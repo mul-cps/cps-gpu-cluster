@@ -1,0 +1,122 @@
+---
+- name: Install K3s cluster
+  hosts: all
+  become: yes
+  gather_facts: yes
+
+  tasks:
+    - name: Install K3s on first control plane
+      shell: |
+        curl -sfL https://get.k3s.io | sh -s - server \
+          --cluster-init \
+          --disable traefik \
+          --disable servicelb \
+          --token {{ k3s_token }} \
+          --tls-san {{ api_vip }} \
+          --cluster-cidr {{ cluster_cidr }} \
+          --service-cidr {{ service_cidr }} \
+          --write-kubeconfig-mode 644
+      args:
+        creates: /usr/local/bin/k3s
+      when: inventory_hostname == groups['control_plane'][0]
+
+    - name: Wait for K3s to be ready on first control plane
+      wait_for:
+        path: /etc/rancher/k3s/k3s.yaml
+        timeout: 300
+      when: inventory_hostname == groups['control_plane'][0]
+
+    - name: Install K3s on additional control planes
+      shell: |
+        curl -sfL https://get.k3s.io | sh -s - server \
+          --server https://{{ hostvars[groups['control_plane'][0]]['ansible_host'] }}:6443 \
+          --token {{ k3s_token }} \
+          --disable traefik \
+          --disable servicelb \
+          --tls-san {{ api_vip }} \
+          --cluster-cidr {{ cluster_cidr }} \
+          --service-cidr {{ service_cidr }} \
+          --write-kubeconfig-mode 644
+      args:
+        creates: /usr/local/bin/k3s
+      when:
+        - inventory_hostname in groups['control_plane']
+        - inventory_hostname != groups['control_plane'][0]
+
+    - name: Apply taint to control plane nodes
+      shell: |
+        kubectl taint nodes {{ inventory_hostname }} {{ control_plane_taint }} --overwrite
+      environment:
+        KUBECONFIG: /etc/rancher/k3s/k3s.yaml
+      when: inventory_hostname in groups['control_plane']
+      retries: 5
+      delay: 10
+      register: taint_result
+      until: taint_result.rc == 0
+
+    - name: Install K3s on GPU workers
+      shell: |
+        curl -sfL https://get.k3s.io | K3S_URL=https://{{ hostvars[groups['control_plane'][0]]['ansible_host'] }}:6443 \
+          K3S_TOKEN={{ k3s_token }} sh -
+      args:
+        creates: /usr/local/bin/k3s
+      when: inventory_hostname in groups['gpu_workers']
+
+    - name: Wait for all nodes to be ready
+      shell: kubectl get nodes {{ inventory_hostname }} -o jsonpath='{.status.conditions[?(@.type=="Ready")].status}'
+      environment:
+        KUBECONFIG: /etc/rancher/k3s/k3s.yaml
+      register: node_status
+      until: node_status.stdout == "True"
+      retries: 30
+      delay: 10
+      when: inventory_hostname == groups['control_plane'][0]
+      delegate_to: "{{ groups['control_plane'][0] }}"
+
+    - name: Label GPU worker nodes
+      shell: |
+        kubectl label nodes {{ inventory_hostname }} \
+          accelerator=nvidia \
+          scratch=nvme \
+          gpu-model=a100 \
+          --overwrite
+      environment:
+        KUBECONFIG: /etc/rancher/k3s/k3s.yaml
+      when: inventory_hostname in groups['gpu_workers']
+      delegate_to: "{{ groups['control_plane'][0] }}"
+
+    - name: Install Helm on first control plane
+      shell: |
+        curl https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3 | bash
+      args:
+        creates: /usr/local/bin/helm
+      when: inventory_hostname == groups['control_plane'][0]
+
+    - name: Add Helm repositories
+      shell: |
+        helm repo add {{ item.name }} {{ item.url }}
+      loop: "{{ helm_repos }}"
+      environment:
+        KUBECONFIG: /etc/rancher/k3s/k3s.yaml
+      when: inventory_hostname == groups['control_plane'][0]
+
+    - name: Update Helm repositories
+      shell: helm repo update
+      environment:
+        KUBECONFIG: /etc/rancher/k3s/k3s.yaml
+      when: inventory_hostname == groups['control_plane'][0]
+
+    - name: Fetch kubeconfig from first control plane
+      fetch:
+        src: /etc/rancher/k3s/k3s.yaml
+        dest: ./kubeconfig
+        flat: yes
+      when: inventory_hostname == groups['control_plane'][0]
+
+    - name: Display cluster info
+      debug:
+        msg: |
+          K3s cluster installed successfully!
+          Copy kubeconfig: scp {{ ansible_user }}@{{ ansible_host }}:/etc/rancher/k3s/k3s.yaml ./kubeconfig
+          Then update server IP: sed -i 's/127.0.0.1/{{ ansible_host }}/g' kubeconfig
+      when: inventory_hostname == groups['control_plane'][0]

@@ -1,0 +1,116 @@
+---
+- name: Install NVIDIA GPU Operator
+  hosts: control_plane[0]
+  become: yes
+  gather_facts: yes
+
+  tasks:
+    - name: Create GPU Operator namespace
+      shell: |
+        kubectl create namespace {{ gpu_operator_namespace }} --dry-run=client -o yaml | kubectl apply -f -
+      environment:
+        KUBECONFIG: /etc/rancher/k3s/k3s.yaml
+
+    - name: Install NVIDIA GPU Operator
+      shell: |
+        helm upgrade --install gpu-operator nvidia/gpu-operator \
+          --namespace {{ gpu_operator_namespace }} \
+          --version {{ gpu_operator_version }} \
+          --set driver.enabled=true \
+          --set toolkit.enabled=true \
+          --set devicePlugin.enabled=true \
+          --set dcgmExporter.enabled=true \
+          --set gfd.enabled=true \
+          --set migManager.enabled=false \
+          --set operator.defaultRuntime=containerd \
+          --wait
+      environment:
+        KUBECONFIG: /etc/rancher/k3s/k3s.yaml
+      timeout: 600
+
+    - name: Wait for GPU Operator pods to be ready
+      shell: |
+        kubectl wait --for=condition=ready pod \
+          -l app.kubernetes.io/name=gpu-operator \
+          -n {{ gpu_operator_namespace }} \
+          --timeout=600s
+      environment:
+        KUBECONFIG: /etc/rancher/k3s/k3s.yaml
+      ignore_errors: yes
+
+    - name: Check GPU Operator status
+      shell: kubectl get pods -n {{ gpu_operator_namespace }}
+      environment:
+        KUBECONFIG: /etc/rancher/k3s/k3s.yaml
+      register: gpu_pods
+
+    - name: Display GPU Operator pods
+      debug:
+        var: gpu_pods.stdout_lines
+
+    - name: Create CUDA test pod manifest
+      copy:
+        dest: /tmp/cuda-vectoradd.yaml
+        content: |
+          apiVersion: v1
+          kind: Pod
+          metadata:
+            name: cuda-vectoradd
+            namespace: default
+          spec:
+            restartPolicy: OnFailure
+            nodeSelector:
+              accelerator: nvidia
+            containers:
+            - name: cuda-vectoradd
+              image: "nvcr.io/nvidia/k8s/cuda-sample:vectoradd-cuda11.7.1"
+              resources:
+                limits:
+                  nvidia.com/gpu: 1
+
+    - name: Run CUDA test pod
+      shell: kubectl apply -f /tmp/cuda-vectoradd.yaml
+      environment:
+        KUBECONFIG: /etc/rancher/k3s/k3s.yaml
+
+    - name: Wait for CUDA test to complete
+      shell: kubectl wait --for=condition=ready pod/cuda-vectoradd --timeout=300s
+      environment:
+        KUBECONFIG: /etc/rancher/k3s/k3s.yaml
+      ignore_errors: yes
+
+    - name: Get CUDA test logs
+      shell: kubectl logs cuda-vectoradd
+      environment:
+        KUBECONFIG: /etc/rancher/k3s/k3s.yaml
+      register: cuda_logs
+      ignore_errors: yes
+
+    - name: Display CUDA test result
+      debug:
+        var: cuda_logs.stdout_lines
+      when: cuda_logs.stdout is defined
+
+    - name: Clean up CUDA test pod
+      shell: kubectl delete pod cuda-vectoradd --ignore-not-found=true
+      environment:
+        KUBECONFIG: /etc/rancher/k3s/k3s.yaml
+
+    - name: Check GPU resources on nodes
+      shell: kubectl get nodes -o json | jq -r '.items[] | select(.status.capacity."nvidia.com/gpu" != null) | "\(.metadata.name): \(.status.capacity."nvidia.com/gpu") GPUs"'
+      environment:
+        KUBECONFIG: /etc/rancher/k3s/k3s.yaml
+      register: gpu_resources
+      ignore_errors: yes
+
+    - name: Display GPU resources
+      debug:
+        var: gpu_resources.stdout_lines
+      when: gpu_resources.stdout is defined
+
+    - name: GPU Operator installation complete
+      debug:
+        msg: |
+          GPU Operator installed successfully!
+          Check GPU availability: kubectl get nodes -o json | jq '.items[].status.capacity'
+          Run GPU test: kubectl apply -f /tmp/cuda-vectoradd.yaml

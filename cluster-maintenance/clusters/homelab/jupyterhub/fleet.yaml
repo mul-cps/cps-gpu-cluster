@@ -1,0 +1,22 @@
+namespace: jupyterhub
+
+helm:
+  chart: jupyterhub
+  repo: https://jupyterhub.github.io/helm-chart
+  version: 3.1.0
+  releaseName: jupyterhub
+  valuesFiles:
+  - values.yaml
+
+# Depends on GPU operator being ready
+dependsOn:
+- selector:
+    matchLabels:
+      app: gpu-operator
+      
+diff:
+  comparePatches:
+  - apiVersion: apps/v1
+    kind: Deployment
+    operations:
+    - {"op": "remove", "path": "/spec/template/metadata/annotations/checksum~1hub-secret"}

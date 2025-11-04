@@ -1,0 +1,57 @@
+---
+# K3s Configuration
+k3s_version: v1.31.2+k3s1
+k3s_token: "{{ lookup('password', '/dev/null chars=ascii_letters,digits length=32') }}"
+
+# Cluster settings
+cluster_cidr: "10.42.0.0/16"
+service_cidr: "10.43.0.0/16"
+cluster_dns: "10.43.0.10"
+cluster_domain: "cluster.local"
+
+# K3s API VIP (optional - for kube-vip)
+api_vip: "10.0.0.100"
+
+# Control plane configuration
+control_plane_taint: "node-role.kubernetes.io/control-plane=true:NoSchedule"
+
+# NFS Configuration
+nfs_server: "10.0.0.30"
+nfs_path: "/export/k3s"
+nfs_storage_class_name: "nfs-client"
+nfs_provisioner_namespace: "nfs-provisioner"
+
+# Fast scratch storage
+scratch_storage_class_name: "fast-scratch"
+scratch_path: "/mnt/nvme/scratch"
+
+# GPU Configuration
+gpu_operator_version: "v23.9.1"
+gpu_operator_namespace: "gpu-operator"
+
+# Helm repositories
+helm_repos:
+  - name: nvidia
+    url: https://nvidia.github.io/gpu-operator
+  - name: nfs-subdir-external-provisioner
+    url: https://kubernetes-sigs.github.io/nfs-subdir-external-provisioner
+  - name: rancher-stable
+    url: https://releases.rancher.com/server-charts/stable
+
+# System settings
+disable_swap: true
+enable_ipv4_forward: true
+
+# Packages to install
+common_packages:
+  - curl
+  - wget
+  - git
+  - vim
+  - htop
+  - net-tools
+  - nfs-common
+
+gpu_worker_packages:
+  - pciutils
+  - linux-headers-generic

@@ -1,0 +1,17 @@
+namespace: gpu-operator
+
+helm:
+  chart: gpu-operator
+  repo: https://nvidia.github.io/gpu-operator
+  version: v23.9.1
+  releaseName: gpu-operator
+  valuesFiles:
+  - values.yaml
+  
+# Fleet will wait for GPU operator to be ready before deploying dependent apps
+diff:
+  comparePatches:
+  - apiVersion: apps/v1
+    kind: DaemonSet
+    operations:
+    - {"op": "remove", "path": "/spec/template/metadata/annotations"}

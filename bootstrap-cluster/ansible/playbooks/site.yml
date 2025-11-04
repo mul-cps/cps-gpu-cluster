@@ -1,0 +1,18 @@
+---
+- name: Deploy K3s GPU Cluster
+  hosts: all
+  become: yes
+  gather_facts: yes
+
+  tasks:
+    - name: Include prerequisites playbook
+      import_playbook: 01-prerequisites.yml
+
+    - name: Include K3s cluster playbook
+      import_playbook: 02-k3s-cluster.yml
+
+    - name: Include storage playbook
+      import_playbook: 03-storage.yml
+
+    - name: Include GPU operator playbook
+      import_playbook: 04-gpu-operator.yml

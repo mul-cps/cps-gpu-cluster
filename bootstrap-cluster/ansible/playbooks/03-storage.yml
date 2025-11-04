@@ -1,0 +1,106 @@
+---
+- name: Configure storage
+  hosts: control_plane[0]
+  become: yes
+  gather_facts: yes
+
+  tasks:
+    - name: Create NFS provisioner namespace
+      shell: |
+        kubectl create namespace {{ nfs_provisioner_namespace }} --dry-run=client -o yaml | kubectl apply -f -
+      environment:
+        KUBECONFIG: /etc/rancher/k3s/k3s.yaml
+
+    - name: Install NFS Subdir External Provisioner
+      shell: |
+        helm upgrade --install nfs-subdir-external-provisioner \
+          nfs-subdir-external-provisioner/nfs-subdir-external-provisioner \
+          --namespace {{ nfs_provisioner_namespace }} \
+          --set nfs.server={{ nfs_server }} \
+          --set nfs.path={{ nfs_path }} \
+          --set storageClass.name={{ nfs_storage_class_name }} \
+          --set storageClass.defaultClass=true \
+          --set storageClass.reclaimPolicy=Retain
+      environment:
+        KUBECONFIG: /etc/rancher/k3s/k3s.yaml
+
+    - name: Wait for NFS provisioner to be ready
+      shell: |
+        kubectl wait --for=condition=ready pod \
+          -l app=nfs-subdir-external-provisioner \
+          -n {{ nfs_provisioner_namespace }} \
+          --timeout=300s
+      environment:
+        KUBECONFIG: /etc/rancher/k3s/k3s.yaml
+
+    - name: Create fast-scratch StorageClass manifest
+      copy:
+        dest: /tmp/fast-scratch-sc.yaml
+        content: |
+          apiVersion: storage.k8s.io/v1
+          kind: StorageClass
+          metadata:
+            name: {{ scratch_storage_class_name }}
+          provisioner: rancher.io/local-path
+          volumeBindingMode: WaitForFirstConsumer
+          reclaimPolicy: Delete
+          parameters:
+            nodePath: {{ scratch_path }}
+
+    - name: Apply fast-scratch StorageClass
+      shell: kubectl apply -f /tmp/fast-scratch-sc.yaml
+      environment:
+        KUBECONFIG: /etc/rancher/k3s/k3s.yaml
+
+    - name: Verify StorageClasses
+      shell: kubectl get sc
+      environment:
+        KUBECONFIG: /etc/rancher/k3s/k3s.yaml
+      register: storage_classes
+
+    - name: Display StorageClasses
+      debug:
+        var: storage_classes.stdout_lines
+
+    - name: Create test PVC for NFS
+      copy:
+        dest: /tmp/test-pvc-nfs.yaml
+        content: |
+          apiVersion: v1
+          kind: PersistentVolumeClaim
+          metadata:
+            name: test-nfs-claim
+            namespace: default
+          spec:
+            accessModes:
+              - ReadWriteMany
+            storageClassName: {{ nfs_storage_class_name }}
+            resources:
+              requests:
+                storage: 1Gi
+
+    - name: Apply test NFS PVC
+      shell: kubectl apply -f /tmp/test-pvc-nfs.yaml
+      environment:
+        KUBECONFIG: /etc/rancher/k3s/k3s.yaml
+
+    - name: Wait for test PVC to be bound
+      shell: kubectl get pvc test-nfs-claim -o jsonpath='{.status.phase}'
+      environment:
+        KUBECONFIG: /etc/rancher/k3s/k3s.yaml
+      register: pvc_status
+      until: pvc_status.stdout == "Bound"
+      retries: 20
+      delay: 5
+
+    - name: Clean up test PVC
+      shell: kubectl delete pvc test-nfs-claim
+      environment:
+        KUBECONFIG: /etc/rancher/k3s/k3s.yaml
+
+    - name: Storage configuration complete
+      debug:
+        msg: |
+          Storage configured successfully!
+          - Default StorageClass: {{ nfs_storage_class_name }} (NFS)
+          - Fast scratch StorageClass: {{ scratch_storage_class_name }} (Local NVMe)

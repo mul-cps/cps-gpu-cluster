@@ -1,0 +1,52 @@
+# NVIDIA GPU Operator Configuration
+
+# Driver configuration
+driver:
+  enabled: true
+  version: "535.104.05"  # Adjust based on your GPU model
+  
+# NVIDIA Container Toolkit
+toolkit:
+  enabled: true
+  version: "1.14.3-centos7"
+
+# Device Plugin
+devicePlugin:
+  enabled: true
+  version: "0.14.3"
+
+# DCGM Exporter (GPU metrics)
+dcgmExporter:
+  enabled: true
+  version: "3.2.5-3.1.8"
+
+# GPU Feature Discovery
+gfd:
+  enabled: true
+  version: "0.8.2"
+
+# MIG Manager (for A100 MIG partitioning - disabled by default)
+migManager:
+  enabled: false
+
+# Node Feature Discovery
+nfd:
+  enabled: true
+
+# Operator configuration
+operator:
+  defaultRuntime: containerd
+  initContainer:
+    image: cuda
+    repository: nvcr.io/nvidia
+    version: 12.3.1-base-ubuntu22.04
+
+# Tolerations for control plane if needed
+tolerations: []
+  # - key: "node-role.kubernetes.io/control-plane"
+  #   operator: "Exists"
+  #   effect: "NoSchedule"
+
+# Node selector - deploy only to GPU nodes
+nodeSelector:
+  accelerator: nvidia

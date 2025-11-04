@@ -1,0 +1,9 @@
+namespace: fleet-local
+
+# Target clusters for this bundle
+# By default, targets the local cluster
+targetCustomizations:
+- name: local
+  clusterSelector:
+    matchLabels:
+      management.cattle.io/cluster-display-name: local

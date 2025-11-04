@@ -1,0 +1,101 @@
+---
+- name: System prerequisites
+  hosts: all
+  become: yes
+  gather_facts: yes
+
+  tasks:
+    - name: Update apt cache
+      apt:
+        update_cache: yes
+        cache_valid_time: 3600
+
+    - name: Install common packages
+      apt:
+        name: "{{ common_packages }}"
+        state: present
+
+    - name: Install GPU worker packages
+      apt:
+        name: "{{ gpu_worker_packages }}"
+        state: present
+      when: inventory_hostname in groups['gpu_workers']
+
+    - name: Disable swap
+      shell: swapoff -a
+      when: disable_swap | bool
+
+    - name: Remove swap from fstab
+      lineinfile:
+        path: /etc/fstab
+        regexp: '^.*swap.*$'
+        state: absent
+      when: disable_swap | bool
+
+    - name: Enable IPv4 forwarding
+      sysctl:
+        name: net.ipv4.ip_forward
+        value: '1'
+        sysctl_set: yes
+        state: present
+        reload: yes
+      when: enable_ipv4_forward | bool
+
+    - name: Load required kernel modules
+      modprobe:
+        name: "{{ item }}"
+        state: present
+      loop:
+        - overlay
+        - br_netfilter
+
+    - name: Make kernel modules persistent
+      copy:
+        dest: /etc/modules-load.d/k3s.conf
+        content: |
+          overlay
+          br_netfilter
+
+    - name: Set sysctl parameters for Kubernetes
+      sysctl:
+        name: "{{ item.name }}"
+        value: "{{ item.value }}"
+        sysctl_set: yes
+        state: present
+        reload: yes
+      loop:
+        - { name: 'net.bridge.bridge-nf-call-iptables', value: '1' }
+        - { name: 'net.bridge.bridge-nf-call-ip6tables', value: '1' }
+        - { name: 'net.ipv4.ip_forward', value: '1' }
+
+    - name: Create NVMe scratch directory on GPU workers
+      file:
+        path: "{{ scratch_path }}"
+        state: directory
+        mode: '0755'
+      when: inventory_hostname in groups['gpu_workers']
+
+    - name: Mount NVMe scratch disk on GPU workers
+      shell: |
+        # Find the second disk (NVMe scratch)
+        DISK=$(lsblk -nd -o NAME,SIZE | grep -v "$(df / | tail -1 | awk '{print $1}' | sed 's/[0-9]//g' | sed 's|/dev/||')" | head -1 | awk '{print $1}')
+        if [ ! -z "$DISK" ] && [ ! -f /mnt/nvme/.mounted ]; then
+          mkfs.ext4 -F /dev/$DISK
+          mount /dev/$DISK {{ scratch_path }}
+          echo "/dev/$DISK {{ scratch_path }} ext4 defaults 0 0" >> /etc/fstab
+          touch /mnt/nvme/.mounted
+        fi
+      when: inventory_hostname in groups['gpu_workers']
+      args:
+        creates: /mnt/nvme/.mounted
+
+    - name: Verify GPUs are visible on workers
+      shell: lspci | grep -i nvidia | wc -l
+      register: gpu_count
+      when: inventory_hostname in groups['gpu_workers']
+      changed_when: false
+
+    - name: Display GPU count
+      debug:
+        msg: "Found {{ gpu_count.stdout }} GPU(s) on {{ inventory_hostname }}"
+      when: inventory_hostname in groups['gpu_workers']

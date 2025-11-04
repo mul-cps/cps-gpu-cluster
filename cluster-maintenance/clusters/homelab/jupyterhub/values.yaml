@@ -1,0 +1,141 @@
+# JupyterHub Configuration for GPU Cluster
+
+# Proxy configuration
+proxy:
+  secretToken: "GENERATE_WITH_openssl_rand_-hex_32"
+  service:
+    type: ClusterIP
+
+# Hub configuration
+hub:
+  config:
+    JupyterHub:
+      admin_access: true
+      authenticator_class: dummy
+    DummyAuthenticator:
+      password: "jupyter"
+  
+  db:
+    pvc:
+      storageClassName: nfs-client
+      storage: 10Gi
+
+  extraConfig:
+    gpu-config: |
+      # Make GPUs available to users
+      c.KubeSpawner.environment = {
+          'NVIDIA_VISIBLE_DEVICES': 'all',
+          'NVIDIA_DRIVER_CAPABILITIES': 'compute,utility'
+      }
+
+# Singleuser notebook configuration
+singleuser:
+  # Default image with CUDA support
+  image:
+    name: jupyter/tensorflow-notebook
+    tag: "latest"
+    pullPolicy: IfNotPresent
+  
+  # Storage for user notebooks
+  storage:
+    capacity: 10Gi
+    dynamic:
+      storageClass: nfs-client
+    homeMountPath: /home/jovyan
+    
+  # Extra storage for fast scratch
+  extraVolumes:
+    - name: scratch
+      persistentVolumeClaim:
+        claimName: "claim-{username}-scratch"
+  
+  extraVolumeMounts:
+    - name: scratch
+      mountPath: /scratch
+  
+  # Default resources (no GPU)
+  cpu:
+    limit: 2
+    guarantee: 1
+  memory:
+    limit: 4G
+    guarantee: 2G
+  
+  # Profile list for GPU selection
+  profileList:
+    - display_name: "CPU Only (2 cores, 4GB RAM)"
+      description: "Standard notebook without GPU"
+      default: true
+      kubespawner_override:
+        cpu_limit: 2
+        cpu_guarantee: 1
+        mem_limit: "4G"
+        mem_guarantee: "2G"
+    
+    - display_name: "Single A100 GPU (8 cores, 32GB RAM)"
+      description: "Notebook with 1x NVIDIA A100 GPU"
+      kubespawner_override:
+        cpu_limit: 8
+        cpu_guarantee: 4
+        mem_limit: "32G"
+        mem_guarantee: "16G"
+        extra_resource_limits:
+          nvidia.com/gpu: "1"
+        extra_resource_guarantees:
+          nvidia.com/gpu: "1"
+        node_selector:
+          accelerator: nvidia
+        image: nvcr.io/nvidia/pytorch:23.10-py3
+    
+    - display_name: "Dual A100 GPUs (16 cores, 64GB RAM)"
+      description: "Notebook with 2x NVIDIA A100 GPUs"
+      kubespawner_override:
+        cpu_limit: 16
+        cpu_guarantee: 8
+        mem_limit: "64G"
+        mem_guarantee: "32G"
+        extra_resource_limits:
+          nvidia.com/gpu: "2"
+        extra_resource_guarantees:
+          nvidia.com/gpu: "2"
+        node_selector:
+          accelerator: nvidia
+        image: nvcr.io/nvidia/pytorch:23.10-py3
+    
+    - display_name: "Research (32 cores, 128GB RAM, 4 GPUs)"
+      description: "Large instance for intensive workloads"
+      kubespawner_override:
+        cpu_limit: 32
+        cpu_guarantee: 16
+        mem_limit: "128G"
+        mem_guarantee: "64G"
+        extra_resource_limits:
+          nvidia.com/gpu: "4"
+        extra_resource_guarantees:
+          nvidia.com/gpu: "4"
+        node_selector:
+          accelerator: nvidia
+        image: nvcr.io/nvidia/pytorch:23.10-py3
+
+  # Allow users to sudo (for package installation)
+  uid: 1000
+  fsGid: 100
+  extraEnv:
+    GRANT_SUDO: "yes"
+    NOTEBOOK_ARGS: "--allow-root"
+
+# Scheduling
+scheduling:
+  userScheduler:
+    enabled: true
+  podPriority:
+    enabled: true
+  userPlaceholder:
+    enabled: false
+
+# Culling (shut down idle notebooks)
+cull:
+  enabled: true
+  timeout: 3600  # 1 hour
+  every: 600     # Check every 10 minutes
+  maxAge: 0      # Don't cull based on age
