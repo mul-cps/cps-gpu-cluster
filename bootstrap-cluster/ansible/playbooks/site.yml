@@ -1,22 +1,19 @@
 ---
-- name: Deploy K3s GPU Cluster
-  hosts: all
-  become: yes
-  gather_facts: yes
+# Main playbook to deploy K3s GPU Cluster
+# This orchestrates all setup playbooks in the correct order
 
-  tasks:
-    - name: Include prerequisites playbook
-      import_playbook: 01-prerequisites.yml
+- name: Prerequisites
+  import_playbook: 01-prerequisites.yml
 
-    - name: Include K3s cluster playbook
-      import_playbook: 02-k3s-cluster.yml
+- name: K3s Cluster Setup
+  import_playbook: 02-k3s-cluster.yml
 
-    - name: Include storage playbook
-      import_playbook: 03-storage.yml
+- name: Storage Configuration
+  import_playbook: 03-storage.yml
 
-    - name: Include GPU operator playbook
-      import_playbook: 04-gpu-operator.yml
+- name: GPU Operator Installation
+  import_playbook: 04-gpu-operator.yml
 
-    - name: Include maintenance VM playbook (if maintenance group exists)
-      import_playbook: 05-maintenance-vm.yml
-      when: "'maintenance' in groups"
+- name: Maintenance VM Configuration
+  import_playbook: 05-maintenance-vm.yml
+  when: "'maintenance' in groups"

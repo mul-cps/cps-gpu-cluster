@@ -97,7 +97,8 @@
         KUBECONFIG: /etc/rancher/k3s/k3s.yaml
 
     - name: Check GPU resources on nodes
-      shell: kubectl get nodes -o json | jq -r '.items[] | select(.status.capacity."nvidia.com/gpu" != null) | "\(.metadata.name): \(.status.capacity."nvidia.com/gpu") GPUs"'
+      shell: |
+        kubectl get nodes -o json | jq -r '.items[] | select(.status.capacity."nvidia.com/gpu" != null) | "\(.metadata.name): \(.status.capacity."nvidia.com/gpu") GPUs"'
       environment:
         KUBECONFIG: /etc/rancher/k3s/k3s.yaml
       register: gpu_resources
