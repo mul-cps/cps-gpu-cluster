@@ -8,6 +8,13 @@ k3s-cp${idx + 1} ansible_host=${ip} ansible_user=${vm_user}
 k3s-wk-gpu${idx + 1} ansible_host=${ip} ansible_user=${vm_user}
 %{ endfor ~}
 
+%{ if length(maintenance_ips) > 0 ~}
+[maintenance]
+%{ for idx, ip in maintenance_ips ~}
+k3s-maintenance ansible_host=${ip} ansible_user=${vm_user}
+%{ endfor ~}
+
+%{ endif ~}
 [k3s_cluster:children]
 control_plane
 gpu_workers

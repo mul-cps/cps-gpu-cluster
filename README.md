@@ -17,6 +17,7 @@ This repository contains infrastructure-as-code for deploying a reproducible GPU
 - **VM Layout**:
   - 3x control-plane nodes (cp1, cp2, cp3)
   - 4x worker nodes (wk-gpu1 through wk-gpu4)
+  - 1x maintenance VM (optional, for cluster management)
   - Each worker VM: 2x A100 GPUs via PCIe passthrough
 
 ### Software Stack
@@ -86,7 +87,9 @@ See [docs/harvester-migration.md](docs/harvester-migration.md) for details.
 - [GPU Passthrough Setup](docs/gpu-passthrough.md)
 - [Terraform Usage](bootstrap-cluster/terraform/README.md)
 - [Ansible Playbooks](bootstrap-cluster/ansible/README.md)
+- [Maintenance VM Guide](docs/maintenance-vm.md)
 - [Fleet GitOps](cluster-maintenance/README.md)
+- [Network Configuration](docs/network-configuration.md)
 - [Harvester Migration](docs/harvester-migration.md)
 - [Troubleshooting](docs/troubleshooting.md)
 

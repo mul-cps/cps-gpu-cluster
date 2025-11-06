@@ -16,3 +16,7 @@
 
     - name: Include GPU operator playbook
       import_playbook: 04-gpu-operator.yml
+
+    - name: Include maintenance VM playbook (if maintenance group exists)
+      import_playbook: 05-maintenance-vm.yml
+      when: "'maintenance' in groups"

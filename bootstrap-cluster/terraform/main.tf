@@ -4,7 +4,11 @@ terraform {
   required_providers {
     proxmox = {
       source  = "telmate/proxmox"
-      version = "~> 2.9"
+      version = "3.0.2-rc04"
+    }
+    local = {
+      source  = "hashicorp/local"
+      version = "~> 2.5"
     }
   }
 }
@@ -31,11 +35,20 @@ resource "proxmox_vm_qemu" "k3s_control_plane" {
   sockets = 1
   memory  = 16384
   
+  # SCSI controller
+  scsihw = "virtio-scsi-single"
+  
   # Machine type for GPU passthrough compatibility
   machine = "q35"
   bios    = "ovmf"
   
-  # EFI disk
+  # Serial console
+  serial {
+    id   = 0
+    type = "socket"
+  }
+  
+  # EFI disk (v3 provider supports efidisk block)
   efidisk {
     efitype = "4m"
     storage = var.storage_pool
@@ -43,25 +56,46 @@ resource "proxmox_vm_qemu" "k3s_control_plane" {
   
   # OS Disk
   disk {
+    slot    = "scsi0"
     size    = "100G"
-    type    = "scsi"
+    type    = "disk"
     storage = var.storage_pool
-    ssd     = 1
+  }
+  
+  # Cloud-init drive
+  disk {
+    slot    = "ide2"
+    type    = "cloudinit"
+    storage = var.storage_pool
   }
   
   # Network
   network {
+    id     = 0
     model  = "virtio"
     bridge = var.network_bridge
+    macaddr = var.control_plane_macs[count.index]
+    tag    = var.vlan_id
   }
   
   # Cloud-init
   os_type   = "cloud-init"
-  ipconfig0 = "ip=10.0.0.${11 + count.index}/24,gw=${var.gateway}"
+  ipconfig0 = "ip=${var.control_plane_ips[count.index]},gw=${var.gateway}"
   
   ciuser     = var.vm_user
+  cipassword = var.vm_password
   sshkeys    = var.ssh_public_key
-  nameserver = var.nameserver
+  nameserver = "${var.nameserver} ${var.nameserver_secondary}"
+  
+  # VM description and tags for Proxmox UI
+  desc = "K3s Control Plane Node ${count.index + 1} - Ubuntu 24.04 LTS"
+  tags = "k3s,control-plane,kubernetes,ubuntu-2404"
+  
+  # Boot configuration
+  boot    = "order=scsi0"
+  
+  # QEMU Guest Agent
+  agent = 1
   
   # Start on boot
   onboot = true
@@ -90,11 +124,20 @@ resource "proxmox_vm_qemu" "k3s_gpu_worker" {
   sockets = 1
   memory  = 131072  # 128 GB
   
+  # SCSI controller
+  scsihw = "virtio-scsi-single"
+  
   # Machine type for GPU passthrough
   machine = "q35"
   bios    = "ovmf"
   
-  # EFI disk
+  # Serial console
+  serial {
+    id   = 0
+    type = "socket"
+  }
+  
+  # EFI disk (v3 provider supports efidisk block)
   efidisk {
     efitype = "4m"
     storage = var.storage_pool
@@ -102,55 +145,164 @@ resource "proxmox_vm_qemu" "k3s_gpu_worker" {
   
   # OS Disk
   disk {
+    slot    = "scsi0"
     size    = "500G"
-    type    = "scsi"
+    type    = "disk"
     storage = var.storage_pool
-    ssd     = 1
   }
   
   # NVMe scratch disk
   disk {
+    slot    = "scsi1"
     size    = "1000G"
-    type    = "scsi"
+    type    = "disk"
     storage = var.nvme_storage_pool
-    ssd     = 1
+  }
+  
+  # Cloud-init drive
+  disk {
+    slot    = "ide2"
+    type    = "cloudinit"
+    storage = var.storage_pool
   }
   
   # Network
   network {
+    id     = 0
     model  = "virtio"
     bridge = var.network_bridge
+    macaddr = var.worker_macs[count.index]
+    tag    = var.vlan_id
   }
   
-  # GPU Passthrough - First A100
-  hostpci0 {
-    host    = var.gpu_pci_addresses[count.index * 2]
-    pcie    = 1
-    rombar  = 1
-    x-vga   = 0
-  }
-  
-  # GPU Passthrough - Second A100
-  hostpci1 {
-    host    = var.gpu_pci_addresses[count.index * 2 + 1]
-    pcie    = 1
-    rombar  = 1
-    x-vga   = 0
+  # GPU Passthrough using resource mappings
+  pcis {
+    pci0 {
+      mapping {
+        mapping_id = "NVIDIA-A100-40GB"
+        pcie       = true
+        rombar     = true
+      }
+    }
+    pci1 {
+      mapping {
+        mapping_id = "NVIDIA-A100-40GB"
+        pcie       = true
+        rombar     = true
+      }
+    }
   }
   
   # Cloud-init
   os_type   = "cloud-init"
-  ipconfig0 = "ip=10.0.0.${21 + count.index}/24,gw=${var.gateway}"
+  ipconfig0 = "ip=${var.worker_ips[count.index]},gw=${var.gateway}"
   
   ciuser     = var.vm_user
+  cipassword = var.vm_password
   sshkeys    = var.ssh_public_key
-  nameserver = var.nameserver
+  nameserver = "${var.nameserver} ${var.nameserver_secondary}"
   
-  # Additional args for VFIO
-  args = "-cpu host,kvm=off"
+    # VM description and tags for Proxmox UI
+  desc = "K3s GPU Worker Node ${count.index + 1} - 2x A100 GPUs - Ubuntu 24.04 LTS"
+  tags = "k3s,worker,gpu,nvidia-a100,kubernetes,ubuntu-2404"
+  
+  # Boot configuration
+  boot    = "order=scsi0"
+  
+  # QEMU Guest Agent
+  agent = 1
   
   # Start on boot
   onboot = true
+  
+  # Lifecycle
+  lifecycle {
+    ignore_changes = [
+      network,
+      disk,
+    ]
+  }
+}
+
+# Maintenance VM (optional - enabled when maintenance_ip is set)
+resource "proxmox_vm_qemu" "maintenance" {
+  count       = var.maintenance_ip != "" ? 1 : 0
+  name        = "k3s-maintenance"
+  target_node = var.proxmox_node
+  
+  # VM Configuration
+  clone      = var.vm_template
+  full_clone = true
+  
+  # Hardware - Minimal resources for maintenance tasks
+  cores   = 2
+  sockets = 1
+  memory  = 4096  # 4 GB
+  
+  # SCSI controller
+  scsihw = "virtio-scsi-single"
+  
+  # Machine type
+  machine = "q35"
+  bios    = "ovmf"
+  
+  # Serial console
+  serial {
+    id   = 0
+    type = "socket"
+  }
+  
+  # EFI disk
+  efidisk {
+    efitype = "4m"
+    storage = var.storage_pool
+  }
+  
+  # OS Disk - Smaller for maintenance VM
+  disk {
+    slot    = "scsi0"
+    size    = "50G"
+    type    = "disk"
+    storage = var.storage_pool
+  }
+  
+  # Cloud-init drive
+  disk {
+    slot    = "ide2"
+    type    = "cloudinit"
+    storage = var.storage_pool
+  }
+  
+  # Network
+  network {
+    id     = 0
+    model  = "virtio"
+    bridge = var.network_bridge
+    macaddr = var.maintenance_mac
+    tag    = var.vlan_id
+  }
+  
+  # Cloud-init
+  os_type   = "cloud-init"
+  ipconfig0 = "ip=${var.maintenance_ip},gw=${var.gateway}"
+  
+  ciuser     = var.vm_user
+  cipassword = var.vm_password
+  sshkeys    = var.ssh_public_key
+  nameserver = "${var.nameserver} ${var.nameserver_secondary}"
+  
+  # VM description and tags for Proxmox UI
+  desc = "Maintenance VM - Ansible, Terraform, Git, Debugging Tools - Ubuntu 24.04 LTS"
+  tags = "maintenance,tools,ansible,terraform,ubuntu-2404"
+  
+  # Boot configuration
+  boot    = "order=scsi0"
+  
+  # QEMU Guest Agent
+  agent = 1
+  
+  # Start on boot
+  onboot = false  # Don't auto-start maintenance VM
   
   # Lifecycle
   lifecycle {
@@ -166,6 +318,7 @@ resource "local_file" "ansible_inventory" {
   content = templatefile("${path.module}/templates/inventory.tpl", {
     control_plane_ips = [for vm in proxmox_vm_qemu.k3s_control_plane : vm.default_ipv4_address]
     worker_ips        = [for vm in proxmox_vm_qemu.k3s_gpu_worker : vm.default_ipv4_address]
+    maintenance_ips   = var.maintenance_ip != "" ? [for vm in proxmox_vm_qemu.maintenance : vm.default_ipv4_address] : []
     vm_user           = var.vm_user
   })
   filename = "${path.module}/../ansible/inventory.ini"

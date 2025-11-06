@@ -1,0 +1,131 @@
+#cloud-config
+# Cloud-init configuration for maintenance VM
+# This will install Ansible, Terraform (OpenTofu), Git, and debugging tools
+
+package_update: true
+package_upgrade: true
+
+packages:
+  # Essential tools
+  - curl
+  - wget
+  - vim
+  - tmux
+  - htop
+  - iotop
+  - iftop
+  - net-tools
+  - dnsutils
+  - iproute2
+  - iputils-ping
+  - traceroute
+  - tcpdump
+  - nmap
+  - netcat-openbsd
+  
+  # Version control
+  - git
+  - git-lfs
+  
+  # Python and pip (for Ansible)
+  - python3
+  - python3-pip
+  - python3-venv
+  
+  # Build tools (for Python packages)
+  - build-essential
+  - libssl-dev
+  - libffi-dev
+  - python3-dev
+  
+  # System debugging tools
+  - strace
+  - lsof
+  - sysstat
+  - iperf3
+  - mtr-tiny
+  
+  # Container tools
+  - docker.io
+  - docker-compose
+  
+  # QEMU Guest Agent
+  - qemu-guest-agent
+
+runcmd:
+  # Start QEMU Guest Agent
+  - systemctl enable qemu-guest-agent
+  - systemctl start qemu-guest-agent
+  
+  # Install Ansible via pip (latest version)
+  - pip3 install --upgrade pip
+  - pip3 install ansible ansible-lint
+  
+  # Install OpenTofu (Terraform alternative)
+  - |
+    # Install OpenTofu from official repository
+    curl -fsSL https://get.opentofu.org/install-opentofu.sh -o /tmp/install-opentofu.sh
+    chmod +x /tmp/install-opentofu.sh
+    /tmp/install-opentofu.sh --install-method deb
+    rm /tmp/install-opentofu.sh
+  
+  # Add user to docker group
+  - usermod -aG docker ubuntu
+  
+  # Install kubectl (for Kubernetes debugging)
+  - |
+    curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"
+    install -o root -g root -m 0755 kubectl /usr/local/bin/kubectl
+    rm kubectl
+  
+  # Install k9s (Kubernetes TUI)
+  - |
+    K9S_VERSION=$(curl -s https://api.github.com/repos/derailed/k9s/releases/latest | grep tag_name | cut -d '"' -f 4)
+    wget -q https://github.com/derailed/k9s/releases/download/${K9S_VERSION}/k9s_Linux_amd64.tar.gz -O /tmp/k9s.tar.gz
+    tar -xzf /tmp/k9s.tar.gz -C /tmp
+    install -o root -g root -m 0755 /tmp/k9s /usr/local/bin/k9s
+    rm /tmp/k9s.tar.gz /tmp/k9s /tmp/README.md /tmp/LICENSE
+  
+  # Install helm (Kubernetes package manager)
+  - |
+    curl https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3 | bash
+  
+  # Create workspace directory
+  - mkdir -p /home/ubuntu/workspace
+  - chown ubuntu:ubuntu /home/ubuntu/workspace
+  
+  # Set up bash aliases for common tasks
+  - |
+    cat >> /home/ubuntu/.bashrc << 'EOF'
+    
+    # Maintenance VM aliases
+    alias k='kubectl'
+    alias kgp='kubectl get pods -A'
+    alias kgn='kubectl get nodes -o wide'
+    alias tf='tofu'
+    alias ll='ls -lah'
+    alias dps='docker ps'
+    alias dlog='docker logs -f'
+    
+    # Custom prompt
+    export PS1='\[\033[01;32m\]\u@maintenance\[\033[00m\]:\[\033[01;34m\]\w\[\033[00m\]\$ '
+    EOF
+  
+  # Set proper ownership
+  - chown ubuntu:ubuntu /home/ubuntu/.bashrc
+
+final_message: |
+  Maintenance VM is ready!
+  
+  Installed tools:
+  - Ansible & ansible-lint
+  - OpenTofu (Terraform)
+  - Git
+  - Docker & Docker Compose
+  - kubectl, k9s, helm
+  - Network debugging: tcpdump, nmap, iperf3, mtr
+  - System debugging: strace, lsof, sysstat
+  
+  Workspace: /home/ubuntu/workspace
+  
+  The system is up after $UPTIME seconds.

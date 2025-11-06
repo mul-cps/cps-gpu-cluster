@@ -1,0 +1,13 @@
+#cloud-config
+# Cloud-init configuration to install and enable qemu-guest-agent
+# This file should be uploaded to Proxmox at /var/lib/vz/snippets/qemu-guest-agent.yml
+
+package_update: true
+package_upgrade: false
+
+packages:
+  - qemu-guest-agent
+
+runcmd:
+  - systemctl enable qemu-guest-agent
+  - systemctl start qemu-guest-agent

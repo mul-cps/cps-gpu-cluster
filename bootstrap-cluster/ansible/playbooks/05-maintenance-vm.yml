@@ -1,0 +1,447 @@
+---
+# Ansible playbook for additional maintenance VM configuration
+# This playbook runs after the cloud-init setup to add extra tools and configurations
+
+- name: Configure Maintenance VM
+  hosts: maintenance
+  become: yes
+  vars:
+    maintenance_tools_dir: "/opt/maintenance-tools"
+    workspace_dir: "/home/{{ ansible_user }}/workspace"
+  
+  tasks:
+    - name: Update apt cache
+      apt:
+        update_cache: yes
+        cache_valid_time: 3600
+    
+    - name: Install additional debugging tools
+      apt:
+        name:
+          - jq              # JSON processor
+          - yq              # YAML processor
+          - tree            # Directory tree viewer
+          - ncdu            # Disk usage analyzer
+          - silversearcher-ag  # Fast code search
+          - ripgrep         # Fast grep alternative
+          - fd-find         # Fast find alternative
+          - bat             # Cat with syntax highlighting
+          - fzf             # Fuzzy finder
+          - httpie          # HTTP client
+          - siege           # HTTP load testing
+          - wrk             # HTTP benchmarking
+          - stress-ng       # Stress testing
+          - pv              # Pipe viewer
+          - rsync           # File synchronization
+        state: present
+    
+    - name: Create maintenance tools directory
+      file:
+        path: "{{ maintenance_tools_dir }}"
+        state: directory
+        mode: '0755'
+    
+    - name: Install kubectx and kubens
+      block:
+        - name: Download kubectx
+          get_url:
+            url: https://raw.githubusercontent.com/ahmetb/kubectx/master/kubectx
+            dest: /usr/local/bin/kubectx
+            mode: '0755'
+        
+        - name: Download kubens
+          get_url:
+            url: https://raw.githubusercontent.com/ahmetb/kubectx/master/kubens
+            dest: /usr/local/bin/kubens
+            mode: '0755'
+    
+    - name: Install krew (kubectl plugin manager)
+      become: yes
+      become_user: "{{ ansible_user }}"
+      shell: |
+        set -x
+        cd "$(mktemp -d)"
+        OS="$(uname | tr '[:upper:]' '[:lower:]')"
+        ARCH="$(uname -m | sed -e 's/x86_64/amd64/' -e 's/\(arm\)\(64\)\?.*/\1\2/' -e 's/aarch64$/arm64/')"
+        KREW="krew-${OS}_${ARCH}"
+        curl -fsSLO "https://github.com/kubernetes-sigs/krew/releases/latest/download/${KREW}.tar.gz"
+        tar zxvf "${KREW}.tar.gz"
+        ./"${KREW}" install krew
+      args:
+        creates: "/home/{{ ansible_user }}/.krew/bin/kubectl-krew"
+    
+    - name: Add krew to PATH in bashrc
+      become: yes
+      become_user: "{{ ansible_user }}"
+      lineinfile:
+        path: "/home/{{ ansible_user }}/.bashrc"
+        line: 'export PATH="${KREW_ROOT:-$HOME/.krew}/bin:$PATH"'
+        state: present
+        create: yes
+    
+    - name: Configure kubectl autocompletion and aliases
+      become: yes
+      become_user: "{{ ansible_user }}"
+      blockinfile:
+        path: "/home/{{ ansible_user }}/.bashrc"
+        marker: "# {mark} KUBECTL CONFIGURATION"
+        block: |
+          # Kubectl configuration
+          export KUBECONFIG=$HOME/.kube/config
+          
+          # Kubectl autocompletion
+          if command -v kubectl &> /dev/null; then
+            source <(kubectl completion bash)
+            complete -F __start_kubectl k
+          fi
+          
+          # Helm autocompletion
+          if command -v helm &> /dev/null; then
+            source <(helm completion bash)
+          fi
+    
+    - name: Install useful kubectl plugins via krew
+      become: yes
+      become_user: "{{ ansible_user }}"
+      shell: |
+        export PATH="${HOME}/.krew/bin:$PATH"
+        kubectl krew install {{ item }}
+      args:
+        creates: "/home/{{ ansible_user }}/.krew/store/{{ item }}"
+      loop:
+        - ctx           # Context switcher
+        - ns            # Namespace switcher
+        - whoami        # Show current user
+        - tree          # Resource hierarchy
+        - tail          # Tail logs from multiple pods
+        - view-secret   # Decode secrets
+        - resource-capacity  # Resource usage
+    
+    - name: Create useful scripts directory
+      file:
+        path: "{{ maintenance_tools_dir }}/scripts"
+        state: directory
+        mode: '0755'
+    
+    - name: Create GPU check script
+      copy:
+        dest: "{{ maintenance_tools_dir }}/scripts/check-gpus.sh"
+        mode: '0755'
+        content: |
+          #!/bin/bash
+          # Check GPU status across all GPU worker nodes
+          
+          echo "=== GPU Status on Worker Nodes ==="
+          echo ""
+          
+          for i in {1..4}; do
+            echo "--- k3s-wk-gpu${i} ---"
+            ssh ubuntu@k3s-wk-gpu${i} "nvidia-smi --query-gpu=index,name,temperature.gpu,utilization.gpu,memory.used,memory.total --format=csv,noheader" 2>/dev/null || echo "Unable to connect"
+            echo ""
+          done
+    
+    - name: Create cluster health check script
+      copy:
+        dest: "{{ maintenance_tools_dir }}/scripts/cluster-health.sh"
+        mode: '0755'
+        content: |
+          #!/bin/bash
+          # Comprehensive K3s cluster health check
+          
+          echo "=== K3s Cluster Health Check ==="
+          echo ""
+          
+          echo "--- Node Status ---"
+          kubectl get nodes -o wide
+          echo ""
+          
+          echo "--- System Pods ---"
+          kubectl get pods -n kube-system
+          echo ""
+          
+          echo "--- GPU Operator Pods ---"
+          kubectl get pods -n gpu-operator 2>/dev/null || echo "GPU operator namespace not found"
+          echo ""
+          
+          echo "--- PersistentVolumeClaims ---"
+          kubectl get pvc -A
+          echo ""
+          
+          echo "--- Top Nodes (CPU/Memory) ---"
+          kubectl top nodes 2>/dev/null || echo "Metrics server not available"
+          echo ""
+          
+          echo "--- Recent Events ---"
+          kubectl get events -A --sort-by='.lastTimestamp' | tail -20
+    
+    - name: Create quick deploy script
+      copy:
+        dest: "{{ maintenance_tools_dir }}/scripts/quick-deploy.sh"
+        mode: '0755'
+        content: |
+          #!/bin/bash
+          # Quick deployment helper for testing
+          
+          set -e
+          
+          if [ $# -lt 2 ]; then
+            echo "Usage: $0 <name> <image> [replicas]"
+            echo "Example: $0 nginx nginx:latest 3"
+            exit 1
+          fi
+          
+          NAME=$1
+          IMAGE=$2
+          REPLICAS=${3:-1}
+          
+          echo "Deploying ${NAME} with image ${IMAGE} (${REPLICAS} replicas)..."
+          
+          kubectl create deployment ${NAME} --image=${IMAGE} --replicas=${REPLICAS}
+          kubectl expose deployment ${NAME} --port=80 --type=NodePort
+          
+          echo "Waiting for deployment to be ready..."
+          kubectl wait --for=condition=available --timeout=300s deployment/${NAME}
+          
+          echo "Deployment complete!"
+          kubectl get deployment,pod,svc -l app=${NAME}
+    
+    - name: Create cleanup script
+      copy:
+        dest: "{{ maintenance_tools_dir }}/scripts/cleanup-failed-pods.sh"
+        mode: '0755'
+        content: |
+          #!/bin/bash
+          # Clean up failed/completed pods across all namespaces
+          
+          echo "Cleaning up failed and completed pods..."
+          
+          kubectl get pods -A --field-selector=status.phase=Failed -o json | \
+            kubectl delete -f - --ignore-not-found=true
+          
+          kubectl get pods -A --field-selector=status.phase=Succeeded -o json | \
+            kubectl delete -f - --ignore-not-found=true
+          
+          echo "Cleanup complete!"
+    
+    - name: Configure kubectl for cluster access
+      become: yes
+      become_user: "{{ ansible_user }}"
+      block:
+        - name: Create .kube directory
+          file:
+            path: "/home/{{ ansible_user }}/.kube"
+            state: directory
+            mode: '0755'
+        
+        - name: Fetch kubeconfig from control plane
+          delegate_to: "{{ groups['control_plane'][0] }}"
+          slurp:
+            src: /etc/rancher/k3s/k3s.yaml
+          register: kubeconfig_content
+        
+        - name: Write kubeconfig to maintenance VM
+          copy:
+            content: "{{ kubeconfig_content.content | b64decode }}"
+            dest: "/home/{{ ansible_user }}/.kube/config"
+            mode: '0600'
+        
+        - name: Update kubeconfig server address
+          replace:
+            path: "/home/{{ ansible_user }}/.kube/config"
+            regexp: 'https://127\.0\.0\.1:6443'
+            replace: "https://{{ hostvars[groups['control_plane'][0]].ansible_host }}:6443"
+        
+        - name: Set correct permissions on kubeconfig
+          file:
+            path: "/home/{{ ansible_user }}/.kube/config"
+            owner: "{{ ansible_user }}"
+            group: "{{ ansible_user }}"
+            mode: '0600'
+    
+    - name: Verify kubectl access
+      become: yes
+      become_user: "{{ ansible_user }}"
+      command: kubectl get nodes
+      register: kubectl_test
+      changed_when: false
+      failed_when: false
+    
+    - name: Display kubectl test result
+      debug:
+        msg: "{{ kubectl_test.stdout_lines if kubectl_test.rc == 0 else 'kubectl not yet configured - will be available after cluster is ready' }}"
+    
+    - name: Set up Git configuration for ansible user
+      become: yes
+      become_user: "{{ ansible_user }}"
+      block:
+        - name: Configure git user name
+          git_config:
+            scope: global
+            name: user.name
+            value: "Maintenance VM"
+        
+        - name: Configure git user email
+          git_config:
+            scope: global
+            name: user.email
+            value: "maintenance@unileoben.ac.at"
+        
+        - name: Configure git default branch
+          git_config:
+            scope: global
+            name: init.defaultBranch
+            value: "main"
+    
+    - name: Create workspace directory structure
+      become: yes
+      become_user: "{{ ansible_user }}"
+      file:
+        path: "{{ workspace_dir }}/{{ item }}"
+        state: directory
+        mode: '0755'
+      loop:
+        - terraform
+        - ansible
+        - kubernetes
+        - scripts
+        - tmp
+    
+    - name: Create README in workspace
+      copy:
+        dest: "{{ workspace_dir }}/README.md"
+        mode: '0644'
+        owner: "{{ ansible_user }}"
+        group: "{{ ansible_user }}"
+        content: |
+          # Maintenance VM Workspace
+          
+          This workspace is organized for cluster maintenance and debugging tasks.
+          
+          ## Directory Structure
+          
+          - `terraform/` - Terraform/OpenTofu configurations
+          - `ansible/` - Ansible playbooks and inventories
+          - `kubernetes/` - Kubernetes manifests and configurations
+          - `scripts/` - Custom maintenance scripts
+          - `tmp/` - Temporary files
+          
+          ## Installed Tools
+          
+          ### Infrastructure as Code
+          - OpenTofu (Terraform)
+          - Ansible + ansible-lint
+          
+          ### Kubernetes Tools
+          - kubectl + useful plugins (via krew)
+          - k9s (Terminal UI)
+          - helm (Package manager)
+          - kubectx/kubens (Context/namespace switching)
+          
+          ### Container Tools
+          - Docker + Docker Compose
+          
+          ### Network & System Debugging
+          - tcpdump, nmap, netcat
+          - iperf3, mtr, iftop
+          - strace, lsof, sysstat
+          
+          ### Development Tools
+          - Git + Git LFS
+          - jq, yq (JSON/YAML processors)
+          - ripgrep, fd, bat (modern CLI tools)
+          - fzf (fuzzy finder)
+          
+          ## Useful Commands
+          
+          ```bash
+          # Check cluster health
+          /opt/maintenance-tools/scripts/cluster-health.sh
+          
+          # Check GPU status on all workers
+          /opt/maintenance-tools/scripts/check-gpus.sh
+          
+          # Quick deployment
+          /opt/maintenance-tools/scripts/quick-deploy.sh nginx nginx:latest 3
+          
+          # Cleanup failed pods
+          /opt/maintenance-tools/scripts/cleanup-failed-pods.sh
+          
+          # Interactive cluster management
+          k9s
+          
+          # Switch kubectl context
+          kubectx
+          
+          # Switch kubectl namespace
+          kubens
+          ```
+          
+          ## SSH to Cluster Nodes
+          
+          ```bash
+          # Control plane nodes
+          ssh ubuntu@k3s-cp1
+          ssh ubuntu@k3s-cp2
+          ssh ubuntu@k3s-cp3
+          
+          # GPU worker nodes
+          ssh ubuntu@k3s-wk-gpu1
+          ssh ubuntu@k3s-wk-gpu2
+          ssh ubuntu@k3s-wk-gpu3
+          ssh ubuntu@k3s-wk-gpu4
+          ```
+    
+    - name: Create a MOTD with useful information
+      copy:
+        dest: /etc/update-motd.d/99-maintenance-info
+        mode: '0755'
+        content: |
+          #!/bin/bash
+          
+          cat << 'EOF'
+          
+          ╔═══════════════════════════════════════════════════════════════╗
+          ║           K3s GPU Cluster - Maintenance VM                    ║
+          ╚═══════════════════════════════════════════════════════════════╝
+          
+          Useful Scripts:
+            • /opt/maintenance-tools/scripts/cluster-health.sh
+            • /opt/maintenance-tools/scripts/check-gpus.sh
+            • /opt/maintenance-tools/scripts/quick-deploy.sh
+          
+          Quick Commands:
+            • k9s                  - Interactive cluster UI
+            • kubectl get nodes    - Show cluster nodes
+            • kubectx / kubens     - Switch context/namespace
+          
+          Workspace: ~/workspace
+          
+          EOF
+    
+    - name: Remove default MOTD files
+      file:
+        path: "/etc/update-motd.d/{{ item }}"
+        state: absent
+      loop:
+        - 10-help-text
+        - 50-motd-news
+    
+    - name: Ensure workspace ownership is correct
+      file:
+        path: "{{ workspace_dir }}"
+        state: directory
+        owner: "{{ ansible_user }}"
+        group: "{{ ansible_user }}"
+        recurse: yes
+    
+    - name: Display completion message
+      debug:
+        msg: |
+          ===============================================
+          Maintenance VM configuration complete!
+          
+          Connect with: ssh {{ ansible_user }}@{{ ansible_host }}
+          
+          Tools installed and ready to use.
+          Check ~/workspace/README.md for more information.
+          ===============================================
