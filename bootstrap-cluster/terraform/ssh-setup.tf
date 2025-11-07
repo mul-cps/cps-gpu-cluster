@@ -172,6 +172,44 @@ resource "null_resource" "distribute_ssh_key_workers" {
   ]
 }
 
+# Distribute the key to storage VM
+resource "null_resource" "distribute_ssh_key_storage" {
+  count = var.maintenance_ip != "" && var.storage_ip != "" ? 1 : 0
+  
+  triggers = {
+    pubkey = data.external.maintenance_pubkey[0].result.pubkey
+    vm_id  = proxmox_vm_qemu.storage[0].vmid
+  }
+  
+  provisioner "local-exec" {
+    command = <<-EOT
+      #!/bin/bash
+      set -e
+      
+      VMID=${proxmox_vm_qemu.storage[0].vmid}
+      PUBKEY='${data.external.maintenance_pubkey[0].result.pubkey}'
+      
+      echo "Adding SSH key to storage VM $VMID..."
+      
+      # Create .ssh directory if needed and add key
+      ssh ${var.proxmox_ssh_user}@${var.proxmox_host} \
+        "qm guest exec $VMID -- \
+          su - ubuntu -c 'mkdir -p /home/ubuntu/.ssh && \
+            chmod 700 /home/ubuntu/.ssh && \
+            grep -qF \"$PUBKEY\" /home/ubuntu/.ssh/authorized_keys 2>/dev/null || \
+            echo \"$PUBKEY\" >> /home/ubuntu/.ssh/authorized_keys && \
+            chmod 600 /home/ubuntu/.ssh/authorized_keys'"
+      
+      echo "✓ SSH key added to VM $VMID"
+    EOT
+  }
+  
+  depends_on = [
+    null_resource.generate_maintenance_ssh_key,
+    data.external.maintenance_pubkey
+  ]
+}
+
 # Set up known_hosts on maintenance VM
 resource "null_resource" "setup_known_hosts" {
   count = var.maintenance_ip != "" ? 1 : 0
@@ -180,6 +218,7 @@ resource "null_resource" "setup_known_hosts" {
     maintenance_vm_id = proxmox_vm_qemu.maintenance[0].id
     control_plane_ips = join(",", var.control_plane_ips)
     worker_ips        = join(",", var.worker_ips)
+    storage_ip        = var.storage_ip
   }
   
   provisioner "local-exec" {
@@ -196,10 +235,10 @@ resource "null_resource" "setup_known_hosts" {
         "qm guest exec $VMID -- \
           su - ubuntu -c 'touch /home/ubuntu/.ssh/known_hosts && chmod 644 /home/ubuntu/.ssh/known_hosts'"
       
-      # Add host keys for all cluster nodes
-      IPS="${join(" ", [for ip in concat(var.control_plane_ips, var.worker_ips) : split("/", ip)[0]])}"
+      # Add host keys for all cluster nodes (including storage if configured)
+      ALL_IPS="${join(" ", [for ip in concat(var.control_plane_ips, var.worker_ips, var.storage_ip != "" ? [var.storage_ip] : []) : split("/", ip)[0]])}"
       
-      for ip in $IPS; do
+      for ip in $ALL_IPS; do
         echo "Adding host key for $ip..."
         ssh ${var.proxmox_ssh_user}@${var.proxmox_host} \
           "qm guest exec $VMID -- \
@@ -212,7 +251,8 @@ resource "null_resource" "setup_known_hosts" {
   
   depends_on = [
     null_resource.distribute_ssh_key_control_plane,
-    null_resource.distribute_ssh_key_workers
+    null_resource.distribute_ssh_key_workers,
+    null_resource.distribute_ssh_key_storage
   ]
 }
 

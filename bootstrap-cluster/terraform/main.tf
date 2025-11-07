@@ -348,11 +348,119 @@ resource "proxmox_vm_qemu" "maintenance" {
   ]
 }
 
+# Storage VM (optional - enabled when storage_ip is set)
+# Provides NFS storage for the cluster until proper storage server is available
+resource "proxmox_vm_qemu" "storage" {
+  count       = var.storage_ip != "" ? 1 : 0
+  name        = "k3s-storage"
+  target_node = var.proxmox_node
+  
+  # VM Configuration
+  clone      = var.vm_template
+  full_clone = true
+  
+  # Hardware - More resources for storage server
+  cores   = 4
+  sockets = 1
+  memory  = 8192  # 8 GB
+  
+  # SCSI controller
+  scsihw = "virtio-scsi-single"
+  
+  # Machine type
+  machine = "q35"
+  bios    = "ovmf"
+  
+  # Serial console
+  serial {
+    id   = 0
+    type = "socket"
+  }
+  
+  # EFI disk
+  efidisk {
+    efitype = "4m"
+    storage = var.storage_pool
+  }
+  
+  # OS Disk
+  disk {
+    slot    = "scsi0"
+    size    = "100G"
+    type    = "disk"
+    storage = var.storage_pool
+  }
+  
+  # Large data disk for NFS storage
+  disk {
+    slot    = "scsi1"
+    size    = "2000G"  # 2TB for cluster storage
+    type    = "disk"
+    storage = var.storage_pool
+  }
+  
+  # Cloud-init drive
+  disk {
+    slot    = "ide2"
+    type    = "cloudinit"
+    storage = var.storage_pool
+  }
+  
+  # Network
+  network {
+    id     = 0
+    model  = "virtio"
+    bridge = var.network_bridge
+    macaddr = var.storage_mac
+    tag    = var.vlan_id
+  }
+  
+  # Cloud-init
+  os_type   = "cloud-init"
+  ipconfig0 = "ip=${var.storage_ip},gw=${var.gateway}"
+  
+  ciuser     = var.vm_user
+  cipassword = var.vm_password
+  sshkeys    = var.ssh_public_key
+  nameserver = "${var.nameserver} ${var.nameserver_secondary}"
+  
+  # Use cloud-init vendor snippet to install qemu-guest-agent
+  # Using vendor= keeps the user-data (ciuser/cipassword) intact
+  cicustom = "vendor=local:snippets/install-qemu-agent.yml"
+  
+  # VM description and tags for Proxmox UI
+  desc = "NFS Storage Node - Provides shared storage for K3s cluster - Ubuntu 24.04 LTS"
+  tags = "storage,nfs,k3s,ubuntu-2404"
+  
+  # Boot configuration
+  boot    = "order=scsi0"
+  
+  # QEMU Guest Agent
+  agent = 1
+  
+  # Start on boot
+  onboot = true  # Auto-start storage VM
+  
+  # Lifecycle
+  lifecycle {
+    ignore_changes = [
+      network,
+      disk,
+    ]
+  }
+  
+  # Ensure cloud-init snippet is uploaded before VM creation
+  depends_on = [
+    null_resource.upload_qemu_agent_snippet
+  ]
+}
+
 # Generate Ansible inventory
 resource "local_file" "ansible_inventory" {
   content = templatefile("${path.module}/templates/inventory.tpl", {
     control_plane_ips = [for vm in proxmox_vm_qemu.k3s_control_plane : vm.default_ipv4_address]
     worker_ips        = [for vm in proxmox_vm_qemu.k3s_gpu_worker : vm.default_ipv4_address]
+    storage_ips       = var.storage_ip != "" ? [for vm in proxmox_vm_qemu.storage : vm.default_ipv4_address] : []
     maintenance_ips   = var.maintenance_ip != "" ? [for vm in proxmox_vm_qemu.maintenance : vm.default_ipv4_address] : []
     vm_user           = var.vm_user
   })

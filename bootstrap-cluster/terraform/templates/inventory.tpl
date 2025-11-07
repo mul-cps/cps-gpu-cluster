@@ -8,6 +8,13 @@ k3s-cp${idx + 1} ansible_host=${ip} ansible_user=${vm_user}
 k3s-wk-gpu${idx + 1} ansible_host=${ip} ansible_user=${vm_user}
 %{ endfor ~}
 
+%{ if length(storage_ips) > 0 ~}
+[storage]
+%{ for idx, ip in storage_ips ~}
+k3s-storage ansible_host=${ip} ansible_user=${vm_user}
+%{ endfor ~}
+
+%{ endif ~}
 %{ if length(maintenance_ips) > 0 ~}
 [maintenance]
 %{ for idx, ip in maintenance_ips ~}

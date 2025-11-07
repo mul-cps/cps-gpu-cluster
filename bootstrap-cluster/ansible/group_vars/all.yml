@@ -15,9 +15,14 @@ api_vip: "10.0.0.100"
 # Control plane configuration
 control_plane_taint: "node-role.kubernetes.io/control-plane=true:NoSchedule"
 
+# Cluster network for NFS exports
+cluster_subnet: "10.21.0.0/16"
+
 # NFS Configuration
-nfs_server: "10.0.0.30"
-nfs_path: "/export/k3s"
+# When using k3s-storage node, this will be set dynamically
+# Otherwise, configure your external NFS server here
+nfs_server: "{{ hostvars[groups['storage'][0]]['ansible_host'] if 'storage' in groups and groups['storage']|length > 0 else '10.0.0.30' }}"
+nfs_path: "/srv/nfs/k3s-storage"
 nfs_storage_class_name: "nfs-client"
 nfs_provisioner_namespace: "nfs-provisioner"
 

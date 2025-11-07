@@ -140,6 +140,18 @@ variable "maintenance_ip" {
   default     = ""  # Set in terraform.tfvars if maintenance VM is needed
 }
 
+variable "storage_mac" {
+  description = "MAC address for storage VM"
+  type        = string
+  default     = ""  # Set in terraform.tfvars if storage VM is needed
+}
+
+variable "storage_ip" {
+  description = "Static IP address for storage VM"
+  type        = string
+  default     = ""  # Set in terraform.tfvars if storage VM is needed
+}
+
 variable "vm_user" {
   description = "Default user for cloud-init"
   type        = string

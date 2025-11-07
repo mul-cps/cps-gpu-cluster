@@ -1,0 +1,82 @@
+---
+- name: Setup NFS storage node
+  hosts: storage
+  become: yes
+  gather_facts: yes
+
+  tasks:
+    - name: Update apt cache
+      apt:
+        update_cache: yes
+        cache_valid_time: 3600
+
+    - name: Install NFS server packages
+      apt:
+        name:
+          - nfs-kernel-server
+          - nfs-common
+        state: present
+
+    - name: Create filesystem on data disk (scsi1)
+      filesystem:
+        fstype: ext4
+        dev: /dev/sdb
+        opts: -L nfs-data
+
+    - name: Create NFS export directory
+      file:
+        path: /srv/nfs
+        state: directory
+        mode: '0755'
+
+    - name: Mount data disk
+      mount:
+        path: /srv/nfs
+        src: /dev/sdb
+        fstype: ext4
+        opts: defaults,noatime
+        state: mounted
+
+    - name: Create NFS share directory for k3s
+      file:
+        path: /srv/nfs/k3s-storage
+        state: directory
+        mode: '0777'
+        owner: nobody
+        group: nogroup
+
+    - name: Configure NFS exports
+      lineinfile:
+        path: /etc/exports
+        line: "/srv/nfs/k3s-storage {{ cluster_subnet }}(rw,sync,no_subtree_check,no_root_squash,insecure)"
+        create: yes
+
+    - name: Export NFS shares
+      command: exportfs -ra
+
+    - name: Ensure NFS server is started and enabled
+      systemd:
+        name: nfs-kernel-server
+        state: started
+        enabled: yes
+
+    - name: Verify NFS exports
+      command: showmount -e localhost
+      register: nfs_exports
+
+    - name: Display NFS exports
+      debug:
+        var: nfs_exports.stdout_lines
+
+    - name: Display storage node info
+      debug:
+        msg: |
+          NFS Storage Node configured successfully!
+          
+          NFS Server: {{ ansible_host }}
+          NFS Export: /srv/nfs/k3s-storage
+          Disk: /dev/sdb ({{ ansible_devices.sdb.size if ansible_devices.sdb is defined else 'N/A' }})
+          
+          To use in Kubernetes, configure NFS provisioner with:
+            nfs.server: {{ ansible_host }}
+            nfs.path: /srv/nfs/k3s-storage
