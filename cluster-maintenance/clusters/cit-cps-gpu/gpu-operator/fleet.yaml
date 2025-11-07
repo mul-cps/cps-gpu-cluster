@@ -1,4 +1,4 @@
-namespace: gpu-operator
+defaultNamespace: gpu-operator
 
 helm:
   chart: gpu-operator
@@ -7,6 +7,10 @@ helm:
   releaseName: gpu-operator
   valuesFiles:
   - values.yaml
+
+# Labels for bundle identification
+labels:
+  app: gpu-operator
   
 # Fleet will wait for GPU operator to be ready before deploying dependent apps
 diff:

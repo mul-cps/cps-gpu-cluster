@@ -1,4 +1,4 @@
-namespace: fleet-local
+defaultNamespace: fleet-local
 
 # Target clusters for this bundle
 # By default, targets the local cluster

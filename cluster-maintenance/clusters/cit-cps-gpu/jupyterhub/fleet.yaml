@@ -1,4 +1,4 @@
-namespace: jupyterhub
+defaultNamespace: jupyterhub
 
 helm:
   chart: jupyterhub
