@@ -6,8 +6,10 @@ driver:
   repository: nvcr.io/nvidia
   image: driver
   version: "580.95.05"
-  # Use precompiled packages for faster installation on Ubuntu
-  usePrecompiled: true
+  # Disable precompiled to use generic Ubuntu 24.04 driver
+  usePrecompiled: false
+  # Use auto kernel module type
+  kernelModuleType: "auto"
 
 # NVIDIA Container Toolkit
 toolkit:
