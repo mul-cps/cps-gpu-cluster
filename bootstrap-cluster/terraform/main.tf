@@ -10,6 +10,14 @@ terraform {
       source  = "hashicorp/local"
       version = "~> 2.5"
     }
+    null = {
+      source  = "hashicorp/null"
+      version = "~> 3.2"
+    }
+    external = {
+      source  = "hashicorp/external"
+      version = "~> 2.3"
+    }
   }
 }
 
@@ -87,6 +95,10 @@ resource "proxmox_vm_qemu" "k3s_control_plane" {
   sshkeys    = var.ssh_public_key
   nameserver = "${var.nameserver} ${var.nameserver_secondary}"
   
+  # Use cloud-init vendor snippet to install qemu-guest-agent
+  # Using vendor= keeps the user-data (ciuser/cipassword) intact
+  cicustom = "vendor=local:snippets/install-qemu-agent.yml"
+  
   # VM description and tags for Proxmox UI
   desc = "K3s Control Plane Node ${count.index + 1} - Ubuntu 24.04 LTS"
   tags = "k3s,control-plane,kubernetes,ubuntu-2404"
@@ -107,6 +119,11 @@ resource "proxmox_vm_qemu" "k3s_control_plane" {
       disk,
     ]
   }
+  
+  # Ensure cloud-init snippet is uploaded before VM creation
+  depends_on = [
+    null_resource.upload_qemu_agent_snippet
+  ]
 }
 
 # GPU Worker VMs
@@ -202,6 +219,10 @@ resource "proxmox_vm_qemu" "k3s_gpu_worker" {
   sshkeys    = var.ssh_public_key
   nameserver = "${var.nameserver} ${var.nameserver_secondary}"
   
+  # Use cloud-init vendor snippet to install qemu-guest-agent
+  # Using vendor= keeps the user-data (ciuser/cipassword) intact
+  cicustom = "vendor=local:snippets/install-qemu-agent.yml"
+  
     # VM description and tags for Proxmox UI
   desc = "K3s GPU Worker Node ${count.index + 1} - 2x A100 GPUs - Ubuntu 24.04 LTS"
   tags = "k3s,worker,gpu,nvidia-a100,kubernetes,ubuntu-2404"
@@ -222,6 +243,11 @@ resource "proxmox_vm_qemu" "k3s_gpu_worker" {
       disk,
     ]
   }
+  
+  # Ensure cloud-init snippet is uploaded before VM creation
+  depends_on = [
+    null_resource.upload_qemu_agent_snippet
+  ]
 }
 
 # Maintenance VM (optional - enabled when maintenance_ip is set)
@@ -291,6 +317,10 @@ resource "proxmox_vm_qemu" "maintenance" {
   sshkeys    = var.ssh_public_key
   nameserver = "${var.nameserver} ${var.nameserver_secondary}"
   
+  # Use cloud-init vendor snippet to install qemu-guest-agent
+  # Using vendor= keeps the user-data (ciuser/cipassword) intact
+  cicustom = "vendor=local:snippets/install-qemu-agent.yml"
+  
   # VM description and tags for Proxmox UI
   desc = "Maintenance VM - Ansible, Terraform, Git, Debugging Tools - Ubuntu 24.04 LTS"
   tags = "maintenance,tools,ansible,terraform,ubuntu-2404"
@@ -311,6 +341,11 @@ resource "proxmox_vm_qemu" "maintenance" {
       disk,
     ]
   }
+  
+  # Ensure cloud-init snippet is uploaded before VM creation
+  depends_on = [
+    null_resource.upload_qemu_agent_snippet
+  ]
 }
 
 # Generate Ansible inventory

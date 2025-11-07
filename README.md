@@ -84,12 +84,21 @@ See [docs/harvester-migration.md](docs/harvester-migration.md) for details.
 
 ## Documentation
 
+### Core Setup
+- [Getting Started](docs/getting-started.md)
 - [GPU Passthrough Setup](docs/gpu-passthrough.md)
 - [Terraform Usage](bootstrap-cluster/terraform/README.md)
 - [Ansible Playbooks](bootstrap-cluster/ansible/README.md)
+
+### Advanced Configuration
+- [SSH Key Setup (Manual)](docs/ssh-key-setup.md)
+- [SSH Key Setup (Terraform)](docs/terraform-ssh-setup.md)
+- [QEMU Guest Agent Setup](docs/qemu-guest-agent-setup.md)
 - [Maintenance VM Guide](docs/maintenance-vm.md)
 - [Fleet GitOps](cluster-maintenance/README.md)
 - [Network Configuration](docs/network-configuration.md)
+
+### Operations
 - [Harvester Migration](docs/harvester-migration.md)
 - [Troubleshooting](docs/troubleshooting.md)
 

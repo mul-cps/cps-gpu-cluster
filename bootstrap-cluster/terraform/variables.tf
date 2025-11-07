@@ -25,6 +25,18 @@ variable "proxmox_node" {
   type        = string
 }
 
+variable "proxmox_host" {
+  description = "Proxmox host address for SSH access (for qm guest exec commands)"
+  type        = string
+  default     = "cit-gpu-01.unileoben.ac.at"
+}
+
+variable "proxmox_ssh_user" {
+  description = "SSH user for Proxmox host access (for qm guest exec commands)"
+  type        = string
+  default     = "root"
+}
+
 variable "vm_template" {
   description = "Name of the VM template to clone"
   type        = string

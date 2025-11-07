@@ -1,6 +1,7 @@
 #cloud-config
-# Cloud-init configuration to install and enable qemu-guest-agent
-# This file should be uploaded to Proxmox at /var/lib/vz/snippets/qemu-guest-agent.yml
+# Cloud-init vendor configuration to install and enable qemu-guest-agent
+# This runs in addition to the main user-data (ciuser/cipassword/sshkeys)
+# Uploaded to Proxmox at /var/lib/vz/snippets/install-qemu-agent.yml
 
 package_update: true
 package_upgrade: false
