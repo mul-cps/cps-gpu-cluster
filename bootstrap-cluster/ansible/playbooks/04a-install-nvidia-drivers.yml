@@ -1,0 +1,61 @@
+---
+- name: Install NVIDIA Drivers on GPU Worker Nodes
+  hosts: gpu_workers
+  become: yes
+  gather_facts: yes
+
+  tasks:
+    - name: Update apt cache
+      apt:
+        update_cache: yes
+        cache_valid_time: 3600
+
+    - name: Install required packages
+      apt:
+        name:
+          - build-essential
+          - linux-headers-{{ ansible_kernel }}
+          - pkg-config
+          - libglvnd-dev
+        state: present
+
+    - name: Add NVIDIA PPA repository
+      apt_repository:
+        repo: ppa:graphics-drivers/ppa
+        state: present
+        update_cache: yes
+
+    - name: Install NVIDIA driver
+      apt:
+        name: nvidia-driver-550
+        state: present
+      register: nvidia_install
+
+    - name: Reboot if nvidia driver was installed
+      reboot:
+        reboot_timeout: 600
+      when: nvidia_install.changed
+
+    - name: Wait for nodes to come back online
+      wait_for_connection:
+        delay: 30
+        timeout: 600
+      when: nvidia_install.changed
+
+    - name: Verify NVIDIA driver installation
+      shell: nvidia-smi
+      register: nvidia_smi_output
+      changed_when: false
+
+    - name: Display nvidia-smi output
+      debug:
+        var: nvidia_smi_output.stdout_lines
+
+    - name: Get GPU count
+      shell: nvidia-smi --query-gpu=name --format=csv,noheader | wc -l
+      register: gpu_count
+      changed_when: false
+
+    - name: Display GPU count
+      debug:
+        msg: "Found {{ gpu_count.stdout }} GPU(s) on {{ inventory_hostname }}"

@@ -18,6 +18,8 @@
           --version {{ gpu_operator_version }} \
           --set driver.enabled=true \
           --set toolkit.enabled=true \
+          --set toolkit.env[0].name=CONTAINERD_SOCKET \
+          --set toolkit.env[0].value={{ k3s_containerd_socket }} \
           --set devicePlugin.enabled=true \
           --set dcgmExporter.enabled=true \
           --set gfd.enabled=true \
@@ -59,8 +61,6 @@
             namespace: default
           spec:
             restartPolicy: OnFailure
-            nodeSelector:
-              accelerator: nvidia
             containers:
             - name: cuda-vectoradd
               image: "nvcr.io/nvidia/k8s/cuda-sample:vectoradd-cuda11.7.1"

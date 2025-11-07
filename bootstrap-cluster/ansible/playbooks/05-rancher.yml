@@ -1,0 +1,245 @@
+---
+- name: Install Rancher with OIDC (Authentik)
+  hosts: control_plane[0]
+  become: yes
+  gather_facts: yes
+
+  vars:
+    kubeconfig: /etc/rancher/k3s/k3s.yaml
+
+  tasks:
+    - name: Ensure cert-manager namespace exists
+      shell: kubectl create namespace cert-manager --dry-run=client -o yaml | kubectl apply -f -
+      environment:
+        KUBECONFIG: "{{ kubeconfig }}"
+
+    - name: Install cert-manager CRDs
+      shell: |
+        kubectl apply -f https://github.com/cert-manager/cert-manager/releases/download/v1.15.3/cert-manager.crds.yaml
+      args:
+        creates: /var/lib/rancher/cert-manager-crds-applied
+      environment:
+        KUBECONFIG: "{{ kubeconfig }}"
+
+    - name: Mark cert-manager CRDs applied
+      file:
+        path: /var/lib/rancher/cert-manager-crds-applied
+        state: touch
+
+    - name: Add extra Helm repos (if not already added by previous playbooks)
+      shell: |
+        helm repo add {{ item.name }} {{ item.url }} || true
+      loop: "{{ helm_repos }}"
+      environment:
+        KUBECONFIG: "{{ kubeconfig }}"
+
+    - name: Update Helm repos
+      shell: helm repo update
+      environment:
+        KUBECONFIG: "{{ kubeconfig }}"
+
+    - name: Install cert-manager
+      shell: |
+        helm upgrade --install cert-manager jetstack/cert-manager \
+          --namespace cert-manager \
+          --version v1.15.3 \
+          --set installCRDs=false
+      args:
+        creates: /var/lib/rancher/cert-manager-installed
+      environment:
+        KUBECONFIG: "{{ kubeconfig }}"
+
+    - name: Mark cert-manager installed
+      file:
+        path: /var/lib/rancher/cert-manager-installed
+        state: touch
+
+    - name: Wait for cert-manager deployments ready
+      shell: |
+        kubectl rollout status deployment/cert-manager -n cert-manager --timeout=300s && \
+        kubectl rollout status deployment/cert-manager-webhook -n cert-manager --timeout=300s && \
+        kubectl rollout status deployment/cert-manager-cainjector -n cert-manager --timeout=300s
+      environment:
+        KUBECONFIG: "{{ kubeconfig }}"
+
+    - name: Install ingress-nginx (ingress controller) if requested
+      when: install_ingress_nginx | bool
+      shell: |
+        helm upgrade --install ingress-nginx ingress-nginx/ingress-nginx \
+          --namespace ingress-nginx \
+          --create-namespace \
+          --set controller.kind=DaemonSet \
+          --set controller.hostNetwork=true \
+          --set controller.daemonset.useHostPort=true \
+          --set controller.service.type=ClusterIP
+      environment:
+        KUBECONFIG: "{{ kubeconfig }}"
+
+    - name: Wait for ingress-nginx controller ready (if installed)
+      when: install_ingress_nginx | bool
+      shell: |
+        kubectl -n ingress-nginx rollout status ds/ingress-nginx-controller --timeout=300s
+      environment:
+        KUBECONFIG: "{{ kubeconfig }}"
+
+    - name: Create cattle-system namespace
+      shell: kubectl create namespace cattle-system --dry-run=client -o yaml | kubectl apply -f -
+      environment:
+        KUBECONFIG: "{{ kubeconfig }}"
+
+    - name: Create TLS issuer (self-signed) for Rancher (adjust if using real certs)
+      copy:
+        dest: /tmp/rancher-ca-issuer.yaml
+        content: |
+          apiVersion: cert-manager.io/v1
+          kind: ClusterIssuer
+          metadata:
+            name: rancher-selfsigned
+          spec:
+            selfSigned: {}
+      environment:
+        KUBECONFIG: "{{ kubeconfig }}"
+
+    - name: Apply Rancher issuer
+      shell: kubectl apply -f /tmp/rancher-ca-issuer.yaml
+      environment:
+        KUBECONFIG: "{{ kubeconfig }}"
+
+    - name: Create certificate for Rancher hostname
+      copy:
+        dest: /tmp/rancher-cert.yaml
+        content: |
+          apiVersion: cert-manager.io/v1
+          kind: Certificate
+          metadata:
+            name: rancher-tls
+            namespace: cattle-system
+          spec:
+            secretName: tls-rancher
+            dnsNames:
+              - {{ rancher_hostname }}
+            issuerRef:
+              name: rancher-selfsigned
+              kind: ClusterIssuer
+      environment:
+        KUBECONFIG: "{{ kubeconfig }}"
+
+    - name: Apply Rancher certificate
+      shell: kubectl apply -f /tmp/rancher-cert.yaml
+      environment:
+        KUBECONFIG: "{{ kubeconfig }}"
+
+    - name: Wait for Rancher TLS secret
+      shell: kubectl get secret tls-rancher -n cattle-system -o name
+      register: tls_secret
+      retries: 30
+      delay: 10
+      until: tls_secret.stdout != ""
+      environment:
+        KUBECONFIG: "{{ kubeconfig }}"
+
+    - name: Create Rancher values file with OIDC (Helm values do not directly configure OIDC; we install then patch Rancher config)
+      copy:
+        dest: /tmp/rancher-values.yaml
+        content: |
+          hostname: {{ rancher_hostname }}
+          replicas: {{ rancher_replicas }}
+          bootstrapPassword: {{ rancher_bootstrap_password }}
+          tls: ingress
+          ingress:
+            tls:
+              source: secret
+              secretName: tls-rancher
+            extraAnnotations:
+              cert-manager.io/cluster-issuer: rancher-selfsigned
+              nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
+          systemDefaultRegistry: ""
+          addLocal: "true"
+          auditLog:
+            level: 1
+      environment:
+        KUBECONFIG: "{{ kubeconfig }}"
+
+    - name: Determine Rancher chart version dynamically when unspecified
+      shell: |
+        if [ -z "{{ rancher_version }}" ]; then
+          helm search repo rancher-stable/rancher -o json | jq -r '.[0].version'
+        else
+          echo "{{ rancher_version }}"
+        fi
+      register: rancher_chart_version
+      environment:
+        KUBECONFIG: "{{ kubeconfig }}"
+
+    - name: Fail if no Rancher chart version determined
+      fail:
+        msg: "Could not determine Rancher chart version"
+      when: rancher_chart_version.stdout == "" or rancher_chart_version.stdout is not defined
+
+    - name: Install/Upgrade Rancher
+      shell: |
+        echo "Using Rancher chart version: {{ rancher_chart_version.stdout }}" >&2
+        helm upgrade --install rancher rancher-stable/rancher \
+          --namespace cattle-system \
+          -f /tmp/rancher-values.yaml \
+          --version {{ rancher_chart_version.stdout }}
+      args:
+        creates: /var/lib/rancher/rancher-installed
+      environment:
+        KUBECONFIG: "{{ kubeconfig }}"
+
+    - name: Mark Rancher installed
+      file:
+        path: /var/lib/rancher/rancher-installed
+        state: touch
+
+    - name: Wait for Rancher deployment ready
+      shell: kubectl rollout status deployment/rancher -n cattle-system --timeout=600s
+      environment:
+        KUBECONFIG: "{{ kubeconfig }}"
+
+    - name: Construct OIDC AuthConfig manifest
+      copy:
+        dest: /tmp/rancher-oidc-authconfig.yaml
+        content: |
+          apiVersion: management.cattle.io/v3
+          kind: AuthConfig
+          metadata:
+            name: oidc
+          enabled: true
+          accessMode: {{ rancher_oidc.access_mode }}
+          clientId: {{ rancher_oidc.client_id }}
+          clientSecret: {{ rancher_oidc.client_secret }}
+          issuer: {{ rancher_oidc.issuer }}
+          authEndpoint: {{ rancher_oidc.auth_url }}
+          tokenEndpoint: {{ rancher_oidc.token_url }}
+          userInfoEndpoint: {{ rancher_oidc.userinfo_url }}
+          logoutEndpoint: {{ rancher_oidc.logout_url }}
+          jwksEndpoint: {{ rancher_oidc.jwks_url }}
+          scopes:
+          {% for s in rancher_oidc.scopes %}
+            - {{ s }}
+          {% endfor %}
+          displayNameField: "name"
+          userNameField: "preferred_username"
+          userIDField: "sub"
+          groupsField: "groups"
+          rancherURL: "https://{{ rancher_hostname }}"
+      environment:
+        KUBECONFIG: "{{ kubeconfig }}"
+
+    - name: Apply OIDC AuthConfig (may require Rancher API controller readiness)
+      shell: kubectl apply -f /tmp/rancher-oidc-authconfig.yaml
+      register: oidc_apply
+      retries: 10
+      delay: 15
+      until: oidc_apply.rc == 0
+      environment:
+        KUBECONFIG: "{{ kubeconfig }}"
+
+    - name: Display Rancher installation summary
+      debug:
+        msg: |
+          Rancher deployed at https://{{ rancher_hostname }}
+          OIDC AuthConfig applied (verify in Rancher UI > Global Settings > Authentication).
+          If OIDC does not activate automatically, log in with bootstrap password and enable via UI.

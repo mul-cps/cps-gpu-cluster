@@ -31,8 +31,10 @@ scratch_storage_class_name: "fast-scratch"
 scratch_path: "/mnt/nvme/scratch"
 
 # GPU Configuration
-gpu_operator_version: "v23.9.1"
+gpu_operator_version: "v25.10.0"
 gpu_operator_namespace: "gpu-operator"
+# K3s containerd socket (needed for NVIDIA toolkit to signal containerd)
+k3s_containerd_socket: "/run/k3s/containerd/containerd.sock"
 
 # Helm repositories
 helm_repos:
@@ -42,6 +44,36 @@ helm_repos:
     url: https://kubernetes-sigs.github.io/nfs-subdir-external-provisioner
   - name: rancher-stable
     url: https://releases.rancher.com/server-charts/stable
+  - name: jetstack
+    url: https://charts.jetstack.io
+  - name: ingress-nginx
+    url: https://kubernetes.github.io/ingress-nginx
+
+# Rancher configuration
+rancher_hostname: "rancher.cps.unileoben.ac.at"  # Assumption: set DNS to a control-plane IP
+rancher_version: ""  # Leave empty to install the latest compatible Rancher chart for your Kubernetes version
+rancher_replicas: 3
+rancher_bootstrap_password: "admin"
+
+# Deploy ingress-nginx (Traefik disabled in K3s install)
+install_ingress_nginx: true
+
+# OIDC (Authentik) for Rancher
+rancher_oidc:
+  client_id: "wdrQAHf26MmmSR3ZoEQJSUkT84wHMxhqEbRK9al3"
+  client_secret: "l9NhqMvaTgGUPfCE7LMhkv5jW5R1aAJQsYDDxVZxKHfAzy3RFFr2ZtOxQ6lest7F7GyshZuaRoZrXpaGOPa2ZWFdJP6MVNPoeCZED3EkdAnAbCnW0T9WZ9SpGOntqp2S"
+  issuer: "https://auth.cps.unileoben.ac.at/application/o/rancher/"
+  auth_url: "https://auth.cps.unileoben.ac.at/application/o/authorize/"
+  token_url: "https://auth.cps.unileoben.ac.at/application/o/token/"
+  userinfo_url: "https://auth.cps.unileoben.ac.at/application/o/userinfo/"
+  logout_url: "https://auth.cps.unileoben.ac.at/application/o/rancher/end-session/"
+  jwks_url: "https://auth.cps.unileoben.ac.at/application/o/rancher/jwks/"
+  scopes:
+    - openid
+    - profile
+    - email
+    - groups
+  access_mode: "unrestricted"  # or 'restricted' with allowed principals
 
 # System settings
 disable_swap: true
