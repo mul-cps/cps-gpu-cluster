@@ -33,7 +33,7 @@ singleuser:
   # Default image with CUDA support
   image:
     name: jupyter/tensorflow-notebook
-    tag: "latest"
+    tag: "2024-11-01"
     pullPolicy: IfNotPresent
   
   # Storage for user notebooks
@@ -44,11 +44,11 @@ singleuser:
     homeMountPath: /home/jovyan
     # Extra storage for fast scratch
     extraVolumes:
-      - name: scratch
+      scratch:
         persistentVolumeClaim:
           claimName: "claim-{username}-scratch"
     extraVolumeMounts:
-      - name: scratch
+      scratch:
         mountPath: /scratch
   
   # Default resources (no GPU)
