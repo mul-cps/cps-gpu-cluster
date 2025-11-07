@@ -1,33 +1,37 @@
-# NVIDIA GPU Operator Configuration
+# NVIDIA GPU Operator Configuration for Ubuntu 24.04
 
 # Driver configuration
 driver:
   enabled: true
-  version: "535.104.05"  # Adjust based on your GPU model
-  
+  repository: nvcr.io/nvidia
+  image: driver
+  version: "580.95.05"
+  # Use precompiled packages for faster installation on Ubuntu
+  usePrecompiled: true
+
 # NVIDIA Container Toolkit
 toolkit:
   enabled: true
-  version: "1.14.3-centos7"
+  version: "v1.18.0"
 
 # Device Plugin
 devicePlugin:
   enabled: true
-  version: "0.14.3"
+  version: "v0.18.0"
 
 # DCGM Exporter (GPU metrics)
 dcgmExporter:
   enabled: true
-  version: "3.2.5-3.1.8"
+  version: "4.4.1-4.6.0-distroless"
 
 # GPU Feature Discovery
 gfd:
   enabled: true
-  version: "0.8.2"
+  version: "v0.18.0"
 
-# MIG Manager (for A100 MIG partitioning - disabled by default)
+# MIG Manager (for A100 MIG partitioning - enabled by default in v25.10.0)
 migManager:
-  enabled: false
+  enabled: true
 
 # Node Feature Discovery
 nfd:
@@ -39,7 +43,7 @@ operator:
   initContainer:
     image: cuda
     repository: nvcr.io/nvidia
-    version: 12.3.1-base-ubuntu22.04
+    version: 13.0.1-base-ubi9
 
 # Tolerations for control plane if needed
 tolerations: []
