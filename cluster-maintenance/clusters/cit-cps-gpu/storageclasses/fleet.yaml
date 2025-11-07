@@ -1,0 +1,20 @@
+# Storage classes configuration
+# Skip existing resources to avoid conflicts with externally managed storage classes
+
+diff:
+  comparePatches:
+  - apiVersion: storage.k8s.io/v1
+    kind: StorageClass
+    name: nfs-client
+    operations:
+    - {"op": "remove", "path": "/metadata"}
+  - apiVersion: storage.k8s.io/v1
+    kind: StorageClass
+    name: fast-scratch
+    operations:
+    - {"op": "remove", "path": "/metadata"}
+
+# Don't fail if resources already exist
+helm:
+  skipDryRun: true
+  force: false

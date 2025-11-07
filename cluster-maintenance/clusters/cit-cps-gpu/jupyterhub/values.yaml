@@ -42,16 +42,14 @@ singleuser:
     dynamic:
       storageClass: nfs-client
     homeMountPath: /home/jovyan
-    
-  # Extra storage for fast scratch
-  extraVolumes:
-    - name: scratch
-      persistentVolumeClaim:
-        claimName: "claim-{username}-scratch"
-  
-  extraVolumeMounts:
-    - name: scratch
-      mountPath: /scratch
+    # Extra storage for fast scratch
+    extraVolumes:
+      - name: scratch
+        persistentVolumeClaim:
+          claimName: "claim-{username}-scratch"
+    extraVolumeMounts:
+      - name: scratch
+        mountPath: /scratch
   
   # Default resources (no GPU)
   cpu:
