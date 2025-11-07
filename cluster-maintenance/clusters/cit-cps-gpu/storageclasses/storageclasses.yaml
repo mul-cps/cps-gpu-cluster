@@ -1,13 +1,6 @@
-# Note: nfs-client storage class is already managed by nfs-subdir-external-provisioner
-# and is excluded from Fleet management to avoid conflicts
+# Note: Storage classes are already configured and managed outside of Fleet
+# Both nfs-client and fast-scratch storage classes exist and are working properly
+# Removing them from Fleet management to avoid conflicts
 
-apiVersion: storage.k8s.io/v1
-kind: StorageClass
-metadata:
-  name: fast-scratch
-provisioner: rancher.io/local-path
-parameters:
-  nodePath: /mnt/nvme/scratch
-reclaimPolicy: Delete
-volumeBindingMode: WaitForFirstConsumer
-allowVolumeExpansion: false
+# nfs-client - managed by nfs-subdir-external-provisioner Helm chart in nfs-provisioner namespace
+# fast-scratch - created via kubectl apply
