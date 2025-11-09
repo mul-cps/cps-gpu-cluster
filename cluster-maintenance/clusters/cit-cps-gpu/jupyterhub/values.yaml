@@ -38,7 +38,7 @@ hub:
         - "openid"
         - "profile"
         - "email"
-      claim_groups_key: "groups"
+      auth_state_groups_key: "groups"
       manage_groups: true
       allowed_groups:
         - "cps-users"
