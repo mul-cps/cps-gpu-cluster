@@ -30,19 +30,6 @@ hub:
           name: "Montanuniversität Leoben"
           logo_url: "https://www.unileoben.ac.at/fileadmin/shares/allgemeine_datenbank/logos/1-mul-logo/2-mul-logo-smoke-quer.svg"
           url: "https://www.unileoben.ac.at"
-        announcement: |
-          <div class="alert alert-info">
-            <h4><i class="fas fa-info-circle"></i> Welcome to the CPS GPU Cluster!</h4>
-            <p>This JupyterHub instance provides access to high-performance computing resources including NVIDIA A100 GPUs 
-            for machine learning, deep learning, and computational research.</p>
-            <ul>
-              <li><strong>🔒 Authentication:</strong> Secured with CPS Authentik OIDC</li>
-              <li><strong>💾 Storage:</strong> Persistent home directories with 10GB capacity</li>
-              <li><strong>🚀 GPU Access:</strong> Up to 2 NVIDIA A100 GPUs per notebook</li>
-              <li><strong>📚 Pre-installed:</strong> PyTorch, TensorFlow, SciPy ecosystem</li>
-            </ul>
-            <p><a href="/hub/info" class="btn btn-sm btn-info">Learn More</a></p>
-          </div>
     GenericOAuthenticator:
       client_id: "vUhzKqEF0UxPtZNM8aRbA1ncaehhIAIA2x9r83FI"
       client_secret: "EbAzlZLERPQzmF2EQByhihKuUqp36u138fYERPptymppmJbWhquI4sHu9vchqtnMRqbAVnZS6nOA6G0FescWa13MOLdlegQB3yyZSqe5V32NtYsnfDOndyZHiqiL2Bj6"
@@ -99,7 +86,14 @@ hub:
           @web.authenticated
           async def get(self):
               user = await self.get_current_user()
-              self.render("info.html", user=user)
+              # Use JupyterHub's template environment instead of Tornado's direct render
+              template_vars = {
+                  'user': user,
+                  'base_url': self.hub.base_url,
+                  'org': getattr(self.settings.get('template_vars', {}), 'org', {}),
+              }
+              html = self.render_template("info.html", **template_vars)
+              self.write(html)
       
       c.JupyterHub.extra_handlers = [
           (r"/info", InfoHandler),
