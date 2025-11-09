@@ -40,11 +40,11 @@ hub:
         - "email"
       auth_state_groups_key: "groups"
       manage_groups: true
-      allowed_groups:
-        - "cps-users"
+      # Allow all groups - access control handled by Authentik
+      # allowed_groups: []  # Empty list allows all authenticated users
       admin_groups:
-        - "cps-admins"
-  
+        - "authentik Admins"
+
   db:
     pvc:
       storageClassName: nfs-client
@@ -131,20 +131,20 @@ singleuser:
           accelerator: nvidia
         image: quay.io/jupyter/pytorch-notebook:2025-11-06
     
-    - display_name: "Research (32 cores, 128GB RAM, 4 GPUs)"
-      description: "Large instance for intensive workloads"
-      kubespawner_override:
-        cpu_limit: 32
-        cpu_guarantee: 16
-        mem_limit: "128G"
-        mem_guarantee: "64G"
-        extra_resource_limits:
-          nvidia.com/gpu: "4"
-        extra_resource_guarantees:
-          nvidia.com/gpu: "4"
-        node_selector:
-          accelerator: nvidia
-        image: quay.io/jupyter/pytorch-notebook:2025-11-06
+    # - display_name: "Research (32 cores, 128GB RAM, 4 GPUs)"
+    #   description: "Large instance for intensive workloads"
+    #   kubespawner_override:
+    #     cpu_limit: 32
+    #     cpu_guarantee: 16
+    #     mem_limit: "128G"
+    #     mem_guarantee: "64G"
+    #     extra_resource_limits:
+    #       nvidia.com/gpu: "4"
+    #     extra_resource_guarantees:
+    #       nvidia.com/gpu: "4"
+    #     node_selector:
+    #       accelerator: nvidia
+    #     image: quay.io/jupyter/pytorch-notebook:2025-11-06
 
   # Allow users to sudo (for package installation)
   uid: 1000
