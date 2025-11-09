@@ -86,11 +86,6 @@ hub:
         import oauthenticator
       except ImportError:
         subprocess.check_call([sys.executable, '-m', 'pip', 'install', 'oauthenticator'])
-      
-      try:
-        import jupyterhub_fancy_profiles
-      except ImportError:
-        subprocess.check_call([sys.executable, '-m', 'pip', 'install', 'jupyterhub-fancy-profiles'])
     
     01-custom-templates: |
       # Configure custom templates and info page
@@ -108,71 +103,24 @@ hub:
           (r"/info", InfoHandler),
       ]
       
-    02-fancy-profiles: |
-      # Configure fancy profiles for better UI
-      import os
-      
+    02-profiles: |
+      # Configure enhanced profiles for better UI
       c.KubeSpawner.profile_list = [
         {
             'display_name': '💻 CPU Only (2 cores, 4GB RAM)',
             'description': 'Standard notebook without GPU - suitable for general data analysis and Python programming',
             'default': True,
-            'profile_options': {
-                'image': {
-                    'display_name': 'Software Stack',
-                    'choices': {
-                        'tensorflow': {
-                            'display_name': 'TensorFlow (CPU)',
-                            'kubespawner_override': {
-                                'image': 'quay.io/jupyter/tensorflow-notebook:2025-11-06'
-                            }
-                        },
-                        'pytorch': {
-                            'display_name': 'PyTorch (CPU)', 
-                            'default': True,
-                            'kubespawner_override': {
-                                'image': 'quay.io/jupyter/pytorch-notebook:2025-11-06'
-                            }
-                        },
-                        'scipy': {
-                            'display_name': 'SciPy Stack',
-                            'kubespawner_override': {
-                                'image': 'quay.io/jupyter/scipy-notebook:2025-11-06'
-                            }
-                        }
-                    }
-                }
-            },
             'kubespawner_override': {
                 'cpu_limit': 2,
                 'cpu_guarantee': 1,
                 'mem_limit': '4G',
-                'mem_guarantee': '2G'
+                'mem_guarantee': '2G',
+                'image': 'quay.io/jupyter/pytorch-notebook:2025-11-06'
             }
         },
         {
             'display_name': '🚀 Single A100 GPU (8 cores, 32GB RAM)',
             'description': 'High-performance notebook with 1 NVIDIA A100 GPU - perfect for machine learning and deep learning tasks',
-            'profile_options': {
-                'image': {
-                    'display_name': 'GPU-Optimized Stack',
-                    'choices': {
-                        'pytorch': {
-                            'display_name': 'PyTorch (GPU)',
-                            'default': True,
-                            'kubespawner_override': {
-                                'image': 'quay.io/jupyter/pytorch-notebook:2025-11-06'
-                            }
-                        },
-                        'tensorflow': {
-                            'display_name': 'TensorFlow (GPU)',
-                            'kubespawner_override': {
-                                'image': 'quay.io/jupyter/tensorflow-notebook:2025-11-06'
-                            }
-                        }
-                    }
-                }
-            },
             'kubespawner_override': {
                 'cpu_limit': 8,
                 'cpu_guarantee': 4,
@@ -180,32 +128,13 @@ hub:
                 'mem_guarantee': '16G',
                 'extra_resource_limits': {'nvidia.com/gpu': '1'},
                 'extra_resource_guarantees': {'nvidia.com/gpu': '1'},
-                'node_selector': {'accelerator': 'nvidia'}
+                'node_selector': {'accelerator': 'nvidia'},
+                'image': 'quay.io/jupyter/pytorch-notebook:2025-11-06'
             }
         },
         {
             'display_name': '🔥 Dual A100 GPUs (16 cores, 64GB RAM)',
             'description': 'Premium notebook with 2 NVIDIA A100 GPUs - for intensive computational workloads and large model training',
-            'profile_options': {
-                'image': {
-                    'display_name': 'Multi-GPU Stack',
-                    'choices': {
-                        'pytorch': {
-                            'display_name': 'PyTorch (Multi-GPU)',
-                            'default': True,
-                            'kubespawner_override': {
-                                'image': 'quay.io/jupyter/pytorch-notebook:2025-11-06'
-                            }
-                        },
-                        'tensorflow': {
-                            'display_name': 'TensorFlow (Multi-GPU)', 
-                            'kubespawner_override': {
-                                'image': 'quay.io/jupyter/tensorflow-notebook:2025-11-06'
-                            }
-                        }
-                    }
-                }
-            },
             'kubespawner_override': {
                 'cpu_limit': 16,
                 'cpu_guarantee': 8,
@@ -213,7 +142,8 @@ hub:
                 'mem_guarantee': '32G',
                 'extra_resource_limits': {'nvidia.com/gpu': '2'},
                 'extra_resource_guarantees': {'nvidia.com/gpu': '2'},
-                'node_selector': {'accelerator': 'nvidia'}
+                'node_selector': {'accelerator': 'nvidia'},
+                'image': 'quay.io/jupyter/pytorch-notebook:2025-11-06'
             }
         }
       ]
