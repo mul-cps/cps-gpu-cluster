@@ -25,7 +25,6 @@ hub:
     JupyterHub:
       admin_access: true
       authenticator_class: oauthenticator.generic.GenericOAuthenticator
-      template_paths: ["/etc/jupyterhub/custom"]
       template_vars:
         org:
           name: "Montanuniversität Leoben"
@@ -88,6 +87,9 @@ hub:
         subprocess.check_call([sys.executable, '-m', 'pip', 'install', 'oauthenticator'])
     
     01-custom-templates: |
+      # Configure custom template path
+      c.JupyterHub.template_paths = ['/etc/jupyterhub/custom']
+      
       # Configure custom templates and info page
       import os
       from jupyterhub.handlers import BaseHandler
