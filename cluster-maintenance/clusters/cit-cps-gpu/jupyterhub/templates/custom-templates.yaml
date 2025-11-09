@@ -5,7 +5,7 @@ metadata:
   namespace: jupyterhub
 data:
   spawn.html: |
-    {% extends "templates/spawn.html" %}
+    {% extends "page.html" %}
     
     {% block main %}
     <div class="container">
@@ -84,7 +84,7 @@ data:
     {% endblock main %}
 
   info.html: |
-    {% extends "templates/page.html" %}
+    {% extends "page.html" %}
     
     {% block main %}
     <div class="container">
