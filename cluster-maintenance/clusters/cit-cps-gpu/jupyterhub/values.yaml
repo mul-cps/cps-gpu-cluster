@@ -6,21 +6,63 @@ proxy:
   service:
     type: ClusterIP
 
+# Ingress configuration for external access
+ingress:
+  enabled: true
+  ingressClassName: "traefik"
+  annotations:
+    cert-manager.io/cluster-issuer: "letsencrypt-prod"
+    traefik.ingress.kubernetes.io/router.middlewares: "default-redirect-https@kubernetescrd"
+  hosts:
+    - host: jupyterhub.cps.unileoben.ac.at
+      paths:
+        - path: /
+          pathType: Prefix
+  tls:
+    - secretName: jupyterhub-tls
+      hosts:
+        - jupyterhub.cps.unileoben.ac.at
+
 # Hub configuration
 hub:
   config:
     JupyterHub:
       admin_access: true
-      authenticator_class: dummy
-    DummyAuthenticator:
-      password: "jupyter"
+      authenticator_class: oauthenticator.generic.GenericOAuthenticator
+    GenericOAuthenticator:
+      client_id: "vUhzKqEF0UxPtZNM8aRbA1ncaehhIAIA2x9r83FI"
+      client_secret: "EbAzlZLERPQzmF2EQByhihKuUqp36u138fYERPptymppmJbWhquI4sHu9vchqtnMRqbAVnZS6nOA6G0FescWa13MOLdlegQB3yyZSqe5V32NtYsnfDOndyZHiqiL2Bj6"
+      oauth_callback_url: "https://jupyterhub.cps.unileoben.ac.at/hub/oauth_callback"
+      authorize_url: "https://auth.cps.unileoben.ac.at/application/o/authorize/"
+      token_url: "https://auth.cps.unileoben.ac.at/application/o/token/"
+      userdata_url: "https://auth.cps.unileoben.ac.at/application/o/userinfo/"
+      login_service: "CPS Authentik"
+      username_claim: "preferred_username"
+      scope:
+        - "openid"
+        - "profile"
+        - "email"
+      claim_groups_key: "groups"
+      allowed_groups:
+        - "cps-users"
+      admin_groups:
+        - "cps-admins"
   
   db:
     pvc:
       storageClassName: nfs-client
       storage: 10Gi
 
+  # Install OAuthenticator package
   extraConfig:
+    00-install-oauthenticator: |
+      import subprocess
+      import sys
+      try:
+        import oauthenticator
+      except ImportError:
+        subprocess.check_call([sys.executable, '-m', 'pip', 'install', 'oauthenticator'])
+        
     gpu-config: |
       # Make GPUs available to users
       c.KubeSpawner.environment = {
