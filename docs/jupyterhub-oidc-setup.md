@@ -38,11 +38,15 @@ JupyterHub is accessible externally via:
 1. Users navigate to https://jupyterhub.cps.unileoben.ac.at
 2. They're redirected to Authentik for authentication
 3. After successful login, they're redirected back to JupyterHub
-4. Profile selection based on resource requirements:
-   - **CPU Only**: 2 cores, 4GB RAM
-   - **Single GPU**: 8 cores, 32GB RAM, 1x GPU
-   - **Dual GPU**: 16 cores, 64GB RAM, 2x GPU  
-   - **Research**: 32 cores, 128GB RAM, 4x GPU
+4. Enhanced profile selection with jupyterhub-fancy-profiles:
+   - **Visual Cards**: Profile selection with attractive card layout
+   - **University Branding**: Montanuniversität Leoben logo and styling
+   - **Software Selection**: Dropdown menus for PyTorch/TensorFlow/SciPy
+   - **Profile Options**:
+     - **💻 CPU Only**: 2 cores, 4GB RAM (TensorFlow/PyTorch/SciPy)
+     - **🚀 Single GPU**: 8 cores, 32GB RAM, 1x A100 (PyTorch/TensorFlow)
+     - **🔥 Dual GPU**: 16 cores, 64GB RAM, 2x A100 (PyTorch/TensorFlow)
+5. Comprehensive information page at `/hub/info` with cluster details
 
 ## Security Features
 
@@ -84,13 +88,16 @@ kubectl get configmap -n jupyterhub hub-config -o yaml
 
 ## Configuration Files
 
-The OIDC configuration is managed via Fleet GitOps in:
+The OIDC and fancy profiles configuration is managed via Fleet GitOps in:
 - `cluster-maintenance/clusters/cit-cps-gpu/jupyterhub/values.yaml`
+- `cluster-maintenance/clusters/cit-cps-gpu/jupyterhub/templates/custom-templates.yaml`
 
 Key configuration sections:
 - `hub.config.GenericOAuthenticator`: OIDC settings
+- `hub.config.JupyterHub.template_vars`: University branding and announcements
+- `hub.extraConfig.02-fancy-profiles`: Enhanced profile configuration with options
 - `ingress`: External access configuration
-- `singleuser.profileList`: GPU resource profiles
+- Custom templates: Jinja2 templates for spawn and info pages
 
 ## Testing
 
