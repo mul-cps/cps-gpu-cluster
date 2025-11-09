@@ -8,6 +8,10 @@ helm:
   valuesFiles:
   - values.yaml
 
+# Additional Kubernetes manifests for templates
+kustomize:
+  dir: ./templates
+
 # Depends on GPU operator being ready
 dependsOn:
 - selector:
