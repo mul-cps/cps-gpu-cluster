@@ -14,10 +14,8 @@ ingress:
     cert-manager.io/cluster-issuer: "letsencrypt-prod"
     traefik.ingress.kubernetes.io/router.middlewares: "default-redirect-https@kubernetescrd"
   hosts:
-    - host: jupyterhub.cps.unileoben.ac.at
-      paths:
-        - path: /
-          pathType: Prefix
+    - jupyterhub.cps.unileoben.ac.at
+  pathType: Prefix
   tls:
     - secretName: jupyterhub-tls
       hosts:
