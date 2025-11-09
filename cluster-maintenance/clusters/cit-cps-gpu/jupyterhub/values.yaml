@@ -43,6 +43,7 @@ hub:
         - "profile"
         - "email"
       claim_groups_key: "groups"
+      manage_groups: true
       allowed_groups:
         - "cps-users"
       admin_groups:
