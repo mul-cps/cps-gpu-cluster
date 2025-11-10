@@ -264,91 +264,19 @@ hub:
                           'NVIDIA_DRIVER_CAPABILITIES': 'compute,utility'
                       }
                   }
-              },
-              
-              # Custom image profile
-              {
-                  'display_name': '⚙️ Custom Docker Image',
-                  'description': 'Specify your own container image. Use Quay.io images (quay.io/jupyter/*) as Docker Hub images are deprecated.',
-                  'profile_options': {
-                      'image': {
-                          'display_name': 'Docker Image URL',
-                          'unlisted_choice': {
-                              'enabled': True,
-                              'display_name': 'Custom image (e.g., quay.io/jupyter/scipy-notebook:latest)',
-                              'validation_regex': '^.+:.+$',
-                              'validation_message': 'Must be a valid image:tag format',
-                              'kubespawner_override': {'image': '{value}'}
-                          },
-                          'choices': {
-                              'datascience': {
-                                  'display_name': 'DataScience Notebook',
-                                  'default': True,
-                                  'kubespawner_override': {'image': 'quay.io/jupyter/datascience-notebook:2025-11-06'}
-                              },
-                              'scipy': {
-                                  'display_name': 'SciPy Notebook',
-                                  'kubespawner_override': {'image': 'quay.io/jupyter/scipy-notebook:2025-11-06'}
-                              },
-                              'pytorch': {
-                                  'display_name': 'PyTorch Notebook',
-                                  'kubespawner_override': {'image': 'quay.io/jupyter/pytorch-notebook:2025-11-06'}
-                              },
-                              'tensorflow': {
-                                  'display_name': 'TensorFlow Notebook',
-                                  'kubespawner_override': {'image': 'quay.io/jupyter/tensorflow-notebook:2025-11-06'}
-                              }
-                          }
-                      },
-                      'resources': {
-                          'display_name': 'Resource Allocation',
-                          'choices': {
-                              'small': {
-                                  'display_name': 'Small (1GB RAM, 2 CPUs)',
-                                  'kubespawner_override': {
-                                      'cpu_limit': 2.0,
-                                      'cpu_guarantee': 0.5,
-                                      'mem_limit': '1G',
-                                      'mem_guarantee': '256M'
-                                  }
-                              },
-                              'medium': {
-                                  'display_name': 'Medium (4GB RAM, 4 CPUs)',
-                                  'default': True,
-                                  'kubespawner_override': {
-                                      'cpu_limit': 4.0,
-                                      'cpu_guarantee': 1.0,
-                                      'mem_limit': '4G',
-                                      'mem_guarantee': '1G'
-                                  }
-                              },
-                              'large': {
-                                  'display_name': 'Large (8GB RAM, 8 CPUs)',
-                                  'kubespawner_override': {
-                                      'cpu_limit': 8.0,
-                                      'cpu_guarantee': 2.0,
-                                      'mem_limit': '8G',
-                                      'mem_guarantee': '2G'
-                                  }
-                              },
-                              'xlarge': {
-                                  'display_name': 'XLarge (16GB RAM, 16 CPUs)',
-                                  'kubespawner_override': {
-                                      'cpu_limit': 16.0,
-                                      'cpu_guarantee': 4.0,
-                                      'mem_limit': '16G',
-                                      'mem_guarantee': '4G'
-                                  }
-                              }
-                          }
-                      }
-                  }
               }
-              ]
-              spawner.log.info(f"Returning {len(profiles)} HPC profiles")
-              return profiles
-          
-          except Exception as e:
+              
+              # NOTE: Custom image profile with profile_options temporarily disabled
+              # This complex profile might be causing frontend rendering issues
+              # Will re-enable after testing simpler profiles work
+              # {
+              #     'display_name': '⚙️ Custom Docker Image',
+              #     'description': 'Specify your own container image...',
+              #     'profile_options': { ... }
+              # }
+          ]
+          spawner.log.info(f"Returning {len(profiles)} HPC profiles")
+          return profiles          except Exception as e:
               spawner.log.error(f"ERROR in dynamic_profile_list: {e}")
               spawner.log.error(traceback.format_exc())
               # Return a safe default
