@@ -106,7 +106,7 @@ hub:
     02-profiles: |
       # Dynamic profile configuration based on user groups
       # Adapted from Docker Swarm template for KubeSpawner
-      def dynamic_profile_list(spawner):
+      async def dynamic_profile_list(spawner):
           """
           Generate profile list dynamically based on user's group membership.
           Users in 'cpsHPCAccess' get full GPU access and custom image options.
