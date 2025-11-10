@@ -215,16 +215,19 @@ hub:
         
         <div id="gpu-access-notice" style="display: none;" class="alert-gpu-restricted">
           <h4>
-            <svg width="20" height="20" fill="currentColor" viewBox="0 0 16 16">
+            <svg width="24" height="24" fill="currentColor" viewBox="0 0 16 16" style="vertical-align: middle;">
               <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"/>
               <path d="m8.93 6.588-2.29.287-.082.38.45.083c.294.07.352.176.288.469l-.738 3.468c-.194.897.105 1.319.808 1.319.545 0 1.178-.252 1.465-.598l.088-.416c-.2.176-.492.246-.686.246-.275 0-.375-.193-.304-.533L8.93 6.588zM9 4.5a1 1 0 1 1-2 0 1 1 0 0 1 2 0z"/>
             </svg>
-            Limited Access
+            CPU-Only Access
           </h4>
-          <p>
-            Your account currently has access to <strong>CPU-only profiles</strong>. 
-            To request GPU access, please contact the CPS administrators and ask for membership 
-            in the <code style="background: #fff; padding: 2px 6px; border-radius: 3px;">cpsHPCAccess</code> group.
+          <p style="margin-bottom: 15px;">
+            Your account currently has access to <strong>CPU-only computing profiles</strong>.
+          </p>
+          <p style="margin-bottom: 0;">
+            To request GPU access for deep learning and accelerated computing workloads, 
+            please contact the CPS administrators and request membership in the 
+            <code style="background: rgba(255,255,255,0.8); padding: 2px 8px; border-radius: 4px; font-weight: 600;">cpsHPCAccess</code> group.
           </p>
         </div>
         
@@ -245,19 +248,58 @@ hub:
             </optgroup>
           </select>
         </div>
-        
-        <div class="profile-info">
-          <strong>ℹ️ Note:</strong> All profiles include the JupyterLab interface with common data science packages.
-          GPU profiles require approval from system administrators.
-        </div>
       </div>
       
       <script>
       (function() {
-        // Note: We show all profiles in the UI but enforce access via backend
-        // This is because KubeSpawner doesn't support callable options_form
-        // If user selects GPU profile without access, they'll get a clear error message
-        console.log('Profile form loaded - access control via backend');
+        // Fetch user info from JupyterHub API to check GPU access
+        var allowedGPUGroups = ['cpsHPCAccess', 'jupyter_admin'];
+        
+        fetch('/hub/api/user', {
+          credentials: 'same-origin',
+          headers: {
+            'Accept': 'application/json'
+          }
+        })
+        .then(response => response.json())
+        .then(userData => {
+          var hasGPUAccess = false;
+          
+          // Check if user is admin
+          if (userData.admin) {
+            hasGPUAccess = true;
+          }
+          
+          // Check user groups
+          if (userData.groups && Array.isArray(userData.groups)) {
+            hasGPUAccess = hasGPUAccess || userData.groups.some(group => {
+              return allowedGPUGroups.indexOf(group) !== -1;
+            });
+          }
+          
+          console.log('User:', userData.name, 'GPU Access:', hasGPUAccess, 'Groups:', userData.groups);
+          
+          // Hide GPU profiles if no access
+          if (!hasGPUAccess) {
+            var gpuOptgroup = document.getElementById('gpu-optgroup');
+            if (gpuOptgroup) {
+              gpuOptgroup.style.display = 'none';
+            }
+            
+            var notice = document.getElementById('gpu-access-notice');
+            if (notice) {
+              notice.style.display = 'block';
+            }
+          }
+        })
+        .catch(err => {
+          console.error('Failed to fetch user info:', err);
+          // On error, hide GPU profiles to be safe
+          var gpuOptgroup = document.getElementById('gpu-optgroup');
+          if (gpuOptgroup) {
+            gpuOptgroup.style.display = 'none';
+          }
+        });
       })();
       </script>
       """
