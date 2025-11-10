@@ -1,3 +1,4 @@
+name: jupyterhub
 defaultNamespace: jupyterhub
 
 helm:

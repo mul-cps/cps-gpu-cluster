@@ -1,0 +1,18 @@
+name: cluster-tests
+defaultNamespace: default
+
+# Cluster validation and GPU tests
+# These are optional test resources that can be applied to validate cluster functionality
+
+# Dependencies - ensure GPU operator is ready before running GPU tests
+dependsOn:
+  - selector:
+      matchLabels:
+        name: gpu-operator
+
+# Only deploy to clusters labeled for testing
+targets:
+  - name: cit-cps-gpu
+    clusterSelector:
+      matchLabels:
+        name: cit-cps-gpu

@@ -1,6 +1,7 @@
 # Storage classes configuration
-# Skip existing resources to avoid conflicts with externally managed storage classes
+name: storage-classes
 
+# Skip existing resources to avoid conflicts with externally managed storage classes
 diff:
   comparePatches:
   - apiVersion: storage.k8s.io/v1

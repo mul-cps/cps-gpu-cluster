@@ -1,3 +1,4 @@
+name: gpu-operator
 defaultNamespace: gpu-operator
 
 helm:
