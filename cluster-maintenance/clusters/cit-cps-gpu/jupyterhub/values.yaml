@@ -102,7 +102,7 @@ hub:
       
     02-profiles: |
       # Dynamic profile configuration based on user groups
-      async def dynamic_profile_list(spawner):
+      def dynamic_profile_list(spawner):
           """
           Generate profile list dynamically based on user's group membership.
           Users in 'cpsHPCAccess' get full GPU access and custom image options.
@@ -285,6 +285,9 @@ hub:
       
       # Set the dynamic profile list
       c.KubeSpawner.profile_list = dynamic_profile_list
+      
+      # Always show options form (don't skip it)
+      c.Spawner.options_from_form = lambda form_data: form_data
         
     gpu-config: |
       # Make GPUs available to users
