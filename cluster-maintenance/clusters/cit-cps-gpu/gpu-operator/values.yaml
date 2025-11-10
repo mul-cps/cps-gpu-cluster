@@ -30,10 +30,23 @@ devicePlugin:
   enabled: true
   version: "v0.18.0"
 
-# DCGM Exporter (GPU metrics)
+# DCGM Exporter (GPU metrics) with ServiceMonitor for Rancher monitoring
 dcgmExporter:
   enabled: true
   version: "4.4.1-4.6.0-distroless"
+  # Enable ServiceMonitor for Prometheus integration with Rancher monitoring
+  serviceMonitor:
+    enabled: true
+    interval: 15s
+    honorLabels: false
+    # Add labels for Rancher monitoring discovery (optional - Rancher typically discovers all namespaces)
+    additionalLabels: {}
+  # Optional: Configure custom metrics collection
+  env:
+    - name: DCGM_EXPORTER_LISTEN
+      value: ":9400"
+    - name: DCGM_EXPORTER_KUBERNETES
+      value: "true"
 
 # GPU Feature Discovery
 gfd:

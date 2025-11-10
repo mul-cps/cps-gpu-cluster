@@ -1,0 +1,167 @@
+# Rancher Monitoring Configuration with NVIDIA GPU Metrics Integration
+# This configuration enables comprehensive monitoring with GPU metrics support
+
+# Global configuration
+global:
+  cattle:
+    clusterId: "local"
+    clusterName: "cit-cps-gpu"
+
+# Prometheus configuration for GPU metrics integration
+prometheus:
+  prometheusSpec:
+    # Allow discovery of ServiceMonitors across all namespaces (including gpu-operator)
+    serviceMonitorSelectorNilUsesHelmValues: false
+    # Enable cross-namespace ServiceMonitor discovery
+    serviceMonitorNamespaceSelector: {}
+    
+    # Storage configuration for metrics retention
+    storageSpec:
+      volumeClaimTemplate:
+        spec:
+          storageClassName: "local-path"  # Adjust based on your storage class
+          accessModes: ["ReadWriteOnce"]
+          resources:
+            requests:
+              storage: 50Gi
+    
+    # Retention and evaluation settings
+    retention: "15d"
+    retentionSize: "45GiB"
+    evaluationInterval: "30s"
+    scrapeInterval: "30s"
+    
+    # Resource requests and limits
+    resources:
+      requests:
+        memory: "1Gi"
+        cpu: "500m"
+      limits:
+        memory: "4Gi"
+        cpu: "2000m"
+
+    # Additional scrape configurations for custom GPU metrics if needed
+    additionalScrapeConfigs: []
+
+# Grafana configuration
+grafana:
+  enabled: true
+  
+  # Admin credentials (change these!)
+  adminPassword: "admin"  # Change this in production!
+  
+  # Persistent storage for dashboards and settings
+  persistence:
+    enabled: true
+    storageClassName: "local-path"  # Adjust based on your storage class
+    size: 10Gi
+    
+  # Resource configuration
+  resources:
+    requests:
+      memory: "512Mi"
+      cpu: "250m"
+    limits:
+      memory: "1Gi"
+      cpu: "500m"
+  
+  # Import default dashboards
+  sidecar:
+    dashboards:
+      enabled: true
+      # Search for dashboards in cattle-dashboards namespace
+      searchNamespace: "cattle-dashboards"
+      provider:
+        allowUiUpdates: true
+    
+    datasources:
+      enabled: true
+      
+  # Additional plugins for GPU visualization
+  plugins:
+    - grafana-piechart-panel
+    - grafana-clock-panel
+
+# Alertmanager configuration
+alertmanager:
+  enabled: true
+  
+  alertmanagerSpec:
+    # Storage for alert history
+    storage:
+      volumeClaimTemplate:
+        spec:
+          storageClassName: "local-path"  # Adjust based on your storage class
+          accessModes: ["ReadWriteOnce"]
+          resources:
+            requests:
+              storage: 5Gi
+    
+    # Resource configuration
+    resources:
+      requests:
+        memory: "256Mi"
+        cpu: "100m"
+      limits:
+        memory: "512Mi"
+        cpu: "200m"
+
+# Node Exporter for node-level metrics
+nodeExporter:
+  enabled: true
+
+# kube-state-metrics for Kubernetes object metrics
+kubeStateMetrics:
+  enabled: true
+
+# Enable default Prometheus rules
+defaultRules:
+  create: true
+  rules:
+    alertmanager: true
+    etcd: true
+    general: true
+    k8s: true
+    kubeApiserver: true
+    kubeApiserverAvailability: true
+    kubeApiserverBurnrate: true
+    kubeApiserverHistogram: true
+    kubeApiserverSlos: true
+    kubelet: true
+    kubePrometheusGeneral: true
+    kubePrometheusNodeRecording: true
+    kubernetesApps: true
+    kubernetesResources: true
+    kubernetesStorage: true
+    kubernetesSystem: true
+    network: true
+    node: true
+    prometheus: true
+    prometheusOperator: true
+
+# Prometheus Operator configuration
+prometheusOperator:
+  enabled: true
+  
+  # Resource configuration
+  resources:
+    requests:
+      memory: "128Mi"
+      cpu: "100m"
+    limits:
+      memory: "256Mi"
+      cpu: "200m"
+
+# Tolerations for deployment on control plane if needed
+tolerations: []
+  # - key: "node-role.kubernetes.io/control-plane"
+  #   operator: "Exists"
+  #   effect: "NoSchedule"
+
+# Node selector - can be used to control where monitoring components are deployed
+nodeSelector: {}
+
+# Additional labels
+commonLabels:
+  monitoring: "rancher"
+  cluster: "cit-cps-gpu"

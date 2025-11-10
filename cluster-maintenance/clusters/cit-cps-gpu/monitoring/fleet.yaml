@@ -1,0 +1,28 @@
+# Fleet configuration for Rancher Monitoring Stack
+name: rancher-monitoring
+
+# Namespace where the monitoring stack will be deployed
+namespace: cattle-monitoring-system
+
+# Helm chart configuration
+helm:
+  # Use Rancher's monitoring chart
+  chart: rancher-monitoring
+  repo: https://charts.rancher.io
+  version: "103.0.3+up45.31.1"
+  releaseName: rancher-monitoring
+  
+  # Values for the monitoring stack
+  valuesFiles:
+    - values.yaml
+
+# Dependencies - ensure GPU operator is deployed first
+dependsOn:
+  - name: gpu-operator
+
+# Target only clusters with the gpu-monitoring label
+targets:
+  - name: cit-cps-gpu
+    clusterSelector:
+      matchLabels:
+        name: cit-cps-gpu

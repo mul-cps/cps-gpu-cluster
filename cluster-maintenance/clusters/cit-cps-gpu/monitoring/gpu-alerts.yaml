@@ -1,0 +1,89 @@
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  name: nvidia-gpu-alerts
+  namespace: cattle-monitoring-system
+  labels:
+    app: "rancher-monitoring"
+    prometheus: "kube-prometheus"
+    role: "alert-rules"
+spec:
+  groups:
+  - name: nvidia-gpu
+    rules:
+    # GPU High Utilization Alert
+    - alert: GPUHighUtilization
+      expr: DCGM_FI_DEV_GPU_UTIL > 90
+      for: 5m
+      labels:
+        severity: warning
+        component: gpu
+      annotations:
+        summary: "High GPU utilization detected"
+        description: "GPU {{ $labels.gpu }} on instance {{ $labels.exported_instance }} has been running at {{ $value }}% utilization for more than 5 minutes"
+        
+    # GPU High Temperature Alert
+    - alert: GPUHighTemperature
+      expr: DCGM_FI_DEV_GPU_TEMP > 85
+      for: 2m
+      labels:
+        severity: critical
+        component: gpu
+      annotations:
+        summary: "GPU temperature too high"
+        description: "GPU {{ $labels.gpu }} on instance {{ $labels.exported_instance }} temperature is {{ $value }}°C, which exceeds the safe threshold"
+        
+    # GPU Memory High Usage Alert
+    - alert: GPUHighMemoryUsage
+      expr: (DCGM_FI_DEV_FB_USED / (DCGM_FI_DEV_FB_USED + DCGM_FI_DEV_FB_FREE)) * 100 > 95
+      for: 5m
+      labels:
+        severity: warning
+        component: gpu
+      annotations:
+        summary: "High GPU memory usage"
+        description: "GPU {{ $labels.gpu }} on instance {{ $labels.exported_instance }} memory usage is {{ $value }}%"
+        
+    # GPU Power Consumption Alert
+    - alert: GPUHighPowerUsage
+      expr: DCGM_FI_DEV_POWER_USAGE > 400  # Adjust based on your GPU specs (A100 is ~400W max)
+      for: 3m
+      labels:
+        severity: warning
+        component: gpu
+      annotations:
+        summary: "High GPU power consumption"
+        description: "GPU {{ $labels.gpu }} on instance {{ $labels.exported_instance }} is consuming {{ $value }}W of power"
+        
+    # GPU Down Alert
+    - alert: GPUDown
+      expr: up{job=~".*dcgm-exporter.*"} == 0
+      for: 1m
+      labels:
+        severity: critical
+        component: gpu
+      annotations:
+        summary: "GPU exporter is down"
+        description: "DCGM exporter on instance {{ $labels.exported_instance }} has been down for more than 1 minute"
+        
+    # GPU XID Error Alert (if available)
+    - alert: GPUXIDErrors
+      expr: increase(DCGM_FI_DEV_XID_ERRORS[5m]) > 0
+      for: 1m
+      labels:
+        severity: critical
+        component: gpu
+      annotations:
+        summary: "GPU XID errors detected"
+        description: "GPU {{ $labels.gpu }} on instance {{ $labels.exported_instance }} has reported XID errors"
+        
+    # Low GPU Utilization (for cost optimization)
+    - alert: GPULowUtilization
+      expr: avg_over_time(DCGM_FI_DEV_GPU_UTIL[1h]) < 10
+      for: 30m
+      labels:
+        severity: info
+        component: gpu
+      annotations:
+        summary: "GPU underutilized"
+        description: "GPU {{ $labels.gpu }} on instance {{ $labels.exported_instance }} has been running below 10% utilization for the past hour"
