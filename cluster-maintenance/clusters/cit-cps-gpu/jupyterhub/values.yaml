@@ -123,45 +123,39 @@ hub:
           
           if not has_gpu_access:
               # Restricted form for users without GPU access
-              return """
-<div style="max-width: 800px; margin: 20px auto; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;">
-  <div style="background: #fff3cd; border: 2px solid #ffc107; border-radius: 8px; padding: 20px; margin-bottom: 20px;">
-    <h3 style="color: #856404; margin-top: 0;">ℹ️ Limited Access</h3>
-    <p style="color: #856404; margin-bottom: 0;">
-      Your account has access to CPU-only profiles. For GPU access, please contact CPS admins to request membership in the <code>cpsHPCAccess</code> group.
-    </p>
-  </div>
-  <label>Select CPU Profile:</label>
-  <select name="profile" class="form-control">
-    <option value="cpu-small">💻 DataScience - Small (1GB RAM, 2 CPUs)</option>
-    <option value="cpu-medium" selected>💻 DataScience - Medium (4GB RAM, 4 CPUs)</option>
-    <option value="cpu-large">💻 DataScience - Large (8GB RAM, 8 CPUs)</option>
-    <option value="cpu-xlarge">💻 DataScience - XLarge (16GB RAM, 16 CPUs)</option>
-  </select>
-</div>
-"""
+              html = '<div style="max-width: 800px; margin: 20px auto; font-family: -apple-system, BlinkMacSystemFont, \'Segoe UI\', Roboto, sans-serif;">'
+              html += '<div style="background: #fff3cd; border: 2px solid #ffc107; border-radius: 8px; padding: 20px; margin-bottom: 20px;">'
+              html += '<h3 style="color: #856404; margin-top: 0;">ℹ️ Limited Access</h3>'
+              html += '<p style="color: #856404; margin-bottom: 0;">'
+              html += 'Your account has access to CPU-only profiles. For GPU access, please contact CPS admins to request membership in the <code>cpsHPCAccess</code> group.'
+              html += '</p></div>'
+              html += '<label>Select CPU Profile:</label>'
+              html += '<select name="profile" class="form-control">'
+              html += '<option value="cpu-small">💻 DataScience - Small (1GB RAM, 2 CPUs)</option>'
+              html += '<option value="cpu-medium" selected>💻 DataScience - Medium (4GB RAM, 4 CPUs)</option>'
+              html += '<option value="cpu-large">💻 DataScience - Large (8GB RAM, 8 CPUs)</option>'
+              html += '<option value="cpu-xlarge">💻 DataScience - XLarge (16GB RAM, 16 CPUs)</option>'
+              html += '</select></div>'
+              return html
           
           # Full form for authorized users
-          return """
-<div style="max-width: 800px; margin: 20px auto; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;">
-  <h3 style="text-align: center; color: #333;">Select Your Computing Environment</h3>
-  <label>Select Profile:</label>
-  <select name="profile" class="form-control">
-    <optgroup label="CPU Profiles - Available to all">
-      <option value="cpu-small">💻 DataScience - Small (1GB RAM, 2 CPUs)</option>
-      <option value="cpu-medium" selected>💻 DataScience - Medium (4GB RAM, 4 CPUs)</option>
-      <option value="cpu-large">💻 DataScience - Large (8GB RAM, 8 CPUs)</option>
-      <option value="cpu-xlarge">💻 DataScience - XLarge (16GB RAM, 16 CPUs)</option>
-    </optgroup>
-    <optgroup label="GPU Profiles - Authorized Access">
-      <option value="gpu-pytorch-single">🚀 Single A100 GPU - PyTorch (32GB RAM, 8 CPUs)</option>
-      <option value="gpu-tensorflow-single">🚀 Single A100 GPU - TensorFlow (32GB RAM, 8 CPUs)</option>
-      <option value="gpu-pytorch-dual">🔥 Dual A100 GPUs - PyTorch (64GB RAM, 16 CPUs)</option>
-      <option value="gpu-tensorflow-dual">🔥 Dual A100 GPUs - TensorFlow (64GB RAM, 16 CPUs)</option>
-    </optgroup>
-  </select>
-</div>
-"""
+          html = '<div style="max-width: 800px; margin: 20px auto; font-family: -apple-system, BlinkMacSystemFont, \'Segoe UI\', Roboto, sans-serif;">'
+          html += '<h3 style="text-align: center; color: #333;">Select Your Computing Environment</h3>'
+          html += '<label>Select Profile:</label>'
+          html += '<select name="profile" class="form-control">'
+          html += '<optgroup label="CPU Profiles - Available to all">'
+          html += '<option value="cpu-small">💻 DataScience - Small (1GB RAM, 2 CPUs)</option>'
+          html += '<option value="cpu-medium" selected>💻 DataScience - Medium (4GB RAM, 4 CPUs)</option>'
+          html += '<option value="cpu-large">💻 DataScience - Large (8GB RAM, 8 CPUs)</option>'
+          html += '<option value="cpu-xlarge">💻 DataScience - XLarge (16GB RAM, 16 CPUs)</option>'
+          html += '</optgroup>'
+          html += '<optgroup label="GPU Profiles - Authorized Access">'
+          html += '<option value="gpu-pytorch-single">🚀 Single A100 GPU - PyTorch (32GB RAM, 8 CPUs)</option>'
+          html += '<option value="gpu-tensorflow-single">🚀 Single A100 GPU - TensorFlow (32GB RAM, 8 CPUs)</option>'
+          html += '<option value="gpu-pytorch-dual">🔥 Dual A100 GPUs - PyTorch (64GB RAM, 16 CPUs)</option>'
+          html += '<option value="gpu-tensorflow-dual">🔥 Dual A100 GPUs - TensorFlow (64GB RAM, 16 CPUs)</option>'
+          html += '</optgroup></select></div>'
+          return html
       
       
       c.Spawner.options_form = dynamic_profile_form
