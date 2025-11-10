@@ -108,8 +108,9 @@ hub:
       GPU_PROFILE_SLUGS = {'gpu-pytorch-single', 'gpu-tensorflow-single', 'gpu-pytorch-dual', 'gpu-tensorflow-dual'}
       ALLOWED_GPU_GROUPS = {'cpsHPCAccess', 'jupyter_admin'}
       
-      # Profile list - base profiles available to all
-      BASE_PROFILE_LIST = [
+      # Static profile list - all profiles visible to all users
+      # Access control enforced via pre_spawn_hook
+      c.KubeSpawner.profile_list = [
           # CPU Profiles - Available to all users
           {
               'display_name': '💻 DataScience - Small (1GB RAM, 2 CPUs)',
@@ -160,13 +161,11 @@ hub:
                   'image': 'quay.io/jupyter/datascience-notebook:2025-11-06'
               }
           },
-      ]
-      
-      # GPU profiles - only for authorized users
-      GPU_PROFILE_LIST = [
+          
+          # GPU Profiles - Require cpsHPCAccess or jupyter_admin group (enforced at spawn time)
           {
-              'display_name': '🚀 Single A100 GPU - PyTorch (32GB RAM, 8 CPUs)',
-              'description': 'One NVIDIA A100 GPU with PyTorch. Perfect for deep learning and ML training.',
+              'display_name': '🚀 Single A100 GPU - PyTorch (32GB RAM, 8 CPUs) ⚠️ Requires GPU Access',
+              'description': '<b>⚠️ Restricted Access:</b> Requires membership in <code>cpsHPCAccess</code> or <code>jupyter_admin</code> group. Contact CPS admins to request access.<br><br>One NVIDIA A100 GPU with PyTorch. Perfect for deep learning and ML training.',
               'slug': 'gpu-pytorch-single',
               'kubespawner_override': {
                   'cpu_limit': 8.0,
@@ -184,8 +183,8 @@ hub:
               }
           },
           {
-              'display_name': '🚀 Single A100 GPU - TensorFlow (32GB RAM, 8 CPUs)',
-              'description': 'One NVIDIA A100 GPU with TensorFlow. Optimized for TensorFlow workloads.',
+              'display_name': '🚀 Single A100 GPU - TensorFlow (32GB RAM, 8 CPUs) ⚠️ Requires GPU Access',
+              'description': '<b>⚠️ Restricted Access:</b> Requires membership in <code>cpsHPCAccess</code> or <code>jupyter_admin</code> group. Contact CPS admins to request access.<br><br>One NVIDIA A100 GPU with TensorFlow. Optimized for TensorFlow workloads.',
               'slug': 'gpu-tensorflow-single',
               'kubespawner_override': {
                   'cpu_limit': 8.0,
@@ -203,8 +202,8 @@ hub:
               }
           },
           {
-              'display_name': '🔥 Dual A100 GPUs - PyTorch (64GB RAM, 16 CPUs)',
-              'description': 'Two NVIDIA A100 GPUs with PyTorch. Maximum performance for large-scale training.',
+              'display_name': '🔥 Dual A100 GPUs - PyTorch (64GB RAM, 16 CPUs) ⚠️ Requires GPU Access',
+              'description': '<b>⚠️ Restricted Access:</b> Requires membership in <code>cpsHPCAccess</code> or <code>jupyter_admin</code> group. Contact CPS admins to request access.<br><br>Two NVIDIA A100 GPUs with PyTorch. Maximum performance for large-scale training.',
               'slug': 'gpu-pytorch-dual',
               'kubespawner_override': {
                   'cpu_limit': 16.0,
@@ -222,8 +221,8 @@ hub:
               }
           },
           {
-              'display_name': '🔥 Dual A100 GPUs - TensorFlow (64GB RAM, 16 CPUs)',
-              'description': 'Two NVIDIA A100 GPUs with TensorFlow. Maximum performance for TensorFlow workloads.',
+              'display_name': '🔥 Dual A100 GPUs - TensorFlow (64GB RAM, 16 CPUs) ⚠️ Requires GPU Access',
+              'description': '<b>⚠️ Restricted Access:</b> Requires membership in <code>cpsHPCAccess</code> or <code>jupyter_admin</code> group. Contact CPS admins to request access.<br><br>Two NVIDIA A100 GPUs with TensorFlow. Maximum performance for TensorFlow workloads.',
               'slug': 'gpu-tensorflow-dual',
               'kubespawner_override': {
                   'cpu_limit': 16.0,
@@ -242,26 +241,7 @@ hub:
           }
       ]
       
-      # Dynamic profile list based on user groups
-      def get_profile_list(spawner):
-          """Return profile list based on user's GPU access"""
-          group_names = {group.name for group in spawner.user.groups}
-          has_gpu_access = bool(group_names & ALLOWED_GPU_GROUPS)
-          
-          spawner.log.info(f"User {spawner.user.name} groups: {group_names}, GPU access: {has_gpu_access}")
-          
-          if has_gpu_access:
-              profiles = BASE_PROFILE_LIST + GPU_PROFILE_LIST
-              spawner.log.info(f"User {spawner.user.name} granted access to {len(profiles)} profiles (including GPU)")
-          else:
-              profiles = BASE_PROFILE_LIST
-              spawner.log.info(f"User {spawner.user.name} limited to {len(profiles)} CPU-only profiles")
-          
-          return profiles
-      
-      c.KubeSpawner.profile_list = get_profile_list
-      
-      # Pre-spawn hook to enforce group-based access control (defense in depth)
+      # Pre-spawn hook to enforce group-based access control
       async def check_profile_access(spawner):
           """
           Enforce group-based access control for GPU profiles.
@@ -278,7 +258,7 @@ hub:
               # Check if user has GPU access
               if not (group_names & ALLOWED_GPU_GROUPS):
                   spawner.log.warning(f"User {spawner.user.name} attempted to access GPU profile {profile_slug} without permission (groups: {group_names})")
-                  raise Exception(f"Access denied: GPU profiles require membership in one of these groups: {', '.join(ALLOWED_GPU_GROUPS)}")
+                  raise Exception(f"⚠️ Access Denied: GPU profiles require membership in the 'cpsHPCAccess' or 'jupyter_admin' group. Please contact the CPS system administrators to request GPU access.")
               else:
                   spawner.log.info(f"User {spawner.user.name} authorized for GPU profile {profile_slug} (groups: {group_names & ALLOWED_GPU_GROUPS})")
           
