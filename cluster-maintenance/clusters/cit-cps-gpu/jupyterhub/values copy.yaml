@@ -9,7 +9,6 @@ proxy:
 # Ingress configuration for external access
 ingress:
   enabled: true
-  ingressClassName: traefik
   hosts:
     - jupyterhub.cps.unileoben.ac.at
   annotations:
@@ -50,6 +49,8 @@ hub:
         - "groups"
       claim_groups_key: "groups"
       manage_groups: true
+      # Allow all authenticated users - access control handled by Authentik
+      allow_all: true
       admin_groups:
         - "jupyter_admin"
 
@@ -57,7 +58,7 @@ hub:
     pvc:
       storageClassName: nfs-client
       storage: 10Gi
-
+  
   extraVolumes:
     - name: custom-templates
       configMap:
@@ -66,58 +67,56 @@ hub:
     - name: custom-templates
       mountPath: /etc/jupyterhub/custom
 
-  # Install OAuthenticator package and custom logic
+  # Install OAuthenticator package and jupyterhub-fancy-profiles
   extraConfig:
     00-install-packages: |
       import subprocess
       import sys
       try:
-          import oauthenticator  # noqa: F401
+        import oauthenticator
       except ImportError:
-          subprocess.check_call([sys.executable, '-m', 'pip', 'install', 'oauthenticator'])
-
+        subprocess.check_call([sys.executable, '-m', 'pip', 'install', 'oauthenticator'])
+    
     01-custom-templates: |
       # Configure custom template path
       c.JupyterHub.template_paths = ['/etc/jupyterhub/custom']
-
+      
       # Configure custom templates and info page
+      import os
       from jupyterhub.handlers import BaseHandler
       from tornado import web
-
+      
       class InfoHandler(BaseHandler):
           @web.authenticated
           async def get(self):
               user = await self.get_current_user()
-              # pull template_vars from Jinja2 globals where JupyterHub stores them
-              jinja_env = self.settings.get('jinja2_env', None)
-              template_vars = jinja_env.globals.get('template_vars', {}) if jinja_env else {}
-              org = template_vars.get('org', {})
-              html = self.render_template(
-                  "info.html",
-                  user=user,
-                  base_url=self.base_url,  # correct accessor
-                  org=org,
-              )
+              # Use JupyterHub's template environment instead of Tornado's direct render
+              template_vars = {
+                  'user': user,
+                  'base_url': self.hub.base_url,
+                  'org': getattr(self.settings.get('template_vars', {}), 'org', {}),
+              }
+              html = self.render_template("info.html", **template_vars)
               self.write(html)
-
+      
       c.JupyterHub.extra_handlers = [
           (r"/info", InfoHandler),
       ]
-
+      
     02-profiles: |
       # GPU profiles requiring access control
       GPU_PROFILE_SLUGS = {'gpu-pytorch-single', 'gpu-tensorflow-single', 'gpu-pytorch-dual', 'gpu-tensorflow-dual'}
       ALLOWED_GPU_GROUPS = {'cpsHPCAccess', 'jupyter_admin'}
-
+      
       # Store group detection function for use in pre_spawn_hook
       def user_has_gpu_access(spawner):
           """Check if user has GPU access based on groups"""
-          group_names = {getattr(group, "name", group) for group in spawner.user.groups}
-          is_admin = bool(spawner.user.admin)
+          group_names = {group.name for group in spawner.user.groups}
+          is_admin = spawner.user.admin
           has_access = bool(group_names & ALLOWED_GPU_GROUPS) or is_admin
           spawner.log.info(f"GPU access check for {spawner.user.name}: groups={group_names}, access={has_access}")
           return has_access
-
+      
       # Static HTML - we'll handle access control in pre_spawn_hook only
       # KubeSpawner doesn't support callable options_form, so we show all profiles
       # and enforce access via backend pre_spawn_hook
@@ -230,13 +229,13 @@ hub:
           margin-left: 8px;
         }}
       </style>
-
+      
       <div class="profile-container">
         <div class="profile-header">
           <h2>🚀 Choose Your Computing Environment</h2>
           <p>Select the resources that match your computational needs</p>
         </div>
-
+        
         <div id="gpu-access-notice" style="display: none;" class="alert-gpu-restricted">
           <h4>
             <svg width="24" height="24" fill="currentColor" viewBox="0 0 16 16" style="vertical-align: middle;">
@@ -254,7 +253,7 @@ hub:
             <code style="background: rgba(255,255,255,0.8); padding: 2px 8px; border-radius: 4px; font-weight: 600;">cpsHPCAccess</code> group.
           </p>
         </div>
-
+        
         <div class="options-card">
           <div class="card-title">⚙️ Computing Profile</div>
           <div class="form-group-custom">
@@ -285,9 +284,10 @@ hub:
           </div>
         </div>
       </div>
-
+      
       <script>
       (function() {
+  // Fetch user info from JupyterHub API to check GPU access and admin perms
         var allowedGPUGroups = ['cpsHPCAccess', 'jupyter_admin'];
 
         function getCookie(name) {
@@ -296,6 +296,7 @@ hub:
             return parts[0] === name ? decodeURIComponent(parts.slice(1).join('=')) : val;
           }, null);
         }
+
         var xsrf = getCookie('_xsrf');
 
         fetch('/hub/api/user', {
@@ -305,7 +306,9 @@ hub:
           }, xsrf ? { 'X-XSRFToken': xsrf } : {})
         })
         .then(function(response) {
-          if (!response.ok) throw new Error('HTTP ' + response.status);
+          if (!response.ok) {
+            throw new Error('HTTP ' + response.status);
+          }
           return response.json();
         })
         .then(function(userData) {
@@ -315,159 +318,239 @@ hub:
           var isAdmin = !!userData.admin;
           var hasGPUAccess = isAdmin || groups.some(function(g){ return allowedGPUGroups.indexOf(g) !== -1; });
 
+          console.log('User:', userData.name, 'Admin:', isAdmin, 'Groups:', groups, 'GPU Access:', hasGPUAccess);
+
+          // Hide GPU profiles only when explicitly unauthorized
           if (!hasGPUAccess) {
             var gpuOptgroup = document.getElementById('gpu-optgroup');
-            if (gpuOptgroup) gpuOptgroup.style.display = 'none';
+            if (gpuOptgroup) {
+              gpuOptgroup.style.display = 'none';
+            }
             var notice = document.getElementById('gpu-access-notice');
-            if (notice) notice.style.display = 'block';
+            if (notice) {
+              notice.style.display = 'block';
+            }
           }
+
+          // Show Advanced panel for admins
           var advanced = document.getElementById('advanced-panel');
-          if (advanced && isAdmin) advanced.style.display = 'block';
+          if (advanced && isAdmin) {
+            advanced.style.display = 'block';
+          }
         })
         .catch(function(err) {
+          // If API call fails (e.g., XSRF or auth), leave UI as-is (backend will enforce)
           console.warn('User info fetch failed; leaving GPU options visible. Error:', err);
         });
       })();
       </script>
       """
-
+      
       # Process form submission
       def options_from_form(formdata):
           """Extract selected profile and optional custom image from form data"""
           options = {}
           profile = formdata.get('profile', ['cpu-medium'])[0]
           options['profile'] = profile
+          # Optional custom image (admins only - enforced in pre-spawn)
           custom_image = formdata.get('custom_image', [''])[0].strip()
           if custom_image:
               options['custom_image'] = custom_image
           return options
 
       c.Spawner.options_from_form = options_from_form
-
+      
       # Define profile_list for KubeSpawner validation
+      # Note: These profiles are validated by KubeSpawner but the actual config
+      # is applied by pre_spawn_hook from PROFILE_CONFIGS below
       c.KubeSpawner.profile_list = [
-          {'display_name': 'Small - 2 CPUs, 1GB RAM', 'slug': 'cpu-small', 'description': 'CPU-only profile for light workloads'},
-          {'display_name': 'Medium - 4 CPUs, 4GB RAM', 'slug': 'cpu-medium', 'description': 'CPU-only profile for standard workloads', 'default': True},
-          {'display_name': 'Large - 8 CPUs, 8GB RAM', 'slug': 'cpu-large', 'description': 'CPU-only profile for heavy workloads'},
-          {'display_name': 'X-Large - 16 CPUs, 16GB RAM', 'slug': 'cpu-xlarge', 'description': 'CPU-only profile for very heavy workloads'},
-          {'display_name': 'Single A100 GPU - PyTorch', 'slug': 'gpu-pytorch-single', 'description': 'GPU profile with PyTorch (8 CPUs, 32GB RAM)'},
-          {'display_name': 'Single A100 GPU - TensorFlow', 'slug': 'gpu-tensorflow-single', 'description': 'GPU profile with TensorFlow (8 CPUs, 32GB RAM)'},
-          {'display_name': 'Dual A100 GPUs - PyTorch', 'slug': 'gpu-pytorch-dual', 'description': 'GPU profile with PyTorch (16 CPUs, 64GB RAM)'},
-          {'display_name': 'Dual A100 GPUs - TensorFlow', 'slug': 'gpu-tensorflow-dual', 'description': 'GPU profile with TensorFlow (16 CPUs, 64GB RAM)'},
+          {
+              'display_name': 'Small - 2 CPUs, 1GB RAM',
+              'slug': 'cpu-small',
+              'description': 'CPU-only profile for light workloads',
+          },
+          {
+              'display_name': 'Medium - 4 CPUs, 4GB RAM',
+              'slug': 'cpu-medium',
+              'description': 'CPU-only profile for standard workloads',
+              'default': True,
+          },
+          {
+              'display_name': 'Large - 8 CPUs, 8GB RAM',
+              'slug': 'cpu-large',
+              'description': 'CPU-only profile for heavy workloads',
+          },
+          {
+              'display_name': 'X-Large - 16 CPUs, 16GB RAM',
+              'slug': 'cpu-xlarge',
+              'description': 'CPU-only profile for very heavy workloads',
+          },
+          {
+              'display_name': 'Single A100 GPU - PyTorch',
+              'slug': 'gpu-pytorch-single',
+              'description': 'GPU profile with PyTorch (8 CPUs, 32GB RAM)',
+          },
+          {
+              'display_name': 'Single A100 GPU - TensorFlow',
+              'slug': 'gpu-tensorflow-single',
+              'description': 'GPU profile with TensorFlow (8 CPUs, 32GB RAM)',
+          },
+          {
+              'display_name': 'Dual A100 GPUs - PyTorch',
+              'slug': 'gpu-pytorch-dual',
+              'description': 'GPU profile with PyTorch (16 CPUs, 64GB RAM)',
+          },
+          {
+              'display_name': 'Dual A100 GPUs - TensorFlow',
+              'slug': 'gpu-tensorflow-dual',
+              'description': 'GPU profile with TensorFlow (16 CPUs, 64GB RAM)',
+          },
       ]
-
+      
       # Profile configurations (used by pre_spawn_hook to apply settings)
       PROFILE_CONFIGS = {
           'cpu-small': {
               'image': 'quay.io/jupyter/datascience-notebook:2025-11-06',
-              'cpu_limit': 2.0, 'cpu_guarantee': 0.5,
-              'mem_limit': '1G', 'mem_guarantee': '256M',
+              'cpu_limit': 2.0,
+              'cpu_guarantee': 0.5,
+              'mem_limit': '1G',
+              'mem_guarantee': '256M',
           },
           'cpu-medium': {
               'image': 'quay.io/jupyter/datascience-notebook:2025-11-06',
-              'cpu_limit': 4.0, 'cpu_guarantee': 1.0,
-              'mem_limit': '4G', 'mem_guarantee': '1G',
+              'cpu_limit': 4.0,
+              'cpu_guarantee': 1.0,
+              'mem_limit': '4G',
+              'mem_guarantee': '1G',
           },
           'cpu-large': {
               'image': 'quay.io/jupyter/datascience-notebook:2025-11-06',
-              'cpu_limit': 8.0, 'cpu_guarantee': 2.0,
-              'mem_limit': '8G', 'mem_guarantee': '2G',
+              'cpu_limit': 8.0,
+              'cpu_guarantee': 2.0,
+              'mem_limit': '8G',
+              'mem_guarantee': '2G',
           },
           'cpu-xlarge': {
               'image': 'quay.io/jupyter/datascience-notebook:2025-11-06',
-              'cpu_limit': 16.0, 'cpu_guarantee': 4.0,
-              'mem_limit': '16G', 'mem_guarantee': '4G',
+              'cpu_limit': 16.0,
+              'cpu_guarantee': 4.0,
+              'mem_limit': '16G',
+              'mem_guarantee': '4G',
           },
           'gpu-pytorch-single': {
               'image': 'quay.io/jupyter/pytorch-notebook:2025-11-06',
-              'cpu_limit': 8.0, 'cpu_guarantee': 4.0,
-              'mem_limit': '32G', 'mem_guarantee': '16G',
+              'cpu_limit': 8.0,
+              'cpu_guarantee': 4.0,
+              'mem_limit': '32G',
+              'mem_guarantee': '16G',
               'extra_resource_limits': {'nvidia.com/gpu': '1'},
               'extra_resource_guarantees': {'nvidia.com/gpu': '1'},
               'node_selector': {'accelerator': 'nvidia'},
-              'environment': {'NVIDIA_VISIBLE_DEVICES': 'all', 'NVIDIA_DRIVER_CAPABILITIES': 'compute,utility'}
+              'environment': {
+                  'NVIDIA_VISIBLE_DEVICES': 'all',
+                  'NVIDIA_DRIVER_CAPABILITIES': 'compute,utility'
+              }
           },
           'gpu-tensorflow-single': {
               'image': 'quay.io/jupyter/tensorflow-notebook:2025-11-06',
-              'cpu_limit': 8.0, 'cpu_guarantee': 4.0,
-              'mem_limit': '32G', 'mem_guarantee': '16G',
+              'cpu_limit': 8.0,
+              'cpu_guarantee': 4.0,
+              'mem_limit': '32G',
+              'mem_guarantee': '16G',
               'extra_resource_limits': {'nvidia.com/gpu': '1'},
               'extra_resource_guarantees': {'nvidia.com/gpu': '1'},
               'node_selector': {'accelerator': 'nvidia'},
-              'environment': {'NVIDIA_VISIBLE_DEVICES': 'all', 'NVIDIA_DRIVER_CAPABILITIES': 'compute,utility'}
+              'environment': {
+                  'NVIDIA_VISIBLE_DEVICES': 'all',
+                  'NVIDIA_DRIVER_CAPABILITIES': 'compute,utility'
+              }
           },
           'gpu-pytorch-dual': {
               'image': 'quay.io/jupyter/pytorch-notebook:2025-11-06',
-              'cpu_limit': 16.0, 'cpu_guarantee': 8.0,
-              'mem_limit': '64G', 'mem_guarantee': '32G',
+              'cpu_limit': 16.0,
+              'cpu_guarantee': 8.0,
+              'mem_limit': '64G',
+              'mem_guarantee': '32G',
               'extra_resource_limits': {'nvidia.com/gpu': '2'},
               'extra_resource_guarantees': {'nvidia.com/gpu': '2'},
               'node_selector': {'accelerator': 'nvidia'},
-              'environment': {'NVIDIA_VISIBLE_DEVICES': 'all', 'NVIDIA_DRIVER_CAPABILITIES': 'compute,utility'}
+              'environment': {
+                  'NVIDIA_VISIBLE_DEVICES': 'all',
+                  'NVIDIA_DRIVER_CAPABILITIES': 'compute,utility'
+              }
           },
           'gpu-tensorflow-dual': {
               'image': 'quay.io/jupyter/tensorflow-notebook:2025-11-06',
-              'cpu_limit': 16.0, 'cpu_guarantee': 8.0,
-              'mem_limit': '64G', 'mem_guarantee': '32G',
+              'cpu_limit': 16.0,
+              'cpu_guarantee': 8.0,
+              'mem_limit': '64G',
+              'mem_guarantee': '32G',
               'extra_resource_limits': {'nvidia.com/gpu': '2'},
               'extra_resource_guarantees': {'nvidia.com/gpu': '2'},
               'node_selector': {'accelerator': 'nvidia'},
-              'environment': {'NVIDIA_VISIBLE_DEVICES': 'all', 'NVIDIA_DRIVER_CAPABILITIES': 'compute,utility'}
+              'environment': {
+                  'NVIDIA_VISIBLE_DEVICES': 'all',
+                  'NVIDIA_DRIVER_CAPABILITIES': 'compute,utility'
+              }
           },
       }
-
+      
       # Pre-spawn hook to apply profile settings and enforce access control
-      async def apply_profile_settings(spawner):
+  async def apply_profile_settings(spawner):
           """
           Apply profile settings and enforce group-based access control.
           Backend enforcement since KubeSpawner doesn't support callable options_form.
           """
           # Get selected profile from user options
           profile_slug = spawner.user_options.get('profile', 'cpu-medium')
+          
           spawner.log.info(f"User {spawner.user.name} selected profile: {profile_slug}")
+          
+      # Optional: admin-provided custom image overrides profile image
+      custom_image = spawner.user_options.get('custom_image', '').strip()
+      if custom_image:
+        # Allow only admins to set custom images
+        is_admin = spawner.user.admin or any(g.name == 'jupyter_admin' for g in spawner.user.groups)
+        if is_admin:
+          # Very simple validation: allow [a-z0-9-_.:/]
+          import re
+          if re.fullmatch(r"[A-Za-z0-9._:/\-]+", custom_image):
+            spawner.log.info(f"User {spawner.user.name} provided custom image: {custom_image}")
+            spawner.image = custom_image
+          else:
+            spawner.log.warning(f"User {spawner.user.name} provided invalid custom image '{custom_image}', ignoring")
+        else:
+          spawner.log.warning(f"User {spawner.user.name} attempted to set custom image without admin rights; ignoring")
 
-          # Optional: admin-provided custom image overrides profile image
-          custom_image = spawner.user_options.get('custom_image', '').strip()
-          if custom_image:
-              # Allow only admins to set custom images
-              is_admin = spawner.user.admin or any(getattr(g, "name", g) == 'jupyter_admin' for g in spawner.user.groups)
-              if is_admin:
-                  import re
-                  if re.fullmatch(r"[A-Za-z0-9._:/\-]+", custom_image):
-                      spawner.log.info(f"User {spawner.user.name} provided custom image: {custom_image}")
-                      spawner.image = custom_image
-                  else:
-                      spawner.log.warning(f"User {spawner.user.name} provided invalid custom image '{custom_image}', ignoring")
-              else:
-                  spawner.log.warning(f"User {spawner.user.name} attempted to set custom image without admin rights; ignoring")
-
-          # Check if it's a GPU profile and enforce access
+      # Check if it's a GPU profile
           if profile_slug in GPU_PROFILE_SLUGS:
+              # Verify GPU access (admins always have access)
               if not user_has_gpu_access(spawner):
                   spawner.log.warning(f"User {spawner.user.name} attempted GPU profile without permission")
                   raise Exception(
                       "🚫 GPU Access Denied\n\n"
-                      "You selected a GPU profile but your account does not have GPU access.\n\n"
-                      "Request membership in the 'cpsHPCAccess' group or select a CPU profile."
+                      "You have selected a GPU profile but your account does not have GPU access.\n\n"
+                      "To request GPU access, please contact the CPS administrators and ask for "
+                      "membership in the 'cpsHPCAccess' group.\n\n"
+                      "Please select a CPU profile instead."
                   )
-              group_names = {getattr(g, "name", g) for g in spawner.user.groups}
+              group_names = {group.name for group in spawner.user.groups}
               spawner.log.info(f"User {spawner.user.name} authorized for GPU profile (groups: {group_names & ALLOWED_GPU_GROUPS})")
-
+          
           # Apply profile configuration
           if profile_slug in PROFILE_CONFIGS:
               config = PROFILE_CONFIGS[profile_slug]
-
-              # Set image (skip if custom_image already set)
-              if 'image' in config and not custom_image:
-                  spawner.image = config['image']
-
+              
+              # Set image
+              spawner.image = config['image']
+              
               # Set resource limits
               spawner.cpu_limit = config['cpu_limit']
               spawner.cpu_guarantee = config['cpu_guarantee']
               spawner.mem_limit = config['mem_limit']
               spawner.mem_guarantee = config['mem_guarantee']
-
-              # Optional extras
+              
+              # Set GPU resources if specified
               if 'extra_resource_limits' in config:
                   spawner.extra_resource_limits = config['extra_resource_limits']
               if 'extra_resource_guarantees' in config:
@@ -475,16 +558,14 @@ hub:
               if 'node_selector' in config:
                   spawner.node_selector = config['node_selector']
               if 'environment' in config:
-                  if not getattr(spawner, "environment", None):
-                      spawner.environment = {}
                   spawner.environment.update(config['environment'])
-
+              
               spawner.log.info(f"Applied profile {profile_slug}: {config['cpu_limit']} CPU, {config['mem_limit']} RAM")
           else:
               spawner.log.warning(f"Unknown profile {profile_slug}, using default")
-
+      
       c.KubeSpawner.pre_spawn_hook = apply_profile_settings
-
+        
     gpu-config: |
       # Make GPUs available to users
       c.KubeSpawner.environment = {
@@ -494,23 +575,28 @@ hub:
 
 # Singleuser notebook configuration
 singleuser:
+  # Default image with CUDA support
   image:
     name: quay.io/jupyter/tensorflow-notebook
     tag: "2025-11-06"
     pullPolicy: IfNotPresent
-
+  
+  # Storage for user notebooks
   storage:
     capacity: 10Gi
     dynamic:
       storageClass: nfs-client
     homeMountPath: /home/jovyan
-
+  
+  # Default resources (no GPU)
   cpu:
     limit: 2
     guarantee: 1
   memory:
     limit: 4G
     guarantee: 2G
+  
+  # Profile list now configured via jupyterhub-fancy-profiles in extraConfig
 
   # Allow users to sudo (for package installation)
   uid: 1000
