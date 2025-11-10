@@ -346,17 +346,17 @@ hub:
       </script>
       """
       
-      # Process form submission
-      def options_from_form(formdata):
-          """Extract selected profile from form data"""
-          options = {}
-          profile = formdata.get('profile', ['cpu-medium'])[0]
-          options['profile'] = profile
+    # Process form submission
+    def options_from_form(formdata):
+      """Extract selected profile and optional custom image from form data"""
+      options = {}
+      profile = formdata.get('profile', ['cpu-medium'])[0]
+      options['profile'] = profile
       # Optional custom image (admins only - enforced in pre-spawn)
       custom_image = formdata.get('custom_image', [''])[0].strip()
       if custom_image:
         options['custom_image'] = custom_image
-          return options
+      return options
       
       c.Spawner.options_from_form = options_from_form
       
