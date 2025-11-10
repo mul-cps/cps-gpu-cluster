@@ -43,12 +43,13 @@ hub:
         - "openid"
         - "profile"
         - "email"
-      auth_state_groups_key: "groups"
+        - "groups"
+      claim_groups_key: "groups"
       manage_groups: true
       # Allow all authenticated users - access control handled by Authentik
       allow_all: true
       admin_groups:
-        - "authentik Admins"
+        - "jupyter_admin"
 
   db:
     pvc:
