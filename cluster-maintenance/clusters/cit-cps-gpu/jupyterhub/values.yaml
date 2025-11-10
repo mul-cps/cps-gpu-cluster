@@ -160,6 +160,16 @@ hub:
       
       c.Spawner.options_form = dynamic_profile_form
       
+      # Process form submission
+      def options_from_form(formdata):
+          """Extract selected profile from form data"""
+          options = {}
+          profile = formdata.get('profile', ['cpu-medium'])[0]
+          options['profile'] = profile
+          return options
+      
+      c.Spawner.options_from_form = options_from_form
+      
       # Profile configurations (used by pre_spawn_hook to apply settings)
       PROFILE_CONFIGS = {
           'cpu-small': {
