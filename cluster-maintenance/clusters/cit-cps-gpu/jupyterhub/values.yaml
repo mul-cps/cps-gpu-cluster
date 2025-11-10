@@ -179,15 +179,15 @@ hub:
             <!-- MIG slices -->
             <label class="card" data-slug="gpu-mig-1g" id="card-gpu-mig-1g">
               <input type="radio" name="profile" value="gpu-mig-1g">
-              <div class="row"><div class="name">GPU: MIG 1g.10gb</div>
-                <div class="meta"><span class="chip gpu-chip">1× MIG 1g</span><span class="chip cpu-chip">8 vCPU</span><span class="chip ram-chip">32 GiB</span></div>
+              <div class="row"><div class="name">GPU: MIG 1g.5gb</div>
+                <div class="meta"><span class="chip gpu-chip">1× MIG 1g.5gb</span><span class="chip cpu-chip">6 vCPU</span><span class="chip ram-chip">24 GiB</span></div>
               </div>
             </label>
 
             <label class="card" data-slug="gpu-mig-2g" id="card-gpu-mig-2g">
               <input type="radio" name="profile" value="gpu-mig-2g">
-              <div class="row"><div class="name">GPU: MIG 2g.20gb</div>
-                <div class="meta"><span class="chip gpu-chip">1× MIG 2g</span><span class="chip cpu-chip">12 vCPU</span><span class="chip ram-chip">48 GiB</span></div>
+              <div class="row"><div class="name">GPU: MIG 2g.10gb</div>
+                <div class="meta"><span class="chip gpu-chip">1× MIG 2g.10gb</span><span class="chip cpu-chip">10 vCPU</span><span class="chip ram-chip">40 GiB</span></div>
               </div>
             </label>
           </div>
@@ -268,8 +268,8 @@ hub:
           {'display_name': 'GPU TF (1×)', 'slug': 'gpu-tensorflow-single', 'description': '1× GPU • 16 vCPU • 64 GiB'},
           {'display_name': 'GPU PyTorch (2×)', 'slug': 'gpu-pytorch-dual', 'description': '2× GPU • 32 vCPU • 128 GiB'},
           {'display_name': 'GPU TF (2×)', 'slug': 'gpu-tensorflow-dual', 'description': '2× GPU • 32 vCPU • 128 GiB'},
-          {'display_name': 'GPU MIG 1g.10gb', 'slug': 'gpu-mig-1g', 'description': '1× MIG 1g • 8 vCPU • 32 GiB'},
-          {'display_name': 'GPU MIG 2g.20gb', 'slug': 'gpu-mig-2g', 'description': '1× MIG 2g • 12 vCPU • 48 GiB'},
+          {'display_name': 'GPU MIG 1g.5gb', 'slug': 'gpu-mig-1g', 'description': '1× MIG 1g.5gb • 6 vCPU • 24 GiB'},
+          {'display_name': 'GPU MIG 2g.10gb', 'slug': 'gpu-mig-2g', 'description': '1× MIG 2g.10gb • 10 vCPU • 40 GiB'},
       ]
 
       # ---------- Canonical profile configs ----------
@@ -318,20 +318,20 @@ hub:
           },
 
           # MIG slices (adjust resource keys to your operator’s CRD if different)
-          'gpu-mig-1g': {
+      'gpu-mig-1g': {
               'image': 'quay.io/jupyter/pytorch-notebook:2025-11-06',
-              'cpu_limit': 8.0, 'cpu_guarantee': 4.0,
-              'mem_limit': '32G', 'mem_guarantee': '16G',
+        'cpu_limit': 6.0, 'cpu_guarantee': 3.0,
+        'mem_limit': '24G', 'mem_guarantee': '12G',
               'gpu': 1,
-              'resource_key': 'nvidia.com/mig-1g.10gb',
+        'resource_key': 'nvidia.com/mig-1g.5gb',
               'runtime_class': 'nvidia',
           },
-          'gpu-mig-2g': {
+      'gpu-mig-2g': {
               'image': 'quay.io/jupyter/pytorch-notebook:2025-11-06',
-              'cpu_limit': 12.0, 'cpu_guarantee': 6.0,
-              'mem_limit': '48G', 'mem_guarantee': '24G',
+        'cpu_limit': 10.0, 'cpu_guarantee': 5.0,
+        'mem_limit': '40G', 'mem_guarantee': '20G',
               'gpu': 1,
-              'resource_key': 'nvidia.com/mig-2g.20gb',
+        'resource_key': 'nvidia.com/mig-2g.10gb',
               'runtime_class': 'nvidia',
           },
       }
