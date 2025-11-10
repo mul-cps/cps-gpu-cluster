@@ -22,6 +22,16 @@ This will:
 - Keep GPU index `0` full (for `nvidia.com/gpu: 1`)
 - Partition GPU index `1` into 8× `nvidia.com/mig-1g.5gb`
 
+To enable MIG on BOTH GPUs on a single node (A100 40GB -> 7× 1g.5gb per GPU):
+
+```bash
+kubectl label node <node-name> nvidia.com/mig.config=both-mig-40gb-small --overwrite
+```
+
+Notes:
+- Repartitioning triggers GPU resets; drain or expect disruption on that node.
+- For A100 40GB the correct smallest-slice count is 7 (not 8). For A100 80GB it is 8.
+
 ## Apply / Update
 If using Fleet (Rancher): it will reconcile automatically after Git push.
 If applying manually with Helm (Ansible playbook currently sets `migManager.enabled=false`):
@@ -44,8 +54,12 @@ nvidia-smi mig -lci          # List CI instances
 ```
 
 Device Plugin resources should show on the MIG-enabled node:
-- `nvidia.com/gpu: 1` (from the full GPU index 0)
-- `nvidia.com/mig-1g.5gb: 8` (from GPU index 1)
+- If mixed-one-node-40gb-small:
+  - `nvidia.com/gpu: 1` (from the full GPU index 0)
+  - `nvidia.com/mig-1g.5gb: 7` (from GPU index 1)
+- If both-mig-40gb-small:
+  - `nvidia.com/gpu` will not appear
+  - `nvidia.com/mig-1g.5gb: 14` (7 per GPU)
 
 List allocatable:
 ```bash
