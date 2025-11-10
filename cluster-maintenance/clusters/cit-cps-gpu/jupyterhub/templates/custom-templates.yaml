@@ -33,10 +33,10 @@ data:
             <div class="col-md-8">
               <div class="panel panel-default">
                 <div class="panel-heading">
-                  <h4>Start Your Server{% if server_name %} - {{ server_name }}{% endif %}</h4>
+                  <h4>Start Your Server{% if for_user.name != user.name %} for {{ for_user.name }}{% endif %}{% if spawner.name %} - {{ spawner.name }}{% endif %}</h4>
                 </div>
                 <div class="panel-body">
-                  <form action="{{ base_url }}spawn{% if server_name %}/{{ server_name }}{% endif %}" method="post">
+                  <form action="{{ url }}" method="post">
                     {% if spawner.options_form %}
                       {{ spawner.options_form | safe }}
                     {% else %}
@@ -45,7 +45,7 @@ data:
                     <input type="hidden" name="_xsrf" value="{{ xsrf_token }}">
                     <div class="text-center">
                       <button type="submit" class="btn btn-primary btn-lg">
-                        <i class="fa fa-rocket"></i> Start{% if server_name %} {{ server_name }}{% else %} My Server{% endif %}
+                        <i class="fa fa-rocket"></i> Start{% if spawner.name %} {{ spawner.name }}{% else %} My Server{% endif %}
                       </button>
                     </div>
                   </form>
