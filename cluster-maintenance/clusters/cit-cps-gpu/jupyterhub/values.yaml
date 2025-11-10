@@ -179,15 +179,15 @@ hub:
             <!-- MIG slices -->
             <label class="card" data-slug="gpu-mig-1g" id="card-gpu-mig-1g">
               <input type="radio" name="profile" value="gpu-mig-1g">
-              <div class="row"><div class="name">GPU: MIG 1g.5gb</div>
-                <div class="meta"><span class="chip gpu-chip">1× MIG 1g.5gb</span><span class="chip cpu-chip">6 vCPU</span><span class="chip ram-chip">24 GiB</span></div>
+              <div class="row"><div class="name">GPU: MIG 1g.10gb</div>
+                <div class="meta"><span class="chip gpu-chip">1× MIG 1g.10gb</span><span class="chip cpu-chip">8 vCPU</span><span class="chip ram-chip">32 GiB</span></div>
               </div>
             </label>
 
             <label class="card" data-slug="gpu-mig-2g" id="card-gpu-mig-2g">
               <input type="radio" name="profile" value="gpu-mig-2g">
-              <div class="row"><div class="name">GPU: MIG 2g.10gb</div>
-                <div class="meta"><span class="chip gpu-chip">1× MIG 2g.10gb</span><span class="chip cpu-chip">10 vCPU</span><span class="chip ram-chip">40 GiB</span></div>
+              <div class="row"><div class="name">GPU: MIG 2g.20gb</div>
+                <div class="meta"><span class="chip gpu-chip">1× MIG 2g.20gb</span><span class="chip cpu-chip">12 vCPU</span><span class="chip ram-chip">48 GiB</span></div>
               </div>
             </label>
           </div>
@@ -268,11 +268,11 @@ hub:
           {'display_name': 'GPU TF (1×)', 'slug': 'gpu-tensorflow-single', 'description': '1× GPU • 16 vCPU • 64 GiB'},
           {'display_name': 'GPU PyTorch (2×)', 'slug': 'gpu-pytorch-dual', 'description': '2× GPU • 32 vCPU • 128 GiB'},
           {'display_name': 'GPU TF (2×)', 'slug': 'gpu-tensorflow-dual', 'description': '2× GPU • 32 vCPU • 128 GiB'},
-          {'display_name': 'GPU MIG 1g.5gb', 'slug': 'gpu-mig-1g', 'description': '1× MIG 1g.5gb • 6 vCPU • 24 GiB'},
-          {'display_name': 'GPU MIG 2g.10gb', 'slug': 'gpu-mig-2g', 'description': '1× MIG 2g.10gb • 10 vCPU • 40 GiB'},
+          {'display_name': 'GPU MIG 1g.10gb', 'slug': 'gpu-mig-1g', 'description': '1× MIG 1g.10gb • 8 vCPU • 32 GiB'},
+          {'display_name': 'GPU MIG 2g.20gb', 'slug': 'gpu-mig-2g', 'description': '1× MIG 2g.20gb • 12 vCPU • 48 GiB'},
       ]
 
-      # ---------- Canonical profile configs ----------
+      # ---------- Canonical profile configs (CUDA-enabled images) ----------
       PROFILE_CONFIGS = {
           # CPU default
           'cpu-default': {
@@ -283,9 +283,9 @@ hub:
               'gpu': 0,
           },
 
-          # GPU full devices (CPU/RAM doubled vs before)
+          # GPU — full devices (CUDA-enabled images)
           'gpu-pytorch-single': {
-              'image': 'quay.io/jupyter/pytorch-notebook:2025-11-06',
+              'image': 'pytorch/pytorch:2.4.0-cuda12.1-cudnn9-runtime',
               'cpu_limit': 16.0, 'cpu_guarantee': 8.0,
               'mem_limit': '64G', 'mem_guarantee': '32G',
               'gpu': 1,
@@ -293,7 +293,7 @@ hub:
               'runtime_class': 'nvidia',
           },
           'gpu-tensorflow-single': {
-              'image': 'quay.io/jupyter/tensorflow-notebook:2025-11-06',
+              'image': 'tensorflow/tensorflow:2.16.1-gpu',
               'cpu_limit': 16.0, 'cpu_guarantee': 8.0,
               'mem_limit': '64G', 'mem_guarantee': '32G',
               'gpu': 1,
@@ -301,7 +301,7 @@ hub:
               'runtime_class': 'nvidia',
           },
           'gpu-pytorch-dual': {
-              'image': 'quay.io/jupyter/pytorch-notebook:2025-11-06',
+              'image': 'pytorch/pytorch:2.4.0-cuda12.1-cudnn9-runtime',
               'cpu_limit': 32.0, 'cpu_guarantee': 16.0,
               'mem_limit': '128G', 'mem_guarantee': '64G',
               'gpu': 2,
@@ -309,7 +309,7 @@ hub:
               'runtime_class': 'nvidia',
           },
           'gpu-tensorflow-dual': {
-              'image': 'quay.io/jupyter/tensorflow-notebook:2025-11-06',
+              'image': 'tensorflow/tensorflow:2.16.1-gpu',
               'cpu_limit': 32.0, 'cpu_guarantee': 16.0,
               'mem_limit': '128G', 'mem_guarantee': '64G',
               'gpu': 2,
@@ -317,21 +317,21 @@ hub:
               'runtime_class': 'nvidia',
           },
 
-          # MIG slices (adjust resource keys to your operator’s CRD if different)
-      'gpu-mig-1g': {
-              'image': 'quay.io/jupyter/pytorch-notebook:2025-11-06',
-        'cpu_limit': 6.0, 'cpu_guarantee': 3.0,
-        'mem_limit': '24G', 'mem_guarantee': '12G',
+          # MIG slices (CUDA-enabled PyTorch base; adjust resource keys to your node's adverts)
+          'gpu-mig-1g': {
+              'image': 'pytorch/pytorch:2.4.0-cuda12.1-cudnn9-runtime',
+              'cpu_limit': 8.0, 'cpu_guarantee': 4.0,
+              'mem_limit': '32G', 'mem_guarantee': '16G',
               'gpu': 1,
-        'resource_key': 'nvidia.com/mig-1g.5gb',
+              'resource_key': 'nvidia.com/mig-1g.10gb',
               'runtime_class': 'nvidia',
           },
-      'gpu-mig-2g': {
-              'image': 'quay.io/jupyter/pytorch-notebook:2025-11-06',
-        'cpu_limit': 10.0, 'cpu_guarantee': 5.0,
-        'mem_limit': '40G', 'mem_guarantee': '20G',
+          'gpu-mig-2g': {
+              'image': 'pytorch/pytorch:2.4.0-cuda12.1-cudnn9-runtime',
+              'cpu_limit': 12.0, 'cpu_guarantee': 6.0,
+              'mem_limit': '48G', 'mem_guarantee': '24G',
               'gpu': 1,
-        'resource_key': 'nvidia.com/mig-2g.10gb',
+              'resource_key': 'nvidia.com/mig-2g.20gb',
               'runtime_class': 'nvidia',
           },
       }
@@ -349,13 +349,12 @@ hub:
           # Resources
           spawner.cpu_limit = cfg['cpu_limit']; spawner.cpu_guarantee = cfg['cpu_guarantee']
           spawner.mem_limit = cfg['mem_limit']; spawner.mem_guarantee = cfg['mem_guarantee']
-          # RuntimeClass (helps nvidia-smi passthrough with some clusters)
+          # RuntimeClass
           spawner.extra_pod_config = spawner.extra_pod_config or {}
           if cfg['runtime_class']:
               spawner.extra_pod_config['runtimeClassName'] = cfg['runtime_class']
 
-          # Ensure tmux is present (postStart installs if missing)
-          # Note: Debian/Ubuntu base expected; harmless if already present
+          # Ensure tmux present
           spawner.extra_container_config = spawner.extra_container_config or {}
           spawner.extra_container_config['lifecycle'] = {
               'postStart': {
@@ -395,7 +394,6 @@ hub:
           if custom_gpus > 0:
               if not user_has_gpu_access(spawner):
                   raise Exception("🚫 GPU Access Denied\n\nGPU resources require 'cpsHPCAccess' or admin.")
-              # Choose resource key: respect MIG profiles' key if selected; else full GPU
               rkey = cfg.get('resource_key', 'nvidia.com/gpu')
               spawner.extra_resource_limits = {rkey: str(custom_gpus)}
               spawner.extra_resource_guarantees = {rkey: str(custom_gpus)}
@@ -404,7 +402,7 @@ hub:
               spawner.environment.update({'NVIDIA_VISIBLE_DEVICES':'all','NVIDIA_DRIVER_CAPABILITIES':'compute,utility'})
               spawner.node_selector = dict(getattr(spawner,'node_selector',{}) or {}, **{'accelerator':'nvidia'})
 
-          # Record profile on the server (used by per-profile culler)
+          # Record profile on the server
           spawner.environment = spawner.environment or {}
           spawner.environment['HUB_PROFILE_SLUG'] = profile_slug
 
@@ -434,7 +432,6 @@ hub:
                           started = orm_server.started
                           if not started:
                               continue
-                          # Determine profile: from user_options if present, else env
                           profile = (server.user_options or {}).get('profile') or (server.environment or {}).get('HUB_PROFILE_SLUG')
                           if profile and profile in {'gpu-pytorch-single','gpu-tensorflow-single','gpu-pytorch-dual','gpu-tensorflow-dual','gpu-mig-1g','gpu-mig-2g'}:
                               age = (now - started.replace(tzinfo=None)).total_seconds()
@@ -443,20 +440,19 @@ hub:
                                   await iterate_until(server.stop())
               except Exception as e:
                   app.log.warning(f"Per-profile culler error: {e}")
-              await asyncio.sleep(300)  # run every 5 minutes
+              await asyncio.sleep(300)
 
       def _start_culler(app):
           app.io_loop.spawn_callback(_per_profile_cull, app)
 
-      c.JupyterHub.load_roles = getattr(c.JupyterHub, "load_roles", [])  # ensure set
+      c.JupyterHub.load_roles = getattr(c.JupyterHub, "load_roles", [])
       c.JupyterHub.services = (getattr(c.JupyterHub,'services',[]) or []) + [{
           'name': 'per-profile-culler',
           'admin': True,
-          'command': ['python','-c','import sys; sys.exit(0)']  # dummy cmd; we hook below
+          'command': ['python','-c','import sys; sys.exit(0)']
       }]
       c.JupyterHub.init_spawners_timeout = 0
       c.JupyterHub.tornado_settings = getattr(c.JupyterHub, "tornado_settings", {})
-      # Hook when app is ready
       def _post_hook(app): _start_culler(app)
       c.JupyterHub.post_hook = _post_hook
 
@@ -472,6 +468,10 @@ singleuser:
     name: quay.io/jupyter/tensorflow-notebook
     tag: "2025-11-06"
     pullPolicy: IfNotPresent
+
+  # Make sure runtimeClass is set at the Helm layer too (prevents merges overwriting it)
+  extraPodConfig:
+    runtimeClassName: nvidia
 
   storage:
     capacity: 10Gi
