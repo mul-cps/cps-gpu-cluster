@@ -503,7 +503,10 @@ scheduling:
 # Global idle culler (per-profile max handled by the internal service above)
 cull:
   enabled: true
-  timeout: 3600          # Global idle timeout (CPU default profile)
-  every: 600             # Check interval
-  maxAge: 0              # No global max-age; GPU/MIG max-age handled per-profile
-  cullConnected: false   # Keep activity: active websocket = connected; not culled
+  timeout: 3600     # 1h idle timeout
+  every: 600        # check every 10 min
+  maxAge: 0         # no global max-age (your per-profile culler handles GPU caps)
+  users: false
+  adminUsers: true
+  removeNamedServers: false
+  concurrency: 10
