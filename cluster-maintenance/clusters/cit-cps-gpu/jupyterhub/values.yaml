@@ -28,16 +28,11 @@ hub:
       # Enable named servers for power users
       allow_named_servers: true
       named_server_limit_per_user: 3
-      # Ensure spawner handles named servers correctly
-      default_url: "/hub/home"
       template_vars:
         org:
           name: "Montanuniversität Leoben"
           logo_url: "https://www.unileoben.ac.at/fileadmin/shares/allgemeine_datenbank/logos/1-mul-logo/2-mul-logo-smoke-quer.svg"
           url: "https://www.unileoben.ac.at"
-    Spawner:
-      # Allow profile selection for named servers
-      allow_named_servers: true
     GenericOAuthenticator:
       client_id: "vUhzKqEF0UxPtZNM8aRbA1ncaehhIAIA2x9r83FI"
       client_secret: "EbAzlZLERPQzmF2EQByhihKuUqp36u138fYERPptymppmJbWhquI4sHu9vchqtnMRqbAVnZS6nOA6G0FescWa13MOLdlegQB3yyZSqe5V32NtYsnfDOndyZHiqiL2Bj6"
