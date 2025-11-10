@@ -274,9 +274,11 @@ hub:
               #     'description': 'Specify your own container image...',
               #     'profile_options': { ... }
               # }
-          ]
-          spawner.log.info(f"Returning {len(profiles)} HPC profiles")
-          return profiles          except Exception as e:
+              ]
+              spawner.log.info(f"Returning {len(profiles)} HPC profiles")
+              return profiles
+          
+          except Exception as e:
               spawner.log.error(f"ERROR in dynamic_profile_list: {e}")
               spawner.log.error(traceback.format_exc())
               # Return a safe default
