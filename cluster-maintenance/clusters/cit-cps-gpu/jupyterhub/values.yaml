@@ -264,7 +264,9 @@ hub:
           
           spawner.log.info(f"User {spawner.user.name} spawning with profile: {profile_slug}")
       
-      c.KubeSpawner.pre_spawn_hook = check_profile_access    gpu-config: |
+      c.KubeSpawner.pre_spawn_hook = check_profile_access
+        
+    gpu-config: |
       # Make GPUs available to users
       c.KubeSpawner.environment = {
           'NVIDIA_VISIBLE_DEVICES': 'all',
