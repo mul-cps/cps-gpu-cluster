@@ -302,6 +302,53 @@ hub:
       
       c.Spawner.options_from_form = options_from_form
       
+      # Define profile_list for KubeSpawner validation
+      # Note: These profiles are validated by KubeSpawner but the actual config
+      # is applied by pre_spawn_hook from PROFILE_CONFIGS below
+      c.KubeSpawner.profile_list = [
+          {
+              'display_name': 'Small - 2 CPUs, 1GB RAM',
+              'slug': 'cpu-small',
+              'description': 'CPU-only profile for light workloads',
+          },
+          {
+              'display_name': 'Medium - 4 CPUs, 4GB RAM',
+              'slug': 'cpu-medium',
+              'description': 'CPU-only profile for standard workloads',
+              'default': True,
+          },
+          {
+              'display_name': 'Large - 8 CPUs, 8GB RAM',
+              'slug': 'cpu-large',
+              'description': 'CPU-only profile for heavy workloads',
+          },
+          {
+              'display_name': 'X-Large - 16 CPUs, 16GB RAM',
+              'slug': 'cpu-xlarge',
+              'description': 'CPU-only profile for very heavy workloads',
+          },
+          {
+              'display_name': 'Single A100 GPU - PyTorch',
+              'slug': 'gpu-pytorch-single',
+              'description': 'GPU profile with PyTorch (8 CPUs, 32GB RAM)',
+          },
+          {
+              'display_name': 'Single A100 GPU - TensorFlow',
+              'slug': 'gpu-tensorflow-single',
+              'description': 'GPU profile with TensorFlow (8 CPUs, 32GB RAM)',
+          },
+          {
+              'display_name': 'Dual A100 GPUs - PyTorch',
+              'slug': 'gpu-pytorch-dual',
+              'description': 'GPU profile with PyTorch (16 CPUs, 64GB RAM)',
+          },
+          {
+              'display_name': 'Dual A100 GPUs - TensorFlow',
+              'slug': 'gpu-tensorflow-dual',
+              'description': 'GPU profile with TensorFlow (16 CPUs, 64GB RAM)',
+          },
+      ]
+      
       # Profile configurations (used by pre_spawn_hook to apply settings)
       PROFILE_CONFIGS = {
           'cpu-small': {
