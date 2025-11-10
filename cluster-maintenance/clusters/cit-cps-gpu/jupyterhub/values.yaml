@@ -104,14 +104,15 @@ hub:
       ]
       
     02-profiles: |
-      # Static profile list - all users see all profiles
-      # Group-based filtering removed due to frontend rendering issues with callable profile_list
-      c.KubeSpawner.profile_list = [
-              # CPU Profiles - Different resource tiers
-              {
-                  'display_name': '💻 DataScience - Small (1GB RAM, 2 CPUs)',
-                  'description': 'CPU-only with pandas, scikit-learn, matplotlib. Suitable for light data analysis.',
-                  'default': True,
+      # Define all available profiles
+      # GPU profiles will be filtered based on group membership
+      ALL_PROFILES = [
+          # CPU Profiles - Available to all users
+          {
+              'display_name': '💻 DataScience - Small (1GB RAM, 2 CPUs)',
+              'description': 'CPU-only with pandas, scikit-learn, matplotlib. Suitable for light data analysis.',
+              'slug': 'cpu-small',
+              'default': True,
                   'kubespawner_override': {
                       'cpu_limit': 2.0,
                       'cpu_guarantee': 0.5,
@@ -121,8 +122,9 @@ hub:
                   }
               },
               {
-                  'display_name': '� DataScience - Medium (4GB RAM, 4 CPUs)',
+                  'display_name': '💻 DataScience - Medium (4GB RAM, 4 CPUs)',
                   'description': 'CPU-only with pandas, scikit-learn, matplotlib. Good for moderate workloads.',
+                  'slug': 'cpu-medium',
                   'kubespawner_override': {
                       'cpu_limit': 4.0,
                       'cpu_guarantee': 1.0,
@@ -132,8 +134,9 @@ hub:
                   }
               },
               {
-                  'display_name': '� DataScience - Large (8GB RAM, 8 CPUs)',
+                  'display_name': '💻 DataScience - Large (8GB RAM, 8 CPUs)',
                   'description': 'CPU-only with pandas, scikit-learn, matplotlib. For larger datasets.',
+                  'slug': 'cpu-large',
                   'kubespawner_override': {
                       'cpu_limit': 8.0,
                       'cpu_guarantee': 2.0,
@@ -145,6 +148,7 @@ hub:
               {
                   'display_name': '💻 DataScience - XLarge (16GB RAM, 16 CPUs)',
                   'description': 'CPU-only with pandas, scikit-learn, matplotlib. Maximum CPU resources.',
+                  'slug': 'cpu-xlarge',
                   'kubespawner_override': {
                       'cpu_limit': 16.0,
                       'cpu_guarantee': 4.0,
@@ -154,10 +158,12 @@ hub:
                   }
               },
               
-              # GPU Profiles - A100 configurations
+              # GPU Profiles - Require cpsHPCAccess group membership
               {
                   'display_name': '🚀 Single A100 GPU - PyTorch (32GB RAM, 8 CPUs)',
                   'description': 'One NVIDIA A100 GPU with PyTorch. Perfect for deep learning and ML training.',
+                  'slug': 'gpu-pytorch-single',
+                  'allowed_groups': ['cpsHPCAccess', 'jupyter_admin'],
                   'kubespawner_override': {
                       'cpu_limit': 8.0,
                       'cpu_guarantee': 4.0,
@@ -176,6 +182,8 @@ hub:
               {
                   'display_name': '🚀 Single A100 GPU - TensorFlow (32GB RAM, 8 CPUs)',
                   'description': 'One NVIDIA A100 GPU with TensorFlow. Optimized for TensorFlow workloads.',
+                  'slug': 'gpu-tensorflow-single',
+                  'allowed_groups': ['cpsHPCAccess', 'jupyter_admin'],
                   'kubespawner_override': {
                       'cpu_limit': 8.0,
                       'cpu_guarantee': 4.0,
@@ -194,6 +202,8 @@ hub:
               {
                   'display_name': '🔥 Dual A100 GPUs - PyTorch (64GB RAM, 16 CPUs)',
                   'description': 'Two NVIDIA A100 GPUs with PyTorch. Maximum performance for large-scale training.',
+                  'slug': 'gpu-pytorch-dual',
+                  'allowed_groups': ['cpsHPCAccess', 'jupyter_admin'],
                   'kubespawner_override': {
                       'cpu_limit': 16.0,
                       'cpu_guarantee': 8.0,
@@ -212,6 +222,8 @@ hub:
               {
                   'display_name': '🔥 Dual A100 GPUs - TensorFlow (64GB RAM, 16 CPUs)',
                   'description': 'Two NVIDIA A100 GPUs with TensorFlow. Maximum performance for TensorFlow workloads.',
+                  'slug': 'gpu-tensorflow-dual',
+                  'allowed_groups': ['cpsHPCAccess', 'jupyter_admin'],
                   'kubespawner_override': {
                       'cpu_limit': 16.0,
                       'cpu_guarantee': 8.0,
@@ -228,6 +240,45 @@ hub:
                   }
               }
       ]
+      
+      # Custom options form to filter profiles based on user groups
+      async def custom_options_form(spawner):
+          """
+          Dynamically filter profile list based on user's group membership.
+          Profiles with 'allowed_groups' are only shown to users in those groups.
+          Profiles without 'allowed_groups' are shown to everyone.
+          """
+          # Get user's group membership from JupyterHub (populated by OAuth via manage_groups)
+          group_names = {group.name for group in spawner.user.groups}
+          
+          spawner.log.info(f"User {spawner.user.name} groups: {group_names}")
+          
+          # Filter profiles based on group membership
+          allowed_profiles = []
+          for profile in ALL_PROFILES:
+              # If profile has no allowed_groups restriction, show to everyone
+              if 'allowed_groups' not in profile:
+                  allowed_profiles.append(profile)
+                  spawner.log.debug(f"Profile {profile['slug']} available to all users")
+              else:
+                  # Check if user is in any of the allowed groups
+                  profile_allowed_groups = set(profile['allowed_groups'])
+                  if group_names & profile_allowed_groups:  # Set intersection
+                      allowed_profiles.append(profile)
+                      spawner.log.info(f"Profile {profile['slug']} granted to {spawner.user.name} (groups: {group_names & profile_allowed_groups})")
+                  else:
+                      spawner.log.debug(f"Profile {profile['slug']} restricted from {spawner.user.name} (requires: {profile_allowed_groups})")
+          
+          # Set the filtered profile list
+          spawner.profile_list = allowed_profiles
+          
+          spawner.log.info(f"User {spawner.user.name} has access to {len(allowed_profiles)} profiles")
+          
+          # Use KubeSpawner's default options form rendering
+          return spawner._options_form_default()
+      
+      # Assign the custom options form
+      c.KubeSpawner.options_form = custom_options_form
         
     gpu-config: |
       # Make GPUs available to users
