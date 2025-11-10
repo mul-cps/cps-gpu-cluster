@@ -272,7 +272,7 @@ hub:
           {'display_name': 'GPU MIG 2g.20gb', 'slug': 'gpu-mig-2g', 'description': '1× MIG 2g.20gb • 12 vCPU • 48 GiB'},
       ]
 
-      # ---------- Canonical profile configs (CUDA-enabled images) ----------
+      # ---------- Canonical profile configs (CUDA-enabled jupyter-stacks images) ----------
       PROFILE_CONFIGS = {
           # CPU default
           'cpu-default': {
@@ -283,9 +283,9 @@ hub:
               'gpu': 0,
           },
 
-          # GPU — full devices (CUDA-enabled images)
+          # GPU — full devices (CUDA-enabled stacks)
           'gpu-pytorch-single': {
-              'image': 'pytorch/pytorch:2.4.0-cuda12.1-cudnn9-runtime',
+              'image': 'quay.io/jupyter/pytorch-notebook:cuda12-python-3.11.8',
               'cpu_limit': 16.0, 'cpu_guarantee': 8.0,
               'mem_limit': '64G', 'mem_guarantee': '32G',
               'gpu': 1,
@@ -293,7 +293,7 @@ hub:
               'runtime_class': 'nvidia',
           },
           'gpu-tensorflow-single': {
-              'image': 'tensorflow/tensorflow:2.16.1-gpu',
+              'image': 'quay.io/jupyter/tensorflow-notebook:cuda-latest',
               'cpu_limit': 16.0, 'cpu_guarantee': 8.0,
               'mem_limit': '64G', 'mem_guarantee': '32G',
               'gpu': 1,
@@ -301,7 +301,7 @@ hub:
               'runtime_class': 'nvidia',
           },
           'gpu-pytorch-dual': {
-              'image': 'pytorch/pytorch:2.4.0-cuda12.1-cudnn9-runtime',
+              'image': 'quay.io/jupyter/pytorch-notebook:cuda12-python-3.11.8',
               'cpu_limit': 32.0, 'cpu_guarantee': 16.0,
               'mem_limit': '128G', 'mem_guarantee': '64G',
               'gpu': 2,
@@ -309,7 +309,7 @@ hub:
               'runtime_class': 'nvidia',
           },
           'gpu-tensorflow-dual': {
-              'image': 'tensorflow/tensorflow:2.16.1-gpu',
+              'image': 'quay.io/jupyter/tensorflow-notebook:cuda-latest',
               'cpu_limit': 32.0, 'cpu_guarantee': 16.0,
               'mem_limit': '128G', 'mem_guarantee': '64G',
               'gpu': 2,
@@ -317,9 +317,9 @@ hub:
               'runtime_class': 'nvidia',
           },
 
-          # MIG slices (CUDA-enabled PyTorch base; adjust resource keys to your node's adverts)
+          # MIG slices (still CUDA-enabled; same PyTorch image works fine)
           'gpu-mig-1g': {
-              'image': 'pytorch/pytorch:2.4.0-cuda12.1-cudnn9-runtime',
+              'image': 'quay.io/jupyter/pytorch-notebook:cuda12-python-3.11.8',
               'cpu_limit': 8.0, 'cpu_guarantee': 4.0,
               'mem_limit': '32G', 'mem_guarantee': '16G',
               'gpu': 1,
@@ -327,7 +327,7 @@ hub:
               'runtime_class': 'nvidia',
           },
           'gpu-mig-2g': {
-              'image': 'pytorch/pytorch:2.4.0-cuda12.1-cudnn9-runtime',
+              'image': 'quay.io/jupyter/pytorch-notebook:cuda12-python-3.11.8',
               'cpu_limit': 12.0, 'cpu_guarantee': 6.0,
               'mem_limit': '48G', 'mem_guarantee': '24G',
               'gpu': 1,
@@ -469,7 +469,7 @@ singleuser:
     tag: "2025-11-06"
     pullPolicy: IfNotPresent
 
-  # Make sure runtimeClass is set at the Helm layer too (prevents merges overwriting it)
+  # Ensure NVIDIA runtime at the Helm layer
   extraPodConfig:
     runtimeClassName: nvidia
 
@@ -500,12 +500,12 @@ scheduling:
   userPlaceholder:
     enabled: false
 
-# Global idle culler (per-profile max handled by the internal service above)
+# Global idle culler
 cull:
   enabled: true
-  timeout: 3600     # 1h idle timeout
-  every: 600        # check every 10 min
-  maxAge: 0         # no global max-age (your per-profile culler handles GPU caps)
+  timeout: 3600
+  every: 600
+  maxAge: 0
   users: false
   adminUsers: true
   removeNamedServers: false
