@@ -1,8 +1,9 @@
 # Fleet configuration for Rancher Monitoring Stack
 name: rancher-monitoring
 
-# Namespace where the monitoring stack will be deployed
-namespace: cattle-monitoring-system
+# Default namespace where the monitoring stack will be deployed
+# Using defaultNamespace instead of namespace to allow cluster-scoped resources
+defaultNamespace: cattle-monitoring-system
 
 # Helm chart configuration
 helm:
