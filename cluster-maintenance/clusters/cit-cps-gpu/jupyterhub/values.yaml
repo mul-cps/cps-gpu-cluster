@@ -1,220 +1,203 @@
-# values.yaml — Zero to JupyterHub on Kubernetes
-# kubespawner + named servers + per-profile idle policy + GPU/MIG profiles
+# ----- Hub (traitlets) -----
+hub:
+  config:
+    JupyterHub:
+      allow_named_servers: true
+      # named_server_limit_per_user: 0   # 0 = unlimited (optional)
+      # active_server_limit: 0           # 0 = unlimited (optional)
 
-jupyterhub:
-  hub:
-    # Hub configuration (Configurable via traitlets)
-    config:
-      JupyterHub:
-        allow_named_servers: true
-        # optional limits:
-        # named_server_limit_per_user: 0   # 0 = unlimited
-        # active_server_limit: 0           # 0 = unlimited
+    Spawner:
+      http_timeout: 300
+      start_timeout: 900
 
-      Spawner:
-        http_timeout: 300
-        start_timeout: 900
+    # KubeSpawner is the default in Z2JH when singleuser.cloudMetadata.* present,
+    # but you can set it explicitly if you want:
+    # JupyterHub.spawner_class: kubespawner.KubeSpawner
 
-      KubeSpawner:
-        # ---- PROFILE LIST ----
-        # One default CPU-only profile, plus GPU and MIG profiles.
-        profile_list:
-          # === DEFAULT NON-PRIVILEGED (CPU-ONLY) ===
-          - display_name: "Basic (CPU-only, non-privileged)"
-            description: "Light work: 2 shared CPUs, 2 GiB RAM."
-            kubespawner_override:
-              image: "quay.io/jupyter/scipy-notebook:latest"
+# ----- Singleuser defaults (profiles will override) -----
+singleuser:
+  image:
+    name: quay.io/jupyter/scipy-notebook
+    tag: latest
+    pullPolicy: IfNotPresent
 
-              # CPU/Mem (2 CPU shared, 2 GiB)
-              cpu_guarantee: 1
-              cpu_limit: 2
-              mem_guarantee: "2G"
-              mem_limit: "2G"
+  storage:
+    type: dynamic
+    dynamic:
+      storageClass: ""      # set your StorageClass if needed
+    capacity: 10Gi
 
-              # Per-server idle policy (example: 2h, or set 0 to disable)
-              args:
-                - "--ServerApp.shutdown_no_activity_timeout=7200"
-                - "--MappingKernelManager.cull_idle_timeout=0"
-                - "--MappingKernelManager.cull_busy=False"
+  # Default CPU/RAM for the *basic* profile (and as fallback)
+  cpu:
+    guarantee: 1
+    limit: 2
+  memory:
+    guarantee: 2G
+    limit: 2G
 
-              # Friendly reminder + best-effort tmux install
-              environment:
-                MOTD_REMINDER: "Tip: For long runs use 'tmux new -s job' then 'tmux attach -t job'. Keep one JupyterLab tab open to stay 'connected'."
-              lifecycle_hooks:
-                postStart:
-                  exec:
-                    command:
-                      - bash
-                      - -lc
-                      - >
-                        if command -v mamba >/dev/null 2>&1; then mamba install -y tmux || true;
-                        elif command -v conda >/dev/null 2>&1; then conda install -y -c conda-forge tmux || true;
-                        fi;
-                        echo "$MOTD_REMINDER"
+  # ----- Pre-spawn profile chooser (per KubeSpawner profile_list) -----
+  profileList:
+    # === DEFAULT NON-PRIVILEGED (CPU-ONLY) ===
+    - display_name: "Basic (CPU-only, non-privileged)"
+      description: "Light work: 2 shared CPUs, 2 GiB RAM."
+      kubespawner_override:
+        image: "quay.io/jupyter/scipy-notebook:latest"
 
-          # === FULL GPU PROFILE ===
-          - display_name: "GPU Training (1x Full GPU, 16 CPU, 64 GiB)"
-            description: "1x NVIDIA GPU + 16 CPUs + 64 GiB RAM; 12h idle allowed."
-            kubespawner_override:
-              image: "nvcr.io/nvidia/pytorch:24.06-py3"   # includes nvidia-smi
+        cpu_guarantee: 1
+        cpu_limit: 2
+        mem_guarantee: "2G"
+        mem_limit: "2G"
 
-              # Request a full GPU
-              extra_resource_limits:
-                nvidia.com/gpu: "1"
+        # Per-server idle policy (e.g., 2h). Set 0 to disable inside server.
+        args:
+          - "--ServerApp.shutdown_no_activity_timeout=7200"
+          - "--MappingKernelManager.cull_idle_timeout=0"
+          - "--MappingKernelManager.cull_busy=False"
 
-              # “Double” CPU & RAM (tune to your cluster quotas)
-              cpu_guarantee: 8
-              cpu_limit: 16
-              mem_guarantee: "48G"
-              mem_limit: "64G"
+        environment:
+          MOTD_REMINDER: "Tip: For long runs use 'tmux new -s job' then 'tmux attach -t job'. Keep one JupyterLab tab open to stay 'connected'."
 
-              # Per-server idle policy (12h)
-              args:
-                - "--ServerApp.shutdown_no_activity_timeout=43200"
-                - "--MappingKernelManager.cull_idle_timeout=0"
-                - "--MappingKernelManager.cull_busy=False"
+        lifecycle_hooks:
+          postStart:
+            exec:
+              command:
+                - bash
+                - -lc
+                - >
+                  if command -v mamba >/dev/null 2>&1; then mamba install -y tmux || true;
+                  elif command -v conda >/dev/null 2>&1; then conda install -y -c conda-forge tmux || true;
+                  fi;
+                  echo "$MOTD_REMINDER"
 
-              # Ensure nvidia paths + tmux reminder
-              environment:
-                PATH: "/usr/local/nvidia/bin:/usr/local/cuda/bin:/usr/bin:/bin"
-                LD_LIBRARY_PATH: "/usr/local/nvidia/lib:/usr/local/nvidia/lib64:/usr/local/cuda/lib64"
-                MOTD_REMINDER: "Tip: Use tmux for long jobs: 'tmux new -s train' and later 'tmux attach -t train'. Keep one JupyterLab tab open."
+    # === FULL GPU PROFILE (double CPU/RAM) ===
+    - display_name: "GPU Training (1x Full GPU, 16 CPU, 64 GiB)"
+      description: "1x NVIDIA GPU + 16 CPUs + 64 GiB RAM; 12h idle allowed."
+      kubespawner_override:
+        image: "nvcr.io/nvidia/pytorch:24.06-py3"   # includes nvidia-smi
 
-              lifecycle_hooks:
-                postStart:
-                  exec:
-                    command:
-                      - bash
-                      - -lc
-                      - >
-                        if command -v mamba >/dev/null 2>&1; then mamba install -y tmux || true;
-                        elif command -v conda >/dev/null 2>&1; then conda install -y -c conda-forge tmux || true;
-                        fi;
-                        echo "$MOTD_REMINDER";
-                        which nvidia-smi || true; nvidia-smi || true
+        extra_resource_limits:
+          nvidia.com/gpu: "1"
 
-          # === MIG PROFILES (adjust resource keys to match your device plugin) ===
-          - display_name: "GPU (MIG 1g.10gb, 8 CPU, 32 GiB)"
-            description: "1x MIG slice (1g.10gb) + 8 CPUs + 32 GiB RAM; 12h idle allowed."
-            kubespawner_override:
-              image: "nvcr.io/nvidia/pytorch:24.06-py3"
-              extra_resource_limits:
-                # Ensure your NVIDIA device plugin exposes this resource name
-                nvidia.com/mig-1g.10gb: "1"
+        cpu_guarantee: 8
+        cpu_limit: 16
+        mem_guarantee: "48G"
+        mem_limit: "64G"
 
-              cpu_guarantee: 4
-              cpu_limit: 8
-              mem_guarantee: "24G"
-              mem_limit: "32G"
+        # 12h per-server idle window
+        args:
+          - "--ServerApp.shutdown_no_activity_timeout=43200"
+          - "--MappingKernelManager.cull_idle_timeout=0"
+          - "--MappingKernelManager.cull_busy=False"
 
-              args:
-                - "--ServerApp.shutdown_no_activity_timeout=43200"
-                - "--MappingKernelManager.cull_idle_timeout=0"
-                - "--MappingKernelManager.cull_busy=False"
+        environment:
+          PATH: "/usr/local/nvidia/bin:/usr/local/cuda/bin:/usr/bin:/bin"
+          LD_LIBRARY_PATH: "/usr/local/nvidia/lib:/usr/local/nvidia/lib64:/usr/local/cuda/lib64"
+          MOTD_REMINDER: "Tip: Use tmux for long jobs: 'tmux new -s train' and later 'tmux attach -t train'. Keep one JupyterLab tab open."
 
-              environment:
-                PATH: "/usr/local/nvidia/bin:/usr/local/cuda/bin:/usr/bin:/bin"
-                LD_LIBRARY_PATH: "/usr/local/nvidia/lib:/usr/local/nvidia/lib64:/usr/local/cuda/lib64"
-                MOTD_REMINDER: "Tip: Use tmux for long jobs: 'tmux new -s job'. Keep one JupyterLab tab open."
+        lifecycle_hooks:
+          postStart:
+            exec:
+              command:
+                - bash
+                - -lc
+                - >
+                  if command -v mamba >/dev/null 2>&1; then mamba install -y tmux || true;
+                  elif command -v conda >/dev/null 2>&1; then conda install -y -c conda-forge tmux || true;
+                  fi;
+                  echo "$MOTD_REMINDER";
+                  which nvidia-smi || true; nvidia-smi || true
 
-              lifecycle_hooks:
-                postStart:
-                  exec:
-                    command:
-                      - bash
-                      - -lc
-                      - >
-                        if command -v mamba >/dev/null 2>&1; then mamba install -y tmux || true;
-                        elif command -v conda >/dev/null 2>&1; then conda install -y -c conda-forge tmux || true;
-                        fi;
-                        echo "$MOTD_REMINDER";
-                        which nvidia-smi || true; nvidia-smi || true
+    # === MIG PROFILES (adjust resource keys to your NVIDIA device plugin) ===
+    - display_name: "GPU (MIG 1g.10gb, 8 CPU, 32 GiB)"
+      description: "1x MIG slice (1g.10gb) + 8 CPUs + 32 GiB RAM; 12h idle allowed."
+      kubespawner_override:
+        image: "nvcr.io/nvidia/pytorch:24.06-py3"
 
-          - display_name: "GPU (MIG 2g.20gb, 12 CPU, 48 GiB)"
-            description: "1x MIG slice (2g.20gb) + 12 CPUs + 48 GiB RAM; 12h idle allowed."
-            kubespawner_override:
-              image: "nvcr.io/nvidia/pytorch:24.06-py3"
-              extra_resource_limits:
-                nvidia.com/mig-2g.20gb: "1"
+        extra_resource_limits:
+          nvidia.com/mig-1g.10gb: "1"
 
-              cpu_guarantee: 6
-              cpu_limit: 12
-              mem_guarantee: "36G"
-              mem_limit: "48G"
+        cpu_guarantee: 4
+        cpu_limit: 8
+        mem_guarantee: "24G"
+        mem_limit: "32G"
 
-              args:
-                - "--ServerApp.shutdown_no_activity_timeout=43200"
-                - "--MappingKernelManager.cull_idle_timeout=0"
-                - "--MappingKernelManager.cull_busy=False"
+        args:
+          - "--ServerApp.shutdown_no_activity_timeout=43200"
+          - "--MappingKernelManager.cull_idle_timeout=0"
+          - "--MappingKernelManager.cull_busy=False"
 
-              environment:
-                PATH: "/usr/local/nvidia/bin:/usr/local/cuda/bin:/usr/bin:/bin"
-                LD_LIBRARY_PATH: "/usr/local/nvidia/lib:/usr/local/nvidia/lib64:/usr/local/cuda/lib64"
-                MOTD_REMINDER: "Tip: Use tmux for long jobs: 'tmux new -s job'. Keep one JupyterLab tab open."
+        environment:
+          PATH: "/usr/local/nvidia/bin:/usr/local/cuda/bin:/usr/bin:/bin"
+          LD_LIBRARY_PATH: "/usr/local/nvidia/lib:/usr/local/nvidia/lib64:/usr/local/cuda/lib64"
+          MOTD_REMINDER: "Tip: Use tmux for long jobs: 'tmux new -s job'. Keep one JupyterLab tab open."
 
-              lifecycle_hooks:
-                postStart:
-                  exec:
-                    command:
-                      - bash
-                      - -lc
-                      - >
-                        if command -v mamba >/dev/null 2}&1; then mamba install -y tmux || true;
-                        elif command -v conda >/dev/null 2>&1; then conda install -y -c conda-forge tmux || true;
-                        fi;
-                        echo "$MOTD_REMINDER";
-                        which nvidia-smi || true; nvidia-smi || true
+        lifecycle_hooks:
+          postStart:
+            exec:
+              command:
+                - bash
+                - -lc
+                - >
+                  if command -v mamba >/dev/null 2>&1; then mamba install -y tmux || true;
+                  elif command -v conda >/dev/null 2>&1; then conda install -y -c conda-forge tmux || true;
+                  fi;
+                  echo "$MOTD_REMINDER";
+                  which nvidia-smi || true; nvidia-smi || true
 
-    # OPTIONAL: if you want an options form for extra knobs later
-    # extraConfig: {}
+    - display_name: "GPU (MIG 2g.20gb, 12 CPU, 48 GiB)"
+      description: "1x MIG slice (2g.20gb) + 12 CPUs + 48 GiB RAM; 12h idle allowed."
+      kubespawner_override:
+        image: "nvcr.io/nvidia/pytorch:24.06-py3"
 
-  singleuser:
-    # A default image (profiles override it per server)
-    image:
-      name: quay.io/jupyter/scipy-notebook
-      tag: latest
-      pullPolicy: IfNotPresent
-    storage:
-      type: dynamic
-      dynamic:
-        storageClass: ""   # set your StorageClass if needed
-      capacity: 10Gi
+        extra_resource_limits:
+          nvidia.com/mig-2g.20gb: "1"
 
-    # Global defaults (profiles can override via kubespawner_override)
-    cpu:
-      limit: 2
-      guarantee: 1
-    memory:
-      limit: 2G
-      guarantee: 2G
+        cpu_guarantee: 6
+        cpu_limit: 12
+        mem_guarantee: "36G"
+        mem_limit: "48G"
 
-    # (Optional) Security context etc.
-    # extraEnv: {}
-    # extraPodConfig: {}
-    # tolerations: []
-    # nodeSelector: {}
+        args:
+          - "--ServerApp.shutdown_no_activity_timeout=43200"
+          - "--MappingKernelManager.cull_idle_timeout=0"
+          - "--MappingKernelManager.cull_busy=False"
 
-  proxy:
-    https:
-      enabled: false  # set true + secrets if you terminate TLS in-cluster
+        environment:
+          PATH: "/usr/local/nvidia/bin:/usr/local/cuda/bin:/usr/bin:/bin"
+          LD_LIBRARY_PATH: "/usr/local/nvidia/lib:/usr/local/nvidia/lib64:/usr/local/cuda/lib64"
+          MOTD_REMINDER: "Tip: Use tmux for long jobs: 'tmux new -s job'. Keep one JupyterLab tab open."
 
-  # Idle culler (hub-level). Keep generous so per-profile (12h) wins.
-  cull:
+        lifecycle_hooks:
+          postStart:
+            exec:
+              command:
+                - bash
+                - -lc
+                - >
+                  if command -v mamba >/dev/null 2>&1; then mamba install -y tmux || true;
+                  elif command -v conda >/dev/null 2>&1; then conda install -y -c conda-forge tmux || true;
+                  fi;
+                  echo "$MOTD_REMINDER";
+                  which nvidia-smi || true; nvidia-smi || true
+
+# ----- Proxy / ingress as needed -----
+proxy:
+  https:
+    enabled: false   # set true + secrets if you terminate TLS in-cluster
+
+# ----- Idle culler (hub-level). Keep generous so per-profile rules dominate. -----
+cull:
+  enabled: true
+  timeout: 172800          # 48h, larger than the 12h per-server policy
+  every: 600               # check every 10 min
+  maxAge: 0                # 0 = no max age cap
+  cullNamedServers: true
+  cullUsers: true
+  cullConnected: false     # DO NOT cull if a Lab tab is connected (active websocket)
+
+# ----- PrePuller (faster first spawn) -----
+prePuller:
+  hook:
     enabled: true
-    timeout: 172800           # 48h (in seconds) — larger than 12h to let per-server rule govern
-    every: 600                # check every 10 min
-    maxAge: 0                 # 0 = no max age
-    cullNamedServers: true
-    cullUsers: true
-    cullConnected: false      # DO NOT cull if a Lab tab is connected (active websocket)
-
-  scheduling:
-    userScheduler:
-      enabled: false
-
-  # Pre-pull can speed up first spawn
-  prePuller:
-    hook:
-      enabled: true
-    continuous:
-      enabled: true
+  continuous:
+    enabled: true
