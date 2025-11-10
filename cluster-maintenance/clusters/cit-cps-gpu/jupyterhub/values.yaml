@@ -108,163 +108,202 @@ hub:
       GPU_PROFILE_SLUGS = {'gpu-pytorch-single', 'gpu-tensorflow-single', 'gpu-pytorch-dual', 'gpu-tensorflow-dual'}
       ALLOWED_GPU_GROUPS = {'cpsHPCAccess', 'jupyter_admin'}
       
-      # Static profile list - all profiles visible to all users
-      # Access control enforced via pre_spawn_hook
-      c.KubeSpawner.profile_list = [
-          # CPU Profiles - Available to all users
-          {
-              'display_name': '💻 DataScience - Small (1GB RAM, 2 CPUs)',
-              'description': 'CPU-only with pandas, scikit-learn, matplotlib. Suitable for light data analysis.',
-              'slug': 'cpu-small',
-              'default': True,
-              'kubespawner_override': {
-                  'cpu_limit': 2.0,
-                  'cpu_guarantee': 0.5,
-                  'mem_limit': '1G',
-                  'mem_guarantee': '256M',
-                  'image': 'quay.io/jupyter/datascience-notebook:2025-11-06'
-              }
-          },
-          {
-              'display_name': '💻 DataScience - Medium (4GB RAM, 4 CPUs)',
-              'description': 'CPU-only with pandas, scikit-learn, matplotlib. Good for moderate workloads.',
-              'slug': 'cpu-medium',
-              'kubespawner_override': {
-                  'cpu_limit': 4.0,
-                  'cpu_guarantee': 1.0,
-                  'mem_limit': '4G',
-                  'mem_guarantee': '1G',
-                  'image': 'quay.io/jupyter/datascience-notebook:2025-11-06'
-              }
-          },
-          {
-              'display_name': '💻 DataScience - Large (8GB RAM, 8 CPUs)',
-              'description': 'CPU-only with pandas, scikit-learn, matplotlib. For larger datasets.',
-              'slug': 'cpu-large',
-              'kubespawner_override': {
-                  'cpu_limit': 8.0,
-                  'cpu_guarantee': 2.0,
-                  'mem_limit': '8G',
-                  'mem_guarantee': '2G',
-                  'image': 'quay.io/jupyter/datascience-notebook:2025-11-06'
-              }
-          },
-          {
-              'display_name': '💻 DataScience - XLarge (16GB RAM, 16 CPUs)',
-              'description': 'CPU-only with pandas, scikit-learn, matplotlib. Maximum CPU resources.',
-              'slug': 'cpu-xlarge',
-              'kubespawner_override': {
-                  'cpu_limit': 16.0,
-                  'cpu_guarantee': 4.0,
-                  'mem_limit': '16G',
-                  'mem_guarantee': '4G',
-                  'image': 'quay.io/jupyter/datascience-notebook:2025-11-06'
-              }
-          },
+      # Dynamic options form based on user groups (inspired by Docker Swarm implementation)
+      async def dynamic_profile_form(spawner):
+          """Generate profile selection based on user's group membership"""
           
-          # GPU Profiles - Require cpsHPCAccess or jupyter_admin group (enforced at spawn time)
-          {
-              'display_name': '🚀 Single A100 GPU - PyTorch (32GB RAM, 8 CPUs) ⚠️ Requires GPU Access',
-              'description': '<b>⚠️ Restricted Access:</b> Requires membership in <code>cpsHPCAccess</code> or <code>jupyter_admin</code> group. Contact CPS admins to request access.<br><br>One NVIDIA A100 GPU with PyTorch. Perfect for deep learning and ML training.',
-              'slug': 'gpu-pytorch-single',
-              'kubespawner_override': {
-                  'cpu_limit': 8.0,
-                  'cpu_guarantee': 4.0,
-                  'mem_limit': '32G',
-                  'mem_guarantee': '16G',
-                  'extra_resource_limits': {'nvidia.com/gpu': '1'},
-                  'extra_resource_guarantees': {'nvidia.com/gpu': '1'},
-                  'node_selector': {'accelerator': 'nvidia'},
-                  'image': 'quay.io/jupyter/pytorch-notebook:2025-11-06',
-                  'environment': {
-                      'NVIDIA_VISIBLE_DEVICES': 'all',
-                      'NVIDIA_DRIVER_CAPABILITIES': 'compute,utility'
-                  }
-              }
-          },
-          {
-              'display_name': '🚀 Single A100 GPU - TensorFlow (32GB RAM, 8 CPUs) ⚠️ Requires GPU Access',
-              'description': '<b>⚠️ Restricted Access:</b> Requires membership in <code>cpsHPCAccess</code> or <code>jupyter_admin</code> group. Contact CPS admins to request access.<br><br>One NVIDIA A100 GPU with TensorFlow. Optimized for TensorFlow workloads.',
-              'slug': 'gpu-tensorflow-single',
-              'kubespawner_override': {
-                  'cpu_limit': 8.0,
-                  'cpu_guarantee': 4.0,
-                  'mem_limit': '32G',
-                  'mem_guarantee': '16G',
-                  'extra_resource_limits': {'nvidia.com/gpu': '1'},
-                  'extra_resource_guarantees': {'nvidia.com/gpu': '1'},
-                  'node_selector': {'accelerator': 'nvidia'},
-                  'image': 'quay.io/jupyter/tensorflow-notebook:2025-11-06',
-                  'environment': {
-                      'NVIDIA_VISIBLE_DEVICES': 'all',
-                      'NVIDIA_DRIVER_CAPABILITIES': 'compute,utility'
-                  }
-              }
-          },
-          {
-              'display_name': '🔥 Dual A100 GPUs - PyTorch (64GB RAM, 16 CPUs) ⚠️ Requires GPU Access',
-              'description': '<b>⚠️ Restricted Access:</b> Requires membership in <code>cpsHPCAccess</code> or <code>jupyter_admin</code> group. Contact CPS admins to request access.<br><br>Two NVIDIA A100 GPUs with PyTorch. Maximum performance for large-scale training.',
-              'slug': 'gpu-pytorch-dual',
-              'kubespawner_override': {
-                  'cpu_limit': 16.0,
-                  'cpu_guarantee': 8.0,
-                  'mem_limit': '64G',
-                  'mem_guarantee': '32G',
-                  'extra_resource_limits': {'nvidia.com/gpu': '2'},
-                  'extra_resource_guarantees': {'nvidia.com/gpu': '2'},
-                  'node_selector': {'accelerator': 'nvidia'},
-                  'image': 'quay.io/jupyter/pytorch-notebook:2025-11-06',
-                  'environment': {
-                      'NVIDIA_VISIBLE_DEVICES': 'all',
-                      'NVIDIA_DRIVER_CAPABILITIES': 'compute,utility'
-                  }
-              }
-          },
-          {
-              'display_name': '🔥 Dual A100 GPUs - TensorFlow (64GB RAM, 16 CPUs) ⚠️ Requires GPU Access',
-              'description': '<b>⚠️ Restricted Access:</b> Requires membership in <code>cpsHPCAccess</code> or <code>jupyter_admin</code> group. Contact CPS admins to request access.<br><br>Two NVIDIA A100 GPUs with TensorFlow. Maximum performance for TensorFlow workloads.',
-              'slug': 'gpu-tensorflow-dual',
-              'kubespawner_override': {
-                  'cpu_limit': 16.0,
-                  'cpu_guarantee': 8.0,
-                  'mem_limit': '64G',
-                  'mem_guarantee': '32G',
-                  'extra_resource_limits': {'nvidia.com/gpu': '2'},
-                  'extra_resource_guarantees': {'nvidia.com/gpu': '2'},
-                  'node_selector': {'accelerator': 'nvidia'},
-                  'image': 'quay.io/jupyter/tensorflow-notebook:2025-11-06',
-                  'environment': {
-                      'NVIDIA_VISIBLE_DEVICES': 'all',
-                      'NVIDIA_DRIVER_CAPABILITIES': 'compute,utility'
-                  }
-              }
-          }
-      ]
+          # Get user's groups
+          user_groups = []
+          group_names = {group.name for group in spawner.user.groups}
+          
+          # Check if user has GPU access
+          has_gpu_access = bool(group_names & ALLOWED_GPU_GROUPS)
+          
+          spawner.log.info(f"User {spawner.user.name} groups: {group_names}, GPU access: {has_gpu_access}")
+          
+          if not has_gpu_access:
+              # Restricted form for users without GPU access
+              return """
+<div style="max-width: 800px; margin: 20px auto; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;">
+  <div style="background: #fff3cd; border: 2px solid #ffc107; border-radius: 8px; padding: 20px; margin-bottom: 20px;">
+    <h3 style="color: #856404; margin-top: 0;">ℹ️ Limited Access</h3>
+    <p style="color: #856404; margin-bottom: 0;">
+      Your account has access to CPU-only profiles. For GPU access, please contact CPS admins to request membership in the <code>cpsHPCAccess</code> group.
+    </p>
+  </div>
+  <label>Select CPU Profile:</label>
+  <select name="profile" class="form-control">
+    <option value="cpu-small">💻 DataScience - Small (1GB RAM, 2 CPUs)</option>
+    <option value="cpu-medium" selected>💻 DataScience - Medium (4GB RAM, 4 CPUs)</option>
+    <option value="cpu-large">💻 DataScience - Large (8GB RAM, 8 CPUs)</option>
+    <option value="cpu-xlarge">💻 DataScience - XLarge (16GB RAM, 16 CPUs)</option>
+  </select>
+</div>
+"""
+          
+          # Full form for authorized users
+          return """
+<div style="max-width: 800px; margin: 20px auto; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;">
+  <h3 style="text-align: center; color: #333;">Select Your Computing Environment</h3>
+  <label>Select Profile:</label>
+  <select name="profile" class="form-control">
+    <optgroup label="CPU Profiles - Available to all">
+      <option value="cpu-small">💻 DataScience - Small (1GB RAM, 2 CPUs)</option>
+      <option value="cpu-medium" selected>💻 DataScience - Medium (4GB RAM, 4 CPUs)</option>
+      <option value="cpu-large">💻 DataScience - Large (8GB RAM, 8 CPUs)</option>
+      <option value="cpu-xlarge">💻 DataScience - XLarge (16GB RAM, 16 CPUs)</option>
+    </optgroup>
+    <optgroup label="GPU Profiles - Authorized Access">
+      <option value="gpu-pytorch-single">🚀 Single A100 GPU - PyTorch (32GB RAM, 8 CPUs)</option>
+      <option value="gpu-tensorflow-single">🚀 Single A100 GPU - TensorFlow (32GB RAM, 8 CPUs)</option>
+      <option value="gpu-pytorch-dual">🔥 Dual A100 GPUs - PyTorch (64GB RAM, 16 CPUs)</option>
+      <option value="gpu-tensorflow-dual">🔥 Dual A100 GPUs - TensorFlow (64GB RAM, 16 CPUs)</option>
+    </optgroup>
+  </select>
+</div>
+"""
       
-      # Pre-spawn hook to enforce group-based access control
-      async def check_profile_access(spawner):
+      
+      c.Spawner.options_form = dynamic_profile_form
+      
+      # Profile configurations (used by pre_spawn_hook to apply settings)
+      PROFILE_CONFIGS = {
+          'cpu-small': {
+              'image': 'quay.io/jupyter/datascience-notebook:2025-11-06',
+              'cpu_limit': 2.0,
+              'cpu_guarantee': 0.5,
+              'mem_limit': '1G',
+              'mem_guarantee': '256M',
+          },
+          'cpu-medium': {
+              'image': 'quay.io/jupyter/datascience-notebook:2025-11-06',
+              'cpu_limit': 4.0,
+              'cpu_guarantee': 1.0,
+              'mem_limit': '4G',
+              'mem_guarantee': '1G',
+          },
+          'cpu-large': {
+              'image': 'quay.io/jupyter/datascience-notebook:2025-11-06',
+              'cpu_limit': 8.0,
+              'cpu_guarantee': 2.0,
+              'mem_limit': '8G',
+              'mem_guarantee': '2G',
+          },
+          'cpu-xlarge': {
+              'image': 'quay.io/jupyter/datascience-notebook:2025-11-06',
+              'cpu_limit': 16.0,
+              'cpu_guarantee': 4.0,
+              'mem_limit': '16G',
+              'mem_guarantee': '4G',
+          },
+          'gpu-pytorch-single': {
+              'image': 'quay.io/jupyter/pytorch-notebook:2025-11-06',
+              'cpu_limit': 8.0,
+              'cpu_guarantee': 4.0,
+              'mem_limit': '32G',
+              'mem_guarantee': '16G',
+              'extra_resource_limits': {'nvidia.com/gpu': '1'},
+              'extra_resource_guarantees': {'nvidia.com/gpu': '1'},
+              'node_selector': {'accelerator': 'nvidia'},
+              'environment': {
+                  'NVIDIA_VISIBLE_DEVICES': 'all',
+                  'NVIDIA_DRIVER_CAPABILITIES': 'compute,utility'
+              }
+          },
+          'gpu-tensorflow-single': {
+              'image': 'quay.io/jupyter/tensorflow-notebook:2025-11-06',
+              'cpu_limit': 8.0,
+              'cpu_guarantee': 4.0,
+              'mem_limit': '32G',
+              'mem_guarantee': '16G',
+              'extra_resource_limits': {'nvidia.com/gpu': '1'},
+              'extra_resource_guarantees': {'nvidia.com/gpu': '1'},
+              'node_selector': {'accelerator': 'nvidia'},
+              'environment': {
+                  'NVIDIA_VISIBLE_DEVICES': 'all',
+                  'NVIDIA_DRIVER_CAPABILITIES': 'compute,utility'
+              }
+          },
+          'gpu-pytorch-dual': {
+              'image': 'quay.io/jupyter/pytorch-notebook:2025-11-06',
+              'cpu_limit': 16.0,
+              'cpu_guarantee': 8.0,
+              'mem_limit': '64G',
+              'mem_guarantee': '32G',
+              'extra_resource_limits': {'nvidia.com/gpu': '2'},
+              'extra_resource_guarantees': {'nvidia.com/gpu': '2'},
+              'node_selector': {'accelerator': 'nvidia'},
+              'environment': {
+                  'NVIDIA_VISIBLE_DEVICES': 'all',
+                  'NVIDIA_DRIVER_CAPABILITIES': 'compute,utility'
+              }
+          },
+          'gpu-tensorflow-dual': {
+              'image': 'quay.io/jupyter/tensorflow-notebook:2025-11-06',
+              'cpu_limit': 16.0,
+              'cpu_guarantee': 8.0,
+              'mem_limit': '64G',
+              'mem_guarantee': '32G',
+              'extra_resource_limits': {'nvidia.com/gpu': '2'},
+              'extra_resource_guarantees': {'nvidia.com/gpu': '2'},
+              'node_selector': {'accelerator': 'nvidia'},
+              'environment': {
+                  'NVIDIA_VISIBLE_DEVICES': 'all',
+                  'NVIDIA_DRIVER_CAPABILITIES': 'compute,utility'
+              }
+          },
+      }
+      
+      # Pre-spawn hook to apply profile settings and enforce access control
+      async def apply_profile_settings(spawner):
           """
-          Enforce group-based access control for GPU profiles.
-          This runs before spawning and blocks unauthorized access to GPU profiles.
+          Apply profile settings and enforce group-based access control.
+          This approach mimics Docker Swarm's successful implementation.
           """
-          # Get selected profile
-          profile_slug = spawner.user_options.get('profile', '')
+          # Get selected profile from user options
+          profile_slug = spawner.user_options.get('profile', 'cpu-medium')
+          
+          spawner.log.info(f"User {spawner.user.name} selected profile: {profile_slug}")
+          
+          # Get user's groups
+          group_names = {group.name for group in spawner.user.groups}
           
           # Check if it's a GPU profile
           if profile_slug in GPU_PROFILE_SLUGS:
-              # Get user's groups
-              group_names = {group.name for group in spawner.user.groups}
-              
-              # Check if user has GPU access
+              # Verify GPU access
               if not (group_names & ALLOWED_GPU_GROUPS):
-                  spawner.log.warning(f"User {spawner.user.name} attempted to access GPU profile {profile_slug} without permission (groups: {group_names})")
-                  raise Exception(f"⚠️ Access Denied: GPU profiles require membership in the 'cpsHPCAccess' or 'jupyter_admin' group. Please contact the CPS system administrators to request GPU access.")
-              else:
-                  spawner.log.info(f"User {spawner.user.name} authorized for GPU profile {profile_slug} (groups: {group_names & ALLOWED_GPU_GROUPS})")
+                  spawner.log.warning(f"User {spawner.user.name} attempted GPU profile without permission")
+                  raise Exception(f"⚠️ Access Denied: GPU profiles require membership in 'cpsHPCAccess' or 'jupyter_admin' group. Please contact CPS admins to request GPU access.")
+              spawner.log.info(f"User {spawner.user.name} authorized for GPU profile (groups: {group_names & ALLOWED_GPU_GROUPS})")
           
-          spawner.log.info(f"User {spawner.user.name} spawning with profile: {profile_slug}")
+          # Apply profile configuration
+          if profile_slug in PROFILE_CONFIGS:
+              config = PROFILE_CONFIGS[profile_slug]
+              
+              # Set image
+              spawner.image = config['image']
+              
+              # Set resource limits
+              spawner.cpu_limit = config['cpu_limit']
+              spawner.cpu_guarantee = config['cpu_guarantee']
+              spawner.mem_limit = config['mem_limit']
+              spawner.mem_guarantee = config['mem_guarantee']
+              
+              # Set GPU resources if specified
+              if 'extra_resource_limits' in config:
+                  spawner.extra_resource_limits = config['extra_resource_limits']
+              if 'extra_resource_guarantees' in config:
+                  spawner.extra_resource_guarantees = config['extra_resource_guarantees']
+              if 'node_selector' in config:
+                  spawner.node_selector = config['node_selector']
+              if 'environment' in config:
+                  spawner.environment.update(config['environment'])
+              
+              spawner.log.info(f"Applied profile {profile_slug}: {config['cpu_limit']} CPU, {config['mem_limit']} RAM")
+          else:
+              spawner.log.warning(f"Unknown profile {profile_slug}, using default")
       
-      c.KubeSpawner.pre_spawn_hook = check_profile_access
+      c.KubeSpawner.pre_spawn_hook = apply_profile_settings
         
     gpu-config: |
       # Make GPUs available to users
