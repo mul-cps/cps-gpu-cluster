@@ -40,9 +40,59 @@ gfd:
   enabled: true
   version: "v0.18.0"
 
+# MIG scheduling strategy for device plugin: allow both full GPU and MIG resources
+mig:
+  # Advertise both full GPU (on non-MIG nodes) and MIG resources only on the single MIG-enabled node.
+  # Strategy 'mixed' is still appropriate globally; nodes without MIG partitions will just expose nvidia.com/gpu.
+  strategy: mixed
+
 # MIG Manager (for A100 MIG partitioning - enabled by default in v25.10.0)
 migManager:
   enabled: true
+  # Provide a MIG partitioning ConfigMap inline. Create both 40GB and 80GB profiles; set default to one.
+  config:
+    create: true
+    name: custom-mig-parted-configs
+    # Set default to all-disabled so ALL nodes start with no MIG partitions.
+    default: all-disabled
+    data:
+      config.yaml: |-
+        version: v1
+        mig-configs:
+          all-disabled:
+            - devices: all
+              mig-enabled: false
+          # Mixed profile for a single node with 2x A100 40GB (GPU0 full, GPU1 8 slices 1g.5gb)
+          mixed-one-node-40gb-small:
+            - devices: [0]
+              mig-enabled: false
+            - devices: [1]
+              mig-enabled: true
+              mig-devices:
+                "1g.5gb": 8
+          # (Optional) Alternate for future 80GB hardware
+          mixed-one-node-80gb-small:
+            - devices: [0]
+              mig-enabled: false
+            - devices: [1]
+              mig-enabled: true
+              mig-devices:
+                "1g.10gb": 7
+
+  # Per-node activation:
+  # Label exactly ONE GPU node to enable MIG using:
+  #   kubectl label node <node-name> nvidia.com/mig.config=mixed-one-node-40gb-small --overwrite
+  # Leave other nodes without that label (they will use 'all-disabled').
+  # Remove MIG from node:
+  #   kubectl label node <node-name> nvidia.com/mig.config=all-disabled --overwrite
+  # Scheduling notes on the MIG-enabled node:
+  # - Full GPU resource: nvidia.com/gpu (from GPU0)
+  # - MIG slice resources: nvidia.com/mig-1g.5gb (8 allocatable)
+  # Requests examples:
+  #   limits:
+  #     nvidia.com/gpu: 1        # Full GPU (any non-MIG node or GPU0 on MIG node)
+  #   OR
+  #     nvidia.com/mig-1g.5gb: 1 # Single smallest slice (on MIG-enabled node only)
 
 # Node Feature Discovery
 nfd:

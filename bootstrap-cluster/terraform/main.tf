@@ -137,7 +137,7 @@ resource "proxmox_vm_qemu" "k3s_gpu_worker" {
   full_clone = true
   
   # Hardware
-  cores   = 16
+  cores   = 48 #16
   sockets = 1
   memory  = 131072  # 128 GB
   

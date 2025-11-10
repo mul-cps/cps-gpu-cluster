@@ -11,7 +11,7 @@
       environment:
         KUBECONFIG: /etc/rancher/k3s/k3s.yaml
 
-    - name: Install NVIDIA GPU Operator
+    - name: Install NVIDIA GPU Operator (MIG Manager allowed; Fleet/values manage config)
       shell: |
         helm upgrade --install gpu-operator nvidia/gpu-operator \
           --namespace {{ gpu_operator_namespace }} \
@@ -23,7 +23,6 @@
           --set devicePlugin.enabled=true \
           --set dcgmExporter.enabled=true \
           --set gfd.enabled=true \
-          --set migManager.enabled=false \
           --set operator.defaultRuntime=containerd \
           --wait
       environment:
