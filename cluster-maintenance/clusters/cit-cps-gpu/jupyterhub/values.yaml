@@ -127,6 +127,29 @@ hub:
           margin: 30px auto;
           padding: 0 15px;
         }}
+        .options-card {{
+          background: #ffffff;
+          border: 1px solid #e5e7eb;
+          border-radius: 12px;
+          box-shadow: 0 6px 16px rgba(17,24,39,0.08);
+          padding: 22px 24px;
+        }}
+        .options-card + .options-card {{
+          margin-top: 18px;
+        }}
+        .card-title {{
+          font-size: 18px;
+          font-weight: 600;
+          color: #1f2937;
+          margin: 0 0 12px 0;
+          display: flex;
+          align-items: center;
+          gap: 10px;
+        }}
+        .muted {{
+          color: #6b7280;
+          font-size: 13px;
+        }}
         .profile-header {{
           text-align: center;
           margin-bottom: 30px;
@@ -231,28 +254,40 @@ hub:
           </p>
         </div>
         
-        <div class="form-group-custom">
-          <label for="profile-select">Computing Profile</label>
-          <select name="profile" id="profile-select" class="form-control-custom">
-            <optgroup label="💻 CPU Profiles - Available to All Users">
-              <option value="cpu-small">Small - 2 CPUs, 1GB RAM</option>
-              <option value="cpu-medium" selected>Medium - 4 CPUs, 4GB RAM (Recommended)</option>
-              <option value="cpu-large">Large - 8 CPUs, 8GB RAM</option>
-              <option value="cpu-xlarge">X-Large - 16 CPUs, 16GB RAM</option>
-            </optgroup>
-            <optgroup id="gpu-optgroup" label="🚀 GPU Profiles - Requires Authorization">
-              <option value="gpu-pytorch-single">Single A100 GPU - PyTorch (8 CPUs, 32GB RAM)</option>
-              <option value="gpu-tensorflow-single">Single A100 GPU - TensorFlow (8 CPUs, 32GB RAM)</option>
-              <option value="gpu-pytorch-dual">Dual A100 GPUs - PyTorch (16 CPUs, 64GB RAM)</option>
-              <option value="gpu-tensorflow-dual">Dual A100 GPUs - TensorFlow (16 CPUs, 64GB RAM)</option>
-            </optgroup>
-          </select>
+        <div class="options-card">
+          <div class="card-title">⚙️ Computing Profile</div>
+          <div class="form-group-custom">
+            <label for="profile-select" class="muted">Select a resource profile</label>
+            <select name="profile" id="profile-select" class="form-control-custom">
+              <optgroup label="💻 CPU Profiles - Available to All Users">
+                <option value="cpu-small">Small - 2 CPUs, 1GB RAM</option>
+                <option value="cpu-medium" selected>Medium - 4 CPUs, 4GB RAM (Recommended)</option>
+                <option value="cpu-large">Large - 8 CPUs, 8GB RAM</option>
+                <option value="cpu-xlarge">X-Large - 16 CPUs, 16GB RAM</option>
+              </optgroup>
+              <optgroup id="gpu-optgroup" label="🚀 GPU Profiles - Requires Authorization">
+                <option value="gpu-pytorch-single">Single A100 GPU - PyTorch (8 CPUs, 32GB RAM)</option>
+                <option value="gpu-tensorflow-single">Single A100 GPU - TensorFlow (8 CPUs, 32GB RAM)</option>
+                <option value="gpu-pytorch-dual">Dual A100 GPUs - PyTorch (16 CPUs, 64GB RAM)</option>
+                <option value="gpu-tensorflow-dual">Dual A100 GPUs - TensorFlow (16 CPUs, 64GB RAM)</option>
+              </optgroup>
+            </select>
+          </div>
+        </div>
+
+        <div class="options-card" id="advanced-panel" style="display:none;">
+          <div class="card-title">🧪 Advanced Options <span class="muted">(admins only)</span></div>
+          <div class="form-group-custom">
+            <label for="custom-image" class="muted">Custom container image (registry/repo:tag)</label>
+            <input type="text" id="custom-image" name="custom_image" class="form-control-custom" placeholder="e.g. docker.io/jupyter/scipy-notebook:2025-11-06" />
+            <div class="muted" style="margin-top:8px;">If provided, this image will override the profile's default image. All other resource settings still come from the selected profile.</div>
+          </div>
         </div>
       </div>
       
       <script>
       (function() {
-        // Fetch user info from JupyterHub API to check GPU access
+  // Fetch user info from JupyterHub API to check GPU access and admin perms
         var allowedGPUGroups = ['cpsHPCAccess', 'jupyter_admin'];
 
         function getCookie(name) {
@@ -296,6 +331,12 @@ hub:
               notice.style.display = 'block';
             }
           }
+
+          // Show Advanced panel for admins
+          var advanced = document.getElementById('advanced-panel');
+          if (advanced && isAdmin) {
+            advanced.style.display = 'block';
+          }
         })
         .catch(function(err) {
           // If API call fails (e.g., XSRF or auth), leave UI as-is (backend will enforce)
@@ -311,6 +352,10 @@ hub:
           options = {}
           profile = formdata.get('profile', ['cpu-medium'])[0]
           options['profile'] = profile
+      # Optional custom image (admins only - enforced in pre-spawn)
+      custom_image = formdata.get('custom_image', [''])[0].strip()
+      if custom_image:
+        options['custom_image'] = custom_image
           return options
       
       c.Spawner.options_from_form = options_from_form
@@ -451,7 +496,7 @@ hub:
       }
       
       # Pre-spawn hook to apply profile settings and enforce access control
-      async def apply_profile_settings(spawner):
+  async def apply_profile_settings(spawner):
           """
           Apply profile settings and enforce group-based access control.
           Backend enforcement since KubeSpawner doesn't support callable options_form.
@@ -461,7 +506,23 @@ hub:
           
           spawner.log.info(f"User {spawner.user.name} selected profile: {profile_slug}")
           
-          # Check if it's a GPU profile
+      # Optional: admin-provided custom image overrides profile image
+      custom_image = spawner.user_options.get('custom_image', '').strip()
+      if custom_image:
+        # Allow only admins to set custom images
+        is_admin = spawner.user.admin or any(g.name == 'jupyter_admin' for g in spawner.user.groups)
+        if is_admin:
+          # Very simple validation: allow [a-z0-9-_.:/]
+          import re
+          if re.fullmatch(r"[A-Za-z0-9._:/\-]+", custom_image):
+            spawner.log.info(f"User {spawner.user.name} provided custom image: {custom_image}")
+            spawner.image = custom_image
+          else:
+            spawner.log.warning(f"User {spawner.user.name} provided invalid custom image '{custom_image}', ignoring")
+        else:
+          spawner.log.warning(f"User {spawner.user.name} attempted to set custom image without admin rights; ignoring")
+
+      # Check if it's a GPU profile
           if profile_slug in GPU_PROFILE_SLUGS:
               # Verify GPU access (admins always have access)
               if not user_has_gpu_access(spawner):
