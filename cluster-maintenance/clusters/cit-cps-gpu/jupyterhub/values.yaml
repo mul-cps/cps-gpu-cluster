@@ -106,39 +106,45 @@ hub:
     02-profiles: |
       # Dynamic profile configuration based on user groups
       # Adapted from Docker Swarm template for KubeSpawner
-      async def dynamic_profile_list(spawner):
+      def dynamic_profile_list(spawner):
           """
           Generate profile list dynamically based on user's group membership.
           Users in 'cpsHPCAccess' get full GPU access and custom image options.
           Other users get simple CPU-only profile.
           """
-          user = spawner.user
-          user_groups = set(group.name for group in user.groups)
-          
-          # Check if user has HPC access (equivalent to jhub-gpu group in Swarm config)
-          has_hpc_access = 'cpsHPCAccess' in user_groups
-          
-          spawner.log.info(f"Profile list for user {user.name}, groups: {user_groups}, HPC access: {has_hpc_access}")
-          
-          if not has_hpc_access:
-              # Restricted profile for users without cpsHPCAccess group
-              return [
-                  {
-                      'display_name': '💻 Limited Access - Basic Computing',
-                      'description': 'CPU-only notebook server (1 CPU core, 1.5 GB RAM). For full access to GPU resources and larger compute options, please contact your administrator to be added to the cpsHPCAccess group.',
-                      'default': True,
-                      'kubespawner_override': {
-                          'cpu_limit': 1.0,
-                          'cpu_guarantee': 0.5,
-                          'mem_limit': '1.5G',
-                          'mem_guarantee': '512M',
-                          'image': 'quay.io/jupyter/datascience-notebook:2025-11-06'
+          import traceback
+          try:
+              user = spawner.user
+              spawner.log.info(f"=== PROFILE LIST CALLED for user {user.name} ===")
+              
+              user_groups = set(group.name for group in user.groups)
+              
+              # Check if user has HPC access (equivalent to jhub-gpu group in Swarm config)
+              has_hpc_access = 'cpsHPCAccess' in user_groups
+              
+              spawner.log.info(f"User {user.name} groups: {user_groups}, HPC access: {has_hpc_access}")
+              
+              if not has_hpc_access:
+                  # Restricted profile for users without cpsHPCAccess group
+                  profiles = [
+                      {
+                          'display_name': '💻 Limited Access - Basic Computing',
+                          'description': 'CPU-only notebook server (1 CPU core, 1.5 GB RAM). For full access to GPU resources and larger compute options, please contact your administrator to be added to the cpsHPCAccess group.',
+                          'default': True,
+                          'kubespawner_override': {
+                              'cpu_limit': 1.0,
+                              'cpu_guarantee': 0.5,
+                              'mem_limit': '1.5G',
+                              'mem_guarantee': '512M',
+                              'image': 'quay.io/jupyter/datascience-notebook:2025-11-06'
+                          }
                       }
-                  }
-              ]
+                  ]
+                  spawner.log.info(f"Returning {len(profiles)} restricted profiles")
+                  return profiles
           
           # Full access profiles for users in cpsHPCAccess group
-          return [
+          profiles = [
               # CPU Profiles - Different resource tiers
               {
                   'display_name': '💻 DataScience - Small (1GB RAM, 2 CPUs)',
@@ -339,6 +345,18 @@ hub:
                   }
               }
           ]
+          spawner.log.info(f"Returning {len(profiles)} HPC profiles")
+          return profiles
+      
+          except Exception as e:
+              spawner.log.error(f"ERROR in dynamic_profile_list: {e}")
+              spawner.log.error(traceback.format_exc())
+              # Return a safe default
+              return [{
+                  'display_name': 'Default Environment',
+                  'description': 'An error occurred loading profiles. Using default configuration.',
+                  'default': True
+              }]
       
       # Set the dynamic profile list callable on KubeSpawner
       c.KubeSpawner.profile_list = dynamic_profile_list
