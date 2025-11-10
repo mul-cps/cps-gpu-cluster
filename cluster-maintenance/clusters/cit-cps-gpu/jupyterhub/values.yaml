@@ -101,49 +101,190 @@ hub:
       ]
       
     02-profiles: |
-      # Configure enhanced profiles for better UI
-      c.KubeSpawner.profile_list = [
-        {
-            'display_name': '💻 CPU Only (2 cores, 4GB RAM)',
-            'description': 'Standard notebook without GPU - suitable for general data analysis and Python programming',
-            'default': True,
-            'kubespawner_override': {
-                'cpu_limit': 2,
-                'cpu_guarantee': 1,
-                'mem_limit': '4G',
-                'mem_guarantee': '2G',
-                'image': 'quay.io/jupyter/pytorch-notebook:2025-11-06'
-            }
-        },
-        {
-            'display_name': '🚀 Single A100 GPU (8 cores, 32GB RAM)',
-            'description': 'High-performance notebook with 1 NVIDIA A100 GPU - perfect for machine learning and deep learning tasks',
-            'kubespawner_override': {
-                'cpu_limit': 8,
-                'cpu_guarantee': 4,
-                'mem_limit': '32G',
-                'mem_guarantee': '16G',
-                'extra_resource_limits': {'nvidia.com/gpu': '1'},
-                'extra_resource_guarantees': {'nvidia.com/gpu': '1'},
-                'node_selector': {'accelerator': 'nvidia'},
-                'image': 'quay.io/jupyter/pytorch-notebook:2025-11-06'
-            }
-        },
-        {
-            'display_name': '🔥 Dual A100 GPUs (16 cores, 64GB RAM)',
-            'description': 'Premium notebook with 2 NVIDIA A100 GPUs - for intensive computational workloads and large model training',
-            'kubespawner_override': {
-                'cpu_limit': 16,
-                'cpu_guarantee': 8,
-                'mem_limit': '64G',
-                'mem_guarantee': '32G',
-                'extra_resource_limits': {'nvidia.com/gpu': '2'},
-                'extra_resource_guarantees': {'nvidia.com/gpu': '2'},
-                'node_selector': {'accelerator': 'nvidia'},
-                'image': 'quay.io/jupyter/pytorch-notebook:2025-11-06'
-            }
-        }
-      ]
+      # Dynamic profile configuration based on user groups
+      async def dynamic_profile_list(spawner):
+          """
+          Generate profile list dynamically based on user's group membership.
+          Users in 'cpsHPCAccess' get full GPU access and custom image options.
+          Other users get simple CPU-only profile.
+          """
+          user = spawner.user
+          user_groups = set(group.name for group in user.groups)
+          
+          # Check if user has HPC access
+          has_hpc_access = 'cpsHPCAccess' in user_groups
+          
+          if has_hpc_access:
+              # Advanced users get full GPU profiles with custom options
+              return [
+                  {
+                      'display_name': '💻 CPU Only (Basic)',
+                      'description': 'Lightweight CPU-only environment (2 cores, 4GB RAM)',
+                      'default': True,
+                      'kubespawner_override': {
+                          'cpu_limit': 2,
+                          'cpu_guarantee': 1,
+                          'mem_limit': '4G',
+                          'mem_guarantee': '2G',
+                          'image': 'quay.io/jupyter/pytorch-notebook:2025-11-06'
+                      }
+                  },
+                  {
+                      'display_name': '🚀 Single A100 GPU',
+                      'description': 'High-performance with 1 NVIDIA A100 GPU (8 cores, 32GB RAM)',
+                      'kubespawner_override': {
+                          'cpu_limit': 8,
+                          'cpu_guarantee': 4,
+                          'mem_limit': '32G',
+                          'mem_guarantee': '16G',
+                          'extra_resource_limits': {'nvidia.com/gpu': '1'},
+                          'extra_resource_guarantees': {'nvidia.com/gpu': '1'},
+                          'node_selector': {'accelerator': 'nvidia'},
+                          'image': 'quay.io/jupyter/pytorch-notebook:2025-11-06'
+                      }
+                  },
+                  {
+                      'display_name': '🔥 Dual A100 GPUs',
+                      'description': 'Maximum performance with 2 NVIDIA A100 GPUs (16 cores, 64GB RAM)',
+                      'kubespawner_override': {
+                          'cpu_limit': 16,
+                          'cpu_guarantee': 8,
+                          'mem_limit': '64G',
+                          'mem_guarantee': '32G',
+                          'extra_resource_limits': {'nvidia.com/gpu': '2'},
+                          'extra_resource_guarantees': {'nvidia.com/gpu': '2'},
+                          'node_selector': {'accelerator': 'nvidia'},
+                          'image': 'quay.io/jupyter/pytorch-notebook:2025-11-06'
+                      }
+                  },
+                  {
+                      'display_name': '⚙️ Custom Configuration',
+                      'description': 'Customize your resources and container image (Max: 2 GPUs, 128GB RAM)',
+                      'profile_options': {
+                          'image': {
+                              'display_name': 'Container Image',
+                              'unlisted_choice': {
+                                  'enabled': True,
+                                  'display_name': 'Custom image',
+                                  'validation_regex': '^.+:.+$',
+                                  'validation_message': 'Must be a valid image:tag format',
+                                  'kubespawner_override': {'image': '{value}'}
+                              },
+                              'choices': {
+                                  'pytorch': {
+                                      'display_name': 'PyTorch (Latest)',
+                                      'kubespawner_override': {'image': 'quay.io/jupyter/pytorch-notebook:2025-11-06'}
+                                  },
+                                  'tensorflow': {
+                                      'display_name': 'TensorFlow (Latest)',
+                                      'kubespawner_override': {'image': 'quay.io/jupyter/tensorflow-notebook:2025-11-06'}
+                                  },
+                                  'datascience': {
+                                      'display_name': 'Data Science Stack',
+                                      'kubespawner_override': {'image': 'quay.io/jupyter/datascience-notebook:2025-11-06'}
+                                  }
+                              }
+                          },
+                          'gpu_count': {
+                              'display_name': 'Number of GPUs',
+                              'choices': {
+                                  '0': {
+                                      'display_name': 'No GPU',
+                                      'kubespawner_override': {}
+                                  },
+                                  '1': {
+                                      'display_name': '1 GPU',
+                                      'default': True,
+                                      'kubespawner_override': {
+                                          'extra_resource_limits': {'nvidia.com/gpu': '1'},
+                                          'extra_resource_guarantees': {'nvidia.com/gpu': '1'},
+                                          'node_selector': {'accelerator': 'nvidia'}
+                                      }
+                                  },
+                                  '2': {
+                                      'display_name': '2 GPUs',
+                                      'kubespawner_override': {
+                                          'extra_resource_limits': {'nvidia.com/gpu': '2'},
+                                          'extra_resource_guarantees': {'nvidia.com/gpu': '2'},
+                                          'node_selector': {'accelerator': 'nvidia'}
+                                      }
+                                  }
+                              }
+                          },
+                          'cpu_cores': {
+                              'display_name': 'CPU Cores',
+                              'choices': {
+                                  '2': {
+                                      'display_name': '2 cores',
+                                      'kubespawner_override': {'cpu_limit': 2, 'cpu_guarantee': 1}
+                                  },
+                                  '4': {
+                                      'display_name': '4 cores',
+                                      'kubespawner_override': {'cpu_limit': 4, 'cpu_guarantee': 2}
+                                  },
+                                  '8': {
+                                      'display_name': '8 cores',
+                                      'default': True,
+                                      'kubespawner_override': {'cpu_limit': 8, 'cpu_guarantee': 4}
+                                  },
+                                  '16': {
+                                      'display_name': '16 cores',
+                                      'kubespawner_override': {'cpu_limit': 16, 'cpu_guarantee': 8}
+                                  }
+                              }
+                          },
+                          'memory': {
+                              'display_name': 'Memory (RAM)',
+                              'choices': {
+                                  '4': {
+                                      'display_name': '4 GB',
+                                      'kubespawner_override': {'mem_limit': '4G', 'mem_guarantee': '2G'}
+                                  },
+                                  '8': {
+                                      'display_name': '8 GB',
+                                      'kubespawner_override': {'mem_limit': '8G', 'mem_guarantee': '4G'}
+                                  },
+                                  '16': {
+                                      'display_name': '16 GB',
+                                      'kubespawner_override': {'mem_limit': '16G', 'mem_guarantee': '8G'}
+                                  },
+                                  '32': {
+                                      'display_name': '32 GB',
+                                      'default': True,
+                                      'kubespawner_override': {'mem_limit': '32G', 'mem_guarantee': '16G'}
+                                  },
+                                  '64': {
+                                      'display_name': '64 GB',
+                                      'kubespawner_override': {'mem_limit': '64G', 'mem_guarantee': '32G'}
+                                  },
+                                  '128': {
+                                      'display_name': '128 GB',
+                                      'kubespawner_override': {'mem_limit': '128G', 'mem_guarantee': '64G'}
+                                  }
+                              }
+                          }
+                      }
+                  }
+              ]
+          else:
+              # Regular users get only CPU profile
+              return [
+                  {
+                      'display_name': '💻 Standard Notebook Environment',
+                      'description': 'CPU-only notebook server (2 cores, 4GB RAM) - suitable for general data analysis and Python programming. For GPU access, please contact your administrator.',
+                      'default': True,
+                      'kubespawner_override': {
+                          'cpu_limit': 2,
+                          'cpu_guarantee': 1,
+                          'mem_limit': '4G',
+                          'mem_guarantee': '2G',
+                          'image': 'quay.io/jupyter/pytorch-notebook:2025-11-06'
+                      }
+                  }
+              ]
+      
+      # Set the dynamic profile list
+      c.KubeSpawner.profile_list = dynamic_profile_list
         
     gpu-config: |
       # Make GPUs available to users
