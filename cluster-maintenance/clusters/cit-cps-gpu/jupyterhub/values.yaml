@@ -108,21 +108,19 @@ hub:
       GPU_PROFILE_SLUGS = {'gpu-pytorch-single', 'gpu-tensorflow-single', 'gpu-pytorch-dual', 'gpu-tensorflow-dual'}
       ALLOWED_GPU_GROUPS = {'cpsHPCAccess', 'jupyter_admin'}
       
-      # Generate HTML form with server-side group detection
-      # We use a lambda to inject user groups into the static HTML
-      def get_options_form(spawner):
-          """Generate form HTML with user's GPU access status injected"""
+      # Store group detection function for use in pre_spawn_hook
+      def user_has_gpu_access(spawner):
+          """Check if user has GPU access based on groups"""
           group_names = {group.name for group in spawner.user.groups}
-          has_gpu_access = bool(group_names & ALLOWED_GPU_GROUPS)
           is_admin = spawner.user.admin
-          
-          spawner.log.info(f"Rendering form for {spawner.user.name}: groups={group_names}, GPU access={has_gpu_access}, admin={is_admin}")
-          
-          # Override GPU access if user is admin
-          if is_admin:
-              has_gpu_access = True
-          
-          return f"""
+          has_access = bool(group_names & ALLOWED_GPU_GROUPS) or is_admin
+          spawner.log.info(f"GPU access check for {spawner.user.name}: groups={group_names}, access={has_access}")
+          return has_access
+      
+      # Static HTML - we'll handle access control in pre_spawn_hook only
+      # KubeSpawner doesn't support callable options_form, so we show all profiles
+      # and enforce access via backend pre_spawn_hook
+      c.Spawner.options_form = """
       <style>
         .profile-container {{
           max-width: 900px;
@@ -255,29 +253,14 @@ hub:
       </div>
       
       <script>
-      (function() {{
-        // GPU access is determined server-side and injected into the page
-        var hasGPUAccess = {str(has_gpu_access).lower()};
-        
-        // Hide GPU profiles if user doesn't have access
-        if (!hasGPUAccess) {{
-          var gpuOptgroup = document.getElementById('gpu-optgroup');
-          if (gpuOptgroup) {{
-            gpuOptgroup.style.display = 'none';
-          }}
-          
-          var notice = document.getElementById('gpu-access-notice');
-          if (notice) {{
-            notice.style.display = 'block';
-          }}
-        }}
-        
-        console.log('GPU Access Check (server-side):', hasGPUAccess);
-      }})();
+      (function() {
+        // Note: We show all profiles in the UI but enforce access via backend
+        // This is because KubeSpawner doesn't support callable options_form
+        // If user selects GPU profile without access, they'll get a clear error message
+        console.log('Profile form loaded - access control via backend');
+      })();
       </script>
       """
-      
-      c.Spawner.options_form = get_options_form
       
       # Process form submission
       def options_from_form(formdata):
@@ -428,22 +411,26 @@ hub:
       async def apply_profile_settings(spawner):
           """
           Apply profile settings and enforce group-based access control.
-          This approach mimics Docker Swarm's successful implementation.
+          Backend enforcement since KubeSpawner doesn't support callable options_form.
           """
           # Get selected profile from user options
           profile_slug = spawner.user_options.get('profile', 'cpu-medium')
           
           spawner.log.info(f"User {spawner.user.name} selected profile: {profile_slug}")
           
-          # Get user's groups
-          group_names = {group.name for group in spawner.user.groups}
-          
           # Check if it's a GPU profile
           if profile_slug in GPU_PROFILE_SLUGS:
-              # Verify GPU access
-              if not (group_names & ALLOWED_GPU_GROUPS):
+              # Verify GPU access (admins always have access)
+              if not user_has_gpu_access(spawner):
                   spawner.log.warning(f"User {spawner.user.name} attempted GPU profile without permission")
-                  raise Exception(f"⚠️ Access Denied: GPU profiles require membership in 'cpsHPCAccess' or 'jupyter_admin' group. Please contact CPS admins to request GPU access.")
+                  raise Exception(
+                      "🚫 GPU Access Denied\n\n"
+                      "You have selected a GPU profile but your account does not have GPU access.\n\n"
+                      "To request GPU access, please contact the CPS administrators and ask for "
+                      "membership in the 'cpsHPCAccess' group.\n\n"
+                      "Please select a CPU profile instead."
+                  )
+              group_names = {group.name for group in spawner.user.groups}
               spawner.log.info(f"User {spawner.user.name} authorized for GPU profile (groups: {group_names & ALLOWED_GPU_GROUPS})")
           
           # Apply profile configuration
