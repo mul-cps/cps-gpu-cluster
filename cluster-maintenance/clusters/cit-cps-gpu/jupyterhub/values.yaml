@@ -158,7 +158,9 @@ hub:
           return html
       
       
-      c.Spawner.options_form = dynamic_profile_form
+      # TEST: Try static HTML first to verify options_form works at all
+      c.Spawner.options_form = '<div><h3>TEST FORM</h3><select name="profile"><option value="cpu-medium">Test Option</option></select></div>'
+      # c.Spawner.options_form = dynamic_profile_form
       
       # Process form submission
       def options_from_form(formdata):
