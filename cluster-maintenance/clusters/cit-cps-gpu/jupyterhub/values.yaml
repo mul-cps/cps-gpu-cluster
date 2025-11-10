@@ -377,6 +377,23 @@ hub:
                   spawner.environment = {}
               spawner.environment.update({'NVIDIA_VISIBLE_DEVICES':'all','NVIDIA_DRIVER_CAPABILITIES':'compute,utility'})
               spawner.node_selector = dict(getattr(spawner,'node_selector',{}) or {}, **{'accelerator':'nvidia'})
+              
+              # Enable sudo privileges for GPU users with explicit privilege escalation
+              spawner.environment['GRANT_SUDO'] = 'yes'
+              spawner.environment['CHOWN_HOME'] = 'yes'
+              spawner.environment['CHOWN_HOME_OPTS'] = '-R'
+              # Set security context to allow privilege escalation for GPU profiles
+              if 'securityContext' not in spawner.extra_pod_config:
+                  spawner.extra_pod_config['securityContext'] = {}
+              spawner.extra_pod_config['securityContext']['allowPrivilegeEscalation'] = True
+              spawner.extra_pod_config['securityContext']['runAsNonRoot'] = False
+              # Set container security context
+              spawner.extra_container_config = spawner.extra_container_config or {}
+              if 'securityContext' not in spawner.extra_container_config:
+                  spawner.extra_container_config['securityContext'] = {}
+              spawner.extra_container_config['securityContext']['allowPrivilegeEscalation'] = True
+              spawner.extra_container_config['securityContext']['runAsUser'] = 0  # Run as root initially for sudo setup
+              spawner.extra_container_config['securityContext']['capabilities'] = {'add': ['SYS_ADMIN', 'DAC_OVERRIDE']}
 
           # Custom image (admins only)
           if custom_image:
@@ -401,6 +418,23 @@ hub:
                   spawner.environment = {}
               spawner.environment.update({'NVIDIA_VISIBLE_DEVICES':'all','NVIDIA_DRIVER_CAPABILITIES':'compute,utility'})
               spawner.node_selector = dict(getattr(spawner,'node_selector',{}) or {}, **{'accelerator':'nvidia'})
+              
+              # Enable sudo privileges for custom GPU users with explicit privilege escalation
+              spawner.environment['GRANT_SUDO'] = 'yes'
+              spawner.environment['CHOWN_HOME'] = 'yes'
+              spawner.environment['CHOWN_HOME_OPTS'] = '-R'
+              # Set security context to allow privilege escalation for custom GPU configurations
+              if 'securityContext' not in spawner.extra_pod_config:
+                  spawner.extra_pod_config['securityContext'] = {}
+              spawner.extra_pod_config['securityContext']['allowPrivilegeEscalation'] = True
+              spawner.extra_pod_config['securityContext']['runAsNonRoot'] = False
+              # Set container security context
+              spawner.extra_container_config = spawner.extra_container_config or {}
+              if 'securityContext' not in spawner.extra_container_config:
+                  spawner.extra_container_config['securityContext'] = {}
+              spawner.extra_container_config['securityContext']['allowPrivilegeEscalation'] = True
+              spawner.extra_container_config['securityContext']['runAsUser'] = 0  # Run as root initially for sudo setup
+              spawner.extra_container_config['securityContext']['capabilities'] = {'add': ['SYS_ADMIN', 'DAC_OVERRIDE']}
 
           # Record profile on the server
           spawner.environment = spawner.environment or {}
@@ -463,6 +497,65 @@ hub:
           'NVIDIA_DRIVER_CAPABILITIES': 'compute,utility'
       }
 
+    96-gpu-sudo-setup: |
+      """
+      Ensure GPU users have proper sudo configuration with privilege escalation.
+      """
+      def setup_gpu_sudo_privileges(spawner):
+          """Configure sudo privileges for GPU-enabled profiles"""
+          profile_slug = spawner.user_options.get('profile', 'cpu-default')
+          custom_gpus = int(spawner.user_options.get('custom_gpus', 0) or 0)
+          
+          # Check if this is a GPU profile or custom GPU configuration
+          is_gpu_profile = profile_slug in {'gpu-pytorch-single','gpu-tensorflow-single','gpu-pytorch-dual','gpu-tensorflow-dual','gpu-mig-1g','gpu-mig-2g'}
+          has_custom_gpu = custom_gpus > 0
+          
+          if is_gpu_profile or has_custom_gpu:
+              # Ensure the user has GPU access
+              if not user_has_gpu_access(spawner):
+                  return
+                  
+              # Configure startup command to setup sudo properly
+              spawner.extra_container_config = spawner.extra_container_config or {}
+              if 'lifecycle' not in spawner.extra_container_config:
+                  spawner.extra_container_config['lifecycle'] = {}
+              
+              # Enhanced postStart script for GPU users with sudo setup
+              spawner.extra_container_config['lifecycle']['postStart'] = {
+                  'exec': {
+                      'command': [
+                          '/bin/bash', '-c',
+                          '''
+                          # Install tmux if missing
+                          command -v tmux >/dev/null 2>&1 || (apt-get update && apt-get install -y tmux || true)
+                          
+                          # Setup sudo for jovyan user (GPU profiles run as root initially)
+                          if [ "$NB_UID" != "0" ]; then
+                              # Add jovyan to sudo group if not already
+                              usermod -aG sudo jovyan 2>/dev/null || true
+                              # Allow passwordless sudo for jovyan
+                              echo "jovyan ALL=(ALL) NOPASSWD:ALL" > /etc/sudoers.d/jovyan
+                              chmod 440 /etc/sudoers.d/jovyan
+                          fi
+                          
+                          # Ensure proper ownership of home directory
+                          chown -R jovyan:users /home/jovyan || true
+                          '''
+                      ]
+                  }
+              }
+              
+              spawner.log.info(f"GPU sudo privileges configured for {spawner.user.name} with profile {profile_slug}")
+      
+      # Add the sudo setup to the pre_spawn_hook chain
+      original_pre_spawn_hook = c.KubeSpawner.pre_spawn_hook
+      
+      async def combined_pre_spawn_hook(spawner):
+          await original_pre_spawn_hook(spawner)
+          setup_gpu_sudo_privileges(spawner)
+          
+      c.KubeSpawner.pre_spawn_hook = combined_pre_spawn_hook
+
 singleuser:
   image:
     name: quay.io/jupyter/tensorflow-notebook
@@ -472,6 +565,10 @@ singleuser:
   # Ensure NVIDIA runtime at the Helm layer
   extraPodConfig:
     runtimeClassName: nvidia
+    # Base security context (GPU profiles will override with more privileges)
+    securityContext:
+      allowPrivilegeEscalation: false
+      runAsNonRoot: true
 
   storage:
     capacity: 10Gi
@@ -489,7 +586,7 @@ singleuser:
   uid: 1000
   fsGid: 100
   extraEnv:
-    GRANT_SUDO: "yes"
+    GRANT_SUDO: "no"  # Default no sudo for CPU profiles, GPU profiles will override
     NOTEBOOK_ARGS: "--allow-root"
 
 scheduling:
