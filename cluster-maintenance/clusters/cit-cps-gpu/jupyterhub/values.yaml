@@ -26,7 +26,6 @@ hub:
     JupyterHub:
       admin_access: true
       authenticator_class: oauthenticator.generic.GenericOAuthenticator
-      # Enable named servers for power users
       allow_named_servers: true
       named_server_limit_per_user: 3
       template_vars:
@@ -43,15 +42,10 @@ hub:
       userdata_url: "https://auth.cps.unileoben.ac.at/application/o/userinfo/"
       login_service: "CPS Authentik"
       username_claim: "preferred_username"
-      scope:
-        - "openid"
-        - "profile"
-        - "email"
-        - "groups"
+      scope: ["openid","profile","email","groups"]
       claim_groups_key: "groups"
       manage_groups: true
-      admin_groups:
-        - "jupyter_admin"
+      admin_groups: ["jupyter_admin"]
 
   db:
     pvc:
@@ -66,11 +60,9 @@ hub:
     - name: custom-templates
       mountPath: /etc/jupyterhub/custom
 
-  # Install OAuthenticator package and custom logic
   extraConfig:
     00-install-packages: |
-      import subprocess
-      import sys
+      import subprocess, sys
       try:
           import oauthenticator  # noqa: F401
       except ImportError:
@@ -80,7 +72,7 @@ hub:
       # Configure custom template path
       c.JupyterHub.template_paths = ['/etc/jupyterhub/custom']
 
-      # Configure custom templates and info page
+      # Simple info page
       from jupyterhub.handlers import BaseHandler
       from tornado import web
 
@@ -88,208 +80,228 @@ hub:
           @web.authenticated
           async def get(self):
               user = await self.get_current_user()
-              # pull template_vars from Jinja2 globals where JupyterHub stores them
               jinja_env = self.settings.get('jinja2_env', None)
               template_vars = jinja_env.globals.get('template_vars', {}) if jinja_env else {}
               org = template_vars.get('org', {})
-              html = self.render_template(
-                  "info.html",
-                  user=user,
-                  base_url=self.base_url,  # correct accessor
-                  org=org,
-              )
+              html = self.render_template("info.html", user=user, base_url=self.base_url, org=org)
               self.write(html)
 
-      c.JupyterHub.extra_handlers = [
-          (r"/info", InfoHandler),
-      ]
+      c.JupyterHub.extra_handlers = [(r"/info", InfoHandler)]
 
     02-profiles: |
-      # GPU profiles requiring access control
-      GPU_PROFILE_SLUGS = {'gpu-pytorch-single', 'gpu-tensorflow-single', 'gpu-pytorch-dual', 'gpu-tensorflow-dual'}
-      ALLOWED_GPU_GROUPS = {'cpsHPCAccess', 'jupyter_admin'}
+      # ---- Access logic ----
+      GPU_PROFILE_SLUGS = {'gpu-pytorch-single','gpu-tensorflow-single','gpu-pytorch-dual','gpu-tensorflow-dual'}
+      ALLOWED_GPU_GROUPS = {'cpsHPCAccess','jupyter_admin'}
 
-      # Store group detection function for use in pre_spawn_hook
       def user_has_gpu_access(spawner):
-          """Check if user has GPU access based on groups"""
-          group_names = {getattr(group, "name", group) for group in spawner.user.groups}
+          group_names = {getattr(g, "name", g) for g in spawner.user.groups}
           is_admin = bool(spawner.user.admin)
-          has_access = bool(group_names & ALLOWED_GPU_GROUPS) or is_admin
-          spawner.log.info(f"GPU access check for {spawner.user.name}: groups={group_names}, access={has_access}")
-          return has_access
+          ok = bool(group_names & ALLOWED_GPU_GROUPS) or is_admin
+          spawner.log.info(f"GPU access check for {spawner.user.name}: groups={group_names}, access={ok}")
+          return ok
 
-      # Static HTML - we'll handle access control in pre_spawn_hook only
-      # KubeSpawner doesn't support callable options_form, so we show all profiles
-      # and enforce access via backend pre_spawn_hook
+      # ---- UI: Layered boxed style selector ----
+      # Compact, card-based overview; redundant text removed.
       c.Spawner.options_form = """
       <style>
-        .profile-container {{
-          max-width: 900px;
-          margin: 30px auto;
-          padding: 0 15px;
-        }}
-        .options-card {{
-          background: #ffffff;
-          border: 1px solid #e5e7eb;
-          border-radius: 12px;
-          box-shadow: 0 6px 16px rgba(17,24,39,0.08);
-          padding: 22px 24px;
-        }}
-        .options-card + .options-card {{
-          margin-top: 18px;
-        }}
-        .card-title {{
-          font-size: 18px;
-          font-weight: 600;
-          color: #1f2937;
-          margin: 0 0 12px 0;
-          display: flex;
-          align-items: center;
-          gap: 10px;
-        }}
-        .muted {{
-          color: #6b7280;
-          font-size: 13px;
-        }}
-        .profile-header {{
-          text-align: center;
-          margin-bottom: 30px;
-        }}
-        .profile-header h2 {{
-          color: #2c3e50;
-          font-weight: 300;
-          margin-bottom: 10px;
-        }}
-        .profile-header p {{
-          color: #7f8c8d;
-          font-size: 14px;
-        }}
-        .alert-gpu-restricted {{
-          background: linear-gradient(135deg, #fff3cd 0%, #ffeaa7 100%);
-          border: 2px solid #ffc107;
-          border-radius: 12px;
-          padding: 20px;
-          margin-bottom: 25px;
-          box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-        }}
-        .alert-gpu-restricted h4 {{
-          color: #856404;
-          margin-top: 0;
-          font-size: 18px;
-          display: flex;
-          align-items: center;
-          gap: 10px;
-        }}
-        .alert-gpu-restricted p {{
-          color: #856404;
-          margin-bottom: 0;
-          line-height: 1.6;
-        }}
-        .form-group-custom {{
-          margin-bottom: 25px;
-        }}
-        .form-group-custom label {{
-          font-weight: 500;
-          color: #2c3e50;
-          margin-bottom: 10px;
-          display: block;
-          font-size: 16px;
-        }}
-        .form-control-custom {{
-          width: 100%;
-          padding: 12px 15px;
-          font-size: 15px;
-          border: 2px solid #e0e0e0;
-          border-radius: 8px;
-          background: white;
-          transition: all 0.3s ease;
-        }}
-        .form-control-custom:focus {{
-          outline: none;
-          border-color: #3498db;
-          box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.1);
-        }}
-        .form-control-custom option {{
-          padding: 10px;
-        }}
-        .profile-info {{
-          background: #f8f9fa;
-          border-radius: 8px;
-          padding: 15px;
-          margin-top: 20px;
-          font-size: 13px;
-          color: #6c757d;
-        }}
-        .gpu-badge {{
-          background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-          color: white;
-          padding: 3px 8px;
-          border-radius: 4px;
-          font-size: 11px;
-          font-weight: 600;
-          margin-left: 8px;
-        }}
+        .hub-ui * { box-sizing: border-box; }
+        .hub-ui { max-width: 980px; margin: 24px auto; padding: 0 8px; font-family: system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, 'Helvetica Neue', Arial, 'Noto Sans', sans-serif; }
+        .ui-header { display:flex; align-items:center; justify-content:space-between; margin-bottom: 14px; }
+        .ui-title { font-size: 20px; font-weight: 600; letter-spacing: .1px; color: #1f2937; }
+        .subtle { color: #6b7280; font-size: 13px; }
+
+        .layer { background: #fff; border: 1px solid #e5e7eb; border-radius: 14px; box-shadow:
+                 0 1px 1px rgba(0,0,0,.03),
+                 0 8px 20px rgba(17,24,39,.06);
+                 padding: 18px; margin-bottom: 14px; }
+        .layer + .layer { margin-top: 16px; }
+
+        .grid { display:grid; grid-template-columns: repeat(2, minmax(0,1fr)); gap: 12px; }
+        @media (max-width: 820px) { .grid { grid-template-columns: 1fr; } }
+
+        .card { position: relative; border: 1px solid #e5e7eb; border-radius: 12px; padding: 14px; transition: box-shadow .15s ease, border-color .15s ease, transform .05s ease; background:
+                linear-gradient(180deg, rgba(249,250,251,.6), rgba(255,255,255,1)); }
+        .card:hover { box-shadow: 0 8px 22px rgba(17,24,39,.08); border-color:#d1d5db; transform: translateY(-1px); }
+        .card input[type="radio"] { position: absolute; inset:0; opacity:0; cursor:pointer; }
+        .card.selected { border-color: #3b82f6; box-shadow: 0 0 0 3px rgba(59,130,246,.15); }
+
+        .row { display:flex; align-items:center; justify-content:space-between; gap: 10px; }
+        .name { font-weight: 600; color:#111827; }
+        .meta { display:flex; gap:8px; flex-wrap: wrap; }
+        .chip { font-size:12px; border:1px solid #e5e7eb; padding:3px 8px; border-radius:999px; color:#374151; background:#f9fafb; }
+        .gpu-chip { border-color:#c7d2fe; background:#eef2ff; color:#4338ca; }
+        .cpu-chip { border-color:#bae6fd; background:#e0f2fe; color:#075985; }
+        .ram-chip { border-color:#c7f9cc; background:#e8fce9; color:#166534; }
+
+        .muted { color:#6b7280; font-size:12px; }
+        .hr { height:1px; background:linear-gradient(90deg, rgba(229,231,235,0), rgba(229,231,235,1), rgba(229,231,235,0)); margin: 10px 0; }
+
+        .flex { display:flex; gap: 10px; align-items:center; flex-wrap: wrap; }
+        .input { width:100%; padding:10px 12px; border:1.5px solid #e5e7eb; border-radius:10px; font-size:14px; background:white; transition:border-color .15s ease, box-shadow .15s ease; }
+        .input:focus { outline:none; border-color:#3b82f6; box-shadow:0 0 0 3px rgba(59,130,246,.12); }
+
+        .select { padding:10px 12px; border:1.5px solid #e5e7eb; border-radius:10px; background:white; }
+        .hint { font-size:12px; color:#6b7280; margin-top: 4px; }
+
+        .notice { display:none; border:1px dashed #f59e0b; background: linear-gradient(180deg, #fff7ed, #fff); color:#92400e; border-radius:12px; padding:12px; }
+        .notice strong { color:#b45309; }
+        .badgelite { font-size:11px; color:#6b7280; }
       </style>
 
-      <div class="profile-container">
-        <div class="profile-header">
-          <h2>🚀 Choose Your Computing Environment</h2>
-          <p>Select the resources that match your computational needs</p>
+      <div class="hub-ui">
+        <div class="ui-header">
+          <div class="ui-title">Select a Profile</div>
+          <div class="badgelite">Tip: choose CPU for light work, GPU for DL workloads</div>
         </div>
 
-        <div id="gpu-access-notice" style="display: none;" class="alert-gpu-restricted">
-          <h4>
-            <svg width="24" height="24" fill="currentColor" viewBox="0 0 16 16" style="vertical-align: middle;">
-              <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"/>
-              <path d="m8.93 6.588-2.29.287-.082.38.45.083c.294.07.352.176.288.469l-.738 3.468c-.194.897.105 1.319.808 1.319.545 0 1.178-.252 1.465-.598l.088-.416c-.2.176-.492.246-.686.246-.275 0-.375-.193-.304-.533L8.93 6.588zM9 4.5a1 1 0 1 1-2 0 1 1 0 0 1 2 0z"/>
-            </svg>
-            CPU-Only Access
-          </h4>
-          <p style="margin-bottom: 15px;">
-            Your account currently has access to <strong>CPU-only computing profiles</strong>.
-          </p>
-          <p style="margin-bottom: 0;">
-            To request GPU access for deep learning and accelerated computing workloads, 
-            please contact the CPS administrators and request membership in the 
-            <code style="background: rgba(255,255,255,0.8); padding: 2px 8px; border-radius: 4px; font-weight: 600;">cpsHPCAccess</code> group.
-          </p>
+        <div id="gpu-access-notice" class="notice">
+          <strong>No GPU access.</strong> Select a CPU profile or contact admins for <code>cpsHPCAccess</code>.
         </div>
 
-        <div class="options-card">
-          <div class="card-title">⚙️ Computing Profile</div>
-          <div class="form-group-custom">
-            <label for="profile-select" class="muted">Select a resource profile</label>
-            <select name="profile" id="profile-select" class="form-control-custom">
-              <optgroup label="💻 CPU Profiles - Available to All Users">
-                <option value="cpu-small">Small - 2 CPUs, 1GB RAM</option>
-                <option value="cpu-medium" selected>Medium - 4 CPUs, 4GB RAM (Recommended)</option>
-                <option value="cpu-large">Large - 8 CPUs, 8GB RAM</option>
-                <option value="cpu-xlarge">X-Large - 16 CPUs, 16GB RAM</option>
-              </optgroup>
-              <optgroup id="gpu-optgroup" label="🚀 GPU Profiles - Requires Authorization">
-                <option value="gpu-pytorch-single">Single A100 GPU - PyTorch (8 CPUs, 32GB RAM)</option>
-                <option value="gpu-tensorflow-single">Single A100 GPU - TensorFlow (8 CPUs, 32GB RAM)</option>
-                <option value="gpu-pytorch-dual">Dual A100 GPUs - PyTorch (16 CPUs, 64GB RAM)</option>
-                <option value="gpu-tensorflow-dual">Dual A100 GPUs - TensorFlow (16 CPUs, 64GB RAM)</option>
-              </optgroup>
-            </select>
+        <!-- Profiles -->
+        <div class="layer">
+          <div class="grid" id="profile-grid">
+            <!-- CPU small -->
+            <label class="card" data-slug="cpu-small">
+              <input type="radio" name="profile" value="cpu-small">
+              <div class="row">
+                <div class="name">CPU Small</div>
+                <div class="meta">
+                  <span class="chip cpu-chip">2 vCPU</span>
+                  <span class="chip ram-chip">1 GiB</span>
+                </div>
+              </div>
+            </label>
+
+            <!-- CPU medium (default) -->
+            <label class="card selected" data-slug="cpu-medium">
+              <input type="radio" name="profile" value="cpu-medium" checked>
+              <div class="row">
+                <div class="name">CPU Medium</div>
+                <div class="meta">
+                  <span class="chip cpu-chip">4 vCPU</span>
+                  <span class="chip ram-chip">4 GiB</span>
+                </div>
+              </div>
+            </label>
+
+            <!-- CPU large -->
+            <label class="card" data-slug="cpu-large">
+              <input type="radio" name="profile" value="cpu-large">
+              <div class="row">
+                <div class="name">CPU Large</div>
+                <div class="meta">
+                  <span class="chip cpu-chip">8 vCPU</span>
+                  <span class="chip ram-chip">8 GiB</span>
+                </div>
+              </div>
+            </label>
+
+            <!-- CPU xlarge -->
+            <label class="card" data-slug="cpu-xlarge">
+              <input type="radio" name="profile" value="cpu-xlarge">
+              <div class="row">
+                <div class="name">CPU X-Large</div>
+                <div class="meta">
+                  <span class="chip cpu-chip">16 vCPU</span>
+                  <span class="chip ram-chip">16 GiB</span>
+                </div>
+              </div>
+            </label>
+
+            <!-- GPU single PyTorch -->
+            <label class="card" data-slug="gpu-pytorch-single" id="card-gpu-pt-1">
+              <input type="radio" name="profile" value="gpu-pytorch-single">
+              <div class="row">
+                <div class="name">GPU: PyTorch (1×)</div>
+                <div class="meta">
+                  <span class="chip gpu-chip">1× GPU</span>
+                  <span class="chip cpu-chip">8 vCPU</span>
+                  <span class="chip ram-chip">32 GiB</span>
+                </div>
+              </div>
+            </label>
+
+            <!-- GPU single TensorFlow -->
+            <label class="card" data-slug="gpu-tensorflow-single" id="card-gpu-tf-1">
+              <input type="radio" name="profile" value="gpu-tensorflow-single">
+              <div class="row">
+                <div class="name">GPU: TensorFlow (1×)</div>
+                <div class="meta">
+                  <span class="chip gpu-chip">1× GPU</span>
+                  <span class="chip cpu-chip">8 vCPU</span>
+                  <span class="chip ram-chip">32 GiB</span>
+                </div>
+              </div>
+            </label>
+
+            <!-- GPU dual PyTorch -->
+            <label class="card" data-slug="gpu-pytorch-dual" id="card-gpu-pt-2">
+              <input type="radio" name="profile" value="gpu-pytorch-dual">
+              <div class="row">
+                <div class="name">GPU: PyTorch (2×)</div>
+                <div class="meta">
+                  <span class="chip gpu-chip">2× GPU</span>
+                  <span class="chip cpu-chip">16 vCPU</span>
+                  <span class="chip ram-chip">64 GiB</span>
+                </div>
+              </div>
+            </label>
+
+            <!-- GPU dual TensorFlow -->
+            <label class="card" data-slug="gpu-tensorflow-dual" id="card-gpu-tf-2">
+              <input type="radio" name="profile" value="gpu-tensorflow-dual">
+              <div class="row">
+                <div class="name">GPU: TensorFlow (2×)</div>
+                <div class="meta">
+                  <span class="chip gpu-chip">2× GPU</span>
+                  <span class="chip cpu-chip">16 vCPU</span>
+                  <span class="chip ram-chip">64 GiB</span>
+                </div>
+              </div>
+            </label>
           </div>
+          <div class="hr"></div>
+          <div class="muted">GPU cards require authorization.</div>
         </div>
 
-        <div class="options-card" id="advanced-panel" style="display:none;">
-          <div class="card-title">🧪 Advanced Options <span class="muted">(admins only)</span></div>
-          <div class="form-group-custom">
-            <label for="custom-image" class="muted">Custom container image (registry/repo:tag)</label>
-            <input type="text" id="custom-image" name="custom_image" class="form-control-custom" placeholder="e.g. docker.io/jupyter/scipy-notebook:2025-11-06" />
-            <div class="muted" style="margin-top:8px;">If provided, this image will override the profile's default image. All other resource settings still come from the selected profile.</div>
+        <!-- Custom image layer -->
+        <div class="layer">
+          <div class="row" style="align-items:flex-start;">
+            <div style="flex:1; min-width: 260px;">
+              <div class="name" style="margin-bottom:6px;">Optional: Custom Image</div>
+              <input class="input" type="text" id="custom-image" name="custom_image" placeholder="registry/repo:tag (e.g. docker.io/jupyter/scipy-notebook:2025-11-06)" />
+              <div class="hint">Admins only. If set, it overrides the profile image.</div>
+            </div>
+            <div>
+              <div class="name" style="margin-bottom:6px;">GPUs</div>
+              <select class="select" id="custom-gpus" name="custom_gpus">
+                <option value="0" selected>0 × GPU</option>
+                <option value="1">1 × GPU</option>
+                <option value="2">2 × GPU</option>
+              </select>
+              <div class="hint">When using a custom image, you can also request GPUs.</div>
+            </div>
           </div>
         </div>
       </div>
 
       <script>
-      (function() {
-        var allowedGPUGroups = ['cpsHPCAccess', 'jupyter_admin'];
+      (function(){
+        // card selection styling
+        var cards = document.querySelectorAll('.card');
+        function selectCard(el){
+          cards.forEach(function(c){ c.classList.remove('selected'); });
+          el.classList.add('selected');
+          var input = el.querySelector('input[type="radio"]');
+          if (input) input.checked = true;
+        }
+        cards.forEach(function(c){
+          c.addEventListener('click', function(){ selectCard(c); });
+        });
 
+        // GPU auth check; hide/disable GPU cards and custom GPU select if unauthorized
+        var allowedGPUGroups = ['cpsHPCAccess','jupyter_admin'];
         function getCookie(name) {
           return document.cookie.split('; ').reduce(function(val, c) {
             var parts = c.split('=');
@@ -297,196 +309,160 @@ hub:
           }, null);
         }
         var xsrf = getCookie('_xsrf');
-
         fetch('/hub/api/user', {
           credentials: 'same-origin',
-          headers: Object.assign({
-            'Accept': 'application/json'
-          }, xsrf ? { 'X-XSRFToken': xsrf } : {})
+          headers: Object.assign({'Accept':'application/json'}, xsrf ? {'X-XSRFToken': xsrf} : {})
         })
-        .then(function(response) {
-          if (!response.ok) throw new Error('HTTP ' + response.status);
-          return response.json();
-        })
-        .then(function(userData) {
-          var groups = Array.isArray(userData.groups) ? userData.groups.map(function(g){
-            return (typeof g === 'string') ? g : (g && g.name) ? g.name : '';
-          }) : [];
-          var isAdmin = !!userData.admin;
-          var hasGPUAccess = isAdmin || groups.some(function(g){ return allowedGPUGroups.indexOf(g) !== -1; });
+        .then(function(r){ if(!r.ok) throw new Error('HTTP '+r.status); return r.json(); })
+        .then(function(user){
+          var groups = Array.isArray(user.groups) ? user.groups.map(function(g){ return typeof g==='string'? g : (g&&g.name)? g.name : '' }) : [];
+          var isAdmin = !!user.admin;
+          var hasGPU = isAdmin || groups.some(function(g){ return allowedGPUGroups.indexOf(g) !== -1; });
 
-          if (!hasGPUAccess) {
-            var gpuOptgroup = document.getElementById('gpu-optgroup');
-            if (gpuOptgroup) gpuOptgroup.style.display = 'none';
+          if (!hasGPU) {
+            // disable GPU cards
+            ['card-gpu-pt-1','card-gpu-tf-1','card-gpu-pt-2','card-gpu-tf-2'].forEach(function(id){
+              var el = document.getElementById(id);
+              if (el) {
+                el.style.opacity = .5;
+                var inp = el.querySelector('input[type="radio"]');
+                if (inp) { inp.disabled = true; }
+              }
+            });
+            // force custom_gpus = 0
+            var cg = document.getElementById('custom-gpus');
+            if (cg) {
+              cg.value = '0';
+              Array.from(cg.options).forEach(function(opt){
+                if (opt.value !== '0') opt.disabled = true;
+              });
+            }
             var notice = document.getElementById('gpu-access-notice');
             if (notice) notice.style.display = 'block';
           }
-          var advanced = document.getElementById('advanced-panel');
-          if (advanced && isAdmin) advanced.style.display = 'block';
         })
-        .catch(function(err) {
-          console.warn('User info fetch failed; leaving GPU options visible. Error:', err);
-        });
+        .catch(function(){ /* leave defaults */ });
       })();
       </script>
       """
 
-      # Process form submission
+      # ---- Back-end: parse form ----
       def options_from_form(formdata):
-          """Extract selected profile and optional custom image from form data"""
-          options = {}
-          profile = formdata.get('profile', ['cpu-medium'])[0]
-          options['profile'] = profile
+          opts = {}
+          opts['profile'] = formdata.get('profile', ['cpu-medium'])[0]
           custom_image = formdata.get('custom_image', [''])[0].strip()
           if custom_image:
-              options['custom_image'] = custom_image
-          return options
+              opts['custom_image'] = custom_image
+          custom_gpus = formdata.get('custom_gpus', ['0'])[0]
+          try:
+              opts['custom_gpus'] = int(custom_gpus)
+          except Exception:
+              opts['custom_gpus'] = 0
+          return opts
 
       c.Spawner.options_from_form = options_from_form
 
-      # Define profile_list for KubeSpawner validation
+      # ---- KubeSpawner profile list (for validation only) ----
       c.KubeSpawner.profile_list = [
-          {'display_name': 'Small - 2 CPUs, 1GB RAM', 'slug': 'cpu-small', 'description': 'CPU-only profile for light workloads'},
-          {'display_name': 'Medium - 4 CPUs, 4GB RAM', 'slug': 'cpu-medium', 'description': 'CPU-only profile for standard workloads', 'default': True},
-          {'display_name': 'Large - 8 CPUs, 8GB RAM', 'slug': 'cpu-large', 'description': 'CPU-only profile for heavy workloads'},
-          {'display_name': 'X-Large - 16 CPUs, 16GB RAM', 'slug': 'cpu-xlarge', 'description': 'CPU-only profile for very heavy workloads'},
-          {'display_name': 'Single A100 GPU - PyTorch', 'slug': 'gpu-pytorch-single', 'description': 'GPU profile with PyTorch (8 CPUs, 32GB RAM)'},
-          {'display_name': 'Single A100 GPU - TensorFlow', 'slug': 'gpu-tensorflow-single', 'description': 'GPU profile with TensorFlow (8 CPUs, 32GB RAM)'},
-          {'display_name': 'Dual A100 GPUs - PyTorch', 'slug': 'gpu-pytorch-dual', 'description': 'GPU profile with PyTorch (16 CPUs, 64GB RAM)'},
-          {'display_name': 'Dual A100 GPUs - TensorFlow', 'slug': 'gpu-tensorflow-dual', 'description': 'GPU profile with TensorFlow (16 CPUs, 64GB RAM)'},
+          {'display_name': 'CPU Small', 'slug': 'cpu-small', 'description': '2 vCPU • 1 GiB'},
+          {'display_name': 'CPU Medium', 'slug': 'cpu-medium', 'description': '4 vCPU • 4 GiB', 'default': True},
+          {'display_name': 'CPU Large', 'slug': 'cpu-large', 'description': '8 vCPU • 8 GiB'},
+          {'display_name': 'CPU X-Large', 'slug': 'cpu-xlarge', 'description': '16 vCPU • 16 GiB'},
+          {'display_name': 'GPU PyTorch (1×)', 'slug': 'gpu-pytorch-single', 'description': '1× GPU • 8 vCPU • 32 GiB'},
+          {'display_name': 'GPU TF (1×)', 'slug': 'gpu-tensorflow-single', 'description': '1× GPU • 8 vCPU • 32 GiB'},
+          {'display_name': 'GPU PyTorch (2×)', 'slug': 'gpu-pytorch-dual', 'description': '2× GPU • 16 vCPU • 64 GiB'},
+          {'display_name': 'GPU TF (2×)', 'slug': 'gpu-tensorflow-dual', 'description': '2× GPU • 16 vCPU • 64 GiB'},
       ]
 
-      # Profile configurations (used by pre_spawn_hook to apply settings)
+      # ---- Canonical profile configs ----
       PROFILE_CONFIGS = {
-          'cpu-small': {
-              'image': 'quay.io/jupyter/datascience-notebook:2025-11-06',
-              'cpu_limit': 2.0, 'cpu_guarantee': 0.5,
-              'mem_limit': '1G', 'mem_guarantee': '256M',
-          },
-          'cpu-medium': {
-              'image': 'quay.io/jupyter/datascience-notebook:2025-11-06',
-              'cpu_limit': 4.0, 'cpu_guarantee': 1.0,
-              'mem_limit': '4G', 'mem_guarantee': '1G',
-          },
-          'cpu-large': {
-              'image': 'quay.io/jupyter/datascience-notebook:2025-11-06',
-              'cpu_limit': 8.0, 'cpu_guarantee': 2.0,
-              'mem_limit': '8G', 'mem_guarantee': '2G',
-          },
-          'cpu-xlarge': {
-              'image': 'quay.io/jupyter/datascience-notebook:2025-11-06',
-              'cpu_limit': 16.0, 'cpu_guarantee': 4.0,
-              'mem_limit': '16G', 'mem_guarantee': '4G',
-          },
-          'gpu-pytorch-single': {
-              'image': 'quay.io/jupyter/pytorch-notebook:2025-11-06',
-              'cpu_limit': 8.0, 'cpu_guarantee': 4.0,
-              'mem_limit': '32G', 'mem_guarantee': '16G',
-              'extra_resource_limits': {'nvidia.com/gpu': '1'},
-              'extra_resource_guarantees': {'nvidia.com/gpu': '1'},
-              'node_selector': {'accelerator': 'nvidia'},
-              'environment': {'NVIDIA_VISIBLE_DEVICES': 'all', 'NVIDIA_DRIVER_CAPABILITIES': 'compute,utility'}
-          },
-          'gpu-tensorflow-single': {
-              'image': 'quay.io/jupyter/tensorflow-notebook:2025-11-06',
-              'cpu_limit': 8.0, 'cpu_guarantee': 4.0,
-              'mem_limit': '32G', 'mem_guarantee': '16G',
-              'extra_resource_limits': {'nvidia.com/gpu': '1'},
-              'extra_resource_guarantees': {'nvidia.com/gpu': '1'},
-              'node_selector': {'accelerator': 'nvidia'},
-              'environment': {'NVIDIA_VISIBLE_DEVICES': 'all', 'NVIDIA_DRIVER_CAPABILITIES': 'compute,utility'}
-          },
-          'gpu-pytorch-dual': {
-              'image': 'quay.io/jupyter/pytorch-notebook:2025-11-06',
-              'cpu_limit': 16.0, 'cpu_guarantee': 8.0,
-              'mem_limit': '64G', 'mem_guarantee': '32G',
-              'extra_resource_limits': {'nvidia.com/gpu': '2'},
-              'extra_resource_guarantees': {'nvidia.com/gpu': '2'},
-              'node_selector': {'accelerator': 'nvidia'},
-              'environment': {'NVIDIA_VISIBLE_DEVICES': 'all', 'NVIDIA_DRIVER_CAPABILITIES': 'compute,utility'}
-          },
-          'gpu-tensorflow-dual': {
-              'image': 'quay.io/jupyter/tensorflow-notebook:2025-11-06',
-              'cpu_limit': 16.0, 'cpu_guarantee': 8.0,
-              'mem_limit': '64G', 'mem_guarantee': '32G',
-              'extra_resource_limits': {'nvidia.com/gpu': '2'},
-              'extra_resource_guarantees': {'nvidia.com/gpu': '2'},
-              'node_selector': {'accelerator': 'nvidia'},
-              'environment': {'NVIDIA_VISIBLE_DEVICES': 'all', 'NVIDIA_DRIVER_CAPABILITIES': 'compute,utility'}
-          },
+          'cpu-small':   {'image':'quay.io/jupyter/datascience-notebook:2025-11-06','cpu_limit':2.0,'cpu_guarantee':0.5,'mem_limit':'1G','mem_guarantee':'256M'},
+          'cpu-medium':  {'image':'quay.io/jupyter/datascience-notebook:2025-11-06','cpu_limit':4.0,'cpu_guarantee':1.0,'mem_limit':'4G','mem_guarantee':'1G'},
+          'cpu-large':   {'image':'quay.io/jupyter/datascience-notebook:2025-11-06','cpu_limit':8.0,'cpu_guarantee':2.0,'mem_limit':'8G','mem_guarantee':'2G'},
+          'cpu-xlarge':  {'image':'quay.io/jupyter/datascience-notebook:2025-11-06','cpu_limit':16.0,'cpu_guarantee':4.0,'mem_limit':'16G','mem_guarantee':'4G'},
+
+          'gpu-pytorch-single':   {'image':'quay.io/jupyter/pytorch-notebook:2025-11-06','cpu_limit':8.0,'cpu_guarantee':4.0,'mem_limit':'32G','mem_guarantee':'16G',
+                                   'extra_resource_limits':{'nvidia.com/gpu':'1'}, 'extra_resource_guarantees':{'nvidia.com/gpu':'1'},
+                                   'node_selector':{'accelerator':'nvidia'}, 'environment':{'NVIDIA_VISIBLE_DEVICES':'all','NVIDIA_DRIVER_CAPABILITIES':'compute,utility'}},
+          'gpu-tensorflow-single':{'image':'quay.io/jupyter/tensorflow-notebook:2025-11-06','cpu_limit':8.0,'cpu_guarantee':4.0,'mem_limit':'32G','mem_guarantee':'16G',
+                                   'extra_resource_limits':{'nvidia.com/gpu':'1'}, 'extra_resource_guarantees':{'nvidia.com/gpu':'1'},
+                                   'node_selector':{'accelerator':'nvidia'}, 'environment':{'NVIDIA_VISIBLE_DEVICES':'all','NVIDIA_DRIVER_CAPABILITIES':'compute,utility'}},
+          'gpu-pytorch-dual':     {'image':'quay.io/jupyter/pytorch-notebook:2025-11-06','cpu_limit':16.0,'cpu_guarantee':8.0,'mem_limit':'64G','mem_guarantee':'32G',
+                                   'extra_resource_limits':{'nvidia.com/gpu':'2'}, 'extra_resource_guarantees':{'nvidia.com/gpu':'2'},
+                                   'node_selector':{'accelerator':'nvidia'}, 'environment':{'NVIDIA_VISIBLE_DEVICES':'all','NVIDIA_DRIVER_CAPABILITIES':'compute,utility'}},
+          'gpu-tensorflow-dual':  {'image':'quay.io/jupyter/tensorflow-notebook:2025-11-06','cpu_limit':16.0,'cpu_guarantee':8.0,'mem_limit':'64G','mem_guarantee':'32G',
+                                   'extra_resource_limits':{'nvidia.com/gpu':'2'}, 'extra_resource_guarantees':{'nvidia.com/gpu':'2'},
+                                   'node_selector':{'accelerator':'nvidia'}, 'environment':{'NVIDIA_VISIBLE_DEVICES':'all','NVIDIA_DRIVER_CAPABILITIES':'compute,utility'}},
       }
 
-      # Pre-spawn hook to apply profile settings and enforce access control
+      # ---- Apply settings & enforce access ----
       async def apply_profile_settings(spawner):
-          """
-          Apply profile settings and enforce group-based access control.
-          Backend enforcement since KubeSpawner doesn't support callable options_form.
-          """
-          # Get selected profile from user options
           profile_slug = spawner.user_options.get('profile', 'cpu-medium')
-          spawner.log.info(f"User {spawner.user.name} selected profile: {profile_slug}")
-
-          # Optional: admin-provided custom image overrides profile image
           custom_image = spawner.user_options.get('custom_image', '').strip()
-          if custom_image:
-              # Allow only admins to set custom images
-              is_admin = spawner.user.admin or any(getattr(g, "name", g) == 'jupyter_admin' for g in spawner.user.groups)
-              if is_admin:
-                  import re
-                  if re.fullmatch(r"[A-Za-z0-9._:/\-]+", custom_image):
-                      spawner.log.info(f"User {spawner.user.name} provided custom image: {custom_image}")
-                      spawner.image = custom_image
-                  else:
-                      spawner.log.warning(f"User {spawner.user.name} provided invalid custom image '{custom_image}', ignoring")
-              else:
-                  spawner.log.warning(f"User {spawner.user.name} attempted to set custom image without admin rights; ignoring")
+          custom_gpus = int(spawner.user_options.get('custom_gpus', 0) or 0)
+          spawner.log.info(f"User {spawner.user.name} selected profile={profile_slug}, custom_image={'set' if custom_image else 'none'}, custom_gpus={custom_gpus}")
 
-          # Check if it's a GPU profile and enforce access
-          if profile_slug in GPU_PROFILE_SLUGS:
+          # If custom image is set and GPUs requested, enforce GPU access
+          if custom_image and custom_gpus > 0:
               if not user_has_gpu_access(spawner):
-                  spawner.log.warning(f"User {spawner.user.name} attempted GPU profile without permission")
-                  raise Exception(
-                      "🚫 GPU Access Denied\n\n"
-                      "You selected a GPU profile but your account does not have GPU access.\n\n"
-                      "Request membership in the 'cpsHPCAccess' group or select a CPU profile."
-                  )
-              group_names = {getattr(g, "name", g) for g in spawner.user.groups}
-              spawner.log.info(f"User {spawner.user.name} authorized for GPU profile (groups: {group_names & ALLOWED_GPU_GROUPS})")
+                  raise Exception("🚫 GPU Access Denied\n\nCustom image with GPUs requires GPU authorization (group 'cpsHPCAccess' or admin).")
 
-          # Apply profile configuration
-          if profile_slug in PROFILE_CONFIGS:
-              config = PROFILE_CONFIGS[profile_slug]
-
-              # Set image (skip if custom_image already set)
-              if 'image' in config and not custom_image:
+          # Baseline: take resources from the chosen profile if known
+          config = PROFILE_CONFIGS.get(profile_slug)
+          if config:
+              # Set profile image unless custom overrides
+              if not custom_image:
                   spawner.image = config['image']
-
-              # Set resource limits
+              # Resources
               spawner.cpu_limit = config['cpu_limit']
               spawner.cpu_guarantee = config['cpu_guarantee']
               spawner.mem_limit = config['mem_limit']
               spawner.mem_guarantee = config['mem_guarantee']
+              # Profile GPU settings (may be overridden by custom_gpus later)
+              spawner.extra_resource_limits = config.get('extra_resource_limits', {})
+              spawner.extra_resource_guarantees = config.get('extra_resource_guarantees', {})
+              spawner.node_selector = config.get('node_selector', {})
+              if not getattr(spawner, "environment", None):
+                  spawner.environment = {}
+              spawner.environment.update(config.get('environment', {}))
+          else:
+              spawner.log.warning(f"Unknown profile slug {profile_slug}; using defaults")
 
-              # Optional extras
-              if 'extra_resource_limits' in config:
-                  spawner.extra_resource_limits = config['extra_resource_limits']
-              if 'extra_resource_guarantees' in config:
-                  spawner.extra_resource_guarantees = config['extra_resource_guarantees']
-              if 'node_selector' in config:
-                  spawner.node_selector = config['node_selector']
-              if 'environment' in config:
+          # Override with custom image if provided (admins only)
+          if custom_image:
+              is_admin = spawner.user.admin or any(getattr(g,"name",g) == 'jupyter_admin' for g in spawner.user.groups)
+              if is_admin:
+                  import re
+                  if re.fullmatch(r"[A-Za-z0-9._:/\-]+", custom_image):
+                      spawner.image = custom_image
+                  else:
+                      spawner.log.warning(f"Invalid custom image '{custom_image}' ignored")
+              else:
+                  spawner.log.warning(f"Non-admin user {spawner.user.name} attempted custom image; ignoring")
+
+          # If custom_gpus specified, it takes precedence over profile GPU count
+          if custom_gpus >= 0:
+              if custom_gpus == 0:
+                  spawner.extra_resource_limits.pop('nvidia.com/gpu', None)
+                  spawner.extra_resource_guarantees.pop('nvidia.com/gpu', None)
+              else:
+                  # Enforce access (already checked for custom-image case; also enforce for GPU profiles)
+                  if not user_has_gpu_access(spawner):
+                      raise Exception("🚫 GPU Access Denied\n\nGPU resources require authorization (group 'cpsHPCAccess' or admin).")
+                  # Set GPU resources
+                  spawner.extra_resource_limits = {'nvidia.com/gpu': str(custom_gpus)}
+                  spawner.extra_resource_guarantees = {'nvidia.com/gpu': str(custom_gpus)}
+                  # Ensure scheduling to GPU nodes and environment vars
+                  spawner.node_selector = dict(spawner.node_selector or {}, **{'accelerator':'nvidia'})
                   if not getattr(spawner, "environment", None):
                       spawner.environment = {}
-                  spawner.environment.update(config['environment'])
+                  spawner.environment.update({'NVIDIA_VISIBLE_DEVICES':'all','NVIDIA_DRIVER_CAPABILITIES':'compute,utility'})
 
-              spawner.log.info(f"Applied profile {profile_slug}: {config['cpu_limit']} CPU, {config['mem_limit']} RAM")
-          else:
-              spawner.log.warning(f"Unknown profile {profile_slug}, using default")
-
+          spawner.log.info(f"Final spawn config: image={spawner.image}, cpu={spawner.cpu_limit}/{spawner.cpu_guarantee}, mem={spawner.mem_limit}/{spawner.mem_guarantee}, gpus={spawner.extra_resource_limits.get('nvidia.com/gpu','0')}")
       c.KubeSpawner.pre_spawn_hook = apply_profile_settings
 
     gpu-config: |
-      # Make GPUs available to users
+      # Make GPUs visible by default (safe; specific profiles override as needed)
       c.KubeSpawner.environment = {
           'NVIDIA_VISIBLE_DEVICES': 'all',
           'NVIDIA_DRIVER_CAPABILITIES': 'compute,utility'
@@ -512,7 +488,6 @@ singleuser:
     limit: 4G
     guarantee: 2G
 
-  # Allow users to sudo (for package installation)
   uid: 1000
   fsGid: 100
   extraEnv:
