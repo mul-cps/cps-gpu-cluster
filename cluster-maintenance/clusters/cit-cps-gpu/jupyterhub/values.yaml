@@ -340,8 +340,8 @@ hub:
               }
           ]
       
-      # Set the dynamic profile list callable on Spawner (not KubeSpawner)
-      c.Spawner.profile_list = dynamic_profile_list
+      # Set the dynamic profile list callable on KubeSpawner
+      c.KubeSpawner.profile_list = dynamic_profile_list
         
     gpu-config: |
       # Make GPUs available to users
