@@ -241,8 +241,9 @@ hub:
               }
       ]
       
-      # Custom options form to filter profiles based on user groups
-      async def custom_options_form(spawner):
+      # Dynamic profile filtering using callable profile_list
+      # This approach works better with frontend rendering than custom_options_form
+      def dynamic_profile_list(spawner):
           """
           Dynamically filter profile list based on user's group membership.
           Profiles with 'allowed_groups' are only shown to users in those groups.
@@ -269,16 +270,13 @@ hub:
                   else:
                       spawner.log.debug(f"Profile {profile['slug']} restricted from {spawner.user.name} (requires: {profile_allowed_groups})")
           
-          # Set the filtered profile list
-          spawner.profile_list = allowed_profiles
-          
           spawner.log.info(f"User {spawner.user.name} has access to {len(allowed_profiles)} profiles")
           
-          # Use KubeSpawner's default options form rendering
-          return spawner._options_form_default()
+          # Return the filtered list for KubeSpawner to render
+          return allowed_profiles
       
-      # Assign the custom options form
-      c.KubeSpawner.options_form = custom_options_form
+      # Assign the callable profile_list
+      c.KubeSpawner.profile_list = dynamic_profile_list
         
     gpu-config: |
       # Make GPUs available to users
