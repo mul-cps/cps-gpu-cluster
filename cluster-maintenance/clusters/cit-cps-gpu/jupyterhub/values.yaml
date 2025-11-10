@@ -25,6 +25,9 @@ hub:
     JupyterHub:
       admin_access: true
       authenticator_class: oauthenticator.generic.GenericOAuthenticator
+      # Enable named servers for power users
+      allow_named_servers: true
+      named_server_limit_per_user: 3
       template_vars:
         org:
           name: "Montanuniversität Leoben"
@@ -337,8 +340,8 @@ hub:
               }
           ]
       
-      # Set the dynamic profile list callable
-      c.KubeSpawner.profile_list = dynamic_profile_list
+      # Set the dynamic profile list callable on Spawner (not KubeSpawner)
+      c.Spawner.profile_list = dynamic_profile_list
         
     gpu-config: |
       # Make GPUs available to users
