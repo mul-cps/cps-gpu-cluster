@@ -232,7 +232,7 @@ hub:
       }
       ]
         
-    gpu-config: |    gpu-config: |
+    gpu-config: |
       # Make GPUs available to users
       c.KubeSpawner.environment = {
           'NVIDIA_VISIBLE_DEVICES': 'all',
