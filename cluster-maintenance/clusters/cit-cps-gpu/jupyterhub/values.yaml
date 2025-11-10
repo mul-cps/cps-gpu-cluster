@@ -254,51 +254,52 @@ hub:
       (function() {
         // Fetch user info from JupyterHub API to check GPU access
         var allowedGPUGroups = ['cpsHPCAccess', 'jupyter_admin'];
-        
+
+        function getCookie(name) {
+          return document.cookie.split('; ').reduce(function(val, c) {
+            var parts = c.split('=');
+            return parts[0] === name ? decodeURIComponent(parts.slice(1).join('=')) : val;
+          }, null);
+        }
+
+        var xsrf = getCookie('_xsrf');
+
         fetch('/hub/api/user', {
           credentials: 'same-origin',
-          headers: {
+          headers: Object.assign({
             'Accept': 'application/json'
-          }
+          }, xsrf ? { 'X-XSRFToken': xsrf } : {})
         })
-        .then(response => response.json())
-        .then(userData => {
-          var hasGPUAccess = false;
-          
-          // Check if user is admin
-          if (userData.admin) {
-            hasGPUAccess = true;
+        .then(function(response) {
+          if (!response.ok) {
+            throw new Error('HTTP ' + response.status);
           }
-          
-          // Check user groups
-          if (userData.groups && Array.isArray(userData.groups)) {
-            hasGPUAccess = hasGPUAccess || userData.groups.some(group => {
-              return allowedGPUGroups.indexOf(group) !== -1;
-            });
-          }
-          
-          console.log('User:', userData.name, 'GPU Access:', hasGPUAccess, 'Groups:', userData.groups);
-          
-          // Hide GPU profiles if no access
+          return response.json();
+        })
+        .then(function(userData) {
+          var groups = Array.isArray(userData.groups) ? userData.groups.map(function(g){
+            return (typeof g === 'string') ? g : (g && g.name) ? g.name : '';
+          }) : [];
+          var isAdmin = !!userData.admin;
+          var hasGPUAccess = isAdmin || groups.some(function(g){ return allowedGPUGroups.indexOf(g) !== -1; });
+
+          console.log('User:', userData.name, 'Admin:', isAdmin, 'Groups:', groups, 'GPU Access:', hasGPUAccess);
+
+          // Hide GPU profiles only when explicitly unauthorized
           if (!hasGPUAccess) {
             var gpuOptgroup = document.getElementById('gpu-optgroup');
             if (gpuOptgroup) {
               gpuOptgroup.style.display = 'none';
             }
-            
             var notice = document.getElementById('gpu-access-notice');
             if (notice) {
               notice.style.display = 'block';
             }
           }
         })
-        .catch(err => {
-          console.error('Failed to fetch user info:', err);
-          // On error, hide GPU profiles to be safe
-          var gpuOptgroup = document.getElementById('gpu-optgroup');
-          if (gpuOptgroup) {
-            gpuOptgroup.style.display = 'none';
-          }
+        .catch(function(err) {
+          // If API call fails (e.g., XSRF or auth), leave UI as-is (backend will enforce)
+          console.warn('User info fetch failed; leaving GPU options visible. Error:', err);
         });
       })();
       </script>
