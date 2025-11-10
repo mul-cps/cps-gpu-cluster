@@ -242,61 +242,26 @@ hub:
           }
       ]
       
-      # Custom options form to show GPU access notice for unprivileged users
-      def custom_options_form(spawner):
-          """
-          Show different forms based on GPU access:
-          - Users with GPU access: see all profiles
-          - Users without GPU access: see CPU profiles + informational notice
-          """
-          # Get user's groups
+      # Dynamic profile list based on user groups
+      def get_profile_list(spawner):
+          """Return profile list based on user's GPU access"""
           group_names = {group.name for group in spawner.user.groups}
           has_gpu_access = bool(group_names & ALLOWED_GPU_GROUPS)
           
           spawner.log.info(f"User {spawner.user.name} groups: {group_names}, GPU access: {has_gpu_access}")
           
-          # Build profile list based on access
           if has_gpu_access:
-              spawner.profile_list = BASE_PROFILE_LIST + GPU_PROFILE_LIST
-              spawner.log.info(f"User {spawner.user.name} granted access to {len(spawner.profile_list)} profiles (including GPU)")
+              profiles = BASE_PROFILE_LIST + GPU_PROFILE_LIST
+              spawner.log.info(f"User {spawner.user.name} granted access to {len(profiles)} profiles (including GPU)")
           else:
-              spawner.profile_list = BASE_PROFILE_LIST
-              spawner.log.info(f"User {spawner.user.name} limited to {len(spawner.profile_list)} CPU-only profiles")
+              profiles = BASE_PROFILE_LIST
+              spawner.log.info(f"User {spawner.user.name} limited to {len(profiles)} CPU-only profiles")
           
-          # Get the default profile form HTML
-          form_html = spawner._options_form_default()
-          
-          # Add GPU access notice for unprivileged users
-          if not has_gpu_access:
-              notice_html = '''
-              <div class="alert alert-info" role="alert" style="margin-top: 20px;">
-                  <h4 class="alert-heading"><i class="fa fa-info-circle"></i> GPU Access Required</h4>
-                  <p>
-                      You currently have access to <strong>CPU-only</strong> computational environments.
-                      GPU-accelerated profiles (A100 GPUs) are available for users with special permissions.
-                  </p>
-                  <hr>
-                  <p class="mb-0">
-                      <strong>To request GPU access:</strong><br>
-                      Please contact the CPS system administrators or your supervisor to request membership 
-                      in the <code>cpsHPCAccess</code> group. Provide a brief description of your GPU computing needs.
-                  </p>
-                  <p class="mb-0 mt-2">
-                      <strong>Available GPU resources:</strong>
-                      <ul>
-                          <li>🚀 Single A100 GPU profiles (PyTorch/TensorFlow)</li>
-                          <li>🔥 Dual A100 GPU profiles (PyTorch/TensorFlow)</li>
-                      </ul>
-                  </p>
-              </div>
-              '''
-              form_html = form_html + notice_html
-          
-          return form_html
+          return profiles
       
-      c.KubeSpawner.options_form = custom_options_form
+      c.KubeSpawner.profile_list = get_profile_list
       
-      # Pre-spawn hook to enforce group-based access control
+      # Pre-spawn hook to enforce group-based access control (defense in depth)
       async def check_profile_access(spawner):
           """
           Enforce group-based access control for GPU profiles.
