@@ -108,55 +108,189 @@ hub:
       GPU_PROFILE_SLUGS = {'gpu-pytorch-single', 'gpu-tensorflow-single', 'gpu-pytorch-dual', 'gpu-tensorflow-dual'}
       ALLOWED_GPU_GROUPS = {'cpsHPCAccess', 'jupyter_admin'}
       
-      # Static form with client-side filtering based on user groups
-      # Note: Callables don't work with KubeSpawner, so we use static HTML with JavaScript
-      def get_options_form(spawner):
-          """Generate static form with JavaScript-based group filtering"""
-          # Get user's groups for injection into JavaScript
-          group_names = {group.name for group in spawner.user.groups}
-          has_gpu_access = bool(group_names & ALLOWED_GPU_GROUPS)
-          groups_json = str(list(group_names))
-          
-          spawner.log.info(f"User {spawner.user.name} groups: {group_names}, GPU access: {has_gpu_access}")
-          
-          # Return static HTML with embedded user groups
-          return f'''
-          <div id="profile-selector" style="max-width: 800px; margin: 20px auto; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;">
-            <div id="access-notice" style="background: #fff3cd; border: 2px solid #ffc107; border-radius: 8px; padding: 20px; margin-bottom: 20px; display: none;">
-              <h3 style="color: #856404; margin-top: 0;">ℹ️ Limited Access</h3>
-              <p style="color: #856404; margin-bottom: 0;">
-                Your account has access to CPU-only profiles. For GPU access, please contact CPS admins to request membership in the <code>cpsHPCAccess</code> group.
-              </p>
-            </div>
-            <h3 style="text-align: center; color: #333;">Select Your Computing Environment</h3>
-            <label for="profile-select">Select Profile:</label>
-            <select name="profile" id="profile-select" class="form-control">
-              <optgroup label="CPU Profiles - Available to all">
-                <option value="cpu-small">💻 DataScience - Small (1GB RAM, 2 CPUs)</option>
-                <option value="cpu-medium" selected>💻 DataScience - Medium (4GB RAM, 4 CPUs)</option>
-                <option value="cpu-large">💻 DataScience - Large (8GB RAM, 8 CPUs)</option>
-                <option value="cpu-xlarge">💻 DataScience - XLarge (16GB RAM, 16 CPUs)</option>
-              </optgroup>
-              <optgroup id="gpu-profiles" label="GPU Profiles - Authorized Access">
-                <option value="gpu-pytorch-single">🚀 Single A100 GPU - PyTorch (32GB RAM, 8 CPUs)</option>
-                <option value="gpu-tensorflow-single">🚀 Single A100 GPU - TensorFlow (32GB RAM, 8 CPUs)</option>
-                <option value="gpu-pytorch-dual">🔥 Dual A100 GPUs - PyTorch (64GB RAM, 16 CPUs)</option>
-                <option value="gpu-tensorflow-dual">🔥 Dual A100 GPUs - TensorFlow (64GB RAM, 16 CPUs)</option>
-              </optgroup>
-            </select>
-          </div>
-          <script>
-            (function() {{
-              var hasGPUAccess = {str(has_gpu_access).lower()};
-              if (!hasGPUAccess) {{
-                document.getElementById('gpu-profiles').style.display = 'none';
-                document.getElementById('access-notice').style.display = 'block';
-              }}
-            }})();
-          </script>
-          '''
+      # Static HTML form with JavaScript-based dynamic filtering
+      # Note: Callables (both sync and async) don't work with KubeSpawner's options_form
+      # So we use static HTML with JavaScript that reads user info from the page
+      c.Spawner.options_form = """
+      <style>
+        .profile-container {
+          max-width: 900px;
+          margin: 30px auto;
+          padding: 0 15px;
+        }
+        .profile-header {
+          text-align: center;
+          margin-bottom: 30px;
+        }
+        .profile-header h2 {
+          color: #2c3e50;
+          font-weight: 300;
+          margin-bottom: 10px;
+        }
+        .profile-header p {
+          color: #7f8c8d;
+          font-size: 14px;
+        }
+        .alert-gpu-restricted {
+          background: linear-gradient(135deg, #fff3cd 0%, #ffeaa7 100%);
+          border: 2px solid #ffc107;
+          border-radius: 12px;
+          padding: 20px;
+          margin-bottom: 25px;
+          box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+        .alert-gpu-restricted h4 {
+          color: #856404;
+          margin-top: 0;
+          font-size: 18px;
+          display: flex;
+          align-items: center;
+          gap: 10px;
+        }
+        .alert-gpu-restricted p {
+          color: #856404;
+          margin-bottom: 0;
+          line-height: 1.6;
+        }
+        .form-group-custom {
+          margin-bottom: 25px;
+        }
+        .form-group-custom label {
+          font-weight: 500;
+          color: #2c3e50;
+          margin-bottom: 10px;
+          display: block;
+          font-size: 16px;
+        }
+        .form-control-custom {
+          width: 100%;
+          padding: 12px 15px;
+          font-size: 15px;
+          border: 2px solid #e0e0e0;
+          border-radius: 8px;
+          background: white;
+          transition: all 0.3s ease;
+        }
+        .form-control-custom:focus {
+          outline: none;
+          border-color: #3498db;
+          box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.1);
+        }
+        .form-control-custom option {
+          padding: 10px;
+        }
+        .profile-info {
+          background: #f8f9fa;
+          border-radius: 8px;
+          padding: 15px;
+          margin-top: 20px;
+          font-size: 13px;
+          color: #6c757d;
+        }
+        .gpu-badge {
+          background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+          color: white;
+          padding: 3px 8px;
+          border-radius: 4px;
+          font-size: 11px;
+          font-weight: 600;
+          margin-left: 8px;
+        }
+      </style>
       
-      c.Spawner.options_form = get_options_form
+      <div class="profile-container">
+        <div class="profile-header">
+          <h2>🚀 Choose Your Computing Environment</h2>
+          <p>Select the resources that match your computational needs</p>
+        </div>
+        
+        <div id="gpu-access-notice" style="display: none;" class="alert-gpu-restricted">
+          <h4>
+            <svg width="20" height="20" fill="currentColor" viewBox="0 0 16 16">
+              <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"/>
+              <path d="m8.93 6.588-2.29.287-.082.38.45.083c.294.07.352.176.288.469l-.738 3.468c-.194.897.105 1.319.808 1.319.545 0 1.178-.252 1.465-.598l.088-.416c-.2.176-.492.246-.686.246-.275 0-.375-.193-.304-.533L8.93 6.588zM9 4.5a1 1 0 1 1-2 0 1 1 0 0 1 2 0z"/>
+            </svg>
+            Limited Access
+          </h4>
+          <p>
+            Your account currently has access to <strong>CPU-only profiles</strong>. 
+            To request GPU access, please contact the CPS administrators and ask for membership 
+            in the <code style="background: #fff; padding: 2px 6px; border-radius: 3px;">cpsHPCAccess</code> group.
+          </p>
+        </div>
+        
+        <div class="form-group-custom">
+          <label for="profile-select">Computing Profile</label>
+          <select name="profile" id="profile-select" class="form-control-custom">
+            <optgroup label="💻 CPU Profiles - Available to All Users">
+              <option value="cpu-small">Small - 2 CPUs, 1GB RAM</option>
+              <option value="cpu-medium" selected>Medium - 4 CPUs, 4GB RAM (Recommended)</option>
+              <option value="cpu-large">Large - 8 CPUs, 8GB RAM</option>
+              <option value="cpu-xlarge">X-Large - 16 CPUs, 16GB RAM</option>
+            </optgroup>
+            <optgroup id="gpu-optgroup" label="🚀 GPU Profiles - Requires Authorization">
+              <option value="gpu-pytorch-single">Single A100 GPU - PyTorch (8 CPUs, 32GB RAM)</option>
+              <option value="gpu-tensorflow-single">Single A100 GPU - TensorFlow (8 CPUs, 32GB RAM)</option>
+              <option value="gpu-pytorch-dual">Dual A100 GPUs - PyTorch (16 CPUs, 64GB RAM)</option>
+              <option value="gpu-tensorflow-dual">Dual A100 GPUs - TensorFlow (16 CPUs, 64GB RAM)</option>
+            </optgroup>
+          </select>
+        </div>
+        
+        <div class="profile-info">
+          <strong>ℹ️ Note:</strong> All profiles include the JupyterLab interface with common data science packages.
+          GPU profiles require approval from system administrators.
+        </div>
+      </div>
+      
+      <script>
+      (function() {
+        // Check user's GPU access by looking for admin indicator or group membership
+        // JupyterHub templates expose user info via the page
+        var allowedGPUGroups = ['cpsHPCAccess', 'jupyter_admin'];
+        var hasGPUAccess = false;
+        
+        // Try to get user info from JupyterHub's page data
+        try {
+          // Check if user is admin (admins always have GPU access)
+          var isAdmin = document.body.dataset.jupyterhubUser && 
+                       JSON.parse(document.body.dataset.jupyterhubUser).admin;
+          
+          if (isAdmin) {
+            hasGPUAccess = true;
+          } else {
+            // Check user's groups from the page data
+            var userData = document.body.dataset.jupyterhubUser;
+            if (userData) {
+              var user = JSON.parse(userData);
+              if (user.groups) {
+                hasGPUAccess = user.groups.some(function(group) {
+                  return allowedGPUGroups.indexOf(group) !== -1;
+                });
+              }
+            }
+          }
+        } catch (e) {
+          console.log('Could not parse user data, assuming no GPU access');
+        }
+        
+        // Hide GPU profiles if user doesn't have access
+        if (!hasGPUAccess) {
+          var gpuOptgroup = document.getElementById('gpu-optgroup');
+          if (gpuOptgroup) {
+            gpuOptgroup.style.display = 'none';
+          }
+          
+          var notice = document.getElementById('gpu-access-notice');
+          if (notice) {
+            notice.style.display = 'block';
+          }
+        }
+        
+        console.log('GPU Access Check:', hasGPUAccess);
+      })();
+      </script>
+      """
       
       # Process form submission
       def options_from_form(formdata):
