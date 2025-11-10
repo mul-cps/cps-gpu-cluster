@@ -1,0 +1,11 @@
+name: prometheus-crds
+
+# Install Prometheus Operator CRDs required by rancher-monitoring
+# This bundle must be deployed before the rancher-monitoring bundle
+
+# Target only clusters with monitoring
+targets:
+  - name: cit-cps-gpu
+    clusterSelector:
+      matchLabels:
+        name: cit-cps-gpu

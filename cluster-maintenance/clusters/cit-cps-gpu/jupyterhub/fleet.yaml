@@ -17,7 +17,7 @@ kustomize:
 dependsOn:
 - selector:
     matchLabels:
-      app: gpu-operator
+      name: gpu-operator
       
 diff:
   comparePatches:

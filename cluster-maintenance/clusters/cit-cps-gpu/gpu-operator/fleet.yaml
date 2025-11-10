@@ -12,6 +12,7 @@ helm:
 # Labels for bundle identification
 labels:
   app: gpu-operator
+  name: gpu-operator
   
 # Fleet will wait for GPU operator to be ready before deploying dependent apps
 diff:
