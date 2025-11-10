@@ -102,6 +102,9 @@ hub:
       
     02-profiles: |
       # Dynamic profile configuration based on user groups
+      import logging
+      log = logging.getLogger('jupyterhub')
+      
       def dynamic_profile_list(spawner):
           """
           Generate profile list dynamically based on user's group membership.
@@ -111,8 +114,12 @@ hub:
           user = spawner.user
           user_groups = set(group.name for group in user.groups)
           
+          log.info(f"Profile list requested for user {user.name}, groups: {user_groups}")
+          
           # Check if user has HPC access
           has_hpc_access = 'cpsHPCAccess' in user_groups
+          
+          log.info(f"User {user.name} HPC access: {has_hpc_access}")
           
           if has_hpc_access:
               # Advanced users get full GPU profiles with custom options
