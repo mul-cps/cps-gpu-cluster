@@ -108,10 +108,21 @@ hub:
       GPU_PROFILE_SLUGS = {'gpu-pytorch-single', 'gpu-tensorflow-single', 'gpu-pytorch-dual', 'gpu-tensorflow-dual'}
       ALLOWED_GPU_GROUPS = {'cpsHPCAccess', 'jupyter_admin'}
       
-      # Static HTML form with JavaScript-based dynamic filtering
-      # Note: Callables (both sync and async) don't work with KubeSpawner's options_form
-      # So we use static HTML with JavaScript that reads user info from the page
-      c.Spawner.options_form = """
+      # Generate HTML form with server-side group detection
+      # We use a lambda to inject user groups into the static HTML
+      def get_options_form(spawner):
+          """Generate form HTML with user's GPU access status injected"""
+          group_names = {group.name for group in spawner.user.groups}
+          has_gpu_access = bool(group_names & ALLOWED_GPU_GROUPS)
+          is_admin = spawner.user.admin
+          
+          spawner.log.info(f"Rendering form for {spawner.user.name}: groups={group_names}, GPU access={has_gpu_access}, admin={is_admin}")
+          
+          # Override GPU access if user is admin
+          if is_admin:
+              has_gpu_access = True
+          
+          return f"""
       <style>
         .profile-container {
           max-width: 900px;
@@ -244,53 +255,29 @@ hub:
       </div>
       
       <script>
-      (function() {
-        // Check user's GPU access by looking for admin indicator or group membership
-        // JupyterHub templates expose user info via the page
-        var allowedGPUGroups = ['cpsHPCAccess', 'jupyter_admin'];
-        var hasGPUAccess = false;
-        
-        // Try to get user info from JupyterHub's page data
-        try {
-          // Check if user is admin (admins always have GPU access)
-          var isAdmin = document.body.dataset.jupyterhubUser && 
-                       JSON.parse(document.body.dataset.jupyterhubUser).admin;
-          
-          if (isAdmin) {
-            hasGPUAccess = true;
-          } else {
-            // Check user's groups from the page data
-            var userData = document.body.dataset.jupyterhubUser;
-            if (userData) {
-              var user = JSON.parse(userData);
-              if (user.groups) {
-                hasGPUAccess = user.groups.some(function(group) {
-                  return allowedGPUGroups.indexOf(group) !== -1;
-                });
-              }
-            }
-          }
-        } catch (e) {
-          console.log('Could not parse user data, assuming no GPU access');
-        }
+      (function() {{
+        // GPU access is determined server-side and injected into the page
+        var hasGPUAccess = {str(has_gpu_access).lower()};
         
         // Hide GPU profiles if user doesn't have access
-        if (!hasGPUAccess) {
+        if (!hasGPUAccess) {{
           var gpuOptgroup = document.getElementById('gpu-optgroup');
-          if (gpuOptgroup) {
+          if (gpuOptgroup) {{
             gpuOptgroup.style.display = 'none';
-          }
+          }}
           
           var notice = document.getElementById('gpu-access-notice');
-          if (notice) {
+          if (notice) {{
             notice.style.display = 'block';
-          }
-        }
+          }}
+        }}
         
-        console.log('GPU Access Check:', hasGPUAccess);
-      })();
+        console.log('GPU Access Check (server-side):', hasGPUAccess);
+      }})();
       </script>
       """
+      
+      c.Spawner.options_form = get_options_form
       
       # Process form submission
       def options_from_form(formdata):
