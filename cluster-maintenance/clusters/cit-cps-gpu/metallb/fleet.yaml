@@ -18,6 +18,3 @@ helm:
   - values.yaml
   # Wait for CRDs to be available before installing
   waitForJobs: true
-
-kustomize:
-  dir: .
