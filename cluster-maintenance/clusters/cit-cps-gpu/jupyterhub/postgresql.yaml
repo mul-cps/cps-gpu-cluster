@@ -15,23 +15,6 @@ metadata:
 
 ---
 apiVersion: v1
-kind: PersistentVolumeClaim
-metadata:
-  name: postgresql-data
-  namespace: jupyterhub
-  labels:
-    app.kubernetes.io/name: postgresql
-    app.kubernetes.io/component: database
-spec:
-  accessModes:
-    - ReadWriteOnce
-  storageClassName: nfs-client
-  resources:
-    requests:
-      storage: 10Gi
-
----
-apiVersion: v1
 kind: Secret
 metadata:
   name: postgresql-secret
@@ -128,8 +111,7 @@ spec:
           failureThreshold: 3
       volumes:
       - name: postgresql-data
-        persistentVolumeClaim:
-          claimName: postgresql-data
+        emptyDir: {}
 
 ---
 apiVersion: v1
