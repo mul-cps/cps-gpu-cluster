@@ -3,10 +3,10 @@ kind: Kustomization
 
 # Include the storage PVCs and PostgreSQL that JupyterHub depends on
 resources:
-  - namespace.yaml
   - storage-pvcs.yaml
   - postgresql.yaml
   - templates/
 
 # Ensure all resources are in the jupyterhub namespace
+# Note: namespace creation is handled separately
 namespace: jupyterhub
