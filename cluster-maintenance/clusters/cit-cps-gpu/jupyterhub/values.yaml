@@ -163,9 +163,7 @@ singleuser:
     GRANT_SUDO: "yes"
     NOTEBOOK_ARGS: "--allow-root"
     JUPYTERHUB_SINGLEUSER_APP: "jupyter_server.serverapp.ServerApp"
-    JUPYTERHUB_SINGLEUSER_ARGS: >-
-      --ServerApp.default_url=/lab/tree
-      --ServerApp.terminado_settings="{\"shell_command\":[\"/bin/bash\"]}"
+    JUPYTERHUB_SINGLEUSER_ARGS: "--ServerApp.default_url=/lab/tree"
     XDG_CACHE_HOME: /home/jovyan/.cache
     PIP_CACHE_DIR: /home/jovyan/.cache/pip
     HF_HOME: /home/jovyan/.cache/huggingface
