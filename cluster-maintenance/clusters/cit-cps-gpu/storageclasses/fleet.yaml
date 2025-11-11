@@ -1,6 +1,11 @@
 # Storage classes configuration
 name: storage-classes
 
+# Labels for bundle identification
+labels:
+  app: storage-classes
+  name: storage-classes
+
 # Skip existing resources to avoid conflicts with externally managed storage classes
 diff:
   comparePatches:
