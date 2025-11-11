@@ -68,7 +68,7 @@ hub:
   # PostgreSQL (no sqlite)
   db:
     type: postgres
-    url: postgresql://jhub:jhub-secure-db-password-2025@postgresql.jhub.svc.cluster.local:5432/jhub
+    url: postgresql://jhub:jhub-secure-db-password-2025@postgresql.jupyterhub.svc.cluster.local:5432/jhub
 
   # Hub sizing for 200+ concurrent users
   resources:

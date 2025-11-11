@@ -7,5 +7,5 @@ resources:
   - postgresql.yaml
   - templates/
 
-# Ensure proper namespace
+# Ensure all resources are in the jupyterhub namespace
 namespace: jupyterhub

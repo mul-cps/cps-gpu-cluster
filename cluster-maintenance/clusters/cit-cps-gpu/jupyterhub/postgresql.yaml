@@ -8,7 +8,7 @@
 apiVersion: v1
 kind: Namespace
 metadata:
-  name: jhub
+  name: jupyterhub
   labels:
     app.kubernetes.io/name: postgresql
     app.kubernetes.io/part-of: jupyterhub-platform
@@ -18,7 +18,7 @@ apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
   name: postgresql-data
-  namespace: jhub
+  namespace: jupyterhub
   labels:
     app.kubernetes.io/name: postgresql
     app.kubernetes.io/component: database
@@ -35,7 +35,7 @@ apiVersion: v1
 kind: Secret
 metadata:
   name: postgresql-secret
-  namespace: jhub
+  namespace: jupyterhub
   labels:
     app.kubernetes.io/name: postgresql
     app.kubernetes.io/component: database
@@ -50,7 +50,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: postgresql
-  namespace: jhub
+  namespace: jupyterhub
   labels:
     app.kubernetes.io/name: postgresql
     app.kubernetes.io/component: database
@@ -136,7 +136,7 @@ apiVersion: v1
 kind: Service
 metadata:
   name: postgresql
-  namespace: jhub
+  namespace: jupyterhub
   labels:
     app.kubernetes.io/name: postgresql
     app.kubernetes.io/component: database
