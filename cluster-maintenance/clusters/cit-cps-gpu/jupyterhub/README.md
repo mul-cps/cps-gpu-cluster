@@ -1,42 +1,122 @@
-# JupyterHub GPU Deployment
+# JupyterHub Modular Configuration
 
-GPU-enabled JupyterHub for multi-user notebook environment with dynamic profile selection based on user groups.
+This directory contains the modular JupyterHub configuration for the CPS GPU Cluster, split into manageable components for better maintainability and following Fleet GitOps best practices.
 
-## Features
+## Structure
 
-- **Dynamic Profile Selection**: Profile options change based on user group membership
-- **Group-Based Access Control**: `cpsHPCAccess` group gets full GPU access, others get CPU-only
-- **Custom Image Support**: HPC users can specify custom container images
-- **Flexible Resource Configuration**: HPC users can customize CPU, memory, and GPU allocation
-- **Persistent Storage**: User home directories stored on NFS with multiple storage tiers
-- **OIDC Authentication**: Integration with Authentik for SSO
-- **Auto-culling**: Idle notebooks shut down after 1 hour
+```
+jupyterhub/
+├── config/                      # Modular configuration components
+│   ├── auth.py                 # OAuth and admin user configuration  
+│   ├── culler.py               # GPU-aware idle culling logic
+│   ├── profiles.py             # GPU profile definitions and form handling
+│   └── ui_options_form.html    # Custom profile selection UI
+├── templates/                  # Kubernetes templates
+│   ├── custom-templates.yaml   # Custom UI templates (info page, etc.)
+│   ├── kustomization.yaml     # Kustomize configuration
+│   └── namespace.yaml         # Namespace definition
+├── fleet.yaml                 # Fleet deployment configuration
+├── namespace.yaml             # JupyterHub namespace
+├── storage-pvcs.yaml          # Storage PVC definitions
+├── values.yaml                # Original monolithic configuration (deprecated)
+├── values-new.yaml            # New modular configuration
+└── README.md                  # This file
+```
+
+## Configuration Components
+
+### 1. Authentication (`config/auth.py`)
+- **Purpose**: Centralized OAuth configuration for Authentik SSO
+- **Contains**: Client credentials, endpoints, admin user lists
+- **Usage**: Loaded by `00-auth-config` extraConfig section
+
+### 2. Profiles (`config/profiles.py`) 
+- **Purpose**: GPU profile definitions and form handling logic
+- **Contains**: Profile list, form parser, pre-spawn hooks
+- **Features**:
+  - CPU-only and GPU profiles (1x, 2x A100)
+  - PyTorch, TensorFlow, and MIG slice support
+  - Resource limits and node selection
+  - Custom image/GPU override for admins
+
+### 3. Culler (`config/culler.py`)
+- **Purpose**: GPU-aware idle pod culling configuration
+- **Features**:
+  - Dynamic timeouts (6h for dual-GPU, 4h for single-GPU, 2h for CPU)
+  - Priority-based culling (GPU pods freed first)
+  - Pre-cull cleanup hooks
+  - Resource-aware scheduling
+
+### 4. UI (`config/ui_options_form.html`)
+- **Purpose**: Modern profile selection interface
+- **Features**:
+  - Layered, responsive design
+  - GPU access validation via API
+  - Custom image/GPU override controls
+  - Real-time group membership checking
+
+## GPU Profiles Available
+
+### Standard Profiles
+- **CPU (Default)**: 2 vCPU, 2GB RAM - scipy-notebook
+- **GPU PyTorch (1×)**: 16 vCPU, 64GB RAM, 1x A100 - PyTorch 24.11
+- **GPU TensorFlow (1×)**: 16 vCPU, 64GB RAM, 1x A100 - TensorFlow 24.11  
+- **GPU PyTorch (2×)**: 32 vCPU, 128GB RAM, 2x A100 - PyTorch 24.11
+- **GPU TensorFlow (2×)**: 32 vCPU, 128GB RAM, 2x A100 - TensorFlow 24.11
+- **GPU MIG 1g.5gb**: 8 vCPU, 32GB RAM, 1x MIG slice - PyTorch 24.11
+
+### Access Control
+- **GPU Access**: Requires `cpsHPCAccess` or `jupyter_admin` group membership
+- **Admin Features**: Custom image/GPU override for admin users
 
 ## Storage Architecture
 
-JupyterHub uses a three-tier storage approach:
-
 ### 1. Fast Ephemeral Storage (`/home/jovyan`)
-- **Type**: EmptyDir on node SSD
+- **Type**: EmptyDir on node SSD  
 - **Purpose**: Fast workspace for active development
 - **Lifecycle**: Deleted when pod terminates
-- **Best for**: Active notebooks, temporary files, caches
 
-### 2. Persistent User Storage (`/home/jovyan/Persist`)
-- **Type**: NFS with per-user subdirectories via subPathExpr
+### 2. Persistent User Storage (`/home/jovyan/Persist`)  
+- **Type**: NFS with per-user subdirectories
 - **PVC**: `jhub-userdir-rwx` (50TB logical capacity)
 - **Purpose**: Long-term user file storage
-- **Best for**: Important notebooks, datasets, personal projects
 
 ### 3. Shared Team Storage (`/home/jovyan/Shared`)
 - **Type**: NFS ReadWriteMany
 - **PVC**: `jhub-shared-rwx` (2TB)
 - **Purpose**: Team collaboration and shared datasets
-- **Best for**: Shared datasets, team projects, collaboration
 
-### Storage Lifecycle
-- **Auto-backup**: On pod termination, important files are automatically backed up from ephemeral to persistent storage
-- **Symlink**: `/home/jovyan/Save` → `/home/jovyan/Persist` for easy access
+## Deployment 
+
+The modular configuration uses Fleet's `extraFiles` feature to mount component files into the JupyterHub hub pod:
+
+1. **Kustomize**: Generates ConfigMaps from component files
+2. **Fleet**: Processes and deploys the Helm chart with mounted configs
+3. **Hub**: Loads components via `extraConfig` sections
+
+### Switching to Modular Configuration
+
+To deploy the modular configuration:
+
+```bash
+# Rename current values.yaml to backup
+mv values.yaml values-monolithic.yaml
+
+# Use the new modular configuration
+mv values-new.yaml values.yaml
+
+# Commit and let Fleet deploy
+git add -A && git commit -m "Switch to modular JupyterHub configuration"
+git push
+```
+
+## Benefits
+
+1. **Maintainability**: Separate concerns into focused files
+2. **Readability**: Each component is self-contained and documented
+3. **Reusability**: Components can be shared across environments
+4. **Testability**: Individual components can be tested in isolation
+5. **Version Control**: Cleaner diffs when modifying specific features
 
 ## Access
 
@@ -44,9 +124,55 @@ JupyterHub is accessible at: **https://jupyterhub.cps.unileoben.ac.at**
 
 Authentication via Authentik OIDC (SSO).
 
-## User Profiles
+## Configuration Lifecycle
 
-### Regular Users (No Special Groups)
+1. **Development**: Edit components in `config/` directory
+2. **Build**: Kustomize generates ConfigMaps from component files  
+3. **Template**: Fleet processes Helm chart with component data
+4. **Deploy**: JupyterHub hub loads components via extraConfig
+5. **Runtime**: Components provide configuration and logic
+
+## Maintenance
+
+### Adding New Profiles
+Edit `config/profiles.py` and add new entries to `PROFILE_LIST`.
+
+### Modifying Authentication  
+Update OAuth endpoints and credentials in `config/auth.py`.
+
+### Adjusting Culler Logic
+Tune timeout and priority functions in `config/culler.py`.
+
+### UI Customization
+Modify the HTML/CSS/JavaScript in `config/ui_options_form.html`.
+
+## Migration Notes
+
+The new modular configuration maintains full compatibility with the existing setup:
+- All OAuth settings preserved
+- All GPU profiles maintained  
+- Storage configuration unchanged
+- Same UI functionality with improved design
+
+## Troubleshooting
+
+### Component Loading Issues
+Check hub pod logs for import errors:
+```bash
+kubectl logs -n jupyterhub deployment/hub
+```
+
+### Configuration Validation
+Verify ConfigMaps are created correctly:
+```bash
+kubectl get configmaps -n jupyterhub | grep jhub-
+```
+
+### File Mounting
+Check that component files are mounted in hub pod:
+```bash
+kubectl exec -n jupyterhub deployment/hub -- ls -la /etc/jupyterhub/extra/
+```
 
 Users without the `cpsHPCAccess` group see a single profile:
 

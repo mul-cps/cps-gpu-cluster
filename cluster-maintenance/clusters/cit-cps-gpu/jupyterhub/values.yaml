@@ -1,12 +1,8 @@
 # =============================================================================
-# JupyterHub Configuration (schema-compliant)
-# - Fast $HOME on SSD (emptyDir)
-# - Per-user Persist on NFS via subPathExpr (single shared PVC)
-# - Shared NFS at /home/jovyan/Shared (single shared PVC)
-# - PostgreSQL Hub DB
-# - NGINX Ingress, long websocket timeouts
-# - High-user-count tweaks
-# - Restored "nice" Profile Selector UI + logic
+# JupyterHub Configuration (modular)
+# - Storage/Ingress/DB: as before
+# - UI/Profiles/Culler moved to hub.extraFiles + tiny loaders
+# - MIG limited to 1g.5gb
 # =============================================================================
 
 proxy:
@@ -22,7 +18,6 @@ ingress:
   hosts: [jupyterhub.cps.unileoben.ac.at]
   annotations:
     kubernetes.io/ingress.class: nginx
-    # WebSockets / long sessions / uploads
     nginx.ingress.kubernetes.io/enable-websocket: "true"
     nginx.ingress.kubernetes.io/proxy-read-timeout: "3600"
     nginx.ingress.kubernetes.io/proxy-send-timeout: "3600"
@@ -50,18 +45,9 @@ hub:
           url: "https://www.unileoben.ac.at"
 
     GenericOAuthenticator:
-      client_id: "vUhzKqEF0UxPtZNM8aRbA1ncaehhIAIA2x9r83FI"
-      client_secret: "EbAzlZLERPQzmF2EQByhihKuUqp36u138fYERPptymppmJbWhquI4sHu9vchqtnMRqbAVnZS6nOA6G0FescWa13MOLdlegQB3yyZSqe5V32NtYsnfDOndyZHiqiL2Bj6"
-      oauth_callback_url: "https://jupyterhub.cps.unileoben.ac.at/hub/oauth_callback"
-      authorize_url: "https://auth.cps.unileoben.ac.at/application/o/authorize/"
-      token_url: "https://auth.cps.unileoben.ac.at/application/o/token/"
-      userdata_url: "https://auth.cps.unileoben.ac.at/application/o/userinfo/"
-      login_service: "CPS Authentik"
-      username_claim: "preferred_username"
-      scope: ["openid","profile","email","groups"]
-      claim_groups_key: "groups"
+      # OAuth configuration will be loaded from auth.py module
       manage_groups: true
-      admin_groups: ["jupyter_admin"]
+      admin_groups: ["jupyter_admin", "cpsHPCAccess"]
 
   # PostgreSQL (no sqlite)
   db:
@@ -88,6 +74,32 @@ hub:
     - name: custom-templates
       mountPath: /etc/jupyterhub/custom
 
+  # ---------- Ship modular files into the Hub ----------
+  extraFiles:
+    # UI Configuration
+    ui_options_form:
+      mountPath: /etc/jupyterhub/extra/ui_options_form.html
+      stringData: |
+{{ .Files.Get "config/ui_options_form.html" | indent 8 }}
+    
+    # Profile Configuration  
+    profiles:
+      mountPath: /etc/jupyterhub/extra/profiles.py
+      stringData: |
+{{ .Files.Get "config/profiles.py" | indent 8 }}
+    
+    # Culler Configuration
+    culler_config:
+      mountPath: /etc/jupyterhub/extra/culler.py  
+      stringData: |
+{{ .Files.Get "config/culler.py" | indent 8 }}
+          
+    # Auth Configuration
+    auth_config:
+      mountPath: /etc/jupyterhub/extra/auth.py
+      stringData: |
+{{ .Files.Get "config/auth.py" | indent 8 }}
+
   extraConfig:
     00-install-oauthenticator: |
       import subprocess, sys
@@ -96,7 +108,33 @@ hub:
       except ImportError:
           subprocess.check_call([sys.executable, "-m", "pip", "install", "oauthenticator"])
 
-    01-info-endpoint: |
+    00-auth-config: |
+      # Load authentication configuration from modular file
+      import importlib.util, sys
+      spec = importlib.util.spec_from_file_location("auth", "/etc/jupyterhub/extra/auth.py")
+      auth_mod = importlib.util.module_from_spec(spec)
+      sys.modules["auth"] = auth_mod
+      spec.loader.exec_module(auth_mod)
+      
+      # Apply OAuth configuration
+      oauth_config = auth_mod.get_oauth_config()
+      c.GenericOAuthenticator.client_id = oauth_config['client_id']
+      c.GenericOAuthenticator.client_secret = oauth_config['client_secret']
+      c.GenericOAuthenticator.oauth_callback_url = oauth_config['oauth_callback_url']
+      c.GenericOAuthenticator.authorize_url = oauth_config['authorize_url']
+      c.GenericOAuthenticator.token_url = oauth_config['token_url']
+      c.GenericOAuthenticator.userdata_url = oauth_config['userdata_url']
+      c.GenericOAuthenticator.login_service = oauth_config['login_service']
+      c.GenericOAuthenticator.username_claim = oauth_config['username_claim']
+      c.GenericOAuthenticator.userdata_params = oauth_config['userdata_params']
+      c.GenericOAuthenticator.scope = oauth_config['scope']
+      c.GenericOAuthenticator.claim_groups_key = oauth_config['claim_groups_key']
+      
+      # Apply admin configuration  
+      admin_config = auth_mod.get_admin_config()
+      c.Authenticator.admin_users = set(admin_config['users'])
+
+    01-templates-and-info: |
       c.JupyterHub.template_paths = ['/etc/jupyterhub/custom']
       from jupyterhub.handlers import BaseHandler
       from tornado import web
@@ -111,338 +149,35 @@ hub:
               self.write(html)
       c.JupyterHub.extra_handlers = [(r"/info", InfoHandler)]
 
-    02-profiles: |
-      # ---------- Access logic ----------
-      GPU_PROFILE_SLUGS = {
-          'gpu-pytorch-single','gpu-tensorflow-single',
-          'gpu-pytorch-dual','gpu-tensorflow-dual',
-          'gpu-mig-1g','gpu-mig-2g'
-      }
-      ALLOWED_GPU_GROUPS = {'cpsHPCAccess','jupyter_admin'}
+    02-ui-options-form: |
+      # Load the HTML UI from file
+      with open('/etc/jupyterhub/extra/ui_options_form.html', 'r', encoding='utf-8') as f:
+          c.Spawner.options_form = f.read()
 
-      def user_has_gpu_access(spawner):
-          group_names = {getattr(g, "name", g) for g in spawner.user.groups}
-          return bool(spawner.user.admin) or bool(group_names & ALLOWED_GPU_GROUPS)
+    03-profiles: |
+      # Wire up profile list + form parser + pre_spawn_hook
+      import importlib.util, sys
+      spec = importlib.util.spec_from_file_location("profiles", "/etc/jupyterhub/extra/profiles.py")
+      mod = importlib.util.module_from_spec(spec); sys.modules["profiles"] = mod; spec.loader.exec_module(mod)
+      c.KubeSpawner.profile_list = mod.PROFILE_LIST
+      c.Spawner.options_from_form = mod.options_from_form
+      c.KubeSpawner.pre_spawn_hook = mod.apply_profile_settings
 
-      # ---------- Layered boxed UI ----------
-      c.Spawner.options_form = """
-      <style>
-        .hub-ui * { box-sizing: border-box; }
-        .hub-ui { max-width: 980px; margin: 24px auto; padding: 0 8px; font-family: system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, 'Helvetica Neue', Arial, 'Noto Sans', sans-serif; }
-        .ui-title { font-size: 20px; font-weight: 600; color: #1f2937; margin-bottom: 6px; }
-        .subtle { color: #6b7280; font-size: 13px; margin-bottom: 12px; }
-
-        .layer { background: #fff; border: 1px solid #e5e7eb; border-radius: 14px; box-shadow:
-                 0 1px 1px rgba(0,0,0,.03), 0 8px 20px rgba(17,24,39,.06);
-                 padding: 18px; margin-bottom: 16px; }
-        .grid { display:grid; grid-template-columns: repeat(2, minmax(0,1fr)); gap: 12px; }
-        @media (max-width: 820px) { .grid { grid-template-columns: 1fr; } }
-
-        .card { position: relative; border: 1px solid #e5e7eb; border-radius: 12px; padding: 14px;
-                transition: box-shadow .15s ease, border-color .15s ease, transform .05s ease;
-                background: linear-gradient(180deg, rgba(249,250,251,.6), rgba(255,255,255,1)); }
-        .card:hover { box-shadow: 0 8px 22px rgba(17,24,39,.08); border-color:#d1d5db; transform: translateY(-1px); }
-        .card input[type="radio"] { position: absolute; inset:0; opacity:0; cursor:pointer; }
-        .card.selected { border-color: #3b82f6; box-shadow: 0 0 0 3px rgba(59,130,246,.15); }
-        .row { display:flex; align-items:center; justify-content:space-between; gap: 10px; }
-        .name { font-weight: 600; color:#111827; }
-        .meta { display:flex; gap:8px; flex-wrap: wrap; }
-        .chip { font-size:12px; border:1px solid #e5e7eb; padding:3px 8px; border-radius:999px; color:#374151; background:#f9fafb; }
-        .gpu-chip { border-color:#c7d2fe; background:#eef2ff; color:#4338ca; }
-        .cpu-chip { border-color:#bae6fd; background:#e0f2fe; color:#075985; }
-        .ram-chip { border-color:#c7f9cc; background:#e8fce9; color:#166534; }
-        .notice { display:none; border:1px dashed #f59e0b; background: linear-gradient(180deg, #fff7ed, #fff); color:#92400e; border-radius:12px; padding:12px; margin-bottom: 12px; }
-        .hint { font-size:12px; color:#6b7280; margin-top: 4px; }
-        .input, .select { width:100%; padding:10px 12px; border:1.5px solid #e5e7eb; border-radius:10px; background:white; }
-        .select-inline { width:auto; min-width: 160px; }
-      </style>
-
-      <div class="hub-ui">
-        <div class="ui-title">Select a Profile</div>
-        <div class="subtle">For longer CLI workloads, use <code>tmux</code> in a Terminal (we’ll install it for you).</div>
-
-        <div id="gpu-access-notice" class="notice">
-          <strong>No GPU access.</strong> Choose the CPU profile or contact admins for <code>cpsHPCAccess</code>.
-        </div>
-
-        <div class="layer">
-          <div class="grid" id="profile-grid">
-            <!-- CPU default (only non-privileged default) -->
-            <label class="card selected" data-slug="cpu-default">
-              <input type="radio" name="profile" value="cpu-default" checked>
-              <div class="row">
-                <div class="name">CPU (Default)</div>
-                <div class="meta">
-                  <span class="chip cpu-chip">2 vCPU (shared)</span>
-                  <span class="chip ram-chip">2 GiB</span>
-                </div>
-              </div>
-            </label>
-
-            <!-- GPU single -->
-            <label class="card" data-slug="gpu-pytorch-single" id="card-gpu-pt-1">
-              <input type="radio" name="profile" value="gpu-pytorch-single">
-              <div class="row"><div class="name">GPU: PyTorch (1×)</div>
-                <div class="meta"><span class="chip gpu-chip">1× GPU</span><span class="chip cpu-chip">16 vCPU</span><span class="chip ram-chip">64 GiB</span></div>
-              </div>
-            </label>
-
-            <label class="card" data-slug="gpu-tensorflow-single" id="card-gpu-tf-1">
-              <input type="radio" name="profile" value="gpu-tensorflow-single">
-              <div class="row"><div class="name">GPU: TensorFlow (1×)</div>
-                <div class="meta"><span class="chip gpu-chip">1× GPU</span><span class="chip cpu-chip">16 vCPU</span><span class="chip ram-chip">64 GiB</span></div>
-              </div>
-            </label>
-
-            <!-- GPU dual -->
-            <label class="card" data-slug="gpu-pytorch-dual" id="card-gpu-pt-2">
-              <input type="radio" name="profile" value="gpu-pytorch-dual">
-              <div class="row"><div class="name">GPU: PyTorch (2×)</div>
-                <div class="meta"><span class="chip gpu-chip">2× GPU</span><span class="chip cpu-chip">32 vCPU</span><span class="chip ram-chip">128 GiB</span></div>
-              </div>
-            </label>
-
-            <label class="card" data-slug="gpu-tensorflow-dual" id="card-gpu-tf-2">
-              <input type="radio" name="profile" value="gpu-tensorflow-dual">
-              <div class="row"><div class="name">GPU: TensorFlow (2×)</div>
-                <div class="meta"><span class="chip gpu-chip">2× GPU</span><span class="chip cpu-chip">32 vCPU</span><span class="chip ram-chip">128 GiB</span></div>
-              </div>
-            </label>
-
-            <!-- MIG slices -->
-            <label class="card" data-slug="gpu-mig-1g" id="card-gpu-mig-1g">
-              <input type="radio" name="profile" value="gpu-mig-1g">
-              <div class="row"><div class="name">GPU: MIG 1g.10gb</div>
-                <div class="meta"><span class="chip gpu-chip">1× MIG 1g.10gb</span><span class="chip cpu-chip">8 vCPU</span><span class="chip ram-chip">32 GiB</span></div>
-              </div>
-            </label>
-
-            <label class="card" data-slug="gpu-mig-2g" id="card-gpu-mig-2g">
-              <input type="radio" name="profile" value="gpu-mig-2g">
-              <div class="row"><div class="name">GPU: MIG 2g.20gb</div>
-                <div class="meta"><span class="chip gpu-chip">1× MIG 2g.20gb</span><span class="chip cpu-chip">12 vCPU</span><span class="chip ram-chip">48 GiB</span></div>
-              </div>
-            </label>
-          </div>
-        </div>
-
-        <!-- Custom image + flexible GPU count -->
-        <div class="layer">
-          <div class="row" style="align-items:flex-start; gap:16px; flex-wrap: wrap;">
-            <div style="flex:1; min-width: 260px;">
-              <div class="name" style="margin-bottom:6px;">Optional: Custom Image</div>
-              <input class="input" type="text" id="custom-image" name="custom_image" placeholder="registry/repo:tag (admins only)" />
-              <div class="hint">Overrides the profile image.</div>
-            </div>
-            <div class="select-inline">
-              <div class="name" style="margin-bottom:6px;">GPUs</div>
-              <select class="select" id="custom-gpus" name="custom_gpus">
-                <option value="0" selected>0 × GPU</option>
-                <option value="1">1 × GPU</option>
-                <option value="2">2 × GPU</option>
-              </select>
-              <div class="hint">Requires GPU access.</div>
-            </div>
-          </div>
-        </div>
-
-        <div class="hint">Reminder: for long CLI jobs, start a Terminal and use <code>tmux</code> (we’ll install it automatically).</div>
-      </div>
-
-      <script>
-      (function(){
-        var cards = document.querySelectorAll('.card');
-        function selectCard(el){ cards.forEach(c=>c.classList.remove('selected')); el.classList.add('selected'); var i = el.querySelector('input[type="radio"]'); if (i) i.checked = true; }
-        cards.forEach(c=>c.addEventListener('click', ()=>selectCard(c)));
-
-        var allowedGPUGroups = ['cpsHPCAccess','jupyter_admin'];
-        function getCookie(name){ return document.cookie.split('; ').reduce(function(val,c){ var p=c.split('='); return p[0]===name?decodeURIComponent(p.slice(1).join('=')):val; }, null); }
-        var xsrf = getCookie('_xsrf');
-        fetch('/hub/api/user', {
-          credentials: 'same-origin',
-          headers: Object.assign({'Accept':'application/json'}, xsrf ? {'X-XSRFToken': xsrf} : {})
-        })
-        .then(r=>{ if(!r.ok) throw new Error('HTTP '+r.status); return r.json(); })
-        .then(user=>{
-          var groups = Array.isArray(user.groups) ? user.groups.map(g=> typeof g==='string'? g : (g&&g.name)? g.name : '') : [];
-          var isAdmin = !!user.admin;
-          var hasGPU = isAdmin || groups.some(g=> allowedGPUGroups.indexOf(g)!==-1);
-          if (!hasGPU) {
-            ['card-gpu-pt-1','card-gpu-tf-1','card-gpu-pt-2','card-gpu-tf-2','card-gpu-mig-1g','card-gpu-mig-2g'].forEach(id=>{
-              var el=document.getElementById(id); if(el){ el.style.opacity=.5; var inp=el.querySelector('input[type="radio"]'); if(inp) inp.disabled=true; }
-            });
-            var cg=document.getElementById('custom-gpus'); if(cg){ cg.value='0'; Array.from(cg.options).forEach(o=>{ if(o.value!=='0') o.disabled=true; }); }
-            var notice=document.getElementById('gpu-access-notice'); if(notice) notice.style.display='block';
-          }
-        })
-        .catch(()=>{});
-      })();
-      </script>
-      """
-
-      # ---------- Parse form ----------
-      def options_from_form(formdata):
-          opts = {}
-          opts['profile'] = formdata.get('profile', ['cpu-default'])[0]
-          custom_image = formdata.get('custom_image', [''])[0].strip()
-          if custom_image:
-              opts['custom_image'] = custom_image
-          try:
-              opts['custom_gpus'] = int(formdata.get('custom_gpus', ['0'])[0])
-          except Exception:
-              opts['custom_gpus'] = 0
-          return opts
-      c.Spawner.options_from_form = options_from_form
-
-      # ---------- Profiles (validation only) ----------
-      c.KubeSpawner.profile_list = [
-          {'display_name': 'CPU (Default)', 'slug': 'cpu-default', 'description': '2 vCPU (shared) • 2 GiB', 'default': True},
-          {'display_name': 'GPU PyTorch (1×)', 'slug': 'gpu-pytorch-single', 'description': '1× GPU • 16 vCPU • 64 GiB'},
-          {'display_name': 'GPU TF (1×)', 'slug': 'gpu-tensorflow-single', 'description': '1× GPU • 16 vCPU • 64 GiB'},
-          {'display_name': 'GPU PyTorch (2×)', 'slug': 'gpu-pytorch-dual', 'description': '2× GPU • 32 vCPU • 128 GiB'},
-          {'display_name': 'GPU TF (2×)', 'slug': 'gpu-tensorflow-dual', 'description': '2× GPU • 32 vCPU • 128 GiB'},
-          {'display_name': 'GPU MIG 1g.10gb', 'slug': 'gpu-mig-1g', 'description': '1× MIG 1g.10gb • 8 vCPU • 32 GiB'},
-          {'display_name': 'GPU MIG 2g.20gb', 'slug': 'gpu-mig-2g', 'description': '1× MIG 2g.20gb • 12 vCPU • 48 GiB'},
-      ]
-
-      # ---------- Canonical profile configs (CUDA-enabled images) ----------
-      PROFILE_CONFIGS = {
-          'cpu-default': {
-              'image': 'quay.io/jupyter/datascience-notebook:2025-11-06',
-              'cpu_limit': 2.0, 'cpu_guarantee': 0.5,
-              'mem_limit': '2G', 'mem_guarantee': '1G',
-              'runtime_class': None,
-              'gpu': 0,
-          },
-          'gpu-pytorch-single': {
-              'image': 'quay.io/jupyter/pytorch-notebook:cuda12-python-3.11.8',
-              'cpu_limit': 16.0, 'cpu_guarantee': 8.0,
-              'mem_limit': '64G', 'mem_guarantee': '32G',
-              'gpu': 1,
-              'resource_key': 'nvidia.com/gpu',
-              'runtime_class': 'nvidia',
-          },
-          'gpu-tensorflow-single': {
-              'image': 'quay.io/jupyter/tensorflow-notebook:cuda-latest',
-              'cpu_limit': 16.0, 'cpu_guarantee': 8.0,
-              'mem_limit': '64G', 'mem_guarantee': '32G',
-              'gpu': 1,
-              'resource_key': 'nvidia.com/gpu',
-              'runtime_class': 'nvidia',
-          },
-          'gpu-pytorch-dual': {
-              'image': 'quay.io/jupyter/pytorch-notebook:cuda12-python-3.11.8',
-              'cpu_limit': 32.0, 'cpu_guarantee': 16.0,
-              'mem_limit': '128G', 'mem_guarantee': '64G',
-              'gpu': 2,
-              'resource_key': 'nvidia.com/gpu',
-              'runtime_class': 'nvidia',
-          },
-          'gpu-tensorflow-dual': {
-              'image': 'quay.io/jupyter/tensorflow-notebook:cuda-latest',
-              'cpu_limit': 32.0, 'cpu_guarantee': 16.0,
-              'mem_limit': '128G', 'mem_guarantee': '64G',
-              'gpu': 2,
-              'resource_key': 'nvidia.com/gpu',
-              'runtime_class': 'nvidia',
-          },
-          'gpu-mig-1g': {
-              'image': 'quay.io/jupyter/pytorch-notebook:cuda12-python-3.11.8',
-              'cpu_limit': 8.0, 'cpu_guarantee': 4.0,
-              'mem_limit': '32G', 'mem_guarantee': '16G',
-              'gpu': 1,
-              'resource_key': 'nvidia.com/mig-1g.10gb',
-              'runtime_class': 'nvidia',
-          },
-          'gpu-mig-2g': {
-              'image': 'quay.io/jupyter/pytorch-notebook:cuda12-python-3.11.8',
-              'cpu_limit': 12.0, 'cpu_guarantee': 6.0,
-              'mem_limit': '48G', 'mem_guarantee': '24G',
-              'gpu': 1,
-              'resource_key': 'nvidia.com/mig-2g.20gb',
-              'runtime_class': 'nvidia',
-          },
-      }
-
-      # ---------- Apply profile & per-profile knobs ----------
-      async def apply_profile_settings(spawner):
-          profile_slug = spawner.user_options.get('profile', 'cpu-default')
-          custom_image = spawner.user_options.get('custom_image', '').strip()
-          custom_gpus = int(spawner.user_options.get('custom_gpus', 0) or 0)
-          cfg = PROFILE_CONFIGS.get(profile_slug, PROFILE_CONFIGS['cpu-default'])
-          spawner.log.info(f"{spawner.user.name} -> profile={profile_slug}, custom_image={'set' if custom_image else 'none'}, custom_gpus={custom_gpus}")
-
-          # Base image
-          spawner.image = cfg['image'] if not custom_image else spawner.image
-          # Resources
-          spawner.cpu_limit = cfg['cpu_limit']; spawner.cpu_guarantee = cfg['cpu_guarantee']
-          spawner.mem_limit = cfg['mem_limit']; spawner.mem_guarantee = cfg['mem_guarantee']
-          # RuntimeClass
-          spawner.extra_pod_config = spawner.extra_pod_config or {}
-          if cfg['runtime_class']:
-              spawner.extra_pod_config['runtimeClassName'] = cfg['runtime_class']
-
-          # Ensure tmux present (best-effort; container must have apt)
-          spawner.extra_container_config = spawner.extra_container_config or {}
-          spawner.extra_container_config['lifecycle'] = {
-              'postStart': {
-                  'exec': {
-                      'command': [
-                          '/bin/sh','-c',
-                          'command -v tmux >/dev/null 2>&1 || (apt-get update && apt-get install -y tmux || true)'
-                      ]
-                  }
-              }
-          }
-
-          # GPU / MIG resources (profile)
-          spawner.extra_resource_limits = {}
-          spawner.extra_resource_guarantees = {}
-          if cfg['gpu'] and cfg.get('resource_key'):
-              spawner.extra_resource_limits[cfg['resource_key']] = str(cfg['gpu'])
-              spawner.extra_resource_guarantees[cfg['resource_key']] = str(cfg['gpu'])
-              if not getattr(spawner, "environment", None):
-                  spawner.environment = {}
-              spawner.environment.update({'NVIDIA_VISIBLE_DEVICES':'all','NVIDIA_DRIVER_CAPABILITIES':'compute,utility'})
-              spawner.node_selector = dict(getattr(spawner,'node_selector',{}) or {}, **{'accelerator':'nvidia'})
-
-          # Custom image (admins only)
-          if custom_image:
-              is_admin = spawner.user.admin or any(getattr(g,"name",g) == 'jupyter_admin' for g in spawner.user.groups)
-              if is_admin:
-                  import re
-                  if re.fullmatch(r"[A-Za-z0-9._:/\\-]+", custom_image):
-                      spawner.image = custom_image
-                  else:
-                      spawner.log.warning(f"Invalid custom image '{custom_image}', ignoring")
-              else:
-                  spawner.log.warning(f"Non-admin custom image ignored for {spawner.user.name}")
-
-          # Custom GPU override
-          if custom_gpus > 0:
-              if not user_has_gpu_access(spawner):
-                  raise Exception("🚫 GPU Access Denied\n\nGPU resources require 'cpsHPCAccess' or admin.")
-              rkey = cfg.get('resource_key', 'nvidia.com/gpu')
-              spawner.extra_resource_limits = {rkey: str(custom_gpus)}
-              spawner.extra_resource_guarantees = {rkey: str(custom_gpus)}
-              if not getattr(spawner, "environment", None):
-                  spawner.environment = {}
-              spawner.environment.update({'NVIDIA_VISIBLE_DEVICES':'all','NVIDIA_DRIVER_CAPABILITIES':'compute,utility'})
-              spawner.node_selector = dict(getattr(spawner,'node_selector',{}) or {}, **{'accelerator':'nvidia'})
-
-          # Record profile on the server
-          spawner.environment = spawner.environment or {}
-          spawner.environment['HUB_PROFILE_SLUG'] = profile_slug
-
-          spawner.log.info(f"Final: image={spawner.image} CPU={spawner.cpu_limit}/{spawner.cpu_guarantee} MEM={spawner.mem_limit}/{spawner.mem_guarantee} RES={spawner.extra_resource_limits}")
-      c.KubeSpawner.pre_spawn_hook = apply_profile_settings
-
-    gpu-config: |
-      # Base env (profiles may extend)
+    04-gpu-env: |
+      # Base env for GPU-enabled images
       c.KubeSpawner.environment = {
           'NVIDIA_VISIBLE_DEVICES': 'all',
           'NVIDIA_DRIVER_CAPABILITIES': 'compute,utility'
       }
+
+    95-per-profile-culler: |
+      # Start internal per-profile culler (12h hard max for GPU profiles)
+      import importlib.util, sys
+      from jupyterhub.app import JupyterHub
+      spec = importlib.util.spec_from_file_location("culler", "/etc/jupyterhub/extra/culler.py")
+      cul = importlib.util.module_from_spec(spec); sys.modules["culler"] = cul; spec.loader.exec_module(cul)
+      def _start(app: JupyterHub): app.io_loop.spawn_callback(cul.per_profile_cull, app)
+      c.JupyterHub.post_hook = _start
 
 singleuser:
   image:
@@ -450,46 +185,35 @@ singleuser:
     tag: "2025-11-06"
     pullPolicy: IfNotPresent
 
-  # If you use GPU profiles, keep the runtime here so schema stays valid
   extraPodConfig:
     runtimeClassName: nvidia
 
   # ---------- STORAGE ----------
   storage:
-    # Make $HOME fast by default (emptyDir on node SSD)
     type: none
     extraVolumes:
-      # Fast ephemeral home
       - name: fast-home
         emptyDir: {}
-      # Shared RWX NFS (PVC must exist; dynamic via nfs-subdir-provisioner)
       - name: shared-rwx
         persistentVolumeClaim:
           claimName: jhub-shared-rwx
-      # Per-user persistent NFS via subPathExpr on a single RWX PVC
       - name: userdir-rwx
         persistentVolumeClaim:
           claimName: jhub-userdir-rwx
-
     extraVolumeMounts:
-      # $HOME on SSD
       - name: fast-home
         mountPath: /home/jovyan
-      # Shared datasets/team space
       - name: shared-rwx
         mountPath: /home/jovyan/Shared
         readOnly: false
-      # Durable per-user dir (each user mapped to a subdir)
       - name: userdir-rwx
         mountPath: /home/jovyan/Persist
         readOnly: false
         subPathExpr: "users/$(JUPYTERHUB_USER)"
 
-  # Group-writable NFS
   uid: 1000
   fsGid: 100
 
-  # Fast-by-default: open Lab at $HOME and keep caches local
   extraEnv:
     GRANT_SUDO: "yes"
     NOTEBOOK_ARGS: "--allow-root"
@@ -502,11 +226,9 @@ singleuser:
     TORCH_HOME: /home/jovyan/.cache/torch
     NUMBA_CACHE_DIR: /home/jovyan/.cache/numba
 
-  # Cloud metadata blocking disabled to avoid container startup issues
   cloudMetadata:
     blockWithIptables: false
 
-  # Lifecycle hooks (schema key is lifecycleHooks)
   lifecycleHooks:
     postStart:
       exec:
@@ -527,7 +249,6 @@ singleuser:
           - /bin/sh
           - -c
           - |
-            # Best-effort sync of common work files on graceful stop
             set -eu
             dst="/home/jovyan/Persist/last_session/$(date +%Y%m%d-%H%M%S)"
             mkdir -p "$dst" || true
@@ -537,7 +258,6 @@ singleuser:
               --exclude='.cache' --exclude='**/.git' --exclude='**/__pycache__' \
               /home/jovyan/ "$dst" || true
 
-  # Baseline CPU/RAM for default spawns (profiles can override)
   cpu:
     limit: 2
     guarantee: 1
@@ -545,9 +265,6 @@ singleuser:
     limit: 4G
     guarantee: 2G
 
-# -----------------------------------------------------------------------------
-# Scheduling / scale knobs
-# -----------------------------------------------------------------------------
 scheduling:
   userScheduler:
     enabled: true
