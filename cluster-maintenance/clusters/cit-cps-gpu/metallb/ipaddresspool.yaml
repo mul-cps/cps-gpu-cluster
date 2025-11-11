@@ -1,0 +1,12 @@
+---
+apiVersion: metallb.io/v1beta1
+kind: IPAddressPool
+metadata:
+  name: default-pool
+  namespace: metallb-system
+spec:
+  addresses:
+  # IP range for LoadBalancer services in VLAN 633
+  # Allocated from available range in 10.21.0.0/16
+  - 10.21.0.50-10.21.0.60
+  autoAssign: true

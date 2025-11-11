@@ -18,14 +18,17 @@ helm:
 kustomize:
   dir: .
 
-# Depends on storage infrastructure and GPU operator being ready
+# Depends on storage infrastructure and ingress
 dependsOn:
 - selector:
     matchLabels:
       name: storage-classes
 - selector:
     matchLabels:
-      name: gpu-operator
+      name: ingress-nginx
+- selector:
+    matchLabels:
+      name: wildcard-cert
       
 diff:
   comparePatches:

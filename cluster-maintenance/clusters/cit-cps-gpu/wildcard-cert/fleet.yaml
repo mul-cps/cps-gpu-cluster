@@ -1,0 +1,9 @@
+name: wildcard-cert
+defaultNamespace: cert-manager
+
+labels:
+  app: wildcard-cert
+  name: wildcard-cert
+
+kustomize:
+  dir: .

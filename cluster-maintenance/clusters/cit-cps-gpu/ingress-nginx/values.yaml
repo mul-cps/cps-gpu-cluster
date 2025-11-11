@@ -1,0 +1,63 @@
+# NGINX Ingress Controller Configuration
+
+controller:
+  # Service configuration - LoadBalancer type for MetalLB
+  service:
+    enabled: true
+    type: LoadBalancer
+    # MetalLB will auto-assign IP from pool (10.21.0.50-60)
+    # Optionally request specific IP:
+    # loadBalancerIP: 10.21.0.50
+    annotations:
+      # MetalLB configuration
+      metallb.universe.tf/allow-shared-ip: "ingress-shared"
+    externalTrafficPolicy: Local  # Preserve source IP
+    
+  # Ingress class configuration
+  ingressClassResource:
+    name: nginx
+    enabled: true
+    default: true
+    controllerValue: "k8s.io/ingress-nginx"
+  
+  # Publish service on all GPU worker nodes
+  kind: DaemonSet
+  
+  # Metrics for Prometheus
+  metrics:
+    enabled: true
+    serviceMonitor:
+      enabled: true
+      namespace: cattle-monitoring-system
+  
+  # Resource limits
+  resources:
+    requests:
+      cpu: 100m
+      memory: 128Mi
+    limits:
+      cpu: 1000m
+      memory: 512Mi
+  
+  # Enable real IP forwarding (important for logging and auth)
+  config:
+    use-forwarded-headers: "true"
+    compute-full-forwarded-for: "true"
+    use-proxy-protocol: "false"
+  
+  # Autoscaling disabled (using DaemonSet for HA)
+  autoscaling:
+    enabled: false
+
+# Default backend (optional 404 page)
+defaultBackend:
+  enabled: false
+
+# RBAC
+rbac:
+  create: true
+
+# Service account
+serviceAccount:
+  create: true
+  name: ingress-nginx

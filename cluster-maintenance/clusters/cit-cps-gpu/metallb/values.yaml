@@ -1,0 +1,21 @@
+# MetalLB Configuration
+# Provides LoadBalancer IP allocation for services in the cluster
+
+# Controller and speaker settings
+controller:
+  logLevel: info
+
+speaker:
+  logLevel: info
+  # FRR mode disabled - using native L2 mode
+  frr:
+    enabled: false
+
+# Prometheus monitoring integration
+prometheus:
+  serviceMonitor:
+    enabled: true
+    namespace: cattle-monitoring-system
+  prometheusRule:
+    enabled: true
+    namespace: cattle-monitoring-system

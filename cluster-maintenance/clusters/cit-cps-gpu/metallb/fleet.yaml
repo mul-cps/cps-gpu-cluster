@@ -1,0 +1,17 @@
+name: metallb
+defaultNamespace: metallb-system
+
+labels:
+  app: metallb
+  name: metallb
+
+helm:
+  chart: metallb
+  repo: https://metallb.github.io/metallb
+  version: 0.14.9
+  releaseName: metallb
+  valuesFiles:
+  - values.yaml
+
+kustomize:
+  dir: .
