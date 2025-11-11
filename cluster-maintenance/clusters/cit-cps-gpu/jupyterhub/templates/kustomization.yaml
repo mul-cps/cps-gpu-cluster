@@ -12,16 +12,16 @@ configMapGenerator:
 # Component configuration files
 - name: jhub-ui-options-form
   files:
-  - ../config/ui_options_form.html
+  - ui_options_form.html
 
 - name: jhub-profiles
   files:
-  - ../config/profiles.py
+  - profiles.py
 
 - name: jhub-culler-config
   files:
-  - ../config/culler.py
+  - culler.py
 
 - name: jhub-auth-config
   files:
-  - ../config/auth.py
+  - auth.py
