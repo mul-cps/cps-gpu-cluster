@@ -16,7 +16,7 @@ helm:
 
 # Storage PVCs and additional Kubernetes manifests
 kustomize:
-  dir: ./
+  dir: .
 
 # Depends on storage infrastructure and GPU operator being ready
 dependsOn:
