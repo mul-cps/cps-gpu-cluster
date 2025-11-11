@@ -1,10 +1,11 @@
 # MetalLB Configuration
 # Provides LoadBalancer IP allocation for services in the cluster
 
-# CRDs are installed separately via the metallb-crds bundle
-# This ensures CRDs are available before the main installation
+# Enable CRDs installation from Helm chart
+# The Helm chart includes proper CRD definitions with conversion webhooks
 crds:
-  enabled: false  # Disabled because CRDs are installed via metallb-crds bundle
+  enabled: true
+  validationFailurePolicy: Ignore
 
 # Controller and speaker settings
 controller:

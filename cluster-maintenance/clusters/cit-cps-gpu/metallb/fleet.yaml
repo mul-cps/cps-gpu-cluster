@@ -5,10 +5,6 @@ labels:
   app: metallb
   name: metallb
 
-# Depend on CRDs being installed first
-dependsOn:
-- name: metallb-crds
-
 helm:
   chart: metallb
   repo: https://metallb.github.io/metallb
@@ -16,5 +12,3 @@ helm:
   releaseName: metallb
   valuesFiles:
   - values.yaml
-  # Wait for CRDs to be available before installing
-  waitForJobs: true

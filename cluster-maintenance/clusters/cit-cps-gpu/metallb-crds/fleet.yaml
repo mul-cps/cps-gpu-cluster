@@ -1,6 +1,0 @@
-name: metallb-crds
-defaultNamespace: metallb-system
-
-labels:
-  app: metallb
-  name: metallb-crds
