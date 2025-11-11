@@ -1,0 +1,12 @@
+name: metallb-crds
+defaultNamespace: metallb-system
+
+labels:
+  app: metallb
+  name: metallb-crds
+
+helm:
+  chart: crds
+  repo: https://metallb.github.io/metallb
+  version: 0.14.9
+  releaseName: metallb-crds

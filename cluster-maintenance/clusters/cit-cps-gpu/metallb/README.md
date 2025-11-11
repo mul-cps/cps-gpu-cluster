@@ -8,6 +8,15 @@ MetalLB provides LoadBalancer service type implementation for bare-metal Kuberne
 **IP Pool:** 10.21.0.50 - 10.21.0.60 (VLAN 633)
 **Network:** 10.21.0.0/16
 
+## Deployment
+
+MetalLB is deployed in two stages via Fleet:
+
+1. **metallb-crds** bundle - Installs CRDs first
+2. **metallb** bundle - Installs MetalLB controller, speaker, and configuration (depends on metallb-crds)
+
+This ensures the Custom Resource Definitions are available before creating IPAddressPool and L2Advertisement resources.
+
 ## How It Works
 
 1. When a service requests `type: LoadBalancer`, MetalLB assigns an IP from the pool
