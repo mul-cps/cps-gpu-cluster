@@ -8,9 +8,35 @@ GPU-enabled JupyterHub for multi-user notebook environment with dynamic profile 
 - **Group-Based Access Control**: `cpsHPCAccess` group gets full GPU access, others get CPU-only
 - **Custom Image Support**: HPC users can specify custom container images
 - **Flexible Resource Configuration**: HPC users can customize CPU, memory, and GPU allocation
-- **Persistent Storage**: User home directories stored on NFS
+- **Persistent Storage**: User home directories stored on NFS with multiple storage tiers
 - **OIDC Authentication**: Integration with Authentik for SSO
 - **Auto-culling**: Idle notebooks shut down after 1 hour
+
+## Storage Architecture
+
+JupyterHub uses a three-tier storage approach:
+
+### 1. Fast Ephemeral Storage (`/home/jovyan`)
+- **Type**: EmptyDir on node SSD
+- **Purpose**: Fast workspace for active development
+- **Lifecycle**: Deleted when pod terminates
+- **Best for**: Active notebooks, temporary files, caches
+
+### 2. Persistent User Storage (`/home/jovyan/Persist`)
+- **Type**: NFS with per-user subdirectories via subPathExpr
+- **PVC**: `jhub-userdir-rwx` (50TB logical capacity)
+- **Purpose**: Long-term user file storage
+- **Best for**: Important notebooks, datasets, personal projects
+
+### 3. Shared Team Storage (`/home/jovyan/Shared`)
+- **Type**: NFS ReadWriteMany
+- **PVC**: `jhub-shared-rwx` (2TB)
+- **Purpose**: Team collaboration and shared datasets
+- **Best for**: Shared datasets, team projects, collaboration
+
+### Storage Lifecycle
+- **Auto-backup**: On pod termination, important files are automatically backed up from ephemeral to persistent storage
+- **Symlink**: `/home/jovyan/Save` → `/home/jovyan/Persist` for easy access
 
 ## Access
 

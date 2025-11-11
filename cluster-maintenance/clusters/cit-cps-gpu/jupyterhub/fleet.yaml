@@ -9,12 +9,15 @@ helm:
   valuesFiles:
   - values.yaml
 
-# Additional Kubernetes manifests for templates
+# Storage PVCs and additional Kubernetes manifests
 kustomize:
-  dir: ./templates
+  dir: ./
 
-# Depends on GPU operator being ready
+# Depends on storage infrastructure and GPU operator being ready
 dependsOn:
+- selector:
+    matchLabels:
+      name: storageclasses
 - selector:
     matchLabels:
       name: gpu-operator

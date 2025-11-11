@@ -1,22 +1,39 @@
 # =============================================================================
-# JupyterHub Configuration for GPU/CPU Cluster with Fast-Default Homes
+# JupyterHub Configuration (schema-compliant)
+# - Fast $HOME on SSD (emptyDir)
+# - Per-user Persist on NFS via subPathExpr (single shared PVC)
+# - Shared NFS at /home/jovyan/Shared (single shared PVC)
+# - PostgreSQL Hub DB
+# - NGINX Ingress, long websocket timeouts
+# - High-user-count tweaks
 # =============================================================================
 
 proxy:
   service:
     type: ClusterIP
   chp:
-    # More workers for the proxy under higher concurrency
     extraEnv:
       CONFIGPROXY_NUM_WORKERS: "6"
 
 ingress:
   enabled: true
-  ingressClassName: nginx #traefik
+  ingressClassName: nginx
   hosts: [jupyterhub.cps.unileoben.ac.at]
   annotations:
-    kubernetes.io/ingress.class: nginx #traefik
-    cert-manager.io/cluster-issuer: letsencrypt-prod
+    kubernetes.io/ingress.class: nginx
+    # WebSockets / long sessions / uploads
+    nginx.ingress.kubernetes.io/enable-websocket: "true"
+    nginx.ingress.kubernetes.io/proxy-read-timeout: "3600"
+    nginx.ingress.kubernetes.io/proxy-send-timeout: "3600"
+    nginx.ingress.kubernetes.io/proxy-body-size: "2g"
+    nginx.ingress.kubernetes.io/proxy-buffering: "on"
+    nginx.ingress.kubernetes.io/proxy-buffers-number: "16"
+    nginx.ingress.kubernetes.io/proxy-buffer-size: "32k"
+    nginx.ingress.kubernetes.io/proxy-next-upstream: "error timeout http_502 http_503 http_504"
+    nginx.ingress.kubernetes.io/proxy-next-upstream-tries: "3"
+    # sticky (optional if you ever scale proxy-public)
+    # nginx.ingress.kubernetes.io/affinity: "cookie"
+    # nginx.ingress.kubernetes.io/session-cookie-name: "hubroute"
   tls:
     - secretName: jupyterhub-tls
       hosts: [jupyterhub.cps.unileoben.ac.at]
@@ -48,12 +65,12 @@ hub:
       manage_groups: true
       admin_groups: ["jupyter_admin"]
 
-  # ---- Hub DB: PostgreSQL instead of sqlite ----
+  # PostgreSQL (no sqlite)
   db:
     type: postgres
     url: postgresql://jhub:REPLACE_ME_STRONG_PW@postgresql.jhub.svc.cluster.local:5432/jhub
 
-  # Hub resource sizing and spawn behavior for >200 users
+  # Hub sizing for 200+ concurrent users
   resources:
     requests:
       cpu: "500m"
@@ -61,11 +78,8 @@ hub:
     limits:
       cpu: "2"
       memory: "4Gi"
-
   extraEnv:
-    # Larger page size reduces API pagination churn during mass-spawns
     JUPYTERHUB_API_PAGE_SIZE: "200"
-    # Let quotas (if any) enforce limits, not Hub:
     JUPYTERHUB_ACTIVE_SERVER_LIMIT: "0"
 
   extraVolumes:
@@ -99,82 +113,59 @@ hub:
               self.write(html)
       c.JupyterHub.extra_handlers = [(r"/info", InfoHandler)]
 
-    # Chainable pre_spawn_hook placeholder for future tweaks (e.g., power-user size hints)
-    02-pre-spawn-chain: |
-      old_hook = getattr(c.KubeSpawner, "pre_spawn_hook", None)
-      async def pre_spawn_chain(spawner):
-          if old_hook:
-              await old_hook(spawner)
-          # (reserved for future per-user tweaks)
-      c.KubeSpawner.pre_spawn_hook = pre_spawn_chain
-
-# =============================================================================
-# SINGLEUSER: Storage layout
-#   - $HOME (fast): emptyDir on node SSD (ephemeral)
-#   - /home/jovyan/Persist: per-user NFS (dynamic PVC via nfs-subdir-provisioner)
-#   - /home/jovyan/Shared: shared NFS (RWX PVC you create once)
-# =============================================================================
 singleuser:
   image:
-    # Choose your base (CPU or CUDA variant). Leave tag pinned for reproducibility.
     name: quay.io/jupyter/datascience-notebook
     tag: "2025-11-06"
     pullPolicy: IfNotPresent
 
-  # Use NVIDIA runtime when you select GPU profiles (kept here for completeness)
+  # If you use GPU profiles, keep the runtime here so schema stays valid
   extraPodConfig:
     runtimeClassName: nvidia
 
-  # ---------- FAST DEFAULT HOME on SSD ----------
+  # ---------- STORAGE ----------
   storage:
-    type: none                  # disable default PVC at /home
+    # Make $HOME fast by default (emptyDir on node SSD)
+    type: none
     extraVolumes:
+      # Fast ephemeral home
       - name: fast-home
-        emptyDir:
-          # Optionally cap size; omit to allow node SSD to be fully used by pod
-          # sizeLimit: 150Gi
-          medium: ""            # node filesystem (SSD pool)
+        emptyDir: {}
+      # Shared RWX NFS (PVC must exist; dynamic via nfs-subdir-provisioner)
+      - name: shared-rwx
+        persistentVolumeClaim:
+          claimName: jhub-shared-rwx
+      # Per-user persistent NFS via subPathExpr on a single RWX PVC
+      - name: userdir-rwx
+        persistentVolumeClaim:
+          claimName: jhub-userdir-rwx
+
     extraVolumeMounts:
+      # $HOME on SSD
       - name: fast-home
         mountPath: /home/jovyan
-
-    # ---------- Per-user durable (NFS subdir provisioner) ----------
-    extraVolumeClaimTemplates:
-      - name: user-persist
+      # Shared datasets/team space
+      - name: shared-rwx
+        mountPath: /home/jovyan/Shared
+        readOnly: false
+      # Durable per-user dir (each user mapped to a subdir)
+      - name: userdir-rwx
         mountPath: /home/jovyan/Persist
-        pvcNameTemplate: jhub-persist-{username}
-        accessModes: [ "ReadWriteOnce" ]
-        storageClassName: nfs-client
-        resources:
-          requests:
-            storage: 50Gi          # bump specific users by patching their PVC or via profile variants
+        readOnly: false
+        subPathExpr: "users/$(JUPYTERHUB_USER)"
 
-  # ---------- Shared RWX NFS (create PVC jhub-shared-rwx once) ----------
-  extraVolumes:
-    - name: shared-rwx
-      persistentVolumeClaim:
-        claimName: jhub-shared-rwx
-  extraVolumeMounts:
-    - name: shared-rwx
-      mountPath: /home/jovyan/Shared
-      readOnly: false
-
-  # Keep NFS cooperative writes (group-writable)
+  # Group-writable NFS
   uid: 1000
   fsGid: 100
 
-  # Make the fast home the natural default & keep caches local (fast)
+  # Fast-by-default: open Lab at $HOME and keep caches local
   extraEnv:
     GRANT_SUDO: "yes"
     NOTEBOOK_ARGS: "--allow-root"
-
-    # Open JupyterLab at $HOME (fast)
     JUPYTERHUB_SINGLEUSER_APP: "jupyter_server.serverapp.ServerApp"
     JUPYTERHUB_SINGLEUSER_ARGS: >-
       --ServerApp.default_url=/lab/tree
       --ServerApp.terminado_settings='{"shell_command":["/bin/bash"]}'
-
-    # Put heavy caches on fast storage
     XDG_CACHE_HOME: /home/jovyan/.cache
     PIP_CACHE_DIR: /home/jovyan/.cache/pip
     HF_HOME: /home/jovyan/.cache/huggingface
@@ -182,44 +173,42 @@ singleuser:
     TORCH_HOME: /home/jovyan/.cache/torch
     NUMBA_CACHE_DIR: /home/jovyan/.cache/numba
 
-  # Non-root policy friendly cloud-metadata protection (no sidecar)
+  # Cloud metadata block without sidecar (PodSecurity-friendly)
   cloudMetadata:
     blockWithIptables: true
 
-  # Nice UX + safety net: banner & best-effort sync on graceful shutdown
-  extraContainerConfig:
-    lifecycle:
-      postStart:
-        exec:
-          command:
-            - /bin/sh
-            - -c
-            - |
-              set -eu
-              echo "⚡ Fast workspace (ephemeral):   /home/jovyan" > /home/jovyan/README.txt
-              echo "💾 Persistent storage (NFS):     /home/jovyan/Persist" >> /home/jovyan/README.txt
-              echo "👥 Shared storage (NFS, RWX):    /home/jovyan/Shared"  >> /home/jovyan/README.txt
-              [ -e /home/jovyan/Projects ] || mkdir -p /home/jovyan/Projects
-              [ -e /home/jovyan/Data ] || mkdir -p /home/jovyan/Data
-              [ -e /home/jovyan/Save ] || ln -s /home/jovyan/Persist /home/jovyan/Save
-              # Optional: a minimal Lab user-settings drop-in could be added here
-      preStop:
-        exec:
-          command:
-            - /bin/sh
-            - -c
-            - |
-              # Best-effort sync (graceful stops only) of recent work to Persist/last_session
-              set -eu
-              dst="/home/jovyan/Persist/last_session/$(date +%Y%m%d-%H%M%S)"
-              mkdir -p "$dst" || true
-              rsync -a --prune-empty-dirs \
-                --include='*/' \
-                --include='*.ipynb' --include='*.py' --include='*.md' \
-                --exclude='.cache' --exclude='**/.git' --exclude='**/__pycache__' \
-                /home/jovyan/ "$dst" || true
+  # Lifecycle hooks (schema key is lifecycleHooks, not extraContainerConfig)
+  lifecycleHooks:
+    postStart:
+      exec:
+        command:
+          - /bin/sh
+          - -c
+          - |
+            set -eu
+            echo "⚡ Fast workspace (ephemeral):   /home/jovyan" > /home/jovyan/README.txt
+            echo "💾 Persistent storage (NFS):     /home/jovyan/Persist" >> /home/jovyan/README.txt
+            echo "👥 Shared storage (NFS, RWX):    /home/jovyan/Shared"  >> /home/jovyan/README.txt
+            [ -e /home/jovyan/Projects ] || mkdir -p /home/jovyan/Projects
+            [ -e /home/jovyan/Data ] || mkdir -p /home/jovyan/Data
+            [ -e /home/jovyan/Save ] || ln -s /home/jovyan/Persist /home/jovyan/Save
+    preStop:
+      exec:
+        command:
+          - /bin/sh
+          - -c
+          - |
+            # Best-effort sync of common work files on graceful stop
+            set -eu
+            dst="/home/jovyan/Persist/last_session/$(date +%Y%m%d-%H%M%S)"
+            mkdir -p "$dst" || true
+            rsync -a --prune-empty-dirs \
+              --include='*/' \
+              --include='*.ipynb' --include='*.py' --include='*.md' \
+              --exclude='.cache' --exclude='**/.git' --exclude='**/__pycache__' \
+              /home/jovyan/ "$dst" || true
 
-  # Baseline CPU/RAM for non-GPU default spawns (override via profiles if used)
+  # Baseline CPU/RAM for default spawns (profiles can override)
   cpu:
     limit: 2
     guarantee: 1
@@ -227,9 +216,9 @@ singleuser:
     limit: 4G
     guarantee: 2G
 
-# =============================================================================
-# Scheduling / scale knobs for high concurrency
-# =============================================================================
+# -----------------------------------------------------------------------------
+# Scheduling / scale knobs
+# -----------------------------------------------------------------------------
 scheduling:
   userScheduler:
     enabled: true
@@ -238,17 +227,13 @@ scheduling:
   userPlaceholder:
     enabled: false
 
-# Keep popular images warm on nodes to speed mass spawns
 prePuller:
   continuous:
     enabled: true
 
-# =============================================================================
-# Global culler (idle-based). Per-profile max-age culler can be added in hub.extraConfig.
-# =============================================================================
 cull:
   enabled: true
-  timeout: 3600     # 1h of no kernel activity & no websocket (if cull-connected=True)
+  timeout: 3600
   every: 600
   maxAge: 0
   users: false
