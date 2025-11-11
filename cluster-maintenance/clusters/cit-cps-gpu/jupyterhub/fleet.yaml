@@ -17,7 +17,7 @@ kustomize:
 dependsOn:
 - selector:
     matchLabels:
-      name: storageclasses
+      name: storage-classes
 - selector:
     matchLabels:
       name: gpu-operator
