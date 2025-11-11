@@ -112,12 +112,24 @@ DCGM_FI_DEV_GPU_TEMP
    # Open http://localhost:3000
    ```
 
-### Import NVIDIA GPU Dashboard
+### NVIDIA GPU Dashboards
 
-1. In Grafana, click **+** → **Import**
-2. Enter Dashboard ID: **12239** (Official NVIDIA DCGM Dashboard)
-3. Select **Prometheus** as data source
-4. Click **Import**
+The monitoring stack automatically provisions two NVIDIA GPU dashboards via ConfigMaps:
+
+1. **NVIDIA DCGM Dashboard for Kubernetes (MIG & Non-MIG GPUs)** - Complete official dashboard (gnetId: 23382)
+   - Location: General → NVIDIA DCGM Dashboard for Kubernetes
+   - Features: Aggregate metrics, per-GPU details, MIG support, error monitoring, power/temperature tracking
+   
+2. **NVIDIA GPU Monitoring - Overview** - Simplified dashboard for quick overview
+   - Location: General → NVIDIA GPU Monitoring - Overview
+   - Features: Key aggregate metrics (GPU utilization, tensor cores, memory usage)
+   
+These dashboards are automatically loaded when you access Grafana.
+
+**Fixed Issues:**
+- ✅ Datasource template variables resolved (DS_PROMETHEUS → prometheus)
+- ✅ All panel queries properly configured for Rancher monitoring stack
+- ✅ Template variables (Hostname, GPU ID, MIG Profile) working correctly
 
 ### Key GPU Metrics Available
 

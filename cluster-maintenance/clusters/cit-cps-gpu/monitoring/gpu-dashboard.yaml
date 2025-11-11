@@ -1,262 +1,496 @@
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: nvidia-gpu-monitoring-dashboard
+  name: nvidia-gpu-overview-dashboard
   namespace: cattle-dashboards
   labels:
     grafana_dashboard: "1"
     app: "rancher-monitoring"
 data:
-  nvidia-gpu-dashboard.json: |
+  nvidia-dcgm-dashboard.json: |
     {
-      "dashboard": {
-        "id": null,
-        "title": "NVIDIA GPU Cluster Monitoring",
-        "tags": ["nvidia", "gpu", "kubernetes"],
-        "style": "dark",
-        "timezone": "browser",
-        "panels": [
+      "__inputs": [],
+      "__elements": {},
+      "__requires": [
+        {
+          "type": "panel",
+          "id": "bargauge",
+          "name": "Bar gauge",
+          "version": ""
+        },
+        {
+          "type": "panel",
+          "id": "gauge",
+          "name": "Gauge",
+          "version": ""
+        },
+        {
+          "type": "grafana",
+          "id": "grafana",
+          "name": "Grafana",
+          "version": "11.2.0"
+        },
+        {
+          "type": "panel",
+          "id": "piechart",
+          "name": "Pie chart",
+          "version": ""
+        },
+        {
+          "type": "datasource",
+          "id": "prometheus",
+          "name": "Prometheus",
+          "version": "1.0.0"
+        },
+        {
+          "type": "panel",
+          "id": "stat",
+          "name": "Stat",
+          "version": ""
+        },
+        {
+          "type": "panel",
+          "id": "table",
+          "name": "Table",
+          "version": ""
+        },
+        {
+          "type": "panel",
+          "id": "timeseries",
+          "name": "Time series",
+          "version": ""
+        }
+      ],
+      "annotations": {
+        "list": [
           {
-            "id": 1,
-            "title": "GPU Utilization",
-            "type": "stat",
-            "targets": [
-              {
-                "expr": "DCGM_FI_DEV_GPU_UTIL",
-                "legendFormat": "GPU {{gpu}} - {{exported_instance}}"
-              }
-            ],
-            "gridPos": {"h": 8, "w": 12, "x": 0, "y": 0},
-            "options": {
-              "reduceOptions": {
-                "values": false,
-                "calcs": ["lastNotNull"],
-                "fields": ""
-              },
-              "orientation": "auto",
-              "textMode": "auto",
-              "colorMode": "value",
-              "graphMode": "area",
-              "justifyMode": "auto"
+            "builtIn": 1,
+            "datasource": {
+              "type": "datasource",
+              "uid": "grafana"
             },
-            "pluginVersion": "8.5.0",
-            "fieldConfig": {
-              "defaults": {
-                "mappings": [],
-                "thresholds": {
-                  "steps": [
-                    {"color": "green", "value": null},
-                    {"color": "yellow", "value": 70},
-                    {"color": "red", "value": 90}
-                  ]
-                },
-                "unit": "percent",
-                "min": 0,
-                "max": 100
-              }
-            }
-          },
-          {
-            "id": 2,
-            "title": "GPU Memory Usage",
-            "type": "stat",
-            "targets": [
-              {
-                "expr": "DCGM_FI_DEV_FB_USED / (DCGM_FI_DEV_FB_USED + DCGM_FI_DEV_FB_FREE) * 100",
-                "legendFormat": "GPU {{gpu}} Memory - {{exported_instance}}"
-              }
-            ],
-            "gridPos": {"h": 8, "w": 12, "x": 12, "y": 0},
-            "options": {
-              "reduceOptions": {
-                "values": false,
-                "calcs": ["lastNotNull"],
-                "fields": ""
-              },
-              "orientation": "auto",
-              "textMode": "auto",
-              "colorMode": "value",
-              "graphMode": "area",
-              "justifyMode": "auto"
+            "enable": true,
+            "hide": true,
+            "iconColor": "rgba(0, 211, 255, 1)",
+            "name": "Annotations & Alerts",
+            "target": {
+              "limit": 100,
+              "matchAny": false,
+              "tags": [],
+              "type": "dashboard"
             },
-            "pluginVersion": "8.5.0",
-            "fieldConfig": {
-              "defaults": {
-                "mappings": [],
-                "thresholds": {
-                  "steps": [
-                    {"color": "green", "value": null},
-                    {"color": "yellow", "value": 80},
-                    {"color": "red", "value": 95}
-                  ]
-                },
-                "unit": "percent",
-                "min": 0,
-                "max": 100
-              }
-            }
-          },
-          {
-            "id": 3,
-            "title": "GPU Temperature",
-            "type": "timeseries",
-            "targets": [
-              {
-                "expr": "DCGM_FI_DEV_GPU_TEMP",
-                "legendFormat": "GPU {{gpu}} - {{exported_instance}}"
-              }
-            ],
-            "gridPos": {"h": 8, "w": 24, "x": 0, "y": 8},
-            "fieldConfig": {
-              "defaults": {
-                "custom": {
-                  "drawStyle": "line",
-                  "lineInterpolation": "linear",
-                  "barAlignment": 0,
-                  "lineWidth": 1,
-                  "fillOpacity": 10,
-                  "gradientMode": "none",
-                  "spanNulls": false,
-                  "insertNulls": false,
-                  "showPoints": "never",
-                  "pointSize": 5,
-                  "stacking": {"mode": "none", "group": "A"},
-                  "axisPlacement": "auto",
-                  "axisLabel": "",
-                  "axisColorMode": "text",
-                  "scaleDistribution": {"type": "linear"},
-                  "axisCenteredZero": false,
-                  "hideFrom": {"legend": false, "tooltip": false, "vis": false},
-                  "thresholdsStyle": {"mode": "off"}
-                },
-                "mappings": [],
-                "thresholds": {
-                  "mode": "absolute",
-                  "steps": [
-                    {"color": "green", "value": null},
-                    {"color": "yellow", "value": 75},
-                    {"color": "red", "value": 85}
-                  ]
-                },
-                "unit": "celsius"
-              }
-            },
-            "options": {
-              "tooltip": {"mode": "single", "sort": "none"},
-              "legend": {"displayMode": "table", "placement": "right", "calcs": ["last", "max"]},
-              "displayLabels": ["gpu", "exported_instance"]
-            }
-          },
-          {
-            "id": 4,
-            "title": "GPU Power Usage",
-            "type": "timeseries",
-            "targets": [
-              {
-                "expr": "DCGM_FI_DEV_POWER_USAGE",
-                "legendFormat": "GPU {{gpu}} - {{exported_instance}}"
-              }
-            ],
-            "gridPos": {"h": 8, "w": 12, "x": 0, "y": 16},
-            "fieldConfig": {
-              "defaults": {
-                "custom": {
-                  "drawStyle": "line",
-                  "lineInterpolation": "linear",
-                  "barAlignment": 0,
-                  "lineWidth": 1,
-                  "fillOpacity": 10,
-                  "gradientMode": "none",
-                  "spanNulls": false,
-                  "insertNulls": false,
-                  "showPoints": "never",
-                  "pointSize": 5,
-                  "stacking": {"mode": "none", "group": "A"},
-                  "axisPlacement": "auto",
-                  "axisLabel": "",
-                  "axisColorMode": "text",
-                  "scaleDistribution": {"type": "linear"},
-                  "axisCenteredZero": false,
-                  "hideFrom": {"legend": false, "tooltip": false, "vis": false},
-                  "thresholdsStyle": {"mode": "off"}
-                },
-                "mappings": [],
-                "thresholds": {
-                  "mode": "absolute",
-                  "steps": [
-                    {"color": "green", "value": null}
-                  ]
-                },
-                "unit": "watt"
-              }
-            },
-            "options": {
-              "tooltip": {"mode": "single", "sort": "none"},
-              "legend": {"displayMode": "table", "placement": "bottom", "calcs": ["last", "max"]},
-              "displayLabels": ["gpu", "exported_instance"]
-            }
-          },
-          {
-            "id": 5,
-            "title": "Memory Bandwidth Utilization",
-            "type": "timeseries",
-            "targets": [
-              {
-                "expr": "DCGM_FI_DEV_MEM_COPY_UTIL",
-                "legendFormat": "GPU {{gpu}} - {{exported_instance}}"
-              }
-            ],
-            "gridPos": {"h": 8, "w": 12, "x": 12, "y": 16},
-            "fieldConfig": {
-              "defaults": {
-                "custom": {
-                  "drawStyle": "line",
-                  "lineInterpolation": "linear",
-                  "barAlignment": 0,
-                  "lineWidth": 1,
-                  "fillOpacity": 10,
-                  "gradientMode": "none",
-                  "spanNulls": false,
-                  "insertNulls": false,
-                  "showPoints": "never",
-                  "pointSize": 5,
-                  "stacking": {"mode": "none", "group": "A"},
-                  "axisPlacement": "auto",
-                  "axisLabel": "",
-                  "axisColorMode": "text",
-                  "scaleDistribution": {"type": "linear"},
-                  "axisCenteredZero": false,
-                  "hideFrom": {"legend": false, "tooltip": false, "vis": false},
-                  "thresholdsStyle": {"mode": "off"}
-                },
-                "mappings": [],
-                "thresholds": {
-                  "mode": "absolute",
-                  "steps": [
-                    {"color": "green", "value": null},
-                    {"color": "yellow", "value": 80},
-                    {"color": "red", "value": 95}
-                  ]
-                },
-                "unit": "percent",
-                "min": 0,
-                "max": 100
-              }
-            },
-            "options": {
-              "tooltip": {"mode": "single", "sort": "none"},
-              "legend": {"displayMode": "table", "placement": "bottom", "calcs": ["last", "max"]},
-              "displayLabels": ["gpu", "exported_instance"]
-            }
+            "type": "dashboard"
           }
+        ]
+      },
+      "description": "This Grafana dashboard uses the NVIDIA DCGM exporter to monitor GPU performance in Kubernetes clusters. Supporting both MIG and non-MIG GPUs, it provides real-time metrics on utilization, memory, temperature, power, and more, enabling efficient management of NVIDIA GPU resources.",
+      "editable": true,
+      "fiscalYearStartMonth": 0,
+      "gnetId": 23382,
+      "graphTooltip": 1,
+      "id": null,
+      "links": [],
+      "liveNow": false,
+      "panels": [
+        {
+          "gridPos": {
+            "h": 1,
+            "w": 24,
+            "x": 0,
+            "y": 0
+          },
+          "id": 50,
+          "title": "Aggregate",
+          "type": "row"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "fieldConfig": {
+            "defaults": {
+              "color": {
+                "mode": "continuous-GrYlRd"
+              },
+              "decimals": 2,
+              "fieldMinMax": false,
+              "mappings": [],
+              "min": 0,
+              "thresholds": {},
+              "unit": "percent"
+            },
+            "overrides": []
+          },
+          "gridPos": {
+            "h": 6,
+            "w": 6,
+            "x": 0,
+            "y": 1
+          },
+          "id": 44,
+          "maxDataPoints": 100,
+          "options": {
+            "minVizHeight": 75,
+            "minVizWidth": 75,
+            "orientation": "horizontal",
+            "reduceOptions": {
+              "calcs": [
+                "lastNotNull"
+              ],
+              "fields": "",
+              "values": false
+            },
+            "showThresholdLabels": false,
+            "showThresholdMarkers": false,
+            "sizing": "auto",
+            "text": {}
+          },
+          "pluginVersion": "11.2.0",
+          "targets": [
+            {
+              "datasource": {
+                "uid": "prometheus"
+              },
+              "editorMode": "code",
+              "exemplar": true,
+              "expr": "100 * avg (DCGM_FI_PROF_GR_ENGINE_ACTIVE)",
+              "format": "time_series",
+              "interval": "",
+              "intervalFactor": 1,
+              "legendFormat": "",
+              "range": true,
+              "refId": "A"
+            }
+          ],
+          "title": "GPU Engine Utilization",
+          "type": "gauge"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "fieldConfig": {
+            "defaults": {
+              "color": {
+                "mode": "continuous-GrYlRd"
+              },
+              "decimals": 2,
+              "fieldMinMax": false,
+              "mappings": [],
+              "min": 0,
+              "thresholds": {},
+              "unit": "percent"
+            },
+            "overrides": []
+          },
+          "gridPos": {
+            "h": 6,
+            "w": 6,
+            "x": 6,
+            "y": 1
+          },
+          "id": 43,
+          "maxDataPoints": 100,
+          "options": {
+            "minVizHeight": 75,
+            "minVizWidth": 75,
+            "orientation": "horizontal",
+            "reduceOptions": {
+              "calcs": [
+                "lastNotNull"
+              ],
+              "fields": "",
+              "values": false
+            },
+            "showThresholdLabels": false,
+            "showThresholdMarkers": false,
+            "sizing": "auto",
+            "text": {}
+          },
+          "pluginVersion": "11.2.0",
+          "targets": [
+            {
+              "datasource": {
+                "uid": "prometheus"
+              },
+              "editorMode": "code",
+              "exemplar": true,
+              "expr": "100 * avg (DCGM_FI_PROF_PIPE_TENSOR_ACTIVE)",
+              "format": "time_series",
+              "interval": "",
+              "intervalFactor": 1,
+              "legendFormat": "",
+              "range": true,
+              "refId": "A"
+            }
+          ],
+          "title": "Tensor Core Utilization",
+          "type": "gauge"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "fieldConfig": {
+            "defaults": {
+              "color": {
+                "mode": "continuous-GrYlRd"
+              },
+              "decimals": 2,
+              "fieldMinMax": false,
+              "mappings": [],
+              "min": 0,
+              "thresholds": {},
+              "unit": "percent"
+            },
+            "overrides": []
+          },
+          "gridPos": {
+            "h": 6,
+            "w": 6,
+            "x": 12,
+            "y": 1
+          },
+          "id": 42,
+          "maxDataPoints": 100,
+          "options": {
+            "minVizHeight": 75,
+            "minVizWidth": 75,
+            "orientation": "horizontal",
+            "reduceOptions": {
+              "calcs": [
+                "lastNotNull"
+              ],
+              "fields": "",
+              "values": false
+            },
+            "showThresholdLabels": false,
+            "showThresholdMarkers": false,
+            "sizing": "auto",
+            "text": {}
+          },
+          "pluginVersion": "11.2.0",
+          "targets": [
+            {
+              "datasource": {
+                "uid": "prometheus"
+              },
+              "editorMode": "code",
+              "exemplar": true,
+              "expr": "100 * avg (DCGM_FI_PROF_DRAM_ACTIVE)",
+              "format": "time_series",
+              "interval": "",
+              "intervalFactor": 1,
+              "legendFormat": "",
+              "range": true,
+              "refId": "A"
+            }
+          ],
+          "title": "GPU Memory Bandwidth Utilization",
+          "type": "gauge"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "fieldConfig": {
+            "defaults": {
+              "color": {
+                "mode": "continuous-GrYlRd"
+              },
+              "fieldMinMax": false,
+              "mappings": [],
+              "min": 0,
+              "thresholds": {},
+              "unit": "decmbytes"
+            },
+            "overrides": []
+          },
+          "gridPos": {
+            "h": 6,
+            "w": 6,
+            "x": 18,
+            "y": 1
+          },
+          "id": 23,
+          "maxDataPoints": 100,
+          "options": {
+            "minVizHeight": 75,
+            "minVizWidth": 75,
+            "orientation": "horizontal",
+            "reduceOptions": {
+              "calcs": [
+                "lastNotNull"
+              ],
+              "fields": "",
+              "values": false
+            },
+            "showThresholdLabels": false,
+            "showThresholdMarkers": false,
+            "sizing": "auto",
+            "text": {}
+          },
+          "pluginVersion": "11.2.0",
+          "targets": [
+            {
+              "datasource": {
+                "uid": "prometheus"
+              },
+              "editorMode": "code",
+              "exemplar": true,
+              "expr": "sum (DCGM_FI_DEV_FB_USED)",
+              "format": "time_series",
+              "interval": "",
+              "intervalFactor": 1,
+              "legendFormat": "",
+              "range": true,
+              "refId": "A"
+            },
+            {
+              "datasource": {
+                "uid": "prometheus"
+              },
+              "editorMode": "code",
+              "expr": "sum (DCGM_FI_DEV_FB_USED) + sum (DCGM_FI_DEV_FB_FREE)",
+              "hide": false,
+              "instant": false,
+              "legendFormat": "total",
+              "range": true,
+              "refId": "B"
+            }
+          ],
+          "title": "GPU Memory Usage",
+          "transformations": [
+            {
+              "id": "configFromData",
+              "options": {
+                "configPath": "B",
+                "mappings": [
+                  {
+                    "targetField": "max",
+                    "type": "FieldToConfigProperty"
+                  }
+                ]
+              }
+            }
+          ],
+          "type": "gauge"
+        }
+      ],
+      "refresh": "",
+      "schemaVersion": 39,
+      "tags": [
+        "gpu",
+        "kubernetes-mixin",
+        "MIG"
+      ],
+      "templating": {
+        "list": [
+          {
+            "allValue": ".*",
+            "current": {},
+            "datasource": {
+              "type": "prometheus",
+              "uid": "prometheus"
+            },
+            "definition": "label_values(DCGM_FI_DEV_FB_FREE,Hostname)",
+            "hide": 0,
+            "includeAll": true,
+            "label": "",
+            "multi": true,
+            "name": "Hostname",
+            "options": [],
+            "query": {
+              "refId": "PrometheusVariableQueryEditor-VariableQuery"
+            },
+            "refresh": 1,
+            "regex": "",
+            "skipUrlSync": false,
+            "sort": 2,
+            "type": "query"
+          },
+          {
+            "allValue": ".*",
+            "current": {},
+            "datasource": {
+              "type": "prometheus",
+              "uid": "prometheus"
+            },
+            "definition": "label_values(DCGM_FI_DEV_FB_FREE,gpu)",
+            "hide": 0,
+            "includeAll": true,
+            "label": "GPU ID",
+            "multi": false,
+            "name": "gpu",
+            "options": [],
+            "query": {
+              "refId": "PrometheusVariableQueryEditor-VariableQuery"
+            },
+            "refresh": 1,
+            "regex": "",
+            "skipUrlSync": false,
+            "sort": 0,
+            "type": "query"
+          },
+          {
+            "allValue": ".*",
+            "current": {},
+            "datasource": {
+              "type": "prometheus",
+              "uid": "prometheus"
+            },
+            "definition": "label_values(DCGM_FI_DEV_FB_FREE,device)",
+            "hide": 0,
+            "includeAll": true,
+            "label": "GPU Device",
+            "multi": true,
+            "name": "mig",
+            "options": [],
+            "query": {
+              "refId": "PrometheusVariableQueryEditor-VariableQuery"
+            },
+            "refresh": 1,
+            "regex": "",
+            "skipUrlSync": false,
+            "sort": 0,
+            "type": "query"
+          }
+        ]
+      },
+      "time": {
+        "from": "now-30m",
+        "to": "now"
+      },
+      "timepicker": {
+        "refresh_intervals": [
+          "30s",
+          "1m",
+          "5m",
+          "15m",
+          "30m",
+          "1h",
+          "2h",
+          "1d"
         ],
-        "time": {"from": "now-1h", "to": "now"},
-        "timepicker": {},
-        "templating": {"list": []},
-        "annotations": {"list": []},
-        "refresh": "30s",
-        "schemaVersion": 36,
-        "version": 1,
-        "links": []
-      }
+        "time_options": [
+          "5m",
+          "15m",
+          "1h",
+          "6h",
+          "12h",
+          "24h",
+          "2d",
+          "7d",
+          "30d"
+        ]
+      },
+      "timezone": "",
+      "title": "NVIDIA GPU Monitoring - Overview",
+      "uid": "nvidia-gpu-overview",
+      "version": 1,
+      "weekStart": ""
     }
