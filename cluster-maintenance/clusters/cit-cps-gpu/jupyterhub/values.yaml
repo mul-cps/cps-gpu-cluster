@@ -171,9 +171,9 @@ singleuser:
     TORCH_HOME: /home/jovyan/.cache/torch
     NUMBA_CACHE_DIR: /home/jovyan/.cache/numba
 
-  # Cloud metadata block without sidecar (PodSecurity-friendly)
+  # Cloud metadata blocking disabled to avoid container startup issues
   cloudMetadata:
-    blockWithIptables: true
+    blockWithIptables: false
 
   # Lifecycle hooks (schema key is lifecycleHooks, not extraContainerConfig)
   lifecycleHooks:
