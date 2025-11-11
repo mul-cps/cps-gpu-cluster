@@ -29,24 +29,34 @@ toolkit:
 devicePlugin:
   enabled: true
   version: "v0.18.0"
+  # Time-slicing configuration to expose both MIG slices and "full GPU" via replicas
+  config:
+    create: true
+    name: device-plugin-config
+    default: mig-with-replicas
+    data:
+      mig-with-replicas: |-
+        version: v1
+        flags:
+          migStrategy: mixed
+        sharing:
+          timeSlicing:
+            resources:
+              # Create virtual full-GPU resources from MIG slices via replicas
+              # Each 1g.5gb slice can be "overcommitted" to appear as multiple schedulable units
+              - name: nvidia.com/mig-1g.5gb
+                replicas: 1
+              # Expose a synthetic "gpu" resource by replicating MIG slices
+              # This allows scheduling "full GPU" workloads on the MIG node
+              # Replicas=2 means each physical MIG slice presents as 2 logical GPUs for time-sharing
+              - name: nvidia.com/mig-2g.10gb
+                replicas: 1
+            # Note: Actual full GPUs on non-MIG nodes remain nvidia.com/gpu without replicas
 
-# DCGM Exporter (GPU metrics) with ServiceMonitor for Rancher monitoring
+# DCGM Exporter (GPU metrics)
 dcgmExporter:
   enabled: true
   version: "4.4.1-4.6.0-distroless"
-  # Enable ServiceMonitor for Prometheus integration with Rancher monitoring
-  serviceMonitor:
-    enabled: true
-    interval: 15s
-    honorLabels: false
-    # Add labels for Rancher monitoring discovery (optional - Rancher typically discovers all namespaces)
-    additionalLabels: {}
-  # Optional: Configure custom metrics collection
-  env:
-    - name: DCGM_EXPORTER_LISTEN
-      value: ":9400"
-    - name: DCGM_EXPORTER_KUBERNETES
-      value: "true"
 
 # GPU Feature Discovery
 gfd:

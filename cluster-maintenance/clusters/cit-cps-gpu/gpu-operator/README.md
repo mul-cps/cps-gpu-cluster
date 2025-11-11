@@ -67,7 +67,7 @@ kubectl get nodes -o json | jq '.items[] | {name: .metadata.name, alloc: .status
 ```
 
 ## Requesting GPUs
-Full GPU example:
+Full GPU example (on non-MIG nodes):
 ```yaml
 resources:
   limits:
@@ -77,9 +77,25 @@ Single MIG slice (on the MIG-enabled node):
 ```yaml
 resources:
   limits:
-    nvidia.com/mig-1g.5gb: 1
+    nvidia.com/mig-1g.5gb: 1   # Smallest slice (5GB GPU memory)
 ```
-Multiple slices (parallel small jobs): schedule multiple pods each asking for 1 slice.
+Larger MIG slice:
+```yaml
+resources:
+  limits:
+    nvidia.com/mig-2g.10gb: 1  # Larger slice (10GB GPU memory)
+```
+
+## Time-Slicing / Replicas
+The device plugin is configured with time-slicing to allow workloads to share MIG slices:
+- Each `nvidia.com/mig-1g.5gb` and `nvidia.com/mig-2g.10gb` can be scheduled with replicas=1 (no overcommit by default).
+- Multiple pods requesting the same MIG slice resource will time-share the GPU compute.
+- For true isolation, request distinct MIG slices (up to 14 total on the MIG node: 7 per GPU × 2 GPUs).
+
+## Mixed Workload Scheduling
+- **Non-MIG nodes** (k3s-wk-gpu2, gpu3, gpu4): Request `nvidia.com/gpu: 1` or `nvidia.com/gpu: 2` for exclusive full GPUs.
+- **MIG node** (k3s-wk-gpu1): Request `nvidia.com/mig-1g.5gb` or `nvidia.com/mig-2g.10gb` for partitioned slices.
+- To force scheduling to non-MIG nodes, add node affinity or labels to exclude the MIG node.
 
 ## Overcommit / Time-Slicing Notes
 MIG already provides strong isolation. Additional overcommit via time-slicing (device plugin "replicas") is generally NOT recommended on MIG slices. If you still want to oversubscribe the **full** GPU for lighter workloads:
