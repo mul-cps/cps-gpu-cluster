@@ -1,0 +1,35 @@
+name: jupyterhub-test
+defaultNamespace: jupyterhub-test
+
+# Labels for bundle identification
+labels:
+  app: jupyterhub-test
+  name: jupyterhub-test
+
+helm:
+  chart: jupyterhub
+  repo: https://jupyterhub.github.io/helm-chart
+  version: 4.3.1
+  releaseName: jupyterhub-test
+  valuesFiles:
+  - values.yaml
+
+# Storage PVCs and additional Kubernetes manifests
+kustomize:
+  dir: .
+
+# Depends on storage infrastructure and GPU operator being ready
+dependsOn:
+- selector:
+    matchLabels:
+      name: storage-classes
+- selector:
+    matchLabels:
+      name: gpu-operator
+      
+diff:
+  comparePatches:
+  - apiVersion: apps/v1
+    kind: Deployment
+    operations:
+    - {"op": "remove", "path": "/spec/template/metadata/annotations/checksum~1hub-secret"}

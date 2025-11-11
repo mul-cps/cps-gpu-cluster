@@ -1,0 +1,41 @@
+# =============================================================================
+# JupyterHub Storage PVCs
+# - Per-user persistent storage via NFS subPath (jhub-userdir-rwx)
+# - Shared team storage via NFS (jhub-shared-rwx)
+# - Both use nfs-client StorageClass for ReadWriteMany access
+# =============================================================================
+
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: jhub-userdir-rwx
+  namespace: jupyterhub
+  labels:
+    app.kubernetes.io/name: jupyterhub
+    app.kubernetes.io/component: storage
+    app.kubernetes.io/part-of: jupyterhub-platform
+spec:
+  accessModes: 
+    - "ReadWriteMany"
+  storageClassName: nfs-client
+  resources:
+    requests:
+      storage: 50Ti   # logical capacity; enforce quotas on NFS backend if needed
+
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: jhub-shared-rwx
+  namespace: jupyterhub
+  labels:
+    app.kubernetes.io/name: jupyterhub
+    app.kubernetes.io/component: storage
+    app.kubernetes.io/part-of: jupyterhub-platform
+spec:
+  accessModes: 
+    - "ReadWriteMany"
+  storageClassName: nfs-client
+  resources:
+    requests:
+      storage: 2Ti

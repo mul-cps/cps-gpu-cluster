@@ -1,0 +1,200 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: jupyterhub-custom-templates
+  namespace: jupyterhub
+data:
+  spawn.html: |
+    {% extends "page.html" %}
+    {% set user_options_form = True %}
+    
+    {% block main %}
+    <div class="container">
+      <div class="row">
+        <div class="col-md-12">
+          <!-- University Logo and Header -->
+          <div class="text-center mb-4">
+            <img src="{{ org.logo_url }}" alt="{{ org.name }}" style="max-height: 80px; margin-bottom: 20px;">
+            <h2>{{ org.name }} - GPU Cluster</h2>
+            <p class="text-muted">Choose your computational environment</p>
+          </div>
+          
+          <!-- Custom Information Banner -->
+          {% if announcement %}
+          <div class="row">
+            <div class="col-md-12">
+              {{ announcement | safe }}
+            </div>
+          </div>
+          {% endif %}
+          
+          <!-- Default spawn form -->
+          <div class="row justify-content-center">
+            <div class="col-md-8">
+              <div class="panel panel-default">
+                <div class="panel-heading">
+                  <h4>Start Your Server{% if for_user.name != user.name %} for {{ for_user.name }}{% endif %}{% if spawner.name %} - {{ spawner.name }}{% endif %}</h4>
+                </div>
+                <div class="panel-body">
+                  <form action="{{ url }}" method="post">
+                    {% if spawner.options_form %}
+                      {{ spawner.options_form | safe }}
+                    {% else %}
+                      <p>Your server will start with default settings.</p>
+                    {% endif %}
+                    <input type="hidden" name="_xsrf" value="{{ xsrf_token }}">
+                    <div class="text-center">
+                      <button type="submit" class="btn btn-primary btn-lg">
+                        <i class="fa fa-rocket"></i> Start{% if spawner.name %} {{ spawner.name }}{% else %} My Server{% endif %}
+                      </button>
+                    </div>
+                  </form>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    {% endblock main %}
+
+  info.html: |
+    {% extends "page.html" %}
+    
+    {% block main %}
+    <div class="container">
+      <div class="row">
+        <div class="col-md-12">
+          <!-- Header -->
+          <div class="text-center mb-4">
+            <img src="{{ org.logo_url }}" alt="{{ org.name }}" style="max-height: 100px; margin-bottom: 20px;">
+            <h1>{{ org.name }} GPU Cluster</h1>
+            <p class="lead">High-Performance Computing for Research and Education</p>
+          </div>
+          
+          <!-- Cluster Information -->
+          <div class="row">
+            <div class="col-md-6">
+              <div class="card mb-4">
+                <div class="card-header bg-primary text-white">
+                  <h5><i class="fas fa-microchip"></i> Hardware Specifications</h5>
+                </div>
+                <div class="card-body">
+                  <ul class="list-unstyled">
+                    <li><strong>GPUs:</strong> 8x NVIDIA A100 (40GB each)</li>
+                    <li><strong>Nodes:</strong> 4 GPU worker nodes + 3 control nodes</li>
+                    <li><strong>GPU Memory:</strong> Up to 80GB per dual-GPU session</li>
+                    <li><strong>CPU:</strong> Up to 16 cores per session</li>
+                    <li><strong>RAM:</strong> Up to 64GB per session</li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+            
+            <div class="col-md-6">
+              <div class="card mb-4">
+                <div class="card-header bg-success text-white">
+                  <h5><i class="fas fa-cogs"></i> Software Environment</h5>
+                </div>
+                <div class="card-body">
+                  <ul class="list-unstyled">
+                    <li><strong>Container Runtime:</strong> Kubernetes + containerd</li>
+                    <li><strong>GPU Drivers:</strong> NVIDIA 580.95.05 (Ubuntu 24.04)</li>
+                    <li><strong>CUDA:</strong> Latest version with toolkit</li>
+                    <li><strong>Jupyter Images:</strong> TensorFlow, PyTorch, SciPy</li>
+                    <li><strong>Storage:</strong> NFS persistent volumes</li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+          </div>
+          
+          <!-- Usage Guidelines -->
+          <div class="card mb-4">
+            <div class="card-header bg-info text-white">
+              <h5><i class="fas fa-book"></i> Usage Guidelines</h5>
+            </div>
+            <div class="card-body">
+              <div class="row">
+                <div class="col-md-6">
+                  <h6>Getting Started:</h6>
+                  <ol>
+                    <li>Select an appropriate computational profile</li>
+                    <li>Choose your preferred software stack (PyTorch/TensorFlow)</li>
+                    <li>Click "Start Server" to launch your environment</li>
+                    <li>Your home directory is persistent across sessions</li>
+                  </ol>
+                </div>
+                <div class="col-md-6">
+                  <h6>Best Practices:</h6>
+                  <ul>
+                    <li>Use GPU profiles only when needed for ML/AI workloads</li>
+                    <li>Save your work regularly - sessions auto-cull after 1 hour of inactivity</li>
+                    <li>Install additional packages with <code>pip install --user</code></li>
+                    <li>Monitor GPU usage with <code>nvidia-smi</code></li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+          </div>
+          
+          <!-- Profile Options -->
+          <div class="card mb-4">
+            <div class="card-header bg-warning text-dark">
+              <h5><i class="fas fa-server"></i> Available Profiles</h5>
+            </div>
+            <div class="card-body">
+              <div class="row">
+                <div class="col-md-4">
+                  <h6>💻 CPU Only</h6>
+                  <p><strong>Resources:</strong> 2 cores, 4GB RAM</p>
+                  <p><strong>Use for:</strong> General Python development, data analysis, small datasets</p>
+                </div>
+                <div class="col-md-4">
+                  <h6>🚀 Single GPU</h6>
+                  <p><strong>Resources:</strong> 8 cores, 32GB RAM, 1x A100</p>
+                  <p><strong>Use for:</strong> Machine learning, model training, moderate workloads</p>
+                </div>
+                <div class="col-md-4">
+                  <h6>🔥 Dual GPU</h6>
+                  <p><strong>Resources:</strong> 16 cores, 64GB RAM, 2x A100</p>
+                  <p><strong>Use for:</strong> Large model training, distributed computing, intensive research</p>
+                </div>
+              </div>
+            </div>
+          </div>
+          
+          <!-- Support and Contact -->
+          <div class="card mb-4">
+            <div class="card-header bg-dark text-white">
+              <h5><i class="fas fa-life-ring"></i> Support & Resources</h5>
+            </div>
+            <div class="card-body">
+              <div class="row">
+                <div class="col-md-6">
+                  <h6>Technical Support:</h6>
+                  <p>For technical issues, please contact the CPS infrastructure team.</p>
+                  <p><strong>Documentation:</strong> Check the cluster documentation in the repository for troubleshooting guides and examples.</p>
+                </div>
+                <div class="col-md-6">
+                  <h6>Useful Links:</h6>
+                  <ul>
+                    <li><a href="{{ org.url }}" target="_blank">{{ org.name }}</a></li>
+                    <li><a href="https://jupyter.org/" target="_blank">Jupyter Project</a></li>
+                    <li><a href="https://pytorch.org/" target="_blank">PyTorch Documentation</a></li>
+                    <li><a href="https://tensorflow.org/" target="_blank">TensorFlow Documentation</a></li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+          </div>
+          
+          <div class="text-center">
+            <a href="/hub/home" class="btn btn-primary">
+              <i class="fas fa-home"></i> Back to Hub
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+    {% endblock main %}
