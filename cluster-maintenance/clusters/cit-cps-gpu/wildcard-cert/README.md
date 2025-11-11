@@ -1,38 +1,43 @@
 # Wildcard Certificate Configuration
 
-This directory contains the wildcard certificate for `*.cps.unileoben.ac.at` and the cert-manager ClusterIssuer configuration.
+This directory contains the cert-manager ClusterIssuer configuration for `*.cps.unileoben.ac.at`.
 
-## Setup Instructions
+**IMPORTANT:** The TLS certificate secret is NOT stored in Git for security reasons. You must create it manually.
 
-### Option 1: Use Existing Wildcard Certificate (Recommended for Quick Start)
+## Setup Instructions (REQUIRED)
 
-If you already have a wildcard certificate for `*.cps.unileoben.ac.at`:
+### Step 1: Create the TLS Secret Manually
 
-1. **Encode your certificate files:**
+You must have your wildcard certificate files for `*.cps.unileoben.ac.at`:
+- `fullchain.pem` (certificate + intermediate chain)
+- `privkey.pem` (private key)
+
+**Create the secret:**
 
 ```bash
-# Encode certificate (fullchain.pem)
-cat fullchain.pem | base64 -w 0 > cert.b64
-
-# Encode private key (privkey.pem)
-cat privkey.pem | base64 -w 0 > key.b64
+kubectl create secret tls wildcard-cps-cert \
+  --cert=fullchain.pem \
+  --key=privkey.pem \
+  -n cert-manager
 ```
 
-2. **Update `wildcard-secret.yaml`:**
-
-Replace `REPLACE_WITH_BASE64_ENCODED_CERT` and `REPLACE_WITH_BASE64_ENCODED_KEY` with the base64 encoded values.
-
-3. **Commit and push:**
+### Step 2: Verify Secret Creation
 
 ```bash
-git add cluster-maintenance/clusters/cit-cps-gpu/wildcard-cert/wildcard-secret.yaml
-git commit -m "Add wildcard certificate for *.cps.unileoben.ac.at"
+kubectl get secret wildcard-cps-cert -n cert-manager
+```
+
+### Step 3: Deploy the ClusterIssuer
+
+The ClusterIssuer will be deployed automatically by Fleet once you push the changes.
+
+```bash
+git add cluster-maintenance/clusters/cit-cps-gpu/wildcard-cert/
+git commit -m "Add wildcard cert ClusterIssuer"
 git push
 ```
 
-Fleet will deploy the certificate automatically.
-
-### Option 2: Let's Encrypt with DNS-01 Challenge
+Fleet will deploy the ClusterIssuer which references the manually-created secret.
 
 If you want automated certificate management with Let's Encrypt:
 

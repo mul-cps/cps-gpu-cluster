@@ -12,10 +12,10 @@ speaker:
     enabled: false
 
 # Prometheus monitoring integration
+# Disabled to avoid Helm chart validation errors
+# Can be enabled later with proper serviceAccount configuration
 prometheus:
   serviceMonitor:
-    enabled: true
-    namespace: cattle-monitoring-system
+    enabled: false
   prometheusRule:
-    enabled: true
-    namespace: cattle-monitoring-system
+    enabled: false
