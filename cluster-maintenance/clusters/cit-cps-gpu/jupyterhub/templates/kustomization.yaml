@@ -1,24 +1,28 @@
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 
+# Disable hash suffix for ConfigMaps so they have predictable names
+generatorOptions:
+  disableNameSuffixHash: true
+
 configMapGenerator:
-- name: custom-templates
+- name: jupyterhub-custom-templates
   files:
   - custom-templates.yaml
 
 # Component configuration files
-- name: jhub-ui-options-form
+- name: jupyterhub-jhub-ui-options-form
   files:
   - ui_options_form.html
 
-- name: jhub-profiles
+- name: jupyterhub-jhub-profiles
   files:
   - profiles.py
 
-- name: jhub-culler-config
+- name: jupyterhub-jhub-culler-config
   files:
   - culler.py
 
-- name: jhub-auth-config
+- name: jupyterhub-jhub-auth-config
   files:
   - auth.py
