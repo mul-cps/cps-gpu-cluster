@@ -431,14 +431,23 @@ hub:
           app.io_loop.spawn_callback(_per_profile_cull, app)
 
       # Start the culler as an internal callback, not as an external service
-      # No need to register as a service since it runs inside the hub process
-      c.JupyterHub.init_spawners_timeout = 0
+      # Use the load_roles hook to start it after app initialization
+      import asyncio
+      from tornado.ioloop import IOLoop
       
-      # Hook when app is ready to start the internal culler
-      def _post_hook(app): 
-          app.log.info("Starting per-profile GPU culler as internal task")
-          _start_culler(app)
-      c.JupyterHub.post_hook = _post_hook
+      def _init_culler():
+          """Start culler after a short delay to ensure app is ready"""
+          async def _delayed_start():
+              await asyncio.sleep(5)  # Wait for app to be fully initialized
+              from jupyterhub.app import JupyterHub
+              app = JupyterHub.instance()
+              app.log.info("Starting per-profile GPU culler as internal task")
+              _start_culler(app)
+          
+          IOLoop.current().add_callback(_delayed_start)
+      
+      # Schedule the culler to start
+      _init_culler()
 
     gpu-config: |
       # Base env (profiles may extend)
