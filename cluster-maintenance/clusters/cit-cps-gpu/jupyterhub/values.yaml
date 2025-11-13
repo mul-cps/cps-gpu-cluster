@@ -22,6 +22,7 @@ hub:
       authenticator_class: oauthenticator.generic.GenericOAuthenticator
       allow_named_servers: true
       named_server_limit_per_user: 3
+      db_url: postgresql://jhub:jhub-secure-db-password-2025@postgresql:5432/jhub
       template_vars:
         org:
           name: "Montanuniversität Leoben"
@@ -393,62 +394,6 @@ hub:
           spawner.log.info(f"Final: image={spawner.image} CPU={spawner.cpu_limit}/{spawner.cpu_guarantee} MEM={spawner.mem_limit}/{spawner.mem_guarantee} RES={spawner.extra_resource_limits}")
       c.KubeSpawner.pre_spawn_hook = apply_profile_settings
 
-    95-per-profile-culler: |
-      """
-      Internal Hub service: per-profile max runtime.
-      - Any server with profile in GPU_PROFILE_SLUGS gets a 12h hard max (43200 s).
-      - Others are left to the global idle culler.
-      """
-      import asyncio, datetime as _dt
-      from jupyterhub.utils import iterate_until
-
-      MAX_GPU_AGE_SECONDS = 12*60*60
-
-      async def _per_profile_cull(app):
-          while True:
-              try:
-                  now = _dt.datetime.utcnow().replace(tzinfo=None)
-                  for user in app.users.values():
-                      for name, server in user.spawners.items():
-                          orm_server = server.orm_server
-                          if not orm_server or not orm_server.active:
-                              continue
-                          started = orm_server.started
-                          if not started:
-                              continue
-                          # Determine profile: from user_options if present, else env
-                          profile = (server.user_options or {}).get('profile') or (server.environment or {}).get('HUB_PROFILE_SLUG')
-                          if profile and profile in {'gpu-pytorch-single','gpu-tensorflow-single','gpu-pytorch-dual','gpu-tensorflow-dual','gpu-mig-1g','gpu-mig-2g'}:
-                              age = (now - started.replace(tzinfo=None)).total_seconds()
-                              if age >= MAX_GPU_AGE_SECONDS:
-                                  app.log.info(f"Per-profile culler: stopping GPU server of {user.name} ({name}) age={age:.0f}s")
-                                  await iterate_until(server.stop())
-              except Exception as e:
-                  app.log.warning(f"Per-profile culler error: {e}")
-              await asyncio.sleep(300)  # run every 5 minutes
-
-      def _start_culler(app):
-          app.io_loop.spawn_callback(_per_profile_cull, app)
-
-      # Start the culler as an internal callback, not as an external service
-      # Use the load_roles hook to start it after app initialization
-      import asyncio
-      from tornado.ioloop import IOLoop
-      
-      def _init_culler():
-          """Start culler after a short delay to ensure app is ready"""
-          async def _delayed_start():
-              await asyncio.sleep(5)  # Wait for app to be fully initialized
-              from jupyterhub.app import JupyterHub
-              app = JupyterHub.instance()
-              app.log.info("Starting per-profile GPU culler as internal task")
-              _start_culler(app)
-          
-          IOLoop.current().add_callback(_delayed_start)
-      
-      # Schedule the culler to start
-      _init_culler()
-
     gpu-config: |
       # Base env (profiles may extend)
       c.KubeSpawner.environment = {
@@ -463,10 +408,20 @@ singleuser:
     pullPolicy: IfNotPresent
 
   storage:
+    type: static
+    static:
+      pvcName: jhub-userdir-rwx
+      subPath: "home/{username}"
     capacity: 10Gi
-    dynamic:
-      storageClass: nfs-client
     homeMountPath: /home/jovyan
+    extraVolumes:
+      - name: shared-datasets
+        persistentVolumeClaim:
+          claimName: jhub-shared-rwx
+    extraVolumeMounts:
+      - name: shared-datasets
+        mountPath: /shared
+        readOnly: false
 
   cpu:
     limit: 2
@@ -489,12 +444,12 @@ scheduling:
   userPlaceholder:
     enabled: false
 
-# Global idle culler (per-profile max handled by the internal service above)
+# Global idle culler (built-in JupyterHub culler)
 cull:
   enabled: true
   timeout: 3600     # 1h idle timeout
   every: 600        # check every 10 min
-  maxAge: 0         # no global max-age (your per-profile culler handles GPU caps)
+  maxAge: 43200     # 12h max age (12*60*60 = 43200 seconds)
   users: false
   adminUsers: true
   removeNamedServers: false
