@@ -430,16 +430,14 @@ hub:
       def _start_culler(app):
           app.io_loop.spawn_callback(_per_profile_cull, app)
 
-      c.JupyterHub.load_roles = getattr(c.JupyterHub, "load_roles", [])  # ensure set
-      c.JupyterHub.services = (getattr(c.JupyterHub,'services',[]) or []) + [{
-          'name': 'per-profile-culler',
-          'admin': True,
-          'command': ['python','-c','import sys; sys.exit(0)']  # dummy cmd; we hook below
-      }]
+      # Start the culler as an internal callback, not as an external service
+      # No need to register as a service since it runs inside the hub process
       c.JupyterHub.init_spawners_timeout = 0
-      c.JupyterHub.tornado_settings = getattr(c.JupyterHub, "tornado_settings", {})
-      # Hook when app is ready
-      def _post_hook(app): _start_culler(app)
+      
+      # Hook when app is ready to start the internal culler
+      def _post_hook(app): 
+          app.log.info("Starting per-profile GPU culler as internal task")
+          _start_culler(app)
       c.JupyterHub.post_hook = _post_hook
 
     gpu-config: |
