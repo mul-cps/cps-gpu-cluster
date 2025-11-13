@@ -49,14 +49,6 @@ hub:
       storageClassName: nfs-client
       storage: 10Gi
 
-  extraVolumes:
-    - name: custom-templates
-      configMap:
-        name: jupyterhub-custom-templates
-  extraVolumeMounts:
-    - name: custom-templates
-      mountPath: /etc/jupyterhub/custom
-
   extraConfig:
     00-install-packages: |
       import subprocess, sys
@@ -66,19 +58,8 @@ hub:
           subprocess.check_call([sys.executable, '-m', 'pip', 'install', 'oauthenticator'])
 
     01-custom-templates: |
-      c.JupyterHub.template_paths = ['/etc/jupyterhub/custom']
-      from jupyterhub.handlers import BaseHandler
-      from tornado import web
-      class InfoHandler(BaseHandler):
-          @web.authenticated
-          async def get(self):
-              user = await self.get_current_user()
-              jinja_env = self.settings.get('jinja2_env', None)
-              template_vars = jinja_env.globals.get('template_vars', {}) if jinja_env else {}
-              org = template_vars.get('org', {})
-              html = self.render_template("info.html", user=user, base_url=self.base_url, org=org)
-              self.write(html)
-      c.JupyterHub.extra_handlers = [(r"/info", InfoHandler)]
+      # Custom template functionality disabled to avoid ConfigMap conflicts
+      # Templates are managed separately if needed
 
     02-profiles: |
       # ---------- Access logic ----------
