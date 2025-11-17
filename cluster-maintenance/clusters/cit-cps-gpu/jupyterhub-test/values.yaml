@@ -12,7 +12,7 @@ ingress:
   annotations:
     cert-manager.io/cluster-issuer: wildcard-cert
   tls:
-    - secretName: jupyterhub-test-tls
+    - secretName: wildcard-cps-cert
       hosts: [jupyterhub-test.cps.unileoben.ac.at]
 
 hub:

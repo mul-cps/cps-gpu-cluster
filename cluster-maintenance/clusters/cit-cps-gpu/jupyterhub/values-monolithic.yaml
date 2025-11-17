@@ -32,8 +32,9 @@ ingress:
     nginx.ingress.kubernetes.io/proxy-buffer-size: "32k"
     nginx.ingress.kubernetes.io/proxy-next-upstream: "error timeout http_502 http_503 http_504"
     nginx.ingress.kubernetes.io/proxy-next-upstream-tries: "3"
+    cert-manager.io/cluster-issuer: wildcard-cert
   tls:
-    - secretName: jupyterhub-tls
+    - secretName: wildcard-cps-cert
       hosts: [jupyterhub.cps.unileoben.ac.at]
 
 hub:
