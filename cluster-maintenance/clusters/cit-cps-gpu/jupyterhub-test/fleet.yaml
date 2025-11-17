@@ -26,9 +26,6 @@ dependsOn:
 - selector:
     matchLabels:
       name: ingress-nginx
-- selector:
-    matchLabels:
-      name: wildcard-cert
       
 diff:
   comparePatches:
