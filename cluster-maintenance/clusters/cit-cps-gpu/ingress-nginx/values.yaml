@@ -58,8 +58,8 @@ controller:
     - name: wildcard-certs
       mountPath: /etc/ingress-nginx/wildcard-certs
       readOnly: true
-  # Set default SSL certificate
-  defaultSSLCertificate: wildcard-cps-unileoben-ac-at-tls
+  # Set default SSL certificate for all *.cps.unileoben.ac.at services
+  defaultSSLCertificate: wildcard-cps-cert
 
 # Default backend (optional 404 page)
 defaultBackend:
