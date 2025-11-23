@@ -86,20 +86,20 @@ spec:
             - /bin/sh
             - -c
             - exec pg_isready -U "$POSTGRES_USER" -d "$POSTGRES_DB" -h 127.0.0.1 -p 5432
-          initialDelaySeconds: 30
+          initialDelaySeconds: 120
           periodSeconds: 10
           timeoutSeconds: 5
-          failureThreshold: 6
+          failureThreshold: 10
         readinessProbe:
           exec:
             command:
             - /bin/sh
             - -c
             - exec pg_isready -U "$POSTGRES_USER" -d "$POSTGRES_DB" -h 127.0.0.1 -p 5432
-          initialDelaySeconds: 5
+          initialDelaySeconds: 10
           periodSeconds: 10
           timeoutSeconds: 5
-          failureThreshold: 3
+          failureThreshold: 5
       volumes:
       - name: postgresql-data
         persistentVolumeClaim:
