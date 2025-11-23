@@ -51,6 +51,8 @@ hub:
           url: "https://www.unileoben.ac.at"
 
     GenericOAuthenticator:
+      # Temporary workaround: skip TLS verification for Authentik
+      tls_verify: false
       client_id: "vUhzKqEF0UxPtZNM8aRbA1ncaehhIAIA2x9r83FI"
       client_secret: "EbAzlZLERPQzmF2EQByhihKuUqp36u138fYERPptymppmJbWhquI4sHu9vchqtnMRqbAVnZS6nOA6G0FescWa13MOLdlegQB3yyZSqe5V32NtYsnfDOndyZHiqiL2Bj6"
       oauth_callback_url: "https://jupyterhub.cps.unileoben.ac.at/hub/oauth_callback"
