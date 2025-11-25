@@ -8,12 +8,14 @@ proxy:
 ingress:
   enabled: true
   ingressClassName: nginx
-  hosts: [jupyterhub-test.cps.unileoben.ac.at]
-  annotations:
-    cert-manager.io/cluster-issuer: wildcard-cert
+  hosts:
+    - jupyterhub-test.cps.unileoben.ac.at
+    - jupyterhub-test.dshl.unileoben.ac.at
   tls:
     - secretName: wildcard-cps-cert
       hosts: [jupyterhub-test.cps.unileoben.ac.at]
+    - secretName: dshl-wildcard
+      hosts: [jupyterhub-test.dshl.unileoben.ac.at]
 
 hub:
   config:
@@ -30,7 +32,7 @@ hub:
     GenericOAuthenticator:
       client_id: "TEST_CLIENT_ID_FROM_AUTHENTIK"
       client_secret: "TEST_CLIENT_SECRET_FROM_AUTHENTIK"
-      oauth_callback_url: "https://jupyterhub-test.cps.unileoben.ac.at/hub/oauth_callback"
+      oauth_callback_url: "https://jupyterhub-test.dshl.unileoben.ac.at/hub/oauth_callback"
       authorize_url: "https://auth.cps.unileoben.ac.at/application/o/authorize/"
       token_url: "https://auth.cps.unileoben.ac.at/application/o/token/"
       userdata_url: "https://auth.cps.unileoben.ac.at/application/o/userinfo/"

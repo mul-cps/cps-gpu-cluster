@@ -50,7 +50,7 @@ helm_repos:
     url: https://kubernetes.github.io/ingress-nginx
 
 # Rancher configuration
-rancher_hostname: "rancher.cps.unileoben.ac.at"  # Assumption: set DNS to a control-plane IP
+rancher_hostname: "rancher.dshl.unileoben.ac.at"  # Assumption: set DNS to a control-plane IP
 rancher_version: ""  # Leave empty to install the latest compatible Rancher chart for your Kubernetes version
 rancher_replicas: 3
 rancher_bootstrap_password: "admin"

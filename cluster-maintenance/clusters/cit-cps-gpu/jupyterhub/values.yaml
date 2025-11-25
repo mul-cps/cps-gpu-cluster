@@ -8,12 +8,14 @@ proxy:
 ingress:
   enabled: true
   ingressClassName: nginx
-  hosts: [jupyterhub.cps.unileoben.ac.at]
-  annotations:
-    cert-manager.io/cluster-issuer: wildcard-cert
+  hosts:
+    - jupyterhub.cps.unileoben.ac.at
+    - jupyterhub.dshl.unileoben.ac.at
   tls:
     - secretName: wildcard-cps-cert
       hosts: [jupyterhub.cps.unileoben.ac.at]
+    - secretName: dshl-wildcard
+      hosts: [jupyterhub.dshl.unileoben.ac.at]
 
 hub:
   config:
@@ -33,7 +35,7 @@ hub:
       tls_verify: false
       client_id: "vUhzKqEF0UxPtZNM8aRbA1ncaehhIAIA2x9r83FI"
       client_secret: "EbAzlZLERPQzmF2EQByhihKuUqp36u138fYERPptymppmJbWhquI4sHu9vchqtnMRqbAVnZS6nOA6G0FescWa13MOLdlegQB3yyZSqe5V32NtYsnfDOndyZHiqiL2Bj6"
-      oauth_callback_url: "https://jupyterhub.cps.unileoben.ac.at/hub/oauth_callback"
+      oauth_callback_url: "https://jupyterhub.dshl.unileoben.ac.at/hub/oauth_callback"
       authorize_url: "https://auth.cps.unileoben.ac.at/application/o/authorize/"
       token_url: "https://auth.cps.unileoben.ac.at/application/o/token/"
       userdata_url: "https://auth.cps.unileoben.ac.at/application/o/userinfo/"
