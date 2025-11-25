@@ -69,6 +69,8 @@ hub:
 
   extraEnv:
     SSL_CERT_FILE: /ca-bundle/ca-certificates.crt
+    REQUESTS_CA_BUNDLE: /ca-bundle/ca-certificates.crt
+    CURL_CA_BUNDLE: /ca-bundle/ca-certificates.crt
 
   extraVolumes:
     - name: ca-bundle
