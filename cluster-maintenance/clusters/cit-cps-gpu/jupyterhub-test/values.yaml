@@ -52,14 +52,14 @@ hub:
 
   initContainers:
     - name: ca-bundle
-      image: alpine:3.20
+      image: curlimages/curl:8.10.1
       securityContext:
-        runAsUser: 0
-        runAsGroup: 0
+        runAsNonRoot: true
+        runAsUser: 1000
+        runAsGroup: 1000
       command: ["/bin/sh", "-c"]
       args:
         - |
-          apk add --no-cache ca-certificates >/dev/null
           cat /etc/ssl/certs/ca-certificates.crt /harica/harica-root.pem /harica/geant-intermediate.pem > /ca-bundle/ca-certificates.crt
       volumeMounts:
         - name: ca-bundle
