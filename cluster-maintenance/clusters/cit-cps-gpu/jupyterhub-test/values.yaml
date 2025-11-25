@@ -50,6 +50,39 @@ hub:
       storageClassName: nfs-client
       storage: 10Gi
 
+  initContainers:
+    - name: ca-bundle
+      image: busybox:1.36
+      command:
+        - /bin/sh
+        - -c
+        - |
+          cat /etc/ssl/certs/ca-certificates.crt /harica/harica-root.pem > /ca-bundle/ca-certificates.crt
+      volumeMounts:
+        - name: ca-bundle
+          mountPath: /ca-bundle
+        - name: harica-ca
+          mountPath: /harica
+
+  extraEnv:
+    SSL_CERT_FILE: /ca-bundle/ca-certificates.crt
+
+  extraVolumes:
+    - name: ca-bundle
+      emptyDir: {}
+    - name: harica-ca
+      configMap:
+        name: harica-ca
+        items:
+          - key: harica-root
+            path: harica-root.pem
+
+  extraVolumeMounts:
+    - name: ca-bundle
+      mountPath: /ca-bundle
+    - name: harica-ca
+      mountPath: /harica
+
   extraVolumes:
     - name: custom-templates
       configMap:

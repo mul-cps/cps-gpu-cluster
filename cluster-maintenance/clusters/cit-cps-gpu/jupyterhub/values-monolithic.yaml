@@ -85,14 +85,41 @@ hub:
   extraEnv:
     JUPYTERHUB_API_PAGE_SIZE: "200"
     JUPYTERHUB_ACTIVE_SERVER_LIMIT: "0"
+    SSL_CERT_FILE: /ca-bundle/ca-certificates.crt
 
   extraVolumes:
     - name: custom-templates
       configMap:
         name: jupyterhub-custom-templates
+    - name: ca-bundle
+      emptyDir: {}
+    - name: harica-ca
+      configMap:
+        name: harica-ca
+        items:
+          - key: harica-root
+            path: harica-root.pem
   extraVolumeMounts:
     - name: custom-templates
       mountPath: /etc/jupyterhub/custom
+    - name: ca-bundle
+      mountPath: /ca-bundle
+    - name: harica-ca
+      mountPath: /harica
+
+  initContainers:
+    - name: ca-bundle
+      image: busybox:1.36
+      command:
+        - /bin/sh
+        - -c
+        - |
+          cat /etc/ssl/certs/ca-certificates.crt /harica/harica-root.pem > /ca-bundle/ca-certificates.crt
+      volumeMounts:
+        - name: ca-bundle
+          mountPath: /ca-bundle
+        - name: harica-ca
+          mountPath: /harica
 
   extraConfig:
     00-install-oauthenticator: |
