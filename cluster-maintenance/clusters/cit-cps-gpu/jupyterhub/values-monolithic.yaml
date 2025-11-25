@@ -116,7 +116,7 @@ hub:
       args:
         - |
           apk add --no-cache ca-certificates >/dev/null
-          cat /etc/ssl/certs/ca-certificates.crt /harica/harica-root.pem > /ca-bundle/ca-certificates.crt
+          cat /etc/ssl/certs/ca-certificates.crt /harica/harica-root.pem /harica/geant-intermediate.pem > /ca-bundle/ca-certificates.crt
       volumeMounts:
         - name: ca-bundle
           mountPath: /ca-bundle
