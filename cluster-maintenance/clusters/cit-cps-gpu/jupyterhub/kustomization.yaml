@@ -6,6 +6,7 @@ resources:
   - namespace.yaml
   - storage-pvcs.yaml
   - postgresql.yaml
+  - harica-ca-configmap.yaml
   - templates/
 
 # Ensure all resources are in the jupyterhub namespace

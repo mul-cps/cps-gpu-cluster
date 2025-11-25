@@ -5,6 +5,7 @@ kind: Kustomization
 resources:
   - storage-pvcs.yaml
   - postgresql.yaml
+  - harica-ca-configmap.yaml
   - templates/
 
 # Ensure all resources are in the jupyterhub-test namespace
