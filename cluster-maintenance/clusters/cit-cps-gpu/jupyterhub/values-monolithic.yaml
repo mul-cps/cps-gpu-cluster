@@ -114,6 +114,9 @@ hub:
   initContainers:
     - name: ca-bundle
       image: alpine:3.20
+      securityContext:
+        runAsUser: 0
+        runAsGroup: 0
       command: ["/bin/sh", "-c"]
       args:
         - |
