@@ -81,6 +81,8 @@ hub:
         items:
           - key: harica-root
             path: harica-root.pem
+          - key: geant-intermediate
+            path: geant-intermediate.pem
 
   extraVolumeMounts:
     - name: ca-bundle
