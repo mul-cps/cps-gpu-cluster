@@ -11,6 +11,7 @@ helm:
   repo: https://jupyterhub.github.io/helm-chart
   version: 3.3.8
   releaseName: jupyterhub
+  createNamespace: true
   valuesFiles:
   - values.yaml
 

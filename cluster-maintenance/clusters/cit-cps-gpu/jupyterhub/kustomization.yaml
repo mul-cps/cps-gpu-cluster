@@ -3,7 +3,7 @@ kind: Kustomization
 
 # Include the storage PVCs, PostgreSQL, and namespace
 resources:
-  - namespace.yaml
+  # - namespace.yaml
   - storage-pvcs.yaml
   - postgresql.yaml
   - harica-ca-configmap.yaml
