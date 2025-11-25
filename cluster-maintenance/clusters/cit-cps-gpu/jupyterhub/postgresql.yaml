@@ -76,10 +76,10 @@ spec:
         resources:
           requests:
             cpu: 100m
-            memory: 512Mi
+            memory: 1Gi
           limits:
             cpu: 500m
-            memory: 1Gi
+            memory: 2Gi
         livenessProbe:
           exec:
             command:
@@ -103,13 +103,13 @@ spec:
       volumes:
       - name: postgresql-data
         persistentVolumeClaim:
-          claimName: postgresql-data
+          claimName: postgresql-data-longhorn
 
 ---
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: postgresql-data
+  name: postgresql-data-longhorn
   namespace: jupyterhub
   labels:
     app.kubernetes.io/name: postgresql
@@ -121,7 +121,7 @@ spec:
   storageClassName: longhorn
   resources:
     requests:
-      storage: 5Gi
+      storage: 10Gi
 
 ---
 apiVersion: v1
