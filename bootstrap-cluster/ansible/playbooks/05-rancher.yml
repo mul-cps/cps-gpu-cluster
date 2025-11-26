@@ -87,12 +87,20 @@
       environment:
         KUBECONFIG: "{{ kubeconfig }}"
 
-    - name: Ensure Rancher TLS secret exists (pre-provisioned)
-      shell: kubectl get secret dshl-wildcard -n cattle-system -o name
+    - name: Ensure Rancher wildcard TLS secret exists in cert-manager
+      shell: kubectl get secret dshl-wildcard -n cert-manager -o name
       register: tls_secret
       retries: 12
       delay: 5
       until: tls_secret.stdout != ""
+      environment:
+        KUBECONFIG: "{{ kubeconfig }}"
+
+    - name: Sync Rancher wildcard TLS secret into cattle-system
+      shell: |
+        kubectl get secret dshl-wildcard -n cert-manager -o json \
+        | jq 'del(.metadata | .namespace,.creationTimestamp,.resourceVersion,.uid,.selfLink,.managedFields,.annotations,.ownerReferences)' \
+        | kubectl apply -n cattle-system -f -
       environment:
         KUBECONFIG: "{{ kubeconfig }}"
 
