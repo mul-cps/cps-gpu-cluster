@@ -1,7 +1,7 @@
 apiVersion: monitoring.coreos.com/v1
 kind: PrometheusRule
 metadata:
-  name: nvidia-gpu-alerts
+  name: nvidia-gpu-alerts-fleet
   namespace: cattle-monitoring-system
   labels:
     app: "rancher-monitoring"
