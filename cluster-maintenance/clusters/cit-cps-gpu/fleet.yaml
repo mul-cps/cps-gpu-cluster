@@ -1,4 +1,5 @@
 defaultNamespace: fleet-local
+# Trigger update
 
 # Target clusters for this bundle
 # By default, targets the local cluster
