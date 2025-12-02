@@ -1,11 +1,1 @@
 
-apiVersion: v1
-kind: Namespace
-metadata:
-  name: cattle-dashboards
-  labels:
-    name: cattle-dashboards
-    monitoring: "rancher"
-    cluster: "cit-cps-gpu"
-    # This label makes Grafana automatically discover dashboards in this namespace
-    grafana_dashboard: "1"
