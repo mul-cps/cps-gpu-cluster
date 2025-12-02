@@ -3,8 +3,12 @@ kind: Kustomization
 
 # Include the storage PVCs and PostgreSQL that JupyterHub depends on
 resources:
-  - storage-pvcs.yaml
+  - namespace.yaml
+  - values.yaml
+  - fleet.yaml
   - postgresql.yaml
+  - storage-pvcs.yaml
+  - user-docs-configmap.yaml
   - templates/
 
 # Ensure all resources are in the jupyterhub namespace

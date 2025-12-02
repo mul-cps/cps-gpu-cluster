@@ -9,7 +9,7 @@ apiVersion: v1
 kind: Secret
 metadata:
   name: postgresql-secret
-  namespace: jupyterhub
+  namespace: jupyterhub-test
   labels:
     app.kubernetes.io/name: postgresql
     app.kubernetes.io/component: database
@@ -20,11 +20,25 @@ stringData:
   postgres-db: "jhub"
 
 ---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: postgresql-data
+  namespace: jupyterhub-test
+spec:
+  accessModes:
+    - ReadWriteOnce
+  storageClassName: longhorn
+  resources:
+    requests:
+      storage: 10Gi
+
+---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: postgresql
-  namespace: jupyterhub
+  namespace: jupyterhub-test
   labels:
     app.kubernetes.io/name: postgresql
     app.kubernetes.io/component: database
@@ -102,14 +116,15 @@ spec:
           failureThreshold: 3
       volumes:
       - name: postgresql-data
-        emptyDir: {}
+        persistentVolumeClaim:
+          claimName: postgresql-data
 
 ---
 apiVersion: v1
 kind: Service
 metadata:
   name: postgresql
-  namespace: jupyterhub
+  namespace: jupyterhub-test
   labels:
     app.kubernetes.io/name: postgresql
     app.kubernetes.io/component: database

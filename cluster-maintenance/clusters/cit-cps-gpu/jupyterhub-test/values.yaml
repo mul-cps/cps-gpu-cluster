@@ -12,7 +12,7 @@ ingress:
   annotations:
     cert-manager.io/cluster-issuer: wildcard-cert
   tls:
-    - secretName: jupyterhub-test-tls
+    - secretName: jupyterhub-tls
       hosts: [jupyterhub-test.cps.unileoben.ac.at]
 
 hub:
@@ -28,8 +28,8 @@ hub:
           logo_url: "https://www.unileoben.ac.at/fileadmin/shares/allgemeine_datenbank/logos/1-mul-logo/2-mul-logo-smoke-quer.svg"
           url: "https://www.unileoben.ac.at"
     GenericOAuthenticator:
-      client_id: "TEST_CLIENT_ID_FROM_AUTHENTIK"
-      client_secret: "TEST_CLIENT_SECRET_FROM_AUTHENTIK"
+      client_id: "vUhzKqEF0UxPtZNM8aRbA1ncaehhIAIA2x9r83FI"
+      client_secret: "EbAzlZLERPQzmF2EQByhihKuUqp36u138fYERPptymppmJbWhquI4sHu9vchqtnMRqbAVnZS6nOA6G0FescWa13MOLdlegQB3yyZSqe5V32NtYsnfDOndyZHiqiL2Bj6"
       oauth_callback_url: "https://jupyterhub-test.cps.unileoben.ac.at/hub/oauth_callback"
       authorize_url: "https://auth.cps.unileoben.ac.at/application/o/authorize/"
       token_url: "https://auth.cps.unileoben.ac.at/application/o/token/"
@@ -44,8 +44,10 @@ hub:
       allow_all: true
 
   db:
+    type: postgres
+    url: postgresql://jhub:jhub-secure-db-password-2025@postgresql.jupyterhub-test.svc.cluster.local:5432/jhub
     pvc:
-      storageClassName: nfs-client
+      storageClassName: longhorn
       storage: 10Gi
 
   extraVolumes:
@@ -466,7 +468,25 @@ singleuser:
     capacity: 10Gi
     dynamic:
       storageClass: nfs-client
-    homeMountPath: /home/jovyan
+    homeMountPath: /home/jovyan/persistent
+
+    extraVolumes:
+      - name: home
+        emptyDir: {}
+      - name: user-docs
+        configMap:
+          name: jupyterhub-user-docs
+    extraVolumeMounts:
+      - name: home
+        mountPath: /home/jovyan
+      - name: user-docs
+        mountPath: /home/jovyan/00_IMPORTANT_STORAGE_WARNING.md
+        subPath: 00_IMPORTANT_STORAGE_WARNING.md
+        readOnly: true
+      - name: user-docs
+        mountPath: /home/jovyan/01_CLUSTER_GUIDE.md
+        subPath: 01_CLUSTER_GUIDE.md
+        readOnly: true
 
   cpu:
     limit: 2

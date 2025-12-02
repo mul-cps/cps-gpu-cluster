@@ -466,7 +466,25 @@ singleuser:
     capacity: 10Gi
     dynamic:
       storageClass: nfs-client
-    homeMountPath: /home/jovyan
+    homeMountPath: /home/jovyan/persistent
+
+    extraVolumes:
+      - name: home
+        emptyDir: {}
+      - name: user-docs
+        configMap:
+          name: jupyterhub-user-docs
+    extraVolumeMounts:
+      - name: home
+        mountPath: /home/jovyan
+      - name: user-docs
+        mountPath: /home/jovyan/00_IMPORTANT_STORAGE_WARNING.md
+        subPath: 00_IMPORTANT_STORAGE_WARNING.md
+        readOnly: true
+      - name: user-docs
+        mountPath: /home/jovyan/01_CLUSTER_GUIDE.md
+        subPath: 01_CLUSTER_GUIDE.md
+        readOnly: true
 
   cpu:
     limit: 2
