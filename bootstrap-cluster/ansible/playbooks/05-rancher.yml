@@ -87,54 +87,20 @@
       environment:
         KUBECONFIG: "{{ kubeconfig }}"
 
-    - name: Create TLS issuer (self-signed) for Rancher (adjust if using real certs)
-      copy:
-        dest: /tmp/rancher-ca-issuer.yaml
-        content: |
-          apiVersion: cert-manager.io/v1
-          kind: ClusterIssuer
-          metadata:
-            name: rancher-selfsigned
-          spec:
-            selfSigned: {}
-      environment:
-        KUBECONFIG: "{{ kubeconfig }}"
-
-    - name: Apply Rancher issuer
-      shell: kubectl apply -f /tmp/rancher-ca-issuer.yaml
-      environment:
-        KUBECONFIG: "{{ kubeconfig }}"
-
-    - name: Create certificate for Rancher hostname
-      copy:
-        dest: /tmp/rancher-cert.yaml
-        content: |
-          apiVersion: cert-manager.io/v1
-          kind: Certificate
-          metadata:
-            name: rancher-tls
-            namespace: cattle-system
-          spec:
-            secretName: tls-rancher
-            dnsNames:
-              - {{ rancher_hostname }}
-            issuerRef:
-              name: rancher-selfsigned
-              kind: ClusterIssuer
-      environment:
-        KUBECONFIG: "{{ kubeconfig }}"
-
-    - name: Apply Rancher certificate
-      shell: kubectl apply -f /tmp/rancher-cert.yaml
-      environment:
-        KUBECONFIG: "{{ kubeconfig }}"
-
-    - name: Wait for Rancher TLS secret
-      shell: kubectl get secret tls-rancher -n cattle-system -o name
+    - name: Ensure Rancher wildcard TLS secret exists in cert-manager
+      shell: kubectl get secret dshl-wildcard -n cert-manager -o name
       register: tls_secret
-      retries: 30
-      delay: 10
+      retries: 12
+      delay: 5
       until: tls_secret.stdout != ""
+      environment:
+        KUBECONFIG: "{{ kubeconfig }}"
+
+    - name: Sync Rancher wildcard TLS secret into cattle-system
+      shell: |
+        kubectl get secret dshl-wildcard -n cert-manager -o json \
+        | jq 'del(.metadata | .namespace,.creationTimestamp,.resourceVersion,.uid,.selfLink,.managedFields,.annotations,.ownerReferences)' \
+        | kubectl apply -n cattle-system -f -
       environment:
         KUBECONFIG: "{{ kubeconfig }}"
 
@@ -149,9 +115,8 @@
           ingress:
             tls:
               source: secret
-              secretName: tls-rancher
+              secretName: dshl-wildcard
             extraAnnotations:
-              cert-manager.io/cluster-issuer: rancher-selfsigned
               nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
           systemDefaultRegistry: ""
           addLocal: "true"

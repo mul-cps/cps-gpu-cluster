@@ -1,21 +1,11 @@
-# Fleet configuration for Rancher Monitoring Stack
-name: rancher-monitoring
+# Fleet configuration for NVIDIA monitoring add-ons (dashboards, alerts only)
+name: nvidia-monitoring-addons
 
-# Default namespace where the monitoring stack will be deployed
-# Using defaultNamespace instead of namespace to allow cluster-scoped resources
 defaultNamespace: cattle-monitoring-system
 
-# Helm chart configuration
-helm:
-  # Use Rancher's monitoring chart
-  chart: rancher-monitoring
-  repo: https://charts.rancher.io
-  version: "103.0.3+up45.31.1"
-  releaseName: rancher-monitoring
-  
-  # Values for the monitoring stack
-  valuesFiles:
-    - values.yaml
+# Apply only the NVIDIA-specific manifests; monitoring stack is installed manually
+kustomize:
+  dir: .
 
 # Target only clusters with the gpu-monitoring label
 targets:

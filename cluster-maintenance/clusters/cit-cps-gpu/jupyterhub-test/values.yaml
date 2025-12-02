@@ -8,12 +8,14 @@ proxy:
 ingress:
   enabled: true
   ingressClassName: nginx
-  hosts: [jupyterhub-test.cps.unileoben.ac.at]
-  annotations:
-    cert-manager.io/cluster-issuer: wildcard-cert
+  hosts:
+    - jupyterhub-test.cps.unileoben.ac.at
+    - jupyterhub-test.dshl.unileoben.ac.at
   tls:
     - secretName: jupyterhub-tls
       hosts: [jupyterhub-test.cps.unileoben.ac.at]
+    - secretName: dshl-wildcard
+      hosts: [jupyterhub-test.dshl.unileoben.ac.at]
 
 hub:
   config:
@@ -49,6 +51,46 @@ hub:
     pvc:
       storageClassName: longhorn
       storage: 10Gi
+
+  initContainers:
+    - name: ca-bundle
+      image: curlimages/curl:8.10.1
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 1000
+        runAsGroup: 1000
+      command: ["/bin/sh", "-c"]
+      args:
+        - |
+          cat /etc/ssl/certs/ca-certificates.crt /harica/harica-root.pem /harica/geant-intermediate.pem > /ca-bundle/ca-certificates.crt
+      volumeMounts:
+        - name: ca-bundle
+          mountPath: /ca-bundle
+        - name: harica-ca
+          mountPath: /harica
+
+  extraEnv:
+    SSL_CERT_FILE: /ca-bundle/ca-certificates.crt
+    REQUESTS_CA_BUNDLE: /ca-bundle/ca-certificates.crt
+    CURL_CA_BUNDLE: /ca-bundle/ca-certificates.crt
+
+  extraVolumes:
+    - name: ca-bundle
+      emptyDir: {}
+    - name: harica-ca
+      configMap:
+        name: harica-ca
+        items:
+          - key: harica-root
+            path: harica-root.pem
+          - key: geant-intermediate
+            path: geant-intermediate.pem
+
+  extraVolumeMounts:
+    - name: ca-bundle
+      mountPath: /ca-bundle
+    - name: harica-ca
+      mountPath: /harica
 
   extraVolumes:
     - name: custom-templates

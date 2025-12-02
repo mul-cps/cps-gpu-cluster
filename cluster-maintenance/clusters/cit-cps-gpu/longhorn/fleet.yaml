@@ -1,0 +1,15 @@
+name: longhorn
+defaultNamespace: longhorn-system
+
+labels:
+  app: longhorn
+  name: longhorn
+
+helm:
+  chart: longhorn
+  repo: https://charts.longhorn.io
+  version: 1.6.2
+  releaseName: longhorn
+  createNamespace: true
+  valuesFiles:
+    - values.yaml

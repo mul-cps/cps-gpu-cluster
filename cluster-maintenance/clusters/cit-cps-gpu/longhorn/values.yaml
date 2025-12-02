@@ -1,0 +1,32 @@
+persistence:
+  defaultClass: false  # keep Longhorn SC non-default to avoid impacting existing nfs-client
+
+defaultSettings:
+  defaultReplicaCount: 2
+  defaultDataPath: /var/lib/longhorn
+  defaultDataLocality: best-effort
+  storageOverProvisioningPercentage: 200
+  storageMinimalAvailablePercentage: 10
+  guaranteedEngineManagerCPU: 0.25
+  guaranteedReplicaManagerCPU: 0.25
+  orphanAutoDeletion: true
+  nodeDrainPolicy: allow-if-healthy
+
+# Limit system components to worker nodes (no control-plane tolerations)
+longhornManager:
+  tolerations: []
+longhornDriver:
+  tolerations: []
+  nodeSelector: {}
+
+# CSI components also avoid control-plane by default (no extra tolerations)
+csi:
+  attacherTolerations: []
+  provisionerTolerations: []
+  resizerTolerations: []
+  snapshotTolerations: []
+  nodeSelector: {}
+
+service:
+  ui:
+    type: ClusterIP

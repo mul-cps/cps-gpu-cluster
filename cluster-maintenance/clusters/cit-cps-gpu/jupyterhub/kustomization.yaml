@@ -1,16 +1,13 @@
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 
-# Include the storage PVCs and PostgreSQL that JupyterHub depends on
+# Include the storage PVCs, PostgreSQL, and namespace
 resources:
-  - namespace.yaml
-  - values.yaml
-  - fleet.yaml
-  - postgresql.yaml
+  # - namespace.yaml
   - storage-pvcs.yaml
-  - user-docs-configmap.yaml
+  - postgresql.yaml
+  - harica-ca-configmap.yaml
   - templates/
 
 # Ensure all resources are in the jupyterhub namespace
-# Note: namespace creation is handled separately
 namespace: jupyterhub

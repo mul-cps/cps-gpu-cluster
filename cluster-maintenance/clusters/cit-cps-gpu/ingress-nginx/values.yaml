@@ -49,6 +49,9 @@ controller:
   autoscaling:
     enabled: false
 
+  # Default SSL certificate for *.dshl.unileoben.ac.at services
+  defaultSSLCertificate: cert-manager/dshl-wildcard
+
 # Default backend (optional 404 page)
 defaultBackend:
   enabled: false

@@ -33,28 +33,18 @@ The monitoring stack includes:
 
 ## Deployment
 
-### 1. Deploy via Fleet (Recommended)
+### 1. Install Rancher Monitoring manually (now required)
 
-The monitoring stack will be automatically deployed via Fleet when this configuration is committed to the repository.
+- Use the Rancher UI (Apps & Marketplace → Monitoring) to install the monitoring stack.
+- Ensure namespaces `cattle-monitoring-system` and `cattle-dashboards` exist (this repo also applies them).
 
-### 2. Manual Deployment (Alternative)
+### 2. NVIDIA add-ons via Fleet (dashboards & alerts only)
 
-If you need to deploy manually:
-
-```bash
-# Create namespace
-kubectl apply -f namespace.yaml
-
-# Add Rancher monitoring Helm repository
-helm repo add rancher-monitoring https://charts.rancher.io
-helm repo update
-
-# Install monitoring stack
-helm install rancher-monitoring rancher-monitoring/rancher-monitoring \
-  --namespace cattle-monitoring-system \
-  --values values.yaml \
-  --wait
-```
+This Fleet bundle now ships only the NVIDIA GPU dashboards and alert rules (no monitoring stack Helm chart).
+Once the monitoring stack is installed, Fleet will:
+- Create/ensure namespaces: `cattle-monitoring-system`, `cattle-dashboards`
+- Apply GPU dashboards: `gpu-dashboard.yaml`, `gpu-dashboard-full.yaml`, `nvidia-official-dashboard.yaml`
+- Apply GPU alert rules: `gpu-alerts.yaml`
 
 ## Verification
 

@@ -3,5 +3,9 @@ kind: Namespace
 metadata:
   name: jupyterhub-test
   labels:
+    app.kubernetes.io/managed-by: Helm
     app.kubernetes.io/name: jupyterhub-test
     app.kubernetes.io/part-of: jupyterhub-platform
+  annotations:
+    meta.helm.sh/release-name: jupyterhub-test
+    meta.helm.sh/release-namespace: jupyterhub-test

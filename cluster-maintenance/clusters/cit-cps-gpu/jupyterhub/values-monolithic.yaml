@@ -19,7 +19,9 @@ proxy:
 ingress:
   enabled: true
   ingressClassName: nginx
-  hosts: [jupyterhub.cps.unileoben.ac.at]
+  hosts:
+    - jupyterhub.cps.unileoben.ac.at
+    - jupyterhub.dshl.unileoben.ac.at
   annotations:
     kubernetes.io/ingress.class: nginx
     # WebSockets / long sessions / uploads
@@ -33,8 +35,10 @@ ingress:
     nginx.ingress.kubernetes.io/proxy-next-upstream: "error timeout http_502 http_503 http_504"
     nginx.ingress.kubernetes.io/proxy-next-upstream-tries: "3"
   tls:
-    - secretName: jupyterhub-tls
+    - secretName: wildcard-cps-cert
       hosts: [jupyterhub.cps.unileoben.ac.at]
+    - secretName: dshl-wildcard
+      hosts: [jupyterhub.dshl.unileoben.ac.at]
 
 hub:
   config:
@@ -50,9 +54,11 @@ hub:
           url: "https://www.unileoben.ac.at"
 
     GenericOAuthenticator:
+      # Temporary workaround: skip TLS verification for Authentik
+      tls_verify: false
       client_id: "vUhzKqEF0UxPtZNM8aRbA1ncaehhIAIA2x9r83FI"
       client_secret: "EbAzlZLERPQzmF2EQByhihKuUqp36u138fYERPptymppmJbWhquI4sHu9vchqtnMRqbAVnZS6nOA6G0FescWa13MOLdlegQB3yyZSqe5V32NtYsnfDOndyZHiqiL2Bj6"
-      oauth_callback_url: "https://jupyterhub.cps.unileoben.ac.at/hub/oauth_callback"
+      oauth_callback_url: "https://jupyterhub.dshl.unileoben.ac.at/hub/oauth_callback"
       authorize_url: "https://auth.cps.unileoben.ac.at/application/o/authorize/"
       token_url: "https://auth.cps.unileoben.ac.at/application/o/token/"
       userdata_url: "https://auth.cps.unileoben.ac.at/application/o/userinfo/"
@@ -79,14 +85,48 @@ hub:
   extraEnv:
     JUPYTERHUB_API_PAGE_SIZE: "200"
     JUPYTERHUB_ACTIVE_SERVER_LIMIT: "0"
+    SSL_CERT_FILE: /ca-bundle/ca-certificates.crt
+    REQUESTS_CA_BUNDLE: /ca-bundle/ca-certificates.crt
+    CURL_CA_BUNDLE: /ca-bundle/ca-certificates.crt
 
   extraVolumes:
     - name: custom-templates
       configMap:
         name: jupyterhub-custom-templates
+    - name: ca-bundle
+      emptyDir: {}
+    - name: harica-ca
+      configMap:
+        name: harica-ca
+        items:
+          - key: harica-root
+            path: harica-root.pem
+          - key: geant-intermediate
+            path: geant-intermediate.pem
   extraVolumeMounts:
     - name: custom-templates
       mountPath: /etc/jupyterhub/custom
+    - name: ca-bundle
+      mountPath: /ca-bundle
+    - name: harica-ca
+      mountPath: /harica
+
+  initContainers:
+    - name: ca-bundle
+      image: curlimages/curl:8.10.1
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 1000
+        runAsGroup: 1000
+      command: ["/bin/sh", "-c"]
+      args:
+        - |
+          cat /etc/ssl/certs/ca-certificates.crt /harica/harica-root.pem /harica/geant-intermediate.pem > /ca-bundle/ca-certificates.crt
+      volumeMounts:
+        - name: ca-bundle
+          mountPath: /ca-bundle
+        - name: harica-ca
+          mountPath: /harica
 
   extraConfig:
     00-install-oauthenticator: |

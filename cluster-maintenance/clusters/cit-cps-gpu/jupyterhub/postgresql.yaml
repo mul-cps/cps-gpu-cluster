@@ -76,33 +76,52 @@ spec:
         resources:
           requests:
             cpu: 100m
-            memory: 256Mi
+            memory: 1Gi
           limits:
             cpu: 500m
-            memory: 512Mi
+            memory: 2Gi
         livenessProbe:
           exec:
             command:
             - /bin/sh
             - -c
             - exec pg_isready -U "$POSTGRES_USER" -d "$POSTGRES_DB" -h 127.0.0.1 -p 5432
-          initialDelaySeconds: 30
+          initialDelaySeconds: 120
           periodSeconds: 10
           timeoutSeconds: 5
-          failureThreshold: 6
+          failureThreshold: 10
         readinessProbe:
           exec:
             command:
             - /bin/sh
             - -c
             - exec pg_isready -U "$POSTGRES_USER" -d "$POSTGRES_DB" -h 127.0.0.1 -p 5432
-          initialDelaySeconds: 5
+          initialDelaySeconds: 10
           periodSeconds: 10
           timeoutSeconds: 5
-          failureThreshold: 3
+          failureThreshold: 5
       volumes:
       - name: postgresql-data
-        emptyDir: {}
+        persistentVolumeClaim:
+          claimName: postgresql-data-longhorn
+
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: postgresql-data-longhorn
+  namespace: jupyterhub
+  labels:
+    app.kubernetes.io/name: postgresql
+    app.kubernetes.io/component: database
+    app.kubernetes.io/part-of: jupyterhub-platform
+spec:
+  accessModes:
+    - ReadWriteOnce
+  storageClassName: longhorn
+  resources:
+    requests:
+      storage: 10Gi
 
 ---
 apiVersion: v1

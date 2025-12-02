@@ -11,6 +11,7 @@ helm:
   repo: https://jupyterhub.github.io/helm-chart
   version: 4.3.1
   releaseName: jupyterhub-test
+  createNamespace: true
   valuesFiles:
   - values.yaml
 
@@ -26,9 +27,6 @@ dependsOn:
 - selector:
     matchLabels:
       name: ingress-nginx
-- selector:
-    matchLabels:
-      name: wildcard-cert
       
 diff:
   comparePatches:
