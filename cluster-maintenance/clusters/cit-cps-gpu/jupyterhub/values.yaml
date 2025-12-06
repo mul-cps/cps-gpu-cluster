@@ -412,10 +412,7 @@ singleuser:
     pullPolicy: IfNotPresent
 
   storage:
-    type: static
-    static:
-      pvcName: jhub-userdir-rwx
-      subPath: "home/{username}"
+
     capacity: 10Gi
     dynamic:
       storageClass: longhorn-fast
