@@ -45,8 +45,9 @@ hub:
 
   db:
     pvc:
-      storageClassName: nfs-client
+      storageClassName: longhorn
       storage: 10Gi
+
 
   extraVolumes:
     - name: custom-templates
@@ -465,20 +466,28 @@ singleuser:
   storage:
     capacity: 10Gi
     dynamic:
-      storageClass: nfs-client
-    homeMountPath: /home/jovyan/persistent
+      storageClass: longhorn-fast
+    homeMountPath: /home/jovyan/work/persistent
+
 
     extraVolumes:
       - name: home
         emptyDir: {}
+      - name: shared
+        persistentVolumeClaim:
+          claimName: jupyterhub-shared-storage
       - name: user-docs
         configMap:
           name: jupyterhub-user-docs
+
     extraVolumeMounts:
       - name: home
         mountPath: /home/jovyan
+      - name: shared
+        mountPath: /home/jovyan/work/shared
       - name: user-docs
         mountPath: /home/jovyan/00_IMPORTANT_STORAGE_WARNING.md
+
         subPath: 00_IMPORTANT_STORAGE_WARNING.md
         readOnly: true
       - name: user-docs
