@@ -50,30 +50,9 @@ hub:
 
   db:
     pvc:
-      storageClassName: nfs-client
+      storageClassName: longhorn
       storage: 10Gi
 
-  initContainers:
-    - name: ca-bundle
-      image: curlimages/curl:8.10.1
-      securityContext:
-        runAsNonRoot: true
-        runAsUser: 1000
-        runAsGroup: 1000
-      command: ["/bin/sh", "-c"]
-      args:
-        - |
-          cat /etc/ssl/certs/ca-certificates.crt /harica/harica-root.pem /harica/geant-intermediate.pem > /ca-bundle/ca-certificates.crt
-      volumeMounts:
-        - name: ca-bundle
-          mountPath: /ca-bundle
-        - name: harica-ca
-          mountPath: /harica
-
-  extraEnv:
-    SSL_CERT_FILE: /ca-bundle/ca-certificates.crt
-    REQUESTS_CA_BUNDLE: /ca-bundle/ca-certificates.crt
-    CURL_CA_BUNDLE: /ca-bundle/ca-certificates.crt
 
   extraVolumes:
     - name: ca-bundle
@@ -438,15 +417,35 @@ singleuser:
       pvcName: jhub-userdir-rwx
       subPath: "home/{username}"
     capacity: 10Gi
-    homeMountPath: /home/jovyan
+    dynamic:
+      storageClass: longhorn-fast
+    homeMountPath: /home/jovyan/work/persistent
+
+
     extraVolumes:
-      - name: shared-datasets
+      - name: home
+        emptyDir: {}
+      - name: shared
         persistentVolumeClaim:
-          claimName: jhub-shared-rwx
+          claimName: jupyterhub-shared-storage
+      - name: user-docs
+        configMap:
+          name: jupyterhub-user-docs
+
     extraVolumeMounts:
-      - name: shared-datasets
-        mountPath: /shared
-        readOnly: false
+      - name: home
+        mountPath: /home/jovyan
+      - name: shared
+        mountPath: /home/jovyan/work/shared
+      - name: user-docs
+        mountPath: /home/jovyan/00_IMPORTANT_STORAGE_WARNING.md
+
+        subPath: 00_IMPORTANT_STORAGE_WARNING.md
+        readOnly: true
+      - name: user-docs
+        mountPath: /home/jovyan/01_CLUSTER_GUIDE.md
+        subPath: 01_CLUSTER_GUIDE.md
+        readOnly: true
 
   cpu:
     limit: 2
