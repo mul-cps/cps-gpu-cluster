@@ -7,6 +7,7 @@ resources:
   - shared-pvc.yaml
   - postgresql.yaml
   - harica-ca-configmap.yaml
+  - user-docs-configmap.yaml
   - templates/
 
 # Ensure all resources are in the jupyterhub namespace
