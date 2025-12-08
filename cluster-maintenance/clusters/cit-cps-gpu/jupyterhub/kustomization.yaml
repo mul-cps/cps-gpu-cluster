@@ -9,7 +9,7 @@ resources:
   - postgresql.yaml
   - harica-ca-configmap.yaml
   - user-docs-configmap.yaml
-  - user-docs-configmap.yaml
+
   - dask-rbac.yaml
   - templates/
 
