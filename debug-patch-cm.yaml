@@ -1,9 +1,8 @@
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: {{ include "jupyterhub-ssh.fullname" . }}-patch
-  labels:
-    {{- include "jupyterhub-ssh.labels" . | nindent 4 }}
+  name: jupyterhub-patch
+  namespace: jupyterhub
 data:
   __init__.py: |
     import asyncio
@@ -44,11 +43,14 @@ data:
             return True
 
         def connection_requested(self, dest_host, dest_port, orig_host, orig_port):
+            print(f"DEBUG: Connection requested: dest={dest_host}:{dest_port}, user_ip={self.user_ip}")
             self.app.log.info(f"Connection requested: dest={dest_host}:{dest_port}, user_ip={self.user_ip}")
             if dest_host in ["localhost", "127.0.0.1"] and self.user_ip:
                 dest_host = self.user_ip
+                print(f"DEBUG: Rewrote dest to {dest_host}")
                 self.app.log.info(f"Rewrote dest to {dest_host}")
             else:
+                print(f"DEBUG: Did NOT rewrite dest. dest_host={dest_host}, user_ip={self.user_ip}")
                 self.app.log.info(f"Did NOT rewrite dest. dest_host={dest_host}, user_ip={self.user_ip}")
             
             async def handler(stdin, stdout):
@@ -146,6 +148,7 @@ data:
                     resp.raise_for_status()
 
         async def validate_password(self, username, token):
+            print(f"DEBUG: validate_password called for {username}")
             self.username = username
             self.token = token
 
@@ -153,9 +156,11 @@ data:
             async with ClientSession(headers=headers) as session:
                 notebook_url = await self.start_user_server(session, username)
                 if notebook_url is None:
+                    print("DEBUG: validate_password failed: notebook_url is None")
                     return False
                 else:
                     self.notebook_url = notebook_url
+                    print(f"DEBUG: validate_password success: user_ip={self.user_ip}")
                     return True
 
         async def _handle_ws_recv(self, stdout, data_packet):
@@ -324,6 +329,7 @@ data:
             *Must* be set.
             """,
             config=True,
+            valid=True,
         )
 
         start_timeout = Integer(
