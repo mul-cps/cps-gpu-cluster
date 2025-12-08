@@ -1,4 +1,4 @@
-hubUrl: https://jupyterhub.dshl.unileoben.ac.at
+hubUrl: http://hub.jupyterhub.svc.cluster.local:8081
 ssh:
   enabled: true
   service:
