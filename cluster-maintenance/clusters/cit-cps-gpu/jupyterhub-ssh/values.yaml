@@ -2,7 +2,7 @@ hubUrl: https://jupyterhub.dshl.unileoben.ac.at
 ssh:
   enabled: true
   service:
-    type: LoadBalancer
+    type: ClusterIP
 sftp:
   enabled: false
 
