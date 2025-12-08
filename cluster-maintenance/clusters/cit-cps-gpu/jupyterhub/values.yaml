@@ -87,7 +87,8 @@ hub:
       GPU_PROFILE_SLUGS = {
           'gpu-pytorch-single','gpu-tensorflow-single',
           'gpu-pytorch-dual','gpu-tensorflow-dual',
-          'gpu-mig-1g','gpu-mig-2g'
+          'gpu-mig-1g','gpu-mig-2g',
+          'gpu-pytorch-code','gpu-tf-code','gpu-desktop-ros2'
       }
       ALLOWED_GPU_GROUPS = {'cpsHPCAccess','jupyter_admin'}
 
@@ -177,6 +178,21 @@ hub:
               </div>
             </label>
 
+            <!-- GPU code-ready images -->
+            <label class="card" data-slug="gpu-pytorch-code" id="card-gpu-pt-code">
+              <input type="radio" name="profile" value="gpu-pytorch-code">
+              <div class="row"><div class="name">GPU: PyTorch (Code)</div>
+                <div class="meta"><span class="chip gpu-chip">1× GPU</span><span class="chip cpu-chip">16 vCPU</span><span class="chip ram-chip">64 GiB</span></div>
+              </div>
+            </label>
+
+            <label class="card" data-slug="gpu-tf-code" id="card-gpu-tf-code">
+              <input type="radio" name="profile" value="gpu-tf-code">
+              <div class="row"><div class="name">GPU: TensorFlow (Code)</div>
+                <div class="meta"><span class="chip gpu-chip">1× GPU</span><span class="chip cpu-chip">16 vCPU</span><span class="chip ram-chip">64 GiB</span></div>
+              </div>
+            </label>
+
             <!-- GPU dual -->
             <label class="card" data-slug="gpu-pytorch-dual" id="card-gpu-pt-2">
               <input type="radio" name="profile" value="gpu-pytorch-dual">
@@ -204,6 +220,13 @@ hub:
               <input type="radio" name="profile" value="gpu-mig-2g">
               <div class="row"><div class="name">GPU: MIG 2g.10gb</div>
                 <div class="meta"><span class="chip gpu-chip">1× MIG 2g.10gb</span><span class="chip cpu-chip">10 vCPU</span><span class="chip ram-chip">40 GiB</span></div>
+              </div>
+            </label>
+
+            <label class="card" data-slug="gpu-desktop-ros2" id="card-gpu-desktop-ros2">
+              <input type="radio" name="profile" value="gpu-desktop-ros2">
+              <div class="row"><div class="name">GPU: Desktop + ROS 2</div>
+                <div class="meta"><span class="chip gpu-chip">1× GPU</span><span class="chip cpu-chip">16 vCPU</span><span class="chip ram-chip">64 GiB</span></div>
               </div>
             </label>
           </div>
@@ -266,10 +289,13 @@ hub:
           {'display_name': 'Dask Cluster', 'slug': 'dask-cluster', 'description': 'Dask Image • 2 vCPU • 8 GiB'},
           {'display_name': 'GPU PyTorch (1×)', 'slug': 'gpu-pytorch-single', 'description': '1× GPU • 16 vCPU • 64 GiB'},
           {'display_name': 'GPU TF (1×)', 'slug': 'gpu-tensorflow-single', 'description': '1× GPU • 16 vCPU • 64 GiB'},
+          {'display_name': 'GPU PyTorch (Code)', 'slug': 'gpu-pytorch-code', 'description': 'Code-ready image • 1× GPU • 16 vCPU • 64 GiB'},
+          {'display_name': 'GPU TF (Code)', 'slug': 'gpu-tf-code', 'description': 'Code-ready image • 1× GPU • 16 vCPU • 64 GiB'},
           {'display_name': 'GPU PyTorch (2×)', 'slug': 'gpu-pytorch-dual', 'description': '2× GPU • 32 vCPU • 128 GiB'},
           {'display_name': 'GPU TF (2×)', 'slug': 'gpu-tensorflow-dual', 'description': '2× GPU • 32 vCPU • 128 GiB'},
           {'display_name': 'GPU MIG 1g.5gb', 'slug': 'gpu-mig-1g', 'description': '1× MIG 1g.5gb • 6 vCPU • 24 GiB'},
           {'display_name': 'GPU MIG 2g.10gb', 'slug': 'gpu-mig-2g', 'description': '1× MIG 2g.10gb • 10 vCPU • 40 GiB'},
+          {'display_name': 'GPU Desktop + ROS 2', 'slug': 'gpu-desktop-ros2', 'description': 'Desktop + ROS 2 image • 1× GPU • 16 vCPU • 64 GiB'},
           {'display_name': 'GPU via Slurm (Slinky)', 'slug': 'gpu-slurm', 'description': 'Scheduled by Slurm • 8 vCPU • 32 GiB'},
       ]
 
