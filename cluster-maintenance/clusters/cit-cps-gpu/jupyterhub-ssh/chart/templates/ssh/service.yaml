@@ -29,4 +29,3 @@ spec:
   selector:
     {{- include "jupyterhub-ssh.ssh.selectorLabels" . | nindent 4 }}
 {{- end }}
-```
