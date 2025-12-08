@@ -42,6 +42,9 @@ data:
         def password_auth_supported(self):
             return True
 
+        def connection_requested(self, dest_host, dest_port, orig_host, orig_port):
+            return True
+
         async def get_user_server_url(self, session, username):
             """
             Return user's server url if it is running.
@@ -329,7 +332,6 @@ data:
                 password_auth=True,
                 server_host_keys=[self.host_key_path],
                 agent_forwarding=False,  # The cause of so much pain! Let's not allow this by default
-                allow_tcp_forwarding=True,
                 keepalive_interval=30,  # FIXME: Make this configurable
             )
 
