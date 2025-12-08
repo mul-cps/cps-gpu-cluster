@@ -3,6 +3,7 @@ helm:
   repo: https://yuvipanda.github.io/jupyterhub-ssh/
   chart: jupyterhub-ssh
   releaseName: jupyterhub-ssh
+  version: 0.0.1-n142.h402a3d6
   valuesFiles:
   - values.yaml
 diff:
