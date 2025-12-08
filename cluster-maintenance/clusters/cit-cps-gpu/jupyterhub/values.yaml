@@ -288,12 +288,12 @@ hub:
 
           # Dask Cluster
           'dask-cluster': {
-              'image': 'ghcr.io/dask/dask-notebook:2025.11.0',
+              'image': nvcr.io/nvidia/rapidsai/base:24.08-cuda12.2-py3.10, #'ghcr.io/dask/dask-notebook:2025.11.0',
               'cpu_limit': 2.0, 'cpu_guarantee': 1.0,
               'mem_limit': '8G', 'mem_guarantee': '4G',
               'runtime_class': None,
               'gpu': 0,
-              'cmd': ['/bin/sh', '-c', 'pip install --no-cache-dir jupyterhub && jupyterhub-singleuser'],
+              'cmd': ['/bin/sh', '-c', 'pip install --no-cache-dir jupyterhub && jupyterhub-singleuser && jupyter-server-proxy'],
           },
 
           # GPU full devices (CPU/RAM doubled vs before)
