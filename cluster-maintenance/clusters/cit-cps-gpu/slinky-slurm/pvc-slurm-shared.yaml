@@ -5,7 +5,7 @@ metadata:
   namespace: slurm
 spec:
   accessModes: [ReadWriteMany]
-  storageClassName: longhorn-rwx
+  storageClassName: longhorn
   resources:
     requests:
       storage: 500Gi

@@ -288,7 +288,7 @@ hub:
 
           # Dask Cluster
           'dask-cluster': {
-              'image': 'ghcr.io/dask/dask-notebook:2025.1.0',
+              'image': 'ghcr.io/dask/dask-notebook:2025.11.0',
               'cpu_limit': 2.0, 'cpu_guarantee': 1.0,
               'mem_limit': '8G', 'mem_guarantee': '4G',
               'runtime_class': None,
