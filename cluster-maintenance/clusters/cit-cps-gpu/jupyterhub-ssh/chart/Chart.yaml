@@ -1,0 +1,16 @@
+apiVersion: v2
+appVersion: 0.1.0
+description: SSH interface to JupyterHub
+home: https://github.com/yuvipanda/jupyterhub-ssh
+icon: https://jupyter.org/assets/hublogo.svg
+keywords:
+- jupyterhub
+- ssh
+- sftp
+maintainers:
+- email: erik@sundellopensource.se
+  name: Erik Sundell
+name: jupyterhub-ssh
+sources:
+- https://github.com/yuvipanda/jupyterhub-ssh
+version: 0.0.1-n142.h402a3d6

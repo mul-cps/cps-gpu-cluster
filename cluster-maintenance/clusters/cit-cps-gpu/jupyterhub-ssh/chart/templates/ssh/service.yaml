@@ -1,0 +1,27 @@
+{{- if .Values.ssh.enabled -}}
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "jupyterhub-ssh.ssh.fullname" . }}
+  labels:
+    {{- include "jupyterhub-ssh.ssh.labels" . | nindent 4 }}
+    {{- with .Values.ssh.serviceLabels }}
+    {{- . | toYaml | nindent 4 }}
+    {{- end }}
+  {{- with .Values.ssh.serviceAnnotations }}
+  annotations:
+    {{- . | toYaml | nindent 4 }}
+  {{- end }}
+spec:
+  type: {{ .Values.ssh.service.type }}
+  ports:
+    - name: ssh
+      port: {{ .Values.ssh.service.port }}
+      targetPort: ssh
+      protocol: TCP
+      {{- if eq .Values.ssh.service.type "NodePort" }}
+      nodePort: {{ .Values.ssh.service.nodePort }}
+      {{- end }}
+  selector:
+    {{- include "jupyterhub-ssh.ssh.selectorLabels" . | nindent 4 }}
+{{- end }}

@@ -1,0 +1,65 @@
+{{- if .Values.ssh.enabled -}}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "jupyterhub-ssh.ssh.fullname" . }}
+  labels:
+    {{- include "jupyterhub-ssh.ssh.labels" . | nindent 4 }}
+spec:
+  replicas: {{ .Values.ssh.replicaCount }}
+  selector:
+    matchLabels:
+      {{- include "jupyterhub-ssh.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      labels:
+        {{- include "jupyterhub-ssh.ssh.labels" . | nindent 8 }}
+        {{- with .Values.ssh.podLabels }}
+        {{- . | toYaml | nindent 8 }}
+        {{- end }}
+      annotations:
+        checksum/config: {{ omit .Values "sftp" | toYaml | sha256sum }}
+        {{- with .Values.ssh.podAnnotations }}
+        {{- . | toYaml | nindent 8 }}
+        {{- end }}
+    spec:
+      # We don't need any interaction with k8s API
+      automountServiceAccountToken: false 
+      volumes:
+        - name: config
+          secret:
+            secretName: {{ include "jupyterhub-ssh.fullname" . }}
+      containers:
+        - name: server
+          image: "{{ .Values.ssh.image.repository }}:{{ .Values.ssh.image.tag | default .Chart.AppVersion }}"
+          imagePullPolicy: {{ .Values.ssh.image.pullPolicy }}
+          securityContext:
+            allowPrivilegeEscalation: false
+            runAsNonRoot: true
+          volumeMounts:
+            - name: config
+              mountPath: /etc/jupyterhub-ssh/config
+              readOnly: true
+          ports:
+            - name: ssh
+              containerPort: 8022
+              protocol: TCP
+          resources:
+            {{- .Values.ssh.resources | toYaml | nindent 12 }}
+      {{- with .Values.ssh.imagePullSecrets }}
+      imagePullSecrets:
+        {{- . | toYaml | nindent 8 }}
+      {{- end }}
+      {{- with .Values.ssh.nodeSelector }}
+      nodeSelector:
+        {{- . | toYaml | nindent 8 }}
+      {{- end }}
+      {{- with .Values.ssh.affinity }}
+      affinity:
+        {{- . | toYaml | nindent 8 }}
+      {{- end }}
+      {{- with .Values.ssh.tolerations }}
+      tolerations:
+        {{- . | toYaml | nindent 8 }}
+      {{- end }}
+{{- end }}
