@@ -4,4 +4,8 @@ ssh:
   service:
     type: ClusterIP
 sftp:
-  enabled: false
+  enabled: true
+  pvc:
+    # Mount the shared RWX volume used inside singleuser as /home/jovyan/work/shared
+    enabled: true
+    name: jupyterhub-shared-storage
