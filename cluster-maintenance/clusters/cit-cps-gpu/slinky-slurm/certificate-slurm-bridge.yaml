@@ -1,0 +1,19 @@
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: slurm-bridge-admission
+  namespace: slinky
+  labels:
+    app.kubernetes.io/component: admission
+    app.kubernetes.io/name: slurm-bridge-admission
+    app.kubernetes.io/part-of: slurm-bridge
+spec:
+  commonName: slurm-bridge-admission-self-ca
+  dnsNames:
+  - slurm-bridge-admission
+  - slurm-bridge-admission.slinky.svc
+  duration: 43800h0m0s
+  issuerRef:
+    name: slurm-bridge-admission-root-issuer
+  renewBefore: 8760h0m0s
+  secretName: slurm-bridge-admission
