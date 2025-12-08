@@ -76,9 +76,10 @@ hub:
     00-install-packages: |
       import subprocess, sys
       try:
-          import oauthenticator  # noqa: F401
+          import oauthenticator
+          import dask_kubernetes
       except ImportError:
-          subprocess.check_call([sys.executable, '-m', 'pip', 'install', 'oauthenticator'])
+          subprocess.check_call([sys.executable, '-m', 'pip', 'install', 'oauthenticator', 'dask', 'distributed', 'dask-kubernetes', 'dask-labextension', 'jupyter-server-proxy'])
 
     01-custom-templates: |
       # Custom template functionality disabled to avoid ConfigMap conflicts
@@ -410,6 +411,39 @@ singleuser:
     name: quay.io/jupyter/tensorflow-notebook
     tag: "2025-11-06"
     pullPolicy: IfNotPresent
+
+  serviceAccountName: dask-sa
+
+  networkPolicy:
+    enabled: true
+    ingress: []
+    egress:
+      - ports:
+          - port: 443
+            protocol: TCP
+        to:
+          - namespaceSelector:
+              matchLabels:
+                name: kube-system
+    egressAllowRules:
+      cloudMetadataServer: false
+      dnsPortsCloudMetadataServer: true
+      dnsPortsKubeSystemNamespace: true
+      dnsPortsPrivateIPs: true
+      nonPrivateIPs: true
+      privateIPs: true
+
+  extraFiles:
+    jupyter-server-config:
+      mountPath: /etc/jupyter/jupyter_server_config.py
+      stringData: |
+        c.ServerProxy.host_allowlist = lambda app, host: True
+    dask-dashboard-config:
+      mountPath: /home/jovyan/.config/dask/distributed.yaml
+      stringData: |
+        distributed:
+          dashboard:
+            link: "/user/{JUPYTERHUB_USER}/proxy/{host}:{port}/status"
 
   storage:
 

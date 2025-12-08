@@ -1,27 +1,38 @@
-apiVersion: rbac.authorization.k8s.io/v1
-kind: Role
+apiVersion: v1
+kind: ServiceAccount
 metadata:
-  name: dask-admin
+  name: dask-sa
   namespace: jupyterhub
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: dask-cluster-role
 rules:
   - apiGroups: ["kubernetes.dask.org"]
     resources:
       - daskclusters
       - daskworkergroups
+      - daskworkergroups/scale
       - daskjobs
       - daskautoscalers
-    verbs: ["*"]
+    verbs: ["get", "list", "watch", "patch", "create", "delete"]
+  - apiGroups: [""]
+    resources: ["pods", "pods/status"]
+    verbs: ["get", "list", "watch"]
+  - apiGroups: [""]
+    resources: ["services"]
+    verbs: ["get", "list", "watch"]
 ---
 apiVersion: rbac.authorization.k8s.io/v1
-kind: RoleBinding
+kind: ClusterRoleBinding
 metadata:
-  name: dask-admin-binding
-  namespace: jupyterhub
+  name: dask-cluster-role-binding
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: dask-cluster-role
 subjects:
   - kind: ServiceAccount
-    name: default
+    name: dask-sa
     namespace: jupyterhub
-roleRef:
-  kind: Role
-  name: dask-admin
-  apiGroup: rbac.authorization.k8s.io
