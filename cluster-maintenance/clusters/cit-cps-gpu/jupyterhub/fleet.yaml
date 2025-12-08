@@ -7,7 +7,9 @@ labels:
   name: jupyterhub
 
 helm:
-  chart: .
+  chart: jupyterhub
+  repo: https://jupyterhub.github.io/helm-chart
+  version: 4.3.1
   releaseName: jupyterhub
   createNamespace: true
   valuesFiles:

@@ -1,0 +1,14 @@
+defaultNamespace: jupyterhub
+helm:
+  repo: https://yuvipanda.github.io/jupyterhub-ssh/
+  chart: jupyterhub-ssh
+  releaseName: jupyterhub-ssh
+  valuesFiles:
+  - values.yaml
+diff:
+  comparePatches:
+  - apiVersion: v1
+    kind: Service
+    name: jupyterhub-ssh
+    operations:
+    - {"op": "remove", "path": "/status"}
