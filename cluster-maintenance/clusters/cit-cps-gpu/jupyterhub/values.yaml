@@ -259,6 +259,8 @@ hub:
               opts['custom_gpus'] = 0
           return opts
       c.Spawner.options_from_form = options_from_form
+      c.Spawner.http_timeout = 300
+      c.Spawner.start_timeout = 300
 
       # ---------- Profiles (validation only) ----------
       c.KubeSpawner.profile_list = [
