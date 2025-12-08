@@ -152,6 +152,18 @@ hub:
               </div>
             </label>
 
+            <!-- Dask Cluster -->
+            <label class="card" data-slug="dask-cluster">
+              <input type="radio" name="profile" value="dask-cluster">
+              <div class="row">
+                <div class="name">Dask Cluster</div>
+                <div class="meta">
+                  <span class="chip cpu-chip">2 vCPU</span>
+                  <span class="chip ram-chip">8 GiB</span>
+                </div>
+              </div>
+            </label>
+
             <!-- GPU single -->
             <label class="card" data-slug="gpu-pytorch-single" id="card-gpu-pt-1">
               <input type="radio" name="profile" value="gpu-pytorch-single">
@@ -251,6 +263,7 @@ hub:
       # ---------- Profiles (validation only) ----------
       c.KubeSpawner.profile_list = [
           {'display_name': 'CPU (Default)', 'slug': 'cpu-default', 'description': '2 vCPU (shared) • 2 GiB', 'default': True},
+          {'display_name': 'Dask Cluster', 'slug': 'dask-cluster', 'description': 'Dask Image • 2 vCPU • 8 GiB'},
           {'display_name': 'GPU PyTorch (1×)', 'slug': 'gpu-pytorch-single', 'description': '1× GPU • 16 vCPU • 64 GiB'},
           {'display_name': 'GPU TF (1×)', 'slug': 'gpu-tensorflow-single', 'description': '1× GPU • 16 vCPU • 64 GiB'},
           {'display_name': 'GPU PyTorch (2×)', 'slug': 'gpu-pytorch-dual', 'description': '2× GPU • 32 vCPU • 128 GiB'},
@@ -266,6 +279,15 @@ hub:
               'image': 'quay.io/jupyter/datascience-notebook:2025-11-06',
               'cpu_limit': 2.0, 'cpu_guarantee': 0.5,
               'mem_limit': '2G', 'mem_guarantee': '1G',
+              'runtime_class': None,
+              'gpu': 0,
+          },
+
+          # Dask Cluster
+          'dask-cluster': {
+              'image': 'ghcr.io/dask/dask:2025.1.0',
+              'cpu_limit': 2.0, 'cpu_guarantee': 1.0,
+              'mem_limit': '8G', 'mem_guarantee': '4G',
               'runtime_class': None,
               'gpu': 0,
           },
@@ -349,7 +371,7 @@ hub:
                   'exec': {
                       'command': [
                           '/bin/sh','-c',
-                          'command -v tmux >/dev/null 2>&1 || (apt-get update && apt-get install -y tmux || true); pip install --no-cache-dir dask distributed dask-kubernetes dask-labextension jupyter-server-proxy || true'
+                          'command -v tmux >/dev/null 2>&1 || (apt-get update && apt-get install -y tmux || true)'
                       ]
                   }
               }
