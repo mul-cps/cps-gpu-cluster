@@ -364,6 +364,10 @@ hub:
           if cfg['runtime_class']:
               spawner.extra_pod_config['runtimeClassName'] = cfg['runtime_class']
 
+          # Command override (e.g. for Dask profile)
+          if cfg.get('cmd'):
+              spawner.cmd = cfg['cmd']
+
           # Ensure tmux is present (postStart installs if missing)
           # Note: Debian/Ubuntu base expected; harmless if already present
           spawner.extra_container_config = spawner.extra_container_config or {}
