@@ -31,6 +31,7 @@ data:
 
         def __init__(self, app, *args, **kwargs):
             self.app = app
+            self.user_ip = None
             super().__init__(*args, **kwargs)
 
         def connection_made(self, conn):
@@ -43,7 +44,37 @@ data:
             return True
 
         def connection_requested(self, dest_host, dest_port, orig_host, orig_port):
-            return True
+            if dest_host in ["localhost", "127.0.0.1"] and self.user_ip:
+                dest_host = self.user_ip
+            
+            async def handler(stdin, stdout):
+                try:
+                    reader, writer = await asyncio.open_connection(dest_host, dest_port)
+                except OSError as e:
+                    raise asyncssh.ChannelOpenError(
+                        asyncssh.OPEN_CONNECT_FAILED, str(e)) from e
+
+                async def forward(r, w):
+                    try:
+                        while not r.at_eof():
+                            data = await r.read(8192)
+                            if not data:
+                                break
+                            w.write(data)
+                            await w.drain()
+                    except Exception:
+                        pass
+                    finally:
+                        w.close()
+
+                # SSH -> Target
+                t1 = asyncio.create_task(forward(stdin, writer))
+                # Target -> SSH
+                t2 = asyncio.create_task(forward(reader, stdout))
+                
+                await asyncio.wait([t1, t2], return_when=asyncio.FIRST_COMPLETED)
+            
+            return handler
 
         async def get_user_server_url(self, session, username):
             """
@@ -59,6 +90,7 @@ data:
                 # URLs will have preceding slash, but yarl forbids those
                 server = user.get("servers", {}).get("", {})
                 if server.get("ready", False):
+                    self.user_ip = server.get("ip")
                     return self.app.hub_url / user["servers"][""]["url"][1:]
                 else:
                     return None
