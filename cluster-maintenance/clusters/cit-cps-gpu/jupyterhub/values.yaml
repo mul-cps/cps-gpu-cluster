@@ -488,7 +488,9 @@ singleuser:
   fsGid: 100
   extraEnv:
     GRANT_SUDO: "yes"
+    GRANT_SUDO: "yes"
     NOTEBOOK_ARGS: "--allow-root"
+    DASK_KUBERNETES__OPERATOR__NAMESPACE: "dask-compute"
 
 scheduling:
   userScheduler:
