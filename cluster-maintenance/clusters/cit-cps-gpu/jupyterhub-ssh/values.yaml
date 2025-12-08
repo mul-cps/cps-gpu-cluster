@@ -1,4 +1,4 @@
-hubUrl: http://hub.jupyterhub.svc.cluster.local:8081
+hubUrl: http://proxy-public.jupyterhub.svc.cluster.local
 ssh:
   enabled: true
   service:
