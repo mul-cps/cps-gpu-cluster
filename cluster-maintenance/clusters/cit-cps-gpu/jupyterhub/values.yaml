@@ -282,6 +282,7 @@ hub:
               'mem_limit': '2G', 'mem_guarantee': '1G',
               'runtime_class': None,
               'gpu': 0,
+              'grant_sudo': False,
           },
 
           # Dask Cluster
@@ -293,6 +294,7 @@ hub:
               'gpu': 0,
               'uid': 1001, # RapidsAI image uses UID 1001
               'cmd': ['/bin/sh', '-c', 'pip install --no-cache-dir jupyterhub && jupyterhub-singleuser && jupyter-server-proxy'],
+              'grant_sudo': True,
           },
 
           # GPU full devices (CPU/RAM doubled vs before)
@@ -303,6 +305,7 @@ hub:
               'gpu': 1,
               'resource_key': 'nvidia.com/gpu',
               'runtime_class': 'nvidia',
+              'grant_sudo': True,
           },
           'gpu-tensorflow-single': {
               'image': 'quay.io/jupyter/tensorflow-notebook:2025-11-06',
@@ -311,6 +314,7 @@ hub:
               'gpu': 1,
               'resource_key': 'nvidia.com/gpu',
               'runtime_class': 'nvidia',
+              'grant_sudo': True,
           },
           'gpu-pytorch-dual': {
               'image': 'quay.io/jupyter/pytorch-notebook:2025-11-06',
@@ -319,6 +323,7 @@ hub:
               'gpu': 2,
               'resource_key': 'nvidia.com/gpu',
               'runtime_class': 'nvidia',
+              'grant_sudo': True,
           },
           'gpu-tensorflow-dual': {
               'image': 'quay.io/jupyter/tensorflow-notebook:2025-11-06',
@@ -327,6 +332,7 @@ hub:
               'gpu': 2,
               'resource_key': 'nvidia.com/gpu',
               'runtime_class': 'nvidia',
+              'grant_sudo': True,
           },
 
           # MIG slices (adjust resource keys to your operator's CRD if different)
@@ -337,6 +343,7 @@ hub:
               'gpu': 1,
               'resource_key': 'nvidia.com/mig-1g.5gb',
               'runtime_class': 'nvidia',
+              'grant_sudo': True,
           },
           'gpu-mig-2g': {
               'image': 'quay.io/jupyter/pytorch-notebook:2025-11-06',
@@ -345,6 +352,7 @@ hub:
               'gpu': 1,
               'resource_key': 'nvidia.com/mig-2g.10gb',
               'runtime_class': 'nvidia',
+              'grant_sudo': True,
           },
 
           # Slurm Profile
@@ -359,6 +367,7 @@ hub:
                   'slinky.slurm.net/partition': 'gpu',
               },
               'runtime_class': None,
+              'grant_sudo': True,
           },
       }
 
@@ -453,6 +462,14 @@ hub:
               if cfg['scheduler_name'] == 'slurm-bridge-scheduler':
                   spawner.extra_labels.update({"slinky.slurm.net/user": spawner.user.name})
 
+          # Sudo access
+          if cfg.get('grant_sudo'):
+              spawner.environment['GRANT_SUDO'] = 'yes'
+              spawner.extra_container_config = spawner.extra_container_config or {}
+              spawner.extra_container_config['securityContext'] = {
+                  'allowPrivilegeEscalation': True,
+              }
+
           spawner.log.info(f"Final: image={spawner.image} CPU={spawner.cpu_limit}/{spawner.cpu_guarantee} MEM={spawner.mem_limit}/{spawner.mem_guarantee} RES={spawner.extra_resource_limits}")
       c.KubeSpawner.pre_spawn_hook = apply_profile_settings
 
@@ -545,8 +562,6 @@ singleuser:
   uid: 1000
   fsGid: 100
   extraEnv:
-    GRANT_SUDO: "yes"
-    GRANT_SUDO: "yes"
     NOTEBOOK_ARGS: "--allow-root"
     DASK_KUBERNETES__OPERATOR__NAMESPACE: "dask-compute"
 
