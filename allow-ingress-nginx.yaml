@@ -4,7 +4,9 @@ metadata:
   name: allow-ingress-nginx
   namespace: jupyterhub
 spec:
-  podSelector: {}
+  podSelector:
+    matchLabels:
+      component: proxy
   policyTypes:
   - Ingress
   ingress:
