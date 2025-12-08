@@ -29,6 +29,9 @@ spec:
         - name: config
           secret:
             secretName: {{ include "jupyterhub-ssh.fullname" . }}
+        - name: patch
+          configMap:
+            name: {{ include "jupyterhub-ssh.fullname" . }}-patch
       containers:
         - name: server
           image: "{{ .Values.ssh.image.repository }}:{{ .Values.ssh.image.tag | default .Chart.AppVersion }}"
@@ -39,6 +42,10 @@ spec:
           volumeMounts:
             - name: config
               mountPath: /etc/jupyterhub-ssh/config
+              readOnly: true
+            - name: patch
+              mountPath: /srv/jupyterhub-ssh/jupyterhub_ssh/__init__.py
+              subPath: __init__.py
               readOnly: true
           ports:
             - name: ssh
