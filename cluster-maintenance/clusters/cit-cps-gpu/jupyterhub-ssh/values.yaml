@@ -4,4 +4,4 @@ ssh:
   service:
     type: ClusterIP
 sftp:
-  enabled: true
+  enabled: false
