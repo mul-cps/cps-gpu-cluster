@@ -285,7 +285,7 @@ hub:
 
           # Dask Cluster
           'dask-cluster': {
-              'image': 'ghcr.io/dask/dask:2025.1.0',
+              'image': 'ghcr.io/dask/dask-notebook:2025.1.0',
               'cpu_limit': 2.0, 'cpu_guarantee': 1.0,
               'mem_limit': '8G', 'mem_guarantee': '4G',
               'runtime_class': None,
@@ -365,17 +365,18 @@ hub:
 
           # Ensure tmux is present (postStart installs if missing)
           # Note: Debian/Ubuntu base expected; harmless if already present
-          spawner.extra_container_config = spawner.extra_container_config or {}
-          spawner.extra_container_config['lifecycle'] = {
-              'postStart': {
-                  'exec': {
-                      'command': [
-                          '/bin/sh','-c',
-                          'command -v tmux >/dev/null 2>&1 || (apt-get update && apt-get install -y tmux || true)'
-                      ]
+          if profile_slug != 'dask-cluster':
+              spawner.extra_container_config = spawner.extra_container_config or {}
+              spawner.extra_container_config['lifecycle'] = {
+                  'postStart': {
+                      'exec': {
+                          'command': [
+                              '/bin/sh','-c',
+                              'command -v tmux >/dev/null 2>&1 || (apt-get update && apt-get install -y tmux || true)'
+                          ]
+                      }
                   }
               }
-          }
 
           # GPU / MIG resources (profile)
           spawner.extra_resource_limits = {}
