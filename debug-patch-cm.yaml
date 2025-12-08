@@ -108,45 +108,33 @@ data:
             create_url = self.app.hub_url / "hub/api/users" / username / "server"
 
             async with session.post(create_url) as resp:
-                if resp.status == 201 or resp.status == 400:
-                    # FIXME: code 400 can mean "pending stop" or "already running",
-                    #        but we assume it means that the server is already
-                    #        running.
-
-                    # Server started quickly
-                    # We manually generate this, even though it's *bad*
-                    # Mostly because when the server is already running, JupyterHub
-                    # doesn't respond with the whole model!
-                    
-                    # FIX: We MUST get the IP, otherwise forwarding fails.
-                    print(f"DEBUG: Server already running (status {resp.status}). Fetching details to get IP.")
-                    notebook_url = await self.get_user_server_url(session, username)
-                    if notebook_url:
-                        return notebook_url
-                    
-                    print("DEBUG: Failed to get notebook_url after 201/400 response.")
-                    return self.app.hub_url / "user" / username
-                elif resp.status == 202:
-                    # Server start has been requested, now and potentially earlier,
-                    # but hasn't started quickly and is pending spawn.
-                    # We check for a while, reporting progress to user - until we're
-                    # done
+            async with session.post(create_url) as resp:
+                if resp.status in [201, 202, 400]:
+                    # 201: Created
+                    # 202: Pending
+                    # 400: Already running (or pending)
+                    # In all cases, we wait for the server to be reported as "ready" by the API.
+                    # This ensures we get the IP address.
+                    print(f"DEBUG: Server status {resp.status}. Waiting for readiness...")
                     try:
                         async with timeout(self.app.start_timeout):
                             notebook_url = None
-                            self._conn.send_auth_banner("Starting your server...")
+                            self._conn.send_auth_banner("Checking server status...")
                             while notebook_url is None:
                                 # FIXME: Exponential backoff + make this configurable
                                 await asyncio.sleep(0.5)
                                 notebook_url = await self.get_user_server_url(
                                     session, username
                                 )
-                                self._conn.send_auth_banner(".")
+                                if notebook_url is None:
+                                    self._conn.send_auth_banner(".")
                             self._conn.send_auth_banner("done!\n")
+                            print(f"DEBUG: Server ready. URL={notebook_url}, IP={self.user_ip}")
                             return notebook_url
                     except asyncio.TimeoutError:
                         # Server didn't start on time!
                         self._conn.send_auth_banner("failed to start server on time!\n")
+                        print("DEBUG: Timeout waiting for server readiness.")
                         return None
                 elif resp.status == 403:
                     # Token is wrong!
