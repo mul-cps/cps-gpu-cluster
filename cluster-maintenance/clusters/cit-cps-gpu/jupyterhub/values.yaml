@@ -293,6 +293,7 @@ hub:
               'mem_limit': '8G', 'mem_guarantee': '4G',
               'runtime_class': None,
               'gpu': 0,
+              'uid': 1001, # RapidsAI image uses UID 1001
               'cmd': ['/bin/sh', '-c', 'pip install --no-cache-dir jupyterhub && jupyterhub-singleuser && jupyter-server-proxy'],
           },
 
@@ -380,6 +381,10 @@ hub:
           spawner.extra_pod_config = spawner.extra_pod_config or {}
           if cfg['runtime_class']:
               spawner.extra_pod_config['runtimeClassName'] = cfg['runtime_class']
+          
+          # UID Override (e.g. for RapidsAI which uses 1001)
+          if cfg.get('uid'):
+              spawner.uid = cfg['uid']
 
           # Command override (e.g. for Dask profile)
           if cfg.get('cmd'):
