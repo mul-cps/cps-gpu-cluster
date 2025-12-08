@@ -3,12 +3,15 @@ helm:
   releases:
     - name: slurm-operator-crds
       chart: oci://ghcr.io/slinkyproject/charts/slurm-operator-crds
+      version: 0.4.1
     - name: slurm-operator
       chart: oci://ghcr.io/slinkyproject/charts/slurm-operator
+      version: 0.4.1
       valuesFiles:
         - values-slurm-operator.yaml
     - name: slurm
       chart: oci://ghcr.io/slinkyproject/charts/slurm
+      version: 0.4.1
       namespace: slurm
       valuesFiles:
         - values-slurm.yaml
