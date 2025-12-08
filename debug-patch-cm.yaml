@@ -117,6 +117,14 @@ data:
                     # We manually generate this, even though it's *bad*
                     # Mostly because when the server is already running, JupyterHub
                     # doesn't respond with the whole model!
+                    
+                    # FIX: We MUST get the IP, otherwise forwarding fails.
+                    print(f"DEBUG: Server already running (status {resp.status}). Fetching details to get IP.")
+                    notebook_url = await self.get_user_server_url(session, username)
+                    if notebook_url:
+                        return notebook_url
+                    
+                    print("DEBUG: Failed to get notebook_url after 201/400 response.")
                     return self.app.hub_url / "user" / username
                 elif resp.status == 202:
                     # Server start has been requested, now and potentially earlier,
