@@ -42,6 +42,15 @@ loginsets:
     # rootSshAuthorizedKeys: |
     #   ssh-ed25519 AAAA... your@key
 
+    # Slurm configuration
+    config: |
+      # GRES Configuration
+      GresTypes=gpu
+      # Try to override NodeSet to include GRES
+      NodeSet=slinky Feature=slinky Gres=gpu:1
+      # Auto-detect GPUs
+      AutoDetect=nvml
+
     service:
       type: LoadBalancer
       annotations:
@@ -53,3 +62,9 @@ persistence:
     enabled: true
     existingClaim: slurm-shared
     mountPath: /home
+
+worker:
+  replicaCount: 4
+  resources:
+    limits:
+      nvidia.com/gpu: 1
