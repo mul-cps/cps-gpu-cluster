@@ -1,0 +1,8 @@
+defaultNamespace: slinky
+helm:
+  chart: oci://ghcr.io/slinkyproject/charts/slurm-bridge
+  valuesFiles:
+    - values-slurm-bridge.yaml
+
+kustomize:
+  dir: .

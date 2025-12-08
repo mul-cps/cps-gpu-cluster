@@ -1,0 +1,55 @@
+loginsets:
+  slinky:
+    enabled: true
+
+    # SSSD config embedded
+    sssdConf: |
+      [nss]
+      filter_groups = root
+      filter_users = root
+      reconnection_retries = 3
+      [sssd]
+      config_file_version = 2
+      reconnection_retries = 3
+      domains = ldap.goauthentik.io
+      services = nss, pam, ssh
+      [pam]
+      reconnection_retries = 3
+      offline_credentials_expiration = 10
+      [domain/ldap.goauthentik.io]
+      cache_credentials = True
+      id_provider = ldap
+      chpass_provider = ldap
+      auth_provider = ldap
+      access_provider = ldap
+      ldap_uri = ldaps://auth.cps.unileoben.ac.at:636
+      ldap_schema = rfc2307bis
+      ldap_search_base = dc=ldap,dc=goauthentik,dc=io
+      ldap_user_search_base = ou=users,dc=ldap,dc=goauthentik,dc=io
+      ldap_group_search_base = dc=ldap,dc=goauthentik,dc=io
+      ldap_user_object_class = user
+      ldap_user_name = cn
+      ldap_group_object_class = group
+      ldap_group_name = cn
+      ldap_access_order = filter
+      ldap_access_filter = memberOf=cn=CPS,ou=groups,dc=ldap,dc=goauthentik,dc=io
+      ldap_default_bind_dn = cn=ldapservice,ou=users,dc=ldap,dc=goauthentik,dc=io
+      ldap_default_authtok = ldapservice
+      ldap_tls_reqcert = demand
+      ldap_tls_cacert = /etc/ssl/certs/authentik-ca.pem
+
+    # optional break-glass access
+    # rootSshAuthorizedKeys: |
+    #   ssh-ed25519 AAAA... your@key
+
+    service:
+      type: LoadBalancer
+      annotations:
+        external-dns.alpha.kubernetes.io/hostname: slurm-login.dshl.unileoben.ac.at
+
+# Slurm cluster using Longhorn RWX shared storage
+persistence:
+  sharedHome:
+    enabled: true
+    existingClaim: slurm-shared
+    mountPath: /home

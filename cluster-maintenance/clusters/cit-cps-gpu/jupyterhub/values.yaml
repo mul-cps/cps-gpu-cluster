@@ -272,6 +272,7 @@ hub:
           {'display_name': 'GPU TF (2×)', 'slug': 'gpu-tensorflow-dual', 'description': '2× GPU • 32 vCPU • 128 GiB'},
           {'display_name': 'GPU MIG 1g.5gb', 'slug': 'gpu-mig-1g', 'description': '1× MIG 1g.5gb • 6 vCPU • 24 GiB'},
           {'display_name': 'GPU MIG 2g.10gb', 'slug': 'gpu-mig-2g', 'description': '1× MIG 2g.10gb • 10 vCPU • 40 GiB'},
+          {'display_name': 'GPU via Slurm (Slinky)', 'slug': 'gpu-slurm', 'description': 'Scheduled by Slurm • 8 vCPU • 32 GiB'},
       ]
 
       # ---------- Canonical profile configs ----------
@@ -345,6 +346,20 @@ hub:
               'gpu': 1,
               'resource_key': 'nvidia.com/mig-2g.10gb',
               'runtime_class': 'nvidia',
+          },
+
+          # Slurm Profile
+          'gpu-slurm': {
+              'image': 'quay.io/jupyter/pytorch-notebook:2025-11-06',
+              'cpu_limit': 8.0, 'cpu_guarantee': 4.0,
+              'mem_limit': '32G', 'mem_guarantee': '16G',
+              'gpu': 0, # Slurm handles GPU allocation
+              'scheduler_name': 'slurm-bridge-scheduler',
+              'extra_labels': {
+                  'slinky.slurm.net/account': 'cps',
+                  'slinky.slurm.net/partition': 'gpu',
+              },
+              'runtime_class': None,
           },
       }
 
@@ -423,6 +438,17 @@ hub:
           # Record profile on the server (used by per-profile culler)
           spawner.environment = spawner.environment or {}
           spawner.environment['HUB_PROFILE_SLUG'] = profile_slug
+
+          # Scheduler override (e.g. for Slurm)
+          if cfg.get('scheduler_name'):
+              spawner.scheduler_name = cfg['scheduler_name']
+          
+          # Extra labels (e.g. for Slurm accounting)
+          if cfg.get('extra_labels'):
+              spawner.extra_labels.update(cfg['extra_labels'])
+              # Dynamic user label for Slurm
+              if cfg['scheduler_name'] == 'slurm-bridge-scheduler':
+                  spawner.extra_labels.update({"slinky.slurm.net/user": spawner.user.name})
 
           spawner.log.info(f"Final: image={spawner.image} CPU={spawner.cpu_limit}/{spawner.cpu_guarantee} MEM={spawner.mem_limit}/{spawner.mem_guarantee} RES={spawner.extra_resource_limits}")
       c.KubeSpawner.pre_spawn_hook = apply_profile_settings

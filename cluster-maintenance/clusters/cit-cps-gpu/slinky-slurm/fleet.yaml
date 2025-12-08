@@ -1,0 +1,17 @@
+defaultNamespace: slinky
+helm:
+  releases:
+    - name: slurm-operator-crds
+      chart: oci://ghcr.io/slinkyproject/charts/slurm-operator-crds
+    - name: slurm-operator
+      chart: oci://ghcr.io/slinkyproject/charts/slurm-operator
+      valuesFiles:
+        - values-slurm-operator.yaml
+    - name: slurm
+      chart: oci://ghcr.io/slinkyproject/charts/slurm
+      namespace: slurm
+      valuesFiles:
+        - values-slurm.yaml
+
+kustomize:
+  dir: .
