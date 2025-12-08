@@ -1,0 +1,23 @@
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: jupyterhub-ssh-pod-reader
+  namespace: jupyterhub
+rules:
+- apiGroups: [""]
+  resources: ["pods"]
+  verbs: ["get", "list", "watch"]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: jupyterhub-ssh-pod-reader-binding
+  namespace: jupyterhub
+subjects:
+- kind: ServiceAccount
+  name: jupyterhub-ssh
+  namespace: jupyterhub
+roleRef:
+  kind: Role
+  name: jupyterhub-ssh-pod-reader
+  apiGroup: rbac.authorization.k8s.io

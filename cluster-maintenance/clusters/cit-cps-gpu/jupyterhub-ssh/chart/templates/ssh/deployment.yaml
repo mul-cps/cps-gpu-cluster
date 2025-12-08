@@ -23,8 +23,9 @@ spec:
         {{- . | toYaml | nindent 8 }}
         {{- end }}
     spec:
+      serviceAccountName: jupyterhub-ssh
       # We don't need any interaction with k8s API
-      automountServiceAccountToken: false 
+      automountServiceAccountToken: true 
       volumes:
         - name: config
           secret:

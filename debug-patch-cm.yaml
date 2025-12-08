@@ -21,6 +21,9 @@ data:
     from yarl import URL
 
     from .terminado import Terminado
+    import os
+    import ssl
+    import json
 
 
     class NotebookSSHServer(asyncssh.SSHServer):
@@ -97,9 +100,44 @@ data:
                 server = user.get("servers", {}).get("", {})
                 if server.get("ready", False):
                     self.user_ip = server.get("ip")
+                    if not self.user_ip:
+                         print("DEBUG: user_ip is missing from API response. Trying K8s API...")
+                         self.user_ip = await self.get_pod_ip(username)
                     return self.app.hub_url / user["servers"][""]["url"][1:]
                 else:
                     return None
+
+        async def get_pod_ip(self, username):
+            """
+            Fetch the pod IP directly from the Kubernetes API.
+            """
+            try:
+                namespace = "jupyterhub" # Assuming same namespace
+                pod_name = f"jupyter-{username}"
+                
+                service_account_path = "/var/run/secrets/kubernetes.io/serviceaccount"
+                with open(os.path.join(service_account_path, "token")) as f:
+                    token = f.read().strip()
+                
+                ca_cert = os.path.join(service_account_path, "ca.crt")
+                ssl_context = ssl.create_default_context(cafile=ca_cert)
+                
+                api_url = f"https://kubernetes.default.svc/api/v1/namespaces/{namespace}/pods/{pod_name}"
+                headers = {"Authorization": f"Bearer {token}"}
+                
+                async with ClientSession(headers=headers) as session:
+                    async with session.get(api_url, ssl=ssl_context) as resp:
+                        if resp.status == 200:
+                            pod_data = await resp.json()
+                            pod_ip = pod_data.get("status", {}).get("podIP")
+                            print(f"DEBUG: Fetched pod IP from K8s API: {pod_ip}")
+                            return pod_ip
+                        else:
+                            print(f"DEBUG: Failed to fetch pod info from K8s API. Status: {resp.status}")
+                            return None
+            except Exception as e:
+                print(f"DEBUG: Error fetching pod IP from K8s API: {e}")
+                return None
 
         async def start_user_server(self, session, username):
             """ """
