@@ -1,0 +1,17 @@
+defaultNamespace: dask-operator
+
+labels:
+  app: dask-operator
+
+helm:
+  repo: https://helm.dask.org
+  chart: dask-kubernetes-operator
+  version: 2024.3.0
+  releaseName: dask-operator
+  createNamespace: true
+
+targetCustomizations:
+- name: local
+  clusterSelector:
+    matchLabels:
+      management.cattle.io/cluster-display-name: local

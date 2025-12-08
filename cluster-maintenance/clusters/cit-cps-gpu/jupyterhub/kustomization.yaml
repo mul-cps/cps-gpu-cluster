@@ -4,6 +4,7 @@ kind: Kustomization
 # Include the storage PVCs, PostgreSQL, and namespace
 resources:
   # - namespace.yaml
+  - storage-class.yaml
   - shared-pvc.yaml
   - postgresql.yaml
   - harica-ca-configmap.yaml

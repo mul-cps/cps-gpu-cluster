@@ -1,0 +1,24 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: nfs-test-pod
+spec:
+  containers:
+    - name: nfs-test
+      image: alpine:3.18
+      command: ["/bin/sh", "-c"]
+      args:
+        - |
+          echo "Pod started. Listing NFS directory:";
+          ls -al /mnt/nfs;
+          echo "Writing test file...";
+          date > /mnt/nfs/hello_from_k8s.txt;
+          echo "Now tailing directory and sleeping...";
+          while true; do ls -al /mnt/nfs; sleep 10; done
+      volumeMounts:
+        - mountPath: /mnt/nfs
+          name: nfs-vol
+  volumes:
+    - name: nfs-vol
+      persistentVolumeClaim:
+        claimName: nfs-test-pvc
