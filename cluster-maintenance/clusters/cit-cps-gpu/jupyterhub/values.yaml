@@ -476,7 +476,7 @@ hub:
               spawner.environment['NB_UID'] = str(target_uid)
               spawner.environment['NB_USER'] = 'jovyan'
               spawner.environment['CHOWN_HOME'] = 'yes'
-              spawner.environment['CHOWN_HOME_OPTS'] = '-R'
+              spawner.environment['CHOWN_HOME_OPTS'] = '' # Non-recursive to avoid RO mount errors
 
           spawner.log.info(f"Final: image={spawner.image} CPU={spawner.cpu_limit}/{spawner.cpu_guarantee} MEM={spawner.mem_limit}/{spawner.mem_guarantee} RES={spawner.extra_resource_limits}")
       c.KubeSpawner.pre_spawn_hook = apply_profile_settings
