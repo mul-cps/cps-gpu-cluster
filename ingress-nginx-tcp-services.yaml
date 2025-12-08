@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: tcp-services
+  namespace: ingress-nginx
+  labels:
+    app.kubernetes.io/name: ingress-nginx
+    app.kubernetes.io/part-of: ingress-nginx
+    app.kubernetes.io/component: controller
+    app.kubernetes.io/managed-by: Helm
+    helm.sh/chart: ingress-nginx-4.7.1
+
+data:
+  "22": "jupyterhub/jupyterhub-ssh:22"
+  "2222": "jupyterhub/jupyterhub-ssh:2222"

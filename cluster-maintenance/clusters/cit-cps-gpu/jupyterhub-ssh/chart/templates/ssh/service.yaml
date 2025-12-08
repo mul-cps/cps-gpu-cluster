@@ -22,6 +22,11 @@ spec:
       {{- if eq .Values.ssh.service.type "NodePort" }}
       nodePort: {{ .Values.ssh.service.nodePort }}
       {{- end }}
+    - name: sftp
+      port: 2222
+      targetPort: sftp
+      protocol: TCP
   selector:
     {{- include "jupyterhub-ssh.ssh.selectorLabels" . | nindent 4 }}
 {{- end }}
+```

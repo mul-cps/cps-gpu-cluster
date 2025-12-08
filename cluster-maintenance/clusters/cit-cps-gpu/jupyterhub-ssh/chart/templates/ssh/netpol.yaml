@@ -33,6 +33,8 @@ spec:
       ports:
         - port: ssh
           protocol: TCP
+        - port: sftp
+          protocol: TCP
     {{- with .Values.ssh.networkPolicy.ingress}}
     {{- . | toYaml | trimSuffix "\n" | nindent 4 }}
     {{- end }}
