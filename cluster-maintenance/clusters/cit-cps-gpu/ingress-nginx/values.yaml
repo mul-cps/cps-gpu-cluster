@@ -64,3 +64,6 @@ rbac:
 serviceAccount:
   create: true
   name: ingress-nginx
+
+tcp:
+  22: "jupyterhub/jupyterhub-ssh:22"
