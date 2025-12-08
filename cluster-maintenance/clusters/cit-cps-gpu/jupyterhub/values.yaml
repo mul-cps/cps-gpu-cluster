@@ -292,7 +292,7 @@ hub:
               'mem_limit': '8G', 'mem_guarantee': '4G',
               'runtime_class': None,
               'gpu': 0,
-              'cmd': ['/bin/sh', '-c', 'pip install --no-cache-dir jupyterhub==4.3.1 && jupyterhub-singleuser'],
+              'cmd': ['/bin/sh', '-c', 'pip install --no-cache-dir jupyterhub && jupyterhub-singleuser'],
           },
 
           # GPU full devices (CPU/RAM doubled vs before)
