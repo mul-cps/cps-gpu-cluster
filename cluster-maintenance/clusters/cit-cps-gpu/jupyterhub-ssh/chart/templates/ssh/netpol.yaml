@@ -28,9 +28,8 @@ spec:
   ingress:
     # Allow pods in the same namespace with this label to have network access
     - from:
-      - podSelector:
-          matchLabels:
-            hub.jupyter.org/network-access-ssh-server: "true"
+      - ipBlock:
+          cidr: 0.0.0.0/0
       ports:
         - port: ssh
           protocol: TCP
