@@ -371,6 +371,37 @@ hub:
           },
       }
 
+      ### Adding more images ###
+      PROFILE_CONFIGS.update({
+        "gpu-pytorch-code": {
+            "image": "ghcr.io/mul-cps/cps-jupyter-notebook:latest-pytorch-code",
+            "cpu_limit": 16, "cpu_guarantee": 8,
+            "mem_limit": "64G", "mem_guarantee": "32G",
+            "gpu": 1,
+            "resource_key": "nvidia.com/gpu",
+            "runtime_class": "nvidia",
+            "grant_sudo": True,
+        },
+        "gpu-tf-code": {
+            "image": "ghcr.io/mul-cps/cps-jupyter-notebook:latest-tf-code",
+            "cpu_limit": 16, "cpu_guarantee": 8,
+            "mem_limit": "64G", "mem_guarantee": "32G",
+            "gpu": 1,
+            "resource_key": "nvidia.com/gpu",
+            "runtime_class": "nvidia",
+            "grant_sudo": True,
+        },
+        "gpu-desktop-ros2": {
+            "image": "ghcr.io/mul-cps/cps-jupyter-notebook:latest-desktop-ros2",
+            "cpu_limit": 16, "cpu_guarantee": 8,
+            "mem_limit": "64G", "mem_guarantee": "32G",
+            "gpu": 1,
+            "resource_key": "nvidia.com/gpu",
+            "runtime_class": "nvidia",
+            "grant_sudo": True,
+        },
+      })
+
       # ---------- Apply profile & per-profile knobs ----------
       async def apply_profile_settings(spawner):
           profile_slug = spawner.user_options.get('profile', 'cpu-default')
@@ -519,7 +550,22 @@ singleuser:
     jupyter-server-config:
       mountPath: /etc/jupyter/jupyter_server_config.py
       stringData: |
-        c.ServerProxy.host_allowlist = lambda app, host: True
+        # /etc/jupyter/jupyter_server_config.py
+        c = get_config()  # noqa
+
+        # ensure extensions are wired – these calls are idempotent if the package is missing
+        c.ServerApp.jpserver_extensions = getattr(c.ServerApp, "jpserver_extensions", {})
+
+        for ext in [
+            "jupyter_server_proxy",
+            "jupyter_code_server",
+            "jupyter_remote_desktop_proxy",
+        ]:
+            c.ServerApp.jpserver_extensions.setdefault(ext, True)
+
+        # Optional: always allow proxied hosts (you already do something similar)
+        c.ServerProxy = getattr(c, "ServerProxy", {})
+        c.ServerProxy["host_allowlist"] = lambda app, host: True
     dask-dashboard-config:
       mountPath: /home/jovyan/.config/dask/distributed.yaml
       stringData: |
