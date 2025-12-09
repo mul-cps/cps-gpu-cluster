@@ -605,11 +605,11 @@ singleuser:
     capacity: 10Gi
     dynamic:
       storageClass: longhorn-fast
-    homeMountPath: /home/jovyan/work/persistent
+    homeMountPath: /home/jovyan
 
 
     extraVolumes:
-      - name: home
+      - name: ephemeral-work
         emptyDir: {}
       - name: shared
         persistentVolumeClaim:
@@ -619,10 +619,10 @@ singleuser:
           name: jupyterhub-user-docs
 
     extraVolumeMounts:
-      - name: home
-        mountPath: /home/jovyan
+      - name: ephemeral-work
+        mountPath: /home/jovyan/work
       - name: shared
-        mountPath: /home/jovyan/work/shared
+        mountPath: /home/jovyan/shared
       - name: user-docs
         mountPath: /home/jovyan/00_IMPORTANT_STORAGE_WARNING.md
 

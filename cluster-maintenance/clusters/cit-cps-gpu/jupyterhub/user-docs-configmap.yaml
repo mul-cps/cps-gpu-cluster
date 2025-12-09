@@ -5,27 +5,31 @@ metadata:
   namespace: jupyterhub
 data:
   00_IMPORTANT_STORAGE_WARNING.md: |
-    # ⚠️ IMPORTANT STORAGE WARNING ⚠️
+    # ⚠️ STORAGE CONFIGURATION ⚠️
 
-    **STOP AND READ THIS CAREFULLY**
+    **PLEASE READ CAREFULLY**
 
-    Your home directory (`/home/jovyan`) is **EPHEMERAL**.
+    ### ✅ Persistent Home Directory
+    Your home directory (`/home/jovyan`) is **PERSISTENT**.
+    - Settings, VS Code extensions, and files saved here **WILL BE SAVED** across sessions.
+    - This storage is network-attached (Longhorn).
 
-    - This directory is located on the **local NVMe storage** of the compute node you are currently running on.
-    - This provides **maximum performance** for your calculations and data processing.
-    - **HOWEVER**, any data saved directly in `/home/jovyan` (except for the `persistent` folder) **WILL BE LOST** when your server stops or restarts.
-
-    ### ✅ WHERE TO SAVE DATA
-    You **MUST** save all your important work, code, and results in the **`persistent`** folder:
+    ### ⚡ Ephemeral Work Directory (FAST)
+    For high-performance tasks, use the **`work`** folder:
     
-    👉 **/home/jovyan/persistent**
+    👉 **/home/jovyan/work**
 
-    This folder is mounted from the cluster's network storage and is safe.
+    - This directory is on **local NVMe storage** (extremely fast).
+    - **WARNING**: Contents of `work` are **LOST** when your server stops/restarts.
+    - Use this for active datasets and training artifacts.
 
-    ### ⚡ BEST PRACTICES
-    1.  **Copy** large datasets from `persistent` to your home directory (`/home/jovyan`) at the start of your work for fast access.
-    2.  **Run** your calculations using the fast local storage.
-    3.  **Save** your results back to `persistent` before stopping your server.
+    ### 📂 Shared Storage
+    Shared data is available at:
+    
+    👉 **/home/jovyan/shared**
+    
+    - This is **Cluster Storage (Longhorn)**, shared across all users.
+    - Use this for collaborative projects and shared datasets.
 
   01_CLUSTER_GUIDE.md: |
     # CPS GPU Cluster Guide
@@ -43,17 +47,23 @@ data:
     ### Storage Architecture
     We use a tiered storage approach to balance performance and persistence:
 
-    1.  **Local NVMe (Fast & Ephemeral)**:
+    1.  **Home Directory (Persistent)**:
         -   **Path**: `/home/jovyan`
+        -   **Speed**: Cluster Storage (Longhorn).
+        -   **Use Case**: Code, settings, VS Code extensions, final results.
+        -   **Persistence**: ✅ **YES**. Data survives restarts.
+
+    2.  **Work Directory (Fast & Ephemeral)**:
+        -   **Path**: `/home/jovyan/work`
         -   **Speed**: Extremely fast (PCIe Gen4 NVMe).
         -   **Use Case**: Active datasets, temporary training artifacts, scratch space.
         -   **Persistence**: ❌ **NO**. Data is lost when the pod terminates.
 
-    2.  **Network Storage (Slower & Persistent)**:
-        -   **Path**: `/home/jovyan/persistent`
-        -   **Speed**: Limited by network bandwidth (NFS).
-        -   **Use Case**: Code repositories, final results, long-term dataset storage.
-        -   **Persistence**: ✅ **YES**. Data survives restarts.
+    3.  **Shared Storage (Persistent)**:
+        -   **Path**: `/home/jovyan/shared`
+        -   **Speed**: Cluster Storage (Longhorn).
+        -   **Use Case**: Shared datasets, collaborative projects.
+        -   **Persistence**: ✅ **YES**.
 
     ## 🚀 Using JupyterHub
 
@@ -68,10 +78,10 @@ data:
     To get the best performance and avoid data loss:
 
     1.  **Start** your server with the appropriate profile.
-    2.  **Navigate** to `/home/jovyan/persistent` to access your saved files.
-    3.  **Copy** data you need for *current* processing to `/home/jovyan` (e.g., `cp -r persistent/my-dataset .`).
-    4.  **Run** your training/analysis reading from `/home/jovyan`.
-    5.  **Save** checkpoints and final results directly to `/home/jovyan/persistent`.
+    2.  **Clone** your code into `~` (Home).
+    3.  **Copy** large datasets from `~/shared` to `~/work` for fast processing.
+    4.  **Run** your training/analysis reading/writing in `~/work`.
+    5.  **Save** final results back to `~` or `~/shared` before stopping your server.
 
     ## 🆘 Support
     If you have questions or need help, please contact the cluster administrators.
