@@ -388,9 +388,12 @@ hub:
           
           profiles = []
           for slug, cfg in PROFILE_CONFIGS.items():
-              # If not power user, skip GPU profiles
-              if not power_user and cfg.get('gpu', 0) > 0:
-                  continue
+              # If not power user, skip GPU profiles and advanced profiles
+              if not power_user:
+                  if cfg.get('gpu', 0) > 0:
+                      continue
+                  if slug in {'dask-cluster', 'gpu-slurm'}:
+                      continue
               
               profiles.append({
                   'display_name': cfg['display_name'],
