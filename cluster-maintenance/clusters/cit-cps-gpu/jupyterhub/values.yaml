@@ -84,174 +84,133 @@ hub:
 
     02-profiles: |
       # ---------- Access logic ----------
-      GPU_PROFILE_SLUGS = {
-          'gpu-pytorch-single','gpu-tensorflow-single',
-          'gpu-pytorch-dual','gpu-tensorflow-dual',
-          'gpu-mig-1g','gpu-mig-2g',
-          'gpu-pytorch-code','gpu-tf-code','gpu-desktop-ros2'
-      }
-      ALLOWED_GPU_GROUPS = {'cpsHPCAccess','jupyter_admin'}
+      # Groups that have full access (GPU + Shared Storage)
+      POWER_USER_GROUPS = {'app_jupyterhub_poweruser', 'jupyter_admin', 'cpsHPCAccess'}
 
-      def user_has_gpu_access(spawner):
-          group_names = {getattr(g, "name", g) for g in spawner.user.groups}
-          return bool(spawner.user.admin) or bool(group_names & ALLOWED_GPU_GROUPS)
+      def is_power_user(user):
+          user_groups = {getattr(g, "name", g) for g in user.groups}
+          return bool(user.admin) or bool(user_groups & POWER_USER_GROUPS)
 
-      # ---------- Layered boxed UI ----------
-      c.Spawner.options_form = """
-      <style>
-        .hub-ui * { box-sizing: border-box; }
-        .hub-ui { max-width: 980px; margin: 24px auto; padding: 0 8px; font-family: system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, 'Helvetica Neue', Arial, 'Noto Sans', sans-serif; }
-        .ui-title { font-size: 20px; font-weight: 600; color: #1f2937; margin-bottom: 6px; }
-        .subtle { color: #6b7280; font-size: 13px; margin-bottom: 12px; }
+      # ---------- Dynamic UI Generation ----------
+      def get_options_form(spawner):
+          power_user = is_power_user(spawner.user)
+          # We need PROFILE_CONFIGS here, but it is defined later.
+          # In Python script execution order, functions are defined but not executed until called.
+          # So as long as PROFILE_CONFIGS is defined before get_options_form is CALLED, it's fine.
+          
+          allowed_profiles = get_profile_list(spawner)
+          
+          # Helper to render a card
+          def render_card(slug, cfg, selected=False):
+              gpu = cfg.get('gpu', 0)
+              cpu = cfg.get('cpu_limit', 0)
+              mem = cfg.get('mem_limit', '0G')
+              
+              chips = []
+              if gpu > 0:
+                  chips.append(f'<span class="chip gpu-chip">{gpu}× GPU</span>')
+              elif 'mig' in slug:
+                   chips.append(f'<span class="chip gpu-chip">MIG</span>')
+              
+              chips.append(f'<span class="chip cpu-chip">{int(cpu)} vCPU</span>')
+              chips.append(f'<span class="chip ram-chip">{mem}</span>')
+              
+              cls = "card selected" if selected else "card"
+              checked = "checked" if selected else ""
+              
+              return f"""
+              <label class="{cls}" data-slug="{slug}">
+                <input type="radio" name="profile" value="{slug}" {checked}>
+                <div class="row">
+                  <div class="name">{cfg['display_name']}</div>
+                  <div class="meta">{''.join(chips)}</div>
+                </div>
+              </label>
+              """
 
-        .layer { background: #fff; border: 1px solid #e5e7eb; border-radius: 14px; box-shadow:
-                 0 1px 1px rgba(0,0,0,.03), 0 8px 20px rgba(17,24,39,.06);
-                 padding: 18px; margin-bottom: 16px; }
-        .grid { display:grid; grid-template-columns: repeat(2, minmax(0,1fr)); gap: 12px; }
-        @media (max-width: 820px) { .grid { grid-template-columns: 1fr; } }
-
-        .card { position: relative; border: 1px solid #e5e7eb; border-radius: 12px; padding: 14px;
-                transition: box-shadow .15s ease, border-color .15s ease, transform .05s ease;
-                background: linear-gradient(180deg, rgba(249,250,251,.6), rgba(255,255,255,1)); }
-        .card:hover { box-shadow: 0 8px 22px rgba(17,24,39,.08); border-color:#d1d5db; transform: translateY(-1px); }
-        .card input[type="radio"] { position: absolute; inset:0; opacity:0; cursor:pointer; }
-        .card.selected { border-color: #3b82f6; box-shadow: 0 0 0 3px rgba(59,130,246,.15); }
-        .row { display:flex; align-items:center; justify-content:space-between; gap: 10px; }
-        .name { font-weight: 600; color:#111827; }
-        .meta { display:flex; gap:8px; flex-wrap: wrap; }
-        .chip { font-size:12px; border:1px solid #e5e7eb; padding:3px 8px; border-radius:999px; color:#374151; background:#f9fafb; }
-        .gpu-chip { border-color:#c7d2fe; background:#eef2ff; color:#4338ca; }
-        .cpu-chip { border-color:#bae6fd; background:#e0f2fe; color:#075985; }
-        .ram-chip { border-color:#c7f9cc; background:#e8fce9; color:#166534; }
-        .notice { display:none; border:1px dashed #f59e0b; background: linear-gradient(180deg, #fff7ed, #fff); color:#92400e; border-radius:12px; padding:12px; margin-bottom: 12px; }
-        .hint { font-size:12px; color:#6b7280; margin-top: 4px; }
-        .input, .select { width:100%; padding:10px 12px; border:1.5px solid #e5e7eb; border-radius:10px; background:white; }
-        .select-inline { width:auto; min-width: 160px; }
-      </style>
-
-      <div class="hub-ui">
-        <div class="ui-title">Select a Profile</div>
-        <div class="subtle">For longer CLI workloads, use <code>tmux</code> in a Terminal (we'll install it for you).</div>
-
-        <div id="gpu-access-notice" class="notice">
-          <strong>No GPU access.</strong> Choose the CPU profile or contact admins for <code>cpsHPCAccess</code>.
-        </div>
-
-        <div class="layer">
-          <div class="grid" id="profile-grid">
-            <!-- CPU default (only non-privileged default) -->
-            <label class="card selected" data-slug="cpu-default">
-              <input type="radio" name="profile" value="cpu-default" checked>
-              <div class="row">
-                <div class="name">CPU (Default)</div>
-                <div class="meta">
-                  <span class="chip cpu-chip">2 vCPU (shared)</span>
-                  <span class="chip ram-chip">2 GiB</span>
+          # Generate Grid
+          cards_html = []
+          for p in allowed_profiles:
+              slug = p['slug']
+              cfg = PROFILE_CONFIGS[slug]
+              is_default = cfg.get('default', False)
+              cards_html.append(render_card(slug, cfg, selected=is_default))
+          
+          grid_html = "\\n".join(cards_html)
+          
+          # Custom Image Section (Only for power users)
+          custom_image_html = ""
+          if power_user:
+              custom_image_html = """
+              <div class="layer">
+                <div class="row" style="align-items:flex-start; gap:16px; flex-wrap: wrap;">
+                  <div style="flex:1; min-width: 260px;">
+                    <div class="name" style="margin-bottom:6px;">Optional: Custom Image</div>
+                    <input class="input" type="text" id="custom-image" name="custom_image" placeholder="registry/repo:tag (admins only)" />
+                    <div class="hint">Overrides the profile image.</div>
+                  </div>
+                  <div class="select-inline">
+                    <div class="name" style="margin-bottom:6px;">GPUs</div>
+                    <select class="select" id="custom-gpus" name="custom_gpus">
+                      <option value="0" selected>0 × GPU</option>
+                      <option value="1">1 × GPU</option>
+                      <option value="2">2 × GPU</option>
+                    </select>
+                    <div class="hint">Requires GPU access.</div>
+                  </div>
                 </div>
               </div>
-            </label>
+              """
 
-            <!-- Dask Cluster -->
-            <label class="card" data-slug="dask-cluster">
-              <input type="radio" name="profile" value="dask-cluster">
-              <div class="row">
-                <div class="name">Dask Cluster</div>
-                <div class="meta">
-                  <span class="chip cpu-chip">2 vCPU</span>
-                  <span class="chip ram-chip">8 GiB</span>
-                </div>
+          # Full HTML
+          return f"""
+          <style>
+            .hub-ui * {{ box-sizing: border-box; }}
+            .hub-ui {{ max-width: 980px; margin: 24px auto; padding: 0 8px; font-family: system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, 'Helvetica Neue', Arial, 'Noto Sans', sans-serif; }}
+            .ui-title {{ font-size: 20px; font-weight: 600; color: #1f2937; margin-bottom: 6px; }}
+            .subtle {{ color: #6b7280; font-size: 13px; margin-bottom: 12px; }}
+            .layer {{ background: #fff; border: 1px solid #e5e7eb; border-radius: 14px; box-shadow: 0 1px 1px rgba(0,0,0,.03), 0 8px 20px rgba(17,24,39,.06); padding: 18px; margin-bottom: 16px; }}
+            .grid {{ display:grid; grid-template-columns: repeat(2, minmax(0,1fr)); gap: 12px; }}
+            @media (max-width: 820px) {{ .grid {{ grid-template-columns: 1fr; }} }}
+            .card {{ position: relative; border: 1px solid #e5e7eb; border-radius: 12px; padding: 14px; transition: box-shadow .15s ease, border-color .15s ease, transform .05s ease; background: linear-gradient(180deg, rgba(249,250,251,.6), rgba(255,255,255,1)); }}
+            .card:hover {{ box-shadow: 0 8px 22px rgba(17,24,39,.08); border-color:#d1d5db; transform: translateY(-1px); }}
+            .card input[type="radio"] {{ position: absolute; inset:0; opacity:0; cursor:pointer; }}
+            .card.selected {{ border-color: #3b82f6; box-shadow: 0 0 0 3px rgba(59,130,246,.15); }}
+            .row {{ display:flex; align-items:center; justify-content:space-between; gap: 10px; }}
+            .name {{ font-weight: 600; color:#111827; }}
+            .meta {{ display:flex; gap:8px; flex-wrap: wrap; }}
+            .chip {{ font-size:12px; border:1px solid #e5e7eb; padding:3px 8px; border-radius:999px; color:#374151; background:#f9fafb; }}
+            .gpu-chip {{ border-color:#c7d2fe; background:#eef2ff; color:#4338ca; }}
+            .cpu-chip {{ border-color:#bae6fd; background:#e0f2fe; color:#075985; }}
+            .ram-chip {{ border-color:#c7f9cc; background:#e8fce9; color:#166534; }}
+            .input, .select {{ width:100%; padding:10px 12px; border:1.5px solid #e5e7eb; border-radius:10px; background:white; }}
+            .select-inline {{ width:auto; min-width: 160px; }}
+            .hint {{ font-size:12px; color:#6b7280; margin-top: 4px; }}
+          </style>
+
+          <div class="hub-ui">
+            <div class="ui-title">Select a Profile</div>
+            <div class="subtle">For longer CLI workloads, use <code>tmux</code>.</div>
+
+            <div class="layer">
+              <div class="grid" id="profile-grid">
+                {{grid_html}}
               </div>
-            </label>
-
-            <!-- GPU single -->
-            <label class="card" data-slug="gpu-pytorch-single" id="card-gpu-pt-1">
-              <input type="radio" name="profile" value="gpu-pytorch-single">
-              <div class="row"><div class="name">GPU: PyTorch (1×)</div>
-                <div class="meta"><span class="chip gpu-chip">1× GPU</span><span class="chip cpu-chip">16 vCPU</span><span class="chip ram-chip">64 GiB</span></div>
-              </div>
-            </label>
-
-            <label class="card" data-slug="gpu-tensorflow-single" id="card-gpu-tf-1">
-              <input type="radio" name="profile" value="gpu-tensorflow-single">
-              <div class="row"><div class="name">GPU: TensorFlow (1×)</div>
-                <div class="meta"><span class="chip gpu-chip">1× GPU</span><span class="chip cpu-chip">16 vCPU</span><span class="chip ram-chip">64 GiB</span></div>
-              </div>
-            </label>
-
-
-            <!-- GPU dual -->
-            <label class="card" data-slug="gpu-pytorch-dual" id="card-gpu-pt-2">
-              <input type="radio" name="profile" value="gpu-pytorch-dual">
-              <div class="row"><div class="name">GPU: PyTorch (2×)</div>
-                <div class="meta"><span class="chip gpu-chip">2× GPU</span><span class="chip cpu-chip">32 vCPU</span><span class="chip ram-chip">128 GiB</span></div>
-              </div>
-            </label>
-
-            <label class="card" data-slug="gpu-tensorflow-dual" id="card-gpu-tf-2">
-              <input type="radio" name="profile" value="gpu-tensorflow-dual">
-              <div class="row"><div class="name">GPU: TensorFlow (2×)</div>
-                <div class="meta"><span class="chip gpu-chip">2× GPU</span><span class="chip cpu-chip">32 vCPU</span><span class="chip ram-chip">128 GiB</span></div>
-              </div>
-            </label>
-
-            <!-- MIG slices -->
-            <label class="card" data-slug="gpu-mig-1g" id="card-gpu-mig-1g">
-              <input type="radio" name="profile" value="gpu-mig-1g">
-              <div class="row"><div class="name">GPU: MIG 1g.5gb</div>
-                <div class="meta"><span class="chip gpu-chip">1× MIG 1g.5gb</span><span class="chip cpu-chip">6 vCPU</span><span class="chip ram-chip">24 GiB</span></div>
-              </div>
-            </label>
-
-            <label class="card" data-slug="gpu-mig-2g" id="card-gpu-mig-2g">
-              <input type="radio" name="profile" value="gpu-mig-2g">
-              <div class="row"><div class="name">GPU: MIG 2g.10gb</div>
-                <div class="meta"><span class="chip gpu-chip">1× MIG 2g.10gb</span><span class="chip cpu-chip">10 vCPU</span><span class="chip ram-chip">40 GiB</span></div>
-              </div>
-            </label>
-
-            <label class="card" data-slug="gpu-desktop-ros2" id="card-gpu-desktop-ros2">
-              <input type="radio" name="profile" value="gpu-desktop-ros2">
-              <div class="row"><div class="name">GPU: Desktop + ROS 2</div>
-                <div class="meta"><span class="chip gpu-chip">1× GPU</span><span class="chip cpu-chip">16 vCPU</span><span class="chip ram-chip">64 GiB</span></div>
-              </div>
-            </label>
-          </div>
-        </div>
-
-        <!-- Custom image + flexible GPU count -->
-        <div class="layer">
-          <div class="row" style="align-items:flex-start; gap:16px; flex-wrap: wrap;">
-            <div style="flex:1; min-width: 260px;">
-              <div class="name" style="margin-bottom:6px;">Optional: Custom Image</div>
-              <input class="input" type="text" id="custom-image" name="custom_image" placeholder="registry/repo:tag (admins only)" />
-              <div class="hint">Overrides the profile image.</div>
             </div>
-            <div class="select-inline">
-              <div class="name" style="margin-bottom:6px;">GPUs</div>
-              <select class="select" id="custom-gpus" name="custom_gpus">
-                <option value="0" selected>0 × GPU</option>
-                <option value="1">1 × GPU</option>
-                <option value="2">2 × GPU</option>
-              </select>
-              <div class="hint">Requires GPU access.</div>
-            </div>
+
+            {{custom_image_html}}
           </div>
-        </div>
 
-        <div class="hint">Reminder: for long CLI jobs, start a Terminal and use <code>tmux</code> (we'll install it automatically).</div>
-      </div>
+          <script>
+          (function(){{
+            var cards = document.querySelectorAll('.card');
+            function selectCard(el){{ cards.forEach(c=>c.classList.remove('selected')); el.classList.add('selected'); var i = el.querySelector('input[type="radio"]'); if (i) i.checked = true; }}
+            cards.forEach(c=>c.addEventListener('click', ()=>selectCard(c)));
+          }})();
+          </script>
+          """
 
-      <script>
-      (function(){
-        var cards = document.querySelectorAll('.card');
-        function selectCard(el){ cards.forEach(c=>c.classList.remove('selected')); el.classList.add('selected'); var i = el.querySelector('input[type="radio"]'); if (i) i.checked = true; }
-        cards.forEach(c=>c.addEventListener('click', ()=>selectCard(c)));
-
-        // All authenticated users have GPU access (controlled by Authentik)
-        // No client-side restrictions needed
-      })();
-      </script>
-      """
+      c.KubeSpawner.options_form = get_options_form
 
       # ---------- Parse form ----------
       def options_from_form(formdata):
@@ -405,15 +364,26 @@ hub:
 
       # ---------- Generate profile list ----------
       c.KubeSpawner.image_pull_policy = 'Always'
-      c.KubeSpawner.profile_list = [
-          {
-              'display_name': cfg['display_name'],
-              'slug': slug,
-              'description': cfg.get('description', ''),
-              'default': cfg.get('default', False),
-          }
-          for slug, cfg in PROFILE_CONFIGS.items()
-      ]
+      
+      def get_profile_list(spawner):
+          # Filter profiles based on user groups
+          power_user = is_power_user(spawner.user)
+          
+          profiles = []
+          for slug, cfg in PROFILE_CONFIGS.items():
+              # If not power user, skip GPU profiles
+              if not power_user and cfg.get('gpu', 0) > 0:
+                  continue
+              
+              profiles.append({
+                  'display_name': cfg['display_name'],
+                  'slug': slug,
+                  'description': cfg.get('description', ''),
+                  'default': cfg.get('default', False),
+              })
+          return profiles
+
+      c.KubeSpawner.profile_list = get_profile_list
 
       # ---------- Apply profile & per-profile knobs ----------
       async def apply_profile_settings(spawner):
@@ -442,7 +412,6 @@ hub:
               spawner.cmd = cfg['cmd']
 
           # Ensure tmux is present (postStart installs if missing)
-          # Note: Debian/Ubuntu base expected; harmless if already present
           spawner.extra_container_config = spawner.extra_container_config or {}
           spawner.extra_container_config['lifecycle'] = {
               'postStart': {
@@ -480,8 +449,8 @@ hub:
 
           # Custom GPU override
           if custom_gpus > 0:
-              if not user_has_gpu_access(spawner):
-                  raise Exception("🚫 GPU Access Denied\n\nGPU resources require 'cpsHPCAccess' or admin.")
+              if not is_power_user(spawner.user):
+                  raise Exception("🚫 GPU Access Denied\n\nGPU resources require 'app_jupyterhub_poweruser' or admin.")
               # Choose resource key: respect MIG profiles' key if selected; else full GPU
               rkey = cfg.get('resource_key', 'nvidia.com/gpu')
               spawner.extra_resource_limits = {rkey: str(custom_gpus)}
@@ -521,6 +490,17 @@ hub:
               spawner.environment['NB_USER'] = 'jovyan'
               spawner.environment['CHOWN_HOME'] = 'yes'
               spawner.environment['CHOWN_HOME_OPTS'] = '' # Non-recursive to avoid RO mount errors
+
+          # Shared Storage for Power Users
+          if is_power_user(spawner.user):
+             spawner.volumes = (spawner.volumes or []) + [
+                 {'name': 'shared', 'persistentVolumeClaim': {'claimName': 'jupyterhub-shared-storage'}},
+                 {'name': 'cps-persistent1-shared', 'persistentVolumeClaim': {'claimName': 'cps-persistent1-shared-pvc'}},
+             ]
+             spawner.volume_mounts = (spawner.volume_mounts or []) + [
+                 {'name': 'shared', 'mountPath': '/home/jovyan/shared'},
+                 {'name': 'cps-persistent1-shared', 'mountPath': '/home/jovyan/cps_persistent1_shared'},
+             ]
 
           spawner.log.info(f"Final: image={spawner.image} CPU={spawner.cpu_limit}/{spawner.cpu_guarantee} MEM={spawner.mem_limit}/{spawner.mem_guarantee} RES={spawner.extra_resource_limits}")
       c.KubeSpawner.pre_spawn_hook = apply_profile_settings
@@ -597,21 +577,16 @@ singleuser:
     extraVolumes:
       - name: ephemeral-work
         emptyDir: {}
-      - name: shared
-        persistentVolumeClaim:
-          claimName: jupyterhub-shared-storage
+
       - name: user-docs
         configMap:
           name: jupyterhub-user-docs
-      - name: cps-persistent1-shared
-        persistentVolumeClaim:
-          claimName: cps-persistent1-shared-pvc
+
 
     extraVolumeMounts:
       - name: ephemeral-work
         mountPath: /home/jovyan/work
-      - name: shared
-        mountPath: /home/jovyan/shared
+
       - name: user-docs
         mountPath: /home/jovyan/00_IMPORTANT_STORAGE_WARNING.md
         subPath: 00_IMPORTANT_STORAGE_WARNING.md
@@ -620,8 +595,7 @@ singleuser:
         mountPath: /home/jovyan/01_CLUSTER_GUIDE.md
         subPath: 01_CLUSTER_GUIDE.md
         readOnly: true
-      - name: cps-persistent1-shared
-        mountPath: /home/jovyan/cps_persistent1_shared
+
 
   cpu:
     limit: 2
