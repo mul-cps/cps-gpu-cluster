@@ -85,7 +85,8 @@ hub:
     02-profiles: |
       # ---------- Access logic ----------
       # Groups that have full access (GPU + Shared Storage)
-      POWER_USER_GROUPS = {'app_jupyterhub_poweruser', 'jupyter_admin', 'cpsHPCAccess'}
+      # Groups that have full access (GPU + Shared Storage)
+      POWER_USER_GROUPS = {'app_jupyterhub_poweruser', 'jupyter_admin'}
 
       def is_power_user(user):
           user_groups = {getattr(g, "name", g) for g in user.groups}
@@ -165,14 +166,16 @@ hub:
           # Debug Info
           user_groups = sorted([getattr(g, "name", str(g)) for g in spawner.user.groups])
           debug_html = f"""
-          <div style="margin-top: 20px; padding: 10px; border: 1px solid #ccc; background: #f9f9f9; font-family: monospace; font-size: 12px; color: #333;">
-            <strong>Debug Info:</strong><br>
-            User: {spawner.user.name}<br>
-            Admin: {spawner.user.admin}<br>
-            Groups: {user_groups}<br>
-            Power User: {power_user}<br>
-            Allowed Profiles: {[p['slug'] for p in allowed_profiles]}
-          </div>
+          <details style="margin-top: 20px; border: 1px solid #ccc; background: #f9f9f9; border-radius: 4px;">
+            <summary style="padding: 10px; cursor: pointer; font-family: sans-serif; font-size: 13px; color: #555;">Debug Info</summary>
+            <div style="padding: 10px; border-top: 1px solid #eee; font-family: monospace; font-size: 12px; color: #333;">
+              User: {spawner.user.name}<br>
+              Admin: {spawner.user.admin}<br>
+              Groups: {user_groups}<br>
+              Power User: {power_user}<br>
+              Allowed Profiles: {[p['slug'] for p in allowed_profiles]}
+            </div>
+          </details>
           """
 
           # Full HTML
