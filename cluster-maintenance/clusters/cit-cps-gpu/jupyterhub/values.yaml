@@ -136,7 +136,7 @@ hub:
               is_default = cfg.get('default', False)
               cards_html.append(render_card(slug, cfg, selected=is_default))
           
-          grid_html = "\\n".join(cards_html)
+          grid_html = "\n".join(cards_html)
           
           # Custom Image Section (Only for power users)
           custom_image_html = ""
@@ -161,6 +161,19 @@ hub:
                 </div>
               </div>
               """
+
+          # Debug Info
+          user_groups = sorted([getattr(g, "name", str(g)) for g in spawner.user.groups])
+          debug_html = f"""
+          <div style="margin-top: 20px; padding: 10px; border: 1px solid #ccc; background: #f9f9f9; font-family: monospace; font-size: 12px; color: #333;">
+            <strong>Debug Info:</strong><br>
+            User: {spawner.user.name}<br>
+            Admin: {spawner.user.admin}<br>
+            Groups: {user_groups}<br>
+            Power User: {power_user}<br>
+            Allowed Profiles: {[p['slug'] for p in allowed_profiles]}
+          </div>
+          """
 
           # Full HTML
           return f"""
@@ -199,6 +212,7 @@ hub:
             </div>
 
             {custom_image_html}
+            {debug_html}
           </div>
 
           <script>
