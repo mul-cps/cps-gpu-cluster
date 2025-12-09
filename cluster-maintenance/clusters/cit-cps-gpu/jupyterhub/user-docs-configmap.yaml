@@ -83,5 +83,22 @@ data:
     4.  **Run** your training/analysis reading/writing in `~/work`.
     5.  **Save** final results back to `~` or `~/shared` before stopping your server.
 
+    ## 🔐 SSH Access
+    You can access your running notebook server via SSH.
+
+    ### 1. Setup
+    1.  Go to **[https://jupyterhub.cps.unileoben.ac.at/hub/ssh](https://jupyterhub.cps.unileoben.ac.at/hub/ssh)** (or `/hub/ssh`).
+    2.  Add your **SSH Public Key** (e.g., contents of `~/.ssh/id_rsa.pub`).
+
+    ### 2. Connect
+    Once your server is running, you can SSH into it:
+
+    ```bash
+    ssh <username>@jupyterhub.cps.unileoben.ac.at
+    ```
+    *(Replace `<username>` with your JupyterHub username)*
+
+    **Note**: SSH access connects you directly to your running container. If your server is stopped, SSH will not work.
+
     ## 🆘 Support
     If you have questions or need help, please contact the cluster administrators.
