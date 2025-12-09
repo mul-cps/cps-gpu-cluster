@@ -513,14 +513,34 @@ hub:
 
           # Shared Storage for Power Users
           if is_power_user(spawner.user):
-             spawner.volumes = (spawner.volumes or []) + [
+             # Handle volumes
+             new_volumes = [
                  {'name': 'shared', 'persistentVolumeClaim': {'claimName': 'jupyterhub-shared-storage'}},
                  {'name': 'cps-persistent1-shared', 'persistentVolumeClaim': {'claimName': 'cps-persistent1-shared-pvc'}},
              ]
-             spawner.volume_mounts = (spawner.volume_mounts or []) + [
+             if spawner.volumes is None:
+                 spawner.volumes = []
+             
+             if isinstance(spawner.volumes, list):
+                 spawner.volumes.extend(new_volumes)
+             elif isinstance(spawner.volumes, dict):
+                 for v in new_volumes:
+                     spawner.volumes[v['name']] = v
+             
+             # Handle volume_mounts
+             new_mounts = [
                  {'name': 'shared', 'mountPath': '/home/jovyan/shared'},
                  {'name': 'cps-persistent1-shared', 'mountPath': '/home/jovyan/cps_persistent1_shared'},
              ]
+             if spawner.volume_mounts is None:
+                 spawner.volume_mounts = []
+             
+             if isinstance(spawner.volume_mounts, list):
+                 spawner.volume_mounts.extend(new_mounts)
+             elif isinstance(spawner.volume_mounts, dict):
+                 # Fallback if it is a dict (unlikely for mounts but safe to handle)
+                 for m in new_mounts:
+                     spawner.volume_mounts[m['name']] = m
 
           spawner.log.info(f"Final: image={spawner.image} CPU={spawner.cpu_limit}/{spawner.cpu_guarantee} MEM={spawner.mem_limit}/{spawner.mem_guarantee} RES={spawner.extra_resource_limits}")
       c.KubeSpawner.pre_spawn_hook = apply_profile_settings
