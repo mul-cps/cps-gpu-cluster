@@ -254,7 +254,7 @@ hub:
               'display_name': 'CPU (Default)',
               'description': '2 vCPU (shared) • 2 GiB',
               'default': True,
-              'image': 'quay.io/jupyter/datascience-notebook:2025-11-06',
+              'image': 'ghcr.io/mul-cps/cps-jupyter-notebook:latest-standard-cpu',
               'cpu_limit': 2.0, 'cpu_guarantee': 0.5,
               'mem_limit': '2G', 'mem_guarantee': '1G',
               'runtime_class': None,
@@ -654,8 +654,8 @@ prePuller:
     enabled: true
   extraImages:
     datascience:
-      name: quay.io/jupyter/datascience-notebook
-      tag: "2025-11-06"
+      name: ghcr.io/mul-cps/cps-jupyter-notebook
+      tag: "latest-standard-cpu"
     rapidsai:
       name: nvcr.io/nvidia/rapidsai/base
       tag: "24.08-cuda12.2-py3.10"
