@@ -194,11 +194,11 @@ hub:
 
             <div class="layer">
               <div class="grid" id="profile-grid">
-                {{grid_html}}
+                {grid_html}
               </div>
             </div>
 
-            {{custom_image_html}}
+            {custom_image_html}
           </div>
 
           <script>
