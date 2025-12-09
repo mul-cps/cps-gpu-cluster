@@ -496,7 +496,7 @@ hub:
                   spawner.extra_labels.update({"slinky.slurm.net/user": spawner.user.name})
 
           # Sudo access
-          if cfg.get('grant_sudo'):
+          if cfg.get('grant_sudo') and is_power_user(spawner.user):
               spawner.environment['GRANT_SUDO'] = 'yes'
               spawner.extra_container_config = spawner.extra_container_config or {}
               spawner.extra_container_config['securityContext'] = {
