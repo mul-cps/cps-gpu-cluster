@@ -549,7 +549,7 @@ singleuser:
   image:
     name: quay.io/jupyter/tensorflow-notebook
     tag: "2025-11-06"
-    pullPolicy: IfNotPresent
+    pullPolicy: always #IfNotPresent
 
   serviceAccountName: dask-sa
 
