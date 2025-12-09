@@ -283,26 +283,15 @@ hub:
       c.Spawner.http_timeout = 300
       c.Spawner.start_timeout = 300
 
-      # ---------- Profiles (validation only) ----------
-      c.KubeSpawner.profile_list = [
-          {'display_name': 'CPU (Default)', 'slug': 'cpu-default', 'description': '2 vCPU (shared) • 2 GiB', 'default': True},
-          {'display_name': 'Dask Cluster', 'slug': 'dask-cluster', 'description': 'Dask Image • 2 vCPU • 8 GiB'},
-          {'display_name': 'GPU PyTorch (1×)', 'slug': 'gpu-pytorch-single', 'description': '1× GPU • 16 vCPU • 64 GiB'},
-          {'display_name': 'GPU TF (1×)', 'slug': 'gpu-tensorflow-single', 'description': '1× GPU • 16 vCPU • 64 GiB'},
-          {'display_name': 'GPU PyTorch (Code)', 'slug': 'gpu-pytorch-code', 'description': 'Code-ready image • 1× GPU • 16 vCPU • 64 GiB'},
-          {'display_name': 'GPU TF (Code)', 'slug': 'gpu-tf-code', 'description': 'Code-ready image • 1× GPU • 16 vCPU • 64 GiB'},
-          {'display_name': 'GPU PyTorch (2×)', 'slug': 'gpu-pytorch-dual', 'description': '2× GPU • 32 vCPU • 128 GiB'},
-          {'display_name': 'GPU TF (2×)', 'slug': 'gpu-tensorflow-dual', 'description': '2× GPU • 32 vCPU • 128 GiB'},
-          {'display_name': 'GPU MIG 1g.5gb', 'slug': 'gpu-mig-1g', 'description': '1× MIG 1g.5gb • 6 vCPU • 24 GiB'},
-          {'display_name': 'GPU MIG 2g.10gb', 'slug': 'gpu-mig-2g', 'description': '1× MIG 2g.10gb • 10 vCPU • 40 GiB'},
-          {'display_name': 'GPU Desktop + ROS 2', 'slug': 'gpu-desktop-ros2', 'description': 'Desktop + ROS 2 image • 1× GPU • 16 vCPU • 64 GiB'},
-          {'display_name': 'GPU via Slurm (Slinky)', 'slug': 'gpu-slurm', 'description': 'Scheduled by Slurm • 8 vCPU • 32 GiB'},
-      ]
-
       # ---------- Canonical profile configs ----------
+      # Define all profiles here. The UI list is generated from this dictionary.
+      # To add more profiles, simply add entries to this dictionary or use PROFILE_CONFIGS.update({...}).
       PROFILE_CONFIGS = {
           # CPU default
           'cpu-default': {
+              'display_name': 'CPU (Default)',
+              'description': '2 vCPU (shared) • 2 GiB',
+              'default': True,
               'image': 'quay.io/jupyter/datascience-notebook:2025-11-06',
               'cpu_limit': 2.0, 'cpu_guarantee': 0.5,
               'mem_limit': '2G', 'mem_guarantee': '1G',
@@ -313,7 +302,9 @@ hub:
 
           # Dask Cluster
           'dask-cluster': {
-              'image': 'nvcr.io/nvidia/rapidsai/base:24.08-cuda12.2-py3.10', #'ghcr.io/dask/dask-notebook:2025.11.0',
+              'display_name': 'Dask Cluster',
+              'description': 'Dask Image • 2 vCPU • 8 GiB',
+              'image': 'nvcr.io/nvidia/rapidsai/base:24.08-cuda12.2-py3.10',
               'cpu_limit': 2.0, 'cpu_guarantee': 1.0,
               'mem_limit': '8G', 'mem_guarantee': '4G',
               'runtime_class': None,
@@ -323,8 +314,10 @@ hub:
               'grant_sudo': True,
           },
 
-          # GPU full devices (CPU/RAM doubled vs before)
+          # GPU full devices
           'gpu-pytorch-single': {
+              'display_name': 'GPU PyTorch (1×)',
+              'description': '1× GPU • 16 vCPU • 64 GiB',
               'image': 'quay.io/jupyter/pytorch-notebook:2025-11-06',
               'cpu_limit': 16.0, 'cpu_guarantee': 8.0,
               'mem_limit': '64G', 'mem_guarantee': '32G',
@@ -334,6 +327,8 @@ hub:
               'grant_sudo': True,
           },
           'gpu-tensorflow-single': {
+              'display_name': 'GPU TF (1×)',
+              'description': '1× GPU • 16 vCPU • 64 GiB',
               'image': 'quay.io/jupyter/tensorflow-notebook:2025-11-06',
               'cpu_limit': 16.0, 'cpu_guarantee': 8.0,
               'mem_limit': '64G', 'mem_guarantee': '32G',
@@ -342,7 +337,35 @@ hub:
               'runtime_class': 'nvidia',
               'grant_sudo': True,
           },
+          
+          # GPU code-ready images
+          'gpu-pytorch-code': {
+              'display_name': 'GPU PyTorch (Code)',
+              'description': 'Code-ready image • 1× GPU • 16 vCPU • 64 GiB',
+              'image': 'ghcr.io/mul-cps/cps-jupyter-notebook:latest-pytorch-code',
+              'cpu_limit': 16.0, 'cpu_guarantee': 8.0,
+              'mem_limit': '64G', 'mem_guarantee': '32G',
+              'gpu': 1,
+              'resource_key': 'nvidia.com/gpu',
+              'runtime_class': 'nvidia',
+              'grant_sudo': True,
+          },
+          'gpu-tf-code': {
+              'display_name': 'GPU TF (Code)',
+              'description': 'Code-ready image • 1× GPU • 16 vCPU • 64 GiB',
+              'image': 'ghcr.io/mul-cps/cps-jupyter-notebook:latest-tf-code',
+              'cpu_limit': 16.0, 'cpu_guarantee': 8.0,
+              'mem_limit': '64G', 'mem_guarantee': '32G',
+              'gpu': 1,
+              'resource_key': 'nvidia.com/gpu',
+              'runtime_class': 'nvidia',
+              'grant_sudo': True,
+          },
+
+          # GPU dual
           'gpu-pytorch-dual': {
+              'display_name': 'GPU PyTorch (2×)',
+              'description': '2× GPU • 32 vCPU • 128 GiB',
               'image': 'quay.io/jupyter/pytorch-notebook:2025-11-06',
               'cpu_limit': 32.0, 'cpu_guarantee': 16.0,
               'mem_limit': '128G', 'mem_guarantee': '64G',
@@ -352,6 +375,8 @@ hub:
               'grant_sudo': True,
           },
           'gpu-tensorflow-dual': {
+              'display_name': 'GPU TF (2×)',
+              'description': '2× GPU • 32 vCPU • 128 GiB',
               'image': 'quay.io/jupyter/tensorflow-notebook:2025-11-06',
               'cpu_limit': 32.0, 'cpu_guarantee': 16.0,
               'mem_limit': '128G', 'mem_guarantee': '64G',
@@ -361,8 +386,10 @@ hub:
               'grant_sudo': True,
           },
 
-          # MIG slices (adjust resource keys to your operator's CRD if different)
+          # MIG slices
           'gpu-mig-1g': {
+              'display_name': 'GPU MIG 1g.5gb',
+              'description': '1× MIG 1g.5gb • 6 vCPU • 24 GiB',
               'image': 'quay.io/jupyter/pytorch-notebook:2025-11-06',
               'cpu_limit': 6.0, 'cpu_guarantee': 3.0,
               'mem_limit': '24G', 'mem_guarantee': '12G',
@@ -372,6 +399,8 @@ hub:
               'grant_sudo': True,
           },
           'gpu-mig-2g': {
+              'display_name': 'GPU MIG 2g.10gb',
+              'description': '1× MIG 2g.10gb • 10 vCPU • 40 GiB',
               'image': 'quay.io/jupyter/pytorch-notebook:2025-11-06',
               'cpu_limit': 10.0, 'cpu_guarantee': 5.0,
               'mem_limit': '40G', 'mem_guarantee': '20G',
@@ -381,8 +410,23 @@ hub:
               'grant_sudo': True,
           },
 
+          # Desktop + ROS 2
+          'gpu-desktop-ros2': {
+              'display_name': 'GPU Desktop + ROS 2',
+              'description': 'Desktop + ROS 2 image • 1× GPU • 16 vCPU • 64 GiB',
+              'image': 'ghcr.io/mul-cps/cps-jupyter-notebook:latest-desktop-ros2',
+              'cpu_limit': 16.0, 'cpu_guarantee': 8.0,
+              'mem_limit': '64G', 'mem_guarantee': '32G',
+              'gpu': 1,
+              'resource_key': 'nvidia.com/gpu',
+              'runtime_class': 'nvidia',
+              'grant_sudo': True,
+          },
+
           # Slurm Profile
           'gpu-slurm': {
+              'display_name': 'GPU via Slurm (Slinky)',
+              'description': 'Scheduled by Slurm • 8 vCPU • 32 GiB',
               'image': 'quay.io/jupyter/pytorch-notebook:2025-11-06',
               'cpu_limit': 8.0, 'cpu_guarantee': 4.0,
               'mem_limit': '32G', 'mem_guarantee': '16G',
@@ -397,36 +441,17 @@ hub:
           },
       }
 
-      ### Adding more images ###
-      PROFILE_CONFIGS.update({
-        "gpu-pytorch-code": {
-            "image": "ghcr.io/mul-cps/cps-jupyter-notebook:latest-pytorch-code",
-            "cpu_limit": 16, "cpu_guarantee": 8,
-            "mem_limit": "64G", "mem_guarantee": "32G",
-            "gpu": 1,
-            "resource_key": "nvidia.com/gpu",
-            "runtime_class": "nvidia",
-            "grant_sudo": True,
-        },
-        "gpu-tf-code": {
-            "image": "ghcr.io/mul-cps/cps-jupyter-notebook:latest-tf-code",
-            "cpu_limit": 16, "cpu_guarantee": 8,
-            "mem_limit": "64G", "mem_guarantee": "32G",
-            "gpu": 1,
-            "resource_key": "nvidia.com/gpu",
-            "runtime_class": "nvidia",
-            "grant_sudo": True,
-        },
-        "gpu-desktop-ros2": {
-            "image": "ghcr.io/mul-cps/cps-jupyter-notebook:latest-desktop-ros2",
-            "cpu_limit": 16, "cpu_guarantee": 8,
-            "mem_limit": "64G", "mem_guarantee": "32G",
-            "gpu": 1,
-            "resource_key": "nvidia.com/gpu",
-            "runtime_class": "nvidia",
-            "grant_sudo": True,
-        },
-      })
+      # ---------- Generate profile list ----------
+      c.KubeSpawner.image_pull_policy = 'Always'
+      c.KubeSpawner.profile_list = [
+          {
+              'display_name': cfg['display_name'],
+              'slug': slug,
+              'description': cfg.get('description', ''),
+              'default': cfg.get('default', False),
+          }
+          for slug, cfg in PROFILE_CONFIGS.items()
+      ]
 
       # ---------- Apply profile & per-profile knobs ----------
       async def apply_profile_settings(spawner):
@@ -549,7 +574,7 @@ singleuser:
   image:
     name: quay.io/jupyter/tensorflow-notebook
     tag: "2025-11-06"
-    pullPolicy: always #IfNotPresent
+    pullPolicy: Always
 
   serviceAccountName: dask-sa
 
