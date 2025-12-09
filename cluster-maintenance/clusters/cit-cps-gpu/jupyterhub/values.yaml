@@ -318,7 +318,7 @@ hub:
           'gpu-pytorch-single': {
               'display_name': 'GPU PyTorch (1×)',
               'description': '1× GPU • 16 vCPU • 64 GiB',
-              'image': 'quay.io/jupyter/pytorch-notebook:2025-11-06',
+              'image': 'ghcr.io/mul-cps/cps-jupyter-notebook:latest-pytorch-code',
               'cpu_limit': 16.0, 'cpu_guarantee': 8.0,
               'mem_limit': '64G', 'mem_guarantee': '32G',
               'gpu': 1,
@@ -329,30 +329,6 @@ hub:
           'gpu-tensorflow-single': {
               'display_name': 'GPU TF (1×)',
               'description': '1× GPU • 16 vCPU • 64 GiB',
-              'image': 'quay.io/jupyter/tensorflow-notebook:2025-11-06',
-              'cpu_limit': 16.0, 'cpu_guarantee': 8.0,
-              'mem_limit': '64G', 'mem_guarantee': '32G',
-              'gpu': 1,
-              'resource_key': 'nvidia.com/gpu',
-              'runtime_class': 'nvidia',
-              'grant_sudo': True,
-          },
-          
-          # GPU code-ready images
-          'gpu-pytorch-code': {
-              'display_name': 'GPU PyTorch (Code)',
-              'description': 'Code-ready image • 1× GPU • 16 vCPU • 64 GiB',
-              'image': 'ghcr.io/mul-cps/cps-jupyter-notebook:latest-pytorch-code',
-              'cpu_limit': 16.0, 'cpu_guarantee': 8.0,
-              'mem_limit': '64G', 'mem_guarantee': '32G',
-              'gpu': 1,
-              'resource_key': 'nvidia.com/gpu',
-              'runtime_class': 'nvidia',
-              'grant_sudo': True,
-          },
-          'gpu-tf-code': {
-              'display_name': 'GPU TF (Code)',
-              'description': 'Code-ready image • 1× GPU • 16 vCPU • 64 GiB',
               'image': 'ghcr.io/mul-cps/cps-jupyter-notebook:latest-tf-code',
               'cpu_limit': 16.0, 'cpu_guarantee': 8.0,
               'mem_limit': '64G', 'mem_guarantee': '32G',
@@ -366,7 +342,7 @@ hub:
           'gpu-pytorch-dual': {
               'display_name': 'GPU PyTorch (2×)',
               'description': '2× GPU • 32 vCPU • 128 GiB',
-              'image': 'quay.io/jupyter/pytorch-notebook:2025-11-06',
+              'image': 'ghcr.io/mul-cps/cps-jupyter-notebook:latest-pytorch-code',
               'cpu_limit': 32.0, 'cpu_guarantee': 16.0,
               'mem_limit': '128G', 'mem_guarantee': '64G',
               'gpu': 2,
@@ -377,7 +353,7 @@ hub:
           'gpu-tensorflow-dual': {
               'display_name': 'GPU TF (2×)',
               'description': '2× GPU • 32 vCPU • 128 GiB',
-              'image': 'quay.io/jupyter/tensorflow-notebook:2025-11-06',
+              'image': 'ghcr.io/mul-cps/cps-jupyter-notebook:latest-tf-code',
               'cpu_limit': 32.0, 'cpu_guarantee': 16.0,
               'mem_limit': '128G', 'mem_guarantee': '64G',
               'gpu': 2,
@@ -390,7 +366,7 @@ hub:
           'gpu-mig-1g': {
               'display_name': 'GPU MIG 1g.5gb',
               'description': '1× MIG 1g.5gb • 6 vCPU • 24 GiB',
-              'image': 'quay.io/jupyter/pytorch-notebook:2025-11-06',
+              'image': 'ghcr.io/mul-cps/cps-jupyter-notebook:latest-pytorch-code',
               'cpu_limit': 6.0, 'cpu_guarantee': 3.0,
               'mem_limit': '24G', 'mem_guarantee': '12G',
               'gpu': 1,
@@ -401,7 +377,7 @@ hub:
           'gpu-mig-2g': {
               'display_name': 'GPU MIG 2g.10gb',
               'description': '1× MIG 2g.10gb • 10 vCPU • 40 GiB',
-              'image': 'quay.io/jupyter/pytorch-notebook:2025-11-06',
+              'image': 'ghcr.io/mul-cps/cps-jupyter-notebook:latest-pytorch-code',
               'cpu_limit': 10.0, 'cpu_guarantee': 5.0,
               'mem_limit': '40G', 'mem_guarantee': '20G',
               'gpu': 1,
@@ -427,7 +403,7 @@ hub:
           'gpu-slurm': {
               'display_name': 'GPU via Slurm (Slinky)',
               'description': 'Scheduled by Slurm • 8 vCPU • 32 GiB',
-              'image': 'quay.io/jupyter/pytorch-notebook:2025-11-06',
+              'image': 'ghcr.io/mul-cps/cps-jupyter-notebook:latest-pytorch-code',
               'cpu_limit': 8.0, 'cpu_guarantee': 4.0,
               'mem_limit': '32G', 'mem_guarantee': '16G',
               'gpu': 0, # Slurm handles GPU allocation
