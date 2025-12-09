@@ -603,6 +603,9 @@ singleuser:
       - name: user-docs
         configMap:
           name: jupyterhub-user-docs
+      - name: cps-persistent1-shared
+        persistentVolumeClaim:
+          claimName: cps-persistent1-shared-pvc
 
     extraVolumeMounts:
       - name: ephemeral-work
@@ -611,13 +614,14 @@ singleuser:
         mountPath: /home/jovyan/shared
       - name: user-docs
         mountPath: /home/jovyan/00_IMPORTANT_STORAGE_WARNING.md
-
         subPath: 00_IMPORTANT_STORAGE_WARNING.md
         readOnly: true
       - name: user-docs
         mountPath: /home/jovyan/01_CLUSTER_GUIDE.md
         subPath: 01_CLUSTER_GUIDE.md
         readOnly: true
+      - name: cps-persistent1-shared
+        mountPath: /home/jovyan/cps_persistent1_shared
 
   cpu:
     limit: 2
