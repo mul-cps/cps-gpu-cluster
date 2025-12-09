@@ -178,20 +178,6 @@ hub:
               </div>
             </label>
 
-            <!-- GPU code-ready images -->
-            <label class="card" data-slug="gpu-pytorch-code" id="card-gpu-pt-code">
-              <input type="radio" name="profile" value="gpu-pytorch-code">
-              <div class="row"><div class="name">GPU: PyTorch (Code)</div>
-                <div class="meta"><span class="chip gpu-chip">1× GPU</span><span class="chip cpu-chip">16 vCPU</span><span class="chip ram-chip">64 GiB</span></div>
-              </div>
-            </label>
-
-            <label class="card" data-slug="gpu-tf-code" id="card-gpu-tf-code">
-              <input type="radio" name="profile" value="gpu-tf-code">
-              <div class="row"><div class="name">GPU: TensorFlow (Code)</div>
-                <div class="meta"><span class="chip gpu-chip">1× GPU</span><span class="chip cpu-chip">16 vCPU</span><span class="chip ram-chip">64 GiB</span></div>
-              </div>
-            </label>
 
             <!-- GPU dual -->
             <label class="card" data-slug="gpu-pytorch-dual" id="card-gpu-pt-2">
@@ -664,3 +650,23 @@ cull:
   adminUsers: true
   removeNamedServers: false
   concurrency: 10
+
+prePuller:
+  continuous:
+    enabled: true
+  extraImages:
+    datascience:
+      name: quay.io/jupyter/datascience-notebook
+      tag: "2025-11-06"
+    rapidsai:
+      name: nvcr.io/nvidia/rapidsai/base
+      tag: "24.08-cuda12.2-py3.10"
+    cps-pytorch:
+      name: ghcr.io/mul-cps/cps-jupyter-notebook
+      tag: "latest-pytorch-code"
+    cps-tf:
+      name: ghcr.io/mul-cps/cps-jupyter-notebook
+      tag: "latest-tf-code"
+    cps-desktop-ros2:
+      name: ghcr.io/mul-cps/cps-jupyter-notebook
+      tag: "latest-desktop-ros2"

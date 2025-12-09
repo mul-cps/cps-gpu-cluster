@@ -87,14 +87,14 @@ data:
     You can access your running notebook server via SSH.
 
     ### 1. Setup
-    1.  Go to **[https://jupyterhub.cps.unileoben.ac.at/hub/ssh](https://jupyterhub.cps.unileoben.ac.at/hub/ssh)** (or `/hub/ssh`).
+    1.  Go to **[https://jupyterhub.dshl.unileoben.ac.at/hub/ssh](https://jupyterhub.dshl.unileoben.ac.at/hub/ssh)** (or `/hub/ssh`).
     2.  Add your **SSH Public Key** (e.g., contents of `~/.ssh/id_rsa.pub`).
 
     ### 2. Connect
     Once your server is running, you can SSH into it:
 
     ```bash
-    ssh <username>@jupyterhub.cps.unileoben.ac.at
+    ssh <username>@jupyterhub.dshl.unileoben.ac.at
     ```
     *(Replace `<username>` with your JupyterHub username)*
 
