@@ -13,6 +13,10 @@ coder:
     - name: CODER_ACCESS_URL
       value: "https://coder.dshl.unileoben.ac.at"
     
+    # Internal access URL for workspace pods (cluster-internal service)
+    - name: CODER_ACCESS_URL_INTERNAL
+      value: "http://coder.coder.svc.cluster.local"
+    
     # OIDC Authentication with Authentik
     - name: CODER_OIDC_ISSUER_URL
       value: "https://auth.cps.unileoben.ac.at/application/o/coder/"

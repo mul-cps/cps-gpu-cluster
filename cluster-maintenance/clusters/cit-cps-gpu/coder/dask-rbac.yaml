@@ -23,17 +23,16 @@ metadata:
   labels:
     app.kubernetes.io/name: dask-operator-role
     app.kubernetes.io/component: rbac
-spec:
-  rules:
-  - apiGroups: ["kubernetes.dask.org"]
-    resources: ["daskclusters", "daskworkergroups", "daskjobs", "daskautoscalers"]
-    verbs: ["get", "list", "watch", "create", "update", "patch", "delete"]
-  - apiGroups: [""]
-    resources: ["pods", "services"]
-    verbs: ["get", "list", "watch"]
-  - apiGroups: [""]
-    resources: ["pods/log"]
-    verbs: ["get", "list"]
+rules:
+- apiGroups: ["kubernetes.dask.org"]
+  resources: ["daskclusters", "daskworkergroups", "daskjobs", "daskautoscalers"]
+  verbs: ["get", "list", "watch", "create", "update", "patch", "delete"]
+- apiGroups: [""]
+  resources: ["pods", "services"]
+  verbs: ["get", "list", "watch"]
+- apiGroups: [""]
+  resources: ["pods/log"]
+  verbs: ["get", "list"]
 
 ---
 apiVersion: rbac.authorization.k8s.io/v1
