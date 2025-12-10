@@ -1,0 +1,9 @@
+defaultNamespace: ai-llm
+namespace: ai-llm
+
+helm:
+  repo: https://helm.otwld.com/
+  chart: ollama
+  releaseName: ollama
+  valuesFiles:
+    - values-ollama.yaml

@@ -1,0 +1,40 @@
+# Connect to internal Ollama service
+extraEnv:
+  - name: OLLAMA_BASE_URL
+    value: "http://ollama:11434"
+  # OIDC Configuration (secrets loaded from secret-oidc.yaml)
+  - name: WEBUI_AUTH
+    value: "True"
+
+# Load OIDC secrets from the secret created separately
+extraEnvFrom:
+  - secretRef:
+      name: open-webui-oidc
+
+persistence:
+  enabled: true
+  storageClass: "longhorn-fast"
+  size: 10Gi
+
+ingress:
+  enabled: true
+  class: nginx
+  annotations:
+    cert-manager.io/cluster-issuer: "letsencrypt-prod" # Assuming standard cert-manager setup
+  hosts:
+    - host: chat.dshl.unileoben.ac.at
+      paths:
+        - path: /
+          pathType: Prefix
+  tls:
+    - secretName: chat-dshl-tls
+      hosts:
+        - chat.dshl.unileoben.ac.at
+
+resources:
+  requests:
+    cpu: "500m"
+    memory: "1Gi"
+  limits:
+    cpu: "2"
+    memory: "4Gi"

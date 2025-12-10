@@ -1,0 +1,38 @@
+ollama:
+  gpu:
+    enabled: true
+    type: nvidia
+    # Using full GPU resource as discovered
+    nvidiaResource: "nvidia.com/gpu"
+    number: 1
+
+  # Pre-pull and/or run models
+  models:
+    pull:
+      - llama3.2:3b
+      - mistral
+    run:
+      - llama3.2:3b
+
+# Use GPU node pool
+nodeSelector:
+  accelerator: nvidia
+
+tolerations:
+  - key: "nvidia.com/gpu"
+    operator: "Exists"
+    effect: "NoSchedule"
+
+runtimeClassName: nvidia
+
+persistentVolume:
+  enabled: true
+  storageClass: "longhorn-fast"
+  size: 100Gi
+
+service:
+  type: ClusterIP
+  port: 11434
+
+ingress:
+  enabled: false
