@@ -78,8 +78,7 @@ coder:
   # Service configuration
   service:
     type: ClusterIP
-    sessionAffinity:
-      enable: true
+    sessionAffinity: ClientIP
 
   # Ingress configuration
   ingress:
