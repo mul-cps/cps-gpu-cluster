@@ -1,0 +1,54 @@
+# =============================================================================
+# Dask RBAC for Coder Workspaces
+# - ServiceAccount for Coder workspaces to create Dask clusters
+# - Role and RoleBinding for Dask operator access in dask-compute namespace
+# =============================================================================
+
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: dask-sa
+  namespace: coder
+  labels:
+    app.kubernetes.io/name: dask-sa
+    app.kubernetes.io/component: rbac
+    app.kubernetes.io/part-of: coder-platform
+
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: dask-operator-role
+  namespace: dask-compute
+  labels:
+    app.kubernetes.io/name: dask-operator-role
+    app.kubernetes.io/component: rbac
+spec:
+  rules:
+  - apiGroups: ["kubernetes.dask.org"]
+    resources: ["daskclusters", "daskworkergroups", "daskjobs", "daskautoscalers"]
+    verbs: ["get", "list", "watch", "create", "update", "patch", "delete"]
+  - apiGroups: [""]
+    resources: ["pods", "services"]
+    verbs: ["get", "list", "watch"]
+  - apiGroups: [""]
+    resources: ["pods/log"]
+    verbs: ["get", "list"]
+
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: dask-operator-rolebinding
+  namespace: dask-compute
+  labels:
+    app.kubernetes.io/name: dask-operator-rolebinding
+    app.kubernetes.io/component: rbac
+subjects:
+- kind: ServiceAccount
+  name: dask-sa
+  namespace: coder
+roleRef:
+  kind: Role
+  name: dask-operator-role
+  apiGroup: rbac.authorization.k8s.io

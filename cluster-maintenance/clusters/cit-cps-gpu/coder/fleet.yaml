@@ -1,0 +1,39 @@
+name: coder
+defaultNamespace: coder
+
+# Labels for bundle identification
+labels:
+  app: coder
+  name: coder
+
+helm:
+  chart: coder
+  repo: https://helm.coder.com/v2
+  version: 2.29.1
+  releaseName: coder
+  createNamespace: true
+  valuesFiles:
+  - values.yaml
+
+# PostgreSQL, PVCs, and additional Kubernetes manifests
+kustomize:
+  dir: .
+
+# Depends on storage infrastructure, ingress, and GPU operator
+dependsOn:
+- selector:
+    matchLabels:
+      name: storage-classes
+- selector:
+    matchLabels:
+      name: ingress-nginx
+- selector:
+    matchLabels:
+      name: gpu-operator
+
+diff:
+  comparePatches:
+  - apiVersion: apps/v1
+    kind: Deployment
+    operations:
+    - {"op": "remove", "path": "/spec/template/metadata/annotations/checksum~1secret"}

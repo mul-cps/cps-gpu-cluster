@@ -1,0 +1,139 @@
+coder:
+  # Coder environment variables
+  # See: https://coder.com/docs/admin/configure
+  env:
+    # Database connection
+    - name: CODER_PG_CONNECTION_URL
+      valueFrom:
+        secretKeyRef:
+          name: coder-db-url
+          key: url
+    
+    # Access URL - primary domain for Coder
+    - name: CODER_ACCESS_URL
+      value: "https://coder.dshl.unileoben.ac.at"
+    
+    # OIDC Authentication with Authentik
+    - name: CODER_OIDC_ISSUER_URL
+      value: "https://auth.cps.unileoben.ac.at/application/o/coder/"
+    
+    - name: CODER_OIDC_CLIENT_ID
+      value: "lDBqyH9xujZ1WC1PCPPxiqIWg5o0FAX83UmQshsB"
+    
+    - name: CODER_OIDC_CLIENT_SECRET
+      value: "vRA9Z4ueEymKFxxQn3wHplxLRabUm0CFXHShJmEpmSjaXxhsdVwto2Q5m1RF7Bu2nyUULUIVEQhJM3Ix6xZdUqwnhnWz0geSgThZdPYKoxbAY8RhTEQ8JPyOVDh34wpt"
+    
+    # Email domain for OIDC
+    - name: CODER_OIDC_EMAIL_DOMAIN
+      value: "unileoben.ac.at"
+    c
+    # OIDC scopes - request groups for authorization
+    - name: CODER_OIDC_SCOPES
+      value: "openid,profile,email,groups"
+    
+    # Group claim field from OIDC token
+    - name: CODER_OIDC_GROUPS_FIELD
+      value: "groups"
+    
+    # Username claim
+    - name: CODER_OIDC_USERNAME_FIELD
+      value: "preferred_username"
+    
+    # Disable TLS verification for self-signed Authentik certs
+    # TODO: REMOVE THIS WORKAROUND - use proper CA bundle
+    - name: CODER_TLS_CLIENT_AUTH
+      value: "none"
+    
+    # Disable built-in authentication (OIDC only)
+    - name: CODER_DISABLE_PASSWORD_AUTH
+      value: "false"  # Set to "true" after OIDC is verified
+    
+    # Wildcard access URL for workspace subdomains
+    - name: CODER_WILDCARD_ACCESS_URL
+      value: "*.coder.dshl.unileoben.ac.at"
+    
+    # Telemetry (disable for privacy)
+    - name: CODER_TELEMETRY_ENABLE
+      value: "false"
+    
+    # Logging
+    - name: CODER_LOG_HUMAN
+      value: "/dev/stderr"
+    
+    # Prometheus metrics
+    - name: CODER_PROMETHEUS_ENABLE
+      value: "true"
+    - name: CODER_PROMETHEUS_ADDRESS
+      value: "0.0.0.0:2112"
+
+  # Replica count for Coder deployment
+  replicaCount: 1
+
+  # Image configuration
+  image:
+    repo: "ghcr.io/coder/coder"
+    tag: "v2.29.1"
+    pullPolicy: IfNotPresent
+
+  # Service configuration
+  service:
+    type: ClusterIP
+    sessionAffinity:
+      enable: true
+
+  # Ingress configuration
+  ingress:
+    enable: true
+    className: "nginx"
+    host: "coder.dshl.unileoben.ac.at"
+    wildcardHost: "*.coder.dshl.unileoben.ac.at"
+    tls:
+      enable: true
+      secretNames:
+        - dshl-wildcard
+      wildcardSecretName: dshl-wildcard
+    annotations:
+      cert-manager.io/cluster-issuer: "letsencrypt-prod"
+      nginx.ingress.kubernetes.io/proxy-body-size: "0"
+      nginx.ingress.kubernetes.io/proxy-read-timeout: "3600"
+      nginx.ingress.kubernetes.io/proxy-send-timeout: "3600"
+
+  # Resources for Coder pods
+  resources:
+    requests:
+      cpu: "500m"
+      memory: "1Gi"
+    limits:
+      cpu: "2000m"
+      memory: "4Gi"
+
+  # Security context
+  securityContext:
+    runAsNonRoot: true
+    runAsUser: 1000
+    fsGroup: 1000
+    seccompProfile:
+      type: RuntimeDefault
+
+  # Service account
+  serviceAccount:
+    create: true
+    name: "coder"
+    annotations: {}
+
+  # Pod annotations
+  podAnnotations: {}
+
+  # Pod labels
+  podLabels:
+    app.kubernetes.io/name: coder
+    app.kubernetes.io/component: server
+
+  # Affinity rules
+  affinity: {}
+
+  # Tolerations
+  tolerations: []
+
+  # Node selector
+  nodeSelector: {}
