@@ -2,6 +2,8 @@
 extraEnv:
   - name: OLLAMA_BASE_URL
     value: "http://ollama:11434"
+  - name: OLLAMA_BASE_URLS
+    value: "http://ollama:11434"
   # OIDC Configuration (secrets loaded from secret-oidc.yaml)
   - name: WEBUI_AUTH
     value: "True"
