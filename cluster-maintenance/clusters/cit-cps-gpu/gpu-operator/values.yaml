@@ -58,6 +58,8 @@ devicePlugin:
 dcgmExporter:
   enabled: true
   version: "4.4.1-4.6.0-distroless"
+  serviceMonitor:
+    enabled: true
 
 # GPU Feature Discovery
 gfd:
