@@ -6,6 +6,11 @@ extraEnv:
   - name: WEBUI_AUTH
     value: "True"
 
+# Disable bundled Ollama
+ollama:
+  enabled: false
+
+
 # Load OIDC secrets from the secret created separately
 extraEnvFrom:
   - secretRef:
