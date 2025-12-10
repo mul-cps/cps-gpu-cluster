@@ -60,6 +60,8 @@ dcgmExporter:
   version: "4.4.1-4.6.0-distroless"
   serviceMonitor:
     enabled: true
+  podAnnotations:
+    prometheus.io/scrape: "false"
 
 # GPU Feature Discovery
 gfd:
