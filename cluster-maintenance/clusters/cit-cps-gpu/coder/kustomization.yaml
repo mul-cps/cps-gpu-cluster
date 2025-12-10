@@ -4,8 +4,8 @@ kind: Kustomization
 namespace: coder
 
 resources:
-  - namespace.yaml
   - postgresql.yaml
   - coder-db-secret.yaml
   - coder-shared-pvc.yaml
   - dask-rbac.yaml
+
