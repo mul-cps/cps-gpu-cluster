@@ -26,7 +26,7 @@ coder:
     # Email domain for OIDC
     - name: CODER_OIDC_EMAIL_DOMAIN
       value: "unileoben.ac.at"
-    c
+    
     # OIDC scopes - request groups for authorization
     - name: CODER_OIDC_SCOPES
       value: "openid,profile,email,groups"
