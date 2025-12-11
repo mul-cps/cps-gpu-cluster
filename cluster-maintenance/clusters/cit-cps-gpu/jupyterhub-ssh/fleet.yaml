@@ -1,3 +1,4 @@
+name: jupyterhub-ssh
 defaultNamespace: jupyterhub
 helm:
   chart: ./chart

@@ -1,3 +1,4 @@
+name: slurm-bridge
 defaultNamespace: slinky
 helm:
   chart: oci://ghcr.io/slinkyproject/charts/slurm-bridge

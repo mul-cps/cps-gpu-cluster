@@ -1,3 +1,4 @@
+name: dask-compute
 defaultNamespace: dask-compute
 
 labels:

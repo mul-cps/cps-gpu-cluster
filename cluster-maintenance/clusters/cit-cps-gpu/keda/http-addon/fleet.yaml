@@ -15,3 +15,5 @@ helm:
     interceptor:
       proxy:
         port: 8080
+      autoscaling:
+        enabled: false
