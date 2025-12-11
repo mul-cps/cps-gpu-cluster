@@ -361,6 +361,19 @@ hub:
               'grant_sudo': True,
           },
 
+          # ComfyUI Profile
+          'gpu-comfyui': {
+              'display_name': 'ComfyUI (GPU)',
+              'description': 'ComfyUI Image • 1× GPU • 16 vCPU • 64 GiB',
+              'image': 'ghcr.io/mul-cps/cps-jupyter-notebook:main-comfyui',
+              'cpu_limit': 16.0, 'cpu_guarantee': 8.0,
+              'mem_limit': '64G', 'mem_guarantee': '32G',
+              'gpu': 1,
+              'resource_key': 'nvidia.com/gpu',
+              'runtime_class': 'nvidia',
+              'grant_sudo': True,
+          },
+
           # Slurm Profile
           'gpu-slurm': {
               'display_name': 'GPU via Slurm (Slinky)',
