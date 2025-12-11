@@ -1,4 +1,6 @@
 name: keda-core
+labels:
+  name: keda-core
 defaultNamespace: keda
 
 
