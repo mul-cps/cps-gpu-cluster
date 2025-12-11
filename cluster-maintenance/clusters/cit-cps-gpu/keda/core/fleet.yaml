@@ -1,0 +1,7 @@
+defaultNamespace: keda
+namespace: keda
+
+helm:
+  repo: https://kedacore.github.io/charts
+  chart: keda
+  releaseName: keda

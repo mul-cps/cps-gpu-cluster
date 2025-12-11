@@ -1,0 +1,11 @@
+defaultNamespace: keda
+namespace: keda
+
+helm:
+  repo: https://kedacore.github.io/charts
+  chart: keda-add-ons-http
+  releaseName: keda-add-ons-http
+  values:
+    interceptor:
+      proxy:
+        port: 8080
