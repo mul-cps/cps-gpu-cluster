@@ -1,4 +1,10 @@
+name: keda-http-addon
 defaultNamespace: keda
+
+dependsOn:
+  - selector:
+      matchLabels:
+        name: keda-core
 
 
 helm:
