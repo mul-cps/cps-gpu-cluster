@@ -557,6 +557,9 @@ hub:
                  for m in new_mounts:
                      spawner.volume_mounts[m['name']] = m
 
+             # Increase storage capacity for power users
+             spawner.storage_capacity = '100Gi'
+
           spawner.log.info(f"Final: image={spawner.image} CPU={spawner.cpu_limit}/{spawner.cpu_guarantee} MEM={spawner.mem_limit}/{spawner.mem_guarantee} RES={spawner.extra_resource_limits}")
       c.KubeSpawner.pre_spawn_hook = apply_profile_settings
 
