@@ -532,6 +532,7 @@ hub:
              new_volumes = [
                  {'name': 'shared', 'persistentVolumeClaim': {'claimName': 'jupyterhub-shared-storage'}},
                  {'name': 'cps-persistent1-shared', 'persistentVolumeClaim': {'claimName': 'cps-persistent1-shared-pvc'}},
+                 {'name': 'cps-scratch1-tmp', 'persistentVolumeClaim': {'claimName': 'cps-scratch1-tmp-pvc'}},
              ]
              if spawner.volumes is None:
                  spawner.volumes = []
@@ -546,6 +547,7 @@ hub:
              new_mounts = [
                  {'name': 'shared', 'mountPath': '/home/jovyan/shared'},
                  {'name': 'cps-persistent1-shared', 'mountPath': '/home/jovyan/cps_persistent1_shared'},
+                 {'name': 'cps-scratch1-tmp', 'mountPath': '/home/jovyan/cps_scratch1_tmp'},
              ]
              if spawner.volume_mounts is None:
                  spawner.volume_mounts = []

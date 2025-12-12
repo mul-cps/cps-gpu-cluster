@@ -6,6 +6,7 @@ resources:
   # - namespace.yaml
   - storage-class.yaml
   - shared-pvc.yaml
+  - nfs_mounts/cps-scratch1-tmp.yaml
   - postgresql.yaml
   - harica-ca-configmap.yaml
   - user-docs-configmap.yaml
