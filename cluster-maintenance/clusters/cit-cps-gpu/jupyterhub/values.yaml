@@ -77,8 +77,9 @@ hub:
       import subprocess, sys
       try:
           import oauthenticator
+          import ldap3
       except ImportError:
-          subprocess.check_call([sys.executable, '-m', 'pip', 'install', 'oauthenticator'])
+          subprocess.check_call([sys.executable, '-m', 'pip', 'install', 'oauthenticator', 'ldap3'])
 
     01-custom-templates: |
       # Custom template functionality disabled to avoid ConfigMap conflicts
@@ -93,6 +94,37 @@ hub:
       def is_power_user(user):
           user_groups = {getattr(g, "name", g) for g in user.groups}
           return bool(user.admin) or bool(user_groups & POWER_USER_GROUPS)
+
+      # ---------- LDAP Lookup ----------
+      def get_ldap_info(username):
+          from ldap3 import Server, Connection, ALL
+          
+          # LDAP Config
+          LDAP_SERVER = 'ldaps://auth.cps.unileoben.ac.at:636'
+          LDAP_USER = 'cn=ldapservice,ou=users,dc=ldap,dc=goauthentik,dc=io'
+          LDAP_PASSWORD = 'ldapservice'
+          SEARCH_BASE = 'ou=users,dc=ldap,dc=goauthentik,dc=io'
+          
+          try:
+              server = Server(LDAP_SERVER, get_info=ALL)
+              conn = Connection(server, user=LDAP_USER, password=LDAP_PASSWORD, auto_bind=True)
+              
+              # Search for user
+              search_filter = f'(cn={username})'
+              conn.search(SEARCH_BASE, search_filter, attributes=['uidNumber', 'gidNumber'])
+              
+              if len(conn.entries) > 0:
+                  entry = conn.entries[0]
+                  return {
+                      'uid': int(entry.uidNumber.value),
+                      'gid': int(entry.gidNumber.value)
+                  }
+              else:
+                  print(f"LDAP: User {username} not found")
+                  return None
+          except Exception as e:
+              print(f"LDAP Error for {username}: {e}")
+              return None
 
       # ---------- Dynamic UI Generation ----------
       def get_options_form(spawner):
@@ -428,6 +460,39 @@ hub:
           cfg = PROFILE_CONFIGS.get(profile_slug, PROFILE_CONFIGS['cpu-default'])
           spawner.log.info(f"{spawner.user.name} -> profile={profile_slug}, custom_image={'set' if custom_image else 'none'}, custom_gpus={custom_gpus}")
 
+          # LDAP Lookup for UID/GID
+          ldap_info = get_ldap_info(spawner.user.name)
+          if ldap_info:
+              spawner.uid = ldap_info['uid']
+              spawner.gid = ldap_info['gid']
+              spawner.fs_gid = ldap_info['gid']
+              spawner.log.info(f"LDAP: Set {spawner.user.name} to UID={spawner.uid}, GID={spawner.gid}")
+          else:
+              spawner.log.warning(f"LDAP: Could not find UID/GID for {spawner.user.name}, using default")
+
+          # Mount User NFS Share
+          # We mount the root of the user share to /home/jovyan/cps_persistent1_users
+          # The user will only be able to access their own folder due to UID/GID permissions
+          user_nfs_vol = {'name': 'cps-persistent1-users', 'persistentVolumeClaim': {'claimName': 'cps-persistent1-users-pvc'}}
+          user_nfs_mount = {'name': 'cps-persistent1-users', 'mountPath': '/home/jovyan/cps_persistent1_users'}
+          
+          if spawner.volumes is None: spawner.volumes = []
+          if spawner.volume_mounts is None: spawner.volume_mounts = []
+          
+          if isinstance(spawner.volumes, list):
+              spawner.volumes.append(user_nfs_vol)
+          elif isinstance(spawner.volumes, dict):
+              spawner.volumes[user_nfs_vol['name']] = user_nfs_vol
+              
+          if isinstance(spawner.volume_mounts, list):
+              spawner.volume_mounts.append(user_nfs_mount)
+          elif isinstance(spawner.volume_mounts, dict):
+              spawner.volume_mounts[user_nfs_mount['name']] = user_nfs_mount
+
+          # Set Notebook Dir to User's Folder on NFS
+          # spawner.notebook_dir = f"/home/jovyan/cps_persistent1_users/{spawner.user.name}"
+          # spawner.default_url = "/lab/tree/cps_persistent1_users/" + spawner.user.name
+
           # Base image
           spawner.image = cfg['image'] if not custom_image else spawner.image
           # Resources
@@ -664,8 +729,8 @@ singleuser:
     limit: 4G
     guarantee: 2G
 
-  uid: 1000
-  fsGid: 100
+  # uid: 1000
+  # fsGid: 100
   extraEnv:
     NOTEBOOK_ARGS: "--allow-root"
     DASK_KUBERNETES__OPERATOR__NAMESPACE: "dask-compute"

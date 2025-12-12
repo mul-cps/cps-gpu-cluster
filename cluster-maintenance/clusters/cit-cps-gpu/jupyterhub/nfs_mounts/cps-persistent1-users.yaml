@@ -1,0 +1,43 @@
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: cps-persistent1-users-pv
+spec:
+  capacity:
+    storage: 10Ti # NFS size is arbitrary, setting high
+  accessModes:
+    - ReadWriteMany
+  nfs:
+    server: 10.71.1.55
+    path: /mnt/persistent1/cps_persistent1_users
+  mountOptions:
+    - nfsvers=4.2
+    - proto=tcp
+    - hard
+    - timeo=150
+    - retrans=2
+    - rsize=1048576
+    - wsize=1048576
+    - nconnect=8
+    - noresvport
+    - noatime
+    - _netdev
+    - x-systemd.automount
+    - x-systemd.idle-timeout=600s
+    - x-systemd.requires=network-online.target
+    - x-systemd.after=network-online.target
+    - nofail
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: cps-persistent1-users-pvc
+  namespace: jupyterhub
+spec:
+  accessModes:
+    - ReadWriteMany
+  storageClassName: "" # Static provisioning
+  volumeName: cps-persistent1-users-pv
+  resources:
+    requests:
+      storage: 10Ti
