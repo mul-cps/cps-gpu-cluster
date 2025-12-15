@@ -70,22 +70,6 @@ gfd:
 # MIG scheduling strategy for device plugin: allow both full GPU and MIG resources
 mig:
   # Advertise both full GPU (on non-MIG nodes) and MIG resources only on the single MIG-enabled node.
-  # Strategy 'mixed' is still appropriate globally; nodes without MIG partitions will just expose nvidia.com/gpu.
-  strategy: mixed
-
-# MIG Manager (for A100 MIG partitioning - enabled by default in v25.10.0)
-migManager:
-  enabled: true
-  env:
-    - name: LD_LIBRARY_PATH
-      value: /driver-root/usr/lib/x86_64-linux-gnu
-  # Provide a MIG partitioning ConfigMap inline. Create both 40GB and 80GB profiles; set default to one.
-  config:
-    create: true
-    name: custom-mig-parted-configs
-    # Set default to all-disabled so ALL nodes start with no MIG partitions.
-    default: all-disabled
-    data:
       config.yaml: |-
         version: v1
         mig-configs:
