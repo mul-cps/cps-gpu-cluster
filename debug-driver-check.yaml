@@ -1,0 +1,20 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: debug-driver-check
+  namespace: gpu-operator
+spec:
+  nodeName: k3s-wk-gpu1
+  restartPolicy: Never
+  containers:
+  - name: debug
+    image: ubuntu
+    command: ["/bin/bash", "-c", "ls -R /run/nvidia"]
+    volumeMounts:
+    - name: run-nvidia
+      mountPath: /run/nvidia
+  volumes:
+  - name: run-nvidia
+    hostPath:
+      path: /run/nvidia
+      type: Directory

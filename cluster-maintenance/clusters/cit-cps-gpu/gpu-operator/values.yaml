@@ -76,6 +76,9 @@ mig:
 # MIG Manager (for A100 MIG partitioning - enabled by default in v25.10.0)
 migManager:
   enabled: true
+  env:
+    - name: LD_LIBRARY_PATH
+      value: /driver-root/usr/lib/x86_64-linux-gnu
   # Provide a MIG partitioning ConfigMap inline. Create both 40GB and 80GB profiles; set default to one.
   config:
     create: true
