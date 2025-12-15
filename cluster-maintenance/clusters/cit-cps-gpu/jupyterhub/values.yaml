@@ -96,7 +96,7 @@ hub:
           return bool(user.admin) or bool(user_groups & POWER_USER_GROUPS)
 
       # ---------- LDAP Lookup ----------
-      def get_ldap_info(username):
+      def get_ldap_info(username, log=None):
           from ldap3 import Server, Connection, ALL
           
           # LDAP Config
@@ -106,24 +106,28 @@ hub:
           SEARCH_BASE = 'ou=users,dc=ldap,dc=goauthentik,dc=io'
           
           try:
-              server = Server(LDAP_SERVER, get_info=ALL)
-              conn = Connection(server, user=LDAP_USER, password=LDAP_PASSWORD, auto_bind=True)
+              if log: log.info(f"LDAP: Connecting to {LDAP_SERVER}...")
+              server = Server(LDAP_SERVER, get_info=ALL, connect_timeout=5)
+              conn = Connection(server, user=LDAP_USER, password=LDAP_PASSWORD, auto_bind=True, receive_timeout=5)
               
               # Search for user
+              if log: log.info(f"LDAP: Searching for {username}...")
               search_filter = f'(cn={username})'
               conn.search(SEARCH_BASE, search_filter, attributes=['uidNumber', 'gidNumber'])
               
               if len(conn.entries) > 0:
                   entry = conn.entries[0]
+                  if log: log.info(f"LDAP: Found user {username}: {entry.entry_dn}")
                   return {
                       'uid': int(entry.uidNumber.value),
                       'gid': int(entry.gidNumber.value)
                   }
               else:
-                  print(f"LDAP: User {username} not found")
+                  if log: log.warning(f"LDAP: User {username} not found")
                   return None
           except Exception as e:
-              print(f"LDAP Error for {username}: {e}")
+              if log: log.error(f"LDAP Error for {username}: {e}")
+              else: print(f"LDAP Error for {username}: {e}")
               return None
 
       # ---------- Dynamic UI Generation ----------
@@ -461,33 +465,38 @@ hub:
           spawner.log.info(f"{spawner.user.name} -> profile={profile_slug}, custom_image={'set' if custom_image else 'none'}, custom_gpus={custom_gpus}")
 
           # LDAP Lookup for UID/GID
-          ldap_info = get_ldap_info(spawner.user.name)
+          ldap_info = get_ldap_info(spawner.user.name, spawner.log)
+          
+          # Default to jovyan (fail-safe)
+          spawner.uid = 1000
+          spawner.fs_gid = 100
+          
           if ldap_info:
               spawner.uid = ldap_info['uid']
               spawner.gid = ldap_info['gid']
               spawner.fs_gid = ldap_info['gid']
               spawner.log.info(f"LDAP: Set {spawner.user.name} to UID={spawner.uid}, GID={spawner.gid}")
-          else:
-              spawner.log.warning(f"LDAP: Could not find UID/GID for {spawner.user.name}, using default")
 
-          # Mount User NFS Share
-          # We mount the root of the user share to /home/jovyan/cps_persistent1_users
-          # The user will only be able to access their own folder due to UID/GID permissions
-          user_nfs_vol = {'name': 'cps-persistent1-users', 'persistentVolumeClaim': {'claimName': 'cps-persistent1-users-pvc'}}
-          user_nfs_mount = {'name': 'cps-persistent1-users', 'mountPath': '/home/jovyan/cps_persistent1_users'}
-          
-          if spawner.volumes is None: spawner.volumes = []
-          if spawner.volume_mounts is None: spawner.volume_mounts = []
-          
-          if isinstance(spawner.volumes, list):
-              spawner.volumes.append(user_nfs_vol)
-          elif isinstance(spawner.volumes, dict):
-              spawner.volumes[user_nfs_vol['name']] = user_nfs_vol
+              # Mount User NFS Share (Only if we have correct UID)
+              # We mount the root of the user share to /home/jovyan/cps_persistent1_users
+              # The user will only be able to access their own folder due to UID/GID permissions
+              user_nfs_vol = {'name': 'cps-persistent1-users', 'persistentVolumeClaim': {'claimName': 'cps-persistent1-users-pvc'}}
+              user_nfs_mount = {'name': 'cps-persistent1-users', 'mountPath': '/home/jovyan/cps_persistent1_users'}
               
-          if isinstance(spawner.volume_mounts, list):
-              spawner.volume_mounts.append(user_nfs_mount)
-          elif isinstance(spawner.volume_mounts, dict):
-              spawner.volume_mounts[user_nfs_mount['name']] = user_nfs_mount
+              if spawner.volumes is None: spawner.volumes = []
+              if spawner.volume_mounts is None: spawner.volume_mounts = []
+              
+              if isinstance(spawner.volumes, list):
+                  spawner.volumes.append(user_nfs_vol)
+              elif isinstance(spawner.volumes, dict):
+                  spawner.volumes[user_nfs_vol['name']] = user_nfs_vol
+                  
+              if isinstance(spawner.volume_mounts, list):
+                  spawner.volume_mounts.append(user_nfs_mount)
+              elif isinstance(spawner.volume_mounts, dict):
+                  spawner.volume_mounts[user_nfs_mount['name']] = user_nfs_mount
+          else:
+              spawner.log.warning(f"LDAP: Could not find UID/GID for {spawner.user.name}, using default UID 1000/100. NFS share will NOT be mounted.")
 
           # Set Notebook Dir to User's Folder on NFS
           # spawner.notebook_dir = f"/home/jovyan/cps_persistent1_users/{spawner.user.name}"
