@@ -152,7 +152,7 @@ hub:
                    chips.append(f'<span class="chip gpu-chip">MIG</span>')
               
               chips.append(f'<span class="chip cpu-chip">{int(cpu)} vCPU</span>')
-              chips.append(f'<span class="chip ram-chip">{mem}</span>')
+              chips.append(f'<span class="chip ram-chip">{mem} RAM</span>')
               
               cls = "card selected" if selected else "card"
               checked = "checked" if selected else ""
@@ -169,11 +169,49 @@ hub:
 
           # Generate Grid
           cards_html = []
+          
+          # Define Categories
+          categories = {
+              'CPU-only (general purpose)': [],
+              'GPU-enabled': [],
+              'Special': []
+          }
+          
+          # Sort profiles into categories
           for p in allowed_profiles:
               slug = p['slug']
               cfg = PROFILE_CONFIGS[slug]
-              is_default = cfg.get('default', False)
-              cards_html.append(render_card(slug, cfg, selected=is_default))
+              cat = cfg.get('category', 'Special')
+              if cat in categories:
+                  categories[cat].append(p)
+              else:
+                  categories['Special'].append(p)
+
+          # Render Categories
+          for cat_name, profiles in categories.items():
+              if not profiles: continue
+              
+              # Render cards for this category
+              cat_cards = []
+              for p in profiles:
+                  slug = p['slug']
+                  cfg = PROFILE_CONFIGS[slug]
+                  is_default = cfg.get('default', False)
+                  cat_cards.append(render_card(slug, cfg, selected=is_default))
+              
+              cat_grid = "\n".join(cat_cards)
+              
+              # Collapsible Section
+              cards_html.append(f"""
+              <details open style="margin-bottom: 16px; width: 100%;">
+                <summary style="font-weight: 600; color: #374151; font-size: 14px; text-transform: uppercase; letter-spacing: 0.05em; cursor: pointer; margin-bottom: 8px; list-style: none; display: flex; align-items: center;">
+                  <span style="margin-right: 6px;">▶</span> {cat_name}
+                </summary>
+                <div class="grid">
+                  {cat_grid}
+                </div>
+              </details>
+              """)
           
           grid_html = "\n".join(cards_html)
           
@@ -240,6 +278,11 @@ hub:
             .input, .select {{ width:100%; padding:10px 12px; border:1.5px solid #e5e7eb; border-radius:10px; background:white; }}
             .select-inline {{ width:auto; min-width: 160px; }}
             .hint {{ font-size:12px; color:#6b7280; margin-top: 4px; }}
+            
+            /* Collapsible styling */
+            details > summary {{ list-style: none; }}
+            details > summary::-webkit-details-marker {{ display: none; }}
+            details[open] > summary span {{ transform: rotate(90deg); display: inline-block; }}
           </style>
 
           <div class="hub-ui">
@@ -247,9 +290,7 @@ hub:
             <div class="subtle">For longer CLI workloads, use <code>tmux</code>.</div>
 
             <div class="layer">
-              <div class="grid" id="profile-grid">
                 {grid_html}
-              </div>
             </div>
 
             {custom_image_html}
@@ -286,10 +327,10 @@ hub:
       # ---------- Canonical profile configs ----------
       # Define all profiles here. The UI list is generated from this dictionary.
       # To add more profiles, simply add entries to this dictionary or use PROFILE_CONFIGS.update({...}).
-      PROFILE_CONFIGS = {
+        PROFILE_CONFIGS = {
           # CPU default
           'cpu-default': {
-              'display_name': 'CPU (Default)',
+              'display_name': 'Standard Small (CPU)',
               'description': '2 vCPU (shared) • 2 GiB',
               'default': True,
               'image': 'ghcr.io/mul-cps/cps-jupyter-notebook:latest-standard-cpu',
@@ -298,11 +339,12 @@ hub:
               'runtime_class': None,
               'gpu': 0,
               'grant_sudo': False,
+              'category': 'CPU-only (general purpose)',
           },
 
           # Dask Cluster
           'dask-cluster': {
-              'display_name': 'Dask Cluster',
+              'display_name': 'Standard Medium (Dask)',
               'description': 'Dask Image • 2 vCPU • 8 GiB',
               'image': 'nvcr.io/nvidia/rapidsai/base:24.08-cuda12.2-py3.10',
               'cpu_limit': 2.0, 'cpu_guarantee': 1.0,
@@ -312,12 +354,25 @@ hub:
               'uid': 1001, # RapidsAI image uses UID 1001
               'cmd': ['/bin/sh', '-c', 'pip install --no-cache-dir jupyterhub && jupyterhub-singleuser && jupyter-server-proxy'],
               'grant_sudo': True,
+              'category': 'CPU-only (general purpose)',
+          },
+
+          # Desktop CPU
+          'cpu-desktop': {
+              'display_name': 'Standard Large (Desktop)',
+              'description': 'Desktop Environment • 4 vCPU • 16 GiB',
+              'image': 'ghcr.io/mul-cps/cps-jupyter-notebook:latest-desktop-ros2',
+              'cpu_limit': 4.0, 'cpu_guarantee': 1.0,
+              'mem_limit': '16G', 'mem_guarantee': '4G',
+              'gpu': 0,
+              'grant_sudo': False,
+              'category': 'CPU-only (general purpose)',
           },
 
           # GPU full devices
           'gpu-pytorch-single': {
-              'display_name': 'GPU PyTorch (1×)',
-              'description': '1× GPU • 16 vCPU • 64 GiB',
+              'display_name': 'GPU Large (PyTorch 1×)',
+              'description': '1× A100 (40GB VRAM) • 16 vCPU • 64 GiB',
               'image': 'ghcr.io/mul-cps/cps-jupyter-notebook:latest-pytorch-code',
               'cpu_limit': 16.0, 'cpu_guarantee': 8.0,
               'mem_limit': '64G', 'mem_guarantee': '32G',
@@ -325,10 +380,11 @@ hub:
               'resource_key': 'nvidia.com/gpu',
               'runtime_class': 'nvidia',
               'grant_sudo': True,
+              'category': 'GPU-enabled',
           },
           'gpu-tensorflow-single': {
-              'display_name': 'GPU TF (1×)',
-              'description': '1× GPU • 16 vCPU • 64 GiB',
+              'display_name': 'GPU Large (TF 1×)',
+              'description': '1× A100 (40GB VRAM) • 16 vCPU • 64 GiB',
               'image': 'ghcr.io/mul-cps/cps-jupyter-notebook:latest-tf-code',
               'cpu_limit': 16.0, 'cpu_guarantee': 8.0,
               'mem_limit': '64G', 'mem_guarantee': '32G',
@@ -336,12 +392,13 @@ hub:
               'resource_key': 'nvidia.com/gpu',
               'runtime_class': 'nvidia',
               'grant_sudo': True,
+              'category': 'GPU-enabled',
           },
 
           # GPU dual
           'gpu-pytorch-dual': {
-              'display_name': 'GPU PyTorch (2×)',
-              'description': '2× GPU • 32 vCPU • 128 GiB',
+              'display_name': 'GPU X-Large (PyTorch 2×)',
+              'description': '2× A100 (40GB VRAM) • 32 vCPU • 128 GiB',
               'image': 'ghcr.io/mul-cps/cps-jupyter-notebook:latest-pytorch-code',
               'cpu_limit': 32.0, 'cpu_guarantee': 16.0,
               'mem_limit': '128G', 'mem_guarantee': '64G',
@@ -349,10 +406,11 @@ hub:
               'resource_key': 'nvidia.com/gpu',
               'runtime_class': 'nvidia',
               'grant_sudo': True,
+              'category': 'GPU-enabled',
           },
           'gpu-tensorflow-dual': {
-              'display_name': 'GPU TF (2×)',
-              'description': '2× GPU • 32 vCPU • 128 GiB',
+              'display_name': 'GPU X-Large (TF 2×)',
+              'description': '2× A100 (40GB VRAM) • 32 vCPU • 128 GiB',
               'image': 'ghcr.io/mul-cps/cps-jupyter-notebook:latest-tf-code',
               'cpu_limit': 32.0, 'cpu_guarantee': 16.0,
               'mem_limit': '128G', 'mem_guarantee': '64G',
@@ -360,12 +418,13 @@ hub:
               'resource_key': 'nvidia.com/gpu',
               'runtime_class': 'nvidia',
               'grant_sudo': True,
+              'category': 'GPU-enabled',
           },
 
           # MIG slices
           'gpu-mig-1g': {
-              'display_name': 'GPU MIG 1g.5gb',
-              'description': '1× MIG 1g.5gb • 6 vCPU • 24 GiB',
+              'display_name': 'GPU Small (MIG 1g.5gb)',
+              'description': '1/7 A100 Slice (5GB VRAM) • 6 vCPU • 24 GiB',
               'image': 'ghcr.io/mul-cps/cps-jupyter-notebook:latest-pytorch-code',
               'cpu_limit': 6.0, 'cpu_guarantee': 3.0,
               'mem_limit': '24G', 'mem_guarantee': '12G',
@@ -373,10 +432,11 @@ hub:
               'resource_key': 'nvidia.com/mig-1g.5gb',
               'runtime_class': 'nvidia',
               'grant_sudo': True,
+              'category': 'GPU-enabled',
           },
           'gpu-mig-2g': {
-              'display_name': 'GPU MIG 2g.10gb',
-              'description': '1× MIG 2g.10gb • 10 vCPU • 40 GiB',
+              'display_name': 'GPU Medium (MIG 2g.10gb)',
+              'description': '2/7 A100 Slice (10GB VRAM) • 10 vCPU • 40 GiB',
               'image': 'ghcr.io/mul-cps/cps-jupyter-notebook:latest-pytorch-code',
               'cpu_limit': 10.0, 'cpu_guarantee': 5.0,
               'mem_limit': '40G', 'mem_guarantee': '20G',
@@ -384,12 +444,13 @@ hub:
               'resource_key': 'nvidia.com/mig-2g.10gb',
               'runtime_class': 'nvidia',
               'grant_sudo': True,
+              'category': 'GPU-enabled',
           },
 
           # Desktop + ROS 2
           'gpu-desktop-ros2': {
-              'display_name': 'GPU Desktop + ROS 2',
-              'description': 'Desktop + ROS 2 image • 1× GPU • 16 vCPU • 64 GiB',
+              'display_name': 'GPU Large (Desktop + ROS 2)',
+              'description': 'Desktop + ROS 2 • 1× A100 (40GB VRAM) • 16 vCPU • 64 GiB',
               'image': 'ghcr.io/mul-cps/cps-jupyter-notebook:latest-desktop-ros2',
               'cpu_limit': 16.0, 'cpu_guarantee': 8.0,
               'mem_limit': '64G', 'mem_guarantee': '32G',
@@ -397,12 +458,25 @@ hub:
               'resource_key': 'nvidia.com/gpu',
               'runtime_class': 'nvidia',
               'grant_sudo': True,
+              'category': 'GPU-enabled',
+          },
+          'gpu-desktop-mig-1g': {
+              'display_name': 'GPU Small (Desktop + ROS 2)',
+              'description': 'Desktop + ROS 2 • 1/7 A100 Slice (5GB VRAM) • 6 vCPU • 24 GiB',
+              'image': 'ghcr.io/mul-cps/cps-jupyter-notebook:latest-desktop-ros2',
+              'cpu_limit': 6.0, 'cpu_guarantee': 3.0,
+              'mem_limit': '24G', 'mem_guarantee': '12G',
+              'gpu': 1,
+              'resource_key': 'nvidia.com/mig-1g.5gb',
+              'runtime_class': 'nvidia',
+              'grant_sudo': True,
+              'category': 'GPU-enabled',
           },
 
           # ComfyUI Profile
           'gpu-comfyui': {
               'display_name': 'ComfyUI (GPU)',
-              'description': 'ComfyUI Image • 1× GPU • 16 vCPU • 64 GiB',
+              'description': 'ComfyUI Image • 1× A100 (40GB VRAM) • 16 vCPU • 64 GiB',
               'image': 'ghcr.io/mul-cps/cps-jupyter-notebook:main-comfyui',
               'cpu_limit': 16.0, 'cpu_guarantee': 8.0,
               'mem_limit': '64G', 'mem_guarantee': '32G',
@@ -410,6 +484,7 @@ hub:
               'resource_key': 'nvidia.com/gpu',
               'runtime_class': 'nvidia',
               'grant_sudo': True,
+              'category': 'Special',
           },
 
           # Slurm Profile
@@ -427,6 +502,7 @@ hub:
               },
               'runtime_class': None,
               'grant_sudo': True,
+              'category': 'Special',
           },
       }
 
