@@ -327,7 +327,7 @@ hub:
       # ---------- Canonical profile configs ----------
       # Define all profiles here. The UI list is generated from this dictionary.
       # To add more profiles, simply add entries to this dictionary or use PROFILE_CONFIGS.update({...}).
-        PROFILE_CONFIGS = {
+      PROFILE_CONFIGS = {
           # CPU default
           'cpu-default': {
               'display_name': 'Standard Small (CPU)',
