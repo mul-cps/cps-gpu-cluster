@@ -39,7 +39,7 @@ cps-gpu-cluster/
 │   └── ansible/            # K3s installation & configuration
 ├── cluster-maintenance/     # Day-2 operations via Fleet
 │   └── clusters/homelab/   # GitOps manifests
-├── docs/                   # Additional documentation
+├── docs/                   # Comprehensive documentation
 └── README.md
 ```
 
@@ -64,6 +64,8 @@ cps-gpu-cluster/
 7. **Enable Fleet GitOps** (see [cluster-maintenance/README.md](cluster-maintenance/README.md))
 8. **Deploy JupyterHub**
 
+For a detailed step-by-step guide, see the [Deployment Checklist](docs/deployment-checklist.md).
+
 ## Networking
 
 - Network: 10.0.0.x/24
@@ -86,6 +88,8 @@ See [docs/harvester-migration.md](docs/harvester-migration.md) for details.
 
 ### Core Setup
 - [Getting Started](docs/getting-started.md)
+- [Deployment Checklist](docs/deployment-checklist.md)
+- [Quick Reference](docs/quick-reference.md)
 - [GPU Passthrough Setup](docs/gpu-passthrough.md)
 - [Terraform Usage](bootstrap-cluster/terraform/README.md)
 - [Ansible Playbooks](bootstrap-cluster/ansible/README.md)
@@ -97,10 +101,12 @@ See [docs/harvester-migration.md](docs/harvester-migration.md) for details.
 - [Maintenance VM Guide](docs/maintenance-vm.md)
 - [Fleet GitOps](cluster-maintenance/README.md)
 - [Network Configuration](docs/network-configuration.md)
+- [JupyterHub Overview](docs/jupyterhub-overview.md)
 
 ### Operations
 - [Harvester Migration](docs/harvester-migration.md)
 - [Troubleshooting](docs/troubleshooting.md)
+- [Project History](docs/project-history.md)
 
 ## License
 

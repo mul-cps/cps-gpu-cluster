@@ -1,0 +1,19 @@
+name: keda-http-addon
+defaultNamespace: keda
+
+dependsOn:
+  - selector:
+      matchLabels:
+        name: keda-core
+
+
+helm:
+  repo: https://kedacore.github.io/charts
+  chart: keda-add-ons-http
+  releaseName: keda-add-ons-http
+  values:
+    interceptor:
+      proxy:
+        port: 8080
+      autoscaling:
+        enabled: false

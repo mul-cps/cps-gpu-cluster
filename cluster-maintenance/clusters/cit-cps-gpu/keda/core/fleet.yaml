@@ -1,0 +1,10 @@
+name: keda-core
+labels:
+  name: keda-core
+defaultNamespace: keda
+
+
+helm:
+  repo: https://kedacore.github.io/charts
+  chart: keda
+  releaseName: keda

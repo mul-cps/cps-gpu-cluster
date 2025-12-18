@@ -50,8 +50,7 @@ devicePlugin:
               # Expose a synthetic "gpu" resource by replicating MIG slices
               # This allows scheduling "full GPU" workloads on the MIG node
               # Replicas=2 means each physical MIG slice presents as 2 logical GPUs for time-sharing
-              - name: nvidia.com/mig-2g.10gb
-                replicas: 2
+
             # Note: Actual full GPUs on non-MIG nodes remain nvidia.com/gpu without replicas
 
 # DCGM Exporter (GPU metrics)
@@ -71,26 +70,13 @@ gfd:
 # MIG scheduling strategy for device plugin: allow both full GPU and MIG resources
 mig:
   # Advertise both full GPU (on non-MIG nodes) and MIG resources only on the single MIG-enabled node.
-  # Strategy 'mixed' is still appropriate globally; nodes without MIG partitions will just expose nvidia.com/gpu.
-  strategy: mixed
-
-# MIG Manager (for A100 MIG partitioning - enabled by default in v25.10.0)
-migManager:
-  enabled: true
-  # Provide a MIG partitioning ConfigMap inline. Create both 40GB and 80GB profiles; set default to one.
-  config:
-    create: true
-    name: custom-mig-parted-configs
-    # Set default to all-disabled so ALL nodes start with no MIG partitions.
-    default: all-disabled
-    data:
       config.yaml: |-
         version: v1
         mig-configs:
           all-disabled:
             - devices: all
               mig-enabled: false
-          # Mixed profile for a single node with 2x A100 40GB (GPU0 full, GPU1 8 slices 1g.5gb)
+          # Mixed profile for a single node with 2x A100 40GB (GPU0 full, GPU1 7 slices 1g.5gb)
           mixed-one-node-40gb-small:
             - devices: [0]
               mig-enabled: false
@@ -98,14 +84,7 @@ migManager:
               mig-enabled: true
               mig-devices:
                 "1g.5gb": 7
-          # (Optional) Alternate for future 80GB hardware
-          mixed-one-node-80gb-small:
-            - devices: [0]
-              mig-enabled: false
-            - devices: [1]
-              mig-enabled: true
-              mig-devices:
-                "1g.10gb": 8
+
           # Enable MIG on BOTH GPUs (index 0 and 1) on a single node (A100 40GB: 7× 1g.5gb per GPU)
           both-mig-40gb-small:
             - devices: [0]

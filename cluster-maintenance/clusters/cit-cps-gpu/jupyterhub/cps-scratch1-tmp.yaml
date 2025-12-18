@@ -1,0 +1,43 @@
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: cps-scratch1-tmp-pv
+spec:
+  capacity:
+    storage: 10Ti # NFS size is arbitrary, setting high
+  accessModes:
+    - ReadWriteMany
+  nfs:
+    server: 193.170.30.58
+    path: /mnt/scratch1/cps_scratch1_tmp
+  mountOptions:
+    - nfsvers=4.2
+    - proto=tcp
+    - hard
+    - timeo=150
+    - retrans=2
+    - rsize=1048576
+    - wsize=1048576
+    - nconnect=8
+    - noresvport
+    - noatime
+    - _netdev
+    - x-systemd.automount
+    - x-systemd.idle-timeout=600s
+    - x-systemd.requires=network-online.target
+    - x-systemd.after=network-online.target
+    - nofail
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: cps-scratch1-tmp-pvc
+  namespace: jupyterhub
+spec:
+  accessModes:
+    - ReadWriteMany
+  storageClassName: "" # Static provisioning
+  volumeName: cps-scratch1-tmp-pv
+  resources:
+    requests:
+      storage: 10Ti

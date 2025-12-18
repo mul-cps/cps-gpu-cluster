@@ -1,3 +1,4 @@
+name: slinky-slurm
 defaultNamespace: slinky
 helm:
   releases:

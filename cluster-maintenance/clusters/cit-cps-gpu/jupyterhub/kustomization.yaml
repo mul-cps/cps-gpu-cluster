@@ -4,8 +4,10 @@ kind: Kustomization
 # Include the storage PVCs, PostgreSQL, and namespace
 resources:
   # - namespace.yaml
-  - storage-class.yaml
+  # - storage-class.yaml
   - shared-pvc.yaml
+  - cps-scratch1-tmp.yaml
+  - cps-persistent1-users.yaml
   - postgresql.yaml
   - harica-ca-configmap.yaml
   - user-docs-configmap.yaml

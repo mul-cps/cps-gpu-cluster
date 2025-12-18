@@ -1,3 +1,4 @@
+name: wildcard-cert
 defaultNamespace: cattle-monitoring-system
 kustomize:
   dir: .

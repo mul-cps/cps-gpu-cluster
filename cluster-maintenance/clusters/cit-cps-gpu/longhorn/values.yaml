@@ -1,3 +1,9 @@
+global:
+  cattle:
+    systemDefaultRegistry: ""
+
+enablePSP: false
+
 persistence:
   defaultClass: false  # keep Longhorn SC non-default to avoid impacting existing nfs-client
 

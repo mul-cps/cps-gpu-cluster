@@ -1,9 +1,9 @@
 # Connect to internal Ollama service
 extraEnv:
   - name: OLLAMA_BASE_URL
-    value: "http://ollama:11434"
+    value: "http://ollama-http.ai-llm.svc.cluster.local:8080"
   - name: OLLAMA_BASE_URLS
-    value: "http://ollama:11434"
+    value: "http://ollama-http.ai-llm.svc.cluster.local:8080"
   # OIDC Configuration (secrets loaded from secret-oidc.yaml)
   - name: WEBUI_AUTH
     value: "True"
