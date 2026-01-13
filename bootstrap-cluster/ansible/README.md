@@ -122,8 +122,8 @@ After installation, verify the cluster:
 
 ```bash
 # Get kubeconfig from first control plane
-scp ubuntu@10.0.0.11:/etc/rancher/k3s/k3s.yaml ./kubeconfig
-sed -i 's/127.0.0.1/10.0.0.11/g' kubeconfig
+scp ubuntu@10.21.0.35:/etc/rancher/k3s/k3s.yaml ./kubeconfig
+sed -i 's/127.0.0.1/10.21.0.35/g' kubeconfig
 export KUBECONFIG=./kubeconfig
 
 # Check nodes
@@ -152,7 +152,7 @@ kubectl logs cuda-vectoradd
 - Check GPU Operator logs: `kubectl logs -n gpu-operator -l app=nvidia-device-plugin-daemonset`
 
 ### Storage issues
-- Verify NFS mount: `showmount -e 10.0.0.30`
+- Verify NFS mount: `showmount -e 10.21.0.44`
 - Check provisioner logs: `kubectl logs -n kube-system -l app=nfs-subdir-external-provisioner`
 
 ## Next Steps

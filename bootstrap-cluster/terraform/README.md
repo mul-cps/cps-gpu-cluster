@@ -127,7 +127,7 @@ All VMs are attached to **VLAN 633** with MUL-assigned network settings:
 | VM | Hostname | MAC Address | IP Address |
 |----|----------|-------------|------------|
 | k3s-wk-gpu1 | cit-vm-38.cit-gpu.local | 00:16:3e:63:79:29 | 10.21.0.38/16 |
-| k3s-wk-gpu2 | cit-vm-39.cit-gpu.local | 00:16:3e:63:79:2a | 10.21.0.39/16 |
+| k3s-wk-gpu2 | cit-vm-39.cit-gpu.local | 00:16:3e:63:79:2a | 10.21.0.43/16 |
 | k3s-wk-gpu3 | cit-vm-40.cit-gpu.local | 00:16:3e:63:79:2b | 10.21.0.40/16 |
 | k3s-wk-gpu4 | cit-vm-41.cit-gpu.local | 00:16:3e:63:79:2c | 10.21.0.41/16 |
 

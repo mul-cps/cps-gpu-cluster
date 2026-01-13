@@ -29,6 +29,7 @@ toolkit:
 devicePlugin:
   enabled: true
   version: "v0.18.0"
+  migStrategy: mixed
   # Time-slicing configuration to expose both MIG slices and "full GPU" via replicas
   config:
     create: true
