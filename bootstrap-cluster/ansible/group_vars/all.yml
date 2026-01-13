@@ -88,6 +88,9 @@ common_packages:
   - htop
   - net-tools
   - nfs-common
+  - open-iscsi
+  - cryptsetup
+  - dmsetup
 
 gpu_worker_packages:
   - pciutils

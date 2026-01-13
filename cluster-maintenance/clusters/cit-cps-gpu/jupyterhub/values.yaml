@@ -202,8 +202,9 @@ hub:
               cat_grid = "\n".join(cat_cards)
               
               # Collapsible Section
+              is_open = "open" if cat_name == 'GPU-enabled' else ""
               cards_html.append(f"""
-              <details open style="margin-bottom: 16px; width: 100%;">
+              <details {is_open} style="margin-bottom: 16px; width: 100%;">
                 <summary style="font-weight: 600; color: #374151; font-size: 14px; text-transform: uppercase; letter-spacing: 0.05em; cursor: pointer; margin-bottom: 8px; list-style: none; display: flex; align-items: center;">
                   <span style="margin-right: 6px;">▶</span> {cat_name}
                 </summary>
