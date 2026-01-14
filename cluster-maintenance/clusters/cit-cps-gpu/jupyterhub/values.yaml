@@ -786,6 +786,10 @@ singleuser:
 
 
     extraVolumes:
+      - name: dshm
+        emptyDir:
+          medium: Memory
+          sizeLimit: 2Gi
       - name: ephemeral-work
         emptyDir: {}
 
@@ -795,6 +799,8 @@ singleuser:
 
 
     extraVolumeMounts:
+      - name: dshm
+        mountPath: /dev/shm
       - name: ephemeral-work
         mountPath: /home/jovyan/work
 
