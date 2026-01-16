@@ -786,29 +786,31 @@ singleuser:
 
 
     extraVolumes:
-      - name: dshm
+      dshm:
         emptyDir:
           medium: Memory
           sizeLimit: 2Gi
-      - name: ephemeral-work
+      ephemeral-work:
         emptyDir: {}
 
-      - name: user-docs
+      user-docs:
         configMap:
           name: jupyterhub-user-docs
 
 
     extraVolumeMounts:
-      - name: dshm
+      dshm:
         mountPath: /dev/shm
-      - name: ephemeral-work
+      ephemeral-work:
         mountPath: /home/jovyan/work
 
-      - name: user-docs
+      user-docs-warning:
+        name: user-docs
         mountPath: /home/jovyan/00_IMPORTANT_STORAGE_WARNING.md
         subPath: 00_IMPORTANT_STORAGE_WARNING.md
         readOnly: true
-      - name: user-docs
+      user-docs-guide:
+        name: user-docs
         mountPath: /home/jovyan/01_CLUSTER_GUIDE.md
         subPath: 01_CLUSTER_GUIDE.md
         readOnly: true
@@ -839,8 +841,9 @@ scheduling:
 cull:
   enabled: true
   timeout: 3600     # 1h idle timeout
+  namedServers: false # Named servers shall run indefinitely
   every: 600        # check every 10 min
-  maxAge: 43200     # 12h max age (12*60*60 = 43200 seconds)
+  maxAge: 0         # Disable max age limit
   users: false
   adminUsers: true
   removeNamedServers: false
