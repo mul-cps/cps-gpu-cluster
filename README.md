@@ -68,11 +68,11 @@ For a detailed step-by-step guide, see the [Deployment Checklist](docs/deploymen
 
 ## Networking
 
-- Network: 10.0.0.x/24
-- K3s API: api.cluster.local (10.0.0.100)
-- NFS Server: 10.0.0.30:/export/k3s
-- Control Planes: 10.0.0.11-13
-- GPU Workers: 10.0.0.21-24
+- Network: 10.21.0.x/16
+- K3s API: api.cluster.local (10.21.0.100)
+- NFS Server: 10.21.0.44:/srv/nfs/k3s-storage
+- Control Planes: 10.21.0.35-37
+- GPU Workers: 10.21.0.38, 10.21.0.43, 10.21.0.40, 10.21.0.41
 
 ## Future Expansion
 

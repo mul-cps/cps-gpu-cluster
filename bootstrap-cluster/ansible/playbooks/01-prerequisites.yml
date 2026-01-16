@@ -32,6 +32,19 @@
         state: absent
       when: disable_swap | bool
 
+    - name: Disable multipathd
+      service:
+        name: multipathd
+        state: stopped
+        enabled: no
+      ignore_errors: yes
+
+    - name: Enable and start iscsid
+      service:
+        name: iscsid
+        state: started
+        enabled: yes
+
     - name: Enable IPv4 forwarding
       sysctl:
         name: net.ipv4.ip_forward
@@ -48,6 +61,10 @@
       loop:
         - overlay
         - br_netfilter
+        - iscsi_tcp
+        - nvme-tcp
+        - uio_pci_generic
+        - vfio_pci
 
     - name: Make kernel modules persistent
       copy:
@@ -55,6 +72,10 @@
         content: |
           overlay
           br_netfilter
+          iscsi_tcp
+          nvme-tcp
+          uio_pci_generic
+          vfio_pci
 
     - name: Set sysctl parameters for Kubernetes
       sysctl:
@@ -67,6 +88,14 @@
         - { name: 'net.bridge.bridge-nf-call-iptables', value: '1' }
         - { name: 'net.bridge.bridge-nf-call-ip6tables', value: '1' }
         - { name: 'net.ipv4.ip_forward', value: '1' }
+
+    - name: Configure HugePages for Longhorn v2
+      sysctl:
+        name: vm.nr_hugepages
+        value: '1024'
+        sysctl_set: yes
+        state: present
+        reload: yes
 
     - name: Create NVMe scratch directory on GPU workers
       file:

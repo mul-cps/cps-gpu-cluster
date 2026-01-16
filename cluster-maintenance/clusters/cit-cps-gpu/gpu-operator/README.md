@@ -33,16 +33,13 @@ Notes:
 - For A100 40GB the correct smallest-slice count is 7 (not 8). For A100 80GB it is 8.
 
 ## Apply / Update
-If using Fleet (Rancher): it will reconcile automatically after Git push.
-If applying manually with Helm (Ansible playbook currently sets `migManager.enabled=false`):
-1. Update the Ansible playbook `04-gpu-operator.yml` to remove the forced `--set migManager.enabled=false` (or pass `-f values.yaml`).
-2. Then deploy:
-   ```bash
-   helm upgrade --install gpu-operator nvidia/gpu-operator \
-     --namespace gpu-operator \
-     -f values.yaml \
-     --wait
-   ```
+**This configuration is managed by Fleet (GitOps).**
+Any changes to `values.yaml`, `custom-mig-config.yaml`, or `node-labeler.yaml` will be automatically applied when pushed to the repository.
+
+To manually trigger an update (if needed):
+```bash
+kubectl -n fleet-system rollout restart deployment/fleet-agent
+```
 
 ## Verify MIG State
 ```bash

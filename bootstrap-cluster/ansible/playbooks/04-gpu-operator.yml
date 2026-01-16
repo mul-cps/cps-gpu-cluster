@@ -12,6 +12,8 @@
         KUBECONFIG: /etc/rancher/k3s/k3s.yaml
 
     - name: Install NVIDIA GPU Operator (MIG Manager allowed; Fleet/values manage config)
+      # WARNING: This playbook is for initial bootstrap only.
+      # Configuration is managed by Fleet in cluster-maintenance/clusters/cit-cps-gpu/gpu-operator
       shell: |
         helm upgrade --install gpu-operator nvidia/gpu-operator \
           --namespace {{ gpu_operator_namespace }} \

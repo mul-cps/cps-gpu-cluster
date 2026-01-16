@@ -35,7 +35,7 @@ devicePlugin:
     create: true
     name: device-plugin-config
     default: mig-with-replicas
-    data:
+    "data":
       mig-with-replicas: |-
         version: v1
         flags:
