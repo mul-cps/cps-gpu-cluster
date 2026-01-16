@@ -95,8 +95,7 @@ coder:
     wildcardHost: "*.coder.dshl.unileoben.ac.at"
     tls:
       enable: true
-      secretNames:
-        - dshl-wildcard
+      secretName: dshl-wildcard
       wildcardSecretName: dshl-wildcard
     annotations:
       cert-manager.io/cluster-issuer: "letsencrypt-prod"
