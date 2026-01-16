@@ -29,6 +29,7 @@ toolkit:
 devicePlugin:
   enabled: true
   version: "v0.18.0"
+  migStrategy: "mixed"
   # Time-slicing configuration to expose both MIG slices and "full GPU" via replicas
   config:
     create: true
@@ -69,6 +70,7 @@ gfd:
 
 # MIG scheduling strategy for device plugin: allow both full GPU and MIG resources
 mig:
+  strategy: mixed
   # Advertise both full GPU (on non-MIG nodes) and MIG resources only on the single MIG-enabled node.
       config.yaml: |-
         version: v1
