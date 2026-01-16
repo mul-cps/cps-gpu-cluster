@@ -8,4 +8,5 @@ resources:
   - coder-db-secret.yaml
   - coder-shared-pvc.yaml
   - dask-rbac.yaml
+  - coredns-custom.yaml
 

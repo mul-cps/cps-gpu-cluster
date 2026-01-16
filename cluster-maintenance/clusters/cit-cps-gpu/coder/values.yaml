@@ -95,8 +95,7 @@ coder:
     wildcardHost: "*.coder.dshl.unileoben.ac.at"
     tls:
       enable: true
-      secretNames:
-        - dshl-wildcard
+      secretName: dshl-wildcard
       wildcardSecretName: dshl-wildcard
     annotations:
       cert-manager.io/cluster-issuer: "letsencrypt-prod"
@@ -243,11 +242,11 @@ extraTemplates:
       # Persistent home directory
       resource "kubernetes_persistent_volume_claim" "home" {
         metadata {
-          name      = "coder-${data.coder_workspace.me.id}-home"
+          name      = "coder-$${data.coder_workspace.me.id}-home"
           namespace = var.namespace
           labels = {
             "app.kubernetes.io/name"     = "coder-pvc"
-            "app.kubernetes.io/instance" = "coder-pvc-${data.coder_workspace.me.id}"
+            "app.kubernetes.io/instance" = "coder-pvc-$${data.coder_workspace.me.id}"
             "com.coder.resource"         = "true"
             "com.coder.workspace.id"     = data.coder_workspace.me.id
             "com.coder.workspace.name"   = data.coder_workspace.me.name
@@ -273,11 +272,11 @@ extraTemplates:
         wait_for_rollout = false
         
         metadata {
-          name      = "coder-${data.coder_workspace.me.id}"
+          name      = "coder-$${data.coder_workspace.me.id}"
           namespace = var.namespace
           labels = {
             "app.kubernetes.io/name"     = "coder-workspace"
-            "app.kubernetes.io/instance" = "coder-workspace-${data.coder_workspace.me.id}"
+            "app.kubernetes.io/instance" = "coder-workspace-$${data.coder_workspace.me.id}"
             "com.coder.resource"         = "true"
             "com.coder.workspace.id"     = data.coder_workspace.me.id
             "com.coder.workspace.name"   = data.coder_workspace.me.name
@@ -292,7 +291,7 @@ extraTemplates:
           selector {
             match_labels = {
               "app.kubernetes.io/name"     = "coder-workspace"
-              "app.kubernetes.io/instance" = "coder-workspace-${data.coder_workspace.me.id}"
+              "app.kubernetes.io/instance" = "coder-workspace-$${data.coder_workspace.me.id}"
             }
           }
       
@@ -304,7 +303,7 @@ extraTemplates:
             metadata {
               labels = {
                 "app.kubernetes.io/name"     = "coder-workspace"
-                "app.kubernetes.io/instance" = "coder-workspace-${data.coder_workspace.me.id}"
+                "app.kubernetes.io/instance" = "coder-workspace-$${data.coder_workspace.me.id}"
                 "com.coder.resource"         = "true"
                 "com.coder.workspace.id"     = data.coder_workspace.me.id
                 "com.coder.workspace.name"   = data.coder_workspace.me.name
@@ -477,7 +476,7 @@ extraTemplates:
       
       resource "kubernetes_persistent_volume_claim" "home" {
         metadata {
-          name      = "coder-${data.coder_workspace.me.id}-home"
+          name      = "coder-$${data.coder_workspace.me.id}-home"
           namespace = var.namespace
           labels = {
             "app.kubernetes.io/name"     = "coder-pvc"
@@ -503,7 +502,7 @@ extraTemplates:
         wait_for_rollout = false
         
         metadata {
-          name      = "coder-${data.coder_workspace.me.id}"
+          name      = "coder-$${data.coder_workspace.me.id}"
           namespace = var.namespace
           labels = {
             "app.kubernetes.io/name"     = "coder-workspace"
@@ -518,7 +517,7 @@ extraTemplates:
           selector {
             match_labels = {
               "app.kubernetes.io/name"     = "coder-workspace"
-              "app.kubernetes.io/instance" = "coder-workspace-${data.coder_workspace.me.id}"
+              "app.kubernetes.io/instance" = "coder-workspace-$${data.coder_workspace.me.id}"
             }
           }
       
@@ -530,7 +529,7 @@ extraTemplates:
             metadata {
               labels = {
                 "app.kubernetes.io/name"     = "coder-workspace"
-                "app.kubernetes.io/instance" = "coder-workspace-${data.coder_workspace.me.id}"
+                "app.kubernetes.io/instance" = "coder-workspace-$${data.coder_workspace.me.id}"
                 "com.coder.workspace.id"     = data.coder_workspace.me.id
               }
             }
@@ -722,7 +721,7 @@ extraTemplates:
       
       resource "kubernetes_persistent_volume_claim" "home" {
         metadata {
-          name      = "coder-${data.coder_workspace.me.id}-home"
+          name      = "coder-$${data.coder_workspace.me.id}-home"
           namespace = var.namespace
           labels = {
             "app.kubernetes.io/name"     = "coder-pvc"
@@ -748,7 +747,7 @@ extraTemplates:
         wait_for_rollout = false
         
         metadata {
-          name      = "coder-${data.coder_workspace.me.id}"
+          name      = "coder-$${data.coder_workspace.me.id}"
           namespace = var.namespace
           labels = {
             "app.kubernetes.io/name"     = "coder-workspace"
@@ -763,7 +762,7 @@ extraTemplates:
           selector {
             match_labels = {
               "app.kubernetes.io/name"     = "coder-workspace"
-              "app.kubernetes.io/instance" = "coder-workspace-${data.coder_workspace.me.id}"
+              "app.kubernetes.io/instance" = "coder-workspace-$${data.coder_workspace.me.id}"
             }
           }
       
@@ -775,7 +774,7 @@ extraTemplates:
             metadata {
               labels = {
                 "app.kubernetes.io/name"     = "coder-workspace"
-                "app.kubernetes.io/instance" = "coder-workspace-${data.coder_workspace.me.id}"
+                "app.kubernetes.io/instance" = "coder-workspace-$${data.coder_workspace.me.id}"
                 "com.coder.workspace.id"     = data.coder_workspace.me.id
               }
             }
@@ -974,7 +973,7 @@ extraTemplates:
       
       resource "kubernetes_persistent_volume_claim" "home" {
         metadata {
-          name      = "coder-${data.coder_workspace.me.id}-home"
+          name      = "coder-$${data.coder_workspace.me.id}-home"
           namespace = var.namespace
           labels = {
             "app.kubernetes.io/name"     = "coder-pvc"
@@ -1000,7 +999,7 @@ extraTemplates:
         wait_for_rollout = false
         
         metadata {
-          name      = "coder-${data.coder_workspace.me.id}"
+          name      = "coder-$${data.coder_workspace.me.id}"
           namespace = var.namespace
           labels = {
             "app.kubernetes.io/name"     = "coder-workspace"
@@ -1015,7 +1014,7 @@ extraTemplates:
           selector {
             match_labels = {
               "app.kubernetes.io/name"     = "coder-workspace"
-              "app.kubernetes.io/instance" = "coder-workspace-${data.coder_workspace.me.id}"
+              "app.kubernetes.io/instance" = "coder-workspace-$${data.coder_workspace.me.id}"
             }
           }
       
@@ -1027,7 +1026,7 @@ extraTemplates:
             metadata {
               labels = {
                 "app.kubernetes.io/name"     = "coder-workspace"
-                "app.kubernetes.io/instance" = "coder-workspace-${data.coder_workspace.me.id}"
+                "app.kubernetes.io/instance" = "coder-workspace-$${data.coder_workspace.me.id}"
                 "com.coder.workspace.id"     = data.coder_workspace.me.id
               }
             }
@@ -1226,7 +1225,7 @@ extraTemplates:
       
       resource "kubernetes_persistent_volume_claim" "home" {
         metadata {
-          name      = "coder-${data.coder_workspace.me.id}-home"
+          name      = "coder-$${data.coder_workspace.me.id}-home"
           namespace = var.namespace
           labels = {
             "app.kubernetes.io/name"     = "coder-pvc"
@@ -1252,7 +1251,7 @@ extraTemplates:
         wait_for_rollout = false
         
         metadata {
-          name      = "coder-${data.coder_workspace.me.id}"
+          name      = "coder-$${data.coder_workspace.me.id}"
           namespace = var.namespace
           labels = {
             "app.kubernetes.io/name"     = "coder-workspace"
@@ -1267,7 +1266,7 @@ extraTemplates:
           selector {
             match_labels = {
               "app.kubernetes.io/name"     = "coder-workspace"
-              "app.kubernetes.io/instance" = "coder-workspace-${data.coder_workspace.me.id}"
+              "app.kubernetes.io/instance" = "coder-workspace-$${data.coder_workspace.me.id}"
             }
           }
       
@@ -1279,7 +1278,7 @@ extraTemplates:
             metadata {
               labels = {
                 "app.kubernetes.io/name"     = "coder-workspace"
-                "app.kubernetes.io/instance" = "coder-workspace-${data.coder_workspace.me.id}"
+                "app.kubernetes.io/instance" = "coder-workspace-$${data.coder_workspace.me.id}"
                 "com.coder.workspace.id"     = data.coder_workspace.me.id
               }
             }
@@ -1478,7 +1477,7 @@ extraTemplates:
       
       resource "kubernetes_persistent_volume_claim" "home" {
         metadata {
-          name      = "coder-${data.coder_workspace.me.id}-home"
+          name      = "coder-$${data.coder_workspace.me.id}-home"
           namespace = var.namespace
           labels = {
             "app.kubernetes.io/name"     = "coder-pvc"
@@ -1504,7 +1503,7 @@ extraTemplates:
         wait_for_rollout = false
         
         metadata {
-          name      = "coder-${data.coder_workspace.me.id}"
+          name      = "coder-$${data.coder_workspace.me.id}"
           namespace = var.namespace
           labels = {
             "app.kubernetes.io/name"     = "coder-workspace"
@@ -1519,7 +1518,7 @@ extraTemplates:
           selector {
             match_labels = {
               "app.kubernetes.io/name"     = "coder-workspace"
-              "app.kubernetes.io/instance" = "coder-workspace-${data.coder_workspace.me.id}"
+              "app.kubernetes.io/instance" = "coder-workspace-$${data.coder_workspace.me.id}"
             }
           }
       
@@ -1531,7 +1530,7 @@ extraTemplates:
             metadata {
               labels = {
                 "app.kubernetes.io/name"     = "coder-workspace"
-                "app.kubernetes.io/instance" = "coder-workspace-${data.coder_workspace.me.id}"
+                "app.kubernetes.io/instance" = "coder-workspace-$${data.coder_workspace.me.id}"
                 "com.coder.workspace.id"     = data.coder_workspace.me.id
               }
             }
@@ -1730,7 +1729,7 @@ extraTemplates:
       
       resource "kubernetes_persistent_volume_claim" "home" {
         metadata {
-          name      = "coder-${data.coder_workspace.me.id}-home"
+          name      = "coder-$${data.coder_workspace.me.id}-home"
           namespace = var.namespace
           labels = {
             "app.kubernetes.io/name"     = "coder-pvc"
@@ -1756,7 +1755,7 @@ extraTemplates:
         wait_for_rollout = false
         
         metadata {
-          name      = "coder-${data.coder_workspace.me.id}"
+          name      = "coder-$${data.coder_workspace.me.id}"
           namespace = var.namespace
           labels = {
             "app.kubernetes.io/name"     = "coder-workspace"
@@ -1771,7 +1770,7 @@ extraTemplates:
           selector {
             match_labels = {
               "app.kubernetes.io/name"     = "coder-workspace"
-              "app.kubernetes.io/instance" = "coder-workspace-${data.coder_workspace.me.id}"
+              "app.kubernetes.io/instance" = "coder-workspace-$${data.coder_workspace.me.id}"
             }
           }
       
@@ -1783,7 +1782,7 @@ extraTemplates:
             metadata {
               labels = {
                 "app.kubernetes.io/name"     = "coder-workspace"
-                "app.kubernetes.io/instance" = "coder-workspace-${data.coder_workspace.me.id}"
+                "app.kubernetes.io/instance" = "coder-workspace-$${data.coder_workspace.me.id}"
                 "com.coder.workspace.id"     = data.coder_workspace.me.id
               }
             }
@@ -1982,7 +1981,7 @@ extraTemplates:
       
       resource "kubernetes_persistent_volume_claim" "home" {
         metadata {
-          name      = "coder-${data.coder_workspace.me.id}-home"
+          name      = "coder-$${data.coder_workspace.me.id}-home"
           namespace = var.namespace
           labels = {
             "app.kubernetes.io/name"     = "coder-pvc"
@@ -2008,7 +2007,7 @@ extraTemplates:
         wait_for_rollout = false
         
         metadata {
-          name      = "coder-${data.coder_workspace.me.id}"
+          name      = "coder-$${data.coder_workspace.me.id}"
           namespace = var.namespace
           labels = {
             "app.kubernetes.io/name"     = "coder-workspace"
@@ -2023,7 +2022,7 @@ extraTemplates:
           selector {
             match_labels = {
               "app.kubernetes.io/name"     = "coder-workspace"
-              "app.kubernetes.io/instance" = "coder-workspace-${data.coder_workspace.me.id}"
+              "app.kubernetes.io/instance" = "coder-workspace-$${data.coder_workspace.me.id}"
             }
           }
       
@@ -2035,7 +2034,7 @@ extraTemplates:
             metadata {
               labels = {
                 "app.kubernetes.io/name"     = "coder-workspace"
-                "app.kubernetes.io/instance" = "coder-workspace-${data.coder_workspace.me.id}"
+                "app.kubernetes.io/instance" = "coder-workspace-$${data.coder_workspace.me.id}"
                 "com.coder.workspace.id"     = data.coder_workspace.me.id
               }
             }
