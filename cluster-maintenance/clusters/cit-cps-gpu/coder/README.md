@@ -215,7 +215,7 @@ Coder uses OpenID Connect (OIDC) with Authentik:
 ### Prerequisites
 
 - Kubernetes cluster with Fleet
-- Longhorn storage classes: `longhorn`, `longhorn-fast`, `longhorn-overcommit`
+- Longhorn storage classes: `longhorn`, `longhorn-fast`
 - NVIDIA GPU Operator (for GPU workspaces)
 - Ingress NGINX with TLS
 - Authentik OIDC provider configured

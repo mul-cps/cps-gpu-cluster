@@ -6,7 +6,7 @@ metadata:
 spec:
   accessModes:
     - ReadWriteMany
-  storageClassName: longhorn-overcommit
+  storageClassName: longhorn
   resources:
     requests:
       storage: 500Gi
