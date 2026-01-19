@@ -787,13 +787,16 @@ singleuser:
 
     extraVolumes:
       dshm:
+        name: dshm
         emptyDir:
           medium: Memory
           sizeLimit: 2Gi
       ephemeral-work:
+        name: ephemeral-work
         emptyDir: {}
 
       user-docs:
+        name: user-docs
         configMap:
           name: jupyterhub-user-docs
 
