@@ -19,6 +19,14 @@ extraEnv:
     value: "false"
   - name: OAUTH_MERGE_ACCOUNTS_BY_EMAIL
     value: "true"
+  - name: ENABLE_API_KEY
+    value: "true"
+  - name: AIOHTTP_CLIENT_TIMEOUT
+    value: "300"
+  - name: AIOHTTP_CLIENT_TIMEOUT_MODEL_LIST
+    value: "60"
+  - name: SHOW_ADMIN_DETAILS
+    value: "true"
 
 # Disable bundled Ollama
 ollama:

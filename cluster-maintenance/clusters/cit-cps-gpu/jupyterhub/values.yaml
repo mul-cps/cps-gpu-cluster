@@ -845,7 +845,8 @@ cull:
   every: 600        # check every 10 min
   maxAge: 0         # Disable max age limit
   users: false
-  adminUsers: true
+  adminUsers: false
+  namedServers: false
   removeNamedServers: false
   concurrency: 10
 
