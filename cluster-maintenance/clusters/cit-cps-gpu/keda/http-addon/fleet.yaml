@@ -15,5 +15,10 @@ helm:
     interceptor:
       proxy:
         port: 8080
+      responseHeaderTimeout: 300s
+      tcpConnectTimeout: 30s
+      keepAlive: 60s
+      replicas:
+        waitTimeout: 300s
       autoscaling:
         enabled: false

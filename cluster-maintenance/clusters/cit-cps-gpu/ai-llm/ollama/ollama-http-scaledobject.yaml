@@ -6,9 +6,12 @@ metadata:
 spec:
   hosts:
     - ollama-http.ai-llm.svc.cluster.local
+    - ollama-http.ai-llm.svc.cluster.local:8080
+    - ollama-http
+    - ollama-http:8080
   pathPrefixes:
     - /
-  targetPendingRequests: 50
+  targetPendingRequests: 1
   scaleTargetRef:
     name: ollama
     service: ollama
@@ -16,4 +19,4 @@ spec:
   replicas:
     min: 0
     max: 1
-  scaledownPeriod: 120
+  scaledownPeriod: 300
