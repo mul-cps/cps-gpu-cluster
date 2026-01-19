@@ -1,5 +1,6 @@
 name: coder
 defaultNamespace: coder
+namespace: coder
 
 # Labels for bundle identification
 labels:

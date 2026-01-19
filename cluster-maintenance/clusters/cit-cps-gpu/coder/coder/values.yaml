@@ -45,7 +45,7 @@ coder:
   image:
     # coder.image.repo -- The repository of the image.
     repo: "ghcr.io/coder/coder"
-    # coder.image.tag -- The tag of the image, defaults to {{.Chart.AppVersion}}
+    # coder.image.tag -- The tag of the image, defaults to the Chart AppVersion
     # if not set. If you're using the chart directly from git, the default
     # app version will not work and you'll need to set this value. The helm
     # chart helpfully fails quickly in this case.
@@ -420,4 +420,4 @@ extraTemplates:
   #    metadata:
   #      name: my-configmap
   #    data:
-  #      key: {{ .Values.myCustomValue | quote }}
+  #      key: the value of myCustomValue
