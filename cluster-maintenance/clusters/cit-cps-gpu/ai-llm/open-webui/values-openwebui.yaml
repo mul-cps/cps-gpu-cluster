@@ -7,6 +7,18 @@ extraEnv:
   # OIDC Configuration (secrets loaded from secret-oidc.yaml)
   - name: WEBUI_AUTH
     value: "True"
+  - name: OAUTH_PROVIDER_NAME
+    value: "authentik"
+  - name: OPENID_REDIRECT_URI
+    value: "https://openwebui.dshl.unileoben.ac.at/oauth/oidc/callback"
+  - name: WEBUI_URL
+    value: "https://openwebui.dshl.unileoben.ac.at"
+  - name: ENABLE_OAUTH_SIGNUP
+    value: "true"
+  - name: ENABLE_LOGIN_FORM
+    value: "false"
+  - name: OAUTH_MERGE_ACCOUNTS_BY_EMAIL
+    value: "true"
 
 # Disable bundled Ollama
 ollama:
