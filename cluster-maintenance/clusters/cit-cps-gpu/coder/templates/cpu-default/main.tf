@@ -86,7 +86,7 @@ resource "coder_app" "code-server" {
 }
 
 # Persistent home directory
-resource "kubernetes_persistent_volume_claim" "home" {
+resource "kubernetes_persistent_volume_claim_v1" "home" {
   metadata {
     name      = "coder-${data.coder_workspace.me.id}-home"
     namespace = var.namespace
@@ -213,7 +213,7 @@ resource "kubernetes_deployment" "main" {
         volume {
           name = "home"
           persistent_volume_claim {
-            claim_name = kubernetes_persistent_volume_claim.home.metadata[0].name
+            claim_name = kubernetes_persistent_volume_claim_v1.home.metadata[0].name
           }
         }
 
