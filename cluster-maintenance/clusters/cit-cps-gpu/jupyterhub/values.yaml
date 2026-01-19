@@ -800,8 +800,10 @@ singleuser:
 
     extraVolumeMounts:
       dshm:
+        name: dshm
         mountPath: /dev/shm
       ephemeral-work:
+        name: ephemeral-work
         mountPath: /home/jovyan/work
 
       user-docs-warning:
