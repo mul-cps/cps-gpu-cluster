@@ -34,6 +34,10 @@ coder:
     - name: CODER_OIDC_EMAIL_DOMAIN
       value: "unileoben.ac.at"
     
+    # Ignore email verification (Authentik might not send email_verified: true)
+    - name: CODER_OIDC_IGNORE_EMAIL_VERIFIED
+      value: "true"
+    
     # OIDC scopes - request groups for authorization
     - name: CODER_OIDC_SCOPES
       value: "openid,profile,email"
