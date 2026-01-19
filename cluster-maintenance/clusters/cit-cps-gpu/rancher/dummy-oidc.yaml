@@ -1,0 +1,20 @@
+apiVersion: management.cattle.io/v3
+kind: AuthConfig
+metadata:
+  name: oidc
+enabled: false
+accessMode: unrestricted
+clientId: dummy-id
+clientSecret: dummy-secret
+issuer: https://dummy.issuer.com
+authEndpoint: https://dummy.issuer.com/auth
+tokenEndpoint: https://dummy.issuer.com/token
+userInfoEndpoint: https://dummy.issuer.com/userinfo
+logoutEndpoint: https://dummy.issuer.com/logout
+jwksEndpoint: https://dummy.issuer.com/jwks
+scopes: "openid profile email"
+displayNameField: "name"
+userNameField: "preferred_username"
+userIDField: "sub"
+groupsField: "groups"
+rancherURL: "https://rancher.dummy.com"
