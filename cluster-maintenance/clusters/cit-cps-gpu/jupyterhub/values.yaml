@@ -840,13 +840,11 @@ scheduling:
 # Global idle culler (built-in JupyterHub culler)
 cull:
   enabled: true
-  timeout: 3600     # 1h idle timeout
-  namedServers: false # Named servers shall run indefinitely
+  timeout: 172800 # 2 days idle timeout #3600     # 1h idle timeout
   every: 600        # check every 10 min
   maxAge: 0         # Disable max age limit
   users: false
   adminUsers: false
-  namedServers: false
   removeNamedServers: false
   concurrency: 10
 
