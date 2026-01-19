@@ -40,7 +40,7 @@ coder:
     
     # OIDC scopes - request groups for authorization
     - name: CODER_OIDC_SCOPES
-      value: "openid,profile,email"
+      value: "openid,profile,email,groups"
     
     - name: CODER_OIDC_SIGN_IN_TEXT
       value: "Log in with authentik"
@@ -51,6 +51,11 @@ coder:
     # Group claim field from OIDC token
     - name: CODER_OIDC_GROUPS_FIELD
       value: "groups"
+    
+    # Map OIDC group to Coder roles
+    # IMPORTANT: Change "admins" to the exact name of your admin group in Authentik
+    - name: CODER_OIDC_USER_ROLE_MAPPING
+      value: '{"coder-admin": ["owner"]}'
     
     # Username claim
     - name: CODER_OIDC_USERNAME_FIELD
