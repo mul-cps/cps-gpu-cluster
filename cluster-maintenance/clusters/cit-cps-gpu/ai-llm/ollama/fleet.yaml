@@ -8,3 +8,6 @@ helm:
   releaseName: ollama
   valuesFiles:
     - values-ollama.yaml
+
+kustomize:
+  dir: .

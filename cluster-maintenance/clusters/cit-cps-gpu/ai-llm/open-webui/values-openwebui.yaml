@@ -26,15 +26,9 @@ persistence:
 ingress:
   enabled: true
   class: nginx
-  hosts:
-    - host: chat.dshl.unileoben.ac.at
-      paths:
-        - path: /
-          pathType: Prefix
-  tls:
-    - secretName: dshl-wildcard
-      hosts:
-        - chat.dshl.unileoben.ac.at
+  host: openwebui.dshl.unileoben.ac.at
+  tls: true
+  existingSecret: "dshl-wildcard"
 
 resources:
   requests:

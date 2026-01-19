@@ -4,14 +4,16 @@ metadata:
   name: ollama-http
   namespace: ai-llm
 spec:
-  host: ollama-http.ai-llm.svc.cluster.local
-  pathPrefix: /
+  hosts:
+    - ollama-http.ai-llm.svc.cluster.local
+  pathPrefixes:
+    - /
   targetPendingRequests: 50
   scaleTargetRef:
-    deployment: ollama
+    name: ollama
     service: ollama
     port: 11434
   replicas:
     min: 0
     max: 1
-  cooldownPeriod: 120
+  scaledownPeriod: 120

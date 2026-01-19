@@ -8,3 +8,6 @@ helm:
   releaseName: open-webui
   valuesFiles:
     - values-openwebui.yaml
+
+kustomize:
+  dir: .
