@@ -10,4 +10,5 @@ resources:
   - dask-rbac.yaml
   - coder-rbac.yaml
   - coredns-custom.yaml
+  - coder-oidc-secret.yaml
 

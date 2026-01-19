@@ -17,15 +17,15 @@ Fleet enables GitOps-based management of Kubernetes clusters. All applications a
 ```
 cluster-maintenance/
 ├── clusters/
-│   └── homelab/
-│       ├── fleet.yaml              # Fleet bundle configuration
-│       ├── rancher/               # Rancher installation
-│       ├── cert-manager/          # Certificate management
-│       ├── ingress-nginx/         # Ingress controller
-│       ├── gpu-operator/          # NVIDIA GPU Operator
-│       ├── storageclasses/        # Storage configurations
+│   └── cit-cps-gpu/
+│       ├── fleet.yaml             # Fleet bundle configuration
+│       ├── coder/                 # Coder development environments
 │       ├── jupyterhub/            # JupyterHub deployment
-│       └── tests/                 # Validation pods
+│       ├── gpu-operator/          # NVIDIA GPU Operator
+│       ├── ingress-nginx/         # Ingress controller
+│       ├── monitoring/            # Prometheus & Grafana
+│       ├── longhorn/              # Longhorn storage
+│       └── ...                    # Other system components
 └── README.md
 ```
 
@@ -80,7 +80,7 @@ From Rancher UI:
    - **Name**: `cluster-maintenance`
    - **Repository URL**: `https://github.com/<your-org>/cps-gpu-cluster`
    - **Branch**: `main`
-   - **Paths**: `cluster-maintenance/clusters/homelab`
+   - **Paths**: `cluster-maintenance/clusters/cit-cps-gpu`
 4. Click **Create**
 
 Fleet will now automatically deploy and manage all applications defined in this path.
@@ -98,7 +98,7 @@ spec:
   repo: https://github.com/<your-org>/cps-gpu-cluster
   branch: main
   paths:
-  - cluster-maintenance/clusters/homelab
+  - cluster-maintenance/clusters/cit-cps-gpu
   targets:
   - name: local
     clusterSelector:
@@ -161,7 +161,7 @@ dependsOn:
 
 ### Add New Applications
 
-1. Create new directory under `clusters/homelab/<app-name>/`
+1. Create new directory under `clusters/cit-cps-gpu/<app-name>/`
 2. Add Helm chart or Kubernetes manifests
 3. Create `fleet.yaml` with bundle configuration
 4. Commit and push
@@ -245,7 +245,7 @@ git push
 ## Next Steps
 
 After Fleet is configured:
-1. Deploy JupyterHub (see [clusters/homelab/jupyterhub/README.md](clusters/homelab/jupyterhub/README.md))
+1. Deploy JupyterHub (see [clusters/cit-cps-gpu/jupyterhub/README.md](clusters/cit-cps-gpu/jupyterhub/README.md))
 2. Create user profiles for GPU access
 3. Test GPU availability in notebooks
 4. Configure monitoring and alerting

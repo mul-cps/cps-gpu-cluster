@@ -1,23 +1,4 @@
-# =============================================================================
-# PostgreSQL Database for Coder
-# - Single instance PostgreSQL for Coder database
-# - Persistent storage for database data
-# - Service for internal cluster access
-# =============================================================================
 
-apiVersion: v1
-kind: Secret
-metadata:
-  name: postgresql-secret
-  namespace: coder
-  labels:
-    app.kubernetes.io/name: postgresql
-    app.kubernetes.io/component: database
-type: Opaque
-stringData:
-  postgres-password: "coder-secure-db-password-2025"
-  postgres-user: "coder"
-  postgres-db: "coder"
 
 ---
 apiVersion: apps/v1
@@ -53,17 +34,17 @@ spec:
         - name: POSTGRES_DB
           valueFrom:
             secretKeyRef:
-              name: postgresql-secret
+              name: coder-db-secret
               key: postgres-db
         - name: POSTGRES_USER
           valueFrom:
             secretKeyRef:
-              name: postgresql-secret
+              name: coder-db-secret
               key: postgres-user
         - name: POSTGRES_PASSWORD
           valueFrom:
             secretKeyRef:
-              name: postgresql-secret
+              name: coder-db-secret
               key: postgres-password
         - name: PGDATA
           value: /var/lib/postgresql/data/pgdata

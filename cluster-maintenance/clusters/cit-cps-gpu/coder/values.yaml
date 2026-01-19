@@ -9,7 +9,7 @@ coder:
     - name: CODER_PG_CONNECTION_URL
       valueFrom:
         secretKeyRef:
-          name: coder-db-url
+          name: coder-db-secret
           key: url
     
     # Access URL - primary domain for Coder
@@ -25,10 +25,16 @@ coder:
       value: "https://auth.cps.unileoben.ac.at/application/o/coder/"
     
     - name: CODER_OIDC_CLIENT_ID
-      value: "lDBqyH9xujZ1WC1PCPPxiqIWg5o0FAX83UmQshsB"
+      valueFrom:
+        secretKeyRef:
+          name: coder-oidc-secret
+          key: client-id
     
     - name: CODER_OIDC_CLIENT_SECRET
-      value: "vRA9Z4ueEymKFxxQn3wHplxLRabUm0CFXHShJmEpmSjaXxhsdVwto2Q5m1RF7Bu2nyUULUIVEQhJM3Ix6xZdUqwnhnWz0geSgThZdPYKoxbAY8RhTEQ8JPyOVDh34wpt"
+      valueFrom:
+        secretKeyRef:
+          name: coder-oidc-secret
+          key: client-secret
     
     # Email domain for OIDC
     - name: CODER_OIDC_EMAIL_DOMAIN
