@@ -36,7 +36,13 @@ coder:
     
     # OIDC scopes - request groups for authorization
     - name: CODER_OIDC_SCOPES
-      value: "openid,profile,email,groups"
+      value: "openid,profile,email"
+    
+    - name: CODER_OIDC_SIGN_IN_TEXT
+      value: "Log in with authentik"
+    
+    - name: CODER_OIDC_ICON_URL
+      value: "https://auth.cps.unileoben.ac.at/static/dist/assets/icons/icon.png"
     
     # Group claim field from OIDC token
     - name: CODER_OIDC_GROUPS_FIELD
