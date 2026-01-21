@@ -112,7 +112,7 @@ spec:
   containers:
   - name: rsync
     image: alpine:latest
-    command: ["/bin/sh", "-c", "apk add --no-cache rsync && rsync -av --delete /mnt/backup/ /mnt/new/ && echo 'Migration Complete'"]
+    command: ["/bin/sh", "-c", "apk add --no-cache rsync && rsync -avW --numeric-ids --info=progress2 --delete /mnt/backup/ /mnt/new/ && echo 'Migration Complete'"]
     volumeMounts:
     - name: backup
       mountPath: /mnt/backup
