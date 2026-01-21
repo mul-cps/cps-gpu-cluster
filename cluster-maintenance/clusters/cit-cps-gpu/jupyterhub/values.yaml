@@ -782,6 +782,8 @@ singleuser:
     capacity: 10Gi
     dynamic:
       storageClass: longhorn-fast
+      pvcNameTemplate: "claim-{username}"
+      storageAccessModes: ["ReadWriteMany"]
     homeMountPath: /home/jovyan
 
 
