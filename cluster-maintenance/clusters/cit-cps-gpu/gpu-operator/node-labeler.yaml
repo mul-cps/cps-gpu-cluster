@@ -17,9 +17,11 @@ spec:
         - /bin/sh
         - -c
         - |
-          echo "Labeling node k3s-wk-gpu1..."
-          kubectl label node k3s-wk-gpu1 nvidia.com/mig.config=mixed-one-node-40gb-small --overwrite
+          echo "Labeling nodes k3s-wk-gpu1 and k3s-wk-gpu4..."
+          kubectl label node k3s-wk-gpu1 nvidia.com/mig.config=all-disabled --overwrite
           kubectl label node k3s-wk-gpu1 nvidia.com/mig.strategy=mixed --overwrite
+          kubectl label node k3s-wk-gpu4 nvidia.com/mig.config=all-disabled --overwrite
+          kubectl label node k3s-wk-gpu4 nvidia.com/mig.strategy=mixed --overwrite
           echo "Done."
       restartPolicy: OnFailure
 ---

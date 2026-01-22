@@ -25,15 +25,7 @@ data:
           mig-devices:
             "1g.5gb": 7
 
-      both-mig-40gb-small:
-        - devices: [0]
-          mig-enabled: true
-          mig-devices:
-            "1g.5gb": 7
-        - devices: [1]
-          mig-enabled: true
-          mig-devices:
-            "1g.5gb": 7
+
 
       # Standard Profiles (copied from default)
       all-1g.5gb:

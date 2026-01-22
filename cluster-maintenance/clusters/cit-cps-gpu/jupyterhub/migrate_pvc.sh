@@ -70,7 +70,7 @@ for i in {1..60}; do
 done
 
 echo "Deleting original PVC..."
-kubectl delete pvc $PVC_NAME -n $NAMESPACE --wait=true
+kubectl delete pvc $PVC_NAME -n $NAMESPACE --wait=true --ignore-not-found=true
 
 echo "Creating new RWX PVC..."
 cat <<EOF | kubectl apply -n $NAMESPACE -f -
@@ -112,7 +112,7 @@ spec:
   containers:
   - name: rsync
     image: alpine:latest
-    command: ["/bin/sh", "-c", "apk add --no-cache rsync && rsync -avW --numeric-ids --info=progress2 --delete /mnt/backup/ /mnt/new/ && echo 'Migration Complete'"]
+    command: ["/bin/sh", "-c", "apk add --no-cache rsync && rsync -avW --numeric-ids --info=progress2 --exclude='.cache' --exclude='__pycache__' --exclude='.local/share/Trash' --delete /mnt/backup/ /mnt/new/ && echo 'Migration Complete'"]
     volumeMounts:
     - name: backup
       mountPath: /mnt/backup

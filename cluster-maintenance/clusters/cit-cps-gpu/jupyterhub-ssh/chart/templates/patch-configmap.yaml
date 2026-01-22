@@ -86,16 +86,24 @@ data:
 
             Else return None
             """
+            sepChar = "+"
+            serverName = ""
+            if sepChar in username:
+                usernameWithServer = username.split(sepChar, 1)
+                username = usernameWithServer[0]
+                serverName = usernameWithServer[1]
             async with session.get(self.app.hub_url / "hub/api/users" / username) as resp:
                 if resp.status != 200:
                     return None
                 user = await resp.json()
-                print(user)
-                # URLs will have preceding slash, but yarl forbids those
-                server = user.get("servers", {}).get("", {})
+                
+                # Resolving which server to check
+                target_server_name = serverName if serverName else ""
+                server = user.get("servers", {}).get(target_server_name, {})
+                
                 if server.get("ready", False):
                     self.user_ip = server.get("ip")
-                    return self.app.hub_url / user["servers"][""]["url"][1:]
+                    return self.app.hub_url / server["url"][1:]
                 else:
                     return None
 
@@ -103,7 +111,17 @@ data:
             """ """
             # REST API reference:       https://jupyterhub.readthedocs.io/en/stable/_static/rest-api/index.html#operation--users--name--server-post
             # REST API implementation:  https://github.com/jupyterhub/jupyterhub/blob/187fe911edce06eb067f736eaf4cc9ea52e69e08/jupyterhub/apihandlers/users.py#L451-L497
-            create_url = self.app.hub_url / "hub/api/users" / username / "server"
+            sepChar = "+"
+            serverName = ""
+            if sepChar in username:
+                usernameWithServer = username.split(sepChar, 1)
+                username = usernameWithServer[0]
+                serverName = usernameWithServer[1]
+            
+            if serverName:
+                create_url = self.app.hub_url / "hub/api/users" / username / "servers" / serverName
+            else:
+                create_url = self.app.hub_url / "hub/api/users" / username / "server"
 
             async with session.post(create_url) as resp:
                 if resp.status == 201 or resp.status == 400:
@@ -115,6 +133,8 @@ data:
                     # We manually generate this, even though it's *bad*
                     # Mostly because when the server is already running, JupyterHub
                     # doesn't respond with the whole model!
+                    if serverName:
+                        return self.app.hub_url / "user" / username / serverName
                     return self.app.hub_url / "user" / username
                 elif resp.status == 202:
                     # Server start has been requested, now and potentially earlier,
@@ -128,9 +148,14 @@ data:
                             while notebook_url is None:
                                 # FIXME: Exponential backoff + make this configurable
                                 await asyncio.sleep(0.5)
-                                notebook_url = await self.get_user_server_url(
-                                    session, username
-                                )
+                                if serverName:
+                                    notebook_url = await self.get_user_server_url(
+                                        session, username + "+" + serverName
+                                    )
+                                else:
+                                    notebook_url = await self.get_user_server_url(
+                                        session, username
+                                    )
                                 self._conn.send_auth_banner(".")
                             self._conn.send_auth_banner("done!\n")
                             return notebook_url
