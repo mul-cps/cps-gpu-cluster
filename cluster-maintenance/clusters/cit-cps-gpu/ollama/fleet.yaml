@@ -1,4 +1,6 @@
 defaultNamespace: llm
+labels:
+  name: ollama
 helm:
   releaseName: ollama
   repo: https://helm.otwld.com/
