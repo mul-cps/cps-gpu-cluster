@@ -22,3 +22,11 @@ helm:
         waitTimeout: 300s
       autoscaling:
         enabled: false
+diff:
+  comparePatches:
+  - apiVersion: keda.sh/v1alpha1
+    kind: ScaledObject
+    name: keda-add-ons-http-interceptor
+    namespace: keda
+    operations:
+    - {"op": "remove", "path": "/status"}
