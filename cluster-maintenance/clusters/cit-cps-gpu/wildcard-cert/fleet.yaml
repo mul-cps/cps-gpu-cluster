@@ -1,6 +1,0 @@
-name: wildcard-cert
-defaultNamespace: cattle-monitoring-system
-kustomize:
-  dir: .
-labels:
-  app: wildcard-cert
