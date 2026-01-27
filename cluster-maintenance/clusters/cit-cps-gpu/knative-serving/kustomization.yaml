@@ -4,4 +4,6 @@ kind: Kustomization
 resources:
   - serving-core.yaml
   - kourier.yaml
-  - config-network.yaml
+
+patches:
+  - path: config-network.yaml
