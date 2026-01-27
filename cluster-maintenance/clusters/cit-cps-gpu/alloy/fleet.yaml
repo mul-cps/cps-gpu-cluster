@@ -1,4 +1,5 @@
 defaultNamespace: alloy
+name: alloy
 
 helm:
   repo: https://grafana.github.io/helm-charts

@@ -1,7 +1,14 @@
 defaultNamespace: knative-serving
+name: knative-crds
 labels:
   name: knative-crds
 
 # CRDs need to be applied first
 kustomize:
   dir: .
+
+targets:
+  - name: cit-cps-gpu
+    clusterSelector:
+      matchLabels:
+        name: cit-cps-gpu

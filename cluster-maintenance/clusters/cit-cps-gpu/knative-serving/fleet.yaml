@@ -1,4 +1,5 @@
 defaultNamespace: knative-serving
+name: knative-serving
 
 # This bundle deploys Knative Serving and Kourier
 labels:
@@ -12,3 +13,9 @@ dependsOn:
   - selector:
       matchLabels:
         name: knative-crds
+
+targets:
+  - name: cit-cps-gpu
+    clusterSelector:
+      matchLabels:
+        name: cit-cps-gpu

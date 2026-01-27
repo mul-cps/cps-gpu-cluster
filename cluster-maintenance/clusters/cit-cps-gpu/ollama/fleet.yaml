@@ -1,4 +1,5 @@
 defaultNamespace: llm
+name: ollama
 labels:
   name: ollama
 helm:
@@ -15,3 +16,9 @@ dependsOn:
   - selector:
       matchLabels:
         name: knative-serving
+
+targets:
+  - name: cit-cps-gpu
+    clusterSelector:
+      matchLabels:
+        name: cit-cps-gpu

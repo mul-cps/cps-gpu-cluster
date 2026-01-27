@@ -1,4 +1,5 @@
 defaultNamespace: openwebui
+name: open-webui
 helm:
   releaseName: open-webui
   repo: https://helm.openwebui.com/
@@ -13,10 +14,10 @@ dependsOn:
         name: ollama
 
 targetCustomizations:
-- name: local
+- name: cit-cps-gpu
   clusterSelector:
     matchLabels:
-      management.cattle.io/cluster-display-name: local
+      name: cit-cps-gpu
   patches:
   - target:
       group: apps
