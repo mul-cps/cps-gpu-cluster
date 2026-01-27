@@ -1,10 +1,10 @@
 apiVersion: v1
 kind: Pod
 metadata:
-  name: debug-cni-gpu4
+  name: debug-cni-gpu2
   namespace: default
 spec:
-  nodeName: k3s-wk-gpu4
+  nodeName: k3s-wk-gpu2
   hostNetwork: true
   containers:
   - name: debug

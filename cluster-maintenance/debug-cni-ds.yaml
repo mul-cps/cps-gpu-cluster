@@ -1,0 +1,45 @@
+apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+  name: debug-cni-ds
+  namespace: default
+  labels:
+    app: debug-cni
+spec:
+  selector:
+    matchLabels:
+      app: debug-cni
+  template:
+    metadata:
+      labels:
+        app: debug-cni
+    spec:
+      hostNetwork: true
+      tolerations:
+      - operator: Exists
+      containers:
+      - name: debug
+        image: alpine
+        command: ["/bin/sh", "-c", "apk add --no-cache bash; sleep 36000"]
+        securityContext:
+          privileged: true
+        volumeMounts:
+        - name: cni-dir
+          mountPath: /host-cni
+        - name: cni-conf-dir
+          mountPath: /host-cni-conf
+        - name: var-log
+          mountPath: /host-log
+      volumes:
+      - name: cni-dir
+        hostPath:
+          path: /var/lib/cni
+          type: Directory
+      - name: cni-conf-dir
+        hostPath:
+          path: /var/lib/rancher/k3s/agent/etc/cni/net.d
+          type: DirectoryOrCreate
+      - name: var-log
+        hostPath:
+          path: /var/log
+          type: Directory
