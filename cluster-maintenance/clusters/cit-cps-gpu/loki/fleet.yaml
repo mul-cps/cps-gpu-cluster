@@ -1,0 +1,14 @@
+defaultNamespace: loki
+
+helm:
+  repo: https://grafana.github.io/helm-charts
+  chart: loki
+  releaseName: loki
+  valuesFiles:
+    - values-loki.yaml
+
+targetCustomizations:
+  - name: cit-cps-gpu
+    clusterSelector:
+      matchLabels:
+        name: cit-cps-gpu

@@ -1,0 +1,6 @@
+defaultNamespace: cattle-monitoring-system
+targetCustomizations:
+  - name: cit-cps-gpu
+    clusterSelector:
+      matchLabels:
+        name: cit-cps-gpu

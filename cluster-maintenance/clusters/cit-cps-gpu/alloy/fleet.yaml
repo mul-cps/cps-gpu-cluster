@@ -1,0 +1,14 @@
+defaultNamespace: alloy
+
+helm:
+  repo: https://grafana.github.io/helm-charts
+  chart: alloy
+  releaseName: alloy
+  valuesFiles:
+    - values-alloy.yaml
+
+targetCustomizations:
+  - name: cit-cps-gpu
+    clusterSelector:
+      matchLabels:
+        name: cit-cps-gpu
