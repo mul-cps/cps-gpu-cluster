@@ -1,0 +1,7 @@
+defaultNamespace: knative-serving
+labels:
+  name: knative-crds
+
+# CRDs need to be applied first
+kustomize:
+  dir: .

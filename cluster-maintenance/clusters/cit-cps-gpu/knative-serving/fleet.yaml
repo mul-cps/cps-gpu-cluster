@@ -1,10 +1,14 @@
 defaultNamespace: knative-serving
 
 # This bundle deploys Knative Serving and Kourier
-# We need to make sure CRDs are applied first, but Fleet handles ordering if in the same bundle usually by kind?
-# Actually, standard practice is to rely on Fleet's order or split if necessary.
-# However, for pure YAMLs in a directory, Fleet applies them.
-# kustomize is usually better for ordering.
+labels:
+  name: knative-serving
 
 kustomize:
   dir: .
+
+# Ensure CRDs are installed first
+dependsOn:
+  - selector:
+      matchLabels:
+        name: knative-crds
