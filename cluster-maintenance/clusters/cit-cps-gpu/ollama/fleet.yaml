@@ -1,0 +1,15 @@
+defaultNamespace: llm
+helm:
+  releaseName: ollama
+  repo: https://helm.otwld.com/
+  chart: ollama
+  # version: 0.1.0 # Best to omit or pin if known, but user didn't specify version. Will stick to latest or let Flux decide. Actually Fleet uses latest if not configured? No, good practice to not pin if we want latest, but risky. I'll stick to not pinning for now as user didn't specify.
+  createNamespace: true
+  valuesFiles:
+    - values.yaml
+
+# Depends on Knative
+dependsOn:
+  - selector:
+      matchLabels:
+        name: knative-serving

@@ -1,0 +1,31 @@
+defaultNamespace: openwebui
+helm:
+  releaseName: open-webui
+  repo: https://helm.openwebui.com/
+  chart: open-webui
+  createNamespace: true
+  valuesFiles:
+    - values.yaml
+
+dependsOn:
+  - selector:
+      matchLabels:
+        name: ollama
+
+targetCustomizations:
+- name: local
+  clusterSelector:
+    matchLabels:
+      management.cattle.io/cluster-display-name: local
+  patches:
+  - target:
+      group: apps
+      version: v1
+      kind: StatefulSet
+      name: open-webui
+    patch: |-
+      - op: add
+        path: /spec/template/spec/containers/0/envFrom
+        value:
+          - secretRef:
+              name: openwebui-oidc

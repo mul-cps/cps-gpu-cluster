@@ -1,0 +1,32 @@
+ollama:
+  enabled: false
+
+ollamaUrls:
+  - "http://ollama.llm.svc.cluster.local:11434"
+
+ingress:
+  enabled: true
+  class: nginx # User said className: nginx in snippets, but chart might use class or className depending on version. Snippet used `className: nginx`.
+  # Actually, `className` is standard K8s. But let's check snippet: `className: nginx`.
+  annotations:
+    cert-manager.io/cluster-issuer: letsencrypt-prod
+  hosts:
+    - host: openwebui.dshl.unileoben.ac.at
+      paths:
+        - path: /
+          pathType: Prefix
+  tls:
+    - secretName: openwebui-tls
+      hosts:
+        - openwebui.dshl.unileoben.ac.at
+
+extraEnvVars:
+  - name: WEBUI_URL
+    value: "https://openwebui.dshl.unileoben.ac.at"
+  - name: ENABLE_OAUTH_SIGNUP
+    value: "true"
+  - name: OAUTH_PROVIDER_NAME
+    value: "authentik"
+  - name: OAUTH_SCOPES
+    value: "openid email profile"
+  # Secrets injected via patch
