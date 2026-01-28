@@ -3,7 +3,7 @@ defaultNamespace: kube-system
 helm:
   repo: https://emberstack.github.io/helm-charts
   chart: reflector
-  version: 7.1.285 # Latest as of early 2026 estimation, or we can omit version to track latest, but pinning is safer. Let's use a recent known major/minor or omit to pull latest if that's standard. The docs said "latest released chart". I'll omit version to follow the "latest" implication or use a safe guess. Actually, let's omit version to let it float or add it if we knew it. Better to be safe, I'll allow it to be latest or pick a plausible recent one if required.
+  version: 10.0.2
   # Let's check if the user has a specific policy on versions. No.
   # I will use a specific version if I can find it, but the doc chunk didn't list one.
   # I'll stick to just repo and chart for now, or check if I can 'helm search'
@@ -11,3 +11,9 @@ helm:
   # Using structure from user's other files.
 labels:
   app: reflector
+
+targets:
+  - name: cit-cps-gpu
+    clusterSelector:
+      matchLabels:
+        name: cit-cps-gpu
