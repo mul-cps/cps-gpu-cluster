@@ -27,8 +27,14 @@ diff:
     name: webhook.serving.knative.dev
     operations:
     - {"op": "remove", "path": "/webhooks/0/clientConfig/caBundle"}
+    - {"op": "remove", "path": "/webhooks/0/namespaceSelector"}
+    - {"op": "remove", "path": "/webhooks/0/clientConfig/service/path"}
+    - {"op": "remove", "path": "/webhooks/0/clientConfig/service/port"}
   - apiVersion: admissionregistration.k8s.io/v1
     kind: ValidatingWebhookConfiguration
     name: validation.webhook.serving.knative.dev
     operations:
     - {"op": "remove", "path": "/webhooks/0/clientConfig/caBundle"}
+    - {"op": "remove", "path": "/webhooks/0/namespaceSelector"}
+    - {"op": "remove", "path": "/webhooks/0/clientConfig/service/path"}
+    - {"op": "remove", "path": "/webhooks/0/clientConfig/service/port"}
