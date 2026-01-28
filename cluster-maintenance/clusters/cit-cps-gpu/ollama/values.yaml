@@ -1,9 +1,4 @@
-podAnnotations:
-  autoscaling.knative.dev/minScale: "0"
-  autoscaling.knative.dev/maxScale: "1"
-  autoscaling.knative.dev/metric: "concurrency"
-  autoscaling.knative.dev/target: "1"
-  autoscaling.knative.dev/scale-down-delay: "5m"
+podAnnotations: {}
 
 knative:
   enabled: true
@@ -11,7 +6,12 @@ knative:
   timeoutSeconds: 600
   responseStartTimeoutSeconds: 900
   idleTimeoutSeconds: 900
-  annotations: {}
+  annotations:
+    autoscaling.knative.dev/minScale: "0"
+    autoscaling.knative.dev/maxScale: "1"
+    autoscaling.knative.dev/metric: "concurrency"
+    autoscaling.knative.dev/target: "1"
+    autoscaling.knative.dev/scale-down-delay: "5m"
 
 ollama:
   gpu:
