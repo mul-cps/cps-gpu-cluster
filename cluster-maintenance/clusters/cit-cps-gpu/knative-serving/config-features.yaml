@@ -5,3 +5,5 @@ metadata:
   namespace: knative-serving
 data:
   kubernetes.podspec-tolerations: "enabled"
+  kubernetes.podspec-persistent-volume-claim: "enabled"
+  kubernetes.podspec-persistent-volume-write: "enabled"
