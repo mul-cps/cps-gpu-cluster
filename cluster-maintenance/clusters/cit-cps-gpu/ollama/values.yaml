@@ -25,12 +25,13 @@ ollama:
 
 persistence:
   enabled: true
+  storageClassName: longhorn
   size: 200Gi
   mountPath: /root/.ollama
 
 resources:
   requests:
     cpu: "2"
-    memory: 8Gi
+    memory: 32Gi
   limits:
-    memory: 24Gi
+    memory: 64Gi
