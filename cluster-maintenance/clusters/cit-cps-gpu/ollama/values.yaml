@@ -1,4 +1,9 @@
-podAnnotations: {}
+podAnnotations:
+  autoscaling.knative.dev/minScale: "0"
+  autoscaling.knative.dev/maxScale: "1"
+  autoscaling.knative.dev/metric: "concurrency"
+  autoscaling.knative.dev/target: "1"
+  autoscaling.knative.dev/scale-down-delay: "5m"
 
 knative:
   enabled: true
@@ -6,12 +11,7 @@ knative:
   timeoutSeconds: 600
   responseStartTimeoutSeconds: 900
   idleTimeoutSeconds: 900
-  annotations:
-    autoscaling.knative.dev/minScale: "0"
-    autoscaling.knative.dev/maxScale: "1"
-    autoscaling.knative.dev/metric: "concurrency"
-    autoscaling.knative.dev/target: "1"
-    autoscaling.knative.dev/scale-down-delay: "5m"
+  annotations: {}
 
 ollama:
   gpu:
@@ -23,9 +23,9 @@ ollama:
       - llama3
       - mistral
 
-persistence:
+persistentVolume:
   enabled: true
-  storageClassName: longhorn
+  storageClass: longhorn
   size: 200Gi
   mountPath: /root/.ollama
 
