@@ -19,3 +19,16 @@ targets:
     clusterSelector:
       matchLabels:
         name: cit-cps-gpu
+
+diff:
+  comparePatches:
+  - apiVersion: admissionregistration.k8s.io/v1
+    kind: MutatingWebhookConfiguration
+    name: webhook.serving.knative.dev
+    operations:
+    - {"op": "remove", "path": "/webhooks/0/clientConfig/caBundle"}
+  - apiVersion: admissionregistration.k8s.io/v1
+    kind: ValidatingWebhookConfiguration
+    name: validation.webhook.serving.knative.dev
+    operations:
+    - {"op": "remove", "path": "/webhooks/0/clientConfig/caBundle"}
