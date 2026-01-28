@@ -11,11 +11,7 @@ helm:
   valuesFiles:
     - values.yaml
 
-# Depends on Knative
-dependsOn:
-  - selector:
-      matchLabels:
-        name: knative-serving
+
 
 targets:
   - name: cit-cps-gpu

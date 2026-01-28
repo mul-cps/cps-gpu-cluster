@@ -8,10 +8,7 @@ helm:
   valuesFiles:
     - values.yaml
 
-dependsOn:
-  - selector:
-      matchLabels:
-        name: ollama
+
 
 targetCustomizations:
 - name: cit-cps-gpu
