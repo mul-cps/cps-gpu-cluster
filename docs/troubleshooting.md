@@ -530,6 +530,27 @@ kubectl exec -n jupyterhub jupyter-<username> -- df -h
 
 ---
 
+---
+
+## Knative Issues
+
+### Kourier Gateway failing to start
+
+**Symptom**: `kourier-gateway` pods restarting, liveness probes failing with `connection refused`.
+Logs show: `StreamAggregatedResources gRPC config stream to xds_cluster closed: 13`.
+
+**Cause**: Version incompatibility between the Kourier Controller (e.g. v1.20.0) and newer Envoy Proxy versions (e.g. v1.34+). The xDS protocol version or configuration format changed in newer Envoy versions.
+
+**Solution**:
+Downgrade the Envoy image in the Kourier deployment to a compatible version (e.g., `v1.30-latest`).
+
+```bash
+# In kourier.yaml
+image: docker.io/envoyproxy/envoy:v1.30-latest
+```
+
+---
+
 ## General Debugging Commands
 
 ### Check cluster health
