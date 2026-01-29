@@ -1,0 +1,21 @@
+defaultNamespace: vcluster-ckf
+
+helm:
+  repo: https://charts.vcluster.com
+  chart: vcluster
+  version: "0.28.0"
+  valuesFiles:
+    - values-vcluster.yaml
+
+# Dependencies or other fleet config
+dependsOn: []
+
+# Ensure we have the namespace
+targetCustomizations:
+  - name: local
+    clusterSelector:
+      matchLabels:
+        management.cattle.io/cluster-display-name: local
+    helm:
+      valuesFiles:
+        - values-vcluster.yaml

@@ -1,0 +1,10 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: vcluster-ckf
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: vcluster-ckf
+  namespace: vcluster-ckf

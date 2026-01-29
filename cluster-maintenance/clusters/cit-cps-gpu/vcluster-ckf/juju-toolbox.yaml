@@ -1,0 +1,46 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: juju-toolbox
+  namespace: vcluster-ckf
+  labels:
+    app: juju-toolbox
+spec:
+  restartPolicy: Always
+  containers:
+    - name: toolbox
+      # Use a recent Ubuntu for Juju compatibility
+      image: ubuntu:24.04
+      command: ["/bin/bash", "-lc"]
+      args:
+        - |
+          apt-get update
+          apt-get install -y ca-certificates curl bash jq git
+          
+          # Install Juju
+          # Using --classic as it often requires access to system paths, though in a pod it's contained
+          snap install juju --classic || echo "Snap not available, trying manual download if needed or pre-installed" 
+          # Note: Snap inside typical containers is hard. 
+          # Better approach for toolbox: Use the Juju direct binary or a specially crafted image.
+          # However, standard ubuntu + snap support in k8s pods is tricky without /run/snapd.
+          # Let's try downloading the juju binary directly to avoid snap issues in a simple pod.
+          
+          JUJU_VERSION=3.6.1 # Check latest stable
+          curl -L -o juju.tar.xz https://launchpad.net/juju/3.6/${JUJU_VERSION}/+download/juju-${JUJU_VERSION}-linux-amd64.tar.xz
+          tar -xf juju.tar.xz
+          mv juju-bin/juju /usr/local/bin/juju
+          rm -rf juju.tar.xz juju-bin
+          
+          # Install vcluster CLI
+          curl -L -o /usr/local/bin/vcluster https://github.com/loft-sh/vcluster/releases/download/v0.28.0/vcluster-linux-amd64
+          chmod +x /usr/local/bin/vcluster
+          
+          # Install kubectl
+          curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"
+          chmod +x kubectl
+          mv kubectl /usr/local/bin/
+          
+          echo "Toolbox ready. Use 'kubectl exec -it juju-toolbox -- bash' to enter."
+          sleep infinity
+      securityContext:
+        runAsUser: 0

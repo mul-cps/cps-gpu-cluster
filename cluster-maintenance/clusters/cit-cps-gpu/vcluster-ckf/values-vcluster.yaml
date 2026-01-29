@@ -1,0 +1,23 @@
+# vcluster chart values
+vcluster:
+  image: ghcr.io/loft-sh/vcluster:0.28.0
+
+  # Sync host StorageClasses into the virtual cluster so PVCs can use Longhorn
+  sync:
+    storageClasses:
+      enabled: true
+      # We sync all storage classes to ensure Longhorn is available.
+      # Users can filter this if needed using selectors.
+
+  # Useful defaults for security
+  securityContext:
+    allowPrivilegeEscalation: false
+
+service:
+  type: ClusterIP
+  # If you want to access vcluster API from outside cluster easily, set LoadBalancer
+  # type: LoadBalancer
+
+# Ingress for vcluster API (optional, using toolbox/port-forward usually suffices)
+ingress:
+  enabled: false
