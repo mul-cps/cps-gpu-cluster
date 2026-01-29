@@ -1,23 +1,23 @@
-# vcluster chart values
-vcluster:
-  image: ghcr.io/loft-sh/vcluster:0.28.0
+# vcluster.yaml structure (replaces old values.yaml)
+# Docs: https://www.vcluster.com/docs/vcluster/configure/vcluster-yaml/
 
-  # Sync host StorageClasses into the virtual cluster so PVCs can use Longhorn
-  sync:
+# Sync host StorageClasses into the virtual cluster
+sync:
+  fromHost:
     storageClasses:
       enabled: true
-      # We sync all storage classes to ensure Longhorn is available.
-      # Users can filter this if needed using selectors.
 
-  # Useful defaults for security
-  securityContext:
-    allowPrivilegeEscalation: false
+# Networking defaults (ClusterIP) are standard, so no need to specify if not changing.
+# Ingress access is disabled by default.
 
-service:
-  type: ClusterIP
-  # If you want to access vcluster API from outside cluster easily, set LoadBalancer
-  # type: LoadBalancer
+# Security defaults
+# allowPrivilegeEscalation: false (default in newer charts often)
+# If needed:
+# policies:
+#   podSecurity: ...
 
-# Ingress for vcluster API (optional, using toolbox/port-forward usually suffices)
-ingress:
-  enabled: false
+# Control Plane configuration (optional, chart defaults should be fine)
+# controlPlane:
+#   distro:
+#     k8s:
+#       enabled: true
