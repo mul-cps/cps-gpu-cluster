@@ -1,7 +1,7 @@
 defaultNamespace: vcluster-ckf
 
 helm:
-  repo: https://charts.vcluster.com
+  repo: https://charts.loft.sh
   chart: vcluster
   version: "0.28.0"
   valuesFiles:
