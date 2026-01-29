@@ -1,0 +1,37 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: debug-disk-pressure
+  namespace: default
+spec:
+  nodeName: k3s-wk-gpu4
+  restartPolicy: Never
+  containers:
+  - name: debug
+    image: alpine:latest
+    command: ["/bin/sh", "-c", "sleep 3600"]
+    resources:
+      requests:
+        cpu: 200m
+        memory: 200Mi
+      limits:
+        cpu: 200m
+        memory: 200Mi
+    securityContext:
+      privileged: true
+    volumeMounts:
+    - mountPath: /host
+      name: host-root
+  priorityClassName: system-node-critical
+  tolerations:
+  - key: node.kubernetes.io/disk-pressure
+    operator: Exists
+    effect: NoSchedule
+  - key: node.kubernetes.io/disk-pressure
+    operator: Exists
+    effect: NoExecute
+  volumes:
+  - name: host-root
+    hostPath:
+      path: /
+      type: Directory

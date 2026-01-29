@@ -11,12 +11,17 @@ defaultSettings:
   defaultReplicaCount: 2
   defaultDataPath: /var/lib/longhorn
   defaultDataLocality: best-effort
-  storageOverProvisioningPercentage: 200
+  storageOverProvisioningPercentage: 100
   storageMinimalAvailablePercentage: 10
   guaranteedEngineManagerCPU: 0.25
   guaranteedReplicaManagerCPU: 0.25
   orphanAutoDeletion: true
   nodeDrainPolicy: allow-if-healthy
+  filesystemTrimEnabled: true
+  concurrentReplicaRebuildPerNodeLimit: 1   # slower recovery, much steadier cluster
+  replicaAutoBalance: least-effort       # or least-effort if you like some balancing without churn
+  removeSnapshotsDuringFilesystemTrim: true
+  autoCleanupSystemGeneratedSnapshot: true
 
 # Limit system components to worker nodes (no control-plane tolerations)
 longhornManager:
