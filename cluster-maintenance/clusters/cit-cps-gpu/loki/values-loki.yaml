@@ -31,6 +31,7 @@ singleBinary:
 
 limits_config:
   retention_period: 336h
+  volume_enabled: true
 
 # Explicitly disable scalable components to suffice validating logic
 write:
