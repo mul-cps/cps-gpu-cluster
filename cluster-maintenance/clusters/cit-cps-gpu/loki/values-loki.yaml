@@ -40,3 +40,7 @@ read:
   replicas: 0
 backend:
   replicas: 0
+
+memberlist:
+  service:
+    publishNotReadyAddresses: true
