@@ -3,6 +3,7 @@ defaultNamespace: vcluster-ckf
 helm:
   repo: https://charts.loft.sh
   chart: vcluster
+  releaseName: vcluster-ckf
   version: "0.28.0"
   valuesFiles:
     - values-vcluster.yaml
