@@ -6,20 +6,25 @@ metadata:
   labels:
     app: juju-toolbox
 spec:
+  serviceAccountName: juju-toolbox-sa
   restartPolicy: Always
   containers:
     - name: toolbox
       # Use a recent Ubuntu for Juju compatibility
       image: ubuntu:24.04
+      env:
+        - name: VCLUSTER_NO_UPDATE_NOTIFIER
+          value: "true"
       command: ["/bin/bash", "-lc"]
       args:
         - |
+          set -e
           apt-get update
-          apt-get install -y ca-certificates curl bash jq git
+          apt-get install -y ca-certificates curl bash jq git xz-utils
           
           # Install Juju
           # Using --classic as it often requires access to system paths, though in a pod it's contained
-          snap install juju --classic || echo "Snap not available, trying manual download if needed or pre-installed" 
+          # snap install juju --classic || echo "Snap not available, trying manual download if needed or pre-installed" 
           # Note: Snap inside typical containers is hard. 
           # Better approach for toolbox: Use the Juju direct binary or a specially crafted image.
           # However, standard ubuntu + snap support in k8s pods is tricky without /run/snapd.
@@ -28,8 +33,8 @@ spec:
           JUJU_VERSION=3.6.1 # Check latest stable
           curl -L -o juju.tar.xz https://launchpad.net/juju/3.6/${JUJU_VERSION}/+download/juju-${JUJU_VERSION}-linux-amd64.tar.xz
           tar -xf juju.tar.xz
-          mv juju-bin/juju /usr/local/bin/juju
-          rm -rf juju.tar.xz juju-bin
+          mv juju /usr/local/bin/juju
+          rm -rf juju.tar.xz
           
           # Install vcluster CLI
           curl -L -o /usr/local/bin/vcluster https://github.com/loft-sh/vcluster/releases/download/v0.28.0/vcluster-linux-amd64

@@ -19,7 +19,7 @@ Once Fleet has deployed this bundle:
 2.  **Connect to vcluster**:
     ```bash
     # Get kubeconfig
-    vcluster connect vcluster-ckf -n vcluster-ckf -- kubeconfig > /tmp/vcluster-ckf.kubeconfig
+    vcluster connect vcluster-ckf -n vcluster-ckf --server https://vcluster-ckf.vcluster-ckf --silent --print > /tmp/vcluster-ckf.kubeconfig
     export KUBECONFIG=/tmp/vcluster-ckf.kubeconfig
     
     # Verify connection
@@ -40,8 +40,8 @@ Once Fleet has deployed this bundle:
     # Create model
     juju add-model kubeflow
     
-    # Deploy (adjust channel as needed, e.g., 1.9/stable)
-    juju deploy kubeflow --channel=1.9/stable --trust
+    # Deploy (adjust channel as needed, e.g., 1.10/stable)
+    juju deploy kubeflow --channel=1.10/stable --trust
     ```
 
 ## Cleanup

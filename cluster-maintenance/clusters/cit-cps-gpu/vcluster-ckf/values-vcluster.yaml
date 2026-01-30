@@ -1,23 +1,54 @@
-# vcluster.yaml structure (replaces old values.yaml)
+# vcluster.yaml structure
 # Docs: https://www.vcluster.com/docs/vcluster/configure/vcluster-yaml/
 
-# Sync host StorageClasses into the virtual cluster
+# 1. Disable syncing StorageClasses from host (we manage them manually to control default)
 sync:
   fromHost:
     storageClasses:
-      enabled: true
+      enabled: false
 
-# Networking defaults (ClusterIP) are standard, so no need to specify if not changing.
-# Ingress access is disabled by default.
+# 2. Disable internal k3s local-path provisioner
+controlPlane:
+  distro:
+    k3s:
+      enabled: true
+      extraArgs:
+        - "--disable=local-storage"
+
+# 3. Create 'longhorn' StorageClass inside vcluster and make it default
+init:
+  manifests:
+    charts:
+      - name: longhorn-sc
+        manifests: |-
+          apiVersion: storage.k8s.io/v1
+          kind: StorageClass
+          metadata:
+            name: longhorn
+            annotations:
+              storageclass.kubernetes.io/is-default-class: "true"
+          provisioner: driver.longhorn.io
+          reclaimPolicy: Delete
+          allowVolumeExpansion: true
+          volumeBindingMode: Immediate
+          parameters:
+            numberOfReplicas: "3"
+            staleReplicaTimeout: "30"
+            fsType: "ext4"
+            dataLocality: "disabled"
+            unmapMarkSnapChainRemoved: "ignored"
+            disableRevisionCounter: "true"
+            dataEngine: "v1"
+            backupTargetName: "default"
+
+# Standard networking defaults
+networking:
+  advanced:
+    proxyKubelets:
+      byHostname: false
+      byIP: false
 
 # Security defaults
-# allowPrivilegeEscalation: false (default in newer charts often)
-# If needed:
-# policies:
-#   podSecurity: ...
-
-# Control Plane configuration (optional, chart defaults should be fine)
-# controlPlane:
-#   distro:
-#     k8s:
-#       enabled: true
+policies:
+  podSecurity:
+    enabled: false
