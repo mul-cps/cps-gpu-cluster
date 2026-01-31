@@ -5,17 +5,17 @@
 sync:
   fromHost:
     storageClasses:
-      enabled: false
+      enabled: true
     nodes:
       enabled: true # for gpu support?
 
-# 2. Disable internal k3s local-path provisioner
-controlPlane:
-  distro:
-    k3s:
-      enabled: true
-      extraArgs:
-        - "--disable=local-storage"
+# # 2. Disable internal k3s local-path provisioner
+# controlPlane:
+#   distro:
+#     k3s:
+#       enabled: true
+#       extraArgs:
+#         - "--disable=local-storage"
 
 # 3. Create 'longhorn' StorageClass inside vcluster and make it default
 # init:
