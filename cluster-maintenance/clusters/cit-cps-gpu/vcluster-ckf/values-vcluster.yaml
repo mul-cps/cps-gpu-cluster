@@ -18,30 +18,30 @@ controlPlane:
         - "--disable=local-storage"
 
 # 3. Create 'longhorn' StorageClass inside vcluster and make it default
-init:
-  manifests:
-    charts:
-      - name: longhorn-sc
-        manifests: |-
-          apiVersion: storage.k8s.io/v1
-          kind: StorageClass
-          metadata:
-            name: longhorn
-            annotations:
-              storageclass.kubernetes.io/is-default-class: "true"
-          provisioner: driver.longhorn.io
-          reclaimPolicy: Delete
-          allowVolumeExpansion: true
-          volumeBindingMode: Immediate
-          parameters:
-            numberOfReplicas: "3"
-            staleReplicaTimeout: "30"
-            fsType: "ext4"
-            dataLocality: "disabled"
-            unmapMarkSnapChainRemoved: "ignored"
-            disableRevisionCounter: "true"
-            dataEngine: "v1"
-            backupTargetName: "default"
+# init:
+#   manifests:
+#     charts:
+#       - name: longhorn-sc
+#         manifests: |-
+#           apiVersion: storage.k8s.io/v1
+#           kind: StorageClass
+#           metadata:
+#             name: longhorn
+#             annotations:
+#               storageclass.kubernetes.io/is-default-class: "true"
+#           provisioner: driver.longhorn.io
+#           reclaimPolicy: Delete
+#           allowVolumeExpansion: true
+#           volumeBindingMode: Immediate
+#           parameters:
+#             numberOfReplicas: "3"
+#             staleReplicaTimeout: "30"
+#             fsType: "ext4"
+#             dataLocality: "disabled"
+#             unmapMarkSnapChainRemoved: "ignored"
+#             disableRevisionCounter: "true"
+#             dataEngine: "v1"
+#             backupTargetName: "default"
 
 # Standard networking defaults
 networking:
