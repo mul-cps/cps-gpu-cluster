@@ -6,6 +6,8 @@ sync:
   fromHost:
     storageClasses:
       enabled: false
+    nodes:
+      enabled: true # for gpu support?
 
 # 2. Disable internal k3s local-path provisioner
 controlPlane:
