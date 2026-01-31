@@ -50,7 +50,7 @@ networking:
       byHostname: false
       byIP: false
 
-# Security defaults
-policies:
-  podSecurity:
-    enabled: false
+# # Security defaults
+# policies:
+#   podSecurity:
+#     enabled: false
