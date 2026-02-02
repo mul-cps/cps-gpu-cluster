@@ -1,4 +1,5 @@
 defaultNamespace: vcluster-ckf
+name: vcluster-ckf
 
 helm:
   repo: https://charts.loft.sh

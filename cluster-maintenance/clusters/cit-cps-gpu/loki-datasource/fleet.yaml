@@ -1,4 +1,5 @@
 defaultNamespace: cattle-monitoring-system
+name: loki-datasource
 targetCustomizations:
   - name: cit-cps-gpu
     clusterSelector:

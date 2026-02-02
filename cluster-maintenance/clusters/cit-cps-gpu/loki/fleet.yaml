@@ -1,4 +1,5 @@
 defaultNamespace: loki
+name: loki
 
 helm:
   repo: https://grafana.github.io/helm-charts

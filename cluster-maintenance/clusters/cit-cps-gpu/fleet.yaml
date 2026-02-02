@@ -1,4 +1,5 @@
 defaultNamespace: fleet-local
+name: cit-cps-gpu-bootstrap
 # Trigger update
 
 # Target clusters for this bundle
