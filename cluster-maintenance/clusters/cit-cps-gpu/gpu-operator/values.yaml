@@ -30,29 +30,16 @@ devicePlugin:
   enabled: true
   version: "v0.18.0"
   migStrategy: "mixed"
-  # Time-slicing configuration to expose both MIG slices and "full GPU" via replicas
+  # Explicit MIG config (no time-slicing/replicas); NOS will drive MIG layouts on gpu1-3
   config:
     create: true
     name: device-plugin-config
-    default: mig-with-replicas
+    default: mig-mixed
     data:
-      mig-with-replicas: |-
+      mig-mixed: |-
         version: v1
         flags:
           migStrategy: mixed
-        sharing:
-          timeSlicing:
-            resources:
-              # Create virtual full-GPU resources from MIG slices via replicas
-              # Each 1g.5gb slice can be "overcommitted" to appear as multiple schedulable units
-              # Note: replicas must be >= 2 for time-slicing to work
-              - name: nvidia.com/mig-1g.5gb
-                replicas: 2
-              # Expose a synthetic "gpu" resource by replicating MIG slices
-              # This allows scheduling "full GPU" workloads on the MIG node
-              # Replicas=2 means each physical MIG slice presents as 2 logical GPUs for time-sharing
-
-            # Note: Actual full GPUs on non-MIG nodes remain nvidia.com/gpu without replicas
 
 # DCGM Exporter (GPU metrics)
 dcgmExporter:
@@ -76,21 +63,11 @@ migManager:
   enabled: true
   config:
     name: "custom-mig-parted-config"
+    default: "all-disabled"
 
-  # Per-node activation:
-  # Label exactly ONE GPU node to enable MIG using:
-  #   kubectl label node <node-name> nvidia.com/mig.config=mixed-one-node-40gb-small --overwrite
-  # Leave other nodes without that label (they will use 'all-disabled').
-  # Remove MIG from node:
-  #   kubectl label node <node-name> nvidia.com/mig.config=all-disabled --overwrite
-  # Scheduling notes on the MIG-enabled node:
-  # - Full GPU resource: nvidia.com/gpu (from GPU0)
-  # - MIG slice resources: nvidia.com/mig-1g.5gb (8 allocatable)
-  # Requests examples:
-  #   limits:
-  #     nvidia.com/gpu: 1        # Full GPU (any non-MIG node or GPU0 on MIG node)
-  #   OR
-  #     nvidia.com/mig-1g.5gb: 1 # Single smallest slice (on MIG-enabled node only)
+  # MIG node intent (set via node-labeler + NOS):
+  # - k3s-wk-gpu1..3: MIG mode on, NOS controls nvidia.com/mig.config using presets in custom-mig-config.yaml
+  # - k3s-wk-gpu4: nvidia.com/mig.config=all-disabled (full GPU only; no MIG)
 
 # Node Feature Discovery
 nfd:

@@ -1,133 +1,61 @@
-# GPU Operator Mixed MIG Configuration
+# GPU Operator + Dynamic MIG (NOS)
 
-This folder deploys the NVIDIA GPU Operator via Fleet with a mixed MIG strategy. Your cluster has 4 GPU nodes with **2× A100 40GB** each, and only ONE node should be MIG-enabled.
+Fleet-managed GPU Operator configuration for the A100 cluster (4 nodes, 2× A100 40GB each) with dynamic MIG on gpu1–gpu3 and full GPUs on gpu4.
 
-## Goal
-Provide both:
-- One full, non-partitioned A100 for jobs needing the entire GPU (request `nvidia.com/gpu: 1`).
-- One A100 split into the smallest MIG slices for high concurrency / small jobs (request `nvidia.com/mig-1g.5gb` or `nvidia.com/mig-1g.10gb` depending on model).
+## Layout
+- **gpu1–gpu3**: `gpu-pool=mig-dynamic`, `nos.nebuly.com/gpu-partitioning=mig`, `nvidia.com/mig.config=all-enabled`, `nvidia.com/mig.strategy=mixed`. MIG mode stays on; NOS drives MIG partitioning using presets in `custom-mig-config.yaml`.
+- **gpu4**: `gpu-pool=full`, `nvidia.com/mig.config=all-disabled`, `nvidia.com/mig.strategy=single`, taint `gpu-pool=full:NoSchedule`. No MIG; full GPUs only.
+- Labels/taints applied by the Helm hook `node-labeler.yaml` after GPU Operator install/upgrade.
 
-## Profiles
-For A100 40GB, the smallest slice is `1g.5gb`. The charted config creates 8 slices on GPU index 1 and keeps GPU index 0 full.
+## Components
+- **GPU Operator** (`values.yaml`): MIG strategy `mixed`, time-slicing disabled, custom MIG presets in `custom-mig-config.yaml` (A100 40GB geometries). MIG Manager enabled with default `all-disabled` (nodes are explicitly labeled above).
+- **NOS bundle** (`../nos`): vendored Helm chart (0.1.2) with MIG agent enabled on `nos.nebuly.com/gpu-partitioning=mig` nodes; depends on GPU Operator bundle.
+- **MIG presets** (`custom-mig-config.yaml`): covers A100 40GB geometries (`1g.5gb`, `2g.10gb`, `3g.20gb`, `4g.20gb`, `7g.40gb`). Names NOS can set include `a100-1g.5gb-7`, `a100-1g.5gbx5-2g.10gbx1`, `a100-1g.5gbx3-2g.10gbx2`, `a100-1g.5gbx1-2g.10gbx3`, `a100-2g.10gbx2-3g.20gbx1`, `a100-1g.5gbx3-4g.20gbx1`, `a100-7g.40gbx1`, etc.
 
-## Configuration Source
-`values.yaml` defines multiple MIG configs and sets default to `all-disabled`.
-Activate MIG on exactly one node by labeling it with the desired config:
+## Scheduling examples
+- MIG slice (dynamic nodes):
+  ```yaml
+  resources:
+    limits:
+      nvidia.com/mig-1g.5gb: 1  # or nvidia.com/mig-2g.10gb
+  nodeSelector:
+    gpu-pool: mig-dynamic
+  ```
+- Full GPU (gpu4 only):
+  ```yaml
+  resources:
+    limits:
+      nvidia.com/gpu: 1
+  nodeSelector:
+    gpu-pool: full
+  tolerations:
+    - key: gpu-pool
+      value: full
+      effect: NoSchedule
+      operator: Equal
+  ```
+- Ready-to-apply manifests: see `examples/` in this folder.
 
-```bash
-kubectl label node <node-name> nvidia.com/mig.config=mixed-one-node-40gb-small --overwrite
-```
+## Apply / update
+- GitOps via Fleet. Push changes to apply, or trigger manually: `kubectl -n fleet-system rollout restart deployment/fleet-agent`.
 
-This will:
-- Keep GPU index `0` full (for `nvidia.com/gpu: 1`)
-- Partition GPU index `1` into 8× `nvidia.com/mig-1g.5gb`
-
-To enable MIG on BOTH GPUs on a single node (A100 40GB -> 7× 1g.5gb per GPU):
-
-```bash
-kubectl label node <node-name> nvidia.com/mig.config=both-mig-40gb-small --overwrite
-```
-
-Notes:
-- Repartitioning triggers GPU resets; drain or expect disruption on that node.
-- For A100 40GB the correct smallest-slice count is 7 (not 8). For A100 80GB it is 8.
-
-## Apply / Update
-**This configuration is managed by Fleet (GitOps).**
-Any changes to `values.yaml`, `custom-mig-config.yaml`, or `node-labeler.yaml` will be automatically applied when pushed to the repository.
-
-To manually trigger an update (if needed):
-```bash
-kubectl -n fleet-system rollout restart deployment/fleet-agent
-```
-
-## Verify MIG State
+## Verify
 ```bash
 kubectl -n gpu-operator get pods -l app=gpu-operator
-kubectl describe node <gpu-node> | grep -i mig -A2
-nvidia-smi -L                # From a privileged debug pod / node shell
-nvidia-smi mig -lgi          # List GI instances
-nvidia-smi mig -lci          # List CI instances
-```
-
-Device Plugin resources should show on the MIG-enabled node:
-- If mixed-one-node-40gb-small:
-  - `nvidia.com/gpu: 1` (from the full GPU index 0)
-  - `nvidia.com/mig-1g.5gb: 7` (from GPU index 1)
-- If both-mig-40gb-small:
-  - `nvidia.com/gpu` will not appear
-  - `nvidia.com/mig-1g.5gb: 14` (7 per GPU)
-
-List allocatable:
-```bash
+kubectl -n nos get pods
+kubectl describe node k3s-wk-gpu1 | grep -i mig -A2
 kubectl get nodes -o json | jq '.items[] | {name: .metadata.name, alloc: .status.allocatable | with_entries(select(.key|test("nvidia")))}'
 ```
 
-## Requesting GPUs
-Full GPU example (on non-MIG nodes):
-```yaml
-resources:
-  limits:
-    nvidia.com/gpu: 1
+## MIG mode prerequisite
+Enable MIG mode once on gpu1–gpu3 (both GPUs per node) if not already:
+```bash
+sudo nvidia-smi -i <gpu-index> -mig 1
+# reboot if required by the platform
 ```
-Single MIG slice (on the MIG-enabled node):
-```yaml
-resources:
-  limits:
-    nvidia.com/mig-1g.5gb: 1   # Smallest slice (5GB GPU memory)
-```
-Larger MIG slice:
-```yaml
-resources:
-  limits:
-    nvidia.com/mig-2g.10gb: 1  # Larger slice (10GB GPU memory)
-```
-
-## Time-Slicing / Replicas
-The device plugin is configured with time-slicing to allow workloads to share MIG slices:
-- Each `nvidia.com/mig-1g.5gb` and `nvidia.com/mig-2g.10gb` can be scheduled with replicas=1 (no overcommit by default).
-- Multiple pods requesting the same MIG slice resource will time-share the GPU compute.
-- For true isolation, request distinct MIG slices (up to 14 total on the MIG node: 7 per GPU × 2 GPUs).
-
-## Mixed Workload Scheduling
-- **Non-MIG nodes** (k3s-wk-gpu2, gpu3, gpu4): Request `nvidia.com/gpu: 1` or `nvidia.com/gpu: 2` for exclusive full GPUs.
-- **MIG node** (k3s-wk-gpu1): Request `nvidia.com/mig-1g.5gb` or `nvidia.com/mig-2g.10gb` for partitioned slices.
-- To force scheduling to non-MIG nodes, add node affinity or labels to exclude the MIG node.
-
-## Overcommit / Time-Slicing Notes
-MIG already provides strong isolation. Additional overcommit via time-slicing (device plugin "replicas") is generally NOT recommended on MIG slices. If you still want to oversubscribe the **full** GPU for lighter workloads:
-```yaml
-devicePlugin:
-  config:
-    name: time-slicing-config
-    sharing:
-      timeSlicing:
-        resources:
-          - name: nvidia.com/gpu
-            replicas: 2  # Presents one physical GPU as 2 logical for scheduling
-```
-Caveats:
-- No guaranteed performance; jobs share context.
-- Do NOT apply time-slicing to MIG resources simultaneously.
-
-## Changing Strategy Later
-Switching a GPU between full and MIG partitions restarts workloads using that GPU. Plan a maintenance window:
-1. Drain node: `kubectl drain <gpu-node> --ignore-daemonsets --delete-emptydir-data`
-2. Adjust `values.yaml` (profile counts or disable MIG) and redeploy.
-3. Uncordon: `kubectl uncordon <gpu-node>`
+NOS will then create/delete MIG instances according to pending workloads within the allowed geometries.
 
 ## Troubleshooting
-| Symptom | Action |
-|---------|--------|
-| MIG resources not visible | Check `migManager` pod logs; ensure correct profile names. |
-| Full GPU disappeared | Ensure at least one GPU has `migEnabled: false`. |
-| Slice count mismatch | Verify model (40GB vs 80GB) and adjust `count`. |
-| Pods pending on MIG | Confirm resource name matches (`nvidia.com/mig-1g.*`). |
-
-## Next Steps
-- Add monitoring alerts for slice utilization (DCGM exporter metrics).
-- Optionally provide a higher-profile slice (e.g., `2g.*`) for medium workloads.
-- Consider a Node label/taint to steer MIG workloads to the specific MIG node if you add more GPU nodes later.
-
----
-Update this doc if hardware changes or additional GPUs are added.
+- MIG resources missing: check `nos` MIG agent logs and ensure node labels/taints match above; verify MIG mode is enabled on the node.
+- Full GPU workloads pending: confirm they target `gpu-pool=full` and tolerate the taint; ensure GPU Operator device plugin is running on gpu4.
+- Unexpected repartitions: check `nvidia.com/mig.config` label on MIG nodes and `custom-mig-config.yaml` presets.

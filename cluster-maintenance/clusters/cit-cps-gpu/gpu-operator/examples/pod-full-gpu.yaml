@@ -1,0 +1,21 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: full-gpu-demo
+spec:
+  restartPolicy: Never
+  runtimeClassName: nvidia
+  nodeSelector:
+    gpu-pool: full
+  tolerations:
+    - key: gpu-pool
+      value: full
+      effect: NoSchedule
+      operator: Equal
+  containers:
+    - name: cuda
+      image: nvcr.io/nvidia/cuda:12.2.0-base-ubuntu22.04
+      command: ["sleep", "3600"]
+      resources:
+        limits:
+          nvidia.com/gpu: 1

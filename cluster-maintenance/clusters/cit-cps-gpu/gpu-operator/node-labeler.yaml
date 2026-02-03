@@ -17,12 +17,21 @@ spec:
         - /bin/sh
         - -c
         - |
-          echo "Labeling nodes k3s-wk-gpu1 and k3s-wk-gpu4..."
-          kubectl label node k3s-wk-gpu1 nvidia.com/mig.config=all-disabled --overwrite
-          kubectl label node k3s-wk-gpu1 nvidia.com/mig.strategy=mixed --overwrite
+          echo "Labeling GPU pools and NOS-managed MIG nodes..."
+          for n in k3s-wk-gpu1 k3s-wk-gpu2 k3s-wk-gpu3; do
+            kubectl label node ${n} gpu-pool=mig-dynamic --overwrite
+            kubectl label node ${n} nos.nebuly.com/gpu-partitioning=mig --overwrite
+            kubectl label node ${n} nvidia.com/mig.strategy=mixed --overwrite
+            kubectl label node ${n} nvidia.com/mig.config=all-enabled --overwrite
+            kubectl taint node ${n} gpu-pool- --overwrite || true
+          done
+
+          kubectl label node k3s-wk-gpu4 gpu-pool=full --overwrite
+          kubectl label node k3s-wk-gpu4 nos.nebuly.com/gpu-partitioning- --overwrite
           kubectl label node k3s-wk-gpu4 nvidia.com/mig.config=all-disabled --overwrite
-          kubectl label node k3s-wk-gpu4 nvidia.com/mig.strategy=mixed --overwrite
-          echo "Done."
+          kubectl label node k3s-wk-gpu4 nvidia.com/mig.strategy=single --overwrite
+          kubectl taint node k3s-wk-gpu4 gpu-pool=full:NoSchedule --overwrite
+          echo "Labels and taints applied."
       restartPolicy: OnFailure
 ---
 apiVersion: v1

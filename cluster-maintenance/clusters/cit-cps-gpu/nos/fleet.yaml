@@ -1,0 +1,18 @@
+name: nos
+defaultNamespace: nos
+
+labels:
+  app: nos
+  name: nos
+
+helm:
+  chart: chart
+  releaseName: nos
+  valuesFiles:
+  - values.yaml
+
+# Ensure GPU operator is present before nos starts managing GPUs
+dependsOn:
+- selector:
+    matchLabels:
+      name: gpu-operator
