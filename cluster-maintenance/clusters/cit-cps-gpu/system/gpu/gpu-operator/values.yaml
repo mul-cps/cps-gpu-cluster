@@ -8,8 +8,8 @@ driver:
   # Compile drivers on the node (slower but works with any kernel)
   usePrecompiled: false
   version: "550.127.05"
-  # Use Ubuntu base image for driver compilation
-  repository: nvcr.io/nvidia/driver
+  # Use correct image path for driver container
+  repository: nvcr.io/nvidia
   image: driver
   # Manager configuration for driver installation
   manager:
