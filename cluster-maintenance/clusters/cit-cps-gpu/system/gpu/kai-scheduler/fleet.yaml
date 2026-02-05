@@ -4,10 +4,16 @@ defaultNamespace: kai-scheduler
 labels:
   name: kai-scheduler
 
-
-
 helm:
   chart: oci://ghcr.io/nvidia/kai-scheduler/kai-scheduler
   version: v0.12.10
   valuesFiles:
     - values.yaml
+
+diff:
+  comparePatches:
+  - apiVersion: kai.scheduler/v1
+    kind: SchedulingShard
+    name: default
+    operations:
+    - {"op": "remove", "path": "/status"}
