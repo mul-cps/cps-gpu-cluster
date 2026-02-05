@@ -1,0 +1,47 @@
+apiVersion: scheduling.run.ai/v2
+kind: Queue
+metadata:
+  name: courses
+  namespace: kai-scheduler
+spec:
+  quota:
+    gpu: 4
+  limit:
+    gpu: -1
+  overQuotaWeight: 1
+---
+apiVersion: scheduling.run.ai/v2
+kind: Queue
+metadata:
+  name: phd-interactive
+  namespace: kai-scheduler
+spec:
+  quota:
+    gpu: 1.5
+  limit:
+    gpu: -1
+  overQuotaWeight: 2
+---
+apiVersion: scheduling.run.ai/v2
+kind: Queue
+metadata:
+  name: batch
+  namespace: kai-scheduler
+spec:
+  quota:
+    gpu: 0
+  limit:
+    gpu: -1
+  overQuotaWeight: 10
+---
+apiVersion: scheduling.run.ai/v2
+kind: Queue
+metadata:
+  name: default
+  namespace: kai-scheduler
+spec:
+  quota:
+    gpu: -1
+  limit:
+    gpu: -1
+  overQuotaWeight: 10

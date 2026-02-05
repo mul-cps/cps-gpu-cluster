@@ -1,0 +1,4 @@
+defaultNamespace: kai-scheduler
+
+dependsOn:
+  - name: kai-scheduler

@@ -1,0 +1,23 @@
+apiVersion: scheduling.k8s.io/v1
+kind: PriorityClass
+metadata:
+  name: kai-course-high
+value: 10000
+globalDefault: false
+description: "Highest priority for course workloads. Reclaims resources from others."
+---
+apiVersion: scheduling.k8s.io/v1
+kind: PriorityClass
+metadata:
+  name: kai-phd-interactive
+value: 5000
+globalDefault: false
+description: "High priority for PhD interactive work."
+---
+apiVersion: scheduling.k8s.io/v1
+kind: PriorityClass
+metadata:
+  name: kai-batch-low
+value: 1000
+globalDefault: false
+description: "Lowest priority for batch jobs. Preemptible by courses and interactive."
