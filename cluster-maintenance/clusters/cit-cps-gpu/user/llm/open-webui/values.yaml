@@ -10,15 +10,9 @@ ingress:
   # Actually, `className` is standard K8s. But let's check snippet: `className: nginx`.
   annotations:
     cert-manager.io/cluster-issuer: letsencrypt-prod
-  hosts:
-    - host: openwebui.dshl.unileoben.ac.at
-      paths:
-        - path: /
-          pathType: Prefix
-  tls:
-    - secretName: openwebui-tls
-      hosts:
-        - openwebui.dshl.unileoben.ac.at
+  host: openwebui.dshl.unileoben.ac.at
+  tls: true
+  existingSecret: openwebui-tls
 
 extraEnvVars:
   - name: WEBUI_URL
