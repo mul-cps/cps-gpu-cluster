@@ -2,12 +2,11 @@
 
 # Driver configuration
 # GPU Operator will manage NVIDIA drivers (includes nvidia-persistenced)
-# Using compilation-based driver install since precompiled images aren't available for kernel 6.8.0-90
 driver:
   enabled: true
-  # Compile drivers on the node (slower but works with any kernel)
-  usePrecompiled: false
-  version: "550.127.05"
+  # Use precompiled driver for kernel 6.8.0-94-generic (compatible with 6.8.0-90)
+  usePrecompiled: true
+  version: "580-6.8.0-94-generic-ubuntu24.04"
   # Use correct image path for driver container
   repository: nvcr.io/nvidia
   image: driver
