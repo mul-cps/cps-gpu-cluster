@@ -2,11 +2,22 @@
 
 # Driver configuration
 # GPU Operator will manage NVIDIA drivers (includes nvidia-persistenced)
+# Using compilation-based driver install since precompiled images aren't available for kernel 6.8.0-90
 driver:
   enabled: true
-  # Use precompiled drivers for faster deployment
-  usePrecompiled: true
+  # Compile drivers on the node (slower but works with any kernel)
+  usePrecompiled: false
   version: "550.127.05"
+  # Use Ubuntu base image for driver compilation
+  repository: nvcr.io/nvidia/driver
+  image: driver
+  # Manager configuration for driver installation
+  manager:
+    env:
+      - name: ENABLE_GPU_POD_EVICTION
+        value: "false"
+      - name: ENABLE_AUTO_DRAIN
+        value: "false"
 
 # Daemonsets
 daemonsets:
