@@ -17,3 +17,12 @@ targets:
     clusterSelector:
       matchLabels:
         name: cit-cps-gpu
+
+diff:
+  comparePatches:
+  - apiVersion: serving.knative.dev/v1
+    kind: Service
+    name: ollama
+    operations:
+    - {"op": "remove", "path": "/spec/traffic"}
+    - {"op": "remove", "path": "/metadata/annotations"}

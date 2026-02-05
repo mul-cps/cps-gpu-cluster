@@ -30,6 +30,9 @@ diff:
     - {"op": "remove", "path": "/webhooks/0/namespaceSelector"}
     - {"op": "remove", "path": "/webhooks/0/clientConfig/service/path"}
     - {"op": "remove", "path": "/webhooks/0/clientConfig/service/port"}
+    - {"op": "remove", "path": "/webhooks/0/matchPolicy"}
+    - {"op": "remove", "path": "/webhooks/0/reinvocationPolicy"}
+    - {"op": "remove", "path": "/webhooks/0/objectSelector"}
   - apiVersion: admissionregistration.k8s.io/v1
     kind: ValidatingWebhookConfiguration
     name: validation.webhook.serving.knative.dev
@@ -38,3 +41,5 @@ diff:
     - {"op": "remove", "path": "/webhooks/0/namespaceSelector"}
     - {"op": "remove", "path": "/webhooks/0/clientConfig/service/path"}
     - {"op": "remove", "path": "/webhooks/0/clientConfig/service/port"}
+    - {"op": "remove", "path": "/webhooks/0/matchPolicy"}
+    - {"op": "remove", "path": "/webhooks/0/objectSelector"}
