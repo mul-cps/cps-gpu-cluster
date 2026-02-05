@@ -1,9 +1,29 @@
 # NVIDIA GPU Operator Configuration for Ubuntu 24.04
 
 # Driver configuration
-# Drivers are pre-installed on nodes, so disable driver management
+# GPU Operator will manage NVIDIA drivers (includes nvidia-persistenced)
 driver:
-  enabled: false
+  enabled: true
+  # Use precompiled drivers for faster deployment
+  usePrecompiled: true
+  version: "550.127.05"
+
+# Daemonsets
+daemonsets:
+  priorityClassName: system-node-critical
+  tolerations:
+    - key: nvidia.com/gpu
+      operator: Exists
+      effect: NoSchedule
+  # Use UPDATE strategy to allow rolling updates
+  updateStrategy: RollingUpdate
+
+# Validator
+validator:
+  plugin:
+    env:
+      - name: WITH_WORKLOAD
+        value: "false"
 
 # NVIDIA Container Toolkit - K3s configuration
 toolkit:
