@@ -8,8 +8,7 @@ ingress:
   enabled: true
   class: nginx # User said className: nginx in snippets, but chart might use class or className depending on version. Snippet used `className: nginx`.
   # Actually, `className` is standard K8s. But let's check snippet: `className: nginx`.
-  annotations:
-    cert-manager.io/cluster-issuer: letsencrypt-prod
+  annotations: {}
   host: openwebui.dshl.unileoben.ac.at
   tls: true
   existingSecret: openwebui-tls
