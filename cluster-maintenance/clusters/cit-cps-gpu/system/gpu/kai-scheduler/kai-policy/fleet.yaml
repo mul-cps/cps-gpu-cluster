@@ -1,4 +1,10 @@
+name: kai-policy
 defaultNamespace: kai-scheduler
 
+labels:
+  name: kai-policy
+
 dependsOn:
-  - name: kai-scheduler
+  - selector:
+      matchLabels:
+        name: kai-scheduler

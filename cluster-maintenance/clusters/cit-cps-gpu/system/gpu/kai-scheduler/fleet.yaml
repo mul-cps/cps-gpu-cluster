@@ -1,4 +1,10 @@
+name: kai-scheduler
 defaultNamespace: kai-scheduler
+
+labels:
+  name: kai-scheduler
+
+
 
 helm:
   chart: oci://ghcr.io/nvidia/kai-scheduler/kai-scheduler
