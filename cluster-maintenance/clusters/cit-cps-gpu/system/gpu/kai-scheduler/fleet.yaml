@@ -1,6 +1,7 @@
 defaultNamespace: kai-scheduler
 
 helm:
-  chart: ./kai-scheduler
+  chart: oci://ghcr.io/nvidia/kai-scheduler/kai-scheduler
+  version: v0.12.10
   valuesFiles:
     - values.yaml

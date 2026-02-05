@@ -1,11 +1,7 @@
 global:
-  # Prefer explicit registry+tag pin. Version pin is important for reproducibility.
-  # v0.12.11 is the latest release as of 2026-02-04.
-  tag: v0.12.11
-
-  # Registry depends on how you deploy:
+  # Using v0.12.10 as v0.12.11 images/chart are currently unavailable on GHCR.
+  tag: v0.12.10
   registry: ghcr.io/nvidia/kai-scheduler
 
 admission:
-  # The cluster has an "nvidia" RuntimeClass.
-  gpuPodRuntimeClassName: "nvidia"
+  gpuPodRuntimeClassName: nvidia
