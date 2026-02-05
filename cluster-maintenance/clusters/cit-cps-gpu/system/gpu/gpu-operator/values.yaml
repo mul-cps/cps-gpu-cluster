@@ -1,15 +1,9 @@
 # NVIDIA GPU Operator Configuration for Ubuntu 24.04
 
 # Driver configuration
+# Drivers are pre-installed on nodes, so disable driver management
 driver:
-  enabled: true
-  repository: nvcr.io/nvidia
-  image: driver
-  version: "580.95.05"
-  # Disable precompiled to use generic Ubuntu 24.04 driver
-  usePrecompiled: false
-  # Use auto kernel module type
-  kernelModuleType: "auto"
+  enabled: false
 
 # NVIDIA Container Toolkit - K3s configuration
 toolkit:
