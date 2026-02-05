@@ -60,4 +60,15 @@ sftp <username>+<servername>@jupyterhub.dshl.unileoben.ac.at
     *   HostName: `jupyterhub.dshl.unileoben.ac.at`
     *   User: `<your-username>`
 3.  Connect to the host.
-4.  When prompted for the password, enter your **API Token**.
+
+## Deployment Configuration
+
+The Kubernetes manifests for the SSH service are managed via GitOps and located in:
+`cluster-maintenance/clusters/cit-cps-gpu/user/jupyter/jupyterhub-ssh/`
+
+This includes:
+- `values.yaml`: Helm chart values
+- `netpol.yaml`: Network policies
+- `rbac.yaml`: Service account permissions
+- `allow-ingress-nginx.yaml`: Ingress allow rules
+

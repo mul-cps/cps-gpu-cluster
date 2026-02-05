@@ -38,10 +38,18 @@ cps-gpu-cluster/
 │   ├── terraform/          # VM provisioning with GPU passthrough
 │   └── ansible/            # K3s installation & configuration
 ├── cluster-maintenance/     # Day-2 operations via Fleet
-│   └── clusters/homelab/   # GitOps manifests
+│   └── clusters/cit-cps-gpu/ # GitOps manifests for the cluster
 ├── docs/                   # Comprehensive documentation
+├── scripts/                # Maintenance and utility scripts
 └── README.md
 ```
+
+## Maintenance Utilities
+
+The `scripts/` directory contains utility scripts for cluster management:
+- `check_orphans.py`: Scans the cluster for potentially orphaned PVCs and PVs.
+- `cleanup.sh`: Dangerous script to destroy the entire cluster (use with caution).
+- Setup and verification scripts.
 
 ## Quick Start
 
