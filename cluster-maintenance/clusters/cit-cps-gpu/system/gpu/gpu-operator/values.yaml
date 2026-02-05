@@ -8,7 +8,7 @@ driver:
   usePrecompiled: false
   repository: nvcr.io/nvidia
   image: driver
-  version: "580-6.8.0-94-generic"
+  version: "580-6.8.0-90-generic"
   # Manager configuration for driver installation
   manager:
     env:
