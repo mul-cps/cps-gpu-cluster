@@ -1,0 +1,6 @@
+defaultNamespace: kai-scheduler
+
+helm:
+  chart: ./kai-scheduler
+  valuesFiles:
+    - values.yaml

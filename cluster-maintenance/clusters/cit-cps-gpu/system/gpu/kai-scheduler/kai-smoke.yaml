@@ -1,0 +1,10 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: kai-smoke
+  namespace: default
+spec:
+  schedulerName: kai-scheduler
+  containers:
+  - name: pause
+    image: registry.k8s.io/pause:3.9
