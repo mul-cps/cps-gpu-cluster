@@ -1,3 +1,4 @@
+# MIG slice workload - runs on gpu1 (1g.10gb slices)
 apiVersion: v1
 kind: Pod
 metadata:
@@ -6,11 +7,11 @@ spec:
   restartPolicy: Never
   runtimeClassName: nvidia
   nodeSelector:
-    gpu-pool: mig-dynamic
+    gpu-pool: mig
   containers:
     - name: cuda
       image: nvcr.io/nvidia/cuda:12.2.0-base-ubuntu22.04
       command: ["sleep", "3600"]
       resources:
         limits:
-          nvidia.com/mig-1g.5gb: 1
+          nvidia.com/mig-1g.10gb: 1

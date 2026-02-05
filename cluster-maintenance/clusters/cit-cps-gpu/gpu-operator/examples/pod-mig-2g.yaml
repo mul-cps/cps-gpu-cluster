@@ -1,16 +1,28 @@
+# Full GPU workload - runs on gpu2, gpu3 (no taint) or gpu4 (with taint)
+# This example targets gpu2/gpu3 without requiring taint toleration
 apiVersion: v1
 kind: Pod
 metadata:
-  name: mig-2g-demo
+  name: full-gpu-demo-no-taint
 spec:
   restartPolicy: Never
   runtimeClassName: nvidia
   nodeSelector:
-    gpu-pool: mig-dynamic
+    gpu-pool: full
+  affinity:
+    nodeAffinity:
+      requiredDuringSchedulingIgnoredDuringExecution:
+        nodeSelectorTerms:
+          - matchExpressions:
+              - key: kubernetes.io/hostname
+                operator: In
+                values:
+                  - k3s-wk-gpu2
+                  - k3s-wk-gpu3
   containers:
     - name: cuda
       image: nvcr.io/nvidia/cuda:12.2.0-base-ubuntu22.04
       command: ["sleep", "3600"]
       resources:
         limits:
-          nvidia.com/mig-2g.10gb: 1
+          nvidia.com/gpu: 1

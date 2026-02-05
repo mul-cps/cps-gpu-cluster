@@ -1,27 +1,36 @@
-# GPU Operator + Dynamic MIG (NOS)
+# GPU Operator Configuration
 
-Fleet-managed GPU Operator configuration for the A100 cluster (4 nodes, 2× A100 40GB each) with dynamic MIG on gpu1–gpu3 and full GPUs on gpu4.
+Fleet-managed GPU Operator configuration for the A100 cluster (4 nodes, 2× A100 PCIE 40GB each).
 
 ## Layout
-- **gpu1–gpu3**: `gpu-pool=mig-dynamic`, `nos.nebuly.com/gpu-partitioning=mig`, `nvidia.com/mig.config=all-enabled`, `nvidia.com/mig.strategy=mixed`. MIG mode stays on; NOS drives MIG partitioning using presets in `custom-mig-config.yaml`.
-- **gpu4**: `gpu-pool=full`, `nvidia.com/mig.config=all-disabled`, `nvidia.com/mig.strategy=single`, taint `gpu-pool=full:NoSchedule`. No MIG; full GPUs only.
+- **gpu1**: `gpu-pool=mig`, `nvidia.com/mig.config=all-1g.10gb`, `nvidia.com/mig.strategy=mixed`. MIG enabled with 4× `1g.10gb` slices per GPU (8 total).
+- **gpu2–gpu4**: `gpu-pool=full`, `nvidia.com/mig.config=all-disabled`, `nvidia.com/mig.strategy=single`. Full GPU access, MIG disabled.
+- **gpu4 taint**: `gpu-pool=full:NoSchedule` to reserve for explicit full-GPU workloads.
 - Labels/taints applied by the Helm hook `node-labeler.yaml` after GPU Operator install/upgrade.
 
+## A100 40GB Valid MIG Profiles
+| Profile | Memory | Slices per GPU |
+|---------|--------|----------------|
+| `1g.5gb` | 5GB | 7 |
+| `1g.10gb` | 10GB | 4 |
+| `2g.20gb` | 20GB | 3 |
+| `3g.40gb` | 40GB | 2 |
+| `4g.40gb` | 40GB | 1 |
+
 ## Components
-- **GPU Operator** (`values.yaml`): MIG strategy `mixed`, time-slicing disabled, custom MIG presets in `custom-mig-config.yaml` (A100 40GB geometries). MIG Manager enabled with default `all-disabled` (nodes are explicitly labeled above).
-- **NOS bundle** (`../nos`): vendored Helm chart (0.1.2) with MIG agent enabled on `nos.nebuly.com/gpu-partitioning=mig` nodes; depends on GPU Operator bundle.
-- **MIG presets** (`custom-mig-config.yaml`): covers A100 40GB geometries (`1g.5gb`, `2g.10gb`, `3g.20gb`, `4g.20gb`, `7g.40gb`). Names NOS can set include `a100-1g.5gb-7`, `a100-1g.5gbx5-2g.10gbx1`, `a100-1g.5gbx3-2g.10gbx2`, `a100-1g.5gbx1-2g.10gbx3`, `a100-2g.10gbx2-3g.20gbx1`, `a100-1g.5gbx3-4g.20gbx1`, `a100-7g.40gbx1`, etc.
+- **GPU Operator** (`gpu-operator/values.yaml`): MIG strategy `mixed`, custom MIG presets in `custom-mig-parted-config` ConfigMap. Tolerates `gpu-pool` and `nvidia.com/gpu` taints.
+- **MIG presets** (`custom-mig-parted-config`): A100 40GB geometries including `all-1g.5gb`, `all-1g.10gb`, `all-2g.20gb`, `both-mig-40gb-small`, etc.
 
 ## Scheduling examples
-- MIG slice (dynamic nodes):
+- MIG slice (gpu1):
   ```yaml
   resources:
     limits:
-      nvidia.com/mig-1g.5gb: 1  # or nvidia.com/mig-2g.10gb
+      nvidia.com/mig-1g.10gb: 1
   nodeSelector:
-    gpu-pool: mig-dynamic
+    gpu-pool: mig
   ```
-- Full GPU (gpu4 only):
+- Full GPU (gpu2-4):
   ```yaml
   resources:
     limits:
@@ -41,21 +50,21 @@ Fleet-managed GPU Operator configuration for the A100 cluster (4 nodes, 2× A100
 
 ## Verify
 ```bash
-kubectl -n gpu-operator get pods -l app=gpu-operator
-kubectl -n nos get pods
-kubectl describe node k3s-wk-gpu1 | grep -i mig -A2
-kubectl get nodes -o json | jq '.items[] | {name: .metadata.name, alloc: .status.allocatable | with_entries(select(.key|test("nvidia")))}'
+kubectl -n gpu-operator get pods
+kubectl get nodes -l nvidia.com/gpu.present=true -o custom-columns='NAME:.metadata.name,MIG_CONFIG:.metadata.labels.nvidia\.com/mig\.config,MIG_STATE:.metadata.labels.nvidia\.com/mig\.config\.state'
+kubectl get nodes -o custom-columns='NAME:.metadata.name,GPU:.status.allocatable.nvidia\.com/gpu,MIG-1g\.10gb:.status.allocatable.nvidia\.com/mig-1g\.10gb'
 ```
 
-## MIG mode prerequisite
-Enable MIG mode once on gpu1–gpu3 (both GPUs per node) if not already:
+## MIG mode changes
+MIG mode changes on passthrough GPUs (e.g., Harvester VMs) require a **node reboot**. The MIG Manager will set the mode, but the change only takes effect after reboot.
+
+To change MIG config:
 ```bash
-sudo nvidia-smi -i <gpu-index> -mig 1
-# reboot if required by the platform
+kubectl label node <node> nvidia.com/mig.config=<profile> --overwrite
+# If switching MIG on/off, reboot the node
 ```
-NOS will then create/delete MIG instances according to pending workloads within the allowed geometries.
 
 ## Troubleshooting
-- MIG resources missing: check `nos` MIG agent logs and ensure node labels/taints match above; verify MIG mode is enabled on the node.
-- Full GPU workloads pending: confirm they target `gpu-pool=full` and tolerate the taint; ensure GPU Operator device plugin is running on gpu4.
-- Unexpected repartitions: check `nvidia.com/mig.config` label on MIG nodes and `custom-mig-config.yaml` presets.
+- **MIG state failed**: Check MIG manager logs. For passthrough GPUs, MIG mode changes require node reboot.
+- **Full GPU workloads pending**: Confirm they target `gpu-pool=full` and tolerate the `gpu-pool=full:NoSchedule` taint.
+- **Device plugin CrashLoopBackOff**: Usually means MIG mode is pending - node needs reboot.

@@ -1,3 +1,5 @@
+# Full GPU workload with taint toleration - can run on gpu4 (tainted)
+# Also works on gpu2/gpu3 since they have gpu-pool=full label
 apiVersion: v1
 kind: Pod
 metadata:
