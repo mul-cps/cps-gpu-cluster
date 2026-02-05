@@ -4,11 +4,12 @@ metadata:
   name: courses
   namespace: kai-scheduler
 spec:
-  quota:
-    gpu: 4
-  limit:
-    gpu: -1
-  overQuotaWeight: 1
+  parentQueue: default-parent-queue
+  resources:
+    gpu:
+      quota: 4
+      limit: -1
+      overQuotaWeight: 1
 ---
 apiVersion: scheduling.run.ai/v2
 kind: Queue
@@ -16,11 +17,12 @@ metadata:
   name: phd-interactive
   namespace: kai-scheduler
 spec:
-  quota:
-    gpu: 1.5
-  limit:
-    gpu: -1
-  overQuotaWeight: 2
+  parentQueue: default-parent-queue
+  resources:
+    gpu:
+      quota: 1.5
+      limit: -1
+      overQuotaWeight: 2
 ---
 apiVersion: scheduling.run.ai/v2
 kind: Queue
@@ -28,11 +30,12 @@ metadata:
   name: batch
   namespace: kai-scheduler
 spec:
-  quota:
-    gpu: 0
-  limit:
-    gpu: -1
-  overQuotaWeight: 10
+  parentQueue: default-parent-queue
+  resources:
+    gpu:
+      quota: 0
+      limit: -1
+      overQuotaWeight: 10
 ---
 apiVersion: scheduling.run.ai/v2
 kind: Queue
@@ -40,8 +43,9 @@ metadata:
   name: default
   namespace: kai-scheduler
 spec:
-  quota:
-    gpu: -1
-  limit:
-    gpu: -1
-  overQuotaWeight: 10
+  parentQueue: default-parent-queue
+  resources:
+    gpu:
+      quota: -1
+      limit: -1
+      overQuotaWeight: 10
