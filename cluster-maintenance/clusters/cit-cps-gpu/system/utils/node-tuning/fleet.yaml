@@ -1,3 +1,5 @@
+name: node-tuning
 defaultNamespace: kube-system
+
 labels:
   app: system-tuning

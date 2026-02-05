@@ -3,8 +3,3 @@ defaultNamespace: kai-scheduler
 
 labels:
   name: kai-policy
-
-dependsOn:
-  - selector:
-      matchLabels:
-        name: kai-scheduler
