@@ -7,7 +7,7 @@ controller:
     type: LoadBalancer
     # MetalLB will auto-assign IP from pool (10.21.0.50-60)
     # Optionally request specific IP:
-    # loadBalancerIP: 10.21.0.50
+    loadBalancerIP: 10.21.0.50
     annotations:
       # MetalLB configuration
       metallb.universe.tf/allow-shared-ip: "ingress-shared"

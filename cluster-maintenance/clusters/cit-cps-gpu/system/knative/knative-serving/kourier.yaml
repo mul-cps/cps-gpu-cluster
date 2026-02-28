@@ -624,14 +624,10 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: kourier
-  namespace: kourier-system
-  labels:
-    networking.knative.dev/ingress-provider: kourier
-    app.kubernetes.io/component: net-kourier
-    app.kubernetes.io/version: "1.20.0"
-    app.kubernetes.io/name: knative-serving
+  annotations:
+    metallb.universe.tf/allow-shared-ip: "ingress-shared"
 spec:
+  loadBalancerIP: 10.21.0.50
   ports:
     - name: http2
       port: 80
