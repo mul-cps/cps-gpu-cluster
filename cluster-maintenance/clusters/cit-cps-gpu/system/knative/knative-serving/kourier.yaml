@@ -634,7 +634,7 @@ metadata:
   annotations:
     metallb.universe.tf/allow-shared-ip: "ingress-shared"
 spec:
-  loadBalancerIP: 10.21.0.50
+  loadBalancerIP: 10.21.0.51
   ports:
     - name: http2
       port: 80
