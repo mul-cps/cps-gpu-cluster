@@ -4,11 +4,11 @@
 # GPU Operator will manage NVIDIA drivers (includes nvidia-persistenced)
 driver:
   enabled: true
-  # Don't use precompiled mode - we'll specify the full image URI
-  usePrecompiled: false
+  # Use precompiled mode for stability on Ubuntu 24.04.3 LTS
+  usePrecompiled: true
   repository: nvcr.io/nvidia
   image: driver
-  version: "580-6.8.0-90-generic"
+  version: "550.127.05"
   # Manager configuration for driver installation
   manager:
     env:
