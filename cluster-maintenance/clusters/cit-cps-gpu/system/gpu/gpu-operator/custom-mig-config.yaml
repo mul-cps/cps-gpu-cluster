@@ -16,6 +16,15 @@ data:
           mig-enabled: true
           mig-devices: {}
 
+      # Custom profile for 1 MIG GPU and 1 Full GPU on a dual-GPU node
+      one-mig-one-full:
+        - devices: [0]
+          mig-enabled: true
+          mig-devices:
+            "1g.5gb": 7
+        - devices: [1]
+          mig-enabled: false
+
       # Dynamic MIG presets for A100 40GB (applied to all GPUs on the node)
       a100-1g.5gb-7:
         - devices: all

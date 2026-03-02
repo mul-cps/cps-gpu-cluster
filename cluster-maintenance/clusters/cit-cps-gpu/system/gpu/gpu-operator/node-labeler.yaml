@@ -19,21 +19,21 @@ spec:
         - |
           echo "Labeling GPU pools..."
           
-          # gpu1: MIG with 1g.10gb slices (4 per GPU = 8 total)
-          kubectl label node k3s-wk-gpu1 gpu-pool=mig --overwrite
-          kubectl label node k3s-wk-gpu1 nvidia.com/mig.strategy=mixed --overwrite
-          kubectl label node k3s-wk-gpu1 nvidia.com/mig.config=all-1g.10gb --overwrite
-          kubectl taint node k3s-wk-gpu1 gpu-pool- --overwrite || true
-          
-          # gpu2, gpu3: Full GPU access (MIG disabled)
-          for n in k3s-wk-gpu2 k3s-wk-gpu3; do
-            kubectl label node ${n} gpu-pool=full --overwrite
-            kubectl label node ${n} nvidia.com/mig.strategy=single --overwrite
-            kubectl label node ${n} nvidia.com/mig.config=all-disabled --overwrite
+          # k3s-wk-gpu1, k3s-wk-gpu2: MIG with 1g.5gb slices (7 per GPU = 14 per node, 28 total)
+          for n in k3s-wk-gpu1 k3s-wk-gpu2; do
+            kubectl label node ${n} gpu-pool=mig --overwrite
+            kubectl label node ${n} nvidia.com/mig.strategy=mixed --overwrite
+            kubectl label node ${n} nvidia.com/mig.config=a100-1g.5gb-7 --overwrite
             kubectl taint node ${n} gpu-pool- --overwrite || true
           done
-
-          # gpu4: Full GPU access (MIG disabled)
+          
+          # k3s-wk-gpu3: Custom profile (1 MIG GPU, 1 full GPU)
+          kubectl label node k3s-wk-gpu3 gpu-pool=mig --overwrite
+          kubectl label node k3s-wk-gpu3 nvidia.com/mig.strategy=mixed --overwrite
+          kubectl label node k3s-wk-gpu3 nvidia.com/mig.config=one-mig-one-full --overwrite
+          kubectl taint node k3s-wk-gpu3 gpu-pool- --overwrite || true
+          
+          # k3s-wk-gpu4: Full GPU access (MIG disabled)
           kubectl label node k3s-wk-gpu4 gpu-pool=full --overwrite
           kubectl label node k3s-wk-gpu4 nvidia.com/mig.config=all-disabled --overwrite
           kubectl label node k3s-wk-gpu4 nvidia.com/mig.strategy=single --overwrite
