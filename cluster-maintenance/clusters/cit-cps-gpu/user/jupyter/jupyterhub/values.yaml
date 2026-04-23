@@ -318,12 +318,14 @@ hub:
               
               # Collapsible Section
               cards_html.append(f"""
-              <details class="profile-category" style="margin-bottom: 16px; width: 100%;">
+              <details class="profile-category" data-tease-height="104" style="margin-bottom: 16px; width: 100%;">
                 <summary style="font-weight: 600; color: #374151; font-size: 14px; text-transform: uppercase; letter-spacing: 0.05em; cursor: pointer; margin-bottom: 8px; list-style: none; display: flex; align-items: center;">
                   <span style="margin-right: 6px;">▶</span> {cat_name}
                 </summary>
-                <div class="grid">
-                  {cat_grid}
+                <div class="teaser-content">
+                  <div class="grid">
+                    {cat_grid}
+                  </div>
                 </div>
               </details>
               """)
@@ -357,34 +359,36 @@ hub:
           custom_nfs_html = ""
           if power_user:
               custom_nfs_html = f"""
-              <details class="mount-editor">
+              <details class="mount-editor" data-tease-height="88">
                 <summary style="font-weight: 600; color: #374151; font-size: 14px; text-transform: uppercase; letter-spacing: 0.05em; cursor: pointer; margin-bottom: 8px; list-style: none; display: flex; align-items: center;">
                   <span style="margin-right: 6px;">▶</span> Custom NFS mount
                 </summary>
-                <label style="display:flex; align-items:center; gap:10px; font-weight:500; color:#111827; cursor:pointer; margin-top: 8px;">
-                  <input type="checkbox" name="custom_nfs_enabled" value="1" style="width:auto; margin:0;">
-                  <span>Enable custom NFS mount</span>
-                </label>
-                <div class="hint">Use this for a user-specific export that is not part of the standard NFS mount list.</div>
-                <div class="mount-grid">
-                  <div>
-                    <div class="name" style="margin-bottom:6px;">NFS server</div>
-                    <input class="input" type="text" name="custom_nfs_server" value="{CUSTOM_NFS_DEFAULT_SERVER}" placeholder="192.0.2.10 or storage.example.org" />
-                    <div class="hint">Host or IP of the NFS server.</div>
-                  </div>
-                  <div>
-                    <div class="name" style="margin-bottom:6px;">Export path</div>
-                    <input class="input" type="text" name="custom_nfs_path" placeholder="/exports/project-data" />
-                    <div class="hint">Absolute path exported by the server.</div>
-                  </div>
-                  <div>
-                    <div class="name" style="margin-bottom:6px;">Mount path inside the notebook</div>
-                    <input class="input" type="text" name="custom_nfs_mount_path" value="{CUSTOM_NFS_DEFAULT_MOUNT_PATH}" placeholder="/home/jovyan/custom_nfs" />
-                    <div class="hint">Where the custom export should appear in the container.</div>
-                  </div>
-                  <div>
-                    <div class="name" style="margin-bottom:6px;">Notes</div>
-                    <div class="hint">Custom NFS mounts use the same fail-safe spawn flow, but they do not inherit the PV-level mount options shown above.</div>
+                <div class="teaser-content">
+                  <label style="display:flex; align-items:center; gap:10px; font-weight:500; color:#111827; cursor:pointer; margin-top: 8px;">
+                    <input type="checkbox" name="custom_nfs_enabled" value="1" style="width:auto; margin:0;">
+                    <span>Enable custom NFS mount</span>
+                  </label>
+                  <div class="hint">Use this for a user-specific export that is not part of the standard NFS mount list.</div>
+                  <div class="mount-grid">
+                    <div>
+                      <div class="name" style="margin-bottom:6px;">NFS server</div>
+                      <input class="input" type="text" name="custom_nfs_server" value="{CUSTOM_NFS_DEFAULT_SERVER}" placeholder="192.0.2.10 or storage.example.org" />
+                      <div class="hint">Host or IP of the NFS server.</div>
+                    </div>
+                    <div>
+                      <div class="name" style="margin-bottom:6px;">Export path</div>
+                      <input class="input" type="text" name="custom_nfs_path" placeholder="/exports/project-data" />
+                      <div class="hint">Absolute path exported by the server.</div>
+                    </div>
+                    <div>
+                      <div class="name" style="margin-bottom:6px;">Mount path inside the notebook</div>
+                      <input class="input" type="text" name="custom_nfs_mount_path" value="{CUSTOM_NFS_DEFAULT_MOUNT_PATH}" placeholder="/home/jovyan/custom_nfs" />
+                      <div class="hint">Where the custom export should appear in the container.</div>
+                    </div>
+                    <div>
+                      <div class="name" style="margin-bottom:6px;">Notes</div>
+                      <div class="hint">Custom NFS mounts use the same fail-safe spawn flow, but they do not inherit the PV-level mount options shown above.</div>
+                    </div>
                   </div>
                 </div>
               </details>
@@ -404,13 +408,15 @@ hub:
               </div>
             </div>
 
-            <details class="mount-editor">
+            <details class="mount-editor" data-tease-height="92">
               <summary style="font-weight: 600; color: #374151; font-size: 14px; text-transform: uppercase; letter-spacing: 0.05em; cursor: pointer; margin-bottom: 8px; list-style: none; display: flex; align-items: center;">
                 <span style="margin-right: 6px;">▶</span> Standard mounts
               </summary>
-              <div class="hint">Each item shows the cluster-default mount options for the underlying NFS PV. Clear the boxes you do not want.</div>
-              <div class="mount-list">
-                {''.join(nfs_mounts_html)}
+              <div class="teaser-content">
+                <div class="hint">Each item shows the cluster-default mount options for the underlying NFS PV. Clear the boxes you do not want.</div>
+                <div class="mount-list">
+                  {''.join(nfs_mounts_html)}
+                </div>
               </div>
             </details>
 
@@ -491,19 +497,30 @@ hub:
             .mount-details {{ margin-top: 10px; display:grid; gap: 4px; font-size: 12px; color:#374151; }}
             .mount-pill {{ font-size:12px; color:#374151; background:#f9fafb; border:1px solid #e5e7eb; border-radius:999px; padding:4px 10px; white-space: nowrap; }}
             .mount-editor {{ margin-top: 14px; border: 1px solid #e5e7eb; border-radius: 12px; padding: 12px 14px; background: #fafafa; }}
+            .teaser-content {{ overflow: hidden; }}
             
             /* Collapsible styling */
             details > summary {{ list-style: none; }}
             details > summary::-webkit-details-marker {{ display: none; }}
             details[open] > summary span {{ transform: rotate(90deg); display: inline-block; }}
             details:not([open]) > summary span {{ display: inline-block; }}
-            details.teasing > summary span {{ animation: peek-nudge 0.9s ease-in-out 1; transform-origin: 50% 50%; }}
-            @keyframes peek-nudge {{
-              0% {{ transform: translateX(0) rotate(0deg); }}
-              30% {{ transform: translateX(3px) rotate(2deg); }}
-              55% {{ transform: translateX(0) rotate(0deg); }}
-              75% {{ transform: translateX(3px) rotate(1deg); }}
-              100% {{ transform: translateX(0) rotate(0deg); }}
+            details.teasing > summary span {{ animation: teaser-arrow 0.78s cubic-bezier(.22,.88,.32,1.2) 1; transform-origin: 50% 50%; }}
+            details.teasing > .teaser-content {{
+              transform-origin: top center;
+              animation: teaser-peek 0.78s cubic-bezier(.22,.88,.32,1.2) 1;
+            }}
+            @keyframes teaser-arrow {{
+              0% {{ transform: rotate(0deg) translateX(0); }}
+              35% {{ transform: rotate(18deg) translateX(1px); }}
+              58% {{ transform: rotate(12deg) translateX(0); }}
+              82% {{ transform: rotate(16deg) translateX(0); }}
+              100% {{ transform: rotate(0deg) translateX(0); }}
+            }}
+            @keyframes teaser-peek {{
+              0% {{ max-height: 0; opacity: .08; transform: translateY(-6px) scaleY(.94); }}
+              42% {{ max-height: var(--tease-height, 84px); opacity: 1; transform: translateY(0) scaleY(1); }}
+              64% {{ max-height: calc(var(--tease-height, 84px) * .84); opacity: .96; transform: translateY(0) scaleY(.985); }}
+              100% {{ max-height: 0; opacity: .08; transform: translateY(-3px) scaleY(.97); }}
             }}
           </style>
 
@@ -565,14 +582,16 @@ hub:
                 if (panel.open) {{
                   return;
                 }}
+                panel.style.setProperty('--tease-height', (panel.dataset.teaseHeight || 84) + 'px');
                 panel.classList.add('teasing');
                 panel.open = true;
                 window.setTimeout(function() {{
                   panel.open = false;
                   window.setTimeout(function() {{
                     panel.classList.remove('teasing');
-                  }}, 30);
-                }}, 320);
+                    panel.style.removeProperty('--tease-height');
+                  }}, 24);
+                }}, 720);
               }}, delay);
             }}
 
