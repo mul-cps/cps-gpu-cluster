@@ -565,17 +565,9 @@ hub:
 
             var teaserPanels = Array.from(document.querySelectorAll('details.profile-category, details.mount-editor'));
             var prefersReducedMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-            var teaserKey = 'jupyterhub-mount-profile-teaser-seen-v2';
-            var teaserSeen = false;
-
-            try {{
-              teaserSeen = window.sessionStorage.getItem(teaserKey) === '1';
-            }} catch (e) {{
-              teaserSeen = false;
-            }}
 
             function teasePanel(panel, delay) {{
-              if (prefersReducedMotion || teaserSeen || !panel || panel.open) {{
+              if (prefersReducedMotion || !panel || panel.open) {{
                 return;
               }}
               window.setTimeout(function() {{
@@ -596,24 +588,17 @@ hub:
             }}
 
             function startTeasers() {{
-              if (teaserSeen || !teaserPanels.length) {{
+              if (!teaserPanels.length) {{
                 return;
               }}
               teaserPanels.forEach(function(panel, idx) {{
                 teasePanel(panel, 260 + (idx * 520));
               }});
-              window.setTimeout(function() {{
-                try {{
-                  window.sessionStorage.setItem(teaserKey, '1');
-                }} catch (e) {{}}
-              }}, 260 + (teaserPanels.length * 520) + 800);
             }}
 
-            if (!teaserSeen) {{
-              window.requestAnimationFrame(function() {{
-                window.setTimeout(startTeasers, 140);
-              }});
-            }}
+            window.requestAnimationFrame(function() {{
+              window.setTimeout(startTeasers, 140);
+            }});
           }})();
           </script>
           """
