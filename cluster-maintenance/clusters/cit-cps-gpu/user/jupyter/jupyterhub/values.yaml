@@ -506,6 +506,7 @@ hub:
               display: flex;
               flex-wrap: wrap;
               gap: 10px;
+              margin-bottom: 20px;
             }}
             .affiliation-pill {{
               display: inline-flex;
@@ -524,6 +525,7 @@ hub:
             .logo-tile {{
               min-width: 188px;
               max-width: 228px;
+              margin-top: 52px;
               padding: 16px 18px;
               border-radius: 20px;
               border: 1px solid #dbe3ef;
@@ -537,7 +539,6 @@ hub:
             }}
             .hero-main {{
               max-width: 62ch;
-              margin-top: 20px;
             }}
             .hero-title {{
               font-size: 34px;
@@ -855,6 +856,7 @@ hub:
                 flex-direction: column;
               }}
               .logo-tile {{
+                margin-top: 0;
                 max-width: 220px;
               }}
               .flip-controls,
