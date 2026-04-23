@@ -85,20 +85,24 @@ jupyterhub/
 ### 3. Persistent User Storage (`/home/jovyan/cps_persistent1_users`)
 - **Type**: NFS-backed per-user share
 - **PVC**: `cps-persistent1-users-pvc`
-- **Mount rule**: Added only when LDAP UID/GID lookup succeeds and the user keeps the NFS checkbox enabled
+- **Mount rule**: Added only when LDAP UID/GID lookup succeeds and the user keeps the network-mount toggle enabled
 - **Purpose**: Long-term user files
 
 ### 4. Shared Team Storage and Scratch
-- **Type**: NFS ReadWriteMany
-- **PVCs**: `jupyterhub-shared-storage`, `cps-persistent1-shared-pvc`, `cps-scratch1-tmp-pvc`
+- **Type**: Mixed storage
+- **Longhorn shared workspace**: `jupyterhub-shared-storage` at `/home/jovyan/shared`
+- **NFS project share**: `cps-persistent1-shared-pvc` at `/home/jovyan/cps_persistent1_shared`
+- **NFS scratch**: `cps-scratch1-tmp-pvc` at `/home/jovyan/cps_scratch1_tmp`
 - **Purpose**: Team collaboration and larger shared datasets
-- **Scope**: Mounted only for power users (`cpsHPCAccess` / `jupyter_admin`) who keep the NFS checkbox enabled
+- **Scope**: Longhorn shared workspace stays available for power users; the NFS mounts are individually selectable
 
 ### Spawn Resilience
-- The base notebook home stays on Longhorn, but the spawn path can still request optional NFS mounts.
-- The profile form now includes a `Mount NFS storage` checkbox that is enabled by default.
-- If NFS is degraded, users can clear that checkbox and spawn without the personal NFS share and, for power users, without shared and scratch NFS mounts.
-- If the checkbox stays enabled and NFS is unavailable, Kubernetes can still leave the pod in `ContainerCreating` or `Pending` until the mount is satisfied.
+- The base notebook home stays on Longhorn, and the shared power-user workspace stays on Longhorn as well.
+- The profile form includes an `Enable network mounts` toggle plus a collapsible mount editor.
+- The mount editor shows the standard NFS mounts as individual checkboxes with the cluster-default mount options prefilled for visibility.
+- Power users can also enter a custom NFS server, export path, and notebook mount path.
+- If NFS is degraded, users can uncheck network mounts entirely or deselect just the affected NFS entries and still launch the session.
+- If the network-mount toggle stays enabled and NFS is unavailable, Kubernetes can still leave the pod in `ContainerCreating` or `Pending` until the mount is satisfied.
 
 ## Deployment 
 
@@ -189,9 +193,9 @@ kubectl exec -n jupyterhub deployment/hub -- ls -la /etc/jupyterhub/extra/
 ```
 
 ### NFS Outage Behavior
-- By default, all users still request their personal NFS share when LDAP lookup succeeds.
-- Power-user profiles also request the shared and scratch NFS mounts by default.
-- If NFS is degraded, clear `Mount NFS storage` in the profile form to start on Longhorn-only storage.
+- By default, all users request their personal NFS share when LDAP lookup succeeds.
+- Power-user profiles can opt into the project-share and scratch NFS mounts individually from the mount editor.
+- If NFS is degraded, clear `Enable network mounts` in the profile form to start on Longhorn-only storage.
 - If you see `Pending` or `ContainerCreating`, check the pod events first and then verify the NFS PV/PVCs.
 
 ### Recommended Fail-Safe Strategy
