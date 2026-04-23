@@ -565,7 +565,7 @@ hub:
 
             var teaserPanels = Array.from(document.querySelectorAll('details.profile-category, details.mount-editor'));
             var prefersReducedMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-            var teaserKey = 'jupyterhub-mount-profile-teaser-seen';
+            var teaserKey = 'jupyterhub-mount-profile-teaser-seen-v2';
             var teaserSeen = false;
 
             try {{
@@ -595,15 +595,24 @@ hub:
               }}, delay);
             }}
 
-            if (!teaserSeen) {{
+            function startTeasers() {{
+              if (teaserSeen || !teaserPanels.length) {{
+                return;
+              }}
               teaserPanels.forEach(function(panel, idx) {{
-                teasePanel(panel, 900 + (idx * 700));
+                teasePanel(panel, 260 + (idx * 520));
               }});
               window.setTimeout(function() {{
                 try {{
                   window.sessionStorage.setItem(teaserKey, '1');
                 }} catch (e) {{}}
-              }}, 900 + (teaserPanels.length * 700) + 500);
+              }}, 260 + (teaserPanels.length * 520) + 800);
+            }}
+
+            if (!teaserSeen) {{
+              window.requestAnimationFrame(function() {{
+                window.setTimeout(startTeasers, 140);
+              }});
             }}
           }})();
           </script>
