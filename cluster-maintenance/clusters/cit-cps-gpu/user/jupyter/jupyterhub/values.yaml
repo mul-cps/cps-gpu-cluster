@@ -535,13 +535,6 @@ hub:
               width: 100%;
               height: auto;
             }}
-            .logo-caption {{
-              margin-top: 10px;
-              font-size: 11px;
-              letter-spacing: .08em;
-              text-transform: uppercase;
-              color: #64748b;
-            }}
             .hero-main {{
               max-width: 62ch;
               margin-top: 20px;
@@ -897,7 +890,6 @@ hub:
                           </div>
                           <div class="logo-tile">
                             <img src="{CPS_LOGO_DATA_URI}" alt="Cyber-Physical-Systems logo" />
-                            <div class="logo-caption">Cyber-Physical-Systems</div>
                           </div>
                         </div>
                         <div class="hero-grid">
