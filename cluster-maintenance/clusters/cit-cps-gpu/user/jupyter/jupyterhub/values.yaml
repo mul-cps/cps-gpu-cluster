@@ -496,6 +496,14 @@ hub:
             details > summary {{ list-style: none; }}
             details > summary::-webkit-details-marker {{ display: none; }}
             details[open] > summary span {{ transform: rotate(90deg); display: inline-block; }}
+            details:not([open]) > summary span {{ display: inline-block; animation: peek-nudge 2.4s ease-in-out infinite; transform-origin: 50% 50%; }}
+            details:hover > summary span {{ animation-play-state: paused; }}
+            @keyframes peek-nudge {{
+              0%, 100% {{ transform: translateX(0); }}
+              45% {{ transform: translateX(4px); }}
+              55% {{ transform: translateX(4px) rotate(6deg); }}
+              70% {{ transform: translateX(0) rotate(0deg); }}
+            }}
           </style>
 
           <div class="hub-ui">
