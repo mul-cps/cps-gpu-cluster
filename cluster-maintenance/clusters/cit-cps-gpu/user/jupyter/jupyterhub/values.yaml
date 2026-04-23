@@ -246,98 +246,82 @@ hub:
       # ---------- Dynamic UI Generation ----------
       def get_options_form(spawner):
           power_user = is_power_user(spawner.user)
-          # We need PROFILE_CONFIGS here, but it is defined later.
-          # In Python script execution order, functions are defined but not executed until called.
-          # So as long as PROFILE_CONFIGS is defined before get_options_form is CALLED, it's fine.
-          
           allowed_profiles = get_profile_list(spawner)
-          
-          # Helper to render a card
+
+          allowed_slugs = {p['slug'] for p in allowed_profiles}
+          default_slug = next(
+              (slug for slug, cfg in PROFILE_CONFIGS.items() if cfg.get('default') and slug in allowed_slugs),
+              allowed_profiles[0]['slug'] if allowed_profiles else 'cpu-default'
+          )
+          default_cfg = PROFILE_CONFIGS.get(default_slug, PROFILE_CONFIGS['cpu-default'])
+
           def render_card(slug, cfg, selected=False):
               gpu = cfg.get('gpu', 0)
               cpu = cfg.get('cpu_limit', 0)
               mem = cfg.get('mem_limit', '0G')
-              
+
               chips = []
               if gpu > 0:
                   chips.append(f'<span class="chip gpu-chip">{gpu}× GPU</span>')
               elif 'mig' in slug:
-                   chips.append(f'<span class="chip gpu-chip">MIG</span>')
-              
+                  chips.append('<span class="chip gpu-chip">MIG</span>')
+
               chips.append(f'<span class="chip cpu-chip">{int(cpu)} vCPU</span>')
               chips.append(f'<span class="chip ram-chip">{mem} RAM</span>')
               if selected:
                   chips.append('<span class="chip default-chip">Default start</span>')
-              
-              cls = "card selected" if selected else "card"
+
+              cls = "option-card selected" if selected else "option-card"
               checked = "checked" if selected else ""
-              
+              description = cfg.get('description', '')
+
               return f"""
               <label class="{cls}" data-slug="{slug}">
                 <input type="radio" name="profile" value="{slug}" {checked}>
-                <div class="row">
-                  <div class="name">{cfg['display_name']}</div>
-                  <div class="meta">{''.join(chips)}</div>
-                </div>
+                <div class="option-card-title">{cfg['display_name']}</div>
+                <div class="option-card-copy">{description}</div>
+                <div class="meta">{''.join(chips)}</div>
               </label>
               """
 
-          # Generate Grid
-          cards_html = []
-          
-          # Define Categories
           categories = {
               'CPU-only (general purpose)': [],
               'GPU-enabled': [],
               'Special': []
           }
-          
-          # Sort profiles into categories
           for p in allowed_profiles:
               slug = p['slug']
               cfg = PROFILE_CONFIGS[slug]
               cat = cfg.get('category', 'Special')
-              if cat in categories:
-                  categories[cat].append(p)
-              else:
-                  categories['Special'].append(p)
+              categories.setdefault(cat, [])
+              categories[cat].append(slug)
 
-          # Render Categories
-          for cat_name, profiles in categories.items():
-              if not profiles: continue
-              
-              # Render cards for this category
-              cat_cards = []
-              for p in profiles:
-                  slug = p['slug']
-                  cfg = PROFILE_CONFIGS[slug]
-                  is_default = cfg.get('default', False)
-                  cat_cards.append(render_card(slug, cfg, selected=is_default))
-              
-              cat_grid = "\n".join(cat_cards)
-              
-              # Collapsible Section
-              cards_html.append(f"""
-              <details class="profile-category" data-tease-height="104" style="margin-bottom: 16px; width: 100%;">
-                <summary style="font-weight: 600; color: #374151; font-size: 14px; text-transform: uppercase; letter-spacing: 0.05em; cursor: pointer; margin-bottom: 8px; list-style: none; display: flex; align-items: center;">
-                  <span style="margin-right: 6px;">▶</span> {cat_name}
-                </summary>
-                <div class="teaser-content">
-                  <div class="grid">
-                    {cat_grid}
-                  </div>
+          sections_html = []
+          for cat_name, slugs in categories.items():
+              if not slugs:
+                  continue
+              card_html = "\n".join(
+                  render_card(slug, PROFILE_CONFIGS[slug], selected=(slug == default_slug))
+                  for slug in slugs
+              )
+              sections_html.append(f"""
+              <section class="option-section">
+                <div class="section-head">
+                  <div class="section-title">{cat_name}</div>
                 </div>
-              </details>
+                <div class="grid">
+                  {card_html}
+                </div>
+              </section>
               """)
-          
-          grid_html = "\n".join(cards_html)
-          
-          nfs_mounts_html = []
+          options_profiles_html = "\n".join(sections_html)
+
+          mount_items_html = []
           for spec in STANDARD_NFS_MOUNTS:
               if spec.get('power_user_only') and not power_user:
                   continue
               checked = "checked" if spec.get('default_checked', False) else ""
-              nfs_mounts_html.append(f"""
+              mount_items_html.append(f"""
               <label class="mount-item">
                 <div class="mount-item-header">
                   <div>
@@ -355,88 +339,55 @@ hub:
                 </div>
               </label>
               """)
+          mount_items_markup = ''.join(mount_items_html)
 
           custom_nfs_html = ""
           if power_user:
               custom_nfs_html = f"""
-              <details class="mount-editor" data-tease-height="88">
-                <summary style="font-weight: 600; color: #374151; font-size: 14px; text-transform: uppercase; letter-spacing: 0.05em; cursor: pointer; margin-bottom: 8px; list-style: none; display: flex; align-items: center;">
-                  <span style="margin-right: 6px;">▶</span> Custom NFS mount
-                </summary>
-                <div class="teaser-content">
-                  <label style="display:flex; align-items:center; gap:10px; font-weight:500; color:#111827; cursor:pointer; margin-top: 8px;">
-                    <input type="checkbox" name="custom_nfs_enabled" value="1" style="width:auto; margin:0;">
-                    <span>Enable custom NFS mount</span>
-                  </label>
-                  <div class="hint">Use this for a user-specific export that is not part of the standard NFS mount list.</div>
-                  <div class="mount-grid">
-                    <div>
-                      <div class="name" style="margin-bottom:6px;">NFS server</div>
-                      <input class="input" type="text" name="custom_nfs_server" value="{CUSTOM_NFS_DEFAULT_SERVER}" placeholder="192.0.2.10 or storage.example.org" />
-                      <div class="hint">Host or IP of the NFS server.</div>
-                    </div>
-                    <div>
-                      <div class="name" style="margin-bottom:6px;">Export path</div>
-                      <input class="input" type="text" name="custom_nfs_path" placeholder="/exports/project-data" />
-                      <div class="hint">Absolute path exported by the server.</div>
-                    </div>
-                    <div>
-                      <div class="name" style="margin-bottom:6px;">Mount path inside the notebook</div>
-                      <input class="input" type="text" name="custom_nfs_mount_path" value="{CUSTOM_NFS_DEFAULT_MOUNT_PATH}" placeholder="/home/jovyan/custom_nfs" />
-                      <div class="hint">Where the custom export should appear in the container.</div>
-                    </div>
-                    <div>
-                      <div class="name" style="margin-bottom:6px;">Notes</div>
-                      <div class="hint">Custom NFS mounts use the same fail-safe spawn flow, but they do not inherit the PV-level mount options shown above.</div>
-                    </div>
+              <section class="layer">
+                <div class="section-title">Custom NFS Mount</div>
+                <label class="toggle-row">
+                  <input type="checkbox" name="custom_nfs_enabled" value="1" style="width:auto; margin:0;">
+                  <span>Enable custom NFS mount</span>
+                </label>
+                <div class="hint">Use this for a user-specific export that is not part of the standard mount set.</div>
+                <div class="mount-grid">
+                  <div>
+                    <div class="field-label">NFS server</div>
+                    <input class="input" type="text" name="custom_nfs_server" value="{CUSTOM_NFS_DEFAULT_SERVER}" placeholder="192.0.2.10 or storage.example.org" />
+                    <div class="hint">Host or IP of the NFS server.</div>
+                  </div>
+                  <div>
+                    <div class="field-label">Export path</div>
+                    <input class="input" type="text" name="custom_nfs_path" placeholder="/exports/project-data" />
+                    <div class="hint">Absolute path exported by the server.</div>
+                  </div>
+                  <div>
+                    <div class="field-label">Mount path inside the notebook</div>
+                    <input class="input" type="text" name="custom_nfs_mount_path" value="{CUSTOM_NFS_DEFAULT_MOUNT_PATH}" placeholder="/home/jovyan/custom_nfs" />
+                    <div class="hint">Where the custom export should appear in the container.</div>
+                  </div>
+                  <div>
+                    <div class="field-label">Behavior</div>
+                    <div class="hint">Custom NFS mounts join the same spawn flow as the standard mounts and are skipped only if left disabled.</div>
                   </div>
                 </div>
-              </details>
+              </section>
               """
 
-          storage_options_html = f"""
-          <div class="layer">
-            <div class="row" style="align-items:flex-start; gap:16px; flex-wrap: wrap;">
-              <div style="flex:1; min-width: 260px;">
-                <div class="name" style="margin-bottom:6px;">Network Storage</div>
-                <label style="display:flex; align-items:center; gap:10px; font-weight:500; color:#111827; cursor:pointer;">
-                  <input type="checkbox" id="mount-nfs" name="mount_nfs" value="1" checked style="width:auto; margin:0;">
-                  <span>Enable network mounts</span>
-                </label>
-                <div class="hint">Uncheck this to start on Longhorn-only storage. Power users can expand the mount editor below to choose specific NFS mounts or add a custom export.</div>
-                <div class="hint">The Longhorn shared workspace at <code>/home/jovyan/shared</code> stays available for power users.</div>
-              </div>
-            </div>
-
-            <details class="mount-editor" data-tease-height="92">
-              <summary style="font-weight: 600; color: #374151; font-size: 14px; text-transform: uppercase; letter-spacing: 0.05em; cursor: pointer; margin-bottom: 8px; list-style: none; display: flex; align-items: center;">
-                <span style="margin-right: 6px;">▶</span> Standard mounts
-              </summary>
-              <div class="teaser-content">
-                <div class="hint">Each item shows the cluster-default mount options for the underlying NFS PV. Clear the boxes you do not want.</div>
-                <div class="mount-list">
-                  {''.join(nfs_mounts_html)}
-                </div>
-              </div>
-            </details>
-
-            {custom_nfs_html}
-          </div>
-          """
-
-          # Custom Image Section (Only for power users)
           custom_image_html = ""
           if power_user:
               custom_image_html = """
-              <div class="layer">
+              <section class="layer">
+                <div class="section-title">Power User Overrides</div>
                 <div class="row" style="align-items:flex-start; gap:16px; flex-wrap: wrap;">
                   <div style="flex:1; min-width: 260px;">
-                    <div class="name" style="margin-bottom:6px;">Optional: Custom Image</div>
+                    <div class="field-label">Custom image</div>
                     <input class="input" type="text" id="custom-image" name="custom_image" placeholder="registry/repo:tag (admins only)" />
-                    <div class="hint">Overrides the profile image.</div>
+                    <div class="hint">Overrides the profile image when your role allows it.</div>
                   </div>
                   <div class="select-inline">
-                    <div class="name" style="margin-bottom:6px;">GPUs</div>
+                    <div class="field-label">GPUs</div>
                     <select class="select" id="custom-gpus" name="custom_gpus">
                       <option value="0" selected>0 × GPU</option>
                       <option value="1">1 × GPU</option>
@@ -445,15 +396,14 @@ hub:
                     <div class="hint">Requires GPU access.</div>
                   </div>
                 </div>
-              </div>
+              </section>
               """
 
-          # Debug Info
           user_groups = sorted([getattr(g, "name", str(g)) for g in spawner.user.groups])
           debug_html = f"""
-          <details style="margin-top: 20px; border: 1px solid #ccc; background: #f9f9f9; border-radius: 4px;">
-            <summary style="padding: 10px; cursor: pointer; font-family: sans-serif; font-size: 13px; color: #555;">Debug Info</summary>
-            <div style="padding: 10px; border-top: 1px solid #eee; font-family: monospace; font-size: 12px; color: #333;">
+          <details class="debug-panel">
+            <summary>Debug Info</summary>
+            <div class="debug-copy">
               User: {spawner.user.name}<br>
               Admin: {spawner.user.admin}<br>
               Groups: {user_groups}<br>
@@ -463,150 +413,535 @@ hub:
           </details>
           """
 
-          # Full HTML
+          quick_start_copy = "Start Server launches the default notebook profile immediately."
+          if power_user:
+              quick_start_copy = "Start Server launches the default notebook profile immediately. Open Options if you need GPUs, alternate images, or custom storage."
+
           return f"""
           <style>
             .hub-ui * {{ box-sizing: border-box; }}
-            .hub-ui {{ max-width: 980px; margin: 24px auto; padding: 0 8px; font-family: system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, 'Helvetica Neue', Arial, 'Noto Sans', sans-serif; }}
-            .ui-title {{ font-size: 20px; font-weight: 600; color: #1f2937; margin-bottom: 6px; }}
-            .subtle {{ color: #6b7280; font-size: 13px; margin-bottom: 12px; }}
-            .layer {{ background: #fff; border: 1px solid #e5e7eb; border-radius: 14px; box-shadow: 0 1px 1px rgba(0,0,0,.03), 0 8px 20px rgba(17,24,39,.06); padding: 18px; margin-bottom: 16px; }}
-            .grid {{ display:grid; grid-template-columns: repeat(2, minmax(0,1fr)); gap: 12px; }}
-            @media (max-width: 820px) {{ .grid {{ grid-template-columns: 1fr; }} }}
-            .card {{ position: relative; border: 1px solid #e5e7eb; border-radius: 12px; padding: 14px; transition: box-shadow .15s ease, border-color .15s ease, transform .05s ease; background: linear-gradient(180deg, rgba(249,250,251,.6), rgba(255,255,255,1)); }}
-            .card:hover {{ box-shadow: 0 8px 22px rgba(17,24,39,.08); border-color:#d1d5db; transform: translateY(-1px); }}
-            .card input[type="radio"] {{ position: absolute; inset:0; opacity:0; cursor:pointer; }}
-            .card.selected {{ border-color: #3b82f6; box-shadow: 0 0 0 3px rgba(59,130,246,.15); }}
-            .row {{ display:flex; align-items:center; justify-content:space-between; gap: 10px; }}
-            .name {{ font-weight: 600; color:#111827; }}
-            .meta {{ display:flex; gap:8px; flex-wrap: wrap; }}
-            .chip {{ font-size:12px; border:1px solid #e5e7eb; padding:3px 8px; border-radius:999px; color:#374151; background:#f9fafb; }}
+            .hub-ui {{
+              max-width: 980px;
+              margin: 24px auto;
+              padding: 0 8px;
+              font-family: system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, 'Helvetica Neue', Arial, 'Noto Sans', sans-serif;
+              color: #0f172a;
+            }}
+            .spawn-shell {{
+              perspective: 1800px;
+            }}
+            .spawn-flip-frame {{
+              position: relative;
+              transition: height .82s cubic-bezier(.22,.82,.25,1);
+            }}
+            .spawn-flip-card {{
+              position: relative;
+              transform-style: preserve-3d;
+              transition: transform .82s cubic-bezier(.22,.82,.25,1);
+            }}
+            .spawn-flip-card.is-flipped {{
+              transform: rotateY(180deg);
+            }}
+            .spawn-face {{
+              position: absolute;
+              inset: 0;
+              width: 100%;
+              backface-visibility: hidden;
+              -webkit-backface-visibility: hidden;
+            }}
+            .spawn-face--back {{
+              transform: rotateY(180deg);
+            }}
+            .face-panel {{
+              background:
+                radial-gradient(circle at top right, rgba(59,130,246,.16), transparent 32%),
+                radial-gradient(circle at bottom left, rgba(14,165,233,.12), transparent 28%),
+                linear-gradient(180deg, #ffffff, #f8fafc 72%);
+              border: 1px solid #dbe3ef;
+              border-radius: 26px;
+              box-shadow: 0 18px 48px rgba(15,23,42,.10);
+              padding: 26px;
+            }}
+            .welcome-panel {{
+              min-height: 420px;
+              display: flex;
+              flex-direction: column;
+              justify-content: space-between;
+            }}
+            .eyebrow {{
+              display: inline-flex;
+              align-items: center;
+              gap: 8px;
+              padding: 6px 12px;
+              border-radius: 999px;
+              border: 1px solid #dbe3ef;
+              background: rgba(255,255,255,.84);
+              font-size: 12px;
+              letter-spacing: .08em;
+              text-transform: uppercase;
+              color: #475569;
+            }}
+            .hero-title {{
+              font-size: 34px;
+              line-height: 1.08;
+              font-weight: 700;
+              color: #0f172a;
+              margin: 18px 0 12px;
+              max-width: 12ch;
+            }}
+            .hero-copy {{
+              max-width: 60ch;
+              font-size: 15px;
+              line-height: 1.7;
+              color: #475569;
+              margin: 0;
+            }}
+            .hero-grid {{
+              display: grid;
+              grid-template-columns: repeat(3, minmax(0,1fr));
+              gap: 14px;
+              margin-top: 24px;
+            }}
+            .hero-stat {{
+              padding: 14px 16px;
+              border-radius: 18px;
+              border: 1px solid #dbe3ef;
+              background: rgba(255,255,255,.78);
+            }}
+            .hero-stat-title {{
+              font-size: 12px;
+              color: #64748b;
+              text-transform: uppercase;
+              letter-spacing: .08em;
+              margin-bottom: 8px;
+            }}
+            .hero-stat-copy {{
+              font-size: 14px;
+              color: #0f172a;
+              line-height: 1.5;
+            }}
+            .default-banner {{
+              margin-top: 26px;
+              padding: 16px 18px;
+              border-radius: 20px;
+              border: 1px solid #c7d2fe;
+              background: linear-gradient(180deg, rgba(238,242,255,.96), rgba(255,255,255,.92));
+            }}
+            .default-banner-title {{
+              font-size: 12px;
+              text-transform: uppercase;
+              letter-spacing: .08em;
+              color: #4338ca;
+              margin-bottom: 8px;
+            }}
+            .default-banner-copy {{
+              font-size: 15px;
+              line-height: 1.6;
+              color: #1e293b;
+            }}
+            .options-heading {{
+              display:flex;
+              align-items:flex-start;
+              justify-content:space-between;
+              gap: 16px;
+              margin-bottom: 18px;
+            }}
+            .title {{
+              font-size: 28px;
+              font-weight: 700;
+              color:#0f172a;
+              margin: 0;
+            }}
+            .subtle {{
+              color:#64748b;
+              font-size: 14px;
+              margin: 6px 0 0;
+              max-width: 62ch;
+              line-height: 1.6;
+            }}
+            .layer {{
+              background: rgba(255,255,255,.80);
+              border: 1px solid #dbe3ef;
+              border-radius: 20px;
+              box-shadow: 0 8px 22px rgba(15,23,42,.05);
+              padding: 18px;
+              margin-bottom: 16px;
+            }}
+            .option-section {{
+              margin-bottom: 20px;
+            }}
+            .section-head {{
+              margin-bottom: 10px;
+            }}
+            .section-title {{
+              font-size: 13px;
+              font-weight: 700;
+              color: #334155;
+              text-transform: uppercase;
+              letter-spacing: .08em;
+            }}
+            .field-label {{
+              font-size: 12px;
+              font-weight: 700;
+              color: #334155;
+              text-transform: uppercase;
+              letter-spacing: .08em;
+              margin-bottom: 6px;
+            }}
+            .grid {{
+              display:grid;
+              grid-template-columns: repeat(2, minmax(0,1fr));
+              gap: 12px;
+            }}
+            .option-card {{
+              position: relative;
+              border: 1px solid #dbe3ef;
+              border-radius: 18px;
+              padding: 16px;
+              transition: box-shadow .16s ease, border-color .16s ease, transform .08s ease;
+              background: linear-gradient(180deg, rgba(248,250,252,.85), rgba(255,255,255,1));
+            }}
+            .option-card:hover {{
+              box-shadow: 0 10px 26px rgba(15,23,42,.08);
+              border-color:#bfdbfe;
+              transform: translateY(-1px);
+            }}
+            .option-card input[type="radio"] {{
+              position: absolute;
+              inset:0;
+              opacity:0;
+              cursor:pointer;
+            }}
+            .option-card.selected {{
+              border-color: #2563eb;
+              box-shadow: 0 0 0 3px rgba(37,99,235,.14);
+            }}
+            .option-card-title {{
+              font-weight: 700;
+              color:#0f172a;
+              margin-bottom: 6px;
+            }}
+            .option-card-copy {{
+              font-size: 13px;
+              line-height: 1.55;
+              color:#64748b;
+              margin-bottom: 10px;
+            }}
+            .row {{
+              display:flex;
+              align-items:center;
+              justify-content:space-between;
+              gap: 10px;
+            }}
+            .meta {{
+              display:flex;
+              gap:8px;
+              flex-wrap: wrap;
+            }}
+            .chip {{
+              font-size:12px;
+              border:1px solid #dbe3ef;
+              padding:3px 8px;
+              border-radius:999px;
+              color:#334155;
+              background:#f8fafc;
+            }}
             .gpu-chip {{ border-color:#c7d2fe; background:#eef2ff; color:#4338ca; }}
             .cpu-chip {{ border-color:#bae6fd; background:#e0f2fe; color:#075985; }}
-            .ram-chip {{ border-color:#c7f9cc; background:#e8fce9; color:#166534; }}
+            .ram-chip {{ border-color:#c7f9cc; background:#ecfccb; color:#166534; }}
             .default-chip {{ border-color:#fde68a; background:#fffbeb; color:#92400e; }}
-            .input, .select {{ width:100%; padding:10px 12px; border:1.5px solid #e5e7eb; border-radius:10px; background:white; }}
+            .input, .select {{
+              width:100%;
+              padding:10px 12px;
+              border:1.5px solid #dbe3ef;
+              border-radius:12px;
+              background:white;
+            }}
             .select-inline {{ width:auto; min-width: 160px; }}
-            .hint {{ font-size:12px; color:#6b7280; margin-top: 4px; }}
-            .mount-list {{ display:grid; gap: 10px; margin-top: 12px; }}
-            .mount-grid {{ display:grid; grid-template-columns: repeat(2, minmax(0,1fr)); gap: 12px; margin-top: 12px; }}
-            @media (max-width: 820px) {{ .mount-grid {{ grid-template-columns: 1fr; }} }}
-            .mount-item {{ display:block; border:1px solid #e5e7eb; border-radius: 12px; background: linear-gradient(180deg, rgba(249,250,251,.65), rgba(255,255,255,1)); padding: 14px; }}
-            .mount-item-header {{ display:flex; justify-content:space-between; gap: 12px; align-items:flex-start; }}
-            .mount-item-title {{ display:flex; align-items:center; font-weight:600; color:#111827; }}
-            .mount-details {{ margin-top: 10px; display:grid; gap: 4px; font-size: 12px; color:#374151; }}
-            .mount-pill {{ font-size:12px; color:#374151; background:#f9fafb; border:1px solid #e5e7eb; border-radius:999px; padding:4px 10px; white-space: nowrap; }}
-            .mount-editor {{ margin-top: 14px; border: 1px solid #e5e7eb; border-radius: 12px; padding: 12px 14px; background: #fafafa; }}
-            .teaser-content {{ overflow: hidden; }}
-            
-            /* Collapsible styling */
-            details > summary {{ list-style: none; }}
-            details > summary::-webkit-details-marker {{ display: none; }}
-            details[open] > summary span {{ transform: rotate(90deg); display: inline-block; }}
-            details:not([open]) > summary span {{ display: inline-block; }}
-            details.teasing {{
-              box-shadow: 0 10px 26px rgba(17,24,39,.08);
+            .hint {{
+              font-size:12px;
+              color:#64748b;
+              margin-top: 4px;
+              line-height: 1.5;
             }}
-            details.teasing > summary span {{ animation: teaser-arrow 0.96s cubic-bezier(.2,.82,.28,1.06) 1; transform-origin: 50% 50%; }}
-            details.teasing > .teaser-content {{
-              transform-origin: top center;
-              animation: teaser-peek 0.96s cubic-bezier(.2,.82,.28,1.06) 1;
+            .toggle-row {{
+              display:flex;
+              align-items:center;
+              gap:10px;
+              font-weight:600;
+              color:#0f172a;
+              cursor:pointer;
             }}
-            @keyframes teaser-arrow {{
-              0% {{ transform: rotate(0deg) translateX(0); }}
-              32% {{ transform: rotate(16deg) translateX(1px); }}
-              56% {{ transform: rotate(11deg) translateX(0); }}
-              74% {{ transform: rotate(14deg) translateX(0); }}
-              100% {{ transform: rotate(0deg) translateX(0); }}
+            .mount-list {{
+              display:grid;
+              gap: 10px;
+              margin-top: 12px;
             }}
-            @keyframes teaser-peek {{
-              0% {{ max-height: 0; opacity: .04; transform: translateY(-7px) scaleY(.96); }}
-              26% {{ max-height: calc(var(--tease-height, 84px) * .74); opacity: .92; transform: translateY(0) scaleY(1); }}
-              44% {{ max-height: var(--tease-height, 84px); opacity: 1; transform: translateY(0) scaleY(1.01); }}
-              63% {{ max-height: calc(var(--tease-height, 84px) * .82); opacity: .98; transform: translateY(0) scaleY(.992); }}
-              78% {{ max-height: calc(var(--tease-height, 84px) * .9); opacity: .96; transform: translateY(0) scaleY(.996); }}
-              100% {{ max-height: 0; opacity: .04; transform: translateY(-3px) scaleY(.98); }}
+            .mount-grid {{
+              display:grid;
+              grid-template-columns: repeat(2, minmax(0,1fr));
+              gap: 12px;
+              margin-top: 12px;
+            }}
+            .mount-item {{
+              display:block;
+              border:1px solid #dbe3ef;
+              border-radius: 16px;
+              background: linear-gradient(180deg, rgba(248,250,252,.82), rgba(255,255,255,1));
+              padding: 14px;
+            }}
+            .mount-item-header {{
+              display:flex;
+              justify-content:space-between;
+              gap: 12px;
+              align-items:flex-start;
+            }}
+            .mount-item-title {{
+              display:flex;
+              align-items:center;
+              font-weight:700;
+              color:#0f172a;
+            }}
+            .mount-details {{
+              margin-top: 10px;
+              display:grid;
+              gap: 4px;
+              font-size: 12px;
+              color:#475569;
+            }}
+            .mount-pill {{
+              font-size:12px;
+              color:#334155;
+              background:#f8fafc;
+              border:1px solid #dbe3ef;
+              border-radius:999px;
+              padding:4px 10px;
+              white-space: nowrap;
+            }}
+            .flip-controls {{
+              display:flex;
+              align-items:center;
+              justify-content:space-between;
+              gap: 16px;
+              margin-top: 18px;
+            }}
+            .flip-copy {{
+              font-size: 13px;
+              line-height: 1.55;
+              color: #64748b;
+              max-width: 54ch;
+            }}
+            .flip-button {{
+              appearance: none;
+              border: 0;
+              border-radius: 999px;
+              padding: 12px 18px;
+              background: linear-gradient(135deg, #0f172a, #1d4ed8);
+              color: white;
+              font-weight: 700;
+              cursor: pointer;
+              box-shadow: 0 10px 24px rgba(29,78,216,.22);
+              transition: transform .16s ease, box-shadow .16s ease, opacity .16s ease;
+            }}
+            .flip-button:hover {{
+              transform: translateY(-1px);
+              box-shadow: 0 14px 30px rgba(29,78,216,.28);
+            }}
+            .flip-button:focus-visible {{
+              outline: 3px solid rgba(59,130,246,.24);
+              outline-offset: 3px;
+            }}
+            .debug-panel {{
+              margin-top: 18px;
+              border: 1px solid #dbe3ef;
+              border-radius: 16px;
+              background: rgba(248,250,252,.82);
+              padding: 10px 14px;
+            }}
+            .debug-panel summary {{
+              cursor: pointer;
+              font-size: 12px;
+              font-weight: 700;
+              letter-spacing: .08em;
+              text-transform: uppercase;
+              color: #64748b;
+            }}
+            .debug-copy {{
+              margin-top: 10px;
+              font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, Liberation Mono, monospace;
+              font-size: 12px;
+              line-height: 1.6;
+              color: #334155;
+            }}
+            @media (max-width: 820px) {{
+              .hero-grid,
+              .grid,
+              .mount-grid {{
+                grid-template-columns: 1fr;
+              }}
+              .flip-controls,
+              .options-heading {{
+                flex-direction: column;
+                align-items: stretch;
+              }}
+              .select-inline {{
+                width: 100%;
+              }}
             }}
           </style>
 
           <div class="hub-ui">
-            <div class="ui-title">Select a Profile</div>
-            <div class="subtle">For longer CLI workloads, use <code>tmux</code>.</div>
+            <div class="spawn-shell">
+              <div class="spawn-flip-frame" id="spawn-flip-frame">
+                <div class="spawn-flip-card" id="spawn-flip-card">
+                  <div class="spawn-face spawn-face--front">
+                    <div class="face-panel welcome-panel" id="spawn-face-front">
+                      <div>
+                        <div class="eyebrow">Montanuniversitaet Leoben JupyterHub</div>
+                        <div class="hero-title">Quick start into the CPS GPU cluster.</div>
+                        <p class="hero-copy">
+                          This JupyterHub instance provides a managed notebook environment for CPU and GPU workloads, persistent home storage on Longhorn, and optional network-attached storage for users who need shared data access.
+                        </p>
+                        <div class="hero-grid">
+                          <div class="hero-stat">
+                            <div class="hero-stat-title">Authentication</div>
+                            <div class="hero-stat-copy">Single sign-on via Authentik with profile access based on your group membership.</div>
+                          </div>
+                          <div class="hero-stat">
+                            <div class="hero-stat-title">Storage</div>
+                            <div class="hero-stat-copy">Fast default home storage plus optional shared and NFS-backed mounts when you opt in.</div>
+                          </div>
+                          <div class="hero-stat">
+                            <div class="hero-stat-title">Workloads</div>
+                            <div class="hero-stat-copy">CPU notebooks for everyone, with additional GPU and power-user options when your role permits them.</div>
+                          </div>
+                        </div>
+                      </div>
+                      <div class="default-banner">
+                        <div class="default-banner-title">Default server launch</div>
+                        <div class="default-banner-copy">
+                          <strong>{default_cfg['display_name']}</strong> starts when you press <strong>Start Server</strong>. {quick_start_copy}
+                        </div>
+                      </div>
+                    </div>
+                  </div>
 
-            <div class="layer">
-                {grid_html}
+                  <div class="spawn-face spawn-face--back">
+                    <div class="face-panel" id="spawn-face-back">
+                      <div class="options-heading">
+                        <div>
+                          <h2 class="title">Advanced Spawn Options</h2>
+                          <p class="subtle">Choose a different profile, adjust storage behavior, or enable power-user overrides before starting the server.</p>
+                        </div>
+                        <div class="chip default-chip">Default profile: {default_cfg['display_name']}</div>
+                      </div>
+
+                      {options_profiles_html}
+
+                      <section class="layer">
+                        <div class="section-title">Network Storage</div>
+                        <label class="toggle-row">
+                          <input type="checkbox" id="mount-nfs" name="mount_nfs" value="1" checked style="width:auto; margin:0;">
+                          <span>Enable network mounts</span>
+                        </label>
+                        <div class="hint">Leave this on for the standard storage layout, or clear it to start on Longhorn-backed storage only.</div>
+                        <div class="hint">The shared power-user workspace at <code>/home/jovyan/shared</code> stays available on Longhorn.</div>
+                        <div class="mount-list">
+                          {mount_items_markup}
+                        </div>
+                      </section>
+
+                      {custom_nfs_html}
+                      {custom_image_html}
+                      {debug_html}
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="flip-controls">
+                <div class="flip-copy" id="flip-copy">
+                  Start Server uses the default profile unless you open Options and change the configuration.
+                </div>
+                <button type="button" class="flip-button" id="flip-toggle" aria-controls="spawn-flip-card" aria-pressed="false">
+                  Options
+                </button>
+              </div>
             </div>
-
-            {storage_options_html}
-            {custom_image_html}
-            {debug_html}
           </div>
 
           <script>
           (function(){{
-            var cards = document.querySelectorAll('.card');
-            function selectCard(el){{ cards.forEach(c=>c.classList.remove('selected')); el.classList.add('selected'); var i = el.querySelector('input[type="radio"]'); if (i) i.checked = true; }}
-            cards.forEach(c=>c.addEventListener('click', ()=>selectCard(c)));
+            var cards = document.querySelectorAll('.option-card');
+            function selectCard(el) {{
+              cards.forEach(function(card) {{ card.classList.remove('selected'); }});
+              el.classList.add('selected');
+              var input = el.querySelector('input[type="radio"]');
+              if (input) {{
+                input.checked = true;
+              }}
+            }}
+            cards.forEach(function(card) {{
+              card.addEventListener('click', function() {{ selectCard(card); }});
+            }});
 
             var master = document.getElementById('mount-nfs');
-            var mountEditors = document.querySelectorAll('.mount-editor');
-
+            var mountArea = document.getElementById('spawn-face-back');
             function syncNfsControls() {{
               var enabled = master ? master.checked : true;
-              mountEditors.forEach(function(editor) {{
-                editor.querySelectorAll('input, select, textarea').forEach(function(field) {{
-                  if (field === master) {{
-                    return;
-                  }}
-                  field.disabled = !enabled;
-                }});
+              if (!mountArea) {{
+                return;
+              }}
+              mountArea.querySelectorAll('input[name$="_nfs"], input[name^="custom_nfs_"], select, textarea').forEach(function(field) {{
+                if (field === master || field.name === 'profile' || field.name === 'custom_image' || field.name === 'custom_gpus') {{
+                  return;
+                }}
+                field.disabled = !enabled;
               }});
             }}
-
             if (master) {{
               master.addEventListener('change', syncNfsControls);
               syncNfsControls();
             }}
 
-            var teaserPanels = Array.from(document.querySelectorAll('details.profile-category, details.mount-editor'));
-            var prefersReducedMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-            var teaserDurationMs = 960;
-            var teaserLeadMs = 220;
-            var teaserCascadeMs = 120;
+            var flipFrame = document.getElementById('spawn-flip-frame');
+            var flipCard = document.getElementById('spawn-flip-card');
+            var flipToggle = document.getElementById('flip-toggle');
+            var flipCopy = document.getElementById('flip-copy');
+            var frontFace = document.getElementById('spawn-face-front');
+            var backFace = document.getElementById('spawn-face-back');
 
-            function teasePanel(panel, delay) {{
-              if (prefersReducedMotion || !panel || panel.open) {{
+            function syncFlipHeight() {{
+              if (!flipFrame || !flipCard || !frontFace || !backFace) {{
                 return;
               }}
-              window.setTimeout(function() {{
-                if (panel.open) {{
-                  return;
-                }}
-                panel.style.setProperty('--tease-height', (panel.dataset.teaseHeight || 84) + 'px');
-                panel.classList.add('teasing');
-                panel.open = true;
-                window.setTimeout(function() {{
-                  panel.open = false;
-                  window.setTimeout(function() {{
-                    panel.classList.remove('teasing');
-                    panel.style.removeProperty('--tease-height');
-                  }}, 24);
-                }}, teaserDurationMs);
-              }}, delay);
+              var activeFace = flipCard.classList.contains('is-flipped') ? backFace : frontFace;
+              flipFrame.style.height = activeFace.offsetHeight + 'px';
             }}
 
-            function startTeasers() {{
-              if (!teaserPanels.length) {{
+            function setFlipState(flipped) {{
+              if (!flipCard || !flipToggle) {{
                 return;
               }}
-              teaserPanels.forEach(function(panel, idx) {{
-                teasePanel(panel, teaserLeadMs + (idx * teaserCascadeMs));
+              flipCard.classList.toggle('is-flipped', flipped);
+              flipToggle.textContent = flipped ? 'Back to Quick Start' : 'Options';
+              flipToggle.setAttribute('aria-pressed', flipped ? 'true' : 'false');
+              if (flipCopy) {{
+                flipCopy.textContent = flipped
+                  ? 'These settings change what Start Server launches. Flip back if you just want the default environment.'
+                  : 'Start Server uses the default profile unless you open Options and change the configuration.';
+              }}
+              window.requestAnimationFrame(syncFlipHeight);
+            }}
+
+            if (flipToggle) {{
+              flipToggle.addEventListener('click', function() {{
+                setFlipState(!flipCard.classList.contains('is-flipped'));
               }});
             }}
 
-            window.requestAnimationFrame(function() {{
-              window.setTimeout(startTeasers, 140);
-            }});
+            window.addEventListener('resize', syncFlipHeight);
+            window.requestAnimationFrame(syncFlipHeight);
           }})();
           </script>
           """

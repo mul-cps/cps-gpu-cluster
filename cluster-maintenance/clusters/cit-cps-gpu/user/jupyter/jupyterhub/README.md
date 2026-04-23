@@ -98,9 +98,10 @@ jupyterhub/
 
 ### Spawn Resilience
 - The base notebook home stays on Longhorn, and the shared power-user workspace stays on Longhorn as well.
-- The profile form includes an `Enable network mounts` toggle plus a collapsible mount editor.
-- The mount editor shows the standard NFS mounts as individual checkboxes with the cluster-default mount options prefilled for visibility.
-- Power users can also enter a custom NFS server, export path, and notebook mount path.
+- The spawn page now opens on a quick-start welcome face. Pressing `Start Server` launches the default profile immediately.
+- An `Options` button flips the card to an advanced configuration face with the full profile and storage controls.
+- The advanced face shows the standard NFS mounts as individual checkboxes with the cluster-default mount options prefilled for visibility.
+- Power users can also enter a custom NFS server, export path, and notebook mount path on the advanced face.
 - If NFS is degraded, users can uncheck network mounts entirely or deselect just the affected NFS entries and still launch the session.
 - If the network-mount toggle stays enabled and NFS is unavailable, Kubernetes can still leave the pod in `ContainerCreating` or `Pending` until the mount is satisfied.
 
@@ -194,8 +195,8 @@ kubectl exec -n jupyterhub deployment/hub -- ls -la /etc/jupyterhub/extra/
 
 ### NFS Outage Behavior
 - By default, all users request their personal NFS share when LDAP lookup succeeds.
-- Power-user profiles can opt into the project-share and scratch NFS mounts individually from the mount editor.
-- If NFS is degraded, clear `Enable network mounts` in the profile form to start on Longhorn-only storage.
+- Power-user profiles can opt into the project-share and scratch NFS mounts individually from the advanced options face.
+- If NFS is degraded, flip to `Options` and clear `Enable network mounts` to start on Longhorn-only storage.
 - If you see `Pending` or `ContainerCreating`, check the pod events first and then verify the NFS PV/PVCs.
 
 ### Recommended Fail-Safe Strategy
