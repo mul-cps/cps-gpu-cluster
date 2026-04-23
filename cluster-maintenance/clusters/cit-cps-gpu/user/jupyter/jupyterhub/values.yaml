@@ -356,7 +356,7 @@ hub:
           custom_nfs_html = ""
           if power_user:
               custom_nfs_html = f"""
-              <details class="mount-editor" open>
+              <details class="mount-editor">
                 <summary style="font-weight: 600; color: #374151; font-size: 14px; text-transform: uppercase; letter-spacing: 0.05em; cursor: pointer; margin-bottom: 8px; list-style: none; display: flex; align-items: center;">
                   <span style="margin-right: 6px;">▶</span> Custom NFS mount
                 </summary>
@@ -389,7 +389,6 @@ hub:
               </details>
               """
 
-          standard_mounts_open = "open" if power_user else ""
           storage_options_html = f"""
           <div class="layer">
             <div class="row" style="align-items:flex-start; gap:16px; flex-wrap: wrap;">
@@ -404,7 +403,7 @@ hub:
               </div>
             </div>
 
-            <details class="mount-editor" {standard_mounts_open}>
+            <details class="mount-editor">
               <summary style="font-weight: 600; color: #374151; font-size: 14px; text-transform: uppercase; letter-spacing: 0.05em; cursor: pointer; margin-bottom: 8px; list-style: none; display: flex; align-items: center;">
                 <span style="margin-right: 6px;">▶</span> Standard mounts
               </summary>
