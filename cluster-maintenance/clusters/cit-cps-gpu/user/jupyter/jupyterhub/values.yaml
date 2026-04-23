@@ -1105,7 +1105,7 @@ hub:
               'cpu_limit': 4.0, 'cpu_guarantee': 1.0,
               'mem_limit': '16G', 'mem_guarantee': '4G',
               'gpu': 0,
-              'grant_sudo': False,
+              'grant_sudo': True,
               'category': 'CPU-only (general purpose)',
           },
 
@@ -1457,7 +1457,7 @@ hub:
                   spawner.extra_labels.update({"slinky.slurm.net/user": spawner.user.name})
 
           # Sudo access
-          if cfg.get('grant_sudo') and is_power_user(spawner.user):
+          if cfg.get('grant_sudo'):
               spawner.environment['GRANT_SUDO'] = 'yes'
               spawner.extra_container_config = spawner.extra_container_config or {}
               spawner.extra_container_config['securityContext'] = {
