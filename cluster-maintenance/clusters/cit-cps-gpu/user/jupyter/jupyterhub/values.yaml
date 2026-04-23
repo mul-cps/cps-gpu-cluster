@@ -216,6 +216,21 @@ hub:
           
           grid_html = "\n".join(cards_html)
           
+          storage_options_html = """
+          <div class="layer">
+            <div class="row" style="align-items:flex-start; gap:16px; flex-wrap: wrap;">
+              <div style="flex:1; min-width: 260px;">
+                <div class="name" style="margin-bottom:6px;">Network Storage</div>
+                <label style="display:flex; align-items:center; gap:10px; font-weight:500; color:#111827; cursor:pointer;">
+                  <input type="checkbox" id="mount-nfs" name="mount_nfs" value="1" checked style="width:auto; margin:0;">
+                  <span>Mount NFS storage</span>
+                </label>
+                <div class="hint">Includes your personal NFS share and, for power users, the shared and scratch mounts. Clear this if network storage is degraded and you only need the local notebook home.</div>
+              </div>
+            </div>
+          </div>
+          """
+
           # Custom Image Section (Only for power users)
           custom_image_html = ""
           if power_user:
@@ -294,6 +309,7 @@ hub:
                 {grid_html}
             </div>
 
+            {storage_options_html}
             {custom_image_html}
             {debug_html}
           </div>
@@ -313,6 +329,8 @@ hub:
       def options_from_form(formdata):
           opts = {}
           opts['profile'] = formdata.get('profile', ['cpu-default'])[0]
+          mount_nfs = formdata.get('mount_nfs', [])
+          opts['mount_nfs'] = bool(mount_nfs and mount_nfs[0] in ('1', 'true', 'on', 'yes'))
           custom_image = formdata.get('custom_image', [''])[0].strip()
           if custom_image:
               opts['custom_image'] = custom_image
@@ -536,10 +554,11 @@ hub:
       # ---------- Apply profile & per-profile knobs ----------
       async def apply_profile_settings(spawner):
           profile_slug = spawner.user_options.get('profile', 'cpu-default')
+          mount_nfs = bool(spawner.user_options.get('mount_nfs', False))
           custom_image = spawner.user_options.get('custom_image', '').strip()
           custom_gpus = int(spawner.user_options.get('custom_gpus', 0) or 0)
           cfg = PROFILE_CONFIGS.get(profile_slug, PROFILE_CONFIGS['cpu-default'])
-          spawner.log.info(f"{spawner.user.name} -> profile={profile_slug}, custom_image={'set' if custom_image else 'none'}, custom_gpus={custom_gpus}")
+          spawner.log.info(f"{spawner.user.name} -> profile={profile_slug}, mount_nfs={mount_nfs}, custom_image={'set' if custom_image else 'none'}, custom_gpus={custom_gpus}")
 
           # LDAP Lookup for UID/GID
           ldap_info = get_ldap_info(spawner.user.name, spawner.log)
@@ -554,24 +573,26 @@ hub:
               spawner.fs_gid = ldap_info['gid']
               spawner.log.info(f"LDAP: Set {spawner.user.name} to UID={spawner.uid}, GID={spawner.gid}")
 
-              # Mount User NFS Share (Only if we have correct UID)
-              # We mount the root of the user share to /home/jovyan/cps_persistent1_users
-              # The user will only be able to access their own folder due to UID/GID permissions
-              user_nfs_vol = {'name': 'cps-persistent1-users', 'persistentVolumeClaim': {'claimName': 'cps-persistent1-users-pvc'}}
-              user_nfs_mount = {'name': 'cps-persistent1-users', 'mountPath': '/home/jovyan/cps_persistent1_users'}
-              
-              if spawner.volumes is None: spawner.volumes = []
-              if spawner.volume_mounts is None: spawner.volume_mounts = []
-              
-              if isinstance(spawner.volumes, list):
-                  spawner.volumes.append(user_nfs_vol)
-              elif isinstance(spawner.volumes, dict):
-                  spawner.volumes[user_nfs_vol['name']] = user_nfs_vol
+              if mount_nfs:
+                  # We mount the root of the user share to /home/jovyan/cps_persistent1_users.
+                  # The user will only be able to access their own folder due to UID/GID permissions.
+                  user_nfs_vol = {'name': 'cps-persistent1-users', 'persistentVolumeClaim': {'claimName': 'cps-persistent1-users-pvc'}}
+                  user_nfs_mount = {'name': 'cps-persistent1-users', 'mountPath': '/home/jovyan/cps_persistent1_users'}
                   
-              if isinstance(spawner.volume_mounts, list):
-                  spawner.volume_mounts.append(user_nfs_mount)
-              elif isinstance(spawner.volume_mounts, dict):
-                  spawner.volume_mounts[user_nfs_mount['name']] = user_nfs_mount
+                  if spawner.volumes is None: spawner.volumes = []
+                  if spawner.volume_mounts is None: spawner.volume_mounts = []
+                  
+                  if isinstance(spawner.volumes, list):
+                      spawner.volumes.append(user_nfs_vol)
+                  elif isinstance(spawner.volumes, dict):
+                      spawner.volumes[user_nfs_vol['name']] = user_nfs_vol
+                      
+                  if isinstance(spawner.volume_mounts, list):
+                      spawner.volume_mounts.append(user_nfs_mount)
+                  elif isinstance(spawner.volume_mounts, dict):
+                      spawner.volume_mounts[user_nfs_mount['name']] = user_nfs_mount
+              else:
+                  spawner.log.warning(f"NFS mounts disabled for {spawner.user.name}; skipping personal NFS share")
           else:
               spawner.log.warning(f"LDAP: Could not find UID/GID for {spawner.user.name}, using default UID 1000/100. NFS share will NOT be mounted.")
 
@@ -649,6 +670,7 @@ hub:
           # Record profile on the server (used by per-profile culler)
           spawner.environment = spawner.environment or {}
           spawner.environment['HUB_PROFILE_SLUG'] = profile_slug
+          spawner.environment['HUB_NFS_MOUNTS'] = 'enabled' if mount_nfs else 'disabled'
 
           # Scheduler override (e.g. for Slurm)
           if cfg.get('scheduler_name'):
@@ -679,39 +701,40 @@ hub:
 
           # Shared Storage for Power Users
           if is_power_user(spawner.user):
-             # Handle volumes
-             new_volumes = [
-                 {'name': 'shared', 'persistentVolumeClaim': {'claimName': 'jupyterhub-shared-storage'}},
-                 {'name': 'cps-persistent1-shared', 'persistentVolumeClaim': {'claimName': 'cps-persistent1-shared-pvc'}},
-                 {'name': 'cps-scratch1-tmp', 'persistentVolumeClaim': {'claimName': 'cps-scratch1-tmp-pvc'}},
-             ]
-             if spawner.volumes is None:
-                 spawner.volumes = []
-             
-             if isinstance(spawner.volumes, list):
-                 spawner.volumes.extend(new_volumes)
-             elif isinstance(spawner.volumes, dict):
-                 for v in new_volumes:
-                     spawner.volumes[v['name']] = v
-             
-             # Handle volume_mounts
-             new_mounts = [
-                 {'name': 'shared', 'mountPath': '/home/jovyan/shared'},
-                 {'name': 'cps-persistent1-shared', 'mountPath': '/home/jovyan/cps_persistent1_shared'},
-                 {'name': 'cps-scratch1-tmp', 'mountPath': '/home/jovyan/cps_scratch1_tmp'},
-             ]
-             if spawner.volume_mounts is None:
-                 spawner.volume_mounts = []
-             
-             if isinstance(spawner.volume_mounts, list):
-                 spawner.volume_mounts.extend(new_mounts)
-             elif isinstance(spawner.volume_mounts, dict):
-                 # Fallback if it is a dict (unlikely for mounts but safe to handle)
-                 for m in new_mounts:
-                     spawner.volume_mounts[m['name']] = m
-
-             # Increase storage capacity for power users
+             # Increase storage capacity for power users even when NFS is disabled.
              spawner.storage_capacity = '100Gi'
+
+             if mount_nfs:
+                 new_volumes = [
+                     {'name': 'shared', 'persistentVolumeClaim': {'claimName': 'jupyterhub-shared-storage'}},
+                     {'name': 'cps-persistent1-shared', 'persistentVolumeClaim': {'claimName': 'cps-persistent1-shared-pvc'}},
+                     {'name': 'cps-scratch1-tmp', 'persistentVolumeClaim': {'claimName': 'cps-scratch1-tmp-pvc'}},
+                 ]
+                 if spawner.volumes is None:
+                     spawner.volumes = []
+                 
+                 if isinstance(spawner.volumes, list):
+                     spawner.volumes.extend(new_volumes)
+                 elif isinstance(spawner.volumes, dict):
+                     for v in new_volumes:
+                         spawner.volumes[v['name']] = v
+                 
+                 new_mounts = [
+                     {'name': 'shared', 'mountPath': '/home/jovyan/shared'},
+                     {'name': 'cps-persistent1-shared', 'mountPath': '/home/jovyan/cps_persistent1_shared'},
+                     {'name': 'cps-scratch1-tmp', 'mountPath': '/home/jovyan/cps_scratch1_tmp'},
+                 ]
+                 if spawner.volume_mounts is None:
+                     spawner.volume_mounts = []
+                 
+                 if isinstance(spawner.volume_mounts, list):
+                     spawner.volume_mounts.extend(new_mounts)
+                 elif isinstance(spawner.volume_mounts, dict):
+                     # Fallback if it is a dict (unlikely for mounts but safe to handle)
+                     for m in new_mounts:
+                         spawner.volume_mounts[m['name']] = m
+             else:
+                 spawner.log.warning(f"NFS mounts disabled for {spawner.user.name}; skipping shared power-user storage")
 
           spawner.log.info(f"Final: image={spawner.image} CPU={spawner.cpu_limit}/{spawner.cpu_guarantee} MEM={spawner.mem_limit}/{spawner.mem_guarantee} RES={spawner.extra_resource_limits}")
       c.KubeSpawner.pre_spawn_hook = apply_profile_settings

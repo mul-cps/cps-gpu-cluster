@@ -76,15 +76,29 @@ jupyterhub/
 - **Purpose**: Fast workspace for active development
 - **Lifecycle**: Deleted when pod terminates
 
-### 2. Persistent User Storage (`/home/jovyan/Persist`)  
-- **Type**: NFS with per-user subdirectories
-- **PVC**: `jhub-userdir-rwx` (50TB logical capacity)
-- **Purpose**: Long-term user file storage
+### 2. User Home Storage (`/home/jovyan`)
+- **Type**: Dynamic PVC on `longhorn-fast`
+- **PVC template**: `claim-{username}`
+- **Purpose**: Primary notebook home and working directory
+- **Availability**: Required for all singleuser sessions, but not NFS-dependent
 
-### 3. Shared Team Storage (`/home/jovyan/Shared`)
+### 3. Persistent User Storage (`/home/jovyan/cps_persistent1_users`)
+- **Type**: NFS-backed per-user share
+- **PVC**: `cps-persistent1-users-pvc`
+- **Mount rule**: Added only when LDAP UID/GID lookup succeeds and the user keeps the NFS checkbox enabled
+- **Purpose**: Long-term user files
+
+### 4. Shared Team Storage and Scratch
 - **Type**: NFS ReadWriteMany
-- **PVC**: `jhub-shared-rwx` (2TB)
-- **Purpose**: Team collaboration and shared datasets
+- **PVCs**: `jupyterhub-shared-storage`, `cps-persistent1-shared-pvc`, `cps-scratch1-tmp-pvc`
+- **Purpose**: Team collaboration and larger shared datasets
+- **Scope**: Mounted only for power users (`cpsHPCAccess` / `jupyter_admin`) who keep the NFS checkbox enabled
+
+### Spawn Resilience
+- The base notebook home stays on Longhorn, but the spawn path can still request optional NFS mounts.
+- The profile form now includes a `Mount NFS storage` checkbox that is enabled by default.
+- If NFS is degraded, users can clear that checkbox and spawn without the personal NFS share and, for power users, without shared and scratch NFS mounts.
+- If the checkbox stays enabled and NFS is unavailable, Kubernetes can still leave the pod in `ContainerCreating` or `Pending` until the mount is satisfied.
 
 ## Deployment 
 
@@ -151,7 +165,7 @@ Modify the HTML/CSS/JavaScript in `config/ui_options_form.html`.
 The new modular configuration maintains full compatibility with the existing setup:
 - All OAuth settings preserved
 - All GPU profiles maintained  
-- Storage configuration unchanged
+- Storage architecture updated to use Longhorn for `/home/jovyan` and optional NFS for extra mounts
 - Same UI functionality with improved design
 
 ## Troubleshooting
@@ -173,6 +187,19 @@ Check that component files are mounted in hub pod:
 ```bash
 kubectl exec -n jupyterhub deployment/hub -- ls -la /etc/jupyterhub/extra/
 ```
+
+### NFS Outage Behavior
+- By default, all users still request their personal NFS share when LDAP lookup succeeds.
+- Power-user profiles also request the shared and scratch NFS mounts by default.
+- If NFS is degraded, clear `Mount NFS storage` in the profile form to start on Longhorn-only storage.
+- If you see `Pending` or `ContainerCreating`, check the pod events first and then verify the NFS PV/PVCs.
+
+### Recommended Fail-Safe Strategy
+1. Keep `/home/jovyan` on non-NFS storage for every profile.
+2. Treat NFS-backed storage as optional and let users opt out at spawn time.
+3. Preserve core compute behavior when NFS is disabled so the same profile still launches.
+4. Expose the degraded-storage mode clearly in the UI and logs.
+5. As a later improvement, move optional NFS attachment fully out of the critical spawn path.
 
 Users without the `cpsHPCAccess` group see a single profile:
 
