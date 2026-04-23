@@ -318,7 +318,7 @@ hub:
               
               # Collapsible Section
               cards_html.append(f"""
-              <details style="margin-bottom: 16px; width: 100%;">
+              <details class="profile-category" style="margin-bottom: 16px; width: 100%;">
                 <summary style="font-weight: 600; color: #374151; font-size: 14px; text-transform: uppercase; letter-spacing: 0.05em; cursor: pointer; margin-bottom: 8px; list-style: none; display: flex; align-items: center;">
                   <span style="margin-right: 6px;">▶</span> {cat_name}
                 </summary>
@@ -496,13 +496,14 @@ hub:
             details > summary {{ list-style: none; }}
             details > summary::-webkit-details-marker {{ display: none; }}
             details[open] > summary span {{ transform: rotate(90deg); display: inline-block; }}
-            details:not([open]) > summary span {{ display: inline-block; animation: peek-nudge 2.4s ease-in-out infinite; transform-origin: 50% 50%; }}
-            details:hover > summary span {{ animation-play-state: paused; }}
+            details:not([open]) > summary span {{ display: inline-block; }}
+            details.teasing > summary span {{ animation: peek-nudge 0.9s ease-in-out 1; transform-origin: 50% 50%; }}
             @keyframes peek-nudge {{
-              0%, 100% {{ transform: translateX(0); }}
-              45% {{ transform: translateX(4px); }}
-              55% {{ transform: translateX(4px) rotate(6deg); }}
-              70% {{ transform: translateX(0) rotate(0deg); }}
+              0% {{ transform: translateX(0) rotate(0deg); }}
+              30% {{ transform: translateX(3px) rotate(2deg); }}
+              55% {{ transform: translateX(0) rotate(0deg); }}
+              75% {{ transform: translateX(3px) rotate(1deg); }}
+              100% {{ transform: translateX(0) rotate(0deg); }}
             }}
           </style>
 
@@ -543,6 +544,47 @@ hub:
             if (master) {{
               master.addEventListener('change', syncNfsControls);
               syncNfsControls();
+            }}
+
+            var teaserPanels = Array.from(document.querySelectorAll('details.profile-category, details.mount-editor'));
+            var prefersReducedMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+            var teaserKey = 'jupyterhub-mount-profile-teaser-seen';
+            var teaserSeen = false;
+
+            try {{
+              teaserSeen = window.sessionStorage.getItem(teaserKey) === '1';
+            }} catch (e) {{
+              teaserSeen = false;
+            }}
+
+            function teasePanel(panel, delay) {{
+              if (prefersReducedMotion || teaserSeen || !panel || panel.open) {{
+                return;
+              }}
+              window.setTimeout(function() {{
+                if (panel.open) {{
+                  return;
+                }}
+                panel.classList.add('teasing');
+                panel.open = true;
+                window.setTimeout(function() {{
+                  panel.open = false;
+                  window.setTimeout(function() {{
+                    panel.classList.remove('teasing');
+                  }}, 30);
+                }}, 320);
+              }}, delay);
+            }}
+
+            if (!teaserSeen) {{
+              teaserPanels.forEach(function(panel, idx) {{
+                teasePanel(panel, 900 + (idx * 700));
+              }});
+              window.setTimeout(function() {{
+                try {{
+                  window.sessionStorage.setItem(teaserKey, '1');
+                }} catch (e) {{}}
+              }}, 900 + (teaserPanels.length * 700) + 500);
             }}
           }})();
           </script>
