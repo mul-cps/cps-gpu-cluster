@@ -8,7 +8,7 @@ spec:
   accessModes:
     - ReadWriteMany
   nfs:
-    server: 10.71.1.55
+    server: 193.170.30.58
     path: /mnt/scratch1/recovery
   mountOptions:
     - rw
