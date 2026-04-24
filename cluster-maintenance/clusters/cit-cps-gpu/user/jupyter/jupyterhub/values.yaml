@@ -150,11 +150,11 @@ hub:
           },
           {
               'key': 'scratch',
-              'label': 'Scratch storage',
-              'description': 'Temporary high-capacity storage for large intermediate artifacts.',
+              'label': 'Scratch1 storage',
+              'description': 'Mount the full scratch1 export for temporary storage and the recovery folder.',
               'volume_name': 'cps-scratch1-tmp',
               'claim_name': 'cps-scratch1-tmp-v2-pvc',
-              'mount_path': '/home/jovyan/cps_scratch1_tmp',
+              'mount_path': '/home/jovyan/cps_scratch1',
               'mount_options': [
                   'nfsvers=4.2',
                   'proto=tcp',
@@ -175,36 +175,6 @@ hub:
               ],
               'kind': 'pvc',
               'default_checked': True,
-              'power_user_only': True,
-          },
-          {
-              'key': 'scratch_recovery',
-              'label': 'Scratch recovery',
-              'description': 'Recovery workspace for scratch data that needs a short-lived NFS mount.',
-              'volume_name': 'cps-scratch1-recovery',
-              'claim_name': 'cps-scratch1-recovery-v3-pvc',
-              'mount_path': '/home/jovyan/cps_scratch1_recovery',
-              'mount_options': [
-                  'rw',
-                  '_netdev',
-                  'soft',
-                  'noatime',
-                  'nodiratime',
-                  'nfsvers=4.2',
-                  'proto=tcp',
-                  'rsize=1048576',
-                  'wsize=1048576',
-                  'timeo=50',
-                  'retrans=2',
-                  'x-systemd.automount',
-                  'x-systemd.idle-timeout=60',
-                  'x-systemd.device-timeout=10s',
-                  'x-systemd.mount-timeout=10s',
-                  'nofail',
-                  'nconnect=4',
-              ],
-              'kind': 'pvc',
-              'default_checked': False,
               'power_user_only': True,
           },
       ]
@@ -1371,16 +1341,11 @@ hub:
                   shared_pvc_mount = {'name': 'cps-persistent1-shared', 'mountPath': '/home/jovyan/cps_persistent1_shared'}
                   append_volume_mount(spawner, shared_pvc_vol, shared_pvc_mount)
                   requested_network_mounts.append('persistent1-shared')
-              if mount_nfs and mount_scratch_nfs:
+              if mount_nfs and (mount_scratch_nfs or mount_scratch_recovery_nfs):
                   scratch_vol = {'name': 'cps-scratch1-tmp', 'persistentVolumeClaim': {'claimName': 'cps-scratch1-tmp-v2-pvc'}}
-                  scratch_mount = {'name': 'cps-scratch1-tmp', 'mountPath': '/home/jovyan/cps_scratch1_tmp', 'subPath': 'cps_scratch1_tmp'}
+                  scratch_mount = {'name': 'cps-scratch1-tmp', 'mountPath': '/home/jovyan/cps_scratch1'}
                   append_volume_mount(spawner, scratch_vol, scratch_mount)
-                  requested_network_mounts.append('scratch')
-              if mount_nfs and mount_scratch_recovery_nfs:
-                  scratch_recovery_vol = {'name': 'cps-scratch1-recovery', 'persistentVolumeClaim': {'claimName': 'cps-scratch1-recovery-v3-pvc'}}
-                  scratch_recovery_mount = {'name': 'cps-scratch1-recovery', 'mountPath': '/home/jovyan/cps_scratch1_recovery', 'subPath': 'recovery'}
-                  append_volume_mount(spawner, scratch_recovery_vol, scratch_recovery_mount)
-                  requested_network_mounts.append('scratch-recovery')
+                  requested_network_mounts.append('scratch1-root')
           elif mount_nfs and (mount_persistent1_shared or mount_scratch_nfs or mount_scratch_recovery_nfs):
               spawner.log.warning(f"Shared network mounts were requested for {spawner.user.name}, but the user is not a power user; skipping")
 
