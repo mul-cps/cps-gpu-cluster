@@ -177,6 +177,36 @@ hub:
               'default_checked': True,
               'power_user_only': True,
           },
+          {
+              'key': 'scratch_recovery',
+              'label': 'Scratch recovery',
+              'description': 'Recovery workspace for scratch data that needs a short-lived NFS mount.',
+              'volume_name': 'cps-scratch1-recovery',
+              'claim_name': 'cps-scratch1-recovery-pvc',
+              'mount_path': '/home/jovyan/cps_scratch1_recovery',
+              'mount_options': [
+                  'rw',
+                  '_netdev',
+                  'soft',
+                  'noatime',
+                  'nodiratime',
+                  'nfsvers=4.2',
+                  'proto=tcp',
+                  'rsize=1048576',
+                  'wsize=1048576',
+                  'timeo=50',
+                  'retrans=2',
+                  'x-systemd.automount',
+                  'x-systemd.idle-timeout=60',
+                  'x-systemd.device-timeout=10s',
+                  'x-systemd.mount-timeout=10s',
+                  'nofail',
+                  'nconnect=4',
+              ],
+              'kind': 'pvc',
+              'default_checked': False,
+              'power_user_only': True,
+          },
       ]
 
       CUSTOM_NFS_DEFAULT_SERVER = '193.170.30.58'
@@ -1048,6 +1078,7 @@ hub:
           opts['mount_personal_nfs'] = form_bool(formdata, 'mount_personal_nfs', False)
           opts['mount_persistent1_shared_nfs'] = form_bool(formdata, 'mount_persistent1_shared_nfs', False)
           opts['mount_scratch_nfs'] = form_bool(formdata, 'mount_scratch_nfs', False)
+          opts['mount_scratch_recovery_nfs'] = form_bool(formdata, 'mount_scratch_recovery_nfs', False)
           opts['custom_nfs_enabled'] = form_bool(formdata, 'custom_nfs_enabled', False)
           opts['custom_nfs_server'] = formdata.get('custom_nfs_server', [''])[0].strip()
           opts['custom_nfs_path'] = formdata.get('custom_nfs_path', [''])[0].strip()
@@ -1279,6 +1310,7 @@ hub:
           mount_personal_nfs = bool(spawner.user_options.get('mount_personal_nfs', False))
           mount_persistent1_shared = bool(spawner.user_options.get('mount_persistent1_shared_nfs', False))
           mount_scratch_nfs = bool(spawner.user_options.get('mount_scratch_nfs', False))
+          mount_scratch_recovery_nfs = bool(spawner.user_options.get('mount_scratch_recovery_nfs', False))
           custom_nfs_enabled = bool(spawner.user_options.get('custom_nfs_enabled', False))
           custom_nfs_server = spawner.user_options.get('custom_nfs_server', '').strip()
           custom_nfs_path = spawner.user_options.get('custom_nfs_path', '').strip()
@@ -1291,7 +1323,8 @@ hub:
           spawner.log.info(
               f"{spawner.user.name} -> profile={profile_slug}, mount_nfs={mount_nfs}, "
               f"mount_personal_nfs={mount_personal_nfs}, mount_persistent1_shared={mount_persistent1_shared}, "
-              f"mount_scratch_nfs={mount_scratch_nfs}, custom_nfs_enabled={custom_nfs_enabled}, "
+              f"mount_scratch_nfs={mount_scratch_nfs}, mount_scratch_recovery_nfs={mount_scratch_recovery_nfs}, "
+              f"custom_nfs_enabled={custom_nfs_enabled}, "
               f"custom_image={'set' if custom_image else 'none'}, custom_gpus={custom_gpus}"
           )
 
@@ -1314,6 +1347,7 @@ hub:
               mount_personal_nfs = False
               mount_persistent1_shared = False
               mount_scratch_nfs = False
+              mount_scratch_recovery_nfs = False
               custom_nfs_enabled = False
 
           if mount_nfs and mount_personal_nfs and ldap_info:
@@ -1342,7 +1376,12 @@ hub:
                   scratch_mount = {'name': 'cps-scratch1-tmp', 'mountPath': '/home/jovyan/cps_scratch1_tmp'}
                   append_volume_mount(spawner, scratch_vol, scratch_mount)
                   requested_network_mounts.append('scratch')
-          elif mount_nfs and (mount_persistent1_shared or mount_scratch_nfs):
+              if mount_nfs and mount_scratch_recovery_nfs:
+                  scratch_recovery_vol = {'name': 'cps-scratch1-recovery', 'persistentVolumeClaim': {'claimName': 'cps-scratch1-recovery-pvc'}}
+                  scratch_recovery_mount = {'name': 'cps-scratch1-recovery', 'mountPath': '/home/jovyan/cps_scratch1_recovery'}
+                  append_volume_mount(spawner, scratch_recovery_vol, scratch_recovery_mount)
+                  requested_network_mounts.append('scratch-recovery')
+          elif mount_nfs and (mount_persistent1_shared or mount_scratch_nfs or mount_scratch_recovery_nfs):
               spawner.log.warning(f"Shared network mounts were requested for {spawner.user.name}, but the user is not a power user; skipping")
 
           if mount_nfs and custom_nfs_enabled:

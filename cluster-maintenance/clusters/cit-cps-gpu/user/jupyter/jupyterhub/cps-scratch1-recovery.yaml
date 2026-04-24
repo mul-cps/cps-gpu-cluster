@@ -1,0 +1,44 @@
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: cps-scratch1-recovery-pv
+spec:
+  capacity:
+    storage: 10Ti # NFS size is arbitrary, setting high
+  accessModes:
+    - ReadWriteMany
+  nfs:
+    server: 10.71.1.55
+    path: /mnt/scratch1/recovery
+  mountOptions:
+    - rw
+    - _netdev
+    - soft
+    - noatime
+    - nodiratime
+    - nfsvers=4.2
+    - proto=tcp
+    - rsize=1048576
+    - wsize=1048576
+    - timeo=50
+    - retrans=2
+    - x-systemd.automount
+    - x-systemd.idle-timeout=60
+    - x-systemd.device-timeout=10s
+    - x-systemd.mount-timeout=10s
+    - nofail
+    - nconnect=4
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: cps-scratch1-recovery-pvc
+  namespace: jupyterhub
+spec:
+  accessModes:
+    - ReadWriteMany
+  storageClassName: "" # Static provisioning
+  volumeName: cps-scratch1-recovery-pv
+  resources:
+    requests:
+      storage: 10Ti
