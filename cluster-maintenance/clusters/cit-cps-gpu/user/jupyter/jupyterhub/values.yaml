@@ -153,7 +153,7 @@ hub:
               'label': 'Scratch storage',
               'description': 'Temporary high-capacity storage for large intermediate artifacts.',
               'volume_name': 'cps-scratch1-tmp',
-              'claim_name': 'cps-scratch1-tmp-pvc',
+              'claim_name': 'cps-scratch1-tmp-v2-pvc',
               'mount_path': '/home/jovyan/cps_scratch1_tmp',
               'mount_options': [
                   'nfsvers=4.2',
@@ -182,7 +182,7 @@ hub:
               'label': 'Scratch recovery',
               'description': 'Recovery workspace for scratch data that needs a short-lived NFS mount.',
               'volume_name': 'cps-scratch1-recovery',
-              'claim_name': 'cps-scratch1-recovery-v2-pvc',
+              'claim_name': 'cps-scratch1-recovery-v3-pvc',
               'mount_path': '/home/jovyan/cps_scratch1_recovery',
               'mount_options': [
                   'rw',
@@ -1372,13 +1372,13 @@ hub:
                   append_volume_mount(spawner, shared_pvc_vol, shared_pvc_mount)
                   requested_network_mounts.append('persistent1-shared')
               if mount_nfs and mount_scratch_nfs:
-                  scratch_vol = {'name': 'cps-scratch1-tmp', 'persistentVolumeClaim': {'claimName': 'cps-scratch1-tmp-pvc'}}
-                  scratch_mount = {'name': 'cps-scratch1-tmp', 'mountPath': '/home/jovyan/cps_scratch1_tmp'}
+                  scratch_vol = {'name': 'cps-scratch1-tmp', 'persistentVolumeClaim': {'claimName': 'cps-scratch1-tmp-v2-pvc'}}
+                  scratch_mount = {'name': 'cps-scratch1-tmp', 'mountPath': '/home/jovyan/cps_scratch1_tmp', 'subPath': 'cps_scratch1_tmp'}
                   append_volume_mount(spawner, scratch_vol, scratch_mount)
                   requested_network_mounts.append('scratch')
               if mount_nfs and mount_scratch_recovery_nfs:
-                  scratch_recovery_vol = {'name': 'cps-scratch1-recovery', 'persistentVolumeClaim': {'claimName': 'cps-scratch1-recovery-v2-pvc'}}
-                  scratch_recovery_mount = {'name': 'cps-scratch1-recovery', 'mountPath': '/home/jovyan/cps_scratch1_recovery'}
+                  scratch_recovery_vol = {'name': 'cps-scratch1-recovery', 'persistentVolumeClaim': {'claimName': 'cps-scratch1-recovery-v3-pvc'}}
+                  scratch_recovery_mount = {'name': 'cps-scratch1-recovery', 'mountPath': '/home/jovyan/cps_scratch1_recovery', 'subPath': 'recovery'}
                   append_volume_mount(spawner, scratch_recovery_vol, scratch_recovery_mount)
                   requested_network_mounts.append('scratch-recovery')
           elif mount_nfs and (mount_persistent1_shared or mount_scratch_nfs or mount_scratch_recovery_nfs):
