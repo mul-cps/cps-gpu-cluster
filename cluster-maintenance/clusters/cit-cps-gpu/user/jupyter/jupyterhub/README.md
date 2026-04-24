@@ -93,6 +93,7 @@ jupyterhub/
 - **Longhorn shared workspace**: `jupyterhub-shared-storage` at `/home/jovyan/shared`
 - **NFS project share**: `cps-persistent1-shared-pvc` at `/home/jovyan/cps_persistent1_shared`
 - **NFS scratch**: `cps-scratch1-tmp-pvc` at `/home/jovyan/cps_scratch1_tmp`
+- **NFS scratch recovery**: `cps-scratch1-recovery-pvc` at `/home/jovyan/cps_scratch1_recovery`
 - **Purpose**: Team collaboration and larger shared datasets
 - **Scope**: Longhorn shared workspace stays available for power users; the NFS mounts are individually selectable
 

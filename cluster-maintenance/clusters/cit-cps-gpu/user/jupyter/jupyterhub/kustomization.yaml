@@ -7,6 +7,7 @@ resources:
   # - storage-class.yaml
   - shared-pvc.yaml
   - cps-scratch1-tmp.yaml
+  - cps-scratch1-recovery.yaml
   - cps-persistent1-users.yaml
   - postgresql.yaml
   - harica-ca-configmap.yaml
