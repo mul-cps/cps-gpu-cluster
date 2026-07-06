@@ -96,9 +96,17 @@ hub:
       # Groups that have full access (GPU + Shared Storage)
       POWER_USER_GROUPS = {'app_jupyterhub_poweruser', 'jupyter_admin'}
 
+      # TODO(platform-owner): placeholder group name(s) - replace with the real
+      # Authentik/LDAP group(s) used for enrolled course/student accounts once known.
+      STUDENT_GROUPS = {'app_jupyterhub_student'}
+
       def is_power_user(user):
           user_groups = {getattr(g, "name", g) for g in user.groups}
           return bool(user.admin) or bool(user_groups & POWER_USER_GROUPS)
+
+      def is_student(user):
+          user_groups = {getattr(g, "name", g) for g in user.groups}
+          return bool(user_groups & STUDENT_GROUPS)
 
       STANDARD_NFS_MOUNTS = [
           {
@@ -267,10 +275,11 @@ hub:
               mem = cfg.get('mem_limit', '0G')
 
               chips = []
-              if gpu > 0:
+              mem_mib = cfg.get('memory_mib')
+              if gpu > 0 and mem_mib:
+                  chips.append(f'<span class="chip gpu-chip">{mem_mib / 1024:g} GB VRAM (MPS-shared)</span>')
+              elif gpu > 0:
                   chips.append(f'<span class="chip gpu-chip">{gpu}× GPU</span>')
-              elif 'mig' in slug:
-                  chips.append('<span class="chip gpu-chip">MIG</span>')
 
               chips.append(f'<span class="chip cpu-chip">{int(cpu)} vCPU</span>')
               chips.append(f'<span class="chip ram-chip">{mem} RAM</span>')
@@ -1167,30 +1176,110 @@ hub:
               'category': 'GPU-enabled',
           },
 
-          # MIG slices
-          'gpu-mig-1g': {
-              'display_name': 'GPU Small (MIG 1g.5gb)',
-              'description': '1/7 A100 Slice (5GB VRAM) • 6 vCPU • 24 GiB',
+          # ---- VRAM-tiered GPU sharing profiles (MPS-based, replaces old MIG slices) ----
+          # All physical GPUs run in full (non-MIG) mode now. Sharing between concurrent
+          # sessions on the same physical GPU is achieved via NVIDIA MPS: KAI Scheduler
+          # bin-packs pods onto GPUs using the 'gpu-memory' pod annotation (MiB), while
+          # KubeSpawner sets the matching CUDA_MPS_PINNED_DEVICE_MEM_LIMIT env var on the
+          # container so the enforced memory ceiling always matches what was scheduled.
+          # All of these request resource_key 'nvidia.com/gpu' with gpu=1 (uniform
+          # physical resource type - no more MIG-specific extended resource names).
+          'gpu-3gb': {
+              'display_name': 'GPU Tiny (3GB, shared)',
+              'description': 'MPS-shared A100 slice (3GB VRAM) • 4 vCPU • 16 GiB',
               'image': 'ghcr.io/mul-cps/cps-jupyter-notebook:latest-pytorch-code',
-              'cpu_limit': 6.0, 'cpu_guarantee': 3.0,
-              'mem_limit': '24G', 'mem_guarantee': '12G',
+              'cpu_limit': 4.0, 'cpu_guarantee': 2.0,
+              'mem_limit': '16G', 'mem_guarantee': '8G',
               'gpu': 1,
-              'resource_key': 'nvidia.com/mig-1g.5gb',
+              'memory_mib': 3072,
+              'resource_key': 'nvidia.com/gpu',
               'runtime_class': 'nvidia',
               'grant_sudo': True,
               'category': 'GPU-enabled',
           },
-          'gpu-mig-2g': {
-              'display_name': 'GPU Medium (MIG 2g.10gb)',
-              'description': '2/7 A100 Slice (10GB VRAM) • 10 vCPU • 40 GiB',
+          'gpu-5gb': {
+              'display_name': 'GPU Small (5GB, shared)',
+              'description': 'MPS-shared A100 slice (5GB VRAM) • 6 vCPU • 24 GiB',
+              'image': 'ghcr.io/mul-cps/cps-jupyter-notebook:latest-pytorch-code',
+              'cpu_limit': 6.0, 'cpu_guarantee': 3.0,
+              'mem_limit': '24G', 'mem_guarantee': '12G',
+              'gpu': 1,
+              'memory_mib': 5120,
+              'resource_key': 'nvidia.com/gpu',
+              'runtime_class': 'nvidia',
+              'grant_sudo': True,
+              'category': 'GPU-enabled',
+          },
+          'gpu-8gb': {
+              'display_name': 'GPU Small-Medium (8GB, shared)',
+              'description': 'MPS-shared A100 slice (8GB VRAM) • 8 vCPU • 32 GiB',
+              'image': 'ghcr.io/mul-cps/cps-jupyter-notebook:latest-pytorch-code',
+              'cpu_limit': 8.0, 'cpu_guarantee': 4.0,
+              'mem_limit': '32G', 'mem_guarantee': '16G',
+              'gpu': 1,
+              'memory_mib': 8192,
+              'resource_key': 'nvidia.com/gpu',
+              'runtime_class': 'nvidia',
+              'grant_sudo': True,
+              'category': 'GPU-enabled',
+          },
+          'gpu-10gb': {
+              'display_name': 'GPU Medium (10GB, shared)',
+              'description': 'MPS-shared A100 slice (10GB VRAM) • 10 vCPU • 40 GiB',
               'image': 'ghcr.io/mul-cps/cps-jupyter-notebook:latest-pytorch-code',
               'cpu_limit': 10.0, 'cpu_guarantee': 5.0,
               'mem_limit': '40G', 'mem_guarantee': '20G',
               'gpu': 1,
-              'resource_key': 'nvidia.com/mig-2g.10gb',
+              'memory_mib': 10240,
+              'resource_key': 'nvidia.com/gpu',
               'runtime_class': 'nvidia',
               'grant_sudo': True,
               'category': 'GPU-enabled',
+          },
+          'gpu-12gb': {
+              'display_name': 'GPU Medium-Large (12GB, shared)',
+              'description': 'MPS-shared A100 slice (12GB VRAM) • 12 vCPU • 48 GiB',
+              'image': 'ghcr.io/mul-cps/cps-jupyter-notebook:latest-pytorch-code',
+              'cpu_limit': 12.0, 'cpu_guarantee': 6.0,
+              'mem_limit': '48G', 'mem_guarantee': '24G',
+              'gpu': 1,
+              'memory_mib': 12288,
+              'resource_key': 'nvidia.com/gpu',
+              'runtime_class': 'nvidia',
+              'grant_sudo': True,
+              'category': 'GPU-enabled',
+          },
+          'gpu-20gb': {
+              'display_name': 'GPU Large (20GB, shared)',
+              'description': 'MPS-shared A100 slice (20GB VRAM) • 16 vCPU • 64 GiB',
+              'image': 'ghcr.io/mul-cps/cps-jupyter-notebook:latest-pytorch-code',
+              'cpu_limit': 16.0, 'cpu_guarantee': 8.0,
+              'mem_limit': '64G', 'mem_guarantee': '32G',
+              'gpu': 1,
+              'memory_mib': 20480,
+              'resource_key': 'nvidia.com/gpu',
+              'runtime_class': 'nvidia',
+              'grant_sudo': True,
+              'category': 'GPU-enabled',
+          },
+
+          # Student-facing profile: small MPS-shared VRAM tier, scheduled through the
+          # existing 'courses' KAI queue with kai-course-high priority. Sizing
+          # (5120 MiB) is a placeholder default - platform owner should tune this
+          # based on actual course/lab GPU memory requirements.
+          'gpu-student': {
+              'display_name': 'GPU Student (Shared)',
+              'description': 'MPS-shared A100 slice (5GB VRAM, course queue) • 6 vCPU • 24 GiB',
+              'image': 'ghcr.io/mul-cps/cps-jupyter-notebook:latest-pytorch-code',
+              'cpu_limit': 6.0, 'cpu_guarantee': 3.0,
+              'mem_limit': '24G', 'mem_guarantee': '12G',
+              'gpu': 1,
+              'memory_mib': 5120,
+              'resource_key': 'nvidia.com/gpu',
+              'runtime_class': 'nvidia',
+              'grant_sudo': True,
+              'category': 'GPU-enabled',
+              'student_profile': True,
           },
 
           # Desktop + ROS 2
@@ -1206,14 +1295,15 @@ hub:
               'grant_sudo': True,
               'category': 'GPU-enabled',
           },
-          'gpu-desktop-mig-1g': {
-              'display_name': 'GPU Small (Desktop + ROS 2)',
-              'description': 'Desktop + ROS 2 • 1/7 A100 Slice (5GB VRAM) • 6 vCPU • 24 GiB',
+          'gpu-desktop-5gb': {
+              'display_name': 'GPU Small (Desktop + ROS 2, shared)',
+              'description': 'Desktop + ROS 2 • MPS-shared A100 slice (5GB VRAM) • 6 vCPU • 24 GiB',
               'image': 'ghcr.io/mul-cps/cps-jupyter-notebook:latest-desktop-ros2',
               'cpu_limit': 6.0, 'cpu_guarantee': 3.0,
               'mem_limit': '24G', 'mem_guarantee': '12G',
               'gpu': 1,
-              'resource_key': 'nvidia.com/mig-1g.5gb',
+              'memory_mib': 5120,
+              'resource_key': 'nvidia.com/gpu',
               'runtime_class': 'nvidia',
               'grant_sudo': True,
               'category': 'GPU-enabled',
@@ -1258,16 +1348,31 @@ hub:
       def get_profile_list(spawner):
           # Filter profiles based on user groups
           power_user = is_power_user(spawner.user)
-          
+          student_user = is_student(spawner.user)
+
           profiles = []
           for slug, cfg in PROFILE_CONFIGS.items():
+              # 'gpu-student' is a special case: not gated by power-user status,
+              # only by STUDENT_GROUPS membership (mirrors the 'power_user_only'
+              # gating pattern used for STANDARD_NFS_MOUNTS).
+              if cfg.get('student_profile'):
+                  if not (student_user or power_user):
+                      continue
+                  profiles.append({
+                      'display_name': cfg['display_name'],
+                      'slug': slug,
+                      'description': cfg.get('description', ''),
+                      'default': cfg.get('default', False),
+                  })
+                  continue
+
               # If not power user, skip GPU profiles and advanced profiles
               if not power_user:
                   if cfg.get('gpu', 0) > 0:
                       continue
                   if slug in {'dask-cluster', 'gpu-slurm'}:
                       continue
-              
+
               profiles.append({
                   'display_name': cfg['display_name'],
                   'slug': slug,
@@ -1412,7 +1517,7 @@ hub:
               }
           }
 
-          # GPU / MIG resources (profile)
+          # GPU resources (profile)
           spawner.extra_resource_limits = {}
           spawner.extra_resource_guarantees = {}
           if cfg['gpu'] and cfg.get('resource_key'):
@@ -1422,6 +1527,32 @@ hub:
                   spawner.environment = {}
               spawner.environment.update({'NVIDIA_VISIBLE_DEVICES':'all','NVIDIA_DRIVER_CAPABILITIES':'compute,utility'})
               spawner.node_selector = dict(getattr(spawner,'node_selector',{}) or {}, **{'accelerator':'nvidia'})
+
+              # MPS-based memory sharing: for VRAM-tiered profiles (those carrying a
+              # 'memory_mib' key), pin the container's MPS memory ceiling and tell
+              # KAI Scheduler's bin-packer the same figure via the 'gpu-memory' pod
+              # annotation, so scheduling accounting and enforcement stay in sync by
+              # construction. Full-GPU profiles (no 'memory_mib') are left alone -
+              # they get the whole device as before.
+              memory_mib = cfg.get('memory_mib')
+              if memory_mib:
+                  spawner.environment['CUDA_MPS_PINNED_DEVICE_MEM_LIMIT'] = f"0={memory_mib}M"
+                  spawner.extra_annotations = spawner.extra_annotations or {}
+                  spawner.extra_annotations.update({'gpu-memory': str(memory_mib)})
+
+              # Route all GPU profiles (except gpu-slurm, which has gpu=0 and is
+              # handled separately below via 'scheduler_name'/'extra_labels') through
+              # KAI Scheduler. Student sessions use the existing 'courses' queue with
+              # kai-course-high priority; staff/general interactive sessions use the
+              # 'phd-interactive' queue with kai-phd-interactive priority.
+              spawner.scheduler_name = 'kai-scheduler'
+              spawner.extra_labels = spawner.extra_labels or {}
+              if cfg.get('student_profile'):
+                  spawner.extra_labels.update({'kai.scheduler/queue': 'courses'})
+                  spawner.extra_pod_config['priorityClassName'] = 'kai-course-high'
+              else:
+                  spawner.extra_labels.update({'kai.scheduler/queue': 'phd-interactive'})
+                  spawner.extra_pod_config['priorityClassName'] = 'kai-phd-interactive'
 
           # Custom image (admins only)
           if custom_image:
@@ -1439,7 +1570,7 @@ hub:
           if custom_gpus > 0:
               if not is_power_user(spawner.user):
                   raise Exception("🚫 GPU Access Denied\n\nGPU resources require 'app_jupyterhub_poweruser' or admin.")
-              # Choose resource key: respect MIG profiles' key if selected; else full GPU
+              # Choose resource key: respect the selected profile's key if set; else full GPU
               rkey = cfg.get('resource_key', 'nvidia.com/gpu')
               spawner.extra_resource_limits = {rkey: str(custom_gpus)}
               spawner.extra_resource_guarantees = {rkey: str(custom_gpus)}
