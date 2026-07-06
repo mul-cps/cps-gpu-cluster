@@ -1,3 +1,13 @@
+# HISTORICAL/SUPERSEDED: this Job encodes a per-node MIG-vs-full split
+# (gpu1/gpu2 MIG, gpu3 mixed, gpu4 full) from when the cluster used static
+# MIG partitioning. That scheme is retired — all 4 GPU nodes now run
+# permanently in full/non-MIG mode (nvidia.com/mig.config=all-disabled),
+# and GPU sharing goes through MPS + KAI Scheduler's gpu-memory annotation
+# instead (see dynamic-mig-layout-instructions.md). The gpu-pool=mig/full
+# labels/taints below no longer reflect an active partitioning scheme,
+# though the gpu-pool label key itself may still be referenced elsewhere
+# in scheduling manifests. Left in place as-is pending a follow-up cleanup
+# once the MPS migration settles; do not treat this as current MIG policy.
 apiVersion: batch/v1
 kind: Job
 metadata:

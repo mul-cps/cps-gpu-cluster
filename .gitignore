@@ -39,3 +39,7 @@ kubeconfig
 # Backup files
 *.bak
 *.backup
+
+# Build artifacts
+*.tgz
+tfplan

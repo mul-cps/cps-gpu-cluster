@@ -6,40 +6,46 @@ This directory contains the modular JupyterHub configuration for the CPS GPU Clu
 
 ```
 jupyterhub/
-├── config/                      # Modular configuration components
-│   ├── auth.py                 # OAuth and admin user configuration  
-│   ├── culler.py               # GPU-aware idle culling logic
-│   ├── profiles.py             # GPU profile definitions and form handling
-│   └── ui_options_form.html    # Custom profile selection UI
-├── templates/                  # Kubernetes templates
-│   ├── custom-templates.yaml   # Custom UI templates (info page, etc.)
-│   ├── kustomization.yaml     # Kustomize configuration
-│   └── namespace.yaml         # Namespace definition
 ├── fleet.yaml                 # Fleet deployment configuration
 ├── namespace.yaml             # JupyterHub namespace
 ├── storage-pvcs.yaml          # Storage PVC definitions
-├── values.yaml                # Original monolithic configuration (deprecated)
-├── values-new.yaml            # New modular configuration
+├── values.yaml                # Live configuration (Helm values + extraConfig, incl. PROFILE_CONFIGS)
 └── README.md                  # This file
 ```
 
+All JupyterHub configuration — authentication, GPU/CPU profile
+definitions, idle culling, and the profile-selection UI — is defined
+inline in `values.yaml`'s `hub.extraConfig` sections, keyed by
+`PROFILE_CONFIGS` and related settings. There is no separate
+`config/` or `templates/` directory anymore: an earlier iteration of
+this bundle split those pieces into standalone Python/HTML files
+mounted as ConfigMaps (`templates/profiles.py`, `auth.py`, `culler.py`,
+`ui_options_form.html`), but nothing in the live Helm release ever
+mounted those ConfigMaps — Fleet's `valuesFiles` only loads
+`values.yaml` — so that directory was confirmed dead and removed.
+
 ## Configuration Components
 
-### 1. Authentication (`config/auth.py`)
+All of the below now live directly in `values.yaml`'s `extraConfig`:
+
+### 1. Authentication
 - **Purpose**: Centralized OAuth configuration for Authentik SSO
 - **Contains**: Client credentials, endpoints, admin user lists
-- **Usage**: Loaded by `00-auth-config` extraConfig section
 
-### 2. Profiles (`config/profiles.py`) 
+### 2. Profiles (`PROFILE_CONFIGS` in `values.yaml`)
 - **Purpose**: GPU profile definitions and form handling logic
 - **Contains**: Profile list, form parser, pre-spawn hooks
 - **Features**:
-  - CPU-only and GPU profiles (1x, 2x A100)
-  - PyTorch, TensorFlow, and MIG slice support
+  - CPU-only and GPU profiles
+  - PyTorch, TensorFlow support
   - Resource limits and node selection
   - Custom image/GPU override for admins
+- GPU sharing for these profiles is now driven by NVIDIA MPS + KAI
+  Scheduler's `gpu-memory` annotation, not MIG slices (see
+  `system/gpu/gpu-operator/README.md` for the MIG-to-MPS migration
+  context).
 
-### 3. Culler (`config/culler.py`)
+### 3. Culler
 - **Purpose**: GPU-aware idle pod culling configuration
 - **Features**:
   - Dynamic timeouts (6h for dual-GPU, 4h for single-GPU, 2h for CPU)
@@ -47,7 +53,7 @@ jupyterhub/
   - Pre-cull cleanup hooks
   - Resource-aware scheduling
 
-### 4. UI (`config/ui_options_form.html`)
+### 4. UI
 - **Purpose**: Modern profile selection interface
 - **Features**:
   - Layered, responsive design
@@ -107,35 +113,10 @@ jupyterhub/
 
 ## Deployment 
 
-The modular configuration uses Fleet's `extraFiles` feature to mount component files into the JupyterHub hub pod:
-
-1. **Kustomize**: Generates ConfigMaps from component files
-2. **Fleet**: Processes and deploys the Helm chart with mounted configs
-3. **Hub**: Loads components via `extraConfig` sections
-
-### Switching to Modular Configuration
-
-To deploy the modular configuration:
-
-```bash
-# Rename current values.yaml to backup
-mv values.yaml values-monolithic.yaml
-
-# Use the new modular configuration
-mv values-new.yaml values.yaml
-
-# Commit and let Fleet deploy
-git add -A && git commit -m "Switch to modular JupyterHub configuration"
-git push
-```
-
-## Benefits
-
-1. **Maintainability**: Separate concerns into focused files
-2. **Readability**: Each component is self-contained and documented
-3. **Reusability**: Components can be shared across environments
-4. **Testability**: Individual components can be tested in isolation
-5. **Version Control**: Cleaner diffs when modifying specific features
+Fleet deploys the JupyterHub Helm chart with `values.yaml` as the sole
+values file. All hub-side customization (auth, profiles, culler, UI)
+loads via `extraConfig` sections embedded directly in `values.yaml` —
+there is no separate ConfigMap-mounting step for these anymore.
 
 ## Access
 
@@ -154,43 +135,23 @@ Authentication via Authentik OIDC (SSO).
 ## Maintenance
 
 ### Adding New Profiles
-Edit `config/profiles.py` and add new entries to `PROFILE_LIST`.
+Edit `values.yaml` and add new entries to `PROFILE_CONFIGS` in its `extraConfig`.
 
 ### Modifying Authentication  
-Update OAuth endpoints and credentials in `config/auth.py`.
+Update OAuth endpoints and credentials in `values.yaml`'s auth-related `extraConfig` section.
 
 ### Adjusting Culler Logic
-Tune timeout and priority functions in `config/culler.py`.
+Tune timeout and priority functions in `values.yaml`'s culler `extraConfig` section.
 
 ### UI Customization
-Modify the HTML/CSS/JavaScript in `config/ui_options_form.html`.
-
-## Migration Notes
-
-The new modular configuration maintains full compatibility with the existing setup:
-- All OAuth settings preserved
-- All GPU profiles maintained  
-- Storage architecture updated to use Longhorn for `/home/jovyan` and optional NFS for extra mounts
-- Same UI functionality with improved design
+Modify the profile-selection UI markup embedded in `values.yaml`.
 
 ## Troubleshooting
 
 ### Component Loading Issues
-Check hub pod logs for import errors:
+Check hub pod logs for import/config errors:
 ```bash
 kubectl logs -n jupyterhub deployment/hub
-```
-
-### Configuration Validation
-Verify ConfigMaps are created correctly:
-```bash
-kubectl get configmaps -n jupyterhub | grep jhub-
-```
-
-### File Mounting
-Check that component files are mounted in hub pod:
-```bash
-kubectl exec -n jupyterhub deployment/hub -- ls -la /etc/jupyterhub/extra/
 ```
 
 ### NFS Outage Behavior
