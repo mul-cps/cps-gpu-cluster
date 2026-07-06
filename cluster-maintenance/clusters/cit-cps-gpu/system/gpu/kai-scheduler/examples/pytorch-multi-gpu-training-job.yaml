@@ -37,13 +37,23 @@
 # annotation at all -- the two are alternative, non-combinable allocation
 # mechanisms in KAI v0.12.10 (see the single-GPU template for the MPS path).
 #
+# --- Verified live 2026-07-06 ---
+# A plain `nvidia.com/gpu` allocation IS correctly protected from double-
+# booking a physical GPU already backing an MPS-shared (`gpu-memory`) pod:
+# tested by running a gpu-memory-annotated pod (backed by KAI's
+# auto-created reservation pod in kai-resource-reservation) and a
+# nvidia.com/gpu: 2 pod on the same 2-GPU node at the same time -- the
+# 2-GPU request correctly stayed Pending (only 1 of 2 physical GPUs free),
+# while a nvidia.com/gpu: 1 request scheduled fine on the free GPU. This is
+# what justified moving the whole cluster's device-plugin default to plain
+# mode (system/gpu/gpu-operator/values.yaml) -- see
+# docs/troubleshooting.md for the full incident writeup, including an
+# earlier, incorrect conclusion that these two allocation paths could not
+# coexist at all (corrected after a flawed test procedure was identified
+# and redone properly).
+#
 # --- OPEN / UNVERIFIED as of this session ---
-# 1. Whether a plain `nvidia.com/gpu` allocation is actually protected at the
-#    device-plugin/scheduler level from being co-scheduled on the same
-#    physical GPU as an MPS-shared (`gpu-memory`) pod has NOT been verified
-#    against this live cluster -- it's assumed based on KAI treating them as
-#    separate accounting paths, but not confirmed empirically.
-# 2. `minMember` on the PodGroup guarantees all member pods are admitted
+# 1. `minMember` on the PodGroup guarantees all member pods are admitted
 #    together or not at all -- it does NOT by itself guarantee the 2 worker
 #    pods land on the same node or within the same NVLink domain. For
 #    intra-node NVLink to actually be used (rather than falling back to

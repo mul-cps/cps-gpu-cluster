@@ -675,16 +675,53 @@ requests bound successfully on the same node at the same time.
 **Practical consequence — reversed from the prior write-up**: the
 "elastic unified pool" model (any GPU serves either mode, arbitrated
 automatically) is achievable. A static per-node MPS-vs-exclusive split is
-NOT required. This reopens the question of whether the cluster-wide
-`gpu-operator/values.yaml` default of `mps-sharing` device-plugin mode is
-even the right foundation — plain/exclusive mode plus KAI's own
-reservation-pod sharing may be architecturally cleaner, since it also
-restores the ability to request `nvidia.com/gpu: 2+` in a single pod
-(needed for genuine multi-GPU/NVLink batch jobs), which the current
-cluster-wide MPS-sharing default makes impossible outright. **This is now
-a live design question, not settled** — treat the cluster's current
-`mps-sharing` default as provisional pending that decision, not as a
-locked-in architecture.
+NOT required.
+
+**UPDATE (2026-07-06, later same day): rolled out cluster-wide, with one
+real blocker found and fixed.** Switched `gpu-operator/values.yaml`'s
+`devicePlugin.config.default` from `mps-sharing` to a new `plain` key
+(`migStrategy: none`, no `sharing` block) and applied via `helm upgrade`
+to all 4 nodes. This is strictly more capable than the old `mps-sharing`
+default: it restores real `nvidia.com/gpu: 2+` requests cluster-wide
+(needed for genuine multi-GPU/NVLink distributed batch jobs, impossible
+under `mps-sharing` due to `failRequestsGreaterThanOne`) while KAI's own
+`gpu-memory` + reservation-pod mechanism continues to provide fractional
+sharing for interactive/student sessions.
+
+**The real blocker**: GPU Operator's own
+`nvidia-device-plugin-mps-control-daemon` DaemonSet only schedules onto
+nodes labeled `nvidia.com/mps.capable=true`, and GPU Feature Discovery
+only sets that label `true` when the node's resolved device-plugin config
+contains a `sharing.mps` block. Switching the cluster-wide default to
+`plain` made `mps.capable=false` on every node, and the daemon's
+`desiredNumberScheduled` dropped to `0` cluster-wide — killing the MPS
+server entirely, which would have silently broken `CUDA_MPS_PINNED_DEVICE_MEM_LIMIT`
+enforcement for every JupyterHub session (see the "not enforced at all"
+finding above for what that failure mode looks like). Overriding the
+`mps.capable` label via a Helm hook was not viable — GFD re-derives it
+continuously (same class of problem as the earlier `mig.strategy` label
+fight), so any static override would be reverted on GFD's next scan.
+
+**Fix**: deployed a standalone MPS control daemon
+(`gpu-operator/mps-control-daemon-standalone.yaml`), cloned from the
+operator's own DaemonSet spec but with the `mps.capable` node-selector
+requirement dropped, and with no `ownerReference` to `ClusterPolicy` so
+the operator's controller does not reconcile/revert it. It reads the
+`mps-sharing` ConfigMap key purely for its pipe/log resource-name
+definition (`nvidia.com/gpu`), not for Kubernetes-level resource sharing.
+Verified live: MPS server healthy and accepting connections on all 4
+nodes; a real PyTorch allocation loop with a 1024 MiB
+`CUDA_MPS_PINNED_DEVICE_MEM_LIMIT` failed at ~800-878 MiB as expected
+(not 40GB), confirming enforcement survived the architecture change; a
+`gpu-memory` pod scheduled via a reservation pod on gpu1 and gpu3 (not
+just the original gpu2 test), confirming the mechanism generalizes across
+nodes, not a one-node fluke.
+
+**Current state**: cluster-wide default is now `plain` device-plugin mode
++ standalone always-on MPS daemon + KAI-native `gpu-memory` sharing. The
+`mps-sharing` ConfigMap key is retained (for the standalone daemon's
+config, and as a documented fallback/comparison option) but is no longer
+selected as any node's actual device-plugin config.
 
 **Lesson for future incidents on this exact question**: don't harden a
 single live-test result into a permanent "RESOLVED (empirically)"

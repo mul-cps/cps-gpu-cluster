@@ -61,49 +61,68 @@ devicePlugin:
   # comment for the full story). Kept here at "none" to match, not to rely on.
   migStrategy: "none"
   #
-  # GPU sharing now goes through NVIDIA MPS, driven by JupyterHub profiles
-  # (see user/jupyter/jupyterhub/values.yaml PROFILE_CONFIGS) + KAI
-  # Scheduler's gpu-memory annotation for scheduling/bin-packing. The
-  # "mps-sharing" config below is what actually starts the MPS control
-  # daemon and advertises MPS-shareable nvidia.com/gpu capacity -- without
-  # it, the gpu-memory annotation and CUDA_MPS_PINNED_DEVICE_MEM_LIMIT env
-  # var that JupyterHub sets are correctly configured but inert.
+  # ARCHITECTURE (revised 2026-07-06, supersedes the mps-sharing-default
+  # design below): device plugin runs in PLAIN mode cluster-wide -- no
+  # `sharing.mps` block, nvidia.com/gpu advertised as the real physical GPU
+  # count (2 per node), not MPS replicas. GPU *sharing* now comes entirely
+  # from KAI Scheduler's own gpu-memory annotation + its automatic
+  # reservation-pod mechanism (namespace kai-resource-reservation), NOT from
+  # the device plugin's sharing strategy. MPS itself (the control daemon +
+  # CUDA_MPS_PINNED_DEVICE_MEM_LIMIT enforcement, set by JupyterHub's
+  # PROFILE_CONFIGS) is still used for per-client VRAM enforcement -- the
+  # nvidia-device-plugin-mps-control-daemon DaemonSet runs regardless of
+  # this config's sharing strategy, so switching to plain mode does not
+  # remove MPS enforcement.
   #
-  # VERIFIED LIVE end-to-end (2026-07-06, gpu4 -> then cluster-wide): device
-  # plugin healthy, MPS control daemon running, node advertised
-  # nvidia.com/gpu=16 (8 MPS replicas x 2 physical GPUs). Confirmed a real
-  # gpu-memory-annotated test pod (KAI queue=batch) scheduled successfully
-  # and ran with the correct CUDA_MPS_PINNED_DEVICE_MEM_LIMIT env var and
-  # full device visibility via nvidia-smi. Three additional fixes were
-  # required to get here, all captured in docs/troubleshooting.md:
-  #   1. KAI Scheduler's own `global.gpuSharing` Helm value (default false)
-  #      must be enabled, or its admission webhook rejects any gpu-memory
-  #      request outright.
-  #   2. KAI's PriorityClass values must stay under 100 or the workload
-  #      becomes non-preemptible and hard-capped at its queue's quota,
-  #      permanently breaking the batch queue's quota=0 burst design (see
-  #      kai-policy/priorityclasses.yaml -- rescaled from 1000/5000/10000
-  #      to 10/50/90).
-  #   3. The nvidia.com/mig.strategy node label must actually be "none",
-  #      not just this Helm value -- GPU Feature Discovery re-derives it
-  #      from ClusterPolicy's live spec, so a real `helm upgrade` (not just
-  #      ad hoc kubectl patches) is needed for it to stick; node-labeler.yaml
-  #      was rewritten to set this uniformly instead of the old MIG-era
-  #      per-node scheme.
+  # WHY THE CHANGE: an earlier "mps-sharing cluster-wide" design (see the
+  # now-corrected docs/troubleshooting.md entry) was based on a live test
+  # that concluded MPS-shared and multi-GPU-exclusive (nvidia.com/gpu: 2+)
+  # requests could not coexist on the same device-plugin config. That test
+  # was flawed -- it never checked the nvidia.com/gpu.memory node label
+  # before declaring failure, and a corrected retest showed a plain-mode
+  # node DOES serve both a gpu-memory-annotated pod (via a KAI reservation
+  # pod backing one physical GPU) and a normal nvidia.com/gpu request (on
+  # the other physical GPU) at the same time. Plain mode is strictly more
+  # capable: it restores real nvidia.com/gpu: 2+ requests (needed for
+  # genuine multi-GPU/NVLink distributed batch jobs -- impossible under
+  # mps-sharing mode, which caps every request at 1 GPU) while still
+  # supporting fractional gpu-memory scheduling through KAI's own mechanism.
   #
-  # Still unverified: the "elastic pool" exclusivity behavior (does a
-  # full-gpu-memory request genuinely block MPS co-scheduling on the same
-  # physical GPU) -- needs a dedicated test with two concurrent pods before
-  # relying on it for real distributed-batch-vs-interactive coexistence.
+  # VERIFIED LIVE (2026-07-06, k3s-wk-gpu2, single-node prototype before
+  # this cluster-wide rollout): nvidia.com/gpu.memory label correctly
+  # populated (40960) under plain mode; a gpu-memory: "5120" pod scheduled
+  # and ran, backed by an auto-created kai-resource-reservation pod; a
+  # concurrent nvidia.com/gpu: 1 pod scheduled and ran on the node's other
+  # physical GPU; a nvidia.com/gpu: 2 pod correctly stayed Pending (only 1
+  # of 2 physical GPUs was free -- correct bin-packing, not a bug).
+  #
+  # Prerequisites this depends on (all already in place, see
+  # docs/troubleshooting.md for the incident history):
+  #   1. KAI Scheduler's `global.gpuSharing` Helm value must be true, or its
+  #      admission webhook rejects gpu-memory requests outright.
+  #   2. KAI's PriorityClass values must stay under 100 (see
+  #      kai-policy/priorityclasses.yaml) or a workload becomes
+  #      non-preemptible and hard-capped at its queue's quota.
+  #   3. The nvidia.com/mig.strategy node label must read "none" -- GPU
+  #      Feature Discovery re-derives it from ClusterPolicy's live spec.
+  #
+  # Still to validate at cluster scale (this rollout): reservation pods
+  # appear correctly on all 4 nodes; JupyterHub profile spawns still work
+  # end-to-end with the plain-mode nvidia.com/gpu resource type; priority
+  # preemption and queue quotas still function; a real multi-GPU NCCL job
+  # runs correctly now that nvidia.com/gpu: 2+ is available cluster-wide.
   config:
     create: true
     name: device-plugin-config
-    default: mps-sharing
+    default: plain
     data:
       mig-mixed: |-
         version: v1
         flags:
           migStrategy: mixed
+      # Retained for potential future single-node fallback / comparison
+      # testing -- no longer the cluster-wide default. See the ARCHITECTURE
+      # comment above for why plain mode replaced this as the default.
       mps-sharing: |-
         version: v1
         sharing:
@@ -121,6 +140,10 @@ devicePlugin:
                 # just needs to be >= the largest realistic number of
                 # concurrent shared sessions on one GPU.
                 replicas: 8
+      plain: |-
+        version: v1
+        flags:
+          migStrategy: none
 
 # DCGM Exporter (GPU metrics)
 dcgmExporter:

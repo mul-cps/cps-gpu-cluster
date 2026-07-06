@@ -1,0 +1,209 @@
+# Standalone MPS control daemon, decoupled from the device plugin's
+# node-level sharing config -- REQUIRED for the plain-mode + KAI-native
+# gpu-memory sharing architecture (see the ARCHITECTURE comment in
+# values.yaml's devicePlugin.config section).
+#
+# WHY THIS EXISTS: GPU Operator's own nvidia-device-plugin-mps-control-daemon
+# DaemonSet (owned/reconciled by ClusterPolicy) only schedules onto nodes
+# labeled nvidia.com/mps.capable=true, and GPU Feature Discovery only sets
+# that label true when the node's *resolved device-plugin config* contains a
+# sharing.mps block. Since this cluster's device-plugin default is now
+# "plain" (no sharing block -- needed to keep nvidia.com/gpu: 2+ requests
+# working for real multi-GPU/NVLink batch jobs), mps.capable is false
+# cluster-wide and the operator's own MPS daemon scales itself to zero
+# replicas everywhere -- confirmed live 2026-07-06 (desiredNumberScheduled: 0
+# on all 4 nodes immediately after the plain-mode rollout). GFD re-derives
+# mps.capable continuously, so overriding the label via node-labeler.yaml
+# would just get reverted on GFD's next scan (same class of problem as the
+# earlier mig.strategy label fight -- see docs/troubleshooting.md).
+#
+# The fix: run our own MPS control daemon, cloned from the operator's own
+# DaemonSet spec (kubectl get ds -n gpu-operator
+# nvidia-device-plugin-mps-control-daemon -o yaml, captured 2026-07-06),
+# with the mps.capable requirement dropped from nodeSelector. This is NOT
+# owned by ClusterPolicy (no ownerReference), so the operator's controller
+# will not fight or revert it. This matches upstream KAI Scheduler's own
+# documented expectation (docs/gpu-sharing/mps/README.md in the KAI repo):
+# "MPS server is running on all GPU-enabled hosts" is a platform
+# prerequisite the operator itself does not guarantee outside its own
+# sharing-mode bookkeeping -- KAI does not care how the MPS server got
+# there, only that CUDA_MPS_PIPE_DIRECTORY resolves to a live one.
+#
+# The device-plugin-config ConfigMap's "mps-sharing" key is kept
+# specifically so this daemon's config-manager sidecar can read a resource
+# name/path definition (nvidia.com/gpu) from it -- it is no longer used for
+# actual Kubernetes resource-sharing/replica accounting (that would re-cap
+# every gpu-memory/nvidia.com/gpu request at 1 GPU per pod, which is exactly
+# what plain mode exists to avoid). It only tells the daemon which pipe/log
+# subdirectory name to use, matching the CUDA_MPS_PIPE_DIRECTORY /
+# CUDA_MPS_LOG_DIRECTORY paths already wired into JupyterHub profiles and
+# the batch job examples (/mps/nvidia.com/gpu/{pipe,log}).
+apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+  name: mps-control-daemon-standalone
+  namespace: gpu-operator
+  labels:
+    app: mps-control-daemon-standalone
+spec:
+  revisionHistoryLimit: 10
+  selector:
+    matchLabels:
+      app: mps-control-daemon-standalone
+  updateStrategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: 1
+      maxSurge: 0
+  template:
+    metadata:
+      labels:
+        app: mps-control-daemon-standalone
+    spec:
+      hostPID: true
+      runtimeClassName: nvidia
+      priorityClassName: system-node-critical
+      serviceAccountName: nvidia-device-plugin
+      # Same node scope as the rest of the GPU Operator stack -- every real
+      # GPU worker, not gated on mps.capable.
+      nodeSelector:
+        accelerator: nvidia
+      tolerations:
+        - key: nvidia.com/gpu
+          operator: Exists
+          effect: NoSchedule
+        - key: gpu-pool
+          operator: Exists
+          effect: NoSchedule
+      initContainers:
+        - name: toolkit-validation
+          image: nvcr.io/nvidia/gpu-operator:v25.10.0
+          command: ["sh", "-c"]
+          args:
+            - "until [ -f /run/nvidia/validations/toolkit-ready ]; do echo waiting for nvidia container stack to be setup; sleep 5; done"
+          securityContext:
+            privileged: true
+            runAsUser: 0
+          volumeMounts:
+            - name: run-nvidia
+              mountPath: /run/nvidia
+              mountPropagation: HostToContainer
+        - name: mps-control-daemon-mounts
+          image: nvcr.io/nvidia/k8s-device-plugin:v0.18.0
+          command: ["mps-control-daemon", "mount-shm"]
+          securityContext:
+            privileged: true
+          volumeMounts:
+            - name: mps-root
+              mountPath: /mps
+              mountPropagation: Bidirectional
+        - name: config-manager-init
+          image: nvcr.io/nvidia/k8s-device-plugin:v0.18.0
+          command: ["config-manager"]
+          env:
+            - name: ONESHOT
+              value: "true"
+            - name: NODE_NAME
+              valueFrom:
+                fieldRef:
+                  fieldPath: spec.nodeName
+            - name: NODE_LABEL
+              # Deliberately NOT nvidia.com/device-plugin.config -- that
+              # label now drives the real (plain) device-plugin config.
+              # This daemon always reads the mps-sharing key regardless of
+              # the node's actual scheduling mode, so it only needs a
+              # constant default, never a per-node override.
+              value: mps-control-daemon-standalone-unused-label
+            - name: CONFIG_FILE_SRCDIR
+              value: /available-configs
+            - name: CONFIG_FILE_DST
+              value: /config/config.yaml
+            - name: DEFAULT_CONFIG
+              value: mps-sharing
+            - name: SEND_SIGNAL
+              value: "false"
+            - name: FALLBACK_STRATEGIES
+              value: empty
+          volumeMounts:
+            - name: config
+              mountPath: /config
+            - name: device-plugin-config
+              mountPath: /available-configs
+      containers:
+        - name: mps-control-daemon-ctr
+          image: nvcr.io/nvidia/k8s-device-plugin:v0.18.0
+          command: ["mps-control-daemon"]
+          securityContext:
+            privileged: true
+          env:
+            - name: NODE_NAME
+              valueFrom:
+                fieldRef:
+                  fieldPath: spec.nodeName
+            - name: NVIDIA_VISIBLE_DEVICES
+              value: all
+            - name: NVIDIA_DRIVER_CAPABILITIES
+              value: compute,utility
+            - name: CONFIG_FILE
+              value: /config/config.yaml
+            - name: MIG_STRATEGY
+              value: none
+          volumeMounts:
+            - name: mps-shm
+              mountPath: /dev/shm
+            - name: mps-root
+              mountPath: /mps
+            - name: config
+              mountPath: /config
+            - name: device-plugin-config
+              mountPath: /available-configs
+        - name: config-manager
+          image: nvcr.io/nvidia/k8s-device-plugin:v0.18.0
+          command: ["config-manager"]
+          securityContext:
+            privileged: true
+          env:
+            - name: ONESHOT
+              value: "false"
+            - name: NODE_NAME
+              valueFrom:
+                fieldRef:
+                  fieldPath: spec.nodeName
+            - name: NODE_LABEL
+              value: mps-control-daemon-standalone-unused-label
+            - name: CONFIG_FILE_SRCDIR
+              value: /available-configs
+            - name: CONFIG_FILE_DST
+              value: /config/config.yaml
+            - name: DEFAULT_CONFIG
+              value: mps-sharing
+            - name: SEND_SIGNAL
+              value: "true"
+            - name: SIGNAL
+              value: "1"
+            - name: PROCESS_TO_SIGNAL
+              value: /usr/bin/mps-control-daemon
+            - name: FALLBACK_STRATEGIES
+              value: empty
+          volumeMounts:
+            - name: config
+              mountPath: /config
+            - name: device-plugin-config
+              mountPath: /available-configs
+      volumes:
+        - name: run-nvidia
+          hostPath:
+            path: /run/nvidia
+            type: Directory
+        - name: mps-root
+          hostPath:
+            path: /run/nvidia/mps
+            type: DirectoryOrCreate
+        - name: mps-shm
+          hostPath:
+            path: /run/nvidia/mps/shm
+        - name: device-plugin-config
+          configMap:
+            name: device-plugin-config
+        - name: config
+          emptyDir: {}
