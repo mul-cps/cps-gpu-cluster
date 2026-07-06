@@ -52,9 +52,17 @@ spec:
             - name: ssh
               containerPort: 8022
               protocol: TCP
-            - name: sftp
-              containerPort: 2222
-              protocol: TCP
+          # NOTE (2026-07-06): a "sftp" containerPort: 2222 entry was
+          # removed here -- it does not exist in the upstream chart
+          # (github.com/yuvipanda/jupyterhub-ssh) and this pod's patched
+          # code (../patch-configmap.yaml) only implements plain
+          # SSH-to-terminal forwarding via Terminado, with zero SFTP
+          # subsystem code. Confirmed live: nothing listens on 2222 in
+          # this pod (`nc -zv <pod-ip> 2222` -> connection refused). Real
+          # SFTP is served by the separate jupyterhub-sftp Deployment (a
+          # standalone OpenSSH server), routed externally via
+          # ingress-nginx's tcp.2222 entry pointing at THAT service, not
+          # this one. See docs/troubleshooting.md.
           resources:
             {{- .Values.ssh.resources | toYaml | nindent 12 }}
       {{- with .Values.ssh.imagePullSecrets }}

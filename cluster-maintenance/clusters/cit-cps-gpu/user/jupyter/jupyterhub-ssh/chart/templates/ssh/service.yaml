@@ -22,10 +22,9 @@ spec:
       {{- if eq .Values.ssh.service.type "NodePort" }}
       nodePort: {{ .Values.ssh.service.nodePort }}
       {{- end }}
-    - name: sftp
-      port: 2222
-      targetPort: sftp
-      protocol: TCP
+      # A "sftp" port (2222 -> targetPort: sftp) was removed here 2026-07-06
+      # -- see ../ssh/deployment.yaml's comment. Nothing in this Deployment
+      # ever listened on it.
   selector:
     {{- include "jupyterhub-ssh.ssh.selectorLabels" . | nindent 4 }}
 {{- end }}

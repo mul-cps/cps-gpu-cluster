@@ -780,9 +780,67 @@ standard fix used by NCCL-on-Kubernetes reference architectures
 this class of problem. Trade-off: `hostNetwork` gives up per-pod network
 isolation (the pod uses the node's network namespace and IP directly) —
 acceptable for this cluster's trusted internal batch queue, reconsider
-for less-trusted workloads. **Not yet re-benchmarked** — re-run the
-inter-node point-to-point test after this change to confirm the expected
-improvement.
+for less-trusted workloads.
+
+**RE-BENCHMARKED 2026-07-06 (after `queues=48` sequential reboot rollout,
+see below, PLUS `NCCL_SOCKET_NTHREADS=4`/`NCCL_NSOCKS_PERTHREAD=4`/
+`NCCL_SOCKET_IFNAME=eth0`)**: real 2-node, 1-GPU-per-node NCCL
+point-to-point test (not `hostNetwork`, just the socket tuning + real
+multiqueue) measured **0.95 GB/s at 16MB, 1.25 GB/s at 256MB** — up from
+0.39 GB/s untuned. 1.25 GB/s is **exactly** 10GbE line rate
+(10 Gbit/s ÷ 8). The combination of real multiqueue (not live-hotplugged)
+and NCCL socket tuning fully resolved the bottleneck — the fabric is now
+saturated at its physical maximum, no further tuning available at the
+network layer. `hostNetwork` was not needed to hit this number in this
+retest; if you still see lower throughput, verify NCCL_SOCKET_IFNAME is
+actually resolving to the physical NIC first before reaching for
+`hostNetwork`.
+
+### `queues=48` virtio-net multiqueue rollout — stability verified
+
+Confirmed live 2026-07-06, some time after the sequential drain/reboot
+rollout described elsewhere in this doc (real Proxmox reboots, not live
+hotplug):
+- `ethtool -l eth0` on all 4 GPU nodes shows `Combined: 48` under "Current
+  hardware settings" — multiqueue is actually active in-guest, not just
+  configured in Proxmox.
+- `flannel.1` stable on all 4 nodes with correct IPs, no NIC/carrier
+  errors in `dmesg` since the reboot.
+- Real NCCL throughput improved to line rate (see the benchmark update
+  above) — the queue count change plus NCCL socket tuning is doing what
+  it was supposed to.
+
+No regressions found. This closes out the multiqueue incident from
+earlier today.
+
+### KAI scheduler stops picking up new PodGroups after a `helm upgrade` touches other components
+
+**Symptom**: pods with an explicit `PodGroup` (gang scheduling) sit
+`Pending` indefinitely with no scheduling events at all, even though
+nodes have free capacity. `kubectl logs -n kai-scheduler
+deploy/kai-scheduler-default` shows `<0> PodGroupInfos` on every
+scheduling cycle — the scheduler isn't seeing the PodGroup at all, not
+rejecting it.
+
+**Found live 2026-07-06**: happened right after a `helm upgrade
+kai-scheduler` that only intentionally changed `admission`'s replica
+count -- but Helm restarted `binder`, `pod-grouper`, `podgroup-controller`,
+and `queue-controller` too (normal upgrade behavior), while
+`kai-scheduler-default` itself was untouched and kept running. The
+scheduler pod's in-memory PodGroupInfo cache appears to depend on a live
+connection/watch to those other components and doesn't automatically
+recover when they restart out from under it.
+
+**Fix**: restart `kai-scheduler-default` itself after any `helm upgrade`
+or config change that touches the other kai-scheduler components, even if
+the change wasn't meant to affect the scheduler pod:
+```bash
+kubectl get pods -n kai-scheduler | grep scheduler-default
+kubectl delete pod -n kai-scheduler <kai-scheduler-default-pod-name>
+```
+Verify recovery by checking a real (or test) PodGroup schedules and that
+`<N> PodGroupInfos` in the scheduler logs is nonzero when workloads are
+pending.
 
 **SUSPECTED BIGGER FACTOR, needs Proxmox-host-level investigation (not
 yet actioned — outside this repo's scope, flagged here for whoever has
