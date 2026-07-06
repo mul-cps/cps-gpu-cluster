@@ -4,7 +4,7 @@ name: alloy
 helm:
   repo: https://grafana.github.io/helm-charts
   chart: alloy
-  version: 1.7.0
+  version: 1.10.0
   releaseName: alloy
   valuesFiles:
     - values-alloy.yaml
