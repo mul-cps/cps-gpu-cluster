@@ -14,7 +14,6 @@ resources:
   - user-docs-configmap.yaml
 
   - dask-rbac.yaml
-  - templates/
 
 # Ensure all resources are in the jupyterhub namespace
 namespace: jupyterhub

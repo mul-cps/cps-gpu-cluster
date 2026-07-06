@@ -56,7 +56,12 @@ devicePlugin:
   enabled: true
   version: "v0.18.0"
   migStrategy: "mixed"
-  # Explicit MIG config (no time-slicing/replicas); NOS will drive MIG layouts on gpu1-3
+  # Vestigial: this config was set up for a MIG-based layout that is now retired.
+  # All 4 GPU nodes run in full/non-MIG mode permanently (see
+  # dynamic-mig-layout-instructions.md). GPU sharing now goes through MPS,
+  # driven by JupyterHub profiles + KAI Scheduler's gpu-memory annotation.
+  # These migStrategy/config settings are being phased out, not actively used
+  # to partition anything today.
   config:
     create: true
     name: device-plugin-config
@@ -81,7 +86,11 @@ gfd:
   enabled: true
   version: "v0.18.0"
 
-# MIG scheduling strategy for device plugin: allow both full GPU and MIG resources
+# Vestigial: MIG is retired cluster-wide (all nodes are permanently
+# all-disabled/full-mode). These mig/migManager settings describe a
+# MIG-based layout that is no longer active; left as-is functionally
+# pending a future MPS-oriented cleanup pass, see
+# dynamic-mig-layout-instructions.md for why MIG was dropped.
 mig:
   strategy: mixed
 
@@ -91,9 +100,9 @@ migManager:
     name: "custom-mig-parted-config"
     default: "all-disabled"
 
-  # MIG node intent (set via node-labeler + NOS):
-  # - k3s-wk-gpu1..3: MIG mode on, NOS controls nvidia.com/mig.config using presets in custom-mig-config.yaml
-  # - k3s-wk-gpu4: nvidia.com/mig.config=all-disabled (full GPU only; no MIG)
+  # Current node intent: all-disabled (full GPU, no MIG) on every GPU node,
+  # k3s-wk-gpu1..4 alike. GPU sharing is handled by MPS + KAI Scheduler's
+  # gpu-memory annotation instead of MIG geometry.
 
 # Node Feature Discovery
 nfd:
