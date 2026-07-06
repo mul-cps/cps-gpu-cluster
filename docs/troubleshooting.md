@@ -1200,6 +1200,50 @@ kubectl get clusters -n fleet-local
 kubectl get bundledeployments -A
 ```
 
+### Bundles perpetually "Modified" over webhook `caBundle` (known upstream Fleet bug, fix not yet released)
+
+**Symptom**: `knative-serving`, `gpu-operator`, and any other bundle that
+deploys a `MutatingWebhookConfiguration`/`ValidatingWebhookConfiguration`
+whose `caBundle` is injected dynamically by its own controller (not
+templated by the Helm chart) shows perpetual `Modified` status, even
+though the underlying application is fully healthy. `fleet-agent` logs
+show `Failed to normalize obj with json patch, error: error in remove for
+path: '.../caBundle': Unable to remove nonexistent key` alongside
+`unexpected end of JSON input`.
+
+**Confirmed 2026-07-06: this is a known, real upstream Fleet bug, not
+something wrong in this repo's config.** Filed as
+[rancher/fleet#5368](https://github.com/rancher/fleet/issues/5368)
+(backport tracked as
+[#5401](https://github.com/rancher/fleet/issues/5401)): "Fleet
+permanently reports admission webhooks as Modified after controller
+injects [caBundle]". Fixed by
+[PR #5369](https://github.com/rancher/fleet/pull/5369), merged into
+Fleet's `main` branch **2026-07-06T10:30:56Z** — the same day this was
+investigated. **Not yet in any released version**: the latest tag at the
+time (`v0.15.4`) was published 2026-06-25, before the fix landed. Deployed
+version on this cluster is `v0.14.3` (older still).
+
+**Current mitigation** (already in place via each affected bundle's
+`fleet.yaml` `diff.comparePatches`, e.g.
+`system/knative/knative-serving/fleet.yaml`): explicitly list every
+webhook field to strip before comparison. This is functionally correct
+but was hit-or-miss to get exactly right (see the JSON-patch "remove
+nonexistent key" errors above -- some fields aren't always present,
+causing patch application itself to fail intermittently) -- it's a
+workaround for a bug that has a real upstream fix now, not a permanent
+solution.
+
+**Action for whoever manages Fleet upgrades**: once a Fleet release
+containing PR #5369 ships (check
+`gh release list --repo rancher/fleet` for anything after
+`v0.15.4`, or search the changelog for "caBundle"), upgrade
+`fleet`/`fleet-agent` and then the `diff.comparePatches` webhook-stripping
+workarounds in `gpu-operator/fleet.yaml` and
+`system/knative/knative-serving/fleet.yaml` can likely be simplified or
+removed entirely -- re-verify bundle status goes fully `Ready` before
+removing them, don't assume.
+
 ### Helm release failed
 
 **Symptom**: Fleet shows Helm release error
