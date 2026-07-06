@@ -471,6 +471,45 @@ kubectl patch clusterpolicy cluster-policy --type=json \
   -p='[{"op":"add","path":"/spec/daemonsets/tolerations/-","value":{"key":"gpu-pool","operator":"Exists","effect":"NoSchedule"}}]'
 ```
 
+### MPS device-plugin sharing config doesn't take effect / MPS daemon fails to start on K3s
+
+**Symptom**: `nvidia-device-plugin-daemonset` logs show something like
+`error waiting for MPS daemon: error checking MPS daemon health: failed to
+send command to MPS daemon: exit status 1` after switching the device
+plugin's `default` config to an MPS-sharing config
+(`system/gpu/gpu-operator/values.yaml`'s `devicePlugin.config`). Pods still
+just get plain whole-GPU allocation — the `gpu-memory`
+annotation/`CUDA_MPS_PINNED_DEVICE_MEM_LIMIT` env var JupyterHub sets have
+no effect.
+
+**Root cause**: there is a known, upstream-unresolved report of exactly
+this failure mode specifically on K3s
+(https://github.com/NVIDIA/k8s-device-plugin/issues/712, closed as
+"not planned" with no confirmed fix). K3s's non-standard containerd socket
+path/config (already worked around elsewhere in this repo's
+`gpu-operator/values.yaml` via `CONTAINERD_SOCKET`/`CONTAINERD_CONFIG`
+toolkit env vars) is suspected but not confirmed as the cause.
+
+**Fast fix**: none confirmed yet — this is exactly why the repo ships the
+MPS config as an available-but-not-yet-defaulted option
+(`mig-mixed` stays the live `default`, `mps-sharing` sits alongside it in
+the same ConfigMap `data` block). Before flipping `default: mps-sharing`
+live:
+1. Test it on a single node first (patch that node's `device-plugin-config`
+   selection, or test in the `cluster-maintenance-testing` environment) —
+   don't flip it cluster-wide as a first attempt.
+2. If the MPS daemon fails to start, check
+   `kubectl logs -n gpu-operator <device-plugin-pod>` for the exact error,
+   check whether the `nvidia-cuda-mps-control`/`nvidia-cuda-mps-server`
+   binaries are present in the driver container (`kubectl exec` into the
+   driver daemonset pod), and compare against the linked GitHub issue for
+   any workarounds contributed after this was written.
+3. If it can't be made to work, the fallback is GPU Operator's
+   `sharing.timeSlicing` (equal-split time-multiplexing, no memory
+   isolation at all) — strictly worse than MPS for this cluster's needs,
+   but confirmed to work broadly; only fall back to it if MPS is a dead
+   end on this K3s version.
+
 ---
 
 ## Storage Issues

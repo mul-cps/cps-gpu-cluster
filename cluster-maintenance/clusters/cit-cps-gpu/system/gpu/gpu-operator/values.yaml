@@ -56,12 +56,27 @@ devicePlugin:
   enabled: true
   version: "v0.18.0"
   migStrategy: "mixed"
-  # Vestigial: this config was set up for a MIG-based layout that is now retired.
-  # All 4 GPU nodes run in full/non-MIG mode permanently (see
-  # dynamic-mig-layout-instructions.md). GPU sharing now goes through MPS,
-  # driven by JupyterHub profiles + KAI Scheduler's gpu-memory annotation.
-  # These migStrategy/config settings are being phased out, not actively used
-  # to partition anything today.
+  # Vestigial: migStrategy was set up for a MIG-based layout that is now
+  # retired. All 4 GPU nodes run in full/non-MIG mode permanently (see
+  # dynamic-mig-layout-instructions.md).
+  #
+  # GPU sharing now goes through NVIDIA MPS, driven by JupyterHub profiles
+  # (see user/jupyter/jupyterhub/values.yaml PROFILE_CONFIGS) + KAI
+  # Scheduler's gpu-memory annotation for scheduling/bin-packing. The
+  # "mps-sharing" config below is what actually starts the MPS control
+  # daemon and advertises MPS-shareable nvidia.com/gpu capacity — without
+  # it, the gpu-memory annotation and CUDA_MPS_PINNED_DEVICE_MEM_LIMIT env
+  # var that JupyterHub sets are correctly configured but INERT (pods just
+  # get plain whole-GPU allocation, no actual sharing).
+  #
+  # NOT YET SWITCHED LIVE — default is still mig-mixed (harmless no-op now
+  # that no node has MIG resources) pending validation. There is a known,
+  # unresolved (closed as not-planned) upstream report of the MPS daemon
+  # failing to start specifically on K3s:
+  # https://github.com/NVIDIA/k8s-device-plugin/issues/712
+  # Validate mps-sharing in the testing environment (per this plan's Phase 8
+  # elastic-pool proof step) before flipping `default` to `mps-sharing`
+  # below and relying on it for real user traffic.
   config:
     create: true
     name: device-plugin-config
@@ -71,6 +86,23 @@ devicePlugin:
         version: v1
         flags:
           migStrategy: mixed
+      mps-sharing: |-
+        version: v1
+        sharing:
+          mps:
+            # failRequestsGreaterThanOne must be true for MPS - allocating
+            # multiple partitions to one workload across multiple GPUs is
+            # ambiguous under MPS, so the device plugin refuses it outright.
+            failRequestsGreaterThanOne: true
+            resources:
+              - name: nvidia.com/gpu
+                # Upper bound on concurrent MPS clients per physical GPU.
+                # Real per-client VRAM enforcement comes from JupyterHub's
+                # CUDA_MPS_PINNED_DEVICE_MEM_LIMIT env var + KAI's gpu-memory
+                # scheduling accounting, not from this replica count - this
+                # just needs to be >= the largest realistic number of
+                # concurrent shared sessions on one GPU.
+                replicas: 8
 
 # DCGM Exporter (GPU metrics)
 dcgmExporter:

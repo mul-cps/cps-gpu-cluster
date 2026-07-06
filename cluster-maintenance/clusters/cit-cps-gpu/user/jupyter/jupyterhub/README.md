@@ -63,17 +63,39 @@ All of the below now live directly in `values.yaml`'s `extraConfig`:
 
 ## GPU Profiles Available
 
-### Standard Profiles
-- **CPU (Default)**: 2 vCPU, 2GB RAM - scipy-notebook
+All GPUs run in full (non-MIG) mode; sharing for the VRAM-tiered profiles
+below is done via NVIDIA MPS, with NVIDIA KAI Scheduler's `gpu-memory`
+annotation driving scheduling/bin-packing and a matching
+`CUDA_MPS_PINNED_DEVICE_MEM_LIMIT` container env var providing enforcement
+(see `system/gpu/gpu-operator/README.md` for the MIG-to-MPS migration
+context). Every GPU profile except `gpu-slurm` is scheduled via
+`kai-scheduler` with a queue/priority class assignment.
+
+### Whole-GPU profiles (queue `phd-interactive`, priority `kai-phd-interactive`)
 - **GPU PyTorch (1×)**: 16 vCPU, 64GB RAM, 1x A100 - PyTorch 24.11
-- **GPU TensorFlow (1×)**: 16 vCPU, 64GB RAM, 1x A100 - TensorFlow 24.11  
+- **GPU TensorFlow (1×)**: 16 vCPU, 64GB RAM, 1x A100 - TensorFlow 24.11
 - **GPU PyTorch (2×)**: 32 vCPU, 128GB RAM, 2x A100 - PyTorch 24.11
 - **GPU TensorFlow (2×)**: 32 vCPU, 128GB RAM, 2x A100 - TensorFlow 24.11
-- **GPU MIG 1g.5gb**: 8 vCPU, 32GB RAM, 1x MIG slice - PyTorch 24.11
+- **GPU Desktop (ROS2)**: 1x A100 - Desktop/ROS2 image
+- **ComfyUI**: 1x A100 - ComfyUI image
+
+### MPS VRAM-tier profiles (queue `phd-interactive`, priority `kai-phd-interactive`)
+- **gpu-3gb** / **gpu-5gb** / **gpu-8gb** / **gpu-10gb** / **gpu-12gb** / **gpu-20gb**: shared A100 access at the named VRAM tier (MiB value matches the profile name), PyTorch 24.11
+- **gpu-desktop-5gb**: 5GB VRAM tier, Desktop/ROS2 image
+
+### Student profile (queue `courses`, priority `kai-course-high`)
+- **gpu-student**: 5GB VRAM tier, gated to student user groups (see `STUDENT_GROUPS` in `values.yaml` — currently a placeholder pending the real Authentik/LDAP group name)
+
+### CPU-only profiles
+- **CPU (Default)**: 2 vCPU, 2GB RAM - scipy-notebook
+- **Dask Cluster**, **CPU Desktop**: power-user only
 
 ### Access Control
-- **GPU Access**: Requires `cpsHPCAccess` or `jupyter_admin` group membership
+- **GPU Access**: Requires `cpsHPCAccess` or `jupyter_admin` group membership (students see only `gpu-student` plus CPU profiles)
 - **Admin Features**: Custom image/GPU override for admin users
+
+### Known follow-up
+- The GPU Operator's device-plugin config (`system/gpu/gpu-operator/values.yaml`) still needs to be switched from its current `mig-mixed` config to an MPS-sharing config before the VRAM-tier profiles above achieve real GPU memory sharing — until then, the `gpu-memory` annotation/`CUDA_MPS_PINNED_DEVICE_MEM_LIMIT` env var are set correctly but inert.
 
 ## Storage Architecture
 
