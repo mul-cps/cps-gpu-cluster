@@ -4,6 +4,7 @@ name: loki
 helm:
   repo: https://grafana.github.io/helm-charts
   chart: loki
+  version: 7.0.0
   releaseName: loki
   valuesFiles:
     - values-loki.yaml
