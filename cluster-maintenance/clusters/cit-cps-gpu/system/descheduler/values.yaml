@@ -1,0 +1,70 @@
+# Descheduler v0.33.0 (matches Kubernetes 1.33 per upstream compatibility matrix:
+# https://github.com/kubernetes-sigs/descheduler#compatibility-matrix)
+#
+# Purpose: consolidate/evict low-priority `batch` queue pods (PriorityClass
+# kai-batch-low = 1000) to free GPU capacity for interactive PhD sessions
+# (kai-phd-interactive = 5000) and course workloads (kai-course-high = 10000).
+# KAI Scheduler (system/gpu/kai-scheduler) then requeues evicted batch pods.
+#
+# Safety guarantee: the DefaultEvictor plugin's `priorityThreshold` is a global
+# filter applied ahead of every strategy/plugin below. Verified from source
+# (pkg/framework/plugins/defaultevictor/defaultevictor.go,
+# IsPodEvictableBasedOnPriority): the check is `pod.Spec.Priority < threshold`,
+# i.e. STRICTLY less-than. Setting the threshold to exactly 1000
+# (kai-batch-low's value) would therefore EXCLUDE kai-batch-low pods
+# themselves (1000 is not < 1000). We set it to 1001 instead, so only pods
+# with priority <= 1000 (i.e. the batch queue) are ever eligible for
+# eviction, while kai-phd-interactive (5000) and kai-course-high (10000) are
+# structurally unreachable.
+
+kind: CronJob
+
+# Chart default is */2 * * * * (every 2 minutes); every 5 minutes is plenty
+# for this cluster's scale and reduces churn/API load without meaningfully
+# delaying capacity handoff to interactive users.
+schedule: "*/5 * * * *"
+
+deschedulerPolicyAPIVersion: "descheduler/v1alpha2"
+
+deschedulerPolicy:
+  profiles:
+    - name: batch-only
+      pluginConfig:
+        - name: DefaultEvictor
+          args:
+            ignorePvcPods: true
+            evictLocalStoragePods: true
+            # Structural safety gate: only pods with priority < 1001 (i.e.
+            # kai-batch-low == 1000 and below) are eligible for eviction by
+            # ANY plugin in this profile. See note above.
+            priorityThreshold:
+              value: 1001
+        - name: LowNodeUtilization
+          args:
+            thresholds:
+              cpu: 20
+              memory: 20
+              pods: 20
+              nvidia.com/gpu: 20
+            targetThresholds:
+              cpu: 50
+              memory: 50
+              pods: 50
+              nvidia.com/gpu: 50
+        - name: RemovePodsViolatingNodeAffinity
+          args:
+            nodeAffinityType:
+              - requiredDuringSchedulingIgnoredDuringExecution
+      plugins:
+        balance:
+          enabled:
+            - LowNodeUtilization
+        deschedule:
+          enabled:
+            - RemovePodsViolatingNodeAffinity
+
+# PodDisruptionBudgets are respected by default (descheduler's eviction API
+# calls go through the standard eviction subresource, which enforces PDBs;
+# no override needed here).
+
+priorityClassName: system-cluster-critical
