@@ -1,9 +1,18 @@
 name: reflector
 defaultNamespace: kube-system
 helm:
-  repo: https://emberstack.github.io/helm-charts
-  chart: reflector
-  version: 10.0.55
+  # Direct .tgz URL instead of repo+chart+version: confirmed live 2026-07-06
+  # that Fleet mis-resolves this repo's index.yaml relative chart URLs
+  # (entries use a relative path like "repository/reflector/reflector-X.tgz",
+  # and Fleet drops the "/helm-charts" prefix segment when resolving it,
+  # producing a 404 and failing EVERY subsequent Fleet sync across the whole
+  # GitRepo, not just this bundle). The chart itself is real and valid
+  # (verified via direct curl) -- this is a Fleet-side URL resolution bug,
+  # not a bad version pin. Using the direct chart URL sidesteps index
+  # resolution entirely. If bumping the version, verify the new URL with
+  # `curl -I https://emberstack.github.io/helm-charts/repository/reflector/reflector-<version>.tgz`
+  # returns 200 before committing, and update this URL to match.
+  chart: https://emberstack.github.io/helm-charts/repository/reflector/reflector-10.0.55.tgz
 labels:
   app: reflector
 
