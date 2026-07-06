@@ -1,3 +1,13 @@
+# IMPORTANT: every queue needs explicit cpu/memory resource blocks, not just
+# gpu. KAI defaults any resource dimension left unspecified to quota=0,
+# limit=0 (a hard cap, not just an unguaranteed/bursty 0) -- confirmed live
+# 2026-07-06 when a real multi-pod batch job was rejected with "OverLimit:
+# batch quota has reached the allowable limit of CPU cores. Limit is 0
+# cores" despite the gpu dimension being correctly configured to burst via
+# limit: -1. cpu/memory below mirror each queue's existing gpu quota/weight
+# shape (same quota=0 + limit=-1 burst-only model for batch, matching
+# quotas for courses/phd-interactive, unlimited for default) so a workload
+# isn't blocked on CPU/memory after correctly clearing the GPU dimension.
 apiVersion: scheduling.run.ai/v2
 kind: Queue
 metadata:
@@ -8,6 +18,14 @@ spec:
   resources:
     gpu:
       quota: 4
+      limit: -1
+      overQuotaWeight: 1
+    cpu:
+      quota: -1
+      limit: -1
+      overQuotaWeight: 1
+    memory:
+      quota: -1
       limit: -1
       overQuotaWeight: 1
 ---
@@ -23,6 +41,14 @@ spec:
       quota: 1.5
       limit: -1
       overQuotaWeight: 2
+    cpu:
+      quota: -1
+      limit: -1
+      overQuotaWeight: 2
+    memory:
+      quota: -1
+      limit: -1
+      overQuotaWeight: 2
 ---
 apiVersion: scheduling.run.ai/v2
 kind: Queue
@@ -36,6 +62,14 @@ spec:
       quota: 0
       limit: -1
       overQuotaWeight: 10
+    cpu:
+      quota: 0
+      limit: -1
+      overQuotaWeight: 10
+    memory:
+      quota: 0
+      limit: -1
+      overQuotaWeight: 10
 ---
 apiVersion: scheduling.run.ai/v2
 kind: Queue
@@ -46,6 +80,14 @@ spec:
   parentQueue: default-parent-queue
   resources:
     gpu:
+      quota: -1
+      limit: -1
+      overQuotaWeight: 10
+    cpu:
+      quota: -1
+      limit: -1
+      overQuotaWeight: 10
+    memory:
       quota: -1
       limit: -1
       overQuotaWeight: 10

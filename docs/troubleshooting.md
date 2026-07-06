@@ -627,6 +627,69 @@ deliberately try to exceed the configured limit from inside the pod (e.g. a
 small PyTorch script allocating in a loop) and confirm it fails with a CUDA
 OOM error at approximately the configured limit, not far beyond it.
 
+### RESOLVED (empirically): MPS-shared and multi-GPU-exclusive requests cannot coexist on the same node config
+
+**The question**: can a single cluster serve both (a) MPS-shared fractional
+GPU requests (`gpu-memory` annotation, this cluster's interactive/student
+tier) and (b) genuine multi-GPU-per-pod exclusive requests
+(`nvidia.com/gpu: 2` or more, needed for real NVLink/PCIe P2P in distributed
+training) on the *same* device-plugin config? This was flagged as an open,
+unverified "elastic pool" question throughout this project's design phase.
+
+**Answer, confirmed live 2026-07-06: no, not with this KAI version + GPU
+Operator device-plugin combination.**
+
+- With the device plugin's `sharing.mps` config active (this cluster's
+  default), requesting `nvidia.com/gpu: 2` in one pod is rejected outright:
+  `invalid request: maximum request size for shared resources is 1; found 2,
+  which is unexpected`. This applies regardless of pod count — spreading the
+  request across multiple 1-GPU pods works, but a single process/pod can
+  never see more than 1 GPU.
+- A superficially appealing fix — revert the device plugin to plain/
+  non-shared mode and let KAI's own `gpu-memory` scheduling operate
+  independently on top of a normal GPU count — does **not** work either:
+  tested live by switching one node (`k3s-wk-gpu2`) to a plain
+  `migStrategy: none` config with no `sharing.mps` block. A normal
+  `nvidia.com/gpu: 2` pod scheduled fine on that node (confirming the
+  device-plugin side works as expected), but a `gpu-memory`-annotated pod
+  targeting the *same* node was rejected: `no nodes with enough resources
+  were found: ... didn't have enough resources: GPU memory`, and the
+  scheduler's own logs showed it still computing an internal fractional
+  `Gpus: 51.2`-style unit request against **zero** available capacity — i.e.
+  KAI's `gpu-memory` scheduling math itself depends on the device plugin
+  advertising shareable/replica-based GPU capacity; it is not an independent
+  layer that works regardless of the device plugin's sharing mode on this
+  version.
+
+**Practical consequence**: per-node, you must choose one mode or the other.
+A node running `sharing.mps` can serve any number of MPS-shared/fractional
+pods but never a real multi-GPU pod. A node running plain/exclusive mode
+can serve real multi-GPU pods but no fractional `gpu-memory` requests at
+all. There is no single config that serves both simultaneously on the same
+node with the versions in use on this cluster.
+
+**What this means for this cluster's design**: the "elastic unified pool"
+model (any GPU serves either mode, arbitrated automatically) does not hold.
+The correct model is a **static split**: dedicate specific nodes to
+MPS-sharing (interactive/student/embarrassingly-parallel batch traffic) and
+specific nodes to plain/exclusive mode (real distributed multi-GPU batch
+jobs), matching the fallback originally proposed during design and now
+empirically required, not just a hypothetical safety net. Revisit this
+finding if a future KAI Scheduler or GPU Operator release changes this
+behavior — recheck with the same test (a `gpu-memory` pod and a
+`nvidia.com/gpu: 2` pod both targeting the same node) before assuming the
+constraint has been lifted.
+
+**Bonus finding from the same test session — real intra-node/intra-pod
+multi-GPU bandwidth**: a single pod requesting 2 GPUs on a plain-mode node
+measured ~100-116 GB/s effective NCCL all-reduce bandwidth (PCIe P2P), vs.
+~0.9-1.4 GB/s for the same benchmark run across 4 separate single-GPU pods
+co-located on one MPS-sharing node (NCCL falls back to socket/TCP transport
+between separate pods regardless of physical co-location — pods don't share
+NVLink/P2P transport unless they're the same process). For real distributed
+training performance, genuine multi-GPU-per-pod placement matters far more
+than merely scheduling pods onto the same physical node.
+
 ---
 
 ## Storage Issues
