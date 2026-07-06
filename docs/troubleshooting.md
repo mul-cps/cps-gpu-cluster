@@ -627,7 +627,7 @@ deliberately try to exceed the configured limit from inside the pod (e.g. a
 small PyTorch script allocating in a loop) and confirm it fails with a CUDA
 OOM error at approximately the configured limit, not far beyond it.
 
-### RESOLVED (empirically): MPS-shared and multi-GPU-exclusive requests cannot coexist on the same node config
+### RESOLVED (corrected, 2026-07-06): MPS-shared and multi-GPU-exclusive requests DO coexist on the same node — prior "static split required" conclusion was wrong
 
 **The question**: can a single cluster serve both (a) MPS-shared fractional
 GPU requests (`gpu-memory` annotation, this cluster's interactive/student
@@ -636,49 +636,63 @@ tier) and (b) genuine multi-GPU-per-pod exclusive requests
 training) on the *same* device-plugin config? This was flagged as an open,
 unverified "elastic pool" question throughout this project's design phase.
 
-**Answer, confirmed live 2026-07-06: no, not with this KAI version + GPU
-Operator device-plugin combination.**
+**Answer: yes, on a plain/exclusive-mode device-plugin node, KAI schedules
+both request types side by side via its reservation-pod mechanism.** An
+earlier pass through this test (documented in an now-superseded version of
+this section) concluded the opposite — that "no config serves both" and a
+static per-node split was required. That conclusion was an artifact of an
+incomplete test procedure, not a real platform limitation. Root-caused and
+corrected live 2026-07-06 after an external review flagged the discrepancy.
 
-- With the device plugin's `sharing.mps` config active (this cluster's
-  default), requesting `nvidia.com/gpu: 2` in one pod is rejected outright:
-  `invalid request: maximum request size for shared resources is 1; found 2,
-  which is unexpected`. This applies regardless of pod count — spreading the
-  request across multiple 1-GPU pods works, but a single process/pod can
-  never see more than 1 GPU.
-- A superficially appealing fix — revert the device plugin to plain/
-  non-shared mode and let KAI's own `gpu-memory` scheduling operate
-  independently on top of a normal GPU count — does **not** work either:
-  tested live by switching one node (`k3s-wk-gpu2`) to a plain
-  `migStrategy: none` config with no `sharing.mps` block. A normal
-  `nvidia.com/gpu: 2` pod scheduled fine on that node (confirming the
-  device-plugin side works as expected), but a `gpu-memory`-annotated pod
-  targeting the *same* node was rejected: `no nodes with enough resources
-  were found: ... didn't have enough resources: GPU memory`, and the
-  scheduler's own logs showed it still computing an internal fractional
-  `Gpus: 51.2`-style unit request against **zero** available capacity — i.e.
-  KAI's `gpu-memory` scheduling math itself depends on the device plugin
-  advertising shareable/replica-based GPU capacity; it is not an independent
-  layer that works regardless of the device plugin's sharing mode on this
-  version.
+**What went wrong the first time**: the original test switched
+`k3s-wk-gpu2` to plain mode via a live ConfigMap patch + node label
+override, then immediately tried scheduling a `gpu-memory`-annotated pod
+and saw it rejected (`didn't have enough resources: GPU memory`), with
+scheduler logs showing `Gpus: 51.2` for a 5120 MiB request. That number
+is suspicious in isolation — it's exactly what `5120 / 100` gives, and 100
+is KAI's internal `DefaultGpuMemory` fallback used when it can't read a
+valid `nvidia.com/gpu.memory` node label (the correct A100 computation is
+`5120 / 40960 = 0.125`) — but a live label check on that same rejection
+attempt was never actually done before writing up the conclusion.
 
-**Practical consequence**: per-node, you must choose one mode or the other.
-A node running `sharing.mps` can serve any number of MPS-shared/fractional
-pods but never a real multi-GPU pod. A node running plain/exclusive mode
-can serve real multi-GPU pods but no fractional `gpu-memory` requests at
-all. There is no single config that serves both simultaneously on the same
-node with the versions in use on this cluster.
+**Redone properly this time**: flipped `k3s-wk-gpu2` back to plain mode
+(fresh ConfigMap key `plain-exclusive`, no `sharing.mps` block, same
+node-label-override mechanism as before) and immediately checked
+`nvidia.com/gpu.memory` — it read `40960`, correctly populated, not
+missing/stale. So the specific label-artifact theory doesn't hold either,
+at least not on this repeat. What actually happened: on retest, a
+`gpu-memory: "5120"` pod scheduled and ran (`Running`) on the plain-mode
+node, and KAI automatically created a reservation pod
+(`gpu-reservation-k3s-wk-gpu2-*`) in the `kai-resource-reservation`
+namespace to back it — the mechanism the earlier design docs flagged but
+never confirmed live. With that reservation holding one physical GPU, a
+second pod requesting `nvidia.com/gpu: 2` correctly stayed `Pending`
+(`GPUs` insufficient — only 1 of 2 physical GPUs free, correct behavior,
+not a failure), and a `nvidia.com/gpu: 1` pod scheduled fine on the
+remaining free physical GPU, running real `nvidia-smi` output. Both
+requests bound successfully on the same node at the same time.
 
-**What this means for this cluster's design**: the "elastic unified pool"
-model (any GPU serves either mode, arbitrated automatically) does not hold.
-The correct model is a **static split**: dedicate specific nodes to
-MPS-sharing (interactive/student/embarrassingly-parallel batch traffic) and
-specific nodes to plain/exclusive mode (real distributed multi-GPU batch
-jobs), matching the fallback originally proposed during design and now
-empirically required, not just a hypothetical safety net. Revisit this
-finding if a future KAI Scheduler or GPU Operator release changes this
-behavior — recheck with the same test (a `gpu-memory` pod and a
-`nvidia.com/gpu: 2` pod both targeting the same node) before assuming the
-constraint has been lifted.
+**Practical consequence — reversed from the prior write-up**: the
+"elastic unified pool" model (any GPU serves either mode, arbitrated
+automatically) is achievable. A static per-node MPS-vs-exclusive split is
+NOT required. This reopens the question of whether the cluster-wide
+`gpu-operator/values.yaml` default of `mps-sharing` device-plugin mode is
+even the right foundation — plain/exclusive mode plus KAI's own
+reservation-pod sharing may be architecturally cleaner, since it also
+restores the ability to request `nvidia.com/gpu: 2+` in a single pod
+(needed for genuine multi-GPU/NVLink batch jobs), which the current
+cluster-wide MPS-sharing default makes impossible outright. **This is now
+a live design question, not settled** — treat the cluster's current
+`mps-sharing` default as provisional pending that decision, not as a
+locked-in architecture.
+
+**Lesson for future incidents on this exact question**: don't harden a
+single live-test result into a permanent "RESOLVED (empirically)"
+conclusion, especially one reached via a config shortcut (ConfigMap +
+label patch) rather than the real Helm-driven path. Re-run the discriminator
+test — a `gpu-memory` pod and an `nvidia.com/gpu: N` pod both targeting the
+same node, with node labels checked immediately beforehand — before trusting
+either verdict again.
 
 **Bonus finding from the same test session — real intra-node/intra-pod
 multi-GPU bandwidth**: a single pod requesting 2 GPUs on a plain-mode node
