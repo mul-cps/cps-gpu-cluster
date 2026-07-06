@@ -9,6 +9,13 @@ helm:
   valuesFiles:
     - values-vcluster.yaml
 
+# Applies the raw manifests in kustomization.yaml (juju-toolbox pod + RBAC)
+# on top of the rendered Helm chart. See kustomization.yaml's comment for
+# why this was added 2026-07-06 -- these were never actually deployed
+# before.
+kustomize:
+  dir: .
+
 # Dependencies or other fleet config
 dependsOn: []
 
