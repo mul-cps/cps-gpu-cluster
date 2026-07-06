@@ -118,12 +118,31 @@ spec:
     spec:
       schedulerName: kai-scheduler
       priorityClassName: kai-batch-low
+      # hostNetwork + ClusterFirstWithHostNet: bypasses this cluster's
+      # Flannel CNI overlay (VXLAN, cni0/flannel.1, MTU 1450) for NCCL
+      # inter-node traffic. Verified live 2026-07-06: a real 8-GPU/4-node
+      # NCCL job through the default pod-network path measured only
+      # ~0.39 GB/s inter-node point-to-point on this cluster's 10GbE fabric
+      # (~30% of the ~1.1-1.2 GB/s a single 10GbE NIC should sustain) --
+      # traffic was transiting the VXLAN overlay instead of the physical
+      # NIC (eth0) directly. hostNetwork is the standard fix used by
+      # NCCL-on-Kubernetes reference architectures (Kubeflow Training
+      # Operator, cloud GPU node-pool guides) for exactly this reason. This
+      # does trade away per-pod network isolation/IP (the pod uses the
+      # node's network namespace directly) -- acceptable for a trusted
+      # internal batch queue, reconsider for less-trusted workloads.
+      # NOT yet re-benchmarked against this specific change -- re-run the
+      # inter-node point-to-point test in docs/troubleshooting.md after
+      # applying this to confirm the expected improvement on real hardware.
+      hostNetwork: true
+      dnsPolicy: ClusterFirstWithHostNet
       # Required for the per-ordinal DNS name used in --master-addr below to
       # resolve: Indexed Job pods only get a stable
       # "<job-name>-<index>.<subdomain>" DNS record when spec.subdomain
       # matches a headless Service selecting these pods (the
       # "Job with Pod-to-Pod Communication" pattern) -- without it the
-      # auto-assigned hostname alone does not register in cluster DNS.
+      # auto-assigned hostname alone does not register in cluster DNS. With
+      # hostNetwork, this DNS name resolves to the node's real IP.
       subdomain: pytorch-multi-gpu-training-example
       # Never (not OnFailure): a mid-training failure on ANY rank should
       # bring down the whole distributed group rather than kubelet silently
@@ -184,6 +203,13 @@ spec:
               value: "4"
             - name: NCCL_NSOCKS_PERTHREAD
               value: "4"
+            # Pins NCCL to the real physical NIC (confirmed live 2026-07-06
+            # via a hostNetwork debug pod: eth0 is the node's actual 10GbE
+            # interface at its real node IP) rather than letting NCCL's
+            # auto-detection pick a CNI/overlay interface. Only meaningful
+            # combined with hostNetwork: true above.
+            - name: NCCL_SOCKET_IFNAME
+              value: "eth0"
           resources:
             # Whole-GPU, non-fractional allocation -- see comment block at
             # top of file for why this job cannot use the gpu-memory /

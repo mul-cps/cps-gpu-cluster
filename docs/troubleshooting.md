@@ -769,6 +769,49 @@ verified-optimal for this exact NIC/driver combination — re-run the
 inter-node point-to-point discriminator test above after changing them to
 confirm actual improvement before trusting a specific value in production.
 
+**Also applied: `hostNetwork: true` + `NCCL_SOCKET_IFNAME=eth0`** on the
+multi-GPU examples. A `hostNetwork` debug pod on `k3s-wk-gpu1` confirmed
+pod traffic by default transits this cluster's Flannel CNI overlay
+(`cni0`/`flannel.1`, VXLAN, MTU 1450) rather than the physical NIC
+(`eth0`, MTU 1500, the node's real IP) directly — extra
+encapsulation/copy overhead on every inter-node NCCL packet. This is the
+standard fix used by NCCL-on-Kubernetes reference architectures
+(Kubeflow Training Operator, cloud GPU node-pool guides) for exactly
+this class of problem. Trade-off: `hostNetwork` gives up per-pod network
+isolation (the pod uses the node's network namespace and IP directly) —
+acceptable for this cluster's trusted internal batch queue, reconsider
+for less-trusted workloads. **Not yet re-benchmarked** — re-run the
+inter-node point-to-point test after this change to confirm the expected
+improvement.
+
+**SUSPECTED BIGGER FACTOR, needs Proxmox-host-level investigation (not
+yet actioned — outside this repo's scope, flagged here for whoever has
+Proxmox host access)**: this cluster's nodes are Proxmox VMs using
+virtio-net for their (virtual) "10GbE" links. virtio-net defaults to a
+**single queue**, and all traffic through a single-queue virtio device is
+serviced by **one `vhost-net` kernel thread on the Proxmox host** — this
+means NCCL's socket-level parallelism (`NCCL_SOCKET_NTHREADS`/
+`NCCL_NSOCKS_PERTHREAD`) may have limited effect regardless of tuning,
+since all those parallel sockets still funnel through one host CPU
+thread. This would fully explain being stuck at ~30% of nominal link
+speed independent of any in-guest NCCL tuning. **Before spending more
+time on NCCL env vars**, whoever has Proxmox access should:
+1. Check whether `vhost-<pid>` threads on the Proxmox host(s) are pinned
+   near 100% CPU during an NCCL run (`top`/`htop` on the host) — the
+   smoking gun for this bottleneck.
+2. Check/enable virtio-net multiqueue: `multiqueue=N` in each GPU
+   worker's Proxmox VM config (N matching vCPU count), AND activate it
+   inside the guest (`ethtool -L eth0 combined N` — Proxmox creating the
+   queues is not enough, the guest must turn them on too).
+3. Run a plain `iperf3` test VM-to-VM (no Kubernetes/NCCL involved) to
+   establish the actual achievable virtio bandwidth ceiling before
+   trusting any further NCCL-level tuning — this isolates the
+   infrastructure bottleneck from application-level configuration.
+4. Worth checking whether any two GPU worker VMs happen to share the
+   same physical Proxmox host — traffic between them would use the
+   host's internal bridge, not the physical NIC at all, and could/should
+   be far faster than 10GbE if so.
+
 **Operational note**: the 8-GPU run also surfaced a real incident —
 force-deleting a stuck pod holding a GPU on one node left that node's
 GPUs in a "device busy" state for any subsequent real CUDA workload; see

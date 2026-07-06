@@ -204,6 +204,12 @@ metadata:
 spec:
   schedulerName: kai-scheduler
   priorityClassName: kai-batch-low
+  # hostNetwork bypasses this cluster's Flannel CNI overlay (VXLAN,
+  # MTU 1450) for NCCL inter-node traffic -- see
+  # pytorch-multi-gpu-training-job.yaml's comment for the full rationale
+  # and docs/troubleshooting.md for what was actually measured.
+  hostNetwork: true
+  dnsPolicy: ClusterFirstWithHostNet
   restartPolicy: Never
   containers:
     - name: main
@@ -217,13 +223,21 @@ spec:
         # torchrun defaults OMP_NUM_THREADS to 1 (leaving requested CPUs
         # idle), and NCCL's default socket transport under-saturates this
         # cluster's 10GbE inter-node fabric (measured ~0.39 GB/s at 256MB
-        # untuned, live 2026-07-06 -- see docs/troubleshooting.md).
+        # untuned, live 2026-07-06 -- see docs/troubleshooting.md). Also
+        # note: this cluster's nodes are Proxmox VMs on virtio-net: if
+        # virtio multiqueue isn't enabled/activated on the host+guest,
+        # these socket settings have limited effect since all traffic
+        # still serializes through one vhost-net kernel thread. Check that
+        # BEFORE assuming these NCCL values are the bottleneck -- see
+        # docs/troubleshooting.md.
         - name: OMP_NUM_THREADS
           value: "4"
         - name: NCCL_SOCKET_NTHREADS
           value: "4"
         - name: NCCL_NSOCKS_PERTHREAD
           value: "4"
+        - name: NCCL_SOCKET_IFNAME
+          value: "eth0"
       resources:
         limits:
           nvidia.com/gpu: "1"
@@ -254,6 +268,12 @@ metadata:
 spec:
   schedulerName: kai-scheduler
   priorityClassName: kai-batch-low
+  # hostNetwork bypasses this cluster's Flannel CNI overlay (VXLAN,
+  # MTU 1450) for NCCL inter-node traffic -- see
+  # pytorch-multi-gpu-training-job.yaml's comment for the full rationale
+  # and docs/troubleshooting.md for what was actually measured.
+  hostNetwork: true
+  dnsPolicy: ClusterFirstWithHostNet
   restartPolicy: Never
   containers:
     - name: main
@@ -267,13 +287,21 @@ spec:
         # torchrun defaults OMP_NUM_THREADS to 1 (leaving requested CPUs
         # idle), and NCCL's default socket transport under-saturates this
         # cluster's 10GbE inter-node fabric (measured ~0.39 GB/s at 256MB
-        # untuned, live 2026-07-06 -- see docs/troubleshooting.md).
+        # untuned, live 2026-07-06 -- see docs/troubleshooting.md). Also
+        # note: this cluster's nodes are Proxmox VMs on virtio-net: if
+        # virtio multiqueue isn't enabled/activated on the host+guest,
+        # these socket settings have limited effect since all traffic
+        # still serializes through one vhost-net kernel thread. Check that
+        # BEFORE assuming these NCCL values are the bottleneck -- see
+        # docs/troubleshooting.md.
         - name: OMP_NUM_THREADS
           value: "4"
         - name: NCCL_SOCKET_NTHREADS
           value: "4"
         - name: NCCL_NSOCKS_PERTHREAD
           value: "4"
+        - name: NCCL_SOCKET_IFNAME
+          value: "eth0"
       resources:
         limits:
           nvidia.com/gpu: "1"
@@ -304,6 +332,12 @@ metadata:
 spec:
   schedulerName: kai-scheduler
   priorityClassName: kai-batch-low
+  # hostNetwork bypasses this cluster's Flannel CNI overlay (VXLAN,
+  # MTU 1450) for NCCL inter-node traffic -- see
+  # pytorch-multi-gpu-training-job.yaml's comment for the full rationale
+  # and docs/troubleshooting.md for what was actually measured.
+  hostNetwork: true
+  dnsPolicy: ClusterFirstWithHostNet
   restartPolicy: Never
   containers:
     - name: main
@@ -317,13 +351,21 @@ spec:
         # torchrun defaults OMP_NUM_THREADS to 1 (leaving requested CPUs
         # idle), and NCCL's default socket transport under-saturates this
         # cluster's 10GbE inter-node fabric (measured ~0.39 GB/s at 256MB
-        # untuned, live 2026-07-06 -- see docs/troubleshooting.md).
+        # untuned, live 2026-07-06 -- see docs/troubleshooting.md). Also
+        # note: this cluster's nodes are Proxmox VMs on virtio-net: if
+        # virtio multiqueue isn't enabled/activated on the host+guest,
+        # these socket settings have limited effect since all traffic
+        # still serializes through one vhost-net kernel thread. Check that
+        # BEFORE assuming these NCCL values are the bottleneck -- see
+        # docs/troubleshooting.md.
         - name: OMP_NUM_THREADS
           value: "4"
         - name: NCCL_SOCKET_NTHREADS
           value: "4"
         - name: NCCL_NSOCKS_PERTHREAD
           value: "4"
+        - name: NCCL_SOCKET_IFNAME
+          value: "eth0"
       resources:
         limits:
           nvidia.com/gpu: "1"
@@ -354,6 +396,12 @@ metadata:
 spec:
   schedulerName: kai-scheduler
   priorityClassName: kai-batch-low
+  # hostNetwork bypasses this cluster's Flannel CNI overlay (VXLAN,
+  # MTU 1450) for NCCL inter-node traffic -- see
+  # pytorch-multi-gpu-training-job.yaml's comment for the full rationale
+  # and docs/troubleshooting.md for what was actually measured.
+  hostNetwork: true
+  dnsPolicy: ClusterFirstWithHostNet
   restartPolicy: Never
   containers:
     - name: main
@@ -367,13 +415,21 @@ spec:
         # torchrun defaults OMP_NUM_THREADS to 1 (leaving requested CPUs
         # idle), and NCCL's default socket transport under-saturates this
         # cluster's 10GbE inter-node fabric (measured ~0.39 GB/s at 256MB
-        # untuned, live 2026-07-06 -- see docs/troubleshooting.md).
+        # untuned, live 2026-07-06 -- see docs/troubleshooting.md). Also
+        # note: this cluster's nodes are Proxmox VMs on virtio-net: if
+        # virtio multiqueue isn't enabled/activated on the host+guest,
+        # these socket settings have limited effect since all traffic
+        # still serializes through one vhost-net kernel thread. Check that
+        # BEFORE assuming these NCCL values are the bottleneck -- see
+        # docs/troubleshooting.md.
         - name: OMP_NUM_THREADS
           value: "4"
         - name: NCCL_SOCKET_NTHREADS
           value: "4"
         - name: NCCL_NSOCKS_PERTHREAD
           value: "4"
+        - name: NCCL_SOCKET_IFNAME
+          value: "eth0"
       resources:
         limits:
           nvidia.com/gpu: "1"
