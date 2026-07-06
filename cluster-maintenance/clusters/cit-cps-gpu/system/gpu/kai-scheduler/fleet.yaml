@@ -5,8 +5,8 @@ labels:
   name: kai-scheduler
 
 helm:
-  chart: oci://ghcr.io/nvidia/kai-scheduler/kai-scheduler
-  version: v0.12.10
+  chart: oci://ghcr.io/kai-scheduler/kai-scheduler/kai-scheduler
+  version: v0.14.6
   valuesFiles:
     - values.yaml
 

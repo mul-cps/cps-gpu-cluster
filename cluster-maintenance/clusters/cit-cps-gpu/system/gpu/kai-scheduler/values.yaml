@@ -1,7 +1,11 @@
 global:
-  # Using v0.12.10 as v0.12.11 images/chart are currently unavailable on GHCR.
-  tag: v0.12.10
-  registry: ghcr.io/nvidia/kai-scheduler
+  # Bumped 2026-07-06: v0.12.10 -> v0.14.6 (LTS line). Note the project
+  # moved its GHCR org between v0.13.0 and v0.14.0 -- both the Helm chart
+  # (fleet.yaml: oci://ghcr.io/kai-scheduler/kai-scheduler/kai-scheduler)
+  # and this registry override must point at ghcr.io/kai-scheduler/kai-scheduler
+  # now, not ghcr.io/nvidia/kai-scheduler (the old path 404s for >=v0.14).
+  tag: v0.14.6
+  registry: ghcr.io/kai-scheduler/kai-scheduler
   # Required for the gpu-memory annotation (MPS-based VRAM-tier sharing,
   # see user/jupyter/jupyterhub/values.yaml PROFILE_CONFIGS) -- without
   # this, KAI's admission webhook rejects any pod with a GPU-sharing
@@ -34,6 +38,13 @@ global:
   # replica it can't prevent the exact incident above, but it does stop a
   # voluntary eviction (node drain, descheduler) from casually taking down
   # the only admission pod without at least surfacing the block.
+  #
+  # RE-CHECKED against v0.14.6 (2026-07-06, during the v0.12.10 -> v0.14.6
+  # bump): `helm show values` for v0.14.6 still only exposes
+  # `operator.replicaCount`, no per-component (admission) replicaCount, and
+  # still no namespaceSelector field anywhere under `admission:`. Issue
+  # https://github.com/kai-scheduler/KAI-Scheduler/issues/1842 (filed by us)
+  # remains OPEN upstream -- neither gap has been fixed as of v0.14.6.
 
 admission:
   gpuPodRuntimeClassName: nvidia
