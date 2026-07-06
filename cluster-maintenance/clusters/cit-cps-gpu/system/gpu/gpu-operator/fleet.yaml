@@ -4,7 +4,7 @@ defaultNamespace: gpu-operator
 helm:
   chart: gpu-operator
   repo: https://nvidia.github.io/gpu-operator
-  version: v25.10.0
+  version: v26.3.3
   releaseName: gpu-operator
   valuesFiles:
   - values.yaml

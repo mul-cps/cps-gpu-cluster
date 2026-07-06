@@ -31,7 +31,7 @@ scratch_storage_class_name: "fast-scratch"
 scratch_path: "/mnt/nvme/scratch"
 
 # GPU Configuration
-gpu_operator_version: "v25.10.0"
+gpu_operator_version: "v26.3.3"
 gpu_operator_namespace: "gpu-operator"
 # K3s containerd socket (needed for NVIDIA toolkit to signal containerd)
 k3s_containerd_socket: "/run/k3s/containerd/containerd.sock"
