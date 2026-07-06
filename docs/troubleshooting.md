@@ -1269,6 +1269,44 @@ image: docker.io/envoyproxy/envoy:v1.30-latest
 
 ---
 
+### Knative Serving 1.22.x upgrade blocked by Kubernetes version requirement (2026-07-06)
+
+**Symptom**: after applying `knative-v1.22.1` serving-core.yaml/serving-crds.yaml
+and matching `net-kourier` v1.22.1 kourier.yaml, the `controller` and `webhook`
+Deployments crashloop immediately with:
+
+```
+{"severity":"EMERGENCY", ... "message":"Version check failed", ...
+"error":"kubernetes version \"1.33.5+k3s1\" is not compatible, need at least
+\"1.34.0-0\" (this can be overridden with the env var \"KUBERNETES_MIN_VERSION\")"}
+```
+
+**Cause**: Knative Serving 1.22 raised its minimum supported Kubernetes
+version to 1.34.0. This cluster runs K3s v1.33.5 (control-plane upgrades
+are out of scope for this pass -- handled separately due to higher risk).
+1.22 is therefore not installable here without also bumping K3s.
+
+**Resolution taken**: rolled back live (`kubectl apply -k` with the
+previous 1.20.1 `serving-crds.yaml`/`serving-core.yaml`/`kourier.yaml`
+restored via `git checkout`). All `knative-serving` and `kourier-system`
+pods returned to `Running`/healthy on 1.20.1, and the `ollama` `ksvc`
+in `llm` reported `READY=True` again post-rollback. One follow-up quirk
+during rollback: the `config.webhook.serving.knative.dev` validating
+webhook rejected re-applying the old `config-gc` ConfigMap ("the update
+modifies a key in \"_example\" ... probably not what you want") because
+the 1.22.1 apply had already rewritten its `_example` text/checksum
+annotation; deleting the ConfigMap and recreating it via `kubectl apply`
+**without** the `knative.dev/example-checksum` annotation resolved it
+(Knative recomputes/validates that annotation itself; it isn't required
+on create).
+
+**Do not retry this bump** until K3s is upgraded to >= 1.34 (`KUBERNETES_MIN_VERSION`
+env var override was deliberately not used here to sidestep this, since
+that masks an unsupported combination rather than fixing it). Once K3s
+is >= 1.34, knative-v1.22.1 / net-kourier v1.22.1 should be revisited.
+
+---
+
 ## General Debugging Commands
 
 ### Check cluster health
