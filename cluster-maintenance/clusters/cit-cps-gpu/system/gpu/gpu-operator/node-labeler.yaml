@@ -1,13 +1,22 @@
-# HISTORICAL/SUPERSEDED: this Job encodes a per-node MIG-vs-full split
-# (gpu1/gpu2 MIG, gpu3 mixed, gpu4 full) from when the cluster used static
-# MIG partitioning. That scheme is retired — all 4 GPU nodes now run
-# permanently in full/non-MIG mode (nvidia.com/mig.config=all-disabled),
+# Superseded the old per-node MIG-vs-full split (gpu1/gpu2 MIG, gpu3 mixed,
+# gpu4 full) from when the cluster used static MIG partitioning. That scheme
+# is retired -- all 4 GPU nodes now run permanently in full/non-MIG mode,
 # and GPU sharing goes through MPS + KAI Scheduler's gpu-memory annotation
-# instead (see dynamic-mig-layout-instructions.md). The gpu-pool=mig/full
-# labels/taints below no longer reflect an active partitioning scheme,
-# though the gpu-pool label key itself may still be referenced elsewhere
-# in scheduling manifests. Left in place as-is pending a follow-up cleanup
-# once the MPS migration settles; do not treat this as current MIG policy.
+# instead (see dynamic-mig-layout-instructions.md).
+#
+# IMPORTANT: this is a Helm post-install/post-upgrade hook Job, so it RE-RUNS
+# on every gpu-operator chart upgrade/reconcile. Leaving the old mixed/single
+# strategy labels in this script (even if fixed live via kubectl) would
+# silently re-apply the stale values on the next Fleet/Helm reconcile --
+# confirmed live 2026-07-06: KAI Scheduler's own scheduling plugin reads
+# nvidia.com/mig.strategy and refused non-MIG-sharing pods on any node
+# labeled "mixed" ("non MIG jobs cant run on a node with MigStrategy=mixed"),
+# even though the node's actual MIG config was already all-disabled. This
+# script now applies the correct uniform state instead of just documenting it.
+#
+# The gpu-pool=mig/full labels/taint are also removed here since there's no
+# more per-node pool distinction under the elastic MPS model (every node is
+# now the same "full, MPS-shared" pool) -- see gpu-operator/README.md.
 apiVersion: batch/v1
 kind: Job
 metadata:
@@ -27,28 +36,15 @@ spec:
         - /bin/sh
         - -c
         - |
-          echo "Labeling GPU pools..."
-          
-          # k3s-wk-gpu1, k3s-wk-gpu2: MIG with 1g.5gb slices (7 per GPU = 14 per node, 28 total)
-          for n in k3s-wk-gpu1 k3s-wk-gpu2; do
-            kubectl label node ${n} gpu-pool=mig --overwrite
-            kubectl label node ${n} nvidia.com/mig.strategy=mixed --overwrite
-            kubectl label node ${n} nvidia.com/mig.config=a100-1g.5gb-7 --overwrite
+          echo "Labeling GPU nodes as uniform full-mode/MPS pool..."
+
+          for n in k3s-wk-gpu1 k3s-wk-gpu2 k3s-wk-gpu3 k3s-wk-gpu4; do
+            kubectl label node ${n} nvidia.com/mig.strategy=none --overwrite
+            kubectl label node ${n} nvidia.com/mig.config=all-disabled --overwrite
+            kubectl label node ${n} gpu-pool- --overwrite || true
             kubectl taint node ${n} gpu-pool- --overwrite || true
           done
-          
-          # k3s-wk-gpu3: Custom profile (1 MIG GPU, 1 full GPU)
-          kubectl label node k3s-wk-gpu3 gpu-pool=mig --overwrite
-          kubectl label node k3s-wk-gpu3 nvidia.com/mig.strategy=mixed --overwrite
-          kubectl label node k3s-wk-gpu3 nvidia.com/mig.config=one-mig-one-full --overwrite
-          kubectl taint node k3s-wk-gpu3 gpu-pool- --overwrite || true
-          
-          # k3s-wk-gpu4: Full GPU access (MIG disabled)
-          kubectl label node k3s-wk-gpu4 gpu-pool=full --overwrite
-          kubectl label node k3s-wk-gpu4 nvidia.com/mig.config=all-disabled --overwrite
-          kubectl label node k3s-wk-gpu4 nvidia.com/mig.strategy=single --overwrite
-          kubectl taint node k3s-wk-gpu4 gpu-pool=full:NoSchedule --overwrite
-          echo "Labels and taints applied."
+          echo "Labels applied."
       restartPolicy: OnFailure
 ---
 apiVersion: v1

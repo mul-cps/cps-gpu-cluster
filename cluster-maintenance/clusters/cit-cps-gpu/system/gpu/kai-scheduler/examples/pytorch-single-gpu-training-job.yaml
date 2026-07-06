@@ -7,8 +7,13 @@
 # kai-scheduler-v0.12.10.tgz and the upstream NVIDIA/KAI-Scheduler v0.12.10 tag):
 #   - `batch` Queue: gpu quota=0, overQuotaWeight=10 (bursts into idle capacity,
 #     no guaranteed quota) -- system/gpu/kai-scheduler/kai-policy/queues.yaml
-#   - `kai-batch-low` PriorityClass: value=1000, lowest priority, preemptible by
+#   - `kai-batch-low` PriorityClass: value=10, lowest priority, preemptible by
 #     course/interactive work -- system/gpu/kai-scheduler/kai-policy/priorityclasses.yaml
+#     (rescaled from an earlier 1000: KAI treats any PriorityClass value
+#     >= 100 as non-preemptible and hard-caps it at its queue's quota, which
+#     made the batch queue's quota=0 burst design permanently unschedulable
+#     under the original values -- verified live 2026-07-06, see
+#     docs/troubleshooting.md)
 #   - GPU sharing on this cluster uses MPS + KAI's unprefixed `gpu-memory` pod
 #     annotation (MiB value). IMPORTANT (corrected this session): `gpu-memory`
 #     and `resources.limits."nvidia.com/gpu"` are ALTERNATIVE allocation paths,

@@ -55,32 +55,50 @@ toolkit:
 devicePlugin:
   enabled: true
   version: "v0.18.0"
-  migStrategy: "mixed"
-  # Vestigial: migStrategy was set up for a MIG-based layout that is now
-  # retired. All 4 GPU nodes run in full/non-MIG mode permanently (see
-  # dynamic-mig-layout-instructions.md).
+  # NOTE: this key is functionally inert in this chart version -- the field
+  # that actually drives the device plugin's --mig-strategy flag is the
+  # separate top-level `mig.strategy` value below in this same file (see its
+  # comment for the full story). Kept here at "none" to match, not to rely on.
+  migStrategy: "none"
   #
   # GPU sharing now goes through NVIDIA MPS, driven by JupyterHub profiles
   # (see user/jupyter/jupyterhub/values.yaml PROFILE_CONFIGS) + KAI
   # Scheduler's gpu-memory annotation for scheduling/bin-packing. The
   # "mps-sharing" config below is what actually starts the MPS control
-  # daemon and advertises MPS-shareable nvidia.com/gpu capacity — without
+  # daemon and advertises MPS-shareable nvidia.com/gpu capacity -- without
   # it, the gpu-memory annotation and CUDA_MPS_PINNED_DEVICE_MEM_LIMIT env
-  # var that JupyterHub sets are correctly configured but INERT (pods just
-  # get plain whole-GPU allocation, no actual sharing).
+  # var that JupyterHub sets are correctly configured but inert.
   #
-  # NOT YET SWITCHED LIVE — default is still mig-mixed (harmless no-op now
-  # that no node has MIG resources) pending validation. There is a known,
-  # unresolved (closed as not-planned) upstream report of the MPS daemon
-  # failing to start specifically on K3s:
-  # https://github.com/NVIDIA/k8s-device-plugin/issues/712
-  # Validate mps-sharing in the testing environment (per this plan's Phase 8
-  # elastic-pool proof step) before flipping `default` to `mps-sharing`
-  # below and relying on it for real user traffic.
+  # VERIFIED LIVE end-to-end (2026-07-06, gpu4 -> then cluster-wide): device
+  # plugin healthy, MPS control daemon running, node advertised
+  # nvidia.com/gpu=16 (8 MPS replicas x 2 physical GPUs). Confirmed a real
+  # gpu-memory-annotated test pod (KAI queue=batch) scheduled successfully
+  # and ran with the correct CUDA_MPS_PINNED_DEVICE_MEM_LIMIT env var and
+  # full device visibility via nvidia-smi. Three additional fixes were
+  # required to get here, all captured in docs/troubleshooting.md:
+  #   1. KAI Scheduler's own `global.gpuSharing` Helm value (default false)
+  #      must be enabled, or its admission webhook rejects any gpu-memory
+  #      request outright.
+  #   2. KAI's PriorityClass values must stay under 100 or the workload
+  #      becomes non-preemptible and hard-capped at its queue's quota,
+  #      permanently breaking the batch queue's quota=0 burst design (see
+  #      kai-policy/priorityclasses.yaml -- rescaled from 1000/5000/10000
+  #      to 10/50/90).
+  #   3. The nvidia.com/mig.strategy node label must actually be "none",
+  #      not just this Helm value -- GPU Feature Discovery re-derives it
+  #      from ClusterPolicy's live spec, so a real `helm upgrade` (not just
+  #      ad hoc kubectl patches) is needed for it to stick; node-labeler.yaml
+  #      was rewritten to set this uniformly instead of the old MIG-era
+  #      per-node scheme.
+  #
+  # Still unverified: the "elastic pool" exclusivity behavior (does a
+  # full-gpu-memory request genuinely block MPS co-scheduling on the same
+  # physical GPU) -- needs a dedicated test with two concurrent pods before
+  # relying on it for real distributed-batch-vs-interactive coexistence.
   config:
     create: true
     name: device-plugin-config
-    default: mig-mixed
+    default: mps-sharing
     data:
       mig-mixed: |-
         version: v1
@@ -118,13 +136,18 @@ gfd:
   enabled: true
   version: "v0.18.0"
 
-# Vestigial: MIG is retired cluster-wide (all nodes are permanently
-# all-disabled/full-mode). These mig/migManager settings describe a
-# MIG-based layout that is no longer active; left as-is functionally
-# pending a future MPS-oriented cleanup pass, see
-# dynamic-mig-layout-instructions.md for why MIG was dropped.
+# MIG is retired cluster-wide (all nodes are permanently all-disabled/
+# full-mode). THIS is the field that actually drives the device plugin's
+# --mig-strategy flag (NOT devicePlugin.migStrategy above, which is a
+# separate, functionally-inert key in this chart -- confirmed live
+# 2026-07-06 after `devicePlugin.migStrategy: none` alone did not stop the
+# device plugin crashing with "using --mig-strategy=mixed is not supported
+# with MPS"; querying the live ClusterPolicy showed spec.mig.strategy, not
+# spec.devicePlugin.migStrategy, was still "mixed"). Must be "none" for
+# MPS sharing (system/gpu/gpu-operator/values.yaml devicePlugin.config
+# default: mps-sharing) to work at all. See docs/troubleshooting.md.
 mig:
-  strategy: mixed
+  strategy: none
 
 migManager:
   enabled: true

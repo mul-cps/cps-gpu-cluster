@@ -7,7 +7,7 @@ compatibility matrix) as a `CronJob` running every 5 minutes.
 ## What it does
 
 Evicts long-running, low-priority `batch`-queue GPU jobs
-(`kai-batch-low`, priority value `1000`) so KAI Scheduler can immediately
+(`kai-batch-low`, priority value `10`) so KAI Scheduler can immediately
 requeue them elsewhere, freeing GPU capacity for interactive workloads
 (`kai-phd-interactive`, `kai-course-high`) whenever they're pending. Two
 strategies are enabled in the `batch-only` profile:
@@ -31,7 +31,7 @@ which is configured with:
 
 ```yaml
 priorityThreshold:
-  value: 1001
+  value: 11
 ```
 
 `DefaultEvictor` gates *every* eviction decision made by the profile against
@@ -41,16 +41,25 @@ descheduler source
 `IsPodEvictableBasedOnPriority`): the comparison is
 `pod.Spec.Priority < priorityThreshold.value` — strictly less-than.
 
-Because of that strict inequality, the threshold is set to `1001`, not
-`1000`. Setting it to exactly `1000` (the `kai-batch-low` PriorityClass
-value) would have excluded `kai-batch-low` pods themselves, since `1000` is
-not `< 1000` — defeating the bundle's purpose. With `1001`:
+Because of that strict inequality, the threshold is set to `11`, not
+`10`. Setting it to exactly `10` (the `kai-batch-low` PriorityClass
+value) would have excluded `kai-batch-low` pods themselves, since `10` is
+not `< 10` — defeating the bundle's purpose. With `11`:
 
-| PriorityClass          | Value | `value < 1001`? | Evictable? |
+| PriorityClass          | Value | `value < 11`? | Evictable? |
 |-------------------------|-------|------------------|------------|
-| `kai-batch-low`          | 1000  | yes              | **yes**    |
-| `kai-phd-interactive`    | 5000  | no               | no         |
-| `kai-course-high`        | 10000 | no               | no         |
+| `kai-batch-low`          | 10    | yes              | **yes**    |
+| `kai-phd-interactive`    | 50    | no               | no         |
+| `kai-course-high`        | 90    | no               | no         |
+
+**Note (2026-07-06):** these PriorityClass values were rescaled from an
+earlier 1000/5000/10000 scheme after discovering live that KAI Scheduler
+treats any PriorityClass `>= 100` as non-preemptible, hard-capping it at its
+queue's deserved quota with no ability to burst over quota regardless of
+`overQuotaWeight` — which made the `batch` queue (quota `0`, relying
+entirely on bursting) permanently unschedulable under the original values.
+See `system/gpu/kai-scheduler/kai-policy/priorityclasses.yaml` and
+`docs/troubleshooting.md` for the full incident.
 
 This is enforced structurally by the descheduler's own policy config, not by
 convention — no combination of labels, queues, or scheduling behavior can

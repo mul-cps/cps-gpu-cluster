@@ -471,44 +471,89 @@ kubectl patch clusterpolicy cluster-policy --type=json \
   -p='[{"op":"add","path":"/spec/daemonsets/tolerations/-","value":{"key":"gpu-pool","operator":"Exists","effect":"NoSchedule"}}]'
 ```
 
-### MPS device-plugin sharing config doesn't take effect / MPS daemon fails to start on K3s
+### MPS-based GPU sharing setup — full incident and the fast path (RESOLVED, 2026-07-06)
 
-**Symptom**: `nvidia-device-plugin-daemonset` logs show something like
-`error waiting for MPS daemon: error checking MPS daemon health: failed to
-send command to MPS daemon: exit status 1` after switching the device
-plugin's `default` config to an MPS-sharing config
-(`system/gpu/gpu-operator/values.yaml`'s `devicePlugin.config`). Pods still
-just get plain whole-GPU allocation — the `gpu-memory`
-annotation/`CUDA_MPS_PINNED_DEVICE_MEM_LIMIT` env var JupyterHub sets have
-no effect.
+**Update: MPS works fine on this K3s cluster.** An earlier version of this
+entry treated an upstream GitHub issue
+(https://github.com/NVIDIA/k8s-device-plugin/issues/712) as an unresolved
+K3s-specific MPS blocker. It wasn't — the real blockers were four separate,
+fixable misconfigurations, found by actually running an end-to-end test
+pod rather than trusting the pessimistic issue thread. If MPS sharing looks
+broken again in the future, check these four things **in this order**
+before assuming it's a platform-level dead end:
 
-**Root cause**: there is a known, upstream-unresolved report of exactly
-this failure mode specifically on K3s
-(https://github.com/NVIDIA/k8s-device-plugin/issues/712, closed as
-"not planned" with no confirmed fix). K3s's non-standard containerd socket
-path/config (already worked around elsewhere in this repo's
-`gpu-operator/values.yaml` via `CONTAINERD_SOCKET`/`CONTAINERD_CONFIG`
-toolkit env vars) is suspected but not confirmed as the cause.
+**1. `--mig-strategy=mixed is not supported with MPS`** (device-plugin logs)
 
-**Fast fix**: none confirmed yet — this is exactly why the repo ships the
-MPS config as an available-but-not-yet-defaulted option
-(`mig-mixed` stays the live `default`, `mps-sharing` sits alongside it in
-the same ConfigMap `data` block). Before flipping `default: mps-sharing`
-live:
-1. Test it on a single node first (patch that node's `device-plugin-config`
-   selection, or test in the `cluster-maintenance-testing` environment) —
-   don't flip it cluster-wide as a first attempt.
-2. If the MPS daemon fails to start, check
-   `kubectl logs -n gpu-operator <device-plugin-pod>` for the exact error,
-   check whether the `nvidia-cuda-mps-control`/`nvidia-cuda-mps-server`
-   binaries are present in the driver container (`kubectl exec` into the
-   driver daemonset pod), and compare against the linked GitHub issue for
-   any workarounds contributed after this was written.
-3. If it can't be made to work, the fallback is GPU Operator's
-   `sharing.timeSlicing` (equal-split time-multiplexing, no memory
-   isolation at all) — strictly worse than MPS for this cluster's needs,
-   but confirmed to work broadly; only fall back to it if MPS is a dead
-   end on this K3s version.
+Symptom: `nvidia-device-plugin-daemonset` crashloops with exactly that
+error after selecting an `mps-sharing` device-plugin config.
+
+Root cause: the field that actually drives the device plugin's
+`--mig-strategy` flag is `mig.strategy` in `gpu-operator/values.yaml` — a
+**separate, different key** from `devicePlugin.migStrategy` (which exists
+in this chart's values schema but is functionally inert; setting it alone
+does nothing). Confirm which one the live cluster is actually using:
+```bash
+kubectl get clusterpolicy cluster-policy -o jsonpath='{.spec.mig.strategy}{"\n"}'
+```
+Fix: set `mig.strategy: none` in `gpu-operator/values.yaml`, then a REAL
+`helm upgrade` (not just `kubectl patch`/`kubectl set env` — those get
+silently reverted by GPU Feature Discovery re-deriving state from
+ClusterPolicy's live spec on its own reconcile cycle):
+```bash
+helm upgrade gpu-operator nvidia/gpu-operator --version <version> \
+  -n gpu-operator -f system/gpu/gpu-operator/values.yaml --reuse-values
+```
+
+**2. KAI admission webhook: `"GPU sharing is disabled"`**
+
+Symptom: creating any pod with a `gpu-memory` annotation is flat-out
+rejected by `admission.kai-scheduler.svc` before it even reaches the
+scheduler.
+
+Root cause: KAI Scheduler's own `global.gpuSharing` Helm value defaults to
+`false` — fractional/shared GPU requests are rejected outright until this
+is explicitly enabled in `system/gpu/kai-scheduler/values.yaml`.
+
+Fix: `global.gpuSharing: true` in that file, then
+`helm upgrade kai-scheduler oci://ghcr.io/nvidia/kai-scheduler/kai-scheduler --version <version> -n kai-scheduler -f values.yaml --reuse-values`.
+
+**3. `nvidia.com/gpu` and `gpu-memory` combined on one pod → `"cannot request both GPU and GPU memory"`**
+
+They're alternative allocation paths, not additive — see the KAI example
+manifests in `system/gpu/kai-scheduler/examples/` for the correct shape of
+each (whole-GPU jobs use only `nvidia.com/gpu`; MPS-shared jobs use only
+the `gpu-memory` annotation, no `nvidia.com/gpu` resource request at all).
+
+**4. `NonPreemptibleOverQuota`: `"Workload requested 0.05 GPUs, but batch quota is 0 GPUs..."`**
+
+This is the subtle one. **KAI treats any PriorityClass value `>= 100` as
+non-preemptible, and non-preemptible workloads are hard-capped at their
+queue's deserved quota — they can never burst over quota, no matter how
+high `overQuotaWeight` is set.** If a queue is deliberately given `quota: 0`
+to rely entirely on bursting into idle capacity (as this cluster's `batch`
+queue does), every PriorityClass used by that queue's workloads MUST be
+kept under 100, or nothing in that queue can ever schedule, full stop. This
+cluster's priority classes were originally `1000`/`5000`/`10000`
+(`kai-batch-low`/`kai-phd-interactive`/`kai-course-high`) — all comfortably
+above the threshold, silently breaking the `batch` queue from day one of
+the design. Rescaled to `10`/`50`/`90` (same relative order, same
+preemption behavior among each other, just under the hard non-preemptible
+line). See `system/gpu/kai-scheduler/kai-policy/priorityclasses.yaml` for
+the current values and the full explanation, and
+`system/descheduler/values.yaml`'s `priorityThreshold` (which must track
+the `kai-batch-low` value + 1, due to a separate strict-less-than
+comparison — see that file's own comment).
+
+Reference: `PriorityClass.value` is immutable once created —
+`kubectl apply` on a changed value fails with `"may not be changed in an
+update"`; use `kubectl delete -f ... && kubectl create -f ...` instead.
+
+**Verification that all four are fixed**: a synthetic pod with a
+`gpu-memory` annotation, `kai.scheduler/queue: batch` label, and
+`kai-batch-low` priority class should reach `Running`, and
+`kubectl exec <pod> -- nvidia-smi` should show the GPU with
+`MIG M.: Disabled`. Confirmed working end-to-end on this cluster
+2026-07-06.
 
 ---
 

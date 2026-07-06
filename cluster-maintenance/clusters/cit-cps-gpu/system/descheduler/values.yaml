@@ -2,19 +2,27 @@
 # https://github.com/kubernetes-sigs/descheduler#compatibility-matrix)
 #
 # Purpose: consolidate/evict low-priority `batch` queue pods (PriorityClass
-# kai-batch-low = 1000) to free GPU capacity for interactive PhD sessions
-# (kai-phd-interactive = 5000) and course workloads (kai-course-high = 10000).
+# kai-batch-low = 10) to free GPU capacity for interactive PhD sessions
+# (kai-phd-interactive = 50) and course workloads (kai-course-high = 90).
 # KAI Scheduler (system/gpu/kai-scheduler) then requeues evicted batch pods.
+#
+# NOTE: priorityclasses.yaml values were rescaled from their original
+# 1000/5000/10000 to 10/50/90 (2026-07-06) after discovering live that KAI
+# Scheduler treats any PriorityClass >= 100 as non-preemptible and hard-caps
+# it at its queue's quota -- the original values made the entire
+# burst-into-idle-capacity design (batch queue quota=0) permanently
+# unschedulable. See docs/troubleshooting.md and kai-policy/priorityclasses.yaml
+# for the full incident. The threshold below is updated to match.
 #
 # Safety guarantee: the DefaultEvictor plugin's `priorityThreshold` is a global
 # filter applied ahead of every strategy/plugin below. Verified from source
 # (pkg/framework/plugins/defaultevictor/defaultevictor.go,
 # IsPodEvictableBasedOnPriority): the check is `pod.Spec.Priority < threshold`,
-# i.e. STRICTLY less-than. Setting the threshold to exactly 1000
+# i.e. STRICTLY less-than. Setting the threshold to exactly 10
 # (kai-batch-low's value) would therefore EXCLUDE kai-batch-low pods
-# themselves (1000 is not < 1000). We set it to 1001 instead, so only pods
-# with priority <= 1000 (i.e. the batch queue) are ever eligible for
-# eviction, while kai-phd-interactive (5000) and kai-course-high (10000) are
+# themselves (10 is not < 10). We set it to 11 instead, so only pods
+# with priority <= 10 (i.e. the batch queue) are ever eligible for
+# eviction, while kai-phd-interactive (50) and kai-course-high (90) are
 # structurally unreachable.
 
 kind: CronJob
@@ -34,11 +42,11 @@ deschedulerPolicy:
           args:
             ignorePvcPods: true
             evictLocalStoragePods: true
-            # Structural safety gate: only pods with priority < 1001 (i.e.
-            # kai-batch-low == 1000 and below) are eligible for eviction by
+            # Structural safety gate: only pods with priority < 11 (i.e.
+            # kai-batch-low == 10 and below) are eligible for eviction by
             # ANY plugin in this profile. See note above.
             priorityThreshold:
-              value: 1001
+              value: 11
         - name: LowNodeUtilization
           args:
             thresholds:

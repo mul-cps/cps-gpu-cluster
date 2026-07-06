@@ -2,6 +2,12 @@ global:
   # Using v0.12.10 as v0.12.11 images/chart are currently unavailable on GHCR.
   tag: v0.12.10
   registry: ghcr.io/nvidia/kai-scheduler
+  # Required for the gpu-memory annotation (MPS-based VRAM-tier sharing,
+  # see user/jupyter/jupyterhub/values.yaml PROFILE_CONFIGS) -- without
+  # this, KAI's admission webhook rejects any pod with a GPU-sharing
+  # request outright ("GPU sharing is disabled"). Confirmed live
+  # (2026-07-06) via kubectl patch before landing this repo change.
+  gpuSharing: true
 
 admission:
   gpuPodRuntimeClassName: nvidia
