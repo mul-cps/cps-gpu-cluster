@@ -1265,6 +1265,19 @@ helm history <release-name> -n <namespace>
 helm rollback <release-name> -n <namespace>
 ```
 
+### Real incident (2026-07-06): direct `helm upgrade` on a Fleet-managed release caused Fleet to prune production resources, including a data PVC
+
+**What happened**: while fixing a plaintext-secret issue in JupyterHub's OAuth config, ran `helm upgrade jupyterhub jupyterhub/jupyterhub ...` directly (bypassing Fleet) to test the fix live -- the same established pattern used successfully many times earlier this session. This time, with several other agents concurrently pushing commits and Fleet actively reconciling in the background, the resulting ownership drift (`meta.helm.sh/release-name` set by the raw `helm upgrade` instead of Fleet's own `objectset.rio.cattle.io/*` annotations) caused Fleet to treat the `postgresql` Deployment and its PVC, plus the `jupyterhub-shared-storage` PVC, as no longer part of desired state and prune them -- deleting the production JupyterHub's internal hub database and starting a delete on the shared-storage PVC.
+
+**Immediate response**: paused the `cluster-maintenance` GitRepo to stop further reconciliation, patched the shared-storage PV to `Retain` (its deletion was still pending on a finalizer, not yet complete -- caught in time), restored the postgres Deployment/PVC/Secret/Service from the repo's own manifest. Real impact was limited to JupyterHub's session/spawner tracking state (users need to re-login, no permanent data loss) -- all per-user notebook PVCs are separate objects and were untouched throughout.
+
+**Separately, in the same incident window**: a different agent's Reflector chart-version bump (`10.0.55`) hit a real Fleet bug -- Fleet mis-resolves this chart repo's relative URLs in its `index.yaml` (drops a path segment, producing a 404) -- which broke **every** subsequent Fleet git sync across the *entire* GitRepo, not just the Reflector bundle, compounding the recovery. Fixed by switching that bundle to a direct `.tgz` chart URL, bypassing index resolution.
+
+**Lessons**:
+- Never run a raw `helm upgrade`/`helm uninstall` against a Fleet-managed release on a shared cluster while other agents/processes may also be reconciling Fleet concurrently -- the window between "test live" and "commit to git" is exactly when Fleet can see the drift and act on it. If a live test is truly necessary, pause Fleet first, and don't leave it paused-then-unpaused casually with an unverified fix in between.
+- A single bad chart URL/version in *any* bundle's `fleet.yaml` can break Fleet's git sync for the **whole GitRepo**, not just that bundle -- verify a new chart version's actual downloadability (`curl -I <chart-url>`) before committing, not just that the version string looks plausible.
+- Before deleting an object whose `ReclaimPolicy` is `Delete`, or when investigating a PVC/PV already mid-Terminating, check `persistentVolumeReclaimPolicy` and switch to `Retain` immediately if there's any doubt -- it's a cheap, fully reversible safety net.
+
 ---
 
 ## JupyterHub Issues
