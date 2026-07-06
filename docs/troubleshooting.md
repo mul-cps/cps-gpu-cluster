@@ -981,10 +981,16 @@ replica onto another node) rather than loosening the policy further.
 cluster (confirmed live: no `nfs-provisioner` namespace, no `nfs-client`
 StorageClass; `kubectl get storageclass` shows only `fast-scratch`,
 `local-path`, `longhorn`, `longhorn-fast`, `longhorn-overcommit`,
-`longhorn-static`). This was either a planned-but-never-deployed setup or
-removed long ago without updating this doc. All persistent storage on
+`longhorn-static`). **Confirmed 2026-07-06 this was real, not just
+aspirational**: 13 `Released` (orphaned) PVs still exist, backed by NFS at
+`10.21.0.44:/srv/nfs/k3s-storage` (mostly old JupyterHub
+`jhub-shared-rwx`/`jhub-userdir-rwx` volumes), all with
+`storageClassName: nfs-client` recorded in their spec -- so this
+StorageClass genuinely existed and was actively used at some point, then
+was removed (deliberately or accidentally) without cleaning up the
+orphaned PVs or updating this doc. All *current* persistent storage on
 this cluster goes through Longhorn or local-path -- there is no
-general-purpose NFS storage class. If a manifest references
+general-purpose NFS storage class anymore. If a manifest references
 `storageClassName: nfs-client`, that's the bug, not the cluster (this
 exact mistake caused `jhub-shared-rwx`/`jhub-userdir-rwx` PVCs on the
 `non-production-testing` branch to be stuck Pending for 7+ months -- see

@@ -57,7 +57,7 @@ kubectl describe bundle <bundle-name> -n fleet-local
 ## Key facts to keep straight
 
 - Network: 10.21.0.0/16; API at `api.cluster.local` (10.21.0.100); NFS server 10.21.0.44:/srv/nfs/k3s-storage; control planes 10.21.0.35-37; GPU workers .38/.43/.40/.41.
-- Storage classes: `nfs-client` (default, general-purpose via NFS) and `fast-scratch` (local-path, NVMe scratch per GPU worker at `/mnt/nvme/scratch`).
+- Storage classes: `local-path` (cluster default), `fast-scratch` (local-path, NVMe scratch per GPU worker at `/mnt/nvme/scratch`), and `longhorn`/`longhorn-fast`/`longhorn-overcommit`/`longhorn-static` for general persistent storage. **`nfs-client` no longer exists** (confirmed live 2026-07-06) — it was a real, working StorageClass at some point (13 `Released` PVs backed by NFS at `10.21.0.44:/srv/nfs/k3s-storage` still exist as evidence, mostly old JupyterHub shared/userdir volumes) but has since been removed without a documented reason or replacement path. If you see `storageClassName: nfs-client` in any manifest, that's a bug — it will leave the PVC permanently `Pending` (this exact mistake caused a real incident on the `non-production-testing` branch, see `docs/troubleshooting.md`).
 - GPU worker node labels: `accelerator=nvidia`, `scratch=nvme`, `gpu-model=a100`.
 - Changes to `cluster-maintenance/` take effect only after Fleet syncs from Git — there is no local "apply" step for that tree.
 - Secrets are never stored in Git; cross-namespace secret distribution goes through Reflector annotations (see `system/utils/reflector`), not copy-pasted manifests.
