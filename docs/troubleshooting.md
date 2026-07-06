@@ -917,26 +917,74 @@ replica onto another node) rather than loosening the policy further.
 
 ### NFS mount failed
 
-**Symptom**: Pods can't mount NFS volumes
+**STALE (corrected 2026-07-06)**: this section previously referenced an
+`nfs-subdir-external-provisioner` in an `nfs-provisioner` namespace and an
+`nfs-client` StorageClass at `10.0.0.30` -- none of this exists in the
+cluster (confirmed live: no `nfs-provisioner` namespace, no `nfs-client`
+StorageClass; `kubectl get storageclass` shows only `fast-scratch`,
+`local-path`, `longhorn`, `longhorn-fast`, `longhorn-overcommit`,
+`longhorn-static`). This was either a planned-but-never-deployed setup or
+removed long ago without updating this doc. All persistent storage on
+this cluster goes through Longhorn or local-path -- there is no
+general-purpose NFS storage class. If a manifest references
+`storageClassName: nfs-client`, that's the bug, not the cluster (this
+exact mistake caused `jhub-shared-rwx`/`jhub-userdir-rwx` PVCs on the
+`non-production-testing` branch to be stuck Pending for 7+ months -- see
+below).
 
-**Solutions**:
+The only real NFS dependency in this cluster is Longhorn's own **backup
+target** (see the next section) -- an external NFS export used for
+off-cluster backups, unrelated to any StorageClass or provisioner.
 
-1. Test NFS from node:
+### Longhorn backup target NFS mount failing (recurring backups silently broken)
+
+**Symptom**: `kubectl get backuptarget.longhorn.io default -n longhorn-system`
+shows `available: false`, with a condition message ending in `mount failed:
+exit status 32`. Recurring backup jobs (`backup-all`, cron `0 22 * * *`)
+silently fail to create off-cluster backups; Longhorn's snapshot
+auto-cleanup (which only fires after a *successful* backup) stops
+pruning, and local snapshots accumulate unbounded.
+
+**Found live 2026-07-06**: target is
+`nfs://193.170.30.58:/mnt/persistent1/proxmox_backups/cit-gpu-01/longhorn`
+(configured out-of-band via the Longhorn UI/kubectl -- not tracked
+anywhere in this repo's GitOps manifests, so there's no version-controlled
+record of when or why it was set up this way).
+
+**This is a genuinely recent break, not old neglect** -- initially assumed
+otherwise, but checking `kubectl get backups.longhorn.io -n longhorn-system`
+showed 1048 completed backups, the most recent at **2026-07-05T22:00:36Z**
+(the night before this was noticed), and the backup-target's own
+`lastSyncedAt` shows it went unavailable at **2026-07-06T12:22:15Z** --
+roughly a 14-hour window. So this broke sometime that morning, not months
+ago. The ~2158 local snapshots (~463GB) found during this same
+investigation are consistent with **normal** retention accumulation given
+regular daily backups were working until the day before, not runaway
+failure -- don't re-derive alarm from that number alone.
+
+**Diagnosis so far**: TCP port 2049 (nfsd) on `193.170.30.58` is reachable
+from both the Proxmox host and a cluster node directly (`nc -zv` succeeds
+from both). But `showmount -e 193.170.30.58` from inside the cluster hangs
+indefinitely -- suggesting the NFS **mount protocol/rpcbind (port 111) or
+mountd** is unreachable or filtered, even though the main NFS data port
+isn't. This is consistent with `mount failed: exit status 32` (a very
+common `mount.nfs` failure mode when the MOUNT protocol can't complete),
+though the export path itself (`/mnt/persistent1/proxmox_backups/...`)
+could also simply be missing or reconfigured on the server side --
+without access to `193.170.30.58` itself this can't be narrowed further
+from the cluster side.
+
+**Needs**: whoever administers `193.170.30.58` to check the NFS export
+config and firewall rules for port 111/rpcbind specifically, and confirm
+the export path still exists. This also has no documented owner/runbook
+in this repo -- worth adding one once resolved, including moving the
+backup target config into GitOps (a `BackupTarget` custom resource can be
+applied declaratively) so future changes are tracked.
+
+**Verify it's fixed**:
 ```bash
-showmount -e 10.0.0.30
-sudo mount -t nfs 10.0.0.30:/export/k3s /mnt
-```
-
-2. Check NFS provisioner:
-```bash
-kubectl get pods -n nfs-provisioner
-kubectl logs -n nfs-provisioner -l app=nfs-subdir-external-provisioner
-```
-
-3. Verify firewall:
-```bash
-# On NFS server
-sudo ufw allow from 10.0.0.0/24 to any port nfs
+kubectl get backuptarget.longhorn.io default -n longhorn-system -o jsonpath='{.status.available}'
+# should print "true"; then confirm a new backup completes at the next 22:00 cron run
 ```
 
 ### PVC stuck in Pending
