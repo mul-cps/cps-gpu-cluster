@@ -20,7 +20,7 @@ defaultSettings:
   guaranteedEngineManagerCPU: 0.25
   guaranteedReplicaManagerCPU: 0.25
   orphanAutoDeletion: true
-  nodeDrainPolicy: allow-if-healthy
+  nodeDrainPolicy: allow-if-replica-is-stopped  # "allow-if-healthy" is not a valid Longhorn enum value; it silently never applied (live setting stayed at the block-if-contains-last-replica default). This is what unblocks kured node reboots when a node holds a volume's only replica but that replica is already stopped/detached (not serving live I/O).
   filesystemTrimEnabled: true
   #concurrentReplicaRebuildPerNodeLimit: 1   # slower recovery, much steadier cluster
   replicaAutoBalance: least-effort       # or least-effort if you like some balancing without churn

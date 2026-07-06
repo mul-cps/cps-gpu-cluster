@@ -3,9 +3,30 @@ ssh:
   enabled: true
   service:
     type: ClusterIP
+# This is the REAL, working SFTP server (a standalone OpenSSH sftp-server
+# mounting jupyterhub-shared-storage directly at /mnt/home, listening on
+# container port 2222, exposed via the jupyterhub-sftp Service's port 22).
+# CORRECTED 2026-07-06: this pod was always healthy and listening -- the
+# actual gap was that ingress-nginx-tcp never forwarded any external port to
+# it (only the separate jupyterhub-ssh service's port 22 was wired up), so
+# "sftp never worked" was purely a missing TCP-forward, not a broken
+# component. See system/networking/ingress-nginx/values.yaml's tcp.2222
+# entry, which now points at jupyterhub-sftp:22 (this deployment), not the
+# jupyterhub-ssh deployment (that one's patched __init__.py -- see
+# templates/patch-configmap.yaml -- only implements plain SSH-to-terminal
+# forwarding via Terminado; it has no SFTP subsystem code at all, despite
+# declaring a port 2222 in its own pod spec -- do not route SFTP traffic
+# there, confirmed live: connection refused).
+#
+# NOTE: upstream docs describe this component as supporting "NFS based home
+# directories" -- our shared storage uses the longhorn-overcommit
+# StorageClass (RWX), not NFS. This has NOT yet been verified to work
+# correctly end-to-end with Longhorn's RWX semantics specifically (only
+# confirmed the server process itself starts and listens) -- if real SFTP
+# file operations misbehave, that storage-backend mismatch is the first
+# thing to check.
 sftp:
   enabled: true
   pvc:
-    # Mount the shared RWX volume used inside singleuser as /home/jovyan/work/shared
     enabled: true
     name: jupyterhub-shared-storage

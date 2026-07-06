@@ -1,0 +1,154 @@
+# Example: distributed multi-GPU TensorFlow training
+# (tf.distribute.MultiWorkerMirroredStrategy), gang-scheduled across 2 pods x
+# 2 GPUs each (4 GPUs total) on the `batch` KAI queue. TensorFlow counterpart
+# of pytorch-multi-gpu-training-job.yaml -- see that file's comments for the
+# full rationale on why an explicit PodGroup is required for real gang
+# scheduling, why this workload uses whole/exclusive GPUs (not MPS-shared
+# gpu-memory), and the open/unverified caveats about co-scheduling isolation
+# and NVLink topology, all of which apply identically here. This file keeps
+# comments brief and TensorFlow-specific.
+#
+# --- How TF_CONFIG rank/cluster discovery works here ---
+# MultiWorkerMirouredStrategy expects a TF_CONFIG env var (JSON) on every
+# worker containing the full list of worker addresses (`cluster.worker`) and
+# that worker's own index (`task.index`). Unlike torchrun (which only needs
+# a single master address + a local rank), every TF worker needs the full
+# peer list up front. We build that list from the headless Service's stable
+# per-ordinal DNS names (<service>-<ordinal>.<service>.<namespace>.svc) for
+# an Indexed Job, and set `task.index` from the Kubernetes-provided
+# JOB_COMPLETION_INDEX. There is no built-in Kubernetes field that renders
+# the whole TF_CONFIG JSON for you, so the container's entrypoint script
+# assembles it from env vars at startup (shown below) -- this is the common,
+# correct pattern for TF distributed training on Kubernetes without the
+# separate TensorFlow training-operator (a lighter-weight alternative to
+# pulling in kubeflow's tf-job CRD, consistent with how the PyTorch example
+# also avoids the kubeflow PyTorchJob CRD in favor of a plain Indexed Job).
+apiVersion: scheduling.run.ai/v2alpha2
+kind: PodGroup
+metadata:
+  name: tensorflow-multi-gpu-training-example-pg
+  namespace: kai-scheduler
+spec:
+  minMember: 2 # total pod count (2 pods x 2 GPUs each = 4 GPUs)
+  queue: batch
+  priorityClassName: kai-batch-low
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: tensorflow-multi-gpu-training-example
+  namespace: kai-scheduler
+spec:
+  clusterIP: None
+  selector:
+    job-name: tensorflow-multi-gpu-training-example
+  ports:
+    - name: tf-worker
+      port: 2222
+      targetPort: 2222
+---
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: tensorflow-multi-gpu-training-example
+  namespace: kai-scheduler
+spec:
+  completionMode: Indexed
+  parallelism: 2
+  completions: 2
+  backoffLimit: 6
+  template:
+    metadata:
+      labels:
+        kai.scheduler/queue: batch
+        job-name: tensorflow-multi-gpu-training-example
+      annotations:
+        # Attaches this pod to the explicit PodGroup above (see PyTorch
+        # example for why this is required for real gang scheduling).
+        pod-group-name: tensorflow-multi-gpu-training-example-pg
+    spec:
+      schedulerName: kai-scheduler
+      priorityClassName: kai-batch-low
+      # Required for the per-ordinal DNS names listed in TF_CONFIG's
+      # cluster.worker to resolve -- see the PyTorch multi-GPU example's
+      # comment on spec.subdomain for why this is needed for Indexed Job
+      # pods to get stable "<job-name>-<index>.<subdomain>" DNS records.
+      subdomain: tensorflow-multi-gpu-training-example
+      # Never: MultiWorkerMirroredStrategy's collective ops require all
+      # workers in lockstep; an in-place kubelet restart of a single worker
+      # would desync the collective group, same reasoning as the PyTorch DDP
+      # example. Recovery happens at the Job level (resubmit, resume from
+      # checkpoint), not via restartPolicy.
+      restartPolicy: Never
+      containers:
+        - name: tensorflow
+          image: your-registry/tensorflow-training:latest
+          command: ["bash", "-c"]
+          args:
+            - |
+              export TF_CONFIG=$(python3 -c "
+              import json, os
+              idx = int(os.environ['JOB_COMPLETION_INDEX'])
+              workers = [f'tensorflow-multi-gpu-training-example-{i}.tensorflow-multi-gpu-training-example:2222' for i in range(2)]
+              print(json.dumps({'cluster': {'worker': workers}, 'task': {'type': 'worker', 'index': idx}}))
+              ")
+              python3 train_mwms.py \
+                --checkpoint-dir=/checkpoints \
+                --data-dir=/data \
+                --resume-from-latest
+          env:
+            - name: JOB_COMPLETION_INDEX
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.annotations['batch.kubernetes.io/job-completion-index']
+            - name: TF_FORCE_GPU_ALLOW_GROWTH
+              value: "true"
+          resources:
+            # Whole-GPU, non-fractional allocation -- no gpu-memory
+            # annotation on this pod. See the PyTorch multi-GPU example for
+            # why distributed training needs exclusive full GPUs rather than
+            # MPS-shared ones.
+            limits:
+              nvidia.com/gpu: "2"
+              cpu: "16"
+              memory: "64Gi"
+            requests:
+              cpu: "8"
+              memory: "32Gi"
+          volumeMounts:
+            - name: training-data
+              mountPath: /data
+              readOnly: true
+            - name: checkpoints
+              mountPath: /checkpoints
+      volumes:
+        - name: training-data
+          persistentVolumeClaim:
+            claimName: training-data-pvc
+        - name: checkpoints
+          persistentVolumeClaim:
+            claimName: training-checkpoints-pvc
+---
+# Checkpointing pattern: with MultiWorkerMirroredStrategy, ALL workers must
+# call the save op (it's a collective operation), but only the chief worker
+# (task.index == 0) should actually persist to the real checkpoint path --
+# non-chief workers are expected to write to a throwaway/temporary local
+# path and delete it afterwards. This is TensorFlow's own documented
+# multi-worker checkpointing pattern (see the "SlicedCheckpoint"/chief-only
+# guidance in the tf.distribute docs), analogous to but not identical to the
+# PyTorch DDP example's "only rank 0 writes" pattern: in DDP the non-zero
+# ranks skip the write entirely; in TF MultiWorkerMirroredStrategy all
+# workers must participate in the collective save call, just to different
+# destinations. train_mwms.py in this template is expected to implement that
+# chief/non-chief split internally based on task.index from TF_CONFIG.
+#
+# Reuses training-data-pvc / training-checkpoints-pvc (ReadOnlyMany /
+# ReadWriteMany, nfs-client StorageClass) from
+# pytorch-single-gpu-training-job.yaml -- apply that file first, or copy the
+# PVC objects here for a standalone example.
+#
+# Recovery from descheduler eviction: same reasoning as the PyTorch
+# multi-GPU example -- gang scheduling via minMember=2 means the Indexed Job
+# controller recreates an evicted pod at its ordinal and KAI re-admits the
+# group together; no manual Job resubmission needed for a mid-run eviction,
+# only after Failed (backoffLimit exhausted) or Completed.

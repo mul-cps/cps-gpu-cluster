@@ -1,8 +1,18 @@
+# IMPORTANT: KAI Scheduler treats any PriorityClass with value >= 100 as
+# NON-preemptible, and non-preemptible workloads are hard-capped at their
+# queue's deserved quota -- they can NEVER burst over quota, regardless of
+# overQuotaWeight (verified live, 2026-07-06: a batch-queue test pod at the
+# old value of 1000 was permanently rejected with "NonPreemptibleOverQuota"
+# since the batch queue's quota is deliberately 0 -- the entire
+# burst-into-idle-capacity design in queues.yaml requires values to stay
+# UNDER 100 to remain preemptible). Values below kept the same relative
+# ordering as before (course > interactive > batch), just rescaled under
+# the threshold. See docs/troubleshooting.md for the full incident.
 apiVersion: scheduling.k8s.io/v1
 kind: PriorityClass
 metadata:
   name: kai-course-high
-value: 10000
+value: 90
 globalDefault: false
 description: "Highest priority for course workloads. Reclaims resources from others."
 ---
@@ -10,7 +20,7 @@ apiVersion: scheduling.k8s.io/v1
 kind: PriorityClass
 metadata:
   name: kai-phd-interactive
-value: 5000
+value: 50
 globalDefault: false
 description: "High priority for PhD interactive work."
 ---
@@ -18,6 +28,6 @@ apiVersion: scheduling.k8s.io/v1
 kind: PriorityClass
 metadata:
   name: kai-batch-low
-value: 1000
+value: 10
 globalDefault: false
 description: "Lowest priority for batch jobs. Preemptible by courses and interactive."

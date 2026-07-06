@@ -1,0 +1,261 @@
+# Example: distributed multi-GPU PyTorch DDP training, gang-scheduled across
+# 2 pods x 2 GPUs each (4 GPUs total) on the `batch` KAI queue.
+#
+# TEMPLATE for users to adapt -- image/command/training script are
+# illustrative placeholders.
+#
+# --- Why gang scheduling needs an explicit PodGroup ---
+# KAI's podgrouper webhook auto-creates a PodGroup for pods it owns, but for a
+# plain multi-pod batch/v1 Job it hardcodes MinAvailable=1 per pod-group
+# (verified by reading pkg/podgrouper/podgrouper/plugins/defaultgrouper/
+# default_grouper.go and pkg/podgrouper/podgrouper/plugins/job/job_grouper.go
+# in the upstream NVIDIA/KAI-Scheduler v0.12.10 source: the K8s Job grouper
+# computes a separate PodGroup name per-pod unless "legacy" grouping applies,
+# and MinAvailable defaults to 1 either way). That means a bare multi-pod Job
+# does NOT get "all pods together or none" semantics automatically. To get
+# real gang scheduling here we create our own PodGroup CR with
+# spec.minMember = 2 (total pod count) and attach each pod to it explicitly
+# via the `pod-group-name` annotation. This is the real, scheduler-level gang
+# membership mechanism, not just a status-aggregation detail: the scheduler
+# core itself reads this annotation (pkg/scheduler/api/pod_info/pod_info.go:294
+# and pkg/scheduler/cache/cluster_info/indexers.go:24, both keyed on
+# `commonconstants.PodGroupAnnotationForPod` = "pod-group-name"), and KAI's
+# own e2e test helper (test/e2e/modules/resources/rd/pod_group/pod_group.go)
+# creates explicit PodGroup objects the same way we do here
+# (`scheduling.run.ai/v2alpha2`, `spec.minMember`, `spec.queue`) -- confirming
+# this is KAI's sanctioned pattern for externally-managed PodGroups. All
+# verified against the upstream NVIDIA/KAI-Scheduler v0.12.10 tag source.
+#
+# --- Why full exclusive GPUs, not MPS sharing, for this job ---
+# Distributed multi-GPU training needs real GPU-to-GPU peer-to-peer /NVLink
+# transfers for NCCL all-reduce. MPS-shared (fractional, `gpu-memory`
+# annotation) GPUs are a client/daemon time-sliced sharing mode, not
+# NVLink-capable exclusive access, and mixing MPS-shared allocation with NCCL
+# collectives is not a supported combination. So each pod below requests
+# whole GPUs via resources.limits."nvidia.com/gpu" (plain device-plugin
+# allocation, KAI's non-fractional path) and carries NO `gpu-memory`
+# annotation at all -- the two are alternative, non-combinable allocation
+# mechanisms in KAI v0.12.10 (see the single-GPU template for the MPS path).
+#
+# --- Verified live 2026-07-06 ---
+# A plain `nvidia.com/gpu` allocation IS correctly protected from double-
+# booking a physical GPU already backing an MPS-shared (`gpu-memory`) pod:
+# tested by running a gpu-memory-annotated pod (backed by KAI's
+# auto-created reservation pod in kai-resource-reservation) and a
+# nvidia.com/gpu: 2 pod on the same 2-GPU node at the same time -- the
+# 2-GPU request correctly stayed Pending (only 1 of 2 physical GPUs free),
+# while a nvidia.com/gpu: 1 request scheduled fine on the free GPU. This is
+# what justified moving the whole cluster's device-plugin default to plain
+# mode (system/gpu/gpu-operator/values.yaml) -- see
+# docs/troubleshooting.md for the full incident writeup, including an
+# earlier, incorrect conclusion that these two allocation paths could not
+# coexist at all (corrected after a flawed test procedure was identified
+# and redone properly).
+#
+# --- OPEN / UNVERIFIED as of this session ---
+# 1. `minMember` on the PodGroup guarantees all member pods are admitted
+#    together or not at all -- it does NOT by itself guarantee the 2 worker
+#    pods land on the same node or within the same NVLink domain. For
+#    intra-node NVLink to actually be used (rather than falling back to
+#    slower inter-node networking, which this cluster's 8x A100-over-4-nodes
+#    topology may force anyway since each node only has 2 GPUs), you would
+#    need a topology constraint (spec.topologyConstraint /
+#    spec.subGroups[].topologyConstraint on the PodGroup, present in the
+#    v0.12.10 CRD) or node affinity/pod affinity -- not added here, flagged
+#    for follow-up.
+apiVersion: scheduling.run.ai/v2alpha2
+kind: PodGroup
+metadata:
+  name: pytorch-multi-gpu-training-example-pg
+  namespace: kai-scheduler
+spec:
+  minMember: 2 # total pod count below (2 pods x 2 GPUs each = 4 GPUs)
+  queue: batch
+  priorityClassName: kai-batch-low
+---
+# Headless Service for rank/master discovery. torchrun on rank 0 (pod ordinal
+# 0 of the indexed Job) is reachable at
+# <service-name>-0.<service-name>.<namespace>.svc.cluster.local, which we use
+# as MASTER_ADDR below -- the standard pattern for PyTorch DDP on Kubernetes
+# with an Indexed Job (no separate StatefulSet needed).
+apiVersion: v1
+kind: Service
+metadata:
+  name: pytorch-multi-gpu-training-example
+  namespace: kai-scheduler
+spec:
+  clusterIP: None
+  selector:
+    job-name: pytorch-multi-gpu-training-example
+  ports:
+    - name: torchrun
+      port: 29500
+      targetPort: 29500
+---
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: pytorch-multi-gpu-training-example
+  namespace: kai-scheduler
+spec:
+  # Indexed completion mode gives each pod a stable, predictable ordinal via
+  # the JOB_COMPLETION_INDEX env var (Kubernetes sets this automatically) --
+  # we use that ordinal directly as the torchrun --node-rank / RANK, and
+  # ordinal 0 as the DDP master, without needing a StatefulSet.
+  completionMode: Indexed
+  parallelism: 2
+  completions: 2
+  backoffLimit: 6
+  template:
+    metadata:
+      labels:
+        kai.scheduler/queue: batch
+        job-name: pytorch-multi-gpu-training-example
+      annotations:
+        # Attaches this pod to the explicit PodGroup above instead of
+        # whatever per-pod PodGroup KAI's default webhook logic would create.
+        pod-group-name: pytorch-multi-gpu-training-example-pg
+    spec:
+      schedulerName: kai-scheduler
+      priorityClassName: kai-batch-low
+      # hostNetwork + ClusterFirstWithHostNet: bypasses this cluster's
+      # Flannel CNI overlay (VXLAN, cni0/flannel.1, MTU 1450) for NCCL
+      # inter-node traffic. Verified live 2026-07-06: a real 8-GPU/4-node
+      # NCCL job through the default pod-network path measured only
+      # ~0.39 GB/s inter-node point-to-point on this cluster's 10GbE fabric
+      # (~30% of the ~1.1-1.2 GB/s a single 10GbE NIC should sustain) --
+      # traffic was transiting the VXLAN overlay instead of the physical
+      # NIC (eth0) directly. hostNetwork is the standard fix used by
+      # NCCL-on-Kubernetes reference architectures (Kubeflow Training
+      # Operator, cloud GPU node-pool guides) for exactly this reason. This
+      # does trade away per-pod network isolation/IP (the pod uses the
+      # node's network namespace directly) -- acceptable for a trusted
+      # internal batch queue, reconsider for less-trusted workloads.
+      # NOT yet re-benchmarked against this specific change -- re-run the
+      # inter-node point-to-point test in docs/troubleshooting.md after
+      # applying this to confirm the expected improvement on real hardware.
+      hostNetwork: true
+      dnsPolicy: ClusterFirstWithHostNet
+      # Required for the per-ordinal DNS name used in --master-addr below to
+      # resolve: Indexed Job pods only get a stable
+      # "<job-name>-<index>.<subdomain>" DNS record when spec.subdomain
+      # matches a headless Service selecting these pods (the
+      # "Job with Pod-to-Pod Communication" pattern) -- without it the
+      # auto-assigned hostname alone does not register in cluster DNS. With
+      # hostNetwork, this DNS name resolves to the node's real IP.
+      subdomain: pytorch-multi-gpu-training-example
+      # Never (not OnFailure): a mid-training failure on ANY rank should
+      # bring down the whole distributed group rather than kubelet silently
+      # restarting a single container in place -- an in-place restart of one
+      # rank while the others keep running would desync the process group.
+      # Recovery here is meant to happen at the Job level: fix the issue,
+      # `kubectl delete job` + re-apply (or re-run this manifest), and let
+      # training resume from the last checkpoint on shared storage.
+      restartPolicy: Never
+      containers:
+        - name: pytorch
+          image: your-registry/pytorch-training:latest
+          command: ["bash", "-c"]
+          args:
+            - |
+              torchrun \
+                --nnodes=2 \
+                --nproc_per_node=2 \
+                --node-rank=${JOB_COMPLETION_INDEX} \
+                --master-addr=pytorch-multi-gpu-training-example-0.pytorch-multi-gpu-training-example \
+                --master-port=29500 \
+                train_ddp.py \
+                  --checkpoint-dir=/checkpoints \
+                  --data-dir=/data \
+                  --resume-from-latest
+          env:
+            - name: JOB_COMPLETION_INDEX
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.annotations['batch.kubernetes.io/job-completion-index']
+            - name: NCCL_DEBUG
+              value: "INFO"
+            # torchrun defaults OMP_NUM_THREADS to 1 per process to avoid
+            # oversubscribing the host when it can't see the real CPU
+            # request (confirmed live 2026-07-06 -- every torchrun launch on
+            # this cluster prints "Setting OMP_NUM_THREADS ... to be 1").
+            # With 8 CPUs requested / 2 GPU processes per pod, 1 thread
+            # leaves 7 of the requested cores idle per process for
+            # data-loading/preprocessing. Set explicitly to requests.cpu /
+            # nproc_per_node -- adjust if you change either value below.
+            - name: OMP_NUM_THREADS
+              value: "4"
+            # NCCL socket transport tuning for this cluster's 10GbE
+            # inter-node fabric (no InfiniBand/RDMA). Verified live
+            # 2026-07-06: an untuned 8-GPU/4-node NCCL all_reduce measured
+            # only ~0.39 GB/s (~3.1 Gbit/s of the 10 Gbit link) on inter-node
+            # point-to-point at 256MB -- well under line rate, because NCCL's
+            # default socket transport uses too few threads/sockets to
+            # saturate a single 10GbE NIC. Increasing socket parallelism is
+            # the standard NCCL tuning knob for non-RDMA Ethernet fabrics
+            # (see NVIDIA's NCCL env var docs, NCCL_NSOCKS_PERTHREAD /
+            # NCCL_SOCKET_NTHREADS). Re-run the discriminator test in
+            # docs/troubleshooting.md's NCCL benchmark section after
+            # changing these to confirm improvement on your actual hardware
+            # before trusting these specific values -- they are a
+            # starting point, not verified-optimal.
+            - name: NCCL_SOCKET_NTHREADS
+              value: "4"
+            - name: NCCL_NSOCKS_PERTHREAD
+              value: "4"
+            # Pins NCCL to the real physical NIC (confirmed live 2026-07-06
+            # via a hostNetwork debug pod: eth0 is the node's actual 10GbE
+            # interface at its real node IP) rather than letting NCCL's
+            # auto-detection pick a CNI/overlay interface. Only meaningful
+            # combined with hostNetwork: true above.
+            - name: NCCL_SOCKET_IFNAME
+              value: "eth0"
+          resources:
+            # Whole-GPU, non-fractional allocation -- see comment block at
+            # top of file for why this job cannot use the gpu-memory /
+            # MPS-shared path. No `gpu-memory` annotation on this pod.
+            limits:
+              nvidia.com/gpu: "2"
+              cpu: "16"
+              memory: "64Gi"
+            requests:
+              cpu: "8"
+              memory: "32Gi"
+          volumeMounts:
+            - name: training-data
+              mountPath: /data
+              readOnly: true
+            - name: checkpoints
+              mountPath: /checkpoints
+      volumes:
+        - name: training-data
+          persistentVolumeClaim:
+            claimName: training-data-pvc
+        - name: checkpoints
+          persistentVolumeClaim:
+            claimName: training-checkpoints-pvc
+---
+# Checkpointing pattern for this job: only rank 0 (JOB_COMPLETION_INDEX==0)
+# should write the shared model/optimizer checkpoint to /checkpoints -- this
+# is the standard PyTorch DDP pattern, since all ranks hold replicated model
+# state after an all-reduce and writing from every rank would race on the
+# same file(s) on the shared NFS-backed PVC. train_ddp.py in this template is
+# expected to gate its checkpoint-writing call on
+# `torch.distributed.get_rank() == 0`. All ranks read from /data identically
+# (read-only mount, safe for concurrent reads).
+#
+# Reuses the same training-data-pvc / training-checkpoints-pvc PVCs defined
+# in pytorch-single-gpu-training-job.yaml (ReadOnlyMany / ReadWriteMany on
+# the nfs-client StorageClass) -- apply that file first, or copy the two
+# PersistentVolumeClaim objects here if you want this example fully
+# standalone.
+#
+# --- Recovery from descheduler eviction ---
+# Because minMember=2 gang-schedules the pods together, if the descheduler
+# evicts ONE pod of this group, Kubernetes deletes that pod and the Indexed
+# Job controller recreates it at the same ordinal; KAI's PodGroup semantics
+# mean it (and, if resources are tight, its sibling) will wait to be
+# re-admitted together rather than partially running. You do not need to
+# manually resubmit the Job for a mid-run eviction. You WOULD need to
+# manually resubmit if the Job exhausts backoffLimit and is marked Failed,
+# or after a successful completion to run again.
