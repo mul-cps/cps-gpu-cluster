@@ -92,6 +92,17 @@ spec:
             #     same physical GPU): 20480 (used as the example default here)
             - name: CUDA_MPS_PINNED_DEVICE_MEM_LIMIT
               value: "0=20480M"
+            # CRITICAL (found live, 2026-07-06): CUDA_MPS_PINNED_DEVICE_MEM_LIMIT
+            # alone does NOT connect this process to the MPS daemon --
+            # without these two, CUDA silently falls back to direct GPU
+            # access and the limit above is never enforced (confirmed: a
+            # test pod missing this allocated 16x its configured limit with
+            # zero errors; identical pod WITH this wiring correctly failed
+            # right at the limit). See docs/troubleshooting.md.
+            - name: CUDA_MPS_PIPE_DIRECTORY
+              value: "/mps/nvidia.com/gpu/pipe"
+            - name: CUDA_MPS_LOG_DIRECTORY
+              value: "/mps/nvidia.com/gpu/log"
           volumeMounts:
             # Read-mostly input dataset, mounted separately from checkpoints
             # so training code never writes into the dataset path.
@@ -103,9 +114,14 @@ spec:
             - name: checkpoints
               mountPath: /checkpoints
             # Required for CUDA MPS clients to reach the MPS control
-            # daemon's pipe directory on the node.
-            - name: mps
-              mountPath: /tmp/nvidia-mps
+            # daemon's pipe/log directories on the node. Paths confirmed
+            # live against the actual mps-control-daemon pod's mounts:
+            # hostPath /run/nvidia/mps -> container /mps, with
+            # nvidia.com/gpu/{pipe,log} created underneath at runtime.
+            - name: mps-pipe
+              mountPath: /mps/nvidia.com/gpu/pipe
+            - name: mps-log
+              mountPath: /mps/nvidia.com/gpu/log
           resources:
             # --- GPU allocation: this pod uses the MPS-shared / fractional
             # path via the `gpu-memory` annotation (see metadata.annotations
@@ -127,11 +143,14 @@ spec:
           persistentVolumeClaim:
             claimName: training-checkpoints-pvc
         # Required for CUDA MPS clients to reach the MPS control daemon's
-        # pipe/log directory on the node (see upstream KAI
-        # docs/gpu-sharing/mps/gpu-sharing-with-mps.yaml).
-        - name: mps
+        # pipe/log directories on the node.
+        - name: mps-pipe
           hostPath:
-            path: /tmp/nvidia-mps
+            path: /run/nvidia/mps/nvidia.com/gpu/pipe
+            type: DirectoryOrCreate
+        - name: mps-log
+          hostPath:
+            path: /run/nvidia/mps/nvidia.com/gpu/log
             type: DirectoryOrCreate
 ---
 # Example PersistentVolumeClaims backing the mounts above. Split into a

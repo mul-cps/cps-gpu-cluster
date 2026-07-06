@@ -555,6 +555,78 @@ update"`; use `kubectl delete -f ... && kubectl create -f ...` instead.
 `MIG M.: Disabled`. Confirmed working end-to-end on this cluster
 2026-07-06.
 
+**Reaching `Running` is not enough — a fifth issue lurks past this point:**
+see the next entry. A pod can be `Running` with the correct
+`CUDA_MPS_PINNED_DEVICE_MEM_LIMIT` env var set and still have **zero actual
+memory enforcement**, silently.
+
+### `CUDA_MPS_PINNED_DEVICE_MEM_LIMIT` set correctly but not enforced at all
+
+**Symptom**: a pod requesting an MPS-shared `gpu-memory` tier runs fine,
+`nvidia-smi` shows the GPU, `env | grep CUDA_MPS` shows the limit env var
+present and correct — but a workload inside the pod allocates far beyond
+that limit with no error at all (confirmed live 2026-07-06: a test pod with
+`CUDA_MPS_PINNED_DEVICE_MEM_LIMIT=0=1024M` allocated 16 GiB via PyTorch
+before the test script simply ran out of loop iterations, never hitting an
+OOM).
+
+**Root cause**: `CUDA_MPS_PINNED_DEVICE_MEM_LIMIT` only has any effect on a
+process that actually connects to the MPS control daemon as a client. That
+connection requires `CUDA_MPS_PIPE_DIRECTORY` and `CUDA_MPS_LOG_DIRECTORY`
+env vars pointing at the daemon's actual socket/log directories, **plus**
+volume mounts backing them with the correct hostPath. Without these, CUDA
+silently falls back to plain direct GPU access — no MPS, no limit, no
+error, nothing in the daemon's logs indicating a client ever tried to
+connect. This is easy to get wrong because the pod still schedules,
+starts, and runs `nvidia-smi` successfully either way; there is no
+observable difference until you specifically try to exceed the limit.
+
+**Fast fix**: every container using `CUDA_MPS_PINNED_DEVICE_MEM_LIMIT` must
+also set:
+```yaml
+env:
+  - name: CUDA_MPS_PINNED_DEVICE_MEM_LIMIT
+    value: "0=<MiB>M"
+  - name: CUDA_MPS_PIPE_DIRECTORY
+    value: "/mps/nvidia.com/gpu/pipe"
+  - name: CUDA_MPS_LOG_DIRECTORY
+    value: "/mps/nvidia.com/gpu/log"
+volumeMounts:
+  - name: mps-pipe
+    mountPath: /mps/nvidia.com/gpu/pipe
+  - name: mps-log
+    mountPath: /mps/nvidia.com/gpu/log
+```
+```yaml
+volumes:
+  - name: mps-pipe
+    hostPath:
+      path: /run/nvidia/mps/nvidia.com/gpu/pipe
+      type: DirectoryOrCreate
+  - name: mps-log
+    hostPath:
+      path: /run/nvidia/mps/nvidia.com/gpu/log
+      type: DirectoryOrCreate
+```
+The exact hostPath is confirmed by checking the real MPS control daemon
+pod's own mounts (`kubectl get pod -n gpu-operator -l
+app=nvidia-device-plugin-mps-control-daemon -o
+jsonpath='{.items[0].spec.containers[0].volumeMounts}'`): it mounts
+`/run/nvidia/mps` (host) to `/mps` (container) and creates
+`nvidia.com/gpu/{pipe,log}` underneath that at runtime — client pods need
+the same host path, one level deeper.
+
+This wiring is now included in `user/jupyter/jupyterhub/values.yaml`'s
+`apply_profile_settings` (all VRAM-tier profiles) and in every example in
+`system/gpu/kai-scheduler/examples/` — if you write a new MPS-sharing
+manifest by hand, copy this pattern rather than just the memory-limit env
+var alone.
+
+**How to verify enforcement is actually working**, not just assumed:
+deliberately try to exceed the configured limit from inside the pod (e.g. a
+small PyTorch script allocating in a loop) and confirm it fails with a CUDA
+OOM error at approximately the configured limit, not far beyond it.
+
 ---
 
 ## Storage Issues

@@ -1534,11 +1534,41 @@ hub:
               # annotation, so scheduling accounting and enforcement stay in sync by
               # construction. Full-GPU profiles (no 'memory_mib') are left alone -
               # they get the whole device as before.
+              #
+              # CRITICAL (found live, 2026-07-06): CUDA_MPS_PINNED_DEVICE_MEM_LIMIT
+              # alone does NOT connect the process to the MPS daemon -- without also
+              # setting CUDA_MPS_PIPE_DIRECTORY/CUDA_MPS_LOG_DIRECTORY (and mounting
+              # the daemon's actual pipe/log hostPath), CUDA silently falls back to
+              # direct GPU access and the memory limit is never enforced at all. A
+              # test pod missing this wiring allocated 16x its configured 1GB limit
+              # with zero errors; the identical test WITH this wiring correctly
+              # failed at ~1GB. See docs/troubleshooting.md for the full incident.
               memory_mib = cfg.get('memory_mib')
               if memory_mib:
                   spawner.environment['CUDA_MPS_PINNED_DEVICE_MEM_LIMIT'] = f"0={memory_mib}M"
+                  spawner.environment['CUDA_MPS_PIPE_DIRECTORY'] = '/mps/nvidia.com/gpu/pipe'
+                  spawner.environment['CUDA_MPS_LOG_DIRECTORY'] = '/mps/nvidia.com/gpu/log'
                   spawner.extra_annotations = spawner.extra_annotations or {}
                   spawner.extra_annotations.update({'gpu-memory': str(memory_mib)})
+
+                  mps_pipe_volume = {'name': 'mps-pipe', 'hostPath': {'path': '/run/nvidia/mps/nvidia.com/gpu/pipe', 'type': 'DirectoryOrCreate'}}
+                  mps_log_volume = {'name': 'mps-log', 'hostPath': {'path': '/run/nvidia/mps/nvidia.com/gpu/log', 'type': 'DirectoryOrCreate'}}
+                  mps_pipe_mount = {'name': 'mps-pipe', 'mountPath': '/mps/nvidia.com/gpu/pipe'}
+                  mps_log_mount = {'name': 'mps-log', 'mountPath': '/mps/nvidia.com/gpu/log'}
+                  if spawner.volumes is None:
+                      spawner.volumes = []
+                  if spawner.volume_mounts is None:
+                      spawner.volume_mounts = []
+                  if isinstance(spawner.volumes, list):
+                      spawner.volumes.extend([mps_pipe_volume, mps_log_volume])
+                  elif isinstance(spawner.volumes, dict):
+                      spawner.volumes[mps_pipe_volume['name']] = mps_pipe_volume
+                      spawner.volumes[mps_log_volume['name']] = mps_log_volume
+                  if isinstance(spawner.volume_mounts, list):
+                      spawner.volume_mounts.extend([mps_pipe_mount, mps_log_mount])
+                  elif isinstance(spawner.volume_mounts, dict):
+                      spawner.volume_mounts[mps_pipe_mount['name']] = mps_pipe_mount
+                      spawner.volume_mounts[mps_log_mount['name']] = mps_log_mount
 
               # Route all GPU profiles (except gpu-slurm, which has gpu=0 and is
               # handled separately below via 'scheduler_name'/'extra_labels') through

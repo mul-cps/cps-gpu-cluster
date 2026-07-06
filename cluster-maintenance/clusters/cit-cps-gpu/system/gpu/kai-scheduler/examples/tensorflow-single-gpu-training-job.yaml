@@ -44,8 +44,18 @@ spec:
             - "--resume-from-latest"
           env:
             # Must match the gpu-memory annotation value above.
+            #
+            # CRITICAL (found live, 2026-07-06): this env var ALONE does not
+            # connect the process to the MPS daemon -- CUDA_MPS_PIPE_DIRECTORY/
+            # CUDA_MPS_LOG_DIRECTORY below (and the matching mounts) are
+            # required too, or the limit is silently never enforced. See
+            # docs/troubleshooting.md.
             - name: CUDA_MPS_PINNED_DEVICE_MEM_LIMIT
               value: "0=20480M"
+            - name: CUDA_MPS_PIPE_DIRECTORY
+              value: "/mps/nvidia.com/gpu/pipe"
+            - name: CUDA_MPS_LOG_DIRECTORY
+              value: "/mps/nvidia.com/gpu/log"
             # Keeps TF from grabbing all GPU memory upfront, which would
             # conflict with the MPS memory limit above.
             - name: TF_FORCE_GPU_ALLOW_GROWTH
@@ -57,9 +67,11 @@ spec:
             - name: checkpoints
               mountPath: /checkpoints
             # Required for CUDA MPS clients to reach the MPS control
-            # daemon's pipe directory on the node.
-            - name: mps
-              mountPath: /tmp/nvidia-mps
+            # daemon's pipe/log directories on the node.
+            - name: mps-pipe
+              mountPath: /mps/nvidia.com/gpu/pipe
+            - name: mps-log
+              mountPath: /mps/nvidia.com/gpu/log
           resources:
             requests:
               cpu: "4"
@@ -75,9 +87,13 @@ spec:
           persistentVolumeClaim:
             claimName: training-checkpoints-pvc
         # Required for CUDA MPS clients to reach the MPS control daemon.
-        - name: mps
+        - name: mps-pipe
           hostPath:
-            path: /tmp/nvidia-mps
+            path: /run/nvidia/mps/nvidia.com/gpu/pipe
+            type: DirectoryOrCreate
+        - name: mps-log
+          hostPath:
+            path: /run/nvidia/mps/nvidia.com/gpu/log
             type: DirectoryOrCreate
 ---
 # Reuses the same training-data-pvc (ReadOnlyMany) / training-checkpoints-pvc

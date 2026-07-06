@@ -76,24 +76,47 @@ spec:
             # Must match the gpu-memory annotation above (MiB). This is
             # what NVIDIA MPS actually enforces - KAI only schedules
             # against the annotation, it does not enforce it.
+            #
+            # CRITICAL (found live, 2026-07-06): this env var ALONE does
+            # NOT connect the process to the MPS daemon. Without also
+            # setting CUDA_MPS_PIPE_DIRECTORY/CUDA_MPS_LOG_DIRECTORY to
+            # match the daemon's actual socket/log paths (and mounting
+            # them below), CUDA silently falls back to direct GPU access
+            # and this limit is never enforced at all - confirmed by a
+            # test pod without this wiring allocating 16x its configured
+            # limit with zero errors. See docs/troubleshooting.md.
             - name: CUDA_MPS_PINNED_DEVICE_MEM_LIMIT
               value: "0=10240M"
+            - name: CUDA_MPS_PIPE_DIRECTORY
+              value: "/mps/nvidia.com/gpu/pipe"
+            - name: CUDA_MPS_LOG_DIRECTORY
+              value: "/mps/nvidia.com/gpu/log"
           volumeMounts:
             - name: checkpoints
               mountPath: /checkpoints
             # Required for the pod to actually talk to the host's MPS
-            # control daemon (nvidia-cuda-mps-control), per KAI's
-            # upstream MPS-sharing example. Must match the MPS server's
-            # CUDA_MPS_PIPE_DIRECTORY on the node.
-            - name: mps
-              mountPath: /tmp/nvidia-mps
+            # control daemon. Paths must match the daemon's own mount
+            # (confirmed live via `kubectl get pod
+            # nvidia-device-plugin-mps-control-daemon-... -n gpu-operator
+            # -o jsonpath='{.spec.containers[0].volumeMounts}'`: hostPath
+            # /run/nvidia/mps -> container /mps, with the daemon creating
+            # nvidia.com/gpu/pipe and nvidia.com/gpu/log underneath that
+            # at runtime).
+            - name: mps-pipe
+              mountPath: /mps/nvidia.com/gpu/pipe
+            - name: mps-log
+              mountPath: /mps/nvidia.com/gpu/log
       volumes:
         - name: checkpoints
           persistentVolumeClaim:
             claimName: single-gpu-mps-shared-job-checkpoints
-        - name: mps
+        - name: mps-pipe
           hostPath:
-            path: /tmp/nvidia-mps
+            path: /run/nvidia/mps/nvidia.com/gpu/pipe
+            type: DirectoryOrCreate
+        - name: mps-log
+          hostPath:
+            path: /run/nvidia/mps/nvidia.com/gpu/log
             type: DirectoryOrCreate
 ---
 apiVersion: v1
