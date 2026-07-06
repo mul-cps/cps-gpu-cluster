@@ -1344,6 +1344,20 @@ hub:
 
       # ---------- Generate profile list ----------
       c.KubeSpawner.image_pull_policy = 'Always'
+      # Route every spawned pod through KAI Scheduler by default, not just
+      # GPU profiles -- previously only set inside apply_profile_settings
+      # for GPU profiles, which left any non-GPU pod (and any pod spawned
+      # before the profile hook's scheduler_name assignment took effect)
+      # eligible for whatever scheduler the chart's built-in
+      # scheduling.userScheduler happened to be running, causing
+      # inconsistent routing between kai-scheduler and
+      # jupyterhub-user-scheduler. See docs/troubleshooting.md and
+      # scheduling.userScheduler.enabled: false below -- both changes are
+      # required together (a per-spawner default here does not stop a
+      # second, independently-active scheduler from also competing for
+      # placement of the same pods). gpu-slurm profile still overrides
+      # this via cfg['scheduler_name'] in apply_profile_settings.
+      c.KubeSpawner.scheduler_name = 'kai-scheduler'
       
       def get_profile_list(spawner):
           # Filter profiles based on user groups
@@ -1766,8 +1780,25 @@ singleuser:
     DASK_KUBERNETES__OPERATOR__NAMESPACE: "dask-compute"
 
 scheduling:
+  # Disabled 2026-07-06: this chart's built-in user-scheduler is a
+  # relabeled kube-scheduler whose only purpose is bin-packing pods onto
+  # the most-utilized node for cloud autoscaling (see
+  # https://z2jh.jupyter.org/en/stable/administrator/optimization.html --
+  # "Only activate the user scheduler if you have an autoscaling node
+  # pool"). We don't autoscale nodes, and running it alongside
+  # kai-scheduler caused a real incident: a live user session
+  # (jupyter-gottam) was scheduled by userScheduler instead of
+  # kai-scheduler and was not subject to KAI's GPU reservation/priority
+  # accounting at all, double-booking a physical GPU that KAI had already
+  # allocated to a batch job on the same node (see
+  # docs/troubleshooting.md). Two independently-active schedulers with
+  # overlapping placement targets is a known unstable pattern (same class
+  # of bug as jupyterhub/zero-to-jupyterhub-k8s#1592). KAI's own
+  # priority/queue system already provides the scheduling intelligence
+  # this cluster needs; disable userScheduler entirely rather than rely on
+  # every current and future profile remembering to set scheduler_name.
   userScheduler:
-    enabled: true
+    enabled: false
   podPriority:
     enabled: true
   userPlaceholder:

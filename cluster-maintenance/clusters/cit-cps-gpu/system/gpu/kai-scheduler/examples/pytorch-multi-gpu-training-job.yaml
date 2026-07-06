@@ -156,6 +156,34 @@ spec:
                   fieldPath: metadata.annotations['batch.kubernetes.io/job-completion-index']
             - name: NCCL_DEBUG
               value: "INFO"
+            # torchrun defaults OMP_NUM_THREADS to 1 per process to avoid
+            # oversubscribing the host when it can't see the real CPU
+            # request (confirmed live 2026-07-06 -- every torchrun launch on
+            # this cluster prints "Setting OMP_NUM_THREADS ... to be 1").
+            # With 8 CPUs requested / 2 GPU processes per pod, 1 thread
+            # leaves 7 of the requested cores idle per process for
+            # data-loading/preprocessing. Set explicitly to requests.cpu /
+            # nproc_per_node -- adjust if you change either value below.
+            - name: OMP_NUM_THREADS
+              value: "4"
+            # NCCL socket transport tuning for this cluster's 10GbE
+            # inter-node fabric (no InfiniBand/RDMA). Verified live
+            # 2026-07-06: an untuned 8-GPU/4-node NCCL all_reduce measured
+            # only ~0.39 GB/s (~3.1 Gbit/s of the 10 Gbit link) on inter-node
+            # point-to-point at 256MB -- well under line rate, because NCCL's
+            # default socket transport uses too few threads/sockets to
+            # saturate a single 10GbE NIC. Increasing socket parallelism is
+            # the standard NCCL tuning knob for non-RDMA Ethernet fabrics
+            # (see NVIDIA's NCCL env var docs, NCCL_NSOCKS_PERTHREAD /
+            # NCCL_SOCKET_NTHREADS). Re-run the discriminator test in
+            # docs/troubleshooting.md's NCCL benchmark section after
+            # changing these to confirm improvement on your actual hardware
+            # before trusting these specific values -- they are a
+            # starting point, not verified-optimal.
+            - name: NCCL_SOCKET_NTHREADS
+              value: "4"
+            - name: NCCL_NSOCKS_PERTHREAD
+              value: "4"
           resources:
             # Whole-GPU, non-fractional allocation -- see comment block at
             # top of file for why this job cannot use the gpu-memory /

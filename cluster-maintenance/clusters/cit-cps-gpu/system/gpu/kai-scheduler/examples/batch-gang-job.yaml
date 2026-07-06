@@ -212,9 +212,26 @@ spec:
              "--nnodes=4", "--nproc_per_node=1",
              "--node_rank=0", "--master_addr=distributed-gang-job-worker-0",
              "train_ddp.py", "--checkpoint-dir", "/checkpoints"]
+      env:
+        # See pytorch-multi-gpu-training-job.yaml for why these matter --
+        # torchrun defaults OMP_NUM_THREADS to 1 (leaving requested CPUs
+        # idle), and NCCL's default socket transport under-saturates this
+        # cluster's 10GbE inter-node fabric (measured ~0.39 GB/s at 256MB
+        # untuned, live 2026-07-06 -- see docs/troubleshooting.md).
+        - name: OMP_NUM_THREADS
+          value: "4"
+        - name: NCCL_SOCKET_NTHREADS
+          value: "4"
+        - name: NCCL_NSOCKS_PERTHREAD
+          value: "4"
       resources:
         limits:
           nvidia.com/gpu: "1"
+          cpu: "4"
+          memory: "16Gi"
+        requests:
+          cpu: "4"
+          memory: "16Gi"
       volumeMounts:
         - name: checkpoints
           mountPath: /checkpoints
@@ -245,9 +262,26 @@ spec:
              "--nnodes=4", "--nproc_per_node=1",
              "--node_rank=1", "--master_addr=distributed-gang-job-worker-0",
              "train_ddp.py", "--checkpoint-dir", "/checkpoints"]
+      env:
+        # See pytorch-multi-gpu-training-job.yaml for why these matter --
+        # torchrun defaults OMP_NUM_THREADS to 1 (leaving requested CPUs
+        # idle), and NCCL's default socket transport under-saturates this
+        # cluster's 10GbE inter-node fabric (measured ~0.39 GB/s at 256MB
+        # untuned, live 2026-07-06 -- see docs/troubleshooting.md).
+        - name: OMP_NUM_THREADS
+          value: "4"
+        - name: NCCL_SOCKET_NTHREADS
+          value: "4"
+        - name: NCCL_NSOCKS_PERTHREAD
+          value: "4"
       resources:
         limits:
           nvidia.com/gpu: "1"
+          cpu: "4"
+          memory: "16Gi"
+        requests:
+          cpu: "4"
+          memory: "16Gi"
       volumeMounts:
         - name: checkpoints
           mountPath: /checkpoints
@@ -278,9 +312,26 @@ spec:
              "--nnodes=4", "--nproc_per_node=1",
              "--node_rank=2", "--master_addr=distributed-gang-job-worker-0",
              "train_ddp.py", "--checkpoint-dir", "/checkpoints"]
+      env:
+        # See pytorch-multi-gpu-training-job.yaml for why these matter --
+        # torchrun defaults OMP_NUM_THREADS to 1 (leaving requested CPUs
+        # idle), and NCCL's default socket transport under-saturates this
+        # cluster's 10GbE inter-node fabric (measured ~0.39 GB/s at 256MB
+        # untuned, live 2026-07-06 -- see docs/troubleshooting.md).
+        - name: OMP_NUM_THREADS
+          value: "4"
+        - name: NCCL_SOCKET_NTHREADS
+          value: "4"
+        - name: NCCL_NSOCKS_PERTHREAD
+          value: "4"
       resources:
         limits:
           nvidia.com/gpu: "1"
+          cpu: "4"
+          memory: "16Gi"
+        requests:
+          cpu: "4"
+          memory: "16Gi"
       volumeMounts:
         - name: checkpoints
           mountPath: /checkpoints
@@ -311,9 +362,26 @@ spec:
              "--nnodes=4", "--nproc_per_node=1",
              "--node_rank=3", "--master_addr=distributed-gang-job-worker-0",
              "train_ddp.py", "--checkpoint-dir", "/checkpoints"]
+      env:
+        # See pytorch-multi-gpu-training-job.yaml for why these matter --
+        # torchrun defaults OMP_NUM_THREADS to 1 (leaving requested CPUs
+        # idle), and NCCL's default socket transport under-saturates this
+        # cluster's 10GbE inter-node fabric (measured ~0.39 GB/s at 256MB
+        # untuned, live 2026-07-06 -- see docs/troubleshooting.md).
+        - name: OMP_NUM_THREADS
+          value: "4"
+        - name: NCCL_SOCKET_NTHREADS
+          value: "4"
+        - name: NCCL_NSOCKS_PERTHREAD
+          value: "4"
       resources:
         limits:
           nvidia.com/gpu: "1"
+          cpu: "4"
+          memory: "16Gi"
+        requests:
+          cpu: "4"
+          memory: "16Gi"
       volumeMounts:
         - name: checkpoints
           mountPath: /checkpoints

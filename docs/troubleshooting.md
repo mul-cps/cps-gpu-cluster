@@ -741,6 +741,75 @@ NVLink/P2P transport unless they're the same process). For real distributed
 training performance, genuine multi-GPU-per-pod placement matters far more
 than merely scheduling pods onto the same physical node.
 
+**Follow-up (2026-07-06): real 8-GPU/4-node gang-scheduled job, full
+cluster.** Ran a genuine `torchrun --nnodes=4 --nproc_per_node=2` job across
+all 4 nodes (all 8 physical GPUs, real `nvidia.com/gpu: 2` per pod, explicit
+`PodGroup` gang scheduling via KAI). Correctness check passed
+(`all_reduce` sum across all 8 ranks matched expected value exactly).
+Bandwidth results, untuned defaults:
+- All-8-GPU ring `all_reduce`: only ~0.13-0.23 GB/s busbw at every message
+  size from 1MB to 1GB — bottlenecked by the slowest link in the ring
+  (inter-node, over this cluster's 10GbE fabric), as expected for ring
+  collectives.
+- Intra-node point-to-point (PCIe, same physical node): 229.8 GB/s at
+  256MB — consistent with the earlier 2-GPU finding above.
+- Inter-node point-to-point (10GbE): only 0.39 GB/s at 256MB (~3.1 Gbit/s
+  of the nominal 10 Gbit/s link) — well under line rate. NCCL's default
+  socket transport does not saturate a single 10GbE NIC out of the box.
+
+**Fix applied to the batch job examples**: set `NCCL_SOCKET_NTHREADS=4` /
+`NCCL_NSOCKS_PERTHREAD=4` (standard NCCL tuning knobs for non-RDMA
+Ethernet fabrics) and `OMP_NUM_THREADS` explicitly (torchrun defaults this
+to 1 per process when it can't see the real CPU request, printing
+`Setting OMP_NUM_THREADS ... to be 1` on every launch — confirmed live,
+leaves most of a multi-core CPU request idle for data-loading/
+preprocessing) in `kai-scheduler/examples/pytorch-multi-gpu-training-job.yaml`
+and `batch-gang-job.yaml`. These are a reasonable starting point, not
+verified-optimal for this exact NIC/driver combination — re-run the
+inter-node point-to-point discriminator test above after changing them to
+confirm actual improvement before trusting a specific value in production.
+
+**Operational note**: the 8-GPU run also surfaced a real incident —
+force-deleting a stuck pod holding a GPU on one node left that node's
+GPUs in a "device busy" state for any subsequent real CUDA workload; see
+the dedicated entry below ("Force-deleting a pod with a live CUDA context
+can leave the GPU stuck") for the cause and fix.
+
+### Force-deleting a pod with a live CUDA context can leave the GPU stuck ("device busy or unavailable") until the MPS daemon restarts
+
+**Symptom**: after force-deleting a pod that was mid-spawn/holding a GPU
+(`kubectl delete pod ... --grace-period=0 --force`), every subsequent real
+CUDA workload on that node's GPUs fails deterministically with
+`RuntimeError: CUDA error: CUDA-capable device(s) is/are busy or
+unavailable`, even in complete isolation (a single pod, no other workload,
+no other process shown by `nvidia-smi`/`--query-compute-apps` other than
+`nvidia-cuda-mps-server`). `nvidia-smi` itself (query-only) still works
+fine, and ECC/throttle status is clean — this is not a hardware fault.
+
+**Root cause**: found live 2026-07-06 on `k3s-wk-gpu4`, hit while
+force-deleting a stuck user JupyterHub pod (`jupyter-gottam`) that was
+occupying a GPU during an unrelated NCCL benchmark test. Both GPUs on the
+node were in `Exclusive_Process` compute mode (required for the MPS
+control daemon's server context) — force-killing a client process
+mid-context-teardown, or simply the general churn of pods rapidly
+claiming/releasing a device in this mode, can leave a stale exclusive-mode
+lock at the driver level that a plain `nvidia-smi --gpu-reset` cannot
+clear either (`In use by another client` — referring to the still-running
+MPS server's own persistent context).
+
+**Fix (verified, no Proxmox-level power cycle needed)**: delete and let
+the DaemonSet recreate the `mps-control-daemon-standalone` pod on the
+affected node (`kubectl delete pod -n gpu-operator
+mps-control-daemon-standalone-<node-suffix>`). This cleanly tears down and
+re-establishes the MPS server's own context, which clears the stuck lock.
+Verified: a real 2-GPU PyTorch compute workload that failed deterministically
+before the daemon restart succeeded immediately after, with correct
+results on both devices. This is a much cheaper fix than the VFIO
+passthrough GPU reset documented elsewhere in this file (which needs a
+real Proxmox-level `qm stop`/`qm start`) — try this first for any
+"device busy" error on a node running the standalone MPS daemon before
+escalating to a full VM power cycle.
+
 ---
 
 ## Storage Issues
