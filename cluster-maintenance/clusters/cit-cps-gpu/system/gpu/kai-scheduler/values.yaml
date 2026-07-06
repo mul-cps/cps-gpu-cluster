@@ -8,6 +8,22 @@ global:
   # request outright ("GPU sharing is disabled"). Confirmed live
   # (2026-07-06) via kubectl patch before landing this repo change.
   gpuSharing: true
+  # Bumped from 1 to 2 (2026-07-06): the admission webhook's
+  # namespaceSelector is broad by design (NotIn [kube-system,
+  # kai-scheduler]) and matches nearly every pod creation cluster-wide,
+  # regardless of schedulerName -- confirmed live during a real incident
+  # where a single admission pod became briefly unreachable (post-network-
+  # outage Flannel breakage) and blocked ALL pod scheduling cluster-wide,
+  # including pods that never requested kai-scheduler at all. Filed
+  # https://github.com/kai-scheduler/KAI-Scheduler/issues/1842 asking for a
+  # configurable namespaceSelector to narrow this properly, but there is no
+  # per-component replicaCount override in this chart version (only this
+  # global knob) -- a second replica of every KAI control-plane component
+  # is a broader change than "just fix admission", but reduces the exact
+  # single-point-of-failure that caused the incident, with a matching
+  # PodDisruptionBudget (admission-pdb.yaml) so a voluntary
+  # eviction/rollout can't take both replicas down at once either.
+  replicaCount: 2
 
 admission:
   gpuPodRuntimeClassName: nvidia

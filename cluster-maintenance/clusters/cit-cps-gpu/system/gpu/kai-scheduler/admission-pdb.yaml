@@ -1,0 +1,16 @@
+# PodDisruptionBudget for KAI's admission webhook, added alongside bumping
+# global.replicaCount to 2 in values.yaml (see that file's comment for the
+# incident this responds to). Ensures a voluntary disruption (node drain,
+# descheduler eviction, rolling upgrade) can't take down both admission
+# replicas simultaneously, which would repeat the same cluster-wide
+# pod-scheduling outage this was added to prevent.
+apiVersion: policy/v1
+kind: PodDisruptionBudget
+metadata:
+  name: admission-pdb
+  namespace: kai-scheduler
+spec:
+  minAvailable: 1
+  selector:
+    matchLabels:
+      app: admission
