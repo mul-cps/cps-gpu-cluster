@@ -1186,7 +1186,7 @@ hub:
           # physical resource type - no more MIG-specific extended resource names).
           'gpu-3gb': {
               'display_name': 'GPU Tiny (3GB, shared)',
-              'description': 'MPS-shared A100 slice (3GB VRAM) • 4 vCPU • 16 GiB',
+              'description': '3GB VRAM via MPS sharing • 4 vCPU • 16 GiB',
               'image': 'ghcr.io/mul-cps/cps-jupyter-notebook:latest-pytorch-code',
               'cpu_limit': 4.0, 'cpu_guarantee': 2.0,
               'mem_limit': '16G', 'mem_guarantee': '8G',
@@ -1199,7 +1199,7 @@ hub:
           },
           'gpu-5gb': {
               'display_name': 'GPU Small (5GB, shared)',
-              'description': 'MPS-shared A100 slice (5GB VRAM) • 6 vCPU • 24 GiB',
+              'description': '5GB VRAM via MPS sharing • 6 vCPU • 24 GiB',
               'image': 'ghcr.io/mul-cps/cps-jupyter-notebook:latest-pytorch-code',
               'cpu_limit': 6.0, 'cpu_guarantee': 3.0,
               'mem_limit': '24G', 'mem_guarantee': '12G',
@@ -1212,7 +1212,7 @@ hub:
           },
           'gpu-8gb': {
               'display_name': 'GPU Small-Medium (8GB, shared)',
-              'description': 'MPS-shared A100 slice (8GB VRAM) • 8 vCPU • 32 GiB',
+              'description': '8GB VRAM via MPS sharing • 8 vCPU • 32 GiB',
               'image': 'ghcr.io/mul-cps/cps-jupyter-notebook:latest-pytorch-code',
               'cpu_limit': 8.0, 'cpu_guarantee': 4.0,
               'mem_limit': '32G', 'mem_guarantee': '16G',
@@ -1225,7 +1225,7 @@ hub:
           },
           'gpu-10gb': {
               'display_name': 'GPU Medium (10GB, shared)',
-              'description': 'MPS-shared A100 slice (10GB VRAM) • 10 vCPU • 40 GiB',
+              'description': '10GB VRAM via MPS sharing • 10 vCPU • 40 GiB',
               'image': 'ghcr.io/mul-cps/cps-jupyter-notebook:latest-pytorch-code',
               'cpu_limit': 10.0, 'cpu_guarantee': 5.0,
               'mem_limit': '40G', 'mem_guarantee': '20G',
@@ -1238,7 +1238,7 @@ hub:
           },
           'gpu-12gb': {
               'display_name': 'GPU Medium-Large (12GB, shared)',
-              'description': 'MPS-shared A100 slice (12GB VRAM) • 12 vCPU • 48 GiB',
+              'description': '12GB VRAM via MPS sharing • 12 vCPU • 48 GiB',
               'image': 'ghcr.io/mul-cps/cps-jupyter-notebook:latest-pytorch-code',
               'cpu_limit': 12.0, 'cpu_guarantee': 6.0,
               'mem_limit': '48G', 'mem_guarantee': '24G',
@@ -1251,7 +1251,7 @@ hub:
           },
           'gpu-20gb': {
               'display_name': 'GPU Large (20GB, shared)',
-              'description': 'MPS-shared A100 slice (20GB VRAM) • 16 vCPU • 64 GiB',
+              'description': '20GB VRAM via MPS sharing • 16 vCPU • 64 GiB',
               'image': 'ghcr.io/mul-cps/cps-jupyter-notebook:latest-pytorch-code',
               'cpu_limit': 16.0, 'cpu_guarantee': 8.0,
               'mem_limit': '64G', 'mem_guarantee': '32G',
@@ -1269,7 +1269,7 @@ hub:
           # based on actual course/lab GPU memory requirements.
           'gpu-student': {
               'display_name': 'GPU Student (Shared)',
-              'description': 'MPS-shared A100 slice (5GB VRAM, course queue) • 6 vCPU • 24 GiB',
+              'description': '5GB VRAM via MPS sharing, course queue • 6 vCPU • 24 GiB',
               'image': 'ghcr.io/mul-cps/cps-jupyter-notebook:latest-pytorch-code',
               'cpu_limit': 6.0, 'cpu_guarantee': 3.0,
               'mem_limit': '24G', 'mem_guarantee': '12G',
@@ -1297,7 +1297,7 @@ hub:
           },
           'gpu-desktop-5gb': {
               'display_name': 'GPU Small (Desktop + ROS 2, shared)',
-              'description': 'Desktop + ROS 2 • MPS-shared A100 slice (5GB VRAM) • 6 vCPU • 24 GiB',
+              'description': 'Desktop + ROS 2 • 5GB VRAM via MPS sharing • 6 vCPU • 24 GiB',
               'image': 'ghcr.io/mul-cps/cps-jupyter-notebook:latest-desktop-ros2',
               'cpu_limit': 6.0, 'cpu_guarantee': 3.0,
               'mem_limit': '24G', 'mem_guarantee': '12G',
