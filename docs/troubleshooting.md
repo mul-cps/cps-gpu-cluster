@@ -1032,6 +1032,40 @@ kubectl get sc fast-scratch -o yaml
 kubectl get nodes -l scratch=nvme
 ```
 
+### Longhorn upgrade skipped (2026-07-06): capacity/eviction state too unstable
+
+**Context**: a routine version-bump pass considered upgrading Longhorn
+from v1.9.2 towards v1.10.x/v1.11.3. This was intentionally SKIPPED.
+
+**Why**: this cluster has an unresolved Longhorn capacity problem --
+`default-disk` is mid-eviction-adjacent on all 4 GPU nodes and
+`nvme-scratch` is scheduled beyond 100% capacity on 3/4 nodes. Checking
+live volume state (`kubectl get volumes.longhorn.io -n longhorn-system`)
+at the time confirmed the risk is not theoretical:
+
+- 1 volume `degraded`/`attached` (rebuild-in-progress signature)
+- 2 volumes `faulted`
+- 33 volumes `unknown`/`detached` (expected for currently-unmounted PVCs,
+  not itself a problem)
+
+Longhorn upgrades replace the manager/engine images cluster-wide and can
+trigger engine live-upgrades on attached volumes; doing that while a
+volume is already mid-rebuild or faulted, on top of disks already at/over
+capacity, risks turning a recoverable degraded-volume situation into data
+loss. Per the standing guidance for this pass ("any risk -> skip"), the
+upgrade was not attempted.
+
+**Before attempting this upgrade in the future**:
+1. Resolve the underlying capacity/eviction problem first (rebalance or
+   add capacity so no disk is over 100% scheduled).
+2. Re-check `kubectl get volumes.longhorn.io -n longhorn-system` and
+   confirm zero volumes are `degraded`/`faulted`/rebuilding.
+3. Take/verify recent backups of any volume holding non-reproducible data
+   before upgrading.
+4. Only then proceed with the v1.9.2 -> v1.10.x/v1.11.3 bump, following
+   Longhorn's official upgrade path (no version-skipping across major
+   minors per their docs).
+
 ---
 
 ## Fleet/GitOps Issues
