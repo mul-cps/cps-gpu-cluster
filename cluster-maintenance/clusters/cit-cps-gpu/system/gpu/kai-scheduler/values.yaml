@@ -8,22 +8,32 @@ global:
   # request outright ("GPU sharing is disabled"). Confirmed live
   # (2026-07-06) via kubectl patch before landing this repo change.
   gpuSharing: true
-  # Bumped from 1 to 2 (2026-07-06): the admission webhook's
-  # namespaceSelector is broad by design (NotIn [kube-system,
-  # kai-scheduler]) and matches nearly every pod creation cluster-wide,
-  # regardless of schedulerName -- confirmed live during a real incident
-  # where a single admission pod became briefly unreachable (post-network-
-  # outage Flannel breakage) and blocked ALL pod scheduling cluster-wide,
-  # including pods that never requested kai-scheduler at all. Filed
-  # https://github.com/kai-scheduler/KAI-Scheduler/issues/1842 asking for a
-  # configurable namespaceSelector to narrow this properly, but there is no
-  # per-component replicaCount override in this chart version (only this
-  # global knob) -- a second replica of every KAI control-plane component
-  # is a broader change than "just fix admission", but reduces the exact
-  # single-point-of-failure that caused the incident, with a matching
-  # PodDisruptionBudget (admission-pdb.yaml) so a voluntary
-  # eviction/rollout can't take both replicas down at once either.
-  replicaCount: 2
+  # INVESTIGATED, NOT SET (2026-07-06): tried setting global.replicaCount:
+  # 2 here to get a second admission webhook replica (the admission
+  # webhook's namespaceSelector is broad by design -- NotIn [kube-system,
+  # kai-scheduler] -- and matches nearly every pod creation cluster-wide
+  # regardless of schedulerName; confirmed live during a real incident
+  # where a single admission pod becoming briefly unreachable blocked ALL
+  # pod scheduling cluster-wide). Traced the chart template
+  # (kai-scheduler/templates/kai-config.yaml:41) and found
+  # `global.replicaCount` only maps to `.Values.operator.replicaCount` --
+  # the kai-operator's OWN replica count, not admission's or any other
+  # component's. admission's replica count is hardcoded to 1 in the
+  # operator's Go controller with no values.yaml/Config-CR override
+  # surface at all in v0.12.10 -- same class of "operator hardcodes it, no
+  # config exposed" gap as the namespaceSelector issue. Filed
+  # https://github.com/kai-scheduler/KAI-Scheduler/issues/1842 for the
+  # namespaceSelector; this replica-count gap should be added to that same
+  # upstream ask (or a new issue) rather than worked around here --
+  # cloning admission the way mps-control-daemon-standalone.yaml clones
+  # the MPS daemon is possible but meaningfully more fragile (admission
+  # runs the actual webhook logic with TLS cert rotation via
+  # certSecretName, not just a passthrough daemon) and wasn't attempted.
+  #
+  # admission-pdb.yaml is still applied (see that file) -- with only 1
+  # replica it can't prevent the exact incident above, but it does stop a
+  # voluntary eviction (node drain, descheduler) from casually taking down
+  # the only admission pod without at least surfacing the block.
 
 admission:
   gpuPodRuntimeClassName: nvidia

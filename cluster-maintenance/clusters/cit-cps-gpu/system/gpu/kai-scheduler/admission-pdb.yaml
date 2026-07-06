@@ -1,9 +1,20 @@
-# PodDisruptionBudget for KAI's admission webhook, added alongside bumping
-# global.replicaCount to 2 in values.yaml (see that file's comment for the
-# incident this responds to). Ensures a voluntary disruption (node drain,
-# descheduler eviction, rolling upgrade) can't take down both admission
-# replicas simultaneously, which would repeat the same cluster-wide
-# pod-scheduling outage this was added to prevent.
+# PodDisruptionBudget for KAI's admission webhook. NOTE (2026-07-06): this
+# component runs a single replica hardcoded by the kai-operator, with no
+# values.yaml override in v0.12.10 to change that (see the comment in
+# values.yaml next to `global.gpuSharing` for the full investigation) --
+# so with minAvailable: 1 and only 1 real replica, this PDB currently
+# allows ZERO voluntary disruptions of it (a node drain or descheduler
+# eviction targeting this pod will be blocked, not rerouted to a second
+# replica). That's still useful -- it prevents this pod from being
+# casually evicted without at least being surfaced as blocked -- but it
+# does NOT protect against the actual failure mode that motivated this
+# (a node/network outage taking the single pod down involuntarily). Real
+# protection requires either an upstream fix for per-component replica
+# counts, or hand-cloning the admission Deployment the way
+# gpu-operator/mps-control-daemon-standalone.yaml clones the MPS daemon --
+# not attempted here since admission's TLS cert rotation
+# (certSecretName-based) makes that meaningfully more fragile to clone
+# correctly than a passthrough daemon.
 apiVersion: policy/v1
 kind: PodDisruptionBudget
 metadata:
