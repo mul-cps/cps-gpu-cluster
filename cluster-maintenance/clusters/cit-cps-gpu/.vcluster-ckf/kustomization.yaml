@@ -1,0 +1,17 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+# CORRECTED 2026-07-06: these raw manifests (the juju-toolbox pod + its
+# RBAC, needed to complete the manual Charmed Kubeflow bootstrap described
+# in README.md) were never actually applied by Fleet. This bundle's
+# fleet.yaml had no kustomize stanza at all, and Fleet was not picking
+# these files up as bare sibling manifests (unlike some other bundles in
+# this repo) -- confirmed live: no juju-toolbox pod, no juju-toolbox-sa
+# ServiceAccount ever existed, despite the bundle showing "1/1 ready"
+# (Fleet was only tracking the vcluster Helm release itself). Wiring these
+# in explicitly via kustomize, matching the proven-working pattern used by
+# other bundles in this repo (e.g. user/jupyter/jupyterhub-test).
+resources:
+  - rbac-host.yaml
+  - juju-toolbox-rbac.yaml
+  - juju-toolbox.yaml
