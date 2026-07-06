@@ -23,6 +23,12 @@ ingress:
       hosts: [jupyterhub.dshl.unileoben.ac.at]
 
 hub:
+  extraEnv:
+    - name: OAUTH_CLIENT_SECRET
+      valueFrom:
+        secretKeyRef:
+          name: jupyterhub-oauth-secret
+          key: client-secret
   config:
     JupyterHub:
       admin_access: true
@@ -39,7 +45,15 @@ hub:
       # TODO: REMOVE THIS WORKAROUND - disables TLS verification for self-signed Authentik certs
       tls_verify: false
       client_id: "vUhzKqEF0UxPtZNM8aRbA1ncaehhIAIA2x9r83FI"
-      client_secret: "EbAzlZLERPQzmF2EQByhihKuUqp36u138fYERPptymppmJbWhquI4sHu9vchqtnMRqbAVnZS6nOA6G0FescWa13MOLdlegQB3yyZSqe5V32NtYsnfDOndyZHiqiL2Bj6"
+      # client_secret is set via extraConfig/00-oauth-secret below, read from
+      # the OAUTH_CLIENT_SECRET env var (injected from the jupyterhub-oauth-secret
+      # k8s Secret via hub.extraEnv). CORRECTED 2026-07-06: this value was
+      # previously committed here in plaintext -- removed from HEAD, but the
+      # exposed value is still permanently in this repo's git history and
+      # must be rotated in Authentik (Applications -> this OAuth provider ->
+      # regenerate client secret), independent of this code fix. Update the
+      # jupyterhub-oauth-secret k8s Secret's client-secret key with the new
+      # value after rotating, then `kubectl rollout restart deploy/hub -n jupyterhub`.
       oauth_callback_url: "https://jupyterhub.dshl.unileoben.ac.at/hub/oauth_callback"
       authorize_url: "https://auth.cps.unileoben.ac.at/application/o/authorize/"
       token_url: "https://auth.cps.unileoben.ac.at/application/o/token/"
@@ -78,6 +92,10 @@ hub:
       mountPath: /harica
 
   extraConfig:
+    00-oauth-secret: |
+      import os
+      c.GenericOAuthenticator.client_secret = os.environ['OAUTH_CLIENT_SECRET']
+
     00-install-packages: |
       import subprocess, sys
       try:
