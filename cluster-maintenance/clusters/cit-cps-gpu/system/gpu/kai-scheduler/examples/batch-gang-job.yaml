@@ -1,0 +1,313 @@
+# Example workloads for the `batch` KAI queue.
+#
+# All GPUs in this cluster (k3s-wk-gpu1..4, 2x A100 each) run in full
+# (non-MIG) mode. Sharing a physical GPU across workloads is done with
+# NVIDIA MPS plus KAI's `gpu-memory` pod annotation (unprefixed, MiB value)
+# for scheduling/bin-packing. KAI schedules against the declared
+# `gpu-memory` value but does NOT enforce it - actual memory enforcement
+# comes from the matching `CUDA_MPS_PINNED_DEVICE_MEM_LIMIT` container env
+# var, which you must set yourself to match.
+#
+# This file shows the two patterns batch users need:
+#
+#   1. single-gpu-mps-shared-job   - a single-GPU, embarrassingly-parallel
+#      job that is happy to share a physical GPU with other work via MPS.
+#      Uses a small `gpu-memory` tier so KAI can pack it alongside other
+#      pods on the same device.
+#
+#   2. distributed-gang-job (Pods + PodGroup) - a multi-GPU job that needs
+#      real NVLink/P2P between GPUs (e.g. PyTorch DDP). Each pod requests
+#      a whole GPU via plain `nvidia.com/gpu: "1"` with NO `gpu-memory`
+#      annotation, so it is allocated through the standard (non-fractional)
+#      device plugin path rather than KAI's MPS-sharing path, and it is
+#      gang-scheduled via an explicit PodGroup so all workers start
+#      together or not at all.
+#
+# See ../docs/batch-job-submission.md for usage notes, including the
+# checkpoint-to-shared-storage requirement for batch queue jobs (they will
+# be evicted by the cluster descheduler for consolidation).
+
+# -----------------------------------------------------------------------
+# Pattern 1: single-GPU, MPS-shared batch job
+# -----------------------------------------------------------------------
+# A single pod carrying `schedulerName: kai-scheduler` + the
+# `kai.scheduler/queue` label is enough for KAI's podgrouper webhook to
+# auto-create a PodGroup for it - no explicit PodGroup needed here.
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: single-gpu-mps-shared-job
+  namespace: default
+spec:
+  # Batch queue jobs have zero guaranteed quota and can be preempted by
+  # kai-course-high / kai-phd-interactive at any time, and may also be
+  # evicted by the cluster descheduler for consolidation. Restart on
+  # failure/eviction and rely on the job's own checkpointing.
+  backoffLimit: 4
+  template:
+    metadata:
+      labels:
+        kai.scheduler/queue: batch
+      annotations:
+        # Modest MPS-shared tier: this pod is happy to share its physical
+        # GPU with other MPS-shared workloads. Must match the
+        # CUDA_MPS_PINNED_DEVICE_MEM_LIMIT value below.
+        gpu-memory: "10240"
+    spec:
+      schedulerName: kai-scheduler
+      priorityClassName: kai-batch-low
+      restartPolicy: OnFailure
+      containers:
+        - name: main
+          image: your-registry/your-batch-image:latest
+          # Replace with your actual entrypoint. The job should checkpoint
+          # periodically to shared storage - see docs/batch-job-submission.md.
+          args: ["python", "train.py", "--checkpoint-dir", "/checkpoints"]
+          # NOTE: deliberately no `nvidia.com/gpu` resource request/limit
+          # here. KAI's fractional/MPS-sharing path is driven entirely by
+          # the `gpu-memory` annotation above - adding an integer
+          # `nvidia.com/gpu` limit routes the pod through the stock
+          # NVIDIA device plugin's whole-GPU allocation instead, which
+          # defeats sharing and conflicts with KAI's fractional
+          # accounting. This matches KAI's own upstream gpu-sharing
+          # examples (docs/gpu-sharing/gpu-memory.yaml upstream), which
+          # also omit `nvidia.com/gpu` on shared pods.
+          env:
+            # Must match the gpu-memory annotation above (MiB). This is
+            # what NVIDIA MPS actually enforces - KAI only schedules
+            # against the annotation, it does not enforce it.
+            - name: CUDA_MPS_PINNED_DEVICE_MEM_LIMIT
+              value: "0=10240M"
+          volumeMounts:
+            - name: checkpoints
+              mountPath: /checkpoints
+            # Required for the pod to actually talk to the host's MPS
+            # control daemon (nvidia-cuda-mps-control), per KAI's
+            # upstream MPS-sharing example. Must match the MPS server's
+            # CUDA_MPS_PIPE_DIRECTORY on the node.
+            - name: mps
+              mountPath: /tmp/nvidia-mps
+      volumes:
+        - name: checkpoints
+          persistentVolumeClaim:
+            claimName: single-gpu-mps-shared-job-checkpoints
+        - name: mps
+          hostPath:
+            path: /tmp/nvidia-mps
+            type: DirectoryOrCreate
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: single-gpu-mps-shared-job-checkpoints
+  namespace: default
+spec:
+  # nfs-client is the default StorageClass backed by the cluster's shared
+  # NFS export - suitable for periodic checkpoint writes from batch jobs.
+  storageClassName: nfs-client
+  accessModes:
+    - ReadWriteMany
+  resources:
+    requests:
+      storage: 50Gi
+
+---
+# -----------------------------------------------------------------------
+# Pattern 2: distributed multi-GPU, gang-scheduled, full-exclusive job
+# -----------------------------------------------------------------------
+# KAI's podgrouper webhook only auto-creates a PodGroup for a single pod
+# carrying schedulerName + kai.scheduler/queue. A multi-pod distributed
+# job (e.g. PyTorch DDP spanning several pods that must all be scheduled
+# together or not at all) needs an EXPLICIT PodGroup so KAI gang-schedules
+# it. This shape (apiVersion scheduling.run.ai/v2alpha2, kind PodGroup,
+# spec.minMember, spec.queue, plus the pod-side
+# `pod-group-name` annotation and `kai.scheduler/skip-podgrouper: "true"`
+# job/pod annotation to stop podgrouper from creating its own PodGroup) is
+# taken directly from NVIDIA's KAI-Scheduler v0.12.10 "external PodGroups"
+# contract - see docs/batch-job-submission.md for exactly where this was
+# verified.
+#
+# minMember below matches the number of worker pods (4), so KAI will not
+# start any of them unless all 4 can be scheduled simultaneously.
+apiVersion: scheduling.run.ai/v2alpha2
+kind: PodGroup
+metadata:
+  name: distributed-gang-job
+  namespace: default
+spec:
+  minMember: 4
+  queue: batch
+  priorityClassName: kai-batch-low
+
+---
+# Worker pods rank 0-3 of a 4-GPU distributed (e.g. PyTorch DDP) job.
+# Each pod requests one whole physical GPU via plain `nvidia.com/gpu: "1"`
+# and deliberately carries NO `gpu-memory` (or `gpu-fraction`) annotation.
+# Per KAI's upstream gpu-sharing docs, `gpu-memory`/`gpu-fraction` are
+# what route a pod through KAI's fractional/MPS-sharing accounting path;
+# omitting them means this pod is allocated a whole GPU through the
+# standard NVIDIA device plugin path, which is the genuine
+# full-exclusive route - not a "gpu-memory: 40960 (= full device)"
+# annotation, which would still be fractional accounting and is
+# unverified to behave as full exclusivity (see below).
+#
+# CORRECTION vs. an earlier draft of this example: combining
+# `nvidia.com/gpu: "1"` with `gpu-memory: "40960"` was considered, but
+# KAI's own upstream examples (docs/gpu-sharing/gpu-memory.yaml,
+# docs/gpu-sharing/gpu-sharing.yaml) never combine an integer
+# `nvidia.com/gpu` limit with a `gpu-memory`/`gpu-fraction` annotation on
+# the same pod - the annotation-based path and the device-plugin
+# integer-request path are presented as alternatives, not additive. So
+# this example uses the plain integer-request path for genuine exclusivity.
+#
+# NOTE (still open): NVLink/P2P is intra-node. Requesting 1 GPU per pod
+# across 4 pods does not by itself guarantee KAI places multiple workers
+# of this job on the same physical node/NVLink domain - if your workload
+# needs guaranteed intra-node NVLink between specific ranks, add a
+# topology constraint (see KAI's docs/topology/) or node affinity; this
+# example only guarantees gang scheduling and whole-GPU exclusivity, not
+# node co-location.
+apiVersion: v1
+kind: Pod
+metadata:
+  name: distributed-gang-job-worker-0
+  namespace: default
+  annotations:
+    pod-group-name: distributed-gang-job
+    kai.scheduler/skip-podgrouper: "true"
+  labels:
+    app: distributed-gang-job
+    role: worker
+spec:
+  schedulerName: kai-scheduler
+  priorityClassName: kai-batch-low
+  restartPolicy: Never
+  containers:
+    - name: main
+      image: your-registry/your-ddp-image:latest
+      args: ["python", "-m", "torch.distributed.run",
+             "--nnodes=4", "--nproc_per_node=1",
+             "--node_rank=0", "--master_addr=distributed-gang-job-worker-0",
+             "train_ddp.py", "--checkpoint-dir", "/checkpoints"]
+      resources:
+        limits:
+          nvidia.com/gpu: "1"
+      volumeMounts:
+        - name: checkpoints
+          mountPath: /checkpoints
+  volumes:
+    - name: checkpoints
+      persistentVolumeClaim:
+        claimName: distributed-gang-job-checkpoints
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: distributed-gang-job-worker-1
+  namespace: default
+  annotations:
+    pod-group-name: distributed-gang-job
+    kai.scheduler/skip-podgrouper: "true"
+  labels:
+    app: distributed-gang-job
+    role: worker
+spec:
+  schedulerName: kai-scheduler
+  priorityClassName: kai-batch-low
+  restartPolicy: Never
+  containers:
+    - name: main
+      image: your-registry/your-ddp-image:latest
+      args: ["python", "-m", "torch.distributed.run",
+             "--nnodes=4", "--nproc_per_node=1",
+             "--node_rank=1", "--master_addr=distributed-gang-job-worker-0",
+             "train_ddp.py", "--checkpoint-dir", "/checkpoints"]
+      resources:
+        limits:
+          nvidia.com/gpu: "1"
+      volumeMounts:
+        - name: checkpoints
+          mountPath: /checkpoints
+  volumes:
+    - name: checkpoints
+      persistentVolumeClaim:
+        claimName: distributed-gang-job-checkpoints
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: distributed-gang-job-worker-2
+  namespace: default
+  annotations:
+    pod-group-name: distributed-gang-job
+    kai.scheduler/skip-podgrouper: "true"
+  labels:
+    app: distributed-gang-job
+    role: worker
+spec:
+  schedulerName: kai-scheduler
+  priorityClassName: kai-batch-low
+  restartPolicy: Never
+  containers:
+    - name: main
+      image: your-registry/your-ddp-image:latest
+      args: ["python", "-m", "torch.distributed.run",
+             "--nnodes=4", "--nproc_per_node=1",
+             "--node_rank=2", "--master_addr=distributed-gang-job-worker-0",
+             "train_ddp.py", "--checkpoint-dir", "/checkpoints"]
+      resources:
+        limits:
+          nvidia.com/gpu: "1"
+      volumeMounts:
+        - name: checkpoints
+          mountPath: /checkpoints
+  volumes:
+    - name: checkpoints
+      persistentVolumeClaim:
+        claimName: distributed-gang-job-checkpoints
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: distributed-gang-job-worker-3
+  namespace: default
+  annotations:
+    pod-group-name: distributed-gang-job
+    kai.scheduler/skip-podgrouper: "true"
+  labels:
+    app: distributed-gang-job
+    role: worker
+spec:
+  schedulerName: kai-scheduler
+  priorityClassName: kai-batch-low
+  restartPolicy: Never
+  containers:
+    - name: main
+      image: your-registry/your-ddp-image:latest
+      args: ["python", "-m", "torch.distributed.run",
+             "--nnodes=4", "--nproc_per_node=1",
+             "--node_rank=3", "--master_addr=distributed-gang-job-worker-0",
+             "train_ddp.py", "--checkpoint-dir", "/checkpoints"]
+      resources:
+        limits:
+          nvidia.com/gpu: "1"
+      volumeMounts:
+        - name: checkpoints
+          mountPath: /checkpoints
+  volumes:
+    - name: checkpoints
+      persistentVolumeClaim:
+        claimName: distributed-gang-job-checkpoints
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: distributed-gang-job-checkpoints
+  namespace: default
+spec:
+  storageClassName: nfs-client
+  accessModes:
+    - ReadWriteMany
+  resources:
+    requests:
+      storage: 200Gi
