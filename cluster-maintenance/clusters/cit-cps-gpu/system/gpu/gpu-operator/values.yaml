@@ -24,6 +24,9 @@ daemonsets:
     - key: nvidia.com/gpu
       operator: Exists
       effect: NoSchedule
+    - key: gpu-pool
+      operator: Exists
+      effect: NoSchedule
   # Use UPDATE strategy to allow rolling updates
   updateStrategy: RollingUpdate
 

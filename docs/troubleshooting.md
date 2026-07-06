@@ -298,9 +298,240 @@ kubectl get daemonset -n gpu-operator nvidia-device-plugin-daemonset
 kubectl get nodes --show-labels | grep accelerator
 ```
 
+### ClusterPolicy stuck NotReady / MIG config stuck in "failed"
+
+**Symptom**: `kubectl get clusterpolicy cluster-policy -o jsonpath='{.status.conditions}'` shows
+`states not ready: [state-operator-validation state-device-plugin]` (or similar) indefinitely.
+A specific node shows `nvidia.com/mig.config.state=failed`, its
+`nvidia-device-plugin-daemonset` is `CrashLoopBackOff` with
+`unable to create cdi spec file: ... invalid spec, no devices`, and
+`nvidia-cuda-validator`/`nvidia-operator-validator` are stuck
+`Init:CrashLoopBackOff`.
+
+**Root cause**: `nvidia-mig-manager` hit a transient Kubernetes API conflict
+while trying to reconcile the node's MIG geometry (`Operation cannot be
+fulfilled on nodes "...": the object has been modified`), gave up, wrote
+`mig.config.state=failed`, and then just sits waiting for the
+`nvidia.com/mig.config` label to change again — it does not keep retrying on
+its own. The node label conflict is usually caused by something else writing
+to the node object around the same time (another controller, another
+`kubectl label` call, a Fleet reconcile, etc.), not a real hardware fault.
+
+**Fast fix** (works when the node's actual MIG *mode* already matches the
+target — i.e. you're only fixing a stuck *geometry* reconcile, not asking it
+to flip MIG mode on/off): force a fresh reconcile attempt by deleting the
+stuck `nvidia-mig-manager` pod on that node. It restarts, re-reads the label,
+and — if there's no real mode change needed — converges cleanly within
+seconds, no drain/reboot required:
+```bash
+kubectl get pods -n gpu-operator -l app=nvidia-mig-manager --field-selector spec.nodeName=<node> -o name
+kubectl delete pod -n gpu-operator <that-pod>
+# watch for convergence:
+kubectl get node <node> -o jsonpath='{.metadata.labels.nvidia\.com/mig\.config\.state}{"\n"}'
+```
+If the label still flips back to `failed` once, that's usually one more
+transient conflict clearing itself — delete the (now-new) mig-manager pod
+once more and it should settle to `success`.
+
+Once fixed on all nodes, if `ClusterPolicy` is still reporting stale
+conditions despite every pod being `Running`/`Completed`, its controller may
+just need a nudge to recompute status — restart it:
+```bash
+kubectl delete pod -n gpu-operator -l app.kubernetes.io/name=gpu-operator
+```
+
+### MIG mode toggle needs a REAL reset — in-guest reboot is not enough on passthrough GPUs
+
+**Symptom**: `nvidia-mig-manager` logs show one of:
+```
+Error applying MIG configuration with hooks: error initializing NVML: ERROR_LIBRARY_NOT_FOUND
+```
+or, after an in-guest `systemctl reboot`:
+```
+Resetting GPU 00000000:XX:YY.Z is not supported.
+Error applying MIG configuration with hooks: error resetting all GPUs: exit status 3
+```
+
+**Root cause**: unlike a geometry-only reconcile (see above), actually
+flipping the MIG *mode* bit (MIG-enabled ↔ MIG-disabled) on a GPU requires a
+real device reset (FLR/bus-reset). On PCIe passthrough (VFIO), that reset
+only happens when QEMU releases and reacquires the device — i.e., on a full
+VM stop/start. A `systemctl reboot` run **inside the guest** only restarts
+the guest OS; QEMU and the passed-through GPU never stop, so the device
+keeps its prior MIG-mode state across the guest reboot. This is standard,
+documented VFIO/QEMU passthrough behavior, not specific to this cluster —
+NVIDIA's own MIG guidance for virtualized/passthrough A100s says to reboot
+the **VM**, not the guest kernel.
+
+There is no way to make a guest-triggered reboot propagate to a QEMU
+restart — that boundary is fundamental to how passthrough works. Kured (this
+cluster's automated reboot daemon) is fine for routine OS-patch reboots, but
+cannot fix this case by itself.
+
+**Fast fix**: power-cycle the VM at the Proxmox host level (not the guest):
+```bash
+# on the Proxmox host, replacing <vmid>:
+qm stop <vmid>
+qm start <vmid>
+```
+Do this *after* setting the target `nvidia.com/mig.config=all-disabled` (or
+whatever geometry you want) on the node — mig-manager will pick it up and
+converge once the node rejoins with a genuinely reset GPU. Expect the
+driver/device-plugin/validator pods to crashloop transiently for a minute or
+two immediately after the node rejoins — that's normal settling, not a new
+failure, unless it's still crashlooping after several minutes (see next
+entry).
+
+**Before doing this**: cordon and drain the node first (see the Longhorn
+entry below for a drain gotcha), and check whether the node hosts a
+Longhorn storage replica, an ingress-nginx replica, or other singleton
+workloads that would be disrupted — `kubectl get pods -A --field-selector
+spec.nodeName=<node>` and cross-check against
+`kubectl get replicas.longhorn.io -n longhorn-system` for volumes with only
+one replica on that node.
+
+### Driver DaemonSet pod stuck in CrashLoopBackOff after being manually deleted/cycled
+
+**Symptom**: after deleting an `nvidia-driver-daemonset` pod (e.g. to pick up
+a config change — this DaemonSet uses `updateStrategy: OnDelete`, so it
+never rolls out template changes on its own; you must delete each pod by
+hand to force it), the replacement pod's `k8s-driver-manager` init container
+crashloops with:
+```
+Failed to unload kernel module nvidia_uvm: resource temporarily unavailable
+Could not unload NVIDIA driver kernel modules, driver is in use
+Auto eviction of GPU pods on node <node> is disabled by the upgrade policy
+Auto drain of the node is disabled by the upgrade policy
+failed to uninstall nvidia driver components: failed to unload driver: resource temporarily unavailable
+```
+
+**Root cause**: this cluster's GPU Operator config sets
+`ENABLE_GPU_POD_EVICTION: "false"` and `ENABLE_AUTO_DRAIN: "false"`
+(`system/gpu/gpu-operator/values.yaml`, `driver.manager.env`) — the driver
+manager will not forcibly evict pods still using the GPU, it just fails.
+Any pod actively holding the GPU (check
+`kubectl get pods -A -o json | jq` for containers requesting
+`nvidia.com/gpu` on that node) keeps the kernel module's refcount above zero.
+
+**Fast fix**: identify and delete the pod(s) actually using the GPU on that
+node first:
+```bash
+kubectl get pods -A -o json | python3 -c '
+import json,sys
+d=json.load(sys.stdin)
+for p in d["items"]:
+    if p["spec"].get("nodeName") != "<node>": continue
+    for c in p["spec"].get("containers", []):
+        if any("gpu" in k for k in c.get("resources",{}).get("requests",{})):
+            print(p["metadata"]["namespace"], p["metadata"]["name"])
+'
+kubectl delete pod -n <namespace> <pod-using-gpu>
+```
+The crashlooping driver pod will succeed on its next automatic retry once
+the module's refcount drops to zero — you generally don't need to delete it
+yourself, just wait one backoff cycle. If it's still failing with the same
+"in use" error after several retries with no decreasing refcount, delete the
+crashlooping pod to force a clean init attempt:
+```bash
+kubectl delete pod -n gpu-operator <driver-daemonset-pod>
+```
+**Before deleting a GPU-holding pod**: check whether it's a real user's live
+session (e.g. a JupyterHub notebook) — this will abruptly kill their running
+work. Confirm with the pod's owner/user first if at all possible; this is a
+disruptive action, not a routine one.
+
+### GPU Operator daemonsets never scheduling on one specific node
+
+**Symptom**: one GPU worker shows `nvidia.com/gpu` allocatable = 0
+indefinitely, and `kubectl get pods -n gpu-operator -o wide` shows **no**
+`nvidia-device-plugin-daemonset`/`nvidia-mig-manager`/`gpu-feature-discovery`
+pods scheduled there at all (not even in a crash state — just absent),
+while the driver daemonset itself did make it onto the node.
+
+**Root cause**: the node has a custom taint (e.g. `gpu-pool=full:NoSchedule`,
+used to reserve certain nodes for full-GPU-only workloads) that the GPU
+Operator's own daemonsets don't tolerate. The driver pod is often already
+running because it was scheduled *before* the taint was applied — taints
+don't evict already-running pods, only block new ones.
+
+**Fast fix**: add a matching toleration to
+`system/gpu/gpu-operator/values.yaml`'s `daemonsets.tolerations`, then apply
+(or, for a quick live check before merging to Git, patch the live
+`ClusterPolicy` directly — remember to land the same fix in the repo
+afterward so Fleet doesn't fight it on the next sync):
+```yaml
+daemonsets:
+  tolerations:
+    - key: gpu-pool
+      operator: Exists
+      effect: NoSchedule
+```
+```bash
+kubectl patch clusterpolicy cluster-policy --type=json \
+  -p='[{"op":"add","path":"/spec/daemonsets/tolerations/-","value":{"key":"gpu-pool","operator":"Exists","effect":"NoSchedule"}}]'
+```
+
 ---
 
 ## Storage Issues
+
+### kured stuck unable to reboot a node for days ("Cannot evict pod as it would violate the pod's disruption budget")
+
+**Symptom**: `kubectl logs -n kured <kured-pod-on-node>` shows repeated
+```
+error when evicting pods/"instance-manager-..." -n "longhorn-system" (will retry after 5s): Cannot evict pod as it would violate the pod's disruption budget.
+...
+Error draining <node>: ... global timeout reached: 45m0s
+Unable to cordon or drain <node>: ..., will release lock and retry cordon and drain before rebooting when lock is next acquired
+Performing a best-effort uncordon after failed cordon and drain
+```
+— repeating indefinitely (kured retries on its own schedule, e.g. weekly,
+and fails the same way every time), or a manual `kubectl drain <node>` hangs
+on Longhorn's `instance-manager` pod specifically.
+
+**Root cause**: Longhorn's `instance-manager` PodDisruptionBudget only
+allows eviction when its own **node-drain-policy** setting says it's safe.
+Check the live value — it may not match what's declared in
+`system/storage/longhorn/values.yaml`:
+```bash
+kubectl get settings.longhorn.io -n longhorn-system node-drain-policy -o jsonpath='{.value}{"\n"}'
+```
+If this doesn't match the repo's `defaultSettings.nodeDrainPolicy`, the
+declared value is probably not a real Longhorn enum (valid values are
+`block-if-contains-last-replica`, `allow-if-replica-is-stopped`,
+`always-allow` — anything else is silently ignored, and Longhorn keeps the
+`block-if-contains-last-replica` default). This is exactly what happened
+here: the repo had `allow-if-healthy`, which isn't a valid value, so it
+never actually applied.
+
+Separately, check for an under-replicated volume with its only copy on the
+node you're draining — this alone can trip
+`block-if-contains-last-replica` even when the rest of the node's volumes
+are fully redundant elsewhere:
+```bash
+kubectl get replicas.longhorn.io -n longhorn-system -o jsonpath='{range .items[?(@.spec.nodeID=="<node>")]}{.spec.volumeName}{"\n"}{end}' | sort -u
+# for each volume, check replica count/state across all nodes:
+kubectl get replicas.longhorn.io -n longhorn-system -o jsonpath='{range .items[?(@.spec.volumeName=="<volume>")]}{.spec.nodeID}{" "}{.status.currentState}{"\n"}{end}'
+```
+
+**Fast fix**: correct the setting to a real value (`allow-if-replica-is-stopped`
+is the right choice for a cluster using `kured`/unattended-upgrades — it
+permits eviction when a volume's only local replica is already
+stopped/detached, which is the common case for planned reboots):
+```bash
+kubectl patch settings.longhorn.io -n longhorn-system node-drain-policy \
+  --type merge -p '{"value":"allow-if-replica-is-stopped"}'
+```
+Also fix `system/storage/longhorn/values.yaml`'s
+`defaultSettings.nodeDrainPolicy` to the same value and land it via Fleet —
+otherwise the next Longhorn Helm reconcile could silently reset it back to
+whatever the (broken) declared value was.
+
+Note this may not clear a block caused by a volume whose replica is
+**actively running** (not stopped) and genuinely has no other copy — that's
+a real single-point-of-failure and `allow-if-replica-is-stopped` correctly
+still blocks it. Fix the under-replication itself (get a second healthy
+replica onto another node) rather than loosening the policy further.
 
 ### NFS mount failed
 
@@ -374,6 +605,29 @@ kubectl get nodes -l scratch=nvme
 ---
 
 ## Fleet/GitOps Issues
+
+### Pausing Fleet during live incident remediation
+
+When fixing a live cluster problem with direct `kubectl`/`helm` changes
+(acceptable only as an immediate, temporary fix — see repo conventions in
+`CLAUDE.md`), pause the production GitRepo first so a Fleet reconcile can't
+land mid-incident and interact unpredictably with in-progress manual
+changes, especially if the matching fix hasn't been merged to `main` yet:
+```bash
+kubectl patch gitrepo cluster-maintenance -n fleet-local --type merge -p '{"spec":{"paused":true}}'
+```
+Check whether the relevant Bundle has `correctDrift` enabled — if not
+(`kubectl get bundle <name> -n fleet-local -o jsonpath='{.spec.correctDrift}'`
+returns empty), Fleet won't actively revert manual changes on its own
+between reconciles; it only flags the Bundle as `Modified`. The real risk is
+a *future* reconcile applying stale values from `main` if your fix hasn't
+landed there yet, not Fleet's normal polling silently undoing things.
+
+**Always unpause once the durable fix is merged to `main`** — don't leave
+production GitOps paused indefinitely:
+```bash
+kubectl patch gitrepo cluster-maintenance -n fleet-local --type merge -p '{"spec":{"paused":false}}'
+```
 
 ### GitRepo not syncing
 
