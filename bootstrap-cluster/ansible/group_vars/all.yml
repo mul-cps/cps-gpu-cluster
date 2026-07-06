@@ -1,6 +1,6 @@
 ---
 # K3s Configuration
-k3s_version: v1.31.2+k3s1
+k3s_version: v1.34.9+k3s1
 k3s_token: "{{ lookup('password', '/dev/null chars=ascii_letters,digits length=32') }}"
 
 # Cluster settings
