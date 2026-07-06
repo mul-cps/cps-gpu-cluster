@@ -1,0 +1,197 @@
+# Example: single-GPU, long-running PyTorch training job on the `batch` KAI queue.
+#
+# This is a TEMPLATE for users to copy and adapt -- the image, command, and
+# training script are illustrative placeholders, not a real script.
+#
+# Verified facts this template relies on (checked against this repo's vendored
+# kai-scheduler-v0.12.10.tgz and the upstream NVIDIA/KAI-Scheduler v0.12.10 tag):
+#   - `batch` Queue: gpu quota=0, overQuotaWeight=10 (bursts into idle capacity,
+#     no guaranteed quota) -- system/gpu/kai-scheduler/kai-policy/queues.yaml
+#   - `kai-batch-low` PriorityClass: value=1000, lowest priority, preemptible by
+#     course/interactive work -- system/gpu/kai-scheduler/kai-policy/priorityclasses.yaml
+#   - GPU sharing on this cluster uses MPS + KAI's unprefixed `gpu-memory` pod
+#     annotation (MiB value). IMPORTANT (corrected this session): `gpu-memory`
+#     and `resources.limits."nvidia.com/gpu"` are ALTERNATIVE allocation paths,
+#     NOT additive/combinable on the same pod. A pod requesting `gpu-memory`
+#     must NOT also set `nvidia.com/gpu` in resources.limits -- KAI schedules it
+#     as a fractional/MPS-shared allocation instead of a whole-device allocation.
+#   - MPS client pods need the MPS control daemon's pipe directory bind-mounted
+#     at /tmp/nvidia-mps (hostPath), matching upstream KAI's
+#     docs/gpu-sharing/mps/gpu-sharing-with-mps.yaml example -- without this
+#     mount the CUDA MPS client library cannot reach the daemon and CUDA init
+#     fails.
+#   - KAI schedules/bin-packs against the declared `gpu-memory` value but does
+#     NOT itself enforce it -- actual enforcement is via the
+#     CUDA_MPS_PINNED_DEVICE_MEM_LIMIT container env var.
+#
+# StorageClass used below (`nfs-client`) is the cluster's real default
+# general-purpose NFS storage class -- see
+# system/storage/storageclasses/storageclasses.yaml. `fast-scratch` (local-path,
+# per-node NVMe) is NOT used here because it's node-local: if the descheduler
+# evicts this pod and KAI reschedules it onto a different worker, a
+# fast-scratch checkpoint would be left behind on the old node and unreadable
+# from the new one. Only shared, node-independent storage is safe for
+# checkpoints that must survive eviction/rescheduling.
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: pytorch-single-gpu-training-example
+  namespace: kai-scheduler
+  labels:
+    kai.scheduler/queue: batch
+spec:
+  # restartPolicy: OnFailure lets the kubelet restart the container in place
+  # (same pod, same node) on a non-zero exit -- appropriate here because
+  # train.py is expected to resume from its own last checkpoint on restart
+  # (see the --resume-from-latest arg below), so an in-place retry is cheap
+  # and correct. This is NOT the mechanism that recovers from descheduler
+  # eviction (see note below) -- it only covers the container crashing on its
+  # own, e.g. a transient CUDA error or OOM.
+  backoffLimit: 6
+  template:
+    metadata:
+      labels:
+        kai.scheduler/queue: batch
+      annotations:
+        # MPS-shared / fractional GPU allocation (see the two options
+        # documented near the bottom of this file). Keep this value in sync
+        # with the CUDA_MPS_PINNED_DEVICE_MEM_LIMIT env var below. Do NOT
+        # also set resources.limits."nvidia.com/gpu" on this pod -- gpu-memory
+        # and nvidia.com/gpu are alternative, non-combinable allocation paths
+        # in KAI v0.12.10.
+        gpu-memory: "20480"
+    spec:
+      schedulerName: kai-scheduler
+      priorityClassName: kai-batch-low
+      restartPolicy: OnFailure
+      containers:
+        - name: trainer
+          image: your-registry/pytorch-training:latest
+          command: ["python"]
+          args:
+            - "train.py"
+            - "--checkpoint-dir=/checkpoints"
+            - "--data-dir=/data"
+            - "--resume-from-latest"
+          env:
+            # Enforces the declared gpu-memory value inside the container.
+            # KAI schedules against the annotation below but does not enforce
+            # it itself -- this env var is what actually caps MPS client
+            # memory use so this job doesn't clobber co-scheduled MPS
+            # workloads on the same physical GPU.
+            #
+            # CHOOSE ONE default and match it to the `gpu-memory` annotation
+            # value below -- keep them in sync:
+            #   - Full-device (no sharing): 40960
+            #   - Shared tier (leaves room for other MPS workloads on the
+            #     same physical GPU): 20480 (used as the example default here)
+            - name: CUDA_MPS_PINNED_DEVICE_MEM_LIMIT
+              value: "0=20480M"
+          volumeMounts:
+            # Read-mostly input dataset, mounted separately from checkpoints
+            # so training code never writes into the dataset path.
+            - name: training-data
+              mountPath: /data
+              readOnly: true
+            # Writable checkpoint destination on shared storage. This is
+            # what actually survives descheduler eviction -- see note below.
+            - name: checkpoints
+              mountPath: /checkpoints
+            # Required for CUDA MPS clients to reach the MPS control
+            # daemon's pipe directory on the node.
+            - name: mps
+              mountPath: /tmp/nvidia-mps
+          resources:
+            # --- GPU allocation: this pod uses the MPS-shared / fractional
+            # path via the `gpu-memory` annotation (see metadata.annotations
+            # below), NOT resources.limits."nvidia.com/gpu". Do not add
+            # `nvidia.com/gpu` here -- the two are alternative allocation
+            # mechanisms in KAI v0.12.10, not additive; setting both is
+            # invalid/undefined behavior.
+            requests:
+              cpu: "4"
+              memory: "16Gi"
+            limits:
+              cpu: "8"
+              memory: "32Gi"
+      volumes:
+        - name: training-data
+          persistentVolumeClaim:
+            claimName: training-data-pvc
+        - name: checkpoints
+          persistentVolumeClaim:
+            claimName: training-checkpoints-pvc
+        # Required for CUDA MPS clients to reach the MPS control daemon's
+        # pipe/log directory on the node (see upstream KAI
+        # docs/gpu-sharing/mps/gpu-sharing-with-mps.yaml).
+        - name: mps
+          hostPath:
+            path: /tmp/nvidia-mps
+            type: DirectoryOrCreate
+---
+# Example PersistentVolumeClaims backing the mounts above. Split into a
+# read-mostly dataset claim and a writable checkpoint claim -- mirrors the
+# convention used by this cluster's JupyterHub deployment, which mounts
+# distinct per-purpose NFS-backed PVCs rather than subPaths of one PVC
+# (see user/jupyter/jupyterhub/values.yaml STANDARD_NFS_MOUNTS).
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: training-data-pvc
+  namespace: kai-scheduler
+spec:
+  # NOTE: this PVC is meant to point at a pre-populated NFS share of
+  # training data, not an empty freshly-provisioned volume -- a dynamically
+  # provisioned, empty, ReadOnlyMany volume is useless (nothing could ever
+  # write the dataset into it). In practice this typically means either
+  # pointing storageClassName at a StorageClass backed by an existing NFS
+  # export that already has data on it, or provisioning it ReadWriteMany
+  # once to populate it out-of-band and then treating it as read-only from
+  # training jobs going forward.
+  accessModes:
+    - ReadOnlyMany
+  storageClassName: nfs-client
+  resources:
+    requests:
+      storage: 100Gi
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: training-checkpoints-pvc
+  namespace: kai-scheduler
+spec:
+  accessModes:
+    - ReadWriteMany
+  storageClassName: nfs-client
+  resources:
+    requests:
+      storage: 50Gi
+---
+# --- Notes on gpu-memory sizing (pick one; edit both the annotation above
+# and the CUDA_MPS_PINNED_DEVICE_MEM_LIMIT env var to match):
+#
+#   gpu-memory: "40960"  # ~full A100 device. Use when this job should not
+#                          share the physical GPU with other MPS workloads --
+#                          effectively exclusive, but still scheduled/accounted
+#                          via the fractional path rather than nvidia.com/gpu.
+#
+#   gpu-memory: "20480"  # half a device (example default used above). Leaves
+#                          room for another MPS-shared workload on the same
+#                          physical GPU, improving utilization for jobs that
+#                          don't need the whole card.
+#
+# --- Recovery from descheduler eviction:
+# The descheduler bundle (system/descheduler/) may evict this pod for
+# consolidation. KAI's scheduler will then try to reschedule the *pod* onto
+# whatever node has capacity -- for a plain Job-owned pod, Kubernetes itself
+# (not KAI) recreates the pod under the Job controller if it's evicted
+# (eviction deletes the pod; the Job controller notices and creates a
+# replacement pod, which KAI then schedules like any other). You do NOT need
+# to manually resubmit the Job for a mid-run eviction. You WOULD need to
+# manually resubmit (kubectl apply -f ...) if the Job itself reaches
+# `backoffLimit` and is marked Failed, or after it completes and you want to
+# run it again -- KAI/Kubernetes do not auto-resubmit a finished/failed Job.
+# This is why --resume-from-latest matters: whichever pod picks the work back
+# up (original node or a new one) must find its progress on shared storage,
+# not on local disk.

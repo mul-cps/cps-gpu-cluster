@@ -1,0 +1,92 @@
+# Example: single-GPU, long-running TensorFlow training job on the `batch`
+# KAI queue. TensorFlow counterpart of pytorch-single-gpu-training-job.yaml --
+# same KAI scheduling, queue/priority, storage, and MPS conventions apply
+# here; see that file's comments for the fully detailed rationale
+# (gpu-memory vs nvidia.com/gpu, MPS hostPath mount, checkpoint-on-eviction
+# reasoning, StorageClass choice). This file keeps comments brief and
+# TensorFlow-specific.
+#
+# TEMPLATE for users to adapt -- image/command/training script are
+# illustrative placeholders.
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: tensorflow-single-gpu-training-example
+  namespace: kai-scheduler
+  labels:
+    kai.scheduler/queue: batch
+spec:
+  backoffLimit: 6
+  template:
+    metadata:
+      labels:
+        kai.scheduler/queue: batch
+      annotations:
+        # MPS-shared/fractional GPU allocation. Do NOT also set
+        # resources.limits."nvidia.com/gpu" -- alternative, non-combinable
+        # paths in KAI v0.12.10.
+        gpu-memory: "20480" # half a device; use "40960" for full-device
+    spec:
+      schedulerName: kai-scheduler
+      priorityClassName: kai-batch-low
+      # OnFailure: train.py is expected to resume from its own checkpoint on
+      # restart (see --resume-from-latest), so an in-place kubelet restart is
+      # cheap and correct here.
+      restartPolicy: OnFailure
+      containers:
+        - name: trainer
+          image: your-registry/tensorflow-training:latest
+          command: ["python"]
+          args:
+            - "train.py"
+            - "--checkpoint-dir=/checkpoints"
+            - "--data-dir=/data"
+            - "--resume-from-latest"
+          env:
+            # Must match the gpu-memory annotation value above.
+            - name: CUDA_MPS_PINNED_DEVICE_MEM_LIMIT
+              value: "0=20480M"
+            # Keeps TF from grabbing all GPU memory upfront, which would
+            # conflict with the MPS memory limit above.
+            - name: TF_FORCE_GPU_ALLOW_GROWTH
+              value: "true"
+          volumeMounts:
+            - name: training-data
+              mountPath: /data
+              readOnly: true
+            - name: checkpoints
+              mountPath: /checkpoints
+            # Required for CUDA MPS clients to reach the MPS control
+            # daemon's pipe directory on the node.
+            - name: mps
+              mountPath: /tmp/nvidia-mps
+          resources:
+            requests:
+              cpu: "4"
+              memory: "16Gi"
+            limits:
+              cpu: "8"
+              memory: "32Gi"
+      volumes:
+        - name: training-data
+          persistentVolumeClaim:
+            claimName: training-data-pvc
+        - name: checkpoints
+          persistentVolumeClaim:
+            claimName: training-checkpoints-pvc
+        # Required for CUDA MPS clients to reach the MPS control daemon.
+        - name: mps
+          hostPath:
+            path: /tmp/nvidia-mps
+            type: DirectoryOrCreate
+---
+# Reuses the same training-data-pvc (ReadOnlyMany) / training-checkpoints-pvc
+# (ReadWriteMany) PVCs on the nfs-client StorageClass defined in
+# pytorch-single-gpu-training-job.yaml. Apply that file first, or duplicate
+# the two PersistentVolumeClaim objects here for a standalone example.
+#
+# Recovery from descheduler eviction: same as the PyTorch single-GPU
+# example -- Kubernetes' Job controller recreates an evicted pod
+# automatically; you do not need to manually resubmit the Job for a mid-run
+# eviction, only if it exhausts backoffLimit (Failed) or after it Completes
+# and you want to run it again.
