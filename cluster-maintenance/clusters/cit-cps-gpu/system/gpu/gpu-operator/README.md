@@ -98,3 +98,40 @@ See `docs/troubleshooting.md`'s GPU Issues section, in particular:
 - "MIG mode toggle needs a REAL reset — in-guest reboot is not enough on
   passthrough GPUs" — why MIG mode changes need a Proxmox-level VM
   stop/start, and why that cost is part of why MIG was retired here.
+
+## Pending: v25.10.0 -> v26.3.3 bump (not yet done, scoped below)
+
+`gpu-operator/` (this directory's chart subdirectory) is a **vendored
+local copy** of the upstream chart (full `Chart.yaml`/`values.yaml`/
+`templates/`/`crds/` tree checked into Git), not a plain remote-repo
+reference. Fleet resolves the chart from this local directory whenever
+`helm.chart` in `fleet.yaml` matches a subdirectory name here — the
+`version:` field in `fleet.yaml` has **no effect** in this setup; bumping
+it alone is a silent no-op (confirmed empirically 2026-07-06: two Fleet
+reconciles plus a forced `gitrepo` resync all redeployed the vendored
+`v25.10.0` chart even with `fleet.yaml`'s `version:` set to `v26.3.3`,
+which is why both that field and `bootstrap-cluster/ansible/group_vars/all.yml`'s
+`gpu_operator_version` were reverted to `v25.10.0` to match live state).
+
+To actually land v26.3.3:
+1. `helm pull nvidia/gpu-operator --version v26.3.3 --untar` and replace
+   this `gpu-operator/` subdirectory wholesale with the pulled contents.
+2. Re-apply this cluster's only local customization on top — confirmed via
+   `diff -r` against a clean `v25.10.0` pull that the *only* delta from
+   stock upstream is two `gpu-pool:NoSchedule` toleration blocks added to
+   `values.yaml` (one in the daemonsets' common tolerations, one further
+   down for a second component) — port those same two blocks into the new
+   `values.yaml`, don't hand-merge the rest of the file.
+3. Update the image tag in `mps-control-daemon-standalone.yaml` (hand-authored
+   raw manifest, not templated from the chart) from
+   `nvcr.io/nvidia/gpu-operator:v25.10.0` to `:v26.3.3` to keep the MPS
+   control daemon's NVML library version in lockstep with the rest of the
+   operator's images.
+4. Check the CRD diff between the two chart versions
+   (`nvidia.com_clusterpolicies.yaml`, `nvidia.com_nvidiadrivers.yaml`)
+   for breaking schema changes before applying, since this is a 3-minor
+   jump (25.10 -> 26.3) treated as its own risk-tested step per
+   `docs/upgrade-path-2026-k3s-1.34-dra.md`.
+5. Verify per the same pattern used for the K3s 1.34 upgrade: ClusterPolicy
+   `ready`, all 4 nodes report correct `nvidia.com/gpu` allocatable, a real
+   GPU pod runs via both plain scheduling and the KAI scheduler.
