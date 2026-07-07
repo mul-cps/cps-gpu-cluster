@@ -1601,8 +1601,16 @@ hub:
               # Raised to 200s to give reclaim room to complete against a
               # real 150s-grace-period victim with margin, while still
               # resolving far faster than the original 1200s.
+              #
+              # UPDATED 2026-07-07 (again): live-tested a SECOND concurrent
+              # 2-GPU request against phd-interactive's quota=2 (which only
+              # guarantees one such session) with the cluster fully
+              # saturated (8/8 GPUs in use) -- it succeeded via reclaim but
+              # took ~165s, leaving only ~35s of margin under 200s. Raised
+              # to 250s for real margin on concurrent/contended multi-GPU
+              # requests, not just the single-request case.
               if cfg['gpu'] > 1 and not cfg.get('memory_mib'):
-                  spawner.start_timeout = 200
+                  spawner.start_timeout = 250
 
               # MPS-based memory sharing: for VRAM-tiered profiles (those carrying a
               # 'memory_mib' key), pin the container's MPS memory ceiling and tell
@@ -1687,12 +1695,12 @@ hub:
               # Same fragmentation risk as the built-in multi-GPU profiles above
               # applies to a power-user's custom_gpus override -- extend the
               # timeout whenever more than one whole GPU is requested this way.
-              # See 2026-07-07 updates above: raised to 200s to cover real
-              # ablator-* batch jobs' 150s terminationGracePeriodSeconds with
-              # margin, while still resolving far faster than the original
-              # 1200s.
+              # See 2026-07-07 updates above: raised to 250s to cover real
+              # ablator-* batch jobs' 150s terminationGracePeriodSeconds and
+              # concurrent multi-GPU contention with margin, while still
+              # resolving far faster than the original 1200s.
               if custom_gpus > 1:
-                  spawner.start_timeout = 200
+                  spawner.start_timeout = 250
 
           # Record profile on the server (used by per-profile culler)
           spawner.environment = spawner.environment or {}
