@@ -2278,7 +2278,7 @@ data:
           "type": "timeseries"
         }
       ],
-      "refresh": "",
+      "refresh": "30s",
       "schemaVersion": 39,
       "tags": [
         "gpu",
@@ -2365,8 +2365,8 @@ data:
         ]
       },
       "time": {
-        "from": "2025-05-01T18:36:31.586Z",
-        "to": "2025-05-01T20:01:30.579Z"
+        "from": "now-1h",
+        "to": "now"
       },
       "timepicker": {
         "refresh_intervals": [
