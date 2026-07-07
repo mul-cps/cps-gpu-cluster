@@ -29,7 +29,7 @@
 #     NOT itself enforce it -- actual enforcement is via the
 #     CUDA_MPS_PINNED_DEVICE_MEM_LIMIT container env var.
 #
-# StorageClass used below (`nfs-client`) is the cluster's real default
+# StorageClass used below (`longhorn-overcommit`) is the cluster's real default
 # general-purpose NFS storage class -- see
 # system/storage/storageclasses/storageclasses.yaml. `fast-scratch` (local-path,
 # per-node NVMe) is NOT used here because it's node-local: if the descheduler
@@ -174,7 +174,7 @@ spec:
   # training jobs going forward.
   accessModes:
     - ReadOnlyMany
-  storageClassName: nfs-client
+  storageClassName: longhorn-overcommit
   resources:
     requests:
       storage: 100Gi
@@ -187,7 +187,7 @@ metadata:
 spec:
   accessModes:
     - ReadWriteMany
-  storageClassName: nfs-client
+  storageClassName: longhorn-overcommit
   resources:
     requests:
       storage: 50Gi

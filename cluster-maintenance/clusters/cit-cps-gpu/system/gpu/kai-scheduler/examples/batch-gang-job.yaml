@@ -125,9 +125,9 @@ metadata:
   name: single-gpu-mps-shared-job-checkpoints
   namespace: default
 spec:
-  # nfs-client is the default StorageClass backed by the cluster's shared
+  # longhorn-overcommit is the RWX-capable StorageClass backed by the cluster's shared
   # NFS export - suitable for periodic checkpoint writes from batch jobs.
-  storageClassName: nfs-client
+  storageClassName: longhorn-overcommit
   accessModes:
     - ReadWriteMany
   resources:
@@ -452,7 +452,7 @@ metadata:
   name: distributed-gang-job-checkpoints
   namespace: default
 spec:
-  storageClassName: nfs-client
+  storageClassName: longhorn-overcommit
   accessModes:
     - ReadWriteMany
   resources:

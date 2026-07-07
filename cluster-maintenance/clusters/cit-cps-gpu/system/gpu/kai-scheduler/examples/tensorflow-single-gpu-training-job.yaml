@@ -97,7 +97,7 @@ spec:
             type: DirectoryOrCreate
 ---
 # Reuses the same training-data-pvc (ReadOnlyMany) / training-checkpoints-pvc
-# (ReadWriteMany) PVCs on the nfs-client StorageClass defined in
+# (ReadWriteMany) PVCs on the longhorn-overcommit StorageClass defined in
 # pytorch-single-gpu-training-job.yaml. Apply that file first, or duplicate
 # the two PersistentVolumeClaim objects here for a standalone example.
 #

@@ -143,7 +143,7 @@ spec:
 # chief/non-chief split internally based on task.index from TF_CONFIG.
 #
 # Reuses training-data-pvc / training-checkpoints-pvc (ReadOnlyMany /
-# ReadWriteMany, nfs-client StorageClass) from
+# ReadWriteMany, longhorn-overcommit StorageClass) from
 # pytorch-single-gpu-training-job.yaml -- apply that file first, or copy the
 # PVC objects here for a standalone example.
 #

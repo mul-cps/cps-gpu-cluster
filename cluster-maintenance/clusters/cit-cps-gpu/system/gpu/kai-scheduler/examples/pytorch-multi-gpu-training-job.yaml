@@ -246,7 +246,7 @@ spec:
 #
 # Reuses the same training-data-pvc / training-checkpoints-pvc PVCs defined
 # in pytorch-single-gpu-training-job.yaml (ReadOnlyMany / ReadWriteMany on
-# the nfs-client StorageClass) -- apply that file first, or copy the two
+# the longhorn-overcommit StorageClass) -- apply that file first, or copy the two
 # PersistentVolumeClaim objects here if you want this example fully
 # standalone.
 #

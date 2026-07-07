@@ -1,6 +1,12 @@
 # Note: Storage classes are already configured and managed outside of Fleet
-# Both nfs-client and fast-scratch storage classes exist and are working properly
 # Removing them from Fleet management to avoid conflicts
-
-# nfs-client - managed by nfs-subdir-external-provisioner Helm chart in nfs-provisioner namespace
+#
+# nfs-client does NOT exist (confirmed live 2026-07-06) -- it was removed at
+# some point without a documented replacement path. Released PVs from it
+# still exist as evidence, but the StorageClass itself is gone. Use
+# longhorn/longhorn-fast/longhorn-overcommit/longhorn-static for general
+# persistent storage, or fast-scratch for local-path NVMe scratch.
+#
 # fast-scratch - created via kubectl apply
+# longhorn/longhorn-fast/longhorn-overcommit/longhorn-static - via the
+# longhorn bundle in system/storage/longhorn/
