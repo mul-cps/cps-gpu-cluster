@@ -1487,6 +1487,78 @@ workarounds in `gpu-operator/fleet.yaml` and
 removed entirely -- re-verify bundle status goes fully `Ready` before
 removing them, don't assume.
 
+### `knative-serving` ErrApplied: config-gc webhook rejection + ownership conflict (2026-07-07)
+
+**Symptom**: `kubectl get bundle knative-serving -n fleet-local` showed
+`ErrApplied(1)` with a compound message: (1) `cannot patch "config-gc"
+... admission webhook "config.webhook.serving.knative.dev" denied the
+request: validation failed: the update modifies a key in "_example"`,
+(2) `configmap.v1 knative-serving/config-gc is not owned by us`, (3) HPA
+`kourier-system/3scale-kourier-gateway` `unable to get metrics for
+resource cpu`, plus the usual caBundle "modified" noise (see the entry
+above -- same known, accepted rancher/fleet#5368 issue, not touched here).
+
+**Root causes** (verified live against the cluster, not guessed):
+
+1. **`_example` checksum drift.** The live `config-gc` ConfigMap had no
+   `knative.dev/example-checksum` annotation at all, and its `_example`
+   field's comment separators (`# ---`) didn't match the byte-exact text
+   shipped in upstream `knative-serving` v1.20.1 (`# ---------------------------------------`),
+   confirmed by diffing against the real upstream release manifest
+   (`github.com/knative/serving/releases/download/knative-v1.20.1/serving-core.yaml`).
+   Knative's own config webhook validates `_example` against its checksum
+   annotation on every update; since the annotation was missing/stale,
+   any Fleet-submitted `_example` -- even byte-identical to what upstream
+   ships -- would keep getting rejected. Separately, this repo's
+   `serving-core.yaml` had also (incorrectly) nested real GC retention
+   values (`retain-since-create-time`, etc.) *inside* the `_example` block
+   scalar instead of as sibling top-level `data` keys, which is exactly
+   the mistake the webhook's own error text warns against ("copy the
+   respective setting to the top-level of the ConfigMap").
+2. **Ownership conflict.** The live `config-gc` had been created by a
+   manual, client-side `kubectl apply` at some point (field manager
+   `kubectl-client-side-apply`, no `objectset.rio.cattle.io/*` or
+   `meta.helm.sh/*` annotations Fleet's Helm-based apply expects), so
+   Fleet's server-side/Helm apply refused to touch an object it didn't
+   recognize as its own.
+3. **HPA metrics error was stale, not real.** `metrics-server` is
+   installed and healthy cluster-wide (`kubectl top nodes` works,
+   `kubectl describe hpa 3scale-kourier-gateway -n kourier-system` showed
+   `ScalingActive: True` with a valid `10%/100%` CPU reading). The error
+   in the bundle status was a snapshot from a transient window of
+   kubelet-scrape failures (`connection refused` / timeouts to
+   `:10250` on several nodes, visible in `metrics-server` logs) that had
+   already self-resolved by the time this was investigated. No config
+   change was needed for this one -- it cleared on the next Fleet
+   reconcile along with the other two fixes. Worth flagging as a broader
+   signal (intermittent kubelet metrics endpoint flakiness across
+   multiple nodes) even though it wasn't blocking anything by itself.
+
+**Fix** (`cluster-maintenance/clusters/cit-cps-gpu/system/knative/knative-serving/`):
+- `serving-core.yaml`: restored `config-gc`'s `_example` to be
+  byte-identical to the upstream v1.20.1 release (verified with
+  `kubectl apply --dry-run=server`, a non-mutating dry run that still
+  invokes the real admission webhook, before pushing), and added the GC
+  retention settings as real top-level `data` keys alongside `_example`
+  rather than nested inside it.
+- `fleet.yaml`: added `helm.takeOwnership: true` so Fleet adopts the
+  pre-existing, manually-created `config-gc` object instead of failing
+  forever on the ownership mismatch. (`correctDrift.force` was
+  considered first but rejected -- it corrects drift on resources Fleet
+  already owns, it does not adopt un-owned ones, and forcing drift
+  correction on this particular bundle risked fighting the
+  `comparePatches` webhook-caBundle workaround documented above.)
+
+**Verified**: after push, `config-gc` picked up
+`meta.helm.sh/release-name`/`objectset.rio.cattle.io/id` annotations
+(Fleet ownership) and the correct `knative.dev/example-checksum:
+"aa3813a8"`; the HPA showed `cpu: 10%/100%`; all pods in
+`knative-serving` and `kourier-system` were `Running`. Bundle status
+went from `ErrApplied(1)` (3 real errors) to `Modified(1)` (only the
+pre-existing, accepted caBundle noise from rancher/fleet#5368) -- do not
+expect this bundle to reach a plain `Ready` until that upstream Fleet
+bug is fixed, per the entry above.
+
 ### Helm release failed
 
 **Symptom**: Fleet shows Helm release error
