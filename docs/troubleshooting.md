@@ -1678,6 +1678,74 @@ kubectl get sc nfs-client -o yaml
 kubectl exec -n jupyterhub jupyter-<username> -- df -h
 ```
 
+### SFTP on port 2222 unreachable end-to-end despite healthy Service/Endpoints/pod (2026-07-07)
+
+Follow-up to the port-2222 wiring fix from 2026-07-06 (`tcp."2222"` in
+`system/networking/ingress-nginx/values.yaml` was repointed from
+`jupyterhub-ssh:2222` — a dead port with no SFTP subsystem code — to
+`jupyterhub-sftp:22`, the real OpenSSH-based SFTP server; see git commits
+`2a14e36` and `8a5084a`). After that fix, `scp`/`sftp` against port 2222
+still failed: connections reset/refused during the SSH banner exchange,
+both from outside the cluster and from a debug pod hitting the
+`jupyterhub-sftp` Service's ClusterIP directly.
+
+**Root cause**: a NetworkPolicy, not a Service/routing bug. The `sftp`
+component's chart-default `NetworkPolicy`
+(`user/jupyter/jupyterhub-ssh/chart/templates/sftp/netpol.yaml`) only
+allows ingress from same-namespace pods labeled
+`hub.jupyter.org/network-access-sftp-server: "true"` (i.e. JupyterHub
+singleuser pods reaching their own home directory server). Unlike the
+sibling `ssh` component's NetworkPolicy (`ipBlock: 0.0.0.0/0`, wide open),
+it has **no rule at all** permitting traffic from `ingress-nginx`'s
+namespace. So every packet from `ingress-nginx`'s TCP passthrough — and
+from any other pod without that specific label — was rejected before it
+ever reached the sftp pod. The Service (`jupyterhub-sftp`, ClusterIP
+`10.43.139.105:22` → named port `sftp` → container port 2222), the
+`Endpoints`/`EndpointSlice` objects, and the pod itself were all correct
+and healthy the entire time.
+
+**Diagnostic technique worth keeping**: `kubectl port-forward` straight to
+the pod's IP:port succeeded even while the Service was completely
+unreachable from any other pod. `port-forward` connects via the kubelet
+directly into the pod's network namespace and is not subject to
+NetworkPolicy enforcement (which acts on traffic crossing the veth/CNI
+interface) — so "pod healthy + port-forward works, but Service/any other
+pod can't reach it" is a strong signal to check NetworkPolicy next, before
+suspecting kube-proxy/iptables/EndpointSlice drift.
+
+**Fix** (git-tracked, applied via Fleet, not a live-only patch): added an
+explicit ingress rule to `user/jupyter/jupyterhub-ssh/values.yaml`
+(`sftp.networkPolicy.ingress`, consumed by the chart's
+`{{- with .Values.sftp.networkPolicy.ingress }}` extension point) allowing
+a `namespaceSelector` match on `name: ingress-nginx` for the `sftp` port.
+Verified live before committing by patching the `NetworkPolicy` object
+directly and confirming a connection from an actual
+`ingress-nginx-controller` pod succeeded, then reverted that manual patch
+so the real fix could go through git + Fleet reconciliation cleanly (no
+live drift left behind). After Fleet picked up the commit and rolled the
+`jupyterhub-sftp` deployment, re-verified the same test passed with the
+git-managed `NetworkPolicy` in place.
+
+**On "should port 22 also serve SFTP" (i.e. retire the separate port
+2222/`jupyterhub-ssh` split)**: checked upstream
+(`github.com/yuvipanda/jupyterhub-ssh`) — the `jupyterhub-sftp` container's
+`sshd_config` is deliberately SFTP-only and hardened:
+```
+Subsystem sftp internal-sftp
+ChrootDirectory /export/home/%u
+ForceCommand internal-sftp -d %u
+PermitTTY no
+```
+`PermitTTY no` plus the forced command make interactive shell access
+impossible under any configuration of this server. Repointing port 22 at
+`jupyterhub-sftp` would not unify shell+SFTP on one port — it would simply
+break the existing terminal SSH access currently served by the separate
+`jupyterhub-ssh` deployment, with no compensating benefit. **Decision:
+keep the two ports functionally separate** — port 22 (`jupyterhub-ssh`,
+terminal-only) and port 2222 (`jupyterhub-sftp`, file-transfer-only) as
+they are today. This is a deliberate upstream security-hardened split, not
+an accidental gap, so no config change was made here.
+
 ---
 
 ---
