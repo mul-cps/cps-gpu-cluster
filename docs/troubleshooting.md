@@ -980,6 +980,88 @@ observed, and check for duplicate ServiceMonitor objects targeting the
 same dcgm-exporter Service (none currently exist -- confirmed only one
 ServiceMonitor, `nvidia-dcgm-exporter` in `gpu-operator`, cluster-wide).
 
+### GPU Monitoring / Grafana Dashboards: "GPU shown twice with different values" root-caused -- unaggregated per-GPU legend queries collide with DCGM's per-pod attribution labels (2026-07-07)
+
+**Symptom**: the comparison dashboard `[Community-phoerious] Better NVIDIA
+DCGM Dashboard` (grafana.com ID 22515, tracked in git as ConfigMap
+`gpu-dash-22515-community` under
+`system/observability/monitoring/gpu-dashboard-comparison/`) showed MORE
+than 8 rows in its "GPU Power Usage" / "GPU Memory Used" legends -- e.g.
+`k3s-wk-gpu1 - GPU 1` appearing twice with different wattage values. This
+looks like the previously-documented "GPUs shown twice" issue above, but
+it is a **different root cause** and was actively reproducible this time
+(not a stale/transient artifact).
+
+**Ruled out first** (same checks as the historical entry, re-verified
+live, still true): exactly one `nvidia-dcgm-exporter` pod per GPU node,
+all `Running`, 0 restarts; exactly one ServiceMonitor
+(`nvidia-dcgm-exporter` in `gpu-operator`); an **instant** query against
+Prometheus for `DCGM_FI_DEV_POWER_USAGE` returns exactly 8 series, one
+per physical GPU, unique `UUID`/`Hostname`/`gpu`. So this is not a
+double-scrape and not a stale-series artifact of a pod restart.
+
+**Actual root cause**: dcgm-exporter enriches every `DCGM_FI_DEV_*`
+metric with `exported_pod` / `exported_namespace` / `exported_container`
+labels identifying whichever workload pod currently owns that GPU
+(intentional per-job GPU attribution, not a bug -- useful for correlating
+GPU usage to specific training jobs). GPU workers in this cluster run
+many short-lived JupyterHub training pods (`ablator-*` in the
+`jupyterhub` namespace) that churn every few minutes. Each time the
+occupying pod on a given physical GPU changes, `exported_pod` changes,
+which means the metric's **full label set** changes -- so Prometheus
+treats it as a **brand-new distinct series** for the same physical GPU,
+even though `Hostname`/`gpu`/`UUID` stay identical. A dashboard time-range
+query (e.g. the default 6h) spans multiple job turnovers and returns
+every one of these transient series. The phoerious dashboard's panels
+query the bare metric (`DCGM_FI_DEV_POWER_USAGE{Hostname=~"$host",
+gpu=~"$gpu"}`) with legend format `{{Hostname}} - GPU {{gpu}}`, which
+ignores `exported_pod` -- so multiple job-scoped series for the same GPU
+collapse onto the *same legend string* but render as separate rows with
+different values.
+
+**Evidence**: an instant query returns 8 series; a 6h `query_range` for
+the same metric returned **35** series -- e.g. `k3s-wk-gpu1`/`gpu=0`
+alone had 5 distinct series in that window, each with a different
+`exported_pod` value (`ablator-fr1deskgena100-lifecycle-v2-ngm2b`,
+`ablator-fr3depthresidfinea100-w01-dccj4`,
+`ablator-fr3noisestopa100-noise-unbounded-ctrl-8hm8d`,
+`ablator-fr3targetcapa100-target-capacity-60000-px2mg`, and one with no
+`exported_pod` at all -- GPU briefly idle).
+
+**Why the git-tracked official dashboard never showed this**: the real
+NVIDIA official dashboard
+(`system/observability/monitoring/nvidia-official-dashboard.json`,
+ConfigMap `nvidia-dcgm-official-dashboard-fleet`) already wraps its
+per-GPU panels in `avg by(Hostname, gpu) (...)` / `sum(...)`, which
+collapses the `exported_pod`-churn duplicates by construction. The
+comparison dashboard's community-authored queries never expected
+per-pod-enriched metrics and use the bare selector instead.
+
+**Fix applied** (repo, Fleet-managed --
+`cluster-maintenance/clusters/cit-cps-gpu/system/observability/monitoring/gpu-dashboard-comparison/gpu-dash-22515-community.yaml`):
+wrapped the 7 affected timeseries panels (GPU Power Usage, GPU Memory
+Used, GPU Memory Used Percentage, GPU Utilization, Tensor Core
+Utilization, GPU Temperature, GPU SM Clocks) in
+`max by (Hostname, gpu, UUID) (...)`, collapsing all `exported_pod`
+variants of a given physical GPU into a single series while preserving
+the `UUID` label so distinct physical GPUs are never merged into each
+other. The single-value gauge/stat panels (`GPU Power Total`, `GPU
+Avgerage Temperature`, `GPU Energy Draw Total`) already used
+`sum(...)`/`avg(...)` and needed no change.
+
+**Verified**: `max by (Hostname, gpu, UUID) (DCGM_FI_DEV_POWER_USAGE)`
+over the same 6h range now returns exactly 8 series (down from 35),
+one per physical GPU, matching the 8 GPUs live on the cluster.
+
+**Takeaway for any future GPU dashboard added to this repo**: never query
+a bare `DCGM_FI_DEV_*`/`DCGM_FI_PROF_*` selector for a "per physical GPU"
+panel on this cluster -- always aggregate with
+`<agg> by (Hostname, gpu, UUID) (...)` (or by `UUID` alone), because
+dcgm-exporter's pod-attribution labels (`exported_pod`,
+`exported_namespace`, `exported_container`) will fragment one GPU into
+many series across any time range that spans a training-job turnover,
+which happens routinely on this cluster.
+
 ---
 
 ## Storage Issues
