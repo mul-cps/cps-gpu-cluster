@@ -1717,6 +1717,87 @@ kubectl get csidrivers
 
 ---
 
+### JupyterHub "2× GPU" profile spawn failure was real GPU capacity exhaustion, not a scheduler-wiring bug (2026-07-07)
+
+**Symptom**: user `gottam` spawned a named server `2gpus_1` using the
+`gpu-pytorch-dual` profile ("GPU X-Large (PyTorch 2×)", `gpu: 2`) at
+2026-07-07T09:30:47Z. Pod `jupyter-gottam--x-2gpus-1---e11ab7e5` never
+scheduled; after JupyterHub's 5-minute spawn timeout it deleted the
+pending pod (09:35:47Z), which is why a `PodGrouperWarning` ("Pod ...
+not found") appeared alongside the scheduling failure — the pod-grouper
+tried to act on it after it was already gone. The rejection message was:
+
+```
+no nodes with enough resources were found: 3 node(s) didn't have enough resources: CPU cores.
+3 node(s) didn't have enough resources: memory.
+7 node(s) didn't have enough resources: GPUs.
+```
+
+**First checked whether this was a scheduler-wiring gap** (a real
+possibility given the `non-production-testing` incident where a pod
+bypassed KAI and hit the default scheduler): it was not. Hub logs
+confirm `profile=gpu-pytorch-dual` was applied; a `PodGroup` object
+(`pg-jupyter-gottam--x-2gpus-1---e11ab7e5-...`) was created for the pod,
+which only happens when KAI Scheduler's pod-grouper has picked the pod
+up — i.e. `spawner.scheduler_name = 'kai-scheduler'` and the
+`kai.scheduler/queue: phd-interactive` / `priorityClassName:
+kai-phd-interactive` labels from `apply_profile_settings()` in
+`cluster-maintenance/clusters/cit-cps-gpu/user/jupyter/jupyterhub/values.yaml`
+were correctly applied, same as every other non-`gpu-slurm` GPU profile.
+The "no nodes ... CPU cores / memory / GPUs" wording is not a plain
+kube-scheduler message here — KAI's own binpacking/PodGroup-scheduling
+path emits the same phrasing when it exhausts its node-filter reasons, so
+seeing this text does not by itself indicate default-scheduler fallback;
+the presence of the `PodGroup` object is the reliable signal.
+
+**Actual root cause: real, correct capacity exhaustion.** `gpu-pytorch-dual`
+requests `nvidia.com/gpu: 2` as a single pod, which (with the current
+"plain device-plugin mode + KAI-native sharing" architecture, see commit
+`9105a19`) must land on **one** node with 2 free physical GPU units — a
+single pod cannot span nodes and there is no gang-scheduling/PodGroup
+multi-node spanning wired up for this profile. `kubectl describe node`
+at the time of the failure showed, per GPU worker (each allocatable
+`nvidia.com/gpu: 2`, i.e. 8 GPUs total across the 4 workers):
+
+| Node | GPUs used/allocatable | Free |
+|---|---|---|
+| k3s-wk-gpu1 | 2/2 | 0 |
+| k3s-wk-gpu2 | 2/2 | 0 |
+| k3s-wk-gpu3 | 1/2 | 1 |
+| k3s-wk-gpu4 | 1/2 | 1 |
+
+6 of 8 GPUs were in use (mostly `ablator-*` batch training jobs also in
+the `jupyterhub` namespace); the 2 free GPUs were split 1+1 across
+`k3s-wk-gpu3` and `k3s-wk-gpu4`, so no single node had 2 free GPUs at
+request time. CPU/memory were not the real constraint — cluster-wide
+CPU/mem utilization was 24-40%/5-27% per node, comfortably enough for the
+profile's `cpu_guarantee: 16` / `mem_guarantee: 64G` — the "3 node(s)
+didn't have enough CPU/memory" part of the message refers to the 3
+control-plane nodes (no GPUs, smaller allocatable, filtered out early);
+the binding constraint for all 7 nodes was the GPU filter.
+
+**Not a bug — no code change made.** The profile is correctly wired to
+KAI (queue, priority class, scheduler name all present and consistent
+with every other working GPU profile). This is expected behavior: a
+whole-node 2-GPU request will legitimately fail/wait whenever the
+cluster's free GPUs happen to be fragmented across nodes, which is
+common with 4 nodes × 2 GPUs each and several single-GPU sessions
+already running.
+
+**UX gap worth a human decision (not fixed here)**: JupyterHub currently
+gives up and deletes the pending pod after a fixed 5-minute spawn
+timeout, surfacing what reads as a hard failure ("Pod not found") rather
+than "waiting for 2 free GPUs on one node." KAI's queue/priority
+mechanism (`phd-interactive`) would in principle let this request sit
+pending and get scheduled once 2 GPUs free up or via reclaim, but
+JupyterHub's spawn timeout tears the pod down before that can happen.
+Whether to raise the spawn timeout for multi-GPU profiles, or add
+clearer user-facing messaging that "2× GPU" profiles may need to wait
+for fragmented capacity to consolidate on one node, is a product
+decision for the platform owner, not something to silently change here.
+
+---
+
 ## Getting Help
 
 If issues persist:
