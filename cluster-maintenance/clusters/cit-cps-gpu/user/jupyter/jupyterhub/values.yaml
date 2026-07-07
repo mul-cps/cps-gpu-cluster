@@ -1581,19 +1581,28 @@ hub:
               # UPDATED 2026-07-07: measured live that KAI's reclaim/
               # consolidation defragmentation itself only takes ~30-45s
               # end-to-end (bounded by the real 30s terminationGracePeriodSeconds
-              # used by ablator-* batch jobs), or ~9-10s via consolidation's
-              # live-relocation path -- not remotely close to needing 20
-              # minutes. Per explicit product requirement, ANY spawn attempt
-              # (success or failure) must resolve in under 2 minutes, so the
-              # timeout is set just above the measured fast-path ceiling
-              # rather than left long "for safety" against the separate,
-              # unbounded case where the requesting queue is already over its
-              # own fair share (reclaim/consolidation both refuse to act at
-              # all in that case, per docs/gpu-scheduling-architecture.md) --
-              # that case now fails fast and surfaces to the user quickly
-              # instead of hanging for up to 20 minutes.
+              # used by ablator-* batch jobs at the time), or ~9-10s via
+              # consolidation's live-relocation path. Per explicit product
+              # requirement, ANY spawn attempt (success or failure) must
+              # resolve quickly rather than being left long "for safety"
+              # against the separate, unbounded case where the requesting
+              # queue is already over its own fair share (reclaim/
+              # consolidation both refuse to act at all in that case, per
+              # docs/gpu-scheduling-architecture.md) -- that case still fails
+              # fast rather than hanging for up to 20 minutes.
+              #
+              # UPDATED 2026-07-07 (later, verification pass): live
+              # ablator-* batch jobs were found to actually use
+              # terminationGracePeriodSeconds=150, not 30 -- reclaim's bind
+              # time is bounded by the victim's real grace period, so on a
+              # fully-saturated cluster the eviction alone can take close to
+              # 150s. 110s was too tight against that realistic worst case
+              # (see docs/troubleshooting.md verification-pass entry).
+              # Raised to 200s to give reclaim room to complete against a
+              # real 150s-grace-period victim with margin, while still
+              # resolving far faster than the original 1200s.
               if cfg['gpu'] > 1 and not cfg.get('memory_mib'):
-                  spawner.start_timeout = 110  # under 2 minutes
+                  spawner.start_timeout = 200
 
               # MPS-based memory sharing: for VRAM-tiered profiles (those carrying a
               # 'memory_mib' key), pin the container's MPS memory ceiling and tell
@@ -1678,10 +1687,12 @@ hub:
               # Same fragmentation risk as the built-in multi-GPU profiles above
               # applies to a power-user's custom_gpus override -- extend the
               # timeout whenever more than one whole GPU is requested this way.
-              # See 2026-07-07 update above: capped under 2 minutes per product
-              # requirement, since the measured fast defrag path is ~30-45s.
+              # See 2026-07-07 updates above: raised to 200s to cover real
+              # ablator-* batch jobs' 150s terminationGracePeriodSeconds with
+              # margin, while still resolving far faster than the original
+              # 1200s.
               if custom_gpus > 1:
-                  spawner.start_timeout = 110  # under 2 minutes
+                  spawner.start_timeout = 200
 
           # Record profile on the server (used by per-profile culler)
           spawner.environment = spawner.environment or {}
