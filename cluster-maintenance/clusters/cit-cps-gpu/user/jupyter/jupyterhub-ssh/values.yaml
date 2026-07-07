@@ -30,3 +30,22 @@ sftp:
   pvc:
     enabled: true
     name: jupyterhub-shared-storage
+  # The chart's default NetworkPolicy for this component only allows ingress
+  # from same-namespace pods labeled hub.jupyter.org/network-access-sftp-server:
+  # "true" (i.e. JupyterHub singleuser pods). It does NOT allow ingress-nginx
+  # (a different namespace) to reach it at all, unlike the sibling `ssh`
+  # component's NetworkPolicy, which is wide open (0.0.0.0/0). This is why
+  # port 2222 was unreachable end-to-end even after the ingress-nginx tcp.2222
+  # forward was correctly pointed at this Service (see docs/troubleshooting.md,
+  # 2026-07-07 entry): the Service and Endpoint were healthy, but the
+  # NetworkPolicy silently rejected traffic from ingress-nginx before it ever
+  # reached the pod. Add an explicit rule allowing the ingress-nginx namespace.
+  networkPolicy:
+    ingress:
+      - from:
+          - namespaceSelector:
+              matchLabels:
+                name: ingress-nginx
+        ports:
+          - port: sftp
+            protocol: TCP
