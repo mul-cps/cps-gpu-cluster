@@ -163,48 +163,29 @@
       environment:
         KUBECONFIG: "{{ kubeconfig }}"
 
-    - name: Construct OIDC AuthConfig manifest
-      copy:
-        dest: /tmp/rancher-oidc-authconfig.yaml
-        content: |
-          apiVersion: management.cattle.io/v3
-          kind: AuthConfig
-          metadata:
-            name: oidc
-          enabled: true
-          accessMode: {{ rancher_oidc.access_mode }}
-          clientId: {{ rancher_oidc.client_id }}
-          clientSecret: {{ rancher_oidc.client_secret }}
-          issuer: {{ rancher_oidc.issuer }}
-          authEndpoint: {{ rancher_oidc.auth_url }}
-          tokenEndpoint: {{ rancher_oidc.token_url }}
-          userInfoEndpoint: {{ rancher_oidc.userinfo_url }}
-          logoutEndpoint: {{ rancher_oidc.logout_url }}
-          jwksEndpoint: {{ rancher_oidc.jwks_url }}
-          scopes:
-          {% for s in rancher_oidc.scopes %}
-            - {{ s }}
-          {% endfor %}
-          displayNameField: "name"
-          userNameField: "preferred_username"
-          userIDField: "sub"
-          groupsField: "groups"
-          rancherURL: "https://{{ rancher_hostname }}"
-      environment:
-        KUBECONFIG: "{{ kubeconfig }}"
-
-    - name: Apply OIDC AuthConfig (may require Rancher API controller readiness)
-      shell: kubectl apply -f /tmp/rancher-oidc-authconfig.yaml
-      register: oidc_apply
-      retries: 10
-      delay: 15
-      until: oidc_apply.rc == 0
-      environment:
-        KUBECONFIG: "{{ kubeconfig }}"
+    # Rancher's OIDC AuthConfig is *not* templated/applied here anymore. The
+    # earlier version of this task used AuthConfig name "oidc" (type
+    # oidcConfig), which is Rancher's legacy Keycloak-oriented OIDC provider,
+    # not the "Generic OIDC" provider Authentik needs (that's AuthConfig name
+    # "genericoidc", type genericOIDCConfig) -- confirmed live on the cluster
+    # 2026-07-07 (`kubectl get authconfig genericoidc/oidc -o yaml`). It also
+    # sourced clientId/clientSecret from a rancher_oidc group_var, which
+    # committed the client_secret to git in plaintext -- a live credential
+    # exposure, removed 2026-07-07 (see docs/troubleshooting.md and
+    # docs/rancher-authentik-sso-plan.md).
+    #
+    # Post-install, apply the genericoidc AuthConfig by hand:
+    # cluster-maintenance/clusters/cit-cps-gpu/rancher/genericoidc.yaml
+    # (clientId only -- clientSecret is supplied out-of-band via kubectl,
+    # never stored in this repo). See docs/rancher-authentik-sso-plan.md for
+    # the full cutover procedure.
 
     - name: Display Rancher installation summary
       debug:
         msg: |
           Rancher deployed at https://{{ rancher_hostname }}
-          OIDC AuthConfig applied (verify in Rancher UI > Global Settings > Authentication).
-          If OIDC does not activate automatically, log in with bootstrap password and enable via UI.
+          OIDC is not auto-configured by this playbook -- apply
+          cluster-maintenance/clusters/cit-cps-gpu/rancher/genericoidc.yaml
+          by hand per docs/rancher-authentik-sso-plan.md, supplying the
+          client secret out-of-band. Until then, log in with the bootstrap
+          password.

@@ -3379,6 +3379,69 @@ stage.
 
 ---
 
+## RESOLVED (2026-07-07): Rancher SAML integration was broken (corrupted SP cert) and its private key was committed in plaintext -- migrated to Authentik Generic OIDC
+
+A broader security sweep flagged `cluster-maintenance/clusters/cit-cps-gpu/rancher/saml.yaml`
+as committing the SAML Service Provider's RSA private key (`spKey`) in
+plaintext -- the same class of issue as the earlier JupyterHub OAuth
+`client_secret` incident (see the `values.yaml` inline comment / that
+incident's own troubleshooting entry). Investigating before rotating the
+key turned up something worse: **the SAML integration was already broken
+in production**. Both the git-committed and live `spCert` had a corrupted
+trailing character (`-----END CERTIFICATE-----c`), and Rancher had been
+continuously logging `SAML: failed to parse PEM block containing the
+private key, requeuing` since at least 2026-07-06.
+
+Rather than fix and continue maintaining SAML's cert/key lifecycle, Rancher
+was migrated to **Generic OIDC** against the same Authentik instance,
+mirroring JupyterHub's existing OAuth pattern. Full details, including the
+Rancher `AuthConfig` field-name pitfalls (`rancherUrl` vs `rancherURL`,
+`scope` as a string not `scopes` as a list, etc.) and the Authentik
+"Encryption Key must be disabled" gotcha, are in
+`docs/rancher-authentik-sso-plan.md`.
+
+**Two additional live secret exposures found and fixed in the same pass**:
+a plaintext `rancher_oidc.client_secret` (from an abandoned 2025 OIDC
+attempt -- endpoints matched the current live Authentik provider exactly,
+so treated as a live credential requiring rotation in Authentik, not just
+git cleanup) and a hardcoded `rancher_bootstrap_password: "admin"`, both in
+`bootstrap-cluster/ansible/group_vars/all.yml`. The corresponding Ansible
+task in `05-rancher.yml` was also templating the AuthConfig under the
+**wrong provider type** (`oidc`/legacy Keycloak-style, not
+`genericoidc`/Generic OIDC) -- likely the actual root cause of that 2025
+attempt being recorded as "broken" with no further explanation at the time.
+
+**Key exposure is neutralized by rotation, not just git removal**: the old
+`spKey`/`spCert` remain in git history forever (removing them from HEAD
+alone does nothing for that), but the exposure is actually closed because
+(a) the live `adfs` `AuthConfig` object was deleted from the cluster, and
+(b) the corresponding SAML application/provider in Authentik was disabled,
+so nothing trusts that key pair anymore. Authentik's `rancher-saml-key`
+**signing keypair** itself was deliberately left untouched -- it's shared
+with the new OIDC provider (used for ID token signing / JWKS), and
+rotating it would have broken the new OIDC login too.
+
+**Account-linking correction**: initially assumed Rancher's dashboard has a
+self-service "link external identity" option for local users under Account
+settings -- it does not. The only automatic local/external principal
+linking Rancher does is a one-time side effect of *Rancher's own UI*
+"enable provider" flow, applying only to whichever local user is logged in
+and clicks that button at that moment. Since `genericoidc` was enabled here
+via `kubectl patch` rather than through Rancher's UI, this auto-link did
+not fire for anyone. Existing local admin accounts remain fully separate
+identities from their OIDC counterparts; the supported path for granting
+OIDC users permissions is binding Rancher roles to **Authentik group
+names** via `groupsClaim: "groups"` (mirrors JupyterHub's existing
+`claim_groups_key`/`admin_groups` pattern), not account linking.
+
+**Not addressed** (separate, still open): `jupyterhub/postgresql.yaml`'s
+plaintext Postgres password; NetworkPolicy gaps in `cit-auth`/
+`kai-scheduler`/`longhorn-system`; a set of stale ClusterRoleBindings
+referencing non-existent namespaces from old Kubeflow/Slurm/NFS-provisioner
+attempts on the host cluster.
+
+---
+
 ## Getting Help
 
 If issues persist:

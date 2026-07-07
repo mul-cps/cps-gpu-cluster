@@ -1,0 +1,56 @@
+apiVersion: management.cattle.io/v3
+kind: AuthConfig
+metadata:
+  name: genericoidc
+
+# Applied by hand, like saml.yaml -- rancher/ bypasses Fleet entirely.
+# `kubectl apply -f` this file, then patch in clientSecret separately:
+#
+#   kubectl patch authconfig genericoidc --type merge -p \
+#     "{\"clientSecret\":\"$(kubectl get secret rancher-oidc-secret -n cattle-system -o jsonpath='{.data.clientSecret}' | base64 -d)\"}"
+#
+# The client secret is never stored in this repo. See docs/rancher-authentik-sso-plan.md
+# for the full SAML->OIDC cutover procedure.
+#
+# Start with enabled: false, verify a real browser login succeeds while `adfs`
+# is still active, THEN disable `adfs` and flip this to enabled: true -- Rancher
+# only supports one active external auth provider at a time (plus `local`,
+# which stays enabled throughout as the fallback).
+#
+# Field names verified against pkg/apis/management.cattle.io/v3/authn_types.go
+# (OIDCConfig/GenericOIDCConfig structs) -- an earlier revision of this file
+# used SAML-style field names (rancherURL, jwksEndpoint, scopes as a list,
+# displayNameField/userNameField/uidField/groupsField) that don't exist on
+# the OIDC config struct at all, which silently left the required `rancherUrl`
+# field empty and produced a Go nil-formatting bug in Rancher's post-login
+# redirect ("%!s(<nil>)" showing up in the browser URL). Confirmed live
+# 2026-07-07.
+enabled: false
+accessMode: unrestricted
+
+type: genericOIDCConfig
+
+clientId: "oMCe0WAjKAIadGyOHz5ok4Lv5iMxEVlXYGHS36z8"
+# clientSecret: applied out-of-band via kubectl patch, see comment above.
+
+rancherUrl: "https://rancher.dshl.unileoben.ac.at/verify-auth"
+rancherApiHost: "https://rancher.dshl.unileoben.ac.at"
+
+issuer: "https://auth.cps.unileoben.ac.at/application/o/rancher/"
+authEndpoint: "https://auth.cps.unileoben.ac.at/application/o/authorize/"
+tokenEndpoint: "https://auth.cps.unileoben.ac.at/application/o/token/"
+userInfoEndpoint: "https://auth.cps.unileoben.ac.at/application/o/userinfo/"
+endSessionEndpoint: "https://auth.cps.unileoben.ac.at/application/o/rancher/end-session/"
+jwksUrl: "https://auth.cps.unileoben.ac.at/application/o/rancher/jwks/"
+
+# Space-delimited string, not a list, per OIDCConfig.Scopes.
+scope: "openid profile email groups"
+
+# Defaults already match what we want (name/email/groups); set explicitly
+# for clarity/documentation purposes.
+nameClaim: "name"
+emailClaim: "email"
+groupsClaim: "groups"
+groupSearchEnabled: false
+
+pkceMethod: ""

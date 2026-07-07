@@ -53,27 +53,22 @@ helm_repos:
 rancher_hostname: "rancher.dshl.unileoben.ac.at"  # Assumption: set DNS to a control-plane IP
 rancher_version: ""  # Leave empty to install the latest compatible Rancher chart for your Kubernetes version
 rancher_replicas: 3
-rancher_bootstrap_password: "admin"
+# Randomly generated per-run rather than a fixed default; override with
+# -e rancher_bootstrap_password=... if you need a known value (e.g. to match
+# what's already been set on a live cluster). Never commit a literal value here
+# -- a hardcoded "admin" password lived here previously and was flagged as a
+# live credential exposure, see docs/troubleshooting.md.
+rancher_bootstrap_password: "{{ lookup('password', '/dev/null chars=ascii_letters,digits length=24') }}"
 
 # Deploy ingress-nginx (Traefik disabled in K3s install)
 install_ingress_nginx: true
 
-# OIDC (Authentik) for Rancher
-rancher_oidc:
-  client_id: "wdrQAHf26MmmSR3ZoEQJSUkT84wHMxhqEbRK9al3"
-  client_secret: "l9NhqMvaTgGUPfCE7LMhkv5jW5R1aAJQsYDDxVZxKHfAzy3RFFr2ZtOxQ6lest7F7GyshZuaRoZrXpaGOPa2ZWFdJP6MVNPoeCZED3EkdAnAbCnW0T9WZ9SpGOntqp2S"
-  issuer: "https://auth.cps.unileoben.ac.at/application/o/rancher/"
-  auth_url: "https://auth.cps.unileoben.ac.at/application/o/authorize/"
-  token_url: "https://auth.cps.unileoben.ac.at/application/o/token/"
-  userinfo_url: "https://auth.cps.unileoben.ac.at/application/o/userinfo/"
-  logout_url: "https://auth.cps.unileoben.ac.at/application/o/rancher/end-session/"
-  jwks_url: "https://auth.cps.unileoben.ac.at/application/o/rancher/jwks/"
-  scopes:
-    - openid
-    - profile
-    - email
-    - groups
-  access_mode: "unrestricted"  # or 'restricted' with allowed principals
+# Rancher's OIDC (Authentik) AuthConfig is no longer bootstrapped from here.
+# It previously lived in a rancher_oidc var block with a plaintext client_secret
+# committed to git -- a live credential exposure, removed 2026-07-07 (see
+# docs/troubleshooting.md and docs/rancher-authentik-sso-plan.md). The live
+# genericoidc AuthConfig is now applied by hand post-bootstrap, with its
+# client secret supplied out-of-band via kubectl, never stored in this repo.
 
 # System settings
 disable_swap: true
