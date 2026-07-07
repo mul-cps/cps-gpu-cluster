@@ -2,10 +2,19 @@ apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 
 # Only NVIDIA-specific add-ons; Rancher Monitoring stack is installed manually
+#
+# NOTE: resource files must stay FLAT in this directory (no subdirectories).
+# Fleet's own kustomize bundling enforces a stricter load restriction than
+# plain `kubectl kustomize` -- a subdirectory-referenced plain resource file
+# (e.g. gpu-dashboard-comparison/foo.yaml) fails with "security; file ... is
+# not in or below ''" even though `kubectl kustomize .` builds it fine
+# locally. Confirmed live 2026-07-07 -- see docs/troubleshooting.md.
 resources:
   - namespace.yaml
   - nvidia-official-dashboard.yaml
   - gpu-alerts.yaml
-  - gpu-dashboard-comparison/gpu-dash-22515-community.yaml
-  - gpu-dashboard-comparison/gpu-dash-23382-community.yaml
-  - gpu-dashboard-comparison/gpu-dash-24450-community.yaml
+  - gpu-dash-22515-community.yaml
+  - gpu-dash-23382-community.yaml
+  - gpu-dash-24450-community.yaml
+  - jupyterhub-stats-23694.yaml
+  - jupyterhub-servicemonitor.yaml

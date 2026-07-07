@@ -35,6 +35,12 @@ hub:
       authenticator_class: oauthenticator.generic.GenericOAuthenticator
       allow_named_servers: true
       named_server_limit_per_user: 3
+      # Allow Prometheus to scrape /hub/metrics without a token -- added
+      # 2026-07-07 to support the JupyterHub Stats Grafana dashboard
+      # (grafana.com ID 23694). Confirmed live the endpoint was 403ing
+      # unauthenticated scrapes before this; metrics content itself has
+      # no sensitive data (aggregate counts only).
+      authenticate_prometheus: false
       db_url: postgresql://jhub:jhub-secure-db-password-2025@postgresql:5432/jhub
       template_vars:
         org:

@@ -1,0 +1,19 @@
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: jupyterhub-hub-metrics
+  namespace: jupyterhub
+  labels:
+    release: rancher-monitoring
+spec:
+  namespaceSelector:
+    matchNames:
+      - jupyterhub
+  selector:
+    matchLabels:
+      component: hub
+      app: jupyterhub
+  endpoints:
+    - port: hub
+      path: /hub/metrics
+      interval: 30s
