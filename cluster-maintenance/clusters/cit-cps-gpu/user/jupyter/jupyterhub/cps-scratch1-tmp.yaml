@@ -4,29 +4,44 @@ metadata:
   name: cps-scratch1-tmp-v2-pv
 spec:
   capacity:
-    storage: 10Ti # NFS size is arbitrary, setting high
+    storage: 2900Gi
   accessModes:
     - ReadWriteMany
+  persistentVolumeReclaimPolicy: Retain
+  # NOTE (2026-07-07): this PV/PVC pair was hand-recreated live during the
+  # 2026-07-06 jupyterhub-shared-storage incident recovery (see
+  # docs/troubleshooting.md), with a different nfs.path, capacity, and
+  # storageClassName than this file previously specified. spec.nfs and
+  # spec.capacity are immutable once a PV exists, so once the live and git
+  # specs diverged, Fleet could not reconcile them (bundle stuck NotReady:
+  # "spec.persistentvolumesource is immutable after creation"). This file
+  # was updated to match the live, actively-mounted object exactly (rather
+  # than deleting/recreating it) because it's in active use by real pods
+  # (jupyter-bjoern and several ablator jobs) mounting
+  # /home/jovyan/cps_scratch1 -- deleting and recreating with the old spec
+  # would have force-unmounted live NFS scratch from running notebooks.
+  # storageClassName: nfs-client is intentionally kept here even though no
+  # such StorageClass object exists in-cluster: this is a statically
+  # provisioned PV/PVC bound directly via volumeName, so no provisioner
+  # ever needs to resolve "nfs-client" -- it's just a label copied from the
+  # live object to avoid a second immutable-field mismatch. Do not "fix"
+  # this to empty string without first patching the live PV/PVC to match,
+  # or Fleet will wedge on this bundle again.
+  storageClassName: nfs-client
   nfs:
     server: 193.170.30.58
-    path: /mnt/scratch1
+    path: /mnt/scratch1/cps_scratch1_tmp
   mountOptions:
     - nfsvers=4.2
     - proto=tcp
     - hard
     - timeo=150
-    - retrans=2
+    - retrans=3
     - rsize=1048576
     - wsize=1048576
-    - nconnect=8
+    - nconnect=4
     - noresvport
     - noatime
-    - _netdev
-    - x-systemd.automount
-    - x-systemd.idle-timeout=600s
-    - x-systemd.requires=network-online.target
-    - x-systemd.after=network-online.target
-    - nofail
 ---
 apiVersion: v1
 kind: PersistentVolumeClaim
@@ -36,8 +51,8 @@ metadata:
 spec:
   accessModes:
     - ReadWriteMany
-  storageClassName: "" # Static provisioning
+  storageClassName: nfs-client # matches live static-provisioned PV/PVC, see PV comment above
   volumeName: cps-scratch1-tmp-v2-pv
   resources:
     requests:
-      storage: 10Ti
+      storage: 2900Gi

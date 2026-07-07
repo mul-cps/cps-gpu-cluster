@@ -1455,6 +1455,50 @@ helm rollback <release-name> -n <namespace>
 
 ---
 
+### Follow-up #2 (2026-07-07): `jupyterhub` Fleet bundle wedge fixed; real root cause of `fast-scratch`/`longhorn-overcommit` capacity issue found
+
+**Part A -- `jupyterhub` bundle `NotReady` on `cps-scratch1-tmp-v2-pv` (fixed)**
+
+**Root cause**: `kubectl describe bundle jupyterhub -n fleet-local` showed `cannot patch "cps-scratch1-tmp-v2-pv" ... spec.persistentvolumesource: Forbidden: spec.persistentvolumesource is immutable after creation`. The live PV/PVC pair (`creationTimestamp` 2026-07-06T21:09:54Z, i.e. created live during the incident above, presumably as part of an earlier attempt to unblock a different problem that session) had a **different `nfs.path`, `capacity`, `mountOptions`, and `storageClassName`** than the git-tracked manifest (`cluster-maintenance/clusters/cit-cps-gpu/user/jupyter/jupyterhub/cps-scratch1-tmp.yaml`):
+
+| field | git (old) | live |
+|---|---|---|
+| `capacity` | `10Ti` | `2900Gi` |
+| `nfs.path` | `/mnt/scratch1` | `/mnt/scratch1/cps_scratch1_tmp` |
+| `storageClassName` | (unset / `""`) | `nfs-client` |
+| `mountOptions` | `retrans=2`, `nconnect=8`, + systemd-automount options | `retrans=3`, `nconnect=4`, no systemd options |
+
+`spec.persistentvolumesource` (and `capacity`) are immutable once a PV exists, so Fleet could never reconcile this drift by patching -- every sync attempt failed the same way, wedging the whole bundle (this is also why the shared-storage PVC in the incident above was never auto-recovered by Fleet: the bundle owning it couldn't sync at all).
+
+The live PVC (`cps-scratch1-tmp-v2-pvc` in `jupyterhub`) is genuinely in active use -- bound and mounted by `jupyter-bjoern` and four running `ablator-*` pods at `/home/jovyan/cps_scratch1` -- so deleting/recreating the PV to match the old git spec was ruled out (would force-unmount live NFS scratch from running jobs for no benefit). Instead, updated the git manifest to match the live object's actual spec exactly (capacity, path, mountOptions, `storageClassName: nfs-client`), so Fleet's next reconcile is a no-op instead of an illegal patch. Note `storageClassName: nfs-client` is kept intentionally even though no `nfs-client` StorageClass object exists in-cluster (see main "Key facts" note in `CLAUDE.md`) -- this PV/PVC pair is statically provisioned via `spec.volumeName`, so no provisioner ever needs to resolve that class name; it's just a label that must match between the PV and PVC. A comment was added directly in the manifest to stop a future agent from "fixing" this to `""` without also patching the live objects, which would just recreate the same wedge.
+
+**Part B -- `fast-scratch`/`longhorn-overcommit` overcommit: real numbers and root cause**
+
+Longhorn's global `storage-over-provisioning-percentage` setting is `100` (i.e. no artificial overcommit factor is configured) -- so the "overcommit" isn't a policy dial being cranked, it's real oversubscription of physical space by requested (not actual-used) PVC sizes:
+
+- Per-node NVMe (`nvme-scratch` Longhorn disk, backing `/mnt/nvme/scratch`) raw capacity: **983 GiB** (`storageMaximum` 1,055,735,832,576 B) on all 4 GPU workers, confirmed via `df -h` on each node directly.
+- `ProvisionedLimit` (StorageMax - StorageReserved, at 100% over-provisioning) = **~883 GiB** per node.
+- Actual `ScheduledTotal` (sum of *requested* Longhorn replica sizes, not real bytes used) per node:
+  - `k3s-wk-gpu1`: 1,853,278,388,224 B (~1726 GiB) -- **2.06x** over the 883 GiB limit -> `DiskPressure`/not-schedulable
+  - `k3s-wk-gpu3`: 1,638,530,023,424 B (~1526 GiB) -- **1.78x** over -> `DiskPressure`/not-schedulable
+  - `k3s-wk-gpu4`: 1,842,540,969,984 B (~1716 GiB) -- **1.94x** over -> `DiskPressure`/not-schedulable
+  - `k3s-wk-gpu2`: **0 B scheduled**, fully empty
+- Real `df -h /mnt/nvme/scratch` usage (actual bytes on disk, not requested): gpu1 52% (482G/984G), gpu2 1% (36K), gpu3 40% (367G), gpu4 31% (288G) -- i.e. the physical disks are nowhere near full; the pressure is purely from Longhorn's request-based accounting.
+
+**Root cause, found while investigating why gpu1/gpu3/gpu4 alone are over 100% requested while gpu2 sits empty**: `kubectl get nodes.longhorn.io -n longhorn-system k3s-wk-gpu2 -o yaml` shows `spec.allowScheduling: false` and `spec.evictionRequested: true` on the **Longhorn Node object** for `k3s-wk-gpu2` -- this is independent of Kubernetes; the k8s `Node` itself is `Ready` and not cordoned/tainted. This means Longhorn has excluded an entire GPU worker (~983 GiB of NVMe + ~483 GiB of the default disk) from all replica scheduling, forcing every volume's replicas (89 replicas total, from the general-purpose `longhorn`/`longhorn-fast` storage classes as well as `longhorn-overcommit` -- none of these storage classes set a disk `tags` selector, so *all* Longhorn-backed PVCs cluster-wide compete for space on `nvme-scratch`, not just `fast-scratch`/`longhorn-overcommit` ones) onto only 3 of 4 nodes. This alone accounts for roughly a 33% reduction in available scheduling capacity and is very likely why gpu1/gpu3/gpu4 look overcommitted while gpu2 is untouched. No record of *why* `k3s-wk-gpu2` was set to `allowScheduling: false`/`evictionRequested: true` was found in this repo or in Fleet/Helm values -- it looks like leftover state from an unfinished manual node-eviction/drain, not an intentional, documented policy.
+
+**Orphan check** (`scripts/check_orphans.py`, run against fresh `pvcs.json`/`pods.json`/`pvs.json` dumps): all 34 live Longhorn volumes trace back to real, still-existing PVCs (the "detached" ones are just idle/stopped notebook pods, not orphans). The 11 `Released` PVs found are all pre-existing `nfs-client`-class NFS volumes (documented in `CLAUDE.md`/earlier entries), unrelated to the `nvme-scratch` Longhorn disk -- **no Longhorn volumes or replicas were safe to delete**, so no cleanup was performed for this issue.
+
+**Recommendation (not applied -- flagging per instructions, this is a capacity/policy call)**:
+1. **Most likely real fix**: re-enable scheduling on `k3s-wk-gpu2`'s Longhorn node (`allowScheduling: true`, clear `evictionRequested`) unless someone confirms an in-progress, intentional drain of that node -- this alone would add back ~983 GiB of NVMe scratch pool and let Longhorn's own rebalancing spread replicas across all 4 nodes, likely resolving the `DiskPressure` condition on the other three without touching any storage class setting.
+2. Consider adding a `tags` selector to the `nvme-scratch` Longhorn disk (matching `longhorn-overcommit`'s eventual PVC placement) plus a matching `diskSelector`/parameter on `longhorn`/`longhorn-fast` storage classes, so general-purpose Longhorn volumes stop competing with scratch workloads for the same physical disk -- this is a bigger, more disruptive change than #1 and should be planned separately.
+3. Do not lower the over-provisioning percentage further (it's already at the non-overcommitted default of 100%) -- the problem is under-utilized node capacity (#1), not an aggressive ratio.
+4. If #1 is not viable, the remaining options are: add more physical NVMe capacity to gpu1/gpu3/gpu4, or reduce replica count/volume sizes for the largest scratch consumers -- both larger, standalone decisions.
+
+**Fix applied this pass**: only the git manifest fix in Part A (`cps-scratch1-tmp.yaml` updated to match live state). No changes were made to Longhorn node scheduling, storage classes, or over-provisioning settings -- Part B is report-only per the instructions for this investigation.
+
+---
+
 ## JupyterHub Issues
 
 ### Hub pod not starting
