@@ -23,7 +23,7 @@ The repo is split into two distinct lifecycle phases that use different tools an
 
 `tests/nfs-testclaim/` is not an automated test suite — it's a manifest (PV/PVC/Pod) applied manually to smoke-test NFS storage.
 
-`docs/` contains the authoritative deep-dive docs (network config, GPU passthrough, JupyterHub OIDC/SSH access, troubleshooting, harvester migration plan, project history) — check there before re-deriving cluster facts from manifests.
+`docs/` contains the authoritative deep-dive docs (network config, GPU passthrough, JupyterHub OIDC/SSH access, troubleshooting, harvester migration plan, project history, GPU scheduling architecture — see `docs/gpu-scheduling-architecture.md` for KAI Scheduler internals, the MPS sharing model, and the three-tier priority/queue design) — check there before re-deriving cluster facts from manifests.
 
 ## Common commands
 

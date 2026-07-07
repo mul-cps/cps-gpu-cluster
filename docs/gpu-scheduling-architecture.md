@@ -1,0 +1,434 @@
+# GPU Scheduling Architecture
+
+This is the single source of truth for how GPU scheduling actually works on
+this cluster: KAI Scheduler internals, the three-tier priority/queue model,
+NVIDIA MPS-based sharing, and the "elastic unified pool" design. It exists
+because the mechanisms here were pieced together the hard way, through real
+incidents (see `docs/troubleshooting.md`) — this doc consolidates the
+verified facts in one place instead of leaving them scattered across
+incident write-ups.
+
+Every scheduler-internals claim below was checked against the actual
+KAI-Scheduler Go source (not secondhand descriptions) at the version
+confirmed running on this cluster. File paths and line-level behavior are
+cited so they can be re-verified.
+
+## Verified version (2026-07-07)
+
+| | Value |
+|---|---|
+| Repo-pinned (`cluster-maintenance/.../system/gpu/kai-scheduler/fleet.yaml`) | `oci://ghcr.io/kai-scheduler/kai-scheduler/kai-scheduler` @ **v0.14.6** |
+| Live cluster (`kubectl get pods -n kai-scheduler -o jsonpath='{...spec.containers[*].image}'`) | every component image tag: **v0.14.6** (`admission`, `binder`, `operator`, `scheduler`, `podgrouper`, `podgroupcontroller`, `queuecontroller`, all `ghcr.io/kai-scheduler/kai-scheduler/...`) |
+
+**Repo-pinned and live match: v0.14.6.** A claim surfaced mid-session that
+v0.12.10 was "the exact version actually running" — that claim is **false**;
+it was not corroborated by a live check and is contradicted by the
+`kubectl` output above (checked 2026-07-07). The GHCR org for this chart
+is `ghcr.io/kai-scheduler/kai-scheduler` (moved from `ghcr.io/nvidia/kai-scheduler`
+at some point before this check); the upstream source repo is
+`github.com/NVIDIA/KAI-Scheduler` (an org-to-org redirect currently exists
+from `kai-scheduler/KAI-Scheduler` to `NVIDIA/KAI-Scheduler` — clone
+either, they resolve to the same commit history). All source citations
+below are against the `v0.14.6` tag of that repo.
+
+## Why MPS, not MIG
+
+- The A100s in this cluster are PCIe-passthrough to Proxmox VMs, not
+  bare-metal with DRA-capable firmware paths. NVIDIA's DynamicMIG DRA
+  feature (on-demand MIG geometry changes without a reboot) is excluded on
+  this hardware/virtualization combination.
+- Without DynamicMIG, changing MIG *mode* (MIG-enabled vs MIG-disabled) or
+  geometry requires a full GPU reset that, on these passthrough VMs, a
+  plain in-guest reboot does not reliably deliver — see
+  `docs/troubleshooting.md` ("MIG mode toggle needs a REAL reset").
+  That makes static MIG partitioning workable but MIG-based *elastic*,
+  on-demand sharing impractical: you cannot flip a GPU between "3x sliced"
+  and "whole" fast enough to respond to actual demand.
+- MPS has none of that constraint: it shares one physical GPU across
+  processes at the CUDA-context level, with no GPU mode change, and works
+  identically whether the workload later needs 1 GPU or wants to burst to
+  a multi-GPU job on the same node.
+- Conclusion: all 4 GPU workers run in **full (non-MIG) mode permanently**;
+  sharing for small/interactive workloads is done entirely via MPS,
+  arbitrated by KAI Scheduler's fractional GPU-memory model, not MIG.
+
+## Why three priority tiers with these specific values
+
+| PriorityClass | Value | Queue | GPU quota | overQuotaWeight | Use |
+|---|---|---|---|---|---|
+| `kai-course-high` | 90 | `courses` | 4 | 1 | Course/student Jupyter, small fixed MPS slices (3-5 GiB) |
+| `kai-phd-interactive` | 50 | `phd-interactive` | 1.5 | 2 | General/PhD interactive Jupyter, larger or full-GPU |
+| `kai-batch-low` | 10 | `batch` | 0 | 10 | Batch jobs, pure burst/opportunistic filler |
+| (implicit) | — | `default` | unlimited | 10 | Fallback for unlabeled workloads |
+
+Source: `cluster-maintenance/clusters/cit-cps-gpu/system/gpu/kai-scheduler/kai-policy/priorityclasses.yaml`
+and `.../kai-policy/queues.yaml`.
+
+**Load-bearing constraint: all three values are deliberately kept under
+100.** This is not an arbitrary numbering choice — it is required by KAI's
+own behavior. `DefaultPriorityClass`/queue logic in KAI treats any pod
+whose PriorityClass value is `>= 100` as **non-preemptible**, and
+non-preemptible pods are additionally hard-capped at their queue's
+*deserved* quota — they can never burst over quota regardless of
+`overQuotaWeight`. This was discovered via a real incident: a `batch`
+pod was originally assigned priority `1000`; since `batch`'s GPU quota is
+deliberately `0` (batch is pure-burst, it "owns" nothing), a non-preemptible
+`batch` pod could never be scheduled at all — every attempt failed with
+`NonPreemptibleOverQuota`. Confirmed live 2026-07-06; full incident in
+`docs/troubleshooting.md`. The fix was rescaling all three PriorityClass
+values below 100 (90 / 50 / 10), preserving the same relative ordering
+(course > interactive > batch) while keeping every tier preemptible and
+able to participate in the burst/reclaim model below.
+
+Relative spacing (90 vs 50 vs 10) reflects intent, not a hard constraint
+KAI enforces beyond ordering: courses need to reliably displace anything
+else on demand (highest, closest to the 100 ceiling with headroom),
+interactive PhD work sits in the middle (can be reclaimed by courses, can
+itself reclaim from batch), and batch is bottom with `quota: 0` — it only
+ever runs in genuinely idle capacity and yields first.
+
+`cpu`/`memory` quota dimensions mirror the `gpu` shape per queue (any
+unspecified resource dimension defaults to `quota=0, limit=0` in KAI — a
+hard cap, not just "unguaranteed" — so every queue explicitly sets
+cpu/memory alongside gpu; see the comment block at the top of
+`kai-policy/queues.yaml` and the "CPU/memory hard cap" incident in
+`docs/troubleshooting.md`).
+
+## Why an elastic unified pool, not a static node/GPU split
+
+The alternative design would statically partition nodes/GPUs: e.g. some
+GPUs always in MPS-sharing mode for courses, others always plain/exclusive
+for PhD/batch multi-GPU jobs. This cluster does **not** do that — any of
+the 8 physical GPUs can serve either an MPS-shared course/interactive pod
+or a genuine exclusive/multi-GPU pod, arbitrated automatically by KAI's
+own reservation-pod mechanism.
+
+**Verification status: executed and confirmed, not just planned.** An
+earlier design-time assumption ("no single device-plugin config can serve
+both request types, a static split is required") was tested live, found to
+be wrong on retest, and the cluster was subsequently rolled out cluster-wide
+on the elastic model. See `docs/troubleshooting.md`, section "RESOLVED
+(corrected, 2026-07-06): MPS-shared and multi-GPU-exclusive requests DO
+coexist on the same node" for the full test log, and the following
+"UPDATE (2026-07-06, later same day): rolled out cluster-wide" section for
+the production rollout (switching `gpu-operator/values.yaml`'s
+`devicePlugin.config.default` to a `plain` key, with the
+`nvidia.com/mps.capable=true` node-label fix needed to keep the MPS control
+daemon alive). As of this writing that rollout is live cluster-wide.
+
+Why this matters operationally: it means capacity is not wasted holding a
+GPU "reserved for course use" while idle, nor "reserved for batch" while a
+course session is queued — the same physical GPU inventory serves all
+three tiers, and KAI's bin-packing (below) decides case by case whether a
+given GPU should host several small shared sessions or one exclusive job.
+
+## The KAI action pipeline
+
+Default action list and execution order, confirmed in
+`pkg/scheduler/conf_util/scheduler_conf_util.go:37`:
+
+```
+"allocate, consolidation, reclaim, preempt, stalegangeviction"
+```
+
+Each action also carries a numeric priority (higher runs first), confirmed
+in `pkg/apis/kai/v1/schedulingshard_types.go:118-119`:
+
+```
+allocate=500, consolidation=400, reclaim=300, preempt=200, stalegangeviction=100
+```
+
+```
+┌─────────────────────────────────────────────────────────────────────┐
+│                     KAI scheduling cycle (per session)                │
+│                                                                         │
+│   pending pod                                                         │
+│       │                                                               │
+│       ▼                                                               │
+│  ┌──────────┐  placed?──yes──▶ done, pod bound                       │
+│  │ ALLOCATE │  (fits on an idle/fitting GPU as-is, no disruption)     │
+│  └────┬─────┘                                                        │
+│       │ no                                                            │
+│       ▼                                                               │
+│  ┌──────────────┐  placed?──yes──▶ done, pod bound                   │
+│  │ CONSOLIDATION│  (KAI reshuffles/repacks OTHER already-running     │
+│  └────┬─────────┘   pods to free room — no cross-queue/priority      │
+│       │ no           eviction, just bin-packing existing workloads)  │
+│       ▼                                                               │
+│  ┌──────────┐  placed?──yes──▶ done, pod bound (victim(s) evicted,   │
+│  │ RECLAIM  │  (cross-queue: pull back capacity a DIFFERENT queue     │  cross-queue)
+│  └────┬─────┘   borrowed over its fair share — e.g. courses           │
+│       │ no       reclaiming from phd-interactive or batch)            │
+│       ▼                                                               │
+│  ┌──────────┐  placed?──yes──▶ done, pod bound (victim(s) evicted,   │
+│  │ PREEMPT  │  (same-queue only: higher-priority job in the SAME      │  same-queue)
+│  └────┬─────┘   queue displaces a lower-priority job in that queue)   │
+│       │ no                                                             │
+│       ▼                                                               │
+│  ┌──────────────────┐                                                 │
+│  │ STALEGANGEVICTION│  evicts gang-scheduled jobs stuck partially     │
+│  └──────────────────┘  allocated past a timeout, to unblock others    │
+│       │                                                               │
+│       ▼                                                               │
+│  still pending → retried next scheduling cycle                        │
+└─────────────────────────────────────────────────────────────────────┘
+```
+
+Why the order matters: cheaper, less-disruptive strategies are always
+attempted before eviction. `allocate` tries the simple case first (does
+this pod fit somewhere with zero side effects). `consolidation` still
+causes zero *cross-workload* disruption in the priority/quota sense — it
+only repacks pods that are already free to move, e.g. onto more-filled
+GPUs (see bin-packing plugins below), before anything is evicted. Only if
+neither succeeds does the scheduler resort to `reclaim` (taking back
+over-fair-share capacity from another queue) and only after that fails
+does it fall through to `preempt` (same-queue, lower-priority job in the
+same queue gets displaced). `stalegangeviction` is the last-resort cleanup
+for stuck gang jobs. A pod exits the pipeline the moment any stage
+successfully places it — it does not continue through later, more
+disruptive stages once satisfied.
+
+### Reclaim vs. preempt: cross-queue vs. same-queue (source-verified)
+
+This is the mechanism that makes the three-tier model actually work, and
+it is a real code-level distinction, not just a naming convention:
+
+- **`reclaim` is cross-queue only.** In
+  `pkg/scheduler/actions/reclaim/reclaim.go`, the victim-candidate builder
+  (`getOrderedVictimsQueue`, lines ~123-143) explicitly *excludes* jobs in
+  the reclaimer's own queue:
+  ```go
+  for _, job := range ssn.ClusterInfo.PodGroupInfos {
+      if job.Queue == reclaimer.Queue {
+          continue
+      }
+      if !ssn.ReclaimVictimFilter(reclaimer, job) {
+          continue
+      }
+      ...
+  }
+  ```
+  This is the exact mechanism by which the `courses` queue can displace
+  `phd-interactive` or `batch` (different queues) — a pending course pod
+  can only ever *reclaim* from a queue it is not itself in.
+
+- **`preempt` is same-queue only.** In
+  `pkg/scheduler/actions/preempt/preempt.go`, `buildFilterFuncForPreempt`
+  requires the candidate victim's queue to match the preemptor's queue,
+  and its priority to be strictly lower:
+  ```go
+  if job.Priority >= preemptor.Priority {
+      return false
+  }
+  if job.Queue != preemptor.Queue {
+      return false
+  }
+  ```
+  So `preempt` only ever resolves priority conflicts *within* one queue
+  (e.g. two different-priority workloads both submitted into `batch`);
+  it never reaches across queues — that job belongs entirely to `reclaim`.
+
+`Reclaimable`-ness itself (whether a reclaimer is even allowed to reclaim
+right now) is gated by fair-share accounting in
+`pkg/scheduler/plugins/proportion/reclaimable/reclaimable.go`
+(`CanReclaimResources`): a reclaimer can only reclaim while its own queue's
+allocation-plus-request stays within its fair share, and non-preemptible
+reclaimers are additionally capped at the queue's deserved share — this is
+the same `>=100 → non-preemptible` mechanic from the priority-tier section
+above, applied on the reclaiming side too.
+
+## Bin-packing / placement scoring
+
+Three plugins jointly decide *where* a fitting pod lands, all
+source-confirmed at v0.14.6 (default plugin priorities from
+`deployments/kai-scheduler/crds/kai.scheduler_schedulingshards.yaml:145`:
+`gpupack/gpuspread=300, nodeplacement=200, gpusharingorder=100`):
+
+- **`gpupack`** (`pkg/scheduler/plugins/gpupack/gpupack.go`): for
+  fractional/MPS placements, scores a candidate GPU by
+  `node.GetUsedGpuPortion(gpuIdx)` — the *more* of a GPU's memory is
+  already claimed, the higher (better) the score. This directly biases new
+  MPS pods toward GPUs that already host other MPS sessions rather than
+  spreading onto empty ones.
+- **`gpusharingorder`** (`pkg/scheduler/plugins/gpusharingorder/gpusharingorder.go`):
+  adds a bonus score when a node already has a compatible shared-GPU group
+  the pod can join (`node.IsTaskFitOnGpuGroup`), reinforcing the same
+  "join an existing shared GPU" preference at the node-selection level.
+- **`nodeplacement`** (`pkg/scheduler/plugins/nodeplacement/nodeplacement.go`):
+  general resource-packing plugin, defaults both GPU and CPU strategies to
+  `BinpackStrategy` unless explicitly overridden to `SpreadStrategy` via
+  plugin arguments (`New()`, lines ~34-45). This cluster does not override
+  it, so GPU placement is binpack by default.
+
+**Why this matters for this cluster's specific goal:** small course/MPS
+sessions should pack tightly onto GPUs that already have MPS sessions
+running, preserving whole/mostly-free GPUs for large PhD/interactive or
+batch jobs that need real P2P/exclusive multi-GPU access. Eviction
+(reclaim/preempt) is meant to be a genuine last resort — only reached when
+bin-packing and consolidation truly cannot place a pending higher-priority
+pod anywhere.
+
+### Concrete before/after packing example
+
+```
+BEFORE                                                       
+┌─────────────── GPU0 (40 GiB) ───────────────┐  ┌── GPU1 (40 GiB) ──┐  ┌── GPU2 (40 GiB) ──┐
+│ course-pod-A (5G) │ course-pod-B (4G) │ free │  │  phd-large (40G)  │  │  batch-job (40G)  │
+│      MPS          │       MPS         │ 31G  │  │  exclusive, full  │  │  exclusive, full  │
+└───────────────────────────────────────────────┘  └───────────────────┘  └───────────────────┘
+queue: courses (used ~9G of 4-GPU quota)            queue: phd-interactive   queue: batch
+                                                     (used 1 of 1.5 quota)   (used 1, quota=0,
+                                                                              pure burst)
+
+Scenario A — new small course pod arrives, requests gpu-memory: 4G
+  → gpupack scores GPU0's partially-used GPU higher than GPU1/GPU2 (which
+    are full anyway) → ALLOCATE succeeds, pod packs onto GPU0's free 31G.
+  → No eviction needed. Whole/mostly-free capacity elsewhere untouched.
+
+AFTER (scenario A)
+┌─────────────── GPU0 (40 GiB) ───────────────────────┐
+│ course-A(5G) │ course-B(4G) │ course-C(4G, NEW) │ free 27G │
+└──────────────────────────────────────────────────────┘
+
+Scenario B — a burst of course pods fills GPU0 entirely, and courses'
+queue is still under its fair share, but a NEW course pod can no longer
+fit on GPU0 (full) or any other GPU (GPU1/GPU2 fully claimed by
+phd-interactive/batch exclusive jobs):
+  → ALLOCATE fails (nothing fits as-is).
+  → CONSOLIDATION fails (nothing else can be repacked to free room; the
+    other two GPUs hold single exclusive jobs, not fragmentable shares).
+  → RECLAIM: courses (different queue) is within fair share and entitled
+    to reclaim from either phd-interactive or batch (different queues from
+    courses) per the fair-share check in reclaimable.go. batch has
+    quota=0 and is the designated pure-burst/lowest tier, so it is
+    reclaimed from first in practice — the batch-job pod on GPU2 is
+    evicted, freeing GPU2 entirely for the new course pod (oversized for
+    the need, but the only reclaim target that fits).
+  → The phd-large pod on GPU1 is left untouched — reclaim only evicts as
+    many/whichever victims the solver's scenario search finds sufficient
+    to satisfy the pending pod; it does not preemptively also evict GPU1
+    if GPU2 alone satisfies the request. (Which specific victim(s) get
+    picked when more than one is eligible is exactly the open question in
+    the next section — here there is only one plausible candidate, batch,
+    so it's not itself illustrative of the general case.)
+```
+
+## Open/unverified question: intelligent victim selection
+
+**Status: UNVERIFIED — do not treat either answer as settled.**
+
+When more than one job of a lower/reclaimable-appropriate priority is
+eligible as an eviction victim (e.g. two different `phd-interactive` pods
+could both be reclaimed from to make room for a `courses` pod), does KAI
+pick the least-disruptive one (shortest-running, smallest, idle) or just
+the first valid candidate the solver's scenario search happens to try?
+
+What was checked this pass: `utils.GetVictimsQueue`
+(`pkg/scheduler/actions/utils/action.go:18-47`) builds the victim
+candidate set via `NewJobsOrderByQueues(... VictimQueue: true ...)` and
+`InitializeWithJobs`, and the actual scenario search happens in
+`pkg/scheduler/actions/common/solvers/` (`job_solver.go`,
+`by_pod_solver.go`, `scenario/base_scenario.go`, `scenario/by_node_scenario.go`,
+plus the `accumulated_scenario_filters/idle_gpus` and `node_affinities`
+filters). Reading `JobsOrderByQueues`'s ordering function (referenced in
+`pkg/scheduler/actions/utils/job_order_by_queue.go`) to determine whether
+`VictimQueue: true` sorts victims by some "least disruptive" heuristic
+(age, size, idleness) versus queue-fairness order alone was **not**
+completed in this pass — the ordering comparator itself was not traced
+line-by-line to a concrete answer.
+
+**This is left as an explicit open question for future investigation.**
+To resolve it: read `job_order_by_queue.go`'s comparator when
+`VictimQueue` is set, and/or observe live behavior — trigger a reclaim
+scenario with two equally-eligible `phd-interactive` victims of different
+age/size and see which one KAI actually picks. Do not assume either
+"smart" or "arbitrary" selection without doing that.
+
+## Known caveat: MPS memory limit is per-process, not per-pod
+
+`CUDA_MPS_PINNED_DEVICE_MEM_LIMIT` (set by KubeSpawner to match KAI's
+`gpu-memory` scheduling annotation — see `docs/troubleshooting.md`'s MPS
+sections for the full env var / hostPath wiring) is enforced by the MPS
+control daemon **per CUDA client process**, not per pod. A pod that spawns
+multiple CUDA-using processes (e.g. a notebook that forks several worker
+processes, or launches more than one training script) can have *each*
+process independently claim up to the configured limit — so a pod's
+*aggregate* VRAM usage can exceed its intended tier if it runs more than
+one CUDA client concurrently.
+
+This is an **open risk**, particularly for the less-trusted student/course
+track, since course sessions get the smallest, most tightly-packed slices
+(this is exactly the tier where over-claiming most directly harms
+neighbors sharing the same physical GPU).
+
+- **Current accepted mitigation**: an informal "one CUDA kernel/process per
+  session" expectation for course workloads — not technically enforced,
+  just the operating assumption.
+- **A stronger fix, if ever built**, would look like: aggregate
+  per-pod/per-cgroup GPU memory usage monitoring (e.g. via
+  `nvidia-smi`/DCGM per-process stats correlated back to pod) with
+  automatic kill/eviction of a pod whose combined CUDA client usage
+  exceeds its tier — not implemented today.
+
+## Diagrams
+
+### 1. Three-tier priority/queue hierarchy
+
+```
+                    ┌─────────────────────────────┐
+                    │      queue: courses          │
+                    │  kai-course-high, value 90    │
+                    │  gpu quota: 4, weight: 1       │
+                    └───────────┬───────────────────┘
+                                │  reclaim (cross-queue, highest
+                                │  priority tier pulls back capacity
+                                │  from any other queue over its
+                                ▼  fair share)
+                    ┌─────────────────────────────┐
+                    │   queue: phd-interactive      │
+                    │  kai-phd-interactive, value 50 │
+                    │  gpu quota: 1.5, weight: 2      │
+                    └───────────┬───────────────────┘
+                                │  reclaim (phd-interactive can in
+                                │  turn reclaim from batch, and can
+                                │  itself be reclaimed FROM by courses)
+                                ▼
+                    ┌─────────────────────────────┐
+                    │       queue: batch             │
+                    │  kai-batch-low, value 10        │
+                    │  gpu quota: 0, weight: 10        │
+                    │  (pure burst/opportunistic       │
+                    │   filler — owns no guaranteed    │
+                    │   capacity, yields first)        │
+                    └─────────────────────────────┘
+
+  preempt arrows (same-queue only, not drawn as cross-tier): within any
+  one of these queues, a higher-priority job submitted to that SAME queue
+  can preempt a lower-priority job already running in that same queue.
+  preempt never crosses the queue boundaries drawn above — only reclaim
+  does.
+```
+
+### 2. Action pipeline flowchart
+
+See "The KAI action pipeline" section above for the annotated box diagram
+(allocate → consolidation → reclaim → preempt → stalegangeviction, each
+stage's placed?/no branch shown explicitly).
+
+### 3. Concrete packing example
+
+See "Concrete before/after packing example" above.
+
+## Related docs
+
+- `docs/troubleshooting.md` — full incident write-ups this doc draws on:
+  MIG mode/reset behavior, MPS setup and enforcement gotchas, the
+  PriorityClass `>=100` incident, the CPU/memory quota-gap incident, and
+  the elastic-pool coexistence test (both the flawed first pass and the
+  corrected/rolled-out result).
+- `cluster-maintenance/clusters/cit-cps-gpu/system/gpu/kai-scheduler/kai-policy/README.md` —
+  quick reference for how to route a workload to a queue/priority class.
+- `cluster-maintenance/clusters/cit-cps-gpu/system/gpu/kai-scheduler/kai-policy/priorityclasses.yaml`
+  and `queues.yaml` — the live source of truth for current values (verify
+  these directly if this doc and the manifests ever appear to disagree —
+  the manifests win).
