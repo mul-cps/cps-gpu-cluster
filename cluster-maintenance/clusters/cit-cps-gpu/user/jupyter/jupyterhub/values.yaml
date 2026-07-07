@@ -1560,6 +1560,26 @@ hub:
               spawner.environment.update({'NVIDIA_VISIBLE_DEVICES':'all','NVIDIA_DRIVER_CAPABILITIES':'compute,utility'})
               spawner.node_selector = dict(getattr(spawner,'node_selector',{}) or {}, **{'accelerator':'nvidia'})
 
+              # Multi-GPU exclusive profiles (whole-device, gpu > 1, no MPS
+              # 'memory_mib' fractional sharing) request more than one whole
+              # nvidia.com/gpu on a SINGLE pod/node. With 4 workers x 2 GPUs
+              # each, free GPUs can legitimately be fragmented 1+1 across two
+              # nodes even though the cluster-wide total is sufficient -- KAI
+              # then leaves the pod pending while it waits for reclaim/
+              # consolidation (or a session to end) to free 2 GPUs on one
+              # node. c.Spawner.start_timeout (global, set above to 300s/5m)
+              # is nowhere near long enough to wait that out, and its
+              # generic-looking timeout kills the pending pod and PodGroup
+              # before KAI can resolve it (see docs/troubleshooting.md,
+              # "JupyterHub '2x GPU' profile spawn failure", 2026-07-07).
+              # KubeSpawner's start_timeout is a per-instance traitlet, so
+              # overriding it here in the pre-spawn hook only affects this
+              # spawner instance/profile -- single-GPU and MPS-shared
+              # profiles keep the fast 5-minute default so genuine failures
+              # still surface quickly.
+              if cfg['gpu'] > 1 and not cfg.get('memory_mib'):
+                  spawner.start_timeout = 1200  # 20 minutes
+
               # MPS-based memory sharing: for VRAM-tiered profiles (those carrying a
               # 'memory_mib' key), pin the container's MPS memory ceiling and tell
               # KAI Scheduler's bin-packer the same figure via the 'gpu-memory' pod
@@ -1640,6 +1660,11 @@ hub:
                   spawner.environment = {}
               spawner.environment.update({'NVIDIA_VISIBLE_DEVICES':'all','NVIDIA_DRIVER_CAPABILITIES':'compute,utility'})
               spawner.node_selector = dict(getattr(spawner,'node_selector',{}) or {}, **{'accelerator':'nvidia'})
+              # Same fragmentation risk as the built-in multi-GPU profiles above
+              # applies to a power-user's custom_gpus override -- extend the
+              # timeout whenever more than one whole GPU is requested this way.
+              if custom_gpus > 1:
+                  spawner.start_timeout = 1200  # 20 minutes
 
           # Record profile on the server (used by per-profile culler)
           spawner.environment = spawner.environment or {}

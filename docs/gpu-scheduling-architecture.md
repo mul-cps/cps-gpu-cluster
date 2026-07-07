@@ -313,36 +313,120 @@ phd-interactive/batch exclusive jobs):
     so it's not itself illustrative of the general case.)
 ```
 
-## Open/unverified question: intelligent victim selection
+## RESOLVED (2026-07-07): consolidation vs. reclaim — which one actually defragments already-running work, and victim selection
 
-**Status: UNVERIFIED — do not treat either answer as settled.**
+**Status: source-verified against the actual v0.14.6 code (`github.com/NVIDIA/KAI-Scheduler`
+tag `v0.14.6`) AND confirmed with a live synthetic test on this cluster.
+This replaces the previously-open "intelligent victim selection" question
+below with a concrete, evidence-backed answer.**
 
-When more than one job of a lower/reclaimable-appropriate priority is
-eligible as an eviction victim (e.g. two different `phd-interactive` pods
-could both be reclaimed from to make room for a `courses` pod), does KAI
-pick the least-disruptive one (shortest-running, smallest, idle) or just
-the first valid candidate the solver's scenario search happens to try?
+### Does `consolidation` evict/relocate already-*running* lower-priority pods, or only repack pending work?
 
-What was checked this pass: `utils.GetVictimsQueue`
-(`pkg/scheduler/actions/utils/action.go:18-47`) builds the victim
-candidate set via `NewJobsOrderByQueues(... VictimQueue: true ...)` and
-`InitializeWithJobs`, and the actual scenario search happens in
-`pkg/scheduler/actions/common/solvers/` (`job_solver.go`,
-`by_pod_solver.go`, `scenario/base_scenario.go`, `scenario/by_node_scenario.go`,
-plus the `accumulated_scenario_filters/idle_gpus` and `node_affinities`
-filters). Reading `JobsOrderByQueues`'s ordering function (referenced in
-`pkg/scheduler/actions/utils/job_order_by_queue.go`) to determine whether
-`VictimQueue: true` sorts victims by some "least disruptive" heuristic
-(age, size, idleness) versus queue-fairness order alone was **not**
-completed in this pass — the ordering comparator itself was not traced
-line-by-line to a concrete answer.
+Source says it *can* target running work: `buildPreemptibleFilterFunc`
+in `pkg/scheduler/actions/consolidation/consolidation.go` builds its
+victim candidate set with `job.IsPreemptibleJob()` and
+`job.GetActiveAllocatedTasksCount() == 0 → excluded` — i.e. candidates
+must have at least one *already-running* task, not just be pending. This
+is gated by `ssn.GetMaxNumberConsolidationPreemptees()`
+(`consolidation.go:36`, `if ... == 0 { skip }`), which defaults to **16**
+(`cmd/scheduler/app/options/options.go:38,114`,
+`defaultMaxConsolidationPreemptees = 16`, flag
+`--max-consolidation-preemptees`). This cluster's live `SchedulingShard/default`
+has no `args`/`actions` overrides (confirmed via
+`kubectl get schedulingshard default -o yaml`), so consolidation runs at
+this default — **enabled, out of the box, no config change was needed or made.**
 
-**This is left as an explicit open question for future investigation.**
-To resolve it: read `job_order_by_queue.go`'s comparator when
-`VictimQueue` is set, and/or observe live behavior — trigger a reclaim
-scenario with two equally-eligible `phd-interactive` victims of different
-age/size and see which one KAI actually picks. Do not assume either
-"smart" or "arbitrary" selection without doing that.
+However, **consolidation's scenario-feasibility check requires victims to
+be *reallocated* (moved to another node), not merely deleted**:
+`allPodsReallocated()` (`consolidation.go:120-129`) fails the scenario if
+any victim task is still `pod_status.Releasing` — i.e. consolidation is a
+genuine *repacking* pass: it only succeeds if there is somewhere else for
+the victim to go. If the cluster has no spare capacity to relocate a
+victim to (true on this 4-node/8-GPU cluster whenever the other GPUs are
+also full), consolidation will report "Didn't find a consolidation
+strategy" even though evicting the victim outright would free the needed
+capacity.
+
+### Live test (2026-07-07, synthetic pods, cleaned up after)
+
+1. Filled `k3s-wk-gpu2` and `k3s-wk-gpu3` each down to 1 free GPU with
+   two synthetic `kai-batch-low`/queue=`batch` filler pods, leaving free
+   GPUs fragmented 1(gpu2)+1(gpu3)+1(gpu4) — no node with 2 free, same
+   shape as the real 2026-07-07 `gpu-pytorch-dual` incident.
+2. Submitted a synthetic 2-GPU pod at `kai-phd-interactive`/queue
+   `phd-interactive`. Scheduler logs showed **consolidation entered every
+   cycle and logged "Didn't find a consolidation strategy"**; **reclaim
+   also failed** ("Didn't find a reclaim strategy") — because
+   `phd-interactive`'s queue was already at/over its fair share
+   (`queue phd-interactive` quota=1.5, already `allocated: nvidia.com/gpu: 2`
+   at test time), and `reclaimable.Reclaimable`/`CanReclaimResources`
+   (`pkg/scheduler/plugins/proportion/reclaimable/reclaimable.go:30-42`)
+   unconditionally blocks reclaim once
+   `allocatedResources.Add(requestedResources)` would exceed
+   `reclaimerQueue.GetFairShare()`, independent of physical GPU
+   availability. This is a real, source-confirmed gate distinct from
+   physical placement feasibility.
+3. Deleted that pod, resubmitted the same 2-GPU request at
+   `kai-course-high`/queue `courses` (quota 4, effectively idle at test
+   time — plenty of fair-share headroom). Result, from live scheduler
+   logs and cluster events:
+   - `consolidation` again logged **"Didn't find a consolidation
+     strategy"** — consistent with the repacking constraint above: there
+     was nowhere free to relocate the batch filler pods *to*.
+   - `reclaim` succeeded: `reclaim/reclaim.go:92` logged *"Reclaimed
+     resources for job ... evicting reclaimee tasks:
+     <[.../consol-test-filler-gpu3]>"*, and the k8s event confirmed
+     `Evict: Pod .../consol-test-filler-gpu3 was preempted by workload
+     .../pg-consol-test-pending-2gpu-b...`. The pending 2-GPU `courses`
+     pod was then bound to the now-fully-freed `k3s-wk-gpu3`
+     (`Successfully allocated ... Creating bind request for task ...
+     to node <k3s-wk-gpu3>`).
+
+### Conclusion
+
+**It is `reclaim` (`pkg/scheduler/actions/reclaim/reclaim.go`), not
+`consolidation`, that performs the active defragmentation this cluster
+actually needs.** Reclaim evicts a lower-priority, different-queue,
+already-running pod outright (no requirement to relocate it anywhere) to
+free physical capacity for a pending higher-priority job — exactly the
+"evict the `ablator-*` batch job so both free GPUs land on one node"
+behavior wanted for the `gpu-pytorch-dual` scenario, and it already works
+today with the cluster's existing/default KAI config (courses(90) >
+phd-interactive(50) > batch(10) priority tiers, batch quota=0). No config
+change was required or made — this is default v0.14.6 behavior, verified
+live.
+
+`consolidation` is a real, separate mechanism that also targets
+already-*running* preemptible jobs (not just pending ones, correcting the
+prior framing of this question) — but it is a strict bin-*repacking* pass
+that only succeeds when a victim can be moved elsewhere; on a
+tightly-packed cluster with no spare node capacity it is expected to keep
+losing to `reclaim`, which needs no such relocation target. Both actions
+are gated by the `proportion` plugin's fair-share accounting
+(`reclaimable.go`), which blocks a request from over-drawing its own
+queue's fair share regardless of physical GPU availability — a
+requester's own queue being over quota, not a lack of physical capacity,
+can be why a "there's obviously a free GPU that would satisfy this" case
+still doesn't schedule.
+
+**Residual, lower-priority gap (not exercised live, flagged from source
+only):** `buildPreemptibleFilterFunc` in `consolidation.go` filters
+victims solely via `job.IsPreemptibleJob()` (priority < 100 → default
+`Preemptible`, `pkg/apis/scheduling/v2alpha2/podgroup_types.go:85`), with
+**no check that the victim's own priority is lower than the preemptor's**.
+Since this cluster's three tiers (courses=90, phd-interactive=50,
+batch=10) are *all* under the 100 threshold, all three are `Preemptible`
+by this default rule, so in principle a lower-priority pending job could
+target a strictly-higher-priority running job as a consolidation victim.
+In practice this is constrained by (a) `reclaim`'s separate,
+priority/queue-independent fair-share gate above, and (b) queue-order and
+job-order traversal generally favoring the higher-priority queue's own
+pending jobs first — but there is no explicit "victim priority <
+preemptor priority" guard in the consolidation code path itself. This is
+a real, narrow gap worth a future look (e.g. an explicit non-preemptible
+`spec.preemptibility` override on `courses`/`phd-interactive` PodGroups if
+this ever becomes a practical problem), not something fixed in this
+pass.
 
 ## Known caveat: MPS memory limit is per-process, not per-pod
 

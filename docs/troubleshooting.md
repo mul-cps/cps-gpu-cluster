@@ -1798,6 +1798,103 @@ decision for the platform owner, not something to silently change here.
 
 ---
 
+### Follow-up (2026-07-07): multi-GPU spawn timeout raised; KAI's active defragmentation confirmed to work via `reclaim`, not `consolidation`
+
+Two fixes for the fragmentation gap flagged above (product decision now made).
+
+**1. JupyterHub spawn timeout, per-profile.** In
+`cluster-maintenance/clusters/cit-cps-gpu/user/jupyter/jupyterhub/values.yaml`,
+`apply_profile_settings()` (the KubeSpawner `pre_spawn_hook`) now
+overrides `spawner.start_timeout` to **1200s (20 minutes)** whenever a
+profile requests more than one whole `nvidia.com/gpu` with no MPS
+`memory_mib` fractional-sharing key — i.e. `gpu-pytorch-dual` and
+`gpu-tensorflow-dual` (both `gpu: 2`), plus the power-user
+`custom_gpus > 1` override path. `KubeSpawner.start_timeout` is a
+per-instance traitlet, so setting `spawner.start_timeout` inside the
+pre-spawn hook only affects that spawner instance/profile; the global
+`c.Spawner.start_timeout = 300` (5 minutes) is untouched, so single-GPU
+and MPS-shared profiles still fail fast on genuine problems. No UI/status
+surfacing change was made beyond this — KAI's `PodGroup` doesn't expose a
+distinct "pending due to fragmentation" condition that JupyterHub's
+progress reporting could specially relay (its conditions are the generic
+`Unschedulable`/`SchedulingErrors` ones already seen in the original
+incident), so a clearer message would have to be hand-written into the
+spawn-progress hook; not done here since the working timeout fix matters
+more and this was called out as a "don't over-engineer" item.
+
+**2. KAI active defragmentation — confirmed live, already works, no config
+change.** The ask was: can KAI actively relocate/evict a lower-priority
+*already-running* pod (e.g. a batch `ablator-*` job) to consolidate
+fragmented free GPUs onto one node for a pending higher-priority
+multi-GPU request, rather than just waiting? Investigated against
+`github.com/NVIDIA/KAI-Scheduler` tag `v0.14.6` source and verified live
+against this cluster (synthetic filler + pending pods, cleaned up after):
+
+- **`consolidation` (`pkg/scheduler/actions/consolidation/consolidation.go`)
+  can target already-running preemptible jobs as victims** (its
+  `buildPreemptibleFilterFunc` requires `GetActiveAllocatedTasksCount() != 0`,
+  not "still pending") — correcting the previous framing of this as an
+  open question about pending-vs-running scope. But its scenario check,
+  `allPodsReallocated()` (`consolidation.go:120-129`), requires every
+  victim to be *reallocated elsewhere*, not simply evicted — it's a
+  bin-repacking pass, and on a cluster with no spare node capacity to
+  move a victim to, it has nothing to repack onto and reports "Didn't
+  find a consolidation strategy" even when outright evicting the victim
+  would free the needed capacity. Live test: this happened every cycle,
+  in both a failing and a succeeding scenario below.
+- **`reclaim` (`pkg/scheduler/actions/reclaim/reclaim.go`) is what
+  actually performs the defragmentation.** Live test: filled
+  `k3s-wk-gpu2`/`k3s-wk-gpu3` to 1 free GPU each with synthetic
+  `kai-batch-low`/`batch`-queue filler pods (reproducing the exact 1+1
+  fragmentation shape from the original incident). A synthetic 2-GPU pod
+  submitted at `kai-course-high`/`courses` then triggered, within
+  scheduler cycles: `consolidation` — "Didn't find a consolidation
+  strategy" (as above); `reclaim` — **succeeded**, logging *"Reclaimed
+  resources for job ... evicting reclaimee tasks:
+  <[jupyterhub/consol-test-filler-gpu3]>"* (`reclaim/reclaim.go:92`), with
+  a matching k8s event (*"Evict: Pod .../consol-test-filler-gpu3 was
+  preempted by workload .../pg-consol-test-pending-2gpu-b..."*), and the
+  pending pod was bound to the now-fully-freed `k3s-wk-gpu3`
+  (`allocate/allocate.go:106`, "Succesfully allocated resources").
+  This is precisely the batch-pod-evicted-to-free-a-whole-node behavior
+  the user wanted, and it worked with **zero config changes** — the live
+  `SchedulingShard/default` has no `actions`/`args` overrides, so
+  `consolidation`/`reclaim` both already run at their v0.14.6 defaults
+  (`--max-consolidation-preemptees=16`, from
+  `cmd/scheduler/app/options/options.go:38`; no consolidation/reclaim
+  toggle exists that needed enabling).
+- **A first attempt at the same 2-GPU request from `phd-interactive`
+  failed** (both consolidation and reclaim: "Didn't find a ... strategy"),
+  but for a different, also source-confirmed reason: `phd-interactive`'s
+  queue was already at/over its fair share (quota 1.5, already
+  `allocated: nvidia.com/gpu: 2`), and
+  `reclaimable.Reclaimable`/`CanReclaimResources`
+  (`pkg/scheduler/plugins/proportion/reclaimable/reclaimable.go:30-42`)
+  unconditionally blocks a reclaimer once its own queue would exceed its
+  fair share, independent of whether physical GPU capacity exists
+  elsewhere. Worth remembering when a "there's obviously a free GPU"
+  case still won't schedule — the requester's own queue quota can be the
+  real blocker, not physical placement.
+- **Real residual gap (source-only, not exercised live):**
+  `buildPreemptibleFilterFunc` in `consolidation.go` filters candidate
+  victims only via `job.IsPreemptibleJob()` (priority < 100 → default
+  `Preemptible`), with no check that the victim's priority is actually
+  *lower* than the preemptor's. This cluster's three tiers (courses=90,
+  phd-interactive=50, batch=10) are all under 100, so all three are
+  `Preemptible` by the default rule — nothing in `consolidation`'s victim
+  filter itself stops a lower-priority pending job from targeting a
+  higher-priority running job as a victim. In practice `reclaim`'s
+  separate fair-share gate and queue/job ordering make this unlikely, but
+  it is not structurally guaranteed. Flagged, not fixed, in
+  `docs/gpu-scheduling-architecture.md`'s (now resolved) victim-selection
+  section.
+
+No live KAI config was modified — this was a verification-only pass for
+KAI. The JupyterHub timeout change is the only functional change, in
+`cluster-maintenance/clusters/cit-cps-gpu/user/jupyter/jupyterhub/values.yaml`.
+
+---
+
 ## Getting Help
 
 If issues persist:
