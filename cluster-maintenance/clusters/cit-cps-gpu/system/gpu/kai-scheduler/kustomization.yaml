@@ -1,0 +1,43 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+# Fleet renders the Helm chart above, then applies this as a post-render
+# patch on the combined output (see fleet.yaml's `kustomize.dir: .`).
+#
+# Raises the kai-scheduler's klog verbosity from its default (V2 only:
+# "Enter/Leaving Reclaim") to V5, so a future reclaim/fair-share
+# investigation can be conclusive. V5 is the minimum level that surfaces
+# both:
+#   - reclaim.go:100/112 (V3) "Attempting to reclaim for job" /
+#     "Didn't find a reclaim strategy for job" -- whether a job even
+#     reached the solver (its *absence* for a given job is the only signal
+#     that CanReclaimResources, reclaimable.go:31, silently gated it --
+#     that function itself has no log line at any verbosity).
+#   - reclaimable.go:168/182 (V5) the specific solver-level fair-share
+#     failure reason: "Saturation ratios would not stay lower than sibling
+#     queue" / "Queue will have nonpreemtible jobs over quota" -- this is
+#     the detail needed to distinguish a fair-share-gate skip from some
+#     other solver failure.
+# V7 (reclaimable.go:92, FitsReclaimStrategy) is not needed for this and
+# was deliberately left out to limit log volume.
+#
+# NOTE: --v is a *global* klog level -- it raises verbosity for every
+# scheduler subsystem (allocate, predicates, proportion, etc.), not just
+# reclaim, so expect materially more log volume cluster-wide, not just
+# during reclaim cycles. See docs/troubleshooting.md, 2026-07-07 entry,
+# for the Loki retention/volume consideration before leaving this enabled
+# long-term -- consider reverting to default verbosity once the reclaim
+# investigation this was added for is concluded.
+#
+# See docs/troubleshooting.md "phd-interactive burst" and "does reclaim
+# cross the exclusive/fractional boundary" entries for the investigations
+# this unblocks.
+patches:
+  - target:
+      kind: SchedulingShard
+      name: default
+    patch: |-
+      - op: add
+        path: /spec/args
+        value:
+          v: "5"

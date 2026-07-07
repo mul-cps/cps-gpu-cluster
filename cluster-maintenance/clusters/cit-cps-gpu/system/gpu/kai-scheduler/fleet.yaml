@@ -10,6 +10,14 @@ helm:
   valuesFiles:
     - values.yaml
 
+# Post-render patch applied on top of the Helm output (the chart's
+# default-shard.yaml template has no values.yaml field wired to
+# SchedulingShard.spec.args, even though the CRD supports it -- see
+# kustomization.yaml and docs/troubleshooting.md, 2026-07-07 entry, for why
+# this is needed and confirmation this is a supported Fleet bundle shape).
+kustomize:
+  dir: .
+
 diff:
   comparePatches:
   - apiVersion: kai.scheduler/v1

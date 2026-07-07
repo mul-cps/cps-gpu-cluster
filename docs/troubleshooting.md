@@ -2943,6 +2943,94 @@ exactly the situation observed live today.
 
 ---
 
+## RESOLVED (2026-07-07): raise kai-scheduler log verbosity for future reclaim investigations
+
+**Context.** Both the "phd-interactive can burst to 8 GPUs" and "does
+reclaim cross the exclusive/fractional boundary" entries above hit the
+same wall: `kai-scheduler-default`'s log verbosity was stuck at the
+chart's default (V2 — only `Enter Reclaim`/`Leaving Reclaim`,
+`reclaim.go:48-49`), so neither investigation could distinguish "silently
+skipped at the fair-share gate" from "reached the solver and failed for a
+different reason." This entry raises verbosity so a repeat test can be
+conclusive.
+
+**Source check (KAI-Scheduler v0.14.6, the version pinned in this bundle's
+`fleet.yaml`).** Checked the actual `klog`-style call sites in the reclaim
+path:
+- `pkg/scheduler/plugins/proportion/reclaimable/reclaimable.go:31`
+  (`CanReclaimResources`, the exact `allocated+requested > fairShare` gate
+  from the "phd-interactive" entry) — **has no log call at any
+  verbosity.** A job being silently gated here is only inferable by its
+  *absence* from the next line below.
+- `pkg/scheduler/actions/reclaim/reclaim.go:100,112` — V3: "Didn't find a
+  reclaim strategy for job" / "Attempting to reclaim for job". Presence of
+  the latter means the job passed `CanReclaimResources` and reached the
+  solver.
+- `pkg/scheduler/plugins/proportion/reclaimable/reclaimable.go:168,182` —
+  V5: the specific solver-level failure reason ("Saturation ratios would
+  not stay lower than sibling queue <...>" / "Queue will have
+  nonpreemtible jobs over quota and reclaimer job is an interactive job").
+  This is the detail both prior investigations were missing.
+- `reclaimable.go:92` — V7 (`FitsReclaimStrategy`/strategy-fit check) —
+  one tier further, not needed for the fair-share question, deliberately
+  left off to limit log volume.
+
+**Chart gap found.** The `kai-scheduler` Helm chart (v0.14.6) has no
+`values.yaml` field wired to `SchedulingShard.spec.args`, even though the
+CRD (`kai.scheduler_schedulingshards.yaml`) explicitly supports arbitrary
+scheduler CLI flags there, merged in by the kai-operator
+(`pkg/operator/operands/scheduler/resources_for_shard.go:245-276`,
+`buildArgsList`) against the scheduler's real pflag set
+(`cmd/scheduler/app/options/options.go:113`, `fs.IntVar(&s.Verbosity, "v",
+...)` confirms `--v` is a valid, registered flag; unknown flag names in
+`spec.args` are silently ignored rather than causing a crashloop, per
+`resources_for_shard.go:271-276`'s `flagSet.VisitAll` guard).
+
+**Change made.** Since the chart doesn't expose this via `values.yaml`,
+added a Fleet-supported post-render Kustomize patch alongside the Helm
+chart in this bundle: `fleet.yaml` gained a root-level `kustomize: {dir:
+.}` (Fleet renders the Helm chart, then applies this Kustomize patch on
+the combined output — the same shape `rancher/fleet-examples`'
+`multi-cluster/helm-kustomize` demonstrates), and the new
+`kustomization.yaml` in this directory JSON-patches
+`SchedulingShard/default` to add `spec.args: {v: "5"}`. Verified the
+render locally (`helm template` piped through `kubectl kustomize`) before
+pushing — the patch lands as expected and doesn't disturb any other
+templated field.
+
+**Why V5 and not V3 or V7.** V3 alone only shows whether a job reached the
+solver, not why it failed once there — insufficient to answer either
+prior investigation's open question. V5 adds the specific fair-share
+failure reason, which is what's needed. V7 adds one more tier
+(strategy-fit) that isn't relevant to the fair-share question and would
+add more log volume than necessary — skipped.
+
+**Log volume/retention consideration.** `--v` is a **global** klog level
+for the whole scheduler binary, not scoped to the reclaim action —
+raising it to 5 means every subsystem (allocate, predicates, proportion,
+consolidation, etc.) logs at V5, continuously, not just during reclaim
+cycles. This cluster's Loki (`system/observability/loki/values-loki.yaml`)
+has `retention_period: 336h` (14 days) but no volume/ingestion-rate cap
+noted in this bundle's values — a sustained higher log rate would consume
+more of that 14-day window's storage faster rather than being rejected
+outright, which is a soft risk, not a hard limit breach. Recommend
+treating this as a temporary investigation aid: re-run the pending
+synthetic reclaim tests from the two entries above soon, then consider
+reverting `kustomization.yaml`'s patch value back toward the default (or
+removing it) once those investigations conclude, rather than leaving V5
+on indefinitely.
+
+**Live verification.** After pushing, confirmed via `kubectl get bundles
+-n fleet-local` that the `kai-scheduler` bundle synced successfully, and
+that `kai-scheduler-default`'s pod restarted with `--v=5` in its container
+args and produced V3+ log lines (mundane ones — no real reclaim
+contention was triggered, per the safety constraint already established
+in the entries above). This clears the blocker noted in both prior
+entries; the actual reclaim/fair-share repeat tests themselves are still
+open follow-ups.
+
+---
+
 ## Getting Help
 
 If issues persist:
