@@ -2401,119 +2401,134 @@ blocking further pods.
 
 ---
 
-### Confirmed (2026-07-07): `phd-interactive` already can burst to (up to) 8 GPUs, reclaiming from `batch`, whenever `courses` isn't contending — no config change needed
+### Investigated (2026-07-07): `phd-interactive` can reclaim past its static quota via `batch`, but only up to a `FairShare` ceiling capped well below 8 — a real gap against "burst to 8 GPUs", and the fix is `overQuotaWeight`, not `quota`
 
 **Question.** Product requirement: "`phd-interactive` should be able to
 get up to 8 GPUs if `courses` doesn't use them, AND preempt/reclaim
 `batch` jobs if needed to get there." `phd-interactive`'s static quota is
 only 2 (`queues.yaml`), so anything beyond 2 GPUs, when all 8 are already
-held by `batch`, requires the `reclaim` action to evict `batch` pods. Risk
-hypothesis going in: `reclaim`'s reclaimer-side gate,
-`CanReclaimResources` (`reclaimable.go:31-55`), might hard-cap the
-reclaiming queue at its own *static* `quota`, in which case
-`phd-interactive` could only ever land on genuinely-idle GPUs, never
-reclaim past 2, regardless of `courses`' idle capacity — this would be a
-real gap against the requirement.
+held by `batch`, requires the `reclaim` action to evict `batch` pods.
 
-**Source verdict: the gate is dynamic, not static, for `phd-interactive`
-specifically.** `CanReclaimResources` (KAI-Scheduler v0.14.6,
+**Source: the reclaimer-side gate is dynamic (`FairShare`), not static
+quota, for `phd-interactive` — but "dynamic" doesn't mean "unbounded".**
+`CanReclaimResources` (KAI-Scheduler v0.14.6,
 `pkg/scheduler/plugins/proportion/reclaimable/reclaimable.go:31-55`) has
-two sequential checks:
-1. `allocatedResources := reclaimerQueue.GetAllocatedShare() + requested; if !allocatedResources.LessEqual(reclaimerQueue.GetFairShare()) { return false }`
-   — gated on the queue's **dynamically-computed `FairShare`**, not its
-   static `quota`.
-2. `if reclaimer.IsPreemptable { return true }` — if the reclaiming job's
-   PodGroup is `Preemptible`, the function returns here; the *second*,
-   static-quota-based check (`allocatedNonPreemptible ... LessEqual(reclaimerQueue.GetDeservedShare())`,
-   i.e. `quota`) is only reached for **non-preemptible** reclaimers.
+two sequential checks: (1) `allocatedResources := reclaimerQueue.GetAllocatedShare() + requested; if !allocatedResources.LessEqual(reclaimerQueue.GetFairShare()) { return false }`
+— gated on the dynamically-computed `FairShare`, not `quota`; (2) `if
+reclaimer.IsPreemptable { return true }` — the *second*, static-quota
+check (`GetDeservedShare`) is only reached for non-preemptible
+reclaimers. Whether a PodGroup is `Preemptible` is decided by
+`pkg/common/podgroup/preemptible.go:14-26` (`priority < 100` →
+`Preemptible`); per `kai-policy/priorityclasses.yaml` (documented
+2026-07-06), all three priority classes here are under 100
+(`kai-course-high=90`, `kai-phd-interactive=50`, `kai-batch-low=10`), so
+every job, including `phd-interactive`'s, is `Preemptible` and the
+static-quota reclaimer check never applies. So the real gate on how far
+`phd-interactive` can reclaim is its dynamic `FairShare`.
 
-Whether a PodGroup is `Preemptible` is decided by
-`pkg/common/podgroup/preemptible.go:14-26`
-(`CalculatePreemptibility`): if not explicitly set, a PodGroup with
-`priority < 100` is `Preemptible`, `>= 100` is `NonPreemptible`. Per
-`kai-policy/priorityclasses.yaml` (already documented, 2026-07-06, as a
-deliberate design choice — see the comment block at the top of that
-file), all three of this cluster's priority classes are under 100
-(`kai-course-high=90`, `kai-phd-interactive=50`, `kai-batch-low=10`) —
-**every job in this cluster, including `phd-interactive` jobs, is
-`Preemptible`, specifically so that this static-quota reclaimer-side
-check never applies to them.** So for `phd-interactive` the sole live
-gate on how far it can reclaim is its dynamic `FairShare`, computed by
-`resource_division.go`.
+**Correction to an earlier draft of this entry: `FairShare` division is
+NOT tiered by PriorityClass/queue priority the way this was first
+(wrongly) read.** `resource_division.go`'s `getQueuesByPriority` buckets
+by `rs.QueueAttributes.Priority` — a field on the *Queue* CRD (from
+`resource_share_defaults.go`'s `qo.Priority`), **not** the PriorityClass
+value (90/50/10) used for pod ordering/preemptibility. None of
+`courses`/`phd-interactive`/`batch` set `spec.priority` in
+`queues.yaml`, so all three default to the same value and land in the
+**same** division tier. Live logs confirm this directly — every queue's
+`resource_division` log line reads `Queue Priority: <100>` for
+`courses`, `phd-interactive`, and `batch` alike. That means over-quota
+surplus is **not** awarded to `phd-interactive` ahead of `batch` by
+tier — the two compete directly for it via `overQuotaWeight`
+(`phd-interactive: 2` vs `batch: 10` — batch's weight is nearly 5x
+higher), which is backwards for this requirement, matching the risk the
+original ask flagged.
 
-`resource_division.go`'s `divideOverQuotaResource` /
-`divideUpToFairShare` distributes GPU capacity beyond each queue's
-deserved quota in descending-priority tiers (`courses` tier first, then
-`phd-interactive`, then `batch`), and a queue only reserves any of that
-tier's leftover if it has actual unsatisfied `requested` demand
-(`isQueueSatisfied`: `request <= FairShare`). Two consequences: (a) if
-`courses` has zero pending demand, it claims none of the surplus and its
-FairShare stays at 0/idle, regardless of its `quota:4`, freeing that
-capacity for the next tier down; (b) because `phd-interactive`'s
-priority tier is processed strictly before `batch`'s, `phd-interactive`
-never has to out-compete `batch` via `overQuotaWeight` for that
-surplus — the current `overQuotaWeight` values (`phd-interactive: 2` <
-`batch: 10`) are irrelevant to this scenario; weights only break ties
-*within* a priority tier, and `batch` is a different, lower tier. (This
-also answers the sub-question in the original ask: no, `batch`'s higher
-`overQuotaWeight` is not "backwards" here and does not need changing —
-it doesn't affect fairness relative to `phd-interactive` at all under
-this cross-tier design.)
+**Live math confirms it, live test confirms it.** Real cluster state
+2026-07-07: `courses` deserved=4, requested=0, fairShare=0 (idle, as
+required by the scenario). `phd-interactive` deserved=2, requested=3,
+allocated=3, fairShare=3. `batch` deserved=0, requested=7, allocated=5,
+fairShare=5. Reproducing `resource_division`'s math by hand: total=8,
+deserved round gives `phd-interactive` 2 (its quota), surplus=6; that 6
+is split by weight between the two over-quota queues,
+`phd-interactive:batch = 2:10` → `phd-interactive` gets `6*2/12=1`,
+`batch` gets `6*10/12=5` → **`phd-interactive` fairShare=2+1=3, batch
+fairShare=5`** — exactly the logged numbers. Critically, this ratio is
+independent of how much `phd-interactive` actually asks for, as long as
+`batch` also keeps demanding the full cluster: requesting more doesn't
+move the weight split.
 
-**Live evidence — this has already happened in production, no synthetic
-test needed.** Checked cluster state and `kai-scheduler` logs (`kubectl
-logs -n kai-scheduler deploy/kai-scheduler-default`) live, 2026-07-07.
-Current real state: `courses` deserved=4, requested=0, allocated=0,
-**fairShare=0** (zero demand, contributing nothing but also claiming
-nothing of the surplus). `phd-interactive` deserved=2, requested=3,
-allocated=3, **fairShare=3** — i.e. right now, in production,
-`phd-interactive`'s dynamic entitlement already exceeds its static quota
-by 1 GPU, purely because `courses` isn't contending. `batch`
-deserved=0, requested=7, allocated=5, fairShare=5 (already
-demand-constrained by its own request, unrelated to this test).
+Confirmed this live, non-disruptively: added one synthetic 1-GPU
+`phd-interactive` pod (`synthetic-phd-burst-probe`,
+`kai.scheduler/queue: phd-interactive`, `priorityClassName:
+kai-phd-interactive`) to push `phd-interactive`'s total requested from 3
+to 4, while `courses` stayed idle and real `batch` pods held the other
+5 GPUs. Watched for ~2 minutes across many scheduler cycles: `fairShare`
+for `phd-interactive` **stayed pinned at 3** (did not grow to 4);
+`allocate`/`consolidation`/`preempt` all failed each cycle ("Could not
+allocate" / "not enough allocatable GPUs" / "Didn't find a preemption
+strategy"); the synthetic pod stayed `Pending` for the full window;
+**zero `batch` pods were touched** (all 10 real `ablator-*` pods
+unchanged: same 4 `Running`/`Pending`/`Succeeded` status as before the
+test). This is exactly what `CanReclaimResources` predicts:
+`allocated(3) + requested(1) = 4 > fairShare(3)` fails the gate before
+`reclaim` is even attempted, so `batch` is never touched no matter how
+much `phd-interactive` demands. Cleaned up: `kubectl delete pod
+synthetic-phd-burst-probe -n jupyterhub`; no real batch or course
+workload was ever affected.
 
-The scheduler's own logs show exactly how `phd-interactive` got that 3rd
-GPU: an earlier scheduling cycle today (session `AdTJEU`) recorded, for
-`jupyterhub/pg-jupyter-bjoern--x-2xgpu---bfbfa13e` (queue
-`phd-interactive`, requesting 2 GPUs, 1 already held): `allocate` →
-"Could not allocate", `consolidation` → "not enough allocatable GPUs",
-then `reclaim` → `"Attempting to reclaim for job: ... of queue
-<phd-interactive>"` → **`"Reclaimed resources for job ..., evicting
-reclaimee tasks: <[jupyterhub/ablator-sppfullfixa100-b20a261fdf-ctrl-c54qj
-jupyterhub/ablator-sppfullfixa100-39f36da05b-ctrl-2hlxm]>"`** — two real
-`batch`-queue pods evicted, live, to satisfy `phd-interactive`'s burst
-past its static quota=2, exactly the requirement being verified. No
-synthetic pods were needed or added for this finding; it is a real event
-already in the log history, matched against the queue-state snapshot
-that shows the resulting allocation.
+(An earlier real event today — session `AdTJEU`, `phd-interactive`
+reclaiming its 3rd GPU by evicting two real `batch` pods,
+`ablator-sppfullfixa100-*` — is genuine evidence that reclaim past
+*static quota* (2 → 3) works. It is **not** evidence of bursting to 8;
+that reclaim succeeded only because `phd-interactive`'s `FairShare` at
+the time (3) was still above its then-current allocation, i.e. it's the
+same ceiling being demonstrated, not a different, higher one.)
 
-**Conclusion.** `phd-interactive` already can, and demonstrably does,
-burst past its static quota=2 by reclaiming from `batch`, whenever
-`courses` isn't using its own deserved share — this is not a gap, it's
-the intended behavior of KAI's dynamic fair-share division combined with
-this cluster's deliberate choice (documented 2026-07-06 in
-`priorityclasses.yaml`) to keep every PriorityClass under the
-`Preemptible` threshold of 100. The theoretical ceiling is the full
-8-GPU cluster capacity, bounded only by `phd-interactive`'s own actual
-demand and `courses`'/`batch`'s competing demand in their respective
-priority tiers — not by `phd-interactive`'s static `quota` field, which
-only matters (a) as the floor `phd-interactive` is guaranteed even under
-contention, and (b) as the reclaim-immunity threshold for its own jobs
-against reclaim *by* `courses` (see the "armor" investigation above —
-that mechanism is unaffected by, and unrelated to, this one; that one
-gates the *reclaimee* side via static quota/`GetDeservedShare`, this one
-gates the *reclaimer* side via dynamic `FairShare` and is bypassed
-entirely for `Preemptible` jobs).
+**Conclusion.** `phd-interactive` can dynamically burst past its
+*static* quota=2 via reclaim (confirmed, to fairShare's value, currently
+3) whenever `courses` isn't contending — but it is **not** currently
+able to burst to the full 8 GPUs while `batch` also demands the whole
+cluster, because `FairShare` division splits `courses`' idle surplus
+between `phd-interactive` and `batch` by `overQuotaWeight`, and
+`batch`'s weight (10) is 5x `phd-interactive`'s (2). This directly
+fails the "up to 8 GPUs" half of the requirement in the realistic case
+where `batch` is also fully using the cluster (the only case that
+matters — if `batch` weren't demanding the whole cluster, idle GPUs
+would already be available via plain `allocate`, no reclaim needed).
 
-**No config change made or recommended.** The requirement is already
-satisfied by the current live configuration; raising `phd-interactive`'s
-static `quota` to chase this requirement would be both unnecessary and
-counterproductive, since it would reintroduce the reclaim-immunity risk
-against `courses` documented in the "armor" investigation above, for no
-additional burst capability (burst capability already goes to the full
-cluster via `FairShare`, not `quota`). `overQuotaWeight` also does not
-need adjusting for this scenario, per the cross-tier reasoning above —
-only same-tier siblings compete on it, and `phd-interactive` has none.
+**Recommendation (not applied — flagging for a decision).** The lever
+that matches the requirement is **`overQuotaWeight`, not `quota`** —
+raising `phd-interactive`'s static quota would just reintroduce the
+reclaim-immunity risk against `courses` documented in the "armor"
+investigation above, without helping here (that gate is about the
+*reclaimee* side and is unrelated to this dynamic-FairShare mechanism).
+Concretely: with the current 2:10 split, `phd-interactive` gets
+deserved(2) + 6*2/12 ≈ 3 of 8 when `batch` also wants everything;
+flipping the weights (e.g. `phd-interactive overQuotaWeight: 10`,
+`batch overQuotaWeight: 2`) would give `phd-interactive` ≈ deserved(2) +
+6*10/12 ≈ 7 of 8 in the same scenario — much closer to the "up to 8"
+requirement, and it changes nothing about `phd-interactive`'s
+reclaim-immunity floor (still governed by static `quota`, untouched).
+Two things to check before applying this, since it wasn't verified live
+this pass: (1) whether raising `phd-interactive`'s `overQuotaWeight`
+also inflates `courses`' ability to reclaim resources back from
+`phd-interactive` beyond what's intended (it shouldn't — `overQuotaWeight`
+only affects surplus division among queues *at the same
+Queue-CRD-priority tier*, and this cluster's `courses`/`phd-interactive`
+weight relationship is unaffected by changing `phd-interactive` vs
+`batch`'s ratio — but re-verify with a live `resource_division` log
+check after any change); (2) whether the KAI Queue CRD's own
+`spec.priority` field (currently unset, defaulting all three queues to
+the same tier) would be a cleaner lever than `overQuotaWeight` — setting
+distinct queue priorities so `phd-interactive`'s tier is processed
+*before* `batch`'s tier (mirroring what a first draft of this
+investigation incorrectly assumed was already happening via
+PriorityClass) would let `phd-interactive` claim surplus ahead of
+`batch` unconditionally, rather than proportionally — this is a
+materially different design decision from an `overQuotaWeight` tweak
+and deserves its own live test before being adopted. No config change
+made in this pass; this needs a human decision on which lever to use
+before proceeding.
 
 ---
 
