@@ -1072,6 +1072,90 @@ which happens routinely on this cluster.
 
 ---
 
+### KAI admission webhook blast radius: upstream response to issue #1842 -- already fixed in v0.14.6, no config change needed (2026-07-07)
+
+**Background**: see `cluster-maintenance/clusters/cit-cps-gpu/system/gpu/kai-scheduler/values.yaml`
+(top-of-file `global:` comment block) for the original investigation --
+we found the `mutating-kai-admission`/`validating-kai-admission`
+webhooks' `namespaceSelector` is hardcoded broad (`NotIn [kube-system,
+kai-scheduler]`), a live `kubectl patch` narrowing it was silently
+reverted by `kai-operator`'s reconciliation loop, and no `Config` CR/
+Helm values field exposes it. We filed
+https://github.com/kai-scheduler/KAI-Scheduler/issues/1842 upstream
+asking for a configurable `namespaceSelector`/`objectSelector`.
+
+**Maintainer response** (collaborator `enoodle`, comment
+https://github.com/kai-scheduler/KAI-Scheduler/issues/1842#issuecomment-4897859295,
+quoted in full):
+
+> It should only operate on pods with `schedulerName: kai-scheduler` : https://github.com/kai-scheduler/KAI-Scheduler/blob/main/pkg/operator/operands/admission/resources.go#L206-L215
+
+This is category (b)/(c) from our triage, not a promise of future work:
+the maintainer is saying the gap we described no longer applies, because
+`admissionregistration.k8s.io` **`matchConditions`** (a CEL expression
+gating whether the webhook is invoked at all, evaluated by the API
+server *before* any network call to the webhook backend) already scope
+both webhooks to `object.spec.schedulerName == 'kai-scheduler'`. The
+issue as originally filed described v0.12.10 behavior; this match-condition
+mechanism was added upstream sometime before v0.14.6.
+
+**Verified independently, not taken on faith**:
+
+- Checked `pkg/operator/operands/admission/resources.go` at both `main`
+  and the `v0.14.6` tag in github.com/NVIDIA/KAI-Scheduler -- identical
+  `buildSchedulerNameMatchConditions()` function in both, and
+  `pkg/apis/kai/v1/global.go` defaults `Global.SchedulerName` to
+  `"kai-scheduler"` (`constants.DefaultSchedulerName`) via
+  `SetDefaultWhereNeeded()` whenever the `Config` CR doesn't override it
+  -- so the match condition is present **by default**, no opt-in config
+  needed, and it's already the version this cluster runs (confirmed
+  `admission:v0.14.6` image tag live).
+- Confirmed live on the cluster itself:
+  ```
+  kubectl get mutatingwebhookconfigurations mutating-kai-admission -o json
+  kubectl get validatingwebhookconfigurations validating-kai-admission -o json
+  ```
+  Both webhooks' `webhooks[0].matchConditions` already contain:
+  ```json
+  {"name": "scheduler-name-match", "expression": "object.spec.schedulerName == 'kai-scheduler'"}
+  ```
+  while `namespaceSelector` is still the same broad
+  `NotIn [kube-system, kai-scheduler]` as before, and `rules` is scoped
+  to `CREATE` on `pods` only.
+
+**What this means in practice**: the broad `namespaceSelector` is now
+functionally inert for the incident scenario we hit. Because
+`matchConditions` are evaluated server-side against the incoming pod
+object *before* the webhook is ever contacted, any pod that doesn't
+explicitly set `spec.schedulerName: kai-scheduler` (e.g. the JupyterHub
+Hub pod from the original incident) is skipped entirely -- no network
+call to the `admission` pod happens, so an unreachable/crashed
+`admission` pod (even under `failurePolicy: Fail`) cannot block
+unrelated pod creation cluster-wide anymore. The blast radius is already
+reduced to exactly the workloads that opt into `schedulerName:
+kai-scheduler`, which was the actual goal of issue #1842.
+
+**Action taken**: none required on the cluster -- this is default
+behavior already live in the deployed v0.14.6, not a config knob we
+need to set or a version we need to bump. Updated the stale
+"RE-CHECKED against v0.14.6 ... neither gap has been fixed" claim in
+`cluster-maintenance/clusters/cit-cps-gpu/system/gpu/kai-scheduler/values.yaml`
+to reflect this finding (docs/comment-only change, no functional diff).
+The admission `replicaCount` gap (still-hardcoded to 1, no per-component
+override surface) described in that same comment block is unaffected by
+this finding and remains open upstream as its own ask.
+
+**Status of issue #1842**: still open upstream as a feature request (a
+supported `namespaceSelector`/`objectSelector` override field would
+still be nice for defense-in-depth and for non-pod resources KAI may
+gate in the future), but the concrete production risk that motivated
+filing it -- an admission-webhook outage blocking unrelated
+infrastructure pods -- is already mitigated in the version this cluster
+runs. No further upstream fix is being waited on for that specific
+concern.
+
+---
+
 ## Storage Issues
 
 ### kured stuck unable to reboot a node for days ("Cannot evict pod as it would violate the pod's disruption budget")

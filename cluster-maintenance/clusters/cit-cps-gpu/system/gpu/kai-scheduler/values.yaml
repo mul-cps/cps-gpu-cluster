@@ -42,9 +42,32 @@ global:
   # RE-CHECKED against v0.14.6 (2026-07-06, during the v0.12.10 -> v0.14.6
   # bump): `helm show values` for v0.14.6 still only exposes
   # `operator.replicaCount`, no per-component (admission) replicaCount, and
-  # still no namespaceSelector field anywhere under `admission:`. Issue
-  # https://github.com/kai-scheduler/KAI-Scheduler/issues/1842 (filed by us)
-  # remains OPEN upstream -- neither gap has been fixed as of v0.14.6.
+  # still no namespaceSelector field anywhere under `admission:`.
+  #
+  # UPDATE (2026-07-07): a maintainer responded on issue #1842
+  # (https://github.com/kai-scheduler/KAI-Scheduler/issues/1842#issuecomment-4897859295)
+  # pointing out both webhooks already gate on `object.spec.schedulerName
+  # == 'kai-scheduler'` via `matchConditions` (CEL, evaluated server-side
+  # before the webhook backend is ever contacted). Verified this is true
+  # live on this cluster for BOTH mutating-kai-admission and
+  # validating-kai-admission (v0.14.6, confirmed via
+  # `kubectl get {mutating,validating}webhookconfigurations ... -o json`)
+  # and in the v0.14.6 upstream source
+  # (pkg/operator/operands/admission/resources.go,
+  # buildSchedulerNameMatchConditions; pkg/apis/kai/v1/global.go defaults
+  # Global.SchedulerName to "kai-scheduler" so this is on by default, no
+  # Config CR override needed). Net effect: the broad namespaceSelector
+  # above is now functionally inert for the incident this issue was filed
+  # over -- any pod that doesn't explicitly set schedulerName:
+  # kai-scheduler (e.g. JupyterHub's Hub pod) never reaches the webhook at
+  # all, so an unreachable admission pod can no longer block unrelated
+  # cluster-wide pod creation even under failurePolicy: Fail. No config
+  # change was needed or made here as a result -- see
+  # docs/troubleshooting.md ("KAI admission webhook blast radius: upstream
+  # response to issue #1842", 2026-07-07) for the full verification. The
+  # namespaceSelector/objectSelector override request and the
+  # admission-replicaCount gap both remain open upstream as separate,
+  # lower-severity asks.
 
 admission:
   gpuPodRuntimeClassName: nvidia
