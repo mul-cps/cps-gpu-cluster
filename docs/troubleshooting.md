@@ -1953,6 +1953,27 @@ fair-share-exhausted case, which is the actual reason this fix exists.
 No change made to the timeout value based on this follow-up; 1200s
 stands, now with measured justification instead of just an estimate.
 
+**UPDATE 2026-07-07 (later same day): overridden by explicit product
+requirement.** Despite the above measured justification for 1200s, the
+requirement changed: every spawn attempt, success or failure, must
+resolve in under 2 minutes -- no exceptions for the slow/fair-share-
+exhausted case. `start_timeout` for multi-GPU exclusive profiles
+(`gpu.gpu > 1` with no `memory_mib`, and power-user `custom_gpus > 1`)
+was changed from `1200` to `110` seconds in
+`user/jupyter/jupyterhub/values.yaml`. This comfortably covers the
+measured fast defragmentation path (~30-45s reclaim, ~9-10s
+consolidation) with margin, but means the previously-tolerated slow case
+(queue already over its own fair share, `reclaim`/`consolidation` both
+refuse to act at all) now fails fast at ~110s instead of waiting up to
+20 minutes. That trade-off is intentional and explicitly requested --
+a stuck request now surfaces to the user as a quick, clear failure
+instead of a long hang, at the cost of not auto-recovering from that
+slow case even if capacity would have freed up naturally a few minutes
+later. If that auto-recovery behavior is wanted back for the slow case
+specifically (as opposed to a blanket timeout), it would need to be
+implemented as a distinct outcome (e.g. a queued/retry UX) rather than
+just raising the timeout again.
+
 ### Verification pass (2026-07-07, later same day): both fixes confirmed live; strong evidence the 110s timeout does NOT cover the real reclaim path under current batch-job grace periods
 
 Two changes had been pushed for review, not yet empirically confirmed:
@@ -2043,27 +2064,6 @@ comfortably under the 110s budget, using SIGTERM-based fast checkpoint
 exit if the trainer supports it, or accepting that reclaim-dependent
 spawns may still fail and revisiting the timeout/UX tradeoff), not
 something to fix unilaterally here.
-
-**UPDATE 2026-07-07 (later same day): overridden by explicit product
-requirement.** Despite the above measured justification for 1200s, the
-requirement changed: every spawn attempt, success or failure, must
-resolve in under 2 minutes -- no exceptions for the slow/fair-share-
-exhausted case. `start_timeout` for multi-GPU exclusive profiles
-(`gpu.gpu > 1` with no `memory_mib`, and power-user `custom_gpus > 1`)
-was changed from `1200` to `110` seconds in
-`user/jupyter/jupyterhub/values.yaml`. This comfortably covers the
-measured fast defragmentation path (~30-45s reclaim, ~9-10s
-consolidation) with margin, but means the previously-tolerated slow case
-(queue already over its own fair share, `reclaim`/`consolidation` both
-refuse to act at all) now fails fast at ~110s instead of waiting up to
-20 minutes. That trade-off is intentional and explicitly requested --
-a stuck request now surfaces to the user as a quick, clear failure
-instead of a long hang, at the cost of not auto-recovering from that
-slow case even if capacity would have freed up naturally a few minutes
-later. If that auto-recovery behavior is wanted back for the slow case
-specifically (as opposed to a blanket timeout), it would need to be
-implemented as a distinct outcome (e.g. a queued/retry UX) rather than
-just raising the timeout again.
 
 ---
 
