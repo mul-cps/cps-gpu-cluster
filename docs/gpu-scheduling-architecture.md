@@ -134,6 +134,25 @@ the production rollout (switching `gpu-operator/values.yaml`'s
 `nvidia.com/mps.capable=true` node-label fix needed to keep the MPS control
 daemon alive). As of this writing that rollout is live cluster-wide.
 
+**Does `reclaim` itself honor this unified-pool model, or are exclusive and
+fractional workloads secretly two separate reclaim pools?** Checked against
+source 2026-07-07 (see `docs/troubleshooting.md`, "RESOLVED (2026-07-07):
+does `reclaim` cross the exclusive vs. fractional boundary?" for full
+citations): no type-pool separation exists in KAI `v0.14.6`. The
+node-level predicate (`node_info.go:345-366`,
+`isTaskAllocatableOnNonAllocatedResources`) counts any freed whole GPU —
+including one vacated by evicting an *exclusive* `nvidia.com/gpu`-only
+victim — toward satisfying a *fractional* `gpu-memory` requester's
+device-count need, via the `nodeIdleOrReleasingWholeGpus` term. Neither the
+victim-candidate filter nor the queue fair-share gate discriminate by
+request style either. This is consistent with (and reinforces) the elastic
+unified pool design above: reclaim, not just plain `allocate`, treats all 8
+GPUs as one arbitrable pool regardless of how they're currently claimed.
+**Caveat:** this is a source-verified mechanism finding, not yet re-confirmed
+by a clean live test — see the troubleshooting entry for why (cluster was
+fully saturated by real workloads and scheduler log verbosity was too low to
+capture the decision path during the one live attempt made so far).
+
 Why this matters operationally: it means capacity is not wasted holding a
 GPU "reserved for course use" while idle, nor "reserved for batch" while a
 course session is queued — the same physical GPU inventory serves all

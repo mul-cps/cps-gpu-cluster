@@ -2611,6 +2611,121 @@ before proceeding.
 
 ---
 
+## RESOLVED (2026-07-07): does `reclaim` cross the exclusive (`nvidia.com/gpu`)
+vs. fractional (`gpu-memory`/MPS) boundary?
+
+**Question.** After the `courses` admission-webhook fix (previous entry), a
+live synthetic test matching a real `gpu-*gb` course profile (`kai.scheduler/queue:
+courses`, `priorityClassName: kai-course-high`, `gpu-memory: "5120"`
+annotation, **no** `nvidia.com/gpu` in requests/limits) was submitted while
+all 8 physical GPUs were held by real production `batch`/`phd-interactive`
+jobs, each consuming a full `nvidia.com/gpu: 1` exclusive unit (no
+`gpu-memory` annotation). The pod passed admission but sat `Pending`.
+Scheduler logs showed `reclaim` entering ("2 PodGroupInfos and 5 Queues") and
+leaving with no eviction attempted; `consolidation` said "not enough
+allocatable GPUs"; `preempt` correctly found nothing (same-queue only). The
+open question: is this a genuine architectural gap — exclusive and
+fractional workloads as two separate resource pools that `reclaim` can never
+cross — that would mean `courses` (highest priority) can never start a new
+MPS session once all 8 GPUs are claimed by *any* workload type?
+
+**Source-verified answer: no such type-pool separation exists.** Checked
+against KAI-Scheduler `v0.14.6` source (the version pinned in
+`cluster-maintenance/.../system/gpu/kai-scheduler/fleet.yaml`), at every
+layer `reclaim` passes through before reaching a node:
+
+1. **Victim-candidate filter** (`pkg/scheduler/actions/reclaim/reclaim.go:126-148`,
+   `getOrderedVictimsQueue`) — the only filter applied is `ssn.ReclaimVictimFilter`,
+   which resolves to a single registered function, `minruntime`'s
+   `reclaimFilterFn` (`pkg/scheduler/plugins/minruntime/minruntime.go:79`),
+   gating on job min-runtime elapsed. Nothing here inspects whether the
+   candidate victim is an exclusive or fractional job.
+2. **Queue fair-share gate** (`pkg/scheduler/plugins/proportion/reclaimable/reclaimable.go`,
+   `CanReclaimResources` and `Reclaimable`/`reclaimResourcesFromReclaimees`) —
+   operates purely on quantified resource-vector dimensions (CPU/Memory/GPU,
+   see `getInvolvedResourcesNames`, lines 268-289) compared against
+   deserved/fair shares. An exclusive job's `nvidia.com/gpu: 1` and a
+   fractional job's `gpu-memory` request both quantify into the *same* GPU
+   dimension (`resource_info.GPUIndex`) — there is no separate accounting
+   pool for the two request styles at this layer either.
+3. **Node-level allocatability predicate** — the actual mechanism, in
+   `pkg/scheduler/api/node_info/node_info.go:345-366`
+   (`isTaskAllocatableOnNonAllocatedResources`). For a fractional/shared-GPU
+   task it computes:
+   ```go
+   nodeIdleOrReleasingWholeGpus := int64(math.Floor(nodeNonAllocatedVector.Get(resource_info.GPUIndex)))
+   nodeNonAllocatedResourcesMatchingSharedGpus := ni.fractionTaskGpusAllocatableDeviceCount(task)
+   if nodeIdleOrReleasingWholeGpus+nodeNonAllocatedResourcesMatchingSharedGpus >= task.ResReq.GetNumOfGpuDevices() {
+       return true
+   }
+   ```
+   `nodeIdleOrReleasingWholeGpus` counts **any** idle-or-releasing whole GPU
+   in the node's non-allocated resource vector — including one freed by
+   evicting an exclusive `nvidia.com/gpu`-only job, since exclusive jobs use
+   the plain resource vector, not the `UsedSharedGPUsMemory`/
+   `AllocatedSharedGPUsMemory` maps (`pkg/scheduler/api/node_info/gpu_sharing_node_info.go:58-97`,
+   `addSharedGPUTaskResourcesPerPodGroup`, only invoked when
+   `task.IsSharedGPUAllocation()`). A whole GPU freed by evicting an
+   *exclusive* victim satisfies a fractional requester's device-count need
+   (typically 1) through this term alone — `fractionTaskGpusAllocatableDeviceCount`
+   (which *is* type-restricted to GPU groups already present in
+   `UsedSharedGPUsMemory`, `gpu_sharing_node_info.go:351-363`) doesn't even
+   need to contribute. **Conclusion: reclaiming an exclusive job to free
+   capacity for a fractional requester is architecturally supported — there
+   is no separate pool.**
+
+**Live-test status: mechanism confirmed by source, but the original
+failure's exact trigger is unconfirmed — do not treat it as resolved
+operationally yet.** Two blockers prevented closing the loop live this pass:
+
+- **Cluster is fully saturated by real workloads right now** (verified
+  2026-07-07: all 4 GPU workers at 2/2 `nvidia.com/gpu` used by real
+  `batch`/`phd-interactive` jobs — `k3s-wk-gpu1..4`, 8/8 GPUs). There is no
+  spare capacity anywhere to build a fully-isolated synthetic scenario
+  (synthetic exclusive victims + synthetic fractional reclaimer on one node)
+  without evicting real jobs, which the safety constraint for this
+  investigation forbids. A truly isolated live test needs to be re-run
+  during a genuinely idle window.
+- **Scheduler log verbosity is too low to have captured the original
+  decision path.** Confirmed live: `kai-scheduler-default`'s only log
+  verbosity in 48h of history is V2 (`Enter Reclaim`/`Leaving Reclaim` at
+  `reclaim.go:48-49`); none of the more granular lines that would
+  discriminate the original failure's cause are present —
+  `"Attempting to reclaim for job"` (`reclaim.go:112`, V3),
+  `"Didn't find a reclaim strategy"` (`reclaim.go:100`, V3), or the
+  `reclaimable.go` V5/V7 lines ("Saturation ratios would not stay lower
+  than sibling queue", "queue shouldn't be reclaimed"). The scheduler
+  Deployment has no `--v`/verbosity flag set (defaults apply), so the
+  original test's logs never distinguished "silently skipped at
+  `CanReclaimResources`" from "reached the solver and failed the
+  scenario/fair-share check for an unrelated reason" — both look identical
+  at V2. **This is fixable**: the `kai-scheduler-default` container args are
+  set from `cluster-maintenance/.../system/gpu/kai-scheduler`'s Fleet
+  values; adding a verbosity flag (e.g. `--v=5`, if the chart exposes it)
+  would make a repeat test conclusive. No such change was made this pass
+  (would require a scheduler pod restart and hasn't been evaluated for
+  side effects).
+
+**Recommendation.** Do not conclude the original `courses`-pod Pending
+episode was caused by an architectural exclusive/fractional split — the
+source rules that out. The likely explanation is a fair-share/solver-level
+gate (e.g. `reclaimable.go`'s saturation-ratio check between sibling
+queues, or a `VictimInvariantPrePredicateFailure`) rather than a resource-type
+boundary, but this is **not yet empirically confirmed**. Before relying on
+this operationally: (1) enable higher scheduler log verbosity via the Fleet
+`kai-scheduler` values (needs the chart's supported mechanism checked first),
+then (2) re-run the same synthetic `courses` fractional pod against a
+node genuinely saturated by exclusive jobs — either during a real idle
+window (safest) or, if forced during saturation, with the understanding that
+success means a real `batch`/`phd-interactive` job *will* be evicted
+(reclaim commits atomically; there's no way to intercept mid-decision).
+Given current queue state (`courses` deserved=4, 0 currently allocated;
+`batch` deserved=0, fully over-quota) the fair-share gate is unlikely to be
+the blocker today, which makes a repeat test — done carefully, ideally
+during lower real load — worth prioritizing to close this out.
+
+---
+
 ## Getting Help
 
 If issues persist:
