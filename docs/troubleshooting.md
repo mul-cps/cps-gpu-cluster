@@ -3029,6 +3029,142 @@ in the entries above). This clears the blocker noted in both prior
 entries; the actual reclaim/fair-share repeat tests themselves are still
 open follow-ups.
 
+## RESOLVED (2026-07-07): root cause of the reclaim mystery is a real
+## KAI v0.14.6 bug -- `MinNodeGPUMemory` never reflects real GPU capacity
+
+Root-caused with certainty, live, after explicit permission was given to
+evict real production pods for testing (previously withheld out of an
+abundance of caution). This closes out every prior entry in this
+sequence ("phd-interactive can burst to 8 GPUs", "does reclaim cross the
+exclusive/fractional boundary", "cold-start bootstrap hypothesis,
+REFUTED", the V5 and V6 verbosity raises) with a definitive answer.
+
+**The test.** With the cluster genuinely fully saturated (8/8
+`nvidia.com/gpu`, real batch + phd-interactive production jobs), two
+synthetic `courses`-queue pods were submitted back to back:
+- `gpu-memory: "5120"` (a real 5GB student-tier request) -- stayed
+  `Pending` indefinitely. Zero `"Attempting to reclaim for job"` log
+  lines for it at any point (V6) -- it never even reached the reclaim
+  solver.
+- `gpu-memory: "200"` (a tiny 200MB request) -- reached `Running` within
+  seconds, via a **real reclaim**: KAI evicted a genuine running batch
+  pod (`ablator-sppfullfixa100-b20a261fdf-ctrl-28qfr`, confirmed via
+  `Evict` event: `"was preempted by workload
+  jupyterhub/pg-kai-retest-course-tiny..."`) to make room. Log evidence:
+  `"Trying to solve scenario: ... Potential victim
+  tasks:jupyterhub/ablator-sppfullfixa100-b20a261fdf-ctrl-28qfr"` →
+  `"Trying to pipeline job"` → success.
+
+**So reclaim itself works correctly, end-to-end, including evicting a
+real whole-GPU exclusive job to satisfy a fractional MPS requester** --
+this settles the "does reclaim cross the exclusive/fractional boundary"
+question affirmatively, with a real production eviction as proof, not
+just source reading. The 5GB request's failure was something else
+entirely.
+
+**The actual bug.** `resource_division`'s per-cycle log showed, for the
+`courses` queue: `deserved: <4>, requested: <51.2>` while the 5GB pod
+was pending, and `deserved: <4>, requested: <2>` while the 200MB pod was
+pending. Both numbers are exactly `memory_MiB / 100`
+(5120/100=51.2, 200/100=2.0) -- **not** the `ceil(memory / real_GPU_memory
+* 100) / 100` fractional formula previously assumed and reported as
+verified earlier the same day (that earlier verification read the wrong
+code path -- see below). Since `CanReclaimResources` gates on
+`allocated + requested <= fairShare` (here, `fairShare` == `deserved` ==
+4, since `courses` had zero other usage), the 5GB request (51.2) blew
+past the gate by ~13x and reclaim's solver was never even entered
+(matching the observed zero log lines), while the 200MB request (2)
+comfortably passed.
+
+Traced to source, `github.com/NVIDIA/KAI-Scheduler` tag `v0.14.6`:
+- `pkg/scheduler/plugins/proportion/proportion.go:366` computes a
+  *pending* fractional job's queue-quota charge as
+  `NumOfGpuDevices * (GpuMemory / ssn.ClusterInfo.MinNodeGPUMemory)` --
+  using **`MinNodeGPUMemory`**, a single cluster-wide value, not the
+  specific real per-GPU capacity read correctly elsewhere for *already
+  allocated* jobs (`node_info.go`'s `GetRequiredInitQuota` /
+  `getGpuMemoryFractionalOnNode`, which is what the earlier same-day
+  verification actually read and correctly confirmed -- for **allocated**
+  jobs, not pending ones, which is the distinction that was missed).
+- `pkg/scheduler/cache/cluster_info/cluster_info.go:240-268`
+  (`snapshotNodes`) computes `MinNodeGPUMemory` like this:
+  ```go
+  var minGPUMemory int64 = node_info.DefaultGpuMemory  // = 100
+  for _, node := range nodes {
+      nodeGPUMemory := resultNodes[node.Name].MemoryOfEveryGpuOnNode
+      if nodeGPUMemory > node_info.DefaultGpuMemory {
+          minGPUMemory = min(minGPUMemory, nodeGPUMemory)
+      }
+  }
+  ```
+  The accumulator is seeded with **the same sentinel value (100)** used
+  to *exclude* non-GPU nodes (the 3 control-plane nodes, which have no
+  `nvidia.com/gpu.memory` label and fall back to `DefaultGpuMemory=100`
+  via `node_info.go:627-641`'s `getNodeGpuMemory`). Since `min(100, X)`
+  for any real GPU's memory `X` (e.g. 40900, confirmed live via
+  `nvidia.com/gpu.memory=40960` on all 4 GPU workers, floored to the
+  nearest 100 by `getNodeGpuMemory`) is always `100`, **`MinNodeGPUMemory`
+  can never rise above 100 no matter how many correctly-labeled GPU nodes
+  exist** -- it's a permanently-stuck-at-100 initialization bug, not a
+  labeling problem on this cluster's side (all 4 GPU workers' labels were
+  independently confirmed correct and readable; the scheduler logs
+  (`Could not find gpu memory label...`) only ever fired for the 3
+  non-GPU control-plane nodes, exactly as expected).
+
+**Blast radius**: this affects every *pending* `gpu-memory`-annotated
+(MPS/fractional) pod cluster-wide, in every queue -- not just `courses`.
+Any single-GPU MPS profile in `phd-interactive` (anything with
+`memory_mib` set, not just the exclusive dual-GPU profiles) hits the
+identical bug. It only manifests when a fractional pod needs `reclaim`
+to get scheduled (i.e., the cluster is saturated and nothing is already
+idle) -- which is exactly the scenario this entire day's investigation
+kept circling back to. Under low/idle load, `allocate` succeeds directly
+and the buggy pending-job quota charge never becomes the deciding
+factor.
+
+**Also corrects an earlier same-day entry**: the "courses queue quota is
+fractional, 30 students at 5GB ≈ 3.9, fits under quota=4" finding from
+earlier today used the *allocated*-job formula (`getGpuMemoryFractionalOnNode`,
+correct, but the wrong code path for this question) rather than the
+*pending*-job formula (`proportion.go:366`, the one that actually gates
+whether a fractional pod can get scheduled via reclaim in the first
+place). The two formulas diverge by roughly 409x on this cluster
+(40900/100) for any pending fractional job. The corrected math: a real
+5GB student session's PENDING quota charge is `51.2`, not `0.13`; 30
+concurrent 5GB students would charge `~1536`, not `~3.9`.
+
+**Recommended fix, not yet applied**: since patching/rebuilding the KAI
+scheduler binary itself is out of scope for this cluster, the practical
+mitigation is to size `courses`' (and any other MPS-heavy queue's)
+`gpu.quota` value to account for the bug's ~409x inflation on *pending*
+fractional demand, rather than the true physical-memory-fraction model.
+For the "guarantee 30 concurrent 5GB student sessions" requirement:
+`30 * 51.2 ≈ 1536`, so a quota in the ~1600-2000 range (not 4) would be
+needed to actually guarantee that scenario end-to-end today, including
+under full cluster saturation. This is safe for `courses` specifically
+*only* because every course profile in this repo is MPS/fractional
+(never a plain exclusive `nvidia.com/gpu` request) -- if that ever
+changes, an inflated quota would apply to exclusive requests at face
+value (real GPU count) too, which would need re-evaluating. Not yet
+applied -- this materially changes the queue's numeric semantics and
+deserves an explicit decision rather than a unilateral change, especially
+given today's separate finding that inflated quota grants reclaim-immunity
+(here, deliberately desired for `courses` as the top-priority queue, but
+worth stating explicitly rather than assuming).
+
+**Upstream**: filed as
+[kai-scheduler/KAI-Scheduler#1847](https://github.com/kai-scheduler/KAI-Scheduler/issues/1847) --
+the `snapshotNodes` accumulator-seeding bug is a small, precise,
+reproducible fix (seed `minGPUMemory` with the first qualifying node's
+value, or a large sentinel, instead of `DefaultGpuMemory`).
+
+All synthetic test pods (`kai-retest-course-5gb`, `kai-retest-course-tiny`)
+were cleaned up; the real batch job evicted during testing was not
+manually restored (its queue's own opportunistic/no-guarantee semantics
+mean it's expected to be re-submitted/requeued by its own owner if still
+needed -- confirmed no `restartPolicy`/requeue issue was introduced by
+this test).
+
 ---
 
 ## Getting Help

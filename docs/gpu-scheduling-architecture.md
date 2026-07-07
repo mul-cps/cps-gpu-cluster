@@ -170,11 +170,29 @@ a "bigger aggregate demand succeeds, smaller single request fails"
 threshold effect would require. No type/cost distinction between
 first-pod-on-a-GPU and joining-an-existing-group exists at the scheduler
 layer for this reason. The original single-pod Pending result documented
-above therefore remains open and unexplained by either the type-pool or the
-bootstrap-cost hypothesis — most likely a solver/saturation-ratio gate or
-an under-verbosity blind spot, per the troubleshooting entry's
-recommendation to raise `kai-scheduler` log verbosity and retest during an
-idle window. One operationally useful, source-grounded takeaway did come out
+above was **subsequently root-caused and resolved** (`docs/troubleshooting.md`,
+"RESOLVED (2026-07-07): root cause of the reclaim mystery is a real KAI
+v0.14.6 bug") — not a type-pool separation, not a bootstrap-cost effect,
+but a genuine upstream bug: `MinNodeGPUMemory`
+(`pkg/scheduler/cache/cluster_info/cluster_info.go`'s `snapshotNodes`)
+is seeded with the same sentinel (`DefaultGpuMemory = 100`) used to
+exclude non-GPU nodes from the calculation, so `min(100, <any real GPU's
+memory>)` is always `100` — it can never reflect this cluster's real
+~40900 MiB per-GPU capacity. This only affects **pending** fractional
+jobs' queue-quota charge (`proportion.go:366`); already-allocated jobs
+use the correct per-node formula, which is why the earlier "quota is
+fractional, ~0.13 per 5GB session" finding elsewhere in this doc was
+independently correct for that different code path but did not apply to
+the reclaim-admission question. The practical effect: any pending
+`gpu-memory`-annotated pod's fair-share charge is ~409x larger than its
+true physical-memory fraction, so realistically-sized MPS requests
+(3-5GB+) blow past small queue quotas and get fair-share-gated before
+`reclaim`'s solver is ever entered — confirmed live with a real
+production batch-job eviction proving reclaim itself works correctly
+once a request's (bug-inflated) charge fits under quota. See the
+troubleshooting entry for the full fix/workaround discussion (queue
+quota sizing to compensate, since patching the scheduler binary is out
+of scope) and upstream issue link. One operationally useful, source-grounded takeaway did come out
 of this: a **pre-warmed "anchor" fractional pod** kept alive on a node
 during a course window means later small `gpu-memory` pods pack into the
 already-existing shared-GPU group (via the
