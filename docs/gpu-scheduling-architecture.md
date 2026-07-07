@@ -153,6 +153,39 @@ by a clean live test — see the troubleshooting entry for why (cluster was
 fully saturated by real workloads and scheduler log verbosity was too low to
 capture the decision path during the one live attempt made so far).
 
+**A follow-up "cold-start bootstrap" refinement of that open question was
+also checked and refuted** (`docs/troubleshooting.md`, "REFUTED
+(2026-07-07): 'cold-start bootstrap' hypothesis"): the idea that
+*starting a brand-new* shared-GPU group specifically (as opposed to joining
+one already present) might be blocked because the binder's full-GPU
+reservation pod (`numberOfGPUsToReserve = 1`,
+`pkg/binder/binding/resourcereservation/resource_reservation.go`) poisons
+the reclaim fair-share math for the first fractional pod on a GPU. Source
+shows the scheduler's reclaim/fair-share plugins have no knowledge of
+reservation pods at decision time (they're a binder-side effect created
+*after* the scheduler's bind decision) and, independent of that, the
+fair-share inequality (`allocatedShare + requested <= fairShare`) only gets
+*harder* to satisfy as `requested` grows — the opposite direction from what
+a "bigger aggregate demand succeeds, smaller single request fails"
+threshold effect would require. No type/cost distinction between
+first-pod-on-a-GPU and joining-an-existing-group exists at the scheduler
+layer for this reason. The original single-pod Pending result documented
+above therefore remains open and unexplained by either the type-pool or the
+bootstrap-cost hypothesis — most likely a solver/saturation-ratio gate or
+an under-verbosity blind spot, per the troubleshooting entry's
+recommendation to raise `kai-scheduler` log verbosity and retest during an
+idle window. One operationally useful, source-grounded takeaway did come out
+of this: a **pre-warmed "anchor" fractional pod** kept alive on a node
+during a course window means later small `gpu-memory` pods pack into the
+already-existing shared-GPU group (via the
+`fractionTaskGpusAllocatableDeviceCount` term,
+`gpu_sharing_node_info.go:351-363`) with no reclaim/eviction involved at
+all — a simpler and safer path than depending on reclaim to evict an
+exclusive victim on demand, though the anchor itself must be stood up
+during genuinely idle capacity (it needs a whole free GPU) and kept alive
+continuously, since it cannot help retroactively once the cluster is
+already fully saturated with exclusive jobs.
+
 Why this matters operationally: it means capacity is not wasted holding a
 GPU "reserved for course use" while idle, nor "reserved for batch" while a
 course session is queued — the same physical GPU inventory serves all

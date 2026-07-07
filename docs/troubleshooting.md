@@ -2829,6 +2829,120 @@ during lower real load — worth prioritizing to close this out.
 
 ---
 
+## REFUTED (2026-07-07): "cold-start bootstrap" hypothesis — does the
+binder's full-GPU reservation pod poison the *initial* reclaim decision for
+the first fractional pod on a GPU?
+
+**Hypothesis under test** (a refinement of the entry above, not a
+contradiction): maybe the Pending result wasn't a generic fair-share/solver
+gate, but specifically a *bootstrap granularity mismatch* — the first
+`gpu-memory` pod to land on a physical GPU with no existing shared-GPU group
+forces KAI's binder to stand up a reservation pod that claims a full
+`nvidia.com/gpu: 1` (`numberOfGPUsToReserve = 1`,
+`pkg/binder/binding/resourcereservation/resource_reservation.go:45`), and if
+the scheduler's reclaim fair-share math counted *that* 1.0 cost (rather than
+the requester's small nominal `gpu-memory` charge, e.g. 0.13 GPU-quota-units
+for 5GB/40960MiB) against the reclaiming queue's fair share, a lone small
+request could get rejected as "not worth it" while a larger aggregate
+demand (e.g. 8x 5GB ≈ 1.04 quota-units) crossed the threshold and succeeded
+— a bizarre threshold-cliff around 7-8 pending 5GB requests.
+
+**Source verdict: refuted on two independent grounds, no live test needed
+to falsify the mechanism itself.**
+
+1. **The reservation pod is a binder-only concept; the scheduler's reclaim
+   math never sees it.** `pkg/scheduler/` (the whole scheduling/reclaim
+   package tree) has zero references to `resourcereservation`,
+   `gpu-reservation`, or `ReservationPod` beyond `cluster_info.go`, which
+   only folds *already-existing* reservation pods into node accounting as
+   ordinary tasks (`AddTasksToNode`, `cluster_info.go:309-317`,
+   `pod_info.IsResourceReservationTask`, line 482) — i.e. it can inflate
+   node occupancy for GPUs that already have a shared group, but a
+   reservation pod **does not exist yet** at the moment the scheduler is
+   deciding whether to reclaim for a brand-new fractional requester (the
+   binder only creates it *after* the scheduler's bind decision). The
+   reclaim fair-share plugin
+   (`pkg/scheduler/plugins/proportion/reclaimable/reclaimable.go:29-40`,
+   `CanReclaimResources`) quantifies `reclaimer.RequiredResources` — the
+   task's own resource request, i.e. the small `gpu-memory`-derived
+   fractional charge — via `utils.QuantifyVector`. There is no path by
+   which a not-yet-created reservation pod's 1.0 GPU cost enters this
+   comparison.
+2. **Even if it did, the direction is backwards from the hypothesis's
+   prediction.** `CanReclaimResources` gates on
+   `allocatedShare + requestedResources <= fairShare` — a *larger*
+   `requestedResources` makes the check *harder* to pass, not easier. So
+   "aggregate demand succeeds where a single small request fails" is the
+   wrong direction for this gate regardless of which charge is used: a
+   0.13 charge is strictly easier to clear than a 1.04 (or 1.0) charge, not
+   harder. The hypothesis's threshold-cliff prediction is directionally
+   incompatible with how the fair-share inequality works.
+3. **The node-level feasibility check (the actual reclaim-triggering
+   mechanism, `isTaskAllocatableOnNonAllocatedResources`,
+   `node_info.go:345-366`, see prior entry) is also insensitive to
+   aggregate demand size in the way hypothesized.** A fractional/`gpu-memory`-only
+   request without an existing shared group gets `count = fractionDefaultCount`
+   via `NewGpuResourceRequirementWithGpus`
+   (`pkg/scheduler/api/resource_info/gpu_resource_requirment.go:44-58`), so
+   `GetNumOfGpuDevices()` returns a small fixed device count (1) for *each*
+   individual pod regardless of its `gpu-memory` size — evicting one
+   exclusive victim to free one whole GPU satisfies this term identically
+   for a single 5GB pod and for each of 8 separate 5GB pods; there is no
+   accumulation/threshold effect at this layer either, since each pod is
+   evaluated as its own task in the solver.
+
+**Live test: judged unsafe to run, honestly reported as such rather than
+forced.** Checked live cluster state (2026-07-07): all 4 GPU workers are at
+2/2 `nvidia.com/gpu` allocated with **real** Running/Pending production jobs
+(`jupyter-bjoern`, `jupyter-bjoern--x-2xgpu`, `jupyter-gottam`, several
+`ablator-*` batch jobs, some already genuinely `Pending` themselves waiting
+for capacity) — there is no node with spare or synthetic-only-fillable
+capacity anywhere in the cluster right now. The "preferred approach" in this
+investigation's own safety constraints (cordon + fill only real-idle GPUs
+with synthetic victims) is not constructible today without touching real
+workloads, so no synthetic pods were submitted this pass. This is consistent
+with, not contradictory to, the source-level refutation above — the
+mechanism is ruled out independent of a live run.
+
+**Incidental finding that further undercuts any "victims aren't reclaimable"
+alternative explanation for the original Pending result:** `kubectl get
+priorityclass` shows `kai-course-high` at value 90, strictly *above*
+`kai-phd-interactive` at value 50 (`kai-batch-low` is 10). Courses jobs
+outrank interactive jobs, and `courses`' queue quota is 4 GPUs with (at
+observation time) 0 GPUs actually in use by `courses` — nowhere near its
+deserved share. Nothing in priority ordering or queue quota explains a
+single 5GB `courses` pod failing to reclaim from `phd-interactive`. The
+original Pending result therefore still stands as *unexplained* by any
+mechanism checked so far (bootstrap cost: refuted; type-pool separation:
+refuted in the prior entry; priority/quota starvation: refuted here) —
+the most likely remaining candidates are the same ones flagged in the prior
+entry (a solver/saturation-ratio gate, or simply insufficient log verbosity
+to have observed the true decision path), and resolving that still needs
+the same fix: raise scheduler log verbosity via the Fleet `kai-scheduler`
+values and re-run during a genuinely idle window.
+
+**Operational recommendation on the proposed mitigation ("keep one warm
+shared-GPU group alive during course windows via a small anchor
+workload"): sound, but for a different reason than the hypothesis
+assumed.** The benefit isn't dodging a bootstrap fair-share penalty (no such
+penalty exists at the scheduler layer). It's that
+`isTaskAllocatableOnNonAllocatedResources`'s
+`fractionTaskGpusAllocatableDeviceCount` term
+(`node_info.go:361`, backed by `UsedSharedGPUsMemory`/
+`gpu_sharing_node_info.go:351-363`) is only non-zero when a shared-GPU group
+*already exists* on a node. With a warm anchor present, a new small
+`gpu-memory` pod can pack directly into existing shared capacity — no
+reclaim, no eviction, no dependency on the reclaim/fair-share machinery at
+all — which is a strictly simpler and safer path than relying on reclaim to
+correctly evict an exclusive victim on demand. Caveat: standing up the
+anchor itself still needs one whole free GPU (its own reservation pod), so
+it must be pre-warmed during genuinely idle capacity and kept alive
+continuously through the course window — it does not help retroactively
+once the cluster is already fully saturated with exclusive jobs, which is
+exactly the situation observed live today.
+
+---
+
 ## Getting Help
 
 If issues persist:
