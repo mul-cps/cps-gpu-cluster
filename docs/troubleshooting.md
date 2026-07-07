@@ -1893,6 +1893,66 @@ No live KAI config was modified — this was a verification-only pass for
 KAI. The JupyterHub timeout change is the only functional change, in
 `cluster-maintenance/clusters/cit-cps-gpu/user/jupyter/jupyterhub/values.yaml`.
 
+**Follow-up: measured end-to-end timing (is 20 minutes the right number?)**
+Re-ran the synthetic fragmentation test with timestamped polling to check
+whether the 1200s spawn timeout is well-calibrated. Two runs happened to
+exercise both paths:
+
+- **Reclaim path** (original test, `batch` filler evicted for a
+  `phd-interactive`/`courses` pending pod): decision-to-evict happened
+  within the scheduler's ~1s cycle cadence (visible from per-cycle log
+  timestamps 1.0-1.2s apart); the k8s event trail then showed roughly
+  ~25-30s between the `Evict`/`Killing` event and the pending pod being
+  `Pipelined` onto the freed node, consistent with the pod's
+  `terminationGracePeriodSeconds` (both the synthetic filler, set
+  explicitly to 30s, and this cluster's real `ablator-*` batch Jobs,
+  confirmed via `kubectl get job -n jupyterhub -o yaml | grep
+  terminationGracePeriodSeconds` → **30s for all of them**) — i.e. the
+  wait is bounded by that 30s grace window (SIGTERM, then SIGKILL at 30s
+  if the process hasn't exited, so a real training job that doesn't
+  checkpoint fast still can't blow past ~30s). A few more seconds after
+  that for the container to actually start (image already cached in
+  every case observed). **Total observed: on the order of 30-45s
+  end-to-end**, not minutes.
+- **Consolidation path** (re-run, same fragmentation shape): this time
+  consolidation itself succeeded — logs show `Sucesfully consolidated ...
+  about to reallocate victims: <[jupyterhub/jupyter-bjoern]>` (a real,
+  live interactive notebook session, not a synthetic pod) only ~1.5s
+  after the pending pod was submitted, with the relocated session pod
+  rescheduled to a different node and confirmed back to serving requests
+  (`kubectl logs -n jupyterhub deploy/hub`, 302s to
+  `/user/bjoern/...`) within seconds. The new 2-GPU pod's container was
+  `Running` **~9-10 seconds after submission** in this run — i.e. when a
+  victim can simply be relocated rather than needing to fully terminate
+  and restart, it's close to instant. (Side effect noted: this briefly
+  moved a real user's live JupyterHub session pod — expected, harmless,
+  and exactly the intended behavior of consolidation; confirmed the
+  session came back up cleanly afterward.)
+
+**Neither observed run took anywhere close to 20 minutes** — actual
+defragmentation completed in single-digit to double-digit seconds. So why
+keep the 1200s timeout? Because these fast paths are the *easy* case
+(there's already reclaimable/relocatable capacity available *right now*).
+The scenario the timeout actually has to cover is the one from the first
+`phd-interactive` attempt earlier in this test session: `reclaim` and
+`consolidation` both failed outright (queue already over its own fair
+share, gated by `reclaimable.go`'s `CanReclaimResources` regardless of
+physical GPU availability) — in that case there is no active mechanism
+that will ever free the capacity; the pending pod can only be satisfied
+once some other running session in the same queue naturally completes or
+is manually stopped, which has no fixed bound and can legitimately take
+much longer than a minute. **1200s (20 minutes) remains a reasonable,
+deliberately generous ceiling**: it costs nothing in the fast/common
+case (reclaim or consolidation succeeding), and gives real headroom for
+the slow, no-active-defrag-available case, without being so long that a
+truly stuck request keeps a user staring at a spinner indefinitely. If
+this were retuned purely off the measured reclaim/consolidation timing,
+5 minutes would already cover every run observed here with margin — but
+that would reintroduce close to the original problem for the
+fair-share-exhausted case, which is the actual reason this fix exists.
+No change made to the timeout value based on this follow-up; 1200s
+stands, now with measured justification instead of just an estimate.
+
 ---
 
 ## Getting Help
