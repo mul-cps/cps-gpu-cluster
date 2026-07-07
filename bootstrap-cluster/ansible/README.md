@@ -74,12 +74,20 @@ ansible-playbook -i inventory.ini playbooks/03-storage.yml
 ansible-playbook -i inventory.ini playbooks/04-gpu-operator.yml
 ```
 
-#### 5. Rancher installation with OIDC (Authentik)
+#### 5. Rancher installation
 Assumptions:
 - DNS `rancher_hostname` points to your cluster ingress (e.g., a control-plane IP).
 - Self-signed TLS via cert-manager is acceptable. Adjust to Let's Encrypt as needed.
 
-Configure variables in `group_vars/all.yml` under `Rancher configuration` and `rancher_oidc`.
+Configure variables in `group_vars/all.yml` under `Rancher configuration`
+(`rancher_hostname`, `rancher_version`, `rancher_replicas`,
+`rancher_bootstrap_password`). This playbook no longer bootstraps an OIDC
+AuthConfig itself -- a plaintext `rancher_oidc` client_secret used to live
+here and was removed as a live credential exposure (see
+`docs/troubleshooting.md`). Apply
+`cluster-maintenance/clusters/cit-cps-gpu/rancher/genericoidc.yaml` by hand
+post-install per `docs/rancher-authentik-sso-plan.md`, supplying the client
+secret out-of-band via `kubectl`, never in this repo.
 
 Run:
 ```bash
@@ -89,7 +97,8 @@ ansible-playbook -i inventory.ini playbooks/05-rancher.yml
 After deployment:
 - Open https://<rancher_hostname>
 - Login with bootstrap password (`rancher_bootstrap_password`) on first visit
-- Verify OIDC config under Global Settings > Authentication; enable if not already active.
+- Apply the `genericoidc` AuthConfig per `docs/rancher-authentik-sso-plan.md`
+  if OIDC login isn't already active.
 
 ## What Gets Installed
 
