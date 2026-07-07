@@ -64,6 +64,13 @@ by you, the first time you log in via SFTP (see
 `docs/troubleshooting.md`, 2026-07-07 entry, for the bug this fixed: earlier
 logins succeeded but left users unable to write anything).
 
+**Want SFTP against your real personal home directory instead of shared
+storage?** That's not implemented yet. See
+`docs/sftp-via-contents-api-scoping.md` for a scoping/design writeup of two
+candidate approaches (bridging the port-22 server to JupyterHub's Contents
+API vs. an SFTP sidecar container in each notebook pod) and the tradeoffs
+between them.
+
 ## VS Code Remote SSH
 
 1.  Install the "Remote - SSH" extension in VS Code.
