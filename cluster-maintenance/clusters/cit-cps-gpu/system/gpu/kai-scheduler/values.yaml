@@ -1,10 +1,28 @@
 global:
+  # Bumped 2026-07-07: v0.14.6 -> v0.16.3. Motivated by the MinNodeGPUMemory
+  # fair-share bug (fixed upstream in v0.16.2; see docs/troubleshooting.md,
+  # "RESOLVED (2026-07-07): root cause of the reclaim mystery" and the
+  # follow-up entry) plus v0.16.3's additional "Filter unreclaimable reclaim
+  # victims" fix. Verified before bumping: no JobSet workloads on this
+  # cluster (CRD present, zero instances, zero manifests in this repo) --
+  # the two JobSet-scoped breaking changes in v0.15.0/v0.16.0 (minAvailable
+  # auto-calc change; PodGroup hierarchy restructure removing
+  # backoffLimit/completions/parallelism from the PodGroup CRD) do not
+  # apply. Confirmed no live PodGroup on this cluster sets those removed
+  # fields. Confirmed all 8 component images (scheduler, admission, binder,
+  # operator, podgrouper, podgroupcontroller, queuecontroller,
+  # crd-upgrader) resolve at v0.16.3 in ghcr.io/kai-scheduler/kai-scheduler.
+  # The chart runs its own crd-upgrader pre-upgrade Helm hook, so the CRD
+  # schema changes (additive only, backward compatible) are applied
+  # automatically by Fleet's helm upgrade -- no manual `kubectl apply` of
+  # CRDs needed.
+  #
   # Bumped 2026-07-06: v0.12.10 -> v0.14.6 (LTS line). Note the project
   # moved its GHCR org between v0.13.0 and v0.14.0 -- both the Helm chart
   # (fleet.yaml: oci://ghcr.io/kai-scheduler/kai-scheduler/kai-scheduler)
   # and this registry override must point at ghcr.io/kai-scheduler/kai-scheduler
   # now, not ghcr.io/nvidia/kai-scheduler (the old path 404s for >=v0.14).
-  tag: v0.14.6
+  tag: v0.16.3
   registry: ghcr.io/kai-scheduler/kai-scheduler
   # Required for the gpu-memory annotation (MPS-based VRAM-tier sharing,
   # see user/jupyter/jupyterhub/values.yaml PROFILE_CONFIGS) -- without
@@ -70,4 +88,10 @@ global:
   # lower-severity asks.
 
 admission:
-  gpuPodRuntimeClassName: nvidia
+  # Renamed from gpuPodRuntimeClassName -> gpuFractionRuntimeClassName in
+  # v0.16.0 (bumped alongside the chart to v0.16.3, 2026-07-07). The old
+  # name still exists in the v0.16.3 CRD (deprecated, gpuFractionRuntimeClassName
+  # wins if both set) but Helm would silently drop an unknown-to-the-new-chart
+  # key were the rename skipped -- functionally it's the same field either
+  # way, this just uses the current name.
+  gpuFractionRuntimeClassName: nvidia

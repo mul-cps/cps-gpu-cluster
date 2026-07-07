@@ -6,7 +6,7 @@ labels:
 
 helm:
   chart: oci://ghcr.io/kai-scheduler/kai-scheduler/kai-scheduler
-  version: v0.14.6
+  version: v0.16.3
   valuesFiles:
     - values.yaml
 
