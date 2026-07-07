@@ -89,7 +89,7 @@ data:
             {
               "disableTextWrap": false,
               "editorMode": "code",
-              "expr": "DCGM_FI_DEV_GPU_UTIL{instance=~\"${instance}\", gpu=~\"${gpu}\"}",
+              "expr": "max by (instance, gpu, UUID) (DCGM_FI_DEV_GPU_UTIL{instance=~\"${instance}\", gpu=~\"${gpu}\"})",
               "fullMetaSearch": false,
               "includeNullMetadata": true,
               "legendFormat": "__auto",
@@ -308,7 +308,7 @@ data:
             {
               "datasource": null,
               "editorMode": "code",
-              "expr": "DCGM_FI_DEV_GPU_TEMP{instance=~\"${instance}\", gpu=~\"${gpu}\"}",
+              "expr": "max by (instance, gpu, UUID) (DCGM_FI_DEV_GPU_TEMP{instance=~\"${instance}\", gpu=~\"${gpu}\"})",
               "interval": "",
               "legendFormat": "GPU {{gpu}}",
               "range": true,
@@ -373,7 +373,7 @@ data:
             {
               "disableTextWrap": false,
               "editorMode": "code",
-              "expr": "DCGM_FI_DEV_FAN_SPEED{instance=~\"${instance}\", gpu=~\"${gpu}\"}",
+              "expr": "max by (instance, gpu, UUID) (DCGM_FI_DEV_FAN_SPEED{instance=~\"${instance}\", gpu=~\"${gpu}\"})",
               "fullMetaSearch": false,
               "includeNullMetadata": true,
               "legendFormat": "GPU {{gpu}}",
@@ -442,7 +442,7 @@ data:
               "disableTextWrap": false,
               "editorMode": "builder",
               "exemplar": false,
-              "expr": "DCGM_FI_DEV_GPU_UTIL{instance=~\"${instance}\", gpu=~\"${gpu}\"}",
+              "expr": "max by (instance, gpu, UUID) (DCGM_FI_DEV_GPU_UTIL{instance=~\"${instance}\", gpu=~\"${gpu}\"})",
               "fullMetaSearch": false,
               "includeNullMetadata": true,
               "legendFormat": "GPU {{gpu}}",
@@ -538,7 +538,7 @@ data:
             {
               "disableTextWrap": false,
               "editorMode": "code",
-              "expr": "DCGM_FI_DEV_FB_USED{instance=~\"${instance}\", gpu=~\"${gpu}\"}",
+              "expr": "max by (instance, gpu, UUID) (DCGM_FI_DEV_FB_USED{instance=~\"${instance}\", gpu=~\"${gpu}\"})",
               "fullMetaSearch": false,
               "includeNullMetadata": true,
               "legendFormat": "GPU {{gpu}} Used",
@@ -551,7 +551,7 @@ data:
               "datasource": null,
               "disableTextWrap": false,
               "editorMode": "code",
-              "expr": "DCGM_FI_DEV_FB_TOTAL{instance=~\"${instance}\", gpu=~\"${gpu}\"}",
+              "expr": "max by (instance, gpu, UUID) (DCGM_FI_DEV_FB_TOTAL{instance=~\"${instance}\", gpu=~\"${gpu}\"})",
               "fullMetaSearch": false,
               "hide": false,
               "includeNullMetadata": true,
@@ -648,7 +648,7 @@ data:
             {
               "disableTextWrap": false,
               "editorMode": "code",
-              "expr": "DCGM_FI_DEV_POWER_USAGE{instance=~\"${instance}\", gpu=~\"${gpu}\"}",
+              "expr": "max by (instance, gpu, UUID) (DCGM_FI_DEV_POWER_USAGE{instance=~\"${instance}\", gpu=~\"${gpu}\"})",
               "fullMetaSearch": false,
               "includeNullMetadata": true,
               "legendFormat": "GPU {{gpu}} Used",
@@ -661,7 +661,7 @@ data:
               "datasource": null,
               "disableTextWrap": false,
               "editorMode": "code",
-              "expr": "DCGM_FI_DEV_POWER_MGMT_LIMIT{instance=~\"${instance}\", gpu=~\"${gpu}\"}",
+              "expr": "max by (instance, gpu, UUID) (DCGM_FI_DEV_POWER_MGMT_LIMIT{instance=~\"${instance}\", gpu=~\"${gpu}\"})",
               "fullMetaSearch": false,
               "hide": false,
               "includeNullMetadata": true,
@@ -759,7 +759,7 @@ data:
             {
               "datasource": null,
               "editorMode": "builder",
-              "expr": "DCGM_FI_DEV_GPU_TEMP{instance=~\"${instance}\", gpu=~\"${gpu}\"}",
+              "expr": "max by (instance, gpu, UUID) (DCGM_FI_DEV_GPU_TEMP{instance=~\"${instance}\", gpu=~\"${gpu}\"})",
               "instant": false,
               "interval": "",
               "legendFormat": "GPU {{gpu}}",
@@ -852,7 +852,7 @@ data:
             {
               "disableTextWrap": false,
               "editorMode": "code",
-              "expr": "DCGM_FI_DEV_GPU_UTIL{instance=~\"${instance}\", gpu=~\"${gpu}\"}",
+              "expr": "max by (instance, gpu, UUID) (DCGM_FI_DEV_GPU_UTIL{instance=~\"${instance}\", gpu=~\"${gpu}\"})",
               "fullMetaSearch": false,
               "includeNullMetadata": true,
               "legendFormat": "GPU {{gpu}}",
@@ -948,7 +948,7 @@ data:
             {
               "disableTextWrap": false,
               "editorMode": "code",
-              "expr": "DCGM_FI_DEV_FAN_SPEED{instance=~\"${instance}\", gpu=~\"${gpu}\"}",
+              "expr": "max by (instance, gpu, UUID) (DCGM_FI_DEV_FAN_SPEED{instance=~\"${instance}\", gpu=~\"${gpu}\"})",
               "fullMetaSearch": false,
               "includeNullMetadata": true,
               "legendFormat": "GPU {{gpu}}",
