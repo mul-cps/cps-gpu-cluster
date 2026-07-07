@@ -48,18 +48,32 @@ spec:
     # spawn failure" and its 2026-07-07 follow-ups). Raising quota to 2
     # matches the guarantee to what a single dual-GPU session actually
     # needs, so reclaim can act instead of being fair-share-gated.
+    # overQuotaWeight raised 2 -> 10 on 2026-07-07: FairShare division buckets
+    # courses/phd-interactive/batch in the same tier (Queue CRD spec.priority
+    # is unset/equal for all three -- a different field from the
+    # PriorityClass values 90/50/10), so idle surplus from courses' quota
+    # gets split across phd-interactive and batch by overQuotaWeight alone.
+    # At 2 vs batch's 10, phd-interactive only ever got ~1/6 of that surplus
+    # (deserved=2, fairShare=3 out of courses' full 4-GPU idle quota) --
+    # confirmed live via scheduler logs and a synthetic burst test that
+    # stalled at fairShare=3 with zero batch eviction attempts, even with
+    # courses fully idle. Swapped to 10 (phd-interactive) vs batch's new 2
+    # so phd-interactive claims most of that surplus instead, letting it
+    # burst toward the full 8-GPU cluster when courses isn't contending.
+    # Does NOT touch reclaim-immunity (still governed by static quota,
+    # unchanged at 2) -- see docs/troubleshooting.md for full derivation.
     gpu:
       quota: 2
       limit: -1
-      overQuotaWeight: 2
+      overQuotaWeight: 10
     cpu:
       quota: -1
       limit: -1
-      overQuotaWeight: 2
+      overQuotaWeight: 10
     memory:
       quota: -1
       limit: -1
-      overQuotaWeight: 2
+      overQuotaWeight: 10
 ---
 apiVersion: scheduling.run.ai/v2
 kind: Queue
@@ -69,18 +83,25 @@ metadata:
 spec:
   parentQueue: default-parent-queue
   resources:
+    # overQuotaWeight lowered 10 -> 2 on 2026-07-07, paired with
+    # phd-interactive's 2 -> 10 raise (see that queue's comment for the
+    # full derivation) -- batch was winning ~5/6 of courses' idle surplus
+    # capacity, capping phd-interactive's burst at fairShare=3 instead of
+    # letting it approach the full 8-GPU cluster when courses is idle.
+    # batch is still a pure opportunistic filler (quota=0) and still gets a
+    # real share of unclaimed capacity, just no longer the majority share.
     gpu:
       quota: 0
       limit: -1
-      overQuotaWeight: 10
+      overQuotaWeight: 2
     cpu:
       quota: 0
       limit: -1
-      overQuotaWeight: 10
+      overQuotaWeight: 2
     memory:
       quota: 0
       limit: -1
-      overQuotaWeight: 10
+      overQuotaWeight: 2
 ---
 apiVersion: scheduling.run.ai/v2
 kind: Queue
