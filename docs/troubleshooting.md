@@ -2463,6 +2463,17 @@ follow-up**: re-run the same synthetic-pod batch (see
 `nvidia.com/gpu`, `runtimeClassName: nvidia`, MPS pipe/log hostPath mounts,
 `kai.scheduler/queue: courses` label, `kai-course-high` priority) during a
 real maintenance window or low-usage period, scaling to 30, and confirm
+(one caveat for whoever runs this: `status.requested` climbs by the raw
+memory-scaled pre-bind figure -- e.g. 6 pods at 5120 MiB each showed
+`requested: 307.2`, i.e. `6 × (5120/100)` -- this is expected pre-bind
+accounting, NOT the fractional 0.13/pod figure; don't panic at that number
+climbing past 4, only `status.allocated` -- populated once pods actually
+bind -- reflects the real fractional charge described above. Also note
+the real JupyterHub path sets `NVIDIA_VISIBLE_DEVICES=all` on the
+container, which none of the synthetic test pods in this investigation
+did -- that interacts with KAI's reservation-pod device injection and is
+unexercised by anything documented here; watch for it specifically when a
+real session first reaches `Running`.)
 `kubectl get queue courses -n kai-scheduler -o yaml`'s `status.allocated`
 gpu figure lands near the ~3.9 predicted above rather than hitting 4 and
 blocking further pods.
