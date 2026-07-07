@@ -6,3 +6,8 @@ resources:
   - namespace.yaml
   - nvidia-official-dashboard.yaml
   - gpu-alerts.yaml
+  - gpu-dashboard-comparison/gpu-dash-12239-official-nvidia.yaml
+  - gpu-dashboard-comparison/gpu-dash-15117-community.yaml
+  - gpu-dashboard-comparison/gpu-dash-22515-community.yaml
+  - gpu-dashboard-comparison/gpu-dash-23382-community.yaml
+  - gpu-dashboard-comparison/gpu-dash-24450-community.yaml
