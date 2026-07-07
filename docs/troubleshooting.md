@@ -1953,6 +1953,97 @@ fair-share-exhausted case, which is the actual reason this fix exists.
 No change made to the timeout value based on this follow-up; 1200s
 stands, now with measured justification instead of just an estimate.
 
+### Verification pass (2026-07-07, later same day): both fixes confirmed live; strong evidence the 110s timeout does NOT cover the real reclaim path under current batch-job grace periods
+
+Two changes had been pushed for review, not yet empirically confirmed:
+`phd-interactive` queue GPU quota 1.5 → 2 (commit `6c2dd84`,
+`kai-policy/queues.yaml`) and JupyterHub `start_timeout` for multi-GPU
+exclusive profiles 1200s → 110s (commit `cd31b99`, `jupyterhub/values.yaml`).
+
+**Both changes confirmed live.** `kubectl get queue phd-interactive -n
+kai-scheduler -o yaml` shows `spec.resources.gpu.quota: 2` (the stale
+`kubectl.kubernetes.io/last-applied-configuration` annotation still shows
+`1.5` — that's just a kubectl bookkeeping artifact, not the live spec, and
+is not authoritative). The `jupyterhub` GitRepo has reconciled commit
+`6c2dd8439cccf...` and the `kai-policy`/`jupyterhub` bundles are `1/1`
+ready. The hub pod (`hub-89c54b6f8-tfqsd`) had restarted ~6 minutes before
+this check, and its freshly-mounted `/usr/local/etc/jupyterhub/secret/values.yaml`
+(timestamp matching the pod's start time) contains
+`spawner.start_timeout = 110  # under 2 minutes` in the `custom_gpus > 1`
+and dual-GPU-profile branches of `apply_profile_settings()` — i.e. the new
+config is not just committed, it is the config the running hub process
+actually loaded.
+
+**Could not safely run the planned end-to-end reclaim-under-contention
+test — and that itself surfaced a stronger finding than a clean pass
+would have.** At verification time all 8 GPUs across the 4 workers were
+already in use (2/2 per node), entirely by real `batch`-queue Jobs
+(`ablator-*`, `kai-batch-low`/`batch`, `kai.scheduler/queue: batch`,
+owned by `Job` objects with `backoffLimit: 0` and `restartPolicy: Never`
+— i.e. no automatic retry if killed), including an active
+`splatograph` training run under `bjoern`'s own namespace writing
+real checkpointed output. With 0 free GPUs, there was no room to add
+synthetic filler pods without first evicting real, non-requeuing batch
+work, and reclaim's own mechanism (`reclaim/reclaim.go`) sends the victim
+`SIGTERM` the moment it decides to evict — there is no way to "peek" at
+reclaim firing without it actually being the eviction. Deliberately did
+not run this test; evicting a real, unrestartable training job to
+exercise a verification pass was judged not an acceptable trade.
+
+**However, the cluster state itself contains a real, actionable signal
+about whether the 110s timeout is sufficient.** The currently-running
+`ablator-*` pods all have `terminationGracePeriodSeconds: 150`, not the
+`30` seen on the older, already-`Completed` `ablator-*` pods from earlier
+in the day — grace period is evidently variable across job batches, and
+has drifted upward to 150s for everything now live. The earlier
+same-day follow-up entry above measured reclaim's bind time as
+essentially bounded by the victim's grace window (~25-30s
+Evict-to-Pipelined against a 30s grace period). Scaling that relationship
+to a 150s grace period puts reclaim's bind time well past the new 110s
+`start_timeout` — i.e. **if reclaim ever has to target one of these
+currently-live 150s-grace batch pods, the 2-GPU spawn is likely to hit
+the 110s timeout and fail before reclaim completes**, not because the
+quota fix is wrong (it correctly unblocks `CanReclaimResources`, and that
+part is straightforward to re-verify once the cluster has a genuine 1+1
+free-GPU gap and a requeue-safe victim to test against), but because the
+JupyterHub timeout is calibrated against a grace period this cluster no
+longer uses everywhere. The fact that the grace period was deliberately
+raised from 30s to 150s is itself suggestive: a training job is generally
+only given a longer grace window because it does real work on `SIGTERM`
+(checkpointing) and needs the time — implying the realistic cost of
+reclaiming one of these victims is close to the full 150s, not near-zero.
+`consolidation` (the ~9-10s fast path from the earlier follow-up) does
+not offer an escape here either: it requires spare capacity elsewhere to
+relocate a victim onto, and a fully-saturated 8/8 cluster — exactly the
+condition under which a 2-GPU request would need defragmentation help in
+the first place — has none, so it falls through to the grace-bound
+`reclaim` path in precisely the scenario the fix targets.
+
+**Also checked and confirmed NOT a risk:** the dual-GPU profiles'
+container images (`ghcr.io/mul-cps/cps-jupyter-notebook:latest-pytorch-code`
+/ `latest-tf-code`) are both present in `prePuller.extraImages`
+(`cps-pytorch`, `cps-tf`) in `jupyterhub/values.yaml`, and the
+`continuous-image-puller` DaemonSet is `4/4` ready across all 4 GPU
+workers (128 days old, healthy) — so a cold-node image pull is not a
+plausible source of extra delay on top of the timing risk above.
+
+**Net assessment:** both config changes are live as intended. The queue
+quota fix is very likely correct (unblocks the `CanReclaimResources`
+fair-share gate as designed) but was not re-exercised live this pass. The
+110s spawn-timeout budget is *not* confirmed to be sufficient — the
+cluster's real current batch-job shape (150s termination grace, no
+retry) makes it plausible-to-likely that a reclaim-dependent spawn will
+still time out, which would silently reintroduce a version of the
+original UX failure (fast, clean-looking failure instead of a hang, but
+still a failure) precisely when reclaim is needed against a real,
+long-grace-period batch job. **No further production config changes made
+this pass** — this is flagged as an open risk requiring a decision (e.g.
+lowering `terminationGracePeriodSeconds` on batch Jobs to something
+comfortably under the 110s budget, using SIGTERM-based fast checkpoint
+exit if the trainer supports it, or accepting that reclaim-dependent
+spawns may still fail and revisiting the timeout/UX tradeoff), not
+something to fix unilaterally here.
+
 **UPDATE 2026-07-07 (later same day): overridden by explicit product
 requirement.** Despite the above measured justification for 1200s, the
 requirement changed: every spawn attempt, success or failure, must
