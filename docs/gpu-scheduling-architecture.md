@@ -237,6 +237,31 @@ reclaimers are additionally capped at the queue's deserved share — this is
 the same `>=100 → non-preemptible` mechanic from the priority-tier section
 above, applied on the reclaiming side too.
 
+**Important refinement (source- and live-verified 2026-07-07, see
+`docs/troubleshooting.md`'s "can inflating phd-interactive's quota armor
+it against reclaim" entry): the victim side of the decision is gated the
+same way, by quota/fair-share headroom, with no priority comparison
+anywhere.** `pkg/scheduler/plugins/proportion/reclaimable/strategies/strategies.go`'s
+`GuaranteeDeservedQuotaStrategy` explicitly refuses to reclaim from a
+queue whose current usage is at or under its own deserved quota,
+regardless of the reclaimer's priority; `MaintainFairShareStrategy`
+likewise only allows reclaiming from a queue that is over its own
+(fair-share-adjusted) allocatable share. Read together with the
+reclaimer-side gate above, this means: **priority class value never
+directly decides which queue gets reclaimed from — it only decides
+ordering/eligibility to attempt reclaim at all (via the scheduler action
+priorities and `preempt`'s in-queue priority check); the actual
+victim-selection decision is 100% quota/fair-share arithmetic.** A
+concrete, practical consequence for this cluster: a queue's GPU `quota`
+must track real expected usage, not be rounded up "to be safe" —
+inflating a lower-priority queue's quota well above its actual usage can
+make its running jobs immune to reclaim by a higher-priority queue for as
+long as usage stays under the inflated ceiling, silently defeating the
+`courses` (90) > `phd-interactive` (50) > `batch` (10) priority ordering
+this whole design relies on. Prefer raising `overQuotaWeight` (which only
+affects how *surplus* capacity is split, not a reclaim-proof floor) over
+raising `quota` itself if more headroom is wanted.
+
 ## Bin-packing / placement scoring
 
 Three plugins jointly decide *where* a fitting pod lands, all

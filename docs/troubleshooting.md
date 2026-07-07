@@ -2151,6 +2151,140 @@ something to fix unilaterally here.
 
 ---
 
+### Investigated (2026-07-07): can inflating `phd-interactive`'s GPU quota "armor" its jobs against `courses` reclaim, breaking the priority hierarchy?
+
+**Question.** The three-tier design (`courses` quota=4 priority=90 >
+`phd-interactive` quota=2 priority=50 > `batch` quota=0 priority=10)
+depends on `courses` always being able to reclaim from `phd-interactive`
+when it needs to. Hypothesis: if `phd-interactive`'s quota were raised
+well above its real usage (e.g. to 8, the whole cluster), a job sitting
+comfortably *within* that inflated quota might become immune to reclaim
+by `courses`, because reclaim eligibility might be gated on "is the
+victim's queue currently over its own quota" rather than on priority
+class value alone — which would mean an oversized quota silently defeats
+the priority design.
+
+**Source verdict: confirmed, unambiguously, at the reclaimee side.**
+Checked against `github.com/NVIDIA/KAI-Scheduler` tag `v0.14.6`,
+`pkg/scheduler/plugins/proportion/reclaimable/strategies/strategies.go`.
+Reclaim eligibility for a specific victim queue is decided by
+`FitsReclaimStrategy` (`strategies.go:18-33`), which succeeds if *either*
+of two independent strategies returns true — **neither strategy looks at
+priority at all**, both key entirely off quota/fair-share arithmetic:
+
+- `MaintainFairShareStrategy.Reclaimable` (`strategies.go:42-56`): `return
+  !reclaimeeRemainingShare.LessEqual(reclaimeeQueue.GetAllocatableShare())`
+  — the victim queue is only reclaimable while its allocation exceeds its
+  own (fair-share-adjusted) allocatable share.
+- `GuaranteeDeservedQuotaStrategy.Reclaimable` (`strategies.go:58-84`):
+  explicitly `if reclaimeeRemainingShare.LessEqual(reclaimeeQueue.GetDeservedShare())
+  { return false }` — i.e. **if the victim's current usage is at or under
+  its own deserved quota, this strategy refuses to touch it, full stop**,
+  regardless of the reclaimer's priority.
+
+So a queue whose usage sits inside its own deserved quota fails both
+strategies and cannot be reclaimed from by anyone, no matter how much
+higher the reclaimer's priority is. This directly matches option (a) from
+the original hypothesis for the *reclaimee* side of the decision — quota
+headroom, not priority, is what makes a queue's running jobs untouchable.
+(There is a separate, independent gate on the *reclaimer* side —
+`CanReclaimResources` in `reclaimable.go:29-53`, already documented above
+in the multi-GPU spawn timeout entry — which blocks the *requesting*
+queue from reclaiming at all once its own allocation-plus-request would
+exceed its own fair share. That gate is orthogonal to this question and,
+in the live test below, turned out to be the dominant constraint at one
+point — see caveat.)
+
+**Live test.** Cluster was near-idle (2/8 GPUs in real use: 1 real
+`batch` pod, 1 real `phd-interactive` JupyterHub session). Built an
+all-synthetic saturation scenario in namespace `reclaim-test`
+(`sleep 3600` busybox pods, `schedulerName: kai-scheduler`, correct
+`kai.scheduler/queue` label and `priorityClassName` per queue):
+
+1. Added 2 synthetic 1-GPU `phd-interactive` pods (`victim-a`,
+   `victim-b`) → phd-interactive allocated = 3 (1 real + 2 synthetic).
+2. Added 4 synthetic 1-GPU `batch` pods → batch allocated = 5 (1 real + 4
+   synthetic). Cluster now fully saturated at 8/8 GPUs, with phd-interactive
+   holding only 3 of the 8 GPUs.
+3. `kubectl patch queue phd-interactive -n kai-scheduler` to raise its
+   GPU quota from the real value **2 → 8** (temporary, live-only, not
+   committed).
+4. Submitted six synthetic 1-GPU `courses` pods (`reclaim-1`..`reclaim-6`).
+   The first five satisfied themselves entirely by reclaiming from
+   `batch` (quota=0, trivially over-quota, evicted one by one — confirmed
+   via `kubectl get queue batch` allocated dropping from 5 to 0). This is
+   expected, normal reclaim behavior and not itself the test.
+5. The sixth (`reclaim-6`) had nowhere left to go except `phd-interactive`
+   (3 GPUs allocated, now sitting inside its inflated quota of 8). It
+   stayed **`Pending` for the full observation window** (~2.5 minutes,
+   multiple scheduler cycles). Scheduler logs
+   (`kubectl logs -n kai-scheduler deploy/kai-scheduler-default`) showed,
+   every cycle: `allocate` → "Could not allocate", `consolidation` →
+   "not enough allocatable GPUs", `reclaim` → "Enter Reclaim... Leaving
+   Reclaim" with **zero reclaim attempts logged against `victim-a`/`victim-b`**,
+   `preempt` → "Didn't find a preemption strategy". `phd-interactive`'s
+   allocated count stayed at exactly 3 the entire time — untouched.
+   `resource_division` logs during this window showed `courses`:
+   `deserved=4, allocated=5, fairShare=5`, so `reclaim-6` (would bring
+   courses to 6) failed `CanReclaimResources`'s own-queue fair-share gate
+   before even reaching the per-victim strategy check — this is the
+   reclaimer-side gate above, not the reclaimee-side one being tested, so
+   this run alone doesn't cleanly isolate the hypothesis.
+6. Reverted `phd-interactive`'s quota **8 → 2** (the real value) via the
+   same `kubectl patch`, to see whether `phd-interactive` (now allocated=3
+   against its real quota=2, i.e. genuinely over quota) would become
+   reclaimable again. `reclaim-6` did eventually schedule, but by evicting
+   a *same-queue* `courses` pod (`reclaim-5`) that the scheduler's own job
+   ordering picked as an easier target — not by reclaiming from
+   `phd-interactive` — so this particular run is **inconclusive** on the
+   reverse direction; `courses`' own fair-share cap (still computed as 5 in
+   both the quota=8 and quota=2 cases in this specific demand mix) appears
+   to have been the binding constraint throughout this test, independent
+   of `phd-interactive`'s quota setting.
+7. Cleaned up: `kubectl delete namespace reclaim-test` (all synthetic
+   pods gone), `phd-interactive` quota confirmed back at the git-tracked
+   value of 2. No real user pod or batch job was touched at any point.
+
+**Conclusion.** The mechanism is confirmed **from source**, unambiguously:
+`GuaranteeDeservedQuotaStrategy` and `MaintainFairShareStrategy` both gate
+reclaim eligibility purely on the victim queue's own quota/fair-share
+headroom, with no priority comparison anywhere in either strategy — so a
+queue kept within its own deserved quota cannot be reclaimed from,
+regardless of how much higher the requesting queue's priority is. The
+live test's forward direction (inflate phd-interactive to quota=8) is
+consistent with this: `phd-interactive` sat untouched at 3/8 for the
+entire observation window while a `courses` reclaimer was demonstrably
+blocked and had no other viable target. The live test's reverse direction
+(revert to quota=2) did not cleanly demonstrate `phd-interactive` becoming
+reclaimable again, because a different, reclaimer-side fair-share gate
+(`CanReclaimResources` on the `courses` queue itself) dominated in that
+specific demand mix and resolved the pending pod via intra-queue
+preemption before cross-queue reclaim was ever attempted against
+`phd-interactive`. That's a real, useful finding in its own right: **two
+independent fair-share gates exist (reclaimer-side and reclaimee-side),
+either one alone can block a reclaim, and a naive live test can hit
+either one first** — so don't read "reclaim didn't happen" as proof of
+one specific mechanism without checking `resource_division` logs for
+which queue's fair share was actually the limiting factor.
+
+**Practical recommendation for this cluster.** Size Queue GPU quotas
+close to real expected usage per queue, not inflated "just in case" or
+"to be safe." An oversized quota on a lower-priority queue does not just
+fail to help — per `GuaranteeDeservedQuotaStrategy`'s explicit deserved-quota
+check, it can actively make that queue's jobs immune to reclaim by a
+nominally higher-priority queue for as long as its usage stays under the
+inflated ceiling, silently defeating the `courses` > `phd-interactive` >
+`batch` priority design documented above. `phd-interactive`'s quota should
+track real observed PhD/interactive demand (currently 2, raised from 1.5
+earlier this session for a documented, measured reason — see the quota
+1.5→2 entry above) rather than being rounded up defensively. If more
+headroom is wanted for `phd-interactive` without this risk, prefer raising
+its `overQuotaWeight` (which only affects how *surplus* capacity beyond
+all deserved quotas is split, and does not create a new reclaim-proof
+floor) over raising `quota` itself.
+
+---
+
 ## Getting Help
 
 If issues persist:
