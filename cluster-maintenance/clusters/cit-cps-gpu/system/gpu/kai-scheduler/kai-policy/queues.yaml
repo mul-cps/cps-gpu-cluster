@@ -37,8 +37,19 @@ metadata:
 spec:
   parentQueue: default-parent-queue
   resources:
+    # gpu.quota raised 1.5 -> 2 on 2026-07-07: KAI's reclaim is gated by
+    # CanReclaimResources, which blocks a queue from reclaiming *beyond its
+    # own guaranteed quota* even when reclaim would otherwise succeed. The
+    # gpu-pytorch-dual/gpu-tensorflow-dual profiles (this queue) request 2
+    # whole GPUs on a single pod -- with quota 1.5, that request already
+    # exceeds this queue's guarantee before reclaim is even attempted, so
+    # reclaim never fires for these profiles regardless of real cluster
+    # capacity (see docs/troubleshooting.md, "JupyterHub '2x GPU' profile
+    # spawn failure" and its 2026-07-07 follow-ups). Raising quota to 2
+    # matches the guarantee to what a single dual-GPU session actually
+    # needs, so reclaim can act instead of being fair-share-gated.
     gpu:
-      quota: 1.5
+      quota: 2
       limit: -1
       overQuotaWeight: 2
     cpu:
