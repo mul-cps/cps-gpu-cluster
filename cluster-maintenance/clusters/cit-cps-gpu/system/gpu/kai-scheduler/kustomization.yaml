@@ -5,9 +5,21 @@ kind: Kustomization
 # patch on the combined output (see fleet.yaml's `kustomize.dir: .`).
 #
 # Raises the kai-scheduler's klog verbosity from its default (V2 only:
-# "Enter/Leaving Reclaim") to V5, so a future reclaim/fair-share
-# investigation can be conclusive. V5 is the minimum level that surfaces
-# both:
+# "Enter/Leaving Reclaim") to V6, so a future reclaim/fair-share
+# investigation can be conclusive. Originally set to V5 (2026-07-07),
+# raised again same day per an expert review of the "cold-start bootstrap
+# hypothesis, REFUTED" finding: V5 covers the scenario-filter/solver-entry
+# level, but not the virtual-allocation ("pipeline") level where a
+# whole-GPU-victim -> fractional-requester reclaim could still fail after
+# a victim scenario is otherwise accepted. V6 is the minimum level that
+# additionally surfaces:
+#   - "Trying to pipeline job: <namespace/name>, resources required: ..."
+#     -- the virtual-allocation attempt against a candidate post-eviction
+#     scenario. If the pending course pod still can't virtually allocate
+#     here even after a whole-GPU victim is notionally removed, that's
+#     direct evidence of a whole/fractional resource-representation
+#     mismatch in the solver, distinct from a fair-share gate rejection.
+# Already covered at V5 (kept, not redundant -- V6 is additive):
 #   - reclaim.go:100/112 (V3) "Attempting to reclaim for job" /
 #     "Didn't find a reclaim strategy for job" -- whether a job even
 #     reached the solver (its *absence* for a given job is the only signal
@@ -15,23 +27,39 @@ kind: Kustomization
 #     that function itself has no log line at any verbosity).
 #   - reclaimable.go:168/182 (V5) the specific solver-level fair-share
 #     failure reason: "Saturation ratios would not stay lower than sibling
-#     queue" / "Queue will have nonpreemtible jobs over quota" -- this is
-#     the detail needed to distinguish a fair-share-gate skip from some
-#     other solver failure.
-# V7 (reclaimable.go:92, FitsReclaimStrategy) is not needed for this and
-# was deliberately left out to limit log volume.
+#     queue" / "Queue will have nonpreemtible jobs over quota".
+#   - V5 "Filtered by <filter-name> for scenario: ..." -- accumulated
+#     scenario filters (node-affinity, topology-aware idle-GPU-capacity,
+#     cluster-level idle-GPU-capacity) rejecting a candidate victim set
+#     BEFORE virtual-allocation simulation even runs -- check this before
+#     assuming the pipeline-level (V6) logic was ever reached.
+# V7 (reclaimable.go:92, FitsReclaimStrategy) still not needed and left
+# out to limit log volume further.
+#
+# Diagnostic checklist for the next retest (see docs/troubleshooting.md
+# for full context) -- walk these five gates in order using the grep
+# strings below, since each implies a different fix:
+#   1. CanReclaimResources gate (silent -- inferred by absence of #2's log)
+#   2. Victim eligibility/filtering -- which jobs entered
+#      getOrderedVictimsQueue() at all (same-queue/non-preemptible/
+#      minruntime-filtered jobs never become candidates)
+#   3. Accumulated scenario filters -- "Filtered by ..." (V5)
+#   4. Virtual allocation/pipeline failure -- "Trying to pipeline job" (V6)
+#   5. Post-simulation fair-share solution validator -- "Failed to reclaim
+#      resources" / "Saturation ratios" (V5/V6)
+# grep -E 'Attempting to reclaim|Checking if reclaim is possible|Trying to solve scenario|Filtered by|No solution found|Trying to pipeline job|Failed to reclaim resources|Saturation ratios|Didn.t find a reclaim strategy'
 #
 # NOTE: --v is a *global* klog level -- it raises verbosity for every
 # scheduler subsystem (allocate, predicates, proportion, etc.), not just
 # reclaim, so expect materially more log volume cluster-wide, not just
-# during reclaim cycles. See docs/troubleshooting.md, 2026-07-07 entry,
+# during reclaim cycles. See docs/troubleshooting.md, 2026-07-07 entries,
 # for the Loki retention/volume consideration before leaving this enabled
 # long-term -- consider reverting to default verbosity once the reclaim
 # investigation this was added for is concluded.
 #
-# See docs/troubleshooting.md "phd-interactive burst" and "does reclaim
-# cross the exclusive/fractional boundary" entries for the investigations
-# this unblocks.
+# See docs/troubleshooting.md "phd-interactive burst", "does reclaim
+# cross the exclusive/fractional boundary", and "cold-start bootstrap
+# hypothesis, REFUTED" entries for the investigations this unblocks.
 patches:
   - target:
       kind: SchedulingShard
@@ -40,4 +68,4 @@ patches:
       - op: add
         path: /spec/args
         value:
-          v: "5"
+          v: "6"
