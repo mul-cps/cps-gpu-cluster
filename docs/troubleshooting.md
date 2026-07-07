@@ -911,6 +911,75 @@ real Proxmox-level `qm stop`/`qm start`) — try this first for any
 "device busy" error on a node running the standalone MPS daemon before
 escalating to a full VM power cycle.
 
+### GPU Monitoring / Grafana Dashboards: duplicate dashboards cleaned up, dcgm-exporter confirmed healthy, "GPUs shown twice" not currently reproducible
+
+**Requirements for NVIDIA's official GPU dashboard to work**: GPU Operator's
+`dcgmExporter.enabled: true` + `dcgmExporter.serviceMonitor.enabled: true`
+(already set in `gpu-operator/values.yaml`) is sufficient -- confirmed live
+2026-07-07: all 4 `nvidia-dcgm-exporter` pods `Running`, the ServiceMonitor's
+selector (`app: nvidia-dcgm-exporter` in the `gpu-operator` namespace)
+correctly matches Prometheus's own `serviceMonitorSelector: {}` (empty =
+match everything), and all 4 scrape targets show `up` with no errors in
+Prometheus's own targets API. No additional wiring was needed -- the
+dashboard problem was never a scrape gap.
+
+**The real problem: 4 live duplicate/orphaned GPU dashboards in Grafana,
+only 1 backed by a tracked ConfigMap.** Found via `kubectl get configmap -A
+-l grafana_dashboard=1` plus Grafana's own `/api/search` (which showed
+dashboards with NO backing ConfigMap at all -- manually imported into
+Grafana's database at some point, bypassing GitOps entirely):
+- `nvidia-dcgm-official-dashboard-fleet` (repo:
+  `system/observability/monitoring/nvidia-official-dashboard.yaml`) -- the
+  genuine official NVIDIA DCGM dashboard (24 panels, all real
+  `DCGM_FI_DEV_*`/`DCGM_FI_PROF_*` queries). **Kept, this is now the only
+  GPU dashboard.**
+- `nvidia-dcgm-dashboard-full` (repo: `gpu-dashboard-full.yaml`) -- byte-
+  identical panel content to the one above, just a different ConfigMap
+  name/dashboard UID. Pure duplicate. Removed.
+- `nvidia-gpu-overview-dashboard` (repo: `gpu-dashboard.yaml`) -- a smaller,
+  hand-written 5-panel dashboard (`DCGM_FI_PROF_*` aggregates only). Not the
+  official one. Removed.
+- `nvidia-dcgm-official-dashboard` (live-only, 238 days old, never in git)
+  -- an orphaned manual import predating this bundle's Fleet management.
+  Removed directly via `kubectl delete configmap`.
+- Beyond ConfigMaps entirely, Grafana's own dashboard database additionally
+  had **4 more GPU dashboards with no backing ConfigMap or file at all**
+  ("Better NVIDIA DCGM Dashboard", "GPU Nodes v2", "NVIDIA DCGM Dashboard
+  for Kubernetes (MIG & Non-MIG GPUs) v2", "NVIDIA DCGM Exporter Dashboard -
+  new") -- manually imported at some point, untracked, undeletable via
+  Grafana's own HTTP API even as admin (`{"message":"You'll need additional
+  permissions to perform this action. Permissions needed:
+  dashboards:delete"}` -- this Grafana instance is fronted by a
+  `grafana-proxy` sidecar that bridges Rancher's own auth/RBAC; a direct
+  port-forward to the `grafana` container bypasses that proxy and gets a
+  Grafana-local session with almost no real permissions, even for the
+  `admin` account, even after `grafana cli admin reset-admin-password`).
+  Removed by copying `/var/lib/grafana/grafana.db` out of the pod (`kubectl
+  cp`), editing the `dashboard`/`dashboard_tag`/`dashboard_version`/`star`
+  tables directly with Python's `sqlite3` module, copying the file back,
+  and restarting the pod to reload it. **If more untracked dashboards turn
+  up in the future, this is the only reliable way to remove them** --
+  don't waste time on the HTTP API's `admin`/`admin` login for delete
+  operations, it doesn't have the rights.
+
+**Verified after cleanup**: exactly one GPU dashboard remains
+(`nvidia-official-dcgm`), its panels query real live metrics through
+Grafana's own datasource proxy (not a synthetic check), returning exactly
+8 series (2 per node × 4 nodes) with 8 unique GPU UUIDs -- no duplication.
+
+**The historical "GPUs shown twice" bug**: NOT reproducible in the current
+live state. Checked `DCGM_FI_DEV_GPU_UTIL` cardinality directly against
+Prometheus -- exactly 8 series, one per physical GPU, unique
+`UUID`/`Hostname`/`gpu` label combinations, no duplicate series anywhere.
+Most likely this was a transient artifact of one of this session's several
+device-plugin config transitions (mig-mixed → mps-sharing → plain) or a
+mid-transition GFD relabeling window, not a persistent config bug -- the
+architecture has since settled and metrics are clean. If it recurs, check
+GPU Feature Discovery pod logs for relabeling churn around the time it's
+observed, and check for duplicate ServiceMonitor objects targeting the
+same dcgm-exporter Service (none currently exist -- confirmed only one
+ServiceMonitor, `nvidia-dcgm-exporter` in `gpu-operator`, cluster-wide).
+
 ---
 
 ## Storage Issues

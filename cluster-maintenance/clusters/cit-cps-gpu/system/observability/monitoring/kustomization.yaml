@@ -4,7 +4,5 @@ kind: Kustomization
 # Only NVIDIA-specific add-ons; Rancher Monitoring stack is installed manually
 resources:
   - namespace.yaml
-  - gpu-dashboard.yaml
-  - gpu-dashboard-full.yaml
   - nvidia-official-dashboard.yaml
   - gpu-alerts.yaml
