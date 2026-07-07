@@ -2285,6 +2285,238 @@ floor) over raising `quota` itself.
 
 ---
 
+## RESOLVED (2026-07-07): can 30 concurrent 5GB student MPS sessions actually run? Real blocker was a JupyterHub pod-spec bug, not queue quota
+
+**Product requirement being tested:** all 30 students in a course must be
+able to simultaneously spawn a `gpu-5gb` (5GiB, MPS-shared) JupyterHub
+session in the `courses` queue. Investigated whether the `courses` queue's
+`gpu.quota: 4` (see `kai-policy/queues.yaml`) hard-caps concurrency at 4
+sessions regardless of each session's small memory footprint.
+
+**Finding 1 (source-verified, v0.14.6): queue quota accounting for
+`gpu-memory` pods is fractional, not integer-per-pod — quota is NOT the
+blocker.** `GetRequiredInitQuota` / `setAcceptedResources` in
+`pkg/scheduler/api/node_info/node_info.go` (lines ~689-718) compute a
+bound pod's GPU quota charge as
+`count(1) × getGpuMemoryFractionalOnNode(gpuMemory)`, where
+`getGpuMemoryFractionalOnNode` (same file, ~line 346) is
+`ceil((memory / MemoryOfEveryGpuOnNode) * 100) / 100` — i.e. the fraction
+of one physical GPU's memory the pod actually consumes, rounded up to the
+nearest 0.01. This `AcceptedResource` (not the raw, pre-bind
+`ResourceRequirements`) is what `pkg/scheduler/plugins/proportion/proportion.go`
+(lines 357/449, via `utils.QuantifyVector`) tallies into
+`Queue.Status.Allocated`. On this cluster's A100s (40960 MiB), a 5120 MiB
+session charges `ceil(5120/40960*100)/100 = 0.13` GPU-quota-units, not
+1.0. **30 such sessions would charge the `courses` queue only `30 × 0.13
+= 3.9`**, comfortably under the current `quota: 4`. (Caution for future
+readers: a pod's raw, unbound `ResourceRequirements.GetGpusQuota()` -- via
+`resource_info/gpu_resource_requirment.go`'s `NewGpuResourceRequirementWithGpus(0,
+gpuMemory)` construction, portion=0 -- looks like it charges 0 GPUs before
+the pod is bound to a specific node; don't stop at that code path and
+conclude "quota is irrelevant" or "quota is integer-count" from it alone --
+the real Queue accounting happens post-bind against `AcceptedResource`,
+which is fractional. This was flagged and corrected mid-investigation.)
+
+**Finding 2 (the real, live-reproduced blocker): the current live
+`jupyterhub/values.yaml` VRAM-tiered profiles (`gpu-3gb` through the
+largest MPS tier) set `nvidia.com/gpu: 1` as a resource limit/guarantee
+*and* the `gpu-memory` annotation on the same pod.** These are alternative,
+non-combinable allocation paths in KAI --confirmed both by this repo's own
+prior documentation (the "MPS-based GPU sharing setup" entry above, and
+`kai-scheduler/examples/README.md`) and by KAI's admission webhook source
+(`pkg/binder/plugins/gpusharing/gpu-request/gpu_request_validator.go:36-38`):
+`hasGpuMemoryAnnotation && (hasGpuFractionAnnotation || hasWholeGPULimit)`
+returns `"cannot request both GPU and GPU memory"`, hard-rejected at
+admission before the scheduler ever sees the pod. Reproduced live: a
+synthetic pod built to exactly match the `gpu-5gb` profile's shape
+(`resources.limits."nvidia.com/gpu": "1"` + `gpu-memory: "5120"`
+annotation) was rejected by `admission.kai-scheduler.svc` with exactly
+this error. **This means every course/MPS-shared profile spawn attempt
+fails at admission today, unconditionally — 0 concurrent sessions, not 4,
+regardless of queue quota, student count, or cluster capacity.** This is
+a JupyterHub pod-spec bug (`apply_profile_settings`'s GPU-resource block
+unconditionally applied `cfg['resource_key']` for any profile with
+`cfg['gpu']` truthy, without excluding `memory_mib` profiles), not a KAI
+scheduler or quota misconfiguration.
+
+**Fix applied**: `user/jupyter/jupyterhub/values.yaml`, the GPU-resource
+block in `apply_profile_settings` (~line 1555) now reads
+`if cfg['gpu'] and cfg.get('resource_key') and not cfg.get('memory_mib')`
+— VRAM-tiered/MPS profiles no longer get a `nvidia.com/gpu` resource
+limit/guarantee at all; they rely solely on the `gpu-memory` annotation
+(already set a few lines below) for KAI's fractional scheduling and
+accounting. Full-GPU profiles (no `memory_mib`) are unaffected. Pushed to
+`main` for Fleet to reconcile (JupyterHub bundle).
+
+**Live-test caveat (be honest about what was and wasn't verified): the
+full 30-concurrent-session end-to-end spawn test could NOT be completed**
+because, at test time, the cluster's real production workload had all 8
+physical GPUs' worth of KAI-tracked capacity already allocated
+(`resource_division` logs showed `Total allocatable resources ... Gpus:
+8`, fully claimed across `phd-interactive` (3, over its quota=2 but
+reclaim-immune per the entry above), `batch` (5, mixed exclusive +
+fractional `gpu-memory` jobs -- confirming multiple `gpu-memory` pods
+already coexist packed on shared physical GPUs in this cluster's real
+workload today, which is itself decent evidence against a hard "1
+reservation pod per client" ceiling), and real interactive JupyterHub
+sessions). Correctly-shaped synthetic test pods (annotation-only, no
+`nvidia.com/gpu`) passed admission cleanly (unlike the original
+resource_key+annotation shape, which was rejected exactly as predicted)
+but then legitimately queued behind real, live user work with "no nodes
+with enough resources: GPU memory" -- this is expected behavior on a
+saturated cluster, not a bug, and evicting real production sessions to
+force a clean 30-pod test was correctly out of scope. Repeated single-pod
+retries over several minutes never found a free window either -- the
+cluster stayed genuinely saturated with real work for the entire
+investigation.
+
+**Be precise about what this means for confidence in the fix: the
+`jupyterhub/values.yaml` change itself was never confirmed end-to-end.**
+No `gpu-memory`-annotated pod (synthetic or real) reached `Running` during
+this investigation, and no pod ever appeared in the
+`kai-resource-reservation` namespace. The fix is believed correct because
+(a) it makes the JupyterHub-generated pod shape match the one documented
+example/rule and the one that passed admission cleanly in the synthetic
+test, and (b) a first draft of this same fix was caught overreaching --
+gating the whole GPU-resource `if` block on `not cfg.get('memory_mib')`
+instead of just the two `nvidia.com/gpu` limit/guarantee lines would have
+also skipped the `gpu-memory` annotation, the MPS env vars/hostPath
+mounts, and the `accelerator: nvidia` node selector for every MPS profile
+-- silently turning `gpu-5gb` into a plain CPU pod with no GPU annotation
+at all. That was corrected before commit (only the two
+`extra_resource_limits`/`extra_resource_guarantees` lines are now gated),
+but it's a reminder that this fix has NOT been validated by watching a
+real pod actually spawn correctly. **Before trusting this in production,
+get at least one `gpu-*gb` JupyterHub session to `Running` and confirm a
+`kai-resource-reservation` pod appears for it**, ideally during a
+maintenance window when the cluster isn't fully saturated. **Recommended
+follow-up**: re-run the same synthetic-pod batch (see
+`gen_test_pods2.py`-style manifest: `gpu-memory` annotation only, no
+`nvidia.com/gpu`, `runtimeClassName: nvidia`, MPS pipe/log hostPath mounts,
+`kai.scheduler/queue: courses` label, `kai-course-high` priority) during a
+real maintenance window or low-usage period, scaling to 30, and confirm
+`kubectl get queue courses -n kai-scheduler -o yaml`'s `status.allocated`
+gpu figure lands near the ~3.9 predicted above rather than hitting 4 and
+blocking further pods.
+
+---
+
+### Confirmed (2026-07-07): `phd-interactive` already can burst to (up to) 8 GPUs, reclaiming from `batch`, whenever `courses` isn't contending — no config change needed
+
+**Question.** Product requirement: "`phd-interactive` should be able to
+get up to 8 GPUs if `courses` doesn't use them, AND preempt/reclaim
+`batch` jobs if needed to get there." `phd-interactive`'s static quota is
+only 2 (`queues.yaml`), so anything beyond 2 GPUs, when all 8 are already
+held by `batch`, requires the `reclaim` action to evict `batch` pods. Risk
+hypothesis going in: `reclaim`'s reclaimer-side gate,
+`CanReclaimResources` (`reclaimable.go:31-55`), might hard-cap the
+reclaiming queue at its own *static* `quota`, in which case
+`phd-interactive` could only ever land on genuinely-idle GPUs, never
+reclaim past 2, regardless of `courses`' idle capacity — this would be a
+real gap against the requirement.
+
+**Source verdict: the gate is dynamic, not static, for `phd-interactive`
+specifically.** `CanReclaimResources` (KAI-Scheduler v0.14.6,
+`pkg/scheduler/plugins/proportion/reclaimable/reclaimable.go:31-55`) has
+two sequential checks:
+1. `allocatedResources := reclaimerQueue.GetAllocatedShare() + requested; if !allocatedResources.LessEqual(reclaimerQueue.GetFairShare()) { return false }`
+   — gated on the queue's **dynamically-computed `FairShare`**, not its
+   static `quota`.
+2. `if reclaimer.IsPreemptable { return true }` — if the reclaiming job's
+   PodGroup is `Preemptible`, the function returns here; the *second*,
+   static-quota-based check (`allocatedNonPreemptible ... LessEqual(reclaimerQueue.GetDeservedShare())`,
+   i.e. `quota`) is only reached for **non-preemptible** reclaimers.
+
+Whether a PodGroup is `Preemptible` is decided by
+`pkg/common/podgroup/preemptible.go:14-26`
+(`CalculatePreemptibility`): if not explicitly set, a PodGroup with
+`priority < 100` is `Preemptible`, `>= 100` is `NonPreemptible`. Per
+`kai-policy/priorityclasses.yaml` (already documented, 2026-07-06, as a
+deliberate design choice — see the comment block at the top of that
+file), all three of this cluster's priority classes are under 100
+(`kai-course-high=90`, `kai-phd-interactive=50`, `kai-batch-low=10`) —
+**every job in this cluster, including `phd-interactive` jobs, is
+`Preemptible`, specifically so that this static-quota reclaimer-side
+check never applies to them.** So for `phd-interactive` the sole live
+gate on how far it can reclaim is its dynamic `FairShare`, computed by
+`resource_division.go`.
+
+`resource_division.go`'s `divideOverQuotaResource` /
+`divideUpToFairShare` distributes GPU capacity beyond each queue's
+deserved quota in descending-priority tiers (`courses` tier first, then
+`phd-interactive`, then `batch`), and a queue only reserves any of that
+tier's leftover if it has actual unsatisfied `requested` demand
+(`isQueueSatisfied`: `request <= FairShare`). Two consequences: (a) if
+`courses` has zero pending demand, it claims none of the surplus and its
+FairShare stays at 0/idle, regardless of its `quota:4`, freeing that
+capacity for the next tier down; (b) because `phd-interactive`'s
+priority tier is processed strictly before `batch`'s, `phd-interactive`
+never has to out-compete `batch` via `overQuotaWeight` for that
+surplus — the current `overQuotaWeight` values (`phd-interactive: 2` <
+`batch: 10`) are irrelevant to this scenario; weights only break ties
+*within* a priority tier, and `batch` is a different, lower tier. (This
+also answers the sub-question in the original ask: no, `batch`'s higher
+`overQuotaWeight` is not "backwards" here and does not need changing —
+it doesn't affect fairness relative to `phd-interactive` at all under
+this cross-tier design.)
+
+**Live evidence — this has already happened in production, no synthetic
+test needed.** Checked cluster state and `kai-scheduler` logs (`kubectl
+logs -n kai-scheduler deploy/kai-scheduler-default`) live, 2026-07-07.
+Current real state: `courses` deserved=4, requested=0, allocated=0,
+**fairShare=0** (zero demand, contributing nothing but also claiming
+nothing of the surplus). `phd-interactive` deserved=2, requested=3,
+allocated=3, **fairShare=3** — i.e. right now, in production,
+`phd-interactive`'s dynamic entitlement already exceeds its static quota
+by 1 GPU, purely because `courses` isn't contending. `batch`
+deserved=0, requested=7, allocated=5, fairShare=5 (already
+demand-constrained by its own request, unrelated to this test).
+
+The scheduler's own logs show exactly how `phd-interactive` got that 3rd
+GPU: an earlier scheduling cycle today (session `AdTJEU`) recorded, for
+`jupyterhub/pg-jupyter-bjoern--x-2xgpu---bfbfa13e` (queue
+`phd-interactive`, requesting 2 GPUs, 1 already held): `allocate` →
+"Could not allocate", `consolidation` → "not enough allocatable GPUs",
+then `reclaim` → `"Attempting to reclaim for job: ... of queue
+<phd-interactive>"` → **`"Reclaimed resources for job ..., evicting
+reclaimee tasks: <[jupyterhub/ablator-sppfullfixa100-b20a261fdf-ctrl-c54qj
+jupyterhub/ablator-sppfullfixa100-39f36da05b-ctrl-2hlxm]>"`** — two real
+`batch`-queue pods evicted, live, to satisfy `phd-interactive`'s burst
+past its static quota=2, exactly the requirement being verified. No
+synthetic pods were needed or added for this finding; it is a real event
+already in the log history, matched against the queue-state snapshot
+that shows the resulting allocation.
+
+**Conclusion.** `phd-interactive` already can, and demonstrably does,
+burst past its static quota=2 by reclaiming from `batch`, whenever
+`courses` isn't using its own deserved share — this is not a gap, it's
+the intended behavior of KAI's dynamic fair-share division combined with
+this cluster's deliberate choice (documented 2026-07-06 in
+`priorityclasses.yaml`) to keep every PriorityClass under the
+`Preemptible` threshold of 100. The theoretical ceiling is the full
+8-GPU cluster capacity, bounded only by `phd-interactive`'s own actual
+demand and `courses`'/`batch`'s competing demand in their respective
+priority tiers — not by `phd-interactive`'s static `quota` field, which
+only matters (a) as the floor `phd-interactive` is guaranteed even under
+contention, and (b) as the reclaim-immunity threshold for its own jobs
+against reclaim *by* `courses` (see the "armor" investigation above —
+that mechanism is unaffected by, and unrelated to, this one; that one
+gates the *reclaimee* side via static quota/`GetDeservedShare`, this one
+gates the *reclaimer* side via dynamic `FairShare` and is bypassed
+entirely for `Preemptible` jobs).
+
+**No config change made or recommended.** The requirement is already
+satisfied by the current live configuration; raising `phd-interactive`'s
+static `quota` to chase this requirement would be both unnecessary and
+counterproductive, since it would reintroduce the reclaim-immunity risk
+against `courses` documented in the "armor" investigation above, for no
+additional burst capability (burst capability already goes to the full
+cluster via `FairShare`, not `quota`). `overQuotaWeight` also does not
+need adjusting for this scenario, per the cross-tier reasoning above —
+only same-tier siblings compete on it, and `phd-interactive` has none.
+
+---
+
 ## Getting Help
 
 If issues persist:

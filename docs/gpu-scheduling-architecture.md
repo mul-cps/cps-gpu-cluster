@@ -64,6 +64,24 @@ below are against the `v0.14.6` tag of that repo.
 Source: `cluster-maintenance/clusters/cit-cps-gpu/system/gpu/kai-scheduler/kai-policy/priorityclasses.yaml`
 and `.../kai-policy/queues.yaml`.
 
+**Quota semantics for `gpu-memory`-annotated (MPS-fractional) pods are
+fractional, not integer-per-pod (source-verified, v0.14.6, 2026-07-07).**
+A bound pod's charge against its queue's GPU quota is
+`count × ceil((gpuMemory / MemoryOfEveryGpuOnNode) * 100) / 100`
+(`getGpuMemoryFractionalOnNode` /  `GetRequiredInitQuota` /
+`setAcceptedResources` in `pkg/scheduler/api/node_info/node_info.go`),
+tallied into `Queue.Status.Allocated` via the pod's post-bind
+`AcceptedResource`, not its raw pre-bind resource request. Concretely: on
+this cluster's 40960 MiB A100s, a 5120 MiB MPS session charges only
+`ceil(5120/40960*100)/100 = 0.13` quota-units, so `courses`' `quota: 4`
+guarantees roughly `4 / 0.13 ≈ 30` concurrent 5 GiB sessions, not 4. Do
+not read a queue's numeric `gpu.quota` as "N whole GPUs / N pods" for
+MPS-shared workloads — see `docs/troubleshooting.md`'s "can 30 concurrent
+5GB student MPS sessions actually run?" entry for the full derivation and
+the real blocker that was found instead (a JupyterHub pod-spec bug
+combining `nvidia.com/gpu` and `gpu-memory` on the same pod, which the
+KAI admission webhook rejects outright, independent of quota math).
+
 **Load-bearing constraint: all three values are deliberately kept under
 100.** This is not an arbitrary numbering choice — it is required by KAI's
 own behavior. `DefaultPriorityClass`/queue logic in KAI treats any pod

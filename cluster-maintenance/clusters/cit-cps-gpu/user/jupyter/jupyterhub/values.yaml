@@ -1550,11 +1550,40 @@ hub:
           }
 
           # GPU resources (profile)
+          #
+          # CRITICAL (found live 2026-07-07, capacity-planning pass for the
+          # 30-concurrent-student-session requirement): `gpu-memory` (MPS
+          # fractional sharing, set below via 'memory_mib') and
+          # `resources.limits."nvidia.com/gpu"` are ALTERNATIVE, non-combinable
+          # allocation paths in KAI -- setting both on the same pod is
+          # unconditionally rejected by the admission webhook
+          # (admission.kai-scheduler.svc) with "cannot request both GPU and
+          # GPU memory" (pkg/binder/plugins/gpusharing/gpu-request/gpu_request_validator.go:36-38
+          # in NVIDIA/KAI-Scheduler v0.14.6). This file's example templates and
+          # docs/troubleshooting.md already documented this rule, but every
+          # VRAM-tiered ('memory_mib') profile below was still unconditionally
+          # given a `nvidia.com/gpu` resource limit/guarantee too, via this
+          # block -- confirmed live: a synthetic pod built from this exact
+          # profile shape (gpu:1 limit + gpu-memory annotation) was rejected
+          # by the same admission error. This meant EVERY course/MPS-shared
+          # 'gpu-*gb' profile spawn attempt failed at admission, unconditionally
+          # -- not a capacity or queue-quota problem, a total block regardless
+          # of student count. Fixed by excluding memory_mib profiles from the
+          # nvidia.com/gpu resource assignment; they rely solely on the
+          # 'gpu-memory' annotation set further below.
           spawner.extra_resource_limits = {}
           spawner.extra_resource_guarantees = {}
           if cfg['gpu'] and cfg.get('resource_key'):
-              spawner.extra_resource_limits[cfg['resource_key']] = str(cfg['gpu'])
-              spawner.extra_resource_guarantees[cfg['resource_key']] = str(cfg['gpu'])
+              # Only whole-GPU (non-MPS) profiles get an actual nvidia.com/gpu
+              # resource limit/guarantee. MPS/'memory_mib' profiles must NOT --
+              # see the comment above this block -- they rely solely on the
+              # 'gpu-memory' annotation set later in this same block.
+              # Everything else below (NVIDIA_VISIBLE_DEVICES, node_selector,
+              # the memory_mib annotation/env/mounts) still applies to BOTH
+              # kinds of GPU profile, so it stays outside this inner if.
+              if not cfg.get('memory_mib'):
+                  spawner.extra_resource_limits[cfg['resource_key']] = str(cfg['gpu'])
+                  spawner.extra_resource_guarantees[cfg['resource_key']] = str(cfg['gpu'])
               if not getattr(spawner, "environment", None):
                   spawner.environment = {}
               spawner.environment.update({'NVIDIA_VISIBLE_DEVICES':'all','NVIDIA_DRIVER_CAPABILITIES':'compute,utility'})
