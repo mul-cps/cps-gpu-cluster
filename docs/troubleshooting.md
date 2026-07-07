@@ -3153,10 +3153,42 @@ given today's separate finding that inflated quota grants reclaim-immunity
 worth stating explicitly rather than assuming).
 
 **Upstream**: filed as
-[kai-scheduler/KAI-Scheduler#1847](https://github.com/kai-scheduler/KAI-Scheduler/issues/1847) --
-the `snapshotNodes` accumulator-seeding bug is a small, precise,
-reproducible fix (seed `minGPUMemory` with the first qualifying node's
-value, or a large sentinel, instead of `DefaultGpuMemory`).
+[kai-scheduler/KAI-Scheduler#1847](https://github.com/kai-scheduler/KAI-Scheduler/issues/1847),
+then closed the same day on further checking -- **already fixed upstream**.
+PR [#1792](https://github.com/kai-scheduler/KAI-Scheduler/pull/1792)
+("fix(scheduler): fix min gpu memory based calculations") fixes exactly
+this (`snapshotNodes`'s `minimalNodeGPUMemory` now uses a nil-initialized
+pointer accumulator instead of seeding at `DefaultGpuMemory`, confirmed
+by diffing the fixed source directly), plus the related max-vs-min fix
+for overLimit/isNonPreemptibleOverQuota checks. Cherry-picked via
+[#1795](https://github.com/kai-scheduler/KAI-Scheduler/pull/1795) and
+shipped in **v0.16.2** (2026-06-30) -- this cluster runs v0.14.6. Neither
+PR had a tracking issue linked ("Fixes #" empty in both), so this wasn't
+discoverable by searching open/closed issues before filing; #1847 was
+left open briefly then closed as already-resolved rather than deleted,
+to leave a findable record for anyone else who hits this on v0.14.x.
+
+**Fix path for this cluster: upgrade KAI v0.14.6 -> v0.16.2** (not the
+newer v0.16.3, released the same day this was found -- prefer the extra
+week of real-world baking) rather than compensating via queue quota
+inflation (which would encode a scheduler bug into policy and need
+undoing later). Two breaking changes exist between here and there,
+both scoped to JobSet workloads only (v0.15.0: JobSet `minAvailable` no
+longer auto-calculated from `parallelism x replicas`; v0.16.0: JobSet
+PodGroup restructured to a two-level SubGroup hierarchy) -- this
+cluster's batch examples use plain Jobs, not JobSets, so these shouldn't
+apply, but confirm no JobSet usage exists before upgrading. v0.15.0 also
+formalizes `scheduler.args` as a real Helm value, which would let the
+`--v=6` verbosity setting move from the current Fleet Kustomize
+post-render patch (`system/gpu/kai-scheduler/kustomization.yaml`) to a
+proper `values.yaml` field. Upgrade not yet executed -- needs a staged
+plan (verify no JobSet usage, test in isolation, rollback plan) given
+this session's history of version-bump incidents (K3s 1.34's mid-rollout
+GPU driver issue, the KAI GHCR org migration). Acceptance test after
+upgrading: repeat the two diagnostic probes from this entry (`gpu-memory:
+"200"` should charge `~0.01`, `gpu-memory: "5120"` should charge `~0.13`,
+not `2.0`/`51.2`) to confirm the fix landed correctly, not just that
+pods schedule.
 
 All synthetic test pods (`kai-retest-course-5gb`, `kai-retest-course-tiny`)
 were cleaned up; the real batch job evicted during testing was not
