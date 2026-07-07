@@ -73,6 +73,24 @@ hub:
       # Allow all users authenticated by Authentik
       allow_all: true
 
+  # z2jh's default hub NetworkPolicy only allows ingress from pods labeled
+  # hub.jupyter.org/network-access-hub=true, blocking Prometheus (added
+  # 2026-07-07 for the JupyterHub Stats dashboard, grafana.com 23694) from
+  # reaching /hub/metrics -- confirmed live: `dial tcp ...: connection
+  # refused` from the Prometheus pod despite the endpoint working fine
+  # in-pod/via authenticate_prometheus:false. Adds a second ingress rule
+  # permitting the monitoring namespace on the metrics port, without
+  # removing the existing label-based rule.
+  networkPolicy:
+    ingress:
+      - from:
+          - namespaceSelector:
+              matchLabels:
+                name: cattle-monitoring-system
+        ports:
+          - port: http
+            protocol: TCP
+
   db:
     pvc:
       storageClassName: longhorn
