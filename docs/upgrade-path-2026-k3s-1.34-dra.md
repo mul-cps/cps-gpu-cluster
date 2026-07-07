@@ -36,6 +36,26 @@ Everything else (Longhorn, ingress-nginx, MetalLB, GPU Operator, KAI
 Scheduler, JupyterHub, etc.) must be changed by editing this repo and
 letting Fleet reconcile.
 
+## Status update (2026-07-07)
+
+The K3s upgrade described in this plan has since been **executed**: all 7
+nodes are now running **v1.34.9+k3s1** (confirmed live). The
+`bootstrap-cluster/ansible/group_vars/all.yml` drift noted below has also
+been fixed to match.
+
+The GPU Operator bump to **v26.3.3** was attempted and then **reverted**
+back to **v25.10.0** (confirmed live) — do not treat v26.3.3 as deployed.
+The bundle vendors the chart tree locally, so `fleet.yaml`'s `version`
+field does not necessarily reflect the real deployed version; always
+cross-check the live pod image (`kubectl get pods -n gpu-operator -o
+jsonpath='{.items[*].spec.containers[*].image}'`).
+
+The table below is the **pre-upgrade snapshot** from when this plan was
+written and is otherwise unchanged/still accurate for everything else
+(Rancher, cert-manager, Longhorn, ingress-nginx, MetalLB). Note Fleet is
+actually **v0.14.3** (chart drifted since this table was written), not the
+v0.14.0 shown below.
+
 ## Current live versions (confirmed via kubectl/helm, 2026-07-06)
 
 | Component | Current | Notes |

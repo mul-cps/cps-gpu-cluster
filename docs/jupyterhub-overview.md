@@ -1,5 +1,16 @@
 # JupyterHub Deep Dive - CPS GPU Cluster
 
+> **Staleness note (2026-07-06):** the MIG-based GPU-sharing sections below
+> (MIG profiles, `nvidia.com/mig-*` resource keys, `nvidia.com/mig.capable`
+> node selectors, per-node MIG slice counts) describe a GPU-sharing
+> mechanism that is **no longer in use**. The cluster now uses plain
+> device-plugin mode with MPS + KAI-native `gpu-memory` annotations
+> instead (see `docs/troubleshooting.md` and
+> `cluster-maintenance/clusters/cit-cps-gpu/system/gpu/kai-scheduler/`).
+> Treat the MIG-specific numbers/resource-key examples below as historical;
+> a separate pass is updating the scheduling-behavior documentation in
+> detail.
+
 ## What is JupyterHub?
 
 ### Overview
@@ -846,12 +857,18 @@ metadata:
   namespace: jupyterhub
 spec:
   accessModes:
-    - ReadWriteMany  # NFS allows multiple pods
-  storageClassName: nfs-client
+    - ReadWriteOnce  # current storage classes here are RWO
+  storageClassName: longhorn  # nfs-client no longer exists on this cluster
   resources:
     requests:
       storage: 10Gi  # Default quota per user
 ```
+
+<!-- NOTE: this example previously used storageClassName: nfs-client, which
+does not exist on the live cluster (confirmed 2026-07-06 — see CLAUDE.md
+and docs/troubleshooting.md's "NFS mount failed" entry). Current
+general-purpose persistent storage goes through Longhorn or local-path. -->
+
 
 **Directory Structure:**
 ```

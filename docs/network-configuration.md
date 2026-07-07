@@ -28,19 +28,25 @@ This document describes the network configuration for the K3s GPU cluster runnin
 | VM Name      | Hostname                    | MAC Address       | IP Address    | GPUs     |
 |--------------|----------------------------|-------------------|---------------|----------|
 | k3s-wk-gpu1  | cit-vm-38.cit-gpu.local    | 00:16:3e:63:79:29 | 10.21.0.38/16 | 2x A100  |
-| k3s-wk-gpu2  | cit-vm-39.cit-gpu.local    | 00:16:3e:63:79:2a | 10.21.0.39/16 | 2x A100  |
+| k3s-wk-gpu2  | cit-vm-43.cit-gpu.local    | 00:16:3e:63:79:2e | 10.21.0.43/16 | 2x A100  |
 | k3s-wk-gpu3  | cit-vm-40.cit-gpu.local    | 00:16:3e:63:79:2b | 10.21.0.40/16 | 2x A100  |
 | k3s-wk-gpu4  | cit-vm-41.cit-gpu.local    | 00:16:3e:63:79:2c | 10.21.0.41/16 | 2x A100  |
 
-### Reserved/Available MACs (Not Currently Used)
+<!-- Corrected 2026-07-07: this table previously listed k3s-wk-gpu2 at
+10.21.0.39 with hostname cit-vm-39; the live cluster's k3s-wk-gpu2 is
+confirmed at 10.21.0.43 (kubectl get nodes -o wide), matching CLAUDE.md's
+"GPU workers .38/.43/.40/.41". .39 is not currently assigned to any node
+we could confirm. The "available for expansion" table below has also been
+corrected: .42 (maintenance VM) and .44 (NFS storage node) are both
+actually in use, not available. -->
 
-The following MACs are allocated but not currently assigned:
+### Other assigned/reserved addresses
 
 | MAC Address       | IP Address    | Hostname                    | Notes              |
 |-------------------|---------------|-----------------------------|--------------------|
-| 00:16:3e:63:79:2d | 10.21.0.42/16 | cit-vm-42.cit-gpu.local    | Available for expansion |
-| 00:16:3e:63:79:2e | 10.21.0.43/16 | cit-vm-43.cit-gpu.local    | Available for expansion |
-| 00:16:3e:63:79:2f | 10.21.0.44/16 | cit-vm-44.cit-gpu.local    | Available for expansion |
+| 00:16:3e:63:79:2d | 10.21.0.42/16 | cit-vm-42.cit-gpu.local    | In use: maintenance VM (see `docs/maintenance-vm.md`) |
+| 00:16:3e:63:79:2f | 10.21.0.44/16 | cit-vm-44.cit-gpu.local    | In use: NFS storage node `k3s-storage` (see `docs/storage-node.md`) |
+| (unconfirmed)     | 10.21.0.39/16 | -                          | Not currently assigned to any live node; previously (incorrectly) documented as k3s-wk-gpu2 |
 
 ## Terraform Configuration
 
@@ -100,7 +106,7 @@ Contains the actual values:
     │  Control Plane    │         │   GPU Workers       │
     │                   │         │                     │
     │  k3s-cp1 (.35)   │         │  k3s-wk-gpu1 (.38) │
-    │  k3s-cp2 (.36)   │         │  k3s-wk-gpu2 (.39) │
+    │  k3s-cp2 (.36)   │         │  k3s-wk-gpu2 (.43) │
     │  k3s-cp3 (.37)   │         │  k3s-wk-gpu3 (.40) │
     │                   │         │  k3s-wk-gpu4 (.41) │
     └───────────────────┘         └─────────────────────┘

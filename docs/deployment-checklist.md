@@ -240,6 +240,14 @@ Use this checklist to deploy the GPU cluster from scratch.
   - local-path storageclass (default)
   - NFS provisioner running
 
+  > Note (2026-07-06): this checklist reflects what the bootstrap Ansible
+  > playbook does if re-run from scratch. The **live cluster today does
+  > not have an `nfs-client` StorageClass** — it was removed at some point
+  > without a documented reason (see `CLAUDE.md` and
+  > `docs/troubleshooting.md`). Current live StorageClasses are
+  > `local-path`, `fast-scratch`, and the `longhorn`/`longhorn-fast`/
+  > `longhorn-overcommit`/`longhorn-static` set.
+
 ### ✅ GPU Operator Installation
 
 - [ ] Deploy GPU operator

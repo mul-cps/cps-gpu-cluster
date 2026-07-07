@@ -298,7 +298,12 @@ kubectl get daemonset -n gpu-operator nvidia-device-plugin-daemonset
 kubectl get nodes --show-labels | grep accelerator
 ```
 
-### ClusterPolicy stuck NotReady / MIG config stuck in "failed"
+### ClusterPolicy stuck NotReady / MIG config stuck in "failed" (HISTORICAL — MIG no longer used)
+
+**Superseded**: this cluster no longer uses MIG partitioning for GPU sharing.
+GPU sharing is now MPS + KAI-native `gpu-memory` annotations on plain
+device-plugin mode (see the MPS entries below). This entry is kept only as
+a historical reference for anyone who re-enables MIG in the future.
 
 **Symptom**: `kubectl get clusterpolicy cluster-policy -o jsonpath='{.status.conditions}'` shows
 `states not ready: [state-operator-validation state-device-plugin]` (or similar) indefinitely.
@@ -340,7 +345,10 @@ just need a nudge to recompute status — restart it:
 kubectl delete pod -n gpu-operator -l app.kubernetes.io/name=gpu-operator
 ```
 
-### MIG mode toggle needs a REAL reset — in-guest reboot is not enough on passthrough GPUs
+### MIG mode toggle needs a REAL reset — in-guest reboot is not enough on passthrough GPUs (HISTORICAL — MIG no longer used)
+
+**Superseded**: same note as above — MIG is not part of the current GPU
+sharing architecture. Kept for historical/future reference only.
 
 **Symptom**: `nvidia-mig-manager` logs show one of:
 ```
@@ -1623,7 +1631,10 @@ Deployments crashloop immediately with:
 
 **Cause**: Knative Serving 1.22 raised its minimum supported Kubernetes
 version to 1.34.0. This cluster runs K3s v1.33.5 (control-plane upgrades
-are out of scope for this pass -- handled separately due to higher risk).
+are out of scope for this pass -- handled separately due to higher risk;
+**note: K3s was subsequently upgraded to v1.34.9+k3s1 across all 7 nodes
+later in this session -- this v1.33.5 reference is dated/historical, not
+the current version**).
 1.22 is therefore not installable here without also bumping K3s.
 
 **Resolution taken**: rolled back live (`kubectl apply -k` with the

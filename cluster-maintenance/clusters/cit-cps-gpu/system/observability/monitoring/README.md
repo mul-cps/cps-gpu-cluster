@@ -43,7 +43,7 @@ The monitoring stack includes:
 This Fleet bundle now ships only the NVIDIA GPU dashboards and alert rules (no monitoring stack Helm chart).
 Once the monitoring stack is installed, Fleet will:
 - Create/ensure namespaces: `cattle-monitoring-system`, `cattle-dashboards`
-- Apply GPU dashboards: `gpu-dashboard.yaml`, `gpu-dashboard-full.yaml`, `nvidia-official-dashboard.yaml`
+- Apply GPU dashboards: `nvidia-official-dashboard.yaml` plus the three community dashboards under `gpu-dashboard-comparison/` (gnetId 22515, 23382, 24450 -- see `kustomization.yaml` for the exact list)
 - Apply GPU alert rules: `gpu-alerts.yaml`
 
 ## Verification
@@ -104,16 +104,25 @@ DCGM_FI_DEV_GPU_TEMP
 
 ### NVIDIA GPU Dashboards
 
-The monitoring stack automatically provisions two NVIDIA GPU dashboards via ConfigMaps:
+<!-- Corrected 2026-07-06/07: this section previously described two
+dashboards (23382 + an "Overview" dashboard) and referenced
+gpu-dashboard.yaml/gpu-dashboard-full.yaml, which are not what
+kustomization.yaml actually applies. -->
 
-1. **NVIDIA DCGM Dashboard for Kubernetes (MIG & Non-MIG GPUs)** - Complete official dashboard (gnetId: 23382)
-   - Location: General → NVIDIA DCGM Dashboard for Kubernetes
-   - Features: Aggregate metrics, per-GPU details, MIG support, error monitoring, power/temperature tracking
-   
-2. **NVIDIA GPU Monitoring - Overview** - Simplified dashboard for quick overview
-   - Location: General → NVIDIA GPU Monitoring - Overview
-   - Features: Key aggregate metrics (GPU utilization, tensor cores, memory usage)
-   
+The monitoring stack provisions the official NVIDIA dashboard plus three
+community DCGM dashboards via ConfigMaps, per
+`kustomization.yaml`'s `resources` list:
+
+1. **nvidia-official-dashboard.yaml** - the official NVIDIA/Rancher DCGM dashboard
+2. **`gpu-dashboard-comparison/gpu-dash-23382-community.yaml`** (gnetId: 23382) - NVIDIA DCGM Dashboard for Kubernetes (MIG & Non-MIG GPUs)
+3. **`gpu-dashboard-comparison/gpu-dash-22515-community.yaml`** (gnetId: 22515) - "[Community-phoerious] Better NVIDIA DCGM Dashboard"
+4. **`gpu-dashboard-comparison/gpu-dash-24450-community.yaml`** (gnetId: 24450) - community DCGM dashboard
+
+Two other community dashboards (gnetId 12239 and 15117) were tried and
+removed on 2026-07-06 for showing "No data" on this cluster's Prometheus
+config -- do not re-add them without confirming they actually populate
+first.
+
 These dashboards are automatically loaded when you access Grafana.
 
 **Fixed Issues:**

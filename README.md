@@ -23,9 +23,9 @@ This repository contains infrastructure-as-code for deploying a reproducible GPU
 ### Software Stack
 
 - **Infrastructure**: Proxmox VE with PCIe passthrough
-- **Kubernetes**: K3s v1.31 (HA mode with embedded etcd)
+- **Kubernetes**: K3s v1.34.9+k3s1 (HA mode with embedded etcd)
 - **Provisioning**: Terraform + Ansible
-- **Storage**: NFS Subdir External Provisioner + Local-path for scratch
+- **Storage**: Longhorn + local-path (default) for general persistent storage, `fast-scratch` (local-path/NVMe) for scratch. An NFS-backed `nfs-client` StorageClass existed historically but has since been removed from the live cluster (see `CLAUDE.md`).
 - **GPU**: NVIDIA GPU Operator via Helm
 - **Management**: Rancher + Fleet GitOps
 - **AI Platform**: JupyterHub with GPU profiles
@@ -66,7 +66,7 @@ The `scripts/` directory contains utility scripts for cluster management:
 1. **Enable GPU Passthrough on Proxmox** (see [docs/gpu-passthrough.md](docs/gpu-passthrough.md))
 2. **Provision VMs with Terraform** (see [bootstrap-cluster/terraform/README.md](bootstrap-cluster/terraform/README.md))
 3. **Install K3s with Ansible** (see [bootstrap-cluster/ansible/README.md](bootstrap-cluster/ansible/README.md))
-4. **Configure Storage** (NFS + fast-scratch StorageClasses)
+4. **Configure Storage** (Longhorn/local-path + `fast-scratch` StorageClasses; see storage note above)
 5. **Install NVIDIA GPU Operator**
 6. **Install Rancher Management**
 7. **Enable Fleet GitOps** (see [cluster-maintenance/README.md](cluster-maintenance/README.md))

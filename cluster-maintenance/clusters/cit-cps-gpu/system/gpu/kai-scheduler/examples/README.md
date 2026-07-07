@@ -43,9 +43,21 @@ don't apply them as-is.
 
 Both single- and multi-GPU templates split storage into two separate
 mounts: a read-only `/data` mount for input datasets and a writable
-`/checkpoints` mount for training progress, backed by distinct PVCs on the
-`nfs-client` StorageClass (this cluster's shared, node-independent storage
--- see `system/storage/storageclasses/storageclasses.yaml`). Checkpointing
+`/checkpoints` mount for training progress, backed by distinct PVCs
+referencing the `nfs-client` StorageClass name in these example manifests.
+
+<!-- TODO(unverified/stale): `nfs-client` does NOT exist as a live
+StorageClass on this cluster (confirmed 2026-07-06 -- see CLAUDE.md and
+docs/troubleshooting.md's "NFS mount failed" entry). The comment in
+`system/storage/storageclasses/storageclasses.yaml` claiming "Both
+nfs-client and fast-scratch storage classes exist and are working
+properly" is also stale. These example job templates
+(batch-gang-job.yaml, pytorch-single-gpu-training-job.yaml) will leave
+their PVCs permanently Pending if applied as-is; a real deployment should
+substitute `longhorn`, `longhorn-fast`, or `fast-scratch` depending on the
+access mode needed. Left unfixed here since editing the example
+manifests themselves is out of scope for this documentation pass. -->
+Checkpointing
 to shared storage matters because the cluster's descheduler
 (`system/descheduler/`) may evict `batch`-queue pods for consolidation at
 any time; only progress written to shared storage survives an eviction to a

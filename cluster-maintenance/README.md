@@ -14,18 +14,26 @@ Fleet enables GitOps-based management of Kubernetes clusters. All applications a
 
 ## Structure
 
+<!-- Corrected 2026-07-06/07: the tree below previously showed a flat
+layout (jupyterhub/, gpu-operator/, ingress-nginx/, monitoring/,
+longhorn/ directly under cit-cps-gpu/); the actual layout splits bundles
+into system/ (cluster infrastructure) and user/ (user-facing workloads)
+subtrees -- see CLAUDE.md for the authoritative breakdown. -->
+
 ```
 cluster-maintenance/
 ├── clusters/
 │   └── cit-cps-gpu/
-│       ├── fleet.yaml             # Fleet bundle configuration
-│       ├── coder/                 # Coder development environments
-│       ├── jupyterhub/            # JupyterHub deployment
-│       ├── gpu-operator/          # NVIDIA GPU Operator
-│       ├── ingress-nginx/         # Ingress controller
-│       ├── monitoring/            # Prometheus & Grafana
-│       ├── longhorn/              # Longhorn storage
-│       └── ...                    # Other system components
+│       ├── system/                # cluster-wide infrastructure bundles
+│       │   ├── gpu/               # gpu-operator, kai-scheduler
+│       │   ├── networking/        # ingress-nginx, metallb
+│       │   ├── observability/     # alloy, loki, monitoring
+│       │   ├── storage/           # longhorn, storageclasses
+│       │   └── utils/             # node-tuning, reflector
+│       ├── user/                  # user-facing workloads
+│       │   ├── jupyter/           # jupyterhub, jupyterhub-ssh
+│       │   └── llm/               # ollama, open-webui
+│       └── .vcluster-ckf/         # vcluster hosting Charmed Kubeflow
 └── README.md
 ```
 
@@ -116,7 +124,9 @@ Via Fleet, the following will be automatically deployed:
 - **ingress-nginx**: Ingress controller for external access
 
 ### Storage
-- **StorageClasses**: NFS and fast-scratch configurations
+- **StorageClasses**: `longhorn`/`longhorn-fast`/`longhorn-overcommit`/`longhorn-static`
+  and `fast-scratch` (local-path/NVMe). (An `nfs-client` StorageClass existed
+  historically but no longer exists on this cluster — see `CLAUDE.md`.)
 
 ### GPU Support
 - **NVIDIA GPU Operator**: GPU drivers, device plugin, monitoring
@@ -247,7 +257,7 @@ git push
 ## Next Steps
 
 After Fleet is configured:
-1. Deploy JupyterHub (see [clusters/cit-cps-gpu/jupyterhub/README.md](clusters/cit-cps-gpu/jupyterhub/README.md))
+1. Deploy JupyterHub (see [clusters/cit-cps-gpu/user/jupyter/jupyterhub/README.md](clusters/cit-cps-gpu/user/jupyter/jupyterhub/README.md))
 2. Create user profiles for GPU access
 3. Test GPU availability in notebooks
 4. Configure monitoring and alerting

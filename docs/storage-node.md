@@ -2,6 +2,19 @@
 
 This document describes the temporary NFS storage node for the K3s cluster until a proper storage server is available.
 
+> **Current live-cluster status (confirmed 2026-07-06):** the `nfs-client`
+> StorageClass described in this doc **does not exist on the live cluster
+> today** — it was removed at some point without a documented reason or
+> replacement path. The `nfs-subdir-external-provisioner`/`03-storage.yml`
+> steps below still reflect what the bootstrap Ansible playbook does if
+> re-run, but the actual current StorageClasses in use are `local-path`
+> (default), `fast-scratch`, and the `longhorn`/`longhorn-fast`/
+> `longhorn-overcommit`/`longhorn-static` set — see `CLAUDE.md` and
+> `docs/troubleshooting.md`'s "NFS mount failed" entry for the full history.
+> The NFS server at `10.21.0.44` itself still exists and still backs some
+> orphaned `Released` PVs, but is not the general-purpose storage path
+> anymore.
+
 ## Overview
 
 The storage node (`k3s-storage`) is a VM that provides NFS-based shared storage to the Kubernetes cluster. It includes:
