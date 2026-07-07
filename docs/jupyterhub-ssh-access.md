@@ -40,17 +40,29 @@ ssh abcd123+gpu-work@jupyterhub.dshl.unileoben.ac.at
 Use your **API Token** as the password.
 
 ## SFTP / File Transfer
-You can also use SFTP to transfer files.
+You can also use SFTP to transfer files. **This is a separate server from the
+one used for `ssh` terminal access above** -- the plain `ssh` deployment's
+`jupyterhub-ssh` image has no SFTP subsystem code at all (`PermitTTY no` +
+`ForceCommand internal-sftp` only exists on the dedicated SFTP server), so
+SFTP must go through port **2222**, not the default port 22:
 
-**Default Server:**
 ```bash
-sftp <username>@jupyterhub.dshl.unileoben.ac.at
+sftp -P 2222 <username>@jupyterhub.dshl.unileoben.ac.at
 ```
 
-**Named Server:**
-```bash
-sftp <username>+<servername>@jupyterhub.dshl.unileoben.ac.at
-```
+**Named Server:** the SFTP server is not aware of per-notebook named servers
+(see below) -- there's no `<username>+<servername>` variant for SFTP.
+
+**What SFTP actually gives you access to**: unlike terminal SSH (which
+proxies into your running singleuser notebook pod and its personal home
+directory PVC), the SFTP server mounts the cluster's **shared storage**
+(`jupyterhub-shared-storage`, used for datasets/collaboration across users)
+and gives you a private, writable slice of it at `/<username>` inside your
+chroot -- not your personal JupyterHub home directory. That per-user slice
+(`/mnt/home/<username>` on the backing PVC) is created automatically, owned
+by you, the first time you log in via SFTP (see
+`docs/troubleshooting.md`, 2026-07-07 entry, for the bug this fixed: earlier
+logins succeeded but left users unable to write anything).
 
 ## VS Code Remote SSH
 

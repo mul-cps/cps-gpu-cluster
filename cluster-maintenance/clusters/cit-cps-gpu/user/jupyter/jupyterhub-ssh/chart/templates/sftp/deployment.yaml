@@ -45,6 +45,10 @@ spec:
                 mode: 0400
               - key: hubUrl
                 path: hubUrl
+        - name: patch
+          configMap:
+            name: {{ include "jupyterhub-ssh.sftp.fullname" . }}-patch
+            defaultMode: 0755
       containers:
         - name: server
           image: "{{ .Values.sftp.image.repository }}:{{ .Values.sftp.image.tag | default .Chart.AppVersion }}"
@@ -58,6 +62,10 @@ spec:
             {{- end }}
             - name: config
               mountPath: /etc/jupyterhub-sftp/config
+              readOnly: true
+            - name: patch
+              mountPath: /usr/sbin/jupyterhub-token-verify.py
+              subPath: jupyterhub-token-verify.py
               readOnly: true
           ports:
             - name: sftp

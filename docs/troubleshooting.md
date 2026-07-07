@@ -1748,6 +1748,109 @@ an accidental gap, so no config change was made here.
 
 ---
 
+### SFTP login succeeds but uploads fail with "Permission denied" -- home directory never created (2026-07-07)
+
+Follow-up to the NetworkPolicy fix above (same day, discovered during real
+end-to-end user testing immediately after that fix landed): once port 2222
+was reachable, `scp`/`sftp` password auth against `jupyterhub-sftp` succeeded
+(`Accepted password for bjoern` in sshd logs, confirming the token-verify PAM
+step worked), but every file write failed with `Permission denied`, and
+directory listings showed the user's chroot as empty.
+
+**Root cause**: `/usr/sbin/jupyterhub-token-verify.py` (baked into the vendored
+`quay.io/jupyterhub-ssh/sftp` image, invoked via `pam_exec.so` on every login,
+see `/etc/pam.d/common-auth` in the container) implements the chroot/bind-mount
+scheme documented in its own docstring: on first login for a user it creates
+`/export/home/<user>/<user>` and bind-mounts `/mnt/home/<user>` (the real
+`jupyterhub-shared-storage` PVC, mounted in the pod per
+`chart/templates/sftp/deployment.yaml`) onto it, then sshd chroots into
+`/export/home/<user>` and serves SFTP from the bind-mounted subdirectory.
+
+The bug: `/mnt/home` only ever contained `lost+found` -- confirmed live via
+`kubectl exec <sftp-pod> -n jupyterhub -- ls -la /mnt/home/` -- no
+`/mnt/home/<username>` subdirectory exists for any user, because nothing ever
+provisions one. Upstream's script assumes this directory already exists; it
+never creates it. So the `mount -o bind <nonexistent src> <dest>` call in
+`bind_mount_user()` fails, but the script still leaves the user chrooted into
+the pre-created, empty, root-owned `/export/home/<user>/<user>` directory
+(confirmed via `kubectl exec <sftp-pod> -- ls -la /export/home/`, and via
+`kubectl exec <sftp-pod> -- mount`, which showed no bind mount at all for the
+affected user) -- a directory owned by root, mode `755`, which the
+NSS-all-to-one uid `jovyan` (`1000:1000`, confirmed via
+`kubectl exec <sftp-pod> -- id jovyan`) that all SFTP users map to cannot
+write into. Hence: successful auth, but every write is `Permission denied`.
+
+This also reveals a design point worth keeping in mind: this SFTP server
+deliberately exposes SHARED storage (`jupyterhub-shared-storage`, meant for
+datasets/collaboration -- see the comment above `sftp:` in
+`user/jupyter/jupyterhub-ssh/values.yaml`), not each user's personal
+JupyterHub home directory (that's a separate per-user PVC used by the
+notebook pods). The intended behavior is "give a user a writable slice of the
+shared-storage tree over SFTP", but nothing created that slice automatically
+-- it only ever worked for a user who happened to already have a
+pre-existing directory there.
+
+**Fix** (git-tracked, applied via Fleet): rather than adding an out-of-band
+job to pre-create directories for every known JupyterHub user (which would
+only cover users known at the time the job runs, and re-derives the user list
+by a side channel), patched the vendored script itself via the same
+ConfigMap-volume-override pattern already used for the sibling `ssh`
+component (`chart/templates/patch-configmap.yaml` overriding
+`__init__.py`, mounted in `chart/templates/ssh/deployment.yaml`). Added
+`chart/templates/sftp/patch-configmap.yaml`, a byte-for-byte fork of
+upstream's `jupyterhub-token-verify.py` with one addition in
+`bind_mount_user()`: before the existing bind-mount logic runs, if
+`src_path` (`/mnt/home/<username>`) doesn't exist, create it
+(`os.makedirs`), `chown` it to `1000:1000`, and `chmod` it `0700`. Mounted
+via a new `patch` ConfigMap volume in
+`chart/templates/sftp/deployment.yaml`, overriding
+`/usr/sbin/jupyterhub-token-verify.py` with `subPath` (mirroring exactly how
+the `ssh` deployment overrides its own `__init__.py`). This fixes the
+problem for every current and future user automatically, at the moment they
+first log in, without needing to enumerate JupyterHub's user list separately
+-- and requires no change to the vendored image itself.
+
+Considered but rejected: a periodic/init job pre-creating
+`/mnt/home/<username>` for every user found via the Hub's user API. Rejected
+because it only covers users that exist at job-run time (new users would
+still hit the bug until the next run), it duplicates the escaping logic
+upstream's script already does correctly (`escapism`-based, handling
+non-ASCII/uppercase usernames), and it adds an extra moving part (a job with
+its own RBAC/schedule) for no benefit over fixing the root cause directly in
+the one place that actually needs the directory to exist.
+
+**Verified live before committing**: copied the patched `bind_mount_user()`
+logic into a standalone script inside the running `jupyterhub-sftp` pod and
+exercised it against a synthetic username (`synthtestuser`, not any real
+user, to avoid touching `bjoern`'s actual data path) --
+`/mnt/home/synthtestuser` was created (`drwx------ jovyan jovyan`), bind-mounted
+onto `/export/home/synthtestuser/synthtestuser` (confirmed via `mount` inside
+the pod), and a file written through the bind-mounted path
+(`echo hello > /export/home/synthtestuser/synthtestuser/testfile.txt`) landed
+correctly in the real backing PVC path
+(`cat /mnt/home/synthtestuser/testfile.txt` -> `hello`). Cleaned up
+(`umount` + `rm -rf`) both the synthetic directory and the bind mount before
+committing -- no synthetic or real data was left behind.
+
+Also confirmed the real user's stale broken state self-heals on rollout: the
+earlier failed login had already left `bjoern` with an empty, unmounted,
+root-owned `/export/home/bjoern/bjoern` (from before this fix). Since
+`/export/home` is not a persisted volume in the Deployment spec (only
+`/mnt/home` and the `config`/`patch` ConfigMap volumes are declared), and
+adding the new `patch` volume/volumeMount to the Deployment necessarily
+changes the pod template and triggers a rollout, the stale directory is wiped
+when Fleet reconciles this change and the pod restarts -- `bjoern`'s next
+login starts from a clean, no-op-safe state and goes through the patched
+`bind_mount_user()` path fresh, which is what actually creates and mounts his
+real home directory for the first time.
+
+No live-only kubectl patch was left in place -- the ConfigMap and Deployment
+changes above are the only fix, applied through git + Fleet, per this
+session's established pattern of never leaving drift on a Fleet-managed
+bundle.
+
+---
+
 ---
 
 ## Knative Issues
