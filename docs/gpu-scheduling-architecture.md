@@ -13,23 +13,29 @@ KAI-Scheduler Go source (not secondhand descriptions) at the version
 confirmed running on this cluster. File paths and line-level behavior are
 cited so they can be re-verified.
 
-## Verified version (2026-07-07)
+## Verified version (2026-07-07, upgraded same day)
 
 | | Value |
 |---|---|
-| Repo-pinned (`cluster-maintenance/.../system/gpu/kai-scheduler/fleet.yaml`) | `oci://ghcr.io/kai-scheduler/kai-scheduler/kai-scheduler` @ **v0.14.6** |
-| Live cluster (`kubectl get pods -n kai-scheduler -o jsonpath='{...spec.containers[*].image}'`) | every component image tag: **v0.14.6** (`admission`, `binder`, `operator`, `scheduler`, `podgrouper`, `podgroupcontroller`, `queuecontroller`, all `ghcr.io/kai-scheduler/kai-scheduler/...`) |
+| Repo-pinned (`cluster-maintenance/.../system/gpu/kai-scheduler/fleet.yaml`) | `oci://ghcr.io/kai-scheduler/kai-scheduler/kai-scheduler` @ **v0.16.3** (bumped from v0.14.6, see `docs/troubleshooting.md` "KAI Scheduler upgraded v0.14.6 -> v0.16.3") |
+| Live cluster (`kubectl get pods -n kai-scheduler -o jsonpath='{...spec.containers[*].image}'`) | every component image tag: **v0.16.3** (`admission`, `binder`, `operator`, `scheduler`, `podgrouper`, `podgroupcontroller`, `queuecontroller`, all `ghcr.io/kai-scheduler/kai-scheduler/...`) |
 
-**Repo-pinned and live match: v0.14.6.** A claim surfaced mid-session that
-v0.12.10 was "the exact version actually running" — that claim is **false**;
-it was not corroborated by a live check and is contradicted by the
-`kubectl` output above (checked 2026-07-07). The GHCR org for this chart
-is `ghcr.io/kai-scheduler/kai-scheduler` (moved from `ghcr.io/nvidia/kai-scheduler`
+**Repo-pinned and live match: v0.16.3.** This cluster ran v0.14.6 for most
+of 2026-07-07 (all source citations, line numbers, and the `MinNodeGPUMemory`
+bug analysis further down in this doc were originally written and verified
+against that tag); it was upgraded to v0.16.3 the same day specifically to
+pick up the upstream fix for that bug (PR #1792, shipped in v0.16.2, plus
+an additional v0.16.3 fix for unreclaimable reclaim victims). The bug
+section below is kept as a historical record of the investigation and is
+now annotated as fixed rather than rewritten wholesale — line-number
+citations against the old v0.14.6 source may drift as the fixed code
+evolves further upstream; treat them as "as of the investigation", not as
+current-HEAD guarantees. The GHCR org for this chart is
+`ghcr.io/kai-scheduler/kai-scheduler` (moved from `ghcr.io/nvidia/kai-scheduler`
 at some point before this check); the upstream source repo is
 `github.com/NVIDIA/KAI-Scheduler` (an org-to-org redirect currently exists
 from `kai-scheduler/KAI-Scheduler` to `NVIDIA/KAI-Scheduler` — clone
-either, they resolve to the same commit history). All source citations
-below are against the `v0.14.6` tag of that repo.
+either, they resolve to the same commit history).
 
 ## Why MPS, not MIG
 
@@ -190,9 +196,22 @@ true physical-memory fraction, so realistically-sized MPS requests
 `reclaim`'s solver is ever entered — confirmed live with a real
 production batch-job eviction proving reclaim itself works correctly
 once a request's (bug-inflated) charge fits under quota. See the
-troubleshooting entry for the full fix/workaround discussion (queue
-quota sizing to compensate, since patching the scheduler binary is out
-of scope) and upstream issue link. One operationally useful, source-grounded takeaway did come out
+troubleshooting entry for the full fix/workaround discussion and
+upstream issue link.
+
+**UPDATE (2026-07-07, later same day): fixed, upgrade completed.** This
+bug is fixed upstream as of v0.16.2 (PR #1792) and this cluster was
+upgraded from v0.14.6 straight to v0.16.3 the same day specifically to
+pick it up (see `docs/troubleshooting.md`, "KAI Scheduler upgraded
+v0.14.6 -> v0.16.3"). Live acceptance test after the upgrade confirmed a
+pending `gpu-memory: "200"` pod now charges `~0.01` and `gpu-memory:
+"5120"` charges `~0.13` against `courses`'s fair-share, not the
+pre-upgrade `~2.0`/`~51.2` — the queue-quota-inflation workaround
+discussed below was **never actually applied** (`courses.gpu.quota`
+stayed at its intended value, `4`) and is no longer needed now that the
+real bug is fixed. The rest of this section (bug mechanism, root cause)
+is left as-is as an accurate historical record of the v0.14.6 code path.
+One operationally useful, source-grounded takeaway did come out
 of this: a **pre-warmed "anchor" fractional pod** kept alive on a node
 during a course window means later small `gpu-memory` pods pack into the
 already-existing shared-GPU group (via the

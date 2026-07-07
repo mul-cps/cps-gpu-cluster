@@ -3199,6 +3199,114 @@ this test).
 
 ---
 
+## RESOLVED (2026-07-07): KAI Scheduler upgraded v0.14.6 -> v0.16.3, MinNodeGPUMemory bug confirmed fixed live
+
+Executed the staged upgrade plan from the entry above, going one patch
+release further than originally planned (v0.16.3, released the same day,
+rather than v0.16.2) since it shipped an additional directly-relevant fix
+("Filter unreclaimable reclaim victims") and its own release notes showed
+no changes beyond that plus two unrelated NUMA-placement fixes.
+
+**Pre-flight (all passed, staged upgrade proceeded)**:
+- No JobSet workloads on this cluster: `jobsets.jobset.x-k8s.io` CRD is
+  installed but `kubectl get jobsets -A` returns zero instances, and
+  `grep -rl "kind: JobSet" cluster-maintenance/` finds nothing. Both
+  JobSet-scoped breaking changes (v0.15.0 `minAvailable` auto-calc change,
+  v0.16.0 PodGroup hierarchy restructure) confirmed inapplicable.
+- Diffed the PodGroup CRD schema directly (`helm pull --untar` both chart
+  versions, `diff` the `crds/` YAML): `backoffLimit`, `completions`, and
+  `parallelism` were removed from `scheduling.run.ai_podgroups.yaml`
+  (these are exactly the JobSet-hierarchy fields the release notes
+  referenced). Checked all 13 live PodGroups on the cluster (via
+  `kubectl get podgroups -A -o json` parsed for these three keys) --
+  none use them, confirming the removal is safe here.
+- Confirmed all 8 shipped component images (scheduler, admission,
+  binder, operator, podgrouper, podgroupcontroller, queuecontroller,
+  crd-upgrader) resolve at `v0.16.3` in
+  `ghcr.io/kai-scheduler/kai-scheduler` via an authenticated GHCR
+  manifest HEAD check (anonymous/unauthenticated requests 401; needed a
+  scoped pull token from `https://ghcr.io/token` first).
+- Confirmed this chart ships its own `crd-upgrader` pre-upgrade Helm hook
+  (`templates/hooks/pre/crd-upgrader.yaml`, present in both v0.14.6 and
+  v0.16.3) that applies the chart's `crds/` directory on every
+  `helm upgrade` -- this is *not* the "Helm never touches `crds/` after
+  install" trap; Fleet's helm-upgrade path runs this hook automatically,
+  so no manual CRD `kubectl apply` step was needed.
+- Snapshotted pre-upgrade state to the scratchpad (not committed): all 7
+  running component images at v0.14.6, full `Queue`/`PriorityClass`/
+  `SchedulingShard` YAML, and the pre-upgrade git commit hash
+  (`c08bd1a`), for a clean rollback path if needed.
+- Live load at upgrade time: all 4 GPU workers fully allocated
+  (`nvidia.com/gpu: 2/2` each), 3 real JupyterHub sessions running
+  (`jupyter-bjoern`, `jupyter-bjoern--x-2xgpu`, `jupyter-gottam`), plus
+  several `ablator-*` batch Jobs in the `batch` queue (some `Completed`,
+  some `Pending`/`ContainerCreating` -- real contention already present).
+  Proceeded anyway: a scheduler upgrade restarts control-plane
+  components only, not a data-plane operation, so it doesn't require
+  draining workloads.
+
+**Applied**: bumped `fleet.yaml`'s `helm.version` and `values.yaml`'s
+`global.tag` from `v0.14.6` to `v0.16.3`, and renamed
+`admission.gpuPodRuntimeClassName` to `admission.gpuFractionRuntimeClassName`
+(the v0.16.0 rename -- old name still accepted by the CRD but deprecated,
+and the new name wins if both are set; renamed anyway since Helm would
+otherwise carry a now-legacy key forward indefinitely). Left the existing
+Fleet Kustomize post-render patch (`kustomization.yaml`, `--v=6`
+verbosity via `SchedulingShard.spec.args`) untouched rather than
+migrating it to the newer `scheduler.args` Helm value in the same change
+-- confirmed `scheduler.args` exists and maps to the same
+`SchedulingShard.spec.args` field via `helm show values`, but kept the
+diff minimal for a live-cluster change; migrating the verbosity mechanism
+is a good separate follow-up. Committed and pushed to `main`
+(`85dd3ae`), not applied via direct `helm upgrade`.
+
+**Rollout** (Stage 3): Fleet's `cluster-maintenance` GitRepo synced to
+the new commit within ~30s. The `crd-upgrader` Job ran once, then all 7
+components rolled through a normal rolling update -- new pods came up at
+v0.16.3 (`kai-operator`, `pod-grouper`, `podgroup-controller`,
+`queue-controller`, `admission`, `binder`, `kai-scheduler-default`) and
+old v0.14.6 pods terminated. No `CrashLoopBackOff`, no stuck `Pending`
+beyond the normal ~90s rollout window, and `kubectl get bundle
+kai-scheduler -n fleet-local` reported `ready: 1` throughout except for
+one transient `updating` state during the rollout itself. Confirmed
+scheduler logs (`kubectl logs -n kai-scheduler <scheduler-pod>`) showed
+no new error/panic/fatal patterns. Confirmed the 3 pre-existing real
+JupyterHub session pods (`jupyter-bjoern`, `jupyter-bjoern--x-2xgpu`,
+`jupyter-gottam`) stayed `Running` with 0 restarts across the entire
+scheduler restart, as expected for a control-plane-only change.
+
+**Acceptance test** (Stage 4): repeated the two diagnostic probes from
+the entry above, this time on the live v0.16.3 scheduler. Submitted two
+synthetic pods in the `courses` queue (`gpu-memory: "200"` and
+`gpu-memory: "5120"` annotations, no `nvidia.com/gpu` resource); both
+scheduled to `Running` immediately (no reclaim needed at test time). The
+scheduler's `resource_division` log for `queue <courses>` now reads:
+
+```
+Resource division result for queue <courses>: ... GPU: deserved: <4>,
+requested: <0.14>, ... allocated: <0.14>, ...
+```
+
+`0.14` = `0.01` (200/40960, correctly charged) + `0.13` (5120/40960,
+correctly charged) -- **the correct fractional values**, not the
+pre-upgrade v0.14.6 result (`~2.0` and `~51.2`, summing to the ~409x
+inflation this whole investigation traced back to `MinNodeGPUMemory`
+never reflecting real GPU capacity). Confirms the fix from
+[#1792](https://github.com/kai-scheduler/KAI-Scheduler/pull/1792)
+(shipped in v0.16.2, carried into v0.16.3) is live and correct on this
+cluster, not just theoretically present in the release. `kubectl get
+queue courses -n kai-scheduler -o yaml` shows nothing unexpected (empty
+`status`, same as pre-upgrade, `spec.resources.gpu.quota: 4` unchanged).
+Test pods cleaned up.
+
+**Net effect**: the workaround discussed in the entry above (compensating
+the reclaim gap via queue quota inflation) is confirmed unnecessary --
+`courses.gpu.quota` was never actually changed to a workaround value and
+stays at its originally-intended `4`. No rollback was needed at any
+stage.
+
+---
+
 ## Getting Help
 
 If issues persist:
