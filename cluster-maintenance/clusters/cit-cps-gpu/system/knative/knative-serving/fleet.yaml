@@ -20,6 +20,13 @@ targets:
       matchLabels:
         name: cit-cps-gpu
 
+# config-gc was previously created by a manual `kubectl apply` (client-side-apply
+# field manager, no objectset.rio.cattle.io/* ownership annotations), so Fleet's
+# helm-based apply hits an ownership conflict on it. takeOwnership lets Fleet
+# adopt the pre-existing object instead of failing forever.
+helm:
+  takeOwnership: true
+
 diff:
   comparePatches:
   - apiVersion: admissionregistration.k8s.io/v1

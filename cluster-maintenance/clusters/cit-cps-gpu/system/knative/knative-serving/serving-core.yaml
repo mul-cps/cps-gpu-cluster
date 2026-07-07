@@ -1386,11 +1386,9 @@ data:
     # this example block and unindented to be in the data block
     # to actually change the configuration.
 
-    # ---
-
+    # ---------------------------------------
     # Garbage Collector Settings
-    # ---
-
+    # ---------------------------------------
     #
     # Active
     #   * Revisions which are referenced by a Route are considered active.
@@ -1444,6 +1442,19 @@ data:
     # Maximum number of non-active revisions to retain
     # or "disabled" to disable any maximum limit.
     max-non-active-revisions: "1000"
+
+  # Duration since creation before considering a revision for GC or "disabled".
+  retain-since-create-time: "48h"
+
+  # Duration since active before considering a revision for GC or "disabled".
+  retain-since-last-active-time: "15h"
+
+  # Minimum number of non-active revisions to retain.
+  min-non-active-revisions: "20"
+
+  # Maximum number of non-active revisions to retain
+  # or "disabled" to disable any maximum limit.
+  max-non-active-revisions: "1000"
 
 ---
 
