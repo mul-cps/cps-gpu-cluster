@@ -158,7 +158,62 @@ spec:
       containers:
         - name: mps-control-daemon-ctr
           image: nvcr.io/nvidia/k8s-device-plugin:v0.18.0
-          command: ["mps-control-daemon"]
+          # Force GPU compute mode to DEFAULT after the daemon's own startup
+          # (which hardcodes EXCLUSIVE_PROCESS -- confirmed live 2026-07-22,
+          # no config knob exists anywhere in GPU Operator/device-plugin to
+          # change this, see docs/troubleshooting.md). EXCLUSIVE_PROCESS
+          # allows only one CUDA context per GPU; since this daemon's own
+          # nvidia-cuda-mps-server permanently holds that slot, ANY
+          # plain-exclusive (nvidia.com/gpu: N, non-MPS) pod that KAI
+          # schedules onto a GPU with no *active* MPS client still fails
+          # with "CUDA-capable device(s) is/are busy or unavailable" --
+          # this cluster's elastic unified-pool design (see
+          # docs/gpu-scheduling-architecture.md) means any GPU can flip
+          # between MPS-shared and exclusive use, so this recurs by
+          # construction, not as a rare edge case. DEFAULT mode lets an
+          # MPS server and a separate exclusive-mode client each hold their
+          # own context on the same GPU, which verified testing (2026-07-22,
+          # k3s-wk-gpu4) showed does NOT weaken MPS memory enforcement --
+          # CUDA_MPS_PINNED_DEVICE_MEM_LIMIT still OOMs a client at exactly
+          # its configured limit. It also does not create a scheduling-level
+          # double-booking risk for well-behaved pods: KAI's reservation pod
+          # requests a real nvidia.com/gpu extended resource, which kubelet's
+          # own device manager tracks and will never hand the same physical
+          # GPU UUID to a second pod regardless of which scheduler placed it
+          # (reproduced live: a plain-exclusive test pod correctly got
+          # "Insufficient nvidia.com/gpu" while a GPU had a live MPS
+          # reservation). The residual gap (a privileged pod with direct
+          # hostPath device access bypassing device-plugin accounting
+          # entirely) predates this change and is orthogonal to compute mode.
+          #
+          # This must be re-applied after every restart of this container --
+          # confirmed live that the compute mode reverts to EXCLUSIVE_PROCESS
+          # every time (pod delete, node reboot, image upgrade), since it's
+          # set by the daemon binary's own startup, not persisted by the
+          # driver. Hence the wrapper below, rather than an init container
+          # (runs too early, daemon overwrites it) or a postStart hook (races
+          # the daemon's own startup, not guaranteed to run after it).
+          #
+          # NOT a one-shot "wait for ready, then set once": confirmed live
+          # 2026-07-22 that this races and loses. The /mps/nvidia.com/gpu/
+          # .started marker lives on the hostPath mps-root volume and
+          # survives pod restarts, so on a restart it already exists and the
+          # wait loop returns immediately -- before the daemon binary's own
+          # (asynchronous) EXCLUSIVE_PROCESS-setting has actually happened
+          # for *this* instance, which then runs after our override and wins.
+          # A background loop that keeps re-asserting DEFAULT for the
+          # container's whole lifetime sidesteps the race entirely and is
+          # self-healing against any future re-assertion by the daemon.
+          command: ["/bin/sh", "-c"]
+          args:
+            - |
+              mps-control-daemon &
+              daemon_pid=$!
+              while kill -0 "$daemon_pid" 2>/dev/null; do
+                nvidia-smi -c DEFAULT >/dev/null 2>&1
+                sleep 5
+              done &
+              wait "$daemon_pid"
           securityContext:
             privileged: true
           env:
