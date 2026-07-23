@@ -27,3 +27,10 @@ Task 5: PR #7 merged successfully. Post-merge collision discovered live: a genui
   - https://dex.dshl.unileoben.ac.at/.well-known/openid-configuration resolves correctly
   - Bundle status "Modified" is expected/intentional (same pattern as Rancher AuthConfig drift)
 Starting Task 6 (repoint Rancher genericoidc at Dex) on branch feat/dex-task6-rancher-repoint.
+
+Task 6: complete (PRs #8, #9 merged). Live cutover hit 3 more real issues, all resolved:
+  1. Dex serving fake TLS cert (fixed via Reflector allow-list, same fix pattern documented)
+  2. Sync Job didn't re-fire on Fleet-triggered Helm upgrade (unblocked via direct kubectl patch; root cause not fully understood, flagged as follow-up)
+  3. Authentik connector providers missing Signing Key (HS256 default) then Encryption Key set (JWE) -- both fixed by user in Authentik UI, matching the exact gotcha class from the original SAML migration.
+  CONFIRMED: real browser login works end-to-end via Dex. local admin fallback intact. All bundles healthy except pre-existing unrelated drift.
+Task 7 (group-claim verification, rollback docs): rollback docs already written in Task 6. Group-claim live verification not done (accessMode: unrestricted means it's not currently gating access) -- flagged as a lighter-weight follow-up, not blocking.
