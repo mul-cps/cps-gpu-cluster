@@ -20,6 +20,7 @@ resources:
   - postgres-sopssecret.yaml
   - ldap-sopssecret.yaml
   - proxy-sopssecret.yaml
+  - oauth-sopssecret.yaml
 
 # Ensure all resources are in the jupyterhub namespace
 namespace: jupyterhub

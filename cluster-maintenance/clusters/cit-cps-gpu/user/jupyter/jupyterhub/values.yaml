@@ -48,6 +48,7 @@ ingress:
 hub:
   extraEnv:
     - name: OAUTH_CLIENT_SECRET
+      # client-secret sourced from jupyterhub-oauth-secret, now SOPS-managed — see oauth-sopssecret.yaml
       valueFrom:
         secretKeyRef:
           name: jupyterhub-oauth-secret
