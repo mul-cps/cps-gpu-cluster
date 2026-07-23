@@ -46,3 +46,9 @@ Task 9: complete (commits 6787fad, 3220f5c, b2aff06 -- review found & fixed a Cr
   Real Authentik infra changes made outside git: provider pk 36 redirect_uris set, client_secret rotated twice (once during setup believing it was fresh, once after discovering the leak).
   User-provided Authentik API token was pasted in this chat session -- recommended user revoke/rotate it since it's no longer needed and now sits in conversation history.
   Pre-existing, out of scope: open-webui/fleet.yaml Helm chart is unpinned (no version:).
+
+Task 10: complete (commit 3b06a1b, review approved)
+  group_vars/all.yml half: genuine no-op, k3s_token/rancher_bootstrap_password already Jinja-generated, nothing to migrate.
+  terraform.tfvars half: real file was lost, recreated from LIVE Proxmox API queries (node cit-gpu-01, storage pools, 8x A100 PCI addresses, VLAN 633, gateway, existing SSH pubkey from k3s-cp1) using a fresh operator-provided API token. Fresh vm_password generated (hash committed, one-time plaintext in scratchpad for operator to save to a password manager -- NOT in git).
+  Controller independently verified decrypt works for terraform.tfvars AND spot-checked Tasks 4/7's secrets too, using the real age private key extracted read-only from the live sops-age-key cluster Secret (then securely deleted locally) -- full pipeline confirmed end-to-end, not just structurally.
+  User-provided Proxmox API token was also pasted in chat -- recommend revoking/rotating alongside the Authentik token.
