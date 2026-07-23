@@ -29,6 +29,15 @@ hub:
         secretKeyRef:
           name: jupyterhub-oauth-secret
           key: client-secret
+    # POSTGRES_PASSWORD is read from the postgresql-secret Secret (produced
+    # by postgres-sopssecret.yaml) and used to build db_url below at
+    # startup via extraConfig/00-postgres-db-url -- avoids a plaintext
+    # password literal in this values file. Same pattern as OAUTH_CLIENT_SECRET.
+    - name: POSTGRES_PASSWORD
+      valueFrom:
+        secretKeyRef:
+          name: postgresql-secret
+          key: postgres-password
   config:
     JupyterHub:
       admin_access: true
@@ -41,7 +50,12 @@ hub:
       # unauthenticated scrapes before this; metrics content itself has
       # no sensitive data (aggregate counts only).
       authenticate_prometheus: false
-      db_url: postgresql://jhub:jhub-secure-db-password-2025@postgresql:5432/jhub
+      # db_url is NOT set here (was previously a literal with the
+      # password embedded, duplicating the plaintext in postgresql.yaml's
+      # Secret). It is now assembled at runtime in
+      # extraConfig/00-postgres-db-url below from the POSTGRES_PASSWORD
+      # env var (sourced from the postgresql-secret Secret via extraEnv
+      # above), so no password literal exists in this file.
       template_vars:
         org:
           name: "Montanuniversität Leoben"
@@ -119,6 +133,12 @@ hub:
     00-oauth-secret: |
       import os
       c.GenericOAuthenticator.client_secret = os.environ['OAUTH_CLIENT_SECRET']
+
+    00-postgres-db-url: |
+      import os
+      c.JupyterHub.db_url = "postgresql://jhub:{}@postgresql:5432/jhub".format(
+          os.environ['POSTGRES_PASSWORD']
+      )
 
     00-install-packages: |
       import subprocess, sys
