@@ -5,3 +5,4 @@ kind: Kustomization
 # sops-secrets-operator) — see docs/sops-secrets-migration.md
 resources:
   - oauth-sopssecret.yaml
+  - oauth-envfrom-sync-job.yaml
