@@ -34,3 +34,8 @@ Task 6: complete (commit 2cb46ba, review approved)
   in the rendered output for both bundles). MUST check this same gap for
   every later task that adds a *-sopssecret.yaml file to an existing
   Fleet-kustomize bundle (rancher/ in Task 7, open-webui/ in Task 9).
+
+Task 7: complete (commits f25b3d8..5877029 + fix 234deac, review: Changes Requested -> fixed -> effectively approved)
+  Fix applied directly (trivial, one-line image pin): bitnami/kubectl:1.30 -> rancher/kubectl:v1.29.0 (unconfirmed-pullable tag risk).
+  Deviations from brief, verified sound by reviewer: Helm post-install/post-upgrade hooks instead of fleet.cattle.io/apply-once (real in-repo precedent); added secrets:get RBAC (necessary, brief's RBAC was broken without it); added empty-value guard (necessary, brief's script had a silent-failure hole).
+  True end-to-end verification (Fleet sync, Job Complete, real OIDC login) deferred to post-merge -- cannot test pre-merge since GitRepo tracks main.
