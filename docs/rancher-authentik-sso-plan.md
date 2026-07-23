@@ -1,8 +1,17 @@
 # Rancher + Authentik SSO: migration from SAML to Generic OIDC (completed 2026-07-07)
 
-Status: **done and live.** Rancher authenticates via Authentik Generic OIDC.
+Status: **superseded 2026-07-23.** Rancher no longer authenticates
+against CPS Authentik directly — it now goes through a Dex broker
+(`dex.dshl.unileoben.ac.at`), which fans out to both CPS and CIT
+Authentik. See `docs/dex-idp-broker.md` for the current setup; this
+document is kept for history (the SAML→OIDC migration this file
+originally covered, and the direct-to-CPS-Authentik period that followed
+it, both still explain real field-name/config gotchas relevant to the
+`AuthConfig` CRD in general).
+
 The SAML integration described in earlier revisions of this document has
-been retired.
+been retired. The direct-to-CPS-Authentik Generic OIDC setup described
+below was live from 2026-07-07 to 2026-07-23.
 
 ## Summary
 
