@@ -20,3 +20,6 @@ Task 3: complete (commits b302fa7..c124a9a, review approved)
 
 Task 4: complete (commits 649cdad..c79233e, review approved)
   Note: db_url user/db (jhub/jhub) still hardcoded literal (non-secret, pre-existing, not a regression) — flagged for future awareness if those ever rotate.
+
+Task 5: complete (commit 7875ed9, review approved)
+  Minor note: docs still echo the still-unrotated 'ldapservice' value in a code span — acceptable until rotation, flagged for later tightening.
