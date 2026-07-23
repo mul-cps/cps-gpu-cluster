@@ -23,3 +23,4 @@ design spec exactly).
 
 | Secret | Old location | New location | Status |
 |---|---|---|---|
+| Grafana admin password | system/observability/monitoring/values.yaml:51 (plaintext) | system/observability/monitoring/grafana-sopssecret.yaml | done |
