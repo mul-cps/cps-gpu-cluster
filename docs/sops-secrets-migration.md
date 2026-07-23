@@ -29,6 +29,7 @@ design spec exactly).
 | JupyterHub proxy auth token | values.yaml `proxy.secretToken` (placeholder literal `GENERATE_WITH_openssl_rand_-hex_32`, never a real secret) | proxy-sopssecret.yaml | done |
 | Rancher OIDC (Authentik) clientSecret | `rancher-oidc-secret` Secret in `cattle-system`, applied/patched by hand outside Fleet (`rancher/` had no `fleet.yaml`) | `rancher/oidc-sopssecret.yaml` | done, reused live value (not rotated) — see "Note on the Rancher AuthConfig sync mechanism" below |
 | JupyterHub OAuth (Authentik) client_secret | `jupyterhub-oauth-secret` Secret in `jupyterhub`, applied out-of-band outside Fleet | `jupyterhub/oauth-sopssecret.yaml` | done, reused live value (not rotated) — rotating would break the live Authentik-registered client unless updated there too |
+| Open WebUI OAuth (Authentik) client_id/client_secret | N/A — no such Secret exists anywhere (git or live); see "Open WebUI OAuth: not migrated" below | N/A | **NOT MIGRATED — genuine gap, flagged for human decision** |
 
 ### Note on the proxy auth token mechanism
 
@@ -96,6 +97,68 @@ rancher-oidc-secret -n cattle-system -o jsonpath='{.data.clientSecret}' |
 base64 -d`), not a newly generated one — reusing it avoids breaking the
 existing Authentik OAuth provider registration. Rotation, if desired, is a
 separate follow-up requiring a matching change in Authentik.
+
+### Open WebUI OAuth: not migrated (no live value found)
+
+Task 9 investigated `cluster-maintenance/clusters/cit-cps-gpu/user/llm/open-webui/`
+looking for the OAuth client_id/client_secret referenced by
+`values.yaml`'s `# Secrets injected via patch` comment. Conclusion: there
+is nothing to migrate — no real value exists in git or on the live
+cluster.
+
+- `fleet.yaml` has a `targetCustomizations` patch that adds
+  `envFrom: [{secretRef: {name: openwebui-oidc}}]` to the `open-webui`
+  StatefulSet container, but **no Secret named `openwebui-oidc` (or
+  anything else with OAuth creds) exists** in the `openwebui` namespace
+  or anywhere else in the cluster — confirmed via `kubectl get secrets -n
+  openwebui` (only two Helm release-tracking secrets present) and
+  `kubectl get secret -A | grep -i oidc` (no match).
+- The live `open-webui-0` StatefulSet pod has no `envFrom` and no
+  `OAUTH_CLIENT_ID`/`OAUTH_CLIENT_SECRET` env vars — only
+  `WEBUI_URL`, `ENABLE_OAUTH_SIGNUP=true`, `OAUTH_PROVIDER_NAME=authentik`,
+  `OAUTH_SCOPES`. Checked the `open-webui-pipelines` and `open-webui-redis`
+  Deployments too — no OAuth config on either.
+- Git history shows this integration existed once and was **deliberately
+  removed**: commit `d49bad0` ("chore: delete Open WebUI OIDC patch...")
+  deleted the old `oidc-patch.yaml` that wired a Secret named
+  `open-webui-oidc` (namespace `ai-llm`, the pre-restructure layout) into
+  the container. The patch present in today's `fleet.yaml` was
+  reintroduced later, pointing at a *renamed* Secret (`openwebui-oidc`,
+  no hyphen, namespace `openwebui`) that was never created — i.e. the
+  patch is aspirational/stale, matching the `values.yaml` comment.
+  Key names also differ: the old (deleted) Secret used
+  `OIDC_CLIENT_ID`/`OIDC_CLIENT_SECRET`/`OIDC_PROVIDER_URL`; the current
+  `extraEnvVars` use the chart's `OAUTH_*` convention instead, so even if
+  the old Secret still existed its keys wouldn't match what the
+  `envFrom` patch needs downstream.
+- **Do not reuse the historical values.** Commit `9f9f8ff` (2025-12-10)
+  briefly committed real-looking `OIDC_CLIENT_ID`/`OIDC_CLIENT_SECRET`
+  values in plaintext to this Secret before it was deleted. That
+  credential has been sitting in git history in plaintext ever since —
+  it must be treated as already compromised. Re-encrypting the same
+  value into SOPS would be security theater (still recoverable from git
+  history) and does not constitute a real migration. **Recommended
+  follow-up regardless of the decision below: revoke/rotate that
+  specific OAuth client in Authentik.**
+
+**Human decision needed** — three possibilities, pick one and follow up:
+1. OAuth login for Open WebUI is *not* actually working right now (most
+   likely, given `ENABLE_OAUTH_SIGNUP=true` with no client creds present
+   — Authentik would reject any login attempt) and nobody has noticed or
+   it's simply not finished being set up. Fix: register a real OAuth
+   client in Authentik, create the Secret (name/keys matching what the
+   `envFrom` patch and chart expect), then encrypt it into a
+   `SopsSecret` following the Task 8 pattern.
+2. OAuth was intentionally abandoned for Open WebUI (e.g. reverted to
+   built-in auth) and the `fleet.yaml` patch + `values.yaml` comment are
+   stale docs debt that should be deleted, not fulfilled.
+3. Something else is providing OAuth outside this repo's view (unlikely,
+   given the live pod spec has no evidence of it) — worth a quick check
+   with whoever manages Authentik client registrations.
+
+No file changes were made to `open-webui/` for this task — no
+`oauth-sopssecret.yaml` was created, since there is no genuine value to
+put in it.
 
 ## Credential rotation checklist
 
