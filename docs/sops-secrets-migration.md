@@ -27,8 +27,8 @@ design spec exactly).
 | Postgres password | postgresql.yaml (plaintext) + values.yaml db_url (duplicate) | postgres-sopssecret.yaml | done, rotated |
 | LDAP bind-service-account password | values.yaml extraConfig/02-profiles get_ldap_info() (plaintext `LDAP_PASSWORD = 'ldapservice'`) | ldap-sopssecret.yaml | done, not rotated (value reused as-is) |
 | JupyterHub proxy auth token | values.yaml `proxy.secretToken` (placeholder literal `GENERATE_WITH_openssl_rand_-hex_32`, never a real secret) | proxy-sopssecret.yaml | done |
-| Rancher OIDC (Authentik) clientSecret | `rancher-oidc-secret` Secret in `cattle-system`, applied/patched by hand outside Fleet (`rancher/` had no `fleet.yaml`) | `rancher/oidc-sopssecret.yaml` | done, reused live value (not rotated) — see "Note on the Rancher AuthConfig sync mechanism" below |
-| JupyterHub OAuth (Authentik) client_secret | `jupyterhub-oauth-secret` Secret in `jupyterhub`, applied out-of-band outside Fleet | `jupyterhub/oauth-sopssecret.yaml` | done, reused live value (not rotated) — rotating would break the live Authentik-registered client unless updated there too |
+| Rancher OIDC (Authentik) clientSecret | `rancher-oidc-secret` Secret in `cattle-system`, applied/patched by hand outside Fleet (`rancher/` had no `fleet.yaml`) | `rancher/oidc-sopssecret.yaml` | done, rotated 2026-07-23 (Task 11) — see "Note on the Rancher AuthConfig sync mechanism" below and the Credential rotation checklist |
+| JupyterHub OAuth (Authentik) client_secret | `jupyterhub-oauth-secret` Secret in `jupyterhub`, applied out-of-band outside Fleet | `jupyterhub/oauth-sopssecret.yaml` | done, rotated 2026-07-23 (Task 11) — see the Credential rotation checklist |
 | Open WebUI OAuth (Authentik) client_id/client_secret | client_id/client_secret from Authentik provider "Provider for OpenWebUI" (pk 36); client_secret rotated 2026-07-23 after review found the client_id was already leaked in commit `9f9f8ff` | `cluster-maintenance/clusters/cit-cps-gpu/user/llm/open-webui/oauth-sopssecret.yaml` (`openwebui-oidc`) | Migrated (Task 9 follow-up), secret rotated post-review — see "Open WebUI OAuth: now configured" below |
 | Terraform `terraform.tfvars` (Proxmox API token, VM cloud-init password hash, SSH pubkey, GPU PCI addresses, network config) | Local-only file, gitignored, confirmed lost 2026-07-23 — no committed plaintext ever existed | `bootstrap-cluster/terraform/terraform.tfvars` (whole-file SOPS encryption, decrypt via `sops exec-env` / `sops -d`) | done — recreated from live Proxmox API query (new API token, new VM password hash) since the original file was unrecoverable; `bootstrap-cluster/ansible/group_vars/all.yml` checked separately and found to hold no static secrets (`k3s_token`/`rancher_bootstrap_password` are runtime `lookup('password', ...)` generated, nothing to migrate there) |
 
@@ -92,12 +92,14 @@ than silently patching an empty string into the live AuthConfig — a shell
 `set -eu` without `pipefail` does not catch a failed `kubectl get | base64
 -d` pipe on its own.
 
-The `clientSecret` value committed in `oidc-sopssecret.yaml` is the actual
-live value retrieved from the running cluster (`kubectl get secret
+The `clientSecret` value initially committed in `oidc-sopssecret.yaml` was
+the live value retrieved from the running cluster (`kubectl get secret
 rancher-oidc-secret -n cattle-system -o jsonpath='{.data.clientSecret}' |
-base64 -d`), not a newly generated one — reusing it avoids breaking the
-existing Authentik OAuth provider registration. Rotation, if desired, is a
-separate follow-up requiring a matching change in Authentik.
+base64 -d`). It was **since rotated in Authentik as part of Task 11**
+(2026-07-23), because that value was leaked in plaintext in commit
+`5c16d55` — the value now encrypted in `oidc-sopssecret.yaml` is the new,
+post-rotation secret, not the originally-retrieved one. See the
+Credential rotation checklist below for details.
 
 ### Open WebUI OAuth: now configured (Task 9 follow-up)
 
