@@ -10,3 +10,6 @@ Pre-verified facts (controller, live cluster, 2026-07-23):
 - age public key confirmed: age1h05qj66un22scwapuhyl76skls7ll235vlu27cjwkk5tpav6sqmsx3zp6a
 - sops v3.13.3 and age v1.3.1 installed to ~/.local/bin (not in base image)
 - terraform.tfvars is CONFIRMED LOST — Task 10 recreates rather than retrieves
+
+Task 1: complete (commit 2dbf94d, controller-executed — facts pre-verified live, no subagent needed for pure transcription)
+Task 2: complete (commit 2dbf94d, controller-executed)
