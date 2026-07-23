@@ -13,3 +13,7 @@ Pre-verified facts (controller, live cluster, 2026-07-23):
 
 Task 1: complete (commit 2dbf94d, controller-executed — facts pre-verified live, no subagent needed for pure transcription)
 Task 2: complete (commit 2dbf94d, controller-executed)
+
+Task 3: complete (commits b302fa7..c124a9a, review approved)
+  Note: system/observability/monitoring/ is applied manually via deploy.sh, NOT Fleet-reconciled (pre-existing, flagged by reviewer, not fixed by this task).
+  Note: real namespace is cattle-monitoring-system, not "monitoring" as the plan assumed.
