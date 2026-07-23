@@ -1,1 +1,3 @@
+# terraform.tfvars is now SOPS-encrypted, safe to commit — see docs/sops-secrets-migration.md
 terraform.tfvars
+!terraform.tfvars

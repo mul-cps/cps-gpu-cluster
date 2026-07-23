@@ -170,3 +170,26 @@ After cluster is ready:
 1. Install Rancher (see [../../cluster-maintenance/README.md](../../cluster-maintenance/README.md))
 2. Configure Fleet GitOps
 3. Deploy JupyterHub
+
+## Secrets (SOPS)
+
+Real values for `../terraform/terraform.tfvars` are SOPS-encrypted and
+committed to this repo. Decrypt on demand rather than keeping a permanent
+plaintext copy on disk:
+
+```bash
+cd bootstrap-cluster/terraform
+sops exec-env terraform.tfvars 'tofu apply -var-file=/dev/stdin'  # adjust per actual tofu invocation needs
+```
+
+`sops -d terraform.tfvars` also works for a one-off read (pipe straight
+into the command that needs it — avoid writing decrypted output to a
+file). Requires the shared age private key (the same one used by the
+`sops-secrets-operator` in-cluster) — see
+[docs/sops-secrets-migration.md](../../docs/sops-secrets-migration.md)
+for how to obtain it if you don't already have it.
+
+`group_vars/all.yml` in this directory has no static secrets to encrypt:
+`k3s_token` and `rancher_bootstrap_password` are both generated at
+Ansible runtime via `lookup('password', ...)`, so nothing plaintext is
+ever committed there.

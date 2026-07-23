@@ -3,8 +3,10 @@
 *.tfstate.*
 .terraform/
 .terraform.lock.hcl
+# terraform.tfvars is now SOPS-encrypted, safe to commit — see docs/sops-secrets-migration.md
 *.tfvars
 !example.tfvars
+!terraform.tfvars
 
 # Ansible
 *.retry
