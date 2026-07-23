@@ -114,3 +114,52 @@ the commit immediately before this repoint. To roll back: revert
 commit, keeping `rancher/oidc-sync-job.yaml` as-is (it just patches
 whatever `clientSecret` the current `SopsSecret` holds, so no change
 needed there for either direction).
+
+## Live cutover incidents and fixes (2026-07-23)
+
+Three real issues hit during Task 6's actual cutover, all resolved:
+
+1. **Dex served ingress-nginx's fake default cert, not `dshl-wildcard`.**
+   Fixed by adding `dex` to the existing Reflector allow-list (see
+   `system/networking/wildcard-cert/README.md`'s updated live-reality
+   section). `curl -k` masks this failure mode — always verify with a
+   plain `curl` or `openssl s_client`.
+
+2. **Helm's post-upgrade hook Job didn't re-fire on a Fleet-triggered
+   Helm upgrade with unchanged hook manifest content.** `helm history`
+   confirmed a new revision was created for the repoint commit, but
+   `rancher-oidc-sync-job`'s Job object's `creationTimestamp` was still
+   from the original Task 7 deploy — it never re-ran, leaving the OLD
+   Authentik-issued `clientSecret` live in the AuthConfig after the
+   repoint (Dex expects its own 64-char shared secret, not Authentik's
+   128-char one). Fixed with a direct `kubectl patch authconfig
+   genericoidc` using the known Dex secret value as an immediate
+   unblock. **Root cause not yet fully understood or fixed** — flagged
+   as a follow-up: either Helm hooks need an explicit forcing mechanism
+   on Fleet-triggered upgrades, or the sync-Job pattern needs a
+   different re-run trigger than relying on "hook fires on every
+   upgrade" (which apparently doesn't hold reliably here).
+
+3. **Authentik connector providers (CPS pk 47, CIT pk 3) had no Signing
+   Key set, defaulting to HS256** — Dex only accepts RS256 ID tokens
+   from upstream connectors (`id_token_signing_alg_values_supported`
+   in Dex's own discovery confirms `RS256` only). Fixed by setting a
+   Signing Key (Authentik's self-signed certificate) on both providers
+   in the Authentik UI.
+
+4. **After fixing #3, a second Authentik gotcha surfaced**: an
+   `Encryption Key` set on a provider makes Authentik issue encrypted
+   JWE tokens instead of plain signed JWTs — Dex (like Rancher before
+   it, see `docs/rancher-authentik-sso-plan.md`'s original SAML→OIDC
+   migration notes) can't parse those (`failed to unmarshal claims:
+   invalid character ... looking for beginning of value`). Fixed by
+   confirming Encryption Key was unset (None) on both providers, Signing
+   Key only. **This is the second time this exact Authentik gotcha has
+   bitten an OIDC integration in this cluster** — leave Encryption Key
+   unset on every Authentik OAuth2 provider used for OIDC (JupyterHub,
+   Rancher-direct, Rancher-via-Dex's connectors) unless a specific
+   reason requires JWE.
+
+Confirmed working end-to-end: real browser login through Rancher via
+Dex, `local` admin fallback still functional, all Fleet bundles healthy
+except pre-existing unrelated drift (`knative-serving`, `ollama`).
