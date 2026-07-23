@@ -58,3 +58,8 @@ Task 11: complete (commits e922a13 + docs-fix, review: Changes Requested -> fixe
   Fix applied directly: corrected a wrong citation (JupyterHub leak wrongly attributed to rancher-authentik-sso-plan.md; real commits are dfd3c3d leak / d96a8fa fix).
   rancher_bootstrap_password: confirmed no separate checklist item needed -- addressed as a code-level fix (random generation) already, not a SopsSecret; live Rancher admin account state still needs a human check.
   Both Authentik API tokens used during this session should be revoked by the user now that rotation work is done.
+
+Task 12: complete (final commit above)
+  4 parallel doc agents dispatched (system/, user/, bootstrap-cluster, CLAUDE.md). All diffs spot-checked before commit, all accurate.
+  Agent D's dispatch prompt assumption (Reflector has "narrower remaining use" for TLS) was WRONG -- controller verified live via kubectl: Reflector IS active, but only for cit-teaching-platform's cit-auth/cit-jhub namespaces, unrelated to this repo. CLAUDE.md corrected to state this precisely rather than guess.
+  All 12 tasks complete. Ready for final whole-branch review.
