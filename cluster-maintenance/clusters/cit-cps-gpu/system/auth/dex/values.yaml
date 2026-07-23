@@ -26,15 +26,15 @@
 #     staticClients and other top-level config sections", open, unresolved).
 #     So env-var expansion does NOT reach `staticClients[].secret`.
 #
-# CONCERN (see report): the `staticClients[].secret` value below is written
-# in the same `$DEX_RANCHER_CLIENT_SECRET` form for consistency and to avoid
-# a literal secret in git, but per the above it will NOT be expanded by Dex
-# -- Dex will use the literal string "$DEX_RANCHER_CLIENT_SECRET" as the
-# actual client secret, so Rancher OIDC login will fail against this static
-# client until this is fixed (see task5 report for options: SOPS-encrypt a
-# full pre-rendered config.yaml as the configSecret instead of using
-# `config:` + envVars, once someone with plaintext secret access can build
-# it; or track dexidp/dex #4212 upstream).
+# RESOLVED (2026-07-23): the `staticClients[].secret` value below is
+# written in the same `$DEX_RANCHER_CLIENT_SECRET` form for consistency,
+# but per the above it is NOT expanded by Dex itself -- fleet.yaml's
+# targetCustomizations patch adds an initContainer that substitutes the
+# real value into a rendered copy of this config on a shared emptyDir
+# before Dex starts, and repoints the main container's config mount at
+# that rendered copy. See fleet.yaml for the full patch and reasoning.
+# Track dexidp/dex#4212 upstream -- if native staticClients env expansion
+# ships, this initContainer workaround can be removed.
 
 envVars:
   - name: DEX_CPS_CLIENT_SECRET

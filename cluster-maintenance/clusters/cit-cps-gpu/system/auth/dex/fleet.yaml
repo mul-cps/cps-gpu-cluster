@@ -21,3 +21,65 @@ dependsOn:
 - selector:
     matchLabels:
       name: ingress-nginx
+
+# dex/dex chart's `staticClients[].secret` field does NOT support Dex's
+# native $ENV_VAR expansion (confirmed against dexidp/dex source, see
+# values.yaml's header comment and dexidp/dex#4212 -- connectors DO
+# support it, staticClients does not). This patch adds an initContainer
+# that renders the real Rancher-facing client secret into a copy of the
+# chart-generated config Secret on a shared emptyDir, and repoints the
+# main container's config mount at that rendered copy instead of the
+# original (which still contains the literal, unexpanded placeholder
+# string). The secret value is base64-alphabet only (A-Za-z0-9+/=, per
+# `openssl rand -base64`), which contains no sed-special characters
+# (no `&`, and `|` is used as the delimiter), so a plain `sed` substitution
+# is safe without escaping.
+targetCustomizations:
+- name: cit-cps-gpu
+  clusterSelector:
+    matchLabels:
+      name: cit-cps-gpu
+  patches:
+  - target:
+      group: apps
+      version: v1
+      kind: Deployment
+      name: dex
+    patch: |-
+      - op: replace
+        path: /spec/template/spec/volumes
+        value:
+          - name: config
+            secret:
+              secretName: dex
+          - name: config-rendered
+            emptyDir: {}
+      - op: add
+        path: /spec/template/spec/initContainers
+        value:
+          - name: render-static-client-secret
+            image: bitnami/kubectl:latest
+            command:
+              - sh
+              - -c
+              - |
+                set -eu
+                sed "s|\$DEX_RANCHER_CLIENT_SECRET|$DEX_RANCHER_CLIENT_SECRET|g" /etc/dex-src/config.yaml > /etc/dex-rendered/config.yaml
+            env:
+              - name: DEX_RANCHER_CLIENT_SECRET
+                valueFrom:
+                  secretKeyRef:
+                    name: dex-rancher-client
+                    key: clientSecret
+            volumeMounts:
+              - name: config
+                mountPath: /etc/dex-src
+                readOnly: true
+              - name: config-rendered
+                mountPath: /etc/dex-rendered
+      - op: replace
+        path: /spec/template/spec/containers/0/volumeMounts
+        value:
+          - name: config-rendered
+            mountPath: /etc/dex
+            readOnly: true
