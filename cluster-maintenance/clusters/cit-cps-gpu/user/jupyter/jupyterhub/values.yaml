@@ -1,5 +1,28 @@
 proxy:
-  secretToken: "GENERATE_WITH_openssl_rand_-hex_32"
+  # secretToken is intentionally NOT set here (was previously a plaintext
+  # placeholder literal). The chart only accepts this value as a literal --
+  # there is no existing-Secret reference field for it, and
+  # hub.existingSecret would require re-implementing every other
+  # chart-managed hub secret key (cookie_secret, CryptKeeper.keys, etc),
+  # which is out of scope. Instead, both the hub and proxy pods are given
+  # CONFIGPROXY_AUTH_TOKEN via extraEnv below, sourced from the
+  # jupyterhub-proxy-token Secret (produced by proxy-sopssecret.yaml).
+  # This env var is appended after the chart's own hardcoded
+  # CONFIGPROXY_AUTH_TOKEN entry (which reads the chart's
+  # auto-generated/random hub secret value) in both Deployments, so it
+  # takes precedence for the actual container process env (last entry
+  # wins for duplicate names in a k8s container's env list) -- verified
+  # against jupyterhub chart 4.3.1 templates
+  # (templates/hub/deployment.yaml, templates/proxy/deployment.yaml,
+  # templates/hub/_helpers-passwords.tpl). Not confirmed live via
+  # kubectl; see docs/sops-secrets-migration.md.
+  chp:
+    extraEnv:
+      - name: CONFIGPROXY_AUTH_TOKEN
+        valueFrom:
+          secretKeyRef:
+            name: jupyterhub-proxy-token
+            key: proxy-token
   service:
     type: ClusterIP
 
@@ -50,6 +73,17 @@ hub:
         secretKeyRef:
           name: jupyterhub-ldap-credentials
           key: bind-password
+    # CONFIGPROXY_AUTH_TOKEN is read directly by the hub process (not via
+    # extraConfig) from the jupyterhub-proxy-token Secret (produced by
+    # proxy-sopssecret.yaml) -- same Secret/key the proxy pod's
+    # proxy.chp.extraEnv above reads, so hub and proxy always share one
+    # token. See the comment on proxy.chp.extraEnv above for why this
+    # replaces proxy.secretToken instead of setting a literal.
+    - name: CONFIGPROXY_AUTH_TOKEN
+      valueFrom:
+        secretKeyRef:
+          name: jupyterhub-proxy-token
+          key: proxy-token
   config:
     JupyterHub:
       admin_access: true

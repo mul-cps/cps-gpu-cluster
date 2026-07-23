@@ -26,6 +26,32 @@ design spec exactly).
 | Grafana admin password | system/observability/monitoring/values.yaml:51 (plaintext) | system/observability/monitoring/grafana-sopssecret.yaml | done |
 | Postgres password | postgresql.yaml (plaintext) + values.yaml db_url (duplicate) | postgres-sopssecret.yaml | done, rotated |
 | LDAP bind-service-account password | values.yaml extraConfig/02-profiles get_ldap_info() (plaintext `LDAP_PASSWORD = 'ldapservice'`) | ldap-sopssecret.yaml | done, not rotated (value reused as-is) |
+| JupyterHub proxy auth token | values.yaml `proxy.secretToken` (placeholder literal `GENERATE_WITH_openssl_rand_-hex_32`, never a real secret) | proxy-sopssecret.yaml | done |
+
+### Note on the proxy auth token mechanism
+
+Unlike the other three secrets above, `proxy.secretToken` (aka
+`hub.config.ConfigurableHTTPProxy.auth_token`) has no existing-Secret
+reference field in jupyterhub chart 4.3.1 — the chart only accepts it as
+a literal in values, or auto-generates one into its own chart-managed hub
+Secret. `hub.existingSecret` would swap that whole secret and require
+re-implementing every other chart-managed key (cookie_secret,
+CryptKeeper.keys, etc.), which is out of scope here. Instead, both
+`hub.extraEnv` and `proxy.chp.extraEnv` inject `CONFIGPROXY_AUTH_TOKEN`
+from the `jupyterhub-proxy-token` Secret (produced by
+`proxy-sopssecret.yaml`), appended after the chart's own hardcoded
+`CONFIGPROXY_AUTH_TOKEN` entry in both the hub and proxy Deployments.
+Verified via `helm template` (chart 4.3.1) that both Deployments render
+two `CONFIGPROXY_AUTH_TOKEN` env entries per pod, with our SopsSecret
+reference last, consistent with k8s duplicate-env-name last-wins
+semantics. This was not confirmed against a live cluster (no kubectl
+access during this change) — if the hub and proxy pods ever authenticate
+against different tokens, check
+`kubectl logs -n jupyterhub deploy/proxy` for auth-token mismatch errors
+first.
+
+This was a placeholder being replaced with a real generated value, not a
+credential rotation, so it has no rotation-checklist entry below.
 
 ## Credential rotation checklist
 
