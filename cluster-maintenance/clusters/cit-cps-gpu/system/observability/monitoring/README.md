@@ -87,9 +87,9 @@ DCGM_FI_DEV_GPU_TEMP
 
 ## Grafana Access
 
-### Default Credentials
+### Credentials
 - **Username**: `admin`
-- **Password**: `admin` (change this in production!)
+- **Password**: SOPS-encrypted in `grafana-sopssecret.yaml`; retrieve with `sops -d grafana-sopssecret.yaml` if you have decrypt access.
 
 ### Access Methods
 
@@ -244,7 +244,7 @@ Fleet will automatically apply updates when configuration changes are committed.
 
 ## Security Notes
 
-1. **Change default passwords**: Update Grafana admin password in production
+1. **Admin password**: SOPS-encrypted in `grafana-sopssecret.yaml`; retrieve with `sops -d grafana-sopssecret.yaml` if you have decrypt access. Rotate via that file, not values.yaml.
 2. **Network policies**: Consider implementing network policies for monitoring namespace
 3. **RBAC**: Review and customize RBAC permissions as needed
 4. **TLS**: Configure TLS for external access in production environments
