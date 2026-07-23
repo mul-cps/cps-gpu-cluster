@@ -90,7 +90,13 @@ spec:
       restartPolicy: OnFailure
       containers:
         - name: sync
-          image: bitnami/kubectl:1.30
+          # rancher/kubectl:v1.29.0, not bitnami/kubectl:1.30 -- Bitnami's
+          # 2025 Docker Hub distribution change makes that tag's pullability
+          # unconfirmed, and a failed pull here would silently block all
+          # future clientSecret rotation with no visible error. This tag is
+          # the same confirmed-live precedent already used by
+          # system/observability/monitoring/crds-and-namespace.yaml.
+          image: rancher/kubectl:v1.29.0
           command:
             - sh
             - -c
