@@ -31,6 +31,12 @@ All of the below now live directly in `values.yaml`'s `extraConfig`:
 ### 1. Authentication
 - **Purpose**: Centralized OAuth configuration for Authentik SSO
 - **Contains**: Client credentials, endpoints, admin user lists
+- OAuth client_secret, the LDAP bind password, the Postgres password, and
+  the proxy auth token are all SOPS-encrypted `SopsSecret` resources
+  (`oauth-sopssecret.yaml`, `ldap-sopssecret.yaml`,
+  `postgres-sopssecret.yaml`, `proxy-sopssecret.yaml`) rather than
+  plaintext values in `values.yaml` — see `docs/sops-secrets-migration.md`
+  for the full migration record and per-secret rotation status.
 
 ### 2. Profiles (`PROFILE_CONFIGS` in `values.yaml`)
 - **Purpose**: GPU profile definitions and form handling logic
@@ -160,7 +166,7 @@ Authentication via Authentik OIDC (SSO).
 Edit `values.yaml` and add new entries to `PROFILE_CONFIGS` in its `extraConfig`.
 
 ### Modifying Authentication  
-Update OAuth endpoints and credentials in `values.yaml`'s auth-related `extraConfig` section.
+Update OAuth endpoints and non-secret settings in `values.yaml`'s auth-related `extraConfig` section. The OAuth `client_secret` itself lives in `oauth-sopssecret.yaml` (SOPS-encrypted) — see `docs/sops-secrets-migration.md`.
 
 ### Adjusting Culler Logic
 Tune timeout and priority functions in `values.yaml`'s culler `extraConfig` section.

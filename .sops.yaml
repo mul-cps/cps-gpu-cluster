@@ -1,0 +1,14 @@
+# SOPS configuration for cps-gpu-cluster.
+# Shares an age keypair with the cit-teaching-platform repo's
+# sops-secrets-operator, already deployed into this cluster — see
+# docs/sops-secrets-migration.md. Do not generate a new keypair here.
+
+creation_rules:
+  # In-cluster K8s Secrets, decrypted by the shared sops-secrets-operator.
+  - path_regex: cluster-maintenance/.*-sopssecret\.yaml$
+    encrypted_regex: "^(stringData)$"
+    age: age1h05qj66un22scwapuhyl76skls7ll235vlu27cjwkk5tpav6sqmsx3zp6a
+
+  # Local IaC secrets, decrypted on demand via `sops exec-env`.
+  - path_regex: bootstrap-cluster/(terraform/.*\.tfvars|ansible/group_vars/.*\.ya?ml)$
+    age: age1h05qj66un22scwapuhyl76skls7ll235vlu27cjwkk5tpav6sqmsx3zp6a

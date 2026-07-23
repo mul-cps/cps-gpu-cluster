@@ -24,7 +24,7 @@ one active external auth provider at a time, alongside `local`.
 | AuthConfig | type | enabled | Notes |
 |---|---|---|---|
 | `local` | `localConfig` | **true** | Always active; built-in Rancher admin fallback. Never disabled at any point during this migration. |
-| `genericoidc` | `genericOIDCConfig` | **true** | **The active external provider.** Config lives at `cluster-maintenance/clusters/cit-cps-gpu/rancher/genericoidc.yaml`, applied by hand (this directory has no `fleet.yaml` — a documented exception to the Fleet-only rule, same as before). |
+| `genericoidc` | `genericOIDCConfig` | **true** | **The active external provider.** Config lives at `cluster-maintenance/clusters/cit-cps-gpu/rancher/genericoidc.yaml`. As of 2026-07-23 this directory is Fleet-managed like the rest of the repo — the "no `fleet.yaml`, applied by hand" exception documented here previously no longer applies. `clientSecret` is SOPS-encrypted (`rancher/oidc-sopssecret.yaml`) and patched into the live `AuthConfig` object by an in-cluster Helm-hook Job (`rancher/oidc-sync-job.yaml`), since the `AuthConfig` CRD has no `secretKeyRef`-style field. See `docs/sops-secrets-migration.md` for the full mechanism and rationale. |
 | `adfs` | — | deleted | The live `AuthConfig` object was deleted from the cluster once OIDC login was confirmed working. Its manifest (`saml.yaml`) was removed from git in the same change. |
 
 ## Field-name pitfalls hit during setup (useful if this is ever redone)

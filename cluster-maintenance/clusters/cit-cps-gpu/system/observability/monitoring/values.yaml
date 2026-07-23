@@ -47,8 +47,12 @@ prometheus:
 grafana:
   enabled: true
   
-  # Admin credentials (change these!)
-  adminPassword: "admin"  # Change this in production!
+  # Admin credentials: sourced from the `grafana-admin-credentials` Secret,
+  # decrypted in-cluster from grafana-sopssecret.yaml by sops-secrets-operator.
+  admin:
+    existingSecret: grafana-admin-credentials
+    userKey: admin-user
+    passwordKey: admin-password
   
   # Persistent storage for dashboards and settings
   persistence:

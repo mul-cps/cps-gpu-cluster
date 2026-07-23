@@ -22,4 +22,8 @@ extraEnvVars:
     value: "authentik"
   - name: OAUTH_SCOPES
     value: "openid email profile"
-  # Secrets injected via patch
+  - name: OPENID_PROVIDER_URL
+    value: "https://auth.cps.unileoben.ac.at/application/o/open-web-ui/.well-known/openid-configuration"
+  # OAUTH_CLIENT_ID / OAUTH_CLIENT_SECRET come from the openwebui-oidc
+  # Secret (see oauth-sopssecret.yaml), injected via the StatefulSet
+  # envFrom patch in fleet.yaml.

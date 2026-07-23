@@ -5,21 +5,6 @@
 # - Service for internal cluster access
 # =============================================================================
 
-apiVersion: v1
-kind: Secret
-metadata:
-  name: postgresql-secret
-  namespace: jupyterhub
-  labels:
-    app.kubernetes.io/name: postgresql
-    app.kubernetes.io/component: database
-type: Opaque
-stringData:
-  postgres-password: "jhub-secure-db-password-2025"
-  postgres-user: "jhub"
-  postgres-db: "jhub"
-
----
 apiVersion: apps/v1
 kind: Deployment
 metadata:

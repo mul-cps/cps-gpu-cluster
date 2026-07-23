@@ -1,5 +1,28 @@
 proxy:
-  secretToken: "GENERATE_WITH_openssl_rand_-hex_32"
+  # secretToken is intentionally NOT set here (was previously a plaintext
+  # placeholder literal). The chart only accepts this value as a literal --
+  # there is no existing-Secret reference field for it, and
+  # hub.existingSecret would require re-implementing every other
+  # chart-managed hub secret key (cookie_secret, CryptKeeper.keys, etc),
+  # which is out of scope. Instead, both the hub and proxy pods are given
+  # CONFIGPROXY_AUTH_TOKEN via extraEnv below, sourced from the
+  # jupyterhub-proxy-token Secret (produced by proxy-sopssecret.yaml).
+  # This env var is appended after the chart's own hardcoded
+  # CONFIGPROXY_AUTH_TOKEN entry (which reads the chart's
+  # auto-generated/random hub secret value) in both Deployments, so it
+  # takes precedence for the actual container process env (last entry
+  # wins for duplicate names in a k8s container's env list) -- verified
+  # against jupyterhub chart 4.3.1 templates
+  # (templates/hub/deployment.yaml, templates/proxy/deployment.yaml,
+  # templates/hub/_helpers-passwords.tpl). Not confirmed live via
+  # kubectl; see docs/sops-secrets-migration.md.
+  chp:
+    extraEnv:
+      - name: CONFIGPROXY_AUTH_TOKEN
+        valueFrom:
+          secretKeyRef:
+            name: jupyterhub-proxy-token
+            key: proxy-token
   service:
     type: ClusterIP
 
@@ -25,10 +48,43 @@ ingress:
 hub:
   extraEnv:
     - name: OAUTH_CLIENT_SECRET
+      # client-secret sourced from jupyterhub-oauth-secret, now SOPS-managed — see oauth-sopssecret.yaml
       valueFrom:
         secretKeyRef:
           name: jupyterhub-oauth-secret
           key: client-secret
+    # POSTGRES_PASSWORD is read from the postgresql-secret Secret (produced
+    # by postgres-sopssecret.yaml) and used to build db_url below at
+    # startup via extraConfig/00-postgres-db-url -- avoids a plaintext
+    # password literal in this values file. Same pattern as OAUTH_CLIENT_SECRET.
+    - name: POSTGRES_PASSWORD
+      valueFrom:
+        secretKeyRef:
+          name: postgresql-secret
+          key: postgres-password
+    # LDAP_BIND_PASSWORD is read from the jupyterhub-ldap-credentials Secret
+    # (produced by ldap-sopssecret.yaml) and used by get_ldap_info() in
+    # extraConfig/02-profiles below -- avoids the LDAP bind-service-account
+    # password being a plaintext literal in this values file. Same pattern
+    # as OAUTH_CLIENT_SECRET/POSTGRES_PASSWORD. NOTE: this reuses the
+    # existing 'ldapservice' credential value as-is; it is NOT a rotated
+    # password -- see docs/sops-secrets-migration.md rotation checklist.
+    - name: LDAP_BIND_PASSWORD
+      valueFrom:
+        secretKeyRef:
+          name: jupyterhub-ldap-credentials
+          key: bind-password
+    # CONFIGPROXY_AUTH_TOKEN is read directly by the hub process (not via
+    # extraConfig) from the jupyterhub-proxy-token Secret (produced by
+    # proxy-sopssecret.yaml) -- same Secret/key the proxy pod's
+    # proxy.chp.extraEnv above reads, so hub and proxy always share one
+    # token. See the comment on proxy.chp.extraEnv above for why this
+    # replaces proxy.secretToken instead of setting a literal.
+    - name: CONFIGPROXY_AUTH_TOKEN
+      valueFrom:
+        secretKeyRef:
+          name: jupyterhub-proxy-token
+          key: proxy-token
   config:
     JupyterHub:
       admin_access: true
@@ -41,7 +97,12 @@ hub:
       # unauthenticated scrapes before this; metrics content itself has
       # no sensitive data (aggregate counts only).
       authenticate_prometheus: false
-      db_url: postgresql://jhub:jhub-secure-db-password-2025@postgresql:5432/jhub
+      # db_url is NOT set here (was previously a literal with the
+      # password embedded, duplicating the plaintext in postgresql.yaml's
+      # Secret). It is now assembled at runtime in
+      # extraConfig/00-postgres-db-url below from the POSTGRES_PASSWORD
+      # env var (sourced from the postgresql-secret Secret via extraEnv
+      # above), so no password literal exists in this file.
       template_vars:
         org:
           name: "Montanuniversität Leoben"
@@ -119,6 +180,12 @@ hub:
     00-oauth-secret: |
       import os
       c.GenericOAuthenticator.client_secret = os.environ['OAUTH_CLIENT_SECRET']
+
+    00-postgres-db-url: |
+      import os
+      c.JupyterHub.db_url = "postgresql://jhub:{}@postgresql:5432/jhub".format(
+          os.environ['POSTGRES_PASSWORD']
+      )
 
     00-install-packages: |
       import subprocess, sys
@@ -268,10 +335,18 @@ hub:
       def get_ldap_info(username, log=None):
           from ldap3 import Server, Connection, ALL
           
+          import os
+
           # LDAP Config
           LDAP_SERVER = 'ldaps://auth.cps.unileoben.ac.at:636'
           LDAP_USER = 'cn=ldapservice,ou=users,dc=ldap,dc=goauthentik,dc=io'
-          LDAP_PASSWORD = 'ldapservice'
+          # LDAP_PASSWORD is read from the LDAP_BIND_PASSWORD env var (injected
+          # from the jupyterhub-ldap-credentials k8s Secret via hub.extraEnv).
+          # This reuses the existing 'ldapservice' bind-account credential --
+          # not a newly generated value. Rotation flagged as manual follow-up
+          # requiring LDAP directory admin coordination, see
+          # docs/sops-secrets-migration.md.
+          LDAP_PASSWORD = os.environ['LDAP_BIND_PASSWORD']
           SEARCH_BASE = 'ou=users,dc=ldap,dc=goauthentik,dc=io'
           
           try:
