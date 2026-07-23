@@ -41,3 +41,8 @@ Task 7: complete (commits f25b3d8..5877029 + fix 234deac, review: Changes Reques
   True end-to-end verification (Fleet sync, Job Complete, real OIDC login) deferred to post-merge -- cannot test pre-merge since GitRepo tracks main.
 
 Task 8: complete (commit 21eba72, review approved, kustomize wiring correctly included from the start)
+
+Task 9: complete (commits 6787fad, 3220f5c, b2aff06 -- review found & fixed a Critical: the "new" Authentik client (pk 36, client_id 5PLqeFpglsR0YVcsZj6nQtBkzNG6EiGyjQOZAdGr) was actually the SAME client leaked in commit 9f9f8ff. Rotated secret in Authentik immediately (client_id unchanged), re-encrypted, docs corrected. Re-review approved.)
+  Real Authentik infra changes made outside git: provider pk 36 redirect_uris set, client_secret rotated twice (once during setup believing it was fresh, once after discovering the leak).
+  User-provided Authentik API token was pasted in this chat session -- recommended user revoke/rotate it since it's no longer needed and now sits in conversation history.
+  Pre-existing, out of scope: open-webui/fleet.yaml Helm chart is unpinned (no version:).
