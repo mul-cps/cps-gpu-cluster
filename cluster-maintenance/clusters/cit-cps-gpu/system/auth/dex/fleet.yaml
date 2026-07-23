@@ -1,0 +1,50 @@
+name: dex-idp-broker
+defaultNamespace: dex
+
+labels:
+  app: dex
+  name: dex-idp-broker
+
+helm:
+  chart: dex
+  repo: https://charts.dexidp.io
+  version: "0.24.1"
+  releaseName: dex
+  createNamespace: true
+  valuesFiles:
+  - values.yaml
+
+kustomize:
+  dir: .
+
+dependsOn:
+- selector:
+    matchLabels:
+      name: ingress-nginx
+
+# dex/dex chart's `staticClients[].secret` field does NOT support Dex's
+# native $ENV_VAR expansion (confirmed against dexidp/dex source, see
+# values.yaml's header comment and dexidp/dex#4212 -- connectors DO
+# support it, staticClients does not).
+#
+# REDESIGNED (2026-07-23, review): the original fix used a
+# `targetCustomizations[].patches` JSON-patch block (copied from
+# user/llm/open-webui/fleet.yaml's pre-existing envFrom patch). That
+# whole mechanism turned out to be invalid Fleet syntax -- confirmed
+# against Fleet's actual fleetyaml.go source: `TargetCustomizations` is
+# typed `[]BundleTarget`, the same struct as `targets[]`, which has NO
+# `patches` field at all (only `diff.comparePatches`, which controls
+# DRIFT COMPARISON, not resource content). The unrecognized `patches` key
+# was silently dropped -- exactly why open-webui's envFrom injection has
+# never actually applied live (confirmed: empty envFrom on the live
+# StatefulSet), and would have done the same here. See
+# docs/troubleshooting.md for the full incident writeup; open-webui's
+# fleet.yaml needs the same redesign as a separate follow-up.
+#
+# Fixed by reusing the Helm-hook sync-Job pattern already proven live
+# today for rancher/oidc-sync-job.yaml: a post-install/post-upgrade hook
+# Job patches the real secret into the chart-rendered config Secret
+# in-place after Helm creates it, then restarts the Dex Deployment so it
+# picks up the corrected config on its next start (Dex only reads
+# config.yaml at startup, unlike Rancher's AuthConfig which the
+# controller re-reads live). See rancher-secret-sync-job.yaml.
