@@ -8,7 +8,10 @@ helm:
   valuesFiles:
     - values.yaml
 
-
+# SOPS-encrypted OAuth secret (decrypted in-cluster by the shared
+# sops-secrets-operator) — see docs/sops-secrets-migration.md
+kustomize:
+  dir: .
 
 targetCustomizations:
 - name: cit-cps-gpu
