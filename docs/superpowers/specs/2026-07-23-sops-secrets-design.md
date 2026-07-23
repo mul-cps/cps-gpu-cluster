@@ -136,6 +136,27 @@ template, not a real-secret file.)
   connector client secrets will use the `SopsSecret` pattern established
   here).
 
+## Optional follow-up: git history rewrite
+
+Rotating the git-history-leaked credentials (above) is mandatory and
+sufficient to neutralize the exposure — a rotated credential is worthless
+even if its old value stays visible in history. Scrubbing the values from
+git history itself (e.g. `git filter-repo`) is a **separate, optional**
+piece of cleanup, not required by this spec and not performed as part of
+it. It is destructive and disruptive:
+
+- Rewrites every commit hash from the point of introduction onward,
+  breaking all existing clones, forks, and open branches/PRs — everyone
+  must re-clone.
+- Requires a force-push to `main`.
+- Does not retroactively erase copies that already exist outside the
+  canonical repo (forks, CI logs, local clones made before the rewrite) —
+  it reduces future exposure, it does not undo past exposure.
+
+If this is wanted, it should be a deliberate, explicitly-requested,
+separately-scheduled operation performed only after rotation is confirmed
+complete — never bundled into the SOPS migration itself.
+
 ## Documentation deliverable
 
 `docs/sops-secrets-migration.md` (dated, following the
