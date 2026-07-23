@@ -17,3 +17,26 @@ Plan: docs/superpowers/plans/2026-07-23-dex-idp-broker.md
 - `https://rancher.dshl.unileoben.ac.at/v3-public/authProviders` returns both `genericOIDCProvider` and `localProvider`.
 
 This is the exact state Task 6 will diff against and the rollback target if Dex needs to be backed out.
+
+## Upstream connector client registrations (2026-07-23)
+
+Both registered via the Authentik API, mirroring each instance's own
+existing authorization_flow/invalidation_flow/property_mappings
+conventions (verified against each instance's pre-existing providers
+before creating these — CPS: `Provider for Rancher OIDC`; CIT:
+`Provider for cit-jhub`), both with redirect URI
+`https://dex.dshl.unileoben.ac.at/callback` and app slug
+`dex-rancher-broker`.
+
+| Instance | Provider pk | client_id | Issuer |
+|---|---|---|---|
+| CPS (`auth.cps.unileoben.ac.at`) | 47 | `iGjkHeZPoMrpWsw5TZ3RY368DDJa2d8TwOnR1EVS` | `https://auth.cps.unileoben.ac.at/application/o/dex-rancher-broker/` |
+| CIT (`auth.dshl.unileoben.ac.at`) | 3 | `qlPmVf0I9embINVWrDqSjWIjoD6HrTwx6TbEUYXq` | `https://auth.dshl.unileoben.ac.at/application/o/dex-rancher-broker/` |
+
+Both issuers' `.well-known/openid-configuration` confirmed live and
+resolving correctly. client_secrets are SOPS-encrypted in Task 4's
+`SopsSecret`s — never recorded here in plaintext.
+
+The API tokens used to register these (one CPS, one CIT) should be
+revoked by the operator now that registration is complete, same handling
+discipline as every Authentik token used during the SOPS migration.
