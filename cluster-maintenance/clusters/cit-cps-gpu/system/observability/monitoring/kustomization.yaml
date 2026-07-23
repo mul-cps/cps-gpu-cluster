@@ -18,3 +18,10 @@ resources:
   - gpu-dash-24450-community.yaml
   - jupyterhub-stats-23694.yaml
   - jupyterhub-servicemonitor.yaml
+
+  # SOPS-encrypted secret (decrypted in-cluster by the shared
+  # sops-secrets-operator) — the Grafana Helm release itself stays
+  # manually installed via deploy.sh, but this Fleet bundle already
+  # targets cattle-monitoring-system, so the Secret can ride along here.
+  # See docs/sops-secrets-migration.md.
+  - grafana-sopssecret.yaml

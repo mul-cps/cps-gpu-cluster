@@ -15,5 +15,11 @@ resources:
 
   - dask-rbac.yaml
 
+  # SOPS-encrypted secrets (decrypted in-cluster by the shared
+  # sops-secrets-operator) — see docs/sops-secrets-migration.md
+  - postgres-sopssecret.yaml
+  - ldap-sopssecret.yaml
+  - proxy-sopssecret.yaml
+
 # Ensure all resources are in the jupyterhub namespace
 namespace: jupyterhub
