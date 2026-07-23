@@ -12,3 +12,8 @@ using `ssh root@193.171.81.160 "qm guest exec 101 -- ..."` (KUBECONFIG=/etc/ranc
 as the reliable path, same as used to recover both incidents.
 
 Task 1: complete (controller-executed, live-verified: chart 0.24.1, CRDs auto-created by Dex itself via RBAC not a separate manifest, genericoidc baseline confirmed matching git, local login confirmed by operator)
+
+Task 2: complete (controller-executed, CPS provider pk 47, client_id iGjkHeZPoMrpWsw5TZ3RY368DDJa2d8TwOnR1EVS, live discovery confirmed)
+Task 3: complete (controller-executed, CIT provider pk 3, client_id qlPmVf0I9embINVWrDqSjWIjoD6HrTwx6TbEUYXq, live discovery confirmed -- unblocked, user provided both CPS+CIT tokens together)
+  Both client secrets in /tmp/.../scratchpad/secure/dex_cps.txt and dex_cit.txt for Task 4's SopsSecrets, not yet consumed.
+  Recommend user revoke both Authentik API tokens now that registration is done.
