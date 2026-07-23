@@ -90,6 +90,7 @@ DCGM_FI_DEV_GPU_TEMP
 ### Credentials
 - **Username**: `admin`
 - **Password**: SOPS-encrypted in `grafana-sopssecret.yaml`; retrieve with `sops -d grafana-sopssecret.yaml` if you have decrypt access.
+- See `docs/sops-secrets-migration.md` for the full migration history of this secret (moved from a plaintext `values.yaml` literal).
 
 ### Access Methods
 
@@ -244,7 +245,7 @@ Fleet will automatically apply updates when configuration changes are committed.
 
 ## Security Notes
 
-1. **Admin password**: SOPS-encrypted in `grafana-sopssecret.yaml`; retrieve with `sops -d grafana-sopssecret.yaml` if you have decrypt access. Rotate via that file, not values.yaml.
+1. **Admin password**: SOPS-encrypted in `grafana-sopssecret.yaml`; retrieve with `sops -d grafana-sopssecret.yaml` if you have decrypt access. Rotate via that file, not values.yaml. See `docs/sops-secrets-migration.md` for migration details.
 2. **Network policies**: Consider implementing network policies for monitoring namespace
 3. **RBAC**: Review and customize RBAC permissions as needed
 4. **TLS**: Configure TLS for external access in production environments

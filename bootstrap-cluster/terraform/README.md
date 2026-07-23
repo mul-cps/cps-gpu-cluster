@@ -26,13 +26,26 @@ See [TEMPLATE_CREATION.md](TEMPLATE_CREATION.md) for detailed instructions.
 
 ### 1. Review and update `terraform.tfvars`
 
-The repository includes a pre-configured `terraform.tfvars` file with:
+`terraform.tfvars` is SOPS-encrypted and committed to this repo (it is
+not gitignored or local-only) with a pre-configured set of:
 - Proxmox API credentials
 - VLAN 633 network configuration with MUL-assigned MAC addresses
 - GPU PCI addresses
 - Storage pool: NvmeZFSstorage
 
-Update as needed:
+Decrypt on demand rather than keeping a permanent plaintext copy on disk:
+
+```bash
+sops exec-env terraform.tfvars 'tofu plan -var-file=/dev/stdin'  # adjust per actual tofu invocation needs
+```
+
+`sops -d terraform.tfvars` also works for a one-off read (pipe straight
+into the command that needs it — avoid writing decrypted output to a
+file). Requires the shared age private key — see
+[docs/sops-secrets-migration.md](../../docs/sops-secrets-migration.md)
+for how to obtain it if you don't already have it.
+
+Update as needed (re-encrypt with `sops -e -i terraform.tfvars` after editing):
 - `pm_api_token_secret`: Your actual API token secret
 - `gpu_pci_addresses`: Your GPU PCI addresses (use `lspci | grep NVIDIA` on Proxmox)
 
