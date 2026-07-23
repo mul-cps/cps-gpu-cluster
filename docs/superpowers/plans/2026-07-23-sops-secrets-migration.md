@@ -35,8 +35,8 @@ Expected: at least one `sops-secrets-operator` pod in `Running` state. If the na
 
 - [ ] **Step 2: Confirm the CRD and its API group**
 
-Run: `kubectl get crd sopssecrets.isindir.io -o jsonpath='{.spec.group}/{.spec.versions[0].name}'`
-Expected: output like `isindir.io/v1alpha3` (record the exact version — later `SopsSecret` manifests must use it).
+Run: `kubectl get crd sopssecrets.isindir.github.com -o jsonpath='{.spec.group}/{.spec.versions[0].name}'`
+Expected: output like `isindir.github.com/v1alpha3` (record the exact version — later `SopsSecret` manifests must use it).
 
 - [ ] **Step 3: Confirm the operator's age public key matches the design assumption**
 
@@ -60,11 +60,11 @@ This repo reuses the `sops-secrets-operator` deployed by the
 its own instance.
 
 - Namespace: `sops-system`
-- CRD: `sopssecrets.isindir.io` (`<version from Step 2>`)
+- CRD: `sopssecrets.isindir.github.com` (`<version from Step 2>`)
 - Age recipient key: `age1h05qj66un22scwapuhyl76skls7ll235vlu27cjwkk5tpav6sqmsx3zp6a`
 
 Verified live 2026-07-23 via `kubectl get pods -n sops-system` and
-`kubectl get crd sopssecrets.isindir.io`.
+`kubectl get crd sopssecrets.isindir.github.com`.
 
 ## Secrets migrated
 
@@ -151,7 +151,7 @@ Record the output — used in the next step, then discard from your shell histor
 - [ ] **Step 2: Write the plaintext `SopsSecret`, matching the CRD version from Task 1**
 
 ```yaml
-apiVersion: isindir.io/v1alpha3
+apiVersion: isindir.github.com/v1alpha3
 kind: SopsSecret
 metadata:
   name: grafana-admin-credentials
@@ -163,7 +163,7 @@ spec:
         admin-password: "PASTE_GENERATED_PASSWORD_HERE"
 ```
 
-Save this to `cluster-maintenance/clusters/cit-cps-gpu/system/observability/monitoring/grafana-sopssecret.yaml`. Replace `apiVersion` with whatever Task 1 Step 2 actually confirmed if it differs from `isindir.io/v1alpha3`.
+Save this to `cluster-maintenance/clusters/cit-cps-gpu/system/observability/monitoring/grafana-sopssecret.yaml`. Replace `apiVersion` with whatever Task 1 Step 2 actually confirmed if it differs from `isindir.github.com/v1alpha3`.
 
 - [ ] **Step 3: Encrypt the file in place**
 
@@ -233,7 +233,7 @@ The old value `jhub-secure-db-password-2025` is being retired, not reused — it
 - [ ] **Step 2: Write the `SopsSecret`, preserving the exact Secret name and keys the Deployment already references**
 
 ```yaml
-apiVersion: isindir.io/v1alpha3
+apiVersion: isindir.github.com/v1alpha3
 kind: SopsSecret
 metadata:
   name: postgresql-secret
@@ -324,7 +324,7 @@ Read `cluster-maintenance/clusters/cit-cps-gpu/user/jupyter/jupyterhub/values.ya
 Generate nothing new here — this is an existing service-account credential (`ldapservice`'s password), not something to regenerate blindly, since rotating an LDAP bind account may need coordination with whoever administers that directory. Use the existing value `ldapservice` as a placeholder to encrypt for now, and flag rotation as a manual follow-up (LDAP bind accounts are typically centrally managed, unlike an app-generated Postgres password).
 
 ```yaml
-apiVersion: isindir.io/v1alpha3
+apiVersion: isindir.github.com/v1alpha3
 kind: SopsSecret
 metadata:
   name: jupyterhub-ldap-credentials
@@ -404,7 +404,7 @@ Run: `openssl rand -hex 32`
 - [ ] **Step 2: Write and encrypt the `SopsSecret`**
 
 ```yaml
-apiVersion: isindir.io/v1alpha3
+apiVersion: isindir.github.com/v1alpha3
 kind: SopsSecret
 metadata:
   name: jupyterhub-proxy-token
@@ -534,7 +534,7 @@ Use the actual current live `clientSecret` value (retrieve it from the running c
 Run: `kubectl get secret rancher-oidc-secret -n cattle-system -o jsonpath='{.data.clientSecret}' | base64 -d`
 
 ```yaml
-apiVersion: isindir.io/v1alpha3
+apiVersion: isindir.github.com/v1alpha3
 kind: SopsSecret
 metadata:
   name: rancher-oidc-secret
@@ -605,7 +605,7 @@ Run: `kubectl get secret jupyterhub-oauth-secret -n jupyterhub -o jsonpath='{.da
 - [ ] **Step 2: Write and encrypt the `SopsSecret`**
 
 ```yaml
-apiVersion: isindir.io/v1alpha3
+apiVersion: isindir.github.com/v1alpha3
 kind: SopsSecret
 metadata:
   name: jupyterhub-oauth-secret
@@ -679,9 +679,16 @@ Also check for a Fleet `kustomize`/overlay patch mechanism: `find cluster-mainte
 
 Read `bootstrap-cluster/ansible/group_vars/all.yml` in full. Per the inventory: `k3s_token` and `rancher_bootstrap_password` are already runtime-generated via Ansible `lookup('password', ...)` — these don't need SOPS since nothing plaintext is committed. Only variables holding real static values (if any exist beyond what was found) are candidates. If none exist beyond the already-safe lookup-based ones, this half of the task is a no-op for `group_vars/` — do not invent secrets to encrypt where none exist.
 
-- [ ] **Step 2: For `terraform.tfvars` — obtain the real local file from wherever it currently lives (gitignored, not in this repo checkout by default)**
+- [ ] **Step 2: `terraform.tfvars` is confirmed LOST — recreate it, do not search further for a copy**
 
-This file contains `pm_api_token_secret` and `vm_password` (a password hash). Since it's gitignored today, get the operator's actual local copy (outside this plan's automatable scope — coordinate with whoever holds it, e.g. `bjoern.ellensohn@gmail.com` per the git config). Do not fabricate placeholder values and commit those as if real.
+Confirmed 2026-07-23: the real `terraform.tfvars` no longer exists anywhere it was kept; it must be recreated from scratch rather than retrieved. This is a real credential-recreation task, not a file-hunt:
+
+1. `pm_api_token_secret` — generate a **new** Proxmox API token (Datacenter → Permissions → API Tokens in the Proxmox web UI), since the old one's value is unrecoverable and should be treated as dead (revoke the old token ID if it still exists and is identifiable, to avoid an orphaned live credential). This step requires access to the Proxmox web UI — it cannot be done via this repo or kubectl; escalate to the human operator to perform it and hand back the new token value.
+2. `vm_password` — regenerate via `scripts/generate-password-hash.sh` (interactive, prompts for a new password, prints a SHA-512 hash to stdout — never persists the plaintext).
+3. `ssh_public_key` — reuse the existing public key if the corresponding private key (`~/.ssh/id_rsa` per `ansible.cfg`) is still available locally; otherwise generate a new keypair and redistribute the public key to existing VMs' `authorized_keys` (out of scope for this task — flag as a separate follow-up if a new keypair is needed).
+4. Other non-secret `tfvars` values (VM counts, network ranges, etc.) — copy from `bootstrap-cluster/terraform/example.tfvars`'s structure and the "Key facts to keep straight" section of `CLAUDE.md` (network `10.21.0.0/16`, control planes `.35-37`, GPU workers `.38/.43/.40/.41`) as the source of truth for non-secret values, since there's no other copy to restore from.
+
+Do not fabricate a plausible-looking `pm_api_token_secret` value — a wrong-but-real-looking token fails silently differently than a clearly-fake placeholder and is worse to debug. If the human operator hasn't provided the new token value yet, mark this task NEEDS_CONTEXT and stop rather than guessing.
 
 - [ ] **Step 3: Encrypt and commit the real file, removing it from `.gitignore`'s exclusion for this specific filename**
 
