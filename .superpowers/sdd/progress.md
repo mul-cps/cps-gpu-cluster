@@ -19,3 +19,11 @@ Task 3: complete (controller-executed, CIT provider pk 3, client_id qlPmVf0I9emb
   Recommend user revoke both Authentik API tokens now that registration is done.
 
 Task 4: complete (commit 90a8545, review approved, controller independently verified all 3 decrypt to expected values via real age key)
+
+Task 5: PR #7 merged successfully. Post-merge collision discovered live: a genuinely separate ~6mo-old orphaned Dex deployment (ClusterRole/ClusterRoleBinding "dex", CRDs dex.coreos.com/* dated Jan 2026, namespace "auth" long gone) blocked install with an ownership-metadata error. User directed: delete the old orphans rather than rename our release. Deleted stale ClusterRole+ClusterRoleBinding "dex" (confirmed genuinely orphaned: no namespace, no pods, 6mo old). Forced resync (forceSyncGeneration, NOT bundledeployment delete). Dex now fully live and verified:
+  - Job dex-rancher-secret-sync: Complete
+  - Pod dex-*: 1/1 Running, clean startup logs (reused old CRDs gracefully, "already available, skipping create")
+  - Config Secret's staticClients[0].secret contains the REAL value, not placeholder (confirmed via decode)
+  - https://dex.dshl.unileoben.ac.at/.well-known/openid-configuration resolves correctly
+  - Bundle status "Modified" is expected/intentional (same pattern as Rancher AuthConfig drift)
+Starting Task 6 (repoint Rancher genericoidc at Dex) on branch feat/dex-task6-rancher-repoint.
