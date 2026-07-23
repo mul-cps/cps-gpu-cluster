@@ -24,3 +24,8 @@ design spec exactly).
 | Secret | Old location | New location | Status |
 |---|---|---|---|
 | Grafana admin password | system/observability/monitoring/values.yaml:51 (plaintext) | system/observability/monitoring/grafana-sopssecret.yaml | done |
+| Postgres password | postgresql.yaml (plaintext) + values.yaml db_url (duplicate) | postgres-sopssecret.yaml | done, rotated |
+
+## Credential rotation checklist
+
+- [x] JupyterHub Postgres password — rotated 2026-07-23 (was jhub-secure-db-password-2025, plaintext in git)
