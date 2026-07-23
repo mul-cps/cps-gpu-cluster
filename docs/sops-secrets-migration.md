@@ -25,7 +25,9 @@ design spec exactly).
 |---|---|---|---|
 | Grafana admin password | system/observability/monitoring/values.yaml:51 (plaintext) | system/observability/monitoring/grafana-sopssecret.yaml | done |
 | Postgres password | postgresql.yaml (plaintext) + values.yaml db_url (duplicate) | postgres-sopssecret.yaml | done, rotated |
+| LDAP bind-service-account password | values.yaml extraConfig/02-profiles get_ldap_info() (plaintext `LDAP_PASSWORD = 'ldapservice'`) | ldap-sopssecret.yaml | done, not rotated (value reused as-is) |
 
 ## Credential rotation checklist
 
 - [x] JupyterHub Postgres password — rotated 2026-07-23 (was jhub-secure-db-password-2025, plaintext in git)
+- [ ] JupyterHub LDAP bind-service-account password — NOT rotated by this migration; the existing `ldapservice` credential value was reused as-is when encrypting into `jupyterhub-ldap-credentials`/`ldap-sopssecret.yaml`. This is a centrally-managed LDAP directory account (`cn=ldapservice,ou=users,dc=ldap,dc=goauthentik,dc=io`), not an app-generated password, so rotation is flagged as a manual follow-up requiring coordination with whoever administers the Authentik/LDAP directory before changing it here.
