@@ -1469,6 +1469,26 @@ production GitOps paused indefinitely:
 kubectl patch gitrepo cluster-maintenance -n fleet-local --type merge -p '{"spec":{"paused":false}}'
 ```
 
+### Fleet bundle name collided with a pre-existing, independently-installed Helm release (RESOLVED 2026-07-23)
+
+**Symptom**: Rancher completely down immediately after a merge — `rancher.dshl.unileoben.ac.at` returns a plain nginx default-backend 404 on every path, `kubectl` (which proxies through Rancher's own API) becomes unreachable as a direct consequence.
+
+**Root cause**: A new bundle (`cluster-maintenance/clusters/cit-cps-gpu/rancher/`) had no explicit `name:` in its `fleet.yaml`, so Fleet derived the bundle name from the directory: `rancher`. Fleet applies **every** bundle as a synthetic Helm release named after the bundle — including pure `kustomize.dir` bundles with no `helm:` chart block. `rancher` collided exactly with the real Rancher installation's own Helm release, also named `rancher` in `cattle-system`, installed once via `bootstrap-cluster/ansible/playbooks/05-rancher.yml`, entirely outside Fleet. On reconcile, Fleet's synthetic release (`helm history rancher -n cattle-system` showed a new revision with chart `rancher-v0.0.0+git-<merge-commit>`) superseded the real one, and Helm pruned the real Rancher `Deployment`/`Service` as "no longer in the desired manifest." All 3 Rancher pods were killed; the `genericoidc` `AuthConfig` was reset to a bare stub (Rancher recreates an empty stub for a missing-but-required AuthConfig type).
+
+**Diagnosis path** (useful if this happens again with any bundle, not just Rancher): `kubectl` itself was unreachable since this cluster's only external kubeconfig proxies through Rancher — used `qm guest exec <control-plane-vmid> -- kubectl ...` directly from the Proxmox hypervisor (`KUBECONFIG=/etc/rancher/k3s/k3s.yaml`) to bypass Rancher entirely and diagnose/fix while it was down. `helm history <name> -n <namespace>` immediately showed the colliding synthetic release and its exact merge-commit-stamped chart version.
+
+**Recovery**:
+```bash
+# From a control-plane node (or via `qm guest exec <vmid> -- ...` from the hypervisor if Rancher/kubectl access is itself down):
+export KUBECONFIG=/etc/rancher/k3s/k3s.yaml
+helm rollback rancher 8 -n cattle-system   # restore the real pre-collision release
+kubectl patch gitrepo cluster-maintenance -n fleet-local --type merge -p '{"spec":{"paused":true}}'   # prevent immediate re-collision
+# Manually re-apply the AuthConfig (issuer/clientId/enabled/etc.) and re-patch clientSecret
+# from the SopsSecret, since both were wiped along with the Deployment.
+```
+
+**Durable fix**: gave the bundle an explicit, collision-proof `name:` (`rancher-oidc-sync-bundle`, not `rancher`) in `fleet.yaml`. **Never let a new Fleet bundle's name match, even by directory-name coincidence, any Helm release that exists independently of Fleet** — this repo has exactly one such release (Rancher itself, installed by Ansible, not Fleet); every other live Helm release in this cluster is already a Fleet bundle's own synthetic release and poses no collision risk to itself.
+
 ### GitRepo not syncing
 
 **Symptom**: Fleet shows old commit or not syncing
