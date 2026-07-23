@@ -1,0 +1,108 @@
+# Dex IdP broker — federates the CPS and CIT Authentik instances behind a
+# single OIDC issuer that Rancher's Generic OIDC auth provider talks to.
+#
+# Secret-sourced values (connector clientSecret, Rancher staticClient secret)
+# are NEVER placed as literals in this file. The dex/dex chart's `config` key
+# is raw YAML passed straight through to Dex's own config.yaml, so a Helm/Fleet
+# template can't inject a Secret value into it directly. Instead we use the
+# chart's `envVars` hook (templates/deployment.yaml) to mount the three
+# SopsSecrets (see kustomization.yaml) as container env vars, and reference
+# them from `config` using Dex's native `$ENV_VAR` / `${VAR}` expansion
+# (os.ExpandEnv), gated by the DEX_EXPAND_ENV feature flag (default: enabled).
+#
+# VERIFIED against dexidp/dex master source (2026-07-23), not just docs:
+#   - cmd/dex/config.go: Storage.UnmarshalJSON, Signer.UnmarshalJSON, and
+#     Connector.UnmarshalJSON each call expandEnvInMap()/os.ExpandEnv() when
+#     featureflags.ExpandEnv.Enabled() (default true). This IS how the
+#     `clientSecret: $DEX_..._CLIENT_SECRET` lines below get resolved for the
+#     two OIDC connectors -- confirmed working end-to-end via `helm template`
+#     (env vars land in the Deployment; rendered config Secret contains the
+#     literal `$DEX_CPS_CLIENT_SECRET` placeholder string, not env expansion
+#     itself -- that final substitution happens inside the Dex process at
+#     startup, per the source above, not at Helm/Fleet render time).
+#   - storage/static.go (backing `staticClients`) has NO UnmarshalJSON /
+#     ExpandEnv call at all -- confirmed by reading the file directly, and by
+#     dexidp/dex issue #4212 ("Support Environment variable expansion in
+#     staticClients and other top-level config sections", open, unresolved).
+#     So env-var expansion does NOT reach `staticClients[].secret`.
+#
+# CONCERN (see report): the `staticClients[].secret` value below is written
+# in the same `$DEX_RANCHER_CLIENT_SECRET` form for consistency and to avoid
+# a literal secret in git, but per the above it will NOT be expanded by Dex
+# -- Dex will use the literal string "$DEX_RANCHER_CLIENT_SECRET" as the
+# actual client secret, so Rancher OIDC login will fail against this static
+# client until this is fixed (see task5 report for options: SOPS-encrypt a
+# full pre-rendered config.yaml as the configSecret instead of using
+# `config:` + envVars, once someone with plaintext secret access can build
+# it; or track dexidp/dex #4212 upstream).
+
+envVars:
+  - name: DEX_CPS_CLIENT_SECRET
+    valueFrom:
+      secretKeyRef:
+        name: dex-cps-connector
+        key: clientSecret
+  - name: DEX_CIT_CLIENT_SECRET
+    valueFrom:
+      secretKeyRef:
+        name: dex-cit-connector
+        key: clientSecret
+  - name: DEX_RANCHER_CLIENT_SECRET
+    valueFrom:
+      secretKeyRef:
+        name: dex-rancher-client
+        key: clientSecret
+
+config:
+  issuer: https://dex.dshl.unileoben.ac.at
+
+  storage:
+    type: kubernetes
+    config:
+      inCluster: true
+
+  web:
+    http: 0.0.0.0:5556
+
+  connectors:
+    - type: oidc
+      id: cps
+      name: CPS
+      config:
+        issuer: https://auth.cps.unileoben.ac.at/application/o/dex-rancher-broker/
+        clientID: iGjkHeZPoMrpWsw5TZ3RY368DDJa2d8TwOnR1EVS
+        clientSecret: $DEX_CPS_CLIENT_SECRET
+        redirectURI: https://dex.dshl.unileoben.ac.at/callback
+    - type: oidc
+      id: cit
+      name: CIT
+      config:
+        issuer: https://auth.dshl.unileoben.ac.at/application/o/dex-rancher-broker/
+        clientID: qlPmVf0I9embINVWrDqSjWIjoD6HrTwx6TbEUYXq
+        clientSecret: $DEX_CIT_CLIENT_SECRET
+        redirectURI: https://dex.dshl.unileoben.ac.at/callback
+
+  staticClients:
+    - id: rancher
+      name: Rancher
+      secret: $DEX_RANCHER_CLIENT_SECRET
+      redirectURIs:
+        - https://rancher.dshl.unileoben.ac.at/verify-auth
+
+rbac:
+  create: true
+  createClusterScoped: true
+
+ingress:
+  enabled: true
+  className: nginx
+  annotations: {}
+  hosts:
+    - host: dex.dshl.unileoben.ac.at
+      paths:
+        - path: /
+          pathType: ImplementationSpecific
+  tls:
+    - secretName: dshl-wildcard
+      hosts:
+        - dex.dshl.unileoben.ac.at

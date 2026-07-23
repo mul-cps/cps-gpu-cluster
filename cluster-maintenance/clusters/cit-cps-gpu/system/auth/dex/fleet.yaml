@@ -1,0 +1,23 @@
+name: dex-idp-broker
+defaultNamespace: dex
+
+labels:
+  app: dex
+  name: dex-idp-broker
+
+helm:
+  chart: dex
+  repo: https://charts.dexidp.io
+  version: "0.24.1"
+  releaseName: dex
+  createNamespace: true
+  valuesFiles:
+  - values.yaml
+
+kustomize:
+  dir: .
+
+dependsOn:
+- selector:
+    matchLabels:
+      name: ingress-nginx
