@@ -1,0 +1,83 @@
+# See fleet.yaml's header comment for why this exists: Fleet has no
+# native mechanism to JSON-patch a Helm-rendered resource per-target
+# (targetCustomizations[].patches is not a real field). This Job patches
+# `envFrom: [secretRef: openwebui-oidc]` onto the live StatefulSet's
+# container after Helm creates/upgrades it, so OAUTH_CLIENT_ID/
+# OAUTH_CLIENT_SECRET actually reach the container. Idempotent: the
+# JSON-patch `add` op on this exact path always sets the whole `envFrom`
+# list value (not appending to an existing list), so re-running it never
+# creates duplicate entries -- unlike the mistake that broke JupyterHub's
+# Fleet apply earlier (see docs/troubleshooting.md).
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: openwebui-oauth-sync
+  namespace: openwebui
+  annotations:
+    helm.sh/hook: post-install,post-upgrade
+    helm.sh/hook-weight: "-10"
+    helm.sh/hook-delete-policy: before-hook-creation
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: openwebui-oauth-sync
+  namespace: openwebui
+  annotations:
+    helm.sh/hook: post-install,post-upgrade
+    helm.sh/hook-weight: "-10"
+    helm.sh/hook-delete-policy: before-hook-creation
+rules:
+  - apiGroups: ["apps"]
+    resources: ["statefulsets"]
+    verbs: ["get", "patch"]
+    resourceNames: ["open-webui"]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: openwebui-oauth-sync
+  namespace: openwebui
+  annotations:
+    helm.sh/hook: post-install,post-upgrade
+    helm.sh/hook-weight: "-10"
+    helm.sh/hook-delete-policy: before-hook-creation
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: Role
+  name: openwebui-oauth-sync
+subjects:
+  - kind: ServiceAccount
+    name: openwebui-oauth-sync
+    namespace: openwebui
+---
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: openwebui-oauth-sync
+  namespace: openwebui
+  annotations:
+    helm.sh/hook: post-install,post-upgrade
+    helm.sh/hook-weight: "0"
+    helm.sh/hook-delete-policy: before-hook-creation
+spec:
+  backoffLimit: 3
+  template:
+    spec:
+      serviceAccountName: openwebui-oauth-sync
+      restartPolicy: OnFailure
+      containers:
+        - name: sync
+          image: bitnami/kubectl:latest
+          command:
+            - sh
+            - -c
+            - |
+              set -eu
+              CURRENT=$(kubectl get statefulset open-webui -n openwebui -o jsonpath='{.spec.template.spec.containers[0].envFrom}')
+              if [ "$CURRENT" = '[{"secretRef":{"name":"openwebui-oidc"}}]' ]; then
+                echo "envFrom already set correctly; nothing to patch" >&2
+                exit 0
+              fi
+              kubectl patch statefulset open-webui -n openwebui --type=json \
+                -p='[{"op":"add","path":"/spec/template/spec/containers/0/envFrom","value":[{"secretRef":{"name":"openwebui-oidc"}}]}]'

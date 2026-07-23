@@ -13,32 +13,22 @@ helm:
 kustomize:
   dir: .
 
-# FIX 2026-07-23: clusterSelector previously used `name: cit-cps-gpu`,
-# which matches no live fleet.cattle.io Cluster object -- the only real
-# cluster is named `local` (label `name: local`, confirmed via
-# `kubectl get clusters.fleet.cattle.io -A`). A non-matching selector
-# means this envFrom patch has silently never applied since it was
-# added -- confirmed live: `kubectl get sts open-webui -n openwebui -o
-# jsonpath='{.spec.template.spec.containers[0].envFrom}'` returned empty.
-# Open WebUI's OAuth login has never actually been wired in despite the
-# SOPS migration work in docs/sops-secrets-migration.md having encrypted
-# the real client_id/secret -- this was the missing link. Found while
-# building the Dex IdP broker (docs/superpowers/plans/2026-07-23-dex-idp-broker.md),
-# which copied this exact (broken) pattern before the bug was caught.
-targetCustomizations:
-- name: local
-  clusterSelector:
-    matchLabels:
-      name: local
-  patches:
-  - target:
-      group: apps
-      version: v1
-      kind: StatefulSet
-      name: open-webui
-    patch: |-
-      - op: add
-        path: /spec/template/spec/containers/0/envFrom
-        value:
-          - secretRef:
-              name: openwebui-oidc
+# REDESIGNED 2026-07-23: this bundle previously used a
+# `targetCustomizations[].patches` JSON-patch block to inject envFrom
+# into the chart-rendered StatefulSet. That mechanism is not valid Fleet
+# syntax at all -- confirmed against Fleet's fleetyaml.go source:
+# TargetCustomizations is typed []BundleTarget, which has no `patches`
+# field (only `diff.comparePatches`, which affects drift comparison
+# only, never resource content). The key was silently dropped, which is
+# why Open WebUI's OAuth login never actually worked despite the client
+# being fully provisioned and SOPS-encrypted (see
+# docs/sops-secrets-migration.md). Found and root-caused while building
+# the Dex IdP broker, which copied this same broken pattern before being
+# caught -- see docs/troubleshooting.md and
+# docs/superpowers/plans/2026-07-23-dex-idp-broker.md.
+#
+# Replaced with the Helm-hook sync-Job pattern proven live for
+# rancher/oidc-sync-job.yaml and system/auth/dex/rancher-secret-sync-job.yaml:
+# a post-install/post-upgrade hook Job patches envFrom onto the live
+# StatefulSet via `kubectl patch` after Helm creates it. See
+# oauth-envfrom-sync-job.yaml.
