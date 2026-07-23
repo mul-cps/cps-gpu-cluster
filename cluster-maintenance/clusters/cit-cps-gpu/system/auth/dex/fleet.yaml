@@ -34,11 +34,26 @@ dependsOn:
 # `openssl rand -base64`), which contains no sed-special characters
 # (no `&`, and `|` is used as the delimiter), so a plain `sed` substitution
 # is safe without escaping.
+#
+# CRITICAL FIX (2026-07-23, review): clusterSelector below originally used
+# `name: cit-cps-gpu` (copied from user/llm/open-webui/fleet.yaml's
+# existing envFrom patch) -- this label does NOT exist on the live
+# fleet.cattle.io Cluster object, which is actually named `local` with
+# label `name: local` (confirmed via `kubectl get clusters.fleet.cattle.io -A`).
+# A non-matching selector means the patch silently never applies -- no
+# error, no warning, just an unpatched base manifest reconciling
+# successfully. This exact bug was found to ALSO affect the open-webui
+# precedent this was copied from: its OAuth envFrom patch has never
+# actually applied live either (confirmed empty envFrom on the live
+# StatefulSet), meaning Open WebUI's OAuth login (SOPS-migrated in an
+# earlier, separate piece of work) is still not actually wired in -- a
+# pre-existing bug, out of scope to fix here, but flagged for a
+# follow-up fix to open-webui/fleet.yaml.
 targetCustomizations:
-- name: cit-cps-gpu
+- name: local
   clusterSelector:
     matchLabels:
-      name: cit-cps-gpu
+      name: local
   patches:
   - target:
       group: apps
