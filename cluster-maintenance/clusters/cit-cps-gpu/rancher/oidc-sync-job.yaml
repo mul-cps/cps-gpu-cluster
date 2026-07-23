@@ -1,0 +1,105 @@
+# Rancher's AuthConfig CRD has no secretKeyRef-style field -- clientSecret
+# must be a literal value on the object itself (see docs/rancher-authentik-sso-plan.md
+# and genericoidc.yaml). This Job reads the real value from the
+# rancher-oidc-secret Secret (decrypted in-cluster from oidc-sopssecret.yaml
+# by the shared sops-secrets-operator) and patches it into the AuthConfig,
+# replacing the old manual `kubectl patch` step.
+#
+# Re-run mechanism: Helm hooks, not a bare Job + fleet.cattle.io/apply-once.
+# Fleet applies every bundle -- even pure kustomize.dir raw-manifest bundles
+# with no `helm:` chart block, like this one -- as a synthetic Helm release
+# under the hood, so `helm.sh/hook` annotations fire on every Fleet
+# reconcile/upgrade. This is the same pattern already used and confirmed
+# live in this repo by system/gpu/gpu-operator/node-labeler.yaml and
+# system/observability/monitoring/crds-and-namespace.yaml -- see
+# docs/sops-secrets-migration.md for why this was chosen over
+# `fleet.cattle.io/apply-once: "false"` (that annotation appears nowhere
+# else in this repo and its semantics for this Fleet version were not
+# independently verifiable; the Helm-hook approach has in-repo, live-confirmed
+# precedent instead).
+#
+# The Job intentionally does NOT use `hook-succeeded` in its delete policy
+# (unlike the RBAC objects above) -- it uses `before-hook-creation` only, so
+# the most recent run's Job/Pod/logs stay inspectable via
+# `kubectl get job rancher-oidc-sync -n cattle-system` instead of vanishing
+# on success, and is only cleaned up right before the next run.
+#
+# Fails loudly (exit 1, no patch applied) rather than patching an empty
+# clientSecret if the Secret is missing or not yet decrypted by the
+# sops-secrets-operator -- `set -eu` alone does not catch a failed
+# `kubectl get | base64 -d` pipeline (no `pipefail` in dash/sh), so the
+# empty-value check below is required, not optional.
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: rancher-oidc-sync
+  namespace: cattle-system
+  annotations:
+    helm.sh/hook: post-install,post-upgrade
+    helm.sh/hook-weight: "-10"
+    helm.sh/hook-delete-policy: before-hook-creation
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: rancher-oidc-sync
+  annotations:
+    helm.sh/hook: post-install,post-upgrade
+    helm.sh/hook-weight: "-10"
+    helm.sh/hook-delete-policy: before-hook-creation
+rules:
+  - apiGroups: ["management.cattle.io"]
+    resources: ["authconfigs"]
+    verbs: ["get", "patch"]
+  - apiGroups: [""]
+    resources: ["secrets"]
+    verbs: ["get"]
+    resourceNames: ["rancher-oidc-secret"]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: rancher-oidc-sync
+  annotations:
+    helm.sh/hook: post-install,post-upgrade
+    helm.sh/hook-weight: "-10"
+    helm.sh/hook-delete-policy: before-hook-creation
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: rancher-oidc-sync
+subjects:
+  - kind: ServiceAccount
+    name: rancher-oidc-sync
+    namespace: cattle-system
+---
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: rancher-oidc-sync
+  namespace: cattle-system
+  annotations:
+    helm.sh/hook: post-install,post-upgrade
+    helm.sh/hook-weight: "0"
+    helm.sh/hook-delete-policy: before-hook-creation
+spec:
+  backoffLimit: 3
+  template:
+    spec:
+      serviceAccountName: rancher-oidc-sync
+      restartPolicy: OnFailure
+      containers:
+        - name: sync
+          image: bitnami/kubectl:1.30
+          command:
+            - sh
+            - -c
+            - |
+              set -eu
+              RAW=$(kubectl get secret rancher-oidc-secret -n cattle-system -o jsonpath='{.data.clientSecret}')
+              SECRET=$(printf '%s' "$RAW" | base64 -d)
+              if [ -z "$SECRET" ]; then
+                echo "clientSecret is empty (Secret missing/not yet decrypted by sops-secrets-operator?); refusing to patch" >&2
+                exit 1
+              fi
+              kubectl patch authconfig genericoidc --type merge -p "{\"clientSecret\":\"$SECRET\"}"

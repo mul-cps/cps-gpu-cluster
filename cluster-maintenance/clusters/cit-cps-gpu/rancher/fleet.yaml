@@ -1,0 +1,14 @@
+name: rancher
+defaultNamespace: cattle-system
+
+labels:
+  app: rancher
+  name: rancher
+
+# Raw manifests only -- no external chart. Fleet applies every bundle via a
+# synthetic Helm release regardless of whether a `helm:` block is present,
+# which is what lets the Helm-hook Job below re-run on every reconcile (see
+# oidc-sync-job.yaml and system/observability/monitoring/crds-and-namespace.yaml
+# for the confirmed-live precedent of this same pattern).
+kustomize:
+  dir: .
