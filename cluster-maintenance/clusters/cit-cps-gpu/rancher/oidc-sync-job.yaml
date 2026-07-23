@@ -9,14 +9,19 @@
 # Fleet applies every bundle -- even pure kustomize.dir raw-manifest bundles
 # with no `helm:` chart block, like this one -- as a synthetic Helm release
 # under the hood, so `helm.sh/hook` annotations fire on every Fleet
-# reconcile/upgrade. This is the same pattern already used and confirmed
-# live in this repo by system/gpu/gpu-operator/node-labeler.yaml and
-# system/observability/monitoring/crds-and-namespace.yaml -- see
-# docs/sops-secrets-migration.md for why this was chosen over
-# `fleet.cattle.io/apply-once: "false"` (that annotation appears nowhere
-# else in this repo and its semantics for this Fleet version were not
-# independently verifiable; the Helm-hook approach has in-repo, live-confirmed
-# precedent instead).
+# reconcile/upgrade. system/gpu/gpu-operator/node-labeler.yaml uses the same
+# hook pattern and IS confirmed live (uses bitnami/kubectl:latest, same
+# image as here). system/observability/monitoring/crds-and-namespace.yaml
+# was PREVIOUSLY cited as a second precedent for this pattern but that claim
+# was never actually verified -- it uses rancher/kubectl:v1.29.0, which was
+# discovered live 2026-07-23 (see this file's image comment below) to have
+# no shell at all, so that Job may never have successfully run. Its
+# hook-succeeded delete policy would hide a failing Job by deleting it on
+# success only, so absence of the Job object is not proof it worked. Not
+# fixed here (out of scope for this incident fix); flagged as a follow-up.
+# `fleet.cattle.io/apply-once: "false"` was considered instead of Helm
+# hooks but rejected: that annotation appears nowhere else in this repo and
+# its semantics for this Fleet version were not independently verifiable.
 #
 # The Job intentionally does NOT use `hook-succeeded` in its delete policy
 # (unlike the RBAC objects above) -- it uses `before-hook-creation` only, so
@@ -90,13 +95,16 @@ spec:
       restartPolicy: OnFailure
       containers:
         - name: sync
-          # rancher/kubectl:v1.29.0, not bitnami/kubectl:1.30 -- Bitnami's
-          # 2025 Docker Hub distribution change makes that tag's pullability
-          # unconfirmed, and a failed pull here would silently block all
-          # future clientSecret rotation with no visible error. This tag is
-          # the same confirmed-live precedent already used by
-          # system/observability/monitoring/crds-and-namespace.yaml.
-          image: rancher/kubectl:v1.29.0
+          # bitnami/kubectl:latest, NOT rancher/kubectl:v1.29.0 -- that tag
+          # was tried first (based on an unverified "confirmed live"
+          # in-repo comment) and empirically failed live 2026-07-23: the
+          # image has no shell at all ("exec: sh: executable file not found
+          # in $PATH"), confirmed via `kubectl run --image=rancher/kubectl:v1.29.0
+          # --command -- sh -c 'echo test'`. bitnami/kubectl:latest was
+          # verified the same way to actually contain a working shell before
+          # being used here -- do not swap this image again without the same
+          # live verification.
+          image: bitnami/kubectl:latest
           command:
             - sh
             - -c

@@ -1,14 +1,31 @@
-name: rancher
+name: rancher-oidc-sync-bundle
 defaultNamespace: cattle-system
 
 labels:
   app: rancher
-  name: rancher
+  name: rancher-oidc-sync-bundle
 
+# INCIDENT 2026-07-23: this bundle previously had `name: rancher`. Fleet
+# applies every bundle as a synthetic Helm release named after the bundle,
+# and "rancher" collided with the real Rancher installation's own Helm
+# release (also named "rancher", installed once via
+# bootstrap-cluster/ansible/playbooks/05-rancher.yml, completely outside
+# Fleet). On first reconcile, Fleet's synthetic "rancher" release (v9)
+# superseded the real one (v8), and Helm pruned the real Rancher
+# Deployment/Service as "no longer in the desired manifest" -- all 3
+# Rancher pods were killed and the genericoidc AuthConfig was reset to a
+# bare stub. Recovered via `helm rollback rancher 8 -n cattle-system` plus
+# manually re-applying this AuthConfig. See docs/troubleshooting.md and
+# docs/sops-secrets-migration.md for the full incident writeup.
+#
+# Never let a Fleet bundle name collide with an unrelated pre-existing Helm
+# release name -- always give a bundle-local `name:` that can't plausibly
+# match anything else, even when applying raw manifests with no `helm:`
+# block (Fleet still synthesizes a Helm release regardless).
+#
 # Raw manifests only -- no external chart. Fleet applies every bundle via a
 # synthetic Helm release regardless of whether a `helm:` block is present,
 # which is what lets the Helm-hook Job below re-run on every reconcile (see
-# oidc-sync-job.yaml and system/observability/monitoring/crds-and-namespace.yaml
-# for the confirmed-live precedent of this same pattern).
+# oidc-sync-job.yaml).
 kustomize:
   dir: .
