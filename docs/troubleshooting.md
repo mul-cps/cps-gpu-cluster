@@ -1446,6 +1446,91 @@ upgrade was not attempted.
 
 ## Fleet/GitOps Issues
 
+### `targetCustomizations[].patches` is not a real Fleet field — silently dropped (RESOLVED 2026-07-23)
+
+**Symptom**: a `fleet.yaml` with a `targetCustomizations` block containing
+`patches: [{op: add/replace, path: ..., value: ...}]` (JSON-Patch style,
+intended to mutate a Helm-rendered resource for a specific target
+cluster) has no effect at all on the live cluster — no error anywhere,
+the base manifest just reconciles as if the patch didn't exist.
+
+**Root cause**: confirmed against Fleet's actual source
+(`pkg/apis/fleet.cattle.io/v1alpha1/fleetyaml.go`):
+`TargetCustomizations []BundleTarget` — `targetCustomizations` entries
+are typed as `BundleTarget`, the exact same struct used for `targets[]`.
+`BundleTarget` has **no `patches` field at all** — only
+`diff.comparePatches`, which controls *drift comparison* (telling Fleet
+to ignore certain fields when deciding whether a live resource has
+"drifted" from desired state), not resource *content*. A `patches:` key
+under `targetCustomizations` is simply an unrecognized field and is
+silently dropped by the YAML unmarshaler — no validation error, no
+warning.
+
+This was found to have silently broken `open-webui/fleet.yaml`'s
+`envFrom` injection (adding `OAUTH_CLIENT_ID`/`OAUTH_CLIENT_SECRET` to
+the live StatefulSet) since it was first added — confirmed via
+`kubectl get sts open-webui -n openwebui -o
+jsonpath='{.spec.template.spec.containers[0].envFrom}'` returning empty.
+Open WebUI's OAuth login was never actually functional despite the
+client being fully provisioned and SOPS-encrypted (see
+`docs/sops-secrets-migration.md`). The same broken pattern was initially
+copied into the Dex IdP broker work before being caught — see
+`docs/superpowers/plans/2026-07-23-dex-idp-broker.md`.
+
+**Fix**: there is no direct Fleet-native equivalent for "JSON-patch a
+Helm-rendered resource, per-target." Use the Helm-hook sync-Job pattern
+instead (see `rancher/oidc-sync-job.yaml` and
+`system/auth/dex/rancher-secret-sync-job.yaml` for two proven-live
+examples): a `post-install,post-upgrade` hook Job that reads/patches the
+live resource directly via `kubectl` after Helm creates it. This is more
+moving parts than a declarative patch would be, but it's a mechanism
+that's actually real and independently testable (`kubectl get job ...
+Complete`), unlike a silently-dropped YAML field.
+
+**`open-webui/fleet.yaml` still needs this same redesign** — its
+`clusterSelector` was corrected in the same investigation (see the
+selector entry below) but that alone does not fix the root cause, since
+the whole `patches:` mechanism it relies on doesn't exist. Tracked as an
+open follow-up, not yet fixed.
+
+### `clusterSelector: matchLabels: name: cit-cps-gpu` matches no cluster (RESOLVED 2026-07-23)
+
+Separately from the above: several `targetCustomizations` blocks in this
+repo (including the one described above) used
+`clusterSelector: {matchLabels: {name: cit-cps-gpu}}`. The only real
+`fleet.cattle.io` `Cluster` object in this deployment is named `local`
+(`kubectl get clusters.fleet.cattle.io -A` — label `name: local`, not
+`cit-cps-gpu`). Combined with the bug above, this was a second,
+independent reason the same patches never applied. If reviving any
+`targetCustomizations` usage in this repo, use `name: local`.
+
+### Force-recreating a `BundleDeployment` for a chart with PVCs can delete them (INCIDENT 2026-07-23, data loss)
+
+**Do not do this**: `kubectl delete bundledeployment <name> -n
+cluster-fleet-local-local-<hash>` to force an immediate re-apply (used
+safely earlier the same day to recover the Rancher bundle, which has no
+persistent storage). For a Helm release that owns `PersistentVolumeClaim`
+objects (e.g. `open-webui`'s chart-templated PVCs, not a StatefulSet
+`volumeClaimTemplate` — those behave differently), forcing a
+`BundleDeployment` recreation appears to make Fleet perform a full
+uninstall/reinstall cycle of the underlying Helm release, which deletes
+and does not reliably recreate PVCs whose reclaim policy is `Delete`
+(the cluster default `local-path` StorageClass, and most others in this
+cluster, are `Delete`). The underlying PV/data is gone immediately — no
+`Released` state, no snapshot, no recovery path via `kubectl`. This
+happened to Open WebUI's persistent chat/config data during the Dex IdP
+broker work; confirmed real, permanent loss (no Longhorn volume, no
+`Released` PV, `local-path` deletes the host directory on PVC deletion).
+
+**If a bundle isn't picking up a merged fix quickly enough**: prefer
+`kubectl patch gitrepo cluster-maintenance -n fleet-local --type merge
+-p '{"spec":{"forceSyncGeneration": <n+1>}}'` (bump the integer) over
+deleting the `BundleDeployment` — this forces Fleet to re-evaluate from
+git without touching already-applied downstream resources. Reserve
+`BundleDeployment` deletion, if ever, for bundles with **no** persistent
+storage, and even then treat it as a last resort, not a routine "force
+resync" tool.
+
 ### Pausing Fleet during live incident remediation
 
 When fixing a live cluster problem with direct `kubectl`/`helm` changes
