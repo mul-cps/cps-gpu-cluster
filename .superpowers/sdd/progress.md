@@ -52,3 +52,9 @@ Task 10: complete (commit 3b06a1b, review approved)
   terraform.tfvars half: real file was lost, recreated from LIVE Proxmox API queries (node cit-gpu-01, storage pools, 8x A100 PCI addresses, VLAN 633, gateway, existing SSH pubkey from k3s-cp1) using a fresh operator-provided API token. Fresh vm_password generated (hash committed, one-time plaintext in scratchpad for operator to save to a password manager -- NOT in git).
   Controller independently verified decrypt works for terraform.tfvars AND spot-checked Tasks 4/7's secrets too, using the real age private key extracted read-only from the live sops-age-key cluster Secret (then securely deleted locally) -- full pipeline confirmed end-to-end, not just structurally.
   User-provided Proxmox API token was also pasted in chat -- recommend revoking/rotating alongside the Authentik token.
+
+Task 11: complete (commits e922a13 + docs-fix, review: Changes Requested -> fixed -> approved)
+  Both rotations independently confirmed by controller to decrypt to exactly the new values.
+  Fix applied directly: corrected a wrong citation (JupyterHub leak wrongly attributed to rancher-authentik-sso-plan.md; real commits are dfd3c3d leak / d96a8fa fix).
+  rancher_bootstrap_password: confirmed no separate checklist item needed -- addressed as a code-level fix (random generation) already, not a SopsSecret; live Rancher admin account state still needs a human check.
+  Both Authentik API tokens used during this session should be revoked by the user now that rotation work is done.
