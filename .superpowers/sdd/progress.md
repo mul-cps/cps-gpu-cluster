@@ -63,3 +63,8 @@ Task 12: complete (final commit above)
   4 parallel doc agents dispatched (system/, user/, bootstrap-cluster, CLAUDE.md). All diffs spot-checked before commit, all accurate.
   Agent D's dispatch prompt assumption (Reflector has "narrower remaining use" for TLS) was WRONG -- controller verified live via kubectl: Reflector IS active, but only for cit-teaching-platform's cit-auth/cit-jhub namespaces, unrelated to this repo. CLAUDE.md corrected to state this precisely rather than guess.
   All 12 tasks complete. Ready for final whole-branch review.
+
+Final whole-branch review: complete. No Critical findings.
+  Verdict: ready to merge, one Important doc-consistency fix applied (above) -- inventory table + Rancher sync-mechanism note said "not rotated" after Task 11 already rotated both. Checklist was always correct; this only fixed stale prose elsewhere in the same doc.
+  Explicit PASS on all high-stakes checks: kustomize wiring (all 7 SopsSecrets render, verified live), no plaintext secrets anywhere in the 31-file diff, Task 7's Critical image-pin fix present, git history not rewritten, TLS certs untouched, scope matches spec.
+  Residual, disclosed, unavoidable pre-merge: true end-to-end login verification (Fleet sync -> Job Complete -> real OIDC browser login for Rancher; JupyterHub Postgres/LDAP/OAuth/proxy login) can only happen AFTER merge, since the live GitRepo tracks main.
