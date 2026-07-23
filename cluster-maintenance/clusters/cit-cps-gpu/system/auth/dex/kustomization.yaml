@@ -4,3 +4,4 @@ resources:
   - cps-connector-sopssecret.yaml
   - cit-connector-sopssecret.yaml
   - rancher-client-sopssecret.yaml
+  - rancher-secret-sync-job.yaml

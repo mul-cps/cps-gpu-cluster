@@ -28,13 +28,16 @@
 #
 # RESOLVED (2026-07-23): the `staticClients[].secret` value below is
 # written in the same `$DEX_RANCHER_CLIENT_SECRET` form for consistency,
-# but per the above it is NOT expanded by Dex itself -- fleet.yaml's
-# targetCustomizations patch adds an initContainer that substitutes the
-# real value into a rendered copy of this config on a shared emptyDir
-# before Dex starts, and repoints the main container's config mount at
-# that rendered copy. See fleet.yaml for the full patch and reasoning.
-# Track dexidp/dex#4212 upstream -- if native staticClients env expansion
-# ships, this initContainer workaround can be removed.
+# but per the above it is NOT expanded by Dex itself -- rancher-secret-sync-job.yaml
+# (a Helm post-install/post-upgrade hook Job, same proven pattern as
+# rancher/oidc-sync-job.yaml) patches the real value into the rendered
+# config Secret in place after Helm creates it, then restarts the Dex
+# Deployment. See fleet.yaml and rancher-secret-sync-job.yaml for the
+# full reasoning (an earlier attempt used a Fleet targetCustomizations
+# JSON-patch, which turned out to be invalid Fleet syntax -- see
+# fleet.yaml's history/comment). Track dexidp/dex#4212 upstream -- if
+# native staticClients env expansion ships, this sync-Job workaround can
+# be removed.
 
 envVars:
   - name: DEX_CPS_CLIENT_SECRET
