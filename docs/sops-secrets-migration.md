@@ -29,7 +29,7 @@ design spec exactly).
 | JupyterHub proxy auth token | values.yaml `proxy.secretToken` (placeholder literal `GENERATE_WITH_openssl_rand_-hex_32`, never a real secret) | proxy-sopssecret.yaml | done |
 | Rancher OIDC (Authentik) clientSecret | `rancher-oidc-secret` Secret in `cattle-system`, applied/patched by hand outside Fleet (`rancher/` had no `fleet.yaml`) | `rancher/oidc-sopssecret.yaml` | done, reused live value (not rotated) — see "Note on the Rancher AuthConfig sync mechanism" below |
 | JupyterHub OAuth (Authentik) client_secret | `jupyterhub-oauth-secret` Secret in `jupyterhub`, applied out-of-band outside Fleet | `jupyterhub/oauth-sopssecret.yaml` | done, reused live value (not rotated) — rotating would break the live Authentik-registered client unless updated there too |
-| Open WebUI OAuth (Authentik) client_id/client_secret | Real client_id/client_secret from Authentik provider "Provider for OpenWebUI" (pk 36) | `cluster-maintenance/clusters/cit-cps-gpu/user/llm/open-webui/oauth-sopssecret.yaml` (`openwebui-oidc`) | Migrated (Task 9 follow-up) — see "Open WebUI OAuth: now configured" below |
+| Open WebUI OAuth (Authentik) client_id/client_secret | client_id/client_secret from Authentik provider "Provider for OpenWebUI" (pk 36); client_secret rotated 2026-07-23 after review found the client_id was already leaked in commit `9f9f8ff` | `cluster-maintenance/clusters/cit-cps-gpu/user/llm/open-webui/oauth-sopssecret.yaml` (`openwebui-oidc`) | Migrated (Task 9 follow-up), secret rotated post-review — see "Open WebUI OAuth: now configured" below |
 
 ### Note on the proxy auth token mechanism
 
@@ -108,9 +108,9 @@ findings below, preserved for history). The human operator decided
 (option 1 below): finish the Authentik provider registration and wire up
 real OAuth, then continue the migration.
 
-The Authentik OAuth2 provider "Provider for OpenWebUI" (pk 36) already
-existed with a real, never-leaked client_id/client_secret; it was
-missing only a `redirect_uri`. The controller set
+The Authentik OAuth2 provider "Provider for OpenWebUI" (pk 36,
+client_id `5PLqeFpglsR0YVcsZj6nQtBkzNG6EiGyjQOZAdGr`) already existed; it
+was missing only a `redirect_uri`. The controller set
 `redirect_uri = https://openwebui.dshl.unileoben.ac.at/oauth/oidc/callback`
 on that provider (matching Open WebUI's `/oauth/oidc/callback` OAuth
 callback convention). A follow-up task then:
@@ -129,12 +129,27 @@ callback convention). A follow-up task then:
   `extraEnvVars`, and replaced the stale `# Secrets injected via patch`
   comment with one pointing at the SopsSecret.
 
-**Still open (out of scope for this task):** the Dec-2025
-committed-then-deleted `OIDC_CLIENT_ID`/`OIDC_CLIENT_SECRET` values
-(commit `9f9f8ff`) described below remain in git history and are a
-**separate, unrelated Authentik client** from the one now wired up here.
-That old, leaked client should still be revoked/rotated in Authentik —
-tracked as Task 11, not done as part of this change.
+**Correction (2026-07-23, code review):** the original version of this
+section claimed the Authentik client used above (pk 36, client_id
+`5PLqeFpglsR0YVcsZj6nQtBkzNG6EiGyjQOZAdGr`) was "real, never-leaked" and
+"a separate, unrelated Authentik client" from the one described in the
+"Original investigation notes" below. **That was false.** The
+client_id is identical to the one committed in plaintext in commit
+`9f9f8ff` (2025-12-10, `secret-oidc.yaml`,
+`OIDC_CLIENT_ID`/`OIDC_CLIENT_SECRET` keys) — it is the *same*
+Authentik client, not a different one. The `client_secret` originally
+encrypted into `oauth-sopssecret.yaml` by this task was therefore
+already permanently exposed via git history, and re-encrypting it into
+SOPS did not constitute a real migration (the exact "security theater"
+failure mode warned about two paragraphs below, which the original
+author of this section failed to check for their own change).
+
+**Remediation:** the client_secret for this Authentik client (pk 36,
+client_id unchanged — client_ids don't rotate, only secrets do) was
+rotated directly in Authentik on 2026-07-23. The newly rotated value
+is what's now encrypted in `oauth-sopssecret.yaml`. The old secret
+leaked in commit `9f9f8ff` is now dead/invalid and can no longer be
+used to authenticate as this OAuth client.
 
 Original investigation notes (preserved for history):
 
@@ -180,4 +195,5 @@ Authentik and finish the wiring. See "Open WebUI OAuth: now configured
 ## Credential rotation checklist
 
 - [x] JupyterHub Postgres password — rotated 2026-07-23 (was jhub-secure-db-password-2025, plaintext in git)
+- [x] Open WebUI OAuth client_secret (Authentik "Provider for OpenWebUI", pk 36, client_id `5PLqeFpglsR0YVcsZj6nQtBkzNG6EiGyjQOZAdGr`) — rotated 2026-07-23 in Authentik after code review found this client_id (client_id unchanged, only the secret rotates) was already leaked in plaintext in commit `9f9f8ff` (2025-12-10); the old leaked secret is now dead. `oauth-sopssecret.yaml` re-encrypted with the rotated value.
 - [ ] JupyterHub LDAP bind-service-account password — NOT rotated by this migration; the existing `ldapservice` credential value was reused as-is when encrypting into `jupyterhub-ldap-credentials`/`ldap-sopssecret.yaml`. This is a centrally-managed LDAP directory account (`cn=ldapservice,ou=users,dc=ldap,dc=goauthentik,dc=io`), not an app-generated password, so rotation is flagged as a manual follow-up requiring coordination with whoever administers the Authentik/LDAP directory before changing it here.
