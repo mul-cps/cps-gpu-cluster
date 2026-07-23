@@ -23,3 +23,14 @@ Task 4: complete (commits 649cdad..c79233e, review approved)
 
 Task 5: complete (commit 7875ed9, review approved)
   Minor note: docs still echo the still-unrotated 'ldapservice' value in a code span — acceptable until rotation, flagged for later tightening.
+
+Task 6: complete (commit 2cb46ba, review approved)
+  IMPORTANT cross-cutting fix (commit after 2cb46ba): kustomization.yaml
+  resources: lists in BOTH jupyterhub/ and system/observability/monitoring/
+  were missing the new *-sopssecret.yaml files -- Fleet's kustomize build
+  only includes explicitly listed resources, so Tasks 3/4/5/6's secrets
+  would never have reached the cluster. Fixed and verified with
+  `kubectl kustomize .` locally (confirmed SopsSecret objects now appear
+  in the rendered output for both bundles). MUST check this same gap for
+  every later task that adds a *-sopssecret.yaml file to an existing
+  Fleet-kustomize bundle (rancher/ in Task 7, open-webui/ in Task 9).
