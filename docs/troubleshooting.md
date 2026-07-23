@@ -1754,6 +1754,43 @@ Longhorn's global `storage-over-provisioning-percentage` setting is `100` (i.e. 
 
 ## JupyterHub Issues
 
+### Duplicate env var name in extraEnv broke Fleet's patch apply (RESOLVED 2026-07-23)
+
+**Symptom**: `kubectl get bundle jupyterhub -n fleet-local` shows `ErrApplied`:
+```
+cannot patch "hub" with kind Deployment: The order in patch list: [...] doesn't match $setElementOrder list: [...]
+```
+Existing JupyterHub pods keep running (this is a failed *patch*, not a
+prune/delete), but the bundle stops reconciling entirely — no further
+changes to any part of this bundle land until fixed.
+
+**Root cause**: `values.yaml`'s `hub.extraEnv` and `proxy.chp.extraEnv`
+each added a second `CONFIGPROXY_AUTH_TOKEN` entry (intending to override
+the chart's own auto-generated token via "last entry wins" container env
+semantics — a real, valid Kubernetes behavior). But Fleet's patch-apply
+uses a strategic-merge-style diff that merges `containers[].env` by the
+`name` key; two list entries sharing one key make the list-merge
+undecidable, breaking the patch for the **entire** Deployment, not just
+that field. The `hub.extraEnv`/`proxy.chp.extraEnv` block's own comment at
+the time explicitly flagged this as "not confirmed live" — it wasn't, and
+this is exactly the failure mode that risked.
+
+**Fix**: removed the duplicate override entirely; reverted to the chart's
+own default `CONFIGPROXY_AUTH_TOKEN` (its own auto-generated, persisted
+`hub` Secret), which was already working correctly before this was
+touched. A future attempt to make this SOPS-managed needs a mechanism that
+doesn't create a same-name list-merge conflict — e.g. writing directly
+into the chart's own `hub` Secret key instead of adding a second env
+entry, verified live before merging, not just via `helm template`.
+
+**General lesson**: `helm template` output looking correct locally does
+**not** prove a values.yaml change will apply cleanly to a live,
+previously-reconciled Fleet bundle — Fleet's live patch/diff behavior
+against existing managed-fields state can fail in ways a template render
+can never show. Any change relying on duplicate-name "last wins" list
+entries (env vars, volumes, etc.) needs live verification against the
+actual bundle before merging, not just a template render.
+
 ### Hub pod not starting
 
 **Symptom**: JupyterHub hub pod in CrashLoopBackOff
