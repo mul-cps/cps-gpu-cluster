@@ -17,3 +17,5 @@ Task 2: complete (controller-executed, CPS provider pk 47, client_id iGjkHeZPoMr
 Task 3: complete (controller-executed, CIT provider pk 3, client_id qlPmVf0I9embINVWrDqSjWIjoD6HrTwx6TbEUYXq, live discovery confirmed -- unblocked, user provided both CPS+CIT tokens together)
   Both client secrets in /tmp/.../scratchpad/secure/dex_cps.txt and dex_cit.txt for Task 4's SopsSecrets, not yet consumed.
   Recommend user revoke both Authentik API tokens now that registration is done.
+
+Task 4: complete (commit 90a8545, review approved, controller independently verified all 3 decrypt to expected values via real age key)
