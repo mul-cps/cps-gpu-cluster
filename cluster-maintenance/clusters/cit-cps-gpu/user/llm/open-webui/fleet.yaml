@@ -13,11 +13,23 @@ helm:
 kustomize:
   dir: .
 
+# FIX 2026-07-23: clusterSelector previously used `name: cit-cps-gpu`,
+# which matches no live fleet.cattle.io Cluster object -- the only real
+# cluster is named `local` (label `name: local`, confirmed via
+# `kubectl get clusters.fleet.cattle.io -A`). A non-matching selector
+# means this envFrom patch has silently never applied since it was
+# added -- confirmed live: `kubectl get sts open-webui -n openwebui -o
+# jsonpath='{.spec.template.spec.containers[0].envFrom}'` returned empty.
+# Open WebUI's OAuth login has never actually been wired in despite the
+# SOPS migration work in docs/sops-secrets-migration.md having encrypted
+# the real client_id/secret -- this was the missing link. Found while
+# building the Dex IdP broker (docs/superpowers/plans/2026-07-23-dex-idp-broker.md),
+# which copied this exact (broken) pattern before the bug was caught.
 targetCustomizations:
-- name: cit-cps-gpu
+- name: local
   clusterSelector:
     matchLabels:
-      name: cit-cps-gpu
+      name: local
   patches:
   - target:
       group: apps
