@@ -1965,6 +1965,18 @@ singleuser:
         # in images that don't have xpra installed -- same lazy behavior as
         # jupyter_remote_desktop_proxy already relies on for non-desktop
         # profiles above.
+        #
+        # --xvfb override (2026-07-24 incident): Xpra's default Xvfb
+        # command enables `+extension GLX` -- same root cause as the
+        # TurboVNC/Xvnc segfault fixed earlier this session. Xpra's
+        # bundled Xvfb-for-Xpra crashed identically here (confirmed live:
+        # "Fatal server error" / "Xvfb command has terminated!", crash
+        # stack touching libEGL/eglGetError during InitExtensions).
+        # GPU acceleration for apps doesn't need Xvfb's own GLX -- it
+        # comes from VirtualGL's EGL backend (_vglwrap), independent of
+        # this 2D X server's own GLX support, exactly as with the
+        # TurboVNC profile. Fixed by disabling GLX in the xvfb command
+        # (verified live: Xvfb stays up without it).
         def _xpra_command(port):
             return [
                 "xpra", "start", ":100",
@@ -1975,6 +1987,9 @@ singleuser:
                 "--start-child=/usr/local/bin/start-xpra-desktop.sh",
                 "--systemd-run=no",
                 "--pulseaudio=no",
+                "--xvfb=Xvfb -screen 0 1680x1050x24 -extension GLX "
+                "+extension RANDR +extension RENDER +extension Composite "
+                "-nolisten tcp -noreset -auth $XAUTHORITY",
             ]
 
         c.ServerProxy["servers"] = {
