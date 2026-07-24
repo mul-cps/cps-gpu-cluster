@@ -1434,6 +1434,27 @@ hub:
               'category': 'GPU-enabled',
           },
 
+          # Xpra desktop (new, parallel to gpu-desktop-5gb above -- see
+          # docs/superpowers/specs/2026-07-24-xpra-desktop-migration-design.md).
+          # Native OS clipboard, LibreOffice + common desktop tools, same
+          # MPS-slice pattern and VirtualGL GPU rendering path as the
+          # TurboVNC profiles. Software x264 encode (A100 has no NVENC),
+          # so cpu_limit is set a bit higher than gpu-desktop-5gb's as a
+          # starting point -- tune based on measured encode load.
+          'gpu-desktop-xpra': {
+              'display_name': 'GPU Small (Desktop + Xpra, shared)',
+              'description': 'Desktop + ROS 2 + LibreOffice • Xpra (native clipboard) • 5GB VRAM via MPS sharing • 8 vCPU • 24 GiB',
+              'image': 'ghcr.io/mul-cps/cps-jupyter-notebook:latest-desktop-ros2-xpra',
+              'cpu_limit': 8.0, 'cpu_guarantee': 4.0,
+              'mem_limit': '24G', 'mem_guarantee': '12G',
+              'gpu': 1,
+              'memory_mib': 5120,
+              'resource_key': 'nvidia.com/gpu',
+              'runtime_class': 'nvidia',
+              'grant_sudo': True,
+              'category': 'GPU-enabled',
+          },
+
           # ComfyUI Profile
           'gpu-comfyui': {
               'display_name': 'ComfyUI (GPU)',
@@ -1928,6 +1949,34 @@ singleuser:
         # Optional: always allow proxied hosts (you already do something similar)
         c.ServerProxy = getattr(c, "ServerProxy", {})
         c.ServerProxy["host_allowlist"] = lambda app, host: True
+
+        # Xpra desktop (gpu-desktop-xpra profile). This entry only actually
+        # spawns `xpra` when the launcher tile is clicked, so it's harmless
+        # in images that don't have xpra installed -- same lazy behavior as
+        # jupyter_remote_desktop_proxy already relies on for non-desktop
+        # profiles above.
+        def _xpra_command(port):
+            return [
+                "xpra", "start", ":100",
+                f"--bind-tcp=0.0.0.0:{port}",
+                "--html=on",
+                "--daemon=no",
+                "--exit-with-children=yes",
+                "--start-child=/usr/local/bin/start-xpra-desktop.sh",
+                "--systemd-run=no",
+                "--pulseaudio=no",
+            ]
+
+        c.ServerProxy["servers"] = {
+            "xpra": {
+                "command": _xpra_command,
+                "timeout": 60,
+                "new_browser_tab": True,
+                "launcher_entry": {
+                    "title": "Desktop (Xpra)",
+                },
+            }
+        }
     dask-dashboard-config:
       mountPath: /home/jovyan/.config/dask/distributed.yaml
       stringData: |
