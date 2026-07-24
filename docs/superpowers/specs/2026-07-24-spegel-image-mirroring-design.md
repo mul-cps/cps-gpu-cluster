@@ -55,7 +55,26 @@ k3s's exact default containerd registry-config-path behavior needs to be confirm
 - Note: many of the image's ~70+ layers were already locally present on gpu1 from other already-pulled sibling images sharing the same CUDA/PyTorch/ROS base layers (this repo's images share a lot of common base layers) — this is expected layer deduplication, not a flaw in the test, but it means "the pull finished quickly" alone wasn't proof by itself; the Prometheus cache-hit counter was the actual proof.
 - Debugging pitfall hit along the way: Spegel writes a single `_default/hosts.toml` wildcard mirror config when `mirroredRegistries: []` (all registries), not a per-registry file like `ghcr.io/hosts.toml` — looking for the wrong filename gave a false "mirror config missing" impression initially.
 
-**Rollback safety note** (from PR #27 review): Spegel's chart has a `helm uninstall` hook (shipped since v0.2.0) that cleanly removes the containerd mirror config it wrote. This depends on the hook actually running — **never force-delete the `spegel` namespace or its resources**; let Fleet/Helm uninstall complete normally if this bundle is ever removed, and verify `certs.d/_default/hosts.toml` is gone afterward. Even mid-outage this is not a hard brick risk: Spegel's generated mirror config includes the real upstream registry as a fallback, so a crash-looping Spegel DaemonSet degrades to normal direct pulls (added latency), not failure.
+**Rollback safety note** (from PR #27 review): Spegel's chart has a `helm uninstall` hook (shipped since v0.2.0) that cleanly removes the containerd mirror config it wrote. This depends on the hook actually running — **never force-delete the `spegel` namespace or its resources**; let Fleet/Helm uninstall complete normally if this bundle is ever removed, and verify `certs.d/` is empty afterward.
+
+## CRITICAL incident: first-time pulls were completely broken (found and fixed same day, 2026-07-24)
+
+**This corrects a wrong claim made above** ("Spegel's generated mirror config includes the real upstream registry as a fallback, so a crash-looping Spegel DaemonSet degrades to normal direct pulls") — that was **not true** for the initial rollout config and was never actually verified before being written; it was an unverified assumption carried over from the PR #27 review discussion. The real, verified behavior:
+
+- With `mirroredRegistries` left at the chart default (`[]`, meaning "mirror all registries"), Spegel writes a single wildcard `_default/hosts.toml` containing **only its own two local endpoints, with no fallback host entry for the real origin registry at all**.
+- Per containerd's documented `hosts.toml` semantics, once a custom hosts.toml exists for a registry, it is the *complete* set of hosts to try — there is no implicit fallback to the real registry hostname.
+- Result: **every first-time pull of any image not already cached on some cluster node failed outright** with `NotFound`, cluster-wide, immediately upon rollout. Confirmed live: `crictl pull docker.io/library/alpine:3.19.7` (a real, common image, definitely not cached anywhere in this cluster) failed in under a second with zero corresponding Spegel log lines — the request never even reached Spegel's registry handler.
+- This was caught the same day as rollout, before it caused a real incident for a user, by deliberately testing the fallback path (not just the peer-hit path) after the initial "it works" verification.
+
+**Fix**: explicitly list `mirroredRegistries` (docker.io, ghcr.io, quay.io, gcr.io, registry.k8s.io, nvcr.io — the registries actually observed in use via Spegel's own metrics and containerd OCI event logs) instead of leaving it as the wildcard default. This makes Spegel generate **per-registry** `hosts.toml` files, each of which correctly includes the real origin as an explicit fallback host (confirmed live: `docker.io/hosts.toml` now includes `server = 'https://registry-1.docker.io'`, Docker Hub's actual API hostname, which Spegel resolves automatically once the registry is explicitly named).
+
+**Verified after the fix, both paths, with Prometheus metrics as proof (not just "the pull succeeded")**:
+- Fallback-to-origin: `spegel_mirror_requests_total{cache="miss",registry="docker.io"}` incremented on the node doing a genuine first-time pull, pull succeeded.
+- Peer-to-peer: `spegel_mirror_requests_total{cache="hit",registry="docker.io"}` incremented on a second node pulling the same (now cluster-cached) image, sourced from the first node as a peer.
+
+**Deliberately excluded from `mirroredRegistries`**: the one private/authenticated registry seen in cluster traffic (`git.unileoben.ac.at:5050`). Mirroring it would require `basicAuthSecretName` configured correctly; getting that wrong could break it worse than simply leaving it to bypass Spegel and pull directly, as it did before Spegel existed.
+
+**Lesson**: when a review or design doc asserts a safety property ("X falls back to Y"), verify that specific claim empirically before relying on it — the same discipline already established elsewhere this session (TurboVNC/Xpra fixes), applied here to a claim from a different agent's PR review rather than my own reasoning. An unverified safety claim written down confidently is exactly as dangerous as no claim at all.
 
 ## Explicitly out of scope
 
