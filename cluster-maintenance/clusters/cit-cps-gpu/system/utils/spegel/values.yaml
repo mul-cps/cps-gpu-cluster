@@ -1,0 +1,13 @@
+# k3s uses non-default paths for containerd's socket, registry mirror
+# config, and content store -- all three confirmed live (2026-07-24)
+# against k3s-wk-gpu1 (k3s v1.34.9+k3s1), not assumed from the chart's
+# generic upstream-containerd defaults.
+spegel:
+  containerdSock: "/run/k3s/containerd/containerd.sock"
+  # k3s's containerd already reads mirror config from this path by
+  # default (confirmed: `config_path` is set to this exact value in
+  # /var/lib/rancher/k3s/agent/etc/containerd/config.toml on a live
+  # node) -- no node-level k3s config changes needed, just point Spegel
+  # at the same path.
+  containerdRegistryConfigPath: "/var/lib/rancher/k3s/agent/etc/containerd/certs.d"
+  containerdContentPath: "/var/lib/rancher/k3s/agent/containerd/io.containerd.content.v1.content"

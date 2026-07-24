@@ -1,0 +1,19 @@
+# Spegel -- stateless peer-to-peer OCI image mirror. Nodes pull
+# already-cached image layers from peer nodes over the cluster network
+# instead of re-fetching from origin registries (GHCR, Docker Hub, etc.)
+# on every pull. No PVC, no central component -- see
+# docs/superpowers/specs/2026-07-24-spegel-image-mirroring-design.md
+# for why this was chosen over a central pull-through registry mirror.
+#
+# k3s paths confirmed live (2026-07-24) against a real node
+# (k3s-wk-gpu1, k3s v1.34.9+k3s1) rather than assumed from the chart's
+# generic (non-k3s) defaults -- see values.yaml for the overrides this
+# required.
+name: spegel
+defaultNamespace: spegel
+
+helm:
+  chart: oci://ghcr.io/spegel-org/helm-charts/spegel
+  version: "0.7.4"
+  valuesFiles:
+    - values.yaml
