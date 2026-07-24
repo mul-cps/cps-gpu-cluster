@@ -189,20 +189,6 @@ hub:
       import os
       c.GenericOAuthenticator.client_secret = os.environ['OAUTH_CLIENT_SECRET']
 
-    00b-debug-groups-claim: |
-      # TEMPORARY DEBUG (2026-07-24): root-causing why auth_state_groups_key
-      # ("oauth_user.groups") isn't found after the Dex cutover. This hook
-      # runs during authenticate(), right after auth_state is built and
-      # BEFORE group processing -- the correct place to see the real
-      # oauth_user dict shape. REMOVE after root-causing.
-      def _debug_modify_auth_state_hook(authenticator, auth_state):
-          oauth_user = auth_state.get('oauth_user', {})
-          authenticator.log.info(f"DEBUG oauth_user full keys: {list(oauth_user.keys())}")
-          authenticator.log.info(f"DEBUG oauth_user.get('groups'): {oauth_user.get('groups', 'MISSING')}")
-          authenticator.log.info(f"DEBUG id_token present: {bool(auth_state.get('id_token'))}")
-          return auth_state
-      c.GenericOAuthenticator.modify_auth_state_hook = _debug_modify_auth_state_hook
-
     00-postgres-db-url: |
       import os
       c.JupyterHub.db_url = "postgresql://jhub:{}@postgresql:5432/jhub".format(
