@@ -163,3 +163,49 @@ Three real issues hit during Task 6's actual cutover, all resolved:
 Confirmed working end-to-end: real browser login through Rancher via
 Dex, `local` admin fallback still functional, all Fleet bundles healthy
 except pre-existing unrelated drift (`knative-serving`, `ollama`).
+
+## `insecureEnableGroups` was missed — groups silently didn't flow (RESOLVED 2026-07-24)
+
+**This was flagged in the very first research pass that led to choosing
+Dex** (the pasted analysis at the start of this whole design, before any
+implementation): *"Dex can forward groups from an upstream OIDC provider,
+but its current documentation warns that OIDC connector groups may
+become stale and are disabled by default unless
+`insecureEnableGroups` is enabled."* That warning got lost between
+design and implementation — the CPS/CIT connector configs in
+`system/auth/dex/values.yaml` never set it, and nobody noticed until
+JupyterHub's Dex cutover (this doc's earlier section) made group-based
+behavior (power-user NFS mounts, admin role) visibly break.
+
+**Symptom**: every login through Dex succeeds, but the issued token has
+no `groups` claim at all — confirmed via a temporary
+`modify_auth_state_hook` debug log showing Dex's userinfo response
+contains only `iss/sub/aud/exp/iat/at_hash/email/email_verified/name/
+preferred_username`, despite `scope=openid+profile+email+groups` being
+requested. `manage_groups: true` group-sync in JupyterHub then correctly
+sees an empty group list and strips the user of every group membership
+on every login — including `app_jupyterhub_poweruser`, which silently
+disabled the persistent1_shared/scratch NFS mount options in the spawn
+form (unrelated to the separate, genuine LDAP-outpost connectivity issue
+found at the same time — two independent bugs surfaced by the same
+symptom).
+
+**Root cause**: confirmed against `dexidp/dex` source
+(`connector/oidc/oidc.go`): `InsecureEnableGroups bool` — "disabled by
+default until https://github.com/dexidp/dex/issues/1065 is resolved."
+Requesting the `groups` scope alone is not sufficient; the connector
+must explicitly opt in.
+
+**Fix**: `insecureEnableGroups: true` added to both the `cps` and `cit`
+connector configs. "Insecure" here refers to Dex's own caveat about
+potentially-stale group membership on long-lived tokens/sessions, not a
+security downgrade of the OIDC flow itself — accepted, since this
+cluster already depends on live group-based RBAC working correctly
+(Rancher's `groupsClaim`, JupyterHub's `admin_groups`/power-user gating).
+
+**Lesson**: when a design's own research phase flags a specific,
+named configuration gotcha, carry that exact flag through to a
+verification checklist at implementation time — don't rely on it being
+remembered. This is now the second time in this session a config
+detail correctly identified during design got silently dropped by
+implementation.

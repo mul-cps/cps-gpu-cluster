@@ -71,6 +71,24 @@ config:
   web:
     http: 0.0.0.0:5556
 
+  # insecureEnableGroups (2026-07-24, INCIDENT): Dex's OIDC connector does
+  # NOT include a `groups` claim in its issued tokens by default, even when
+  # the client requests the "groups" scope -- confirmed via
+  # connector/oidc/oidc.go: `InsecureEnableGroups bool ... disabled by
+  # default until https://github.com/dexidp/dex/issues/1065 is resolved`.
+  # Missing this caused JupyterHub's group-sync to see NO groups at all
+  # for every Dex-routed login, silently stripping users (including
+  # power-user/admin group membership) on every login -- root-caused via
+  # a temporary modify_auth_state_hook debug log
+  # (docs/dex-idp-broker.md has the full writeup) that showed Dex's
+  # userinfo response contains only
+  # iss/sub/aud/exp/iat/at_hash/email/email_verified/name/preferred_username,
+  # no `groups` key at all, despite scope=openid+profile+email+groups
+  # being requested. "Insecure" here refers to Dex's own caveat about
+  # potentially-stale group membership on long-lived tokens (dexidp/dex#1065),
+  # not a security downgrade for this OIDC flow itself -- accepted given
+  # this repo already depends on live group-based RBAC (Rancher, JupyterHub
+  # admin_groups) working correctly.
   connectors:
     - type: oidc
       id: cps
@@ -80,6 +98,7 @@ config:
         clientID: iGjkHeZPoMrpWsw5TZ3RY368DDJa2d8TwOnR1EVS
         clientSecret: $DEX_CPS_CLIENT_SECRET
         redirectURI: https://dex.dshl.unileoben.ac.at/callback
+        insecureEnableGroups: true
     - type: oidc
       id: cit
       name: CIT
@@ -88,6 +107,7 @@ config:
         clientID: qlPmVf0I9embINVWrDqSjWIjoD6HrTwx6TbEUYXq
         clientSecret: $DEX_CIT_CLIENT_SECRET
         redirectURI: https://dex.dshl.unileoben.ac.at/callback
+        insecureEnableGroups: true
 
   staticClients:
     - id: rancher
