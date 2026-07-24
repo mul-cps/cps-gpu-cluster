@@ -55,6 +55,11 @@ envVars:
       secretKeyRef:
         name: dex-rancher-client
         key: clientSecret
+  - name: DEX_JHUB_CLIENT_SECRET
+    valueFrom:
+      secretKeyRef:
+        name: dex-jhub-client
+        key: clientSecret
 
 config:
   issuer: https://dex.dshl.unileoben.ac.at
@@ -91,6 +96,11 @@ config:
       secret: $DEX_RANCHER_CLIENT_SECRET
       redirectURIs:
         - https://rancher.dshl.unileoben.ac.at/verify-auth
+    - id: jupyterhub
+      name: JupyterHub
+      secret: $DEX_JHUB_CLIENT_SECRET
+      redirectURIs:
+        - https://jupyterhub.dshl.unileoben.ac.at/hub/oauth_callback
 
 rbac:
   create: true

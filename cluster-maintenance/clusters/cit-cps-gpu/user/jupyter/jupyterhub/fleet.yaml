@@ -27,6 +27,13 @@ dependsOn:
 - selector:
     matchLabels:
       name: ingress-nginx
+# Added 2026-07-24 (review finding C1): without this, Fleet could apply
+# this bundle's Dex-repointed OAuth config before the dex-idp-broker
+# bundle has registered the jupyterhub static client and synced its
+# secret, locking out every user with no local-auth fallback.
+- selector:
+    matchLabels:
+      name: dex-idp-broker
       
 diff:
   comparePatches:

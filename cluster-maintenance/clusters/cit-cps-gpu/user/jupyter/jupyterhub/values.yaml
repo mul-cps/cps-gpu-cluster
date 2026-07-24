@@ -89,23 +89,51 @@ hub:
           logo_url: "https://www.unileoben.ac.at/fileadmin/shares/allgemeine_datenbank/logos/1-mul-logo/2-mul-logo-smoke-quer.svg"
           url: "https://www.unileoben.ac.at"
     GenericOAuthenticator:
-      # TODO: REMOVE THIS WORKAROUND - disables TLS verification for self-signed Authentik certs
-      tls_verify: false
-      client_id: "vUhzKqEF0UxPtZNM8aRbA1ncaehhIAIA2x9r83FI"
+      # REPOINTED TO DEX 2026-07-24 (docs/dex-idp-broker.md): this instance
+      # now authenticates through the Dex broker instead of CPS Authentik
+      # directly, so users can choose either CPS or CIT login at Dex's
+      # connector-selection screen. username_claim/claim_groups_key are
+      # UNCHANGED on purpose -- Dex's default claim mapping forwards
+      # Authentik's preferred_username/groups claims through unchanged
+      # (verified against dexidp/dex source: connector/oidc/oidc.go's
+      # default ClaimMapping keys are literally "preferred_username" and
+      # "groups", matching Authentik's own claim names), so existing users'
+      # usernames -- and therefore their PVC-backed home directories --
+      # must resolve identically whether they log in via CPS or CIT.
+      # VERIFY LIVE with a known existing user before trusting this in
+      # production: confirm no new claim-<username> PVC gets created.
+      #
+      # ROLLBACK: to revert to direct CPS Authentik (pre-Dex), restore
+      # client_id/authorize_url/token_url/userdata_url/login_service to:
+      #   client_id: "vUhzKqEF0UxPtZNM8aRbA1ncaehhIAIA2x9r83FI"
+      #   authorize_url: "https://auth.cps.unileoben.ac.at/application/o/authorize/"
+      #   token_url: "https://auth.cps.unileoben.ac.at/application/o/token/"
+      #   userdata_url: "https://auth.cps.unileoben.ac.at/application/o/userinfo/"
+      #   login_service: "CPS Authentik"
+      #   tls_verify: false
+      # and restore jupyterhub-oauth-secret's client-secret to the old
+      # Authentik-issued value (rotate a new one in Authentik if the old
+      # one was ever exposed -- do not reuse a burned secret).
+      #
+      # RE-ENABLED 2026-07-24: was disabled for self-signed Authentik certs
+      # (direct-to-Authentik OIDC endpoints). Dex serves a real, publicly
+      # trusted HARICA wildcard cert (confirmed live via `openssl s_client`
+      # and a plain `curl` without `-k`, see docs/troubleshooting.md's TLS
+      # incident and docs/dex-idp-broker.md), so this workaround is no
+      # longer needed now that all OIDC endpoints point at Dex, not
+      # Authentik directly.
+      tls_verify: true
+      client_id: "jupyterhub"
       # client_secret is set via extraConfig/00-oauth-secret below, read from
       # the OAUTH_CLIENT_SECRET env var (injected from the jupyterhub-oauth-secret
-      # k8s Secret via hub.extraEnv). CORRECTED 2026-07-06: this value was
-      # previously committed here in plaintext -- removed from HEAD, but the
-      # exposed value is still permanently in this repo's git history and
-      # must be rotated in Authentik (Applications -> this OAuth provider ->
-      # regenerate client secret), independent of this code fix. Update the
-      # jupyterhub-oauth-secret k8s Secret's client-secret key with the new
-      # value after rotating, then `kubectl rollout restart deploy/hub -n jupyterhub`.
+      # k8s Secret via hub.extraEnv). Now holds Dex's static client shared
+      # secret (dex-jhub-client), not an Authentik-issued one -- see
+      # system/auth/dex/jhub-client-sopssecret.yaml.
       oauth_callback_url: "https://jupyterhub.dshl.unileoben.ac.at/hub/oauth_callback"
-      authorize_url: "https://auth.cps.unileoben.ac.at/application/o/authorize/"
-      token_url: "https://auth.cps.unileoben.ac.at/application/o/token/"
-      userdata_url: "https://auth.cps.unileoben.ac.at/application/o/userinfo/"
-      login_service: "CPS Authentik"
+      authorize_url: "https://dex.dshl.unileoben.ac.at/auth"
+      token_url: "https://dex.dshl.unileoben.ac.at/token"
+      userdata_url: "https://dex.dshl.unileoben.ac.at/userinfo"
+      login_service: "Login (CPS or CIT via Dex)"
       username_claim: "preferred_username"
       scope: ["openid","profile","email","groups"]
       claim_groups_key: "groups"
