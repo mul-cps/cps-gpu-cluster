@@ -2,6 +2,12 @@
 
 > **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
 
+**Status: COMPLETE (2026-07-24).** All 5 tasks executed and verified live — see
+`docs/superpowers/specs/2026-07-24-spegel-image-mirroring-design.md`'s
+"Live verification results" section for the actual findings (containerd
+paths, DaemonSet health, and concrete Prometheus-metrics proof that
+peer-to-peer mirroring is really happening, not just "pods are Running").
+
 **Goal:** Deploy Spegel as a cluster-wide DaemonSet so nodes pull already-cached image layers from peer nodes over the fast cluster network instead of re-fetching from origin registries.
 
 **Architecture:** New Fleet bundle at `cluster-maintenance/clusters/cit-cps-gpu/system/utils/spegel/`, deployed via Spegel's official Helm chart, following this repo's standard bundle pattern (`fleet.yaml` + `values.yaml`). No PVC, no central component — Spegel is a stateless DaemonSet using containerd's own registry-mirror hook.

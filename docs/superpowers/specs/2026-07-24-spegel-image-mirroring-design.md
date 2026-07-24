@@ -1,6 +1,6 @@
 # Cluster-wide Image Mirroring via Spegel
 
-**Status:** Approved (user chose Spegel over a central pull-through registry mirror after weighing tradeoffs), ready for planning.
+**Status:** Deployed and verified live on 2026-07-24. All 7 nodes running Spegel v0.7.4, peer-to-peer mirroring confirmed working with real traffic (see "Live verification results" below).
 **Date:** 2026-07-24
 
 ## Problem
@@ -41,6 +41,21 @@ k3s's exact default containerd registry-config-path behavior needs to be confirm
 3. Deploy via Fleet (same GitOps flow as every other bundle in this repo — no manual `helm install`).
 4. Verify live: confirm the DaemonSet is Running on all 7 nodes, then prove peer-to-peer pull actually works — e.g. delete a large image's local cache on one GPU node (`crictl rmi` / `ctr -n k8s.io images rm`) while it's still present on another, force a re-pull, and confirm (via Spegel's own metrics/logs, not just "it worked") that the pull came from a peer, not the origin registry.
 5. Document in `docs/troubleshooting.md`'s style if any incident occurs during rollout, matching this repo's established documentation discipline.
+
+## Live verification results (2026-07-24)
+
+**Task 1 (containerd config path):** Confirmed live against `k3s-wk-gpu1` (v1.34.9+k3s1) — `config_path` is already set to `/var/lib/rancher/k3s/agent/etc/containerd/certs.d` by default in `/var/lib/rancher/k3s/agent/etc/containerd/config.toml`. No node-level k3s config changes were needed. Also confirmed the real k3s-specific containerd socket path (`/run/k3s/containerd/containerd.sock`) and content-store path (`/var/lib/rancher/k3s/agent/containerd/io.containerd.content.v1.content`), both different from the chart's generic upstream-containerd defaults and both required as explicit `values.yaml` overrides.
+
+**Task 3 (DaemonSet health):** All 7 pods (3 control-plane + 4 GPU workers) reached `Running`/`1/1 Ready` within ~20s of Fleet sync. Startup logs showed transient `failed to run bootstrap` errors from all pods simultaneously trying to resolve the `spegel-bootstrap` headless service before its DNS records were populated — self-healing, resolved within ~15s (`bootstrap completed connectivity is reached`), not a real problem.
+
+**Task 4 (peer-to-peer pull proof):** Verified with concrete evidence, not just "the pod is Running":
+- Confirmed `ghcr.io/mul-cps/cps-jupyter-notebook:latest-desktop-ros2-xpra` (19.2GB) was present on `k3s-wk-gpu4` but not `k3s-wk-gpu1`.
+- Forced a pull on `k3s-wk-gpu1` via `crictl pull`.
+- Confirmed via Spegel's own Prometheus metrics (`kubectl port-forward` directly to gpu1's Spegel pod, port 9090 — **not** the ClusterIP Service, which load-balances to a random pod and gives a misleading aggregate view) that `spegel_mirror_requests_total{cache="hit",registry="ghcr.io"}` was 71 (one per image layer) and `spegel_mirror_last_success_timestamp_seconds` matched the test window exactly (2026-07-24 16:20:16 CEST).
+- Note: many of the image's ~70+ layers were already locally present on gpu1 from other already-pulled sibling images sharing the same CUDA/PyTorch/ROS base layers (this repo's images share a lot of common base layers) — this is expected layer deduplication, not a flaw in the test, but it means "the pull finished quickly" alone wasn't proof by itself; the Prometheus cache-hit counter was the actual proof.
+- Debugging pitfall hit along the way: Spegel writes a single `_default/hosts.toml` wildcard mirror config when `mirroredRegistries: []` (all registries), not a per-registry file like `ghcr.io/hosts.toml` — looking for the wrong filename gave a false "mirror config missing" impression initially.
+
+**Rollback safety note** (from PR #27 review): Spegel's chart has a `helm uninstall` hook (shipped since v0.2.0) that cleanly removes the containerd mirror config it wrote. This depends on the hook actually running — **never force-delete the `spegel` namespace or its resources**; let Fleet/Helm uninstall complete normally if this bundle is ever removed, and verify `certs.d/_default/hosts.toml` is gone afterward. Even mid-outage this is not a hard brick risk: Spegel's generated mirror config includes the real upstream registry as a fallback, so a crash-looping Spegel DaemonSet degrades to normal direct pulls (added latency), not failure.
 
 ## Explicitly out of scope
 
