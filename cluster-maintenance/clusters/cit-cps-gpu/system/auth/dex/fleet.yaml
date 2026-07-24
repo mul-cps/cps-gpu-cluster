@@ -47,4 +47,4 @@ dependsOn:
 # in-place after Helm creates it, then restarts the Dex Deployment so it
 # picks up the corrected config on its next start (Dex only reads
 # config.yaml at startup, unlike Rancher's AuthConfig which the
-# controller re-reads live). See rancher-secret-sync-job.yaml.
+# controller re-reads live). See secrets-sync-cronjob.yaml.
