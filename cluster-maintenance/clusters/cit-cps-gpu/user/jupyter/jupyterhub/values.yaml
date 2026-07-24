@@ -1990,12 +1990,17 @@ singleuser:
                 "--xvfb=Xvfb -screen 0 1680x1050x24 -extension GLX "
                 "+extension RANDR +extension RENDER +extension Composite "
                 "-nolisten tcp -noreset -dpi 96 -auth $XAUTHORITY",
-                # xfce4-panel/xfwm4 don't handle Xpra's default dynamic
-                # screen resize (matching the browser window on every
-                # resize) cleanly -- confirmed live, 2026-07-24: taskbar
-                # disappearing, windows shifted/misplaced after the
-                # first resize event. Keep a fixed screen size instead.
-                "--resize-display=no",
+                # NOTE (2026-07-24): --resize-display=no was tried here
+                # first, on the theory that xfce4-panel/xfwm4 couldn't
+                # handle Xpra's dynamic screen resize -- but a fixed
+                # 1680x1050 screen doesn't match the real browser
+                # viewport size, leaving a cut-off/blank strip when the
+                # viewport is wider (confirmed live). The original
+                # panel/window misplacement was more likely caused by
+                # the DPI mismatch below, not resizing itself. Reverted
+                # to Xpra's default dynamic resize (matches viewport,
+                # no cutoff) and kept only the DPI fix.
+                #
                 # Xvfb otherwise derives DPI from an assumed physical
                 # screen size, producing an anisotropic mismatch
                 # ("DPI set to 56 x 90 (wanted 96 x 96)", confirmed
