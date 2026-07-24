@@ -1,0 +1,44 @@
+externalURL: https://harbor.dshl.unileoben.ac.at
+
+expose:
+  type: ingress
+  tls:
+    enabled: true
+    certSource: secret
+    secret:
+      secretName: dshl-wildcard
+  ingress:
+    hosts:
+      core: harbor.dshl.unileoben.ac.at
+    className: nginx
+    annotations:
+      nginx.ingress.kubernetes.io/ssl-redirect: "true"
+      nginx.ingress.kubernetes.io/proxy-body-size: "0"
+
+existingSecretAdminPassword: harbor-admin-password
+existingSecretAdminPasswordKey: HARBOR_ADMIN_PASSWORD
+existingSecretSecretKey: harbor-secret-key
+
+persistence:
+  enabled: true
+  resourcePolicy: keep
+  persistentVolumeClaim:
+    registry:
+      storageClass: longhorn
+      size: 200Gi
+    jobservice:
+      jobLog:
+        storageClass: longhorn
+        size: 5Gi
+    database:
+      storageClass: longhorn
+      size: 5Gi
+    redis:
+      storageClass: longhorn
+      size: 2Gi
+    trivy:
+      storageClass: longhorn
+      size: 10Gi
+
+trivy:
+  enabled: true
