@@ -209,3 +209,55 @@ verification checklist at implementation time — don't rely on it being
 remembered. This is now the second time in this session a config
 detail correctly identified during design got silently dropped by
 implementation.
+
+## `cit-teaching-platform` JupyterHub cutover (2026-07-24, confirmed live)
+
+Extended the Dex broker to the second, separate JupyterHub instance —
+`bjoernellens1/cit-teaching-platform`'s `cit-jupyterhub` Fleet bundle
+(namespace `cit-jhub`, ~300 real student/staff users, existing PVCs
+named `claim-<username>`), previously talking to CIT Authentik directly.
+This is a different repo/tenant from this repo's own JupyterHub instance
+(already cut over — see the sections above), sharing only the same
+physical cluster and the same Dex broker/connectors.
+
+**Changes**:
+- `cps-gpu-cluster` PR #17: added a third Dex `staticClients` entry, id
+  `cit-jupyterhub`, redirect URI
+  `https://jhub.dshl.unileoben.ac.at/hub/oauth_callback`. New SopsSecret
+  `dex-cit-jhub-client` (namespace `dex`); `secrets-sync-cronjob.yaml`
+  extended (RBAC `resourceNames`, `get_secret` call, `sed` substitution,
+  placeholder grep alternation) to patch this third client's secret into
+  the live Dex config, same self-healing pattern as `rancher`/`jupyterhub`.
+  No Authentik-side changes needed — reused the existing `cps`/`cit`
+  connectors, which already had `insecureEnableGroups: true` set from the
+  fix above.
+- `cit-teaching-platform` PR #5: `bundles/20-jupyterhub/values/
+  jupyterhub-values.yaml`'s `GenericOAuthenticator` repointed from
+  `auth.dshl.unileoben.ac.at` (direct CIT Authentik) to
+  `dex.dshl.unileoben.ac.at` (Dex); `client_id` → `cit-jupyterhub`;
+  `username_claim: preferred_username` and all group-based logic
+  (`admin_groups`, `manage_groups`, `pre_spawn_hook`/`profile_list_hook`
+  keying off `jhub-admins`/`jhub-powerusers`/`course-*` groups) left
+  **unchanged** — Dex passes these claims through unprefixed and
+  identically to how CIT Authentik issued them. `jupyterhub-sopssecret.yaml`'s
+  `jupyterhub-oauth-secret.client-secret` rotated to match Dex's new
+  static-client secret (re-encrypted with the same shared SOPS age key
+  used by both repos' operators).
+
+**Verification**: both repos' Fleet GitRepos force-synced
+(`forceSyncGeneration`) to pick up the merge immediately rather than
+waiting for the default poll interval; confirmed `dex-cit-jhub-client`
+SopsSecret `Healthy`; confirmed the `dex-secrets-sync` CronJob patched
+the real secret into the live `dex` config Secret (placeholder gone) and
+triggered a `dex` Deployment rollout; confirmed the `cit-jhub` `hub` pod
+picked up the new secret and Dex endpoints via a rolling restart; **real
+browser login through Dex confirmed working** with an existing
+`cit-jhub` user — user-confirmed. No separate incident this time: the
+`insecureEnableGroups` and TLS-cert lessons from the first cutover were
+already in place cluster-wide, so this second instance came up clean.
+
+**Rollback**: documented inline in `cit-teaching-platform`'s
+`jupyterhub-values.yaml` (restores the direct-Authentik
+`authorize_url`/`token_url`/`userdata_url`/`client_id`/`login_service`
+block and notes to restore `jupyterhub-oauth-secret` to the CIT Authentik
+"Provider for cit-jhub" (pk 2) client secret).
