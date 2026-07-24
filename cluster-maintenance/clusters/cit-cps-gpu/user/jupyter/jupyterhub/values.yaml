@@ -1937,14 +1937,24 @@ singleuser:
         c = get_config()  # noqa
 
         # ensure extensions are wired – these calls are idempotent if the package is missing
-        c.ServerApp.jpserver_extensions = getattr(c.ServerApp, "jpserver_extensions", {})
-
-        for ext in [
-            "jupyter_server_proxy",
-            "jupyter_code_server",
-            "jupyter_remote_desktop_proxy",
-        ]:
-            c.ServerApp.jpserver_extensions.setdefault(ext, True)
+        # NOTE (2026-07-24 incident): c.ServerApp.jpserver_extensions
+        # auto-vivifies as a traitlets LazyConfigValue (not a plain dict)
+        # on nested attribute access like this -- LazyConfigValue supports
+        # neither .setdefault() (the original form here) NOR item
+        # assignment (confirmed live: both raise). Either form threw an
+        # exception and silently aborted this entire config file's
+        # execution partway through, on every profile, since this file
+        # was first introduced -- meaning everything below this point
+        # (including host_allowlist and, later, the Xpra server_proxy
+        # entry) never actually ran. Confirmed live via pod startup logs
+        # and by testing both forms directly against the real traitlets
+        # library in a running pod. Fixed by assigning a plain dict in
+        # one shot instead of trying to mutate the auto-vivified value.
+        c.ServerApp.jpserver_extensions = {
+            "jupyter_server_proxy": True,
+            "jupyter_code_server": True,
+            "jupyter_remote_desktop_proxy": True,
+        }
 
         # Optional: always allow proxied hosts (you already do something similar)
         c.ServerProxy = getattr(c, "ServerProxy", {})
