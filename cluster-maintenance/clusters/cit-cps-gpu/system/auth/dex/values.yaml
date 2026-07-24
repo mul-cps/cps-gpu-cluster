@@ -59,6 +59,11 @@ envVars:
       secretKeyRef:
         name: dex-jhub-client
         key: clientSecret
+  - name: DEX_CIT_JHUB_CLIENT_SECRET
+    valueFrom:
+      secretKeyRef:
+        name: dex-cit-jhub-client
+        key: clientSecret
 
 config:
   issuer: https://dex.dshl.unileoben.ac.at
@@ -120,6 +125,11 @@ config:
       secret: $DEX_JHUB_CLIENT_SECRET
       redirectURIs:
         - https://jupyterhub.dshl.unileoben.ac.at/hub/oauth_callback
+    - id: cit-jupyterhub
+      name: CIT Teaching Platform JupyterHub
+      secret: $DEX_CIT_JHUB_CLIENT_SECRET
+      redirectURIs:
+        - https://jhub.dshl.unileoben.ac.at/hub/oauth_callback
 
 rbac:
   create: true
