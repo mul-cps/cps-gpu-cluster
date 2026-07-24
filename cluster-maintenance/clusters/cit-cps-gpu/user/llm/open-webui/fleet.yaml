@@ -28,7 +28,7 @@ kustomize:
 # docs/superpowers/plans/2026-07-23-dex-idp-broker.md.
 #
 # Replaced with the Helm-hook sync-Job pattern proven live for
-# rancher/oidc-sync-job.yaml and system/auth/dex/rancher-secret-sync-job.yaml:
+# rancher/oidc-sync-job.yaml and system/auth/dex/secrets-sync-cronjob.yaml:
 # a post-install/post-upgrade hook Job patches envFrom onto the live
 # StatefulSet via `kubectl patch` after Helm creates it. See
 # oauth-envfrom-sync-job.yaml.

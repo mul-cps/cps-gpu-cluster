@@ -1513,7 +1513,7 @@ copied into the Dex IdP broker work before being caught — see
 **Fix**: there is no direct Fleet-native equivalent for "JSON-patch a
 Helm-rendered resource, per-target." Use the Helm-hook sync-Job pattern
 instead (see `rancher/oidc-sync-job.yaml` and
-`system/auth/dex/rancher-secret-sync-job.yaml` for two proven-live
+`system/auth/dex/secrets-sync-cronjob.yaml` for two proven-live
 examples): a `post-install,post-upgrade` hook Job that reads/patches the
 live resource directly via `kubectl` after Helm creates it. This is more
 moving parts than a declarative patch would be, but it's a mechanism
