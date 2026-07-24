@@ -110,6 +110,7 @@ hub:
       #   token_url: "https://auth.cps.unileoben.ac.at/application/o/token/"
       #   userdata_url: "https://auth.cps.unileoben.ac.at/application/o/userinfo/"
       #   login_service: "CPS Authentik"
+      #   tls_verify: false
       # and restore jupyterhub-oauth-secret's client-secret to the old
       # Authentik-issued value (rotate a new one in Authentik if the old
       # one was ever exposed -- do not reuse a burned secret).
