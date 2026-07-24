@@ -5,4 +5,5 @@ resources:
   - cit-connector-sopssecret.yaml
   - rancher-client-sopssecret.yaml
   - jhub-client-sopssecret.yaml
+  - cit-jhub-client-sopssecret.yaml
   - secrets-sync-cronjob.yaml
