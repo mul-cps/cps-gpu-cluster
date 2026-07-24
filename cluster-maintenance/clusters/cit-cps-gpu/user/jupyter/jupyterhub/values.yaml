@@ -114,12 +114,14 @@ hub:
       # Authentik-issued value (rotate a new one in Authentik if the old
       # one was ever exposed -- do not reuse a burned secret).
       #
-      # TODO: REMOVE THIS WORKAROUND - disables TLS verification; was needed
-      # for self-signed Authentik certs, Dex now serves the real dshl
-      # wildcard cert (see docs/troubleshooting.md's TLS incident), so this
-      # may no longer be necessary -- not changed here to keep this repoint
-      # to a single, isolated variable.
-      tls_verify: false
+      # RE-ENABLED 2026-07-24: was disabled for self-signed Authentik certs
+      # (direct-to-Authentik OIDC endpoints). Dex serves a real, publicly
+      # trusted HARICA wildcard cert (confirmed live via `openssl s_client`
+      # and a plain `curl` without `-k`, see docs/troubleshooting.md's TLS
+      # incident and docs/dex-idp-broker.md), so this workaround is no
+      # longer needed now that all OIDC endpoints point at Dex, not
+      # Authentik directly.
+      tls_verify: true
       client_id: "jupyterhub"
       # client_secret is set via extraConfig/00-oauth-secret below, read from
       # the OAUTH_CLIENT_SECRET env var (injected from the jupyterhub-oauth-secret
