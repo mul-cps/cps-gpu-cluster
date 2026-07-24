@@ -1989,7 +1989,20 @@ singleuser:
                 "--pulseaudio=no",
                 "--xvfb=Xvfb -screen 0 1680x1050x24 -extension GLX "
                 "+extension RANDR +extension RENDER +extension Composite "
-                "-nolisten tcp -noreset -auth $XAUTHORITY",
+                "-nolisten tcp -noreset -dpi 96 -auth $XAUTHORITY",
+                # xfce4-panel/xfwm4 don't handle Xpra's default dynamic
+                # screen resize (matching the browser window on every
+                # resize) cleanly -- confirmed live, 2026-07-24: taskbar
+                # disappearing, windows shifted/misplaced after the
+                # first resize event. Keep a fixed screen size instead.
+                "--resize-display=no",
+                # Xvfb otherwise derives DPI from an assumed physical
+                # screen size, producing an anisotropic mismatch
+                # ("DPI set to 56 x 90 (wanted 96 x 96)", confirmed
+                # live) -- causes font/UI scaling problems. -dpi above
+                # fixes the X server side; this fixes the Xpra client
+                # side to match.
+                "--dpi=96",
             ]
 
         c.ServerProxy["servers"] = {
