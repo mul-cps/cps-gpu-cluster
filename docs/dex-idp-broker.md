@@ -71,7 +71,7 @@ relied on needs the same redesign, not yet done). See
 `docs/troubleshooting.md` for the full incident writeup.
 
 Fixed by reusing the Helm-hook sync-Job pattern already proven live for
-`rancher/oidc-sync-job.yaml`: `rancher-secret-sync-job.yaml` patches the
+`rancher/oidc-sync-job.yaml`: `secrets-sync-cronjob.yaml` patches the
 real Rancher static-client secret into the chart-rendered config Secret
 after Helm creates it, then restarts the Dex Deployment. Confirmed live:
 Job `Complete`, pod `1/1 Running`, config Secret's `staticClients[0].secret`

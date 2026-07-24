@@ -1446,6 +1446,39 @@ upgrade was not attempted.
 
 ## Fleet/GitOps Issues
 
+### Helm post-install/post-upgrade hook Jobs don't reliably re-fire on every upgrade (RESOLVED 2026-07-24, redesigned)
+
+**Symptom**: a Helm hook Job that has run successfully once (e.g.
+`system/auth/dex`'s secret-sync Jobs) silently stops re-running on
+subsequent Fleet-triggered Helm upgrades, even though `helm history`
+confirms a new revision was created. Meanwhile the Helm chart's own
+templated resources (e.g. a Secret holding rendered config) DO
+re-render from scratch on every upgrade, resetting any placeholder the
+stale hook was supposed to have patched. Net effect: a secret that
+worked correctly reverts to a broken, unpatched placeholder after an
+unrelated later change to the same release — happened twice in one day
+to `system/auth/dex`'s Rancher static-client secret, each time
+requiring an emergency manual `kubectl patch`.
+
+**Root cause**: not fully understood. Helm's documented hook behavior
+is "hooks fire on every matching lifecycle event," which should mean
+every `post-upgrade` fires on every upgrade regardless of whether the
+hook's own manifest content changed. In practice, under Fleet's
+synthetic-Helm-release mechanism, this didn't hold when a *second*,
+newer hook (added in a later revision) existed alongside an *older*,
+unchanged one — the older one didn't re-fire while the newer one did.
+
+**Fix**: don't rely on Helm hook re-fire guarantees for this class of
+"patch a value after Helm renders it" problem. Use a **self-healing
+`CronJob`** instead (see `system/auth/dex/secrets-sync-cronjob.yaml`):
+runs on a fixed schedule (every 5 minutes), idempotently checks for and
+re-patches any known placeholder, completely independent of Helm
+upgrade timing. Also consolidate multiple such patches into **one**
+CronJob rather than one per secret/client, since independent
+schedules would otherwise race on a shared read-modify-write target
+(the config Secret's full-field replace) — see that file's header
+comment for the full incident writeup.
+
 ### `targetCustomizations[].patches` is not a real Fleet field — silently dropped (RESOLVED 2026-07-23)
 
 **Symptom**: a `fleet.yaml` with a `targetCustomizations` block containing
@@ -1480,7 +1513,7 @@ copied into the Dex IdP broker work before being caught — see
 **Fix**: there is no direct Fleet-native equivalent for "JSON-patch a
 Helm-rendered resource, per-target." Use the Helm-hook sync-Job pattern
 instead (see `rancher/oidc-sync-job.yaml` and
-`system/auth/dex/rancher-secret-sync-job.yaml` for two proven-live
+`system/auth/dex/secrets-sync-cronjob.yaml` for two proven-live
 examples): a `post-install,post-upgrade` hook Job that reads/patches the
 live resource directly via `kubectl` after Helm creates it. This is more
 moving parts than a declarative patch would be, but it's a mechanism

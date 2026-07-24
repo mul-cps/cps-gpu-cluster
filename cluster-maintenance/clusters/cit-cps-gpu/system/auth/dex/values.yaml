@@ -26,18 +26,17 @@
 #     staticClients and other top-level config sections", open, unresolved).
 #     So env-var expansion does NOT reach `staticClients[].secret`.
 #
-# RESOLVED (2026-07-23): the `staticClients[].secret` value below is
-# written in the same `$DEX_RANCHER_CLIENT_SECRET` form for consistency,
-# but per the above it is NOT expanded by Dex itself -- rancher-secret-sync-job.yaml
-# (a Helm post-install/post-upgrade hook Job, same proven pattern as
-# rancher/oidc-sync-job.yaml) patches the real value into the rendered
-# config Secret in place after Helm creates it, then restarts the Dex
-# Deployment. See fleet.yaml and rancher-secret-sync-job.yaml for the
-# full reasoning (an earlier attempt used a Fleet targetCustomizations
-# JSON-patch, which turned out to be invalid Fleet syntax -- see
-# fleet.yaml's history/comment). Track dexidp/dex#4212 upstream -- if
-# native staticClients env expansion ships, this sync-Job workaround can
-# be removed.
+# RESOLVED (2026-07-23, redesigned 2026-07-24): the `staticClients[].secret`
+# values below (for `rancher` and `jupyterhub`) are written in this
+# `$DEX_..._CLIENT_SECRET` form for consistency, but per the above they
+# are NOT expanded by Dex itself -- secrets-sync-cronjob.yaml (a
+# self-healing CronJob, not a Helm hook -- see that file's header comment
+# for why the original Helm-hook-Job design was abandoned after a real
+# incident where an older hook silently stopped re-firing) patches the
+# real values into the rendered config Secret in place, then restarts the
+# Dex Deployment if anything changed. Track dexidp/dex#4212 upstream --
+# if native staticClients env expansion ships, this CronJob workaround
+# can be removed.
 
 envVars:
   - name: DEX_CPS_CLIENT_SECRET
