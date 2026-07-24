@@ -1870,6 +1870,66 @@ Longhorn's global `storage-over-provisioning-percentage` setting is `100` (i.e. 
 
 ---
 
+## SOPS Secrets Issues
+
+### `SopsSecret` silently never adopts a pre-existing Secret — "Child secret is not owned by controller" (RESOLVED 2026-07-24)
+
+**Symptom**: `kubectl get sopssecret <name> -n <ns>` shows STATUS `Child
+secret is not owned by controller error`, and the live `Secret` object
+it's supposed to manage holds STALE content — often the original
+plaintext value from before the SOPS migration, not what's currently
+encrypted in git. The `sops-secrets-operator` logs the same error
+repeatedly on every reconcile (`sopssecret has a conflict with
+existing kubernetes secret resource, potential reasons: target secret
+already pre-existed or is managed by multiple sops secrets`) but never
+self-heals.
+
+**Root cause**: the `sops-secrets-operator` uses a Kubernetes
+`ownerReferences` entry (pointing at the `SopsSecret` CR, `controller:
+true`) as its adoption marker — `kubectl get secret <name> -o
+jsonpath='{.metadata.ownerReferences}'` on a properly-managed secret
+shows this; a broken one shows nothing. Any `Secret` that already
+existed (created via plain `kubectl apply`/`kubectl create secret`,
+before a `SopsSecret` for that name was ever introduced) has no such
+reference, and the operator refuses to overwrite an object it doesn't
+already own — a deliberate safety behavior, not a bug in the operator
+itself.
+
+**This bit two secrets during the SOPS/Dex migration work, both
+originally created by hand years before SOPS was introduced**:
+`jupyterhub-oauth-secret` (created 2026-07-06) and `rancher-oidc-secret`
+(created out-of-band per the original SAML→OIDC migration). Both were
+"migrated" to `SopsSecret` management in earlier work (`docs/sops-secrets-migration.md`
+Tasks 4/7/8) and every task/PR review at the time only checked that the
+**encrypted content in git was correct** — nobody actually confirmed
+the live `Secret` object was successfully overwritten by the operator.
+Both silently kept serving their old, stale, eventually-wrong values
+for weeks, only discovered when a real login attempt failed with
+`invalid_client` (JupyterHub OAuth via Dex) and a stale-content check
+(Rancher).
+
+**Fix**: `kubectl delete secret <name> -n <namespace>` on the
+stale/orphaned Secret — the operator recreates it fresh with the
+correct `ownerReferences` and current decrypted content on its next
+reconcile (its default requeue interval is roughly 5 minutes; force an
+immediate reconcile by restarting the operator pod: `kubectl delete pod
+-n sops-system -l app.kubernetes.io/name=sops-secrets-operator`).
+Deleting the Secret is safe — nothing reads it live except at pod
+startup (env var injection), so no in-flight request is disrupted;
+already-running pods keep their existing env values until their next
+restart, which is why a manual `kubectl rollout restart` of the
+consuming Deployment is also needed afterward to actually pick up the
+corrected value.
+
+**General lesson**: when migrating ANY pre-existing, hand-created
+Secret to `SopsSecret` management, verify live — `kubectl get
+sopssecret <name> -n <ns>` shows `Healthy`, not just that the encrypted
+file's content is correct in git — as part of that migration task, not
+as an assumption. A repo-wide sweep (`kubectl get sopssecret -A`)
+found no other broken instances in this repo's scope as of 2026-07-24,
+but this class of bug won't self-announce; check it explicitly whenever
+adopting a new pre-existing Secret.
+
 ## JupyterHub Issues
 
 ### Duplicate env var name in extraEnv broke Fleet's patch apply (RESOLVED 2026-07-23)
