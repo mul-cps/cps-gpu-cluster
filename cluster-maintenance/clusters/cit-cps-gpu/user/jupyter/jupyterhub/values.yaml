@@ -1990,6 +1990,12 @@ singleuser:
                 "--xvfb=Xvfb -screen 0 1680x1050x24 -extension GLX "
                 "+extension RANDR +extension RENDER +extension Composite "
                 "-nolisten tcp -noreset -auth $XAUTHORITY",
+                # xfce4-panel/xfwm4 don't handle Xpra's default dynamic
+                # screen resize (matching the browser window on every
+                # resize) cleanly -- confirmed live, 2026-07-24: taskbar
+                # disappearing, windows shifted/misplaced after the
+                # first resize event. Keep a fixed screen size instead.
+                "--resize-display=no",
             ]
 
         c.ServerProxy["servers"] = {
