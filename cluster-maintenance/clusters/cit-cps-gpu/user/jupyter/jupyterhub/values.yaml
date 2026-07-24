@@ -1524,6 +1524,20 @@ hub:
 
       # ---------- Apply profile & per-profile knobs ----------
       async def apply_profile_settings(spawner):
+          # TEMPORARY DEBUG (2026-07-24): investigating why the groups claim
+          # isn't reaching auth_state_groups_key ("oauth_user.groups" not
+          # found) after the Dex cutover -- logging the raw auth_state shape
+          # once to see exactly what Dex's userinfo response looks like vs
+          # what GenericOAuthenticator expects. REMOVE after root-causing.
+          try:
+              _auth_state = await spawner.user.get_auth_state()
+              spawner.log.info(f"DEBUG auth_state keys for {spawner.user.name}: {list(_auth_state.keys()) if _auth_state else None}")
+              if _auth_state and 'oauth_user' in _auth_state:
+                  spawner.log.info(f"DEBUG oauth_user keys for {spawner.user.name}: {list(_auth_state['oauth_user'].keys())}")
+                  spawner.log.info(f"DEBUG oauth_user.groups for {spawner.user.name}: {_auth_state['oauth_user'].get('groups', 'MISSING')}")
+          except Exception as _debug_exc:
+              spawner.log.warning(f"DEBUG auth_state inspection failed: {_debug_exc}")
+
           profile_slug = spawner.user_options.get('profile', 'cpu-default')
           mount_nfs = bool(spawner.user_options.get('mount_nfs', False))
           mount_personal_nfs = bool(spawner.user_options.get('mount_personal_nfs', False))
