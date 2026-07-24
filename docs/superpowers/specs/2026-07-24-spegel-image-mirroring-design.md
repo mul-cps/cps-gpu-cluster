@@ -1,0 +1,49 @@
+# Cluster-wide Image Mirroring via Spegel
+
+**Status:** Approved (user chose Spegel over a central pull-through registry mirror after weighing tradeoffs), ready for planning.
+**Date:** 2026-07-24
+
+## Problem
+
+Every node in the `cit-cps-gpu` cluster pulls container images independently from their origin registries (GHCR, Docker Hub, NVIDIA NGC, etc.) over the internet, even when another node on the same 10.21.0.0/16 cluster network already has that exact image layer cached locally. This repo builds and pushes large multi-GB images regularly (e.g. the `cps-jupyter-notebook` desktop variants, 30-40GB), and with 4 GPU worker nodes (`k3s-wk-gpu1..4`) that can each independently schedule the same JupyterHub profile pod, redundant full-image pulls from the internet are wasteful when the cluster's internal network is much faster than the path to GHCR.
+
+No image-mirroring or caching solution exists in the cluster today (confirmed: no `registries.yaml` on nodes, no Spegel/registry-mirror pods running).
+
+## Decision
+
+Deploy [Spegel](https://github.com/spegel-org/spegel) — a stateless peer-to-peer OCI image mirror. Each node's containerd, on a cache miss, asks Spegel (running as a DaemonSet) whether ANY other node in the cluster already has the needed layer; if so, it streams it over the cluster network from that peer instead of the origin registry. No central registry, no PVC/shared storage — peer discovery and layer lookup use Kubernetes itself (a distributed hash table) rather than a stateful backing store.
+
+### Why Spegel over a central pull-through registry mirror (the alternative considered)
+
+Both were viable at this cluster's size (7 nodes); a central mirror (`registry:2` in proxy mode + Longhorn PVC) is simpler to reason about but is a single component to size/scale/keep available, and doesn't remove the "first pull is still slow" case per cache-cold image — every image still transits through one place. Spegel has zero storage footprint, no single component to keep healthy, and gets faster as more nodes have pulled a given image (more peers to source layers from). The user chose Spegel explicitly after this tradeoff was presented.
+
+## How it works (mechanism)
+
+1. Spegel runs as a DaemonSet (one pod per node, `hostNetwork: true`), with each pod running a local OCI-registry-compatible endpoint.
+2. It configures containerd's registry mirror settings (via the `hosts.toml` drop-in files under `/var/lib/rancher/k3s/agent/etc/containerd/certs.d/`, which k3s's containerd reads automatically — this repo's k3s version needs to be confirmed to read this path without extra config, see Task 1) to route pulls through the local Spegel endpoint first.
+3. Spegel pods discover each other and advertise which image digests/layers they have via a peer-to-peer protocol (built on containerd's own content store introspection — no separate database).
+4. On a pull, if a peer has the needed layer, Spegel streams it node-to-node over the cluster network; otherwise it transparently falls through to the real upstream registry (GHCR, Docker Hub, etc.), same as today.
+
+## Scope
+
+- Applies cluster-wide, to every node (control-plane nodes get it too for consistency/simplicity, even though they don't run GPU workloads — Rancher/system images benefit too).
+- No changes to how images are built/pushed (this repo's `mul-cps/cps-jupyter-notebook` CI is untouched).
+- No changes to any existing Fleet bundle other than adding a new one.
+
+## Implementation risk and required first task
+
+k3s's exact default containerd registry-config-path behavior needs to be confirmed empirically against the live cluster's actual k3s version (`v1.34.9+k3s1`, confirmed via `kubectl get nodes`) before writing the Helm values — **Task 1 of the plan is to verify this live** (check whether `/var/lib/rancher/k3s/agent/etc/containerd/certs.d/` is read by default, or whether `/etc/rancher/k3s/config.yaml`'s `containerd-registry-config-path` needs to be set first) rather than assume from general Spegel documentation, matching this session's established pattern of verifying infra assumptions live instead of guessing.
+
+## Rollout plan
+
+1. Verify containerd registry-config-path behavior live (Task 1, above).
+2. New Fleet bundle `cluster-maintenance/clusters/cit-cps-gpu/system/utils/spegel/` (alongside `node-tuning`/`reflector` in the same `system/utils/` category), using Spegel's official Helm chart (`oci://ghcr.io/spegel-org/helm-charts/spegel`).
+3. Deploy via Fleet (same GitOps flow as every other bundle in this repo — no manual `helm install`).
+4. Verify live: confirm the DaemonSet is Running on all 7 nodes, then prove peer-to-peer pull actually works — e.g. delete a large image's local cache on one GPU node (`crictl rmi` / `ctr -n k8s.io images rm`) while it's still present on another, force a re-pull, and confirm (via Spegel's own metrics/logs, not just "it worked") that the pull came from a peer, not the origin registry.
+5. Document in `docs/troubleshooting.md`'s style if any incident occurs during rollout, matching this repo's established documentation discipline.
+
+## Explicitly out of scope
+
+- A central pull-through registry mirror (the alternative considered and rejected).
+- Any change to image build/publish pipelines.
+- Backing Spegel with persistent storage (Longhorn or otherwise) — it is deliberately stateless by design; a PVC would be working against the tool's architecture, not with it.
