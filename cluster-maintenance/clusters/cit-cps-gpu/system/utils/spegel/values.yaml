@@ -11,3 +11,30 @@ spegel:
   # at the same path.
   containerdRegistryConfigPath: "/var/lib/rancher/k3s/agent/etc/containerd/certs.d"
   containerdContentPath: "/var/lib/rancher/k3s/agent/containerd/io.containerd.content.v1.content"
+
+  # CRITICAL (found live, 2026-07-24, right after initial rollout):
+  # leaving this empty (the chart default, "mirror all registries")
+  # makes Spegel write a single wildcard `_default/hosts.toml` that
+  # ONLY lists Spegel's own local endpoints, with NO fallback host
+  # entry for the real origin registry at all. Per containerd's
+  # documented hosts.toml semantics, a custom hosts.toml is the
+  # *complete* set of hosts to try -- there is no implicit fallback to
+  # the real registry hostname once a hosts.toml exists for it. This
+  # made ALL first-time pulls of any image not already cached on some
+  # cluster node fail outright with "not found" (confirmed live:
+  # `crictl pull docker.io/library/alpine:...` failed in <1s, zero
+  # Spegel logs -- the request never even reached Spegel's registry
+  # handler). Spegel can't pre-populate a fallback host for an
+  # open-ended wildcard covering literally any registry, but it CAN
+  # per explicitly-listed registry, since it then knows exactly which
+  # real origin to add as the final fallback host. Listed here are the
+  # registries actually observed in use across this cluster (via
+  # Spegel's own `spegel_advertised_content_digests` metric and
+  # containerd OCI event logs).
+  mirroredRegistries:
+    - https://docker.io
+    - https://ghcr.io
+    - https://quay.io
+    - https://gcr.io
+    - https://registry.k8s.io
+    - https://nvcr.io
