@@ -1,0 +1,15 @@
+# Harbor -- in-cluster OCI registry, deployed as a prerequisite for the
+# incluster-image-builder service (mul-cps/incluster-image-builder),
+# which pushes build outputs here.
+name: harbor
+defaultNamespace: harbor
+
+helm:
+  repo: https://helm.goharbor.io
+  chart: harbor
+  version: "1.19.1"
+  valuesFiles:
+    - values.yaml
+
+kustomize:
+  dir: .
