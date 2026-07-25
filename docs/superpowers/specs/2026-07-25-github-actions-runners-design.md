@@ -78,6 +78,15 @@ daemon. The pool:
 Existing `docker/build-push-action`-based workflows need only the one
 `buildx create` step added, not a rewrite.
 
+**Verified live, important:** registry authentication for `--push`/
+`--export-cache` operations against the pool is forwarded from the
+**client's own session** (whatever invokes `docker buildx build`/
+`buildctl`), not the long-running daemon's own environment/credentials.
+Each CI workflow needs its own `docker login` step before pushing --
+see `system/ci/README.md` for the exact pattern. The daemon's own
+mounted credentials only cover its own pulls (e.g. a Dockerfile `FROM`
+referencing a private Harbor image).
+
 ### 5. Registry mirroring
 
 No new configuration needed. Spegel already mirrors pulls transparently
