@@ -45,6 +45,17 @@ spec:
             # no separate prune CronJob needed for this layer.
             - --oci-worker-gc-keepstorage=10000,70000,90000
           env:
+            # NOTE (verified live 2026-07-25): this DOCKER_CONFIG only
+            # authenticates the daemon's OWN pulls -- e.g. a Dockerfile's
+            # FROM referencing a private Harbor image. It does NOT
+            # authenticate --export-cache/--push operations when using
+            # the buildx "remote" driver against this long-running
+            # daemon: registry auth for those is forwarded from the
+            # CLIENT's own session (buildctl/docker buildx's own
+            # DOCKER_CONFIG), not the daemon's environment. CI workflows
+            # must `docker login harbor.dshl.unileoben.ac.at` (or
+            # equivalent) themselves before `docker buildx build --push`
+            # against this pool -- see system/ci/README.md.
             - name: DOCKER_CONFIG
               value: /home/user/.docker
           ports:
