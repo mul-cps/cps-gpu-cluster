@@ -1,0 +1,8 @@
+# Shared, persistent rootless-BuildKit pool for in-cluster GitHub Actions
+# CI Docker image builds. See docs/superpowers/specs/
+# 2026-07-25-github-actions-runners-design.md.
+name: ci-buildkit-pool
+defaultNamespace: ci
+
+kustomize:
+  dir: .

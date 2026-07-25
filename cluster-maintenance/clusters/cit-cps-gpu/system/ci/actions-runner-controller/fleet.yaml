@@ -8,6 +8,5 @@ labels:
   name: actions-runner-controller
 
 helm:
-  repo: oci://ghcr.io/actions/actions-runner-controller-charts
-  chart: gha-runner-scale-set-controller
+  chart: oci://ghcr.io/actions/actions-runner-controller-charts/gha-runner-scale-set-controller
   version: "0.14.2"

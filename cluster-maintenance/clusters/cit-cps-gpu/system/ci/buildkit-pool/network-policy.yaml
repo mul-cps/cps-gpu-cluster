@@ -1,0 +1,24 @@
+# Restrict the BuildKit pool's TCP endpoint to CI runner pods only.
+# Namespace "arc-runners" doesn't exist yet (created by the deferred
+# gha-runner-scale-set bundle, once the GitHub App credentials are
+# wired up) -- this policy is harmless in the meantime, it simply
+# matches nothing until that namespace exists with this label.
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: buildkit-pool-restrict-ingress
+  namespace: ci
+spec:
+  podSelector:
+    matchLabels:
+      app.kubernetes.io/name: buildkit-pool
+  policyTypes:
+    - Ingress
+  ingress:
+    - from:
+        - namespaceSelector:
+            matchLabels:
+              kubernetes.io/metadata.name: arc-runners
+      ports:
+        - protocol: TCP
+          port: 1234

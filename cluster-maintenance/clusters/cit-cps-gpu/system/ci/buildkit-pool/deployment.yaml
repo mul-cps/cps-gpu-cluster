@@ -1,0 +1,109 @@
+# Shared, persistent rootless-BuildKit pool for in-cluster GitHub Actions
+# CI. Workflows connect via `docker buildx create --driver remote
+# tcp://buildkit-pool.ci.svc.cluster.local:1234`, instead of each runner
+# pod running its own Docker-in-Docker daemon. See
+# docs/superpowers/specs/2026-07-25-github-actions-runners-design.md.
+#
+# Reuses the exact image and securityContext verified working for
+# incluster-image-builder's build Jobs this session: setuid
+# newuidmap/newgidmap (baked into ghcr.io/mul-cps/buildkit-rootless-k8s),
+# AppArmor Unconfined (Ubuntu 24.04 blocks unprivileged user-namespace
+# creation otherwise), allowPrivilegeEscalation: true (required for the
+# setuid elevation), and capabilities NOT dropped to ALL (a root-via-setuid
+# process is still bounded by the container's own capability bounding
+# set -- see incluster-image-builder's kubernetes.py for the full
+# rationale). Still non-root (UID 1000), still not privileged.
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: buildkit-pool
+  namespace: ci
+  labels:
+    app.kubernetes.io/name: buildkit-pool
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: buildkit-pool
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: buildkit-pool
+    spec:
+      automountServiceAccountToken: false
+      containers:
+        - name: buildkitd
+          image: ghcr.io/mul-cps/buildkit-rootless-k8s:v1
+          args:
+            - --addr=unix:///run/user/1000/buildkit/buildkitd.sock
+            - --addr=tcp://0.0.0.0:1234
+            - --oci-worker-no-process-sandbox
+            - --root=/scratch/.buildkit-root
+            # Reserved,Free,Maximum in MB -- keeps at least 10GB, targets
+            # 70GB free before more aggressive GC, hard-caps at 90GB
+            # (headroom under the 100Gi scratch PVC below). Self-bounding,
+            # no separate prune CronJob needed for this layer.
+            - --oci-worker-gc-keepstorage=10000,70000,90000
+          env:
+            - name: DOCKER_CONFIG
+              value: /home/user/.docker
+          ports:
+            - name: buildkit
+              containerPort: 1234
+          securityContext:
+            runAsNonRoot: true
+            runAsUser: 1000
+            runAsGroup: 1000
+            allowPrivilegeEscalation: true
+            privileged: false
+            seccompProfile:
+              type: Unconfined
+            appArmorProfile:
+              type: Unconfined
+          resources:
+            requests:
+              cpu: "2"
+              memory: 4Gi
+            limits:
+              cpu: "8"
+              memory: 16Gi
+          readinessProbe:
+            exec:
+              command: ["buildctl", "--addr", "unix:///run/user/1000/buildkit/buildkitd.sock", "debug", "workers"]
+            initialDelaySeconds: 5
+            periodSeconds: 10
+          volumeMounts:
+            - name: scratch
+              mountPath: /scratch
+            - name: registry-auth
+              mountPath: /home/user/.docker
+              readOnly: true
+      volumes:
+        - name: scratch
+          ephemeral:
+            volumeClaimTemplate:
+              spec:
+                accessModes: ["ReadWriteOnce"]
+                storageClassName: fast-scratch
+                resources:
+                  requests:
+                    storage: 100Gi
+        - name: registry-auth
+          secret:
+            secretName: ci-harbor-builder
+            items:
+              - key: .dockerconfigjson
+                path: config.json
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: buildkit-pool
+  namespace: ci
+spec:
+  selector:
+    app.kubernetes.io/name: buildkit-pool
+  ports:
+    - name: buildkit
+      port: 1234
+      targetPort: 1234
