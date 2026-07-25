@@ -31,3 +31,16 @@ metadata:
 value: 10
 globalDefault: false
 description: "Lowest priority for batch jobs. Preemptible by courses and interactive."
+---
+# Below batch on purpose: GPU-requesting CI jobs (in-cluster GitHub
+# Actions runners, see docs/superpowers/specs/
+# 2026-07-25-github-actions-runners-design.md) must never compete with
+# real batch work, let alone courses/interactive. Stays under the 100
+# threshold (see note above) so it remains preemptible.
+apiVersion: scheduling.k8s.io/v1
+kind: PriorityClass
+metadata:
+  name: kai-ci-lowest
+value: 1
+globalDefault: false
+description: "Lowest priority of all -- GPU-requesting CI jobs. Preemptible by everything."
