@@ -1,0 +1,13 @@
+# GitHub Actions Runner Controller (ARC) -- the controller/operator only.
+# One instance cluster-wide; individual runner scale sets (one per repo
+# or org-wide) are separate Fleet bundles that depend on this one. See
+# docs/superpowers/specs/2026-07-25-github-actions-runners-design.md.
+name: actions-runner-controller
+defaultNamespace: arc-systems
+labels:
+  name: actions-runner-controller
+
+helm:
+  repo: oci://ghcr.io/actions/actions-runner-controller-charts
+  chart: gha-runner-scale-set-controller
+  version: "0.14.2"

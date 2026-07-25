@@ -123,3 +123,30 @@ spec:
       quota: -1
       limit: -1
       overQuotaWeight: 10
+---
+# GPU-requesting in-cluster GitHub Actions CI jobs (kai-ci-lowest
+# PriorityClass). Same pure-opportunistic-filler shape as batch
+# (quota=0, burst-only via limit=-1) but the lowest overQuotaWeight of
+# any queue, so CI gets the smallest share of any idle-surplus burst --
+# it should never meaningfully compete with real cluster users. See
+# docs/superpowers/specs/2026-07-25-github-actions-runners-design.md.
+apiVersion: scheduling.run.ai/v2
+kind: Queue
+metadata:
+  name: ci
+  namespace: kai-scheduler
+spec:
+  parentQueue: default-parent-queue
+  resources:
+    gpu:
+      quota: 0
+      limit: -1
+      overQuotaWeight: 1
+    cpu:
+      quota: 0
+      limit: -1
+      overQuotaWeight: 1
+    memory:
+      quota: 0
+      limit: -1
+      overQuotaWeight: 1
