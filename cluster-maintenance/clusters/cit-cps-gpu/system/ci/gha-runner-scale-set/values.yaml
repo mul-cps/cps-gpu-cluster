@@ -1,0 +1,28 @@
+# Org-level runner scale set for mul-cps. See docs/superpowers/specs/
+# 2026-07-25-github-actions-runners-design.md and system/ci/README.md.
+githubConfigUrl: https://github.com/mul-cps
+githubConfigSecret: gha-runner-github-config
+
+runnerScaleSetName: cit-cps-gpu
+
+# Scale to zero when idle -- this is a shared GPU cluster, idle runner
+# pods (esp. any requesting nvidia.com/gpu) should never sit around
+# holding capacity.
+minRunners: 0
+maxRunners: 10
+
+# containerMode: kubernetes -- no privileged Docker-in-Docker sidecar.
+# Plain CI (test/lint/non-container build steps) runs directly in the
+# runner container; workflows needing `container:`/`services:` blocks
+# get those translated into real Kubernetes pods by ARC. Docker image
+# builds instead connect to the shared buildkit-pool (see
+# system/ci/buildkit-pool/) via buildx's remote driver -- see
+# system/ci/README.md for the exact workflow pattern.
+containerMode:
+  type: "kubernetes"
+  kubernetesModeWorkVolumeClaim:
+    accessModes: ["ReadWriteOnce"]
+    storageClassName: "fast-scratch"
+    resources:
+      requests:
+        storage: 10Gi

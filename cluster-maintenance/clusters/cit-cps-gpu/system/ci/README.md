@@ -40,20 +40,17 @@ for the full design.
       cache-from: type=registry,ref=harbor.dshl.unileoben.ac.at/ci-build-cache/<name>:cache
       cache-to: type=registry,ref=harbor.dshl.unileoben.ac.at/ci-build-cache/<name>:cache,mode=max
   ```
-- **Runner scale set -- NOT YET DEPLOYED.** Needs a GitHub App installed
-  on the `mul-cps` org (App ID, Installation ID, private key) -- a
-  web-UI-only step that can't be done via `gh` CLI/API, done by the
-  cluster operator separately. Once the credentials exist:
-  1. SOPS-encrypt them into a `githubConfigSecret` Secret (same pattern
-     as `ci-harbor-builder` in `buildkit-pool/harbor-builder-sopssecret.yaml`).
-  2. Add a `gha-runner-scale-set` Fleet bundle here (namespace
-     `arc-runners` -- already referenced by `buildkit-pool`'s
-     NetworkPolicy, so no changes needed there), `containerMode:
-     kubernetes`, `githubConfigUrl: https://github.com/mul-cps`.
-  3. GPU-requesting workflow jobs should set
-     `priorityClassName: kai-ci-lowest` and `schedulerName: kai-scheduler`
-     (queue label per KAI's usual `runai/queue: ci` annotation -- see
-     `system/gpu/kai-scheduler/kai-policy/queues.yaml`).
+- **`gha-runner-scale-set/`** -- deployed. Org-level runner scale set
+  (`githubConfigUrl: https://github.com/mul-cps`, scale set name
+  `cit-cps-gpu`), namespace `arc-runners` (already referenced by
+  `buildkit-pool`'s NetworkPolicy). Auth via a GitHub App (App ID,
+  Installation ID, private key SOPS-encrypted in
+  `github-config-sopssecret.yaml`). `containerMode: kubernetes` --
+  `minRunners: 0`/`maxRunners: 10`, scales to zero when idle. GPU-requesting
+  workflow jobs should set `priorityClassName: kai-ci-lowest` and
+  `schedulerName: kai-scheduler` (queue label per KAI's usual
+  `runai/queue: ci` annotation -- see
+  `system/gpu/kai-scheduler/kai-policy/queues.yaml`).
 
 ## Harbor GC (out-of-band, not Helm-managed)
 

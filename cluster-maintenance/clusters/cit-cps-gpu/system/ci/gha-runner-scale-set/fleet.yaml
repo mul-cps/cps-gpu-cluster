@@ -1,0 +1,21 @@
+# Org-level GitHub Actions runner scale set for mul-cps. Depends on the
+# ARC controller/CRDs bundle. See docs/superpowers/specs/
+# 2026-07-25-github-actions-runners-design.md and system/ci/README.md.
+name: gha-runner-scale-set
+defaultNamespace: arc-runners
+labels:
+  name: gha-runner-scale-set
+
+dependsOn:
+  - selector:
+      matchLabels:
+        name: actions-runner-controller
+
+helm:
+  chart: oci://ghcr.io/actions/actions-runner-controller-charts/gha-runner-scale-set
+  version: "0.14.2"
+  valuesFiles:
+    - values.yaml
+
+kustomize:
+  dir: .
