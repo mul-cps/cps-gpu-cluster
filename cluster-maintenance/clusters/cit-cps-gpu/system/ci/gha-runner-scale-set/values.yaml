@@ -5,6 +5,15 @@ githubConfigSecret: gha-runner-github-config
 
 runnerScaleSetName: cit-cps-gpu
 
+# Explicit because auto-discovery of the controller's ServiceAccount
+# failed live (2026-07-25) despite the expected
+# app.kubernetes.io/part-of=gha-rs-controller label being present on
+# the controller Deployment in arc-systems -- see
+# actions-runner-controller-gha-rs-controller.
+controllerServiceAccount:
+  namespace: arc-systems
+  name: actions-runner-controller-gha-rs-controller
+
 # Scale to zero when idle -- this is a shared GPU cluster, idle runner
 # pods (esp. any requesting nvidia.com/gpu) should never sit around
 # holding capacity.
