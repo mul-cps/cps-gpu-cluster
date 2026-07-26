@@ -48,3 +48,4 @@ tfplan
 
 # Claude Code agent worktrees/scratch state
 .claude/
+site/
