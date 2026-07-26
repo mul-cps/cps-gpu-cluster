@@ -49,6 +49,17 @@ containerMode:
       requests:
         storage: 10Gi
 
+# Kubernetes-level backstop, independent of GitHub's own job-timeout
+# bookkeeping (default 360min/6h unless a workflow sets
+# timeout-minutes): if a job hangs *and* the runner-to-GitHub
+# connection also breaks, GitHub's own cancellation signal never
+# arrives, and without this the pod would run forever. 21600s (6h)
+# matches GitHub's default -- this is a safety net, not meant to be
+# the primary timeout (set timeout-minutes per-job for that).
+template:
+  spec:
+    activeDeadlineSeconds: 21600
+
 # Matches the metric names the official ARC sample Grafana dashboard
 # (actions/actions-runner-controller docs/gha-runner-scale-set-controller/
 # samples/grafana-dashboard) expects. See system/ci/README.md "Monitoring".

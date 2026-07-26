@@ -30,3 +30,10 @@ containerMode:
     resources:
       requests:
         storage: 10Gi
+
+# Kubernetes-level backstop -- see gha-runner-scale-set/values.yaml
+# (cit-cps-gpu) for the full rationale. 6h matches GitHub's own
+# default job timeout; this only fires if that signal never arrives.
+template:
+  spec:
+    activeDeadlineSeconds: 21600
