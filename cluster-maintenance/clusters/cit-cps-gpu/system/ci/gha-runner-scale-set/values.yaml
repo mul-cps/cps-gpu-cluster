@@ -5,6 +5,19 @@ githubConfigSecret: gha-runner-github-config
 
 runnerScaleSetName: cit-cps-gpu
 
+# Extra labels beyond the scale set name itself, so existing/future
+# workflows written the standard GitHub way (runs-on: [self-hosted,
+# linux, x64] or runs-on: [self-hosted, gpu]) also route here without
+# needing runs-on: cit-cps-gpu specifically. NOTE: the "gpu" label only
+# routes the job here -- it does NOT itself request nvidia.com/gpu or
+# apply kai-ci-lowest/kai-scheduler. Workflows that actually need a GPU
+# must still set those explicitly (see system/ci/README.md).
+scaleSetLabels:
+  - self-hosted
+  - linux
+  - x64
+  - gpu
+
 # Explicit because auto-discovery of the controller's ServiceAccount
 # failed live (2026-07-25) despite the expected
 # app.kubernetes.io/part-of=gha-rs-controller label being present on
