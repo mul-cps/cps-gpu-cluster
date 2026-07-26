@@ -1,0 +1,9 @@
+# Enables the controller-manager's /metrics endpoint (:8080) and the
+# listener metrics endpoint (:8080/metrics, applied to listener pods
+# spawned per AutoscalingRunnerSet). Scraped via the Service +
+# ServiceMonitor in this directory. See system/ci/README.md
+# "Monitoring" section.
+metrics:
+  controllerManagerAddr: ":8080"
+  listenerAddr: ":8080"
+  listenerEndpoint: "/metrics"

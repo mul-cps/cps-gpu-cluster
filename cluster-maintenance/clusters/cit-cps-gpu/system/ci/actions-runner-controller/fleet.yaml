@@ -10,3 +10,8 @@ labels:
 helm:
   chart: oci://ghcr.io/actions/actions-runner-controller-charts/gha-runner-scale-set-controller
   version: "0.14.2"
+  valuesFiles:
+    - values.yaml
+
+kustomize:
+  dir: .

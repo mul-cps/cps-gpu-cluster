@@ -1,0 +1,18 @@
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: actions-runner-controller-metrics
+  namespace: arc-systems
+  labels:
+    release: rancher-monitoring
+spec:
+  namespaceSelector:
+    matchNames:
+      - arc-systems
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: gha-rs-controller
+  endpoints:
+    - port: metrics
+      path: /metrics
+      interval: 30s

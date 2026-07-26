@@ -40,17 +40,53 @@ for the full design.
       cache-from: type=registry,ref=harbor.dshl.unileoben.ac.at/ci-build-cache/<name>:cache
       cache-to: type=registry,ref=harbor.dshl.unileoben.ac.at/ci-build-cache/<name>:cache,mode=max
   ```
-- **`gha-runner-scale-set/`** -- deployed. Org-level runner scale set
-  (`githubConfigUrl: https://github.com/mul-cps`, scale set name
-  `cit-cps-gpu`), namespace `arc-runners` (already referenced by
-  `buildkit-pool`'s NetworkPolicy). Auth via a GitHub App (App ID,
-  Installation ID, private key SOPS-encrypted in
-  `github-config-sopssecret.yaml`). `containerMode: kubernetes` --
-  `minRunners: 0`/`maxRunners: 10`, scales to zero when idle. GPU-requesting
-  workflow jobs should set `priorityClassName: kai-ci-lowest` and
-  `schedulerName: kai-scheduler` (queue label per KAI's usual
-  `runai/queue: ci` annotation -- see
+- **`gha-runner-scale-set/`** -- deployed and verified live (2026-07-26):
+  the org-level runner scale set (`githubConfigUrl:
+  https://github.com/mul-cps`, scale set name `cit-cps-gpu`), namespace
+  `arc-runners` (already referenced by `buildkit-pool`'s NetworkPolicy),
+  successfully registered with GitHub and its listener pod is running.
+  Auth via a GitHub App (App ID 4397759, Installation ID 149124630,
+  private key SOPS-encrypted in `github-config-sopssecret.yaml`).
+  `containerMode: kubernetes` -- `minRunners: 0`/`maxRunners: 10`, scales
+  to zero when idle. GPU-requesting workflow jobs should set
+  `priorityClassName: kai-ci-lowest` and `schedulerName: kai-scheduler`
+  (queue label per KAI's usual `runai/queue: ci` annotation -- see
   `system/gpu/kai-scheduler/kai-policy/queues.yaml`).
+
+  **GitHub App permission gotcha, hit live:** a GitHub App needs the
+  **organization**-level "Self-hosted runners" permission (Read and
+  write) to issue runner registration tokens -- this is a *separate*
+  permission category from the repository-level "Actions"/
+  "Administration" permissions, easy to miss on the App's settings page.
+  Even after saving that permission on the App, the *installation*
+  itself doesn't pick it up automatically -- the org owner must visit
+  the installation's settings page
+  (`https://github.com/organizations/mul-cps/settings/installations/<id>`)
+  and explicitly accept the new permission grant there. Symptom before
+  fixing: controller logs show `403 Forbidden: Resource not accessible
+  by integration` when requesting a runner registration token, even
+  though App-level JWT auth succeeds.
+
+## Monitoring
+
+Prometheus metrics are enabled for both the controller-manager and
+listener pods (`system/ci/actions-runner-controller/values.yaml`), a
+`Service`+`ServiceMonitor` scrapes the controller, and a `PodMonitor`
+scrapes listener pods directly (they're ephemeral, one per
+AutoscalingRunnerSet, not behind a stable Service -- selector confirmed
+live against a real listener pod's labels,
+`app.kubernetes.io/component: runner-scale-set-listener`).
+`listenerMetrics` in `gha-runner-scale-set/values.yaml` matches the
+metric names the official ARC sample dashboard expects.
+
+The dashboard itself (`actions-runner-controller/dashboard-configmap.yaml`)
+is imported from the upstream
+[`actions/actions-runner-controller` sample](https://github.com/actions/actions-runner-controller/blob/master/docs/gha-runner-scale-set-controller/samples/grafana-dashboard/ARC-Autoscaling-Runner-Set-Monitoring.json),
+with its templated `${DS_PROMETHEUS}` datasource resolved to `null`
+(Grafana's default datasource) to match this cluster's existing
+`gpu-dash-*.yaml` convention -- picked up automatically by the Grafana
+sidecar via the `grafana_dashboard: "1"` label, same as every other
+dashboard in `system/observability/monitoring/`.
 
 ## Harbor GC (out-of-band, not Helm-managed)
 

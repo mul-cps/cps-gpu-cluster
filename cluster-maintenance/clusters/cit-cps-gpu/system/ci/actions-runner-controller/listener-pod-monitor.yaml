@@ -1,0 +1,23 @@
+# Listener pods are ephemeral and created per-AutoscalingRunnerSet, not
+# behind a stable Service -- a PodMonitor selecting by their actual
+# labels (confirmed live 2026-07-26, see
+# app.kubernetes.io/component: runner-scale-set-listener) is the only
+# way to scrape their /metrics endpoint.
+apiVersion: monitoring.coreos.com/v1
+kind: PodMonitor
+metadata:
+  name: gha-runner-listener-metrics
+  namespace: arc-systems
+  labels:
+    release: rancher-monitoring
+spec:
+  namespaceSelector:
+    matchNames:
+      - arc-systems
+  selector:
+    matchLabels:
+      app.kubernetes.io/component: runner-scale-set-listener
+  podMetricsEndpoints:
+    - port: metrics
+      path: /metrics
+      interval: 30s

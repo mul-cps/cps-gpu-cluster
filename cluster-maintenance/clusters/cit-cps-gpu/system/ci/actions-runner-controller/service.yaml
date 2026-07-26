@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: actions-runner-controller-gha-rs-controller-metrics
+  namespace: arc-systems
+  labels:
+    app.kubernetes.io/name: gha-rs-controller
+spec:
+  selector:
+    app.kubernetes.io/name: gha-rs-controller
+    app.kubernetes.io/instance: actions-runner-controller
+  ports:
+    - name: metrics
+      port: 8080
+      targetPort: metrics
