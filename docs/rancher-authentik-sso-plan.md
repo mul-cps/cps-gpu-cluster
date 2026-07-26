@@ -75,6 +75,22 @@ in Authentik, only the SAML application/provider object was removed — the
 `rancher-saml-key` signing keypair itself was left intact, since removing
 or rotating it would have broken the OIDC login too.
 
+**Update, 2026-07-26**: this turned out to be a live secret-exposure risk
+-- `saml.yaml`'s RSA private key for this exact keypair had been committed
+in plaintext in git history (commit `6f40dcbd`, before SAML was retired),
+and a `gitleaks` audit ahead of a possible public-visibility decision for
+this repo found it still active. It was also, previously undocumented
+here, the signing key for a second provider (`Provider for kubeflow`, pk
+42 -- see `sops-secrets-migration.md`'s rotation checklist). Both
+providers were switched to their own dedicated new keypairs
+(`rancher-oidc-key-2026-07`, `kubeflow-oidc-key-2026-07`), Rancher OIDC
+login was confirmed still working, and the old `rancher-saml-key` keypair
+was deleted from Authentik once nothing referenced it. The Kubeflow
+provider/application were removed outright rather than re-keyed, since
+Kubeflow itself was never actually installed on this cluster (see
+`.vcluster-ckf/README.md`). The leaked private key in git history is now
+cryptographically dead.
+
 ## Secondary secret exposures found and fixed during this work
 
 While researching the SAML break, two additional live plaintext secrets
