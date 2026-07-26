@@ -40,18 +40,49 @@ for the full design.
       cache-from: type=registry,ref=harbor.dshl.unileoben.ac.at/ci-build-cache/<name>:cache
       cache-to: type=registry,ref=harbor.dshl.unileoben.ac.at/ci-build-cache/<name>:cache,mode=max
   ```
-- **`gha-runner-scale-set/`** -- deployed and verified live (2026-07-26):
-  the org-level runner scale set (`githubConfigUrl:
-  https://github.com/mul-cps`, scale set name `cit-cps-gpu`), namespace
-  `arc-runners` (already referenced by `buildkit-pool`'s NetworkPolicy),
-  successfully registered with GitHub and its listener pod is running.
-  Auth via a GitHub App (App ID 4397759, Installation ID 149124630,
-  private key SOPS-encrypted in `github-config-sopssecret.yaml`).
-  `containerMode: kubernetes` -- `minRunners: 0`/`maxRunners: 10`, scales
-  to zero when idle. GPU-requesting workflow jobs should set
-  `priorityClassName: kai-ci-lowest` and `schedulerName: kai-scheduler`
-  (queue label per KAI's usual `runai/queue: ci` annotation -- see
+- **`gha-runner-scale-set/`** -- deployed and verified live end-to-end
+  (2026-07-26): a real workflow was registered, picked up by the
+  listener, ran to `completed success` in an ephemeral runner pod, and
+  the pod was gone immediately after (scale-to-zero confirmed). Org-level
+  runner scale set (`githubConfigUrl: https://github.com/mul-cps`, scale
+  set name `cit-cps-gpu`), namespace `arc-runners` (already referenced by
+  `buildkit-pool`'s NetworkPolicy). Auth via a GitHub App (App ID
+  4397759, Installation ID 149124630, private key SOPS-encrypted in
+  `github-config-sopssecret.yaml`). `minRunners: 0`/`maxRunners: 10`.
+  Extra `scaleSetLabels` (`self-hosted`, `linux`, `x64`, `gpu`) let
+  workflows written the standard way route here without needing
+  `runs-on: cit-cps-gpu` specifically -- note the `gpu` label only
+  *routes* the job here, it does not itself request `nvidia.com/gpu` or
+  apply the KAI priority class (see below).
+
+  **`containerMode: kubernetes` requires every job to declare a
+  `container:` block -- verified live.** There is no bare execution
+  environment on this runner (unlike GitHub-hosted runners or ARC's
+  `dind` mode): a job without `container:` fails immediately with
+  `Jobs without a job container are forbidden on this runner`. This is
+  the deliberate tradeoff for having no privileged Docker-in-Docker
+  sidecar -- every workflow job needs e.g.:
+  ```yaml
+  jobs:
+    test:
+      runs-on: cit-cps-gpu
+      container:
+        image: alpine:3.20   # or ubuntu:24.04, node:22, etc.
+      steps: [...]
+  ```
+
+  **GPU-requesting workflow jobs** should set `priorityClassName:
+  kai-ci-lowest` and `schedulerName: kai-scheduler` (queue label per
+  KAI's usual `runai/queue: ci` annotation -- see
   `system/gpu/kai-scheduler/kai-policy/queues.yaml`).
+
+  **Runner-group restriction, hit live:** the default runner group has
+  `allows_public_repositories: false` (GitHub's sensible default --
+  otherwise a fork's PR on a public repo could run arbitrary code on
+  this cluster). Jobs from public repos silently sit `queued` forever
+  with no error surfaced anywhere -- the listener logs just show
+  `"assigned job"=0` on every poll. If a self-hosted job never picks up,
+  check whether the repo is public before assuming a config bug.
 
   **GitHub App permission gotcha, hit live:** a GitHub App needs the
   **organization**-level "Self-hosted runners" permission (Read and
