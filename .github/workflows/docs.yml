@@ -24,17 +24,22 @@ concurrency:
   group: pages
   cancel-in-progress: false
 
-# Runs on the in-cluster self-hosted runner (org-level cit-cps-gpu scale
-# set). containerMode: kubernetes requires every job to declare an
-# explicit container: image -- there is no bare execution environment.
+# Standard GitHub-hosted runners, not the in-cluster self-hosted one:
+# this repo is public, and the org's default runner group has
+# allows_public_repositories: false (a deliberate security boundary --
+# a fork's PR on a public repo shouldn't be able to run code on our
+# self-hosted infra). This is a lightweight docs build; it doesn't
+# need the GPU-cluster runner anyway.
 jobs:
   build-docs:
-    runs-on: [self-hosted, linux, x64]
+    runs-on: ubuntu-latest
     timeout-minutes: 10
-    container:
-      image: python:3.12
     steps:
       - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
 
       - name: Install mkdocs-material
         run: pip install mkdocs-material
@@ -51,10 +56,8 @@ jobs:
   deploy-docs:
     if: github.ref == 'refs/heads/main'
     needs: build-docs
-    runs-on: [self-hosted, linux, x64]
+    runs-on: ubuntu-latest
     timeout-minutes: 10
-    container:
-      image: ubuntu:24.04
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
