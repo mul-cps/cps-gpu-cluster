@@ -1,0 +1,32 @@
+# Repo-scoped runner scale set for bjoernellens1/splatograph -- a
+# personal-account repo, not part of the mul-cps org, so it can't use
+# the org-level cit-cps-gpu scale set (GitHub Actions runner scope is
+# strictly per-org or per-repo, never shared across accounts). Auth via
+# a fine-grained PAT (repo-scoped to splatograph, Administration:
+# read/write) instead of a GitHub App -- simpler for a single personal
+# repo. See system/ci/README.md.
+githubConfigUrl: https://github.com/bjoernellens1/splatograph
+githubConfigSecret: gha-runner-splatograph-config
+
+runnerScaleSetName: splatograph
+
+controllerServiceAccount:
+  namespace: arc-systems
+  name: actions-runner-controller-gha-rs-controller
+
+minRunners: 0
+maxRunners: 5
+
+scaleSetLabels:
+  - self-hosted
+  - linux
+  - x64
+
+containerMode:
+  type: "kubernetes"
+  kubernetesModeWorkVolumeClaim:
+    accessModes: ["ReadWriteOnce"]
+    storageClassName: "fast-scratch"
+    resources:
+      requests:
+        storage: 10Gi

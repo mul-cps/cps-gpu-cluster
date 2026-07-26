@@ -1,0 +1,20 @@
+# Repo-scoped runner scale set for bjoernellens1/splatograph. See
+# system/ci/README.md and gha-runner-scale-set-splatograph/values.yaml.
+name: gha-runner-scale-set-splatograph
+defaultNamespace: arc-runners
+labels:
+  name: gha-runner-scale-set-splatograph
+
+dependsOn:
+  - selector:
+      matchLabels:
+        name: actions-runner-controller
+
+helm:
+  chart: oci://ghcr.io/actions/actions-runner-controller-charts/gha-runner-scale-set
+  version: "0.14.2"
+  valuesFiles:
+    - values.yaml
+
+kustomize:
+  dir: .
