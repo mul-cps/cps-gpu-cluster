@@ -42,3 +42,14 @@ persistence:
 
 trivy:
   enabled: true
+
+# registry and jobservice PVCs are Longhorn (RWO) -- with the chart's
+# default RollingUpdate strategy, a new pod can never attach the volume
+# while the old pod still holds it, so rollouts get permanently stuck
+# (confirmed live 2026-08-03: 20+ accumulated stale ReplicaSets for
+# harbor-registry, ~30min-old rollout attempts scheduled to a different
+# node than the currently-healthy pod, all stuck ContainerCreating on
+# FailedAttachVolume "Multi-Attach error"). Recreate kills the old pod
+# first, releasing the volume, before starting the new one.
+updateStrategy:
+  type: Recreate
