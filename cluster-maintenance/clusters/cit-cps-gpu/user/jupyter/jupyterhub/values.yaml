@@ -1830,8 +1830,21 @@ hub:
               "chown jovyan /home/jovyan/.ssh /home/jovyan/.ssh/authorized_keys\n"
               "mkdir -p /run/sshd\n"
               "[ -f /etc/ssh/ssh_host_ed25519_key ] || ssh-keygen -A >/dev/null 2>&1\n"
-              'pkill -f "sshd -p 2200" >/dev/null 2>&1 || true\n'
-              "exec /usr/sbin/sshd -D -p 2200 -o PermitRootLogin=no -o PasswordAuthentication=no -o AllowUsers=jovyan -o PidFile=/tmp/sshd-2200.pid\n"
+              # "sshd -p 2200" (without .*) does NOT match the actual
+              # running cmdline "sshd -D -p 2200" (the -D flag sits
+              # between "sshd" and "-p 2200"), confirmed live: this
+              # silently failed to kill a still-running prior instance
+              # during manual re-testing, causing a bind conflict that
+              # masked an unrelated fix for several iterations.
+              'pkill -f "sshd.*-p 2200" >/dev/null 2>&1 || true\n'
+              # StrictModes=no: confirmed live that /home/jovyan itself is
+              # world-writable (drwxrwxrwx) in this image, which makes
+              # sshd's default StrictModes check reject key auth
+              # ("Auth failed for user jovyan" / Permission denied)
+              # regardless of .ssh's own correct permissions -- matches
+              # why the original standalone sidecar's sshd_config also
+              # had to set this.
+              "exec /usr/sbin/sshd -D -p 2200 -o StrictModes=no -o PermitRootLogin=no -o PasswordAuthentication=no -o AllowUsers=jovyan -o PidFile=/tmp/sshd-2200.pid\n"
           )
           _ssh_setup_cmd = (
               "mkdir -p /tmp/ssh-setup-logs && cat > /tmp/ssh-setup.sh << 'SCRIPT_EOF'\n"
