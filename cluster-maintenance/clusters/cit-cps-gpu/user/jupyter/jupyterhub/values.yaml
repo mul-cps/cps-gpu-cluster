@@ -1748,122 +1748,63 @@ hub:
               else:
                   raise
 
-          # NOTE (verified against jupyterhub-kubespawner 7.1.0 source and the
-          # z2jh jupyterhub chart 4.3.1 files/hub/jupyterhub_config.py --
-          # `KubeSpawner.volume_name_template` does not exist as an attribute
-          # anywhere in kubespawner; it was never a real trait. The home
-          # directory volume name is instead built by the z2jh chart itself
-          # (not by kubespawner) from singleuser.storage.dynamic.volumeNameTemplate
-          # (default "volume-{user_server}", not overridden in this values.yaml)
-          # and injected into `c.KubeSpawner.volumes`/`volume_mounts` as class
-          # config BEFORE pre_spawn_hook runs, so `spawner.volumes` /
-          # `spawner.volume_mounts` already contain that entry here -- with its
-          # `{...}` placeholders still unexpanded (kubespawner only expands them
-          # later, in get_pod_manifest() via self._expand_all(), which also
-          # walks spawner.extra_containers). So the robust fix is to find the
-          # home-directory entry by its mountPath (== singleuser.storage.homeMountPath,
-          # "/home/jovyan" here) in spawner.volume_mounts, and reuse its raw
-          # (possibly still-templated) `name` string verbatim for the sidecar's
-          # volumeMount -- kubespawner will expand it identically for both
-          # containers since expansion happens once, globally, on the same
-          # spawner instance.
-          home_mount_path = "/home/jovyan"
-          _volume_mount_entries = (
-              spawner.volume_mounts.values()
-              if isinstance(spawner.volume_mounts, dict)
-              else (spawner.volume_mounts or [])
-          )
-          home_volume_name = next(
-              (vm.get('name') for vm in _volume_mount_entries if vm.get('mountPath') == home_mount_path),
-              None,
-          )
-
-          if home_volume_name is None:
-              # Could not identify the home-directory volume -- do NOT crash the
-              # spawn for every user over an SSH-only feature. Skip adding the
-              # sidecar for this spawn and log loudly instead.
-              spawner.log.error(
-                  f"ssh-sidecar: could not find a volume mount with mountPath="
-                  f"{home_mount_path!r} in spawner.volume_mounts for "
-                  f"{spawner.user.name}; skipping ssh-sidecar container for this spawn."
-              )
-          else:
-              spawner.extra_containers = spawner.extra_containers or []
-              spawner.extra_containers.append({
-                  "name": "ssh-sidecar",
-                  # Pinned to -v3, not :2026-08-03 or -v2: re-pushing the
-                  # same tag after a Dockerfile fix left ghcr.io/k3s's
-                  # containerd resolving the tag to stale (pre-fix)
-                  # content even with imagePullPolicy Always -- confirmed
-                  # live via a debug pod pull showing stale content
-                  # minutes after a fixed image was successfully pushed
-                  # under an already-used tag. A distinct tag sidesteps
-                  # registry/tag resolution caching entirely every time
-                  # this image changes; -v3 fixes jovyan's login shell
-                  # (was /bin/sh, breaking VS Code's terminal integration
-                  # -- confirmed live). Verified this exact tag's content
-                  # via debug pods before wiring it in here.
-                  "image": "ghcr.io/mul-cps/jupyterhub-ssh-sidecar:2026-08-03-v3",
-                  # Always (not the K8s default IfNotPresent): this image
-                  # iterates under a fixed date-tag during development --
-                  # confirmed live that a node with the tag already cached
-                  # silently kept using a stale, broken build after a
-                  # same-tag rebuild+push fixed a real bug. Small image,
-                  # low pod churn -- the repeated-pull cost is negligible
-                  # next to the risk of silently running stale code.
-                  "imagePullPolicy": "Always",
-                  "env": [{"name": "AUTHORIZED_KEY", "value": pub_openssh.decode()}],
-                  "ports": [{"containerPort": 2200, "name": "ssh-sidecar", "protocol": "TCP"}],
-                  # Mirror ALL of the main container's volumeMounts (NFS
-                  # extras like cps_persistent1_shared/cps_scratch1/shared,
-                  # the docs ConfigMap files, etc.), not just the home PVC
-                  # -- confirmed live (2026-08-03) via a real VS Code
-                  # Remote-SSH session that mounting only the home volume
-                  # left every NFS/shared mount (and the user-docs
-                  # ConfigMap-backed .md files) completely absent from the
-                  # sidecar's filesystem view, even though they're plain
-                  # subdirectories under /home/jovyan in the main
-                  # container. spawner.volume_mounts is already fully
-                  # built by this point in the function (all the NFS/
-                  # shared append_volume_mount() calls happened earlier
-                  # above), so reusing it wholesale keeps both containers'
-                  # views identical with no separate maintenance burden.
-                  "volumeMounts": list(_volume_mount_entries),
-                  # Fixed UID: the sidecar is a distinct container with its own
-                  # sshd running a fixed identity (sshd_config hardcodes
-                  # `AllowUsers jovyan`, and the sidecar image's `jovyan` user is
-                  # always UID 1000 regardless of what UID the main notebook
-                  # container runs as via spawner.uid). Do NOT use spawner.uid
-                  # here -- for real users (LDAP-derived UID, or 1001 for
-                  # RapidsAI) that would not match the sidecar image's fixed
-                  # UID-1000 jovyan account and its root-owned-at-build-time
-                  # /etc/ssh/sidecar_* directories, causing EACCES + CrashLoopBackOff.
-                  "securityContext": {"runAsUser": 1000, "allowPrivilegeEscalation": False},
-              })
-              # ghcr.io defaults newly-pushed org packages to private
-              # visibility (confirmed live: this package returned "not
-              # found" on pull without credentials, while other
-              # ghcr.io/mul-cps images that are public pulled fine with no
-              # imagePullSecrets at all). Rather than depend on someone
-              # remembering to flip package visibility, pull with a
-              # dedicated credential every time.
-              spawner.image_pull_secrets = list(spawner.image_pull_secrets or []) + [
-                  "ghcr-jupyterhub-ssh-sidecar-pull"
-              ]
+          # REDESIGNED 2026-08-03 (live, mid-incident): originally this ran
+          # a separate "ssh-sidecar" container (minimal debian + openssh),
+          # sharing only volume mounts with the main "notebook" container.
+          # Confirmed live via a real VS Code Remote-SSH session that this
+          # left the ssh session with none of the main container's actual
+          # software -- no nvidia-smi, no CUDA, no conda/pip environment,
+          # no GPU device access at all (K8s grants GPU resources
+          # per-container, not per-pod). A sidecar can share the
+          # filesystem via matching volumeMounts, but never the image
+          # layers or GPU device access of a DIFFERENT container. Fixed by
+          # running sshd inside the main container itself instead, via the
+          # postStart hook below (same mechanism already used to ensure
+          # tmux is present) -- this gets full parity with the Jupyter web
+          # terminal for free, and eliminates the separate sidecar image
+          # entirely (no more build/push/tag-caching maintenance burden).
+          # The public key is passed in via an env var the postStart
+          # script writes to ~/.ssh/authorized_keys.
+          spawner.environment["SSH_SIDECAR_AUTHORIZED_KEY"] = pub_openssh.decode()
           # --- end SSH sidecar credential ---
 
           # Command override (e.g. for Dask profile)
           if cfg.get('cmd'):
               spawner.cmd = cfg['cmd']
 
-          # Ensure tmux is present (postStart installs if missing)
+          # Ensure tmux is present, and (2026-08-03) run a real sshd inside
+          # this container itself for VS Code Remote-SSH support -- see
+          # the SSH_SIDECAR_AUTHORIZED_KEY comment above for why this
+          # replaced a separate sidecar container. Runs as whatever user
+          # postStart executes as in this image (confirmed live already
+          # via the pre-existing tmux/sftp-server install below, which
+          # works today in production, so the same apt-get privilege
+          # context is proven sufficient); `sudo` is used explicitly for
+          # the handful of steps that need root (package install, sshd
+          # host keys, binding, starting the daemon) since the notebook
+          # image grants jovyan passwordless sudo. authorized_keys is
+          # rewritten on every spawn to match the freshly generated
+          # per-spawn key from the ssh-sidecar Secret above. sshd is
+          # started in the background on port 2200 (unprivileged, chosen
+          # to avoid clashing with anything already using 22) and left
+          # running for the pod's lifetime; PasswordAuthentication is
+          # disabled -- the gateway's per-pod generated key is the only
+          # accepted credential, matching the original sidecar's model.
           spawner.extra_container_config = spawner.extra_container_config or {}
           spawner.extra_container_config['lifecycle'] = {
               'postStart': {
                   'exec': {
                       'command': [
-                          '/bin/sh','-c',
-                          'command -v tmux >/dev/null 2>&1 && [ -e /usr/lib/openssh/sftp-server ] || (apt-get update && apt-get install -y tmux openssh-sftp-server || true)'
+                          '/bin/sh', '-c',
+                          'command -v tmux >/dev/null 2>&1 && [ -e /usr/lib/openssh/sftp-server ] || (sudo apt-get update && sudo apt-get install -y tmux openssh-sftp-server || true); '
+                          'command -v sshd >/dev/null 2>&1 || (sudo apt-get update && sudo apt-get install -y openssh-server || true); '
+                          'mkdir -p /home/jovyan/.ssh && chmod 700 /home/jovyan/.ssh && '
+                          'printf "%s\\n" "$SSH_SIDECAR_AUTHORIZED_KEY" > /home/jovyan/.ssh/authorized_keys && '
+                          'chmod 600 /home/jovyan/.ssh/authorized_keys && '
+                          'sudo mkdir -p /run/sshd && '
+                          '[ -f /etc/ssh/ssh_host_ed25519_key ] || sudo ssh-keygen -A >/dev/null 2>&1; '
+                          'sudo pkill -f "sshd -p 2200" >/dev/null 2>&1 || true; '
+                          'sudo /usr/sbin/sshd -p 2200 -o PermitRootLogin=no -o PasswordAuthentication=no -o AllowUsers=jovyan -o PidFile=/tmp/sshd-2200.pid'
                       ]
                   }
               }
