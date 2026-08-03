@@ -563,9 +563,30 @@ data:
                 asyncio.create_task(pump(inner_process.stderr, stderr)),
             ]
             await asyncio.wait(tasks, return_when=asyncio.FIRST_COMPLETED)
-            self._conn.close()
+            # Do NOT call self._conn.close() here -- confirmed live
+            # (2026-08-03) via a real VS Code Remote-SSH connection that
+            # this closed the ENTIRE outer client connection as soon as
+            # ANY single channel on it finished, killing every other
+            # still-active channel sharing that same connection (VS
+            # Code opens a short-lived exec channel to install/start its
+            # remote server, then a SEPARATE longer-lived port-forward
+            # channel to actually reach it -- closing the connection
+            # when the first (install) channel completed silently killed
+            # the second (port-forward) channel too, surfacing to the
+            # client as "Connection to ... closed by remote host"
+            # immediately after the install step). Only clean up this
+            # channel's own process/tasks; the outer connection closes
+            # naturally on its own when the real client disconnects it
+            # (or when asyncssh's own connection-lost handling fires),
+            # which is what allows unrelated concurrent channels
+            # (agent-forwarding, other exec calls, port-forwards) on the
+            # same connection to keep working independently.
             for t in tasks:
                 t.cancel()
+            try:
+                inner_process.close()
+            except Exception:
+                pass
 
         async def _session_with_fallback(self, stdin, stdout, stderr):
             """
