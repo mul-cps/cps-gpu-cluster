@@ -1723,19 +1723,28 @@ hub:
           # happened before this hook runs.
           load_config()
           core_api = shared_client("CoreV1Api")
+          # The z2jh chart's own "hub" Role (not ours to edit -- Helm
+          # re-templates it on every upgrade) grants
+          # get/watch/list/create/delete on secrets, but NOT update/patch.
+          # `replace_namespaced_secret` needs `update` and was confirmed
+          # live to fail with a 403 Forbidden for the hub's own
+          # ServiceAccount. Use only the verbs the hub SA actually has:
+          # delete (ignore 404 if it didn't exist yet) then create. A
+          # concurrent spawn for the same identity racing this same
+          # delete+create is handled by retrying once on a 409 from create.
           try:
-              await core_api.replace_namespaced_secret(sidecar_secret_name, "jupyterhub", secret_body)
+              await core_api.delete_namespaced_secret(sidecar_secret_name, "jupyterhub")
           except ApiException as e:
-              if e.status == 404:
-                  try:
-                      await core_api.create_namespaced_secret("jupyterhub", secret_body)
-                  except ApiException as create_err:
-                      if create_err.status == 409:
-                          # Lost the create race to a concurrent spawn for the same
-                          # identity; the secret now exists, so replace it instead.
-                          await core_api.replace_namespaced_secret(sidecar_secret_name, "jupyterhub", secret_body)
-                      else:
-                          raise
+              if e.status != 404:
+                  raise
+          try:
+              await core_api.create_namespaced_secret("jupyterhub", secret_body)
+          except ApiException as e:
+              if e.status == 409:
+                  # Lost the create race to a concurrent spawn for the same
+                  # identity; delete+create once more to take over cleanly.
+                  await core_api.delete_namespaced_secret(sidecar_secret_name, "jupyterhub")
+                  await core_api.create_namespaced_secret("jupyterhub", secret_body)
               else:
                   raise
 
