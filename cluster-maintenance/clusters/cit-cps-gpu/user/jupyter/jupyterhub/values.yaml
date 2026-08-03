@@ -1660,6 +1660,77 @@ hub:
           if cfg.get('uid'):
               spawner.uid = cfg['uid']
 
+          # --- SSH sidecar credential (VS Code Remote-SSH support) ---
+          import base64
+          import re
+          from cryptography.hazmat.primitives import serialization
+          from cryptography.hazmat.primitives.asymmetric.ed25519 import Ed25519PrivateKey
+          from kubernetes_asyncio import client as k8s_client
+          from kubernetes_asyncio.client.rest import ApiException
+
+          safe_username = re.sub(r'[^a-z0-9-]', '-', spawner.user.name.lower())[:40]
+          sidecar_secret_name = f"ssh-sidecar-{safe_username}"
+
+          priv_key = Ed25519PrivateKey.generate()
+          priv_pem = priv_key.private_bytes(
+              encoding=serialization.Encoding.PEM,
+              format=serialization.PrivateFormat.OpenSSH,
+              encryption_algorithm=serialization.NoEncryption(),
+          )
+          pub_openssh = priv_key.public_key().public_bytes(
+              encoding=serialization.Encoding.OpenSSH,
+              format=serialization.PublicFormat.OpenSSH,
+          )
+
+          secret_body = k8s_client.V1Secret(
+              metadata=k8s_client.V1ObjectMeta(
+                  name=sidecar_secret_name,
+                  namespace="jupyterhub",
+                  labels={"app.kubernetes.io/component": "ssh-sidecar-credential"},
+              ),
+              string_data={
+                  "private_key": priv_pem.decode(),
+                  "public_key": pub_openssh.decode(),
+              },
+              type="Opaque",
+          )
+
+          core_api = k8s_client.CoreV1Api(spawner.api_client)
+          try:
+              await core_api.replace_namespaced_secret(sidecar_secret_name, "jupyterhub", secret_body)
+          except ApiException as e:
+              if e.status == 404:
+                  await core_api.create_namespaced_secret("jupyterhub", secret_body)
+              else:
+                  raise
+
+          # NOTE (unverified / needs live-cluster check -- see task-3-report.md):
+          # This chart configures singleuser.storage.type=dynamic with
+          # pvcNameTemplate "claim-{username}" (values.yaml storage: block), but
+          # does NOT set c.KubeSpawner.volume_name_template anywhere in this
+          # values.yaml, so KubeSpawner's own default should apply. Static
+          # analysis of this repo cannot confirm KubeSpawner's exact default
+          # template string or the resulting volume name without a live pod
+          # spec (`kubectl get pod <notebook-pod> -o yaml`). Confirm this
+          # against a running pod before relying on it; if wrong, the sidecar
+          # will fail to mount /home/jovyan.
+          home_volume_name = spawner.volume_name_template.format(
+              userid=getattr(spawner.user, 'id', ''),
+              username=spawner.user.escaped_name,
+              servername=spawner.name or '',
+          )
+
+          spawner.extra_containers = spawner.extra_containers or []
+          spawner.extra_containers.append({
+              "name": "ssh-sidecar",
+              "image": "ghcr.io/mul-cps/jupyterhub-ssh-sidecar:2026-08-03",
+              "env": [{"name": "AUTHORIZED_KEY", "value": pub_openssh.decode()}],
+              "ports": [{"containerPort": 2200, "name": "ssh-sidecar", "protocol": "TCP"}],
+              "volumeMounts": [{"name": home_volume_name, "mountPath": "/home/jovyan"}],
+              "securityContext": {"runAsUser": 1000, "allowPrivilegeEscalation": False},
+          })
+          # --- end SSH sidecar credential ---
+
           # Command override (e.g. for Dask profile)
           if cfg.get('cmd'):
               spawner.cmd = cfg['cmd']
