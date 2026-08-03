@@ -11,8 +11,14 @@ forwarding operate against the user's real notebook filesystem.
 See `docs/superpowers/specs/2026-08-03-vscode-remote-ssh-design.md` for
 the full design.
 
-Build and push (adjust registry/tag to match this repo's existing custom
-image build pattern for `incluster-image-builder`-managed images):
+Built and pushed manually (no CI wiring for this image — the repo's only
+documented image-build CI path, Harbor + the self-hosted ARC runner
+pool, is unreachable from this public repo's default runner group and has
+no `HARBOR_ROBOT_PASSWORD` secret configured; see `system/ci/README.md`).
+Pushed to `ghcr.io/mul-cps`, where this GitHub account has admin access:
 
-    docker build -t <registry>/jupyterhub-ssh-sidecar:2026-08-03 .
-    docker push <registry>/jupyterhub-ssh-sidecar:2026-08-03
+    docker build -t ghcr.io/mul-cps/jupyterhub-ssh-sidecar:2026-08-03 .
+    gh auth token | docker login ghcr.io -u <your-github-username> --password-stdin
+    docker push ghcr.io/mul-cps/jupyterhub-ssh-sidecar:2026-08-03
+
+Current live tag: `ghcr.io/mul-cps/jupyterhub-ssh-sidecar:2026-08-03`
