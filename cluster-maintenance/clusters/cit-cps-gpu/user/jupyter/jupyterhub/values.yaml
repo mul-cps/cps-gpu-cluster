@@ -1806,6 +1806,16 @@ hub:
                   # /etc/ssh/sidecar_* directories, causing EACCES + CrashLoopBackOff.
                   "securityContext": {"runAsUser": 1000, "allowPrivilegeEscalation": False},
               })
+              # ghcr.io defaults newly-pushed org packages to private
+              # visibility (confirmed live: this package returned "not
+              # found" on pull without credentials, while other
+              # ghcr.io/mul-cps images that are public pulled fine with no
+              # imagePullSecrets at all). Rather than depend on someone
+              # remembering to flip package visibility, pull with a
+              # dedicated credential every time.
+              spawner.image_pull_secrets = list(spawner.image_pull_secrets or []) + [
+                  "ghcr-jupyterhub-ssh-sidecar-pull"
+              ]
           # --- end SSH sidecar credential ---
 
           # Command override (e.g. for Dask profile)
