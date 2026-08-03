@@ -5,6 +5,19 @@ helm:
   releaseName: jupyterhub-ssh
   valuesFiles:
   - values.yaml
+
+# Without this, Fleet only ever applied the Helm chart's own templates --
+# rbac.yaml and allow-ingress-nginx.yaml (loose manifests at this
+# top level, not part of chart/) were silently never applied by Fleet at
+# all. Confirmed live 2026-08-03: the RBAC secrets-read grant added here
+# months ago for VS Code Remote-SSH support had been sitting inert in git
+# the whole time (the live Role's managedFields showed
+# kubectl-client-side-apply, not fleet/helm), causing every SSH session
+# needing that grant to fail with a 403. Matches the working pattern
+# already used by system/auth/dex/fleet.yaml.
+kustomize:
+  dir: .
+
 diff:
   comparePatches:
   - apiVersion: v1

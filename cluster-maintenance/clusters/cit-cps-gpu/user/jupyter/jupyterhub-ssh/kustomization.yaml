@@ -1,0 +1,12 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+resources:
+  - rbac.yaml
+  - allow-ingress-nginx.yaml
+# netpol.yaml deliberately excluded: it's a stale, out-of-date duplicate
+# of the NetworkPolicy the Helm chart's own chart/templates/ssh/netpol.yaml
+# already creates (same object name "jupyterhub-ssh") -- confirmed live
+# 2026-08-03 that applying it would regress the live policy (it's missing
+# the "sftp" ingress port the chart-managed version already has). Do not
+# add it here; if that object ever needs editing, edit the chart template
+# instead and delete this stale file.
