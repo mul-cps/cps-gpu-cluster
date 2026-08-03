@@ -137,17 +137,32 @@ data:
             return True
 
         def connection_requested(self, dest_host, dest_port, orig_host, orig_port):
-            self.app.log.info(f"Connection requested: dest={dest_host}:{dest_port}, user_ip={self.user_ip}")
-            if dest_host in ["localhost", "127.0.0.1"] and self.user_ip:
-                dest_host = self.user_ip
-                self.app.log.info(f"Rewrote dest to {dest_host}")
-            else:
-                self.app.log.info(f"Did NOT rewrite dest. dest_host={dest_host}, user_ip={self.user_ip}")
-            
+            # Relay the forwarded TCP connection through the pod's
+            # ssh-sidecar rather than connecting directly from the
+            # gateway pod itself. Confirmed live (2026-08-03) via VS Code
+            # Remote-SSH: its remote server process binds to loopback
+            # only (`listeningOn==127.0.0.1:<port>`) inside the notebook
+            # container's network namespace -- a raw connect from the
+            # gateway pod (a different pod entirely) to
+            # `<notebook-pod-ip>:<port>` cannot reach a loopback-bound
+            # socket, so every such forward failed with "Connection reset
+            # by peer" immediately after VS Code's server started. The
+            # sidecar container shares the SAME pod network namespace as
+            # the notebook container, so relaying through an
+            # asyncssh.SSHClientConnection.open_connection() call on the
+            # sidecar connection reaches "localhost"/"127.0.0.1" exactly
+            # as the requesting client intended -- no self.user_ip
+            # rewrite needed here at all anymore (that rewrite existed
+            # only to work around the gateway's own inability to reach
+            # loopback-bound ports, which relaying through the sidecar
+            # makes unnecessary).
             async def handler(stdin, stdout):
                 try:
-                    reader, writer = await asyncio.open_connection(dest_host, dest_port)
-                except OSError as e:
+                    sidecar_conn = await self._get_sidecar_connection()
+                    reader, writer = await sidecar_conn.open_connection(
+                        dest_host, dest_port
+                    )
+                except Exception as e:
                     raise asyncssh.ChannelOpenError(
                         asyncssh.OPEN_CONNECT_FAILED, str(e)) from e
 
@@ -168,9 +183,9 @@ data:
                 t1 = asyncio.create_task(forward(stdin, writer))
                 # Target -> SSH
                 t2 = asyncio.create_task(forward(reader, stdout))
-                
+
                 await asyncio.wait([t1, t2], return_when=asyncio.FIRST_COMPLETED)
-            
+
             return handler
 
         async def get_user_server_url(self, session, username):
