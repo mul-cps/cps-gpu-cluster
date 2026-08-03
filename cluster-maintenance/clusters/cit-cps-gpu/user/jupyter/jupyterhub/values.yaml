@@ -2333,3 +2333,9 @@ prePuller:
     cps-desktop-ros2:
       name: ghcr.io/mul-cps/cps-jupyter-notebook
       tag: "latest-desktop-ros2"
+    cps-desktop-ros2-xpra:
+      name: ghcr.io/mul-cps/cps-jupyter-notebook
+      tag: "latest-desktop-ros2-xpra"
+    cps-comfyui:
+      name: ghcr.io/mul-cps/cps-jupyter-notebook
+      tag: "main-comfyui"
