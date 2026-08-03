@@ -199,12 +199,37 @@ data:
                     secret = await resp.json()
             private_key_pem = base64.b64decode(secret["data"]["private_key"]).decode()
 
+            # Agent forwarding: `asyncssh.listen(..., agent_forwarding=True)` in
+            # start_server() makes asyncssh automatically create a local
+            # UNIX-socket agent listener (bridged back to the real client's
+            # forwarded agent) whenever the client requests forwarding (e.g.
+            # `ssh -A`) -- this happens transparently at the channel/session
+            # level before session_requested()'s handler ever runs, so
+            # self._conn.get_agent_path() is already populated here if the
+            # client asked for it. Passing that same path as `agent_path` (and
+            # `agent_forwarding=True`) on this OUTBOUND connection to the
+            # sidecar makes every asyncssh.SSHClientConnection.create_process()
+            # call on it automatically send its own `auth-agent-req@openssh.com`
+            # to the sidecar (verified against installed asyncssh==2.24.0
+            # source: SSHClientConnection.create_session() derives its
+            # per-session agent_forwarding flag as
+            # `bool(self._agent_forward_path)`, itself set from the
+            # `agent_path`/`agent_forwarding` connect() options -- there is no
+            # per-call `agent_forwarding` kwarg on create_process()/
+            # create_session() in this version, confirmed via
+            # inspect.signature()). If the client didn't request forwarding,
+            # get_agent_path() returns None and we simply don't forward,
+            # matching normal ssh-agent-forwarding semantics.
+            agent_path = self._conn.get_agent_path()
+
             self._sidecar_conn = await asyncssh.connect(
                 self.user_ip,
                 port=2200,
                 username="jovyan",
                 client_keys=[asyncssh.import_private_key(private_key_pem)],
                 known_hosts=None,
+                agent_path=agent_path,
+                agent_forwarding=bool(agent_path),
             )
             return self._sidecar_conn
 
@@ -373,8 +398,29 @@ data:
             for t in tasks:
                 t.cancel()
 
+        async def _session_with_fallback(self, stdin, stdout, stderr):
+            """
+            Prefer relaying into the pod's ssh-sidecar, but fall back to the
+            old Terminado-bridging path (_handle_client) when the sidecar is
+            unavailable -- e.g. a pod that was already running before this
+            sidecar/secret machinery was deployed, so it has neither the
+            sidecar container nor the ssh-sidecar-* Secret yet. Without this
+            fallback, every already-running notebook pod would lose SSH
+            access outright on merge/deploy until the user manually restarted
+            their server.
+            """
+            try:
+                await self._get_sidecar_connection()
+            except Exception as e:
+                self.app.log.warning(
+                    f"ssh-sidecar unavailable for {getattr(self, 'username', '?')} "
+                    f"({e!r}); falling back to Terminado bridge"
+                )
+                return await self._handle_client(stdin, stdout, stderr)
+            return await self._relay_session(stdin, stdout, stderr)
+
         def session_requested(self):
-            return self._relay_session
+            return self._session_with_fallback
 
 
     class JupyterHubSSH(Application):

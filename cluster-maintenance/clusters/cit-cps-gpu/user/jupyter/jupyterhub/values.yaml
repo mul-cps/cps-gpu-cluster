@@ -1661,6 +1661,14 @@ hub:
               spawner.uid = cfg['uid']
 
           # --- SSH sidecar credential (VS Code Remote-SSH support) ---
+          # WARNING: this hook runs for EVERY spawn. If `cryptography` and
+          # `kubernetes_asyncio` are not already present in the JupyterHub hub
+          # image's Python environment, this import will raise ImportError on
+          # every single spawn attempt for every user (a full outage), not just
+          # for SSH users. VERIFIED LIVE? -- if you are reading this and have not
+          # confirmed `pip show cryptography` and `pip show kubernetes_asyncio`
+          # succeed inside a running hub pod, STOP and verify before deploying
+          # this change. See docs/superpowers/specs/2026-08-03-vscode-remote-ssh-design.md.
           import re
           from cryptography.hazmat.primitives import serialization
           from cryptography.hazmat.primitives.asymmetric.ed25519 import Ed25519PrivateKey
@@ -1712,31 +1720,64 @@ hub:
               else:
                   raise
 
-          # NOTE (unverified / needs live-cluster check -- see task-3-report.md):
-          # This chart configures singleuser.storage.type=dynamic with
-          # pvcNameTemplate "claim-{username}" (values.yaml storage: block), but
-          # does NOT set c.KubeSpawner.volume_name_template anywhere in this
-          # values.yaml, so KubeSpawner's own default should apply. Static
-          # analysis of this repo cannot confirm KubeSpawner's exact default
-          # template string or the resulting volume name without a live pod
-          # spec (`kubectl get pod <notebook-pod> -o yaml`). Confirm this
-          # against a running pod before relying on it; if wrong, the sidecar
-          # will fail to mount /home/jovyan.
-          home_volume_name = spawner.volume_name_template.format(
-              userid=getattr(spawner.user, 'id', ''),
-              username=spawner.user.escaped_name,
-              servername=spawner.name or '',
+          # NOTE (verified against jupyterhub-kubespawner 7.1.0 source and the
+          # z2jh jupyterhub chart 4.3.1 files/hub/jupyterhub_config.py --
+          # `KubeSpawner.volume_name_template` does not exist as an attribute
+          # anywhere in kubespawner; it was never a real trait. The home
+          # directory volume name is instead built by the z2jh chart itself
+          # (not by kubespawner) from singleuser.storage.dynamic.volumeNameTemplate
+          # (default "volume-{user_server}", not overridden in this values.yaml)
+          # and injected into `c.KubeSpawner.volumes`/`volume_mounts` as class
+          # config BEFORE pre_spawn_hook runs, so `spawner.volumes` /
+          # `spawner.volume_mounts` already contain that entry here -- with its
+          # `{...}` placeholders still unexpanded (kubespawner only expands them
+          # later, in get_pod_manifest() via self._expand_all(), which also
+          # walks spawner.extra_containers). So the robust fix is to find the
+          # home-directory entry by its mountPath (== singleuser.storage.homeMountPath,
+          # "/home/jovyan" here) in spawner.volume_mounts, and reuse its raw
+          # (possibly still-templated) `name` string verbatim for the sidecar's
+          # volumeMount -- kubespawner will expand it identically for both
+          # containers since expansion happens once, globally, on the same
+          # spawner instance.
+          home_mount_path = "/home/jovyan"
+          _volume_mount_entries = (
+              spawner.volume_mounts.values()
+              if isinstance(spawner.volume_mounts, dict)
+              else (spawner.volume_mounts or [])
+          )
+          home_volume_name = next(
+              (vm.get('name') for vm in _volume_mount_entries if vm.get('mountPath') == home_mount_path),
+              None,
           )
 
-          spawner.extra_containers = spawner.extra_containers or []
-          spawner.extra_containers.append({
-              "name": "ssh-sidecar",
-              "image": "ghcr.io/mul-cps/jupyterhub-ssh-sidecar:2026-08-03",
-              "env": [{"name": "AUTHORIZED_KEY", "value": pub_openssh.decode()}],
-              "ports": [{"containerPort": 2200, "name": "ssh-sidecar", "protocol": "TCP"}],
-              "volumeMounts": [{"name": home_volume_name, "mountPath": "/home/jovyan"}],
-              "securityContext": {"runAsUser": spawner.uid, "allowPrivilegeEscalation": False},
-          })
+          if home_volume_name is None:
+              # Could not identify the home-directory volume -- do NOT crash the
+              # spawn for every user over an SSH-only feature. Skip adding the
+              # sidecar for this spawn and log loudly instead.
+              spawner.log.error(
+                  f"ssh-sidecar: could not find a volume mount with mountPath="
+                  f"{home_mount_path!r} in spawner.volume_mounts for "
+                  f"{spawner.user.name}; skipping ssh-sidecar container for this spawn."
+              )
+          else:
+              spawner.extra_containers = spawner.extra_containers or []
+              spawner.extra_containers.append({
+                  "name": "ssh-sidecar",
+                  "image": "ghcr.io/mul-cps/jupyterhub-ssh-sidecar:2026-08-03",
+                  "env": [{"name": "AUTHORIZED_KEY", "value": pub_openssh.decode()}],
+                  "ports": [{"containerPort": 2200, "name": "ssh-sidecar", "protocol": "TCP"}],
+                  "volumeMounts": [{"name": home_volume_name, "mountPath": "/home/jovyan"}],
+                  # Fixed UID: the sidecar is a distinct container with its own
+                  # sshd running a fixed identity (sshd_config hardcodes
+                  # `AllowUsers jovyan`, and the sidecar image's `jovyan` user is
+                  # always UID 1000 regardless of what UID the main notebook
+                  # container runs as via spawner.uid). Do NOT use spawner.uid
+                  # here -- for real users (LDAP-derived UID, or 1001 for
+                  # RapidsAI) that would not match the sidecar image's fixed
+                  # UID-1000 jovyan account and its root-owned-at-build-time
+                  # /etc/ssh/sidecar_* directories, causing EACCES + CrashLoopBackOff.
+                  "securityContext": {"runAsUser": 1000, "allowPrivilegeEscalation": False},
+              })
           # --- end SSH sidecar credential ---
 
           # Command override (e.g. for Dask profile)
