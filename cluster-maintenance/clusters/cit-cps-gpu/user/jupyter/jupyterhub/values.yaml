@@ -1674,6 +1674,7 @@ hub:
           from cryptography.hazmat.primitives.asymmetric.ed25519 import Ed25519PrivateKey
           from kubernetes_asyncio import client as k8s_client
           from kubernetes_asyncio.client.rest import ApiException
+          from kubespawner.clients import load_config, shared_client
 
           safe_username = re.sub(r'[^a-z0-9-]', '-', spawner.user.name.lower())[:40]
           safe_server_name = re.sub(r'[^a-z0-9-]', '-', (spawner.name or '').lower())[:40]
@@ -1703,7 +1704,25 @@ hub:
               type="Opaque",
           )
 
-          core_api = k8s_client.CoreV1Api(spawner.api_client)
+          # KubeSpawner instances have no `.api_client`/`.api` attribute of
+          # their own (confirmed live against the running hub pod's
+          # installed kubespawner: KubeSpawner exposes no api/api_client
+          # trait at all) -- kubespawner itself gets its Kubernetes API
+          # clients via kubespawner.clients.shared_client(), which reuses
+          # the config KubeSpawner already loaded globally at hub startup.
+          # A prior version of this code called
+          # `k8s_client.CoreV1Api(spawner.api_client)` here, which raised
+          # `AttributeError: 'KubeSpawner' object has no attribute
+          # 'api_client'` on every single spawn attempt -- confirmed live
+          # via `kubectl logs deploy/hub` after this bug reached
+          # production. Use the same shared_client() pattern kubespawner
+          # itself uses instead. load_config() is idempotent (@lru_cache)
+          # and safe to call even if kubespawner already loaded config
+          # elsewhere in the process -- call it explicitly here so this
+          # code doesn't depend on incidental prior calls having already
+          # happened before this hook runs.
+          load_config()
+          core_api = shared_client("CoreV1Api")
           try:
               await core_api.replace_namespaced_secret(sidecar_secret_name, "jupyterhub", secret_body)
           except ApiException as e:
