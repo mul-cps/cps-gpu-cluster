@@ -1803,7 +1803,17 @@ hub:
                       'command': [
                           '/bin/sh', '-c',
                           'mkdir -p /tmp/ssh-setup-logs; '
-                          '( '
+                          # setsid is required, not optional: plain `( ... ) &`
+                          # was confirmed live to NOT survive past the
+                          # postStart hook's own exec session tearing down --
+                          # the backgrounded subshell was killed before ever
+                          # writing a single byte to its own log file
+                          # (confirmed by inspecting the resulting empty
+                          # setup.log after a real spawn). setsid gives the
+                          # background job its own session, fully detached
+                          # from the hook's process group, so it survives
+                          # the hook returning.
+                          'setsid sh -c \''
                           'command -v tmux >/dev/null 2>&1 && [ -e /usr/lib/openssh/sftp-server ] || (sudo apt-get update && sudo apt-get install -y tmux openssh-sftp-server || true); '
                           'command -v sshd >/dev/null 2>&1 || (sudo apt-get update && sudo apt-get install -y openssh-server || true); '
                           'mkdir -p /home/jovyan/.ssh && chmod 700 /home/jovyan/.ssh && '
@@ -1812,8 +1822,8 @@ hub:
                           'sudo mkdir -p /run/sshd && '
                           '{ [ -f /etc/ssh/ssh_host_ed25519_key ] || sudo ssh-keygen -A >/dev/null 2>&1; }; '
                           'sudo pkill -f "sshd -p 2200" >/dev/null 2>&1 || true; '
-                          'sudo /usr/sbin/sshd -p 2200 -o PermitRootLogin=no -o PasswordAuthentication=no -o AllowUsers=jovyan -o PidFile=/tmp/sshd-2200.pid '
-                          ') </dev/null >/tmp/ssh-setup-logs/setup.log 2>&1 &'
+                          'sudo /usr/sbin/sshd -p 2200 -o PermitRootLogin=no -o PasswordAuthentication=no -o AllowUsers=jovyan -o PidFile=/tmp/sshd-2200.pid'
+                          '\' </dev/null >/tmp/ssh-setup-logs/setup.log 2>&1 &'
                       ]
                   }
               }
