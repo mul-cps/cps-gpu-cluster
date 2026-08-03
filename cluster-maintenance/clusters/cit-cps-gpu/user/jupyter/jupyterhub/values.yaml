@@ -1791,7 +1791,17 @@ hub:
               spawner.extra_containers = spawner.extra_containers or []
               spawner.extra_containers.append({
                   "name": "ssh-sidecar",
-                  "image": "ghcr.io/mul-cps/jupyterhub-ssh-sidecar:2026-08-03",
+                  # Pinned to -v2, not :2026-08-03: re-pushing the same tag
+                  # after a Dockerfile fix left ghcr.io/k3s's containerd
+                  # resolving the tag to stale (pre-fix) content even with
+                  # imagePullPolicy Always -- confirmed live via a debug
+                  # pod pull showing the old root-owned directories minutes
+                  # after the fixed image was successfully pushed under
+                  # the same tag. A distinct tag sidesteps registry/tag
+                  # resolution caching entirely; verified this exact tag's
+                  # content (chowned dirs + a real SSH login) via debug
+                  # pods before wiring it in here.
+                  "image": "ghcr.io/mul-cps/jupyterhub-ssh-sidecar:2026-08-03-v2",
                   # Always (not the K8s default IfNotPresent): this image
                   # iterates under a fixed date-tag during development --
                   # confirmed live that a node with the tag already cached
