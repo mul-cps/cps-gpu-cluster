@@ -24,6 +24,99 @@ data:
     from .terminado import Terminado
 
 
+    class RelaySFTPServer(asyncssh.SFTPServer):
+        """
+        Proxies the SFTP subsystem into the pod's ssh-sidecar's own real
+        sftp-server, instead of asyncssh's local-filesystem default.
+
+        Confirmed live (2026-08-03) that asyncssh's server-side SFTP
+        subsystem handling is entirely separate from the generic
+        session_requested() callback used for shell/exec:
+        SSHServerStreamSession.subsystem_requested('sftp') returns
+        bool(sftp_factory) -- with no sftp_factory configured, the
+        subsystem request is rejected outright before our relay code
+        ever runs (client sees "subsystem request failed on channel
+        0"), and even WITH an sftp_factory, session_started() routes
+        sftp requests through asyncssh's own SFTPServer machinery, not
+        the session_factory callback. This class plugs into that
+        machinery instead of fighting it, delegating every operation to
+        a real asyncssh.SFTPClient opened against the sidecar -- since
+        that's a genuine remote SFTP client (not the Contents API), full
+        random-access read/write is supported natively, unlike the
+        whole-file-only approach considered and rejected in
+        docs/sftp-via-contents-api-scoping.md.
+        """
+
+        def __init__(self, chan):
+            super().__init__(chan)
+            self._owner = chan.get_connection()._owner
+            self._sftp_client = None
+
+        async def _client(self):
+            if self._sftp_client is None:
+                conn = await self._owner._get_sidecar_connection()
+                self._sftp_client = await conn.start_sftp_client()
+            return self._sftp_client
+
+        async def open(self, path, pflags, attrs):
+            client = await self._client()
+            return await client.open(path, pflags, attrs)
+
+        async def close(self, file_obj):
+            await file_obj.close()
+
+        async def read(self, file_obj, offset, size):
+            return await file_obj.read(size, offset)
+
+        async def write(self, file_obj, offset, data):
+            return await file_obj.write(data, offset)
+
+        async def fstat(self, file_obj):
+            return await file_obj.stat()
+
+        async def fsetstat(self, file_obj, attrs):
+            return await file_obj.setstat(attrs)
+
+        async def stat(self, path):
+            return await (await self._client()).stat(path)
+
+        async def lstat(self, path):
+            return await (await self._client()).lstat(path)
+
+        async def setstat(self, path, attrs):
+            return await (await self._client()).setstat(path, attrs)
+
+        async def listdir(self, path):
+            return await (await self._client()).listdir(path)
+
+        async def remove(self, path):
+            return await (await self._client()).remove(path)
+
+        async def rename(self, oldpath, newpath):
+            return await (await self._client()).rename(oldpath, newpath)
+
+        async def posix_rename(self, oldpath, newpath):
+            return await (await self._client()).posix_rename(oldpath, newpath)
+
+        async def mkdir(self, path, attrs):
+            return await (await self._client()).mkdir(path, attrs)
+
+        async def rmdir(self, path):
+            return await (await self._client()).rmdir(path)
+
+        async def realpath(self, path):
+            return await (await self._client()).realpath(path)
+
+        async def readlink(self, path):
+            return await (await self._client()).readlink(path)
+
+        async def symlink(self, oldpath, newpath):
+            return await (await self._client()).symlink(oldpath, newpath)
+
+        async def statvfs(self, path):
+            return await (await self._client()).statvfs(path)
+
+
     class NotebookSSHServer(asyncssh.SSHServer):
         """
         A single SSH connection mapping to a notebook server on a JupyterHub
@@ -481,7 +574,23 @@ data:
             return await self._relay_session(stdin, stdout, stderr)
 
         def session_requested(self):
-            return self._session_with_fallback
+            # Returning a plain callable here would make asyncssh build
+            # `SSHServerStreamSession(callable, sftp_factory=None, False)`
+            # internally (asyncssh.connection._process_session_open,
+            # confirmed against 2.7.0 source) -- sftp_factory is hardcoded
+            # to None on that path, with no way to inject one. Construct
+            # the same session object ourselves instead, so the sftp
+            # subsystem gets a real factory (RelaySFTPServer) while
+            # shell/exec still go through _session_with_fallback exactly
+            # as before. legacy `scp` (invoked as `exec scp -t/-f ...` by
+            # the scp CLI) doesn't need allow_scp=True here -- it already
+            # works transparently through _relay_session's generic exec
+            # branch, which relays the command to the sidecar's own real
+            # scp binary.
+            from asyncssh.stream import SSHServerStreamSession
+            return SSHServerStreamSession(
+                self._session_with_fallback, RelaySFTPServer, False
+            )
 
 
     class JupyterHubSSH(Application):
@@ -600,6 +709,16 @@ data:
                 password_auth=True,
                 server_host_keys=[self.host_key_path],
                 agent_forwarding=True,
+                # NOTE: sftp_factory is intentionally NOT set here. Setting
+                # it at this (listener) level flips asyncssh's internal
+                # dispatch (SSHServerConnection._process_session_open) to
+                # bypass session_requested() ENTIRELY for every channel
+                # type, not just sftp -- confirmed against asyncssh 2.7.0
+                # source before deploying this, since it would have
+                # silently broken shell/exec too. Instead,
+                # session_requested() below constructs the equivalent
+                # SSHServerStreamSession itself, per-connection, wiring in
+                # RelaySFTPServer only for that one session.
                 keepalive_interval=30,  # FIXME: Make this configurable
             )
 
