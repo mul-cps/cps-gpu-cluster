@@ -170,6 +170,55 @@ data:
                     # FIXME: Handle other cases that pop up
                     resp.raise_for_status()
 
+        async def _get_sidecar_connection(self):
+            """
+            Lazily establish (and cache) an inner asyncssh client connection
+            to this session's notebook pod's ssh-sidecar container.
+            """
+            if getattr(self, "_sidecar_conn", None) is not None:
+                return self._sidecar_conn
+
+            import base64
+            import re
+
+            sepChar = "+"
+            username = self.username
+            serverName = ""
+            if sepChar in username:
+                username, serverName = username.split(sepChar, 1)
+
+            safe_username = re.sub(r'[^a-z0-9-]', '-', username.lower())[:40]
+            safe_server_name = re.sub(r'[^a-z0-9-]', '-', serverName.lower())[:40]
+            secret_name = f"ssh-sidecar-{safe_username}-{safe_server_name or 'default'}"
+
+            headers = {"Authorization": f"Bearer {self._k8s_token()}"}
+            url = f"https://kubernetes.default.svc/api/v1/namespaces/jupyterhub/secrets/{secret_name}"
+            async with ClientSession(headers=headers) as session:
+                async with session.get(url, ssl=self._k8s_ssl_context()) as resp:
+                    resp.raise_for_status()
+                    secret = await resp.json()
+            private_key_pem = base64.b64decode(secret["data"]["private_key"]).decode()
+
+            self._sidecar_conn = await asyncssh.connect(
+                self.user_ip,
+                port=2200,
+                username="jovyan",
+                client_keys=[asyncssh.import_private_key(private_key_pem)],
+                known_hosts=None,
+            )
+            return self._sidecar_conn
+
+        def _k8s_token(self):
+            with open("/var/run/secrets/kubernetes.io/serviceaccount/token") as f:
+                return f.read().strip()
+
+        def _k8s_ssl_context(self):
+            import ssl
+            ctx = ssl.create_default_context(
+                cafile="/var/run/secrets/kubernetes.io/serviceaccount/ca.crt"
+            )
+            return ctx
+
         async def validate_password(self, username, token):
             self.username = username
             self.token = token
@@ -273,8 +322,60 @@ data:
                 for t in pending:
                     t.cancel()
 
+        async def _relay_session(self, stdin, stdout, stderr):
+            """
+            Relay this SSH session's stdio into an equivalent session opened
+            against the pod's ssh-sidecar, preserving PTY/exec/subsystem
+            semantics transparently.
+            """
+            sidecar_conn = await self._get_sidecar_connection()
+            channel = stdin.channel
+
+            term_type = channel.get_terminal_type()
+            command = channel.get_command()
+            subsystem = channel.get_subsystem()
+
+            kwargs = {}
+            if term_type:
+                rows, cols, width, height = channel.get_terminal_size()
+                kwargs["term_type"] = term_type
+                kwargs["term_size"] = (cols, rows, width, height)
+
+            if subsystem:
+                inner_process = await sidecar_conn.create_process(subsystem=subsystem, **kwargs)
+            elif command:
+                inner_process = await sidecar_conn.create_process(command, **kwargs)
+            else:
+                inner_process = await sidecar_conn.create_process(**kwargs)
+
+            async def pump(reader, writer):
+                try:
+                    while True:
+                        data = await reader.read(65536)
+                        if not data:
+                            break
+                        writer.write(data)
+                        await writer.drain()
+                except Exception:
+                    pass
+                finally:
+                    try:
+                        writer.close()
+                    except Exception:
+                        pass
+
+            tasks = [
+                asyncio.create_task(pump(stdin, inner_process.stdin)),
+                asyncio.create_task(pump(inner_process.stdout, stdout)),
+                asyncio.create_task(pump(inner_process.stderr, stderr)),
+            ]
+            await asyncio.wait(tasks, return_when=asyncio.FIRST_COMPLETED)
+            self._conn.close()
+            for t in tasks:
+                t.cancel()
+
         def session_requested(self):
-            return self._handle_client
+            return self._relay_session
 
 
     class JupyterHubSSH(Application):
@@ -392,7 +493,7 @@ data:
                 line_editor=False,
                 password_auth=True,
                 server_host_keys=[self.host_key_path],
-                agent_forwarding=False,  # The cause of so much pain! Let's not allow this by default
+                agent_forwarding=True,
                 keepalive_interval=30,  # FIXME: Make this configurable
             )
 
