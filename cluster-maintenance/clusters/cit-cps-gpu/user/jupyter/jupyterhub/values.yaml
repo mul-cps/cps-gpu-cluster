@@ -1796,35 +1796,54 @@ hub:
           # long the background install takes or whether it fails.
           # SSH access simply becomes available a few seconds after the
           # rest of the pod, instead of blocking notebook startup on it.
+          # This exact mechanism (setsid + a one-line `sh -c '...' &`
+          # script embedded as a shell string) went through several live
+          # failed iterations before landing here -- see git history on
+          # this block for the full trail (sudo silently failing under a
+          # TTY-less setsid session; sshd's own self-daemonizing
+          # double-fork silently vanishing when backgrounded with a
+          # trailing `&` inside a nested `sh -c` string). The version
+          # below was verified end-to-end in an isolated debug pod
+          # (real listening sshd process observed via `ps aux`, not just
+          # assumed) before being wired into the real spawn path:
+          # - the script is written to a real FILE first, not passed as
+          #   a nested-quoted inline string, to eliminate an entire class
+          #   of shell-quoting ambiguity;
+          # - it ends with `exec sshd -D ...` rather than backgrounding
+          #   sshd with a trailing `&` -- `exec` replaces the script's
+          #   own process image with sshd directly, so sshd BECOMES the
+          #   setsid'd session leader instead of being a background child
+          #   whose survival depends on job-control semantics that proved
+          #   unreliable in this nested context.
           spawner.extra_container_config = spawner.extra_container_config or {}
+          _ssh_setup_script = (
+              "#!/bin/sh\n"
+              "command -v tmux >/dev/null 2>&1 && [ -e /usr/lib/openssh/sftp-server ] || (apt-get update && apt-get install -y tmux openssh-sftp-server || true)\n"
+              "command -v sshd >/dev/null 2>&1 || (apt-get update && apt-get install -y openssh-server || true)\n"
+              "mkdir -p /home/jovyan/.ssh && chmod 700 /home/jovyan/.ssh\n"
+              'printf "%s\\n" "$SSH_SIDECAR_AUTHORIZED_KEY" > /home/jovyan/.ssh/authorized_keys\n'
+              "chmod 600 /home/jovyan/.ssh/authorized_keys\n"
+              # Owner-only chown (no group): "jovyan:jovyan" confirmed
+              # live to fail with "invalid group" in this image (jovyan's
+              # primary group isn't literally named "jovyan") -- owner
+              # ownership alone is what sshd's StrictModes check needs.
+              "chown jovyan /home/jovyan/.ssh /home/jovyan/.ssh/authorized_keys\n"
+              "mkdir -p /run/sshd\n"
+              "[ -f /etc/ssh/ssh_host_ed25519_key ] || ssh-keygen -A >/dev/null 2>&1\n"
+              'pkill -f "sshd -p 2200" >/dev/null 2>&1 || true\n'
+              "exec /usr/sbin/sshd -D -p 2200 -o PermitRootLogin=no -o PasswordAuthentication=no -o AllowUsers=jovyan -o PidFile=/tmp/sshd-2200.pid\n"
+          )
+          _ssh_setup_cmd = (
+              "mkdir -p /tmp/ssh-setup-logs && cat > /tmp/ssh-setup.sh << 'SCRIPT_EOF'\n"
+              + _ssh_setup_script
+              + "SCRIPT_EOF\n"
+              "chmod +x /tmp/ssh-setup.sh\n"
+              "setsid /tmp/ssh-setup.sh </dev/null >/tmp/ssh-setup-logs/setup.log 2>&1 &"
+          )
           spawner.extra_container_config['lifecycle'] = {
               'postStart': {
                   'exec': {
-                      'command': [
-                          '/bin/sh', '-c',
-                          'mkdir -p /tmp/ssh-setup-logs; '
-                          # setsid is required, not optional: plain `( ... ) &`
-                          # was confirmed live to NOT survive past the
-                          # postStart hook's own exec session tearing down --
-                          # the backgrounded subshell was killed before ever
-                          # writing a single byte to its own log file
-                          # (confirmed by inspecting the resulting empty
-                          # setup.log after a real spawn). setsid gives the
-                          # background job its own session, fully detached
-                          # from the hook's process group, so it survives
-                          # the hook returning.
-                          'setsid sh -c \''
-                          'command -v tmux >/dev/null 2>&1 && [ -e /usr/lib/openssh/sftp-server ] || (sudo apt-get update && sudo apt-get install -y tmux openssh-sftp-server || true); '
-                          'command -v sshd >/dev/null 2>&1 || (sudo apt-get update && sudo apt-get install -y openssh-server || true); '
-                          'mkdir -p /home/jovyan/.ssh && chmod 700 /home/jovyan/.ssh && '
-                          'printf "%s\\n" "$SSH_SIDECAR_AUTHORIZED_KEY" > /home/jovyan/.ssh/authorized_keys && '
-                          'chmod 600 /home/jovyan/.ssh/authorized_keys; '
-                          'sudo mkdir -p /run/sshd && '
-                          '{ [ -f /etc/ssh/ssh_host_ed25519_key ] || sudo ssh-keygen -A >/dev/null 2>&1; }; '
-                          'sudo pkill -f "sshd -p 2200" >/dev/null 2>&1 || true; '
-                          'sudo /usr/sbin/sshd -p 2200 -o PermitRootLogin=no -o PasswordAuthentication=no -o AllowUsers=jovyan -o PidFile=/tmp/sshd-2200.pid'
-                          '\' </dev/null >/tmp/ssh-setup-logs/setup.log 2>&1 &'
-                      ]
+                      'command': ['/bin/sh', '-c', _ssh_setup_cmd]
                   }
               }
           }
