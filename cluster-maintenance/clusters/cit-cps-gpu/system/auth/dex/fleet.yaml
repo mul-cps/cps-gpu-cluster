@@ -48,3 +48,23 @@ dependsOn:
 # picks up the corrected config on its next start (Dex only reads
 # config.yaml at startup, unlike Rancher's AuthConfig which the
 # controller re-reads live). See secrets-sync-cronjob.yaml.
+#
+# 2026-08-03: the CronJob's in-place patch of the `dex` Secret's
+# `data["config.yaml"]` makes this bundle perpetually show as `Modified`
+# in Fleet (git has the raw $DEX_..._CLIENT_SECRET placeholders, the live
+# Secret has the substituted values) -- same accepted drift pattern as
+# Rancher's AuthConfig (see rancher-authentik-sso-plan.md). Unlike that
+# case, THIS bundle is also a `dependsOn` target for other bundles (e.g.
+# user/jupyter/jupyterhub), and Fleet's dependsOn gating treats `Modified`
+# as not-Ready, so the drift was silently blocking every dependent
+# bundle from ever applying. Fixed the same way jupyterhub-ssh/fleet.yaml
+# already ignores its own expected `/status` drift: tell Fleet to ignore
+# this one known, intentional field when diffing.
+diff:
+  comparePatches:
+  - apiVersion: v1
+    kind: Secret
+    name: dex
+    namespace: dex
+    operations:
+    - {"op": "remove", "path": "/data/config.yaml"}
