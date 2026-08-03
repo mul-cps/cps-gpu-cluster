@@ -103,25 +103,31 @@ data:
                 
                 if server.get("ready", False):
                     # server.get("ip") is confirmed live (2026-08-03) to
-                    # never be present at all in this Hub's server model --
-                    # KubeSpawner reports the pod's address only via
+                    # never be present at all in this Hub's server model.
                     # state.dns_name (e.g.
-                    # "jupyter-<user>.jupyterhub.svc.cluster.local"), not a
-                    # top-level "ip" field. Passing None as the host to
-                    # asyncssh.connect() silently defaults to "localhost",
-                    # which was causing every ssh-sidecar connection
-                    # attempt to fail with a live-confirmed
-                    # "Connect call failed ('127.0.0.1', 2200)" /
-                    # "('::1', 2200)" error -- this affected both this
-                    # feature's sidecar relay AND the pre-existing
+                    # "jupyter-<user>.jupyterhub.svc.cluster.local") is
+                    # present but ALSO confirmed live to not actually
+                    # resolve -- this KubeSpawner config doesn't create a
+                    # per-pod Service, so that DNS name has no backing
+                    # record (gaierror: Name or service not known).
+                    # Passing None/an unresolvable host to
+                    # asyncssh.connect() was causing every ssh-sidecar
+                    # connection attempt to fail -- this affected both
+                    # this feature's sidecar relay AND the pre-existing
                     # connection_requested() port-forwarding rewrite,
                     # which has the exact same self.user_ip dependency and
-                    # was very likely equally broken already. Prefer
-                    # state.dns_name (works from anywhere in the cluster,
-                    # no extra k8s API call needed), falling back to the
-                    # legacy "ip" field for forward-compatibility with any
-                    # spawner configuration that might actually set it.
-                    self.user_ip = server.get("state", {}).get("dns_name") or server.get("ip")
+                    # was very likely equally broken already. The only
+                    # reliable source of the pod's real address is the
+                    # Kubernetes API itself -- fetch it directly using the
+                    # gateway's own in-cluster credentials (RBAC already
+                    # grants `pods: get`).
+                    state = server.get("state", {})
+                    pod_ip = None
+                    if state.get("pod_name") and state.get("namespace"):
+                        pod_ip = await self._get_pod_ip(
+                            state["namespace"], state["pod_name"]
+                        )
+                    self.user_ip = pod_ip or state.get("dns_name") or server.get("ip")
                     return self.app.hub_url / server["url"][1:]
                 else:
                     return None
@@ -262,6 +268,27 @@ data:
                 cafile="/var/run/secrets/kubernetes.io/serviceaccount/ca.crt"
             )
             return ctx
+
+        async def _get_pod_ip(self, namespace, pod_name):
+            """
+            Look up a pod's real IP directly via the Kubernetes API.
+            Returns None (never raises) if the lookup fails for any
+            reason -- callers fall back to other address sources.
+            """
+            url = (
+                f"https://kubernetes.default.svc/api/v1/namespaces/"
+                f"{namespace}/pods/{pod_name}"
+            )
+            headers = {"Authorization": f"Bearer {self._k8s_token()}"}
+            try:
+                async with ClientSession(headers=headers) as session:
+                    async with session.get(url, ssl=self._k8s_ssl_context()) as resp:
+                        if resp.status != 200:
+                            return None
+                        pod = await resp.json()
+                        return pod.get("status", {}).get("podIP")
+            except Exception:
+                return None
 
         async def validate_password(self, username, token):
             self.username = username
