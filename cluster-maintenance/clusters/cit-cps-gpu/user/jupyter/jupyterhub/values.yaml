@@ -1791,17 +1791,19 @@ hub:
               spawner.extra_containers = spawner.extra_containers or []
               spawner.extra_containers.append({
                   "name": "ssh-sidecar",
-                  # Pinned to -v2, not :2026-08-03: re-pushing the same tag
-                  # after a Dockerfile fix left ghcr.io/k3s's containerd
-                  # resolving the tag to stale (pre-fix) content even with
-                  # imagePullPolicy Always -- confirmed live via a debug
-                  # pod pull showing the old root-owned directories minutes
-                  # after the fixed image was successfully pushed under
-                  # the same tag. A distinct tag sidesteps registry/tag
-                  # resolution caching entirely; verified this exact tag's
-                  # content (chowned dirs + a real SSH login) via debug
-                  # pods before wiring it in here.
-                  "image": "ghcr.io/mul-cps/jupyterhub-ssh-sidecar:2026-08-03-v2",
+                  # Pinned to -v3, not :2026-08-03 or -v2: re-pushing the
+                  # same tag after a Dockerfile fix left ghcr.io/k3s's
+                  # containerd resolving the tag to stale (pre-fix)
+                  # content even with imagePullPolicy Always -- confirmed
+                  # live via a debug pod pull showing stale content
+                  # minutes after a fixed image was successfully pushed
+                  # under an already-used tag. A distinct tag sidesteps
+                  # registry/tag resolution caching entirely every time
+                  # this image changes; -v3 fixes jovyan's login shell
+                  # (was /bin/sh, breaking VS Code's terminal integration
+                  # -- confirmed live). Verified this exact tag's content
+                  # via debug pods before wiring it in here.
+                  "image": "ghcr.io/mul-cps/jupyterhub-ssh-sidecar:2026-08-03-v3",
                   # Always (not the K8s default IfNotPresent): this image
                   # iterates under a fixed date-tag during development --
                   # confirmed live that a node with the tag already cached
@@ -1812,7 +1814,21 @@ hub:
                   "imagePullPolicy": "Always",
                   "env": [{"name": "AUTHORIZED_KEY", "value": pub_openssh.decode()}],
                   "ports": [{"containerPort": 2200, "name": "ssh-sidecar", "protocol": "TCP"}],
-                  "volumeMounts": [{"name": home_volume_name, "mountPath": "/home/jovyan"}],
+                  # Mirror ALL of the main container's volumeMounts (NFS
+                  # extras like cps_persistent1_shared/cps_scratch1/shared,
+                  # the docs ConfigMap files, etc.), not just the home PVC
+                  # -- confirmed live (2026-08-03) via a real VS Code
+                  # Remote-SSH session that mounting only the home volume
+                  # left every NFS/shared mount (and the user-docs
+                  # ConfigMap-backed .md files) completely absent from the
+                  # sidecar's filesystem view, even though they're plain
+                  # subdirectories under /home/jovyan in the main
+                  # container. spawner.volume_mounts is already fully
+                  # built by this point in the function (all the NFS/
+                  # shared append_volume_mount() calls happened earlier
+                  # above), so reusing it wholesale keeps both containers'
+                  # views identical with no separate maintenance burden.
+                  "volumeMounts": list(_volume_mount_entries),
                   # Fixed UID: the sidecar is a distinct container with its own
                   # sshd running a fixed identity (sshd_config hardcodes
                   # `AllowUsers jovyan`, and the sidecar image's `jovyan` user is
