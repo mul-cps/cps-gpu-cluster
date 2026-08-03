@@ -1991,7 +1991,15 @@ singleuser:
 
   networkPolicy:
     enabled: true
-    ingress: []
+    ingress:
+      - from:
+          - podSelector:
+              matchLabels:
+                app.kubernetes.io/name: jupyterhub-ssh
+                app.kubernetes.io/component: ssh
+        ports:
+          - port: 2200
+            protocol: TCP
     egress:
       - ports:
           - port: 443
