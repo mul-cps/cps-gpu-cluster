@@ -1,0 +1,23 @@
+# cluster-maintenance/clusters/cit-cps-gpu/user/jupyter/jupyterhub-ssh/sidecar/sshd_config
+Port 2200
+ListenAddress 0.0.0.0
+Protocol 2
+
+HostKey /etc/ssh/sidecar_host_keys/ssh_host_ed25519_key
+
+PasswordAuthentication no
+KbdInteractiveAuthentication no
+PubkeyAuthentication yes
+AuthorizedKeysFile /etc/ssh/sidecar_authorized_keys/authorized_keys
+
+PermitRootLogin no
+AllowUsers jovyan
+
+AllowAgentForwarding yes
+AllowTcpForwarding yes
+X11Forwarding no
+PermitTTY yes
+Subsystem sftp /usr/lib/openssh/sftp-server
+
+UsePAM no
+StrictModes no
