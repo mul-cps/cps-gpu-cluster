@@ -102,7 +102,26 @@ data:
                 server = user.get("servers", {}).get(target_server_name, {})
                 
                 if server.get("ready", False):
-                    self.user_ip = server.get("ip")
+                    # server.get("ip") is confirmed live (2026-08-03) to
+                    # never be present at all in this Hub's server model --
+                    # KubeSpawner reports the pod's address only via
+                    # state.dns_name (e.g.
+                    # "jupyter-<user>.jupyterhub.svc.cluster.local"), not a
+                    # top-level "ip" field. Passing None as the host to
+                    # asyncssh.connect() silently defaults to "localhost",
+                    # which was causing every ssh-sidecar connection
+                    # attempt to fail with a live-confirmed
+                    # "Connect call failed ('127.0.0.1', 2200)" /
+                    # "('::1', 2200)" error -- this affected both this
+                    # feature's sidecar relay AND the pre-existing
+                    # connection_requested() port-forwarding rewrite,
+                    # which has the exact same self.user_ip dependency and
+                    # was very likely equally broken already. Prefer
+                    # state.dns_name (works from anywhere in the cluster,
+                    # no extra k8s API call needed), falling back to the
+                    # legacy "ip" field for forward-compatibility with any
+                    # spawner configuration that might actually set it.
+                    self.user_ip = server.get("state", {}).get("dns_name") or server.get("ip")
                     return self.app.hub_url / server["url"][1:]
                 else:
                     return None
