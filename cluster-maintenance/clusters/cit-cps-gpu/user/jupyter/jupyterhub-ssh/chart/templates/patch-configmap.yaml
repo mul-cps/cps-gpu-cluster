@@ -337,9 +337,8 @@ data:
 
             kwargs = {}
             if term_type:
-                rows, cols, width, height = channel.get_terminal_size()
                 kwargs["term_type"] = term_type
-                kwargs["term_size"] = (cols, rows, width, height)
+                kwargs["term_size"] = channel.get_terminal_size()
 
             if subsystem:
                 inner_process = await sidecar_conn.create_process(subsystem=subsystem, **kwargs)
