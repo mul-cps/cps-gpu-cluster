@@ -274,6 +274,21 @@ data:
                     return False
                 else:
                     self.notebook_url = notebook_url
+                    # start_user_server()'s fast path (server already
+                    # running, Hub API returns 201/400) returns a
+                    # manually-constructed URL without ever calling
+                    # get_user_server_url() -- confirmed live (2026-08-03)
+                    # that self.user_ip therefore stayed None for the
+                    # overwhelmingly common case of connecting to an
+                    # already-running server (only the slow-spawn 202
+                    # polling path happened to call it). Since the fix
+                    # to resolve self.user_ip from state.dns_name lives
+                    # inside get_user_server_url(), explicitly call it
+                    # here too so self.user_ip is reliably populated
+                    # before any session/channel request needs it,
+                    # regardless of which start_user_server() path ran.
+                    if self.user_ip is None:
+                        await self.get_user_server_url(session, username)
                     return True
 
         async def _handle_ws_recv(self, stdout, data_packet):
