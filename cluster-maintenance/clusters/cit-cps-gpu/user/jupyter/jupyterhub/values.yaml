@@ -1661,7 +1661,6 @@ hub:
               spawner.uid = cfg['uid']
 
           # --- SSH sidecar credential (VS Code Remote-SSH support) ---
-          import base64
           import re
           from cryptography.hazmat.primitives import serialization
           from cryptography.hazmat.primitives.asymmetric.ed25519 import Ed25519PrivateKey
@@ -1669,7 +1668,8 @@ hub:
           from kubernetes_asyncio.client.rest import ApiException
 
           safe_username = re.sub(r'[^a-z0-9-]', '-', spawner.user.name.lower())[:40]
-          sidecar_secret_name = f"ssh-sidecar-{safe_username}"
+          safe_server_name = re.sub(r'[^a-z0-9-]', '-', (spawner.name or '').lower())[:40]
+          sidecar_secret_name = f"ssh-sidecar-{safe_username}-{safe_server_name or 'default'}"
 
           priv_key = Ed25519PrivateKey.generate()
           priv_pem = priv_key.private_bytes(
@@ -1700,7 +1700,15 @@ hub:
               await core_api.replace_namespaced_secret(sidecar_secret_name, "jupyterhub", secret_body)
           except ApiException as e:
               if e.status == 404:
-                  await core_api.create_namespaced_secret("jupyterhub", secret_body)
+                  try:
+                      await core_api.create_namespaced_secret("jupyterhub", secret_body)
+                  except ApiException as create_err:
+                      if create_err.status == 409:
+                          # Lost the create race to a concurrent spawn for the same
+                          # identity; the secret now exists, so replace it instead.
+                          await core_api.replace_namespaced_secret(sidecar_secret_name, "jupyterhub", secret_body)
+                      else:
+                          raise
               else:
                   raise
 
@@ -1727,7 +1735,7 @@ hub:
               "env": [{"name": "AUTHORIZED_KEY", "value": pub_openssh.decode()}],
               "ports": [{"containerPort": 2200, "name": "ssh-sidecar", "protocol": "TCP"}],
               "volumeMounts": [{"name": home_volume_name, "mountPath": "/home/jovyan"}],
-              "securityContext": {"runAsUser": 1000, "allowPrivilegeEscalation": False},
+              "securityContext": {"runAsUser": spawner.uid, "allowPrivilegeEscalation": False},
           })
           # --- end SSH sidecar credential ---
 
