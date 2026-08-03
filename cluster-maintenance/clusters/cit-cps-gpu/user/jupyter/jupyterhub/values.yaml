@@ -1792,6 +1792,14 @@ hub:
               spawner.extra_containers.append({
                   "name": "ssh-sidecar",
                   "image": "ghcr.io/mul-cps/jupyterhub-ssh-sidecar:2026-08-03",
+                  # Always (not the K8s default IfNotPresent): this image
+                  # iterates under a fixed date-tag during development --
+                  # confirmed live that a node with the tag already cached
+                  # silently kept using a stale, broken build after a
+                  # same-tag rebuild+push fixed a real bug. Small image,
+                  # low pod churn -- the repeated-pull cost is negligible
+                  # next to the risk of silently running stale code.
+                  "imagePullPolicy": "Always",
                   "env": [{"name": "AUTHORIZED_KEY", "value": pub_openssh.decode()}],
                   "ports": [{"containerPort": 2200, "name": "ssh-sidecar", "protocol": "TCP"}],
                   "volumeMounts": [{"name": home_volume_name, "mountPath": "/home/jovyan"}],
