@@ -118,6 +118,53 @@ cpu/memory alongside gpu; see the comment block at the top of
 `kai-policy/queues.yaml` and the "CPU/memory hard cap" incident in
 `docs/troubleshooting.md`).
 
+## User-facing implication: jobs can be killed, always checkpoint
+
+Because lower-priority work is preemptible by design (see above), a
+running job in `phd-interactive` or `batch` can be evicted at any time a
+higher-priority job (course > interactive > batch) needs the GPU capacity
+it's using — this is normal, expected scheduler behavior, not a bug or
+outage. Users should always checkpoint long-running training jobs so an
+eviction costs at most the work done since the last checkpoint, not the
+whole run. Minimal PyTorch example:
+
+```python
+import os
+import torch
+
+CKPT_PATH = "checkpoint.pt"
+start_epoch = 0
+
+# Resume from a checkpoint if one exists (e.g. after eviction/restart)
+if os.path.exists(CKPT_PATH):
+    ckpt = torch.load(CKPT_PATH)
+    model.load_state_dict(ckpt["model"])
+    optimizer.load_state_dict(ckpt["optimizer"])
+    start_epoch = ckpt["epoch"] + 1
+
+for epoch in range(start_epoch, num_epochs):
+    train_one_epoch(model, optimizer, ...)
+
+    # Save after every epoch so at most one epoch of work is ever lost
+    torch.save(
+        {
+            "model": model.state_dict(),
+            "optimizer": optimizer.state_dict(),
+            "epoch": epoch,
+        },
+        CKPT_PATH,
+    )
+```
+
+Other frameworks have the same concept: PyTorch Lightning's
+`ModelCheckpoint` callback, Hugging Face `Trainer`'s `save_strategy`, and
+Keras's `ModelCheckpoint`. Checkpoints should be written to the user's
+persistent home directory, not `/tmp` or `fast-scratch` (local-path-backed
+NVMe scratch, not guaranteed to survive a pod being rescheduled to a
+different node). This guidance is also published for end users on the
+Nextcloud Collectives GPU cluster page (`CPS Technik/CPS
+Infrastructure/CPS-CIT GPU Cluster.md`).
+
 ## Why an elastic unified pool, not a static node/GPU split
 
 The alternative design would statically partition nodes/GPUs: e.g. some
