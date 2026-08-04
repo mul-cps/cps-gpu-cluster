@@ -197,7 +197,14 @@ data:
                 )
                 return False
 
-            return authorized_keys.validate(key, "", "")
+            match = authorized_keys.validate(key, "", "")
+            self.app.log.warning(
+                f"pubkey auth DEBUG: username={username!r} "
+                f"offered_key_fp={key.get_fingerprint()!r} "
+                f"authorized_keys_raw={result.stdout!r} "
+                f"match={match!r}"
+            )
+            return match
 
         def connection_requested(self, dest_host, dest_port, orig_host, orig_port):
             # Relay the forwarded TCP connection through the pod's
