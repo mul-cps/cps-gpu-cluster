@@ -19,6 +19,16 @@ spec:
         {{- end }}
       annotations:
         checksum/config: {{ omit .Values "sftp" | toYaml | sha256sum }}
+        # The patched __init__.py is mounted with subPath, which Kubernetes
+        # never live-updates on ConfigMap changes -- and checksum/config
+        # above only hashes .Values, not this template's own rendered
+        # content, so an edit to patch-configmap.yaml alone previously
+        # never triggered a pod restart at all (confirmed live, 2026-08-04:
+        # multiple __init__.py logic changes silently never took effect
+        # until manually `kubectl rollout restart`ed). Hash the actual
+        # rendered ConfigMap content too so any change to it forces a
+        # rollout on its own.
+        checksum/patch-configmap: {{ include (print $.Template.BasePath "/patch-configmap.yaml") . | sha256sum }}
         {{- with .Values.ssh.podAnnotations }}
         {{- . | toYaml | nindent 8 }}
         {{- end }}
