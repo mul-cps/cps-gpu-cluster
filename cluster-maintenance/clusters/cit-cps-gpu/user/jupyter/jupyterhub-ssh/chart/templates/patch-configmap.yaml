@@ -197,14 +197,16 @@ data:
                 )
                 return False
 
-            match = authorized_keys.validate(key, "", "")
-            self.app.log.warning(
-                f"pubkey auth DEBUG: username={username!r} "
-                f"offered_key_fp={key.get_fingerprint()!r} "
-                f"authorized_keys_raw={result.stdout!r} "
-                f"match={match!r}"
-            )
-            return match
+            # validate() returns the matched entry's key-options mapping on
+            # success (e.g. {} for a plain key with no "command="/"from="
+            # etc. restrictions) or None on no match -- NOT a plain bool.
+            # Confirmed live (2026-08-04): an empty dict IS a real match
+            # but is falsy in Python, and asyncssh's own caller does
+            # `if not result: return None`, which was silently treating
+            # every ordinary, unrestricted authorized_keys entry as a
+            # rejection. Must explicitly test for None, not just return
+            # the mapping directly.
+            return authorized_keys.validate(key, "", "") is not None
 
         def connection_requested(self, dest_host, dest_port, orig_host, orig_port):
             # Relay the forwarded TCP connection through the pod's
