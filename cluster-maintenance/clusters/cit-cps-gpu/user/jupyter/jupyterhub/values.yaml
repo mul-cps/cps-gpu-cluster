@@ -1885,7 +1885,26 @@ hub:
               "command -v tmux >/dev/null 2>&1 && [ -e /usr/lib/openssh/sftp-server ] || (apt-get update && apt-get install -y tmux openssh-sftp-server || true)\n"
               "command -v sshd >/dev/null 2>&1 || (apt-get update && apt-get install -y openssh-server || true)\n"
               "mkdir -p /home/jovyan/.ssh && chmod 700 /home/jovyan/.ssh\n"
-              'printf "%s\\n" "$SSH_SIDECAR_AUTHORIZED_KEY" > /home/jovyan/.ssh/authorized_keys\n'
+              "touch /home/jovyan/.ssh/authorized_keys\n"
+              # Idempotent, non-destructive rewrite: `> authorized_keys`
+              # unconditionally on every pod start previously wiped out
+              # ANY key a user had added themselves (e.g. via
+              # `ssh-copy-id`, landing here through the sidecar relay) --
+              # confirmed live (2026-08-04) this would have silently
+              # discarded a user's own key on their very next pod
+              # restart. Tag this gateway's own managed line with a
+              # trailing marker comment, strip only lines carrying that
+              # exact marker (i.e. only ever our own previous line, never
+              # a user's key, which won't have this marker), then append
+              # the current gateway key fresh -- also fixes the marker-less
+              # version of this script re-appending on every restart
+              # across the SAME still-running pod ballooning into repeated
+              # duplicate entries (confirmed live: 3 duplicate copies of a
+              # user's own key from repeated ssh-copy-id retries during
+              # this same debugging session).
+              'grep -v " jupyterhub-ssh-gateway-managed$" /home/jovyan/.ssh/authorized_keys > /tmp/authorized_keys.new || true\n'
+              'printf "%s jupyterhub-ssh-gateway-managed\\n" "$SSH_SIDECAR_AUTHORIZED_KEY" >> /tmp/authorized_keys.new\n'
+              "mv /tmp/authorized_keys.new /home/jovyan/.ssh/authorized_keys\n"
               "chmod 600 /home/jovyan/.ssh/authorized_keys\n"
               # Owner-only chown (no group): "jovyan:jovyan" confirmed
               # live to fail with "invalid group" in this image (jovyan's
