@@ -63,8 +63,22 @@ This proxies into your running singleuser notebook pod, the same way `ssh`
 does -- you get your **personal JupyterHub home directory**, not shared
 storage.
 
-**Named Server:** the SFTP server is not aware of per-notebook named servers
--- there's no `<username>+<servername>` variant for SFTP.
+**Named Server:** the same `<username>+<servername>` syntax used for `ssh`
+also works for `sftp` -- it lands you in that named server's own home
+directory:
+
+```bash
+sftp <username>+<servername>@jupyterhub.dshl.unileoben.ac.at
+```
+
+Confirmed live (2026-08-04): both interactive `ssh` and `sftp` against a
+named server land you in the correct pod with correct auth. Non-interactive
+one-shot commands (`ssh <username>+<servername>@... 'somecommand'`, i.e. an
+SSH *exec* request rather than a login shell) currently fail silently
+(connection closes with no output) -- this affects the default server too,
+so it's a pre-existing gap in the exec-relay path, not specific to named
+servers. Use an interactive session (plain `ssh ...` with no trailing
+command) until that's fixed.
 
 ## VS Code Remote SSH
 
