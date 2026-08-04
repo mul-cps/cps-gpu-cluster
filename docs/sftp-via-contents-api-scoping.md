@@ -1,5 +1,12 @@
 # Scoping: real SFTP against the user's home directory (not just shared storage)
 
+**Superseded 2026-08-04**: the "SFTP sidecar container in each notebook pod"
+approach scoped below was implemented (`RelaySFTPServer`, see
+`docs/jupyterhub-ssh-access.md`) -- default-port SFTP now proxies into the
+user's personal home directory. The standalone shared-storage SFTP server
+this doc contrasts it with has since been removed. Kept for the design
+reasoning/tradeoffs below; no longer describes the current state.
+
 **Status: research/design only. No code changed, no cluster touched.**
 
 ## Background
