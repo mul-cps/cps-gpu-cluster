@@ -213,7 +213,17 @@ hub:
       # itself lives in the jupyterhub-ssh-gateway-token Secret (SOPS,
       # see ../jupyterhub-ssh/ssh-gateway-sopssecret.yaml) and is injected
       # here via SSH_GATEWAY_TOKEN (hub.extraEnv above).
-      c.JupyterHub.services = [
+      #
+      # MUST append, not overwrite: the chart's own `cull:` config
+      # (jupyterhub-idle-culler) already populates c.JupyterHub.services
+      # by this point in extraConfig evaluation order (config sections
+      # execute in key-sorted order, and the chart's own hub-config
+      # template is loaded before any extraConfig entry) -- replacing the
+      # list wholesale here previously clobbered the idle-culler service,
+      # crash-looping the whole hub with "Found undefined service
+      # jupyterhub-idle-culler in role jupyterhub-idle-culler" (confirmed
+      # live, 2026-08-04).
+      c.JupyterHub.services = c.JupyterHub.services + [
           {
               "name": "ssh-gateway",
               "admin": True,
