@@ -16,49 +16,10 @@ ssh:
         secretKeyRef:
           name: jupyterhub-ssh-gateway-token
           key: admin-api-token
-# This is the REAL, working SFTP server (a standalone OpenSSH sftp-server
-# mounting jupyterhub-shared-storage directly at /mnt/home, listening on
-# container port 2222, exposed via the jupyterhub-sftp Service's port 22).
-# CORRECTED 2026-07-06: this pod was always healthy and listening -- the
-# actual gap was that ingress-nginx-tcp never forwarded any external port to
-# it (only the separate jupyterhub-ssh service's port 22 was wired up), so
-# "sftp never worked" was purely a missing TCP-forward, not a broken
-# component. See system/networking/ingress-nginx/values.yaml's tcp.2222
-# entry, which now points at jupyterhub-sftp:22 (this deployment), not the
-# jupyterhub-ssh deployment (that one's patched __init__.py -- see
-# templates/patch-configmap.yaml -- only implements plain SSH-to-terminal
-# forwarding via Terminado; it has no SFTP subsystem code at all, despite
-# declaring a port 2222 in its own pod spec -- do not route SFTP traffic
-# there, confirmed live: connection refused).
-#
-# NOTE: upstream docs describe this component as supporting "NFS based home
-# directories" -- our shared storage uses the longhorn-overcommit
-# StorageClass (RWX), not NFS. This has NOT yet been verified to work
-# correctly end-to-end with Longhorn's RWX semantics specifically (only
-# confirmed the server process itself starts and listens) -- if real SFTP
-# file operations misbehave, that storage-backend mismatch is the first
-# thing to check.
-sftp:
-  enabled: true
-  pvc:
-    enabled: true
-    name: jupyterhub-shared-storage
-  # The chart's default NetworkPolicy for this component only allows ingress
-  # from same-namespace pods labeled hub.jupyter.org/network-access-sftp-server:
-  # "true" (i.e. JupyterHub singleuser pods). It does NOT allow ingress-nginx
-  # (a different namespace) to reach it at all, unlike the sibling `ssh`
-  # component's NetworkPolicy, which is wide open (0.0.0.0/0). This is why
-  # port 2222 was unreachable end-to-end even after the ingress-nginx tcp.2222
-  # forward was correctly pointed at this Service (see docs/troubleshooting.md,
-  # 2026-07-07 entry): the Service and Endpoint were healthy, but the
-  # NetworkPolicy silently rejected traffic from ingress-nginx before it ever
-  # reached the pod. Add an explicit rule allowing the ingress-nginx namespace.
-  networkPolicy:
-    ingress:
-      - from:
-          - namespaceSelector:
-              matchLabels:
-                name: ingress-nginx
-        ports:
-          - port: sftp
-            protocol: TCP
+# The separate standalone jupyterhub-sftp component (port 2222, shared
+# storage) was removed 2026-08-04: the default ssh gateway (port 22, same
+# connection as `ssh`) now has a real SFTP subsystem (RelaySFTPServer, see
+# chart/templates/patch-configmap.yaml) that relays into each user's own
+# notebook pod via the sidecar -- giving access to the user's actual
+# personal home directory rather than shared storage, over the same
+# key/token auth as ssh. That single method replaces this one.

@@ -67,15 +67,3 @@ serviceAccount:
 
 tcp:
   22: "jupyterhub/jupyterhub-ssh:22"
-  # SFTP -- routes to the SEPARATE jupyterhub-sftp Deployment/Service (a
-  # standalone OpenSSH sftp-server mounting jupyterhub-shared-storage), via
-  # that service's own port 22 (which forwards to the pod's real listener on
-  # container port 2222). CORRECTED 2026-07-06: an earlier version of this
-  # entry pointed at jupyterhub-ssh:2222 instead -- that pod declares a 2222
-  # container port but its patched code (chart/templates/patch-configmap.yaml)
-  # only implements plain SSH-to-terminal forwarding with zero SFTP support;
-  # confirmed live that nothing listens there (connection refused). This was
-  # the actual root cause of "SFTP never worked" -- no external port was ever
-  # forwarded to the component that actually runs an SFTP server, not a
-  # broken server. See user/jupyter/jupyterhub-ssh/values.yaml.
-  2222: "jupyterhub/jupyterhub-sftp:22"
