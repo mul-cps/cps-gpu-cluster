@@ -52,6 +52,10 @@ spec:
             - name: ssh
               containerPort: 8022
               protocol: TCP
+          {{- with .Values.ssh.extraEnv }}
+          env:
+            {{- . | toYaml | nindent 12 }}
+          {{- end }}
           # NOTE (2026-07-06): a "sftp" containerPort: 2222 entry was
           # removed here -- it does not exist in the upstream chart
           # (github.com/yuvipanda/jupyterhub-ssh) and this pod's patched

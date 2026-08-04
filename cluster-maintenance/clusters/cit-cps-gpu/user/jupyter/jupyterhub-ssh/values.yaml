@@ -3,6 +3,19 @@ ssh:
   enabled: true
   service:
     type: ClusterIP
+  # SSH_GATEWAY_TOKEN: admin-scoped JupyterHub API token used by
+  # validate_public_key (patch-configmap.yaml) to start/locate a user's
+  # server during SSH public-key auth, where there's no per-request user
+  # token the way there is for password/token auth. Same Secret/value is
+  # also injected into the hub pod (../jupyterhub/values.yaml
+  # hub.extraEnv) to register this as a JupyterHub service — see
+  # ssh-gateway-sopssecret.yaml.
+  extraEnv:
+    - name: SSH_GATEWAY_TOKEN
+      valueFrom:
+        secretKeyRef:
+          name: jupyterhub-ssh-gateway-token
+          key: admin-api-token
 # This is the REAL, working SFTP server (a standalone OpenSSH sftp-server
 # mounting jupyterhub-shared-storage directly at /mnt/home, listening on
 # container port 2222, exposed via the jupyterhub-sftp Service's port 22).

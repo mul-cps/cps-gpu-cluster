@@ -65,6 +65,21 @@ hub:
         secretKeyRef:
           name: jupyterhub-ldap-credentials
           key: bind-password
+    # SSH_GATEWAY_TOKEN is a dedicated admin-scoped JupyterHub API token for
+    # the jupyterhub-ssh gateway service (see
+    # ../jupyterhub-ssh/ssh-gateway-sopssecret.yaml), registered as a
+    # JupyterHub service below (extraConfig/00-ssh-gateway-service) so the
+    # gateway can start/locate any user's server for SSH public-key auth,
+    # where (unlike password/token auth) there is no per-request user token
+    # available. The SAME token value is also injected into the
+    # jupyterhub-ssh pod itself (see
+    # ../jupyterhub-ssh/chart/templates/ssh/deployment.yaml) from the same
+    # Secret, so both sides agree on the credential.
+    - name: SSH_GATEWAY_TOKEN
+      valueFrom:
+        secretKeyRef:
+          name: jupyterhub-ssh-gateway-token
+          key: admin-api-token
   config:
     JupyterHub:
       admin_access: true
@@ -188,6 +203,23 @@ hub:
     00-oauth-secret: |
       import os
       c.GenericOAuthenticator.client_secret = os.environ['OAUTH_CLIENT_SECRET']
+
+    00-ssh-gateway-service: |
+      import os
+      # Registers the jupyterhub-ssh gateway as an admin-scoped JupyterHub
+      # service so it can start/locate any user's server for SSH
+      # public-key auth (see jupyterhub-ssh's patch-configmap.yaml
+      # validate_public_key, which uses this same token). The token value
+      # itself lives in the jupyterhub-ssh-gateway-token Secret (SOPS,
+      # see ../jupyterhub-ssh/ssh-gateway-sopssecret.yaml) and is injected
+      # here via SSH_GATEWAY_TOKEN (hub.extraEnv above).
+      c.JupyterHub.services = [
+          {
+              "name": "ssh-gateway",
+              "admin": True,
+              "api_token": os.environ["SSH_GATEWAY_TOKEN"],
+          }
+      ]
 
     00-postgres-db-url: |
       import os

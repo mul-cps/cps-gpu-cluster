@@ -8,6 +8,7 @@ data:
   __init__.py: |
     import asyncio
     import logging
+    import os
     from functools import partial
 
     import asyncssh
@@ -135,6 +136,68 @@ data:
 
         def password_auth_supported(self):
             return True
+
+        def public_key_auth_supported(self):
+            return True
+
+        async def validate_public_key(self, username, key):
+            """
+            Accept an offered SSH public key if it's present in the target
+            user's own ~/.ssh/authorized_keys (i.e. the file a normal
+            `ssh-copy-id` writes to), matching plain OpenSSH server
+            semantics -- just proxied through this gateway.
+
+            Unlike validate_password (where the "password" IS a JupyterHub
+            API token good for exactly this user's own API calls),
+            public-key auth carries no per-request token, so this uses a
+            dedicated admin-scoped service token (SSH_GATEWAY_TOKEN, a
+            JupyterHub service registered via
+            jupyterhub/values.yaml hub.extraConfig/00-ssh-gateway-service)
+            to start/locate the user's server on the user's behalf, the
+            same way validate_password's start_user_server() does but with
+            an admin token standing in for a personal one.
+            """
+            self.username = username
+            admin_token = os.environ["SSH_GATEWAY_TOKEN"]
+            headers = {"Authorization": f"token {admin_token}"}
+            async with ClientSession(headers=headers) as session:
+                notebook_url = await self.start_user_server(session, username)
+                if notebook_url is None:
+                    return False
+                self.notebook_url = notebook_url
+                # Used by _handle_client()'s Terminado-bridge fallback path
+                # if the sidecar is unavailable -- an admin-scoped token is
+                # accepted by the singleuser server's hub-auth just like a
+                # personal one would be, since JupyterHub authorizes
+                # admin=True service tokens against any user's server.
+                self.token = admin_token
+                if self.user_ip is None:
+                    await self.get_user_server_url(session, username)
+
+            try:
+                sidecar_conn = await self._get_sidecar_connection()
+                result = await sidecar_conn.run(
+                    "cat ~/.ssh/authorized_keys 2>/dev/null", check=False
+                )
+            except Exception as e:
+                self.app.log.warning(
+                    f"pubkey auth: couldn't reach ssh-sidecar for {username} "
+                    f"to check authorized_keys ({e!r})"
+                )
+                return False
+
+            if result.exit_status != 0 or not result.stdout:
+                return False
+
+            try:
+                authorized_keys = asyncssh.import_authorized_keys(result.stdout)
+            except Exception as e:
+                self.app.log.warning(
+                    f"pubkey auth: couldn't parse authorized_keys for {username} ({e!r})"
+                )
+                return False
+
+            return authorized_keys.validate(key, "", "")
 
         def connection_requested(self, dest_host, dest_port, orig_host, orig_port):
             # Relay the forwarded TCP connection through the pod's
