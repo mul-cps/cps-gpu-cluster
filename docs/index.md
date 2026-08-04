@@ -34,6 +34,13 @@ operations managed continuously via Rancher Fleet GitOps.
     deployed continuously via Rancher Fleet watching this repo -- never apply
     those manifests by hand; edit them and let Fleet reconcile.
 
+!!! note "About this docs site"
+    This `docs/` tree uses fully auto-discovered navigation (folders +
+    `.pages` files, no hand-maintained `nav:` list in `mkdocs.yml`) -- the
+    reusable setup is published separately as
+    [bjoernellens1/mkdocs-docs-template](https://github.com/bjoernellens1/mkdocs-docs-template)
+    if you want the same structure for another project.
+
 ## Repository Structure
 
 ```
@@ -50,7 +57,7 @@ cps-gpu-cluster/
 
 ## Quick Start
 
-1. Enable GPU passthrough on Proxmox -- see [GPU Passthrough](gpu-passthrough.md)
+1. Enable GPU passthrough on Proxmox -- see [GPU Passthrough](gpu/gpu-passthrough.md)
 2. Provision VMs with Terraform
 3. Install K3s with Ansible
 4. Configure storage (Longhorn/local-path + `fast-scratch`)
@@ -58,8 +65,8 @@ cps-gpu-cluster/
 6. Install Rancher and enable Fleet GitOps
 7. Deploy JupyterHub
 
-For the full step-by-step walkthrough, see the [Deployment Checklist](deployment-checklist.md)
-or the [Getting Started](getting-started.md) guide.
+For the full step-by-step walkthrough, see the [Deployment Checklist](getting-started/deployment-checklist.md)
+or the [Getting Started](getting-started/getting-started.md) guide.
 
 ## Networking
 
@@ -70,9 +77,46 @@ or the [Getting Started](getting-started.md) guide.
 
 ## Where to look next
 
-- **New to this cluster?** Start with [Getting Started](getting-started.md).
-- **Deploying GPU workloads?** See [GPU Scheduling Architecture](gpu-scheduling-architecture.md).
-- **Running a GPU job without an interactive notebook?** See [Running GPU Jobs Without an Interactive Session](gpu-batch-jobs.md).
-- **Something broke?** Check [Troubleshooting](troubleshooting.md) first.
+- **New to this cluster?** Start with [Getting Started](getting-started/getting-started.md).
+- **Deploying GPU workloads?** See [GPU Scheduling Architecture](gpu/gpu-scheduling-architecture.md).
+- **Running a GPU job without an interactive notebook?** See [Running GPU Jobs Without an Interactive Session](gpu/gpu-batch-jobs.md).
+- **Something broke?** Check [Troubleshooting](operations/troubleshooting.md) first.
 - **CI/CD on the cluster?** See the in-cluster GitHub Actions runner setup under
   `cluster-maintenance/clusters/cit-cps-gpu/system/ci/README.md` in the repo.
+
+### Deployment & operations reference
+
+- [Deployment Checklist](getting-started/deployment-checklist.md) — step-by-step checklist for deploying the cluster from scratch, phase by phase.
+- [Quick Reference](getting-started/quick-reference.md) — essential commands for initial deployment and day-to-day cluster management.
+- [GPU Passthrough](gpu/gpu-passthrough.md) — enabling PCIe GPU passthrough on Proxmox VE for NVIDIA GPUs.
+- [Network Configuration](networking-auth/network-configuration.md) — VLAN/subnet/gateway/DNS layout for the cluster network at MUL.
+- [Storage Node](provisioning/storage-node.md) — the original NFS storage node setup, with a live-status note on which StorageClasses are actually in use today.
+- [Maintenance VM](provisioning/maintenance-vm.md) — purpose and setup of the utility VM used for cluster administration and debugging.
+- [SSH Key Setup](provisioning/ssh-key-setup.md) — distributing SSH keys between VMs via the Proxmox QEMU guest agent.
+- [Terraform SSH Setup](provisioning/terraform-ssh-setup.md) — the Terraform-automated version of SSH key distribution (`ssh-setup.tf`).
+- [QEMU Guest Agent Setup](provisioning/qemu-guest-agent-setup.md) — how the QEMU guest agent is configured/verified, a prerequisite for the SSH automation above.
+- [SOPS Secrets Migration](networking-auth/sops-secrets-migration.md) — how cluster secrets are committed to Git encrypted with SOPS and decrypted in-cluster.
+
+### JupyterHub
+
+- [JupyterHub Overview](jupyterhub/jupyterhub-overview.md) — deep dive into the JupyterHub deployment (note: its MIG-sharing sections are marked stale; see the doc's own staleness note).
+- [JupyterHub Access Control and Dynamic Profile UI](jupyterhub/jupyterhub-access-and-ui.md) — how GPU access control and the profile-selection UI are implemented.
+- [JupyterHub OIDC Setup](jupyterhub/jupyterhub-oidc-setup.md) — OIDC authentication configuration against CPS Authentik.
+- [JupyterHub SSH Access](jupyterhub/jupyterhub-ssh-access.md) — accessing notebook pods over SSH/SFTP via the jupyterhub-ssh gateway.
+- [Dex OIDC broker for Rancher](networking-auth/dex-idp-broker.md) — the Dex broker Rancher now authenticates through, fanning out to CPS and CIT Authentik.
+
+### Example notebooks
+
+- [gpu-cluster-test.ipynb](examples/gpu-cluster-test.ipynb) — notebook that verifies GPU/OIDC/storage functionality after a fresh cluster setup.
+- [fancy-profiles-showcase.ipynb](examples/fancy-profiles-showcase.ipynb) — placeholder notebook for showcasing JupyterHub profiles (currently empty).
+
+### History / past incidents & superseded designs
+
+These describe point-in-time plans, migrations, or incidents rather than the current state of the cluster — read them for background, not as a reference for what's live today.
+
+- [Project History](project/project-history.md) — the original project specification and goals this repo was built from.
+- [Harvester Migration Guide](project/harvester-migration.md) — plan for migrating from K3s-on-Proxmox-VMs to bare-metal Harvester if a second server becomes available (not executed).
+- [Rancher + Authentik SSO Plan](networking-auth/rancher-authentik-sso-plan.md) — the SAML-to-OIDC migration for Rancher auth; superseded by the Dex broker (see above).
+- [SFTP via Contents API Scoping](jupyterhub/sftp-via-contents-api-scoping.md) — design exploration for per-user SFTP; superseded by the sidecar approach documented in JupyterHub SSH Access.
+- [Upgrade Path: K3s 1.34 + DRA-capable GPU Operator](operations/upgrade-path-2026-k3s-1.34-dra.md) — planning doc for a future upgrade to enable NVIDIA DRA; not yet executed.
+- [Migration Path: ingress-nginx Retirement](operations/upgrade-path-ingress-nginx-retirement.md) — research/planning doc for replacing ingress-nginx after its upstream retirement; not yet executed.

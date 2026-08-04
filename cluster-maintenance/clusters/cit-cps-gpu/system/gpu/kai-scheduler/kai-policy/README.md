@@ -5,7 +5,7 @@ This bundle defines the queues and priority classes for the NVIDIA KAI Scheduler
 For the full architecture — scheduler internals (action pipeline, reclaim
 vs. preempt, bin-packing plugins), the MPS sharing model, and the "why"
 behind these values — see
-[`docs/gpu-scheduling-architecture.md`](../../../../../../../docs/gpu-scheduling-architecture.md).
+[`docs/gpu-scheduling-architecture.md`](../../../../../../../docs/gpu/gpu-scheduling-architecture.md).
 
 ## Usage
 

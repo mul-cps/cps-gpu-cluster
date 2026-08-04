@@ -1,0 +1,7 @@
+title: JupyterHub
+nav:
+  - jupyterhub-overview.md
+  - jupyterhub-access-and-ui.md
+  - jupyterhub-oidc-setup.md
+  - jupyterhub-ssh-access.md
+  - sftp-via-contents-api-scoping.md

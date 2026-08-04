@@ -1,0 +1,5 @@
+title: GPU
+nav:
+  - gpu-passthrough.md
+  - gpu-scheduling-architecture.md
+  - gpu-batch-jobs.md

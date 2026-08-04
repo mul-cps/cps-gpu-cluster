@@ -42,7 +42,7 @@ jobs:
           python-version: "3.12"
 
       - name: Install mkdocs-material
-        run: pip install mkdocs-material
+        run: pip install mkdocs-material mkdocs-awesome-pages-plugin mkdocs-jupyter
 
       - name: Build docs
         run: mkdocs build

@@ -63,7 +63,7 @@ The `scripts/` directory contains utility scripts for cluster management:
 
 ### Deployment Flow
 
-1. **Enable GPU Passthrough on Proxmox** (see [docs/gpu-passthrough.md](docs/gpu-passthrough.md))
+1. **Enable GPU Passthrough on Proxmox** (see [docs/gpu-passthrough.md](docs/gpu/gpu-passthrough.md))
 2. **Provision VMs with Terraform** (see [bootstrap-cluster/terraform/README.md](bootstrap-cluster/terraform/README.md))
 3. **Install K3s with Ansible** (see [bootstrap-cluster/ansible/README.md](bootstrap-cluster/ansible/README.md))
 4. **Configure Storage** (Longhorn/local-path + `fast-scratch` StorageClasses; see storage note above)
@@ -72,7 +72,7 @@ The `scripts/` directory contains utility scripts for cluster management:
 7. **Enable Fleet GitOps** (see [cluster-maintenance/README.md](cluster-maintenance/README.md))
 8. **Deploy JupyterHub**
 
-For a detailed step-by-step guide, see the [Deployment Checklist](docs/deployment-checklist.md).
+For a detailed step-by-step guide, see the [Deployment Checklist](docs/getting-started/deployment-checklist.md).
 
 ## Networking
 
@@ -90,31 +90,31 @@ When a second bare-metal node becomes available, consider migrating to Harvester
 - Longhorn distributed storage
 - Enhanced HA capabilities
 
-See [docs/harvester-migration.md](docs/harvester-migration.md) for details.
+See [docs/harvester-migration.md](docs/project/harvester-migration.md) for details.
 
 ## Documentation
 
 ### Core Setup
-- [Getting Started](docs/getting-started.md)
-- [Deployment Checklist](docs/deployment-checklist.md)
-- [Quick Reference](docs/quick-reference.md)
-- [GPU Passthrough Setup](docs/gpu-passthrough.md)
+- [Getting Started](docs/getting-started/getting-started.md)
+- [Deployment Checklist](docs/getting-started/deployment-checklist.md)
+- [Quick Reference](docs/getting-started/quick-reference.md)
+- [GPU Passthrough Setup](docs/gpu/gpu-passthrough.md)
 - [Terraform Usage](bootstrap-cluster/terraform/README.md)
 - [Ansible Playbooks](bootstrap-cluster/ansible/README.md)
 
 ### Advanced Configuration
-- [SSH Key Setup (Manual)](docs/ssh-key-setup.md)
-- [SSH Key Setup (Terraform)](docs/terraform-ssh-setup.md)
-- [QEMU Guest Agent Setup](docs/qemu-guest-agent-setup.md)
-- [Maintenance VM Guide](docs/maintenance-vm.md)
+- [SSH Key Setup (Manual)](docs/provisioning/ssh-key-setup.md)
+- [SSH Key Setup (Terraform)](docs/provisioning/terraform-ssh-setup.md)
+- [QEMU Guest Agent Setup](docs/provisioning/qemu-guest-agent-setup.md)
+- [Maintenance VM Guide](docs/provisioning/maintenance-vm.md)
 - [Fleet GitOps](cluster-maintenance/README.md)
-- [Network Configuration](docs/network-configuration.md)
-- [JupyterHub Overview](docs/jupyterhub-overview.md)
+- [Network Configuration](docs/networking-auth/network-configuration.md)
+- [JupyterHub Overview](docs/jupyterhub/jupyterhub-overview.md)
 
 ### Operations
-- [Harvester Migration](docs/harvester-migration.md)
-- [Troubleshooting](docs/troubleshooting.md)
-- [Project History](docs/project-history.md)
+- [Harvester Migration](docs/project/harvester-migration.md)
+- [Troubleshooting](docs/operations/troubleshooting.md)
+- [Project History](docs/project/project-history.md)
 
 ## License
 

@@ -50,36 +50,13 @@ markdown_extensions:
   - toc:
       permalink: true
 
-nav:
-  - Home: index.md
-  - Getting Started:
-      - Overview: getting-started.md
-      - Deployment Checklist: deployment-checklist.md
-      - Quick Reference: quick-reference.md
-  - Provisioning:
-      - Terraform SSH Setup: terraform-ssh-setup.md
-      - SSH Key Setup: ssh-key-setup.md
-      - QEMU Guest Agent Setup: qemu-guest-agent-setup.md
-      - Maintenance VM: maintenance-vm.md
-      - Storage Node: storage-node.md
-  - Networking & Auth:
-      - Network Configuration: network-configuration.md
-      - Dex IdP Broker: dex-idp-broker.md
-      - SOPS Secrets Migration: sops-secrets-migration.md
-      - Rancher/Authentik SSO Plan: rancher-authentik-sso-plan.md
-  - GPU:
-      - GPU Passthrough: gpu-passthrough.md
-      - GPU Scheduling Architecture: gpu-scheduling-architecture.md
-  - JupyterHub:
-      - Overview: jupyterhub-overview.md
-      - Access & UI: jupyterhub-access-and-ui.md
-      - OIDC Setup: jupyterhub-oidc-setup.md
-      - SSH Access: jupyterhub-ssh-access.md
-      - SFTP via Contents API: sftp-via-contents-api-scoping.md
-  - Operations:
-      - Troubleshooting: troubleshooting.md
-      - Upgrade Path -- k3s 1.34 / DRA: upgrade-path-2026-k3s-1.34-dra.md
-      - Upgrade Path -- ingress-nginx retirement: upgrade-path-ingress-nginx-retirement.md
-  - Project:
-      - History: project-history.md
-      - Harvester Migration: harvester-migration.md
+# nav: intentionally omitted -- awesome-pages builds it from docs/'s folder
+# structure plus each folder's .pages file (title + curated order for known
+# pages; anything not explicitly listed still gets auto-appended), so new
+# docs show up without editing this file.
+plugins:
+  - search
+  - awesome-pages
+  - mkdocs-jupyter:
+      execute: false
+      include_source: true

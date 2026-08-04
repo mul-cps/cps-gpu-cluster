@@ -36,7 +36,7 @@ cd cps-gpu-cluster
 
 ### 2. Enable GPU Passthrough on Proxmox
 
-Follow [docs/gpu-passthrough.md](gpu-passthrough.md) to:
+Follow [docs/gpu-passthrough.md](../gpu/gpu-passthrough.md) to:
 - Enable IOMMU in GRUB
 - Load VFIO modules
 - Bind GPUs to vfio-pci
@@ -260,7 +260,7 @@ Commit and push - Fleet will auto-deploy.
 
 ## Troubleshooting
 
-See [docs/troubleshooting.md](troubleshooting.md) for common issues.
+See [docs/troubleshooting.md](../operations/troubleshooting.md) for common issues.
 
 Quick checks:
 
@@ -342,4 +342,4 @@ To destroy everything:
 
 - GitHub Issues: File bug reports and feature requests
 - Documentation: All docs in `/docs` directory
-- Troubleshooting: See [docs/troubleshooting.md](troubleshooting.md)
+- Troubleshooting: See [docs/troubleshooting.md](../operations/troubleshooting.md)

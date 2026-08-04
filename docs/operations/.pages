@@ -1,0 +1,5 @@
+title: Operations
+nav:
+  - troubleshooting.md
+  - upgrade-path-2026-k3s-1.34-dra.md
+  - upgrade-path-ingress-nginx-retirement.md

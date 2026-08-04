@@ -12,7 +12,7 @@ Use this checklist to deploy the GPU cluster from scratch.
 - [ ] Network configured (VLAN 633 accessible)
 - [ ] NVMe ZFS storage pool created (`NvmeZFSstorage`)
 - [ ] Ubuntu 24.04 Cloud-Init template created (VMID: 9000)
-  - See: [bootstrap-cluster/terraform/TEMPLATE_CREATION.md](bootstrap-cluster/terraform/TEMPLATE_CREATION.md)
+  - See: [bootstrap-cluster/terraform/TEMPLATE_CREATION.md](../../bootstrap-cluster/terraform/TEMPLATE_CREATION.md)
 - [ ] Proxmox API token created for Terraform
   - User: `terraform-prov@pve`
   - Token name: `mytoken`
@@ -456,9 +456,9 @@ Use this checklist to deploy the GPU cluster from scratch.
 ## Troubleshooting Reference
 
 If issues occur, see:
-- [docs/troubleshooting.md](docs/troubleshooting.md)
-- [docs/qemu-guest-agent-setup.md](docs/qemu-guest-agent-setup.md)
-- [docs/terraform-ssh-setup.md](docs/terraform-ssh-setup.md)
+- [docs/troubleshooting.md](../operations/troubleshooting.md)
+- [docs/qemu-guest-agent-setup.md](../provisioning/qemu-guest-agent-setup.md)
+- [docs/terraform-ssh-setup.md](../provisioning/terraform-ssh-setup.md)
 
 ## Rollback Procedures
 

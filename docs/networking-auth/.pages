@@ -1,0 +1,6 @@
+title: Networking & Auth
+nav:
+  - network-configuration.md
+  - dex-idp-broker.md
+  - sops-secrets-migration.md
+  - rancher-authentik-sso-plan.md
