@@ -3,6 +3,7 @@ kind: Kustomization
 resources:
   - rbac.yaml
   - allow-ingress-nginx.yaml
+  - ssh-gateway-sopssecret.yaml
 # netpol.yaml deliberately excluded: it's a stale, out-of-date duplicate
 # of the NetworkPolicy the Helm chart's own chart/templates/ssh/netpol.yaml
 # already creates (same object name "jupyterhub-ssh") -- confirmed live
