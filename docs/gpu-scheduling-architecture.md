@@ -684,6 +684,10 @@ See "Concrete before/after packing example" above.
 
 ## Related docs
 
+- `docs/gpu-batch-jobs.md` — how to submit GPU jobs without an interactive
+  JupyterHub session (`kubectl`-submitted Jobs, all supported GPU-sharing/
+  gang-scheduling/framework combinations, with links to working example
+  manifests).
 - `docs/troubleshooting.md` — full incident write-ups this doc draws on:
   MIG mode/reset behavior, MPS setup and enforcement gotchas, the
   PriorityClass `>=100` incident, the CPU/memory quota-gap incident, and

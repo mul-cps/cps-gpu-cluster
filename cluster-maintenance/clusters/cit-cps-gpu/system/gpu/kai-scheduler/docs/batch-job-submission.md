@@ -169,18 +169,19 @@ platform enforces.** Batch job authors are responsible for:
   will simply restart the pod (per `restartPolicy`) after eviction or
   preemption - your application code must handle resumption itself.
 
-Use the `nfs-client` StorageClass (the cluster's default, backed by the
-shared NFS export via the `nfs-subdir-external-provisioner`) for
-checkpoint PVCs - see
+Use the `longhorn-overcommit` StorageClass (replicated block storage,
+supports `ReadWriteMany`) for checkpoint PVCs - see
 `../../../storage/storageclasses/storageclasses.yaml` for the
-authoritative list of storage classes available in this cluster.
-`longhorn-fast` and `longhorn-overcommit` also exist (replicated
-block storage) but `nfs-client` is the simpler default for
-`ReadWriteMany` checkpoint directories shared across a job's pods, as
-used in the examples in this file.
+authoritative list of storage classes available in this cluster. Note:
+`nfs-client` no longer exists on this cluster (removed without a
+documented replacement path - see CLAUDE.md and
+`docs/troubleshooting.md`); a PVC referencing it stays `Pending` forever.
+`longhorn-overcommit` is the current default for `ReadWriteMany`
+checkpoint directories shared across a job's pods, as used in the
+examples in this file.
 
 Both example jobs in `../examples/batch-gang-job.yaml` mount a
-`/checkpoints` path backed by an `nfs-client` PVC to illustrate this
-pattern; replace the placeholder image/args with your actual training
-code, which must write checkpoints to that path on a schedule shorter
-than your expected eviction interval.
+`/checkpoints` path backed by a `longhorn-overcommit` PVC to illustrate
+this pattern; replace the placeholder image/args with your actual
+training code, which must write checkpoints to that path on a schedule
+shorter than your expected eviction interval.

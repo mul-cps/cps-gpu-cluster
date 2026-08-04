@@ -72,6 +72,7 @@ or the [Getting Started](getting-started.md) guide.
 
 - **New to this cluster?** Start with [Getting Started](getting-started.md).
 - **Deploying GPU workloads?** See [GPU Scheduling Architecture](gpu-scheduling-architecture.md).
+- **Running a GPU job without an interactive notebook?** See [Running GPU Jobs Without an Interactive Session](gpu-batch-jobs.md).
 - **Something broke?** Check [Troubleshooting](troubleshooting.md) first.
 - **CI/CD on the cluster?** See the in-cluster GitHub Actions runner setup under
   `cluster-maintenance/clusters/cit-cps-gpu/system/ci/README.md` in the repo.
