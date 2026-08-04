@@ -1911,6 +1911,27 @@ hub:
               # primary group isn't literally named "jovyan") -- owner
               # ownership alone is what sshd's StrictModes check needs.
               "chown jovyan /home/jovyan/.ssh /home/jovyan/.ssh/authorized_keys\n"
+              # GPU-profile base image (cschranz/gpu-jupyter) ships jovyan
+              # with a LOCKED account (`getent shadow jovyan` -> `jovyan:!:...`)
+              # -- confirmed live (2026-08-04) this makes OpenSSH's own
+              # core allowed_user() check (auth.c) reject every connection
+              # attempt outright ("User jovyan not allowed because account
+              # is locked"), fully independent of PAM and firing before any
+              # auth-method-specific logic runs -- i.e. this blocks the
+              # whole sidecar relay (exec/shell, not just SFTP) on every
+              # GPU profile, not just the SFTP path that surfaced it.
+              # cpu-default's base image (datascience-notebook) ships a
+              # real password hash for jovyan, not locked, which is why
+              # this was never hit while testing SSH against that profile
+              # earlier today. Only root can clear a locked shadow entry;
+              # GPU (grant_sudo: True) profiles already run this whole
+              # script as root, so this is safe here and a harmless no-op
+              # (`|| true`) on non-root/non-sudo profiles that don't need
+              # it. `passwd -d` clears the password field entirely (empty,
+              # not locked) -- safe combined with the PasswordAuthentication=no
+              # already set below, so this does not open a blank-password
+              # login path.
+              '[ "$(id -u)" = "0" ] && passwd -d jovyan >/dev/null 2>&1 || true\n'
               # Non-sudo profiles (grant_sudo: False, e.g. cpu-default) run
               # this whole container -- postStart included -- as the plain
               # jovyan user, not root (only grant_sudo: True profiles get
