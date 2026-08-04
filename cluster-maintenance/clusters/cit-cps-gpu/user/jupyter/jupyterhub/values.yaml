@@ -1931,7 +1931,19 @@ hub:
               # regardless of .ssh's own correct permissions -- matches
               # why the original standalone sidecar's sshd_config also
               # had to set this.
-              "exec /usr/sbin/sshd -D -p 2200 -h /home/jovyan/.ssh/host_keys/ssh_host_ed25519_key -o StrictModes=no -o PermitRootLogin=no -o PasswordAuthentication=no -o AllowUsers=jovyan -o PidFile=/tmp/sshd-2200.pid\n"
+              # UsePAM=no: confirmed live (2026-08-04) that PAM's ACCOUNT
+              # phase (not the key check itself, which succeeded) rejects
+              # jovyan outright -- "Access denied for user jovyan by PAM
+              # account configuration" -- in this minimal image's default
+              # PAM config, most likely because jovyan's /etc/shadow
+              # password field is locked/disabled, which pam_unix's
+              # account phase treats as an expired/disabled account
+              # regardless of auth method. PasswordAuthentication is
+              # already off and AllowUsers already restricts to jovyan
+              # only, so PAM adds nothing security-relevant here for this
+              # internal-only (never externally exposed) sidecar sshd --
+              # simplest fix is to not invoke it at all.
+              "exec /usr/sbin/sshd -D -p 2200 -h /home/jovyan/.ssh/host_keys/ssh_host_ed25519_key -o UsePAM=no -o StrictModes=no -o PermitRootLogin=no -o PasswordAuthentication=no -o AllowUsers=jovyan -o PidFile=/tmp/sshd-2200.pid\n"
           )
           _ssh_setup_cmd = (
               "mkdir -p /tmp/ssh-setup-logs && cat > /tmp/ssh-setup.sh << 'SCRIPT_EOF'\n"
