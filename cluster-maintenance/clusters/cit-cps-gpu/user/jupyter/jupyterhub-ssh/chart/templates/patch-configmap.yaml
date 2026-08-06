@@ -61,7 +61,20 @@ data:
 
         async def open(self, path, pflags, attrs):
             client = await self._client()
-            return await client.open(path, pflags, attrs)
+            # encoding=None: asyncssh.SFTPClient.open() defaults to
+            # encoding="utf-8" (text mode), which makes the returned
+            # SFTPClientFile.write() call data.encode() on every write --
+            # but the data this relay's own write()/read() callbacks
+            # exchange with asyncssh's outer SFTPServer machinery is
+            # always raw bytes (the real SFTP wire protocol is binary,
+            # not text). Confirmed live (2026-08-06): with the default
+            # text-mode encoding, every upload failed with "Uncaught
+            # exception: 'bytes' object has no attribute 'encode'" on the
+            # first write (opens/reads of empty or non-existent files
+            # didn't surface it, only a real content write did). This
+            # relay must stay byte-transparent end-to-end, matching what
+            # a real binary-mode SFTP client/server pair would do.
+            return await client.open(path, pflags, attrs, encoding=None)
 
         async def close(self, file_obj):
             await file_obj.close()
