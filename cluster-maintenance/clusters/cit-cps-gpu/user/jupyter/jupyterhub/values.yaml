@@ -1733,6 +1733,7 @@ hub:
           # confirmed `pip show cryptography` and `pip show kubernetes_asyncio`
           # succeed inside a running hub pod, STOP and verify before deploying
           # this change. See docs/superpowers/specs/2026-08-03-vscode-remote-ssh-design.md.
+          import base64
           import re
           from cryptography.hazmat.primitives import serialization
           from cryptography.hazmat.primitives.asymmetric.ed25519 import Ed25519PrivateKey
@@ -1743,30 +1744,6 @@ hub:
           safe_username = re.sub(r'[^a-z0-9-]', '-', spawner.user.name.lower())[:40]
           safe_server_name = re.sub(r'[^a-z0-9-]', '-', (spawner.name or '').lower())[:40]
           sidecar_secret_name = f"ssh-sidecar-{safe_username}-{safe_server_name or 'default'}"
-
-          priv_key = Ed25519PrivateKey.generate()
-          priv_pem = priv_key.private_bytes(
-              encoding=serialization.Encoding.PEM,
-              format=serialization.PrivateFormat.OpenSSH,
-              encryption_algorithm=serialization.NoEncryption(),
-          )
-          pub_openssh = priv_key.public_key().public_bytes(
-              encoding=serialization.Encoding.OpenSSH,
-              format=serialization.PublicFormat.OpenSSH,
-          )
-
-          secret_body = k8s_client.V1Secret(
-              metadata=k8s_client.V1ObjectMeta(
-                  name=sidecar_secret_name,
-                  namespace="jupyterhub",
-                  labels={"app.kubernetes.io/component": "ssh-sidecar-credential"},
-              ),
-              string_data={
-                  "private_key": priv_pem.decode(),
-                  "public_key": pub_openssh.decode(),
-              },
-              type="Opaque",
-          )
 
           # KubeSpawner instances have no `.api_client`/`.api` attribute of
           # their own (confirmed live against the running hub pod's
@@ -1787,30 +1764,77 @@ hub:
           # happened before this hook runs.
           load_config()
           core_api = shared_client("CoreV1Api")
-          # The z2jh chart's own "hub" Role (not ours to edit -- Helm
-          # re-templates it on every upgrade) grants
-          # get/watch/list/create/delete on secrets, but NOT update/patch.
-          # `replace_namespaced_secret` needs `update` and was confirmed
-          # live to fail with a 403 Forbidden for the hub's own
-          # ServiceAccount. Use only the verbs the hub SA actually has:
-          # delete (ignore 404 if it didn't exist yet) then create. A
-          # concurrent spawn for the same identity racing this same
-          # delete+create is handled by retrying once on a 409 from create.
+
+          # Get-or-create, NOT unconditional regenerate-on-every-call.
+          # Confirmed live (2026-08-06): this hook can run more than once
+          # for what is logically a single user-facing spawn (KubeSpawner
+          # builds the pod manifest -- and therefore invokes this
+          # pre_spawn hook -- more than once per spawn attempt in some
+          # code paths). The previous version unconditionally generated a
+          # brand-new random Ed25519 keypair and delete+created the Secret
+          # on every single invocation, so whichever invocation happened
+          # to run LAST won the Secret, while the pod's actual
+          # `SSH_SIDECAR_AUTHORIZED_KEY` env var baked into
+          # `~/.ssh/authorized_keys` reflected whichever invocation's
+          # manifest KubeSpawner actually used to create the pod --
+          # confirmed live these two silently diverged for a real user
+          # (`gottam`), leaving the notebook pod's authorized_keys and the
+          # `ssh-sidecar-<user>-<server>` Secret holding two DIFFERENT
+          # keypairs from the same spawn, which made the SSH gateway's
+          # sidecar connection fail pubkey auth every time
+          # ("Auth failed for user jovyan") despite everything else being
+          # healthy. Reusing an existing Secret's public key across
+          # repeated hook invocations (and across pod restarts, which is
+          # harmless -- this is a per-identity credential, not a
+          # single-use one) makes every invocation agree on the same
+          # keypair regardless of how many times the hook fires.
+          existing_secret = None
           try:
-              await core_api.delete_namespaced_secret(sidecar_secret_name, "jupyterhub")
+              existing_secret = await core_api.read_namespaced_secret(sidecar_secret_name, "jupyterhub")
           except ApiException as e:
               if e.status != 404:
                   raise
-          try:
-              await core_api.create_namespaced_secret("jupyterhub", secret_body)
-          except ApiException as e:
-              if e.status == 409:
-                  # Lost the create race to a concurrent spawn for the same
-                  # identity; delete+create once more to take over cleanly.
-                  await core_api.delete_namespaced_secret(sidecar_secret_name, "jupyterhub")
+
+          if existing_secret is not None:
+              pub_openssh = base64.b64decode(existing_secret.data["public_key"])
+          else:
+              priv_key = Ed25519PrivateKey.generate()
+              priv_pem = priv_key.private_bytes(
+                  encoding=serialization.Encoding.PEM,
+                  format=serialization.PrivateFormat.OpenSSH,
+                  encryption_algorithm=serialization.NoEncryption(),
+              )
+              pub_openssh = priv_key.public_key().public_bytes(
+                  encoding=serialization.Encoding.OpenSSH,
+                  format=serialization.PublicFormat.OpenSSH,
+              )
+
+              secret_body = k8s_client.V1Secret(
+                  metadata=k8s_client.V1ObjectMeta(
+                      name=sidecar_secret_name,
+                      namespace="jupyterhub",
+                      labels={"app.kubernetes.io/component": "ssh-sidecar-credential"},
+                  ),
+                  string_data={
+                      "private_key": priv_pem.decode(),
+                      "public_key": pub_openssh.decode(),
+                  },
+                  type="Opaque",
+              )
+              try:
                   await core_api.create_namespaced_secret("jupyterhub", secret_body)
-              else:
-                  raise
+              except ApiException as e:
+                  if e.status == 409:
+                      # Lost the create race to a concurrent invocation
+                      # for the same identity -- read back whichever
+                      # keypair won so we still agree with it, rather
+                      # than deleting/overwriting it (that unconditional
+                      # delete+create loop is exactly the bug this
+                      # rewrite removes).
+                      winner = await core_api.read_namespaced_secret(sidecar_secret_name, "jupyterhub")
+                      pub_openssh = base64.b64decode(winner.data["public_key"])
+                  else:
+                      raise
 
           # REDESIGNED 2026-08-03 (live, mid-incident): originally this ran
           # a separate "ssh-sidecar" container (minimal debian + openssh),
