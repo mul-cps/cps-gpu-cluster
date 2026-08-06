@@ -1446,6 +1446,109 @@ upgrade was not attempted.
 
 ## Fleet/GitOps Issues
 
+### `gitjob` controller silently stops polling/reconciling for hours, resumes instantly on restart (WORKAROUND ONLY, root cause unconfirmed, 2026-08-06)
+
+**Symptom**: `kubectl get gitrepo cluster-maintenance -n fleet-local` shows
+`.status.commit` stuck on an old commit indefinitely, even though new
+commits were pushed to `main` and the GitRepo's
+`spec.pollingInterval` is `30s`. No errors, no `Reconciling`/`Stalled`
+conditions change, no pod restarts (`RESTARTS: 0`) -- the `gitjob`
+Deployment (`cattle-fleet-system/gitjob`, single replica, no
+liveness/readiness probes configured) just stops doing anything.
+Confirmed cluster-wide, not specific to this repo: `kubectl logs -n
+cattle-fleet-system -l app=gitjob` showed **zero log lines in the 6+
+hours before the fix in this incident**, for any GitRepo
+(`cluster-maintenance`, `cit-teaching-platform`,
+`incluster-image-builder` alike) -- not just a slow poll, a fully idle
+controller.
+
+**Timeline this session**: first observed stuck for **~45 hours**
+(last real reconcile at `2026-08-04T15:08:10Z`, next new commits not
+picked up until manually intervened on `2026-08-06`). `kubectl rollout
+restart deploy/gitjob -n cattle-fleet-system` fixed it immediately
+(new commit picked up within one ~30s poll cycle). It then **wedged
+again within about 15-20 minutes** after that first restart, on the
+very next commit pushed -- confirmed by the same symptom (no new
+`cluster-maintenance-*` Job pod, `.status.commit` stale) and fixed
+again by a second `rollout restart`. Two wedges in under an hour makes
+this a real recurring problem, not a rare one-off.
+
+**Root cause: not confirmed, but suspicious pattern found.** The gitjob
+controller logs show `leader election` succeeding instantly and
+cleanly on both restarts (this repo's own election lease,
+`fleet-gitops-leader-election-shard`, transferred without delay), and
+the node hosting the pod (`k3s-cp2`) had no resource pressure the whole
+time -- so this isn't a node/scheduling issue, and it isn't a
+leader-election issue. The last logged event before the first ~45h
+wedge was an actual **reconcile error**:
+```
+Reconciler error  error creating git job: jobs.batch "cluster-maintenance-b1550" already exists
+Deleting previous job to avoid conflicts  commit=b5ee95b...
+```
+immediately followed by a successful recovery (delete+recreate,
+`b5ee95b` picked up fine).
+
+**Update, same session, confirmed by direct observation**: this
+"already exists" error is not a rare edge case -- it fired again on
+literally the **first reconcile after the second restart** too (job
+name `cluster-maintenance-32798`, deterministically derived from
+repo+commit, so it collides with an already-existing Job object left
+over from an earlier attempt at the same commit) and self-healed the
+same way. So this specific error+recovery cycle appears to fire on
+*most or all* reconciles of this GitRepo, not just the two that
+happened to precede a wedge -- it is normal, routine, self-healing
+noise by itself, not proof of the wedge's trigger. What it does show
+is that this GitRepo's reconcile path exercises an error-then-recover
+branch almost every single poll, which is exactly the kind of
+hot/fragile path where a subtler bug in how the controller's workqueue
+handles a returned error (e.g. mis-handling the retry/backoff state,
+or a status-update conflict racing the same reconcile) is more likely
+to occasionally misfire and drop the item entirely, compared to a
+GitRepo whose reconciles are always clean. The leading hypothesis --
+**not verified against `rancher/fleet:v0.14.3` source, flagged here as
+unconfirmed** -- is a client-go workqueue backoff/requeue bug tied to
+this recurring error path, but the exact mechanism that turns "routine
+self-healed error" into "wedged for 45 hours" has not been isolated.
+Also notable: `Job` deletion here happens without
+`propagationPolicy=Background`/`Orphan` (see the very next log line,
+"child pods are preserved by default when jobs are deleted"), which
+leaves an orphaned completed pod behind on every single one of these
+routine recoveries -- confirmed dozens of `cluster-maintenance-*`
+`Completed` pods with no owning Job accumulated in `fleet-local` over
+the past ~2 weeks. Harmless on its own (they're just inert completed
+pods) but worth cleaning up periodically and worth fixing at the
+source if this is ever patched upstream.
+
+**Fix applied (workaround only)**: `kubectl rollout restart deploy/gitjob
+-n cattle-fleet-system` — safe, stateless, single-replica, and this is
+a Rancher/Fleet system component (see the `Fleet/K3s/cert-manager`
+exception to this repo's "GitOps only" convention), not something
+tracked in this git tree.
+
+**Not yet done / real follow-up needed**:
+- No liveness probe exists on the `gitjob` Deployment at all
+  (`kubectl get deploy gitjob -n cattle-fleet-system -o yaml` shows no
+  `livenessProbe`), so kubelet has no way to detect and auto-restart a
+  wedged-but-still-"Running" controller -- this is why it can sit
+  silently broken for 45 hours with zero automated recovery. Since
+  `gitjob` is a Rancher-managed system Deployment (not one of ours),
+  adding a probe means either patching it live (drift that Rancher's
+  own reconciler may revert on the next Fleet/Rancher upgrade) or
+  raising it upstream/with Rancher support -- not done here.
+- Consider a monitoring alert on `GitRepo.status.commit` vs. the
+  actual latest commit on `main` staying stale for more than a few
+  minutes (the existing `system/observability` stack -- alloy/loki/
+  monitoring -- could plausibly host this, but no alert rule was
+  written as part of this incident).
+- Check whether upgrading past `rancher/fleet:v0.14.3` picks up a fix
+  for this if it is in fact the workqueue-backoff issue suspected
+  above -- not checked against upstream release notes/changelog.
+- If this recurs again soon (matching the ~15-20 minute reproduction
+  seen this session), that's much stronger evidence for the backoff
+  hypothesis specifically (would mean *any* transient reconcile error,
+  not just a rare one, retriggers it) and worth escalating rather than
+  continuing to treat as a one-off restart-and-forget.
+
 ### Helm post-install/post-upgrade hook Jobs don't reliably re-fire on every upgrade (RESOLVED 2026-07-24, redesigned)
 
 **Symptom**: a Helm hook Job that has run successfully once (e.g.
