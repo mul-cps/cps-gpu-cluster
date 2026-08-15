@@ -33,6 +33,54 @@
       environment:
         KUBECONFIG: /etc/rancher/k3s/k3s.yaml
 
+    # local-path-provisioner (rancher.io/local-path) does NOT read the
+    # StorageClass's `parameters.nodePath` as a filesystem path override on
+    # its own -- it only provisions a volume at `nodePath` on a given node
+    # if that exact path is also listed for that node (or for
+    # DEFAULT_PATH_FOR_NON_LISTED_NODES) in the local-path-config ConfigMap
+    # in kube-system. Without this task, the StorageClass silently exists
+    # but every provision attempt fails with "config doesn't contain path
+    # {{ scratch_path }} on node <name>" and every PVC/pod using
+    # {{ scratch_storage_class_name }} hangs Pending forever (found
+    # 2026-08-15 -- this exact gap took down all 5 CI runners for ~14h,
+    # see cps-gpu-cluster issue/incident notes and splatograph#648).
+    - name: Write local-path-config ConfigMap manifest ({{ scratch_path }} registered on every gpu_workers node, default path untouched for CP/other nodes)
+      copy:
+        dest: /tmp/local-path-config-cm.yaml
+        content: |
+          apiVersion: v1
+          kind: ConfigMap
+          metadata:
+            name: local-path-config
+            namespace: kube-system
+          data:
+            config.json: |-
+              {
+                "nodePathMap":[
+                {
+                  "node":"DEFAULT_PATH_FOR_NON_LISTED_NODES",
+                  "paths":["/var/lib/rancher/k3s/storage"]
+                }{% for node in groups['gpu_workers'] %},
+                {
+                  "node":"{{ node }}",
+                  "paths":["/var/lib/rancher/k3s/storage","{{ scratch_path }}"]
+                }{% endfor %}
+
+                ]
+              }
+
+    - name: Apply local-path-config ConfigMap
+      shell: kubectl apply -f /tmp/local-path-config-cm.yaml
+      environment:
+        KUBECONFIG: /etc/rancher/k3s/k3s.yaml
+      register: local_path_config_apply
+
+    - name: Restart local-path-provisioner to pick up config if it changed
+      shell: kubectl -n kube-system rollout restart deploy local-path-provisioner
+      environment:
+        KUBECONFIG: /etc/rancher/k3s/k3s.yaml
+      when: "'configured' in local_path_config_apply.stdout"
+
     - name: Create fast-scratch StorageClass manifest
       copy:
         dest: /tmp/fast-scratch-sc.yaml
