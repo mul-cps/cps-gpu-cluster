@@ -55,17 +55,18 @@ directory, `longhorn-backups`. Create the child directory through a one-shot,
 idempotent NFS-mounted Kubernetes Job and verify it is writable before updating
 Longhorn's target.
 
-Declare the Longhorn `BackupTarget` named `default` in the Longhorn Fleet
-bundle with:
+Configure the chart's `defaultBackupStore` in the Longhorn Fleet values with:
 
 ```
 nfs://193.170.30.58:/mnt/scratch1/cps_scratch1_tmp/longhorn-backups?nfsOptions=nfsvers=4.2,proto=tcp,hard,timeo=150,retrans=3,rsize=1048576,wsize=1048576,noresvport
 ```
 
-Retain the existing five-minute polling interval and no credential secret.
-Verify `.status.available=true`, then take and confirm an on-demand backup of
-a healthy Longhorn volume before considering the target operational. The
-existing `backup-all` recurring job then resumes protecting its labeled
+Retain the existing five-minute polling interval and no credential secret. Add
+the directory-bootstrap Job through the chart's `extraObjects` value; sibling
+raw YAML is packaged in a Helm Fleet bundle but is not applied by the Helm
+release. Verify `.status.available=true`, then take and confirm an on-demand
+backup of a healthy Longhorn volume before considering the target operational.
+The existing `backup-all` recurring job then resumes protecting its labeled
 volumes.
 
 ### 3. Decouple Jupyter availability from the failed shared workspace

@@ -4,7 +4,7 @@
 
 **Goal:** Restore Longhorn backup protection and GPU2 scheduling while allowing JupyterHub power users to start without the faulted shared workspace.
 
-**Architecture:** A raw resource Job creates and proves a dedicated directory on the selected scratch NFS export, and a GitOps-owned Longhorn BackupTarget consumes that directory. A focused JupyterHub option controls whether the shared Longhorn PVC is added to a power-user pod. GPU2 scheduling is restored through the live Longhorn Node CR, then documented as an operational intervention.
+**Architecture:** A Longhorn chart `extraObjects` Job creates and proves a dedicated directory on the selected scratch NFS export, while the chart's `defaultBackupStore` configures the target. A focused JupyterHub option controls whether the shared Longhorn PVC is added to a power-user pod. GPU2 scheduling is restored through the live Longhorn Node CR, then documented as an operational intervention.
 
 **Tech Stack:** Kubernetes CRDs and Jobs, Rancher Fleet, Longhorn 1.9.2, JupyterHub/KubeSpawner Python configuration embedded in Helm values, POSIX shell validation.
 
@@ -22,13 +22,12 @@
 ### Task 1: Define and validate the scratch-NFS backup target resources
 
 **Files:**
-- Create: `cluster-maintenance/clusters/cit-cps-gpu/system/storage/longhorn/backup-target-bootstrap.yaml`
-- Create: `cluster-maintenance/clusters/cit-cps-gpu/system/storage/longhorn/backup-target.yaml`
+- Modify: `cluster-maintenance/clusters/cit-cps-gpu/system/storage/longhorn/values.yaml`
 - Create: `tests/longhorn/validate-backup-target-manifests.sh`
 
 **Interfaces:**
 - Consumes: NFS server `193.170.30.58` and export `/mnt/scratch1/cps_scratch1_tmp`.
-- Produces: Job `longhorn-backup-target-bootstrap` and `backuptarget.longhorn.io/default` in `longhorn-system`.
+- Produces: chart-rendered Job `longhorn-backup-target-bootstrap` and a Longhorn `defaultBackupStore` target in `longhorn-system`.
 
 - [ ] **Step 1: Write the failing manifest-contract test**
 
@@ -39,62 +38,59 @@ Create `tests/longhorn/validate-backup-target-manifests.sh`:
 set -euo pipefail
 
 root=$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)
-bootstrap="$root/cluster-maintenance/clusters/cit-cps-gpu/system/storage/longhorn/backup-target-bootstrap.yaml"
-target="$root/cluster-maintenance/clusters/cit-cps-gpu/system/storage/longhorn/backup-target.yaml"
+values="$root/cluster-maintenance/clusters/cit-cps-gpu/system/storage/longhorn/values.yaml"
 
-test -f "$bootstrap"
-test -f "$target"
-rg -F 'mountPath: /backup' "$bootstrap"
-rg -F 'server: 193.170.30.58' "$bootstrap"
-rg -F 'path: /mnt/scratch1/cps_scratch1_tmp' "$bootstrap"
-rg -F 'mkdir -p /backup/longhorn-backups' "$bootstrap"
-rg -F 'name: default' "$target"
-rg -F 'nfs://193.170.30.58:/mnt/scratch1/cps_scratch1_tmp/longhorn-backups?' "$target"
-rg -F 'nfsvers=4.2,proto=tcp,hard,timeo=150,retrans=3,rsize=1048576,wsize=1048576,noresvport' "$target"
+rg -F 'defaultBackupStore:' "$values"
+rg -F 'backupTarget: nfs://193.170.30.58:/mnt/scratch1/cps_scratch1_tmp/longhorn-backups?' "$values"
+rg -F 'pollInterval: 300' "$values"
+rg -F 'extraObjects:' "$values"
+rg -F 'name: longhorn-backup-target-bootstrap' "$values"
+rg -F 'mkdir -p /backup/longhorn-backups' "$values"
 ```
 
 - [ ] **Step 2: Run the test and verify it fails because the manifests do not exist**
 
 Run: `bash tests/longhorn/validate-backup-target-manifests.sh`
 
-Expected: non-zero exit from `test -f` for `backup-target-bootstrap.yaml`.
+Expected: non-zero exit because neither `defaultBackupStore` nor the bootstrap Job exists in `values.yaml`.
 
-- [ ] **Step 3: Add the minimal bootstrap Job and BackupTarget CR**
+- [ ] **Step 3: Add the chart-native backup target and bootstrap Job**
 
-Create `backup-target-bootstrap.yaml` with an idempotent Job that mounts the scratch NFS export directly:
+Add this `defaultBackupStore` and `extraObjects` entry to `values.yaml`:
 
 ```yaml
-apiVersion: batch/v1
-kind: Job
-metadata:
-  name: longhorn-backup-target-bootstrap
-  namespace: longhorn-system
-spec:
-  backoffLimit: 2
-  template:
+defaultBackupStore:
+  backupTarget: nfs://193.170.30.58:/mnt/scratch1/cps_scratch1_tmp/longhorn-backups?nfsOptions=nfsvers=4.2,proto=tcp,hard,timeo=150,retrans=3,rsize=1048576,wsize=1048576,noresvport
+  backupTargetCredentialSecret: ""
+  pollInterval: 300
+extraObjects:
+  - apiVersion: batch/v1
+    kind: Job
+    metadata:
+      name: longhorn-backup-target-bootstrap
+      namespace: longhorn-system
     spec:
-      restartPolicy: OnFailure
-      containers:
-        - name: create-and-verify-target
-          image: busybox:1.37
-          command: ["/bin/sh", "-ec"]
-          args:
-            - |
-              mkdir -p /backup/longhorn-backups
-              test -d /backup/longhorn-backups
-              touch /backup/longhorn-backups/.longhorn-backup-target-check
-              rm /backup/longhorn-backups/.longhorn-backup-target-check
-          volumeMounts:
+      backoffLimit: 2
+      template:
+        spec:
+          restartPolicy: OnFailure
+          containers:
+            - name: create-and-verify-target
+              image: busybox:1.37
+              command: ["/bin/sh", "-ec"]
+              args:
+                - mkdir -p /backup/longhorn-backups && touch /backup/longhorn-backups/.longhorn-backup-target-check && rm /backup/longhorn-backups/.longhorn-backup-target-check
+              volumeMounts:
+                - name: backup-root
+                  mountPath: /backup
+          volumes:
             - name: backup-root
-              mountPath: /backup
-      volumes:
-        - name: backup-root
-          nfs:
-            server: 193.170.30.58
-            path: /mnt/scratch1/cps_scratch1_tmp
+              nfs:
+                server: 193.170.30.58
+                path: /mnt/scratch1/cps_scratch1_tmp
 ```
 
-Create `backup-target.yaml` with `kind: BackupTarget`, metadata name `default`, a five-minute poll interval, and the exact scratch-NFS URL required by the test.
+The Longhorn chart renders `defaultBackupStore` into its default-resource ConfigMap; Longhorn then reconciles the default backup target. Do not add sibling raw YAML because Fleet packages it but Helm does not apply it.
 
 - [ ] **Step 4: Run focused validation and server dry-run**
 
@@ -102,8 +98,11 @@ Run:
 
 ```bash
 bash tests/longhorn/validate-backup-target-manifests.sh
-kubectl apply --dry-run=server -f cluster-maintenance/clusters/cit-cps-gpu/system/storage/longhorn/backup-target-bootstrap.yaml
-kubectl apply --dry-run=server -f cluster-maintenance/clusters/cit-cps-gpu/system/storage/longhorn/backup-target.yaml
+helm template longhorn longhorn/longhorn --version 1.9.2 --namespace longhorn-system \
+  --values cluster-maintenance/clusters/cit-cps-gpu/system/storage/longhorn/values.yaml >/tmp/longhorn-rendered.yaml
+rg -F 'name: longhorn-backup-target-bootstrap' /tmp/longhorn-rendered.yaml
+rg -F 'backup-target: nfs://193.170.30.58:/mnt/scratch1/cps_scratch1_tmp/longhorn-backups?' /tmp/longhorn-rendered.yaml
+kubectl apply --dry-run=server -f /tmp/longhorn-rendered.yaml
 ```
 
 Expected: validation passes and both server dry-runs are accepted without mutation.
@@ -111,8 +110,7 @@ Expected: validation passes and both server dry-runs are accepted without mutati
 - [ ] **Step 5: Commit the target resources and test**
 
 ```bash
-git add cluster-maintenance/clusters/cit-cps-gpu/system/storage/longhorn/backup-target-bootstrap.yaml \
-  cluster-maintenance/clusters/cit-cps-gpu/system/storage/longhorn/backup-target.yaml \
+git add cluster-maintenance/clusters/cit-cps-gpu/system/storage/longhorn/values.yaml \
   tests/longhorn/validate-backup-target-manifests.sh
 git commit -m "fix(storage): configure scratch NFS backup target"
 ```
