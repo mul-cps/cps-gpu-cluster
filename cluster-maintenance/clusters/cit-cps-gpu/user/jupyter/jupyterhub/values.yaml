@@ -529,10 +529,10 @@ hub:
               <section class="layer">
                 <div class="section-title">Shared Workspace</div>
                 <label class="toggle-row">
-                  <input type="checkbox" name="mount_shared_longhorn" value="1" style="width:auto; margin:0;">
+                  <input type="checkbox" name="mount_shared_longhorn" value="1" checked style="width:auto; margin:0;">
                   <span>Mount the shared Longhorn workspace</span>
                 </label>
-                <div class="hint">Mounts <code>jupyterhub-shared-storage</code> at <code>/home/jovyan/shared</code>. Leave disabled while the shared workspace is under recovery.</div>
+                <div class="hint">Mounts <code>jupyterhub-shared-storage</code> at <code>/home/jovyan/shared</code>. Uncheck while the shared workspace is under recovery.</div>
               </section>
               """
 
