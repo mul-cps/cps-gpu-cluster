@@ -1971,6 +1971,23 @@ Longhorn's global `storage-over-provisioning-percentage` setting is `100` (i.e. 
 
 **Fix applied this pass**: only the git manifest fix in Part A (`cps-scratch1-tmp.yaml` updated to match live state). No changes were made to Longhorn node scheduling, storage classes, or over-provisioning settings -- Part B is report-only per the instructions for this investigation.
 
+**Update (2026-08-24): scheduling restored after a faulted Longhorn volume incident.** The root cause above was re-checked live: `k3s-wk-gpu2` still had `spec.allowScheduling: false` and `spec.evictionRequested: true`, while both of its Longhorn disks were ready and schedulable. The approved repair was deliberately limited to:
+
+```bash
+kubectl -n longhorn-system patch nodes.longhorn.io k3s-wk-gpu2 --type=merge \
+  -p '{"spec":{"allowScheduling":true,"evictionRequested":false}}'
+```
+
+Verify the result before treating capacity as restored:
+
+```bash
+kubectl -n longhorn-system get nodes.longhorn.io k3s-wk-gpu2 \
+  -o jsonpath='{.spec.allowScheduling}{" "}{.spec.evictionRequested}{"\n"}'
+kubectl -n longhorn-system get nodes.longhorn.io k3s-wk-gpu2 -o json | jq '.status.diskStatus'
+```
+
+Expected output starts with `true false`; both disks must report `Ready=True` and `Schedulable=True`. Do not disable scheduling or request eviction again unless a planned drain has first moved replicas safely. This repair does not recover a faulted volume with no viable replicas; it restores capacity for healthy and degraded volumes to rebuild.
+
 ---
 
 ## SOPS Secrets Issues
