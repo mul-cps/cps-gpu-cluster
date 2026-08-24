@@ -523,6 +523,19 @@ hub:
               """)
           mount_items_markup = ''.join(mount_items_html)
 
+          shared_workspace_html = ""
+          if power_user:
+              shared_workspace_html = """
+              <section class="layer">
+                <div class="section-title">Shared Workspace</div>
+                <label class="toggle-row">
+                  <input type="checkbox" name="mount_shared_longhorn" value="1" style="width:auto; margin:0;">
+                  <span>Mount the shared Longhorn workspace</span>
+                </label>
+                <div class="hint">Mounts <code>jupyterhub-shared-storage</code> at <code>/home/jovyan/shared</code>. Leave disabled while the shared workspace is under recovery.</div>
+              </section>
+              """
+
           custom_nfs_html = ""
           if power_user:
               custom_nfs_html = f"""
@@ -1118,12 +1131,13 @@ hub:
                           <span>Enable network mounts</span>
                         </label>
                         <div class="hint">Leave this on for the standard storage layout, or clear it to start on Longhorn-backed storage only.</div>
-                        <div class="hint">The shared power-user workspace at <code>/home/jovyan/shared</code> stays available on Longhorn.</div>
+                        <div class="hint">Power users can separately opt into the shared Longhorn workspace.</div>
                         <div class="mount-list">
                           {mount_items_markup}
                         </div>
                       </section>
 
+                      {shared_workspace_html}
                       {custom_nfs_html}
                       {custom_image_html}
                       {debug_html}
@@ -1226,6 +1240,7 @@ hub:
           opts = {}
           opts['profile'] = formdata.get('profile', ['cpu-default'])[0]
           opts['mount_nfs'] = form_bool(formdata, 'mount_nfs', False)
+          opts['mount_shared_longhorn'] = form_bool(formdata, 'mount_shared_longhorn', False)
           opts['mount_personal_nfs'] = form_bool(formdata, 'mount_personal_nfs', False)
           opts['mount_persistent1_shared_nfs'] = form_bool(formdata, 'mount_persistent1_shared_nfs', False)
           opts['mount_scratch_nfs'] = form_bool(formdata, 'mount_scratch_nfs', False)
@@ -1611,6 +1626,7 @@ hub:
       async def apply_profile_settings(spawner):
           profile_slug = spawner.user_options.get('profile', 'cpu-default')
           mount_nfs = bool(spawner.user_options.get('mount_nfs', False))
+          mount_shared_longhorn = bool(spawner.user_options.get('mount_shared_longhorn', False))
           mount_personal_nfs = bool(spawner.user_options.get('mount_personal_nfs', False))
           mount_persistent1_shared = bool(spawner.user_options.get('mount_persistent1_shared_nfs', False))
           mount_scratch_nfs = bool(spawner.user_options.get('mount_scratch_nfs', False))
@@ -1626,6 +1642,7 @@ hub:
           requested_storage_mounts = []
           spawner.log.info(
               f"{spawner.user.name} -> profile={profile_slug}, mount_nfs={mount_nfs}, "
+              f"mount_shared_longhorn={mount_shared_longhorn}, "
               f"mount_personal_nfs={mount_personal_nfs}, mount_persistent1_shared={mount_persistent1_shared}, "
               f"mount_scratch_nfs={mount_scratch_nfs}, mount_scratch_recovery_nfs={mount_scratch_recovery_nfs}, "
               f"custom_nfs_enabled={custom_nfs_enabled}, "
@@ -1665,10 +1682,11 @@ hub:
           if is_power_user(spawner.user):
               # Keep a larger working volume for power users even when network mounts are off.
               spawner.storage_capacity = '100Gi'
-              shared_vol = {'name': 'shared', 'persistentVolumeClaim': {'claimName': 'jupyterhub-shared-storage'}}
-              shared_mount = {'name': 'shared', 'mountPath': '/home/jovyan/shared'}
-              append_volume_mount(spawner, shared_vol, shared_mount)
-              requested_storage_mounts.append('shared-longhorn')
+              if mount_shared_longhorn:
+                  shared_vol = {'name': 'shared', 'persistentVolumeClaim': {'claimName': 'jupyterhub-shared-storage'}}
+                  shared_mount = {'name': 'shared', 'mountPath': '/home/jovyan/shared'}
+                  append_volume_mount(spawner, shared_vol, shared_mount)
+                  requested_storage_mounts.append('shared-longhorn')
 
               if mount_nfs and mount_persistent1_shared:
                   shared_pvc_vol = {'name': 'cps-persistent1-shared', 'persistentVolumeClaim': {'claimName': 'cps-persistent1-shared-pvc'}}
