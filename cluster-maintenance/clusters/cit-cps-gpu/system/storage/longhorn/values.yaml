@@ -27,6 +27,41 @@ defaultSettings:
   removeSnapshotsDuringFilesystemTrim: true
   autoCleanupSystemGeneratedSnapshot: true
 
+defaultBackupStore:
+  backupTarget: nfs://193.170.30.58:/mnt/scratch1/cps_scratch1_tmp/longhorn-backups?nfsOptions=nfsvers=4.2,proto=tcp,hard,timeo=150,retrans=3,rsize=1048576,wsize=1048576,noresvport
+  backupTargetCredentialSecret: ""
+  pollInterval: 300
+
+extraObjects:
+  - apiVersion: batch/v1
+    kind: Job
+    metadata:
+      name: longhorn-backup-target-bootstrap
+      namespace: longhorn-system
+    spec:
+      backoffLimit: 2
+      template:
+        spec:
+          restartPolicy: OnFailure
+          containers:
+            - name: create-and-verify-target
+              image: busybox:1.37
+              command: ["/bin/sh", "-ec"]
+              args:
+                - |
+                  mkdir -p /backup/longhorn-backups
+                  test -d /backup/longhorn-backups
+                  touch /backup/longhorn-backups/.longhorn-backup-target-check
+                  rm /backup/longhorn-backups/.longhorn-backup-target-check
+              volumeMounts:
+                - name: backup-root
+                  mountPath: /backup
+          volumes:
+            - name: backup-root
+              nfs:
+                server: 193.170.30.58
+                path: /mnt/scratch1/cps_scratch1_tmp
+
 # Limit system components to worker nodes (no control-plane tolerations)
 longhornManager:
   tolerations: []
