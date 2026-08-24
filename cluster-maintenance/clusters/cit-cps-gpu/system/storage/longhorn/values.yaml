@@ -15,7 +15,7 @@ defaultSettings:
   defaultReplicaCount: 2
   defaultDataPath: /var/lib/longhorn
   defaultDataLocality: best-effort
-  storageOverProvisioningPercentage: 100
+  storageOverProvisioningPercentage: 200
   storageMinimalAvailablePercentage: 10
   guaranteedEngineManagerCPU: 0.25
   guaranteedReplicaManagerCPU: 0.25
