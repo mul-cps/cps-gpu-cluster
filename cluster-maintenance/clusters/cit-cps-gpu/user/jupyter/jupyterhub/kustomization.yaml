@@ -6,7 +6,6 @@ resources:
   # - namespace.yaml
   # - storage-class.yaml
   - shared-pvc.yaml
-  - shared-pvc-replacement.yaml
   - cps-scratch1-tmp.yaml
   - cps-scratch1-recovery.yaml
   - cps-persistent1-users.yaml

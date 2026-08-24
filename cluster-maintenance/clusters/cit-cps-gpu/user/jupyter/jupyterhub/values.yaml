@@ -532,7 +532,7 @@ hub:
                   <input type="checkbox" name="mount_shared_longhorn" value="1" checked style="width:auto; margin:0;">
                   <span>Mount the shared Longhorn workspace</span>
                 </label>
-                <div class="hint">Mounts the replacement shared workspace at <code>/home/jovyan/shared</code>. The faulted original claim remains preserved for forensic recovery.</div>
+                <div class="hint">Mounts the recovered shared workspace at <code>/home/jovyan/shared</code>. It has a verified external backup.</div>
               </section>
               """
 
@@ -1683,7 +1683,7 @@ hub:
               # Keep a larger working volume for power users even when network mounts are off.
               spawner.storage_capacity = '100Gi'
               if mount_shared_longhorn:
-                  shared_vol = {'name': 'shared', 'persistentVolumeClaim': {'claimName': 'jupyterhub-shared-storage-replacement'}}
+                  shared_vol = {'name': 'shared', 'persistentVolumeClaim': {'claimName': 'jupyterhub-shared-storage'}}
                   shared_mount = {'name': 'shared', 'mountPath': '/home/jovyan/shared'}
                   append_volume_mount(spawner, shared_vol, shared_mount)
                   requested_storage_mounts.append('shared-longhorn')
