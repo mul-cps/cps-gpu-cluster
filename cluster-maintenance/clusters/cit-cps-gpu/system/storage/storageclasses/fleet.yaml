@@ -24,3 +24,7 @@ diff:
 helm:
   skipDryRun: true
   force: false
+  # local-path-config is created by K3s's packaged local-storage addon. Fleet
+  # must adopt it so the NVMe node-path allowlist is reconciled continuously,
+  # instead of being restored only when the bootstrap playbook is rerun.
+  takeOwnership: true
