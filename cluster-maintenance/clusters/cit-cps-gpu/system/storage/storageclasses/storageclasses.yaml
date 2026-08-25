@@ -1,5 +1,7 @@
-# Note: Storage classes are already configured and managed outside of Fleet
-# Removing them from Fleet management to avoid conflicts
+# Note: Storage classes are already configured and managed outside of Fleet.
+# The local-path provisioner's node-path allowlist is Fleet-managed here,
+# because fast-scratch cannot bind a volume unless /mnt/nvme/scratch is
+# explicitly authorized for each GPU worker.
 #
 # nfs-client does NOT exist (confirmed live 2026-07-06) -- it was removed at
 # some point without a documented replacement path. Released PVs from it
