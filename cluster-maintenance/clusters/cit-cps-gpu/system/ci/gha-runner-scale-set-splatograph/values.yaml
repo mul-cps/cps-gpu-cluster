@@ -15,7 +15,7 @@ controllerServiceAccount:
   name: actions-runner-controller-gha-rs-controller
 
 minRunners: 0
-maxRunners: 5
+maxRunners: 20
 
 scaleSetLabels:
   - self-hosted
