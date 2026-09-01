@@ -23,7 +23,11 @@ diff:
 # Don't fail if resources already exist
 helm:
   skipDryRun: true
-  force: false
+  # K3s's local-storage addon owns this ConfigMap and can re-apply its
+  # stock one-path configuration after a control-plane change.  Without a
+  # forced Helm upgrade Fleet reports "not owned by us" and cannot restore
+  # the GPU workers' fast-scratch allowlist, leaving ARC runner PVCs Pending.
+  force: true
   # local-path-config is created by K3s's packaged local-storage addon. Fleet
   # must adopt it so the NVMe node-path allowlist is reconciled continuously,
   # instead of being restored only when the bootstrap playbook is rerun.
