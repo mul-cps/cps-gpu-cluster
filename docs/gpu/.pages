@@ -2,4 +2,6 @@ title: GPU
 nav:
   - gpu-passthrough.md
   - gpu-scheduling-architecture.md
+  - compute-platform-evolution.md
+  - karta-workload-integration.md
   - gpu-batch-jobs.md
