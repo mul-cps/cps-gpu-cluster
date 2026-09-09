@@ -1,0 +1,10 @@
+name: beszel
+defaultNamespace: beszel
+kustomize:
+  dir: .
+labels:
+  app: beszel
+dependsOn:
+  - selector:
+      matchLabels:
+        name: ingress-nginx
