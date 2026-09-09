@@ -29,6 +29,10 @@ spec:
               value: "https://beszel.dshl.unileoben.ac.at"
             - name: PORT
               value: "8090"
+            - name: AUTO_LOGIN
+              value: "viewer@cps.unileoben.ac.at"
+            - name: SHARE_ALL_SYSTEMS
+              value: "true"
           ports:
             - name: http
               containerPort: 8090
