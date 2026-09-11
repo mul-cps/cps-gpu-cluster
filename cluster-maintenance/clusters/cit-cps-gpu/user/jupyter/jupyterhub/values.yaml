@@ -1336,6 +1336,7 @@ hub:
               'cpu_limit': 16.0, 'cpu_guarantee': 8.0,
               'mem_limit': '64G', 'mem_guarantee': '32G',
               'gpu': 1,
+              'shm_size': '32Gi',
               'resource_key': 'nvidia.com/gpu',
               'runtime_class': 'nvidia',
               'grant_sudo': True,
@@ -1348,6 +1349,7 @@ hub:
               'cpu_limit': 16.0, 'cpu_guarantee': 8.0,
               'mem_limit': '64G', 'mem_guarantee': '32G',
               'gpu': 1,
+              'shm_size': '32Gi',
               'resource_key': 'nvidia.com/gpu',
               'runtime_class': 'nvidia',
               'grant_sudo': True,
@@ -1362,6 +1364,7 @@ hub:
               'cpu_limit': 32.0, 'cpu_guarantee': 16.0,
               'mem_limit': '128G', 'mem_guarantee': '64G',
               'gpu': 2,
+              'shm_size': '64Gi',
               'resource_key': 'nvidia.com/gpu',
               'runtime_class': 'nvidia',
               'grant_sudo': True,
@@ -1374,6 +1377,7 @@ hub:
               'cpu_limit': 32.0, 'cpu_guarantee': 16.0,
               'mem_limit': '128G', 'mem_guarantee': '64G',
               'gpu': 2,
+              'shm_size': '64Gi',
               'resource_key': 'nvidia.com/gpu',
               'runtime_class': 'nvidia',
               'grant_sudo': True,
@@ -2256,6 +2260,22 @@ hub:
               spawner.environment['NB_USER'] = 'jovyan'
               spawner.environment['CHOWN_HOME'] = 'yes'
               spawner.environment['CHOWN_HOME_OPTS'] = '' # Non-recursive to avoid RO mount errors
+
+          # Shared memory (/dev/shm) tuning for multiprocessing / PyTorch DataLoader
+          shm_size = cfg.get('shm_size')
+          if shm_size:
+              if isinstance(spawner.volumes, dict):
+                  if 'dshm' in spawner.volumes:
+                      spawner.volumes['dshm']['emptyDir'] = {'medium': 'Memory', 'sizeLimit': shm_size}
+                  else:
+                      spawner.volumes['dshm'] = {'name': 'dshm', 'emptyDir': {'medium': 'Memory', 'sizeLimit': shm_size}}
+              elif isinstance(spawner.volumes, list):
+                  for v in spawner.volumes:
+                      if v.get('name') == 'dshm':
+                          v['emptyDir'] = {'medium': 'Memory', 'sizeLimit': shm_size}
+                          break
+                  else:
+                      spawner.volumes.append({'name': 'dshm', 'emptyDir': {'medium': 'Memory', 'sizeLimit': shm_size}})
 
           spawner.log.info(f"Final: image={spawner.image} CPU={spawner.cpu_limit}/{spawner.cpu_guarantee} MEM={spawner.mem_limit}/{spawner.mem_guarantee} RES={spawner.extra_resource_limits}")
       c.KubeSpawner.pre_spawn_hook = apply_profile_settings
