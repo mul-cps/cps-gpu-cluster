@@ -4,3 +4,7 @@ metadata:
   name: eligsir-webxr-test
   labels:
     app.kubernetes.io/name: eligsir-webxr-test
+    app.kubernetes.io/managed-by: Helm
+  annotations:
+    meta.helm.sh/release-name: eligsir-webxr-test
+    meta.helm.sh/release-namespace: eligsir-webxr-test
