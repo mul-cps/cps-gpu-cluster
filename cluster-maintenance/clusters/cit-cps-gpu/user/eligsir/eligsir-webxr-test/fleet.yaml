@@ -1,0 +1,10 @@
+name: eligsir-webxr-test
+defaultNamespace: eligsir-webxr-test
+kustomize:
+  dir: .
+labels:
+  app: eligsir-webxr-test
+dependsOn:
+  - selector:
+      matchLabels:
+        name: ingress-nginx

@@ -1,0 +1,24 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: eligsir-webxr-test
+  annotations:
+    nginx.ingress.kubernetes.io/proxy-body-size: 520m
+    nginx.ingress.kubernetes.io/proxy-read-timeout: "120"
+    nginx.ingress.kubernetes.io/proxy-send-timeout: "120"
+spec:
+  ingressClassName: nginx
+  tls:
+    - hosts: [eligsir-webxr-test.dshl.unileoben.ac.at]
+      secretName: dshl-wildcard
+  rules:
+    - host: eligsir-webxr-test.dshl.unileoben.ac.at
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: eligsir-webxr-test
+                port:
+                  name: http

@@ -1,0 +1,11 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: eligsir-webxr-test
+spec:
+  selector:
+    app.kubernetes.io/name: eligsir-webxr-test
+  ports:
+    - name: http
+      port: 80
+      targetPort: http

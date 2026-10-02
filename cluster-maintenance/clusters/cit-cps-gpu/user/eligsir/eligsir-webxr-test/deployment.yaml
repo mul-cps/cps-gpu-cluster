@@ -1,0 +1,114 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: eligsir-webxr-test
+  namespace: eligsir-webxr-test
+  labels:
+    app.kubernetes.io/name: eligsir-webxr-test
+spec:
+  # A single broker owns in-memory state; restarting it loses active sessions.
+  replicas: 1
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: eligsir-webxr-test
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: eligsir-webxr-test
+    spec:
+      automountServiceAccountToken: false
+      # WebRTC peers need routable node ICE candidates until TURN is available.
+      hostNetwork: true
+      dnsPolicy: ClusterFirstWithHostNet
+      nodeSelector:
+        kubernetes.io/hostname: k3s-wk-gpu4
+      imagePullSecrets:
+        - name: eligsir-registry
+      securityContext:
+        fsGroup: 10001
+        runAsNonRoot: true
+        seccompProfile:
+          type: RuntimeDefault
+      terminationGracePeriodSeconds: 15
+      containers:
+        - name: web
+          image: harbor.dshl.unileoben.ac.at/ci-images/eligsir-webxr-frontend@sha256:195c62506f71c35981da0a8145e2949658d64b7464db3f80d80d9aa5def4b8af
+          ports:
+            - name: http
+              containerPort: 18089
+          securityContext:
+            runAsUser: 101
+            runAsGroup: 101
+            readOnlyRootFilesystem: true
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop:
+                - ALL
+          resources:
+            requests:
+              cpu: 100m
+              memory: 128Mi
+            limits:
+              cpu: "1"
+              memory: 512Mi
+          readinessProbe:
+            httpGet:
+              path: /healthz
+              port: http
+            initialDelaySeconds: 3
+            periodSeconds: 5
+          livenessProbe:
+            httpGet:
+              path: /healthz
+              port: http
+            periodSeconds: 30
+          volumeMounts:
+            - name: webtmp
+              mountPath: /tmp
+        - name: broker
+          image: harbor.dshl.unileoben.ac.at/ci-images/eligsir-webxr-broker@sha256:35802af73d2c5a0788dc8c3520e0ad252fb9c8067f5df7aa7aede5a3c281e259
+          securityContext:
+            runAsUser: 10001
+            runAsGroup: 10001
+            readOnlyRootFilesystem: true
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop:
+                - ALL
+          env:
+            - name: ELIGSIR_API_PORT
+              value: "8787"
+            - name: ELIGSIR_MAP_SOURCE
+              value: external-core
+            - name: ELIGSIR_SCENE_UPLOAD_ROOT
+              value: /tmp
+          resources:
+            requests:
+              cpu: 250m
+              memory: 256Mi
+              ephemeral-storage: 1Gi
+            limits:
+              cpu: "2"
+              memory: 1Gi
+              ephemeral-storage: 5Gi
+          readinessProbe:
+            exec:
+              command:
+                - python
+                - -c
+                - "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8787/api/map/snapshot', timeout=2).read(1)"
+            initialDelaySeconds: 5
+            periodSeconds: 10
+            timeoutSeconds: 3
+          volumeMounts:
+            - name: brokertmp
+              mountPath: /tmp
+      volumes:
+        - name: webtmp
+          emptyDir:
+            sizeLimit: 64Mi
+        - name: brokertmp
+          emptyDir:
+            sizeLimit: 4Gi
