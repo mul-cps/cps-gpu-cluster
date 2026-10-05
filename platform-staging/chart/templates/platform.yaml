@@ -260,7 +260,8 @@ spec:
               valueFrom: {secretKeyRef: {name: {{ $console.secretRef }}, key: compute-policy-token}}
             - {name: JUPYTERHUB_API_URL, value: {{ $console.hubApiUrl | quote }}}
             - {name: JUPYTERHUB_OAUTH_CALLBACK_URL, value: {{ $callback | quote }}}
-            - {name: JUPYTERHUB_OAUTH_CLIENT_ID, value: "service-{{ $name }}-admin"}
+            - {name: JUPYTERHUB_CLIENT_ID, value: "service-{{ $name }}-admin"}
+            - {name: JUPYTERHUB_SERVICE_NAME, value: "{{ $name }}-admin"}
             - {name: JUPYTERHUB_SERVICE_PREFIX, value: "/services/{{ $name }}-admin/"}
             - name: JUPYTERHUB_API_TOKEN
               valueFrom: {secretKeyRef: {name: {{ $console.secretRef }}, key: hub-api-token}}

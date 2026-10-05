@@ -47,6 +47,9 @@ class Staging(unittest.TestCase):
             if name != 'compute-gateway':
                 env = pod['containers'][0]['env']
                 self.assertIn({'name':'SSL_CERT_FILE','value':'/trust/ca.crt'},env)
+                self.assertIn({'name':'JUPYTERHUB_CLIENT_ID','value':'service-'+name},env)
+                self.assertIn({'name':'JUPYTERHUB_SERVICE_NAME','value':name},env)
+                self.assertFalse(any(item['name']=='JUPYTERHUB_OAUTH_CLIENT_ID' for item in env))
         config = next(d for d in docs if d['kind']=='ConfigMap' and d['metadata']['name']=='cps-admin-config')
         self.assertIn('https://compute-gateway.cps-compute.svc.cluster.local:8000',config['data']['config.py'])
         gateway = deployments['compute-gateway']['spec']['template']['spec']['containers'][0]
