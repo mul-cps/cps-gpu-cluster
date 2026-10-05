@@ -62,8 +62,12 @@ class Staging(unittest.TestCase):
             pod=backup['spec']['jobTemplate']['spec']['template']['spec']
             self.assertIn('podAffinity',pod['affinity'])
             if backup['metadata']['name'] != 'compute-state-backup':
-                self.assertIn('source.backup(target)',pod['containers'][0]['args'][0])
-                self.assertIn('mode=ro',pod['containers'][0]['args'][0])
+                self.assertEqual(pod['containers'][0]['command'],['python','/scripts/backup-console.py'])
+                env={item['name']:item['value'] for item in pod['containers'][0]['env']}
+                self.assertEqual(env['BACKUP_POLICY_HASH'],policy['policyHash'])
+                self.assertEqual(env['BACKUP_IMAGE'],image)
+                self.assertIn(env['BACKUP_OWNER'],('cps','cit'))
+                self.assertTrue(next(v for v in pod['containers'][0]['volumeMounts'] if v['name']=='source')['readOnly'])
     def test_controller_credentials_and_permissions_are_explicit(self):
         policy=json.loads((ROOT/'compute-policy/generated/policy.json').read_text())
         image='registry.invalid/test@sha256:'+'1'*64

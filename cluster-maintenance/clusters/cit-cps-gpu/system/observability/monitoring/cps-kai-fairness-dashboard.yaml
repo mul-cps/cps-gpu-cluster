@@ -18,75 +18,116 @@ data:
     \ stay unknown until that exporter is deployed. Spawn histogram does not prove a representative pre-pulled burst qualification.\
     \ Operational viewers only; students use the addon.\",\n        \"mode\": \"markdown\"\n      },\n      \"title\": \"\
     Evidence boundary\",\n      \"type\": \"text\"\n    },\n    {\n      \"datasource\": {\n        \"type\": \"prometheus\"\
-    ,\n        \"uid\": \"${DS_PROMETHEUS}\"\n      },\n      \"fieldConfig\": {\n        \"defaults\": {\n          \"custom\"\
-    : {\n            \"spanNulls\": false\n          },\n          \"noValue\": \"Unavailable / stale\",\n          \"unit\"\
-    : \"short\"\n        },\n        \"overrides\": []\n      },\n      \"gridPos\": {\n        \"h\": 8,\n        \"w\":\
-    \ 12,\n        \"x\": 0,\n        \"y\": 4\n      },\n      \"id\": 2,\n      \"targets\": [\n        {\n          \"\
-    expr\": \"kai_queue_fair_share_gpu\",\n          \"legendFormat\": \"{{namespace}} {{queue}} {{UUID}}\",\n          \"\
-    refId\": \"A\"\n        }\n      ],\n      \"title\": \"Queue GPU fair share\",\n      \"type\": \"timeseries\"\n    },\n\
-    \    {\n      \"datasource\": {\n        \"type\": \"prometheus\",\n        \"uid\": \"${DS_PROMETHEUS}\"\n      },\n\
-    \      \"fieldConfig\": {\n        \"defaults\": {\n          \"custom\": {\n            \"spanNulls\": false\n      \
-    \    },\n          \"noValue\": \"Unavailable / stale\",\n          \"unit\": \"short\"\n        },\n        \"overrides\"\
-    : []\n      },\n      \"gridPos\": {\n        \"h\": 8,\n        \"w\": 12,\n        \"x\": 12,\n        \"y\": 4\n  \
-    \    },\n      \"id\": 3,\n      \"targets\": [\n        {\n          \"expr\": \"kai_queue_gpu_usage\",\n          \"\
-    legendFormat\": \"{{namespace}} {{queue}} {{UUID}}\",\n          \"refId\": \"A\"\n        }\n      ],\n      \"title\"\
-    : \"Queue GPU usage (upstream UsageDB units)\",\n      \"type\": \"timeseries\"\n    },\n    {\n      \"datasource\":\
-    \ {\n        \"type\": \"prometheus\",\n        \"uid\": \"${DS_PROMETHEUS}\"\n      },\n      \"fieldConfig\": {\n  \
-    \      \"defaults\": {\n          \"custom\": {\n            \"spanNulls\": false\n          },\n          \"noValue\"\
-    : \"Unavailable / stale\",\n          \"unit\": \"short\"\n        },\n        \"overrides\": []\n      },\n      \"gridPos\"\
-    : {\n        \"h\": 8,\n        \"w\": 12,\n        \"x\": 0,\n        \"y\": 12\n      },\n      \"id\": 4,\n      \"\
-    targets\": [\n        {\n          \"expr\": \"increase(kai_pod_group_evicted_pods_total[10m])\",\n          \"legendFormat\"\
-    : \"{{namespace}} {{queue}} {{UUID}}\",\n          \"refId\": \"A\"\n        }\n      ],\n      \"title\": \"Evicted pods\
-    \ per PodGroup\",\n      \"type\": \"timeseries\"\n    },\n    {\n      \"datasource\": {\n        \"type\": \"prometheus\"\
-    ,\n        \"uid\": \"${DS_PROMETHEUS}\"\n      },\n      \"fieldConfig\": {\n        \"defaults\": {\n          \"custom\"\
-    : {\n            \"spanNulls\": false\n          },\n          \"noValue\": \"Unavailable / stale\",\n          \"unit\"\
-    : \"ms\"\n        },\n        \"overrides\": []\n      },\n      \"gridPos\": {\n        \"h\": 8,\n        \"w\": 12,\n\
-    \        \"x\": 12,\n        \"y\": 12\n      },\n      \"id\": 5,\n      \"targets\": [\n        {\n          \"expr\"\
-    : \"kai_e2e_scheduling_latency_milliseconds\",\n          \"legendFormat\": \"{{namespace}} {{queue}} {{UUID}}\",\n  \
-    \        \"refId\": \"A\"\n        }\n      ],\n      \"title\": \"Scheduling algorithm latency (not full startup)\",\n\
-    \      \"type\": \"timeseries\"\n    },\n    {\n      \"datasource\": {\n        \"type\": \"prometheus\",\n        \"\
-    uid\": \"${DS_PROMETHEUS}\"\n      },\n      \"fieldConfig\": {\n        \"defaults\": {\n          \"custom\": {\n  \
-    \          \"spanNulls\": false\n          },\n          \"noValue\": \"Unavailable / stale\",\n          \"unit\": \"\
+    ,\n        \"uid\": \"${DS_PROMETHEUS}\"\n      },\n      \"description\": \"Observed upstream telemetry; samples older\
+    \ than 120 seconds are unavailable.\",\n      \"fieldConfig\": {\n        \"defaults\": {\n          \"custom\": {\n \
+    \           \"spanNulls\": false\n          },\n          \"noValue\": \"Unavailable / stale\",\n          \"unit\": \"\
     short\"\n        },\n        \"overrides\": []\n      },\n      \"gridPos\": {\n        \"h\": 8,\n        \"w\": 12,\n\
-    \        \"x\": 0,\n        \"y\": 20\n      },\n      \"id\": 6,\n      \"targets\": [\n        {\n          \"expr\"\
-    : \"up{namespace=\\\"kai-scheduler\\\"}\",\n          \"legendFormat\": \"{{namespace}} {{queue}} {{UUID}}\",\n      \
-    \    \"refId\": \"A\"\n        }\n      ],\n      \"title\": \"KAI scheduler availability\",\n      \"type\": \"timeseries\"\
+    \        \"x\": 0,\n        \"y\": 4\n      },\n      \"id\": 2,\n      \"targets\": [\n        {\n          \"expr\"\
+    : \"(kai_queue_fair_share_gpu and (time() - timestamp(kai_queue_fair_share_gpu) <= 120))\",\n          \"legendFormat\"\
+    : \"{{namespace}} {{queue_name}} {{UUID}}\",\n          \"refId\": \"A\"\n        }\n      ],\n      \"title\": \"Queue\
+    \ GPU fair share\",\n      \"type\": \"timeseries\"\n    },\n    {\n      \"datasource\": {\n        \"type\": \"prometheus\"\
+    ,\n        \"uid\": \"${DS_PROMETHEUS}\"\n      },\n      \"description\": \"Observed upstream telemetry; samples older\
+    \ than 120 seconds are unavailable.\",\n      \"fieldConfig\": {\n        \"defaults\": {\n          \"custom\": {\n \
+    \           \"spanNulls\": false\n          },\n          \"noValue\": \"Unavailable / stale\",\n          \"unit\": \"\
+    short\"\n        },\n        \"overrides\": []\n      },\n      \"gridPos\": {\n        \"h\": 8,\n        \"w\": 12,\n\
+    \        \"x\": 12,\n        \"y\": 4\n      },\n      \"id\": 3,\n      \"targets\": [\n        {\n          \"expr\"\
+    : \"(kai_queue_gpu_usage and (time() - timestamp(kai_queue_gpu_usage) <= 120))\",\n          \"legendFormat\": \"{{namespace}}\
+    \ {{queue_name}} {{UUID}}\",\n          \"refId\": \"A\"\n        }\n      ],\n      \"title\": \"Queue GPU usage (upstream\
+    \ UsageDB units)\",\n      \"type\": \"timeseries\"\n    },\n    {\n      \"datasource\": {\n        \"type\": \"prometheus\"\
+    ,\n        \"uid\": \"${DS_PROMETHEUS}\"\n      },\n      \"description\": \"Observed upstream telemetry; samples older\
+    \ than 120 seconds are unavailable.\",\n      \"fieldConfig\": {\n        \"defaults\": {\n          \"custom\": {\n \
+    \           \"spanNulls\": false\n          },\n          \"noValue\": \"Unavailable / stale\",\n          \"unit\": \"\
+    short\"\n        },\n        \"overrides\": []\n      },\n      \"gridPos\": {\n        \"h\": 8,\n        \"w\": 12,\n\
+    \        \"x\": 0,\n        \"y\": 12\n      },\n      \"id\": 4,\n      \"targets\": [\n        {\n          \"expr\"\
+    : \"(increase(kai_total_preemption_attempts[10m]) and (time() - timestamp(kai_total_preemption_attempts) <= 120))\",\n\
+    \          \"legendFormat\": \"{{namespace}} {{queue_name}} {{UUID}}\",\n          \"refId\": \"A\"\n        }\n     \
+    \ ],\n      \"title\": \"Preemption attempts (not evicted pods)\",\n      \"type\": \"timeseries\"\n    },\n    {\n  \
+    \    \"datasource\": {\n        \"type\": \"prometheus\",\n        \"uid\": \"${DS_PROMETHEUS}\"\n      },\n      \"description\"\
+    : \"Observed upstream telemetry; samples older than 120 seconds are unavailable.\",\n      \"fieldConfig\": {\n      \
+    \  \"defaults\": {\n          \"custom\": {\n            \"spanNulls\": false\n          },\n          \"noValue\": \"\
+    Unavailable / stale\",\n          \"unit\": \"ms\"\n        },\n        \"overrides\": []\n      },\n      \"gridPos\"\
+    : {\n        \"h\": 8,\n        \"w\": 12,\n        \"x\": 12,\n        \"y\": 12\n      },\n      \"id\": 5,\n      \"\
+    targets\": [\n        {\n          \"expr\": \"(kai_e2e_scheduling_latency_milliseconds and (time() - timestamp(kai_e2e_scheduling_latency_milliseconds)\
+    \ <= 120))\",\n          \"legendFormat\": \"{{namespace}} {{queue_name}} {{UUID}}\",\n          \"refId\": \"A\"\n  \
+    \      }\n      ],\n      \"title\": \"KAI scheduling + binding latency (not full startup)\",\n      \"type\": \"timeseries\"\
     \n    },\n    {\n      \"datasource\": {\n        \"type\": \"prometheus\",\n        \"uid\": \"${DS_PROMETHEUS}\"\n \
-    \     },\n      \"fieldConfig\": {\n        \"defaults\": {\n          \"mappings\": [\n            {\n              \"\
-    options\": {\n                \"0\": {\n                  \"text\": \"Fresh\"\n                },\n                \"\
-    1\": {\n                  \"text\": \"Unavailable / stale\"\n                }\n              },\n              \"type\"\
-    : \"value\"\n            }\n          ],\n          \"noValue\": \"Unavailable\",\n          \"thresholds\": {\n     \
-    \       \"mode\": \"absolute\",\n            \"steps\": [\n              {\n                \"color\": \"green\",\n  \
-    \              \"value\": null\n              },\n              {\n                \"color\": \"red\",\n             \
-    \   \"value\": 1\n              }\n            ]\n          }\n        },\n        \"overrides\": []\n      },\n     \
-    \ \"gridPos\": {\n        \"h\": 4,\n        \"w\": 8,\n        \"x\": 16,\n        \"y\": 28\n      },\n      \"id\"\
-    : 7,\n      \"targets\": [\n        {\n          \"expr\": \"(time() - max(timestamp(DCGM_FI_DEV_FB_FREE)) > bool 120)\
-    \ or absent(DCGM_FI_DEV_FB_FREE)\",\n          \"refId\": \"A\"\n        }\n      ],\n      \"title\": \"Telemetry missing/stale:\
-    \ DCGM_FI_DEV_FB_FREE\",\n      \"type\": \"stat\"\n    },\n    {\n      \"datasource\": {\n        \"type\": \"prometheus\"\
-    ,\n        \"uid\": \"${DS_PROMETHEUS}\"\n      },\n      \"fieldConfig\": {\n        \"defaults\": {\n          \"mappings\"\
-    : [\n            {\n              \"options\": {\n                \"0\": {\n                  \"text\": \"Fresh\"\n  \
-    \              },\n                \"1\": {\n                  \"text\": \"Unavailable / stale\"\n                }\n\
+    \     },\n      \"description\": \"Observed upstream telemetry; samples older than 120 seconds are unavailable.\",\n \
+    \     \"fieldConfig\": {\n        \"defaults\": {\n          \"custom\": {\n            \"spanNulls\": false\n       \
+    \   },\n          \"noValue\": \"Unavailable / stale\",\n          \"unit\": \"short\"\n        },\n        \"overrides\"\
+    : []\n      },\n      \"gridPos\": {\n        \"h\": 8,\n        \"w\": 12,\n        \"x\": 0,\n        \"y\": 20\n  \
+    \    },\n      \"id\": 6,\n      \"targets\": [\n        {\n          \"expr\": \"(up{namespace=\\\"kai-scheduler\\\"\
+    } and (time() - timestamp(up{namespace=\\\"kai-scheduler\\\"}) <= 120))\",\n          \"legendFormat\": \"{{namespace}}\
+    \ {{queue_name}} {{UUID}}\",\n          \"refId\": \"A\"\n        }\n      ],\n      \"title\": \"KAI scheduler availability\"\
+    ,\n      \"type\": \"timeseries\"\n    },\n    {\n      \"datasource\": {\n        \"type\": \"prometheus\",\n       \
+    \ \"uid\": \"${DS_PROMETHEUS}\"\n      },\n      \"description\": \"Instant target/series freshness; missing, failed or\
+    \ samples older than 120 seconds are unavailable.\",\n      \"fieldConfig\": {\n        \"defaults\": {\n          \"\
+    mappings\": [\n            {\n              \"options\": {\n                \"0\": {\n                  \"text\": \"Fresh\"\
+    \n                },\n                \"1\": {\n                  \"text\": \"Unavailable / stale\"\n                }\n\
     \              },\n              \"type\": \"value\"\n            }\n          ],\n          \"noValue\": \"Unavailable\"\
     ,\n          \"thresholds\": {\n            \"mode\": \"absolute\",\n            \"steps\": [\n              {\n     \
     \           \"color\": \"green\",\n                \"value\": null\n              },\n              {\n              \
     \  \"color\": \"red\",\n                \"value\": 1\n              }\n            ]\n          }\n        },\n      \
     \  \"overrides\": []\n      },\n      \"gridPos\": {\n        \"h\": 4,\n        \"w\": 8,\n        \"x\": 0,\n      \
-    \  \"y\": 28\n      },\n      \"id\": 8,\n      \"targets\": [\n        {\n          \"expr\": \"(time() - max(timestamp(jupyterhub_running_servers))\
-    \ > bool 120) or absent(jupyterhub_running_servers)\",\n          \"refId\": \"A\"\n        }\n      ],\n      \"title\"\
-    : \"Telemetry missing/stale: jupyterhub_running_servers\",\n      \"type\": \"stat\"\n    },\n    {\n      \"datasource\"\
-    : {\n        \"type\": \"prometheus\",\n        \"uid\": \"${DS_PROMETHEUS}\"\n      },\n      \"fieldConfig\": {\n  \
-    \      \"defaults\": {\n          \"mappings\": [\n            {\n              \"options\": {\n                \"0\"\
-    : {\n                  \"text\": \"Fresh\"\n                },\n                \"1\": {\n                  \"text\":\
-    \ \"Unavailable / stale\"\n                }\n              },\n              \"type\": \"value\"\n            }\n   \
-    \       ],\n          \"noValue\": \"Unavailable\",\n          \"thresholds\": {\n            \"mode\": \"absolute\",\n\
-    \            \"steps\": [\n              {\n                \"color\": \"green\",\n                \"value\": null\n \
-    \             },\n              {\n                \"color\": \"red\",\n                \"value\": 1\n              }\n\
+    \  \"y\": 28\n      },\n      \"id\": 7,\n      \"targets\": [\n        {\n          \"expr\": \"(time() - max(timestamp(DCGM_FI_DEV_FB_FREE))\
+    \ > bool 120) or absent(DCGM_FI_DEV_FB_FREE)\",\n          \"instant\": true,\n          \"refId\": \"A\"\n        }\n\
+    \      ],\n      \"title\": \"Telemetry availability: DCGM_FI_DEV_FB_FREE\",\n      \"type\": \"stat\"\n    },\n    {\n\
+    \      \"datasource\": {\n        \"type\": \"prometheus\",\n        \"uid\": \"${DS_PROMETHEUS}\"\n      },\n      \"\
+    description\": \"Instant target/series freshness; missing, failed or samples older than 120 seconds are unavailable.\"\
+    ,\n      \"fieldConfig\": {\n        \"defaults\": {\n          \"mappings\": [\n            {\n              \"options\"\
+    : {\n                \"0\": {\n                  \"text\": \"Fresh\"\n                },\n                \"1\": {\n \
+    \                 \"text\": \"Unavailable / stale\"\n                }\n              },\n              \"type\": \"value\"\
+    \n            }\n          ],\n          \"noValue\": \"Unavailable\",\n          \"thresholds\": {\n            \"mode\"\
+    : \"absolute\",\n            \"steps\": [\n              {\n                \"color\": \"green\",\n                \"\
+    value\": null\n              },\n              {\n                \"color\": \"red\",\n                \"value\": 1\n\
+    \              }\n            ]\n          }\n        },\n        \"overrides\": []\n      },\n      \"gridPos\": {\n\
+    \        \"h\": 4,\n        \"w\": 8,\n        \"x\": 8,\n        \"y\": 28\n      },\n      \"id\": 8,\n      \"targets\"\
+    : [\n        {\n          \"expr\": \"clamp_max((1 - min(up{namespace=\\\"jupyterhub\\\",service=\\\"hub\\\"})) + (time()\
+    \ - max(timestamp(up{namespace=\\\"jupyterhub\\\",service=\\\"hub\\\"})) > bool 120), 1) or absent(up{namespace=\\\"jupyterhub\\\
+    \",service=\\\"hub\\\"})\",\n          \"instant\": true,\n          \"refId\": \"A\"\n        }\n      ],\n      \"title\"\
+    : \"Telemetry availability: up{namespace=\\\"jupyterhub\\\",service=\\\"hub\\\"}\",\n      \"type\": \"stat\"\n    },\n\
+    \    {\n      \"datasource\": {\n        \"type\": \"prometheus\",\n        \"uid\": \"${DS_PROMETHEUS}\"\n      },\n\
+    \      \"description\": \"Instant target/series freshness; missing, failed or samples older than 120 seconds are unavailable.\"\
+    ,\n      \"fieldConfig\": {\n        \"defaults\": {\n          \"mappings\": [\n            {\n              \"options\"\
+    : {\n                \"0\": {\n                  \"text\": \"Fresh\"\n                },\n                \"1\": {\n \
+    \                 \"text\": \"Unavailable / stale\"\n                }\n              },\n              \"type\": \"value\"\
+    \n            }\n          ],\n          \"noValue\": \"Unavailable\",\n          \"thresholds\": {\n            \"mode\"\
+    : \"absolute\",\n            \"steps\": [\n              {\n                \"color\": \"green\",\n                \"\
+    value\": null\n              },\n              {\n                \"color\": \"red\",\n                \"value\": 1\n\
+    \              }\n            ]\n          }\n        },\n        \"overrides\": []\n      },\n      \"gridPos\": {\n\
+    \        \"h\": 4,\n        \"w\": 8,\n        \"x\": 16,\n        \"y\": 28\n      },\n      \"id\": 9,\n      \"targets\"\
+    : [\n        {\n          \"expr\": \"clamp_max((1 - min(up{namespace=\\\"cit-jhub\\\",service=\\\"hub\\\"})) + (time()\
+    \ - max(timestamp(up{namespace=\\\"cit-jhub\\\",service=\\\"hub\\\"})) > bool 120), 1) or absent(up{namespace=\\\"cit-jhub\\\
+    \",service=\\\"hub\\\"})\",\n          \"instant\": true,\n          \"refId\": \"A\"\n        }\n      ],\n      \"title\"\
+    : \"Telemetry availability: up{namespace=\\\"cit-jhub\\\",service=\\\"hub\\\"}\",\n      \"type\": \"stat\"\n    },\n\
+    \    {\n      \"datasource\": {\n        \"type\": \"prometheus\",\n        \"uid\": \"${DS_PROMETHEUS}\"\n      },\n\
+    \      \"description\": \"Instant target/series freshness; missing, failed or samples older than 120 seconds are unavailable.\"\
+    ,\n      \"fieldConfig\": {\n        \"defaults\": {\n          \"mappings\": [\n            {\n              \"options\"\
+    : {\n                \"0\": {\n                  \"text\": \"Fresh\"\n                },\n                \"1\": {\n \
+    \                 \"text\": \"Unavailable / stale\"\n                }\n              },\n              \"type\": \"value\"\
+    \n            }\n          ],\n          \"noValue\": \"Unavailable\",\n          \"thresholds\": {\n            \"mode\"\
+    : \"absolute\",\n            \"steps\": [\n              {\n                \"color\": \"green\",\n                \"\
+    value\": null\n              },\n              {\n                \"color\": \"red\",\n                \"value\": 1\n\
+    \              }\n            ]\n          }\n        },\n        \"overrides\": []\n      },\n      \"gridPos\": {\n\
+    \        \"h\": 4,\n        \"w\": 8,\n        \"x\": 0,\n        \"y\": 32\n      },\n      \"id\": 10,\n      \"targets\"\
+    : [\n        {\n          \"expr\": \"clamp_max((1 - min(up{namespace=\\\"kai-scheduler\\\",service=\\\"kai-scheduler-default\\\
+    \"})) + (time() - max(timestamp(up{namespace=\\\"kai-scheduler\\\",service=\\\"kai-scheduler-default\\\"})) > bool 120),\
+    \ 1) or absent(up{namespace=\\\"kai-scheduler\\\",service=\\\"kai-scheduler-default\\\"})\",\n          \"instant\": true,\n\
+    \          \"refId\": \"A\"\n        }\n      ],\n      \"title\": \"Telemetry availability: up{namespace=\\\"kai-scheduler\\\
+    \",service=\\\"kai-scheduler-default\\\"}\",\n      \"type\": \"stat\"\n    },\n    {\n      \"datasource\": {\n     \
+    \   \"type\": \"prometheus\",\n        \"uid\": \"${DS_PROMETHEUS}\"\n      },\n      \"description\": \"Planned controller\
+    \ contract; no qualified exporter is deployed. This panel must remain unavailable until qualification.\",\n      \"fieldConfig\"\
+    : {\n        \"defaults\": {\n          \"mappings\": [\n            {\n              \"options\": {\n               \
+    \ \"0\": {\n                  \"text\": \"Fresh\"\n                },\n                \"1\": {\n                  \"\
+    text\": \"Unavailable / stale\"\n                }\n              },\n              \"type\": \"value\"\n            }\n\
+    \          ],\n          \"noValue\": \"Unavailable\",\n          \"thresholds\": {\n            \"mode\": \"absolute\"\
+    ,\n            \"steps\": [\n              {\n                \"color\": \"green\",\n                \"value\": null\n\
+    \              },\n              {\n                \"color\": \"red\",\n                \"value\": 1\n              }\n\
     \            ]\n          }\n        },\n        \"overrides\": []\n      },\n      \"gridPos\": {\n        \"h\": 4,\n\
-    \        \"w\": 8,\n        \"x\": 8,\n        \"y\": 28\n      },\n      \"id\": 9,\n      \"targets\": [\n        {\n\
+    \        \"w\": 8,\n        \"x\": 8,\n        \"y\": 32\n      },\n      \"id\": 11,\n      \"targets\": [\n        {\n\
     \          \"expr\": \"(time() - max(timestamp(cps_compute_physical_free_gpus)) > bool 120) or absent(cps_compute_physical_free_gpus)\"\
-    ,\n          \"refId\": \"A\"\n        }\n      ],\n      \"title\": \"Telemetry missing/stale: cps_compute_physical_free_gpus\"\
-    ,\n      \"type\": \"stat\"\n    }\n  ],\n  \"refresh\": \"30s\",\n  \"schemaVersion\": 39,\n  \"tags\": [\n    \"cps-compute\"\
-    ,\n    \"gitops\"\n  ],\n  \"templating\": {\n    \"list\": [\n      {\n        \"current\": {},\n        \"name\": \"\
-    DS_PROMETHEUS\",\n        \"query\": \"prometheus\",\n        \"type\": \"datasource\"\n      }\n    ]\n  },\n  \"time\"\
-    : {\n    \"from\": \"now-1h\",\n    \"to\": \"now\"\n  },\n  \"title\": \"CPS / CIT \\u2014 KAI Scheduling/Fairness\"\
-    ,\n  \"uid\": \"cps-kai-fairness\",\n  \"version\": 1\n}"
+    ,\n          \"instant\": true,\n          \"refId\": \"A\"\n        }\n      ],\n      \"title\": \"Telemetry availability:\
+    \ cps_compute_physical_free_gpus\",\n      \"type\": \"stat\"\n    }\n  ],\n  \"refresh\": \"30s\",\n  \"schemaVersion\"\
+    : 39,\n  \"tags\": [\n    \"cps-compute\",\n    \"gitops\"\n  ],\n  \"templating\": {\n    \"list\": [\n      {\n    \
+    \    \"current\": {},\n        \"name\": \"DS_PROMETHEUS\",\n        \"query\": \"prometheus\",\n        \"type\": \"\
+    datasource\"\n      }\n    ]\n  },\n  \"time\": {\n    \"from\": \"now-1h\",\n    \"to\": \"now\"\n  },\n  \"title\":\
+    \ \"CPS / CIT \\u2014 KAI Scheduling/Fairness\",\n  \"uid\": \"cps-kai-fairness\",\n  \"version\": 1\n}"

@@ -328,16 +328,12 @@ spec:
           containers:
             - name: backup
               image: {{ $image | quote }}
-              command: [python, -c]
-              args:
-                - |
-                  import datetime, pathlib, sqlite3
-                  source = sqlite3.connect('file:/data/courses.sqlite?mode=ro', uri=True)
-                  dest = pathlib.Path('/backup') / (datetime.datetime.now(datetime.timezone.utc).strftime('%Y%m%dT%H%M%SZ') + '.sqlite')
-                  with sqlite3.connect(dest) as target:
-                      source.backup(target)
-                      assert target.execute('PRAGMA integrity_check').fetchone()[0] == 'ok'
-                  source.close()
+              command: [python, /scripts/backup-console.py]
+              env:
+                - {name: BACKUP_SOURCE, value: /data/courses.sqlite}
+                - {name: BACKUP_IMAGE, value: {{ $image | quote }}}
+                - {name: BACKUP_OWNER, value: {{ $name | quote }}}
+                - {name: BACKUP_POLICY_HASH, value: {{ $hash | quote }}}
               securityContext:
                 allowPrivilegeEscalation: false
                 capabilities: {drop: [ALL]}
@@ -347,7 +343,9 @@ spec:
               volumeMounts:
                 - {name: source, mountPath: /data, readOnly: true}
                 - {name: backup, mountPath: /backup}
+                - {name: script, mountPath: /scripts, readOnly: true}
           volumes:
+            - {name: script, configMap: {name: compute-console-backup}}
             - {name: source, persistentVolumeClaim: {claimName: {{ $name }}-admin-data}}
             - {name: backup, persistentVolumeClaim: {claimName: {{ $name }}-admin-backup}}
 {{- end }}

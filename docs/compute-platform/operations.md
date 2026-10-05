@@ -75,7 +75,7 @@ restoration must reconcile reservations against actual Hub server shutdown state
    Source inspection points to [policy informer cancellation](https://github.com/kubernetes/kubernetes/blob/v1.34.9/staging/src/k8s.io/apiserver/pkg/admission/plugin/policy/generic/policy_source.go#L338)
    and [shared factory reuse](https://github.com/kubernetes/kubernetes/blob/v1.34.9/staging/src/k8s.io/client-go/informers/factory.go#L130);
    it is an inferred diagnosis, not inspection of each API server's cache.
-   The executor baseline uses Argo 3.7.2 `argoexec init/wait`, info/text/0 log flags
+   The executor baseline uses Argo 3.7.18 `argoexec init/wait`, info/text/0 log flags
    and no extra executor arguments. A controller configuration change requires
    updating and requalifying the exact command allowlist. Provision only the
    declared artifact/CA secrets and explicit executor token Secret. None belongs
@@ -99,7 +99,9 @@ restoration must reconcile reservations against actual Hub server shutdown state
    policy_hash, state_directory, argo_url/token environment reference, trusted
    hubs and reviewed canonical_people maps, owner-bound console service token
    environment references, and source-qualified workspace shutdown mappings.
-   See the compute repository's runtime docs for the exact schema.
+   See the compute repository's runtime docs for the exact schema. Explicit empty canonical maps keep human linkage disabled while email
+   verification is deferred. The Argo client uses the projected token file, read
+   per request, so token rotation does not require a restart.
 6. Mount the compiled policy read-only and activate the digest-only staging Helm
    chart through a reviewed Fleet bundle. Its disabled default emits no workloads.
 7. Import reviewed local course/grant records; confirm grant retention through
@@ -116,9 +118,11 @@ restoration must reconcile reservations against actual Hub server shutdown state
 
 Four Git-owned dashboards cover overview, packing, KAI fairness and teaching
 readiness. Existing upstream dashboards remain pinned in their manifests. KAI
-ServiceMonitors use inspected service labels/ports. CPS metrics scraping already
-exists; CIT requires its own authenticated monitor/credential and network-policy
-qualification before activation. The dashboards explicitly mark absent/stale
+ServiceMonitors use inspected service labels/ports. Both Hubs have authenticated monitors with separate metrics-only service
+credentials and scoped network access. Live qualification on 2026-10-05 observed
+both Hub targets and the KAI binder, scheduler, admission and queue-controller
+targets UP. Missing Argo, isolator and Descheduler telemetry still requires
+qualification. The dashboards explicitly mark absent/stale
 controller series as unavailable; they do not equate VRAM or utilization with
 placement-eligible free physical GPUs.
 
@@ -151,3 +155,37 @@ SSH key. NFS continues using `193.170.30.58`; the overlay carries control and S3
 Pin `gateway.storageVerificationImage` to a tested digest. Verify permissions with
 an actual service-account token: Rancher proxy impersonation is not sufficient.
 A neutral notebook uses `/workspace`; personal homes retain their existing paths.
+
+### Database restore qualification
+
+The 2026-10-05 live restore Jobs copied the CPS console, CIT console and gateway
+backups into isolated temporary directories. They verified recorded image/policy
+provenance, database SHA-256 hashes and SQLite integrity, then opened the copies
+with the matching deployed application. Each console also rejected the other
+console's ownership. Production databases and source backups were untouched.
+Console snapshots include schema/user versions and a schema digest. This checks
+application readability; it does not qualify offsite recovery, matching-version
+Hub startup, human login or workspace reconciliation after a disaster.
+
+### Loki volume recovery
+
+Before scaling or replacing Loki, check both the StatefulSet claim-retention
+policy and the PV reclaim policy. The chart now explicitly retains claims on
+scaling and deletion. Preserve the original volume, never create a new empty
+claim as a substitute for its contents, and record the exact PV/claim binding.
+
+On 2026-10-05 an accidental scale-down removed the old claim under the chart's
+previous Delete policy. The original Longhorn volume was protected with Retain
+and rebound to a replacement claim. No original volume deletion was observed.
+GPU1 had an orphan iSCSI session; Loki was placed temporarily on GPU2 instead of
+restarting shared node storage services. Its 50Gi filesystem was full. A separate
+PVC expansion to 55Gi restored startup. Recent logs and a query restricted to
+seven days ago through 24 hours ago both returned entries. Loki and Alloy Helm
+releases subsequently reached Deployed, with Loki 2/2 and Alloy 7/7 ready.
+
+The StatefulSet claim template remains 50Gi because that field is immutable;
+existing claim expansion is a separate operation. Check Longhorn allocation
+limits before expansion; do not increase global overprovisioning to force it.
+The stale GPU1 session and permanent placement still require maintenance review.
+Retention compaction is configured for 14 days, but cleanup latency and steady
+storage growth require observation before sizing is considered qualified.

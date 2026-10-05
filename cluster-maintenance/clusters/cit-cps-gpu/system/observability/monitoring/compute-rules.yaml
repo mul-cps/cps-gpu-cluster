@@ -3,32 +3,39 @@ kind: PrometheusRule
 metadata:
   name: cps-compute-observability
   namespace: cattle-monitoring-system
-  labels: {release: rancher-monitoring}
+  labels:
+    release: rancher-monitoring
 spec:
   groups:
-    - name: cps.compute
-      rules:
-        - record: cps:hub_spawn_p95_seconds
-          expr: histogram_quantile(0.95, sum by (le, namespace) (rate(jupyterhub_server_spawn_duration_seconds_bucket[10m])))
-        - record: cps:gpu_unused_vram_mib
-          expr: max by (UUID, Hostname) (DCGM_FI_DEV_FB_FREE)
-        - alert: ComputeHubScrapingIncomplete
-          expr: (sum(up{namespace=~"jupyterhub|cit-jhub",service="hub"}) < 2) or absent(up{namespace=~"jupyterhub|cit-jhub",service="hub"})
-          for: 5m
-          labels: {severity: warning}
-          annotations:
-            summary: Both CPS and CIT Hub metrics must be available
-            description: Missing metrics are unknown; check each Hub ServiceMonitor, auth and NetworkPolicy.
-        - alert: ComputeGPUCollectorUnavailable
-          expr: absent(DCGM_FI_DEV_FB_FREE) or (time() - max(timestamp(DCGM_FI_DEV_FB_FREE)) > 120)
-          for: 5m
-          labels: {severity: warning}
-          annotations:
-            summary: GPU memory telemetry is unavailable or stale
-        - alert: ComputeHubSpawnLatencyHigh
-          expr: cps:hub_spawn_p95_seconds > 180
-          for: 10m
-          labels: {severity: warning}
-          annotations:
-            summary: Hub spawn p95 exceeds 180 seconds
-            description: Operational alert only; representative burst qualification is a separate release gate.
+  - name: cps.compute
+    rules:
+    - record: cps:hub_spawn_p95_seconds
+      expr: histogram_quantile(0.95, sum by (le, namespace) (rate(jupyterhub_server_spawn_duration_seconds_bucket[10m]) and (time() - timestamp(jupyterhub_server_spawn_duration_seconds_bucket)
+        <= 120)))
+    - record: cps:gpu_unused_vram_mib
+      expr: max by (UUID, Hostname) (DCGM_FI_DEV_FB_FREE and (time() - timestamp(DCGM_FI_DEV_FB_FREE) <= 120))
+    - alert: ComputeHubScrapingIncomplete
+      expr: (max by (namespace) (up{namespace="jupyterhub",service="hub"}) < 1) or absent(up{namespace="jupyterhub",service="hub"}) or (max by
+        (namespace) (up{namespace="cit-jhub",service="hub"}) < 1) or absent(up{namespace="cit-jhub",service="hub"})
+      for: 5m
+      labels:
+        severity: warning
+      annotations:
+        summary: Both CPS and CIT Hub metrics must be available
+        description: Missing metrics are unknown; check each Hub ServiceMonitor, auth and NetworkPolicy.
+    - alert: ComputeGPUCollectorUnavailable
+      expr: absent(DCGM_FI_DEV_FB_FREE) or (max(time() - timestamp(DCGM_FI_DEV_FB_FREE)) > 120) or (up{namespace="gpu-operator",service="nvidia-dcgm-exporter"}
+        == 0)
+      for: 5m
+      labels:
+        severity: warning
+      annotations:
+        summary: GPU memory telemetry is unavailable or stale
+    - alert: ComputeHubSpawnLatencyHigh
+      expr: cps:hub_spawn_p95_seconds > 180
+      for: 10m
+      labels:
+        severity: warning
+      annotations:
+        summary: Hub spawn p95 exceeds 180 seconds
+        description: Operational alert only; representative burst qualification is a separate release gate.

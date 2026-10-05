@@ -1,5 +1,4 @@
 deploymentMode: SingleBinary
-
 loki:
   auth_enabled: false
   limits_config:
@@ -12,39 +11,38 @@ loki:
   commonConfig:
     replication_factor: 1
   storage:
-    type: 'filesystem'
+    type: filesystem
   schemaConfig:
     configs:
-      - from: 2024-01-01
-        store: tsdb
-        object_store: filesystem
-        schema: v13
-        index:
-          prefix: index_
-          period: 24h
-
+    - from: 2024-01-01
+      store: tsdb
+      object_store: filesystem
+      schema: v13
+      index:
+        prefix: index_
+        period: 24h
 singleBinary:
   replicas: 1
   persistence:
     enabled: true
     storageClass: longhorn
+    # Existing StatefulSet claim templates are immutable. The retained live
+    # storage-loki-0 PVC was expanded separately to 55Gi on 2026-10-05.
     size: 50Gi
+    whenDeleted: Retain
+    whenScaled: Retain
   resources:
     requests:
       cpu: 200m
       memory: 512Mi
     limits:
       memory: 2Gi
-
-
-# Explicitly disable scalable components to suffice validating logic
 write:
   replicas: 0
 read:
   replicas: 0
 backend:
   replicas: 0
-
 memberlist:
   service:
     publishNotReadyAddresses: true

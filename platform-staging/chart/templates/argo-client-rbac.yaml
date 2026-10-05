@@ -1,0 +1,26 @@
+{{- if and .Values.enabled .Values.gateway.kubernetes.enabled }}
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: cps-compute-argo-client
+  namespace: cps-workflows
+rules:
+  - apiGroups: [argoproj.io]
+    resources: [workflows]
+    verbs: [get, list, watch, create, patch]
+  - apiGroups: [""]
+    resources: [pods]
+    verbs: [get, list]
+  - apiGroups: [""]
+    resources: [pods/log]
+    verbs: [get]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: cps-compute-argo-client
+  namespace: cps-workflows
+subjects:
+  - {kind: ServiceAccount, name: cps-compute-controller, namespace: {{ .Values.namespace }}}
+roleRef: {apiGroup: rbac.authorization.k8s.io, kind: Role, name: cps-compute-argo-client}
+{{- end }}

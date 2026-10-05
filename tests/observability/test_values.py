@@ -22,6 +22,8 @@ class MonitoringConfig(unittest.TestCase):
         self.assertEqual(config['limits_config'].get('retention_period'), '336h')
         self.assertTrue(config['compactor']['retention_enabled'])
         self.assertEqual(config['compactor']['delete_request_store'], 'filesystem')
+        stateful=next(d for d in docs if d and d['kind']=='StatefulSet' and d['metadata']['name']=='loki')
+        self.assertEqual(stateful['spec']['persistentVolumeClaimRetentionPolicy'],{'whenDeleted':'Retain','whenScaled':'Retain'})
 
     def test_alloy_discovers_only_local_node(self):
         values = yaml.safe_load((OBS / 'alloy/values-alloy.yaml').read_text())
