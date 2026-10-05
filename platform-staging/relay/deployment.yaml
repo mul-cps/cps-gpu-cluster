@@ -1,0 +1,135 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: cps-artifacts-relay
+  labels:
+    # NetBird needs TUN and namespace-local networking capabilities. Neither
+    # container uses host networking, host PID, or host IPC.
+    pod-security.kubernetes.io/enforce: privileged
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: netbird-state
+spec:
+  accessModes: [ReadWriteOnce]
+  storageClassName: longhorn
+  resources:
+    requests: {storage: 1Gi}
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: artifacts-relay
+spec:
+  replicas: 1
+  strategy: {type: Recreate}
+  selector:
+    matchLabels: {app: artifacts-relay}
+  template:
+    metadata:
+      labels: {app: artifacts-relay}
+    spec:
+      automountServiceAccountToken: false
+      terminationGracePeriodSeconds: 30
+      initContainers:
+        - name: restore-identity
+          image: docker.io/library/python@sha256:1b668429b3511ab407d8e00648891631b0b1a4d7e15e3ca70f38ab5b91ad4ab4
+          command: [python3, -c]
+          args:
+            - |
+              import os, pathlib, shutil
+              path = pathlib.Path('/var/lib/netbird/default.json')
+              if not path.exists():
+                  os.umask(0o077)
+                  shutil.copyfile('/identity/default.json', path)
+          volumeMounts:
+            - {name: identity, mountPath: /identity, readOnly: true}
+            - {name: state, mountPath: /var/lib/netbird}
+      containers:
+        - name: netbird
+          image: docker.io/netbirdio/netbird@sha256:4976692ea44bb93871743d0b742b4a8f97f6425bfc458ca2d78e28fdb8bdf4ad
+          command: [/bin/bash, -c]
+          args:
+            - |
+              set -eu
+              netbird service run &
+              daemon=$!
+              trap 'kill -TERM "$daemon" 2>/dev/null || true; wait "$daemon" || true' EXIT
+              for attempt in $(seq 1 30); do
+                  netbird status --check live >/dev/null 2>&1 && break
+                  sleep 1
+              done
+              netbird up --disable-dns --disable-client-routes --disable-server-routes --block-lan-access
+              wait "$daemon"
+          env:
+            - {name: NB_RELAY_TRANSPORT, value: prefer-quic}
+            - {name: NB_LOG_LEVEL, value: warn}
+          securityContext:
+            capabilities: {add: [NET_ADMIN, SYS_ADMIN, SYS_RESOURCE]}
+          resources:
+            requests: {cpu: 100m, memory: 128Mi}
+            limits: {cpu: "1", memory: 512Mi}
+          readinessProbe:
+            exec: {command: [netbird, status, --check, ready]}
+            initialDelaySeconds: 10
+            periodSeconds: 10
+          livenessProbe:
+            exec: {command: [netbird, status, --check, live]}
+            initialDelaySeconds: 30
+          volumeMounts:
+            - {name: tun, mountPath: /dev/net/tun}
+            - {name: state, mountPath: /var/lib/netbird}
+        - name: proxy
+          image: docker.io/library/haproxy@sha256:5d97434a423c2533cfeb42874d45cf6d69a840b60334582dfbfd5008e94c80be
+          command: [haproxy, -W, -db, -f, /config/haproxy.cfg]
+          ports: [{name: s3, containerPort: 8333}]
+          securityContext:
+            runAsNonRoot: true
+            runAsUser: 1000
+            runAsGroup: 1000
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: true
+            capabilities: {drop: [ALL]}
+          resources:
+            requests: {cpu: 100m, memory: 64Mi}
+            limits: {cpu: "1", memory: 256Mi}
+          readinessProbe: {tcpSocket: {port: s3}, periodSeconds: 10}
+          livenessProbe: {tcpSocket: {port: s3}, initialDelaySeconds: 30}
+          volumeMounts:
+            - {name: config, mountPath: /config, readOnly: true}
+            - {name: tls, mountPath: /tls, readOnly: true}
+            - {name: trust, mountPath: /trust, readOnly: true}
+      securityContext: {fsGroup: 1000, seccompProfile: {type: RuntimeDefault}}
+      volumes:
+        - {name: identity, secret: {secretName: netbird-peer-identity, defaultMode: 384}}
+        - {name: state, persistentVolumeClaim: {claimName: netbird-state}}
+        - {name: tun, hostPath: {path: /dev/net/tun, type: CharDevice}}
+        - {name: config, configMap: {name: artifacts-relay-proxy}}
+        - {name: tls, secret: {secretName: artifacts-relay-tls, defaultMode: 288}}
+        - {name: trust, configMap: {name: artifacts-relay-ca}}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: artifacts
+spec:
+  type: ClusterIP
+  selector: {app: artifacts-relay}
+  ports: [{name: s3, port: 8333, targetPort: s3}]
+---
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: artifacts-ingress
+spec:
+  podSelector: {matchLabels: {app: artifacts-relay}}
+  policyTypes: [Ingress]
+  ingress:
+    - from:
+        - namespaceSelector:
+            matchExpressions:
+              - key: kubernetes.io/metadata.name
+                operator: In
+                values: [cps-compute, cps-workflows, jupyterhub, cit-jhub, cps-artifacts-relay]
+      ports: [{protocol: TCP, port: 8333}]
