@@ -1,0 +1,130 @@
+{{- if and .Values.enabled .Values.artifactRetention.enabled }}
+{{- $r := .Values.artifactRetention }}
+{{- $image := required "retention reviewed image digest required" $r.image }}
+{{- if not (regexMatch "^.+@sha256:[a-f0-9]{64}$" $image) }}{{ fail "retention immutable image required" }}{{ end }}
+{{- $policy := required "retention central policy hash required" .Values.policyHash }}
+{{- if not (regexMatch "^sha256:[a-f0-9]{64}$" $policy) }}{{ fail "retention sha256 policy hash required" }}{{ end }}
+{{- if ne .Values.namespace "cps-compute" }}{{ fail "retention namespace must be cps-compute" }}{{ end }}
+{{- if or (lt (int $r.maxDeletes) 1) (gt (int $r.maxDeletes) 1000) (lt (int $r.maxExamined) 1) (gt (int $r.maxExamined) 10000) }}{{ fail "bounded retention limits required" }}{{ end }}
+{{- if or (lt (int $r.deadlineSeconds) 60) (gt (int $r.deadlineSeconds) 900) }}{{ fail "bounded retention deadline required" }}{{ end }}
+{{- if and $r.apply (or (not $r.conditionalDeleteQualified) (not $r.lifecycleQualified) (not $r.qualificationEvidence)) }}{{ fail "retention apply requires reviewed conditional deletion and full lifecycle evidence" }}{{ end }}
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: cps-artifact-retention
+  namespace: cps-compute
+automountServiceAccountToken: false
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: cps-artifact-retention-proof
+  namespace: cps-workflows
+rules:
+  - apiGroups: [argoproj.io]
+    resources: [workflows]
+    verbs: [get]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: cps-artifact-retention-proof
+  namespace: cps-workflows
+subjects:
+  - {kind: ServiceAccount, name: cps-artifact-retention, namespace: cps-compute}
+roleRef: {apiGroup: rbac.authorization.k8s.io, kind: Role, name: cps-artifact-retention-proof}
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: cps-artifact-retention
+  namespace: cps-compute
+data:
+  artifact-retention.py: |
+{{ .Files.Get "files/artifact-retention.py" | indent 4 }}
+  config.json: |
+    {{ dict "version" 1 "image" $image "policyHash" $policy "endpoint" $r.endpoint "bucket" $r.bucket "accessKeyFile" "/s3/accessKey" "secretKeyFile" "/s3/secretKey" "ca" "/s3-ca/ca.crt" "argoUrl" $r.argoUrl "namespace" "cps-workflows" "argoTokenFile" "/argo-token/token" "argoCa" "/argo-ca/ca.crt" "conditionalDeleteQualified" $r.conditionalDeleteQualified "probeWorkflow" $r.probeWorkflow | toJson }}
+---
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: cps-artifact-retention
+  namespace: cps-compute
+  annotations:
+    compute.cps.unileoben.ac.at/policy-hash: {{ $policy | quote }}
+    compute.cps.unileoben.ac.at/retention-version: "1"
+spec:
+  schedule: {{ $r.schedule | quote }}
+  suspend: {{ $r.suspend }}
+  concurrencyPolicy: Forbid
+  successfulJobsHistoryLimit: 1
+  failedJobsHistoryLimit: 2
+  jobTemplate:
+    spec:
+      backoffLimit: 0
+      activeDeadlineSeconds: {{ $r.deadlineSeconds }}
+      template:
+        metadata:
+          labels: {app: cps-artifact-retention}
+        spec:
+          serviceAccountName: cps-artifact-retention
+          automountServiceAccountToken: false
+          restartPolicy: Never
+          imagePullSecrets: [{name: {{ .Values.gateway.imagePullSecretRef }}}]
+          securityContext:
+            runAsNonRoot: true
+            runAsUser: 10001
+            runAsGroup: 10001
+            fsGroup: 10001
+            seccompProfile: {type: RuntimeDefault}
+          containers:
+            - name: retention
+              image: {{ $image | quote }}
+              command: [python, /scripts/artifact-retention.py]
+              args:
+                - --config=/scripts/config.json
+                - --max-deletes={{ $r.maxDeletes }}
+                - --max-examined={{ $r.maxExamined }}
+                {{- if $r.apply }}
+                - --apply
+                {{- end }}
+              securityContext:
+                allowPrivilegeEscalation: false
+                readOnlyRootFilesystem: true
+                capabilities: {drop: [ALL]}
+              resources:
+                requests: {cpu: 50m, memory: 96Mi}
+                limits: {cpu: "1", memory: 256Mi}
+              volumeMounts:
+                - {name: scripts, mountPath: /scripts, readOnly: true}
+                - {name: credentials, mountPath: /s3, readOnly: true}
+                - {name: s3-ca, mountPath: /s3-ca, readOnly: true}
+                - {name: argo-ca, mountPath: /argo-ca, readOnly: true}
+                - {name: argo-token, mountPath: /argo-token, readOnly: true}
+          volumes:
+            - {name: scripts, configMap: {name: cps-artifact-retention}}
+            - {name: credentials, secret: {secretName: {{ required "retention S3 credentials required" $r.credentialSecretRef }}}}
+            - {name: s3-ca, secret: {secretName: {{ required "retention S3 CA required" $r.caSecretRef }}}}
+            - {name: argo-ca, configMap: {name: {{ required "retention Argo CA required" $r.argoCaConfigMapRef }}}}
+            - name: argo-token
+              projected:
+                sources:
+                  - serviceAccountToken: {path: token, expirationSeconds: 3600}
+---
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: cps-artifact-retention-argo
+  namespace: {{ $r.argoNamespace }}
+spec:
+  podSelector:
+    matchLabels: {app.kubernetes.io/component: server}
+  policyTypes: [Ingress]
+  ingress:
+    - from:
+        - namespaceSelector:
+            matchLabels: {kubernetes.io/metadata.name: cps-compute}
+          podSelector:
+            matchLabels: {app: cps-artifact-retention}
+      ports: [{protocol: TCP, port: 2746}]
+{{- end }}

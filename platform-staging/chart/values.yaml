@@ -33,3 +33,24 @@ consoles:
     hubApiUrl: http://hub.cit-jhub.svc.cluster.local:8081/hub/api
     publicCallbackUrl: ""
     secretRef: cit-admin-oauth
+# Explicitly disabled, suspended and dry-run until conditional delete and proof metadata qualify.
+artifactRetention:
+  enabled: false
+  suspend: true
+  apply: false
+  conditionalDeleteQualified: false
+  lifecycleQualified: false
+  qualificationEvidence: ""
+  image: ""
+  schedule: "41 3 * * *"
+  maxDeletes: 10
+  maxExamined: 1000
+  deadlineSeconds: 300
+  endpoint: https://artifacts.cps-artifacts-relay.svc.cluster.local:8333
+  bucket: cps-compute
+  credentialSecretRef: cps-artifact-credentials
+  caSecretRef: cps-artifact-ca
+  argoUrl: https://cps-argo-argo-workflows-server.cps-argo.svc.cluster.local:2746
+  argoNamespace: cps-argo
+  argoCaConfigMapRef: cps-compute-gateway-ca
+  probeWorkflow: ""
