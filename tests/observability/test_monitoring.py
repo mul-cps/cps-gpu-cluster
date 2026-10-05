@@ -15,6 +15,15 @@ PROMTOOL=os.environ.get('CPS_PROMTOOL','/tmp/cps-monitoring-promtool/prometheus-
 class ComputeMonitoring(unittest.TestCase):
     def dashboards(self):
         return [json.loads(next(iter(yaml.safe_load(p.read_text())['data'].values()))) for p in sorted(MON.glob('cps-*-dashboard.yaml'))]
+    def test_dashboard_namespace_matches_grafana_discovery(self):
+        settings=yaml.safe_load((MON/'values.yaml').read_text())
+        namespace=settings['grafana']['sidecar']['dashboards']['searchNamespace']
+        self.assertEqual(namespace,'cattle-dashboards')
+        for path in MON.glob('cps-*-dashboard.yaml'):
+            dashboard=yaml.safe_load(path.read_text())
+            self.assertEqual(dashboard['metadata']['namespace'],namespace)
+            self.assertEqual(dashboard['metadata']['labels']['grafana_dashboard'],'1')
+
     def test_dashboards_freshness_and_per_hub_availability(self):
         dashboards=self.dashboards();self.assertEqual(len(dashboards),4)
         for d in dashboards:

@@ -68,7 +68,7 @@ for slug,(title,items) in DASHBOARDS.items():
                'links':[{'title':'CPS Hub','url':'https://jupyterhub.dshl.unileoben.ac.at','targetBlank':True},
                         {'title':'CIT Hub','url':'https://jhub.dshl.unileoben.ac.at','targetBlank':True},
                         {'title':'Rancher','url':'https://rancher.dshl.unileoben.ac.at','targetBlank':True}]}
-    cm={'apiVersion':'v1','kind':'ConfigMap','metadata':{'name':f'cps-{slug}-dashboard','namespace':'cattle-monitoring-system',
+    cm={'apiVersion':'v1','kind':'ConfigMap','metadata':{'name':f'cps-{slug}-dashboard','namespace':'cattle-dashboards',
         'labels':{'grafana_dashboard':'1'},'annotations':{'k8s-sidecar-target-directory':'/tmp/dashboards/Compute'}},
         'data':{f'{slug}.json':json.dumps(dashboard,sort_keys=True,indent=2)}}
     (DEST/f'cps-{slug}-dashboard.yaml').write_text(yaml.safe_dump(cm,sort_keys=False,width=120))
