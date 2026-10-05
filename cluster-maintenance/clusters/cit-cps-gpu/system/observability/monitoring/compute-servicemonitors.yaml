@@ -1,0 +1,28 @@
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: kai-compute-metrics
+  namespace: cattle-monitoring-system
+  labels: {release: rancher-monitoring}
+spec:
+  namespaceSelector:
+    matchNames: [kai-scheduler]
+  selector:
+    matchExpressions:
+      - {key: app, operator: In, values: [admission, binder, kai-scheduler-default]}
+  endpoints:
+    - {port: http-metrics, path: /metrics, interval: 30s}
+---
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: kai-queue-metrics
+  namespace: cattle-monitoring-system
+  labels: {release: rancher-monitoring}
+spec:
+  namespaceSelector:
+    matchNames: [kai-scheduler]
+  selector:
+    matchLabels: {app: queue-controller}
+  endpoints:
+    - {port: metrics, path: /metrics, interval: 30s}

@@ -1,4 +1,4 @@
-# Descheduler v0.33.0 (matches Kubernetes 1.33 per upstream compatibility matrix:
+# Descheduler v0.34.0 (matches Kubernetes 1.34 per upstream compatibility matrix:
 # https://github.com/kubernetes-sigs/descheduler#compatibility-matrix)
 #
 # Purpose: consolidate/evict low-priority `batch` queue pods (PriorityClass
@@ -40,6 +40,16 @@ deschedulerPolicy:
       pluginConfig:
         - name: DefaultEvictor
           args:
+            # Only controller-reviewed restartable batch pods may opt in.
+            # Exclude known gang/JobSet labels even if accidentally opted in.
+            labelSelector:
+              matchLabels:
+                compute.cps.unileoben.ac.at/descheduler-eligible: "true"
+              matchExpressions:
+                - {key: pod-group-name, operator: DoesNotExist}
+                - {key: scheduling.k8s.io/group-name, operator: DoesNotExist}
+                - {key: kai.scheduler/podgroup, operator: DoesNotExist}
+                - {key: jobset.sigs.k8s.io/jobset-name, operator: DoesNotExist}
             ignorePvcPods: true
             evictLocalStoragePods: true
             # Structural safety gate: only pods with priority < 11 (i.e.

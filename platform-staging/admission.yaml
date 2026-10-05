@@ -1,0 +1,54 @@
+# Candidate lower-layer enforcement for the dedicated workload namespace.
+# No Fleet bundle includes this file. An empty allowlist denies all containers.
+apiVersion: admissionregistration.k8s.io/v1
+kind: ValidatingAdmissionPolicy
+metadata:
+  name: cps-compute-workload-boundary
+spec:
+  failurePolicy: Fail
+  paramKind:
+    apiVersion: v1
+    kind: ConfigMap
+  matchConstraints:
+    resourceRules:
+      - apiGroups: [""]
+        apiVersions: [v1]
+        operations: [CREATE, UPDATE]
+        resources: [pods]
+  matchConditions:
+    - name: dedicated-workload-namespace
+      expression: request.namespace == 'cps-workflows'
+  validations:
+    - expression: object.spec.schedulerName == 'kai-scheduler' && object.spec.serviceAccountName == 'cps-workflow'
+      message: Compute workloads require the trusted scheduler and workflow service account
+    - expression: >-
+        object.spec.containers.all(c, c.image in params.data['approved-images'].split(',')) &&
+        (!has(object.spec.initContainers) || object.spec.initContainers.all(c, c.image in params.data['approved-images'].split(',')))
+      message: Every workload and executor image must be an explicitly approved digest
+    - expression: '!has(object.spec.ephemeralContainers) || size(object.spec.ephemeralContainers) == 0'
+      message: Ephemeral container access requires a separate reviewed debugging exception
+    - expression: >-
+        (!has(object.spec.hostNetwork) || !object.spec.hostNetwork) &&
+        (!has(object.spec.hostPID) || !object.spec.hostPID) &&
+        (!has(object.spec.hostIPC) || !object.spec.hostIPC)
+      message: Host namespaces are prohibited
+    - expression: >-
+        !has(object.spec.volumes) || object.spec.volumes.all(v, !has(v.hostPath))
+      message: Host mounts require an explicit trusted GPU injector exception that has not been qualified
+    - expression: >-
+        object.spec.containers.all(c, !has(c.securityContext) ||
+        ((!has(c.securityContext.privileged) || !c.securityContext.privileged) &&
+        (!has(c.securityContext.allowPrivilegeEscalation) || !c.securityContext.allowPrivilegeEscalation)))
+      message: Privilege escalation is prohibited
+---
+apiVersion: admissionregistration.k8s.io/v1
+kind: ValidatingAdmissionPolicyBinding
+metadata:
+  name: cps-compute-workload-boundary
+spec:
+  policyName: cps-compute-workload-boundary
+  validationActions: [Deny]
+  paramRef:
+    name: cps-admission-policy
+    namespace: cps-compute
+    parameterNotFoundAction: Deny

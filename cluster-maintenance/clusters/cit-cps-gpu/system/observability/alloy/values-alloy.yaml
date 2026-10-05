@@ -2,6 +2,11 @@ controller:
   type: daemonset
 
 alloy:
+  extraEnv:
+    - name: HOSTNAME
+      valueFrom:
+        fieldRef:
+          fieldPath: spec.nodeName
   configMap:
     create: true
     content: |
@@ -11,6 +16,10 @@ alloy:
 
       discovery.kubernetes "pods" {
         role = "pod"
+        selectors {
+          role = "pod"
+          field = "spec.nodeName=" + sys.env("HOSTNAME")
+        }
       }
 
       loki.source.kubernetes "pods" {

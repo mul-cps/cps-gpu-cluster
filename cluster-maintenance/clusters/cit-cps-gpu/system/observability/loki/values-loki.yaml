@@ -2,6 +2,13 @@ deploymentMode: SingleBinary
 
 loki:
   auth_enabled: false
+  limits_config:
+    retention_period: 336h
+    volume_enabled: true
+  compactor:
+    retention_enabled: true
+    delete_request_store: filesystem
+    working_directory: /var/loki/compactor
   commonConfig:
     replication_factor: 1
   storage:
@@ -29,9 +36,6 @@ singleBinary:
     limits:
       memory: 2Gi
 
-limits_config:
-  retention_period: 336h
-  volume_enabled: true
 
 # Explicitly disable scalable components to suffice validating logic
 write:

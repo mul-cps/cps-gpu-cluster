@@ -1,0 +1,17 @@
+name: Compute policy artifacts
+on:
+  pull_request:
+    paths: ['compute-policy/**', 'scripts/compile_compute_policy.py', 'tests/compute_policy/**', '.github/workflows/compute-policy.yml']
+  push:
+    paths: ['compute-policy/**', 'scripts/compile_compute_policy.py', 'tests/compute_policy/**', '.github/workflows/compute-policy.yml']
+permissions:
+  contents: read
+jobs:
+  compile:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+      - name: Validate policy and generated artifacts
+        run: |
+          python3 -m unittest discover -s tests/compute_policy -v
+          python3 scripts/compile_compute_policy.py --check

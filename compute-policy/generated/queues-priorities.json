@@ -1,0 +1,206 @@
+{
+  "apiVersion": "v1",
+  "items": [
+    {
+      "apiVersion": "scheduling.run.ai/v2",
+      "kind": "Queue",
+      "metadata": {
+        "annotations": {
+          "compute.cps.unileoben.ac.at/policy-hash": "sha256:bd2269a93fef4de1e6fc0124d6a6b07d11ac9708eb4b3fb56dd4f3d790ada2ce"
+        },
+        "labels": {
+          "compute.cps.unileoben.ac.at/policy-version": "0.1.0"
+        },
+        "name": "cps-interactive"
+      },
+      "spec": {
+        "resources": {
+          "cpu": {
+            "limit": 256000,
+            "overQuotaWeight": 1,
+            "quota": 0
+          },
+          "gpu": {
+            "limit": 8,
+            "overQuotaWeight": 1,
+            "quota": 8
+          },
+          "memory": {
+            "limit": 1099511.627776,
+            "overQuotaWeight": 1,
+            "quota": 0.0
+          }
+        }
+      }
+    },
+    {
+      "apiVersion": "scheduling.run.ai/v2",
+      "kind": "Queue",
+      "metadata": {
+        "annotations": {
+          "compute.cps.unileoben.ac.at/policy-hash": "sha256:bd2269a93fef4de1e6fc0124d6a6b07d11ac9708eb4b3fb56dd4f3d790ada2ce"
+        },
+        "labels": {
+          "compute.cps.unileoben.ac.at/policy-version": "0.1.0"
+        },
+        "name": "cps-batch"
+      },
+      "spec": {
+        "resources": {
+          "cpu": {
+            "limit": 256000,
+            "overQuotaWeight": 1,
+            "quota": 0
+          },
+          "gpu": {
+            "limit": 8,
+            "overQuotaWeight": 1,
+            "quota": 0
+          },
+          "memory": {
+            "limit": 1099511.627776,
+            "overQuotaWeight": 1,
+            "quota": 0.0
+          }
+        }
+      }
+    },
+    {
+      "apiVersion": "scheduling.k8s.io/v1",
+      "description": "CPS compute policy exam; activation requires qualification",
+      "globalDefault": false,
+      "kind": "PriorityClass",
+      "metadata": {
+        "annotations": {
+          "compute.cps.unileoben.ac.at/policy-hash": "sha256:bd2269a93fef4de1e6fc0124d6a6b07d11ac9708eb4b3fb56dd4f3d790ada2ce"
+        },
+        "labels": {
+          "compute.cps.unileoben.ac.at/policy-version": "0.1.0"
+        },
+        "name": "cps-exam"
+      },
+      "preemptionPolicy": "PreemptLowerPriority",
+      "value": 90
+    },
+    {
+      "apiVersion": "scheduling.k8s.io/v1",
+      "description": "CPS compute policy lecture; activation requires qualification",
+      "globalDefault": false,
+      "kind": "PriorityClass",
+      "metadata": {
+        "annotations": {
+          "compute.cps.unileoben.ac.at/policy-hash": "sha256:bd2269a93fef4de1e6fc0124d6a6b07d11ac9708eb4b3fb56dd4f3d790ada2ce"
+        },
+        "labels": {
+          "compute.cps.unileoben.ac.at/policy-version": "0.1.0"
+        },
+        "name": "cps-lecture"
+      },
+      "preemptionPolicy": "PreemptLowerPriority",
+      "value": 80
+    },
+    {
+      "apiVersion": "scheduling.k8s.io/v1",
+      "description": "CPS compute policy ta; activation requires qualification",
+      "globalDefault": false,
+      "kind": "PriorityClass",
+      "metadata": {
+        "annotations": {
+          "compute.cps.unileoben.ac.at/policy-hash": "sha256:bd2269a93fef4de1e6fc0124d6a6b07d11ac9708eb4b3fb56dd4f3d790ada2ce"
+        },
+        "labels": {
+          "compute.cps.unileoben.ac.at/policy-version": "0.1.0"
+        },
+        "name": "cps-ta"
+      },
+      "preemptionPolicy": "PreemptLowerPriority",
+      "value": 70
+    },
+    {
+      "apiVersion": "scheduling.k8s.io/v1",
+      "description": "CPS compute policy research; activation requires qualification",
+      "globalDefault": false,
+      "kind": "PriorityClass",
+      "metadata": {
+        "annotations": {
+          "compute.cps.unileoben.ac.at/policy-hash": "sha256:bd2269a93fef4de1e6fc0124d6a6b07d11ac9708eb4b3fb56dd4f3d790ada2ce"
+        },
+        "labels": {
+          "compute.cps.unileoben.ac.at/policy-version": "0.1.0"
+        },
+        "name": "cps-research"
+      },
+      "preemptionPolicy": "PreemptLowerPriority",
+      "value": 60
+    },
+    {
+      "apiVersion": "scheduling.k8s.io/v1",
+      "description": "CPS compute policy project; activation requires qualification",
+      "globalDefault": false,
+      "kind": "PriorityClass",
+      "metadata": {
+        "annotations": {
+          "compute.cps.unileoben.ac.at/policy-hash": "sha256:bd2269a93fef4de1e6fc0124d6a6b07d11ac9708eb4b3fb56dd4f3d790ada2ce"
+        },
+        "labels": {
+          "compute.cps.unileoben.ac.at/policy-version": "0.1.0"
+        },
+        "name": "cps-project"
+      },
+      "preemptionPolicy": "PreemptLowerPriority",
+      "value": 50
+    },
+    {
+      "apiVersion": "scheduling.k8s.io/v1",
+      "description": "CPS compute policy homework; activation requires qualification",
+      "globalDefault": false,
+      "kind": "PriorityClass",
+      "metadata": {
+        "annotations": {
+          "compute.cps.unileoben.ac.at/policy-hash": "sha256:bd2269a93fef4de1e6fc0124d6a6b07d11ac9708eb4b3fb56dd4f3d790ada2ce"
+        },
+        "labels": {
+          "compute.cps.unileoben.ac.at/policy-version": "0.1.0"
+        },
+        "name": "cps-homework"
+      },
+      "preemptionPolicy": "PreemptLowerPriority",
+      "value": 40
+    },
+    {
+      "apiVersion": "scheduling.k8s.io/v1",
+      "description": "CPS compute policy batch; activation requires qualification",
+      "globalDefault": false,
+      "kind": "PriorityClass",
+      "metadata": {
+        "annotations": {
+          "compute.cps.unileoben.ac.at/policy-hash": "sha256:bd2269a93fef4de1e6fc0124d6a6b07d11ac9708eb4b3fb56dd4f3d790ada2ce"
+        },
+        "labels": {
+          "compute.cps.unileoben.ac.at/policy-version": "0.1.0"
+        },
+        "name": "cps-batch"
+      },
+      "preemptionPolicy": "PreemptLowerPriority",
+      "value": 10
+    },
+    {
+      "apiVersion": "scheduling.k8s.io/v1",
+      "description": "CPS compute policy ci; activation requires qualification",
+      "globalDefault": false,
+      "kind": "PriorityClass",
+      "metadata": {
+        "annotations": {
+          "compute.cps.unileoben.ac.at/policy-hash": "sha256:bd2269a93fef4de1e6fc0124d6a6b07d11ac9708eb4b3fb56dd4f3d790ada2ce"
+        },
+        "labels": {
+          "compute.cps.unileoben.ac.at/policy-version": "0.1.0"
+        },
+        "name": "cps-ci"
+      },
+      "preemptionPolicy": "PreemptLowerPriority",
+      "value": 5
+    }
+  ],
+  "kind": "List"
+}

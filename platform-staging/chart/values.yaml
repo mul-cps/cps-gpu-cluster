@@ -1,0 +1,27 @@
+# Outside Fleet's watched paths. Enabling requires released, reviewed image digests.
+enabled: false
+policyJson: ""
+policyHash: ""
+namespace: cps-compute
+storageClass: longhorn
+backupSchedule: "17 2 * * *"
+gateway:
+  image: ""
+  command: ["uvicorn", "cps_compute.runtime:create_runtime", "--factory", "--host", "0.0.0.0", "--port", "8000", "--ssl-keyfile", "/tls/tls.key", "--ssl-certfile", "/tls/tls.crt"]
+  secretRef: cps-compute-gateway
+  configSecretRef: cps-compute-runtime
+  tlsSecretRef: cps-compute-gateway-tls
+  caConfigMapRef: cps-compute-gateway-ca
+  url: https://compute-gateway.cps-compute.svc.cluster.local:8000
+  port: 8000
+consoles:
+  cps:
+    image: ""
+    hubApiUrl: http://hub.jupyterhub.svc.cluster.local:8081/hub/api
+    publicCallbackUrl: https://jupyterhub.dshl.unileoben.ac.at/services/cps-admin/oauth_callback
+    secretRef: cps-admin-oauth
+  cit:
+    image: ""
+    hubApiUrl: http://hub.cit-jhub.svc.cluster.local:8081/hub/api
+    publicCallbackUrl: ""
+    secretRef: cit-admin-oauth

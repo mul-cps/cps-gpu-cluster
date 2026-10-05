@@ -1,0 +1,92 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: cps-gpu-packing-dashboard
+  namespace: cattle-monitoring-system
+  labels:
+    grafana_dashboard: '1'
+  annotations:
+    k8s-sidecar-target-directory: /tmp/dashboards/Compute
+data:
+  gpu-packing.json: "{\n  \"links\": [\n    {\n      \"targetBlank\": true,\n      \"title\": \"CPS Hub\",\n      \"url\"\
+    : \"https://jupyterhub.dshl.unileoben.ac.at\"\n    },\n    {\n      \"targetBlank\": true,\n      \"title\": \"CIT Hub\"\
+    ,\n      \"url\": \"https://jhub.dshl.unileoben.ac.at\"\n    },\n    {\n      \"targetBlank\": true,\n      \"title\"\
+    : \"Rancher\",\n      \"url\": \"https://rancher.dshl.unileoben.ac.at\"\n    }\n  ],\n  \"panels\": [\n    {\n      \"\
+    gridPos\": {\n        \"h\": 4,\n        \"w\": 24,\n        \"x\": 0,\n        \"y\": 0\n      },\n      \"id\": 1,\n\
+    \      \"options\": {\n        \"content\": \"Missing or stale series mean **unavailable**, never zero. Physical free\
+    \ GPUs require placement/UUID accounting; VRAM and utilization are separate. Panels naming a required controller/isolator\
+    \ stay unknown until that exporter is deployed. Spawn histogram does not prove a representative pre-pulled burst qualification.\
+    \ Operational viewers only; students use the addon.\",\n        \"mode\": \"markdown\"\n      },\n      \"title\": \"\
+    Evidence boundary\",\n      \"type\": \"text\"\n    },\n    {\n      \"datasource\": {\n        \"type\": \"prometheus\"\
+    ,\n        \"uid\": \"${DS_PROMETHEUS}\"\n      },\n      \"fieldConfig\": {\n        \"defaults\": {\n          \"custom\"\
+    : {\n            \"spanNulls\": false\n          },\n          \"noValue\": \"Unavailable / stale\",\n          \"unit\"\
+    : \"decmbytes\"\n        },\n        \"overrides\": []\n      },\n      \"gridPos\": {\n        \"h\": 8,\n        \"\
+    w\": 12,\n        \"x\": 0,\n        \"y\": 4\n      },\n      \"id\": 2,\n      \"targets\": [\n        {\n         \
+    \ \"expr\": \"DCGM_FI_DEV_FB_FREE\",\n          \"legendFormat\": \"{{namespace}} {{queue}} {{UUID}}\",\n          \"\
+    refId\": \"A\"\n        }\n      ],\n      \"title\": \"Unused VRAM per physical device (not free GPUs)\",\n      \"type\"\
+    : \"timeseries\"\n    },\n    {\n      \"datasource\": {\n        \"type\": \"prometheus\",\n        \"uid\": \"${DS_PROMETHEUS}\"\
+    \n      },\n      \"fieldConfig\": {\n        \"defaults\": {\n          \"custom\": {\n            \"spanNulls\": false\n\
+    \          },\n          \"noValue\": \"Unavailable / stale\",\n          \"unit\": \"decmbytes\"\n        },\n      \
+    \  \"overrides\": []\n      },\n      \"gridPos\": {\n        \"h\": 8,\n        \"w\": 12,\n        \"x\": 12,\n    \
+    \    \"y\": 4\n      },\n      \"id\": 3,\n      \"targets\": [\n        {\n          \"expr\": \"DCGM_FI_DEV_FB_USED\"\
+    ,\n          \"legendFormat\": \"{{namespace}} {{queue}} {{UUID}}\",\n          \"refId\": \"A\"\n        }\n      ],\n\
+    \      \"title\": \"Used VRAM per physical device\",\n      \"type\": \"timeseries\"\n    },\n    {\n      \"datasource\"\
+    : {\n        \"type\": \"prometheus\",\n        \"uid\": \"${DS_PROMETHEUS}\"\n      },\n      \"fieldConfig\": {\n  \
+    \      \"defaults\": {\n          \"custom\": {\n            \"spanNulls\": false\n          },\n          \"noValue\"\
+    : \"Unavailable / stale\",\n          \"unit\": \"percent\"\n        },\n        \"overrides\": []\n      },\n      \"\
+    gridPos\": {\n        \"h\": 8,\n        \"w\": 12,\n        \"x\": 0,\n        \"y\": 12\n      },\n      \"id\": 4,\n\
+    \      \"targets\": [\n        {\n          \"expr\": \"DCGM_FI_DEV_GPU_UTIL\",\n          \"legendFormat\": \"{{namespace}}\
+    \ {{queue}} {{UUID}}\",\n          \"refId\": \"A\"\n        }\n      ],\n      \"title\": \"Runtime GPU utilization\"\
+    ,\n      \"type\": \"timeseries\"\n    },\n    {\n      \"datasource\": {\n        \"type\": \"prometheus\",\n       \
+    \ \"uid\": \"${DS_PROMETHEUS}\"\n      },\n      \"fieldConfig\": {\n        \"defaults\": {\n          \"custom\": {\n\
+    \            \"spanNulls\": false\n          },\n          \"noValue\": \"Unavailable / stale\",\n          \"unit\":\
+    \ \"short\"\n        },\n        \"overrides\": []\n      },\n      \"gridPos\": {\n        \"h\": 8,\n        \"w\":\
+    \ 12,\n        \"x\": 12,\n        \"y\": 12\n      },\n      \"id\": 5,\n      \"targets\": [\n        {\n          \"\
+    expr\": \"cps_compute_physical_free_gpus\",\n          \"legendFormat\": \"{{namespace}} {{queue}} {{UUID}}\",\n     \
+    \     \"refId\": \"A\"\n        }\n      ],\n      \"title\": \"Placement-eligible free devices (controller required)\"\
+    ,\n      \"type\": \"timeseries\"\n    },\n    {\n      \"datasource\": {\n        \"type\": \"prometheus\",\n       \
+    \ \"uid\": \"${DS_PROMETHEUS}\"\n      },\n      \"fieldConfig\": {\n        \"defaults\": {\n          \"custom\": {\n\
+    \            \"spanNulls\": false\n          },\n          \"noValue\": \"Unavailable / stale\",\n          \"unit\":\
+    \ \"bytes\"\n        },\n        \"overrides\": []\n      },\n      \"gridPos\": {\n        \"h\": 8,\n        \"w\":\
+    \ 12,\n        \"x\": 0,\n        \"y\": 20\n      },\n      \"id\": 6,\n      \"targets\": [\n        {\n          \"\
+    expr\": \"cps_compute_gpu_memory_limit_bytes\",\n          \"legendFormat\": \"{{namespace}} {{queue}} {{UUID}}\",\n \
+    \         \"refId\": \"A\"\n        }\n      ],\n      \"title\": \"Enforced memory cap (isolator required)\",\n     \
+    \ \"type\": \"timeseries\"\n    },\n    {\n      \"datasource\": {\n        \"type\": \"prometheus\",\n        \"uid\"\
+    : \"${DS_PROMETHEUS}\"\n      },\n      \"fieldConfig\": {\n        \"defaults\": {\n          \"mappings\": [\n     \
+    \       {\n              \"options\": {\n                \"0\": {\n                  \"text\": \"Fresh\"\n           \
+    \     },\n                \"1\": {\n                  \"text\": \"Unavailable / stale\"\n                }\n         \
+    \     },\n              \"type\": \"value\"\n            }\n          ],\n          \"noValue\": \"Unavailable\",\n  \
+    \        \"thresholds\": {\n            \"mode\": \"absolute\",\n            \"steps\": [\n              {\n         \
+    \       \"color\": \"green\",\n                \"value\": null\n              },\n              {\n                \"\
+    color\": \"red\",\n                \"value\": 1\n              }\n            ]\n          }\n        },\n        \"overrides\"\
+    : []\n      },\n      \"gridPos\": {\n        \"h\": 4,\n        \"w\": 8,\n        \"x\": 16,\n        \"y\": 28\n  \
+    \    },\n      \"id\": 7,\n      \"targets\": [\n        {\n          \"expr\": \"(time() - max(timestamp(DCGM_FI_DEV_FB_FREE))\
+    \ > bool 120) or absent(DCGM_FI_DEV_FB_FREE)\",\n          \"refId\": \"A\"\n        }\n      ],\n      \"title\": \"\
+    Telemetry missing/stale: DCGM_FI_DEV_FB_FREE\",\n      \"type\": \"stat\"\n    },\n    {\n      \"datasource\": {\n  \
+    \      \"type\": \"prometheus\",\n        \"uid\": \"${DS_PROMETHEUS}\"\n      },\n      \"fieldConfig\": {\n        \"\
+    defaults\": {\n          \"mappings\": [\n            {\n              \"options\": {\n                \"0\": {\n    \
+    \              \"text\": \"Fresh\"\n                },\n                \"1\": {\n                  \"text\": \"Unavailable\
+    \ / stale\"\n                }\n              },\n              \"type\": \"value\"\n            }\n          ],\n   \
+    \       \"noValue\": \"Unavailable\",\n          \"thresholds\": {\n            \"mode\": \"absolute\",\n            \"\
+    steps\": [\n              {\n                \"color\": \"green\",\n                \"value\": null\n              },\n\
+    \              {\n                \"color\": \"red\",\n                \"value\": 1\n              }\n            ]\n\
+    \          }\n        },\n        \"overrides\": []\n      },\n      \"gridPos\": {\n        \"h\": 4,\n        \"w\"\
+    : 8,\n        \"x\": 0,\n        \"y\": 28\n      },\n      \"id\": 8,\n      \"targets\": [\n        {\n          \"\
+    expr\": \"(time() - max(timestamp(jupyterhub_running_servers)) > bool 120) or absent(jupyterhub_running_servers)\",\n\
+    \          \"refId\": \"A\"\n        }\n      ],\n      \"title\": \"Telemetry missing/stale: jupyterhub_running_servers\"\
+    ,\n      \"type\": \"stat\"\n    },\n    {\n      \"datasource\": {\n        \"type\": \"prometheus\",\n        \"uid\"\
+    : \"${DS_PROMETHEUS}\"\n      },\n      \"fieldConfig\": {\n        \"defaults\": {\n          \"mappings\": [\n     \
+    \       {\n              \"options\": {\n                \"0\": {\n                  \"text\": \"Fresh\"\n           \
+    \     },\n                \"1\": {\n                  \"text\": \"Unavailable / stale\"\n                }\n         \
+    \     },\n              \"type\": \"value\"\n            }\n          ],\n          \"noValue\": \"Unavailable\",\n  \
+    \        \"thresholds\": {\n            \"mode\": \"absolute\",\n            \"steps\": [\n              {\n         \
+    \       \"color\": \"green\",\n                \"value\": null\n              },\n              {\n                \"\
+    color\": \"red\",\n                \"value\": 1\n              }\n            ]\n          }\n        },\n        \"overrides\"\
+    : []\n      },\n      \"gridPos\": {\n        \"h\": 4,\n        \"w\": 8,\n        \"x\": 8,\n        \"y\": 28\n   \
+    \   },\n      \"id\": 9,\n      \"targets\": [\n        {\n          \"expr\": \"(time() - max(timestamp(cps_compute_physical_free_gpus))\
+    \ > bool 120) or absent(cps_compute_physical_free_gpus)\",\n          \"refId\": \"A\"\n        }\n      ],\n      \"\
+    title\": \"Telemetry missing/stale: cps_compute_physical_free_gpus\",\n      \"type\": \"stat\"\n    }\n  ],\n  \"refresh\"\
+    : \"30s\",\n  \"schemaVersion\": 39,\n  \"tags\": [\n    \"cps-compute\",\n    \"gitops\"\n  ],\n  \"templating\": {\n\
+    \    \"list\": [\n      {\n        \"current\": {},\n        \"name\": \"DS_PROMETHEUS\",\n        \"query\": \"prometheus\"\
+    ,\n        \"type\": \"datasource\"\n      }\n    ]\n  },\n  \"time\": {\n    \"from\": \"now-1h\",\n    \"to\": \"now\"\
+    \n  },\n  \"title\": \"CPS / CIT \\u2014 GPU Packing\",\n  \"uid\": \"cps-gpu-packing\",\n  \"version\": 1\n}"

@@ -1,0 +1,148 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://compute.cps.unileoben.ac.at/policy/schema/v1",
+  "title": "CPS/CIT policy catalog v1",
+  "type": "object",
+  "required": [
+    "schemaVersion",
+    "version",
+    "profiles",
+    "priorities",
+    "queues",
+    "entitlements",
+    "approvedImages",
+    "trusted",
+    "labels",
+    "gpuQualification",
+    "compatibility",
+    "notebook",
+    "courseProviders",
+    "artifacts",
+    "reservationPolicy",
+    "status",
+    "queueUnits"
+  ],
+  "additionalProperties": false,
+  "properties": {
+    "schemaVersion": {
+      "const": 1
+    },
+    "version": {
+      "type": "string",
+      "pattern": "^\\d+\\.\\d+\\.\\d+$"
+    },
+    "status": {
+      "const": "pilot-unqualified"
+    },
+    "approvedImages": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": {
+        "type": "string",
+        "pattern": "^\\S+@sha256:[a-f0-9]{64}$"
+      }
+    },
+    "profiles": {
+      "type": "object",
+      "minProperties": 1,
+      "additionalProperties": {
+        "type": "object",
+        "required": [
+          "kind",
+          "enabled",
+          "cpu",
+          "memory",
+          "gpu",
+          "queue",
+          "images",
+          "maxAgeSeconds",
+          "idleSeconds"
+        ],
+        "properties": {
+          "kind": {
+            "enum": [
+              "interactive",
+              "batch"
+            ]
+          },
+          "enabled": {
+            "type": "boolean"
+          },
+          "cpu": {
+            "type": "string"
+          },
+          "memory": {
+            "type": "string"
+          },
+          "gpu": {
+            "type": "object",
+            "required": [
+              "mode"
+            ],
+            "properties": {
+              "mode": {
+                "enum": [
+                  "none",
+                  "shared",
+                  "exclusive"
+                ]
+              }
+            }
+          },
+          "images": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "maxAgeSeconds": {
+            "type": "integer",
+            "minimum": 1
+          },
+          "idleSeconds": {
+            "type": [
+              "integer",
+              "null"
+            ]
+          }
+        }
+      }
+    },
+    "priorities": {
+      "type": "object"
+    },
+    "queues": {
+      "type": "object"
+    },
+    "entitlements": {
+      "type": "object"
+    },
+    "trusted": {
+      "type": "object"
+    },
+    "labels": {
+      "type": "object"
+    },
+    "gpuQualification": {
+      "type": "object"
+    },
+    "compatibility": {
+      "type": "object"
+    },
+    "notebook": {
+      "type": "object"
+    },
+    "courseProviders": {
+      "type": "object"
+    },
+    "artifacts": {
+      "type": "object"
+    },
+    "reservationPolicy": {
+      "type": "object"
+    },
+    "queueUnits": {
+      "type": "object"
+    }
+  }
+}

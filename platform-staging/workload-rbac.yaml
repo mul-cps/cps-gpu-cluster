@@ -1,0 +1,62 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: cps-workflows
+  labels:
+    pod-security.kubernetes.io/enforce: restricted
+    pod-security.kubernetes.io/enforce-version: v1.34
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: cps-workflow
+  namespace: cps-workflows
+---
+# Argo executor can publish its own results, without granting namespace admin.
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: cps-workflow-executor
+  namespace: cps-workflows
+rules:
+  - apiGroups: [argoproj.io]
+    resources: [workflowtaskresults]
+    verbs: [create, patch]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: cps-workflow-executor
+  namespace: cps-workflows
+subjects:
+  - {kind: ServiceAccount, name: cps-workflow, namespace: cps-workflows}
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: Role
+  name: cps-workflow-executor
+---
+apiVersion: v1
+kind: ResourceQuota
+metadata:
+  name: cps-workflow-ceiling
+  namespace: cps-workflows
+spec:
+  hard:
+    requests.cpu: "256"
+    limits.cpu: "256"
+    requests.memory: 1Ti
+    limits.memory: 1Ti
+    requests.nvidia.com/gpu: "8"
+    pods: "128"
+---
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: cps-workload-private-ingress
+  namespace: cps-workflows
+spec:
+  podSelector: {}
+  policyTypes: [Ingress]
+  # No inbound network access between untrusted jobs by default.
+  # Distributed launchers need scoped project/gang exceptions after qualification.
+  ingress: []
