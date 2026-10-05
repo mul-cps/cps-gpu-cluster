@@ -1,4 +1,5 @@
-# Candidate chart v0.18.1, outside Fleet. Not a live upgrade.
+# Candidate chart v0.18.1, outside Fleet. Controlled live qualification uses
+# legacy default queues/priorities until promotion or baseline restoration.
 global:
   tag: v0.18.1
   registry: ghcr.io/kai-scheduler/kai-scheduler

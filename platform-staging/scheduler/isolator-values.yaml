@@ -1,7 +1,7 @@
 # OCI chart 1.1.0-chart (image v1.1.0). Apply the scope patch before activation.
 # Vendor images are version pinned here; resolve reviewed digests in the release lock.
 image:
-  tag: v1.1.0
+  tag: v1.1.0@sha256:2743f1684721f6368e87f98a17d7e7392805786cdb70b44ce0e8fdc10b1e13d0
 librarySync:
   nodeSelector: {accelerator: nvidia}
 webhook:
@@ -13,3 +13,8 @@ monitor:
   serviceMonitor:
     enabled: true
     labels: {release: rancher-monitoring}
+
+tls:
+  patch:
+    imageNew:
+      tag: v1.1.1@sha256:64d8c73dca984af206adf9d6d7e46aa550362b1d7a01f3a0a91b20cc67868660
