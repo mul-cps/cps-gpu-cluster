@@ -75,10 +75,14 @@ spec:
         compute.cps.unileoben.ac.at/policy-hash: {{ $hash | quote }}
     spec:
       automountServiceAccountToken: false
+      {{- if .Values.gateway.kubernetes.enabled }}
+      serviceAccountName: cps-compute-controller
+      {{- end }}
+      imagePullSecrets: [{name: {{ .Values.gateway.imagePullSecretRef }}}]
       securityContext:
         runAsNonRoot: true
-        runAsUser: 1000
-        fsGroup: 1000
+        runAsUser: 10001
+        fsGroup: 10001
         seccompProfile: {type: RuntimeDefault}
       containers:
         - name: gateway
@@ -102,11 +106,34 @@ spec:
             - {name: config, mountPath: /config, readOnly: true}
             - {name: policy, mountPath: /policy, readOnly: true}
             - {name: tls, mountPath: /tls, readOnly: true}
+            - {name: trust, mountPath: /trust, readOnly: true}
+            {{- if .Values.gateway.storageBridgeSecretRef }}
+            - {name: storage-bridge, mountPath: /storage-bridge, readOnly: true}
+            {{- end }}
+            {{- if .Values.gateway.kubernetes.enabled }}
+            - {name: api, mountPath: /var/run/secrets/kubernetes.io/serviceaccount, readOnly: true}
+            {{- end }}
       volumes:
         - {name: data, persistentVolumeClaim: {claimName: compute-state}}
         - {name: config, secret: {secretName: {{ .Values.gateway.configSecretRef }}}}
         - {name: policy, configMap: {name: compute-policy}}
         - {name: tls, secret: {secretName: {{ $tlsSecret }}}}
+        - {name: trust, configMap: {name: {{ $caConfigMap }}}}
+        {{- if .Values.gateway.storageBridgeSecretRef }}
+        - {name: storage-bridge, secret: {secretName: {{ .Values.gateway.storageBridgeSecretRef }}, defaultMode: 288}}
+        {{- end }}
+        {{- if .Values.gateway.kubernetes.enabled }}
+        - name: api
+          projected:
+            defaultMode: 288
+            sources:
+              - serviceAccountToken: {path: token, expirationSeconds: 3600}
+              - configMap:
+                  name: kube-root-ca.crt
+                  items: [{key: ca.crt, path: ca.crt}]
+              - downwardAPI:
+                  items: [{path: namespace, fieldRef: {fieldPath: metadata.namespace}}]
+        {{- end }}
 ---
 apiVersion: v1
 kind: Service
@@ -137,7 +164,7 @@ spec:
         - namespaceSelector:
             matchExpressions:
               - {key: kubernetes.io/metadata.name, operator: In, values: [jupyterhub, cit-jhub]}
-      ports: [{protocol: TCP, port: 10101}]
+      ports: [{protocol: TCP, port: 10101}, {protocol: TCP, port: {{ .Values.gateway.port }}}]
 
 {{- range $name, $console := .Values.consoles }}
 {{- $image := required (printf "%s console released image digest required" $name) $console.image }}
@@ -157,6 +184,7 @@ data:
     c.CourseServiceApp.compute_policy_url = {{ $gatewayUrl | squote }}
     c.CourseServiceApp.compute_gateway_url = {{ $gatewayUrl | squote }}
     c.CourseServiceApp.compute_policy_token = os.environ['COMPUTE_POLICY_TOKEN']
+    c.CourseServiceApp.filesystem_adapter_class = 'cps_compute.storage.HTTPFilesystemAdapter'
     c.CourseServiceApp.port = 10101
     c.CourseServiceApp.service_prefix = '/services/{{ $name }}-admin/'
     c.CourseServiceApp.server_config_file = '/data/config.yml'
@@ -210,10 +238,11 @@ spec:
         compute.cps.unileoben.ac.at/policy-hash: {{ $hash | quote }}
     spec:
       automountServiceAccountToken: false
+      imagePullSecrets: [{name: {{ $.Values.gateway.imagePullSecretRef }}}]
       securityContext:
         runAsNonRoot: true
-        runAsUser: 1000
-        fsGroup: 1000
+        runAsUser: 10001
+        fsGroup: 10001
         seccompProfile: {type: RuntimeDefault}
       containers:
         - name: console
@@ -223,6 +252,10 @@ spec:
           ports: [{name: http, containerPort: 10101}]
           env:
             - {name: SSL_CERT_FILE, value: /trust/ca.crt}
+            - {name: CPS_WORKSPACE_CONTROL_URL, value: {{ $gatewayUrl | quote }}}
+            - {name: CPS_WORKSPACE_CONTROL_CA, value: /trust/ca.crt}
+            - name: CPS_WORKSPACE_CONTROL_TOKEN
+              valueFrom: {secretKeyRef: {name: {{ $console.secretRef }}, key: compute-policy-token}}
             - name: COMPUTE_POLICY_TOKEN
               valueFrom: {secretKeyRef: {name: {{ $console.secretRef }}, key: compute-policy-token}}
             - {name: JUPYTERHUB_API_URL, value: {{ $console.hubApiUrl | quote }}}
@@ -279,6 +312,7 @@ spec:
         spec:
           restartPolicy: Never
           automountServiceAccountToken: false
+          imagePullSecrets: [{name: {{ $.Values.gateway.imagePullSecretRef }}}]
           affinity:
             podAffinity:
               requiredDuringSchedulingIgnoredDuringExecution:
@@ -287,8 +321,8 @@ spec:
                   topologyKey: kubernetes.io/hostname
           securityContext:
             runAsNonRoot: true
-            runAsUser: 1000
-            fsGroup: 1000
+            runAsUser: 10001
+            fsGroup: 10001
             seccompProfile: {type: RuntimeDefault}
           containers:
             - name: backup

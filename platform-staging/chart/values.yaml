@@ -10,13 +10,18 @@ gateway:
   executorImage: ""
   artifactSecretRef: cps-artifacts
   artifactCaSecretRef: cps-artifacts-ca
-  command: ["uvicorn", "cps_compute.runtime:create_runtime", "--factory", "--host", "0.0.0.0", "--port", "8000", "--ssl-keyfile", "/tls/tls.key", "--ssl-certfile", "/tls/tls.crt"]
+  command: ["uvicorn", "cps_compute.runtime:create_runtime", "--factory", "--workers", "1", "--host", "0.0.0.0", "--port", "8000", "--ssl-keyfile", "/tls/tls.key", "--ssl-certfile", "/tls/tls.crt"]
   secretRef: cps-compute-gateway
   configSecretRef: cps-compute-runtime
   tlsSecretRef: cps-compute-gateway-tls
   caConfigMapRef: cps-compute-gateway-ca
   url: https://compute-gateway.cps-compute.svc.cluster.local:8000
   port: 8000
+  imagePullSecretRef: cps-compute-image-pull
+  storageBridgeSecretRef: ""
+  storageVerificationImage: ""
+  kubernetes:
+    enabled: false
 consoles:
   cps:
     image: ""

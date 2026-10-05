@@ -52,6 +52,29 @@ class Staging(unittest.TestCase):
             if backup['metadata']['name'] != 'compute-state-backup':
                 self.assertIn('source.backup(target)',pod['containers'][0]['args'][0])
                 self.assertIn('mode=ro',pod['containers'][0]['args'][0])
+    def test_controller_credentials_and_permissions_are_explicit(self):
+        policy=json.loads((ROOT/'compute-policy/generated/policy.json').read_text())
+        image='registry.invalid/test@sha256:'+'1'*64
+        result=self.render({'enabled':True,'policyJson':json.dumps(policy),'policyHash':policy['policyHash'],
+                            'gateway':{'image':image,'kubernetes':{'enabled':True},'storageBridgeSecretRef':'restricted-nas-key'},
+                            'consoles':{'cps':{'image':image},'cit':{'image':image,'publicCallbackUrl':'https://example.invalid/callback'}}})
+        self.assertEqual(result.returncode,0,result.stderr)
+        docs=[d for d in yaml.safe_load_all(result.stdout) if d]
+        gateway=next(d for d in docs if d['kind']=='Deployment' and d['metadata']['name']=='compute-gateway')['spec']['template']['spec']
+        self.assertEqual(gateway['serviceAccountName'],'cps-compute-controller')
+        self.assertFalse(gateway['automountServiceAccountToken'])
+        self.assertEqual(gateway['securityContext']['runAsUser'],10001)
+        self.assertTrue(any('projected' in v for v in gateway['volumes']))
+        cluster_role=next(d for d in docs if d['kind']=='ClusterRole')
+        for rule in cluster_role['rules']:
+            self.assertNotIn('secrets',rule['resources'])
+            self.assertNotIn('delete',rule['verbs'])
+        policies=[d for d in docs if d['kind']=='ValidatingAdmissionPolicy']
+        self.assertEqual(len(policies),3)
+        for deployment in [d for d in docs if d['kind']=='Deployment' and d['metadata']['name']!='compute-gateway']:
+            pod=deployment['spec']['template']['spec']
+            self.assertFalse(any('projected' in v for v in pod['volumes']))
+            self.assertFalse(any(v.get('secret',{}).get('secretName')=='restricted-nas-key' for v in pod['volumes']))
     def test_mismatched_policy_cannot_render(self):
         policy=json.loads((ROOT/'compute-policy/generated/policy.json').read_text())
         result=self.render({'enabled':True,'policyJson':json.dumps(policy),'policyHash':'sha256:'+'0'*64})

@@ -134,3 +134,20 @@ Operational Grafana access is for trusted viewers. Ordinary users obtain authori
 personal/workspace data through the addon. Link control operations to each Hub,
 Rancher, Argo and TrueNAS; do not grant users broad Grafana data access to implement
 their personal workload view.
+
+### Restricted workspace controller credentials
+
+Enable `gateway.kubernetes.enabled` only for a qualified controller deployment.
+The gateway runs one worker and receives an explicitly projected Kubernetes token;
+consoles and backup jobs receive no API token. The controller may observe writers
+cluster-wide, create retained NFS volumes and source-scoped claims/verifier Jobs,
+and manage distributed workloads in `cps-workflows`. It cannot read Secrets or
+delete persistent volumes. Admission restricts its volume roots and verifier Jobs.
+
+Set `gateway.storageBridgeSecretRef` to a dedicated Secret containing only the
+forced-command NAS key and trusted host keys. Use the private relay service on
+port 8022, with strict host-key checking for `truenas.local`. Never use the operator
+SSH key. NFS continues using `193.170.30.58`; the overlay carries control and S3.
+Pin `gateway.storageVerificationImage` to a tested digest. Verify permissions with
+an actual service-account token: Rancher proxy impersonation is not sufficient.
+A neutral notebook uses `/workspace`; personal homes retain their existing paths.
