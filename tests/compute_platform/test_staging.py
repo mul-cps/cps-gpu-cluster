@@ -27,6 +27,15 @@ class Staging(unittest.TestCase):
         docs=[d for d in yaml.safe_load_all(result.stdout) if d]
         deployments={d['metadata']['name']:d for d in docs if d['kind']=='Deployment'}
         self.assertEqual(set(deployments),{'cps-admin','cit-admin','compute-gateway'})
+        hub_access=[d for d in docs if d['kind']=='NetworkPolicy' and d['metadata']['name']=='cps-compute-hub-api']
+        self.assertEqual({d['metadata']['namespace'] for d in hub_access},{'jupyterhub','cit-jhub'})
+        for rule in hub_access:
+            ingress=rule['spec']['ingress'][0]
+            self.assertEqual(ingress['ports'],[{'protocol':'TCP','port':8081}])
+            peer=ingress['from'][0]
+            self.assertEqual(peer['namespaceSelector']['matchLabels'],{'kubernetes.io/metadata.name':'cps-compute'})
+            source='cps' if rule['metadata']['namespace']=='jupyterhub' else 'cit'
+            self.assertEqual(peer['podSelector']['matchExpressions'][0]['values'],['compute-gateway',source+'-admin'])
         claims=[]
         for name,deployment in deployments.items():
             self.assertEqual(deployment['spec']['replicas'],1)

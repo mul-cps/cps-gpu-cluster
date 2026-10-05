@@ -1,0 +1,24 @@
+{{- if .Values.enabled }}
+{{- range $source, $hub := dict "cps" "jupyterhub" "cit" "cit-jhub" }}
+---
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: cps-compute-hub-api
+  namespace: {{ $hub }}
+spec:
+  podSelector:
+    matchLabels: {app: jupyterhub, component: hub}
+  policyTypes: [Ingress]
+  ingress:
+    - from:
+        - namespaceSelector:
+            matchLabels: {kubernetes.io/metadata.name: {{ $.Values.namespace }}}
+          podSelector:
+            matchExpressions:
+              - key: app
+                operator: In
+                values: [compute-gateway, {{ $source }}-admin]
+      ports: [{protocol: TCP, port: 8081}]
+{{- end }}
+{{- end }}
