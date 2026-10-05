@@ -93,4 +93,19 @@ class ComputeMonitoring(unittest.TestCase):
         # CIT credential deployment remains an explicit separate gate.
         self.assertFalse(any(m['spec']['namespaceSelector']=={'matchNames':['cit-jhub']} for m in monitors))
 
+    def test_workflow_metrics_have_a_scoped_network_boundary(self):
+        docs=list(yaml.safe_load_all((MON/'workflow-isolation-metrics.yaml').read_text()))
+        argo=next(d for d in docs if d['kind']=='PodMonitor')
+        self.assertEqual(argo['spec']['namespaceSelector'],{'matchNames':['cps-argo']})
+        self.assertEqual(argo['spec']['podMetricsEndpoints'][0]['port'],'metrics')
+        policy=next(d for d in docs if d['kind']=='NetworkPolicy')
+        self.assertEqual(policy['spec']['podSelector']['matchLabels'],argo['spec']['selector']['matchLabels'])
+        self.assertEqual(len(policy['spec']['ingress']),1)
+        rule=policy['spec']['ingress'][0]
+        self.assertEqual(rule['ports'],[{'port':9090,'protocol':'TCP'}])
+        self.assertEqual(rule['from'],[{'namespaceSelector':{'matchLabels':{'kubernetes.io/metadata.name':'cattle-monitoring-system'}},'podSelector':{'matchLabels':{'app.kubernetes.io/name':'prometheus'}}}])
+        isolator=next(d for d in docs if d['kind']=='ServiceMonitor')
+        self.assertEqual(isolator['spec']['namespaceSelector'],{'matchNames':['kai-resource-isolator']})
+        self.assertEqual(isolator['spec']['selector']['matchLabels']['app.kubernetes.io/component'],'kai-vgpu-monitor')
+
 if __name__=='__main__':unittest.main()

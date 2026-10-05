@@ -13,6 +13,12 @@ controller:
   image:
     tag: v3.7.18@sha256:e89fcdf8ba947589a0982a3fce867c63c235c56631c5c20428c536db21635004
   workflowNamespaces: [cps-workflows]
+  # Internal read-only metrics, restricted to Prometheus by NetworkPolicy.
+  metricsConfig:
+    enabled: true
+    secure: false
+    port: 9090
+    portName: metrics
   rbac:
     accessAllSecrets: false
     secretWhitelist:

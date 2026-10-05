@@ -121,8 +121,11 @@ readiness. Existing upstream dashboards remain pinned in their manifests. KAI
 ServiceMonitors use inspected service labels/ports. Both Hubs have authenticated monitors with separate metrics-only service
 credentials and scoped network access. Live qualification on 2026-10-05 observed
 both Hub targets and the KAI binder, scheduler, admission and queue-controller
-targets UP. Missing Argo, isolator and Descheduler telemetry still requires
-qualification. The dashboards explicitly mark absent/stale
+targets UP. The Argo controller and all four isolator monitors were subsequently observed UP.
+The Argo metrics endpoint uses the chart-supported internal HTTP option with
+ingress restricted to Prometheus pods on port 9090; API and artifact TLS are
+unchanged. Per-container cap telemetry and the short-lived Descheduler CronJob
+still require qualification. The dashboards explicitly mark absent/stale
 controller series as unavailable; they do not equate VRAM or utilization with
 placement-eligible free physical GPUs.
 
@@ -189,3 +192,10 @@ limits before expansion; do not increase global overprovisioning to force it.
 The stale GPU1 session and permanent placement still require maintenance review.
 Retention compaction is configured for 14 days, but cleanup latency and steady
 storage growth require observation before sizing is considered qualified.
+
+The matching-version Hub database exercise restored CPS PostgreSQL 15.17 and CIT
+PostgreSQL 18.4, then opened each database with the exact deployed JupyterHub
+5.5.2 image through an isolated Unix socket. Transactions were forced read-only,
+containers had no network or published ports, and users/groups/services/server
+counts matched the dumps before and after. This qualifies matching-version ORM
+readability, not Hub process startup, OAuth login or live spawner recovery.
