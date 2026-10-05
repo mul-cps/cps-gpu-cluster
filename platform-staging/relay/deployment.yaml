@@ -83,7 +83,7 @@ spec:
         - name: proxy
           image: docker.io/library/haproxy@sha256:5d97434a423c2533cfeb42874d45cf6d69a840b60334582dfbfd5008e94c80be
           command: [haproxy, -W, -db, -f, /config/haproxy.cfg]
-          ports: [{name: s3, containerPort: 8333}]
+          ports: [{name: s3, containerPort: 8333}, {name: workspace-rpc, containerPort: 8022}]
           securityContext:
             runAsNonRoot: true
             runAsUser: 1000
@@ -116,7 +116,7 @@ metadata:
 spec:
   type: ClusterIP
   selector: {app: artifacts-relay}
-  ports: [{name: s3, port: 8333, targetPort: s3}]
+  ports: [{name: s3, port: 8333, targetPort: s3}, {name: workspace-rpc, port: 8022, targetPort: workspace-rpc}]
 ---
 apiVersion: networking.k8s.io/v1
 kind: NetworkPolicy
@@ -133,3 +133,7 @@ spec:
                 operator: In
                 values: [cps-compute, cps-workflows, jupyterhub, cit-jhub, cps-artifacts-relay]
       ports: [{protocol: TCP, port: 8333}]
+    - from:
+        - namespaceSelector: {matchLabels: {kubernetes.io/metadata.name: cps-compute}}
+          podSelector: {matchLabels: {app: compute-gateway}}
+      ports: [{protocol: TCP, port: 8022}]

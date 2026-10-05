@@ -31,6 +31,10 @@ class RelayTests(unittest.TestCase):
         self.assertIn('ssl crt /tls/server.pem', config)
         policy = next(x for x in objects if x['kind'] == 'NetworkPolicy')
         self.assertEqual(policy['spec']['ingress'][0]['ports'], [{'protocol': 'TCP', 'port': 8333}])
+        rpc = policy['spec']['ingress'][1]
+        self.assertEqual(rpc['ports'], [{'protocol': 'TCP', 'port': 8022}])
+        self.assertEqual(rpc['from'], [{'namespaceSelector': {'matchLabels': {'kubernetes.io/metadata.name': 'cps-compute'}}, 'podSelector': {'matchLabels': {'app': 'compute-gateway'}}}])
+        self.assertIn('server nas 100.65.233.45:8022', config)
 
 
 if __name__ == '__main__':

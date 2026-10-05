@@ -10,8 +10,26 @@ endpoint. HAProxy accepts TLS with a certificate for that exact DNS name, then
 re-encrypts to TrueNAS over NetBird. Backend validation requires both the NAS CA
 and the existing `truenas.local` certificate identity. S3 bodies are visible to
 this trusted cluster proxy; traffic over the external relay remains encrypted.
-The separate TrueNAS bridge only forwards TCP8333 to its existing management-side
+The separate TrueNAS bridge forwards TCP8333 to its existing management-side
 S3 endpoint and has no host-published ports. Existing NFS addresses stay unchanged.
+
+Internal TCP8022 is reserved for the gateway's workspace controller. The NAS
+bridge accepts that port only from the enrolled cluster peer `100.65.52.117`
+and forwards to internal `10.71.1.55:22`. Cluster ingress requires namespace
+`cps-compute` and Pod label `app=compute-gateway`. SSH validates the original
+`truenas.local` host key end to end. The dedicated controller key uses an
+authorized-keys forced command with `restrict`; arbitrary shell commands fail.
+The dispatcher is `scripts/compute-platform/truenas-workspace-rpc.py`, installed
+at `/home/truenas_admin/.ssh/cps-workspace-rpc.py`. Its only operations are
+provision/status/archive on fixed, source-and-group-hashed retained datasets.
+It never deletes datasets or turns an archived dataset writable. Keep its
+private key and pinned known-hosts file in controller Secrets, never user Pods.
+The existing general operator SSH identity must not be installed in Kubernetes.
+
+The dispatcher creates separate NFS exports for new datasets using the existing
+client networks `10.71.1.0/24` and `10.21.0.0/16`; it changes no existing exports.
+Archives use ZFS readonly plus an independent writable client mount that must
+receive `EROFS`, after the controller confirms all writers have stopped.
 
 Before `kubectl apply -k .`, provision private resources in this namespace:
 
