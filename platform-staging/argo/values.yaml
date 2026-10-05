@@ -36,7 +36,7 @@ controller:
         fsGroup: 10001
         seccompProfile: {type: RuntimeDefault}
       podGC: {strategy: OnWorkflowCompletion, deleteDelayDuration: 10m}
-      ttlStrategy: {secondsAfterCompletion: 1209600}
+      ttlStrategy: {secondsAfterCompletion: 8035200}
 executor:
   image:
     tag: v3.7.18@sha256:8651f0d1a1050be46ef28a7362cbb7387b5f5c29ce691ebddd5d99a0bb7281a9

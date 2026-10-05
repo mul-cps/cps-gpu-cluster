@@ -7,6 +7,7 @@
 {{- if ne .Values.namespace "cps-compute" }}{{ fail "retention namespace must be cps-compute" }}{{ end }}
 {{- if or (lt (int $r.maxDeletes) 1) (gt (int $r.maxDeletes) 1000) (lt (int $r.maxExamined) 1) (gt (int $r.maxExamined) 10000) }}{{ fail "bounded retention limits required" }}{{ end }}
 {{- if or (lt (int $r.deadlineSeconds) 60) (gt (int $r.deadlineSeconds) 900) }}{{ fail "bounded retention deadline required" }}{{ end }}
+{{- if and $r.reconcileMetadata (or (not $r.lifecycleQualified) (not $r.qualificationEvidence)) }}{{ fail "retention reconciliation requires reviewed full lifecycle evidence" }}{{ end }}
 {{- if and $r.apply (or (not $r.conditionalDeleteQualified) (not $r.lifecycleQualified) (not $r.qualificationEvidence)) }}{{ fail "retention apply requires reviewed conditional deletion and full lifecycle evidence" }}{{ end }}
 apiVersion: v1
 kind: ServiceAccount
@@ -23,7 +24,7 @@ metadata:
 rules:
   - apiGroups: [argoproj.io]
     resources: [workflows]
-    verbs: [get]
+    verbs: [get, patch]
 ---
 apiVersion: rbac.authorization.k8s.io/v1
 kind: RoleBinding
@@ -43,7 +44,7 @@ data:
   artifact-retention.py: |
 {{ .Files.Get "files/artifact-retention.py" | indent 4 }}
   config.json: |
-    {{ dict "version" 1 "image" $image "policyHash" $policy "endpoint" $r.endpoint "bucket" $r.bucket "accessKeyFile" "/s3/accessKey" "secretKeyFile" "/s3/secretKey" "ca" "/s3-ca/ca.crt" "argoUrl" $r.argoUrl "namespace" "cps-workflows" "argoTokenFile" "/argo-token/token" "argoCa" "/argo-ca/ca.crt" "conditionalDeleteQualified" $r.conditionalDeleteQualified "probeWorkflow" $r.probeWorkflow | toJson }}
+    {{ dict "version" 1 "image" $image "policyHash" $policy "endpoint" $r.endpoint "bucket" $r.bucket "accessKeyFile" "/s3/accessKey" "secretKeyFile" "/s3/secretKey" "ca" "/s3-ca/ca.crt" "argoUrl" $r.argoUrl "namespace" "cps-workflows" "argoTokenFile" "/argo-token/token" "argoCa" "/argo-ca/ca.crt" "conditionalDeleteQualified" $r.conditionalDeleteQualified "probeWorkflow" $r.probeWorkflow "kubeUrl" $r.kubeUrl "kubeCa" "/kube-ca/ca.crt" "lifecycleQualified" $r.lifecycleQualified "reconcileMetadata" $r.reconcileMetadata "qualificationEvidence" $r.qualificationEvidence | toJson }}
 ---
 apiVersion: batch/v1
 kind: CronJob
@@ -85,6 +86,9 @@ spec:
                 - --config=/scripts/config.json
                 - --max-deletes={{ $r.maxDeletes }}
                 - --max-examined={{ $r.maxExamined }}
+                {{- if $r.reconcileMetadata }}
+                - --reconcile-metadata
+                {{- end }}
                 {{- if $r.apply }}
                 - --apply
                 {{- end }}
@@ -101,11 +105,13 @@ spec:
                 - {name: s3-ca, mountPath: /s3-ca, readOnly: true}
                 - {name: argo-ca, mountPath: /argo-ca, readOnly: true}
                 - {name: argo-token, mountPath: /argo-token, readOnly: true}
+                - {name: kube-ca, mountPath: /kube-ca, readOnly: true}
           volumes:
             - {name: scripts, configMap: {name: cps-artifact-retention}}
             - {name: credentials, secret: {secretName: {{ required "retention S3 credentials required" $r.credentialSecretRef }}}}
             - {name: s3-ca, secret: {secretName: {{ required "retention S3 CA required" $r.caSecretRef }}}}
             - {name: argo-ca, configMap: {name: {{ required "retention Argo CA required" $r.argoCaConfigMapRef }}}}
+            - {name: kube-ca, configMap: {name: kube-root-ca.crt}}
             - name: argo-token
               projected:
                 sources:

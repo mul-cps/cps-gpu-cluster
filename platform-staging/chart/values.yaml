@@ -40,6 +40,8 @@ artifactRetention:
   apply: false
   conditionalDeleteQualified: false
   lifecycleQualified: false
+  reconcileMetadata: false
+  kubeUrl: https://kubernetes.default.svc
   qualificationEvidence: ""
   image: ""
   schedule: "41 3 * * *"
