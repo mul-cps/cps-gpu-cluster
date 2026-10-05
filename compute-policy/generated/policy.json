@@ -149,7 +149,7 @@
     "snapshotLimitBytes": 52428800,
     "stripOutputs": true
   },
-  "policyHash": "sha256:bd2269a93fef4de1e6fc0124d6a6b07d11ac9708eb4b3fb56dd4f3d790ada2ce",
+  "policyHash": "sha256:051cd754210af2830d67968eea898f674a55ff66f5c88b3db95dff205f04e33d",
   "priorities": {
     "batch": 10,
     "ci": 5,
@@ -415,5 +415,15 @@
     "schedulerName": "kai-scheduler",
     "serviceAccountName": "cps-workflow"
   },
-  "version": "0.1.0"
+  "version": "0.1.0",
+  "workloadScheduling": {
+    "batch": {
+      "priorityClassName": "cps-batch",
+      "queue": "cps-batch"
+    },
+    "interactive": {
+      "priorityClassName": "cps-homework",
+      "queue": "cps-interactive"
+    }
+  }
 }

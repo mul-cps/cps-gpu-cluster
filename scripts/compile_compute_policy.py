@@ -37,6 +37,10 @@ def compile_catalog(catalog):
         raise ValueError('unsupported schema or invalid policy version')
     if catalog['priorities'] != {'exam':90,'lecture':80,'ta':70,'research':60,'project':50,'homework':40,'batch':10,'ci':5}:
         raise ValueError('priority convention differs from the reviewed v1 policy')
+    if catalog.get('workloadScheduling') != {'interactive': {'queue':'cps-interactive','priorityClassName':'cps-homework'}, 'batch': {'queue':'cps-batch','priorityClassName':'cps-batch'}}:
+        raise ValueError('workload scheduling differs from reviewed interactive/homework and batch mapping')
+    if set(catalog['queues']) != {'interactive','batch'}:
+        raise ValueError('unknown workload queue identifier')
     for name, deserved in [('interactive', 8), ('batch', 0)]:
         queue = catalog['queues'][name]
         if queue['gpu'] != {'deserved': deserved, 'limit': 8}:

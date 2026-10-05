@@ -414,5 +414,15 @@
     "gpu": "physical GPU fractions",
     "cpu": "cores",
     "memory": "MiB"
+  },
+  "workloadScheduling": {
+    "interactive": {
+      "queue": "cps-interactive",
+      "priorityClassName": "cps-homework"
+    },
+    "batch": {
+      "queue": "cps-batch",
+      "priorityClassName": "cps-batch"
+    }
   }
 }

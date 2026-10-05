@@ -15,6 +15,29 @@ class PolicyTests(unittest.TestCase):
     def setUp(self):
         self.catalog = json.loads((ROOT / 'compute-policy/catalog.json').read_text())
 
+    def test_workload_scheduling_matches_generated_queues_and_priorities(self):
+        compiled=policy.compile_catalog(self.catalog)
+        objects=policy.manifests(compiled)['items']
+        queues={o['metadata']['name'] for o in objects if o['kind']=='Queue'}
+        priorities={o['metadata']['name']:o['value'] for o in objects if o['kind']=='PriorityClass'}
+        expected={'interactive':('cps-interactive','cps-homework',40),'batch':('cps-batch','cps-batch',10)}
+        for kind,(queue,priority,value) in expected.items():
+            self.assertEqual(compiled['workloadScheduling'][kind],{'queue':queue,'priorityClassName':priority})
+            self.assertIn(queue,queues);self.assertEqual(priorities[priority],value)
+            self.assertTrue(all(p['queue']==kind for p in compiled['profiles'].values() if p['kind']==kind))
+
+    def test_reject_missing_unknown_or_elevated_workload_scheduling(self):
+        for mutation in ('absent','unknown','elevated','queue','profile-kind','profile-queue'):
+            with self.subTest(mutation=mutation):
+                c=copy.deepcopy(self.catalog)
+                if mutation=='absent':c.pop('workloadScheduling')
+                elif mutation=='unknown':c['workloadScheduling']['interactive']['queue']='other'
+                elif mutation=='elevated':c['workloadScheduling']['interactive']['priorityClassName']='cps-exam'
+                elif mutation=='queue':c['queues']['other']=copy.deepcopy(c['queues']['batch'])
+                elif mutation=='profile-kind':c['profiles']['interactive-cpu']['kind']='batch'
+                else:c['profiles']['interactive-cpu']['queue']='other'
+                with self.assertRaises(ValueError):policy.compile_catalog(c)
+
     def test_determinism_and_hash(self):
         first = policy.compile_catalog(self.catalog)
         self.assertEqual(first, policy.compile_catalog(copy.deepcopy(self.catalog)))

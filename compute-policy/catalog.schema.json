@@ -20,7 +20,8 @@
     "artifacts",
     "reservationPolicy",
     "status",
-    "queueUnits"
+    "queueUnits",
+    "workloadScheduling"
   ],
   "additionalProperties": false,
   "properties": {
@@ -104,6 +105,12 @@
               "integer",
               "null"
             ]
+          },
+          "queue": {
+            "enum": [
+              "interactive",
+              "batch"
+            ]
           }
         }
       }
@@ -143,6 +150,18 @@
     },
     "queueUnits": {
       "type": "object"
+    },
+    "workloadScheduling": {
+      "const": {
+        "interactive": {
+          "queue": "cps-interactive",
+          "priorityClassName": "cps-homework"
+        },
+        "batch": {
+          "queue": "cps-batch",
+          "priorityClassName": "cps-batch"
+        }
+      }
     }
   }
 }
