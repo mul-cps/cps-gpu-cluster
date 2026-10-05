@@ -34,9 +34,10 @@ An operator identity administers buckets. A separate gateway identity has
 Read/Write/List/Tagging access to **only `cps-compute`**, the provisioned bucket.
 There is no anonymous identity. The gateway's ListBuckets response is filtered;
 it cannot read or write another bucket. No browser or ordinary user receives
-these credentials. Notebook workers must obtain a narrowly scoped run credential
-or signed transfer URLs before production activation; the broad gateway credential
-is not appropriate for arbitrary user kernels.
+these credentials. Notebook execution is offline: isolated trusted Argo init/wait
+containers transfer artifacts through secret mounts, while the user kernel receives
+neither S3 credentials nor a Kubernetes service-account token. Qualify actual
+generated Pod mounts and a malicious kernel probe before production activation.
 
 Private credentials and CA/server keys are kept outside Git at
 `/home/bjoern/cps-platform-evidence/2026-10-05/truenas-artifacts/private/`, directory

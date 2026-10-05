@@ -62,9 +62,15 @@ work. JobSet launchers remain disabled until distributed retry/cleanup passes.
 
 Production targets are chart **4.4.2**, Hub **5.5.2**, KubeSpawner **7.x**.
 CIT was already at 5.5.2/7.1.0 before this change. CPS's baseline promotion is
-tracked independently of the unreleased platform. Hub **6.0.1** remains a separate
+complete at 5.5.2/7.1.0 with preserved API identities/groups and PVC bindings;
+real browser login remains a qualification gate. Hub **6.0.1** remains a separate
 qualification target. The gateway and admin branches are implementation artifacts;
 there are no pilot, candidate or production release tags yet.
 
 Hera remains the workflow language; Argo executes, KAI schedules. No CPS DAG
 language, separate snippet repository or Moodle deployment was introduced.
+
+SeaweedFS is running on the existing TrueNAS with authenticated TLS on port 8333.
+Its [deployment and recovery runbook](https://github.com/mul-cps/cps-gpu-cluster/blob/feat/compute-platform-v1/platform-staging/artifacts/truenas/README.md)
+records persistence and authorization checks. The existing cluster/NFS addresses
+are preserved. Hub-to-S3 connectivity and automated retention remain unqualified.

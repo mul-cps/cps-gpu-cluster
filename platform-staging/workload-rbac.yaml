@@ -11,6 +11,27 @@ kind: ServiceAccount
 metadata:
   name: cps-workflow
   namespace: cps-workflows
+automountServiceAccountToken: false
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: cps-workflow-executor
+  namespace: cps-workflows
+  annotations:
+    workflows.argoproj.io/service-account-token.name: cps-workflow-executor.service-account-token
+automountServiceAccountToken: false
+---
+# Argo explicitly mounts this credential only in trusted init/wait containers.
+# Token data is populated by Kubernetes; never export it into Git or user kernels.
+apiVersion: v1
+kind: Secret
+metadata:
+  name: cps-workflow-executor.service-account-token
+  namespace: cps-workflows
+  annotations:
+    kubernetes.io/service-account.name: cps-workflow-executor
+type: kubernetes.io/service-account-token
 ---
 # Argo executor can publish its own results, without granting namespace admin.
 apiVersion: rbac.authorization.k8s.io/v1
@@ -29,7 +50,7 @@ metadata:
   name: cps-workflow-executor
   namespace: cps-workflows
 subjects:
-  - {kind: ServiceAccount, name: cps-workflow, namespace: cps-workflows}
+  - {kind: ServiceAccount, name: cps-workflow-executor, namespace: cps-workflows}
 roleRef:
   apiGroup: rbac.authorization.k8s.io
   kind: Role

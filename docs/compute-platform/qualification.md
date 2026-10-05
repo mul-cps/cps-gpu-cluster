@@ -10,6 +10,21 @@ console/store isolation, effective Loki retention, Alloy node discovery and narr
 Descheduler scope. It runs existing storage/Jupyter manifest checks. Public PRs
 use GitHub-hosted runners; GPU qualification must be a trusted operator job.
 
+`python scripts/compute-platform/qualify-admission.py --context CONTEXT --evidence
+/PRIVATE/PATH/new.json` creates an isolated temporary namespace, parameter CRD and scoped admission
+policy, checks API-server dry-run requests, then removes those resources. It runs
+no workload containers. On 2026-10-05 the checks accepted a credential-free main
+container and approved read-only executor mounts, and rejected automatic token mounts,
+user secret environments/projected tokens, an untrusted executor image, an approved
+executor image with an overridden command, loader environment variables, binary-shadowing
+mounts, and shared process namespaces. The final ten checks passed; the preceding
+eight-check suite also passed after cleanup/recreation. Generated Argo
+Pods, kernel credential probes and failed artifact uploads remain separate gates.
+
+Local fresh-kernel Papermill tests execute tagged typed parameters and a selected
+Python helper import, retaining the executed notebook after success and an intentional
+failure. This qualifies local execution; it does not establish live S3 transfer.
+
 | Acceptance scenario | Required evidence before a release |
 | --- | --- |
 | Identity/storage | Reviewed email/person aliases; unchanged homes, named-server slugs/PVCs/NFS; one allowance per person |

@@ -28,6 +28,21 @@ metadata:
     compute.cps.unileoben.ac.at/policy-hash: {{ $hash | quote }}
 data:
   policy.json: {{ .Values.policyJson | quote }}
+---
+apiVersion: compute.cps.unileoben.ac.at/v1alpha1
+kind: ComputeAdmissionPolicy
+metadata:
+  name: cps-admission-policy
+  namespace: {{ $namespace }}
+data:
+  {{- $executorImage := .Values.gateway.executorImage }}
+  {{- if and $executorImage (not (regexMatch "^[^@ ]+@sha256:[a-f0-9]{64}$" $executorImage)) }}{{ fail "executor image must use a digest reference" }}{{ end }}
+  {{- $approvedImages := $policy.approvedImages }}
+  {{- if $executorImage }}{{ $approvedImages = append $approvedImages $executorImage }}{{ end }}
+  approved-images: {{ join "," $approvedImages | quote }}
+  executor-image: {{ $executorImage | quote }}
+  artifact-secret: {{ .Values.gateway.artifactSecretRef | quote }}
+  artifact-ca-secret: {{ .Values.gateway.artifactCaSecretRef | quote }}
 
 {{- $gatewayImage := required "gateway released image digest required" .Values.gateway.image }}
 {{- if not (regexMatch "^[^@ ]+@sha256:[a-f0-9]{64}$" $gatewayImage) }}{{ fail "gateway image must use a digest reference" }}{{ end }}

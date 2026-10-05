@@ -60,6 +60,29 @@ restoration must reconcile reservations against actual Hub server shutdown state
 2. Install Argo/JobSet and qualify KAI 0.18.1 plus resource-isolator 1.1.0-chart,
    HAMi-core and MPS as a reviewed dependency group. Rendered candidate values live
    in `platform-staging/scheduler`. They are not a live scheduler upgrade.
+   Pin the trusted Argo executor digest as `gateway.executorImage`; the admission
+   `ComputeAdmissionPolicy` combines it with the catalog's approved workload images. Empty image
+   lists stay denied. User containers run as the credential-free `cps-workflow`
+   principal with automatic token mounts disabled. Argo init/wait containers alone
+   receive the restricted `cps-workflow-executor` credentials. Qualify generated
+   Pod mounts and absence of kernel access to executor credentials before activation;
+   the shared executor role must never be mounted in user containers.
+   Follow [Argo's workflow security guidance](https://argoproj.github.io/argo-workflows/security/)
+   for separating automatic user token mounts from executor credentials.
+   Install `platform-staging/admission-parameters-crd.yaml` before enabling the
+   application chart and binding. This general compute CRD avoids the stopped
+   typed ConfigMap informer observed during repeated K3s 1.34.9 qualification.
+   Source inspection points to [policy informer cancellation](https://github.com/kubernetes/kubernetes/blob/v1.34.9/staging/src/k8s.io/apiserver/pkg/admission/plugin/policy/generic/policy_source.go#L338)
+   and [shared factory reuse](https://github.com/kubernetes/kubernetes/blob/v1.34.9/staging/src/k8s.io/client-go/informers/factory.go#L130);
+   it is an inferred diagnosis, not inspection of each API server's cache.
+   The executor baseline uses Argo 3.7.2 `argoexec init/wait`, info/text/0 log flags
+   and no extra executor arguments. A controller configuration change requires
+   updating and requalifying the exact command allowlist. Provision only the
+   declared artifact/CA secrets and explicit executor token Secret. None belongs
+   in the user container, its environment or its shared process namespace.
+   Custom executor environment variables, template ConfigMap offload and arbitrary
+   shared executor mounts are denied. Qualify any necessary additional Argo feature
+   against the reviewed environment/mount allowlist before admitting it.
 3. Apply the mandatory isolator webhook scope patch. The upstream chart's default
    broad opt-out selector with `Ignore` is insufficient for enforcing caps. The
    candidate uses `Fail`, a controlled namespace label and no client opt-out.

@@ -7,6 +7,9 @@ storageClass: longhorn
 backupSchedule: "17 2 * * *"
 gateway:
   image: ""
+  executorImage: ""
+  artifactSecretRef: cps-artifacts
+  artifactCaSecretRef: cps-artifacts-ca
   command: ["uvicorn", "cps_compute.runtime:create_runtime", "--factory", "--host", "0.0.0.0", "--port", "8000", "--ssl-keyfile", "/tls/tls.key", "--ssl-certfile", "/tls/tls.crt"]
   secretRef: cps-compute-gateway
   configSecretRef: cps-compute-runtime
