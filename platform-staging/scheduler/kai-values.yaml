@@ -2,7 +2,7 @@
 global:
   tag: v0.18.1
   registry: ghcr.io/kai-scheduler/kai-scheduler
-  gpuSharing: true
+  gpuSharingMode: HamiCore
 binder:
   plugins:
     hamicore:

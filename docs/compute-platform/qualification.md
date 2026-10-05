@@ -63,3 +63,13 @@ JobSet launcher qualification, complete legacy grant migration, real browser/RTC
 and Shares/NFS provisioning, expired-session/idle lifetime enforcement, actual
 artifact retention and matching-version restore exercises. The referenced
 application docs track the exact implementation boundary.
+
+## 2026-10-05 live staging evidence
+
+Persistent NetBird relay recovered after a Deployment restart, preserving peer identity. Both CPS and CIT Hub Pods reached the artifact service with normal DNS and verified TLS; anonymous bucket access returned 403. Signed 50 MiB upload/download and cleanup passed through the relay.
+
+Private Argo 3.7.18 controller/server deployed with image digests, scoped client authentication and operator-signed TLS. Restricted Pod Security and the compute admission policy admitted the qualified executor shape. Operator-controlled CPU notebook tests passed success and deliberate-failure outcomes; both executed notebooks were downloaded and hash-recorded, with selected local imports and typed parameters working. Main containers had no Secret mounts and automounted API tokens were disabled. Runner/executor UIDs must agree: 10001 is the staging baseline.
+
+Evidence is held privately under `cps-platform-evidence/2026-10-05/notebook-live/results.json`. Runner image: `ghcr.io/mul-cps/cps-compute:qualification-a7abe7d13465a8ea@sha256:f107b407f3e6c9218a4a9b5ec4df9f0ea013f4abd0a177e474013ff6b682c893`. Operator-test policy hash: `sha256:46078b979b4c04fde933ab72c48e558fd5e15a8c604f13f0aa0e950c046d8a00`. This is runner/admission/artifact evidence, not end-user gateway authorization or a production release.
+
+Email verification is required before CPS/CIT linkage. Microsoft 365 STARTTLS succeeds, but authentication currently times out; no verification email was sent and no linkage was activated. Remaining GPU isolation/scheduling, shared workspace, identity verification, gateway and recovery gates remain unqualified.

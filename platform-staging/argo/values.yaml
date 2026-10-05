@@ -24,6 +24,11 @@ controller:
     limits: {cpu: '1', memory: 1Gi}
   workflowDefaults:
     spec:
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 10001
+        fsGroup: 10001
+        seccompProfile: {type: RuntimeDefault}
       podGC: {strategy: OnWorkflowCompletion, deleteDelayDuration: 10m}
       ttlStrategy: {secondsAfterCompletion: 1209600}
 executor:
