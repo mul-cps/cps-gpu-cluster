@@ -41,5 +41,6 @@ script. No sibling dataset or export was created by this source implementation.
 Gateway integration commit `342d047` passes 253 compute tests. Trusted
 `storage.storageVersion` is passed consistently to SSH, Kubernetes and controller
 components. Existing legacy version/path mismatches are rejected before NAS
-operations, and read-only mount checks exclude both compute trees. Neither the
-new gateway nor the dual-version forced NAS script has been deployed yet.
+operations, and read-only mount checks exclude both compute trees. The dual-version forced NAS script is now installed with a private backup;
+the production gateway remains unchanged. See isolated-v2-live-qualification.md
+for the bounded live controller/mount/archive checks and remaining gates.

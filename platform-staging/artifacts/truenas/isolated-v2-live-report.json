@@ -1,0 +1,93 @@
+{
+  "storage": {
+    "pvc": "cps-workspace-710a1c6d4d20c85fe3b001efe97fcd2ede2e73f0",
+    "pv": "cps-workspace-710a1c6d4d20c85fe3b001efe97fcd2ede2e73f0",
+    "namespace": "jupyterhub",
+    "server": "193.170.30.58",
+    "path": "/mnt/persistent1/cps_compute_workspaces/cps/710a1c6d4d20c85fe3b001efe97fcd2ede2e73f0be2fc9945f3bd394930ce89e",
+    "group_hash": "710a1c6d4d20c85fe3b001efe97fcd2ede2e73f0be2fc9945f3bd394930ce89e",
+    "storage_version": 2,
+    "state": "active",
+    "readonly_mounts": [],
+    "evidence": {
+      "dataset": "persistent1/cps_compute_workspaces/cps/710a1c6d4d20c85fe3b001efe97fcd2ede2e73f0be2fc9945f3bd394930ce89e",
+      "readonly": false,
+      "mechanism": "zfs-readonly",
+      "permissions_verified": true,
+      "acltype": "POSIX1E",
+      "aclmode": "DISCARD",
+      "uid": 1000,
+      "gid": 1000,
+      "mode": "0770",
+      "default_acl": false
+    }
+  },
+  "workspace": "qual-v2-442a4f627947",
+  "group": "qualification-v2-c10cbf13111145ac8a8dd180828db600",
+  "legacyStatusPreserved": true,
+  "mountedWrite": {
+    "createdMode": "0600",
+    "sha256": "00d42ed0693af6a79001d363b2b988ae5bda4971bd6833659f1c59606b876097"
+  },
+  "archive": {
+    "state": "archived",
+    "read_only_verified": true,
+    "evidence": {
+      "nas": {
+        "dataset": "persistent1/cps_compute_workspaces/cps/710a1c6d4d20c85fe3b001efe97fcd2ede2e73f0be2fc9945f3bd394930ce89e",
+        "readonly": true,
+        "mechanism": "zfs-readonly"
+      },
+      "mount": {
+        "job": "jupyterhub/cps-archive-verify-099877377ff048cc",
+        "read_only_verified": true
+      }
+    }
+  },
+  "statusReadonly": true,
+  "sourceSHA256": "70c98f8f3279b62a904a1d30f420438e30d55369e56173e65fa36b7d57da2453",
+  "scope": "Actual source controller, restricted SSH transport and live NAS/Kubernetes; operator Kube credentials, no authenticated HTTP/Hub lifecycle",
+  "limitations": [
+    "Existing gateway process/image unchanged; tested transport source executed only in transient subprocess",
+    "Verifier used previously pinned Python gateway image",
+    "No cross-group privacy, backup or production RBAC qualification"
+  ],
+  "retainedFileChecksums": [
+    {
+      "name": "qualification.txt",
+      "sha256": "00d42ed0693af6a79001d363b2b988ae5bda4971bd6833659f1c59606b876097"
+    },
+    {
+      "name": "qualification-20fcdffdf0b0416fb4ffb32fc7af3720.txt",
+      "sha256": "00d42ed0693af6a79001d363b2b988ae5bda4971bd6833659f1c59606b876097"
+    },
+    {
+      "name": "qualification-923ba3d61399.txt",
+      "sha256": "00d42ed0693af6a79001d363b2b988ae5bda4971bd6833659f1c59606b876097"
+    }
+  ],
+  "retainedChecksumsVerifiedViaNFS": true,
+  "cleanup": {
+    "pvPhase": "Released",
+    "reclaimPolicy": "Retain",
+    "verifierPodsAndJobsAbsent": true,
+    "writerAndReadProbeDeletionConfirmed": true
+  },
+  "nasInstall": {
+    "oldSHA256": "3406968cd1cafc9cd8cf94d4b0a8073db7e5e044bb5f09b38cd9b9e438c1646f",
+    "newSHA256": "e0721659cdd328e570b95048fe5a953752de99cefab1d37f109d98e67d4501b8",
+    "backup": "/home/truenas_admin/.ssh/cps-workspace-rpc.py.backup-3406968cd1cafc9c"
+  },
+  "computeRevision": "3d6de755d2e45629153519cfcc9eb4f28ad93d68",
+  "fixtureFailures": [
+    "Exec URI oversized; source sent via stdin",
+    "Client JSON log conversion; raw log bytes used",
+    "NFS API readOnly default mismatch fixed with regression",
+    "Repeated fixture filename collision; unique bounded filenames used"
+  ],
+  "testResults": {
+    "computePassed": 256,
+    "warnings": 22,
+    "nasPassed": 13
+  }
+}
