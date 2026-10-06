@@ -27,7 +27,7 @@ failure. This qualifies local execution; it does not establish live S3 transfer.
 
 | Acceptance scenario | Required evidence before a release |
 | --- | --- |
-| Identity/storage | Reviewed email/person aliases; unchanged homes, named-server slugs/PVCs/NFS; one allowance per person |
+| Identity/storage | Reviewed university issuer/subject/person aliases; unchanged homes, named-server slugs/PVCs/NFS; one allowance per person |
 | Authorization | Crafted gateway, admin and direct workload requests denied for resources, image, mount, queue, priority and entitlement bypasses |
 | Permissions | Imported local grants survive login; expired grants stop being effective; instructor operations remain course-scoped |
 | Collaboration | Two browser visitors retain their own identity while sharing RTC state; removed members lose existing access |
@@ -76,4 +76,28 @@ KAI 0.18.1 staging components are healthy. The pinned HAMi isolator is restricte
 
 A new operator-only retained NFS dataset passed write/read checks through unchanged server `193.170.30.58`. ZFS archival preserved its contents; a subsequent writable client mount received server-side `EROFS` on write. This qualifies the NAS mechanism, not the complete console/controller lifecycle. No existing home or shared data was modified.
 
-Email setup is deferred at the user's request. Email verification remains required before CPS/CIT linkage; no verification email was sent and no linkage or human global allowance was activated. Remaining packing/scheduling, shared workspace lifecycle, gateway authorization and recovery gates remain unqualified.
+At the time of this 2026-10-05 evidence, email setup and linkage were deferred.
+The later user decision makes email verification optional, not mandatory.
+University federation linkage uses exact issuer and upstream subject with
+reviewed aliases; matching email or display names never activates allowances.
+Direct university Dex login still awaits ICT registration. The dated results
+above do not supersede the newer qualification evidence below.
+
+
+## 2026-10-06 qualification update
+
+The full platform remains unqualified; no pilot, candidate or production release
+is established by these individual checks.
+
+- [Notebook and artifact data path](../../platform-staging/gateway-qualified/qualification/notebook-artifacts.md): actual gateway handlers, real Argo and SeaweedFS over the relay passed controlled success/failure, snapshot, supporting files, typed parameters, ownership checks and retention fencing. Synthetic workspace principals were used; human Hub OAuth and the final notebook image matrix remain separate gates.
+- [Current-version database restore](../../platform-staging/gateway-qualified/qualification/backup-restore.md): both consoles and the gateway passed fresh, matching-image/policy backups and isolated database/application-open restores. Full Hub authentication, populated migration and offsite recovery remain open.
+- [Combined GPU isolation](../../platform-staging/scheduler/qualification/runtime-isolation.md): normal OOM and peer continuation passed, but a crafted process bypassed the nominal cap by disabling MPS and HAMi participation. This contradicts runtime isolation qualification; ordinary GPU profiles remain disabled.
+- The scheduled artifact retention template now uses the current script, image and policy. Its actual CLI dry run examined 25 objects with zero errors or deletions. Deletion remains suspended pending permanent provenance protection and mutation activation qualification.
+- The CPU notebook overlay and Xpra parent image builds are ongoing. The complete twelve-variant image/release matrix remains open.
+- Four operational dashboards retain explicit unavailable/stale telemetry and now link to both admin consoles and internal TrueNAS. The private Argo operator UI route and the required controller telemetry remain open.
+
+Existing authenticator group management remains in place until reviewed grant
+migration and login-survival qualification. No cross-Hub global allowance is
+activated by username/email matching. Real two-visitor RTC, member removal,
+pooled starts, teaching reclaim/protection, startup bursts, defragmentation,
+distributed cleanup and full recovery remain required acceptance scenarios.
