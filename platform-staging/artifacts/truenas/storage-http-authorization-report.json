@@ -1,0 +1,41 @@
+{
+  "tests": [
+    {
+      "name": "missing-service-credential",
+      "status": 401,
+      "passed": true
+    },
+    {
+      "name": "invalid-service-credential",
+      "status": 401,
+      "passed": true
+    },
+    {
+      "name": "cit-unknown-workspace",
+      "status": 409,
+      "passed": true
+    },
+    {
+      "name": "cps-unknown-workspace",
+      "status": 409,
+      "passed": true
+    },
+    {
+      "name": "cps-metrics-cannot-provision",
+      "status": 403,
+      "passed": true
+    },
+    {
+      "name": "cit-metrics-cannot-provision",
+      "status": 403,
+      "passed": true
+    }
+  ],
+  "scope": "Live TLS HTTP rejection requests; no registered workspace or NAS mutation",
+  "image": "qualification-5771df5",
+  "tlsVerification": true,
+  "limitations": [
+    "Rejection requests on current production image only",
+    "No positive provisioning, neutral Hub account provenance or Kubernetes binding qualification"
+  ]
+}
