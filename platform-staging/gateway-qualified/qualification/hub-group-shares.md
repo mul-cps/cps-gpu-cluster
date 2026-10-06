@@ -34,3 +34,13 @@ The actual admin adapter then passed named-server startup, rejection of a runnin
 Evidence remains private under `/home/bjoern/cps-platform-evidence/2026-10-06/hub-kubespawner-rtc`: `shares-api-report.json`, `rbac-scope-verification.json`, `nfs-fixture.json`, `notebook-pod-security-report.json`, `image-integrity-report.json`, `publication.json` and `sbom-publication.json`. Fixture credentials are excluded from Git. The Hub and proxy remain running for the next RTC checks; the notebook server and bounded NFS test jobs have stopped.
 
 Still required: two RTC clients observing shared notebook edits, revocation of an already-open connection through the workspace removal sequence, retained data across workspace restart, cross-Hub reservations, grant migration and real production authentication. Neither production Hub has received the compatibility hook.
+
+## Two-client RTC qualification, 2026-10-06
+
+The Kubernetes fixture subsequently passed two authenticated Python RTC clients using the notebook image's Jupyter collaboration WebSocket protocol. Alice edited a notebook cell; Bob's independent CRDT document observed the same edit. This is live protocol evidence, not a rendered browser/UI check.
+
+The member-removal sequence confirmed workspace shutdown before changing membership. Both already-open RTC transports reached EOF within the bounded wait. Shutdown produced no WebSocket close code, so the test asserts observed transport EOF rather than requiring a graceful close frame. Alice's edit was retained in the NFS notebook after restart. Bob's existing token no longer carried shared-server access, and his server request was denied or redirected to authentication. The final server shutdown was confirmed.
+
+Private evidence: `hub-kubespawner-rtc/rtc-report.json` and `qualify-rtc.py` under the operator evidence root above. This establishes the fixture's shared-state, connection closure and restart retention checks. It does not prove the production membership API invokes this sequence, production browser behavior, cross-Hub reservations, grant migration or production authentication. Those remain gates.
+
+The owned Hub/proxy deployments, ClusterIP services and Kubernetes fixture authentication/pull secrets were removed after testing. The dedicated retained NFS test directory, PV/PVC and private evidence remain for review; no human data was removed.
