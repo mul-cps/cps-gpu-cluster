@@ -1,0 +1,103 @@
+{{- if .Values.enabled }}
+{{- if empty .Values.databasePodLabels }}{{ fail "databasePodLabels must not be empty" }}{{ end }}
+{{- $owner := required "owner required" .Values.owner }}
+{{- if not (has $owner (list "cps" "cit")) }}{{ fail "owner must be cps or cit" }}{{ end }}
+{{- $image := required "matching PostgreSQL image digest required" .Values.image }}
+{{- if not (regexMatch "^[a-zA-Z0-9./:_-]+@sha256:[a-f0-9]{64}$" $image) }}{{ fail "immutable PostgreSQL image digest required" }}{{ end }}
+{{- $namespace := required "namespace required" .Values.namespace }}
+{{- $secret := required "existing database secret required" .Values.secretRef }}
+{{- $host := required "database service host required" .Values.host }}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ $owner }}-hub-postgresql-backup
+  namespace: {{ $namespace }}
+data:
+  backup.sh: |
+{{ .Files.Get "files/backup.sh" | indent 4 }}
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: {{ $owner }}-hub-postgresql-backup
+  namespace: {{ $namespace }}
+spec:
+  accessModes: [ReadWriteOnce]
+  storageClassName: {{ .Values.storageClass }}
+  resources:
+    requests: {storage: {{ .Values.storage | quote }}}
+---
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: {{ $owner }}-hub-postgresql-backup
+  namespace: {{ $namespace }}
+spec:
+  schedule: {{ .Values.schedule | quote }}
+  timeZone: Etc/UTC
+  suspend: {{ .Values.suspend }}
+  concurrencyPolicy: Forbid
+  successfulJobsHistoryLimit: 1
+  failedJobsHistoryLimit: 3
+  jobTemplate:
+    spec:
+      activeDeadlineSeconds: 300
+      backoffLimit: 0
+      template:
+        metadata:
+          labels: {app: hub-postgresql-backup, owner: {{ $owner }}}
+        spec:
+          restartPolicy: Never
+          automountServiceAccountToken: false
+          securityContext:
+            runAsNonRoot: true
+            runAsUser: 1000
+            runAsGroup: 1000
+            fsGroup: 1000
+            seccompProfile: {type: RuntimeDefault}
+          affinity:
+            podAffinity:
+              requiredDuringSchedulingIgnoredDuringExecution:
+                - labelSelector:
+                    matchLabels:
+{{ required "databasePodLabels required" .Values.databasePodLabels | toYaml | indent 22 }}
+                  topologyKey: kubernetes.io/hostname
+          containers:
+            - name: backup
+              image: {{ $image | quote }}
+              command: [sh, /scripts/backup.sh]
+              securityContext:
+                readOnlyRootFilesystem: true
+                allowPrivilegeEscalation: false
+                capabilities: {drop: [ALL]}
+              resources:
+                requests: {cpu: 50m, memory: 64Mi}
+                limits: {cpu: "1", memory: 256Mi}
+              env:
+                - {name: PGHOST, value: {{ $host | quote }}}
+                - {name: PGCONNECT_TIMEOUT, value: "15"}
+                - name: PGUSER
+{{- if .Values.userKey }}
+                  valueFrom: {secretKeyRef: {name: {{ $secret }}, key: {{ .Values.userKey }}}}
+{{- else }}
+                  value: {{ required "database user required" .Values.user | quote }}
+{{- end }}
+                - name: PGDATABASE
+{{- if .Values.databaseKey }}
+                  valueFrom: {secretKeyRef: {name: {{ $secret }}, key: {{ .Values.databaseKey }}}}
+{{- else }}
+                  value: {{ .Values.database | quote }}
+{{- end }}
+                - name: PGPASSWORD
+                  valueFrom: {secretKeyRef: {name: {{ $secret }}, key: {{ required "database password key required" .Values.passwordKey }}}}
+                - {name: BACKUP_OWNER, value: {{ $owner | quote }}}
+                - {name: BACKUP_IMAGE, value: {{ $image | quote }}}
+              volumeMounts:
+                - {name: backups, mountPath: /backup}
+                - {name: script, mountPath: /scripts, readOnly: true}
+                - {name: temporary, mountPath: /tmp}
+          volumes:
+            - {name: backups, persistentVolumeClaim: {claimName: {{ $owner }}-hub-postgresql-backup}}
+            - {name: script, configMap: {name: {{ $owner }}-hub-postgresql-backup}}
+            - {name: temporary, emptyDir: {sizeLimit: 64Mi}}
+{{- end }}

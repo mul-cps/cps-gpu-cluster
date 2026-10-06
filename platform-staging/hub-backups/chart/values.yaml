@@ -1,0 +1,17 @@
+# Outside Fleet watched paths; qualify a one-shot Job before unsuspending.
+enabled: false
+suspend: true
+owner: ""
+namespace: ""
+image: ""
+schedule: "31 2 * * *"
+storageClass: longhorn
+storage: 1Gi
+host: ""
+user: ""
+database: jupyterhub
+secretRef: ""
+passwordKey: ""
+userKey: ""
+databaseKey: ""
+databasePodLabels: {}

@@ -15,7 +15,7 @@ Private evidence: `/home/bjoern/cps-platform-evidence/2026-10-06/{cps,cit}-hub-p
 
 Both database workload specifications use mutable tags (`postgres:15`, `bitnami/postgresql:latest`). Restore qualification therefore records immutable running digests; production GitOps pins and migration qualification remain required. Completed Longhorn backups exist for CIT's database volume, but this logical restore does not qualify a Longhorn backup restore or establish off-host durability.
 
-Remaining gates: protected role/credential/configuration backup (owners and ACLs are deliberately excluded from these logical dumps), matching Hub application startup against restored databases, storage/path associations, complete recovery automation and approved off-host backup/restore. No Hub database backup CronJobs were found; compute and both console backup CronJobs are separate and do not cover these PostgreSQL databases.
+Remaining gates: protected role/credential/configuration backup (owners and ACLs are deliberately excluded from these logical dumps), matching Hub application startup against restored databases, storage/path associations, complete platform recovery automation and approved off-host backup/restore. At the initial inventory, no Hub database backup CronJobs were found; compute and both console backup CronJobs are separate and do not cover these PostgreSQL databases.
 
 ## Matching Hub initialization and repeatable protected capture
 
@@ -32,3 +32,11 @@ The destination must be operator-owned mode 0700 and outside Git checkouts. The 
 Four focused tests cover successful private publication/checksums, failed capture cleanup, invalid dump rejection and refusal of public/Git destinations. A live capture of both namespaces passed, with private bundles under `/home/bjoern/cps-platform-evidence/2026-10-06/hub-backup-bundles/`. Captures are sequential; this does not create a globally consistent platform snapshot or preserve PostgreSQL cluster roles/ACLs. The earlier protected configuration capture is retained separately under `hub-protected-configuration-backup/`.
 
 Scheduled PostgreSQL backups, approved encrypted off-host durability, complete role/ACL recovery and full Hub service recovery remain required. The command does not install a CronJob, change production workloads or enable GPU access.
+
+## Automated logical database backups
+
+The separate [Hub backup chart](../../hub-backups/README.md) is deployed for both namespaces. Both one-shot jobs completed, their archives were exported through credential-free readers with read-only mounts, checksums matched their job-written manifests, and both newly generated archives restored into fresh `scheduled_backup` databases in the matching network-disabled PostgreSQL containers. Each restore retained schema `4621fec11365`, 17 tables and the expected aggregate user count. Readers were deleted and local restore containers stopped.
+
+Kubernetes then triggered genuine scheduled jobs for both Hubs at `2026-10-06T20:17:00Z`; scheduled-timestamp annotations distinguish these from manual jobs. Both succeeded. The final live schedule is daily `02:31 Etc/UTC`, with concurrency forbidden and a five-minute deadline. Owner values record enabled/unsuspended qualified jobs; chart defaults remain disabled/suspended. Exact database image pins, Secret references, restricted pod configuration, dedicated 1 GiB Longhorn volumes and database/DNS-only egress are in Git. No NFS addresses or production Hub/database configurations changed.
+
+Evidence is under `/home/bjoern/cps-platform-evidence/2026-10-06/hub-scheduled-backup/`, including controller and restore reports. This closes the missing automated logical Hub database capture, but not PostgreSQL cluster roles/ACL recovery, configuration restoration, complete connected Hub recovery or approved off-host durability. Backup bundles are retained without automated deletion until an off-host retention policy is reviewed; monitor volume capacity and failed Jobs.
