@@ -9,43 +9,46 @@ metadata:
     k8s-sidecar-target-directory: /tmp/dashboards/Compute
 data:
   gpu-packing.json: "{\n  \"links\": [\n    {\n      \"targetBlank\": true,\n      \"title\": \"CPS Hub\",\n      \"url\"\
-    : \"https://jupyterhub.dshl.unileoben.ac.at\"\n    },\n    {\n      \"targetBlank\": true,\n      \"title\": \"CIT Hub\"\
-    ,\n      \"url\": \"https://jhub.dshl.unileoben.ac.at\"\n    },\n    {\n      \"targetBlank\": true,\n      \"title\"\
-    : \"Rancher\",\n      \"url\": \"https://rancher.dshl.unileoben.ac.at\"\n    }\n  ],\n  \"panels\": [\n    {\n      \"\
-    gridPos\": {\n        \"h\": 4,\n        \"w\": 24,\n        \"x\": 0,\n        \"y\": 0\n      },\n      \"id\": 1,\n\
-    \      \"options\": {\n        \"content\": \"Missing or stale series mean **unavailable**, never zero. Physical free\
-    \ GPUs require placement/UUID accounting; VRAM and utilization are separate. Panels naming a required controller/isolator\
-    \ stay unknown until that exporter is deployed. Spawn histogram does not prove a representative pre-pulled burst qualification.\
-    \ Operational viewers only; students use the addon.\",\n        \"mode\": \"markdown\"\n      },\n      \"title\": \"\
-    Evidence boundary\",\n      \"type\": \"text\"\n    },\n    {\n      \"datasource\": {\n        \"type\": \"prometheus\"\
-    ,\n        \"uid\": \"${DS_PROMETHEUS}\"\n      },\n      \"description\": \"Observed upstream telemetry; samples older\
-    \ than 120 seconds are unavailable.\",\n      \"fieldConfig\": {\n        \"defaults\": {\n          \"custom\": {\n \
-    \           \"spanNulls\": false\n          },\n          \"noValue\": \"Unavailable / stale\",\n          \"unit\": \"\
-    decmbytes\"\n        },\n        \"overrides\": []\n      },\n      \"gridPos\": {\n        \"h\": 8,\n        \"w\":\
-    \ 12,\n        \"x\": 0,\n        \"y\": 4\n      },\n      \"id\": 2,\n      \"targets\": [\n        {\n          \"\
-    expr\": \"(DCGM_FI_DEV_FB_FREE and (time() - timestamp(DCGM_FI_DEV_FB_FREE) <= 120))\",\n          \"legendFormat\": \"\
-    {{namespace}} {{queue_name}} {{UUID}}\",\n          \"refId\": \"A\"\n        }\n      ],\n      \"title\": \"Unused VRAM\
-    \ per physical device (not free GPUs)\",\n      \"type\": \"timeseries\"\n    },\n    {\n      \"datasource\": {\n   \
-    \     \"type\": \"prometheus\",\n        \"uid\": \"${DS_PROMETHEUS}\"\n      },\n      \"description\": \"Observed upstream\
-    \ telemetry; samples older than 120 seconds are unavailable.\",\n      \"fieldConfig\": {\n        \"defaults\": {\n \
-    \         \"custom\": {\n            \"spanNulls\": false\n          },\n          \"noValue\": \"Unavailable / stale\"\
-    ,\n          \"unit\": \"decmbytes\"\n        },\n        \"overrides\": []\n      },\n      \"gridPos\": {\n        \"\
-    h\": 8,\n        \"w\": 12,\n        \"x\": 12,\n        \"y\": 4\n      },\n      \"id\": 3,\n      \"targets\": [\n\
-    \        {\n          \"expr\": \"(DCGM_FI_DEV_FB_USED and (time() - timestamp(DCGM_FI_DEV_FB_USED) <= 120))\",\n    \
-    \      \"legendFormat\": \"{{namespace}} {{queue_name}} {{UUID}}\",\n          \"refId\": \"A\"\n        }\n      ],\n\
-    \      \"title\": \"Used VRAM per physical device\",\n      \"type\": \"timeseries\"\n    },\n    {\n      \"datasource\"\
-    : {\n        \"type\": \"prometheus\",\n        \"uid\": \"${DS_PROMETHEUS}\"\n      },\n      \"description\": \"Observed\
-    \ upstream telemetry; samples older than 120 seconds are unavailable.\",\n      \"fieldConfig\": {\n        \"defaults\"\
-    : {\n          \"custom\": {\n            \"spanNulls\": false\n          },\n          \"noValue\": \"Unavailable / stale\"\
-    ,\n          \"unit\": \"percent\"\n        },\n        \"overrides\": []\n      },\n      \"gridPos\": {\n        \"\
-    h\": 8,\n        \"w\": 12,\n        \"x\": 0,\n        \"y\": 12\n      },\n      \"id\": 4,\n      \"targets\": [\n\
-    \        {\n          \"expr\": \"(DCGM_FI_DEV_GPU_UTIL and (time() - timestamp(DCGM_FI_DEV_GPU_UTIL) <= 120))\",\n  \
-    \        \"legendFormat\": \"{{namespace}} {{queue_name}} {{UUID}}\",\n          \"refId\": \"A\"\n        }\n      ],\n\
-    \      \"title\": \"Runtime GPU utilization\",\n      \"type\": \"timeseries\"\n    },\n    {\n      \"datasource\": {\n\
-    \        \"type\": \"prometheus\",\n        \"uid\": \"${DS_PROMETHEUS}\"\n      },\n      \"description\": \"Planned\
-    \ telemetry contract; no qualified exporter is deployed for this series. Unavailable means unknown, never zero.\",\n \
+    : \"https://jupyterhub.dshl.unileoben.ac.at\"\n    },\n    {\n      \"targetBlank\": true,\n      \"title\": \"CPS administration\"\
+    ,\n      \"url\": \"https://jupyterhub.dshl.unileoben.ac.at/services/cps-admin/app/\"\n    },\n    {\n      \"targetBlank\"\
+    : true,\n      \"title\": \"CIT Hub\",\n      \"url\": \"https://jhub.dshl.unileoben.ac.at\"\n    },\n    {\n      \"\
+    targetBlank\": true,\n      \"title\": \"CIT administration\",\n      \"url\": \"https://jhub.dshl.unileoben.ac.at/services/cit-admin/app/\"\
+    \n    },\n    {\n      \"targetBlank\": true,\n      \"title\": \"TrueNAS (internal CPS network)\",\n      \"url\": \"\
+    https://10.71.1.55\"\n    },\n    {\n      \"targetBlank\": true,\n      \"title\": \"Rancher\",\n      \"url\": \"https://rancher.dshl.unileoben.ac.at\"\
+    \n    }\n  ],\n  \"panels\": [\n    {\n      \"gridPos\": {\n        \"h\": 4,\n        \"w\": 24,\n        \"x\": 0,\n\
+    \        \"y\": 0\n      },\n      \"id\": 1,\n      \"options\": {\n        \"content\": \"Missing or stale series mean\
+    \ **unavailable**, never zero. Physical free GPUs require placement/UUID accounting; VRAM and utilization are separate.\
+    \ Panels naming a required controller/isolator stay unknown until that exporter is deployed. Spawn histogram does not\
+    \ prove a representative pre-pulled burst qualification. Operational viewers only; students use the addon.\",\n      \
+    \  \"mode\": \"markdown\"\n      },\n      \"title\": \"Evidence boundary\",\n      \"type\": \"text\"\n    },\n    {\n\
+    \      \"datasource\": {\n        \"type\": \"prometheus\",\n        \"uid\": \"${DS_PROMETHEUS}\"\n      },\n      \"\
+    description\": \"Observed upstream telemetry; samples older than 120 seconds are unavailable.\",\n      \"fieldConfig\"\
+    : {\n        \"defaults\": {\n          \"custom\": {\n            \"spanNulls\": false\n          },\n          \"noValue\"\
+    : \"Unavailable / stale\",\n          \"unit\": \"decmbytes\"\n        },\n        \"overrides\": []\n      },\n     \
+    \ \"gridPos\": {\n        \"h\": 8,\n        \"w\": 12,\n        \"x\": 0,\n        \"y\": 4\n      },\n      \"id\":\
+    \ 2,\n      \"targets\": [\n        {\n          \"expr\": \"(DCGM_FI_DEV_FB_FREE and (time() - timestamp(DCGM_FI_DEV_FB_FREE)\
+    \ <= 120))\",\n          \"legendFormat\": \"{{namespace}} {{queue_name}} {{UUID}}\",\n          \"refId\": \"A\"\n  \
+    \      }\n      ],\n      \"title\": \"Unused VRAM per physical device (not free GPUs)\",\n      \"type\": \"timeseries\"\
+    \n    },\n    {\n      \"datasource\": {\n        \"type\": \"prometheus\",\n        \"uid\": \"${DS_PROMETHEUS}\"\n \
+    \     },\n      \"description\": \"Observed upstream telemetry; samples older than 120 seconds are unavailable.\",\n \
     \     \"fieldConfig\": {\n        \"defaults\": {\n          \"custom\": {\n            \"spanNulls\": false\n       \
-    \   },\n          \"noValue\": \"Unavailable / stale\",\n          \"unit\": \"short\"\n        },\n        \"overrides\"\
+    \   },\n          \"noValue\": \"Unavailable / stale\",\n          \"unit\": \"decmbytes\"\n        },\n        \"overrides\"\
+    : []\n      },\n      \"gridPos\": {\n        \"h\": 8,\n        \"w\": 12,\n        \"x\": 12,\n        \"y\": 4\n  \
+    \    },\n      \"id\": 3,\n      \"targets\": [\n        {\n          \"expr\": \"(DCGM_FI_DEV_FB_USED and (time() - timestamp(DCGM_FI_DEV_FB_USED)\
+    \ <= 120))\",\n          \"legendFormat\": \"{{namespace}} {{queue_name}} {{UUID}}\",\n          \"refId\": \"A\"\n  \
+    \      }\n      ],\n      \"title\": \"Used VRAM per physical device\",\n      \"type\": \"timeseries\"\n    },\n    {\n\
+    \      \"datasource\": {\n        \"type\": \"prometheus\",\n        \"uid\": \"${DS_PROMETHEUS}\"\n      },\n      \"\
+    description\": \"Observed upstream telemetry; samples older than 120 seconds are unavailable.\",\n      \"fieldConfig\"\
+    : {\n        \"defaults\": {\n          \"custom\": {\n            \"spanNulls\": false\n          },\n          \"noValue\"\
+    : \"Unavailable / stale\",\n          \"unit\": \"percent\"\n        },\n        \"overrides\": []\n      },\n      \"\
+    gridPos\": {\n        \"h\": 8,\n        \"w\": 12,\n        \"x\": 0,\n        \"y\": 12\n      },\n      \"id\": 4,\n\
+    \      \"targets\": [\n        {\n          \"expr\": \"(DCGM_FI_DEV_GPU_UTIL and (time() - timestamp(DCGM_FI_DEV_GPU_UTIL)\
+    \ <= 120))\",\n          \"legendFormat\": \"{{namespace}} {{queue_name}} {{UUID}}\",\n          \"refId\": \"A\"\n  \
+    \      }\n      ],\n      \"title\": \"Runtime GPU utilization\",\n      \"type\": \"timeseries\"\n    },\n    {\n   \
+    \   \"datasource\": {\n        \"type\": \"prometheus\",\n        \"uid\": \"${DS_PROMETHEUS}\"\n      },\n      \"description\"\
+    : \"Planned telemetry contract; no qualified exporter is deployed for this series. Unavailable means unknown, never zero.\"\
+    ,\n      \"fieldConfig\": {\n        \"defaults\": {\n          \"custom\": {\n            \"spanNulls\": false\n    \
+    \      },\n          \"noValue\": \"Unavailable / stale\",\n          \"unit\": \"short\"\n        },\n        \"overrides\"\
     : []\n      },\n      \"gridPos\": {\n        \"h\": 8,\n        \"w\": 12,\n        \"x\": 12,\n        \"y\": 12\n \
     \     },\n      \"id\": 5,\n      \"targets\": [\n        {\n          \"expr\": \"(cps_compute_physical_free_gpus and\
     \ (time() - timestamp(cps_compute_physical_free_gpus) <= 120))\",\n          \"legendFormat\": \"{{namespace}} {{queue_name}}\

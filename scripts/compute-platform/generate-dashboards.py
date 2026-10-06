@@ -66,7 +66,10 @@ for slug,(title,items) in DASHBOARDS.items():
                'tags':['cps-compute','gitops'],'time':{'from':'now-1h','to':'now'},'panels':panels,
                'templating':{'list':[{'name':'DS_PROMETHEUS','type':'datasource','query':'prometheus','current':{}}]},
                'links':[{'title':'CPS Hub','url':'https://jupyterhub.dshl.unileoben.ac.at','targetBlank':True},
+                        {'title':'CPS administration','url':'https://jupyterhub.dshl.unileoben.ac.at/services/cps-admin/app/','targetBlank':True},
                         {'title':'CIT Hub','url':'https://jhub.dshl.unileoben.ac.at','targetBlank':True},
+                        {'title':'CIT administration','url':'https://jhub.dshl.unileoben.ac.at/services/cit-admin/app/','targetBlank':True},
+                        {'title':'TrueNAS (internal CPS network)','url':'https://10.71.1.55','targetBlank':True},
                         {'title':'Rancher','url':'https://rancher.dshl.unileoben.ac.at','targetBlank':True}]}
     cm={'apiVersion':'v1','kind':'ConfigMap','metadata':{'name':f'cps-{slug}-dashboard','namespace':'cattle-dashboards',
         'labels':{'grafana_dashboard':'1'},'annotations':{'k8s-sidecar-target-directory':'/tmp/dashboards/Compute'}},
