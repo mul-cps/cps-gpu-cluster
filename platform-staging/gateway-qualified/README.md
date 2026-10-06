@@ -18,6 +18,11 @@ GPU profiles remain disabled. Identity aliases, grant migration, lifecycle
 cleanup and distributed GPU qualification are separate unresolved gates.
 The university federation hook remains disabled pending ICT registration.
 
+The ownership-checked artifact retain API is enabled in the runtime JSON with
+`artifacts.lifecycle.enabled: true`; scheduled deletion remains suspended.
+See [notebook/artifact operator qualification](qualification/notebook-artifacts.md)
+for evidence and its identity/image-matrix limitations.
+
 For rollback, restore the former policy ConfigMap, runtime `policy_hash`,
 and previous image:
 `ghcr.io/mul-cps/cps-compute:qualification-fa48334@sha256:409231d125fb9e2ace3b4356ea4ff5d142dd351bdde7d6ac5be8ad80c56caafe`.

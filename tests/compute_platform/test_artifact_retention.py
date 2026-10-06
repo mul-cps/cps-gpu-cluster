@@ -203,3 +203,37 @@ class RetentionChart(unittest.TestCase):
         for override in ({'reconcileMetadata':True},{'reconcileMetadata':True,'lifecycleQualified':True},{'apply':True},{'apply':True,'conditionalDeleteQualified':True,'qualificationEvidence':'conditional-only'},{'maxExamined':0},{'maxDeletes':1001}):self.assertNotEqual(self.render(override).returncode,0)
 
 if __name__=='__main__':unittest.main()
+
+class ProofTransport(unittest.TestCase):
+    def test_refused_read_retries_with_rotated_projected_token(self):
+        with tempfile.TemporaryDirectory() as directory:
+            token=Path(directory)/'token';token.write_text('first');seen=[]
+            def request(req,**kwargs):
+                seen.append(req.headers['Authorization'])
+                if len(seen)==1:
+                    token.write_text('second')
+                    raise urllib.error.URLError(ConnectionRefusedError('cold policy path'))
+                return io.BytesIO(b'{"metadata":{"uid":"fixture-uid"}}')
+            with patch.object(m.ssl,'create_default_context',return_value=object()),patch.object(m.urllib.request,'urlopen',side_effect=request),patch.object(m.time,'sleep'):
+                proof=m.ArgoProof('https://argo','cps-workflows',token,None)
+                self.assertEqual(proof.get('fixture')['metadata']['uid'],'fixture-uid')
+            self.assertEqual(seen,['Bearer first','Bearer second'])
+
+    def test_refused_read_is_bounded_and_auth_failure_is_not_retried(self):
+        for error,count in ((urllib.error.URLError(ConnectionRefusedError('not ready')),3),(urllib.error.HTTPError('https://argo',403,'denied',{},None),1)):
+            with self.subTest(error=type(error).__name__),tempfile.TemporaryDirectory() as directory:
+                token=Path(directory)/'token';token.write_text('fixture');seen=[]
+                def request(req,**kwargs):seen.append(req);raise error
+                with patch.object(m.ssl,'create_default_context',return_value=object()),patch.object(m.urllib.request,'urlopen',side_effect=request),patch.object(m.time,'sleep'):
+                    proof=m.ArgoProof('https://argo','cps-workflows',token,None)
+                    with self.assertRaises(urllib.error.URLError):proof.get('fixture')
+                self.assertEqual(len(seen),count)
+
+    def test_ambiguous_metadata_patch_is_never_transport_retried(self):
+        with tempfile.TemporaryDirectory() as directory:
+            token=Path(directory)/'token';token.write_text('fixture');seen=[]
+            def request(req,**kwargs):seen.append(req.get_method());raise urllib.error.URLError(ConnectionRefusedError('ambiguous'))
+            with patch.object(m.ssl,'create_default_context',return_value=object()),patch.object(m.urllib.request,'urlopen',side_effect=request):
+                proof=m.ArgoProof('https://argo','cps-workflows',token,None,kube_url='https://kube')
+                with self.assertRaises(urllib.error.URLError):proof.kube_request('fixture',{'metadata':{'uid':'fixture-uid'}})
+            self.assertEqual(seen,['PATCH'])

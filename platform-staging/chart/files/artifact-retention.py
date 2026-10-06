@@ -102,11 +102,18 @@ class ArgoProof:
         if not token or any(c.isspace() for c in token):raise ValueError('Projected Argo token missing')
         return token
     def get(self,name):
-        request=urllib.request.Request(self.url+'/api/v1/workflows/'+quote(self.namespace,safe='')+'/'+quote(name,safe=''),headers={'Authorization':'Bearer '+self.token()})
-        with urllib.request.urlopen(request,context=self.context,timeout=15) as response:
-            body=response.read(1048577)
-            if len(body)>1048576:raise ValueError('Oversized Argo proof')
-            return json.loads(body)
+        # Startup qualification observed transient refused connections.
+        # Retry only a refused read; metadata PATCH ambiguity remains fenced.
+        for attempt in range(3):
+            request=urllib.request.Request(self.url+'/api/v1/workflows/'+quote(self.namespace,safe='')+'/'+quote(name,safe=''),headers={'Authorization':'Bearer '+self.token()})
+            try:
+                with urllib.request.urlopen(request,context=self.context,timeout=15) as response:
+                    body=response.read(1048577)
+                    if len(body)>1048576:raise ValueError('Oversized Argo proof')
+                    return json.loads(body)
+            except urllib.error.URLError as exc:
+                if not isinstance(exc.reason,ConnectionRefusedError) or attempt==2:raise
+                time.sleep(attempt+1)
 
 
     def kube_request(self,name,body=None):
