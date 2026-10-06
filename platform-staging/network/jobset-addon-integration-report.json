@@ -1,0 +1,32 @@
+{
+  "namespace": "cps-jobset-logs-d9fad4ef",
+  "production_changed": false,
+  "qualification_scope": "operator-owned CPU JobSet and local authenticated HTTP fixture; not production Hub bridge",
+  "real_owner_filtered_listing": true,
+  "two_synthetic_http_identities": true,
+  "jobset_uid_verified": true,
+  "returned_pod_uid_verified": true,
+  "returned_pods": 1,
+  "foreign_label_only_job_filtered": true,
+  "http": {
+    "anonymous": 401,
+    "other_person": 403,
+    "owner": 200,
+    "excessive_tail": 422
+  },
+  "owned_log_marker": true,
+  "packaging": {
+    "wheel_sha256": "31c1b5307236a3a56feb0945f31e268ac71e750fee66441d9a1a2644c6e97369",
+    "prebuilt_addon_matches_wheel": true,
+    "source_tests_passed": 267,
+    "addon_tests_passed": 7,
+    "admin_tests_passed": 58,
+    "production_deployed": false,
+    "installed_wheel_tests_passed": 267
+  },
+  "compute_revision": "ecca9028cf11c263f1753c4d01200ca753fcfce8",
+  "admin_revision": "cdbc1d7ea848f1d6d791f6bc3aeeba807b7d95b9",
+  "fixture_cleanup_verified": true,
+  "production_deployed": false,
+  "browser_rendering_qualified": false
+}
