@@ -43,3 +43,9 @@ Final Xpra overlay `ghcr.io/mul-cps/cps-jupyter-notebook@sha256:d1a89ef183373c25
 Final MuJoCo/Xpra overlay `ghcr.io/mul-cps/cps-jupyter-notebook@sha256:a7fbf377c7fa077ed1ce3330a898e9ba4f32a6ebbfca6ec5710ebb47063ffe7d` passed the same checks and compiled a small MuJoCo model, advanced 100 physics steps and verified finite state and gravity-induced movement. Versions were MuJoCo 3.15.0 and Gymnasium 1.4.0. GPU EGL rendering remains unqualified. All 44 OCI blob hashes, SPDX/SLSA statements and the published index digest verified.
 
 Evidence is under `notebook-cluster-runtime/`: `desktop-xpra-report.json`, `mujoco-xpra-report.json`, Pod snapshots, exact Jobs, scripts and logs. Completed Jobs were removed. There are now five final overlay candidates; the full twelve-image matrix and production release remain incomplete.
+
+## Minimal CUDA/PyTorch root qualification
+
+`mujoco-base-gpu` is deliberately the minimal CUDA/PyTorch parent; its Dockerfile installs no MuJoCo. The first assigned physics test therefore failed with an absent module after all notebook checks passed. That failed test and Job snapshot are retained. MuJoCo physics belongs to the derived `mujoco-xpra` runtime, which passed it above.
+
+Final base artifact `ghcr.io/mul-cps/cps-jupyter-notebook-mujoco-base-gpu@sha256:5b5898a5f1dfb98a8dde2f313b923f8532267dffb1c1670b19ae56c6b35875b2` passed the restricted notebook tests plus CPU matrix multiplication, autograd and TorchVision import with Torch 2.10.0+cu128 / TorchVision 0.25.0+cu128. Its CUDA build is 12.8; no GPU kernels were run. All 36 OCI blob hashes, SPDX/SLSA statements and the remote index digest verified. Evidence: `notebook-cluster-runtime/mujoco-base-report.json` and `notebook-matrix-resolved/mujoco-base-gpu/`. Six final overlay candidates now have bounded runtime checks; full matrix, hardware and release qualification remain incomplete.
