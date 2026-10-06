@@ -1,0 +1,9 @@
+# Current scraping and Descheduler safety audit
+
+At 2026-10-06, live Prometheus targets were up for both Hubs, Argo, KAI admission/binder/scheduler/queue controller, the resource-isolator monitors, both gateway metrics endpoints and DCGM. The 22 relevant active targets include duplicate monitor discovery; this is a transport inventory, not 22 independent components or proof of correct aggregation. Evidence: `/home/bjoern/cps-platform-evidence/2026-10-06/monitoring-current/report.json`.
+
+Descheduler had no scrape target. Its live five-minute CronJob used v0.34.0 and a policy with priority threshold 11 and PVC protection, but lacked the candidate's restartable-batch opt-in and four gang/JobSet label exclusions. The fallback was suspended; there were no active Jobs at suspension. KAI was neither changed nor stopped. This is a temporary safety measure, not completion of the fallback-removal performance comparison.
+
+Git values now explicitly keep the CronJob suspended. Rendering the pinned 0.34.0 chart confirms the pause, required `descheduler-eligible=true` label and all four DoesNotExist gang exclusions. Both scope tests pass. Candidate rendered manifests, the live before-state and suspension report are retained under `descheduler-scope/` in the private operator archive.
+
+Before resuming, qualify the narrow policy with controlled, non-mutating runtime probes, confirm live policy alignment and implement reliable Descheduler metrics. Short-lived CronJob targets must not be reported as continuous telemetry. The required KAI-with/without-fallback churn comparison, physical free-GPU measurement, startup/wait thresholds and protected-session checks remain open. Do not resume the legacy broad policy or remove the fallback permanently based on scrape health or static scope tests alone.

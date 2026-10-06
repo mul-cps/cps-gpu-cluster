@@ -10,4 +10,13 @@ class DeschedulerScope(unittest.TestCase):
         selector = args.get('labelSelector', {})
         self.assertEqual(selector.get('matchLabels', {}).get('compute.cps.unileoben.ac.at/descheduler-eligible'), 'true')
         self.assertIn({'key': 'pod-group-name', 'operator': 'DoesNotExist'}, selector.get('matchExpressions', []))
+
+    def test_unqualified_fallback_stays_suspended_and_excludes_all_known_gangs(self):
+        v = yaml.safe_load((ROOT/'cluster-maintenance/clusters/cit-cps-gpu/system/descheduler/values.yaml').read_text())
+        self.assertEqual(v['kind'], 'CronJob')
+        self.assertTrue(v['suspend'])
+        expressions=v['deschedulerPolicy']['profiles'][0]['pluginConfig'][0]['args']['labelSelector']['matchExpressions']
+        self.assertEqual({entry['key'] for entry in expressions}, {'pod-group-name','scheduling.k8s.io/group-name','kai.scheduler/podgroup','jobset.sigs.k8s.io/jobset-name'})
+        self.assertTrue(all(entry['operator']=='DoesNotExist' for entry in expressions))
+
 if __name__ == '__main__':unittest.main()

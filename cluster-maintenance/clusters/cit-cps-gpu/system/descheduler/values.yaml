@@ -27,6 +27,9 @@
 
 kind: CronJob
 
+# Legacy live policy lacked opt-in/gang guards; remain paused until runtime qualification.
+suspend: true
+
 # Chart default is */2 * * * * (every 2 minutes); every 5 minutes is plenty
 # for this cluster's scale and reduces churn/API load without meaningfully
 # delaying capacity handoff to interactive users.
