@@ -35,3 +35,7 @@ relied upon to satisfy admission.
 The bounded CPU retry and cleanup gate is documented separately in
 [retry-qualification.md](retry-qualification.md). It does not enable distributed
 GPU access or replace the four/eight-GPU acceptance scenarios.
+
+A controlled four-exclusive-GPU NCCL collective and single retry also passed;
+see [four-gpu-qualification.md](four-gpu-qualification.md). Checkpoint recovery,
+eight-GPU execution and production qualification remain open.
