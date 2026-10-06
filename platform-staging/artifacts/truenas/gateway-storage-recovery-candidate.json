@@ -20,12 +20,15 @@
   "liveRecoveryQualified": true,
   "qualificationPending": [
     "Interruption during an in-flight SSH RPC itself (hard crashes after committed NAS side effects qualified)",
-    "Production storage handover and future parent-mount prevention",
-    "Cross-group privacy and full storage restore/off-host backup"
+    "Production legacy storage handover",
+    "Pod-level direct NFS/RPC egress isolation and cross-group privacy",
+    "Full storage restore/off-host backup"
   ],
   "liveRecoveryScope": "Both CPS/CIT failed provision and failed archive replay on the same fixture database, including handled gateway restart after failures",
   "liveRecoveryEvidence": "gateway-storage-recovery-live-report.json",
   "hardCrashAfterNasMutationQualified": true,
   "podReplacementStateRetentionQualified": true,
-  "hardCrashEvidence": "gateway-storage-hard-crash-report.json"
+  "hardCrashEvidence": "gateway-storage-hard-crash-report.json",
+  "v2KubernetesMountBoundaryQualified": true,
+  "mountBoundaryEvidence": "workspace-mount-boundary-report.json"
 }
