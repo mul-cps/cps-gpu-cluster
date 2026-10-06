@@ -34,8 +34,20 @@ can only further constrain the server's limit:
 [MPS deployment guidance](https://docs.nvidia.com/deploy/mps/latest/when-to-use-mps.html),
 [MPS memory-limit hierarchy](https://docs.nvidia.com/deploy/mps/appendix-environment-variables.html).
 
-Next qualification must establish actual MPS client/server participation and
-test bypass attempts against the combined setup. It must also prove distinct
+A subsequent controlled combined-stack probe mounted the actual MPS pipe and
+shared-memory directory. The MPS controller confirmed a participating client.
+With the fresh HAMi cache and enlarged environment limit, MPS still denied the
+6 GiB allocation. Setting the client pipe to a nonexistent path, while resetting
+the writable HAMi cache, allowed the same 6 GiB allocation. The peer continued
+on the same physical GPU through all six attempts. No daemon limits or compute
+modes were changed, and the probe removed its own pods.
+
+Thus the current **combined HAMi/MPS stack also fails the runtime override gate**.
+Evidence is retained in the operator archive as
+`2026-10-06/gpu-runtime/combined-mps.json`; the report records actual MPS clients,
+CUDA return values, GPU identities and peer progress.
+
+Remaining qualification must prove an authoritative enforcement path, distinct
 5/10/20 GiB profile limits and compatibility with exclusive batch jobs. A single
 daemon-wide ceiling does not establish those distinct per-profile limits.
 Do not change production compute modes while existing sessions are active.
