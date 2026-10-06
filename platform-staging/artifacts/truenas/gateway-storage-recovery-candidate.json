@@ -17,10 +17,12 @@
   "imagePipCheck": "passed",
   "remoteIndexVerified": true,
   "productionDeployed": false,
-  "liveRecoveryQualified": false,
+  "liveRecoveryQualified": true,
   "qualificationPending": [
-    "Authenticated fixture failure/retry without database reset",
-    "Gateway restart with same state and interrupted operation",
-    "Production storage handover and future parent-mount prevention"
-  ]
+    "Hard process crash during an in-flight NAS mutation (handled restart after failed operation qualified)",
+    "Production storage handover and future parent-mount prevention",
+    "Cross-group privacy and full storage restore/off-host backup"
+  ],
+  "liveRecoveryScope": "Both CPS/CIT failed provision and failed archive replay on the same fixture database, including handled gateway restart after failures",
+  "liveRecoveryEvidence": "gateway-storage-recovery-live-report.json"
 }
