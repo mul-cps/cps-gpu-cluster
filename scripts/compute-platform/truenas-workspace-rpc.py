@@ -42,6 +42,30 @@ def lookup(dataset, call):
     return rows[0] if rows else None
 
 
+def verify_private_permissions(row, path, call):
+    """Read-only gate; never repair existing data or inherited ACLs implicitly."""
+    if (row.get('acltype', {}).get('value') != 'POSIX'
+            or row.get('aclmode', {}).get('value') != 'DISCARD'):
+        raise ValueError('Private POSIX/DISCARD workspace dataset required')
+    metadata = call('filesystem.stat', path)
+    if (metadata.get('realpath') != path or metadata.get('type') != 'DIRECTORY'
+            or metadata.get('uid') != 1000 or metadata.get('gid') != 1000
+            or not isinstance(metadata.get('mode'), int) or metadata['mode'] & 0o7777 != 0o770):
+        raise ValueError('Verified workspace ownership and mode 0770 required')
+    acl = call('filesystem.getacl', path)
+    entries = acl.get('acl', [])
+    if (acl.get('acltype') != 'POSIX1E' or acl.get('trivial') is not True
+            or acl.get('uid') != 1000 or acl.get('gid') != 1000
+            or len(entries) != 3 or {e.get('tag') for e in entries} != {'USER_OBJ', 'GROUP_OBJ', 'OTHER'}):
+        raise ValueError('Trivial private workspace ACL required')
+    for entry in entries:
+        expected = {key: entry['tag'] != 'OTHER' for key in ('READ', 'WRITE', 'EXECUTE')}
+        if entry.get('id') != -1 or entry.get('default') is not False or entry.get('perms') != expected:
+            raise ValueError('Inherited or extended workspace ACL not qualified')
+    return {'permissions_verified': True, 'acltype': 'POSIX1E', 'aclmode': 'DISCARD',
+            'uid': 1000, 'gid': 1000, 'mode': '0770', 'default_acl': False}
+
+
 def execute(data, dataset, call=middleware):
     row = lookup(dataset, call)
     if data['action'] == 'provision' and row is None:
@@ -66,8 +90,10 @@ def execute(data, dataset, call=middleware):
     readonly = row.get('readonly', {}).get('value') == 'ON'
     if data['action'] == 'provision' and readonly:
         raise ValueError('Archived workspace cannot become writable')
+    permissions = {}
     if data['action'] == 'provision':
         path = '/mnt/' + dataset
+        permissions = verify_private_permissions(row, path, call)
         shares = call('sharing.nfs.query', [['path', '=', path]])
         if not shares:
             call('sharing.nfs.create', {'path': path, 'networks': ['10.71.1.0/24', '10.21.0.0/16'], 'enabled': True, 'ro': False, 'comment': 'CPS compute retained group workspace'})
@@ -76,7 +102,7 @@ def execute(data, dataset, call=middleware):
     if data['action'] == 'archive' and not readonly:
         raise ValueError('Read-only property was not verified')
     return {'path': '/mnt/' + dataset, 'read_only': readonly, 'immutable': readonly,
-            'files_preserved': True, 'evidence': {'dataset': dataset, 'readonly': readonly, 'mechanism': 'zfs-readonly'}}
+            'files_preserved': True, 'evidence': {'dataset': dataset, 'readonly': readonly, 'mechanism': 'zfs-readonly', **permissions}}
 
 
 if __name__ == '__main__':
