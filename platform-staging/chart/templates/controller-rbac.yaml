@@ -94,13 +94,13 @@ spec:
     - expression: >-
         object.metadata.name.matches('^cps-workspace-[a-f0-9]{40}$') &&
         has(object.spec.nfs) && object.spec.nfs.server == '193.170.30.58' &&
-        object.spec.nfs.path.matches('^/mnt/persistent1/cps_persistent1_shared/compute/(cps|cit)/[a-f0-9]{64}$') &&
+        object.spec.nfs.path.matches('^/mnt/persistent1/(cps_persistent1_shared/compute|cps_compute_workspaces)/(cps|cit)/[a-f0-9]{64}$') &&
         object.spec.persistentVolumeReclaimPolicy == 'Retain' &&
         (!has(object.spec.storageClassName) || object.spec.storageClassName == '') &&
         object.spec.accessModes == ['ReadWriteMany'] &&
         has(object.spec.claimRef) && object.spec.claimRef.name == object.metadata.name &&
         object.spec.claimRef.namespace in ['jupyterhub', 'cit-jhub'] &&
-        (object.spec.nfs.path.contains('/compute/cps/') ? object.spec.claimRef.namespace == 'jupyterhub' : object.spec.claimRef.namespace == 'cit-jhub')
+        (object.spec.nfs.path.matches('/cps/[a-f0-9]{64}$') ? object.spec.claimRef.namespace == 'jupyterhub' : object.spec.claimRef.namespace == 'cit-jhub')
       message: Compute controller may create only retained, source-bound NFS workspace volumes
 ---
 apiVersion: admissionregistration.k8s.io/v1
