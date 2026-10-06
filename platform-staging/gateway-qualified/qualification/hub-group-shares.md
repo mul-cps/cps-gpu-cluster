@@ -44,3 +44,9 @@ The member-removal sequence confirmed workspace shutdown before changing members
 Private evidence: `hub-kubespawner-rtc/rtc-report.json` and `qualify-rtc.py` under the operator evidence root above. This establishes the fixture's shared-state, connection closure and restart retention checks. It does not prove the production membership API invokes this sequence, production browser behavior, cross-Hub reservations, grant migration or production authentication. Those remain gates.
 
 The owned Hub/proxy deployments, ClusterIP services and Kubernetes fixture authentication/pull secrets were removed after testing. The dedicated retained NFS test directory, PV/PVC and private evidence remain for review; no human data was removed.
+
+## Admin handler membership-removal integration
+
+The same live Hub/NFS/RTC scenario passed through the actual `WorkspaceHandler` HTTP route and `WorkspaceService.remove_member`, using admin source `0ef266ba721f07a7b19b841d1dbbbd06818cb620`. The synthetic instructor was authorized by the real pinned RBAC implementation and current Hub group `lms.course.course.term.fixture.instructor`, without Hub administrator status. The handler stopped the workspace, removed the membership, reconciled Shares and persisted the interruption notice. Both open RTC transports closed, the edit survived restart, and the removed member lost shared access. Final shutdown was confirmed.
+
+Private evidence: `hub-kubespawner-rtc/admin-handler-rtc-report.json` and `qualify-admin-handler-rtc.py`. Scope boundary: the loopback handler used an isolated synthetic authentication key, and its CPU accounting stub asserted confirmed shutdown without exercising GPU reservation release. Production OAuth, actual shared accounting, global concurrency and rendered UI remain unqualified. This adds real application-handler/lifecycle evidence to the protocol fixture rather than claiming production rollout.
