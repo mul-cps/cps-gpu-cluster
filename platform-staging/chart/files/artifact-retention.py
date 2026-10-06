@@ -256,4 +256,7 @@ def main():
     report=sweep(s3,settings['bucket'],proof,apply=args.apply,max_deletes=args.max_deletes,max_examined=args.max_examined,prefix=args.prefix,conditional_delete_qualified=settings.get('conditionalDeleteQualified') is True,lifecycle_qualified=settings.get('lifecycleQualified') is True,reconcile_metadata=args.reconcile_metadata)
     report.update(version=1,image=settings['image'],policy_hash=settings['policyHash'])
     print(json.dumps(report,indent=2))
+    # Preserving unknown objects is safe, but the scheduled job must expose
+    # incomplete proof/telemetry to operators rather than report success.
+    if report['errors']:raise SystemExit(1)
 if __name__=='__main__':main()

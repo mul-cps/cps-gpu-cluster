@@ -237,3 +237,25 @@ class ProofTransport(unittest.TestCase):
                 proof=m.ArgoProof('https://argo','cps-workflows',token,None,kube_url='https://kube')
                 with self.assertRaises(urllib.error.URLError):proof.kube_request('fixture',{'metadata':{'uid':'fixture-uid'}})
             self.assertEqual(seen,['PATCH'])
+
+
+class RetentionJobOutcome(unittest.TestCase):
+    def test_unknown_object_proof_fails_job_without_deleting_and_prints_report(self):
+        import sys
+        from types import SimpleNamespace
+        now=datetime.now(timezone.utc);s3=S3(now);proof=Proof(now)
+        s3.head_object=lambda **kw: (_ for _ in ()).throw(RuntimeError('Proof unavailable'))
+        modules={'boto3':SimpleNamespace(client=lambda *a,**kw:s3),
+                 'botocore':SimpleNamespace(), 'botocore.client':SimpleNamespace(Config=lambda **kw:kw)}
+        with tempfile.TemporaryDirectory() as directory:
+            root=Path(directory)
+            for name in ('access','secret'): (root/name).write_text('fixture-only')
+            settings={'version':1,'image':'registry.invalid/image@sha256:'+'a'*64,'policyHash':'sha256:'+'a'*64,
+                      'endpoint':'https://s3.invalid','accessKeyFile':str(root/'access'),'secretKeyFile':str(root/'secret'),
+                      'ca':None,'argoUrl':'https://argo.invalid','namespace':'cps-workflows','argoTokenFile':'unused','bucket':'bucket'}
+            config=root/'config.json';config.write_text(json.dumps(settings));output=io.StringIO()
+            with patch.dict(sys.modules,modules),patch.object(sys,'argv',['retention','--config',str(config)]),patch.object(m,'ArgoProof',return_value=proof),patch('sys.stdout',output):
+                with self.assertRaises(SystemExit) as failure:m.main()
+            self.assertEqual(failure.exception.code,1)
+            report=json.loads(output.getvalue());self.assertEqual(report['errors'],1);self.assertEqual(report['deleted'],0)
+            self.assertFalse(s3.deleted)
