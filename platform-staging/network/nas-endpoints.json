@@ -1,0 +1,5 @@
+{
+  "schemaVersion": 1,
+  "blockedPodDestinations": ["193.170.30.58/32", "10.71.1.55/32"],
+  "scope": "Known IPv4 NAS service addresses; keep node-side NFS mounts unchanged"
+}

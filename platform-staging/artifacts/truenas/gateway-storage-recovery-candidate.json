@@ -19,9 +19,9 @@
   "productionDeployed": false,
   "liveRecoveryQualified": true,
   "qualificationPending": [
+    "Legacy Dask token/resource-template permissions and namespace-wide Pod egress coverage",
     "Interruption during an in-flight SSH RPC itself (hard crashes after committed NAS side effects qualified)",
-    "Production legacy storage handover",
-    "Pod-level direct NFS/RPC egress isolation and cross-group privacy",
+    "Production legacy storage handover and cross-group file authorization",
     "Full storage restore/off-host backup"
   ],
   "liveRecoveryScope": "Both CPS/CIT failed provision and failed archive replay on the same fixture database, including handled gateway restart after failures",
@@ -30,5 +30,8 @@
   "podReplacementStateRetentionQualified": true,
   "hardCrashEvidence": "gateway-storage-hard-crash-report.json",
   "v2KubernetesMountBoundaryQualified": true,
-  "mountBoundaryEvidence": "workspace-mount-boundary-report.json"
+  "mountBoundaryEvidence": "workspace-mount-boundary-report.json",
+  "podNasEgressFixtureQualified": true,
+  "podNasEgressProductionQualified": false,
+  "podNasEgressEvidence": "../../network/nas-egress-qualification-report.json"
 }
