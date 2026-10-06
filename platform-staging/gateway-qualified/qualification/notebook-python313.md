@@ -35,3 +35,11 @@ The standard CPU candidate also passed a Kubernetes Job with Pod Security restri
 Base GPU candidate `ghcr.io/mul-cps/cps-jupyter-notebook-base-gpu@sha256:7672b3b4c8efa60bb41e6b614254c7cf834e77033690c94c4844feef83835966` passed the same notebook execution checks under those restrictions. Its 73 OCI blob hashes, SPDX/SLSA statements and published index digest verified. Python was 3.13.14, with Lab 4.5.7, RTC 4.4.1 and Papermill 2.7.0. This validates the installed notebook runtime without granting a GPU: CUDA execution, memory isolation, specialized libraries, production RTC and the full release matrix remain separate incomplete gates.
 
 Private evidence: `notebook-cluster-runtime/{standard-cpu,base-gpu}-report.json`, exact Job manifests and runtime logs, plus `notebook-matrix-resolved/base-gpu/oci-report.json`. Completed Jobs were removed after collecting evidence. The candidate inventory now has three final overlay images and remains `qualified=false`, without a source tag.
+
+## Xpra and MuJoCo/Xpra backend checks
+
+Final Xpra overlay `ghcr.io/mul-cps/cps-jupyter-notebook@sha256:d1a89ef183373c254b10522ed171aec8e6ca6e8dc0e6b6711f8b2a07ea0513eb` passed the restricted notebook runtime and a headless non-root Xpra/XFCE test. Its local control socket responded and the VirtualGL wrapper's CPU fallback worked. The test explicitly placed all Xpra sockets under writable `/tmp`; initial attempts exposed Xpra's default additional socket directory under the read-only home. No rendered browser or GPU graphics were qualified.
+
+Final MuJoCo/Xpra overlay `ghcr.io/mul-cps/cps-jupyter-notebook@sha256:a7fbf377c7fa077ed1ce3330a898e9ba4f32a6ebbfca6ec5710ebb47063ffe7d` passed the same checks and compiled a small MuJoCo model, advanced 100 physics steps and verified finite state and gravity-induced movement. Versions were MuJoCo 3.15.0 and Gymnasium 1.4.0. GPU EGL rendering remains unqualified. All 44 OCI blob hashes, SPDX/SLSA statements and the published index digest verified.
+
+Evidence is under `notebook-cluster-runtime/`: `desktop-xpra-report.json`, `mujoco-xpra-report.json`, Pod snapshots, exact Jobs, scripts and logs. Completed Jobs were removed. There are now five final overlay candidates; the full twelve-image matrix and production release remain incomplete.
