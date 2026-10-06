@@ -9,6 +9,7 @@ import subprocess
 import sys
 
 ROOT = 'persistent1/cps_persistent1_shared/compute'
+ROOTS = {1: ROOT, 2: 'persistent1/cps_compute_workspaces'}
 
 
 def request(command):
@@ -18,7 +19,7 @@ def request(command):
     data = json.loads(base64.b64decode(words[1], validate=True))
     if set(data) != {'version', 'action', 'source', 'group_id', 'actor', 'workspaces'}:
         raise ValueError('Unexpected RPC fields')
-    if data['version'] != 1 or data['source'] not in ('cps', 'cit') or data['action'] not in ('provision', 'archive', 'status'):
+    if type(data['version']) is not int or data['version'] not in ROOTS or data['source'] not in ('cps', 'cit') or data['action'] not in ('provision', 'archive', 'status'):
         raise ValueError('Unsupported RPC')
     if not isinstance(data['group_id'], str) or not data['group_id'].strip() or len(data['group_id']) > 256:
         raise ValueError('Invalid group')
@@ -27,7 +28,7 @@ def request(command):
     if not isinstance(data['workspaces'], list) or len(data['workspaces']) > 256 or any(not isinstance(x, str) or len(x) > 256 for x in data['workspaces']):
         raise ValueError('Invalid workspace evidence')
     digest = hashlib.sha256((data['source'] + '\0' + data['group_id']).encode()).hexdigest()
-    return data, ROOT + '/' + data['source'] + '/' + digest
+    return data, ROOTS[data['version']] + '/' + data['source'] + '/' + digest
 
 
 def middleware(method, *args):
@@ -67,9 +68,15 @@ def verify_private_permissions(row, path, call):
 
 
 def execute(data, dataset, call=middleware):
+    if type(data.get('version')) is not int or data['version'] not in ROOTS:
+        raise ValueError('Unsupported storage version')
+    root = ROOTS[data['version']]
+    digest = hashlib.sha256((data['source'] + '\0' + data['group_id']).encode()).hexdigest()
+    if dataset != root + '/' + data['source'] + '/' + digest:
+        raise ValueError('Storage version/path mismatch')
     row = lookup(dataset, call)
     if data['action'] == 'provision' and row is None:
-        for parent in (ROOT, ROOT + '/' + data['source']):
+        for parent in (root, root + '/' + data['source']):
             if lookup(parent, call) is None:
                 call('pool.dataset.create', {'name': parent, 'type': 'FILESYSTEM', 'acltype': 'POSIX', 'aclmode': 'DISCARD'})
         call('pool.dataset.create', {'name': dataset, 'type': 'FILESYSTEM', 'acltype': 'POSIX', 'aclmode': 'DISCARD'})

@@ -87,5 +87,37 @@ class WorkspaceRPCTests(unittest.TestCase):
                 self.assertNotIn('filesystem.setperm', calls)
 
 
+    def test_v2_uses_isolated_root_without_changing_v1_identifiers(self):
+        _, legacy = rpc.request(self.payload(version=1))
+        _, isolated = rpc.request(self.payload(version=2))
+        self.assertEqual(legacy.rsplit('/', 1)[0], 'persistent1/cps_persistent1_shared/compute/cps')
+        self.assertEqual(isolated.rsplit('/', 1)[0], 'persistent1/cps_compute_workspaces/cps')
+        self.assertEqual(legacy.rsplit('/', 1)[1], isolated.rsplit('/', 1)[1])
+        for version in (True, False, 0, 3, '2'):
+            with self.subTest(version=version), self.assertRaises(ValueError):
+                rpc.request(self.payload(version=version))
+
+    def test_v2_provision_only_creates_isolated_parents(self):
+        data, path = rpc.request(self.payload(version=2, action='provision'))
+        created = []
+        class StopBeforePermissions(Exception): pass
+        def call(method, *args):
+            if method == 'pool.dataset.query': return []
+            if method == 'pool.dataset.create':
+                created.append(args[0]['name'])
+                if len(created) == 3: raise StopBeforePermissions()
+                return {}
+            raise AssertionError(method)
+        with self.assertRaises(StopBeforePermissions): rpc.execute(data, path, call)
+        self.assertEqual(created, ['persistent1/cps_compute_workspaces',
+                                   'persistent1/cps_compute_workspaces/cps', path])
+
+    def test_execute_refuses_version_path_mismatch_before_middleware(self):
+        data, legacy = rpc.request(self.payload(version=1, action='provision'))
+        data['version'] = 2
+        def call(*args): raise AssertionError('Mismatch must not reach middleware')
+        with self.assertRaises(ValueError): rpc.execute(data, legacy, call)
+
+
 if __name__ == '__main__':
     unittest.main()
