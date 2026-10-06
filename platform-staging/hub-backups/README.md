@@ -18,3 +18,14 @@ The daily schedule is **02:31 UTC**, concurrency is forbidden and the deadline i
 For recovery, export an archive and its manifest using a credential-free reader pod with a read-only mount on the database node. Verify its checksum, restore to a fresh isolated database using the recorded image version, and initialize the matching Hub image against the restored database. Never apply exported production Secrets or start restored Hub services in a connected test environment without an explicit reviewed recovery procedure.
 
 Qualification evidence is private under `/home/bjoern/cps-platform-evidence/2026-10-06/hub-scheduled-backup/`: one-shot Job reports, checksummed job archives, matching isolated restore reports and a controller-trigger report. The restore tests verify Hub schema `4621fec11365`, 17 tables and six CPS/thirteen CIT users. They do not cover row-by-row comparison, PostgreSQL roles/ACLs, production OAuth, server spawning, NFS recovery, off-host durability or a complete platform restore. Those remain release gates. See [Hub recovery evidence](../gateway-qualified/qualification/hub-database-restore.md).
+
+## Operational alerts
+
+`alerts.yaml` supplies five dedicated Rancher Monitoring rules: stale success (>26 hours), absent expected CronJob telemetry, no success telemetry after two hours, suspended backups and failed owned Jobs. Successful historical runs do not suppress a retained failed-Job alert; inspect and resolve the failure. Prometheus confirmed successful-run metrics for both Hubs. Free-space samples for these PVCs were absent during qualification, so this deployment does not claim continuous filesystem-capacity telemetry.
+
+```sh
+kubectl apply -f platform-staging/hub-backups/alerts.yaml
+python tests/observability/check_hub_backup_alerts.py
+```
+
+The checker extracts the Kubernetes rule spec and runs `promtool` syntax validation plus six synthetic metric scenarios. To use the exact deployed Prometheus image, pull the digest named in the checker and run with `--podman`; containers have networking disabled and no cluster credentials. Live rule-loading/health evidence is under `/home/bjoern/cps-platform-evidence/2026-10-06/hub-backup-alerts/`. Loading and evaluating rules does not qualify notification delivery, backup durability or full recovery.

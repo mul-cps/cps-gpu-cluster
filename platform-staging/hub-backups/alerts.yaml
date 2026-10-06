@@ -1,0 +1,46 @@
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  name: cps-hub-backup-readiness
+  namespace: cattle-monitoring-system
+  labels:
+    release: rancher-monitoring
+spec:
+  groups:
+    - name: cps.hub.backups
+      rules:
+        - alert: HubDatabaseBackupStale
+          expr: time() - max by (namespace, cronjob) (kube_cronjob_status_last_successful_time{namespace=~"jupyterhub|cit-jhub",cronjob=~"(cps|cit)-hub-postgresql-backup"}) > 93600
+          for: 15m
+          labels: {severity: critical}
+          annotations:
+            summary: Hub database backup has not succeeded for over 26 hours
+            description: Check the backup Job, database connectivity, credentials and backup volume capacity. A previous successful capture does not prove a recent recoverable backup.
+        - alert: HubDatabaseBackupMissing
+          expr: absent(kube_cronjob_info{namespace="jupyterhub",cronjob="cps-hub-postgresql-backup"}) or absent(kube_cronjob_info{namespace="cit-jhub",cronjob="cit-hub-postgresql-backup"})
+          for: 15m
+          labels: {severity: critical}
+          annotations:
+            summary: Expected Hub database backup CronJob metrics are absent
+            description: Check whether the CronJob exists and kube-state-metrics is healthy. Missing telemetry is unknown, not a successful backup.
+        - alert: HubDatabaseBackupNeverSucceeded
+          expr: (time() - kube_cronjob_created{namespace=~"jupyterhub|cit-jhub",cronjob=~"(cps|cit)-hub-postgresql-backup"} > 7200) unless on (namespace, cronjob) kube_cronjob_status_last_successful_time{namespace=~"jupyterhub|cit-jhub",cronjob=~"(cps|cit)-hub-postgresql-backup"}
+          for: 15m
+          labels: {severity: warning}
+          annotations:
+            summary: Hub database backup has no successful-run telemetry
+            description: Qualify a one-shot backup and restore after installation; investigate missing last-success metrics.
+        - alert: HubDatabaseBackupSuspended
+          expr: kube_cronjob_spec_suspend{namespace=~"jupyterhub|cit-jhub",cronjob=~"(cps|cit)-hub-postgresql-backup"} == 1
+          for: 15m
+          labels: {severity: warning}
+          annotations:
+            summary: Daily Hub database backup is suspended
+            description: Check whether suspension is an intentional maintenance operation and resume qualified backups afterward.
+        - alert: HubDatabaseBackupJobFailed
+          expr: (kube_job_status_failed{namespace=~"jupyterhub|cit-jhub"} > 0) * on (namespace, job_name) group_left (owner_name) kube_job_owner{namespace=~"jupyterhub|cit-jhub",owner_kind="CronJob",owner_name=~"(cps|cit)-hub-postgresql-backup"}
+          for: 5m
+          labels: {severity: warning}
+          annotations:
+            summary: A Hub database backup Job failed
+            description: Inspect the failed Job and volume capacity. Completed older backups are retained; this failure requires investigation even if a later run succeeds.
