@@ -69,11 +69,18 @@ def backup(destination):
             pod_file = staging / f'{namespace}-running-images.txt'
             capture(['get', 'pods', '-n', namespace, '-o',
                      'jsonpath={range .items[*]}{.metadata.name}{"\\t"}{range .status.containerStatuses[*]}{.name}{"="}{.imageID}{" "}{end}{"\\n"}{end}'], pod_file)
+            # Role/password-hash export requires the existing PostgreSQL admin.
+            # Credentials stay inside their database pod and private bundle.
+            admin = ('export PGPASSWORD="$POSTGRES_PASSWORD"; user="$POSTGRES_USER"; '
+                     if namespace == 'jupyterhub' else
+                     'export PGPASSWORD="$POSTGRES_POSTGRES_PASSWORD"; user=postgres; ')
             dump = staging / f'{namespace}.pgdump'
             capture(['exec', '-n', namespace, workload, '--', 'sh', '-ec',
-                     'export PGPASSWORD="$POSTGRES_PASSWORD"; exec pg_dump '
-                     '--format=custom --no-owner --no-acl --username="$POSTGRES_USER" '
+                     admin + 'exec pg_dump --format=custom --create --username="$user" '
                      f'--dbname="${db_var}"'], dump)
+            capture(['exec', '-n', namespace, workload, '--', 'sh', '-ec',
+                     admin + 'exec pg_dumpall --roles-only --username="$user"'],
+                    staging / f'{namespace}-roles.sql')
             with dump.open('rb') as source:
                 if source.read(5) != b'PGDMP':
                     raise ValueError('Expected a PostgreSQL custom-format dump; no bundle published')
@@ -82,7 +89,8 @@ def backup(destination):
             'files': {p.name: {'sha256': digest(p), 'bytes': p.stat().st_size}
                       for p in sorted(staging.iterdir())},
             'limitations': ['Sequential captures, not a cluster-wide atomic snapshot',
-                            'Database owners, ACLs and cluster roles are excluded',
+                            'Role and database captures are sequential; changes require a coordinated window',
+                            'Tablespaces and cluster-wide configuration are excluded',
                             'No NFS data or volume backup', 'No off-host copy',
                             'Successful capture is not demonstrated recovery'],
         }
