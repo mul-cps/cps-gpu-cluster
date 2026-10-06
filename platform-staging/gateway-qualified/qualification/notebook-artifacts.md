@@ -46,9 +46,14 @@ permission. Its report SHA-256 is `b91a58c79164e7116126152027b64a27782a03ee3fe8e
 Authentication failures and ambiguous metadata PATCH failures are never
 transport-retried.
 
-Scheduled cleanup remains suspended: its persistent ConfigMap/template still
-needs the current image/settings, and permanent provenance write restrictions
-and activation qualification remain open. The final notebook-image matrix,
+The persistent ConfigMap and suspended CronJob now use the current script,
+image, central policy hash and Kubernetes CA mount. An actual job cloned from
+that template ran the CLI in dry-run mode: 25 objects examined, zero errors,
+zero deletions and no metadata reconciliation. Its report SHA-256 is
+`28ee123c2f5c85191e049a7aa37e37ebbd0f0a43926e592a5573da9e7165ffe5`.
+
+Scheduled cleanup remains suspended while permanent provenance write
+restrictions and mutation activation qualification remain open. The final notebook-image matrix,
 canonical human identities, Hub grant migration and real browser/RTC scenarios
 remain open. These reports do not satisfy the catalog's all-scenario release
 gate. See [canonical compute application documentation](https://github.com/mul-cps/cps-compute)
