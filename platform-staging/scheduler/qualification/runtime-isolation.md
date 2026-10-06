@@ -19,6 +19,27 @@ arbitrary notebook code. The probe freed the allocation, kept the peer working,
 used a pinned trusted image, and deleted only its own ephemeral pods. It did not
 change MPS server configuration, teaching sessions, quotas or grants.
 
+### Combined-stack evidence boundary
+
+A follow-up read-only inspection confirmed that the source fixture
+`hami-20g-peer` has neither an MPS socket mount nor an MPS connection environment.
+The runtime probe therefore exercises **HAMi alone**, not a qualified HAMi/MPS
+combination. Its failure remains valid evidence for that scope.
+
+The live standalone MPS daemon explicitly runs `nvidia-smi -c DEFAULT` every
+five seconds. Both GPUs on the inspected idle node report Default mode. This
+does not enforce MPS as the sole CUDA arbiter. NVIDIA recommends
+`EXCLUSIVE_PROCESS` for that purpose, and documents that client memory limits
+can only further constrain the server's limit:
+[MPS deployment guidance](https://docs.nvidia.com/deploy/mps/latest/when-to-use-mps.html),
+[MPS memory-limit hierarchy](https://docs.nvidia.com/deploy/mps/appendix-environment-variables.html).
+
+Next qualification must establish actual MPS client/server participation and
+test bypass attempts against the combined setup. It must also prove distinct
+5/10/20 GiB profile limits and compatibility with exclusive batch jobs. A single
+daemon-wide ceiling does not establish those distinct per-profile limits.
+Do not change production compute modes while existing sessions are active.
+
 The probe runner is `scripts/compute-platform/qualify-gpu-runtime.py`. It refuses
 nodes with an active GPU workload/reservation, requires the scoped qualification
 namespace, bounds allocations and pod lifetimes, and records negative evidence.
@@ -39,8 +60,8 @@ The core also documents environment-controlled limits and resetting the local
 cache when changing them:
 [HAMi-core usage](https://github.com/Project-HAMi/HAMi-core).
 
-If quotas must survive arbitrary notebook code, qualify a hardware-backed design
-rather than merely suppressing one environment override. MIG offers dedicated
+If quotas must survive arbitrary notebook code, qualify the complete enforcement
+path rather than merely suppressing one environment override. MIG offers dedicated
 compute and memory paths, but changes packing/reconfiguration and exclusive-job
 behavior; it needs a reviewed policy/scheduling migration:
 [NVIDIA MIG introduction](https://docs.nvidia.com/datacenter/tesla/mig-user-guide/latest/introduction.html).
