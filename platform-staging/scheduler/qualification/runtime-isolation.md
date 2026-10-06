@@ -57,6 +57,21 @@ nodes with an active GPU workload/reservation, requires the scoped qualification
 namespace, bounds allocations and pod lifetimes, and records negative evidence.
 Its safety guards have dedicated tests. Never run it from a public PR runner.
 
+To reproduce the combined-stack test on a node that the guards confirm idle:
+
+```sh
+python3 scripts/compute-platform/qualify-gpu-runtime.py \
+  --node k3s-wk-gpu2 --mps \
+  --output /private/operator-evidence/combined-mps.json
+```
+
+`--mps` requires exactly one Ready standalone MPS daemon on that node, uses its
+existing socket/shared-memory directories, checks the controller for active
+clients while the peer is ready, and adds the disconnected-MPS attempt. It does
+not create directories, set server limits or change compute modes. An absent
+participant leaves the report incomplete and cleans up the created probe pods.
+A failed quota gate exits nonzero and must not be treated as rollout approval.
+
 The live resource-isolator webhook was also missing its reviewed scheduler
 condition; it now applies only to namespaces labeled
 `compute.cps.unileoben.ac.at/isolation=required` and Pods using `kai-scheduler`.
