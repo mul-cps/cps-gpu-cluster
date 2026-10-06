@@ -72,3 +72,8 @@ Private evidence, captured files and executable fixtures are under
 `cps-platform-evidence/2026-10-06/jobset-checkpoint/`. Outstanding gates include
 private creation permissions, real project provisioning/authorization, deployment
 of matching application artifacts, eight-GPU recovery and broader scheduling.
+
+A subsequent fixture-only correction and installed-wheel test are recorded in
+[checkpoint-acl-qualification.md](checkpoint-acl-qualification.md). New-file
+creation and non-owner data denial now pass on that corrected fixture; this
+historical report preserves the original failure and is not production approval.

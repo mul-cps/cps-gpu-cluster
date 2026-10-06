@@ -1,0 +1,137 @@
+{
+  "path": "/mnt/persistent1/cps_persistent1_shared/qualification-hub-rtc-20261006/jobset-checkpoint-f6f8e940",
+  "scope": "qualification directory and four known synthetic artifacts only; no production export/dataset/ancestor changes",
+  "recursive": false,
+  "directoryACL": [
+    {
+      "tag": "owner@",
+      "id": -1,
+      "type": "ALLOW",
+      "perms": {
+        "BASIC": "FULL_CONTROL"
+      },
+      "flags": {
+        "DIRECTORY_INHERIT": true,
+        "FILE_INHERIT": false
+      }
+    },
+    {
+      "tag": "owner@",
+      "id": -1,
+      "type": "ALLOW",
+      "perms": {
+        "READ_DATA": true,
+        "WRITE_DATA": true,
+        "APPEND_DATA": true,
+        "READ_NAMED_ATTRS": true,
+        "WRITE_NAMED_ATTRS": true,
+        "DELETE": true,
+        "READ_ATTRIBUTES": true,
+        "WRITE_ATTRIBUTES": true,
+        "READ_ACL": true,
+        "WRITE_ACL": true,
+        "WRITE_OWNER": true,
+        "SYNCHRONIZE": true,
+        "EXECUTE": false,
+        "DELETE_CHILD": false
+      },
+      "flags": {
+        "DIRECTORY_INHERIT": true,
+        "FILE_INHERIT": true,
+        "INHERIT_ONLY": true
+      }
+    },
+    {
+      "tag": "everyone@",
+      "id": -1,
+      "type": "ALLOW",
+      "perms": {
+        "BASIC": "READ"
+      },
+      "flags": {
+        "BASIC": "NOINHERIT"
+      }
+    }
+  ],
+  "creationProbe": {
+    "umask": "0o77",
+    "results": [
+      {
+        "requested": "0o600",
+        "created": "0o600",
+        "afterChmod": "0o600",
+        "uid": 1000
+      },
+      {
+        "requested": "0o666",
+        "created": "0o600",
+        "afterChmod": "0o600",
+        "uid": 1000
+      },
+      {
+        "requested": "0o700",
+        "created": "0o600",
+        "afterChmod": "0o600",
+        "uid": 1000
+      }
+    ],
+    "parentMode": "0o2770"
+  },
+  "accessProbes": [
+    {
+      "uid": 1000,
+      "gid": 100,
+      "access": {
+        "read": "allowed",
+        "write": "allowed"
+      },
+      "metadataAccessible": true
+    },
+    {
+      "uid": 1001,
+      "gid": 100,
+      "access": {
+        "read": "denied",
+        "write": "denied"
+      },
+      "metadataAccessible": false
+    },
+    {
+      "uid": 950,
+      "gid": 100,
+      "access": {
+        "read": "denied",
+        "write": "denied"
+      },
+      "metadataAccessible": true
+    }
+  ],
+  "securedExistingArtifacts": [
+    {
+      "name": "cps-js-4a3ccd90b50d70260850172b3482f461.pt",
+      "beforeACECount": 5,
+      "afterACECount": 1
+    },
+    {
+      "name": "cps-js-dc07fbd5d90ae50a56c4fda92d753fd5-final.json",
+      "beforeACECount": 5,
+      "afterACECount": 1
+    },
+    {
+      "name": "cps-js-4a3ccd90b50d70260850172b3482f461-final.json",
+      "beforeACECount": 5,
+      "afterACECount": 1
+    },
+    {
+      "name": "cps-js-dc07fbd5d90ae50a56c4fda92d753fd5.pt",
+      "beforeACECount": 5,
+      "afterACECount": 1
+    }
+  ],
+  "requestedProtectedFlag": true,
+  "observedProtectedFlag": false,
+  "fixturePrivateCreationPassed": true,
+  "productionStorageQualified": false,
+  "rollbackEvidence": "private nfs-checkpoint-acl/before.json and per-file ACL backups",
+  "artifactContentsPreserved": true
+}
