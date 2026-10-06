@@ -40,7 +40,7 @@ DASHBOARDS={
 ' teaching-readiness'.strip(): ('Teaching/Exam Readiness', [
  ('Spawn p95, target 180s', SPAWN_P95, 's'),
  ('Protected sessions (policy controller required)', fresh('cps_compute_protected_sessions'), 'short'),
- ('Reservation conflicts (gateway required)', fresh_rate('cps_compute_reservation_conflicts_total','increase'), 'short'),
+ ('Reservation acquisition conflicts', fresh_rate('cps_compute_reservation_conflicts_total','increase'), 'short'),
  ('Physical free GPUs (controller required)', fresh('cps_compute_physical_free_gpus'), 'short'),
  ('Current protection class (controller required)', fresh('cps_compute_teaching_priority'), 'short'),
 ]),
@@ -49,9 +49,9 @@ for slug,(title,items) in DASHBOARDS.items():
     panels=[{'id':1,'type':'text','title':'Evidence boundary','gridPos':{'h':4,'w':24,'x':0,'y':0},
              'options':{'mode':'markdown','content':'Missing or stale series mean **unavailable**, never zero. Physical free GPUs require placement/UUID accounting; VRAM and utilization are separate. Panels naming a required controller/isolator stay unknown until that exporter is deployed. Spawn histogram does not prove a representative pre-pulled burst qualification. Operational viewers only; students use the addon.'}}]
     for idx,(name,expr,unit) in enumerate(items,2):
-        panels.append({'id':idx,'type':'timeseries','title':name,'description':'Planned telemetry contract; no qualified exporter is deployed for this series. Unavailable means unknown, never zero.' if 'cps_compute_' in expr else 'Observed upstream telemetry; samples older than 120 seconds are unavailable.','datasource':{'type':'prometheus','uid':'${DS_PROMETHEUS}'},
+        panels.append({'id':idx,'type':'timeseries','title':name,'description':'Qualified gateway exporter; durable acquisition conflicts by console source since exporter activation. Historical generic denials are excluded. Samples older than 120 seconds are unavailable.' if 'cps_compute_reservation_conflicts_total' in expr else ('Planned telemetry contract; no qualified exporter is deployed for this series. Unavailable means unknown, never zero.' if 'cps_compute_' in expr else 'Observed upstream telemetry; samples older than 120 seconds are unavailable.'),'datasource':{'type':'prometheus','uid':'${DS_PROMETHEUS}'},
                        'gridPos':{'h':8,'w':12,'x':12*((idx-2)%2),'y':4+8*((idx-2)//2)},
-                       'targets':[{'refId':'A','expr':expr,'legendFormat':'{{namespace}} {{queue_name}} {{UUID}}'}],
+                       'targets':[{'refId':'A','expr':expr,'legendFormat':'{{source}}' if 'cps_compute_reservation_conflicts_total' in expr else '{{namespace}} {{queue_name}} {{UUID}}'}],
                        'fieldConfig':{'defaults':{'unit':unit,'noValue':'Unavailable / stale','custom':{'spanNulls':False}},'overrides':[]}})
     health_metrics=('DCGM_FI_DEV_FB_FREE', 'up{namespace="jupyterhub",service="hub"}', 'up{namespace="cit-jhub",service="hub"}', 'up{namespace="kai-scheduler",service="kai-scheduler-default"}', 'cps_compute_physical_free_gpus')
     for health_index,metric in enumerate(health_metrics):

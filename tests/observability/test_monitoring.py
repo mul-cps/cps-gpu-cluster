@@ -33,7 +33,10 @@ class ComputeMonitoring(unittest.TestCase):
                 self.assertEqual(panel['fieldConfig']['defaults']['noValue'],'Unavailable / stale')
                 self.assertFalse(panel['fieldConfig']['defaults']['custom']['spanNulls'])
                 self.assertNotIn('or vector(0)',panel['targets'][0]['expr'])
-                if 'cps_compute_' in panel['targets'][0]['expr']:self.assertIn('Planned telemetry contract',panel['description'])
+                if 'cps_compute_reservation_conflicts_total' in panel['targets'][0]['expr']:
+                    self.assertIn('Qualified gateway exporter',panel['description'])
+                    self.assertEqual(panel['targets'][0]['legendFormat'],'{{source}}')
+                elif 'cps_compute_' in panel['targets'][0]['expr']:self.assertIn('Planned telemetry contract',panel['description'])
             status=[p for p in d['panels'] if p['type']=='stat']
             expressions=[p['targets'][0]['expr'] for p in status]
             for ns in ('jupyterhub','cit-jhub'):

@@ -39,37 +39,37 @@ data:
     \ <= 120))\",\n          \"legendFormat\": \"{{namespace}} {{queue_name}} {{UUID}}\",\n          \"refId\": \"A\"\n  \
     \      }\n      ],\n      \"title\": \"Protected sessions (policy controller required)\",\n      \"type\": \"timeseries\"\
     \n    },\n    {\n      \"datasource\": {\n        \"type\": \"prometheus\",\n        \"uid\": \"${DS_PROMETHEUS}\"\n \
-    \     },\n      \"description\": \"Planned telemetry contract; no qualified exporter is deployed for this series. Unavailable\
-    \ means unknown, never zero.\",\n      \"fieldConfig\": {\n        \"defaults\": {\n          \"custom\": {\n        \
-    \    \"spanNulls\": false\n          },\n          \"noValue\": \"Unavailable / stale\",\n          \"unit\": \"short\"\
-    \n        },\n        \"overrides\": []\n      },\n      \"gridPos\": {\n        \"h\": 8,\n        \"w\": 12,\n     \
-    \   \"x\": 0,\n        \"y\": 12\n      },\n      \"id\": 4,\n      \"targets\": [\n        {\n          \"expr\": \"\
-    (increase(cps_compute_reservation_conflicts_total[10m]) and (time() - timestamp(cps_compute_reservation_conflicts_total)\
-    \ <= 120))\",\n          \"legendFormat\": \"{{namespace}} {{queue_name}} {{UUID}}\",\n          \"refId\": \"A\"\n  \
-    \      }\n      ],\n      \"title\": \"Reservation conflicts (gateway required)\",\n      \"type\": \"timeseries\"\n \
-    \   },\n    {\n      \"datasource\": {\n        \"type\": \"prometheus\",\n        \"uid\": \"${DS_PROMETHEUS}\"\n   \
-    \   },\n      \"description\": \"Planned telemetry contract; no qualified exporter is deployed for this series. Unavailable\
-    \ means unknown, never zero.\",\n      \"fieldConfig\": {\n        \"defaults\": {\n          \"custom\": {\n        \
-    \    \"spanNulls\": false\n          },\n          \"noValue\": \"Unavailable / stale\",\n          \"unit\": \"short\"\
-    \n        },\n        \"overrides\": []\n      },\n      \"gridPos\": {\n        \"h\": 8,\n        \"w\": 12,\n     \
-    \   \"x\": 12,\n        \"y\": 12\n      },\n      \"id\": 5,\n      \"targets\": [\n        {\n          \"expr\": \"\
-    (cps_compute_physical_free_gpus and (time() - timestamp(cps_compute_physical_free_gpus) <= 120))\",\n          \"legendFormat\"\
-    : \"{{namespace}} {{queue_name}} {{UUID}}\",\n          \"refId\": \"A\"\n        }\n      ],\n      \"title\": \"Physical\
-    \ free GPUs (controller required)\",\n      \"type\": \"timeseries\"\n    },\n    {\n      \"datasource\": {\n       \
-    \ \"type\": \"prometheus\",\n        \"uid\": \"${DS_PROMETHEUS}\"\n      },\n      \"description\": \"Planned telemetry\
-    \ contract; no qualified exporter is deployed for this series. Unavailable means unknown, never zero.\",\n      \"fieldConfig\"\
+    \     },\n      \"description\": \"Qualified gateway exporter; durable acquisition conflicts by console source since exporter\
+    \ activation. Historical generic denials are excluded. Samples older than 120 seconds are unavailable.\",\n      \"fieldConfig\"\
     : {\n        \"defaults\": {\n          \"custom\": {\n            \"spanNulls\": false\n          },\n          \"noValue\"\
     : \"Unavailable / stale\",\n          \"unit\": \"short\"\n        },\n        \"overrides\": []\n      },\n      \"gridPos\"\
-    : {\n        \"h\": 8,\n        \"w\": 12,\n        \"x\": 0,\n        \"y\": 20\n      },\n      \"id\": 6,\n      \"\
-    targets\": [\n        {\n          \"expr\": \"(cps_compute_teaching_priority and (time() - timestamp(cps_compute_teaching_priority)\
-    \ <= 120))\",\n          \"legendFormat\": \"{{namespace}} {{queue_name}} {{UUID}}\",\n          \"refId\": \"A\"\n  \
-    \      }\n      ],\n      \"title\": \"Current protection class (controller required)\",\n      \"type\": \"timeseries\"\
-    \n    },\n    {\n      \"datasource\": {\n        \"type\": \"prometheus\",\n        \"uid\": \"${DS_PROMETHEUS}\"\n \
-    \     },\n      \"description\": \"Instant target/series freshness; missing, failed or samples older than 120 seconds\
-    \ are unavailable.\",\n      \"fieldConfig\": {\n        \"defaults\": {\n          \"mappings\": [\n            {\n \
-    \             \"options\": {\n                \"0\": {\n                  \"text\": \"Fresh\"\n                },\n  \
-    \              \"1\": {\n                  \"text\": \"Unavailable / stale\"\n                }\n              },\n  \
-    \            \"type\": \"value\"\n            }\n          ],\n          \"noValue\": \"Unavailable\",\n          \"thresholds\"\
+    : {\n        \"h\": 8,\n        \"w\": 12,\n        \"x\": 0,\n        \"y\": 12\n      },\n      \"id\": 4,\n      \"\
+    targets\": [\n        {\n          \"expr\": \"(increase(cps_compute_reservation_conflicts_total[10m]) and (time() - timestamp(cps_compute_reservation_conflicts_total)\
+    \ <= 120))\",\n          \"legendFormat\": \"{{source}}\",\n          \"refId\": \"A\"\n        }\n      ],\n      \"\
+    title\": \"Reservation acquisition conflicts\",\n      \"type\": \"timeseries\"\n    },\n    {\n      \"datasource\":\
+    \ {\n        \"type\": \"prometheus\",\n        \"uid\": \"${DS_PROMETHEUS}\"\n      },\n      \"description\": \"Planned\
+    \ telemetry contract; no qualified exporter is deployed for this series. Unavailable means unknown, never zero.\",\n \
+    \     \"fieldConfig\": {\n        \"defaults\": {\n          \"custom\": {\n            \"spanNulls\": false\n       \
+    \   },\n          \"noValue\": \"Unavailable / stale\",\n          \"unit\": \"short\"\n        },\n        \"overrides\"\
+    : []\n      },\n      \"gridPos\": {\n        \"h\": 8,\n        \"w\": 12,\n        \"x\": 12,\n        \"y\": 12\n \
+    \     },\n      \"id\": 5,\n      \"targets\": [\n        {\n          \"expr\": \"(cps_compute_physical_free_gpus and\
+    \ (time() - timestamp(cps_compute_physical_free_gpus) <= 120))\",\n          \"legendFormat\": \"{{namespace}} {{queue_name}}\
+    \ {{UUID}}\",\n          \"refId\": \"A\"\n        }\n      ],\n      \"title\": \"Physical free GPUs (controller required)\"\
+    ,\n      \"type\": \"timeseries\"\n    },\n    {\n      \"datasource\": {\n        \"type\": \"prometheus\",\n       \
+    \ \"uid\": \"${DS_PROMETHEUS}\"\n      },\n      \"description\": \"Planned telemetry contract; no qualified exporter\
+    \ is deployed for this series. Unavailable means unknown, never zero.\",\n      \"fieldConfig\": {\n        \"defaults\"\
+    : {\n          \"custom\": {\n            \"spanNulls\": false\n          },\n          \"noValue\": \"Unavailable / stale\"\
+    ,\n          \"unit\": \"short\"\n        },\n        \"overrides\": []\n      },\n      \"gridPos\": {\n        \"h\"\
+    : 8,\n        \"w\": 12,\n        \"x\": 0,\n        \"y\": 20\n      },\n      \"id\": 6,\n      \"targets\": [\n   \
+    \     {\n          \"expr\": \"(cps_compute_teaching_priority and (time() - timestamp(cps_compute_teaching_priority) <=\
+    \ 120))\",\n          \"legendFormat\": \"{{namespace}} {{queue_name}} {{UUID}}\",\n          \"refId\": \"A\"\n     \
+    \   }\n      ],\n      \"title\": \"Current protection class (controller required)\",\n      \"type\": \"timeseries\"\n\
+    \    },\n    {\n      \"datasource\": {\n        \"type\": \"prometheus\",\n        \"uid\": \"${DS_PROMETHEUS}\"\n  \
+    \    },\n      \"description\": \"Instant target/series freshness; missing, failed or samples older than 120 seconds are\
+    \ unavailable.\",\n      \"fieldConfig\": {\n        \"defaults\": {\n          \"mappings\": [\n            {\n     \
+    \         \"options\": {\n                \"0\": {\n                  \"text\": \"Fresh\"\n                },\n      \
+    \          \"1\": {\n                  \"text\": \"Unavailable / stale\"\n                }\n              },\n      \
+    \        \"type\": \"value\"\n            }\n          ],\n          \"noValue\": \"Unavailable\",\n          \"thresholds\"\
     : {\n            \"mode\": \"absolute\",\n            \"steps\": [\n              {\n                \"color\": \"green\"\
     ,\n                \"value\": null\n              },\n              {\n                \"color\": \"red\",\n         \
     \       \"value\": 1\n              }\n            ]\n          }\n        },\n        \"overrides\": []\n      },\n \
