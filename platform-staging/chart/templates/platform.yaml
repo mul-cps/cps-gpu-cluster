@@ -91,6 +91,15 @@ spec:
           ports: [{name: http, containerPort: {{ .Values.gateway.port }}}]
           env:
             - {name: CPS_COMPUTE_CONFIG, value: /config/runtime.json}
+            {{- if .Values.metrics.enabled }}
+            {{- range $source := list "cps" "cit" }}
+            - name: CPS_METRICS_{{ upper $source }}_TOKEN
+              valueFrom:
+                secretKeyRef:
+                  name: {{ (index $.Values.metrics.credentials $source).name | quote }}
+                  key: {{ (index $.Values.metrics.credentials $source).key | quote }}
+            {{- end }}
+            {{- end }}
           envFrom:
             - secretRef: {name: {{ .Values.gateway.secretRef }}}
           securityContext:
@@ -140,6 +149,7 @@ kind: Service
 metadata:
   name: compute-gateway
   namespace: {{ $namespace }}
+  labels: {app: compute-gateway}
 spec:
   selector: {app: compute-gateway}
   ports: [{name: http, port: {{ .Values.gateway.port }}, targetPort: http}]

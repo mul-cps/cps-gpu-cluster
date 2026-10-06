@@ -56,3 +56,9 @@ artifactRetention:
   argoNamespace: cps-argo
   argoCaConfigMapRef: cps-compute-gateway-ca
   probeWorkflow: ""
+metrics:
+  enabled: false
+  prometheusNamespace: cattle-monitoring-system
+  credentials:
+    cps: {name: "", key: ""}
+    cit: {name: "", key: ""}
