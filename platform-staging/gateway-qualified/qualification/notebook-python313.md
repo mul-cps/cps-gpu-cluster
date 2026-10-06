@@ -83,3 +83,9 @@ Final `desktop-ros2-xpra` candidate `ghcr.io/mul-cps/cps-jupyter-notebook@sha256
 All 97 OCI blobs, SLSA provenance, UID 1000 and the published index verified. The full standalone SPDX SBOM covers 5,522 packages, is bound to the OCI runtime configuration and has SHA-256 `24e619b85da9f8beeb912924941b6ebbfd609e555048bfd3ded26c64e10adec4`. The release verifier also checked native-package coverage and manifest binding. The SBOM remains a local paired artifact requiring release publication.
 
 Evidence: `notebook-matrix-resolved/desktop-ros2-xpra-standalone-sbom/` and `notebook-cluster-runtime/desktop-ros2-xpra-report.json`, final Job/Pod snapshots and runtime log. Eleven of twelve overlay candidates have bounded runtime checks. ComfyUI, actual GPU execution/isolation, production collaboration and final release qualification remain open.
+
+## ComfyUI artifact verification
+
+ComfyUI's final offline overlay build completed at OCI index `sha256:87055416cb30d04f26b93a8912d6cbfa7f612bdecb709bc4097ab409f6662eb5`. All 89 blobs, SLSA provenance, UID 1000 and core notebook/framework package coverage verified. The full standalone SPDX SBOM contains 5,043 packages and has SHA-256 `afbfb247b67fa0ec328f99d928ec6b623440c44ee91de9cc87914acb9357b862`. Release tooling verified native-package coverage and image configuration/manifest binding, using checksum-verified Syft 1.54.1. Evidence: `notebook-matrix-resolved/comfyui-standalone-sbom/`.
+
+Registry publication and runtime execution remain separate gates. This artifact verification does not increase the eleven runtime-tested candidates or qualify GPU/model execution, proxy startup, production RTC or a final tagged release. Standalone SBOM publication remains required with the eventual release.
