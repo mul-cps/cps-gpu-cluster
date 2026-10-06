@@ -6,5 +6,7 @@
   "imageManifest": "sha256:9e9b46c1b9025e0847c4f76515127454c69b5f50d18ec918baa686a7cc700ebb",
   "attestationManifest": "sha256:65c075269fa9481bc6e31c06d8ca6aeb657d7bb56c6817ed7ad1dc0326b4e694",
   "attestationReferencesImage": true,
-  "productionPromoted": false
+  "productionPromoted": false,
+  "knownMissingGuard": "Active ancestor NFS mounts are not rejected before provisioning",
+  "productionStorageActivationAllowed": false
 }
