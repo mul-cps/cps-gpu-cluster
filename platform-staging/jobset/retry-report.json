@@ -1,0 +1,50 @@
+{
+  "namespace": "cps-jobset-retry-0b91a72c",
+  "image": "ghcr.io/mul-cps/cps-compute:qualification-5771df5@sha256:627f093c3c96038c7ecd9e9b99f0138198c23c9460cabb7bd11b19e94f465096",
+  "cases": [
+    {
+      "case": "recover",
+      "terminalState": "Completed",
+      "restarts": 1,
+      "injectedFailures": [
+        {
+          "attempt": 0,
+          "jobUID": "d905fdb8-82de-4e5c-a317-f54d0437430f"
+        }
+      ],
+      "childrenRemoved": true,
+      "cleanupSweeps": 1,
+      "idempotencyTombstoneRetained": true,
+      "crossOwnerReadDenied": true
+    },
+    {
+      "case": "exhaust",
+      "terminalState": "Failed",
+      "restarts": 2,
+      "injectedFailures": [
+        {
+          "attempt": 0,
+          "jobUID": "be90fb0c-6d29-439d-aee3-800054c063c5"
+        },
+        {
+          "attempt": 1,
+          "jobUID": "ed104537-f349-4507-b079-0f11608a6383"
+        },
+        {
+          "attempt": 2,
+          "jobUID": "c6dc86df-4cb1-40dd-968a-901b6eeb28cf"
+        }
+      ],
+      "childrenRemoved": true,
+      "cleanupSweeps": 2,
+      "idempotencyTombstoneRetained": true,
+      "crossOwnerReadDenied": true
+    }
+  ],
+  "productionQualificationChanged": false,
+  "namespaceDeleted": true,
+  "scope": "isolated CPU controller retry and cleanup; production distributed/GPU qualification remains false",
+  "sourceCommit": "5771df5e3db86a59b20fcf965cc3ce273df0c503",
+  "regressionTestCommit": "27bc229df5e1194f9fadd4ce8942796e91bf9b18",
+  "fixtureSHA256": "20a1afe64976dd45f7c8e8629686bdb1277100e1335c69d686ef0ab04d88c712"
+}

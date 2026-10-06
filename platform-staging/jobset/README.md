@@ -31,3 +31,7 @@ JobSet names reserve room for child Job/Pod suffixes; generated names use 128-bi
 hashes. Old 192-bit identifiers remain recognizable for termination/cleanup.
 Pod templates explicitly set RuntimeDefault seccomp; controller defaults are not
 relied upon to satisfy admission.
+
+The bounded CPU retry and cleanup gate is documented separately in
+[retry-qualification.md](retry-qualification.md). It does not enable distributed
+GPU access or replace the four/eight-GPU acceptance scenarios.
