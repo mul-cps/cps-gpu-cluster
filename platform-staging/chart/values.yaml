@@ -1,5 +1,7 @@
 # Outside Fleet's watched paths. Enabling requires released, reviewed image digests.
 enabled: false
+legacyDaskBoundary:
+  enabled: false
 policyJson: ""
 policyHash: ""
 namespace: cps-compute
