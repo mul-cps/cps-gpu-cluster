@@ -1,0 +1,7 @@
+# Combined backend/UI qualification image; layer over reviewed runtime values.
+# This overlay alone does not configure a deployment or qualify the platform release.
+consoles:
+  cps:
+    image: ghcr.io/mul-cps/e2x-course-hub:qualification-combined-sdk-0ef266b@sha256:03634029cbe382c4a5c520f9e19a32fc047a676afbe51de47639c62e0aa1b12e
+  cit:
+    image: ghcr.io/mul-cps/e2x-course-hub:qualification-combined-sdk-0ef266b@sha256:03634029cbe382c4a5c520f9e19a32fc047a676afbe51de47639c62e0aa1b12e
