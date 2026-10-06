@@ -39,3 +39,8 @@ GPU access or replace the four/eight-GPU acceptance scenarios.
 A controlled four-exclusive-GPU NCCL collective and single retry also passed;
 see [four-gpu-qualification.md](four-gpu-qualification.md). Checkpoint recovery,
 eight-GPU execution and production qualification remain open.
+
+Project-scoped checkpoint mounting and controlled four-GPU model/optimizer
+recovery are documented in [checkpoint-qualification.md](checkpoint-qualification.md).
+Functional recovery passed; private-file creation permissions failed and remain
+a production gate. The production compute image has not gained the new feature.

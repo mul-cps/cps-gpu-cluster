@@ -1,0 +1,272 @@
+{
+  "namespace": "cps-jobset-checkpoint-e5186216",
+  "image": "ghcr.io/mul-cps/cps-jupyter-notebook@sha256:6a0fc97f17ac13f70c06b834a37641116407a0d134ea23ed3d67eac0f55fc0ab",
+  "cases": [
+    {
+      "case": "collective-retry",
+      "terminalState": "Completed",
+      "restarts": 1,
+      "injectedFailures": [
+        {
+          "attempt": 0,
+          "jobUID": "ccc001f4-d2cd-4c9b-82a9-b64538a3b19b"
+        }
+      ],
+      "childrenRemoved": true,
+      "cleanupSweeps": 1,
+      "idempotencyTombstoneRetained": true,
+      "crossOwnerReadDenied": true,
+      "collectiveRanks": 4,
+      "allReduceIterations": 10,
+      "backend": "NCCL",
+      "checkpointRecoveryQualified": true
+    }
+  ],
+  "productionQualificationChanged": false,
+  "namespaceDeleted": true,
+  "retainedCheckpointPV": "cps-jobset-checkpoint-e5186216-checkpoints",
+  "nfsServer": "193.170.30.58",
+  "nfsPath": "/mnt/persistent1/cps_persistent1_shared/qualification-hub-rtc-20261006",
+  "checkpointSubPath": "jobset-checkpoint-f6f8e940",
+  "sourceCommit": "1a71bc713aac8b9ea263860b8b7ca0c878892619",
+  "fixtureSHA256": "8948abd1e018e26f66b1ff894571b511704cbef997cb0508c512bdc9f76265ac",
+  "records": [
+    {
+      "kind": "CHECKPOINT_SAVED",
+      "attempt": 0,
+      "rank": 0,
+      "step": 2,
+      "sha256": "331972f0a0628f5fa1d618fea46c979e6bd6ad941082c22b7fb8b4eed5e4b4e5"
+    },
+    {
+      "kind": "COLLECTIVE_OK",
+      "attempt": 0,
+      "rank": 0,
+      "hostname": "cps-js-dc07fbd5d90ae50a56c4fda92d753fd5-workers-0-0",
+      "device": "NVIDIA A100-PCIE-40GB",
+      "torch": "2.11.0+cu129",
+      "peakBytes": 17050112,
+      "iterations": 10,
+      "sum": 10,
+      "resumed": false,
+      "step": 2
+    },
+    {
+      "kind": "CHECKPOINT_SAVED",
+      "attempt": 0,
+      "rank": 1,
+      "step": 2,
+      "sha256": "331972f0a0628f5fa1d618fea46c979e6bd6ad941082c22b7fb8b4eed5e4b4e5"
+    },
+    {
+      "kind": "COLLECTIVE_OK",
+      "attempt": 0,
+      "rank": 1,
+      "hostname": "cps-js-dc07fbd5d90ae50a56c4fda92d753fd5-workers-1-0",
+      "device": "NVIDIA A100-PCIE-40GB",
+      "torch": "2.11.0+cu129",
+      "peakBytes": 17049600,
+      "iterations": 10,
+      "sum": 10,
+      "resumed": false,
+      "step": 2
+    },
+    {
+      "kind": "CHECKPOINT_SAVED",
+      "attempt": 0,
+      "rank": 2,
+      "step": 2,
+      "sha256": "331972f0a0628f5fa1d618fea46c979e6bd6ad941082c22b7fb8b4eed5e4b4e5"
+    },
+    {
+      "kind": "COLLECTIVE_OK",
+      "attempt": 0,
+      "rank": 2,
+      "hostname": "cps-js-dc07fbd5d90ae50a56c4fda92d753fd5-workers-2-0",
+      "device": "NVIDIA A100-PCIE-40GB",
+      "torch": "2.11.0+cu129",
+      "peakBytes": 17050112,
+      "iterations": 10,
+      "sum": 10,
+      "resumed": false,
+      "step": 2
+    },
+    {
+      "kind": "CHECKPOINT_SAVED",
+      "attempt": 0,
+      "rank": 3,
+      "step": 2,
+      "sha256": "331972f0a0628f5fa1d618fea46c979e6bd6ad941082c22b7fb8b4eed5e4b4e5"
+    },
+    {
+      "kind": "COLLECTIVE_OK",
+      "attempt": 0,
+      "rank": 3,
+      "hostname": "cps-js-dc07fbd5d90ae50a56c4fda92d753fd5-workers-3-0",
+      "device": "NVIDIA A100-PCIE-40GB",
+      "torch": "2.11.0+cu129",
+      "peakBytes": 17050112,
+      "iterations": 10,
+      "sum": 10,
+      "resumed": false,
+      "step": 2
+    },
+    {
+      "kind": "CHECKPOINT_RESTORED",
+      "attempt": 1,
+      "rank": 0,
+      "step": 2,
+      "sha256": "331972f0a0628f5fa1d618fea46c979e6bd6ad941082c22b7fb8b4eed5e4b4e5",
+      "momentum": -49.875
+    },
+    {
+      "kind": "TRAINING_RECOVERY_OK",
+      "attempt": 1,
+      "rank": 0,
+      "step": 4,
+      "weight": 2.1297342777252197,
+      "referenceWeight": 2.129734375,
+      "momentum": -62.96718215942383
+    },
+    {
+      "kind": "COLLECTIVE_OK",
+      "attempt": 1,
+      "rank": 0,
+      "hostname": "cps-js-dc07fbd5d90ae50a56c4fda92d753fd5-workers-0-0",
+      "device": "NVIDIA A100-PCIE-40GB",
+      "torch": "2.11.0+cu129",
+      "peakBytes": 17050624,
+      "iterations": 10,
+      "sum": 10,
+      "resumed": true,
+      "step": 4
+    },
+    {
+      "kind": "CHECKPOINT_RESTORED",
+      "attempt": 1,
+      "rank": 1,
+      "step": 2,
+      "sha256": "331972f0a0628f5fa1d618fea46c979e6bd6ad941082c22b7fb8b4eed5e4b4e5",
+      "momentum": -49.875
+    },
+    {
+      "kind": "TRAINING_RECOVERY_OK",
+      "attempt": 1,
+      "rank": 1,
+      "step": 4,
+      "weight": 2.1297342777252197,
+      "referenceWeight": 2.129734375,
+      "momentum": -62.96718215942383
+    },
+    {
+      "kind": "COLLECTIVE_OK",
+      "attempt": 1,
+      "rank": 1,
+      "hostname": "cps-js-dc07fbd5d90ae50a56c4fda92d753fd5-workers-1-0",
+      "device": "NVIDIA A100-PCIE-40GB",
+      "torch": "2.11.0+cu129",
+      "peakBytes": 17050112,
+      "iterations": 10,
+      "sum": 10,
+      "resumed": true,
+      "step": 4
+    },
+    {
+      "kind": "CHECKPOINT_RESTORED",
+      "attempt": 1,
+      "rank": 2,
+      "step": 2,
+      "sha256": "331972f0a0628f5fa1d618fea46c979e6bd6ad941082c22b7fb8b4eed5e4b4e5",
+      "momentum": -49.875
+    },
+    {
+      "kind": "TRAINING_RECOVERY_OK",
+      "attempt": 1,
+      "rank": 2,
+      "step": 4,
+      "weight": 2.1297342777252197,
+      "referenceWeight": 2.129734375,
+      "momentum": -62.96718215942383
+    },
+    {
+      "kind": "COLLECTIVE_OK",
+      "attempt": 1,
+      "rank": 2,
+      "hostname": "cps-js-dc07fbd5d90ae50a56c4fda92d753fd5-workers-2-0",
+      "device": "NVIDIA A100-PCIE-40GB",
+      "torch": "2.11.0+cu129",
+      "peakBytes": 17050112,
+      "iterations": 10,
+      "sum": 10,
+      "resumed": true,
+      "step": 4
+    },
+    {
+      "kind": "CHECKPOINT_RESTORED",
+      "attempt": 1,
+      "rank": 3,
+      "step": 2,
+      "sha256": "331972f0a0628f5fa1d618fea46c979e6bd6ad941082c22b7fb8b4eed5e4b4e5",
+      "momentum": -49.875
+    },
+    {
+      "kind": "TRAINING_RECOVERY_OK",
+      "attempt": 1,
+      "rank": 3,
+      "step": 4,
+      "weight": 2.1297342777252197,
+      "referenceWeight": 2.129734375,
+      "momentum": -62.96718215942383
+    },
+    {
+      "kind": "COLLECTIVE_OK",
+      "attempt": 1,
+      "rank": 3,
+      "hostname": "cps-js-dc07fbd5d90ae50a56c4fda92d753fd5-workers-3-0",
+      "device": "NVIDIA A100-PCIE-40GB",
+      "torch": "2.11.0+cu129",
+      "peakBytes": 17050112,
+      "iterations": 10,
+      "sum": 10,
+      "resumed": true,
+      "step": 4
+    }
+  ],
+  "logHashes": {
+    "capture.log": "ad8822a42814d546d740490ac96bcd44f6ddc950bd3d93992b8a3744df9267dd",
+    "collective-retry-attempt-0-cps-js-dc07fbd5d90ae50a56c4fda92d753fd5-workers-0-0-hlnls.log": "0ef4998f24e32f0e271058d10b03a6193ab26e321d06dc87c9a85f01899aed1b",
+    "collective-retry-attempt-0-cps-js-dc07fbd5d90ae50a56c4fda92d753fd5-workers-1-0-ntd8x.log": "c7cc8d233c04f816f2a41888f6a08445bd85d65561944b2dfb9451320b8e75c0",
+    "collective-retry-attempt-0-cps-js-dc07fbd5d90ae50a56c4fda92d753fd5-workers-2-0-lw9kg.log": "b7b9d02b509431886c29cf2761db180b013f44c14f3cccb585eef23daeca2554",
+    "collective-retry-attempt-0-cps-js-dc07fbd5d90ae50a56c4fda92d753fd5-workers-3-0-h8fd5.log": "9f4728efce36a469456a6aa06ca1831ae78f6b697fc09890d626b8266a5ae250",
+    "collective-retry-attempt-1-cps-js-dc07fbd5d90ae50a56c4fda92d753fd5-workers-0-0-hhjdh.log": "b97778d03fea4cca459e0078518ddf83c029148a2fc7a95fb2e0a96df31fcc84",
+    "collective-retry-attempt-1-cps-js-dc07fbd5d90ae50a56c4fda92d753fd5-workers-1-0-xv2jv.log": "b2150226ab00b8d19315d77e43dd95db6b2494cf24de9559c41a68027d96bce7",
+    "collective-retry-attempt-1-cps-js-dc07fbd5d90ae50a56c4fda92d753fd5-workers-2-0-22pv2.log": "89b392fe9740da9557803434781776d0e316923a0cf8304c02b3a8c55da75090",
+    "collective-retry-attempt-1-cps-js-dc07fbd5d90ae50a56c4fda92d753fd5-workers-3-0-nk9wt.log": "4711f3bbb518ec1f5e01eab9a33eb0132d723fd7c26bf07747938b578b17d92d"
+  },
+  "retainedFiles": {
+    "parentModeRestored": "0o2770",
+    "parentModeBeforeRestore": "0o2775",
+    "files": [
+      {
+        "filename": "cps-js-dc07fbd5d90ae50a56c4fda92d753fd5.pt",
+        "sha256": "331972f0a0628f5fa1d618fea46c979e6bd6ad941082c22b7fb8b4eed5e4b4e5",
+        "bytes": 2621,
+        "mode": "0o600",
+        "modeBefore": "0o777",
+        "uid": 1000
+      },
+      {
+        "filename": "cps-js-dc07fbd5d90ae50a56c4fda92d753fd5-final.json",
+        "sha256": "c3ce27cc5faf9f6d294bc2bd6ba6350c7ec32eea3fc8cc871a6e96dac7fb7edc",
+        "bytes": 116,
+        "mode": "0o600",
+        "modeBefore": "0o777",
+        "uid": 1000
+      }
+    ]
+  },
+  "privateFileCreationQualified": false,
+  "productionDistributedQualified": false,
+  "productionGatewayContainsChange": false,
+  "scope": "controlled four-rank scalar DDP model/optimizer checkpoint recovery; initial filesystem file permissions failed and required correction"
+}
