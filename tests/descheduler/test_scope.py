@@ -15,6 +15,7 @@ class DeschedulerScope(unittest.TestCase):
         v = yaml.safe_load((ROOT/'cluster-maintenance/clusters/cit-cps-gpu/system/descheduler/values.yaml').read_text())
         self.assertEqual(v['kind'], 'CronJob')
         self.assertTrue(v['suspend'])
+        self.assertEqual(v['image']['tag'], 'v0.34.0@sha256:18ecceedd6096627d9e496f5332e9d2431587f53699802d35393f40a5a7b7239')
         expressions=v['deschedulerPolicy']['profiles'][0]['pluginConfig'][0]['args']['labelSelector']['matchExpressions']
         self.assertEqual({entry['key'] for entry in expressions}, {'pod-group-name','scheduling.k8s.io/group-name','kai.scheduler/podgroup','jobset.sigs.k8s.io/jobset-name'})
         self.assertTrue(all(entry['operator']=='DoesNotExist' for entry in expressions))

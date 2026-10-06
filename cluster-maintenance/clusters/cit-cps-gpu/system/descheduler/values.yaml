@@ -30,6 +30,10 @@ kind: CronJob
 # Legacy live policy lacked opt-in/gang guards; remain paused until runtime qualification.
 suspend: true
 
+# Exact currently deployed binary qualified in a read-only dry-run.
+image:
+  tag: "v0.34.0@sha256:18ecceedd6096627d9e496f5332e9d2431587f53699802d35393f40a5a7b7239"
+
 # Chart default is */2 * * * * (every 2 minutes); every 5 minutes is plenty
 # for this cluster's scale and reduces churn/API load without meaningfully
 # delaying capacity handoff to interactive users.
