@@ -116,6 +116,27 @@ def qualify(context):
         shared = copy.deepcopy(pod)
         shared['spec']['shareProcessNamespace'] = True
         cases.append(('shared-executor-processes',shared,False))
+        for label, field, value in (
+            ('untrusted-scheduler', 'schedulerName', 'default-scheduler'),
+            ('untrusted-service-account', 'serviceAccountName', 'default'),
+        ):
+            candidate = copy.deepcopy(pod)
+            candidate['spec'][field] = value
+            cases.append((label, candidate, False))
+        for label, image in (
+            ('unapproved-image-digest', 'registry.invalid/user@sha256:' + '3' * 64),
+            ('mutable-image-tag', 'registry.invalid/user:latest'),
+        ):
+            candidate = copy.deepcopy(pod)
+            candidate['spec']['containers'][0]['image'] = image
+            cases.append((label, candidate, False))
+        env_from = copy.deepcopy(pod)
+        env_from['spec']['containers'][0]['envFrom'] = [{'secretRef': {'name': 'forbidden'}}]
+        cases.append(('user-secret-envfrom', env_from, False))
+        main_secret = copy.deepcopy(trusted)
+        main_secret['spec']['containers'][0]['volumeMounts'] = [
+            {'name': 'artifacts', 'mountPath': '/argo/secret/cps-artifacts', 'readOnly': True}]
+        cases.append(('user-trusted-executor-secret-mount', main_secret, False))
         for label, candidate, accepted in cases:
             result = request(candidate)
             actual = result.returncode == 0
