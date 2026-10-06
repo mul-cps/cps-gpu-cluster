@@ -2,6 +2,6 @@
 # Do not deploy this file alone or promote unrelated chart/source changes.
 consoles:
   cps:
-    image: ghcr.io/mul-cps/e2x-course-hub:qualification-ui-c883262@sha256:cda835ec61e36f29ba80b5d895af3948f494a6c09fdf46e42875bc918053f7a4
+    image: ghcr.io/mul-cps/e2x-course-hub:qualification-ui-240350a@sha256:3c9a6241fd53263c6a7037c205adc7662cfd95d56672deed535eb811c7369d1f
   cit:
-    image: ghcr.io/mul-cps/e2x-course-hub:qualification-ui-c883262@sha256:cda835ec61e36f29ba80b5d895af3948f494a6c09fdf46e42875bc918053f7a4
+    image: ghcr.io/mul-cps/e2x-course-hub:qualification-ui-240350a@sha256:3c9a6241fd53263c6a7037c205adc7662cfd95d56672deed535eb811c7369d1f
