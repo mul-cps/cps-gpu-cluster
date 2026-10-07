@@ -12,5 +12,18 @@
   "remoteDigestPulledAndVerified": true,
   "productionDeployed": false,
   "fullGatewayArgoS3Qualified": false,
-  "sbomPublished": false
+  "sbomPublished": true,
+  "sbom": {
+    "subject": "ghcr.io/mul-cps/cps-compute@sha256:41f36901e11a9793bbb9aec6088b31fb6bd7cff778b16a5e6743a71a2b5d48e4",
+    "sourceImageId": "sha256:a5f60891d11d9913e540aa6838e063bd612c316930454ca4de16d4e48c4a9964",
+    "packages": 185,
+    "files": 23952,
+    "spdxSha256": "1dc003fff1cc761ffef39d908de9a373e21117719ea98d1586b88abdc5b1d7a9",
+    "nativeSha256": "c3822873ba39692401ce0803816f6e681106131deffa2eec3df6d9243f063034",
+    "format": "SPDX 2.3 plus complete Syft inventory",
+    "productionQualified": false,
+    "attachment": "ghcr.io/mul-cps/cps-compute@sha256:18af6c1b9e918e5639fa88b4f3000245902a2184029839f4305892468b673741",
+    "subjectVerified": true,
+    "downloadHashesMatched": true
+  }
 }
