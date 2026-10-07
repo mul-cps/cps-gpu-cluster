@@ -18,4 +18,23 @@ Private evidence: `/home/bjoern/cps-platform-evidence/2026-10-06/reservation-shu
 
 ## Remaining acceptance
 
+### Authenticated HTTP process qualification (2026-10-07)
+
+Current compute source `70471b9793f21a87d74ac7a673f871dfa9620101` passed the
+[controlled HTTP process gate](../../network/reservation-http-current-report.json).
+Two independent HTTP server processes shared the control/reservation databases;
+two client processes raced authenticated CPS/CIT acquisitions after source-owned
+grants and workspace registrations were accepted through the internal API.
+Exactly one acquisition succeeded (200/409), and SQL traces proved the losing
+transaction rolled back its unique-member insertion. Wrong-console operations,
+invalid/metrics credentials, client-asserted shutdown and stale attempts were
+rejected. Synthetic observer confirmation permitted release and the losing
+workspace then acquired successfully. Source hashes and private script/report
+checksums are recorded in the linked report.
+
+This closes the controlled HTTP boundary test beyond direct SQLite calls.
+Authentication, canonical identities, neutral owner provenance, qualification
+catalog and shutdown observer are synthetic fixtures. It does not establish
+production linkage, actual Hub/Pod shutdown, GPU capacity or live deployment.
+
 Run concurrent authenticated CPS/CIT acquisitions through the qualified gateway with reviewed canonical identities, verify rollback and persisted attempt binding, then exercise actual Hub and Kubernetes shutdown observation before release. Confirm CPU sessions and independently entitled batch submissions remain available while a member holds an interactive reservation. GPU sharing additionally requires aggregate memory isolation and scheduling qualification; backend race success does not satisfy those gates.
