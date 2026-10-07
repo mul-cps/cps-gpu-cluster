@@ -39,5 +39,30 @@
   "limitations": [
     "Layered qualification build; common-source release tag and full matrix remain open.",
     "No GPU devices mounted; hardware isolation and variant-specific GPU behavior unqualified."
-  ]
+  ],
+  "sbom": {
+    "variant": "base-gpu",
+    "subject": "ghcr.io/mul-cps/cps-jupyter-notebook-base-gpu@sha256:fa3bcc50744ff5d791b816678180027f23800048e89740be7dceb8499c978182",
+    "sourceImageId": "sha256:64007d0a27873c5cf99833c14f4c57bc2b3f6cbc80b05b98c651bf7b7885e5d5",
+    "packages": 3915,
+    "files": 78032,
+    "requiredPackagesVerified": [
+      "cps-compute",
+      "hera-workflows",
+      "jupyter-collaboration",
+      "jupyterlab",
+      "papermill"
+    ],
+    "checksums": {
+      "sbom.spdx.json": "856d9fe95c23f781b06e9b591c564d42b88d03da439d87ad3c27e340b0424aee",
+      "sbom.syft.json": "4445308213681c0479464b413eb33eac0f4eb664aeb40d607d1986f5c7d84b47"
+    },
+    "attachment": "ghcr.io/mul-cps/cps-jupyter-notebook-base-gpu@sha256:556122cf902a67086ab97ba3a1ed4c12f99b6f9444cdbd076132acdecd5262ce",
+    "subjectVerified": true,
+    "downloadHashesMatched": true,
+    "scannerSha256": "dbf75864e7a7ff9e1fbf00552c31483f693188632a9f68f343cd7653dac513d6",
+    "productionQualified": false,
+    "createdAt": "2026-10-07T04:45:26.645615+00:00"
+  },
+  "sbomPublished": true
 }
