@@ -44,5 +44,10 @@
     "evidence": "gateway-70471b9-retain-report.json",
     "executionPodsCreated": 0,
     "realIdentityQualified": false
+  },
+  "controlledRetentionStaleWriteQualification": {
+    "passed": true,
+    "evidence": "gateway-70471b9-retain-cas-report.json",
+    "liveDeletionRaceQualified": false
   }
 }
