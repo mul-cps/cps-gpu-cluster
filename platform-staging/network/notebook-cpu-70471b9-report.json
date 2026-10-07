@@ -27,5 +27,30 @@
     "input.ipynb": "d4701b26657d1b840e790973c67eb2e279893e956efb203a4576c9b379d82c8d",
     "report.json": "e3874bc906a8f7addc4db12e28a19d34b603a00031488df99e2df6f11bbfba53",
     "success.ipynb": "bca139caffe8a3dcfb401e117c1abfd425582aef63be8d309a08cc8db0a235c0"
-  }
+  },
+  "sbom": {
+    "variant": "standard-cpu",
+    "subject": "ghcr.io/mul-cps/cps-jupyter-notebook@sha256:1fab06639346f69e96cda6c8f551d761cc51c47de85cdc0ec42ef31bf2ef2c7f",
+    "sourceImageId": "sha256:46cd2a71c8e692cc42a9a109746458901790c328d05dedce62b687bd16d1fa23",
+    "packages": 4086,
+    "files": 74774,
+    "requiredPackagesVerified": [
+      "cps-compute",
+      "hera-workflows",
+      "jupyter-collaboration",
+      "jupyterlab",
+      "papermill"
+    ],
+    "checksums": {
+      "sbom.spdx.json": "66ab1ab78e11917fa83617c841b710dbf6270f6340cf717cd8c1811f84c6ddfa",
+      "sbom.syft.json": "e9c606dc38f48c265fb0408567c04d0622b6d96ef773699309a962ab26f53fc1"
+    },
+    "attachment": "ghcr.io/mul-cps/cps-jupyter-notebook@sha256:aaf779f7e0c6ed52434e32ccdadc506f076f3da0c807fdcb4cdadd9e557b1321",
+    "subjectVerified": true,
+    "downloadHashesMatched": true,
+    "scannerSha256": "dbf75864e7a7ff9e1fbf00552c31483f693188632a9f68f343cd7653dac513d6",
+    "productionQualified": false,
+    "createdAt": "2026-10-07T04:37:07.240434+00:00"
+  },
+  "sbomPublished": true
 }
