@@ -32,7 +32,9 @@
       "image": "ghcr.io/mul-cps/cps-jupyter-notebook-base-cpu@sha256:2c18d8bb45cc9cbcaa98a71228e7c0cf4fcdfa6e9f52ba5e768a466abffe64fe",
       "report": "notebook-base-cpu-70471b9-report.json",
       "cpuNotebookChecksPassed": true,
-      "gpuQualified": false
+      "gpuQualified": false,
+      "sbomReferrer": "ghcr.io/mul-cps/cps-jupyter-notebook-base-cpu@sha256:75e868296e2c742146276c032d06e07b05d70323648948843d5d8012a96eecdf",
+      "sbomRemoteVerified": true
     },
     {
       "component": "base-gpu",

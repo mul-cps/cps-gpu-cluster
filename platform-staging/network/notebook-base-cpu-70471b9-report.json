@@ -36,5 +36,30 @@
   "image": "ghcr.io/mul-cps/cps-jupyter-notebook-base-cpu@sha256:2c18d8bb45cc9cbcaa98a71228e7c0cf4fcdfa6e9f52ba5e768a466abffe64fe",
   "digest": "sha256:2c18d8bb45cc9cbcaa98a71228e7c0cf4fcdfa6e9f52ba5e768a466abffe64fe",
   "published": true,
-  "remoteManifestAndConfigVerified": true
+  "remoteManifestAndConfigVerified": true,
+  "sbom": {
+    "variant": "base-cpu",
+    "subject": "ghcr.io/mul-cps/cps-jupyter-notebook-base-cpu@sha256:2c18d8bb45cc9cbcaa98a71228e7c0cf4fcdfa6e9f52ba5e768a466abffe64fe",
+    "sourceImageId": "sha256:3c82c82bf353b41a92e09f443a6c241d236f09e856ae8c5e8776be222e1c0ac8",
+    "packages": 4086,
+    "files": 74774,
+    "requiredPackagesVerified": [
+      "cps-compute",
+      "hera-workflows",
+      "jupyter-collaboration",
+      "jupyterlab",
+      "papermill"
+    ],
+    "checksums": {
+      "sbom.spdx.json": "2499943ca3ddb7beb8ac418cffbb9e618d76fa828b3b8f105413d0c70ddc084a",
+      "sbom.syft.json": "1f221220583bb8a965cfcd87716a052a61e7c158e613b5c5a9c019b04fbcfeb7"
+    },
+    "attachment": "ghcr.io/mul-cps/cps-jupyter-notebook-base-cpu@sha256:75e868296e2c742146276c032d06e07b05d70323648948843d5d8012a96eecdf",
+    "subjectVerified": true,
+    "downloadHashesMatched": true,
+    "scannerSha256": "dbf75864e7a7ff9e1fbf00552c31483f693188632a9f68f343cd7653dac513d6",
+    "productionQualified": false,
+    "createdAt": "2026-10-07T04:39:37.141472+00:00"
+  },
+  "sbomPublished": true
 }
