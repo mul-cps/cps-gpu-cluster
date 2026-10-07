@@ -1,0 +1,190 @@
+{
+  "name": "cps-retention-cas-7dbc8867",
+  "passed": true,
+  "productionQualified": false,
+  "cleanup": [
+    {
+      "kind": "pod",
+      "name": "cps-retention-cas-7dbc8867",
+      "deleteAccepted": true,
+      "removed": true
+    },
+    {
+      "kind": "networkpolicy",
+      "name": "cps-retention-cas-7dbc8867",
+      "deleteAccepted": true,
+      "removed": true
+    },
+    {
+      "kind": "workflow",
+      "name": "cps-ec27653499ff49b28e8c6257a47f17ce614feb6187bf4f1a",
+      "deleteAccepted": true,
+      "removed": true
+    },
+    {
+      "kind": "workflow",
+      "name": "cps-409faf4ca66b4b8c801aecb56e97baec925dfdb2ed794198",
+      "deleteAccepted": true,
+      "removed": true
+    },
+    {
+      "kind": "workflow",
+      "name": "cps-36538001ae3c45f1ac01de71103ea81eb0c763009df94288",
+      "deleteAccepted": true,
+      "removed": true
+    },
+    {
+      "kind": "workflow",
+      "name": "cps-211437e60182467487a5ec77064296810d1638b6fc5543ac",
+      "deleteAccepted": true,
+      "removed": true
+    }
+  ],
+  "fixture": {
+    "passed": true,
+    "productionQualified": false,
+    "scope": "Synthetic terminal status and advanced clock; real Argo HTTPS, Kubernetes CAS and S3. No execution Pods.",
+    "cases": [
+      {
+        "case": "delete",
+        "name": "cps-211437e60182467487a5ec77064296810d1638b6fc5543ac",
+        "uid": "92e6402f-3688-4f67-9310-75a0ce245070",
+        "firstSweep": {
+          "examined": 1,
+          "eligible": 1,
+          "deleted": 1,
+          "skipped": 0,
+          "errors": 0,
+          "objects": [
+            {
+              "key": "notebook-inputs/211437e60182467487a5ec77064296810d1638b6fc5543ac/snapshot.tar",
+              "workflow_uid": "92e6402f-3688-4f67-9310-75a0ce245070",
+              "time": "2026-10-23T05:43:51.663765+00:00"
+            }
+          ],
+          "apply": true,
+          "truncated": false,
+          "reconciled": 0
+        },
+        "repeatSweep": {
+          "examined": 0,
+          "eligible": 0,
+          "deleted": 0,
+          "skipped": 0,
+          "errors": 0,
+          "objects": [],
+          "apply": true,
+          "truncated": false,
+          "reconciled": 0
+        },
+        "snapshotPresent": false,
+        "permanentClaimPreserved": true,
+        "conditionalDeleteCalls": 1
+      },
+      {
+        "case": "retained",
+        "name": "cps-36538001ae3c45f1ac01de71103ea81eb0c763009df94288",
+        "uid": "8d42eed8-41f0-4e95-be97-bd665c7ca911",
+        "firstSweep": {
+          "examined": 1,
+          "eligible": 0,
+          "deleted": 0,
+          "skipped": 1,
+          "errors": 0,
+          "objects": [],
+          "apply": true,
+          "truncated": false,
+          "reconciled": 0
+        },
+        "repeatSweep": {
+          "examined": 1,
+          "eligible": 0,
+          "deleted": 0,
+          "skipped": 1,
+          "errors": 0,
+          "objects": [],
+          "apply": true,
+          "truncated": false,
+          "reconciled": 0
+        },
+        "snapshotPresent": true,
+        "permanentClaimPreserved": true,
+        "conditionalDeleteCalls": 0
+      },
+      {
+        "case": "ambiguous-after",
+        "name": "cps-409faf4ca66b4b8c801aecb56e97baec925dfdb2ed794198",
+        "uid": "266ff46d-e657-4bba-81f9-21d739dde017",
+        "firstSweep": {
+          "examined": 1,
+          "eligible": 1,
+          "deleted": 0,
+          "skipped": 0,
+          "errors": 1,
+          "objects": [],
+          "apply": true,
+          "truncated": false,
+          "reconciled": 0
+        },
+        "repeatSweep": {
+          "examined": 0,
+          "eligible": 0,
+          "deleted": 0,
+          "skipped": 0,
+          "errors": 0,
+          "objects": [],
+          "apply": true,
+          "truncated": false,
+          "reconciled": 0
+        },
+        "snapshotPresent": false,
+        "permanentClaimPreserved": true,
+        "conditionalDeleteCalls": 1
+      },
+      {
+        "case": "ambiguous-before",
+        "name": "cps-ec27653499ff49b28e8c6257a47f17ce614feb6187bf4f1a",
+        "uid": "9328dbee-b2b0-4afd-b931-694fb606f4ec",
+        "firstSweep": {
+          "examined": 1,
+          "eligible": 1,
+          "deleted": 0,
+          "skipped": 0,
+          "errors": 1,
+          "objects": [],
+          "apply": true,
+          "truncated": false,
+          "reconciled": 0
+        },
+        "repeatSweep": {
+          "examined": 1,
+          "eligible": 0,
+          "deleted": 0,
+          "skipped": 1,
+          "errors": 0,
+          "objects": [],
+          "apply": true,
+          "truncated": false,
+          "reconciled": 0
+        },
+        "snapshotPresent": true,
+        "permanentClaimPreserved": true,
+        "conditionalDeleteCalls": 1
+      }
+    ]
+  },
+  "executionPodsCreated": 0,
+  "syntheticS3EvidencePreserved": true,
+  "observedAt": "2026-10-07T05:45:18.343173+00:00",
+  "controllerScriptSha256": "9cadec1f0229222f34923b18f456a0506ae5e92826ea78ab7e791e1e72e73542",
+  "fixtureScriptSha256": "04ff8f42deff4ba58e91d5c1fb8fbdba49b97729d9149d23a3e2f100296ab59a",
+  "launcherScriptSha256": "19032edd5e3ffb607d6b8abff8af91142dd029091400bb1ecbf193052ec918be",
+  "gatewayImageRequested": "ghcr.io/mul-cps/cps-compute@sha256:41f36901e11a9793bbb9aec6088b31fb6bd7cff778b16a5e6743a71a2b5d48e4",
+  "automaticCleanupActivated": false,
+  "limitations": [
+    "Synthetic terminal workflow status and an advanced clock; no real executed notebook is covered.",
+    "Transport ambiguity is injected immediately before or after a real conditional delete; no actual network outage is induced.",
+    "No production lifecycle qualification, release promotion, off-host recovery or automatic claim resumption is asserted.",
+    "Two surviving synthetic snapshots and immutable provenance records are preserved as fixture evidence."
+  ]
+}
