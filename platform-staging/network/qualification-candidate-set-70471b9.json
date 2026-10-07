@@ -9,7 +9,9 @@
     {
       "component": "gateway",
       "image": "ghcr.io/mul-cps/cps-compute:qualification-workingdir-70471b9@sha256:41f36901e11a9793bbb9aec6088b31fb6bd7cff778b16a5e6743a71a2b5d48e4",
-      "report": "gateway-workingdir-candidate-70471b9.json"
+      "report": "gateway-workingdir-candidate-70471b9.json",
+      "sbomReferrer": "ghcr.io/mul-cps/cps-compute@sha256:18af6c1b9e918e5639fa88b4f3000245902a2184029839f4305892468b673741",
+      "sbomRemoteVerified": true
     },
     {
       "component": "admin",
