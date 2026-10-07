@@ -49,5 +49,11 @@
     "passed": true,
     "evidence": "gateway-70471b9-retain-cas-report.json",
     "liveDeletionRaceQualified": false
+  },
+  "controlledDeletionClaimPrecedenceQualification": {
+    "passed": true,
+    "evidence": "gateway-70471b9-delete-claim-report.json",
+    "objectDeletionPerformed": false,
+    "liveDeletionControllerRaceQualified": false
   }
 }
