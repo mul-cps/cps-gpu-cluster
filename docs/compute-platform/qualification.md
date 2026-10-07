@@ -126,9 +126,19 @@ gradients and a Keras training batch. GPU execution, isolation and browser/RTC a
 are separate gates. The minimal MuJoCo parent intentionally lacks MuJoCo;
 physics and rendering belong to its descendant qualification.
 
-The remaining parent/variant builds, common clean source-tag construction,
+All twelve matching notebook variants now have remotely verified candidates.
+Common clean source-tag construction,
 authenticated integration of the updated packaged artifacts, identity/grant
 migration, GPU qualification, scheduling/startup/defragmentation and full
 recovery gates remain open. No release or GPU access is enabled by these
 candidate results. The generated release lock stays `unqualified` with an
 empty qualified compatibility list.
+
+The ROS desktop and ROS Xpra candidates pass local ROS Jazzy pub/sub through
+the separate system Python interpreter. Xpra variants pass isolated HTML HTTP
+and live XFCE checks; the MuJoCo descendant also passes CPU physics. ComfyUI
+passes CPU HTTP startup, persistent data/database creation and a saved latent
+workflow. The ROS and ComfyUI full standalone SPDX/native inventories are
+verified locally and as remote referrers bound to exact image subjects.
+These checks exclude GPU execution, model inference and browser interaction;
+the inventory remains a partial platform qualification with no promotion.
