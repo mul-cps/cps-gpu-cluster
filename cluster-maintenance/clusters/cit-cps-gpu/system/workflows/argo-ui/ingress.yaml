@@ -1,0 +1,30 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: argo-ui
+  namespace: cps-argo
+  annotations:
+    nginx.ingress.kubernetes.io/backend-protocol: HTTPS
+    nginx.ingress.kubernetes.io/use-regex: "true"
+    nginx.ingress.kubernetes.io/rewrite-target: /$2
+    nginx.ingress.kubernetes.io/ssl-redirect: "true"
+    nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
+    nginx.ingress.kubernetes.io/proxy-ssl-secret: cps-argo/argo-ui-upstream-ca
+    nginx.ingress.kubernetes.io/proxy-ssl-verify: "on"
+    nginx.ingress.kubernetes.io/proxy-ssl-name: cps-argo-argo-workflows-server.cps-argo.svc.cluster.local
+    nginx.ingress.kubernetes.io/proxy-ssl-server-name: "on"
+spec:
+  ingressClassName: nginx
+  # The existing JupyterHub Ingress terminates TLS for this shared hostname.
+  # Its / Prefix remains the catch-all; this longer route serves only /argo.
+  rules:
+    - host: jupyterhub.dshl.unileoben.ac.at
+      http:
+        paths:
+          - path: /argo(/|$)(.*)
+            pathType: ImplementationSpecific
+            backend:
+              service:
+                name: cps-argo-argo-workflows-server
+                port:
+                  number: 2746

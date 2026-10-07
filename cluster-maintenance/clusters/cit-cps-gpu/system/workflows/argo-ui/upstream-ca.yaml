@@ -1,0 +1,68 @@
+apiVersion: v1
+kind: Secret
+metadata:
+  name: argo-ui-upstream-ca
+  namespace: cps-argo
+type: Opaque
+stringData:
+  ca.crt: '-----BEGIN CERTIFICATE-----
+
+    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
+
+    -----END CERTIFICATE-----
+
+    '
