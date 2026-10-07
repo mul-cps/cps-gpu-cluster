@@ -74,6 +74,15 @@
       "computeWheelSha256": "05d82345b0f65a3a94c715c68788f52d14c545cba41a5e622249870e0e848667",
       "remoteDigestsVerified": true,
       "qualificationEvidence": "/mnt/cps_scratch1_tmp/bjoern/cps-platform-builds/2026-10-07/notebook-pytorch-runtime-base-6bb6a57/report.json"
+    },
+    {
+      "component": "pytorch-code",
+      "image": "ghcr.io/mul-cps/cps-jupyter-notebook:qualification-storage-resources-6bb6a57-pytorch-code@sha256:2646c45d9ae5853fac15aebbd58a0371920da6413f42f01cb833387fa70b8d58",
+      "linuxManifest": "sha256:fb8f5e7fd777e24fd0138e82c6a092c4ff314376353e29ccc4a0e1a36c9695c2",
+      "computeSourceRevision": "6bb6a57bc8d8426e281c0654ac8eedd1668ae600",
+      "computeWheelSha256": "05d82345b0f65a3a94c715c68788f52d14c545cba41a5e622249870e0e848667",
+      "remoteDigestsVerified": true,
+      "qualificationEvidence": "/mnt/cps_scratch1_tmp/bjoern/cps-platform-builds/2026-10-07/notebook-pytorch-code-6bb6a57/report.json"
     }
   ],
   "observedProduction": [
@@ -99,10 +108,11 @@
       "readyReplicas": 1
     }
   ],
-  "remainingNotebookVariants": 7,
+  "remainingNotebookVariants": 6,
   "limitations": [
     "Existing notebook parents do not prove common source-tag build",
     "Full acceptance scenarios and migrations remain incomplete",
     "Gateway/controller authenticated integration of the updated packaged artifacts remains pending"
-  ]
+  ],
+  "candidateUpdatedAt": "2026-10-07T01:33:32.743818+00:00"
 }
