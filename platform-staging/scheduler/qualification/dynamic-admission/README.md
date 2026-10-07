@@ -37,12 +37,26 @@ is not a completed production lineage controller. Existing user permissions to
 create/patch/bind/exec Pods, create arbitrary parents or change parameters and
 injector maps must be checked separately.
 
-Only the **pre-KAI-injection shape** is supported. KAI hostPaths, environment
-ConfigMaps and device references deliberately fail this candidate. A final Pod
-snapshot does not prove the admission sequence. Actual CREATE, mutation, UPDATE
-and binding observations are required before adding a complete injected shape
-and a narrowly authenticated transition. Hub and JobSet surfaces remain separate
-pending contracts; a generic Job-controller identity is not guessed.
+The original `render_policy.py` supports only the **pre-KAI-injection shape**.
+`injected_policy.py` adds a separate source-inferred candidate with the exact
+pinned KAI/isolator hostPaths, metrics, device/quota references and actual regular
+main-container index. Its exact protected Pod registry prevents copied quota
+names from granting authority. `quota_policy.py` protects both referenced maps
+and their population stages; `binding_policy.py` models the UID-bearing binding
+request against separately reviewed completed-map generations. These are inactive
+contracts, not a working submission-to-binding integration. See
+[the exact source trace](SOURCE_TRACE.md) and [the coordination gaps](RUNTIME_CONTRACT.md).
+
+`notebook_fixtures.py` also executes the actual released NotebookSubmissions,
+snapshot, S3NotebookLauncher and ArgoBackend APIs with in-memory transport
+responses. The fixtures preserve selected files and JSON-compatible typed
+parameters, strip saved outputs, enforce 50 MiB, and exercise idempotence and
+first-UID provenance binding. Their controller, executor and webhook fields remain
+unmaterialized; an executor-hardening patch is a detached proposal only.
+
+A final Pod snapshot does not prove the admission sequence. Actual CREATE,
+mutation, UPDATE and binding observations remain required. Hub and JobSet
+surfaces remain separate pending contracts; a generic controller identity is not guessed.
 
 The credentialed-executor fixture is also synthetic. The candidate requires
 explicit UID10001/GID10001, read-only root and RuntimeDefault seccomp on the
@@ -79,6 +93,10 @@ python -B platform-staging/scheduler/qualification/dynamic-admission/render_poli
   --namespace cps-dynamic-admission-review \
   --executor-image 'registry.example/argoexec@sha256:<reviewed-digest>' \
   --output /tmp/new-dynamic-admission-candidate.yaml
+
+python -B platform-staging/scheduler/qualification/dynamic-admission/render_runtime.py \
+  --executor-image 'registry.example/argoexec@sha256:<reviewed-digest>' \
+  --output /tmp/new-dynamic-runtime-candidates.yaml
 ```
 
 Without `--registry`, the rendered creator and owner lists are empty. A review
@@ -86,6 +104,12 @@ registry is JSON with only `createCreators`, `updateCreators` and `owners` keys;
 owners contain exactly `name` and `uid`. Rendering is not deployment or proof
 that those declarations were verified. Outputs are created exclusively and never
 overwrite prior evidence.
+
+The runtime renderer emits three separate CRDs, parameter resources, policies
+and bindings (12 objects). All registries default empty. Its additional registry
+fields are documented in [RUNTIME_CONTRACT.md](RUNTIME_CONTRACT.md); records are
+operator attestations, not live API reads. No renderer emits a Namespace, grants
+RBAC permissions or deploys an application.
 
 `cel_evaluate.py` executes the literal expressions with a reported CEL
 parser/interpreter. It has no Python policy mirror or custom policy functions.
@@ -105,7 +129,9 @@ server type checking and denied-request propagation barriers remain mandatory.
    parent records, and reviewed scratch enforcement/Pod Security arrangement.
 2. Actual Argo init/wait/cache Pods, parameter/schema typing without warnings,
    positive and crafted-negative server requests, including subresources.
-3. Complete KAI injection, owned ConfigMaps and binding-order qualification with
+3. Implement trusted per-Pod prefix coordination and synchronous quota/binding
+   approval without the rollback/recreated-map race, then qualify complete KAI
+   injection, owned ConfigMaps and binding ordering with
    unauthorized parent, Pod, exec/bind and configuration mutations denied.
 4. Separate Hub/JobSet contracts and shared-workspace lifecycle/reservations.
 5. The live [mixed 5/10/20 GiB experiment](../dynamic-cache/MIXED_RUNTIME.md),
