@@ -1,8 +1,8 @@
 {
-  "observedAt": "2026-10-07T04:23:23.785001+00:00",
+  "observedAt": "2026-10-07T04:30:09.190523+00:00",
   "computeSourceRevision": "70471b9793f21a87d74ac7a673f871dfa9620101",
   "computeWheelSha256": "86a0fa74cb6e15dd408fcfe36945ca1f614af14ff3bda555f49aaf4e85408d37",
-  "status": "partial layered qualification matrix",
+  "status": "all twelve notebook wheels aligned; release qualification incomplete",
   "productionPromotionAllowed": false,
   "artifacts": [
     {
@@ -82,11 +82,18 @@
       "cpuNotebookChecksPassed": true,
       "nativeRosLoopbackPassed": true,
       "gpuQualified": false
+    },
+    {
+      "component": "desktop-ros2-xpra",
+      "image": "ghcr.io/mul-cps/cps-jupyter-notebook@sha256:15282af21c4256432742d5e4b7b139d80d2863606e20c963eeb600cf98cd3ea0",
+      "report": "notebook-desktop-ros2-xpra-70471b9-report.json",
+      "cpuNotebookChecksPassed": true,
+      "nativeRosLoopbackPassed": true,
+      "isolatedXpraHttpPassed": true,
+      "gpuQualified": false
     }
   ],
-  "remainingNotebookVariants": [
-    "desktop-ros2-xpra"
-  ],
+  "remainingNotebookVariants": [],
   "remainingGates": [
     "Matching admin candidate and full coordinated application matrix",
     "Common-source-tag build and release SBOM/provenance",
