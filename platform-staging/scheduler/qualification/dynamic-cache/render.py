@@ -17,6 +17,8 @@ HAMI_REVISION = "5496322f2fb3e71bf1eca014fba3c9bc59ab8ffd"
 HAMI_PATH = "/usr/local/vgpu/libvgpu.so"
 CACHE_KEY = "CUDA_DEVICE_MEMORY_SHARED_CACHE"
 CACHE_PATH = "/tmp/cps-workspace-usage.cache"
+REVIEWED_GPU_ANNOTATION = "compute.cps.unileoben.ac.at/reviewed-gpu-uuid"
+GPU_UUID_FIELD_PATH = f"metadata.annotations['{REVIEWED_GPU_ANNOTATION}']"
 INITIALIZE = '''import json,os,stat
 path='/cache-root/usage.cache'
 assert os.getuid()==10001
@@ -32,13 +34,15 @@ assert os.getuid()==10001
 proof=json.loads(pathlib.Path('/probe/preflight.json').read_text())
 expected={'runtimeReviewed':True,'role':sys.argv[1],'podUid':os.environ['FIXTURE_POD_UID'],
  'runId':proof['runId'],'nodeUid':proof['nodeUid'],
- 'gpuUuid':proof['gpuUuid'],'hamiSha256':proof['hami']['sha256'],'probeSha256':sys.argv[2]}
+ 'hamiSha256':proof['hami']['sha256'],'probeSha256':sys.argv[2]}
 marker=pathlib.Path('/cache-root/operator-approved.json')
 deadline=time.monotonic()+60
 while time.monotonic()<deadline:
  if marker.exists():
   assert marker.stat().st_uid==10001 and marker.stat().st_size<=4096
-  assert json.loads(marker.read_text())==expected, 'Operator review marker mismatch'
+  actual=json.loads(marker.read_text())
+  assert actual.get('gpuUuid') in proof['gpuUuidAllowlist'], 'GPU is outside observed GPU allowlist'
+  assert actual==dict(expected,gpuUuid=actual['gpuUuid']), 'Operator review marker mismatch'
   print(json.dumps({'event':'operator-runtime-review-released','role':sys.argv[1]}),flush=True)
   sys.exit(0)
  time.sleep(0.2)
@@ -72,17 +76,24 @@ def validate_preflight(value, now=None):
     target = value["targetGpuUuid"]
     if not re.fullmatch(r"GPU-[a-fA-F0-9]{8}(?:-[a-fA-F0-9]{4}){3}-[a-fA-F0-9]{12}", target):
         raise ValueError("Explicit physical GPU UUID required; MIG is excluded")
+    observed = value["gpus"]
+    if (len(observed) != 2 or len({gpu["uuid"] for gpu in observed}) != 2 or
+            len({gpu["index"] for gpu in observed}) != 2 or any(
+                not re.fullmatch(r"GPU-[a-fA-F0-9]{8}(?:-[a-fA-F0-9]{4}){3}-[a-fA-F0-9]{12}", gpu["uuid"])
+                or type(gpu["index"]) is not int or gpu["index"] < 0 for gpu in observed)):
+        raise ValueError("Exactly both observed physical GPU2 UUIDs and distinct indices required")
     entries = [gpu for gpu in value["gpus"] if gpu["uuid"] == target]
     if len(entries) != 1 or type(entries[0]["index"]) is not int or entries[0]["index"] < 0:
         raise ValueError("Target UUID must be observed exactly once on GPU2 with an index")
     if value["activeGpuPods"] != []:
         raise ValueError("Target node has active GPU workloads or reservations")
     servers = [server for server in value["mpsServers"]
-               if server.get("gpuUuid") == target and server.get("ready") is True
+               if server.get("gpuUuid") in {gpu["uuid"] for gpu in observed} and server.get("ready") is True
                and type(server.get("pid")) is int and server["pid"] > 0]
-    if not servers:
-        raise ValueError("An existing Ready MPS server on this exact GPU is required")
+    if {server["gpuUuid"] for server in servers} != {gpu["uuid"] for gpu in observed}:
+        raise ValueError("An existing Ready MPS server on each allowed physical GPU is required")
     return {"node": NODE, "nodeUid": node["uid"], "gpuUuid": target,
+            "gpuUuidAllowlist": [gpu["uuid"] for gpu in observed],
             "gpuIndex": entries[0]["index"], "observedAt": value["observedAt"],
             "image": IMAGE, "existingMpsPids": [s["pid"] for s in servers], "hami": hami,
             "schedulerQuota": quota}
@@ -101,7 +112,7 @@ def render(preflight, run_id, now=None):
                    "kai.scheduler/queue": "cps-batch"}
     annotations = {"compute.cps.unileoben.ac.at/qualification-state": "disabled-manual-fixture",
                    "compute.cps.unileoben.ac.at/expected-node-uid": proof["nodeUid"],
-                   "compute.cps.unileoben.ac.at/expected-gpu-uuid": proof["gpuUuid"],
+                   "compute.cps.unileoben.ac.at/initial-preflight-gpu-choice": proof["gpuUuid"],
                    "compute.cps.unileoben.ac.at/preflight-at": proof["observedAt"],
                    "compute.cps.unileoben.ac.at/fixture-run-id": run_id,
                    "compute.cps.unileoben.ac.at/probe-sha256": digest,
@@ -154,7 +165,8 @@ def render(preflight, run_id, now=None):
                             {"name": "GPU_PORTION", "value": "0.13"},
                             {"name": "EXPECTED_HAMI_SHA256", "value": proof["hami"]["sha256"]},
                             {"name": "EXPECTED_HAMI_REVISION", "value": HAMI_REVISION},
-                            {"name": "EXPECTED_GPU_UUID", "value": proof["gpuUuid"]},
+                            {"name": "EXPECTED_GPU_UUID", "valueFrom": {
+                                "fieldRef": {"apiVersion": "v1", "fieldPath": GPU_UUID_FIELD_PATH}}},
                             {"name": "CUDA_MPS_PIPE_DIRECTORY", "value": "/mps/pipe"},
                             {"name": "NVIDIA_DRIVER_CAPABILITIES", "value": "compute,utility"}],
                     "resources": {"requests": {"cpu": "100m", "memory": "128Mi"},

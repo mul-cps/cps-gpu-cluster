@@ -5,7 +5,7 @@ import json
 from pathlib import Path
 
 from probe import CACHE_PATH, ROUNDS, concurrent_verdict, normalized_uuid, ordinary_verdict
-from render import HAMI_PATH, HAMI_REVISION, IMAGE, NODE
+from render import GPU_UUID_FIELD_PATH, HAMI_PATH, HAMI_REVISION, IMAGE, NODE, REVIEWED_GPU_ANNOTATION
 
 
 def valid_hami(value, preflight):
@@ -108,19 +108,28 @@ def json_events(path):
     return [json.loads(line) for line in path.read_text().splitlines() if line.startswith("{")]
 
 
-def evaluate(workspace_events, peer_events, workspace_pod, peer_pod, node, preflight, *, configmaps=None):
+def evaluate(workspace_events, peer_events, workspace_pod, peer_pod, node, preflight, configmaps=None):
     reasons = []
     reports = [e for e in workspace_events if e.get("event") == "workspace-result"]
     if len(reports) != 1:
         return {"status": "inconclusive", "reasons": ["Exactly one workspace report required"],
                 "productionQualified": False, "hostileIsolationQualified": False}
     report = reports[0]
-    expected = normalized_uuid(preflight["targetGpuUuid"])
+    reviewed_gpu = workspace_pod.get("metadata", {}).get("annotations", {}).get(REVIEWED_GPU_ANNOTATION)
+    whitelist = [gpu["uuid"] for gpu in preflight["gpus"]]
+    expected = None
+    try:
+        if reviewed_gpu not in whitelist:
+            raise ValueError("Selection is not in observed GPU2 inventory")
+        expected = normalized_uuid(reviewed_gpu)
+    except (TypeError, ValueError):
+        reasons.append("Reviewed physical GPU selection is missing or outside observed GPU2 inventory")
     if node["metadata"].get("name") != NODE or node["metadata"].get("uid") != preflight["node"]["uid"]:
         reasons.append("Target node UID changed or does not match")
     uids = []
     run_ids = []
     quota_receipts = []
+    selection_receipts = []
     for pod in (workspace_pod, peer_pod):
         metadata, spec = pod["metadata"], pod["spec"]
         uids.append(metadata["uid"])
@@ -130,6 +139,23 @@ def evaluate(workspace_events, peer_events, workspace_pod, peer_pod, node, prefl
         if len(main) != 1 or main[0]["image"] != IMAGE:
             reasons.append("Fixture image mismatch")
         env = {e["name"]: e.get("value") for e in main[0].get("env", [])}
+        if metadata.get("annotations", {}).get(REVIEWED_GPU_ANNOTATION) != reviewed_gpu:
+            reasons.append("Independent peer and workspace were not reviewed on the same physical GPU")
+        expected_entries = [e for e in main[0].get("env", []) if e["name"] == "EXPECTED_GPU_UUID"]
+        if (len(expected_entries) != 1 or expected_entries[0].get("valueFrom") != {
+                "fieldRef": {"apiVersion": "v1", "fieldPath": GPU_UUID_FIELD_PATH}}):
+            reasons.append("Expected GPU identity must come from the reviewed Pod annotation")
+        try:
+            selections = [e for e in main[0].get("env", []) if e["name"] == "NVIDIA_VISIBLE_DEVICES"]
+            if (len(selections) != 1 or "value" in selections[0] or
+                    selections[0]["valueFrom"]["configMapKeyRef"]["key"] != "NVIDIA_VISIBLE_DEVICES"):
+                raise ValueError("Actual KAI-owned device selection reference required")
+            selected, proof = resolve_configmap_env(selections[0], pod, configmaps)
+            if proof is None or selected != f"k8s.device-plugin.nvidia.com/gpu={reviewed_gpu}":
+                raise ValueError("Actual selected GPU differs from the reviewed annotation")
+            selection_receipts.append(proof)
+        except (KeyError, TypeError, ValueError):
+            reasons.append("Actual KAI ConfigMap GPU selection could not be verified")
         for key in ("CUDA_DEVICE_MEMORY_LIMIT", "GPU_PORTION"):
             try:
                 entries = [e for e in main[0].get("env", []) if e["name"] == key]
@@ -221,6 +247,7 @@ def evaluate(workspace_events, peer_events, workspace_pod, peer_pod, node, prefl
             "schedulerQuotaDrift": True,
             "canonicalQuotaDrift": report.get("canonicalQuotaDrift") if report.get("hami") else None,
             "exactProfileQuotaQualified": False, "schedulerQuotaReceipts": quota_receipts,
+            "schedulerSelectionReceipts": selection_receipts,
             "node": NODE, "nodeUid": preflight["node"]["uid"], "gpu": expected,
             "podUids": uids}
 

@@ -16,6 +16,7 @@ import render
 
 NOW = dt.datetime(2026, 10, 7, 14, tzinfo=dt.timezone.utc)
 GPU = "GPU-12345678-1234-1234-1234-123456789abc"
+OTHER_GPU = "GPU-12345678-1234-1234-1234-123456789abd"
 UID = "12345678-1234-1234-1234-123456789abc"
 
 
@@ -27,8 +28,9 @@ def preflight():
             "schedulerQuota": {"kaiVersion": "0.18.1", "requestedMiB": 5120,
                                "schedulerInjectedMiB": 5324, "cudaDeviceMemoryLimit": "5324m", "gpuPortion": "0.13",
                                "canonicalLimitMiB": 5120, "cudaDeviceMemoryLimit0": "5120m"},
-            "gpus": [{"uuid": GPU, "index": 1}], "activeGpuPods": [],
-            "mpsServers": [{"gpuUuid": GPU, "pid": 100, "ready": True}]}
+            "gpus": [{"uuid": GPU, "index": 0}, {"uuid": OTHER_GPU, "index": 1}], "activeGpuPods": [],
+            "mpsServers": [{"gpuUuid": GPU, "pid": 100, "ready": True},
+                           {"gpuUuid": OTHER_GPU, "pid": 200, "ready": True}]}
 
 
 def value(code=0, start=100, end=None, pid=101):
@@ -47,11 +49,22 @@ def value(code=0, start=100, end=None, pid=101):
 def valid_evidence():
     fixture = render.render(preflight(), "abcd1234", NOW)
     pods = []
+    configmaps = []
     for number, item in enumerate(fixture["items"][1:]):
         pods.append({"metadata": {**item["spec"]["template"]["metadata"],
                      "uid": f"pod-{number}", "name": f"pod-name-{number}", "namespace": render.NAMESPACE},
                      "spec": {**item["spec"]["template"]["spec"], "nodeName": render.NODE},
                      "status": {"phase": "Succeeded"}})
+        pod = pods[-1]
+        pod["metadata"]["annotations"]["compute.cps.unileoben.ac.at/reviewed-gpu-uuid"] = GPU
+        cm_name = pod["metadata"]["name"] + "-shared-gpu-0"
+        pod["spec"]["containers"][0]["env"].append({"name": "NVIDIA_VISIBLE_DEVICES", "valueFrom": {
+            "configMapKeyRef": {"name": cm_name, "key": "NVIDIA_VISIBLE_DEVICES"}}})
+        configmaps.append({"apiVersion": "v1", "kind": "ConfigMap", "metadata": {
+            "name": cm_name, "namespace": render.NAMESPACE, "uid": cm_name+"-uid", "resourceVersion": "123",
+            "ownerReferences": [{"apiVersion": "v1", "kind": "Pod", "name": pod["metadata"]["name"], "uid": pod["metadata"]["uid"]}]},
+            "data": {"CUDA_DEVICE_MEMORY_LIMIT": "5324m", "GPU_PORTION": "0.13",
+                     "NVIDIA_VISIBLE_DEVICES": f"k8s.device-plugin.nvidia.com/gpu={GPU}"}})
     ordinary = {key: value(2 if key == "bDenied" else 0) for key in
                 ("aHold", "bDenied", "aContinued", "aFree", "bAfterFree", "bContinued")}
     report = {"event": "workspace-result", "status": "bounded-standard-cases-passed",
@@ -83,10 +96,22 @@ def valid_evidence():
     for events, uid in ((workspace, "pod-1"), (peer, "pod-0")):
         for event in events:
             event.update(podUid=uid, runId="abcd1234")
-    return workspace, peer, pods[1], pods[0], {"metadata": {"name": render.NODE, "uid": UID}}, preflight()
+    return (workspace, peer, pods[1], pods[0], {"metadata": {"name": render.NODE, "uid": UID}}, preflight(),
+            {"before": {"items": configmaps}, "after": {"items": copy.deepcopy(configmaps)}})
 
 
 class RendererTests(unittest.TestCase):
+    def test_mps_server_must_already_be_ready_for_each_allowed_gpu(self):
+        for index in (0, 1):
+            for change in ("missing", "not-ready"):
+                data = preflight()
+                if change == "missing":
+                    data["mpsServers"].pop(index)
+                else:
+                    data["mpsServers"][index]["ready"] = False
+                with self.subTest(index=index, change=change), self.assertRaises(ValueError):
+                    render.render(data, "abcd1234", NOW)
+
     def test_manifest_is_disabled_and_cache_is_a_private_nonroot_file_mount(self):
         result = render.render(preflight(), "abcd1234", NOW)
         self.assertEqual([x["kind"] for x in result["items"]], ["ConfigMap", "Job", "Job"])
@@ -116,6 +141,10 @@ class RendererTests(unittest.TestCase):
             self.assertEqual(env["CUDA_DEVICE_MEMORY_LIMIT_0"], "5120m")
             self.assertEqual(env["CUDA_DEVICE_MEMORY_LIMIT"], "5324m")
             self.assertEqual(env["GPU_PORTION"], "0.13")
+            expected = next(e for e in pod["containers"][0]["env"] if e["name"] == "EXPECTED_GPU_UUID")
+            self.assertEqual(expected["valueFrom"]["fieldRef"]["fieldPath"],
+                             "metadata.annotations['compute.cps.unileoben.ac.at/reviewed-gpu-uuid']")
+            self.assertNotIn("NVIDIA_VISIBLE_DEVICES", env)
 
     def test_preflight_rejects_unsafe_or_unbound_targets(self):
         changes = [lambda d: d["node"].update(name="k3s-wk-gpu1"),
@@ -184,7 +213,8 @@ class RendererTests(unittest.TestCase):
         self.assertFalse(calls & {"unlink", "chmod", "write_text", "write_bytes"})
 
     def test_operator_gate_accepts_only_the_exact_actual_pod_and_rendered_proof(self):
-        proof = {"nodeUid": UID, "gpuUuid": GPU, "runId": "abcd1234", "hami": {"sha256": "a"*64}}
+        proof = {"nodeUid": UID, "gpuUuid": GPU, "gpuUuidAllowlist": [GPU, OTHER_GPU],
+                 "runId": "abcd1234", "hami": {"sha256": "a"*64}}
         marker = {"runtimeReviewed": True, "role": "peer", "podUid": "actual-pod",
                   "runId": "abcd1234", "nodeUid": UID, "gpuUuid": GPU,
                   "hamiSha256": "a"*64, "probeSha256": "b"*64}
@@ -203,6 +233,14 @@ class RendererTests(unittest.TestCase):
             with self.assertRaises(SystemExit) as complete:
                 exec(compile(render.OPERATOR_GATE, "operator-gate", "exec"), {})
             self.assertEqual(complete.exception.code, 0)
+            marker["gpuUuid"] = OTHER_GPU
+            with self.assertRaises(SystemExit) as other_complete:
+                exec(compile(render.OPERATOR_GATE, "operator-gate", "exec"), {})
+            self.assertEqual(other_complete.exception.code, 0)
+            marker["gpuUuid"] = "GPU-00000000-0000-0000-0000-000000000000"
+            with self.assertRaisesRegex(AssertionError, "observed GPU allowlist"):
+                exec(compile(render.OPERATOR_GATE, "operator-gate", "exec"), {})
+            marker["gpuUuid"] = GPU
             for key in ("podUid", "runId", "hamiSha256", "probeSha256", "nodeUid", "role"):
                 original = marker[key]
                 marker[key] = "mismatched"
@@ -283,9 +321,10 @@ class VerdictTests(unittest.TestCase):
             items.append({"apiVersion": "v1", "kind": "ConfigMap", "metadata": {
                 "name": name, "namespace": render.NAMESPACE, "uid": name+"-uid", "resourceVersion": "123",
                 "ownerReferences": [{"apiVersion": "v1", "kind": "Pod", "name": pod["metadata"]["name"], "uid": pod["metadata"]["uid"]}]},
-                "data": {"CUDA_DEVICE_MEMORY_LIMIT": "5324m", "GPU_PORTION": "0.13"}})
+                "data": {"CUDA_DEVICE_MEMORY_LIMIT": "5324m", "GPU_PORTION": "0.13",
+                         "NVIDIA_VISIBLE_DEVICES": f"k8s.device-plugin.nvidia.com/gpu={GPU}"}})
         snapshots = {"before": {"items": items}, "after": {"items": copy.deepcopy(items)}}
-        self.assertEqual(evaluate.evaluate(*evidence, configmaps=snapshots)["status"], "bounded-standard-cases-passed")
+        self.assertEqual(evaluate.evaluate(*evidence[:6], configmaps=snapshots)["status"], "bounded-standard-cases-passed")
         for kind in ("missing", "uid", "rv", "owner", "quota", "portion"):
             changed = copy.deepcopy(snapshots)
             if kind == "missing":
@@ -302,7 +341,48 @@ class VerdictTests(unittest.TestCase):
                 for stage in ("before", "after"):
                     changed[stage]["items"][0]["data"][key] = "unexpected"
             with self.subTest(kind=kind):
-                self.assertEqual(evaluate.evaluate(*evidence, configmaps=changed)["status"], "failed-or-inconclusive")
+                self.assertEqual(evaluate.evaluate(*evidence[:6], configmaps=changed)["status"], "failed-or-inconclusive")
+
+    def test_reviewed_selection_must_be_observed_same_card_and_owned_by_each_pod(self):
+        for kind in ("missing-review", "unobserved", "different-card", "cm-selection", "cm-missing"):
+            evidence = list(valid_evidence())
+            key = "compute.cps.unileoben.ac.at/reviewed-gpu-uuid"
+            if kind == "missing-review":
+                evidence[2]["metadata"]["annotations"].pop(key)
+            elif kind == "unobserved":
+                evidence[2]["metadata"]["annotations"][key] = "GPU-00000000-0000-0000-0000-000000000000"
+            elif kind == "different-card":
+                evidence[3]["metadata"]["annotations"][key] = OTHER_GPU
+            elif kind == "cm-selection":
+                for stage in ("before", "after"):
+                    evidence[6][stage]["items"][0]["data"]["NVIDIA_VISIBLE_DEVICES"] = f"k8s.device-plugin.nvidia.com/gpu={OTHER_GPU}"
+            else:
+                evidence[6] = None
+            with self.subTest(kind=kind):
+                self.assertEqual(evaluate.evaluate(*evidence)["status"], "failed-or-inconclusive")
+
+    def test_actual_second_observed_card_can_pass_without_changing_initial_choice(self):
+        evidence = list(valid_evidence())
+        def update_gpu(value):
+            if isinstance(value, dict):
+                for key, item in value.items():
+                    if key == "gpu":
+                        value[key] = probe.normalized_uuid(OTHER_GPU)
+                    elif key == "compute.cps.unileoben.ac.at/reviewed-gpu-uuid":
+                        value[key] = OTHER_GPU
+                    elif key == "NVIDIA_VISIBLE_DEVICES":
+                        value[key] = f"k8s.device-plugin.nvidia.com/gpu={OTHER_GPU}"
+                    else:
+                        update_gpu(item)
+            elif isinstance(value, list):
+                for item in value:
+                    update_gpu(item)
+        for value in (evidence[0], evidence[1], evidence[2], evidence[3], evidence[6]):
+            update_gpu(value)
+        self.assertEqual(evidence[5]["targetGpuUuid"], GPU)
+        result = evaluate.evaluate(*evidence)
+        self.assertEqual(result["status"], "bounded-standard-cases-passed", result)
+        self.assertEqual(result["gpu"], probe.normalized_uuid(OTHER_GPU))
 
     def test_sequential_or_touching_intervals_are_not_concurrency_evidence(self):
         for starts_ends in ((100, 105, 110, 115), (100, 110, 110, 120)):
