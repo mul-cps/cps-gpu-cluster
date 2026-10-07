@@ -20,5 +20,12 @@
   "image": "ghcr.io/mul-cps/cps-jupyter-notebook@sha256:1fab06639346f69e96cda6c8f551d761cc51c47de85cdc0ec42ef31bf2ef2c7f",
   "digest": "sha256:1fab06639346f69e96cda6c8f551d761cc51c47de85cdc0ec42ef31bf2ef2c7f",
   "published": true,
-  "remoteManifestAndConfigVerified": true
+  "remoteManifestAndConfigVerified": true,
+  "runtimeArtifacts": {
+    "failure-input.ipynb": "e411dc3d621b0067c15d71fd3a7385c0700a810cdc98c630691925a8b9f9dda9",
+    "failure.ipynb": "311b5499a927d7a9e2a0016cf834a2320945af1ab478459431e4a898524d197b",
+    "input.ipynb": "d4701b26657d1b840e790973c67eb2e279893e956efb203a4576c9b379d82c8d",
+    "report.json": "e3874bc906a8f7addc4db12e28a19d34b603a00031488df99e2df6f11bbfba53",
+    "success.ipynb": "bca139caffe8a3dcfb401e117c1abfd425582aef63be8d309a08cc8db0a235c0"
+  }
 }

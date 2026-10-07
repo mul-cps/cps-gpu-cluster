@@ -1,0 +1,40 @@
+{
+  "computeSourceRevision": "70471b9793f21a87d74ac7a673f871dfa9620101",
+  "wheelSha256": "86a0fa74cb6e15dd408fcfe36945ca1f614af14ff3bda555f49aaf4e85408d37",
+  "imageConfigId": "3c82c82bf353b41a92e09f443a6c241d236f09e856ae8c5e8776be222e1c0ac8",
+  "parentConfigId": "4d49a0cf3d875fb9faca2e49f0adc77d7585c3a7bdd9fa344f912cac9f308a33",
+  "installedHashes": {
+    "modulesMatched": 21,
+    "addonAssetsMatched": 5,
+    "uid": 1000
+  },
+  "runtime": {
+    "uid": 1000,
+    "python": "3.13.13",
+    "compute": "0.1.0",
+    "rtc": "4.4.1",
+    "lab": "4.5.7",
+    "freshKernelSuccess": true,
+    "typedParameters": true,
+    "immutableInput": true,
+    "failedExecutedNotebookRetained": true,
+    "qualified": false,
+    "scope": "base CPU runtime only; no Hub browser qualification"
+  },
+  "runtimeArtifacts": {
+    "failure-input.ipynb": "2b5a19b51659773f472ec56404f695fa8414fd9b84ce4ae9969ea778b783c8a7",
+    "failure.ipynb": "3a326bb7f22a592878c2e3fc0f03c997be2b6e6d0d7eea55c97ec2a9c3dddcd4",
+    "input.ipynb": "264582f449038d3e3ea2248f073df4c46e921bb3e5a10642c3ed0ed7f66abe22",
+    "report.json": "e3874bc906a8f7addc4db12e28a19d34b603a00031488df99e2df6f11bbfba53",
+    "success.ipynb": "060efdf28bf2195566f05ce3fdb74d999c8a534fd491d1981225078347e94053"
+  },
+  "pipCheckPassed": true,
+  "parentStartupConfigurationPreserved": true,
+  "qualified": false,
+  "deployed": false,
+  "scope": "base CPU compatibility only; common-tag release and Hub browser remain open",
+  "image": "ghcr.io/mul-cps/cps-jupyter-notebook-base-cpu@sha256:2c18d8bb45cc9cbcaa98a71228e7c0cf4fcdfa6e9f52ba5e768a466abffe64fe",
+  "digest": "sha256:2c18d8bb45cc9cbcaa98a71228e7c0cf4fcdfa6e9f52ba5e768a466abffe64fe",
+  "published": true,
+  "remoteManifestAndConfigVerified": true
+}
