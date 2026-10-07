@@ -85,6 +85,20 @@ class Staging(unittest.TestCase):
         for rule in cluster_role['rules']:
             self.assertNotIn('secrets',rule['resources'])
             self.assertNotIn('delete',rule['verbs'])
+        # Argo log streaming watches Pods to discover the selected container;
+        # pods/log GET alone is insufficient. Keep this grant namespace scoped.
+        argo_role=next(d for d in docs if d['kind']=='Role' and d['metadata']['name']=='cps-compute-argo-client')
+        self.assertEqual(argo_role['metadata']['namespace'],'cps-workflows')
+        granted={(group,resource,verb) for rule in argo_role['rules']
+                 for group in rule['apiGroups'] for resource in rule['resources'] for verb in rule['verbs']}
+        expected_grants={('argoproj.io','workflows',verb) for verb in ('get','list','watch','create','patch')}
+        expected_grants|={('','pods',verb) for verb in ('get','list','watch')}
+        expected_grants.add(('','pods/log','get'))
+        self.assertEqual(granted,expected_grants)
+        argo_binding=next(d for d in docs if d['kind']=='RoleBinding' and d['metadata']['name']=='cps-compute-argo-client')
+        self.assertEqual(argo_binding['metadata']['namespace'],'cps-workflows')
+        self.assertEqual(argo_binding['roleRef'],{'apiGroup':'rbac.authorization.k8s.io','kind':'Role','name':'cps-compute-argo-client'})
+        self.assertEqual(argo_binding['subjects'],[{'kind':'ServiceAccount','name':'cps-compute-controller','namespace':'cps-compute'}])
         policies=[d for d in docs if d['kind']=='ValidatingAdmissionPolicy']
         expected={'cps-compute-retained-storage','cps-compute-bound-workspace-claim',
                   'cps-compute-archive-verifier','cps-compute-private-workspace-pv',

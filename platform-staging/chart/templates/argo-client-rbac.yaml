@@ -10,7 +10,7 @@ rules:
     verbs: [get, list, watch, create, patch]
   - apiGroups: [""]
     resources: [pods]
-    verbs: [get, list]
+    verbs: [get, list, watch]
   - apiGroups: [""]
     resources: [pods/log]
     verbs: [get]
