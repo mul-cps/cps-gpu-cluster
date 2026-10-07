@@ -39,5 +39,35 @@
   "limitations": [
     "Layered qualification build; common-source release tag and full matrix remain open.",
     "No GPU devices mounted; hardware isolation and variant-specific GPU behavior unqualified."
-  ]
+  ],
+  "sbom": {
+    "variant": "mujoco-xpra",
+    "subject": "ghcr.io/mul-cps/cps-jupyter-notebook@sha256:7d812b828092949357a35618d53220ef3bc4f52c11b29230d8de1ae4346507c4",
+    "sourceImageId": "sha256:bc28d0b5be1fdff39e2c64b36eda75ea47f0aa8ef21fcc6e60b0b6cd0150c3b0",
+    "packages": 983,
+    "files": 52821,
+    "requiredPackagesVerified": [
+      "cps-compute",
+      "hera-workflows",
+      "jupyter-collaboration",
+      "jupyterlab",
+      "papermill"
+    ],
+    "checksums": {
+      "sbom.spdx.json": "c28947375647f94649488658183ec00c542f89fe3a1ae072dc25ee6f06c8c750",
+      "sbom.syft.json": "951a705ff815ec41084e0d61bec1c45ad9bf7ab5f01a88da76317eef76d1a913"
+    },
+    "attachment": "ghcr.io/mul-cps/cps-jupyter-notebook@sha256:e4bf50e0cde7e24a98d6308788c228ca04b1a94f8823aa1b876667ec1183836c",
+    "subjectVerified": true,
+    "downloadHashesMatched": true,
+    "scannerSha256": "dbf75864e7a7ff9e1fbf00552c31483f693188632a9f68f343cd7653dac513d6",
+    "productionQualified": false,
+    "createdAt": "2026-10-07T05:11:21.084808+00:00",
+    "variantPackagesVerified": [
+      "mujoco",
+      "gymnasium"
+    ],
+    "fileCoverage": "package-owned files (Syft metadata selection owned-by-package); not every image file"
+  },
+  "sbomPublished": true
 }

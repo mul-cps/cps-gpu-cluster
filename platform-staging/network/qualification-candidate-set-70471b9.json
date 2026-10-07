@@ -97,7 +97,9 @@
       "image": "ghcr.io/mul-cps/cps-jupyter-notebook@sha256:7d812b828092949357a35618d53220ef3bc4f52c11b29230d8de1ae4346507c4",
       "report": "notebook-mujoco-xpra-70471b9-report.json",
       "cpuNotebookChecksPassed": true,
-      "gpuQualified": false
+      "gpuQualified": false,
+      "sbomReferrer": "ghcr.io/mul-cps/cps-jupyter-notebook@sha256:e4bf50e0cde7e24a98d6308788c228ca04b1a94f8823aa1b876667ec1183836c",
+      "sbomRemoteVerified": true
     },
     {
       "component": "comfyui",
