@@ -31,5 +31,11 @@
     "evidence": "gateway-70471b9-argo-report.json",
     "scope": "operator fixture over authenticated loopback HTTP, installed 70471b9 gateway, real Argo/admission/S3; synthetic identity and isolated namespace; not human OAuth, production HTTPS or retain endpoint qualification",
     "productionQualified": false
+  },
+  "controlledHttpsQualification": {
+    "passed": true,
+    "evidence": "gateway-70471b9-https-report.json",
+    "productionServiceRoutingQualified": false,
+    "realIdentityQualified": false
   }
 }

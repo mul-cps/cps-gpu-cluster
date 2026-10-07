@@ -1,0 +1,98 @@
+{
+  "status": "passed",
+  "scope": "operator fixture over certificate-verified loopback HTTPS, installed 70471b9 gateway, real Argo/admission/S3; synthetic identity and isolated namespace; not human OAuth, production Service routing or retain endpoint qualification",
+  "runs": [
+    {
+      "name": "cps-05cd6098208463b876f92fcec80ba2c28ca61cf26adce5dc",
+      "uid": "1b76ef95-9c8a-4150-b1fd-f73cbc921c4c",
+      "expectedFailure": false,
+      "initialPhase": null,
+      "otherOwnerDenied": {
+        "inspect": 403,
+        "/logs": 403,
+        "/artifacts": 403,
+        "terminate": 403,
+        "retain": 403
+      },
+      "phase": "Succeeded",
+      "message": null,
+      "immutableSnapshot": true,
+      "outputsStripped": true,
+      "supportingImport": true,
+      "typedParameters": true,
+      "idempotentUid": true,
+      "executedAvailable": true,
+      "metadataBoundToUid": true,
+      "snapshotHash": "2d8674b73346384426246cc0dbe941246126f1c58d04b2ee92fcef0e6aaad2e6",
+      "executedHash": "e37a38088eb536cbb3b27b93e7ebfe6c78f3c6f1356cc3850c187076e8a14509"
+    },
+    {
+      "name": "cps-434f03633080ca737a8fdc3145dddf44f4b13a9bf8814909",
+      "uid": "f4b49438-70a2-490c-b29a-42359e6504b9",
+      "expectedFailure": true,
+      "initialPhase": null,
+      "otherOwnerDenied": {
+        "inspect": 403,
+        "/logs": 403,
+        "/artifacts": 403,
+        "terminate": 403,
+        "retain": 403
+      },
+      "phase": "Failed",
+      "message": "main: Error (exit code 1)",
+      "immutableSnapshot": true,
+      "outputsStripped": true,
+      "supportingImport": true,
+      "typedParameters": true,
+      "idempotentUid": true,
+      "executedAvailable": true,
+      "metadataBoundToUid": true,
+      "snapshotHash": "5c153894273241c516b1c6149a8d9d51e39407cc54e724e96e3a5ac384703e75",
+      "executedHash": "3f54a5c95ea5e6d03692a8f0ecb5e1e5223ddb9a29d7d3cf01ca72423eebbc6a"
+    }
+  ],
+  "deploymentPolicyHash": "sha256:051cd754210af2830d67968eea898f674a55ff66f5c88b3db95dff205f04e33d",
+  "candidatePolicyHash": "sha256:8b4e201697d82726c57d5f68c2f73346304a0376ac884d27f8da625c35cd1068",
+  "tlsVerified": true,
+  "missingAndInvalidAuthDenied": true,
+  "cleanup": [
+    {
+      "kind": "namespace",
+      "namespace": null,
+      "absent": true
+    },
+    {
+      "kind": "pod",
+      "namespace": "cps-compute",
+      "absent": true
+    },
+    {
+      "kind": "networkpolicy",
+      "namespace": "cps-argo",
+      "absent": true
+    },
+    {
+      "kind": "networkpolicy",
+      "namespace": "cps-artifacts-relay",
+      "absent": true
+    },
+    {
+      "kind": "validatingadmissionpolicy",
+      "namespace": null,
+      "absent": true
+    },
+    {
+      "kind": "validatingadmissionpolicybinding",
+      "namespace": null,
+      "absent": true
+    }
+  ],
+  "tlsHostname": "compute-gateway.cps-compute.svc.cluster.local",
+  "certificateVerification": "ssl.create_default_context with deployment CA; only TCP dial destination overridden to loopback",
+  "gatewayImage": "ghcr.io/mul-cps/cps-compute@sha256:41f36901e11a9793bbb9aec6088b31fb6bd7cff778b16a5e6743a71a2b5d48e4",
+  "productionQualified": false,
+  "realIdentityQualified": false,
+  "ownerRetentionQualified": false,
+  "productionServiceRoutingQualified": false,
+  "syntheticS3EvidencePreserved": true
+}
