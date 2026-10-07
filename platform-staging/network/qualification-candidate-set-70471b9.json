@@ -14,7 +14,9 @@
     {
       "component": "admin",
       "image": "ghcr.io/mul-cps/e2x-course-hub@sha256:5ca589cda8ab06e3764932957ebe04c8e42804efb96d8f3f87c10af96d7ef357",
-      "report": "admin-70471b9-report.json"
+      "report": "admin-70471b9-report.json",
+      "sbomReferrer": "ghcr.io/mul-cps/e2x-course-hub@sha256:e5a07b9354f6e383d05716493730fc283335fffa848d13e3126078b1a298c210",
+      "sbomRemoteVerified": true
     },
     {
       "component": "standard-cpu",
