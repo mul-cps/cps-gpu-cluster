@@ -32,7 +32,9 @@
     "qualified": false,
     "scope": "base GPU image runtime only; no GPU isolation or Hub browser qualification"
   },
-  "published": false,
+  "published": true,
   "deployed": false,
-  "gpuExecution": false
+  "gpuExecution": false,
+  "image": "ghcr.io/mul-cps/cps-jupyter-notebook-base-gpu:qualification-storage-resources-6bb6a57@sha256:5278b7ee0230491da8789992d975ac65e52c07f6f255d055d2fd44527c4e2708",
+  "remoteIndexAndChildrenVerified": true
 }

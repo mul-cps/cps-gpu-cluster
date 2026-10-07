@@ -47,6 +47,15 @@
       "computeWheelSha256": "05d82345b0f65a3a94c715c68788f52d14c545cba41a5e622249870e0e848667",
       "remoteDigestsVerified": true,
       "qualificationEvidence": "/home/bjoern/cps-platform-evidence/2026-10-07/notebook-cpu-6bb6a57/base-cpu/report.json"
+    },
+    {
+      "component": "base-gpu",
+      "image": "ghcr.io/mul-cps/cps-jupyter-notebook-base-gpu:qualification-storage-resources-6bb6a57@sha256:5278b7ee0230491da8789992d975ac65e52c07f6f255d055d2fd44527c4e2708",
+      "linuxManifest": "sha256:36189d865b17cfc9c2fea83fd86ccbef72fa309effea6922f8e3281c8986a063",
+      "computeSourceRevision": "6bb6a57bc8d8426e281c0654ac8eedd1668ae600",
+      "computeWheelSha256": "05d82345b0f65a3a94c715c68788f52d14c545cba41a5e622249870e0e848667",
+      "remoteDigestsVerified": true,
+      "qualificationEvidence": "/mnt/cps_scratch1_tmp/bjoern/cps-platform-builds/2026-10-07/notebook-base-gpu-6bb6a57/report.json"
     }
   ],
   "observedProduction": [
@@ -72,7 +81,7 @@
       "readyReplicas": 1
     }
   ],
-  "remainingNotebookVariants": 10,
+  "remainingNotebookVariants": 9,
   "limitations": [
     "Existing notebook parents do not prove common source-tag build",
     "Full acceptance scenarios and migrations remain incomplete",

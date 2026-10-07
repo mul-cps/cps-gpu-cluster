@@ -6,4 +6,4 @@ As UID 1000 with networking disabled and no GPU devices supplied, fresh Papermil
 
 OCI index/manifests/config and attestation JSON blobs were rehashed; SPDX and SLSA v1 subjects bind to the Linux manifest. Exact digests are in the adjacent JSON. Build output was streamed directly to the existing NFS scratch mount; no cluster storage address/configuration changed. Source evidence is `/mnt/cps_scratch1_tmp/bjoern/cps-platform-builds/2026-10-07/notebook-base-gpu-6bb6a57/`.
 
-Image publication is in progress and remote verification remains pending. Nothing was deployed. Common-tag construction for all twelve variants, GPU execution/isolation, browser and full gateway notebook submission acceptance remain incomplete; GPU sharing stays disabled.
+Image publication is complete. The remote OCI index and both child manifests were independently rehashed and match local build metadata. Nothing was deployed. Common-tag construction for all twelve variants, GPU execution/isolation, browser and full gateway notebook submission acceptance remain incomplete; GPU sharing stays disabled.
