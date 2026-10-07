@@ -84,6 +84,7 @@ class CompiledRuntimeTests(unittest.TestCase):
         for job in fixture['items'][1:]:
             self.assertTrue(job['spec']['suspend']);self.assertEqual(job['spec']['backoffLimit'],0)
             spec=job['spec']['template']['spec'];self.assertFalse(spec['automountServiceAccountToken'])
+            self.assertEqual(spec['imagePullSecrets'],[{'name':'cps-compute-image-pull'}])
             self.assertEqual(spec['nodeSelector'],{'kubernetes.io/hostname':'k3s-wk-gpu2'})
             init=spec['initContainers'][0]
             self.assertEqual(init['name'],'cps-gpu-cache-init')

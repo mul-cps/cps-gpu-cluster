@@ -20,6 +20,7 @@ CACHE_KEY, CACHE_PATH = baseline.CACHE_KEY, baseline.CACHE_PATH
 REVIEWED_GPU_ANNOTATION = baseline.REVIEWED_GPU_ANNOTATION
 GPU_UUID_FIELD_PATH = baseline.GPU_UUID_FIELD_PATH
 SOURCE_COMMIT = "2f43f59aa319f8a114bae41ff89226018e3e5089"
+IMAGE_PULL_SECRET = "cps-compute-image-pull"
 IMAGE = ("ghcr.io/mul-cps/cps-compute:qualification-2f43f59aa319@sha256:"
          "38dad2077eb1552683cdb54c1ee50ffdf42d63e4a7dcd322f95f9f0236261c04")
 WHEEL_SHA256 = "06939b3e4cefc882f419635129e982f46d40f376e9f6b3122e51ab4bed96febe"
@@ -145,6 +146,7 @@ def render(preflight, run_id, wheel, *, uid=10001, gid=10001, now=None):
                              {"name": "cps-gpu-cache", "mountPath": "/cache-root"}]}
         spec = {"schedulerName": "kai-scheduler", "priorityClassName": "cps-batch", "restartPolicy": "Never",
             "activeDeadlineSeconds": 180, "automountServiceAccountToken": False,
+            "imagePullSecrets": [{"name": IMAGE_PULL_SECRET}],
             "nodeSelector": {"kubernetes.io/hostname": NODE}, "securityContext": copy.deepcopy(plan["pod_security_context"]),
             "initContainers": [*copy.deepcopy(plan["init_containers"]), gate],
             "containers": [{"name": "main", "image": IMAGE, "command": ["python", "-u", "/probe/probe_compiled.py", role],
