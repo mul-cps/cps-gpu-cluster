@@ -1,0 +1,81 @@
+{
+  "observedAt": "2026-10-07T00:47:55.745769+00:00",
+  "status": "partial qualification candidate set",
+  "productionPromotionAllowed": false,
+  "gpuSharingQualified": false,
+  "policyHash": "sha256:051cd754210af2830d67968eea898f674a55ff66f5c88b3db95dff205f04e33d",
+  "hubTarget": {
+    "chart": "4.4.2",
+    "jupyterhub": "5.5.2",
+    "kubespawner": "7.x"
+  },
+  "computeSourceRevision": "6bb6a57bc8d8426e281c0654ac8eedd1668ae600",
+  "computeWheelSha256": "05d82345b0f65a3a94c715c68788f52d14c545cba41a5e622249870e0e848667",
+  "artifacts": [
+    {
+      "component": "gateway",
+      "image": "ghcr.io/mul-cps/cps-compute:qualification-storage-resources-6bb6a57@sha256:05f9e4428f576bede669c969398090b64af6f53faa487ba0c8a546db77b0170f",
+      "linuxManifest": "sha256:52142eaa71eec346f9ea26e92ac4705b3320c22b55bb9d3b506fb6057a9326f5",
+      "computeSourceRevision": "6bb6a57bc8d8426e281c0654ac8eedd1668ae600",
+      "computeWheelSha256": "05d82345b0f65a3a94c715c68788f52d14c545cba41a5e622249870e0e848667",
+      "remoteDigestsVerified": true,
+      "qualificationEvidence": "/home/bjoern/cps-platform-evidence/2026-10-07/compute-6bb6a57-image/report.json"
+    },
+    {
+      "component": "admin",
+      "image": "ghcr.io/mul-cps/e2x-course-hub:qualification-storage-resources-6bb6a57@sha256:1a5aa3ac4dec220a8d9b4cd6d7643a6f1ad71a45cdedfd3fb0fb0e48bfa1c1e3",
+      "linuxManifest": "sha256:2f7eae46868cfca274347c4169b3ebf01761342c801dbb9a9dc4c602aea6a1c7",
+      "computeSourceRevision": "6bb6a57bc8d8426e281c0654ac8eedd1668ae600",
+      "computeWheelSha256": "05d82345b0f65a3a94c715c68788f52d14c545cba41a5e622249870e0e848667",
+      "remoteDigestsVerified": true,
+      "qualificationEvidence": "/home/bjoern/cps-platform-evidence/2026-10-07/admin-resource-image/report.json"
+    },
+    {
+      "component": "standard-cpu",
+      "image": "ghcr.io/mul-cps/cps-jupyter-notebook:qualification-storage-resources-6bb6a57-cpu@sha256:2eebb5496efc59badc74dda10d9149dc59c6e1794cfb9c171d5edf81ca7bdfee",
+      "linuxManifest": "sha256:e35543b41faa5d56a252843d20cb3bc8a46985821791569f5580e37a5b72ee84",
+      "computeSourceRevision": "6bb6a57bc8d8426e281c0654ac8eedd1668ae600",
+      "computeWheelSha256": "05d82345b0f65a3a94c715c68788f52d14c545cba41a5e622249870e0e848667",
+      "remoteDigestsVerified": true,
+      "qualificationEvidence": "/home/bjoern/cps-platform-evidence/2026-10-07/notebook-cpu-6bb6a57/standard-cpu/report.json"
+    },
+    {
+      "component": "base-cpu",
+      "image": "ghcr.io/mul-cps/cps-jupyter-notebook-base-cpu:qualification-storage-resources-6bb6a57@sha256:466ccae48fb92b036a26fc1761a5b4f9228f7341d89a080fed242b3544f32af9",
+      "linuxManifest": "sha256:fc9af9024a742b8b79e9943f17bd6104c03c15b9cc5b95696a640aa69cacd8c7",
+      "computeSourceRevision": "6bb6a57bc8d8426e281c0654ac8eedd1668ae600",
+      "computeWheelSha256": "05d82345b0f65a3a94c715c68788f52d14c545cba41a5e622249870e0e848667",
+      "remoteDigestsVerified": true,
+      "qualificationEvidence": "/home/bjoern/cps-platform-evidence/2026-10-07/notebook-cpu-6bb6a57/base-cpu/report.json"
+    }
+  ],
+  "observedProduction": [
+    {
+      "deployment": "cit-admin",
+      "images": [
+        "ghcr.io/mul-cps/e2x-course-hub:qualification-combined-sdk-0ef266b@sha256:03634029cbe382c4a5c520f9e19a32fc047a676afbe51de47639c62e0aa1b12e"
+      ],
+      "readyReplicas": 1
+    },
+    {
+      "deployment": "compute-gateway",
+      "images": [
+        "ghcr.io/mul-cps/cps-compute:qualification-5771df5@sha256:627f093c3c96038c7ecd9e9b99f0138198c23c9460cabb7bd11b19e94f465096"
+      ],
+      "readyReplicas": 1
+    },
+    {
+      "deployment": "cps-admin",
+      "images": [
+        "ghcr.io/mul-cps/e2x-course-hub:qualification-combined-sdk-0ef266b@sha256:03634029cbe382c4a5c520f9e19a32fc047a676afbe51de47639c62e0aa1b12e"
+      ],
+      "readyReplicas": 1
+    }
+  ],
+  "remainingNotebookVariants": 10,
+  "limitations": [
+    "Existing notebook parents do not prove common source-tag build",
+    "Full acceptance scenarios and migrations remain incomplete",
+    "Gateway/controller authenticated integration of the updated packaged artifacts remains pending"
+  ]
+}
