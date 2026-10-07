@@ -1,0 +1,25 @@
+{
+  "schemaVersion": 1,
+  "status": "disabled-unqualified",
+  "activation": {
+    "enabled": false,
+    "fleet": false,
+    "modeChanges": false,
+    "workloadSubmission": false,
+    "productionCatalog": false
+  },
+  "target": {
+    "nodeName": "k3s-wk-gpu2",
+    "nodeUID": null,
+    "gpuUUID": null,
+    "gpuIndex": null
+  },
+  "geometry": {"3g.20gb": 1, "2g.10gb": 1, "1g.5gb": 2},
+  "plannedNodeLabels": {"compute.cps.unileoben.ac.at/gpu-mode": "mig-pilot"},
+  "exclusiveJobSelectors": [
+    {
+      "name": "REVIEW-ALL-WHOLE-GPU-TEMPLATES",
+      "nodeSelector": {"compute.cps.unileoben.ac.at/gpu-mode": "full-gpu"}
+    }
+  ]
+}
