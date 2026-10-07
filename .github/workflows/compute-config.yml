@@ -20,5 +20,15 @@ jobs:
         run: |
           sudo apt-get update
           sudo apt-get install --yes ripgrep
+      - name: Install checksum-pinned PromQL verifier
+        run: |
+          set -euo pipefail
+          archive="$RUNNER_TEMP/prometheus-3.5.0.linux-amd64.tar.gz"
+          curl --fail --location --retry 3 \
+            https://github.com/prometheus/prometheus/releases/download/v3.5.0/prometheus-3.5.0.linux-amd64.tar.gz \
+            --output "$archive"
+          echo "e811827af26d822afb09a4f28314f61b618b12cff5369835a67f674d8b46f39a  $archive" | sha256sum --check
+          tar -xzf "$archive" -C "$RUNNER_TEMP" prometheus-3.5.0.linux-amd64/promtool
+          echo "CPS_PROMTOOL=$RUNNER_TEMP/prometheus-3.5.0.linux-amd64/promtool" >> "$GITHUB_ENV"
       - name: Render and verify pinned deployment candidates
         run: scripts/compute-platform/verify-config.sh

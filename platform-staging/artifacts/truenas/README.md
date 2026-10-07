@@ -67,14 +67,45 @@ retained outputs are preserved. Completed runs must be marked eligible by a
 trusted controller, which adds `cps-workflow` / `cps-workflow-uid` object metadata.
 Current uploads without that evidence are preserved.
 
-Configure its private JSON with endpoint, bucket, accessKey, secretKey, ca,
-argoUrl, namespace, argoTokenFile and optional argoCa. Run with the released
+Configure its private JSON with endpoint, bucket, accessKeyFile, secretKeyFile, ca,
+argoUrl, namespace, argoTokenFile and optional argoCa, kubeUrl and kubeCa.
+Credentials are read from private files. Include version, immutable image digest
+and policyHash as required by the CLI. Run with the released
 boto3 environment; `--apply` is explicit and `--max-deletes` defaults to 10.
 A scheduler and completion/tag reconciler are **not activated** until live Argo
 proof, retention-change coordination and retained-object protection are qualified.
-Tag changes and deletion across separate systems are not one atomic transaction;
-production retention/retain actions need a shared controller lease or native legal
-hold before race-free protection can be claimed.
+The implemented coordination uses the workflow's versioned
+`cps.compute/artifact-lifecycle` annotation. Owner retention and cleanup compete
+through Kubernetes resource-version compare-and-swap. A durable `retained` claim
+protects an object even if its S3 tag update fails. A durable `deleting` claim
+fences subsequent retention; cleanup rechecks identity, age, tags and ETag before
+conditional deletion. These claims do not expire. Unit coverage includes
+successful and failed executed notebooks with stale S3 tags, but full live
+controller crash recovery remains an activation gate.
+
+### Ambiguous deletion recovery
+
+If a conditional delete times out, its durable `deleting` claim remains. Ordinary
+sweeps skip it, including after the nominal retention period. Do not remove the
+claim, reset its age or retry with an unconditional S3 delete.
+
+1. Keep automatic deletion suspended. Preserve the job report, exact object key,
+   workflow name/UID/resourceVersion, lifecycle claim token/ETag and immutable
+   intent/binding records in private incident evidence.
+2. Read the exact object through authenticated, verified HTTPS. Distinguish an
+   authenticated missing-object response from timeout, authorization failure or
+   unavailable telemetry; only the former is evidence of absence.
+3. If absent, record the result and preserve the claim and provenance. The script
+   does not automatically mark an ambiguous deletion complete.
+4. If present, compare its ETag and identity metadata with the saved claim and
+   reread the exact workflow UID and claim. Changed or missing evidence requires
+   review while preserving the object. The current CLI has no claim-resume
+   operation; completing a pending deletion needs a separately reviewed recovery
+   procedure and qualification, rather than enabling a broader sweep.
+
+Qualify this process on disposable, owned fixtures before production activation.
+An application restart or successful dry run is not an ambiguous-delete recovery
+exercise.
 
 ## Evidence
 
