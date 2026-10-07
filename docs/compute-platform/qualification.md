@@ -41,9 +41,20 @@ failure. This qualifies local execution; it does not establish live S3 transfer.
 | Moodle scaffold | Local CRUD and provenance references; no disabled side effects; enable fails; fake provider reconciles |
 
 `compile_compute_policy.py --qualification-evidence FILE --check` binds evidence
-to the exact policy hash and verifies artifact SHA256 bytes. All scenario names
-are required. It is an integrity check; an operator still reviews the validity
-of the results. It does not enable profiles, deploy applications or issue releases.
+to the exact policy hash and verifies artifact SHA256 bytes. All twelve scenario
+names are required. `scenarioReports` must map every scenario to a distinct local
+JSON report listed in `artifacts` with its SHA-256. Each report must declare the
+matching `scenario` and `policyHash`, `passed: true`, and
+`qualifiedScope: "production"`. Shared report paths, missing references, failed
+or fixture-only reports and checksum/content mismatches are rejected. Existing
+blanket evidence bundles must be replaced with separately reviewed reports.
+
+This is a structure and integrity check; report declarations do not independently
+prove hardware results, real identity/permissions, measured timing thresholds or
+recovery. An operator still reviews the actual results and attached logs against
+the acceptance table. Controlled fixture reports in `platform-staging` are
+supporting evidence, not production reports. The command does not enable
+profiles, deploy applications or issue releases.
 
 | Stage | Compute | Admin fork | Cluster / CIT | Notebook |
 | --- | --- | --- | --- | --- |

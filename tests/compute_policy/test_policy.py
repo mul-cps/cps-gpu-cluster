@@ -73,14 +73,39 @@ class PolicyTests(unittest.TestCase):
         self.assertEqual(queue['spec']['resources']['memory']['limit'], 1048576 * 1.048576)
 
     def test_evidence_artifacts_detect_tampering(self):
+        import json
         with tempfile.TemporaryDirectory() as directory:
-            path = Path(directory) / 'evidence.txt'
-            path.write_text('reviewed results')
+            scenarios = ['identity-storage', 'authorization', 'permissions', 'collaboration', 'pooling', 'notebook-jobs', 'isolation', 'scheduling', 'startup', 'defragmentation', 'recovery', 'moodle-scaffold']
+            evidence = {'policyHash': 'sha256:test', 'passed': True, 'scenarios': scenarios,
+                        'artifacts': [], 'scenarioReports': {}}
+            for scenario in scenarios:
+                path = Path(directory) / (scenario + '.json')
+                path.write_text(json.dumps({'scenario': scenario, 'policyHash': 'sha256:test', 'passed': True, 'qualifiedScope': 'production'}))
+                evidence['artifacts'].append({'path': str(path), 'sha256': hashlib.sha256(path.read_bytes()).hexdigest()})
+                evidence['scenarioReports'][scenario] = str(path)
+            policy.validate_evidence(evidence, 'sha256:test')
+            original = path.read_text()
+            for field, value in [('qualifiedScope', 'controlled-fixture'), ('passed', False), ('policyHash', 'wrong'), ('scenario', 'authorization')]:
+                with self.subTest(field=field):
+                    report = json.loads(original); report[field] = value
+                    path.write_text(json.dumps(report))
+                    evidence['artifacts'][-1]['sha256'] = hashlib.sha256(path.read_bytes()).hexdigest()
+                    with self.assertRaises(ValueError): policy.validate_evidence(evidence, 'sha256:test')
+            path.write_text(original)
+            evidence['artifacts'][-1]['sha256'] = hashlib.sha256(path.read_bytes()).hexdigest()
+            original_reference = evidence['scenarioReports']['moodle-scaffold']
+            evidence['scenarioReports']['moodle-scaffold'] = evidence['scenarioReports']['authorization']
+            with self.assertRaises(ValueError): policy.validate_evidence(evidence, 'sha256:test')
+            evidence['scenarioReports']['moodle-scaffold'] = original_reference
+            path.write_text('tampered')
+            with self.assertRaises(ValueError): policy.validate_evidence(evidence, 'sha256:test')
+
+    def test_blanket_artifact_cannot_qualify_all_scenarios(self):
+        with tempfile.TemporaryDirectory() as directory:
+            path = Path(directory) / 'evidence.txt'; path.write_text('reviewed results')
             evidence = {'policyHash': 'sha256:test', 'passed': True,
                         'scenarios': ['identity-storage', 'authorization', 'permissions', 'collaboration', 'pooling', 'notebook-jobs', 'isolation', 'scheduling', 'startup', 'defragmentation', 'recovery', 'moodle-scaffold'],
                         'artifacts': [{'path': str(path), 'sha256': hashlib.sha256(path.read_bytes()).hexdigest()}]}
-            policy.validate_evidence(evidence, 'sha256:test')
-            path.write_text('tampered')
             with self.assertRaises(ValueError): policy.validate_evidence(evidence, 'sha256:test')
 
     def test_reject_moodle_activation(self):

@@ -26,10 +26,34 @@ def validate_evidence(evidence, policy_hash):
         raise ValueError('all acceptance scenarios require independent evidence')
     if not evidence.get('artifacts'):
         raise ValueError('qualification requires evidence artifacts')
+    verified = {}
     for artifact in evidence['artifacts']:
         path = Path(artifact['path'])
         if not path.is_file() or hashlib.sha256(path.read_bytes()).hexdigest() != artifact['sha256']:
             raise ValueError('missing or altered qualification artifact')
+        resolved = str(path.resolve())
+        if resolved in verified:
+            raise ValueError('duplicate qualification artifact')
+        verified[resolved] = path
+    reports = evidence.get('scenarioReports')
+    if not isinstance(reports, dict) or set(reports) != required:
+        raise ValueError('every acceptance scenario requires a checksummed production report')
+    used = set()
+    for scenario, reference in reports.items():
+        if not isinstance(reference, str):
+            raise ValueError('scenario report path required')
+        resolved = str(Path(reference).resolve())
+        if resolved not in verified or resolved in used:
+            raise ValueError('scenario reports must be distinct verified artifacts')
+        used.add(resolved)
+        try:
+            report = json.loads(verified[resolved].read_text())
+        except (ValueError, UnicodeError):
+            raise ValueError('scenario qualification report must be JSON') from None
+        if (not isinstance(report, dict) or report.get('scenario') != scenario
+                or report.get('policyHash') != policy_hash or report.get('passed') is not True
+                or report.get('qualifiedScope') != 'production'):
+            raise ValueError('scenario requires passed production qualification for the exact policy')
 
 
 def compile_catalog(catalog):
