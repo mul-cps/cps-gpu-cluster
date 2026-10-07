@@ -62,7 +62,7 @@ python3 evaluate_compiled.py \
   --output /absolute/operator-evidence/evaluation.json
 ```
 
-The evaluator verifies compiler fragments in the actual final Pod, UID/GID, init order, gate, file subPath and unchanged owned KAI ConfigMap receipts. Its synthetic unit fixtures test refusal behavior; they are not live qualification. Run offline checks from this directory with the verified wheel available:
+The evaluator verifies compiler fragments in the actual final Pod, UID/GID, init order, gate, file subPath and unchanged owned KAI ConfigMap receipts. It also reconstructs the original suspended Jobs from the fixed renderer/wheel/preflight and requires the actual complete main/init executable shape to match those Jobs. Only the observed KAI environment, four mounts, three hostPath volumes, one shared ConfigMap volume and fixed Kubernetes defaults may be added. The injector `envFrom` ConfigMap must be Pod-owned, unchanged and empty; shared quota/device data must contain exactly the four reviewed keys. Altered commands/args, lifecycle hooks, probes, extra environment/mounts/resources/security/containers, host namespaces, service account changes or changed original Job templates fail closed. A changed deployment or injector shape needs an explicitly reviewed fixture update; it is not silently accepted as a default. Its synthetic unit fixtures test refusal behavior; they are not live qualification. Run offline checks from this directory with the verified wheel available:
 
 ```bash
 CPS_QUALIFICATION_COMPILER_WHEEL=/absolute/path/to/the/verified/cps_compute-0.1.0-py3-none-any.whl \

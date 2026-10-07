@@ -1,6 +1,8 @@
 #!/usr/bin/env python3
 """Offline evidence evaluation; no synthetic report can activate production."""
 import argparse
+import copy
+import datetime as dt
 import json
 import hashlib
 from pathlib import Path
@@ -8,7 +10,7 @@ from pathlib import Path
 from probe_compiled import CACHE_PATH, ROUNDS, concurrent_verdict, normalized_uuid, ordinary_verdict
 from render_compiled import (GPU_UUID_FIELD_PATH, HAMI_PATH, HAMI_REVISION, IMAGE, NODE,
     REVIEWED_GPU_ANNOTATION, SOURCE_COMMIT, WHEEL_SHA256, MODULE_SHA256,
-    REVIEWED_IDENTITIES, OPERATOR_GATE, compile_plan)
+    REVIEWED_IDENTITIES, OPERATOR_GATE, compile_plan, render as trusted_render)
 from probe_compiled import HOLD_SECONDS, HOLD_TICKS
 
 
@@ -188,9 +190,160 @@ def valid_hold(hold, events, child_values, cache, gpu):
         return False
 
 
+def owned_configmap(name, pod, receipts):
+    """Require stable full content and identity of a ConfigMap owned by this Pod."""
+    snapshots = []
+    for stage in ("before", "after"):
+        matches = [cm for cm in receipts[stage]["items"] if cm.get("metadata", {}).get("name") == name
+                   and cm.get("metadata", {}).get("namespace") == pod["metadata"]["namespace"]]
+        if len(matches) != 1:
+            raise ValueError("Owned injector ConfigMap receipt is missing or ambiguous")
+        cm = matches[0]
+        meta = cm["metadata"]
+        if (cm.get("apiVersion") != "v1" or cm.get("kind") != "ConfigMap" or
+                not meta.get("uid") or not meta.get("resourceVersion") or
+                not any(owner.get("kind") == "Pod" and owner.get("apiVersion") == "v1" and
+                    owner.get("name") == pod["metadata"]["name"] and owner.get("uid") == pod["metadata"]["uid"]
+                    for owner in meta.get("ownerReferences", []))):
+            raise ValueError("Injector ConfigMap Pod ownership is unproven")
+        snapshots.append(cm)
+    before, after = snapshots
+    if (any(before["metadata"].get(key) != after["metadata"].get(key)
+            for key in ("uid", "resourceVersion", "ownerReferences")) or
+            before.get("data") != after.get("data") or before.get("binaryData") != after.get("binaryData")):
+        raise ValueError("Injector ConfigMap changed during evidence capture")
+    if after.get("binaryData") not in (None, {}):
+        raise ValueError("Unexpected binary injector data")
+    return after
+
+
+def unique_mapping(items, key):
+    if not isinstance(items, list):
+        raise ValueError("A runtime fragment list is required")
+    result = {}
+    for item in items:
+        name = item[key]
+        if not isinstance(name, str) or name in result:
+            raise ValueError("Duplicate or malformed runtime fragment")
+        result[name] = item
+    return result
+
+
+def defaulted_container(container):
+    value = copy.deepcopy(container)
+    defaults = {"imagePullPolicy": "IfNotPresent", "terminationMessagePath": "/dev/termination-log",
+                "terminationMessagePolicy": "File"}
+    for key, expected in defaults.items():
+        if key in value:
+            if value.pop(key) != expected:
+                raise ValueError("Unexpected Kubernetes container default")
+    # Explicit false has the same Kubernetes meaning as omission. No other
+    # extra security key, capabilities, procMount, or loader option is accepted.
+    security = value.get("securityContext", {})
+    if "privileged" in security:
+        if security.pop("privileged") is not False:
+            raise ValueError("Privileged container")
+    return value
+
+
+def mount_mapping(mounts):
+    result = unique_mapping(mounts, "mountPath")
+    for name, value in result.items():
+        if (not name.startswith("/") or "//" in name or any(part in (".", "..") for part in name.split("/"))):
+            raise ValueError("Noncanonical Pod mount destination")
+        if value.get("readOnly") is False:
+            value.pop("readOnly")
+    return result
+
+
+def validate_executable_pod(pod, expected_template, receipts):
+    """Bind actual execution to the fixed rendered Job plus reviewed mutations.
+
+    Unknown executable fields, host namespaces, source mounts, environment,
+    security overrides, and KAI data fail closed. Only observed injector
+    additions and fixed Kubernetes defaults are accepted.
+    """
+    actual = copy.deepcopy(pod["spec"])
+    expected = copy.deepcopy(expected_template["spec"])
+    main = actual["containers"][0]
+    selection = [e for e in main["env"] if e["name"] == "NVIDIA_VISIBLE_DEVICES"]
+    if len(selection) != 1:
+        raise ValueError("Exactly one actual KAI device selection is required")
+    reference = selection[0]["valueFrom"]["configMapKeyRef"]
+    if set(reference) != {"name", "key"} or reference["key"] != "NVIDIA_VISIBLE_DEVICES":
+        raise ValueError("Unexpected device selection reference shape")
+    cm_name = reference["name"]
+    gpu = pod["metadata"]["annotations"][REVIEWED_GPU_ANNOTATION]
+    cm = owned_configmap(cm_name, pod, receipts)
+    if cm.get("data") != {"CUDA_DEVICE_MEMORY_LIMIT": "5324m", "GPU_PORTION": "0.13",
+                         "NVIDIA_VISIBLE_DEVICES": f"k8s.device-plugin.nvidia.com/gpu={gpu}",
+                         "RUNAI_NUM_OF_GPUS": "0.13"}:
+        raise ValueError("Only reviewed fixed KAI quota and device data are permitted")
+    empty = owned_configmap(cm_name + "-evar", pod, receipts)
+    if empty.get("data") not in (None, {}):
+        raise ValueError("KAI envFrom ConfigMap must remain empty")
+    if main.get("envFrom") != [{"configMapRef": {"name": cm_name + "-evar", "optional": False}}]:
+        raise ValueError("Only the bound empty injector envFrom ConfigMap is permitted")
+    expected_main = expected["containers"][0]
+    expected_main["env"].extend([
+        {"name": "POD_UID", "valueFrom": {"fieldRef": {"apiVersion": "v1", "fieldPath": "metadata.uid"}}},
+        {"name": "CONTAINER_NAME", "value": "main"},
+        {"name": "CONTAINER_VGPU_MOUNT", "value": "/usr/local/vgpu"},
+        *[{"name": name, "valueFrom": {"configMapKeyRef": {"name": cm_name, "key": name,
+            **({"optional": True} if name == "CUDA_DEVICE_MEMORY_LIMIT" else {})}}}
+          for name in ("NVIDIA_VISIBLE_DEVICES", "RUNAI_NUM_OF_GPUS", "GPU_PORTION", "CUDA_DEVICE_MEMORY_LIMIT")]])
+    expected_main["envFrom"] = [{"configMapRef": {"name": cm_name + "-evar", "optional": False}}]
+    expected_main["volumeMounts"].extend([
+        {"name": "kai-resource-isolator-vgpu", "mountPath": "/usr/local/vgpu"},
+        {"name": "kai-resource-isolator-vgpu", "mountPath": "/etc/ld.so.preload", "readOnly": True, "subPath": "ld.so.preload"},
+        {"name": "kai-resource-isolator-containers", "mountPath": "/usr/local/vgpu/containers"},
+        {"name": "kai-resource-isolator-vgpulock", "mountPath": "/tmp/vgpulock"}])
+    expected["volumes"].extend([
+        {"name": "kai-resource-isolator-vgpu", "hostPath": {"path": "/usr/local/vgpu", "type": "DirectoryOrCreate"}},
+        {"name": "kai-resource-isolator-containers", "hostPath": {"path": "/usr/local/vgpu/containers", "type": "DirectoryOrCreate"}},
+        {"name": "kai-resource-isolator-vgpulock", "hostPath": {"path": "/tmp/vgpulock", "type": "DirectoryOrCreate"}},
+        {"name": cm_name + "-vol", "configMap": {"name": cm_name, "defaultMode": 420}}])
+    for field in ("containers", "initContainers"):
+        current, wanted = actual.pop(field), expected.pop(field)
+        if [c["name"] for c in current] != [c["name"] for c in wanted]:
+            raise ValueError("Executable container/init order differs from the rendered Job")
+        for container, template in zip(current, wanted):
+            container, template = defaulted_container(container), defaulted_container(template)
+            if unique_mapping(container.pop("env", []), "name") != unique_mapping(template.pop("env", []), "name"):
+                raise ValueError("Actual executable environment differs from trusted rendered/injected values")
+            if mount_mapping(container.pop("volumeMounts", [])) != mount_mapping(template.pop("volumeMounts", [])):
+                raise ValueError("Actual executable mounts differ from trusted rendered/injected values")
+            if container != template:
+                raise ValueError("Actual executable command, resources, security, lifecycle or probes changed")
+    if unique_mapping(actual.pop("volumes"), "name") != unique_mapping(expected.pop("volumes"), "name"):
+        raise ValueError("Actual Pod volume sources differ from trusted rendered/injected values")
+    defaults = {"dnsPolicy": "ClusterFirst", "enableServiceLinks": True,
+                "terminationGracePeriodSeconds": 30, "serviceAccountName": "default", "serviceAccount": "default",
+                "preemptionPolicy": "PreemptLowerPriority", "priority": 10, "runtimeClassName": "nvidia",
+                "nodeName": NODE, "hostIPC": False, "hostPID": False,
+                "hostNetwork": False, "shareProcessNamespace": False}
+    for key, value in defaults.items():
+        if key in actual:
+            current = actual.pop(key)
+            if current != value or type(current) is not type(value):
+                raise ValueError("Unexpected host, runtime or Kubernetes Pod default")
+    # Admission adds only the two ordinary node-not-ready/unreachable defaults.
+    if "tolerations" in actual:
+        tolerations = [{"effect": "NoExecute", "key": "node.kubernetes.io/" + name,
+                        "operator": "Exists", "tolerationSeconds": 300} for name in ("not-ready", "unreachable")]
+        if actual.pop("tolerations") != tolerations:
+            raise ValueError("Unexpected Pod tolerations")
+    if actual != expected:
+        raise ValueError("Actual whole-Pod execution fields differ from the rendered Job")
+    if not contains_fragment(pod["metadata"].get("annotations", {}), expected_template["metadata"]["annotations"]):
+        raise ValueError("Rendered Pod annotation binding changed")
+    if not contains_fragment(pod["metadata"].get("labels", {}), expected_template["metadata"]["labels"]):
+        raise ValueError("Rendered Pod policy labels changed")
+
+
 def evaluate(workspace_events, peer_events, workspace_pod, peer_pod, node, preflight, configmaps=None, *, fixture=None, compiler_wheel=None):
     reasons = []
-    fixture_proof, plan, identity = None, None, None
+    fixture_proof, plan, identity, expected_jobs = None, None, None, {}
     try:
         fixture_cm = fixture["items"][0]
         if fixture_cm["kind"] != "ConfigMap" or fixture_cm["immutable"] is not True:
@@ -211,6 +364,13 @@ def evaluate(workspace_events, peer_events, workspace_pod, peer_pod, node, prefl
         if (source_sha != fixture_proof["probeSha256"] or source_sha != current_sha or
                 fixture_cm["data"]["operator-gate.py"] != OPERATOR_GATE):
             raise ValueError("Fixture probe source hash mismatch")
+        archive_time = dt.datetime.fromisoformat(preflight["observedAt"].replace("Z", "+00:00"))
+        trusted_fixture = trusted_render(preflight, fixture_proof["runId"], compiler_wheel,
+            uid=identity[0], gid=identity[1], now=archive_time)
+        if fixture != trusted_fixture:
+            raise ValueError("Original rendered Jobs differ from the trusted fixed fixture")
+        expected_jobs = {role: trusted_fixture["items"][index]["spec"]["template"]
+                         for role, index in (("peer", 1), ("workspace", 2))}
     except (KeyError, TypeError, ValueError, OSError):
         reasons.append("Exact packaged compiler fixture provenance is missing or invalid")
     reports = [e for e in workspace_events if e.get("event") == "workspace-result"]
@@ -285,6 +445,8 @@ def evaluate(workspace_events, peer_events, workspace_pod, peer_pod, node, prefl
             reasons.append("Fixed cache file mount absent")
         if plan and fixture_proof and identity:
             try:
+                role = "workspace" if pod is workspace_pod else "peer"
+                validate_executable_pod(pod, expected_jobs[role], configmaps)
                 if len({e["name"] for e in main[0]["env"]}) != len(main[0]["env"]):
                     raise ValueError("Duplicate runtime environment names")
                 if len(spec["containers"]) != 1 or [c["name"] for c in spec["initContainers"]] != [

@@ -37,6 +37,37 @@ def evidence(uid=10001,gid=10001):
         pod['spec']['containers'][0]['env'].extend({'name':name,'valueFrom':{
             'configMapKeyRef':{'name':cm_name,'key':name}}} for name in
             ('NVIDIA_VISIBLE_DEVICES','CUDA_DEVICE_MEMORY_LIMIT','GPU_PORTION'))
+        main=pod['spec']['containers'][0]
+        main['env'].extend([
+            {'name':'POD_UID','valueFrom':{'fieldRef':{'apiVersion':'v1','fieldPath':'metadata.uid'}}},
+            {'name':'CONTAINER_NAME','value':'main'},
+            {'name':'CONTAINER_VGPU_MOUNT','value':'/usr/local/vgpu'},
+            {'name':'RUNAI_NUM_OF_GPUS','valueFrom':{'configMapKeyRef':{'name':cm_name,'key':'RUNAI_NUM_OF_GPUS'}}}])
+        next(e for e in main['env'] if e['name']=='CUDA_DEVICE_MEMORY_LIMIT')['valueFrom']['configMapKeyRef']['optional']=True
+        main['envFrom']=[{'configMapRef':{'name':cm_name+'-evar','optional':False}}]
+        for container in pod['spec']['containers']+pod['spec']['initContainers']:
+            container.setdefault('imagePullPolicy','IfNotPresent')
+            container['terminationMessagePath']='/dev/termination-log'
+            container['terminationMessagePolicy']='File'
+        main['volumeMounts'].extend([
+            {'name':'kai-resource-isolator-vgpu','mountPath':'/usr/local/vgpu'},
+            {'name':'kai-resource-isolator-vgpu','mountPath':'/etc/ld.so.preload','readOnly':True,'subPath':'ld.so.preload'},
+            {'name':'kai-resource-isolator-containers','mountPath':'/usr/local/vgpu/containers'},
+            {'name':'kai-resource-isolator-vgpulock','mountPath':'/tmp/vgpulock'}])
+        pod['spec']['volumes'].extend([
+            {'name':'kai-resource-isolator-vgpu','hostPath':{'path':'/usr/local/vgpu','type':'DirectoryOrCreate'}},
+            {'name':'kai-resource-isolator-containers','hostPath':{'path':'/usr/local/vgpu/containers','type':'DirectoryOrCreate'}},
+            {'name':'kai-resource-isolator-vgpulock','hostPath':{'path':'/tmp/vgpulock','type':'DirectoryOrCreate'}},
+            {'name':cm_name+'-vol','configMap':{'name':cm_name,'defaultMode':420}}])
+        pod['spec'].update(dnsPolicy='ClusterFirst',enableServiceLinks=True,nodeName=renderer.NODE,
+            preemptionPolicy='PreemptLowerPriority',priority=10,runtimeClassName='nvidia',
+            serviceAccount='default',serviceAccountName='default',terminationGracePeriodSeconds=30,
+            tolerations=[{'effect':'NoExecute','key':'node.kubernetes.io/'+key,'operator':'Exists','tolerationSeconds':300}
+                         for key in ('not-ready','unreachable')])
+        shared=next(cm for cm in cms['before']['items'] if cm['metadata']['name']==cm_name)
+        shared['data']['RUNAI_NUM_OF_GPUS']='0.13'
+        cms['before']['items'].append({'apiVersion':'v1','kind':'ConfigMap','metadata':{
+            **copy.deepcopy(shared['metadata']),'name':cm_name+'-evar','uid':cm_name+'-evar-uid'},'data':None})
         pods.append(pod)
     report=workspace[-1]
     report.update(compiler={'sourceCommit':renderer.SOURCE_COMMIT,'moduleSha256':renderer.MODULE_SHA256,'version':'0.1.0'},
@@ -70,6 +101,7 @@ def evidence(uid=10001,gid=10001):
                   'cudaResult':0,'observedNs':n*500_000_000} for n in range(17,82)],peer[-1]]
     for events,pod in ((workspace,pods[1]),(peer,pods[0])):
         for event in events:event.update(podUid=pod['metadata']['uid'],runId='abcd1234')
+    cms['after']['items']=copy.deepcopy(cms['before']['items'])
     return [workspace,peer,pods[1],pods[0],node,preflight(),cms],fixture
 
 class CompiledRuntimeTests(unittest.TestCase):
@@ -196,6 +228,79 @@ class CompiledRuntimeTests(unittest.TestCase):
             elif mutation=='gate-security':values[2]['spec']['initContainers'][1]['securityContext']['allowPrivilegeEscalation']=True
             else:values[2]['spec']['initContainers'].reverse()
             self.assertEqual(self.evaluate(values,fixture)['status'],'failed-or-inconclusive',mutation)
+
+    def test_actual_executable_and_host_namespace_changes_are_refused(self):
+        for mutation in ('main-command','main-args','lifecycle','liveness-probe','readiness-probe',
+                         'startup-probe','envfrom-secret','hostPID','hostIPC','hostNetwork',
+                         'shareProcessNamespace','api-token'):
+            values,fixture=evidence();spec=values[2]['spec'];main=spec['containers'][0]
+            if mutation=='main-command':main['command']=['python','-c','print("different code")']
+            elif mutation=='main-args':main['args']=['different-role']
+            elif mutation=='lifecycle':main['lifecycle']={'postStart':{'exec':{'command':['sh','-c','true']}}}
+            elif mutation.endswith('probe'):
+                key={'liveness-probe':'livenessProbe','readiness-probe':'readinessProbe','startup-probe':'startupProbe'}[mutation]
+                main[key]={'exec':{'command':['sh','-c','true']}}
+            elif mutation=='envfrom-secret':main['envFrom']=[{'secretRef':{'name':'unexpected'}}]
+            elif mutation=='api-token':spec['automountServiceAccountToken']=True
+            else:spec[mutation]=True
+            result=self.evaluate(values,fixture)
+            self.assertEqual(result['status'],'failed-or-inconclusive',mutation)
+            self.assertFalse(result['compilerGeneratedRuntimeQualified'],mutation)
+
+    def test_unexpected_runtime_fragments_and_injector_data_fail_closed(self):
+        mutations = ('main-resource','main-security','main-env','extra-mount','changed-mount-source',
+            'extra-volume','main-port','main-workingdir','main-stdin','init-args','init-lifecycle','gate-env',
+            'ephemeral-container','pod-security','node-selector','runtime-class','service-account',
+            'pull-secret','nonempty-injector','injector-owner','injector-rv','injector-extra-key',
+            'runai-value','configmap-literal','fixture-and-pod-command')
+        for mutation in mutations:
+            with self.subTest(mutation=mutation):
+                values,fixture=evidence();spec=values[2]['spec'];main=spec['containers'][0]
+                if mutation=='main-resource':main['resources']['limits']['memory']='512Mi'
+                elif mutation=='main-security':main['securityContext']['capabilities']['add']=['SYS_ADMIN']
+                elif mutation=='main-env':main['env'].append({'name':'LD_PRELOAD','value':'/tmp/unknown.so'})
+                elif mutation=='extra-mount':main['volumeMounts'].append({'name':'scratch','mountPath':'/etc'})
+                elif mutation=='changed-mount-source':main['volumeMounts'][0]['name']='scratch'
+                elif mutation=='extra-volume':spec['volumes'].append({'name':'credentials','secret':{'secretName':'unexpected'}})
+                elif mutation=='main-port':main['ports']=[{'containerPort':8080,'hostPort':8080}]
+                elif mutation=='main-workingdir':main['workingDir']='/tmp'
+                elif mutation=='main-stdin':main['stdin']=True
+                elif mutation=='init-args':spec['initContainers'][0]['args'][-1]='0'
+                elif mutation=='init-lifecycle':spec['initContainers'][0]['lifecycle']={'postStart':{'exec':{'command':['true']}}}
+                elif mutation=='gate-env':spec['initContainers'][1]['env'].append({'name':'LD_PRELOAD','value':'/tmp/unknown.so'})
+                elif mutation=='ephemeral-container':spec['ephemeralContainers']=[{'name':'debug','image':renderer.IMAGE}]
+                elif mutation=='pod-security':spec['securityContext']['sysctls']=[{'name':'net.ipv4.ip_forward','value':'1'}]
+                elif mutation=='node-selector':spec['nodeSelector']['kubernetes.io/hostname']='k3s-wk-gpu1'
+                elif mutation=='runtime-class':spec['runtimeClassName']='different'
+                elif mutation=='service-account':spec['serviceAccountName']='admin'
+                elif mutation=='pull-secret':spec['imagePullSecrets']=[{'name':'different'}]
+                elif mutation in ('nonempty-injector','injector-owner','injector-rv'):
+                    for stage in ('before','after'):
+                        cm=next(cm for cm in values[6][stage]['items'] if cm['metadata']['name']=='pod-name-1-shared-gpu-0-evar')
+                        if mutation=='nonempty-injector':cm['data']={'LD_PRELOAD':'/tmp/unknown.so'}
+                        elif mutation=='injector-owner':cm['metadata']['ownerReferences'][0]['uid']='different-pod'
+                        elif stage=='after':cm['metadata']['resourceVersion']='changed'
+                elif mutation in ('injector-extra-key','runai-value'):
+                    for stage in ('before','after'):
+                        cm=next(cm for cm in values[6][stage]['items'] if cm['metadata']['name']=='pod-name-1-shared-gpu-0')
+                        cm['data']['LD_PRELOAD' if mutation=='injector-extra-key' else 'RUNAI_NUM_OF_GPUS']='bad'
+                elif mutation=='configmap-literal':
+                    entry=next(e for e in main['env'] if e['name']=='RUNAI_NUM_OF_GPUS')
+                    entry.pop('valueFrom');entry['value']='0.13'
+                else:
+                    main['command']=['python','-c','print("different")']
+                    fixture['items'][2]['spec']['template']['spec']['containers'][0]['command']=copy.deepcopy(main['command'])
+                result=self.evaluate(values,fixture)
+                self.assertEqual(result['status'],'failed-or-inconclusive')
+                self.assertFalse(result['compilerGeneratedRuntimeQualified'])
+
+    def test_known_optional_kubernetes_false_defaults_remain_safe(self):
+        values,fixture=evidence()
+        for pod in (values[2],values[3]):
+            for name in ('hostPID','hostIPC','hostNetwork','shareProcessNamespace'):pod['spec'][name]=False
+            for container in pod['spec']['containers']+pod['spec']['initContainers']:
+                container['securityContext']['privileged']=False
+        self.assertEqual(self.evaluate(values,fixture)['status'],'bounded-standard-cases-passed')
 
     def test_cpu_gate_identity_wheel_pod_no_cuda_and_bounded_probe(self):
         source=renderer.OPERATOR_GATE;ast.parse(source)
