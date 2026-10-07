@@ -1,0 +1,43 @@
+{
+  "variant": "tf-code",
+  "computeSourceRevision": "70471b9793f21a87d74ac7a673f871dfa9620101",
+  "wheelSha256": "86a0fa74cb6e15dd408fcfe36945ca1f614af14ff3bda555f49aaf4e85408d37",
+  "parentConfigId": "f6e7c30283d8617cb10a3df8d8288223745d3d06652605ed4039c203d88bd390",
+  "imageConfigId": "e8eaf0059cdc115a7d6f296189b7ce51aba3fbc882284d3e86a4ddfb4b517b8b",
+  "image": "ghcr.io/mul-cps/cps-jupyter-notebook@sha256:1e286682dc58c73d68e978b87e051694091db2411f9866c05f5e4472b9d107b4",
+  "published": true,
+  "remoteManifestAndConfigVerified": true,
+  "installedHashes": {
+    "modulesMatched": 21,
+    "addonAssetsMatched": 5,
+    "uid": 1000
+  },
+  "runtime": {
+    "uid": 1000,
+    "python": "3.13.14",
+    "compute": "0.1.0",
+    "rtc": "4.4.1",
+    "lab": "4.5.7",
+    "freshKernelSuccess": true,
+    "typedParameters": true,
+    "immutableInput": true,
+    "failedExecutedNotebookRetained": true,
+    "qualified": false,
+    "scope": "CPU notebook execution only; GPU and variant-specific application runtime not qualified"
+  },
+  "runtimeArtifacts": {
+    "failure-input.ipynb": "201bba833b7db9443e0b925867049a785f1424d2ed9607d6d7b8dea946eba1a0",
+    "failure.ipynb": "7eb2160fcb2473469f7ddab3204bf49b9e83f787e2ae4f9e88ff7836657e8d9c",
+    "input.ipynb": "a60fefa6318ff8b0f885ab4c83b9e3ba49aedbf1252b2a3fda1b7344cb0be1a0",
+    "report.json": "953caf5f38c863ab0ce0263b9110b4ca1d318663acf4bef5ea72d46bc650fa23",
+    "success.ipynb": "ad51cadc519c04befbdb00a73811b0403c29fd70e143c7797e3c92ce7005c2ef"
+  },
+  "parentStartupConfigurationPreserved": true,
+  "pipCheckPassed": true,
+  "qualified": false,
+  "deployed": false,
+  "limitations": [
+    "Layered qualification build; common-source release tag and full matrix remain open.",
+    "No GPU devices mounted; hardware isolation and variant-specific GPU behavior unqualified."
+  ]
+}
