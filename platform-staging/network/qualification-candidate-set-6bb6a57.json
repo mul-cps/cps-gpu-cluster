@@ -110,6 +110,17 @@
       "computeWheelSha256": "05d82345b0f65a3a94c715c68788f52d14c545cba41a5e622249870e0e848667",
       "remoteDigestsVerified": true,
       "qualificationEvidence": "/mnt/cps_scratch1_tmp/bjoern/cps-platform-builds/2026-10-07/notebook-mujoco-xpra-6bb6a57/report.json"
+    },
+    {
+      "component": "desktop-ros2",
+      "image": "ghcr.io/mul-cps/cps-jupyter-notebook:qualification-storage-resources-6bb6a57-desktop-ros2@sha256:205251ead14700c9bd3e680b216320dfb3ea4aabe81bb189302d1f0d2b04c400",
+      "linuxManifest": "sha256:bf3aa8852af59db589063e327b1fde1fbf62183ef5f6d52932bd0e6b9804fbcb",
+      "computeSourceRevision": "6bb6a57bc8d8426e281c0654ac8eedd1668ae600",
+      "computeWheelSha256": "05d82345b0f65a3a94c715c68788f52d14c545cba41a5e622249870e0e848667",
+      "remoteDigestsVerified": true,
+      "standaloneSbomReferrer": "ghcr.io/mul-cps/cps-jupyter-notebook@sha256:4c27821c2cad1acffbf887b49c6dc55a09a01e234058feaf1b79300a1371469f",
+      "standaloneSbomRemoteVerified": true,
+      "qualificationEvidence": "/mnt/cps_scratch1_tmp/bjoern/cps-platform-builds/2026-10-07/notebook-desktop-ros2-6bb6a57/report.json"
     }
   ],
   "observedProduction": [
@@ -135,11 +146,11 @@
       "readyReplicas": 1
     }
   ],
-  "remainingNotebookVariants": 3,
+  "remainingNotebookVariants": 2,
   "limitations": [
     "Existing notebook parents do not prove common source-tag build",
     "Full acceptance scenarios and migrations remain incomplete",
     "Gateway/controller authenticated integration of the updated packaged artifacts remains pending"
   ],
-  "candidateUpdatedAt": "2026-10-07T02:06:49.689105+00:00"
+  "candidateUpdatedAt": "2026-10-07T02:30:00.177497+00:00"
 }
