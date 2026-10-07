@@ -18,7 +18,9 @@ import time
 
 CACHE_KEY = "CUDA_DEVICE_MEMORY_SHARED_CACHE"
 CACHE_PATH = "/tmp/cps-workspace-usage.cache"
-NOMINAL_MIB = 5120
+REQUESTED_MIB = 5120
+SCHEDULER_INJECTED_MIB = 5324
+CANONICAL_LIMIT_MIB = 5120
 ALLOCATION_MIB = 3072
 ROUNDS = 16
 MAX_SKEW_NS = 25_000_000
@@ -76,8 +78,11 @@ def hami_provenance():
     expected = os.environ.get("EXPECTED_HAMI_SHA256", "")
     if len(expected) != 64 or any(c not in "0123456789abcdef" for c in expected):
         raise RuntimeError("Observed HAMi binary SHA256 is required")
-    if os.environ.get("CUDA_DEVICE_MEMORY_LIMIT") != "5120m":
-        raise RuntimeError("Explicit 5120 MiB HAMi limit is required")
+    if (os.environ.get("CUDA_DEVICE_MEMORY_LIMIT") != "5324m" or
+            os.environ.get("GPU_PORTION") != "0.13" or
+            os.environ.get("CUDA_DEVICE_MEMORY_LIMIT_0") != "5120m" or
+            os.environ.get("EXPECTED_HAMI_LIMIT_MIB") != "5120"):
+        raise RuntimeError("Reviewed global 5324m/portion 0.13 and canonical per-device 5120m limit required")
     path = Path(HAMI_PATH)
     before = path.stat()
     digest = hashlib.sha256(path.read_bytes()).hexdigest()
@@ -109,10 +114,13 @@ def hami_provenance():
     core.get_current_device_memory_limit.argtypes = [ctypes.c_int]
     core.get_current_device_memory_limit.restype = ctypes.c_uint64
     limit = core.get_current_device_memory_limit(0)
-    if limit != NOMINAL_MIB * 1024**2:
+    if limit != CANONICAL_LIMIT_MIB * 1024**2:
         raise RuntimeError(f"Effective HAMi quota is {limit} bytes, expected 5120 MiB")
     return core, {"referenceSourceRevision": HAMI_REVISION, "sourceRevisionVerified": False, "libraryPath": HAMI_PATH,
                   "sha256": digest, "loaded": True, "preloadVerified": True,
+                  "schedulerInjectedLimitBytes": SCHEDULER_INJECTED_MIB * 1024**2,
+                  "canonicalLimitBytes": CANONICAL_LIMIT_MIB * 1024**2,
+                  "perDeviceLimitVerified": True,
                   "effectiveLimitBytes": limit, "device": after.st_dev, "inode": after.st_ino}
 
 
@@ -123,6 +131,7 @@ class Cuda:
         self.lib = ctypes.CDLL("libcuda.so.1")
         signatures = {
             "cuInit": [ctypes.c_uint],
+            "cuDeviceGetCount": [ctypes.POINTER(ctypes.c_int)],
             "cuDeviceGet": [ctypes.POINTER(ctypes.c_int), ctypes.c_int],
             "cuCtxCreate_v2": [ctypes.POINTER(ctypes.c_void_p), ctypes.c_uint, ctypes.c_int],
             "cuDeviceGetUuid": [ctypes.c_void_p, ctypes.c_int],
@@ -137,6 +146,10 @@ class Cuda:
             getattr(self.lib, name).argtypes = args
             getattr(self.lib, name).restype = ctypes.c_int
         self.check(self.lib.cuInit(0), "cuInit")
+        count = ctypes.c_int()
+        self.check(self.lib.cuDeviceGetCount(ctypes.byref(count)), "cuDeviceGetCount")
+        if count.value != 1:
+            raise RuntimeError("Per-device suffix candidate requires exactly one visible CUDA device")
         device = ctypes.c_int()
         self.check(self.lib.cuDeviceGet(ctypes.byref(device), 0), "cuDeviceGet")
         self.context = ctypes.c_void_p()
@@ -149,6 +162,7 @@ class Cuda:
             raise RuntimeError("Scheduler assigned a different physical GPU")
         self.allocations = {}
         self.core, self.hami = hami_provenance()
+        self.hami["singleVisibleDeviceVerified"] = True
 
     @staticmethod
     def check(result, operation):
@@ -156,7 +170,7 @@ class Cuda:
             raise RuntimeError(f"{operation} CUDA error {result}")
 
     def allocate(self, label, mib):
-        if self.core.get_current_device_memory_limit(0) != NOMINAL_MIB * 1024**2:
+        if self.core.get_current_device_memory_limit(0) != CANONICAL_LIMIT_MIB * 1024**2:
             raise RuntimeError("Effective workspace quota changed")
         if label in self.allocations:
             raise ValueError("Allocation label already held")
@@ -325,7 +339,12 @@ def workspace():
     started = time.time_ns()
     report = {"event": "workspace-result", "productionQualified": False,
               "hostileIsolationQualified": False, "tamper": {"status": "not-run"},
-              "startedNs": started, "nominalMiB": NOMINAL_MIB,
+              "startedNs": started, "requestedMiB": REQUESTED_MIB,
+              "schedulerInjectedMiB": SCHEDULER_INJECTED_MIB,
+              "canonicalLimitMiB": CANONICAL_LIMIT_MIB,
+              "effectiveHamiLimitMiB": None,
+              "schedulerQuotaDrift": True, "canonicalQuotaDrift": None,
+              "exactProfileQuotaQualified": False,
               "status": "incomplete", "ordinary": {}, "concurrency": []}
     try:
         for name in ("a", "b"):
@@ -337,6 +356,8 @@ def workspace():
         report["cache"] = a.ready["cache"]
         report["gpu"] = a.ready["gpu"]
         report["hami"] = a.ready["hami"]
+        report["effectiveHamiLimitMiB"] = report["hami"]["effectiveLimitBytes"] // 1024**2
+        report["canonicalQuotaDrift"] = report["effectiveHamiLimitMiB"] != REQUESTED_MIB
         r = report["ordinary"]
         r["aHold"] = a.request("a-hold", "allocate", mib=ALLOCATION_MIB)
         if r["aHold"]["cudaResult"] != 0:

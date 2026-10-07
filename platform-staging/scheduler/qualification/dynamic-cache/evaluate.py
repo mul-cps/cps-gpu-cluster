@@ -13,7 +13,46 @@ def valid_hami(value, preflight):
             and value["libraryPath"] == HAMI_PATH
             and value["sha256"] == preflight["hami"]["sha256"]
             and value["loaded"] is True and value["preloadVerified"] is True
-            and value["effectiveLimitBytes"] == 5120 * 1024**2)
+            and value["effectiveLimitBytes"] == 5120 * 1024**2
+            and value["schedulerInjectedLimitBytes"] == 5324 * 1024**2
+            and value["canonicalLimitBytes"] == 5120 * 1024**2
+            and value["perDeviceLimitVerified"] is True and value["singleVisibleDeviceVerified"] is True)
+
+
+def resolve_configmap_env(entry, pod, receipts):
+    """Resolve only a stable, currently observed ConfigMap owned by this Pod."""
+    if "value" in entry and "valueFrom" not in entry:
+        return entry["value"], None
+    reference = entry["valueFrom"]["configMapKeyRef"]
+    metadata = pod["metadata"]
+    matches = []
+    for stage in ("before", "after"):
+        items = [cm for cm in receipts[stage]["items"]
+                 if cm.get("metadata", {}).get("name") == reference["name"] and
+                 cm.get("metadata", {}).get("namespace") == metadata["namespace"]]
+        if len(items) != 1:
+            raise ValueError("Referenced ConfigMap snapshot missing or ambiguous")
+        cm = items[0]
+        own = cm["metadata"]
+        if (cm.get("apiVersion") != "v1" or cm.get("kind") != "ConfigMap" or
+                not own.get("uid") or not own.get("resourceVersion") or
+                not any(owner.get("kind") == "Pod" and owner.get("apiVersion") == "v1" and
+                    owner.get("uid") == metadata["uid"] and owner.get("name") == metadata["name"]
+                    for owner in own.get("ownerReferences", []))):
+            raise ValueError("Referenced ConfigMap identity/Pod ownership unproven")
+        matches.append(cm)
+    before, after = matches
+    if (before["metadata"]["uid"] != after["metadata"]["uid"] or
+            before["metadata"]["resourceVersion"] != after["metadata"]["resourceVersion"] or
+            before["metadata"].get("ownerReferences") != after["metadata"].get("ownerReferences") or
+            before.get("data") != after.get("data")):
+        raise ValueError("Referenced ConfigMap changed during collection")
+    result = after["data"][reference["key"]]
+    if not isinstance(result, str):
+        raise ValueError("ConfigMap environment value must be a string")
+    return result, {"name": reference["name"], "namespace": metadata["namespace"],
+                    "uid": after["metadata"]["uid"], "resourceVersion": after["metadata"]["resourceVersion"],
+                    "key": reference["key"], "ownerPodUid": metadata["uid"]}
 
 
 def valid_round_ticks(record, child_values):
@@ -69,7 +108,7 @@ def json_events(path):
     return [json.loads(line) for line in path.read_text().splitlines() if line.startswith("{")]
 
 
-def evaluate(workspace_events, peer_events, workspace_pod, peer_pod, node, preflight):
+def evaluate(workspace_events, peer_events, workspace_pod, peer_pod, node, preflight, *, configmaps=None):
     reasons = []
     reports = [e for e in workspace_events if e.get("event") == "workspace-result"]
     if len(reports) != 1:
@@ -81,6 +120,7 @@ def evaluate(workspace_events, peer_events, workspace_pod, peer_pod, node, prefl
         reasons.append("Target node UID changed or does not match")
     uids = []
     run_ids = []
+    quota_receipts = []
     for pod in (workspace_pod, peer_pod):
         metadata, spec = pod["metadata"], pod["spec"]
         uids.append(metadata["uid"])
@@ -90,12 +130,24 @@ def evaluate(workspace_events, peer_events, workspace_pod, peer_pod, node, prefl
         if len(main) != 1 or main[0]["image"] != IMAGE:
             reasons.append("Fixture image mismatch")
         env = {e["name"]: e.get("value") for e in main[0].get("env", [])}
+        for key in ("CUDA_DEVICE_MEMORY_LIMIT", "GPU_PORTION"):
+            try:
+                entries = [e for e in main[0].get("env", []) if e["name"] == key]
+                if len(entries) != 1:
+                    raise ValueError("Exactly one quota environment entry required")
+                resolved, proof = resolve_configmap_env(entries[0], pod, configmaps)
+                env[key] = resolved
+                if proof:
+                    quota_receipts.append(proof)
+            except (KeyError, TypeError, ValueError):
+                reasons.append("Scheduler quota ConfigMap identity/value could not be verified")
         run_ids.append(env.get("FIXTURE_RUN_ID"))
         if env.get("FIXTURE_RUN_ID") != metadata.get("annotations", {}).get("compute.cps.unileoben.ac.at/fixture-run-id"):
             reasons.append("Fixture run ID does not match the rendered annotation")
         if env.get("CUDA_DEVICE_MEMORY_SHARED_CACHE") != CACHE_PATH:
             reasons.append("Fixture cache configuration mismatch")
-        if (env.get("CUDA_DEVICE_MEMORY_LIMIT") != "5120m" or
+        if (env.get("CUDA_DEVICE_MEMORY_LIMIT") != "5324m" or env.get("GPU_PORTION") != "0.13" or
+                env.get("CUDA_DEVICE_MEMORY_LIMIT_0") != "5120m" or env.get("EXPECTED_HAMI_LIMIT_MIB") != "5120" or
                 env.get("EXPECTED_HAMI_SHA256") != preflight["hami"]["sha256"] or
                 env.get("EXPECTED_HAMI_REVISION") != HAMI_REVISION):
             reasons.append("Fixture quota/HAMi provenance configuration mismatch")
@@ -119,8 +171,11 @@ def evaluate(workspace_events, peer_events, workspace_pod, peer_pod, node, prefl
             reasons.append("Synchronized same-inode concurrency gate failed or was inconclusive")
         if report["gpu"] != expected:
             reasons.append("Workspace used a different GPU")
-        if report["nominalMiB"] != 5120:
-            reasons.append("Workspace nominal quota changed")
+        if (report["requestedMiB"] != 5120 or report["schedulerInjectedMiB"] != 5324 or
+                report["canonicalLimitMiB"] != 5120 or report["effectiveHamiLimitMiB"] != 5120 or
+                report["schedulerQuotaDrift"] is not True or report["canonicalQuotaDrift"] is not False or
+                report["exactProfileQuotaQualified"] is not False):
+            reasons.append("Requested/scheduler/canonical quota observation contract changed")
         cache = report["cache"]
         if not valid_hami(report["hami"], preflight):
             reasons.append("Workspace preloaded HAMi binary or effective quota is unproven")
@@ -161,6 +216,11 @@ def evaluate(workspace_events, peer_events, workspace_pod, peer_pod, node, prefl
     return {"status": "bounded-standard-cases-passed" if not reasons else "failed-or-inconclusive",
             "reasons": reasons, "productionQualified": False, "hostileIsolationQualified": False,
             "tamper": {"status": "not-run", "existingFailureRemains": True},
+            "requestedMiB": 5120, "schedulerInjectedMiB": 5324, "canonicalLimitMiB": 5120,
+            "effectiveHamiLimitMiB": report.get("effectiveHamiLimitMiB") if report.get("hami") else None,
+            "schedulerQuotaDrift": True,
+            "canonicalQuotaDrift": report.get("canonicalQuotaDrift") if report.get("hami") else None,
+            "exactProfileQuotaQualified": False, "schedulerQuotaReceipts": quota_receipts,
             "node": NODE, "nodeUid": preflight["node"]["uid"], "gpu": expected,
             "podUids": uids}
 
@@ -170,10 +230,12 @@ if __name__ == "__main__":
     for argument in ("workspace-log", "peer-log", "workspace-pod", "peer-pod", "node", "preflight"):
         parser.add_argument(f"--{argument}", type=Path, required=True)
     parser.add_argument("--output", type=Path, required=True)
+    parser.add_argument("--configmaps", type=Path, help="Root before/after snapshots of all referenced quota ConfigMaps")
     args = parser.parse_args()
     result = evaluate(json_events(args.workspace_log), json_events(args.peer_log),
         json.loads(args.workspace_pod.read_text()), json.loads(args.peer_pod.read_text()),
-        json.loads(args.node.read_text()), json.loads(args.preflight.read_text()))
+        json.loads(args.node.read_text()), json.loads(args.preflight.read_text()),
+        configmaps=json.loads(args.configmaps.read_text()) if args.configmaps else None)
     with args.output.open("x") as destination:
         json.dump(result, destination, indent=2)
         destination.write("\n")

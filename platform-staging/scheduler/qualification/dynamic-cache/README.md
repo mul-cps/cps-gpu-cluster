@@ -70,6 +70,15 @@ Inventory must be at most 15 minutes old when rendering.
     "libraryPath": "/usr/local/vgpu/libvgpu.so",
     "sha256": "ACTUAL_OBSERVED_INJECTED_BINARY_SHA256"
   },
+  "schedulerQuota": {
+    "kaiVersion": "0.18.1",
+    "requestedMiB": 5120,
+    "schedulerInjectedMiB": 5324,
+    "cudaDeviceMemoryLimit": "5324m",
+    "gpuPortion": "0.13",
+    "canonicalLimitMiB": 5120,
+    "cudaDeviceMemoryLimit0": "5120m"
+  },
   "targetGpuUuid": "OBSERVED_PHYSICAL_GPU_UUID",
   "gpus": [{"uuid": "OBSERVED_PHYSICAL_GPU_UUID", "index": 0}],
   "activeGpuPods": [],
@@ -149,12 +158,33 @@ cache device/inode throughout initialization, allocation and free. Their cache
 file must actually appear in `/proc/self/maps` with matching device/inode; a
 default or synthesized alternative cache mapping makes the test fail. The
 JSON evidence records cache identity, CUDA GPU UUID, actual CUDA return codes,
-memory accounting reported by CUDA, and allocation timing. The environment
-explicitly sets the HAMi quota to `5120m`. Before allocation, the probe verifies
+memory accounting reported by CUDA, and allocation timing.
+
+The observed KAI 0.18.1 binder rounds a requested 5120 MiB on this 40960 MiB
+GPU from fraction 0.125 to 0.13, injecting global `5324m` and `GPU_PORTION=0.13`.
+The first runtime review was stopped before CUDA because the earlier fixture
+expected an unmodified 5120 MiB global value. That abort remains evidence.
+
+This candidate preserves those observed global values and adds the trusted
+per-device override `CUDA_DEVICE_MEMORY_LIMIT_0=5120m`, inherited unchanged by
+both children. The reference HAMi initialization gives a per-device key
+precedence over the global fallback; see
+[per-device quota parsing](https://github.com/Project-HAMi/HAMi-core/blob/5496322f2fb3e71bf1eca014fba3c9bc59ab8ffd/src/multiprocess/multiprocess_memory_limit.c#L166-L179).
+The installed binary's source provenance remains unverified, so its actual
+behavior must be measured. Exactly one visible CUDA device is required before
+using suffix 0. No global KAI, MPS, device-mode or ConfigMap values are edited.
+
+Before allocation, the probe verifies
 the library's actual SHA256 and mapped device/inode, confirms its preload
 configuration, obtains its already loaded handle using `RTLD_NOLOAD`, and reads
 `get_current_device_memory_limit(0)`. A missing preload, unreviewed binary or
-effective quota other than 5120 MiB fails. These checks do not load an absent
+effective quota other than 5120 MiB fails. It also requires the actual global
+`5324m`, portion `0.13`, and suffix `5120m`; another rounding quantum is rejected.
+The report separates requested 5120 MiB, scheduler-injected 5324 MiB, expected
+canonical 5120 MiB, and the actual observed hook quota. The latter starts null
+and remains null if hook initialization is not proven. Scheduler drift stays
+visible and `exactProfileQuotaQualified` remains false even on bounded success.
+These checks do not load an absent
 hook merely to manufacture positive evidence. The expected binary hash comes
 from actual node observation. Runtime receipts explicitly retain
 `sourceRevisionVerified: false`; reconstructing source provenance is a separate
@@ -205,6 +235,7 @@ python3 evaluate.py --workspace-log /PRIVATE_EVIDENCE/workspace.log \
   --workspace-pod /PRIVATE_EVIDENCE/workspace-pod.json \
   --peer-pod /PRIVATE_EVIDENCE/peer-pod.json --node /PRIVATE_EVIDENCE/node.json \
   --preflight /PRIVATE_EVIDENCE/preflight.json \
+  --configmaps /PRIVATE_EVIDENCE/configmap-snapshots.json \
   --output /PRIVATE_EVIDENCE/bounded-result.json
 python3 -m unittest -v test_dynamic_cache.py
 ```
@@ -216,3 +247,13 @@ It can return only bounded standard-case evidence. `productionQualified` and
 `hostileIsolationQualified` stay false in every outcome. The GPU catalog and
 group-sharing feature remain disabled until the remaining actual isolation,
 dynamic profile matrix and reservation/revocation gates pass.
+
+For KAI's mutated quota/portion environment references, collect every referenced
+ConfigMap before CUDA release and again after the run, while it still exists.
+Store the actual snapshots as `{"before": {"items": [...]}, "after": {"items": [...]}}`
+in the file passed to `--configmaps`. The evaluator resolves only the exact
+referenced namespace/name/key and requires the same UID/resourceVersion/data,
+plus a Pod owner reference matching that fixture's actual name and UID. Missing,
+replaced, changed, foreign-owned or unexpected quota references fail. Actual
+runtime environment/preload and exported-hook quota evidence remain mandatory;
+these snapshots do not substitute for those checks.

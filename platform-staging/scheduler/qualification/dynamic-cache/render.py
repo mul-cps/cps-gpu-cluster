@@ -63,6 +63,12 @@ def validate_preflight(value, now=None):
             or hami["sourceRevisionVerified"] is not False
             or not re.fullmatch(r"[a-f0-9]{64}", hami["sha256"])):
         raise ValueError("Observed binary SHA256 and explicitly unverified reference source revision required")
+    quota = value["schedulerQuota"]
+    if quota != {"kaiVersion": "0.18.1", "requestedMiB": 5120,
+                 "schedulerInjectedMiB": 5324, "cudaDeviceMemoryLimit": "5324m",
+                 "gpuPortion": "0.13", "canonicalLimitMiB": 5120,
+                 "cudaDeviceMemoryLimit0": "5120m"}:
+        raise ValueError("Only reviewed KAI rounding and fixed canonical device-0 quota candidate allowed")
     target = value["targetGpuUuid"]
     if not re.fullmatch(r"GPU-[a-fA-F0-9]{8}(?:-[a-fA-F0-9]{4}){3}-[a-fA-F0-9]{12}", target):
         raise ValueError("Explicit physical GPU UUID required; MIG is excluded")
@@ -78,7 +84,8 @@ def validate_preflight(value, now=None):
         raise ValueError("An existing Ready MPS server on this exact GPU is required")
     return {"node": NODE, "nodeUid": node["uid"], "gpuUuid": target,
             "gpuIndex": entries[0]["index"], "observedAt": value["observedAt"],
-            "image": IMAGE, "existingMpsPids": [s["pid"] for s in servers], "hami": hami}
+            "image": IMAGE, "existingMpsPids": [s["pid"] for s in servers], "hami": hami,
+            "schedulerQuota": quota}
 
 
 def render(preflight, run_id, now=None):
@@ -141,7 +148,10 @@ def render(preflight, run_id, now=None):
                             {"name": "FIXTURE_POD_UID", "valueFrom": {
                                 "fieldRef": {"fieldPath": "metadata.uid"}}},
                             {"name": "FIXTURE_RUN_ID", "value": run_id},
-                            {"name": "CUDA_DEVICE_MEMORY_LIMIT", "value": "5120m"},
+                            {"name": "CUDA_DEVICE_MEMORY_LIMIT", "value": "5324m"},
+                            {"name": "CUDA_DEVICE_MEMORY_LIMIT_0", "value": "5120m"},
+                            {"name": "EXPECTED_HAMI_LIMIT_MIB", "value": "5120"},
+                            {"name": "GPU_PORTION", "value": "0.13"},
                             {"name": "EXPECTED_HAMI_SHA256", "value": proof["hami"]["sha256"]},
                             {"name": "EXPECTED_HAMI_REVISION", "value": HAMI_REVISION},
                             {"name": "EXPECTED_GPU_UUID", "value": proof["gpuUuid"]},

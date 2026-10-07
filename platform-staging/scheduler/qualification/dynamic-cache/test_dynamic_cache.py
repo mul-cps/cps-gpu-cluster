@@ -24,6 +24,9 @@ def preflight():
             "image": render.IMAGE, "targetGpuUuid": GPU,
             "hami": {"referenceSourceRevision": render.HAMI_REVISION, "sourceRevisionVerified": False,
                      "libraryPath": render.HAMI_PATH, "sha256": "a" * 64},
+            "schedulerQuota": {"kaiVersion": "0.18.1", "requestedMiB": 5120,
+                               "schedulerInjectedMiB": 5324, "cudaDeviceMemoryLimit": "5324m", "gpuPortion": "0.13",
+                               "canonicalLimitMiB": 5120, "cudaDeviceMemoryLimit0": "5120m"},
             "gpus": [{"uuid": GPU, "index": 1}], "activeGpuPods": [],
             "mpsServers": [{"gpuUuid": GPU, "pid": 100, "ready": True}]}
 
@@ -35,7 +38,9 @@ def value(code=0, start=100, end=None, pid=101):
             "cache": {"device": 20, "inode": 21, "mappingVerified": True, "noTmpFallback": True},
             "hami": {"referenceSourceRevision": render.HAMI_REVISION, "sourceRevisionVerified": False,
                      "libraryPath": render.HAMI_PATH,
-                     "sha256": "a" * 64, "loaded": True, "preloadVerified": True, "effectiveLimitBytes": 5120*1024**2},
+                     "sha256": "a" * 64, "loaded": True, "preloadVerified": True, "effectiveLimitBytes": 5120*1024**2,
+                     "schedulerInjectedLimitBytes": 5324*1024**2, "canonicalLimitBytes": 5120*1024**2,
+                     "perDeviceLimitVerified": True, "singleVisibleDeviceVerified": True},
             "gpu": probe.normalized_uuid(GPU)}
 
 
@@ -44,13 +49,16 @@ def valid_evidence():
     pods = []
     for number, item in enumerate(fixture["items"][1:]):
         pods.append({"metadata": {**item["spec"]["template"]["metadata"],
-                     "uid": f"pod-{number}", "namespace": render.NAMESPACE},
+                     "uid": f"pod-{number}", "name": f"pod-name-{number}", "namespace": render.NAMESPACE},
                      "spec": {**item["spec"]["template"]["spec"], "nodeName": render.NODE},
                      "status": {"phase": "Succeeded"}})
     ordinary = {key: value(2 if key == "bDenied" else 0) for key in
                 ("aHold", "bDenied", "aContinued", "aFree", "bAfterFree", "bContinued")}
     report = {"event": "workspace-result", "status": "bounded-standard-cases-passed",
-              "startedNs": 1_000_000_000, "finishedNs": 2_000_000_000, "nominalMiB": 5120,
+              "startedNs": 1_000_000_000, "finishedNs": 2_000_000_000,
+              "requestedMiB": 5120, "schedulerInjectedMiB": 5324, "canonicalLimitMiB": 5120,
+              "effectiveHamiLimitMiB": 5120, "schedulerQuotaDrift": True, "canonicalQuotaDrift": False,
+              "exactProfileQuotaQualified": False,
               "ordinary": ordinary, "gpu": probe.normalized_uuid(GPU), "cache": value()["cache"],
               "hami": value()["hami"], "concurrency": []}
     workspace = [{"event": "child-evidence", "child": name,
@@ -104,6 +112,10 @@ class RendererTests(unittest.TestCase):
                 self.assertNotIn("nvidia.com/gpu", container["resources"]["limits"])
             env = {e["name"]: e.get("value") for e in pod["containers"][0]["env"]}
             self.assertEqual(env["CUDA_DEVICE_MEMORY_SHARED_CACHE"], probe.CACHE_PATH)
+            self.assertEqual(env["EXPECTED_HAMI_LIMIT_MIB"], "5120")
+            self.assertEqual(env["CUDA_DEVICE_MEMORY_LIMIT_0"], "5120m")
+            self.assertEqual(env["CUDA_DEVICE_MEMORY_LIMIT"], "5324m")
+            self.assertEqual(env["GPU_PORTION"], "0.13")
 
     def test_preflight_rejects_unsafe_or_unbound_targets(self):
         changes = [lambda d: d["node"].update(name="k3s-wk-gpu1"),
@@ -115,6 +127,9 @@ class RendererTests(unittest.TestCase):
                    lambda d: d["hami"].update(sha256="not-a-binary-hash"),
                    lambda d: d["hami"].update(referenceSourceRevision="different"),
                    lambda d: d["hami"].update(sourceRevisionVerified=True),
+                   lambda d: d["schedulerQuota"].update(schedulerInjectedMiB=6144),
+                   lambda d: d["schedulerQuota"].update(cudaDeviceMemoryLimit="5120m"),
+                   lambda d: d["schedulerQuota"].update(gpuPortion="0.125"),
                    lambda d: d.update(gpus=[]),
                    lambda d: d.update(observedAt=(NOW-dt.timedelta(minutes=16)).isoformat()),
                    lambda d: d.update(observedAt=(NOW+dt.timedelta(seconds=1)).isoformat()),
@@ -200,7 +215,8 @@ class RendererTests(unittest.TestCase):
         info = SimpleNamespace(st_dev=1, st_ino=2, st_size=len(library), st_mtime_ns=3, st_ctime_ns=4)
         env = {"EXPECTED_HAMI_REVISION": render.HAMI_REVISION,
                "EXPECTED_HAMI_SHA256": probe.hashlib.sha256(library).hexdigest(),
-               "CUDA_DEVICE_MEMORY_LIMIT": "5120m"}
+               "CUDA_DEVICE_MEMORY_LIMIT": "5324m", "CUDA_DEVICE_MEMORY_LIMIT_0": "5120m",
+               "EXPECTED_HAMI_LIMIT_MIB": "5120", "GPU_PORTION": "0.13"}
         maps = f"1000-2000 r-xp 00000000 00:01 2 {render.HAMI_PATH}\n"
         def text(path):
             return maps if str(path) == "/proc/self/maps" else render.HAMI_PATH + "\n"
@@ -218,9 +234,10 @@ class RendererTests(unittest.TestCase):
             _, proof = probe.hami_provenance()
             self.assertTrue(proof["preloadVerified"])
             self.assertEqual(load.call_args.kwargs["mode"], probe.os.RTLD_NOLOAD | probe.os.RTLD_NOW)
-            core.get_current_device_memory_limit.size = 40 * 1024**3
-            with self.assertRaisesRegex(RuntimeError, "Effective HAMi quota"):
-                probe.hami_provenance()
+            for observed_limit in (5324 * 1024**2, 40 * 1024**3):
+                core.get_current_device_memory_limit.size = observed_limit
+                with self.assertRaisesRegex(RuntimeError, "Effective HAMi quota"):
+                    probe.hami_provenance()
             core.get_current_device_memory_limit.size = 5120 * 1024**2
             with patch.dict("os.environ", {"EXPECTED_HAMI_SHA256": "f" * 64}):
                 with self.assertRaisesRegex(RuntimeError, "binary does not match"):
@@ -231,6 +248,62 @@ class RendererTests(unittest.TestCase):
 
 
 class VerdictTests(unittest.TestCase):
+    def test_rounded_observation_never_claims_exact_requested_profile_quota(self):
+        result = evaluate.evaluate(*valid_evidence())
+        self.assertEqual(result["status"], "bounded-standard-cases-passed")
+        self.assertEqual(result["requestedMiB"], 5120)
+        self.assertEqual(result["schedulerInjectedMiB"], 5324)
+        self.assertEqual(result["effectiveHamiLimitMiB"], 5120)
+        self.assertTrue(result["schedulerQuotaDrift"])
+        self.assertFalse(result["canonicalQuotaDrift"])
+        self.assertFalse(result["exactProfileQuotaQualified"])
+        evidence = list(valid_evidence())
+        evidence[0][-1]["exactProfileQuotaQualified"] = True
+        self.assertEqual(evaluate.evaluate(*evidence)["status"], "failed-or-inconclusive")
+
+    def test_failed_hook_initialization_does_not_report_an_observed_canonical_quota(self):
+        evidence = list(valid_evidence())
+        report = evidence[0][-1]
+        report.pop("hami")
+        report.update(status="incomplete", effectiveHamiLimitMiB=None, canonicalQuotaDrift=None)
+        result = evaluate.evaluate(*evidence)
+        self.assertEqual(result["status"], "failed-or-inconclusive")
+        self.assertIsNone(result["effectiveHamiLimitMiB"])
+        self.assertIsNone(result["canonicalQuotaDrift"])
+
+    def test_mutated_quota_env_requires_stable_owned_configmap_receipts(self):
+        evidence = list(valid_evidence())
+        items = []
+        for pod in (evidence[2], evidence[3]):
+            name = pod["metadata"]["name"] + "-shared-gpu-0"
+            for entry in pod["spec"]["containers"][0]["env"]:
+                if entry["name"] in ("CUDA_DEVICE_MEMORY_LIMIT", "GPU_PORTION"):
+                    entry.pop("value")
+                    entry["valueFrom"] = {"configMapKeyRef": {"name": name, "key": entry["name"]}}
+            items.append({"apiVersion": "v1", "kind": "ConfigMap", "metadata": {
+                "name": name, "namespace": render.NAMESPACE, "uid": name+"-uid", "resourceVersion": "123",
+                "ownerReferences": [{"apiVersion": "v1", "kind": "Pod", "name": pod["metadata"]["name"], "uid": pod["metadata"]["uid"]}]},
+                "data": {"CUDA_DEVICE_MEMORY_LIMIT": "5324m", "GPU_PORTION": "0.13"}})
+        snapshots = {"before": {"items": items}, "after": {"items": copy.deepcopy(items)}}
+        self.assertEqual(evaluate.evaluate(*evidence, configmaps=snapshots)["status"], "bounded-standard-cases-passed")
+        for kind in ("missing", "uid", "rv", "owner", "quota", "portion"):
+            changed = copy.deepcopy(snapshots)
+            if kind == "missing":
+                changed["after"]["items"] = []
+            elif kind == "uid":
+                changed["after"]["items"][0]["metadata"]["uid"] = "replaced"
+            elif kind == "rv":
+                changed["after"]["items"][0]["metadata"]["resourceVersion"] = "124"
+            elif kind == "owner":
+                for stage in ("before", "after"):
+                    changed[stage]["items"][0]["metadata"]["ownerReferences"][0]["uid"] = "another-pod"
+            else:
+                key = "CUDA_DEVICE_MEMORY_LIMIT" if kind == "quota" else "GPU_PORTION"
+                for stage in ("before", "after"):
+                    changed[stage]["items"][0]["data"][key] = "unexpected"
+            with self.subTest(kind=kind):
+                self.assertEqual(evaluate.evaluate(*evidence, configmaps=changed)["status"], "failed-or-inconclusive")
+
     def test_sequential_or_touching_intervals_are_not_concurrency_evidence(self):
         for starts_ends in ((100, 105, 110, 115), (100, 110, 110, 120)):
             a_start, a_end, b_start, b_end = starts_ends
