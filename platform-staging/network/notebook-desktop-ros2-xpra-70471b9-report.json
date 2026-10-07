@@ -56,5 +56,31 @@
     "gpuExecution": false,
     "browserInteractionVerified": false,
     "qualified": false
-  }
+  },
+  "sbom": {
+    "variant": "desktop-ros2-xpra",
+    "subject": "ghcr.io/mul-cps/cps-jupyter-notebook@sha256:15282af21c4256432742d5e4b7b139d80d2863606e20c963eeb600cf98cd3ea0",
+    "sourceImageId": "sha256:459d16995481f8cc5c655bcac5b3bec957b2026032b9a75e780f680b56c25558",
+    "packages": 5521,
+    "files": 165803,
+    "requiredPackagesVerified": [
+      "cps-compute",
+      "hera-workflows",
+      "jupyter-collaboration",
+      "jupyterlab",
+      "papermill"
+    ],
+    "checksums": {
+      "sbom.spdx.json": "8b68893685e4bcdd132ecf04b8736e19efbab4b2a213a341b0a5891b82325b96",
+      "sbom.syft.json": "3340fbae605ef54491107833450c424f205179b31d8d790526e9602fa547488f"
+    },
+    "attachment": "ghcr.io/mul-cps/cps-jupyter-notebook@sha256:827f8a06f9d6d892de5f3e270a07a4ee3e8f025fdf3f65dbf9beed61d35b6718",
+    "subjectVerified": true,
+    "downloadHashesMatched": true,
+    "scannerSha256": "dbf75864e7a7ff9e1fbf00552c31483f693188632a9f68f343cd7653dac513d6",
+    "productionQualified": false,
+    "createdAt": "2026-10-07T05:37:56.255641+00:00",
+    "fileCoverage": "package-owned files (Syft metadata selection owned-by-package); not every image file"
+  },
+  "sbomPublished": true
 }

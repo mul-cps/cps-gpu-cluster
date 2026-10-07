@@ -127,7 +127,9 @@
       "cpuNotebookChecksPassed": true,
       "nativeRosLoopbackPassed": true,
       "isolatedXpraHttpPassed": true,
-      "gpuQualified": false
+      "gpuQualified": false,
+      "sbomReferrer": "ghcr.io/mul-cps/cps-jupyter-notebook@sha256:827f8a06f9d6d892de5f3e270a07a4ee3e8f025fdf3f65dbf9beed61d35b6718",
+      "sbomRemoteVerified": true
     }
   ],
   "remainingGates": [
