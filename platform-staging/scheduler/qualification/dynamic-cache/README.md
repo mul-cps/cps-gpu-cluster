@@ -1,7 +1,8 @@
 # Dynamic workspace cache qualification fixture
 
-Status: disabled, source and offline tests only. Dynamic GPU sharing remains the
-target. This package uses no MIG and changes no GPU mode, MPS server ceiling,
+Status: deployment disabled; one controlled live run passed the bounded standard
+cases on 2026-10-07. See [RESULTS.md](RESULTS.md) for its evidence and remaining
+gates. Dynamic GPU sharing remains the target. This package uses no MIG and changes no GPU mode, MPS server ceiling,
 device plugin, policy catalog, or user Pod. It is outside Fleet deployment paths.
 The renderer always emits suspended Jobs and has no execute/unsuspend option.
 
@@ -48,10 +49,11 @@ Those observations do not establish correspondence to the reference source.
 ## Controlled scope and preflight
 
 Only the root operator may perform live actions. GPU1 and existing user sessions
-remain protected. This renderer accepts only `k3s-wk-gpu2`, one physical GPU UUID
-observed on that node, its observed node UID, the fixed image, no active GPU
-workloads/reservations on that node, and an already Ready MPS server for that
-UUID. It neither starts nor configures MPS. The active server's nominal 5 GiB
+remain protected. This renderer accepts only `k3s-wk-gpu2`, both observed physical
+GPU UUIDs on that node, its observed node UID, the fixed image, no active GPU
+workloads/reservations on that node, and an already Ready MPS server for each
+allowed UUID. `targetGpuUuid` records an initial preflight choice, not actual
+scheduler placement. It neither starts nor configures MPS. The active server's nominal 5 GiB
 per-client ceiling remains unchanged. Qualifying 10/20 GiB profiles requires
 separate authorized maintenance; this fixture cannot provide that evidence.
 
@@ -79,10 +81,16 @@ Inventory must be at most 15 minutes old when rendering.
     "canonicalLimitMiB": 5120,
     "cudaDeviceMemoryLimit0": "5120m"
   },
-  "targetGpuUuid": "OBSERVED_PHYSICAL_GPU_UUID",
-  "gpus": [{"uuid": "OBSERVED_PHYSICAL_GPU_UUID", "index": 0}],
+  "targetGpuUuid": "OBSERVED_PHYSICAL_GPU_UUID_0",
+  "gpus": [
+    {"uuid": "OBSERVED_PHYSICAL_GPU_UUID_0", "index": 0},
+    {"uuid": "OBSERVED_PHYSICAL_GPU_UUID_1", "index": 1}
+  ],
   "activeGpuPods": [],
-  "mpsServers": [{"gpuUuid": "OBSERVED_PHYSICAL_GPU_UUID", "pid": 1234, "ready": true}]
+  "mpsServers": [
+    {"gpuUuid": "OBSERVED_PHYSICAL_GPU_UUID_0", "pid": 1234, "ready": true},
+    {"gpuUuid": "OBSERVED_PHYSICAL_GPU_UUID_1", "pid": 5678, "ready": true}
+  ]
 }
 ```
 
@@ -105,11 +113,19 @@ the rendered bytes and their hash. Any manual application or unsuspension is a
 separate root operation after the fresh checks. Start the independent peer Job
 first. Each Pod initializes its private cache, then a non-GPU init gate waits
 up to 60 seconds for the root operator to review the fully injected Pod before
-any CUDA probe executes. In that gate container, root can create the private
+any CUDA probe executes. Let KAI select the card normally. Root must review the
+actual Pod-owned ConfigMap's `NVIDIA_VISIBLE_DEVICES` selection and verify that
+physical UUID belongs to the observed allowlist. Using the actual Pod UID and
+resourceVersion as a CAS fence, root patches only the annotation
+`compute.cps.unileoben.ac.at/reviewed-gpu-uuid` to that observed selection.
+The main container reads it through the Downward API as `EXPECTED_GPU_UUID`;
+the initial choice annotation is not used as runtime evidence. Do not edit
+KAI selection, `NVIDIA_VISIBLE_DEVICES`, or any injected ConfigMap.
+In that gate container, root can then create the private
 `/cache-root/operator-approved.json` after verifying the final image IDs,
 preload/library mounts, exact explicit quota/cache environment, target node UID,
 card UUID and unchanged MPS configuration. The marker must match this exact
-shape, with observed values from the rendered proof (no additional fields):
+shape, with the actual reviewed card from the rendered allowlist (no additional fields):
 
 ```json
 {
@@ -118,7 +134,7 @@ shape, with observed values from the rendered proof (no additional fields):
   "podUid": "OBSERVED_ACTUAL_POD_UID",
   "runId": "UNIQUELOWERCASEID",
   "nodeUid": "OBSERVED_NODE_UID",
-  "gpuUuid": "OBSERVED_PHYSICAL_GPU_UUID",
+  "gpuUuid": "ACTUAL_REVIEWED_KAI_SELECTED_GPU_UUID",
   "hamiSha256": "ACTUAL_OBSERVED_INJECTED_BINARY_SHA256",
   "probeSha256": "SHA256_OF_RENDERED_PROBE_SOURCE"
 }
@@ -133,12 +149,15 @@ write it using the already nonroot gate container, and preserve its bytes as
 an operator receipt. Missing, late or mismatched approval fails the Job. This
 is a root execution control, not an identity or source-build attestation. No
 Pod API credentials are installed. Wait for `peer-ready` and successful
-heartbeats on the expected physical GPU, then start and review/release the
-workspace Job promptly. Both stop within their 180-second active
+heartbeats on its actual reviewed physical GPU, then start the workspace Job
+promptly. Release its gate only if its actual KAI selection matches the peer's
+physical GPU; otherwise leave it unreleased and record an inconclusive result.
+Both stop within their 180-second active
 deadline and have no retries. Neither accesses Kubernetes credentials. The
-peer holds 256 MiB for approximately 90 seconds. If scheduling puts either Job
-on the other GPU2 card, it stops before memory allocation and the result is
-inconclusive. Do not substitute a same-workspace child for the independent peer.
+peer holds 256 MiB for approximately 90 seconds. The probe checks its actual
+CUDA UUID against the reviewed annotation before memory allocation. A selection
+outside the allowlist or a workspace on a different card fails the gate. Do not
+substitute a same-workspace child for the independent peer.
 
 ## Cache and allocation contract
 
@@ -248,12 +267,15 @@ It can return only bounded standard-case evidence. `productionQualified` and
 group-sharing feature remain disabled until the remaining actual isolation,
 dynamic profile matrix and reservation/revocation gates pass.
 
-For KAI's mutated quota/portion environment references, collect every referenced
+For KAI's mutated quota, portion and device-selection environment references, collect every referenced
 ConfigMap before CUDA release and again after the run, while it still exists.
 Store the actual snapshots as `{"before": {"items": [...]}, "after": {"items": [...]}}`
 in the file passed to `--configmaps`. The evaluator resolves only the exact
 referenced namespace/name/key and requires the same UID/resourceVersion/data,
 plus a Pod owner reference matching that fixture's actual name and UID. Missing,
-replaced, changed, foreign-owned or unexpected quota references fail. Actual
+replaced, changed, foreign-owned or unexpected references fail. Both Pods must
+carry the same reviewed GPU annotation from the observed allowlist, and each
+owned ConfigMap's actual device selection must match it. A literal user-supplied
+`NVIDIA_VISIBLE_DEVICES` override is rejected. Actual
 runtime environment/preload and exported-hook quota evidence remain mandatory;
 these snapshots do not substitute for those checks.
