@@ -1,0 +1,15 @@
+{
+  "qualified": false,
+  "scope": "CPU parent compatibility only; release matrix incomplete",
+  "digest": "sha256:e0400526b9373e9099d77b2f94581d1a731ff861273dda265cd28438c46baa10",
+  "linuxManifest": "sha256:16956536829a0343ad900d93e6c14234d86e66af654c17b0b76c51b7599e5fd4",
+  "user": "1000",
+  "predicateTypes": [
+    "https://spdx.dev/Document",
+    "https://slsa.dev/provenance/v1"
+  ],
+  "offlinePackageInstallation": true,
+  "pipCheckPassed": true,
+  "releaseRunnerTestsPassed": 14,
+  "releaseRunnerFixRevision": "9f5d0a867b7ba0ce0e063ecca0038426888fd1b9"
+}
