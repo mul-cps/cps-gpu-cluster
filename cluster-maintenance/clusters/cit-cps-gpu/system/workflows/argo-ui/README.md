@@ -1,4 +1,4 @@
-The Argo UI is served at [https://jupyterhub.dshl.unileoben.ac.at/argo/](https://jupyterhub.dshl.unileoben.ac.at/argo/) using the existing Argo release in `cps-argo`. This Fleet bundle contains raw UI access manifests only. The existing `cps-argo` Helm release remains the owner of the full Argo release; this bundle neither installs another release nor takes ownership of its controller/server/executor resources.
+The Argo UI is served at [https://jupyterhub.dshl.unileoben.ac.at/argo/](https://jupyterhub.dshl.unileoben.ac.at/argo/) using the existing Argo release in `cps-argo`. This Fleet bundle contains raw UI access manifests only, which Fleet manages through its own bundle release. The existing `cps-argo` Helm release remains the owner of the Argo application; this bundle does not install another Argo application or take ownership of its controller/server/executor resources.
 
 The existing `jupyterhub/jupyterhub` Ingress owns TLS for `jupyterhub.dshl.unileoben.ac.at` through its `dshl-wildcard` Secret. The Argo UI bundle deliberately shares that hostname without copying the wildcard private key. The existing ingress and TLS configuration must remain available.
 
