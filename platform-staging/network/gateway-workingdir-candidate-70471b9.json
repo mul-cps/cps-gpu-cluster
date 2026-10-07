@@ -24,7 +24,8 @@
     "productionQualified": false,
     "attachment": "ghcr.io/mul-cps/cps-compute@sha256:18af6c1b9e918e5639fa88b4f3000245902a2184029839f4305892468b673741",
     "subjectVerified": true,
-    "downloadHashesMatched": true
+    "downloadHashesMatched": true,
+    "fileCoverage": "package-owned files (Syft metadata selection owned-by-package); not every image file"
   },
   "controlledGatewayArgoS3Qualification": {
     "passed": true,

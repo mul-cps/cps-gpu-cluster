@@ -62,7 +62,8 @@
     "downloadHashesMatched": true,
     "scannerSha256": "dbf75864e7a7ff9e1fbf00552c31483f693188632a9f68f343cd7653dac513d6",
     "productionQualified": false,
-    "createdAt": "2026-10-07T04:45:26.645615+00:00"
+    "createdAt": "2026-10-07T04:45:26.645615+00:00",
+    "fileCoverage": "package-owned files (Syft metadata selection owned-by-package); not every image file"
   },
   "sbomPublished": true
 }

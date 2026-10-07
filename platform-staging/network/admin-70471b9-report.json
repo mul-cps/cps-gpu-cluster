@@ -55,7 +55,8 @@
     "downloadHashesMatched": true,
     "productionQualified": false,
     "scannerSha256": "dbf75864e7a7ff9e1fbf00552c31483f693188632a9f68f343cd7653dac513d6",
-    "scope": "full image inventory; no vulnerability clearance, signed release or production acceptance"
+    "scope": "full image inventory; no vulnerability clearance, signed release or production acceptance",
+    "fileCoverage": "package-owned files (Syft metadata selection owned-by-package); not every image file"
   },
   "sbomPublished": true
 }
