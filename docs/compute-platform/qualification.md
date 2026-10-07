@@ -118,10 +118,11 @@ that production observation.
 Matching notebook candidates pass forced offline wheel installation and
 installed SDK/addon source hash checks. Fresh kernels verify typed parameters,
 immutable input and retained success/failure notebooks. The MuJoCo parent and
-PyTorch candidates additionally verify source hashes inside the fresh kernel.
+PyTorch and TensorFlow candidates additionally verify source hashes inside the fresh kernel.
 The PyTorch code variant also
 passes its CPU ML imports, native TorchVision NMS, in-memory datasets and
-scikit-learn execution. GPU execution, isolation and browser/RTC acceptance
+scikit-learn execution. The TensorFlow candidate passes CPU matrix operations,
+gradients and a Keras training batch. GPU execution, isolation and browser/RTC acceptance
 are separate gates. The minimal MuJoCo parent intentionally lacks MuJoCo;
 physics and rendering belong to its descendant qualification.
 
