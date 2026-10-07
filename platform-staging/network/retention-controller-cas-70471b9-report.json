@@ -186,5 +186,15 @@
     "Transport ambiguity is injected immediately before or after a real conditional delete; no actual network outage is induced.",
     "No production lifecycle qualification, release promotion, off-host recovery or automatic claim resumption is asserted.",
     "Two surviving synthetic snapshots and immutable provenance records are preserved as fixture evidence."
-  ]
+  ],
+  "archivedSources": {
+    "fixtureScriptSha256": {
+      "path": "retention-controller-cas-70471b9-fixture.py.txt",
+      "sha256": "04ff8f42deff4ba58e91d5c1fb8fbdba49b97729d9149d23a3e2f100296ab59a"
+    },
+    "launcherScriptSha256": {
+      "path": "retention-controller-cas-70471b9-launcher.py.txt",
+      "sha256": "19032edd5e3ffb607d6b8abff8af91142dd029091400bb1ecbf193052ec918be"
+    }
+  }
 }

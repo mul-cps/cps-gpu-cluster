@@ -1,0 +1,54 @@
+import copy,json,subprocess,uuid
+from datetime import datetime,timezone
+from pathlib import Path
+root=Path(__file__).parent
+name='cps-retention-cas-'+uuid.uuid4().hex[:8]
+def k(args,obj=None,check=True):return subprocess.run(['kubectl',*args],input=json.dumps(obj) if obj is not None else None,text=True,capture_output=True,check=check,timeout=150)
+def create(obj):return json.loads(k(['create','-f','-','-o','json'],obj).stdout)
+owned=[];fixtures={'cases':[]};report={'name':name,'passed':False,'productionQualified':False,'cleanup':[]}
+def record(): (root/'report.json').write_text(json.dumps(report,indent=2)+'\n')
+try:
+ for entry in json.loads((root/'prepared.json').read_text())['cases']:
+  wf=copy.deepcopy(entry['workflow']);wf['metadata']['labels']['workflows.argoproj.io/completed']='true'
+  made=create(wf);owned.append(('workflow','cps-workflows',made['metadata']['name'],made['metadata']['uid']))
+  now=datetime.now(timezone.utc).isoformat()
+  status={'status':{'phase':'Succeeded','startedAt':now,'finishedAt':now,'message':'Controlled synthetic terminal-proof fixture; no execution templates'}}
+  k(['patch','workflow',made['metadata']['name'],'-n','cps-workflows','--type=merge','-p',json.dumps(status)])
+  made=json.loads(k(['get','workflow',made['metadata']['name'],'-n','cps-workflows','-o','json']).stdout)
+  fixtures['cases'].append({'case':entry['case'],'workflow':made})
+ (root/'fixtures.json').write_text(json.dumps(fixtures,indent=2)+'\n')
+ net=create({'apiVersion':'networking.k8s.io/v1','kind':'NetworkPolicy','metadata':{'name':name,'namespace':'cps-argo'},'spec':{'podSelector':{'matchLabels':{'app.kubernetes.io/component':'server'}},'policyTypes':['Ingress'],'ingress':[{'from':[{'namespaceSelector':{'matchLabels':{'kubernetes.io/metadata.name':'cps-compute'}},'podSelector':{'matchLabels':{'app':name}}}],'ports':[{'protocol':'TCP','port':2746}]}]}})
+ owned.append(('networkpolicy','cps-argo',name,net['metadata']['uid']))
+ spec=copy.deepcopy(json.loads(k(['get','deployment','compute-gateway','-n','cps-compute','-o','json']).stdout)['spec']['template']['spec'])
+ spec.update(restartPolicy='Never',activeDeadlineSeconds=600)
+ for volume in spec['volumes']:
+  if volume['name']=='data':volume.clear();volume.update(name='data',emptyDir={})
+ c=spec['containers'][0];c['image']='ghcr.io/mul-cps/cps-compute@sha256:41f36901e11a9793bbb9aec6088b31fb6bd7cff778b16a5e6743a71a2b5d48e4'
+ c['command']=['python','-c','import time;time.sleep(600)']
+ for key in ('args','readinessProbe','livenessProbe'):c.pop(key,None)
+ pod=create({'apiVersion':'v1','kind':'Pod','metadata':{'name':name,'namespace':'cps-compute','labels':{'app':name}},'spec':spec});owned.append(('pod','cps-compute',name,pod['metadata']['uid']))
+ k(['wait','--for=condition=Ready','pod/'+name,'-n','cps-compute','--timeout=120s'])
+ for filename in ('fixture.py','fixtures.json','artifact-retention.py'):k(['cp',str(root/filename),'cps-compute/'+name+':/tmp/'+filename])
+ result=k(['exec','-n','cps-compute',name,'--','python','/tmp/fixture.py'],check=False)
+ (root/'execution.log').write_text(result.stdout+result.stderr)
+ got=k(['exec','-n','cps-compute',name,'--','cat','/tmp/retention-report.json'],check=False)
+ if got.returncode==0:report['fixture']=json.loads(got.stdout)
+ assert result.returncode==0,'Controlled fixture failed; inspect private execution log'
+ for entry in fixtures['cases']:
+  pods=json.loads(k(['get','pods','-n','cps-workflows','-l','workflows.argoproj.io/workflow='+entry['workflow']['metadata']['name'],'-o','json']).stdout)
+  assert not pods['items'],'Execution Pod unexpectedly exists'
+ report.update(passed=report['fixture']['passed'],executionPodsCreated=0,syntheticS3EvidencePreserved=True)
+finally:
+ for kind,namespace,resource,uid in reversed(owned):
+  current=k(['get',kind,resource,'-n',namespace,'-o','json'],check=False)
+  if current.returncode!=0:
+   report['cleanup'].append({'kind':kind,'name':resource,'removed':'NotFound' in current.stderr});continue
+  assert json.loads(current.stdout)['metadata']['uid']==uid,'Resource UID changed; refuse cleanup'
+  plural={'workflow':'workflows','pod':'pods','networkpolicy':'networkpolicies'}[kind]
+  prefix={'workflow':'/apis/argoproj.io/v1alpha1','pod':'/api/v1','networkpolicy':'/apis/networking.k8s.io/v1'}[kind]
+  deletion=k(['delete','--raw',prefix+'/namespaces/'+namespace+'/'+plural+'/'+resource,'-f','-'],{'apiVersion':'v1','kind':'DeleteOptions','preconditions':{'uid':uid}},check=False)
+  if kind=='pod':k(['wait','--for=delete','pod/'+resource,'-n',namespace,'--timeout=60s'],check=False)
+  remaining=k(['get',kind,resource,'-n',namespace],check=False)
+  report['cleanup'].append({'kind':kind,'name':resource,'deleteAccepted':deletion.returncode==0,'removed':'NotFound' in remaining.stderr})
+ record()
+print(json.dumps({'passed':report['passed'],'cases':len(report.get('fixture',{}).get('cases',[])),'resourcesRemoved':all(x.get('removed') for x in report['cleanup']),'productionQualified':False}))
