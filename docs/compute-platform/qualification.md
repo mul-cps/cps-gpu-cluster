@@ -45,7 +45,8 @@ to the exact policy hash and verifies artifact SHA256 bytes. All twelve scenario
 names are required. `scenarioReports` must map every scenario to a distinct local
 JSON report listed in `artifacts` with its SHA-256. Each report must declare the
 matching `scenario` and `policyHash`, `passed: true`, and
-`qualifiedScope: "production"`. Shared report paths, missing references, failed
+`qualifiedScope: "production"`. Report parsing uses the same bytes that passed checksum verification, avoiding
+a second file read. Shared report paths, missing references, failed
 or fixture-only reports and checksum/content mismatches are rejected. Existing
 blanket evidence bundles must be replaced with separately reviewed reports.
 

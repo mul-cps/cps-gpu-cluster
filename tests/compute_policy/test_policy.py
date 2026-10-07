@@ -85,6 +85,17 @@ class PolicyTests(unittest.TestCase):
                 evidence['scenarioReports'][scenario] = str(path)
             policy.validate_evidence(evidence, 'sha256:test')
             original = path.read_text()
+            from unittest.mock import patch
+            changed = json.loads(original); changed['qualifiedScope'] = 'controlled-fixture'
+            path.write_text(json.dumps(changed))
+            evidence['artifacts'][-1]['sha256'] = hashlib.sha256(path.read_bytes()).hexdigest()
+            original_read_text = Path.read_text
+            def replaced_second_read(current, *args, **kwargs):
+                return original if current == path else original_read_text(current, *args, **kwargs)
+            with patch.object(Path, 'read_text', replaced_second_read):
+                with self.assertRaises(ValueError): policy.validate_evidence(evidence, 'sha256:test')
+            path.write_text(original)
+            evidence['artifacts'][-1]['sha256'] = hashlib.sha256(path.read_bytes()).hexdigest()
             for field, value in [('qualifiedScope', 'controlled-fixture'), ('passed', False), ('policyHash', 'wrong'), ('scenario', 'authorization')]:
                 with self.subTest(field=field):
                     report = json.loads(original); report[field] = value
