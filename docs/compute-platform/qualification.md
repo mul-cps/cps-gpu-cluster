@@ -154,3 +154,8 @@ passes bounded CPS/CIT registration/provision/idempotence/archive checks through
 a real Hub fixture, forced NAS RPC and quota-compatible verifier Jobs. The
 preceding refusal probe covers V1 only. Full admin/Hub/browser integration,
 production identity/grants, privacy, handover, recovery and GPU gates remain open.
+
+The [legacy Dask transition evidence](../../platform-staging/network/legacy-dask-transition.md)
+now also covers WorkerGroup scale PATCH/PUT dry-runs for both isolated
+principals: baseline allowed, guard denied, operator allowed, zero replicas
+preserved and no execution Pods created. Production transition remains disabled.
