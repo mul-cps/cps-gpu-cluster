@@ -1,0 +1,17 @@
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: artifacts-from-argo-server
+  namespace: cps-artifacts-relay
+spec:
+  podSelector: {matchLabels: {app: artifacts-relay}}
+  policyTypes: [Ingress]
+  ingress:
+    - from:
+        - namespaceSelector:
+            matchLabels: {kubernetes.io/metadata.name: cps-argo}
+          podSelector:
+            matchLabels:
+              app.kubernetes.io/instance: cps-argo
+              app.kubernetes.io/name: argo-workflows-server
+      ports: [{protocol: TCP, port: 8333}]

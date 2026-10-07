@@ -40,3 +40,28 @@ After the ingress and viewer account are applied, log in from your own trusted t
 Request a new token when it expires. Keep the token in your own terminal/browser; do not commit or share it. The manifests contain no token or long-lived ServiceAccount token Secret. This README describes the configured route and login flow; live ingress and login verification are separate integration checks.
 
 References: [Argo client authentication](https://argo-workflows.readthedocs.io/en/release-3.7/argo-server-auth-mode/), [kubectl create token](https://kubernetes.io/docs/reference/kubectl/generated/kubectl_create/kubectl_create_token/).
+
+## Notebook artifact downloads
+
+Native Argo client-auth artifact downloads resolve the repository credential and CA Secrets using the request identity. The operator viewer has no Secret access, so this native download path fails even when the viewer can read the Workflow. `artifact-downloads.yaml` adds a bounded proxy for the longer `/argo/artifact-files/` route. Native Argo login and its `authorization=Bearer <Kubernetes JWT>` cookie remain unchanged; the proxy also accepts a Bearer header. It verifies the caller's Kubernetes GET permission on the exact Workflow before fetching and again before returning buffered bytes.
+
+The separate `argo-artifact-reader` ServiceAccount has only Workflow GET in `cps-workflows` and GET on the named `cps-artifact-credentials` and `cps-artifact-ca` Secrets. Its rotating projected token is used with the fixed native Argo backend, which performs the S3 download. The Python proxy does not call a Secret API, and reader credentials are not returned to the browser. Viewer permissions remain unchanged. `artifact-relay-access.yaml` adds port 8333 access only from the native Argo server pods in `cps-argo`; it preserves the existing relay policy. There is no fallback that grants storage privileges to the viewer or switches native Argo authentication modes.
+
+Supported downloads are canonical notebook `inputs/snapshot` and `outputs/executed-notebook` from `cps-workflows`, bound to the exact Workflow, node and object descriptor. Each file is capped at **100 MiB**, with **60 seconds** for authorization and buffering and at most **two active downloads**. Changed or revoked Workflow access fails before buffered bytes are disclosed. A Workflow record can remain visible after a retention qualification fixture has deleted its files; those requests return an explicit storage-unavailable 404. General workflow artifacts and archived logs are not served by this route yet. Canonical behavior, configuration and qualification requirements are documented in [cps-compute artifact downloads](https://github.com/mul-cps/cps-compute/blob/27e0bbfb303bcdaadcfcbc242c0565a52206ddcf/docs/artifact-downloads.md)..
+
+The Deployment pulls the private GHCR image using the kubelet-only `argo-artifact-image-pull` Secret. Its SOPS-managed GitOps resource contains only the existing gateway credential for `ghcr.io`; the application does not mount it and its reader account cannot read it. The digest pins the reviewed download-service source. Source manifests and image publication alone do not verify authenticated public downloads: readiness, supported downloads, negative authorization, native-cookie behavior and unchanged viewer RBAC require integration checks.
+
+To roll back, remove only these three artifact manifests from the Fleet desired state and reconcile. For manually applied resources, after removing them from the desired state, delete the exact additions:
+
+```sh
+kubectl -n cps-argo delete ingress argo-artifact-downloads
+kubectl -n cps-argo delete deployment,service argo-artifact-downloads
+kubectl -n cps-argo delete networkpolicy \
+  argo-artifact-downloads-from-ingress argo-server-from-artifact-downloads
+kubectl -n cps-artifacts-relay delete networkpolicy artifacts-from-argo-server
+kubectl -n cps-workflows delete rolebinding,role argo-artifact-reader
+kubectl -n cps-argo delete serviceaccount argo-artifact-reader
+kubectl -n cps-argo delete sopssecret argo-artifact-image-pull
+```
+
+Preserve the original `argo-ui` Ingress, `argo-ui-from-ingress` policy, upstream CA, viewer account and its authorization resources, and the existing `cps-argo` Helm release. Removing the proxy restores the native artifact route and its viewer Secret denial; it does not qualify an alternative artifact access path.

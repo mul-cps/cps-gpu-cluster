@@ -1,0 +1,194 @@
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: argo-artifact-reader
+  namespace: cps-argo
+automountServiceAccountToken: false
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: argo-artifact-reader
+  namespace: cps-workflows
+rules:
+  - apiGroups: [argoproj.io]
+    resources: [workflows]
+    verbs: [get]
+  - apiGroups: [""]
+    resources: [secrets]
+    resourceNames: [cps-artifact-credentials, cps-artifact-ca]
+    verbs: [get]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: argo-artifact-reader
+  namespace: cps-workflows
+subjects:
+  - kind: ServiceAccount
+    name: argo-artifact-reader
+    namespace: cps-argo
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: Role
+  name: argo-artifact-reader
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: argo-artifact-downloads
+  namespace: cps-argo
+spec:
+  replicas: 1
+  strategy: {type: Recreate}
+  selector:
+    matchLabels:
+      app.kubernetes.io/instance: cps-argo
+      app.kubernetes.io/name: argo-artifact-downloads
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/instance: cps-argo
+        app.kubernetes.io/name: argo-artifact-downloads
+    spec:
+      serviceAccountName: argo-artifact-reader
+      automountServiceAccountToken: false
+      imagePullSecrets: [{name: argo-artifact-image-pull}]
+      nodeSelector: {kubernetes.io/hostname: k3s-wk-gpu2}
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 10001
+        runAsGroup: 10001
+        fsGroup: 10001
+        seccompProfile: {type: RuntimeDefault}
+      containers:
+        - name: downloads
+          # Pinned source 27e0bbfb303bcdaadcfcbc242c0565a52206ddcf.
+          image: ghcr.io/mul-cps/cps-compute@sha256:79e933dcf6a042aa9966aec5de9ad4050e8a328254efa6df44e990613838b734
+          command: [python, -m, cps_compute.artifact_downloads]
+          ports: [{name: http, containerPort: 8080, protocol: TCP}]
+          env:
+            - name: CPS_ARTIFACT_ARGO_URL
+              value: https://cps-argo-argo-workflows-server.cps-argo.svc.cluster.local:2746
+            - {name: CPS_ARTIFACT_ARGO_CA, value: /etc/argo-ca/ca.crt}
+          securityContext:
+            readOnlyRootFilesystem: true
+            allowPrivilegeEscalation: false
+            capabilities: {drop: [ALL]}
+          resources:
+            requests: {cpu: 100m, memory: 256Mi, ephemeral-storage: 256Mi}
+            limits: {cpu: "1", memory: 512Mi, ephemeral-storage: 1Gi}
+          readinessProbe:
+            httpGet: {path: /healthz, port: http}
+            initialDelaySeconds: 3
+            periodSeconds: 10
+            timeoutSeconds: 2
+          livenessProbe:
+            httpGet: {path: /healthz, port: http}
+            initialDelaySeconds: 10
+            periodSeconds: 10
+            timeoutSeconds: 2
+          volumeMounts:
+            - {name: temporary, mountPath: /tmp}
+            - {name: argo-ca, mountPath: /etc/argo-ca, readOnly: true}
+            - name: reader-identity
+              mountPath: /var/run/secrets/kubernetes.io/serviceaccount
+              readOnly: true
+      volumes:
+        - {name: temporary, emptyDir: {sizeLimit: 256Mi}}
+        - name: argo-ca
+          secret:
+            secretName: argo-ui-upstream-ca
+            defaultMode: 0440
+            items: [{key: ca.crt, path: ca.crt}]
+        - name: reader-identity
+          projected:
+            defaultMode: 0440
+            sources:
+              - serviceAccountToken: {path: token, expirationSeconds: 600}
+              - configMap:
+                  name: kube-root-ca.crt
+                  items: [{key: ca.crt, path: ca.crt}]
+              - downwardAPI:
+                  items:
+                    - path: namespace
+                      fieldRef: {apiVersion: v1, fieldPath: metadata.namespace}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: argo-artifact-downloads
+  namespace: cps-argo
+spec:
+  type: ClusterIP
+  selector:
+    app.kubernetes.io/instance: cps-argo
+    app.kubernetes.io/name: argo-artifact-downloads
+  ports: [{name: http, port: 8080, targetPort: http, protocol: TCP}]
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: argo-artifact-downloads
+  namespace: cps-argo
+  annotations:
+    nginx.ingress.kubernetes.io/backend-protocol: HTTP
+    nginx.ingress.kubernetes.io/use-regex: "true"
+    nginx.ingress.kubernetes.io/rewrite-target: /argo/$1
+    nginx.ingress.kubernetes.io/ssl-redirect: "true"
+    nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
+spec:
+  ingressClassName: nginx
+  # TLS remains owned by the existing shared-host JupyterHub ingress.
+  rules:
+    - host: jupyterhub.dshl.unileoben.ac.at
+      http:
+        paths:
+          - path: /argo/(artifact-files/cps-workflows/workflows/[^/]+/[^/]+/(inputs/snapshot|outputs/executed-notebook))$
+            pathType: ImplementationSpecific
+            backend:
+              service:
+                name: argo-artifact-downloads
+                port: {number: 8080}
+---
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: argo-artifact-downloads-from-ingress
+  namespace: cps-argo
+spec:
+  podSelector:
+    matchLabels:
+      app.kubernetes.io/instance: cps-argo
+      app.kubernetes.io/name: argo-artifact-downloads
+  policyTypes: [Ingress]
+  ingress:
+    - from:
+        - namespaceSelector:
+            matchLabels: {kubernetes.io/metadata.name: ingress-nginx}
+          podSelector:
+            matchLabels:
+              app.kubernetes.io/name: ingress-nginx
+              app.kubernetes.io/component: controller
+      ports: [{protocol: TCP, port: 8080}]
+---
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: argo-server-from-artifact-downloads
+  namespace: cps-argo
+spec:
+  podSelector:
+    matchLabels:
+      app.kubernetes.io/instance: cps-argo
+      app.kubernetes.io/name: argo-workflows-server
+  policyTypes: [Ingress]
+  ingress:
+    - from:
+        - namespaceSelector:
+            matchLabels: {kubernetes.io/metadata.name: cps-argo}
+          podSelector:
+            matchLabels:
+              app.kubernetes.io/instance: cps-argo
+              app.kubernetes.io/name: argo-artifact-downloads
+      ports: [{protocol: TCP, port: 2746}]
