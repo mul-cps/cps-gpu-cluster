@@ -86,7 +86,16 @@ class Staging(unittest.TestCase):
             self.assertNotIn('secrets',rule['resources'])
             self.assertNotIn('delete',rule['verbs'])
         policies=[d for d in docs if d['kind']=='ValidatingAdmissionPolicy']
-        self.assertEqual(len(policies),3)
+        expected={'cps-compute-retained-storage','cps-compute-bound-workspace-claim',
+                  'cps-compute-archive-verifier','cps-compute-private-workspace-pv',
+                  'cps-compute-private-workspace-pod'}
+        self.assertEqual({p['metadata']['name'] for p in policies},expected)
+        bindings=[d for d in docs if d['kind']=='ValidatingAdmissionPolicyBinding']
+        self.assertEqual({b['spec']['policyName'] for b in bindings},expected)
+        for admission in policies:
+            self.assertEqual(admission['spec']['failurePolicy'],'Fail')
+        for binding in bindings:
+            self.assertEqual(binding['spec']['validationActions'],['Deny'])
         for deployment in [d for d in docs if d['kind']=='Deployment' and d['metadata']['name']!='compute-gateway']:
             pod=deployment['spec']['template']['spec']
             self.assertFalse(any('projected' in v for v in pod['volumes']))
