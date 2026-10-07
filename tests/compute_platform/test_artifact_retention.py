@@ -135,6 +135,29 @@ class Retention(unittest.TestCase):
         self.s3=S3(self.now);self.proof.workflow['metadata']['annotations'].pop(m.ANNOTATION)
         self.assertEqual(m.sweep(self.s3,'bucket',self.proof,now=self.now)['eligible'],0)
 
+    def test_completed_output_retain_survives_tag_update_crash(self):
+        for phase in ('Succeeded', 'Failed'):
+            with self.subTest(phase=phase):
+                self.s3=S3(self.now);self.proof=Proof(self.now)
+                self.s3.key='run-artifacts/'+ID+'/executed.ipynb'
+                self.s3.tags['retention']='run-expirable'
+                self.proof.workflow['status']['phase']=phase
+                self.proof.workflow['status']['nodes']={'run':{'outputs':{'artifacts':[
+                    {'name':'executed-notebook','s3':{'bucket':'bucket','key':self.s3.key}}]}}}
+                self.s3.head['Metadata']=m.expected_metadata(self.proof.workflow,self.s3.key)
+                claim={'state':'retained','actor':'owner','at':self.now.isoformat()}
+                self.proof.workflow['metadata']['annotations'][m.ANNOTATION]=json.dumps(
+                    {'version':1,'artifacts':{'executed-notebook':claim}})
+                # A crash leaves the S3 tag false after the durable owner claim.
+                report=m.sweep(self.s3,'bucket',self.proof,apply=True,
+                    conditional_delete_qualified=True,lifecycle_qualified=True,now=self.now)
+                self.assertEqual(report['errors'],0);self.assertEqual(report['eligible'],0)
+                self.assertFalse(self.s3.deleted);self.assertEqual(self.proof.patch_calls,0)
+                self.assertTrue(m.reconcile(self.s3,'bucket',self.proof,
+                    self.s3.key,self.s3.head,self.now))
+                self.assertEqual(self.s3.tags['retained'],'true')
+                self.assertEqual(m.lifecycle(self.proof.workflow)['artifacts']['executed-notebook'],claim)
+
     def test_terminal_reconcile_is_explicit_idempotent_and_preserves_retain(self):
         self.s3.head['Metadata']={};self.s3.tags={'retained':'true'}
         report=m.sweep(self.s3,'bucket',self.proof,now=self.now)
