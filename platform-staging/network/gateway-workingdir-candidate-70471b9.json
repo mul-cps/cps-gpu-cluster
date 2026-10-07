@@ -25,5 +25,11 @@
     "attachment": "ghcr.io/mul-cps/cps-compute@sha256:18af6c1b9e918e5639fa88b4f3000245902a2184029839f4305892468b673741",
     "subjectVerified": true,
     "downloadHashesMatched": true
+  },
+  "controlledGatewayArgoS3Qualification": {
+    "passed": true,
+    "evidence": "gateway-70471b9-argo-report.json",
+    "scope": "operator fixture over authenticated loopback HTTP, installed 70471b9 gateway, real Argo/admission/S3; synthetic identity and isolated namespace; not human OAuth, production HTTPS or retain endpoint qualification",
+    "productionQualified": false
   }
 }
