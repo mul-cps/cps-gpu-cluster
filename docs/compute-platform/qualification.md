@@ -101,3 +101,33 @@ migration and login-survival qualification. No cross-Hub global allowance is
 activated by username/email matching. Real two-visitor RTC, member removal,
 pooled starts, teaching reclaim/protection, startup bursts, defragmentation,
 distributed cleanup and full recovery remain required acceptance scenarios.
+
+
+## 2026-10-07 matching candidate qualification
+
+The [partial candidate inventory](../../platform-staging/network/qualification-candidate-set-6bb6a57.md)
+records the gateway, admin and notebook images built against compute source
+`6bb6a57bc8d8426e281c0654ac8eedd1668ae600` and wheel checksum
+`05d82345b0f65a3a94c715c68788f52d14c545cba41a5e622249870e0e848667`.
+The adjacent JSON pins each remotely verified image index and Linux manifest,
+links its exact qualification evidence and records the remaining notebook count.
+This inventory is not a deployment or promotion lock. Its production image
+snapshot has its own observation timestamp; adding a candidate does not update
+that production observation.
+
+Matching notebook candidates pass forced offline wheel installation and
+installed SDK/addon source hash checks. Fresh kernels verify typed parameters,
+immutable input and retained success/failure notebooks. The MuJoCo parent and
+PyTorch candidates additionally verify source hashes inside the fresh kernel.
+The PyTorch code variant also
+passes its CPU ML imports, native TorchVision NMS, in-memory datasets and
+scikit-learn execution. GPU execution, isolation and browser/RTC acceptance
+are separate gates. The minimal MuJoCo parent intentionally lacks MuJoCo;
+physics and rendering belong to its descendant qualification.
+
+The remaining parent/variant builds, common clean source-tag construction,
+authenticated integration of the updated packaged artifacts, identity/grant
+migration, GPU qualification, scheduling/startup/defragmentation and full
+recovery gates remain open. No release or GPU access is enabled by these
+candidate results. The generated release lock stays `unqualified` with an
+empty qualified compatibility list.
