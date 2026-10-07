@@ -1,0 +1,16 @@
+{
+  "sourceRevision": "70471b9793f21a87d74ac7a673f871dfa9620101",
+  "wheelSha256": "86a0fa74cb6e15dd408fcfe36945ca1f614af14ff3bda555f49aaf4e85408d37",
+  "image": "ghcr.io/mul-cps/cps-compute:qualification-workingdir-70471b9@sha256:41f36901e11a9793bbb9aec6088b31fb6bd7cff778b16a5e6743a71a2b5d48e4",
+  "installed": {
+    "modulesMatched": 21,
+    "addonAssetsMatched": 5,
+    "workingDirectoryFixInstalled": true,
+    "uid": 10001,
+    "pipCheckPassed": true
+  },
+  "remoteDigestPulledAndVerified": true,
+  "productionDeployed": false,
+  "fullGatewayArgoS3Qualified": false,
+  "sbomPublished": false
+}
