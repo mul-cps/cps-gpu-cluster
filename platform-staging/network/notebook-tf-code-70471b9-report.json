@@ -39,5 +39,31 @@
   "limitations": [
     "Layered qualification build; common-source release tag and full matrix remain open.",
     "No GPU devices mounted; hardware isolation and variant-specific GPU behavior unqualified."
-  ]
+  ],
+  "sbom": {
+    "variant": "tf-code",
+    "subject": "ghcr.io/mul-cps/cps-jupyter-notebook@sha256:1e286682dc58c73d68e978b87e051694091db2411f9866c05f5e4472b9d107b4",
+    "sourceImageId": "sha256:e8eaf0059cdc115a7d6f296189b7ce51aba3fbc882284d3e86a4ddfb4b517b8b",
+    "packages": 3932,
+    "files": 78104,
+    "requiredPackagesVerified": [
+      "cps-compute",
+      "hera-workflows",
+      "jupyter-collaboration",
+      "jupyterlab",
+      "papermill"
+    ],
+    "checksums": {
+      "sbom.spdx.json": "c934406353b4f34762dd4dd00e43fd7afd78a190125eeb3dc048b0833d8a73d8",
+      "sbom.syft.json": "6f90b17968c799929806fa1afe1cc23a8d42829682226acffcc7bea097dc480e"
+    },
+    "attachment": "ghcr.io/mul-cps/cps-jupyter-notebook@sha256:63d5675836e93fe4979cc78f6cc1d2c607d8a8ba76bfb313c64d10f687366e36",
+    "subjectVerified": true,
+    "downloadHashesMatched": true,
+    "scannerSha256": "dbf75864e7a7ff9e1fbf00552c31483f693188632a9f68f343cd7653dac513d6",
+    "productionQualified": false,
+    "createdAt": "2026-10-07T05:06:02.800091+00:00",
+    "fileCoverage": "package-owned files (Syft metadata selection owned-by-package); not every image file"
+  },
+  "sbomPublished": true
 }

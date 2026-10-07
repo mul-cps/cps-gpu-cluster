@@ -64,7 +64,9 @@
       "image": "ghcr.io/mul-cps/cps-jupyter-notebook@sha256:1e286682dc58c73d68e978b87e051694091db2411f9866c05f5e4472b9d107b4",
       "report": "notebook-tf-code-70471b9-report.json",
       "cpuNotebookChecksPassed": true,
-      "gpuQualified": false
+      "gpuQualified": false,
+      "sbomReferrer": "ghcr.io/mul-cps/cps-jupyter-notebook@sha256:63d5675836e93fe4979cc78f6cc1d2c607d8a8ba76bfb313c64d10f687366e36",
+      "sbomRemoteVerified": true
     },
     {
       "component": "desktop-xpra-base",
