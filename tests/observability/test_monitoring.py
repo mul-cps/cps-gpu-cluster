@@ -57,6 +57,14 @@ class ComputeMonitoring(unittest.TestCase):
                 for panel in dashboard['panels']:
                     if panel['type']=='text':continue
                     target=panel['targets'][0]
+                    if 'histogram_quantile' in target['expr']:
+                        for values, expected in [('0+0x6', []), ('0+1x6', [
+                                {'labels':'{namespace="jupyterhub"}','value':95}])]:
+                            cases['tests'].append({'name':panel['title']+' spawn observations '+values,
+                                'interval':'30s','input_series':[
+                                    {'series':'jupyterhub_server_spawn_duration_seconds_bucket{namespace="jupyterhub",le="'+bound+'"}',
+                                     'values':values} for bound in ('100', '+Inf')],
+                                'promql_expr_test':[{'expr':target['expr'],'eval_time':'3m','exp_samples':expected}]})
                     expected=[]
                     if panel['type']=='stat':
                         expr=target['expr']

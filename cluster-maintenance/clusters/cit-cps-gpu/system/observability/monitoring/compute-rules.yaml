@@ -11,7 +11,7 @@ spec:
     rules:
     - record: cps:hub_spawn_p95_seconds
       expr: histogram_quantile(0.95, sum by (le, namespace) (rate(jupyterhub_server_spawn_duration_seconds_bucket[10m]) and (time() - timestamp(jupyterhub_server_spawn_duration_seconds_bucket)
-        <= 120)))
+        <= 120))) >= 0
     - record: cps:gpu_unused_vram_mib
       expr: max by (UUID, Hostname) (DCGM_FI_DEV_FB_FREE and (time() - timestamp(DCGM_FI_DEV_FB_FREE) <= 120))
     - alert: ComputeHubScrapingIncomplete

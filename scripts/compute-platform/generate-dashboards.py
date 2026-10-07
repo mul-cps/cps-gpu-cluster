@@ -13,7 +13,9 @@ def fresh(selector):
 def fresh_rate(metric,operation='rate'):
     return f'({operation}({metric}[10m]) and (time() - timestamp({metric}) <= {FRESH_SECONDS}))'
 
-SPAWN_P95='histogram_quantile(0.95, sum by (le, namespace) ('+fresh_rate('jupyterhub_server_spawn_duration_seconds_bucket')+'))'
+# A fresh histogram with no observations yields NaN; comparison filters it
+# without inventing a zero-second spawn or changing valid nonnegative samples.
+SPAWN_P95='(histogram_quantile(0.95, sum by (le, namespace) ('+fresh_rate('jupyterhub_server_spawn_duration_seconds_bucket')+')) >= 0)'
 
 DASHBOARDS={
 'compute-overview': ('Compute Overview', [

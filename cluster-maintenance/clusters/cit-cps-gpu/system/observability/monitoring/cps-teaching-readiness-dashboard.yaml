@@ -26,9 +26,9 @@ data:
     : {\n        \"defaults\": {\n          \"custom\": {\n            \"spanNulls\": false\n          },\n          \"noValue\"\
     : \"Unavailable / stale\",\n          \"unit\": \"s\"\n        },\n        \"overrides\": []\n      },\n      \"gridPos\"\
     : {\n        \"h\": 8,\n        \"w\": 12,\n        \"x\": 0,\n        \"y\": 4\n      },\n      \"id\": 2,\n      \"\
-    targets\": [\n        {\n          \"expr\": \"histogram_quantile(0.95, sum by (le, namespace) ((rate(jupyterhub_server_spawn_duration_seconds_bucket[10m])\
-    \ and (time() - timestamp(jupyterhub_server_spawn_duration_seconds_bucket) <= 120))))\",\n          \"legendFormat\":\
-    \ \"{{namespace}} {{queue_name}} {{UUID}}\",\n          \"refId\": \"A\"\n        }\n      ],\n      \"title\": \"Spawn\
+    targets\": [\n        {\n          \"expr\": \"(histogram_quantile(0.95, sum by (le, namespace) ((rate(jupyterhub_server_spawn_duration_seconds_bucket[10m])\
+    \ and (time() - timestamp(jupyterhub_server_spawn_duration_seconds_bucket) <= 120)))) >= 0)\",\n          \"legendFormat\"\
+    : \"{{namespace}} {{queue_name}} {{UUID}}\",\n          \"refId\": \"A\"\n        }\n      ],\n      \"title\": \"Spawn\
     \ p95, target 180s\",\n      \"type\": \"timeseries\"\n    },\n    {\n      \"datasource\": {\n        \"type\": \"prometheus\"\
     ,\n        \"uid\": \"${DS_PROMETHEUS}\"\n      },\n      \"description\": \"Planned telemetry contract; no qualified\
     \ exporter is deployed for this series. Unavailable means unknown, never zero.\",\n      \"fieldConfig\": {\n        \"\
