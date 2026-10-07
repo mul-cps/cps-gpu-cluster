@@ -13,3 +13,9 @@ The canonical builder in the notebook repository requires a clean checkout at th
 The [default-interpreter resolver receipt](notebook-offline-resolution-70471b9-report.json) records twelve successful pip `--dry-run --ignore-installed --no-index --require-hashes` requests against the pinned wheelhouse in disposable local containers with network disabled. The wheelhouse was read-only. Post-run image config IDs match candidate reports; logs are checksummed in private evidence.
 
 The first non-root and unmapped-root passes failed before resolution because private inputs were unreadable. Explicit host-owner mapping and disabled container labeling fixed fixture access without widening directory permissions. All twelve corrected requests passed. These results cover the default interpreter, not secondary ROS/system kernels. Installation, pip-check after installation, source-tag builds, runtime and release qualification remain open.
+
+## Offline installation evidence
+
+The [installation receipt](notebook-offline-install-70471b9-report.json) records successful forced offline installation of the pinned wheelhouse in all twelve disposable candidate containers, followed by `pip check`, compute/RTC imports and a prebuilt addon presence assertion. Network access was disabled, inputs were read-only and no GPU devices were exposed. Checksummed logs remain private.
+
+This covers each default interpreter, with root matching the release Dockerfile install step and explicit host-owner mapping for private input access. Container changes were discarded. Tagged-source builds, secondary interpreters, actual runtime and production qualification remain open.
