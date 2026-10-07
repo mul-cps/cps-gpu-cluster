@@ -25,3 +25,19 @@ class NasEgressTests(unittest.TestCase):
     def test_ingress_only_policy_gains_egress_without_changing_ingress(self):
         m=self.module();p={'spec':{'policyTypes':['Ingress'],'ingress':[{'ports':[{'port':8080}]}]}}
         r=m.restrict(p,['193.170.30.58/32']);self.assertEqual(r['spec']['ingress'],p['spec']['ingress']);self.assertIn('Egress',r['spec']['policyTypes']);self.assertEqual(r['spec']['egress'][0]['to'][0]['ipBlock']['except'],['193.170.30.58/32'])
+    def test_catalog_covers_relay_nas_destinations_in_public_and_mesh_ranges(self):
+        import json,ipaddress,re
+        root=Path(__file__).resolve().parents[2]
+        targets=json.loads((root/'platform-staging/network/nas-endpoints.json').read_text())['blockedPodDestinations']
+        networks=[ipaddress.ip_network(t,strict=True) for t in targets]
+        destinations={ipaddress.ip_address(ip) for ip in re.findall(r'^\s*server nas ([0-9.]+):', (root/'platform-staging/relay/haproxy.cfg').read_text(),re.M)}
+        self.assertTrue(destinations,'Relay NAS destination inventory must not be empty')
+        for destination in destinations:
+            self.assertTrue(any(destination in n for n in networks),f'Unexcluded relay NAS destination: {destination}')
+        policy={'spec':{'policyTypes':['Egress'],'egress':[{'to':[{'ipBlock':{'cidr':'0.0.0.0/0'}}]},{'to':[{'ipBlock':{'cidr':'100.64.0.0/10'}}]}]}}
+        compiled=self.module().restrict(policy,targets)
+        for rule in compiled['spec']['egress']:
+            block=rule['to'][0]['ipBlock'];cidr=ipaddress.ip_network(block['cidr'])
+            for destination in destinations:
+                if destination in cidr:
+                    self.assertTrue(any(destination in ipaddress.ip_network(n) for n in block.get('except',[])))
