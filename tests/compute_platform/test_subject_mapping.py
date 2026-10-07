@@ -24,6 +24,16 @@ class SubjectMapping(unittest.TestCase):
             with self.assertRaises(ValueError):m.compile_mapping(records)
     def test_existing_person_id_can_be_preserved(self):
         person='be0f469d-f691-5143-b3f8-7c670e94dd0a';d=m.compile_mapping([self.record(personId=person),self.record('cit','akadmin',personId=person)]);self.assertEqual(d['canonical_people']['cps']['bjoern'],person)
+    def test_existing_person_id_on_one_alias_is_preserved_in_either_order(self):
+        person='be0f469d-f691-5143-b3f8-7c670e94dd0a'
+        records=[self.record(personId=person),self.record('cit','akadmin')]
+        for ordered in (records,list(reversed(records))):
+            with self.subTest(order=ordered):
+                result=m.compile_mapping(ordered)
+                self.assertEqual(result['canonical_people']['cps']['bjoern'],person)
+                self.assertEqual(result['canonical_people']['cit']['akadmin'],person)
+                self.assertEqual(len(result['people']),1)
+
     def test_conflicting_person_ids_or_subjects_fail(self):
         records=[self.record(personId='be0f469d-f691-5143-b3f8-7c670e94dd0a'),self.record('cit','akadmin',personId='aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa')]
         with self.assertRaises(ValueError):m.compile_mapping(records)

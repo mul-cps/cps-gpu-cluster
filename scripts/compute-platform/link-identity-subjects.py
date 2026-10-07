@@ -16,6 +16,7 @@ NAMESPACE = uuid.uuid5(uuid.NAMESPACE_DNS, 'compute.cps.unileoben.ac.at/people')
 
 def compile_mapping(records):
     people, per_hub, identities = {}, {}, {}
+    reviewed, preserved = [], {}
     for record in records:
         hub, username = record.get('hub'), record.get('username')
         subject = record.get('subject')
@@ -28,7 +29,14 @@ def compile_mapping(records):
         if not isinstance(subject, str) or not 1 <= len(subject) <= 255 or any(ord(c) < 33 or ord(c) > 126 for c in subject):
             raise ValueError('Subject must be an opaque nonempty ASCII identifier without whitespace')
         identity = (TRUSTED_ISSUER, subject)
-        person = str(uuid.UUID(record['personId'])) if record.get('personId') else str(uuid.uuid5(NAMESPACE, json.dumps(identity, separators=(',', ':'))))
+        if record.get('personId'):
+            person = str(uuid.UUID(record['personId']))
+            if identity in preserved and preserved[identity] != person:
+                raise ValueError('Conflicting canonical person for upstream identity')
+            preserved[identity] = person
+        reviewed.append((hub, username, subject, identity))
+    for hub, username, subject, identity in reviewed:
+        person = preserved.get(identity) or str(uuid.uuid5(NAMESPACE, json.dumps(identity, separators=(',', ':'))))
         if identity in identities and identities[identity] != person:
             raise ValueError('Conflicting canonical person for upstream identity')
         if person in people and people[person]['subject'] != subject:
