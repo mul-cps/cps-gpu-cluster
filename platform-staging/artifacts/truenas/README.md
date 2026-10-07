@@ -57,9 +57,12 @@ expiration is installed.
 
 The deployed standalone Seaweed server does not run the scheduled native
 lifecycle worker. API configuration acceptance therefore **does not prove
-expiration runs**. The implemented operator
-`scripts/compute-platform/truenas-artifacts-retention.py` provides executable
-cleanup with stronger protection: verified HTTPS Argo lookup, exact workflow UID,
+expiration runs**. The legacy operator
+`scripts/compute-platform/truenas-artifacts-retention.py` is read-only and rejects
+`--apply` before configuration or client initialization. Its inventory is not a
+deletion authorization. The packaged controller
+`platform-staging/chart/files/artifact-retention.py` implements cleanup with
+stronger protection: verified HTTPS Argo lookup, exact workflow UID,
 namespace and notebook-ID binding, terminal status and completion age, immutable
 object ETag conditional deletion, a deletion limit, and dry-run default. Unknown
 metadata, missing proof, changed eligibility, API errors, active inputs and
@@ -67,7 +70,7 @@ retained outputs are preserved. Completed runs must be marked eligible by a
 trusted controller, which adds `cps-workflow` / `cps-workflow-uid` object metadata.
 Current uploads without that evidence are preserved.
 
-Configure its private JSON with endpoint, bucket, accessKeyFile, secretKeyFile, ca,
+Configure the packaged controller's private JSON with endpoint, bucket, accessKeyFile, secretKeyFile, ca,
 argoUrl, namespace, argoTokenFile and optional argoCa, kubeUrl and kubeCa.
 Credentials are read from private files. Include version, immutable image digest
 and policyHash as required by the CLI. Run with the released

@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Conservative S3 retention with live terminal Argo proof. Dry run is the default."""
+"""Legacy read-only S3 retention inventory. Use the packaged controller for cleanup."""
 import argparse
 from datetime import datetime,timezone,timedelta
 import json
@@ -38,6 +38,7 @@ class ArgoProof:
         with urllib.request.urlopen(request,context=self.context,timeout=30) as response:return json.load(response)
 
 def sweep(s3,bucket,proof,*,apply=False,max_deletes=10,prefix=None,now=None):
+    if apply:raise ValueError('Legacy retention inventory is read-only; use the qualified packaged controller')
     now=now or datetime.now(timezone.utc);report={'examined':0,'eligible':0,'deleted':0,'skipped':0,'errors':0,'objects':[]}
     prefixes=[prefix] if prefix else list(POLICY)
     if any(not any(p.startswith(allowed) for allowed in POLICY) for p in prefixes):raise ValueError('Unmanaged retention prefix')
@@ -57,22 +58,16 @@ def sweep(s3,bucket,proof,*,apply=False,max_deletes=10,prefix=None,now=None):
                     finished=datetime.fromisoformat(workflow['status']['finishedAt'].replace('Z','+00:00'))
                     if now-finished<timedelta(days=category(key)[1]):report['skipped']+=1;continue
                     report['eligible']+=1
-                    if not apply:continue
-                    if report['deleted']>=max_deletes:return report
-                    # Re-read mutable eligibility and condition deletion on the observed ETag.
-                    current={t['Key']:t['Value'] for t in s3.get_object_tagging(Bucket=bucket,Key=key)['TagSet']}
-                    if current!=tags or not eligible(key,head['LastModified'],current,now):report['skipped']+=1;continue
-                    s3.delete_object(Bucket=bucket,Key=key,IfMatch=head['ETag'])
-                    report['deleted']+=1;report['objects'].append({'key':key,'workflow_uid':uid,'time':now.isoformat()})
                 except Exception:
                     # Unknown/missing telemetry, old SDKs or unsupported conditional delete preserve data.
                     report['errors']+=1
     return report
 
 def main():
+    p=argparse.ArgumentParser(description=__doc__);p.add_argument('--config',type=Path,required=True);p.add_argument('--apply',action='store_true');p.add_argument('--max-deletes',type=int,default=10);p.add_argument('--prefix');args=p.parse_args()
+    if args.apply:p.error('Legacy retention inventory is read-only; use the qualified packaged controller')
     import boto3
     from botocore.client import Config
-    p=argparse.ArgumentParser(description=__doc__);p.add_argument('--config',type=Path,required=True);p.add_argument('--apply',action='store_true');p.add_argument('--max-deletes',type=int,default=10);p.add_argument('--prefix');args=p.parse_args()
     if not 1<=args.max_deletes<=1000:raise ValueError('Bounded deletion limit required')
     settings=json.loads(args.config.read_text())
     if urlsplit(settings['endpoint']).scheme!='https':raise ValueError('S3 requires verified HTTPS')
