@@ -20,8 +20,28 @@ must remain outside Git. It records live Hub images, PVC/PV bindings, queues and
 Fleet state. The local restore script uses an isolated CPU-only container with no
 network access and verifies identity counts. PostgreSQL 18 logical restoration
 is a useful check, **not a matching-version Hub launch or an NFS restore**.
-Do not disable authenticator-managed groups until reviewed canonical email mappings
+Do not disable authenticator-managed groups until reviewed canonical upstream subject mappings
 and existing group/grant imports have been seeded and checked against backups.
+
+For the current role-preserving bundles from `backup-hubs.py`, use the separate
+matched-image recovery command. First validate the entire private bundle:
+
+```bash
+python scripts/compute-platform/restore-hub-backups.py /PRIVATE/PATH/bundle
+python scripts/compute-platform/restore-hub-backups.py /PRIVATE/PATH/bundle \
+  --execute --output /PRIVATE/PATH/new-restore-evidence
+```
+
+Validation checks every manifest size/checksum, private file permissions and a
+single immutable recorded database image per Hub before any container starts.
+Execution requires those images already cached locally (`--pull=never`). It
+uses separate network-disabled containers, synthetic bootstrap administrators,
+role replay and `pg_restore --create --exit-on-error`, preserving owners and ACLs.
+It leaves the backup untouched and removes the containers and bootstrap env files.
+Error diagnostics remain private. The report records restored schema, database
+version and user counts; it does not independently compare source rows or prove
+connected Hub, OAuth/spawning, NFS, coordinated snapshots or off-host recovery.
+The legacy inventory-only helper above does not accept current backup bundles.
 
 The 2026-10-05 CPS baseline rollout reached JupyterHub 5.5.2, KubeSpawner 7.1.0
 and OAuthenticator 17.4.0 on chart 4.4.2. Before/after API checks preserved all
