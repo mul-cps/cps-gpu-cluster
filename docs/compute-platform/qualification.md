@@ -142,3 +142,9 @@ workflow. The ROS and ComfyUI full standalone SPDX/native inventories are
 verified locally and as remote referrers bound to exact image subjects.
 These checks exclude GPU execution, model inference and browser interaction;
 the inventory remains a partial platform qualification with no promotion.
+
+The [packaged gateway storage refusal probe](../../platform-staging/artifacts/truenas/gateway-6bb6a57-storage-guard.md)
+passes internal service authorization and active-parent refusal for CPS/CIT
+under the actual controller service account. It makes zero NAS calls and uses
+only temporary databases. Successful storage lifecycle, actual Hub ownership,
+shutdown and production HTTP/OAuth remain unqualified.

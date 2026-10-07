@@ -1,0 +1,89 @@
+{
+  "passed": true,
+  "imageComputeRevision": "6bb6a57bc8d8426e281c0654ac8eedd1668ae600",
+  "serviceAccountIdentity": "system:serviceaccount:cps-compute:cps-compute-controller",
+  "cases": [
+    {
+      "source": "cps",
+      "case": "missing-auth",
+      "status": 401
+    },
+    {
+      "source": "cps",
+      "case": "invalid-auth",
+      "status": 401
+    },
+    {
+      "source": "cps",
+      "case": "metrics-only",
+      "status": 403
+    },
+    {
+      "source": "cps",
+      "case": "wrong-console",
+      "status": 409
+    },
+    {
+      "source": "cps",
+      "case": "source-authorized-guard",
+      "status": 409
+    },
+    {
+      "source": "cps",
+      "writerGuard": {
+        "kind": "active-parent-mount",
+        "count": 1
+      },
+      "noStorageBindingCreated": true
+    },
+    {
+      "source": "cit",
+      "case": "missing-auth",
+      "status": 401
+    },
+    {
+      "source": "cit",
+      "case": "invalid-auth",
+      "status": 401
+    },
+    {
+      "source": "cit",
+      "case": "metrics-only",
+      "status": 403
+    },
+    {
+      "source": "cit",
+      "case": "wrong-console",
+      "status": 409
+    },
+    {
+      "source": "cit",
+      "case": "source-authorized-guard",
+      "status": 409
+    },
+    {
+      "source": "cit",
+      "writerGuard": {
+        "kind": "active-parent-mount",
+        "count": 1
+      },
+      "noStorageBindingCreated": true
+    }
+  ],
+  "nasCalls": 0,
+  "databaseScope": "temporary probe only",
+  "httpScope": "ASGI application with operator fixture credentials",
+  "limitations": [
+    "Refusal/authorization gate only; NAS lifecycle, actual Hub ownership, production OAuth and successful storage provisioning are not qualified."
+  ],
+  "observedAt": "2026-10-07T03:04:15.056808+00:00",
+  "image": "ghcr.io/mul-cps/cps-compute@sha256:05f9e4428f576bede669c969398090b64af6f53faa487ba0c8a546db77b0170f",
+  "runtimeImageId": "ghcr.io/mul-cps/cps-compute@sha256:05f9e4428f576bede669c969398090b64af6f53faa487ba0c8a546db77b0170f",
+  "probeSha256": "1f4fefaba67614cbf66253a56ca468233c029bf9a5761b9cda06eed1c06f7afa",
+  "job": "gateway-6bb6a57-guard-dd076407-pull",
+  "jobUid": "9ba5a637-578a-4f7e-8f0b-6c43f45d256d",
+  "podUid": "5075b317-ee7e-41be-a923-1cf7fab0edb0",
+  "qualified": false,
+  "productionDeploymentChanged": false,
+  "probeResourcesRemoved": true
+}
