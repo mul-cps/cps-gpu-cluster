@@ -1,6 +1,12 @@
 # Disabled single-card MIG pilot preparation
 
-Status: **offline review only; activation permission pending; all qualification gates open**.
+Status: **rejected for the active rollout; archived offline experiment only**.
+The operator explicitly requires dynamic resource sharing and rejected MIG on
+October 7, 2026. This package must not be used as the next qualification or
+activation path. KAI/HAMi/MPS dynamic sharing remains the selected direction;
+its aggregate workspace limits and runtime bypasses still require resolution.
+The files below retain the previously prepared, disabled experiment for review
+history. No activation is scheduled or authorized.
 The reviewed scope is one explicitly identified A100 40GB card on `k3s-wk-gpu2`.
 `k3s-wk-gpu1` and `jupyter-bjoern` UID
 `a663ab6b-e927-418f-9671-fc0b36a27b3a` are excluded. No production catalog,
