@@ -65,6 +65,15 @@
       "computeWheelSha256": "05d82345b0f65a3a94c715c68788f52d14c545cba41a5e622249870e0e848667",
       "remoteDigestsVerified": true,
       "qualificationEvidence": "/mnt/cps_scratch1_tmp/bjoern/cps-platform-builds/2026-10-07/notebook-mujoco-base-gpu-6bb6a57/report.json"
+    },
+    {
+      "component": "pytorch-runtime-base",
+      "image": "ghcr.io/mul-cps/cps-jupyter-notebook:qualification-storage-resources-6bb6a57-pytorch-runtime-base@sha256:6182a355b3a2f7462b4e0c90062d1561125b4a7edab2f8caea51d647c893cf57",
+      "linuxManifest": "sha256:4b0202684a4dba5f4ebf8c16bea1f06019cacdf63e1f7371c6da0b596ee50d3b",
+      "computeSourceRevision": "6bb6a57bc8d8426e281c0654ac8eedd1668ae600",
+      "computeWheelSha256": "05d82345b0f65a3a94c715c68788f52d14c545cba41a5e622249870e0e848667",
+      "remoteDigestsVerified": true,
+      "qualificationEvidence": "/mnt/cps_scratch1_tmp/bjoern/cps-platform-builds/2026-10-07/notebook-pytorch-runtime-base-6bb6a57/report.json"
     }
   ],
   "observedProduction": [
@@ -90,7 +99,7 @@
       "readyReplicas": 1
     }
   ],
-  "remainingNotebookVariants": 8,
+  "remainingNotebookVariants": 7,
   "limitations": [
     "Existing notebook parents do not prove common source-tag build",
     "Full acceptance scenarios and migrations remain incomplete",
