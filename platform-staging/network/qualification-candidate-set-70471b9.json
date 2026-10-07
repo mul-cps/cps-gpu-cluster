@@ -106,7 +106,9 @@
       "image": "ghcr.io/mul-cps/cps-jupyter-notebook@sha256:241ab05db9274e74c472a0033c2b69f5ff4aa6203060b1872323827da930e4af",
       "report": "notebook-comfyui-70471b9-report.json",
       "cpuNotebookChecksPassed": true,
-      "gpuQualified": false
+      "gpuQualified": false,
+      "sbomReferrer": "ghcr.io/mul-cps/cps-jupyter-notebook@sha256:bfe0a51f049804ed02638dfafb8ed198a491bf24113e303aef21d1cfe7977ec6",
+      "sbomRemoteVerified": true
     },
     {
       "component": "desktop-ros2",
