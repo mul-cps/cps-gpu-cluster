@@ -36,6 +36,27 @@ export containing `hub`, unchanged `username`, exact `issuer`, exact `subject`,
 Output is private, mode 0600, outside Git and never overwrites a file. Matching
 emails or names does not link people. Subjects are case-sensitive.
 
+For a person with an existing canonical UUID, include that `personId` on at
+least one reviewed alias. All aliases with the same exact issuer and subject
+inherit it, regardless of export order. Conflicting existing UUIDs are rejected;
+resolve the conflict through review rather than omitting IDs to generate a new
+one. If neither alias has an existing ID, the importer derives a stable UUID
+from the issuer and subject.
+
+Use private absolute paths outside the repository:
+
+```bash
+python3 scripts/compute-platform/link-identity-subjects.py \
+  /private/reviewed-university-identities.json \
+  /private/canonical-university-identities.json
+```
+
+Review the resulting per-Hub username maps and preserved IDs before applying
+them through the migration gates below. Generating this file does not install
+Hub configuration, change groups or activate global allowances. Keep source
+evidence and reviewer approval with the private export; the two boolean fields
+record those decisions and do not independently verify upstream identity.
+
 Inspect Authentik's native source identifier derivation before treating stored
 connection identifiers as raw upstream subjects. Compare both existing source
 clients' subject modes; pairwise subjects can differ. Resolve differences in an
