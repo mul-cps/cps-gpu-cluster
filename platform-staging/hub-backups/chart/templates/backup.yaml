@@ -7,6 +7,21 @@
 {{- $namespace := required "namespace required" .Values.namespace }}
 {{- $secret := required "existing database secret required" .Values.secretRef }}
 {{- $host := required "database service host required" .Values.host }}
+{{- if .Values.roleCapture.enabled }}
+{{- $roleSecret := required "separate privilegedCredentialSecretRef required" .Values.roleCapture.privilegedCredentialSecretRef }}
+{{- if eq $roleSecret $secret }}{{ fail "role capture credentials must be separate from application credentials" }}{{ end }}
+{{- $roleUserKey := required "roleCapture.userKey required" .Values.roleCapture.userKey }}
+{{- $rolePasswordKey := required "roleCapture.passwordKey required" .Values.roleCapture.passwordKey }}
+{{- $configurationSecret := required "protectedConfigurationSecretRef required" .Values.roleCapture.protectedConfigurationSecretRef }}
+{{- $snapshotUID := required "configurationSnapshot.uid required" .Values.roleCapture.configurationSnapshot.uid }}
+{{- $snapshotVersion := required "configurationSnapshot.resourceVersion required" .Values.roleCapture.configurationSnapshot.resourceVersion }}
+{{- $snapshotCapture := required "configurationSnapshot.capturedAt required" .Values.roleCapture.configurationSnapshot.capturedAt }}
+{{- if not (kindIs "bool" .Values.roleCapture.credentialQualified) }}{{ fail "roleCapture.credentialQualified must be a boolean" }}{{ end }}
+{{- if not .Values.suspend }}
+{{- if not .Values.roleCapture.credentialQualified }}{{ fail "role capture schedule requires reviewed credential qualification" }}{{ end }}
+{{- $evidence := required "role capture qualificationEvidence required before scheduling" .Values.roleCapture.qualificationEvidence }}
+{{- end }}
+{{- end }}
 apiVersion: v1
 kind: ConfigMap
 metadata:
@@ -92,12 +107,40 @@ spec:
                   valueFrom: {secretKeyRef: {name: {{ $secret }}, key: {{ required "database password key required" .Values.passwordKey }}}}
                 - {name: BACKUP_OWNER, value: {{ $owner | quote }}}
                 - {name: BACKUP_IMAGE, value: {{ $image | quote }}}
+                - {name: ROLE_CAPTURE_ENABLED, value: {{ .Values.roleCapture.enabled | quote }}}
+                - {name: BACKUP_HUB_IMAGE, value: {{ .Values.hub.image | quote }}}
+                - {name: BACKUP_HUB_CHART_VERSION, value: {{ .Values.hub.chartVersion | quote }}}
+                - {name: BACKUP_HUB_APP_VERSION, value: {{ .Values.hub.appVersion | quote }}}
+{{- if .Values.roleCapture.enabled }}
+                - name: ROLE_CAPTURE_PGUSER
+                  valueFrom: {secretKeyRef: {name: {{ .Values.roleCapture.privilegedCredentialSecretRef }}, key: {{ .Values.roleCapture.userKey }}}}
+                - name: ROLE_CAPTURE_PGPASSWORD
+                  valueFrom: {secretKeyRef: {name: {{ .Values.roleCapture.privilegedCredentialSecretRef }}, key: {{ .Values.roleCapture.passwordKey }}}}
+                - {name: BACKUP_CONFIGURATION_SECRET_REF, value: {{ .Values.roleCapture.protectedConfigurationSecretRef | quote }}}
+                - {name: BACKUP_CONFIGURATION_UID, value: {{ .Values.roleCapture.configurationSnapshot.uid | quote }}}
+                - {name: BACKUP_CONFIGURATION_RESOURCE_VERSION, value: {{ .Values.roleCapture.configurationSnapshot.resourceVersion | quote }}}
+                - {name: BACKUP_CONFIGURATION_CAPTURED_AT, value: {{ .Values.roleCapture.configurationSnapshot.capturedAt | quote }}}
+{{- end }}
               volumeMounts:
                 - {name: backups, mountPath: /backup}
                 - {name: script, mountPath: /scripts, readOnly: true}
                 - {name: temporary, mountPath: /tmp}
+{{- if .Values.roleCapture.enabled }}
+                - {name: protected-configuration, mountPath: /protected-configuration, readOnly: true}
+{{- end }}
           volumes:
             - {name: backups, persistentVolumeClaim: {claimName: {{ $owner }}-hub-postgresql-backup}}
             - {name: script, configMap: {name: {{ $owner }}-hub-postgresql-backup}}
             - {name: temporary, emptyDir: {sizeLimit: 64Mi}}
+{{- if .Values.roleCapture.enabled }}
+            - name: protected-configuration
+              secret:
+                secretName: {{ .Values.roleCapture.protectedConfigurationSecretRef }}
+                defaultMode: 0440
+                items:
+                  - {key: workloads.json, path: workloads.json}
+                  - {key: configmaps.json, path: configmaps.json}
+                  - {key: secrets.json, path: secrets.json}
+                  - {key: running-images.txt, path: running-images.txt}
+{{- end }}
 {{- end }}

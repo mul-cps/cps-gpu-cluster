@@ -15,3 +15,23 @@ passwordKey: ""
 userKey: ""
 databaseKey: ""
 databasePodLabels: {}
+# A separate existing PostgreSQL superuser identity; never promote the app user.
+# Leave disabled until a suspended one-shot capture and restore are reviewed.
+roleCapture:
+  enabled: false
+  privilegedCredentialSecretRef: ""
+  userKey: ""
+  passwordKey: ""
+  credentialQualified: false
+  qualificationEvidence: ""
+  protectedConfigurationSecretRef: ""
+  # Operator-declared metadata for this supplied snapshot, not a live API read.
+  configurationSnapshot:
+    uid: ""
+    resourceVersion: ""
+    capturedAt: ""
+# Optional trusted operator settings. Empty values remain unknown in the bundle.
+hub:
+  image: ""
+  chartVersion: ""
+  appVersion: ""
