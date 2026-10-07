@@ -56,6 +56,15 @@
       "computeWheelSha256": "05d82345b0f65a3a94c715c68788f52d14c545cba41a5e622249870e0e848667",
       "remoteDigestsVerified": true,
       "qualificationEvidence": "/mnt/cps_scratch1_tmp/bjoern/cps-platform-builds/2026-10-07/notebook-base-gpu-6bb6a57/report.json"
+    },
+    {
+      "component": "mujoco-base-gpu",
+      "image": "ghcr.io/mul-cps/cps-jupyter-notebook-mujoco-base-gpu:qualification-storage-resources-6bb6a57@sha256:9be5a05c7f081b3bf7a557b736bb5af960e9ac0a55d74f029b958e9dfb6ad32f",
+      "linuxManifest": "sha256:a8fbcf645366fc86125135f1921fe036642abf98fce851f39a200e710bd83894",
+      "computeSourceRevision": "6bb6a57bc8d8426e281c0654ac8eedd1668ae600",
+      "computeWheelSha256": "05d82345b0f65a3a94c715c68788f52d14c545cba41a5e622249870e0e848667",
+      "remoteDigestsVerified": true,
+      "qualificationEvidence": "/mnt/cps_scratch1_tmp/bjoern/cps-platform-builds/2026-10-07/notebook-mujoco-base-gpu-6bb6a57/report.json"
     }
   ],
   "observedProduction": [
@@ -81,7 +90,7 @@
       "readyReplicas": 1
     }
   ],
-  "remainingNotebookVariants": 9,
+  "remainingNotebookVariants": 8,
   "limitations": [
     "Existing notebook parents do not prove common source-tag build",
     "Full acceptance scenarios and migrations remain incomplete",
