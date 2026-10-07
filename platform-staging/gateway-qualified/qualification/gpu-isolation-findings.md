@@ -1,6 +1,33 @@
 # GPU isolation findings
 
-Status: failed; fractional GPU profiles remain disabled.
+Status: dynamic ordinary-use accounting passed one controlled run; the earlier
+deliberate bypass remains reproducible. Fractional GPU profiles remain disabled
+pending the integration and remaining qualification gates.
+
+## Current dynamic-sharing direction — 2026-10-07
+
+The operator requires dynamic resource sharing and rejected MIG. KAI/HAMi/MPS
+remains the selected runtime. The earlier findings below are retained as
+evidence of the software enforcement boundary, rather than a hardware migration
+proposal.
+
+The controlled `dyn071421c` run used a fixed private accounting-file mount,
+verified the loaded HAMi binary and actual 5120 MiB indexed quota, and ran two
+CUDA children on the independent peer's physical GPU. A second 3 GiB allocation
+was denied while the first remained active; after the first freed its allocation,
+the second succeeded. All 16 tested allocation rounds had actual overlap, with
+one success and one OOM each. The independent peer kept making progress.
+See the [complete controlled result](../../scheduler/qualification/dynamic-cache/RESULTS.md).
+
+This establishes bounded ordinary same-workspace accounting and reuse after
+freeing memory. It does not qualify deliberate runtime tampering, every CUDA
+allocation API, crash recovery, the 10/20 GiB profiles, or the final generated
+Hub/Argo/JobSet Pods. Exact runtime settings, private cache initialization and
+MPS mounts are being integrated in the shared application; their approved image,
+admission exceptions and live group reservation/revocation gates still require
+qualification. No GPU mode or MPS daemon setting was changed in this run.
+
+## Earlier deliberate-bypass investigation
 
 The controlled combined HAMi/MPS probe on the same physical GPU denied an ordinary 6 GiB allocation under a nominal 5 GiB profile while its peer continued. Changing the client MPS pipe path, increasing the HAMi environment limit and recreating the writable HAMi cache allowed the 6 GiB allocation. This is a runtime bypass, not a gateway admission omission. Evidence: operator-private `2026-10-06/gpu-runtime/combined-mps-reproducible.json`.
 
