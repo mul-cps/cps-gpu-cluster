@@ -4,6 +4,6 @@ Standard CPU and base CPU existing-parent overlays now use the same 6bb6a57 comp
 
 Both images were exercised as UID 1000 with networking disabled: fresh Papermill success/failure kernels, bool/int/float/string parameters, immutable input and retained failed executed notebook. Both runtime harnesses exited zero and their containers were removed. The OCI indexes/manifests/configs and attestation JSON blobs were rehashed; SPDX and SLSA v1 subjects bind to each Linux manifest. Runtime Python 3.13.13, JupyterLab 4.5.7 and RTC 4.4.1 were recorded.
 
-Private evidence is 2026-10-07 `notebook-cpu-6bb6a57/{standard-cpu,base-cpu}` and the reusable `verify-runtime.py`. Verified evidence copies of each OCI archive remain; duplicate builder archives were removed to recover disk space.
+Private evidence is 2026-10-07 `notebook-cpu-6bb6a57/{standard-cpu,base-cpu}` and the reusable `verify-runtime.py`. After immutable publication, the builder and operator temporary OCI archives were retired. Archive checksums, byte lengths and immutable registry references are retained in the JSON; metadata, attestations and runtime notebook outputs remain.
 
-These two candidates are local, unpublished and undeployed. This qualifies existing CPU parents only, not twelve variants built from one common source tag, GPU isolation, real user-browser behavior or the full gateway notebook submission path. Those gates remain incomplete.
+Both candidates are published and undeployed. Remote OCI indexes and child manifests were independently rehashed and match local metadata. This qualifies existing CPU parents only, not twelve variants built from one common source tag, GPU isolation, real user-browser behavior or the full gateway notebook submission path. Those gates remain incomplete.
