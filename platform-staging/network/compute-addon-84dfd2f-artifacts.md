@@ -1,6 +1,8 @@
 # Current compute addon and CPU artifact qualification
 
-Status: verified candidate artifacts and prepared fixture; not deployed or released.
+Status: verified candidate artifacts and initial fixture preparation; captured before the controlled runtime attempt.
+
+The later [CPU Argo attempt and observed cleanup](notebook-argo-84dfd2f-run-19dd7c214a8e.md) record one successful notebook and an incomplete full CPU gate. These remain qualification candidates, without production deployment or release.
 
 The batch-profile selection and resource-correct plain Hera snippets from compute
 `84dfd2fa09b68e77a46f62d1a0fd6da0a42b359b` are packaged in wheel
