@@ -10,13 +10,56 @@ spec:
   - name: cps.compute
     rules:
     - record: cps:hub_spawn_p95_seconds
-      expr: histogram_quantile(0.95, sum by (le, namespace) (rate(jupyterhub_server_spawn_duration_seconds_bucket[10m]) and (time() - timestamp(jupyterhub_server_spawn_duration_seconds_bucket)
-        <= 120))) >= 0
+      expr: histogram_quantile(0.95, sum by (le, namespace) (rate(jupyterhub_server_spawn_duration_seconds_bucket[10m]) and
+        (time() - timestamp(jupyterhub_server_spawn_duration_seconds_bucket) <= 120))) >= 0
     - record: cps:gpu_unused_vram_mib
       expr: max by (UUID, Hostname) (DCGM_FI_DEV_FB_FREE and (time() - timestamp(DCGM_FI_DEV_FB_FREE) <= 120))
+    - record: cps:gpu_inventory_devices_by_node
+      expr: max by (node) ((kube_node_status_capacity{resource="nvidia_com_gpu",job="kube-state-metrics"} and (time() - timestamp(kube_node_status_capacity{resource="nvidia_com_gpu",job="kube-state-metrics"})
+        <= 120)) > 0)
+    - record: cps:gpu_bound_active_devices_by_node
+      expr: sum by (node) (max by (namespace,pod,uid,node,container) ((kube_pod_container_resource_requests{resource="nvidia_com_gpu",node!="",job="kube-state-metrics"}
+        and (time() - timestamp(kube_pod_container_resource_requests{resource="nvidia_com_gpu",node!="",job="kube-state-metrics"})
+        <= 120)) > 0) * on(namespace,pod,uid) group_left() max by(namespace,pod,uid) ((kube_pod_status_phase{phase=~"Pending|Running",job="kube-state-metrics"}
+        and (time() - timestamp(kube_pod_status_phase{phase=~"Pending|Running",job="kube-state-metrics"}) <= 120)) == 1))
+    - record: cps:gpu_kubernetes_unallocated_devices
+      expr: (sum(max by (node) ((kube_node_status_capacity{resource="nvidia_com_gpu",job="kube-state-metrics"} and (time()
+        - timestamp(kube_node_status_capacity{resource="nvidia_com_gpu",job="kube-state-metrics"}) <= 120)) > 0)) - sum(sum
+        by (node) (max by (namespace,pod,uid,node,container) ((kube_pod_container_resource_requests{resource="nvidia_com_gpu",node!="",job="kube-state-metrics"}
+        and (time() - timestamp(kube_pod_container_resource_requests{resource="nvidia_com_gpu",node!="",job="kube-state-metrics"})
+        <= 120)) > 0) * on(namespace,pod,uid) group_left() max by(namespace,pod,uid) ((kube_pod_status_phase{phase=~"Pending|Running",job="kube-state-metrics"}
+        and (time() - timestamp(kube_pod_status_phase{phase=~"Pending|Running",job="kube-state-metrics"}) <= 120)) == 1)))
+        >= 0) and on() (sum(max by (node) ((kube_node_status_capacity{resource="nvidia_com_gpu",job="kube-state-metrics"}
+        and (time() - timestamp(kube_node_status_capacity{resource="nvidia_com_gpu",job="kube-state-metrics"}) <= 120)) >
+        0)) == 8) and on() (count(max by (node) ((kube_node_status_capacity{resource="nvidia_com_gpu",job="kube-state-metrics"}
+        and (time() - timestamp(kube_node_status_capacity{resource="nvidia_com_gpu",job="kube-state-metrics"}) <= 120)) >
+        0)) == 4) and on() (min((up{job="kube-state-metrics",namespace="cattle-monitoring-system"} and (time() - timestamp(up{job="kube-state-metrics",namespace="cattle-monitoring-system"})
+        <= 120))) == 1) and on() (count((kube_pod_container_resource_requests{resource="nvidia_com_gpu",node!="",job="kube-state-metrics"}
+        and (time() - timestamp(kube_pod_container_resource_requests{resource="nvidia_com_gpu",node!="",job="kube-state-metrics"})
+        <= 120))) > 0) unless on() (count(kube_pod_container_resource_requests{resource="nvidia_com_gpu",node!="",job="kube-state-metrics"}
+        and (time() - timestamp(kube_pod_container_resource_requests{resource="nvidia_com_gpu",node!="",job="kube-state-metrics"})
+        > 120)) > 0) unless on() (count(kube_pod_container_resource_requests{resource="nvidia_com_gpu",node!="",job="kube-state-metrics"}
+        unless on(namespace,pod,uid) max by(namespace,pod,uid) ((kube_pod_status_phase{job="kube-state-metrics"} and (time()
+        - timestamp(kube_pod_status_phase{job="kube-state-metrics"}) <= 120)) == 1)) > 0) unless on() (count((max by (node)
+        ((kube_node_status_capacity{resource="nvidia_com_gpu",job="kube-state-metrics"} and (time() - timestamp(kube_node_status_capacity{resource="nvidia_com_gpu",job="kube-state-metrics"})
+        <= 120)) > 0)) unless on(node) max by(node) ((kube_node_status_condition{condition="Ready",status="true",job="kube-state-metrics"}
+        and (time() - timestamp(kube_node_status_condition{condition="Ready",status="true",job="kube-state-metrics"}) <= 120))
+        == 1)) > 0) unless on() (count(kube_pod_container_resource_requests{resource="nvidia_com_gpu",node!="",job="kube-state-metrics"}
+        unless on(node) (max by (node) ((kube_node_status_capacity{resource="nvidia_com_gpu",job="kube-state-metrics"} and
+        (time() - timestamp(kube_node_status_capacity{resource="nvidia_com_gpu",job="kube-state-metrics"}) <= 120)) > 0)))
+        > 0) unless on() (sum((kube_pod_init_container_resource_requests{resource="nvidia_com_gpu",job="kube-state-metrics"}
+        and (time() - timestamp(kube_pod_init_container_resource_requests{resource="nvidia_com_gpu",job="kube-state-metrics"})
+        <= 120))) > 0) unless on() (count(kube_pod_init_container_resource_requests{resource="nvidia_com_gpu",job="kube-state-metrics"}
+        and (time() - timestamp(kube_pod_init_container_resource_requests{resource="nvidia_com_gpu",job="kube-state-metrics"})
+        > 120)) > 0) unless on() (count((max by (node) ((kube_node_status_capacity{resource="nvidia_com_gpu",job="kube-state-metrics"}
+        and (time() - timestamp(kube_node_status_capacity{resource="nvidia_com_gpu",job="kube-state-metrics"}) <= 120)) >
+        0)) unless on(node) (max by(node) ((kube_node_status_allocatable{resource="nvidia_com_gpu",job="kube-state-metrics"}
+        and (time() - timestamp(kube_node_status_allocatable{resource="nvidia_com_gpu",job="kube-state-metrics"}) <= 120)))
+        == on(node) (max by (node) ((kube_node_status_capacity{resource="nvidia_com_gpu",job="kube-state-metrics"} and (time()
+        - timestamp(kube_node_status_capacity{resource="nvidia_com_gpu",job="kube-state-metrics"}) <= 120)) > 0)))) > 0)
     - alert: ComputeHubScrapingIncomplete
-      expr: (max by (namespace) (up{namespace="jupyterhub",service="hub"}) < 1) or absent(up{namespace="jupyterhub",service="hub"}) or (max by
-        (namespace) (up{namespace="cit-jhub",service="hub"}) < 1) or absent(up{namespace="cit-jhub",service="hub"})
+      expr: (max by (namespace) (up{namespace="jupyterhub",service="hub"}) < 1) or absent(up{namespace="jupyterhub",service="hub"})
+        or (max by (namespace) (up{namespace="cit-jhub",service="hub"}) < 1) or absent(up{namespace="cit-jhub",service="hub"})
       for: 5m
       labels:
         severity: warning

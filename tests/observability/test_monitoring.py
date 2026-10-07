@@ -36,6 +36,9 @@ class ComputeMonitoring(unittest.TestCase):
                 if 'cps_compute_reservation_conflicts_total' in panel['targets'][0]['expr']:
                     self.assertIn('Qualified gateway exporter',panel['description'])
                     self.assertEqual(panel['targets'][0]['legendFormat'],'{{source}}')
+                elif 'cps:gpu_kubernetes_unallocated_devices' in panel['targets'][0]['expr']:
+                    self.assertEqual(panel['title'],'Kubernetes unallocated whole-GPU estimate')
+                    self.assertIn('does not prove placement, process quiescence',panel['description'])
                 elif 'cps_compute_' in panel['targets'][0]['expr']:self.assertIn('Planned telemetry contract',panel['description'])
             status=[p for p in d['panels'] if p['type']=='stat']
             expressions=[p['targets'][0]['expr'] for p in status]
@@ -50,6 +53,7 @@ class ComputeMonitoring(unittest.TestCase):
     def test_real_promql_missing_stale_and_duplicate_targets(self):
         rule=yaml.safe_load((MON/'compute-rules.yaml').read_text())['spec']
         cases=yaml.safe_load((ROOT/'tests/observability/promtool-cases.yaml').read_text())
+        cases['tests'].extend(yaml.safe_load((ROOT/'tests/observability/gpu-allocation-cases.yaml').read_text())['tests'])
         with tempfile.TemporaryDirectory() as directory:
             directory=Path(directory);(directory/'rules.yaml').write_text(yaml.safe_dump(rule))
             # Evaluate the actual dashboard queries, not a mirrored helper.
@@ -75,7 +79,7 @@ class ComputeMonitoring(unittest.TestCase):
                         expected=[{'labels':labels,'value':1}]
                     cases['tests'].append({'name':panel['title']+' missing is unknown','interval':'30s','input_series':[],
                         'promql_expr_test':[{'expr':target['expr'],'eval_time':'3m','exp_samples':expected}]})
-                    selector=re.search(r'\b(?:jupyterhub|DCGM|kai|cps_compute|up)[A-Za-z0-9_]*(?:\{[^}]*\})?',target['expr']).group()
+                    selector=re.search(r'\b(?:jupyterhub|DCGM|kai|cps_compute|cps:gpu|up)[A-Za-z0-9_]*(?:\{[^}]*\})?',target['expr']).group()
                     selector=selector.replace('namespace=~"jupyterhub|cit-jhub"','namespace="jupyterhub"')
                     stale_expected=[{'labels':'{}','value':1}] if panel['type']=='stat' else []
                     cases['tests'].append({'name':panel['title']+' stale is unavailable','interval':'30s',

@@ -21,6 +21,7 @@ DASHBOARDS={
 'compute-overview': ('Compute Overview', [
  ('Running servers by Hub', fresh('jupyterhub_running_servers{namespace=~"jupyterhub|cit-jhub"}'), 'short'),
  ('Physical GPU devices observed', 'count(count by (UUID) ('+fresh('DCGM_FI_DEV_FB_FREE')+'))', 'short'),
+ ('Kubernetes unallocated whole-GPU estimate', fresh('cps:gpu_kubernetes_unallocated_devices'), 'short'),
  ('Placement-eligible physical free GPUs (controller required)', fresh('cps_compute_physical_free_gpus'), 'short'),
  ('Hub spawn p95 seconds', SPAWN_P95, 's'),
  ('Hub scrape availability', fresh('up{namespace=~"jupyterhub|cit-jhub",service="hub"}'), 'short'),
@@ -29,6 +30,7 @@ DASHBOARDS={
  ('Unused VRAM per physical device (not free GPUs)', fresh('DCGM_FI_DEV_FB_FREE'), 'decmbytes'),
  ('Used VRAM per physical device', fresh('DCGM_FI_DEV_FB_USED'), 'decmbytes'),
  ('Runtime GPU utilization', fresh('DCGM_FI_DEV_GPU_UTIL'), 'percent'),
+ ('Kubernetes unallocated whole-GPU estimate', fresh('cps:gpu_kubernetes_unallocated_devices'), 'short'),
  ('Placement-eligible free devices (controller required)', fresh('cps_compute_physical_free_gpus'), 'short'),
  ('Enforced memory cap (isolator required)', fresh('cps_compute_gpu_memory_limit_bytes'), 'bytes'),
 ]),
@@ -43,19 +45,20 @@ DASHBOARDS={
  ('Spawn p95, target 180s', SPAWN_P95, 's'),
  ('Protected sessions (policy controller required)', fresh('cps_compute_protected_sessions'), 'short'),
  ('Reservation acquisition conflicts', fresh_rate('cps_compute_reservation_conflicts_total','increase'), 'short'),
- ('Physical free GPUs (controller required)', fresh('cps_compute_physical_free_gpus'), 'short'),
+ ('Kubernetes unallocated whole-GPU estimate', fresh('cps:gpu_kubernetes_unallocated_devices'), 'short'),
+ ('Placement-eligible physical free GPUs (controller required)', fresh('cps_compute_physical_free_gpus'), 'short'),
  ('Current protection class (controller required)', fresh('cps_compute_teaching_priority'), 'short'),
 ]),
 }
 for slug,(title,items) in DASHBOARDS.items():
     panels=[{'id':1,'type':'text','title':'Evidence boundary','gridPos':{'h':4,'w':24,'x':0,'y':0},
-             'options':{'mode':'markdown','content':'Missing or stale series mean **unavailable**, never zero. Physical free GPUs require placement/UUID accounting; VRAM and utilization are separate. Panels naming a required controller/isolator stay unknown until that exporter is deployed. Spawn histogram does not prove a representative pre-pulled burst qualification. Operational viewers only; students use the addon.'}}]
+             'options':{'mode':'markdown','content':'Missing or stale series mean **unavailable**, never zero. Kubernetes unallocated whole-GPU estimates deduct bound active physical requests, including fractional reservation Pods. Scheduler placement and process quiescence remain independently unknown; VRAM and utilization do not establish either. Panels naming a required controller/isolator stay unknown until that exporter is deployed. Spawn histogram does not prove a representative pre-pulled burst qualification. Operational viewers only; students use the addon.'}}]
     for idx,(name,expr,unit) in enumerate(items,2):
-        panels.append({'id':idx,'type':'timeseries','title':name,'description':'Qualified gateway exporter; durable acquisition conflicts by console source since exporter activation. Historical generic denials are excluded. Samples older than 120 seconds are unavailable.' if 'cps_compute_reservation_conflicts_total' in expr else ('Planned telemetry contract; no qualified exporter is deployed for this series. Unavailable means unknown, never zero.' if 'cps_compute_' in expr else 'Observed upstream telemetry; samples older than 120 seconds are unavailable.'),'datasource':{'type':'prometheus','uid':'${DS_PROMETHEUS}'},
+        panels.append({'id':idx,'type':'timeseries','title':name,'description':'Fresh Kubernetes inventory minus bound Pending/Running whole-GPU requests, including KAI reservation Pods. Missing, stale or unsupported accounting stays unknown. This estimate does not prove placement, process quiescence or 4/8-GPU gang availability.' if 'cps:gpu_kubernetes_unallocated_devices' in expr else 'Qualified gateway exporter; durable acquisition conflicts by console source since exporter activation. Historical generic denials are excluded. Samples older than 120 seconds are unavailable.' if 'cps_compute_reservation_conflicts_total' in expr else ('Planned telemetry contract; no qualified exporter is deployed for this series. Unavailable means unknown, never zero.' if 'cps_compute_' in expr else 'Observed upstream telemetry; samples older than 120 seconds are unavailable.'),'datasource':{'type':'prometheus','uid':'${DS_PROMETHEUS}'},
                        'gridPos':{'h':8,'w':12,'x':12*((idx-2)%2),'y':4+8*((idx-2)//2)},
                        'targets':[{'refId':'A','expr':expr,'legendFormat':'{{source}}' if 'cps_compute_reservation_conflicts_total' in expr else '{{namespace}} {{queue_name}} {{UUID}}'}],
                        'fieldConfig':{'defaults':{'unit':unit,'noValue':'Unavailable / stale','custom':{'spanNulls':False}},'overrides':[]}})
-    health_metrics=('DCGM_FI_DEV_FB_FREE', 'up{namespace="jupyterhub",service="hub"}', 'up{namespace="cit-jhub",service="hub"}', 'up{namespace="kai-scheduler",service="kai-scheduler-default"}', 'cps_compute_physical_free_gpus')
+    health_metrics=('DCGM_FI_DEV_FB_FREE', 'up{namespace="jupyterhub",service="hub"}', 'up{namespace="cit-jhub",service="hub"}', 'up{namespace="kai-scheduler",service="kai-scheduler-default"}', 'cps_compute_physical_free_gpus', 'cps:gpu_kubernetes_unallocated_devices')
     for health_index,metric in enumerate(health_metrics):
         idx=len(panels)+1
         panels.append({'id':idx,'type':'stat','title':f'Telemetry availability: {metric}','description':'Planned controller contract; no qualified exporter is deployed. This panel must remain unavailable until qualification.' if metric.startswith('cps_compute_') else 'Instant target/series freshness; missing, failed or samples older than 120 seconds are unavailable.',
