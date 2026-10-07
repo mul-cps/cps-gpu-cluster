@@ -1,6 +1,6 @@
 # Versioned workspace roots
 
-Status: NAS and SDK/controller/runtime source integration implemented; live qualification pending.
+Status: dual-version integration and bounded live fixture qualification passed; production handover remains pending.
 
 The forced RPC retains its exact request fields. Version 1 preserves the existing
 root `persistent1/cps_persistent1_shared/compute`; version 2 selects only
@@ -35,8 +35,9 @@ Rollout order:
 
 Thirteen NAS storage tests pass, including version 1 path preservation, version 2
 parent creation, unsupported versions and rejection before middleware on mismatches.
-The installed TrueNAS forced command remains the previously qualified version 1
-script. No sibling dataset or export was created by this source implementation.
+The initial source-only stage kept the installed version 1 forced command
+unchanged and created no sibling datasets or exports. The later dual-version
+deployment and fixture qualification are recorded below.
 
 Gateway integration commit `342d047` passes 253 compute tests. Trusted
 `storage.storageVersion` is passed consistently to SSH, Kubernetes and controller
@@ -44,3 +45,7 @@ components. Existing legacy version/path mismatches are rejected before NAS
 operations, and read-only mount checks exclude both compute trees. The dual-version forced NAS script is now installed with a private backup;
 the production gateway remains unchanged. See isolated-v2-live-qualification.md
 for the bounded live controller/mount/archive checks and remaining gates.
+
+The matching 6bb6a57 gateway now also passes the bounded V2 HTTPS lifecycle;
+see gateway-6bb6a57-v2-http-qualification.md. Production configuration remains
+V1 and legacy bindings have not been migrated.

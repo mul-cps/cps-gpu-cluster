@@ -4,4 +4,9 @@ The adjacent JSON cross-checks all fourteen published gateway/admin/CPU/GPU note
 
 The recorded production Deployment snapshot shows: the gateway remains on 5771df5 and both consoles on the combined 0ef266b candidate. The new images have not been deployed. The compatibility baseline remains Hub 5.5.2 / chart 4.4.2 / KubeSpawner 7.x. The central release lock is unqualified with no qualified compatibility entries.
 
-All twelve notebook variants have matching compute wheel evidence. Common source-tag construction, authenticated integration of the new packaged artifacts and the remaining acceptance/migration gates are incomplete. GPU sharing stays unqualified. This file is a partial inventory, not a promotion lock; productionPromotionAllowed is false. Individual evidence reports retain their exact verification scope.
+All twelve notebook variants have matching compute wheel evidence. Common source-tag construction, full admin/Hub/browser integration of the new packaged artifacts and the remaining acceptance/migration gates are incomplete. GPU sharing stays unqualified. This file is a partial inventory, not a promotion lock; productionPromotionAllowed is false. Individual evidence reports retain their exact verification scope.
+
+The matching gateway also passes bounded V2 HTTPS storage lifecycle checks for
+CPS/CIT with a real Hub fixture, NAS RPC and server-read-only verification. See
+its additional evidence link in the JSON. This does not qualify production
+identity, privacy, legacy handover, recovery or browser/RTC workflows.

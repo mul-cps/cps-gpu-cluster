@@ -19,7 +19,8 @@
       "computeSourceRevision": "6bb6a57bc8d8426e281c0654ac8eedd1668ae600",
       "computeWheelSha256": "05d82345b0f65a3a94c715c68788f52d14c545cba41a5e622249870e0e848667",
       "remoteDigestsVerified": true,
-      "qualificationEvidence": "/home/bjoern/cps-platform-evidence/2026-10-07/compute-6bb6a57-image/report.json"
+      "qualificationEvidence": "/home/bjoern/cps-platform-evidence/2026-10-07/compute-6bb6a57-image/report.json",
+      "storageHttpQualificationEvidence": "platform-staging/artifacts/truenas/gateway-6bb6a57-v2-http-report.json"
     },
     {
       "component": "admin",
@@ -172,7 +173,7 @@
   "limitations": [
     "Existing notebook parents do not prove common source-tag build",
     "Full acceptance scenarios and migrations remain incomplete",
-    "Gateway/controller authenticated integration of the updated packaged artifacts remains pending"
+    "Bounded current gateway HTTPS V2 storage lifecycle passed; full admin/Hub/browser integration remains pending"
   ],
-  "candidateUpdatedAt": "2026-10-07T02:58:42.600846+00:00"
+  "candidateUpdatedAt": "2026-10-07T03:13:41.007484+00:00"
 }

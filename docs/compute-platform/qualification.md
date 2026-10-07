@@ -146,5 +146,11 @@ the inventory remains a partial platform qualification with no promotion.
 The [packaged gateway storage refusal probe](../../platform-staging/artifacts/truenas/gateway-6bb6a57-storage-guard.md)
 passes internal service authorization and active-parent refusal for CPS/CIT
 under the actual controller service account. It makes zero NAS calls and uses
-only temporary databases. Successful storage lifecycle, actual Hub ownership,
-shutdown and production HTTP/OAuth remain unqualified.
+only temporary databases. That refusal probe excludes successful storage lifecycle, actual Hub ownership,
+shutdown and production HTTP/OAuth.
+
+The [current packaged gateway V2 HTTPS lifecycle](../../platform-staging/artifacts/truenas/gateway-6bb6a57-v2-http-qualification.md)
+passes bounded CPS/CIT registration/provision/idempotence/archive checks through
+a real Hub fixture, forced NAS RPC and quota-compatible verifier Jobs. The
+preceding refusal probe covers V1 only. Full admin/Hub/browser integration,
+production identity/grants, privacy, handover, recovery and GPU gates remain open.

@@ -85,5 +85,7 @@
   "podUid": "5075b317-ee7e-41be-a923-1cf7fab0edb0",
   "qualified": false,
   "productionDeploymentChanged": false,
-  "probeResourcesRemoved": true
+  "probeResourcesRemoved": true,
+  "storageVersion": 1,
+  "workspaceRoot": "/mnt/persistent1/cps_persistent1_shared/compute"
 }
