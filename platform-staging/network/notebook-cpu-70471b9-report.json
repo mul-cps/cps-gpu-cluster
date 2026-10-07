@@ -1,0 +1,24 @@
+{
+  "computeSourceRevision": "70471b9793f21a87d74ac7a673f871dfa9620101",
+  "wheelSha256": "86a0fa74cb6e15dd408fcfe36945ca1f614af14ff3bda555f49aaf4e85408d37",
+  "imageConfigId": "46cd2a71c8e692cc42a9a109746458901790c328d05dedce62b687bd16d1fa23",
+  "parentConfigId": "301ccdc07681622410736c1b837abd12c0092b955711dce4af10a0888fcb633d",
+  "modulesMatched": 21,
+  "addonAssetsMatched": 5,
+  "pipCheckPassed": true,
+  "runtime": {
+    "uid": 1000,
+    "freshKernelSuccess": true,
+    "typedParameters": true,
+    "immutableInput": true,
+    "failedExecutedNotebookRetained": true
+  },
+  "parentStartupConfigurationPreserved": true,
+  "qualified": false,
+  "deployed": false,
+  "scope": "standard CPU qualification candidate only; common-tag matrix, GPU, Hub browser and release gates remain open",
+  "image": "ghcr.io/mul-cps/cps-jupyter-notebook@sha256:1fab06639346f69e96cda6c8f551d761cc51c47de85cdc0ec42ef31bf2ef2c7f",
+  "digest": "sha256:1fab06639346f69e96cda6c8f551d761cc51c47de85cdc0ec42ef31bf2ef2c7f",
+  "published": true,
+  "remoteManifestAndConfigVerified": true
+}
