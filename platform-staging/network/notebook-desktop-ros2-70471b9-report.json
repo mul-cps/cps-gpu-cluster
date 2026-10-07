@@ -47,5 +47,31 @@
     "initialFailure": "Missing newline joining notebook code fragments produced SyntaxError; no image failure inferred",
     "failedLogSha256": "f26f5f0aab18705a942889eb730eb3611a4d1da9ef08999c58965818acbbfd55",
     "correctedRunPassed": true
-  }
+  },
+  "sbom": {
+    "variant": "desktop-ros2",
+    "subject": "ghcr.io/mul-cps/cps-jupyter-notebook@sha256:c4e6f2b3f9e1173a7815e122e5192d4295473e9763cf206cc37af025ac3e144b",
+    "sourceImageId": "sha256:61f493b03cd5adde8e6c05e9be6eb1d35e29c109f698ae7cb963643b089d8d09",
+    "packages": 5443,
+    "files": 161547,
+    "requiredPackagesVerified": [
+      "cps-compute",
+      "hera-workflows",
+      "jupyter-collaboration",
+      "jupyterlab",
+      "papermill"
+    ],
+    "checksums": {
+      "sbom.spdx.json": "31f6f11e23bcc05e8d66b40ea752ea47996a97e93933cad9ce513072251b6870",
+      "sbom.syft.json": "5a07629bd0202d9d156076c56a1caadc38595633deddfc8c045e9d49cf9e72ba"
+    },
+    "attachment": "ghcr.io/mul-cps/cps-jupyter-notebook@sha256:89042a7ea1eca3107cd95e8c6c521a38b0c0233ddb956d352b0738b0a85e9f62",
+    "subjectVerified": true,
+    "downloadHashesMatched": true,
+    "scannerSha256": "dbf75864e7a7ff9e1fbf00552c31483f693188632a9f68f343cd7653dac513d6",
+    "productionQualified": false,
+    "createdAt": "2026-10-07T05:28:44.270719+00:00",
+    "fileCoverage": "package-owned files (Syft metadata selection owned-by-package); not every image file"
+  },
+  "sbomPublished": true
 }

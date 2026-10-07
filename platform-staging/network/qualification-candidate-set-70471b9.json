@@ -116,7 +116,9 @@
       "report": "notebook-desktop-ros2-70471b9-report.json",
       "cpuNotebookChecksPassed": true,
       "nativeRosLoopbackPassed": true,
-      "gpuQualified": false
+      "gpuQualified": false,
+      "sbomReferrer": "ghcr.io/mul-cps/cps-jupyter-notebook@sha256:89042a7ea1eca3107cd95e8c6c521a38b0c0233ddb956d352b0738b0a85e9f62",
+      "sbomRemoteVerified": true
     },
     {
       "component": "desktop-ros2-xpra",
