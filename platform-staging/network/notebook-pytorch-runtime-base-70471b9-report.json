@@ -39,5 +39,33 @@
   "limitations": [
     "Layered qualification build; common-source release tag and full matrix remain open.",
     "No GPU devices mounted; hardware isolation and variant-specific GPU behavior unqualified."
-  ]
+  ],
+  "sbom": {
+    "variant": "pytorch-runtime-base",
+    "subject": "ghcr.io/mul-cps/cps-jupyter-notebook@sha256:7bafcf19207bdbc900f566106e08d0ff04edc1ff5e7241c82ce0966ca6dc40cf",
+    "sourceImageId": "sha256:d3e60fb58bbe054c34c4c05fce170ae9d20229f343250e20e00d26e5ebd2725f",
+    "packages": 817,
+    "files": 43215,
+    "requiredPackagesVerified": [
+      "cps-compute",
+      "hera-workflows",
+      "jupyter-collaboration",
+      "jupyterlab",
+      "papermill",
+      "torch",
+      "torchvision"
+    ],
+    "checksums": {
+      "sbom.spdx.json": "cd3ee71434da58dcc96d1fb1b2a33267352266c6b8da3cf0316b409a879b3d15",
+      "sbom.syft.json": "c98764d5d818e664eaa3f88ed997545712cff795e6d63c5589645ece91cc8a7f"
+    },
+    "attachment": "ghcr.io/mul-cps/cps-jupyter-notebook@sha256:4b4d85e7b2a0463a4b9ae825ef65979094fdc7c305099b71006c674aea67a4f1",
+    "subjectVerified": true,
+    "downloadHashesMatched": true,
+    "scannerSha256": "dbf75864e7a7ff9e1fbf00552c31483f693188632a9f68f343cd7653dac513d6",
+    "productionQualified": false,
+    "createdAt": "2026-10-07T04:50:35.542617+00:00",
+    "fileCoverage": "package-owned files (Syft metadata selection owned-by-package); not every image file"
+  },
+  "sbomPublished": true
 }

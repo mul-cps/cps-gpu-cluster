@@ -59,7 +59,9 @@
       "image": "ghcr.io/mul-cps/cps-jupyter-notebook@sha256:7bafcf19207bdbc900f566106e08d0ff04edc1ff5e7241c82ce0966ca6dc40cf",
       "report": "notebook-pytorch-runtime-base-70471b9-report.json",
       "cpuNotebookChecksPassed": true,
-      "gpuQualified": false
+      "gpuQualified": false,
+      "sbomReferrer": "ghcr.io/mul-cps/cps-jupyter-notebook@sha256:4b4d85e7b2a0463a4b9ae825ef65979094fdc7c305099b71006c674aea67a4f1",
+      "sbomRemoteVerified": true
     },
     {
       "component": "pytorch-code",
