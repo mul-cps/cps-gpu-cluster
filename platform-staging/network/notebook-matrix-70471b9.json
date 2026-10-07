@@ -37,7 +37,9 @@
       "image": "ghcr.io/mul-cps/cps-jupyter-notebook-mujoco-base-gpu@sha256:83d9660953874c98b8e50e20d6dd4293428e5dbfd8449d444d39171275386968",
       "report": "notebook-mujoco-base-gpu-70471b9-report.json",
       "cpuNotebookChecksPassed": true,
-      "gpuQualified": false
+      "gpuQualified": false,
+      "sbomReferrer": "ghcr.io/mul-cps/cps-jupyter-notebook-mujoco-base-gpu@sha256:df97c53daf7fce94064a5a0692915e4e0fc7439693196900711ba0a33c34d992",
+      "sbomRemoteVerified": true
     },
     {
       "component": "pytorch-runtime-base",
