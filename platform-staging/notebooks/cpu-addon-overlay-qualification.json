@@ -1,8 +1,8 @@
 {
   "qualified": false,
   "scope": "CPU parent compatibility only; release matrix incomplete",
-  "digest": "sha256:e0400526b9373e9099d77b2f94581d1a731ff861273dda265cd28438c46baa10",
-  "linuxManifest": "sha256:16956536829a0343ad900d93e6c14234d86e66af654c17b0b76c51b7599e5fd4",
+  "digest": "sha256:8da5ec7bd43f791c677b44f42f9f16c5261cdf3834b5d7e3fed3b7782acb8fc6",
+  "linuxManifest": "sha256:872db915b34971439e2ff45a53ad862df4118c1817683d1427f5ac18b2e1e8b2",
   "user": "1000",
   "predicateTypes": [
     "https://spdx.dev/Document",
@@ -11,5 +11,24 @@
   "offlinePackageInstallation": true,
   "pipCheckPassed": true,
   "releaseRunnerTestsPassed": 14,
-  "releaseRunnerFixRevision": "9f5d0a867b7ba0ce0e063ecca0038426888fd1b9"
+  "releaseRunnerFixRevision": "b95c700a12229ff1435d986e4722b80e39290a0f",
+  "installedSourceModulesMatched": 21,
+  "installedAddonAssetsMatched": 5,
+  "runtime": {
+    "uid": 1000,
+    "python": "3.13.13",
+    "compute": "0.1.0",
+    "rtc": "4.4.1",
+    "lab": "4.5.7",
+    "freshKernelSuccess": true,
+    "typedParameters": true,
+    "immutableInput": true,
+    "failedExecutedNotebookRetained": true,
+    "qualified": false,
+    "scope": "standard CPU runtime only; no GPU or Hub browser qualification"
+  },
+  "supersedesDigest": "sha256:e0400526b9373e9099d77b2f94581d1a731ff861273dda265cd28438c46baa10",
+  "initialCandidateRejected": "same-version pip install retained older SDK and addon",
+  "image": "ghcr.io/mul-cps/cps-jupyter-notebook:qualification-addon-ecca902-cpu@sha256:8da5ec7bd43f791c677b44f42f9f16c5261cdf3834b5d7e3fed3b7782acb8fc6",
+  "remoteIndexAndChildrenVerified": true
 }
