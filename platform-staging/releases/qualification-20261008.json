@@ -51,6 +51,18 @@
       "tokenLifetimeSeconds": 900,
       "leastPrivilegeDenials": 4,
       "realBrowserOAuthQualified": false
+    },
+    "dynamicCoordinationCandidate": {
+      "tests": 43,
+      "status": "inactive-offline-candidate",
+      "productionAtomicityQualified": false
+    },
+    "adminRollout": {
+      "report": "../admin/qualification/reviewed-alias/observed.json",
+      "bothConsolesReady": true,
+      "liveSchemaVersion": 6,
+      "currentBackupProvenanceUpdated": true,
+      "reviewedAliasesInstalled": false
     }
   },
   "defaults": {
@@ -66,7 +78,8 @@
     "Real browser OAuth and personal Argo ownership/privacy on both Hubs",
     "Installed reviewed identity inventory and migrated grants before authenticator group ownership transition",
     "Shared workspace revocation/archive, pooled accounting, scheduling bursts, and restore exercises",
-    "Matched notebook variants, reviewed Fleet promotion, release tags and production qualification"
+    "Matched notebook variants, reviewed Fleet promotion, release tags and production qualification",
+    "Actual ICT filer hostname/export and filer-observed client source IP; screenshot endpoint appears to be an allowed GPU client"
   ],
   "limits": [
     "These counts are separate suites; installed/source repetitions are not additional distinct cases.",

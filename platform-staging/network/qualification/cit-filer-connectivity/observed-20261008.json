@@ -4,7 +4,10 @@
   "namespace": "cps-cit-nfs-connectivity-20261008",
   "target": {
     "server": "193.171.81.79",
-    "export": "/vm-storage"
+    "export": "/vm-storage",
+    "reverseDns": "cit-gpu-02.unileoben.ac.at",
+    "intendedCitFilerConfirmed": false,
+    "role": "Endpoint shown in Dolphin; ICT email identifies this address as an allowed client"
   },
   "tests": [
     {
@@ -792,7 +795,8 @@
     "clusterNfsSourceAtFiler": "not observed; requires filer/firewall logs",
     "workstationLocalIPv4": "10.71.1.174",
     "workstationGateway": "10.71.1.1",
-    "workstationPublicHttpsEgressIPv4": "193.170.30.58"
+    "workstationPublicHttpsEgressIPv4": "193.170.30.58",
+    "clusterPublicHttpsEgressReverseDns": "pa-cit-gpu.unileoben.ac.at"
   },
   "qualification": {
     "nfsUsable": false,
@@ -801,9 +805,11 @@
     "readOnlyV41MountSucceeded": false,
     "readOnlyV3MountSucceeded": false,
     "fileUidGidAccessQualified": false,
-    "writesAttempted": false
+    "writesAttempted": false,
+    "intendedCitShareAccessQualified": false
   },
   "limits": [
+    "The tested endpoint is not confirmed as the intended CIT filer. Obtain the actual filer hostname/IP/export from ICT; do not treat this as a definitive test of the newly provisioned share.",
     "Public HTTPS egress may differ from destination-specific NFS routing/NAT.",
     "The rpcinfo control probe against existing CPS NAS also timed out; RPC probe results alone do not establish export ACL failure.",
     "Actual mount attempts failed before UID/GID file access could be tested.",
