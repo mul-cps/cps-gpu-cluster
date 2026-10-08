@@ -187,8 +187,13 @@ after matching its recorded hash.
 Remove the stray file after matching its separate hash. Do not clear the entire
 CDI directory or affect existing files. Root's original directory baseline was
 empty. The independent firmware directory must remain while the615 module uses
-it. Only after owned CUDA stops and actual NVIDIA modules/FDs are absent may root
-restore the original journaled firmware search path, before the chosen R580 path.
+it. After owned CUDA stops and actual NVIDIA modules/FDs are absent, root can
+recover580 with the exact staged GSP files while preserving the independent
+search path. Restoring the old driver-root-dependent path before580 bootstrap
+is unsafe. The later [R580 rollback receipt](r580-rollback.md) supersedes the
+earlier search-path order and records the successful CPU-only firmware preload.
+Restore the original path only after proving580 files there are reachable and
+hash-match; otherwise retain the explicit temporary firmware deviation.
 
 Restoring the original R580 DaemonSet uses its unchanged manager, which can
 recycle toolkit and produce the same brief K3s restart. A temporary node-only

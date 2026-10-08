@@ -48,7 +48,7 @@ reboot, K3s/containerd restart or broad DaemonSet image change is excluded.
 Idle GPU/MPS status must be rechecked immediately before a maintenance step;
 earlier root read-only checks are not a future idle guarantee.
 
-After root approval, execute these bounded steps with a rollback journal:
+Root executes these bounded steps with a private rollback journal:
 
 1. Fresh-read target UID/kernel, both GPUs' process lists and MPS clients, KAI
    reservations, GPU workloads, all CPU/PVC Pod UIDs and health. Refuse if any
@@ -85,7 +85,9 @@ After root approval, execute these bounded steps with a rollback journal:
 
 Rollback uses only GPU2. Stop owned canary clients and required GPU2 operands;
 verify module references clear; delete the owned R615 DS/Pod and wait for its
-driver cleanup. Restore the original journaled firmware search path. Restore
+driver cleanup. Stage the exact R580 GSP files in the independent firmware directory
+and preserve that search path through cold580 bootstrap, as described in
+[r580-rollback.md](r580-rollback.md). Restore
 `gpu.deploy.driver=true` so the unchanged legacy R580
 DS recreates only GPU2's driver Pod. Verify its image ID equals the recorded
 R580 digest, actual loaded driver is 580.95.05, both GPUs are healthy, and old
