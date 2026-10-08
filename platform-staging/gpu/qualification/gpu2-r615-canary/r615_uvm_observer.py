@@ -3,6 +3,8 @@
 import argparse
 import datetime
 import json
+import hashlib
+import struct
 from pathlib import Path
 import subprocess
 
@@ -20,11 +22,6 @@ for module in nvidia nvidia_uvm; do
     stat -c '%n %s' "$path"
     modinfo -F vermagic "$path"
     modinfo -F version "$path"
-    # kmod31 --dump-modversions rejects these ELF modules; readelf is read-only.
-    versions=$(readelf -x __versions "$path")
-    test -n "$versions"
-    printf 'import_versions_hex_dump_sha256='
-    printf '%s\n' "$versions" | awk '/^  0x/ {printf "%s%s%s%s", $2,$3,$4,$5}' | sha256sum
 done
 printf 'loaded_module_identity\n'
 for module in nvidia nvidia_uvm; do
@@ -55,6 +52,47 @@ done
 '''
 
 
+MODULE_PATHS = ['/lib/modules/6.8.0-134-generic/kernel/drivers/video/nvidia.ko',
+                '/lib/modules/6.8.0-134-generic/kernel/drivers/video/nvidia-uvm.ko',
+                '/var/tmp/cps-r615-uvm-guard-build-20261008/source/nvidia-uvm.ko']
+
+
+def elf_versions(read):
+    header = read(0, 64)
+    assert len(header) == 64 and header[:6] == b'\x7fELF\x02\x01'
+    offset = struct.unpack_from('<Q', header, 40)[0]
+    entry_size, count, string_index = struct.unpack_from('<HHH', header, 58)
+    assert entry_size == 64 and 0 < string_index < count < 1024
+    table = read(offset, entry_size * count)
+    assert len(table) == entry_size * count
+    sections = [struct.unpack_from('<IIQQQQIIQQ', table, i * entry_size) for i in range(count)]
+    string_section = sections[string_index]
+    assert 0 < string_section[5] < 128 * 1024
+    names = read(string_section[4], string_section[5])
+    assert len(names) == string_section[5]
+    matches = [section for section in sections
+               if names[section[0]:].split(b'\0', 1)[0] == b'__versions']
+    assert len(matches) == 1 and 0 < matches[0][5] < 128 * 1024
+    data = read(matches[0][4], matches[0][5])
+    assert len(data) == matches[0][5]
+    return {'sectionBytes': len(data),
+            'canonicalHexSHA256': hashlib.sha256(data.hex().encode()).hexdigest()}
+
+
+def raw_sections(pod_name):
+    prefix = ['kubectl', '-n', 'gpu-operator', 'exec', pod_name,
+              '-c', 'nvidia-driver-ctr', '--']
+    receipts = []
+    for path in MODULE_PATHS:
+        def read(offset, size):
+            return subprocess.check_output(prefix + ['dd', 'if=' + path, 'bs=1',
+                'skip=' + str(offset), 'count=' + str(size), 'status=none'])
+        receipt = {'path': path, **elf_versions(read)}
+        receipt['sha256'] = subprocess.check_output(prefix + ['sha256sum', path], text=True).split()[0]
+        receipts.append(receipt)
+    return receipts
+
+
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument('stage', choices=['before', 'guard-loaded', 'original-restored'])
@@ -83,6 +121,7 @@ if __name__ == '__main__':
                        'restartCount': container['restartCount']},
                'readOnlyModuleAndRuntimeReceipt': outputs[0],
                'readOnlyHolderReceipt': outputs[1],
+               'rawElfVersionsSectionReceipts': raw_sections(pod['metadata']['name']),
                'tenantIsolationQualified': False}
     with destination.open('x') as stream:
         json.dump(receipt, stream, indent=2)
