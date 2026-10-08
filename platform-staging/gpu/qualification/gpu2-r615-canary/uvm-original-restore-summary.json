@@ -1,0 +1,17 @@
+{
+  "observedAt": "2026-10-08T15:23:55.638431+00:00",
+  "scope": "Original615UVM restored after bounded guard test; R580/operator/node rollback still pending",
+  "originalUvmSrcversion": "2CA5427BFF504A8F70EEAE8",
+  "originalUvmParametersRestored": true,
+  "installedModuleFilesUnchanged": true,
+  "coreLoadedIdentityAndAddressUnchanged": true,
+  "runtimePidsAndStartTicksUnchanged": true,
+  "noUvmClients": true,
+  "bothGpusCurrentAndPendingMigDisabled": true,
+  "rootRestoreReceiptSHA256": "7ef3fb64688d9e3d5c6f2eb4fe2e24a9489f9e8048194d7eb7b9cd942bcd9452",
+  "rootRestoreLogSHA256": "2c5c401737d7110097c498afd5b8e65a34931162114b5cbbf61aa82be574e12d",
+  "observerReceiptSHA256": "488f40f1e50690102db717d6472762d7c5f6df2c27c528593d7377325aff0923",
+  "r580Restored": false,
+  "nodeUncordoned": false,
+  "tenantIsolationQualified": false
+}
