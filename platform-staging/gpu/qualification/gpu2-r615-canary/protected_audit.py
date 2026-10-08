@@ -25,12 +25,20 @@ if __name__ == '__main__':
                         'node': previous['node'], 'expectedUID': previous['uid'],
                         'currentUID': pod['metadata']['uid'] if pod else None,
                         'uidMatched': bool(pod and pod['metadata']['uid'] == previous['uid']),
-                        'ready': ready, 'containerRestartsMatched': restarts})
+                        'ready': ready, 'containerRestartsMatched': restarts,
+                        'containerImagesMatched': bool(pod and
+                            [(c['name'], c.get('imageID')) for c in pod['status'].get('containerStatuses', [])]
+                            == [(c['name'], c['imageID']) for c in previous['containers']])})
     report = {'observedAt': datetime.datetime.now(datetime.timezone.utc).isoformat(),
               'scope': 'GPU1/3/4 baseline Pods and GPU2 CPU/PVC Pods; root-owned GPU2 GPU operator/prototype operands excluded',
               'allProtectedUIDsMatched': all(p['uidMatched'] for p in results),
               'allProtectedReady': all(p['ready'] for p in results),
               'allProtectedRestartsMatched': all(p['containerRestartsMatched'] for p in results),
+              'gpu2CpuPvcUIDsMatched': all(p['uidMatched'] for p in results if p['node'] == 'k3s-wk-gpu2'),
+              'gpu2CpuPvcReady': all(p['ready'] for p in results if p['node'] == 'k3s-wk-gpu2'),
+              'otherGpuDriverUIDsImagesReadyMatched': all(
+                  p['uidMatched'] and p['ready'] and p['containerImagesMatched'] and p['containerRestartsMatched']
+                  for p in results if p['namespace'] == 'gpu-operator' and p['name'].startswith('nvidia-driver-daemonset-')),
               'protectedPods': results}
     (HERE / 'protected-current-receipt.json').write_text(json.dumps(report, indent=2) + '\n')
     print(json.dumps({k: v for k, v in report.items() if k != 'protectedPods'}))
