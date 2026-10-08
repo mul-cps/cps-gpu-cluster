@@ -1,10 +1,28 @@
 # Inactive R615 Pod-parent memory-cap prototype
 
-This directory contains a small **inert by default** prototype and CPU tests.
-No GPU, node, driver, image, scheduler or cluster changes were made to qualify
-this source. Hardware enforcement, managed memory, hostile isolation and
-automatic KAI integration remain **unqualified**. Use only the separately
-reviewed, drained, non-MIG R615 canary with its prepared driver rollback.
+This directory contains an **inert by default** prototype, CPU tests and an
+actual controlled R615 canary result. **Managed memory escaped the native cap;
+do not activate this as complete GPU memory isolation.** Hostile isolation and
+automatic KAI integration remain unqualified. Root owned the drained non-MIG
+driver canary, native cap setter, sealed release and physical telemetry; this
+fixture owner created only the isolated QA namespace/resources and collected
+read-only evidence. No GPU image, production allowance or scheduler was changed.
+
+[live-result-20261008.json](live-result-20261008.json) preserves executed source
+`03d575b`, immutable source hashes, exact Pod identities and actual logs. Both
+main containers ran at UID1000/GID100 with dropALL and native CDI driver mounts.
+The128MiB peer context failed with CUDA OOM2. At512MiB, context usage was
+436,289,216bytes; GPU-first managed512MiB allocation/prefetch/synchronize/full
+GPU touch succeeded while native usage and parent CPU memory.current stayed
+unchanged. Physical GPU usage was427→1363→427MiB (main delta936MiB), GPU1 stayed0,
+and598 peer heartbeats passed with52 during the main phase. This is a controlled
+aggregate budget violation, not a hostile Pod qualification.
+
+The executed legacy field `managed_prefetch_above_cap_succeeded=false` compares
+payload alone against the cap:512equals512. Context baseline plus payload was
+973,160,128bytes, exceeding536,870,912. The report derives an explicit aggregate
+violation without rewriting original logs. Future source adds that field and
+managed context startup metadata; it was CPU-tested, not rerun on hardware.
 
 `pod_cap.py` binds a reviewed Pod UID/spec/node/GPU and the actual CRI first-init
 PID, PID start ticks, boot ID, cgroup path/device/inode. It sets and reads back a
@@ -119,8 +137,12 @@ GPU-memset the whole allocation and synchronize. **No CPU dereference or CPU
 population of managed pages occurs.** Parent memory.current and NVML used/cap
 are captured before and while the GPU-touched allocation remains held. Success
 above the cap is reported explicitly; managed-memory qualification stays false.
-Explicit probe allocations remain below512MiB, excluding opaque driver context
-overhead. Context initialization can itself exceed a small cap; that returns
+The512MiB case is managed/heartbeat only and requires a positive actual context
+baseline whose sum with the512MiB payload exceeds the cap. It emits a held signal
+and holds10seconds for independent physical telemetry. Two-process ordinary512
+testing is postponed. The large payload is bounded to512MiB, with separate fixed
+4byte heartbeat buffers and opaque driver context overhead. Context initialization
+can itself exceed a small cap; that returns
 hardware-inconclusive. Do not automatically enlarge quotas or claim enforcement.
 
 R615's misc implementation can return `NOT_SUPPORTED` (NVML code3) for a virgin
@@ -162,7 +184,17 @@ PYTHONDONTWRITEBYTECODE=1 python -m unittest discover \
 python platform-staging/scheduler/qualification/r615-pod-cap/cuda_probe.py
 ```
 
-28 CPU tests pass, including exact NVML ABI bytes, real temporary proc/cgroup
+31 CPU tests pass (37 with existing GPU runtime tests,11 subtests), including exact NVML ABI bytes, real temporary proc/cgroup
 paths, foreign identity/PID/inode/boot denial, nested child limits, gate release,
 shared-versus-per-context budget, managed observer timing and failed cleanup.
 External CUDA/NVML calls are faked in these tests; no GPU evidence is implied.
+
+`qa-fixture.json` records actual executed source03d575b and main managed512/peer512
+Pod specs. Root's manual writer keeps `/cap-receipts/ready.json` root0600 and the
+nonsecret `/phase/parent.json` root0644 for UID1000's read-only mount. The trusted
+init has a writable private emptyDir for root-assisted sealing; main has no cap
+receipt mount. Host-wide LD_LIBRARY_PATH was removed after a pre-CUDA glibc
+failure; native CDI injects GPU libraries without substituting the image's libc.
+[cleanup-inventory-20261008.json](cleanup-inventory-20261008.json) lists exact
+retained terminal Pods and namespace resources. No deletion is authorized by
+this artifact; root checks native cgroup disappearance and requests cleanup.

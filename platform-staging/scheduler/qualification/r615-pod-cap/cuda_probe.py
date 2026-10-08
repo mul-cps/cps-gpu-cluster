@@ -46,6 +46,12 @@ def ordinary(a, b, cap):
         a.request('free'); b.request('free')
 
 
+def aggregate_violation(baseline, amount, cuda):
+    return (baseline.get('used',0)>0 and baseline.get('hard',0)>0
+            and baseline['used']+amount*1048576>baseline['hard']
+            and all(cuda.get(key)==0 for key in ('cuda_result','prefetch_result','prefetch_sync_result','touch_result')))
+
+
 def managed(worker, cap, *, observe=lambda: None, hold=lambda: None, on_hold=lambda value: None):
     amount = plan(cap)['managed_mib']
     try:
@@ -58,6 +64,7 @@ def managed(worker, cap, *, observe=lambda: None, hold=lambda: None, on_hold=lam
         value = worker.request('allocate',mib=amount,managed=True)
         result={'managed_mib':amount, 'managed':value, 'managed_memory_qualified':False,
                 'before':before, 'after_gpu_touch':observe(),
+                'aggregate_budget_violation_observed':aggregate_violation(baseline,amount,value),
                 'baseline_plus_managed_exceeds_cap':baseline.get('used',0)+amount*1048576>baseline.get('hard',cap*1048576),
                 'managed_prefetch_above_cap_succeeded':amount>cap and all(value.get(k) == 0 for k in
                     ('cuda_result','prefetch_result','touch_result'))}
@@ -247,7 +254,7 @@ def main():
                            started_ns=time.time_ns(),peer_heartbeat_qualification='separate-cgroup-log-coverage-required')
     try:
         report['before_contexts']=observe()
-        a=Child(args.device_uuid);children.append(a)
+        a=Child(args.device_uuid);children.append(a);report['context_startups']=[a.ready]
         if args.mode in ('ordinary','all'):
             b=Child(args.device_uuid);children.append(b)
             require(a.ready['pid']!=b.ready['pid'],'Two distinct CUDA processes required')

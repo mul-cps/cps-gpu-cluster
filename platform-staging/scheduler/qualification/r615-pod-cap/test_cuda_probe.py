@@ -16,7 +16,8 @@ class Worker:
             if not value.get('managed') and self.budget['used'] + amount > self.budget['cap']:
                 return {'cuda_result': 2, 'touch_result': None, 'prefetch_result': None}
             self.held = amount; self.budget['used'] += amount
-            return {'cuda_result': 0, 'touch_result': 0, 'prefetch_result': 0 if value.get('managed') else None}
+            return {'cuda_result': 0, 'touch_result': 0, 'prefetch_result': 0 if value.get('managed') else None,
+                    'prefetch_sync_result':0 if value.get('managed') else None}
         if operation == 'free':
             self.budget['used'] -= self.held; self.held = 0
         return {'cuda_result': 0}
@@ -92,6 +93,7 @@ class CudaProbeTests(unittest.TestCase):
         self.assertEqual(result['managed_mib'],512)
         self.assertEqual(held,[512]);self.assertEqual(budget['used'],0)
         self.assertTrue(result['baseline_plus_managed_exceeds_cap'])
+        self.assertTrue(result['aggregate_budget_violation_observed'])
         self.assertFalse(result['managed_memory_qualified'])
 
     def test_fixed512_requires_baseline_proof_and_cannot_run_ordinary_aggregate(self):
@@ -100,6 +102,17 @@ class CudaProbeTests(unittest.TestCase):
             with self.assertRaises(ValueError):self.probe.managed(worker,512,observe=lambda:before)
         with self.assertRaises(ValueError):self.probe.ordinary(worker,worker,512)
         self.assertEqual(self.probe.plan(512)['managed_mib'],512)
+
+    def test_aggregate_violation_requires_positive_baseline_and_every_gpu_operation_success(self):
+        baseline={'used':436289216,'hard':536870912}
+        cuda={k:0 for k in ('cuda_result','prefetch_result','prefetch_sync_result','touch_result')}
+        self.assertTrue(self.probe.aggregate_violation(baseline,512,cuda))
+        for key in cuda:
+            for result in (None,2):
+                changed=dict(cuda);changed[key]=result
+                self.assertFalse(self.probe.aggregate_violation(baseline,512,changed))
+        self.assertFalse(self.probe.aggregate_violation({'used':0,'hard':536870912},512,cuda))
+        self.assertFalse(self.probe.aggregate_violation(baseline,64,cuda))
 
 
 if __name__ == '__main__': unittest.main()
