@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Inert fixed64/128MiB driver probe; run heartbeat in a separate capped Pod."""
+"""Inert fixed64/128/512MiB driver probe; heartbeat belongs to a separate capped Pod."""
 import argparse
 import ctypes as C
 import json
@@ -18,11 +18,13 @@ def require(ok, message):
 
 
 def plan(cap):
-    require(type(cap) is int and cap in (64,128), 'Only fixed64/128MiB scientific probes supported')
+    require(type(cap) is int and cap in (64,128,512), 'Only fixed64/128/512MiB scientific probes supported')
+    if cap==512:return {'cap_mib':512,'allocation_mib_each':None,'managed_mib':512}
     return {'cap_mib':cap, 'allocation_mib_each':cap*3//5, 'managed_mib':cap+16}
 
 
 def ordinary(a, b, cap):
+    require(cap in (64,128), '512MiB case is managed/heartbeat only; aggregate ordinary measurement postponed')
     amount = plan(cap)['allocation_mib_each']
     result = {'allocation_mib_each':amount, 'hostile_isolation_qualified':False}
     try:
@@ -44,15 +46,23 @@ def ordinary(a, b, cap):
         a.request('free'); b.request('free')
 
 
-def managed(worker, cap, *, observe=lambda: None):
+def managed(worker, cap, *, observe=lambda: None, hold=lambda: None, on_hold=lambda value: None):
     amount = plan(cap)['managed_mib']
     try:
         before = observe()
+        baseline=before.get('nvml_limits',{}) if isinstance(before,dict) else {}
+        if cap==512:
+            require(baseline.get('used',0)>0 and baseline.get('hard')==512*1048576
+                    and baseline['used']+amount*1048576>baseline['hard'],
+                    'Positive actual context baseline plus managed payload must exceed exact512MiB cap')
         value = worker.request('allocate',mib=amount,managed=True)
-        return {'managed_mib':amount, 'managed':value, 'managed_memory_qualified':False,
+        result={'managed_mib':amount, 'managed':value, 'managed_memory_qualified':False,
                 'before':before, 'after_gpu_touch':observe(),
-                'managed_prefetch_above_cap_succeeded':all(value.get(k) == 0 for k in
+                'baseline_plus_managed_exceeds_cap':baseline.get('used',0)+amount*1048576>baseline.get('hard',cap*1048576),
+                'managed_prefetch_above_cap_succeeded':amount>cap and all(value.get(k) == 0 for k in
                     ('cuda_result','prefetch_result','touch_result'))}
+        on_hold(dict(result,kind='managed-gpu-touch-held'));hold()
+        return result
     finally: worker.request('free')
 
 
@@ -112,7 +122,7 @@ class Cuda:
         return {'cuda_result':code,'free_bytes':free.value,'total_bytes':total.value}
 
     def allocate(self,mib,*,managed=False):
-        require(type(mib) is int and 0<mib<=144 and self.pointer is None,'One bounded allocation per context')
+        require(type(mib) is int and 0<mib<=512 and self.pointer is None,'One bounded allocation per context')
         size=mib*1048576;pointer=C.c_ulonglong()
         code=(self.lib.cuMemAllocManaged(C.byref(pointer),size,1) if managed
               else self.lib.cuMemAlloc_v2(C.byref(pointer),size))
@@ -197,7 +207,7 @@ class Child:
 def main():
     parser=argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--mode',choices=('ordinary','managed','all','heartbeat'),default='all')
-    parser.add_argument('--cap-mib',type=int,choices=(64,128),default=64)
+    parser.add_argument('--cap-mib',type=int,choices=(64,128,512),default=64)
     parser.add_argument('--device-uuid')
     parser.add_argument('--heartbeat-seconds',type=int,default=120)
     parser.add_argument('--parent-cgroup',type=Path,help='Actual read-only host Pod-parent cgroup path from cap receipt')
@@ -205,6 +215,8 @@ def main():
     parser.add_argument('--worker',action='store_true',help=argparse.SUPPRESS)
     parser.add_argument('--execute',action='store_true')
     args=parser.parse_args();parameters=plan(args.cap_mib)
+    require(args.cap_mib!=512 or args.mode in ('managed','heartbeat') or args.worker,
+            '512MiB case is managed/heartbeat only')
     require(0<args.heartbeat_seconds<=120,'Bounded heartbeat duration required')
     if not args.execute:
         emit(dict(parameters,state='inert',gpu_calls=False,managed_memory_qualified=False));return
@@ -222,6 +234,7 @@ def main():
         driver=None
         signal.signal(signal.SIGTERM,lambda *_: sys.exit(0))
         try:
+            emit({'kind':'peer-before-context','parent':observe()})
             driver=Cuda(args.device_uuid)
             end=time.monotonic()+args.heartbeat_seconds
             while time.monotonic()<end:emit(dict(driver.tick(),kind='independent-pod-heartbeat',parent=observe()));time.sleep(0.2)
@@ -240,7 +253,8 @@ def main():
             require(a.ready['pid']!=b.ready['pid'],'Two distinct CUDA processes required')
             report['context_startups']=[a.ready,b.ready];report['ordinary']=ordinary(a,b,args.cap_mib)
             b.close()
-        if args.mode in ('managed','all'):report['managed']=managed(a,args.cap_mib,observe=observe)
+        if args.mode in ('managed','all'):
+            report['managed']=managed(a,args.cap_mib,observe=observe,hold=lambda:time.sleep(10),on_hold=emit)
         report['after_phases']=observe()
         report['status']='bounded-measurement-completed'
     except Exception as error:report.update(status='hardware-inconclusive',error_type=type(error).__name__,error=str(error))

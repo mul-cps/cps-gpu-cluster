@@ -85,5 +85,21 @@ class CudaProbeTests(unittest.TestCase):
         self.assertEqual(result['after_gpu_touch']['nvml_limits']['hard'], 67108864)
         self.assertEqual(budget['used'], 0)
 
+    def test_fixed512_managed_uses_positive_baseline_and_holds_before_free(self):
+        budget = {'cap':512,'used':0}; worker=Worker(budget); held=[]
+        def observe(): return {'parent_memory_current':1000,'nvml_limits':{'soft':512*1048576,'hard':512*1048576,'used':8*1048576}}
+        result=self.probe.managed(worker,512,observe=observe,hold=lambda:held.append(worker.held))
+        self.assertEqual(result['managed_mib'],512)
+        self.assertEqual(held,[512]);self.assertEqual(budget['used'],0)
+        self.assertTrue(result['baseline_plus_managed_exceeds_cap'])
+        self.assertFalse(result['managed_memory_qualified'])
+
+    def test_fixed512_requires_baseline_proof_and_cannot_run_ordinary_aggregate(self):
+        worker=Worker({'cap':512,'used':0})
+        for before in (None,{'nvml_limits':{'used':0,'hard':512*1048576}}, {'nvml_limits':{'used':1,'hard':1024*1048576}}):
+            with self.assertRaises(ValueError):self.probe.managed(worker,512,observe=lambda:before)
+        with self.assertRaises(ValueError):self.probe.ordinary(worker,worker,512)
+        self.assertEqual(self.probe.plan(512)['managed_mib'],512)
+
 
 if __name__ == '__main__': unittest.main()

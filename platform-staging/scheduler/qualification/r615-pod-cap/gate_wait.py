@@ -23,7 +23,7 @@ def main():
     parser.add_argument('--receipt',type=Path,required=True)
     parser.add_argument('--pod-uid',default=os.environ.get('POD_UID'),required='POD_UID' not in os.environ)
     parser.add_argument('--gpu-uuid',required=True)
-    parser.add_argument('--cap-mib',type=int,choices=(64,128,5120,10240,20480),required=True)
+    parser.add_argument('--cap-mib',type=int,choices=(64,128,512,5120,10240,20480),required=True)
     parser.add_argument('--execute',action='store_true')
     args=parser.parse_args()
     if not args.execute:print(json.dumps({'state':'inert','gpu_calls':False}));return

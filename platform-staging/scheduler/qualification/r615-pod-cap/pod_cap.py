@@ -76,7 +76,7 @@ def validate_intent(intent):
     require(set(intent) == {'pod_uid', 'namespace', 'name', 'node', 'gpu_uuid', 'cap_mib', 'spec_sha256'}, 'Exact operator-reviewed intent required')
     require(str(uuid.UUID(intent['pod_uid'])) == intent['pod_uid'], 'Canonical exact Pod UID required')
     require(re.fullmatch(r'GPU-[0-9a-f]{8}(?:-[0-9a-f]{4}){3}-[0-9a-f]{12}', intent['gpu_uuid']) is not None, 'Exact physical GPU UUID required')
-    require(type(intent['cap_mib']) is int and intent['cap_mib'] in (64, 128, 5120, 10240, 20480), 'Reviewed integer MiB cap required')
+    require(type(intent['cap_mib']) is int and intent['cap_mib'] in (64, 128, 512, 5120, 10240, 20480), 'Reviewed integer MiB cap required')
     require(re.fullmatch('[a-f0-9]{64}', intent['spec_sha256']) is not None, 'Reviewed full Pod spec SHA256 required')
     for key in ('namespace', 'name', 'node'):
         require(re.fullmatch('[a-z0-9][a-z0-9.-]*', intent[key]) is not None, 'Exact Kubernetes reference required')
