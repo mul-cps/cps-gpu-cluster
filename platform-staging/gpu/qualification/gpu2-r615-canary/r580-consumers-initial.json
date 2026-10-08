@@ -1,0 +1,1547 @@
+{
+  "observedAt": "2026-10-08T15:31:11.911860+00:00",
+  "nodeUID": "3336cdd5-d245-436e-b57c-2f66c6dcaa41",
+  "unschedulable": true,
+  "operandLabels": {
+    "accelerator": "nvidia",
+    "nvidia.com/gpu-driver-upgrade-state": "upgrade-done",
+    "nvidia.com/gpu.deploy.container-toolkit": "true",
+    "nvidia.com/gpu.deploy.dcgm": "true",
+    "nvidia.com/gpu.deploy.dcgm-exporter": "true",
+    "nvidia.com/gpu.deploy.device-plugin": "true",
+    "nvidia.com/gpu.deploy.driver": "true",
+    "nvidia.com/gpu.deploy.gpu-feature-discovery": "true",
+    "nvidia.com/gpu.deploy.mig-manager": "true",
+    "nvidia.com/gpu.deploy.node-status-exporter": "true",
+    "nvidia.com/gpu.deploy.nvsm": "true",
+    "nvidia.com/gpu.deploy.operator-validator": "true",
+    "nvidia.com/gpu.present": "true",
+    "nvidia.com/mig.config": "all-disabled",
+    "nvidia.com/mig.config.state": "success"
+  },
+  "operands": [
+    {
+      "name": "gpu-feature-discovery-zkbgk",
+      "uid": "bc2b47f3-7e53-435e-8d7e-ac51dc0919cb",
+      "deleting": null,
+      "phase": "Pending",
+      "ready": false,
+      "init": [
+        {
+          "containerID": "containerd://0ef42e36adb1c0881467d1324547b68c1bd0aa628e42b99a0a94cb57ef093d0b",
+          "image": "nvcr.io/nvidia/gpu-operator:v25.10.0",
+          "imageID": "nvcr.io/nvidia/gpu-operator@sha256:d4841412c9b8d27c53b1588dcebffc5451e9ab0fd36b2c656c33a65356507cfd",
+          "lastState": {},
+          "name": "toolkit-validation",
+          "ready": false,
+          "resources": {},
+          "restartCount": 0,
+          "started": true,
+          "state": {
+            "running": {
+              "startedAt": "2026-10-08T15:30:07Z"
+            }
+          },
+          "user": {
+            "linux": {
+              "gid": 0,
+              "supplementalGroups": [
+                0
+              ],
+              "uid": 0
+            }
+          },
+          "volumeMounts": [
+            {
+              "mountPath": "/run/nvidia",
+              "name": "run-nvidia"
+            },
+            {
+              "mountPath": "/var/run/secrets/kubernetes.io/serviceaccount",
+              "name": "kube-api-access-ct4hs",
+              "readOnly": true,
+              "recursiveReadOnly": "Disabled"
+            }
+          ]
+        },
+        {
+          "image": "nvcr.io/nvidia/k8s-device-plugin:v0.18.0",
+          "imageID": "",
+          "lastState": {},
+          "name": "config-manager-init",
+          "ready": false,
+          "restartCount": 0,
+          "started": false,
+          "state": {
+            "waiting": {
+              "reason": "PodInitializing"
+            }
+          },
+          "volumeMounts": [
+            {
+              "mountPath": "/config",
+              "name": "config"
+            },
+            {
+              "mountPath": "/available-configs",
+              "name": "device-plugin-config"
+            },
+            {
+              "mountPath": "/var/run/secrets/kubernetes.io/serviceaccount",
+              "name": "kube-api-access-ct4hs",
+              "readOnly": true,
+              "recursiveReadOnly": "Disabled"
+            }
+          ]
+        }
+      ],
+      "main": [
+        {
+          "image": "nvcr.io/nvidia/k8s-device-plugin:v0.18.0",
+          "imageID": "",
+          "lastState": {},
+          "name": "config-manager",
+          "ready": false,
+          "restartCount": 0,
+          "started": false,
+          "state": {
+            "waiting": {
+              "reason": "PodInitializing"
+            }
+          },
+          "volumeMounts": [
+            {
+              "mountPath": "/config",
+              "name": "config"
+            },
+            {
+              "mountPath": "/available-configs",
+              "name": "device-plugin-config"
+            },
+            {
+              "mountPath": "/var/run/secrets/kubernetes.io/serviceaccount",
+              "name": "kube-api-access-ct4hs",
+              "readOnly": true,
+              "recursiveReadOnly": "Disabled"
+            }
+          ]
+        },
+        {
+          "image": "nvcr.io/nvidia/k8s-device-plugin:v0.18.0",
+          "imageID": "",
+          "lastState": {},
+          "name": "gpu-feature-discovery",
+          "ready": false,
+          "restartCount": 0,
+          "started": false,
+          "state": {
+            "waiting": {
+              "reason": "PodInitializing"
+            }
+          },
+          "volumeMounts": [
+            {
+              "mountPath": "/etc/kubernetes/node-feature-discovery/features.d",
+              "name": "output-dir"
+            },
+            {
+              "mountPath": "/sys",
+              "name": "host-sys",
+              "readOnly": true,
+              "recursiveReadOnly": "Disabled"
+            },
+            {
+              "mountPath": "/config",
+              "name": "config"
+            },
+            {
+              "mountPath": "/available-configs",
+              "name": "device-plugin-config"
+            },
+            {
+              "mountPath": "/var/run/secrets/kubernetes.io/serviceaccount",
+              "name": "kube-api-access-ct4hs",
+              "readOnly": true,
+              "recursiveReadOnly": "Disabled"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "gpu-operator-node-feature-discovery-gc-74dd579c7f-ndnqs",
+      "uid": "316e105f-674f-4b20-b902-4dd4a46a94ab",
+      "deleting": null,
+      "phase": "Running",
+      "ready": true,
+      "init": [],
+      "main": [
+        {
+          "allocatedResources": {
+            "cpu": "10m",
+            "memory": "128Mi"
+          },
+          "containerID": "containerd://acb76960f8111efd9848c5999c516071f10da259b73c2d745f73ebce58bfa857",
+          "image": "registry.k8s.io/nfd/node-feature-discovery:v0.18.2",
+          "imageID": "registry.k8s.io/nfd/node-feature-discovery@sha256:9fb5b0764076a7e9c9a93579ef062dd7283b2db0253fa9f793a6931a2c88385e",
+          "lastState": {},
+          "name": "gc",
+          "ready": true,
+          "resources": {
+            "limits": {
+              "memory": "1Gi"
+            },
+            "requests": {
+              "cpu": "10m",
+              "memory": "128Mi"
+            }
+          },
+          "restartCount": 0,
+          "started": true,
+          "state": {
+            "running": {
+              "startedAt": "2026-07-06T18:31:58Z"
+            }
+          },
+          "user": {
+            "linux": {
+              "gid": 0,
+              "supplementalGroups": [
+                0
+              ],
+              "uid": 65534
+            }
+          },
+          "volumeMounts": [
+            {
+              "mountPath": "/var/run/secrets/kubernetes.io/serviceaccount",
+              "name": "kube-api-access-btb75",
+              "readOnly": true,
+              "recursiveReadOnly": "Disabled"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "gpu-operator-node-feature-discovery-master-948c8bb7c-wvntb",
+      "uid": "21733ba1-37e6-44ef-bc2c-8876cdaf091b",
+      "deleting": null,
+      "phase": "Running",
+      "ready": true,
+      "init": [],
+      "main": [
+        {
+          "allocatedResources": {
+            "cpu": "100m",
+            "memory": "128Mi"
+          },
+          "containerID": "containerd://4b44b39fb9b9b8e85f6918135d05c1f6f74c48959aefe2bffc615f1f6f2d09bf",
+          "image": "registry.k8s.io/nfd/node-feature-discovery:v0.18.2",
+          "imageID": "registry.k8s.io/nfd/node-feature-discovery@sha256:9fb5b0764076a7e9c9a93579ef062dd7283b2db0253fa9f793a6931a2c88385e",
+          "lastState": {
+            "terminated": {
+              "containerID": "containerd://803b99d765de76a168baf78dbc4c25ebc6aa381f84eb222bd7e1d5078f381049",
+              "exitCode": 2,
+              "finishedAt": "2026-10-08T00:29:08Z",
+              "reason": "Error",
+              "startedAt": "2026-10-01T00:11:42Z"
+            }
+          },
+          "name": "master",
+          "ready": true,
+          "resources": {
+            "limits": {
+              "memory": "4Gi"
+            },
+            "requests": {
+              "cpu": "100m",
+              "memory": "128Mi"
+            }
+          },
+          "restartCount": 15,
+          "started": true,
+          "state": {
+            "running": {
+              "startedAt": "2026-10-08T00:30:05Z"
+            }
+          },
+          "user": {
+            "linux": {
+              "gid": 0,
+              "supplementalGroups": [
+                0
+              ],
+              "uid": 65534
+            }
+          },
+          "volumeMounts": [
+            {
+              "mountPath": "/etc/kubernetes/node-feature-discovery",
+              "name": "nfd-master-conf",
+              "readOnly": true,
+              "recursiveReadOnly": "Disabled"
+            },
+            {
+              "mountPath": "/var/run/secrets/kubernetes.io/serviceaccount",
+              "name": "kube-api-access-z87rj",
+              "readOnly": true,
+              "recursiveReadOnly": "Disabled"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "gpu-operator-node-feature-discovery-worker-hlwkr",
+      "uid": "25be5252-854b-4ea6-b2a8-8733105ec96a",
+      "deleting": null,
+      "phase": "Running",
+      "ready": true,
+      "init": [],
+      "main": [
+        {
+          "allocatedResources": {
+            "cpu": "5m",
+            "memory": "64Mi"
+          },
+          "containerID": "containerd://a2588b2b0e028afd7e077ec08c965bced64fffc6d2bf5b719b44e80f1d966863",
+          "image": "registry.k8s.io/nfd/node-feature-discovery:v0.18.2",
+          "imageID": "registry.k8s.io/nfd/node-feature-discovery@sha256:9fb5b0764076a7e9c9a93579ef062dd7283b2db0253fa9f793a6931a2c88385e",
+          "lastState": {
+            "terminated": {
+              "containerID": "containerd://398a4e84fc27b65cad15d70a4f6c17d51d2a8a7c453df67b83618015153039b1",
+              "exitCode": 1,
+              "finishedAt": "2026-10-08T00:30:17Z",
+              "reason": "Error",
+              "startedAt": "2026-10-08T00:30:17Z"
+            }
+          },
+          "name": "worker",
+          "ready": true,
+          "resources": {
+            "limits": {
+              "memory": "512Mi"
+            },
+            "requests": {
+              "cpu": "5m",
+              "memory": "64Mi"
+            }
+          },
+          "restartCount": 35,
+          "started": true,
+          "state": {
+            "running": {
+              "startedAt": "2026-10-08T00:30:41Z"
+            }
+          },
+          "user": {
+            "linux": {
+              "gid": 0,
+              "supplementalGroups": [
+                0
+              ],
+              "uid": 65534
+            }
+          },
+          "volumeMounts": [
+            {
+              "mountPath": "/host-boot",
+              "name": "host-boot",
+              "readOnly": true,
+              "recursiveReadOnly": "Disabled"
+            },
+            {
+              "mountPath": "/host-etc/os-release",
+              "name": "host-os-release",
+              "readOnly": true,
+              "recursiveReadOnly": "Disabled"
+            },
+            {
+              "mountPath": "/host-sys",
+              "name": "host-sys",
+              "readOnly": true,
+              "recursiveReadOnly": "Disabled"
+            },
+            {
+              "mountPath": "/host-usr/lib",
+              "name": "host-usr-lib",
+              "readOnly": true,
+              "recursiveReadOnly": "Disabled"
+            },
+            {
+              "mountPath": "/host-lib",
+              "name": "host-lib",
+              "readOnly": true,
+              "recursiveReadOnly": "Disabled"
+            },
+            {
+              "mountPath": "/host-proc/swaps",
+              "name": "host-proc-swaps",
+              "readOnly": true,
+              "recursiveReadOnly": "Disabled"
+            },
+            {
+              "mountPath": "/etc/kubernetes/node-feature-discovery/features.d/",
+              "name": "features-d",
+              "readOnly": true,
+              "recursiveReadOnly": "Disabled"
+            },
+            {
+              "mountPath": "/etc/kubernetes/node-feature-discovery",
+              "name": "nfd-worker-conf",
+              "readOnly": true,
+              "recursiveReadOnly": "Disabled"
+            },
+            {
+              "mountPath": "/var/run/secrets/kubernetes.io/serviceaccount",
+              "name": "kube-api-access-zm88x",
+              "readOnly": true,
+              "recursiveReadOnly": "Disabled"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "gpu2-r580-firmware-preload-c4dvv",
+      "uid": "7e60d2fa-d156-4fd0-bedb-1b6518d29cab",
+      "deleting": null,
+      "phase": "Failed",
+      "ready": false,
+      "init": [],
+      "main": [
+        {
+          "allocatedResources": {
+            "cpu": "100m",
+            "ephemeral-storage": "1Gi",
+            "memory": "128Mi"
+          },
+          "containerID": "containerd://de10f4fcb33e87ac20b182574256bb3f955d150fa47e96d1e4d86a34405b6f96",
+          "image": "nvcr.io/nvidia/driver:580.95.05-ubuntu24.04",
+          "imageID": "nvcr.io/nvidia/driver@sha256:41515698692bd5e192186e620b65717af960a66d22dbb5a06e3656575a5d9148",
+          "lastState": {},
+          "name": "extract-firmware-only",
+          "ready": false,
+          "resources": {
+            "limits": {
+              "cpu": "1",
+              "ephemeral-storage": "3Gi",
+              "memory": "512Mi"
+            },
+            "requests": {
+              "cpu": "100m",
+              "ephemeral-storage": "1Gi",
+              "memory": "128Mi"
+            }
+          },
+          "restartCount": 0,
+          "started": false,
+          "state": {
+            "terminated": {
+              "containerID": "containerd://de10f4fcb33e87ac20b182574256bb3f955d150fa47e96d1e4d86a34405b6f96",
+              "exitCode": 143,
+              "finishedAt": "2026-10-08T14:26:27Z",
+              "reason": "Error",
+              "startedAt": "2026-10-08T14:26:18Z"
+            }
+          },
+          "user": {
+            "linux": {
+              "gid": 0,
+              "supplementalGroups": [
+                0
+              ],
+              "uid": 0
+            }
+          },
+          "volumeMounts": [
+            {
+              "mountPath": "/scratch",
+              "name": "scratch"
+            },
+            {
+              "mountPath": "/owned-firmware",
+              "name": "owned-firmware"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "gpu2-r580-firmware-preload-v2-fwkxz",
+      "uid": "6138bb42-91aa-49f4-a411-da5040d41556",
+      "deleting": null,
+      "phase": "Succeeded",
+      "ready": false,
+      "init": [],
+      "main": [
+        {
+          "allocatedResources": {
+            "cpu": "100m",
+            "ephemeral-storage": "1Gi",
+            "memory": "128Mi"
+          },
+          "containerID": "containerd://60e5cca0700de80ab886c83f87806211efeff0ff4775c2655c4079a8e009fb8a",
+          "image": "nvcr.io/nvidia/driver:580.95.05-ubuntu24.04",
+          "imageID": "nvcr.io/nvidia/driver@sha256:41515698692bd5e192186e620b65717af960a66d22dbb5a06e3656575a5d9148",
+          "lastState": {},
+          "name": "extract-firmware-only",
+          "ready": false,
+          "resources": {
+            "limits": {
+              "cpu": "1",
+              "ephemeral-storage": "3Gi",
+              "memory": "512Mi"
+            },
+            "requests": {
+              "cpu": "100m",
+              "ephemeral-storage": "1Gi",
+              "memory": "128Mi"
+            }
+          },
+          "restartCount": 0,
+          "started": false,
+          "state": {
+            "terminated": {
+              "containerID": "containerd://60e5cca0700de80ab886c83f87806211efeff0ff4775c2655c4079a8e009fb8a",
+              "exitCode": 0,
+              "finishedAt": "2026-10-08T14:32:31Z",
+              "reason": "Completed",
+              "startedAt": "2026-10-08T14:32:26Z"
+            }
+          },
+          "user": {
+            "linux": {
+              "gid": 0,
+              "supplementalGroups": [
+                0
+              ],
+              "uid": 0
+            }
+          },
+          "volumeMounts": [
+            {
+              "mountPath": "/scratch",
+              "name": "scratch"
+            },
+            {
+              "mountPath": "/owned-firmware",
+              "name": "owned-firmware"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "mps-control-daemon-standalone-t8h2q",
+      "uid": "4fdef5ed-bae0-4f7b-9614-8c4e1976d46e",
+      "deleting": null,
+      "phase": "Pending",
+      "ready": false,
+      "init": [
+        {
+          "containerID": "containerd://e86d13f39916cb1a2e6c3a0bfadb982081b73484647626303ec4f5da21e08a04",
+          "image": "nvcr.io/nvidia/gpu-operator:v25.10.0",
+          "imageID": "nvcr.io/nvidia/gpu-operator@sha256:d4841412c9b8d27c53b1588dcebffc5451e9ab0fd36b2c656c33a65356507cfd",
+          "lastState": {},
+          "name": "toolkit-validation",
+          "ready": false,
+          "resources": {},
+          "restartCount": 0,
+          "started": true,
+          "state": {
+            "running": {
+              "startedAt": "2026-10-08T15:30:07Z"
+            }
+          },
+          "user": {
+            "linux": {
+              "gid": 0,
+              "supplementalGroups": [
+                0
+              ],
+              "uid": 0
+            }
+          },
+          "volumeMounts": [
+            {
+              "mountPath": "/run/nvidia",
+              "name": "run-nvidia"
+            },
+            {
+              "mountPath": "/var/run/secrets/kubernetes.io/serviceaccount",
+              "name": "kube-api-access-lxxql",
+              "readOnly": true,
+              "recursiveReadOnly": "Disabled"
+            }
+          ]
+        },
+        {
+          "image": "nvcr.io/nvidia/k8s-device-plugin:v0.18.0",
+          "imageID": "",
+          "lastState": {},
+          "name": "mps-control-daemon-mounts",
+          "ready": false,
+          "restartCount": 0,
+          "started": false,
+          "state": {
+            "waiting": {
+              "reason": "PodInitializing"
+            }
+          },
+          "volumeMounts": [
+            {
+              "mountPath": "/mps",
+              "name": "mps-root"
+            },
+            {
+              "mountPath": "/var/run/secrets/kubernetes.io/serviceaccount",
+              "name": "kube-api-access-lxxql",
+              "readOnly": true,
+              "recursiveReadOnly": "Disabled"
+            }
+          ]
+        },
+        {
+          "image": "nvcr.io/nvidia/k8s-device-plugin:v0.18.0",
+          "imageID": "",
+          "lastState": {},
+          "name": "config-manager-init",
+          "ready": false,
+          "restartCount": 0,
+          "started": false,
+          "state": {
+            "waiting": {
+              "reason": "PodInitializing"
+            }
+          },
+          "volumeMounts": [
+            {
+              "mountPath": "/config",
+              "name": "config"
+            },
+            {
+              "mountPath": "/available-configs",
+              "name": "device-plugin-config"
+            },
+            {
+              "mountPath": "/var/run/secrets/kubernetes.io/serviceaccount",
+              "name": "kube-api-access-lxxql",
+              "readOnly": true,
+              "recursiveReadOnly": "Disabled"
+            }
+          ]
+        }
+      ],
+      "main": [
+        {
+          "image": "nvcr.io/nvidia/k8s-device-plugin:v0.18.0",
+          "imageID": "",
+          "lastState": {},
+          "name": "config-manager",
+          "ready": false,
+          "restartCount": 0,
+          "started": false,
+          "state": {
+            "waiting": {
+              "reason": "PodInitializing"
+            }
+          },
+          "volumeMounts": [
+            {
+              "mountPath": "/config",
+              "name": "config"
+            },
+            {
+              "mountPath": "/available-configs",
+              "name": "device-plugin-config"
+            },
+            {
+              "mountPath": "/var/run/secrets/kubernetes.io/serviceaccount",
+              "name": "kube-api-access-lxxql",
+              "readOnly": true,
+              "recursiveReadOnly": "Disabled"
+            }
+          ]
+        },
+        {
+          "image": "nvcr.io/nvidia/k8s-device-plugin:v0.18.0",
+          "imageID": "",
+          "lastState": {},
+          "name": "mps-control-daemon-ctr",
+          "ready": false,
+          "restartCount": 0,
+          "started": false,
+          "state": {
+            "waiting": {
+              "reason": "PodInitializing"
+            }
+          },
+          "volumeMounts": [
+            {
+              "mountPath": "/dev/shm",
+              "name": "mps-shm"
+            },
+            {
+              "mountPath": "/mps",
+              "name": "mps-root"
+            },
+            {
+              "mountPath": "/config",
+              "name": "config"
+            },
+            {
+              "mountPath": "/available-configs",
+              "name": "device-plugin-config"
+            },
+            {
+              "mountPath": "/var/run/secrets/kubernetes.io/serviceaccount",
+              "name": "kube-api-access-lxxql",
+              "readOnly": true,
+              "recursiveReadOnly": "Disabled"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "nvidia-container-toolkit-daemonset-v69hf",
+      "uid": "7ff824e0-4a88-402d-9252-34c9a72d24f2",
+      "deleting": null,
+      "phase": "Running",
+      "ready": true,
+      "init": [
+        {
+          "containerID": "containerd://0a0b92d1a79ff0bdf516e3519945cd7a2877aa273bad0e378d6e396128a1abd8",
+          "image": "nvcr.io/nvidia/gpu-operator:v25.10.0",
+          "imageID": "nvcr.io/nvidia/gpu-operator@sha256:d4841412c9b8d27c53b1588dcebffc5451e9ab0fd36b2c656c33a65356507cfd",
+          "lastState": {},
+          "name": "driver-validation",
+          "ready": true,
+          "resources": {},
+          "restartCount": 0,
+          "started": false,
+          "state": {
+            "terminated": {
+              "containerID": "containerd://0a0b92d1a79ff0bdf516e3519945cd7a2877aa273bad0e378d6e396128a1abd8",
+              "exitCode": 0,
+              "finishedAt": "2026-10-08T15:30:58Z",
+              "reason": "Completed",
+              "startedAt": "2026-10-08T15:30:57Z"
+            }
+          },
+          "user": {
+            "linux": {
+              "gid": 0,
+              "supplementalGroups": [
+                0
+              ],
+              "uid": 0
+            }
+          },
+          "volumeMounts": [
+            {
+              "mountPath": "/run/nvidia/driver",
+              "name": "driver-install-dir"
+            },
+            {
+              "mountPath": "/run/nvidia/validations",
+              "name": "run-nvidia-validations"
+            },
+            {
+              "mountPath": "/host",
+              "name": "host-root",
+              "readOnly": true,
+              "recursiveReadOnly": "Disabled"
+            },
+            {
+              "mountPath": "/host-dev-char",
+              "name": "host-dev-char"
+            },
+            {
+              "mountPath": "/var/run/secrets/kubernetes.io/serviceaccount",
+              "name": "kube-api-access-8fspn",
+              "readOnly": true,
+              "recursiveReadOnly": "Disabled"
+            }
+          ]
+        }
+      ],
+      "main": [
+        {
+          "containerID": "containerd://cb8bd2e42ab835ce6d235f9099054579b59447723f634a6becaa8a1e834c04dc",
+          "image": "nvcr.io/nvidia/k8s/container-toolkit:v1.18.0",
+          "imageID": "nvcr.io/nvidia/k8s/container-toolkit@sha256:c0d14372bc5d74e882eb60c5c5580459675bf08a2e4c627422cc949af6e9717d",
+          "lastState": {},
+          "name": "nvidia-container-toolkit-ctr",
+          "ready": true,
+          "resources": {},
+          "restartCount": 0,
+          "started": true,
+          "state": {
+            "running": {
+              "startedAt": "2026-10-08T15:30:58Z"
+            }
+          },
+          "user": {
+            "linux": {
+              "gid": 0,
+              "supplementalGroups": [
+                0
+              ],
+              "uid": 0
+            }
+          },
+          "volumeMounts": [
+            {
+              "mountPath": "/bin/entrypoint.sh",
+              "name": "nvidia-container-toolkit-entrypoint",
+              "readOnly": true,
+              "recursiveReadOnly": "Disabled"
+            },
+            {
+              "mountPath": "/run/nvidia/toolkit",
+              "name": "toolkit-root"
+            },
+            {
+              "mountPath": "/run/nvidia/validations",
+              "name": "run-nvidia-validations"
+            },
+            {
+              "mountPath": "/usr/local/nvidia",
+              "name": "toolkit-install-dir"
+            },
+            {
+              "mountPath": "/usr/share/containers/oci/hooks.d",
+              "name": "crio-hooks"
+            },
+            {
+              "mountPath": "/driver-root",
+              "name": "driver-install-dir"
+            },
+            {
+              "mountPath": "/host",
+              "name": "host-root",
+              "readOnly": true,
+              "recursiveReadOnly": "Disabled"
+            },
+            {
+              "mountPath": "/var/run/cdi",
+              "name": "cdi-root"
+            },
+            {
+              "mountPath": "/runtime/config-dir/",
+              "name": "containerd-config"
+            },
+            {
+              "mountPath": "/runtime/config-dir.d/",
+              "name": "containerd-drop-in-config"
+            },
+            {
+              "mountPath": "/runtime/sock-dir/",
+              "name": "containerd-socket"
+            },
+            {
+              "mountPath": "/var/run/secrets/kubernetes.io/serviceaccount",
+              "name": "kube-api-access-8fspn",
+              "readOnly": true,
+              "recursiveReadOnly": "Disabled"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "nvidia-dcgm-exporter-7l5c2",
+      "uid": "fc06bb9d-1bf1-4162-a7ab-ba3000e3b6f5",
+      "deleting": null,
+      "phase": "Pending",
+      "ready": false,
+      "init": [
+        {
+          "containerID": "containerd://06a8cd03254366fddefb1b82ddf94ccff00316fbdab7efedca063591aecf093b",
+          "image": "nvcr.io/nvidia/gpu-operator:v25.10.0",
+          "imageID": "nvcr.io/nvidia/gpu-operator@sha256:d4841412c9b8d27c53b1588dcebffc5451e9ab0fd36b2c656c33a65356507cfd",
+          "lastState": {},
+          "name": "toolkit-validation",
+          "ready": false,
+          "resources": {},
+          "restartCount": 0,
+          "started": true,
+          "state": {
+            "running": {
+              "startedAt": "2026-10-08T15:30:07Z"
+            }
+          },
+          "user": {
+            "linux": {
+              "gid": 0,
+              "supplementalGroups": [
+                0
+              ],
+              "uid": 0
+            }
+          },
+          "volumeMounts": [
+            {
+              "mountPath": "/run/nvidia",
+              "name": "run-nvidia"
+            },
+            {
+              "mountPath": "/var/run/secrets/kubernetes.io/serviceaccount",
+              "name": "kube-api-access-plcsn",
+              "readOnly": true,
+              "recursiveReadOnly": "Disabled"
+            }
+          ]
+        }
+      ],
+      "main": [
+        {
+          "image": "nvcr.io/nvidia/k8s/dcgm-exporter:4.4.1-4.6.0-distroless",
+          "imageID": "",
+          "lastState": {},
+          "name": "nvidia-dcgm-exporter",
+          "ready": false,
+          "restartCount": 0,
+          "started": false,
+          "state": {
+            "waiting": {
+              "reason": "PodInitializing"
+            }
+          },
+          "volumeMounts": [
+            {
+              "mountPath": "/var/lib/kubelet/pod-resources",
+              "name": "pod-gpu-resources",
+              "readOnly": true,
+              "recursiveReadOnly": "Disabled"
+            },
+            {
+              "mountPath": "/var/run/secrets/kubernetes.io/serviceaccount",
+              "name": "kube-api-access-plcsn",
+              "readOnly": true,
+              "recursiveReadOnly": "Disabled"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "nvidia-device-plugin-daemonset-qtw5b",
+      "uid": "ad283f76-d76b-4dd3-9bf0-fec1c7d7120e",
+      "deleting": null,
+      "phase": "Pending",
+      "ready": false,
+      "init": [
+        {
+          "containerID": "containerd://5e691ec904d0c7ce55e7ab2af89add212cd6adbfda47c6090bca5dcaf9766d24",
+          "image": "nvcr.io/nvidia/gpu-operator:v25.10.0",
+          "imageID": "nvcr.io/nvidia/gpu-operator@sha256:d4841412c9b8d27c53b1588dcebffc5451e9ab0fd36b2c656c33a65356507cfd",
+          "lastState": {},
+          "name": "toolkit-validation",
+          "ready": false,
+          "resources": {},
+          "restartCount": 0,
+          "started": true,
+          "state": {
+            "running": {
+              "startedAt": "2026-10-08T15:30:07Z"
+            }
+          },
+          "user": {
+            "linux": {
+              "gid": 0,
+              "supplementalGroups": [
+                0
+              ],
+              "uid": 0
+            }
+          },
+          "volumeMounts": [
+            {
+              "mountPath": "/run/nvidia/validations",
+              "name": "run-nvidia-validations"
+            },
+            {
+              "mountPath": "/var/run/secrets/kubernetes.io/serviceaccount",
+              "name": "kube-api-access-5rfqb",
+              "readOnly": true,
+              "recursiveReadOnly": "Disabled"
+            }
+          ]
+        },
+        {
+          "image": "nvcr.io/nvidia/k8s-device-plugin:v0.18.0",
+          "imageID": "",
+          "lastState": {},
+          "name": "config-manager-init",
+          "ready": false,
+          "restartCount": 0,
+          "started": false,
+          "state": {
+            "waiting": {
+              "reason": "PodInitializing"
+            }
+          },
+          "volumeMounts": [
+            {
+              "mountPath": "/config",
+              "name": "config"
+            },
+            {
+              "mountPath": "/available-configs",
+              "name": "device-plugin-config"
+            },
+            {
+              "mountPath": "/var/run/secrets/kubernetes.io/serviceaccount",
+              "name": "kube-api-access-5rfqb",
+              "readOnly": true,
+              "recursiveReadOnly": "Disabled"
+            }
+          ]
+        }
+      ],
+      "main": [
+        {
+          "image": "nvcr.io/nvidia/k8s-device-plugin:v0.18.0",
+          "imageID": "",
+          "lastState": {},
+          "name": "config-manager",
+          "ready": false,
+          "restartCount": 0,
+          "started": false,
+          "state": {
+            "waiting": {
+              "reason": "PodInitializing"
+            }
+          },
+          "volumeMounts": [
+            {
+              "mountPath": "/config",
+              "name": "config"
+            },
+            {
+              "mountPath": "/available-configs",
+              "name": "device-plugin-config"
+            },
+            {
+              "mountPath": "/var/run/secrets/kubernetes.io/serviceaccount",
+              "name": "kube-api-access-5rfqb",
+              "readOnly": true,
+              "recursiveReadOnly": "Disabled"
+            }
+          ]
+        },
+        {
+          "image": "nvcr.io/nvidia/k8s-device-plugin:v0.18.0",
+          "imageID": "",
+          "lastState": {},
+          "name": "nvidia-device-plugin",
+          "ready": false,
+          "restartCount": 0,
+          "started": false,
+          "state": {
+            "waiting": {
+              "reason": "PodInitializing"
+            }
+          },
+          "volumeMounts": [
+            {
+              "mountPath": "/bin/entrypoint.sh",
+              "name": "nvidia-device-plugin-entrypoint",
+              "readOnly": true,
+              "recursiveReadOnly": "Disabled"
+            },
+            {
+              "mountPath": "/var/lib/kubelet/device-plugins",
+              "name": "device-plugin"
+            },
+            {
+              "mountPath": "/run/nvidia/validations",
+              "name": "run-nvidia-validations"
+            },
+            {
+              "mountPath": "/driver-root",
+              "name": "driver-install-dir"
+            },
+            {
+              "mountPath": "/host",
+              "name": "host-root",
+              "readOnly": true,
+              "recursiveReadOnly": "Disabled"
+            },
+            {
+              "mountPath": "/var/run/cdi",
+              "name": "cdi-root"
+            },
+            {
+              "mountPath": "/dev/shm",
+              "name": "mps-shm"
+            },
+            {
+              "mountPath": "/mps",
+              "name": "mps-root"
+            },
+            {
+              "mountPath": "/config",
+              "name": "config"
+            },
+            {
+              "mountPath": "/available-configs",
+              "name": "device-plugin-config"
+            },
+            {
+              "mountPath": "/var/run/secrets/kubernetes.io/serviceaccount",
+              "name": "kube-api-access-5rfqb",
+              "readOnly": true,
+              "recursiveReadOnly": "Disabled"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "nvidia-driver-daemonset-wvk94",
+      "uid": "efc316a2-3ec6-4a68-ad61-f590e65d0931",
+      "deleting": null,
+      "phase": "Running",
+      "ready": true,
+      "init": [
+        {
+          "containerID": "containerd://e7e6f9d0b2056ac1f518763eb3025d7b093c36af61786d581c3568b2343d1dab",
+          "image": "nvcr.io/nvidia/cloud-native/k8s-driver-manager:v0.9.0",
+          "imageID": "nvcr.io/nvidia/cloud-native/k8s-driver-manager@sha256:a6c12abacc9c4f51d3653c90fcad32f19799069889338601407eba05fea4ba18",
+          "lastState": {},
+          "name": "k8s-driver-manager",
+          "ready": true,
+          "resources": {},
+          "restartCount": 0,
+          "started": false,
+          "state": {
+            "terminated": {
+              "containerID": "containerd://e7e6f9d0b2056ac1f518763eb3025d7b093c36af61786d581c3568b2343d1dab",
+              "exitCode": 0,
+              "finishedAt": "2026-10-08T15:26:44Z",
+              "reason": "Completed",
+              "startedAt": "2026-10-08T15:26:38Z"
+            }
+          },
+          "user": {
+            "linux": {
+              "gid": 0,
+              "supplementalGroups": [
+                0
+              ],
+              "uid": 0
+            }
+          },
+          "volumeMounts": [
+            {
+              "mountPath": "/run/nvidia",
+              "name": "run-nvidia"
+            },
+            {
+              "mountPath": "/host",
+              "name": "host-root",
+              "readOnly": true,
+              "recursiveReadOnly": "Disabled"
+            },
+            {
+              "mountPath": "/sys",
+              "name": "host-sys"
+            },
+            {
+              "mountPath": "/run/mellanox/drivers",
+              "name": "run-mellanox-drivers"
+            },
+            {
+              "mountPath": "/var/run/secrets/kubernetes.io/serviceaccount",
+              "name": "kube-api-access-njzgn",
+              "readOnly": true,
+              "recursiveReadOnly": "Disabled"
+            }
+          ]
+        }
+      ],
+      "main": [
+        {
+          "containerID": "containerd://cbe8584a65df8904766afdcf2e8abeab8dcc8cf078860a9114ed0b2923fa67d8",
+          "image": "nvcr.io/nvidia/driver:580.95.05-ubuntu24.04",
+          "imageID": "nvcr.io/nvidia/driver@sha256:41515698692bd5e192186e620b65717af960a66d22dbb5a06e3656575a5d9148",
+          "lastState": {},
+          "name": "nvidia-driver-ctr",
+          "ready": true,
+          "resources": {},
+          "restartCount": 0,
+          "started": true,
+          "state": {
+            "running": {
+              "startedAt": "2026-10-08T15:26:45Z"
+            }
+          },
+          "user": {
+            "linux": {
+              "gid": 0,
+              "supplementalGroups": [
+                0
+              ],
+              "uid": 0
+            }
+          },
+          "volumeMounts": [
+            {
+              "mountPath": "/run/nvidia",
+              "name": "run-nvidia"
+            },
+            {
+              "mountPath": "/run/nvidia-fabricmanager",
+              "name": "run-nvidia-fabricmanager"
+            },
+            {
+              "mountPath": "/run/nvidia-topologyd",
+              "name": "run-nvidia-topologyd"
+            },
+            {
+              "mountPath": "/var/log",
+              "name": "var-log"
+            },
+            {
+              "mountPath": "/dev/log",
+              "name": "dev-log"
+            },
+            {
+              "mountPath": "/host-etc/os-release",
+              "name": "host-os-release",
+              "readOnly": true,
+              "recursiveReadOnly": "Disabled"
+            },
+            {
+              "mountPath": "/run/mellanox/drivers/usr/src",
+              "name": "mlnx-ofed-usr-src"
+            },
+            {
+              "mountPath": "/run/mellanox/drivers",
+              "name": "run-mellanox-drivers"
+            },
+            {
+              "mountPath": "/sys/devices/system/memory/auto_online_blocks",
+              "name": "sysfs-memory-online"
+            },
+            {
+              "mountPath": "/sys/module/firmware_class/parameters/path",
+              "name": "firmware-search-path"
+            },
+            {
+              "mountPath": "/lib/firmware",
+              "name": "nv-firmware"
+            },
+            {
+              "mountPath": "/var/run/secrets/kubernetes.io/serviceaccount",
+              "name": "kube-api-access-njzgn",
+              "readOnly": true,
+              "recursiveReadOnly": "Disabled"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "nvidia-mig-manager-qlwgj",
+      "uid": "929eac46-8be4-4068-a1f3-ad6a182f995b",
+      "deleting": null,
+      "phase": "Pending",
+      "ready": false,
+      "init": [
+        {
+          "containerID": "containerd://304ba6d8103dbe6d3e3fafd84580397307c6c9a11bfc87c482a43a1709d28cde",
+          "image": "nvcr.io/nvidia/gpu-operator:v25.10.0",
+          "imageID": "nvcr.io/nvidia/gpu-operator@sha256:d4841412c9b8d27c53b1588dcebffc5451e9ab0fd36b2c656c33a65356507cfd",
+          "lastState": {},
+          "name": "toolkit-validation",
+          "ready": false,
+          "resources": {},
+          "restartCount": 0,
+          "started": true,
+          "state": {
+            "running": {
+              "startedAt": "2026-10-08T15:26:45Z"
+            }
+          },
+          "user": {
+            "linux": {
+              "gid": 0,
+              "supplementalGroups": [
+                0
+              ],
+              "uid": 0
+            }
+          },
+          "volumeMounts": [
+            {
+              "mountPath": "/run/nvidia/validations",
+              "name": "run-nvidia-validations"
+            },
+            {
+              "mountPath": "/var/run/secrets/kubernetes.io/serviceaccount",
+              "name": "kube-api-access-5lt8t",
+              "readOnly": true,
+              "recursiveReadOnly": "Disabled"
+            }
+          ]
+        }
+      ],
+      "main": [
+        {
+          "image": "nvcr.io/nvidia/cloud-native/k8s-mig-manager:v0.13.0",
+          "imageID": "",
+          "lastState": {},
+          "name": "nvidia-mig-manager",
+          "ready": false,
+          "restartCount": 0,
+          "started": false,
+          "state": {
+            "waiting": {
+              "reason": "PodInitializing"
+            }
+          },
+          "volumeMounts": [
+            {
+              "mountPath": "/bin/entrypoint.sh",
+              "name": "nvidia-mig-manager-entrypoint",
+              "readOnly": true,
+              "recursiveReadOnly": "Disabled"
+            },
+            {
+              "mountPath": "/run/nvidia/validations",
+              "name": "run-nvidia-validations"
+            },
+            {
+              "mountPath": "/sys",
+              "name": "host-sys"
+            },
+            {
+              "mountPath": "/mig-parted-config",
+              "name": "mig-parted-config"
+            },
+            {
+              "mountPath": "/host",
+              "name": "host-root"
+            },
+            {
+              "mountPath": "/gpu-clients",
+              "name": "gpu-clients"
+            },
+            {
+              "mountPath": "/driver-root",
+              "name": "driver-install-dir"
+            },
+            {
+              "mountPath": "/var/run/cdi",
+              "name": "cdi-root"
+            },
+            {
+              "mountPath": "/var/run/secrets/kubernetes.io/serviceaccount",
+              "name": "kube-api-access-5lt8t",
+              "readOnly": true,
+              "recursiveReadOnly": "Disabled"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "nvidia-operator-validator-d2mqd",
+      "uid": "87598815-8789-47f4-a24f-532b78a69923",
+      "deleting": null,
+      "phase": "Pending",
+      "ready": false,
+      "init": [
+        {
+          "containerID": "containerd://7a08aaf18b6e9521a18b3d68954fff7074f8bcfafd0673187c7b2cb97fc16141",
+          "image": "nvcr.io/nvidia/gpu-operator:v25.10.0",
+          "imageID": "nvcr.io/nvidia/gpu-operator@sha256:d4841412c9b8d27c53b1588dcebffc5451e9ab0fd36b2c656c33a65356507cfd",
+          "lastState": {},
+          "name": "driver-validation",
+          "ready": true,
+          "resources": {},
+          "restartCount": 0,
+          "started": false,
+          "state": {
+            "terminated": {
+              "containerID": "containerd://7a08aaf18b6e9521a18b3d68954fff7074f8bcfafd0673187c7b2cb97fc16141",
+              "exitCode": 0,
+              "finishedAt": "2026-10-08T15:30:08Z",
+              "reason": "Completed",
+              "startedAt": "2026-10-08T15:30:07Z"
+            }
+          },
+          "user": {
+            "linux": {
+              "gid": 0,
+              "supplementalGroups": [
+                0
+              ],
+              "uid": 0
+            }
+          },
+          "volumeMounts": [
+            {
+              "mountPath": "/host",
+              "name": "host-root",
+              "readOnly": true,
+              "recursiveReadOnly": "Disabled"
+            },
+            {
+              "mountPath": "/run/nvidia/driver",
+              "name": "driver-install-dir"
+            },
+            {
+              "mountPath": "/run/nvidia/validations",
+              "name": "run-nvidia-validations"
+            },
+            {
+              "mountPath": "/host-dev-char",
+              "name": "host-dev-char"
+            },
+            {
+              "mountPath": "/var/run/secrets/kubernetes.io/serviceaccount",
+              "name": "kube-api-access-cg6xl",
+              "readOnly": true,
+              "recursiveReadOnly": "Disabled"
+            }
+          ]
+        },
+        {
+          "containerID": "containerd://a81ba8d643f4ed3174f861f008085ddfde108fb4723b1cba689537559fee8a90",
+          "image": "nvcr.io/nvidia/gpu-operator:v25.10.0",
+          "imageID": "nvcr.io/nvidia/gpu-operator@sha256:d4841412c9b8d27c53b1588dcebffc5451e9ab0fd36b2c656c33a65356507cfd",
+          "lastState": {
+            "terminated": {
+              "containerID": "containerd://a81ba8d643f4ed3174f861f008085ddfde108fb4723b1cba689537559fee8a90",
+              "exitCode": 128,
+              "finishedAt": "2026-10-08T15:30:48Z",
+              "message": "failed to create containerd task: failed to create shim task: OCI runtime create failed: runc create failed: unable to start container process: error during container init: failed to fulfil mount request: open /run/nvidia/driver/lib/firmware/nvidia/580.95.05/gsp_ga10x.bin: no such file or directory",
+              "reason": "StartError",
+              "startedAt": "1970-01-01T00:00:00Z"
+            }
+          },
+          "name": "toolkit-validation",
+          "ready": false,
+          "resources": {},
+          "restartCount": 3,
+          "started": false,
+          "state": {
+            "waiting": {
+              "message": "back-off 40s restarting failed container=toolkit-validation pod=nvidia-operator-validator-d2mqd_gpu-operator(87598815-8789-47f4-a24f-532b78a69923)",
+              "reason": "CrashLoopBackOff"
+            }
+          },
+          "user": {
+            "linux": {
+              "gid": 0,
+              "supplementalGroups": [
+                0
+              ],
+              "uid": 0
+            }
+          },
+          "volumeMounts": [
+            {
+              "mountPath": "/run/nvidia/validations",
+              "name": "run-nvidia-validations"
+            },
+            {
+              "mountPath": "/var/run/secrets/kubernetes.io/serviceaccount",
+              "name": "kube-api-access-cg6xl",
+              "readOnly": true,
+              "recursiveReadOnly": "Disabled"
+            }
+          ]
+        },
+        {
+          "image": "nvcr.io/nvidia/gpu-operator:v25.10.0",
+          "imageID": "",
+          "lastState": {},
+          "name": "cuda-validation",
+          "ready": false,
+          "restartCount": 0,
+          "started": false,
+          "state": {
+            "waiting": {
+              "reason": "PodInitializing"
+            }
+          },
+          "volumeMounts": [
+            {
+              "mountPath": "/run/nvidia/validations",
+              "name": "run-nvidia-validations"
+            },
+            {
+              "mountPath": "/var/run/secrets/kubernetes.io/serviceaccount",
+              "name": "kube-api-access-cg6xl",
+              "readOnly": true,
+              "recursiveReadOnly": "Disabled"
+            }
+          ]
+        },
+        {
+          "image": "nvcr.io/nvidia/gpu-operator:v25.10.0",
+          "imageID": "",
+          "lastState": {},
+          "name": "plugin-validation",
+          "ready": false,
+          "restartCount": 0,
+          "started": false,
+          "state": {
+            "waiting": {
+              "reason": "PodInitializing"
+            }
+          },
+          "volumeMounts": [
+            {
+              "mountPath": "/run/nvidia/validations",
+              "name": "run-nvidia-validations"
+            },
+            {
+              "mountPath": "/var/run/secrets/kubernetes.io/serviceaccount",
+              "name": "kube-api-access-cg6xl",
+              "readOnly": true,
+              "recursiveReadOnly": "Disabled"
+            }
+          ]
+        }
+      ],
+      "main": [
+        {
+          "image": "nvcr.io/nvidia/gpu-operator:v25.10.0",
+          "imageID": "",
+          "lastState": {},
+          "name": "nvidia-operator-validator",
+          "ready": false,
+          "restartCount": 0,
+          "started": false,
+          "state": {
+            "waiting": {
+              "reason": "PodInitializing"
+            }
+          },
+          "volumeMounts": [
+            {
+              "mountPath": "/run/nvidia/validations",
+              "name": "run-nvidia-validations"
+            },
+            {
+              "mountPath": "/var/run/secrets/kubernetes.io/serviceaccount",
+              "name": "kube-api-access-cg6xl",
+              "readOnly": true,
+              "recursiveReadOnly": "Disabled"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "scope": "Consumer labels restored; operator readiness observation before uncordon"
+}
