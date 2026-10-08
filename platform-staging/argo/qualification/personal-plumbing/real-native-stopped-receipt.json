@@ -1,0 +1,351 @@
+{
+  "scope": "bounded actual Hub normal-user and native Argo/S3 preparation; stopped for isolation priority",
+  "actualBrowserHubOAuthQualified": false,
+  "normalOwnerPrivacyQualified": false,
+  "logsArtifactsWriteDenialQualified": false,
+  "productionHubGatewayIngressChanged": false,
+  "productionGrantsChanged": false,
+  "qaGrants": 0,
+  "normalHubFixtureCreationVerified": true,
+  "noFixtureServersOrHomes": true,
+  "initializer": {
+    "firstAttempt": {
+      "createdAt": "2026-10-08T12:50:42Z",
+      "failedAt": "2026-10-08T12:50:46Z",
+      "errorDetails": "private response suppressed; failed resource replaced before detailed error receipt"
+    },
+    "retryOutput": {
+      "actualSnapshotsStored": 2,
+      "actualIntentRecordsStored": 2
+    },
+    "imageIds": [
+      "ghcr.io/mul-cps/cps-compute@sha256:74cfb93dcf0078c116b88662b19b6ef14611f616e34ae3141f1fd24ceb3e12ce"
+    ],
+    "credentialReferences": [
+      "cps-compute-gateway:AWS_ACCESS_KEY_ID",
+      "cps-compute-gateway:AWS_SECRET_ACCESS_KEY",
+      "cps-compute-gateway:AWS_DEFAULT_REGION"
+    ],
+    "caReference": "cps-compute-gateway-ca:ca.crt",
+    "namespace": "cps-compute",
+    "artifactRelayIngressAlreadyAllowed": true
+  },
+  "workflows": [
+    {
+      "name": "cps-d814fb1920d85cb0e586a3b30727d3d5a14e27a9685118bf",
+      "uid": "0732b728-9988-49c0-ba2d-da26a3762d79",
+      "phase": "Error",
+      "message": "error in entry template execution: pods \"cps-d814fb1920d85cb0e586a3b30727d3d5a14e27a9685118bf\" is forbidden: ValidatingAdmissionPolicy 'cps-compute-workload-boundary' with binding 'cps-compute-workload-boundary' denied request: Executor credentials require only the approved read-only secret mount paths",
+      "spec": {
+        "activeDeadlineSeconds": 300,
+        "arguments": {},
+        "automountServiceAccountToken": false,
+        "entrypoint": "main",
+        "executor": {
+          "serviceAccountName": "cps-workflow-executor"
+        },
+        "podGC": {
+          "deleteDelayDuration": "10m",
+          "strategy": "OnWorkflowCompletion"
+        },
+        "podSpecPatch": "{\"volumes\": [{\"name\": \"tmp-dir-argo\", \"emptyDir\": {}}, {\"name\": \"argo-staging\", \"emptyDir\": {}}], \"containers\": [{\"name\": \"wait\", \"securityContext\": {\"runAsNonRoot\": true, \"runAsUser\": 10001, \"runAsGroup\": 10001, \"allowPrivilegeEscalation\": false, \"readOnlyRootFilesystem\": true, \"capabilities\": {\"drop\": [\"ALL\"]}, \"seccompProfile\": {\"type\": \"RuntimeDefault\"}}, \"resources\": {\"requests\": {\"cpu\": \"10m\", \"memory\": \"32Mi\"}, \"limits\": {\"cpu\": \"250m\", \"memory\": \"128Mi\"}}}], \"initContainers\": [{\"name\": \"init\", \"securityContext\": {\"runAsNonRoot\": true, \"runAsUser\": 10001, \"runAsGroup\": 10001, \"allowPrivilegeEscalation\": false, \"readOnlyRootFilesystem\": true, \"capabilities\": {\"drop\": [\"ALL\"]}, \"seccompProfile\": {\"type\": \"RuntimeDefault\"}}, \"resources\": {\"requests\": {\"cpu\": \"10m\", \"memory\": \"32Mi\"}, \"limits\": {\"cpu\": \"250m\", \"memory\": \"128Mi\"}}, \"volumeMounts\": [{\"name\": \"tmp-dir-argo\", \"mountPath\": \"/tmp\", \"subPath\": \"init\"}]}]}",
+        "schedulerName": "kai-scheduler",
+        "securityContext": {
+          "fsGroup": 10001,
+          "runAsGroup": 10001,
+          "runAsNonRoot": true,
+          "runAsUser": 10001,
+          "seccompProfile": {
+            "type": "RuntimeDefault"
+          }
+        },
+        "serviceAccountName": "cps-workflow",
+        "templates": [
+          {
+            "container": {
+              "args": [
+                "tar -tzf /inputs/snapshot.tar | test \"$(cat)\" = notebook.ipynb; printf %s eyJjZWxscyI6W3siY2VsbF90eXBlIjoiY29kZSIsImV4ZWN1dGlvbl9jb3VudCI6MSwibWV0YWRhdGEiOnt9LCJvdXRwdXRzIjpbeyJuYW1lIjoic3Rkb3V0Iiwib3V0cHV0X3R5cGUiOiJzdHJlYW0iLCJ0ZXh0IjoicGVyc29uYWwtYXJnby1yZWFsLWNwdS0wLWQ4MTRmYjE5MjBkODVjYjBlNTg2YTNiMzA3MjdkM2Q1YTE0ZTI3YTk2ODUxMThiZlxuIn1dLCJzb3VyY2UiOiJwcmludCgncGVyc29uYWwtYXJnby1yZWFsLWNwdS0wLWQ4MTRmYjE5MjBkODVjYjBlNTg2YTNiMzA3MjdkM2Q1YTE0ZTI3YTk2ODUxMThiZicpIn1dLCJtZXRhZGF0YSI6eyJxdWFsaWZpY2F0aW9uTG9nTWFya2VyIjoicGVyc29uYWwtYXJnby1yZWFsLWNwdS0wLWQ4MTRmYjE5MjBkODVjYjBlNTg2YTNiMzA3MjdkM2Q1YTE0ZTI3YTk2ODUxMThiZiJ9LCJuYmZvcm1hdCI6NCwibmJmb3JtYXRfbWlub3IiOjV9 | base64 -d > /argo/staging/executed.ipynb; echo personal-argo-real-cpu-0-d814fb1920d85cb0e586a3b30727d3d5a14e27a9685118bf"
+              ],
+              "command": [
+                "/bin/sh",
+                "-ec"
+              ],
+              "image": "quay.io/argoproj/argoexec:v3.7.18@sha256:8651f0d1a1050be46ef28a7362cbb7387b5f5c29ce691ebddd5d99a0bb7281a9",
+              "name": "",
+              "resources": {
+                "limits": {
+                  "cpu": "500m",
+                  "memory": "256Mi"
+                },
+                "requests": {
+                  "cpu": "100m",
+                  "memory": "128Mi"
+                }
+              },
+              "securityContext": {
+                "allowPrivilegeEscalation": false,
+                "capabilities": {
+                  "drop": [
+                    "ALL"
+                  ]
+                },
+                "readOnlyRootFilesystem": true,
+                "runAsGroup": 10001,
+                "runAsNonRoot": true,
+                "runAsUser": 10001,
+                "seccompProfile": {
+                  "type": "RuntimeDefault"
+                }
+              },
+              "volumeMounts": [
+                {
+                  "mountPath": "/argo/staging",
+                  "name": "argo-staging"
+                }
+              ]
+            },
+            "inputs": {
+              "artifacts": [
+                {
+                  "archive": {
+                    "none": {}
+                  },
+                  "name": "snapshot",
+                  "path": "/inputs/snapshot.tar",
+                  "s3": {
+                    "accessKeySecret": {
+                      "key": "accessKey",
+                      "name": "cps-artifact-credentials"
+                    },
+                    "bucket": "cps-compute",
+                    "caSecret": {
+                      "key": "ca.crt",
+                      "name": "cps-artifact-ca"
+                    },
+                    "endpoint": "artifacts.cps-artifacts-relay.svc.cluster.local:8333",
+                    "insecure": false,
+                    "key": "notebook-snapshots/d814fb1920d85cb0e586a3b30727d3d5a14e27a9685118bf/snapshot.tar.gz",
+                    "secretKeySecret": {
+                      "key": "secretKey",
+                      "name": "cps-artifact-credentials"
+                    }
+                  }
+                }
+              ]
+            },
+            "metadata": {},
+            "name": "main",
+            "outputs": {
+              "artifacts": [
+                {
+                  "archive": {
+                    "none": {}
+                  },
+                  "name": "executed-notebook",
+                  "path": "/argo/staging/executed.ipynb",
+                  "s3": {
+                    "accessKeySecret": {
+                      "key": "accessKey",
+                      "name": "cps-artifact-credentials"
+                    },
+                    "bucket": "cps-compute",
+                    "caSecret": {
+                      "key": "ca.crt",
+                      "name": "cps-artifact-ca"
+                    },
+                    "endpoint": "artifacts.cps-artifacts-relay.svc.cluster.local:8333",
+                    "insecure": false,
+                    "key": "run-artifacts/d814fb1920d85cb0e586a3b30727d3d5a14e27a9685118bf/executed.ipynb",
+                    "secretKeySecret": {
+                      "key": "secretKey",
+                      "name": "cps-artifact-credentials"
+                    }
+                  }
+                }
+              ]
+            }
+          }
+        ],
+        "ttlStrategy": {
+          "secondsAfterCompletion": 1209600
+        },
+        "volumes": [
+          {
+            "emptyDir": {},
+            "name": "argo-staging"
+          }
+        ]
+      }
+    },
+    {
+      "name": "cps-2a820774751b25a4257996dfca77c2c64b8727f829550483",
+      "uid": "3a4eacbe-699b-43bd-bb19-9f5751973d4e",
+      "phase": "Error",
+      "message": "error in entry template execution: pods \"cps-2a820774751b25a4257996dfca77c2c64b8727f829550483\" is forbidden: ValidatingAdmissionPolicy 'cps-compute-workload-boundary' with binding 'cps-compute-workload-boundary' denied request: Executor credentials require only the approved read-only secret mount paths",
+      "spec": {
+        "activeDeadlineSeconds": 300,
+        "arguments": {},
+        "automountServiceAccountToken": false,
+        "entrypoint": "main",
+        "executor": {
+          "serviceAccountName": "cps-workflow-executor"
+        },
+        "podGC": {
+          "deleteDelayDuration": "10m",
+          "strategy": "OnWorkflowCompletion"
+        },
+        "podSpecPatch": "{\"volumes\": [{\"name\": \"tmp-dir-argo\", \"emptyDir\": {}}, {\"name\": \"argo-staging\", \"emptyDir\": {}}], \"containers\": [{\"name\": \"wait\", \"securityContext\": {\"runAsNonRoot\": true, \"runAsUser\": 10001, \"runAsGroup\": 10001, \"allowPrivilegeEscalation\": false, \"readOnlyRootFilesystem\": true, \"capabilities\": {\"drop\": [\"ALL\"]}, \"seccompProfile\": {\"type\": \"RuntimeDefault\"}}, \"resources\": {\"requests\": {\"cpu\": \"10m\", \"memory\": \"32Mi\"}, \"limits\": {\"cpu\": \"250m\", \"memory\": \"128Mi\"}}}], \"initContainers\": [{\"name\": \"init\", \"securityContext\": {\"runAsNonRoot\": true, \"runAsUser\": 10001, \"runAsGroup\": 10001, \"allowPrivilegeEscalation\": false, \"readOnlyRootFilesystem\": true, \"capabilities\": {\"drop\": [\"ALL\"]}, \"seccompProfile\": {\"type\": \"RuntimeDefault\"}}, \"resources\": {\"requests\": {\"cpu\": \"10m\", \"memory\": \"32Mi\"}, \"limits\": {\"cpu\": \"250m\", \"memory\": \"128Mi\"}}, \"volumeMounts\": [{\"name\": \"tmp-dir-argo\", \"mountPath\": \"/tmp\", \"subPath\": \"init\"}]}]}",
+        "schedulerName": "kai-scheduler",
+        "securityContext": {
+          "fsGroup": 10001,
+          "runAsGroup": 10001,
+          "runAsNonRoot": true,
+          "runAsUser": 10001,
+          "seccompProfile": {
+            "type": "RuntimeDefault"
+          }
+        },
+        "serviceAccountName": "cps-workflow",
+        "templates": [
+          {
+            "container": {
+              "args": [
+                "tar -tzf /inputs/snapshot.tar | test \"$(cat)\" = notebook.ipynb; printf %s eyJjZWxscyI6W3siY2VsbF90eXBlIjoiY29kZSIsImV4ZWN1dGlvbl9jb3VudCI6MSwibWV0YWRhdGEiOnt9LCJvdXRwdXRzIjpbeyJuYW1lIjoic3Rkb3V0Iiwib3V0cHV0X3R5cGUiOiJzdHJlYW0iLCJ0ZXh0IjoicGVyc29uYWwtYXJnby1yZWFsLWNwdS0xLTJhODIwNzc0NzUxYjI1YTQyNTc5OTZkZmNhNzdjMmM2NGI4NzI3ZjgyOTU1MDQ4M1xuIn1dLCJzb3VyY2UiOiJwcmludCgncGVyc29uYWwtYXJnby1yZWFsLWNwdS0xLTJhODIwNzc0NzUxYjI1YTQyNTc5OTZkZmNhNzdjMmM2NGI4NzI3ZjgyOTU1MDQ4MycpIn1dLCJtZXRhZGF0YSI6eyJxdWFsaWZpY2F0aW9uTG9nTWFya2VyIjoicGVyc29uYWwtYXJnby1yZWFsLWNwdS0xLTJhODIwNzc0NzUxYjI1YTQyNTc5OTZkZmNhNzdjMmM2NGI4NzI3ZjgyOTU1MDQ4MyJ9LCJuYmZvcm1hdCI6NCwibmJmb3JtYXRfbWlub3IiOjV9 | base64 -d > /argo/staging/executed.ipynb; echo personal-argo-real-cpu-1-2a820774751b25a4257996dfca77c2c64b8727f829550483"
+              ],
+              "command": [
+                "/bin/sh",
+                "-ec"
+              ],
+              "image": "quay.io/argoproj/argoexec:v3.7.18@sha256:8651f0d1a1050be46ef28a7362cbb7387b5f5c29ce691ebddd5d99a0bb7281a9",
+              "name": "",
+              "resources": {
+                "limits": {
+                  "cpu": "500m",
+                  "memory": "256Mi"
+                },
+                "requests": {
+                  "cpu": "100m",
+                  "memory": "128Mi"
+                }
+              },
+              "securityContext": {
+                "allowPrivilegeEscalation": false,
+                "capabilities": {
+                  "drop": [
+                    "ALL"
+                  ]
+                },
+                "readOnlyRootFilesystem": true,
+                "runAsGroup": 10001,
+                "runAsNonRoot": true,
+                "runAsUser": 10001,
+                "seccompProfile": {
+                  "type": "RuntimeDefault"
+                }
+              },
+              "volumeMounts": [
+                {
+                  "mountPath": "/argo/staging",
+                  "name": "argo-staging"
+                }
+              ]
+            },
+            "inputs": {
+              "artifacts": [
+                {
+                  "archive": {
+                    "none": {}
+                  },
+                  "name": "snapshot",
+                  "path": "/inputs/snapshot.tar",
+                  "s3": {
+                    "accessKeySecret": {
+                      "key": "accessKey",
+                      "name": "cps-artifact-credentials"
+                    },
+                    "bucket": "cps-compute",
+                    "caSecret": {
+                      "key": "ca.crt",
+                      "name": "cps-artifact-ca"
+                    },
+                    "endpoint": "artifacts.cps-artifacts-relay.svc.cluster.local:8333",
+                    "insecure": false,
+                    "key": "notebook-snapshots/2a820774751b25a4257996dfca77c2c64b8727f829550483/snapshot.tar.gz",
+                    "secretKeySecret": {
+                      "key": "secretKey",
+                      "name": "cps-artifact-credentials"
+                    }
+                  }
+                }
+              ]
+            },
+            "metadata": {},
+            "name": "main",
+            "outputs": {
+              "artifacts": [
+                {
+                  "archive": {
+                    "none": {}
+                  },
+                  "name": "executed-notebook",
+                  "path": "/argo/staging/executed.ipynb",
+                  "s3": {
+                    "accessKeySecret": {
+                      "key": "accessKey",
+                      "name": "cps-artifact-credentials"
+                    },
+                    "bucket": "cps-compute",
+                    "caSecret": {
+                      "key": "ca.crt",
+                      "name": "cps-artifact-ca"
+                    },
+                    "endpoint": "artifacts.cps-artifacts-relay.svc.cluster.local:8333",
+                    "insecure": false,
+                    "key": "run-artifacts/2a820774751b25a4257996dfca77c2c64b8727f829550483/executed.ipynb",
+                    "secretKeySecret": {
+                      "key": "secretKey",
+                      "name": "cps-artifact-credentials"
+                    }
+                  }
+                }
+              ]
+            }
+          }
+        ],
+        "ttlStrategy": {
+          "secondsAfterCompletion": 1209600
+        },
+        "volumes": [
+          {
+            "emptyDir": {},
+            "name": "argo-staging"
+          }
+        ]
+      }
+    }
+  ],
+  "workflowAcceptance": "admission denied before Pods; not notebook execution qualification",
+  "s3Cleanup": {
+    "ownedSnapshotAndIntentObjectsDeleted": 4,
+    "absenceVerified": true,
+    "transport": "existing gateway service-side credential references; QA cleanup Job endpoint failed"
+  },
+  "ownedQaKubernetesResourcesRemoved": true,
+  "failedQaCleanupJob": {
+    "errorType": "EndpointConnectionError",
+    "privateResponseSuppressed": true,
+    "removed": true
+  },
+  "normalHubFixturesCleanup": {
+    "usersDeleted": 2,
+    "visitorTokenSecretDeleted": true,
+    "maintenanceIssuerTokenRevoked": true,
+    "postRevocationHubRejected": true,
+    "serversStarted": 0,
+    "homesProvisioned": 0
+  },
+  "sourceTests": {
+    "operatorSafetyPassed": 9,
+    "pythonCompilationPassed": true
+  }
+}

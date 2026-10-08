@@ -138,16 +138,35 @@ The read-only Argo credential needs Workflow GET/LIST only for controlled fixtur
 records; no operational Argo credential is cloned. Use suspended, annotated,
 CPU-only fixture Workflow records if real owner records are needed, and remove
 only their exact created UIDs after tests. Creation of Hub users or Workflow
-fixtures remains a separate root-reviewed step. Actual HTTP tests and the complete bounded QA runtime startup remain pending
-because normal fixture credentials, public Kubernetes CA projection, independent
-QA artifact-client credentials and controlled provenance records do not yet exist.
+fixtures remains a separate root-reviewed step. `ownership_http.py --extended` requires actual own log content and HEAD/GET
+artifact bytes matching a controlled fixture hash, foreign/unknown 404, and
+read-only terminate denial even for an owner. It first verifies actual normal
+Hub identity, rejects admin substitution, bounds responses and refuses HTTP
+redirects so bearer tokens cannot be forwarded to another URL. Missing own
+artifacts/provenance fail qualification rather than producing a passing receipt.
+Actual HTTP tests and the complete bounded QA runtime startup remain pending.
+On 2026-10-08, two real normal CPS Hub fixture users and visitor tokens were
+verified without servers/homes. Two snapshot and intent pairs were stored in
+the actual S3 service. Both CPU Workflows were denied before Pod creation by
+the existing executor mount-path admission boundary. The task stopped when
+isolation became the user priority; all new fixtures, users, tokens and objects
+were removed. `real-native-stopped-receipt.json` records this incomplete gate. The published SDK fixes
+artifact access to its reviewed native Argo/S3 endpoints, bucket and Secret names;
+a separate fake artifact backend cannot qualify that integration. Service-side
+Secret references may be consumed by a separately approved real fixture run,
+without printing or cloning production credential data.
 The configuration helper is preparation code, not a qualified live QA gateway.
 
 Preparation requires verified, matching gateway-state and Hub database/config
-backup evidence, a new sanitized preparation journal, and root-reviewed successful
-real browser Hub OAuth, normal owner privacy and canonical/optional alias inventory
-evidence. These gates are currently incomplete, so production preparation is
-blocked before any mutation. Original runtime Secret remains untouched. On rollout failure,
+backup evidence, a new sanitized preparation journal, and root-reviewed actual
+normal-Hub-token owner privacy plus canonical/optional alias inventory evidence.
+Private preparation creates the registration needed for later real browser
+verification and does not require that prior OAuth result. Public activation
+remains separate and requires actual browser Hub OAuth, full owner/foreign
+logs/artifacts/write-denial coverage and reviewed route/Fleet persistence.
+The user explicitly skipped browser verification this session, then prioritized
+isolation before this preparation ran. No production Hub/gateway/ingress changes
+occurred. The browser gate remains false. Original runtime Secret remains untouched. On rollout failure,
 the operator restores only its owned gateway image/config/reader fields and Hub
 mounts from fresh objects with resourceVersion CAS; unrelated edits are retained.
 New resources remain private/dormant for explicit cleanup. After a completed preparation, `--rollback-reviewed-sha256` with the matching

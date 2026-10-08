@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 """Review by default: two CPS normal fixtures, no servers/homes, expiring API tokens."""
 import argparse
+import base64
 import datetime
 import hashlib
 import json
@@ -26,20 +27,36 @@ PLAN={'hubApi':HUB,'users':USERS,'createBody':{'admin':False},
 SHA=hashlib.sha256(json.dumps(PLAN,sort_keys=True,separators=(',',':')).encode()).hexdigest()
 
 
+class NoRedirect(urllib.request.HTTPRedirectHandler):
+    def redirect_request(self,*args,**kwargs):return None
+
+
 def request(path, token, *, method='GET', body=None):
     payload=None if body is None else json.dumps(body).encode()
     headers={'Authorization':'token '+token,'Content-Type':'application/json'}
     try:
-        response=urllib.request.urlopen(urllib.request.Request(HUB+path,data=payload,headers=headers,method=method),
-            context=ssl.create_default_context(),timeout=15)
+        opener=urllib.request.build_opener(urllib.request.HTTPSHandler(context=ssl.create_default_context()),NoRedirect())
+        response=opener.open(urllib.request.Request(HUB+path,data=payload,headers=headers,method=method),timeout=15)
         content=response.read(1024*1024)
         return response.status,json.loads(content) if content else None
     except urllib.error.HTTPError as error:return error.code,None
 
 
-def execute(admin_file, receipt_file, cleanup=False, authenticator_hooks_reviewed=False):
+def administration_token(admin_file=None, secret_reference=None):
+    assert bool(admin_file)!=bool(secret_reference)
+    if secret_reference:
+        assert secret_reference=='cps-compute/cps-admin-oauth:hub-api-token'
+        # The existing service credential is used only for administration; bytes
+        # remain in memory and never enter argv, stdout, files or visitor tests.
+        result=subprocess.run(['kubectl','-n','cps-compute','get','secret','cps-admin-oauth','-o','json'],capture_output=True,text=True)
+        assert result.returncode==0
+        return base64.b64decode(json.loads(result.stdout)['data']['hub-api-token']).decode().strip()
     path=Path(admin_file);assert stat.S_IMODE(path.stat().st_mode)&0o077==0
-    admin=path.read_text().strip()
+    return path.read_text().strip()
+
+
+def execute(admin_file, receipt_file, cleanup=False, authenticator_hooks_reviewed=False, secret_reference=None, native_token=None):
+    admin=native_token if native_token is not None else administration_token(admin_file,secret_reference)
     receipt_path=Path(receipt_file)
     if cleanup:
         receipt=json.loads(receipt_path.read_text())
@@ -101,14 +118,21 @@ if __name__=='__main__':
     if not __debug__:raise SystemExit('fixture script requires validation-enabled Python')
     parser=argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--execute-reviewed-sha256');parser.add_argument('--admin-token-file')
+    parser.add_argument('--admin-secret-reference',help='Existing reviewed CPS administration service reference; loaded only in process memory')
+    parser.add_argument('--token-secret-namespace',choices=[NAMESPACE,'cps-compute'],default=NAMESPACE,
+                        help='Owned temporary consumer namespace; part of the concrete review hash')
     parser.add_argument('--receipt-file',help='Required sanitized creation receipt, also required for cleanup')
     parser.add_argument('--authenticator-hooks-reviewed',action='store_true',help='Root reviewed actual Hub add_user hooks and confirmed no home provisioning')
     parser.add_argument('--cleanup',action='store_true')
     options=parser.parse_args()
     try:
+        NAMESPACE=options.token_secret_namespace
+        PLAN['secretReference']['namespace']=NAMESPACE
+        SHA=hashlib.sha256(json.dumps(PLAN,sort_keys=True,separators=(',',':')).encode()).hexdigest()
         if options.execute_reviewed_sha256:
             assert options.execute_reviewed_sha256==SHA
-            print(json.dumps(execute(options.admin_token_file,options.receipt_file,options.cleanup,options.authenticator_hooks_reviewed)))
+            print(json.dumps(execute(options.admin_token_file,options.receipt_file,options.cleanup,options.authenticator_hooks_reviewed,
+                                     options.admin_secret_reference)))
         else:print(json.dumps({**PLAN,'reviewSha256':SHA},indent=2))
     except Exception:
         print('fixture operation stopped; credential and user response bodies suppressed')

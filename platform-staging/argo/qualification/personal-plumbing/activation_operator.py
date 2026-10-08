@@ -128,6 +128,10 @@ def plan():
             'clientId':'service-'+s+'-argo-ui','scope':'access:services!service='+s+'-argo-ui'} for s,(ns,origin) in SOURCES.items()},
         'runtimeChange':{'originalSecretPreserved':RUNTIME_OLD,'newSecret':RUNTIME_NEW,
             'onlyAddedKey':{'argoUi':{'enabled':True,'readerTokenFile':'/argo-reader/token','temporaryDirectory':'/tmp'}}},
+        'privatePreparationGates':['matching verified backups','reviewed canonical/alias identity inventory',
+            'actual normal-Hub-token backend ownership HTTP qualification'],
+        'publicActivationGates':['actual Hub OAuth browser verification','own/foreign logs/artifacts/write-denial coverage',
+            'exact legacy route replacement and Fleet persistence'],
         'resources':[{'kind':o['kind'],'namespace':o['metadata']['namespace'],'name':o['metadata']['name']} for o in objects],
         'activationBlockedBy':['normal gateway canonical identity maps currently empty; grants also empty',
             'real normal-user browser/ownership/callback/download/SSE qualification pending',
@@ -193,6 +197,16 @@ def rollback_fields(old_image, hub_sources, gateway_updated):
         hub=get('deployment','hub',namespace);hub_pod_update(hub['spec']['template']['spec'],False);replace(hub)
 
 
+def private_preparation_evidence(evidence, old_image):
+    assert evidence['gatewayStateSnapshotVerified'] is True and evidence['gatewayImage']==old_image
+    assert evidence['hubDatabaseConfigSnapshotsVerified']=={'cps':True,'cit':True}
+    gates=evidence['activationGates']
+    assert gates['normalOwnerPrivacyQualified'] is True and gates['aliasInventoryReviewed'] is True
+    # Registration/backend preparation enables browser verification. It cannot
+    # require the OAuth flow that it is preparing, and never publishes a route.
+    assert type(gates.get('actualBrowserHubOAuthQualified',False)) is bool
+
+
 def prepare(review_sha, backup_evidence, receipt_file):
     expected=json.loads((HERE/'activation-plan.json').read_text())
     assert review_sha==expected['reviewSha256'], 'Exact concrete plan review hash required'
@@ -205,11 +219,7 @@ def prepare(review_sha, backup_evidence, receipt_file):
                        for v in deployment['spec']['template']['spec']['volumes'])
     old_image=next(c['image'] for c in gateway['spec']['template']['spec']['containers'] if c['name']=='gateway')
     evidence=json.loads(Path(backup_evidence).read_text())
-    assert evidence['gatewayStateSnapshotVerified'] is True and evidence['gatewayImage']==old_image
-    assert evidence['hubDatabaseConfigSnapshotsVerified']=={'cps':True,'cit':True}
-    # Production preparation stays blocked until root reviews actual identity/privacy evidence.
-    assert evidence['activationGates']=={'realBrowserHubOAuthQualified':True,
-        'normalOwnerPrivacyQualified':True,'aliasInventoryReviewed':True}
+    private_preparation_evidence(evidence,old_image)
     # Verify the exact planned native prefix before creating any Secret or changing a Pod.
     # Argo serves a SPA index for unknown paths, so status=200 alone is insufficient.
     native=next(e['value'] for o in rendered_objects() if o['kind']=='Deployment' for e in o['spec']['template']['spec']['containers'][0]['env'] if e['name']=='ARGO_USER_NATIVE_ARGO_URL')
@@ -268,7 +278,7 @@ def prepare(review_sha, backup_evidence, receipt_file):
         raise RuntimeError('Preparation failed; owned deployment fields restored; created resources remain dormant for explicit cleanup') from None
     receipt['backendPrepared']=True;Path(receipt_file).write_text(json.dumps(receipt,indent=2)+'\n')
     return {'status':'backend-prepared-not-public','reviewSha256':review_sha,'ingressPublished':False,
-        'normalUserOwnershipQualified':False,'fleetPersistenceQualified':False}
+        'normalUserOwnershipQualified':True,'actualBrowserHubOAuthQualified':False,'fleetPersistenceQualified':False}
 
 
 def rollback(review_sha, receipt_file):

@@ -65,6 +65,16 @@
       }
     }
   },
+  "privatePreparationGates": [
+    "matching verified backups",
+    "reviewed canonical/alias identity inventory",
+    "actual normal-Hub-token backend ownership HTTP qualification"
+  ],
+  "publicActivationGates": [
+    "actual Hub OAuth browser verification",
+    "own/foreign logs/artifacts/write-denial coverage",
+    "exact legacy route replacement and Fleet persistence"
+  ],
   "resources": [
     {
       "kind": "ServiceAccount",
@@ -161,5 +171,5 @@
     "no full chart apply",
     "no Fleet edits"
   ],
-  "reviewSha256": "4d6fa642433921d4aba7464908455ce1d2c803e37086d75dd903e477d4d6d680"
+  "reviewSha256": "db40c6aea56bfef3cd660b07e96d4322e893d1ba8e3794fbd52e3c0faa0ad9e3"
 }

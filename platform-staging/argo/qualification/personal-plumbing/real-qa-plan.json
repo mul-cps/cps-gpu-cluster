@@ -1,0 +1,44 @@
+{
+  "ownerLabel": "compute.cps.unileoben.ac.at/owner",
+  "s3Endpoint": "https://artifacts.cps-artifacts-relay.svc.cluster.local:8333",
+  "fixtures": [
+    {
+      "id": "d814fb1920d85cb0e586a3b30727d3d5a14e27a9685118bf",
+      "workflow": "cps-d814fb1920d85cb0e586a3b30727d3d5a14e27a9685118bf",
+      "user": "cps-argo-qa-a-20261008",
+      "person": "b49edc95-2b9f-4bbc-b307-50423db6cfc4",
+      "ownerHash": "22c15b1e7c6af93fa814766b23d09484d96e233255b2ebd287e67bb3eaab682",
+      "snapshotBase64": "H4sIAAAAAAAC/+3PTU7DMBAF4BwFzaYgJchJ4yTNGeAEqKpsx6mipnZwbImq6t1xigSCNT8L3reZsRfzZoz1Wlp7uB+mk5HJj2BRVZbXGn2tjLPivb/+56wqeHLDkl8QZi9cjE/+pzMpPY4ztU9v3c6fJk0tKdtpSkm/aBX8YM1O2WA8tSaMY0pH7UUnvKD2fEnJBj8Fv8zYpjTb4NQyYXKD8berSbvZGjFmwu1t5nTs1BQylnVNXvYy3xSsa7iSTPOmEmu5ZnVRd+uOi7zURS02VcPzvJH96o4u20/R9BzEOPSDEsuGD3b/KNxBuyX7u0Ipnmdkb91RxOPLj8fuOBgbo/glAQAAAAAAAAAAAAAAAAAAAAAA+BOvwyIvGAAoAAA=",
+      "snapshotSha256": "1b1a220f5f93eabd75f01f9fb3ee21f15c8bec40568e56710e58079ea940c8bc",
+      "artifactSha256": "8442a1b887c82996bd394e004ab45dc59f1e2f01802996334d4a70ee287f12f8",
+      "logMarker": "personal-argo-real-cpu-0-d814fb1920d85cb0e586a3b30727d3d5a14e27a9685118bf",
+      "intent": {
+        "version": 1,
+        "notebook_id": "d814fb1920d85cb0e586a3b30727d3d5a14e27a9685118bf",
+        "policy_hash": "sha256:051cd754210af2830d67968eea898f674a55ff66f5c88b3db95dff205f04e33d",
+        "owner": "22c15b1e7c6af93fa814766b23d09484d96e233255b2ebd287e67bb3eaab682",
+        "submission_hash": "e3162567b3324de9f980ece37c5b1d3b4da89c27b8e6db3707c4105e2ec109bb",
+        "snapshot_hash": "1b1a220f5f93eabd75f01f9fb3ee21f15c8bec40568e56710e58079ea940c8bc"
+      }
+    },
+    {
+      "id": "2a820774751b25a4257996dfca77c2c64b8727f829550483",
+      "workflow": "cps-2a820774751b25a4257996dfca77c2c64b8727f829550483",
+      "user": "cps-argo-qa-b-20261008",
+      "person": "f4bf4157-8de6-4aaf-9b93-a3f01d5c9cd0",
+      "ownerHash": "07e1c01d924e8c21e0521971fa48a9b22d860d0d8dfaa1cf5f55a48b0fa75c0",
+      "snapshotBase64": "H4sIAAAAAAAC/+3PTU7DMBAF4BwFzaYgJZVr7DjNGeAEqKoc16mipnZwbImq6t1JigSCNT8L3reZsRfzZpyPtvH+sOyGk2uyH8EmpRDXOvlamWT8vb/+r1jJZXbDsl+QxqjDFJ/9T2cytu9Hqp/eum08DZZqMn5nKSf7Yk2KnXdb45OLVLvU9zkdbdQ7HTXV50tOPsUhxXnGJqfRp2DmCUPoXLxdDDaM3um+0GHvi2CnzgypWBVcV5wpJZRcNVxqwaVar8tda7RShptSNJXiqq34WkomqvvFHV02n6LpOem+azuj5w0f/P5Rh4MNc/Z3hdJ0nmtaH456Ol58PLbHzvkpSl4yAAAAAAAAAAAAAAAAAAAAAACAP/EK54eRmwAoAAA=",
+      "snapshotSha256": "992f55c17bc83a88df40a31ea120a88a6541c6539ce83bccc9026b9efdce36c4",
+      "artifactSha256": "7775cb415dd94b3f9b87cf822cbef9e15f0617b69b2b309392b9cf2b2659e1d2",
+      "logMarker": "personal-argo-real-cpu-1-2a820774751b25a4257996dfca77c2c64b8727f829550483",
+      "intent": {
+        "version": 1,
+        "notebook_id": "2a820774751b25a4257996dfca77c2c64b8727f829550483",
+        "policy_hash": "sha256:051cd754210af2830d67968eea898f674a55ff66f5c88b3db95dff205f04e33d",
+        "owner": "07e1c01d924e8c21e0521971fa48a9b22d860d0d8dfaa1cf5f55a48b0fa75c0",
+        "submission_hash": "5f99d907cb668b0cae776162de6d8416cb19b1df555f0687a195fbf8330af767",
+        "snapshot_hash": "992f55c17bc83a88df40a31ea120a88a6541c6539ce83bccc9026b9efdce36c4"
+      }
+    }
+  ]
+}
