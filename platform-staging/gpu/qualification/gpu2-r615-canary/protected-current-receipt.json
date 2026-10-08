@@ -1,5 +1,5 @@
 {
-  "observedAt": "2026-10-08T15:02:06.462721+00:00",
+  "observedAt": "2026-10-08T15:22:56.644664+00:00",
   "scope": "GPU1/3/4 baseline Pods and GPU2 CPU/PVC Pods; root-owned GPU2 GPU operator/prototype operands excluded",
   "allProtectedUIDsMatched": false,
   "allProtectedReady": false,
