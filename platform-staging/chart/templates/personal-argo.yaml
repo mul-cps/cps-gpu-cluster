@@ -27,6 +27,7 @@ spec:
       labels: {app: {{ $source }}-argo-ui}
     spec:
       automountServiceAccountToken: false
+      terminationGracePeriodSeconds: 40
       imagePullSecrets: [{name: {{ $.Values.gateway.imagePullSecretRef }}}]
       securityContext:
         runAsNonRoot: true

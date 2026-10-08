@@ -44,6 +44,7 @@ class PersonalArgoChart(unittest.TestCase):
             deployment = next(o for o in objects if o and o['kind'] == 'Deployment' and o['metadata']['name'] == f'{source}-argo-ui')
             pod = deployment['spec']['template']['spec']; container = pod['containers'][0]
             self.assertFalse(pod['automountServiceAccountToken'])
+            self.assertGreater(pod['terminationGracePeriodSeconds'], 30)
             self.assertTrue(container['securityContext']['readOnlyRootFilesystem'])
             env = {e['name']: e for e in container['env']}
             self.assertEqual(env['ARGO_USER_OAUTH_CLIENT_ID']['value'], f'service-{source}-argo-ui')
