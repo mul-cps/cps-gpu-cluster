@@ -3,7 +3,7 @@
 {{- $image := required "Personal Argo requires a released service image digest" .Values.personalArgo.image }}
 {{- if not (regexMatch "^[^@ ]+@sha256:[a-f0-9]{64}$" $image) }}{{ fail "Personal Argo service image must use a digest" }}{{ end }}
 {{- $native := required "Pinned native Argo HTTPS asset backend required" .Values.personalArgo.nativeUrl }}
-{{- if not (regexMatch "^https://[^/?# ]+(:[0-9]+)?/argo$" $native) }}{{ fail "Native Argo backend must be HTTPS and end in /argo" }}{{ end }}
+{{- if not (regexMatch "^https://[^/?#@ ]+(:[0-9]+)?(/argo)?/?$" $native) }}{{ fail "Native Argo backend must be HTTPS with a root or /argo base path" }}{{ end }}
 {{- range $source, $settings := .Values.personalArgo.sources }}
 {{- if $settings.enabled }}
 {{- if not (has $source (list "cps" "cit")) }}{{ fail "Only CPS/CIT personal Argo sources are permitted" }}{{ end }}

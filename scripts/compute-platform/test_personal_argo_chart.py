@@ -76,11 +76,22 @@ class PersonalArgoChart(unittest.TestCase):
         self.assertIn('match exactly', result.stderr)
 
     def test_native_backend_rejects_plaintext_and_unknown_base_path(self):
-        for url in ('http://native.invalid/argo', 'https://native.invalid', 'https://native.invalid/foreign'):
+        for url in ('http://native.invalid/argo', 'http://native.invalid/', 'https://native.invalid/foreign',
+                    'https://native.invalid//', 'https://native.invalid/argo//', 'https://native.invalid/argo/api'):
             with self.subTest(url=url):
                 values = copy.deepcopy(self.values); values['personalArgo']['nativeUrl'] = url
                 result, _ = self.render(values)
                 self.assertNotEqual(result.returncode, 0)
+
+    def test_native_backend_accepts_explicit_https_root_or_argo(self):
+        for url in ('https://native.invalid', 'https://native.invalid/', 'https://native.invalid/argo', 'https://native.invalid/argo/'):
+            with self.subTest(url=url):
+                values = copy.deepcopy(self.values); values['personalArgo']['nativeUrl'] = url
+                result, objects = self.render(values)
+                self.assertEqual(result.returncode, 0, result.stderr)
+                deployment = next(o for o in objects if o and o['kind'] == 'Deployment' and o['metadata']['name'] == 'cps-argo-ui')
+                env = {e['name']: e for e in deployment['spec']['template']['spec']['containers'][0]['env']}
+                self.assertEqual(env['ARGO_USER_NATIVE_ARGO_URL']['value'], url)
 
 
 if __name__ == '__main__':
