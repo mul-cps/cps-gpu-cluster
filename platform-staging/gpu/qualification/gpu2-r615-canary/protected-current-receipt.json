@@ -1,0 +1,1989 @@
+{
+  "observedAt": "2026-10-08T13:43:23.923074+00:00",
+  "scope": "GPU1/3/4 baseline Pods and GPU2 CPU/PVC Pods; root-owned GPU2 GPU operator/prototype operands excluded",
+  "allProtectedUIDsMatched": true,
+  "allProtectedReady": true,
+  "allProtectedRestartsMatched": false,
+  "protectedPods": [
+    {
+      "namespace": "alloy",
+      "name": "alloy-f7rp5",
+      "node": "k3s-wk-gpu1",
+      "expectedUID": "af38b0ab-9c95-40a0-ab7f-38b6675e37b1",
+      "currentUID": "af38b0ab-9c95-40a0-ab7f-38b6675e37b1",
+      "uidMatched": true,
+      "ready": true,
+      "containerRestartsMatched": true
+    },
+    {
+      "namespace": "alloy",
+      "name": "alloy-qrhmh",
+      "node": "k3s-wk-gpu3",
+      "expectedUID": "f5c1d3a6-e6d3-423e-9c6e-263889ee15ed",
+      "currentUID": "f5c1d3a6-e6d3-423e-9c6e-263889ee15ed",
+      "uidMatched": true,
+      "ready": true,
+      "containerRestartsMatched": true
+    },
+    {
+      "namespace": "alloy",
+      "name": "alloy-vs4nr",
+      "node": "k3s-wk-gpu4",
+      "expectedUID": "917559d1-356c-4847-8b74-562d785730a4",
+      "currentUID": "917559d1-356c-4847-8b74-562d785730a4",
+      "uidMatched": true,
+      "ready": true,
+      "containerRestartsMatched": true
+    },
+    {
+      "namespace": "arc-systems",
+      "name": "actions-runner-controller-gha-rs-controller-797c948bb9-bpbph",
+      "node": "k3s-wk-gpu3",
+      "expectedUID": "1b2576b8-120e-4327-95e8-841a335fcd36",
+      "currentUID": "1b2576b8-120e-4327-95e8-841a335fcd36",
+      "uidMatched": true,
+      "ready": true,
+      "containerRestartsMatched": true
+    },
+    {
+      "namespace": "arc-systems",
+      "name": "cit-cps-gpu-5d57db67-listener",
+      "node": "k3s-wk-gpu4",
+      "expectedUID": "cab8ca15-50a7-4ddf-80d7-56af2f75cf5c",
+      "currentUID": "cab8ca15-50a7-4ddf-80d7-56af2f75cf5c",
+      "uidMatched": true,
+      "ready": true,
+      "containerRestartsMatched": true
+    },
+    {
+      "namespace": "arc-systems",
+      "name": "splatograph-767bd695-listener",
+      "node": "k3s-wk-gpu4",
+      "expectedUID": "9eb4b5fa-a0af-490a-b278-1eb58d564ef4",
+      "currentUID": "9eb4b5fa-a0af-490a-b278-1eb58d564ef4",
+      "uidMatched": true,
+      "ready": true,
+      "containerRestartsMatched": true
+    },
+    {
+      "namespace": "beszel",
+      "name": "beszel-hub-85897b7675-8p7pf",
+      "node": "k3s-wk-gpu4",
+      "expectedUID": "4becefc8-f435-4a7f-b02b-3e14fbd9798f",
+      "currentUID": "4becefc8-f435-4a7f-b02b-3e14fbd9798f",
+      "uidMatched": true,
+      "ready": true,
+      "containerRestartsMatched": true
+    },
+    {
+      "namespace": "cattle-capi-system",
+      "name": "capi-controller-manager-6f9cfbdb68-hncct",
+      "node": "k3s-wk-gpu4",
+      "expectedUID": "a21f7e4c-1600-4b3d-9e4b-abb5954ecb42",
+      "currentUID": "a21f7e4c-1600-4b3d-9e4b-abb5954ecb42",
+      "uidMatched": true,
+      "ready": true,
+      "containerRestartsMatched": true
+    },
+    {
+      "namespace": "cattle-fleet-system",
+      "name": "fleet-controller-bc58b4fdb-tmhgr",
+      "node": "k3s-wk-gpu4",
+      "expectedUID": "8720ad15-255d-4813-bf65-f8ec50f51cc6",
+      "currentUID": "8720ad15-255d-4813-bf65-f8ec50f51cc6",
+      "uidMatched": true,
+      "ready": true,
+      "containerRestartsMatched": true
+    },
+    {
+      "namespace": "cattle-fleet-system",
+      "name": "helmops-7945bb64d8-6pcgl",
+      "node": "k3s-wk-gpu4",
+      "expectedUID": "2786305f-c701-4ab7-9bd0-48773d25a3c7",
+      "currentUID": "2786305f-c701-4ab7-9bd0-48773d25a3c7",
+      "uidMatched": true,
+      "ready": true,
+      "containerRestartsMatched": true
+    },
+    {
+      "namespace": "cattle-monitoring-system",
+      "name": "alertmanager-rancher-monitoring-alertmanager-0",
+      "node": "k3s-wk-gpu4",
+      "expectedUID": "6646ff4b-9102-4537-ba52-fbd33fd5a1e3",
+      "currentUID": "6646ff4b-9102-4537-ba52-fbd33fd5a1e3",
+      "uidMatched": true,
+      "ready": true,
+      "containerRestartsMatched": true
+    },
+    {
+      "namespace": "cattle-monitoring-system",
+      "name": "prometheus-rancher-monitoring-prometheus-0",
+      "node": "k3s-wk-gpu3",
+      "expectedUID": "156c0e9c-f745-4a26-8fbe-0b7bbbc69b88",
+      "currentUID": "156c0e9c-f745-4a26-8fbe-0b7bbbc69b88",
+      "uidMatched": true,
+      "ready": true,
+      "containerRestartsMatched": true
+    },
+    {
+      "namespace": "cattle-monitoring-system",
+      "name": "rancher-monitoring-grafana-6ff45ff66b-p9czj",
+      "node": "k3s-wk-gpu3",
+      "expectedUID": "d0166ea5-87b0-400e-ae5f-be5b47972955",
+      "currentUID": "d0166ea5-87b0-400e-ae5f-be5b47972955",
+      "uidMatched": true,
+      "ready": true,
+      "containerRestartsMatched": true
+    },
+    {
+      "namespace": "cattle-monitoring-system",
+      "name": "rancher-monitoring-prometheus-node-exporter-2qz85",
+      "node": "k3s-wk-gpu1",
+      "expectedUID": "aeed3584-41db-4d66-a7bc-cade871c0a7e",
+      "currentUID": "aeed3584-41db-4d66-a7bc-cade871c0a7e",
+      "uidMatched": true,
+      "ready": true,
+      "containerRestartsMatched": true
+    },
+    {
+      "namespace": "cattle-monitoring-system",
+      "name": "rancher-monitoring-prometheus-node-exporter-mrh8r",
+      "node": "k3s-wk-gpu4",
+      "expectedUID": "e5a4b3f9-4f40-4d32-b4e7-9dfd5174570e",
+      "currentUID": "e5a4b3f9-4f40-4d32-b4e7-9dfd5174570e",
+      "uidMatched": true,
+      "ready": true,
+      "containerRestartsMatched": true
+    },
+    {
+      "namespace": "cattle-monitoring-system",
+      "name": "rancher-monitoring-prometheus-node-exporter-njfql",
+      "node": "k3s-wk-gpu3",
+      "expectedUID": "a2b0be13-7c82-425a-aaa6-7f7298de16ac",
+      "currentUID": "a2b0be13-7c82-425a-aaa6-7f7298de16ac",
+      "uidMatched": true,
+      "ready": true,
+      "containerRestartsMatched": true
+    },
+    {
+      "namespace": "cattle-system",
+      "name": "rancher-b6cd998d9-5rck8",
+      "node": "k3s-wk-gpu3",
+      "expectedUID": "a0d22703-2834-4aa2-a62f-de9045c6249f",
+      "currentUID": "a0d22703-2834-4aa2-a62f-de9045c6249f",
+      "uidMatched": true,
+      "ready": true,
+      "containerRestartsMatched": true
+    },
+    {
+      "namespace": "cattle-system",
+      "name": "rancher-b6cd998d9-zrf59",
+      "node": "k3s-wk-gpu4",
+      "expectedUID": "7030444e-0b8d-49f6-8037-98d1adf56e1e",
+      "currentUID": "7030444e-0b8d-49f6-8037-98d1adf56e1e",
+      "uidMatched": true,
+      "ready": true,
+      "containerRestartsMatched": true
+    },
+    {
+      "namespace": "cattle-system",
+      "name": "rancher-webhook-7fdf4d74fd-zwkgw",
+      "node": "k3s-wk-gpu4",
+      "expectedUID": "7018c823-a657-4b99-a9d1-061f9c82c86e",
+      "currentUID": "7018c823-a657-4b99-a9d1-061f9c82c86e",
+      "uidMatched": true,
+      "ready": true,
+      "containerRestartsMatched": true
+    },
+    {
+      "namespace": "cert-manager",
+      "name": "cert-manager-7b454c49cf-drd6s",
+      "node": "k3s-wk-gpu3",
+      "expectedUID": "cd170e99-f4b6-4f63-90da-b1914514d7cf",
+      "currentUID": "cd170e99-f4b6-4f63-90da-b1914514d7cf",
+      "uidMatched": true,
+      "ready": true,
+      "containerRestartsMatched": true
+    },
+    {
+      "namespace": "ci",
+      "name": "buildkit-pool-7567cb9459-w8xkw",
+      "node": "k3s-wk-gpu4",
+      "expectedUID": "b628a64c-f07f-47d1-bd8e-afcacaf17456",
+      "currentUID": "b628a64c-f07f-47d1-bd8e-afcacaf17456",
+      "uidMatched": true,
+      "ready": true,
+      "containerRestartsMatched": true
+    },
+    {
+      "namespace": "cit-auth",
+      "name": "authentik-postgresql-0",
+      "node": "k3s-wk-gpu3",
+      "expectedUID": "068d7a13-c0fb-49cc-8e4f-1871be0fe1b6",
+      "currentUID": "068d7a13-c0fb-49cc-8e4f-1871be0fe1b6",
+      "uidMatched": true,
+      "ready": true,
+      "containerRestartsMatched": true
+    },
+    {
+      "namespace": "cit-auth",
+      "name": "authentik-server-84bd7c5556-97pd6",
+      "node": "k3s-wk-gpu4",
+      "expectedUID": "09574710-ed2d-4db1-ac27-ca2286429a91",
+      "currentUID": "09574710-ed2d-4db1-ac27-ca2286429a91",
+      "uidMatched": true,
+      "ready": true,
+      "containerRestartsMatched": true
+    },
+    {
+      "namespace": "cit-auth",
+      "name": "authentik-server-84bd7c5556-r775v",
+      "node": "k3s-wk-gpu1",
+      "expectedUID": "2f0acfe3-73cc-4137-acce-6702cd98e3f6",
+      "currentUID": "2f0acfe3-73cc-4137-acce-6702cd98e3f6",
+      "uidMatched": true,
+      "ready": true,
+      "containerRestartsMatched": true
+    },
+    {
+      "namespace": "cit-auth",
+      "name": "authentik-worker-66bb756b4c-6kvxm",
+      "node": "k3s-wk-gpu3",
+      "expectedUID": "777034ec-5414-43be-bf03-c64264f5f629",
+      "currentUID": "777034ec-5414-43be-bf03-c64264f5f629",
+      "uidMatched": true,
+      "ready": true,
+      "containerRestartsMatched": true
+    },
+    {
+      "namespace": "cit-jhub",
+      "name": "continuous-image-puller-g959d",
+      "node": "k3s-wk-gpu3",
+      "expectedUID": "648ed393-25ee-477a-ac95-13710eb551f2",
+      "currentUID": "648ed393-25ee-477a-ac95-13710eb551f2",
+      "uidMatched": true,
+      "ready": true,
+      "containerRestartsMatched": true
+    },
+    {
+      "namespace": "cit-jhub",
+      "name": "continuous-image-puller-lb4wg",
+      "node": "k3s-wk-gpu1",
+      "expectedUID": "1232dd89-5bc7-4bdc-bbbe-ec05d102d361",
+      "currentUID": "1232dd89-5bc7-4bdc-bbbe-ec05d102d361",
+      "uidMatched": true,
+      "ready": true,
+      "containerRestartsMatched": true
+    },
+    {
+      "namespace": "cit-jhub",
+      "name": "continuous-image-puller-tnt7c",
+      "node": "k3s-wk-gpu4",
+      "expectedUID": "ca6b3d1c-83e9-48b1-b8a8-6ac87aa79f11",
+      "currentUID": "ca6b3d1c-83e9-48b1-b8a8-6ac87aa79f11",
+      "uidMatched": true,
+      "ready": true,
+      "containerRestartsMatched": true
+    },
+    {
+      "namespace": "cit-jhub",
+      "name": "hub-676788c8c5-h8lds",
+      "node": "k3s-wk-gpu1",
+      "expectedUID": "62741836-3d6b-49c9-b053-0412a7465e94",
+      "currentUID": "62741836-3d6b-49c9-b053-0412a7465e94",
+      "uidMatched": true,
+      "ready": true,
+      "containerRestartsMatched": true
+    },
+    {
+      "namespace": "cit-jhub",
+      "name": "jupyter-m12113877",
+      "node": "k3s-wk-gpu1",
+      "expectedUID": "791a82ec-66df-40e4-8b75-f371642dc3c4",
+      "currentUID": "791a82ec-66df-40e4-8b75-f371642dc3c4",
+      "uidMatched": true,
+      "ready": true,
+      "containerRestartsMatched": true
+    },
+    {
+      "namespace": "cit-jhub",
+      "name": "jupyterhub-postgresql-0",
+      "node": "k3s-wk-gpu3",
+      "expectedUID": "b50fc272-e3b2-4a76-866c-88c947648c66",
+      "currentUID": "b50fc272-e3b2-4a76-866c-88c947648c66",
+      "uidMatched": true,
+      "ready": true,
+      "containerRestartsMatched": true
+    },
+    {
+      "namespace": "cit-jhub",
+      "name": "proxy-86f4955947-djgwd",
+      "node": "k3s-wk-gpu3",
+      "expectedUID": "3c584a0b-6dc6-4e4d-9e4e-68e0d0ffe396",
+      "currentUID": "3c584a0b-6dc6-4e4d-9e4e-68e0d0ffe396",
+      "uidMatched": true,
+      "ready": true,
+      "containerRestartsMatched": true
+    },
+    {
+      "namespace": "cps-argo",
+      "name": "cps-argo-argo-workflows-server-8655fcb554-k8945",
+      "node": "k3s-wk-gpu3",
+      "expectedUID": "460397f9-5542-49b7-a9b4-2c479388ff3c",
+      "currentUID": "460397f9-5542-49b7-a9b4-2c479388ff3c",
+      "uidMatched": true,
+      "ready": true,
+      "containerRestartsMatched": true
+    },
+    {
+      "namespace": "cps-argo",
+      "name": "cps-argo-argo-workflows-workflow-controller-689c76dbdc-vnd47",
+      "node": "k3s-wk-gpu1",
+      "expectedUID": "197bca93-794d-4756-8e9e-65c6baa94eae",
+      "currentUID": "197bca93-794d-4756-8e9e-65c6baa94eae",
+      "uidMatched": true,
+      "ready": true,
+      "containerRestartsMatched": true
+    },
+    {
+      "namespace": "cps-artifacts-relay",
+      "name": "artifacts-relay-75f467ffc7-5gfkv",
+      "node": "k3s-wk-gpu1",
+      "expectedUID": "804fa36a-8891-43ca-8834-ae68efe68306",
+      "currentUID": "804fa36a-8891-43ca-8834-ae68efe68306",
+      "uidMatched": true,
+      "ready": true,
+      "containerRestartsMatched": true
+    },
+    {
+      "namespace": "cps-compute",
+      "name": "cit-admin-5b985f6949-bmpzj",
+      "node": "k3s-wk-gpu3",
+      "expectedUID": "6630b069-2d23-4a34-9c72-ac2cfba2b6e0",
+      "currentUID": "6630b069-2d23-4a34-9c72-ac2cfba2b6e0",
+      "uidMatched": true,
+      "ready": true,
+      "containerRestartsMatched": true
+    },
+    {
+      "namespace": "cps-compute",
+      "name": "compute-gateway-5764687446-l8gf9",
+      "node": "k3s-wk-gpu3",
+      "expectedUID": "b7499688-42ef-45a6-8151-cc79017ac838",
+      "currentUID": "b7499688-42ef-45a6-8151-cc79017ac838",
+      "uidMatched": true,
+      "ready": true,
+      "containerRestartsMatched": true
+    },
+    {
+      "namespace": "cps-personal-argo-qualification-20261008",
+      "name": "cps-argo-ui-5fd9548f59-k2qdb",
+      "node": "k3s-wk-gpu4",
+      "expectedUID": "b5e04d76-5616-42b4-bb9e-86556e93b6c0",
+      "currentUID": "b5e04d76-5616-42b4-bb9e-86556e93b6c0",
+      "uidMatched": true,
+      "ready": true,
+      "containerRestartsMatched": true
+    },
+    {
+      "namespace": "dex",
+      "name": "dex-7cd97c5fb6-75sx9",
+      "node": "k3s-wk-gpu3",
+      "expectedUID": "43355d88-75e2-433b-bf2b-1c511e297c4f",
+      "currentUID": "43355d88-75e2-433b-bf2b-1c511e297c4f",
+      "uidMatched": true,
+      "ready": true,
+      "containerRestartsMatched": true
+    },
+    {
+      "namespace": "eligsir-webxr-test",
+      "name": "eligsir-webxr-test-d84b6ff87-9frb5",
+      "node": "k3s-wk-gpu4",
+      "expectedUID": "90a08f15-e0b6-4abe-81d9-3cb992172526",
+      "currentUID": "90a08f15-e0b6-4abe-81d9-3cb992172526",
+      "uidMatched": true,
+      "ready": true,
+      "containerRestartsMatched": true
+    },
+    {
+      "namespace": "gpu-operator",
+      "name": "gpu-feature-discovery-52w4f",
+      "node": "k3s-wk-gpu4",
+      "expectedUID": "d7309a7d-32ba-4604-912d-e8cb091421bf",
+      "currentUID": "d7309a7d-32ba-4604-912d-e8cb091421bf",
+      "uidMatched": true,
+      "ready": true,
+      "containerRestartsMatched": true
+    },
+    {
+      "namespace": "gpu-operator",
+      "name": "gpu-feature-discovery-55zsl",
+      "node": "k3s-wk-gpu1",
+      "expectedUID": "a52d16a0-00d3-49ed-b5c8-128ccd2714cc",
+      "currentUID": "a52d16a0-00d3-49ed-b5c8-128ccd2714cc",
+      "uidMatched": true,
+      "ready": true,
+      "containerRestartsMatched": true
+    },
+    {
+      "namespace": "gpu-operator",
+      "name": "gpu-feature-discovery-rz7hf",
+      "node": "k3s-wk-gpu3",
+      "expectedUID": "f8ad2fe3-2df6-4986-8182-800ea9de5e3b",
+      "currentUID": "f8ad2fe3-2df6-4986-8182-800ea9de5e3b",
+      "uidMatched": true,
+      "ready": true,
+      "containerRestartsMatched": true
+    },
+    {
+      "namespace": "gpu-operator",
+      "name": "gpu-operator-74f857bc49-wjw4l",
+      "node": "k3s-wk-gpu4",
+      "expectedUID": "b51e325f-da04-4d00-a89f-ef3ced198ce1",
+      "currentUID": "b51e325f-da04-4d00-a89f-ef3ced198ce1",
+      "uidMatched": true,
+      "ready": true,
+      "containerRestartsMatched": true
+    },
+    {
+      "namespace": "gpu-operator",
+      "name": "gpu-operator-node-feature-discovery-worker-4smzg",
+      "node": "k3s-wk-gpu3",
+      "expectedUID": "39035ed1-fa78-4097-b850-f00cb6ee253d",
+      "currentUID": "39035ed1-fa78-4097-b850-f00cb6ee253d",
+      "uidMatched": true,
+      "ready": true,
+      "containerRestartsMatched": true
+    },
+    {
+      "namespace": "gpu-operator",
+      "name": "gpu-operator-node-feature-discovery-worker-fcq62",
+      "node": "k3s-wk-gpu4",
+      "expectedUID": "ce90fc8f-249f-49d9-9e4b-ea262d535c87",
+      "currentUID": "ce90fc8f-249f-49d9-9e4b-ea262d535c87",
+      "uidMatched": true,
+      "ready": true,
+      "containerRestartsMatched": true
+    },
+    {
+      "namespace": "gpu-operator",
+      "name": "gpu-operator-node-feature-discovery-worker-xbvrz",
+      "node": "k3s-wk-gpu1",
+      "expectedUID": "e15ba7bc-10fc-4db2-8475-e627b65f1daa",
+      "currentUID": "e15ba7bc-10fc-4db2-8475-e627b65f1daa",
+      "uidMatched": true,
+      "ready": true,
+      "containerRestartsMatched": true
+    },
+    {
+      "namespace": "gpu-operator",
+      "name": "mps-control-daemon-standalone-2rz45",
+      "node": "k3s-wk-gpu3",
+      "expectedUID": "b77cd71b-1b2e-4f7f-b4ba-f2e22ae5b18c",
+      "currentUID": "b77cd71b-1b2e-4f7f-b4ba-f2e22ae5b18c",
+      "uidMatched": true,
+      "ready": true,
+      "containerRestartsMatched": true
+    },
+    {
+      "namespace": "gpu-operator",
+      "name": "mps-control-daemon-standalone-49gkb",
+      "node": "k3s-wk-gpu1",
+      "expectedUID": "b19dc172-7bf9-4dce-9779-cefbd8b0961e",
+      "currentUID": "b19dc172-7bf9-4dce-9779-cefbd8b0961e",
+      "uidMatched": true,
+      "ready": true,
+      "containerRestartsMatched": true
+    },
+    {
+      "namespace": "gpu-operator",
+      "name": "mps-control-daemon-standalone-x4klh",
+      "node": "k3s-wk-gpu4",
+      "expectedUID": "edb737df-e7a9-4447-aaa6-4bb8d9c68c8a",
+      "currentUID": "edb737df-e7a9-4447-aaa6-4bb8d9c68c8a",
+      "uidMatched": true,
+      "ready": true,
+      "containerRestartsMatched": true
+    },
+    {
+      "namespace": "gpu-operator",
+      "name": "nvidia-container-toolkit-daemonset-2rn5w",
+      "node": "k3s-wk-gpu4",
+      "expectedUID": "be2d1f16-46ff-4eb6-8b71-5dbe76bb1dd4",
+      "currentUID": "be2d1f16-46ff-4eb6-8b71-5dbe76bb1dd4",
+      "uidMatched": true,
+      "ready": true,
+      "containerRestartsMatched": true
+    },
+    {
+      "namespace": "gpu-operator",
+      "name": "nvidia-container-toolkit-daemonset-6szsf",
+      "node": "k3s-wk-gpu3",
+      "expectedUID": "54431e3a-f181-46b3-a18d-83c981aeedb1",
+      "currentUID": "54431e3a-f181-46b3-a18d-83c981aeedb1",
+      "uidMatched": true,
+      "ready": true,
+      "containerRestartsMatched": true
+    },
+    {
+      "namespace": "gpu-operator",
+      "name": "nvidia-container-toolkit-daemonset-cmrb8",
+      "node": "k3s-wk-gpu1",
+      "expectedUID": "33000545-ef74-434d-ad3f-371fb85e9a4b",
+      "currentUID": "33000545-ef74-434d-ad3f-371fb85e9a4b",
+      "uidMatched": true,
+      "ready": true,
+      "containerRestartsMatched": true
+    },
+    {
+      "namespace": "gpu-operator",
+      "name": "nvidia-dcgm-exporter-5rslt",
+      "node": "k3s-wk-gpu4",
+      "expectedUID": "8d4d5bb4-56e7-4a99-9773-790562eb196c",
+      "currentUID": "8d4d5bb4-56e7-4a99-9773-790562eb196c",
+      "uidMatched": true,
+      "ready": true,
+      "containerRestartsMatched": true
+    },
+    {
+      "namespace": "gpu-operator",
+      "name": "nvidia-dcgm-exporter-f4pbm",
+      "node": "k3s-wk-gpu3",
+      "expectedUID": "0253cd23-154a-4f40-bcde-68cc66cd3c6b",
+      "currentUID": "0253cd23-154a-4f40-bcde-68cc66cd3c6b",
+      "uidMatched": true,
+      "ready": true,
+      "containerRestartsMatched": true
+    },
+    {
+      "namespace": "gpu-operator",
+      "name": "nvidia-dcgm-exporter-jrr5v",
+      "node": "k3s-wk-gpu1",
+      "expectedUID": "99d4e806-9a67-49b3-9fbf-ab3b72873136",
+      "currentUID": "99d4e806-9a67-49b3-9fbf-ab3b72873136",
+      "uidMatched": true,
+      "ready": true,
+      "containerRestartsMatched": true
+    },
+    {
+      "namespace": "gpu-operator",
+      "name": "nvidia-device-plugin-daemonset-2tpcp",
+      "node": "k3s-wk-gpu4",
+      "expectedUID": "70e56293-0911-434b-a77c-9ed5115a8714",
+      "currentUID": "70e56293-0911-434b-a77c-9ed5115a8714",
+      "uidMatched": true,
+      "ready": true,
+      "containerRestartsMatched": true
+    },
+    {
+      "namespace": "gpu-operator",
+      "name": "nvidia-device-plugin-daemonset-f2v2x",
+      "node": "k3s-wk-gpu1",
+      "expectedUID": "5e5f225c-9e71-4f71-9899-45384e00306d",
+      "currentUID": "5e5f225c-9e71-4f71-9899-45384e00306d",
+      "uidMatched": true,
+      "ready": true,
+      "containerRestartsMatched": true
+    },
+    {
+      "namespace": "gpu-operator",
+      "name": "nvidia-device-plugin-daemonset-xwrc6",
+      "node": "k3s-wk-gpu3",
+      "expectedUID": "32a9c3e0-fab2-46fa-99b6-51b0692cdf7a",
+      "currentUID": "32a9c3e0-fab2-46fa-99b6-51b0692cdf7a",
+      "uidMatched": true,
+      "ready": true,
+      "containerRestartsMatched": true
+    },
+    {
+      "namespace": "gpu-operator",
+      "name": "nvidia-driver-daemonset-gd6kd",
+      "node": "k3s-wk-gpu1",
+      "expectedUID": "4544b0a8-4f7a-4188-8752-25c463131544",
+      "currentUID": "4544b0a8-4f7a-4188-8752-25c463131544",
+      "uidMatched": true,
+      "ready": true,
+      "containerRestartsMatched": true
+    },
+    {
+      "namespace": "gpu-operator",
+      "name": "nvidia-driver-daemonset-nsrmk",
+      "node": "k3s-wk-gpu3",
+      "expectedUID": "c4275e3c-e34f-4545-8389-d673e6f7b401",
+      "currentUID": "c4275e3c-e34f-4545-8389-d673e6f7b401",
+      "uidMatched": true,
+      "ready": true,
+      "containerRestartsMatched": true
+    },
+    {
+      "namespace": "gpu-operator",
+      "name": "nvidia-driver-daemonset-pbpzh",
+      "node": "k3s-wk-gpu4",
+      "expectedUID": "446b94c7-3863-4091-9701-d97e4349e9b9",
+      "currentUID": "446b94c7-3863-4091-9701-d97e4349e9b9",
+      "uidMatched": true,
+      "ready": true,
+      "containerRestartsMatched": true
+    },
+    {
+      "namespace": "gpu-operator",
+      "name": "nvidia-mig-manager-5kxgk",
+      "node": "k3s-wk-gpu1",
+      "expectedUID": "9d323640-ab99-48fb-9265-38205169af86",
+      "currentUID": "9d323640-ab99-48fb-9265-38205169af86",
+      "uidMatched": true,
+      "ready": true,
+      "containerRestartsMatched": true
+    },
+    {
+      "namespace": "gpu-operator",
+      "name": "nvidia-mig-manager-k7cfx",
+      "node": "k3s-wk-gpu4",
+      "expectedUID": "e65d4acb-85f7-48ef-a533-254cfe462c5b",
+      "currentUID": "e65d4acb-85f7-48ef-a533-254cfe462c5b",
+      "uidMatched": true,
+      "ready": true,
+      "containerRestartsMatched": true
+    },
+    {
+      "namespace": "gpu-operator",
+      "name": "nvidia-mig-manager-tq6mg",
+      "node": "k3s-wk-gpu3",
+      "expectedUID": "1503367e-699e-43b9-95e8-31a9030fc4dc",
+      "currentUID": "1503367e-699e-43b9-95e8-31a9030fc4dc",
+      "uidMatched": true,
+      "ready": true,
+      "containerRestartsMatched": true
+    },
+    {
+      "namespace": "gpu-operator",
+      "name": "nvidia-operator-validator-42tkm",
+      "node": "k3s-wk-gpu4",
+      "expectedUID": "9289627c-420b-4210-853e-a1e36b5aed67",
+      "currentUID": "9289627c-420b-4210-853e-a1e36b5aed67",
+      "uidMatched": true,
+      "ready": true,
+      "containerRestartsMatched": true
+    },
+    {
+      "namespace": "gpu-operator",
+      "name": "nvidia-operator-validator-6pswb",
+      "node": "k3s-wk-gpu1",
+      "expectedUID": "caf29db7-d787-4d54-86a2-e9e4dba27c42",
+      "currentUID": "caf29db7-d787-4d54-86a2-e9e4dba27c42",
+      "uidMatched": true,
+      "ready": true,
+      "containerRestartsMatched": true
+    },
+    {
+      "namespace": "gpu-operator",
+      "name": "nvidia-operator-validator-hhpgm",
+      "node": "k3s-wk-gpu3",
+      "expectedUID": "34fb5a08-a29e-440a-9a7f-6a0ab20efcd1",
+      "currentUID": "34fb5a08-a29e-440a-9a7f-6a0ab20efcd1",
+      "uidMatched": true,
+      "ready": true,
+      "containerRestartsMatched": true
+    },
+    {
+      "namespace": "harbor",
+      "name": "harbor-core-88f75658d-l5gvj",
+      "node": "k3s-wk-gpu1",
+      "expectedUID": "ecefb1a5-79d6-4139-9daf-08ec0eaa5c2f",
+      "currentUID": "ecefb1a5-79d6-4139-9daf-08ec0eaa5c2f",
+      "uidMatched": true,
+      "ready": true,
+      "containerRestartsMatched": true
+    },
+    {
+      "namespace": "harbor",
+      "name": "harbor-database-0",
+      "node": "k3s-wk-gpu3",
+      "expectedUID": "78023ac9-db09-4384-a652-9873e758a443",
+      "currentUID": "78023ac9-db09-4384-a652-9873e758a443",
+      "uidMatched": true,
+      "ready": true,
+      "containerRestartsMatched": true
+    },
+    {
+      "namespace": "harbor",
+      "name": "harbor-jobservice-97b79455f-d9qdd",
+      "node": "k3s-wk-gpu3",
+      "expectedUID": "8e80a629-6508-46b8-9160-ffa7bf388c43",
+      "currentUID": "8e80a629-6508-46b8-9160-ffa7bf388c43",
+      "uidMatched": true,
+      "ready": true,
+      "containerRestartsMatched": true
+    },
+    {
+      "namespace": "harbor",
+      "name": "harbor-portal-66b5d45fc5-9d4mk",
+      "node": "k3s-wk-gpu3",
+      "expectedUID": "d7077b2b-977f-470a-9836-37b041b02183",
+      "currentUID": "d7077b2b-977f-470a-9836-37b041b02183",
+      "uidMatched": true,
+      "ready": true,
+      "containerRestartsMatched": true
+    },
+    {
+      "namespace": "harbor",
+      "name": "harbor-redis-0",
+      "node": "k3s-wk-gpu3",
+      "expectedUID": "ab59a117-561a-4aca-90c5-3139bf17b649",
+      "currentUID": "ab59a117-561a-4aca-90c5-3139bf17b649",
+      "uidMatched": true,
+      "ready": true,
+      "containerRestartsMatched": true
+    },
+    {
+      "namespace": "harbor",
+      "name": "harbor-registry-999bf7785-fh99n",
+      "node": "k3s-wk-gpu3",
+      "expectedUID": "dbcb2726-dbe2-494e-a037-ea65025e2f5b",
+      "currentUID": "dbcb2726-dbe2-494e-a037-ea65025e2f5b",
+      "uidMatched": true,
+      "ready": true,
+      "containerRestartsMatched": true
+    },
+    {
+      "namespace": "harbor",
+      "name": "harbor-trivy-0",
+      "node": "k3s-wk-gpu3",
+      "expectedUID": "3969989e-1a18-47ec-8d84-aa9fcb1f0d64",
+      "currentUID": "3969989e-1a18-47ec-8d84-aa9fcb1f0d64",
+      "uidMatched": true,
+      "ready": true,
+      "containerRestartsMatched": true
+    },
+    {
+      "namespace": "image-builds",
+      "name": "image-builder-api-67d7c7fc5d-gxn57",
+      "node": "k3s-wk-gpu3",
+      "expectedUID": "88c226e6-22b3-469a-ae67-7737e1ba87b7",
+      "currentUID": "88c226e6-22b3-469a-ae67-7737e1ba87b7",
+      "uidMatched": true,
+      "ready": true,
+      "containerRestartsMatched": true
+    },
+    {
+      "namespace": "ingress-nginx",
+      "name": "ingress-nginx-controller-m78kr",
+      "node": "k3s-wk-gpu4",
+      "expectedUID": "4552af9a-7ce3-4b19-9ee0-f3dc744f1d1e",
+      "currentUID": "4552af9a-7ce3-4b19-9ee0-f3dc744f1d1e",
+      "uidMatched": true,
+      "ready": true,
+      "containerRestartsMatched": true
+    },
+    {
+      "namespace": "ingress-nginx",
+      "name": "ingress-nginx-controller-pk99d",
+      "node": "k3s-wk-gpu1",
+      "expectedUID": "e661c78c-dade-4770-80d6-c471ba8a23fd",
+      "currentUID": "e661c78c-dade-4770-80d6-c471ba8a23fd",
+      "uidMatched": true,
+      "ready": true,
+      "containerRestartsMatched": true
+    },
+    {
+      "namespace": "ingress-nginx",
+      "name": "ingress-nginx-controller-rgz69",
+      "node": "k3s-wk-gpu3",
+      "expectedUID": "812069f8-8384-461c-aef4-885c17139831",
+      "currentUID": "812069f8-8384-461c-aef4-885c17139831",
+      "uidMatched": true,
+      "ready": true,
+      "containerRestartsMatched": true
+    },
+    {
+      "namespace": "jobset-system",
+      "name": "cps-jobset-controller-674c95f9c-jgk7g",
+      "node": "k3s-wk-gpu1",
+      "expectedUID": "bb3dacb5-a186-4ed5-9fb9-3a92000caf66",
+      "currentUID": "bb3dacb5-a186-4ed5-9fb9-3a92000caf66",
+      "uidMatched": true,
+      "ready": true,
+      "containerRestartsMatched": true
+    },
+    {
+      "namespace": "jupyterhub",
+      "name": "continuous-image-puller-j5rrc",
+      "node": "k3s-wk-gpu3",
+      "expectedUID": "61f84785-84f2-4eed-bb48-a4afc7d70197",
+      "currentUID": "61f84785-84f2-4eed-bb48-a4afc7d70197",
+      "uidMatched": true,
+      "ready": true,
+      "containerRestartsMatched": true
+    },
+    {
+      "namespace": "jupyterhub",
+      "name": "continuous-image-puller-kkfsg",
+      "node": "k3s-wk-gpu4",
+      "expectedUID": "16622185-d538-488a-ad2a-0d4db6a412db",
+      "currentUID": "16622185-d538-488a-ad2a-0d4db6a412db",
+      "uidMatched": true,
+      "ready": true,
+      "containerRestartsMatched": true
+    },
+    {
+      "namespace": "jupyterhub",
+      "name": "continuous-image-puller-sccx6",
+      "node": "k3s-wk-gpu1",
+      "expectedUID": "6cb414a0-e5b7-4553-a0da-4f568b9cb693",
+      "currentUID": "6cb414a0-e5b7-4553-a0da-4f568b9cb693",
+      "uidMatched": true,
+      "ready": true,
+      "containerRestartsMatched": true
+    },
+    {
+      "namespace": "jupyterhub",
+      "name": "hub-67b76cdf8c-rrtx8",
+      "node": "k3s-wk-gpu1",
+      "expectedUID": "2460e275-1a1f-4b8c-ad13-c02ec0844c29",
+      "currentUID": "2460e275-1a1f-4b8c-ad13-c02ec0844c29",
+      "uidMatched": true,
+      "ready": true,
+      "containerRestartsMatched": true
+    },
+    {
+      "namespace": "jupyterhub",
+      "name": "jupyter-bjoern",
+      "node": "k3s-wk-gpu1",
+      "expectedUID": "a663ab6b-e927-418f-9671-fc0b36a27b3a",
+      "currentUID": "a663ab6b-e927-418f-9671-fc0b36a27b3a",
+      "uidMatched": true,
+      "ready": true,
+      "containerRestartsMatched": true
+    },
+    {
+      "namespace": "jupyterhub",
+      "name": "jupyter-muslim",
+      "node": "k3s-wk-gpu1",
+      "expectedUID": "ed3d0a76-8997-47f7-91d5-25ef60a67bca",
+      "currentUID": "ed3d0a76-8997-47f7-91d5-25ef60a67bca",
+      "uidMatched": true,
+      "ready": true,
+      "containerRestartsMatched": true
+    },
+    {
+      "namespace": "jupyterhub",
+      "name": "jupyterhub-ssh-bd57847b9-2k4dq",
+      "node": "k3s-wk-gpu4",
+      "expectedUID": "d20fffa4-8365-4ac5-ab0d-0d81849b611d",
+      "currentUID": "d20fffa4-8365-4ac5-ab0d-0d81849b611d",
+      "uidMatched": true,
+      "ready": true,
+      "containerRestartsMatched": true
+    },
+    {
+      "namespace": "jupyterhub",
+      "name": "proxy-5fb6bdc66d-lqqw4",
+      "node": "k3s-wk-gpu1",
+      "expectedUID": "0beaa23e-9ba7-4bb9-958c-f5dbc9cd6e0c",
+      "currentUID": "0beaa23e-9ba7-4bb9-958c-f5dbc9cd6e0c",
+      "uidMatched": true,
+      "ready": true,
+      "containerRestartsMatched": true
+    },
+    {
+      "namespace": "kai-resource-isolator",
+      "name": "kai-resource-isolator-libsync-g98z4",
+      "node": "k3s-wk-gpu4",
+      "expectedUID": "d328d13a-258e-42e7-a865-14ccf1d513a9",
+      "currentUID": "d328d13a-258e-42e7-a865-14ccf1d513a9",
+      "uidMatched": true,
+      "ready": true,
+      "containerRestartsMatched": true
+    },
+    {
+      "namespace": "kai-resource-isolator",
+      "name": "kai-resource-isolator-libsync-hh8bc",
+      "node": "k3s-wk-gpu3",
+      "expectedUID": "058d02a4-8b5b-47d0-98d9-5acdf3095741",
+      "currentUID": "058d02a4-8b5b-47d0-98d9-5acdf3095741",
+      "uidMatched": true,
+      "ready": true,
+      "containerRestartsMatched": true
+    },
+    {
+      "namespace": "kai-resource-isolator",
+      "name": "kai-resource-isolator-libsync-m2z2s",
+      "node": "k3s-wk-gpu1",
+      "expectedUID": "a27d736a-9df4-43a4-9328-a077bcf34460",
+      "currentUID": "a27d736a-9df4-43a4-9328-a077bcf34460",
+      "uidMatched": true,
+      "ready": true,
+      "containerRestartsMatched": true
+    },
+    {
+      "namespace": "kai-resource-isolator",
+      "name": "kai-resource-isolator-monitor-57ztc",
+      "node": "k3s-wk-gpu4",
+      "expectedUID": "6cfda117-4538-4904-b2af-b79eac2663fa",
+      "currentUID": "6cfda117-4538-4904-b2af-b79eac2663fa",
+      "uidMatched": true,
+      "ready": true,
+      "containerRestartsMatched": true
+    },
+    {
+      "namespace": "kai-resource-isolator",
+      "name": "kai-resource-isolator-monitor-m29xl",
+      "node": "k3s-wk-gpu1",
+      "expectedUID": "01f9b07e-22bc-48fd-b01c-6c5f15f10f51",
+      "currentUID": "01f9b07e-22bc-48fd-b01c-6c5f15f10f51",
+      "uidMatched": true,
+      "ready": true,
+      "containerRestartsMatched": true
+    },
+    {
+      "namespace": "kai-resource-isolator",
+      "name": "kai-resource-isolator-monitor-w6ssb",
+      "node": "k3s-wk-gpu3",
+      "expectedUID": "aa83e094-76e8-4e7b-be24-42c12cc4d896",
+      "currentUID": "aa83e094-76e8-4e7b-be24-42c12cc4d896",
+      "uidMatched": true,
+      "ready": true,
+      "containerRestartsMatched": true
+    },
+    {
+      "namespace": "kai-resource-isolator",
+      "name": "kai-resource-isolator-webhook-74c95f967c-p8jr7",
+      "node": "k3s-wk-gpu1",
+      "expectedUID": "e4125aa8-f2a4-45b6-9e1e-e442f4ca2381",
+      "currentUID": "e4125aa8-f2a4-45b6-9e1e-e442f4ca2381",
+      "uidMatched": true,
+      "ready": true,
+      "containerRestartsMatched": true
+    },
+    {
+      "namespace": "kai-resource-reservation",
+      "name": "gpu-reservation-398d6112309f9dff",
+      "node": "k3s-wk-gpu1",
+      "expectedUID": "c82fd5ab-b47a-4f04-b277-345d85ab9dd4",
+      "currentUID": "c82fd5ab-b47a-4f04-b277-345d85ab9dd4",
+      "uidMatched": true,
+      "ready": true,
+      "containerRestartsMatched": true
+    },
+    {
+      "namespace": "kai-scheduler",
+      "name": "admission-54566cc766-7znmx",
+      "node": "k3s-wk-gpu1",
+      "expectedUID": "80e20051-9956-4577-9565-9d6772c88353",
+      "currentUID": "80e20051-9956-4577-9565-9d6772c88353",
+      "uidMatched": true,
+      "ready": true,
+      "containerRestartsMatched": true
+    },
+    {
+      "namespace": "kai-scheduler",
+      "name": "binder-6854fd7b9c-zlwtk",
+      "node": "k3s-wk-gpu1",
+      "expectedUID": "f9f3e547-bbda-4601-b8ac-d2d6ce4f7236",
+      "currentUID": "f9f3e547-bbda-4601-b8ac-d2d6ce4f7236",
+      "uidMatched": true,
+      "ready": true,
+      "containerRestartsMatched": true
+    },
+    {
+      "namespace": "kai-scheduler",
+      "name": "kai-operator-854cd78c9d-dxmlj",
+      "node": "k3s-wk-gpu1",
+      "expectedUID": "a9fefb36-8904-4d8e-81d2-547da51c176a",
+      "currentUID": "a9fefb36-8904-4d8e-81d2-547da51c176a",
+      "uidMatched": true,
+      "ready": true,
+      "containerRestartsMatched": true
+    },
+    {
+      "namespace": "kai-scheduler",
+      "name": "kai-scheduler-default-686c859c84-hjnfv",
+      "node": "k3s-wk-gpu1",
+      "expectedUID": "456c8182-7703-4356-8712-99fbef76afc4",
+      "currentUID": "456c8182-7703-4356-8712-99fbef76afc4",
+      "uidMatched": true,
+      "ready": true,
+      "containerRestartsMatched": true
+    },
+    {
+      "namespace": "kai-scheduler",
+      "name": "pod-grouper-66cfc5859b-t2s9r",
+      "node": "k3s-wk-gpu1",
+      "expectedUID": "28c77c04-8534-4695-9f26-a8224763f340",
+      "currentUID": "28c77c04-8534-4695-9f26-a8224763f340",
+      "uidMatched": true,
+      "ready": true,
+      "containerRestartsMatched": true
+    },
+    {
+      "namespace": "kai-scheduler",
+      "name": "podgroup-controller-679fc68688-gfsmp",
+      "node": "k3s-wk-gpu1",
+      "expectedUID": "8db7d157-3965-40ce-a3a8-5d0b951afaac",
+      "currentUID": "8db7d157-3965-40ce-a3a8-5d0b951afaac",
+      "uidMatched": true,
+      "ready": true,
+      "containerRestartsMatched": true
+    },
+    {
+      "namespace": "kai-scheduler",
+      "name": "queue-controller-6fb7fbd9f8-jhnr6",
+      "node": "k3s-wk-gpu1",
+      "expectedUID": "a6559577-3f9a-4653-9448-e988674267e8",
+      "currentUID": "a6559577-3f9a-4653-9448-e988674267e8",
+      "uidMatched": true,
+      "ready": true,
+      "containerRestartsMatched": true
+    },
+    {
+      "namespace": "knative-serving",
+      "name": "activator-7c67cf64d4-x92f9",
+      "node": "k3s-wk-gpu3",
+      "expectedUID": "fd9979aa-195f-4b29-9365-602ebf8c119f",
+      "currentUID": "fd9979aa-195f-4b29-9365-602ebf8c119f",
+      "uidMatched": true,
+      "ready": true,
+      "containerRestartsMatched": true
+    },
+    {
+      "namespace": "knative-serving",
+      "name": "webhook-5c756fc6c5-7nf8r",
+      "node": "k3s-wk-gpu1",
+      "expectedUID": "220d0eee-1d9b-4140-b78a-62b1442e2928",
+      "currentUID": "220d0eee-1d9b-4140-b78a-62b1442e2928",
+      "uidMatched": true,
+      "ready": true,
+      "containerRestartsMatched": true
+    },
+    {
+      "namespace": "kourier-system",
+      "name": "3scale-kourier-gateway-68c5d84954-nx6b6",
+      "node": "k3s-wk-gpu1",
+      "expectedUID": "6c6adb76-fe4c-4144-9217-ab9e7d45a6f1",
+      "currentUID": "6c6adb76-fe4c-4144-9217-ab9e7d45a6f1",
+      "uidMatched": true,
+      "ready": true,
+      "containerRestartsMatched": true
+    },
+    {
+      "namespace": "kube-system",
+      "name": "reflector-7bd7f9bc59-cdzpz",
+      "node": "k3s-wk-gpu4",
+      "expectedUID": "1229aae5-1686-4747-b9f1-6a4c83f9637b",
+      "currentUID": "1229aae5-1686-4747-b9f1-6a4c83f9637b",
+      "uidMatched": true,
+      "ready": true,
+      "containerRestartsMatched": true
+    },
+    {
+      "namespace": "kube-system",
+      "name": "system-tuning-22mzg",
+      "node": "k3s-wk-gpu1",
+      "expectedUID": "b4a707a4-472f-44a3-a6e3-1022d7936934",
+      "currentUID": "b4a707a4-472f-44a3-a6e3-1022d7936934",
+      "uidMatched": true,
+      "ready": true,
+      "containerRestartsMatched": true
+    },
+    {
+      "namespace": "kube-system",
+      "name": "system-tuning-2lv65",
+      "node": "k3s-wk-gpu3",
+      "expectedUID": "7079d36e-8868-4ac6-9ab8-ca6caa97e8e4",
+      "currentUID": "7079d36e-8868-4ac6-9ab8-ca6caa97e8e4",
+      "uidMatched": true,
+      "ready": true,
+      "containerRestartsMatched": true
+    },
+    {
+      "namespace": "kube-system",
+      "name": "system-tuning-x5qrd",
+      "node": "k3s-wk-gpu4",
+      "expectedUID": "03f2377e-ad58-4b99-be74-8e9ac17097ee",
+      "currentUID": "03f2377e-ad58-4b99-be74-8e9ac17097ee",
+      "uidMatched": true,
+      "ready": true,
+      "containerRestartsMatched": true
+    },
+    {
+      "namespace": "kured",
+      "name": "kured-4c4jf",
+      "node": "k3s-wk-gpu4",
+      "expectedUID": "f6ca7d20-4e56-40ef-b8a4-3e40be6436c4",
+      "currentUID": "f6ca7d20-4e56-40ef-b8a4-3e40be6436c4",
+      "uidMatched": true,
+      "ready": true,
+      "containerRestartsMatched": true
+    },
+    {
+      "namespace": "kured",
+      "name": "kured-8l6dm",
+      "node": "k3s-wk-gpu3",
+      "expectedUID": "e35c3853-0698-428a-9e05-7e20e83d5cb1",
+      "currentUID": "e35c3853-0698-428a-9e05-7e20e83d5cb1",
+      "uidMatched": true,
+      "ready": true,
+      "containerRestartsMatched": true
+    },
+    {
+      "namespace": "kured",
+      "name": "kured-l7knp",
+      "node": "k3s-wk-gpu1",
+      "expectedUID": "97e8502a-f6f0-4863-8f32-cf3045edb299",
+      "currentUID": "97e8502a-f6f0-4863-8f32-cf3045edb299",
+      "uidMatched": true,
+      "ready": true,
+      "containerRestartsMatched": true
+    },
+    {
+      "namespace": "loki",
+      "name": "loki-canary-hj4ds",
+      "node": "k3s-wk-gpu3",
+      "expectedUID": "49f1da1a-e4b6-49ba-b256-cf5b8eca0492",
+      "currentUID": "49f1da1a-e4b6-49ba-b256-cf5b8eca0492",
+      "uidMatched": true,
+      "ready": true,
+      "containerRestartsMatched": true
+    },
+    {
+      "namespace": "loki",
+      "name": "loki-canary-jqg8m",
+      "node": "k3s-wk-gpu4",
+      "expectedUID": "deb291b6-ec70-4e9f-95ed-189a79898afd",
+      "currentUID": "deb291b6-ec70-4e9f-95ed-189a79898afd",
+      "uidMatched": true,
+      "ready": true,
+      "containerRestartsMatched": true
+    },
+    {
+      "namespace": "loki",
+      "name": "loki-canary-sdbgt",
+      "node": "k3s-wk-gpu1",
+      "expectedUID": "750e48ef-0067-4005-a0d0-79f944ff597a",
+      "currentUID": "750e48ef-0067-4005-a0d0-79f944ff597a",
+      "uidMatched": true,
+      "ready": true,
+      "containerRestartsMatched": true
+    },
+    {
+      "namespace": "loki",
+      "name": "loki-results-cache-0",
+      "node": "k3s-wk-gpu4",
+      "expectedUID": "79997de2-1706-4dcc-9ee9-228cb160f0e2",
+      "currentUID": "79997de2-1706-4dcc-9ee9-228cb160f0e2",
+      "uidMatched": true,
+      "ready": true,
+      "containerRestartsMatched": true
+    },
+    {
+      "namespace": "longhorn-system",
+      "name": "csi-attacher-74cd57d888-8dktc",
+      "node": "k3s-wk-gpu3",
+      "expectedUID": "98cf721b-112a-444d-84b6-76fdb733331e",
+      "currentUID": "98cf721b-112a-444d-84b6-76fdb733331e",
+      "uidMatched": true,
+      "ready": true,
+      "containerRestartsMatched": true
+    },
+    {
+      "namespace": "longhorn-system",
+      "name": "csi-attacher-74cd57d888-z5jc8",
+      "node": "k3s-wk-gpu4",
+      "expectedUID": "6dbbc8fd-9a58-442a-a9e6-85a600ff1924",
+      "currentUID": "6dbbc8fd-9a58-442a-a9e6-85a600ff1924",
+      "uidMatched": true,
+      "ready": true,
+      "containerRestartsMatched": true
+    },
+    {
+      "namespace": "longhorn-system",
+      "name": "csi-provisioner-668f595df8-ddxfn",
+      "node": "k3s-wk-gpu3",
+      "expectedUID": "0c1624f2-7447-4f7b-84ba-e7088ad47a9d",
+      "currentUID": "0c1624f2-7447-4f7b-84ba-e7088ad47a9d",
+      "uidMatched": true,
+      "ready": true,
+      "containerRestartsMatched": true
+    },
+    {
+      "namespace": "longhorn-system",
+      "name": "csi-provisioner-668f595df8-p5zdk",
+      "node": "k3s-wk-gpu4",
+      "expectedUID": "492701b2-4d33-45ba-a53a-ea7f64786efa",
+      "currentUID": "492701b2-4d33-45ba-a53a-ea7f64786efa",
+      "uidMatched": true,
+      "ready": true,
+      "containerRestartsMatched": true
+    },
+    {
+      "namespace": "longhorn-system",
+      "name": "csi-resizer-749f8b9cd7-dp8vg",
+      "node": "k3s-wk-gpu4",
+      "expectedUID": "c672d80a-0247-4374-9f97-02c9beaaee9d",
+      "currentUID": "c672d80a-0247-4374-9f97-02c9beaaee9d",
+      "uidMatched": true,
+      "ready": true,
+      "containerRestartsMatched": true
+    },
+    {
+      "namespace": "longhorn-system",
+      "name": "csi-resizer-749f8b9cd7-kpgdc",
+      "node": "k3s-wk-gpu3",
+      "expectedUID": "61aad3a9-3c5f-4477-9053-34de7964260f",
+      "currentUID": "61aad3a9-3c5f-4477-9053-34de7964260f",
+      "uidMatched": true,
+      "ready": true,
+      "containerRestartsMatched": true
+    },
+    {
+      "namespace": "longhorn-system",
+      "name": "csi-snapshotter-58dd468645-rjzlq",
+      "node": "k3s-wk-gpu4",
+      "expectedUID": "9d87fccc-b847-46b3-808b-835a2ebe6a07",
+      "currentUID": "9d87fccc-b847-46b3-808b-835a2ebe6a07",
+      "uidMatched": true,
+      "ready": true,
+      "containerRestartsMatched": true
+    },
+    {
+      "namespace": "longhorn-system",
+      "name": "csi-snapshotter-58dd468645-zh722",
+      "node": "k3s-wk-gpu3",
+      "expectedUID": "84ca869c-35e9-4049-82e2-2725c99c5748",
+      "currentUID": "84ca869c-35e9-4049-82e2-2725c99c5748",
+      "uidMatched": true,
+      "ready": true,
+      "containerRestartsMatched": true
+    },
+    {
+      "namespace": "longhorn-system",
+      "name": "engine-image-ei-27581b25-fqwq9",
+      "node": "k3s-wk-gpu4",
+      "expectedUID": "b978a31e-4df9-482b-9f52-abe02b2c8bb6",
+      "currentUID": "b978a31e-4df9-482b-9f52-abe02b2c8bb6",
+      "uidMatched": true,
+      "ready": true,
+      "containerRestartsMatched": true
+    },
+    {
+      "namespace": "longhorn-system",
+      "name": "engine-image-ei-27581b25-jbzw6",
+      "node": "k3s-wk-gpu3",
+      "expectedUID": "ddf3365e-02f7-4ee1-af20-18b1ec694768",
+      "currentUID": "ddf3365e-02f7-4ee1-af20-18b1ec694768",
+      "uidMatched": true,
+      "ready": true,
+      "containerRestartsMatched": true
+    },
+    {
+      "namespace": "longhorn-system",
+      "name": "engine-image-ei-27581b25-qdrh5",
+      "node": "k3s-wk-gpu1",
+      "expectedUID": "ec61027c-a5c4-4815-afc8-57fb8fba65a2",
+      "currentUID": "ec61027c-a5c4-4815-afc8-57fb8fba65a2",
+      "uidMatched": true,
+      "ready": true,
+      "containerRestartsMatched": true
+    },
+    {
+      "namespace": "longhorn-system",
+      "name": "instance-manager-01df8b5d06bc85a19eafeab08a042c97",
+      "node": "k3s-wk-gpu4",
+      "expectedUID": "9f473508-da36-48e5-ae65-86d514c2baba",
+      "currentUID": "9f473508-da36-48e5-ae65-86d514c2baba",
+      "uidMatched": true,
+      "ready": true,
+      "containerRestartsMatched": true
+    },
+    {
+      "namespace": "longhorn-system",
+      "name": "instance-manager-07936386348324497cd14054d0e3f480",
+      "node": "k3s-wk-gpu3",
+      "expectedUID": "1cb5b256-633e-4f39-8841-a88e5e0a58f0",
+      "currentUID": "1cb5b256-633e-4f39-8841-a88e5e0a58f0",
+      "uidMatched": true,
+      "ready": true,
+      "containerRestartsMatched": true
+    },
+    {
+      "namespace": "longhorn-system",
+      "name": "instance-manager-0817aaca164811bb69b48dd3a1856634",
+      "node": "k3s-wk-gpu1",
+      "expectedUID": "5e124981-35ba-4100-9d1a-a7249d144a8a",
+      "currentUID": "5e124981-35ba-4100-9d1a-a7249d144a8a",
+      "uidMatched": true,
+      "ready": true,
+      "containerRestartsMatched": true
+    },
+    {
+      "namespace": "longhorn-system",
+      "name": "longhorn-csi-plugin-9ds4v",
+      "node": "k3s-wk-gpu3",
+      "expectedUID": "ef1cde28-ec13-4ed1-8ad7-0969d0e473d5",
+      "currentUID": "ef1cde28-ec13-4ed1-8ad7-0969d0e473d5",
+      "uidMatched": true,
+      "ready": true,
+      "containerRestartsMatched": true
+    },
+    {
+      "namespace": "longhorn-system",
+      "name": "longhorn-csi-plugin-ntds7",
+      "node": "k3s-wk-gpu1",
+      "expectedUID": "12bc6b1a-ac68-49e5-8e0d-196738a62c7b",
+      "currentUID": "12bc6b1a-ac68-49e5-8e0d-196738a62c7b",
+      "uidMatched": true,
+      "ready": true,
+      "containerRestartsMatched": true
+    },
+    {
+      "namespace": "longhorn-system",
+      "name": "longhorn-csi-plugin-vm6lv",
+      "node": "k3s-wk-gpu4",
+      "expectedUID": "1ff49553-442c-4030-8f77-38757042f494",
+      "currentUID": "1ff49553-442c-4030-8f77-38757042f494",
+      "uidMatched": true,
+      "ready": true,
+      "containerRestartsMatched": true
+    },
+    {
+      "namespace": "longhorn-system",
+      "name": "longhorn-manager-257qd",
+      "node": "k3s-wk-gpu1",
+      "expectedUID": "05b784f0-8ebc-4d70-9fe9-46acf2c099a2",
+      "currentUID": "05b784f0-8ebc-4d70-9fe9-46acf2c099a2",
+      "uidMatched": true,
+      "ready": true,
+      "containerRestartsMatched": true
+    },
+    {
+      "namespace": "longhorn-system",
+      "name": "longhorn-manager-j6bll",
+      "node": "k3s-wk-gpu3",
+      "expectedUID": "ed3ac0be-3657-491c-88c8-9625f3f58304",
+      "currentUID": "ed3ac0be-3657-491c-88c8-9625f3f58304",
+      "uidMatched": true,
+      "ready": true,
+      "containerRestartsMatched": true
+    },
+    {
+      "namespace": "longhorn-system",
+      "name": "longhorn-manager-nwl6c",
+      "node": "k3s-wk-gpu4",
+      "expectedUID": "6be58ad3-6553-4c9d-a4a3-af05c66acdc8",
+      "currentUID": "6be58ad3-6553-4c9d-a4a3-af05c66acdc8",
+      "uidMatched": true,
+      "ready": true,
+      "containerRestartsMatched": true
+    },
+    {
+      "namespace": "longhorn-system",
+      "name": "longhorn-ui-5f96f4bbdb-l4bfd",
+      "node": "k3s-wk-gpu4",
+      "expectedUID": "80317373-bf8b-4f44-8237-9a568a8bc5b4",
+      "currentUID": "80317373-bf8b-4f44-8237-9a568a8bc5b4",
+      "uidMatched": true,
+      "ready": true,
+      "containerRestartsMatched": true
+    },
+    {
+      "namespace": "longhorn-system",
+      "name": "share-manager-pvc-07fefb42-f68c-4b53-851f-22949eedb800",
+      "node": "k3s-wk-gpu4",
+      "expectedUID": "46d25d72-fa0d-4b2a-bc01-04108d5b448f",
+      "currentUID": "46d25d72-fa0d-4b2a-bc01-04108d5b448f",
+      "uidMatched": true,
+      "ready": true,
+      "containerRestartsMatched": true
+    },
+    {
+      "namespace": "longhorn-system",
+      "name": "share-manager-pvc-3d0143d2-4476-4eaf-90b3-2c2890de9408",
+      "node": "k3s-wk-gpu4",
+      "expectedUID": "63adceaa-0c5e-459b-8eff-b60c5123cf6b",
+      "currentUID": "63adceaa-0c5e-459b-8eff-b60c5123cf6b",
+      "uidMatched": true,
+      "ready": true,
+      "containerRestartsMatched": true
+    },
+    {
+      "namespace": "longhorn-system",
+      "name": "share-manager-pvc-b774d9f7-54fc-4fa1-954c-90f7692402de",
+      "node": "k3s-wk-gpu3",
+      "expectedUID": "adb1cc11-e24a-498c-b87d-03c77b4ad542",
+      "currentUID": "adb1cc11-e24a-498c-b87d-03c77b4ad542",
+      "uidMatched": true,
+      "ready": true,
+      "containerRestartsMatched": true
+    },
+    {
+      "namespace": "metallb-system",
+      "name": "metallb-controller-7f4cd7d66b-nwcrn",
+      "node": "k3s-wk-gpu4",
+      "expectedUID": "389c7dcf-6887-4780-ac6a-6f677e35eec6",
+      "currentUID": "389c7dcf-6887-4780-ac6a-6f677e35eec6",
+      "uidMatched": true,
+      "ready": true,
+      "containerRestartsMatched": true
+    },
+    {
+      "namespace": "metallb-system",
+      "name": "metallb-frr-k8s-btl57",
+      "node": "k3s-wk-gpu3",
+      "expectedUID": "9da2ecf0-3360-43b2-9954-5771ffefbb22",
+      "currentUID": "9da2ecf0-3360-43b2-9954-5771ffefbb22",
+      "uidMatched": true,
+      "ready": true,
+      "containerRestartsMatched": true
+    },
+    {
+      "namespace": "metallb-system",
+      "name": "metallb-frr-k8s-wmdlx",
+      "node": "k3s-wk-gpu4",
+      "expectedUID": "0755eb3a-f043-44b6-a30b-593b9f42a855",
+      "currentUID": "0755eb3a-f043-44b6-a30b-593b9f42a855",
+      "uidMatched": true,
+      "ready": true,
+      "containerRestartsMatched": true
+    },
+    {
+      "namespace": "metallb-system",
+      "name": "metallb-frr-k8s-xnkbn",
+      "node": "k3s-wk-gpu1",
+      "expectedUID": "b9c07f8b-aa37-4fce-948c-a86da2596c46",
+      "currentUID": "b9c07f8b-aa37-4fce-948c-a86da2596c46",
+      "uidMatched": true,
+      "ready": true,
+      "containerRestartsMatched": true
+    },
+    {
+      "namespace": "metallb-system",
+      "name": "metallb-speaker-6f59l",
+      "node": "k3s-wk-gpu4",
+      "expectedUID": "1717a156-654c-48fc-afcc-2c24421dd971",
+      "currentUID": "1717a156-654c-48fc-afcc-2c24421dd971",
+      "uidMatched": true,
+      "ready": true,
+      "containerRestartsMatched": true
+    },
+    {
+      "namespace": "metallb-system",
+      "name": "metallb-speaker-qpmc9",
+      "node": "k3s-wk-gpu1",
+      "expectedUID": "f381a26d-2eb3-4bb6-ae0b-ded4caf9d6a0",
+      "currentUID": "f381a26d-2eb3-4bb6-ae0b-ded4caf9d6a0",
+      "uidMatched": true,
+      "ready": true,
+      "containerRestartsMatched": true
+    },
+    {
+      "namespace": "metallb-system",
+      "name": "metallb-speaker-s7sc9",
+      "node": "k3s-wk-gpu3",
+      "expectedUID": "9a3221d4-32a1-4e72-b28f-765374ac669b",
+      "currentUID": "9a3221d4-32a1-4e72-b28f-765374ac669b",
+      "uidMatched": true,
+      "ready": true,
+      "containerRestartsMatched": true
+    },
+    {
+      "namespace": "openwebui",
+      "name": "open-webui-0",
+      "node": "k3s-wk-gpu1",
+      "expectedUID": "bf38a0b7-b841-4f30-b30e-d0b3d8c97dfb",
+      "currentUID": "bf38a0b7-b841-4f30-b30e-d0b3d8c97dfb",
+      "uidMatched": true,
+      "ready": true,
+      "containerRestartsMatched": true
+    },
+    {
+      "namespace": "openwebui",
+      "name": "open-webui-pipelines-f7dcbdfc4-tw5rs",
+      "node": "k3s-wk-gpu4",
+      "expectedUID": "339c1e94-44f5-4ca8-9ebe-23eda780aed8",
+      "currentUID": "339c1e94-44f5-4ca8-9ebe-23eda780aed8",
+      "uidMatched": true,
+      "ready": true,
+      "containerRestartsMatched": true
+    },
+    {
+      "namespace": "openwebui",
+      "name": "open-webui-redis-6f74fc9d86-zrbj5",
+      "node": "k3s-wk-gpu1",
+      "expectedUID": "791d3f1f-827a-4af7-a7ad-01a48ea62583",
+      "currentUID": "791d3f1f-827a-4af7-a7ad-01a48ea62583",
+      "uidMatched": true,
+      "ready": true,
+      "containerRestartsMatched": true
+    },
+    {
+      "namespace": "sops-system",
+      "name": "sops-secrets-operator-6f4fbb47c-b8hkh",
+      "node": "k3s-wk-gpu4",
+      "expectedUID": "3584ae72-2a0d-4263-b43c-d17e77e09c64",
+      "currentUID": "3584ae72-2a0d-4263-b43c-d17e77e09c64",
+      "uidMatched": true,
+      "ready": true,
+      "containerRestartsMatched": true
+    },
+    {
+      "namespace": "spegel",
+      "name": "spegel-q99br",
+      "node": "k3s-wk-gpu3",
+      "expectedUID": "ceef3d06-9d04-4e65-9c93-3a1687743c1f",
+      "currentUID": "ceef3d06-9d04-4e65-9c93-3a1687743c1f",
+      "uidMatched": true,
+      "ready": true,
+      "containerRestartsMatched": true
+    },
+    {
+      "namespace": "spegel",
+      "name": "spegel-sj9l9",
+      "node": "k3s-wk-gpu1",
+      "expectedUID": "2d88095c-0793-4874-9cfe-71409212d8f4",
+      "currentUID": "2d88095c-0793-4874-9cfe-71409212d8f4",
+      "uidMatched": true,
+      "ready": true,
+      "containerRestartsMatched": true
+    },
+    {
+      "namespace": "spegel",
+      "name": "spegel-vk4k8",
+      "node": "k3s-wk-gpu4",
+      "expectedUID": "8945f68c-70c2-43f3-a25a-3e9559ad7242",
+      "currentUID": "8945f68c-70c2-43f3-a25a-3e9559ad7242",
+      "uidMatched": true,
+      "ready": true,
+      "containerRestartsMatched": true
+    },
+    {
+      "namespace": "vcluster-ckf",
+      "name": "vcluster-ckf-0",
+      "node": "k3s-wk-gpu4",
+      "expectedUID": "ae656f1c-d271-4425-8880-6f0614b088d4",
+      "currentUID": "ae656f1c-d271-4425-8880-6f0614b088d4",
+      "uidMatched": true,
+      "ready": true,
+      "containerRestartsMatched": true
+    },
+    {
+      "namespace": "alloy",
+      "name": "alloy-cnt4q",
+      "node": "k3s-wk-gpu2",
+      "expectedUID": "00cdf7fb-5542-41b0-b88c-ef8b32e85ce7",
+      "currentUID": "00cdf7fb-5542-41b0-b88c-ef8b32e85ce7",
+      "uidMatched": true,
+      "ready": true,
+      "containerRestartsMatched": true
+    },
+    {
+      "namespace": "cattle-fleet-system",
+      "name": "gitjob-6f49568497-n99dd",
+      "node": "k3s-wk-gpu2",
+      "expectedUID": "c9096098-e4a7-4ba6-b709-f164134b0647",
+      "currentUID": "c9096098-e4a7-4ba6-b709-f164134b0647",
+      "uidMatched": true,
+      "ready": true,
+      "containerRestartsMatched": true
+    },
+    {
+      "namespace": "cattle-monitoring-system",
+      "name": "rancher-monitoring-kube-state-metrics-5cc64fcff7-cjn62",
+      "node": "k3s-wk-gpu2",
+      "expectedUID": "8e1f8618-178b-41a0-be5d-69cd2ab597c1",
+      "currentUID": "8e1f8618-178b-41a0-be5d-69cd2ab597c1",
+      "uidMatched": true,
+      "ready": true,
+      "containerRestartsMatched": true
+    },
+    {
+      "namespace": "cattle-monitoring-system",
+      "name": "rancher-monitoring-operator-d78b98855-4ssqr",
+      "node": "k3s-wk-gpu2",
+      "expectedUID": "6f183d89-ca1b-4b4c-ad14-111797009684",
+      "currentUID": "6f183d89-ca1b-4b4c-ad14-111797009684",
+      "uidMatched": true,
+      "ready": true,
+      "containerRestartsMatched": true
+    },
+    {
+      "namespace": "cattle-monitoring-system",
+      "name": "rancher-monitoring-prometheus-adapter-54fc9cdd56-w4b7b",
+      "node": "k3s-wk-gpu2",
+      "expectedUID": "043ee17d-2e7c-4b0c-a5b5-9ee9f28d4340",
+      "currentUID": "043ee17d-2e7c-4b0c-a5b5-9ee9f28d4340",
+      "uidMatched": true,
+      "ready": true,
+      "containerRestartsMatched": true
+    },
+    {
+      "namespace": "cattle-monitoring-system",
+      "name": "rancher-monitoring-prometheus-node-exporter-ml952",
+      "node": "k3s-wk-gpu2",
+      "expectedUID": "95d08b5d-5749-48d2-a5a2-45821db4f2d5",
+      "currentUID": "95d08b5d-5749-48d2-a5a2-45821db4f2d5",
+      "uidMatched": true,
+      "ready": true,
+      "containerRestartsMatched": true
+    },
+    {
+      "namespace": "cattle-system",
+      "name": "rancher-b6cd998d9-8wcvr",
+      "node": "k3s-wk-gpu2",
+      "expectedUID": "6017f6d0-e1cd-4949-be70-8f0ebb911dbc",
+      "currentUID": "6017f6d0-e1cd-4949-be70-8f0ebb911dbc",
+      "uidMatched": true,
+      "ready": true,
+      "containerRestartsMatched": true
+    },
+    {
+      "namespace": "cattle-turtles-system",
+      "name": "rancher-turtles-controller-manager-86bc6bbdb5-b2tkj",
+      "node": "k3s-wk-gpu2",
+      "expectedUID": "c74b2444-fc57-4dec-a6bb-8bb04d4adff6",
+      "currentUID": "c74b2444-fc57-4dec-a6bb-8bb04d4adff6",
+      "uidMatched": true,
+      "ready": true,
+      "containerRestartsMatched": true
+    },
+    {
+      "namespace": "cert-manager",
+      "name": "cert-manager-cainjector-6bf9d5c79b-6rfh6",
+      "node": "k3s-wk-gpu2",
+      "expectedUID": "e156b8c1-c221-4ec4-84e5-158df61b7c2f",
+      "currentUID": "e156b8c1-c221-4ec4-84e5-158df61b7c2f",
+      "uidMatched": true,
+      "ready": true,
+      "containerRestartsMatched": true
+    },
+    {
+      "namespace": "cert-manager",
+      "name": "cert-manager-webhook-78f7b4d9d7-78jfb",
+      "node": "k3s-wk-gpu2",
+      "expectedUID": "ee27e0a6-b998-424d-81e6-f15d9af75fe3",
+      "currentUID": "ee27e0a6-b998-424d-81e6-f15d9af75fe3",
+      "uidMatched": true,
+      "ready": true,
+      "containerRestartsMatched": true
+    },
+    {
+      "namespace": "ci",
+      "name": "buildkit-pool-7567cb9459-szkct",
+      "node": "k3s-wk-gpu2",
+      "expectedUID": "c59ac550-99a1-4fcb-8a6c-5d348af90262",
+      "currentUID": "c59ac550-99a1-4fcb-8a6c-5d348af90262",
+      "uidMatched": true,
+      "ready": true,
+      "containerRestartsMatched": true
+    },
+    {
+      "namespace": "cit-auth",
+      "name": "authentik-worker-66bb756b4c-dcvw6",
+      "node": "k3s-wk-gpu2",
+      "expectedUID": "b220b496-ddce-407f-b44b-e4ecc2780482",
+      "currentUID": "b220b496-ddce-407f-b44b-e4ecc2780482",
+      "uidMatched": true,
+      "ready": true,
+      "containerRestartsMatched": true
+    },
+    {
+      "namespace": "cit-jhub",
+      "name": "continuous-image-puller-zs7x2",
+      "node": "k3s-wk-gpu2",
+      "expectedUID": "8c2a8383-07ad-44a6-8dd1-6c73d40780c0",
+      "currentUID": "8c2a8383-07ad-44a6-8dd1-6c73d40780c0",
+      "uidMatched": true,
+      "ready": true,
+      "containerRestartsMatched": true
+    },
+    {
+      "namespace": "cps-argo",
+      "name": "argo-artifact-downloads-5b996556c8-6bzsp",
+      "node": "k3s-wk-gpu2",
+      "expectedUID": "cf65a248-e816-42fd-8b67-455993897e03",
+      "currentUID": "cf65a248-e816-42fd-8b67-455993897e03",
+      "uidMatched": true,
+      "ready": true,
+      "containerRestartsMatched": true
+    },
+    {
+      "namespace": "cps-compute",
+      "name": "cps-admin-58c6f68c88-pq58n",
+      "node": "k3s-wk-gpu2",
+      "expectedUID": "92a2f4c1-3fb3-4be6-84e1-64a3c4b98f16",
+      "currentUID": "92a2f4c1-3fb3-4be6-84e1-64a3c4b98f16",
+      "uidMatched": true,
+      "ready": true,
+      "containerRestartsMatched": true
+    },
+    {
+      "namespace": "image-builds",
+      "name": "image-builder-api-67d7c7fc5d-n6fsh",
+      "node": "k3s-wk-gpu2",
+      "expectedUID": "2df1f606-ae15-4f22-b159-0eb98757b205",
+      "currentUID": "2df1f606-ae15-4f22-b159-0eb98757b205",
+      "uidMatched": true,
+      "ready": true,
+      "containerRestartsMatched": true
+    },
+    {
+      "namespace": "ingress-nginx",
+      "name": "ingress-nginx-controller-m6txm",
+      "node": "k3s-wk-gpu2",
+      "expectedUID": "0346590e-9d13-4c10-af17-d63757c9a285",
+      "currentUID": "0346590e-9d13-4c10-af17-d63757c9a285",
+      "uidMatched": true,
+      "ready": true,
+      "containerRestartsMatched": true
+    },
+    {
+      "namespace": "jupyterhub",
+      "name": "continuous-image-puller-g68hd",
+      "node": "k3s-wk-gpu2",
+      "expectedUID": "eb6e627b-e3be-4d6c-b306-d612035d734d",
+      "currentUID": "eb6e627b-e3be-4d6c-b306-d612035d734d",
+      "uidMatched": true,
+      "ready": true,
+      "containerRestartsMatched": true
+    },
+    {
+      "namespace": "jupyterhub",
+      "name": "postgresql-6f46c896b4-524mt",
+      "node": "k3s-wk-gpu2",
+      "expectedUID": "735c9cc9-8a5c-44e0-9fcc-4b1d7d1a7953",
+      "currentUID": "735c9cc9-8a5c-44e0-9fcc-4b1d7d1a7953",
+      "uidMatched": true,
+      "ready": true,
+      "containerRestartsMatched": true
+    },
+    {
+      "namespace": "knative-serving",
+      "name": "autoscaler-5564c5c759-k5wrm",
+      "node": "k3s-wk-gpu2",
+      "expectedUID": "36cb1df9-4593-4471-8181-1efaa15c3bd0",
+      "currentUID": "36cb1df9-4593-4471-8181-1efaa15c3bd0",
+      "uidMatched": true,
+      "ready": true,
+      "containerRestartsMatched": true
+    },
+    {
+      "namespace": "knative-serving",
+      "name": "controller-7544bfc5db-s2x88",
+      "node": "k3s-wk-gpu2",
+      "expectedUID": "b4500d48-f8ad-446f-a19d-452eed65856d",
+      "currentUID": "b4500d48-f8ad-446f-a19d-452eed65856d",
+      "uidMatched": true,
+      "ready": true,
+      "containerRestartsMatched": true
+    },
+    {
+      "namespace": "knative-serving",
+      "name": "net-kourier-controller-56fbdbc79f-vq92w",
+      "node": "k3s-wk-gpu2",
+      "expectedUID": "f1d21999-a5c1-4b1e-b3f3-0bfa8c82cb80",
+      "currentUID": "f1d21999-a5c1-4b1e-b3f3-0bfa8c82cb80",
+      "uidMatched": true,
+      "ready": true,
+      "containerRestartsMatched": true
+    },
+    {
+      "namespace": "kube-system",
+      "name": "system-tuning-jx5r9",
+      "node": "k3s-wk-gpu2",
+      "expectedUID": "b68f8c8c-bc63-4c6e-a43f-f8200af01db0",
+      "currentUID": "b68f8c8c-bc63-4c6e-a43f-f8200af01db0",
+      "uidMatched": true,
+      "ready": true,
+      "containerRestartsMatched": true
+    },
+    {
+      "namespace": "kured",
+      "name": "kured-vwx8s",
+      "node": "k3s-wk-gpu2",
+      "expectedUID": "a97ff766-239c-4ae6-ba03-d130128e95f7",
+      "currentUID": "a97ff766-239c-4ae6-ba03-d130128e95f7",
+      "uidMatched": true,
+      "ready": true,
+      "containerRestartsMatched": true
+    },
+    {
+      "namespace": "loki",
+      "name": "loki-0",
+      "node": "k3s-wk-gpu2",
+      "expectedUID": "8bacbfbe-90cc-497a-ab3e-d458e05199df",
+      "currentUID": "8bacbfbe-90cc-497a-ab3e-d458e05199df",
+      "uidMatched": true,
+      "ready": true,
+      "containerRestartsMatched": true
+    },
+    {
+      "namespace": "loki",
+      "name": "loki-canary-cz7dq",
+      "node": "k3s-wk-gpu2",
+      "expectedUID": "19774368-c243-4b29-a3b8-e4f68bd8929e",
+      "currentUID": "19774368-c243-4b29-a3b8-e4f68bd8929e",
+      "uidMatched": true,
+      "ready": true,
+      "containerRestartsMatched": true
+    },
+    {
+      "namespace": "loki",
+      "name": "loki-chunks-cache-0",
+      "node": "k3s-wk-gpu2",
+      "expectedUID": "5b5c596a-8453-481b-921e-52e4eee98054",
+      "currentUID": "5b5c596a-8453-481b-921e-52e4eee98054",
+      "uidMatched": true,
+      "ready": true,
+      "containerRestartsMatched": true
+    },
+    {
+      "namespace": "loki",
+      "name": "loki-gateway-768c95fc77-fdzgc",
+      "node": "k3s-wk-gpu2",
+      "expectedUID": "828c666a-fff2-4112-a485-f2eaf5b67ea7",
+      "currentUID": "828c666a-fff2-4112-a485-f2eaf5b67ea7",
+      "uidMatched": true,
+      "ready": true,
+      "containerRestartsMatched": true
+    },
+    {
+      "namespace": "longhorn-system",
+      "name": "csi-attacher-74cd57d888-gp9sw",
+      "node": "k3s-wk-gpu2",
+      "expectedUID": "044dc42a-88bc-4dce-abcb-2bc43c8185df",
+      "currentUID": "044dc42a-88bc-4dce-abcb-2bc43c8185df",
+      "uidMatched": true,
+      "ready": true,
+      "containerRestartsMatched": true
+    },
+    {
+      "namespace": "longhorn-system",
+      "name": "csi-provisioner-668f595df8-4lwft",
+      "node": "k3s-wk-gpu2",
+      "expectedUID": "bc0ba934-5fcb-4520-8aa1-461d5b13cd72",
+      "currentUID": "bc0ba934-5fcb-4520-8aa1-461d5b13cd72",
+      "uidMatched": true,
+      "ready": true,
+      "containerRestartsMatched": true
+    },
+    {
+      "namespace": "longhorn-system",
+      "name": "csi-resizer-749f8b9cd7-kjnvm",
+      "node": "k3s-wk-gpu2",
+      "expectedUID": "d02b55e5-a929-4264-a619-ecb5ef519e8b",
+      "currentUID": "d02b55e5-a929-4264-a619-ecb5ef519e8b",
+      "uidMatched": true,
+      "ready": true,
+      "containerRestartsMatched": true
+    },
+    {
+      "namespace": "longhorn-system",
+      "name": "csi-snapshotter-58dd468645-j4thq",
+      "node": "k3s-wk-gpu2",
+      "expectedUID": "ca7d812b-7492-4616-a1ea-1d926f2c9e1d",
+      "currentUID": "ca7d812b-7492-4616-a1ea-1d926f2c9e1d",
+      "uidMatched": true,
+      "ready": true,
+      "containerRestartsMatched": true
+    },
+    {
+      "namespace": "longhorn-system",
+      "name": "engine-image-ei-27581b25-vzn67",
+      "node": "k3s-wk-gpu2",
+      "expectedUID": "0974ce60-6cc7-4085-9eae-02f0657cce01",
+      "currentUID": "0974ce60-6cc7-4085-9eae-02f0657cce01",
+      "uidMatched": true,
+      "ready": true,
+      "containerRestartsMatched": true
+    },
+    {
+      "namespace": "longhorn-system",
+      "name": "instance-manager-435fec096c724854458dc568b2a09632",
+      "node": "k3s-wk-gpu2",
+      "expectedUID": "4f1aacf8-64ef-43fc-ab0c-f8711b61e793",
+      "currentUID": "4f1aacf8-64ef-43fc-ab0c-f8711b61e793",
+      "uidMatched": true,
+      "ready": true,
+      "containerRestartsMatched": true
+    },
+    {
+      "namespace": "longhorn-system",
+      "name": "longhorn-csi-plugin-px92r",
+      "node": "k3s-wk-gpu2",
+      "expectedUID": "3afe4f23-361d-448b-a249-0530b5860764",
+      "currentUID": "3afe4f23-361d-448b-a249-0530b5860764",
+      "uidMatched": true,
+      "ready": true,
+      "containerRestartsMatched": true
+    },
+    {
+      "namespace": "longhorn-system",
+      "name": "longhorn-driver-deployer-58b6fb5988-97m7p",
+      "node": "k3s-wk-gpu2",
+      "expectedUID": "3d063ba1-3c5f-4905-96d4-8f6e9c52ef93",
+      "currentUID": "3d063ba1-3c5f-4905-96d4-8f6e9c52ef93",
+      "uidMatched": true,
+      "ready": true,
+      "containerRestartsMatched": true
+    },
+    {
+      "namespace": "longhorn-system",
+      "name": "longhorn-manager-frn9c",
+      "node": "k3s-wk-gpu2",
+      "expectedUID": "3e9efcb8-b746-4840-a75e-3125461f9788",
+      "currentUID": "3e9efcb8-b746-4840-a75e-3125461f9788",
+      "uidMatched": true,
+      "ready": true,
+      "containerRestartsMatched": true
+    },
+    {
+      "namespace": "longhorn-system",
+      "name": "longhorn-ui-5f96f4bbdb-rh29z",
+      "node": "k3s-wk-gpu2",
+      "expectedUID": "46d9606a-8438-4be4-9e0d-37ae9fc4d2fa",
+      "currentUID": "46d9606a-8438-4be4-9e0d-37ae9fc4d2fa",
+      "uidMatched": true,
+      "ready": true,
+      "containerRestartsMatched": true
+    },
+    {
+      "namespace": "metallb-system",
+      "name": "metallb-frr-k8s-cxnlc",
+      "node": "k3s-wk-gpu2",
+      "expectedUID": "72835f69-0aa9-41f9-bd0c-3f8d59eeccbf",
+      "currentUID": "72835f69-0aa9-41f9-bd0c-3f8d59eeccbf",
+      "uidMatched": true,
+      "ready": true,
+      "containerRestartsMatched": true
+    },
+    {
+      "namespace": "metallb-system",
+      "name": "metallb-speaker-qlrmd",
+      "node": "k3s-wk-gpu2",
+      "expectedUID": "60791d13-2720-404f-ae9f-1c6043eb48c4",
+      "currentUID": "60791d13-2720-404f-ae9f-1c6043eb48c4",
+      "uidMatched": true,
+      "ready": true,
+      "containerRestartsMatched": true
+    },
+    {
+      "namespace": "spegel",
+      "name": "spegel-9vzlm",
+      "node": "k3s-wk-gpu2",
+      "expectedUID": "7880f1cb-0996-44b3-9c40-163407622128",
+      "currentUID": "7880f1cb-0996-44b3-9c40-163407622128",
+      "uidMatched": true,
+      "ready": true,
+      "containerRestartsMatched": false
+    },
+    {
+      "namespace": "vcluster-ckf",
+      "name": "coredns-744d9bd8bf-dmrxr-x-kube-system-x-vcluster-ckf",
+      "node": "k3s-wk-gpu2",
+      "expectedUID": "fd3517f9-d767-4cda-baa0-35a0740d4bde",
+      "currentUID": "fd3517f9-d767-4cda-baa0-35a0740d4bde",
+      "uidMatched": true,
+      "ready": true,
+      "containerRestartsMatched": true
+    }
+  ]
+}
