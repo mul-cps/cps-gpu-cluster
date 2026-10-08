@@ -46,16 +46,20 @@ Only canary persistenced holds NVIDIA device FDs. Core srcversion is
 uvm_enable_builtin_tests=0. The receipt preserves every visible UVM parameter.
 
 Current kmod31 `modprobe --dump-modversions` rejects these existing ELF modules.
-A read-only canonical __versions section digest avoids that tool limitation:
+The initial observer awk digest was incorrect: the final partial row included
+ASCII, while the first build parser dropped the final byte. Root's original
+build precondition correctly failed before any source copy. The CRC fields in
+`uvm-review-before.json` are historical incorrect metadata and are superseded by
+`uvm-raw-section-proof.json`; module-file SHA and other baseline fields remain
+valid. The corrected observer parses ELF section headers and reads the exact
+__versions bytes with read-only `dd`, without executing objcopy or writing a live
+file. Three tests cover final partial-byte inclusion, truncation and ELF class.
 
-```sh
-readelf -x __versions "$ko" |
-  awk '/^  0x/ {printf "%s%s%s%s", $2,$3,$4,$5}' | sha256sum
-```
-
-Original UVM digest is
-`4ce551ea23acfc754376c9d82915e766653a4faf7f1f85438d7c97b76026ae37`;
-core digest is`0b9498bdcdf3b4843f0b86409c609347f97a17675a16238a729ada511075933f`.
+Original and candidate UVM each have10017 section bytes; SHA256 of their full
+`bytes.hex()` strings is
+`0054b45bf40416a31ae6e77554935731d29b0235c5a49452590408ebb0f5184a`.
+Original core has12409 section bytes, canonical digest
+`30e9bd10a691e10d45a81fe6d3dac3aa0c4375c6487c458e5398699e6dd60b28`.
 Candidate UVM must match the original import-version digest and exact kernel
 vermagic/version before any root load. The compilation may build the unchanged
 core in an owned source copy to obtain CRCs, but must never install or load that
@@ -65,8 +69,11 @@ contains no symlinks, and fresh proposed tool/build directories were absent at
 review. It checks five source pins, bounded fresh nonoverlapping source copy,
 original module SHA/CRC, exact kernel/headers, modules-only make with at most two
 jobs, original files unchanged afterward, and candidate CRC/version/vermagic.
-No module install/load or runtime command is present. The900s CPU compilation
-and subsequent hardware load remain separate root-controlled gates.
+No module install/load or runtime command is present. Root's CPU compilation then passed, exit0. The candidate UVM SHA256 is
+`b2ae67722e9e21a70c319aeed2184f5b2d1f23b8e32dea00816cfd5cd2c3ee61`,
+version615.71.09, exact kernel vermagic and raw-section digest matching original.
+Original source/module hashes remained unchanged. Actual CUDA tests remain a
+separate gate.
 `uvm-source-review-hashes.json` freezes the exact reviewed proposal files.
 
 The root-reviewable original615 UVM restore candidate is:
@@ -88,3 +95,27 @@ The earlier [normal R580 rollback](r580-rollback.md) is still ready after the
 bounded UVM phase, with exact580 GSP files staged. Normal legacy ownership has
 separate toolkit/runtime interruption risk. No canary outcome overrides that
 rollback's gates or enables dynamic sharing.
+
+
+At15:02Z, `uvm-review-guard-loaded.json` independently records root's successful
+UVM-only load: srcversion9353E234906B1910373B07A, guardY/HMMY/ATS0/SAMY/builtins0,
+UVMrefs0 and no UVM device clients. Core srcversion21362C9DF5C1F6DCBE23F50 and
+loaded address0xffffffffc0df9000 remain unchanged; modeset address0xffffffffc1639000
+also matches baseline. Runtime agent1457864/containerd1457904 and start ticks
+810395303/810395495 match. Original installed files are unchanged; both original
+A100 UUIDs show615.71.09 and current+pending MIG Disabled. Canary UID/Ready/restart0,
+GPU2 CPU/PVC UIDs/Ready and other GPU driver UIDs/images/Ready match. Historical
+Spegel restart and absent GPU1 notebook limitations remain recorded separately.
+No core or daemon continuity claim applies to the earlier full-driver phase.
+
+The runtime proposal was independently reviewed and all13 CPU tests passed.
+It checks actual guard/HMM/ATS/builtin state, CUDA attributes88/100, UID1000/GID100,
+no preload, exact physical UUID, fixed512 MiB parent readback, bounded raw64/256/
+recovery allocations with verified cap margin, managed64 denial, fresh process
+and fork-before-CUDA cases, and an independent120s peer. Raw CUDA cleanup is
+explicit; Torch contexts end with their fresh process. Outer subprocess timeout
+can kill a fork launcher while its child runs briefly until its own bounded
+60s deadline; root must verify actual FD/reference cleanup, not infer it from
+launcher exit. No inherited/shared/imported state or selective per-Pod policy is
+qualified by this proposal. Actual CUDA outcomes and original-UVM restoration
+remain pending.
