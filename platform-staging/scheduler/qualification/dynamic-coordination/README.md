@@ -1,7 +1,9 @@
 # QA dynamic quota generation fence
 
-This is an **inactive QA candidate**, with no cluster changes, workload submission,
-GPU/device changes, publishing, registry enrollment, or production activation.
+This is an **inactive QA candidate**. Its original preparation made no cluster
+changes; the separate bounded CPU-only API qualification is recorded in
+[LIVE_CPU_20261008.md](LIVE_CPU_20261008.md). No GPU/device change, production
+registry enrollment or production activation has occurred.
 The renderer emits zero webhook Deployment replicas and an empty manual registry
 by default. It grants no Node access or sealer PATCH permission by default.
 
@@ -166,5 +168,8 @@ evidence. Live Kubernetes CEL type/defaulting checks for the new transition, rea
 TLS/API authentication, service image digest, binder hook, cancellation/rollback,
 concurrent admission stress, registry rollout and failure/recovery remain gates.
 
-All **43 new tests passed**. `evidence.json` records the command, suite counts,
-source hashes and explicit unqualified gates.
+The original **43 tests passed** at commit `739441e`; `evidence.json` retains that
+original source receipt. The expanded suite now has **54 passing tests**, including
+the API-server timeout-query routing regression and bounded cancellation. The
+live CPU report preserves the failed first call, corrected service generation,
+actual authenticated actors, native API receipts and inactive final inventory.
