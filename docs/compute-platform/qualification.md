@@ -197,3 +197,25 @@ The idle MPS server still uses UID 10001. That mismatch requires a separate
 bounded compatibility test before mixed dynamic sharing; no MIG or GPU-mode
 change was made. Browser OAuth qualification and the missing ICT filer
 hostname/export remain explicit external gates.
+
+A later GPU2 no-MIG canary tested native R615 Pod-parent cgroup memory limits.
+Stock managed memory bypassed those limits. A pinned experimental UVM guard
+then denied the tested fresh managed allocations and passed ordinary CUDA
+OOM/recovery and PyTorch 2.11 allocation/OOM/recovery at a 5 GiB cap. Each
+matrix retained 597 successful independent peer heartbeats. The earlier
+512 MiB PyTorch failure remains inconclusive. See the
+[actual no-MIG results](../../platform-staging/gpu/qualification/r615-uvm-guard/actual-outcomes-20261008.md).
+
+The experiment used manual cap assignment and fresh independent contexts.
+Automatic node reconciliation, driver-reload generations, restart/cancellation
+races, imported/shared VAspaces, managed globals and MPS interaction remain
+unqualified. GPU group profiles remain disabled; this checkpoint does not
+activate the experimental driver or claim hostile tenant isolation.
+
+GPU2 returned to its original operator-owned R580 driver, with both A100s
+MIG disabled, GPU services Ready and the node uncordoned. Protected CPU/PVC
+identities and readiness were checked. Toolkit recovery restarted
+K3s/containerd. The verified independent firmware directory/search path
+remains required because the usual firmware path is empty. The
+[rollback receipt](../../platform-staging/gpu/qualification/gpu2-r615-canary/rollback-receipt.md)
+records that temporary deviation and removal of the owned canary/test objects.
