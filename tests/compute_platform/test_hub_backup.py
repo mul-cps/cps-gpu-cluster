@@ -18,7 +18,7 @@ class HubBackup(unittest.TestCase):
         os.chmod(destination, 0o600)
 
     def test_publishes_private_checksummed_complete_bundle(self):
-        with tempfile.TemporaryDirectory(dir=ROOT.parent) as directory:
+        with tempfile.TemporaryDirectory() as directory:
             with patch.object(module, 'capture', side_effect=self.fixture):
                 target = module.backup(Path(directory) / 'backups')
             self.assertEqual(target.stat().st_mode & 0o777, 0o700)
@@ -33,7 +33,7 @@ class HubBackup(unittest.TestCase):
             self.assertFalse(list(target.parent.glob('.partial-*')))
 
     def test_failed_capture_does_not_publish_or_expose_error(self):
-        with tempfile.TemporaryDirectory(dir=ROOT.parent) as directory:
+        with tempfile.TemporaryDirectory() as directory:
             def fail(args, destination):
                 self.fixture(args, destination)
                 raise RuntimeError('fixture failure')
@@ -44,7 +44,7 @@ class HubBackup(unittest.TestCase):
             self.assertEqual(list(root.iterdir()), [])
 
     def test_invalid_dump_does_not_publish(self):
-        with tempfile.TemporaryDirectory(dir=ROOT.parent) as directory:
+        with tempfile.TemporaryDirectory() as directory:
             def invalid(args, destination):
                 self.fixture(args, destination)
                 if args[0] == 'exec': destination.write_bytes(b'not a dump')
@@ -54,7 +54,7 @@ class HubBackup(unittest.TestCase):
             self.assertEqual(list(root.iterdir()), [])
 
     def test_rejects_public_destination_and_git_checkout(self):
-        with tempfile.TemporaryDirectory(dir=ROOT.parent) as directory:
+        with tempfile.TemporaryDirectory() as directory:
             root = Path(directory)
             public = root / 'public'; public.mkdir(mode=0o755); public.chmod(0o755)
             with self.assertRaises(ValueError): module.backup(public)
@@ -62,7 +62,7 @@ class HubBackup(unittest.TestCase):
             with self.assertRaises(ValueError): module.backup(repo / 'backup')
 
     def test_role_export_failure_never_publishes_and_preserves_ownership(self):
-        with tempfile.TemporaryDirectory(dir=ROOT.parent) as directory:
+        with tempfile.TemporaryDirectory() as directory:
             root = Path(directory) / 'backups'
             commands = []
             def capture(args, destination):

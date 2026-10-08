@@ -27,7 +27,7 @@ class HubRestore(unittest.TestCase):
         p = root / 'manifest.json'; p.write_text(json.dumps(manifest)); p.chmod(0o600)
 
     def test_current_bundle_selects_distinct_immutable_database_images(self):
-        with tempfile.TemporaryDirectory(dir=ROOT.parent) as tmp:
+        with tempfile.TemporaryDirectory() as tmp:
             root = Path(tmp); self.fixture(root)
             plan = module.validate_bundle(root)
             self.assertEqual(plan['jupyterhub']['image'], 'docker.io/library/postgres@sha256:' + 'a' * 64)
@@ -35,7 +35,7 @@ class HubRestore(unittest.TestCase):
 
     def test_corrupt_missing_public_and_symlink_inputs_are_rejected(self):
         for case in ('corrupt', 'missing', 'public', 'symlink'):
-            with self.subTest(case=case), tempfile.TemporaryDirectory(dir=ROOT.parent) as tmp:
+            with self.subTest(case=case), tempfile.TemporaryDirectory() as tmp:
                 root = Path(tmp); self.fixture(root); p = root / 'jupyterhub.pgdump'
                 if case == 'corrupt': p.write_bytes(b'PGDMPchanged')
                 if case == 'missing': p.unlink()
@@ -45,7 +45,7 @@ class HubRestore(unittest.TestCase):
 
     def test_mutable_and_ambiguous_database_images_are_rejected(self):
         for image in ('docker.io/library/postgres:15', 'docker.io/library/postgres@sha256:' + 'a' * 64 + ' postgresql=docker.io/library/postgres@sha256:' + 'c' * 64):
-            with self.subTest(image=image), tempfile.TemporaryDirectory(dir=ROOT.parent) as tmp:
+            with self.subTest(image=image), tempfile.TemporaryDirectory() as tmp:
                 root = Path(tmp); self.fixture(root)
                 p = root / 'jupyterhub-running-images.txt'; p.write_text('postgresql-abc\tpostgresql=' + image + '\n')
                 manifest = json.loads((root / 'manifest.json').read_text()); manifest['files'][p.name] = {'sha256': hashlib.sha256(p.read_bytes()).hexdigest(), 'bytes': p.stat().st_size}
