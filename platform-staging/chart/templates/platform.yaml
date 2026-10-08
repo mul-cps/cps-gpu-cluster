@@ -116,6 +116,9 @@ spec:
             - {name: policy, mountPath: /policy, readOnly: true}
             - {name: tls, mountPath: /tls, readOnly: true}
             - {name: trust, mountPath: /trust, readOnly: true}
+            {{- if .Values.gateway.argoUi.enabled }}
+            - {name: argo-ui-reader, mountPath: /argo-reader, readOnly: true}
+            {{- end }}
             {{- if .Values.gateway.storageBridgeSecretRef }}
             - {name: storage-bridge, mountPath: /storage-bridge, readOnly: true}
             {{- end }}
@@ -128,6 +131,13 @@ spec:
         - {name: policy, configMap: {name: compute-policy}}
         - {name: tls, secret: {secretName: {{ $tlsSecret }}}}
         - {name: trust, configMap: {name: {{ $caConfigMap }}}}
+        {{- if .Values.gateway.argoUi.enabled }}
+        - name: argo-ui-reader
+          secret:
+            secretName: {{ required "Argo UI reader Secret reference required" .Values.gateway.argoUi.readerSecretRef }}
+            defaultMode: 288
+            items: [{key: token, path: token}]
+        {{- end }}
         {{- if .Values.gateway.storageBridgeSecretRef }}
         - {name: storage-bridge, secret: {secretName: {{ .Values.gateway.storageBridgeSecretRef }}, defaultMode: 288}}
         {{- end }}
@@ -167,7 +177,7 @@ spec:
     - from:
         - podSelector:
             matchExpressions:
-              - {key: app, operator: In, values: [cps-admin, cit-admin]}
+              - {key: app, operator: In, values: [cps-admin, cit-admin, cps-argo-ui, cit-argo-ui]}
       ports: [{protocol: TCP, port: {{ .Values.gateway.port }}}]
     # Hub proxies reach only their administrative service port.
     - from:

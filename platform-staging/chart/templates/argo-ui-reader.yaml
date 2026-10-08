@@ -1,0 +1,101 @@
+{{- if and .Values.enabled .Values.gateway.argoUi.enabled }}
+{{- $reader := required "Reader service account name required" .Values.gateway.argoUi.readerServiceAccount }}
+{{- $readerNamespace := required "Reader namespace required" .Values.gateway.argoUi.readerNamespace }}
+{{- $secret := required "Precreated reader token Secret reference required" .Values.gateway.argoUi.readerSecretRef }}
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: argo-ui-token-rotator
+  namespace: {{ .Values.namespace }}
+automountServiceAccountToken: false
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: cps-argo-ui-token-request
+  namespace: {{ $readerNamespace }}
+rules:
+  - apiGroups: [""]
+    resources: [serviceaccounts/token]
+    resourceNames: [{{ $reader | quote }}]
+    verbs: [create]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: cps-argo-ui-token-request
+  namespace: {{ $readerNamespace }}
+subjects:
+  - {kind: ServiceAccount, name: argo-ui-token-rotator, namespace: {{ .Values.namespace }}}
+roleRef: {apiGroup: rbac.authorization.k8s.io, kind: Role, name: cps-argo-ui-token-request}
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: cps-argo-ui-token-publish
+  namespace: {{ .Values.namespace }}
+rules:
+  - apiGroups: [""]
+    resources: [secrets]
+    resourceNames: [{{ $secret | quote }}]
+    verbs: [patch]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: cps-argo-ui-token-publish
+  namespace: {{ .Values.namespace }}
+subjects:
+  - {kind: ServiceAccount, name: argo-ui-token-rotator, namespace: {{ .Values.namespace }}}
+roleRef: {apiGroup: rbac.authorization.k8s.io, kind: Role, name: cps-argo-ui-token-publish}
+---
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: argo-ui-token-rotator
+  namespace: {{ .Values.namespace }}
+spec:
+  schedule: "*/5 * * * *"
+  concurrencyPolicy: Forbid
+  successfulJobsHistoryLimit: 1
+  failedJobsHistoryLimit: 2
+  jobTemplate:
+    spec:
+      backoffLimit: 1
+      activeDeadlineSeconds: 90
+      template:
+        metadata:
+          labels: {app: argo-ui-token-rotator}
+        spec:
+          restartPolicy: Never
+          serviceAccountName: argo-ui-token-rotator
+          automountServiceAccountToken: true
+          imagePullSecrets: [{name: {{ .Values.gateway.imagePullSecretRef }}}]
+          securityContext:
+            runAsNonRoot: true
+            runAsUser: 10001
+            runAsGroup: 10001
+            seccompProfile: {type: RuntimeDefault}
+          containers:
+            - name: rotate
+              image: {{ required "Rotator requires the released compute image" .Values.gateway.image | quote }}
+              command: [python, -c]
+              args:
+                - |
+                  import base64
+                  from kubernetes import client, config
+                  config.load_incluster_config()
+                  api = client.CoreV1Api()
+                  request = client.V1TokenRequest(spec=client.V1TokenRequestSpec(audiences=[], expiration_seconds=900))
+                  token = api.create_namespaced_service_account_token({{ $reader | squote }}, {{ $readerNamespace | squote }}, request, _request_timeout=(5, 15)).status.token
+                  api.patch_namespaced_secret({{ $secret | squote }}, {{ .Values.namespace | squote }}, {'data': {'token': base64.b64encode(token.encode()).decode()}}, _request_timeout=(5, 15))
+                  print('Short-lived personal Argo reader credential rotated')
+              securityContext:
+                allowPrivilegeEscalation: false
+                readOnlyRootFilesystem: true
+                capabilities: {drop: [ALL]}
+              resources:
+                requests: {cpu: 50m, memory: 64Mi}
+                limits: {cpu: 250m, memory: 256Mi}
+{{- end }}

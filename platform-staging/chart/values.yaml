@@ -24,6 +24,39 @@ gateway:
   storageVerificationImage: ""
   kubernetes:
     enabled: false
+  argoUi:
+    enabled: false
+    readerSecretRef: cps-argo-ui-reader
+    readerServiceAccount: argo-artifact-reader
+    readerNamespace: cps-argo
+# Each frontend has its own OAuth client and signed session cookies.
+# OAuth/service registration and verified ingress are separate activation gates.
+personalArgo:
+  enabled: false
+  image: ""
+  port: 8080
+  nativeUrl: ""
+  nativeCaFile: /trust/ca.crt
+  upstreamCaConfigMapRef: cps-compute-gateway-ca
+  sources:
+    cps:
+      enabled: false
+      publicOrigin: ""
+      hubApiUrl: ""
+      secretRef: cps-argo-ui-oauth
+      ingress:
+        enabled: false
+        host: ""
+        tlsSecretRef: ""
+    cit:
+      enabled: false
+      publicOrigin: ""
+      hubApiUrl: ""
+      secretRef: cit-argo-ui-oauth
+      ingress:
+        enabled: false
+        host: ""
+        tlsSecretRef: ""
 consoles:
   cps:
     image: ""
