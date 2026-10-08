@@ -1,0 +1,774 @@
+{
+  "observedAt": "2026-10-08T13:04:36.510772+00:00",
+  "clusterPolicy": {
+    "metadata": {
+      "name": "cluster-policy",
+      "uid": "dd349713-ef3f-4abf-9f64-a7baded3f53d",
+      "resourceVersion": "244833206",
+      "generation": 7,
+      "labels": {
+        "app.kubernetes.io/component": "gpu-operator",
+        "app.kubernetes.io/instance": "gpu-operator",
+        "app.kubernetes.io/managed-by": "Helm",
+        "app.kubernetes.io/name": "gpu-operator",
+        "app.kubernetes.io/version": "v25.10.0",
+        "helm.sh/chart": "gpu-operator-v25.10.0",
+        "objectset.rio.cattle.io/hash": "60885aea99a43b9759a1b8e0f61fd97060bc26fd"
+      },
+      "annotations": {
+        "meta.helm.sh/release-name": "gpu-operator",
+        "meta.helm.sh/release-namespace": "gpu-operator",
+        "objectset.rio.cattle.io/id": "default-gpu-operator-cattle-fleet-local-system"
+      }
+    },
+    "driver": {
+      "certConfig": {
+        "name": ""
+      },
+      "enabled": true,
+      "image": "driver",
+      "imagePullPolicy": "IfNotPresent",
+      "kernelModuleConfig": {
+        "name": ""
+      },
+      "kernelModuleType": "auto",
+      "licensingConfig": {
+        "nlsEnabled": true,
+        "secretName": ""
+      },
+      "manager": {
+        "env": [
+          {
+            "name": "ENABLE_GPU_POD_EVICTION",
+            "value": "false"
+          },
+          {
+            "name": "ENABLE_AUTO_DRAIN",
+            "value": "false"
+          }
+        ],
+        "image": "k8s-driver-manager",
+        "imagePullPolicy": "IfNotPresent",
+        "repository": "nvcr.io/nvidia/cloud-native",
+        "version": "v0.9.0"
+      },
+      "rdma": {
+        "enabled": false,
+        "useHostMofed": false
+      },
+      "repoConfig": {
+        "configMapName": ""
+      },
+      "repository": "nvcr.io/nvidia",
+      "startupProbe": {
+        "failureThreshold": 120,
+        "initialDelaySeconds": 60,
+        "periodSeconds": 10,
+        "timeoutSeconds": 60
+      },
+      "upgradePolicy": {
+        "autoUpgrade": true,
+        "drain": {
+          "deleteEmptyDir": false,
+          "enable": false,
+          "force": false,
+          "timeoutSeconds": 300
+        },
+        "maxParallelUpgrades": 1,
+        "maxUnavailable": "25%",
+        "podDeletion": {
+          "deleteEmptyDir": false,
+          "force": false,
+          "timeoutSeconds": 300
+        },
+        "waitForCompletion": {
+          "timeoutSeconds": 0
+        }
+      },
+      "useNvidiaDriverCRD": false,
+      "usePrecompiled": false,
+      "version": "580.95.05",
+      "virtualTopology": {
+        "config": ""
+      }
+    },
+    "toolkit": {
+      "enabled": true,
+      "env": [
+        {
+          "name": "CONTAINERD_CONFIG",
+          "value": "/var/lib/rancher/k3s/agent/etc/containerd/config.toml"
+        },
+        {
+          "name": "CONTAINERD_SOCKET",
+          "value": "/run/k3s/containerd/containerd.sock"
+        },
+        {
+          "name": "CONTAINERD_RUNTIME_CLASS",
+          "value": "nvidia"
+        },
+        {
+          "name": "CONTAINERD_SET_AS_DEFAULT",
+          "value": "true"
+        }
+      ],
+      "image": "container-toolkit",
+      "imagePullPolicy": "IfNotPresent",
+      "installDir": "/usr/local/nvidia",
+      "repository": "nvcr.io/nvidia/k8s",
+      "version": "v1.18.0"
+    },
+    "daemonsets": {
+      "labels": {
+        "app.kubernetes.io/managed-by": "gpu-operator",
+        "helm.sh/chart": "gpu-operator-v25.10.0"
+      },
+      "priorityClassName": "system-node-critical",
+      "rollingUpdate": {
+        "maxUnavailable": "1"
+      },
+      "tolerations": [
+        {
+          "effect": "NoSchedule",
+          "key": "nvidia.com/gpu",
+          "operator": "Exists"
+        },
+        {
+          "effect": "NoSchedule",
+          "key": "gpu-pool",
+          "operator": "Exists"
+        }
+      ],
+      "updateStrategy": "RollingUpdate"
+    },
+    "status": {
+      "conditions": [
+        {
+          "lastTransitionTime": "2026-07-06T21:17:11Z",
+          "message": "ClusterPolicy is ready as all resources have been successfully reconciled",
+          "reason": "Reconciled",
+          "status": "True",
+          "type": "Ready"
+        },
+        {
+          "lastTransitionTime": "2026-07-06T21:17:11Z",
+          "message": "",
+          "reason": "Ready",
+          "status": "False",
+          "type": "Error"
+        }
+      ],
+      "namespace": "gpu-operator",
+      "state": "ready"
+    }
+  },
+  "driverCrd": {
+    "created": "2025-11-07T13:52:05Z",
+    "versions": [
+      {
+        "name": "v1alpha1",
+        "served": true,
+        "storage": true,
+        "specProperties": [
+          "annotations",
+          "args",
+          "certConfig",
+          "driverType",
+          "env",
+          "gdrcopy",
+          "gds",
+          "image",
+          "imagePullPolicy",
+          "imagePullSecrets",
+          "kernelModuleConfig",
+          "kernelModuleType",
+          "labels",
+          "licensingConfig",
+          "livenessProbe",
+          "manager",
+          "nodeAffinity",
+          "nodeSelector",
+          "priorityClassName",
+          "rdma",
+          "readinessProbe",
+          "repoConfig",
+          "repository",
+          "resources",
+          "secretEnv",
+          "startupProbe",
+          "tolerations",
+          "useOpenKernelModules",
+          "usePrecompiled",
+          "version",
+          "virtualTopologyConfig"
+        ]
+      }
+    ]
+  },
+  "candidate": {
+    "tag": "nvcr.io/nvidia/driver:615.71.09-ubuntu24.04",
+    "indexDigest": "sha256:0ed39c3e75c219954ba81be558c9aa0e6abbfa838c0f60d61bf9a139776fa186",
+    "amd64Digest": "sha256:bc7572b7f14177c467e4dd8b66c4f4535f462ea9cf6a65cebd7603cc966ebbd7",
+    "sourceRevision": "575c9011c4fa4b94200c56818b1f97cdbcf610af",
+    "metadataOnly": true,
+    "layersDownloaded": false,
+    "driverInstalled": false
+  },
+  "sourcePins": {
+    "gpu2-nvidiadriver-controller-v25.10.0.go": "a195b8412c691485a36186dadaadeb1bebab4234dcf55af204fd72c6ec40e1e0",
+    "gpu2-driver-state-v25.10.0.go": "e103b8314f3ed0004f1a7492e25c1894c3d3105881a27885adc1ec4bdd63f823",
+    "gpu2-driver-nodepool-v25.10.0.go": "41881f531502c6136f78a748a49d9c0c017b29cef20333ddbb9bd86e1094636e",
+    "gpu2-operator-main-v25.10.0.go": "e7eb8ec0d1a92daa35259ebd55b71d4d0dad28ad887a909e63fad96324058732",
+    "gpu2-crd-driver-template-v25.10.0.yaml": "27a76adcc9f495bd698000ff2b3536e11f3332354d58d71f551a0a03312250bb"
+  },
+  "protectedGpuDriverPods": [
+    {
+      "node": "k3s-wk-gpu1",
+      "name": "nvidia-driver-daemonset-gd6kd",
+      "uid": "4544b0a8-4f7a-4188-8752-25c463131544",
+      "imageIds": [
+        "nvcr.io/nvidia/driver@sha256:41515698692bd5e192186e620b65717af960a66d22dbb5a06e3656575a5d9148"
+      ],
+      "managerImageIds": [
+        "nvcr.io/nvidia/cloud-native/k8s-driver-manager@sha256:a6c12abacc9c4f51d3653c90fcad32f19799069889338601407eba05fea4ba18"
+      ]
+    },
+    {
+      "node": "k3s-wk-gpu3",
+      "name": "nvidia-driver-daemonset-nsrmk",
+      "uid": "c4275e3c-e34f-4545-8389-d673e6f7b401",
+      "imageIds": [
+        "nvcr.io/nvidia/driver@sha256:41515698692bd5e192186e620b65717af960a66d22dbb5a06e3656575a5d9148"
+      ],
+      "managerImageIds": [
+        "nvcr.io/nvidia/cloud-native/k8s-driver-manager@sha256:a6c12abacc9c4f51d3653c90fcad32f19799069889338601407eba05fea4ba18"
+      ]
+    },
+    {
+      "node": "k3s-wk-gpu4",
+      "name": "nvidia-driver-daemonset-pbpzh",
+      "uid": "446b94c7-3863-4091-9701-d97e4349e9b9",
+      "imageIds": [
+        "nvcr.io/nvidia/driver@sha256:41515698692bd5e192186e620b65717af960a66d22dbb5a06e3656575a5d9148"
+      ],
+      "managerImageIds": [
+        "nvcr.io/nvidia/cloud-native/k8s-driver-manager@sha256:a6c12abacc9c4f51d3653c90fcad32f19799069889338601407eba05fea4ba18"
+      ]
+    },
+    {
+      "node": "k3s-wk-gpu2",
+      "name": "nvidia-driver-daemonset-ssr7r",
+      "uid": "b72e0314-256d-44a5-83ec-b6a8cc180447",
+      "imageIds": [
+        "nvcr.io/nvidia/driver@sha256:41515698692bd5e192186e620b65717af960a66d22dbb5a06e3656575a5d9148"
+      ],
+      "managerImageIds": [
+        "nvcr.io/nvidia/cloud-native/k8s-driver-manager@sha256:a6c12abacc9c4f51d3653c90fcad32f19799069889338601407eba05fea4ba18"
+      ]
+    }
+  ],
+  "helm": [
+    {
+      "name": "gpu-operator",
+      "namespace": "gpu-operator",
+      "revision": "105",
+      "updated": "2026-10-05 15:23:03.842923777 +0000 UTC",
+      "status": "deployed",
+      "chart": "gpu-operator-v25.10.0",
+      "app_version": "v25.10.0"
+    }
+  ],
+  "gpu2": {
+    "name": "k3s-wk-gpu2",
+    "uid": "3336cdd5-d245-436e-b57c-2f66c6dcaa41",
+    "unschedulable": false,
+    "taints": null,
+    "nodeInfo": {
+      "architecture": "amd64",
+      "bootID": "209f8bc9-a478-48e4-925a-6e07ffa56f7a",
+      "containerRuntimeVersion": "containerd://2.2.5-k3s2",
+      "kernelVersion": "6.8.0-134-generic",
+      "kubeProxyVersion": "",
+      "kubeletVersion": "v1.34.9+k3s1",
+      "machineID": "a5d6c873f113403f88663680b11240a8",
+      "operatingSystem": "linux",
+      "osImage": "Ubuntu 24.04.3 LTS",
+      "systemUUID": "a5d6c873-f113-403f-8866-3680b11240a8"
+    },
+    "nvidiaLabels": {
+      "gpu-model": "a100",
+      "nos.nebuly.com/gpu-partitioning": "mig",
+      "nvidia.com/cuda.driver-version.full": "580.95.05",
+      "nvidia.com/cuda.driver-version.major": "580",
+      "nvidia.com/cuda.driver-version.minor": "95",
+      "nvidia.com/cuda.driver-version.revision": "05",
+      "nvidia.com/cuda.driver.major": "580",
+      "nvidia.com/cuda.driver.minor": "95",
+      "nvidia.com/cuda.driver.rev": "05",
+      "nvidia.com/cuda.runtime-version.full": "13.0",
+      "nvidia.com/cuda.runtime-version.major": "13",
+      "nvidia.com/cuda.runtime-version.minor": "0",
+      "nvidia.com/cuda.runtime.major": "13",
+      "nvidia.com/cuda.runtime.minor": "0",
+      "nvidia.com/gfd.timestamp": "1783372105",
+      "nvidia.com/gpu-driver-upgrade-state": "upgrade-done",
+      "nvidia.com/gpu.compute.major": "8",
+      "nvidia.com/gpu.compute.minor": "0",
+      "nvidia.com/gpu.count": "2",
+      "nvidia.com/gpu.deploy.container-toolkit": "true",
+      "nvidia.com/gpu.deploy.dcgm": "true",
+      "nvidia.com/gpu.deploy.dcgm-exporter": "true",
+      "nvidia.com/gpu.deploy.device-plugin": "true",
+      "nvidia.com/gpu.deploy.driver": "true",
+      "nvidia.com/gpu.deploy.gpu-feature-discovery": "true",
+      "nvidia.com/gpu.deploy.mig-manager": "true",
+      "nvidia.com/gpu.deploy.node-status-exporter": "true",
+      "nvidia.com/gpu.deploy.nvsm": "true",
+      "nvidia.com/gpu.deploy.operator-validator": "true",
+      "nvidia.com/gpu.family": "ampere",
+      "nvidia.com/gpu.machine": "Standard-PC-Q35-ICH9-2009",
+      "nvidia.com/gpu.memory": "40960",
+      "nvidia.com/gpu.mode": "compute",
+      "nvidia.com/gpu.present": "true",
+      "nvidia.com/gpu.product": "NVIDIA-A100-PCIE-40GB",
+      "nvidia.com/gpu.replicas": "1",
+      "nvidia.com/gpu.sharing-strategy": "none",
+      "nvidia.com/mig.capable": "true",
+      "nvidia.com/mig.config": "all-disabled",
+      "nvidia.com/mig.config.state": "success",
+      "nvidia.com/mps.capable": "false",
+      "nvidia.com/vgpu.present": "false"
+    }
+  },
+  "runningPodCount": 55,
+  "gpu2PodBaseline": [
+    {
+      "namespace": "alloy",
+      "name": "alloy-cnt4q",
+      "uid": "00cdf7fb-5542-41b0-b88c-ef8b32e85ce7",
+      "phase": "Running",
+      "pvcs": []
+    },
+    {
+      "namespace": "cattle-fleet-system",
+      "name": "gitjob-6f49568497-n99dd",
+      "uid": "c9096098-e4a7-4ba6-b709-f164134b0647",
+      "phase": "Running",
+      "pvcs": []
+    },
+    {
+      "namespace": "cattle-monitoring-system",
+      "name": "rancher-monitoring-kube-state-metrics-5cc64fcff7-cjn62",
+      "uid": "8e1f8618-178b-41a0-be5d-69cd2ab597c1",
+      "phase": "Running",
+      "pvcs": []
+    },
+    {
+      "namespace": "cattle-monitoring-system",
+      "name": "rancher-monitoring-operator-d78b98855-4ssqr",
+      "uid": "6f183d89-ca1b-4b4c-ad14-111797009684",
+      "phase": "Running",
+      "pvcs": []
+    },
+    {
+      "namespace": "cattle-monitoring-system",
+      "name": "rancher-monitoring-prometheus-adapter-54fc9cdd56-w4b7b",
+      "uid": "043ee17d-2e7c-4b0c-a5b5-9ee9f28d4340",
+      "phase": "Running",
+      "pvcs": []
+    },
+    {
+      "namespace": "cattle-monitoring-system",
+      "name": "rancher-monitoring-prometheus-node-exporter-ml952",
+      "uid": "95d08b5d-5749-48d2-a5a2-45821db4f2d5",
+      "phase": "Running",
+      "pvcs": []
+    },
+    {
+      "namespace": "cattle-system",
+      "name": "rancher-b6cd998d9-8wcvr",
+      "uid": "6017f6d0-e1cd-4949-be70-8f0ebb911dbc",
+      "phase": "Running",
+      "pvcs": []
+    },
+    {
+      "namespace": "cattle-turtles-system",
+      "name": "rancher-turtles-controller-manager-86bc6bbdb5-b2tkj",
+      "uid": "c74b2444-fc57-4dec-a6bb-8bb04d4adff6",
+      "phase": "Running",
+      "pvcs": []
+    },
+    {
+      "namespace": "cert-manager",
+      "name": "cert-manager-cainjector-6bf9d5c79b-6rfh6",
+      "uid": "e156b8c1-c221-4ec4-84e5-158df61b7c2f",
+      "phase": "Running",
+      "pvcs": []
+    },
+    {
+      "namespace": "cert-manager",
+      "name": "cert-manager-webhook-78f7b4d9d7-78jfb",
+      "uid": "ee27e0a6-b998-424d-81e6-f15d9af75fe3",
+      "phase": "Running",
+      "pvcs": []
+    },
+    {
+      "namespace": "ci",
+      "name": "buildkit-pool-7567cb9459-szkct",
+      "uid": "c59ac550-99a1-4fcb-8a6c-5d348af90262",
+      "phase": "Running",
+      "pvcs": []
+    },
+    {
+      "namespace": "cit-auth",
+      "name": "authentik-worker-66bb756b4c-dcvw6",
+      "uid": "b220b496-ddce-407f-b44b-e4ecc2780482",
+      "phase": "Running",
+      "pvcs": []
+    },
+    {
+      "namespace": "cit-jhub",
+      "name": "continuous-image-puller-zs7x2",
+      "uid": "8c2a8383-07ad-44a6-8dd1-6c73d40780c0",
+      "phase": "Running",
+      "pvcs": []
+    },
+    {
+      "namespace": "cps-argo",
+      "name": "argo-artifact-downloads-5b996556c8-6bzsp",
+      "uid": "cf65a248-e816-42fd-8b67-455993897e03",
+      "phase": "Running",
+      "pvcs": []
+    },
+    {
+      "namespace": "cps-compute",
+      "name": "cps-admin-58c6f68c88-pq58n",
+      "uid": "92a2f4c1-3fb3-4be6-84e1-64a3c4b98f16",
+      "phase": "Running",
+      "pvcs": [
+        "cps-admin-data"
+      ]
+    },
+    {
+      "namespace": "gpu-operator",
+      "name": "gpu-feature-discovery-dl7d8",
+      "uid": "04e5def6-12eb-42f1-9841-20fa7cdb30a1",
+      "phase": "Running",
+      "pvcs": []
+    },
+    {
+      "namespace": "gpu-operator",
+      "name": "gpu-operator-node-feature-discovery-gc-74dd579c7f-ndnqs",
+      "uid": "316e105f-674f-4b20-b902-4dd4a46a94ab",
+      "phase": "Running",
+      "pvcs": []
+    },
+    {
+      "namespace": "gpu-operator",
+      "name": "gpu-operator-node-feature-discovery-master-948c8bb7c-wvntb",
+      "uid": "21733ba1-37e6-44ef-bc2c-8876cdaf091b",
+      "phase": "Running",
+      "pvcs": []
+    },
+    {
+      "namespace": "gpu-operator",
+      "name": "gpu-operator-node-feature-discovery-worker-hlwkr",
+      "uid": "25be5252-854b-4ea6-b2a8-8733105ec96a",
+      "phase": "Running",
+      "pvcs": []
+    },
+    {
+      "namespace": "gpu-operator",
+      "name": "mps-control-daemon-standalone-m2587",
+      "uid": "4cb8c92b-95a7-4a30-9d62-bc17bb542941",
+      "phase": "Running",
+      "pvcs": []
+    },
+    {
+      "namespace": "gpu-operator",
+      "name": "nvidia-container-toolkit-daemonset-2n9rl",
+      "uid": "e0b860b6-cc2d-498a-986d-14d2a0266a3e",
+      "phase": "Running",
+      "pvcs": []
+    },
+    {
+      "namespace": "gpu-operator",
+      "name": "nvidia-dcgm-exporter-rqqqn",
+      "uid": "b02b507e-7332-42ac-a7fa-c0788dea1334",
+      "phase": "Running",
+      "pvcs": []
+    },
+    {
+      "namespace": "gpu-operator",
+      "name": "nvidia-device-plugin-daemonset-b9gtn",
+      "uid": "a4e947f2-811b-4dcc-9e2b-322e6284cd65",
+      "phase": "Running",
+      "pvcs": []
+    },
+    {
+      "namespace": "gpu-operator",
+      "name": "nvidia-driver-daemonset-ssr7r",
+      "uid": "b72e0314-256d-44a5-83ec-b6a8cc180447",
+      "phase": "Running",
+      "pvcs": []
+    },
+    {
+      "namespace": "gpu-operator",
+      "name": "nvidia-mig-manager-zlcxc",
+      "uid": "6ed10f8d-f884-46eb-9f9e-4006d697b5a5",
+      "phase": "Running",
+      "pvcs": []
+    },
+    {
+      "namespace": "gpu-operator",
+      "name": "nvidia-operator-validator-vqxp8",
+      "uid": "ae8ebafb-7d86-4654-81d4-ad8f8260af66",
+      "phase": "Running",
+      "pvcs": []
+    },
+    {
+      "namespace": "image-builds",
+      "name": "image-builder-api-67d7c7fc5d-n6fsh",
+      "uid": "2df1f606-ae15-4f22-b159-0eb98757b205",
+      "phase": "Running",
+      "pvcs": []
+    },
+    {
+      "namespace": "ingress-nginx",
+      "name": "ingress-nginx-controller-m6txm",
+      "uid": "0346590e-9d13-4c10-af17-d63757c9a285",
+      "phase": "Running",
+      "pvcs": []
+    },
+    {
+      "namespace": "jupyterhub",
+      "name": "continuous-image-puller-g68hd",
+      "uid": "eb6e627b-e3be-4d6c-b306-d612035d734d",
+      "phase": "Running",
+      "pvcs": []
+    },
+    {
+      "namespace": "jupyterhub",
+      "name": "postgresql-6f46c896b4-524mt",
+      "uid": "735c9cc9-8a5c-44e0-9fcc-4b1d7d1a7953",
+      "phase": "Running",
+      "pvcs": [
+        "postgresql-data-longhorn"
+      ]
+    },
+    {
+      "namespace": "kai-resource-isolator",
+      "name": "kai-resource-isolator-libsync-tv8sw",
+      "uid": "2f455157-6902-44d4-abd6-08a7dcf327c2",
+      "phase": "Running",
+      "pvcs": []
+    },
+    {
+      "namespace": "kai-resource-isolator",
+      "name": "kai-resource-isolator-monitor-vvz8p",
+      "uid": "e2714d97-1b73-4ba2-aa15-9ad276379a05",
+      "phase": "Running",
+      "pvcs": []
+    },
+    {
+      "namespace": "knative-serving",
+      "name": "autoscaler-5564c5c759-k5wrm",
+      "uid": "36cb1df9-4593-4471-8181-1efaa15c3bd0",
+      "phase": "Running",
+      "pvcs": []
+    },
+    {
+      "namespace": "knative-serving",
+      "name": "controller-7544bfc5db-s2x88",
+      "uid": "b4500d48-f8ad-446f-a19d-452eed65856d",
+      "phase": "Running",
+      "pvcs": []
+    },
+    {
+      "namespace": "knative-serving",
+      "name": "net-kourier-controller-56fbdbc79f-vq92w",
+      "uid": "f1d21999-a5c1-4b1e-b3f3-0bfa8c82cb80",
+      "phase": "Running",
+      "pvcs": []
+    },
+    {
+      "namespace": "kube-system",
+      "name": "system-tuning-jx5r9",
+      "uid": "b68f8c8c-bc63-4c6e-a43f-f8200af01db0",
+      "phase": "Running",
+      "pvcs": []
+    },
+    {
+      "namespace": "kured",
+      "name": "kured-vwx8s",
+      "uid": "a97ff766-239c-4ae6-ba03-d130128e95f7",
+      "phase": "Running",
+      "pvcs": []
+    },
+    {
+      "namespace": "loki",
+      "name": "loki-0",
+      "uid": "8bacbfbe-90cc-497a-ab3e-d458e05199df",
+      "phase": "Running",
+      "pvcs": [
+        "storage-loki-0"
+      ]
+    },
+    {
+      "namespace": "loki",
+      "name": "loki-canary-cz7dq",
+      "uid": "19774368-c243-4b29-a3b8-e4f68bd8929e",
+      "phase": "Running",
+      "pvcs": []
+    },
+    {
+      "namespace": "loki",
+      "name": "loki-chunks-cache-0",
+      "uid": "5b5c596a-8453-481b-921e-52e4eee98054",
+      "phase": "Running",
+      "pvcs": []
+    },
+    {
+      "namespace": "loki",
+      "name": "loki-gateway-768c95fc77-fdzgc",
+      "uid": "828c666a-fff2-4112-a485-f2eaf5b67ea7",
+      "phase": "Running",
+      "pvcs": []
+    },
+    {
+      "namespace": "longhorn-system",
+      "name": "csi-attacher-74cd57d888-gp9sw",
+      "uid": "044dc42a-88bc-4dce-abcb-2bc43c8185df",
+      "phase": "Running",
+      "pvcs": []
+    },
+    {
+      "namespace": "longhorn-system",
+      "name": "csi-provisioner-668f595df8-4lwft",
+      "uid": "bc0ba934-5fcb-4520-8aa1-461d5b13cd72",
+      "phase": "Running",
+      "pvcs": []
+    },
+    {
+      "namespace": "longhorn-system",
+      "name": "csi-resizer-749f8b9cd7-kjnvm",
+      "uid": "d02b55e5-a929-4264-a619-ecb5ef519e8b",
+      "phase": "Running",
+      "pvcs": []
+    },
+    {
+      "namespace": "longhorn-system",
+      "name": "csi-snapshotter-58dd468645-j4thq",
+      "uid": "ca7d812b-7492-4616-a1ea-1d926f2c9e1d",
+      "phase": "Running",
+      "pvcs": []
+    },
+    {
+      "namespace": "longhorn-system",
+      "name": "engine-image-ei-27581b25-vzn67",
+      "uid": "0974ce60-6cc7-4085-9eae-02f0657cce01",
+      "phase": "Running",
+      "pvcs": []
+    },
+    {
+      "namespace": "longhorn-system",
+      "name": "instance-manager-435fec096c724854458dc568b2a09632",
+      "uid": "4f1aacf8-64ef-43fc-ab0c-f8711b61e793",
+      "phase": "Running",
+      "pvcs": []
+    },
+    {
+      "namespace": "longhorn-system",
+      "name": "longhorn-csi-plugin-px92r",
+      "uid": "3afe4f23-361d-448b-a249-0530b5860764",
+      "phase": "Running",
+      "pvcs": []
+    },
+    {
+      "namespace": "longhorn-system",
+      "name": "longhorn-driver-deployer-58b6fb5988-97m7p",
+      "uid": "3d063ba1-3c5f-4905-96d4-8f6e9c52ef93",
+      "phase": "Running",
+      "pvcs": []
+    },
+    {
+      "namespace": "longhorn-system",
+      "name": "longhorn-manager-frn9c",
+      "uid": "3e9efcb8-b746-4840-a75e-3125461f9788",
+      "phase": "Running",
+      "pvcs": []
+    },
+    {
+      "namespace": "longhorn-system",
+      "name": "longhorn-ui-5f96f4bbdb-rh29z",
+      "uid": "46d9606a-8438-4be4-9e0d-37ae9fc4d2fa",
+      "phase": "Running",
+      "pvcs": []
+    },
+    {
+      "namespace": "metallb-system",
+      "name": "metallb-frr-k8s-cxnlc",
+      "uid": "72835f69-0aa9-41f9-bd0c-3f8d59eeccbf",
+      "phase": "Running",
+      "pvcs": []
+    },
+    {
+      "namespace": "metallb-system",
+      "name": "metallb-speaker-qlrmd",
+      "uid": "60791d13-2720-404f-ae9f-1c6043eb48c4",
+      "phase": "Running",
+      "pvcs": []
+    },
+    {
+      "namespace": "spegel",
+      "name": "spegel-9vzlm",
+      "uid": "7880f1cb-0996-44b3-9c40-163407622128",
+      "phase": "Running",
+      "pvcs": []
+    },
+    {
+      "namespace": "vcluster-ckf",
+      "name": "coredns-744d9bd8bf-dmrxr-x-kube-system-x-vcluster-ckf",
+      "uid": "fd3517f9-d767-4cda-baa0-35a0740d4bde",
+      "phase": "Running",
+      "pvcs": []
+    }
+  ],
+  "protectedPvcPods": [
+    {
+      "namespace": "cps-compute",
+      "name": "cps-admin-58c6f68c88-pq58n",
+      "uid": "92a2f4c1-3fb3-4be6-84e1-64a3c4b98f16",
+      "phase": "Running",
+      "pvcs": [
+        "cps-admin-data"
+      ]
+    },
+    {
+      "namespace": "jupyterhub",
+      "name": "postgresql-6f46c896b4-524mt",
+      "uid": "735c9cc9-8a5c-44e0-9fcc-4b1d7d1a7953",
+      "phase": "Running",
+      "pvcs": [
+        "postgresql-data-longhorn"
+      ]
+    },
+    {
+      "namespace": "loki",
+      "name": "loki-0",
+      "uid": "8bacbfbe-90cc-497a-ab3e-d458e05199df",
+      "phase": "Running",
+      "pvcs": [
+        "storage-loki-0"
+      ]
+    }
+  ],
+  "qualification": {
+    "applied": false,
+    "driverReloadQualified": false,
+    "rollbackQualified": false,
+    "cuda134FeaturesQualified": false,
+    "broadDriverDaemonSetChanged": false,
+    "readOnlyInventory": true
+  }
+}
