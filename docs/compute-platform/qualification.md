@@ -171,3 +171,29 @@ The [legacy Dask transition evidence](../../platform-staging/network/legacy-dask
 now also covers WorkerGroup scale PATCH/PUT dry-runs for both isolated
 principals: baseline allowed, guard denied, operator allowed, zero replicas
 preserved and no execution Pods created. Production transition remains disabled.
+
+## 2026-10-08 live acceptance checkpoint
+
+The [current checkpoint](../../platform-staging/releases/qualification-20261008.json)
+pins the compute/admin candidates and keeps production qualification false.
+The [CPU coordination run](../../platform-staging/scheduler/qualification/dynamic-coordination/LIVE_CPU_20261008.md)
+passed actual KAI CPU scheduling, API-server webhook transport, native UID/resourceVersion
+binding preconditions and exact original-Pod cancellation. The real API server's
+webhook timeout query exposed a routing defect; the fix and 54 source tests pass.
+The isolated webhook was removed and its service stopped. No GPU workload or
+production admission configuration was changed. Positive GPU generation sealing
+and KAI GPU preBind/rollback integration remain unqualified.
+
+Fresh private CPS/CIT database/config backups preceded the personal Argo rollout.
+Both databases [restored logically](../../platform-staging/hub-backups/logical-restore-20261008.json)
+inside isolated local containers using their exact running PostgreSQL images.
+This excludes source-row/ACL comparisons, connected Hub authentication/spawning,
+NFS archives and off-host recovery.
+
+The [CPU runtime preflight](../../platform-staging/scheduler/qualification/mps-dynamic/uid-cpu-preflight-20261008.json)
+checks UID 1000/GID 100 and private scratch/cache permissions in the proposed
+immutable runtime on GPU2, with zero GPU requests and no CUDA initialization.
+The idle MPS server still uses UID 10001. That mismatch requires a separate
+bounded compatibility test before mixed dynamic sharing; no MIG or GPU-mode
+change was made. Browser OAuth qualification and the missing ICT filer
+hostname/export remain explicit external gates.

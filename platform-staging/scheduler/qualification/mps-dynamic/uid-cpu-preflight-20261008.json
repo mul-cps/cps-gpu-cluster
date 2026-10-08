@@ -1,0 +1,37 @@
+{
+  "observedAt": "2026-10-08T12:46:05.343770+00:00",
+  "status": "cpu-runtime-preflight-passed-mps-uid-mismatch",
+  "node": "k3s-wk-gpu2",
+  "podUid": "f774661b-43c2-4de4-ab1e-900e6e68204b",
+  "imageId": "ghcr.io/mul-cps/cps-compute@sha256:b3802a7f70077ff56adbc060d1177409eeff76c8b3cf8ccf9f39047c1e6716bf",
+  "runtime": {
+    "uid": 1000,
+    "gid": 100,
+    "home": "/scratch",
+    "scratchUid": 0,
+    "scratchGid": 100,
+    "cacheMode": "0o2700",
+    "fileMode": "0o600",
+    "cudaInitialized": false,
+    "nfsMounted": false,
+    "passed": true
+  },
+  "mpsReadOnly": {
+    "pid": 3166883,
+    "startTicks": 792169718,
+    "uid": 10001,
+    "clientListEmpty": true,
+    "mig": "Disabled",
+    "computeMode": "Default",
+    "cards": 2,
+    "usedMemoryMiBPerCard": 45
+  },
+  "cudaCompatibilityQualified": false,
+  "gpuIsolationQualified": false,
+  "productionGpuEnabled": false,
+  "limitations": [
+    "Read-only MPS observation and CPU-only runtime test; no CUDA context or UID handover",
+    "Current MPS UID10001 differs from notebook UID1000; dynamic mixed-runtime acceptance remains open"
+  ],
+  "cleanup": "temporary namespace deleted; no GPU or NFS resources used"
+}

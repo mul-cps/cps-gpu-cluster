@@ -53,9 +53,11 @@
       "realBrowserOAuthQualified": false
     },
     "dynamicCoordinationCandidate": {
-      "tests": 43,
-      "status": "inactive-offline-candidate",
-      "productionAtomicityQualified": false
+      "tests": 54,
+      "status": "cpu-only-native-api-qualified-production-inactive",
+      "report": "../scheduler/qualification/dynamic-coordination/LIVE_CPU_20261008.md",
+      "productionAtomicityQualified": false,
+      "positiveGpuFenceQualified": false
     },
     "adminRollout": {
       "report": "../admin/qualification/reviewed-alias/observed.json",
@@ -63,6 +65,18 @@
       "liveSchemaVersion": 6,
       "currentBackupProvenanceUpdated": true,
       "reviewedAliasesInstalled": false
+    },
+    "hubLogicalRestore": {
+      "report": "../hub-backups/logical-restore-20261008.json",
+      "bothHubsPassed": true,
+      "matchingRunningDatabaseImages": true,
+      "connectedHubRecoveryQualified": false
+    },
+    "runtimeUidPreflight": {
+      "report": "../scheduler/qualification/mps-dynamic/uid-cpu-preflight-20261008.json",
+      "cpuOnly": true,
+      "cudaCompatibilityQualified": false,
+      "gpuIsolationQualified": false
     }
   },
   "defaults": {
