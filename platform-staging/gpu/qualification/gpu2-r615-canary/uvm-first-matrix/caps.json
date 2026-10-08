@@ -1,0 +1,42 @@
+{
+  "uvm-guard-main": {
+    "state": "applied-before-main",
+    "pod_uid": "567b84be-5bd3-48bf-9ee1-0633a6676acd",
+    "gpu_uuid": "GPU-16128952-b438-556a-00bb-93039ee24e56",
+    "cap_bytes": 536870912,
+    "boot_id": "209f8bc9-a478-48e4-925a-6e07ffa56f7a",
+    "pid_start_ticks": 810927720,
+    "host_pid": 1736878,
+    "container_id": "b94f528628526b222ec1e62a33d5b23c0cdb00e8a3d9d1c7c2150f3eec7ece8b",
+    "cgroup_relative": "/kubepods.slice/kubepods-burstable.slice/kubepods-burstable-pod567b84be_5bd3_48bf_9ee1_0633a6676acd.slice",
+    "manual_driver_canary": true,
+    "automatic_orchestration_qualified": false,
+    "spec_sha256": "5cca5fa963756e38f6c5365df37873391548947e4600948d341f7dee542c6b8f",
+    "readback": {
+      "soft": 536870912,
+      "hard": 536870912,
+      "used": 0
+    },
+    "actual_cli_readback": "GPU 0: NVIDIA A100-PCIE-40GB (UUID: GPU-16128952-b438-556a-00bb-93039ee24e56)\n  namespace:      /sys/fs/cgroup/kubepods.slice/kubepods-burstable.slice/kubepods-burstable-pod567b84be_5bd3_48bf_9ee1_0633a6676acd.slice\n  soft limit:     512 MiB\n  hard limit:     512 MiB\n  current used:   0 MiB\n"
+  },
+  "uvm-guard-peer": {
+    "state": "applied-before-main",
+    "pod_uid": "1f02616c-6d0e-4cfd-ae34-a8bb31ee5f39",
+    "gpu_uuid": "GPU-16128952-b438-556a-00bb-93039ee24e56",
+    "cap_bytes": 536870912,
+    "boot_id": "209f8bc9-a478-48e4-925a-6e07ffa56f7a",
+    "pid_start_ticks": 810927720,
+    "host_pid": 1736880,
+    "container_id": "e0322f1f7d934741fa7766cef1817ae512c64491a899230174f2830545e141b2",
+    "cgroup_relative": "/kubepods.slice/kubepods-burstable.slice/kubepods-burstable-pod1f02616c_6d0e_4cfd_ae34_a8bb31ee5f39.slice",
+    "manual_driver_canary": true,
+    "automatic_orchestration_qualified": false,
+    "spec_sha256": "7c8e9e934e17648487e6549f11cad6fc21ebb749b759abae2ef1937d60e7d2d5",
+    "readback": {
+      "soft": 536870912,
+      "hard": 536870912,
+      "used": 0
+    },
+    "actual_cli_readback": "GPU 0: NVIDIA A100-PCIE-40GB (UUID: GPU-16128952-b438-556a-00bb-93039ee24e56)\n  namespace:      /sys/fs/cgroup/kubepods.slice/kubepods-burstable.slice/kubepods-burstable-pod1f02616c_6d0e_4cfd_ae34_a8bb31ee5f39.slice\n  soft limit:     512 MiB\n  hard limit:     512 MiB\n  current used:   0 MiB\n"
+  }
+}

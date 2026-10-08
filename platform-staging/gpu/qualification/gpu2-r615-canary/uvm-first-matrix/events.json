@@ -1,0 +1,416 @@
+{
+  "uvm-guard-main": {
+    "apiVersion": "v1",
+    "items": [
+      {
+        "apiVersion": "v1",
+        "count": 1,
+        "eventTime": null,
+        "firstTimestamp": "2026-10-08T15:05:10Z",
+        "involvedObject": {
+          "apiVersion": "v1",
+          "fieldPath": "spec.initContainers{cps-driver-cap-gate}",
+          "kind": "Pod",
+          "name": "uvm-guard-main",
+          "namespace": "cps-r615-uvm-guard-20261008",
+          "resourceVersion": "362133629",
+          "uid": "567b84be-5bd3-48bf-9ee1-0633a6676acd"
+        },
+        "kind": "Event",
+        "lastTimestamp": "2026-10-08T15:05:10Z",
+        "message": "Container image \"ghcr.io/mul-cps/cps-compute:qualification-40b9525@sha256:b3802a7f70077ff56adbc060d1177409eeff76c8b3cf8ccf9f39047c1e6716bf\" already present on machine",
+        "metadata": {
+          "creationTimestamp": "2026-10-08T15:05:10Z",
+          "name": "uvm-guard-main.18dc96361746989e",
+          "namespace": "cps-r615-uvm-guard-20261008",
+          "resourceVersion": "362133643",
+          "uid": "46a05c25-4f6e-45fc-b9fd-771e149429f0"
+        },
+        "reason": "Pulled",
+        "reportingComponent": "kubelet",
+        "reportingInstance": "k3s-wk-gpu2",
+        "source": {
+          "component": "kubelet",
+          "host": "k3s-wk-gpu2"
+        },
+        "type": "Normal"
+      },
+      {
+        "apiVersion": "v1",
+        "count": 1,
+        "eventTime": null,
+        "firstTimestamp": "2026-10-08T15:05:10Z",
+        "involvedObject": {
+          "apiVersion": "v1",
+          "fieldPath": "spec.initContainers{cps-driver-cap-gate}",
+          "kind": "Pod",
+          "name": "uvm-guard-main",
+          "namespace": "cps-r615-uvm-guard-20261008",
+          "resourceVersion": "362133629",
+          "uid": "567b84be-5bd3-48bf-9ee1-0633a6676acd"
+        },
+        "kind": "Event",
+        "lastTimestamp": "2026-10-08T15:05:10Z",
+        "message": "Created container: cps-driver-cap-gate",
+        "metadata": {
+          "creationTimestamp": "2026-10-08T15:05:10Z",
+          "name": "uvm-guard-main.18dc963618cdce16",
+          "namespace": "cps-r615-uvm-guard-20261008",
+          "resourceVersion": "362133645",
+          "uid": "5d4f1327-fe35-4c76-9303-a6128168fc98"
+        },
+        "reason": "Created",
+        "reportingComponent": "kubelet",
+        "reportingInstance": "k3s-wk-gpu2",
+        "source": {
+          "component": "kubelet",
+          "host": "k3s-wk-gpu2"
+        },
+        "type": "Normal"
+      },
+      {
+        "apiVersion": "v1",
+        "count": 1,
+        "eventTime": null,
+        "firstTimestamp": "2026-10-08T15:05:10Z",
+        "involvedObject": {
+          "apiVersion": "v1",
+          "fieldPath": "spec.initContainers{cps-driver-cap-gate}",
+          "kind": "Pod",
+          "name": "uvm-guard-main",
+          "namespace": "cps-r615-uvm-guard-20261008",
+          "resourceVersion": "362133629",
+          "uid": "567b84be-5bd3-48bf-9ee1-0633a6676acd"
+        },
+        "kind": "Event",
+        "lastTimestamp": "2026-10-08T15:05:10Z",
+        "message": "Started container cps-driver-cap-gate",
+        "metadata": {
+          "creationTimestamp": "2026-10-08T15:05:11Z",
+          "name": "uvm-guard-main.18dc96361ffd6de5",
+          "namespace": "cps-r615-uvm-guard-20261008",
+          "resourceVersion": "362133648",
+          "uid": "9c66689c-3b1f-4783-9db7-8e8cd86c38ca"
+        },
+        "reason": "Started",
+        "reportingComponent": "kubelet",
+        "reportingInstance": "k3s-wk-gpu2",
+        "source": {
+          "component": "kubelet",
+          "host": "k3s-wk-gpu2"
+        },
+        "type": "Normal"
+      },
+      {
+        "apiVersion": "v1",
+        "count": 1,
+        "eventTime": null,
+        "firstTimestamp": "2026-10-08T15:06:47Z",
+        "involvedObject": {
+          "apiVersion": "v1",
+          "fieldPath": "spec.containers{main}",
+          "kind": "Pod",
+          "name": "uvm-guard-main",
+          "namespace": "cps-r615-uvm-guard-20261008",
+          "resourceVersion": "362133629",
+          "uid": "567b84be-5bd3-48bf-9ee1-0633a6676acd"
+        },
+        "kind": "Event",
+        "lastTimestamp": "2026-10-08T15:06:47Z",
+        "message": "Container image \"ghcr.io/mul-cps/cps-jupyter-notebook@sha256:6b6a8d6a225df1b938fe98bcdad9e547aef249347392ce8f29adb3fedda512ae\" already present on machine",
+        "metadata": {
+          "creationTimestamp": "2026-10-08T15:06:47Z",
+          "name": "uvm-guard-main.18dc964ca0836f96",
+          "namespace": "cps-r615-uvm-guard-20261008",
+          "resourceVersion": "362134942",
+          "uid": "c8d3bacc-57aa-4570-9b06-92ca80e71dd3"
+        },
+        "reason": "Pulled",
+        "reportingComponent": "kubelet",
+        "reportingInstance": "k3s-wk-gpu2",
+        "source": {
+          "component": "kubelet",
+          "host": "k3s-wk-gpu2"
+        },
+        "type": "Normal"
+      },
+      {
+        "apiVersion": "v1",
+        "count": 1,
+        "eventTime": null,
+        "firstTimestamp": "2026-10-08T15:06:47Z",
+        "involvedObject": {
+          "apiVersion": "v1",
+          "fieldPath": "spec.containers{main}",
+          "kind": "Pod",
+          "name": "uvm-guard-main",
+          "namespace": "cps-r615-uvm-guard-20261008",
+          "resourceVersion": "362133629",
+          "uid": "567b84be-5bd3-48bf-9ee1-0633a6676acd"
+        },
+        "kind": "Event",
+        "lastTimestamp": "2026-10-08T15:06:47Z",
+        "message": "Created container: main",
+        "metadata": {
+          "creationTimestamp": "2026-10-08T15:06:47Z",
+          "name": "uvm-guard-main.18dc964ca215e472",
+          "namespace": "cps-r615-uvm-guard-20261008",
+          "resourceVersion": "362134944",
+          "uid": "d7674988-4c89-4a96-b4a6-855cc9066d51"
+        },
+        "reason": "Created",
+        "reportingComponent": "kubelet",
+        "reportingInstance": "k3s-wk-gpu2",
+        "source": {
+          "component": "kubelet",
+          "host": "k3s-wk-gpu2"
+        },
+        "type": "Normal"
+      },
+      {
+        "apiVersion": "v1",
+        "count": 1,
+        "eventTime": null,
+        "firstTimestamp": "2026-10-08T15:06:47Z",
+        "involvedObject": {
+          "apiVersion": "v1",
+          "fieldPath": "spec.containers{main}",
+          "kind": "Pod",
+          "name": "uvm-guard-main",
+          "namespace": "cps-r615-uvm-guard-20261008",
+          "resourceVersion": "362133629",
+          "uid": "567b84be-5bd3-48bf-9ee1-0633a6676acd"
+        },
+        "kind": "Event",
+        "lastTimestamp": "2026-10-08T15:06:47Z",
+        "message": "Started container main",
+        "metadata": {
+          "creationTimestamp": "2026-10-08T15:06:47Z",
+          "name": "uvm-guard-main.18dc964cb43760a5",
+          "namespace": "cps-r615-uvm-guard-20261008",
+          "resourceVersion": "362134946",
+          "uid": "df9fc6a7-7833-4a75-8d04-cae8f0080889"
+        },
+        "reason": "Started",
+        "reportingComponent": "kubelet",
+        "reportingInstance": "k3s-wk-gpu2",
+        "source": {
+          "component": "kubelet",
+          "host": "k3s-wk-gpu2"
+        },
+        "type": "Normal"
+      }
+    ],
+    "kind": "List",
+    "metadata": {
+      "resourceVersion": ""
+    }
+  },
+  "uvm-guard-peer": {
+    "apiVersion": "v1",
+    "items": [
+      {
+        "apiVersion": "v1",
+        "count": 1,
+        "eventTime": null,
+        "firstTimestamp": "2026-10-08T15:05:10Z",
+        "involvedObject": {
+          "apiVersion": "v1",
+          "fieldPath": "spec.initContainers{cps-driver-cap-gate}",
+          "kind": "Pod",
+          "name": "uvm-guard-peer",
+          "namespace": "cps-r615-uvm-guard-20261008",
+          "resourceVersion": "362133628",
+          "uid": "1f02616c-6d0e-4cfd-ae34-a8bb31ee5f39"
+        },
+        "kind": "Event",
+        "lastTimestamp": "2026-10-08T15:05:10Z",
+        "message": "Container image \"ghcr.io/mul-cps/cps-compute:qualification-40b9525@sha256:b3802a7f70077ff56adbc060d1177409eeff76c8b3cf8ccf9f39047c1e6716bf\" already present on machine",
+        "metadata": {
+          "creationTimestamp": "2026-10-08T15:05:10Z",
+          "name": "uvm-guard-peer.18dc96361756215e",
+          "namespace": "cps-r615-uvm-guard-20261008",
+          "resourceVersion": "362133644",
+          "uid": "2fb2384e-0bad-4612-85ef-70106770cf70"
+        },
+        "reason": "Pulled",
+        "reportingComponent": "kubelet",
+        "reportingInstance": "k3s-wk-gpu2",
+        "source": {
+          "component": "kubelet",
+          "host": "k3s-wk-gpu2"
+        },
+        "type": "Normal"
+      },
+      {
+        "apiVersion": "v1",
+        "count": 1,
+        "eventTime": null,
+        "firstTimestamp": "2026-10-08T15:05:10Z",
+        "involvedObject": {
+          "apiVersion": "v1",
+          "fieldPath": "spec.initContainers{cps-driver-cap-gate}",
+          "kind": "Pod",
+          "name": "uvm-guard-peer",
+          "namespace": "cps-r615-uvm-guard-20261008",
+          "resourceVersion": "362133628",
+          "uid": "1f02616c-6d0e-4cfd-ae34-a8bb31ee5f39"
+        },
+        "kind": "Event",
+        "lastTimestamp": "2026-10-08T15:05:10Z",
+        "message": "Created container: cps-driver-cap-gate",
+        "metadata": {
+          "creationTimestamp": "2026-10-08T15:05:10Z",
+          "name": "uvm-guard-peer.18dc963618eecde9",
+          "namespace": "cps-r615-uvm-guard-20261008",
+          "resourceVersion": "362133646",
+          "uid": "110dc91e-0611-4aa6-9e67-deb6a43385ac"
+        },
+        "reason": "Created",
+        "reportingComponent": "kubelet",
+        "reportingInstance": "k3s-wk-gpu2",
+        "source": {
+          "component": "kubelet",
+          "host": "k3s-wk-gpu2"
+        },
+        "type": "Normal"
+      },
+      {
+        "apiVersion": "v1",
+        "count": 1,
+        "eventTime": null,
+        "firstTimestamp": "2026-10-08T15:05:11Z",
+        "involvedObject": {
+          "apiVersion": "v1",
+          "fieldPath": "spec.initContainers{cps-driver-cap-gate}",
+          "kind": "Pod",
+          "name": "uvm-guard-peer",
+          "namespace": "cps-r615-uvm-guard-20261008",
+          "resourceVersion": "362133628",
+          "uid": "1f02616c-6d0e-4cfd-ae34-a8bb31ee5f39"
+        },
+        "kind": "Event",
+        "lastTimestamp": "2026-10-08T15:05:11Z",
+        "message": "Started container cps-driver-cap-gate",
+        "metadata": {
+          "creationTimestamp": "2026-10-08T15:05:11Z",
+          "name": "uvm-guard-peer.18dc963620ac1e3a",
+          "namespace": "cps-r615-uvm-guard-20261008",
+          "resourceVersion": "362133649",
+          "uid": "ccf870e7-04dd-450b-a4d6-729f04d13054"
+        },
+        "reason": "Started",
+        "reportingComponent": "kubelet",
+        "reportingInstance": "k3s-wk-gpu2",
+        "source": {
+          "component": "kubelet",
+          "host": "k3s-wk-gpu2"
+        },
+        "type": "Normal"
+      },
+      {
+        "apiVersion": "v1",
+        "count": 1,
+        "eventTime": null,
+        "firstTimestamp": "2026-10-08T15:05:58Z",
+        "involvedObject": {
+          "apiVersion": "v1",
+          "fieldPath": "spec.containers{main}",
+          "kind": "Pod",
+          "name": "uvm-guard-peer",
+          "namespace": "cps-r615-uvm-guard-20261008",
+          "resourceVersion": "362133628",
+          "uid": "1f02616c-6d0e-4cfd-ae34-a8bb31ee5f39"
+        },
+        "kind": "Event",
+        "lastTimestamp": "2026-10-08T15:05:58Z",
+        "message": "Container image \"ghcr.io/mul-cps/cps-compute:qualification-40b9525@sha256:b3802a7f70077ff56adbc060d1177409eeff76c8b3cf8ccf9f39047c1e6716bf\" already present on machine",
+        "metadata": {
+          "creationTimestamp": "2026-10-08T15:05:58Z",
+          "name": "uvm-guard-peer.18dc96411f14c734",
+          "namespace": "cps-r615-uvm-guard-20261008",
+          "resourceVersion": "362134261",
+          "uid": "19aa4b0d-d3b6-4609-90f3-0f19b1cd19d6"
+        },
+        "reason": "Pulled",
+        "reportingComponent": "kubelet",
+        "reportingInstance": "k3s-wk-gpu2",
+        "source": {
+          "component": "kubelet",
+          "host": "k3s-wk-gpu2"
+        },
+        "type": "Normal"
+      },
+      {
+        "apiVersion": "v1",
+        "count": 1,
+        "eventTime": null,
+        "firstTimestamp": "2026-10-08T15:05:58Z",
+        "involvedObject": {
+          "apiVersion": "v1",
+          "fieldPath": "spec.containers{main}",
+          "kind": "Pod",
+          "name": "uvm-guard-peer",
+          "namespace": "cps-r615-uvm-guard-20261008",
+          "resourceVersion": "362133628",
+          "uid": "1f02616c-6d0e-4cfd-ae34-a8bb31ee5f39"
+        },
+        "kind": "Event",
+        "lastTimestamp": "2026-10-08T15:05:58Z",
+        "message": "Created container: main",
+        "metadata": {
+          "creationTimestamp": "2026-10-08T15:05:58Z",
+          "name": "uvm-guard-peer.18dc9641209c734a",
+          "namespace": "cps-r615-uvm-guard-20261008",
+          "resourceVersion": "362134263",
+          "uid": "3949f93f-d2ae-4eea-a06e-384e8f2ddfd0"
+        },
+        "reason": "Created",
+        "reportingComponent": "kubelet",
+        "reportingInstance": "k3s-wk-gpu2",
+        "source": {
+          "component": "kubelet",
+          "host": "k3s-wk-gpu2"
+        },
+        "type": "Normal"
+      },
+      {
+        "apiVersion": "v1",
+        "count": 1,
+        "eventTime": null,
+        "firstTimestamp": "2026-10-08T15:05:58Z",
+        "involvedObject": {
+          "apiVersion": "v1",
+          "fieldPath": "spec.containers{main}",
+          "kind": "Pod",
+          "name": "uvm-guard-peer",
+          "namespace": "cps-r615-uvm-guard-20261008",
+          "resourceVersion": "362133628",
+          "uid": "1f02616c-6d0e-4cfd-ae34-a8bb31ee5f39"
+        },
+        "kind": "Event",
+        "lastTimestamp": "2026-10-08T15:05:58Z",
+        "message": "Started container main",
+        "metadata": {
+          "creationTimestamp": "2026-10-08T15:05:58Z",
+          "name": "uvm-guard-peer.18dc96412f8acad7",
+          "namespace": "cps-r615-uvm-guard-20261008",
+          "resourceVersion": "362134264",
+          "uid": "34d1d189-36d2-4331-b751-ba47494315d2"
+        },
+        "reason": "Started",
+        "reportingComponent": "kubelet",
+        "reportingInstance": "k3s-wk-gpu2",
+        "source": {
+          "component": "kubelet",
+          "host": "k3s-wk-gpu2"
+        },
+        "type": "Normal"
+      }
+    ],
+    "kind": "List",
+    "metadata": {
+      "resourceVersion": ""
+    }
+  }
+}
