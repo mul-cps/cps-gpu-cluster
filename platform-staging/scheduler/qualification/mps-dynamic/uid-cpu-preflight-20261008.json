@@ -33,5 +33,23 @@
     "Read-only MPS observation and CPU-only runtime test; no CUDA context or UID handover",
     "Current MPS UID10001 differs from notebook UID1000; dynamic mixed-runtime acceptance remains open"
   ],
-  "cleanup": "temporary namespace deleted; no GPU or NFS resources used"
+  "cleanup": "temporary namespace deleted; no GPU or NFS resources used",
+  "capabilityReadOnly": {
+    "driverVersion": "580.95.05",
+    "nvidiaSmiMemoryLimitsHelpExitCode": 2,
+    "nvidiaSmiMemoryLimitsSupported": false,
+    "mpsControlHelpInterface": "legacy v2; no protocol3 option advertised",
+    "cgroupControllers": [
+      "cpuset",
+      "cpu",
+      "io",
+      "memory",
+      "hugetlb",
+      "pids",
+      "rdma",
+      "misc"
+    ],
+    "dmemAdvertised": false,
+    "note": "Help and controller reads only; no protocol switch, driver upgrade, limit write or daemon restart"
+  }
 }
