@@ -1,3 +1,7 @@
+Root has held R615 deployment because its documented memory controls do not yet
+close the managed-memory isolation gap. The files below remain an unapplied
+fallback proposal. See `mig-conditional-plan.md` for the read-only MIG alternative.
+
 GPU2 is eligible for a one-node driver canary proposal, but reload and rollback
 are not yet qualified. No driver layer was downloaded, Pod stopped, device
 changed, node cordoned, ClusterPolicy changed or resource applied for this audit.

@@ -219,7 +219,10 @@
     "gpu2-driver-state-v25.10.0.go": "e103b8314f3ed0004f1a7492e25c1894c3d3105881a27885adc1ec4bdd63f823",
     "gpu2-driver-nodepool-v25.10.0.go": "41881f531502c6136f78a748a49d9c0c017b29cef20333ddbb9bd86e1094636e",
     "gpu2-operator-main-v25.10.0.go": "e7eb8ec0d1a92daa35259ebd55b71d4d0dad28ad887a909e63fad96324058732",
-    "gpu2-crd-driver-template-v25.10.0.yaml": "27a76adcc9f495bd698000ff2b3536e11f3332354d58d71f551a0a03312250bb"
+    "gpu2-crd-driver-template-v25.10.0.yaml": "27a76adcc9f495bd698000ff2b3536e11f3332354d58d71f551a0a03312250bb",
+    "gpu2-device-plugin-v0.18.0-readme.md": "6d01de65501b841d6d8d19985be0b771bcfd645bf24ba1afe490f8fc2f4b57bc",
+    "gpu2-device-plugin-v0.18.0-server.go": "2040d4a411e79d673adab295cf5194fd71fb54608cf005082c239beed53e61e5",
+    "gpu2-device-plugin-v0.18.0-health.go": "b0e7d3807aedac0a020089badea7ac41093f5498635f736d9c4c59c8e393176a"
   },
   "protectedGpuDriverPods": [
     {
@@ -770,5 +773,39 @@
     "cuda134FeaturesQualified": false,
     "broadDriverDaemonSetChanged": false,
     "readOnlyInventory": true
+  },
+  "migConditional": {
+    "observedAt": "2026-10-08T13:15:43.706102+00:00",
+    "driver": "580.95.05",
+    "devices": [
+      {
+        "uuid": "GPU-16128952-b438-556a-00bb-93039ee24e56",
+        "name": "NVIDIA A100-PCIE-40GB",
+        "currentMode": "Disabled",
+        "pendingMode": "Disabled"
+      },
+      {
+        "uuid": "GPU-1e6145d5-8ee2-43e2-a0d5-6d345909e8a6",
+        "name": "NVIDIA A100-PCIE-40GB",
+        "currentMode": "Disabled",
+        "pendingMode": "Disabled"
+      }
+    ],
+    "pluginVersion": "v0.18.0",
+    "pluginMigStrategyEnvironment": "none",
+    "gfdMigStrategyEnvironment": "none",
+    "perNodeConfigLabel": "nvidia.com/device-plugin.config",
+    "configChangesApplied": false,
+    "instanceChangesApplied": false,
+    "initialEnableRequiresA100Reset": true,
+    "vmRebootMayBeRequired": true,
+    "onlineExistingGiContinuityQualified": false,
+    "noExistingEnabledGiAvailable": true,
+    "driverUpgradeHeldForManagedMemoryIsolationGap": true
+  },
+  "postAuditChecks": {
+    "clusterPolicyResourceVersionUnchanged": true,
+    "allFourExistingDriverPodUidsUnchanged": true,
+    "readOnlyGpuQueryOnly": true
   }
 }
