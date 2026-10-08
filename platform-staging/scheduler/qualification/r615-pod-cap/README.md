@@ -49,6 +49,7 @@ its CRI PID1, with no shell child wrapper. The trusted CPU-only init receives
 the Pod UID via Downward API and a read-only mount of its root-owned receipt
 directory. It needs UID0 to read the0600 receipt, no CUDA access or API token;
 the main container receives no receipt mount or write authority.
+The gate waits at most600seconds for manual canary setup and then fails closed.
 
 ```sh
 python /qualification/gate_wait.py --execute \
@@ -122,6 +123,13 @@ Explicit probe allocations remain below512MiB, excluding opaque driver context
 overhead. Context initialization can itself exceed a small cap; that returns
 hardware-inconclusive. Do not automatically enlarge quotas or claim enforcement.
 
+R615's misc implementation can return `NOT_SUPPORTED` (NVML code3) for a virgin
+cgroup without any nearest limit, as well as for an unsupported backend.
+The helper preserves this as `unset-or-unsupported`, permits only a prepared
+setter attempt, and requires successful set plus exact cap readback to release.
+Code3 is never an unlimited/cleanup proof or a feature-qualified verdict.
+See the [actual615 getter](https://github.com/NVIDIA/open-gpu-kernel-modules/blob/615.71.09/src/nvidia/src/kernel/mem_mgr/memacct.c#L324-L346).
+
 After the exact Pod is gone/terminal and parent `populated` is0:
 
 ```sh
@@ -154,7 +162,7 @@ PYTHONDONTWRITEBYTECODE=1 python -m unittest discover \
 python platform-staging/scheduler/qualification/r615-pod-cap/cuda_probe.py
 ```
 
-24 CPU tests pass, including exact NVML ABI bytes, real temporary proc/cgroup
+28 CPU tests pass, including exact NVML ABI bytes, real temporary proc/cgroup
 paths, foreign identity/PID/inode/boot denial, nested child limits, gate release,
 shared-versus-per-context budget, managed observer timing and failed cleanup.
 External CUDA/NVML calls are faked in these tests; no GPU evidence is implied.

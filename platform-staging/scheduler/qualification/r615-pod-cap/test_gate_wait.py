@@ -1,6 +1,7 @@
 import copy
 import importlib
 import unittest
+from unittest.mock import patch
 
 
 class GateTests(unittest.TestCase):
@@ -25,6 +26,14 @@ class GateTests(unittest.TestCase):
         for readback in (None, {'soft':0,'hard':67108864}, {'soft':67108864,'hard':134217728}):
             proof=copy.deepcopy(self.proof);proof['readback']=readback
             with self.assertRaises(ValueError):self.verify(proof)
+
+    def test_manual_setup_wait_is_bounded_at_600_seconds_without_release(self):
+        args=['gate_wait.py','--execute','--receipt','/nonexistent-r615-test/ready.json',
+              '--pod-uid',self.proof['pod_uid'],'--gpu-uuid',self.proof['gpu_uuid'],'--cap-mib','64']
+        with patch('sys.argv',args):
+            with patch('gate_wait.time.monotonic',side_effect=[0,599.9,600.1]), patch('gate_wait.time.sleep') as sleep:
+                with self.assertRaises(TimeoutError):self.gate.main()
+                sleep.assert_called_once_with(0.2)
 
 
 if __name__=='__main__':unittest.main()

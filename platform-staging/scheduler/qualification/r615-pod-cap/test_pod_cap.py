@@ -71,6 +71,31 @@ class PodCapTests(unittest.TestCase):
         self.assertFalse(proof['hostile_isolation_qualified'])
         self.assertEqual(self.receipt.stat().st_mode & 0o777, 0o600)
 
+    def test_ambiguous_virgin_get_requires_successful_set_and_exact_readback(self):
+        original = self.driver.get
+        self.driver.get = lambda gpu, path: original(gpu, path) or {'nvml_result': 3, 'state': 'unset-or-unsupported'}
+        proof = self.apply()
+        self.assertEqual(proof['state'], 'applied-before-main')
+        self.assertEqual(proof['readback']['hard'], 67108864)
+        self.assertFalse(proof['hostile_isolation_qualified'])
+
+    def test_ambiguous_virgin_get_and_unsupported_set_never_release_gate(self):
+        self.driver.get = lambda *args: {'nvml_result': 3, 'state': 'unset-or-unsupported'}
+        def unsupported(*args): raise ValueError('NVML operation failed with code 3')
+        self.driver.set = unsupported
+        with self.assertRaisesRegex(ValueError, 'code 3'): self.apply()
+        self.assertEqual(json.loads(self.receipt.read_text())['state'], 'failed-cap-retained')
+        self.assertEqual(self.driver.limits, {})
+
+    def test_ambiguous_get_after_set_is_not_a_readback_or_cleanup_proof(self):
+        self.driver.get = lambda *args: {'nvml_result': 3, 'state': 'unset-or-unsupported'}
+        with self.assertRaisesRegex(ValueError, 'readback'): self.apply()
+        proof = json.loads(self.receipt.read_text())
+        self.assertEqual(proof['state'], 'failed-cap-retained')
+        (self.parent/'cgroup.events').write_text('populated 0\n')
+        with self.assertRaises(ValueError): self.cap.cleanup(proof, lambda: None, self.cg, self.driver, self.proc)
+        self.assertEqual(self.driver.limits[str(self.parent)]['hard'], 67108864)
+
     def test_foreign_cri_pod_or_container_is_denied_before_setting(self):
         for key, value in [('io.kubernetes.pod.uid', 'foreign'), ('io.kubernetes.container.name', 'main')]:
             with self.subTest(key=key):
@@ -164,6 +189,7 @@ class PodCapTests(unittest.TestCase):
             def __init__(self, body): self.body = body
             def __call__(self, *args): return self.body(*args)
         values = {}
+        missing = [6]
         def setter(handle, pointer):
             address, soft, hard = struct.unpack('=QQQ', C.string_at(pointer, 24))
             self.assertEqual(handle.value, 0x123456789)
@@ -172,7 +198,7 @@ class PodCapTests(unittest.TestCase):
         def getter(handle, pointer):
             address = struct.unpack('=Q', C.string_at(pointer, 8))[0]
             path = C.string_at(address).decode()
-            if path not in values: return 6
+            if path not in values: return missing[0]
             soft, hard = values[path]
             C.memmove(pointer, struct.pack('=QQQQ', address, soft, hard, 4096), 32)
             return 0
@@ -186,6 +212,8 @@ class PodCapTests(unittest.TestCase):
         with patch('pod_cap.C.CDLL', return_value=library):
             driver = self.cap.Nvml()
             self.assertIsNone(driver.get(GPU, str(self.parent)))
+            missing[0] = 3
+            self.assertEqual(driver.get(GPU, str(self.parent)), {'nvml_result': 3, 'state': 'unset-or-unsupported'})
             driver.set(GPU, str(self.parent), 67108864, 134217728)
             self.assertEqual(driver.get(GPU, str(self.parent)), {'soft': 67108864, 'hard': 134217728, 'used': 4096})
             driver.set(GPU, str(self.parent), 0, 18446744073709551615)
