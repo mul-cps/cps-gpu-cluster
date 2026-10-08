@@ -1,0 +1,9 @@
+{
+  "version": "615.71.09",
+  "originalSourceSha256": "cf8d21c77f7db22f11b1a9c80f4197644d736d145afc2ea01bf057f83faaf8af",
+  "patchedSourceSha256": "e49447593565bef4ff899ab65283169387a9992f941598a978bb939aca6a2871",
+  "patchSha256": "1666be7d7e8a23523370b5b1cfbb1496921bafc67f24554bce33d8ec90f83608",
+  "primarySource": "https://github.com/NVIDIA/open-gpu-kernel-modules/blob/615.71.09/kernel-open/nvidia-uvm/uvm_va_range.c",
+  "experimental": true,
+  "hardwareQualified": false
+}
