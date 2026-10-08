@@ -64,12 +64,29 @@ class ServiceTests(unittest.TestCase):
         self.assertEqual(response['response']['uid'], 'admission-review-id')
         self.assertTrue(response['response']['allowed'])
 
+    def test_decision_receipt_is_bounded_and_omits_object_secrets(self):
+        events = []
+        self.server.decision_log = events.append
+        incoming = review()
+        incoming['request']['object']['metadata']['annotations'] = {'secret': 'DO-NOT-LOG'}
+        self.post(incoming)
+        self.assertEqual(len(events), 1)
+        self.assertFalse(events[0]['allowed'])
+        self.assertEqual(events[0]['reviewUid'], 'admission-review-id')
+        self.assertNotIn('DO-NOT-LOG', json.dumps(events))
+        self.assertLess(len(json.dumps(events[0])), 1800)
+
     def test_health_and_no_seal_or_enrollment_endpoints(self):
         with urlopen(self.url + '/healthz', context=self.context, timeout=2) as response:
             self.assertEqual(response.status, 200)
         for path in ('/seal', '/enroll', '/not-validate'):
             with self.subTest(path=path), self.assertRaises(HTTPError) as error: self.post(review(), path)
             self.assertEqual(error.exception.code, 404)
+
+    def test_apiserver_timeout_query_routes_to_validate(self):
+        status, response = self.post(review(), '/validate?timeout=5s')
+        self.assertEqual(status, 200)
+        self.assertTrue(response['response']['allowed'])
 
     def test_api_error_and_total_deadline_return_uid_bound_denial(self):
         for mode in ('error', 'slow'):

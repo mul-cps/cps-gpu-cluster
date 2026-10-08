@@ -8,7 +8,7 @@ import socket
 import threading
 import time
 from urllib.error import HTTPError
-from urllib.parse import quote
+from urllib.parse import quote, urlsplit
 from urllib.request import Request, urlopen
 
 import fence
@@ -71,11 +71,12 @@ class KubernetesAPI:
 class AdmissionServer(ThreadingHTTPServer):
     daemon_threads = True
 
-    def __init__(self, address, registry, api, *, workers=4):
+    def __init__(self, address, registry, api, *, workers=4, decision_log=None):
         if type(workers) is not int or not 1 <= workers <= 8:
             raise ValueError('At most eight request workers permitted')
         self.registry = fence.validate_registry(registry)
         self.api = api
+        self.decision_log = decision_log
         self.slots = threading.BoundedSemaphore(workers)
         super().__init__(address, Handler)
 
@@ -125,7 +126,7 @@ class Handler(BaseHTTPRequestHandler):
         self.send_json(200 if self.path == '/healthz' else 404, {'ready': self.path == '/healthz', 'qualification': 'qa-only'})
 
     def do_POST(self):
-        if self.path != '/validate':
+        if urlsplit(self.path).path != '/validate':
             self.send_json(404, {'error': 'Only /validate is available'})
             return
         try:
@@ -142,9 +143,30 @@ class Handler(BaseHTTPRequestHandler):
                 result = self.server.api.get(resource, namespace, name, deadline=deadline)
                 if time.monotonic() >= deadline: raise TimeoutError('Admission deadline exceeded')
                 return result
-            self.send_json(200, fence.authorize(review, self.server.registry, read))
+            started = time.monotonic()
+            decision = fence.authorize(review, self.server.registry, read)
+            if self.server.decision_log is not None:
+                self.server.decision_log(decision_event(review, decision, time.monotonic() - started))
+            self.send_json(200, decision)
         except (ValueError, OSError, TimeoutError):
             self.send_json(400, {'error': 'Invalid, oversized or timed-out admission protocol'})
+
+
+def decision_event(review, decision, elapsed):
+    """Bounded protocol receipts only; never log tokens, object bodies or metadata."""
+    request = review.get('request', {})
+    def value(obj, key, limit=256):
+        text = obj.get(key, '') if isinstance(obj, dict) else ''
+        return text[:limit] if isinstance(text, str) else ''
+    metadata = request.get('object', {}).get('metadata', {}) if isinstance(request.get('object'), dict) else {}
+    response = decision['response']
+    return {'event': 'admission-decision', 'reviewUid': value(request, 'uid', 128),
+            'username': value(request.get('userInfo'), 'username'), 'namespace': value(request, 'namespace'),
+            'name': value(request, 'name'), 'operation': value(request, 'operation', 16),
+            'resource': value(request.get('resource'), 'resource', 64), 'subResource': value(request, 'subResource', 64),
+            'bindingUid': value(metadata, 'uid', 128), 'bindingResourceVersion': value(metadata, 'resourceVersion', 32),
+            'allowed': response['allowed'], 'elapsedMs': round(elapsed * 1000, 3),
+            'reason': value(response.get('status'), 'message')}
 
 
 def main():
@@ -156,12 +178,14 @@ def main():
     parser.add_argument('--token-file', default='/var/run/secrets/kubernetes.io/serviceaccount/token')
     parser.add_argument('--api-ca', default='/var/run/secrets/kubernetes.io/serviceaccount/ca.crt')
     parser.add_argument('--port', type=int, default=8443)
+    parser.add_argument('--decision-log', action='store_true', help='Emit bounded QA protocol receipts to stdout')
     args = parser.parse_args()
     if not 1024 <= args.port <= 65535: parser.error('Bounded unprivileged port required')
     raw = args.registry.read_bytes()
     if len(raw) > fence.MAX_BYTES: parser.error('Oversized protected registry')
     api = KubernetesAPI(args.api_server, args.token_file, args.api_ca)
-    server = AdmissionServer(('0.0.0.0', args.port), json.loads(raw), api)
+    sink = (lambda event: print(json.dumps(event, sort_keys=True), flush=True)) if args.decision_log else None
+    server = AdmissionServer(('0.0.0.0', args.port), json.loads(raw), api, decision_log=sink)
     context = ssl.SSLContext(ssl.PROTOCOL_TLS_SERVER)
     context.minimum_version = ssl.TLSVersion.TLSv1_2
     context.load_cert_chain(args.tls_cert, args.tls_key)
