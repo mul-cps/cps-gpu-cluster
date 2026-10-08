@@ -1,0 +1,126 @@
+{
+  "active_canonical_people": {
+    "cit": {},
+    "cps": {}
+  },
+  "active_runtime_secret": {
+    "data_key": "runtime.json",
+    "name": "cps-compute-runtime",
+    "resourceVersion": "359613412",
+    "sha256": "22605161db89c3dcbd8926c571816c88a00659913c52ebc307d97560667363d5"
+  },
+  "canonical_person_id": "d98fbadd-d9a0-4981-8d20-1ab58bb75745",
+  "captured_at": "2026-10-08T13:06:20.173516+00:00",
+  "cit_authentication": {
+    "cause": "OAuthenticator federation refresh fails against Dex userinfo with expired stored token",
+    "console_mutation_reached": false,
+    "native_minimal_token_bypasses_federation_freshness": false,
+    "owning_hub_status": 403,
+    "stored_token_expiry_utc": "2026-07-25 08:42:05 UTC"
+  },
+  "compiler_refusal": "Exactly both independently audited source aliases required",
+  "confirmed_source_aliases": {
+    "cps": {
+      "bjoern": "d98fbadd-d9a0-4981-8d20-1ab58bb75745"
+    }
+  },
+  "console_image": "ghcr.io/mul-cps/e2x-course-hub:qualification-reviewed-alias-f5c005c@sha256:735f891ba008c58a9d3f4d324c22893d13b094dabe7ea39f80c776ffb6c89767",
+  "cps_authenticated_api_receipt": {
+    "authenticated_csrf_bootstrap": true,
+    "identity": {
+      "authority": "reviewed_account_alias",
+      "person_id": "d98fbadd-d9a0-4981-8d20-1ab58bb75745",
+      "review_actor": "bjoern",
+      "review_reason": "Explicit administrative review of the user-authorized own accounts CPS bjoern and CIT akadmin by Rancher operator u-vhm9n/cpsadmin. Exact owning Hub accounts independently checked; one explicitly assigned canonical UUID; unchanged usernames and storage; no email/name matching or new entitlement. Operator-assisted native owning Hub issuance of a minimal 900-second user token; unchanged console authentication; token revoked after review.",
+      "reviewed_at": "2026-10-08T12:56:10.739440+00:00"
+    },
+    "method": "POST",
+    "path": "/services/cps-admin/api/identities",
+    "status": 200
+  },
+  "cps_latest_persisted_proof": {
+    "audit": {
+      "actor": "bjoern",
+      "console": "cps",
+      "id": "bjoern",
+      "kind": "identity-aliases",
+      "new": {
+        "authority": "reviewed_account_alias",
+        "person_id": "d98fbadd-d9a0-4981-8d20-1ab58bb75745",
+        "review_actor": "bjoern",
+        "review_reason": "Explicit administrative review of the user-authorized own accounts CPS bjoern and CIT akadmin by Rancher operator u-vhm9n/cpsadmin. Exact owning Hub accounts independently checked; one explicitly assigned canonical UUID; unchanged usernames and storage; no email/name matching or new entitlement. Operator-assisted native owning Hub issuance of a minimal 900-second user token; unchanged console authentication; token revoked after review.",
+        "reviewed_at": "2026-10-08T12:58:16.400150+00:00"
+      },
+      "outcome": "success",
+      "time": "2026-10-08T12:58:16.400651+00:00"
+    },
+    "canonical_person_id": "d98fbadd-d9a0-4981-8d20-1ab58bb75745",
+    "console": "cps",
+    "image": "ghcr.io/mul-cps/e2x-course-hub:qualification-reviewed-alias-f5c005c@sha256:735f891ba008c58a9d3f4d324c22893d13b094dabe7ea39f80c776ffb6c89767",
+    "review_actor": "bjoern",
+    "review_reason": "Explicit administrative review of the user-authorized own accounts CPS bjoern and CIT akadmin by Rancher operator u-vhm9n/cpsadmin. Exact owning Hub accounts independently checked; one explicitly assigned canonical UUID; unchanged usernames and storage; no email/name matching or new entitlement. Operator-assisted native owning Hub issuance of a minimal 900-second user token; unchanged console authentication; token revoked after review.",
+    "reviewed_at": "2026-10-08T12:58:16.400150+00:00",
+    "schema": 6,
+    "source": "f5c005ca8b36995c6b4221873d3d0b4d334be3d4",
+    "username": "bjoern"
+  },
+  "fresh_backups": {
+    "cit": {
+      "all_row_checksums_preserved": true,
+      "backup_path": "/backup/20261008T130650.959884Z-b7f2ea93f20747d18baba2d5e9e0bd2b",
+      "created_at": "2026-10-08T13:06:50.959908+00:00",
+      "file_mode": "0600",
+      "sha256": "b7ce26c7d3361a552025a5116c5772a9876dc7627611358327a8ba327a9bdf46",
+      "startup_config_imports": true,
+      "user_version": 6
+    },
+    "cps": {
+      "all_row_checksums_preserved": true,
+      "backup_path": "/backup/20261008T130632.819657Z-320e7f56184e48dca8bc86441ba9c50d",
+      "created_at": "2026-10-08T13:06:32.819695+00:00",
+      "file_mode": "0600",
+      "sha256": "807f574c1ea2aaed4c4dc95e67d18cdc86165f2e25090b4dbdaa1f8c25f6dcaa",
+      "startup_config_imports": true,
+      "user_version": 6
+    }
+  },
+  "gateway_activated": false,
+  "gateway_restarted": false,
+  "global_control_counts": {
+    "audit_record": 0,
+    "grant_record": 0,
+    "storage_lifecycle": 0,
+    "workspace_record": 0
+  },
+  "grants_changed": false,
+  "group_migration_performed": false,
+  "handover_ready": false,
+  "owned_tokens": {
+    "actual_hub_rejection_after_revocation": {
+      "cit": 403,
+      "cps": 403
+    },
+    "cit_token_already_rejected_before_revocation": true,
+    "exact_scope_revocation_verified": true,
+    "native_db_rows_remaining": {
+      "cit": 0,
+      "cps": 0
+    },
+    "ttl_seconds": 900,
+    "unknown_initial_cps_mint_reconciled": true
+  },
+  "pending_source_aliases": {
+    "cit": {
+      "akadmin": "d98fbadd-d9a0-4981-8d20-1ab58bb75745"
+    }
+  },
+  "qualification": {
+    "browser_login": false,
+    "local_tests": 23,
+    "two_hub_runtime_activation": false
+  },
+  "runtime_candidate_created": false,
+  "source": "f5c005ca8b36995c6b4221873d3d0b4d334be3d4",
+  "status": "partial-unqualified-handover",
+  "stop_reason": "Root reprioritized GPU isolation; checkpoint partial state without federation bypass or new identity work"
+}
