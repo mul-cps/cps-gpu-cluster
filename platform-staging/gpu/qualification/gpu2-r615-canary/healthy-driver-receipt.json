@@ -1,0 +1,15 @@
+{
+  "observedAt": "2026-10-08T14:04:06.910374+00:00",
+  "pod": {
+    "name": "gpu2-r615-driver-canary-5nqv4",
+    "uid": "fad28572-7be1-45c2-83d3-57392dd7acaf",
+    "node": "k3s-wk-gpu2",
+    "imageID": "nvcr.io/nvidia/driver@sha256:bc7572b7f14177c467e4dd8b66c4f4535f462ea9cf6a65cebd7603cc966ebbd7",
+    "restartCount": 0,
+    "ready": true
+  },
+  "readOnlyHostReceipt": "driver_version\nNVRM version: NVIDIA UNIX Open Kernel Module for x86_64  615.71.09  Release Build  (dvs-builder@U22-I3-F05-2-4)  Fri Sep  4 22:33:33 UTC 2026\nGCC version:  gcc version 13.3.0 (Ubuntu 13.3.0-6ubuntu2~24.04.1) \ngpu_and_mig_state\nGPU-16128952-b438-556a-00bb-93039ee24e56, 615.71.09, NVIDIA A100-PCIE-40GB, Disabled, Disabled\nGPU-1e6145d5-8ee2-43e2-a0d5-6d345909e8a6, 615.71.09, NVIDIA A100-PCIE-40GB, Disabled, Disabled\nfirmware_path=/run/nvidia/firmware-r615-canary\n\nfirmware_sizes\n/proc/1/root/run/nvidia/firmware-r615-canary/nvidia/615.71.09/gsp_tu10x.bin 22897536\n/proc/1/root/run/nvidia/firmware-r615-canary/nvidia/615.71.09/ucodes_tu10x.bin 8837632\n/proc/1/root/run/nvidia/firmware-r615-canary/nvidia/615.71.09/gsp_ga10x.bin 27043992\n/proc/1/root/run/nvidia/firmware-r615-canary/nvidia/615.71.09/ucodes_ga10x.bin 58215936\ncritical_host_processes\npid=1457864 comm=k3s-agent start_ticks=810395303\nexe=/var/lib/rancher/k3s/data/65415f7708224bbfc7865f032e84da4a5123a3acebef70c8ee40fa991aa68555/bin/k3s\npid=1457904 comm=containerd start_ticks=810395495\nexe=/var/lib/rancher/k3s/data/65415f7708224bbfc7865f032e84da4a5123a3acebef70c8ee40fa991aa68555/bin/k3s\nhost_boot_time=1783362633\nclock_ticks_per_second=100\n",
+  "memoryIsolationQualified": false,
+  "runtimeUnchanged": false,
+  "initialContainerdPID": 954817
+}

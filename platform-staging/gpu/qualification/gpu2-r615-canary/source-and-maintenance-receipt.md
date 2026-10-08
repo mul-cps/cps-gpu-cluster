@@ -104,7 +104,101 @@ unmounts. The corrected candidate uses independent
 sets the kernel firmware search path there using one tiny pinned-image init.
 Source lines293–311 retain an existing nonempty path, making that explicit init
 necessary. Root saves the original path `/run/nvidia/driver/lib/firmware` privately
-for rollback. Actual device discovery and isolation tests remain pending.
+for rollback. Actual memory-isolation tests remain a separate acceptance gate.
+
+The corrected live canary then became Ready at the pinned amd64 image ID, with
+Open615.71.09, both expected A100 UUIDs healthy, current+pending MIG Disabled,
+and all four expected615 gsp/ucodes firmware files present and nonempty in the
+independent directory. `healthy-driver-receipt.json` records the current Pod UID,
+actual module/GPU state and host processes. This closes the narrow firmware
+startup defect; it does not qualify memory isolation.
+
+Runtime continuity failed on the first attempt. The original read-only
+containerd PID was954817; the later PID is1457904, with k3s-agent1457864.
+`runtime-journal-receipt.json` records the exact host unit sequence:
+
+- Prototype libsync ldpreload volume detached13:34:13Z. Its live DaemonSet has
+  no lifecycle/preStop; command only copies the two files then execs sleep.
+  Monitor also has no lifecycle/preStop.
+- At13:36:21.301Z, original k3s-agent954775 received shutdown because
+  `containerd exited: signal: hangup`.
+- systemd scheduled restart13:36:26.730Z; new agent started13:36:26.898Z,
+  containerd ran13:36:28.677Z and was ready13:36:30.684Z; service started13:36:32.844Z.
+
+The toolkit source identifies the matching cleanup path:
+[v1.18.0 installer main](https://github.com/NVIDIA/nvidia-container-toolkit/blob/v1.18.0/cmd/nvidia-ctk-installer/main.go#L219-L232)
+waits for termination then calls runtime.Cleanup;
+[containerd cleanup](https://github.com/NVIDIA/nvidia-container-toolkit/blob/v1.18.0/cmd/nvidia-ctk-installer/container/runtime/containerd/containerd.go#L114-L140)
+unconfigures then restarts;
+[signal implementation](https://github.com/NVIDIA/nvidia-container-toolkit/blob/v1.18.0/cmd/nvidia-ctk-installer/container/runtime/containerd/containerd_linux.go#L74-L87)
+sends SIGHUP to the containerd socket's peer PID. Default restart mode is signal,
+and the actual operator entrypoint execs nvidia-toolkit without an override.
+This source path and the manager/toolkit termination timeline support toolkit
+cleanup as the cause; this journal does not record the exact signal-sender PID.
+Keeping toolkit running and omitting manager prevents this path in the corrected
+canary. Legacy-manager rollback can repeat it and is not approved by a claim of
+unchanged runtime. `RUNTIME_RESTART_MODE=none` exists as an option, but no shared
+toolkit DaemonSet change was made or proposed as part of this receipt.
+
+A virgin fallback-memory-limit GET returning NotSupported is not evidence that
+the backend is unavailable: the open615 source
+[memacct.c](https://github.com/NVIDIA/open-gpu-kernel-modules/blob/615.71.09/src/nvidia/src/kernel/mem_mgr/memacct.c#L324-L347)
+also returns that error when no nearest configured limit exists. Root is testing
+a bounded real SET before considering any module parameter. The kernel has
+CONFIG_CGROUP_MISC=y and root controllers/subtree_control include misc. No force
+parameter or further reload was prepared/applied by this worker. If later needed,
+the driver-container reads `/drivers/nvidia.conf`; NVIDIA_MODULE_PARAMS env is
+overwritten by its array initialization and is not an input. The documented
+override is `NVreg_RegistryDwords="RmMemacctMode=1"`, rather than a standalone
+NVreg_RmMemacctMode parameter. The default is auto3, with force-misc1 only a
+downgrade; no capability conclusion follows from that option alone.
+
+The root later set and read128 MiB soft/hard limits successfully on both owned
+QA cgroups, so no forced registry parameter was needed. The unprivileged CUDA
+fixtures initially failed to start because their requested UUID CDI devices were
+unresolved. Management discovery mode only generates `all`; root generated a
+node-only NVML-mode specification with vendor `management.nvidia.com`, containing
+the two exact UUIDs and `all`. Existing host CLI is1.18.0 commit
+f8daa5e26de9fd7eb79259040b6dd5a52060048c, at
+`/usr/local/nvidia/toolkit/nvidia-ctk`; its wrapper requires the host/chroot context.
+No runtime restart is required to write this independently named CDI file.
+
+`cdi-file-receipt.json` records root's actual registered file
+`/var/run/cdi/cps-r615-canary.json`, SHA256
+`bf89492a56f1235e0772fb1d26e88243200c739c09793e770a16a6a842c7f448`.
+At14:04Z, agent1457864 and containerd1457904 still had the same process start
+ticks as the first restart. Protected baseline UIDs and Ready states all matched;
+the prior Spegel restart remained the sole restart-count difference.
+
+One worker probe intended to emit to stdout passed an empty `--output=` flag
+before `--format json`. The CLI consumed the next flag as a filename and created
+unregistered host `/--format.yaml`, size19880, SHA256
+`29cad3cef29273fdee40cb610f9eb21cc0fd56269795edb447d162511e873f59`.
+This is outside CDI search directories and affected no runtime registration.
+Root was informed immediately after discovery and owns exact hash-guarded
+cleanup. A corrected stdout probe omitted the output flag. No more generation
+probes are needed. This bounded accidental write is the exception to the worker's
+read-only live operations and is recorded explicitly.
+
+Cleanup order is root-owned: stop the owned CUDA processes while retaining their
+fixture Pods/cgroups, zero any configured soft reservations, verify actual
+clients gone, then delete fixtures and remove only the named owned CDI file
+after matching its recorded hash.
+Remove the stray file after matching its separate hash. Do not clear the entire
+CDI directory or affect existing files. Root's original directory baseline was
+empty. The independent firmware directory must remain while the615 module uses
+it. Only after owned CUDA stops and actual NVIDIA modules/FDs are absent may root
+restore the original journaled firmware search path, before the chosen R580 path.
+
+Restoring the original R580 DaemonSet uses its unchanged manager, which can
+recycle toolkit and produce the same brief K3s restart. A temporary node-only
+R580 driver without that manager can avoid the cycle while under manual
+ownership, but later return to legacy ownership still requires handling it.
+No overlapping drivers or ownership adoption are proposed or performed. Root
+chooses the rollback path and must verify the CPU/PVC baseline after it.
+The planner's `restore` now refuses a live canary and requires a Ready original
+R580 image plus actual580.95.05/MIG Disabled on both GPUs before emitting any
+consumer/uncordon patch. Recovering the driver is a separate root-controlled step.
 
 `node_journal.py` only emits private CAS patches. Root's consumers patch tests
 fresh node UID/resourceVersion, cordons GPU2 and excludes MPS/plugin/DCGM/GFD/
