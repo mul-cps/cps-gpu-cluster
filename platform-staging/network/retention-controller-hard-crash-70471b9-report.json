@@ -1,0 +1,78 @@
+{
+  "name": "cps-retention-cas-fbc5b953",
+  "passed": true,
+  "productionQualified": false,
+  "cleanup": [
+    {
+      "kind": "pod",
+      "name": "cps-retention-cas-fbc5b953",
+      "deleteAccepted": true,
+      "removed": true
+    },
+    {
+      "kind": "networkpolicy",
+      "name": "cps-retention-cas-fbc5b953",
+      "deleteAccepted": true,
+      "removed": true
+    },
+    {
+      "kind": "workflow",
+      "name": "cps-4dd5c0af509444c49e8703ed5c9ec6d6382dad1cfef540c7",
+      "deleteAccepted": true,
+      "removed": true
+    }
+  ],
+  "fixture": {
+    "passed": true,
+    "productionQualified": false,
+    "scope": "Real SIGKILL at the conditional-delete barrier and fresh-process recovery; synthetic terminal status and advanced clock; real Argo HTTPS, Kubernetes CAS and S3. No execution Pods.",
+    "cases": [
+      {
+        "case": "ambiguous-before",
+        "name": "cps-4dd5c0af509444c49e8703ed5c9ec6d6382dad1cfef540c7",
+        "uid": "64588815-fe65-4e86-bf36-bf5dae2b9510",
+        "repeatSweep": {
+          "examined": 1,
+          "eligible": 0,
+          "deleted": 0,
+          "skipped": 1,
+          "errors": 0,
+          "objects": [],
+          "apply": true,
+          "truncated": false,
+          "reconciled": 0
+        },
+        "snapshotPresent": true,
+        "permanentClaimPreserved": true,
+        "deletionBarrierReached": true,
+        "workerExitSignal": 9,
+        "freshRecoveryProcessPassed": true,
+        "snapshotBodyHashPreserved": true,
+        "crashedWorkerReturnedSweepReport": false
+      }
+    ]
+  },
+  "executionPodsCreated": 0,
+  "syntheticS3EvidencePreserved": true,
+  "observedAt": "2026-10-07T05:53:37.048996+00:00",
+  "controllerScriptSha256": "9cadec1f0229222f34923b18f456a0506ae5e92826ea78ab7e791e1e72e73542",
+  "privateRawReceiptSha256": "33672359cc1b80b342483ee9abe51f5078678aa2804136843c0a36a540a60617",
+  "automaticCleanupActivated": false,
+  "limitations": [
+    "Workflow terminal status and clock are synthetic; no executed-notebook runtime is covered.",
+    "SIGKILL occurs immediately before the conditional S3 delete, after the live CAS claim and final proof checks.",
+    "The killed worker returns no sweep report; only the fresh recovery process produces a completed report.",
+    "Recovery preserves the claim and snapshot; it does not automatically resume deletion or resolve ambiguity.",
+    "One synthetic snapshot and immutable provenance records remain as fixture evidence."
+  ],
+  "archivedSources": {
+    "fixture.py": {
+      "path": "retention-controller-hard-crash-70471b9-fixture.py.txt",
+      "sha256": "ea86a6278aa2ecf95fcac24d97b4580c78bb07d8ef81b429c795f412e0c5fd0d"
+    },
+    "run.py": {
+      "path": "retention-controller-hard-crash-70471b9-launcher.py.txt",
+      "sha256": "19032edd5e3ffb607d6b8abff8af91142dd029091400bb1ecbf193052ec918be"
+    }
+  }
+}

@@ -1,0 +1,21 @@
+# Candidate chart v0.18.1, outside Fleet. Controlled live qualification uses
+# legacy default queues/priorities until promotion or baseline restoration.
+global:
+  tag: v0.18.1
+  registry: ghcr.io/kai-scheduler/kai-scheduler
+  gpuSharingMode: HamiCore
+binder:
+  plugins:
+    hamicore:
+      enabled: true
+admission:
+  gpuFractionRuntimeClassName: nvidia
+scheduler:
+  actions:
+    # Keep off until protected-session + churn qualification demonstrates safety.
+    consolidation:
+      enabled: false
+defaultPriorityClasses:
+  enabled: false
+defaultQueue:
+  createDefaultQueue: false

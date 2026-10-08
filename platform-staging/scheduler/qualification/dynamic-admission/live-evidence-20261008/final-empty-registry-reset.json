@@ -1,0 +1,44 @@
+[
+  {
+    "command": [
+      "kubectl",
+      "--request-timeout=20s",
+      "replace",
+      "-f",
+      "-",
+      "-o",
+      "json"
+    ],
+    "exitCode": 0,
+    "stderr": "",
+    "stdout": "{\n    \"apiVersion\": \"cps-dynamic-admission-live-20261008.compute.cps.unileoben.ac.at/v1alpha1\",\n    \"approvedImages\": [\n        \"ghcr.io/mul-cps/cps-compute:qualification-40b9525@sha256:b3802a7f70077ff56adbc060d1177409eeff76c8b3cf8ccf9f39047c1e6716bf\",\n        \"quay.io/argoproj/argoexec:v3.7.18@sha256:8651f0d1a1050be46ef28a7362cbb7387b5f5c29ce691ebddd5d99a0bb7281a9\"\n    ],\n    \"createCreators\": [],\n    \"data\": {\n        \"artifact-ca-secret\": \"cps-artifacts-ca\",\n        \"artifact-secret\": \"cps-artifacts\",\n        \"executor-image\": \"quay.io/argoproj/argoexec:v3.7.18@sha256:8651f0d1a1050be46ef28a7362cbb7387b5f5c29ce691ebddd5d99a0bb7281a9\"\n    },\n    \"kind\": \"DynamicGpuAdmissionPolicy\",\n    \"metadata\": {\n        \"creationTimestamp\": \"2026-10-08T08:38:28Z\",\n        \"generation\": 12,\n        \"name\": \"reviewed-runtime\",\n        \"namespace\": \"cps-dynamic-admission-live-20261008\",\n        \"resourceVersion\": \"361811946\",\n        \"uid\": \"fa70be14-e23e-44ec-adf0-0e8975f012d5\"\n    },\n    \"owners\": [],\n    \"reviewedPods\": [],\n    \"updateCreators\": []\n}\n"
+  },
+  {
+    "command": [
+      "kubectl",
+      "--request-timeout=20s",
+      "replace",
+      "-f",
+      "-",
+      "-o",
+      "json"
+    ],
+    "exitCode": 0,
+    "stderr": "",
+    "stdout": "{\n    \"apiVersion\": \"cps-dynamic-admission-live-20261008.compute.cps.unileoben.ac.at/v1alpha1\",\n    \"kind\": \"DynamicGpuQuotaPolicy\",\n    \"metadata\": {\n        \"annotations\": {\n            \"compute.cps.unileoben.ac.at/kai-source\": \"bdf434e5e9201cccf4e05fad04d814363653f692\",\n            \"compute.cps.unileoben.ac.at/qualification-state\": \"disabled-offline-candidate\",\n            \"compute.cps.unileoben.ac.at/source-files-sha256\": \"2067e6238c1eb33988ca232780dc7f04e92f71e0468edec6f73e44fef3292431\"\n        },\n        \"creationTimestamp\": \"2026-10-08T08:38:31Z\",\n        \"generation\": 4,\n        \"name\": \"reviewed-quota-maps\",\n        \"namespace\": \"cps-dynamic-admission-live-20261008\",\n        \"resourceVersion\": \"361811949\",\n        \"uid\": \"c13a9c61-10f4-49e4-841c-0ad497812e4e\"\n    },\n    \"records\": [],\n    \"writers\": []\n}\n"
+  },
+  {
+    "command": [
+      "kubectl",
+      "--request-timeout=20s",
+      "replace",
+      "-f",
+      "-",
+      "-o",
+      "json"
+    ],
+    "exitCode": 0,
+    "stderr": "",
+    "stdout": "{\n    \"apiVersion\": \"cps-dynamic-admission-live-20261008.compute.cps.unileoben.ac.at/v1alpha1\",\n    \"kind\": \"DynamicGpuBindingPolicy\",\n    \"metadata\": {\n        \"annotations\": {\n            \"compute.cps.unileoben.ac.at/kai-source\": \"bdf434e5e9201cccf4e05fad04d814363653f692\",\n            \"compute.cps.unileoben.ac.at/qualification-state\": \"disabled-offline-candidate\",\n            \"compute.cps.unileoben.ac.at/source-files-sha256\": \"5af246cd2a7ecab58f9b9d778d8ec4605be6b08ad00d9f955d5a87ca01d936e1\"\n        },\n        \"creationTimestamp\": \"2026-10-08T08:38:31Z\",\n        \"generation\": 3,\n        \"name\": \"reviewed-bindings\",\n        \"namespace\": \"cps-dynamic-admission-live-20261008\",\n        \"resourceVersion\": \"361811950\",\n        \"uid\": \"08e0d8f9-e844-4b47-b357-55f0a6a0bed3\"\n    },\n    \"records\": [],\n    \"writers\": []\n}\n"
+  }
+]

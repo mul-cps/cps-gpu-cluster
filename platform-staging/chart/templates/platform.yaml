@@ -1,0 +1,372 @@
+{{- if .Values.enabled }}
+{{- $policy := fromJson (required "policyJson must contain the compiled shared catalog" .Values.policyJson) }}
+{{- $hash := required "policyHash required" .Values.policyHash }}
+{{- if not (regexMatch "^sha256:[a-f0-9]{64}$" $hash) }}{{ fail "policyHash must be sha256" }}{{ end }}
+{{- if ne $policy.policyHash $hash }}{{ fail "policyHash differs from compiled policyJson" }}{{ end }}
+{{- $namespace := .Values.namespace }}
+{{- $gatewayUrl := required "trusted HTTPS gateway URL required" .Values.gateway.url }}
+{{- if not (regexMatch "^https://[^/?# ]+(:[0-9]+)?$" $gatewayUrl) }}{{ fail "gateway URL must be HTTPS with no path or query" }}{{ end }}
+{{- $tlsSecret := required "gateway TLS secret reference required" .Values.gateway.tlsSecretRef }}
+{{- $caConfigMap := required "gateway CA ConfigMap reference required" .Values.gateway.caConfigMapRef }}
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: {{ $namespace }}
+  labels:
+    compute.cps.unileoben.ac.at/managed: "true"
+    # Restricted workload namespace. Isolator hostPath exceptions require a
+    # separately reviewed admission deployment, not a namespace-wide waiver.
+    pod-security.kubernetes.io/enforce: restricted
+    pod-security.kubernetes.io/enforce-version: v1.34
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: compute-policy
+  namespace: {{ $namespace }}
+  annotations:
+    compute.cps.unileoben.ac.at/policy-hash: {{ $hash | quote }}
+data:
+  policy.json: {{ .Values.policyJson | quote }}
+---
+apiVersion: compute.cps.unileoben.ac.at/v1alpha1
+kind: ComputeAdmissionPolicy
+metadata:
+  name: cps-admission-policy
+  namespace: {{ $namespace }}
+data:
+  {{- $executorImage := .Values.gateway.executorImage }}
+  {{- if and $executorImage (not (regexMatch "^[^@ ]+@sha256:[a-f0-9]{64}$" $executorImage)) }}{{ fail "executor image must use a digest reference" }}{{ end }}
+  {{- $approvedImages := $policy.approvedImages }}
+  {{- if $executorImage }}{{ $approvedImages = append $approvedImages $executorImage }}{{ end }}
+  approved-images: {{ join "," $approvedImages | quote }}
+  executor-image: {{ $executorImage | quote }}
+  artifact-secret: {{ .Values.gateway.artifactSecretRef | quote }}
+  artifact-ca-secret: {{ .Values.gateway.artifactCaSecretRef | quote }}
+
+{{- $gatewayImage := required "gateway released image digest required" .Values.gateway.image }}
+{{- if not (regexMatch "^[^@ ]+@sha256:[a-f0-9]{64}$" $gatewayImage) }}{{ fail "gateway image must use a digest reference" }}{{ end }}
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: compute-state
+  namespace: {{ $namespace }}
+spec:
+  accessModes: [ReadWriteOnce]
+  storageClassName: {{ .Values.storageClass }}
+  resources:
+    requests: {storage: 10Gi}
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: compute-gateway
+  namespace: {{ $namespace }}
+spec:
+  replicas: 1
+  strategy: {type: Recreate}
+  selector:
+    matchLabels: {app: compute-gateway}
+  template:
+    metadata:
+      labels: {app: compute-gateway}
+      annotations:
+        compute.cps.unileoben.ac.at/policy-hash: {{ $hash | quote }}
+    spec:
+      automountServiceAccountToken: false
+      {{- if .Values.gateway.kubernetes.enabled }}
+      serviceAccountName: cps-compute-controller
+      {{- end }}
+      imagePullSecrets: [{name: {{ .Values.gateway.imagePullSecretRef }}}]
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 10001
+        fsGroup: 10001
+        seccompProfile: {type: RuntimeDefault}
+      containers:
+        - name: gateway
+          image: {{ $gatewayImage | quote }}
+          command: {{ .Values.gateway.command | toJson }}
+          ports: [{name: http, containerPort: {{ .Values.gateway.port }}}]
+          env:
+            - {name: CPS_COMPUTE_CONFIG, value: /config/runtime.json}
+            {{- if .Values.metrics.enabled }}
+            {{- range $source := list "cps" "cit" }}
+            - name: CPS_METRICS_{{ upper $source }}_TOKEN
+              valueFrom:
+                secretKeyRef:
+                  name: {{ (index $.Values.metrics.credentials $source).name | quote }}
+                  key: {{ (index $.Values.metrics.credentials $source).key | quote }}
+            {{- end }}
+            {{- end }}
+          envFrom:
+            - secretRef: {name: {{ .Values.gateway.secretRef }}}
+          securityContext:
+            allowPrivilegeEscalation: false
+            capabilities: {drop: [ALL]}
+          resources:
+            requests: {cpu: 100m, memory: 256Mi}
+            limits: {cpu: "2", memory: 1Gi}
+          readinessProbe:
+            tcpSocket: {port: http}
+          volumeMounts:
+            - {name: data, mountPath: /data}
+            - {name: config, mountPath: /config, readOnly: true}
+            - {name: policy, mountPath: /policy, readOnly: true}
+            - {name: tls, mountPath: /tls, readOnly: true}
+            - {name: trust, mountPath: /trust, readOnly: true}
+            {{- if .Values.gateway.argoUi.enabled }}
+            - {name: argo-ui-reader, mountPath: /argo-reader, readOnly: true}
+            {{- end }}
+            {{- if .Values.gateway.storageBridgeSecretRef }}
+            - {name: storage-bridge, mountPath: /storage-bridge, readOnly: true}
+            {{- end }}
+            {{- if .Values.gateway.kubernetes.enabled }}
+            - {name: api, mountPath: /var/run/secrets/kubernetes.io/serviceaccount, readOnly: true}
+            {{- end }}
+      volumes:
+        - {name: data, persistentVolumeClaim: {claimName: compute-state}}
+        - {name: config, secret: {secretName: {{ .Values.gateway.configSecretRef }}}}
+        - {name: policy, configMap: {name: compute-policy}}
+        - {name: tls, secret: {secretName: {{ $tlsSecret }}}}
+        - {name: trust, configMap: {name: {{ $caConfigMap }}}}
+        {{- if .Values.gateway.argoUi.enabled }}
+        - name: argo-ui-reader
+          secret:
+            secretName: {{ required "Argo UI reader Secret reference required" .Values.gateway.argoUi.readerSecretRef }}
+            defaultMode: 288
+            items: [{key: token, path: token}]
+        {{- end }}
+        {{- if .Values.gateway.storageBridgeSecretRef }}
+        - {name: storage-bridge, secret: {secretName: {{ .Values.gateway.storageBridgeSecretRef }}, defaultMode: 288}}
+        {{- end }}
+        {{- if .Values.gateway.kubernetes.enabled }}
+        - name: api
+          projected:
+            defaultMode: 288
+            sources:
+              - serviceAccountToken: {path: token, expirationSeconds: 3600}
+              - configMap:
+                  name: kube-root-ca.crt
+                  items: [{key: ca.crt, path: ca.crt}]
+              - downwardAPI:
+                  items: [{path: namespace, fieldRef: {fieldPath: metadata.namespace}}]
+        {{- end }}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: compute-gateway
+  namespace: {{ $namespace }}
+  labels: {app: compute-gateway}
+spec:
+  selector: {app: compute-gateway}
+  ports: [{name: http, port: {{ .Values.gateway.port }}, targetPort: http}]
+---
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: compute-private-ingress
+  namespace: {{ $namespace }}
+spec:
+  podSelector: {}
+  policyTypes: [Ingress]
+  ingress:
+    # Shared gateway/control API stays private to the console services.
+    - from:
+        - podSelector:
+            matchExpressions:
+              - {key: app, operator: In, values: [cps-admin, cit-admin, cps-argo-ui, cit-argo-ui]}
+      ports: [{protocol: TCP, port: {{ .Values.gateway.port }}}]
+    # Hub proxies reach only their administrative service port.
+    - from:
+        - namespaceSelector:
+            matchExpressions:
+              - {key: kubernetes.io/metadata.name, operator: In, values: [jupyterhub, cit-jhub]}
+      ports: [{protocol: TCP, port: 10101}, {protocol: TCP, port: {{ .Values.gateway.port }}}]
+
+{{- range $name, $console := .Values.consoles }}
+{{- $image := required (printf "%s console released image digest required" $name) $console.image }}
+{{- if not (regexMatch "^[^@ ]+@sha256:[a-f0-9]{64}$" $image) }}{{ fail "console images must use digest references" }}{{ end }}
+{{- $callback := required (printf "%s publicCallbackUrl required" $name) $console.publicCallbackUrl }}
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ $name }}-admin-config
+  namespace: {{ $namespace }}
+data:
+  config.py: |
+    c.CourseServiceApp.console_owner = {{ $name | squote }}
+    c.CourseServiceApp.database_path = '/data/courses.sqlite'
+    import os
+    c.CourseServiceApp.compute_policy_url = {{ $gatewayUrl | squote }}
+    c.CourseServiceApp.compute_gateway_url = {{ $gatewayUrl | squote }}
+    c.CourseServiceApp.compute_policy_token = os.environ['COMPUTE_POLICY_TOKEN']
+    c.CourseServiceApp.filesystem_adapter_class = 'cps_compute.storage.HTTPFilesystemAdapter'
+    c.CourseServiceApp.port = 10101
+    c.CourseServiceApp.service_prefix = '/services/{{ $name }}-admin/'
+    c.CourseServiceApp.server_config_file = '/data/config.yml'
+    c.CourseServiceApp.course_providers = {
+        'local': {'enabled': True},
+        'moodle': {'enabled': False, 'baseUrl': None, 'authSecretRef': None,
+                   'syncInterval': '10m', 'readOnly': True},
+    }
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: {{ $name }}-admin-data
+  namespace: {{ $namespace }}
+spec:
+  accessModes: [ReadWriteOnce]
+  storageClassName: {{ $.Values.storageClass }}
+  resources:
+    requests:
+      storage: 5Gi
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: {{ $name }}-admin-backup
+  namespace: {{ $namespace }}
+spec:
+  accessModes: [ReadWriteOnce]
+  storageClassName: {{ $.Values.storageClass }}
+  resources:
+    requests:
+      storage: 10Gi
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ $name }}-admin
+  namespace: {{ $namespace }}
+spec:
+  replicas: 1
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      app: {{ $name }}-admin
+  template:
+    metadata:
+      labels:
+        app: {{ $name }}-admin
+      annotations:
+        compute.cps.unileoben.ac.at/policy-hash: {{ $hash | quote }}
+    spec:
+      automountServiceAccountToken: false
+      imagePullSecrets: [{name: {{ $.Values.gateway.imagePullSecretRef }}}]
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 10001
+        fsGroup: 10001
+        seccompProfile: {type: RuntimeDefault}
+      containers:
+        - name: console
+          image: {{ $image | quote }}
+          command: [python, -m, e2x_course_hub.course_service.app]
+          args: [--config=/config/config.py]
+          ports: [{name: http, containerPort: 10101}]
+          env:
+            - {name: SSL_CERT_FILE, value: /trust/ca.crt}
+            - {name: CPS_WORKSPACE_CONTROL_URL, value: {{ $gatewayUrl | quote }}}
+            - {name: CPS_WORKSPACE_CONTROL_CA, value: /trust/ca.crt}
+            - name: CPS_WORKSPACE_CONTROL_TOKEN
+              valueFrom: {secretKeyRef: {name: {{ $console.secretRef }}, key: compute-policy-token}}
+            - name: COMPUTE_POLICY_TOKEN
+              valueFrom: {secretKeyRef: {name: {{ $console.secretRef }}, key: compute-policy-token}}
+            - {name: JUPYTERHUB_API_URL, value: {{ $console.hubApiUrl | quote }}}
+            - {name: JUPYTERHUB_OAUTH_CALLBACK_URL, value: {{ $callback | quote }}}
+            - {name: JUPYTERHUB_CLIENT_ID, value: "service-{{ $name }}-admin"}
+            - {name: JUPYTERHUB_SERVICE_NAME, value: "{{ $name }}-admin"}
+            - {name: JUPYTERHUB_SERVICE_PREFIX, value: "/services/{{ $name }}-admin/"}
+            - name: JUPYTERHUB_API_TOKEN
+              valueFrom: {secretKeyRef: {name: {{ $console.secretRef }}, key: hub-api-token}}
+          securityContext:
+            allowPrivilegeEscalation: false
+            capabilities: {drop: [ALL]}
+          resources:
+            requests: {cpu: 100m, memory: 256Mi}
+            limits: {cpu: "1", memory: 1Gi}
+          readinessProbe:
+            tcpSocket: {port: http}
+          volumeMounts:
+            - {name: data, mountPath: /data}
+            - {name: config, mountPath: /config, readOnly: true}
+            - {name: policy, mountPath: /policy, readOnly: true}
+            - {name: trust, mountPath: /trust, readOnly: true}
+      volumes:
+        - {name: data, persistentVolumeClaim: {claimName: {{ $name }}-admin-data}}
+        - {name: config, configMap: {name: {{ $name }}-admin-config}}
+        - {name: policy, configMap: {name: compute-policy}}
+        - {name: trust, configMap: {name: {{ $caConfigMap }}}}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ $name }}-admin
+  namespace: {{ $namespace }}
+spec:
+  selector: {app: {{ $name }}-admin}
+  ports: [{name: http, port: 10101, targetPort: http}]
+---
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: {{ $name }}-admin-backup
+  namespace: {{ $namespace }}
+spec:
+  schedule: {{ $.Values.backupSchedule | quote }}
+  concurrencyPolicy: Forbid
+  successfulJobsHistoryLimit: 1
+  failedJobsHistoryLimit: 3
+  jobTemplate:
+    spec:
+      backoffLimit: 1
+      activeDeadlineSeconds: 300
+      template:
+        metadata:
+          labels: {app: {{ $name }}-admin-backup}
+        spec:
+          restartPolicy: Never
+          automountServiceAccountToken: false
+          imagePullSecrets: [{name: {{ $.Values.gateway.imagePullSecretRef }}}]
+          affinity:
+            podAffinity:
+              requiredDuringSchedulingIgnoredDuringExecution:
+                - labelSelector:
+                    matchLabels: {app: {{ $name }}-admin}
+                  topologyKey: kubernetes.io/hostname
+          securityContext:
+            runAsNonRoot: true
+            runAsUser: 10001
+            fsGroup: 10001
+            seccompProfile: {type: RuntimeDefault}
+          containers:
+            - name: backup
+              image: {{ $image | quote }}
+              command: [python, /scripts/backup-console.py]
+              env:
+                - {name: BACKUP_SOURCE, value: /data/courses.sqlite}
+                - {name: BACKUP_IMAGE, value: {{ $image | quote }}}
+                - {name: BACKUP_OWNER, value: {{ $name | quote }}}
+                - {name: BACKUP_POLICY_HASH, value: {{ $hash | quote }}}
+              securityContext:
+                allowPrivilegeEscalation: false
+                capabilities: {drop: [ALL]}
+              resources:
+                requests: {cpu: 50m, memory: 64Mi}
+                limits: {cpu: "1", memory: 256Mi}
+              volumeMounts:
+                - {name: source, mountPath: /data, readOnly: true}
+                - {name: backup, mountPath: /backup}
+                - {name: script, mountPath: /scripts, readOnly: true}
+          volumes:
+            - {name: script, configMap: {name: compute-console-backup}}
+            - {name: source, persistentVolumeClaim: {claimName: {{ $name }}-admin-data}}
+            - {name: backup, persistentVolumeClaim: {claimName: {{ $name }}-admin-backup}}
+{{- end }}
+{{- end }}

@@ -1,0 +1,872 @@
+{
+    "apiVersion": "v1",
+    "items": [
+        {
+            "apiVersion": "v1",
+            "count": 1,
+            "eventTime": null,
+            "firstTimestamp": "2026-10-08T12:29:21Z",
+            "involvedObject": {
+                "apiVersion": "v1",
+                "kind": "Pod",
+                "name": "kai-cpu-allow",
+                "namespace": "cps-dynamic-admission-coord-live-20261008",
+                "resourceVersion": "361996120",
+                "uid": "0df80855-e549-47ba-b08c-d46e4665c6a1"
+            },
+            "kind": "Event",
+            "lastTimestamp": "2026-10-08T12:29:21Z",
+            "message": "Pod \"kai-cpu-allow\" not found",
+            "metadata": {
+                "creationTimestamp": "2026-10-08T12:29:21Z",
+                "name": "kai-cpu-allow.18dc8db544e2f746",
+                "namespace": "cps-dynamic-admission-coord-live-20261008",
+                "resourceVersion": "361996121",
+                "uid": "cda7981e-ca2f-4ab0-9610-8d7d227c73ed"
+            },
+            "reason": "PodGrouperWarning",
+            "reportingComponent": "pod-grouper",
+            "reportingInstance": "",
+            "source": {
+                "component": "pod-grouper"
+            },
+            "type": "Warning"
+        },
+        {
+            "apiVersion": "v1",
+            "count": 1,
+            "eventTime": null,
+            "firstTimestamp": "2026-10-08T12:29:22Z",
+            "involvedObject": {
+                "apiVersion": "v1",
+                "kind": "Pod",
+                "name": "kai-cpu-allow",
+                "namespace": "cps-dynamic-admission-coord-live-20261008",
+                "resourceVersion": "361996153",
+                "uid": "0df80855-e549-47ba-b08c-d46e4665c6a1"
+            },
+            "kind": "Event",
+            "lastTimestamp": "2026-10-08T12:29:22Z",
+            "message": "Successfully assigned pod cps-dynamic-admission-coord-live-20261008/kai-cpu-allow to node k3s-cp3 at node-pool default",
+            "metadata": {
+                "creationTimestamp": "2026-10-08T12:29:22Z",
+                "name": "kai-cpu-allow.18dc8db5927d7236",
+                "namespace": "cps-dynamic-admission-coord-live-20261008",
+                "resourceVersion": "361996173",
+                "uid": "d670beea-92c9-419b-8185-2676e05a4dbf"
+            },
+            "reason": "Scheduled",
+            "reportingComponent": "kai-scheduler",
+            "reportingInstance": "",
+            "source": {
+                "component": "kai-scheduler"
+            },
+            "type": "Normal"
+        },
+        {
+            "apiVersion": "v1",
+            "count": 1,
+            "eventTime": null,
+            "firstTimestamp": "2026-10-08T12:29:22Z",
+            "involvedObject": {
+                "apiVersion": "v1",
+                "kind": "Pod",
+                "name": "kai-cpu-allow",
+                "namespace": "cps-dynamic-admission-coord-live-20261008",
+                "resourceVersion": "361996175",
+                "uid": "0df80855-e549-47ba-b08c-d46e4665c6a1"
+            },
+            "kind": "Event",
+            "lastTimestamp": "2026-10-08T12:29:22Z",
+            "message": "Pod bound successfully to node k3s-cp3",
+            "metadata": {
+                "creationTimestamp": "2026-10-08T12:29:22Z",
+                "name": "kai-cpu-allow.18dc8db5945f9784",
+                "namespace": "cps-dynamic-admission-coord-live-20261008",
+                "resourceVersion": "361996190",
+                "uid": "fe240183-3b2f-453f-b82a-af5aba18f7c7"
+            },
+            "reason": "Bound",
+            "reportingComponent": "binder",
+            "reportingInstance": "",
+            "source": {
+                "component": "binder"
+            },
+            "type": "Normal"
+        },
+        {
+            "apiVersion": "v1",
+            "count": 1,
+            "eventTime": null,
+            "firstTimestamp": "2026-10-08T12:29:23Z",
+            "involvedObject": {
+                "apiVersion": "v1",
+                "fieldPath": "spec.containers{main}",
+                "kind": "Pod",
+                "name": "kai-cpu-allow",
+                "namespace": "cps-dynamic-admission-coord-live-20261008",
+                "resourceVersion": "361996181",
+                "uid": "0df80855-e549-47ba-b08c-d46e4665c6a1"
+            },
+            "kind": "Event",
+            "lastTimestamp": "2026-10-08T12:29:23Z",
+            "message": "Container image \"ghcr.io/mul-cps/cps-compute@sha256:627f093c3c96038c7ecd9e9b99f0138198c23c9460cabb7bd11b19e94f465096\" already present on machine",
+            "metadata": {
+                "creationTimestamp": "2026-10-08T12:29:23Z",
+                "name": "kai-cpu-allow.18dc8db5a0ecd60f",
+                "namespace": "cps-dynamic-admission-coord-live-20261008",
+                "resourceVersion": "361996216",
+                "uid": "7e46b916-b120-416d-a31c-1c3f16c72385"
+            },
+            "reason": "Pulled",
+            "reportingComponent": "kubelet",
+            "reportingInstance": "k3s-cp3",
+            "source": {
+                "component": "kubelet",
+                "host": "k3s-cp3"
+            },
+            "type": "Normal"
+        },
+        {
+            "apiVersion": "v1",
+            "count": 1,
+            "eventTime": null,
+            "firstTimestamp": "2026-10-08T12:29:23Z",
+            "involvedObject": {
+                "apiVersion": "v1",
+                "fieldPath": "spec.containers{main}",
+                "kind": "Pod",
+                "name": "kai-cpu-allow",
+                "namespace": "cps-dynamic-admission-coord-live-20261008",
+                "resourceVersion": "361996181",
+                "uid": "0df80855-e549-47ba-b08c-d46e4665c6a1"
+            },
+            "kind": "Event",
+            "lastTimestamp": "2026-10-08T12:29:23Z",
+            "message": "Created container: main",
+            "metadata": {
+                "creationTimestamp": "2026-10-08T12:29:23Z",
+                "name": "kai-cpu-allow.18dc8db5a28e52f9",
+                "namespace": "cps-dynamic-admission-coord-live-20261008",
+                "resourceVersion": "361996218",
+                "uid": "21b85ae1-7e05-43e2-a800-593372fc14b7"
+            },
+            "reason": "Created",
+            "reportingComponent": "kubelet",
+            "reportingInstance": "k3s-cp3",
+            "source": {
+                "component": "kubelet",
+                "host": "k3s-cp3"
+            },
+            "type": "Normal"
+        },
+        {
+            "apiVersion": "v1",
+            "count": 1,
+            "eventTime": null,
+            "firstTimestamp": "2026-10-08T12:29:23Z",
+            "involvedObject": {
+                "apiVersion": "v1",
+                "fieldPath": "spec.containers{main}",
+                "kind": "Pod",
+                "name": "kai-cpu-allow",
+                "namespace": "cps-dynamic-admission-coord-live-20261008",
+                "resourceVersion": "361996181",
+                "uid": "0df80855-e549-47ba-b08c-d46e4665c6a1"
+            },
+            "kind": "Event",
+            "lastTimestamp": "2026-10-08T12:29:23Z",
+            "message": "Started container main",
+            "metadata": {
+                "creationTimestamp": "2026-10-08T12:29:23Z",
+                "name": "kai-cpu-allow.18dc8db5ab94190d",
+                "namespace": "cps-dynamic-admission-coord-live-20261008",
+                "resourceVersion": "361996224",
+                "uid": "636dce3b-0c71-4e67-9515-f29d5a0baa19"
+            },
+            "reason": "Started",
+            "reportingComponent": "kubelet",
+            "reportingInstance": "k3s-cp3",
+            "source": {
+                "component": "kubelet",
+                "host": "k3s-cp3"
+            },
+            "type": "Normal"
+        },
+        {
+            "apiVersion": "v1",
+            "count": 1,
+            "eventTime": null,
+            "firstTimestamp": "2026-10-08T12:29:21Z",
+            "involvedObject": {
+                "apiVersion": "v1",
+                "kind": "Pod",
+                "name": "kai-cpu-deny",
+                "namespace": "cps-dynamic-admission-coord-live-20261008",
+                "resourceVersion": "361996126",
+                "uid": "afb5decc-3f34-4304-9d73-c85e2276f07b"
+            },
+            "kind": "Event",
+            "lastTimestamp": "2026-10-08T12:29:21Z",
+            "message": "Pod \"kai-cpu-deny\" not found",
+            "metadata": {
+                "creationTimestamp": "2026-10-08T12:29:21Z",
+                "name": "kai-cpu-deny.18dc8db54cb9b288",
+                "namespace": "cps-dynamic-admission-coord-live-20261008",
+                "resourceVersion": "361996127",
+                "uid": "78978dce-b106-470a-b3a1-b195f2184955"
+            },
+            "reason": "PodGrouperWarning",
+            "reportingComponent": "pod-grouper",
+            "reportingInstance": "",
+            "source": {
+                "component": "pod-grouper"
+            },
+            "type": "Warning"
+        },
+        {
+            "apiVersion": "v1",
+            "count": 25,
+            "eventTime": null,
+            "firstTimestamp": "2026-10-08T12:29:22Z",
+            "involvedObject": {
+                "apiVersion": "v1",
+                "kind": "Pod",
+                "name": "kai-cpu-deny",
+                "namespace": "cps-dynamic-admission-coord-live-20261008",
+                "resourceVersion": "361996166",
+                "uid": "afb5decc-3f34-4304-9d73-c85e2276f07b"
+            },
+            "kind": "Event",
+            "lastTimestamp": "2026-10-08T12:29:47Z",
+            "message": "Successfully assigned pod cps-dynamic-admission-coord-live-20261008/kai-cpu-deny to node k3s-cp3 at node-pool default",
+            "metadata": {
+                "creationTimestamp": "2026-10-08T12:29:22Z",
+                "name": "kai-cpu-deny.18dc8db592ce43a4",
+                "namespace": "cps-dynamic-admission-coord-live-20261008",
+                "resourceVersion": "361996713",
+                "uid": "828129e3-22a0-4791-914e-a5d0e4778f36"
+            },
+            "reason": "Scheduled",
+            "reportingComponent": "kai-scheduler",
+            "reportingInstance": "",
+            "source": {
+                "component": "kai-scheduler"
+            },
+            "type": "Normal"
+        },
+        {
+            "apiVersion": "v1",
+            "count": 25,
+            "eventTime": null,
+            "firstTimestamp": "2026-10-08T12:29:22Z",
+            "involvedObject": {
+                "apiVersion": "v1",
+                "kind": "Pod",
+                "name": "kai-cpu-deny",
+                "namespace": "cps-dynamic-admission-coord-live-20261008",
+                "resourceVersion": "361996180",
+                "uid": "afb5decc-3f34-4304-9d73-c85e2276f07b"
+            },
+            "kind": "Event",
+            "lastTimestamp": "2026-10-08T12:29:33Z",
+            "message": "Failed to bind pod cps-dynamic-admission-coord-live-20261008/kai-cpu-deny to node k3s-cp3: failed to bind pod \u003ccps-dynamic-admission-coord-live-20261008/kai-cpu-deny\u003e to node \u003ck3s-cp3\u003e: Internal error occurred: failed calling webhook \"cpu-transport.qa.compute.cps.unileoben.ac.at\": failed to call webhook: the server could not find the requested resource",
+            "metadata": {
+                "creationTimestamp": "2026-10-08T12:29:22Z",
+                "name": "kai-cpu-deny.18dc8db5952ec4a6",
+                "namespace": "cps-dynamic-admission-coord-live-20261008",
+                "resourceVersion": "361996460",
+                "uid": "8d20670c-58d1-4d45-a2f2-fd895d8b3116"
+            },
+            "reason": "BindingError",
+            "reportingComponent": "binder",
+            "reportingInstance": "",
+            "source": {
+                "component": "binder"
+            },
+            "type": "Warning"
+        },
+        {
+            "apiVersion": "v1",
+            "count": 1,
+            "eventTime": null,
+            "firstTimestamp": "2026-10-08T12:29:23Z",
+            "involvedObject": {
+                "apiVersion": "v1",
+                "fieldPath": "spec.containers{main}",
+                "kind": "Pod",
+                "name": "native-bind",
+                "namespace": "cps-dynamic-admission-coord-live-20261008",
+                "resourceVersion": "361996200",
+                "uid": "de2e6436-7c85-4a09-ab5e-3f24db3281dc"
+            },
+            "kind": "Event",
+            "lastTimestamp": "2026-10-08T12:29:23Z",
+            "message": "Container image \"ghcr.io/mul-cps/cps-compute@sha256:627f093c3c96038c7ecd9e9b99f0138198c23c9460cabb7bd11b19e94f465096\" already present on machine",
+            "metadata": {
+                "creationTimestamp": "2026-10-08T12:29:23Z",
+                "name": "native-bind.18dc8db5a636175a",
+                "namespace": "cps-dynamic-admission-coord-live-20261008",
+                "resourceVersion": "361996222",
+                "uid": "c893fcd8-f7bc-4028-ad25-98fca9a717fe"
+            },
+            "reason": "Pulled",
+            "reportingComponent": "kubelet",
+            "reportingInstance": "k3s-cp3",
+            "source": {
+                "component": "kubelet",
+                "host": "k3s-cp3"
+            },
+            "type": "Normal"
+        },
+        {
+            "apiVersion": "v1",
+            "count": 1,
+            "eventTime": null,
+            "firstTimestamp": "2026-10-08T12:29:23Z",
+            "involvedObject": {
+                "apiVersion": "v1",
+                "fieldPath": "spec.containers{main}",
+                "kind": "Pod",
+                "name": "native-bind",
+                "namespace": "cps-dynamic-admission-coord-live-20261008",
+                "resourceVersion": "361996200",
+                "uid": "de2e6436-7c85-4a09-ab5e-3f24db3281dc"
+            },
+            "kind": "Event",
+            "lastTimestamp": "2026-10-08T12:29:23Z",
+            "message": "Created container: main",
+            "metadata": {
+                "creationTimestamp": "2026-10-08T12:29:23Z",
+                "name": "native-bind.18dc8db5a759c5e2",
+                "namespace": "cps-dynamic-admission-coord-live-20261008",
+                "resourceVersion": "361996223",
+                "uid": "689501ee-dc18-424d-9090-192506453fa8"
+            },
+            "reason": "Created",
+            "reportingComponent": "kubelet",
+            "reportingInstance": "k3s-cp3",
+            "source": {
+                "component": "kubelet",
+                "host": "k3s-cp3"
+            },
+            "type": "Normal"
+        },
+        {
+            "apiVersion": "v1",
+            "count": 1,
+            "eventTime": null,
+            "firstTimestamp": "2026-10-08T12:29:23Z",
+            "involvedObject": {
+                "apiVersion": "v1",
+                "fieldPath": "spec.containers{main}",
+                "kind": "Pod",
+                "name": "native-bind",
+                "namespace": "cps-dynamic-admission-coord-live-20261008",
+                "resourceVersion": "361996200",
+                "uid": "de2e6436-7c85-4a09-ab5e-3f24db3281dc"
+            },
+            "kind": "Event",
+            "lastTimestamp": "2026-10-08T12:29:23Z",
+            "message": "Started container main",
+            "metadata": {
+                "creationTimestamp": "2026-10-08T12:29:23Z",
+                "name": "native-bind.18dc8db5adb6c873",
+                "namespace": "cps-dynamic-admission-coord-live-20261008",
+                "resourceVersion": "361996225",
+                "uid": "98e54ee9-0ca3-43bc-b652-eb26dcf08998"
+            },
+            "reason": "Started",
+            "reportingComponent": "kubelet",
+            "reportingInstance": "k3s-cp3",
+            "source": {
+                "component": "kubelet",
+                "host": "k3s-cp3"
+            },
+            "type": "Normal"
+        },
+        {
+            "apiVersion": "v1",
+            "count": 1,
+            "eventTime": null,
+            "firstTimestamp": "2026-10-08T12:31:28Z",
+            "involvedObject": {
+                "apiVersion": "v1",
+                "fieldPath": "spec.containers{main}",
+                "kind": "Pod",
+                "name": "native-bind",
+                "namespace": "cps-dynamic-admission-coord-live-20261008",
+                "resourceVersion": "361998523",
+                "uid": "abef3820-1ab9-4384-839f-0d8170565b46"
+            },
+            "kind": "Event",
+            "lastTimestamp": "2026-10-08T12:31:28Z",
+            "message": "Container image \"ghcr.io/mul-cps/cps-compute@sha256:627f093c3c96038c7ecd9e9b99f0138198c23c9460cabb7bd11b19e94f465096\" already present on machine",
+            "metadata": {
+                "creationTimestamp": "2026-10-08T12:31:28Z",
+                "name": "native-bind.18dc8dd2eab82cd0",
+                "namespace": "cps-dynamic-admission-coord-live-20261008",
+                "resourceVersion": "361998542",
+                "uid": "09085973-12c7-4b2f-88de-352e93be9f78"
+            },
+            "reason": "Pulled",
+            "reportingComponent": "kubelet",
+            "reportingInstance": "k3s-cp3",
+            "source": {
+                "component": "kubelet",
+                "host": "k3s-cp3"
+            },
+            "type": "Normal"
+        },
+        {
+            "apiVersion": "v1",
+            "count": 1,
+            "eventTime": null,
+            "firstTimestamp": "2026-10-08T12:31:28Z",
+            "involvedObject": {
+                "apiVersion": "v1",
+                "fieldPath": "spec.containers{main}",
+                "kind": "Pod",
+                "name": "native-bind",
+                "namespace": "cps-dynamic-admission-coord-live-20261008",
+                "resourceVersion": "361998523",
+                "uid": "abef3820-1ab9-4384-839f-0d8170565b46"
+            },
+            "kind": "Event",
+            "lastTimestamp": "2026-10-08T12:31:28Z",
+            "message": "Created container: main",
+            "metadata": {
+                "creationTimestamp": "2026-10-08T12:31:28Z",
+                "name": "native-bind.18dc8dd2ebca0d78",
+                "namespace": "cps-dynamic-admission-coord-live-20261008",
+                "resourceVersion": "361998543",
+                "uid": "c72b3250-0464-415b-8a7f-9465f25d65e8"
+            },
+            "reason": "Created",
+            "reportingComponent": "kubelet",
+            "reportingInstance": "k3s-cp3",
+            "source": {
+                "component": "kubelet",
+                "host": "k3s-cp3"
+            },
+            "type": "Normal"
+        },
+        {
+            "apiVersion": "v1",
+            "count": 1,
+            "eventTime": null,
+            "firstTimestamp": "2026-10-08T12:31:28Z",
+            "involvedObject": {
+                "apiVersion": "v1",
+                "fieldPath": "spec.containers{main}",
+                "kind": "Pod",
+                "name": "native-bind",
+                "namespace": "cps-dynamic-admission-coord-live-20261008",
+                "resourceVersion": "361998523",
+                "uid": "abef3820-1ab9-4384-839f-0d8170565b46"
+            },
+            "kind": "Event",
+            "lastTimestamp": "2026-10-08T12:31:28Z",
+            "message": "Started container main",
+            "metadata": {
+                "creationTimestamp": "2026-10-08T12:31:28Z",
+                "name": "native-bind.18dc8dd2f49bc8df",
+                "namespace": "cps-dynamic-admission-coord-live-20261008",
+                "resourceVersion": "361998548",
+                "uid": "834a6ab7-39fa-48d0-920f-09b3c250edbd"
+            },
+            "reason": "Started",
+            "reportingComponent": "kubelet",
+            "reportingInstance": "k3s-cp3",
+            "source": {
+                "component": "kubelet",
+                "host": "k3s-cp3"
+            },
+            "type": "Normal"
+        },
+        {
+            "action": "Binding",
+            "apiVersion": "v1",
+            "eventTime": "2026-10-08T12:29:21.712319Z",
+            "firstTimestamp": null,
+            "involvedObject": {
+                "apiVersion": "v1",
+                "kind": "Pod",
+                "name": "native-probe-2k2b6",
+                "namespace": "cps-dynamic-admission-coord-live-20261008",
+                "resourceVersion": "361996131",
+                "uid": "e7298720-8c4c-4d8a-b97f-b4f43ccab437"
+            },
+            "kind": "Event",
+            "lastTimestamp": null,
+            "message": "Successfully assigned cps-dynamic-admission-coord-live-20261008/native-probe-2k2b6 to k3s-cp3",
+            "metadata": {
+                "creationTimestamp": "2026-10-08T12:29:21Z",
+                "name": "native-probe-2k2b6.18dc8db55346412e",
+                "namespace": "cps-dynamic-admission-coord-live-20261008",
+                "resourceVersion": "361996135",
+                "uid": "0ed9e41e-4f5e-4968-98b4-82da4b5f0a18"
+            },
+            "reason": "Scheduled",
+            "reportingComponent": "default-scheduler",
+            "reportingInstance": "default-scheduler-k3s-cp1",
+            "source": {},
+            "type": "Normal"
+        },
+        {
+            "apiVersion": "v1",
+            "count": 1,
+            "eventTime": null,
+            "firstTimestamp": "2026-10-08T12:29:22Z",
+            "involvedObject": {
+                "apiVersion": "v1",
+                "fieldPath": "spec.containers{main}",
+                "kind": "Pod",
+                "name": "native-probe-2k2b6",
+                "namespace": "cps-dynamic-admission-coord-live-20261008",
+                "resourceVersion": "361996134",
+                "uid": "e7298720-8c4c-4d8a-b97f-b4f43ccab437"
+            },
+            "kind": "Event",
+            "lastTimestamp": "2026-10-08T12:29:22Z",
+            "message": "Container image \"ghcr.io/mul-cps/cps-compute@sha256:627f093c3c96038c7ecd9e9b99f0138198c23c9460cabb7bd11b19e94f465096\" already present on machine",
+            "metadata": {
+                "creationTimestamp": "2026-10-08T12:29:22Z",
+                "name": "native-probe-2k2b6.18dc8db573dab238",
+                "namespace": "cps-dynamic-admission-coord-live-20261008",
+                "resourceVersion": "361996147",
+                "uid": "bdddbe0b-3505-4bda-92ec-928d1c9519ee"
+            },
+            "reason": "Pulled",
+            "reportingComponent": "kubelet",
+            "reportingInstance": "k3s-cp3",
+            "source": {
+                "component": "kubelet",
+                "host": "k3s-cp3"
+            },
+            "type": "Normal"
+        },
+        {
+            "apiVersion": "v1",
+            "count": 1,
+            "eventTime": null,
+            "firstTimestamp": "2026-10-08T12:29:22Z",
+            "involvedObject": {
+                "apiVersion": "v1",
+                "fieldPath": "spec.containers{main}",
+                "kind": "Pod",
+                "name": "native-probe-2k2b6",
+                "namespace": "cps-dynamic-admission-coord-live-20261008",
+                "resourceVersion": "361996134",
+                "uid": "e7298720-8c4c-4d8a-b97f-b4f43ccab437"
+            },
+            "kind": "Event",
+            "lastTimestamp": "2026-10-08T12:29:22Z",
+            "message": "Created container: main",
+            "metadata": {
+                "creationTimestamp": "2026-10-08T12:29:22Z",
+                "name": "native-probe-2k2b6.18dc8db575c6298d",
+                "namespace": "cps-dynamic-admission-coord-live-20261008",
+                "resourceVersion": "361996149",
+                "uid": "344eb533-d597-443e-9a95-8116b4d57367"
+            },
+            "reason": "Created",
+            "reportingComponent": "kubelet",
+            "reportingInstance": "k3s-cp3",
+            "source": {
+                "component": "kubelet",
+                "host": "k3s-cp3"
+            },
+            "type": "Normal"
+        },
+        {
+            "apiVersion": "v1",
+            "count": 1,
+            "eventTime": null,
+            "firstTimestamp": "2026-10-08T12:29:22Z",
+            "involvedObject": {
+                "apiVersion": "v1",
+                "fieldPath": "spec.containers{main}",
+                "kind": "Pod",
+                "name": "native-probe-2k2b6",
+                "namespace": "cps-dynamic-admission-coord-live-20261008",
+                "resourceVersion": "361996134",
+                "uid": "e7298720-8c4c-4d8a-b97f-b4f43ccab437"
+            },
+            "kind": "Event",
+            "lastTimestamp": "2026-10-08T12:29:22Z",
+            "message": "Started container main",
+            "metadata": {
+                "creationTimestamp": "2026-10-08T12:29:22Z",
+                "name": "native-probe-2k2b6.18dc8db57fd27484",
+                "namespace": "cps-dynamic-admission-coord-live-20261008",
+                "resourceVersion": "361996151",
+                "uid": "cd414fde-20b5-41c5-a06e-1fe8af69bd1b"
+            },
+            "reason": "Started",
+            "reportingComponent": "kubelet",
+            "reportingInstance": "k3s-cp3",
+            "source": {
+                "component": "kubelet",
+                "host": "k3s-cp3"
+            },
+            "type": "Normal"
+        },
+        {
+            "action": "Binding",
+            "apiVersion": "v1",
+            "eventTime": "2026-10-08T12:31:27.430241Z",
+            "firstTimestamp": null,
+            "involvedObject": {
+                "apiVersion": "v1",
+                "kind": "Pod",
+                "name": "native-probe-r2-rfzfd",
+                "namespace": "cps-dynamic-admission-coord-live-20261008",
+                "resourceVersion": "361998496",
+                "uid": "81237301-5e36-4767-93c3-74a4e75fc1ca"
+            },
+            "kind": "Event",
+            "lastTimestamp": null,
+            "message": "Successfully assigned cps-dynamic-admission-coord-live-20261008/native-probe-r2-rfzfd to k3s-cp3",
+            "metadata": {
+                "creationTimestamp": "2026-10-08T12:31:27Z",
+                "name": "native-probe-r2-rfzfd.18dc8dd298a582b2",
+                "namespace": "cps-dynamic-admission-coord-live-20261008",
+                "resourceVersion": "361998500",
+                "uid": "088a0602-816d-449e-b5a7-9d576308565f"
+            },
+            "reason": "Scheduled",
+            "reportingComponent": "default-scheduler",
+            "reportingInstance": "default-scheduler-k3s-cp1",
+            "source": {},
+            "type": "Normal"
+        },
+        {
+            "apiVersion": "v1",
+            "count": 1,
+            "eventTime": null,
+            "firstTimestamp": "2026-10-08T12:31:27Z",
+            "involvedObject": {
+                "apiVersion": "v1",
+                "fieldPath": "spec.containers{main}",
+                "kind": "Pod",
+                "name": "native-probe-r2-rfzfd",
+                "namespace": "cps-dynamic-admission-coord-live-20261008",
+                "resourceVersion": "361998499",
+                "uid": "81237301-5e36-4767-93c3-74a4e75fc1ca"
+            },
+            "kind": "Event",
+            "lastTimestamp": "2026-10-08T12:31:27Z",
+            "message": "Container image \"ghcr.io/mul-cps/cps-compute@sha256:627f093c3c96038c7ecd9e9b99f0138198c23c9460cabb7bd11b19e94f465096\" already present on machine",
+            "metadata": {
+                "creationTimestamp": "2026-10-08T12:31:27Z",
+                "name": "native-probe-r2-rfzfd.18dc8dd2b7f517a0",
+                "namespace": "cps-dynamic-admission-coord-live-20261008",
+                "resourceVersion": "361998507",
+                "uid": "6ec062f1-76ec-4bf1-bdef-034a34845f15"
+            },
+            "reason": "Pulled",
+            "reportingComponent": "kubelet",
+            "reportingInstance": "k3s-cp3",
+            "source": {
+                "component": "kubelet",
+                "host": "k3s-cp3"
+            },
+            "type": "Normal"
+        },
+        {
+            "apiVersion": "v1",
+            "count": 1,
+            "eventTime": null,
+            "firstTimestamp": "2026-10-08T12:31:27Z",
+            "involvedObject": {
+                "apiVersion": "v1",
+                "fieldPath": "spec.containers{main}",
+                "kind": "Pod",
+                "name": "native-probe-r2-rfzfd",
+                "namespace": "cps-dynamic-admission-coord-live-20261008",
+                "resourceVersion": "361998499",
+                "uid": "81237301-5e36-4767-93c3-74a4e75fc1ca"
+            },
+            "kind": "Event",
+            "lastTimestamp": "2026-10-08T12:31:27Z",
+            "message": "Created container: main",
+            "metadata": {
+                "creationTimestamp": "2026-10-08T12:31:27Z",
+                "name": "native-probe-r2-rfzfd.18dc8dd2ba14482f",
+                "namespace": "cps-dynamic-admission-coord-live-20261008",
+                "resourceVersion": "361998511",
+                "uid": "81269d75-7fd6-45a8-b926-937715791768"
+            },
+            "reason": "Created",
+            "reportingComponent": "kubelet",
+            "reportingInstance": "k3s-cp3",
+            "source": {
+                "component": "kubelet",
+                "host": "k3s-cp3"
+            },
+            "type": "Normal"
+        },
+        {
+            "apiVersion": "v1",
+            "count": 1,
+            "eventTime": null,
+            "firstTimestamp": "2026-10-08T12:31:28Z",
+            "involvedObject": {
+                "apiVersion": "v1",
+                "fieldPath": "spec.containers{main}",
+                "kind": "Pod",
+                "name": "native-probe-r2-rfzfd",
+                "namespace": "cps-dynamic-admission-coord-live-20261008",
+                "resourceVersion": "361998499",
+                "uid": "81237301-5e36-4767-93c3-74a4e75fc1ca"
+            },
+            "kind": "Event",
+            "lastTimestamp": "2026-10-08T12:31:28Z",
+            "message": "Started container main",
+            "metadata": {
+                "creationTimestamp": "2026-10-08T12:31:28Z",
+                "name": "native-probe-r2-rfzfd.18dc8dd2c45ea969",
+                "namespace": "cps-dynamic-admission-coord-live-20261008",
+                "resourceVersion": "361998516",
+                "uid": "04cec58c-b499-4524-9923-9187cd8655e1"
+            },
+            "reason": "Started",
+            "reportingComponent": "kubelet",
+            "reportingInstance": "k3s-cp3",
+            "source": {
+                "component": "kubelet",
+                "host": "k3s-cp3"
+            },
+            "type": "Normal"
+        },
+        {
+            "apiVersion": "v1",
+            "count": 1,
+            "eventTime": null,
+            "firstTimestamp": "2026-10-08T12:31:27Z",
+            "involvedObject": {
+                "apiVersion": "batch/v1",
+                "kind": "Job",
+                "name": "native-probe-r2",
+                "namespace": "cps-dynamic-admission-coord-live-20261008",
+                "resourceVersion": "361998494",
+                "uid": "074c3b48-0c42-4045-9189-24ad1d64bdce"
+            },
+            "kind": "Event",
+            "lastTimestamp": "2026-10-08T12:31:27Z",
+            "message": "Created pod: native-probe-r2-rfzfd",
+            "metadata": {
+                "creationTimestamp": "2026-10-08T12:31:27Z",
+                "name": "native-probe-r2.18dc8dd2984526b4",
+                "namespace": "cps-dynamic-admission-coord-live-20261008",
+                "resourceVersion": "361998497",
+                "uid": "76a6f55d-e347-4b26-814e-7e8fd831f4f3"
+            },
+            "reason": "SuccessfulCreate",
+            "reportingComponent": "job-controller",
+            "reportingInstance": "",
+            "source": {
+                "component": "job-controller"
+            },
+            "type": "Normal"
+        },
+        {
+            "apiVersion": "v1",
+            "count": 1,
+            "eventTime": null,
+            "firstTimestamp": "2026-10-08T12:31:31Z",
+            "involvedObject": {
+                "apiVersion": "batch/v1",
+                "kind": "Job",
+                "name": "native-probe-r2",
+                "namespace": "cps-dynamic-admission-coord-live-20261008",
+                "resourceVersion": "361998629",
+                "uid": "074c3b48-0c42-4045-9189-24ad1d64bdce"
+            },
+            "kind": "Event",
+            "lastTimestamp": "2026-10-08T12:31:31Z",
+            "message": "Job completed",
+            "metadata": {
+                "creationTimestamp": "2026-10-08T12:31:31Z",
+                "name": "native-probe-r2.18dc8dd39edef5e8",
+                "namespace": "cps-dynamic-admission-coord-live-20261008",
+                "resourceVersion": "361998632",
+                "uid": "92a7e7c2-10b9-4758-b2c3-48cb5675965d"
+            },
+            "reason": "Completed",
+            "reportingComponent": "job-controller",
+            "reportingInstance": "",
+            "source": {
+                "component": "job-controller"
+            },
+            "type": "Normal"
+        },
+        {
+            "apiVersion": "v1",
+            "count": 1,
+            "eventTime": null,
+            "firstTimestamp": "2026-10-08T12:29:21Z",
+            "involvedObject": {
+                "apiVersion": "batch/v1",
+                "kind": "Job",
+                "name": "native-probe",
+                "namespace": "cps-dynamic-admission-coord-live-20261008",
+                "resourceVersion": "361996129",
+                "uid": "a647fb1b-2327-4cbe-9321-dfc398bbb5dd"
+            },
+            "kind": "Event",
+            "lastTimestamp": "2026-10-08T12:29:21Z",
+            "message": "Created pod: native-probe-2k2b6",
+            "metadata": {
+                "creationTimestamp": "2026-10-08T12:29:21Z",
+                "name": "native-probe.18dc8db552dc7e3b",
+                "namespace": "cps-dynamic-admission-coord-live-20261008",
+                "resourceVersion": "361996132",
+                "uid": "ada2f4e2-22d1-4877-90cb-5edc873ebc6f"
+            },
+            "reason": "SuccessfulCreate",
+            "reportingComponent": "job-controller",
+            "reportingInstance": "",
+            "source": {
+                "component": "job-controller"
+            },
+            "type": "Normal"
+        },
+        {
+            "apiVersion": "v1",
+            "count": 1,
+            "eventTime": null,
+            "firstTimestamp": "2026-10-08T12:29:26Z",
+            "involvedObject": {
+                "apiVersion": "batch/v1",
+                "kind": "Job",
+                "name": "native-probe",
+                "namespace": "cps-dynamic-admission-coord-live-20261008",
+                "resourceVersion": "361996311",
+                "uid": "a647fb1b-2327-4cbe-9321-dfc398bbb5dd"
+            },
+            "kind": "Event",
+            "lastTimestamp": "2026-10-08T12:29:26Z",
+            "message": "Job has reached the specified backoff limit",
+            "metadata": {
+                "creationTimestamp": "2026-10-08T12:29:26Z",
+                "name": "native-probe.18dc8db6706a11a3",
+                "namespace": "cps-dynamic-admission-coord-live-20261008",
+                "resourceVersion": "361996314",
+                "uid": "3f951e4c-5c95-4f66-a2d0-c5b918d96735"
+            },
+            "reason": "BackoffLimitExceeded",
+            "reportingComponent": "job-controller",
+            "reportingInstance": "",
+            "source": {
+                "component": "job-controller"
+            },
+            "type": "Warning"
+        }
+    ],
+    "kind": "List",
+    "metadata": {
+        "resourceVersion": ""
+    }
+}

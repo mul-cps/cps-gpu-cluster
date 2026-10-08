@@ -133,12 +133,11 @@ devicePlugin:
             failRequestsGreaterThanOne: true
             resources:
               - name: nvidia.com/gpu
-                # Upper bound on concurrent MPS clients per physical GPU.
-                # Real per-client VRAM enforcement comes from JupyterHub's
-                # CUDA_MPS_PINNED_DEVICE_MEM_LIMIT env var + KAI's gpu-memory
-                # scheduling accounting, not from this replica count - this
-                # just needs to be >= the largest realistic number of
-                # concurrent shared sessions on one GPU.
+                # Legacy fixed partition setting: the standalone daemon divides
+        # both memory and SM capacity by this count (40 GiB / 8 = 5 GiB,
+        # 100% / 8 rounds to 12%). Client environment settings can only
+        # reduce that ceiling, so larger variable profiles require the
+        # separately qualified candidate MPS configuration.
                 replicas: 8
       plain: |-
         version: v1

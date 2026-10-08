@@ -1,0 +1,62 @@
+{
+  "adminSourceRevision": "cdbc1d7ea848f1d6d791f6bc3aeeba807b7d95b9",
+  "computeSourceRevision": "70471b9793f21a87d74ac7a673f871dfa9620101",
+  "wheelSha256": "86a0fa74cb6e15dd408fcfe36945ca1f614af14ff3bda555f49aaf4e85408d37",
+  "image": "ghcr.io/mul-cps/e2x-course-hub@sha256:5ca589cda8ab06e3764932957ebe04c8e42804efb96d8f3f87c10af96d7ef357",
+  "imageConfigId": "7eb0e75a1da0752987af08ea93cff38315c8b47f04b07d6b697f7800e4439219",
+  "parentConfigId": "33f707fe2172cab6e86200de5cd5f6b2d63b3c236043c95e9965555619b8775c",
+  "installedVerification": {
+    "uid": 10001,
+    "installed_admin_modules_matched": 42,
+    "installed_compute_modules_matched": 21,
+    "hub_version": "5.5.2",
+    "rbac_version": "0.3.0",
+    "rbac_revision_verified": true,
+    "jobset_route_allowlist_verified": true,
+    "frontend_asset_hashes": {
+      "../../../share/e2x_course_hub/static/course-service-ui/assets/main.css": "9ad9607c67ef0680a0a90dc155d2d47f00b95cf36ebd3cc822b2392df86e5576",
+      "../../../share/e2x_course_hub/static/course-service-ui/main.js": "1019344e63664a0f1beb3d96ec8fd399941ca231820e6470eb631f459cf0f33d"
+    }
+  },
+  "installedAddonVerification": {
+    "modulesMatched": 21,
+    "addonAssetsMatched": 5,
+    "uid": 10001
+  },
+  "installedTestsPassed": 58,
+  "installedTestLogSha256": "234176b6718038ce04a584191b3c675844a6e507f02c211d860bc8a1971c2ac8",
+  "pipCheckPassed": true,
+  "parentStartupConfigurationPreserved": true,
+  "published": true,
+  "remoteManifestAndConfigVerified": true,
+  "deployed": false,
+  "qualified": false,
+  "limitations": [
+    "Layered qualification image; common-source release tagging and full SBOM remain open.",
+    "Installed tests use fixtures; real Hub OAuth, grants, browser UI and RTC remain unqualified."
+  ],
+  "sbom": {
+    "subject": "ghcr.io/mul-cps/e2x-course-hub@sha256:5ca589cda8ab06e3764932957ebe04c8e42804efb96d8f3f87c10af96d7ef357",
+    "sourceImageId": "sha256:7eb0e75a1da0752987af08ea93cff38315c8b47f04b07d6b697f7800e4439219",
+    "packages": 243,
+    "files": 3730,
+    "requiredPackagesVerified": [
+      "cps-compute",
+      "e2x-course-hub",
+      "e2x-hub-rbac",
+      "jupyterhub"
+    ],
+    "checksums": {
+      "sbom.spdx.json": "ea1ca2c532cd89b07ded603352f8d61e054160dc1ca4a52e91891689b1d327f2",
+      "sbom.syft.json": "fdac1a1621f8bb11d2e372be49d431daf71ba3a5bdf2f0cf9e35477e33c29c4a"
+    },
+    "attachment": "ghcr.io/mul-cps/e2x-course-hub@sha256:e5a07b9354f6e383d05716493730fc283335fffa848d13e3126078b1a298c210",
+    "subjectVerified": true,
+    "downloadHashesMatched": true,
+    "productionQualified": false,
+    "scannerSha256": "dbf75864e7a7ff9e1fbf00552c31483f693188632a9f68f343cd7653dac513d6",
+    "scope": "full image inventory; no vulnerability clearance, signed release or production acceptance",
+    "fileCoverage": "package-owned files (Syft metadata selection owned-by-package); not every image file"
+  },
+  "sbomPublished": true
+}

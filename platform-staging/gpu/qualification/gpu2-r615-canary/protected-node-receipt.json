@@ -1,0 +1,4008 @@
+{
+  "observedAt": "2026-10-08T13:29:43.627309+00:00",
+  "node": {
+    "name": "k3s-wk-gpu2",
+    "uid": "3336cdd5-d245-436e-b57c-2f66c6dcaa41",
+    "resourceVersion": "362049670",
+    "unschedulable": false,
+    "labels": {
+      "accelerator": "nvidia",
+      "nvidia.com/gpu.deploy.container-toolkit": "true",
+      "nvidia.com/gpu.deploy.dcgm": "true",
+      "nvidia.com/gpu.deploy.dcgm-exporter": "true",
+      "nvidia.com/gpu.deploy.device-plugin": "true",
+      "nvidia.com/gpu.deploy.driver": "true",
+      "nvidia.com/gpu.deploy.gpu-feature-discovery": "true",
+      "nvidia.com/gpu.deploy.mig-manager": "true",
+      "nvidia.com/gpu.deploy.node-status-exporter": "true",
+      "nvidia.com/gpu.deploy.nvsm": "true",
+      "nvidia.com/gpu.deploy.operator-validator": "true"
+    }
+  },
+  "gpu2ActivePods": [
+    {
+      "namespace": "alloy",
+      "name": "alloy-cnt4q",
+      "uid": "00cdf7fb-5542-41b0-b88c-ef8b32e85ce7",
+      "node": "k3s-wk-gpu2",
+      "phase": "Running",
+      "ready": true,
+      "containers": [
+        {
+          "name": "alloy",
+          "imageID": "docker.io/grafana/alloy@sha256:41c41849989b7e054ccbadc17938ee1e5592fe26bfbc56ef3ffc109c0b0b2739",
+          "ready": true,
+          "restartCount": 0
+        },
+        {
+          "name": "config-reloader",
+          "imageID": "quay.io/prometheus-operator/prometheus-config-reloader@sha256:7d9e4eea5f1139e602508871f422b0116c60e87c662f3dcd234d5ab60cd0d8c1",
+          "ready": true,
+          "restartCount": 0
+        }
+      ],
+      "pvcs": []
+    },
+    {
+      "namespace": "cattle-fleet-system",
+      "name": "gitjob-6f49568497-n99dd",
+      "uid": "c9096098-e4a7-4ba6-b709-f164134b0647",
+      "node": "k3s-wk-gpu2",
+      "phase": "Running",
+      "ready": true,
+      "containers": [
+        {
+          "name": "gitjob",
+          "imageID": "docker.io/rancher/fleet@sha256:5f46325a7713a04bf350aa41005d7cbd497d47d7f8fc02e6a3d98f72e454acad",
+          "ready": true,
+          "restartCount": 24
+        }
+      ],
+      "pvcs": []
+    },
+    {
+      "namespace": "cattle-monitoring-system",
+      "name": "rancher-monitoring-kube-state-metrics-5cc64fcff7-cjn62",
+      "uid": "8e1f8618-178b-41a0-be5d-69cd2ab597c1",
+      "node": "k3s-wk-gpu2",
+      "phase": "Running",
+      "ready": true,
+      "containers": [
+        {
+          "name": "kube-state-metrics",
+          "imageID": "docker.io/rancher/mirrored-kube-state-metrics-kube-state-metrics@sha256:2bbc915567334b13632bf62c0a97084aff72a36e13c4dabd5f2f11c898c5bacd",
+          "ready": true,
+          "restartCount": 33
+        }
+      ],
+      "pvcs": []
+    },
+    {
+      "namespace": "cattle-monitoring-system",
+      "name": "rancher-monitoring-operator-d78b98855-4ssqr",
+      "uid": "6f183d89-ca1b-4b4c-ad14-111797009684",
+      "node": "k3s-wk-gpu2",
+      "phase": "Running",
+      "ready": true,
+      "containers": [
+        {
+          "name": "rancher-monitoring",
+          "imageID": "docker.io/rancher/mirrored-prometheus-operator-prometheus-operator@sha256:890b3bb05cf4ed81541922c611de8805ec9f5c1428017738a8e64e9189350e80",
+          "ready": true,
+          "restartCount": 0
+        }
+      ],
+      "pvcs": []
+    },
+    {
+      "namespace": "cattle-monitoring-system",
+      "name": "rancher-monitoring-prometheus-adapter-54fc9cdd56-w4b7b",
+      "uid": "043ee17d-2e7c-4b0c-a5b5-9ee9f28d4340",
+      "node": "k3s-wk-gpu2",
+      "phase": "Running",
+      "ready": true,
+      "containers": [
+        {
+          "name": "prometheus-adapter",
+          "imageID": "docker.io/rancher/mirrored-prometheus-adapter-prometheus-adapter@sha256:680f266f0b7bc9fe8e1def4e61923591072b5d562c7e9950c7dea1771a65f22f",
+          "ready": true,
+          "restartCount": 0
+        }
+      ],
+      "pvcs": []
+    },
+    {
+      "namespace": "cattle-monitoring-system",
+      "name": "rancher-monitoring-prometheus-node-exporter-ml952",
+      "uid": "95d08b5d-5749-48d2-a5a2-45821db4f2d5",
+      "node": "k3s-wk-gpu2",
+      "phase": "Running",
+      "ready": true,
+      "containers": [
+        {
+          "name": "node-exporter",
+          "imageID": "docker.io/rancher/mirrored-prometheus-node-exporter@sha256:d00a542e409ee618a4edc67da14dd48c5da66726bbd5537ab2af9c1dfc442c8a",
+          "ready": true,
+          "restartCount": 10
+        }
+      ],
+      "pvcs": []
+    },
+    {
+      "namespace": "cattle-system",
+      "name": "rancher-b6cd998d9-8wcvr",
+      "uid": "6017f6d0-e1cd-4949-be70-8f0ebb911dbc",
+      "node": "k3s-wk-gpu2",
+      "phase": "Running",
+      "ready": true,
+      "containers": [
+        {
+          "name": "rancher",
+          "imageID": "docker.io/rancher/rancher@sha256:4b1eea4c10ac2af1765a3036310fd77433a8fe42e25504843c8cfe2784c45a82",
+          "ready": true,
+          "restartCount": 5
+        }
+      ],
+      "pvcs": []
+    },
+    {
+      "namespace": "cattle-turtles-system",
+      "name": "rancher-turtles-controller-manager-86bc6bbdb5-b2tkj",
+      "uid": "c74b2444-fc57-4dec-a6bb-8bb04d4adff6",
+      "node": "k3s-wk-gpu2",
+      "phase": "Running",
+      "ready": true,
+      "containers": [
+        {
+          "name": "manager",
+          "imageID": "docker.io/rancher/turtles@sha256:14e1c6c4cc6026e6cd99b4b6b711ded740b6883d53dd98cd55bf4424b4d1687b",
+          "ready": true,
+          "restartCount": 32
+        }
+      ],
+      "pvcs": []
+    },
+    {
+      "namespace": "cert-manager",
+      "name": "cert-manager-cainjector-6bf9d5c79b-6rfh6",
+      "uid": "e156b8c1-c221-4ec4-84e5-158df61b7c2f",
+      "node": "k3s-wk-gpu2",
+      "phase": "Running",
+      "ready": true,
+      "containers": [
+        {
+          "name": "cert-manager-cainjector",
+          "imageID": "quay.io/jetstack/cert-manager-cainjector@sha256:3c49185718cf454bac559f71c4453b33f1086db48084604247d9acb7a4de2973",
+          "ready": true,
+          "restartCount": 31
+        }
+      ],
+      "pvcs": []
+    },
+    {
+      "namespace": "cert-manager",
+      "name": "cert-manager-webhook-78f7b4d9d7-78jfb",
+      "uid": "ee27e0a6-b998-424d-81e6-f15d9af75fe3",
+      "node": "k3s-wk-gpu2",
+      "phase": "Running",
+      "ready": true,
+      "containers": [
+        {
+          "name": "cert-manager-webhook",
+          "imageID": "quay.io/jetstack/cert-manager-webhook@sha256:6edf44244b2a711be737c4ab8e54e68d9112cc4e87da2ef97a7f76b768f4fde7",
+          "ready": true,
+          "restartCount": 0
+        }
+      ],
+      "pvcs": []
+    },
+    {
+      "namespace": "ci",
+      "name": "buildkit-pool-7567cb9459-szkct",
+      "uid": "c59ac550-99a1-4fcb-8a6c-5d348af90262",
+      "node": "k3s-wk-gpu2",
+      "phase": "Running",
+      "ready": true,
+      "containers": [
+        {
+          "name": "buildkitd",
+          "imageID": "ghcr.io/mul-cps/buildkit-rootless-k8s@sha256:cb2055cdcfc8dcf1034349d94ebf32c50501298279a1f1179d2cf045806c3d04",
+          "ready": true,
+          "restartCount": 8
+        }
+      ],
+      "pvcs": []
+    },
+    {
+      "namespace": "cit-auth",
+      "name": "authentik-worker-66bb756b4c-dcvw6",
+      "uid": "b220b496-ddce-407f-b44b-e4ecc2780482",
+      "node": "k3s-wk-gpu2",
+      "phase": "Running",
+      "ready": true,
+      "containers": [
+        {
+          "name": "worker",
+          "imageID": "ghcr.io/goauthentik/server@sha256:33a92b246b798f23931ce62027e045ecf302c3bc198b6389225973db6448a886",
+          "ready": true,
+          "restartCount": 0
+        }
+      ],
+      "pvcs": []
+    },
+    {
+      "namespace": "cit-jhub",
+      "name": "continuous-image-puller-zs7x2",
+      "uid": "8c2a8383-07ad-44a6-8dd1-6c73d40780c0",
+      "node": "k3s-wk-gpu2",
+      "phase": "Running",
+      "ready": true,
+      "containers": [
+        {
+          "name": "pause",
+          "imageID": "registry.k8s.io/pause@sha256:278fb9dbcca9518083ad1e11276933a2e96f23de604a3a08cc3c80002767d24c",
+          "ready": true,
+          "restartCount": 0
+        }
+      ],
+      "pvcs": []
+    },
+    {
+      "namespace": "cps-argo",
+      "name": "argo-artifact-downloads-5b996556c8-6bzsp",
+      "uid": "cf65a248-e816-42fd-8b67-455993897e03",
+      "node": "k3s-wk-gpu2",
+      "phase": "Running",
+      "ready": true,
+      "containers": [
+        {
+          "name": "downloads",
+          "imageID": "ghcr.io/mul-cps/cps-compute@sha256:79e933dcf6a042aa9966aec5de9ad4050e8a328254efa6df44e990613838b734",
+          "ready": true,
+          "restartCount": 0
+        }
+      ],
+      "pvcs": []
+    },
+    {
+      "namespace": "cps-compute",
+      "name": "cps-admin-58c6f68c88-pq58n",
+      "uid": "92a2f4c1-3fb3-4be6-84e1-64a3c4b98f16",
+      "node": "k3s-wk-gpu2",
+      "phase": "Running",
+      "ready": true,
+      "containers": [
+        {
+          "name": "console",
+          "imageID": "ghcr.io/mul-cps/e2x-course-hub@sha256:735f891ba008c58a9d3f4d324c22893d13b094dabe7ea39f80c776ffb6c89767",
+          "ready": true,
+          "restartCount": 0
+        }
+      ],
+      "pvcs": [
+        "cps-admin-data"
+      ]
+    },
+    {
+      "namespace": "gpu-operator",
+      "name": "gpu-feature-discovery-dl7d8",
+      "uid": "04e5def6-12eb-42f1-9841-20fa7cdb30a1",
+      "node": "k3s-wk-gpu2",
+      "phase": "Running",
+      "ready": true,
+      "containers": [
+        {
+          "name": "config-manager",
+          "imageID": "nvcr.io/nvidia/k8s-device-plugin@sha256:2d16df5f3f12081b4bd6b317cf697e5c7a195c53cec7e0bab756db02a06b985c",
+          "ready": true,
+          "restartCount": 0
+        },
+        {
+          "name": "gpu-feature-discovery",
+          "imageID": "nvcr.io/nvidia/k8s-device-plugin@sha256:2d16df5f3f12081b4bd6b317cf697e5c7a195c53cec7e0bab756db02a06b985c",
+          "ready": true,
+          "restartCount": 0
+        }
+      ],
+      "pvcs": []
+    },
+    {
+      "namespace": "gpu-operator",
+      "name": "gpu-operator-node-feature-discovery-gc-74dd579c7f-ndnqs",
+      "uid": "316e105f-674f-4b20-b902-4dd4a46a94ab",
+      "node": "k3s-wk-gpu2",
+      "phase": "Running",
+      "ready": true,
+      "containers": [
+        {
+          "name": "gc",
+          "imageID": "registry.k8s.io/nfd/node-feature-discovery@sha256:9fb5b0764076a7e9c9a93579ef062dd7283b2db0253fa9f793a6931a2c88385e",
+          "ready": true,
+          "restartCount": 0
+        }
+      ],
+      "pvcs": []
+    },
+    {
+      "namespace": "gpu-operator",
+      "name": "gpu-operator-node-feature-discovery-master-948c8bb7c-wvntb",
+      "uid": "21733ba1-37e6-44ef-bc2c-8876cdaf091b",
+      "node": "k3s-wk-gpu2",
+      "phase": "Running",
+      "ready": true,
+      "containers": [
+        {
+          "name": "master",
+          "imageID": "registry.k8s.io/nfd/node-feature-discovery@sha256:9fb5b0764076a7e9c9a93579ef062dd7283b2db0253fa9f793a6931a2c88385e",
+          "ready": true,
+          "restartCount": 15
+        }
+      ],
+      "pvcs": []
+    },
+    {
+      "namespace": "gpu-operator",
+      "name": "gpu-operator-node-feature-discovery-worker-hlwkr",
+      "uid": "25be5252-854b-4ea6-b2a8-8733105ec96a",
+      "node": "k3s-wk-gpu2",
+      "phase": "Running",
+      "ready": true,
+      "containers": [
+        {
+          "name": "worker",
+          "imageID": "registry.k8s.io/nfd/node-feature-discovery@sha256:9fb5b0764076a7e9c9a93579ef062dd7283b2db0253fa9f793a6931a2c88385e",
+          "ready": true,
+          "restartCount": 35
+        }
+      ],
+      "pvcs": []
+    },
+    {
+      "namespace": "gpu-operator",
+      "name": "mps-control-daemon-standalone-m2587",
+      "uid": "4cb8c92b-95a7-4a30-9d62-bc17bb542941",
+      "node": "k3s-wk-gpu2",
+      "phase": "Running",
+      "ready": true,
+      "containers": [
+        {
+          "name": "config-manager",
+          "imageID": "nvcr.io/nvidia/k8s-device-plugin@sha256:2d16df5f3f12081b4bd6b317cf697e5c7a195c53cec7e0bab756db02a06b985c",
+          "ready": true,
+          "restartCount": 0
+        },
+        {
+          "name": "mps-control-daemon-ctr",
+          "imageID": "nvcr.io/nvidia/k8s-device-plugin@sha256:2d16df5f3f12081b4bd6b317cf697e5c7a195c53cec7e0bab756db02a06b985c",
+          "ready": true,
+          "restartCount": 0
+        }
+      ],
+      "pvcs": []
+    },
+    {
+      "namespace": "gpu-operator",
+      "name": "nvidia-container-toolkit-daemonset-2n9rl",
+      "uid": "e0b860b6-cc2d-498a-986d-14d2a0266a3e",
+      "node": "k3s-wk-gpu2",
+      "phase": "Running",
+      "ready": true,
+      "containers": [
+        {
+          "name": "nvidia-container-toolkit-ctr",
+          "imageID": "nvcr.io/nvidia/k8s/container-toolkit@sha256:c0d14372bc5d74e882eb60c5c5580459675bf08a2e4c627422cc949af6e9717d",
+          "ready": true,
+          "restartCount": 0
+        }
+      ],
+      "pvcs": []
+    },
+    {
+      "namespace": "gpu-operator",
+      "name": "nvidia-dcgm-exporter-rqqqn",
+      "uid": "b02b507e-7332-42ac-a7fa-c0788dea1334",
+      "node": "k3s-wk-gpu2",
+      "phase": "Running",
+      "ready": true,
+      "containers": [
+        {
+          "name": "nvidia-dcgm-exporter",
+          "imageID": "nvcr.io/nvidia/k8s/dcgm-exporter@sha256:ed2dfcb708949de649ab8e1b23521cfd1eba89774dbbe662b6835f1ffcaadb1a",
+          "ready": true,
+          "restartCount": 0
+        }
+      ],
+      "pvcs": []
+    },
+    {
+      "namespace": "gpu-operator",
+      "name": "nvidia-device-plugin-daemonset-b9gtn",
+      "uid": "a4e947f2-811b-4dcc-9e2b-322e6284cd65",
+      "node": "k3s-wk-gpu2",
+      "phase": "Running",
+      "ready": true,
+      "containers": [
+        {
+          "name": "config-manager",
+          "imageID": "nvcr.io/nvidia/k8s-device-plugin@sha256:2d16df5f3f12081b4bd6b317cf697e5c7a195c53cec7e0bab756db02a06b985c",
+          "ready": true,
+          "restartCount": 0
+        },
+        {
+          "name": "nvidia-device-plugin",
+          "imageID": "nvcr.io/nvidia/k8s-device-plugin@sha256:2d16df5f3f12081b4bd6b317cf697e5c7a195c53cec7e0bab756db02a06b985c",
+          "ready": true,
+          "restartCount": 0
+        }
+      ],
+      "pvcs": []
+    },
+    {
+      "namespace": "gpu-operator",
+      "name": "nvidia-driver-daemonset-ssr7r",
+      "uid": "b72e0314-256d-44a5-83ec-b6a8cc180447",
+      "node": "k3s-wk-gpu2",
+      "phase": "Running",
+      "ready": true,
+      "containers": [
+        {
+          "name": "nvidia-driver-ctr",
+          "imageID": "nvcr.io/nvidia/driver@sha256:41515698692bd5e192186e620b65717af960a66d22dbb5a06e3656575a5d9148",
+          "ready": true,
+          "restartCount": 0
+        }
+      ],
+      "pvcs": []
+    },
+    {
+      "namespace": "gpu-operator",
+      "name": "nvidia-mig-manager-zlcxc",
+      "uid": "6ed10f8d-f884-46eb-9f9e-4006d697b5a5",
+      "node": "k3s-wk-gpu2",
+      "phase": "Running",
+      "ready": true,
+      "containers": [
+        {
+          "name": "nvidia-mig-manager",
+          "imageID": "nvcr.io/nvidia/cloud-native/k8s-mig-manager@sha256:9194a84d3ff2d99886653add3867ec8ee03755442a6d75844932812a12a968de",
+          "ready": true,
+          "restartCount": 0
+        }
+      ],
+      "pvcs": []
+    },
+    {
+      "namespace": "gpu-operator",
+      "name": "nvidia-operator-validator-vqxp8",
+      "uid": "ae8ebafb-7d86-4654-81d4-ad8f8260af66",
+      "node": "k3s-wk-gpu2",
+      "phase": "Running",
+      "ready": true,
+      "containers": [
+        {
+          "name": "nvidia-operator-validator",
+          "imageID": "nvcr.io/nvidia/gpu-operator@sha256:d4841412c9b8d27c53b1588dcebffc5451e9ab0fd36b2c656c33a65356507cfd",
+          "ready": true,
+          "restartCount": 0
+        }
+      ],
+      "pvcs": []
+    },
+    {
+      "namespace": "image-builds",
+      "name": "image-builder-api-67d7c7fc5d-n6fsh",
+      "uid": "2df1f606-ae15-4f22-b159-0eb98757b205",
+      "node": "k3s-wk-gpu2",
+      "phase": "Running",
+      "ready": true,
+      "containers": [
+        {
+          "name": "api",
+          "imageID": "ghcr.io/mul-cps/incluster-image-builder@sha256:a0fcf7a3282c8761cd8490c799f9a31065f5b328c2b44f5dae1734594325c1b5",
+          "ready": true,
+          "restartCount": 0
+        }
+      ],
+      "pvcs": []
+    },
+    {
+      "namespace": "ingress-nginx",
+      "name": "ingress-nginx-controller-m6txm",
+      "uid": "0346590e-9d13-4c10-af17-d63757c9a285",
+      "node": "k3s-wk-gpu2",
+      "phase": "Running",
+      "ready": true,
+      "containers": [
+        {
+          "name": "controller",
+          "imageID": "registry.k8s.io/ingress-nginx/controller@sha256:d56f135b6462cfc476447cfe564b83a45e8bb7da2774963b00d12161112270b7",
+          "ready": true,
+          "restartCount": 0
+        }
+      ],
+      "pvcs": []
+    },
+    {
+      "namespace": "jupyterhub",
+      "name": "continuous-image-puller-g68hd",
+      "uid": "eb6e627b-e3be-4d6c-b306-d612035d734d",
+      "node": "k3s-wk-gpu2",
+      "phase": "Running",
+      "ready": true,
+      "containers": [
+        {
+          "name": "pause",
+          "imageID": "registry.k8s.io/pause@sha256:278fb9dbcca9518083ad1e11276933a2e96f23de604a3a08cc3c80002767d24c",
+          "ready": true,
+          "restartCount": 0
+        }
+      ],
+      "pvcs": []
+    },
+    {
+      "namespace": "jupyterhub",
+      "name": "postgresql-6f46c896b4-524mt",
+      "uid": "735c9cc9-8a5c-44e0-9fcc-4b1d7d1a7953",
+      "node": "k3s-wk-gpu2",
+      "phase": "Running",
+      "ready": true,
+      "containers": [
+        {
+          "name": "postgresql",
+          "imageID": "docker.io/library/postgres@sha256:866264fb97643e747f9d0981cd060114f83b49450e5bac4988324bb3c6af2fd7",
+          "ready": true,
+          "restartCount": 0
+        }
+      ],
+      "pvcs": [
+        "postgresql-data-longhorn"
+      ]
+    },
+    {
+      "namespace": "kai-resource-isolator",
+      "name": "kai-resource-isolator-libsync-tv8sw",
+      "uid": "2f455157-6902-44d4-abd6-08a7dcf327c2",
+      "node": "k3s-wk-gpu2",
+      "phase": "Running",
+      "ready": true,
+      "containers": [
+        {
+          "name": "libsync",
+          "imageID": "docker.io/projecthami/kai-resource-isolator@sha256:2743f1684721f6368e87f98a17d7e7392805786cdb70b44ce0e8fdc10b1e13d0",
+          "ready": true,
+          "restartCount": 0
+        }
+      ],
+      "pvcs": []
+    },
+    {
+      "namespace": "kai-resource-isolator",
+      "name": "kai-resource-isolator-monitor-vvz8p",
+      "uid": "e2714d97-1b73-4ba2-aa15-9ad276379a05",
+      "node": "k3s-wk-gpu2",
+      "phase": "Running",
+      "ready": true,
+      "containers": [
+        {
+          "name": "monitor",
+          "imageID": "docker.io/projecthami/kai-resource-isolator@sha256:2743f1684721f6368e87f98a17d7e7392805786cdb70b44ce0e8fdc10b1e13d0",
+          "ready": true,
+          "restartCount": 0
+        }
+      ],
+      "pvcs": []
+    },
+    {
+      "namespace": "knative-serving",
+      "name": "autoscaler-5564c5c759-k5wrm",
+      "uid": "36cb1df9-4593-4471-8181-1efaa15c3bd0",
+      "node": "k3s-wk-gpu2",
+      "phase": "Running",
+      "ready": true,
+      "containers": [
+        {
+          "name": "autoscaler",
+          "imageID": "gcr.io/knative-releases/knative.dev/serving/cmd/autoscaler@sha256:702a90183dea248d92169646b20f797c4d30e2966d1ce36c45c4aafe4210ed1f",
+          "ready": true,
+          "restartCount": 0
+        }
+      ],
+      "pvcs": []
+    },
+    {
+      "namespace": "knative-serving",
+      "name": "controller-7544bfc5db-s2x88",
+      "uid": "b4500d48-f8ad-446f-a19d-452eed65856d",
+      "node": "k3s-wk-gpu2",
+      "phase": "Running",
+      "ready": true,
+      "containers": [
+        {
+          "name": "controller",
+          "imageID": "gcr.io/knative-releases/knative.dev/serving/cmd/controller@sha256:3839632cd515a5b007e5c3d1d6d68c911a08e66762ed4f17f8b98597d84539b0",
+          "ready": true,
+          "restartCount": 0
+        }
+      ],
+      "pvcs": []
+    },
+    {
+      "namespace": "knative-serving",
+      "name": "net-kourier-controller-56fbdbc79f-vq92w",
+      "uid": "f1d21999-a5c1-4b1e-b3f3-0bfa8c82cb80",
+      "node": "k3s-wk-gpu2",
+      "phase": "Running",
+      "ready": true,
+      "containers": [
+        {
+          "name": "controller",
+          "imageID": "gcr.io/knative-releases/knative.dev/net-kourier/cmd/kourier@sha256:5f42fee429eb589990f9ba5c7659ae543a8db051ff3392570ca6340c2135dcb3",
+          "ready": true,
+          "restartCount": 0
+        }
+      ],
+      "pvcs": []
+    },
+    {
+      "namespace": "kube-system",
+      "name": "system-tuning-jx5r9",
+      "uid": "b68f8c8c-bc63-4c6e-a43f-f8200af01db0",
+      "node": "k3s-wk-gpu2",
+      "phase": "Running",
+      "ready": true,
+      "containers": [
+        {
+          "name": "sysctl-tuner",
+          "imageID": "docker.io/library/busybox@sha256:fd8d9aa63ba2f0982b5304e1ee8d3b90a210bc1ffb5314d980eb6962f1a9715d",
+          "ready": true,
+          "restartCount": 5
+        }
+      ],
+      "pvcs": []
+    },
+    {
+      "namespace": "kured",
+      "name": "kured-vwx8s",
+      "uid": "a97ff766-239c-4ae6-ba03-d130128e95f7",
+      "node": "k3s-wk-gpu2",
+      "phase": "Running",
+      "ready": true,
+      "containers": [
+        {
+          "name": "kured",
+          "imageID": "ghcr.io/kubereboot/kured@sha256:76567a71427b074bfc51df6797c8c30ba44c9678ace7cd61a186ddb662ce97b1",
+          "ready": true,
+          "restartCount": 4
+        }
+      ],
+      "pvcs": []
+    },
+    {
+      "namespace": "loki",
+      "name": "loki-0",
+      "uid": "8bacbfbe-90cc-497a-ab3e-d458e05199df",
+      "node": "k3s-wk-gpu2",
+      "phase": "Running",
+      "ready": true,
+      "containers": [
+        {
+          "name": "loki",
+          "imageID": "docker.io/grafana/loki@sha256:3c8fd3570dd9219951a60d3f919c7f31923d10baee578b77bc26c4a0b32d092d",
+          "ready": true,
+          "restartCount": 0
+        },
+        {
+          "name": "loki-sc-rules",
+          "imageID": "docker.io/kiwigrid/k8s-sidecar@sha256:a6b3f707f883108376514489a94d6629109a327b2978e1d826cd104c4ca436df",
+          "ready": true,
+          "restartCount": 0
+        }
+      ],
+      "pvcs": [
+        "storage-loki-0"
+      ]
+    },
+    {
+      "namespace": "loki",
+      "name": "loki-canary-cz7dq",
+      "uid": "19774368-c243-4b29-a3b8-e4f68bd8929e",
+      "node": "k3s-wk-gpu2",
+      "phase": "Running",
+      "ready": true,
+      "containers": [
+        {
+          "name": "loki-canary",
+          "imageID": "docker.io/grafana/loki-canary@sha256:0dac7d5cb383adb8d3723676a70ed0c65b582e636846f4ce48703556dd509ad1",
+          "ready": true,
+          "restartCount": 4
+        }
+      ],
+      "pvcs": []
+    },
+    {
+      "namespace": "loki",
+      "name": "loki-chunks-cache-0",
+      "uid": "5b5c596a-8453-481b-921e-52e4eee98054",
+      "node": "k3s-wk-gpu2",
+      "phase": "Running",
+      "ready": true,
+      "containers": [
+        {
+          "name": "exporter",
+          "imageID": "docker.io/prom/memcached-exporter@sha256:b6763ecb3c47f2408e0398518851b7f8c5fc46232b2649f8c78a321130c54266",
+          "ready": true,
+          "restartCount": 0
+        },
+        {
+          "name": "memcached",
+          "imageID": "docker.io/library/memcached@sha256:c8503d4491edd3110cc07d0465089d3a41cf1daf8645e71149e39a51835e92cd",
+          "ready": true,
+          "restartCount": 0
+        }
+      ],
+      "pvcs": []
+    },
+    {
+      "namespace": "loki",
+      "name": "loki-gateway-768c95fc77-fdzgc",
+      "uid": "828c666a-fff2-4112-a485-f2eaf5b67ea7",
+      "node": "k3s-wk-gpu2",
+      "phase": "Running",
+      "ready": true,
+      "containers": [
+        {
+          "name": "nginx",
+          "imageID": "docker.io/nginxinc/nginx-unprivileged@sha256:0c79d56aee561a1d81c63f00eee5fb5fe29279560cdc55e91425133104c7fbe6",
+          "ready": true,
+          "restartCount": 0
+        }
+      ],
+      "pvcs": []
+    },
+    {
+      "namespace": "longhorn-system",
+      "name": "csi-attacher-74cd57d888-gp9sw",
+      "uid": "044dc42a-88bc-4dce-abcb-2bc43c8185df",
+      "node": "k3s-wk-gpu2",
+      "phase": "Running",
+      "ready": true,
+      "containers": [
+        {
+          "name": "csi-attacher",
+          "imageID": "docker.io/longhornio/csi-attacher@sha256:4786c3f9b9a0d9649ccf00e97369e36286b7d129c87dbe0f6a3f4149ee7dd4f6",
+          "ready": true,
+          "restartCount": 8
+        }
+      ],
+      "pvcs": []
+    },
+    {
+      "namespace": "longhorn-system",
+      "name": "csi-provisioner-668f595df8-4lwft",
+      "uid": "bc0ba934-5fcb-4520-8aa1-461d5b13cd72",
+      "node": "k3s-wk-gpu2",
+      "phase": "Running",
+      "ready": true,
+      "containers": [
+        {
+          "name": "csi-provisioner",
+          "imageID": "docker.io/longhornio/csi-provisioner@sha256:ea9a31cd482ac381329abcbcd6071833d3b2259b5b999f258c8614fd41dccf18",
+          "ready": true,
+          "restartCount": 5
+        }
+      ],
+      "pvcs": []
+    },
+    {
+      "namespace": "longhorn-system",
+      "name": "csi-resizer-749f8b9cd7-kjnvm",
+      "uid": "d02b55e5-a929-4264-a619-ecb5ef519e8b",
+      "node": "k3s-wk-gpu2",
+      "phase": "Running",
+      "ready": true,
+      "containers": [
+        {
+          "name": "csi-resizer",
+          "imageID": "docker.io/longhornio/csi-resizer@sha256:1d2a08fcdba3e1e9fc7bd7a96429ed8543c8234c034699aadcf1e3651dd512e3",
+          "ready": true,
+          "restartCount": 9
+        }
+      ],
+      "pvcs": []
+    },
+    {
+      "namespace": "longhorn-system",
+      "name": "csi-snapshotter-58dd468645-j4thq",
+      "uid": "ca7d812b-7492-4616-a1ea-1d926f2c9e1d",
+      "node": "k3s-wk-gpu2",
+      "phase": "Running",
+      "ready": true,
+      "containers": [
+        {
+          "name": "csi-snapshotter",
+          "imageID": "docker.io/longhornio/csi-snapshotter@sha256:40ec7de434d680038a6e0604e75464d73f75f294d15a50a63404b76e223dfe45",
+          "ready": true,
+          "restartCount": 4
+        }
+      ],
+      "pvcs": []
+    },
+    {
+      "namespace": "longhorn-system",
+      "name": "engine-image-ei-27581b25-vzn67",
+      "uid": "0974ce60-6cc7-4085-9eae-02f0657cce01",
+      "node": "k3s-wk-gpu2",
+      "phase": "Running",
+      "ready": true,
+      "containers": [
+        {
+          "name": "engine-image-ei-27581b25",
+          "imageID": "docker.io/longhornio/longhorn-engine@sha256:f1b17bab9e50ea021add30bcc6f539fe0364212f620203eaf5c97b67f36dc266",
+          "ready": true,
+          "restartCount": 9
+        }
+      ],
+      "pvcs": []
+    },
+    {
+      "namespace": "longhorn-system",
+      "name": "instance-manager-435fec096c724854458dc568b2a09632",
+      "uid": "4f1aacf8-64ef-43fc-ab0c-f8711b61e793",
+      "node": "k3s-wk-gpu2",
+      "phase": "Running",
+      "ready": true,
+      "containers": [
+        {
+          "name": "instance-manager",
+          "imageID": "docker.io/longhornio/longhorn-instance-manager@sha256:b0d45a6fadbef8f16ac168e06cbae7ae02e46eae9359b95e16ef1ce537069d81",
+          "ready": true,
+          "restartCount": 0
+        }
+      ],
+      "pvcs": []
+    },
+    {
+      "namespace": "longhorn-system",
+      "name": "longhorn-csi-plugin-px92r",
+      "uid": "3afe4f23-361d-448b-a249-0530b5860764",
+      "node": "k3s-wk-gpu2",
+      "phase": "Running",
+      "ready": true,
+      "containers": [
+        {
+          "name": "longhorn-csi-plugin",
+          "imageID": "docker.io/longhornio/longhorn-manager@sha256:02a0434391b1ebd7d25a5eb4686256b74b9fc105633cb9ba89f391ed3fc2bd40",
+          "ready": true,
+          "restartCount": 12
+        },
+        {
+          "name": "longhorn-liveness-probe",
+          "imageID": "docker.io/longhornio/livenessprobe@sha256:82d59c88296195f769df27ecff5a1091b01c6e8c6415204fe0dc1b30125873b0",
+          "ready": true,
+          "restartCount": 9
+        },
+        {
+          "name": "node-driver-registrar",
+          "imageID": "docker.io/longhornio/csi-node-driver-registrar@sha256:749938604d4b1129c59cd6db3a2229214428dbbe3e7f8c32c243338fbecf2c91",
+          "ready": true,
+          "restartCount": 12
+        }
+      ],
+      "pvcs": []
+    },
+    {
+      "namespace": "longhorn-system",
+      "name": "longhorn-driver-deployer-58b6fb5988-97m7p",
+      "uid": "3d063ba1-3c5f-4905-96d4-8f6e9c52ef93",
+      "node": "k3s-wk-gpu2",
+      "phase": "Running",
+      "ready": true,
+      "containers": [
+        {
+          "name": "longhorn-driver-deployer",
+          "imageID": "docker.io/longhornio/longhorn-manager@sha256:02a0434391b1ebd7d25a5eb4686256b74b9fc105633cb9ba89f391ed3fc2bd40",
+          "ready": true,
+          "restartCount": 0
+        }
+      ],
+      "pvcs": []
+    },
+    {
+      "namespace": "longhorn-system",
+      "name": "longhorn-manager-frn9c",
+      "uid": "3e9efcb8-b746-4840-a75e-3125461f9788",
+      "node": "k3s-wk-gpu2",
+      "phase": "Running",
+      "ready": true,
+      "containers": [
+        {
+          "name": "longhorn-manager",
+          "imageID": "docker.io/longhornio/longhorn-manager@sha256:02a0434391b1ebd7d25a5eb4686256b74b9fc105633cb9ba89f391ed3fc2bd40",
+          "ready": true,
+          "restartCount": 8
+        },
+        {
+          "name": "pre-pull-share-manager-image",
+          "imageID": "docker.io/longhornio/longhorn-share-manager@sha256:2a9896eb69ccb4089bbeca79d4ddf8ccd00a887a52697c501dae51fb018a3e94",
+          "ready": true,
+          "restartCount": 5
+        }
+      ],
+      "pvcs": []
+    },
+    {
+      "namespace": "longhorn-system",
+      "name": "longhorn-ui-5f96f4bbdb-rh29z",
+      "uid": "46d9606a-8438-4be4-9e0d-37ae9fc4d2fa",
+      "node": "k3s-wk-gpu2",
+      "phase": "Running",
+      "ready": true,
+      "containers": [
+        {
+          "name": "longhorn-ui",
+          "imageID": "docker.io/longhornio/longhorn-ui@sha256:ed989d362320f77ced706ca104373eb273cce4625a58280a554b60917fcab9fd",
+          "ready": true,
+          "restartCount": 0
+        }
+      ],
+      "pvcs": []
+    },
+    {
+      "namespace": "metallb-system",
+      "name": "metallb-frr-k8s-cxnlc",
+      "uid": "72835f69-0aa9-41f9-bd0c-3f8d59eeccbf",
+      "node": "k3s-wk-gpu2",
+      "phase": "Running",
+      "ready": true,
+      "containers": [
+        {
+          "name": "controller",
+          "imageID": "quay.io/metallb/frr-k8s@sha256:1cb06fb2d5538c9f9b20d3adf00da8d1e6cb0166bc15df8add0d9efe578641a4",
+          "ready": true,
+          "restartCount": 0
+        },
+        {
+          "name": "frr",
+          "imageID": "quay.io/frrouting/frr@sha256:8745af1f9bbbc26ab11d99ccdf35e07aa3427a199749bef0cd6bb5132bb130df",
+          "ready": true,
+          "restartCount": 13
+        },
+        {
+          "name": "frr-metrics",
+          "imageID": "quay.io/frrouting/frr@sha256:8745af1f9bbbc26ab11d99ccdf35e07aa3427a199749bef0cd6bb5132bb130df",
+          "ready": true,
+          "restartCount": 0
+        },
+        {
+          "name": "frr-status",
+          "imageID": "quay.io/frrouting/frr@sha256:8745af1f9bbbc26ab11d99ccdf35e07aa3427a199749bef0cd6bb5132bb130df",
+          "ready": true,
+          "restartCount": 0
+        },
+        {
+          "name": "reloader",
+          "imageID": "quay.io/frrouting/frr@sha256:8745af1f9bbbc26ab11d99ccdf35e07aa3427a199749bef0cd6bb5132bb130df",
+          "ready": true,
+          "restartCount": 0
+        }
+      ],
+      "pvcs": []
+    },
+    {
+      "namespace": "metallb-system",
+      "name": "metallb-speaker-qlrmd",
+      "uid": "60791d13-2720-404f-ae9f-1c6043eb48c4",
+      "node": "k3s-wk-gpu2",
+      "phase": "Running",
+      "ready": true,
+      "containers": [
+        {
+          "name": "speaker",
+          "imageID": "quay.io/metallb/speaker@sha256:16561e96531e1852d5c229ad7fae6e994dcfa983ff7f4de6b6208b34a4e2ddbc",
+          "ready": true,
+          "restartCount": 0
+        }
+      ],
+      "pvcs": []
+    },
+    {
+      "namespace": "spegel",
+      "name": "spegel-9vzlm",
+      "uid": "7880f1cb-0996-44b3-9c40-163407622128",
+      "node": "k3s-wk-gpu2",
+      "phase": "Running",
+      "ready": true,
+      "containers": [
+        {
+          "name": "registry",
+          "imageID": "ghcr.io/spegel-org/spegel@sha256:26c60b05e08ac738e8442bc389c5780bff0e1d8153956e45d810a2f1008cf56f",
+          "ready": true,
+          "restartCount": 0
+        }
+      ],
+      "pvcs": []
+    },
+    {
+      "namespace": "vcluster-ckf",
+      "name": "coredns-744d9bd8bf-dmrxr-x-kube-system-x-vcluster-ckf",
+      "uid": "fd3517f9-d767-4cda-baa0-35a0740d4bde",
+      "node": "k3s-wk-gpu2",
+      "phase": "Running",
+      "ready": true,
+      "containers": [
+        {
+          "name": "coredns",
+          "imageID": "docker.io/coredns/coredns@sha256:40384aa1f5ea6bfdc77997d243aec73da05f27aed0c5e9d65bfa98933c519d97",
+          "ready": true,
+          "restartCount": 0
+        }
+      ],
+      "pvcs": []
+    }
+  ],
+  "protectedOtherGpuNodePods": [
+    {
+      "namespace": "alloy",
+      "name": "alloy-f7rp5",
+      "uid": "af38b0ab-9c95-40a0-ab7f-38b6675e37b1",
+      "node": "k3s-wk-gpu1",
+      "phase": "Running",
+      "ready": true,
+      "containers": [
+        {
+          "name": "alloy",
+          "imageID": "docker.io/grafana/alloy@sha256:41c41849989b7e054ccbadc17938ee1e5592fe26bfbc56ef3ffc109c0b0b2739",
+          "ready": true,
+          "restartCount": 0
+        },
+        {
+          "name": "config-reloader",
+          "imageID": "quay.io/prometheus-operator/prometheus-config-reloader@sha256:7d9e4eea5f1139e602508871f422b0116c60e87c662f3dcd234d5ab60cd0d8c1",
+          "ready": true,
+          "restartCount": 0
+        }
+      ],
+      "pvcs": []
+    },
+    {
+      "namespace": "alloy",
+      "name": "alloy-qrhmh",
+      "uid": "f5c1d3a6-e6d3-423e-9c6e-263889ee15ed",
+      "node": "k3s-wk-gpu3",
+      "phase": "Running",
+      "ready": true,
+      "containers": [
+        {
+          "name": "alloy",
+          "imageID": "docker.io/grafana/alloy@sha256:41c41849989b7e054ccbadc17938ee1e5592fe26bfbc56ef3ffc109c0b0b2739",
+          "ready": true,
+          "restartCount": 0
+        },
+        {
+          "name": "config-reloader",
+          "imageID": "quay.io/prometheus-operator/prometheus-config-reloader@sha256:7d9e4eea5f1139e602508871f422b0116c60e87c662f3dcd234d5ab60cd0d8c1",
+          "ready": true,
+          "restartCount": 0
+        }
+      ],
+      "pvcs": []
+    },
+    {
+      "namespace": "alloy",
+      "name": "alloy-vs4nr",
+      "uid": "917559d1-356c-4847-8b74-562d785730a4",
+      "node": "k3s-wk-gpu4",
+      "phase": "Running",
+      "ready": true,
+      "containers": [
+        {
+          "name": "alloy",
+          "imageID": "docker.io/grafana/alloy@sha256:41c41849989b7e054ccbadc17938ee1e5592fe26bfbc56ef3ffc109c0b0b2739",
+          "ready": true,
+          "restartCount": 0
+        },
+        {
+          "name": "config-reloader",
+          "imageID": "quay.io/prometheus-operator/prometheus-config-reloader@sha256:7d9e4eea5f1139e602508871f422b0116c60e87c662f3dcd234d5ab60cd0d8c1",
+          "ready": true,
+          "restartCount": 0
+        }
+      ],
+      "pvcs": []
+    },
+    {
+      "namespace": "arc-systems",
+      "name": "actions-runner-controller-gha-rs-controller-797c948bb9-bpbph",
+      "uid": "1b2576b8-120e-4327-95e8-841a335fcd36",
+      "node": "k3s-wk-gpu3",
+      "phase": "Running",
+      "ready": true,
+      "containers": [
+        {
+          "name": "manager",
+          "imageID": "ghcr.io/actions/gha-runner-scale-set-controller@sha256:1b4c7f62e971ab259a4b8798e48e2adaad4af747f45990f474ea5feefa03531d",
+          "ready": true,
+          "restartCount": 0
+        }
+      ],
+      "pvcs": []
+    },
+    {
+      "namespace": "arc-systems",
+      "name": "cit-cps-gpu-5d57db67-listener",
+      "uid": "cab8ca15-50a7-4ddf-80d7-56af2f75cf5c",
+      "node": "k3s-wk-gpu4",
+      "phase": "Running",
+      "ready": true,
+      "containers": [
+        {
+          "name": "listener",
+          "imageID": "ghcr.io/actions/gha-runner-scale-set-controller@sha256:1b4c7f62e971ab259a4b8798e48e2adaad4af747f45990f474ea5feefa03531d",
+          "ready": true,
+          "restartCount": 0
+        }
+      ],
+      "pvcs": []
+    },
+    {
+      "namespace": "arc-systems",
+      "name": "splatograph-767bd695-listener",
+      "uid": "9eb4b5fa-a0af-490a-b278-1eb58d564ef4",
+      "node": "k3s-wk-gpu4",
+      "phase": "Running",
+      "ready": true,
+      "containers": [
+        {
+          "name": "listener",
+          "imageID": "ghcr.io/actions/gha-runner-scale-set-controller@sha256:1b4c7f62e971ab259a4b8798e48e2adaad4af747f45990f474ea5feefa03531d",
+          "ready": true,
+          "restartCount": 0
+        }
+      ],
+      "pvcs": []
+    },
+    {
+      "namespace": "beszel",
+      "name": "beszel-hub-85897b7675-8p7pf",
+      "uid": "4becefc8-f435-4a7f-b02b-3e14fbd9798f",
+      "node": "k3s-wk-gpu4",
+      "phase": "Running",
+      "ready": true,
+      "containers": [
+        {
+          "name": "beszel",
+          "imageID": "docker.io/henrygd/beszel@sha256:4c51486968efa0b0a702c1b0967966a2e06fb250b7418f3072d2488faea27c51",
+          "ready": true,
+          "restartCount": 0
+        }
+      ],
+      "pvcs": [
+        "beszel-data"
+      ]
+    },
+    {
+      "namespace": "cattle-capi-system",
+      "name": "capi-controller-manager-6f9cfbdb68-hncct",
+      "uid": "a21f7e4c-1600-4b3d-9e4b-abb5954ecb42",
+      "node": "k3s-wk-gpu4",
+      "phase": "Running",
+      "ready": true,
+      "containers": [
+        {
+          "name": "manager",
+          "imageID": "docker.io/rancher/cluster-api-controller@sha256:313b29e3a0467734f7b9e6fca1aa7a44d6fef22b1b2c14b074ce18ee0c1a21b4",
+          "ready": true,
+          "restartCount": 37
+        }
+      ],
+      "pvcs": []
+    },
+    {
+      "namespace": "cattle-fleet-system",
+      "name": "fleet-controller-bc58b4fdb-tmhgr",
+      "uid": "8720ad15-255d-4813-bf65-f8ec50f51cc6",
+      "node": "k3s-wk-gpu4",
+      "phase": "Running",
+      "ready": true,
+      "containers": [
+        {
+          "name": "fleet-agentmanagement",
+          "imageID": "docker.io/rancher/fleet@sha256:5f46325a7713a04bf350aa41005d7cbd497d47d7f8fc02e6a3d98f72e454acad",
+          "ready": true,
+          "restartCount": 13
+        },
+        {
+          "name": "fleet-cleanup",
+          "imageID": "docker.io/rancher/fleet@sha256:5f46325a7713a04bf350aa41005d7cbd497d47d7f8fc02e6a3d98f72e454acad",
+          "ready": true,
+          "restartCount": 14
+        },
+        {
+          "name": "fleet-controller",
+          "imageID": "docker.io/rancher/fleet@sha256:5f46325a7713a04bf350aa41005d7cbd497d47d7f8fc02e6a3d98f72e454acad",
+          "ready": true,
+          "restartCount": 31
+        }
+      ],
+      "pvcs": []
+    },
+    {
+      "namespace": "cattle-fleet-system",
+      "name": "helmops-7945bb64d8-6pcgl",
+      "uid": "2786305f-c701-4ab7-9bd0-48773d25a3c7",
+      "node": "k3s-wk-gpu4",
+      "phase": "Running",
+      "ready": true,
+      "containers": [
+        {
+          "name": "helmops",
+          "imageID": "docker.io/rancher/fleet@sha256:5f46325a7713a04bf350aa41005d7cbd497d47d7f8fc02e6a3d98f72e454acad",
+          "ready": true,
+          "restartCount": 34
+        }
+      ],
+      "pvcs": []
+    },
+    {
+      "namespace": "cattle-monitoring-system",
+      "name": "alertmanager-rancher-monitoring-alertmanager-0",
+      "uid": "6646ff4b-9102-4537-ba52-fbd33fd5a1e3",
+      "node": "k3s-wk-gpu4",
+      "phase": "Running",
+      "ready": true,
+      "containers": [
+        {
+          "name": "alertmanager",
+          "imageID": "docker.io/rancher/mirrored-prometheus-alertmanager@sha256:715fbe2dec9da111628f3e0e7c946307aa7982ff39d8ad51d119eac7544588d0",
+          "ready": true,
+          "restartCount": 0
+        },
+        {
+          "name": "config-reloader",
+          "imageID": "docker.io/rancher/mirrored-prometheus-operator-prometheus-config-reloader@sha256:7d5114f24fdaaf266b5e2fab3feed2c9769342ca73c5152ecfbc553d76a5dc54",
+          "ready": true,
+          "restartCount": 0
+        }
+      ],
+      "pvcs": [
+        "alertmanager-rancher-monitoring-alertmanager-db-alertmanager-rancher-monitoring-alertmanager-0"
+      ]
+    },
+    {
+      "namespace": "cattle-monitoring-system",
+      "name": "prometheus-rancher-monitoring-prometheus-0",
+      "uid": "156c0e9c-f745-4a26-8fbe-0b7bbbc69b88",
+      "node": "k3s-wk-gpu3",
+      "phase": "Running",
+      "ready": true,
+      "containers": [
+        {
+          "name": "config-reloader",
+          "imageID": "docker.io/rancher/mirrored-prometheus-operator-prometheus-config-reloader@sha256:7d5114f24fdaaf266b5e2fab3feed2c9769342ca73c5152ecfbc553d76a5dc54",
+          "ready": true,
+          "restartCount": 1
+        },
+        {
+          "name": "prometheus",
+          "imageID": "docker.io/rancher/prom-prometheus@sha256:63805ebb8d2b3920190daf1cb14a60871b16fd38bed42b857a3182bc621f4996",
+          "ready": true,
+          "restartCount": 7
+        },
+        {
+          "name": "prometheus-proxy",
+          "imageID": "docker.io/rancher/mirrored-library-nginx@sha256:8e9776e1c28f087ed4a5e1b8e8609a0a3a2317fee57f6d2dfe534941c63b263b",
+          "ready": true,
+          "restartCount": 0
+        }
+      ],
+      "pvcs": [
+        "prometheus-rancher-monitoring-prometheus-db-prometheus-rancher-monitoring-prometheus-0"
+      ]
+    },
+    {
+      "namespace": "cattle-monitoring-system",
+      "name": "rancher-monitoring-grafana-6ff45ff66b-p9czj",
+      "uid": "d0166ea5-87b0-400e-ae5f-be5b47972955",
+      "node": "k3s-wk-gpu3",
+      "phase": "Running",
+      "ready": true,
+      "containers": [
+        {
+          "name": "grafana",
+          "imageID": "docker.io/rancher/mirrored-grafana-grafana@sha256:a1701c2180249361737a99a01bc770db39381640e4d631825d38ff4535efa47d",
+          "ready": true,
+          "restartCount": 0
+        },
+        {
+          "name": "grafana-proxy",
+          "imageID": "docker.io/rancher/mirrored-library-nginx@sha256:8e9776e1c28f087ed4a5e1b8e8609a0a3a2317fee57f6d2dfe534941c63b263b",
+          "ready": true,
+          "restartCount": 0
+        },
+        {
+          "name": "grafana-sc-dashboard",
+          "imageID": "docker.io/rancher/appco-k8s-sidecar@sha256:7dabf60ad1f13169c6d4948e69198ccbe5471037248aa43bb11c3830cd9ee611",
+          "ready": true,
+          "restartCount": 0
+        }
+      ],
+      "pvcs": [
+        "rancher-monitoring-grafana"
+      ]
+    },
+    {
+      "namespace": "cattle-monitoring-system",
+      "name": "rancher-monitoring-prometheus-node-exporter-2qz85",
+      "uid": "aeed3584-41db-4d66-a7bc-cade871c0a7e",
+      "node": "k3s-wk-gpu1",
+      "phase": "Running",
+      "ready": true,
+      "containers": [
+        {
+          "name": "node-exporter",
+          "imageID": "docker.io/rancher/mirrored-prometheus-node-exporter@sha256:d00a542e409ee618a4edc67da14dd48c5da66726bbd5537ab2af9c1dfc442c8a",
+          "ready": true,
+          "restartCount": 11
+        }
+      ],
+      "pvcs": []
+    },
+    {
+      "namespace": "cattle-monitoring-system",
+      "name": "rancher-monitoring-prometheus-node-exporter-mrh8r",
+      "uid": "e5a4b3f9-4f40-4d32-b4e7-9dfd5174570e",
+      "node": "k3s-wk-gpu4",
+      "phase": "Running",
+      "ready": true,
+      "containers": [
+        {
+          "name": "node-exporter",
+          "imageID": "docker.io/rancher/mirrored-prometheus-node-exporter@sha256:d00a542e409ee618a4edc67da14dd48c5da66726bbd5537ab2af9c1dfc442c8a",
+          "ready": true,
+          "restartCount": 3
+        }
+      ],
+      "pvcs": []
+    },
+    {
+      "namespace": "cattle-monitoring-system",
+      "name": "rancher-monitoring-prometheus-node-exporter-njfql",
+      "uid": "a2b0be13-7c82-425a-aaa6-7f7298de16ac",
+      "node": "k3s-wk-gpu3",
+      "phase": "Running",
+      "ready": true,
+      "containers": [
+        {
+          "name": "node-exporter",
+          "imageID": "docker.io/rancher/mirrored-prometheus-node-exporter@sha256:d00a542e409ee618a4edc67da14dd48c5da66726bbd5537ab2af9c1dfc442c8a",
+          "ready": true,
+          "restartCount": 8
+        }
+      ],
+      "pvcs": []
+    },
+    {
+      "namespace": "cattle-system",
+      "name": "rancher-b6cd998d9-5rck8",
+      "uid": "a0d22703-2834-4aa2-a62f-de9045c6249f",
+      "node": "k3s-wk-gpu3",
+      "phase": "Running",
+      "ready": true,
+      "containers": [
+        {
+          "name": "rancher",
+          "imageID": "docker.io/rancher/rancher@sha256:4b1eea4c10ac2af1765a3036310fd77433a8fe42e25504843c8cfe2784c45a82",
+          "ready": true,
+          "restartCount": 4
+        }
+      ],
+      "pvcs": []
+    },
+    {
+      "namespace": "cattle-system",
+      "name": "rancher-b6cd998d9-zrf59",
+      "uid": "7030444e-0b8d-49f6-8037-98d1adf56e1e",
+      "node": "k3s-wk-gpu4",
+      "phase": "Running",
+      "ready": true,
+      "containers": [
+        {
+          "name": "rancher",
+          "imageID": "docker.io/rancher/rancher@sha256:4b1eea4c10ac2af1765a3036310fd77433a8fe42e25504843c8cfe2784c45a82",
+          "ready": true,
+          "restartCount": 4
+        }
+      ],
+      "pvcs": []
+    },
+    {
+      "namespace": "cattle-system",
+      "name": "rancher-webhook-7fdf4d74fd-zwkgw",
+      "uid": "7018c823-a657-4b99-a9d1-061f9c82c86e",
+      "node": "k3s-wk-gpu4",
+      "phase": "Running",
+      "ready": true,
+      "containers": [
+        {
+          "name": "rancher-webhook",
+          "imageID": "docker.io/rancher/rancher-webhook@sha256:ae8e0035ec6a7ce59d407206e0b770d5d98b797a0bfebf4b15ec1010f94ff3df",
+          "ready": true,
+          "restartCount": 4
+        }
+      ],
+      "pvcs": []
+    },
+    {
+      "namespace": "cert-manager",
+      "name": "cert-manager-7b454c49cf-drd6s",
+      "uid": "cd170e99-f4b6-4f63-90da-b1914514d7cf",
+      "node": "k3s-wk-gpu3",
+      "phase": "Running",
+      "ready": true,
+      "containers": [
+        {
+          "name": "cert-manager-controller",
+          "imageID": "quay.io/jetstack/cert-manager-controller@sha256:ae5e14401cde4dec8bccce7594f829cd491044aa66944272e1d4fccc941ec77c",
+          "ready": true,
+          "restartCount": 13
+        }
+      ],
+      "pvcs": []
+    },
+    {
+      "namespace": "ci",
+      "name": "buildkit-pool-7567cb9459-w8xkw",
+      "uid": "b628a64c-f07f-47d1-bd8e-afcacaf17456",
+      "node": "k3s-wk-gpu4",
+      "phase": "Running",
+      "ready": true,
+      "containers": [
+        {
+          "name": "buildkitd",
+          "imageID": "ghcr.io/mul-cps/buildkit-rootless-k8s@sha256:cb2055cdcfc8dcf1034349d94ebf32c50501298279a1f1179d2cf045806c3d04",
+          "ready": true,
+          "restartCount": 12
+        }
+      ],
+      "pvcs": []
+    },
+    {
+      "namespace": "cit-auth",
+      "name": "authentik-postgresql-0",
+      "uid": "068d7a13-c0fb-49cc-8e4f-1871be0fe1b6",
+      "node": "k3s-wk-gpu3",
+      "phase": "Running",
+      "ready": true,
+      "containers": [
+        {
+          "name": "postgresql",
+          "imageID": "docker.io/library/postgres@sha256:86e0b703649d7a792bd9243ee28afc9d8f7c6b2b5638077c9d6882d4d472bbfd",
+          "ready": true,
+          "restartCount": 0
+        }
+      ],
+      "pvcs": [
+        "data-authentik-postgresql-0"
+      ]
+    },
+    {
+      "namespace": "cit-auth",
+      "name": "authentik-server-84bd7c5556-97pd6",
+      "uid": "09574710-ed2d-4db1-ac27-ca2286429a91",
+      "node": "k3s-wk-gpu4",
+      "phase": "Running",
+      "ready": true,
+      "containers": [
+        {
+          "name": "server",
+          "imageID": "ghcr.io/goauthentik/server@sha256:33a92b246b798f23931ce62027e045ecf302c3bc198b6389225973db6448a886",
+          "ready": true,
+          "restartCount": 0
+        }
+      ],
+      "pvcs": []
+    },
+    {
+      "namespace": "cit-auth",
+      "name": "authentik-server-84bd7c5556-r775v",
+      "uid": "2f0acfe3-73cc-4137-acce-6702cd98e3f6",
+      "node": "k3s-wk-gpu1",
+      "phase": "Running",
+      "ready": true,
+      "containers": [
+        {
+          "name": "server",
+          "imageID": "ghcr.io/goauthentik/server@sha256:33a92b246b798f23931ce62027e045ecf302c3bc198b6389225973db6448a886",
+          "ready": true,
+          "restartCount": 0
+        }
+      ],
+      "pvcs": []
+    },
+    {
+      "namespace": "cit-auth",
+      "name": "authentik-worker-66bb756b4c-6kvxm",
+      "uid": "777034ec-5414-43be-bf03-c64264f5f629",
+      "node": "k3s-wk-gpu3",
+      "phase": "Running",
+      "ready": true,
+      "containers": [
+        {
+          "name": "worker",
+          "imageID": "ghcr.io/goauthentik/server@sha256:33a92b246b798f23931ce62027e045ecf302c3bc198b6389225973db6448a886",
+          "ready": true,
+          "restartCount": 0
+        }
+      ],
+      "pvcs": []
+    },
+    {
+      "namespace": "cit-jhub",
+      "name": "continuous-image-puller-g959d",
+      "uid": "648ed393-25ee-477a-ac95-13710eb551f2",
+      "node": "k3s-wk-gpu3",
+      "phase": "Running",
+      "ready": true,
+      "containers": [
+        {
+          "name": "pause",
+          "imageID": "registry.k8s.io/pause@sha256:278fb9dbcca9518083ad1e11276933a2e96f23de604a3a08cc3c80002767d24c",
+          "ready": true,
+          "restartCount": 0
+        }
+      ],
+      "pvcs": []
+    },
+    {
+      "namespace": "cit-jhub",
+      "name": "continuous-image-puller-lb4wg",
+      "uid": "1232dd89-5bc7-4bdc-bbbe-ec05d102d361",
+      "node": "k3s-wk-gpu1",
+      "phase": "Running",
+      "ready": true,
+      "containers": [
+        {
+          "name": "pause",
+          "imageID": "registry.k8s.io/pause@sha256:278fb9dbcca9518083ad1e11276933a2e96f23de604a3a08cc3c80002767d24c",
+          "ready": true,
+          "restartCount": 0
+        }
+      ],
+      "pvcs": []
+    },
+    {
+      "namespace": "cit-jhub",
+      "name": "continuous-image-puller-tnt7c",
+      "uid": "ca6b3d1c-83e9-48b1-b8a8-6ac87aa79f11",
+      "node": "k3s-wk-gpu4",
+      "phase": "Running",
+      "ready": true,
+      "containers": [
+        {
+          "name": "pause",
+          "imageID": "registry.k8s.io/pause@sha256:278fb9dbcca9518083ad1e11276933a2e96f23de604a3a08cc3c80002767d24c",
+          "ready": true,
+          "restartCount": 0
+        }
+      ],
+      "pvcs": []
+    },
+    {
+      "namespace": "cit-jhub",
+      "name": "hub-676788c8c5-h8lds",
+      "uid": "62741836-3d6b-49c9-b053-0412a7465e94",
+      "node": "k3s-wk-gpu1",
+      "phase": "Running",
+      "ready": true,
+      "containers": [
+        {
+          "name": "hub",
+          "imageID": "quay.io/jupyterhub/k8s-hub@sha256:108fbb01c3fe23e4a81efc8899aa73b4c15413615c73dfcdc44248eb63096e41",
+          "ready": true,
+          "restartCount": 0
+        }
+      ],
+      "pvcs": []
+    },
+    {
+      "namespace": "cit-jhub",
+      "name": "jupyter-m12113877",
+      "uid": "791a82ec-66df-40e4-8b75-f371642dc3c4",
+      "node": "k3s-wk-gpu1",
+      "phase": "Running",
+      "ready": true,
+      "containers": [
+        {
+          "name": "notebook",
+          "imageID": "harbor.dshl.unileoben.ac.at/cps-users/cps-jupyter-notebook@sha256:1ed46addaed50f1874edec98001a122bd9da219d89e6cfecf1945c7338261c21",
+          "ready": true,
+          "restartCount": 0
+        }
+      ],
+      "pvcs": [
+        "claim-m12113877"
+      ]
+    },
+    {
+      "namespace": "cit-jhub",
+      "name": "jupyterhub-postgresql-0",
+      "uid": "b50fc272-e3b2-4a76-866c-88c947648c66",
+      "node": "k3s-wk-gpu3",
+      "phase": "Running",
+      "ready": true,
+      "containers": [
+        {
+          "name": "postgresql",
+          "imageID": "docker.io/bitnami/postgresql@sha256:256bf40a7343862b9a66d1d27cd34599e80dad99284fc5450b24cb02e26ff34e",
+          "ready": true,
+          "restartCount": 0
+        }
+      ],
+      "pvcs": [
+        "data-jupyterhub-postgresql-0"
+      ]
+    },
+    {
+      "namespace": "cit-jhub",
+      "name": "proxy-86f4955947-djgwd",
+      "uid": "3c584a0b-6dc6-4e4d-9e4e-68e0d0ffe396",
+      "node": "k3s-wk-gpu3",
+      "phase": "Running",
+      "ready": true,
+      "containers": [
+        {
+          "name": "chp",
+          "imageID": "quay.io/jupyterhub/configurable-http-proxy@sha256:522738d5285e4be758da5023194cbc95249efdadaa62a0998c8ed1aa2890b2da",
+          "ready": true,
+          "restartCount": 0
+        }
+      ],
+      "pvcs": []
+    },
+    {
+      "namespace": "cps-argo",
+      "name": "cps-argo-argo-workflows-server-8655fcb554-k8945",
+      "uid": "460397f9-5542-49b7-a9b4-2c479388ff3c",
+      "node": "k3s-wk-gpu3",
+      "phase": "Running",
+      "ready": true,
+      "containers": [
+        {
+          "name": "argo-server",
+          "imageID": "quay.io/argoproj/argocli@sha256:b1029d3c8b92a6ecc7e466539533fff9dbceea5b0246dc6ce7eae1bdfc18a740",
+          "ready": true,
+          "restartCount": 0
+        }
+      ],
+      "pvcs": []
+    },
+    {
+      "namespace": "cps-argo",
+      "name": "cps-argo-argo-workflows-workflow-controller-689c76dbdc-vnd47",
+      "uid": "197bca93-794d-4756-8e9e-65c6baa94eae",
+      "node": "k3s-wk-gpu1",
+      "phase": "Running",
+      "ready": true,
+      "containers": [
+        {
+          "name": "controller",
+          "imageID": "quay.io/argoproj/workflow-controller@sha256:e89fcdf8ba947589a0982a3fce867c63c235c56631c5c20428c536db21635004",
+          "ready": true,
+          "restartCount": 0
+        }
+      ],
+      "pvcs": []
+    },
+    {
+      "namespace": "cps-artifacts-relay",
+      "name": "artifacts-relay-75f467ffc7-5gfkv",
+      "uid": "804fa36a-8891-43ca-8834-ae68efe68306",
+      "node": "k3s-wk-gpu1",
+      "phase": "Running",
+      "ready": true,
+      "containers": [
+        {
+          "name": "netbird",
+          "imageID": "docker.io/netbirdio/netbird@sha256:4976692ea44bb93871743d0b742b4a8f97f6425bfc458ca2d78e28fdb8bdf4ad",
+          "ready": true,
+          "restartCount": 0
+        },
+        {
+          "name": "proxy",
+          "imageID": "docker.io/library/haproxy@sha256:5d97434a423c2533cfeb42874d45cf6d69a840b60334582dfbfd5008e94c80be",
+          "ready": true,
+          "restartCount": 0
+        }
+      ],
+      "pvcs": [
+        "netbird-state"
+      ]
+    },
+    {
+      "namespace": "cps-compute",
+      "name": "cit-admin-5b985f6949-bmpzj",
+      "uid": "6630b069-2d23-4a34-9c72-ac2cfba2b6e0",
+      "node": "k3s-wk-gpu3",
+      "phase": "Running",
+      "ready": true,
+      "containers": [
+        {
+          "name": "console",
+          "imageID": "ghcr.io/mul-cps/e2x-course-hub@sha256:735f891ba008c58a9d3f4d324c22893d13b094dabe7ea39f80c776ffb6c89767",
+          "ready": true,
+          "restartCount": 0
+        }
+      ],
+      "pvcs": [
+        "cit-admin-data"
+      ]
+    },
+    {
+      "namespace": "cps-compute",
+      "name": "compute-gateway-5764687446-l8gf9",
+      "uid": "b7499688-42ef-45a6-8151-cc79017ac838",
+      "node": "k3s-wk-gpu3",
+      "phase": "Running",
+      "ready": true,
+      "containers": [
+        {
+          "name": "gateway",
+          "imageID": "ghcr.io/mul-cps/cps-compute@sha256:627f093c3c96038c7ecd9e9b99f0138198c23c9460cabb7bd11b19e94f465096",
+          "ready": true,
+          "restartCount": 0
+        }
+      ],
+      "pvcs": [
+        "compute-state"
+      ]
+    },
+    {
+      "namespace": "cps-personal-argo-qualification-20261008",
+      "name": "cps-argo-ui-5fd9548f59-k2qdb",
+      "uid": "b5e04d76-5616-42b4-bb9e-86556e93b6c0",
+      "node": "k3s-wk-gpu4",
+      "phase": "Running",
+      "ready": true,
+      "containers": [
+        {
+          "name": "argo-ui",
+          "imageID": "ghcr.io/mul-cps/e2x-course-hub@sha256:c4df863a35a46d598cb319508b7d4e45caae3d1f9b71e24b2f1692c65e5f07bc",
+          "ready": true,
+          "restartCount": 0
+        }
+      ],
+      "pvcs": []
+    },
+    {
+      "namespace": "dex",
+      "name": "dex-7cd97c5fb6-75sx9",
+      "uid": "43355d88-75e2-433b-bf2b-1c511e297c4f",
+      "node": "k3s-wk-gpu3",
+      "phase": "Running",
+      "ready": true,
+      "containers": [
+        {
+          "name": "dex",
+          "imageID": "ghcr.io/dexidp/dex@sha256:5d0656fce7d453c0e3b2706abf40c0d0ce5b371fb0b73b3cf714d05f35fa5f86",
+          "ready": true,
+          "restartCount": 0
+        }
+      ],
+      "pvcs": []
+    },
+    {
+      "namespace": "eligsir-webxr-test",
+      "name": "eligsir-webxr-test-d84b6ff87-9frb5",
+      "uid": "90a08f15-e0b6-4abe-81d9-3cb992172526",
+      "node": "k3s-wk-gpu4",
+      "phase": "Running",
+      "ready": true,
+      "containers": [
+        {
+          "name": "broker",
+          "imageID": "harbor.dshl.unileoben.ac.at/ci-images/eligsir-webxr-broker@sha256:35802af73d2c5a0788dc8c3520e0ad252fb9c8067f5df7aa7aede5a3c281e259",
+          "ready": true,
+          "restartCount": 0
+        },
+        {
+          "name": "web",
+          "imageID": "harbor.dshl.unileoben.ac.at/ci-images/eligsir-webxr-frontend@sha256:195c62506f71c35981da0a8145e2949658d64b7464db3f80d80d9aa5def4b8af",
+          "ready": true,
+          "restartCount": 0
+        }
+      ],
+      "pvcs": []
+    },
+    {
+      "namespace": "gpu-operator",
+      "name": "gpu-feature-discovery-52w4f",
+      "uid": "d7309a7d-32ba-4604-912d-e8cb091421bf",
+      "node": "k3s-wk-gpu4",
+      "phase": "Running",
+      "ready": true,
+      "containers": [
+        {
+          "name": "config-manager",
+          "imageID": "nvcr.io/nvidia/k8s-device-plugin@sha256:2d16df5f3f12081b4bd6b317cf697e5c7a195c53cec7e0bab756db02a06b985c",
+          "ready": true,
+          "restartCount": 0
+        },
+        {
+          "name": "gpu-feature-discovery",
+          "imageID": "nvcr.io/nvidia/k8s-device-plugin@sha256:2d16df5f3f12081b4bd6b317cf697e5c7a195c53cec7e0bab756db02a06b985c",
+          "ready": true,
+          "restartCount": 0
+        }
+      ],
+      "pvcs": []
+    },
+    {
+      "namespace": "gpu-operator",
+      "name": "gpu-feature-discovery-55zsl",
+      "uid": "a52d16a0-00d3-49ed-b5c8-128ccd2714cc",
+      "node": "k3s-wk-gpu1",
+      "phase": "Running",
+      "ready": true,
+      "containers": [
+        {
+          "name": "config-manager",
+          "imageID": "nvcr.io/nvidia/k8s-device-plugin@sha256:2d16df5f3f12081b4bd6b317cf697e5c7a195c53cec7e0bab756db02a06b985c",
+          "ready": true,
+          "restartCount": 0
+        },
+        {
+          "name": "gpu-feature-discovery",
+          "imageID": "nvcr.io/nvidia/k8s-device-plugin@sha256:2d16df5f3f12081b4bd6b317cf697e5c7a195c53cec7e0bab756db02a06b985c",
+          "ready": true,
+          "restartCount": 0
+        }
+      ],
+      "pvcs": []
+    },
+    {
+      "namespace": "gpu-operator",
+      "name": "gpu-feature-discovery-rz7hf",
+      "uid": "f8ad2fe3-2df6-4986-8182-800ea9de5e3b",
+      "node": "k3s-wk-gpu3",
+      "phase": "Running",
+      "ready": true,
+      "containers": [
+        {
+          "name": "config-manager",
+          "imageID": "nvcr.io/nvidia/k8s-device-plugin@sha256:2d16df5f3f12081b4bd6b317cf697e5c7a195c53cec7e0bab756db02a06b985c",
+          "ready": true,
+          "restartCount": 0
+        },
+        {
+          "name": "gpu-feature-discovery",
+          "imageID": "nvcr.io/nvidia/k8s-device-plugin@sha256:2d16df5f3f12081b4bd6b317cf697e5c7a195c53cec7e0bab756db02a06b985c",
+          "ready": true,
+          "restartCount": 0
+        }
+      ],
+      "pvcs": []
+    },
+    {
+      "namespace": "gpu-operator",
+      "name": "gpu-operator-74f857bc49-wjw4l",
+      "uid": "b51e325f-da04-4d00-a89f-ef3ced198ce1",
+      "node": "k3s-wk-gpu4",
+      "phase": "Running",
+      "ready": true,
+      "containers": [
+        {
+          "name": "gpu-operator",
+          "imageID": "nvcr.io/nvidia/gpu-operator@sha256:d4841412c9b8d27c53b1588dcebffc5451e9ab0fd36b2c656c33a65356507cfd",
+          "ready": true,
+          "restartCount": 30
+        }
+      ],
+      "pvcs": []
+    },
+    {
+      "namespace": "gpu-operator",
+      "name": "gpu-operator-node-feature-discovery-worker-4smzg",
+      "uid": "39035ed1-fa78-4097-b850-f00cb6ee253d",
+      "node": "k3s-wk-gpu3",
+      "phase": "Running",
+      "ready": true,
+      "containers": [
+        {
+          "name": "worker",
+          "imageID": "registry.k8s.io/nfd/node-feature-discovery@sha256:9fb5b0764076a7e9c9a93579ef062dd7283b2db0253fa9f793a6931a2c88385e",
+          "ready": true,
+          "restartCount": 29
+        }
+      ],
+      "pvcs": []
+    },
+    {
+      "namespace": "gpu-operator",
+      "name": "gpu-operator-node-feature-discovery-worker-fcq62",
+      "uid": "ce90fc8f-249f-49d9-9e4b-ea262d535c87",
+      "node": "k3s-wk-gpu4",
+      "phase": "Running",
+      "ready": true,
+      "containers": [
+        {
+          "name": "worker",
+          "imageID": "registry.k8s.io/nfd/node-feature-discovery@sha256:9fb5b0764076a7e9c9a93579ef062dd7283b2db0253fa9f793a6931a2c88385e",
+          "ready": true,
+          "restartCount": 33
+        }
+      ],
+      "pvcs": []
+    },
+    {
+      "namespace": "gpu-operator",
+      "name": "gpu-operator-node-feature-discovery-worker-xbvrz",
+      "uid": "e15ba7bc-10fc-4db2-8475-e627b65f1daa",
+      "node": "k3s-wk-gpu1",
+      "phase": "Running",
+      "ready": true,
+      "containers": [
+        {
+          "name": "worker",
+          "imageID": "registry.k8s.io/nfd/node-feature-discovery@sha256:9fb5b0764076a7e9c9a93579ef062dd7283b2db0253fa9f793a6931a2c88385e",
+          "ready": true,
+          "restartCount": 34
+        }
+      ],
+      "pvcs": []
+    },
+    {
+      "namespace": "gpu-operator",
+      "name": "mps-control-daemon-standalone-2rz45",
+      "uid": "b77cd71b-1b2e-4f7f-b4ba-f2e22ae5b18c",
+      "node": "k3s-wk-gpu3",
+      "phase": "Running",
+      "ready": true,
+      "containers": [
+        {
+          "name": "config-manager",
+          "imageID": "nvcr.io/nvidia/k8s-device-plugin@sha256:2d16df5f3f12081b4bd6b317cf697e5c7a195c53cec7e0bab756db02a06b985c",
+          "ready": true,
+          "restartCount": 0
+        },
+        {
+          "name": "mps-control-daemon-ctr",
+          "imageID": "nvcr.io/nvidia/k8s-device-plugin@sha256:2d16df5f3f12081b4bd6b317cf697e5c7a195c53cec7e0bab756db02a06b985c",
+          "ready": true,
+          "restartCount": 0
+        }
+      ],
+      "pvcs": []
+    },
+    {
+      "namespace": "gpu-operator",
+      "name": "mps-control-daemon-standalone-49gkb",
+      "uid": "b19dc172-7bf9-4dce-9779-cefbd8b0961e",
+      "node": "k3s-wk-gpu1",
+      "phase": "Running",
+      "ready": true,
+      "containers": [
+        {
+          "name": "config-manager",
+          "imageID": "nvcr.io/nvidia/k8s-device-plugin@sha256:2d16df5f3f12081b4bd6b317cf697e5c7a195c53cec7e0bab756db02a06b985c",
+          "ready": true,
+          "restartCount": 0
+        },
+        {
+          "name": "mps-control-daemon-ctr",
+          "imageID": "nvcr.io/nvidia/k8s-device-plugin@sha256:2d16df5f3f12081b4bd6b317cf697e5c7a195c53cec7e0bab756db02a06b985c",
+          "ready": true,
+          "restartCount": 0
+        }
+      ],
+      "pvcs": []
+    },
+    {
+      "namespace": "gpu-operator",
+      "name": "mps-control-daemon-standalone-x4klh",
+      "uid": "edb737df-e7a9-4447-aaa6-4bb8d9c68c8a",
+      "node": "k3s-wk-gpu4",
+      "phase": "Running",
+      "ready": true,
+      "containers": [
+        {
+          "name": "config-manager",
+          "imageID": "nvcr.io/nvidia/k8s-device-plugin@sha256:2d16df5f3f12081b4bd6b317cf697e5c7a195c53cec7e0bab756db02a06b985c",
+          "ready": true,
+          "restartCount": 0
+        },
+        {
+          "name": "mps-control-daemon-ctr",
+          "imageID": "nvcr.io/nvidia/k8s-device-plugin@sha256:2d16df5f3f12081b4bd6b317cf697e5c7a195c53cec7e0bab756db02a06b985c",
+          "ready": true,
+          "restartCount": 0
+        }
+      ],
+      "pvcs": []
+    },
+    {
+      "namespace": "gpu-operator",
+      "name": "nvidia-container-toolkit-daemonset-2rn5w",
+      "uid": "be2d1f16-46ff-4eb6-8b71-5dbe76bb1dd4",
+      "node": "k3s-wk-gpu4",
+      "phase": "Running",
+      "ready": true,
+      "containers": [
+        {
+          "name": "nvidia-container-toolkit-ctr",
+          "imageID": "nvcr.io/nvidia/k8s/container-toolkit@sha256:c0d14372bc5d74e882eb60c5c5580459675bf08a2e4c627422cc949af6e9717d",
+          "ready": true,
+          "restartCount": 0
+        }
+      ],
+      "pvcs": []
+    },
+    {
+      "namespace": "gpu-operator",
+      "name": "nvidia-container-toolkit-daemonset-6szsf",
+      "uid": "54431e3a-f181-46b3-a18d-83c981aeedb1",
+      "node": "k3s-wk-gpu3",
+      "phase": "Running",
+      "ready": true,
+      "containers": [
+        {
+          "name": "nvidia-container-toolkit-ctr",
+          "imageID": "nvcr.io/nvidia/k8s/container-toolkit@sha256:c0d14372bc5d74e882eb60c5c5580459675bf08a2e4c627422cc949af6e9717d",
+          "ready": true,
+          "restartCount": 0
+        }
+      ],
+      "pvcs": []
+    },
+    {
+      "namespace": "gpu-operator",
+      "name": "nvidia-container-toolkit-daemonset-cmrb8",
+      "uid": "33000545-ef74-434d-ad3f-371fb85e9a4b",
+      "node": "k3s-wk-gpu1",
+      "phase": "Running",
+      "ready": true,
+      "containers": [
+        {
+          "name": "nvidia-container-toolkit-ctr",
+          "imageID": "nvcr.io/nvidia/k8s/container-toolkit@sha256:c0d14372bc5d74e882eb60c5c5580459675bf08a2e4c627422cc949af6e9717d",
+          "ready": true,
+          "restartCount": 0
+        }
+      ],
+      "pvcs": []
+    },
+    {
+      "namespace": "gpu-operator",
+      "name": "nvidia-dcgm-exporter-5rslt",
+      "uid": "8d4d5bb4-56e7-4a99-9773-790562eb196c",
+      "node": "k3s-wk-gpu4",
+      "phase": "Running",
+      "ready": true,
+      "containers": [
+        {
+          "name": "nvidia-dcgm-exporter",
+          "imageID": "nvcr.io/nvidia/k8s/dcgm-exporter@sha256:ed2dfcb708949de649ab8e1b23521cfd1eba89774dbbe662b6835f1ffcaadb1a",
+          "ready": true,
+          "restartCount": 0
+        }
+      ],
+      "pvcs": []
+    },
+    {
+      "namespace": "gpu-operator",
+      "name": "nvidia-dcgm-exporter-f4pbm",
+      "uid": "0253cd23-154a-4f40-bcde-68cc66cd3c6b",
+      "node": "k3s-wk-gpu3",
+      "phase": "Running",
+      "ready": true,
+      "containers": [
+        {
+          "name": "nvidia-dcgm-exporter",
+          "imageID": "nvcr.io/nvidia/k8s/dcgm-exporter@sha256:ed2dfcb708949de649ab8e1b23521cfd1eba89774dbbe662b6835f1ffcaadb1a",
+          "ready": true,
+          "restartCount": 0
+        }
+      ],
+      "pvcs": []
+    },
+    {
+      "namespace": "gpu-operator",
+      "name": "nvidia-dcgm-exporter-jrr5v",
+      "uid": "99d4e806-9a67-49b3-9fbf-ab3b72873136",
+      "node": "k3s-wk-gpu1",
+      "phase": "Running",
+      "ready": true,
+      "containers": [
+        {
+          "name": "nvidia-dcgm-exporter",
+          "imageID": "nvcr.io/nvidia/k8s/dcgm-exporter@sha256:ed2dfcb708949de649ab8e1b23521cfd1eba89774dbbe662b6835f1ffcaadb1a",
+          "ready": true,
+          "restartCount": 0
+        }
+      ],
+      "pvcs": []
+    },
+    {
+      "namespace": "gpu-operator",
+      "name": "nvidia-device-plugin-daemonset-2tpcp",
+      "uid": "70e56293-0911-434b-a77c-9ed5115a8714",
+      "node": "k3s-wk-gpu4",
+      "phase": "Running",
+      "ready": true,
+      "containers": [
+        {
+          "name": "config-manager",
+          "imageID": "nvcr.io/nvidia/k8s-device-plugin@sha256:2d16df5f3f12081b4bd6b317cf697e5c7a195c53cec7e0bab756db02a06b985c",
+          "ready": true,
+          "restartCount": 0
+        },
+        {
+          "name": "nvidia-device-plugin",
+          "imageID": "nvcr.io/nvidia/k8s-device-plugin@sha256:2d16df5f3f12081b4bd6b317cf697e5c7a195c53cec7e0bab756db02a06b985c",
+          "ready": true,
+          "restartCount": 0
+        }
+      ],
+      "pvcs": []
+    },
+    {
+      "namespace": "gpu-operator",
+      "name": "nvidia-device-plugin-daemonset-f2v2x",
+      "uid": "5e5f225c-9e71-4f71-9899-45384e00306d",
+      "node": "k3s-wk-gpu1",
+      "phase": "Running",
+      "ready": true,
+      "containers": [
+        {
+          "name": "config-manager",
+          "imageID": "nvcr.io/nvidia/k8s-device-plugin@sha256:2d16df5f3f12081b4bd6b317cf697e5c7a195c53cec7e0bab756db02a06b985c",
+          "ready": true,
+          "restartCount": 0
+        },
+        {
+          "name": "nvidia-device-plugin",
+          "imageID": "nvcr.io/nvidia/k8s-device-plugin@sha256:2d16df5f3f12081b4bd6b317cf697e5c7a195c53cec7e0bab756db02a06b985c",
+          "ready": true,
+          "restartCount": 0
+        }
+      ],
+      "pvcs": []
+    },
+    {
+      "namespace": "gpu-operator",
+      "name": "nvidia-device-plugin-daemonset-xwrc6",
+      "uid": "32a9c3e0-fab2-46fa-99b6-51b0692cdf7a",
+      "node": "k3s-wk-gpu3",
+      "phase": "Running",
+      "ready": true,
+      "containers": [
+        {
+          "name": "config-manager",
+          "imageID": "nvcr.io/nvidia/k8s-device-plugin@sha256:2d16df5f3f12081b4bd6b317cf697e5c7a195c53cec7e0bab756db02a06b985c",
+          "ready": true,
+          "restartCount": 0
+        },
+        {
+          "name": "nvidia-device-plugin",
+          "imageID": "nvcr.io/nvidia/k8s-device-plugin@sha256:2d16df5f3f12081b4bd6b317cf697e5c7a195c53cec7e0bab756db02a06b985c",
+          "ready": true,
+          "restartCount": 0
+        }
+      ],
+      "pvcs": []
+    },
+    {
+      "namespace": "gpu-operator",
+      "name": "nvidia-driver-daemonset-gd6kd",
+      "uid": "4544b0a8-4f7a-4188-8752-25c463131544",
+      "node": "k3s-wk-gpu1",
+      "phase": "Running",
+      "ready": true,
+      "containers": [
+        {
+          "name": "nvidia-driver-ctr",
+          "imageID": "nvcr.io/nvidia/driver@sha256:41515698692bd5e192186e620b65717af960a66d22dbb5a06e3656575a5d9148",
+          "ready": true,
+          "restartCount": 0
+        }
+      ],
+      "pvcs": []
+    },
+    {
+      "namespace": "gpu-operator",
+      "name": "nvidia-driver-daemonset-nsrmk",
+      "uid": "c4275e3c-e34f-4545-8389-d673e6f7b401",
+      "node": "k3s-wk-gpu3",
+      "phase": "Running",
+      "ready": true,
+      "containers": [
+        {
+          "name": "nvidia-driver-ctr",
+          "imageID": "nvcr.io/nvidia/driver@sha256:41515698692bd5e192186e620b65717af960a66d22dbb5a06e3656575a5d9148",
+          "ready": true,
+          "restartCount": 0
+        }
+      ],
+      "pvcs": []
+    },
+    {
+      "namespace": "gpu-operator",
+      "name": "nvidia-driver-daemonset-pbpzh",
+      "uid": "446b94c7-3863-4091-9701-d97e4349e9b9",
+      "node": "k3s-wk-gpu4",
+      "phase": "Running",
+      "ready": true,
+      "containers": [
+        {
+          "name": "nvidia-driver-ctr",
+          "imageID": "nvcr.io/nvidia/driver@sha256:41515698692bd5e192186e620b65717af960a66d22dbb5a06e3656575a5d9148",
+          "ready": true,
+          "restartCount": 0
+        }
+      ],
+      "pvcs": []
+    },
+    {
+      "namespace": "gpu-operator",
+      "name": "nvidia-mig-manager-5kxgk",
+      "uid": "9d323640-ab99-48fb-9265-38205169af86",
+      "node": "k3s-wk-gpu1",
+      "phase": "Running",
+      "ready": true,
+      "containers": [
+        {
+          "name": "nvidia-mig-manager",
+          "imageID": "nvcr.io/nvidia/cloud-native/k8s-mig-manager@sha256:9194a84d3ff2d99886653add3867ec8ee03755442a6d75844932812a12a968de",
+          "ready": true,
+          "restartCount": 0
+        }
+      ],
+      "pvcs": []
+    },
+    {
+      "namespace": "gpu-operator",
+      "name": "nvidia-mig-manager-k7cfx",
+      "uid": "e65d4acb-85f7-48ef-a533-254cfe462c5b",
+      "node": "k3s-wk-gpu4",
+      "phase": "Running",
+      "ready": true,
+      "containers": [
+        {
+          "name": "nvidia-mig-manager",
+          "imageID": "nvcr.io/nvidia/cloud-native/k8s-mig-manager@sha256:9194a84d3ff2d99886653add3867ec8ee03755442a6d75844932812a12a968de",
+          "ready": true,
+          "restartCount": 0
+        }
+      ],
+      "pvcs": []
+    },
+    {
+      "namespace": "gpu-operator",
+      "name": "nvidia-mig-manager-tq6mg",
+      "uid": "1503367e-699e-43b9-95e8-31a9030fc4dc",
+      "node": "k3s-wk-gpu3",
+      "phase": "Running",
+      "ready": true,
+      "containers": [
+        {
+          "name": "nvidia-mig-manager",
+          "imageID": "nvcr.io/nvidia/cloud-native/k8s-mig-manager@sha256:9194a84d3ff2d99886653add3867ec8ee03755442a6d75844932812a12a968de",
+          "ready": true,
+          "restartCount": 0
+        }
+      ],
+      "pvcs": []
+    },
+    {
+      "namespace": "gpu-operator",
+      "name": "nvidia-operator-validator-42tkm",
+      "uid": "9289627c-420b-4210-853e-a1e36b5aed67",
+      "node": "k3s-wk-gpu4",
+      "phase": "Running",
+      "ready": true,
+      "containers": [
+        {
+          "name": "nvidia-operator-validator",
+          "imageID": "nvcr.io/nvidia/gpu-operator@sha256:d4841412c9b8d27c53b1588dcebffc5451e9ab0fd36b2c656c33a65356507cfd",
+          "ready": true,
+          "restartCount": 0
+        }
+      ],
+      "pvcs": []
+    },
+    {
+      "namespace": "gpu-operator",
+      "name": "nvidia-operator-validator-6pswb",
+      "uid": "caf29db7-d787-4d54-86a2-e9e4dba27c42",
+      "node": "k3s-wk-gpu1",
+      "phase": "Running",
+      "ready": true,
+      "containers": [
+        {
+          "name": "nvidia-operator-validator",
+          "imageID": "nvcr.io/nvidia/gpu-operator@sha256:d4841412c9b8d27c53b1588dcebffc5451e9ab0fd36b2c656c33a65356507cfd",
+          "ready": true,
+          "restartCount": 0
+        }
+      ],
+      "pvcs": []
+    },
+    {
+      "namespace": "gpu-operator",
+      "name": "nvidia-operator-validator-hhpgm",
+      "uid": "34fb5a08-a29e-440a-9a7f-6a0ab20efcd1",
+      "node": "k3s-wk-gpu3",
+      "phase": "Running",
+      "ready": true,
+      "containers": [
+        {
+          "name": "nvidia-operator-validator",
+          "imageID": "nvcr.io/nvidia/gpu-operator@sha256:d4841412c9b8d27c53b1588dcebffc5451e9ab0fd36b2c656c33a65356507cfd",
+          "ready": true,
+          "restartCount": 0
+        }
+      ],
+      "pvcs": []
+    },
+    {
+      "namespace": "harbor",
+      "name": "harbor-core-88f75658d-l5gvj",
+      "uid": "ecefb1a5-79d6-4139-9daf-08ec0eaa5c2f",
+      "node": "k3s-wk-gpu1",
+      "phase": "Running",
+      "ready": true,
+      "containers": [
+        {
+          "name": "core",
+          "imageID": "docker.io/goharbor/harbor-core@sha256:887a85b8ea98b76bfc9f715f1a0785bb99f9a1034241513902dd6e95be922a83",
+          "ready": true,
+          "restartCount": 0
+        }
+      ],
+      "pvcs": []
+    },
+    {
+      "namespace": "harbor",
+      "name": "harbor-database-0",
+      "uid": "78023ac9-db09-4384-a652-9873e758a443",
+      "node": "k3s-wk-gpu3",
+      "phase": "Running",
+      "ready": true,
+      "containers": [
+        {
+          "name": "database",
+          "imageID": "docker.io/goharbor/harbor-db@sha256:7944d8594a48a8d014e1fa440bc788348f2a779fa2c612ed6b79390cd767e6db",
+          "ready": true,
+          "restartCount": 0
+        }
+      ],
+      "pvcs": [
+        "database-data-harbor-database-0"
+      ]
+    },
+    {
+      "namespace": "harbor",
+      "name": "harbor-jobservice-97b79455f-d9qdd",
+      "uid": "8e80a629-6508-46b8-9160-ffa7bf388c43",
+      "node": "k3s-wk-gpu3",
+      "phase": "Running",
+      "ready": true,
+      "containers": [
+        {
+          "name": "jobservice",
+          "imageID": "docker.io/goharbor/harbor-jobservice@sha256:0de4fd2ce3a02d3e6591b439e4674ea085885ddf43652b44004cc67eb19dba12",
+          "ready": true,
+          "restartCount": 0
+        }
+      ],
+      "pvcs": [
+        "harbor-jobservice"
+      ]
+    },
+    {
+      "namespace": "harbor",
+      "name": "harbor-portal-66b5d45fc5-9d4mk",
+      "uid": "d7077b2b-977f-470a-9836-37b041b02183",
+      "node": "k3s-wk-gpu3",
+      "phase": "Running",
+      "ready": true,
+      "containers": [
+        {
+          "name": "portal",
+          "imageID": "docker.io/goharbor/harbor-portal@sha256:ac55161c57a8351807adf8f8def264bdd52667c371d0436beefebdac4341c9e2",
+          "ready": true,
+          "restartCount": 0
+        }
+      ],
+      "pvcs": []
+    },
+    {
+      "namespace": "harbor",
+      "name": "harbor-redis-0",
+      "uid": "ab59a117-561a-4aca-90c5-3139bf17b649",
+      "node": "k3s-wk-gpu3",
+      "phase": "Running",
+      "ready": true,
+      "containers": [
+        {
+          "name": "redis",
+          "imageID": "docker.io/goharbor/redis-photon@sha256:5669d4828805d9ed0bbfc18c101c6ec82d26a13cb9242b48f6348a3e3b2e4cca",
+          "ready": true,
+          "restartCount": 0
+        }
+      ],
+      "pvcs": [
+        "data-harbor-redis-0"
+      ]
+    },
+    {
+      "namespace": "harbor",
+      "name": "harbor-registry-999bf7785-fh99n",
+      "uid": "dbcb2726-dbe2-494e-a037-ea65025e2f5b",
+      "node": "k3s-wk-gpu3",
+      "phase": "Running",
+      "ready": true,
+      "containers": [
+        {
+          "name": "registry",
+          "imageID": "docker.io/goharbor/registry-photon@sha256:ebf0325c2661729dbb317cbf839608eb8b15cfa158911a94976f2c21563c466e",
+          "ready": true,
+          "restartCount": 0
+        },
+        {
+          "name": "registryctl",
+          "imageID": "docker.io/goharbor/harbor-registryctl@sha256:554147a956989175f63f8d41573d716c6ddf6052acd1749c88c0f99ce6ee2bff",
+          "ready": true,
+          "restartCount": 0
+        }
+      ],
+      "pvcs": [
+        "harbor-registry"
+      ]
+    },
+    {
+      "namespace": "harbor",
+      "name": "harbor-trivy-0",
+      "uid": "3969989e-1a18-47ec-8d84-aa9fcb1f0d64",
+      "node": "k3s-wk-gpu3",
+      "phase": "Running",
+      "ready": true,
+      "containers": [
+        {
+          "name": "trivy",
+          "imageID": "docker.io/goharbor/trivy-adapter-photon@sha256:f0c52bed36c083ec4fded26cefab01e4cd58c9354c261cb3156c69f57bb50131",
+          "ready": true,
+          "restartCount": 0
+        }
+      ],
+      "pvcs": [
+        "data-harbor-trivy-0"
+      ]
+    },
+    {
+      "namespace": "image-builds",
+      "name": "image-builder-api-67d7c7fc5d-gxn57",
+      "uid": "88c226e6-22b3-469a-ae67-7737e1ba87b7",
+      "node": "k3s-wk-gpu3",
+      "phase": "Running",
+      "ready": true,
+      "containers": [
+        {
+          "name": "api",
+          "imageID": "ghcr.io/mul-cps/incluster-image-builder@sha256:a0fcf7a3282c8761cd8490c799f9a31065f5b328c2b44f5dae1734594325c1b5",
+          "ready": true,
+          "restartCount": 0
+        }
+      ],
+      "pvcs": []
+    },
+    {
+      "namespace": "ingress-nginx",
+      "name": "ingress-nginx-controller-m78kr",
+      "uid": "4552af9a-7ce3-4b19-9ee0-f3dc744f1d1e",
+      "node": "k3s-wk-gpu4",
+      "phase": "Running",
+      "ready": true,
+      "containers": [
+        {
+          "name": "controller",
+          "imageID": "registry.k8s.io/ingress-nginx/controller@sha256:d56f135b6462cfc476447cfe564b83a45e8bb7da2774963b00d12161112270b7",
+          "ready": true,
+          "restartCount": 0
+        }
+      ],
+      "pvcs": []
+    },
+    {
+      "namespace": "ingress-nginx",
+      "name": "ingress-nginx-controller-pk99d",
+      "uid": "e661c78c-dade-4770-80d6-c471ba8a23fd",
+      "node": "k3s-wk-gpu1",
+      "phase": "Running",
+      "ready": true,
+      "containers": [
+        {
+          "name": "controller",
+          "imageID": "registry.k8s.io/ingress-nginx/controller@sha256:d56f135b6462cfc476447cfe564b83a45e8bb7da2774963b00d12161112270b7",
+          "ready": true,
+          "restartCount": 0
+        }
+      ],
+      "pvcs": []
+    },
+    {
+      "namespace": "ingress-nginx",
+      "name": "ingress-nginx-controller-rgz69",
+      "uid": "812069f8-8384-461c-aef4-885c17139831",
+      "node": "k3s-wk-gpu3",
+      "phase": "Running",
+      "ready": true,
+      "containers": [
+        {
+          "name": "controller",
+          "imageID": "registry.k8s.io/ingress-nginx/controller@sha256:d56f135b6462cfc476447cfe564b83a45e8bb7da2774963b00d12161112270b7",
+          "ready": true,
+          "restartCount": 0
+        }
+      ],
+      "pvcs": []
+    },
+    {
+      "namespace": "jobset-system",
+      "name": "cps-jobset-controller-674c95f9c-jgk7g",
+      "uid": "bb3dacb5-a186-4ed5-9fb9-3a92000caf66",
+      "node": "k3s-wk-gpu1",
+      "phase": "Running",
+      "ready": true,
+      "containers": [
+        {
+          "name": "controller",
+          "imageID": "registry.k8s.io/jobset/jobset@sha256:e75536f1135b7bb2f19f8c3b620782fbdd9091d73398e3a272f9a5fed322980d",
+          "ready": true,
+          "restartCount": 4
+        }
+      ],
+      "pvcs": []
+    },
+    {
+      "namespace": "jupyterhub",
+      "name": "continuous-image-puller-j5rrc",
+      "uid": "61f84785-84f2-4eed-bb48-a4afc7d70197",
+      "node": "k3s-wk-gpu3",
+      "phase": "Running",
+      "ready": true,
+      "containers": [
+        {
+          "name": "pause",
+          "imageID": "registry.k8s.io/pause@sha256:278fb9dbcca9518083ad1e11276933a2e96f23de604a3a08cc3c80002767d24c",
+          "ready": true,
+          "restartCount": 0
+        }
+      ],
+      "pvcs": []
+    },
+    {
+      "namespace": "jupyterhub",
+      "name": "continuous-image-puller-kkfsg",
+      "uid": "16622185-d538-488a-ad2a-0d4db6a412db",
+      "node": "k3s-wk-gpu4",
+      "phase": "Running",
+      "ready": true,
+      "containers": [
+        {
+          "name": "pause",
+          "imageID": "registry.k8s.io/pause@sha256:278fb9dbcca9518083ad1e11276933a2e96f23de604a3a08cc3c80002767d24c",
+          "ready": true,
+          "restartCount": 0
+        }
+      ],
+      "pvcs": []
+    },
+    {
+      "namespace": "jupyterhub",
+      "name": "continuous-image-puller-sccx6",
+      "uid": "6cb414a0-e5b7-4553-a0da-4f568b9cb693",
+      "node": "k3s-wk-gpu1",
+      "phase": "Running",
+      "ready": true,
+      "containers": [
+        {
+          "name": "pause",
+          "imageID": "registry.k8s.io/pause@sha256:278fb9dbcca9518083ad1e11276933a2e96f23de604a3a08cc3c80002767d24c",
+          "ready": true,
+          "restartCount": 0
+        }
+      ],
+      "pvcs": []
+    },
+    {
+      "namespace": "jupyterhub",
+      "name": "hub-67b76cdf8c-rrtx8",
+      "uid": "2460e275-1a1f-4b8c-ad13-c02ec0844c29",
+      "node": "k3s-wk-gpu1",
+      "phase": "Running",
+      "ready": true,
+      "containers": [
+        {
+          "name": "hub",
+          "imageID": "quay.io/jupyterhub/k8s-hub@sha256:108fbb01c3fe23e4a81efc8899aa73b4c15413615c73dfcdc44248eb63096e41",
+          "ready": true,
+          "restartCount": 0
+        }
+      ],
+      "pvcs": [
+        "hub-db-dir"
+      ]
+    },
+    {
+      "namespace": "jupyterhub",
+      "name": "jupyter-bjoern",
+      "uid": "a663ab6b-e927-418f-9671-fc0b36a27b3a",
+      "node": "k3s-wk-gpu1",
+      "phase": "Running",
+      "ready": true,
+      "containers": [
+        {
+          "name": "notebook",
+          "imageID": "ghcr.io/mul-cps/cps-jupyter-notebook@sha256:6b6a8d6a225df1b938fe98bcdad9e547aef249347392ce8f29adb3fedda512ae",
+          "ready": true,
+          "restartCount": 0
+        }
+      ],
+      "pvcs": [
+        "cps-persistent1-shared-pvc",
+        "cps-scratch1-tmp-v2-pvc",
+        "jupyterhub-shared-storage",
+        "claim-bjoern"
+      ]
+    },
+    {
+      "namespace": "jupyterhub",
+      "name": "jupyter-muslim",
+      "uid": "ed3d0a76-8997-47f7-91d5-25ef60a67bca",
+      "node": "k3s-wk-gpu1",
+      "phase": "Running",
+      "ready": true,
+      "containers": [
+        {
+          "name": "notebook",
+          "imageID": "ghcr.io/mul-cps/cps-jupyter-notebook@sha256:6b6a8d6a225df1b938fe98bcdad9e547aef249347392ce8f29adb3fedda512ae",
+          "ready": true,
+          "restartCount": 0
+        }
+      ],
+      "pvcs": [
+        "claim-muslim"
+      ]
+    },
+    {
+      "namespace": "jupyterhub",
+      "name": "jupyterhub-ssh-bd57847b9-2k4dq",
+      "uid": "d20fffa4-8365-4ac5-ab0d-0d81849b611d",
+      "node": "k3s-wk-gpu4",
+      "phase": "Running",
+      "ready": true,
+      "containers": [
+        {
+          "name": "server",
+          "imageID": "quay.io/jupyterhub-ssh/ssh@sha256:a0b6360f76d9c2db423a64dff17e2e804e3834c3e532eec3983d019bd7cff09f",
+          "ready": true,
+          "restartCount": 0
+        }
+      ],
+      "pvcs": []
+    },
+    {
+      "namespace": "jupyterhub",
+      "name": "proxy-5fb6bdc66d-lqqw4",
+      "uid": "0beaa23e-9ba7-4bb9-958c-f5dbc9cd6e0c",
+      "node": "k3s-wk-gpu1",
+      "phase": "Running",
+      "ready": true,
+      "containers": [
+        {
+          "name": "chp",
+          "imageID": "quay.io/jupyterhub/configurable-http-proxy@sha256:522738d5285e4be758da5023194cbc95249efdadaa62a0998c8ed1aa2890b2da",
+          "ready": true,
+          "restartCount": 0
+        }
+      ],
+      "pvcs": []
+    },
+    {
+      "namespace": "kai-resource-isolator",
+      "name": "kai-resource-isolator-libsync-g98z4",
+      "uid": "d328d13a-258e-42e7-a865-14ccf1d513a9",
+      "node": "k3s-wk-gpu4",
+      "phase": "Running",
+      "ready": true,
+      "containers": [
+        {
+          "name": "libsync",
+          "imageID": "docker.io/projecthami/kai-resource-isolator@sha256:2743f1684721f6368e87f98a17d7e7392805786cdb70b44ce0e8fdc10b1e13d0",
+          "ready": true,
+          "restartCount": 0
+        }
+      ],
+      "pvcs": []
+    },
+    {
+      "namespace": "kai-resource-isolator",
+      "name": "kai-resource-isolator-libsync-hh8bc",
+      "uid": "058d02a4-8b5b-47d0-98d9-5acdf3095741",
+      "node": "k3s-wk-gpu3",
+      "phase": "Running",
+      "ready": true,
+      "containers": [
+        {
+          "name": "libsync",
+          "imageID": "docker.io/projecthami/kai-resource-isolator@sha256:2743f1684721f6368e87f98a17d7e7392805786cdb70b44ce0e8fdc10b1e13d0",
+          "ready": true,
+          "restartCount": 0
+        }
+      ],
+      "pvcs": []
+    },
+    {
+      "namespace": "kai-resource-isolator",
+      "name": "kai-resource-isolator-libsync-m2z2s",
+      "uid": "a27d736a-9df4-43a4-9328-a077bcf34460",
+      "node": "k3s-wk-gpu1",
+      "phase": "Running",
+      "ready": true,
+      "containers": [
+        {
+          "name": "libsync",
+          "imageID": "docker.io/projecthami/kai-resource-isolator@sha256:2743f1684721f6368e87f98a17d7e7392805786cdb70b44ce0e8fdc10b1e13d0",
+          "ready": true,
+          "restartCount": 0
+        }
+      ],
+      "pvcs": []
+    },
+    {
+      "namespace": "kai-resource-isolator",
+      "name": "kai-resource-isolator-monitor-57ztc",
+      "uid": "6cfda117-4538-4904-b2af-b79eac2663fa",
+      "node": "k3s-wk-gpu4",
+      "phase": "Running",
+      "ready": true,
+      "containers": [
+        {
+          "name": "monitor",
+          "imageID": "docker.io/projecthami/kai-resource-isolator@sha256:2743f1684721f6368e87f98a17d7e7392805786cdb70b44ce0e8fdc10b1e13d0",
+          "ready": true,
+          "restartCount": 0
+        }
+      ],
+      "pvcs": []
+    },
+    {
+      "namespace": "kai-resource-isolator",
+      "name": "kai-resource-isolator-monitor-m29xl",
+      "uid": "01f9b07e-22bc-48fd-b01c-6c5f15f10f51",
+      "node": "k3s-wk-gpu1",
+      "phase": "Running",
+      "ready": true,
+      "containers": [
+        {
+          "name": "monitor",
+          "imageID": "docker.io/projecthami/kai-resource-isolator@sha256:2743f1684721f6368e87f98a17d7e7392805786cdb70b44ce0e8fdc10b1e13d0",
+          "ready": true,
+          "restartCount": 0
+        }
+      ],
+      "pvcs": []
+    },
+    {
+      "namespace": "kai-resource-isolator",
+      "name": "kai-resource-isolator-monitor-w6ssb",
+      "uid": "aa83e094-76e8-4e7b-be24-42c12cc4d896",
+      "node": "k3s-wk-gpu3",
+      "phase": "Running",
+      "ready": true,
+      "containers": [
+        {
+          "name": "monitor",
+          "imageID": "docker.io/projecthami/kai-resource-isolator@sha256:2743f1684721f6368e87f98a17d7e7392805786cdb70b44ce0e8fdc10b1e13d0",
+          "ready": true,
+          "restartCount": 0
+        }
+      ],
+      "pvcs": []
+    },
+    {
+      "namespace": "kai-resource-isolator",
+      "name": "kai-resource-isolator-webhook-74c95f967c-p8jr7",
+      "uid": "e4125aa8-f2a4-45b6-9e1e-e442f4ca2381",
+      "node": "k3s-wk-gpu1",
+      "phase": "Running",
+      "ready": true,
+      "containers": [
+        {
+          "name": "webhook",
+          "imageID": "docker.io/projecthami/kai-resource-isolator@sha256:2743f1684721f6368e87f98a17d7e7392805786cdb70b44ce0e8fdc10b1e13d0",
+          "ready": true,
+          "restartCount": 0
+        }
+      ],
+      "pvcs": []
+    },
+    {
+      "namespace": "kai-resource-reservation",
+      "name": "gpu-reservation-398d6112309f9dff",
+      "uid": "c82fd5ab-b47a-4f04-b277-345d85ab9dd4",
+      "node": "k3s-wk-gpu1",
+      "phase": "Running",
+      "ready": true,
+      "containers": [
+        {
+          "name": "resource-reservation",
+          "imageID": "ghcr.io/kai-scheduler/kai-scheduler/resourcereservation@sha256:f476965d65e49059da53b3999494a33814a45408111d12010086acfadc0131d3",
+          "ready": true,
+          "restartCount": 0
+        }
+      ],
+      "pvcs": []
+    },
+    {
+      "namespace": "kai-scheduler",
+      "name": "admission-54566cc766-7znmx",
+      "uid": "80e20051-9956-4577-9565-9d6772c88353",
+      "node": "k3s-wk-gpu1",
+      "phase": "Running",
+      "ready": true,
+      "containers": [
+        {
+          "name": "admission",
+          "imageID": "ghcr.io/kai-scheduler/kai-scheduler/admission@sha256:01492e2118a8f4192f20c72ca1e077724b036f65828c53f1f6d5e5755f2ff0fb",
+          "ready": true,
+          "restartCount": 0
+        }
+      ],
+      "pvcs": []
+    },
+    {
+      "namespace": "kai-scheduler",
+      "name": "binder-6854fd7b9c-zlwtk",
+      "uid": "f9f3e547-bbda-4601-b8ac-d2d6ce4f7236",
+      "node": "k3s-wk-gpu1",
+      "phase": "Running",
+      "ready": true,
+      "containers": [
+        {
+          "name": "binder",
+          "imageID": "ghcr.io/kai-scheduler/kai-scheduler/binder@sha256:1d10b1b212faddab22cdaea5da2f9d17e1d4154d68d7d0f4bfc44dc6a343624b",
+          "ready": true,
+          "restartCount": 0
+        }
+      ],
+      "pvcs": []
+    },
+    {
+      "namespace": "kai-scheduler",
+      "name": "kai-operator-854cd78c9d-dxmlj",
+      "uid": "a9fefb36-8904-4d8e-81d2-547da51c176a",
+      "node": "k3s-wk-gpu1",
+      "phase": "Running",
+      "ready": true,
+      "containers": [
+        {
+          "name": "operator",
+          "imageID": "ghcr.io/kai-scheduler/kai-scheduler/operator@sha256:fe8f5d57e963d52ea1336caf73701c9591bfabf9d715edde15b7100a56621d17",
+          "ready": true,
+          "restartCount": 0
+        }
+      ],
+      "pvcs": []
+    },
+    {
+      "namespace": "kai-scheduler",
+      "name": "kai-scheduler-default-686c859c84-hjnfv",
+      "uid": "456c8182-7703-4356-8712-99fbef76afc4",
+      "node": "k3s-wk-gpu1",
+      "phase": "Running",
+      "ready": true,
+      "containers": [
+        {
+          "name": "kai-scheduler-default",
+          "imageID": "ghcr.io/kai-scheduler/kai-scheduler/scheduler@sha256:4a5e146d63d81781e2bea584fcebfd4a33d794046a43a1316b0f3cd27331e417",
+          "ready": true,
+          "restartCount": 0
+        }
+      ],
+      "pvcs": []
+    },
+    {
+      "namespace": "kai-scheduler",
+      "name": "pod-grouper-66cfc5859b-t2s9r",
+      "uid": "28c77c04-8534-4695-9f26-a8224763f340",
+      "node": "k3s-wk-gpu1",
+      "phase": "Running",
+      "ready": true,
+      "containers": [
+        {
+          "name": "pod-grouper",
+          "imageID": "ghcr.io/kai-scheduler/kai-scheduler/podgrouper@sha256:284e72e1cdd0e2860b2f30497d028cf0c5f031ed6e277feeace72d1e5acd9451",
+          "ready": true,
+          "restartCount": 0
+        }
+      ],
+      "pvcs": []
+    },
+    {
+      "namespace": "kai-scheduler",
+      "name": "podgroup-controller-679fc68688-gfsmp",
+      "uid": "8db7d157-3965-40ce-a3a8-5d0b951afaac",
+      "node": "k3s-wk-gpu1",
+      "phase": "Running",
+      "ready": true,
+      "containers": [
+        {
+          "name": "podgroup-controller",
+          "imageID": "ghcr.io/kai-scheduler/kai-scheduler/podgroupcontroller@sha256:d15a264e04853308a8bad1a75edc506a04a71c12517dbb7e38dc9f5dfa863a94",
+          "ready": true,
+          "restartCount": 0
+        }
+      ],
+      "pvcs": []
+    },
+    {
+      "namespace": "kai-scheduler",
+      "name": "queue-controller-6fb7fbd9f8-jhnr6",
+      "uid": "a6559577-3f9a-4653-9448-e988674267e8",
+      "node": "k3s-wk-gpu1",
+      "phase": "Running",
+      "ready": true,
+      "containers": [
+        {
+          "name": "queue-controller",
+          "imageID": "ghcr.io/kai-scheduler/kai-scheduler/queuecontroller@sha256:3f32615c07bf4770a1e96d2ff49f474707b88d368dddeac230a6f3745884332a",
+          "ready": true,
+          "restartCount": 0
+        }
+      ],
+      "pvcs": []
+    },
+    {
+      "namespace": "knative-serving",
+      "name": "activator-7c67cf64d4-x92f9",
+      "uid": "fd9979aa-195f-4b29-9365-602ebf8c119f",
+      "node": "k3s-wk-gpu3",
+      "phase": "Running",
+      "ready": true,
+      "containers": [
+        {
+          "name": "activator",
+          "imageID": "gcr.io/knative-releases/knative.dev/serving/cmd/activator@sha256:a0b7df3f38d127b1ae3d300ffd99a220d0d9209be712558961d3cdb048a05495",
+          "ready": true,
+          "restartCount": 2
+        }
+      ],
+      "pvcs": []
+    },
+    {
+      "namespace": "knative-serving",
+      "name": "webhook-5c756fc6c5-7nf8r",
+      "uid": "220d0eee-1d9b-4140-b78a-62b1442e2928",
+      "node": "k3s-wk-gpu1",
+      "phase": "Running",
+      "ready": true,
+      "containers": [
+        {
+          "name": "webhook",
+          "imageID": "gcr.io/knative-releases/knative.dev/serving/cmd/webhook@sha256:2501e32186dd40c1f95eb7020121b328502a46b6d68e9dc2d917d2ed47958c1e",
+          "ready": true,
+          "restartCount": 1
+        }
+      ],
+      "pvcs": []
+    },
+    {
+      "namespace": "kourier-system",
+      "name": "3scale-kourier-gateway-68c5d84954-nx6b6",
+      "uid": "6c6adb76-fe4c-4144-9217-ab9e7d45a6f1",
+      "node": "k3s-wk-gpu1",
+      "phase": "Running",
+      "ready": true,
+      "containers": [
+        {
+          "name": "kourier-gateway",
+          "imageID": "docker.io/envoyproxy/envoy@sha256:b5cc70f5fe5503858817e897ae1da5d873dc32cbc493790b4e330b8a42c4af9d",
+          "ready": true,
+          "restartCount": 0
+        }
+      ],
+      "pvcs": []
+    },
+    {
+      "namespace": "kube-system",
+      "name": "reflector-7bd7f9bc59-cdzpz",
+      "uid": "1229aae5-1686-4747-b9f1-6a4c83f9637b",
+      "node": "k3s-wk-gpu4",
+      "phase": "Running",
+      "ready": true,
+      "containers": [
+        {
+          "name": "reflector",
+          "imageID": "docker.io/emberstack/kubernetes-reflector@sha256:5dccefffadd482347403c8b20e3a7e6534f162f2479d947b5361aec9d17335db",
+          "ready": true,
+          "restartCount": 0
+        }
+      ],
+      "pvcs": []
+    },
+    {
+      "namespace": "kube-system",
+      "name": "system-tuning-22mzg",
+      "uid": "b4a707a4-472f-44a3-a6e3-1022d7936934",
+      "node": "k3s-wk-gpu1",
+      "phase": "Running",
+      "ready": true,
+      "containers": [
+        {
+          "name": "sysctl-tuner",
+          "imageID": "docker.io/library/busybox@sha256:fd8d9aa63ba2f0982b5304e1ee8d3b90a210bc1ffb5314d980eb6962f1a9715d",
+          "ready": true,
+          "restartCount": 5
+        }
+      ],
+      "pvcs": []
+    },
+    {
+      "namespace": "kube-system",
+      "name": "system-tuning-2lv65",
+      "uid": "7079d36e-8868-4ac6-9ab8-ca6caa97e8e4",
+      "node": "k3s-wk-gpu3",
+      "phase": "Running",
+      "ready": true,
+      "containers": [
+        {
+          "name": "sysctl-tuner",
+          "imageID": "docker.io/library/busybox@sha256:fd8d9aa63ba2f0982b5304e1ee8d3b90a210bc1ffb5314d980eb6962f1a9715d",
+          "ready": true,
+          "restartCount": 3
+        }
+      ],
+      "pvcs": []
+    },
+    {
+      "namespace": "kube-system",
+      "name": "system-tuning-x5qrd",
+      "uid": "03f2377e-ad58-4b99-be74-8e9ac17097ee",
+      "node": "k3s-wk-gpu4",
+      "phase": "Running",
+      "ready": true,
+      "containers": [
+        {
+          "name": "sysctl-tuner",
+          "imageID": "docker.io/library/busybox@sha256:fd8d9aa63ba2f0982b5304e1ee8d3b90a210bc1ffb5314d980eb6962f1a9715d",
+          "ready": true,
+          "restartCount": 3
+        }
+      ],
+      "pvcs": []
+    },
+    {
+      "namespace": "kured",
+      "name": "kured-4c4jf",
+      "uid": "f6ca7d20-4e56-40ef-b8a4-3e40be6436c4",
+      "node": "k3s-wk-gpu4",
+      "phase": "Running",
+      "ready": true,
+      "containers": [
+        {
+          "name": "kured",
+          "imageID": "ghcr.io/kubereboot/kured@sha256:76567a71427b074bfc51df6797c8c30ba44c9678ace7cd61a186ddb662ce97b1",
+          "ready": true,
+          "restartCount": 1
+        }
+      ],
+      "pvcs": []
+    },
+    {
+      "namespace": "kured",
+      "name": "kured-8l6dm",
+      "uid": "e35c3853-0698-428a-9e05-7e20e83d5cb1",
+      "node": "k3s-wk-gpu3",
+      "phase": "Running",
+      "ready": true,
+      "containers": [
+        {
+          "name": "kured",
+          "imageID": "ghcr.io/kubereboot/kured@sha256:76567a71427b074bfc51df6797c8c30ba44c9678ace7cd61a186ddb662ce97b1",
+          "ready": true,
+          "restartCount": 2
+        }
+      ],
+      "pvcs": []
+    },
+    {
+      "namespace": "kured",
+      "name": "kured-l7knp",
+      "uid": "97e8502a-f6f0-4863-8f32-cf3045edb299",
+      "node": "k3s-wk-gpu1",
+      "phase": "Running",
+      "ready": true,
+      "containers": [
+        {
+          "name": "kured",
+          "imageID": "ghcr.io/kubereboot/kured@sha256:76567a71427b074bfc51df6797c8c30ba44c9678ace7cd61a186ddb662ce97b1",
+          "ready": true,
+          "restartCount": 2
+        }
+      ],
+      "pvcs": []
+    },
+    {
+      "namespace": "loki",
+      "name": "loki-canary-hj4ds",
+      "uid": "49f1da1a-e4b6-49ba-b256-cf5b8eca0492",
+      "node": "k3s-wk-gpu3",
+      "phase": "Running",
+      "ready": true,
+      "containers": [
+        {
+          "name": "loki-canary",
+          "imageID": "docker.io/grafana/loki-canary@sha256:0dac7d5cb383adb8d3723676a70ed0c65b582e636846f4ce48703556dd509ad1",
+          "ready": true,
+          "restartCount": 2
+        }
+      ],
+      "pvcs": []
+    },
+    {
+      "namespace": "loki",
+      "name": "loki-canary-jqg8m",
+      "uid": "deb291b6-ec70-4e9f-95ed-189a79898afd",
+      "node": "k3s-wk-gpu4",
+      "phase": "Running",
+      "ready": true,
+      "containers": [
+        {
+          "name": "loki-canary",
+          "imageID": "docker.io/grafana/loki-canary@sha256:0dac7d5cb383adb8d3723676a70ed0c65b582e636846f4ce48703556dd509ad1",
+          "ready": true,
+          "restartCount": 1
+        }
+      ],
+      "pvcs": []
+    },
+    {
+      "namespace": "loki",
+      "name": "loki-canary-sdbgt",
+      "uid": "750e48ef-0067-4005-a0d0-79f944ff597a",
+      "node": "k3s-wk-gpu1",
+      "phase": "Running",
+      "ready": true,
+      "containers": [
+        {
+          "name": "loki-canary",
+          "imageID": "docker.io/grafana/loki-canary@sha256:0dac7d5cb383adb8d3723676a70ed0c65b582e636846f4ce48703556dd509ad1",
+          "ready": true,
+          "restartCount": 3
+        }
+      ],
+      "pvcs": []
+    },
+    {
+      "namespace": "loki",
+      "name": "loki-results-cache-0",
+      "uid": "79997de2-1706-4dcc-9ee9-228cb160f0e2",
+      "node": "k3s-wk-gpu4",
+      "phase": "Running",
+      "ready": true,
+      "containers": [
+        {
+          "name": "exporter",
+          "imageID": "docker.io/prom/memcached-exporter@sha256:b6763ecb3c47f2408e0398518851b7f8c5fc46232b2649f8c78a321130c54266",
+          "ready": true,
+          "restartCount": 0
+        },
+        {
+          "name": "memcached",
+          "imageID": "docker.io/library/memcached@sha256:c8503d4491edd3110cc07d0465089d3a41cf1daf8645e71149e39a51835e92cd",
+          "ready": true,
+          "restartCount": 0
+        }
+      ],
+      "pvcs": []
+    },
+    {
+      "namespace": "longhorn-system",
+      "name": "csi-attacher-74cd57d888-8dktc",
+      "uid": "98cf721b-112a-444d-84b6-76fdb733331e",
+      "node": "k3s-wk-gpu3",
+      "phase": "Running",
+      "ready": true,
+      "containers": [
+        {
+          "name": "csi-attacher",
+          "imageID": "docker.io/longhornio/csi-attacher@sha256:4786c3f9b9a0d9649ccf00e97369e36286b7d129c87dbe0f6a3f4149ee7dd4f6",
+          "ready": true,
+          "restartCount": 2
+        }
+      ],
+      "pvcs": []
+    },
+    {
+      "namespace": "longhorn-system",
+      "name": "csi-attacher-74cd57d888-z5jc8",
+      "uid": "6dbbc8fd-9a58-442a-a9e6-85a600ff1924",
+      "node": "k3s-wk-gpu4",
+      "phase": "Running",
+      "ready": true,
+      "containers": [
+        {
+          "name": "csi-attacher",
+          "imageID": "docker.io/longhornio/csi-attacher@sha256:4786c3f9b9a0d9649ccf00e97369e36286b7d129c87dbe0f6a3f4149ee7dd4f6",
+          "ready": true,
+          "restartCount": 5
+        }
+      ],
+      "pvcs": []
+    },
+    {
+      "namespace": "longhorn-system",
+      "name": "csi-provisioner-668f595df8-ddxfn",
+      "uid": "0c1624f2-7447-4f7b-84ba-e7088ad47a9d",
+      "node": "k3s-wk-gpu3",
+      "phase": "Running",
+      "ready": true,
+      "containers": [
+        {
+          "name": "csi-provisioner",
+          "imageID": "docker.io/longhornio/csi-provisioner@sha256:ea9a31cd482ac381329abcbcd6071833d3b2259b5b999f258c8614fd41dccf18",
+          "ready": true,
+          "restartCount": 6
+        }
+      ],
+      "pvcs": []
+    },
+    {
+      "namespace": "longhorn-system",
+      "name": "csi-provisioner-668f595df8-p5zdk",
+      "uid": "492701b2-4d33-45ba-a53a-ea7f64786efa",
+      "node": "k3s-wk-gpu4",
+      "phase": "Running",
+      "ready": true,
+      "containers": [
+        {
+          "name": "csi-provisioner",
+          "imageID": "docker.io/longhornio/csi-provisioner@sha256:ea9a31cd482ac381329abcbcd6071833d3b2259b5b999f258c8614fd41dccf18",
+          "ready": true,
+          "restartCount": 3
+        }
+      ],
+      "pvcs": []
+    },
+    {
+      "namespace": "longhorn-system",
+      "name": "csi-resizer-749f8b9cd7-dp8vg",
+      "uid": "c672d80a-0247-4374-9f97-02c9beaaee9d",
+      "node": "k3s-wk-gpu4",
+      "phase": "Running",
+      "ready": true,
+      "containers": [
+        {
+          "name": "csi-resizer",
+          "imageID": "docker.io/longhornio/csi-resizer@sha256:1d2a08fcdba3e1e9fc7bd7a96429ed8543c8234c034699aadcf1e3651dd512e3",
+          "ready": true,
+          "restartCount": 2
+        }
+      ],
+      "pvcs": []
+    },
+    {
+      "namespace": "longhorn-system",
+      "name": "csi-resizer-749f8b9cd7-kpgdc",
+      "uid": "61aad3a9-3c5f-4477-9053-34de7964260f",
+      "node": "k3s-wk-gpu3",
+      "phase": "Running",
+      "ready": true,
+      "containers": [
+        {
+          "name": "csi-resizer",
+          "imageID": "docker.io/longhornio/csi-resizer@sha256:1d2a08fcdba3e1e9fc7bd7a96429ed8543c8234c034699aadcf1e3651dd512e3",
+          "ready": true,
+          "restartCount": 2
+        }
+      ],
+      "pvcs": []
+    },
+    {
+      "namespace": "longhorn-system",
+      "name": "csi-snapshotter-58dd468645-rjzlq",
+      "uid": "9d87fccc-b847-46b3-808b-835a2ebe6a07",
+      "node": "k3s-wk-gpu4",
+      "phase": "Running",
+      "ready": true,
+      "containers": [
+        {
+          "name": "csi-snapshotter",
+          "imageID": "docker.io/longhornio/csi-snapshotter@sha256:40ec7de434d680038a6e0604e75464d73f75f294d15a50a63404b76e223dfe45",
+          "ready": true,
+          "restartCount": 4
+        }
+      ],
+      "pvcs": []
+    },
+    {
+      "namespace": "longhorn-system",
+      "name": "csi-snapshotter-58dd468645-zh722",
+      "uid": "84ca869c-35e9-4049-82e2-2725c99c5748",
+      "node": "k3s-wk-gpu3",
+      "phase": "Running",
+      "ready": true,
+      "containers": [
+        {
+          "name": "csi-snapshotter",
+          "imageID": "docker.io/longhornio/csi-snapshotter@sha256:40ec7de434d680038a6e0604e75464d73f75f294d15a50a63404b76e223dfe45",
+          "ready": true,
+          "restartCount": 8
+        }
+      ],
+      "pvcs": []
+    },
+    {
+      "namespace": "longhorn-system",
+      "name": "engine-image-ei-27581b25-fqwq9",
+      "uid": "b978a31e-4df9-482b-9f52-abe02b2c8bb6",
+      "node": "k3s-wk-gpu4",
+      "phase": "Running",
+      "ready": true,
+      "containers": [
+        {
+          "name": "engine-image-ei-27581b25",
+          "imageID": "docker.io/longhornio/longhorn-engine@sha256:f1b17bab9e50ea021add30bcc6f539fe0364212f620203eaf5c97b67f36dc266",
+          "ready": true,
+          "restartCount": 3
+        }
+      ],
+      "pvcs": []
+    },
+    {
+      "namespace": "longhorn-system",
+      "name": "engine-image-ei-27581b25-jbzw6",
+      "uid": "ddf3365e-02f7-4ee1-af20-18b1ec694768",
+      "node": "k3s-wk-gpu3",
+      "phase": "Running",
+      "ready": true,
+      "containers": [
+        {
+          "name": "engine-image-ei-27581b25",
+          "imageID": "docker.io/longhornio/longhorn-engine@sha256:f1b17bab9e50ea021add30bcc6f539fe0364212f620203eaf5c97b67f36dc266",
+          "ready": true,
+          "restartCount": 7
+        }
+      ],
+      "pvcs": []
+    },
+    {
+      "namespace": "longhorn-system",
+      "name": "engine-image-ei-27581b25-qdrh5",
+      "uid": "ec61027c-a5c4-4815-afc8-57fb8fba65a2",
+      "node": "k3s-wk-gpu1",
+      "phase": "Running",
+      "ready": true,
+      "containers": [
+        {
+          "name": "engine-image-ei-27581b25",
+          "imageID": "docker.io/longhornio/longhorn-engine@sha256:f1b17bab9e50ea021add30bcc6f539fe0364212f620203eaf5c97b67f36dc266",
+          "ready": true,
+          "restartCount": 10
+        }
+      ],
+      "pvcs": []
+    },
+    {
+      "namespace": "longhorn-system",
+      "name": "instance-manager-01df8b5d06bc85a19eafeab08a042c97",
+      "uid": "9f473508-da36-48e5-ae65-86d514c2baba",
+      "node": "k3s-wk-gpu4",
+      "phase": "Running",
+      "ready": true,
+      "containers": [
+        {
+          "name": "instance-manager",
+          "imageID": "docker.io/longhornio/longhorn-instance-manager@sha256:b0d45a6fadbef8f16ac168e06cbae7ae02e46eae9359b95e16ef1ce537069d81",
+          "ready": true,
+          "restartCount": 0
+        }
+      ],
+      "pvcs": []
+    },
+    {
+      "namespace": "longhorn-system",
+      "name": "instance-manager-07936386348324497cd14054d0e3f480",
+      "uid": "1cb5b256-633e-4f39-8841-a88e5e0a58f0",
+      "node": "k3s-wk-gpu3",
+      "phase": "Running",
+      "ready": true,
+      "containers": [
+        {
+          "name": "instance-manager",
+          "imageID": "docker.io/longhornio/longhorn-instance-manager@sha256:b0d45a6fadbef8f16ac168e06cbae7ae02e46eae9359b95e16ef1ce537069d81",
+          "ready": true,
+          "restartCount": 0
+        }
+      ],
+      "pvcs": []
+    },
+    {
+      "namespace": "longhorn-system",
+      "name": "instance-manager-0817aaca164811bb69b48dd3a1856634",
+      "uid": "5e124981-35ba-4100-9d1a-a7249d144a8a",
+      "node": "k3s-wk-gpu1",
+      "phase": "Running",
+      "ready": true,
+      "containers": [
+        {
+          "name": "instance-manager",
+          "imageID": "docker.io/longhornio/longhorn-instance-manager@sha256:b0d45a6fadbef8f16ac168e06cbae7ae02e46eae9359b95e16ef1ce537069d81",
+          "ready": true,
+          "restartCount": 0
+        }
+      ],
+      "pvcs": []
+    },
+    {
+      "namespace": "longhorn-system",
+      "name": "longhorn-csi-plugin-9ds4v",
+      "uid": "ef1cde28-ec13-4ed1-8ad7-0969d0e473d5",
+      "node": "k3s-wk-gpu3",
+      "phase": "Running",
+      "ready": true,
+      "containers": [
+        {
+          "name": "longhorn-csi-plugin",
+          "imageID": "docker.io/longhornio/longhorn-manager@sha256:02a0434391b1ebd7d25a5eb4686256b74b9fc105633cb9ba89f391ed3fc2bd40",
+          "ready": true,
+          "restartCount": 10
+        },
+        {
+          "name": "longhorn-liveness-probe",
+          "imageID": "docker.io/longhornio/livenessprobe@sha256:82d59c88296195f769df27ecff5a1091b01c6e8c6415204fe0dc1b30125873b0",
+          "ready": true,
+          "restartCount": 7
+        },
+        {
+          "name": "node-driver-registrar",
+          "imageID": "docker.io/longhornio/csi-node-driver-registrar@sha256:749938604d4b1129c59cd6db3a2229214428dbbe3e7f8c32c243338fbecf2c91",
+          "ready": true,
+          "restartCount": 10
+        }
+      ],
+      "pvcs": []
+    },
+    {
+      "namespace": "longhorn-system",
+      "name": "longhorn-csi-plugin-ntds7",
+      "uid": "12bc6b1a-ac68-49e5-8e0d-196738a62c7b",
+      "node": "k3s-wk-gpu1",
+      "phase": "Running",
+      "ready": true,
+      "containers": [
+        {
+          "name": "longhorn-csi-plugin",
+          "imageID": "docker.io/longhornio/longhorn-manager@sha256:02a0434391b1ebd7d25a5eb4686256b74b9fc105633cb9ba89f391ed3fc2bd40",
+          "ready": true,
+          "restartCount": 11
+        },
+        {
+          "name": "longhorn-liveness-probe",
+          "imageID": "docker.io/longhornio/livenessprobe@sha256:82d59c88296195f769df27ecff5a1091b01c6e8c6415204fe0dc1b30125873b0",
+          "ready": true,
+          "restartCount": 10
+        },
+        {
+          "name": "node-driver-registrar",
+          "imageID": "docker.io/longhornio/csi-node-driver-registrar@sha256:749938604d4b1129c59cd6db3a2229214428dbbe3e7f8c32c243338fbecf2c91",
+          "ready": true,
+          "restartCount": 11
+        }
+      ],
+      "pvcs": []
+    },
+    {
+      "namespace": "longhorn-system",
+      "name": "longhorn-csi-plugin-vm6lv",
+      "uid": "1ff49553-442c-4030-8f77-38757042f494",
+      "node": "k3s-wk-gpu4",
+      "phase": "Running",
+      "ready": true,
+      "containers": [
+        {
+          "name": "longhorn-csi-plugin",
+          "imageID": "docker.io/longhornio/longhorn-manager@sha256:02a0434391b1ebd7d25a5eb4686256b74b9fc105633cb9ba89f391ed3fc2bd40",
+          "ready": true,
+          "restartCount": 3
+        },
+        {
+          "name": "longhorn-liveness-probe",
+          "imageID": "docker.io/longhornio/livenessprobe@sha256:82d59c88296195f769df27ecff5a1091b01c6e8c6415204fe0dc1b30125873b0",
+          "ready": true,
+          "restartCount": 3
+        },
+        {
+          "name": "node-driver-registrar",
+          "imageID": "docker.io/longhornio/csi-node-driver-registrar@sha256:749938604d4b1129c59cd6db3a2229214428dbbe3e7f8c32c243338fbecf2c91",
+          "ready": true,
+          "restartCount": 3
+        }
+      ],
+      "pvcs": []
+    },
+    {
+      "namespace": "longhorn-system",
+      "name": "longhorn-manager-257qd",
+      "uid": "05b784f0-8ebc-4d70-9fe9-46acf2c099a2",
+      "node": "k3s-wk-gpu1",
+      "phase": "Running",
+      "ready": true,
+      "containers": [
+        {
+          "name": "longhorn-manager",
+          "imageID": "docker.io/longhornio/longhorn-manager@sha256:02a0434391b1ebd7d25a5eb4686256b74b9fc105633cb9ba89f391ed3fc2bd40",
+          "ready": true,
+          "restartCount": 6
+        },
+        {
+          "name": "pre-pull-share-manager-image",
+          "imageID": "docker.io/longhornio/longhorn-share-manager@sha256:2a9896eb69ccb4089bbeca79d4ddf8ccd00a887a52697c501dae51fb018a3e94",
+          "ready": true,
+          "restartCount": 5
+        }
+      ],
+      "pvcs": []
+    },
+    {
+      "namespace": "longhorn-system",
+      "name": "longhorn-manager-j6bll",
+      "uid": "ed3ac0be-3657-491c-88c8-9625f3f58304",
+      "node": "k3s-wk-gpu3",
+      "phase": "Running",
+      "ready": true,
+      "containers": [
+        {
+          "name": "longhorn-manager",
+          "imageID": "docker.io/longhornio/longhorn-manager@sha256:02a0434391b1ebd7d25a5eb4686256b74b9fc105633cb9ba89f391ed3fc2bd40",
+          "ready": true,
+          "restartCount": 4
+        },
+        {
+          "name": "pre-pull-share-manager-image",
+          "imageID": "docker.io/longhornio/longhorn-share-manager@sha256:2a9896eb69ccb4089bbeca79d4ddf8ccd00a887a52697c501dae51fb018a3e94",
+          "ready": true,
+          "restartCount": 3
+        }
+      ],
+      "pvcs": []
+    },
+    {
+      "namespace": "longhorn-system",
+      "name": "longhorn-manager-nwl6c",
+      "uid": "6be58ad3-6553-4c9d-a4a3-af05c66acdc8",
+      "node": "k3s-wk-gpu4",
+      "phase": "Running",
+      "ready": true,
+      "containers": [
+        {
+          "name": "longhorn-manager",
+          "imageID": "docker.io/longhornio/longhorn-manager@sha256:02a0434391b1ebd7d25a5eb4686256b74b9fc105633cb9ba89f391ed3fc2bd40",
+          "ready": true,
+          "restartCount": 3
+        },
+        {
+          "name": "pre-pull-share-manager-image",
+          "imageID": "docker.io/longhornio/longhorn-share-manager@sha256:2a9896eb69ccb4089bbeca79d4ddf8ccd00a887a52697c501dae51fb018a3e94",
+          "ready": true,
+          "restartCount": 3
+        }
+      ],
+      "pvcs": []
+    },
+    {
+      "namespace": "longhorn-system",
+      "name": "longhorn-ui-5f96f4bbdb-l4bfd",
+      "uid": "80317373-bf8b-4f44-8237-9a568a8bc5b4",
+      "node": "k3s-wk-gpu4",
+      "phase": "Running",
+      "ready": true,
+      "containers": [
+        {
+          "name": "longhorn-ui",
+          "imageID": "docker.io/longhornio/longhorn-ui@sha256:ed989d362320f77ced706ca104373eb273cce4625a58280a554b60917fcab9fd",
+          "ready": true,
+          "restartCount": 0
+        }
+      ],
+      "pvcs": []
+    },
+    {
+      "namespace": "longhorn-system",
+      "name": "share-manager-pvc-07fefb42-f68c-4b53-851f-22949eedb800",
+      "uid": "46d25d72-fa0d-4b2a-bc01-04108d5b448f",
+      "node": "k3s-wk-gpu4",
+      "phase": "Running",
+      "ready": true,
+      "containers": [
+        {
+          "name": "share-manager",
+          "imageID": "docker.io/longhornio/longhorn-share-manager@sha256:2a9896eb69ccb4089bbeca79d4ddf8ccd00a887a52697c501dae51fb018a3e94",
+          "ready": true,
+          "restartCount": 0
+        }
+      ],
+      "pvcs": []
+    },
+    {
+      "namespace": "longhorn-system",
+      "name": "share-manager-pvc-3d0143d2-4476-4eaf-90b3-2c2890de9408",
+      "uid": "63adceaa-0c5e-459b-8eff-b60c5123cf6b",
+      "node": "k3s-wk-gpu4",
+      "phase": "Running",
+      "ready": true,
+      "containers": [
+        {
+          "name": "share-manager",
+          "imageID": "docker.io/longhornio/longhorn-share-manager@sha256:2a9896eb69ccb4089bbeca79d4ddf8ccd00a887a52697c501dae51fb018a3e94",
+          "ready": true,
+          "restartCount": 0
+        }
+      ],
+      "pvcs": []
+    },
+    {
+      "namespace": "longhorn-system",
+      "name": "share-manager-pvc-b774d9f7-54fc-4fa1-954c-90f7692402de",
+      "uid": "adb1cc11-e24a-498c-b87d-03c77b4ad542",
+      "node": "k3s-wk-gpu3",
+      "phase": "Running",
+      "ready": true,
+      "containers": [
+        {
+          "name": "share-manager",
+          "imageID": "docker.io/longhornio/longhorn-share-manager@sha256:2a9896eb69ccb4089bbeca79d4ddf8ccd00a887a52697c501dae51fb018a3e94",
+          "ready": true,
+          "restartCount": 0
+        }
+      ],
+      "pvcs": []
+    },
+    {
+      "namespace": "metallb-system",
+      "name": "metallb-controller-7f4cd7d66b-nwcrn",
+      "uid": "389c7dcf-6887-4780-ac6a-6f677e35eec6",
+      "node": "k3s-wk-gpu4",
+      "phase": "Running",
+      "ready": true,
+      "containers": [
+        {
+          "name": "controller",
+          "imageID": "quay.io/metallb/controller@sha256:f51ab515de9ccd20dc3dccb093e48df8adddac019326c456f449e55ba91b6420",
+          "ready": true,
+          "restartCount": 0
+        }
+      ],
+      "pvcs": []
+    },
+    {
+      "namespace": "metallb-system",
+      "name": "metallb-frr-k8s-btl57",
+      "uid": "9da2ecf0-3360-43b2-9954-5771ffefbb22",
+      "node": "k3s-wk-gpu3",
+      "phase": "Running",
+      "ready": true,
+      "containers": [
+        {
+          "name": "controller",
+          "imageID": "quay.io/metallb/frr-k8s@sha256:1cb06fb2d5538c9f9b20d3adf00da8d1e6cb0166bc15df8add0d9efe578641a4",
+          "ready": true,
+          "restartCount": 0
+        },
+        {
+          "name": "frr",
+          "imageID": "quay.io/frrouting/frr@sha256:8745af1f9bbbc26ab11d99ccdf35e07aa3427a199749bef0cd6bb5132bb130df",
+          "ready": true,
+          "restartCount": 13
+        },
+        {
+          "name": "frr-metrics",
+          "imageID": "quay.io/frrouting/frr@sha256:8745af1f9bbbc26ab11d99ccdf35e07aa3427a199749bef0cd6bb5132bb130df",
+          "ready": true,
+          "restartCount": 0
+        },
+        {
+          "name": "frr-status",
+          "imageID": "quay.io/frrouting/frr@sha256:8745af1f9bbbc26ab11d99ccdf35e07aa3427a199749bef0cd6bb5132bb130df",
+          "ready": true,
+          "restartCount": 0
+        },
+        {
+          "name": "reloader",
+          "imageID": "quay.io/frrouting/frr@sha256:8745af1f9bbbc26ab11d99ccdf35e07aa3427a199749bef0cd6bb5132bb130df",
+          "ready": true,
+          "restartCount": 0
+        }
+      ],
+      "pvcs": []
+    },
+    {
+      "namespace": "metallb-system",
+      "name": "metallb-frr-k8s-wmdlx",
+      "uid": "0755eb3a-f043-44b6-a30b-593b9f42a855",
+      "node": "k3s-wk-gpu4",
+      "phase": "Running",
+      "ready": true,
+      "containers": [
+        {
+          "name": "controller",
+          "imageID": "quay.io/metallb/frr-k8s@sha256:1cb06fb2d5538c9f9b20d3adf00da8d1e6cb0166bc15df8add0d9efe578641a4",
+          "ready": true,
+          "restartCount": 0
+        },
+        {
+          "name": "frr",
+          "imageID": "quay.io/frrouting/frr@sha256:8745af1f9bbbc26ab11d99ccdf35e07aa3427a199749bef0cd6bb5132bb130df",
+          "ready": true,
+          "restartCount": 13
+        },
+        {
+          "name": "frr-metrics",
+          "imageID": "quay.io/frrouting/frr@sha256:8745af1f9bbbc26ab11d99ccdf35e07aa3427a199749bef0cd6bb5132bb130df",
+          "ready": true,
+          "restartCount": 0
+        },
+        {
+          "name": "frr-status",
+          "imageID": "quay.io/frrouting/frr@sha256:8745af1f9bbbc26ab11d99ccdf35e07aa3427a199749bef0cd6bb5132bb130df",
+          "ready": true,
+          "restartCount": 0
+        },
+        {
+          "name": "reloader",
+          "imageID": "quay.io/frrouting/frr@sha256:8745af1f9bbbc26ab11d99ccdf35e07aa3427a199749bef0cd6bb5132bb130df",
+          "ready": true,
+          "restartCount": 0
+        }
+      ],
+      "pvcs": []
+    },
+    {
+      "namespace": "metallb-system",
+      "name": "metallb-frr-k8s-xnkbn",
+      "uid": "b9c07f8b-aa37-4fce-948c-a86da2596c46",
+      "node": "k3s-wk-gpu1",
+      "phase": "Running",
+      "ready": true,
+      "containers": [
+        {
+          "name": "controller",
+          "imageID": "quay.io/metallb/frr-k8s@sha256:1cb06fb2d5538c9f9b20d3adf00da8d1e6cb0166bc15df8add0d9efe578641a4",
+          "ready": true,
+          "restartCount": 0
+        },
+        {
+          "name": "frr",
+          "imageID": "quay.io/frrouting/frr@sha256:8745af1f9bbbc26ab11d99ccdf35e07aa3427a199749bef0cd6bb5132bb130df",
+          "ready": true,
+          "restartCount": 13
+        },
+        {
+          "name": "frr-metrics",
+          "imageID": "quay.io/frrouting/frr@sha256:8745af1f9bbbc26ab11d99ccdf35e07aa3427a199749bef0cd6bb5132bb130df",
+          "ready": true,
+          "restartCount": 0
+        },
+        {
+          "name": "frr-status",
+          "imageID": "quay.io/frrouting/frr@sha256:8745af1f9bbbc26ab11d99ccdf35e07aa3427a199749bef0cd6bb5132bb130df",
+          "ready": true,
+          "restartCount": 0
+        },
+        {
+          "name": "reloader",
+          "imageID": "quay.io/frrouting/frr@sha256:8745af1f9bbbc26ab11d99ccdf35e07aa3427a199749bef0cd6bb5132bb130df",
+          "ready": true,
+          "restartCount": 0
+        }
+      ],
+      "pvcs": []
+    },
+    {
+      "namespace": "metallb-system",
+      "name": "metallb-speaker-6f59l",
+      "uid": "1717a156-654c-48fc-afcc-2c24421dd971",
+      "node": "k3s-wk-gpu4",
+      "phase": "Running",
+      "ready": true,
+      "containers": [
+        {
+          "name": "speaker",
+          "imageID": "quay.io/metallb/speaker@sha256:16561e96531e1852d5c229ad7fae6e994dcfa983ff7f4de6b6208b34a4e2ddbc",
+          "ready": true,
+          "restartCount": 0
+        }
+      ],
+      "pvcs": []
+    },
+    {
+      "namespace": "metallb-system",
+      "name": "metallb-speaker-qpmc9",
+      "uid": "f381a26d-2eb3-4bb6-ae0b-ded4caf9d6a0",
+      "node": "k3s-wk-gpu1",
+      "phase": "Running",
+      "ready": true,
+      "containers": [
+        {
+          "name": "speaker",
+          "imageID": "quay.io/metallb/speaker@sha256:16561e96531e1852d5c229ad7fae6e994dcfa983ff7f4de6b6208b34a4e2ddbc",
+          "ready": true,
+          "restartCount": 1
+        }
+      ],
+      "pvcs": []
+    },
+    {
+      "namespace": "metallb-system",
+      "name": "metallb-speaker-s7sc9",
+      "uid": "9a3221d4-32a1-4e72-b28f-765374ac669b",
+      "node": "k3s-wk-gpu3",
+      "phase": "Running",
+      "ready": true,
+      "containers": [
+        {
+          "name": "speaker",
+          "imageID": "quay.io/metallb/speaker@sha256:16561e96531e1852d5c229ad7fae6e994dcfa983ff7f4de6b6208b34a4e2ddbc",
+          "ready": true,
+          "restartCount": 0
+        }
+      ],
+      "pvcs": []
+    },
+    {
+      "namespace": "openwebui",
+      "name": "open-webui-0",
+      "uid": "bf38a0b7-b841-4f30-b30e-d0b3d8c97dfb",
+      "node": "k3s-wk-gpu1",
+      "phase": "Running",
+      "ready": true,
+      "containers": [
+        {
+          "name": "open-webui",
+          "imageID": "ghcr.io/open-webui/open-webui@sha256:9591b13f13843c7721c2b8eaf7382846c81b3ffe126526d1888d1fed50c6a33f",
+          "ready": true,
+          "restartCount": 0
+        }
+      ],
+      "pvcs": [
+        "open-webui"
+      ]
+    },
+    {
+      "namespace": "openwebui",
+      "name": "open-webui-pipelines-f7dcbdfc4-tw5rs",
+      "uid": "339c1e94-44f5-4ca8-9ebe-23eda780aed8",
+      "node": "k3s-wk-gpu4",
+      "phase": "Running",
+      "ready": true,
+      "containers": [
+        {
+          "name": "pipelines",
+          "imageID": "ghcr.io/open-webui/pipelines@sha256:b48e9bc338ce2be0acfbeff01810db72408a12f07739f9e3879c1f2b00952d6e",
+          "ready": true,
+          "restartCount": 0
+        }
+      ],
+      "pvcs": [
+        "open-webui-pipelines"
+      ]
+    },
+    {
+      "namespace": "openwebui",
+      "name": "open-webui-redis-6f74fc9d86-zrbj5",
+      "uid": "791d3f1f-827a-4af7-a7ad-01a48ea62583",
+      "node": "k3s-wk-gpu1",
+      "phase": "Running",
+      "ready": true,
+      "containers": [
+        {
+          "name": "open-webui-redis",
+          "imageID": "docker.io/library/redis@sha256:02419de7eddf55aa5bcf49efb74e88fa8d931b4d77c07eff8a6b2144472b6952",
+          "ready": true,
+          "restartCount": 0
+        }
+      ],
+      "pvcs": []
+    },
+    {
+      "namespace": "sops-system",
+      "name": "sops-secrets-operator-6f4fbb47c-b8hkh",
+      "uid": "3584ae72-2a0d-4263-b43c-d17e77e09c64",
+      "node": "k3s-wk-gpu4",
+      "phase": "Running",
+      "ready": true,
+      "containers": [
+        {
+          "name": "sops-secrets-operator",
+          "imageID": "docker.io/isindir/sops-secrets-operator@sha256:b9c2f955f178cf03a31743190fe90acc3b36560479aa8d628f9c6472fa9c912f",
+          "ready": true,
+          "restartCount": 14
+        }
+      ],
+      "pvcs": []
+    },
+    {
+      "namespace": "spegel",
+      "name": "spegel-q99br",
+      "uid": "ceef3d06-9d04-4e65-9c93-3a1687743c1f",
+      "node": "k3s-wk-gpu3",
+      "phase": "Running",
+      "ready": true,
+      "containers": [
+        {
+          "name": "registry",
+          "imageID": "ghcr.io/spegel-org/spegel@sha256:26c60b05e08ac738e8442bc389c5780bff0e1d8153956e45d810a2f1008cf56f",
+          "ready": true,
+          "restartCount": 1
+        }
+      ],
+      "pvcs": []
+    },
+    {
+      "namespace": "spegel",
+      "name": "spegel-sj9l9",
+      "uid": "2d88095c-0793-4874-9cfe-71409212d8f4",
+      "node": "k3s-wk-gpu1",
+      "phase": "Running",
+      "ready": true,
+      "containers": [
+        {
+          "name": "registry",
+          "imageID": "ghcr.io/spegel-org/spegel@sha256:26c60b05e08ac738e8442bc389c5780bff0e1d8153956e45d810a2f1008cf56f",
+          "ready": true,
+          "restartCount": 2
+        }
+      ],
+      "pvcs": []
+    },
+    {
+      "namespace": "spegel",
+      "name": "spegel-vk4k8",
+      "uid": "8945f68c-70c2-43f3-a25a-3e9559ad7242",
+      "node": "k3s-wk-gpu4",
+      "phase": "Running",
+      "ready": true,
+      "containers": [
+        {
+          "name": "registry",
+          "imageID": "ghcr.io/spegel-org/spegel@sha256:26c60b05e08ac738e8442bc389c5780bff0e1d8153956e45d810a2f1008cf56f",
+          "ready": true,
+          "restartCount": 0
+        }
+      ],
+      "pvcs": []
+    },
+    {
+      "namespace": "vcluster-ckf",
+      "name": "vcluster-ckf-0",
+      "uid": "ae656f1c-d271-4425-8880-6f0614b088d4",
+      "node": "k3s-wk-gpu4",
+      "phase": "Running",
+      "ready": true,
+      "containers": [
+        {
+          "name": "syncer",
+          "imageID": "ghcr.io/loft-sh/vcluster-pro@sha256:d0d1cafdc5f757481fe9be6a9f7f49d90020fd0f6b1916d81f7aa16acc3b4a63",
+          "ready": true,
+          "restartCount": 27
+        }
+      ],
+      "pvcs": [
+        "data-vcluster-ckf-0"
+      ]
+    }
+  ],
+  "gpu2GpuResourceOrAnnotatedWorkloads": [],
+  "gpu2Reservations": []
+}

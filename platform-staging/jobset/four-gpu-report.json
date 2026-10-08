@@ -1,0 +1,127 @@
+{
+  "namespace": "cps-jobset-gpu4-b55ea436",
+  "image": "ghcr.io/mul-cps/cps-jupyter-notebook@sha256:6a0fc97f17ac13f70c06b834a37641116407a0d134ea23ed3d67eac0f55fc0ab",
+  "cases": [
+    {
+      "case": "collective-retry",
+      "terminalState": "Completed",
+      "restarts": 1,
+      "injectedFailures": [
+        {
+          "attempt": 0,
+          "jobUID": "4f22a7bb-b3a5-4032-969d-0caddf63034a"
+        }
+      ],
+      "childrenRemoved": true,
+      "cleanupSweeps": 1,
+      "idempotencyTombstoneRetained": true,
+      "crossOwnerReadDenied": true,
+      "collectiveRanks": 4,
+      "allReduceIterations": 10,
+      "backend": "NCCL",
+      "checkpointRecoveryQualified": false
+    }
+  ],
+  "productionQualificationChanged": false,
+  "namespaceDeleted": true,
+  "sourceCommit": "5771df5e3db86a59b20fcf965cc3ce273df0c503",
+  "fixtureSHA256": "3750a3653e6b2244bcb3575b1f19deb04d03b1030fc27cb389791c8bc7cf0075",
+  "collectives": [
+    {
+      "attempt": 0,
+      "sha256": "ee6fbe3e1e47531ccd25666796ebb04abeb8c2aad0cfc229c66647ed63b1bd93",
+      "rank": 0,
+      "hostname": "cps-js-6bff832dfbe26ccab2a4d1cf1a09a921-workers-0-0",
+      "device": "NVIDIA A100-PCIE-40GB",
+      "torch": "2.11.0+cu129",
+      "peakBytes": 8192,
+      "iterations": 10,
+      "sum": 10
+    },
+    {
+      "attempt": 0,
+      "sha256": "b1e0459d7114b247f3e9ab6091da65bce9f9913a14cbc2bcddb9e90c3b8c8b00",
+      "rank": 1,
+      "hostname": "cps-js-6bff832dfbe26ccab2a4d1cf1a09a921-workers-1-0",
+      "device": "NVIDIA A100-PCIE-40GB",
+      "torch": "2.11.0+cu129",
+      "peakBytes": 8192,
+      "iterations": 10,
+      "sum": 10
+    },
+    {
+      "attempt": 0,
+      "sha256": "6cdd45cb383d89a7d3bf73b7d4b6ca906e6687323d64ba1e03f13507d08fa0db",
+      "rank": 2,
+      "hostname": "cps-js-6bff832dfbe26ccab2a4d1cf1a09a921-workers-2-0",
+      "device": "NVIDIA A100-PCIE-40GB",
+      "torch": "2.11.0+cu129",
+      "peakBytes": 8192,
+      "iterations": 10,
+      "sum": 10
+    },
+    {
+      "attempt": 0,
+      "sha256": "fd7310c817c2bddf505e6b8efa466e98d09340edacaba94c81a9a33679977f76",
+      "rank": 3,
+      "hostname": "cps-js-6bff832dfbe26ccab2a4d1cf1a09a921-workers-3-0",
+      "device": "NVIDIA A100-PCIE-40GB",
+      "torch": "2.11.0+cu129",
+      "peakBytes": 8192,
+      "iterations": 10,
+      "sum": 10
+    },
+    {
+      "attempt": 1,
+      "sha256": "9924190c40a4f91491f9db09aec95c41dc9ba296b666abf80c974806300d3eef",
+      "rank": 0,
+      "hostname": "cps-js-6bff832dfbe26ccab2a4d1cf1a09a921-workers-0-0",
+      "device": "NVIDIA A100-PCIE-40GB",
+      "torch": "2.11.0+cu129",
+      "peakBytes": 8192,
+      "iterations": 10,
+      "sum": 10
+    },
+    {
+      "attempt": 1,
+      "sha256": "54985ec326a3f3cc9d7823314cf2b444e10ec91b0abb50218e298c611be1dbc9",
+      "rank": 1,
+      "hostname": "cps-js-6bff832dfbe26ccab2a4d1cf1a09a921-workers-1-0",
+      "device": "NVIDIA A100-PCIE-40GB",
+      "torch": "2.11.0+cu129",
+      "peakBytes": 8192,
+      "iterations": 10,
+      "sum": 10
+    },
+    {
+      "attempt": 1,
+      "sha256": "89ccc9122a6b6e01dd165f25f3c91cd150b042824ced64f0ab0c0ded1c29f0a4",
+      "rank": 2,
+      "hostname": "cps-js-6bff832dfbe26ccab2a4d1cf1a09a921-workers-2-0",
+      "device": "NVIDIA A100-PCIE-40GB",
+      "torch": "2.11.0+cu129",
+      "peakBytes": 8192,
+      "iterations": 10,
+      "sum": 10
+    },
+    {
+      "attempt": 1,
+      "sha256": "e3aec3c3f0e265d1d61c2740f809d00f66310acdf749d5281f5735ab85470f59",
+      "rank": 3,
+      "hostname": "cps-js-6bff832dfbe26ccab2a4d1cf1a09a921-workers-3-0",
+      "device": "NVIDIA A100-PCIE-40GB",
+      "torch": "2.11.0+cu129",
+      "peakBytes": 8192,
+      "iterations": 10,
+      "sum": 10
+    }
+  ],
+  "distinctPhysicalGPUCount": 4,
+  "replacementNodes": {
+    "k3s-wk-gpu1": 1,
+    "k3s-wk-gpu2": 2,
+    "k3s-wk-gpu3": 1
+  },
+  "scope": "controlled four-exclusive-GPU NCCL collective and one retry; no checkpoint recovery, eight-GPU or production-user qualification",
+  "productionDistributedQualified": false
+}

@@ -1,0 +1,37 @@
+{
+  "applicationCommit": "111dc2d41346027fae1b747646b47e982d0be628",
+  "image": "ghcr.io/mul-cps/cps-compute:qualification-recovery-111dc2d@sha256:30c09221af83a13cb46c81e1c98b66f7c80467726f6bd38e3ce6fdb06880a520",
+  "platformManifest": "sha256:4d5fdf34b7ed81bfcb763144f25a02146695b10d119d228c2adc4bf0df23184c",
+  "attestationManifest": "sha256:05d53ed66e66733e5acec5142f298b8c8cf6cc26452b61aa153f4172f5c34c6b",
+  "wheelSha256": "254960c12bf8f564a8b27269604a6c1be109fe414d5cdeb48a1c9034680eeca6",
+  "sourceTests": {
+    "passed": 261,
+    "warnings": 22
+  },
+  "installedWheelTests": {
+    "passed": 261,
+    "warnings": 22
+  },
+  "imageSourceFilesMatched": 20,
+  "imageUid": 10001,
+  "imagePipCheck": "passed",
+  "remoteIndexVerified": true,
+  "productionDeployed": false,
+  "liveRecoveryQualified": true,
+  "qualificationPending": [
+    "Legacy Dask token/resource-template permissions and namespace-wide Pod egress coverage",
+    "Interruption during an in-flight SSH RPC itself (hard crashes after committed NAS side effects qualified)",
+    "Production legacy storage handover and cross-group file authorization",
+    "Full storage restore/off-host backup"
+  ],
+  "liveRecoveryScope": "Both CPS/CIT failed provision and failed archive replay on the same fixture database, including handled gateway restart after failures",
+  "liveRecoveryEvidence": "gateway-storage-recovery-live-report.json",
+  "hardCrashAfterNasMutationQualified": true,
+  "podReplacementStateRetentionQualified": true,
+  "hardCrashEvidence": "gateway-storage-hard-crash-report.json",
+  "v2KubernetesMountBoundaryQualified": true,
+  "mountBoundaryEvidence": "workspace-mount-boundary-report.json",
+  "podNasEgressFixtureQualified": true,
+  "podNasEgressProductionQualified": false,
+  "podNasEgressEvidence": "../../network/nas-egress-qualification-report.json"
+}

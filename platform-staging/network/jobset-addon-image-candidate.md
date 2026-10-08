@@ -1,0 +1,13 @@
+# Combined compute/addon image candidate
+
+Status: published qualification image; production gateway, consoles and notebook images remain unchanged.
+
+The candidate is `ghcr.io/mul-cps/cps-compute:qualification-addon-ecca902@sha256:f0b96b871d2615d0873ac3437a9f3c65138aaf7a4a3418dc16b77835d538c6e3` from compute revision `ecca9028cf11c263f1753c4d01200ca753fcfce8`, paired with admin revision `cdbc1d7ea848f1d6d791f6bc3aeeba807b7d95b9`. It contains the same verified wheel, SDK, gateway, runner and rebuilt prebuilt addon; versions remain pilot 0.1.0, not a production release. Runtime constraints were reused from the previously qualified gateway baseline.
+
+All 21 packaged Python modules and five addon assets were checked against explicit source hashes inside the final image. The initial bind-mount comparison found zero files and was rejected as insufficient evidence; the final check passed hashes over stdin and required nonzero counts. The image runs as UID 10001 and `pip check` passed. The associated wheel passed 267 source/installed tests; seven addon helper tests and the prebuilt build passed. Live CPU ownership/list/log fixtures are recorded separately in the preceding JobSet qualification reports.
+
+BuildKit produced SPDX SBOM and SLSA provenance v1 attestations; both subjects were checked against the Linux manifest digest. Publication retained the whole OCI index and attestations. Remote index and child manifest bytes were independently hashed and matched local digests. Exact manifests/checksums and application revisions are in `jobset-addon-image-candidate.json`.
+
+A temporary Pod ran the published image with the actual `cps-compute-controller` service account. SelfSubjectReview identified that principal, and seven SelfSubjectAccessReviews confirmed namespace-scoped JobSet get/list, Job get/list, Pod get/list and pods/log get in `cps-workflows`. Actual empty, narrowly selected JobSet/Job/Pod list calls succeeded. Automatic token mounting is disabled on the account: the first probe correctly had no token and failed startup. The successful probe alone used an explicit 600-second token projection with CA and namespace; no credential was printed, exported or given to a browser. No RBAC change or distributed workload was created. The probe and its temporary egress policy were removed and deletion verified.
+
+These permission checks do not prove an end-to-end released gateway HTTP log read under real Hub OAuth. Before promotion, publish compatible admin and notebook images, qualify that bridge/rendered addon, and complete production identity/grant, launcher/Pod-isolation and GPU gates. Pin the recorded OCI index digest when testing; do not merge automatic Fleet promotion or enable profiles on the strength of this publication alone.

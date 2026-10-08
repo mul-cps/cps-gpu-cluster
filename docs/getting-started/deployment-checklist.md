@@ -12,7 +12,7 @@ Use this checklist to deploy the GPU cluster from scratch.
 - [ ] Network configured (VLAN 633 accessible)
 - [ ] NVMe ZFS storage pool created (`NvmeZFSstorage`)
 - [ ] Ubuntu 24.04 Cloud-Init template created (VMID: 9000)
-  - See: [bootstrap-cluster/terraform/TEMPLATE_CREATION.md](../../bootstrap-cluster/terraform/TEMPLATE_CREATION.md)
+  - See: [Terraform template creation](https://github.com/mul-cps/cps-gpu-cluster/blob/main/bootstrap-cluster/terraform/TEMPLATE_CREATION.md)
 - [ ] Proxmox API token created for Terraform
   - User: `terraform-prov@pve`
   - Token name: `mytoken`

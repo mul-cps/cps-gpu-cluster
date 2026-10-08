@@ -1,0 +1,64 @@
+{
+  "services": {
+    "seaweed": {
+      "image": "chrislusf/seaweedfs:4.48@sha256:aba492e2a4e4c90bff795745e8e660affa1f09e7650f5981bd7bccd1a06cd931",
+      "entrypoint": [
+        "/usr/bin/weed"
+      ],
+      "command": [
+        "server",
+        "-ip=127.0.0.1",
+        "-ip.bind=0.0.0.0",
+        "-dir=/data",
+        "-master.dir=/data/master",
+        "-volume.max=64",
+        "-master.volumeSizeLimitMB=1024",
+        "-filer=true",
+        "-filer.disableDirListing=true",
+        "-s3=true",
+        "-s3.port=8333",
+        "-s3.config=/run/cps/s3.json",
+        "-s3.cert.file=/run/cps/tls.crt",
+        "-s3.key.file=/run/cps/tls.key"
+      ],
+      "user": "568:568",
+      "ports": [
+        "8333:8333"
+      ],
+      "restart": "unless-stopped",
+      "cap_drop": [
+        "ALL"
+      ],
+      "security_opt": [
+        "no-new-privileges:true"
+      ],
+      "read_only": true,
+      "tmpfs": [
+        "/tmp:rw,noexec,nosuid,size=64m"
+      ],
+      "mem_limit": "2g",
+      "cpus": 2.0,
+      "pids_limit": 256,
+      "volumes": [
+        "/mnt/persistent1/cps_compute_artifacts/data:/data",
+        "/mnt/persistent1/cps_compute_artifacts/config:/run/cps:ro",
+        "/mnt/persistent1/cps_compute_artifacts/config/filer.toml:/etc/seaweedfs/filer.toml:ro"
+      ],
+      "healthcheck": {
+        "test": [
+          "CMD",
+          "curl",
+          "--cacert",
+          "/run/cps/ca.crt",
+          "--silent",
+          "--output",
+          "/dev/null",
+          "https://127.0.0.1:8333/"
+        ],
+        "interval": "30s",
+        "timeout": "10s",
+        "retries": 3
+      }
+    }
+  }
+}

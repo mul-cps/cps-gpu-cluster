@@ -1,0 +1,33 @@
+{
+  "fixtureRemoved": true,
+  "temporaryRelayRuleRemoved": true,
+  "removedJobsClaims": [
+    {
+      "source": "cps",
+      "job": "jupyterhub/cps-archive-verify-d5b07fd88ded4acb",
+      "pvc": "jupyterhub/cps-workspace-5c76a32628758fcf7a551083828101cf55234a18"
+    },
+    {
+      "source": "cit",
+      "job": "cit-jhub/cps-archive-verify-711583c25cc44d20",
+      "pvc": "cit-jhub/cps-workspace-c2f12313299b996ce63dd952a09b9cba8303d7bb"
+    }
+  ],
+  "retainedPVs": [
+    {
+      "source": "cps",
+      "pv": "cps-workspace-5c76a32628758fcf7a551083828101cf55234a18",
+      "path": "/mnt/persistent1/cps_compute_workspaces/cps/5c76a32628758fcf7a551083828101cf55234a185542e30a14b2389c94762904",
+      "phase": "Released",
+      "nasReadonlyVerified": true
+    },
+    {
+      "source": "cit",
+      "pv": "cps-workspace-c2f12313299b996ce63dd952a09b9cba8303d7bb",
+      "path": "/mnt/persistent1/cps_compute_workspaces/cit/c2f12313299b996ce63dd952a09b9cba8303d7bbaebe16d61fdfc2643e12b585",
+      "phase": "Released",
+      "nasReadonlyVerified": true
+    }
+  ],
+  "productionGatewayImageUnchanged": "ghcr.io/mul-cps/cps-compute:qualification-5771df5@sha256:627f093c3c96038c7ecd9e9b99f0138198c23c9460cabb7bd11b19e94f465096"
+}

@@ -1,0 +1,129 @@
+{
+  "observedAt": "2026-10-08T14:34:36.443884+00:00",
+  "scope": "Root-owned GPU2 CPU-only firmware extraction; no driver installation",
+  "attempts": [
+    {
+      "job": {
+        "name": "gpu2-r580-firmware-preload",
+        "uid": "d7b3eec0-0cc0-486c-96aa-f6b5ddeaa407",
+        "status": {
+          "conditions": [
+            {
+              "lastProbeTime": "2026-10-08T14:26:29Z",
+              "lastTransitionTime": "2026-10-08T14:26:29Z",
+              "message": "Job has reached the specified backoff limit",
+              "reason": "BackoffLimitExceeded",
+              "status": "True",
+              "type": "FailureTarget"
+            },
+            {
+              "lastProbeTime": "2026-10-08T14:26:29Z",
+              "lastTransitionTime": "2026-10-08T14:26:29Z",
+              "message": "Job has reached the specified backoff limit",
+              "reason": "BackoffLimitExceeded",
+              "status": "True",
+              "type": "Failed"
+            }
+          ],
+          "failed": 1,
+          "ready": 0,
+          "startTime": "2026-10-08T14:26:17Z",
+          "terminating": 0,
+          "uncountedTerminatedPods": {}
+        }
+      },
+      "pod": {
+        "name": "gpu2-r580-firmware-preload-c4dvv",
+        "uid": "7e60d2fa-d156-4fd0-bedb-1b6518d29cab",
+        "node": "k3s-wk-gpu2",
+        "phase": "Failed",
+        "imageID": "nvcr.io/nvidia/driver@sha256:41515698692bd5e192186e620b65717af960a66d22dbb5a06e3656575a5d9148",
+        "restartCount": 0,
+        "state": {
+          "terminated": {
+            "containerID": "containerd://de10f4fcb33e87ac20b182574256bb3f955d150fa47e96d1e4d86a34405b6f96",
+            "exitCode": 143,
+            "finishedAt": "2026-10-08T14:26:27Z",
+            "reason": "Error",
+            "startedAt": "2026-10-08T14:26:18Z"
+          }
+        }
+      },
+      "proposalFile": "r580-firmware-preload-not-applied.yaml",
+      "proposalSHA256": "9f0caa6fffbbdd6bc84b347aecea8fa18ba9bc4fcf420db4e9e552fd1c4fadfc",
+      "actualScriptSHA256": "611ce7abd877afd237d12fee3a41660218d4707e83b819469117024c8bfa546d",
+      "logs": "/drivers/NVIDIA-Linux-x86_64-580.95.05.run: OK\nCreating directory /scratch/r580\nVerifying archive integrity... OK\nExtraction failed.\nUncompressing NVIDIA Accelerated Graphics Driver for Linux-x86_64 580.95.05....................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................\nTerminated\n",
+      "cpuOnly": true,
+      "serviceAccountTokenMounted": false,
+      "privileged": false,
+      "capabilities": {
+        "drop": [
+          "ALL"
+        ]
+      }
+    },
+    {
+      "job": {
+        "name": "gpu2-r580-firmware-preload-v2",
+        "uid": "d485b078-f024-4cdc-bccd-4d90a70c42f8",
+        "status": {
+          "completionTime": "2026-10-08T14:32:34Z",
+          "conditions": [
+            {
+              "lastProbeTime": "2026-10-08T14:32:34Z",
+              "lastTransitionTime": "2026-10-08T14:32:34Z",
+              "message": "Reached expected number of succeeded pods",
+              "reason": "CompletionsReached",
+              "status": "True",
+              "type": "SuccessCriteriaMet"
+            },
+            {
+              "lastProbeTime": "2026-10-08T14:32:34Z",
+              "lastTransitionTime": "2026-10-08T14:32:34Z",
+              "message": "Reached expected number of succeeded pods",
+              "reason": "CompletionsReached",
+              "status": "True",
+              "type": "Complete"
+            }
+          ],
+          "ready": 0,
+          "startTime": "2026-10-08T14:32:25Z",
+          "succeeded": 1,
+          "terminating": 0,
+          "uncountedTerminatedPods": {}
+        }
+      },
+      "pod": {
+        "name": "gpu2-r580-firmware-preload-v2-fwkxz",
+        "uid": "6138bb42-91aa-49f4-a411-da5040d41556",
+        "node": "k3s-wk-gpu2",
+        "phase": "Succeeded",
+        "imageID": "nvcr.io/nvidia/driver@sha256:41515698692bd5e192186e620b65717af960a66d22dbb5a06e3656575a5d9148",
+        "restartCount": 0,
+        "state": {
+          "terminated": {
+            "containerID": "containerd://60e5cca0700de80ab886c83f87806211efeff0ff4775c2655c4079a8e009fb8a",
+            "exitCode": 0,
+            "finishedAt": "2026-10-08T14:32:31Z",
+            "reason": "Completed",
+            "startedAt": "2026-10-08T14:32:26Z"
+          }
+        }
+      },
+      "proposalFile": "r580-firmware-preload-v2-not-applied.yaml",
+      "proposalSHA256": "ac1f32aaafcceee808328f670d8b1f5a9ec056d22afc583da1c43e887de04f19",
+      "actualScriptSHA256": "43251a8e359291caf2ca94d8bb8bec231c45eb6720bb76b0020b6be9c77adee6",
+      "logs": "/drivers/NVIDIA-Linux-x86_64-580.95.05.run: OK\nCREATED gsp_tu10x.bin 2eb1c5015cec34a7b43e0c390139d2ad2f8fc2ad8ce7813ed4c38f6c626e5aea\nCREATED gsp_ga10x.bin aca0afdf6587afa641639f555fbe148b2fe1b1138445731d5dfce05a87acb021\nEXTRACTION_ONLY_NO_DRIVER_INSTALL_COMPLETE\n",
+      "cpuOnly": true,
+      "serviceAccountTokenMounted": false,
+      "privileged": false,
+      "capabilities": {
+        "drop": [
+          "ALL"
+        ]
+      }
+    }
+  ],
+  "firmwarePreloadPassed": true,
+  "r580RollbackExecuted": false
+}

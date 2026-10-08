@@ -1,0 +1,51 @@
+{
+  "passed": true,
+  "checks": [
+    {
+      "source": "cit",
+      "proof": {
+        "job": "cit-jhub/cps-archive-verify-eae4401dd31f4a95",
+        "read_only_verified": true
+      },
+      "resources": {
+        "limits": {
+          "cpu": "500m",
+          "memory": "256Mi"
+        },
+        "requests": {
+          "cpu": "100m",
+          "memory": "64Mi"
+        }
+      },
+      "exitCode": 0,
+      "oomKilled": false,
+      "rwClientMount": true,
+      "uid": 1000
+    },
+    {
+      "source": "cps",
+      "proof": {
+        "job": "jupyterhub/cps-archive-verify-c5962e35b445458f",
+        "read_only_verified": true
+      },
+      "resources": {
+        "limits": {
+          "cpu": "500m",
+          "memory": "256Mi"
+        },
+        "requests": {
+          "cpu": "100m",
+          "memory": "64Mi"
+        }
+      },
+      "exitCode": 0,
+      "oomKilled": false,
+      "rwClientMount": true,
+      "uid": 1000
+    }
+  ],
+  "cleanup": "fixture Jobs/Pods/PVCs deleted; original Retain PV claimRefs restored",
+  "scope": "current source operator test, existing immutable verifier runtime; no controller-SA HTTP or new packaged image qualification",
+  "cleanupVerified": true,
+  "sourceRevision": "6bb6a57bc8d8426e281c0654ac8eedd1668ae600"
+}

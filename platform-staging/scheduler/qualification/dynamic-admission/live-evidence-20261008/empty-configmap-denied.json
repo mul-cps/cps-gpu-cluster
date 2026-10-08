@@ -1,0 +1,43 @@
+{
+  "command": [
+    "kubectl",
+    "--request-timeout=20s",
+    "--as",
+    "system:serviceaccount:offline:declared-binder",
+    "create",
+    "--dry-run=server",
+    "-f",
+    "-",
+    "-o",
+    "json"
+  ],
+  "exitCode": 1,
+  "expected": "policy-deny",
+  "input": {
+    "apiVersion": "v1",
+    "data": {
+      "CUDA_DEVICE_MEMORY_LIMIT": "5324m",
+      "GPU_PORTION": "0.13",
+      "NVIDIA_VISIBLE_DEVICES": "k8s.device-plugin.nvidia.com/gpu=1",
+      "RUNAI_NUM_OF_GPUS": "0.13"
+    },
+    "kind": "ConfigMap",
+    "metadata": {
+      "name": "offline-argo-5-bcdfgh2-shared-gpu-1",
+      "namespace": "cps-dynamic-admission-live-20261008",
+      "ownerReferences": [
+        {
+          "apiVersion": "v1",
+          "kind": "Pod",
+          "name": "offline-argo-5-declared",
+          "uid": "11111111-1111-1111-1111-111111111111"
+        }
+      ]
+    }
+  },
+  "inputSha256": "e1c0662569885e68b68ba402cfc8a7f68aa28c8d27d40432ec0fda2086666651",
+  "matchedExpectation": true,
+  "name": "empty-configmap-denied",
+  "stderr": "The configmaps \"offline-argo-5-bcdfgh2-shared-gpu-1\" is invalid: : ValidatingAdmissionPolicy 'cps-dynamic-admission-live-20261008-quota' with binding 'cps-dynamic-admission-live-20261008-quota' denied request: Every ConfigMap mutation requires an explicitly reviewed authenticated writer\n",
+  "stdout": ""
+}

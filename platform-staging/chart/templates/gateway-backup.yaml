@@ -1,0 +1,77 @@
+{{- if .Values.enabled }}
+{{- $image := required "gateway released image digest required" .Values.gateway.image }}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: compute-state-backup
+  namespace: {{ .Values.namespace }}
+data:
+  backup-state.py: |
+{{ .Files.Get "files/backup-state.py" | indent 4 }}
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: compute-state-backup
+  namespace: {{ .Values.namespace }}
+spec:
+  accessModes: [ReadWriteOnce]
+  storageClassName: {{ .Values.storageClass }}
+  resources:
+    requests: {storage: 10Gi}
+---
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: compute-state-backup
+  namespace: {{ .Values.namespace }}
+spec:
+  schedule: {{ .Values.backupSchedule | quote }}
+  concurrencyPolicy: Forbid
+  successfulJobsHistoryLimit: 1
+  failedJobsHistoryLimit: 3
+  jobTemplate:
+    spec:
+      backoffLimit: 1
+      activeDeadlineSeconds: 300
+      template:
+        metadata:
+          labels: {app: compute-state-backup}
+        spec:
+          restartPolicy: Never
+          automountServiceAccountToken: false
+          imagePullSecrets: [{name: {{ .Values.gateway.imagePullSecretRef }}}]
+          affinity:
+            podAffinity:
+              requiredDuringSchedulingIgnoredDuringExecution:
+                - labelSelector:
+                    matchLabels: {app: compute-gateway}
+                  topologyKey: kubernetes.io/hostname
+          securityContext:
+            runAsNonRoot: true
+            runAsUser: 10001
+            fsGroup: 10001
+            seccompProfile: {type: RuntimeDefault}
+          containers:
+            - name: backup
+              image: {{ $image | quote }}
+              command: [python, /scripts/backup-state.py]
+              env:
+                - {name: BACKUP_IMAGE, value: {{ $image | quote }}}
+                - {name: BACKUP_POLICY_HASH, value: {{ .Values.policyHash | quote }}}
+              securityContext:
+                allowPrivilegeEscalation: false
+                capabilities: {drop: [ALL]}
+              resources:
+                requests: {cpu: 50m, memory: 64Mi}
+                limits: {cpu: "1", memory: 256Mi}
+              volumeMounts:
+                # SQLite writer locks require write access to journal metadata.
+                - {name: source, mountPath: /data}
+                - {name: backup, mountPath: /backup}
+                - {name: script, mountPath: /scripts, readOnly: true}
+          volumes:
+            - {name: source, persistentVolumeClaim: {claimName: compute-state}}
+            - {name: backup, persistentVolumeClaim: {claimName: compute-state-backup}}
+            - {name: script, configMap: {name: compute-state-backup}}
+{{- end }}

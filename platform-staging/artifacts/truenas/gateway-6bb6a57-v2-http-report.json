@@ -1,0 +1,223 @@
+{
+  "tlsVerified": true,
+  "serviceAccount": "cps-compute-controller",
+  "image": "sha256:05f9e4428f576bede669c969398090b64af6f53faa487ba0c8a546db77b0170f",
+  "sources": {
+    "cps": {
+      "registration": {
+        "workspace": "qualification-http-6bb6a57-ff6f9c5e38594b64",
+        "owner": "qualification-neutral",
+        "server": "",
+        "members": [
+          "fixture-person"
+        ],
+        "principal": "workspace:cps:qualification-http-6bb6a57-ff6f9c5e38594b64",
+        "profiles": [
+          "interactive-cpu"
+        ],
+        "ceiling": {
+          "cpu": "2",
+          "memory": "8Gi"
+        },
+        "namespace": "jupyterhub",
+        "pod": "qualification-absent-6c390c033bdd424c",
+        "policy_hash": "sha256:051cd754210af2830d67968eea898f674a55ff66f5c88b3db95dff205f04e33d",
+        "group_id": "qualification-http-6bb6a57-af6198859bae470580cd7b526bd86794"
+      },
+      "storage": {
+        "pvc": "cps-workspace-f6e56a298a69614c2461c0bae9c60bdf4bc7733f",
+        "pv": "cps-workspace-f6e56a298a69614c2461c0bae9c60bdf4bc7733f",
+        "namespace": "jupyterhub",
+        "server": "193.170.30.58",
+        "path": "/mnt/persistent1/cps_compute_workspaces/cps/f6e56a298a69614c2461c0bae9c60bdf4bc7733f88675287c842555c263f4083",
+        "group_hash": "f6e56a298a69614c2461c0bae9c60bdf4bc7733f88675287c842555c263f4083",
+        "storage_version": 2,
+        "state": "active",
+        "readonly_mounts": [],
+        "evidence": {
+          "dataset": "persistent1/cps_compute_workspaces/cps/f6e56a298a69614c2461c0bae9c60bdf4bc7733f88675287c842555c263f4083",
+          "readonly": false,
+          "mechanism": "zfs-readonly",
+          "permissions_verified": true,
+          "acltype": "POSIX1E",
+          "aclmode": "DISCARD",
+          "uid": 1000,
+          "gid": 1000,
+          "mode": "0770",
+          "default_acl": false
+        }
+      },
+      "crossSourceDenied": true,
+      "archive": {
+        "state": "archived",
+        "read_only_verified": true,
+        "evidence": {
+          "nas": {
+            "dataset": "persistent1/cps_compute_workspaces/cps/f6e56a298a69614c2461c0bae9c60bdf4bc7733f88675287c842555c263f4083",
+            "readonly": true,
+            "mechanism": "zfs-readonly"
+          },
+          "mount": {
+            "job": "jupyterhub/cps-archive-verify-38e399db40bd4f37",
+            "read_only_verified": true
+          }
+        }
+      },
+      "reprovisionSameBinding": true,
+      "archivedProvisionDenied": true
+    },
+    "cit": {
+      "registration": {
+        "workspace": "qualification-http-6bb6a57-d7d82e64630e49ea",
+        "owner": "qualification-neutral",
+        "server": "",
+        "members": [
+          "fixture-person"
+        ],
+        "principal": "workspace:cit:qualification-http-6bb6a57-d7d82e64630e49ea",
+        "profiles": [
+          "interactive-cpu"
+        ],
+        "ceiling": {
+          "cpu": "2",
+          "memory": "8Gi"
+        },
+        "namespace": "cit-jhub",
+        "pod": "qualification-absent-fe891e61a8784962",
+        "policy_hash": "sha256:051cd754210af2830d67968eea898f674a55ff66f5c88b3db95dff205f04e33d",
+        "group_id": "qualification-http-6bb6a57-a693fb734aa54c75a9497fb6c69d2be0"
+      },
+      "storage": {
+        "pvc": "cps-workspace-8cf162ecb9275a9ece506b0df2e61f25afec26cd",
+        "pv": "cps-workspace-8cf162ecb9275a9ece506b0df2e61f25afec26cd",
+        "namespace": "cit-jhub",
+        "server": "193.170.30.58",
+        "path": "/mnt/persistent1/cps_compute_workspaces/cit/8cf162ecb9275a9ece506b0df2e61f25afec26cd393a59ee6dd5d3277b8c7e24",
+        "group_hash": "8cf162ecb9275a9ece506b0df2e61f25afec26cd393a59ee6dd5d3277b8c7e24",
+        "storage_version": 2,
+        "state": "active",
+        "readonly_mounts": [],
+        "evidence": {
+          "dataset": "persistent1/cps_compute_workspaces/cit/8cf162ecb9275a9ece506b0df2e61f25afec26cd393a59ee6dd5d3277b8c7e24",
+          "readonly": false,
+          "mechanism": "zfs-readonly",
+          "permissions_verified": true,
+          "acltype": "POSIX1E",
+          "aclmode": "DISCARD",
+          "uid": 1000,
+          "gid": 1000,
+          "mode": "0770",
+          "default_acl": false
+        }
+      },
+      "crossSourceDenied": true,
+      "archive": {
+        "state": "archived",
+        "read_only_verified": true,
+        "evidence": {
+          "nas": {
+            "dataset": "persistent1/cps_compute_workspaces/cit/8cf162ecb9275a9ece506b0df2e61f25afec26cd393a59ee6dd5d3277b8c7e24",
+            "readonly": true,
+            "mechanism": "zfs-readonly"
+          },
+          "mount": {
+            "job": "cit-jhub/cps-archive-verify-c9f78a79acd44162",
+            "read_only_verified": true
+          }
+        }
+      },
+      "reprovisionSameBinding": true,
+      "archivedProvisionDenied": true
+    }
+  },
+  "authRejections": [
+    {
+      "name": "missing",
+      "status": 401
+    },
+    {
+      "name": "invalid",
+      "status": 401
+    },
+    {
+      "name": "cps-metrics",
+      "status": 403
+    },
+    {
+      "name": "cit-metrics",
+      "status": 403
+    }
+  ],
+  "limitations": [
+    "Fixture canonical people and neutral Hub; no production identity linkage or browser authorization",
+    "Fixture in-memory proxy, no human server spawn or RTC",
+    "Empty synthetic data; no backup/legacy handover qualification"
+  ],
+  "auditRecords": 14,
+  "archivedStatesVerified": true,
+  "qualified": false,
+  "observedAt": "2026-10-07T03:11:52.275497+00:00",
+  "computeSourceRevision": "6bb6a57bc8d8426e281c0654ac8eedd1668ae600",
+  "productionPromotionAllowed": false,
+  "apiLifecyclePassed": true,
+  "storageVersion": 2,
+  "fixtureHubVersion": "5.5.2",
+  "scope": "Bounded current-package HTTPS/Hub-fixture/NAS/Kubernetes lifecycle only",
+  "controlDatabaseCaptureSha256": "ddc6c78d2d648b757ff2e59564a1ba05629005f59627908601000014def10692",
+  "httpProbeSha256": "cf3b19da12513be2cf6c3fdccf0ef26360e7fd8f5ab5930ab8809f2421757820",
+  "cleanup": {
+    "datasetsRetainedReadOnly": true,
+    "removed": [
+      "jupyterhub/job/cps-archive-verify-38e399db40bd4f37",
+      "jupyterhub/pvc/cps-workspace-f6e56a298a69614c2461c0bae9c60bdf4bc7733f",
+      "pv/cps-workspace-f6e56a298a69614c2461c0bae9c60bdf4bc7733f",
+      "cit-jhub/job/cps-archive-verify-c9f78a79acd44162",
+      "cit-jhub/pvc/cps-workspace-8cf162ecb9275a9ece506b0df2e61f25afec26cd",
+      "pv/cps-workspace-8cf162ecb9275a9ece506b0df2e61f25afec26cd",
+      "cps-compute/pod/qualification-gateway-6bb6a57-http",
+      "cps-compute/configmap/qualification-gateway-6bb6a57-http",
+      "cps-compute/secret/qualification-gateway-6bb6a57-http",
+      "cps-artifacts-relay/networkpolicy/qualification-gateway-6bb6a57-http"
+    ],
+    "verifiers": {
+      "cps": {
+        "job": "cps-archive-verify-38e399db40bd4f37",
+        "uid": 1000,
+        "podUid": "e68c9563-8e99-4df5-b674-fd258e8f57c6",
+        "exitCode": 0,
+        "resources": {
+          "limits": {
+            "cpu": "500m",
+            "memory": "256Mi"
+          },
+          "requests": {
+            "cpu": "100m",
+            "memory": "64Mi"
+          }
+        },
+        "gid": 1000,
+        "jobUid": "0b1873cc-52b4-4002-b999-f844032fbdb7"
+      },
+      "cit": {
+        "job": "cps-archive-verify-c9f78a79acd44162",
+        "uid": 1000,
+        "podUid": "696d7d7f-b45e-4555-8c82-8a579ccd8930",
+        "exitCode": 0,
+        "resources": {
+          "limits": {
+            "cpu": "500m",
+            "memory": "256Mi"
+          },
+          "requests": {
+            "cpu": "100m",
+            "memory": "64Mi"
+          }
+        },
+        "gid": 1000,
+        "jobUid": "93a471aa-202a-4ff6-ae17-e85b03158917"
+      }
+    },
+    "fixturePodUid": "264b3930-fb40-4f19-83c6-5126310baa7e"
+  },
+  "gatewayImageConfirmedByPodPullEvent": true
+}

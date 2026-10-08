@@ -1,0 +1,36 @@
+{
+  "fixtureRemoved": true,
+  "temporaryRelayPolicyRemoved": true,
+  "verifierJobsRemoved": [
+    "jupyterhub/cps-archive-verify-16f7bf7588b94ffd",
+    "cit-jhub/cps-archive-verify-accaf6efed9c4e1f",
+    "jupyterhub/cps-archive-verify-953478b3f3ef4efe"
+  ],
+  "claimsRemoved": true,
+  "retainedPVs": [
+    {
+      "pv": "cps-workspace-70d4a75eec6783e4713a17048de3b33bfec4b316",
+      "phase": "Released",
+      "path": "/mnt/persistent1/cps_compute_workspaces/cps/70d4a75eec6783e4713a17048de3b33bfec4b3163e01714ee268a965939e6949",
+      "namespace": "jupyterhub"
+    },
+    {
+      "pv": "cps-workspace-0595e91556bc8c7dcf50fd53952725e973236188",
+      "phase": "Released",
+      "path": "/mnt/persistent1/cps_compute_workspaces/cit/0595e91556bc8c7dcf50fd53952725e973236188edf09353aa04e2bfdba28e23",
+      "namespace": "cit-jhub"
+    },
+    {
+      "pv": "cps-workspace-bc3bc4d21d454408d2e7fb7b97f54a7937c5aa60",
+      "phase": "Released",
+      "path": "/mnt/persistent1/cps_compute_workspaces/cps/bc3bc4d21d454408d2e7fb7b97f54a7937c5aa60d16d67b9a02750f1fc19341a",
+      "namespace": "jupyterhub"
+    }
+  ],
+  "failedArchiveReadonlyProof": {
+    "job": "jupyterhub/cps-archive-verify-953478b3f3ef4efe",
+    "read_only_verified": true
+  },
+  "failedOperationRecoveryQualified": false,
+  "NASOnlyFailedProvisioningDatasets": "Retained; original random group identifiers not captured before disposable state replacement; no uncertain dataset deleted"
+}

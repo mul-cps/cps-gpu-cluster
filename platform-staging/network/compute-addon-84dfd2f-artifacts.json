@@ -1,0 +1,74 @@
+{
+  "sourceRevision": "84dfd2fa09b68e77a46f62d1a0fd6da0a42b359b",
+  "wheelSHA256": "f4390d13cd158700904091bffe8607534230a06dd46e16fdc77a0317a3882821",
+  "gateway": {
+    "image": "ghcr.io/mul-cps/cps-compute@sha256:2cc3b7924ea3a051ea871aac35e833e9dff020932e381f04d2b557e06aa99cc9",
+    "user": 10001,
+    "group": 10001,
+    "modulesVerified": 21,
+    "addonFilesVerified": 5,
+    "packages": 79,
+    "pipCheck": "No broken requirements found.",
+    "remoteDigestVerified": true
+  },
+  "cpuNotebook": {
+    "image": "ghcr.io/mul-cps/cps-jupyter-notebook@sha256:eac3085e567e85de3df63b84f985ef3f20dffcc75a55ccccbc4be66026384f1d",
+    "lockedBase": "ghcr.io/mul-cps/cps-jupyter-notebook@sha256:1fab06639346f69e96cda6c8f551d761cc51c47de85cdc0ec42ef31bf2ef2c7f",
+    "user": 1000,
+    "group": 100,
+    "modulesVerified": 21,
+    "addonFilesVerified": 5,
+    "packages": 315,
+    "jupyterLab": "4.5.7",
+    "rtc": "4.4.1",
+    "rtcServerEnabled": true,
+    "pipCheck": "No broken requirements found.",
+    "installedVersionsUnchanged": true,
+    "jupyterConfigsUnchanged": true,
+    "startupConfigurationPreservedInRawAndRuntimeMetadata": true,
+    "manifestMediaType": "application/vnd.docker.distribution.manifest.v2+json",
+    "installNetwork": "none",
+    "dependencyResolution": false,
+    "provenanceAttestationAttached": false,
+    "sbomAttached": false
+  },
+  "fixture": {
+    "status": "prepared; not installed or executed",
+    "gatewayImage": "ghcr.io/mul-cps/cps-compute@sha256:2cc3b7924ea3a051ea871aac35e833e9dff020932e381f04d2b557e06aa99cc9",
+    "runnerImage": "ghcr.io/mul-cps/cps-jupyter-notebook@sha256:eac3085e567e85de3df63b84f985ef3f20dffcc75a55ccccbc4be66026384f1d",
+    "testBucket": "proposed; absent",
+    "focusedPreparationTests": 7,
+    "objectCount": 21,
+    "workflowRuns": 0,
+    "credentialsInstalled": false,
+    "prerequisite": "Separate test identity provisioning was denied by the selected SeaweedFS IAM endpoint; use a reviewed administrative route before execution."
+  },
+  "iamAttempt": {
+    "result": "AccessDenied",
+    "testIdentityCreated": false,
+    "testKeyCreated": false,
+    "ownedEmptyBucketDeleted": true,
+    "bucketAbsenceObserved": true,
+    "productionBucketPresent": true,
+    "originalIdentityCount": 2,
+    "objectsDeleted": 0,
+    "serviceRestart": false,
+    "configurationChanged": false
+  },
+  "proofSHA256": {
+    "compute-84dfd2f-artifacts/verification-report.json": "88f4c7b98d5c734885c34b27aa97beff5f643c8ec67a6a948aaa4d97ef50ff9b",
+    "compute-84dfd2f-artifacts/notebook-cpu/verification-report.json": "ab5bb9e6453c946257a6665c8c7411e406c4f5e128bbebea11d98d27694b0549",
+    "notebook-argo-next-gate/implementation/preparation-report.json": "1aebb6665e6977a7dac74d0b1e488b4b678ff8b68e80289bb5f1eec40b16dc8d",
+    "notebook-argo-next-gate/test-identity-report.json": "4f3772e36e11c777ac57c5255ab850bc3c64302b09009161f08a1ee886239d29"
+  },
+  "productionQualified": false,
+  "deployed": false,
+  "formalReleasePublished": false,
+  "limitations": [
+    "Only the standard CPU notebook candidate contains the current84 wheel; the completed12 canonical build remains historical704.",
+    "Current-image real Argo execution, selected TrueNAS relay path, human OAuth/RTC and production promotion remain unqualified.",
+    "Adminc91 candidate still records compute34; no final complete application compatibility tuple is claimed.",
+    "No new SBOM scans, GPU workload, queue change or Fleet/main promotion occurred.",
+    "The thin Docker CPU distribution is unattested; provenance-bearing canonical OCI archives remain a separate build. The pinned BuildKit exporter rejects attestations with oci-mediatypes=false, so it was not changed."
+  ]
+}

@@ -1,0 +1,145 @@
+2026-10-08T15:30:58.855652002Z IS_HOST_DRIVER=false
+2026-10-08T15:30:58.855712406Z NVIDIA_DRIVER_ROOT=/run/nvidia/driver
+2026-10-08T15:30:58.855715070Z DRIVER_ROOT_CTR_PATH=/driver-root
+2026-10-08T15:30:58.855716694Z NVIDIA_DEV_ROOT=/run/nvidia/driver
+2026-10-08T15:30:58.855718417Z DEV_ROOT_CTR_PATH=/driver-root
+2026-10-08T15:31:03.870384422Z time="2026-10-08T15:31:03Z" level=info msg="Starting nvidia-ctk-installer"
+2026-10-08T15:31:03.870631854Z time="2026-10-08T15:31:03Z" level=info msg="Resolved source root to /artifacts/deb"
+2026-10-08T15:31:03.870652432Z time="2026-10-08T15:31:03Z" level=info msg=Initializing
+2026-10-08T15:31:03.873396405Z time="2026-10-08T15:31:03Z" level=info msg="Using config version 3"
+2026-10-08T15:31:03.873434757Z time="2026-10-08T15:31:03Z" level=info msg="Using CRI runtime plugin name \"io.containerd.cri.v1.runtime\""
+2026-10-08T15:31:03.873580469Z time="2026-10-08T15:31:03Z" level=info msg="Installing NVIDIA container toolkit to '/usr/local/nvidia/toolkit'"
+2026-10-08T15:31:03.873600316Z time="2026-10-08T15:31:03Z" level=info msg="Removing existing NVIDIA container toolkit installation"
+2026-10-08T15:31:03.886057020Z time="2026-10-08T15:31:03Z" level=info msg="Creating directory '/usr/local/nvidia/toolkit'"
+2026-10-08T15:31:04.054570537Z time="2026-10-08T15:31:04Z" level=info msg="Installing NVIDIA container toolkit config '/usr/local/nvidia/toolkit/.config/nvidia-container-runtime/config.toml'"
+2026-10-08T15:31:04.054595945Z time="2026-10-08T15:31:04Z" level=info msg="Creating directory '/usr/local/nvidia/toolkit/.config/nvidia-container-runtime'"
+2026-10-08T15:31:04.055700366Z time="2026-10-08T15:31:04Z" level=info msg="Skipping unset option: nvidia-container-cli.debug"
+2026-10-08T15:31:04.055718068Z time="2026-10-08T15:31:04Z" level=info msg="Skipping unset option: nvidia-container-runtime.debug"
+2026-10-08T15:31:04.055721365Z time="2026-10-08T15:31:04Z" level=info msg="Skipping unset option: nvidia-container-runtime.log-level"
+2026-10-08T15:31:04.055727667Z time="2026-10-08T15:31:04Z" level=info msg="Skipping unset option: nvidia-container-runtime.modes.cdi.annotation-prefixes"
+2026-10-08T15:31:04.055787218Z time="2026-10-08T15:31:04Z" level=info msg="Skipping unset option: nvidia-container-runtime.runtimes"
+2026-10-08T15:31:04.055989004Z Using config:
+2026-10-08T15:31:04.055995105Z accept-nvidia-visible-devices-as-volume-mounts = false
+2026-10-08T15:31:04.055997460Z accept-nvidia-visible-devices-envvar-when-unprivileged = true
+2026-10-08T15:31:04.055999985Z disable-require = false
+2026-10-08T15:31:04.056002730Z supported-driver-capabilities = "compat32,compute,display,graphics,ngx,utility,video"
+2026-10-08T15:31:04.056005145Z swarm-resource = ""
+2026-10-08T15:31:04.056007419Z 
+2026-10-08T15:31:04.056009673Z [nvidia-container-cli]
+2026-10-08T15:31:04.056012177Z   debug = ""
+2026-10-08T15:31:04.056014553Z   environment = []
+2026-10-08T15:31:04.056016766Z   ldcache = ""
+2026-10-08T15:31:04.056019131Z   ldconfig = "@/run/nvidia/driver/sbin/ldconfig"
+2026-10-08T15:31:04.056021385Z   load-kmods = true
+2026-10-08T15:31:04.056027938Z   no-cgroups = false
+2026-10-08T15:31:04.056030442Z   path = "/usr/local/nvidia/toolkit/nvidia-container-cli"
+2026-10-08T15:31:04.056032927Z   root = "/run/nvidia/driver"
+2026-10-08T15:31:04.056035121Z   user = ""
+2026-10-08T15:31:04.056037184Z 
+2026-10-08T15:31:04.056039509Z [nvidia-container-runtime]
+2026-10-08T15:31:04.056044358Z   debug = "/dev/null"
+2026-10-08T15:31:04.056046653Z   log-level = "info"
+2026-10-08T15:31:04.056049218Z   mode = "cdi"
+2026-10-08T15:31:04.056054176Z   runtimes = ["runc", "crun"]
+2026-10-08T15:31:04.056056501Z 
+2026-10-08T15:31:04.056058876Z   [nvidia-container-runtime.modes]
+2026-10-08T15:31:04.056080296Z 
+2026-10-08T15:31:04.056082280Z     [nvidia-container-runtime.modes.cdi]
+2026-10-08T15:31:04.056083962Z       annotation-prefixes = ["cdi.k8s.io/"]
+2026-10-08T15:31:04.056085745Z       default-kind = "management.nvidia.com/gpu"
+2026-10-08T15:31:04.056090464Z       spec-dirs = ["/etc/cdi", "/var/run/cdi"]
+2026-10-08T15:31:04.056092117Z 
+2026-10-08T15:31:04.056165244Z     [nvidia-container-runtime.modes.csv]
+2026-10-08T15:31:04.056216028Z       mount-spec-path = "/etc/nvidia-container-runtime/host-files-for-container.d"
+2026-10-08T15:31:04.056218173Z 
+2026-10-08T15:31:04.056220297Z     [nvidia-container-runtime.modes.legacy]
+2026-10-08T15:31:04.056222902Z       cuda-compat-mode = "ldconfig"
+2026-10-08T15:31:04.056224454Z 
+2026-10-08T15:31:04.056227711Z [nvidia-container-runtime-hook]
+2026-10-08T15:31:04.056270100Z   path = "/usr/local/nvidia/toolkit/nvidia-container-runtime-hook"
+2026-10-08T15:31:04.056272444Z   skip-mode-detection = true
+2026-10-08T15:31:04.056274177Z 
+2026-10-08T15:31:04.056276131Z [nvidia-ctk]
+2026-10-08T15:31:04.056278335Z   path = "/usr/local/nvidia/toolkit/nvidia-ctk"
+2026-10-08T15:31:04.056443864Z time="2026-10-08T15:31:04Z" level=info msg="Creating control device nodes at /driver-root"
+2026-10-08T15:31:04.056450096Z time="2026-10-08T15:31:04Z" level=info msg="Skipping: /driver-root/dev/nvidiactl already exists"
+2026-10-08T15:31:04.056451929Z time="2026-10-08T15:31:04Z" level=info msg="Skipping: /driver-root/dev/nvidia-modeset already exists"
+2026-10-08T15:31:04.056453813Z time="2026-10-08T15:31:04Z" level=info msg="Skipping: /driver-root/dev/nvidia-uvm already exists"
+2026-10-08T15:31:04.056459092Z time="2026-10-08T15:31:04Z" level=info msg="Skipping: /driver-root/dev/nvidia-uvm-tools already exists"
+2026-10-08T15:31:04.056461327Z time="2026-10-08T15:31:04Z" level=info msg="Generating CDI spec for management containers"
+2026-10-08T15:31:04.060819964Z time="2026-10-08T15:31:04Z" level=info msg="Using /driver-root/usr/lib/x86_64-linux-gnu/libnvidia-ml.so.580.95.05"
+2026-10-08T15:31:04.067232243Z time="2026-10-08T15:31:04Z" level=info msg="Using /driver-root/usr/lib/x86_64-linux-gnu/libnvidia-sandboxutils.so.580.95.05"
+2026-10-08T15:31:04.096972732Z time="2026-10-08T15:31:04Z" level=info msg="Selecting /driver-root/dev/nvidia-modeset as /dev/nvidia-modeset"
+2026-10-08T15:31:04.096994673Z time="2026-10-08T15:31:04Z" level=info msg="Selecting /driver-root/dev/nvidia-uvm as /dev/nvidia-uvm"
+2026-10-08T15:31:04.096998581Z time="2026-10-08T15:31:04Z" level=info msg="Selecting /driver-root/dev/nvidia-uvm-tools as /dev/nvidia-uvm-tools"
+2026-10-08T15:31:04.097000694Z time="2026-10-08T15:31:04Z" level=info msg="Selecting /driver-root/dev/nvidia0 as /dev/nvidia0"
+2026-10-08T15:31:04.097002337Z time="2026-10-08T15:31:04Z" level=info msg="Selecting /driver-root/dev/nvidia1 as /dev/nvidia1"
+2026-10-08T15:31:04.097003980Z time="2026-10-08T15:31:04Z" level=info msg="Selecting /driver-root/dev/nvidiactl as /dev/nvidiactl"
+2026-10-08T15:31:04.097015121Z time="2026-10-08T15:31:04Z" level=info msg="Selecting /driver-root/dev/nvidia-caps/nvidia-cap1 as /dev/nvidia-caps/nvidia-cap1"
+2026-10-08T15:31:04.097017266Z time="2026-10-08T15:31:04Z" level=info msg="Selecting /driver-root/dev/nvidia-caps/nvidia-cap2 as /dev/nvidia-caps/nvidia-cap2"
+2026-10-08T15:31:04.097077087Z time="2026-10-08T15:31:04Z" level=warning msg="Could not locate /dev/nvidia-caps-imex-channels/channel*: pattern /dev/nvidia-caps-imex-channels/channel* not found"
+2026-10-08T15:31:04.097317747Z time="2026-10-08T15:31:04Z" level=info msg="Selecting /driver-root/dev/nvidia-modeset as /dev/nvidia-modeset"
+2026-10-08T15:31:04.097371647Z time="2026-10-08T15:31:04Z" level=info msg="Selecting /driver-root/dev/nvidia-uvm as /dev/nvidia-uvm"
+2026-10-08T15:31:04.097394169Z time="2026-10-08T15:31:04Z" level=info msg="Selecting /driver-root/dev/nvidia-uvm-tools as /dev/nvidia-uvm-tools"
+2026-10-08T15:31:04.097397225Z time="2026-10-08T15:31:04Z" level=info msg="Selecting /driver-root/dev/nvidia0 as /dev/nvidia0"
+2026-10-08T15:31:04.097399398Z time="2026-10-08T15:31:04Z" level=info msg="Selecting /driver-root/dev/nvidia1 as /dev/nvidia1"
+2026-10-08T15:31:04.097401302Z time="2026-10-08T15:31:04Z" level=info msg="Selecting /driver-root/dev/nvidiactl as /dev/nvidiactl"
+2026-10-08T15:31:04.097403125Z time="2026-10-08T15:31:04Z" level=info msg="Selecting /driver-root/dev/nvidia-caps/nvidia-cap1 as /dev/nvidia-caps/nvidia-cap1"
+2026-10-08T15:31:04.097404809Z time="2026-10-08T15:31:04Z" level=info msg="Selecting /driver-root/dev/nvidia-caps/nvidia-cap2 as /dev/nvidia-caps/nvidia-cap2"
+2026-10-08T15:31:04.097424636Z time="2026-10-08T15:31:04Z" level=warning msg="Could not locate /dev/nvidia-caps-imex-channels/channel*: pattern /dev/nvidia-caps-imex-channels/channel* not found"
+2026-10-08T15:31:04.120673105Z time="2026-10-08T15:31:04Z" level=info msg="Using driver version 580.95.05"
+2026-10-08T15:31:04.122150082Z time="2026-10-08T15:31:04Z" level=info msg="Selecting /driver-root/usr/lib/x86_64-linux-gnu/libEGL_nvidia.so.580.95.05 as /usr/lib/x86_64-linux-gnu/libEGL_nvidia.so.580.95.05"
+2026-10-08T15:31:04.122185499Z time="2026-10-08T15:31:04Z" level=info msg="Selecting /driver-root/usr/lib/x86_64-linux-gnu/libGLESv1_CM_nvidia.so.580.95.05 as /usr/lib/x86_64-linux-gnu/libGLESv1_CM_nvidia.so.580.95.05"
+2026-10-08T15:31:04.122188485Z time="2026-10-08T15:31:04Z" level=info msg="Selecting /driver-root/usr/lib/x86_64-linux-gnu/libGLESv2_nvidia.so.580.95.05 as /usr/lib/x86_64-linux-gnu/libGLESv2_nvidia.so.580.95.05"
+2026-10-08T15:31:04.122190418Z time="2026-10-08T15:31:04Z" level=info msg="Selecting /driver-root/usr/lib/x86_64-linux-gnu/libGLX_nvidia.so.580.95.05 as /usr/lib/x86_64-linux-gnu/libGLX_nvidia.so.580.95.05"
+2026-10-08T15:31:04.122205326Z time="2026-10-08T15:31:04Z" level=info msg="Selecting /driver-root/usr/lib/x86_64-linux-gnu/libcuda.so.580.95.05 as /usr/lib/x86_64-linux-gnu/libcuda.so.580.95.05"
+2026-10-08T15:31:04.122207790Z time="2026-10-08T15:31:04Z" level=info msg="Selecting /driver-root/usr/lib/x86_64-linux-gnu/libcudadebugger.so.580.95.05 as /usr/lib/x86_64-linux-gnu/libcudadebugger.so.580.95.05"
+2026-10-08T15:31:04.122213181Z time="2026-10-08T15:31:04Z" level=info msg="Selecting /driver-root/usr/lib/x86_64-linux-gnu/libnvcuvid.so.580.95.05 as /usr/lib/x86_64-linux-gnu/libnvcuvid.so.580.95.05"
+2026-10-08T15:31:04.122216276Z time="2026-10-08T15:31:04Z" level=info msg="Selecting /driver-root/usr/lib/x86_64-linux-gnu/libnvidia-allocator.so.580.95.05 as /usr/lib/x86_64-linux-gnu/libnvidia-allocator.so.580.95.05"
+2026-10-08T15:31:04.122220413Z time="2026-10-08T15:31:04Z" level=info msg="Selecting /driver-root/usr/lib/x86_64-linux-gnu/libnvidia-cfg.so.580.95.05 as /usr/lib/x86_64-linux-gnu/libnvidia-cfg.so.580.95.05"
+2026-10-08T15:31:04.122270598Z time="2026-10-08T15:31:04Z" level=info msg="Selecting /driver-root/usr/lib/x86_64-linux-gnu/libnvidia-eglcore.so.580.95.05 as /usr/lib/x86_64-linux-gnu/libnvidia-eglcore.so.580.95.05"
+2026-10-08T15:31:04.122284794Z time="2026-10-08T15:31:04Z" level=info msg="Selecting /driver-root/usr/lib/x86_64-linux-gnu/libnvidia-encode.so.580.95.05 as /usr/lib/x86_64-linux-gnu/libnvidia-encode.so.580.95.05"
+2026-10-08T15:31:04.122289373Z time="2026-10-08T15:31:04Z" level=info msg="Selecting /driver-root/usr/lib/x86_64-linux-gnu/libnvidia-fbc.so.580.95.05 as /usr/lib/x86_64-linux-gnu/libnvidia-fbc.so.580.95.05"
+2026-10-08T15:31:04.122291587Z time="2026-10-08T15:31:04Z" level=info msg="Selecting /driver-root/usr/lib/x86_64-linux-gnu/libnvidia-glcore.so.580.95.05 as /usr/lib/x86_64-linux-gnu/libnvidia-glcore.so.580.95.05"
+2026-10-08T15:31:04.122327012Z time="2026-10-08T15:31:04Z" level=info msg="Selecting /driver-root/usr/lib/x86_64-linux-gnu/libnvidia-glsi.so.580.95.05 as /usr/lib/x86_64-linux-gnu/libnvidia-glsi.so.580.95.05"
+2026-10-08T15:31:04.122329016Z time="2026-10-08T15:31:04Z" level=info msg="Selecting /driver-root/usr/lib/x86_64-linux-gnu/libnvidia-glvkspirv.so.580.95.05 as /usr/lib/x86_64-linux-gnu/libnvidia-glvkspirv.so.580.95.05"
+2026-10-08T15:31:04.122333464Z time="2026-10-08T15:31:04Z" level=info msg="Selecting /driver-root/usr/lib/x86_64-linux-gnu/libnvidia-gpucomp.so.580.95.05 as /usr/lib/x86_64-linux-gnu/libnvidia-gpucomp.so.580.95.05"
+2026-10-08T15:31:04.122335418Z time="2026-10-08T15:31:04Z" level=info msg="Selecting /driver-root/usr/lib/x86_64-linux-gnu/libnvidia-gtk2.so.580.95.05 as /usr/lib/x86_64-linux-gnu/libnvidia-gtk2.so.580.95.05"
+2026-10-08T15:31:04.122345498Z time="2026-10-08T15:31:04Z" level=info msg="Selecting /driver-root/usr/lib/x86_64-linux-gnu/libnvidia-gtk3.so.580.95.05 as /usr/lib/x86_64-linux-gnu/libnvidia-gtk3.so.580.95.05"
+2026-10-08T15:31:04.122396543Z time="2026-10-08T15:31:04Z" level=info msg="Selecting /driver-root/usr/lib/x86_64-linux-gnu/libnvidia-ml.so.580.95.05 as /usr/lib/x86_64-linux-gnu/libnvidia-ml.so.580.95.05"
+2026-10-08T15:31:04.122406632Z time="2026-10-08T15:31:04Z" level=info msg="Selecting /driver-root/usr/lib/x86_64-linux-gnu/libnvidia-ngx.so.580.95.05 as /usr/lib/x86_64-linux-gnu/libnvidia-ngx.so.580.95.05"
+2026-10-08T15:31:04.122409407Z time="2026-10-08T15:31:04Z" level=info msg="Selecting /driver-root/usr/lib/x86_64-linux-gnu/libnvidia-nscq.so.580.95.05 as /usr/lib/x86_64-linux-gnu/libnvidia-nscq.so.580.95.05"
+2026-10-08T15:31:04.122417512Z time="2026-10-08T15:31:04Z" level=info msg="Selecting /driver-root/usr/lib/x86_64-linux-gnu/libnvidia-nvvm.so.580.95.05 as /usr/lib/x86_64-linux-gnu/libnvidia-nvvm.so.580.95.05"
+2026-10-08T15:31:04.122419836Z time="2026-10-08T15:31:04Z" level=info msg="Selecting /driver-root/usr/lib/x86_64-linux-gnu/libnvidia-opencl.so.580.95.05 as /usr/lib/x86_64-linux-gnu/libnvidia-opencl.so.580.95.05"
+2026-10-08T15:31:04.122424585Z time="2026-10-08T15:31:04Z" level=info msg="Selecting /driver-root/usr/lib/x86_64-linux-gnu/libnvidia-opticalflow.so.580.95.05 as /usr/lib/x86_64-linux-gnu/libnvidia-opticalflow.so.580.95.05"
+2026-10-08T15:31:04.122427119Z time="2026-10-08T15:31:04Z" level=info msg="Selecting /driver-root/usr/lib/x86_64-linux-gnu/libnvidia-pkcs11-openssl3.so.580.95.05 as /usr/lib/x86_64-linux-gnu/libnvidia-pkcs11-openssl3.so.580.95.05"
+2026-10-08T15:31:04.122473036Z time="2026-10-08T15:31:04Z" level=info msg="Selecting /driver-root/usr/lib/x86_64-linux-gnu/libnvidia-pkcs11.so.580.95.05 as /usr/lib/x86_64-linux-gnu/libnvidia-pkcs11.so.580.95.05"
+2026-10-08T15:31:04.122475490Z time="2026-10-08T15:31:04Z" level=info msg="Selecting /driver-root/usr/lib/x86_64-linux-gnu/libnvidia-present.so.580.95.05 as /usr/lib/x86_64-linux-gnu/libnvidia-present.so.580.95.05"
+2026-10-08T15:31:04.122477364Z time="2026-10-08T15:31:04Z" level=info msg="Selecting /driver-root/usr/lib/x86_64-linux-gnu/libnvidia-ptxjitcompiler.so.580.95.05 as /usr/lib/x86_64-linux-gnu/libnvidia-ptxjitcompiler.so.580.95.05"
+2026-10-08T15:31:04.122528419Z time="2026-10-08T15:31:04Z" level=info msg="Selecting /driver-root/usr/lib/x86_64-linux-gnu/libnvidia-rtcore.so.580.95.05 as /usr/lib/x86_64-linux-gnu/libnvidia-rtcore.so.580.95.05"
+2026-10-08T15:31:04.122532226Z time="2026-10-08T15:31:04Z" level=info msg="Selecting /driver-root/usr/lib/x86_64-linux-gnu/libnvidia-sandboxutils.so.580.95.05 as /usr/lib/x86_64-linux-gnu/libnvidia-sandboxutils.so.580.95.05"
+2026-10-08T15:31:04.122534359Z time="2026-10-08T15:31:04Z" level=info msg="Selecting /driver-root/usr/lib/x86_64-linux-gnu/libnvidia-tls.so.580.95.05 as /usr/lib/x86_64-linux-gnu/libnvidia-tls.so.580.95.05"
+2026-10-08T15:31:04.122539139Z time="2026-10-08T15:31:04Z" level=info msg="Selecting /driver-root/usr/lib/x86_64-linux-gnu/libnvidia-vksc-core.so.580.95.05 as /usr/lib/x86_64-linux-gnu/libnvidia-vksc-core.so.580.95.05"
+2026-10-08T15:31:04.122575186Z time="2026-10-08T15:31:04Z" level=info msg="Selecting /driver-root/usr/lib/x86_64-linux-gnu/libnvidia-wayland-client.so.580.95.05 as /usr/lib/x86_64-linux-gnu/libnvidia-wayland-client.so.580.95.05"
+2026-10-08T15:31:04.122577691Z time="2026-10-08T15:31:04Z" level=info msg="Selecting /driver-root/usr/lib/x86_64-linux-gnu/libnvoptix.so.580.95.05 as /usr/lib/x86_64-linux-gnu/libnvoptix.so.580.95.05"
+2026-10-08T15:31:04.122579585Z time="2026-10-08T15:31:04Z" level=info msg="Selecting /driver-root/usr/lib/x86_64-linux-gnu/vdpau/libvdpau_nvidia.so.580.95.05 as /usr/lib/x86_64-linux-gnu/vdpau/libvdpau_nvidia.so.580.95.05"
+2026-10-08T15:31:04.122646599Z time="2026-10-08T15:31:04Z" level=info msg="Selecting /driver-root/run/nvidia-persistenced/socket as /run/nvidia-persistenced/socket"
+2026-10-08T15:31:04.122658923Z time="2026-10-08T15:31:04Z" level=warning msg="Could not locate /nvidia-fabricmanager/socket: pattern /nvidia-fabricmanager/socket not found"
+2026-10-08T15:31:04.122661207Z time="2026-10-08T15:31:04Z" level=warning msg="Could not locate /tmp/nvidia-mps: pattern /tmp/nvidia-mps not found"
+2026-10-08T15:31:04.122767646Z time="2026-10-08T15:31:04Z" level=info msg="Selecting /driver-root/run/nvidia/firmware-r615-canary/nvidia/580.95.05/gsp_ga10x.bin as /run/nvidia/firmware-r615-canary/nvidia/580.95.05/gsp_ga10x.bin"
+2026-10-08T15:31:04.122776572Z time="2026-10-08T15:31:04Z" level=info msg="Selecting /driver-root/run/nvidia/firmware-r615-canary/nvidia/580.95.05/gsp_tu10x.bin as /run/nvidia/firmware-r615-canary/nvidia/580.95.05/gsp_tu10x.bin"
+2026-10-08T15:31:04.122846973Z time="2026-10-08T15:31:04Z" level=info msg="Selecting /driver-root/usr/bin/nvidia-smi as /usr/bin/nvidia-smi"
+2026-10-08T15:31:04.122886708Z time="2026-10-08T15:31:04Z" level=info msg="Selecting /driver-root/usr/bin/nvidia-debugdump as /usr/bin/nvidia-debugdump"
+2026-10-08T15:31:04.122930018Z time="2026-10-08T15:31:04Z" level=info msg="Selecting /driver-root/usr/bin/nvidia-persistenced as /usr/bin/nvidia-persistenced"
+2026-10-08T15:31:04.122996783Z time="2026-10-08T15:31:04Z" level=info msg="Selecting /driver-root/usr/bin/nvidia-cuda-mps-control as /usr/bin/nvidia-cuda-mps-control"
+2026-10-08T15:31:04.123036948Z time="2026-10-08T15:31:04Z" level=info msg="Selecting /driver-root/usr/bin/nvidia-cuda-mps-server as /usr/bin/nvidia-cuda-mps-server"
+2026-10-08T15:31:04.123075390Z time="2026-10-08T15:31:04Z" level=info msg="Selecting /driver-root/usr/bin/nvidia-imex as /usr/bin/nvidia-imex"
+2026-10-08T15:31:04.123142546Z time="2026-10-08T15:31:04Z" level=info msg="Selecting /driver-root/usr/bin/nvidia-imex-ctl as /usr/bin/nvidia-imex-ctl"
+2026-10-08T15:31:04.135353630Z time="2026-10-08T15:31:04Z" level=info msg="Starting 'setup' for nvidia-ctk-installer"
+2026-10-08T15:31:04.137855411Z time="2026-10-08T15:31:04Z" level=info msg="Using config version 3"
+2026-10-08T15:31:04.138056346Z time="2026-10-08T15:31:04Z" level=info msg="Using CRI runtime plugin name \"io.containerd.cri.v1.runtime\""
+2026-10-08T15:31:04.138355574Z time="2026-10-08T15:31:04Z" level=info msg="Flushing config to /runtime/config-dir.d/99-nvidia.toml"
+2026-10-08T15:31:04.138719413Z time="2026-10-08T15:31:04Z" level=info msg="Sending SIGHUP signal to containerd"
+2026-10-08T15:31:04.139041245Z time="2026-10-08T15:31:04Z" level=info msg="Successfully signaled containerd"
+2026-10-08T15:31:04.139052776Z time="2026-10-08T15:31:04Z" level=info msg="Completed 'setup' for nvidia-ctk-installer"
+2026-10-08T15:31:04.139055982Z time="2026-10-08T15:31:04Z" level=info msg="Waiting for signal"

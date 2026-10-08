@@ -1,0 +1,49 @@
+{
+  "namespace": "cps-posix-storage-4a911d0b",
+  "pv": "cps-posix-storage-4a911d0b-pv",
+  "path": "/mnt/persistent1/cps_persistent1_shared/compute/cps/295232d058dcbb948fae0e06c4e4e5505c024e3a7015292195832477fa8440db",
+  "probes": [
+    {
+      "uid": 1000,
+      "createdMode": "0o600",
+      "sha256": "fcd993508557be0f709f004c8d6c7e338b875c334c21f3c48cb286cf9bd46f2d"
+    },
+    {
+      "uid": 1001,
+      "access": {
+        "read": "denied",
+        "write": "denied"
+      }
+    },
+    {
+      "uid": 950,
+      "access": {
+        "read": "denied",
+        "write": "denied"
+      }
+    },
+    {
+      "readOnlyVerified": true,
+      "preservedSHA256": "fcd993508557be0f709f004c8d6c7e338b875c334c21f3c48cb286cf9bd46f2d"
+    }
+  ],
+  "archive": {
+    "path": "/mnt/persistent1/cps_persistent1_shared/compute/cps/295232d058dcbb948fae0e06c4e4e5505c024e3a7015292195832477fa8440db",
+    "read_only": true,
+    "immutable": true,
+    "files_preserved": true,
+    "evidence": {
+      "dataset": "persistent1/cps_persistent1_shared/compute/cps/295232d058dcbb948fae0e06c4e4e5505c024e3a7015292195832477fa8440db",
+      "readonly": true,
+      "mechanism": "zfs-readonly"
+    }
+  },
+  "namespaceDeleted": true,
+  "status": "bounded canonical POSIX permission and archive checks passed",
+  "limitations": [
+    "Operator RPC import with actual TrueNAS middleware; forced SSH command deployment not qualified",
+    "Gateway HTTP provisioning and full workspace lifecycle not qualified",
+    "Different UID probes do not establish isolation between workloads sharing UID 1000",
+    "No production dataset permission migration or release promotion"
+  ]
+}

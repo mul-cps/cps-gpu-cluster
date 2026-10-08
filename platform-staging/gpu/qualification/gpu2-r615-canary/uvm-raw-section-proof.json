@@ -1,0 +1,20 @@
+[
+  {
+    "path": "/lib/modules/6.8.0-134-generic/kernel/drivers/video/nvidia.ko",
+    "sha256": "94df0cd9b062ef42091a4f2639438b3596c6a49bcb1b56640ac6ef0f792f2020",
+    "sectionBytes": 12409,
+    "canonicalHexSHA256": "30e9bd10a691e10d45a81fe6d3dac3aa0c4375c6487c458e5398699e6dd60b28"
+  },
+  {
+    "path": "/lib/modules/6.8.0-134-generic/kernel/drivers/video/nvidia-uvm.ko",
+    "sha256": "05c2e1319dacdca062bfddc4368be02b66307e0cda31abcd7d28fb37eeefff01",
+    "sectionBytes": 10017,
+    "canonicalHexSHA256": "0054b45bf40416a31ae6e77554935731d29b0235c5a49452590408ebb0f5184a"
+  },
+  {
+    "path": "/var/tmp/cps-r615-uvm-guard-build-20261008/source/nvidia-uvm.ko",
+    "sha256": "b2ae67722e9e21a70c319aeed2184f5b2d1f23b8e32dea00816cfd5cd2c3ee61",
+    "sectionBytes": 10017,
+    "canonicalHexSHA256": "0054b45bf40416a31ae6e77554935731d29b0235c5a49452590408ebb0f5184a"
+  }
+]

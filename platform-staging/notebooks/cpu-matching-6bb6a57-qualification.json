@@ -1,0 +1,102 @@
+{
+  "qualified": false,
+  "scope": "two existing CPU parent compatibility checks; full common-tag matrix and platform release incomplete",
+  "variants": [
+    {
+      "qualified": false,
+      "scope": "CPU parent compatibility only; release matrix incomplete",
+      "digest": "sha256:2eebb5496efc59badc74dda10d9149dc59c6e1794cfb9c171d5edf81ca7bdfee",
+      "linuxManifest": "sha256:e35543b41faa5d56a252843d20cb3bc8a46985821791569f5580e37a5b72ee84",
+      "user": "1000",
+      "predicateTypes": [
+        "https://spdx.dev/Document",
+        "https://slsa.dev/provenance/v1"
+      ],
+      "offlinePackageInstallation": true,
+      "pipCheckPassed": true,
+      "releaseRunnerTestsPassed": 14,
+      "variant": "standard-cpu",
+      "computeSourceRevision": "6bb6a57bc8d8426e281c0654ac8eedd1668ae600",
+      "wheelSha256": "05d82345b0f65a3a94c715c68788f52d14c545cba41a5e622249870e0e848667",
+      "installedHashes": {
+        "modulesMatched": 21,
+        "addonAssetsMatched": 5,
+        "uid": 1000
+      },
+      "runtime": {
+        "uid": 1000,
+        "python": "3.13.13",
+        "compute": "0.1.0",
+        "rtc": "4.4.1",
+        "lab": "4.5.7",
+        "freshKernelSuccess": true,
+        "typedParameters": true,
+        "immutableInput": true,
+        "failedExecutedNotebookRetained": true,
+        "qualified": false,
+        "scope": "standard CPU runtime only; no GPU or Hub browser qualification"
+      },
+      "published": true,
+      "deployed": false,
+      "image": "ghcr.io/mul-cps/cps-jupyter-notebook:qualification-storage-resources-6bb6a57-cpu@sha256:2eebb5496efc59badc74dda10d9149dc59c6e1794cfb9c171d5edf81ca7bdfee",
+      "remoteIndexAndChildrenVerified": true
+    },
+    {
+      "qualified": false,
+      "scope": "CPU parent compatibility only; release matrix incomplete",
+      "digest": "sha256:466ccae48fb92b036a26fc1761a5b4f9228f7341d89a080fed242b3544f32af9",
+      "linuxManifest": "sha256:fc9af9024a742b8b79e9943f17bd6104c03c15b9cc5b95696a640aa69cacd8c7",
+      "user": "1000",
+      "predicateTypes": [
+        "https://spdx.dev/Document",
+        "https://slsa.dev/provenance/v1"
+      ],
+      "offlinePackageInstallation": true,
+      "pipCheckPassed": true,
+      "releaseRunnerTestsPassed": 14,
+      "variant": "base-cpu",
+      "computeSourceRevision": "6bb6a57bc8d8426e281c0654ac8eedd1668ae600",
+      "wheelSha256": "05d82345b0f65a3a94c715c68788f52d14c545cba41a5e622249870e0e848667",
+      "installedHashes": {
+        "modulesMatched": 21,
+        "addonAssetsMatched": 5,
+        "uid": 1000
+      },
+      "runtime": {
+        "uid": 1000,
+        "python": "3.13.13",
+        "compute": "0.1.0",
+        "rtc": "4.4.1",
+        "lab": "4.5.7",
+        "freshKernelSuccess": true,
+        "typedParameters": true,
+        "immutableInput": true,
+        "failedExecutedNotebookRetained": true,
+        "qualified": false,
+        "scope": "base CPU runtime only; no GPU or Hub browser qualification"
+      },
+      "published": true,
+      "deployed": false,
+      "image": "ghcr.io/mul-cps/cps-jupyter-notebook-base-cpu:qualification-storage-resources-6bb6a57@sha256:466ccae48fb92b036a26fc1761a5b4f9228f7341d89a080fed242b3544f32af9",
+      "remoteIndexAndChildrenVerified": true
+    }
+  ],
+  "localArchiveRetirements": [
+    {
+      "archive": "/home/bjoern/cps-platform-evidence/2026-10-07/notebook-cpu-6bb6a57/standard-cpu/image.tar",
+      "sha256": "ebb5554f2102d2d35c1895db46e028456eb9f241fdb4acbc7943cf03a89c32a8",
+      "sizeBytes": 3940714496,
+      "publishedImage": "ghcr.io/mul-cps/cps-jupyter-notebook:qualification-storage-resources-6bb6a57-cpu@sha256:2eebb5496efc59badc74dda10d9149dc59c6e1794cfb9c171d5edf81ca7bdfee",
+      "remoteIndexAndChildrenVerified": true,
+      "reason": "recover space after immutable publication; reports, attestations and runtime outputs retained"
+    },
+    {
+      "archive": "/home/bjoern/cps-platform-evidence/2026-10-07/notebook-cpu-6bb6a57/base-cpu/image.tar",
+      "sha256": "d1d2bc17b56a682c4c77a9e98161774ea9c83cb210046195a35d4f4d8e0db021",
+      "sizeBytes": 3940715008,
+      "publishedImage": "ghcr.io/mul-cps/cps-jupyter-notebook-base-cpu:qualification-storage-resources-6bb6a57@sha256:466ccae48fb92b036a26fc1761a5b4f9228f7341d89a080fed242b3544f32af9",
+      "remoteIndexAndChildrenVerified": true,
+      "reason": "recover space after immutable publication; reports, attestations and runtime outputs retained"
+    }
+  ]
+}

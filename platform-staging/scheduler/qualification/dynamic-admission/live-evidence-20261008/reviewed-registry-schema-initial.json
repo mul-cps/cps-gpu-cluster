@@ -1,0 +1,34 @@
+[
+  {
+    "command": [
+      "kubectl",
+      "--request-timeout=20s",
+      "replace",
+      "--dry-run=server",
+      "-f",
+      "-",
+      "-o",
+      "json"
+    ],
+    "exitCode": 0,
+    "kind": "DynamicGpuQuotaPolicy",
+    "stderr": "",
+    "stdout": "{\n    \"apiVersion\": \"cps-dynamic-admission-live-20261008.compute.cps.unileoben.ac.at/v1alpha1\",\n    \"kind\": \"DynamicGpuQuotaPolicy\",\n    \"metadata\": {\n        \"annotations\": {\n            \"compute.cps.unileoben.ac.at/kai-source\": \"bdf434e5e9201cccf4e05fad04d814363653f692\",\n            \"compute.cps.unileoben.ac.at/qualification-state\": \"disabled-offline-candidate\",\n            \"compute.cps.unileoben.ac.at/source-files-sha256\": \"2067e6238c1eb33988ca232780dc7f04e92f71e0468edec6f73e44fef3292431\"\n        },\n        \"creationTimestamp\": \"2026-10-08T08:38:31Z\",\n        \"generation\": 2,\n        \"name\": \"reviewed-quota-maps\",\n        \"namespace\": \"cps-dynamic-admission-live-20261008\",\n        \"resourceVersion\": \"361796763\",\n        \"uid\": \"c13a9c61-10f4-49e4-841c-0ad497812e4e\"\n    },\n    \"records\": [\n        {\n            \"cmUid\": \"33333333-3333-3333-3333-333333333333\",\n            \"cudaDeviceMemoryLimit\": \"5324m\",\n            \"gpuPortion\": \"0.13\",\n            \"gpuUuid\": \"GPU-22222222-2222-2222-2222-222222222222\",\n            \"name\": \"offline-argo-5-bcdfgh2-shared-gpu-1\",\n            \"namespace\": \"cps-dynamic-admission-live-20261008\",\n            \"physicalGpuMemoryMiB\": \"40960\",\n            \"podName\": \"offline-argo-5-declared\",\n            \"podUid\": \"11111111-1111-1111-1111-111111111111\",\n            \"runaiNumOfGpus\": \"0.13\",\n            \"type\": \"capabilities\",\n            \"visibleDevices\": \"k8s.device-plugin.nvidia.com/gpu=1\"\n        },\n        {\n            \"cmUid\": \"44444444-4444-4444-4444-444444444444\",\n            \"cudaDeviceMemoryLimit\": \"5324m\",\n            \"gpuPortion\": \"0.13\",\n            \"gpuUuid\": \"GPU-22222222-2222-2222-2222-222222222222\",\n            \"name\": \"offline-argo-5-bcdfgh2-shared-gpu-1-evar\",\n            \"namespace\": \"cps-dynamic-admission-live-20261008\",\n            \"physicalGpuMemoryMiB\": \"40960\",\n            \"podName\": \"offline-argo-5-declared\",\n            \"podUid\": \"11111111-1111-1111-1111-111111111111\",\n            \"runaiNumOfGpus\": \"0.13\",\n            \"type\": \"evar\",\n            \"visibleDevices\": \"k8s.device-plugin.nvidia.com/gpu=1\"\n        }\n    ],\n    \"writers\": [\n        \"system:serviceaccount:offline:declared-binder\"\n    ]\n}\n"
+  },
+  {
+    "command": [
+      "kubectl",
+      "--request-timeout=20s",
+      "replace",
+      "--dry-run=server",
+      "-f",
+      "-",
+      "-o",
+      "json"
+    ],
+    "exitCode": 0,
+    "kind": "DynamicGpuBindingPolicy",
+    "stderr": "",
+    "stdout": "{\n    \"apiVersion\": \"cps-dynamic-admission-live-20261008.compute.cps.unileoben.ac.at/v1alpha1\",\n    \"kind\": \"DynamicGpuBindingPolicy\",\n    \"metadata\": {\n        \"annotations\": {\n            \"compute.cps.unileoben.ac.at/kai-source\": \"bdf434e5e9201cccf4e05fad04d814363653f692\",\n            \"compute.cps.unileoben.ac.at/qualification-state\": \"disabled-offline-candidate\",\n            \"compute.cps.unileoben.ac.at/source-files-sha256\": \"5af246cd2a7ecab58f9b9d778d8ec4605be6b08ad00d9f955d5a87ca01d936e1\"\n        },\n        \"creationTimestamp\": \"2026-10-08T08:38:31Z\",\n        \"generation\": 2,\n        \"name\": \"reviewed-bindings\",\n        \"namespace\": \"cps-dynamic-admission-live-20261008\",\n        \"resourceVersion\": \"361796769\",\n        \"uid\": \"08e0d8f9-e844-4b47-b357-55f0a6a0bed3\"\n    },\n    \"records\": [\n        {\n            \"capabilitiesName\": \"offline-argo-5-bcdfgh2-shared-gpu-1\",\n            \"capabilitiesResourceVersion\": \"10\",\n            \"capabilitiesUid\": \"33333333-3333-3333-3333-333333333333\",\n            \"compiledWorkflowSha256\": \"08a0cab7da6cd6712b1bfe18c28a4266bb920517ab1de6b5d7e8fae896e24c4f\",\n            \"evarName\": \"offline-argo-5-bcdfgh2-shared-gpu-1-evar\",\n            \"evarResourceVersion\": \"11\",\n            \"evarUid\": \"44444444-4444-4444-4444-444444444444\",\n            \"nodeName\": \"offline-node\",\n            \"podName\": \"offline-argo-5-declared\",\n            \"podUid\": \"11111111-1111-1111-1111-111111111111\",\n            \"registryReviewSha256\": \"5555555555555555555555555555555555555555555555555555555555555555\"\n        }\n    ],\n    \"writers\": [\n        \"system:serviceaccount:offline:declared-binder\"\n    ]\n}\n"
+  }
+]

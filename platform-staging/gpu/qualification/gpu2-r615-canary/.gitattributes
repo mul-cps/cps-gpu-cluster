@@ -1,0 +1,3 @@
+# Preserve byte-exact timestamped operator output, including empty log messages.
+r580-restored-driver.log -whitespace
+r580-toolkit-recovery.log -whitespace

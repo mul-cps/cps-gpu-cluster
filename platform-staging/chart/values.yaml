@@ -1,0 +1,99 @@
+# Outside Fleet's watched paths. Enabling requires released, reviewed image digests.
+enabled: false
+legacyDaskBoundary:
+  enabled: false
+policyJson: ""
+policyHash: ""
+namespace: cps-compute
+storageClass: longhorn
+backupSchedule: "17 2 * * *"
+gateway:
+  image: ""
+  executorImage: ""
+  artifactSecretRef: cps-artifacts
+  artifactCaSecretRef: cps-artifacts-ca
+  command: ["uvicorn", "cps_compute.runtime:create_runtime", "--factory", "--workers", "1", "--host", "0.0.0.0", "--port", "8000", "--ssl-keyfile", "/tls/tls.key", "--ssl-certfile", "/tls/tls.crt"]
+  secretRef: cps-compute-gateway
+  configSecretRef: cps-compute-runtime
+  tlsSecretRef: cps-compute-gateway-tls
+  caConfigMapRef: cps-compute-gateway-ca
+  url: https://compute-gateway.cps-compute.svc.cluster.local:8000
+  port: 8000
+  imagePullSecretRef: cps-compute-image-pull
+  storageBridgeSecretRef: ""
+  storageVerificationImage: ""
+  kubernetes:
+    enabled: false
+  argoUi:
+    enabled: false
+    readerSecretRef: cps-argo-ui-reader
+    readerServiceAccount: argo-artifact-reader
+    readerNamespace: cps-argo
+# Each frontend has its own OAuth client and signed session cookies.
+# OAuth/service registration and verified ingress are separate activation gates.
+personalArgo:
+  enabled: false
+  image: ""
+  port: 8080
+  nativeUrl: ""
+  nativeCaFile: /trust/ca.crt
+  upstreamCaConfigMapRef: cps-compute-gateway-ca
+  sources:
+    cps:
+      enabled: false
+      publicOrigin: ""
+      hubApiUrl: ""
+      secretRef: cps-argo-ui-oauth
+      ingress:
+        enabled: false
+        host: ""
+        tlsSecretRef: ""
+    cit:
+      enabled: false
+      publicOrigin: ""
+      hubApiUrl: ""
+      secretRef: cit-argo-ui-oauth
+      ingress:
+        enabled: false
+        host: ""
+        tlsSecretRef: ""
+consoles:
+  cps:
+    image: ""
+    hubApiUrl: http://hub.jupyterhub.svc.cluster.local:8081/hub/api
+    publicCallbackUrl: https://jupyterhub.dshl.unileoben.ac.at/services/cps-admin/oauth_callback
+    secretRef: cps-admin-oauth
+  cit:
+    image: ""
+    hubApiUrl: http://hub.cit-jhub.svc.cluster.local:8081/hub/api
+    publicCallbackUrl: ""
+    secretRef: cit-admin-oauth
+# Explicitly disabled, suspended and dry-run until conditional delete and proof metadata qualify.
+artifactRetention:
+  enabled: false
+  suspend: true
+  apply: false
+  conditionalDeleteQualified: false
+  lifecycleQualified: false
+  reconcileMetadata: false
+  kubeUrl: https://kubernetes.default.svc
+  qualificationEvidence: ""
+  image: ""
+  schedule: "41 3 * * *"
+  maxDeletes: 10
+  maxExamined: 1000
+  deadlineSeconds: 300
+  endpoint: https://artifacts.cps-artifacts-relay.svc.cluster.local:8333
+  bucket: cps-compute
+  credentialSecretRef: cps-artifact-credentials
+  caSecretRef: cps-artifact-ca
+  argoUrl: https://cps-argo-argo-workflows-server.cps-argo.svc.cluster.local:2746
+  argoNamespace: cps-argo
+  argoCaConfigMapRef: cps-compute-gateway-ca
+  probeWorkflow: ""
+metrics:
+  enabled: false
+  prometheusNamespace: cattle-monitoring-system
+  credentials:
+    cps: {name: "", key: ""}
+    cit: {name: "", key: ""}

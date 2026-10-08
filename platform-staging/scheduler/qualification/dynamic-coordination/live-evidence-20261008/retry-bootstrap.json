@@ -1,0 +1,26 @@
+[
+  {
+    "name": "reviewed-code-r2",
+    "namespace": "cps-dynamic-admission-coord-live-20261008",
+    "uid": "0abf07f1-bdd4-4c69-92aa-f97588c7a504",
+    "resourceVersion": "361998415"
+  },
+  {
+    "name": "reviewed-code-r2",
+    "namespace": "cps-dynamic-coordination-live-20261008",
+    "uid": "45a41de6-2163-4f22-95d2-8805bcfeaed5",
+    "resourceVersion": "361998416"
+  },
+  {
+    "deletedOriginalCpuPod": "native-bind",
+    "uid": "de2e6436-7c85-4a09-ab5e-3f24db3281dc"
+  },
+  {
+    "deletedOriginalCpuPod": "native-stale",
+    "uid": "7114224c-d2d4-48ae-ad91-799e180b67ee"
+  },
+  {
+    "deletedOriginalCpuPod": "native-cancel",
+    "uid": "dd44369d-d727-4976-a60b-346ccf2f6426"
+  }
+]

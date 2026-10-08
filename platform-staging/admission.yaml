@@ -1,0 +1,136 @@
+# Candidate lower-layer enforcement for the dedicated workload namespace.
+# No Fleet bundle includes this file. An empty allowlist denies all containers.
+apiVersion: admissionregistration.k8s.io/v1
+kind: ValidatingAdmissionPolicy
+metadata:
+  name: cps-compute-workload-boundary
+spec:
+  failurePolicy: Fail
+  paramKind:
+    apiVersion: compute.cps.unileoben.ac.at/v1alpha1
+    kind: ComputeAdmissionPolicy
+  matchConstraints:
+    namespaceSelector:
+      matchLabels:
+        kubernetes.io/metadata.name: cps-workflows
+    resourceRules:
+      - apiGroups: [""]
+        apiVersions: [v1]
+        operations: [CREATE, UPDATE]
+        resources: [pods]
+  matchConditions:
+    - name: dedicated-workload-namespace
+      expression: request.namespace == 'cps-workflows'
+  validations:
+    - expression: object.spec.containers.filter(c, c.name == 'wait').all(c, c.image == params.data['executor-image'])
+      message: Credentialed wait containers require the pinned trusted executor image
+    - expression: >-
+        object.spec.containers.filter(c, c.name == 'wait').all(c,
+          has(c.command) && c.command == ['argoexec','wait','--loglevel','info','--log-format','text','--gloglevel','0'] &&
+          (!has(c.args) || size(c.args) == 0)) &&
+        (!has(object.spec.initContainers) || object.spec.initContainers.all(c,
+          has(c.command) && c.command == ['argoexec','init','--loglevel','info','--log-format','text','--gloglevel','0'] &&
+          (!has(c.args) || size(c.args) == 0)))
+      message: Executor commands and arguments require the qualified controller configuration
+    - expression: >-
+        object.spec.containers.filter(c, c.name == 'wait').all(c,
+          (!has(c.envFrom) || size(c.envFrom) == 0) &&
+          (!has(c.env) || c.env.all(e,
+            e.name in ['ARGO_POD_NAME','ARGO_POD_UID','ARGO_WORKFLOW_NAME','ARGO_WORKFLOW_UID','ARGO_CONTAINER_NAME',
+              'ARGO_NODE_ID','ARGO_INCLUDE_SCRIPT_OUTPUT','ARGO_DEADLINE','ARGO_TEMPLATE','ARGO_INSTANCE_ID',
+              'ARGO_PROGRESS_FILE','ARGO_PROGRESS_PATCH_TICK_DURATION','ARGO_PROGRESS_FILE_TICK_DURATION','ARGO_TERMINATION_GRACE_PERIOD_SECONDS'] &&
+            (!has(e.valueFrom) || (has(e.valueFrom.fieldRef) &&
+              ((e.name == 'ARGO_POD_NAME' && e.valueFrom.fieldRef.fieldPath == 'metadata.name') ||
+               (e.name == 'ARGO_POD_UID' && e.valueFrom.fieldRef.fieldPath == 'metadata.uid')))))) &&
+          (!has(c.volumeMounts) || c.volumeMounts.all(m,
+            object.spec.volumes.filter(v, v.name == m.name).all(v,
+              (!has(v.projected) || v.projected.sources.all(s, !has(s.secret) && !has(s.serviceAccountToken))) &&
+              (has(v.secret) || (has(v.emptyDir) &&
+                ((m.name == 'var-run-argo' && m.mountPath == '/var/run/argo') ||
+                 (m.name == 'tmp-dir-argo' && m.mountPath == '/tmp') ||
+                 (m.name == 'input-artifacts' && ((c.name == 'init' && m.mountPath == '/argo/inputs/artifacts') ||
+                   (c.name == 'wait' && m.mountPath == '/mainctrfs/inputs/snapshot.tar'))) ||
+                 (m.name == 'argo-staging' && ((c.name == 'init' && m.mountPath == '/argo/staging') ||
+                   (c.name == 'wait' && m.mountPath == '/mainctrfs/argo/staging')))))) &&
+              (!has(v.secret) || (has(m.readOnly) && m.readOnly &&
+                ((v.secret.secretName == 'cps-workflow-executor.service-account-token' && m.mountPath == '/var/run/secrets/kubernetes.io/serviceaccount') ||
+                 (v.secret.secretName == params.data['artifact-secret'] && m.mountPath == '/argo/secret/' + params.data['artifact-secret']) ||
+                 (v.secret.secretName == params.data['artifact-ca-secret'] && m.mountPath == '/argo/secret/' + params.data['artifact-ca-secret'])))))))) &&
+        (!has(object.spec.initContainers) || object.spec.initContainers.all(c,
+          (!has(c.envFrom) || size(c.envFrom) == 0) &&
+          (!has(c.env) || c.env.all(e,
+            e.name in ['ARGO_POD_NAME','ARGO_POD_UID','ARGO_WORKFLOW_NAME','ARGO_WORKFLOW_UID','ARGO_CONTAINER_NAME',
+              'ARGO_NODE_ID','ARGO_INCLUDE_SCRIPT_OUTPUT','ARGO_DEADLINE','ARGO_TEMPLATE','ARGO_INSTANCE_ID',
+              'ARGO_PROGRESS_FILE','ARGO_PROGRESS_PATCH_TICK_DURATION','ARGO_PROGRESS_FILE_TICK_DURATION','ARGO_TERMINATION_GRACE_PERIOD_SECONDS'] &&
+            (!has(e.valueFrom) || (has(e.valueFrom.fieldRef) &&
+              ((e.name == 'ARGO_POD_NAME' && e.valueFrom.fieldRef.fieldPath == 'metadata.name') ||
+               (e.name == 'ARGO_POD_UID' && e.valueFrom.fieldRef.fieldPath == 'metadata.uid')))))) &&
+          (!has(c.volumeMounts) || c.volumeMounts.all(m,
+            object.spec.volumes.filter(v, v.name == m.name).all(v,
+              (!has(v.projected) || v.projected.sources.all(s, !has(s.secret) && !has(s.serviceAccountToken))) &&
+              (has(v.secret) || (has(v.emptyDir) &&
+                ((m.name == 'var-run-argo' && m.mountPath == '/var/run/argo') ||
+                 (m.name == 'tmp-dir-argo' && m.mountPath == '/tmp') ||
+                 (m.name == 'input-artifacts' && ((c.name == 'init' && m.mountPath == '/argo/inputs/artifacts') ||
+                   (c.name == 'wait' && m.mountPath == '/mainctrfs/inputs/snapshot.tar'))) ||
+                 (m.name == 'argo-staging' && ((c.name == 'init' && m.mountPath == '/argo/staging') ||
+                   (c.name == 'wait' && m.mountPath == '/mainctrfs/argo/staging')))))) &&
+              (!has(v.secret) || (has(m.readOnly) && m.readOnly &&
+                ((v.secret.secretName == 'cps-workflow-executor.service-account-token' && m.mountPath == '/var/run/secrets/kubernetes.io/serviceaccount') ||
+                 (v.secret.secretName == params.data['artifact-secret'] && m.mountPath == '/argo/secret/' + params.data['artifact-secret']) ||
+                 (v.secret.secretName == params.data['artifact-ca-secret'] && m.mountPath == '/argo/secret/' + params.data['artifact-ca-secret'])))))))))
+      message: Executor credentials require only the approved read-only secret mount paths
+    - expression: >-
+        !has(object.spec.initContainers) || object.spec.initContainers.all(c,
+          c.name == 'init' && c.image == params.data['executor-image'])
+      message: Credentialed init containers require the pinned trusted executor image
+    - expression: has(object.spec.automountServiceAccountToken) && !object.spec.automountServiceAccountToken
+      message: Untrusted workflow containers must not receive automatic service-account credentials
+    - expression: '!has(object.spec.shareProcessNamespace) || !object.spec.shareProcessNamespace'
+      message: User kernels must not share the executor process namespace
+    - expression: >-
+        object.spec.containers.filter(c, c.name != 'wait').all(c,
+          (!has(c.envFrom) || c.envFrom.all(e, !has(e.secretRef))) &&
+          (!has(c.env) || c.env.all(e, !has(e.valueFrom) || !has(e.valueFrom.secretKeyRef))) &&
+          (!has(c.volumeMounts) || c.volumeMounts.all(m,
+            object.spec.volumes.filter(v, v.name == m.name).all(v,
+              !has(v.secret) && (!has(v.projected) || v.projected.sources.all(s,
+                !has(s.secret) && !has(s.serviceAccountToken)))))))
+      message: Secrets and service-account tokens belong only in the trusted executor containers
+    - expression: object.spec.schedulerName == 'kai-scheduler' && object.spec.serviceAccountName == 'cps-workflow'
+      message: Compute workloads require the trusted scheduler and workflow service account
+    - expression: >-
+        object.spec.containers.all(c, c.image in params.data['approved-images'].split(',')) &&
+        (!has(object.spec.initContainers) || object.spec.initContainers.all(c, c.image in params.data['approved-images'].split(',')))
+      message: Every workload and executor image must be an explicitly approved digest
+    - expression: '!has(object.spec.ephemeralContainers) || size(object.spec.ephemeralContainers) == 0'
+      message: Ephemeral container access requires a separate reviewed debugging exception
+    - expression: >-
+        (!has(object.spec.hostNetwork) || !object.spec.hostNetwork) &&
+        (!has(object.spec.hostPID) || !object.spec.hostPID) &&
+        (!has(object.spec.hostIPC) || !object.spec.hostIPC)
+      message: Host namespaces are prohibited
+    - expression: >-
+        !has(object.spec.volumes) || object.spec.volumes.all(v, !has(v.hostPath))
+      message: Host mounts require an explicit trusted GPU injector exception that has not been qualified
+    - expression: >-
+        object.spec.containers.all(c, !has(c.securityContext) ||
+        ((!has(c.securityContext.privileged) || !c.securityContext.privileged) &&
+        (!has(c.securityContext.allowPrivilegeEscalation) || !c.securityContext.allowPrivilegeEscalation)))
+      message: Privilege escalation is prohibited
+---
+apiVersion: admissionregistration.k8s.io/v1
+kind: ValidatingAdmissionPolicyBinding
+metadata:
+  name: cps-compute-workload-boundary
+spec:
+  policyName: cps-compute-workload-boundary
+  validationActions: [Deny]
+  matchResources:
+    namespaceSelector:
+      matchLabels:
+        kubernetes.io/metadata.name: cps-workflows
+  paramRef:
+    name: cps-admission-policy
+    namespace: cps-compute
+    parameterNotFoundAction: Deny

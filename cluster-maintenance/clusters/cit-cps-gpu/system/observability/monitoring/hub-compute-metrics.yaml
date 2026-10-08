@@ -1,0 +1,54 @@
+# Each Secret is provisioned out of Git with a distinct read:metrics-only Hub token.
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: cps-hub-compute-metrics
+  namespace: cattle-monitoring-system
+  labels: {release: rancher-monitoring}
+spec:
+  namespaceSelector: {matchNames: [jupyterhub]}
+  selector: {matchLabels: {app: jupyterhub, component: hub}}
+  endpoints:
+    - port: hub
+      path: /hub/metrics
+      interval: 30s
+      scrapeTimeout: 10s
+      authorization:
+        type: Bearer
+        credentials: {name: cps-hub-metrics-token, key: token}
+  sampleLimit: 10000
+---
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: cit-hub-compute-metrics
+  namespace: cattle-monitoring-system
+  labels: {release: rancher-monitoring}
+spec:
+  namespaceSelector: {matchNames: [cit-jhub]}
+  selector: {matchLabels: {app: jupyterhub, component: hub}}
+  endpoints:
+    - port: hub
+      path: /hub/metrics
+      interval: 30s
+      scrapeTimeout: 10s
+      authorization:
+        type: Bearer
+        credentials: {name: cit-hub-metrics-token, key: token}
+  sampleLimit: 10000
+---
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: compute-hub-metrics
+  namespace: cit-jhub
+spec:
+  podSelector: {matchLabels: {app: jupyterhub, component: hub}}
+  policyTypes: [Ingress]
+  ingress:
+    - from:
+        - namespaceSelector:
+            matchLabels: {kubernetes.io/metadata.name: cattle-monitoring-system}
+          podSelector:
+            matchLabels: {app.kubernetes.io/name: prometheus}
+      ports: [{protocol: TCP, port: 8081}]

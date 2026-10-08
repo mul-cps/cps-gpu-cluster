@@ -1,0 +1,315 @@
+{
+  "tlsVerified": true,
+  "serviceAccount": "cps-compute-controller",
+  "image": "sha256:ec7dd93e22abf0dbc78cf50259cb746fb480d9e3645a2a61d15dd06c8216ef6f",
+  "sources": {
+    "cps": {
+      "registration": {
+        "workspace": "qualification-http-v2-1181dd0fd8e5418c",
+        "owner": "qualification-neutral",
+        "server": "",
+        "members": [
+          "fixture-person"
+        ],
+        "principal": "workspace:cps:qualification-http-v2-1181dd0fd8e5418c",
+        "profiles": [
+          "interactive-cpu"
+        ],
+        "ceiling": {
+          "cpu": "2",
+          "memory": "8Gi"
+        },
+        "namespace": "jupyterhub",
+        "pod": "qualification-absent-26f5806ce8c8448d",
+        "policy_hash": "sha256:051cd754210af2830d67968eea898f674a55ff66f5c88b3db95dff205f04e33d",
+        "group_id": "qualification-http-v2-9fe8a0a58e7d436aa57becee79b145a0"
+      },
+      "storage": {
+        "pvc": "cps-workspace-70d4a75eec6783e4713a17048de3b33bfec4b316",
+        "pv": "cps-workspace-70d4a75eec6783e4713a17048de3b33bfec4b316",
+        "namespace": "jupyterhub",
+        "server": "193.170.30.58",
+        "path": "/mnt/persistent1/cps_compute_workspaces/cps/70d4a75eec6783e4713a17048de3b33bfec4b3163e01714ee268a965939e6949",
+        "group_hash": "70d4a75eec6783e4713a17048de3b33bfec4b3163e01714ee268a965939e6949",
+        "storage_version": 2,
+        "state": "active",
+        "readonly_mounts": [],
+        "evidence": {
+          "dataset": "persistent1/cps_compute_workspaces/cps/70d4a75eec6783e4713a17048de3b33bfec4b3163e01714ee268a965939e6949",
+          "readonly": false,
+          "mechanism": "zfs-readonly",
+          "permissions_verified": true,
+          "acltype": "POSIX1E",
+          "aclmode": "DISCARD",
+          "uid": 1000,
+          "gid": 1000,
+          "mode": "0770",
+          "default_acl": false
+        }
+      },
+      "crossSourceDenied": true,
+      "archive": {
+        "state": "archived",
+        "read_only_verified": true,
+        "evidence": {
+          "nas": {
+            "dataset": "persistent1/cps_compute_workspaces/cps/70d4a75eec6783e4713a17048de3b33bfec4b3163e01714ee268a965939e6949",
+            "readonly": true,
+            "mechanism": "zfs-readonly"
+          },
+          "mount": {
+            "job": "jupyterhub/cps-archive-verify-16f7bf7588b94ffd",
+            "read_only_verified": true
+          }
+        }
+      },
+      "reprovisionSameBinding": true,
+      "archivedProvisionDenied": true
+    },
+    "cit": {
+      "registration": {
+        "workspace": "qualification-http-v2-d45d7aa72333464b",
+        "owner": "qualification-neutral",
+        "server": "",
+        "members": [
+          "fixture-person"
+        ],
+        "principal": "workspace:cit:qualification-http-v2-d45d7aa72333464b",
+        "profiles": [
+          "interactive-cpu"
+        ],
+        "ceiling": {
+          "cpu": "2",
+          "memory": "8Gi"
+        },
+        "namespace": "cit-jhub",
+        "pod": "qualification-absent-f5d399b344034d0f",
+        "policy_hash": "sha256:051cd754210af2830d67968eea898f674a55ff66f5c88b3db95dff205f04e33d",
+        "group_id": "qualification-http-v2-ec8b7153688f4afeb480faf424f53b6d"
+      },
+      "storage": {
+        "pvc": "cps-workspace-0595e91556bc8c7dcf50fd53952725e973236188",
+        "pv": "cps-workspace-0595e91556bc8c7dcf50fd53952725e973236188",
+        "namespace": "cit-jhub",
+        "server": "193.170.30.58",
+        "path": "/mnt/persistent1/cps_compute_workspaces/cit/0595e91556bc8c7dcf50fd53952725e973236188edf09353aa04e2bfdba28e23",
+        "group_hash": "0595e91556bc8c7dcf50fd53952725e973236188edf09353aa04e2bfdba28e23",
+        "storage_version": 2,
+        "state": "active",
+        "readonly_mounts": [],
+        "evidence": {
+          "dataset": "persistent1/cps_compute_workspaces/cit/0595e91556bc8c7dcf50fd53952725e973236188edf09353aa04e2bfdba28e23",
+          "readonly": false,
+          "mechanism": "zfs-readonly",
+          "permissions_verified": true,
+          "acltype": "POSIX1E",
+          "aclmode": "DISCARD",
+          "uid": 1000,
+          "gid": 1000,
+          "mode": "0770",
+          "default_acl": false
+        }
+      },
+      "crossSourceDenied": true,
+      "archive": {
+        "state": "archived",
+        "read_only_verified": true,
+        "evidence": {
+          "nas": {
+            "dataset": "persistent1/cps_compute_workspaces/cit/0595e91556bc8c7dcf50fd53952725e973236188edf09353aa04e2bfdba28e23",
+            "readonly": true,
+            "mechanism": "zfs-readonly"
+          },
+          "mount": {
+            "job": "cit-jhub/cps-archive-verify-accaf6efed9c4e1f",
+            "read_only_verified": true
+          }
+        }
+      },
+      "reprovisionSameBinding": true,
+      "archivedProvisionDenied": true
+    }
+  },
+  "authRejections": [
+    {
+      "name": "missing",
+      "status": 401
+    },
+    {
+      "name": "invalid",
+      "status": 401
+    },
+    {
+      "name": "cps-metrics",
+      "status": 403
+    },
+    {
+      "name": "cit-metrics",
+      "status": 403
+    }
+  ],
+  "limitations": [
+    "Fixture canonical people and neutral Hub; no production identity linkage or browser authorization",
+    "Fixture in-memory proxy, no human server spawn or RTC",
+    "Empty synthetic data; no backup/legacy handover qualification"
+  ],
+  "applicationCommit": "3d6de755d2e45629153519cfcc9eb4f28ad93d68",
+  "productionGatewayChanged": false,
+  "fixtureOnly": true,
+  "admission": {
+    "cases": [
+      {
+        "root": "cps_persistent1_shared/compute",
+        "source": "cps",
+        "case": "valid",
+        "allowed": true,
+        "expected": true
+      },
+      {
+        "root": "cps_persistent1_shared/compute",
+        "source": "cps",
+        "case": "wrong_namespace",
+        "allowed": false,
+        "expected": false
+      },
+      {
+        "root": "cps_persistent1_shared/compute",
+        "source": "cps",
+        "case": "wrong_server",
+        "allowed": false,
+        "expected": false
+      },
+      {
+        "root": "cps_persistent1_shared/compute",
+        "source": "cps",
+        "case": "delete_policy",
+        "allowed": false,
+        "expected": false
+      },
+      {
+        "root": "cps_persistent1_shared/compute",
+        "source": "cps",
+        "case": "bad_root",
+        "allowed": false,
+        "expected": false
+      },
+      {
+        "root": "cps_persistent1_shared/compute",
+        "source": "cit",
+        "case": "valid",
+        "allowed": true,
+        "expected": true
+      },
+      {
+        "root": "cps_persistent1_shared/compute",
+        "source": "cit",
+        "case": "wrong_namespace",
+        "allowed": false,
+        "expected": false
+      },
+      {
+        "root": "cps_persistent1_shared/compute",
+        "source": "cit",
+        "case": "wrong_server",
+        "allowed": false,
+        "expected": false
+      },
+      {
+        "root": "cps_persistent1_shared/compute",
+        "source": "cit",
+        "case": "delete_policy",
+        "allowed": false,
+        "expected": false
+      },
+      {
+        "root": "cps_persistent1_shared/compute",
+        "source": "cit",
+        "case": "bad_root",
+        "allowed": false,
+        "expected": false
+      },
+      {
+        "root": "cps_compute_workspaces",
+        "source": "cps",
+        "case": "valid",
+        "allowed": true,
+        "expected": true
+      },
+      {
+        "root": "cps_compute_workspaces",
+        "source": "cps",
+        "case": "wrong_namespace",
+        "allowed": false,
+        "expected": false
+      },
+      {
+        "root": "cps_compute_workspaces",
+        "source": "cps",
+        "case": "wrong_server",
+        "allowed": false,
+        "expected": false
+      },
+      {
+        "root": "cps_compute_workspaces",
+        "source": "cps",
+        "case": "delete_policy",
+        "allowed": false,
+        "expected": false
+      },
+      {
+        "root": "cps_compute_workspaces",
+        "source": "cps",
+        "case": "bad_root",
+        "allowed": false,
+        "expected": false
+      },
+      {
+        "root": "cps_compute_workspaces",
+        "source": "cit",
+        "case": "valid",
+        "allowed": true,
+        "expected": true
+      },
+      {
+        "root": "cps_compute_workspaces",
+        "source": "cit",
+        "case": "wrong_namespace",
+        "allowed": false,
+        "expected": false
+      },
+      {
+        "root": "cps_compute_workspaces",
+        "source": "cit",
+        "case": "wrong_server",
+        "allowed": false,
+        "expected": false
+      },
+      {
+        "root": "cps_compute_workspaces",
+        "source": "cit",
+        "case": "delete_policy",
+        "allowed": false,
+        "expected": false
+      },
+      {
+        "root": "cps_compute_workspaces",
+        "source": "cit",
+        "case": "bad_root",
+        "allowed": false,
+        "expected": false
+      }
+    ],
+    "passed": true
+  },
+  "knownFailures": [
+    "Initial fixture missing scoped relay NetworkPolicy; no SSH access",
+    "V2 root initially rejected by legacy-only retained-storage admission",
+    "Fixture verifier image initially differed from pinned admission image; NAS archive succeeded but HTTP fence remained",
+    "Failed-operation fence recovery not qualified; only disposable fixture databases reset"
+  ],
+  "wheelTests": {
+    "passed": 256,
+    "warnings": 22
+  },
+  "retainedStorage": "Datasets and Retain PVs preserved; cleanup report recorded separately"
+}

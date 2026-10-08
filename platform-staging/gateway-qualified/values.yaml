@@ -1,0 +1,9 @@
+# Application and catalog must be deployed together over reviewed runtime values.
+policyHash: sha256:051cd754210af2830d67968eea898f674a55ff66f5c88b3db95dff205f04e33d
+gateway:
+  image: ghcr.io/mul-cps/cps-compute:qualification-5771df5@sha256:627f093c3c96038c7ecd9e9b99f0138198c23c9460cabb7bd11b19e94f465096
+metrics:
+  enabled: true
+  credentials:
+    cps: {name: cps-compute-metrics, key: cps}
+    cit: {name: cps-compute-metrics, key: cit}

@@ -1,0 +1,69 @@
+{
+  "variant": "base-gpu",
+  "computeSourceRevision": "70471b9793f21a87d74ac7a673f871dfa9620101",
+  "wheelSha256": "86a0fa74cb6e15dd408fcfe36945ca1f614af14ff3bda555f49aaf4e85408d37",
+  "parentConfigId": "16c2489ca050ff993bdc7304cec1ea1bc346e40587a3f66077a424c36cbe706f",
+  "imageConfigId": "64007d0a27873c5cf99833c14f4c57bc2b3f6cbc80b05b98c651bf7b7885e5d5",
+  "image": "ghcr.io/mul-cps/cps-jupyter-notebook-base-gpu@sha256:fa3bcc50744ff5d791b816678180027f23800048e89740be7dceb8499c978182",
+  "published": true,
+  "remoteManifestAndConfigVerified": true,
+  "installedHashes": {
+    "modulesMatched": 21,
+    "addonAssetsMatched": 5,
+    "uid": 1000
+  },
+  "runtime": {
+    "uid": 1000,
+    "python": "3.13.14",
+    "compute": "0.1.0",
+    "rtc": "4.4.1",
+    "lab": "4.5.7",
+    "freshKernelSuccess": true,
+    "typedParameters": true,
+    "immutableInput": true,
+    "failedExecutedNotebookRetained": true,
+    "qualified": false,
+    "scope": "CPU notebook execution only; GPU and variant-specific application runtime not qualified"
+  },
+  "runtimeArtifacts": {
+    "failure-input.ipynb": "cedfa9a6ddedf2b2eaddafb4f8f8fa2e880ffccbfa92de24d1a62f1d04dc2031",
+    "failure.ipynb": "e5304ea7b0b7b60483e9853240ddd8508fca5403c0abb8e466666ad1c9348a93",
+    "input.ipynb": "e398c2033c196d3bc79c1aa83b52288d755618320d01c8a1d38a1209d447ff89",
+    "report.json": "953caf5f38c863ab0ce0263b9110b4ca1d318663acf4bef5ea72d46bc650fa23",
+    "success.ipynb": "6dc836d97b894156e3a60c5a957e4c702d8fe56557b22c963ca5e6e1c46dc050"
+  },
+  "parentStartupConfigurationPreserved": true,
+  "pipCheckPassed": true,
+  "qualified": false,
+  "deployed": false,
+  "limitations": [
+    "Layered qualification build; common-source release tag and full matrix remain open.",
+    "No GPU devices mounted; hardware isolation and variant-specific GPU behavior unqualified."
+  ],
+  "sbom": {
+    "variant": "base-gpu",
+    "subject": "ghcr.io/mul-cps/cps-jupyter-notebook-base-gpu@sha256:fa3bcc50744ff5d791b816678180027f23800048e89740be7dceb8499c978182",
+    "sourceImageId": "sha256:64007d0a27873c5cf99833c14f4c57bc2b3f6cbc80b05b98c651bf7b7885e5d5",
+    "packages": 3915,
+    "files": 78032,
+    "requiredPackagesVerified": [
+      "cps-compute",
+      "hera-workflows",
+      "jupyter-collaboration",
+      "jupyterlab",
+      "papermill"
+    ],
+    "checksums": {
+      "sbom.spdx.json": "856d9fe95c23f781b06e9b591c564d42b88d03da439d87ad3c27e340b0424aee",
+      "sbom.syft.json": "4445308213681c0479464b413eb33eac0f4eb664aeb40d607d1986f5c7d84b47"
+    },
+    "attachment": "ghcr.io/mul-cps/cps-jupyter-notebook-base-gpu@sha256:556122cf902a67086ab97ba3a1ed4c12f99b6f9444cdbd076132acdecd5262ce",
+    "subjectVerified": true,
+    "downloadHashesMatched": true,
+    "scannerSha256": "dbf75864e7a7ff9e1fbf00552c31483f693188632a9f68f343cd7653dac513d6",
+    "productionQualified": false,
+    "createdAt": "2026-10-07T04:45:26.645615+00:00",
+    "fileCoverage": "package-owned files (Syft metadata selection owned-by-package); not every image file"
+  },
+  "sbomPublished": true
+}

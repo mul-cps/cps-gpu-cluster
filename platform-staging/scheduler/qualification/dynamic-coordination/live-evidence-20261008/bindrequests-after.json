@@ -1,0 +1,78 @@
+{
+    "apiVersion": "v1",
+    "items": [
+        {
+            "apiVersion": "scheduling.run.ai/v1alpha2",
+            "kind": "BindRequest",
+            "metadata": {
+                "creationTimestamp": "2026-10-08T12:29:22Z",
+                "generation": 1,
+                "labels": {
+                    "selected-node": "k3s-cp3"
+                },
+                "name": "kai-cpu-allow",
+                "namespace": "cps-dynamic-admission-coord-live-20261008",
+                "ownerReferences": [
+                    {
+                        "apiVersion": "v1",
+                        "kind": "Pod",
+                        "name": "kai-cpu-allow",
+                        "uid": "0df80855-e549-47ba-b08c-d46e4665c6a1"
+                    }
+                ],
+                "resourceVersion": "361996188",
+                "uid": "2658c9cd-c45d-4ccf-a3b4-decd3b96dfe3"
+            },
+            "spec": {
+                "podName": "kai-cpu-allow",
+                "receivedGPU": {
+                    "portion": "0.00"
+                },
+                "receivedResourceType": "Regular",
+                "selectedNode": "k3s-cp3"
+            },
+            "status": {
+                "phase": "Succeeded"
+            }
+        },
+        {
+            "apiVersion": "scheduling.run.ai/v1alpha2",
+            "kind": "BindRequest",
+            "metadata": {
+                "creationTimestamp": "2026-10-08T12:29:46Z",
+                "generation": 1,
+                "labels": {
+                    "selected-node": "k3s-cp3"
+                },
+                "name": "kai-cpu-deny",
+                "namespace": "cps-dynamic-admission-coord-live-20261008",
+                "ownerReferences": [
+                    {
+                        "apiVersion": "v1",
+                        "kind": "Pod",
+                        "name": "kai-cpu-deny",
+                        "uid": "afb5decc-3f34-4304-9d73-c85e2276f07b"
+                    }
+                ],
+                "resourceVersion": "361996699",
+                "uid": "234fe868-8e97-4d0b-97ca-d1f9fe0c44db"
+            },
+            "spec": {
+                "podName": "kai-cpu-deny",
+                "receivedGPU": {
+                    "portion": "0.00"
+                },
+                "receivedResourceType": "Regular",
+                "selectedNode": "k3s-cp3"
+            },
+            "status": {
+                "phase": "Failed",
+                "reason": "failed to bind pod \u003ccps-dynamic-admission-coord-live-20261008/kai-cpu-deny\u003e to node \u003ck3s-cp3\u003e: Internal error occurred: failed calling webhook \"cpu-transport.qa.compute.cps.unileoben.ac.at\": failed to call webhook: the server could not find the requested resource"
+            }
+        }
+    ],
+    "kind": "List",
+    "metadata": {
+        "resourceVersion": ""
+    }
+}

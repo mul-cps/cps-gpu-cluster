@@ -1,0 +1,514 @@
+# Physical device accounting fixtures; utilization and VRAM are never allocation inputs.
+tests:
+- name: Physical reservation deducts one whole device despite idle CUDA and unused VRAM
+  interval: 30s
+  input_series:
+  - &id001
+    series: kube_node_status_capacity{resource="nvidia_com_gpu",job="kube-state-metrics",node="k3s-wk-gpu1"}
+    values: 2+0x6
+  - &id002
+    series: kube_node_status_condition{condition="Ready",status="true",job="kube-state-metrics",node="k3s-wk-gpu1"}
+    values: 1+0x6
+  - &id003
+    series: kube_node_status_capacity{resource="nvidia_com_gpu",job="kube-state-metrics",node="k3s-wk-gpu2"}
+    values: 2+0x6
+  - &id004
+    series: kube_node_status_condition{condition="Ready",status="true",job="kube-state-metrics",node="k3s-wk-gpu2"}
+    values: 1+0x6
+  - &id005
+    series: kube_node_status_capacity{resource="nvidia_com_gpu",job="kube-state-metrics",node="k3s-wk-gpu3"}
+    values: 2+0x6
+  - &id006
+    series: kube_node_status_condition{condition="Ready",status="true",job="kube-state-metrics",node="k3s-wk-gpu3"}
+    values: 1+0x6
+  - &id007
+    series: kube_node_status_capacity{resource="nvidia_com_gpu",job="kube-state-metrics",node="k3s-wk-gpu4"}
+    values: 2+0x6
+  - &id008
+    series: kube_node_status_condition{condition="Ready",status="true",job="kube-state-metrics",node="k3s-wk-gpu4"}
+    values: 1+0x6
+  - &id009
+    series: up{job="kube-state-metrics",namespace="cattle-monitoring-system"}
+    values: 1+0x6
+  - &id010
+    series: kube_pod_container_resource_requests{resource="nvidia_com_gpu",job="kube-state-metrics",namespace="kai",pod="physical-reservation",uid="a",node="k3s-wk-gpu1",container="reservation"}
+    values: 1+0x6
+  - &id015
+    series: kube_pod_status_phase{job="kube-state-metrics",namespace="kai",pod="physical-reservation",uid="a",phase="Running"}
+    values: 1+0x6
+  - &id016
+    series: DCGM_FI_DEV_GPU_UTIL{UUID="gpu1"}
+    values: 0+0x6
+  - &id017
+    series: DCGM_FI_DEV_FB_FREE{UUID="gpu1"}
+    values: 81000+0x6
+  - &id018
+    series: kai_queue_allocated_gpus{queue_name="phd-interactive"}
+    values: 0.2+0x6
+  - &id011
+    series: kube_node_status_allocatable{resource="nvidia_com_gpu",job="kube-state-metrics",node="k3s-wk-gpu1"}
+    values: 2+0x6
+  - &id012
+    series: kube_node_status_allocatable{resource="nvidia_com_gpu",job="kube-state-metrics",node="k3s-wk-gpu2"}
+    values: 2+0x6
+  - &id013
+    series: kube_node_status_allocatable{resource="nvidia_com_gpu",job="kube-state-metrics",node="k3s-wk-gpu3"}
+    values: 2+0x6
+  - &id014
+    series: kube_node_status_allocatable{resource="nvidia_com_gpu",job="kube-state-metrics",node="k3s-wk-gpu4"}
+    values: 2+0x6
+  promql_expr_test:
+  - expr: cps:gpu_kubernetes_unallocated_devices
+    eval_time: 3m
+    exp_samples:
+    - labels: cps:gpu_kubernetes_unallocated_devices{}
+      value: 7
+- name: Bound Pending physical request already occupies a device
+  interval: 30s
+  input_series:
+  - *id001
+  - *id002
+  - *id003
+  - *id004
+  - *id005
+  - *id006
+  - *id007
+  - *id008
+  - *id009
+  - *id010
+  - series: kube_pod_status_phase{job="kube-state-metrics",namespace="kai",pod="physical-reservation",uid="a",phase="Pending"}
+    values: 1+0x6
+  - *id011
+  - *id012
+  - *id013
+  - *id014
+  promql_expr_test:
+  - expr: cps:gpu_kubernetes_unallocated_devices
+    eval_time: 3m
+    exp_samples:
+    - labels: cps:gpu_kubernetes_unallocated_devices{}
+      value: 7
+- name: Terminal Pod requests do not deduct current devices
+  interval: 30s
+  input_series:
+  - *id001
+  - *id002
+  - *id003
+  - *id004
+  - *id005
+  - *id006
+  - *id007
+  - *id008
+  - *id009
+  - *id010
+  - *id015
+  - series: kube_pod_container_resource_requests{resource="nvidia_com_gpu",job="kube-state-metrics",namespace="kai",pod="finished",uid="b",node="k3s-wk-gpu2",container="reservation"}
+    values: 2+0x6
+  - series: kube_pod_status_phase{job="kube-state-metrics",namespace="kai",pod="finished",uid="b",phase="Succeeded"}
+    values: 1+0x6
+  - *id011
+  - *id012
+  - *id013
+  - *id014
+  promql_expr_test:
+  - expr: cps:gpu_kubernetes_unallocated_devices
+    eval_time: 3m
+    exp_samples:
+    - labels: cps:gpu_kubernetes_unallocated_devices{}
+      value: 7
+- name: Unbound Pending request has no physical node allocation
+  interval: 30s
+  input_series:
+  - *id001
+  - *id002
+  - *id003
+  - *id004
+  - *id005
+  - *id006
+  - *id007
+  - *id008
+  - *id009
+  - *id010
+  - *id015
+  - series: kube_pod_container_resource_requests{resource="nvidia_com_gpu",job="kube-state-metrics",namespace="kai",pod="queued",uid="b",node="",container="reservation"}
+    values: 2+0x6
+  - series: kube_pod_status_phase{job="kube-state-metrics",namespace="kai",pod="queued",uid="b",phase="Pending"}
+    values: 1+0x6
+  - *id011
+  - *id012
+  - *id013
+  - *id014
+  promql_expr_test:
+  - expr: cps:gpu_kubernetes_unallocated_devices
+    eval_time: 3m
+    exp_samples:
+    - labels: cps:gpu_kubernetes_unallocated_devices{}
+      value: 7
+- name: Duplicate scrape targets do not double-count physical request
+  interval: 30s
+  input_series:
+  - *id001
+  - *id002
+  - *id003
+  - *id004
+  - *id005
+  - *id006
+  - *id007
+  - *id008
+  - *id009
+  - *id010
+  - *id015
+  - series: kube_pod_container_resource_requests{resource="nvidia_com_gpu",job="kube-state-metrics",namespace="kai",pod="physical-reservation",uid="a",node="k3s-wk-gpu1",container="reservation",instance="duplicate"}
+    values: 1+0x6
+  - *id011
+  - *id012
+  - *id013
+  - *id014
+  promql_expr_test:
+  - expr: cps:gpu_kubernetes_unallocated_devices
+    eval_time: 3m
+    exp_samples:
+    - labels: cps:gpu_kubernetes_unallocated_devices{}
+      value: 7
+- name: Eight allocated devices are an observed valid zero
+  interval: 30s
+  input_series:
+  - *id001
+  - *id002
+  - *id003
+  - *id004
+  - *id005
+  - *id006
+  - *id007
+  - *id008
+  - *id009
+  - series: kube_pod_container_resource_requests{resource="nvidia_com_gpu",job="kube-state-metrics",namespace="kai",pod="physical-reservation",uid="a",node="k3s-wk-gpu1",container="reservation"}
+    values: 8+0x6
+  - *id015
+  - *id011
+  - *id012
+  - *id013
+  - *id014
+  promql_expr_test:
+  - expr: cps:gpu_kubernetes_unallocated_devices
+    eval_time: 3m
+    exp_samples:
+    - labels: cps:gpu_kubernetes_unallocated_devices{}
+      value: 0
+- name: Over-inventory allocations are unknown rather than negative free
+  interval: 30s
+  input_series:
+  - *id001
+  - *id002
+  - *id003
+  - *id004
+  - *id005
+  - *id006
+  - *id007
+  - *id008
+  - *id009
+  - series: kube_pod_container_resource_requests{resource="nvidia_com_gpu",job="kube-state-metrics",namespace="kai",pod="physical-reservation",uid="a",node="k3s-wk-gpu1",container="reservation"}
+    values: 9+0x6
+  - *id015
+  - *id011
+  - *id012
+  - *id013
+  - *id014
+  promql_expr_test:
+  - expr: cps:gpu_kubernetes_unallocated_devices
+    eval_time: 3m
+    exp_samples: []
+- name: Stale physical request makes estimate unknown
+  interval: 30s
+  input_series:
+  - *id001
+  - *id002
+  - *id003
+  - *id004
+  - *id005
+  - *id006
+  - *id007
+  - *id008
+  - *id009
+  - series: kube_pod_container_resource_requests{resource="nvidia_com_gpu",job="kube-state-metrics",namespace="kai",pod="physical-reservation",uid="a",node="k3s-wk-gpu1",container="reservation"}
+    values: 1 _ _ _ _ _ _
+  - *id015
+  - *id011
+  - *id012
+  - *id013
+  - *id014
+  promql_expr_test:
+  - expr: cps:gpu_kubernetes_unallocated_devices
+    eval_time: 3m
+    exp_samples: []
+- name: Stale Pod phase makes estimate unknown
+  interval: 30s
+  input_series:
+  - *id001
+  - *id002
+  - *id003
+  - *id004
+  - *id005
+  - *id006
+  - *id007
+  - *id008
+  - *id009
+  - *id010
+  - series: kube_pod_status_phase{job="kube-state-metrics",namespace="kai",pod="physical-reservation",uid="a",phase="Running"}
+    values: 1 _ _ _ _ _ _
+  - *id011
+  - *id012
+  - *id013
+  - *id014
+  promql_expr_test:
+  - expr: cps:gpu_kubernetes_unallocated_devices
+    eval_time: 3m
+    exp_samples: []
+- name: Missing Pod phase makes estimate unknown
+  interval: 30s
+  input_series:
+  - *id001
+  - *id002
+  - *id003
+  - *id004
+  - *id005
+  - *id006
+  - *id007
+  - *id008
+  - *id009
+  - *id010
+  - *id011
+  - *id012
+  - *id013
+  - *id014
+  promql_expr_test:
+  - expr: cps:gpu_kubernetes_unallocated_devices
+    eval_time: 3m
+    exp_samples: []
+- name: Failed kube-state-metrics scrape makes estimate unknown
+  interval: 30s
+  input_series:
+  - *id001
+  - *id002
+  - *id003
+  - *id004
+  - *id005
+  - *id006
+  - *id007
+  - *id008
+  - series: up{job="kube-state-metrics",namespace="cattle-monitoring-system"}
+    values: 0+0x6
+  - *id010
+  - *id015
+  - *id011
+  - *id012
+  - *id013
+  - *id014
+  promql_expr_test:
+  - expr: cps:gpu_kubernetes_unallocated_devices
+    eval_time: 3m
+    exp_samples: []
+- name: Stale kube-state-metrics scrape makes estimate unknown
+  interval: 30s
+  input_series:
+  - *id001
+  - *id002
+  - *id003
+  - *id004
+  - *id005
+  - *id006
+  - *id007
+  - *id008
+  - series: up{job="kube-state-metrics",namespace="cattle-monitoring-system"}
+    values: 1 _ _ _ _ _ _
+  - *id010
+  - *id015
+  - *id011
+  - *id012
+  - *id013
+  - *id014
+  promql_expr_test:
+  - expr: cps:gpu_kubernetes_unallocated_devices
+    eval_time: 3m
+    exp_samples: []
+- name: Stale physical inventory cannot survive through recording lookback
+  interval: 30s
+  input_series:
+  - series: kube_node_status_capacity{resource="nvidia_com_gpu",job="kube-state-metrics",node="k3s-wk-gpu1"}
+    values: 2 _ _ _ _ _ _
+  - *id002
+  - *id003
+  - *id004
+  - *id005
+  - *id006
+  - *id007
+  - *id008
+  - *id009
+  - *id010
+  - *id015
+  - *id011
+  - *id012
+  - *id013
+  - *id014
+  promql_expr_test:
+  - expr: cps:gpu_kubernetes_unallocated_devices
+    eval_time: 3m
+    exp_samples: []
+- name: Partial physical inventory makes estimate unknown
+  interval: 30s
+  input_series:
+  - *id003
+  - *id004
+  - *id005
+  - *id006
+  - *id007
+  - *id008
+  - *id009
+  - *id010
+  - *id015
+  promql_expr_test:
+  - expr: cps:gpu_kubernetes_unallocated_devices
+    eval_time: 3m
+    exp_samples: []
+- name: Not-ready physical inventory node makes estimate unknown
+  interval: 30s
+  input_series:
+  - *id001
+  - series: kube_node_status_condition{condition="Ready",status="true",job="kube-state-metrics",node="k3s-wk-gpu1"}
+    values: 0+0x6
+  - *id003
+  - *id004
+  - *id005
+  - *id006
+  - *id007
+  - *id008
+  - *id009
+  - *id010
+  - *id015
+  - *id011
+  - *id012
+  - *id013
+  - *id014
+  promql_expr_test:
+  - expr: cps:gpu_kubernetes_unallocated_devices
+    eval_time: 3m
+    exp_samples: []
+- name: Unsupported GPU init-container accounting makes estimate unknown
+  interval: 30s
+  input_series:
+  - *id001
+  - *id002
+  - *id003
+  - *id004
+  - *id005
+  - *id006
+  - *id007
+  - *id008
+  - *id009
+  - *id010
+  - *id015
+  - series: kube_pod_init_container_resource_requests{resource="nvidia_com_gpu",job="kube-state-metrics",namespace="kai",pod="init",uid="c",container="gpu-init"}
+    values: 1+0x6
+  - *id011
+  - *id012
+  - *id013
+  - *id014
+  promql_expr_test:
+  - expr: cps:gpu_kubernetes_unallocated_devices
+    eval_time: 3m
+    exp_samples: []
+- name: Absent physical request accounting does not invent an idle pool
+  interval: 30s
+  input_series:
+  - *id001
+  - *id002
+  - *id003
+  - *id004
+  - *id005
+  - *id006
+  - *id007
+  - *id008
+  - *id009
+  - *id011
+  - *id012
+  - *id013
+  - *id014
+  promql_expr_test:
+  - expr: cps:gpu_kubernetes_unallocated_devices
+    eval_time: 3m
+    exp_samples: []
+- name: Physical request outside reviewed inventory makes estimate unknown
+  interval: 30s
+  input_series:
+  - *id001
+  - *id002
+  - *id003
+  - *id004
+  - *id005
+  - *id006
+  - *id007
+  - *id008
+  - *id009
+  - series: kube_pod_container_resource_requests{resource="nvidia_com_gpu",job="kube-state-metrics",namespace="kai",pod="physical-reservation",uid="a",node="k3s-wk-gpu5",container="reservation"}
+    values: 1+0x6
+  - *id015
+  - *id011
+  - *id012
+  - *id013
+  - *id014
+  promql_expr_test:
+  - expr: cps:gpu_kubernetes_unallocated_devices
+    eval_time: 3m
+    exp_samples: []
+- name: Reduced device-plugin allocatable inventory makes estimate unknown
+  interval: 30s
+  input_series:
+  - *id001
+  - *id002
+  - *id003
+  - *id004
+  - *id005
+  - *id006
+  - *id007
+  - *id008
+  - *id009
+  - *id010
+  - *id015
+  - *id016
+  - *id017
+  - *id018
+  - series: kube_node_status_allocatable{resource="nvidia_com_gpu",job="kube-state-metrics",node="k3s-wk-gpu1"}
+    values: 1+0x6
+  - *id012
+  - *id013
+  - *id014
+  promql_expr_test:
+  - expr: cps:gpu_kubernetes_unallocated_devices
+    eval_time: 3m
+    exp_samples: []
+- name: Stale device-plugin allocatable inventory makes estimate unknown
+  interval: 30s
+  input_series:
+  - *id001
+  - *id002
+  - *id003
+  - *id004
+  - *id005
+  - *id006
+  - *id007
+  - *id008
+  - *id009
+  - *id010
+  - *id015
+  - *id016
+  - *id017
+  - *id018
+  - series: kube_node_status_allocatable{resource="nvidia_com_gpu",job="kube-state-metrics",node="k3s-wk-gpu1"}
+    values: 2 _ _ _ _ _ _
+  - *id012
+  - *id013
+  - *id014
+  promql_expr_test:
+  - expr: cps:gpu_kubernetes_unallocated_devices
+    eval_time: 3m
+    exp_samples: []

@@ -1,0 +1,71 @@
+{
+  "variant": "pytorch-runtime-base",
+  "computeSourceRevision": "70471b9793f21a87d74ac7a673f871dfa9620101",
+  "wheelSha256": "86a0fa74cb6e15dd408fcfe36945ca1f614af14ff3bda555f49aaf4e85408d37",
+  "parentConfigId": "730e8a557984bed1350cad3e43ffbd279559fd1b6166d31d73bead575b4a45ff",
+  "imageConfigId": "d3e60fb58bbe054c34c4c05fce170ae9d20229f343250e20e00d26e5ebd2725f",
+  "image": "ghcr.io/mul-cps/cps-jupyter-notebook@sha256:7bafcf19207bdbc900f566106e08d0ff04edc1ff5e7241c82ce0966ca6dc40cf",
+  "published": true,
+  "remoteManifestAndConfigVerified": true,
+  "installedHashes": {
+    "modulesMatched": 21,
+    "addonAssetsMatched": 5,
+    "uid": 1000
+  },
+  "runtime": {
+    "uid": 1000,
+    "python": "3.13.12",
+    "compute": "0.1.0",
+    "rtc": "4.4.1",
+    "lab": "4.5.7",
+    "freshKernelSuccess": true,
+    "typedParameters": true,
+    "immutableInput": true,
+    "failedExecutedNotebookRetained": true,
+    "qualified": false,
+    "scope": "CPU notebook execution only; GPU and variant-specific application runtime not qualified"
+  },
+  "runtimeArtifacts": {
+    "failure-input.ipynb": "d3f1fde8bdd3dcadfc626553dc0b5e0d1bb252ccf8e56a40b62d49ac36c5e7af",
+    "failure.ipynb": "a82d57a2f15ca070fc3d2aebb3c7e702ba73e203ca8b61dccd5d9b3af73b211a",
+    "input.ipynb": "14ecc4040da042add798520bfeaf85a6ae8937f1129539e36ab913e015bef12a",
+    "report.json": "936860bae1914d0bfc0960b61ba49a5cf5c98ff44e7d7161123871db0cf3f553",
+    "success.ipynb": "4df2e5fcbae30025092ef6ada002ce086e71e3c7d3f027e9af64f4105eecf05f"
+  },
+  "parentStartupConfigurationPreserved": true,
+  "pipCheckPassed": true,
+  "qualified": false,
+  "deployed": false,
+  "limitations": [
+    "Layered qualification build; common-source release tag and full matrix remain open.",
+    "No GPU devices mounted; hardware isolation and variant-specific GPU behavior unqualified."
+  ],
+  "sbom": {
+    "variant": "pytorch-runtime-base",
+    "subject": "ghcr.io/mul-cps/cps-jupyter-notebook@sha256:7bafcf19207bdbc900f566106e08d0ff04edc1ff5e7241c82ce0966ca6dc40cf",
+    "sourceImageId": "sha256:d3e60fb58bbe054c34c4c05fce170ae9d20229f343250e20e00d26e5ebd2725f",
+    "packages": 817,
+    "files": 43215,
+    "requiredPackagesVerified": [
+      "cps-compute",
+      "hera-workflows",
+      "jupyter-collaboration",
+      "jupyterlab",
+      "papermill",
+      "torch",
+      "torchvision"
+    ],
+    "checksums": {
+      "sbom.spdx.json": "cd3ee71434da58dcc96d1fb1b2a33267352266c6b8da3cf0316b409a879b3d15",
+      "sbom.syft.json": "c98764d5d818e664eaa3f88ed997545712cff795e6d63c5589645ece91cc8a7f"
+    },
+    "attachment": "ghcr.io/mul-cps/cps-jupyter-notebook@sha256:4b4d85e7b2a0463a4b9ae825ef65979094fdc7c305099b71006c674aea67a4f1",
+    "subjectVerified": true,
+    "downloadHashesMatched": true,
+    "scannerSha256": "dbf75864e7a7ff9e1fbf00552c31483f693188632a9f68f343cd7653dac513d6",
+    "productionQualified": false,
+    "createdAt": "2026-10-07T04:50:35.542617+00:00",
+    "fileCoverage": "package-owned files (Syft metadata selection owned-by-package); not every image file"
+  },
+  "sbomPublished": true
+}
