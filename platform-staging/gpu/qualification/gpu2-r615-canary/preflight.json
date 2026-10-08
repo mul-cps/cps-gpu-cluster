@@ -772,7 +772,9 @@
     "rollbackQualified": false,
     "cuda134FeaturesQualified": false,
     "broadDriverDaemonSetChanged": false,
-    "readOnlyInventory": true
+    "readOnlyInventory": true,
+    "migExcludedByCurrentInstruction": true,
+    "actualIsolationQualified": false
   },
   "migConditional": {
     "observedAt": "2026-10-08T13:15:43.706102+00:00",
@@ -807,5 +809,7 @@
     "clusterPolicyResourceVersionUnchanged": true,
     "allFourExistingDriverPodUidsUnchanged": true,
     "readOnlyGpuQueryOnly": true
-  }
+  },
+  "sourceDaemonSetSpecSHA256": "20ca4ceadc4adcc59b87e4dcedde724af0383b57ca38415d212ccba96460ab8e",
+  "sourceDaemonSetUID": "7347875f-1243-4b54-9fe7-8aed76a75a05"
 }

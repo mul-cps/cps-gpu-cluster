@@ -16,7 +16,7 @@ spec:
         app: gpu2-r615-driver-canary
         qualification.cps/owner: gpu2-r615-driver-canary
       annotations:
-        qualification.cps/state: proposal-only-manually-quiesced-no-manager
+        qualification.cps/state: proposal-only-not-applied
     spec:
       affinity:
         podAntiAffinity:
@@ -104,19 +104,55 @@ spec:
       dnsPolicy: ClusterFirst
       hostPID: true
       initContainers:
-      - name: gpu2-firmware-search-path
-        image: nvcr.io/nvidia/driver@sha256:bc7572b7f14177c467e4dd8b66c4f4535f462ea9cf6a65cebd7603cc966ebbd7
-        imagePullPolicy: IfNotPresent
+      - args:
+        - uninstall_driver
         command:
-        - /bin/sh
-        - -ec
-        args:
-        - printf %s "/run/nvidia/firmware-r615-canary" > /sys/module/firmware_class/parameters/path
+        - driver-manager
+        env:
+        - name: NODE_NAME
+          valueFrom:
+            fieldRef:
+              apiVersion: v1
+              fieldPath: spec.nodeName
+        - name: NVIDIA_VISIBLE_DEVICES
+          value: void
+        - name: ENABLE_GPU_POD_EVICTION
+          value: 'false'
+        - name: ENABLE_AUTO_DRAIN
+          value: 'false'
+        - name: DRAIN_USE_FORCE
+          value: 'false'
+        - name: DRAIN_POD_SELECTOR_LABEL
+        - name: DRAIN_TIMEOUT_SECONDS
+          value: 0s
+        - name: DRAIN_DELETE_EMPTYDIR_DATA
+          value: 'false'
+        - name: OPERATOR_NAMESPACE
+          valueFrom:
+            fieldRef:
+              apiVersion: v1
+              fieldPath: metadata.namespace
+        image: nvcr.io/nvidia/cloud-native/k8s-driver-manager@sha256:a6c12abacc9c4f51d3653c90fcad32f19799069889338601407eba05fea4ba18
+        imagePullPolicy: IfNotPresent
+        name: k8s-driver-manager
+        resources: {}
         securityContext:
           privileged: true
+        terminationMessagePath: /dev/termination-log
+        terminationMessagePolicy: File
         volumeMounts:
-        - name: firmware-search-path
-          mountPath: /sys/module/firmware_class/parameters/path
+        - mountPath: /run/nvidia
+          mountPropagation: Bidirectional
+          name: run-nvidia
+        - mountPath: /host
+          mountPropagation: HostToContainer
+          name: host-root
+          readOnly: true
+        - mountPath: /sys
+          name: host-sys
+        - mountPath: /run/mellanox/drivers
+          mountPropagation: HostToContainer
+          name: run-mellanox-drivers
       nodeSelector:
         kubernetes.io/hostname: k3s-wk-gpu2
       priorityClassName: system-node-critical
@@ -187,7 +223,7 @@ spec:
           type: ''
         name: sysfs-memory-online
       - hostPath:
-          path: /run/nvidia/firmware-r615-canary
+          path: /run/nvidia/driver/lib/firmware
           type: DirectoryOrCreate
         name: nv-firmware
   updateStrategy:

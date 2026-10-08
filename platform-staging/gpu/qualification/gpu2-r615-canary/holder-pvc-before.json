@@ -1,0 +1,130 @@
+{
+  "observedAt": "2026-10-08T13:23:48.573607+00:00",
+  "holderSample": [
+    {
+      "pid": 1260846,
+      "comm": "nvidia-cuda-mps",
+      "uid": 0,
+      "cgroup": "0::/kubepods.slice/kubepods-besteffort.slice/kubepods-besteffort-pod4cb8c92b_95a7_4a30_9d62_bc17bb542941.slice/cri-containerd-0019022186fe703cdd2e4cadbc76aa40bbb1620d192dfeac5d9b04982f575caf.scope|",
+      "devices": [
+        "/dev/nvidia0",
+        "/dev/nvidia1",
+        "/dev/nvidiactl"
+      ],
+      "pod": {
+        "namespace": "gpu-operator",
+        "name": "mps-control-daemon-standalone-m2587",
+        "uid": "4cb8c92b-95a7-4a30-9d62-bc17bb542941"
+      }
+    },
+    {
+      "pid": 3166883,
+      "comm": "nvidia-cuda-mps",
+      "uid": 10001,
+      "cgroup": "0::/kubepods.slice/kubepods-besteffort.slice/kubepods-besteffort-pod4cb8c92b_95a7_4a30_9d62_bc17bb542941.slice/cri-containerd-0019022186fe703cdd2e4cadbc76aa40bbb1620d192dfeac5d9b04982f575caf.scope|",
+      "devices": [
+        "/dev/nvidia-uvm",
+        "/dev/nvidia0",
+        "/dev/nvidia1",
+        "/dev/nvidiactl"
+      ],
+      "pod": {
+        "namespace": "gpu-operator",
+        "name": "mps-control-daemon-standalone-m2587",
+        "uid": "4cb8c92b-95a7-4a30-9d62-bc17bb542941"
+      }
+    },
+    {
+      "pid": 952231,
+      "comm": "nvidia-persiste",
+      "uid": 0,
+      "cgroup": "0::/kubepods.slice/kubepods-besteffort.slice/kubepods-besteffort-podb72e0314_256d_44a5_83ec_b6a8cc180447.slice/cri-containerd-4f4199d1c8b7bd9a34723f4a8e546fa8d2748524059d1e57cccec4d64bfc49c7.scope|",
+      "devices": [
+        "/dev/nvidia0",
+        "/dev/nvidia1",
+        "/dev/nvidiactl"
+      ],
+      "pod": {
+        "namespace": "gpu-operator",
+        "name": "nvidia-driver-daemonset-ssr7r",
+        "uid": "b72e0314-256d-44a5-83ec-b6a8cc180447"
+      }
+    },
+    {
+      "pid": 953455,
+      "comm": "dcgm-exporter",
+      "uid": 0,
+      "cgroup": "0::/kubepods.slice/kubepods-besteffort.slice/kubepods-besteffort-podb02b507e_7332_42ac_a7fa_c0788dea1334.slice/cri-containerd-5e33cd4ca6774c66c49b4d6b00f0704e5a5cd0966c73220f92aaa47c87ae7a3e.scope|",
+      "devices": [
+        "/dev/nvidia-caps/nvidia-cap1",
+        "/dev/nvidia-caps/nvidia-cap2",
+        "/dev/nvidia-uvm",
+        "/dev/nvidia0",
+        "/dev/nvidia1",
+        "/dev/nvidiactl"
+      ],
+      "pod": {
+        "namespace": "gpu-operator",
+        "name": "nvidia-dcgm-exporter-rqqqn",
+        "uid": "b02b507e-7332-42ac-a7fa-c0788dea1334"
+      }
+    },
+    {
+      "pid": 954286,
+      "comm": "nvidia-device-p",
+      "uid": 0,
+      "cgroup": "0::/kubepods.slice/kubepods-besteffort.slice/kubepods-besteffort-poda4e947f2_811b_4dcc_9e2b_322e6284cd65.slice/cri-containerd-709669cab6d8f059cc4882208b92dfce458a602d88523dbaaa527a10666cce17.scope|",
+      "devices": [
+        "/dev/nvidia-caps/nvidia-cap1",
+        "/dev/nvidia-caps/nvidia-cap2",
+        "/dev/nvidia-uvm",
+        "/dev/nvidia0",
+        "/dev/nvidia1",
+        "/dev/nvidiactl"
+      ],
+      "pod": {
+        "namespace": "gpu-operator",
+        "name": "nvidia-device-plugin-daemonset-b9gtn",
+        "uid": "a4e947f2-811b-4dcc-9e2b-322e6284cd65"
+      }
+    }
+  ],
+  "criticalPvcPods": [
+    {
+      "namespace": "cps-compute",
+      "name": "cps-admin-58c6f68c88-pq58n",
+      "uid": "92a2f4c1-3fb3-4be6-84e1-64a3c4b98f16",
+      "baselineUidMatched": true,
+      "ready": true,
+      "restarts": 0,
+      "pvcs": [
+        "cps-admin-data"
+      ]
+    },
+    {
+      "namespace": "jupyterhub",
+      "name": "postgresql-6f46c896b4-524mt",
+      "uid": "735c9cc9-8a5c-44e0-9fcc-4b1d7d1a7953",
+      "baselineUidMatched": true,
+      "ready": true,
+      "restarts": 0,
+      "pvcs": [
+        "postgresql-data-longhorn"
+      ]
+    },
+    {
+      "namespace": "loki",
+      "name": "loki-0",
+      "uid": "8bacbfbe-90cc-497a-ab3e-d458e05199df",
+      "baselineUidMatched": true,
+      "ready": true,
+      "restarts": 0,
+      "pvcs": [
+        "storage-loki-0"
+      ]
+    }
+  ],
+  "targetRunningPodCount": 55,
+  "gpuWorkloads": [],
+  "readyPods": 55
+}

@@ -1,10 +1,12 @@
-Root has held R615 deployment because its documented memory controls do not yet
-close the managed-memory isolation gap. The files below remain an unapplied
-fallback proposal. See `mig-conditional-plan.md` for the read-only MIG alternative.
+Root is running a controlled GPU2-only R615 canary to measure the documented
+managed-memory isolation gap. MIG is explicitly excluded: both current and
+pending MIG modes must stay Disabled. The earlier MIG document is historical
+research, not an active option. No isolation capability is accepted before the
+actual allocation, Managed-memory, and independent heartbeat tests complete.
 
-GPU2 is eligible for a one-node driver canary proposal, but reload and rollback
-are not yet qualified. No driver layer was downloaded, Pod stopped, device
-changed, node cordoned, ClusterPolicy changed or resource applied for this audit.
+This worker performs read-only live audits and source/render changes. Root owns
+the cache fills, private rollback journal, GPU2 cordon/operand exclusions and
+canary application. Driver reload and rollback remain separate runtime gates.
 
 The live operator is v25.10.0 (Fleet/Helm revision 105). ClusterPolicy uses the
 legacy R580 driver DaemonSet; `useNvidiaDriverCRD=false`. That driver DaemonSet
@@ -26,12 +28,16 @@ The candidate image exists in NGC; manifest metadata only was fetched:
 - Existing driver-manager v0.9.0: `sha256:a6c12abacc9c4f51d3653c90fcad32f19799069889338601407eba05fea4ba18`.
 
 `render.py` copies only the current driver Pod shape into a new DaemonSet with a
-unique selector/owner label and exact hostname `k3s-wk-gpu2`. It pins driver and
-manager digests and keeps drain/eviction disabled. It only reads and renders;
+unique selector/owner label and exact hostname `k3s-wk-gpu2`. It pins the driver
+digest and omits driver-manager after verified manual quiescence. It uses an
+independent `/run/nvidia/firmware-r615-canary` host directory; a tiny init sets
+the kernel firmware search path there. Save the previous path in the private
+root rollback journal first. It only reads and renders;
 it has no apply path. The new DS does not use the operator's driver component
 label, preventing its automatic upgrade controller from selecting this fixture.
-Root must review source compatibility and the concrete rendered manifest before
-any download/apply. This proposal is intentionally a temporary standalone
+The renderer guards the original DaemonSet UID and canonical specification hash;
+status/resourceVersion churn is allowed, source specification changes are not.
+This candidate is intentionally a temporary standalone
 canary, with the original Fleet-managed source unchanged.
 
 The target is Ubuntu 24.04.3, kernel 6.8.0-134-generic, two A100 PCIe 40 GB devices.
@@ -52,7 +58,8 @@ After root approval, execute these bounded steps with a rollback journal:
 2. Cordon only GPU2 without eviction. Save its exact labels/annotations. Change
    GPU2 `accelerator` temporarily from `nvidia` to a maintenance value: the
    standalone MPS DS selects this label. Set only GPU2 deployment labels for
-   device-plugin, DCGM exporter, GFD, MIG manager and operator-validator false.
+   device-plugin, DCGM exporter, GFD and operator-validator false.
+   Leave MIG-manager unchanged; do not change MIG mode, instances or profiles.
    Leave toolkit and every CPU/storage Pod running. Verify these labels survive
    operator reconciliation and all GPU2 GPU-consumer processes/FDs disappear.
    If node labels are reconciled back, stop and restore; do not edit shared DSs.
@@ -60,8 +67,9 @@ After root approval, execute these bounded steps with a rollback journal:
    driver Pod to leave. Verify GPU1/3/4 driver Pod UIDs/digests are unchanged.
    Wait for all NVIDIA module references to be clear. If unloading requires
    killing a CPU/PVC process, draining or rebooting, abort and restore R580.
-4. Apply the reviewed uniquely named node-pinned canary DS. Its driver manager
-   has eviction/drain false. Capture actual installed image ID, build log,
+4. Save the original firmware search path privately. Apply the reviewed uniquely
+   named node-pinned canary DS without driver-manager. Root must have verified
+   actual NVIDIA modules and device FDs absent first. Capture actual image ID, build log,
    module type/version and `nvidia-smi`. Bound the install by a root-agreed timeout;
    if unavailable or unsafe, enter rollback. No automatic retries across nodes.
 5. Re-enable only required GPU2 operands. Keep production MPS stopped until an
@@ -70,13 +78,15 @@ After root approval, execute these bounded steps with a rollback journal:
    image and toolkit v1.18.0 are recorded, not declared new-feature compatible.
    Avoid toolkit/runtime rollout: assess whether GPU2 CDI regeneration is needed
    and review that node-only operation first. Root's CPU-only isolation prototype
-   then checks queried driver capabilities and actual policy enforcement.
+   then checks small bounded standard/two-context/Managed allocations and
+   independent heartbeat survival. No production admission policy is enabled.
 6. Compare CPU/PVC health, Pod UIDs and protected-node baseline throughout.
    Leave the node cordoned until root accepts either the canary or rollback.
 
 Rollback uses only GPU2. Stop owned canary clients and required GPU2 operands;
 verify module references clear; delete the owned R615 DS/Pod and wait for its
-driver cleanup. Restore `gpu.deploy.driver=true` so the unchanged legacy R580
+driver cleanup. Restore the original journaled firmware search path. Restore
+`gpu.deploy.driver=true` so the unchanged legacy R580
 DS recreates only GPU2's driver Pod. Verify its image ID equals the recorded
 R580 digest, actual loaded driver is 580.95.05, both GPUs are healthy, and old
 MPS control/client behavior returns. Restore only journaled GPU2 labels and
@@ -85,6 +95,22 @@ If modules cannot reload without reboot, keep GPU2 cordoned and report the
 failure; no reboot is authorized by this plan. Driver-container rollback is
 not a proof against irreversible installer behavior, hence source/build and
 unload review remains a prerequisite before proceeding.
+
+The first canary included manager v0.9.0: its unconditional operand shutdown
+recreated GPU2 toolkit and MIG-manager Pods despite drain/eviction being false.
+The same unchanged init exists in legacy R580 restoration, so its effects must
+be reviewed before that path. Do not claim toolkit, MIG-manager or containerd
+remain unchanged merely from disabled drain flags. The corrected candidate
+omits that init and does not change node labels or restart services.
+
+The first R615 install loaded modules but found no GPUs: firmware installation
+failed with ENOENT because `/lib/firmware` was backed by
+`/run/nvidia/driver/lib/firmware`, inside the driver rootfs that initialization
+unmounts. `first-attempt-with-manager.yaml` preserves that attempt. The corrected
+independent firmware hostPath and explicit search-path init avoid that self
+dependency; actual firmware files, device health and capabilities still require
+runtime verification. Source references and bounded receipts are in
+`source-and-maintenance-receipt.md`.
 
 Released R615 availability does not prove CUDA13.4, new MPS memory controls,
 new context-isolation or dmem behavior on this installed A100/kernel. Those are
