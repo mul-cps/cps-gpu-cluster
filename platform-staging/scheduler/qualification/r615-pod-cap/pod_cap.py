@@ -58,6 +58,10 @@ class Nvml:
         limits = GetLimits(str(path).encode(), 0, 0, 0)
         result = self.lib.nvmlDeviceGetMemoryLimits_v1(self.handle(gpu), C.byref(limits))
         if result == 6: return None  # NVML_ERROR_NOT_FOUND: no exact limit
+        # R615's misc getter also returns3 when no nearest limit exists.
+        # Preserve the ambiguity; only an actual setter and exact readback can
+        # distinguish a virgin group from an unsupported backend.
+        if result == 3: return {'nvml_result': 3, 'state': 'unset-or-unsupported'}
         self.check(result)
         return {'soft': limits.softLimit, 'hard': limits.hardLimit, 'used': limits.currentUsed}
 
@@ -124,7 +128,11 @@ def discover(intent, pod, cri, proc_root, cgroup_root):
                 hostile_isolation_qualified=False, managed_memory_qualified=False)
 
 
-def unlimited(value): return value is None or (value['soft'] == 0 and value['hard'] == MAX)
+def unlimited(value): return value is None or (value.get('soft') == 0 and value.get('hard') == MAX)
+
+
+def unset_candidate(value):
+    return unlimited(value) or value == {'nvml_result': 3, 'state': 'unset-or-unsupported'}
 
 
 def write_receipt(path, value, *, create=False):
@@ -147,17 +155,17 @@ def write_receipt(path, value, *, create=False):
 def apply(intent, get_pod, get_cri, proc_root, cgroup_root, driver, receipt):
     require(int(driver.version.split('.')[0]) >= 615, 'R615 or newer required')
     proof = discover(intent, get_pod(), get_cri(), proc_root, cgroup_root)
-    require(unlimited(driver.get(intent['gpu_uuid'], proof['cgroup_path'])), 'Existing parent limit requires separate reconciliation')
+    require(unset_candidate(driver.get(intent['gpu_uuid'], proof['cgroup_path'])), 'Existing parent limit requires separate reconciliation')
     for child in Path(proof['cgroup_path']).rglob('*'):
         if child.is_dir():
             safe_path(cgroup_root, '/'+str(child.relative_to(cgroup_root)))
-            require(unlimited(driver.get(intent['gpu_uuid'], str(child))), 'Existing descendant override prevents aggregate authority')
+            require(unset_candidate(driver.get(intent['gpu_uuid'], str(child))), 'Existing descendant override prevents aggregate authority')
     proof.update(state='prepared-before-set', driver_version=driver.version)
     write_receipt(receipt, proof, create=True)  # durable exact cleanup authority before mutation
     try:
         driver.set(intent['gpu_uuid'], proof['cgroup_path'], proof['cap_bytes'], proof['cap_bytes'])
         value = driver.get(intent['gpu_uuid'], proof['cgroup_path'])
-        require(value is not None and value['soft'] == proof['cap_bytes'] and value['hard'] == proof['cap_bytes'], 'Exact driver cap readback required')
+        require(value is not None and value.get('soft') == proof['cap_bytes'] and value.get('hard') == proof['cap_bytes'], 'Exact driver cap readback required')
         after = discover(intent, get_pod(), get_cri(), proc_root, cgroup_root)
         require(all(after[k] == v for k, v in proof.items() if k in after), 'Concurrent Pod/PID/cgroup generation changed')
         proof.update(state='applied-before-main', readback=value)
@@ -183,7 +191,7 @@ def cleanup(proof, get_pod, cgroup_root, driver, proc_root=Path('/proc')):
     require(dict(line.split() for line in (group/'cgroup.events').read_text().splitlines()).get('populated') == '0', 'Live tasks remain; cannot remove driver protection')
     value = driver.get(proof['gpu_uuid'], str(group))
     if unlimited(value): return dict(proof, state='already-cleared')
-    require(value['soft'] == proof['cap_bytes'] and value['hard'] == proof['cap_bytes'], 'Foreign/changed limit must not be cleared')
+    require(value.get('soft') == proof['cap_bytes'] and value.get('hard') == proof['cap_bytes'], 'Foreign/changed/uncertain limit must not be cleared')
     driver.set(proof['gpu_uuid'], str(group), 0, MAX)
     require(unlimited(driver.get(proof['gpu_uuid'], str(group))), 'Cleanup readback failed')
     return dict(proof, state='cleared')

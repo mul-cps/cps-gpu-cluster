@@ -30,7 +30,7 @@ def main():
     # This exact Python process must be the CRI first-init PID1, not a child wrapper.
     start=int(Path('/proc/self/stat').read_text().rsplit(') ',1)[1].split()[19])
     boot=Path('/proc/sys/kernel/random/boot_id').read_text().strip()
-    deadline=time.monotonic()+90
+    deadline=time.monotonic()+600  # bounded manual canary setup, never automatic release
     while time.monotonic()<deadline:
         if args.receipt.exists():
             stat=args.receipt.lstat()
