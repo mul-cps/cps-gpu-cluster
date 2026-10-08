@@ -1,0 +1,76 @@
+{
+  "queriedUnit": "k3s-agent",
+  "windowUTC": [
+    "2026-10-08 13:30:00",
+    "2026-10-08 13:40:00"
+  ],
+  "readOnly": true,
+  "events": [
+    {
+      "timestamp": "2026-10-08T13:34:13.153213+00:00",
+      "pid": "954775",
+      "comm": "k3s-agent",
+      "message": "I1008 13:34:13.153192  954775 reconciler_common.go:163] \"operationExecutor.UnmountVolume started for volume \\\"ldpreload\\\" (UniqueName: \\\"kubernetes.io/configmap/2f455157-6902-44d4-abd6-08a7dcf327c2-ldpreload\\\") pod \\\"2f455157-6902-44d4-abd6-08a7dcf327c2\\\" (UID: \\\"2f455157-6902-44d4-abd6-08a7dcf327c2\\\") \""
+    },
+    {
+      "timestamp": "2026-10-08T13:34:13.153811+00:00",
+      "pid": "954775",
+      "comm": "k3s-agent",
+      "message": "I1008 13:34:13.153646  954775 operation_generator.go:782] UnmountVolume.TearDown succeeded for volume \"kubernetes.io/configmap/2f455157-6902-44d4-abd6-08a7dcf327c2-ldpreload\" (OuterVolumeSpecName: \"ldpreload\") pod \"2f455157-6902-44d4-abd6-08a7dcf327c2\" (UID: \"2f455157-6902-44d4-abd6-08a7dcf327c2\"). InnerVolumeSpecName \"ldpreload\". PluginName \"kubernetes.io/configmap\", VolumeGIDValue \"\""
+    },
+    {
+      "timestamp": "2026-10-08T13:34:13.254450+00:00",
+      "pid": "954775",
+      "comm": "k3s-agent",
+      "message": "I1008 13:34:13.254315  954775 reconciler_common.go:299] \"Volume detached for volume \\\"ldpreload\\\" (UniqueName: \\\"kubernetes.io/configmap/2f455157-6902-44d4-abd6-08a7dcf327c2-ldpreload\\\") on node \\\"k3s-wk-gpu2\\\" DevicePath \\\"\\\"\""
+    },
+    {
+      "timestamp": "2026-10-08T13:36:21.301470+00:00",
+      "pid": "954775",
+      "comm": "k3s-agent",
+      "message": "time=\"2026-10-08T13:36:21Z\" level=error msg=\"Shutdown request received: \\\"containerd exited: signal: hangup\\\"\""
+    },
+    {
+      "timestamp": "2026-10-08T13:36:26.730087+00:00",
+      "pid": "1",
+      "comm": "systemd",
+      "message": "k3s-agent.service: Scheduled restart job, restart counter is at 3."
+    },
+    {
+      "timestamp": "2026-10-08T13:36:26.747290+00:00",
+      "pid": "1",
+      "comm": "systemd",
+      "message": "Starting k3s-agent.service - Lightweight Kubernetes..."
+    },
+    {
+      "timestamp": "2026-10-08T13:36:26.898099+00:00",
+      "pid": "1457864",
+      "comm": "k3s-agent",
+      "message": "time=\"2026-10-08T13:36:26Z\" level=info msg=\"Starting k3s agent v1.34.9+k3s1 (5f72184f)\""
+    },
+    {
+      "timestamp": "2026-10-08T13:36:28.677293+00:00",
+      "pid": "1457864",
+      "comm": "k3s-agent",
+      "message": "time=\"2026-10-08T13:36:28Z\" level=info msg=\"Running containerd -c /var/lib/rancher/k3s/agent/etc/containerd/config.toml\""
+    },
+    {
+      "timestamp": "2026-10-08T13:36:30.684266+00:00",
+      "pid": "1457864",
+      "comm": "k3s-agent",
+      "message": "time=\"2026-10-08T13:36:30Z\" level=info msg=\"containerd is now running\""
+    },
+    {
+      "timestamp": "2026-10-08T13:36:31.194754+00:00",
+      "pid": "1457864",
+      "comm": "k3s-agent",
+      "message": "time=\"2026-10-08T13:36:31Z\" level=info msg=\"Running kubelet --cloud-provider=external --config-dir=/var/lib/rancher/k3s/agent/etc/kubelet.conf.d --containerd=/run/k3s/containerd/containerd.sock --hostname-override=k3s-wk-gpu2 --kubeconfig=/var/lib/rancher/k3s/agent/kubelet.kubeconfig --node-ip=10.21.0.43 --node-labels= --read-only-port=0\""
+    },
+    {
+      "timestamp": "2026-10-08T13:36:32.844261+00:00",
+      "pid": "1",
+      "comm": "systemd",
+      "message": "Started k3s-agent.service - Lightweight Kubernetes."
+    }
+  ]
+}

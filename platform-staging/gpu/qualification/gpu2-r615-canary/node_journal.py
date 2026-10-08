@@ -111,6 +111,19 @@ def prepare(stage, directory):
                            for p in pods), "GPU2 consumers still exist; inspect holders before stopping driver"
             patch.append({"op": "add", "path": path_for_label(DRIVER_KEY), "value": "false"})
         elif stage == "restore":
+            assert labels.get(DRIVER_KEY) == "true", "root must recover R580 separately before restoring consumers"
+            assert not any(p["spec"].get("nodeName") == NODE and
+                           p["metadata"].get("labels", {}).get("app") == "gpu2-r615-driver-canary"
+                           for p in pods), "owned canary still exists; never overlap driver ownership"
+            legacy = [p for p in pods if p["spec"].get("nodeName") == NODE and
+                      p["metadata"].get("labels", {}).get("app") == "nvidia-driver-daemonset"]
+            assert len(legacy) == 1 and ready(legacy[0]), "R580 legacy driver must be Ready"
+            assert [c.get("imageID") for c in legacy[0]["status"]["containerStatuses"]] == [
+                "nvcr.io/nvidia/driver@sha256:41515698692bd5e192186e620b65717af960a66d22dbb5a06e3656575a5d9148"]
+            version = subprocess.check_output(["kubectl", "-n", "gpu-operator", "exec",
+                legacy[0]["metadata"]["name"], "-c", "nvidia-driver-ctr", "--", "nvidia-smi",
+                "--query-gpu=driver_version,mig.mode.current,mig.mode.pending", "--format=csv,noheader"], text=True)
+            assert version.splitlines() == ["580.95.05, Disabled, Disabled"] * 2, "actual R580/MIG-disabled recovery required"
             for key, value in journal["labels"].items():
                 patch.append({"op": "remove", "path": path_for_label(key)} if value is None
                              else {"op": "add", "path": path_for_label(key), "value": value})
