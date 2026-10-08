@@ -1,0 +1,75 @@
+{
+  "schemaVersion": 1,
+  "status": "qualification-in-progress",
+  "productionQualified": false,
+  "createdAt": "2026-10-08",
+  "clusterQualificationBase": "c934e7e158de8ee2c7a4d5962e183061527b84eb",
+  "applications": {
+    "compute": {
+      "sourceCommit": "40b9525097776e0d5927242ca625a27dadbd797c",
+      "version": "0.1.0",
+      "image": "ghcr.io/mul-cps/cps-compute@sha256:74cfb93dcf0078c116b88662b19b6ef14611f616e34ae3141f1fd24ceb3e12ce",
+      "wheelSha256": "d05148a430d62ac13e675cac8021b577d6573f0ef21c0a09a5e87ba3b8ac310f",
+      "sourceTests": 605,
+      "installedSourceModulesMatched": 24
+    },
+    "admin": {
+      "sourceCommit": "f5c005ca8b36995c6b4221873d3d0b4d334be3d4",
+      "branch": "fix/reviewed-account-alias-20261008",
+      "image": "ghcr.io/mul-cps/e2x-course-hub@sha256:735f891ba008c58a9d3f4d324c22893d13b094dabe7ea39f80c776ffb6c89767",
+      "sourceTests": 116,
+      "installedWheelTests": 116,
+      "containerTests": 116,
+      "schemaVersion": 6,
+      "emailVerificationMandatory": false,
+      "accountLinkAuthority": "explicitly reviewed owning-Hub account alias or verified email; never an email/name match"
+    }
+  },
+  "compatibility": {
+    "z2jhChart": "4.4.2",
+    "jupyterhub": "5.5.2",
+    "kubernetes": "v1.34.9+k3s1",
+    "policyHash": "sha256:051cd754210af2830d67968eea898f674a55ff66f5c88b3db95dff205f04e33d"
+  },
+  "qualification": {
+    "configurationSuite": "passed",
+    "personalArgoChartTests": 6,
+    "dynamicAdmissionTests": 89,
+    "dynamicCacheTests": 58,
+    "mpsPlannerTests": 13,
+    "liveAdmission": {
+      "report": "../scheduler/qualification/dynamic-admission/LIVE_QUALIFICATION_20261008.md",
+      "emptyRegistryDenials": 3,
+      "authenticatedMatrixPassed": 20,
+      "schemaMutationChecksPassed": 5,
+      "gpuPodsPersisted": 0
+    },
+    "personalArgoReader": {
+      "report": "../argo/qualification/personal-plumbing/observed.json",
+      "twoTokensAuthenticated": true,
+      "rotationProjected": true,
+      "tokenLifetimeSeconds": 900,
+      "leastPrivilegeDenials": 4,
+      "realBrowserOAuthQualified": false
+    }
+  },
+  "defaults": {
+    "gpuSharingEnabled": false,
+    "migUsed": false,
+    "moodleEnabled": false,
+    "universityDexConnectorEnabled": false,
+    "relayRetained": true,
+    "clusterNfsAddressChanged": false
+  },
+  "openGates": [
+    "Trusted final Argo/KAI Pod materialization, quota generation coordination, and dynamic software isolation",
+    "Real browser OAuth and personal Argo ownership/privacy on both Hubs",
+    "Installed reviewed identity inventory and migrated grants before authenticator group ownership transition",
+    "Shared workspace revocation/archive, pooled accounting, scheduling bursts, and restore exercises",
+    "Matched notebook variants, reviewed Fleet promotion, release tags and production qualification"
+  ],
+  "limits": [
+    "These counts are separate suites; installed/source repetitions are not additional distinct cases.",
+    "Container publication and isolated API-server tests are supporting evidence, not a production release."
+  ]
+}

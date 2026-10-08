@@ -1,0 +1,812 @@
+{
+  "schemaVersion": 1,
+  "observedAt": "2026-10-08T09:45:42.639571+00:00",
+  "namespace": "cps-cit-nfs-connectivity-20261008",
+  "target": {
+    "server": "193.171.81.79",
+    "export": "/vm-storage"
+  },
+  "tests": [
+    {
+      "job": "egress-k3s-cp1",
+      "uid": "90d47f8a-7c9e-4f56-9281-4b70b7d60ad4",
+      "status": {
+        "succeeded": 1,
+        "conditions": [
+          {
+            "lastProbeTime": "2026-10-08T09:32:32Z",
+            "lastTransitionTime": "2026-10-08T09:32:32Z",
+            "message": "Reached expected number of succeeded pods",
+            "reason": "CompletionsReached",
+            "status": "True",
+            "type": "SuccessCriteriaMet"
+          },
+          {
+            "lastProbeTime": "2026-10-08T09:32:32Z",
+            "lastTransitionTime": "2026-10-08T09:32:32Z",
+            "message": "Reached expected number of succeeded pods",
+            "reason": "CompletionsReached",
+            "status": "True",
+            "type": "Complete"
+          }
+        ]
+      },
+      "result": {
+        "node": "k3s-cp1",
+        "hostNetwork": true,
+        "checks": [
+          {
+            "url": "https://api.ipify.org",
+            "publicIPv4": "193.170.22.104",
+            "tlsVerified": true
+          },
+          {
+            "url": "https://checkip.amazonaws.com",
+            "publicIPv4": "193.170.22.104",
+            "tlsVerified": true
+          }
+        ]
+      }
+    },
+    {
+      "job": "egress-k3s-cp2",
+      "uid": "e2286cea-f526-42a6-be71-f8e755e667d8",
+      "status": {
+        "succeeded": 1,
+        "conditions": [
+          {
+            "lastProbeTime": "2026-10-08T09:32:33Z",
+            "lastTransitionTime": "2026-10-08T09:32:33Z",
+            "message": "Reached expected number of succeeded pods",
+            "reason": "CompletionsReached",
+            "status": "True",
+            "type": "SuccessCriteriaMet"
+          },
+          {
+            "lastProbeTime": "2026-10-08T09:32:33Z",
+            "lastTransitionTime": "2026-10-08T09:32:33Z",
+            "message": "Reached expected number of succeeded pods",
+            "reason": "CompletionsReached",
+            "status": "True",
+            "type": "Complete"
+          }
+        ]
+      },
+      "result": {
+        "node": "k3s-cp2",
+        "hostNetwork": true,
+        "checks": [
+          {
+            "url": "https://api.ipify.org",
+            "publicIPv4": "193.170.22.104",
+            "tlsVerified": true
+          },
+          {
+            "url": "https://checkip.amazonaws.com",
+            "publicIPv4": "193.170.22.104",
+            "tlsVerified": true
+          }
+        ]
+      }
+    },
+    {
+      "job": "egress-k3s-cp3",
+      "uid": "b0bff749-1799-4caf-83a1-c410a0a5aecd",
+      "status": {
+        "succeeded": 1,
+        "conditions": [
+          {
+            "lastProbeTime": "2026-10-08T09:32:34Z",
+            "lastTransitionTime": "2026-10-08T09:32:34Z",
+            "message": "Reached expected number of succeeded pods",
+            "reason": "CompletionsReached",
+            "status": "True",
+            "type": "SuccessCriteriaMet"
+          },
+          {
+            "lastProbeTime": "2026-10-08T09:32:34Z",
+            "lastTransitionTime": "2026-10-08T09:32:34Z",
+            "message": "Reached expected number of succeeded pods",
+            "reason": "CompletionsReached",
+            "status": "True",
+            "type": "Complete"
+          }
+        ]
+      },
+      "result": {
+        "node": "k3s-cp3",
+        "hostNetwork": true,
+        "checks": [
+          {
+            "url": "https://api.ipify.org",
+            "publicIPv4": "193.170.22.104",
+            "tlsVerified": true
+          },
+          {
+            "url": "https://checkip.amazonaws.com",
+            "publicIPv4": "193.170.22.104",
+            "tlsVerified": true
+          }
+        ]
+      }
+    },
+    {
+      "job": "egress-k3s-wk-gpu1",
+      "uid": "3d0a1be7-b9a1-49f2-bf2d-fd84d125cb50",
+      "status": {
+        "succeeded": 1,
+        "conditions": [
+          {
+            "lastProbeTime": "2026-10-08T09:32:31Z",
+            "lastTransitionTime": "2026-10-08T09:32:31Z",
+            "message": "Reached expected number of succeeded pods",
+            "reason": "CompletionsReached",
+            "status": "True",
+            "type": "SuccessCriteriaMet"
+          },
+          {
+            "lastProbeTime": "2026-10-08T09:32:31Z",
+            "lastTransitionTime": "2026-10-08T09:32:31Z",
+            "message": "Reached expected number of succeeded pods",
+            "reason": "CompletionsReached",
+            "status": "True",
+            "type": "Complete"
+          }
+        ]
+      },
+      "result": {
+        "node": "k3s-wk-gpu1",
+        "hostNetwork": true,
+        "checks": [
+          {
+            "url": "https://api.ipify.org",
+            "publicIPv4": "193.170.22.104",
+            "tlsVerified": true
+          },
+          {
+            "url": "https://checkip.amazonaws.com",
+            "publicIPv4": "193.170.22.104",
+            "tlsVerified": true
+          }
+        ]
+      }
+    },
+    {
+      "job": "egress-k3s-wk-gpu2",
+      "uid": "ea5d5d7b-ea5d-47cb-894a-fda3ba1c4f2b",
+      "status": {
+        "succeeded": 1,
+        "conditions": [
+          {
+            "lastProbeTime": "2026-10-08T09:32:27Z",
+            "lastTransitionTime": "2026-10-08T09:32:27Z",
+            "message": "Reached expected number of succeeded pods",
+            "reason": "CompletionsReached",
+            "status": "True",
+            "type": "SuccessCriteriaMet"
+          },
+          {
+            "lastProbeTime": "2026-10-08T09:32:27Z",
+            "lastTransitionTime": "2026-10-08T09:32:27Z",
+            "message": "Reached expected number of succeeded pods",
+            "reason": "CompletionsReached",
+            "status": "True",
+            "type": "Complete"
+          }
+        ]
+      },
+      "result": {
+        "node": "k3s-wk-gpu2",
+        "hostNetwork": true,
+        "checks": [
+          {
+            "url": "https://api.ipify.org",
+            "publicIPv4": "193.170.22.104",
+            "tlsVerified": true
+          },
+          {
+            "url": "https://checkip.amazonaws.com",
+            "publicIPv4": "193.170.22.104",
+            "tlsVerified": true
+          }
+        ]
+      }
+    },
+    {
+      "job": "egress-k3s-wk-gpu3",
+      "uid": "4d4a6206-3f58-4b27-9f11-33b59ffd300b",
+      "status": {
+        "succeeded": 1,
+        "conditions": [
+          {
+            "lastProbeTime": "2026-10-08T09:32:31Z",
+            "lastTransitionTime": "2026-10-08T09:32:31Z",
+            "message": "Reached expected number of succeeded pods",
+            "reason": "CompletionsReached",
+            "status": "True",
+            "type": "SuccessCriteriaMet"
+          },
+          {
+            "lastProbeTime": "2026-10-08T09:32:31Z",
+            "lastTransitionTime": "2026-10-08T09:32:31Z",
+            "message": "Reached expected number of succeeded pods",
+            "reason": "CompletionsReached",
+            "status": "True",
+            "type": "Complete"
+          }
+        ]
+      },
+      "result": {
+        "node": "k3s-wk-gpu3",
+        "hostNetwork": true,
+        "checks": [
+          {
+            "url": "https://api.ipify.org",
+            "publicIPv4": "193.170.22.104",
+            "tlsVerified": true
+          },
+          {
+            "url": "https://checkip.amazonaws.com",
+            "publicIPv4": "193.170.22.104",
+            "tlsVerified": true
+          }
+        ]
+      }
+    },
+    {
+      "job": "egress-k3s-wk-gpu4",
+      "uid": "bd2ff08a-5252-4fd4-b99b-f5802132e3e6",
+      "status": {
+        "succeeded": 1,
+        "conditions": [
+          {
+            "lastProbeTime": "2026-10-08T09:32:31Z",
+            "lastTransitionTime": "2026-10-08T09:32:31Z",
+            "message": "Reached expected number of succeeded pods",
+            "reason": "CompletionsReached",
+            "status": "True",
+            "type": "SuccessCriteriaMet"
+          },
+          {
+            "lastProbeTime": "2026-10-08T09:32:31Z",
+            "lastTransitionTime": "2026-10-08T09:32:31Z",
+            "message": "Reached expected number of succeeded pods",
+            "reason": "CompletionsReached",
+            "status": "True",
+            "type": "Complete"
+          }
+        ]
+      },
+      "result": {
+        "node": "k3s-wk-gpu4",
+        "hostNetwork": true,
+        "checks": [
+          {
+            "url": "https://api.ipify.org",
+            "publicIPv4": "193.170.22.104",
+            "tlsVerified": true
+          },
+          {
+            "url": "https://checkip.amazonaws.com",
+            "publicIPv4": "193.170.22.104",
+            "tlsVerified": true
+          }
+        ]
+      }
+    },
+    {
+      "job": "mount-v3-gpu2",
+      "uid": "f86d61dd-6f9b-4e6b-9c93-69fdd99b3fd0",
+      "status": {
+        "failed": 1,
+        "conditions": [
+          {
+            "lastProbeTime": "2026-10-08T09:43:57Z",
+            "lastTransitionTime": "2026-10-08T09:43:57Z",
+            "message": "Job was active longer than specified deadline",
+            "reason": "DeadlineExceeded",
+            "status": "True",
+            "type": "FailureTarget"
+          },
+          {
+            "lastProbeTime": "2026-10-08T09:43:59Z",
+            "lastTransitionTime": "2026-10-08T09:43:59Z",
+            "message": "Job was active longer than specified deadline",
+            "reason": "DeadlineExceeded",
+            "status": "True",
+            "type": "Failed"
+          }
+        ]
+      }
+    },
+    {
+      "job": "mount-v41-gpu2",
+      "uid": "cbaa2a57-d2c9-4428-af53-3b4231d7af32",
+      "status": {
+        "failed": 1,
+        "conditions": [
+          {
+            "lastProbeTime": "2026-10-08T09:38:36Z",
+            "lastTransitionTime": "2026-10-08T09:38:36Z",
+            "message": "Job was active longer than specified deadline",
+            "reason": "DeadlineExceeded",
+            "status": "True",
+            "type": "FailureTarget"
+          },
+          {
+            "lastProbeTime": "2026-10-08T09:38:38Z",
+            "lastTransitionTime": "2026-10-08T09:38:38Z",
+            "message": "Job was active longer than specified deadline",
+            "reason": "DeadlineExceeded",
+            "status": "True",
+            "type": "Failed"
+          }
+        ]
+      }
+    },
+    {
+      "job": "nfs-k3s-cp1",
+      "uid": "b2ac3ae3-3fad-44e6-89fd-95948dae334b",
+      "status": {
+        "succeeded": 1,
+        "conditions": [
+          {
+            "lastProbeTime": "2026-10-08T09:34:51Z",
+            "lastTransitionTime": "2026-10-08T09:34:51Z",
+            "message": "Reached expected number of succeeded pods",
+            "reason": "CompletionsReached",
+            "status": "True",
+            "type": "SuccessCriteriaMet"
+          },
+          {
+            "lastProbeTime": "2026-10-08T09:34:51Z",
+            "lastTransitionTime": "2026-10-08T09:34:51Z",
+            "message": "Reached expected number of succeeded pods",
+            "reason": "CompletionsReached",
+            "status": "True",
+            "type": "Complete"
+          }
+        ]
+      },
+      "result": {
+        "node": "k3s-cp1",
+        "hostNetwork": true,
+        "server": "193.171.81.79",
+        "tcp": {
+          "2049": {
+            "connected": true,
+            "localSource": "10.21.0.35"
+          },
+          "111": {
+            "connected": true,
+            "localSource": "10.21.0.35"
+          }
+        },
+        "rpc": {
+          "nfsV4Null": {
+            "errorType": "TimeoutError"
+          },
+          "portmapperExports": {
+            "errorType": "TimeoutError"
+          }
+        }
+      }
+    },
+    {
+      "job": "nfs-k3s-cp2",
+      "uid": "64505183-251a-49c4-8431-da0894f5861e",
+      "status": {
+        "succeeded": 1,
+        "conditions": [
+          {
+            "lastProbeTime": "2026-10-08T09:34:52Z",
+            "lastTransitionTime": "2026-10-08T09:34:52Z",
+            "message": "Reached expected number of succeeded pods",
+            "reason": "CompletionsReached",
+            "status": "True",
+            "type": "SuccessCriteriaMet"
+          },
+          {
+            "lastProbeTime": "2026-10-08T09:34:52Z",
+            "lastTransitionTime": "2026-10-08T09:34:52Z",
+            "message": "Reached expected number of succeeded pods",
+            "reason": "CompletionsReached",
+            "status": "True",
+            "type": "Complete"
+          }
+        ]
+      },
+      "result": {
+        "node": "k3s-cp2",
+        "hostNetwork": true,
+        "server": "193.171.81.79",
+        "tcp": {
+          "2049": {
+            "connected": true,
+            "localSource": "10.21.0.36"
+          },
+          "111": {
+            "connected": true,
+            "localSource": "10.21.0.36"
+          }
+        },
+        "rpc": {
+          "nfsV4Null": {
+            "errorType": "TimeoutError"
+          },
+          "portmapperExports": {
+            "errorType": "TimeoutError"
+          }
+        }
+      }
+    },
+    {
+      "job": "nfs-k3s-cp3",
+      "uid": "ac18c6f2-9b62-465b-9dcd-afba56f60359",
+      "status": {
+        "succeeded": 1,
+        "conditions": [
+          {
+            "lastProbeTime": "2026-10-08T09:34:52Z",
+            "lastTransitionTime": "2026-10-08T09:34:52Z",
+            "message": "Reached expected number of succeeded pods",
+            "reason": "CompletionsReached",
+            "status": "True",
+            "type": "SuccessCriteriaMet"
+          },
+          {
+            "lastProbeTime": "2026-10-08T09:34:52Z",
+            "lastTransitionTime": "2026-10-08T09:34:52Z",
+            "message": "Reached expected number of succeeded pods",
+            "reason": "CompletionsReached",
+            "status": "True",
+            "type": "Complete"
+          }
+        ]
+      },
+      "result": {
+        "node": "k3s-cp3",
+        "hostNetwork": true,
+        "server": "193.171.81.79",
+        "tcp": {
+          "2049": {
+            "connected": true,
+            "localSource": "10.21.0.37"
+          },
+          "111": {
+            "connected": true,
+            "localSource": "10.21.0.37"
+          }
+        },
+        "rpc": {
+          "nfsV4Null": {
+            "errorType": "TimeoutError"
+          },
+          "portmapperExports": {
+            "errorType": "TimeoutError"
+          }
+        }
+      }
+    },
+    {
+      "job": "nfs-k3s-wk-gpu1",
+      "uid": "6cc90f70-1759-411a-9b95-e7141696644b",
+      "status": {
+        "succeeded": 1,
+        "conditions": [
+          {
+            "lastProbeTime": "2026-10-08T09:34:53Z",
+            "lastTransitionTime": "2026-10-08T09:34:53Z",
+            "message": "Reached expected number of succeeded pods",
+            "reason": "CompletionsReached",
+            "status": "True",
+            "type": "SuccessCriteriaMet"
+          },
+          {
+            "lastProbeTime": "2026-10-08T09:34:53Z",
+            "lastTransitionTime": "2026-10-08T09:34:53Z",
+            "message": "Reached expected number of succeeded pods",
+            "reason": "CompletionsReached",
+            "status": "True",
+            "type": "Complete"
+          }
+        ]
+      },
+      "result": {
+        "node": "k3s-wk-gpu1",
+        "hostNetwork": true,
+        "server": "193.171.81.79",
+        "tcp": {
+          "2049": {
+            "connected": true,
+            "localSource": "10.21.0.38"
+          },
+          "111": {
+            "connected": true,
+            "localSource": "10.21.0.38"
+          }
+        },
+        "rpc": {
+          "nfsV4Null": {
+            "errorType": "TimeoutError"
+          },
+          "portmapperExports": {
+            "errorType": "TimeoutError"
+          }
+        }
+      }
+    },
+    {
+      "job": "nfs-k3s-wk-gpu2",
+      "uid": "4e4b58bd-bfaa-492f-85d6-cb870a51289f",
+      "status": {
+        "succeeded": 1,
+        "conditions": [
+          {
+            "lastProbeTime": "2026-10-08T09:34:52Z",
+            "lastTransitionTime": "2026-10-08T09:34:52Z",
+            "message": "Reached expected number of succeeded pods",
+            "reason": "CompletionsReached",
+            "status": "True",
+            "type": "SuccessCriteriaMet"
+          },
+          {
+            "lastProbeTime": "2026-10-08T09:34:52Z",
+            "lastTransitionTime": "2026-10-08T09:34:52Z",
+            "message": "Reached expected number of succeeded pods",
+            "reason": "CompletionsReached",
+            "status": "True",
+            "type": "Complete"
+          }
+        ]
+      },
+      "result": {
+        "node": "k3s-wk-gpu2",
+        "hostNetwork": true,
+        "server": "193.171.81.79",
+        "tcp": {
+          "2049": {
+            "connected": true,
+            "localSource": "10.21.0.43"
+          },
+          "111": {
+            "connected": true,
+            "localSource": "10.21.0.43"
+          }
+        },
+        "rpc": {
+          "nfsV4Null": {
+            "errorType": "TimeoutError"
+          },
+          "portmapperExports": {
+            "errorType": "TimeoutError"
+          }
+        }
+      }
+    },
+    {
+      "job": "nfs-k3s-wk-gpu3",
+      "uid": "b3c5a416-cb2e-4395-a4c2-c23b1e221379",
+      "status": {
+        "succeeded": 1,
+        "conditions": [
+          {
+            "lastProbeTime": "2026-10-08T09:34:53Z",
+            "lastTransitionTime": "2026-10-08T09:34:53Z",
+            "message": "Reached expected number of succeeded pods",
+            "reason": "CompletionsReached",
+            "status": "True",
+            "type": "SuccessCriteriaMet"
+          },
+          {
+            "lastProbeTime": "2026-10-08T09:34:53Z",
+            "lastTransitionTime": "2026-10-08T09:34:53Z",
+            "message": "Reached expected number of succeeded pods",
+            "reason": "CompletionsReached",
+            "status": "True",
+            "type": "Complete"
+          }
+        ]
+      },
+      "result": {
+        "node": "k3s-wk-gpu3",
+        "hostNetwork": true,
+        "server": "193.171.81.79",
+        "tcp": {
+          "2049": {
+            "connected": true,
+            "localSource": "10.21.0.40"
+          },
+          "111": {
+            "connected": true,
+            "localSource": "10.21.0.40"
+          }
+        },
+        "rpc": {
+          "nfsV4Null": {
+            "errorType": "TimeoutError"
+          },
+          "portmapperExports": {
+            "errorType": "TimeoutError"
+          }
+        }
+      }
+    },
+    {
+      "job": "nfs-k3s-wk-gpu4",
+      "uid": "c1792d91-e721-411d-b400-9ede6e5ccdc5",
+      "status": {
+        "succeeded": 1,
+        "conditions": [
+          {
+            "lastProbeTime": "2026-10-08T09:34:53Z",
+            "lastTransitionTime": "2026-10-08T09:34:53Z",
+            "message": "Reached expected number of succeeded pods",
+            "reason": "CompletionsReached",
+            "status": "True",
+            "type": "SuccessCriteriaMet"
+          },
+          {
+            "lastProbeTime": "2026-10-08T09:34:53Z",
+            "lastTransitionTime": "2026-10-08T09:34:53Z",
+            "message": "Reached expected number of succeeded pods",
+            "reason": "CompletionsReached",
+            "status": "True",
+            "type": "Complete"
+          }
+        ]
+      },
+      "result": {
+        "node": "k3s-wk-gpu4",
+        "hostNetwork": true,
+        "server": "193.171.81.79",
+        "tcp": {
+          "2049": {
+            "connected": true,
+            "localSource": "10.21.0.41"
+          },
+          "111": {
+            "connected": true,
+            "localSource": "10.21.0.41"
+          }
+        },
+        "rpc": {
+          "nfsV4Null": {
+            "errorType": "TimeoutError"
+          },
+          "portmapperExports": {
+            "errorType": "TimeoutError"
+          }
+        }
+      }
+    },
+    {
+      "job": "standard-nfs-tools-gpu2",
+      "uid": "29bf19c8-4df2-483e-935c-72b6d0e268cb",
+      "status": {
+        "succeeded": 1,
+        "conditions": [
+          {
+            "lastProbeTime": "2026-10-08T09:40:44Z",
+            "lastTransitionTime": "2026-10-08T09:40:44Z",
+            "message": "Reached expected number of succeeded pods",
+            "reason": "CompletionsReached",
+            "status": "True",
+            "type": "SuccessCriteriaMet"
+          },
+          {
+            "lastProbeTime": "2026-10-08T09:40:44Z",
+            "lastTransitionTime": "2026-10-08T09:40:44Z",
+            "message": "Reached expected number of succeeded pods",
+            "reason": "CompletionsReached",
+            "status": "True",
+            "type": "Complete"
+          }
+        ]
+      },
+      "result": {
+        "node": "k3s-wk-gpu2",
+        "readOnlyHostTools": true,
+        "tests": [
+          {
+            "command": [
+              "/usr/sbin/rpcinfo",
+              "-p",
+              "193.171.81.79"
+            ],
+            "exitCode": -9,
+            "stdout": "",
+            "stderr": ""
+          },
+          {
+            "command": [
+              "/usr/sbin/showmount",
+              "-e",
+              "193.171.81.79"
+            ],
+            "exitCode": -9,
+            "stdout": "",
+            "stderr": ""
+          },
+          {
+            "command": [
+              "/usr/sbin/rpcinfo",
+              "-n",
+              "2049",
+              "-t",
+              "193.171.81.79",
+              "100003",
+              "4"
+            ],
+            "exitCode": -9,
+            "stdout": "",
+            "stderr": ""
+          },
+          {
+            "command": [
+              "/usr/sbin/rpcinfo",
+              "-n",
+              "2049",
+              "-t",
+              "193.170.30.58",
+              "100003",
+              "4"
+            ],
+            "exitCode": -9,
+            "stdout": "",
+            "stderr": ""
+          }
+        ]
+      }
+    }
+  ],
+  "mountEvents": [
+    {
+      "pod": "mount-v3-gpu2-sskhz",
+      "reason": "FailedMount",
+      "message": "MountVolume.SetUp failed for volume \"cit-nfs-connectivity-20261008-v3\" : mount failed: exit status 32\nMounting command: mount\nMounting arguments: -t nfs -o proto=tcp,retrans=1,retry=0,ro,soft,timeo=10,vers=3 193.171.81.79:/vm-storage /var/lib/kubelet/pods/98b9792a-cfb5-4464-a175-fa7565e3eeda/volumes/kubernetes.io~nfs/cit-nfs-connectivity-20261008-v3\nOutput: Created symlink /run/systemd/system/remote-fs.target.wants/rpc-statd.service \u2192 /usr/lib/systemd/system/rpc-statd.service.\nmount.nfs: Connection timed out for 193.171.81.79:/vm-storage on /var/lib/kubelet/pods/98b9792a-cfb5-4464-a175-fa7565e3eeda/volumes/kubernetes.io~nfs/cit-nfs-connectivity-20261008-v3\n",
+      "lastTimestamp": "2026-10-08T09:42:53Z"
+    },
+    {
+      "pod": "mount-v3-gpu2-sskhz",
+      "reason": "FailedMount",
+      "message": "MountVolume.SetUp failed for volume \"cit-nfs-connectivity-20261008-v3\" : mount failed: exit status 32\nMounting command: mount\nMounting arguments: -t nfs -o proto=tcp,retrans=1,retry=0,ro,soft,timeo=10,vers=3 193.171.81.79:/vm-storage /var/lib/kubelet/pods/98b9792a-cfb5-4464-a175-fa7565e3eeda/volumes/kubernetes.io~nfs/cit-nfs-connectivity-20261008-v3\nOutput: mount.nfs: Connection timed out for 193.171.81.79:/vm-storage on /var/lib/kubelet/pods/98b9792a-cfb5-4464-a175-fa7565e3eeda/volumes/kubernetes.io~nfs/cit-nfs-connectivity-20261008-v3\n",
+      "lastTimestamp": "2026-10-08T09:43:59Z"
+    },
+    {
+      "pod": "mount-v41-gpu2-xtmnn",
+      "reason": "FailedMount",
+      "message": "Unable to attach or mount volumes: unmounted volumes=[probe], unattached volumes=[], failed to process volumes=[probe]: error processing PVC cps-cit-nfs-connectivity-20261008/read-only-nfs-probe: PVC is not bound",
+      "lastTimestamp": "2026-10-08T09:37:20Z"
+    },
+    {
+      "pod": "mount-v41-gpu2-xtmnn",
+      "reason": "FailedMount",
+      "message": "MountVolume.SetUp failed for volume \"cit-nfs-connectivity-20261008\" : mount failed: exit status 32\nMounting command: mount\nMounting arguments: -t nfs -o proto=tcp,retrans=1,retry=0,ro,soft,timeo=10,vers=4.1 193.171.81.79:/vm-storage /var/lib/kubelet/pods/34c642b3-c2e9-4f0a-94b4-51ca09e5371d/volumes/kubernetes.io~nfs/cit-nfs-connectivity-20261008\nOutput: mount.nfs: mount system call failed for /var/lib/kubelet/pods/34c642b3-c2e9-4f0a-94b4-51ca09e5371d/volumes/kubernetes.io~nfs/cit-nfs-connectivity-20261008\n",
+      "lastTimestamp": "2026-10-08T09:38:07Z"
+    }
+  ],
+  "network": {
+    "clusterNodeRange": "10.21.0.0/16",
+    "clusterPublicHttpsEgressIPv4": "193.170.22.104",
+    "clusterNfsSourceAtFiler": "not observed; requires filer/firewall logs",
+    "workstationLocalIPv4": "10.71.1.174",
+    "workstationGateway": "10.71.1.1",
+    "workstationPublicHttpsEgressIPv4": "193.170.30.58"
+  },
+  "qualification": {
+    "nfsUsable": false,
+    "tcpReachableAllSevenNodes": true,
+    "nfsRpcResponsive": false,
+    "readOnlyV41MountSucceeded": false,
+    "readOnlyV3MountSucceeded": false,
+    "fileUidGidAccessQualified": false,
+    "writesAttempted": false
+  },
+  "limits": [
+    "Public HTTPS egress may differ from destination-specific NFS routing/NAT.",
+    "The rpcinfo control probe against existing CPS NAS also timed out; RPC probe results alone do not establish export ACL failure.",
+    "Actual mount attempts failed before UID/GID file access could be tested.",
+    "No production NFS paths, exports, routes or firewall rules changed."
+  ]
+}

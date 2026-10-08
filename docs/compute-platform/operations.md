@@ -219,3 +219,13 @@ PostgreSQL 18.4, then opened each database with the exact deployed JupyterHub
 containers had no network or published ports, and users/groups/services/server
 counts matched the dumps before and after. This qualifies matching-version ORM
 readability, not Hub process startup, OAuth login or live spawner recovery.
+
+### CIT filer maintenance and connectivity
+
+On 2026-10-08 ICT reported a maintenance window on most Tuesdays, 05:00–08:00 local university time. The new CIT filer can go offline for part of that window. Confirm the date with ICT before scheduling teaching, exams, or recovery exercises that depend on it; the report does not guarantee an outage every Tuesday or for the entire three hours. Existing CPS TrueNAS endpoints remain unchanged.
+
+The supplied target is `193.171.81.79:/vm-storage`. Cluster NFS mounts originate in the node network, so a Pod or Service address is not the filer allowlist identity. Test the actual node-to-filer path and obtain the source address from filer/firewall logs; public HTTPS egress is supporting evidence only because destination routing or NAT can differ.
+
+Check TCP 2049 and the actual NFS protocol separately. NFSv3 also depends on rpcbind/mountd and their configured ports; listing exports alone does not establish mount or UID/GID permissions. Verify a read-only mount as UID 1000/GID 100 before any migration. Temporary probes must retain their unique namespace/PV/claim identity and must not replace existing homes, exports, or routes. Bounded soft mount options are for disposable read-only diagnostics only; they are not production mount defaults.
+
+When the filer is unavailable, defer new dependent sessions/jobs and report storage unavailable. Avoid force deletion or remount changes to active writers. After service returns, verify file access and application recovery before resuming work; do not treat a completed network handshake as evidence that NFS or data recovery succeeded. Maintenance handling remains manual until dates and recovery behavior are qualified.
