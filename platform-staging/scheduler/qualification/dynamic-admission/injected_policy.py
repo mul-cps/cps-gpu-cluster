@@ -166,14 +166,15 @@ def build(*, reviewed_pods=(), **kwargs):
          "object.spec.volumes.all(v, object.spec.volumes.filter(other, other.name == v.name).size() == 1 && "
          "((has(v.hostPath) && (" + ' || '.join(host_clauses) + ")) || "
          "(has(v.emptyDir) && v.name in ['cps-gpu-cache','var-run-argo','tmp-dir-argo','input-artifacts','argo-staging']) || "
-         "(has(v.secret) && v.secret.secretName in [params.data['artifact-secret'], params.data['artifact-ca-secret'], "
-         "'cps-workflow-executor.service-account-token']) || "
+         "(has(v.secret) && (v.secret.secretName == params.data['artifact-secret'] || "
+         "v.secret.secretName == params.data['artifact-ca-secret'] || "
+         "v.secret.secretName == 'cps-workflow-executor.service-account-token')) || "
          "(v.name == p.capabilitiesVolume && has(v.configMap) && v.configMap.name == p.capabilitiesName && "
          "(!has(v.configMap.optional) || !v.configMap.optional) && (!has(v.configMap.items) || size(v.configMap.items) == 0)))) && "
          "object.spec.volumes.filter(v, v.name == p.capabilitiesVolume).size() == 1 && "
          "object.spec.volumes.filter(v, v.name == 'cps-gpu-cache').size() == 1 && "
          "object.spec.volumes.filter(v, v.name == 'cps-gpu-cache').all(v, has(v.emptyDir) && "
-         "v.emptyDir.sizeLimit == '64Mi' && !has(v.emptyDir.medium)) && " +
+         "has(dyn(v.emptyDir).sizeLimit) && dyn(v.emptyDir).sizeLimit == '64Mi' && !has(v.emptyDir.medium)) && " +
          render_policy.all_of(["object.spec.volumes.filter(v, v.name == " + L(name) + ").size() == 1" for name in
                               list(render_policy.HOSTS) + list(ISOLATOR_HOSTS)]) + ')',
          'Only exact compiler and pinned isolator host paths, private cache, executor volumes and this Pod quota ConfigMap are permitted')

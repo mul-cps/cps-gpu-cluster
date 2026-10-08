@@ -1,0 +1,1158 @@
+apiVersion: apiextensions.k8s.io/v1
+kind: CustomResourceDefinition
+metadata:
+  name: dynamicgpuadmissionpolicies.cps-dynamic-admission-live-20261008.compute.cps.unileoben.ac.at
+spec:
+  group: cps-dynamic-admission-live-20261008.compute.cps.unileoben.ac.at
+  scope: Namespaced
+  names:
+    kind: DynamicGpuAdmissionPolicy
+    plural: dynamicgpuadmissionpolicies
+    singular: dynamicgpuadmissionpolicy
+  versions:
+  - name: v1alpha1
+    served: true
+    storage: true
+    schema:
+      openAPIV3Schema:
+        type: object
+        required:
+        - data
+        - approvedImages
+        - createCreators
+        - updateCreators
+        - owners
+        - reviewedPods
+        properties:
+          data:
+            type: object
+            required:
+            - executor-image
+            - artifact-secret
+            - artifact-ca-secret
+            additionalProperties:
+              type: string
+            x-kubernetes-validations:
+            - rule: self.size() == 3
+              message: Exactly the three declared executor parameters are required
+          approvedImages:
+            type: array
+            maxItems: 8
+            items:
+              type: string
+            x-kubernetes-list-type: set
+          createCreators:
+            type: array
+            maxItems: 8
+            items:
+              type: string
+            x-kubernetes-list-type: set
+          updateCreators:
+            type: array
+            maxItems: 8
+            items:
+              type: string
+            x-kubernetes-list-type: set
+          owners:
+            type: array
+            maxItems: 32
+            x-kubernetes-list-type: map
+            x-kubernetes-list-map-keys:
+            - uid
+            items:
+              type: object
+              required:
+              - name
+              - uid
+              properties:
+                name:
+                  type: string
+                uid:
+                  type: string
+          reviewedPods:
+            type: array
+            maxItems: 32
+            x-kubernetes-list-type: map
+            x-kubernetes-list-map-keys:
+            - name
+            items:
+              type: object
+              required:
+              - name
+              - ownerUid
+              - configMapPrefix
+              - mainIndex
+              - gpuMemory
+              - capabilitiesName
+              - evarName
+              - capabilitiesVolume
+              properties:
+                name:
+                  type: string
+                ownerUid:
+                  type: string
+                configMapPrefix:
+                  type: string
+                mainIndex:
+                  type: integer
+                  enum:
+                  - 0
+                  - 1
+                gpuMemory:
+                  type: string
+                  enum:
+                  - '5120'
+                  - '10240'
+                  - '20480'
+                capabilitiesName:
+                  type: string
+                evarName:
+                  type: string
+                capabilitiesVolume:
+                  type: string
+---
+apiVersion: cps-dynamic-admission-live-20261008.compute.cps.unileoben.ac.at/v1alpha1
+kind: DynamicGpuAdmissionPolicy
+metadata:
+  name: reviewed-runtime
+  namespace: cps-dynamic-admission-live-20261008
+data:
+  executor-image: quay.io/argoproj/argoexec:v3.7.18@sha256:8651f0d1a1050be46ef28a7362cbb7387b5f5c29ce691ebddd5d99a0bb7281a9
+  artifact-secret: cps-artifacts
+  artifact-ca-secret: cps-artifacts-ca
+approvedImages:
+- ghcr.io/mul-cps/cps-compute:qualification-40b9525@sha256:b3802a7f70077ff56adbc060d1177409eeff76c8b3cf8ccf9f39047c1e6716bf
+- quay.io/argoproj/argoexec:v3.7.18@sha256:8651f0d1a1050be46ef28a7362cbb7387b5f5c29ce691ebddd5d99a0bb7281a9
+createCreators: []
+updateCreators: []
+owners: []
+reviewedPods: []
+---
+apiVersion: admissionregistration.k8s.io/v1
+kind: ValidatingAdmissionPolicy
+metadata:
+  name: cps-dynamic-admission-live-20261008-boundary
+  annotations:
+    compute.cps.unileoben.ac.at/qualification-state: disabled-offline-injected-candidate
+    compute.cps.unileoben.ac.at/compiler-source: 40b9525097776e0d5927242ca625a27dadbd797c
+    compute.cps.unileoben.ac.at/compiler-wheel-sha256: 8321127b7db5f6554ddde60f9bb916a7414d570a3405c209632dd142210fe0f4
+    compute.cps.unileoben.ac.at/kai-source: bdf434e5e9201cccf4e05fad04d814363653f692
+    compute.cps.unileoben.ac.at/isolator-source: b7058586fe75e7c5a1addc553f408575bb31647f
+spec:
+  failurePolicy: Fail
+  paramKind:
+    apiVersion: cps-dynamic-admission-live-20261008.compute.cps.unileoben.ac.at/v1alpha1
+    kind: DynamicGpuAdmissionPolicy
+  matchConstraints:
+    namespaceSelector:
+      matchLabels:
+        kubernetes.io/metadata.name: cps-dynamic-admission-live-20261008
+    resourceRules:
+    - apiGroups:
+      - ''
+      apiVersions:
+      - v1
+      operations:
+      - CREATE
+      - UPDATE
+      resources:
+      - pods
+      - pods/ephemeralcontainers
+      - pods/resize
+  matchConditions:
+  - name: isolated-qualification-namespace
+    expression: request.namespace == "cps-dynamic-admission-live-20261008"
+  validations:
+  - expression: object.spec.containers.filter(c, c.name == 'wait').all(c, c.image
+      == params.data['executor-image'])
+    message: Credentialed wait containers require the pinned trusted executor image
+  - expression: "object.spec.containers.filter(c, c.name == 'wait').all(c,\n  has(c.command)\
+      \ && c.command == ['argoexec','wait','--loglevel','info','--log-format','text','--gloglevel','0']\
+      \ &&\n  (!has(c.args) || size(c.args) == 0)) &&\n(!has(object.spec.initContainers)\
+      \ || object.spec.initContainers.filter(c, c.name != 'cps-gpu-cache-init').all(c,\n\
+      \  has(c.command) && c.command == ['argoexec','init','--loglevel','info','--log-format','text','--gloglevel','0']\
+      \ &&\n  (!has(c.args) || size(c.args) == 0)))"
+    message: Executor commands and arguments require the qualified controller configuration
+  - expression: "object.spec.containers.filter(c, c.name == 'wait').all(c,\n  (!has(c.envFrom)\
+      \ || size(c.envFrom) == 0) &&\n  (!has(c.env) || c.env.all(e,\n    e.name in\
+      \ ['ARGO_POD_NAME','ARGO_POD_UID','ARGO_WORKFLOW_NAME','ARGO_WORKFLOW_UID','ARGO_CONTAINER_NAME',\n\
+      \      'ARGO_NODE_ID','ARGO_INCLUDE_SCRIPT_OUTPUT','ARGO_DEADLINE','ARGO_TEMPLATE','ARGO_INSTANCE_ID',\n\
+      \      'ARGO_PROGRESS_FILE','ARGO_PROGRESS_PATCH_TICK_DURATION','ARGO_PROGRESS_FILE_TICK_DURATION','ARGO_TERMINATION_GRACE_PERIOD_SECONDS']\
+      \ &&\n    (!has(e.valueFrom) || (has(e.valueFrom.fieldRef) &&\n      ((e.name\
+      \ == 'ARGO_POD_NAME' && e.valueFrom.fieldRef.fieldPath == 'metadata.name') ||\n\
+      \       (e.name == 'ARGO_POD_UID' && e.valueFrom.fieldRef.fieldPath == 'metadata.uid'))))))\
+      \ &&\n  (!has(c.volumeMounts) || c.volumeMounts.all(m,\n    object.spec.volumes.filter(v,\
+      \ v.name == m.name).all(v,\n      (!has(v.projected) || v.projected.sources.all(s,\
+      \ !has(s.secret) && !has(s.serviceAccountToken))) &&\n      (has(v.secret) ||\
+      \ (has(v.emptyDir) &&\n        ((m.name == 'var-run-argo' && m.mountPath ==\
+      \ '/var/run/argo') ||\n         (m.name == 'tmp-dir-argo' && m.mountPath ==\
+      \ '/tmp') ||\n         (m.name == 'input-artifacts' && ((c.name == 'init' &&\
+      \ m.mountPath == '/argo/inputs/artifacts') ||\n           (c.name == 'wait'\
+      \ && m.mountPath == '/mainctrfs/inputs/snapshot.tar'))) ||\n         (m.name\
+      \ == 'argo-staging' && ((c.name == 'init' && m.mountPath == '/argo/staging')\
+      \ ||\n           (c.name == 'wait' && m.mountPath == '/mainctrfs/argo/staging'))))))\
+      \ &&\n      (!has(v.secret) || (has(m.readOnly) && m.readOnly &&\n        ((v.secret.secretName\
+      \ == 'cps-workflow-executor.service-account-token' && m.mountPath == '/var/run/secrets/kubernetes.io/serviceaccount')\
+      \ ||\n         (v.secret.secretName == params.data['artifact-secret'] && m.mountPath\
+      \ == '/argo/secret/' + params.data['artifact-secret']) ||\n         (v.secret.secretName\
+      \ == params.data['artifact-ca-secret'] && m.mountPath == '/argo/secret/' + params.data['artifact-ca-secret']))))))))\
+      \ &&\n(!has(object.spec.initContainers) || object.spec.initContainers.filter(c,\
+      \ c.name != 'cps-gpu-cache-init').all(c,\n  (!has(c.envFrom) || size(c.envFrom)\
+      \ == 0) &&\n  (!has(c.env) || c.env.all(e,\n    e.name in ['ARGO_POD_NAME','ARGO_POD_UID','ARGO_WORKFLOW_NAME','ARGO_WORKFLOW_UID','ARGO_CONTAINER_NAME',\n\
+      \      'ARGO_NODE_ID','ARGO_INCLUDE_SCRIPT_OUTPUT','ARGO_DEADLINE','ARGO_TEMPLATE','ARGO_INSTANCE_ID',\n\
+      \      'ARGO_PROGRESS_FILE','ARGO_PROGRESS_PATCH_TICK_DURATION','ARGO_PROGRESS_FILE_TICK_DURATION','ARGO_TERMINATION_GRACE_PERIOD_SECONDS']\
+      \ &&\n    (!has(e.valueFrom) || (has(e.valueFrom.fieldRef) &&\n      ((e.name\
+      \ == 'ARGO_POD_NAME' && e.valueFrom.fieldRef.fieldPath == 'metadata.name') ||\n\
+      \       (e.name == 'ARGO_POD_UID' && e.valueFrom.fieldRef.fieldPath == 'metadata.uid'))))))\
+      \ &&\n  (!has(c.volumeMounts) || c.volumeMounts.all(m,\n    object.spec.volumes.filter(v,\
+      \ v.name == m.name).all(v,\n      (!has(v.projected) || v.projected.sources.all(s,\
+      \ !has(s.secret) && !has(s.serviceAccountToken))) &&\n      (has(v.secret) ||\
+      \ (has(v.emptyDir) &&\n        ((m.name == 'var-run-argo' && m.mountPath ==\
+      \ '/var/run/argo') ||\n         (m.name == 'tmp-dir-argo' && m.mountPath ==\
+      \ '/tmp') ||\n         (m.name == 'input-artifacts' && ((c.name == 'init' &&\
+      \ m.mountPath == '/argo/inputs/artifacts') ||\n           (c.name == 'wait'\
+      \ && m.mountPath == '/mainctrfs/inputs/snapshot.tar'))) ||\n         (m.name\
+      \ == 'argo-staging' && ((c.name == 'init' && m.mountPath == '/argo/staging')\
+      \ ||\n           (c.name == 'wait' && m.mountPath == '/mainctrfs/argo/staging'))))))\
+      \ &&\n      (!has(v.secret) || (has(m.readOnly) && m.readOnly &&\n        ((v.secret.secretName\
+      \ == 'cps-workflow-executor.service-account-token' && m.mountPath == '/var/run/secrets/kubernetes.io/serviceaccount')\
+      \ ||\n         (v.secret.secretName == params.data['artifact-secret'] && m.mountPath\
+      \ == '/argo/secret/' + params.data['artifact-secret']) ||\n         (v.secret.secretName\
+      \ == params.data['artifact-ca-secret'] && m.mountPath == '/argo/secret/' + params.data['artifact-ca-secret'])))))))))"
+    message: Executor credentials require only the approved read-only secret mount
+      paths
+  - expression: "!has(object.spec.initContainers) || object.spec.initContainers.filter(c,\
+      \ c.name != 'cps-gpu-cache-init').all(c,\n  c.name == 'init' && c.image == params.data['executor-image'])"
+    message: Credentialed init containers require the pinned trusted executor image
+  - expression: has(object.spec.automountServiceAccountToken) && !object.spec.automountServiceAccountToken
+    message: Untrusted workflow containers must not receive automatic service-account
+      credentials
+  - expression: '!has(object.spec.shareProcessNamespace) || !object.spec.shareProcessNamespace'
+    message: User kernels must not share the executor process namespace
+  - expression: "object.spec.containers.filter(c, c.name != 'wait').all(c,\n  (!has(c.envFrom)\
+      \ || c.envFrom.all(e, !has(e.secretRef))) &&\n  (!has(c.env) || c.env.all(e,\
+      \ !has(e.valueFrom) || !has(e.valueFrom.secretKeyRef))) &&\n  (!has(c.volumeMounts)\
+      \ || c.volumeMounts.all(m,\n    object.spec.volumes.filter(v, v.name == m.name).all(v,\n\
+      \      !has(v.secret) && (!has(v.projected) || v.projected.sources.all(s,\n\
+      \        !has(s.secret) && !has(s.serviceAccountToken)))))))"
+    message: Secrets and service-account tokens belong only in the trusted executor
+      containers
+  - expression: object.spec.schedulerName == 'kai-scheduler' && object.spec.serviceAccountName
+      == 'cps-workflow'
+    message: Compute workloads require the trusted scheduler and workflow service
+      account
+  - expression: object.spec.containers.all(c, c.image in params.approvedImages) &&
+      (!has(object.spec.initContainers) || object.spec.initContainers.filter(c, c.name
+      != 'cps-gpu-cache-init').all(c, c.image in params.approvedImages))
+    message: Every workload and executor image must be an explicitly approved digest
+  - expression: '!has(object.spec.ephemeralContainers) || size(object.spec.ephemeralContainers)
+      == 0'
+    message: Ephemeral container access requires a separate reviewed debugging exception
+  - expression: (!has(object.spec.hostNetwork) || !object.spec.hostNetwork) && (!has(object.spec.hostPID)
+      || !object.spec.hostPID) && (!has(object.spec.hostIPC) || !object.spec.hostIPC)
+    message: Host namespaces are prohibited
+  - expression: object.spec.containers.all(c, !has(c.securityContext) || ((!has(c.securityContext.privileged)
+      || !c.securityContext.privileged) && (!has(c.securityContext.allowPrivilegeEscalation)
+      || !c.securityContext.allowPrivilegeEscalation)))
+    message: Privilege escalation is prohibited
+  - expression: (request.operation == 'CREATE' && request.userInfo.username in params.createCreators)
+      || (request.operation == 'UPDATE' && request.userInfo.username in params.updateCreators)
+    message: Every qualification Pod request requires an explicitly observed and approved
+      creator
+  - expression: has(object.metadata.ownerReferences) && size(object.metadata.ownerReferences)
+      == 1 && object.metadata.ownerReferences.all(o, o.apiVersion == 'argoproj.io/v1alpha1'
+      && o.kind == 'Workflow' && has(o.controller) && o.controller && params.owners.exists(p,
+      p.name == o.name && p.uid == o.uid))
+    message: The exact controller parent Workflow UID must be registered after independent
+      review
+  - expression: request.operation != 'UPDATE' || (has(oldObject.metadata) && object.metadata.uid
+      == oldObject.metadata.uid && object.metadata.ownerReferences == oldObject.metadata.ownerReferences
+      && object.spec.serviceAccountName == oldObject.spec.serviceAccountName && object.spec.schedulerName
+      == oldObject.spec.schedulerName && object.spec.priorityClassName == oldObject.spec.priorityClassName
+      && object.metadata.annotations['gpu-memory'] == oldObject.metadata.annotations['gpu-memory'])
+    message: Updates may not replace the Pod identity, parent, scheduler or approved
+      allocation
+  - expression: size(object.spec.containers) <= 2 && object.spec.containers.filter(c,
+      c.name == 'main').size() == 1 && object.spec.containers.all(c, c.name in ['main','wait'])
+      && object.spec.containers.filter(c, c.name == 'wait').size() <= 1 && has(object.spec.initContainers)
+      && size(object.spec.initContainers) <= 2 && object.spec.initContainers.filter(c,
+      c.name == 'cps-gpu-cache-init').size() == 1 && object.spec.initContainers.all(c,
+      c.name in ['cps-gpu-cache-init','init'])
+    message: Only one main, one private cache initializer and the separately validated
+      Argo executor are allowed
+  - expression: object.spec.initContainers.filter(c, c.name == 'cps-gpu-cache-init').all(c,
+      (has(c.name)) && (c.name == "cps-gpu-cache-init") && (has(c.image)) && (c.image
+      == "ghcr.io/mul-cps/cps-compute:qualification-40b9525@sha256:b3802a7f70077ff56adbc060d1177409eeff76c8b3cf8ccf9f39047c1e6716bf")
+      && (has(c.imagePullPolicy)) && (c.imagePullPolicy == "IfNotPresent") && (has(c.command))
+      && (c.command == ["python","-m","cps_compute.gpu_runtime"]) && (has(c.args))
+      && (c.args == ["initialize-cache","--directory","/cache-root","--uid","1000","--gid","100"])
+      && (has(c.env)) && ((size(c.env) == 1) && ((has(c.env[0].name)) && (c.env[0].name
+      == "PYTHONDONTWRITEBYTECODE") && (has(c.env[0].value)) && (c.env[0].value ==
+      "1"))) && (has(c.securityContext)) && ((has(c.securityContext.runAsNonRoot))
+      && (c.securityContext.runAsNonRoot == true) && (has(c.securityContext.runAsUser))
+      && (c.securityContext.runAsUser == 1000) && (has(c.securityContext.runAsGroup))
+      && (c.securityContext.runAsGroup == 100) && (has(c.securityContext.allowPrivilegeEscalation))
+      && (c.securityContext.allowPrivilegeEscalation == false) && (has(c.securityContext.capabilities))
+      && ((has(c.securityContext.capabilities.drop)) && (c.securityContext.capabilities.drop
+      == ["ALL"])) && (has(c.securityContext.seccompProfile)) && ((has(c.securityContext.seccompProfile.type))
+      && (c.securityContext.seccompProfile.type == "RuntimeDefault")) && (has(c.securityContext.readOnlyRootFilesystem))
+      && (c.securityContext.readOnlyRootFilesystem == true)) && (has(c.resources))
+      && ((has(dyn(c.resources).requests)) && ((has(dyn(c.resources).requests.cpu))
+      && (dyn(c.resources).requests.cpu == "10m") && (has(dyn(c.resources).requests.memory))
+      && (dyn(c.resources).requests.memory == "32Mi") && (size(dyn(c.resources).requests)
+      == 2)) && (has(dyn(c.resources).limits)) && ((has(dyn(c.resources).limits.cpu))
+      && (dyn(c.resources).limits.cpu == "100m") && (has(dyn(c.resources).limits.memory))
+      && (dyn(c.resources).limits.memory == "128Mi") && (size(dyn(c.resources).limits)
+      == 2))) && (has(c.volumeMounts)) && ((size(c.volumeMounts) == 1) && ((has(c.volumeMounts[0].name))
+      && (c.volumeMounts[0].name == "cps-gpu-cache") && (has(c.volumeMounts[0].mountPath))
+      && (c.volumeMounts[0].mountPath == "/cache-root"))) && (!has(c.envFrom) || size(c.envFrom)
+      == 0) && (!has(c.ports) || size(c.ports) == 0) && (!has(c.volumeDevices) ||
+      size(c.volumeDevices) == 0) && (!has(c.resizePolicy) || size(c.resizePolicy)
+      == 0) && (!has(c.workingDir)) && (!has(c.lifecycle)) && (!has(c.livenessProbe))
+      && (!has(c.readinessProbe)) && (!has(c.startupProbe)) && (!has(c.restartPolicy))
+      && (!has(c.stdin) || !c.stdin) && (!has(c.stdinOnce) || !c.stdinOnce) && (!has(c.tty)
+      || !c.tty) && (!has(c.env[0].valueFrom)) && (!has(c.volumeMounts[0].subPath))
+      && (!has(c.volumeMounts[0].subPathExpr)) && (!has(c.volumeMounts[0].mountPropagation))
+      && (!has(c.volumeMounts[0].readOnly) || !c.volumeMounts[0].readOnly))
+    message: The cache initializer must exactly match the verified compiler and receive
+      only its private cache volume
+  - expression: object.spec.containers.filter(c, c.name == 'main').all(c, has(c.securityContext)
+      && (has(c.securityContext.runAsNonRoot)) && (c.securityContext.runAsNonRoot
+      == true) && (has(c.securityContext.runAsUser)) && (c.securityContext.runAsUser
+      == 1000) && (has(c.securityContext.runAsGroup)) && (c.securityContext.runAsGroup
+      == 100) && (has(c.securityContext.allowPrivilegeEscalation)) && (c.securityContext.allowPrivilegeEscalation
+      == false) && (has(c.securityContext.capabilities)) && ((has(c.securityContext.capabilities.drop))
+      && (c.securityContext.capabilities.drop == ["ALL"])) && (has(c.securityContext.seccompProfile))
+      && ((has(c.securityContext.seccompProfile.type)) && (c.securityContext.seccompProfile.type
+      == "RuntimeDefault")) && (!has(c.securityContext.privileged) || !c.securityContext.privileged)
+      && (!has(c.securityContext.capabilities.add) || size(c.securityContext.capabilities.add)
+      == 0) && !has(c.securityContext.procMount) && !has(c.securityContext.seLinuxOptions)
+      && !has(c.securityContext.windowsOptions) && !has(c.securityContext.seccompProfile.localhostProfile))
+    message: GPU main processes require the reviewed UID1000/GID100 nonroot runtime
+      security context
+  - expression: object.spec.containers.filter(c, c.name == 'main').all(c, has(c.resources)
+      && ((object.metadata.annotations['gpu-memory'] == "5120" && (has(dyn(c.resources).requests))
+      && ((has(dyn(c.resources).requests.cpu)) && (dyn(c.resources).requests.cpu ==
+      "4") && (has(dyn(c.resources).requests.memory)) && (dyn(c.resources).requests.memory
+      == "16Gi") && (size(dyn(c.resources).requests) == 2)) && (has(dyn(c.resources).limits))
+      && ((has(dyn(c.resources).limits.cpu)) && (dyn(c.resources).limits.cpu == "4")
+      && (has(dyn(c.resources).limits.memory)) && (dyn(c.resources).limits.memory
+      == "16Gi") && (size(dyn(c.resources).limits) == 2))) || (object.metadata.annotations['gpu-memory']
+      == "10240" && (has(dyn(c.resources).requests)) && ((has(dyn(c.resources).requests.cpu))
+      && (dyn(c.resources).requests.cpu == "4") && (has(dyn(c.resources).requests.memory))
+      && (dyn(c.resources).requests.memory == "16Gi") && (size(dyn(c.resources).requests)
+      == 2)) && (has(dyn(c.resources).limits)) && ((has(dyn(c.resources).limits.cpu))
+      && (dyn(c.resources).limits.cpu == "4") && (has(dyn(c.resources).limits.memory))
+      && (dyn(c.resources).limits.memory == "16Gi") && (size(dyn(c.resources).limits)
+      == 2))) || (object.metadata.annotations['gpu-memory'] == "20480" && (has(dyn(c.resources).requests))
+      && ((has(dyn(c.resources).requests.cpu)) && (dyn(c.resources).requests.cpu ==
+      "4") && (has(dyn(c.resources).requests.memory)) && (dyn(c.resources).requests.memory
+      == "16Gi") && (size(dyn(c.resources).requests) == 2)) && (has(dyn(c.resources).limits))
+      && ((has(dyn(c.resources).limits.cpu)) && (dyn(c.resources).limits.cpu == "4")
+      && (has(dyn(c.resources).limits.memory)) && (dyn(c.resources).limits.memory
+      == "16Gi") && (size(dyn(c.resources).limits) == 2)))))
+    message: CPU and memory requests and limits must match the actual fixed-profile
+      compiler output without extra GPU keys
+  - expression: object.spec.containers.filter(c, c.name == 'main').all(c, c.image
+      == "ghcr.io/mul-cps/cps-compute:qualification-40b9525@sha256:b3802a7f70077ff56adbc060d1177409eeff76c8b3cf8ccf9f39047c1e6716bf")
+      && has(object.spec.activeDeadlineSeconds) && object.spec.activeDeadlineSeconds
+      > 0 && object.spec.activeDeadlineSeconds <= 180 && object.spec.restartPolicy
+      == 'Never' && (request.operation != 'CREATE' || !has(object.spec.nodeName))
+      && (!has(object.spec.nodeSelector) || size(object.spec.nodeSelector) == 0) &&
+      !has(object.spec.affinity) && (!has(object.spec.tolerations) || (size(object.spec.tolerations)
+      <= 2 && object.spec.tolerations.all(t, t.key in ['node.kubernetes.io/not-ready','node.kubernetes.io/unreachable']
+      && t.operator == 'Exists' && t.effect == 'NoExecute' && has(t.tolerationSeconds)
+      && t.tolerationSeconds == 300 && (!has(t.value) || t.value == '') && object.spec.tolerations.filter(other,
+      other.key == t.key).size() == 1)))
+    message: The reviewed runtime image, 180-second maximum and scheduler placement
+      cannot be replaced
+  - expression: object.spec.initContainers.all(c, has(c.securityContext) && has(c.securityContext.allowPrivilegeEscalation)
+      && !c.securityContext.allowPrivilegeEscalation && (!has(c.securityContext.privileged)
+      || !c.securityContext.privileged) && has(c.securityContext.capabilities) &&
+      c.securityContext.capabilities.drop == ['ALL'] && (!has(c.securityContext.capabilities.add)
+      || size(c.securityContext.capabilities.add) == 0) && has(c.securityContext.runAsNonRoot)
+      && c.securityContext.runAsNonRoot && has(c.securityContext.seccompProfile) &&
+      c.securityContext.seccompProfile.type == 'RuntimeDefault')
+    message: The initializer exception never permits privileged init containers or
+      added capabilities
+  - expression: object.spec.containers.filter(c, c.name == 'wait').all(c, has(c.securityContext)
+      && (has(c.securityContext.runAsNonRoot)) && (c.securityContext.runAsNonRoot
+      == true) && (has(c.securityContext.runAsUser)) && (c.securityContext.runAsUser
+      == 10001) && (has(c.securityContext.runAsGroup)) && (c.securityContext.runAsGroup
+      == 10001) && (has(c.securityContext.allowPrivilegeEscalation)) && (c.securityContext.allowPrivilegeEscalation
+      == false) && (has(c.securityContext.capabilities)) && ((has(c.securityContext.capabilities.drop))
+      && (c.securityContext.capabilities.drop == ["ALL"])) && (has(c.securityContext.seccompProfile))
+      && ((has(c.securityContext.seccompProfile.type)) && (c.securityContext.seccompProfile.type
+      == "RuntimeDefault")) && (has(c.securityContext.readOnlyRootFilesystem)) &&
+      (c.securityContext.readOnlyRootFilesystem == true) && (!has(c.securityContext.privileged)
+      || !c.securityContext.privileged) && (!has(c.securityContext.capabilities.add)
+      || size(c.securityContext.capabilities.add) == 0)) && object.spec.initContainers.filter(c,
+      c.name == 'init').all(c, has(c.securityContext) && (has(c.securityContext.runAsNonRoot))
+      && (c.securityContext.runAsNonRoot == true) && (has(c.securityContext.runAsUser))
+      && (c.securityContext.runAsUser == 10001) && (has(c.securityContext.runAsGroup))
+      && (c.securityContext.runAsGroup == 10001) && (has(c.securityContext.allowPrivilegeEscalation))
+      && (c.securityContext.allowPrivilegeEscalation == false) && (has(c.securityContext.capabilities))
+      && ((has(c.securityContext.capabilities.drop)) && (c.securityContext.capabilities.drop
+      == ["ALL"])) && (has(c.securityContext.seccompProfile)) && ((has(c.securityContext.seccompProfile.type))
+      && (c.securityContext.seccompProfile.type == "RuntimeDefault")) && (has(c.securityContext.readOnlyRootFilesystem))
+      && (c.securityContext.readOnlyRootFilesystem == true) && (!has(c.securityContext.privileged)
+      || !c.securityContext.privileged) && (!has(c.securityContext.capabilities.add)
+      || size(c.securityContext.capabilities.add) == 0))
+    message: Credentialed executors retain their separate UID10001/GID10001 read-only
+      nonroot security context
+  - expression: object.spec.containers.filter(c, c.name == 'wait').all(c, has(c.resources)
+      && (has(dyn(c.resources).requests)) && ((has(dyn(c.resources).requests.cpu))
+      && (dyn(c.resources).requests.cpu == "100m") && (has(dyn(c.resources).requests.memory))
+      && (dyn(c.resources).requests.memory == "64Mi") && (size(dyn(c.resources).requests)
+      == 2)) && (has(dyn(c.resources).limits)) && ((has(dyn(c.resources).limits.cpu))
+      && (dyn(c.resources).limits.cpu == "1") && (has(dyn(c.resources).limits.memory))
+      && (dyn(c.resources).limits.memory == "256Mi") && (size(dyn(c.resources).limits)
+      == 2))) && object.spec.initContainers.filter(c, c.name == 'init').all(c, has(c.resources)
+      && (has(dyn(c.resources).requests)) && ((has(dyn(c.resources).requests.cpu))
+      && (dyn(c.resources).requests.cpu == "100m") && (has(dyn(c.resources).requests.memory))
+      && (dyn(c.resources).requests.memory == "64Mi") && (size(dyn(c.resources).requests)
+      == 2)) && (has(dyn(c.resources).limits)) && ((has(dyn(c.resources).limits.cpu))
+      && (dyn(c.resources).limits.cpu == "1") && (has(dyn(c.resources).limits.memory))
+      && (dyn(c.resources).limits.memory == "256Mi") && (size(dyn(c.resources).limits)
+      == 2)))
+    message: Credentialed executors use the declared Argo CPU and memory limits without
+      additional GPU resources
+  - expression: (!has(object.spec.resourceClaims) || size(object.spec.resourceClaims)
+      == 0) && object.spec.containers.all(c, !has(c.resources) || !has(c.resources.claims)
+      || size(c.resources.claims) == 0) && object.spec.initContainers.all(c, !has(c.resources)
+      || !has(c.resources.claims) || size(c.resources.claims) == 0)
+    message: DRA resource claims are outside the dynamic shared GPU v1 contract
+  - expression: has(object.spec.securityContext) && (has(object.spec.securityContext.runAsNonRoot))
+      && (object.spec.securityContext.runAsNonRoot == true) && (has(object.spec.securityContext.runAsUser))
+      && (object.spec.securityContext.runAsUser == 1000) && (has(object.spec.securityContext.runAsGroup))
+      && (object.spec.securityContext.runAsGroup == 100) && (has(object.spec.securityContext.fsGroup))
+      && (object.spec.securityContext.fsGroup == 100) && (has(object.spec.securityContext.seccompProfile))
+      && ((has(object.spec.securityContext.seccompProfile.type)) && (object.spec.securityContext.seccompProfile.type
+      == "RuntimeDefault")) && (!has(object.spec.securityContext.sysctls) || size(object.spec.securityContext.sysctls)
+      == 0) && (!has(object.spec.securityContext.supplementalGroups) || size(object.spec.securityContext.supplementalGroups)
+      == 0) && !has(object.spec.securityContext.seLinuxOptions) && !has(object.spec.securityContext.windowsOptions)
+      && (!has(object.spec.securityContext.appArmorProfile) || (object.spec.securityContext.appArmorProfile.type
+      == 'RuntimeDefault' && !has(object.spec.securityContext.appArmorProfile.localhostProfile)))
+    message: The reviewed Pod UID, GID, fsGroup and RuntimeDefault seccomp must remain
+      explicit
+  - expression: object.spec.containers.all(c, has(c.securityContext) && !has(c.securityContext.seLinuxOptions)
+      && !has(c.securityContext.windowsOptions) && (!has(c.securityContext.procMount)
+      || c.securityContext.procMount == 'Default') && (!has(c.securityContext.appArmorProfile)
+      || (c.securityContext.appArmorProfile.type == 'RuntimeDefault' && !has(c.securityContext.appArmorProfile.localhostProfile)))
+      && (!has(c.securityContext.capabilities.add) || size(c.securityContext.capabilities.add)
+      == 0) && !has(c.securityContext.seccompProfile.localhostProfile)) && object.spec.initContainers.all(c,
+      has(c.securityContext) && !has(c.securityContext.seLinuxOptions) && !has(c.securityContext.windowsOptions)
+      && (!has(c.securityContext.procMount) || c.securityContext.procMount == 'Default')
+      && (!has(c.securityContext.appArmorProfile) || (c.securityContext.appArmorProfile.type
+      == 'RuntimeDefault' && !has(c.securityContext.appArmorProfile.localhostProfile)))
+      && (!has(c.securityContext.capabilities.add) || size(c.securityContext.capabilities.add)
+      == 0) && !has(c.securityContext.seccompProfile.localhostProfile))
+    message: Every executable retains the reviewed AppArmor, proc, SELinux, Windows
+      and capability restrictions
+  - expression: has(object.metadata.labels) && object.metadata.labels['kai.scheduler/queue']
+      == 'cps-batch' && object.spec.priorityClassName == 'cps-batch' && has(object.metadata.annotations)
+      && object.metadata.annotations['gpu-fraction-container-name'] == 'main' && object.metadata.annotations['gpu-memory']
+      in ['5120','10240','20480'] && !('gpu-fraction' in object.metadata.annotations)
+      && !('gpu-fraction-num-devices' in object.metadata.annotations)
+    message: Only fixed 5/10/20 GiB batch candidates and centrally selected queue
+      and priority are allowed
+  - expression: object.spec.containers.all(c, !has(c.lifecycle) && !has(c.livenessProbe)
+      && !has(c.readinessProbe) && !has(c.startupProbe) && (!has(c.volumeDevices)
+      || size(c.volumeDevices) == 0)) && object.spec.initContainers.all(c, !has(c.lifecycle)
+      && !has(c.livenessProbe) && !has(c.readinessProbe) && !has(c.startupProbe) &&
+      (!has(c.volumeDevices) || size(c.volumeDevices) == 0)) && object.spec.containers.all(c,
+      !has(c.ports) || c.ports.all(p, !has(p.hostPort) || p.hostPort == 0)) && (!has(object.spec.runtimeClassName)
+      || object.spec.runtimeClassName == 'nvidia') && (!has(object.spec.os) || object.spec.os.name
+      == 'linux')
+    message: Unreviewed executable hooks, block devices and runtime classes require
+      a separate qualification
+  - expression: size(variables.records) == 1 && variables.records.all(p, object.metadata.namespace
+      == request.namespace && object.metadata.ownerReferences[0].uid == p.ownerUid
+      && object.metadata.annotations['runai/shared-gpu-configmap'] == p.configMapPrefix
+      && object.metadata.annotations['gpu-memory'] == p.gpuMemory && p.mainIndex <
+      size(object.spec.containers) && object.spec.containers[p.mainIndex].name ==
+      'main')
+    message: The reviewed exact Pod plan fixes its Workflow owner, unique quota references,
+      profile and actual main index
+  - expression: 'object.spec.runtimeClassName == ''nvidia'' && variables.records.all(p,
+      object.metadata.annotations[''nvidia.com/container.main.gpu-memory.request'']
+      == (p.gpuMemory == ''5120'' ? ''5Gi'' : (p.gpuMemory == ''10240'' ? ''10Gi''
+      : ''20Gi''))) && object.metadata.annotations.all(k, !k.startsWith(''nvidia.com/container.'')
+      || k == ''nvidia.com/container.main.gpu-memory.request'') && (!(''kai-resource-isolator.io/inject''
+      in object.metadata.annotations) || object.metadata.annotations[''kai-resource-isolator.io/inject'']
+      == ''true'')'
+    message: The normalized KAI memory annotation and NVIDIA runtime remain exact;
+      injector opt-out and other fraction targets are denied
+  - expression: request.operation != 'UPDATE' || (has(oldObject.metadata.annotations)
+      && object.metadata.annotations['runai/shared-gpu-configmap'] == oldObject.metadata.annotations['runai/shared-gpu-configmap']
+      && object.spec.containers == oldObject.spec.containers && object.spec.initContainers
+      == oldObject.spec.initContainers && object.spec.volumes == oldObject.spec.volumes)
+    message: Binding updates retain all executable containers, private volumes and
+      quota references
+  - expression: 'variables.records.all(p, object.spec.containers.filter(c, c.name
+      == ''main'').all(c, has(c.env) && size(c.env) <= 64 && (c.env.filter(e, e.name
+      == "CUDA_DEVICE_MEMORY_LIMIT_0").size() == 1 && c.env.filter(e, e.name == "CUDA_DEVICE_MEMORY_LIMIT_0").all(e,
+      has(e.value) && e.value == p.gpuMemory + ''m'' && !has(e.valueFrom))) && (c.env.filter(e,
+      e.name == "CUDA_DEVICE_MEMORY_SHARED_CACHE").size() == 1 && c.env.filter(e,
+      e.name == "CUDA_DEVICE_MEMORY_SHARED_CACHE").all(e, has(e.value) && e.value
+      == "/tmp/cps-workspace-usage.cache" && !has(e.valueFrom))) && (c.env.filter(e,
+      e.name == "CUDA_MPS_PIPE_DIRECTORY").size() == 1 && c.env.filter(e, e.name ==
+      "CUDA_MPS_PIPE_DIRECTORY").all(e, has(e.value) && e.value == "/mps/pipe" &&
+      !has(e.valueFrom))) && (c.env.filter(e, e.name == "NVIDIA_VISIBLE_DEVICES").size()
+      == 1 && c.env.filter(e, e.name == "NVIDIA_VISIBLE_DEVICES").all(e, !has(e.value)
+      && has(e.valueFrom.configMapKeyRef) && e.valueFrom.configMapKeyRef.name == p.capabilitiesName
+      && e.valueFrom.configMapKeyRef.key == "NVIDIA_VISIBLE_DEVICES" && (!has(e.valueFrom.configMapKeyRef.optional)
+      || !e.valueFrom.configMapKeyRef.optional))) && (c.env.filter(e, e.name == "RUNAI_NUM_OF_GPUS").size()
+      == 1 && c.env.filter(e, e.name == "RUNAI_NUM_OF_GPUS").all(e, !has(e.value)
+      && has(e.valueFrom.configMapKeyRef) && e.valueFrom.configMapKeyRef.name == p.capabilitiesName
+      && e.valueFrom.configMapKeyRef.key == "RUNAI_NUM_OF_GPUS" && (!has(e.valueFrom.configMapKeyRef.optional)
+      || !e.valueFrom.configMapKeyRef.optional))) && (c.env.filter(e, e.name == "GPU_PORTION").size()
+      == 1 && c.env.filter(e, e.name == "GPU_PORTION").all(e, !has(e.value) && has(e.valueFrom.configMapKeyRef)
+      && e.valueFrom.configMapKeyRef.name == p.capabilitiesName && e.valueFrom.configMapKeyRef.key
+      == "GPU_PORTION" && (!has(e.valueFrom.configMapKeyRef.optional) || !e.valueFrom.configMapKeyRef.optional)))
+      && (c.env.filter(e, e.name == "CUDA_DEVICE_MEMORY_LIMIT").size() == 1 && c.env.filter(e,
+      e.name == "CUDA_DEVICE_MEMORY_LIMIT").all(e, !has(e.value) && has(e.valueFrom.configMapKeyRef)
+      && e.valueFrom.configMapKeyRef.name == p.capabilitiesName && e.valueFrom.configMapKeyRef.key
+      == "CUDA_DEVICE_MEMORY_LIMIT" && has(e.valueFrom.configMapKeyRef.optional) &&
+      e.valueFrom.configMapKeyRef.optional)) && (c.env.filter(e, e.name == ''POD_UID'').size()
+      == 1 && c.env.filter(e, e.name == ''POD_UID'').all(e, !has(e.value) && has(e.valueFrom.fieldRef)
+      && e.valueFrom.fieldRef.apiVersion == ''v1'' && e.valueFrom.fieldRef.fieldPath
+      == ''metadata.uid'')) && (c.env.filter(e, e.name == ''CONTAINER_NAME'').size()
+      == 1 && c.env.filter(e, e.name == ''CONTAINER_NAME'').all(e, e.value == ''main''
+      && !has(e.valueFrom))) && (c.env.filter(e, e.name == ''CONTAINER_VGPU_MOUNT'').size()
+      == 1 && c.env.filter(e, e.name == ''CONTAINER_VGPU_MOUNT'').all(e, e.value ==
+      ''/usr/local/vgpu'' && !has(e.valueFrom))) && has(c.envFrom) && size(c.envFrom)
+      == 1 && has(c.envFrom[0].configMapRef) && c.envFrom[0].configMapRef.name ==
+      p.evarName && has(c.envFrom[0].configMapRef.optional) && !c.envFrom[0].configMapRef.optional
+      && !has(c.envFrom[0].secretRef) && !has(c.envFrom[0].prefix) && c.env.all(e,
+      c.env.filter(other, other.name == e.name).size() == 1 && (e.name in ["NVIDIA_VISIBLE_DEVICES","RUNAI_NUM_OF_GPUS","GPU_PORTION","CUDA_DEVICE_MEMORY_LIMIT","CUDA_DEVICE_MEMORY_LIMIT_0","CUDA_DEVICE_MEMORY_SHARED_CACHE","CUDA_MPS_PIPE_DIRECTORY","POD_UID","CONTAINER_NAME","CONTAINER_VGPU_MOUNT","ARGO_CONTAINER_NAME","ARGO_NODE_ID","ARGO_INCLUDE_SCRIPT_OUTPUT","ARGO_DEADLINE","ARGO_PROGRESS_FILE","ARGO_PROGRESS_PATCH_TICK_DURATION","ARGO_PROGRESS_FILE_TICK_DURATION","ARGO_TERMINATION_GRACE_PERIOD_SECONDS","ARGO_POD_NAME","ARGO_POD_UID"]
+      || (!e.name.matches(''(?i)^(CUDA_|NVIDIA_|GPU_|RUNAI_|LD_|HAMI_|VGPU_|MPS_|ARGO_)'')
+      && !e.name.matches(''(?i)^PYTHONPATH$''))) && (!has(e.valueFrom) || e.name in
+      ["NVIDIA_VISIBLE_DEVICES","RUNAI_NUM_OF_GPUS","GPU_PORTION","CUDA_DEVICE_MEMORY_LIMIT","POD_UID"]
+      || (has(e.valueFrom.fieldRef) && e.name in [''ARGO_POD_NAME'',''ARGO_POD_UID'']
+      && e.valueFrom.fieldRef.fieldPath == (e.name == ''ARGO_POD_NAME'' ? ''metadata.name''
+      : ''metadata.uid''))))))'
+    message: Exact KAI quota sources and isolator metrics are required; loader, duplicate
+      and alternate device sources are denied
+  - expression: variables.records.all(p, has(object.spec.volumes) && size(object.spec.volumes)
+      <= 16 && object.spec.volumes.all(v, object.spec.volumes.filter(other, other.name
+      == v.name).size() == 1 && ((has(v.hostPath) && ((v.name == "cps-mps-pipe" &&
+      v.hostPath.path == "/run/nvidia/mps/nvidia.com/gpu/pipe" && v.hostPath.type
+      == "Directory") || (v.name == "cps-mps-shm" && v.hostPath.path == "/run/nvidia/mps/shm"
+      && v.hostPath.type == "Directory") || (v.name == "kai-resource-isolator-vgpu"
+      && v.hostPath.path == "/usr/local/vgpu" && v.hostPath.type == 'DirectoryOrCreate')
+      || (v.name == "kai-resource-isolator-containers" && v.hostPath.path == "/usr/local/vgpu/containers"
+      && v.hostPath.type == 'DirectoryOrCreate') || (v.name == "kai-resource-isolator-vgpulock"
+      && v.hostPath.path == "/tmp/vgpulock" && v.hostPath.type == 'DirectoryOrCreate')))
+      || (has(v.emptyDir) && v.name in ['cps-gpu-cache','var-run-argo','tmp-dir-argo','input-artifacts','argo-staging'])
+      || (has(v.secret) && (v.secret.secretName == params.data['artifact-secret']
+      || v.secret.secretName == params.data['artifact-ca-secret'] || v.secret.secretName
+      == 'cps-workflow-executor.service-account-token')) || (v.name == p.capabilitiesVolume
+      && has(v.configMap) && v.configMap.name == p.capabilitiesName && (!has(v.configMap.optional)
+      || !v.configMap.optional) && (!has(v.configMap.items) || size(v.configMap.items)
+      == 0)))) && object.spec.volumes.filter(v, v.name == p.capabilitiesVolume).size()
+      == 1 && object.spec.volumes.filter(v, v.name == 'cps-gpu-cache').size() == 1
+      && object.spec.volumes.filter(v, v.name == 'cps-gpu-cache').all(v, has(v.emptyDir)
+      && has(dyn(v.emptyDir).sizeLimit) && dyn(v.emptyDir).sizeLimit == '64Mi' &&
+      !has(v.emptyDir.medium)) && (object.spec.volumes.filter(v, v.name == "cps-mps-pipe").size()
+      == 1) && (object.spec.volumes.filter(v, v.name == "cps-mps-shm").size() == 1)
+      && (object.spec.volumes.filter(v, v.name == "kai-resource-isolator-vgpu").size()
+      == 1) && (object.spec.volumes.filter(v, v.name == "kai-resource-isolator-containers").size()
+      == 1) && (object.spec.volumes.filter(v, v.name == "kai-resource-isolator-vgpulock").size()
+      == 1))
+    message: Only exact compiler and pinned isolator host paths, private cache, executor
+      volumes and this Pod quota ConfigMap are permitted
+  - expression: object.spec.containers.all(c, !has(c.volumeMounts) || c.volumeMounts.all(m,
+      !has(m.mountPropagation) && !has(m.subPathExpr) && (!(m.name in ["cps-mps-pipe","cps-mps-shm","cps-gpu-cache","kai-resource-isolator-vgpu","kai-resource-isolator-containers","kai-resource-isolator-vgpulock"])
+      || c.name == 'main'))) && object.spec.containers.filter(c, c.name == 'main').all(c,
+      has(c.volumeMounts) && (c.volumeMounts.filter(m, m.name == "cps-gpu-cache" &&
+      m.mountPath == "/tmp/cps-workspace-usage.cache").size() == 1 && c.volumeMounts.filter(m,
+      m.name == "cps-gpu-cache" && m.mountPath == "/tmp/cps-workspace-usage.cache").all(m,
+      (has(m.name)) && (m.name == "cps-gpu-cache") && (has(m.mountPath)) && (m.mountPath
+      == "/tmp/cps-workspace-usage.cache") && (has(m.subPath)) && (m.subPath == "private/usage.cache")
+      && (!has(m.readOnly) || !m.readOnly) && !has(m.subPathExpr) && !has(m.mountPropagation)))
+      && (c.volumeMounts.filter(m, m.name == "cps-mps-pipe" && m.mountPath == "/mps/pipe").size()
+      == 1 && c.volumeMounts.filter(m, m.name == "cps-mps-pipe" && m.mountPath ==
+      "/mps/pipe").all(m, (has(m.name)) && (m.name == "cps-mps-pipe") && (has(m.mountPath))
+      && (m.mountPath == "/mps/pipe") && (!has(m.readOnly) || !m.readOnly) && !has(m.subPathExpr)
+      && !has(m.mountPropagation) && !has(m.subPath))) && (c.volumeMounts.filter(m,
+      m.name == "cps-mps-shm" && m.mountPath == "/dev/shm").size() == 1 && c.volumeMounts.filter(m,
+      m.name == "cps-mps-shm" && m.mountPath == "/dev/shm").all(m, (has(m.name)) &&
+      (m.name == "cps-mps-shm") && (has(m.mountPath)) && (m.mountPath == "/dev/shm")
+      && (!has(m.readOnly) || !m.readOnly) && !has(m.subPathExpr) && !has(m.mountPropagation)
+      && !has(m.subPath))) && (c.volumeMounts.filter(m, m.name == "kai-resource-isolator-vgpu"
+      && m.mountPath == "/usr/local/vgpu").size() == 1 && c.volumeMounts.filter(m,
+      m.name == "kai-resource-isolator-vgpu" && m.mountPath == "/usr/local/vgpu").all(m,
+      (has(m.name)) && (m.name == "kai-resource-isolator-vgpu") && (has(m.mountPath))
+      && (m.mountPath == "/usr/local/vgpu") && (!has(m.readOnly) || !m.readOnly) &&
+      !has(m.subPathExpr) && !has(m.mountPropagation) && !has(m.subPath))) && (c.volumeMounts.filter(m,
+      m.name == "kai-resource-isolator-vgpu" && m.mountPath == "/etc/ld.so.preload").size()
+      == 1 && c.volumeMounts.filter(m, m.name == "kai-resource-isolator-vgpu" && m.mountPath
+      == "/etc/ld.so.preload").all(m, (has(m.name)) && (m.name == "kai-resource-isolator-vgpu")
+      && (has(m.mountPath)) && (m.mountPath == "/etc/ld.so.preload") && (has(m.subPath))
+      && (m.subPath == "ld.so.preload") && (has(m.readOnly)) && (m.readOnly == true)
+      && !has(m.subPathExpr) && !has(m.mountPropagation))) && (c.volumeMounts.filter(m,
+      m.name == "kai-resource-isolator-containers" && m.mountPath == "/usr/local/vgpu/containers").size()
+      == 1 && c.volumeMounts.filter(m, m.name == "kai-resource-isolator-containers"
+      && m.mountPath == "/usr/local/vgpu/containers").all(m, (has(m.name)) && (m.name
+      == "kai-resource-isolator-containers") && (has(m.mountPath)) && (m.mountPath
+      == "/usr/local/vgpu/containers") && (!has(m.readOnly) || !m.readOnly) && !has(m.subPathExpr)
+      && !has(m.mountPropagation) && !has(m.subPath))) && (c.volumeMounts.filter(m,
+      m.name == "kai-resource-isolator-vgpulock" && m.mountPath == "/tmp/vgpulock").size()
+      == 1 && c.volumeMounts.filter(m, m.name == "kai-resource-isolator-vgpulock"
+      && m.mountPath == "/tmp/vgpulock").all(m, (has(m.name)) && (m.name == "kai-resource-isolator-vgpulock")
+      && (has(m.mountPath)) && (m.mountPath == "/tmp/vgpulock") && (!has(m.readOnly)
+      || !m.readOnly) && !has(m.subPathExpr) && !has(m.mountPropagation) && !has(m.subPath)))
+      && c.volumeMounts.all(m, (has(m.name)) && (m.name == "cps-gpu-cache") && (has(m.mountPath))
+      && (m.mountPath == "/tmp/cps-workspace-usage.cache") && (has(m.subPath)) &&
+      (m.subPath == "private/usage.cache") && (!has(m.readOnly) || !m.readOnly) ||
+      (has(m.name)) && (m.name == "cps-mps-pipe") && (has(m.mountPath)) && (m.mountPath
+      == "/mps/pipe") && (!has(m.readOnly) || !m.readOnly) && !has(m.subPath) || (has(m.name))
+      && (m.name == "cps-mps-shm") && (has(m.mountPath)) && (m.mountPath == "/dev/shm")
+      && (!has(m.readOnly) || !m.readOnly) && !has(m.subPath) || (has(m.name)) &&
+      (m.name == "kai-resource-isolator-vgpu") && (has(m.mountPath)) && (m.mountPath
+      == "/usr/local/vgpu") && (!has(m.readOnly) || !m.readOnly) && !has(m.subPath)
+      || (has(m.name)) && (m.name == "kai-resource-isolator-vgpu") && (has(m.mountPath))
+      && (m.mountPath == "/etc/ld.so.preload") && (has(m.subPath)) && (m.subPath ==
+      "ld.so.preload") && (has(m.readOnly)) && (m.readOnly == true) || (has(m.name))
+      && (m.name == "kai-resource-isolator-containers") && (has(m.mountPath)) && (m.mountPath
+      == "/usr/local/vgpu/containers") && (!has(m.readOnly) || !m.readOnly) && !has(m.subPath)
+      || (has(m.name)) && (m.name == "kai-resource-isolator-vgpulock") && (has(m.mountPath))
+      && (m.mountPath == "/tmp/vgpulock") && (!has(m.readOnly) || !m.readOnly) &&
+      !has(m.subPath) || (m.name == 'var-run-argo' && m.mountPath == '/var/run/argo'
+      && !has(m.subPath)) || (m.name == 'input-artifacts' && m.mountPath == '/inputs/snapshot.tar'
+      && m.subPath == 'snapshot') || (m.name == 'argo-staging' && m.mountPath == '/argo/staging'
+      && !has(m.subPath))))
+    message: Only the main mounts the exact private runtime and isolator paths; credentialed
+      executors never receive these host paths
+  variables:
+  - name: records
+    expression: params.reviewedPods.filter(p, p.name == object.metadata.name)
+---
+apiVersion: admissionregistration.k8s.io/v1
+kind: ValidatingAdmissionPolicyBinding
+metadata:
+  name: cps-dynamic-admission-live-20261008-boundary
+spec:
+  policyName: cps-dynamic-admission-live-20261008-boundary
+  validationActions:
+  - Deny
+  matchResources:
+    namespaceSelector:
+      matchLabels:
+        kubernetes.io/metadata.name: cps-dynamic-admission-live-20261008
+  paramRef:
+    name: reviewed-runtime
+    namespace: cps-dynamic-admission-live-20261008
+    parameterNotFoundAction: Deny
+---
+apiVersion: apiextensions.k8s.io/v1
+kind: CustomResourceDefinition
+metadata:
+  name: dynamicgpuquotapolicies.cps-dynamic-admission-live-20261008.compute.cps.unileoben.ac.at
+  annotations:
+    compute.cps.unileoben.ac.at/qualification-state: disabled-offline-candidate
+    compute.cps.unileoben.ac.at/kai-source: bdf434e5e9201cccf4e05fad04d814363653f692
+    compute.cps.unileoben.ac.at/source-files-sha256: 2067e6238c1eb33988ca232780dc7f04e92f71e0468edec6f73e44fef3292431
+spec:
+  group: cps-dynamic-admission-live-20261008.compute.cps.unileoben.ac.at
+  scope: Namespaced
+  names:
+    kind: DynamicGpuQuotaPolicy
+    plural: dynamicgpuquotapolicies
+    singular: dynamicgpuquotapolicy
+  versions:
+  - name: v1alpha1
+    served: true
+    storage: true
+    schema:
+      openAPIV3Schema:
+        type: object
+        required:
+        - writers
+        - records
+        properties:
+          writers:
+            type: array
+            maxItems: 8
+            x-kubernetes-list-type: set
+            items:
+              type: string
+              maxLength: 343
+              pattern: ^system:serviceaccount:[a-z0-9-]+:[a-z0-9.-]+$
+          records:
+            type: array
+            maxItems: 64
+            x-kubernetes-list-type: map
+            x-kubernetes-list-map-keys:
+            - namespace
+            - name
+            items:
+              type: object
+              required:
+              - cudaDeviceMemoryLimit
+              - gpuPortion
+              - gpuUuid
+              - name
+              - namespace
+              - physicalGpuMemoryMiB
+              - podName
+              - podUid
+              - runaiNumOfGpus
+              - type
+              - visibleDevices
+              properties:
+                gpuPortion:
+                  type: string
+                  maxLength: 10
+                  pattern: ^(?:0\.[0-9]{1,8}|1)$
+                name:
+                  type: string
+                  maxLength: 253
+                  pattern: ^[a-z0-9](?:[a-z0-9.-]*[a-z0-9])?$
+                type:
+                  type: string
+                  maxLength: 12
+                  enum:
+                  - capabilities
+                  - evar
+                podUid:
+                  type: string
+                  maxLength: 36
+                  pattern: ^[0-9a-f]{8}(?:-[0-9a-f]{4}){3}-[0-9a-f]{12}$
+                cudaDeviceMemoryLimit:
+                  type: string
+                  maxLength: 6
+                  pattern: ^(?:[1-9][0-9]{0,3}|[1-3][0-9]{4}|40[0-8][0-9]{2}|409[0-5][0-9]|40960)m$
+                physicalGpuMemoryMiB:
+                  type: string
+                  maxLength: 6
+                  pattern: ^(?:[1-9][0-9]{0,4}|1[0-2][0-9]{4}|130[0-9]{3}|1310[0-6][0-9]|13107[0-2])$
+                namespace:
+                  type: string
+                  maxLength: 63
+                  enum:
+                  - cps-dynamic-admission-live-20261008
+                runaiNumOfGpus:
+                  type: string
+                  maxLength: 10
+                visibleDevices:
+                  type: string
+                  maxLength: 73
+                  pattern: ^(?:GPU-[0-9a-f]{8}(?:-[0-9a-f]{4}){3}-[0-9a-f]{12}|k8s\.device-plugin\.nvidia\.com/gpu=(?:GPU-[0-9a-f]{8}(?:-[0-9a-f]{4}){3}-[0-9a-f]{12}|(?:[0-9]|[12][0-9]|3[01])))$
+                gpuUuid:
+                  type: string
+                  maxLength: 40
+                  pattern: ^GPU-[0-9a-f]{8}(?:-[0-9a-f]{4}){3}-[0-9a-f]{12}$
+                cmUid:
+                  type: string
+                  maxLength: 36
+                  pattern: ^[0-9a-f]{8}(?:-[0-9a-f]{4}){3}-[0-9a-f]{12}$
+                podName:
+                  type: string
+                  maxLength: 253
+                  pattern: ^[a-z0-9](?:[a-z0-9.-]*[a-z0-9])?$
+              x-kubernetes-validations:
+              - rule: self.gpuPortion == self.runaiNumOfGpus
+                message: Both upstream GPU portion aliases must match
+              - rule: 'self.visibleDevices.startsWith(''GPU-'') ? self.visibleDevices
+                  == self.gpuUuid : (self.visibleDevices.startsWith(''k8s.device-plugin.nvidia.com/gpu=GPU-'')
+                  ? self.visibleDevices == ''k8s.device-plugin.nvidia.com/gpu='' +
+                  self.gpuUuid : true)'
+                message: UUID selectors must match the physical UUID; numeric CDI
+                  mapping requires separate independent review
+              - rule: double(self.gpuPortion) > 0 && double(self.gpuPortion) <= 1
+                message: Positive fractional allocation at most one GPU required
+              - rule: 'int(self.cudaDeviceMemoryLimit.substring(0, size(self.cudaDeviceMemoryLimit)
+                  - 1)) == int(double(self.physicalGpuMemoryMiB) * double(self.gpuPortion))
+                  - (double(int(double(self.physicalGpuMemoryMiB) * double(self.gpuPortion)))
+                  > (double(self.physicalGpuMemoryMiB) * double(self.gpuPortion))
+                  ? 1 : 0)'
+                message: HAMi quota must truncate the reviewed advertised memory label
+                  times received portion
+---
+apiVersion: cps-dynamic-admission-live-20261008.compute.cps.unileoben.ac.at/v1alpha1
+kind: DynamicGpuQuotaPolicy
+metadata:
+  name: reviewed-quota-maps
+  namespace: cps-dynamic-admission-live-20261008
+  annotations:
+    compute.cps.unileoben.ac.at/qualification-state: disabled-offline-candidate
+    compute.cps.unileoben.ac.at/kai-source: bdf434e5e9201cccf4e05fad04d814363653f692
+    compute.cps.unileoben.ac.at/source-files-sha256: 2067e6238c1eb33988ca232780dc7f04e92f71e0468edec6f73e44fef3292431
+writers: []
+records: []
+---
+apiVersion: admissionregistration.k8s.io/v1
+kind: ValidatingAdmissionPolicy
+metadata:
+  name: cps-dynamic-admission-live-20261008-quota
+  annotations:
+    compute.cps.unileoben.ac.at/qualification-state: disabled-offline-candidate
+    compute.cps.unileoben.ac.at/kai-source: bdf434e5e9201cccf4e05fad04d814363653f692
+    compute.cps.unileoben.ac.at/source-files-sha256: 2067e6238c1eb33988ca232780dc7f04e92f71e0468edec6f73e44fef3292431
+spec:
+  failurePolicy: Fail
+  paramKind:
+    apiVersion: cps-dynamic-admission-live-20261008.compute.cps.unileoben.ac.at/v1alpha1
+    kind: DynamicGpuQuotaPolicy
+  matchConstraints:
+    matchPolicy: Exact
+    namespaceSelector:
+      matchLabels:
+        kubernetes.io/metadata.name: cps-dynamic-admission-live-20261008
+    resourceRules:
+    - apiGroups:
+      - ''
+      apiVersions:
+      - v1
+      resources:
+      - configmaps
+      operations:
+      - CREATE
+      - UPDATE
+      - DELETE
+      scope: Namespaced
+  variables:
+  - name: subject
+    expression: 'request.operation == ''DELETE'' ? oldObject : object'
+  - name: records
+    expression: 'has(variables.subject.metadata) && has(variables.subject.metadata.name)
+      ? params.records.filter(r, r.namespace == request.namespace && r.name == variables.subject.metadata.name)
+      : []'
+  - name: record
+    expression: 'size(variables.records) == 1 ? variables.records[0] : {}'
+  - name: data
+    expression: 'has(variables.subject.data) ? variables.subject.data : {}'
+  - name: oldData
+    expression: 'has(oldObject.data) ? oldObject.data : {}'
+  - name: stages
+    expression: 'size(variables.records) == 1 ? [{}, {''NVIDIA_VISIBLE_DEVICES'':
+      variables.record.visibleDevices}, {''NVIDIA_VISIBLE_DEVICES'': variables.record.visibleDevices,
+      ''GPU_PORTION'': variables.record.gpuPortion, ''RUNAI_NUM_OF_GPUS'': variables.record.runaiNumOfGpus},
+      {''NVIDIA_VISIBLE_DEVICES'': variables.record.visibleDevices, ''GPU_PORTION'':
+      variables.record.gpuPortion, ''RUNAI_NUM_OF_GPUS'': variables.record.runaiNumOfGpus,
+      ''CUDA_DEVICE_MEMORY_LIMIT'': variables.record.cudaDeviceMemoryLimit}] : [{},{},{},{}]'
+  - name: stage
+    expression: 'size(variables.data) == 0 ? 0 : variables.data == variables.stages[1]
+      ? 1 : variables.data == variables.stages[2] ? 2 : variables.data == variables.stages[3]
+      ? 3 : -1'
+  - name: oldStage
+    expression: '!has(oldObject.metadata) ? -1 : (size(variables.oldData) == 0 ? 0
+      : variables.oldData == variables.stages[1] ? 1 : variables.oldData == variables.stages[2]
+      ? 2 : variables.oldData == variables.stages[3] ? 3 : -1)'
+  validations:
+  - expression: request.namespace == "cps-dynamic-admission-live-20261008"
+    message: Only the isolated qualification namespace is in scope
+  - expression: request.operation in ['CREATE','UPDATE','DELETE']
+    message: Only the explicitly modelled ConfigMap operations are permitted
+  - expression: has(request.userInfo) && has(request.userInfo.username) && request.userInfo.username
+      in params.writers
+    message: Every ConfigMap mutation requires an explicitly reviewed authenticated
+      writer
+  - expression: size(variables.records) == 1 && has(variables.record.name)
+    message: Every ConfigMap name requires an explicit reviewed record; labels cannot
+      authorize writes
+  - expression: '(has(variables.record.physicalGpuMemoryMiB)) && (variables.record.physicalGpuMemoryMiB.matches(''^(?:[1-9][0-9]{0,4}|1[0-2][0-9]{4}|130[0-9]{3}|1310[0-6][0-9]|13107[0-2])$''))
+      && (has(variables.record.gpuPortion)) && (variables.record.gpuPortion.matches(''^(?:0\\.[0-9]{1,8}|1)$''))
+      && (double(variables.record.gpuPortion) > 0) && (double(variables.record.gpuPortion)
+      <= 1) && (has(variables.record.runaiNumOfGpus)) && (variables.record.runaiNumOfGpus
+      == variables.record.gpuPortion) && (has(variables.record.cudaDeviceMemoryLimit))
+      && (variables.record.cudaDeviceMemoryLimit.matches(''^(?:[1-9][0-9]{0,3}|[1-3][0-9]{4}|40[0-8][0-9]{2}|409[0-5][0-9]|40960)m$''))
+      && (variables.record.cudaDeviceMemoryLimit == string(int(double(variables.record.physicalGpuMemoryMiB)
+      * double(variables.record.gpuPortion)) - (double(int(double(variables.record.physicalGpuMemoryMiB)
+      * double(variables.record.gpuPortion))) > (double(variables.record.physicalGpuMemoryMiB)
+      * double(variables.record.gpuPortion)) ? 1 : 0)) + ''m'')'
+    message: The injected quota must match the reviewed bounded node-memory label
+      and upstream float64 truncation
+  - expression: (has(variables.subject.apiVersion)) && (variables.subject.apiVersion
+      == 'v1') && (has(variables.subject.kind)) && (variables.subject.kind == 'ConfigMap')
+      && (has(variables.subject.metadata)) && (has(variables.subject.metadata.name))
+      && (variables.subject.metadata.name == variables.record.name) && (has(variables.subject.metadata.namespace))
+      && (variables.subject.metadata.namespace == variables.record.namespace) && (variables.subject.metadata.namespace
+      == request.namespace)
+    message: The exact registered namespace/name is required
+  - expression: (has(variables.subject.metadata)) && (has(variables.subject.metadata.ownerReferences))
+      && (size(variables.subject.metadata.ownerReferences) == 1) && (variables.subject.metadata.ownerReferences.all(o,
+      (has(o.apiVersion)) && (o.apiVersion == 'v1') && (has(o.kind)) && (o.kind ==
+      'Pod') && (has(o.name)) && (o.name == variables.record.podName) && (has(o.uid))
+      && (o.uid == variables.record.podUid) && (!has(o.controller) || !o.controller)
+      && (!has(o.blockOwnerDeletion) || !o.blockOwnerDeletion)))
+    message: Exactly the reviewed non-controller v1 Pod owner must remain attached
+  - expression: '!has(variables.subject.binaryData) && !has(variables.subject.immutable)'
+    message: Binary data and immutable quota ConfigMaps are outside the reviewed contract
+  - expression: (variables.record.type == 'evar' && size(variables.data) == 0) ||
+      (variables.record.type == 'capabilities' && variables.stage >= 0)
+    message: Only the exact reviewed empty evar or staged capabilities values are
+      permitted
+  - expression: request.operation != 'CREATE' || (oldObject == null && size(variables.data)
+      == 0 && !has(variables.record.cmUid))
+    message: Creation begins empty and cannot recreate an already UID-bound map
+  - expression: request.operation != 'UPDATE' || ((has(oldObject.metadata)) && (has(oldObject.metadata.uid))
+      && (oldObject.metadata.uid.matches('^[0-9a-f]{8}(?:-[0-9a-f]{4}){3}-[0-9a-f]{12}$'))
+      && (has(object.metadata)) && (has(object.metadata.uid)) && (object.metadata.uid
+      == oldObject.metadata.uid) && (has(oldObject.metadata.name)) && (object.metadata.name
+      == oldObject.metadata.name) && (has(oldObject.metadata.namespace)) && (object.metadata.namespace
+      == oldObject.metadata.namespace) && (has(oldObject.metadata.ownerReferences))
+      && (object.metadata.ownerReferences == oldObject.metadata.ownerReferences) &&
+      (!has(oldObject.binaryData)) && (!has(oldObject.immutable)) && (!has(variables.record.cmUid)
+      || object.metadata.uid == variables.record.cmUid))
+    message: Updates preserve the observed ConfigMap UID, name, namespace and exact
+      owner references
+  - expression: request.operation != 'UPDATE' || ((variables.record.type == 'evar'
+      && size(variables.oldData) == 0) || (variables.record.type == 'capabilities'
+      && variables.oldStage >= 0 && variables.stage >= variables.oldStage && variables.stage
+      <= variables.oldStage + 1))
+    message: Same-stage retries or one forward population step are allowed; reset,
+      removal and skipped stages are denied
+  - expression: request.operation != 'DELETE' || (has(oldObject.metadata) && has(oldObject.metadata.uid)
+      && oldObject.metadata.uid.matches('^[0-9a-f]{8}(?:-[0-9a-f]{4}){3}-[0-9a-f]{12}$')
+      && (!has(variables.record.cmUid) || oldObject.metadata.uid == variables.record.cmUid))
+    message: Reviewed binder rollback uses the exact old Pod-owned ConfigMap and optional
+      independently pinned ConfigMap UID
+---
+apiVersion: admissionregistration.k8s.io/v1
+kind: ValidatingAdmissionPolicyBinding
+metadata:
+  name: cps-dynamic-admission-live-20261008-quota
+  annotations:
+    compute.cps.unileoben.ac.at/qualification-state: disabled-offline-candidate
+    compute.cps.unileoben.ac.at/kai-source: bdf434e5e9201cccf4e05fad04d814363653f692
+    compute.cps.unileoben.ac.at/source-files-sha256: 2067e6238c1eb33988ca232780dc7f04e92f71e0468edec6f73e44fef3292431
+spec:
+  policyName: cps-dynamic-admission-live-20261008-quota
+  validationActions:
+  - Deny
+  matchResources:
+    namespaceSelector:
+      matchLabels:
+        kubernetes.io/metadata.name: cps-dynamic-admission-live-20261008
+  paramRef:
+    name: reviewed-quota-maps
+    namespace: cps-dynamic-admission-live-20261008
+    parameterNotFoundAction: Deny
+---
+apiVersion: apiextensions.k8s.io/v1
+kind: CustomResourceDefinition
+metadata:
+  name: dynamicgpubindingpolicies.cps-dynamic-admission-live-20261008.compute.cps.unileoben.ac.at
+  annotations:
+    compute.cps.unileoben.ac.at/qualification-state: disabled-offline-candidate
+    compute.cps.unileoben.ac.at/kai-source: bdf434e5e9201cccf4e05fad04d814363653f692
+    compute.cps.unileoben.ac.at/source-files-sha256: 5af246cd2a7ecab58f9b9d778d8ec4605be6b08ad00d9f955d5a87ca01d936e1
+spec:
+  group: cps-dynamic-admission-live-20261008.compute.cps.unileoben.ac.at
+  scope: Namespaced
+  names:
+    kind: DynamicGpuBindingPolicy
+    plural: dynamicgpubindingpolicies
+    singular: dynamicgpubindingpolicy
+  versions:
+  - name: v1alpha1
+    served: true
+    storage: true
+    schema:
+      openAPIV3Schema:
+        type: object
+        required:
+        - writers
+        - records
+        properties:
+          writers:
+            type: array
+            maxItems: 8
+            x-kubernetes-list-type: set
+            items:
+              type: string
+              maxLength: 343
+              pattern: ^system:serviceaccount:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?(?:\.[a-z0-9](?:[a-z0-9-]*[a-z0-9])?)*$
+          records:
+            type: array
+            maxItems: 32
+            x-kubernetes-list-type: map
+            x-kubernetes-list-map-keys:
+            - podName
+            - podUid
+            items:
+              type: object
+              required:
+              - capabilitiesName
+              - capabilitiesResourceVersion
+              - capabilitiesUid
+              - compiledWorkflowSha256
+              - evarName
+              - evarResourceVersion
+              - evarUid
+              - nodeName
+              - podName
+              - podUid
+              - registryReviewSha256
+              properties:
+                capabilitiesUid:
+                  type: string
+                  pattern: ^[0-9a-f]{8}(?:-[0-9a-f]{4}){3}-[0-9a-f]{12}$
+                  maxLength: 36
+                evarResourceVersion:
+                  type: string
+                  pattern: ^[1-9][0-9]{0,19}$
+                  maxLength: 20
+                compiledWorkflowSha256:
+                  type: string
+                  pattern: ^[0-9a-f]{64}$
+                  maxLength: 64
+                evarName:
+                  type: string
+                  pattern: ^[a-z0-9](?:[a-z0-9-]*[a-z0-9])?(?:\.[a-z0-9](?:[a-z0-9-]*[a-z0-9])?)*$
+                  maxLength: 253
+                podUid:
+                  type: string
+                  pattern: ^[0-9a-f]{8}(?:-[0-9a-f]{4}){3}-[0-9a-f]{12}$
+                  maxLength: 36
+                registryReviewSha256:
+                  type: string
+                  pattern: ^[0-9a-f]{64}$
+                  maxLength: 64
+                capabilitiesName:
+                  type: string
+                  pattern: ^[a-z0-9](?:[a-z0-9-]*[a-z0-9])?(?:\.[a-z0-9](?:[a-z0-9-]*[a-z0-9])?)*$
+                  maxLength: 253
+                capabilitiesResourceVersion:
+                  type: string
+                  pattern: ^[1-9][0-9]{0,19}$
+                  maxLength: 20
+                nodeName:
+                  type: string
+                  pattern: ^[a-z0-9](?:[a-z0-9-]*[a-z0-9])?(?:\.[a-z0-9](?:[a-z0-9-]*[a-z0-9])?)*$
+                  maxLength: 253
+                evarUid:
+                  type: string
+                  pattern: ^[0-9a-f]{8}(?:-[0-9a-f]{4}){3}-[0-9a-f]{12}$
+                  maxLength: 36
+                podName:
+                  type: string
+                  pattern: ^[a-z0-9](?:[a-z0-9-]*[a-z0-9])?(?:\.[a-z0-9](?:[a-z0-9-]*[a-z0-9])?)*$
+                  maxLength: 253
+              x-kubernetes-validations:
+              - rule: self.capabilitiesName != self.evarName
+                message: Independent ConfigMap names required
+              - rule: self.capabilitiesUid != self.evarUid && self.podUid != self.capabilitiesUid
+                  && self.podUid != self.evarUid
+                message: Independent Pod and ConfigMap UID generations required
+---
+apiVersion: cps-dynamic-admission-live-20261008.compute.cps.unileoben.ac.at/v1alpha1
+kind: DynamicGpuBindingPolicy
+metadata:
+  name: reviewed-bindings
+  namespace: cps-dynamic-admission-live-20261008
+  annotations:
+    compute.cps.unileoben.ac.at/qualification-state: disabled-offline-candidate
+    compute.cps.unileoben.ac.at/kai-source: bdf434e5e9201cccf4e05fad04d814363653f692
+    compute.cps.unileoben.ac.at/source-files-sha256: 5af246cd2a7ecab58f9b9d778d8ec4605be6b08ad00d9f955d5a87ca01d936e1
+writers: []
+records: []
+---
+apiVersion: admissionregistration.k8s.io/v1
+kind: ValidatingAdmissionPolicy
+metadata:
+  name: cps-dynamic-admission-live-20261008-binding
+  annotations:
+    compute.cps.unileoben.ac.at/qualification-state: disabled-offline-candidate
+    compute.cps.unileoben.ac.at/kai-source: bdf434e5e9201cccf4e05fad04d814363653f692
+    compute.cps.unileoben.ac.at/source-files-sha256: 5af246cd2a7ecab58f9b9d778d8ec4605be6b08ad00d9f955d5a87ca01d936e1
+spec:
+  failurePolicy: Fail
+  paramKind:
+    apiVersion: cps-dynamic-admission-live-20261008.compute.cps.unileoben.ac.at/v1alpha1
+    kind: DynamicGpuBindingPolicy
+  matchConstraints:
+    matchPolicy: Exact
+    namespaceSelector:
+      matchLabels:
+        kubernetes.io/metadata.name: cps-dynamic-admission-live-20261008
+    resourceRules:
+    - apiGroups:
+      - ''
+      apiVersions:
+      - v1
+      resources:
+      - pods/binding
+      operations:
+      - CREATE
+      scope: Namespaced
+  variables:
+  - name: records
+    expression: 'has(object.metadata) && has(object.metadata.name) && has(object.metadata.uid)
+      ? params.records.filter(r, r.podName == object.metadata.name && r.podUid ==
+      object.metadata.uid) : []'
+  - name: record
+    expression: 'size(variables.records) == 1 ? variables.records[0] : {}'
+  validations:
+  - expression: has(request.namespace) && request.namespace == "cps-dynamic-admission-live-20261008"
+    message: The isolated namespace must match exactly
+  - expression: has(request.operation) && request.operation == 'CREATE'
+    message: Only a pods/binding CREATE is modelled
+  - expression: has(request.userInfo) && has(request.userInfo.username) && request.userInfo.username
+      in params.writers
+    message: The authenticated binder username must be explicitly observed and approved
+  - expression: has(object.apiVersion) && object.apiVersion == 'v1' && has(object.kind)
+      && object.kind == 'Binding'
+    message: Only the exact v1 Binding object is allowed
+  - expression: has(object.metadata) && has(object.metadata.namespace) && object.metadata.namespace
+      == request.namespace && has(object.metadata.name) && has(object.metadata.uid)
+      && size(variables.records) == 1
+    message: The exact reviewed namespace/name/Pod UID generation must be registered
+      once
+  - expression: has(object.target) && has(object.target.kind) && object.target.kind
+      == 'Node' && has(object.target.name) && has(variables.record.nodeName) && object.target.name
+      == variables.record.nodeName && (!has(object.target.apiVersion) || object.target.apiVersion
+      == 'v1')
+    message: Only the reviewed target Node name and absent-or-v1 target API version
+      are permitted
+  - expression: (has(variables.record.capabilitiesName)) && (size(variables.record.capabilitiesName)
+      <= 253) && (variables.record.capabilitiesName.matches("^[a-z0-9](?:[a-z0-9-]*[a-z0-9])?(?:\\.[a-z0-9](?:[a-z0-9-]*[a-z0-9])?)*$"))
+      && (has(variables.record.capabilitiesResourceVersion)) && (size(variables.record.capabilitiesResourceVersion)
+      <= 20) && (variables.record.capabilitiesResourceVersion.matches("^[1-9][0-9]{0,19}$"))
+      && (has(variables.record.capabilitiesUid)) && (size(variables.record.capabilitiesUid)
+      <= 36) && (variables.record.capabilitiesUid.matches("^[0-9a-f]{8}(?:-[0-9a-f]{4}){3}-[0-9a-f]{12}$"))
+      && (has(variables.record.compiledWorkflowSha256)) && (size(variables.record.compiledWorkflowSha256)
+      <= 64) && (variables.record.compiledWorkflowSha256.matches("^[0-9a-f]{64}$"))
+      && (has(variables.record.evarName)) && (size(variables.record.evarName) <= 253)
+      && (variables.record.evarName.matches("^[a-z0-9](?:[a-z0-9-]*[a-z0-9])?(?:\\.[a-z0-9](?:[a-z0-9-]*[a-z0-9])?)*$"))
+      && (has(variables.record.evarResourceVersion)) && (size(variables.record.evarResourceVersion)
+      <= 20) && (variables.record.evarResourceVersion.matches("^[1-9][0-9]{0,19}$"))
+      && (has(variables.record.evarUid)) && (size(variables.record.evarUid) <= 36)
+      && (variables.record.evarUid.matches("^[0-9a-f]{8}(?:-[0-9a-f]{4}){3}-[0-9a-f]{12}$"))
+      && (has(variables.record.nodeName)) && (size(variables.record.nodeName) <= 253)
+      && (variables.record.nodeName.matches("^[a-z0-9](?:[a-z0-9-]*[a-z0-9])?(?:\\.[a-z0-9](?:[a-z0-9-]*[a-z0-9])?)*$"))
+      && (has(variables.record.podName)) && (size(variables.record.podName) <= 253)
+      && (variables.record.podName.matches("^[a-z0-9](?:[a-z0-9-]*[a-z0-9])?(?:\\.[a-z0-9](?:[a-z0-9-]*[a-z0-9])?)*$"))
+      && (has(variables.record.podUid)) && (size(variables.record.podUid) <= 36) &&
+      (variables.record.podUid.matches("^[0-9a-f]{8}(?:-[0-9a-f]{4}){3}-[0-9a-f]{12}$"))
+      && (has(variables.record.registryReviewSha256)) && (size(variables.record.registryReviewSha256)
+      <= 64) && (variables.record.registryReviewSha256.matches("^[0-9a-f]{64}$"))
+      && (variables.record.capabilitiesName != variables.record.evarName) && (variables.record.capabilitiesUid
+      != variables.record.evarUid) && (variables.record.podUid != variables.record.capabilitiesUid)
+      && (variables.record.podUid != variables.record.evarUid)
+    message: A complete operator-attested ConfigMap UID/resourceVersion and Workflow/review
+      digest record is a prerequisite, not a live lookup
+---
+apiVersion: admissionregistration.k8s.io/v1
+kind: ValidatingAdmissionPolicyBinding
+metadata:
+  name: cps-dynamic-admission-live-20261008-binding
+  annotations:
+    compute.cps.unileoben.ac.at/qualification-state: disabled-offline-candidate
+    compute.cps.unileoben.ac.at/kai-source: bdf434e5e9201cccf4e05fad04d814363653f692
+    compute.cps.unileoben.ac.at/source-files-sha256: 5af246cd2a7ecab58f9b9d778d8ec4605be6b08ad00d9f955d5a87ca01d936e1
+spec:
+  policyName: cps-dynamic-admission-live-20261008-binding
+  validationActions:
+  - Deny
+  matchResources:
+    namespaceSelector:
+      matchLabels:
+        kubernetes.io/metadata.name: cps-dynamic-admission-live-20261008
+  paramRef:
+    name: reviewed-bindings
+    namespace: cps-dynamic-admission-live-20261008
+    parameterNotFoundAction: Deny

@@ -37,6 +37,11 @@ def all_of(parts):
 
 def required_tree(path, value, *, map_fields=()):
     """Build real CEL field comparisons; never evaluate policy in Python."""
+    # Quantity's OpenAPI oneOf causes the static checker to omit these maps.
+    # Defer only that access; retain exact values and map cardinality checks.
+    if path == 'c.resources':
+        path = 'dyn(c.resources)'
+        map_fields = tuple(field.replace('c.resources', path, 1) for field in map_fields)
     if isinstance(value, dict):
         clauses = []
         for key, child in value.items():
@@ -85,8 +90,8 @@ def build(wheel=DEFAULT_WHEEL, *, namespace='cps-dynamic-admission-review',
     policy, binding = list(yaml.safe_load_all((ROOT / 'platform-staging/admission.yaml').read_text()))
     policy = copy.deepcopy(policy); binding = copy.deepcopy(binding)
     group = namespace + '.compute.cps.unileoben.ac.at'
-    name = namespace + '-boundary'
-    policy['metadata'] = {'name': name, 'annotations': {
+    policy_name = namespace + '-boundary'
+    policy['metadata'] = {'name': policy_name, 'annotations': {
         'compute.cps.unileoben.ac.at/qualification-state': 'disabled-offline-candidate',
         'compute.cps.unileoben.ac.at/compiler-source': SOURCE,
         'compute.cps.unileoben.ac.at/compiler-wheel-sha256': WHEEL_SHA256}}
@@ -167,7 +172,13 @@ def build(wheel=DEFAULT_WHEEL, *, namespace='cps-dynamic-admission-review',
          "object.spec.activeDeadlineSeconds <= 180 && object.spec.restartPolicy == 'Never' && "
          "(request.operation != 'CREATE' || !has(object.spec.nodeName)) && "
          "(!has(object.spec.nodeSelector) || size(object.spec.nodeSelector) == 0) && "
-         "!has(object.spec.affinity) && (!has(object.spec.tolerations) || size(object.spec.tolerations) == 0)",
+         "!has(object.spec.affinity) && (!has(object.spec.tolerations) || "
+         "(size(object.spec.tolerations) <= 2 && object.spec.tolerations.all(t, "
+         "t.key in ['node.kubernetes.io/not-ready','node.kubernetes.io/unreachable'] && "
+         "t.operator == 'Exists' && t.effect == 'NoExecute' && "
+         "has(t.tolerationSeconds) && t.tolerationSeconds == 300 && "
+         "(!has(t.value) || t.value == '') && "
+         "object.spec.tolerations.filter(other, other.key == t.key).size() == 1)))",
          'The reviewed runtime image, 180-second maximum and scheduler placement cannot be replaced')
     rule("object.spec.initContainers.all(c, has(c.securityContext) && "
          "has(c.securityContext.allowPrivilegeEscalation) && !c.securityContext.allowPrivilegeEscalation && "
@@ -243,11 +254,12 @@ def build(wheel=DEFAULT_WHEEL, *, namespace='cps-dynamic-admission-review',
          "object.spec.volumes.all(v, object.spec.volumes.filter(other, other.name == v.name).size() == 1 && "
          "((has(v.hostPath) && (" + ' || '.join(expected_hosts) + ")) || "
          "(has(v.emptyDir) && v.name in ['cps-gpu-cache','var-run-argo','tmp-dir-argo','input-artifacts','argo-staging']) || "
-         "(has(v.secret) && v.secret.secretName in [params.data['artifact-secret'], params.data['artifact-ca-secret'], "
-         "'cps-workflow-executor.service-account-token']))) && "
+         "(has(v.secret) && (v.secret.secretName == params.data['artifact-secret'] || "
+         "v.secret.secretName == params.data['artifact-ca-secret'] || "
+         "v.secret.secretName == 'cps-workflow-executor.service-account-token')))) && "
          "object.spec.volumes.filter(v, v.name == 'cps-gpu-cache').size() == 1 && "
          "object.spec.volumes.filter(v, v.name == 'cps-gpu-cache').all(v, has(v.emptyDir) && "
-         "has(v.emptyDir.sizeLimit) && v.emptyDir.sizeLimit == '64Mi' && !has(v.emptyDir.medium)) && " +
+         "has(dyn(v.emptyDir).sizeLimit) && dyn(v.emptyDir).sizeLimit == '64Mi' && !has(v.emptyDir.medium)) && " +
          all_of(["object.spec.volumes.filter(v, v.name == " + literal(name) + ").size() == 1" for name in list(HOSTS)[:2]]),
          'Only the two exact compiler MPS hostPaths and one private 64Mi cache are allowed; KAI injection is not yet qualified')
     mounts = plans[5]['volume_mounts']
@@ -299,8 +311,8 @@ def build(wheel=DEFAULT_WHEEL, *, namespace='cps-dynamic-admission-review',
         'approvedImages': list(dict.fromkeys([IMAGE, executor_image])),
         'createCreators': list(dict.fromkeys(create_creators)), 'updateCreators': list(dict.fromkeys(update_creators)),
         'owners': copy.deepcopy(list(owners))}
-    binding['metadata']['name'] = name
-    binding['spec']['policyName'] = name
+    binding['metadata']['name'] = policy_name
+    binding['spec']['policyName'] = policy_name
     binding['spec']['matchResources']['namespaceSelector'] = copy.deepcopy(selector)
     binding['spec']['paramRef'] = {'name': 'reviewed-runtime', 'namespace': namespace, 'parameterNotFoundAction': 'Deny'}
     return {'apiVersion': 'v1', 'kind': 'List', 'items': [crd, params, policy, binding]}

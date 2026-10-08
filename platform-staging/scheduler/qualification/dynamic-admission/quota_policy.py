@@ -58,12 +58,16 @@ def all_of(values):
     return ' && '.join('(' + value + ')' for value in values)
 
 
-def quota_expression(record):
+def quota_integer_expression(record):
     product = 'double(' + record + '.physicalGpuMemoryMiB) * double(' + record + '.gpuPortion)'
     converted = 'int(' + product + ')'
     # CEL int(double) is specified to truncate. The cached interpreter rounds;
     # this positive-floor correction has the same answer under both behaviors.
-    return "string(" + converted + ' - (double(' + converted + ') > (' + product + ") ? 1 : 0)) + 'm'"
+    return converted + ' - (double(' + converted + ') > (' + product + ') ? 1 : 0)'
+
+
+def quota_expression(record):
+    return 'string(' + quota_integer_expression(record) + ") + 'm'"
 
 
 def verify_source_trace(directory):
@@ -230,7 +234,14 @@ def build(*, namespace='cps-dynamic-admission-review', writers=(), records=()):
                 'resourceRules': [{'apiGroups': [''], 'apiVersions': ['v1'], 'resources': ['configmaps'],
                     'operations': ['CREATE', 'UPDATE', 'DELETE'], 'scope': 'Namespaced'}]},
             'variables': variables, 'validations': validations}}
-    record_properties = {field: {'type': 'string'} for field in FIELDS | {'cmUid'}}
+    # CEL's schema cost estimator does not derive bounds from regex patterns.
+    # Keep every string explicitly bounded to the same reviewed wire format.
+    maximum_lengths = {'namespace': 63, 'name': 253, 'type': 12, 'podName': 253,
+        'podUid': 36, 'cmUid': 36, 'gpuUuid': 40,
+        'visibleDevices': len(CDI_PREFIX) + 40, 'physicalGpuMemoryMiB': 6,
+        'gpuPortion': 10, 'runaiNumOfGpus': 10, 'cudaDeviceMemoryLimit': 6}
+    record_properties = {field: {'type': 'string', 'maxLength': maximum_lengths[field]}
+        for field in FIELDS | {'cmUid'}}
     record_properties['type']['enum'] = ['capabilities', 'evar']
     for field in ('podUid', 'cmUid'):
         record_properties[field]['pattern'] = '^' + UID_PATTERN + '$'
@@ -243,7 +254,7 @@ def build(*, namespace='cps-dynamic-admission-review', writers=(), records=()):
     record_properties['physicalGpuMemoryMiB']['pattern'] = '^' + PHYSICAL_MEMORY_PATTERN + '$'
     record_properties['cudaDeviceMemoryLimit']['pattern'] = '^(?:[1-9][0-9]{0,3}|[1-3][0-9]{4}|40[0-8][0-9]{2}|409[0-5][0-9]|40960)m$'
     properties = {'writers': {'type': 'array', 'maxItems': 8, 'x-kubernetes-list-type': 'set',
-        'items': {'type': 'string', 'pattern': '^' + ACTOR_PATTERN + '$'}},
+        'items': {'type': 'string', 'maxLength': 343, 'pattern': '^' + ACTOR_PATTERN + '$'}},
         'records': {'type': 'array', 'maxItems': 64, 'x-kubernetes-list-type': 'map',
             'x-kubernetes-list-map-keys': ['namespace', 'name'], 'items': {'type': 'object',
                 'required': sorted(FIELDS), 'properties': record_properties, 'x-kubernetes-validations': [
@@ -253,7 +264,10 @@ def build(*, namespace='cps-dynamic-admission-review', writers=(), records=()):
                         "self.visibleDevices == '" + CDI_PREFIX + "' + self.gpuUuid : true)",
                         'message': 'UUID selectors must match the physical UUID; numeric CDI mapping requires separate independent review'},
                     {'rule': "double(self.gpuPortion) > 0 && double(self.gpuPortion) <= 1", 'message': 'Positive fractional allocation at most one GPU required'},
-                    {'rule': 'self.cudaDeviceMemoryLimit == ' + quota_expression('self'),
+                    # string(int(...)) has no finite estimated output bound.
+                    # The pattern already fixes the canonical positive MiB
+                    # wire format, so compare its bounded numeric part.
+                    {'rule': 'int(self.cudaDeviceMemoryLimit.substring(0, size(self.cudaDeviceMemoryLimit) - 1)) == ' + quota_integer_expression('self'),
                         'message': 'HAMi quota must truncate the reviewed advertised memory label times received portion'}]}}}
     crd = {'apiVersion': 'apiextensions.k8s.io/v1', 'kind': 'CustomResourceDefinition',
         'metadata': {'name': 'dynamicgpuquotapolicies.' + group, 'annotations': copy.deepcopy(annotations)},

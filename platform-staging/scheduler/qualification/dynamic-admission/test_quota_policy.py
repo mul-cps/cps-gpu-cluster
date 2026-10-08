@@ -278,7 +278,7 @@ class QuotaPolicyTests(unittest.TestCase):
         with self.assertRaises(ValueError):quota.build(records=[BASE, BASE])
         with self.assertRaises(ValueError):quota.build(records=[BASE] * 65)
 
-    def test_crd_quota_pattern_is_bounded_without_extra_cel_extensions(self):
+    def test_crd_quota_pattern_and_numeric_parse_are_bounded(self):
         crd = quota.build()['items'][0]
         record = crd['spec']['versions'][0]['schema']['openAPIV3Schema']['properties']['records']['items']
         pattern = record['properties']['cudaDeviceMemoryLimit']['pattern']
@@ -286,7 +286,9 @@ class QuotaPolicyTests(unittest.TestCase):
             self.assertIsNotNone(re.fullmatch(pattern, value))
         for value in ('0m', '01m', '40961m', '50000m', '40960', '-1m'):
             self.assertIsNone(re.fullmatch(pattern, value))
-        self.assertNotIn('substring', json.dumps(record))
+        rule = record['x-kubernetes-validations'][-1]['rule']
+        self.assertIn('substring(0, size(self.cudaDeviceMemoryLimit) - 1)', rule)
+        self.assertNotIn('string(int(', rule)
 
     def test_source_float64_quota_for_each_received_portion(self):
         for portion, limit in (('0.13', '5324m'), ('0.25', '10240m'), ('0.5', '20480m')):
@@ -342,7 +344,10 @@ class QuotaPolicyTests(unittest.TestCase):
         expressions = [value['rule'] for value in schema['x-kubernetes-validations']]
         expression = next(value for value in expressions if 'physicalGpuMemoryMiB' in value)
         env = Environment()
-        program = env.program(env.compile(expression))
+        # Kubernetes includes the CEL strings library; cel-python omits this
+        # substring method. Only this string operation is supplied locally.
+        program = env.program(env.compile(expression), functions={
+            'substring': lambda value, start, end: celtypes.StringType(value[int(start):int(end)])})
         # Record the engine discrepancy explicitly rather than adapting its
         # conversion function or pretending this is Kubernetes conformance.
         rounded = env.program(env.compile('int(5324.8)')).evaluate({})

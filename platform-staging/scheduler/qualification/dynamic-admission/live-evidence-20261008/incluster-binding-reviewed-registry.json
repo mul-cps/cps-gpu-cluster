@@ -1,0 +1,117 @@
+{
+  "bindingRecords": [
+    {
+      "capabilitiesName": "offline-argo-5-bcdfgh4-shared-gpu-1",
+      "capabilitiesResourceVersion": "10",
+      "capabilitiesUid": "33333333-3333-3333-3333-333333333333",
+      "compiledWorkflowSha256": "08a0cab7da6cd6712b1bfe18c28a4266bb920517ab1de6b5d7e8fae896e24c4f",
+      "evarName": "offline-argo-5-bcdfgh4-shared-gpu-1-evar",
+      "evarResourceVersion": "11",
+      "evarUid": "44444444-4444-4444-4444-444444444444",
+      "nodeName": "offline-node",
+      "podName": "offline-argo-5-declared-i1",
+      "podUid": "11111111-1111-1111-1111-111111111111",
+      "registryReviewSha256": "5555555555555555555555555555555555555555555555555555555555555555"
+    }
+  ],
+  "bindingWriters": [
+    "system:serviceaccount:cps-admission-runner-20261008:probe"
+  ],
+  "createCreators": [
+    "system:serviceaccount:cps-admission-runner-20261008:probe"
+  ],
+  "owners": [
+    {
+      "name": "offline-argo-5",
+      "uid": "4e1dac1f-2e7e-5abc-9020-3340ed89d836"
+    },
+    {
+      "name": "offline-argo-10",
+      "uid": "1f2cc1f0-9175-546c-8c57-af1e52006570"
+    },
+    {
+      "name": "offline-argo-20",
+      "uid": "5fd02d4d-6eb2-5bd1-9a54-0ff68cc5b2ca"
+    }
+  ],
+  "quotaRecords": [
+    {
+      "cmUid": "33333333-3333-3333-3333-333333333333",
+      "cudaDeviceMemoryLimit": "5324m",
+      "gpuPortion": "0.13",
+      "gpuUuid": "GPU-22222222-2222-2222-2222-222222222222",
+      "name": "offline-argo-5-bcdfgh4-shared-gpu-1",
+      "namespace": "cps-dynamic-admission-live-20261008",
+      "physicalGpuMemoryMiB": "40960",
+      "podName": "offline-argo-5-declared-i1",
+      "podUid": "11111111-1111-1111-1111-111111111111",
+      "runaiNumOfGpus": "0.13",
+      "type": "capabilities",
+      "visibleDevices": "k8s.device-plugin.nvidia.com/gpu=1"
+    },
+    {
+      "cmUid": "44444444-4444-4444-4444-444444444444",
+      "cudaDeviceMemoryLimit": "5324m",
+      "gpuPortion": "0.13",
+      "gpuUuid": "GPU-22222222-2222-2222-2222-222222222222",
+      "name": "offline-argo-5-bcdfgh4-shared-gpu-1-evar",
+      "namespace": "cps-dynamic-admission-live-20261008",
+      "physicalGpuMemoryMiB": "40960",
+      "podName": "offline-argo-5-declared-i1",
+      "podUid": "11111111-1111-1111-1111-111111111111",
+      "runaiNumOfGpus": "0.13",
+      "type": "evar",
+      "visibleDevices": "k8s.device-plugin.nvidia.com/gpu=1"
+    }
+  ],
+  "quotaWriters": [
+    "system:serviceaccount:cps-admission-runner-20261008:probe"
+  ],
+  "reviewedPods": [
+    {
+      "configMapPrefix": "offline-argo-5-bcdfgh2-shared-gpu",
+      "gpuMemory": "5120",
+      "mainIndex": 0,
+      "name": "offline-argo-5-declared-i0",
+      "ownerUid": "4e1dac1f-2e7e-5abc-9020-3340ed89d836"
+    },
+    {
+      "configMapPrefix": "offline-argo-10-bcdfgh2-shared-gpu",
+      "gpuMemory": "10240",
+      "mainIndex": 0,
+      "name": "offline-argo-10-declared-i0",
+      "ownerUid": "1f2cc1f0-9175-546c-8c57-af1e52006570"
+    },
+    {
+      "configMapPrefix": "offline-argo-20-bcdfgh2-shared-gpu",
+      "gpuMemory": "20480",
+      "mainIndex": 0,
+      "name": "offline-argo-20-declared-i0",
+      "ownerUid": "5fd02d4d-6eb2-5bd1-9a54-0ff68cc5b2ca"
+    },
+    {
+      "configMapPrefix": "offline-argo-5-bcdfgh4-shared-gpu",
+      "gpuMemory": "5120",
+      "mainIndex": 1,
+      "name": "offline-argo-5-declared-i1",
+      "ownerUid": "4e1dac1f-2e7e-5abc-9020-3340ed89d836"
+    },
+    {
+      "configMapPrefix": "offline-argo-10-bcdfgh4-shared-gpu",
+      "gpuMemory": "10240",
+      "mainIndex": 1,
+      "name": "offline-argo-10-declared-i1",
+      "ownerUid": "1f2cc1f0-9175-546c-8c57-af1e52006570"
+    },
+    {
+      "configMapPrefix": "offline-argo-20-bcdfgh4-shared-gpu",
+      "gpuMemory": "20480",
+      "mainIndex": 1,
+      "name": "offline-argo-20-declared-i1",
+      "ownerUid": "5fd02d4d-6eb2-5bd1-9a54-0ff68cc5b2ca"
+    }
+  ],
+  "updateCreators": [
+    "system:serviceaccount:cps-admission-runner-20261008:probe"
+  ]
+}
