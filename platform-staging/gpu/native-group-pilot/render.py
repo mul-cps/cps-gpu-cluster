@@ -82,6 +82,40 @@ def render(config=None, *, image=DEFAULT_IMAGE, enable=False):
             'validations': [{'expression': expression, 'message': message} for expression, message in expressions]}),
         item('ValidatingAdmissionPolicyBinding', policy_name,
              spec={'policyName': policy_name, 'validationActions': ['Deny']})])
+    # The gateway owns allocation CAS and enrollment, independently of the node
+    # credential. Restrict create through admission because RBAC resourceNames
+    # cannot constrain POST; cleanup remains exclusively node-controlled.
+    gateway_name = 'cps-native-gateway-authority'
+    gateway_subject = [{'kind': 'ServiceAccount', 'name': 'cps-compute-controller', 'namespace': 'cps-compute'}]
+    gateway_username = 'system:serviceaccount:cps-compute:cps-compute-controller'
+    enrollment = ("object.metadata.name.matches('^cps-native-enrollment-[a-f0-9]{40}$') && "
+        "has(object.immutable) && object.immutable == true && has(object.data) && size(object.data) == 1 && "
+        "'enrollment.json' in object.data && has(object.metadata.labels) && size(object.metadata.labels) == 1 && "
+        "'cps.compute/native-binding' in object.metadata.labels && "
+        "object.metadata.labels['cps.compute/native-binding'].matches('^[a-f0-9]{60}$') && "
+        "object.metadata.name == 'cps-native-enrollment-' + object.metadata.labels['cps.compute/native-binding'].substring(0, 40)")
+    ledger = ("object.metadata.name == 'cps-native-gpu-allocations' && "
+        "(!has(object.immutable) || object.immutable == false) && has(object.data) && size(object.data) == 1 && "
+        "'state.json' in object.data && object.data['state.json'] == '{\"allocations\":{},\"version\":1}'")
+    objects.extend([
+        item('Role', gateway_name, namespace, rules=[
+            {'apiGroups': [''], 'resources': ['configmaps'], 'verbs': ['get', 'create']},
+            {'apiGroups': [''], 'resources': ['configmaps'], 'resourceNames': ['cps-native-gpu-allocations'], 'verbs': ['patch']}]),
+        item('RoleBinding', gateway_name, namespace, subjects=gateway_subject,
+            roleRef={'apiGroup': 'rbac.authorization.k8s.io', 'kind': 'Role', 'name': gateway_name}),
+        item('ValidatingAdmissionPolicy', gateway_name + '-create-only', spec={
+            'failurePolicy': 'Fail', 'matchConstraints': {'resourceRules': [{'apiGroups': [''],
+                'apiVersions': ['v1'], 'operations': ['CREATE'], 'resources': ['configmaps'], 'scope': 'Namespaced'}]},
+            'matchConditions': [{'name': 'gateway-authority-create', 'expression':
+                'request.namespace == ' + json.dumps(namespace) + ' && request.userInfo.username == ' + json.dumps(gateway_username)}],
+            'validations': [
+                {'expression': '(' + ledger + ') || (' + enrollment + ')',
+                 'message': 'The gateway may create only an empty native ledger or immutable native enrollment.'},
+                {'expression': '!has(object.binaryData)', 'message': 'Authority records must use text data.'},
+                {'expression': '!has(object.metadata.ownerReferences) || size(object.metadata.ownerReferences) == 0',
+                 'message': 'Native authority records cannot have garbage-collection owners.'}]}),
+        item('ValidatingAdmissionPolicyBinding', gateway_name + '-create-only',
+             spec={'policyName': gateway_name + '-create-only', 'validationActions': ['Deny']})])
     volumes = [{'name': 'code', 'configMap': {'name': code_name, 'defaultMode': 0o444}},
         {'name': 'config', 'configMap': {'name': config_name, 'defaultMode': 0o400}},
         {'name': 'state', 'hostPath': {'path': '/run/cps-native-gpu', 'type': 'Directory'}},
@@ -104,7 +138,7 @@ def render(config=None, *, image=DEFAULT_IMAGE, enable=False):
             'volumes': volumes, 'containers': [{'name': 'node-agent', 'image': image, 'imagePullPolicy': 'IfNotPresent',
                 'command': ['python3', '/opt/native/node_agent.py'],
                 'args': ['--execute', '--config', '/config/config.json', '--bundle', '/opt/native',
-                         '--iterations', '60', '--interval', '2'],
+                         '--iterations', '10000' if enable else '60', '--interval', '2'],
                 'securityContext': {'privileged': True, 'readOnlyRootFilesystem': True},
                 'resources': {'requests': {'cpu': '100m', 'memory': '128Mi'},
                               'limits': {'cpu': '500m', 'memory': '512Mi'}},

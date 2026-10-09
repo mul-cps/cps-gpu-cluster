@@ -44,7 +44,7 @@ class RenderTest(unittest.TestCase):
         self.assertTrue(all(v['rules'] == [{'apiGroups': [''], 'resources': ['pods'], 'verbs': ['get', 'delete']}] for v in pod_roles))
         cluster = next(v for v in result['items'] if v['kind'] == 'ClusterRole')
         self.assertEqual(cluster['rules'], [{'apiGroups': [''], 'resources': ['nodes'], 'resourceNames': ['k3s-wk-gpu2'], 'verbs': ['get']}])
-        authority = next(v for v in result['items'] if v['kind'] == 'Role' and v['metadata']['namespace'] == 'cps-native-authority')
+        authority = next(v for v in result['items'] if v['kind'] == 'Role' and v['metadata']['name'] == 'cps-native-node-agent-authority')
         self.assertEqual(authority['rules'], [{'apiGroups': [''], 'resources': ['configmaps'], 'verbs': ['get', 'list', 'create']}])
         policy = next(v for v in result['items'] if v['kind'] == 'ValidatingAdmissionPolicy')
         expressions = '\n'.join(v['expression'] for v in policy['spec']['validations'])
@@ -52,5 +52,22 @@ class RenderTest(unittest.TestCase):
         self.assertIn('object.immutable', expressions)
         self.assertIn('receipt.json', expressions)
         self.assertIn('system:serviceaccount:cps-native-authority:cps-native-node-agent', policy['spec']['matchConditions'][0]['expression'])
+
+    def test_gateway_has_scoped_ledger_cas_and_admission_closed_enrollment(self):
+        result = self.render.render()
+        role = next(v for v in result['items'] if v['kind'] == 'Role' and v['metadata']['name'] == 'cps-native-gateway-authority')
+        self.assertEqual(role['rules'], [
+            {'apiGroups': [''], 'resources': ['configmaps'], 'verbs': ['get', 'create']},
+            {'apiGroups': [''], 'resources': ['configmaps'], 'resourceNames': ['cps-native-gpu-allocations'], 'verbs': ['patch']}])
+        binding = next(v for v in result['items'] if v['kind'] == 'RoleBinding' and v['metadata']['name'] == role['metadata']['name'])
+        self.assertEqual(binding['subjects'], [{'kind': 'ServiceAccount', 'name': 'cps-compute-controller', 'namespace': 'cps-compute'}])
+        policy = next(v for v in result['items'] if v['kind'] == 'ValidatingAdmissionPolicy' and v['metadata']['name'] == 'cps-native-gateway-authority-create-only')
+        expression = policy['spec']['validations'][0]['expression']
+        self.assertIn('cps-native-enrollment-', expression)
+        self.assertIn('enrollment.json', expression)
+        self.assertIn('object.immutable == true', expression)
+        self.assertIn('"allocations":{},"version":1', expression)
+        self.assertNotIn('receipt.json', expression)
+        self.assertEqual(policy['spec']['failurePolicy'], 'Fail')
 
 if __name__ == '__main__': unittest.main()
