@@ -1,0 +1,129 @@
+# Native group GPU2 node authority pilot
+
+This package is disabled by default. Both CLIs make no API/NVML/module calls
+without `--execute`; the committed proposal has zero replicas and a deliberately
+unusable image digest. It is an offline review artifact, outside the Fleet
+production path. Root owns activation, GPU2 quiescence, module changes and every
+live Kubernetes call.
+
+`node_agent.py` runs bounded iterations through the existing source-pinned
+`QualificationNodeBackend`, `poll.py` helpers and SDK `NativeCapController`.
+The service uses CPU resources, host PID visibility, privileged device access,
+read-only host CRI/cgroups/module metadata, and a persistent local root0700
+`/run/cps-native-gpu`. Source and config ConfigMaps are immutable. Its projected
+credential remains inside the service. The final image must contain Python3 and
+R615 `nvidia-smi`/`libnvidia-ml.so.1`; its NVML version must equal 615.71.09.
+
+The root-selected configuration pins the authority namespace, GPU2 node UID,
+physical GPU UUID, policy hash and CPS/CIT workspace/profile allowlist. The
+service accepts only immutable `cps-native-enrollment-{binding_id[:40]}` maps
+from that namespace. A binding is exactly 60 lowercase hex characters. Each
+closed enrollment fixes the start attempt, workspace principal, sorted member
+IDs and final `CapIntent`. The actual Pod UID, complete admitted spec hash,
+selected node and digest-pinned container images must agree before a cap write.
+No caller can choose placement through this agent.
+
+Root0600 intent and enrollment mirrors preserve the source ConfigMap UID and
+full record. Missing, replaced, duplicated or changed records block authority;
+original enrollments must survive along with cleaned journal tombstones. The
+writer lock prevents a second node loop from owning the same state. The SDK
+journal separately serializes all cap transactions. Errors retain protection
+and allocation ownership; the backend can stop only the exact enrolled Pod
+using a UID-preconditioned delete.
+
+A cleanup ConfigMap is published only after the original Pod is actually absent,
+the exact private journal is `cleaned`, current health/epoch checks pass, native
+recursive tasks and GPU clients are zero, and NVML positively reports no cap or
+an unlimited cap with zero usage. A terminal Pod still present is insufficient.
+Any GPU client on this physical GPU conservatively delays cleanup. An absent
+Pod without an original native journal cannot get a cleanup receipt and needs
+operator recovery. Deadlines, lease expiry and cancellation alone never release
+allowances. Immutable cleanup conflicts are accepted only after an exact GET
+comparison, including a real ConfigMap UID. A private publication tombstone
+allows later restarts to retain the old receipt when a replacement Pod or peer
+now uses the GPU; it never resets a new workload.
+
+RBAC grants only exact Pod GET/DELETE in `jupyterhub` and `cit-jhub`, GET of the
+single GPU2 node, and ConfigMap GET/LIST/CREATE in the authority namespace.
+Because RBAC cannot restrict CREATE by resource name, a fail-closed admission
+policy limits this node credential to immutable cleanup ConfigMaps with one
+`receipt.json`, one matching binding label and no garbage-collection owner.
+The node credential cannot create enrollments or modify the allocation ledger.
+The API authority owns the ledger and releases allowances only after its own
+exact receipt validation. Admission policy server-side validation is a live
+activation gate owned by root; these CPU tests do not establish server support.
+
+## Offline verification and rendering
+
+```sh
+python3 -m unittest discover -s platform-staging/gpu/native-group-pilot -p 'test_*.py' -v
+python3 platform-staging/gpu/native-group-pilot/node_agent.py
+python3 platform-staging/gpu/native-group-pilot/driver_loader.py
+python3 platform-staging/gpu/native-group-pilot/render.py > /tmp/native-node-disabled.json
+```
+
+The committed `source-snapshot.json` stores exact reviewed bytes, checked against
+source pins before rendering/import. It is also available in the immutable code
+ConfigMap. Controller pin: `2c9770188a79406c674560616a8d9da8f4dafa275f0644d9669dfab001e7690e`;
+shared health pin: `22107515ecdc2ffe18afbafa8f15432ed9439aa6fc56ed9531649f790b29e769`.
+
+For a reviewable activation proposal, root prepares a configuration based on
+`config.example.json` with the actual policy hash, an explicit workspace/profile
+allowlist and `enabled: true`, builds the service from an already pinned base
+image with the required userland, and supplies the resulting image digest:
+
+```sh
+podman build --build-arg SERVICE_BASE_IMAGE=REGISTRY/REVIEWED-BASE@sha256:ACTUAL_DIGEST \
+  -t LOCAL-TAG platform-staging/gpu/native-group-pilot
+python3 platform-staging/gpu/native-group-pilot/render.py \
+  --config /ROOT/REVIEWED/enabled.json --image REGISTRY/SERVICE@sha256:ACTUAL_DIGEST \
+  --enable > /ROOT/REVIEWED/activation.json
+```
+
+The build checks that the base is digest-pinned and contains Python3/NVML/tools;
+it performs no GPU calls or package installation. The service image itself and
+live deployment are not built or activated by this package's CPU verification.
+Root must prepare all state directories root0700, retain journals across service
+restarts and approve the scoped credential/admission objects before activation.
+The CRI helper defaults to the host k3s `data/current/bin/crictl`; root verifies
+that exact binary/runtime socket on GPU2 before launching the service.
+
+## Exact root driver loader
+
+`driver_loader.py --execute --quiesced-gpu2` can run only as root on the GPU2
+hostname. Root manually removes every NVIDIA module after quiescing consumers;
+the loader refuses to load while any NVIDIA module remains in sysfs or
+`/proc/modules`. It never unloads, resets, enables MIG, drains or reboots.
+Before root begins any maintenance, invalidate the authority explicitly:
+
+```sh
+python3 /ROOT/REVIEWED/driver_loader.py --execute --quiesced-gpu2 --invalidate
+```
+
+Copy the reviewed files into protected root-owned directories and use the
+following default inputs (the original user-owned build paths are not accepted):
+
+- `/run/cps-native-gpu/driver-inputs/nvidia.ko`: ELF SHA256
+  `59f623fe5fdc89ef06f8055ee4dbfafeabe70b1d0bcabc487bc6fe04b78d6e77`,
+  source version `C6CF64F73A3430C26C030B7`.
+- `/run/cps-native-gpu/driver-inputs/nvidia-uvm.ko`: ELF SHA256
+  `b2ae67722e9e21a70c319aeed2184f5b2d1f23b8e32dea00816cfd5cd2c3ee61`,
+  source version `9353E234906B1910373B07A`.
+- `/run/cps-native-gpu/driver-inputs/native_gpu_health.py`: the exact shared
+  health source from the snapshot above.
+
+All directory ancestors must be root-owned and protected from group/other
+writes; inputs must be single-link regular root-owned files. Hashing uses one
+held file descriptor, and `insmod /proc/self/fd/N` inherits that descriptor via
+`pass_fds`. Input metadata is checked before/after load. Core loads with
+`NVreg_CpsNativeImportGuard=1`; UVM loads with managed-mmap denial, HMM disabled,
+ATS 0, built-in tests 0, and SAM migration disabled.
+
+Only after loaded version/source/flag/module-inode checks does the loader write
+a fresh root0400 `driver-load-manifest.json` and root0600 `driver-generation`
+inside root0700 `authority`. It uses the closed
+`cps-native-driver-load/v1` schema and the shared verifier. A failure invalidates
+authority and retains any loaded modules for root inspection/recovery. The
+`/run/nvidia/firmware-r615-canary` directory is required and never altered or
+removed, because the stock R580 rollback also needs it. Original driver
+DaemonSet recovery remains root's separate operation.
