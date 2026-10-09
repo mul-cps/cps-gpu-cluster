@@ -54,7 +54,8 @@ class ServiceLoopTest(unittest.TestCase):
             def pod(inner, intent): return fixture.pod
             def enrollments(inner, namespace): return [cm]
             def delete(inner, intent): fixture.deleted.append(intent.pod_uid)
-            def configmap(inner, namespace, name): return inner.cleanup
+            def configmap(inner, namespace, name):
+                return inner.cleanup if inner.cleanup is not None and inner.cleanup['metadata']['name'] == name else None
             def create_configmap(inner, namespace, value):
                 if inner.cleanup is not None: raise agent.Conflict()
                 inner.created += 1; inner.cleanup = copy.deepcopy(value)

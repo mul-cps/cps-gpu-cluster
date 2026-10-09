@@ -1,4 +1,6 @@
 import copy
+from dataclasses import asdict
+import hashlib
 import importlib
 import json
 import os
@@ -235,5 +237,332 @@ class EnrollmentTest(unittest.TestCase):
         from unittest.mock import patch
         with patch.object(self.agent, 'load_bundle', side_effect=AssertionError('source read')):
             self.agent.main([])
+
+
+def canonical_json(value):
+    return json.dumps(value, sort_keys=True, separators=(',', ':'), allow_nan=False)
+
+
+def canonical_digest(value):
+    return 'sha256:' + hashlib.sha256(canonical_json(value).encode()).hexdigest()
+
+
+class AbortTest(unittest.TestCase):
+    setUp = EnrollmentTest.setUp
+    check = EnrollmentTest.check
+
+    def abort_fixture(self, envelope=None):
+        envelope = envelope or self.check()
+        enrollment = envelope['enrollment']; binding = enrollment['binding_id']
+        epoch = self.models.DriverEpoch(NODE, '88888888-8888-4888-8888-888888888888',
+            'dddddddd-dddd-4ddd-8ddd-dddddddddddd', GPU)
+        payload = {'version': 1, 'outcome': 'pre-gate-aborted', 'binding_id': binding,
+            'attempt': enrollment['attempt'], 'intent': copy.deepcopy(enrollment['intent']),
+            'enrollment_sha256': canonical_digest(enrollment), 'audit_sha256': 'sha256:' + 'd' * 64,
+            'node_epoch': asdict(epoch)}
+        cm = {'apiVersion': 'v1', 'kind': 'ConfigMap', 'immutable': True,
+            'metadata': {'name': 'cps-native-abort-' + binding[:40],
+                'namespace': envelope['authority_namespace'],
+                'uid': '99999999-9999-4999-8999-999999999999', 'resourceVersion': '3',
+                'labels': {'cps.compute/native-binding': binding}},
+            'data': {'abort.json': canonical_json(payload)}}
+        record = dict(copy.deepcopy(enrollment), ceiling={'cpu': '4', 'memory': '16Gi', 'gpu_memory_gib': 5},
+            group_id='native-pilot-group-a', state='released',
+            pre_gate_abort={'configmap': cm['metadata']['name'], 'configmap_uid': cm['metadata']['uid'],
+                'sha256': canonical_digest(payload)})
+        ledger = {'apiVersion': 'v1', 'kind': 'ConfigMap',
+            'metadata': {'name': 'cps-native-gpu-allocations', 'namespace': envelope['authority_namespace'],
+                'uid': 'aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa', 'resourceVersion': '4'},
+            'data': {'state.json': canonical_json({'version': 1, 'allocations': {binding: record}})}}
+        return cm, envelope, ledger, epoch
+
+    def validate(self, values):
+        return self.agent.validate_abort(*values, self.models)
+
+    def alter_payload(self, values, change, *, update_proof=True):
+        cm, envelope, ledger, epoch = copy.deepcopy(values)
+        payload = json.loads(cm['data']['abort.json']); change(payload)
+        cm['data']['abort.json'] = canonical_json(payload)
+        if update_proof:
+            state = json.loads(ledger['data']['state.json'])
+            state['allocations'][envelope['enrollment']['binding_id']]['pre_gate_abort']['sha256'] = canonical_digest(payload)
+            ledger['data']['state.json'] = canonical_json(state)
+        return cm, envelope, ledger, epoch
+
+    def alter_ledger(self, values, change):
+        cm, envelope, ledger, epoch = copy.deepcopy(values)
+        state = json.loads(ledger['data']['state.json']); change(state)
+        ledger['data']['state.json'] = canonical_json(state)
+        return cm, envelope, ledger, epoch
+
+    def test_abort_requires_exact_canonical_full_enrollment_and_ledger_proof(self):
+        cm, envelope, ledger, epoch = self.abort_fixture()
+        proof = self.validate((cm, envelope, ledger, epoch))
+        self.assertEqual(proof, {'enrollment_uid': envelope['configmap_uid'],
+            'abort_uid': cm['metadata']['uid'], 'abort_sha256': canonical_digest(json.loads(cm['data']['abort.json'])),
+            'ledger_uid': ledger['metadata']['uid'], 'payload': json.loads(cm['data']['abort.json'])})
+        self.assertEqual(self.agent.canonical_sha256(envelope['enrollment']), canonical_digest(envelope['enrollment']))
+
+    def test_abort_rejects_mutable_wrong_authority_type_identity_or_extra_data(self):
+        changes = [lambda cm: cm.update(immutable=False), lambda cm: cm.update(apiVersion='apps/v1'),
+            lambda cm: cm.update(kind='Secret'), lambda cm: cm.update(binaryData={'extra': 'AA=='}),
+            lambda cm: cm['metadata'].update(namespace='jupyterhub'),
+            lambda cm: cm['metadata'].update(uid=''), lambda cm: cm['metadata'].pop('uid'),
+            lambda cm: cm['metadata'].update(deletionTimestamp='now'),
+            lambda cm: cm['metadata'].update(name='cps-native-abort-forged'),
+            lambda cm: cm['metadata'].update(labels={'cps.compute/native-binding': 'e' * 60}),
+            lambda cm: cm['data'].update(extra='untrusted')]
+        for index, change in enumerate(changes):
+            values = self.abort_fixture(); change(values[0])
+            with self.subTest(change=index), self.assertRaises(ValueError): self.validate(values)
+
+    def test_abort_rejects_noncanonical_duplicate_or_nonfinite_payload(self):
+        for raw in (json.dumps(json.loads(self.abort_fixture()[0]['data']['abort.json'])),
+                self.abort_fixture()[0]['data']['abort.json'][:-1] + ',"version":1}',
+                '{"version":NaN}'):
+            values = self.abort_fixture(); values[0]['data']['abort.json'] = raw
+            with self.subTest(raw=raw[:20]), self.assertRaises(ValueError): self.validate(values)
+
+    def test_abort_rejects_tampered_binding_attempt_intent_hash_schema_and_epoch(self):
+        changes = [lambda p: p.update(version=True), lambda p: p.update(outcome='cleaned'),
+            lambda p: p.update(binding_id='e' * 60), lambda p: p.update(attempt='another-attempt'),
+            lambda p: p['intent'].update(pod_uid='bbbbbbbb-bbbb-4bbb-8bbb-bbbbbbbbbbbb'),
+            lambda p: p['intent'].update(cap_mib=10240), lambda p: p['intent'].update(extra=True),
+            lambda p: p.update(enrollment_sha256='sha256:' + 'e' * 64),
+            lambda p: p.update(enrollment_sha256='e' * 64), lambda p: p.update(extra=True),
+            lambda p: p.update(audit_sha256='d' * 64), lambda p: p.update(audit_sha256='sha256:' + 'D' * 64),
+            lambda p: p.update(audit_sha256='sha256:' + 'd' * 63),
+            lambda p: p['node_epoch'].update(node_uid='bbbbbbbb-bbbb-4bbb-8bbb-bbbbbbbbbbbb'),
+            lambda p: p['node_epoch'].update(boot_id='cccccccc-cccc-4ccc-8ccc-cccccccccccc'),
+            lambda p: p['node_epoch'].update(driver_generation='eeeeeeee-eeee-4eee-8eee-eeeeeeeeeeee'),
+            lambda p: p['node_epoch'].update(gpu_uuid='GPU-ffffffff-ffff-4fff-8fff-ffffffffffff'),
+            lambda p: p['node_epoch'].update(extra=True)]
+        for index, change in enumerate(changes):
+            values = self.alter_payload(self.abort_fixture(), change)
+            with self.subTest(change=index), self.assertRaises(ValueError): self.validate(values)
+
+    def test_abort_rejects_nonreleased_or_orphan_ledger_and_wrong_proof(self):
+        changes = [lambda state: state.update(version=True), lambda state: state['allocations'].clear(),
+            lambda state: state['allocations'][BINDING].update(state='sealed'),
+            lambda state: state['allocations'][BINDING].update(attempt='another-attempt'),
+            lambda state: state['allocations'][BINDING].update(members=['person:outsider']),
+            lambda state: state['allocations'][BINDING].pop('intent'),
+            lambda state: state['allocations'][BINDING].pop('pre_gate_abort'),
+            lambda state: state['allocations'][BINDING]['pre_gate_abort'].update(configmap='cps-native-abort-forged'),
+            lambda state: state['allocations'][BINDING]['pre_gate_abort'].update(configmap_uid='bbbbbbbb-bbbb-4bbb-8bbb-bbbbbbbbbbbb'),
+            lambda state: state['allocations'][BINDING]['pre_gate_abort'].update(sha256='sha256:' + 'e' * 64),
+            lambda state: state['allocations'][BINDING]['pre_gate_abort'].update(extra=True)]
+        for index, change in enumerate(changes):
+            with self.subTest(change=index), self.assertRaises(ValueError):
+                self.validate(self.alter_ledger(self.abort_fixture(), change))
+        for change in (lambda cm: cm.update(kind='Secret'),
+                lambda cm: cm['metadata'].update(namespace='jupyterhub'),
+                lambda cm: cm['metadata'].update(name='another-ledger'),
+                lambda cm: cm['metadata'].pop('uid'), lambda cm: cm['data'].update(extra='untrusted')):
+            values = self.abort_fixture(); change(values[2])
+            with self.assertRaises(ValueError): self.validate(values)
+
+    def test_abort_tombstone_is_separate_durable_and_rejects_replacement_or_missing_proof(self):
+        values = self.abort_fixture(); cm, envelope, ledger, epoch = values
+        proof = self.validate(values)
+        with tempfile.TemporaryDirectory() as temporary:
+            state = Path(temporary); state.chmod(0o700)
+            store = self.agent.EnrollmentStore(state, self.models, trusted_uid=os.getuid())
+            store.synchronize([envelope])
+            self.assertFalse(store.abort_published(POD, envelope, proof))
+            store.mark_abort(POD, envelope, proof)
+            tombstone = state / 'pre-gate-aborts' / (POD + '.json')
+            self.assertEqual(tombstone.stat().st_mode & 0o777, 0o600)
+            self.assertFalse((state / 'journal').exists())
+            restarted = self.agent.EnrollmentStore(state, self.models, trusted_uid=os.getuid())
+            self.assertTrue(restarted.abort_published(POD, envelope, proof))
+            for field in ('abort_uid', 'enrollment_uid', 'ledger_uid', 'abort_sha256'):
+                changed = copy.deepcopy(proof); changed[field] = 'bbbbbbbb-bbbb-4bbb-8bbb-bbbbbbbbbbbb'
+                with self.subTest(field=field), self.assertRaises(ValueError):
+                    restarted.abort_published(POD, envelope, changed)
+            with self.assertRaises(ValueError): restarted.abort_published(POD, envelope, None)
+
+    def fake_authority(self, values, *, pod=None, abort=True, record=True):
+        from types import SimpleNamespace
+        cm, envelope, ledger, epoch = values
+        if not record:
+            ledger = self.alter_ledger(values,
+                lambda state: state['allocations'][BINDING].pop('pre_gate_abort'))[2]
+        pods = []
+        def configmap(namespace, name):
+            self.assertEqual(namespace, envelope['authority_namespace'])
+            if name == 'cps-native-gpu-allocations': return ledger
+            self.assertEqual(name, cm['metadata']['name'])
+            return cm if abort else None
+        def get_pod(intent):
+            self.assertEqual(intent.to_dict(), envelope['enrollment']['intent'])
+            pods.append(intent.pod_uid)
+            return pod
+        return SimpleNamespace(configmap=configmap, pod=get_pod, pod_reads=pods)
+
+    def recognize(self, store, journal, values, kube):
+        cm, envelope, ledger, epoch = values
+        return self.agent.recognize_aborts(store, journal, {POD: envelope}, kube, epoch, self.models)
+
+    def test_first_abort_requires_absence_and_no_native_journal(self):
+        from types import SimpleNamespace
+        values = self.abort_fixture()
+        for journal_record, pod in ((object(), None), (None, {'metadata': {'uid': POD}}),
+                (None, {'metadata': {'uid': 'bbbbbbbb-bbbb-4bbb-8bbb-bbbbbbbbbbbb'}})):
+            with self.subTest(journal=journal_record is not None, pod=pod), tempfile.TemporaryDirectory() as temporary:
+                state = Path(temporary); state.chmod(0o700)
+                store = self.agent.EnrollmentStore(state, self.models, trusted_uid=os.getuid())
+                store.synchronize([values[1]])
+                journal = SimpleNamespace(read=lambda uid: journal_record)
+                with self.assertRaises(ValueError):
+                    self.recognize(store, journal, values, self.fake_authority(values, pod=pod))
+                self.assertEqual(list((state / 'pre-gate-aborts').iterdir()), [])
+
+    def test_recognized_abort_survives_restart_and_does_not_inspect_replacement_pod(self):
+        from types import SimpleNamespace
+        values = self.abort_fixture()
+        with tempfile.TemporaryDirectory() as temporary:
+            state = Path(temporary); state.chmod(0o700)
+            store = self.agent.EnrollmentStore(state, self.models, trusted_uid=os.getuid())
+            store.synchronize([values[1]])
+            journal = SimpleNamespace(read=lambda uid: None)
+            kube = self.fake_authority(values)
+            self.assertEqual(self.recognize(store, journal, values, kube), {POD})
+            self.assertEqual(kube.pod_reads, [POD])
+            restarted = self.agent.EnrollmentStore(state, self.models, trusted_uid=os.getuid())
+            replacement = self.fake_authority(values, pod={'metadata': {'uid': 'new-peer'}})
+            self.assertEqual(self.recognize(restarted, journal, values, replacement), {POD})
+            self.assertEqual(replacement.pod_reads, [])
+            self.assertFalse((state / 'journal').exists())
+
+    def test_absent_without_proof_is_not_abort_and_orphan_proof_blocks(self):
+        from types import SimpleNamespace
+        values = self.abort_fixture(); journal = SimpleNamespace(read=lambda uid: None)
+        for orphan in (False, True):
+            with self.subTest(orphan=orphan), tempfile.TemporaryDirectory() as temporary:
+                state = Path(temporary); state.chmod(0o700)
+                store = self.agent.EnrollmentStore(state, self.models, trusted_uid=os.getuid())
+                store.synchronize([values[1]])
+                kube = self.fake_authority(values, abort=False, record=orphan)
+                if orphan:
+                    with self.assertRaises(ValueError): self.recognize(store, journal, values, kube)
+                else: self.assertEqual(self.recognize(store, journal, values, kube), set())
+                self.assertEqual(kube.pod_reads, [])
+                self.assertEqual(list((state / 'pre-gate-aborts').iterdir()), [])
+
+    def test_recognized_abort_requires_original_proof_and_private_tombstone(self):
+        from types import SimpleNamespace
+        for change in ('missing-abort', 'replaced-abort', 'missing-ledger-proof', 'missing-tombstone'):
+            with self.subTest(change=change), tempfile.TemporaryDirectory() as temporary:
+                state = Path(temporary); state.chmod(0o700)
+                values = self.abort_fixture(); store = self.agent.EnrollmentStore(state, self.models, trusted_uid=os.getuid())
+                store.synchronize([values[1]]); journal = SimpleNamespace(read=lambda uid: None)
+                self.assertEqual(self.recognize(store, journal, values, self.fake_authority(values)), {POD})
+                if change == 'replaced-abort':
+                    values[0]['metadata']['uid'] = 'bbbbbbbb-bbbb-4bbb-8bbb-bbbbbbbbbbbb'
+                if change == 'missing-tombstone': (state / 'pre-gate-aborts' / (POD + '.json')).unlink()
+                kube = self.fake_authority(values, pod={'metadata': {'uid': 'new-peer'}},
+                    abort=change != 'missing-abort', record=change != 'missing-ledger-proof')
+                with self.assertRaises(ValueError): self.recognize(store, journal, values, kube)
+
+    def new_enrollment(self, digit, pod_uid, *, actual_spec=None):
+        cm = copy.deepcopy(self.cm); value = copy.deepcopy(self.enrollment)
+        value.update(binding_id=digit * 60, attempt=pod_uid)
+        value['intent']['pod_uid'] = pod_uid
+        if actual_spec is not None:
+            value['intent']['spec_sha256'] = hashlib.sha256(canonical_json(actual_spec).encode()).hexdigest()
+        cm['metadata'].update(name='cps-native-enrollment-' + value['binding_id'][:40], uid=pod_uid,
+            labels={'cps.compute/native-binding': value['binding_id']})
+        cm['data']['enrollment.json'] = json.dumps(value)
+        return cm, self.check(cm)
+
+    def run_cpu_fixture(self, *, changed_epoch=False):
+        from contextlib import nullcontext, redirect_stdout
+        from io import StringIO
+        from types import SimpleNamespace
+        from unittest.mock import patch
+        old_two_cm, old_two = self.new_enrollment('b', 'bbbbbbbb-bbbb-4bbb-8bbb-bbbbbbbbbbbb')
+        spec = {'nodeName': 'k3s-wk-gpu2',
+            'initContainers': [{'name': 'cps-native-cap-gate', 'image': 'example.test/gate@sha256:' + 'a' * 64}],
+            'containers': [{'name': 'notebook', 'image': 'example.test/notebook@sha256:' + 'b' * 64}]}
+        new_uid = 'cccccccc-cccc-4ccc-8ccc-cccccccccccc'
+        new_cm, new = self.new_enrollment('c', new_uid, actual_spec=spec)
+        one, two = self.abort_fixture(), self.abort_fixture(old_two)
+        # Keep distinct actual ConfigMap UIDs, not only distinct payloads.
+        two[0]['metadata']['uid'] = 'eeeeeeee-eeee-4eee-8eee-eeeeeeeeeeee'
+        two_record = json.loads(two[2]['data']['state.json'])['allocations']['b' * 60]
+        two_record['pre_gate_abort']['configmap_uid'] = two[0]['metadata']['uid']
+        state = json.loads(one[2]['data']['state.json']); state['allocations']['b' * 60] = two_record
+        state['allocations']['c' * 60] = dict(copy.deepcopy(new['enrollment']), state='enrolled')
+        one[2]['data']['state.json'] = canonical_json(state)
+        maps = {one[0]['metadata']['name']: one[0], two[0]['metadata']['name']: two[0],
+            'cps-native-gpu-allocations': one[2]}
+        pod = {'metadata': {'uid': new_uid, 'name': new['enrollment']['name'], 'namespace': 'jupyterhub'},
+            'spec': spec, 'status': {'phase': 'Running'}}
+        pod_reads, reconciled, cleanup_calls, created, records = [], [], [], [], {}
+        def get_pod(intent):
+            pod_reads.append(intent.pod_uid)
+            return pod if intent.pod_uid == new_uid else None
+        def configmap(namespace, name):
+            self.assertEqual(namespace, self.config['authority_namespace'])
+            return maps.get(name)
+        kube = SimpleNamespace(node=lambda name: {'metadata': {'name': name, 'uid': NODE}},
+            enrollments=lambda ns: [self.cm, old_two_cm, new_cm], configmap=configmap, pod=get_pod,
+            delete=lambda *args: self.fail('Abort must not delete Pods'),
+            create_configmap=lambda *args: created.append(args))
+        journal = SimpleNamespace(locked=lambda: nullcontext(), records=lambda: list(records.values()),
+            read=lambda uid: records.get(uid), write=lambda record: self.fail('Abort cannot invent native journal'))
+        class Controller:
+            def __init__(inner, backend, actual_journal, enabled):
+                self.assertIs(actual_journal, journal); self.assertTrue(enabled)
+            def reconcile(inner, intent):
+                reconciled.append(intent.pod_uid)
+                self.assertEqual(intent.pod_uid, new_uid)
+                return SimpleNamespace(state='sealed')
+            def cleanup(inner, intent):
+                cleanup_calls.append(intent.pod_uid); self.fail('No native cleanup for never-gated attempts')
+        qualification = SimpleNamespace(cri_reader=lambda *args: None, gpu_clients=lambda *args: (),
+            health=lambda *args, **kwargs: self.fail('No driver probe in CPU fixture'),
+            awaiting_first_gate=lambda pod, intent: False)
+        bundle = (SimpleNamespace(QualificationNodeBackend=lambda *args, **kwargs: object()), qualification,
+            {'models': self.models, 'manual': object(), 'health': object()})
+        epoch = one[3]
+        second_epoch = self.models.DriverEpoch(NODE, epoch.boot_id, 'ffffffff-ffff-4fff-8fff-ffffffffffff', GPU)
+        store_class = self.agent.EnrollmentStore
+        with tempfile.TemporaryDirectory() as temporary:
+            state_root = Path(temporary); state_root.chmod(0o700); output = StringIO()
+            config = copy.deepcopy(self.config); config['pool']['max_workspaces'] = 1
+            with patch.object(self.agent, 'EnrollmentStore', side_effect=lambda path, models:
+                    store_class(path, models, trusted_uid=os.getuid())), \
+                    patch.object(self.models, 'PrivateJournal', return_value=journal), \
+                    patch.object(self.models, 'NativeCapController', Controller), \
+                    patch.object(self.models, 'CapIdentity', side_effect=AssertionError('No native identity for abort')), \
+                    patch.object(self.agent, 'abort_current_epoch', return_value=epoch,
+                        side_effect=[epoch, second_epoch] if changed_epoch else None), \
+                    redirect_stdout(output):
+                if changed_epoch:
+                    with self.assertRaisesRegex(ValueError, 'epoch changed'):
+                        self.agent.run(config, bundle, state_root, kube, object(), iterations=1,
+                            interval=0, crictl='unused', cri_socket='unused')
+                else:
+                    self.agent.run(config, bundle, state_root, kube, object(), iterations=1,
+                        interval=0, crictl='unused', cri_socket='unused')
+            self.assertFalse((state_root / 'journal').exists())
+            self.assertEqual(len(list((state_root / 'pre-gate-aborts').glob('*.json'))), 0 if changed_epoch else 2)
+            self.assertEqual(cleanup_calls, []); self.assertEqual(created, [])
+            events = [json.loads(line) for line in output.getvalue().splitlines()]
+        return events, reconciled, pod_reads, new_uid
+
+    def test_two_old_aborts_do_not_consume_capacity_or_reconcile_while_new_enrollment_runs(self):
+        events, reconciled, pod_reads, new_uid = self.run_cpu_fixture()
+        self.assertEqual(reconciled, [new_uid])
+        self.assertEqual({event['pod_uid']: event['state'] for event in events},
+            {POD: 'pre-gate-aborted', 'bbbbbbbb-bbbb-4bbb-8bbb-bbbbbbbbbbbb': 'pre-gate-aborted', new_uid: 'sealed'})
+        self.assertEqual(pod_reads.count(POD), 1)
+        self.assertTrue(all(event['production_qualified'] is False for event in events))
+
+    def test_epoch_change_fences_run_before_any_native_reconciliation(self):
+        events, reconciled, pod_reads, new_uid = self.run_cpu_fixture(changed_epoch=True)
+        self.assertEqual(events, []); self.assertEqual(reconciled, [])
 
 if __name__ == '__main__': unittest.main()

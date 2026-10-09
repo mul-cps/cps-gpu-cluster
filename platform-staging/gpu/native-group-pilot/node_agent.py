@@ -54,6 +54,14 @@ def parse(raw):
     return json.loads(raw, object_pairs_hook=unique)
 
 
+def canonical_json(value):
+    return json.dumps(value, sort_keys=True, separators=(',', ':'), allow_nan=False)
+
+
+def canonical_sha256(value):
+    return 'sha256:' + hashlib.sha256(canonical_json(value).encode()).hexdigest()
+
+
 def closed(value, keys, description):
     require(isinstance(value, dict) and set(value) == set(keys), description)
 
@@ -197,7 +205,7 @@ class EnrollmentStore:
         source = snapshot_sources()['node_backend.py']
         self.backend = load_source('_native_store_backend', source.encode(), SOURCE_PINS['node_backend.py'], 'node_backend.py')
         self.backend.private_directory(self.state, self.uid)
-        for name in ('intents', 'enrollments', 'authority', 'receipts', 'bootstrap', 'published-cleanup'):
+        for name in ('intents', 'enrollments', 'authority', 'receipts', 'bootstrap', 'published-cleanup', 'pre-gate-aborts'):
             path = self.state / name
             path.mkdir(mode=0o700, exist_ok=True)
             self.backend.private_directory(path, self.uid)
@@ -253,6 +261,124 @@ class EnrollmentStore:
         require(value == {'enrollment_uid': envelope['configmap_uid'], 'receipt_uid': cm['metadata']['uid'],
                  'receipt': parse(expected['data']['receipt.json'])}, 'Missing/replaced cleanup tombstone blocks authority')
         return True
+
+    def mark_abort(self, uid, envelope, proof):
+        require(proof['enrollment_uid'] == envelope['configmap_uid']
+                and proof['payload']['intent'] == envelope['enrollment']['intent']
+                and proof['payload']['intent']['pod_uid'] == uid,
+                'Exact operator abort enrollment required')
+        path = self.state / 'pre-gate-aborts' / (uid + '.json')
+        previous = self.backend.private_read(path, self.uid)
+        require(previous is None or previous == proof, 'Operator abort tombstone changed')
+        if previous is None: self.backend.private_write(path, proof, self.uid, create=True)
+
+    def abort_published(self, uid, envelope, proof):
+        previous = self.backend.private_read(self.state / 'pre-gate-aborts' / (uid + '.json'), self.uid)
+        if previous is None: return False
+        require(proof is not None and previous == proof
+                and proof['enrollment_uid'] == envelope['configmap_uid']
+                and proof['payload']['intent'] == envelope['enrollment']['intent']
+                and proof['payload']['intent']['pod_uid'] == uid,
+                'Missing/replaced operator abort authority blocks node')
+        return True
+
+
+def abort_ledger(cm, namespace):
+    require(isinstance(cm, dict) and cm.get('apiVersion') == 'v1' and cm.get('kind') == 'ConfigMap'
+            and not cm.get('binaryData'), 'Actual native allocation ledger ConfigMap required')
+    meta = cm.get('metadata', {})
+    require(isinstance(meta, dict) and meta.get('namespace') == namespace
+            and meta.get('name') == 'cps-native-gpu-allocations' and canonical_uuid(meta.get('uid'))
+            and token(meta.get('resourceVersion')) and not meta.get('deletionTimestamp'),
+            'Live exact allocation ledger identity required')
+    closed(cm.get('data'), {'state.json'}, 'Single native allocation ledger required')
+    state = parse(cm['data']['state.json'])
+    closed(state, {'version', 'allocations'}, 'Closed native allocation ledger required')
+    require(type(state['version']) is int and state['version'] == 1
+            and isinstance(state['allocations'], dict), 'Versioned native allocation ledger required')
+    return state
+
+
+def validate_abort(cm, envelope, ledger_cm, current_epoch, models):
+    enrollment = envelope['enrollment']; binding = enrollment['binding_id']
+    require(isinstance(cm, dict) and cm.get('apiVersion') == 'v1' and cm.get('kind') == 'ConfigMap'
+            and cm.get('immutable') is True and not cm.get('binaryData'), 'Immutable root operator abort required')
+    meta = cm.get('metadata', {})
+    require(isinstance(meta, dict) and meta.get('namespace') == envelope['authority_namespace']
+            and meta.get('name') == 'cps-native-abort-' + binding[:40]
+            and meta.get('labels') == {LABEL: binding} and canonical_uuid(meta.get('uid'))
+            and not meta.get('deletionTimestamp') and not meta.get('ownerReferences'),
+            'Exact live root operator abort ConfigMap identity required')
+    closed(cm.get('data'), {'abort.json'}, 'Single distinct operator abort record required')
+    payload = parse(cm['data']['abort.json'])
+    closed(payload, {'version', 'outcome', 'binding_id', 'attempt', 'intent', 'enrollment_sha256',
+                     'audit_sha256', 'node_epoch'}, 'Closed pre-gate abort protocol required')
+    require(cm['data']['abort.json'] == canonical_json(payload), 'Canonical operator abort payload required')
+    require(type(payload['version']) is int and payload['version'] == 1
+            and payload['outcome'] == 'pre-gate-aborted' and payload['binding_id'] == binding
+            and payload['attempt'] == enrollment['attempt'] and payload['intent'] == enrollment['intent']
+            and payload['enrollment_sha256'] == canonical_sha256(enrollment)
+            and isinstance(payload['audit_sha256'], str)
+            and re.fullmatch(r'sha256:[a-f0-9]{64}', payload['audit_sha256']),
+            'Exact audited enrollment/attempt/intent abort required')
+    closed(payload['node_epoch'], {'node_uid', 'boot_id', 'driver_generation', 'gpu_uuid'},
+           'Closed operator abort node epoch required')
+    require(type(current_epoch) is models.DriverEpoch
+            and models.DriverEpoch(**payload['node_epoch']) == current_epoch
+            and current_epoch.node_uid == enrollment['node_uid']
+            and current_epoch.gpu_uuid == enrollment['gpu_uuid'], 'Unchanged healthy typed abort epoch required')
+    state = abort_ledger(ledger_cm, envelope['authority_namespace'])
+    record = state['allocations'].get(binding)
+    require(isinstance(record, dict) and record.get('state') == 'released'
+            and all(record.get(key) == value for key, value in enrollment.items()),
+            'Exact released allocation required for operator abort')
+    proof = record.get('pre_gate_abort')
+    closed(proof, {'configmap', 'configmap_uid', 'sha256'}, 'Exact released operator abort proof required')
+    digest = canonical_sha256(payload)
+    require(proof == {'configmap': meta['name'], 'configmap_uid': meta['uid'], 'sha256': digest},
+            'Released allocation and immutable operator abort proof disagree')
+    return {'enrollment_uid': envelope['configmap_uid'], 'abort_uid': meta['uid'],
+            'abort_sha256': digest, 'ledger_uid': ledger_cm['metadata']['uid'], 'payload': payload}
+
+
+def recognize_aborts(store, journal, accepted, kube, current_epoch, models, *, epoch_reader=None):
+    if not accepted: return set()
+    namespace = next(iter(accepted.values()))['authority_namespace']
+    ledger_cm = kube.configmap(namespace, 'cps-native-gpu-allocations')
+    ledger = abort_ledger(ledger_cm, namespace) if ledger_cm is not None else {'allocations': {}}
+    aborted = set()
+    for uid, envelope in accepted.items():
+        binding = envelope['enrollment']['binding_id']
+        cm = kube.configmap(namespace, 'cps-native-abort-' + binding[:40])
+        if cm is None:
+            record = ledger['allocations'].get(binding)
+            require(not isinstance(record, dict) or 'pre_gate_abort' not in record,
+                    'Orphan released operator abort proof blocks node')
+            store.abort_published(uid, envelope, None)
+            continue
+        require(journal.read(uid) is None, 'A native journal can never be treated as never-gated')
+        if current_epoch is None:
+            require(callable(epoch_reader), 'Fresh healthy operator abort epoch reader required')
+            current_epoch = epoch_reader()
+        proof = validate_abort(cm, envelope, ledger_cm, current_epoch, models)
+        if not store.abort_published(uid, envelope, proof):
+            intent = models.CapIntent(**envelope['enrollment']['intent'])
+            require(kube.pod(intent) is None, 'Exact Pod absence required before accepting operator abort')
+            require(epoch_reader is None or epoch_reader() == current_epoch,
+                    'Native epoch changed during operator abort recognition')
+            store.mark_abort(uid, envelope, proof)
+        else:
+            require(epoch_reader is None or epoch_reader() == current_epoch,
+                    'Native epoch changed during operator abort recognition')
+        aborted.add(uid)
+    return aborted
+
+
+def abort_current_epoch(config, state, driver, verifier, models):
+    require(driver.version == '615.71.09', 'Exact native driver required for operator abort recognition')
+    generation = verifier.validate_native_driver_health(authority_directory=str(state / 'authority'))
+    boot_id = Path('/proc/sys/kernel/random/boot_id').read_text().strip()
+    return models.DriverEpoch(config['pool']['node_uid'], boot_id, generation, config['pool']['gpu_uuid'])
 
 
 def validate_actual_pod(pod, enrollment):
@@ -393,8 +519,10 @@ def run(config, bundle, state, kube, driver, *, iterations, interval, crictl, cr
             require(all(record.intent.pod_uid in accepted and record.intent.to_dict() ==
                         accepted[record.intent.pod_uid]['enrollment']['intent'] for record in records),
                     'Original immutable enrollment required for every native journal')
+            aborted = recognize_aborts(store, journal, accepted, kube, None, models,
+                epoch_reader=lambda: abort_current_epoch(config, state, driver, verifier, models))
             active = sum(journal.read(intent.pod_uid) is None or journal.read(intent.pod_uid).state != 'cleaned'
-                         for intent in intents)
+                         for intent in intents if intent.pod_uid not in aborted)
             require(active <= config['pool']['max_workspaces'], 'Selected pool active enrollment capacity exceeded')
         backend = adapter.QualificationNodeBackend(models, manual, intents=intents, driver=driver,
             get_pod=kube.pod, get_node=kube.node, get_cri=qualification.cri_reader(crictl, cri_socket),
@@ -404,6 +532,10 @@ def run(config, bundle, state, kube, driver, *, iterations, interval, crictl, cr
         controller = models.NativeCapController(backend, journal, enabled=True)
         for intent in intents:
             try:
+                if intent.pod_uid in aborted:
+                    print(json.dumps({'pod_uid': intent.pod_uid, 'state': 'pre-gate-aborted',
+                        'iteration': iteration, 'production_qualified': False}), flush=True)
+                    continue
                 record = journal.read(intent.pod_uid)
                 pod = kube.pod(intent)
                 old_cleanup = kube.configmap(config['authority_namespace'], 'cps-native-cleanup-' +
