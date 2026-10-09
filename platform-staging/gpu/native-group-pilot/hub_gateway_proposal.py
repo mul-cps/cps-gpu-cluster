@@ -124,10 +124,10 @@ class CPSNativeLoginGuard(_native_auth_base):
         result = super().check_blocked_users(username, authentication)
         return await result if _native_inspect.isawaitable(result) else result
     async def refresh_user(self, user, handler=None, **kwargs):
-        machine_roles = getattr(getattr(user, 'orm_user', None), 'roles', ())
-        if (user.name in _native_owners and not getattr(user, 'admin', False)
-                and any(role.name == 'cps-workspace-kernel' for role in machine_roles)):
-            return True
+        machine_roles = getattr(getattr(user, 'orm_user', None), 'roles', ()) or ()
+        if user.name in _native_owners:
+            return (not getattr(user, 'admin', False)
+                    and any(role.name == 'cps-workspace-kernel' for role in machine_roles))
         result = super().refresh_user(user, handler=handler, **kwargs)
         return await result if _native_inspect.isawaitable(result) else result
 c.JupyterHub.authenticator_class = CPSNativeLoginGuard
@@ -157,6 +157,25 @@ if any(role.get('name') in ({source + '-native-group-control'!r}, {source + '-na
 _native_roles.extend([{{'name': {source + '-native-group-control'!r}, 'services': [{source + '-admin'!r}], 'scopes': {scopes!r}}},
     {{'name': {source + '-native-group-observer'!r}, 'services': [{source + '-compute-observer'!r}], 'scopes': {observer!r}}}])
 c.JupyterHub.load_roles = _native_roles
+'''
+
+
+def pilot_config(owners):
+    """Delegate the released hook, then inject only the trusted machine pull Secret."""
+    return f'''import json
+import inspect as _native_pull_inspect
+from pathlib import Path
+from cps_compute.native_hub_config import install_native_hub_configuration
+install_native_hub_configuration(c, json.loads(Path('/etc/cps-native-hub/settings.json').read_text()))
+_native_released_pre = c.KubeSpawner.pre_spawn_hook
+_native_pull_owners = frozenset({sorted(owners)!r})
+async def _native_private_pull_pre(spawner):
+    result = _native_released_pre(spawner)
+    if _native_pull_inspect.isawaitable(result):
+        await result
+    if spawner.user.name in _native_pull_owners:
+        spawner.image_pull_secrets = ['cps-native-image-pull']
+c.Spawner.pre_spawn_hook = c.KubeSpawner.pre_spawn_hook = _native_private_pull_pre
 '''
 
 
@@ -249,7 +268,7 @@ def render(inputs, baselines):
         require(not any(key in extras for key in ('zy-native-group-access', 'zz-native-group-pilot')), 'Native configuration collision')
         extras['zy-native-group-access'] = access_config(source, selected,
             group_snapshot_confirmed=inputs['groupSnapshotConfirmed'], role_snapshot=baselines[source]['roles'])
-        extras['zz-native-group-pilot'] = "import json\nfrom pathlib import Path\nfrom cps_compute.native_hub_config import install_native_hub_configuration\ninstall_native_hub_configuration(c, json.loads(Path('/etc/cps-native-hub/settings.json').read_text()))\n"
+        extras['zz-native-group-pilot'] = pilot_config(owners)
         encoded_values = base64.b64encode(yaml.safe_dump(values, sort_keys=False).encode()).decode()
         result[namespace + '-hub-secret.patch.json'] = patch(old_secret, [{'op': 'replace', 'path': '/data/values.yaml', 'value': encoded_values}])
         deployment = baselines[source]['deployment']; spec = deployment['spec']['template']['spec']

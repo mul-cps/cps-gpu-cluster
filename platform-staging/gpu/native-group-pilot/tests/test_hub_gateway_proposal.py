@@ -78,9 +78,9 @@ def test_login_guard_preserves_humans_marker_roles_and_existing_permissions():
     assert asyncio.run(guard.refresh_user(SimpleNamespace(name='human'), handler='human-handler', fresh=True)) == {
         'name': 'human', 'auth_state': {'keep': 'human-oauth-refresh'}}
     assert refreshed == [('human', 'human-handler', {'fresh': True})]
-    assert asyncio.run(guard.refresh_user(SimpleNamespace(name='neutral-a'))) != True
+    assert asyncio.run(guard.refresh_user(SimpleNamespace(name='neutral-a'))) is False
     machine.admin = True
-    assert asyncio.run(guard.refresh_user(machine)) != True
+    assert asyncio.run(guard.refresh_user(machine)) is False
     assert c.Authenticator.blocked_users == {'existing-denied'}
     assert c.GenericOAuthenticator.manage_groups is False
     marker = next(role for role in c.JupyterHub.load_roles if role['name'] == 'cps-workspace-kernel')
@@ -178,6 +178,48 @@ def test_preserved_roles_keep_assignments_and_canonical_defaults_without_extra_p
     roles[0]['scopes'] = ['admin:users']
     with pytest.raises(ValueError, match='default role'):
         proposal.preserved_roles(snapshot)
+
+
+def test_private_pull_wrapper_delegates_released_hook_and_preserves_humans(monkeypatch):
+    import cps_compute.native_hub_config as configuration
+    from traitlets.config import Config
+    c = Config(); calls = []
+    async def released(spawner): calls.append(spawner.user.name)
+    def install(config, settings): config.KubeSpawner.pre_spawn_hook = released
+    monkeypatch.setattr(configuration, 'install_native_hub_configuration', install)
+    monkeypatch.setattr(Path, 'read_text', lambda self: '{}')
+    exec(compile(proposal.pilot_config(['neutral-a']), 'trusted-private-pull-hook', 'exec'), {'c': c})
+    neutral = SimpleNamespace(user=SimpleNamespace(name='neutral-a'), image_pull_secrets=[])
+    human = SimpleNamespace(user=SimpleNamespace(name='human'), image_pull_secrets=['personal-existing'])
+    asyncio.run(c.KubeSpawner.pre_spawn_hook(neutral)); asyncio.run(c.KubeSpawner.pre_spawn_hook(human))
+    assert calls == ['neutral-a', 'human']
+    assert neutral.image_pull_secrets == ['cps-native-image-pull']
+    assert human.image_pull_secrets == ['personal-existing']
+
+
+def test_trusted_pull_reference_survives_closed_native_compiler(render_inputs):
+    from cps_compute.native_gpu_runtime import NativeGpuBinding, NativeGpuRuntimeSettings, compile_native_gpu_pod
+    inputs, baselines = render_inputs
+    rendered = proposal.render(inputs, baselines)
+    catalog = json.loads(rendered['compute-policy.patch.json'][-1]['value'])
+    profile = catalog['profiles'][proposal.PROFILE]
+    claim = 'cps-workspace-fixture'
+    settings = NativeGpuRuntimeSettings(gate_image=inputs['images']['gate'],
+        approved_gate_images=frozenset({inputs['images']['gate']}),
+        approved_workload_images=frozenset({inputs['images']['notebook']}),
+        writable_pvc_claims=frozenset({claim}), writable_mount_paths=frozenset({'/workspace'}), enabled=True)
+    binding = NativeGpuBinding('jupyterhub', 'native-fixture', 'k3s-wk-gpu2',
+        inputs['nodePool']['node_uid'], inputs['nodePool']['gpu_uuid'], proposal.PROFILE, catalog['policyHash'])
+    pod = {'apiVersion': 'v1', 'kind': 'Pod', 'metadata': {'namespace': binding.namespace, 'name': binding.name},
+        'spec': {'imagePullSecrets': [{'name': 'cps-native-image-pull'}], 'containers': [{'name': 'notebook',
+            'image': inputs['images']['notebook'], 'workingDir': '/workspace',
+            'resources': {'limits': {'cpu': '4', 'memory': '16Gi'}, 'requests': {'cpu': '4', 'memory': '16Gi'}},
+            'volumeMounts': [{'name': 'workspace', 'mountPath': '/workspace'}]}],
+            'volumes': [{'name': 'workspace', 'persistentVolumeClaim': {'claimName': claim}}]}}
+    contract = compile_native_gpu_pod(pod, profile, binding=binding, settings=settings, qualification_pilot=True)
+    assert contract.pod['spec']['imagePullSecrets'] == [{'name': 'cps-native-image-pull'}]
+    assert contract.pod['spec']['runtimeClassName'] == 'nvidia'
+    assert contract.pod['spec']['initContainers'][0]['name'] == 'cps-native-cap-gate'
 
 
 def test_prepare_writes_private_new_files_and_preserves_baseline_bytes(render_inputs, tmp_path):
