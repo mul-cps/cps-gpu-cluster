@@ -7,11 +7,16 @@ NV_STATUS memacctValidateMemoryImport(MemoryCharge *pCharge, NvU32 gpuId,
     NV_STATUS status = NV_ERR_INSUFFICIENT_PERMISSIONS;
     GpuRegion *pRegion;
     ClientGroupID actorGroup, destinationGroup;
+    ClientGroupID actorLeaf = NULL, destinationLeaf = NULL;
     void *pidInfo;
 
-    /* NONE has no native accounting to authorize. Controller MUST exclude it. */
-    if (g_memacct.impl == CGROUP_IMPL_NONE)
+    /* Immutable load-time opt-in; default-off preserves unmodified behavior. */
+    if (!os_cps_native_import_guard_enabled())
         return NV_OK;
+
+    /* Enabled mode requires native accounting; absence cannot authorize imports. */
+    if (g_memacct.impl == CGROUP_IMPL_NONE)
+        return NV_ERR_NOT_SUPPORTED;
     /* dmem's charge has no fallback cligrp; reject rather than reinterpret it. */
     if (g_memacct.impl != CGROUP_IMPL_FALLBACK || g_memacct.mutex == NULL)
         return NV_ERR_NOT_SUPPORTED;
@@ -20,7 +25,8 @@ NV_STATUS memacctValidateMemoryImport(MemoryCharge *pCharge, NvU32 gpuId,
     pidInfo = osGetPidInfo();
     if (pidInfo == NULL)
         return NV_ERR_INSUFFICIENT_PERMISSIONS;
-    actorGroup = osClientGroupID(osGetCurrentProcess(), pidInfo);
+    actorLeaf = os_cps_cgroup_get_from_pid_info(pidInfo, OS_CGROUP_IMPL_MISC);
+    actorGroup = actorLeaf;
 
     portSyncMutexAcquire(g_memacct.mutex);
     pRegion = mapFind(&g_memacct.GpuRegionMap, gpuId);
@@ -47,7 +53,8 @@ NV_STATUS memacctValidateMemoryImport(MemoryCharge *pCharge, NvU32 gpuId,
         goto done;
     if (pDestination->pOsPidInfo != NULL)
     {
-        destinationGroup = osClientGroupID(pDestination->ProcID, pDestination->pOsPidInfo);
+        destinationLeaf = os_cps_cgroup_get_from_pid_info(pDestination->pOsPidInfo, OS_CGROUP_IMPL_MISC);
+        destinationGroup = destinationLeaf;
         if (destinationGroup == NULL ||
             memacctLimitsForGroupLocked(pRegion, &destinationGroup) == NULL ||
             destinationGroup != actorGroup)
@@ -64,6 +71,10 @@ NV_STATUS memacctValidateMemoryImport(MemoryCharge *pCharge, NvU32 gpuId,
     status = NV_OK;
 done:
     portSyncMutexRelease(g_memacct.mutex);
+    if (destinationLeaf != NULL)
+        os_cgroup_put(destinationLeaf);
+    if (actorLeaf != NULL)
+        os_cgroup_put(actorLeaf);
     osPutPidInfo(pidInfo);
     return status;
 }
