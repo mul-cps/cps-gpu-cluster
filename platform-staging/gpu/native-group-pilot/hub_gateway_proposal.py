@@ -62,7 +62,28 @@ def group_scopes(workspaces):
     return sorted(set(scopes))
 
 
-def access_config(source, workspaces, *, group_snapshot_confirmed):
+def preserved_roles(snapshot):
+    """Freeze non-auth-managed roles without changing canonical default scopes."""
+    from jupyterhub.roles import get_default_roles
+    defaults = {role['name']: set(role['scopes']) for role in get_default_roles()}
+    require(isinstance(snapshot, dict) and set(snapshot) == {'roles', 'services'}, 'Exact role/service snapshot required')
+    require(all(set(service) == {'name', 'from_config', 'admin', 'roles'}
+                and type(service['from_config']) is bool for service in snapshot['services']),
+            'Exact service lifecycle snapshot required')
+    result = []
+    for role in snapshot['roles']:
+        require(set(role) == {'name', 'description', 'scopes', 'users', 'groups', 'services', 'managed_by_auth'}
+                and type(role['managed_by_auth']) is bool, 'Closed complete actual role snapshot required')
+        if role['managed_by_auth']: continue
+        value = {key: copy.deepcopy(item) for key, item in role.items() if key != 'managed_by_auth'}
+        if role['name'] in defaults:
+            require(set(role['scopes']) == defaults[role['name']], 'Canonical default role scope drift requires review')
+            value.pop('scopes'); value.pop('description')
+        result.append(value)
+    return result
+
+
+def access_config(source, workspaces, *, group_snapshot_confirmed, role_snapshot):
     require(group_snapshot_confirmed is True, 'Confirmed Hub group snapshot required before manage_groups change')
     owners = sorted({item['owner'] for item in workspaces})
     scopes = group_scopes(workspaces)
@@ -70,10 +91,33 @@ def access_config(source, workspaces, *, group_snapshot_confirmed):
         for scope in ('read:roles:users', 'read:servers', 'admin:server_state')})
     # Login-only denial avoids JupyterHub blocked_users startup revocation.
     return f'''import inspect as _native_inspect
+from traitlets import observe as _native_observe
 from jupyterhub.app import JupyterHub as _native_hub_class
 _native_owners = frozenset({owners!r})
 _native_auth_base = _native_hub_class.class_traits()['authenticator_class'].validate(None, c.JupyterHub.authenticator_class)
 class CPSNativeLoginGuard(_native_auth_base):
+    @_native_observe('allowed_groups', 'admin_groups', 'auth_state_groups_key')
+    def _requires_manage_groups(self, change):
+        if self.manage_groups:
+            return super()._requires_manage_groups(change)
+    @_native_observe('claim_groups_key')
+    def _claim_groups_key_changed(self, change):
+        if callable(change.new):
+            self.auth_state_groups_key = lambda state: self.claim_groups_key(state[self.user_auth_state_key])
+        else:
+            self.auth_state_groups_key = f'{{self.user_auth_state_key}}.{{self.claim_groups_key}}'
+    async def update_auth_model(self, model):
+        model = await super().update_auth_model(model)
+        if not self.manage_groups and self.admin_groups and not model['admin']:
+            groups = await self.get_user_groups(model['auth_state'])
+            model['admin'] = bool(groups & self.admin_groups)
+        return model
+    async def check_allowed(self, username, model=None):
+        if await super().check_allowed(username, model):
+            return True
+        if not self.manage_groups and self.allowed_groups and model is not None:
+            return bool((await self.get_user_groups(model['auth_state'])) & self.allowed_groups)
+        return False
     async def check_blocked_users(self, username, authentication=None):
         if username in _native_owners:
             return False
@@ -89,7 +133,20 @@ class CPSNativeLoginGuard(_native_auth_base):
 c.JupyterHub.authenticator_class = CPSNativeLoginGuard
 c.Authenticator.manage_groups = False
 c.GenericOAuthenticator.manage_groups = False
+_native_config_service_names = {{service['name'] for service in c.JupyterHub.get('services', [])}}
+for _native_service in {role_snapshot['services']!r}:
+    if _native_service['from_config'] and _native_service['name'] not in _native_config_service_names:
+        raise RuntimeError('Existing configured service absent from inherited Hub configuration')
 _native_roles = [dict(role) for role in c.JupyterHub.load_roles]
+for _native_preserved in {preserved_roles(role_snapshot)!r}:
+    _native_existing = next((role for role in _native_roles if role.get('name') == _native_preserved['name']), None)
+    if _native_existing is None:
+        _native_roles.append(dict(_native_preserved))
+    else:
+        if 'scopes' in _native_preserved and set(_native_existing.get('scopes', [])) != set(_native_preserved['scopes']):
+            raise RuntimeError('Existing role policy differs from captured actual role')
+        for _native_assignment in ('users', 'groups', 'services'):
+            _native_existing[_native_assignment] = sorted(set(_native_existing.get(_native_assignment, [])) | set(_native_preserved[_native_assignment]))
 _native_marker = next((role for role in _native_roles if role.get('name') == 'cps-workspace-kernel'), None)
 if _native_marker is None:
     _native_marker = {{'name': 'cps-workspace-kernel', 'scopes': []}}
@@ -190,7 +247,8 @@ def render(inputs, baselines):
                 'Neutral owners cannot already be startup-revoked blocked users')
         extras = values['hub']['extraConfig']
         require(not any(key in extras for key in ('zy-native-group-access', 'zz-native-group-pilot')), 'Native configuration collision')
-        extras['zy-native-group-access'] = access_config(source, selected, group_snapshot_confirmed=inputs['groupSnapshotConfirmed'])
+        extras['zy-native-group-access'] = access_config(source, selected,
+            group_snapshot_confirmed=inputs['groupSnapshotConfirmed'], role_snapshot=baselines[source]['roles'])
         extras['zz-native-group-pilot'] = "import json\nfrom pathlib import Path\nfrom cps_compute.native_hub_config import install_native_hub_configuration\ninstall_native_hub_configuration(c, json.loads(Path('/etc/cps-native-hub/settings.json').read_text()))\n"
         encoded_values = base64.b64encode(yaml.safe_dump(values, sort_keys=False).encode()).decode()
         result[namespace + '-hub-secret.patch.json'] = patch(old_secret, [{'op': 'replace', 'path': '/data/values.yaml', 'value': encoded_values}])
@@ -202,10 +260,17 @@ def render(inputs, baselines):
             {'op': 'add', 'path': '/spec/template/spec/volumes/-', 'value': {'name': 'cps-native-hub-config', 'configMap': {'name': cm['metadata']['name']}}},
             {'op': 'add', 'path': f'/spec/template/spec/containers/{index}/volumeMounts/-', 'value': {'name': 'cps-native-hub-config', 'mountPath': MOUNT, 'readOnly': True}},
             {'op': 'add', 'path': f'/spec/template/spec/containers/{index}/env/-', 'value': {'name': token_env, 'valueFrom': {'secretKeyRef': {'name': secret['metadata']['name'], 'key': token_env}}}}]
+        pull_secrets = copy.deepcopy(spec.get('imagePullSecrets', []))
+        require(isinstance(pull_secrets, list) and all(isinstance(item, dict) and set(item) == {'name'}
+                for item in pull_secrets), 'Explicit inherited Hub image pull Secret references required')
+        if not any(item['name'] == 'cps-native-image-pull' for item in pull_secrets):
+            pull_secrets.append({'name': 'cps-native-image-pull'})
+        operations.append({'op': 'add', 'path': '/spec/template/spec/imagePullSecrets', 'value': pull_secrets})
         require(not any(env['name'] == token_env for env in container.get('env', [])), 'Source token environment collision')
         result[namespace + '-hub.patch.json'] = patch(deployment, operations)
         summary['hubs'][source] = {'owners': owners, 'groups': sorted({item['group_id'] for item in selected}),
             'controlScopes': group_scopes(selected), 'claims': claims, 'settingsFields': sorted(settings),
+            'imagePullSecrets': pull_secrets,
             'personalConfigurationPreserved': True, 'neutralLoginGuard': True,
             'neutralMachineRefreshScoped': True, 'manageGroups': False}
     result['runtime-secret.patch.json'] = patch(runtime_secret, [{'op': 'replace', 'path': '/data/runtime.json',
@@ -226,7 +291,8 @@ def prepare(inputs_path, baseline_directory, output):
         'gatewaySecret': read('gateway-secret-baseline.json')}
     for source, namespace in NAMESPACES.items():
         baselines[source] = {'deployment': read(namespace + '-hub-baseline.json'),
-                             'secret': read(namespace + '-hub-secret-baseline.json')}
+                             'secret': read(namespace + '-hub-secret-baseline.json'),
+                             'roles': read(source + '-hub-roles-before.json')}
     if (root / 'gateway-ca-baseline.json').is_file():
         baselines['gatewayCA'] = read('gateway-ca-baseline.json')
     proposals = render(json.loads(Path(inputs_path).read_text()), baselines)

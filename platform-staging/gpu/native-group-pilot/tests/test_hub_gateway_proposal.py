@@ -64,7 +64,8 @@ def test_login_guard_preserves_humans_marker_roles_and_existing_permissions():
     c.Authenticator.blocked_users = {'existing-denied'}
     c.GenericOAuthenticator.manage_groups = True
     item = {'owner': 'neutral-a', 'server': 'rtc', 'group_id': 'course-a'}
-    code = proposal.access_config('cps', [item], group_snapshot_confirmed=True)
+    code = proposal.access_config('cps', [item], group_snapshot_confirmed=True,
+                                  role_snapshot={'roles': [], 'services': []})
     exec(compile(code, 'trusted-operator-config', 'exec'), {'c': c})
     guard = c.JupyterHub.authenticator_class()
     assert asyncio.run(guard.check_blocked_users('neutral-a')) is False
@@ -86,7 +87,8 @@ def test_login_guard_preserves_humans_marker_roles_and_existing_permissions():
     assert marker['users'] == ['neutral-a', 'old-neutral'] and marker['scopes'] == []
     assert c.JupyterHub.load_roles[0] == {'name': 'legacy', 'scopes': ['read:metrics']}
     with pytest.raises(ValueError, match='snapshot'):
-        proposal.access_config('cps', [item], group_snapshot_confirmed=False)
+        proposal.access_config('cps', [item], group_snapshot_confirmed=False,
+                               role_snapshot={'roles': [], 'services': []})
 
 
 @pytest.fixture
@@ -108,7 +110,7 @@ def render_inputs(tmp_path):
         'runtime': obj('Secret', {'runtime.json': b64(json.dumps(runtime))}), 'gateway': deployment('gateway'),
         'gatewaySecret': obj('Secret', {'CPS_CONTROL': b64('fake-cps-token'), 'CIT_CONTROL': b64('fake-cit-token')})}
     for source in ('cps', 'cit'):
-        baselines[source] = {'deployment': deployment('hub'), 'secret': obj('Secret', {
+        baselines[source] = {'deployment': deployment('hub'), 'roles': {'roles': [], 'services': []}, 'secret': obj('Secret', {
             'values.yaml': b64(yaml.safe_dump({'hub': {'extraConfig': {'legacy': 'legacy hook'}, 'keep': 'personal config'}, 'singleuser': {'keep': True}})),
             'cookie': b64('fake-cookie')})}
     inputs = {'version': 1, 'groupSnapshotConfirmed': True,
@@ -142,10 +144,40 @@ def test_render_preserves_personal_values_tokens_and_exact_storage_binding(rende
         assert settings['writablePVCClaims'] == sorted('cps-workspace-' + binding(source, group)[0][:40] for group in groups)
         assert rendered[namespace + '-control-secret.json']['data'] == {source.upper() + '_CONTROL': baselines['gatewaySecret']['data'][source.upper() + '_CONTROL']}
         assert 'api_token' not in cm['data']['settings.json']
+        pulls = next(item for item in rendered[namespace + '-hub.patch.json'] if item['path'] == '/spec/template/spec/imagePullSecrets')
+        assert pulls['value'] == [{'name': 'cps-native-image-pull'}]
     runtime = json.loads(base64.b64decode(rendered['runtime-secret.patch.json'][-1]['value']))
     assert runtime['preserveOtherRuntime'] is True
     assert runtime['hubs']['cps']['canonical_people']['existing'] == 'existing-person'
     assert len(runtime['nativeGpuPilot']['native_pilot_workspaces']) == 3
+
+
+def test_hub_private_pull_secret_appends_preserving_existing_references(render_inputs):
+    inputs, baselines = render_inputs
+    baselines['cps']['deployment']['spec']['template']['spec']['imagePullSecrets'] = [{'name': 'existing-pull'}]
+    rendered = proposal.render(inputs, baselines)
+    pulls = next(item for item in rendered['jupyterhub-hub.patch.json'] if item['path'] == '/spec/template/spec/imagePullSecrets')
+    assert pulls['value'] == [{'name': 'existing-pull'}, {'name': 'cps-native-image-pull'}]
+
+
+def test_preserved_roles_keep_assignments_and_canonical_defaults_without_extra_privilege():
+    from jupyterhub.roles import get_default_roles
+    roles = []
+    for default in get_default_roles():
+        roles.append({**default, 'users': ['existing-human'], 'groups': [], 'services': [], 'managed_by_auth': False})
+    roles.append({'name': 'existing-service-role', 'description': 'Keep actual role',
+        'scopes': ['read:metrics'], 'users': [], 'groups': [], 'services': ['existing-service'], 'managed_by_auth': False})
+    roles.append({'name': 'managed', 'description': '', 'scopes': ['read:metrics'],
+        'users': [], 'groups': [], 'services': [], 'managed_by_auth': True})
+    snapshot = {'roles': roles, 'services': [{'name': 'existing-service', 'from_config': False, 'admin': False, 'roles': ['existing-service-role']}]}
+    preserved = proposal.preserved_roles(snapshot)
+    assert 'managed' not in {role['name'] for role in preserved}
+    assert all('scopes' not in role for role in preserved if role['name'] in ('admin', 'user', 'server', 'token'))
+    assert all(role['users'] == ['existing-human'] for role in preserved if role['name'] in ('admin', 'user', 'server', 'token'))
+    assert preserved[-1]['scopes'] == ['read:metrics'] and preserved[-1]['services'] == ['existing-service']
+    roles[0]['scopes'] = ['admin:users']
+    with pytest.raises(ValueError, match='default role'):
+        proposal.preserved_roles(snapshot)
 
 
 def test_prepare_writes_private_new_files_and_preserves_baseline_bytes(render_inputs, tmp_path):
@@ -158,6 +190,7 @@ def test_prepare_writes_private_new_files_and_preserves_baseline_bytes(render_in
     for source, namespace in proposal.NAMESPACES.items():
         files[namespace + '-hub-baseline.json'] = baselines[source]['deployment']
         files[namespace + '-hub-secret-baseline.json'] = baselines[source]['secret']
+        files[source + '-hub-roles-before.json'] = baselines[source]['roles']
     for name, body in files.items(): (root / name).write_text(json.dumps(body))
     before = {name: (root / name).read_bytes() for name in files}
     input_path = tmp_path / 'inputs.json'; input_path.write_text(json.dumps(inputs))
