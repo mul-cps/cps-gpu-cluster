@@ -58,7 +58,7 @@ current actor through stable PID references. RCU-protected task lookup and
 `cgroup_tryget` retain each original leaf through nearest-parent normalization;
 leaf references are released after the native accounting mutex. Charge debit
 and authority comparison use that same mutex. Missing or dead creator identity,
-foreign parents, and kernel/null-client allocations after caps fail closed.
+foreign parents, and unmarked kernel/null-client allocations after caps fail closed.
 Set/Get current-process limits use the retained lookup while enabled; default-off
 paths keep their original behavior.
 
@@ -83,8 +83,8 @@ python3 platform-staging/gpu/qualification/native-import-guard/render_patch.py \
   --render --source /private/pristine-615.71.09 --output /private/NEW-import-guard.patch
 ```
 
-Renderer verifies SHA256 of all nine pristine input files, checks unique
-anchors and refuses an existing output. Six CPU tests compile the actual
+Renderer verifies SHA256 of all eleven pristine input files, checks unique
+anchors and refuses an existing output. Seven CPU tests compile the actual
 helpers against explicit synthetic stubs, exercise same-parent/cross-parent,
 default-off bypass, missing charge/GPU/user/actor/region and ambiguous server decisions, plus
 load-value validation, protected allocation and per-entry cgroup reference lifetime,
@@ -148,9 +148,41 @@ bounded-pilot limit, requiring reviewed inactive-entry removal for long-running
 production. Pinning prevents recycled cgroup pointers from impersonating the
 original allocation authority while exported backing remains charged.
 
-## CPU build receipt
+## Guarded initialization regression and correction
 
-The reviewed nine-file patch compiled with GCC/G++ 13.3.0 on Ubuntu kernel
+The first retained-creator candidate passed module loading, the immutable flag
+check, cap readback and root NVML, but ordinary user `cuInit` failed before a
+context was created. Recorded NVRM denials point to `nvGpuOpsAllocPhysical` FB
+allocation, not an imported memory object. In pinned source, kernel RM clients
+intentionally have no `pOsPidInfo` (`client.c:131–134`); UVM uses a global GPU-ops
+session (`uvm_global.c:120`). Binding that global session to its creation PID
+would assign later users' initialization to the wrong authority.
+
+The correction appends a driver-owned `bCpsGpuOpsSession` marker to the official
+pre-generated RmClient declaration, explicitly initializes it false in every
+constructor, and marks only the private client created by `nvGpuOpsCreateSession`.
+The setter holds the write RM API lock and client write lock, with no GPU lock,
+and releases them before failed creation cleanup. Cached kernel privilege is a
+sanity check, not the source of marker authority; allocation parameters cannot
+set the marker. The complete RM core must be rebuilt because RmClient size changes.
+
+Only a marked kernel session with no user creator can charge an allocation to
+its retained actual synchronous actor. Its nearest selected cap must have a
+nonzero finite HardLimit; a zero/MAX entry rejects without searching past it.
+The native debit occurs under the same accounting mutex. The uncapped operator
+exception is forbidden for this branch. Unmarked kernel clients and dead user
+creators still fail. Kernel import destinations similarly need the marker and
+an existing original source charge matching the finite actual actor; no
+cross-owner exemption is added.
+
+Global UVM backing may remain charged to the first allocating authority until
+its final reference is released. Measure cleanup with a second peer still alive
+and retain capacity reservations while backing survives. Compatibility and
+isolation for this corrected candidate require fresh hardware tests.
+
+## Earlier candidate CPU build receipt
+
+The earlier retained-creator nine-file patch compiled with GCC/G++ 13.3.0 on Ubuntu kernel
 `6.8.0-134-generic` in 149.703 seconds, with two threads and nice 19. No GPU calls
 or module load occurred, and installed core, RM binary and interface hashes
 remained unchanged. Candidate version/vermagic match the installed 615.71.09 core.
@@ -169,3 +201,25 @@ and `__put_task_struct=0xc8c7f97d`; therefore raw byte equality is not expected.
 Full receipts, raw sections, modinfo, patch, compiler script, log and candidate
 are retained in the operator's private `final-retained-core` evidence directory.
 Compilation and CPU fixtures do not authorize production activation.
+
+## Corrected marked-session CPU build receipt
+
+The eleven-file marked-session finite-cap patch compiled in 157.931 seconds
+with the same two-thread/nice19 bounded toolchain. Installed files remained
+unchanged. All seven CPU fixtures passed; two independent source reviews found
+no remaining blocker for controlled hardware qualification. This corrected
+module has not been loaded by the compilation workflow.
+
+* Patch SHA256: `111bb7c3d4180b60b017727421ca9fd33e39a12c3b2f670398d581602ff6c5e4`.
+* Candidate core SHA256: `7d5a650dd395f478384bf77c7849083a90285a5b04541879c666161c58774f3e`.
+* Full receipt SHA256: `f33d01df1723fd2ae97df9126796a6a7d352f960f109869409b7bfa2bb2a9523`.
+* Evidence archive SHA256: `ca4706cfa22c70420773733e7c9952aa15c8579da09298abe0715a1e56b22502`.
+
+Every candidate named CRC matches the exact kernel Module.symvers; there are
+no missing or changed baseline imports and the same two legitimate additions.
+Version/vermagic match. **The srcversion remains `FDFF9E35B0C7DFAC675EE42` across
+the RM correction, so it cannot distinguish these candidates.** Require the
+exact ELF digest, reviewed source receipt and fresh loader nonce, rather than
+srcversion alone. Artifacts are in the private `final-uvm-session-core` directory.
+Ordinary capped CUDA, same-owner/cross-owner imports and global backing cleanup
+with a healthy peer remain hardware gates before any group GPU activation.

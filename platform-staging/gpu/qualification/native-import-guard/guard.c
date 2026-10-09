@@ -7,6 +7,7 @@ NV_STATUS memacctValidateMemoryImport(MemoryCharge *pCharge, NvU32 gpuId,
     NV_STATUS status = NV_ERR_INSUFFICIENT_PERMISSIONS;
     GpuRegion *pRegion;
     ClientGroupID actorGroup, destinationGroup;
+    ClientGroupLimits *pActorLimits;
     ClientGroupID actorLeaf = NULL, destinationLeaf = NULL;
     void *pidInfo;
 
@@ -45,7 +46,8 @@ NV_STATUS memacctValidateMemoryImport(MemoryCharge *pCharge, NvU32 gpuId,
     /* Once caps exist, uncharged/foreign/ambiguous backing is never authorized. */
     if (pCharge == NULL || pCharge->cligrp == NULL || pCharge->gpuId != gpuId ||
         actorGroup == NULL ||
-        memacctLimitsForGroupLocked(pRegion, &actorGroup) == NULL ||
+        (pActorLimits = memacctLimitsForGroupLocked(pRegion, &actorGroup)) == NULL ||
+        pActorLimits->HardLimit == 0 || pActorLimits->HardLimit == (NvLength)-1 ||
         actorGroup != pCharge->cligrp)
         goto done;
 
@@ -60,7 +62,8 @@ NV_STATUS memacctValidateMemoryImport(MemoryCharge *pCharge, NvU32 gpuId,
             destinationGroup != actorGroup)
             goto done;
     }
-    else if (pDestination->cachedPrivilege < RS_PRIV_LEVEL_KERNEL)
+    else if (!pDestination->bCpsGpuOpsSession ||
+             pDestination->cachedPrivilege < RS_PRIV_LEVEL_KERNEL)
     {
         /* Missing user identity is not equivalent to a trusted kernel client. */
         goto done;

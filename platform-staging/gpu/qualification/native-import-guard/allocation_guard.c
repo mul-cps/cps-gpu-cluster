@@ -9,7 +9,7 @@ static NV_STATUS memacctTryChargeProtected(RmClient *pRmClient, NvU32 gpuId,
     MemoryCharge *pCharge = NULL;
     GpuRegion *pRegion;
     ClientGroupLimits *pActorLimits, *pCreatorLimits;
-    NvBool bOperatorBypass = NV_FALSE;
+    NvBool bOperatorBypass = NV_FALSE, bKernelSession = NV_FALSE;
     *ppCharge = NULL;
     if (g_memacct.impl != CGROUP_IMPL_FALLBACK || g_memacct.mutex == NULL)
         return NV_ERR_NOT_SUPPORTED;
@@ -26,13 +26,18 @@ static NV_STATUS memacctTryChargeProtected(RmClient *pRmClient, NvU32 gpuId,
     if (status != NV_ERR_INSUFFICIENT_PERMISSIONS)
         return status;
 
-    if (pRmClient == NULL || pRmClient->pOsPidInfo == NULL)
+    if (pRmClient == NULL)
+        goto cleanup;
+    bKernelSession = pRmClient->bCpsGpuOpsSession && pRmClient->pOsPidInfo == NULL;
+    if (!bKernelSession && pRmClient->pOsPidInfo == NULL)
         goto cleanup;
     pidInfo = osGetPidInfo();
     if (pidInfo == NULL)
         goto cleanup;
     actorLeaf = os_cps_cgroup_get_from_pid_info(pidInfo, OS_CGROUP_IMPL_MISC);
-    creatorLeaf = os_cps_cgroup_get_from_pid_info(pRmClient->pOsPidInfo, OS_CGROUP_IMPL_MISC);
+    /* A marked global GPU-ops session has no per-user creator. Its synchronous
+     * allocation is charged to the actual finite-capped actor, never exempted. */
+    creatorLeaf = os_cps_cgroup_get_from_pid_info(bKernelSession ? pidInfo : pRmClient->pOsPidInfo, OS_CGROUP_IMPL_MISC);
     if (actorLeaf == NULL || creatorLeaf == NULL)
         goto cleanup;
     actorGroup = actorLeaf;
@@ -51,7 +56,7 @@ static NV_STATUS memacctTryChargeProtected(RmClient *pRmClient, NvU32 gpuId,
     {
         pActorLimits = memacctLimitsForGroupLocked(pRegion, &actorGroup);
         pCreatorLimits = memacctLimitsForGroupLocked(pRegion, &creatorGroup);
-        if (pActorLimits == NULL && pCreatorLimits == NULL &&
+        if (!bKernelSession && pActorLimits == NULL && pCreatorLimits == NULL &&
             actorLeaf == creatorLeaf && osIsAdministrator())
         {
             /* Explicit trusted host-operator boundary, never cached privilege.
@@ -60,7 +65,9 @@ static NV_STATUS memacctTryChargeProtected(RmClient *pRmClient, NvU32 gpuId,
             bOperatorBypass = NV_TRUE;
             status = NV_OK;
         }
-        else if (pActorLimits == NULL || pCreatorLimits == NULL || actorGroup != creatorGroup)
+        else if (pActorLimits == NULL || pCreatorLimits == NULL || actorGroup != creatorGroup ||
+                 (bKernelSession && (pActorLimits->HardLimit == 0 ||
+                                      pActorLimits->HardLimit == (NvLength)-1)))
             status = NV_ERR_INSUFFICIENT_PERMISSIONS;
         else
             status = memacctTryChargeInternalLocked(pRegion, creatorGroup, gpuId, size, pCharge);
@@ -70,7 +77,7 @@ static NV_STATUS memacctTryChargeProtected(RmClient *pRmClient, NvU32 gpuId,
     if (!bOperatorBypass && (status == NV_OK || status == NV_WARN_RESOURCE_ACCOUNTING_SOFT_LIMIT_EXCEEDED))
     {
         pCharge->gpuId = gpuId;
-        pCharge->pid = pRmClient->ProcID;
+        pCharge->pid = bKernelSession ? osGetCurrentProcess() : pRmClient->ProcID;
         *ppCharge = pCharge;
         pCharge = NULL;
         if (status == NV_WARN_RESOURCE_ACCOUNTING_SOFT_LIMIT_EXCEEDED)
