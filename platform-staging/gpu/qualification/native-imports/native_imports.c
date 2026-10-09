@@ -76,6 +76,7 @@ static int token(int fd,char value,int sending) {
  if(sending)return send(fd,&value,1,MSG_NOSIGNAL)==1?0:-1;
  char b[2];return recv(fd,b,sizeof(b),0)==1 && b[0]==value?0:-1;
 }
+static int preload_is_set(void) {const char *value=getenv("LD_PRELOAD");return value && *value;}
 static int parse_uuid(const char *s,unsigned char bytes[16]) {
  if(!s||strlen(s)!=40||strncmp(s,"GPU-",4))return -1;
  int k=0;for(int i=4;i<40;){if(i==12||i==17||i==22||i==27){if(s[i++]!='-')return -1;continue;}
@@ -193,7 +194,7 @@ int main(int argc,char **argv) {
  if(strcmp(mode,"vmm-direct")&&strcmp(mode,"ipc-export")&&strcmp(mode,"ipc-import")&&strcmp(mode,"vmm-export")&&strcmp(mode,"vmm-import"))return 2;
  if(importer_fill&&strcmp(mode,"ipc-import")&&strcmp(mode,"vmm-import"))return 2;
  if(!execute){puts("{\"state\":\"inert\",\"gpu_calls\":false,\"payload_mib\":64,\"production_qualified\":false}");return 0;}
- unsigned char wanted[16];if(parse_uuid(gpu_uuid,wanted)||getuid()!=1000||getgid()!=100||getenv("LD_PRELOAD")||(!socket_path&&strcmp(mode,"vmm-direct"))){fprintf(stderr,"Explicit exact GPU/UID1000/GID100/no-preload/socket identity required\n");return 2;}
+ unsigned char wanted[16];if(parse_uuid(gpu_uuid,wanted)||getuid()!=1000||getgid()!=100||preload_is_set()||(!socket_path&&strcmp(mode,"vmm-direct"))){fprintf(stderr,"Explicit exact GPU/UID1000/GID100/no-preload/socket identity required\n");return 2;}
  int rc=-1,driver=0,count=0;CUdevice device=-1;CUcontext context=NULL;
  if(load_api())goto done;
  if(checked("initialize",api.cuInit(0))||checked("driver-version",api.cuDriverGetVersion(&driver))||driver<13040||checked("device-count",api.cuDeviceGetCount(&count)))goto done;
