@@ -19,16 +19,19 @@ from node_backend import QualificationNodeBackend, GATE, private_directory, priv
 
 
 CORE_SHA256 = '2c9770188a79406c674560616a8d9da8f4dafa275f0644d9669dfab001e7690e'
+HEALTH_SHA256 = '22107515ecdc2ffe18afbafa8f15432ed9439aa6fc56ed9531649f790b29e769'
 MANUAL_SHA256 = '5c84ab668dd276b0216199a964f42886712af9225f9fc702740bfa9bb361a39f'
 
 
 def load_pinned(name, path, expected):
     path = Path(path)
-    require(hashlib.sha256(path.read_bytes()).hexdigest() == expected, 'Pinned module source hash mismatch')
+    raw = path.read_bytes()
+    require(hashlib.sha256(raw).hexdigest() == expected, 'Pinned module source hash mismatch')
     spec = importlib.util.spec_from_file_location(name, path)
     module = importlib.util.module_from_spec(spec)
     sys.modules[name] = module
-    spec.loader.exec_module(module)
+    # Execute the exact hashed bytes, with no second path read after validation.
+    exec(compile(raw, str(path), 'exec'), module.__dict__)
     return module
 
 
@@ -97,14 +100,12 @@ def gpu_clients(gpu_uuid):
     return clients
 
 
-def health(driver):
-    require(driver.version == '615.71.09' and Path('/sys/module/nvidia/version').read_text().strip() == driver.version,
-            'Exact615.71.09 loaded driver/NVML agreement required')
-    for key, expected in {'uvm_deny_managed_mmap': 'Y', 'uvm_disable_hmm': 'Y',
-                          'uvm_ats_mode': '0', 'uvm_enable_builtin_tests': '0',
-                          'uvm_disable_sam_migration': 'Y'}.items():
-        require((Path('/sys/module/nvidia_uvm/parameters') / key).read_text().strip() == expected,
-                'Exact experimental managed-memory guard configuration required')
+def health(driver, verifier, *, module_directory='/sys/module',
+           authority_directory='/run/cps-native-gpu/authority', boot_id=None):
+    """Use the same source-pinned exact-load verifier as the first CPU gate."""
+    require(driver.version == '615.71.09', 'Exact615.71.09 loaded driver/NVML agreement required')
+    verifier.validate_native_driver_health(module_directory,
+        authority_directory=authority_directory, boot_id=boot_id)
     return True
 
 
@@ -180,6 +181,7 @@ def main(argv=None):
     require(1 <= args.iterations <= 10000 and 0.1 <= args.interval <= 30, 'Bounded qualification polling required')
     models = load_pinned('_cps_native_controller', args.controller_module, CORE_SHA256)
     manual = load_pinned('_cps_native_manual', args.manual_helper, MANUAL_SHA256)
+    verifier = load_pinned('_cps_native_health', args.controller_module.with_name('native_gpu_health.py'), HEALTH_SHA256)
     state = private_directory(args.state_root)
     authority = private_directory(state / 'authority')
     enrolled = private_directory(state / 'intents')
@@ -203,7 +205,7 @@ def main(argv=None):
                         'Pending journal requires original root enrollment before restart')
             backend = QualificationNodeBackend(models, manual, intents=list(seen.values()), driver=driver,
                 get_pod=kube.pod, get_node=kube.node, get_cri=cri_reader(args.crictl, args.cri_socket),
-                delete_pod=kube.delete, gpu_clients=gpu_clients, health=lambda: health(driver), state_root=state)
+                delete_pod=kube.delete, gpu_clients=gpu_clients, health=lambda: health(driver, verifier, authority_directory=str(authority)), state_root=state)
             controller = models.NativeCapController(backend, journal, enabled=True)
             for intent in seen.values():
                 try:

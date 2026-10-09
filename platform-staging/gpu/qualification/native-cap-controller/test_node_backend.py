@@ -14,7 +14,7 @@ from types import SimpleNamespace
 from unittest.mock import Mock, patch
 
 from node_backend import QualificationNodeBackend, private_read, private_write
-from poll import CORE_SHA256, MANUAL_SHA256, Kubernetes, awaiting_first_gate, health, load_pinned, main
+from poll import CORE_SHA256, HEALTH_SHA256, MANUAL_SHA256, Kubernetes, awaiting_first_gate, health, load_pinned, main
 
 
 UID = 'd3a1659e-6345-43cc-9ca5-7b8ef1aa5378'
@@ -53,6 +53,7 @@ class NodeBackendTests(unittest.TestCase):
         cls.m = load_pinned('_qualification_test_models', source, CORE_SHA256)
         manual = Path(__file__).resolve().parents[3] / 'scheduler/qualification/r615-pod-cap/pod_cap.py'
         cls.manual = load_pinned('_qualification_test_manual', manual, MANUAL_SHA256)
+        cls.verifier = load_pinned('_qualification_test_health', Path(source).with_name('native_gpu_health.py'), HEALTH_SHA256)
 
     def setUp(self):
         temporary = tempfile.TemporaryDirectory(); self.addCleanup(temporary.cleanup)
@@ -123,7 +124,7 @@ class NodeBackendTests(unittest.TestCase):
         def between_iterations(_):
             self.assertIsNone(self.journal.read(UID))
             self.assertEqual(self.driver.writes, [])
-        with patch('poll.load_pinned', side_effect=[self.m, SimpleNamespace(Nvml=lambda: driver)]), \
+        with patch('poll.load_pinned', side_effect=[self.m, SimpleNamespace(Nvml=lambda: driver), self.verifier]), \
                 patch('poll.os', SimpleNamespace(geteuid=lambda: 0)), \
                 patch('poll.private_directory', side_effect=lambda path:
                       __import__('node_backend').private_directory(path, self.uid)), \
@@ -202,7 +203,7 @@ class NodeBackendTests(unittest.TestCase):
                 kube.pod.return_value = pod
                 output = io.StringIO()
                 driver = SimpleNamespace(close=Mock())
-                with patch('poll.load_pinned', side_effect=[self.m, SimpleNamespace(Nvml=lambda: driver)]), \
+                with patch('poll.load_pinned', side_effect=[self.m, SimpleNamespace(Nvml=lambda: driver), self.verifier]), \
                         patch('poll.os', SimpleNamespace(geteuid=lambda: 0)), \
                         patch('poll.private_directory', side_effect=lambda path:
                               __import__('node_backend').private_directory(path, self.uid)), \
@@ -235,7 +236,7 @@ class NodeBackendTests(unittest.TestCase):
         driver = SimpleNamespace(close=Mock())
         output = io.StringIO()
         # These are injected CPU dependencies, not a live driver or Kube API.
-        with patch('poll.load_pinned', side_effect=[self.m, SimpleNamespace(Nvml=lambda: driver)]), \
+        with patch('poll.load_pinned', side_effect=[self.m, SimpleNamespace(Nvml=lambda: driver), self.verifier]), \
                 patch('poll.os', SimpleNamespace(geteuid=lambda: 0)), \
                 patch('poll.private_directory', side_effect=lambda path:
                       __import__('node_backend').private_directory(path, self.uid)), \
@@ -427,23 +428,132 @@ class NodeBackendTests(unittest.TestCase):
         self.assertTrue((self.state / 'bootstrap' / (UID + '.json')).exists())
         self.assertTrue((self.state / 'journal' / (UID + '.json')).exists())
 
-    def test_cli_health_pins_exact_driver_and_all_guard_parameters(self):
-        params = {'uvm_deny_managed_mmap': 'Y', 'uvm_disable_hmm': 'Y',
-                  'uvm_ats_mode': '0', 'uvm_enable_builtin_tests': '0', 'uvm_disable_sam_migration': 'Y'}
-        healthroot = self.root / 'health'
-        for path, text in [('/sys/module/nvidia/version', self.driver.version),
-                           *[('/sys/module/nvidia_uvm/parameters/' + key, value) for key, value in params.items()]]:
-            file = healthroot / path.lstrip('/'); file.parent.mkdir(parents=True, exist_ok=True); file.write_text(text)
-        with patch('poll.Path', side_effect=lambda path: healthroot / str(path).lstrip('/')):
-            self.assertTrue(health(self.driver))
+    def health_snapshot(self):
+        metadata = self.root / 'health/sys/module'
+        authority = self.state / 'authority'
+        values = {'nvidia/version': '615.71.09', **self.verifier.GUARD_PARAMETERS,
+            **{name + '/srcversion': record['srcversion'] for name, record in self.verifier.MODULE_BUILDS.items()}}
+        for name, value in values.items():
+            path = metadata / name
+            path.parent.mkdir(parents=True, exist_ok=True)
+            if path.exists(): path.chmod(0o600)
+            path.write_text(value)
+            path.chmod(0o400 if name.endswith('NVreg_CpsNativeImportGuard') else 0o444)
+        manifest = {'protocol': self.verifier.PROTOCOL, 'boot_id': BOOT, 'driver_generation': EPOCH,
+            'kernel_release': os.uname().release, 'driver_version': self.driver.version, 'modules': {}}
+        for name, build in self.verifier.MODULE_BUILDS.items():
+            info = (metadata / name).stat()
+            manifest['modules'][name] = {**build, 'sysfs_device': info.st_dev, 'sysfs_inode': info.st_ino}
+        manifest_path = authority / self.verifier.MANIFEST_NAME
+        if manifest_path.exists(): manifest_path.chmod(0o600)
+        manifest_path.write_text(json.dumps(manifest)); manifest_path.chmod(0o400)
+        actual_fstat = os.fstat
+        def root_fstat(fd):
+            info = actual_fstat(fd)
+            actual_path = os.readlink('/proc/self/fd/' + str(fd))
+            if not any(actual_path == str(root) or actual_path.startswith(str(root) + '/')
+                       for root in (metadata, authority)):
+                return info
+            return SimpleNamespace(**{key: 0 if key == 'st_uid' else getattr(info, key)
+                                      for key in dir(info) if key.startswith('st_')})
+        return metadata, authority, manifest, root_fstat, actual_fstat
+
+    def verified_health(self, metadata, authority):
+        return health(self.driver, self.verifier, module_directory=str(metadata),
+                      authority_directory=str(authority), boot_id=BOOT)
+
+    def test_cli_health_pins_exact_driver_all_guards_and_load_manifest(self):
+        metadata, authority, manifest, root_fstat, _ = self.health_snapshot()
+        with patch.object(self.verifier.os, 'fstat', side_effect=root_fstat):
+            self.assertTrue(self.verified_health(metadata, authority))
             self.driver.version = '615.71.10'
-            with self.assertRaisesRegex(ValueError, '615.71.09'): health(self.driver)
+            with self.assertRaisesRegex(ValueError, '615.71.09'):
+                self.verified_health(metadata, authority)
             self.driver.version = '615.71.09'
-            sam = healthroot / 'sys/module/nvidia_uvm/parameters/uvm_disable_sam_migration'
-            sam.write_text('N')
-            with self.assertRaisesRegex(ValueError, 'guard'): health(self.driver)
-            sam.unlink()
-            with self.assertRaises(FileNotFoundError): health(self.driver)
+            for name in ['nvidia/srcversion', 'nvidia_uvm/srcversion', *self.verifier.GUARD_PARAMETERS]:
+                with self.subTest(name=name):
+                    file = metadata / name
+                    previous = file.read_text()
+                    file.chmod(0o600); file.write_text('0' if name.endswith('CpsNativeImportGuard') else 'bad')
+                    file.chmod(0o400 if name.endswith('CpsNativeImportGuard') else 0o444)
+                    with self.assertRaisesRegex(ValueError, 'health'):
+                        self.verified_health(metadata, authority)
+                    file.chmod(0o600); file.write_text(previous)
+                    file.chmod(0o400 if name.endswith('CpsNativeImportGuard') else 0o444)
+            (authority / self.verifier.MANIFEST_NAME).unlink()
+            with self.assertRaises(FileNotFoundError):
+                self.verified_health(metadata, authority)
 
+    def test_manifest_replay_and_core_guard_failures_deny_before_cap_write_or_seal(self):
+        for reason in ('missing-manifest', 'replayed-generation', 'wrong-elf', 'writable-manifest',
+                       'zero-core-guard', 'missing-core-guard', 'symlink-manifest', 'user-manifest'):
+            with self.subTest(reason=reason):
+                metadata, authority, manifest, root_fstat, actual_fstat = self.health_snapshot()
+                file = authority / self.verifier.MANIFEST_NAME
+                if reason == 'missing-manifest': file.unlink()
+                elif reason == 'replayed-generation':
+                    manifest['driver_generation'] = '11111111-1111-4111-8111-111111111111'
+                elif reason == 'wrong-elf': manifest['modules']['nvidia']['elf_sha256'] = '0' * 64
+                elif reason == 'writable-manifest': file.chmod(0o600)
+                elif reason in ('zero-core-guard', 'missing-core-guard'):
+                    guard = metadata / 'nvidia/parameters/NVreg_CpsNativeImportGuard'
+                    if reason == 'missing-core-guard': guard.unlink()
+                    else:
+                        guard.chmod(0o600); guard.write_text('0'); guard.chmod(0o400)
+                elif reason == 'symlink-manifest':
+                    actual = file.with_name('load.actual')
+                    file.rename(actual); file.symlink_to(actual)
+                if reason in ('replayed-generation', 'wrong-elf'):
+                    file.chmod(0o600); file.write_text(json.dumps(manifest)); file.chmod(0o400)
+                if reason == 'user-manifest':
+                    inode = file.stat().st_ino
+                    def owner_fstat(fd):
+                        info = actual_fstat(fd)
+                        return info if info.st_ino == inode else root_fstat(fd)
+                    fake_fstat = owner_fstat
+                else: fake_fstat = root_fstat
+                self.backend.health = lambda: self.verified_health(metadata, authority)
+                with patch.object(self.verifier.os, 'fstat', side_effect=fake_fstat):
+                    with self.assertRaises((ValueError, OSError)):
+                        self.controller.reconcile(self.intent)
+                self.assertEqual(self.driver.writes, [])
+                self.assertIsNone(self.journal.read(UID))
+                self.assertFalse((self.state / 'receipts' / (UID + '.json')).exists())
+                if file.is_symlink(): file.unlink()
 
-if __name__ == '__main__': unittest.main()
+    def test_core_guard_revoked_during_cap_set_prevents_public_seal(self):
+        metadata, authority, _, root_fstat, _ = self.health_snapshot()
+        def verified():
+            with patch.object(self.verifier.os, 'fstat', side_effect=root_fstat):
+                return self.verified_health(metadata, authority)
+        self.backend.health = verified
+        def revoke():
+            if self.driver.writes[-1][1] == self.intent.cap_bytes:
+                guard = metadata / 'nvidia/parameters/NVreg_CpsNativeImportGuard'
+                guard.chmod(0o600); guard.write_text('0'); guard.chmod(0o400)
+        self.driver.after_set = revoke
+        with self.assertRaisesRegex(ValueError, 'health'):
+            self.controller.reconcile(self.intent)
+        self.assertEqual(len(self.driver.writes), 2)
+        self.assertFalse((self.state / 'receipts' / (UID + '.json')).exists())
+
+    def test_altered_shared_verifier_source_is_rejected_before_execution(self):
+        source = self.root / 'native_gpu_health.py'
+        source.write_text("raise AssertionError('must not run')")
+        with self.assertRaisesRegex(ValueError, 'hash mismatch'):
+            load_pinned('_untrusted_health', source, HEALTH_SHA256)
+
+    def test_source_pin_executes_verified_bytes_when_file_changes_after_hash(self):
+        import hashlib
+        import importlib.util
+        source = self.root / 'pinned.py'
+        approved = b"value = 'approved'\n"
+        source.write_bytes(approved)
+        expected = hashlib.sha256(approved).hexdigest()
+        original_spec = importlib.util.spec_from_file_location
+        def replace_after_hash(name, path):
+            source.write_text("value = 'replaced'\n")
+            return original_spec(name, path)
+        with patch('poll.importlib.util.spec_from_file_location', side_effect=replace_after_hash):
+            loaded = load_pinned('_pinned_race', source, expected)
+        self.assertEqual(loaded.value, 'approved')
