@@ -75,7 +75,12 @@ def runtime(source: bytes | None = None):
     return module
 
 
-def _idle_source() -> str:
+def _validate_idle_seconds(idle_seconds: int) -> None:
+    if type(idle_seconds) is not int or not 60 <= idle_seconds <= 3600:
+        raise ValueError('idle_seconds must be an integer from 60 through 3600')
+
+
+def _idle_source(idle_seconds: int) -> str:
     return f'''"""Trusted idle fixture; root runs each bounded probe explicitly."""
 import hashlib,json,os,pathlib,shutil,time
 source=pathlib.Path('/qualification/native-imports')
@@ -86,17 +91,23 @@ target=pathlib.Path('/tmp/native-imports')
 shutil.copyfile(source,target)
 target.chmod(0o700)
 print(json.dumps({{'state':'native-fixture-ready','pid':os.getpid(),'gpu_uuid':'{GPU}',
- 'binary_sha256':'{BINARY_SHA}','idle_seconds':900,'production_qualified':False}}),flush=True)
-time.sleep(900)
+ 'binary_sha256':'{BINARY_SHA}','idle_seconds':{idle_seconds},'production_qualified':False}}),flush=True)
+time.sleep({idle_seconds})
 '''
 
 
-def _binding(module, name: str):
+def _binding(module, name: str, *, policy_hash: str = POLICY_HASH):
     return module.NativeGpuBinding(namespace=NAMESPACE, name=name, node=NODE,
-        node_uid=NODE_UID, gpu_uuid=GPU, profile='native-gpu-5g-pilot', policy_hash=POLICY_HASH)
+        node_uid=NODE_UID, gpu_uuid=GPU, profile='native-gpu-5g-pilot', policy_hash=policy_hash)
 
 
-def render(*, runtime_path=None, binary_path=None, cuda_path=None, session_path=None) -> dict:
+def render(*, runtime_path=None, binary_path=None, cuda_path=None, session_path=None,
+           idle_seconds: int = 900) -> dict:
+    _validate_idle_seconds(idle_seconds)
+    exceptions = [*EXCEPTIONS[:-1],
+        f'main{idle_seconds}s idle with no automatic CUDA execution; peer restartPolicy=Always']
+    policy_hash = 'sha256:' + hashlib.sha256(json.dumps({'profile': PROFILE, 'exceptions': exceptions,
+        'sdkCommit': SDK_COMMIT}, sort_keys=True, separators=(',', ':')).encode()).hexdigest()
     source = _pinned(runtime_path, RUNTIME_SOURCE, 'native_gpu_runtime.py', RUNTIME_SHA)
     binary = _pinned(binary_path, BINARY_SOURCE, 'native-imports', BINARY_SHA, binary=True)
     if binary[:4] != b'\x7fELF':
@@ -104,7 +115,7 @@ def render(*, runtime_path=None, binary_path=None, cuda_path=None, session_path=
     data = {'__init__.py': '', 'native_gpu_runtime.py': source.decode(),
         'cuda_probe.py': _pinned(cuda_path, CUDA_SOURCE, 'cuda_probe.py', CUDA_SHA).decode(),
         'session_probe.py': _pinned(session_path, SESSION_SOURCE, 'session_probe.py', SESSION_SHA).decode(),
-        'main_idle.py': _idle_source()}
+        'main_idle.py': _idle_source(idle_seconds)}
     binary_data = {'native-imports': base64.b64encode(binary).decode()}
     payload_sha = hashlib.sha256(json.dumps({'data': data, 'binaryData': binary_data},
         sort_keys=True, separators=(',', ':')).encode()).hexdigest()
@@ -127,7 +138,8 @@ def render(*, runtime_path=None, binary_path=None, cuda_path=None, session_path=
                         {'name': 'PYTHONDONTWRITEBYTECODE', 'value': '1'}],
                 'resources': {'requests': {'cpu': '100m', 'memory': '256Mi'},
                               'limits': {'cpu': '2', 'memory': '2Gi'}}}]}}
-        contract = module.compile_native_gpu_pod(baseline, PROFILE, binding=_binding(module, name),
+        contract = module.compile_native_gpu_pod(baseline, PROFILE,
+                                                 binding=_binding(module, name, policy_hash=policy_hash),
                                                  settings=settings, qualification_pilot=True)
         pod = copy.deepcopy(contract.pod)
         spec = pod['spec']
@@ -153,9 +165,9 @@ def render(*, runtime_path=None, binary_path=None, cuda_path=None, session_path=
             container['imagePullPolicy'] = 'Never'
         pod['metadata']['annotations'].update({'source.payload.sha256': payload_sha,
             'qualification.production': 'false', 'qualification.controller': 'experimental-native',
-            'qualification.operator-exceptions': json.dumps(EXCEPTIONS, separators=(',', ':')),
+            'qualification.operator-exceptions': json.dumps(exceptions, separators=(',', ':')),
             'qualification.expected-node-uid': NODE_UID, 'qualification.expected-gpu': GPU,
-            'qualification.policy-hash': POLICY_HASH, 'qualification.expected-cap-mib': '5120'})
+            'qualification.policy-hash': policy_hash, 'qualification.expected-cap-mib': '5120'})
         # The trusted operator explicitly rebases its reviewed fixture additions
         # BEFORE dry-run finalization. This is never a browser/API override hook.
         pod['metadata']['annotations'][module.SPEC_ANNOTATION] = module.native_spec_sha256(pod)
@@ -163,17 +175,20 @@ def render(*, runtime_path=None, binary_path=None, cuda_path=None, session_path=
     return {'apiVersion': 'v1', 'kind': 'List', 'items': items}
 
 
-def finalize(proposed: dict, dryrun: dict, *, pod_uid: str | None = None):
+def finalize(proposed: dict, dryrun: dict, *, pod_uid: str | None = None, idle_seconds: int = 900):
+    _validate_idle_seconds(idle_seconds)
     module = runtime()
     name = proposed['metadata']['name']
     if name not in ('native-cap-main', 'native-cap-peer'):
         raise ValueError('Exact trusted fixture Pod required')
     # Verify the complete proposed body against the source-owned rendered object
     # so an arbitrary caller cannot rebase a hostile spec as an operator fixture.
-    expected = next(i for i in render()['items'] if i['kind'] == 'Pod' and i['metadata']['name'] == name)
+    expected = next(i for i in render(idle_seconds=idle_seconds)['items']
+                    if i['kind'] == 'Pod' and i['metadata']['name'] == name)
     if proposed != expected:
         raise ValueError('Trusted proposal changed before admission')
-    contract = module.NativePodContract(copy.deepcopy(proposed), _binding(module, name), 5120,
+    binding = _binding(module, name, policy_hash=expected['metadata']['annotations']['qualification.policy-hash'])
+    contract = module.NativePodContract(copy.deepcopy(proposed), binding, 5120,
                                        module.native_spec_sha256(proposed))
     result = module.finalize_native_admitted_pod(contract, dryrun)
     return result.pod, result.intent_for_pod_uid(pod_uid) if pod_uid is not None else None
@@ -188,16 +203,24 @@ def main() -> None:
     parser.add_argument('--proposed-pod', type=Path)
     parser.add_argument('--dryrun-pod', type=Path)
     parser.add_argument('--pod-uid')
+    parser.add_argument('--idle-seconds', type=int, default=900, metavar='60..3600',
+                        help='Bounded main idle window in seconds (default: 900)')
     args = parser.parse_args()
+    try:
+        _validate_idle_seconds(args.idle_seconds)
+    except ValueError as error:
+        parser.error(str(error))
     if args.proposed_pod or args.dryrun_pod:
         if not args.proposed_pod or not args.dryrun_pod:
             parser.error('Proposed and API dry-run Pod must be provided together')
         pod, intent = finalize(json.loads(args.proposed_pod.read_text()),
-                               json.loads(args.dryrun_pod.read_text()), pod_uid=args.pod_uid)
+                               json.loads(args.dryrun_pod.read_text()), pod_uid=args.pod_uid,
+                               idle_seconds=args.idle_seconds)
         print(json.dumps({'pod': pod, 'intent': intent}, indent=2))
     else:
         print(json.dumps(render(runtime_path=args.runtime_source, binary_path=args.binary_source,
-            cuda_path=args.cuda_source, session_path=args.session_source), indent=2))
+            cuda_path=args.cuda_source, session_path=args.session_source,
+            idle_seconds=args.idle_seconds), indent=2))
 
 
 if __name__ == '__main__':
