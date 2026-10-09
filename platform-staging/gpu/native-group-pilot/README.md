@@ -85,8 +85,14 @@ it performs no GPU calls or package installation. The service image itself and
 live deployment are not built or activated by this package's CPU verification.
 Root must prepare all state directories root0700, retain journals across service
 restarts and approve the scoped credential/admission objects before activation.
-The CRI helper defaults to the host k3s `data/current/bin/crictl`; root verifies
-that exact binary/runtime socket on GPU2 before launching the service.
+The CRI helper defaults to the host k3s `data/current/bin/crictl`. On GPU2,
+`current` is an absolute host symlink: following it beneath `/host` escapes that
+mount prefix and does not locate the host binary inside the service container.
+Root must resolve the actual binary on the host, verify its executable and
+runtime socket, and override the node-agent command with
+`--crictl /host/var/lib/rancher/k3s/data/ACTUAL_RESOLVED_DATA_DIRECTORY/bin/crictl`.
+The directory observed on 2026-10-09 begins `65415f`; that is evidence for that
+host revision, not a reusable default. Resolve it again after a k3s update.
 
 ## Exact root driver loader
 
@@ -210,3 +216,24 @@ this CLI. Release the matching member reservation afterward through the
 existing gateway service API, which still independently observes Hub/Pod
 shutdown. Existing gateway/node credentials must remain unable to create abort
 ConfigMaps. This recovery does not enable profiles or qualify general packing.
+
+## 2026-10-09 qualification boundary
+
+The controlled no-MIG pilot passed automatic 5 GiB cap assignment: Pod UID
+prefix `696bab5d` completed the first gate with exit code `0` and native limit
+readback `5368709120` bytes. Its notebook container never executed because the
+runtime could not resolve its management CDI GPU UUID. Shutdown cleanup remains
+blocked: querying the removed cgroup returned NVML result `17`. Cap assignment
+does not establish notebook startup, cleanup or reservation-release evidence.
+
+Root subsequently corrected GPU2's supplemental CDI specification at
+`/var/run/cdi/management.nvidia.com-native-pilot-r615.json`, SHA256
+`55d23389ef8745a9ffef4b58181ed350f549100b03d7f8e7cb9590ae4f3bc5fd`.
+It exposes only `GPU-16128952-b438-556a-00bb-93039ee24e56`; 57 mounts were validated
+against the current R615 driver paths, and `nvidia-ctk cdi list` resolves that
+UUID. This is specification-resolution evidence; a successful notebook start,
+OOM/recovery and independent peer continuity remain unqualified.
+
+See the [platform checkpoint](../../../docs/compute-platform/qualification.md#2026-10-09-automatic-cap-and-admin-checkpoint)
+for the verified console status and remaining gates. Ordinary group GPU access
+remains disabled.
