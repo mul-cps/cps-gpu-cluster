@@ -83,8 +83,8 @@ python3 platform-staging/gpu/qualification/native-import-guard/render_patch.py \
   --render --source /private/pristine-615.71.09 --output /private/NEW-import-guard.patch
 ```
 
-Renderer verifies SHA256 of all eleven pristine input files, checks unique
-anchors and refuses an existing output. Seven CPU tests compile the actual
+Renderer verifies SHA256 of all twelve pristine input files, checks unique
+anchors and refuses an existing output. Nine CPU tests compile the actual
 helpers against explicit synthetic stubs, exercise same-parent/cross-parent,
 default-off bypass, missing charge/GPU/user/actor/region and ambiguous server decisions, plus
 load-value validation, protected allocation and per-entry cgroup reference lifetime,
@@ -223,3 +223,67 @@ exact ELF digest, reviewed source receipt and fresh loader nonce, rather than
 srcversion alone. Artifacts are in the private `final-uvm-session-core` directory.
 Ordinary capped CUDA, same-owner/cross-owner imports and global backing cleanup
 with a healthy peer remain hardware gates before any group GPU activation.
+
+## Private VMM export-client correction
+
+The marked-session candidate allowed ordinary CUDA initialization and same-Pod
+legacy IPC in the controlled canary, but the operator reported VMM FD export
+failing with CUDA 800. Its NVRM trace names `RmExportObject`'s DupObject into the
+private `hObjExportRmClient`. Pinned `rmobjexportimport.c:257–263` creates that
+kernel root client; `:498–506` duplicates the user's backing into it. This is a
+different intermediary from UVM's GPU-ops session.
+
+A separate constructor-default-false `bCpsObjExportClient` marker is set only on
+that fresh private client in `RmRefObjExportImport`, before memory allocator or
+maps are initialized. Its helper verifies the already-held RM API lock, takes
+and releases the client write lock, and uses the original failed-construction
+cleanup on error. The export marker authorizes destination copies only; it is
+never considered by the allocation path. Every copy still requires original
+backing charge, a nonzero finite actual-actor cap, and exact matching nearest
+parent authority. A source-owned marker is not a cross-owner exemption.
+
+Denial diagnostics log only fixed reason numbers, marker-kind bits, GPU ID,
+status and the actual current host TGID. They emit after releasing the native
+accounting mutex and use one kernel rate limiter with a burst of 8 per 5 seconds.
+They include no kernel pointers, user handles or credentials. Default-off and
+successful operations emit no denial events. Reasons are:
+
+| Reason | Denial |
+|---|---|
+| 1 | Missing actual PID reference |
+| 2 | Missing GPU accounting region |
+| 3 | Missing/mismatched original backing charge |
+| 4 | Actual actor cgroup cannot be retained |
+| 5 | No selected finite actor cap (including zero/MAX) |
+| 6 | Actual actor parent differs from original charge owner |
+| 7 | Missing destination client |
+| 8 | Destination user creator cannot be retained |
+| 9 | Destination user has no matching parent cap |
+| 10 | Unmarked/invalid kernel destination |
+| 11 | Unsupported or absent accounting backend |
+
+The nine CPU fixtures include exact export-marker lock paths, export-only
+allocation denial, same-owner export compatibility, foreign-owner/zero/MAX
+rejection and a synthetic denial logger gate. Actual kernel rate limiting,
+same-Pod VMM export/import and cross-Pod VMM hook denial remain hardware gates.
+
+## Private export-client CPU build receipt
+
+The reviewed twelve-file patch compiled in 159.167 seconds with two threads,
+nice19 and the same bounded toolchain. Installed core, RM binary and interface
+hashes remained unchanged. Nine CPU fixtures and both independent source reviews
+passed. No module load or GPU call occurred in this compilation workflow.
+
+* Patch SHA256: `58823f1b3518578ef0c275d77caf194e5cb00fd4dc322dff1ef30389ab78689a`.
+* Candidate core SHA256: `59f623fe5fdc89ef06f8055ee4dbfafeabe70b1d0bcabc487bc6fe04b78d6e77`.
+* Candidate srcversion: `C6CF64F73A3430C26C030B7`.
+* Full receipt SHA256: `691fbf79e9f762129f917512d0eea80c88050de41664b738fcafd1b4873ae938`.
+* Evidence archive SHA256: `0810774ceaaba72b247a25a8b5ae1598d429995a0a7f23a4e091233f9fbeb4d5`.
+
+Every named import CRC matches the exact kernel Module.symvers. No baseline
+symbols are missing or changed; the third added dependency is
+`___ratelimit=0x1d24c881`, alongside the prior two. Version/vermagic match.
+Use the exact ELF hash and fresh loader/source receipt. Candidate and full
+receipts are retained in the private `final-object-export-core` directory.
+Hardware VMM export/import, cross-parent denial and retained exporter-exit
+cleanup remain required before activation.

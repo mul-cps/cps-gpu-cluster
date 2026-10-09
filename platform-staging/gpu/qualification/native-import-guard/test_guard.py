@@ -29,6 +29,16 @@ class GuardTest(unittest.TestCase):
    binary=pathlib.Path(tmp)/'session-test'
    subprocess.run(['cc','-std=c11','-Wall','-Wextra','-Werror','-I'+str(HERE),str(HERE/'session_test.c'),'-o',str(binary)],check=True,timeout=30)
    subprocess.run([str(binary)],check=True,timeout=10)
+ def test_export_marker_control_flow(self):
+  with tempfile.TemporaryDirectory() as tmp:
+   binary=pathlib.Path(tmp)/'export-marker-test'
+   subprocess.run(['cc','-std=c11','-Wall','-Wextra','-Werror','-I'+str(HERE),str(HERE/'export_client_test.c'),'-o',str(binary)],check=True,timeout=30)
+   subprocess.run([str(binary)],check=True,timeout=10)
+ def test_denial_logger_control_flow(self):
+  with tempfile.TemporaryDirectory() as tmp:
+   binary=pathlib.Path(tmp)/'diagnostic-test'
+   subprocess.run(['cc','-std=c11','-Wall','-Wextra','-Werror','-I'+str(HERE),str(HERE/'diagnostic_test.c'),'-o',str(binary)],check=True,timeout=30)
+   subprocess.run([str(binary)],check=True,timeout=10)
  def test_inert_generator(self):
   result=subprocess.run(['python3',str(HERE/'render_patch.py')],capture_output=True,text=True,check=True,timeout=10)
   self.assertIn('"state": "inert"',result.stdout)
@@ -37,7 +47,9 @@ class GuardTest(unittest.TestCase):
   if not source:self.skipTest('Set CPS_R615_SOURCE to verified pristine NVIDIA615.71.09 source')
   spec=importlib.util.spec_from_file_location('guard_render',HERE/'render_patch.py');module=importlib.util.module_from_spec(spec);spec.loader.exec_module(module)
   original,changed=module.render(pathlib.Path(source))
-  self.assertEqual(len(changed),11)
+  self.assertEqual(len(changed),12)
+  self.assertIn('bCpsObjExportClient = NV_FALSE',changed['src/nvidia/src/kernel/rmapi/client.c'])
+  self.assertEqual(changed['src/nvidia/arch/nvalloc/unix/src/rmobjexportimport.c'].count('bCpsObjExportClient = NV_TRUE'),1)
   self.assertIn('bCpsGpuOpsSession = NV_FALSE',changed['src/nvidia/src/kernel/rmapi/client.c'])
   self.assertEqual(changed['src/nvidia/src/kernel/rmapi/nv_gpu_ops.c'].count('bCpsGpuOpsSession = NV_TRUE'),1)
   self.assertIn('get_task_struct(task)',changed['kernel-open/nvidia/os-interface.c'])

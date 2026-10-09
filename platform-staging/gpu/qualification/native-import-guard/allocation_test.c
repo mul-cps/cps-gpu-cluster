@@ -9,7 +9,7 @@ typedef int NV_STATUS,NvBool;typedef unsigned NvU32;typedef size_t NvLength;type
 enum {NV_OK,NV_ERR_INSUFFICIENT_PERMISSIONS,NV_ERR_NOT_SUPPORTED,NV_ERR_OBJECT_NOT_FOUND,NV_ERR_NO_MEMORY,NV_WARN_RESOURCE_ACCOUNTING_SOFT_LIMIT_EXCEEDED,NV_ERR_RESOURCE_ACCOUNTING_HARD_LIMIT_EXCEEDED};
 enum {CGROUP_IMPL_NONE,CGROUP_IMPL_FALLBACK,CGROUP_IMPL_OS,OS_CGROUP_IMPL_MISC=1,NV_FALSE=0,NV_TRUE=1,NV2080_NOTIFIERS_MEMACCT_SOFT_LIMIT_EXCEEDED=2};
 typedef struct {NvU32 gpuId,pid;ClientGroupID cligrp;} MemoryCharge;
-typedef struct {void *pOsPidInfo;NvU32 ProcID;NvBool bCpsGpuOpsSession;} RmClient;
+typedef struct {void *pOsPidInfo;NvU32 ProcID;NvBool bCpsGpuOpsSession;int bCpsObjExportClient;} RmClient;
 typedef struct {NvLength HardLimit;} ClientGroupLimits;static ClientGroupLimits limits;typedef struct {int clientGroupMap;} GpuRegion;
 static struct {int impl,GpuRegionMap;void *mutex;} g_memacct;
 static GpuRegion region;static ClientGroupID actor,creator;static int locks,gets,puts_count,pid_puts,allocs,frees,notifies,charges,admin,have_region,have_pid,fail_alloc,charge_status;
@@ -32,7 +32,7 @@ static void gpuNotifySubDeviceEvent(void *gpu,int which,void *data,int a,int pid
 #include "allocation_guard.c"
 static void reset(void){limits.HardLimit=512;g_memacct.impl=CGROUP_IMPL_FALLBACK;g_memacct.mutex=(void*)1;region.clientGroupMap=2;actor=G(101);creator=G(102);locks=gets=puts_count=pid_puts=allocs=frees=notifies=charges=admin=fail_alloc=0;have_region=have_pid=1;charge_status=NV_OK;}
 static NV_STATUS run(RmClient *client,MemoryCharge **out){NV_STATUS s=memacctTryChargeProtected(client,7,64,out);assert(!locks&&gets==puts_count);assert(pid_puts==(have_pid&&client&&(client->pOsPidInfo||client->bCpsGpuOpsSession)?1:0));assert(allocs-frees==(*out?1:0));return s;}
-int main(void){RmClient c={(void*)2,19,NV_FALSE};MemoryCharge *out;
+int main(void){RmClient c={(void*)2,19,NV_FALSE,0};MemoryCharge *out;
  reset();assert(run(&c,&out)==NV_OK&&out&&out->cligrp==G(100)&&out->gpuId==7&&out->pid==19);free(out);
  reset();creator=G(201);assert(run(&c,&out)==NV_ERR_INSUFFICIENT_PERMISSIONS&&!out&&!charges);
  reset();creator=NULL;assert(run(&c,&out)==NV_ERR_INSUFFICIENT_PERMISSIONS&&!out);
@@ -44,6 +44,7 @@ int main(void){RmClient c={(void*)2,19,NV_FALSE};MemoryCharge *out;
  reset();actor=G(1);creator=G(2);admin=1;assert(run(&c,&out)==NV_ERR_INSUFFICIENT_PERMISSIONS&&!out);
  reset();actor=G(1);admin=1;assert(run(&c,&out)==NV_ERR_INSUFFICIENT_PERMISSIONS&&!out);
  reset();c.pOsPidInfo=NULL;assert(run(&c,&out)==NV_ERR_INSUFFICIENT_PERMISSIONS&&!out);c.pOsPidInfo=(void*)2;
+ reset();c.pOsPidInfo=NULL;c.bCpsObjExportClient=1;assert(run(&c,&out)==NV_ERR_INSUFFICIENT_PERMISSIONS&&!out&&!charges);c.pOsPidInfo=(void*)2;c.bCpsObjExportClient=0;
  reset();fail_alloc=1;assert(run(&c,&out)==NV_ERR_NO_MEMORY&&!out);
  reset();have_pid=0;assert(run(&c,&out)==NV_ERR_INSUFFICIENT_PERMISSIONS&&!out);
  reset();g_memacct.impl=CGROUP_IMPL_NONE;assert(memacctTryChargeProtected(&c,7,64,&out)==NV_ERR_NOT_SUPPORTED&&!out&&!gets);
