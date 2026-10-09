@@ -273,7 +273,7 @@ class EnrollmentStore:
         if previous is None: self.backend.private_write(path, proof, self.uid, create=True)
 
     def abort_published(self, uid, envelope, proof):
-        previous = self.backend.private_read(self.state / 'pre-gate-aborts' / (uid + '.json'), self.uid)
+        previous = self.abort_record(uid)
         if previous is None: return False
         require(proof is not None and previous == proof
                 and proof['enrollment_uid'] == envelope['configmap_uid']
@@ -281,6 +281,13 @@ class EnrollmentStore:
                 and proof['payload']['intent']['pod_uid'] == uid,
                 'Missing/replaced operator abort authority blocks node')
         return True
+
+    def abort_record(self, uid):
+        value = self.backend.private_read(self.state / 'pre-gate-aborts' / (uid + '.json'), self.uid)
+        if value is not None:
+            closed(value, {'enrollment_uid', 'abort_uid', 'abort_sha256', 'ledger_uid', 'payload'},
+                   'Exact protected operator abort completion required')
+        return value
 
 
 def abort_ledger(cm, namespace):
@@ -357,6 +364,25 @@ def recognize_aborts(store, journal, accepted, kube, current_epoch, models, *, e
             store.abort_published(uid, envelope, None)
             continue
         require(journal.read(uid) is None, 'A native journal can never be treated as never-gated')
+        completed = store.abort_record(uid)
+        if completed is not None:
+            # Completion is durable across driver maintenance. Revalidate the
+            # original immutable authority and released ledger against the
+            # protected proof, without observing a replacement Pod or treating
+            # a new healthy driver as evidence for an old abort.
+            closed(completed['payload']['node_epoch'], {'node_uid', 'boot_id', 'driver_generation', 'gpu_uuid'},
+                   'Original completed operator abort epoch required')
+            original_epoch = models.DriverEpoch(**completed['payload']['node_epoch'])
+            if current_epoch is not None:
+                require(type(current_epoch) is models.DriverEpoch
+                        and current_epoch.node_uid == envelope['enrollment']['node_uid']
+                        and current_epoch.gpu_uuid == envelope['enrollment']['gpu_uuid'],
+                        'Current selected node/GPU identity changed')
+            proof = validate_abort(cm, envelope, ledger_cm, original_epoch, models)
+            require(store.abort_published(uid, envelope, proof), 'Original protected abort completion required')
+            require(journal.read(uid) is None, 'Completed abort acquired a native journal; retain allocation')
+            aborted.add(uid)
+            continue
         if current_epoch is None:
             require(callable(epoch_reader), 'Fresh healthy operator abort epoch reader required')
             current_epoch = epoch_reader()

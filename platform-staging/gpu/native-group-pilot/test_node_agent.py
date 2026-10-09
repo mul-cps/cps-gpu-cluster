@@ -509,6 +509,77 @@ class AbortTest(unittest.TestCase):
             self.assertEqual(replacement.pod_reads, [])
             self.assertFalse((state / 'journal').exists())
 
+    def test_consumed_abort_survives_actual_driver_generation_change_without_new_observation(self):
+        from types import SimpleNamespace
+        from unittest.mock import Mock
+        values = self.abort_fixture(); old_epoch = values[3]
+        new_epoch = replace(old_epoch, driver_generation='ffffffff-ffff-4fff-8fff-ffffffffffff')
+        with tempfile.TemporaryDirectory() as temporary:
+            state = Path(temporary); state.chmod(0o700)
+            store = self.agent.EnrollmentStore(state, self.models, trusted_uid=os.getuid())
+            store.synchronize([values[1]]); journal = SimpleNamespace(read=lambda uid: None)
+            generation = state / 'authority/driver-generation'
+            generation.write_text(old_epoch.driver_generation+'\n'); generation.chmod(0o600)
+            def first_epoch():
+                return replace(old_epoch, driver_generation=store.backend.private_read(generation, os.getuid(), raw=True))
+            self.assertEqual(self.agent.recognize_aborts(store, journal, {POD: values[1]},
+                self.fake_authority(values), None, self.models, epoch_reader=first_epoch), {POD})
+            generation.write_text(new_epoch.driver_generation+'\n')
+            restarted = self.agent.EnrollmentStore(state, self.models, trusted_uid=os.getuid())
+            kube = self.fake_authority(values, pod={'metadata': {'uid': 'new-peer'}})
+            reader = Mock(side_effect=AssertionError('Completed abort must not reread live epoch'))
+            self.assertEqual(self.agent.recognize_aborts(restarted, journal, {POD: values[1]}, kube,
+                new_epoch, self.models, epoch_reader=reader), {POD})
+            self.assertEqual(self.agent.recognize_aborts(restarted, journal, {POD: values[1]}, kube,
+                None, self.models, epoch_reader=reader), {POD})
+            reader.assert_not_called(); self.assertEqual(kube.pod_reads, [])
+            self.assertEqual(restarted.abort_record(POD)['payload']['node_epoch']['driver_generation'],
+                             old_epoch.driver_generation)
+            self.assertEqual(restarted.backend.private_read(generation, os.getuid(), raw=True), new_epoch.driver_generation)
+
+    def test_completed_abort_maintenance_rejects_changed_authority_or_native_journal(self):
+        from types import SimpleNamespace
+        from unittest.mock import Mock
+        for change in ('abort-uid', 'payload', 'released-state', 'ledger-proof', 'enrollment', 'journal',
+                       'late-journal', 'current-node', 'current-gpu'):
+            with self.subTest(change=change), tempfile.TemporaryDirectory() as temporary:
+                state = Path(temporary); state.chmod(0o700)
+                values = self.abort_fixture(); store = self.agent.EnrollmentStore(state, self.models, trusted_uid=os.getuid())
+                store.synchronize([values[1]]); journal = SimpleNamespace(read=lambda uid: None)
+                self.recognize(store, journal, values, self.fake_authority(values))
+                current = replace(values[3], driver_generation='ffffffff-ffff-4fff-8fff-ffffffffffff')
+                if change == 'abort-uid': values[0]['metadata']['uid'] = POD
+                if change == 'payload':
+                    values = self.alter_payload(values, lambda p: p.update(audit_sha256='sha256:'+'f'*64))
+                if change == 'released-state':
+                    values = self.alter_ledger(values, lambda s: s['allocations'][BINDING].update(state='enrolled'))
+                if change == 'ledger-proof':
+                    values = self.alter_ledger(values, lambda s: s['allocations'][BINDING]['pre_gate_abort'].update(sha256='sha256:'+'f'*64))
+                if change == 'enrollment': values[1]['configmap_uid'] = POD
+                if change == 'journal': journal.read = lambda uid: object()
+                if change == 'late-journal': journal.read = Mock(side_effect=[None, object()])
+                if change == 'current-node': current = replace(current, node_uid=POD)
+                if change == 'current-gpu': current = replace(current, gpu_uuid='GPU-'+POD)
+                kube = self.fake_authority(values, pod={'metadata': {'uid': 'new-peer'}})
+                reader = Mock(side_effect=AssertionError('Completed abort must not reread live epoch'))
+                with self.assertRaises(ValueError):
+                    self.agent.recognize_aborts(store, journal, {POD: values[1]}, kube, current,
+                        self.models, epoch_reader=reader)
+                reader.assert_not_called(); self.assertEqual(kube.pod_reads, [])
+
+    def test_unconsumed_abort_still_requires_its_original_fresh_epoch_after_maintenance(self):
+        from types import SimpleNamespace
+        values = self.abort_fixture()
+        current = replace(values[3], driver_generation='ffffffff-ffff-4fff-8fff-ffffffffffff')
+        with tempfile.TemporaryDirectory() as temporary:
+            state = Path(temporary); state.chmod(0o700)
+            store = self.agent.EnrollmentStore(state, self.models, trusted_uid=os.getuid())
+            store.synchronize([values[1]]); journal = SimpleNamespace(read=lambda uid: None)
+            with self.assertRaisesRegex(ValueError, 'Unchanged healthy typed abort epoch'):
+                self.agent.recognize_aborts(store, journal, {POD: values[1]}, self.fake_authority(values),
+                    current, self.models)
+            self.assertIsNone(store.abort_record(POD))
+
     def test_absent_without_proof_is_not_abort_and_orphan_proof_blocks(self):
         from types import SimpleNamespace
         values = self.abort_fixture(); journal = SimpleNamespace(read=lambda uid: None)
