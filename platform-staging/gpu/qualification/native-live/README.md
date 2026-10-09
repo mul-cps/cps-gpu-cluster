@@ -4,6 +4,16 @@ Production and group GPU sharing remain disabled. These files describe bounded,
 trusted hardware experiments; passing one experiment does not complete the
 platform qualification gates.
 
+The guarded driver is a custom, experimental build of NVIDIA's R615.71.09 open
+kernel modules. The core module (`nvidia.ko`) contains local allocation/import
+ownership patches, and a separately built custom UVM module (`nvidia_uvm.ko`)
+adds managed-memory denial. The official NVIDIA base image does not contain
+these guards. Maintaining this build requires reviewed source revisions and
+patched-source/kernel ABI, module-symbol CRC and compatibility checks for both
+modules; it has no upstream qualification. SDK/runtime health enforcement and
+native Hub integration remain activation gates. All production qualification
+and group-sharing flags remain false.
+
 [The synchronized MPS assessment](results/synchronized-mps-20261009.json) records
 the 2026-10-09 run against the experimental R615.71.09 core ELF
 `59f623fe5fdc89ef06f8055ee4dbfafeabe70b1d0bcabc487bc6fe04b78d6e77`.
