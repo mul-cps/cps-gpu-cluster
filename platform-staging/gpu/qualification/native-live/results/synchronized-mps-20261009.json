@@ -241,8 +241,8 @@
   },
   "cleanupUncertainty": [],
   "followup": {
-    "sameParentVmm": "awaiting-new-core-evidence",
-    "crossParentVmm": "awaiting-new-core-evidence"
+    "sameParentVmm": "passed-bounded-experiment; see import-matrix-20261009.json",
+    "crossParentVmm": "expected-denial800 corroborated by fresh hookreason6; see import-matrix-20261009.json"
   },
   "limitations": [
     "This bounded trusted run does not qualify production or enable group sharing.",

@@ -33,8 +33,37 @@ remains partial evidence. This synchronized run supplies the missing measured
 registration, charging and cleanup observations. It does not qualify a shared
 host MPS daemon or compute-percentage fairness. Driver/node restarts, the broader
 memory-import matrix, production reservation lifecycle and the remaining
-acceptance scenarios are separate gates. Fresh same-parent and cross-parent VMM
-results for this core are awaiting their own evidence assessment.
+acceptance scenarios are separate gates.
+
+[The import assessment](results/import-matrix-20261009.json) records the fresh
+four-case matrix against the same core ELF and driver epoch. Same-parent VMM and
+IPC imports succeeded. Cross-parent VMM and IPC imports returned numeric CUDA
+`800`, each corroborated by a fresh driver denial with reason `6`. The generic
+probe exits `1` and reports `inconclusive` for those expected refusals; the
+assessment preserves those raw outcomes.
+
+The observer captured 225 accounting samples across the experiment and **34
+samples inside the 9.000546-second same-parent retained-backing window**. After
+the exporter released its local VMM references, the owner remained charged
+1,002,601,856 bytes throughout that window, 134,217,728 bytes (128 MiB) above the
+measured pre-fill baseline of 868,384,128 bytes. The importer could still read the
+backing after the hold. This delta covers retained backing and the importer's
+fill allocation; it is not attributed solely to the imported 64 MiB. The
+independent peer completed 449 successful ticks over 90.05 seconds. The exporter
+remained alive with its context until the importer finished, so **exporter
+context/process death before importer completion remains untested**.
+
+[The container restart assessment](results/container-restart-20261009.json)
+records an exact CRI stop of the peer's main container and its restart inside the
+same Pod UID and unchanged complete specification. The replacement container saw
+the 5 GiB cap, returned numeric CUDA `2` on its over-cap attempt, and completed the
+pinned probe's recovery checks. An independent main-Pod heartbeat completed 150
+successful ticks over 30.07 seconds, bracketing the stop and restarted probe.
+The controller subsequently reported both Pods sealed in two iterations. The
+probe asserts recovery allocation, touch and kernel results before its successful
+completion; it does not emit a separate raw recovery phase. This test covers a
+main-container restart within the existing Pod parent, and does not cover Pod
+replacement, node reboot or driver reload.
 
 `collect_evidence.py` retains its original fixed capture names and
 `cps-native-live-evidence/v1` output. The synchronized result uses the distinct
