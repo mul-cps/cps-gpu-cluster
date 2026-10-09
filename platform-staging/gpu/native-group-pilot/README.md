@@ -6,6 +6,16 @@ unusable image digest. It is an offline review artifact, outside the Fleet
 production path. Root owns activation, GPU2 quiescence, module changes and every
 live Kubernetes call.
 
+The [2026-10-09 bounded qualification summary](../../../compute-policy/qualification/native-groups-v1.json)
+records six passing hardware gates for only `cps:native-group-b` and
+`cit:native-group-a`, canonical 5 GiB, on the selected A100 without MIG. The
+[dated runtime record](qualification/qualified-runtime-20261009.md) records passed
+normal starts, GPU controls and cleanup. The
+[activation runbook](qualified-activation-runbook.md) describes the reviewed
+normal source handovers. Ordinary GPU qualification remains false; these
+documents do not enable the committed manifests or expand approval to other
+workspaces, profiles or GPUs.
+
 `node_agent.py` runs bounded iterations through the existing source-pinned
 `QualificationNodeBackend`, `poll.py` helpers and SDK `NativeCapController`.
 The service uses CPU resources, host PID visibility, privileged device access,
@@ -234,7 +244,7 @@ existing gateway service API, which still independently observes Hub/Pod
 shutdown. Existing gateway/node credentials must remain unable to create abort
 ConfigMaps. This recovery does not enable profiles or qualify general packing.
 
-## 2026-10-09 qualification boundary
+## Earlier 2026-10-09 qualification checkpoint
 
 The controlled no-MIG pilot passed automatic 5 GiB cap assignment: Pod UID
 prefix `696bab5d` completed the first gate with exit code `0` and native limit
