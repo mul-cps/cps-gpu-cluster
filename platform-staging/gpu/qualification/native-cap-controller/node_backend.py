@@ -9,6 +9,7 @@ import hashlib
 import json
 import os
 from pathlib import Path
+import platform
 import stat
 import tempfile
 import uuid
@@ -174,6 +175,7 @@ class QualificationNodeBackend:
         intent = self._intent(identity)
         require(self._epoch(intent) == identity.epoch, 'Driver/node/boot epoch changed')
         self._health()
+        require(self._epoch(intent) == identity.epoch, 'Driver/node/boot epoch changed during health verification')
         group = self._group(identity, absent=absent)
         return intent, group
 
@@ -350,6 +352,66 @@ class QualificationNodeBackend:
         clients = bool(self.gpu_clients(identity.gpu_uuid)) or used
         return self.m.CleanupObservation(identity.epoch, uid, terminal, identity.cgroup_path,
             device, inode, group is not None, live, clients, True)
+
+    def _retired_mount(self, identity):
+        require(platform.machine() == 'x86_64', 'Reviewed x86_64 kernfs/inode binding required')
+        value = self.cg.stat()
+        require(value.st_dev == identity.cgroup_device, 'Original cgroup2 mount device changed')
+        device = str(os.major(value.st_dev)) + ':' + str(os.minor(value.st_dev))
+        matches = []
+        for line in (self.proc / 'self/mountinfo').read_text().splitlines():
+            before, after = line.split(' - ', 1)
+            parts = before.split()
+            mount = parts[4]
+            for escaped, decoded in ((r'\040', ' '), (r'\011', '\t'), (r'\012', '\n'), (r'\134', '\\')):
+                mount = mount.replace(escaped, decoded)
+            if Path(mount) == self.cg:
+                matches.append(parts[2] == device and after.split()[0] == 'cgroup2')
+        require(matches == [True], 'Exact original cgroup2 mount identity required')
+
+    def _inventory(self, identity):
+        root = self.proc / 'driver/nvidia/gpus'
+        directories = sorted(root.iterdir())
+        require(len(directories) <= 64, 'Bounded actual GPU inventory paths required')
+        selected = []
+        for directory in directories:
+            require(directory.is_dir() and not directory.is_symlink(), 'Actual GPU proc directory required')
+            information = (directory / 'information').read_text()
+            require(len(information) <= 16384, 'Bounded actual GPU information required')
+            if [line.split(':', 1)[1].strip() for line in information.splitlines()
+                    if line.startswith('GPU UUID:')] == [identity.gpu_uuid]:
+                selected.append(directory)
+        require(len(selected) == 1, 'One exact physical GPU proc inventory required')
+        directory_fd = os.open(selected[0], os.O_RDONLY | os.O_DIRECTORY | os.O_NOFOLLOW)
+        try:
+            fd = os.open('cps_native_caps', os.O_RDONLY | os.O_NOFOLLOW, dir_fd=directory_fd)
+        finally:
+            os.close(directory_fd)
+        with os.fdopen(fd, 'rb') as stream:
+            value = os.fstat(stream.fileno())
+            require(stat.S_ISREG(value.st_mode) and value.st_uid == self.uid
+                    and (self.uid != 0 or value.st_gid == 0)
+                    and stat.S_IMODE(value.st_mode) == 0o400 and value.st_nlink == 1,
+                    'Actual protected root0400 native inventory required')
+            raw = stream.read(262145)
+        require(len(raw) <= 262144, 'Complete bounded native inventory required')
+        return json.loads(raw, object_pairs_hook=unique_json,
+                          parse_constant=lambda _: require(False, 'Nonfinite inventory JSON denied'))
+
+    def retired_inert_cap(self, identity, limit):
+        """Read retained accounting under fresh epoch fences; never reset a vanished path."""
+        intent, group = self._current(identity, absent=True)
+        require(group is None and self.get_pod(intent) is None,
+                'Retirement requires exact Pod and original cgroup absence')
+        self._retired_mount(identity)
+        proof = self.m.validate_retired_inventory(self._inventory(identity), identity, limit)
+        # No peer PID inference: the exact retained entry's physical used charge
+        # is zero, CSS is offline and its pin prevents inode/group ID reuse.
+        intent, group = self._current(identity, absent=True)
+        require(group is None and self.get_pod(intent) is None,
+                'Pod/cgroup absence changed across fresh inventory read')
+        self._retired_mount(identity)
+        return proof
 
     def _receipt_path(self, identity):
         self._intent(identity)

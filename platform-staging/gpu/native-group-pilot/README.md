@@ -31,17 +31,34 @@ journal separately serializes all cap transactions. Errors retain protection
 and allocation ownership; the backend can stop only the exact enrolled Pod
 using a UID-preconditioned delete.
 
-A cleanup ConfigMap is published only after the original Pod is actually absent,
-the exact private journal is `cleaned`, current health/epoch checks pass, native
-recursive tasks and GPU clients are zero, and NVML positively reports no cap or
-an unlimited cap with zero usage. A terminal Pod still present is insufficient.
-Any GPU client on this physical GPU conservatively delays cleanup. An absent
+A cleanup ConfigMap is published only after the original Pod is actually absent
+and fresh exact native accounting proof succeeds. A surviving cgroup requires a
+`cleaned` journal, zero recursive tasks and global GPU clients, and positive NVML
+unset/unlimited readback with zero usage. An absent cgroup requires a distinct
+`retired-inert-cap` journal with its original finite cap retained: a complete
+root0400 guarded inventory must identify the exact original inode/kernfs ID as
+offline, pinned, default-hierarchy and physically charged zero bytes. Original
+Pod absence, cgroup2 mount device and the same healthy driver/node/boot epoch
+are checked on both sides of the read. Only this branch permits unrelated live
+peer GPU clients; it performs no native cap reset and never interprets NVML
+error 17 as unset. A terminal Pod still present is insufficient. An absent
 Pod without an original native journal cannot get a cleanup receipt and needs
 operator recovery. Deadlines, lease expiry and cancellation alone never release
 allowances. Immutable cleanup conflicts are accepted only after an exact GET
 comparison, including a real ConfigMap UID. A private publication tombstone
 allows later restarts to retain the old receipt when a replacement Pod or peer
 now uses the GPU; it never resets a new workload.
+
+Normal cleanup v1 remains unchanged. A retained cap adds the closed optional
+`retirement` member containing typed `proof` (`cps-native-retired-inert-cap/v1`),
+`enrollment_uid`, canonical full `enrollment_sha256`, and protected
+`journal_sha256`. Its state is explicitly `retired-inert-cap`, with the original
+finite limits preserved. The gateway must run the matching SDK validator before
+this node code is enabled: it validates actual immutable cleanup/enrollment
+ConfigMap identities and referenced UID/hash, plus the exact intent, epoch and
+finite cap in the typed proof. Old gateways reject this extra evidence and keep
+the allocation held. A newly loaded driver's map cannot prove an older journal's
+epoch; module teardown recovery requires separate operator evidence.
 
 RBAC grants only exact Pod GET/DELETE in `jupyterhub` and `cit-jhub`, GET of the
 single GPU2 node, and ConfigMap GET/LIST/CREATE in the authority namespace.

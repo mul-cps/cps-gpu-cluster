@@ -26,10 +26,10 @@ HERE = Path(__file__).resolve().parent
 NAMESPACES = {'cps': 'jupyterhub', 'cit': 'cit-jhub'}
 LABEL = 'cps.compute/native-binding'
 SOURCE_PINS = {
-    'native_gpu_controller.py': '2c9770188a79406c674560616a8d9da8f4dafa275f0644d9669dfab001e7690e',
+    'native_gpu_controller.py': 'f40ef40f71c9f1206f23fb7052fd69aafd103c0f03a24e6bf3987395dacfd179',
     'native_gpu_health.py': '22107515ecdc2ffe18afbafa8f15432ed9439aa6fc56ed9531649f790b29e769',
-    'node_backend.py': 'c6133075c3cde0f254eb055877b87a08980d25e04a68e10603c3b3be1f9f3ca8',
-    'poll.py': '2650310f8688d979740196a0fddd7bb87d55e7b95fc14e31f0db961c5051e97f',
+    'node_backend.py': 'fb5651ea10118de02ee2e9601a765f947d2ae61f1b2e8670d523912b594afda0',
+    'poll.py': '4b30e5bbc7d869a677b640ec06b5e433a6a54e8f245bfec70c5732eacc5ced9a',
     'pod_cap.py': '5c84ab668dd276b0216199a964f42886712af9225f9fc702740bfa9bb361a39f',
 }
 _NAME = re.compile(r'[a-z0-9](?:[a-z0-9.-]{0,251}[a-z0-9])?')
@@ -240,8 +240,8 @@ class EnrollmentStore:
         return by_uid
 
 
-    def mark_cleanup_published(self, uid, envelope, cm):
-        expected = cleanup_object(envelope)
+    def mark_cleanup_published(self, uid, envelope, cm, record=None):
+        expected = cleanup_object(envelope, record)
         validate_cleanup(cm, expected)
         value = {'enrollment_uid': envelope['configmap_uid'], 'receipt_uid': cm['metadata']['uid'],
                  'receipt': parse(expected['data']['receipt.json'])}
@@ -253,10 +253,10 @@ class EnrollmentStore:
     def cleanup_published(self, uid, envelope, record, cm):
         value = self.backend.private_read(self.state / 'published-cleanup' / (uid + '.json'), self.uid)
         if value is None: return False
-        require(record is not None and record.state == 'cleaned'
+        require(record is not None and record.state in ('cleaned', 'retired-inert-cap')
                 and record.intent.to_dict() == envelope['enrollment']['intent'],
                 'Published cleanup requires its original cleaned native journal')
-        expected = cleanup_object(envelope)
+        expected = cleanup_object(envelope, record)
         validate_cleanup(cm, expected)
         require(value == {'enrollment_uid': envelope['configmap_uid'], 'receipt_uid': cm['metadata']['uid'],
                  'receipt': parse(expected['data']['receipt.json'])}, 'Missing/replaced cleanup tombstone blocks authority')
@@ -399,23 +399,40 @@ def validate_actual_pod(pod, enrollment):
 def cleanup_receipt(envelope, record, backend, pod, models):
     enrollment = envelope['enrollment']
     intent = models.CapIntent(**enrollment['intent'])
-    require(record is not None and record.state == 'cleaned' and record.intent == intent
+    require(type(record) is models.CapRecord and record.state in ('cleaned', 'retired-inert-cap') and record.intent == intent
             and pod is None, 'Actual Pod absence and exact cleaned native journal required')
     stopped = backend.check_cleanup(record.identity)
-    require(stopped.pod_uid is None and not stopped.live_tasks and not stopped.gpu_clients,
-            'Fresh actual Pod absence and zero native tasks/GPU clients required')
-    value = backend._raw(record.identity)
-    require(value is None or (isinstance(value, dict) and set(value) == {'soft', 'hard', 'used'}
-            and value == {'soft': 0, 'hard': models.MAX_LIMIT, 'used': 0}),
-            'Positive cleared/unlimited native cap readback required for release')
-    return cleanup_object(envelope)
+    require(type(stopped) is models.CleanupObservation and stopped.pod_uid is None
+            and stopped.live_tasks is False and stopped.healthy is True
+            and stopped.epoch == record.identity.epoch, 'Fresh exact healthy Pod absence/zero original tasks required')
+    require(backend.read_gate(record.identity) is None, 'Native user gate receipt must remain revoked')
+    if record.state == 'retired-inert-cap':
+        require(stopped.cgroup_exists is False, 'Retired original cgroup must remain absent')
+        proof = backend.retired_inert_cap(record.identity, record.limit)
+        require(type(proof) is models.RetiredInertCap and proof.identity == record.identity
+                and proof.entry == record.retirement.entry and proof.gpu_id == record.retirement.gpu_id,
+                'Fresh original retained inert cap inventory required')
+    else:
+        require(stopped.cgroup_exists is True and stopped.gpu_clients is False,
+                'Cleared cap requires actual cgroup and zero GPU clients')
+        value = backend._raw(record.identity)
+        require(value is None or (isinstance(value, dict) and set(value) == {'soft', 'hard', 'used'}
+                and value == {'soft': 0, 'hard': models.MAX_LIMIT, 'used': 0}),
+                'Positive cleared/unlimited native cap readback required for release')
+    return cleanup_object(envelope, record)
 
 
-def cleanup_object(envelope):
+def cleanup_object(envelope, record=None):
     enrollment = envelope['enrollment']
     binding = enrollment['binding_id']
     receipt = {'version': 1, 'binding_id': binding, 'attempt': enrollment['attempt'],
                'intent': enrollment['intent'], 'cleanup_confirmed': True}
+    if record is not None and record.state == 'retired-inert-cap':
+        require(record.intent.to_dict() == enrollment['intent'] and record.retirement is not None,
+                'Exact typed retired native journal required')
+        receipt['retirement'] = {'proof': record.retirement.to_dict(),
+            'enrollment_uid': envelope['configmap_uid'], 'enrollment_sha256': canonical_sha256(enrollment),
+            'journal_sha256': canonical_sha256(record.to_dict())}
     return {'apiVersion': 'v1', 'kind': 'ConfigMap', 'immutable': True,
             'metadata': {'name': 'cps-native-cleanup-' + binding[:40],
                          'namespace': envelope['authority_namespace'], 'labels': {LABEL: binding}},
@@ -524,7 +541,7 @@ def run(config, bundle, state, kube, driver, *, iterations, interval, crictl, cr
                     'Original immutable enrollment required for every native journal')
             aborted = recognize_aborts(store, journal, accepted, kube, None, models,
                 epoch_reader=lambda: abort_current_epoch(config, state, driver, verifier, models))
-            active = sum(journal.read(intent.pod_uid) is None or journal.read(intent.pod_uid).state != 'cleaned'
+            active = sum(journal.read(intent.pod_uid) is None or journal.read(intent.pod_uid).state not in ('cleaned', 'retired-inert-cap')
                          for intent in intents if intent.pod_uid not in aborted)
             require(active <= config['pool']['max_workspaces'], 'Selected pool active enrollment capacity exceeded')
         backend = adapter.QualificationNodeBackend(models, manual, intents=intents, driver=driver,
@@ -550,10 +567,11 @@ def run(config, bundle, state, kube, driver, *, iterations, interval, crictl, cr
                         'iteration': iteration, 'production_qualified': False}), flush=True)
                     continue
                 if pod is not None: validate_actual_pod(pod, accepted[intent.pod_uid]['enrollment'])
-                if record is not None and record.state == 'cleaned':
+                if record is not None and record.state in ('cleaned', 'retired-inert-cap'):
+                    record = controller.cleanup(intent)  # legacy vanished records also need fresh inventory
                     receipt = cleanup_receipt(accepted[intent.pod_uid], record, backend, pod, models)
                     published = publish_cleanup(kube, receipt)
-                    store.mark_cleanup_published(intent.pod_uid, accepted[intent.pod_uid], published)
+                    store.mark_cleanup_published(intent.pod_uid, accepted[intent.pod_uid], published, record)
                     result = 'cleanup-confirmed'
                 elif record is None and pod is None:
                     result = 'blocked-absent-without-native-journal'  # No invented stop evidence.
@@ -562,7 +580,7 @@ def run(config, bundle, state, kube, driver, *, iterations, interval, crictl, cr
                 elif pod is None or pod.get('status', {}).get('phase') in ('Succeeded', 'Failed'):
                     require(record is not None, 'Terminal Pod has no native cap transaction')
                     stopped = backend.check_cleanup(record.identity)
-                    if stopped.live_tasks or stopped.gpu_clients:
+                    if stopped.live_tasks or (stopped.cgroup_exists and stopped.gpu_clients):
                         result = 'retained-awaiting-stop'
                     else:
                         record = controller.cleanup(intent)
@@ -570,7 +588,7 @@ def run(config, bundle, state, kube, driver, *, iterations, interval, crictl, cr
                         fresh_pod = kube.pod(intent)
                         if fresh_pod is None:
                             published = publish_cleanup(kube, cleanup_receipt(accepted[intent.pod_uid], record, backend, fresh_pod, models))
-                            store.mark_cleanup_published(intent.pod_uid, accepted[intent.pod_uid], published)
+                            store.mark_cleanup_published(intent.pod_uid, accepted[intent.pod_uid], published, record)
                             result = 'cleanup-confirmed'
                         else: result = 'cleaned-awaiting-pod-absence'
                 else:

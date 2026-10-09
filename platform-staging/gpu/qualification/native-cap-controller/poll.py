@@ -18,7 +18,7 @@ import urllib.request
 from node_backend import QualificationNodeBackend, GATE, private_directory, private_read, require
 
 
-CORE_SHA256 = '2c9770188a79406c674560616a8d9da8f4dafa275f0644d9669dfab001e7690e'
+CORE_SHA256 = 'f40ef40f71c9f1206f23fb7052fd69aafd103c0f03a24e6bf3987395dacfd179'
 HEALTH_SHA256 = '22107515ecdc2ffe18afbafa8f15432ed9439aa6fc56ed9531649f790b29e769'
 MANUAL_SHA256 = '5c84ab668dd276b0216199a964f42886712af9225f9fc702740bfa9bb361a39f'
 
@@ -201,7 +201,8 @@ def main(argv=None):
                 seen[intent.pod_uid] = intent
                 intents.append(intent)
             with journal.locked():
-                require({record.intent.pod_uid for record in journal.records() if record.state != 'cleaned'}.issubset(seen),
+                require({record.intent.pod_uid for record in journal.records()
+                         if record.state not in ('cleaned', 'retired-inert-cap')}.issubset(seen),
                         'Pending journal requires original root enrollment before restart')
             backend = QualificationNodeBackend(models, manual, intents=list(seen.values()), driver=driver,
                 get_pod=kube.pod, get_node=kube.node, get_cri=cri_reader(args.crictl, args.cri_socket),
@@ -210,10 +211,10 @@ def main(argv=None):
             for intent in seen.values():
                 try:
                     record = journal.read(intent.pod_uid)
-                    if record is not None and record.state == 'cleaned':
+                    if record is not None and record.state in ('cleaned', 'retired-inert-cap'):
                         # A completed UID is a durable tombstone, even when a
                         # different Pod now occupies its old Kubernetes name.
-                        print(json.dumps({'pod_uid': intent.pod_uid, 'state': 'cleaned',
+                        print(json.dumps({'pod_uid': intent.pod_uid, 'state': record.state,
                             'iteration': iteration, 'production_qualified': False}), flush=True)
                         continue
                     pod = kube.pod(intent)
@@ -226,7 +227,7 @@ def main(argv=None):
                             require(pod is None, 'Enrolled Pod ended before any cap journal existed')
                             continue
                         stopped = backend.check_cleanup(journal.read(intent.pod_uid).identity)
-                        if stopped.live_tasks or stopped.gpu_clients:
+                        if stopped.live_tasks or (stopped.cgroup_exists and stopped.gpu_clients):
                             print(json.dumps({'pod_uid': intent.pod_uid, 'state': 'retained-awaiting-stop',
                                 'iteration': iteration, 'production_qualified': False}), flush=True)
                             continue

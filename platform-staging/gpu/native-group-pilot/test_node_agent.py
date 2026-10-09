@@ -1,5 +1,5 @@
 import copy
-from dataclasses import asdict
+from dataclasses import asdict, replace
 import hashlib
 import importlib
 import json
@@ -205,11 +205,17 @@ class EnrollmentTest(unittest.TestCase):
     def agent_cleanup_fixture(self, state, tasks, clients, readback):
         from types import SimpleNamespace
         intent = self.models.CapIntent(**self.enrollment['intent'])
-        record = SimpleNamespace(state=state, intent=intent, identity=object())
+        relative = '/kubepods.slice/kubepods-burstable-pod' + intent.pod_uid.replace('-', '_') + '.slice'
+        identity = self.models.CapIdentity(intent.pod_uid, intent.spec_sha256, intent.node_uid,
+            intent.gpu_uuid, 'c' * 64, 211, 345, '209f8bc9-a478-48e4-925a-6e07ffa56f7a',
+            relative, '/sys/fs/cgroup' + relative, 29, 71, 'e148263b-805d-4ccd-857c-84a03d4f4229')
+        record = self.models.CapRecord(intent, identity, state, 'e148263b-805d-4ccd-857c-84a03d4f4229',
+            self.models.CapLimit(intent.cap_bytes, intent.cap_bytes))
         class Backend:
             def check_cleanup(inner, identity):
-                return SimpleNamespace(pod_uid=None, live_tasks=tasks, gpu_clients=clients,
-                                       cgroup_exists=True, descendants_supported=True)
+                return self.models.CleanupObservation(identity.epoch, None, False, identity.cgroup_path,
+                    identity.cgroup_device, identity.cgroup_inode, True, tasks, clients, True)
+            def read_gate(inner, identity): return None
             def _raw(inner, identity):
                 if readback == 'ambiguous': return {'nvml_result': 3, 'state': 'unset-or-unsupported'}
                 return {'soft': 0, 'hard': self.models.MAX_LIMIT, 'used': 0} if readback == 'unlimited' else {'soft': 1, 'hard': 1, 'used': 0}
@@ -228,6 +234,53 @@ class EnrollmentTest(unittest.TestCase):
         with self.assertRaises(ValueError): self.agent.publish_cleanup(API(changed), receipt)
         changed = copy.deepcopy(receipt); changed['data']['receipt.json'] = '{}'
         with self.assertRaises(ValueError): self.agent.publish_cleanup(API(changed), receipt)
+
+    def retired_cleanup_fixture(self):
+        backend, record = self.agent_cleanup_fixture('cleaned', False, True, 'capped')
+        inode = record.identity.cgroup_inode
+        document = {'version': 1, 'backend': 'misc-fallback', 'gpu_uuid': GPU, 'gpu_id': 1,
+            'entries': [{'cgroup_id': inode, 'kernfs_id': inode, 'inode': inode, 'offline': True,
+                'pinned': True, 'default_hierarchy': True, 'soft': record.limit.soft,
+                'hard': record.limit.hard, 'used': 0}]}
+        proof = self.models.validate_retired_inventory(document, record.identity, record.limit)
+        record = replace(record, state='retired-inert-cap', retirement=proof)
+        backend.check_cleanup = lambda identity: self.models.CleanupObservation(identity.epoch, None, False,
+            identity.cgroup_path, None, None, False, False, True, True)
+        backend.retired_inert_cap = lambda identity, limit: self.models.validate_retired_inventory(document, identity, limit)
+        def unavailable_nvml(identity): raise RuntimeError('NVML_ERROR_INVALID_ARGUMENT 17')
+        backend._raw = unavailable_nvml
+        return backend, record, document
+
+    def test_retired_receipt_preserves_finite_cap_and_requires_fresh_entry_with_busy_peer(self):
+        backend, record, document = self.retired_cleanup_fixture()
+        envelope = self.check()
+        cm = self.agent.cleanup_receipt(envelope, record, backend, None, self.models)
+        payload = json.loads(cm['data']['receipt.json'])
+        self.assertEqual(set(payload), {'version', 'binding_id', 'attempt', 'intent', 'cleanup_confirmed', 'retirement'})
+        retirement = payload['retirement']
+        self.assertEqual(retirement['proof']['state'], 'retired-inert-cap')
+        self.assertEqual(retirement['proof']['entry']['hard'], record.limit.hard)
+        self.assertEqual(retirement['enrollment_uid'], envelope['configmap_uid'])
+        self.assertEqual(retirement['enrollment_sha256'], self.agent.canonical_sha256(self.enrollment))
+        self.assertEqual(retirement['journal_sha256'], self.agent.canonical_sha256(record.to_dict()))
+        for change in ({'used': 1}, {'offline': False}, {'pinned': False}):
+            original = copy.deepcopy(document['entries'][0]); document['entries'][0].update(change)
+            with self.assertRaises(ValueError): self.agent.cleanup_receipt(envelope, record, backend, None, self.models)
+            document['entries'][0] = original
+
+    def test_retired_cleanup_tombstone_pins_journal_and_actual_immutable_uid(self):
+        backend, record, _ = self.retired_cleanup_fixture(); envelope = self.check()
+        cm = self.agent.cleanup_receipt(envelope, record, backend, None, self.models)
+        cm['metadata']['uid'] = '66666666-6666-4666-8666-666666666666'
+        with tempfile.TemporaryDirectory() as temporary:
+            state = Path(temporary); state.chmod(0o700)
+            store = self.agent.EnrollmentStore(state, self.models, trusted_uid=os.getuid())
+            store.mark_cleanup_published(POD, envelope, cm, record)
+            self.assertTrue(store.cleanup_published(POD, envelope, record, cm))
+            changed = copy.deepcopy(cm); changed['metadata']['uid'] = NODE
+            with self.assertRaises(ValueError): store.cleanup_published(POD, envelope, record, changed)
+            changed = replace(record, state='cleaned', retirement=None)
+            with self.assertRaises(ValueError): store.cleanup_published(POD, envelope, changed, cm)
 
     def test_published_cleanup_tombstone_survives_new_pod_and_busy_peer(self):
         backend, record = self.agent_cleanup_fixture('cleaned', False, False, 'unlimited')

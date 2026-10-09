@@ -372,9 +372,98 @@ class NodeBackendTests(unittest.TestCase):
         self.assertEqual(self.driver.writes[-1], (0, self.m.MAX_LIMIT))
 
     def test_removed_cgroup_never_gets_native_reset(self):
-        self.controller.reconcile(self.intent)
+        record = self.controller.reconcile(self.intent)
         self.stop(); self.pod = None; shutil.rmtree(self.group)
-        self.assertEqual(self.controller.cleanup(self.intent).state, 'cleaned')
+        with self.assertRaises(ValueError): self.controller.cleanup(self.intent)
+        self.retired_inventory(record)
+        self.clients = {999}  # unrelated live peer does not charge this offline entry
+        retired = self.controller.cleanup(self.intent)
+        self.assertEqual(retired.state, 'retired-inert-cap')
+        self.assertEqual(self.journal.read(UID), retired)
+        self.assertEqual(self.controller.cleanup(self.intent), retired)
+        self.assertEqual(len(self.driver.writes), 2)
+
+    def retired_inventory(self, record, **changes):
+        (self.proc / 'self').mkdir(exist_ok=True)
+        device = self.cg.stat().st_dev
+        (self.proc / 'self/mountinfo').write_text('1 0 '+str(os.major(device))+':'+str(os.minor(device))+
+            ' / '+str(self.cg)+' rw - cgroup2 cgroup rw\n')
+        directory = self.proc / 'driver/nvidia/gpus/0000:01:00.0'
+        directory.mkdir(parents=True, exist_ok=True)
+        (directory / 'information').write_text('GPU UUID: '+GPU+'\n')
+        inode = record.identity.cgroup_inode
+        row = {'cgroup_id': inode, 'kernfs_id': inode, 'inode': inode, 'offline': True, 'pinned': True,
+               'default_hierarchy': True, 'soft': self.intent.cap_bytes, 'hard': self.intent.cap_bytes, 'used': 0}
+        row.update(changes)
+        document = {'version': 1, 'backend': 'misc-fallback', 'gpu_uuid': GPU, 'gpu_id': 1, 'entries': [row]}
+        path = directory / 'cps_native_caps'
+        path.chmod(0o600) if path.exists() else None
+        path.write_text(json.dumps(document)); path.chmod(0o400)
+        return path
+
+    def test_retirement_requires_exact_dead_zero_charge_caps_and_protected_source(self):
+        record = self.controller.reconcile(self.intent)
+        self.stop(); self.pod = None; shutil.rmtree(self.group)
+        for change in ({'offline': False}, {'used': 1}, {'pinned': False}, {'hard': self.intent.cap_bytes+1},
+                       {'inode': record.identity.cgroup_inode+1}, {'default_hierarchy': False}):
+            with self.subTest(change=change):
+                self.retired_inventory(record, **change)
+                with self.assertRaises(ValueError): self.controller.cleanup(self.intent)
+                self.assertEqual(self.journal.read(UID).state, 'sealed')
+        path = self.retired_inventory(record); path.chmod(0o444)
+        with self.assertRaises(ValueError): self.controller.cleanup(self.intent)
+        self.assertEqual(len(self.driver.writes), 2)
+
+    def test_retirement_rechecks_epoch_and_absence_after_inventory(self):
+        record = self.controller.reconcile(self.intent)
+        self.stop(); self.pod = None; shutil.rmtree(self.group)
+        self.retired_inventory(record)
+        actual = self.backend._inventory
+        def change(identity):
+            document = actual(identity)
+            self.healthy = False
+            return document
+        with patch.object(self.backend, '_inventory', side_effect=change):
+            with self.assertRaises(ValueError): self.controller.cleanup(self.intent)
+        self.assertEqual(self.journal.read(UID).state, 'sealed')
+        self.assertEqual(len(self.driver.writes), 2)
+
+    def test_post_inventory_health_cannot_validate_a_replacement_generation(self):
+        record = self.controller.reconcile(self.intent)
+        self.stop(); self.pod = None; shutil.rmtree(self.group)
+        self.retired_inventory(record)
+        actual = self.backend._inventory
+        def snapshot(identity):
+            document = actual(identity)
+            def replacement_health():
+                (self.state / 'authority/driver-generation').write_text(BOOT)
+                return True  # replacement module itself can be healthy
+            self.backend.health = replacement_health
+            return document
+        with patch.object(self.backend, '_inventory', side_effect=snapshot):
+            with self.assertRaisesRegex(ValueError, 'epoch changed during health'):
+                self.controller.cleanup(self.intent)
+        self.assertEqual(self.journal.read(UID).state, 'sealed')
+        self.assertTrue((self.state / 'receipts' / (UID + '.json')).exists())
+
+    def test_retired_inventory_source_and_original_mount_fail_closed(self):
+        record = self.controller.reconcile(self.intent)
+        self.stop(); self.pod = None; shutil.rmtree(self.group)
+        path = self.retired_inventory(record)
+        original = path.read_text()
+        for content in ('{"version":1,"version":1}', 'null', '{', 'x' * 262145):
+            path.chmod(0o600); path.write_text(content); path.chmod(0o400)
+            with self.assertRaises((ValueError, OSError)):
+                self.controller.cleanup(self.intent)
+            self.assertEqual(self.journal.read(UID).state, 'sealed')
+        path.chmod(0o600); path.write_text(original); path.chmod(0o400)
+        actual = path.with_name('actual'); path.rename(actual); path.symlink_to(actual)
+        with self.assertRaises((ValueError, OSError)): self.controller.cleanup(self.intent)
+        path.unlink(); actual.rename(path)
+        mount = self.proc / 'self/mountinfo'
+        mount.write_text(mount.read_text().replace(' - cgroup2 ', ' - tmpfs '))
+        with self.assertRaises(ValueError): self.controller.cleanup(self.intent)
+        self.assertEqual(self.journal.read(UID).state, 'sealed')
         self.assertEqual(len(self.driver.writes), 2)
 
     def test_foreign_receipt_is_preserved_and_main_not_released(self):
