@@ -76,8 +76,9 @@ def token(value): return isinstance(value, str) and _TOKEN.fullmatch(value) is n
 
 
 def validate_config(config):
-    closed(config, {'version', 'enabled', 'authority_namespace', 'policy_hash', 'pool', 'workspaces'},
-           'Closed node authority configuration required')
+    required = {'version', 'enabled', 'authority_namespace', 'policy_hash', 'pool', 'workspaces'}
+    require(isinstance(config, dict) and required.issubset(config)
+            and not set(config) - required - {'terminal_history'}, 'Closed node authority configuration required')
     require(type(config['version']) is int and config['version'] == 1 and type(config['enabled']) is bool,
             'Versioned explicit node activation required')
     require(isinstance(config['authority_namespace'], str) and _NAME.fullmatch(config['authority_namespace'])
@@ -98,6 +99,28 @@ def validate_config(config):
         closed(value, {'profile'}, 'Closed workspace profile required')
         require(token(value['profile']), 'Explicit workspace profile required')
     require(not config['enabled'] or bool(config['workspaces']), 'Enabled pool requires an allowlist')
+    history = config.get('terminal_history', {})
+    require(isinstance(history, dict) and len(history) <= 64, 'Bounded explicit terminal history required')
+    for uid, entry in history.items():
+        require(canonical_uuid(uid) and uuid.UUID(uid).int != 0, 'Exact historical Pod UID required')
+        closed(entry, {'binding_id', 'policy_hash', 'profile', 'enrollment_uid', 'enrollment_sha256',
+                      'completion_kind', 'completion_uid', 'completion_sha256', 'ledger_uid', 'journal_sha256'},
+               'Closed historical completion pins required')
+        require(isinstance(entry['binding_id'], str) and re.fullmatch('[a-f0-9]{60}', entry['binding_id'])
+                and token(entry['profile']) and entry['policy_hash'] != config['policy_hash'],
+                'Historical authority cannot authorize the current policy')
+        for key in ('policy_hash', 'enrollment_sha256', 'completion_sha256'):
+            require(isinstance(entry[key], str) and re.fullmatch('sha256:[a-f0-9]{64}', entry[key])
+                    and entry[key] != 'sha256:' + '0' * 64, 'Exact nonzero historical payload pin required')
+        require(all(canonical_uuid(entry[key]) and uuid.UUID(entry[key]).int != 0
+                    for key in ('enrollment_uid', 'completion_uid', 'ledger_uid')), 'Actual historical API UIDs required')
+        require(entry['completion_kind'] in ('cleanup', 'pre-gate-abort'), 'Published terminal completion required')
+        if entry['completion_kind'] == 'cleanup':
+            require(isinstance(entry['journal_sha256'], str)
+                    and re.fullmatch('sha256:[a-f0-9]{64}', entry['journal_sha256'])
+                    and entry['journal_sha256'] != 'sha256:' + '0' * 64, 'Exact terminal native journal pin required')
+        else:
+            require(entry['journal_sha256'] is None, 'Never-gated history must have no native journal')
     return config
 
 
@@ -196,6 +219,81 @@ def validate_enrollment(cm, config, models):
             'Enrollment and frozen cap intent disagree')
     return {'configmap_uid': meta['uid'], 'configmap_name': meta['name'],
             'authority_namespace': meta['namespace'], 'enrollment': enrollment}
+
+
+def validate_authority_enrollments(cms, config, models, store, journal, kube):
+    """Historical records are only revalidated prior completion, never intents.
+
+    The strict current-policy validator stays unchanged. A separate Root pin
+    permits historical structural validation only after its original protected
+    mirror, journal/tombstone and actual immutable released authority agree.
+    This function creates no mirror, receipt, cap, cleanup or abort state.
+    """
+    validate_config(config)
+    history = config.get('terminal_history', {})
+    envelopes, terminal = [], set()
+    for cm in cms:
+        body = parse(cm.get('data', {}).get('enrollment.json', '{}'))
+        require(isinstance(body, dict) and isinstance(body.get('intent'), dict), 'Typed enrollment intent required')
+        uid = body['intent'].get('pod_uid')
+        entry = history.get(uid)
+        if entry is None:
+            envelopes.append(validate_enrollment(cm, config, models))
+            continue
+        old = {key: config[key] for key in ('version', 'enabled', 'authority_namespace', 'pool')}
+        old.update(policy_hash=entry['policy_hash'],
+                   workspaces={str(body.get('source')) + ':' + str(body.get('workspace')): {'profile': entry['profile']}})
+        envelope = validate_enrollment(cm, old, models)
+        require(body['binding_id'] == entry['binding_id'] and envelope['configmap_uid'] == entry['enrollment_uid']
+                and canonical_sha256(body) == entry['enrollment_sha256'], 'Changed historical enrollment authority')
+        require(uid not in terminal, 'Replayed historical enrollment')
+        intent = models.CapIntent(**body['intent'])
+        # Every historical acceptance starts with an already protected mirror.
+        # synchronize must never create historical authority from an API record.
+        require(store.backend.private_read(store.state / 'enrollments' / (uid + '.json'), store.uid) == envelope
+                and store.backend.private_read(store.state / 'intents' / (uid + '.json'), store.uid) == body['intent'],
+                'Original protected historical enrollment and intent required')
+        completion_key = 'receipt.json' if entry['completion_kind'] == 'cleanup' else 'abort.json'
+        completion_name = ('cps-native-cleanup-' if entry['completion_kind'] == 'cleanup' else 'cps-native-abort-') + body['binding_id'][:40]
+        # Two fresh rounds catch replacement/late journal/Pod/ledger changes.
+        for _ in range(2):
+            actual = kube.configmap(config['authority_namespace'], envelope['configmap_name'])
+            require(validate_enrollment(actual, old, models) == envelope, 'Historical immutable enrollment changed on GET')
+            completion = kube.configmap(config['authority_namespace'], completion_name)
+            require(isinstance(completion, dict) and completion.get('metadata', {}).get('uid') == entry['completion_uid']
+                    and not completion.get('metadata', {}).get('ownerReferences')
+                    and canonical_sha256(parse(completion.get('data', {}).get(completion_key, '{}'))) == entry['completion_sha256'],
+                    'Missing/replaced historical immutable completion')
+            ledger_cm = kube.configmap(config['authority_namespace'], 'cps-native-gpu-allocations')
+            ledger = abort_ledger(ledger_cm, config['authority_namespace'])
+            allocation = ledger['allocations'].get(body['binding_id'])
+            require(ledger_cm['metadata']['uid'] == entry['ledger_uid'] and isinstance(allocation, dict)
+                    and allocation.get('state') == 'released' and all(allocation.get(k) == v for k, v in body.items()),
+                    'Exact released historical allocation and intent required')
+            record = journal.read(uid)
+            if entry['completion_kind'] == 'cleanup':
+                require(type(record) is models.CapRecord and record.state in ('cleaned', 'retired-inert-cap')
+                        and canonical_sha256(record.to_dict()) == entry['journal_sha256']
+                        and store.cleanup_published(uid, envelope, record, completion),
+                        'Previously published protected terminal native journal required')
+            else:
+                require(record is None, 'Never-gated historical abort acquired a native journal')
+                prior = store.abort_record(uid)
+                require(prior is not None, 'Prior protected historical abort completion required')
+                epoch = models.DriverEpoch(**prior['payload']['node_epoch'])
+                proof = validate_abort(completion, envelope, ledger_cm, epoch, models)
+                require(store.abort_published(uid, envelope, proof), 'Historical abort authority changed')
+            pod = kube.pod(intent)
+            if pod is not None:
+                meta = pod.get('metadata', {}) if isinstance(pod, dict) else {}
+                require(isinstance(pod, dict) and pod.get('apiVersion') == 'v1' and pod.get('kind') == 'Pod'
+                        and meta.get('namespace') == intent.namespace and meta.get('name') == intent.name
+                        and canonical_uuid(meta.get('uid')) and uuid.UUID(meta['uid']).int != 0
+                        and meta['uid'] != uid, 'Actual original historical Pod UID must remain absent')
+        terminal.add(uid)
+        envelopes.append(envelope)
+    require(terminal == set(history), 'Missing configured immutable terminal history blocks authority')
+    return envelopes, terminal
 
 
 class EnrollmentStore:
@@ -587,19 +685,24 @@ def run(config, bundle, state, kube, driver, *, iterations, interval, crictl, cr
         node = kube.node(config['pool']['node'])
         require(node is not None and node['metadata']['name'] == config['pool']['node']
                 and node['metadata']['uid'] == config['pool']['node_uid'], 'Actual selected node UID changed')
-        envelopes = [validate_enrollment(cm, config, models) for cm in kube.enrollments(config['authority_namespace'])]
-        accepted = store.synchronize(envelopes)
-        intents = [models.CapIntent(**item['enrollment']['intent']) for item in accepted.values()]
+        cms = kube.enrollments(config['authority_namespace'])
         with journal.locked():
+            envelopes, historical = validate_authority_enrollments(cms, config, models, store, journal, kube)
+            accepted = store.synchronize(envelopes)
+            intents = [models.CapIntent(**item['enrollment']['intent']) for uid, item in accepted.items() if uid not in historical]
             records = journal.records()
             require(all(record.intent.pod_uid in accepted and record.intent.to_dict() ==
                         accepted[record.intent.pod_uid]['enrollment']['intent'] for record in records),
                     'Original immutable enrollment required for every native journal')
-            aborted = recognize_aborts(store, journal, accepted, kube, None, models,
+            current = {uid: item for uid, item in accepted.items() if uid not in historical}
+            aborted = recognize_aborts(store, journal, current, kube, None, models,
                 epoch_reader=lambda: abort_current_epoch(config, state, driver, verifier, models))
             active = sum(journal.read(intent.pod_uid) is None or journal.read(intent.pod_uid).state not in ('cleaned', 'retired-inert-cap')
                          for intent in intents if intent.pod_uid not in aborted)
             require(active <= config['pool']['max_workspaces'], 'Selected pool active enrollment capacity exceeded')
+        for uid in sorted(historical):
+            print(json.dumps({'pod_uid': uid, 'state': 'historical-terminal-confirmed',
+                'iteration': iteration, 'production_qualified': False}), flush=True)
         backend = adapter.QualificationNodeBackend(models, manual, intents=intents, driver=driver,
             get_pod=kube.pod, get_node=kube.node, get_cri=qualification.cri_reader(crictl, cri_socket),
             delete_pod=kube.delete, gpu_clients=qualification.gpu_clients,

@@ -713,3 +713,179 @@ class AbortTest(unittest.TestCase):
         self.assertEqual(events, []); self.assertEqual(reconciled, [])
 
 if __name__ == '__main__': unittest.main()
+
+
+class TerminalHistoryTest(unittest.TestCase):
+    """CPU-only policy transitions retain exact already-published history."""
+    agent_cleanup_fixture = EnrollmentTest.agent_cleanup_fixture
+    setUp = EnrollmentTest.setUp
+    check = EnrollmentTest.check
+
+    def completed(self, root, *, abort=False, retired=False):
+        from types import SimpleNamespace
+        store=self.agent.EnrollmentStore(root,self.models,trusted_uid=os.getuid())
+        envelope=self.check();store.synchronize([envelope])
+        if abort:
+            cm,_,ledger,epoch=AbortTest.abort_fixture(self,envelope)
+            store.mark_abort(POD,envelope,self.agent.validate_abort(cm,envelope,ledger,epoch,self.models))
+            record=None;kind='pre-gate-abort';key='abort.json'
+        else:
+            if retired:_,record,_=EnrollmentTest.retired_cleanup_fixture(self)
+            else:_,record=EnrollmentTest.agent_cleanup_fixture(self,'cleaned',False,False,'unlimited')
+            cm=self.agent.cleanup_object(envelope,record);cm['metadata']['uid']='66666666-6666-4666-8666-666666666666'
+            store.mark_cleanup_published(POD,envelope,cm,record)
+            ledger={'apiVersion':'v1','kind':'ConfigMap','metadata':{'name':'cps-native-gpu-allocations',
+                'namespace':envelope['authority_namespace'],'uid':'aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa','resourceVersion':'4'},
+                'data':{'state.json':canonical_json({'version':1,'allocations':{BINDING:dict(copy.deepcopy(self.enrollment),state='released')}})}}
+            kind='cleanup';key='receipt.json'
+        config=copy.deepcopy(self.config);config['policy_hash']='sha256:'+'e'*64
+        config['workspaces']={'cps:pilot':{'profile':'interactive-shared-5'}}
+        config['terminal_history']={POD:{'binding_id':BINDING,'policy_hash':self.enrollment['policy_hash'],
+            'profile':self.enrollment['profile'],'enrollment_uid':envelope['configmap_uid'],
+            'enrollment_sha256':canonical_digest(self.enrollment),'completion_kind':kind,
+            'completion_uid':cm['metadata']['uid'],'completion_sha256':canonical_digest(json.loads(cm['data'][key])),
+            'ledger_uid':ledger['metadata']['uid'],'journal_sha256':None if abort else canonical_digest(record.to_dict())}}
+        maps={self.cm['metadata']['name']:copy.deepcopy(self.cm),cm['metadata']['name']:cm,'cps-native-gpu-allocations':ledger}
+        records={POD:record} if record else {};reads=[]
+        kube=SimpleNamespace(configmap=lambda ns,name:copy.deepcopy(maps.get(name)),pod=lambda intent:reads.append(intent.pod_uid),
+            node=lambda name:{'metadata':{'name':name,'uid':NODE}})
+        journal=SimpleNamespace(read=lambda uid:records.get(uid),records=lambda:list(records.values()))
+        return config,store,journal,kube,maps,records,reads
+
+    def dispatch(self,values,cms=None):
+        config,store,journal,kube,*_=values
+        return self.agent.validate_authority_enrollments(cms or [self.cm],config,self.models,store,journal,kube)
+
+    def test_prior_cleaned_retired_and_abort_completion_survive_changed_policy(self):
+        for kind in ('cleaned','retired','abort'):
+            with self.subTest(kind=kind),tempfile.TemporaryDirectory() as tmp:
+                values=self.completed(Path(tmp),abort=kind=='abort',retired=kind=='retired')
+                with self.assertRaises(ValueError):self.agent.validate_enrollment(self.cm,values[0],self.models)
+                envelopes,terminal=self.dispatch(values);self.assertEqual(terminal,{POD});self.assertEqual(envelopes,[self.check()])
+                self.assertGreaterEqual(len(values[-1]),2)
+
+    def test_old_active_or_missing_local_completion_is_never_history(self):
+        for fault in ('active','tombstone','journal','mirror','intent','ledger-active','missing-cm'):
+            with self.subTest(fault=fault),tempfile.TemporaryDirectory() as tmp:
+                values=self.completed(Path(tmp));_,_,_,_,maps,records,_=values
+                if fault=='active':records[POD]=replace(records[POD],state='sealed')
+                elif fault=='tombstone':(Path(tmp)/'published-cleanup'/(POD+'.json')).unlink()
+                elif fault=='journal':records.clear()
+                elif fault=='mirror':(Path(tmp)/'enrollments'/(POD+'.json')).unlink()
+                elif fault=='intent':(Path(tmp)/'intents'/(POD+'.json')).unlink()
+                elif fault=='missing-cm':maps.pop('cps-native-cleanup-'+BINDING[:40])
+                else:
+                    state=json.loads(maps['cps-native-gpu-allocations']['data']['state.json']);state['allocations'][BINDING]['state']='enrolled'
+                    maps['cps-native-gpu-allocations']['data']['state.json']=canonical_json(state)
+                with self.assertRaises(ValueError):self.dispatch(values)
+
+    def test_actual_uid_full_payload_ledger_and_journal_tampering_blocks(self):
+        for fault in ('enrollment-uid','enrollment-body','completion-uid','completion-body','ledger-uid','ledger-intent','journal-body','missing-history'):
+            with self.subTest(fault=fault),tempfile.TemporaryDirectory() as tmp:
+                values=self.completed(Path(tmp));config,_,_,_,maps,records,_=values;cms=[copy.deepcopy(self.cm)]
+                if fault=='enrollment-uid':cms[0]['metadata']['uid']=NODE
+                elif fault=='enrollment-body':body=json.loads(cms[0]['data']['enrollment.json']);body['attempt']='changed';cms[0]['data']['enrollment.json']=canonical_json(body)
+                elif fault=='completion-uid':maps['cps-native-cleanup-'+BINDING[:40]]['metadata']['uid']=NODE
+                elif fault=='completion-body':maps['cps-native-cleanup-'+BINDING[:40]]['data']['receipt.json']='{}'
+                elif fault=='ledger-uid':maps['cps-native-gpu-allocations']['metadata']['uid']=NODE
+                elif fault=='ledger-intent':
+                    state=json.loads(maps['cps-native-gpu-allocations']['data']['state.json']);state['allocations'][BINDING]['intent']['pod_uid']=NODE
+                    maps['cps-native-gpu-allocations']['data']['state.json']=canonical_json(state)
+                elif fault=='journal-body':records[POD]=replace(records[POD],seal_id=NODE)
+                else:config['terminal_history']={}
+                with self.assertRaises(ValueError):self.dispatch(values,cms)
+
+    def test_original_live_uid_replacement_shape_and_second_read_races_block(self):
+        from unittest.mock import Mock
+        for fault in ('original','untyped','pod-second','journal-second','cm-second'):
+            with self.subTest(fault=fault),tempfile.TemporaryDirectory() as tmp:
+                values=self.completed(Path(tmp));_,_,journal,kube,maps,records,_=values
+                original={'apiVersion':'v1','kind':'Pod','metadata':{'namespace':'jupyterhub','name':'jupyter-pilot','uid':POD}}
+                if fault=='original':kube.pod=lambda intent:original
+                elif fault=='untyped':kube.pod=lambda intent:{'metadata':{'uid':NODE}}
+                elif fault=='pod-second':kube.pod=Mock(side_effect=[None,original])
+                elif fault=='journal-second':
+                    saved=records[POD];journal.read=Mock(side_effect=[saved,replace(saved,state='sealed')])
+                else:
+                    actual=kube.configmap
+                    def replaced(ns,name):
+                        value=actual(ns,name)
+                        if name=='cps-native-cleanup-'+BINDING[:40]:value['metadata']['uid']=NODE
+                        return value
+                    kube.configmap=replaced
+                with self.assertRaises(ValueError):self.dispatch(values)
+
+    def test_new_current_enrollment_and_actual_different_uid_remain_current(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            values=self.completed(Path(tmp));config,_,_,kube,*_=values
+            current=copy.deepcopy(self.cm);body=json.loads(current['data']['enrollment.json']);new_uid='cccccccc-cccc-4ccc-8ccc-cccccccccccc'
+            body['binding_id']='f'*60;body['intent']['pod_uid']=new_uid;body['policy_hash']=config['policy_hash']
+            body['intent']['policy_hash']=config['policy_hash'];body['profile']='interactive-shared-5'
+            current['metadata']['name']='cps-native-enrollment-'+'f'*40;current['metadata']['uid']='eeeeeeee-eeee-4eee-8eee-eeeeeeeeeeee'
+            current['metadata']['labels']={self.agent.LABEL:'f'*60};current['data']['enrollment.json']=canonical_json(body)
+            kube.pod=lambda intent:{'apiVersion':'v1','kind':'Pod','metadata':{'name':intent.name,'namespace':intent.namespace,'uid':new_uid}}
+            envelopes,terminal=self.dispatch(values,[self.cm,current]);self.assertEqual(terminal,{POD})
+            self.assertEqual([x['enrollment']['intent']['pod_uid'] for x in envelopes],[POD,new_uid])
+            self.assertEqual(self.agent.validate_enrollment(current,config,self.models),envelopes[1])
+
+    def test_closed_history_rejects_forged_current_policy_and_missing_pins(self):
+        for fault in ('field','policy','binding','enrollment','receipt','journal','abort-journal','uid'):
+            with self.subTest(fault=fault),tempfile.TemporaryDirectory() as tmp:
+                values=self.completed(Path(tmp));config=values[0];entry=config['terminal_history'][POD]
+                if fault=='field':entry['ignore_live']=True
+                elif fault=='policy':entry['policy_hash']=config['policy_hash']
+                elif fault=='binding':entry['binding_id']='garbage'
+                elif fault=='enrollment':entry['enrollment_sha256']='sha256:'+'0'*64
+                elif fault=='receipt':entry['completion_uid']='not-uid'
+                elif fault=='journal':entry['journal_sha256']=None
+                elif fault=='abort-journal':entry['completion_kind']='pre-gate-abort'
+                else:config['terminal_history']={'not-uid':entry}
+                with self.assertRaises(ValueError):self.agent.validate_config(config)
+
+    def test_run_history_never_reconciles_or_consumes_current_capacity(self):
+        from contextlib import nullcontext,redirect_stdout
+        from io import StringIO
+        from types import SimpleNamespace
+        from unittest.mock import patch
+        with tempfile.TemporaryDirectory() as tmp:
+            root=Path(tmp);root.chmod(0o700)
+            values=self.completed(root,retired=True);config,store,journal,kube,maps,records,_=values
+            config['pool']['max_workspaces']=1
+            current=copy.deepcopy(self.cm);body=json.loads(current['data']['enrollment.json'])
+            new_uid='cccccccc-cccc-4ccc-8ccc-cccccccccccc';body['binding_id']='f'*60
+            body['intent']['pod_uid']=new_uid;body['policy_hash']=config['policy_hash'];body['intent']['policy_hash']=config['policy_hash'];body['profile']='interactive-shared-5'
+            spec={'nodeName':'k3s-wk-gpu2','initContainers':[{'name':'cps-native-cap-gate','image':'example.test/gate@sha256:'+'a'*64}],
+                'containers':[{'name':'notebook','image':'example.test/notebook@sha256:'+'b'*64}]}
+            body['intent']['spec_sha256']=hashlib.sha256(json.dumps(spec,sort_keys=True,separators=(',',':')).encode()).hexdigest()
+            current['metadata']['name']='cps-native-enrollment-'+'f'*40;current['metadata']['uid']='eeeeeeee-eeee-4eee-8eee-eeeeeeeeeeee'
+            current['metadata']['labels']={self.agent.LABEL:'f'*60};current['data']['enrollment.json']=canonical_json(body)
+            actual={'apiVersion':'v1','kind':'Pod','metadata':{'namespace':'jupyterhub','name':body['name'],'uid':new_uid},'spec':spec,'status':{'phase':'Running'}}
+            kube.pod=lambda intent:copy.deepcopy(actual);kube.enrollments=lambda ns:[self.cm,current]
+            kube.delete=lambda *a:self.fail('No Pod deletion');kube.create_configmap=lambda *a:self.fail('No new history publication')
+            journal.locked=lambda:nullcontext();calls=[];backend_intents=[]
+            class Controller:
+                def __init__(inner,backend,actual_journal,enabled):self.assertIs(actual_journal,journal)
+                def reconcile(inner,intent):calls.append(intent.pod_uid);return SimpleNamespace(state='sealed')
+                def cleanup(inner,intent):self.fail('Historical completion cannot run cleanup')
+            def backend(*args,**kwargs):
+                backend_intents.extend(intent.pod_uid for intent in kwargs['intents'])
+                return SimpleNamespace(seal_gate=lambda *a:self.fail('No actual CPU seal'))
+            qualification=SimpleNamespace(cri_reader=lambda *a:None,gpu_clients=lambda *a:(),health=lambda *a,**k:self.fail('No GPU'),awaiting_first_gate=lambda *a:False)
+            bundle=(SimpleNamespace(QualificationNodeBackend=backend),qualification,{'models':self.models,'manual':object(),'health':object(),'cdi':object()})
+            output=StringIO()
+            with patch.object(self.agent,'EnrollmentStore',return_value=store),patch.object(self.models,'PrivateJournal',return_value=journal), \
+                patch.object(self.models,'NativeCapController',Controller),patch.object(self.agent,'validate_device_identity_barrier'), \
+                patch.object(self.agent,'validate_cdi_binding'),redirect_stdout(output):
+                self.agent.run(config,bundle,root,kube,object(),iterations=1,interval=0,crictl='unused',cri_socket='unused')
+            self.assertEqual(calls,[new_uid]);self.assertEqual(backend_intents,[new_uid])
+            events={e['pod_uid']:e['state'] for e in map(json.loads,output.getvalue().splitlines())}
+            self.assertEqual(events,{POD:'historical-terminal-confirmed',new_uid:'sealed'})
+
+    def test_abort_history_never_accepts_new_journal_or_missing_protected_completion(self):
+        for fault in ('journal','completion','payload'):
+            with self.subTest(fault=fault),tempfile.TemporaryDirectory() as tmp:
+                values=self.completed(Path(tmp),abort=True);_,_,_,_,maps,records,_=values
+                if fault=='journal':_,record=EnrollmentTest.agent_cleanup_fixture(self,'cleaned',False,False,'unlimited');records[POD]=record
+                elif fault=='completion':(Path(tmp)/'pre-gate-aborts'/(POD+'.json')).unlink()
+                else:maps['cps-native-abort-'+BINDING[:40]]['data']['abort.json']='{}'
+                with self.assertRaises(ValueError):self.dispatch(values)
