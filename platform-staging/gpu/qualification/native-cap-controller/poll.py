@@ -157,6 +157,13 @@ def main(argv=None):
             controller = models.NativeCapController(backend, journal, enabled=True)
             for intent in seen.values():
                 try:
+                    record = journal.read(intent.pod_uid)
+                    if record is not None and record.state == 'cleaned':
+                        # A completed UID is a durable tombstone, even when a
+                        # different Pod now occupies its old Kubernetes name.
+                        print(json.dumps({'pod_uid': intent.pod_uid, 'state': 'cleaned',
+                            'iteration': iteration, 'production_qualified': False}), flush=True)
+                        continue
                     pod = kube.pod(intent)
                     if pod is None or pod.get('status', {}).get('phase') in ('Succeeded', 'Failed'):
                         if journal.read(intent.pod_uid) is None:

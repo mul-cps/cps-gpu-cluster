@@ -39,8 +39,8 @@ qualification additions before its spec hash and dry-run finalization:
   visibility is void. Actual device binding must still be inspected by the
   privileged backend.
 - Main receives only the temporary empty test host directory
-  `/run/cps-native-gpu/exchange` at `/exchange`. The root-owned base must be
-  mode0755. The operator creates private children for sockets/imports as
+  `/run/cps-native-gpu/exchange` at `/exchange`. Only this empty exchange
+  directory is mode0755; the authority parent stays root0700. The operator creates private children for sockets/imports as
   UID1000/GID100 mode0700. No production filesystem, dataset or credential may
   be placed there.
 - The namespace permits hostPath for these trusted objects. User containers
