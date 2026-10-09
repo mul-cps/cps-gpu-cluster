@@ -144,7 +144,15 @@ static int secure_socket(const char *path,int exporter,struct stat *bound) {
  int exists=lstat(path,&st)==0;if(exporter?(exists||errno!=ENOENT):(!exists||!S_ISSOCK(st.st_mode)||st.st_uid!=1000||(st.st_mode&0777)!=0600))return -1;
  int fd=socket(AF_UNIX,SOCK_SEQPACKET|SOCK_CLOEXEC,0);if(fd<0)return -1;
  struct sockaddr_un address={.sun_family=AF_UNIX};strcpy(address.sun_path,path);
- if(exporter){mode_t mask=umask(0077);int r=bind(fd,(struct sockaddr*)&address,sizeof(address));umask(mask);if(r||lstat(path,bound)||listen(fd,1)){close(fd);return -1;}}
+ if(exporter){
+  mode_t mask=umask(0077);int r=bind(fd,(struct sockaddr*)&address,sizeof(address));umask(mask);
+  struct stat created,ready;
+  if(r||lstat(path,&created)||!S_ISSOCK(created.st_mode)||created.st_uid!=1000){close(fd);return -1;}
+  /* Unix bind creates0700 under umask077; the importer deliberately requires0600. */
+  if(chmod(path,0600)||lstat(path,&ready)||!S_ISSOCK(ready.st_mode)||ready.st_uid!=1000||
+     ready.st_dev!=created.st_dev||ready.st_ino!=created.st_ino||(ready.st_mode&0777)!=0600){close(fd);return -1;}
+  *bound=ready;if(listen(fd,1)){close(fd);return -1;}
+ }
  else if(connect(fd,(struct sockaddr*)&address,sizeof(address))){close(fd);return -1;}
  return fd;
 }
