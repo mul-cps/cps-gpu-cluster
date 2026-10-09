@@ -35,9 +35,10 @@ class LoaderTest(unittest.TestCase):
                     self.assertEqual(Path(argv[1]).read_bytes(), b'\x7fELFexact-input')
                     calls.append(argv)
                     return type('Result', (), {'returncode': 0})()
-                self.loader.insmod_fd(fd, original, ['NVreg_CpsNativeImportGuard=1'], runner=runner)
+                self.loader.insmod_fd(fd, original, self.loader.CORE_PARAMETERS, runner=runner)
                 self.assertEqual(len(calls), 1)
                 self.assertEqual(calls[0][1], '/proc/self/fd/' + str(fd))
+                self.assertEqual(calls[0][2:], ['NVreg_CpsNativeImportGuard=1', 'NVreg_GpuInitOnProbe=1'])
             finally: os.close(fd)
 
     def test_wrong_hash_writable_nonelf_and_symlink_inputs_block(self):

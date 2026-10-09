@@ -23,7 +23,7 @@ CORE_SHA256 = '194a10d24c64eea9240b86845659936f1051b184c63c471f8ebeda2c5bf4495c'
 UVM_SHA256 = 'b2ae67722e9e21a70c319aeed2184f5b2d1f23b8e32dea00816cfd5cd2c3ee61'
 MANIFEST = 'driver-load-manifest.json'
 GENERATION = 'driver-generation'
-CORE_PARAMETERS = ['NVreg_CpsNativeImportGuard=1']
+CORE_PARAMETERS = ['NVreg_CpsNativeImportGuard=1', 'NVreg_GpuInitOnProbe=1']
 UVM_PARAMETERS = ['uvm_deny_managed_mmap=1', 'uvm_disable_hmm=1', 'uvm_ats_mode=0',
                   'uvm_enable_builtin_tests=0', 'uvm_disable_sam_migration=1']
 IDENTITY_FIELDS = ('st_dev', 'st_ino', 'st_uid', 'st_mode', 'st_size', 'st_mtime_ns', 'st_ctime_ns')
