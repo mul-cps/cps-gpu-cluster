@@ -8,6 +8,7 @@ from pathlib import Path
 import sys
 import tempfile
 import unittest
+from unittest import mock
 
 
 HERE = Path(__file__).resolve().parent
@@ -86,6 +87,44 @@ class FixtureTests(unittest.TestCase):
         admitted['spec']['containers'][0]['env'].append({'name': 'LD_PRELOAD', 'value': 'hami.so'})
         with self.assertRaises(ValueError):
             module.finalize(pod, admitted, pod_uid='11111111-1111-4111-8111-111111111111')
+
+    def test_idle_window_changes_immutable_payload_and_trusted_spec_binding(self):
+        module = builder()
+        default = module.render()
+        default_cm = next(i for i in default['items'] if i['kind'] == 'ConfigMap')
+        default_pod = next(i for i in default['items'] if i['kind'] == 'Pod')
+        for seconds in (60, 1800, 3600):
+            with self.subTest(seconds=seconds):
+                result = module.render(idle_seconds=seconds)
+                cm = next(i for i in result['items'] if i['kind'] == 'ConfigMap')
+                pod = next(i for i in result['items'] if i['kind'] == 'Pod')
+                self.assertTrue(cm['immutable'])
+                self.assertNotEqual(cm['metadata']['name'], default_cm['metadata']['name'])
+                self.assertIn(f'time.sleep({seconds})', cm['data']['main_idle.py'])
+                self.assertIn(f"'idle_seconds':{seconds}", cm['data']['main_idle.py'])
+                self.assertIn(f'main{seconds}s idle', pod['metadata']['annotations']['qualification.operator-exceptions'])
+                self.assertNotEqual(pod['metadata']['annotations']['cps.compute/native-spec-sha256'],
+                                    default_pod['metadata']['annotations']['cps.compute/native-spec-sha256'])
+                finalized, intent = module.finalize(pod, copy.deepcopy(pod), idle_seconds=seconds,
+                    pod_uid='11111111-1111-4111-8111-111111111111')
+                self.assertEqual(intent['spec_sha256'], module.runtime().native_spec_sha256(finalized))
+                self.assertEqual(intent['policy_hash'], pod['metadata']['annotations']['qualification.policy-hash'])
+                self.assertNotEqual(intent['policy_hash'], module.POLICY_HASH)
+                with self.assertRaisesRegex(ValueError, 'Trusted proposal changed'):
+                    module.finalize(pod, copy.deepcopy(pod))
+
+    def test_invalid_idle_window_is_rejected_before_source_reads(self):
+        module = builder()
+        for seconds in (59, 3601, 0, -1, True, False, 900.0, '900', None):
+            with self.subTest(seconds=seconds), mock.patch.object(module, '_pinned') as pinned:
+                with self.assertRaisesRegex(ValueError, 'idle_seconds'):
+                    module.render(idle_seconds=seconds)
+                pinned.assert_not_called()
+        pod = next(i for i in module.render()['items'] if i['kind'] == 'Pod')
+        with mock.patch.object(module, 'runtime') as runtime:
+            with self.assertRaisesRegex(ValueError, 'idle_seconds'):
+                module.finalize(pod, pod, idle_seconds=True)
+            runtime.assert_not_called()
 
 
 if __name__ == '__main__':

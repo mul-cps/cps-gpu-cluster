@@ -14,7 +14,10 @@ The proposal has one trusted namespace, one immutable source ConfigMap and two
 `GPU-16128952-b438-556a-00bb-93039ee24e56`. `native-cap-main` uses restartPolicy
 Never; `native-cap-peer` uses Always for a controlled restart exercise. Both
 main processes first validate/copy the reviewed import binary and then idle
-for900seconds. They execute no CUDA automatically. All images are immutable
+for 900 seconds by default. `--idle-seconds` accepts integers from 60 through
+3600 for a longer bounded qualification window. The selected duration changes
+the immutable ConfigMap payload/name, policy hash and bound Pod spec hash.
+They execute no CUDA automatically. All images are immutable
 and use imagePullPolicyNever; both gate and main use the already-cached compute
 qualification40b9525 image.
 
@@ -89,7 +92,15 @@ CLI rendering writes JSON only:
 ```bash
 python3 render_fixture.py > proposal-review.json
 python3 render_fixture.py --proposed-pod proposed.json --dryrun-pod dryrun.json > finalized-review.json
+
+# Use the same explicit window during rendering and finalization.
+python3 render_fixture.py --idle-seconds 3600 > proposal-review.json
+python3 render_fixture.py --idle-seconds 3600 --proposed-pod proposed.json --dryrun-pod dryrun.json > finalized-review.json
 ```
+
+The Python `render()` and `finalize()` APIs accept the same `idle_seconds`
+keyword, defaulting to 900. Finalization rejects a proposal rendered with a
+different window. The default proposal remains unchanged.
 
 The finalization wrapper also accepts `--pod-uid` for constructing a detached
 intent after the matching actual Pod has been created and independently
