@@ -12,6 +12,8 @@ HASHES={
  'kernel-open/common/inc/os-interface.h':'531c2d9f21f63de576c24047a9c01081aa4124740346351e9efdcfe867c3204f',
  'src/nvidia/arch/nvalloc/unix/include/os-interface.h':'bd281e48ff06b481033fc2fb29a891710a2b4d66fb009cc2b752ab6e90f2113b',
  'kernel-open/nvidia/nvidia.Kbuild':'6b2803664c904934bf92a24d55e5668aa82049b082972bce97d13b0ef390735b',
+ 'src/nvidia/generated/g_client_nvoc.h':'1cc654687a59b1635672761670f6521579fb24cb361661329996f3d463e02243',
+ 'src/nvidia/src/kernel/rmapi/client.c':'9b318cf1cb287b927b25a6732f4458801d9f813cf9c2a8e30f141f91b77cda03',
  'src/nvidia/arch/nvalloc/unix/src/os.c':'057b50fcb738be90a073b60f63e70559706864ddcec3bf703282563173e3dce4'}
 def replace_once(data,old,new):
  if data.count(old)!=1:raise ValueError('Pinned source anchor absent or ambiguous')
@@ -25,6 +27,10 @@ def render(source):
   if hashlib.sha256(data).hexdigest()!=sha:raise ValueError('Pristine pinned615.71.09 source required: '+name)
   original[name]=data.decode()
  changed=original.copy()
+ name='src/nvidia/generated/g_client_nvoc.h'
+ changed[name]=replace_once(changed[name],'    NvS32 lockStressCounter;','    NvS32 lockStressCounter;\n    NvBool bCpsGpuOpsSession; /* Source-owned qualification marker, not a user parameter. */')
+ name='src/nvidia/src/kernel/rmapi/client.c'
+ changed[name]=replace_once(changed[name],'    pClient->bIsRootNonPriv  =','    pClient->bCpsGpuOpsSession = NV_FALSE;\n    pClient->bIsRootNonPriv  =')
  name='kernel-open/nvidia/nvidia.Kbuild'
  changed[name]=replace_once(changed[name],'NV_CONFTEST_FUNCTION_COMPILE_TESTS += get_dev_pagemap_has_pgmap_arg','NV_CONFTEST_TYPE_COMPILE_TESTS += memory_device_coherent_present\nNV_CONFTEST_FUNCTION_COMPILE_TESTS += get_dev_pagemap_has_pgmap_arg')
  name='kernel-open/nvidia/os-interface.c'
@@ -57,6 +63,8 @@ def render(source):
  # Explicit include avoids dependence on transitive generated class headers.
  changed[name]=replace_once(changed[name],'#include "gpu/mem_mgr/mem_desc.h"','#include "mem_mgr/memacct.h"\n#include "gpu/mem_mgr/mem_desc.h"')
  name='src/nvidia/src/kernel/rmapi/nv_gpu_ops.c'
+ changed[name]=replace_once(changed[name],'NV_STATUS nvGpuOpsCreateSession(struct gpuSession **session)',(HERE/'gpu_ops_session.c').read_text()+'\nNV_STATUS nvGpuOpsCreateSession(struct gpuSession **session)')
+ changed[name]=replace_once(changed[name],'    gpuSession->devices = NULL;','    status = nvGpuOpsMarkProtectedSession(gpuSession->handle);\n    if (status != NV_OK)\n    {\n        pRmApi->Free(pRmApi, gpuSession->handle, gpuSession->handle);\n        portMemFree(gpuSession);\n        return status;\n    }\n\n    gpuSession->devices = NULL;')
  changed[name]=replace_once(changed[name],'#include <class/cl0002.h>','#include "mem_mgr/memacct.h"\n#include <class/cl0002.h>')
  old='    // RM client allocations can\'t have multiple memdesc.\n    pMemDesc = pMemory->pMemDesc;'
  new=old+'\n    if (memdescGetAddressSpace(pMemDesc) == ADDR_FBMEM)\n    {\n        status = memacctValidateMemoryImport(pMemory->pCharge, pMemDesc->pGpu->gpuId,\n                                             dynamicCast(pSessionClient, RmClient));\n        if (status != NV_OK)\n            goto done;\n    }'
