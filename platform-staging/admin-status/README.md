@@ -27,8 +27,11 @@ The same image reports a workspace as `running` only after Hub readiness is
 confirmed; failed startup retains cleanup guards until shutdown and central
 release are confirmed. Offline validation
 passed 137 backend tests on host and image, 24 browser tests, production
-TypeScript/Vite build, and dependency checks. The live rollout and authenticated
-live checks remain pending at this commit.
+TypeScript/Vite build, and dependency checks. Both consoles rolled out on their
+existing SQLite volume node on 2026-10-09. CPS authenticated status and shipped
+UI bundle returned 200; anonymous status redirected to login and POST returned
+405. Both mounted status records were verified. CIT human authentication still
+requires renewal of the existing upstream login and is not claimed verified.
 
 This display records an operator assessment. Real GPU group-sharing
 qualification still requires the actual startup, memory-limit, peer isolation,
