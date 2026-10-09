@@ -55,6 +55,12 @@ class RenderTest(unittest.TestCase):
 
     def test_gateway_has_scoped_ledger_cas_and_admission_closed_enrollment(self):
         result = self.render.render()
+        node_role = next(v for v in result['items'] if v['kind'] == 'ClusterRole' and v['metadata']['name'] == 'cps-native-gateway-authority-node')
+        self.assertEqual(node_role['rules'], [
+            {'apiGroups': [''], 'resources': ['nodes'], 'resourceNames': ['k3s-wk-gpu2'], 'verbs': ['get']}])
+        node_binding = next(v for v in result['items'] if v['kind'] == 'ClusterRoleBinding' and v['metadata']['name'] == node_role['metadata']['name'])
+        self.assertEqual(node_binding['subjects'], [{'kind': 'ServiceAccount', 'name': 'cps-compute-controller', 'namespace': 'cps-compute'}])
+        self.assertEqual(node_binding['roleRef']['name'], node_role['metadata']['name'])
         role = next(v for v in result['items'] if v['kind'] == 'Role' and v['metadata']['name'] == 'cps-native-gateway-authority')
         self.assertEqual(role['rules'], [
             {'apiGroups': [''], 'resources': ['configmaps'], 'verbs': ['get', 'create']},

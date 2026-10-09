@@ -98,6 +98,10 @@ def render(config=None, *, image=DEFAULT_IMAGE, enable=False):
         "(!has(object.immutable) || object.immutable == false) && has(object.data) && size(object.data) == 1 && "
         "'state.json' in object.data && object.data['state.json'] == '{\"allocations\":{},\"version\":1}'")
     objects.extend([
+        item('ClusterRole', gateway_name + '-node', rules=[
+            {'apiGroups': [''], 'resources': ['nodes'], 'resourceNames': [node], 'verbs': ['get']}]),
+        item('ClusterRoleBinding', gateway_name + '-node', subjects=gateway_subject,
+            roleRef={'apiGroup': 'rbac.authorization.k8s.io', 'kind': 'ClusterRole', 'name': gateway_name + '-node'}),
         item('Role', gateway_name, namespace, rules=[
             {'apiGroups': [''], 'resources': ['configmaps'], 'verbs': ['get', 'create']},
             {'apiGroups': [''], 'resources': ['configmaps'], 'resourceNames': ['cps-native-gpu-allocations'], 'verbs': ['patch']}]),
