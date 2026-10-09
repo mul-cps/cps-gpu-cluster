@@ -7,6 +7,7 @@
 #include <assert.h>
 static struct Wire frame(void){struct Wire w={.magic=0x43505349,.version=1,.kind=2,.bytes=PAYLOAD};return w;}
 int main(void){
+ unsetenv("LD_PRELOAD");assert(!preload_is_set());setenv("LD_PRELOAD","",1);assert(!preload_is_set());setenv("LD_PRELOAD","/untrusted/shim.so",1);assert(preload_is_set());unsetenv("LD_PRELOAD");
  int pair[2];assert(socketpair(AF_UNIX,SOCK_SEQPACKET|SOCK_CLOEXEC,0,pair)==0);
  struct Wire w=frame(),out;int got=-1;
  assert(send_wire(pair[0],&w,-1)==0);assert(recv_wire(pair[1],&out,1,&got)==-1 && got==-1);
