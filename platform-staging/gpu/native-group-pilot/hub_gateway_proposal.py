@@ -79,6 +79,13 @@ class CPSNativeLoginGuard(_native_auth_base):
             return False
         result = super().check_blocked_users(username, authentication)
         return await result if _native_inspect.isawaitable(result) else result
+    async def refresh_user(self, user, handler=None, **kwargs):
+        machine_roles = getattr(getattr(user, 'orm_user', None), 'roles', ())
+        if (user.name in _native_owners and not getattr(user, 'admin', False)
+                and any(role.name == 'cps-workspace-kernel' for role in machine_roles)):
+            return True
+        result = super().refresh_user(user, handler=handler, **kwargs)
+        return await result if _native_inspect.isawaitable(result) else result
 c.JupyterHub.authenticator_class = CPSNativeLoginGuard
 c.Authenticator.manage_groups = False
 c.GenericOAuthenticator.manage_groups = False
@@ -139,7 +146,15 @@ def render(inputs, baselines):
         'node_pool': inputs['nodePool'], 'authorityNamespace': 'cps-native-system'}
     result = {'compute-policy.patch.json': patch(policy_cm, [{'op': 'replace', 'path': '/data/policy.json', 'value': dump(catalog)}])}
     summary = {'profile': PROFILE, 'policyHash': catalog['policyHash'], 'images': inputs['images'], 'hubs': {}}
-    ca = Path(inputs['gatewayCAFile']).read_text()
+    if 'gatewayCA' in baselines:
+        ca_baseline = baselines['gatewayCA']
+        require(ca_baseline.get('kind') == 'ConfigMap'
+                and ca_baseline.get('metadata', {}).get('name') == 'cps-compute-gateway-ca'
+                and ca_baseline.get('metadata', {}).get('namespace') == 'cps-compute',
+                'Exact captured gateway trust ConfigMap required')
+        ca = ca_baseline['data']['ca.crt']
+    else:
+        ca = Path(inputs['gatewayCAFile']).read_text()
     import ssl
     ssl.create_default_context(cadata=ca)
     for source, namespace in NAMESPACES.items():
@@ -191,7 +206,8 @@ def render(inputs, baselines):
         result[namespace + '-hub.patch.json'] = patch(deployment, operations)
         summary['hubs'][source] = {'owners': owners, 'groups': sorted({item['group_id'] for item in selected}),
             'controlScopes': group_scopes(selected), 'claims': claims, 'settingsFields': sorted(settings),
-            'personalConfigurationPreserved': True, 'neutralLoginGuard': True, 'manageGroups': False}
+            'personalConfigurationPreserved': True, 'neutralLoginGuard': True,
+            'neutralMachineRefreshScoped': True, 'manageGroups': False}
     result['runtime-secret.patch.json'] = patch(runtime_secret, [{'op': 'replace', 'path': '/data/runtime.json',
         'value': base64.b64encode(dump(runtime).encode()).decode()}])
     gateway = baselines['gateway']; index = next(i for i, c in enumerate(gateway['spec']['template']['spec']['containers']) if c['name'] == 'gateway')
@@ -211,6 +227,8 @@ def prepare(inputs_path, baseline_directory, output):
     for source, namespace in NAMESPACES.items():
         baselines[source] = {'deployment': read(namespace + '-hub-baseline.json'),
                              'secret': read(namespace + '-hub-secret-baseline.json')}
+    if (root / 'gateway-ca-baseline.json').is_file():
+        baselines['gatewayCA'] = read('gateway-ca-baseline.json')
     proposals = render(json.loads(Path(inputs_path).read_text()), baselines)
     output.mkdir(mode=0o700)
     for name, value in proposals.items():

@@ -6,6 +6,7 @@ import json
 from pathlib import Path
 import sys
 import ssl
+from types import SimpleNamespace
 
 import pytest
 
@@ -51,8 +52,12 @@ def test_scopes_are_exact_owner_server_group_filters():
 def test_login_guard_preserves_humans_marker_roles_and_existing_permissions():
     from jupyterhub.auth import Authenticator
     from traitlets.config import Config
+    refreshed = []
     class Prior(Authenticator):
         def check_blocked_users(self, username, authentication=None): return username != 'existing-denied'
+        async def refresh_user(self, user, handler=None, **kwargs):
+            refreshed.append((user.name, handler, kwargs))
+            return {'name': user.name, 'auth_state': {'keep': 'human-oauth-refresh'}}
     c = Config(); c.JupyterHub.authenticator_class = Prior
     c.JupyterHub.load_roles = [{'name': 'legacy', 'scopes': ['read:metrics']},
                              {'name': 'cps-workspace-kernel', 'scopes': [], 'users': ['old-neutral']}]
@@ -65,6 +70,16 @@ def test_login_guard_preserves_humans_marker_roles_and_existing_permissions():
     assert asyncio.run(guard.check_blocked_users('neutral-a')) is False
     assert asyncio.run(guard.check_blocked_users('existing-denied')) is False
     assert asyncio.run(guard.check_blocked_users('human')) is True
+    machine = SimpleNamespace(name='neutral-a', admin=False,
+        orm_user=SimpleNamespace(roles=[SimpleNamespace(name='cps-workspace-kernel')]))
+    assert asyncio.run(guard.refresh_user(machine)) is True
+    assert refreshed == []
+    assert asyncio.run(guard.refresh_user(SimpleNamespace(name='human'), handler='human-handler', fresh=True)) == {
+        'name': 'human', 'auth_state': {'keep': 'human-oauth-refresh'}}
+    assert refreshed == [('human', 'human-handler', {'fresh': True})]
+    assert asyncio.run(guard.refresh_user(SimpleNamespace(name='neutral-a'))) != True
+    machine.admin = True
+    assert asyncio.run(guard.refresh_user(machine)) != True
     assert c.Authenticator.blocked_users == {'existing-denied'}
     assert c.GenericOAuthenticator.manage_groups is False
     marker = next(role for role in c.JupyterHub.load_roles if role['name'] == 'cps-workspace-kernel')
