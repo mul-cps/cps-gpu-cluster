@@ -40,6 +40,12 @@ class ServiceLoopTest(unittest.TestCase):
         fixture.cri['status']['labels']['io.kubernetes.pod.namespace'] = 'jupyterhub'
         for container in fixture.pod['spec']['initContainers'] + fixture.pod['spec']['containers']:
             container['image'] = 'ghcr.io/cps/runtime@sha256:' + 'f' * 64
+        from cps_compute.native_gpu_runtime import GPU_IDENTITY_SOURCE
+        fixture.pod['spec']['initContainers'].insert(1, {
+            'name':'cps-native-device-identity', 'image':fixture.pod['spec']['containers'][0]['image'],
+            'command':['python','-I','-S','-c',GPU_IDENTITY_SOURCE], 'args':[fixture.intent.gpu_uuid],
+            'env':[{'name':'NVIDIA_VISIBLE_DEVICES','value':fixture.intent.gpu_uuid},
+                   {'name':'CUDA_VISIBLE_DEVICES','value':'0'}]})
         spec_sha = hashlib.sha256(json.dumps(fixture.pod['spec'], sort_keys=True, separators=(',', ':')).encode()).hexdigest()
         intent = dict(fixture.intent.to_dict(), namespace='jupyterhub', spec_sha256=spec_sha,
                       policy_hash=config['policy_hash'])
@@ -68,13 +74,18 @@ class ServiceLoopTest(unittest.TestCase):
         self.bundle = (SimpleNamespace(QualificationNodeBackend=backend),
             SimpleNamespace(awaiting_first_gate=qualification.awaiting_first_gate,
                 cri_reader=lambda *a: lambda intent: fixture.cri, gpu_clients=lambda _: fixture.clients,
-                health=lambda *a, **kw: True), {'models': self.models, 'manual': manual, 'health': None})
+                health=lambda *a, **kw: True), {'models': self.models, 'manual': manual, 'health': None, 'cdi': SimpleNamespace(observe_current_cdi=lambda gpu: {'mapping':gpu})})
         self.real_store = agent.EnrollmentStore
         self.output = io.StringIO()
 
     def run_loop(self, iterations=1, between=None):
         with patch.object(agent, 'EnrollmentStore', side_effect=lambda *a: self.real_store(*a, trusted_uid=os.getuid())), \
-                patch.object(agent.time, 'sleep', side_effect=between), patch('sys.stdout', self.output):
+                patch.object(agent.time, 'sleep', side_effect=between), \
+                patch.object(agent, 'abort_current_epoch', return_value=self.models.DriverEpoch(
+                    self.intent.node_uid,
+                    (self.fixture.proc/'sys/kernel/random/boot_id').read_text().strip(),
+                    (self.fixture.state/'authority/driver-generation').read_text().strip(),self.intent.gpu_uuid)), \
+                patch('sys.stdout', self.output):
             agent.run(self.config, self.bundle, self.fixture.state, self.api, self.fixture.driver,
                       iterations=iterations, interval=0.1, crictl='cpu-injected', cri_socket='cpu-injected')
 
@@ -112,5 +123,31 @@ class ServiceLoopTest(unittest.TestCase):
         with self.assertRaises(ValueError): self.run_loop()
         self.assertEqual(self.fixture.driver.writes, [])
         self.assertIsNone(self.api.cleanup)
+
+    def test_wrong_cdi_mapping_prevents_any_cap_write_or_gate_release(self):
+        self.fixture.pod['status']['initContainerStatuses'] = [{'name':'cps-native-cap-gate',
+            'restartCount':0,'state':{'running':{'startedAt':'2026-10-09T16:00:00Z'}}}]
+        self.bundle[2]['cdi'].observe_current_cdi = lambda gpu: (_ for _ in ()).throw(ValueError('Stale CDI'))
+        with self.assertRaises(ValueError): self.run_loop()
+        self.assertEqual(self.fixture.driver.writes, [])
+        self.assertIsNone(self.fixture.journal.read(self.intent.pod_uid))
+        self.assertIsNone(self.api.cleanup)
+
+    def test_cdi_change_after_apply_keeps_cap_but_never_publishes_gate(self):
+        self.fixture.pod['status']['initContainerStatuses'] = [{'name':'cps-native-cap-gate',
+            'restartCount':0,'state':{'running':{'startedAt':'2026-10-09T16:00:00Z'}}}]
+        reads = []
+        def observation(gpu):
+            reads.append(gpu)
+            if len(reads)>2: raise ValueError('Stale CDI before seal')
+            return {'mapping':gpu}
+        self.bundle[2]['cdi'].observe_current_cdi = observation
+        with self.assertRaises(ValueError): self.run_loop()
+        record=self.fixture.journal.read(self.intent.pod_uid)
+        self.assertEqual(record.state,'sealed')  # Journal precedes actual gate-file publication.
+        self.assertEqual(len(self.fixture.driver.writes),2)
+        self.assertEqual(list((self.fixture.state/'receipts').iterdir()), [])
+        self.assertIsNone(self.api.cleanup)
+
 
 if __name__ == '__main__': unittest.main()

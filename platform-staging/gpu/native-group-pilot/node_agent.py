@@ -26,6 +26,7 @@ HERE = Path(__file__).resolve().parent
 NAMESPACES = {'cps': 'jupyterhub', 'cit': 'cit-jhub'}
 LABEL = 'cps.compute/native-binding'
 SOURCE_PINS = {
+    'cdi_identity.py': '784280a4f670eca067a8cc5b4d558f9d13c0c41141401d47c229de90dd6343c0',
     'native_gpu_controller.py': 'f40ef40f71c9f1206f23fb7052fd69aafd103c0f03a24e6bf3987395dacfd179',
     'native_gpu_health.py': '52fdbdae3d5e2f66fd4653d94ef5a62f734e185fabec30450f4a1b70cfee7d67',
     'node_backend.py': 'fb5651ea10118de02ee2e9601a765f947d2ae61f1b2e8670d523912b594afda0',
@@ -148,7 +149,7 @@ def load_bundle(directory):
     poll = load_source('_native_group_poll', (directory / 'poll.py').read_bytes(),
                        SOURCE_PINS['poll.py'], 'poll.py')
     modules = {}
-    for key, name in [('models', 'native_gpu_controller.py'), ('manual', 'pod_cap.py'), ('health', 'native_gpu_health.py')]:
+    for key, name in [('models', 'native_gpu_controller.py'), ('manual', 'pod_cap.py'), ('health', 'native_gpu_health.py'), ('cdi', 'cdi_identity.py')]:
         modules[key] = load_source('_native_group_' + key, (directory / name).read_bytes(), SOURCE_PINS[name], name)
     return backend, poll, modules
 
@@ -422,6 +423,35 @@ def validate_actual_pod(pod, enrollment):
                 for c in init + containers), 'All final images must use immutable SHA256 digests')
 
 
+def validate_device_identity_barrier(pod, intent):
+    """New caps require the compiled same-image CUDA UUID barrier after CPU seal."""
+    spec = pod['spec']; initializers = spec['initContainers']
+    require(len(initializers) >= 2 and initializers[1].get('name') == 'cps-native-device-identity',
+            'Compiled post-cap physical GPU identity barrier required')
+    barrier = initializers[1]
+    require(barrier.get('image') == spec['containers'][0]['image']
+            and barrier.get('args') == [intent.gpu_uuid]
+            and barrier.get('env') == [{'name': 'NVIDIA_VISIBLE_DEVICES', 'value': intent.gpu_uuid},
+                                       {'name': 'CUDA_VISIBLE_DEVICES', 'value': '0'}],
+            'Identity barrier must use exact workload image and bound GPU visibility')
+    command = barrier.get('command')
+    require(isinstance(command, list) and len(command) == 5 and command[:4] == ['python', '-I', '-S', '-c']
+            and isinstance(command[4], str) and hashlib.sha256(command[4].encode()).hexdigest()
+            == '0cd3e54dda3569a74993c07c65ae107f26b1ef3076b7657f02394bec22a83b39',
+            'Exact isolated raw CUDA identity implementation required')
+
+
+def validate_cdi_binding(intent, state, driver, verifier, cdi, models):
+    """Observe current root CDI and physical minor mapping between healthy epochs."""
+    config = {'pool': {'node_uid': intent.node_uid, 'gpu_uuid': intent.gpu_uuid}}
+    first = abort_current_epoch(config, state, driver, verifier, models)
+    proof = cdi.observe_current_cdi(intent.gpu_uuid)
+    again = cdi.observe_current_cdi(intent.gpu_uuid)
+    last = abort_current_epoch(config, state, driver, verifier, models)
+    require(first == last and proof == again, 'Driver epoch/CDI/physical mapping changed before cap publication')
+    return proof
+
+
 def cleanup_receipt(envelope, record, backend, pod, models):
     enrollment = envelope['enrollment']
     intent = models.CapIntent(**enrollment['intent'])
@@ -575,6 +605,18 @@ def run(config, bundle, state, kube, driver, *, iterations, interval, crictl, cr
             delete_pod=kube.delete, gpu_clients=qualification.gpu_clients,
             health=lambda: qualification.health(driver, verifier, authority_directory=str(state / 'authority')),
             state_root=state)
+        seal_gate = backend.seal_gate
+        def checked_seal(identity, receipt):
+            # Last authority boundary before CPU first-gate exit. A stale CDI
+            # mapping cannot release GPU-capable user initialization.
+            intent = next(item for item in intents if item.pod_uid == identity.pod_uid)
+            pod = kube.pod(intent)
+            require(pod is not None, 'Actual enrolled Pod required before gate publication')
+            validate_actual_pod(pod, accepted[intent.pod_uid]['enrollment'])
+            validate_device_identity_barrier(pod, intent)
+            validate_cdi_binding(intent, state, driver, verifier, modules['cdi'], models)
+            return seal_gate(identity, receipt)
+        backend.seal_gate = checked_seal
         controller = models.NativeCapController(backend, journal, enabled=True)
         for intent in intents:
             try:
@@ -618,6 +660,8 @@ def run(config, bundle, state, kube, driver, *, iterations, interval, crictl, cr
                             result = 'cleanup-confirmed'
                         else: result = 'cleaned-awaiting-pod-absence'
                 else:
+                    validate_device_identity_barrier(pod, intent)
+                    validate_cdi_binding(intent, state, driver, verifier, modules['cdi'], models)
                     record = controller.reconcile(intent)
                     result = record.state
                 print(json.dumps({'pod_uid': intent.pod_uid, 'state': result, 'iteration': iteration,

@@ -669,8 +669,8 @@ class AbortTest(unittest.TestCase):
         qualification = SimpleNamespace(cri_reader=lambda *args: None, gpu_clients=lambda *args: (),
             health=lambda *args, **kwargs: self.fail('No driver probe in CPU fixture'),
             awaiting_first_gate=lambda pod, intent: False)
-        bundle = (SimpleNamespace(QualificationNodeBackend=lambda *args, **kwargs: object()), qualification,
-            {'models': self.models, 'manual': object(), 'health': object()})
+        bundle = (SimpleNamespace(QualificationNodeBackend=lambda *args, **kwargs: SimpleNamespace(seal_gate=lambda *a: self.fail('No actual seal in CPU controller fixture'))), qualification,
+            {'models': self.models, 'manual': object(), 'health': object(), 'cdi': object()})
         epoch = one[3]
         second_epoch = self.models.DriverEpoch(NODE, epoch.boot_id, 'ffffffff-ffff-4fff-8fff-ffffffffffff', GPU)
         store_class = self.agent.EnrollmentStore
@@ -684,6 +684,8 @@ class AbortTest(unittest.TestCase):
                     patch.object(self.models, 'CapIdentity', side_effect=AssertionError('No native identity for abort')), \
                     patch.object(self.agent, 'abort_current_epoch', return_value=epoch,
                         side_effect=[epoch, second_epoch] if changed_epoch else None), \
+                    patch.object(self.agent, 'validate_device_identity_barrier'), \
+                    patch.object(self.agent, 'validate_cdi_binding'), \
                     redirect_stdout(output):
                 if changed_epoch:
                     with self.assertRaisesRegex(ValueError, 'epoch changed'):

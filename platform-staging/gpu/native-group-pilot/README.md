@@ -254,3 +254,30 @@ OOM/recovery and independent peer continuity remain unqualified.
 See the [platform checkpoint](../../../docs/compute-platform/qualification.md#2026-10-09-automatic-cap-and-admin-checkpoint)
 for the verified console status and remaining gates. Ordinary group GPU access
 remains disabled.
+
+The native compiler now inserts `cps-native-device-identity` immediately after
+the CPU cap gate. It uses the same immutable notebook image, isolated Python,
+and the same UUID-selected CDI visibility; it checks raw CUDA device count and
+physical UUID before any user initialization. It creates no CUDA context or
+allocation. A failure leaves the Pod unready and retains the cap/reservation.
+
+The node agent also verifies the configured CDI search closure, protected
+selected CDI file, current proc UUID/BDF/device minor, and actual character
+major/minor twice between healthy epoch reads before cap application and again
+at gate publication. NVML index is never used as a device minor. After driver
+maintenance, Root must refresh CDI while pilot Pods are absent and the writer
+is quiesced; the generated UUID name alone is not proof of correct routing.
+
+`cdi_identity.py` is default inert. `--proposal --document <captured.json>
+--inventory <root-reviewed-inventory.json> --gpu-uuid <bound-uuid> --output
+<new-path>` produces only a new offline proposal and digest. The closed full
+inventory rows are `{gpu_uuid,pci_bdf,minor,device:{major,minor}}`. Root can
+derive them through `read_inventory(proc_path='/proc/driver/nvidia/gpus',
+host_root='/')`, which reads proc/stat only. `refresh_selected_cdi()` preserves
+all approved common edits and changes only the selected deviceNodes. Root
+retains the old CDI bytes and installs the reviewed candidate atomically,
+then verifies it using `observe_current_cdi()` before allowing another start.
+No helper here installs CDI, runs GPU binaries, updates driver modules, or
+releases a reservation. New CDI providers or runtime configuration changes
+require a reviewed source-pin update. Historical sealed/retired journals and
+operator source closures remain intact.
