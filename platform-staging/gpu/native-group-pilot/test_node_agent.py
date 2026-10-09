@@ -66,7 +66,7 @@ class EnrollmentTest(unittest.TestCase):
         api = self.agent.api_class(SimpleNamespace(Kubernetes=object))()
         def read(method, path, value=None):
             self.assertEqual(method, 'GET')
-            self.assertEqual(path, '/api/v1/namespaces/cps-native-authority/configmaps?limit=200')
+            self.assertEqual(path, '/api/v1/namespaces/cps-native-authority/configmaps?limit=200&labelSelector=cps.compute%2Fnative-binding')
             self.assertIsNone(value)
             return response
         api.call = read
@@ -79,6 +79,27 @@ class EnrollmentTest(unittest.TestCase):
         self.assertEqual(len(selected), 1)
         self.assertEqual(self.check(selected[0])['enrollment'], self.enrollment)
         self.assertEqual(response, original)
+
+    def test_binding_selector_is_retained_on_continuation_pages(self):
+        from types import SimpleNamespace
+        from urllib.parse import parse_qs, urlparse
+        api = self.agent.api_class(SimpleNamespace(Kubernetes=object))()
+        paths = []
+        def read(method, path, value=None):
+            query = parse_qs(urlparse(path).query)
+            self.assertEqual(query['labelSelector'], ['cps.compute/native-binding'])
+            self.assertEqual(query['limit'], ['200'])
+            paths.append(path)
+            response = self.core_configmap_list()
+            if len(paths) == 1:
+                response['items'] = []
+                response['metadata']['continue'] = 'reviewed/page+token'
+            else:
+                self.assertEqual(query['continue'], ['reviewed/page+token'])
+            return response
+        api.call = read
+        self.assertEqual(len(api.enrollments(self.config['authority_namespace'])), 1)
+        self.assertEqual(len(paths), 2)
 
     def test_direct_enrollment_without_typed_list_context_remains_rejected(self):
         item = self.core_configmap_list()['items'][0]

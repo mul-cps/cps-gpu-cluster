@@ -463,7 +463,10 @@ def api_class(qualification):
             return '/api/v1/namespaces/' + urllib.parse.quote(namespace, safe='') + '/configmaps'
 
         def enrollments(self, namespace):
-            path = self.maps_path(namespace) + '?limit=200'
+            # Select authority records server-side; source/code ConfigMaps can be
+            # larger than the response bound and are not enrollment inputs.
+            selected = self.maps_path(namespace) + '?limit=200&labelSelector=' + urllib.parse.quote('cps.compute/native-binding', safe='')
+            path = selected
             values = []
             for page in range(10):
                 response = self.call('GET', path)
@@ -490,7 +493,7 @@ def api_class(qualification):
                 more = response['metadata'].get('continue')
                 require(more is None or isinstance(more, str), 'Invalid enrollment continuation')
                 if not more: return values
-                path = self.maps_path(namespace) + '?limit=200&continue=' + urllib.parse.quote(more, safe='')
+                path = selected + '&continue=' + urllib.parse.quote(more, safe='')
             raise ValueError('Enrollment namespace exceeded bounded list')
 
         def configmap(self, namespace, name):
