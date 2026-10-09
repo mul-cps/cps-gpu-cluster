@@ -4,6 +4,17 @@ Production and group GPU sharing remain disabled. These files describe bounded,
 trusted hardware experiments; passing one experiment does not complete the
 platform qualification gates.
 
+[The recovery assessment](results/stock580-recovery-20261009.json) records that
+the custom R615 core/UVM experiment has been retired and stock NVIDIA
+`580.95.05` restored. All seven nodes were Ready and schedulable; the original
+driver DaemonSet UID and full specification were restored, and the other driver
+Pod UIDs remained unchanged. GPU2 retains a manager-free recovery Pod with
+independent firmware and the label `nvidia.com/gpu-driver-upgrade.skip=true`
+until reviewed driver maintenance. **Keep `/run/nvidia/firmware-r615-canary`: the
+stock 580 recovery requires its preserved firmware.** This is a recorded
+maintenance exception. Production/group sharing remain disabled, and the user's
+preference about maintaining a custom driver has not been decided.
+
 The guarded driver is a custom, experimental build of NVIDIA's R615.71.09 open
 kernel modules. The core module (`nvidia.ko`) contains local allocation/import
 ownership patches, and a separately built custom UVM module (`nvidia_uvm.ko`)
