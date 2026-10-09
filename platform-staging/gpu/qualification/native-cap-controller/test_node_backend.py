@@ -14,6 +14,9 @@ from types import SimpleNamespace
 from unittest.mock import Mock, patch
 
 from node_backend import QualificationNodeBackend, private_read, private_write
+import poll as qualification_poll
+# Keep the module object that owns main.__globals__: service bundle tests may
+# replace sys.modules['poll'] with another pinned instance in the same process.
 from poll import CORE_SHA256, HEALTH_SHA256, MANUAL_SHA256, Kubernetes, awaiting_first_gate, health, load_pinned, main
 
 
@@ -109,6 +112,14 @@ class NodeBackendTests(unittest.TestCase):
     def test_inert_cli_needs_no_modules_credentials_or_driver(self):
         main([])
 
+    def test_execute_cli_nonroot_fails_before_loading_any_injected_dependency(self):
+        with patch.object(qualification_poll, 'os', SimpleNamespace(geteuid=lambda: 1000)), \
+                patch.object(qualification_poll, 'load_pinned') as load:
+            with self.assertRaisesRegex(ValueError, 'Explicit root qualification execution required'):
+                main(['--execute', '--qualification', '--controller-module', 'cpu-models',
+                      '--manual-helper', 'cpu-manual'])
+        load.assert_not_called()
+
     def test_poll_fresh_pending_then_running_gate_seals_without_sticky_error(self):
         enrolled = self.state / 'intents'
         enrolled.mkdir(mode=0o700)
@@ -124,14 +135,14 @@ class NodeBackendTests(unittest.TestCase):
         def between_iterations(_):
             self.assertIsNone(self.journal.read(UID))
             self.assertEqual(self.driver.writes, [])
-        with patch('poll.load_pinned', side_effect=[self.m, SimpleNamespace(Nvml=lambda: driver), self.verifier]), \
-                patch('poll.os', SimpleNamespace(geteuid=lambda: 0)), \
-                patch('poll.private_directory', side_effect=lambda path:
+        with patch.object(qualification_poll, 'load_pinned', side_effect=[self.m, SimpleNamespace(Nvml=lambda: driver), self.verifier]), \
+                patch.object(qualification_poll, 'os', SimpleNamespace(geteuid=lambda: 0)), \
+                patch.object(qualification_poll, 'private_directory', side_effect=lambda path:
                       __import__('node_backend').private_directory(path, self.uid)), \
-                patch('poll.private_read', side_effect=lambda path: private_read(path, self.uid)), \
-                patch('poll.Kubernetes', return_value=kube), \
-                patch('poll.QualificationNodeBackend', return_value=self.backend), \
-                patch('poll.time.sleep', side_effect=between_iterations), patch('sys.stdout', output):
+                patch.object(qualification_poll, 'private_read', side_effect=lambda path: private_read(path, self.uid)), \
+                patch.object(qualification_poll, 'Kubernetes', return_value=kube), \
+                patch.object(qualification_poll, 'QualificationNodeBackend', return_value=self.backend), \
+                patch.object(qualification_poll.time, 'sleep', side_effect=between_iterations), patch('sys.stdout', output):
             main(['--execute', '--qualification', '--controller-module', 'cpu-models',
                   '--manual-helper', 'cpu-manual', '--state-root', str(self.state), '--iterations', '2'])
         observed = [json.loads(line) for line in output.getvalue().splitlines()]
@@ -203,13 +214,13 @@ class NodeBackendTests(unittest.TestCase):
                 kube.pod.return_value = pod
                 output = io.StringIO()
                 driver = SimpleNamespace(close=Mock())
-                with patch('poll.load_pinned', side_effect=[self.m, SimpleNamespace(Nvml=lambda: driver), self.verifier]), \
-                        patch('poll.os', SimpleNamespace(geteuid=lambda: 0)), \
-                        patch('poll.private_directory', side_effect=lambda path:
+                with patch.object(qualification_poll, 'load_pinned', side_effect=[self.m, SimpleNamespace(Nvml=lambda: driver), self.verifier]), \
+                        patch.object(qualification_poll, 'os', SimpleNamespace(geteuid=lambda: 0)), \
+                        patch.object(qualification_poll, 'private_directory', side_effect=lambda path:
                               __import__('node_backend').private_directory(path, self.uid)), \
-                        patch('poll.private_read', side_effect=lambda path: private_read(path, self.uid)), \
-                        patch('poll.Kubernetes', return_value=kube), \
-                        patch('poll.QualificationNodeBackend', return_value=self.backend), patch('sys.stdout', output):
+                        patch.object(qualification_poll, 'private_read', side_effect=lambda path: private_read(path, self.uid)), \
+                        patch.object(qualification_poll, 'Kubernetes', return_value=kube), \
+                        patch.object(qualification_poll, 'QualificationNodeBackend', return_value=self.backend), patch('sys.stdout', output):
                     with self.assertRaisesRegex(ValueError, 'observed blocked errors'):
                         main(['--execute', '--qualification', '--controller-module', 'cpu-models',
                               '--manual-helper', 'cpu-manual', '--state-root', str(self.state)])
@@ -236,15 +247,15 @@ class NodeBackendTests(unittest.TestCase):
         driver = SimpleNamespace(close=Mock())
         output = io.StringIO()
         # These are injected CPU dependencies, not a live driver or Kube API.
-        with patch('poll.load_pinned', side_effect=[self.m, SimpleNamespace(Nvml=lambda: driver), self.verifier]), \
-                patch('poll.os', SimpleNamespace(geteuid=lambda: 0)), \
-                patch('poll.private_directory', side_effect=lambda path:
+        with patch.object(qualification_poll, 'load_pinned', side_effect=[self.m, SimpleNamespace(Nvml=lambda: driver), self.verifier]), \
+                patch.object(qualification_poll, 'os', SimpleNamespace(geteuid=lambda: 0)), \
+                patch.object(qualification_poll, 'private_directory', side_effect=lambda path:
                       __import__('node_backend').private_directory(path, self.uid)), \
-                patch('poll.private_read', side_effect=lambda path: private_read(path, self.uid)), \
-                patch('poll.Kubernetes', return_value=kube), \
-                patch('poll.QualificationNodeBackend', return_value=self.backend), \
+                patch.object(qualification_poll, 'private_read', side_effect=lambda path: private_read(path, self.uid)), \
+                patch.object(qualification_poll, 'Kubernetes', return_value=kube), \
+                patch.object(qualification_poll, 'QualificationNodeBackend', return_value=self.backend), \
                 patch.object(self.backend, 'check_cleanup', side_effect=AssertionError('tombstone must skip cleanup')) as cleanup, \
-                patch('poll.time.sleep'), patch('sys.stdout', output):
+                patch.object(qualification_poll.time, 'sleep'), patch('sys.stdout', output):
             main(['--execute', '--qualification', '--controller-module', 'cpu-models',
                   '--manual-helper', 'cpu-manual', '--state-root', str(self.state), '--iterations', '2'])
         observed = [json.loads(line) for line in output.getvalue().splitlines()]
@@ -643,6 +654,6 @@ class NodeBackendTests(unittest.TestCase):
         def replace_after_hash(name, path):
             source.write_text("value = 'replaced'\n")
             return original_spec(name, path)
-        with patch('poll.importlib.util.spec_from_file_location', side_effect=replace_after_hash):
+        with patch.object(qualification_poll.importlib.util, 'spec_from_file_location', side_effect=replace_after_hash):
             loaded = load_pinned('_pinned_race', source, expected)
         self.assertEqual(loaded.value, 'approved')
