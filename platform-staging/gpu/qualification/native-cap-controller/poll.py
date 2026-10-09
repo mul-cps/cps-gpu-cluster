@@ -98,9 +98,11 @@ def gpu_clients(gpu_uuid):
 
 
 def health(driver):
-    require(Path('/sys/module/nvidia/version').read_text().strip() == driver.version, 'Loaded driver/NVML version disagreement')
+    require(driver.version == '615.71.09' and Path('/sys/module/nvidia/version').read_text().strip() == driver.version,
+            'Exact615.71.09 loaded driver/NVML agreement required')
     for key, expected in {'uvm_deny_managed_mmap': 'Y', 'uvm_disable_hmm': 'Y',
-                          'uvm_ats_mode': '0', 'uvm_enable_builtin_tests': '0'}.items():
+                          'uvm_ats_mode': '0', 'uvm_enable_builtin_tests': '0',
+                          'uvm_disable_sam_migration': 'Y'}.items():
         require((Path('/sys/module/nvidia_uvm/parameters') / key).read_text().strip() == expected,
                 'Exact experimental managed-memory guard configuration required')
     return True
@@ -130,8 +132,8 @@ def main(argv=None):
     manual = load_pinned('_cps_native_manual', args.manual_helper, MANUAL_SHA256)
     state = private_directory(args.state_root)
     authority = private_directory(state / 'authority')
-    enrolled = private_directory(authority / 'intents')
-    journal = models.PrivateJournal(authority / 'journal')
+    enrolled = private_directory(state / 'intents')
+    journal = models.PrivateJournal(state / 'journal')
     kube = Kubernetes(args.service_account)
     driver = manual.Nvml()
     seen = {}
