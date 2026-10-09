@@ -10,22 +10,38 @@ NV_STATUS memacctValidateMemoryImport(MemoryCharge *pCharge, NvU32 gpuId,
     ClientGroupLimits *pActorLimits;
     ClientGroupID actorLeaf = NULL, destinationLeaf = NULL;
     void *pidInfo;
+    NvU32 reason = 0, clientKind = 0;
+
 
     /* Immutable load-time opt-in; default-off preserves unmodified behavior. */
     if (!os_cps_native_import_guard_enabled())
         return NV_OK;
 
+    if (pDestination != NULL)
+        clientKind = (pDestination->bCpsGpuOpsSession ? 1U : 0U) |
+                     (pDestination->bCpsObjExportClient ? 2U : 0U) |
+                     (pDestination->pOsPidInfo != NULL ? 4U : 0U);
+
     /* Enabled mode requires native accounting; absence cannot authorize imports. */
     if (g_memacct.impl == CGROUP_IMPL_NONE)
+    {
+        os_cps_native_import_denied(gpuId, 11, clientKind, NV_ERR_NOT_SUPPORTED);
         return NV_ERR_NOT_SUPPORTED;
+    }
     /* dmem's charge has no fallback cligrp; reject rather than reinterpret it. */
     if (g_memacct.impl != CGROUP_IMPL_FALLBACK || g_memacct.mutex == NULL)
+    {
+        os_cps_native_import_denied(gpuId, 11, clientKind, NV_ERR_NOT_SUPPORTED);
         return NV_ERR_NOT_SUPPORTED;
+    }
 
     /* Preserve the real PID reference: find_vpid(host-tgid) is namespace-relative. */
     pidInfo = osGetPidInfo();
     if (pidInfo == NULL)
+    {
+        os_cps_native_import_denied(gpuId, 1, clientKind, status);
         return NV_ERR_INSUFFICIENT_PERMISSIONS;
+    }
     actorLeaf = os_cps_cgroup_get_from_pid_info(pidInfo, OS_CGROUP_IMPL_MISC);
     actorGroup = actorLeaf;
 
@@ -34,6 +50,7 @@ NV_STATUS memacctValidateMemoryImport(MemoryCharge *pCharge, NvU32 gpuId,
     if (pRegion == NULL)
     {
         status = NV_ERR_OBJECT_NOT_FOUND;
+        reason = 2;
         goto done;
     }
     /* Before any GPU caps exist, retain normal driver boot/internal behavior.
@@ -44,28 +61,54 @@ NV_STATUS memacctValidateMemoryImport(MemoryCharge *pCharge, NvU32 gpuId,
         goto done;
     }
     /* Once caps exist, uncharged/foreign/ambiguous backing is never authorized. */
-    if (pCharge == NULL || pCharge->cligrp == NULL || pCharge->gpuId != gpuId ||
-        actorGroup == NULL ||
-        (pActorLimits = memacctLimitsForGroupLocked(pRegion, &actorGroup)) == NULL ||
-        pActorLimits->HardLimit == 0 || pActorLimits->HardLimit == (NvLength)-1 ||
-        actorGroup != pCharge->cligrp)
+    if (pCharge == NULL || pCharge->cligrp == NULL || pCharge->gpuId != gpuId)
+    {
+        reason = 3;
         goto done;
-
+    }
+    if (actorGroup == NULL)
+    {
+        reason = 4;
+        goto done;
+    }
+    pActorLimits = memacctLimitsForGroupLocked(pRegion, &actorGroup);
+    if (pActorLimits == NULL || pActorLimits->HardLimit == 0 ||
+        pActorLimits->HardLimit == (NvLength)-1)
+    {
+        reason = 5;
+        goto done;
+    }
+    if (actorGroup != pCharge->cligrp)
+    {
+        reason = 6;
+        goto done;
+    }
     if (pDestination == NULL)
+    {
+        reason = 7;
         goto done;
+    }
     if (pDestination->pOsPidInfo != NULL)
     {
         destinationLeaf = os_cps_cgroup_get_from_pid_info(pDestination->pOsPidInfo, OS_CGROUP_IMPL_MISC);
         destinationGroup = destinationLeaf;
-        if (destinationGroup == NULL ||
-            memacctLimitsForGroupLocked(pRegion, &destinationGroup) == NULL ||
-            destinationGroup != actorGroup)
+        if (destinationGroup == NULL)
+        {
+            reason = 8;
             goto done;
+        }
+        if (memacctLimitsForGroupLocked(pRegion, &destinationGroup) == NULL ||
+            destinationGroup != actorGroup)
+        {
+            reason = 9;
+            goto done;
+        }
     }
-    else if (!pDestination->bCpsGpuOpsSession ||
+    else if ((!pDestination->bCpsGpuOpsSession && !pDestination->bCpsObjExportClient) ||
              pDestination->cachedPrivilege < RS_PRIV_LEVEL_KERNEL)
     {
         /* Missing user identity is not equivalent to a trusted kernel client. */
+        reason = 10;
         goto done;
     }
     /* A kernel intermediary has no independent user authority. It is allowed
@@ -79,5 +122,7 @@ done:
     if (actorLeaf != NULL)
         os_cgroup_put(actorLeaf);
     osPutPidInfo(pidInfo);
+    if (status != NV_OK)
+        os_cps_native_import_denied(gpuId, reason, clientKind, status);
     return status;
 }
