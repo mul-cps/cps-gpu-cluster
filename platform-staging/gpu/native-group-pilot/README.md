@@ -127,3 +127,86 @@ authority and retains any loaded modules for root inspection/recovery. The
 `/run/nvidia/firmware-r615-canary` directory is required and never altered or
 removed, because the stock R580 rollback also needs it. Original driver
 DaemonSet recovery remains root's separate operation.
+
+## Root-reviewed abort before the gate (qualification only)
+
+`abort_before_gate.py` defaults to an inert status and imports only the Python
+standard library. This one-shot recovery is restricted to the closed GPU2 pool
+and CPS `native-group-a/b` or CIT `native-group-a`. It applies only when root
+has proved that a failed node-agent startup never began a native transaction:
+the controller writes its protected journal before setting any cap, the
+journal still has the same inode/device and no records, no gate was published,
+the exact Pod is absent, and the healthy driver epoch remains unchanged.
+Missing journals, reset epochs, journals with any record, unavailable APIs,
+existing/replacement Pods, and uncertain observations retain the allocation.
+
+Root stops all native writers and reviews the exact gate-only Pod capture,
+failed node-agent log, pinned node-agent/controller sources, original ledger
+allocation and immutable enrollment. The closed evidence object records their
+hashes, exact attempt, ledger/enrollment UIDs and full enrollment hash. Its
+`proof` contains the typed node epoch, journal device/inode, true
+`journal_protected`, `journal_empty`, `gate_receipts_absent`,
+`native_writers_quiesced`, `exclusive_lock`, `driver_healthy`, and integer-zero
+`global_gpu_memory_mib`, `global_gpu_clients`, `global_compute_apps`,
+`pod_runtime_tasks`. `review.native_transaction_never_started` must be true.
+All hashes use `sha256:` followed by SHA256 of the exact reviewed artifact;
+object hashes use canonical JSON (`sort_keys=True`, separators `(',', ':')`,
+`allow_nan=False`). An explicit canonical evidence hash is required.
+
+The root fence command is a reviewed argv JSON array pinned by its canonical
+hash in the evidence. It must acquire the exclusive protected host journal
+writer lock and retain it while the CLI runs. It emits a fresh JSON line
+`{event: "fence-acquired", observed_at: UTC-Z, proof: ...}`; each stdin
+`{"op":"verify"}` independently rechecks the same protected journal, healthy
+epoch, quiesced writers, zero GPU clients/memory/tasks and emits
+`fence-verified` with fresh UTC time. `{"op":"release"}` releases the lock and
+exits successfully. The CLI checks a live subprocess around every actual API
+operation and repeats the proof before publication and CAS. A static JSON
+claim cannot replace this live root fence. Root must pin and protect any
+remote helper bytes referenced by the command before execution.
+
+First generate a private offline proposal from exact captured API objects:
+
+```sh
+python3 platform-staging/gpu/native-group-pilot/abort_before_gate.py \
+  --propose --qualification-only --evidence /ROOT/REVIEWED/evidence.json \
+  --evidence-sha256 sha256:CANONICAL_REVIEWED_EVIDENCE_HASH \
+  --ledger /ROOT/REVIEWED/ledger.json --enrollment /ROOT/REVIEWED/enrollment.json \
+  --output /ROOT/REVIEWED/new-proposal.json
+```
+
+Root can API-server dry-run the proposal's `abort_configmap` using its existing
+operator credential. The proposal includes a CAS plan with an explicitly
+unresolved abort UID; it cannot be applied as a ledger patch. After independent
+review, execute with the pinned live fence and root operator credential:
+
+```sh
+python3 platform-staging/gpu/native-group-pilot/abort_before_gate.py \
+  --execute --qualification-only --evidence /ROOT/REVIEWED/evidence.json \
+  --evidence-sha256 sha256:CANONICAL_REVIEWED_EVIDENCE_HASH \
+  --fence-command-file /ROOT/REVIEWED/fence-command.json \
+  --kubeconfig /ROOT/REVIEWED/operator.kubeconfig \
+  --output /ROOT/REVIEWED/new-execution-receipt.json
+```
+
+The CLI independently reads the exact Node UID, Pod absence, ledger and
+immutable enrollment. It creates and reads back a distinct immutable
+`cps-native-abort-{binding_id[:40]}` ConfigMap, with only the binding label and
+`abort.json`, then JSONPatch-tests both original ledger UID and fresh
+resourceVersion. The allocation becomes `released` and gains
+`pre_gate_abort: {configmap, configmap_uid, sha256}` referencing the actual API
+UID and canonical payload hash. The original intent, immutable allocation,
+other rows, enrollment and all files remain. An orphan abort ConfigMap after
+CAS failure holds no capacity; retry requires exact proof equality. A completed
+retry requires the same real ConfigMap UID and exact ledger tuple.
+
+The node agent requires the matching immutable CM and ledger proof, unchanged
+healthy epoch, no journal record and first actual Pod absence before recording
+its separate protected abort tombstone. It excludes that old UID from capacity
+and never constructs a cap identity or cleanup receipt for it. Preserve the
+abort CM, enrollment and ledger UID/rows permanently for these tombstones.
+There are no SQL, device/cap, Pod-delete or enrollment-delete operations in
+this CLI. Release the matching member reservation afterward through the
+existing gateway service API, which still independently observes Hub/Pod
+shutdown. Existing gateway/node credentials must remain unable to create abort
+ConfigMaps. This recovery does not enable profiles or qualify general packing.
