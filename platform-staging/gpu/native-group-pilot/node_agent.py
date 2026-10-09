@@ -27,9 +27,9 @@ NAMESPACES = {'cps': 'jupyterhub', 'cit': 'cit-jhub'}
 LABEL = 'cps.compute/native-binding'
 SOURCE_PINS = {
     'native_gpu_controller.py': 'f40ef40f71c9f1206f23fb7052fd69aafd103c0f03a24e6bf3987395dacfd179',
-    'native_gpu_health.py': 'ac3ec5477c0d1f057e8973172a8aa97ffe37a5bd139b4b537b9f8d17caf50a20',
+    'native_gpu_health.py': '52fdbdae3d5e2f66fd4653d94ef5a62f734e185fabec30450f4a1b70cfee7d67',
     'node_backend.py': 'fb5651ea10118de02ee2e9601a765f947d2ae61f1b2e8670d523912b594afda0',
-    'poll.py': '6199b8960215f571f722c45a48bb534a9201f6c1e03b32f0f4aa8cb9f83cfce7',
+    'poll.py': '6032d735473813a04df53aba976b900744be5ef17c77d49c5b1d8340c0c183d9',
     'pod_cap.py': '5c84ab668dd276b0216199a964f42886712af9225f9fc702740bfa9bb361a39f',
 }
 _NAME = re.compile(r'[a-z0-9](?:[a-z0-9.-]{0,251}[a-z0-9])?')

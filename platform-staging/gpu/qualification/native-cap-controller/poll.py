@@ -19,7 +19,7 @@ from node_backend import QualificationNodeBackend, GATE, private_directory, priv
 
 
 CORE_SHA256 = 'f40ef40f71c9f1206f23fb7052fd69aafd103c0f03a24e6bf3987395dacfd179'
-HEALTH_SHA256 = 'ac3ec5477c0d1f057e8973172a8aa97ffe37a5bd139b4b537b9f8d17caf50a20'
+HEALTH_SHA256 = '52fdbdae3d5e2f66fd4653d94ef5a62f734e185fabec30450f4a1b70cfee7d67'
 MANUAL_SHA256 = '5c84ab668dd276b0216199a964f42886712af9225f9fc702740bfa9bb361a39f'
 
 

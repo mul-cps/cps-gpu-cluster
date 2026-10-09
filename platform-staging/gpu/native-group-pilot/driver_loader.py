@@ -18,8 +18,8 @@ import subprocess
 import sys
 import uuid
 
-HEALTH_SHA256 = 'ac3ec5477c0d1f057e8973172a8aa97ffe37a5bd139b4b537b9f8d17caf50a20'
-CORE_SHA256 = '194a10d24c64eea9240b86845659936f1051b184c63c471f8ebeda2c5bf4495c'
+HEALTH_SHA256 = '52fdbdae3d5e2f66fd4653d94ef5a62f734e185fabec30450f4a1b70cfee7d67'
+CORE_SHA256 = '4fdcafcdf7f57b9de81f56e8e17db06a91e27680c6a711f3888fd0b76da46421'
 UVM_SHA256 = 'b2ae67722e9e21a70c319aeed2184f5b2d1f23b8e32dea00816cfd5cd2c3ee61'
 MANIFEST = 'driver-load-manifest.json'
 GENERATION = 'driver-generation'

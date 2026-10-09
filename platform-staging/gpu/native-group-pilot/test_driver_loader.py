@@ -81,6 +81,16 @@ class LoaderTest(unittest.TestCase):
         manifest['modules']['nvidia']['elf_sha256'] = '0' * 64
         with self.assertRaises(ValueError): health.validate_load_manifest(manifest, boot_id=manifest['boot_id'], driver_generation=manifest['driver_generation'], kernel_release='test-kernel')
 
+    def test_optional_stack_core_elf_is_pinned_across_loader_and_shared_health(self):
+        raw = json.loads((HERE / 'source-snapshot.json').read_text())['sources']['native_gpu_health.py'].encode()
+        health = self.loader.load_source(raw)
+        expected = '4fdcafcdf7f57b9de81f56e8e17db06a91e27680c6a711f3888fd0b76da46421'
+        self.assertEqual(self.loader.CORE_SHA256, expected)
+        self.assertEqual(health.MODULE_BUILDS['nvidia']['elf_sha256'], expected)
+        self.assertEqual(self.loader.HEALTH_SHA256, hashlib.sha256(raw).hexdigest())
+        self.assertEqual(health.MODULE_BUILDS['nvidia']['srcversion'], '2F87172C8F45C13DCB1A7BA')
+        self.assertEqual(self.loader.UVM_SHA256, health.MODULE_BUILDS['nvidia_uvm']['elf_sha256'])
+
     def test_authority_publication_modes_no_overwrite_and_invalidation(self):
         with tempfile.TemporaryDirectory(dir=Path.home()) as temporary:
             authority = Path(temporary); authority.chmod(0o700)
