@@ -152,7 +152,15 @@ def pci_inventory():
 
 def gpu_fd_clients():
     paths = [*Path('/dev').glob('nvidia*'), *Path('/dev/nvidia-caps').glob('*')]
-    DEVICE_IDS.update(p.stat().st_rdev for p in paths if p.is_char_device())
+    for path in paths:
+        try:
+            info = path.stat()
+        except FileNotFoundError:
+            # Device removal can race observation during unload. Retain every
+            # previously observed ID so surviving descriptors remain visible.
+            continue
+        if stat.S_ISCHR(info.st_mode):
+            DEVICE_IDS.add(info.st_rdev)
     ids = DEVICE_IDS
     require(bool(ids), 'Actual NVIDIA device inventory required')
     clients = set()
@@ -355,41 +363,75 @@ def main(argv=None):
     load_protected(ROOT / 'operator/node_agent.py', dependencies['node_agent.py'], 'node_agent')
     load_protected(ROOT / 'operator/abort_before_gate.py', dependencies['abort_before_gate.py'], 'abort_before_gate')
     recovery = load_protected(ROOT / 'operator/teardown_recovery.py', args.recovery_source_sha256, 'teardown_recovery')
-    health = load_protected(ROOT / 'driver-inputs/native_gpu_health.py', OLD_HEALTH_SHA, 'old_native_gpu_health')
     request = read_rpc()
-    require(set(request) == {'op', 'nonce', 'plan', 'plan_sha256'} and request['op'] == 'acquire', 'Closed acquire RPC required')
+    resumed = request.get('op') == 'resume-after-audit'
+    if resumed:
+        require(set(request) == {'op', 'nonce', 'plan', 'plan_sha256', 'audit', 'resume'},
+                'Closed resume-after-audit RPC required')
+    else:
+        require(set(request) == {'op', 'nonce', 'plan', 'plan_sha256'}
+                and request['op'] == 'acquire', 'Closed acquire RPC required')
     plan, digest, nonce = request['plan'], request['plan_sha256'], request['nonce']
     require(isinstance(nonce, str) and str(uuid.UUID(nonce)) == nonce, 'Fresh canonical RPC nonce required')
-    recovery.validate_plan(plan, digest)
+    historical_payload = None
+    resume = None
+    if resumed:
+        recovery.validate_historical_plan(plan, digest)
+        resume = request['resume']
+        historical_payload = recovery.validate_resume(resume, plan, request['audit'])
+    else:
+        recovery.validate_plan(plan, digest)
     fds = {}
     try:
         for name, path in [('journal', ROOT / 'journal/.writer.lock'),
                            ('driver', ROOT / 'authority/.driver-loader.lock'),
                            ('maintenance', ROOT / 'operator/.teardown.lock')]:
             fds[name] = acquire_lock(path)
-        before = before_proof(plan, digest, fds, recovery, health)
         def emit(event, proof):
             print(json.dumps({'event': event, 'nonce': nonce,
                 'observed_at': datetime.datetime.now(datetime.timezone.utc).isoformat().replace('+00:00', 'Z'),
                 'proof': proof}, sort_keys=True), flush=True)
-        emit('fence-acquired', before)
-        request = read_rpc()
-        require(request == {'op': 'verify-teardown', 'nonce': nonce}, 'Closed ordered teardown RPC required')
-        # Recheck zero memory/apps/FDs/tasks immediately before invalidation.
-        require(before_proof(plan, digest, fds, recovery, health) == before, 'Original quiescence must remain exact')
-        invalidate_old_authority(plan, recovery)
-        deadline = time.monotonic() + 120
-        while any(modules()):
-            require(time.monotonic() < deadline, 'External Root module unload timed out; retain maintenance evidence')
-            require(gpu_fd_clients() == 0 and quiescence(plan['scope']) == (True, 0), 'New GPU client or native writer appeared')
-            time.sleep(0.2)
-        teardown = teardown_proof(plan, digest, fds, recovery, before)
-        emit('fence-teardown-verified', teardown)
-        request = read_rpc()
+        if resumed:
+            # The original observations come only from the real immutable
+            # audit. No unloaded driver is queried to recreate a before proof.
+            before = historical_payload['before']
+            require(lock_proof(fds) == before['locks'], 'Historical lock inode continuity required')
+            teardown = teardown_proof(plan, digest, fds, recovery, before)
+            emit('fence-resumed', teardown)
+            explicitly_verified = False
+        else:
+            health = load_protected(ROOT / 'driver-inputs/native_gpu_health.py', OLD_HEALTH_SHA, 'old_native_gpu_health')
+            before = before_proof(plan, digest, fds, recovery, health)
+            emit('fence-acquired', before)
+            request = read_rpc()
+            require(request == {'op': 'verify-teardown', 'nonce': nonce}, 'Closed ordered teardown RPC required')
+            # Recheck zero memory/apps/FDs/tasks immediately before invalidation.
+            require(before_proof(plan, digest, fds, recovery, health) == before, 'Original quiescence must remain exact')
+            invalidate_old_authority(plan, recovery)
+            deadline = time.monotonic() + 120
+            while any(modules()):
+                require(time.monotonic() < deadline, 'External Root module unload timed out; retain maintenance evidence')
+                require(gpu_fd_clients() == 0 and quiescence(plan['scope']) == (True, 0), 'New GPU client or native writer appeared')
+                time.sleep(0.2)
+            teardown = teardown_proof(plan, digest, fds, recovery, before)
+            emit('fence-teardown-verified', teardown)
+            explicitly_verified = True
+        while True:
+            request = read_rpc()
+            if request != {'op': 'verify-teardown', 'nonce': nonce}:
+                break
+            require(teardown_proof(plan, digest, fds, recovery, before) == teardown,
+                    'Unchanged positive teardown required at reverification')
+            emit('fence-teardown-verified', teardown)
+            explicitly_verified = True
+        require(explicitly_verified, 'Explicit current teardown verification required before publication')
         require(set(request) == {'op', 'nonce', 'plan_sha256', 'audit', 'cleanup'}
                 and request['op'] == 'publish-local' and request['nonce'] == nonce
                 and request['plan_sha256'] == digest, 'Closed ordered local publication RPC required')
         require(teardown_proof(plan, digest, fds, recovery, before) == teardown, 'Unchanged positive teardown required before completion')
+        if resumed:
+            require(recovery.validate_resume(resume, plan, request['audit']) == historical_payload,
+                    'Original immutable audit required at completion')
         local = recovery.complete_local(ROOT, plan, request['audit'], request['cleanup'],
             before=before, teardown=teardown, lock_fds=fds, trusted_uid=0)
         def completion():

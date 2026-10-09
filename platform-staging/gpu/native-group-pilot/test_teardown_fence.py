@@ -210,8 +210,8 @@ class FenceTests(unittest.TestCase):
             self.rpc(b' ' * 262145 + b'\n')
 
     def test_device_ids_survive_device_node_removal_and_detect_existing_fd(self):
-        device = SimpleNamespace(is_char_device=lambda: True,
-            stat=lambda: SimpleNamespace(st_rdev=os.makedev(195, 0)))
+        device = SimpleNamespace(stat=lambda: SimpleNamespace(
+            st_mode=stat.S_IFCHR | 0o600, st_rdev=os.makedev(195, 0)))
         handle = SimpleNamespace(stat=lambda: SimpleNamespace(
             st_mode=stat.S_IFCHR | 0o600, st_rdev=os.makedev(195, 0)))
         active = {'devices': [device], 'fds': []}
@@ -229,6 +229,22 @@ class FenceTests(unittest.TestCase):
             self.assertEqual(fence.gpu_fd_clients(), 1)
             active['fds'] = []
             self.assertEqual(fence.gpu_fd_clients(), 0)
+        self.assertEqual(fence.DEVICE_IDS, {os.makedev(195, 0)})
+
+    def test_device_disappearance_during_scan_retains_known_ids_and_fd_detection(self):
+        disappeared = SimpleNamespace(stat=Mock(side_effect=FileNotFoundError('device removed')))
+        handle = SimpleNamespace(stat=lambda: SimpleNamespace(
+            st_mode=stat.S_IFCHR | 0o600, st_rdev=os.makedev(195, 0)))
+        class Process:
+            name = '123'
+            def __truediv__(self, name):
+                return SimpleNamespace(iterdir=lambda: [handle])
+        paths = {'/dev': SimpleNamespace(glob=lambda pattern: [disappeared]),
+                 '/dev/nvidia-caps': SimpleNamespace(glob=lambda pattern: []),
+                 '/proc': SimpleNamespace(iterdir=lambda: [Process()])}
+        fence.DEVICE_IDS.add(os.makedev(195, 0))
+        with patch.object(fence, 'Path', side_effect=lambda p: paths[str(p)]):
+            self.assertEqual(fence.gpu_fd_clients(), 1)
         self.assertEqual(fence.DEVICE_IDS, {os.makedev(195, 0)})
 
     def test_unreadable_process_fds_are_not_silently_zero_clients(self):
@@ -274,29 +290,60 @@ class FenceTests(unittest.TestCase):
             journal_sha256=proof['journal_sha256'], gate_sha256=None)
 
     def main_transaction(self, *, changed_teardown=False, operation='release', nonce=None,
-                         invalid_bootstrap=None):
+                         invalid_bootstrap=None, verify_count=1, resume=False,
+                         invalid_audit=False, replaced_lock=False, changed_journal=False,
+                         premature_publish=False):
         """Fake every host/API input; retain real temporary lock lifecycle."""
         plan, digest, _ = self.proof_fixture()
         expected_nonce = '11111111-2222-4333-8444-555555555555'
-        before = {'original': 'before-observation'}
-        teardown = {'original': 'positive-teardown-observation'}
-        final_teardown = {'current': 'post-completion-teardown-observation'}
+        lock_paths = {'journal': self.root / 'journal/.writer.lock',
+            'driver': self.root / 'authority/.driver-loader.lock',
+            'maintenance': self.root / 'operator/.teardown.lock'}
+        for path in lock_paths.values():
+            self.file(str(path.relative_to(self.root)))
+        original_locks = {name: {'device': path.stat().st_dev, 'inode': path.stat().st_ino}
+                          for name, path in lock_paths.items()}
+        before = {'stage': 'before', 'operation_id': plan['operation_id'], 'plan_sha256': digest,
+            'scope': plan['scope'], 'journal_sha256': plan['journal']['sha256'], 'locks': original_locks,
+            'native_writers_quiesced': True, 'locks_held': True, 'driver_healthy': True,
+            'gpu_memory_bytes': {g['gpu_uuid']: 0 for g in plan['scope']['nvidia_gpus']},
+            'gpu_fd_clients': 0, 'compute_apps': 0, 'pod_runtime_tasks': 0, 'gate_sha256': None}
+        teardown = {'stage': 'teardown', 'operation_id': plan['operation_id'], 'plan_sha256': digest,
+            'node_uid': fence.NODE_UID, 'boot_id': fence.BOOT_ID,
+            'old_driver_generation': fence.OLD_GENERATION, 'old_generation_invalidated': True,
+            'sysfs_modules': [], 'proc_modules': [],
+            'pci_unbound': [g['pci_bdf'] for g in plan['scope']['nvidia_gpus']],
+            'gpu_fd_clients': 0, 'pod_runtime_tasks': 0, 'locks': original_locks,
+            'journal_sha256': plan['journal']['sha256'], 'gate_sha256': None,
+            'native_writers_quiesced': True, 'locks_held': True, 'new_load_absent': True}
+        final_teardown = {**teardown, 'journal_sha256': 'sha256:' + 'c' * 64}
         audit = {'immutable': True, 'metadata': {'uid': 'actual-audit'}}
         cleanup = {'immutable': True, 'metadata': {'uid': 'actual-cleanup'}}
         completion = {'journal_record': {'state': 'cleaned'},
             'journal_raw_sha256': 'sha256:' + 'c' * 64, 'archive_sha256': 'sha256:' + 'a' * 64,
             'tombstone': {'cleanup_uid': 'actual-cleanup'}, 'gate_absent': True}
-        requests = [
-            {'op': 'acquire', 'nonce': expected_nonce, 'plan': plan, 'plan_sha256': digest},
-            {'op': 'verify-teardown', 'nonce': expected_nonce},
-            {'op': 'publish-local', 'nonce': expected_nonce, 'plan_sha256': digest,
-             'audit': audit, 'cleanup': cleanup},
+        historical_payload = {'protocol': 'cps-native-teardown/v1', 'plan': plan,
+            'plan_sha256': digest, 'before': before, 'teardown': teardown}
+        resume_authority = {'audit_uid': 'actual-audit', 'audit_sha256': 'sha256:' + 'd' * 64,
+            'fence_command_sha256': 'sha256:' + 'e' * 64, 'publisher_sha256': 'sha256:' + 'f' * 64}
+        initial_request = {'op': 'acquire', 'nonce': expected_nonce, 'plan': plan, 'plan_sha256': digest}
+        if resume:
+            initial_request.update(op='resume-after-audit', audit=audit, resume=resume_authority)
+        requests = [initial_request]
+        if not premature_publish:
+            requests.extend({'op': 'verify-teardown', 'nonce': expected_nonce} for _ in range(verify_count))
+        requests.extend([{'op': 'publish-local', 'nonce': expected_nonce, 'plan_sha256': digest,
+                         'audit': audit, 'cleanup': cleanup},
             {'op': 'verify-completion', 'nonce': expected_nonce},
-            {'op': operation, 'nonce': nonce or expected_nonce}]
+            {'op': operation, 'nonce': nonce or expected_nonce}])
         acquired = {}
         real_acquire = fence.acquire_lock
-        for path in ('journal/.writer.lock', 'authority/.driver-loader.lock', 'operator/.teardown.lock'):
-            self.file(path)
+        if replaced_lock:
+            # Keep the original inode alive, preventing accidental inode reuse.
+            old = os.open(lock_paths['driver'], os.O_RDONLY)
+            self.addCleanup(os.close, old)
+            lock_paths['driver'].unlink(); self.file('authority/.driver-loader.lock')
+            self.assertNotEqual(lock_paths['driver'].stat().st_ino, original_locks['driver']['inode'])
 
         def acquiring(path):
             fd = real_acquire(path)
@@ -321,6 +368,11 @@ class FenceTests(unittest.TestCase):
             self.assertEqual(kwargs, {'before': before, 'teardown': teardown,
                 'lock_fds': dict(zip(('journal', 'driver', 'maintenance'), acquired.values())),
                 'trusted_uid': 0})
+            if resume:
+                self.assertIs(kwargs['before'], historical_payload['before'])
+                # Resume passes a freshly observed teardown into the current
+                # publisher. The immutable audit retains the original proof.
+                self.assertIsNot(kwargs['teardown'], historical_payload['teardown'])
 
         def readback(root, actual_plan, actual_audit, actual_cleanup, **kwargs):
             assert_locks_held()
@@ -328,12 +380,22 @@ class FenceTests(unittest.TestCase):
                 (self.root, plan, audit, cleanup, {'trusted_uid': 0}))
             return completion.copy()
 
-        recovery = SimpleNamespace(validate_plan=Mock(), complete_local=Mock(side_effect=publish),
+        resume_validator = Mock(return_value=historical_payload)
+        if invalid_audit:
+            resume_validator.side_effect = ValueError('Historical audit actual UID changed')
+        recovery = SimpleNamespace(validate_plan=Mock(), validate_historical_plan=Mock(),
+            validate_resume=resume_validator, complete_local=Mock(side_effect=publish),
             read_local_completion=Mock(side_effect=readback))
         invalidation = Mock()
-        teardown_observations = [teardown,
-            {'changed': 'unexpected-writer'} if changed_teardown else teardown,
-            final_teardown, final_teardown]
+        before_reader = Mock(return_value=before)
+        if resume:
+            before_reader.side_effect = AssertionError('Resume must never query old health')
+        observations = [dict(teardown) for _ in range(verify_count + (1 if resume else 0))]
+        observations += [{**teardown, 'journal_sha256': 'sha256:' + '9' * 64} if changed_teardown else teardown,
+                         final_teardown, final_teardown]
+        teardown_reader = Mock(side_effect=observations)
+        if changed_journal:
+            teardown_reader.side_effect = ValueError('Protected journal changed')
         own_source = Path(fence.__file__).read_bytes()
         protected_bytes = {Path(fence.__file__): own_source}
         dependencies = {}
@@ -347,7 +409,12 @@ class FenceTests(unittest.TestCase):
         protected_bytes[self.root / 'operator/dependencies.json'] = manifest_raw
         if invalid_bootstrap == 'dependency':
             protected_bytes[self.root / 'operator/node_agent.py'] = b'tampered dependency'
-        loader = Mock(side_effect=[object(), object(), recovery, object()])
+        def loading(path, expected, name):
+            if name == 'teardown_recovery': return recovery
+            if name == 'old_native_gpu_health':
+                self.assertFalse(resume, 'Resume must not load/validate the old health source')
+            return object()
+        loader = Mock(side_effect=loading)
         failure = None
         with self.root_files(), redirect_stdout(io.StringIO()) as output, \
              patch.object(fence.os, 'geteuid', return_value=0), \
@@ -355,10 +422,10 @@ class FenceTests(unittest.TestCase):
              patch.object(fence, 'load_protected', loader), \
              patch.object(fence, 'read_rpc', side_effect=requests), \
              patch.object(fence, 'acquire_lock', side_effect=acquiring), \
-             patch.object(fence, 'before_proof', return_value=before), \
+             patch.object(fence, 'before_proof', before_reader), \
              patch.object(fence, 'invalidate_old_authority', invalidation), \
              patch.object(fence, 'modules', return_value=([], [])), \
-             patch.object(fence, 'teardown_proof', side_effect=teardown_observations), \
+             patch.object(fence, 'teardown_proof', teardown_reader), \
              patch.object(fence.subprocess, 'run', side_effect=AssertionError('No hardware command')):
             try:
                 fence.main(['--execute', '--qualification', '--fence-source-sha256',
@@ -375,9 +442,23 @@ class FenceTests(unittest.TestCase):
             invalidation.assert_not_called()
             loader.assert_not_called()
             self.assertEqual(acquired, {})
+        elif resume:
+            recovery.validate_plan.assert_not_called()
+            recovery.validate_historical_plan.assert_called_once_with(plan, digest)
+            expected_calls = 2 if recovery.complete_local.called else 1
+            self.assertEqual(recovery.validate_resume.call_count, expected_calls)
+            for call in recovery.validate_resume.call_args_list:
+                self.assertEqual(call.args, (resume_authority, plan, audit))
+            invalidation.assert_not_called(); before_reader.assert_not_called()
+            self.assertFalse(any(call.args[2] == 'old_native_gpu_health' for call in loader.call_args_list))
         else:
             recovery.validate_plan.assert_called_once_with(plan, digest)
-            invalidation.assert_called_once_with(plan, recovery)
+            if premature_publish:
+                invalidation.assert_not_called()
+            else:
+                invalidation.assert_called_once_with(plan, recovery)
+        if not failure:
+            self.assertEqual(teardown_reader.call_count, verify_count + (1 if resume else 0) + 3)
         return recovery, failure, [json.loads(line) for line in output.getvalue().splitlines()]
 
     def test_main_retains_all_three_real_locks_through_publication_and_fresh_completion(self):
@@ -416,6 +497,41 @@ class FenceTests(unittest.TestCase):
                 self.assertIn(detail, str(failure))
                 self.assertEqual(events, [])
                 recovery.complete_local.assert_not_called()
+
+    def test_main_repeated_verify_keeps_original_before_and_first_teardown(self):
+        recovery, failure, events = self.main_transaction(verify_count=2)
+        self.assertIsNone(failure)
+        self.assertEqual([event['event'] for event in events], ['fence-acquired',
+            'fence-teardown-verified', 'fence-teardown-verified', 'fence-local-published', 'fence-completion-verified'])
+        self.assertEqual(events[1]['proof'], events[2]['proof'])
+        recovery.complete_local.assert_called_once()
+
+    def test_resume_reacquires_original_locks_and_preserves_historical_proofs_without_old_health(self):
+        recovery, failure, events = self.main_transaction(resume=True)
+        self.assertIsNone(failure)
+        self.assertEqual([event['event'] for event in events], ['fence-resumed',
+            'fence-teardown-verified', 'fence-local-published', 'fence-completion-verified'])
+        self.assertEqual(events[0]['proof'], events[1]['proof'])
+        recovery.complete_local.assert_called_once()
+        self.assertEqual(recovery.read_local_completion.call_count, 2)
+
+    def test_resume_replaced_lock_invalid_audit_or_changed_current_journal_never_publishes(self):
+        for kwargs in ({'replaced_lock': True}, {'invalid_audit': True}, {'changed_journal': True}):
+            with self.subTest(kwargs=kwargs):
+                recovery, failure, events = self.main_transaction(resume=True, **kwargs)
+                self.assertIsNotNone(failure)
+                self.assertEqual(events, [])
+                recovery.complete_local.assert_not_called()
+                recovery.read_local_completion.assert_not_called()
+
+    def test_initial_or_resumed_publication_without_explicit_verify_is_rejected(self):
+        for resume in (False, True):
+            with self.subTest(resume=resume):
+                recovery, failure, events = self.main_transaction(resume=resume, premature_publish=True)
+                self.assertIsNotNone(failure)
+                self.assertEqual(len(events), 1)
+                recovery.complete_local.assert_not_called()
+                recovery.read_local_completion.assert_not_called()
 
 
 if __name__ == '__main__':
