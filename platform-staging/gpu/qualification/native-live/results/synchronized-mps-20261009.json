@@ -1,0 +1,327 @@
+{
+  "schema": "cps-native-synchronized-mps-assessment/v1",
+  "date": "2026-10-09",
+  "status": "bounded-measured-pass",
+  "productionQualified": false,
+  "groupSharingEnabled": false,
+  "sourceImportGuardQualified": false,
+  "boundedMpsPassed": true,
+  "scope": "One trusted no-MIG two-Pod qualification run with separate private MPSv2 daemons on the same physical GPU; no shared host daemon.",
+  "source": {
+    "driverVersion": "615.71.09",
+    "coreElfSha256": "59f623fe5fdc89ef06f8055ee4dbfafeabe70b1d0bcabc487bc6fe04b78d6e77",
+    "coreSrcversion": "C6CF64F73A3430C26C030B7",
+    "driverGeneration": "c814c591-c494-4a67-ade2-1af3c64ad608",
+    "loadObservedNs": 1791535454163003624,
+    "guardEnabled": true,
+    "guardFlagMode": "0400",
+    "loadReceiptSha256": "2ae1cbf8631a08f9e945bd0641889ce666d196ad1783a4685736ccc02f6b2f0d",
+    "coreBuildIdentityUsesElfHash": true,
+    "heldProbeSha256": "f152838b93c190871ebbd1287faf703de1be8571f2d2900219c87705b93b2a4c",
+    "buildReceiptSha256": "691fbf79e9f762129f917512d0eea80c88050de41664b738fcafd1b4873ae938",
+    "sourceCommit": "61dcc93722ecb418bb5f2e00923f05b4b8051dd1",
+    "patchSha256": "58823f1b3518578ef0c275d77caf194e5cb00fd4dc322dff1ef30389ab78689a",
+    "buildReceiptScope": "CPU build receipt; actual loading is recorded separately in the load receipt."
+  },
+  "bindings": {
+    "main": {
+      "specSha256": "004e337268d54d72a473f52d994359457c66085a3765fa192e57283b875ba368",
+      "capBytes": 5368709120,
+      "policyHash": "sha256:b5c32203f0f6b5db6471ea1e910fd04a6bd92fc69ce5b1e537aff5870592308a"
+    },
+    "peer": {
+      "specSha256": "b1d721ce0aee249d3affd1e3e286c5a9126402e97e45565c307f9b3bddd531fc",
+      "capBytes": 5368709120,
+      "policyHash": "sha256:b5c32203f0f6b5db6471ea1e910fd04a6bd92fc69ce5b1e537aff5870592308a"
+    }
+  },
+  "main": {
+    "clientContainerPid": 104,
+    "ordinaryAllocationMiB": 64,
+    "ordinaryCudaResult": 0,
+    "overCapCudaResult": 2,
+    "recoveryAllocationMiB": 64,
+    "recoveryCudaResult": 0,
+    "recoveryTouchResult": 0,
+    "managedCudaResult": 801,
+    "managedTouchAttempted": false,
+    "recoveryTickCudaResult": 0,
+    "heldWindowStartNs": 1791535818797843990,
+    "heldWindowEndNs": 1791535848797974434,
+    "heldWindowSeconds": 30.000130444
+  },
+  "peer": {
+    "clientContainerPid": 65,
+    "successfulTicks": 300,
+    "contextReadyNs": 1791535818208194421,
+    "completionNs": 1791535878356055932,
+    "elapsedSeconds": 60.147861511,
+    "maxTickGapNs": 200777300,
+    "allMainMilestonesBracketed": true,
+    "phaseCoverage": [
+      {
+        "phase": "context-ready",
+        "observedNs": 1791535818795619550,
+        "offsetNs": 587425129,
+        "peerTickBeforeNs": 1791535818609701660,
+        "peerTickAfterNs": 1791535818810267002
+      },
+      {
+        "phase": "ordinary-64",
+        "observedNs": 1791535818795969373,
+        "offsetNs": 587774952,
+        "peerTickBeforeNs": 1791535818609701660,
+        "peerTickAfterNs": 1791535818810267002
+      },
+      {
+        "phase": "over-cap-attempt",
+        "observedNs": 1791535818796397832,
+        "offsetNs": 588203411,
+        "peerTickBeforeNs": 1791535818609701660,
+        "peerTickAfterNs": 1791535818810267002
+      },
+      {
+        "phase": "recovery-64",
+        "observedNs": 1791535818797368725,
+        "offsetNs": 589174304,
+        "peerTickBeforeNs": 1791535818609701660,
+        "peerTickAfterNs": 1791535818810267002
+      },
+      {
+        "phase": "managed-attempt",
+        "observedNs": 1791535818797645350,
+        "offsetNs": 589450929,
+        "peerTickBeforeNs": 1791535818609701660,
+        "peerTickAfterNs": 1791535818810267002
+      },
+      {
+        "phase": "recovery-tick",
+        "observedNs": 1791535818797819916,
+        "offsetNs": 589625495,
+        "peerTickBeforeNs": 1791535818609701660,
+        "peerTickAfterNs": 1791535818810267002
+      },
+      {
+        "phase": "registered-client-inspection-window-start",
+        "observedNs": 1791535818797843990,
+        "offsetNs": 589649569,
+        "peerTickBeforeNs": 1791535818609701660,
+        "peerTickAfterNs": 1791535818810267002
+      },
+      {
+        "phase": "registered-client-inspection-window-end",
+        "observedNs": 1791535848797974434,
+        "offsetNs": 30589780013,
+        "peerTickBeforeNs": 1791535848691479966,
+        "peerTickAfterNs": 1791535848892257266
+      },
+      {
+        "phase": "measurement-passed",
+        "observedNs": 1791535848798067318,
+        "offsetNs": 30589872897,
+        "peerTickBeforeNs": 1791535848691479966,
+        "peerTickAfterNs": 1791535848892257266
+      }
+    ]
+  },
+  "registrations": [
+    {
+      "observedNs": 1791535819412876375,
+      "offsetNs": 1204681954,
+      "clients": {
+        "main": {
+          "serverContainerPid": 106,
+          "clientContainerPid": 104,
+          "observedNs": 1791535819088579160
+        },
+        "peer": {
+          "serverContainerPid": 67,
+          "clientContainerPid": 65,
+          "observedNs": 1791535819399704696
+        }
+      }
+    },
+    {
+      "observedNs": 1791535820464883716,
+      "offsetNs": 2256689295,
+      "clients": {
+        "main": {
+          "serverContainerPid": 106,
+          "clientContainerPid": 104,
+          "observedNs": 1791535820136361230
+        },
+        "peer": {
+          "serverContainerPid": 67,
+          "clientContainerPid": 65,
+          "observedNs": 1791535820451239961
+        }
+      }
+    }
+  ],
+  "nativeAccounting": {
+    "sampleCount": 4,
+    "samples": [
+      {
+        "milestone": "before-private-daemons",
+        "observedNs": 1791535816958235201,
+        "offsetNs": -1249959220,
+        "nativeUsage": {
+          "main": {
+            "usedBytes": 0,
+            "capBytes": 5368709120,
+            "usedFractionOfCap": 0.0
+          },
+          "peer": {
+            "usedBytes": 0,
+            "capBytes": 5368709120,
+            "usedFractionOfCap": 0.0
+          }
+        },
+        "sameGpuComputeAppCount": 0
+      },
+      {
+        "milestone": "both-registered-during-main-hold",
+        "observedNs": 1791535819818575554,
+        "offsetNs": 1610381133,
+        "nativeUsage": {
+          "main": {
+            "usedBytes": 465911488,
+            "capBytes": 5368709120,
+            "usedFractionOfCap": 0.08678277730941772
+          },
+          "peer": {
+            "usedBytes": 465963712,
+            "capBytes": 5368709120,
+            "usedFractionOfCap": 0.08679250478744507
+          }
+        },
+        "sameGpuComputeAppCount": 4
+      },
+      {
+        "milestone": "main-quit-peer-still-live",
+        "observedNs": 1791535849990846765,
+        "offsetNs": 31782652344,
+        "nativeUsage": {
+          "main": {
+            "usedBytes": 0,
+            "capBytes": 5368709120,
+            "usedFractionOfCap": 0.0
+          },
+          "peer": {
+            "usedBytes": 465963712,
+            "capBytes": 5368709120,
+            "usedFractionOfCap": 0.08679250478744507
+          }
+        },
+        "sameGpuComputeAppCount": 2
+      },
+      {
+        "milestone": "both-private-daemons-quit",
+        "observedNs": 1791535879214793861,
+        "offsetNs": 61006599440,
+        "nativeUsage": {
+          "main": {
+            "usedBytes": 0,
+            "capBytes": 5368709120,
+            "usedFractionOfCap": 0.0
+          },
+          "peer": {
+            "usedBytes": 0,
+            "capBytes": 5368709120,
+            "usedFractionOfCap": 0.0
+          }
+        },
+        "sameGpuComputeAppCount": 0
+      }
+    ],
+    "actualClientHostAndParentMappingVerified": true,
+    "mainZeroWhileRegisteredPeerLive": true,
+    "finalBothZeroAndNoGpuClients": true,
+    "coverage": "One simultaneous held-state sample plus clean baseline and both cleanup milestones. Transient OOM/managed-attempt native usage is not sampled."
+  },
+  "cleanupUncertainty": [],
+  "followup": {
+    "sameParentVmm": "awaiting-new-core-evidence",
+    "crossParentVmm": "awaiting-new-core-evidence"
+  },
+  "limitations": [
+    "This bounded trusted run does not qualify production or enable group sharing.",
+    "Two private MPS daemons are measured; a shared host MPS daemon is not qualified.",
+    "CUDA memory limits and ordinary peer survival are measured; MPS compute-percentage fairness is not measured.",
+    "Driver/node restart, broad import matrix and production reservation lifecycle remain separate gates.",
+    "No sanitized raw Pod/Node/credentials or hostnames/person identifiers are included.",
+    "The historical collector has fixed original capture names; this assessment uses a separate explicit schema."
+  ],
+  "provenance": [
+    {
+      "capture": "events.jsonl",
+      "sha256": "9fcb0fee347740c5fbebe4140603d301933ac7ea6d7f7ac003a7c81847283e53",
+      "bytes": 2045
+    },
+    {
+      "capture": "export-core-load-receipt.json",
+      "sha256": "2ae1cbf8631a08f9e945bd0641889ce666d196ad1783a4685736ccc02f6b2f0d",
+      "bytes": 476
+    },
+    {
+      "capture": "main-probe.jsonl",
+      "sha256": "e3693f724bb287cf7729abbe48b9bbf9227f23dee956ced378b8e8e927e4e55f",
+      "bytes": 1540
+    },
+    {
+      "capture": "main-probe.stderr",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    {
+      "capture": "native-cap-main-export-actual.json",
+      "sha256": "d61b2783d07e8bf3fd636be29607c469053a2103192777bb4619119f748d47f4",
+      "bytes": 9110
+    },
+    {
+      "capture": "native-cap-main-export-intent.json",
+      "sha256": "828564c430aacd7a05973844bca9dbd9c62aa16bef8987a9ece2a0b384053f0f",
+      "bytes": 459
+    },
+    {
+      "capture": "native-cap-peer-export-actual.json",
+      "sha256": "458517198e7e31bd2479c1171ab16cb2083514d38ff82737f853019be552524d",
+      "bytes": 9111
+    },
+    {
+      "capture": "native-cap-peer-export-intent.json",
+      "sha256": "e99907b17505f1a6a4e6a4bf52efe72f0b21d6e50c0a274dff1b499c0539d252",
+      "bytes": 459
+    },
+    {
+      "capture": "native-samples.jsonl",
+      "sha256": "de28f9ab91152ce266c1562ec69e62a697f6e4f3d21853aa35977a749c9173ce",
+      "bytes": 15026
+    },
+    {
+      "capture": "object-export-build/receipt.json",
+      "sha256": "691fbf79e9f762129f917512d0eea80c88050de41664b738fcafd1b4873ae938",
+      "bytes": 586897
+    },
+    {
+      "capture": "peer-probe.jsonl",
+      "sha256": "98b788fa97f0f1199049a9b296ccc8561d607d659f7f819530153609c15eb83f",
+      "bytes": 61533
+    },
+    {
+      "capture": "peer-probe.stderr",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    {
+      "capture": "registrations.jsonl",
+      "sha256": "b26bbd533073c619a7180d781817ae1da565e345d82c1a61353c9d38a31ad84b",
+      "bytes": 634
+    },
+    {
+      "capture": "result.json",
+      "sha256": "60867c81484b56bd72bff45ba85680b92c39a02dd34d95b495a00edf7c0782c1",
+      "bytes": 1279
+    }
+  ]
+}
