@@ -147,6 +147,26 @@ class TeardownTests(unittest.TestCase):
     def execute(self, f):
         return r.execute_recovery(f, f.plan, expected_plan_sha256=r.sha256(f.plan))
 
+    def resume_fixture(self, f=None):
+        f = self.fixture() if f is None else f
+        f.plan['tool_sha256'] = r.HISTORICAL_TOOL_SHA256
+        f.before['plan_sha256'] = r.sha256(f.plan); f.after['plan_sha256'] = r.sha256(f.plan)
+        audit = r.audit_body(f.plan, f.before, f.after); audit['metadata']['uid'] = str(uuid.uuid4())
+        f.cms[r.names(f.plan)[0]] = copy.deepcopy(audit)
+        resume = {'audit_uid': audit['metadata']['uid'], 'audit_sha256': r.sha256(r.parse(audit['data']['teardown.json'])),
+            'fence_command_sha256': r.sha256(['root-resume-fence']),
+            'publisher_sha256': r.raw_sha256(Path(r.__file__).read_bytes())}
+        def fence(plan, actual_resume, actual_audit):
+            f.calls.append('resume-fence')
+            payload = r.validate_resume(actual_resume, plan, actual_audit)
+            f.before = payload['before']; f.resumed = copy.deepcopy(f.after)
+            return f
+        f.resume_fence = fence
+        return f, resume, audit
+
+    def resume(self, f, resume):
+        return r.execute_resume(f, f.plan, expected_plan_sha256=r.sha256(f.plan), resume=resume)
+
     def test_default_is_inert_even_with_irrelevant_paths(self):
         with patch.object(r.subprocess, 'Popen', side_effect=AssertionError), patch.object(r.Path, 'read_bytes', side_effect=AssertionError):
             with patch('sys.stdout', new=io.StringIO()) as out:
@@ -361,6 +381,133 @@ class TeardownTests(unittest.TestCase):
         rpc.process = Mock(); rpc.process.poll.side_effect = [None, 0]; rpc.process.returncode = 0
         with self.assertRaisesRegex(r.RecoveryError, 'before requested release'): rpc.__exit__(None, None, None)
         rpc.process.stdin.write.assert_not_called()
+
+    def test_resume_uses_actual_immutable_original_proof_and_preserves_every_audit_byte(self):
+        f, resume, audit = self.resume_fixture(); before = copy.deepcopy(f.before)
+        result = self.resume(f, resume)
+        self.assertEqual(result['state'], 'teardown-cleanup-resumed')
+        self.assertEqual(f.cms[r.names(f.plan)[0]], audit)
+        self.assertEqual(f.before, before)
+        self.assertNotIn('cm-create:'+r.names(f.plan)[0], f.calls)
+        self.assertIn('resume-fence', f.calls)
+        self.assertEqual((f.root/'journal'/(POD+'.json')).read_bytes(), f.raw)
+        self.assertEqual(f.local_completion['tombstone']['enrollment_uid'], f.plan['enrollment_uid'])
+        self.assertEqual(f.cms[r.LEDGER], f.ledger)
+
+    def test_resume_requires_exact_audit_uid_sha_known_old_source_and_new_source(self):
+        f, resume, audit = self.resume_fixture()
+        for change in ({'audit_uid': str(uuid.uuid4())}, {'audit_sha256': 'sha256:'+'1'*64},
+                       {'publisher_sha256': r.HISTORICAL_TOOL_SHA256}, {'extra': True}):
+            with self.subTest(change=change):
+                with self.assertRaises(r.RecoveryError): r.validate_resume({**resume, **change}, f.plan, audit)
+        foreign = copy.deepcopy(f.plan); foreign['tool_sha256'] = 'sha256:'+'f'*64
+        with self.assertRaisesRegex(r.RecoveryError, 'source changed'):
+            r.validate_historical_plan(foreign, r.sha256(foreign))
+        with self.assertRaisesRegex(r.RecoveryError, 'source changed'):
+            r.validate_plan(f.plan, r.sha256(f.plan))
+
+    def test_resume_rejects_existing_cleanup_before_reacquiring_fence(self):
+        f, resume, audit = self.resume_fixture()
+        f.cms[r.names(f.plan)[1]] = {'already': 'exists'}
+        with self.assertRaisesRegex(r.RecoveryError, 'Existing cleanup'): self.resume(f, resume)
+        self.assertNotIn('resume-fence', f.calls)
+        self.assertFalse(any(c.startswith('cm-create:') for c in f.calls))
+
+    def test_resume_fresh_locks_modules_pod_or_historical_proof_change_never_publish(self):
+        for kind in ('locks', 'module', 'pod', 'old-proof'):
+            with self.subTest(kind=kind), tempfile.TemporaryDirectory() as directory:
+                # Use a separately isolated fixture for every already-unloaded case.
+                f = Fixture(directory)
+                try:
+                    f, resume, audit = self.resume_fixture(f)
+                    if kind == 'locks': f.after['locks']['driver']['inode'] += 1
+                    if kind == 'module': f.after['sysfs_modules'] = ['nvidia']
+                    if kind == 'pod': f.pod = {'metadata': {'uid': 'foreign'}}
+                    if kind == 'old-proof':
+                        payload = r.parse(f.cms[r.names(f.plan)[0]]['data']['teardown.json'])
+                        payload['before']['driver_healthy'] = False
+                        f.cms[r.names(f.plan)[0]]['data']['teardown.json'] = r.canonical(payload)
+                    with self.assertRaises(r.RecoveryError): self.resume(f, resume)
+                    self.assertFalse(any(c.startswith('cm-create:') for c in f.calls))
+                finally:
+                    f.close()
+
+    def test_resume_late_actual_audit_uid_replacement_is_rejected(self):
+        f, resume, audit = self.resume_fixture(); publish = f.publish_local
+        def local(audit, cleanup):
+            result = publish(audit, cleanup)
+            f.cms[r.names(f.plan)[0]]['metadata']['uid'] = str(uuid.uuid4())
+            return result
+        f.publish_local = local
+        with self.assertRaisesRegex(r.RecoveryError, 'actual UID'): self.resume(f, resume)
+
+    def test_root_rpc_eof_preserves_durable_private_diagnostic_stderr(self):
+        f = self.fixture()
+        command = [sys.executable, '-c', 'import sys;sys.stdin.readline();sys.stderr.write("protected diagnostic\\n");sys.stderr.flush()']
+        f.plan['fence_command_sha256'] = r.sha256(command)
+        rpc = r.RootFence(command, f.plan, timeout=2, diagnostics_dir=f.root)
+        with self.assertRaises(r.RecoveryError): rpc.__enter__()
+        path = Path(rpc.stderr_path)
+        self.assertTrue(path.exists()); self.assertEqual(path.stat().st_mode & 0o777, 0o600)
+        self.assertIn('protected diagnostic', path.read_text())
+
+    def test_kubernetes_backend_never_mutates_without_fence(self):
+        backend = r.KubernetesBackend(['root-fence'])
+        with patch.object(r.subprocess, 'run', side_effect=AssertionError('Must not call')):
+            with self.assertRaisesRegex(r.RecoveryError, 'held Root fence'):
+                backend.create_cm({'kind': 'ConfigMap'})
+
+    def test_resume_cli_requires_reviewed_current_source_and_full_pins_before_transport(self):
+        f, resume, audit = self.resume_fixture()
+        planfile, commandfile = f.root/'plan.json', f.root/'command.json'
+        planfile.write_text(r.canonical(f.plan)); commandfile.write_text(r.canonical(['root-resume-fence']))
+        argv = ['--execute', '--qualification', '--plan', str(planfile), '--plan-sha256', r.sha256(f.plan),
+                '--fence-command-file', str(commandfile), '--output', str(f.root/'result.json'),
+                '--resume-audit-uid', resume['audit_uid'], '--resume-audit-sha256', resume['audit_sha256'],
+                '--resume-fence-command-sha256', resume['fence_command_sha256']]
+        with patch.object(r, 'KubernetesBackend', side_effect=AssertionError('Transport must not initialize')):
+            with self.assertRaisesRegex(r.RecoveryError, 'All explicit resume'): r.main(argv)
+            with self.assertRaisesRegex(r.RecoveryError, 'publisher SHA mismatch'):
+                r.main(argv + ['--resume-publisher-sha256', 'sha256:'+'f'*64])
+
+    def test_real_resume_jsonl_route_preserves_audit_and_supports_repeated_teardown(self):
+        f, resume, audit = self.resume_fixture()
+        datafile = f.root/'rpc-data.json'
+        code = '''import datetime,json,sys,uuid
+d=json.load(open(sys.argv[1]))
+r=json.loads(sys.stdin.readline())
+assert set(r)=={'op','nonce','plan','plan_sha256','audit','resume'}
+assert r['op']=='resume-after-audit'
+assert str(uuid.UUID(r['nonce']))==r['nonce']
+assert r['plan']==d['plan'] and r['plan_sha256']==d['plan_sha256']
+assert r['audit']==d['audit'] and r['resume']==d['resume']
+nonce=r['nonce']
+def emit(event):
+ print(json.dumps({'event':event,'nonce':nonce,'observed_at':datetime.datetime.now(datetime.timezone.utc).isoformat().replace('+00:00','Z'),'proof':d['teardown']}),flush=True)
+sys.stderr.write('CPU resume route accepted\\n');sys.stderr.flush()
+emit('fence-resumed')
+count=0
+while True:
+ r=json.loads(sys.stdin.readline())
+ assert set(r)=={'op','nonce'} and r['nonce']==nonce
+ if r['op']=='release':
+  assert count==2
+  break
+ assert r['op']=='verify-teardown'
+ count+=1
+ emit('fence-teardown-verified')
+'''
+        command = [sys.executable, '-c', code, str(datafile)]
+        resume['fence_command_sha256'] = r.sha256(command)
+        datafile.write_text(r.canonical({'plan': f.plan, 'plan_sha256': r.sha256(f.plan),
+            'audit': audit, 'resume': resume, 'teardown': f.after}))
+        with r.RootFence(command, f.plan, timeout=3, resume=resume, audit=audit, diagnostics_dir=f.root) as rpc:
+            self.assertEqual(rpc.before, f.before)
+            self.assertEqual(rpc.resumed, f.after)
+            self.assertEqual(rpc.verify_teardown(), f.after)
+            self.assertEqual(rpc.verify_teardown(), f.after)
+        self.assertEqual(rpc.process.returncode, 0)
+        self.assertIn('CPU resume route accepted', Path(rpc.stderr_path).read_text())
 
 
 if __name__ == '__main__': unittest.main()

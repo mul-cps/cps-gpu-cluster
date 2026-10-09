@@ -24,6 +24,7 @@ import abort_before_gate as prior
 
 NAMESPACE, LEDGER, LABEL = prior.NAMESPACE, prior.LEDGER, prior.LABEL
 PROTOCOL = 'cps-native-driver-teardown/v1'
+HISTORICAL_TOOL_SHA256 = 'sha256:c6902334c25d90acb2f4c55853fc81aa03e38df2d5e4b90534351f7801ddab0e'
 ANNOTATIONS = ('cps.compute/teardown-audit', 'cps.compute/teardown-audit-uid',
                'cps.compute/teardown-audit-sha256')
 LOCK_NAMES = ('journal', 'driver', 'maintenance')
@@ -81,6 +82,15 @@ def final_journal_sha256(plan):
 
 
 def validate_plan(plan, expected_sha256):
+    _validate_plan(plan, expected_sha256, raw_sha256(Path(__file__).read_bytes()))
+
+
+def validate_historical_plan(plan, expected_sha256):
+    """Only the one independently reviewed, deployed original publisher."""
+    _validate_plan(plan, expected_sha256, HISTORICAL_TOOL_SHA256)
+
+
+def _validate_plan(plan, expected_sha256, expected_tool_sha256):
     require(prior.hash_value(expected_sha256) and sha256(plan) == expected_sha256,
             'Reviewed plan hash mismatch')
     closed(plan, ('version', 'qualification_only', 'operation_id', 'authority_namespace',
@@ -97,7 +107,7 @@ def validate_plan(plan, expected_sha256):
         require(prior.valid_uuid(plan[key]), 'Invalid actual API UID')
     for key in ('allocation_sha256', 'enrollment_sha256', 'fence_command_sha256', 'tool_sha256'):
         require(prior.hash_value(plan[key]), 'Missing reviewed SHA')
-    require(plan['tool_sha256'] == raw_sha256(Path(__file__).read_bytes()), 'Recovery tool source changed')
+    require(plan['tool_sha256'] == expected_tool_sha256, 'Recovery tool source changed')
     closed(plan['journal'], ('record', 'sha256'), 'Unexpected original journal schema')
     require(prior.hash_value(plan['journal']['sha256']), 'Invalid original raw journal SHA')
     m = _models()
@@ -249,6 +259,45 @@ def immutable_cm(actual, expected):
             'Actual authority UID/ownership/provenance differs')
 
 
+def validate_historical_audit(audit_cm, plan, *, audit_uid, audit_sha256):
+    """Validate the actual immutable old audit without remaking its observations."""
+    digest = sha256(plan)
+    validate_historical_plan(plan, digest)
+    require(prior.valid_uuid(audit_uid) and prior.hash_value(audit_sha256), 'Explicit original audit UID/SHA required')
+    payload = parse(audit_cm.get('data', {}).get('teardown.json'))
+    closed(payload, ('protocol', 'plan_sha256', 'plan', 'before', 'teardown'), 'Invalid historical audit payload')
+    require(payload['protocol'] == PROTOCOL and payload['plan_sha256'] == digest and payload['plan'] == plan
+            and sha256(payload) == audit_sha256, 'Historical immutable plan/audit changed')
+    validate_before(payload['before'], plan, digest)
+    validate_teardown(payload['teardown'], plan, digest, payload['before'])
+    immutable_cm(audit_cm, audit_body(plan, payload['before'], payload['teardown']))
+    require(audit_cm['metadata']['uid'] == audit_uid, 'Historical audit actual UID changed')
+    return payload
+
+
+def validate_resume(resume, plan, audit_cm):
+    closed(resume, ('audit_uid', 'audit_sha256', 'fence_command_sha256', 'publisher_sha256'), 'Unexpected resume authority')
+    require(prior.hash_value(resume['fence_command_sha256'])
+            and resume['publisher_sha256'] == raw_sha256(Path(__file__).read_bytes()), 'Current resume source/command unpinned')
+    return validate_historical_audit(audit_cm, plan,
+        audit_uid=resume['audit_uid'], audit_sha256=resume['audit_sha256'])
+
+
+def _validated_audit(plan, audit_cm):
+    payload = parse(audit_cm.get('data', {}).get('teardown.json'))
+    if plan.get('tool_sha256') == HISTORICAL_TOOL_SHA256:
+        return validate_historical_audit(audit_cm, plan,
+            audit_uid=audit_cm.get('metadata', {}).get('uid'), audit_sha256=sha256(payload))
+    validate_plan(plan, sha256(plan))
+    closed(payload, ('protocol', 'plan_sha256', 'plan', 'before', 'teardown'), 'Invalid retained audit')
+    require(payload['protocol'] == PROTOCOL and payload['plan'] == plan
+            and payload['plan_sha256'] == sha256(plan), 'Foreign retained audit')
+    validate_before(payload['before'], plan, sha256(plan))
+    validate_teardown(payload['teardown'], plan, sha256(plan), payload['before'])
+    immutable_cm(audit_cm, audit_body(plan, payload['before'], payload['teardown']))
+    return payload
+
+
 def tombstone(plan, actual_cleanup):
     return {'enrollment_uid': plan['enrollment_uid'], 'receipt_uid': actual_cleanup['metadata']['uid'],
             'receipt': receipt(plan)}
@@ -354,12 +403,59 @@ def execute_recovery(backend, plan, *, expected_plan_sha256):
                 'allocation_released': False, 'device_calls': False}
 
 
+def execute_resume(backend, plan, *, expected_plan_sha256, resume):
+    """Finish only an exact existing historical audit; never recreate before."""
+    validate_historical_plan(plan, expected_plan_sha256)
+    audit_name, cleanup_name = names(plan)
+    audit = backend.get_cm(audit_name)
+    payload = validate_resume(resume, plan, audit)
+    observe(backend, plan)
+    require(backend.get_cm(cleanup_name, absent=True) is None,
+            'Existing cleanup requires separate review; resume cannot replay completion')
+    with backend.resume_fence(plan, resume, audit) as fence:
+        before = payload['before']
+        require(fence.before == before, 'Resume cannot replace original Root before attestation')
+        validate_teardown(fence.resumed, plan, expected_plan_sha256, before)
+        actual_audit = backend.get_cm(audit_name)
+        validate_resume(resume, plan, actual_audit)
+        require(backend.get_cm(cleanup_name, absent=True) is None, 'Cleanup appeared during resume')
+        observe(backend, plan)
+        validate_teardown(fence.verify_teardown(), plan, expected_plan_sha256, before)
+        expected_cleanup = cleanup_body(plan, audit)
+        created = backend.create_cm(expected_cleanup)
+        immutable_cm(created, expected_cleanup)
+        cleanup = backend.get_cm(cleanup_name)
+        immutable_cm(cleanup, expected_cleanup)
+        require(cleanup['metadata']['uid'] == created['metadata']['uid'], 'Cleanup replaced after create')
+        completion = fence.publish_local(audit, cleanup)
+        validate_completion(completion, plan, expected_plan_sha256, before)
+        require(completion['tombstone'] == tombstone(plan, cleanup), 'Resume completion lost actual immutable UIDs')
+        observe(backend, plan)
+        validate_resume(resume, plan, backend.get_cm(audit_name))
+        actual_cleanup = backend.get_cm(cleanup_name)
+        immutable_cm(actual_cleanup, expected_cleanup)
+        require(actual_cleanup['metadata']['uid'] == cleanup['metadata']['uid'], 'Cleanup authority replaced')
+        final = fence.verify_completion()
+        validate_completion(final, plan, expected_plan_sha256, before)
+        require(final == completion, 'Completed protected evidence changed')
+        return {'version': 1, 'state': 'teardown-cleanup-resumed', 'plan_sha256': expected_plan_sha256,
+                'audit_uid': resume['audit_uid'], 'audit_sha256': resume['audit_sha256'],
+                'cleanup_uid': cleanup['metadata']['uid'], 'binding_id': plan['binding_id'],
+                'attempt': plan['attempt'], 'allocation_released': False, 'device_calls': False}
+
+
 class RootFence:
     """A pinned Root process holds writer locks until all readbacks finish."""
-    def __init__(self, command, plan, timeout=120):
+    def __init__(self, command, plan, timeout=120, *, resume=None, audit=None, diagnostics_dir=None):
+        if resume is not None:
+            payload = validate_resume(resume, plan, audit)
+            self.before = payload['before']
+        command_sha = plan['fence_command_sha256'] if resume is None else resume['fence_command_sha256']
         require(isinstance(command, list) and command and all(isinstance(x, str) and x for x in command)
-                and sha256(command) == plan['fence_command_sha256'], 'Pinned Root command mismatch')
+                and sha256(command) == command_sha, 'Pinned Root command mismatch')
         self.command, self.plan, self.timeout = command, plan, timeout
+        self.resume, self.audit, self.diagnostics_dir = resume, audit, diagnostics_dir
+        self.stderr_path = None
         self.nonce, self.process, self.buffer = str(uuid.uuid4()), None, b''
 
     def ensure_alive(self):
@@ -401,11 +497,25 @@ class RootFence:
         return value['proof']
 
     def __enter__(self):
-        self.process = subprocess.Popen(self.command, stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.DEVNULL)
+        if self.diagnostics_dir is not None:
+            info = Path(self.diagnostics_dir).lstat()
+            require(stat.S_ISDIR(info.st_mode) and info.st_uid == os.geteuid()
+                    and stat.S_IMODE(info.st_mode) == 0o700, 'Private diagnostics0700 directory required')
+        with tempfile.NamedTemporaryFile(prefix='teardown-' + self.plan['operation_id'] + '-', suffix='.stderr.log',
+                dir=self.diagnostics_dir, delete=False) as log:
+            os.fchmod(log.fileno(), 0o600)
+            self.stderr_path = str(Path(log.name).absolute())
+            self.process = subprocess.Popen(self.command, stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=log)
         try:
-            self.send('acquire', plan=self.plan, plan_sha256=sha256(self.plan))
-            self.before = self.line('fence-acquired')
-            validate_before(self.before, self.plan, sha256(self.plan))
+            if self.resume is None:
+                self.send('acquire', plan=self.plan, plan_sha256=sha256(self.plan))
+                self.before = self.line('fence-acquired')
+                validate_before(self.before, self.plan, sha256(self.plan))
+            else:
+                self.send('resume-after-audit', plan=self.plan, plan_sha256=sha256(self.plan),
+                          audit=self.audit, resume=self.resume)
+                self.resumed = self.line('fence-resumed')
+                validate_teardown(self.resumed, self.plan, sha256(self.plan), self.before)
         except BaseException:
             self.close()
             raise
@@ -448,21 +558,29 @@ class RootFence:
 
 class KubernetesBackend:
     """Only actual GET and immutable ConfigMap CREATE; no patch/delete/release."""
-    def __init__(self, command, *, kubeconfig=None, context=None):
+    def __init__(self, command, *, kubeconfig=None, context=None, diagnostics_dir=None):
         self.command = ['kubectl']
         if kubeconfig: self.command += ['--kubeconfig', kubeconfig]
         if context: self.command += ['--context', context]
         self.fence_command, self.live_fence = command, None
+        self.diagnostics_dir = diagnostics_dir
 
     def fence(self, plan):
-        self.live_fence = RootFence(self.fence_command, plan)
+        self.live_fence = RootFence(self.fence_command, plan, diagnostics_dir=self.diagnostics_dir)
+        return self.live_fence
+
+    def resume_fence(self, plan, resume, audit):
+        self.live_fence = RootFence(self.fence_command, plan, resume=resume, audit=audit,
+                                   diagnostics_dir=self.diagnostics_dir)
         return self.live_fence
 
     def call(self, args, *, body=None, absent=False):
-        self.live_fence.ensure_alive()
+        require(self.live_fence is not None or (args and args[0] == 'get' and body is None),
+                'Mutation requires held Root fence')
+        if self.live_fence is not None: self.live_fence.ensure_alive()
         result = subprocess.run(self.command + args, input=canonical(body) if body is not None else None,
             text=True, capture_output=True, timeout=30)
-        self.live_fence.ensure_alive()
+        if self.live_fence is not None: self.live_fence.ensure_alive()
         require(result.returncode == 0, 'Kubernetes transport denied/conflicted/unavailable')
         if absent and not result.stdout.strip(): return None
         value = parse(result.stdout)
@@ -561,9 +679,11 @@ def complete_local(state_root, plan, audit_cm, cleanup_cm, *, before, teardown, 
     """Called by the pinned host helper under its still-held real writer locks."""
     require(os.geteuid() == trusted_uid, 'Root helper identity required')
     digest = sha256(plan)
-    validate_plan(plan, digest); validate_before(before, plan, digest)
+    historical = _validated_audit(plan, audit_cm)
+    require(historical['before'] == before, 'Original audit before proof changed')
+    validate_before(before, plan, digest)
     validate_teardown(teardown, plan, digest, before)
-    expected_audit = audit_body(plan, before, teardown)
+    expected_audit = audit_body(plan, before, historical['teardown'])
     immutable_cm(audit_cm, expected_audit)
     immutable_cm(cleanup_cm, cleanup_body(plan, audit_cm))
     state = Path(state_root)
@@ -617,14 +737,7 @@ def complete_local(state_root, plan, audit_cm, cleanup_cm, *, before, teardown, 
 def read_local_completion(state_root, plan, audit_cm, cleanup_cm, *, trusted_uid=0):
     """Fresh protected readback; host helper independently re-probes teardown/locks."""
     require(os.geteuid() == trusted_uid, 'Root helper identity required')
-    validate_plan(plan, sha256(plan))
-    audit = parse(audit_cm['data']['teardown.json'])
-    closed(audit, ('protocol', 'plan_sha256', 'plan', 'before', 'teardown'), 'Invalid retained audit')
-    require(audit['protocol'] == PROTOCOL and audit['plan'] == plan
-            and audit['plan_sha256'] == sha256(plan), 'Foreign retained audit')
-    validate_before(audit['before'], plan, sha256(plan))
-    validate_teardown(audit['teardown'], plan, sha256(plan), audit['before'])
-    immutable_cm(audit_cm, audit_body(plan, audit['before'], audit['teardown']))
+    audit = _validated_audit(plan, audit_cm)
     immutable_cm(cleanup_cm, cleanup_body(plan, audit_cm))
     state = Path(state_root)
     _directory(state, trusted_uid)
@@ -656,7 +769,9 @@ def main(argv=None):
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--execute', action='store_true')
     parser.add_argument('--qualification', action='store_true')
-    for flag in ('plan', 'plan-sha256', 'fence-command-file', 'output', 'kubeconfig', 'context'):
+    for flag in ('plan', 'plan-sha256', 'fence-command-file', 'output', 'kubeconfig', 'context',
+                 'resume-audit-uid', 'resume-audit-sha256', 'resume-fence-command-sha256',
+                 'resume-publisher-sha256'):
         parser.add_argument('--' + flag)
     args = parser.parse_args(argv)
     if not args.execute:
@@ -664,12 +779,36 @@ def main(argv=None):
     require(args.qualification and args.plan and args.plan_sha256 and args.fence_command_file and args.output,
             'Explicit --execute --qualification, reviewed plan SHA, pinned Root argv and private output required')
     plan = parse(Path(args.plan).read_bytes())
-    validate_plan(plan, args.plan_sha256)
+    resume_values = (args.resume_audit_uid, args.resume_audit_sha256,
+                     args.resume_fence_command_sha256, args.resume_publisher_sha256)
+    resuming = any(v is not None for v in resume_values)
+    require(not resuming or all(resume_values), 'All explicit resume audit/command pins required')
+    if resuming: validate_historical_plan(plan, args.plan_sha256)
+    else: validate_plan(plan, args.plan_sha256)
     require(not Path(args.output).exists(), 'Preserve existing receipt')
     command = parse(Path(args.fence_command_file).read_bytes())
-    RootFence(command, plan)  # Pin before transport or process creation.
-    result = execute_recovery(KubernetesBackend(command, kubeconfig=args.kubeconfig, context=args.context),
-        plan, expected_plan_sha256=args.plan_sha256)
+    resume = {'audit_uid': args.resume_audit_uid, 'audit_sha256': args.resume_audit_sha256,
+              'fence_command_sha256': args.resume_fence_command_sha256,
+              'publisher_sha256': args.resume_publisher_sha256} if resuming else None
+    require(not resuming or resume['publisher_sha256'] == raw_sha256(Path(__file__).read_bytes()),
+            'Explicit reviewed current publisher SHA mismatch')
+    expected_command = plan['fence_command_sha256'] if not resuming else resume['fence_command_sha256']
+    require(prior.hash_value(expected_command) and sha256(command) == expected_command, 'Pinned Root command mismatch')
+    backend = KubernetesBackend(command, kubeconfig=args.kubeconfig, context=args.context,
+                                diagnostics_dir=str(Path(args.output).absolute().parent))
+    try:
+        if resuming:
+            result = execute_resume(backend, plan, expected_plan_sha256=args.plan_sha256, resume=resume)
+        else:
+            result = execute_recovery(backend, plan, expected_plan_sha256=args.plan_sha256)
+    except BaseException as exc:
+        log_path = backend.live_fence.stderr_path if backend.live_fence is not None else None
+        failure = {'version': 1, 'state': 'failed', 'plan_sha256': args.plan_sha256,
+                   'operation_id': plan['operation_id'], 'error': str(exc), 'stderr_log': log_path,
+                   'allocation_released': False, 'device_calls': False}
+        prior.private_output(args.output + '.failure.json', failure)
+        raise
+    result['stderr_log'] = backend.live_fence.stderr_path
     prior.private_output(args.output, result)
     print(canonical(result)); return 0
 

@@ -174,3 +174,71 @@ must equal `fence_command_sha256`. The plan's `tool_sha256` must equal the actua
 recovery Python file byte SHA on both client and host. Default invocation, even
 with other supplied flags or nonexistent paths, makes no calls and reads no plan.
 An existing audit/cleanup is rejected before teardown; no replay waiver exists.
+
+## Resume an existing first-teardown audit
+
+A failed original publication may have created the immutable audit before the
+cleanup receipt. The qualification-only resume mode accepts **only** the original
+reviewed publisher source
+`sha256:c6902334c25d90acb2f4c55853fc81aa03e38df2d5e4b90534351f7801ddab0e`.
+It requires the actual audit ConfigMap UID and canonical payload SHA, preserves
+its original plan/before/first-teardown bytes, and never recomputes old health or
+memory observations. It rejects any existing cleanup receipt. This is a narrow
+continuation, not an arbitrary historical-source or receipt-replay waiver.
+
+The caller first GET-validates the actual immutable audit, selected Node UID,
+enrollment/ledger tuple and all registered Pod absence. It then starts a **new**
+pinned Root argv and sends this exact request:
+
+```
+{op:"resume-after-audit",nonce:FRESH_UUID,plan:ORIGINAL_PLAN,
+ plan_sha256:ORIGINAL_PLAN_SHA,audit:ACTUAL_IMMUTABLE_AUDIT_CM,
+ resume:{audit_uid:ACTUAL_UID,audit_sha256:CANONICAL_PAYLOAD_SHA,
+         fence_command_sha256:NEW_ARGV_SHA,publisher_sha256:NEW_REVIEWED_SOURCE_SHA}}
+```
+
+Host helper API `validate_historical_plan(plan, expected_sha256)` accepts only
+the fixed original source above. `validate_historical_audit(audit_cm, plan,
+audit_uid=..., audit_sha256=...)` returns the validated **original** payload;
+`validate_resume(resume, plan, audit_cm)` additionally validates closed new pins
+and current publisher bytes. The helper verifies its protected copied audit
+and actual reacquired locks, without invoking old health. It emits
+`fence-resumed` with a **fresh teardown proof**, including identical historical
+lock device/inodes, same boot/node, all NVIDIA modules absent, all prior PCI
+functions unbound, old authority absent, unchanged journal, and zero clients/
+tasks. Current host proofs must be derived afresh; the old audit establishes the
+historical before and first teardown facts, not current driver health.
+
+The helper must accept **repeated** `verify-teardown` requests until
+`publish-local`. Original publication sends two such requests, the second after
+audit GET readback; resume sends at least one after `fence-resumed`. The remaining
+local/confirmation/release sequence is unchanged. Existing local APIs retain
+the original audit, validate fresh physical proof independently, and preserve
+an already-cleaned journal exactly. New Node/Pod/authority GETs follow before
+success. Root must keep modules unloaded until completion is acknowledged.
+
+All four resume pins below are required together and checked before process or
+transport initialization. The immutable original plan retains its old command
+and source SHA; those fields must **not** be edited to match new code.
+
+```sh
+python3 platform-staging/gpu/native-group-pilot/teardown_recovery.py \
+  --execute --qualification \
+  --plan /private/original-reviewed-teardown-plan.json \
+  --plan-sha256 "$ORIGINAL_PLAN_SHA256" \
+  --fence-command-file /private/new-pinned-root-resume-argv.json \
+  --resume-audit-uid "$ACTUAL_AUDIT_UID" \
+  --resume-audit-sha256 "$ACTUAL_AUDIT_PAYLOAD_SHA256" \
+  --resume-fence-command-sha256 "$REVIEWED_RESUME_ARGV_SHA256" \
+  --resume-publisher-sha256 "$REVIEWED_NEW_PUBLISHER_SHA256" \
+  --output /private/new-resume-publication-receipt.json \
+  --kubeconfig /private/root-kubeconfig
+```
+
+The output directory must be owned private0700. Root RPC stderr is retained in
+a uniquely named0600 `.stderr.log` there, including EOF/timeout failures. An
+execution exception writes a0600 `<output>.failure.json` with operation/plan,
+error and diagnostic path. Neither log is automatically deleted. The host must
+also persist its validated Root proofs and diagnostics under protected paths
+before sending them, while holding the locks. Historical completion without an
+actual immutable audit is outside this resume mode.
