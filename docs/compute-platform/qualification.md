@@ -219,3 +219,41 @@ K3s/containerd. The verified independent firmware directory/search path
 remains required because the usual firmware path is empty. The
 [rollback receipt](../../platform-staging/gpu/qualification/gpu2-r615-canary/rollback-receipt.md)
 records that temporary deviation and removal of the owned canary/test objects.
+
+## 2026-10-09 automatic cap and admin checkpoint
+
+The controlled GPU2 no-MIG group pilot passed automatic 5 GiB cap assignment.
+Pod UID prefix `696bab5d` completed its first gate with exit code `0`; native
+limit readback was `5368709120` bytes. The notebook container never executed:
+its management CDI GPU UUID was unresolved. Shutdown cleanup then remained
+blocked by NVML result `17` when querying the removed cgroup. This does not
+qualify notebook startup, automatic cleanup or release of the associated
+allowance.
+
+Root corrected the supplemental CDI file
+`/var/run/cdi/management.nvidia.com-native-pilot-r615.json`, SHA256
+`55d23389ef8745a9ffef4b58181ed350f549100b03d7f8e7cb9590ae4f3bc5fd`.
+It contains only `GPU-16128952-b438-556a-00bb-93039ee24e56`; 57 current R615 mount
+paths were validated, and `nvidia-ctk cdi list` resolves the UUID. This correction
+has not yet passed actual notebook startup or the group OOM/peer matrix. The
+[node-authority runbook](../../platform-staging/gpu/native-group-pilot/README.md)
+also records the required resolved-host `--crictl` override; an absolute k3s
+`data/current` symlink is unusable beneath the container's `/host` mount.
+
+At 14:17 UTC, independent read-only verification found both admin services Ready
+on `ghcr.io/mul-cps/e2x-course-hub@sha256:1689e38c6f87cb1d75e6186a2a177afb3f0e0c8a2ab28e5b79d094ac72851845`
+(source `54cead22f03bed6e37f998b43eaaaab913dbd3d6`). Running as UID/GID
+`10001:10001`, each service read and parsed the same current directory-mounted
+status ConfigMap, updated at `2026-10-09T14:14:42.099193Z`; all 45 Python source
+files and three compiled UI assets matched the qualified image receipt. The
+status panel reports cap assignment **passed**, startup and shutdown cleanup
+**blocked**, and ordinary group GPU access **disabled**. Its mounted status is
+refreshed rather than pinned by a `subPath` mount. CIT human OAuth/browser
+acceptance remains unverified.
+
+Root separately observed both Hubs Ready on
+`ghcr.io/mul-cps/cps-compute@sha256:05b47ef4d78840d58907c3416903d5150c4af98ed8c390499ce93d42cf36be70`.
+Deployment readiness does not establish a successful shared GPU notebook.
+Group startup, OOM/recovery, peer continuity, restart, native shutdown cleanup,
+cross-Hub reservation and MPS qualification remain open. This checkpoint is
+sanitized operational evidence and does not enable general group GPU sharing.

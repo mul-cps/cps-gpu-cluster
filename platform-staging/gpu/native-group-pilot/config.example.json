@@ -1,0 +1,13 @@
+{
+  "version": 1,
+  "enabled": false,
+  "authority_namespace": "cps-native-authority",
+  "policy_hash": "sha256:0000000000000000000000000000000000000000000000000000000000000000",
+  "pool": {
+    "node": "k3s-wk-gpu2",
+    "node_uid": "3336cdd5-d245-436e-b57c-2f66c6dcaa41",
+    "gpu_uuid": "GPU-16128952-b438-556a-00bb-93039ee24e56",
+    "max_workspaces": 2
+  },
+  "workspaces": {}
+}

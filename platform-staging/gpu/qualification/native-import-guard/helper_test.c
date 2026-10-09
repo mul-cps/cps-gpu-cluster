@@ -1,0 +1,55 @@
+/* Synthetic CPU fixture compiles the actual guard helper, never NVIDIA/GPU code. */
+#include <assert.h>
+#include <stdint.h>
+#include <stddef.h>
+#include <stdio.h>
+typedef int NV_STATUS;typedef size_t NvLength; typedef unsigned NvU32; typedef void *ClientGroupID;
+#define G(n) ((ClientGroupID)(uintptr_t)(n))
+enum {NV_OK, NV_ERR_INSUFFICIENT_PERMISSIONS, NV_ERR_NOT_SUPPORTED, NV_ERR_OBJECT_NOT_FOUND};
+enum {CGROUP_IMPL_NONE, CGROUP_IMPL_FALLBACK, CGROUP_IMPL_OS, RS_PRIV_LEVEL_KERNEL=10, OS_CGROUP_IMPL_MISC=1};
+typedef struct {ClientGroupID cligrp;NvU32 gpuId;} MemoryCharge;
+typedef struct {void *pOsPidInfo;NvU32 ProcID;int cachedPrivilege;int bCpsGpuOpsSession;int bCpsObjExportClient;} RmClient;
+typedef struct {int clientGroupMap;} GpuRegion;
+typedef struct {NvLength HardLimit;} ClientGroupLimits;static ClientGroupLimits limits;
+static struct {int impl;void *mutex;int GpuRegionMap;} g_memacct;
+static GpuRegion region;static ClientGroupID actor,destination;static int have_pid,have_region,pid_puts,locks,guard_enabled,leaf_gets,leaf_puts,log_calls,last_reason;
+static int os_cps_native_import_guard_enabled(void){return guard_enabled==1;}
+static void *osGetPidInfo(void){return have_pid?(void*)1:NULL;}
+static void osPutPidInfo(void *p){assert(p==(void*)1);pid_puts++;}
+static ClientGroupID os_cps_cgroup_get_from_pid_info(void *info,int impl){assert(info&&impl==OS_CGROUP_IMPL_MISC);ClientGroupID g=info==(void*)1?actor:destination;if(g)leaf_gets++;return g;}
+static void os_cgroup_put(ClientGroupID g){assert(g);leaf_puts++;}
+static void portSyncMutexAcquire(void *p){assert(p);assert(!locks);locks++;}
+static void portSyncMutexRelease(void *p){assert(p);assert(locks==1);locks--;}
+static GpuRegion *mapFind(int *map,NvU32 id){assert(map==&g_memacct.GpuRegionMap);assert(id==7);return have_region?&region:NULL;}
+static int mapCount(int *map){return *map;}
+static ClientGroupLimits *memacctLimitsForGroupLocked(GpuRegion *p,ClientGroupID *group){assert(p==&region&&locks);if(*group==G(101)||*group==G(102))*group=G(100);if(*group==G(201))*group=G(200);return *group==G(100)||*group==G(200)?&limits:NULL;}
+static void os_cps_native_import_denied(NvU32 gpu,NvU32 reason,NvU32 kind,NvU32 status){assert(gpu==7&&reason&&status!=NV_OK&&!locks&&kind<8);log_calls++;last_reason=(int)reason;}
+#include "guard.c"
+static void reset(void){limits.HardLimit=512;g_memacct.impl=CGROUP_IMPL_FALLBACK;g_memacct.mutex=(void*)1;region.clientGroupMap=2;have_pid=have_region=1;actor=G(101);destination=G(102);pid_puts=locks=leaf_gets=leaf_puts=log_calls=last_reason=0;guard_enabled=1;}
+static NV_STATUS check(MemoryCharge *charge,RmClient *client){NV_STATUS s=memacctValidateMemoryImport(charge,7,client);assert(locks==0);assert(log_calls==(s==NV_OK?0:1));assert(leaf_puts==leaf_gets);assert(pid_puts==(have_pid?1:0));return s;}
+int main(void){MemoryCharge charge={G(100),7};RmClient user={(void*)2,18,0,0,0},kernel={NULL,19,RS_PRIV_LEVEL_KERNEL,1,0},exporter={NULL,20,RS_PRIV_LEVEL_KERNEL,0,1};
+ reset();assert(check(&charge,&user)==NV_OK); /* same capped Pod, different children */
+ reset();limits.HardLimit=(NvLength)-1;assert(check(&charge,&kernel)==NV_ERR_INSUFFICIENT_PERMISSIONS);
+ reset();limits.HardLimit=0;assert(check(&charge,&kernel)==NV_ERR_INSUFFICIENT_PERMISSIONS);
+ reset();actor=G(201);assert(check(&charge,&user)==NV_ERR_INSUFFICIENT_PERMISSIONS&&last_reason==6);
+ reset();destination=G(201);assert(check(&charge,&user)==NV_ERR_INSUFFICIENT_PERMISSIONS);
+ reset();assert(check(&charge,&kernel)==NV_OK); /* current capped actor is proven */
+ reset();kernel.bCpsGpuOpsSession=0;assert(check(&charge,&kernel)==NV_ERR_INSUFFICIENT_PERMISSIONS);kernel.bCpsGpuOpsSession=1;
+ reset();actor=G(1);assert(check(&charge,&kernel)==NV_ERR_INSUFFICIENT_PERMISSIONS); /* MPS/async root cannot delegate */
+ reset();assert(check(&charge,&exporter)==NV_OK);
+ reset();actor=G(201);assert(check(&charge,&exporter)==NV_ERR_INSUFFICIENT_PERMISSIONS&&last_reason==6);
+ reset();limits.HardLimit=(NvLength)-1;assert(check(&charge,&exporter)==NV_ERR_INSUFFICIENT_PERMISSIONS&&last_reason==5);
+ reset();assert(check(NULL,&user)==NV_ERR_INSUFFICIENT_PERMISSIONS);
+ reset();charge.gpuId=8;assert(check(&charge,&user)==NV_ERR_INSUFFICIENT_PERMISSIONS);charge.gpuId=7;
+ reset();charge.cligrp=0;assert(check(&charge,&user)==NV_ERR_INSUFFICIENT_PERMISSIONS);charge.cligrp=G(100);
+ reset();assert(check(&charge,NULL)==NV_ERR_INSUFFICIENT_PERMISSIONS);
+ reset();kernel.cachedPrivilege=0;assert(check(&charge,&kernel)==NV_ERR_INSUFFICIENT_PERMISSIONS);
+ reset();actor=0;assert(check(&charge,&user)==NV_ERR_INSUFFICIENT_PERMISSIONS);
+ reset();destination=0;assert(check(&charge,&user)==NV_ERR_INSUFFICIENT_PERMISSIONS);
+ reset();have_region=0;assert(check(&charge,&user)==NV_ERR_OBJECT_NOT_FOUND);
+ reset();have_pid=0;assert(check(&charge,&user)==NV_ERR_INSUFFICIENT_PERMISSIONS);
+ reset();region.clientGroupMap=0;actor=G(1);assert(check(NULL,&kernel)==NV_OK); /* boot is explicitly unprotected */
+ reset();g_memacct.impl=CGROUP_IMPL_OS;assert(memacctValidateMemoryImport(&charge,7,&user)==NV_ERR_NOT_SUPPORTED);assert(!pid_puts&&!locks);
+ reset();g_memacct.impl=CGROUP_IMPL_NONE;assert(memacctValidateMemoryImport(&charge,7,&user)==NV_ERR_NOT_SUPPORTED);assert(!pid_puts&&!locks);
+ reset();guard_enabled=0;g_memacct.impl=CGROUP_IMPL_OS;assert(memacctValidateMemoryImport(NULL,7,NULL)==NV_OK);assert(!pid_puts&&!locks);
+ puts("Synthetic import guard checks passed; driver not built/loaded/qualified");return 0;}
