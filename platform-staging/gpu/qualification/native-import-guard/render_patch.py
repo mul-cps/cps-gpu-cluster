@@ -19,9 +19,13 @@ HASHES={
 def replace_once(data,old,new):
  if data.count(old)!=1:raise ValueError('Pinned source anchor absent or ambiguous')
  return data.replace(old,new,1)
-def render(source):
+READONLY_HASHES={'kernel-open/nvidia/nv-procfs.c':'3e5dde885bcba7890439f57e0d51c670f81bd340df151c38ab2f2ee32eddc006',
+ 'src/nvidia/arch/nvalloc/unix/src/osapi.c':'43017499b404600beac7f5c2b5f09f39774b71f50ba15fd3317399fa29c02b7e',
+ 'src/nvidia/exports_link_command.txt':'b3312b233ce8658452b9f91799d78ca894d7ce7233542caaa0cbe4cbc4f5daf1'}
+def render(source, *, readonly_cap_inventory=False):
  original={}
- for name,sha in HASHES.items():
+ hashes={**HASHES,**(READONLY_HASHES if readonly_cap_inventory else {})}
+ for name,sha in hashes.items():
   path=source/name
   if path.is_symlink():raise ValueError('Symlink source rejected')
   data=path.read_bytes()
@@ -74,15 +78,31 @@ def render(source):
  old='    // RM client allocations can\'t have multiple memdesc.\n    pMemDesc = pMemory->pMemDesc;'
  new=old+'\n    if (memdescGetAddressSpace(pMemDesc) == ADDR_FBMEM)\n    {\n        status = memacctValidateMemoryImport(pMemory->pCharge, pMemDesc->pGpu->gpuId,\n                                             dynamicCast(pSessionClient, RmClient));\n        if (status != NV_OK)\n            goto done;\n    }'
  changed[name]=replace_once(changed[name],old,new)
+ if readonly_cap_inventory:
+  for name in ['kernel-open/common/inc/os-interface.h','src/nvidia/arch/nvalloc/unix/include/os-interface.h']:
+   changed[name]=replace_once(changed[name],'void*       NV_API_CALL  os_get_pid_info(void);',(HERE/'readonly_cap.h').read_text()+'\nvoid*       NV_API_CALL  os_get_pid_info(void);')
+  name='kernel-open/nvidia/os-interface.c'
+  changed[name]=replace_once(changed[name],'void* NV_API_CALL os_get_pid_info(void)',(HERE/'readonly_cap_os.c').read_text()+'\nvoid* NV_API_CALL os_get_pid_info(void)')
+  name='src/nvidia/src/kernel/mem_mgr/memacct.c'
+  changed[name]=replace_once(changed[name],'NV_STATUS memacctGetLimits(', (HERE/'readonly_cap.c').read_text()+'\nNV_STATUS memacctGetLimits(')
+  name='kernel-open/nvidia/nv-procfs.c'
+  changed[name]=replace_once(changed[name],'#include "nv-reg.h"','#include "nv-reg.h"\n#include <linux/cred.h>\n#include <linux/user_namespace.h>\n#include <linux/capability.h>')
+  changed[name]=replace_once(changed[name],'static int\nnv_procfs_read_gpu_info(', (HERE/'readonly_cap_proc.c').read_text()+'\nstatic int\nnv_procfs_read_gpu_info(')
+  anchor='    entry = NV_CREATE_PROC_FILE("registry", proc_nvidia_gpu, registry, nv);'
+  changed[name]=replace_once(changed[name],anchor,'    if (os_cps_native_import_guard_enabled())\n    {\n        entry = proc_create_data("cps_native_caps", S_IFREG | S_IRUSR,\n            proc_nvidia_gpu, &nv_procfs_cps_native_caps_fops, nv);\n        if (!entry)\n            goto failed;\n    }\n\n'+anchor)
+  name='src/nvidia/arch/nvalloc/unix/src/osapi.c'
+  changed[name]=replace_once(changed[name],'NV_STATUS NV_API_CALL rm_acquire_api_lock(', (HERE/'readonly_cap_rm.c').read_text()+'\nNV_STATUS NV_API_CALL rm_acquire_api_lock(')
+  name='src/nvidia/exports_link_command.txt'
+  changed[name]=replace_once(changed[name],'--undefined=rm_get_gpu_uuid\n','--undefined=rm_cps_get_readonly_caps\n--undefined=rm_get_gpu_uuid\n')
  return original,changed
 def patch(original,changed):
- return ''.join(''.join(difflib.unified_diff(original[n].splitlines(True),changed[n].splitlines(True),fromfile='a/'+n,tofile='b/'+n)) for n in HASHES)
+ return ''.join(''.join(difflib.unified_diff(original[n].splitlines(True),changed[n].splitlines(True),fromfile='a/'+n,tofile='b/'+n)) for n in original)
 def main():
- p=argparse.ArgumentParser(description=__doc__);p.add_argument('--source',type=Path);p.add_argument('--output',type=Path);p.add_argument('--render',action='store_true');a=p.parse_args()
- receipt={'state':'inert','gpuCalls':False,'coreBuilt':False,'coreLoaded':False,'productionQualified':False,'sourceTag':'615.71.09','inputSha256':HASHES}
+ p=argparse.ArgumentParser(description=__doc__);p.add_argument('--source',type=Path);p.add_argument('--output',type=Path);p.add_argument('--render',action='store_true');p.add_argument('--readonly-cap-inventory',action='store_true');a=p.parse_args()
+ receipt={'state':'inert','gpuCalls':False,'coreBuilt':False,'coreLoaded':False,'productionQualified':False,'sourceTag':'615.71.09','inputSha256':{**HASHES,**(READONLY_HASHES if a.readonly_cap_inventory else {})},'readonlyCapInventory':a.readonly_cap_inventory}
  if a.render:
   if not a.source or not a.output:p.error('--render requires --source and NEW --output')
-  original,changed=render(a.source);data=patch(original,changed).encode()
+  original,changed=render(a.source,readonly_cap_inventory=a.readonly_cap_inventory);data=patch(original,changed).encode()
   with a.output.open('xb') as stream:stream.write(data)
   receipt.update(state='offline-patch-rendered',patchSha256=hashlib.sha256(data).hexdigest())
  print(json.dumps(receipt))
