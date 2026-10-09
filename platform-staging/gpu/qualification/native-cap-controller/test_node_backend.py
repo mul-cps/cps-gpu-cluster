@@ -1,7 +1,8 @@
 """CPU-only qualification adapter tests; pinned SDK supplied explicitly."""
 import copy
-from dataclasses import replace
+from dataclasses import asdict, replace
 import importlib.util
+import io
 import json
 import os
 from pathlib import Path
@@ -9,7 +10,8 @@ import shutil
 import sys
 import tempfile
 import unittest
-from unittest.mock import patch
+from types import SimpleNamespace
+from unittest.mock import Mock, patch
 
 from node_backend import QualificationNodeBackend, private_read, private_write
 from poll import CORE_SHA256, MANUAL_SHA256, Kubernetes, health, load_pinned, main
@@ -105,6 +107,45 @@ class NodeBackendTests(unittest.TestCase):
 
     def test_inert_cli_needs_no_modules_credentials_or_driver(self):
         main([])
+
+    def test_poll_cleaned_uid_is_a_tombstone_before_same_name_pod_lookup(self):
+        # Complete a real controller transaction in the CPU backend/journal,
+        # then restart the actual CLI loop against its durable cleaned record.
+        self.controller.reconcile(self.intent)
+        self.stop()
+        self.assertEqual(self.controller.cleanup(self.intent).state, 'cleaned')
+        enrolled = self.state / 'intents'
+        enrolled.mkdir(mode=0o700)
+        private_write(enrolled / (UID + '.json'), asdict(self.intent), self.uid, create=True)
+        writes = list(self.driver.writes)
+        replacement = copy.deepcopy(self.pod)
+        replacement['metadata']['uid'] = '11111111-1111-4111-8111-111111111111'
+        replacement['status']['phase'] = 'Running'
+        kube = Mock()
+        kube.pod.return_value = replacement
+        driver = SimpleNamespace(close=Mock())
+        output = io.StringIO()
+        # These are injected CPU dependencies, not a live driver or Kube API.
+        with patch('poll.load_pinned', side_effect=[self.m, SimpleNamespace(Nvml=lambda: driver)]), \
+                patch('poll.os', SimpleNamespace(geteuid=lambda: 0)), \
+                patch('poll.private_directory', side_effect=lambda path:
+                      __import__('node_backend').private_directory(path, self.uid)), \
+                patch('poll.private_read', side_effect=lambda path: private_read(path, self.uid)), \
+                patch('poll.Kubernetes', return_value=kube), \
+                patch('poll.QualificationNodeBackend', return_value=self.backend), \
+                patch.object(self.backend, 'check_cleanup', side_effect=AssertionError('tombstone must skip cleanup')) as cleanup, \
+                patch('poll.time.sleep'), patch('sys.stdout', output):
+            main(['--execute', '--qualification', '--controller-module', 'cpu-models',
+                  '--manual-helper', 'cpu-manual', '--state-root', str(self.state), '--iterations', '2'])
+        observed = [json.loads(line) for line in output.getvalue().splitlines()]
+        self.assertEqual(observed, [{'pod_uid': UID, 'state': 'cleaned', 'iteration': iteration,
+                                    'production_qualified': False} for iteration in (0, 1)])
+        kube.pod.assert_not_called()
+        kube.delete.assert_not_called()
+        cleanup.assert_not_called()
+        driver.close.assert_called_once_with()
+        self.assertEqual(self.driver.writes, writes)
+        self.assertEqual(self.journal.read(UID).state, 'cleaned')
 
     def test_exact_proc_cri_boot_cgroup_and_epoch_identity(self):
         observation = self.backend.observe(self.intent)
