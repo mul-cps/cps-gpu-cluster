@@ -398,7 +398,8 @@ class BatchTests(unittest.TestCase):
                 'labels': {'kubernetes.io/service-name': scope['service']},
                 'ownerReferences': [{'kind': 'Service', 'name': scope['service'], 'uid': scope['service_uid']}]},
                 'endpoints': []}]}
-        for kind in ('valid', 'replicas', 'unobserved', 'uid', 'image', 'service', 'selector', 'pod', 'ready', 'unknown', 'terminating', 'slice-owner'):
+        for kind in ('valid', 'null-endpoints', 'missing-endpoints', 'printer-pods', 'printer-slices',
+                     'replicas', 'unobserved', 'uid', 'image', 'service', 'selector', 'pod', 'ready', 'unknown', 'terminating', 'slice-owner'):
             values = copy.deepcopy([deployment, service, pods, slices])
             d, s, p, e = values
             if kind == 'replicas': d['spec']['replicas'] = 1
@@ -412,9 +413,21 @@ class BatchTests(unittest.TestCase):
                 e['items'][0]['endpoints'] = [{'addresses': ['10.1.1.1'], 'conditions': {'ready': True} if kind == 'ready'
                     else {'ready': False, 'serving': True, 'terminating': True} if kind == 'terminating' else {}}]
             elif kind == 'slice-owner': e['items'][0]['metadata']['ownerReferences'][0]['uid'] = str(uuid.uuid4())
+            elif kind == 'null-endpoints': e['items'][0]['endpoints'] = None
+            elif kind == 'missing-endpoints': e['items'][0].pop('endpoints')
+            elif kind == 'printer-pods': p['kind'] = 'List'
+            elif kind == 'printer-slices': e.update(apiVersion='v1', kind='List')
             backend = SimpleNamespace(call=Mock(side_effect=values))
             with self.subTest(kind=kind):
-                if kind == 'valid': self.assertEqual(b.release_freeze(backend, scope, r)['service_uid'], scope['service_uid'])
+                if kind in ('valid', 'null-endpoints', 'missing-endpoints'):
+                    proof = b.release_freeze(backend, scope, r)
+                    self.assertEqual(proof['service_uid'], scope['service_uid'])
+                    self.assertEqual(proof['pods_resource_version'], '5')
+                    self.assertEqual(proof['endpoints_resource_version'], '6')
+                    self.assertEqual(backend.call.call_args_list[2].args[0], ['get', '--raw',
+                        '/api/v1/namespaces/cps-compute/pods?labelSelector=app%3Dcompute-gateway'])
+                    self.assertEqual(backend.call.call_args_list[3].args[0], ['get', '--raw',
+                        '/apis/discovery.k8s.io/v1/namespaces/cps-compute/endpointslices?labelSelector=kubernetes.io%2Fservice-name%3Dcompute-gateway'])
                 else:
                     with self.assertRaises(ValueError): b.release_freeze(backend, scope, r)
 

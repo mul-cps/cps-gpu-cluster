@@ -19,6 +19,7 @@ import sys
 import tempfile
 import time
 import uuid
+from urllib.parse import quote
 
 ROOT = Path('/run/cps-native-gpu')
 PUBLISHER_SHA = '930bb1ad283526779da3e5c868b9e701b4d1d2df1cc2aac36a3ee5321e992eb0'
@@ -127,9 +128,12 @@ def release_freeze(backend, expected, r):
         and service['metadata']['uid'] == expected['service_uid']
         and service['spec']['selector'] == deploy['spec']['selector']['matchLabels']
         and not service['spec'].get('publishNotReadyAddresses', False), 'Actual pinned gateway Service selector changed')
-    pods = backend.call(['get', 'pods', '-n', ns, '-l', selector, '-o', 'json'])
-    slices = backend.call(['get', 'endpointslices.discovery.k8s.io', '-n', ns, '-l',
-        'kubernetes.io/service-name=' + expected['service'], '-o', 'json'])
+    # kubectl's object printer wraps lists as generic v1/List. Use the exact
+    # authenticated scoped APIs to retain their typed envelopes and list RVs.
+    pods = backend.call(['get', '--raw', '/api/v1/namespaces/' + quote(ns, safe='')
+        + '/pods?labelSelector=' + quote(selector, safe='')])
+    slices = backend.call(['get', '--raw', '/apis/discovery.k8s.io/v1/namespaces/' + quote(ns, safe='')
+        + '/endpointslices?labelSelector=' + quote('kubernetes.io/service-name=' + expected['service'], safe='')])
     require(pods.get('apiVersion') == 'v1' and pods.get('kind') == 'PodList'
         and isinstance(pods.get('items'), list) and not pods['items'], 'Gateway-owned Pods still exist')
     require(slices.get('apiVersion') == 'discovery.k8s.io/v1' and slices.get('kind') == 'EndpointSliceList'
@@ -139,7 +143,7 @@ def release_freeze(backend, expected, r):
             and item['metadata']['labels']['kubernetes.io/service-name'] == expected['service']
             and any(ref.get('kind') == 'Service' and ref.get('name') == expected['service']
                     and ref.get('uid') == expected['service_uid'] for ref in item['metadata'].get('ownerReferences', []))
-            and isinstance(item.get('endpoints'), list) and not item['endpoints'],
+            and item.get('endpoints') in (None, []),
             'Gateway still has an endpoint backend')
     return {'scope': expected, 'deployment_uid': deploy['metadata']['uid'],
             'service_uid': service['metadata']['uid'],
