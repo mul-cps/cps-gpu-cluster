@@ -341,13 +341,29 @@ def api_class(qualification):
             values = []
             for page in range(10):
                 response = self.call('GET', path)
-                require(isinstance(response, dict) and isinstance(response.get('items'), list), 'Actual bounded enrollment list required')
+                require(isinstance(response, dict) and response.get('apiVersion') == 'v1'
+                        and response.get('kind') == 'ConfigMapList'
+                        and isinstance(response.get('metadata'), dict)
+                        and isinstance(response.get('items'), list), 'Actual bounded enrollment ConfigMapList required')
                 for cm in response['items']:
-                    name = cm.get('metadata', {}).get('name', '')
-                    if name.startswith('cps-native-enrollment-'): values.append(cm)
-                more = response.get('metadata', {}).get('continue')
+                    require(isinstance(cm, dict) and cm.get('apiVersion', 'v1') == 'v1'
+                            and cm.get('kind', 'ConfigMap') == 'ConfigMap'
+                            and isinstance(cm.get('metadata'), dict)
+                            and cm['metadata'].get('namespace') == namespace,
+                            'Exact namespaced ConfigMap list item required')
+                    name = cm['metadata'].get('name')
+                    require(isinstance(name, str) and _NAME.fullmatch(name), 'Actual ConfigMap list item name required')
+                    if name.startswith('cps-native-enrollment-'):
+                        # Core/v1 LIST items omit TypeMeta. Infer only absent
+                        # fields from the validated typed endpoint/envelope;
+                        # explicit conflicting types above remain rejected.
+                        value = dict(cm)
+                        value.setdefault('apiVersion', 'v1')
+                        value.setdefault('kind', 'ConfigMap')
+                        values.append(value)
+                more = response['metadata'].get('continue')
+                require(more is None or isinstance(more, str), 'Invalid enrollment continuation')
                 if not more: return values
-                require(isinstance(more, str), 'Invalid enrollment continuation')
                 path = self.maps_path(namespace) + '?limit=200&continue=' + urllib.parse.quote(more, safe='')
             raise ValueError('Enrollment namespace exceeded bounded list')
 

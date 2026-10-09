@@ -47,6 +47,74 @@ class EnrollmentTest(unittest.TestCase):
     def test_exact_immutable_selected_pool_enrollment(self):
         self.assertEqual(self.check()['enrollment'], self.enrollment)
 
+    def core_configmap_list(self):
+        enrollment = copy.deepcopy(self.cm)
+        backend, record = self.agent_cleanup_fixture('cleaned', False, False, 'unlimited')
+        cleanup = self.agent.cleanup_receipt(self.check(), record, backend, None, self.models)
+        cleanup['metadata'].update(uid='66666666-6666-4666-8666-666666666666', resourceVersion='2')
+        for item in (enrollment, cleanup):
+            item.pop('apiVersion'); item.pop('kind')
+        return {'apiVersion':'v1','kind':'ConfigMapList','metadata':{'resourceVersion':'17'},
+                'items':[enrollment,cleanup]}
+
+    def list_enrollments(self, response):
+        from types import SimpleNamespace
+        # Fake only HTTP transport. The actual list adapter must establish the
+        # typed API context before the unchanged public validator sees an item.
+        api = self.agent.api_class(SimpleNamespace(Kubernetes=object))()
+        def read(method, path, value=None):
+            self.assertEqual(method, 'GET')
+            self.assertEqual(path, '/api/v1/namespaces/cps-native-authority/configmaps?limit=200')
+            self.assertIsNone(value)
+            return response
+        api.call = read
+        return api.enrollments(self.config['authority_namespace'])
+
+    def test_real_core_list_items_without_type_metadata_validate_and_cleanup_is_ignored(self):
+        response = self.core_configmap_list(); original = copy.deepcopy(response)
+        self.assertEqual(response['items'][0]['metadata']['labels'], response['items'][1]['metadata']['labels'])
+        selected = self.list_enrollments(response)
+        self.assertEqual(len(selected), 1)
+        self.assertEqual(self.check(selected[0])['enrollment'], self.enrollment)
+        self.assertEqual(response, original)
+
+    def test_direct_enrollment_without_typed_list_context_remains_rejected(self):
+        item = self.core_configmap_list()['items'][0]
+        with self.assertRaises(ValueError): self.check(item)
+
+    def test_malformed_or_wrong_configmap_list_envelope_is_rejected(self):
+        changes = [lambda r:r.pop('apiVersion'), lambda r:r.pop('kind'),
+            lambda r:r.update(apiVersion='apps/v1'), lambda r:r.update(kind='SecretList'),
+            lambda r:r.update(metadata=[]), lambda r:r.pop('metadata'),
+            lambda r:r.update(items={}), lambda r:r.update(items=None)]
+        for index, change in enumerate(changes):
+            response = self.core_configmap_list(); change(response)
+            with self.subTest(index=index), self.assertRaises(ValueError):
+                self.list_enrollments(response)
+
+    def test_explicit_wrong_item_type_or_namespace_is_rejected_before_name_filtering(self):
+        changes = [lambda item:item.update(apiVersion='apps/v1'),
+            lambda item:item.update(kind='Secret'),
+            lambda item:item['metadata'].update(namespace='other-authority')]
+        for index in (0,1):
+            for change_index, change in enumerate(changes):
+                response = self.core_configmap_list(); change(response['items'][index])
+                with self.subTest(item=index, change=change_index), self.assertRaises(ValueError):
+                    self.list_enrollments(response)
+        response = self.core_configmap_list(); response['items'][0] = 'not-a-configmap'
+        with self.assertRaises(ValueError): self.list_enrollments(response)
+
+    def test_mutable_or_tampered_list_enrollment_still_fails_public_validation(self):
+        for mutable in (True,False):
+            response = self.core_configmap_list()
+            if mutable: response['items'][0]['immutable'] = False
+            else:
+                payload = copy.deepcopy(self.enrollment); payload['intent']['cap_mib'] = 10240
+                response['items'][0]['data']['enrollment.json'] = json.dumps(payload)
+            selected = self.list_enrollments(response)
+            self.assertEqual(len(selected), 1)
+            with self.assertRaises(ValueError): self.check(selected[0])
+
     def test_tampered_cap_intent_or_pool_blocks(self):
         for change in ('cap_mib', 'namespace', 'node_uid', 'gpu_uuid', 'policy_hash'):
             cm = copy.deepcopy(self.cm)
