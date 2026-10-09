@@ -14,7 +14,7 @@ from types import SimpleNamespace
 from unittest.mock import Mock, patch
 
 from node_backend import QualificationNodeBackend, private_read, private_write
-from poll import CORE_SHA256, MANUAL_SHA256, Kubernetes, health, load_pinned, main
+from poll import CORE_SHA256, MANUAL_SHA256, Kubernetes, awaiting_first_gate, health, load_pinned, main
 
 
 UID = 'd3a1659e-6345-43cc-9ca5-7b8ef1aa5378'
@@ -107,6 +107,115 @@ class NodeBackendTests(unittest.TestCase):
 
     def test_inert_cli_needs_no_modules_credentials_or_driver(self):
         main([])
+
+    def test_poll_fresh_pending_then_running_gate_seals_without_sticky_error(self):
+        enrolled = self.state / 'intents'
+        enrolled.mkdir(mode=0o700)
+        private_write(enrolled / (UID + '.json'), asdict(self.intent), self.uid, create=True)
+        pending = copy.deepcopy(self.pod)
+        running = copy.deepcopy(pending)
+        running['status']['initContainerStatuses'] = [{'name': 'cps-native-cap-gate',
+            'restartCount': 0, 'state': {'running': {'startedAt': '2026-10-09T16:00:00Z'}}}]
+        kube = Mock()
+        kube.pod.side_effect = [pending, running]
+        driver = SimpleNamespace(close=Mock())
+        output = io.StringIO()
+        def between_iterations(_):
+            self.assertIsNone(self.journal.read(UID))
+            self.assertEqual(self.driver.writes, [])
+        with patch('poll.load_pinned', side_effect=[self.m, SimpleNamespace(Nvml=lambda: driver)]), \
+                patch('poll.os', SimpleNamespace(geteuid=lambda: 0)), \
+                patch('poll.private_directory', side_effect=lambda path:
+                      __import__('node_backend').private_directory(path, self.uid)), \
+                patch('poll.private_read', side_effect=lambda path: private_read(path, self.uid)), \
+                patch('poll.Kubernetes', return_value=kube), \
+                patch('poll.QualificationNodeBackend', return_value=self.backend), \
+                patch('poll.time.sleep', side_effect=between_iterations), patch('sys.stdout', output):
+            main(['--execute', '--qualification', '--controller-module', 'cpu-models',
+                  '--manual-helper', 'cpu-manual', '--state-root', str(self.state), '--iterations', '2'])
+        observed = [json.loads(line) for line in output.getvalue().splitlines()]
+        self.assertEqual([r['state'] for r in observed], ['awaiting-gate', 'sealed'])
+        self.assertTrue(all(r['production_qualified'] is False for r in observed))
+        self.assertEqual(self.journal.read(UID).state, 'sealed')
+        self.assertEqual(len(self.driver.writes), 2)  # bootstrap, finite cap
+        driver.close.assert_called_once_with()
+
+    def test_awaiting_gate_requires_exact_identity_spec_and_never_started_status(self):
+        self.assertTrue(awaiting_first_gate(self.pod, self.intent))
+        waiting = {'name': 'cps-native-cap-gate', 'restartCount': 0,
+                   'state': {'waiting': {'reason': 'ContainerCreating'}}}
+        self.pod['status']['initContainerStatuses'] = [waiting]
+        self.assertTrue(awaiting_first_gate(self.pod, self.intent))
+        mutations = [
+            lambda p: p['metadata'].update(uid='11111111-1111-4111-8111-111111111111'),
+            lambda p: p['metadata'].update(deletionTimestamp='2026-10-09T16:00:00Z'),
+            lambda p: p['metadata'].update(namespace='foreign'),
+            lambda p: p['spec'].update(nodeName='foreign'),
+            lambda p: p['spec']['containers'][0].update(image='changed'),
+            lambda p: p['status'].update(initContainerStatuses=[waiting, waiting]),
+            lambda p: p['status'].update(initContainerStatuses=[dict(waiting, state={})]),
+            lambda p: p['status'].update(initContainerStatuses=[dict(waiting, restartCount=1)]),
+            lambda p: p['status'].update(initContainerStatuses=[dict(waiting,
+                lastState={'terminated': {'exitCode': 1}})]),
+            lambda p: p['status'].update(initContainerStatuses=[dict(waiting,
+                state={'terminated': {'exitCode': 0}})]),
+            lambda p: p['status'].update(initContainerStatuses=[dict(waiting,
+                state={'waiting': {'reason': 'CrashLoopBackOff'}})]),
+            lambda p: p['status'].update(conditions=[{'type': 'Initialized', 'status': 'True'}]),
+            lambda p: p['status'].update(ephemeralContainerStatuses=[{'name': 'debug'}]),
+        ]
+        for i, mutate in enumerate(mutations):
+            with self.subTest(case=i):
+                pod = copy.deepcopy(self.pod)
+                mutate(pod)
+                with self.assertRaises((ValueError, TypeError)):
+                    awaiting_first_gate(pod, self.intent)
+        for container_status in [
+                {'state': {'running': {}}}, {'state': {'terminated': {'exitCode': 0}}},
+                {'state': {'waiting': {'reason': 'PodInitializing'}}, 'containerID': 'containerd://' + CID},
+                {'state': {'waiting': {'reason': 'PodInitializing'}}, 'lastState': {'terminated': {'exitCode': 0}}}]:
+            with self.subTest(main=container_status):
+                pod = copy.deepcopy(self.pod)
+                pod['status']['containerStatuses'] = [dict(container_status, name='main')]
+                with self.assertRaises(ValueError):
+                    awaiting_first_gate(pod, self.intent)
+        pod = copy.deepcopy(self.pod)
+        pod['spec']['initContainers'].append({'name': 'user-init'})
+        digest = __import__('hashlib').sha256(json.dumps(pod['spec'], sort_keys=True, separators=(',', ':')).encode()).hexdigest()
+        intent = replace(self.intent, spec_sha256=digest)
+        pod['status']['initContainerStatuses'].append({'name': 'user-init', 'state': {'running': {}}})
+        with self.assertRaises(ValueError):
+            awaiting_first_gate(pod, intent)
+
+    def test_poll_started_main_or_failed_gate_stays_error_without_native_writes(self):
+        enrolled = self.state / 'intents'
+        enrolled.mkdir(mode=0o700)
+        private_write(enrolled / (UID + '.json'), asdict(self.intent), self.uid, create=True)
+        started = copy.deepcopy(self.pod)
+        started['status']['containerStatuses'] = [{'name': 'main', 'state': {'running': {}}}]
+        failed = copy.deepcopy(self.pod)
+        failed['status'].update(phase='Failed', initContainerStatuses=[
+            {'name': 'cps-native-cap-gate', 'state': {'terminated': {'exitCode': 1}}}])
+        for pod in (started, failed):
+            with self.subTest(phase=pod['status']['phase']):
+                kube = Mock()
+                kube.pod.return_value = pod
+                output = io.StringIO()
+                driver = SimpleNamespace(close=Mock())
+                with patch('poll.load_pinned', side_effect=[self.m, SimpleNamespace(Nvml=lambda: driver)]), \
+                        patch('poll.os', SimpleNamespace(geteuid=lambda: 0)), \
+                        patch('poll.private_directory', side_effect=lambda path:
+                              __import__('node_backend').private_directory(path, self.uid)), \
+                        patch('poll.private_read', side_effect=lambda path: private_read(path, self.uid)), \
+                        patch('poll.Kubernetes', return_value=kube), \
+                        patch('poll.QualificationNodeBackend', return_value=self.backend), patch('sys.stdout', output):
+                    with self.assertRaisesRegex(ValueError, 'observed blocked errors'):
+                        main(['--execute', '--qualification', '--controller-module', 'cpu-models',
+                              '--manual-helper', 'cpu-manual', '--state-root', str(self.state)])
+                self.assertEqual(json.loads(output.getvalue())['state'], 'blocked-error')
+                self.assertIsNone(self.journal.read(UID))
+                self.assertEqual(self.driver.writes, [])
+                driver.close.assert_called_once_with()
 
     def test_poll_cleaned_uid_is_a_tombstone_before_same_name_pod_lookup(self):
         # Complete a real controller transaction in the CPU backend/journal,

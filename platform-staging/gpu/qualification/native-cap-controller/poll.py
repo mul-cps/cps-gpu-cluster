@@ -108,6 +108,56 @@ def health(driver):
     return True
 
 
+def awaiting_first_gate(pod, intent):
+    """Recognize only a verified fresh Pending Pod whose first gate never ran.
+
+    Caller must have no journal for this UID. This authorizes no mutation and
+    does not substitute for the backend's actual CRI/proc/health checks.
+    """
+    require(isinstance(pod, dict), 'Actual Pod object required')
+    status = pod.get('status', {})
+    require(isinstance(status, dict), 'Actual Pod status required')
+    if status.get('phase') != 'Pending':
+        return False
+    meta, spec = pod.get('metadata'), pod.get('spec')
+    require(isinstance(meta, dict) and isinstance(spec, dict), 'Actual Pod identity/specification required')
+    require(not meta.get('deletionTimestamp') and all(meta.get(k) == getattr(intent, attr) for k, attr in
+        [('uid', 'pod_uid'), ('namespace', 'namespace'), ('name', 'name')]), 'Actual exact live enrolled Pod required')
+    require(spec.get('nodeName') == intent.node and
+        hashlib.sha256(json.dumps(spec, sort_keys=True, separators=(',', ':')).encode()).hexdigest() == intent.spec_sha256,
+        'Reviewed enrolled Pod specification changed')
+    init = spec.get('initContainers')
+    containers = spec.get('containers')
+    require(isinstance(init, list) and init and all(isinstance(c, dict) for c in init)
+        and init[0].get('name') == GATE and isinstance(containers, list) and containers
+        and all(isinstance(c, dict) for c in containers), 'Trusted first init gate required')
+    require(not status.get('ephemeralContainerStatuses'), 'Ephemeral workload may have started')
+    conditions = status.get('conditions', [])
+    require(isinstance(conditions, list) and all(isinstance(c, dict) for c in conditions)
+        and not any(c.get('type') == 'Initialized' and c.get('status') == 'True' for c in conditions),
+        'Init sequence already completed')
+    gate_running = False
+    for key, approved in [('initContainerStatuses', init), ('containerStatuses', containers)]:
+        values = status.get(key, [])
+        names = {c.get('name') for c in approved}
+        require(isinstance(values, list) and all(isinstance(s, dict) for s in values)
+            and len({s.get('name') for s in values}) == len(values), 'Malformed actual container statuses')
+        for value in values:
+            state = value.get('state')
+            require(value.get('name') in names and isinstance(state, dict) and len(state) == 1
+                and type(value.get('restartCount', 0)) is int and value.get('restartCount', 0) == 0
+                and not value.get('lastState'), 'Container history prevents fresh gate wait')
+            if key == 'initContainerStatuses' and value.get('name') == GATE and 'running' in state:
+                require(isinstance(state['running'], dict), 'Malformed running gate state')
+                gate_running = True
+                continue  # Actual backend must resolve its CRI identity.
+            require(set(state) == {'waiting'} and isinstance(state['waiting'], dict)
+                and state['waiting'].get('reason') in ('PodInitializing', 'ContainerCreating')
+                and not value.get('containerID') and value.get('ready', False) is False
+                and value.get('started') in (None, False), 'Container already ran or failed before cap assignment')
+    return not gate_running
+
+
 def main(argv=None):
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--execute', action='store_true')
@@ -165,8 +215,13 @@ def main(argv=None):
                             'iteration': iteration, 'production_qualified': False}), flush=True)
                         continue
                     pod = kube.pod(intent)
+                    if record is None and pod is not None and awaiting_first_gate(pod, intent):
+                        print(json.dumps({'pod_uid': intent.pod_uid, 'state': 'awaiting-gate',
+                            'iteration': iteration, 'production_qualified': False}), flush=True)
+                        continue
                     if pod is None or pod.get('status', {}).get('phase') in ('Succeeded', 'Failed'):
                         if journal.read(intent.pod_uid) is None:
+                            require(pod is None, 'Enrolled Pod ended before any cap journal existed')
                             continue
                         stopped = backend.check_cleanup(journal.read(intent.pod_uid).identity)
                         if stopped.live_tasks or stopped.gpu_clients:
