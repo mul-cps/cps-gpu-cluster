@@ -9,9 +9,10 @@ import shutil
 import sys
 import tempfile
 import unittest
+from unittest.mock import patch
 
 from node_backend import QualificationNodeBackend, private_read, private_write
-from poll import CORE_SHA256, MANUAL_SHA256, Kubernetes, load_pinned, main
+from poll import CORE_SHA256, MANUAL_SHA256, Kubernetes, health, load_pinned, main
 
 
 UID = 'd3a1659e-6345-43cc-9ca5-7b8ef1aa5378'
@@ -69,7 +70,7 @@ class NodeBackendTests(unittest.TestCase):
             (group / 'cgroup.threads').write_text('211\n')
         (self.group / 'cgroup.events').write_text('populated 1\n')
         self.state = self.root / 'state'
-        for part in ('', 'authority', 'receipts', 'authority/bootstrap', 'authority/journal'):
+        for part in ('', 'authority', 'receipts', 'bootstrap', 'journal'):
             (self.state / part).mkdir(mode=0o700)
         self.uid = os.getuid()
         epochfile = self.state / 'authority/driver-generation'
@@ -92,7 +93,7 @@ class NodeBackendTests(unittest.TestCase):
             delete_pod=lambda intent: self.deleted.append(intent.pod_uid), gpu_clients=lambda _: self.clients,
             health=lambda: self.healthy, proc_root=self.proc, cgroup_root=self.cg,
             state_root=self.state, trusted_uid=self.uid)
-        self.journal = self.m.PrivateJournal(self.state / 'authority/journal')
+        self.journal = self.m.PrivateJournal(self.state / 'journal')
         self.controller = self.m.NativeCapController(self.backend, self.journal, enabled=True)
 
     def stop(self):
@@ -115,7 +116,7 @@ class NodeBackendTests(unittest.TestCase):
 
     def test_code3_bootstraps_durably_before_cap_and_seal(self):
         def at_write():
-            bootstrap = private_read(self.state / 'authority/bootstrap' / (UID + '.json'), self.uid)
+            bootstrap = private_read(self.state / 'bootstrap' / (UID + '.json'), self.uid)
             if len(self.driver.writes) == 1:
                 self.assertEqual(bootstrap['state'], 'prepared')
                 self.assertIsNone(self.journal.read(UID))
@@ -123,7 +124,7 @@ class NodeBackendTests(unittest.TestCase):
         record = self.controller.reconcile(self.intent)
         self.assertEqual(record.state, 'sealed')
         self.assertEqual(self.driver.writes, [(0, self.m.MAX_LIMIT), (5120 * 1048576, 5120 * 1048576)])
-        bootstrap = private_read(self.state / 'authority/bootstrap' / (UID + '.json'), self.uid)
+        bootstrap = private_read(self.state / 'bootstrap' / (UID + '.json'), self.uid)
         self.assertEqual(bootstrap['state'], 'applied')
         self.assertEqual(bootstrap['readback']['used'], 0)
         self.assertEqual(self.backend.read_gate(record.identity), record.receipt())
@@ -133,14 +134,14 @@ class NodeBackendTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, 'unowned'):
             self.controller.reconcile(self.intent)
         self.assertEqual(self.driver.writes, [])
-        self.assertEqual(list((self.state / 'authority/bootstrap').iterdir()), [])
+        self.assertEqual(list((self.state / 'bootstrap').iterdir()), [])
 
     def test_unsupported_after_unlimited_set_retains_bootstrap_and_no_public_receipt(self):
         def unsupported(): self.driver.value = {'nvml_result': 3, 'state': 'unset-or-unsupported'}
         self.driver.after_set = unsupported
         with self.assertRaisesRegex(ValueError, 'readback'):
             self.controller.reconcile(self.intent)
-        self.assertEqual(private_read(self.state / 'authority/bootstrap' / (UID + '.json'), self.uid)['state'], 'prepared')
+        self.assertEqual(private_read(self.state / 'bootstrap' / (UID + '.json'), self.uid)['state'], 'prepared')
         self.assertIsNone(self.journal.read(UID))
         self.assertEqual(list((self.state / 'receipts').iterdir()), [])
 
@@ -150,7 +151,7 @@ class NodeBackendTests(unittest.TestCase):
         self.driver.after_set = None
         self.assertIsNone(self.journal.read(UID))
         self.assertEqual(self.controller.reconcile(self.intent).state, 'sealed')
-        self.assertEqual(private_read(self.state / 'authority/bootstrap' / (UID + '.json'), self.uid)['state'], 'applied')
+        self.assertEqual(private_read(self.state / 'bootstrap' / (UID + '.json'), self.uid)['state'], 'applied')
 
     def test_bootstrap_cannot_follow_user_init_or_main(self):
         for key in ('containerStatuses', 'initContainerStatuses'):
@@ -250,7 +251,7 @@ class NodeBackendTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, 'health'):
             self.controller.reconcile(self.intent)
         self.assertEqual(self.driver.writes, [(0, self.m.MAX_LIMIT)])
-        self.assertEqual(private_read(self.state / 'authority/bootstrap' / (UID + '.json'), self.uid)['state'], 'prepared')
+        self.assertEqual(private_read(self.state / 'bootstrap' / (UID + '.json'), self.uid)['state'], 'prepared')
         self.assertIsNone(self.journal.read(UID))
 
     def test_receipt_publication_never_overwrites_even_owned_existing_content(self):
@@ -269,6 +270,30 @@ class NodeBackendTests(unittest.TestCase):
         self.assertEqual(calls[0][0], 'DELETE')
         self.assertEqual(calls[0][2]['preconditions'], {'uid': UID})
         self.assertEqual(calls[0][1], '/api/v1/namespaces/qualification/pods/notebook')
+
+    def test_gate_authority_directory_never_contains_private_controller_records(self):
+        self.controller.reconcile(self.intent)
+        self.assertEqual([file.name for file in (self.state / 'authority').iterdir()], ['driver-generation'])
+        self.assertTrue((self.state / 'bootstrap' / (UID + '.json')).exists())
+        self.assertTrue((self.state / 'journal' / (UID + '.json')).exists())
+
+    def test_cli_health_pins_exact_driver_and_all_guard_parameters(self):
+        params = {'uvm_deny_managed_mmap': 'Y', 'uvm_disable_hmm': 'Y',
+                  'uvm_ats_mode': '0', 'uvm_enable_builtin_tests': '0', 'uvm_disable_sam_migration': 'Y'}
+        healthroot = self.root / 'health'
+        for path, text in [('/sys/module/nvidia/version', self.driver.version),
+                           *[('/sys/module/nvidia_uvm/parameters/' + key, value) for key, value in params.items()]]:
+            file = healthroot / path.lstrip('/'); file.parent.mkdir(parents=True, exist_ok=True); file.write_text(text)
+        with patch('poll.Path', side_effect=lambda path: healthroot / str(path).lstrip('/')):
+            self.assertTrue(health(self.driver))
+            self.driver.version = '615.71.10'
+            with self.assertRaisesRegex(ValueError, '615.71.09'): health(self.driver)
+            self.driver.version = '615.71.09'
+            sam = healthroot / 'sys/module/nvidia_uvm/parameters/uvm_disable_sam_migration'
+            sam.write_text('N')
+            with self.assertRaisesRegex(ValueError, 'guard'): health(self.driver)
+            sam.unlink()
+            with self.assertRaises(FileNotFoundError): health(self.driver)
 
 
 if __name__ == '__main__': unittest.main()

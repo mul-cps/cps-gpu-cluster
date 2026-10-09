@@ -22,14 +22,16 @@ helper into an isolated module and changes its gate constant in memory to
 Use the verified R615 driver container in host PID namespace. Host cgroups are
 mounted at `/sys/fs/cgroup`; host proc identities are visible through `/proc`.
 The root-owned host directories `/run/cps-native-gpu`, `receipts`, `authority`,
-`authority/intents`, `authority/bootstrap` and `authority/journal` must all have
+`intents`, `bootstrap` and `journal` must all have
 mode `0700`. The intent, epoch, bootstrap, journal and gate receipt files have
-mode `0600`. None of these directories may be writable by users. Only gate
+mode `0600`. None of these directories may be writable by users. The gate-mounted `authority`
+directory contains only `driver-generation`; intents, bootstrap and journal
+remain separate sibling directories. Only gate
 receipt and current epoch mounts are supplied read only to the approved CPU
 gate; the private intent/bootstrap/journal directories are never mounted there.
 
 Root enrolls each **actual** admitted Pod UID in
-`authority/intents/<pod-uid>.json`, containing the exact `CapIntent` fields.
+`intents/<pod-uid>.json`, containing the exact `CapIntent` fields.
 An admitted, defaulted full Pod spec hash must be computed before user gate
 execution; an annotation alone is not admission authority. Each intent binds
 the actual node UID, canonical physical GPU UUID, fixed cap and policy hash.

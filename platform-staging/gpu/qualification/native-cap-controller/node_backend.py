@@ -121,7 +121,7 @@ class QualificationNodeBackend:
         self.proc, self.cg, self.state = Path(proc_root), Path(cgroup_root), Path(state_root)
         self.uid = trusted_uid
         for path in (self.state, self.state / 'authority', self.state / 'receipts',
-                     self.state / 'authority/bootstrap'):
+                     self.state / 'bootstrap'):
             private_directory(path, self.uid)
         require(int(self.driver.version.split('.')[0]) >= 615, 'R615 or newer required')
         self.manual.GATE = GATE  # imported isolated helper module, never edit its source
@@ -258,7 +258,7 @@ class QualificationNodeBackend:
             require(not any(line.startswith('0::' + identity.cgroup_relative + '/')
                             or line == '0::' + identity.cgroup_relative for line in cgroups),
                     'CUDA client already present in virgin Pod')
-        path = self.state / 'authority/bootstrap' / (identity.pod_uid + '.json')
+        path = self.state / 'bootstrap' / (identity.pod_uid + '.json')
         expected = {'protocol': BOOTSTRAP_PROTOCOL, 'intent': intent.to_dict(),
                     'identity': identity.to_dict(), 'state': 'prepared',
                     'readback': None, 'production_qualified': False}
@@ -288,7 +288,7 @@ class QualificationNodeBackend:
             return self._bootstrap(identity)
         if value is None:
             return None
-        bootstrap = private_read(self.state / 'authority/bootstrap' / (identity.pod_uid + '.json'), self.uid)
+        bootstrap = private_read(self.state / 'bootstrap' / (identity.pod_uid + '.json'), self.uid)
         if (bootstrap is not None and bootstrap.get('state') == 'prepared'
                 and value == {'soft': 0, 'hard': self.m.MAX_LIMIT, 'used': 0}):
             return self._bootstrap(identity)  # crash after unlimited set, before bootstrap commit
