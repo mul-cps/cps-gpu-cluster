@@ -9,10 +9,13 @@ evidence exits one. Private Pod objects are inputs only, never output objects.
 from __future__ import annotations
 
 import argparse
+import errno
 import hashlib
 import json
+import os
 import re
 import stat
+import sys
 import uuid
 from pathlib import Path
 from typing import Any
@@ -89,14 +92,29 @@ class Inputs:
     def raw(self, name: str) -> bytes:
         # All names are fixed in this module; refuse symlinks and special files.
         path = self.root / name
+        fd = None
         try:
-            info = path.lstat()
-            need(stat.S_ISREG(info.st_mode) and not path.is_symlink(), "unsafe-input-file")
+            fd = os.open(path, os.O_RDONLY | os.O_NOFOLLOW | os.O_NONBLOCK)
+            info = os.fstat(fd)
+            need(stat.S_ISREG(info.st_mode), "unsafe-input-file")
             need(info.st_size <= MAX_INPUT_BYTES, "input-too-large")
-            data = path.read_bytes()
-            need(len(data) <= MAX_INPUT_BYTES, "input-too-large")
-        except OSError:
-            raise EvidenceError("missing-or-unreadable-input") from None
+            data = bytearray()
+            while True:
+                chunk = os.read(fd, min(65536, MAX_INPUT_BYTES + 1 - len(data)))
+                if not chunk:
+                    break
+                data.extend(chunk)
+                need(len(data) <= MAX_INPUT_BYTES, "input-too-large")
+            after = os.fstat(fd)
+            need((info.st_size, info.st_mtime_ns, info.st_ctime_ns) ==
+                 (after.st_size, after.st_mtime_ns, after.st_ctime_ns), "input-changed-during-read")
+        except OSError as exc:
+            raise EvidenceError("unsafe-input-file" if exc.errno == errno.ELOOP else
+                                "missing-or-unreadable-input") from None
+        finally:
+            if fd is not None:
+                os.close(fd)
+        data = bytes(data)
         self.provenance[name] = {"sha256": hashlib.sha256(data).hexdigest(), "bytes": len(data)}
         return data
 
@@ -451,11 +469,16 @@ def main() -> int:
     report = collect(args.rootdir)
     encoded = json.dumps(report, sort_keys=True, indent=2) + "\n"
     if args.output:
-        # Do not overwrite raw input evidence or follow an output symlink.
-        need(args.output.resolve().parent != args.rootdir.resolve() or args.output.name not in
-             {r["file"] for r in report["provenance"]}, "output-would-overwrite-input")
-        need(not args.output.is_symlink(), "unsafe-output-symlink")
-        args.output.write_text(encoded)
+        # A new inode prevents hardlinks, aliases and races from truncating raw
+        # evidence. Preserve every existing destination, even an earlier report.
+        try:
+            fd = os.open(args.output, os.O_WRONLY | os.O_CREAT | os.O_EXCL | os.O_NOFOLLOW, 0o600)
+            with os.fdopen(fd, "w", encoding="utf-8") as output:
+                output.write(encoded)
+        except OSError as exc:
+            print("output-already-exists" if exc.errno == errno.EEXIST else
+                  "output-unwritable", file=sys.stderr)
+            return 1
     else:
         print(encoded, end="")
     return 1 if report["errors"] else 0

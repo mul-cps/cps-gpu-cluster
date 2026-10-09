@@ -1,7 +1,9 @@
 """CPU tests of interpretation/sanitization; no hardware qualification claims."""
 import hashlib
 import importlib.util
+import io
 import json
+import os
 from pathlib import Path
 import subprocess
 import sys
@@ -240,3 +242,88 @@ def test_cli_exit_failure_is_sanitized_and_has_no_hardware_calls(tmp_path):
     assert json.loads(result.stdout)["status"] == "incomplete-or-invalid-live-evidence"
     assert result.stderr == ""
     assert str(tmp_path) not in result.stdout
+
+
+def test_output_hardlink_cannot_destroy_raw_capture(capture, monkeypatch, capsys):
+    raw = capture / "native-cap-main-actual.json"
+    original = raw.read_bytes()
+    elsewhere = capture / "another-directory"
+    elsewhere.mkdir()
+    output = elsewhere / "report.json"
+    os.link(raw, output)
+    monkeypatch.setattr(sys, "argv", [str(MODULE_PATH), str(capture), "--output", str(output)])
+    assert collector.main() == 1
+    assert raw.read_bytes() == original and output.read_bytes() == original
+    assert capsys.readouterr().err.strip() == "output-already-exists"
+
+
+def test_new_output_is_sanitized_and_private(capture, monkeypatch, capsys):
+    output = capture / "new-report.json"
+    monkeypatch.setattr(sys, "argv", [str(MODULE_PATH), str(capture), "--output", str(output)])
+    assert collector.main() == 0
+    report = json.loads(output.read_text())
+    assert report["status"] == "partial-live-evidence" and not report["errors"]
+    assert SECRET not in output.read_text()
+    assert output.stat().st_mode & 0o777 == 0o600
+    assert capsys.readouterr().err == ""
+
+
+def test_input_swapped_to_symlink_at_open_fails_closed(capture, monkeypatch):
+    target = capture / "ordinary-oom.jsonl"
+    secret = capture / "private-unrelated.txt"
+    secret.write_text(SECRET)
+    original_os_open, original_io_open = os.open, io.open
+
+    def swap(path):
+        if Path(path) == target and not target.is_symlink():
+            target.unlink()
+            target.symlink_to(secret)
+
+    def open_descriptor(path, *args, **kwargs):
+        swap(path)
+        return original_os_open(path, *args, **kwargs)
+
+    def open_file(path, *args, **kwargs):
+        swap(path)
+        return original_io_open(path, *args, **kwargs)
+
+    monkeypatch.setattr(os, "open", open_descriptor)
+    monkeypatch.setattr(io, "open", open_file)
+    with pytest.raises(collector.EvidenceError, match="unsafe-input-file"):
+        collector.Inputs(capture).raw(target.name)
+    assert secret.read_text() == SECRET
+
+
+def test_input_changed_during_descriptor_read_is_not_published(capture, monkeypatch):
+    target = capture / "ordinary-oom.jsonl"
+    original_read = os.read
+    changed = False
+
+    def append_during_read(fd, count):
+        nonlocal changed
+        data = original_read(fd, count)
+        if not changed:
+            changed = True
+            with target.open("ab") as output:
+                output.write(b" ")
+        return data
+
+    monkeypatch.setattr(os, "read", append_during_read)
+    inputs = collector.Inputs(capture)
+    with pytest.raises(collector.EvidenceError, match="input-changed-during-read"):
+        inputs.raw(target.name)
+    assert inputs.provenance == {}
+
+
+@pytest.mark.parametrize("kind", ["file", "symlink"])
+def test_existing_output_is_preserved(capture, monkeypatch, capsys, kind):
+    output = capture / "existing-report.json"
+    if kind == "file":
+        output.write_text("existing report")
+    else:
+        output.symlink_to(capture / "native-cap-main-actual.json")
+    original = output.read_bytes()
+    monkeypatch.setattr(sys, "argv", [str(MODULE_PATH), str(capture), "--output", str(output)])
+    assert collector.main() == 1
+    assert output.read_bytes() == original
+    assert capsys.readouterr().err.strip() == "output-already-exists"
