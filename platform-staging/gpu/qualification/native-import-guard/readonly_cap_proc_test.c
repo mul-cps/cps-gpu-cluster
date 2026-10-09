@@ -17,6 +17,7 @@ typedef int NV_STATUS;
 #define NV_OK 0
 #define NV_ERR_BUFFER_TOO_SMALL 2
 #define NV_ERR_OBJECT_NOT_FOUND 3
+#define NV_ERR_INVALID_ARGUMENT 4
 #define GFP_KERNEL 0
 #define GLOBAL_ROOT_UID 0
 #define CAP_SYS_ADMIN 21
@@ -40,25 +41,38 @@ typedef struct {
     int (*release)(struct inode *,struct file *);
 } nv_proc_ops_t;
 static int uid, cap, enabled=1, init_user_ns, nv_system_pm_lock;
-static int pm_locked, pm_error, snapshots, snapshot_error, stack_error, uuid_error;
+static int pm_locked, pm_error, snapshots, snapshot_error, stack_error, uuid_error, altstack=1;
 static int current_euid(void) { return uid; }
 static int uid_eq(int a,int b) { return a==b; }
 static int ns_capable(int *ns,int which) { assert(ns==&init_user_ns && which==CAP_SYS_ADMIN); return cap; }
 static int os_cps_native_import_guard_enabled(void) { return enabled; }
 static void *kcalloc(size_t n,size_t size,int flags) { assert(flags==0); return calloc(n,size); }
 static void kfree(void *p) { free(p); }
-static int nv_kmem_cache_alloc_stack(nvidia_stack_t **sp) { if(stack_error) return -1; *sp=malloc(sizeof(**sp)); assert(*sp); return 0; }
+static NvBool rm_is_altstack_in_use(void) { return altstack; }
+static int nv_kmem_cache_alloc_stack(nvidia_stack_t **sp) { *sp=NULL; if (!altstack) return 0; if(stack_error) return -1; *sp=malloc(sizeof(**sp)); assert(*sp); return 0; }
 static void nv_kmem_cache_free_stack(nvidia_stack_t *sp) { free(sp); }
 static char *rm_get_gpu_uuid(nvidia_stack_t *sp,nv_state_t *nv) {
-    char *s; assert(sp && nv->gpu_id==123); if(uuid_error) return NULL;
+    char *s; assert((!altstack || sp) && nv->gpu_id==123); if(uuid_error) return NULL;
     s=malloc(41); strcpy(s,"GPU-16128952-b438-556a-00bb-93039ee24e56"); return s;
 }
 static void os_free_mem(void *p) { free(p); }
-NV_STATUS NV_API_CALL rm_cps_get_readonly_caps(void *stack,NvU32 gpuId,CpsNativeCapRow *rows,NvU32 capacity,NvU32 *count) {
-    assert(stack && gpuId==123 && capacity==256 && pm_locked);
+static int api_locked, enters, exits, inits, frees;
+typedef struct { int dummy; } THREAD_STATE_NODE;
+#define THREAD_STATE_FLAGS_NONE 0
+#define API_LOCK_FLAGS_NONE 0
+#define RM_LOCK_MODULES_OSAPI 0
+#define NV_ENTER_RM_RUNTIME(sp, fp) do { assert(!rm_is_altstack_in_use() || (sp)); (fp)=(sp); enters++; } while(0)
+#define NV_EXIT_RM_RUNTIME(sp, fp) do { assert((fp)==(sp)); exits++; } while(0)
+static void threadStateInit(THREAD_STATE_NODE *node,int flags) { (void)node; assert(flags==0); inits++; }
+static void threadStateFree(THREAD_STATE_NODE *node,int flags) { (void)node; assert(flags==0); frees++; }
+static int rmapiLockAcquire(int flags,int module) { assert(flags==0 && module==0 && pm_locked && !api_locked); api_locked=1; return NV_OK; }
+static void rmapiLockRelease(void) { assert(api_locked); api_locked=0; }
+NV_STATUS NV_API_CALL memacctGetCpsReadonlyCapSnapshot(NvU32 gpuId,CpsNativeCapRow *rows,NvU32 capacity,NvU32 *count) {
+    assert(gpuId==123 && capacity==256 && pm_locked && api_locked);
     snapshots++; if(snapshot_error) return snapshot_error;
     *count=1; rows[0]=(CpsNativeCapRow){4294967313ULL,4294967313ULL,4294967313ULL,5368709120ULL,5368709120ULL,0,1,1,1}; return NV_OK;
 }
+#include "readonly_cap_rm.c"
 static void seq_printf(struct seq_file *s,const char *format,...) {
     va_list args; va_start(args,format);
     int written=vsnprintf(s->data+s->used,sizeof(s->data)-s->used,format,args);
@@ -111,6 +125,12 @@ int main(void) {
     assert(nv_procfs_cps_native_caps_fops.read(&file,output,sizeof(output),&position)==-EIO && file.seq.used==0 && !pm_locked);
     uuid_error=0; nv.nv_uuid_cache.valid=0;
     assert(nv_procfs_cps_native_caps_fops.read(&file,output,sizeof(output),&position)==-EIO && file.seq.used==0 && !pm_locked);
+    /* Actual callback + actual RM wrapper, using the compiled Core194 vendor
+     * convention: optional stack disabled means a successful NULL allocation. */
+    nv.nv_uuid_cache.valid=1; altstack=0; previous=snapshots;
+    assert(nv_procfs_cps_native_caps_fops.read(&file,output,sizeof(output),&position)>0);
+    assert(snapshots==previous+1 && strstr(output,"\"hard\":5368709120,\"used\":0"));
+    assert(!pm_locked && !api_locked && enters==exits && inits==frees);
     assert(nv_procfs_cps_native_caps_fops.release(&inode,&file)==0);
     return 0;
 }

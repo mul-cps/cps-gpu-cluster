@@ -8,7 +8,9 @@ NV_STATUS NV_API_CALL rm_cps_get_readonly_caps(void *stack, NvU32 gpuId,
     THREAD_STATE_NODE threadState;
     NV_STATUS status;
     void *fp;
-    if (sp == NULL || count == NULL)
+    /* Vendor stack allocation deliberately returns NULL when the optional RM
+     * alternate stack is disabled; NV_ENTER_RM_RUNTIME is then a no-op. */
+    if ((sp == NULL && rm_is_altstack_in_use()) || count == NULL)
         return NV_ERR_INVALID_ARGUMENT;
     *count = 0;
     NV_ENTER_RM_RUNTIME(sp, fp);

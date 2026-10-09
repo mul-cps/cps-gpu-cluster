@@ -21,6 +21,11 @@ there is no successful truncated snapshot. Rows contain no kernel pointers.
 The OSAPI wrapper holds the existing RM API lock and enters the normal RM runtime
 before taking the accounting mutex; this also fences the mutex's last-GPU
 destruction. Proc reads hold the same system PM read lock as existing proc files.
+The vendor's optional alternate RM stack can be disabled. In that build, its
+stack allocator succeeds with a NULL stack and the RM runtime macros are no-ops;
+the inventory wrapper accepts this convention. A NULL stack remains an error
+when the alternate stack is enabled. CPU tests join the actual proc callback to
+the actual RM wrapper in both modes, rather than substituting a wrapper stub.
 The default-hierarchy check uses the exported GPL `cgrp_dfl_root` data symbol;
 the unexported kernel-local `cgroup_on_dfl` function is not callable by a module.
 

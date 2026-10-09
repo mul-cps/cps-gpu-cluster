@@ -67,8 +67,9 @@ typedef struct { int dummy; } THREAD_STATE_NODE;
 #define THREAD_STATE_FLAGS_NONE 0
 #define API_LOCK_FLAGS_NONE 0
 #define RM_LOCK_MODULES_OSAPI 0
-static int api_locked, api_error, enters, exits, inits, frees;
-#define NV_ENTER_RM_RUNTIME(sp, fp) do { assert(sp); (fp)=(sp); enters++; } while(0)
+static int api_locked, api_error, enters, exits, inits, frees, altstack=1;
+static NvBool rm_is_altstack_in_use(void) { return altstack; }
+#define NV_ENTER_RM_RUNTIME(sp, fp) do { assert(!rm_is_altstack_in_use() || (sp)); (fp)=(sp); enters++; } while(0)
 #define NV_EXIT_RM_RUNTIME(sp, fp) do { assert((fp)==(sp)); exits++; } while(0)
 static void threadStateInit(THREAD_STATE_NODE *node, int flags) { (void)node; assert(flags==0); inits++; }
 static void threadStateFree(THREAD_STATE_NODE *node, int flags) { (void)node; assert(flags==0); frees++; }
@@ -149,6 +150,13 @@ int main(void) {
     assert(rm_cps_get_readonly_caps(&stack,123,rows,256,&count)==api_error && count==0);
     assert(!api_locked && !locked && enters==exits && inits==frees);
     assert(rm_cps_get_readonly_caps(NULL,123,rows,256,&count)==NV_ERR_INVALID_ARGUMENT);
+    /* Linux stack allocation returns success with NULL when NVIDIA's optional
+     * alternate stack is disabled. The real RM wrapper must accept this. */
+    api_error=0; altstack=0; count=99;
+    assert(rm_cps_get_readonly_caps(NULL,123,rows,256,&count)==NV_OK && count==1);
+    assert(!api_locked && !locked && enters==exits && inits==frees);
+    assert(rm_cps_get_readonly_caps(NULL,123,rows,256,NULL)==NV_ERR_INVALID_ARGUMENT);
+    altstack=1;
     api_error=0; exists=0;
     assert(rm_cps_get_readonly_caps(&stack,123,rows,256,&count)==NV_ERR_OBJECT_NOT_FOUND && count==0);
     assert(!api_locked && !locked && enters==exits && inits==frees);
