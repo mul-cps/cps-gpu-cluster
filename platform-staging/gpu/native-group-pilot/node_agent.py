@@ -77,34 +77,51 @@ def token(value): return isinstance(value, str) and _TOKEN.fullmatch(value) is n
 
 def validate_config(config):
     required = {'version', 'enabled', 'authority_namespace', 'policy_hash', 'pool', 'workspaces'}
+    measured = isinstance(config, dict) and type(config.get('version')) is int and config['version'] == 2
+    if measured: required.add('mode')
     require(isinstance(config, dict) and required.issubset(config)
             and not set(config) - required - {'terminal_history'}, 'Closed node authority configuration required')
-    require(type(config['version']) is int and config['version'] == 1 and type(config['enabled']) is bool,
+    require(type(config['version']) is int and config['version'] in (1, 2) and type(config['enabled']) is bool,
             'Versioned explicit node activation required')
     require(isinstance(config['authority_namespace'], str) and _NAME.fullmatch(config['authority_namespace'])
             and config['authority_namespace'] not in NAMESPACES.values(), 'Separate authority namespace required')
     require(isinstance(config['policy_hash'], str) and re.fullmatch(r'sha256:[a-f0-9]{64}', config['policy_hash']),
             'Pinned policy hash required')
     pool = config['pool']
-    closed(pool, {'node', 'node_uid', 'gpu_uuid', 'max_workspaces'}, 'Closed operator-selected pool required')
-    require(pool['node'] == 'k3s-wk-gpu2' and canonical_uuid(pool['node_uid'])
-            and isinstance(pool['gpu_uuid'], str) and pool['gpu_uuid'].startswith('GPU-')
-            and canonical_uuid(pool['gpu_uuid'][4:]) and type(pool['max_workspaces']) is int
-            and pool['max_workspaces'] in (1, 2), 'Exact bounded GPU2 pool required')
+    if measured:
+        require(config['mode'] in ('operator-qualification', 'qualified-group'), 'Separate measured authority mode required')
+        validate_measured_pool(pool)
+    else:
+        closed(pool, {'node', 'node_uid', 'gpu_uuid', 'max_workspaces'}, 'Closed operator-selected pool required')
+        require(pool['node'] == 'k3s-wk-gpu2' and canonical_uuid(pool['node_uid'])
+                and isinstance(pool['gpu_uuid'], str) and pool['gpu_uuid'].startswith('GPU-')
+                and canonical_uuid(pool['gpu_uuid'][4:]) and type(pool['max_workspaces']) is int
+                and pool['max_workspaces'] in (1, 2), 'Exact bounded GPU2 pool required')
     require(isinstance(config['workspaces'], dict) and len(config['workspaces']) <= 32,
             'Bounded trusted workspace allowlist required')
     for key, value in config['workspaces'].items():
         require(isinstance(key, str) and ':' in key and key.split(':', 1)[0] in NAMESPACES
                 and token(key.split(':', 1)[1]), 'Exact CPS/CIT workspace allowlist required')
-        closed(value, {'profile'}, 'Closed workspace profile required')
-        require(token(value['profile']), 'Explicit workspace profile required')
+        if measured:
+            closed(value, {'profile', 'cap_mib'}, 'Closed measured workspace cap required')
+            prefix = 'interactive-native-qualification-' if config['mode'] == 'operator-qualification' else 'interactive-shared-'
+            caps = {prefix + str(size): size * 1024 for size in (5, 10, 20)}
+            require(value['profile'] in caps and type(value['cap_mib']) is int
+                and value['cap_mib'] == caps[value['profile']] and value['cap_mib'] <= pool['memory_budget_mib'],
+                'Exact reviewed measured workspace profile/cap required')
+        else:
+            closed(value, {'profile'}, 'Closed workspace profile required')
+            require(token(value['profile']), 'Explicit workspace profile required')
     require(not config['enabled'] or bool(config['workspaces']), 'Enabled pool requires an allowlist')
     history = config.get('terminal_history', {})
     require(isinstance(history, dict) and len(history) <= 64, 'Bounded explicit terminal history required')
     for uid, entry in history.items():
         require(canonical_uuid(uid) and uuid.UUID(uid).int != 0, 'Exact historical Pod UID required')
+        extra = {'cap_mib'} if measured and isinstance(entry, dict) and 'cap_mib' in entry else set()
+        if extra:
+            require(type(entry['cap_mib']) is int and entry['cap_mib'] in (5120, 10240, 20480), 'Exact historical cap required')
         closed(entry, {'binding_id', 'policy_hash', 'profile', 'enrollment_uid', 'enrollment_sha256',
-                      'completion_kind', 'completion_uid', 'completion_sha256', 'ledger_uid', 'journal_sha256'},
+                      'completion_kind', 'completion_uid', 'completion_sha256', 'ledger_uid', 'journal_sha256'} | extra,
                'Closed historical completion pins required')
         require(isinstance(entry['binding_id'], str) and re.fullmatch('[a-f0-9]{60}', entry['binding_id'])
                 and token(entry['profile']) and entry['policy_hash'] != config['policy_hash'],
@@ -122,6 +139,41 @@ def validate_config(config):
         else:
             require(entry['journal_sha256'] is None, 'Never-gated history must have no native journal')
     return config
+
+
+def validate_measured_pool(pool):
+    closed(pool, {'node', 'node_uid', 'gpu_uuid', 'max_workspaces', 'total_memory_mib',
+        'free_memory_mib', 'headroom_mib', 'memory_budget_mib', 'boot_id', 'driver_generation'},
+        'Closed measured GPU2 pool required')
+    require(pool['node'] == 'k3s-wk-gpu2'
+        and pool['node_uid'] == '3336cdd5-d245-436e-b57c-2f66c6dcaa41'
+        and pool['gpu_uuid'] == 'GPU-16128952-b438-556a-00bb-93039ee24e56',
+        'Exact measured GPU2 physical identity required')
+    require(all(type(pool[k]) is int for k in ('max_workspaces', 'total_memory_mib',
+        'free_memory_mib', 'headroom_mib', 'memory_budget_mib'))
+        and 1 <= pool['max_workspaces'] <= 32 and 0 < pool['total_memory_mib'] <= 40960
+        and 0 < pool['free_memory_mib'] <= pool['total_memory_mib'] and pool['headroom_mib'] >= 1024
+        and 0 < pool['memory_budget_mib'] <= pool['free_memory_mib'] - pool['headroom_mib'],
+        'Measured budget must fit free memory minus additional unsold headroom')
+    require(all(canonical_uuid(pool[k]) and uuid.UUID(pool[k]).int != 0
+        for k in ('boot_id', 'driver_generation')), 'Pinned measured pool epoch required')
+
+
+def validate_pool_epoch(config, epoch):
+    if config['version'] == 2:
+        require(all(getattr(epoch, key) == config['pool'][key]
+            for key in ('node_uid', 'gpu_uuid', 'boot_id', 'driver_generation')),
+            'Measured pool capacity belongs to a different boot/driver/device epoch')
+
+
+def validate_active_capacity(config, intents, journal, aborted):
+    live = [intent for intent in intents if intent.pod_uid not in aborted
+        and (journal.read(intent.pod_uid) is None
+             or journal.read(intent.pod_uid).state not in ('cleaned', 'retired-inert-cap'))]
+    require(len(live) <= config['pool']['max_workspaces'], 'Selected pool active enrollment capacity exceeded')
+    if config['version'] == 2:
+        require(sum(intent.cap_mib for intent in live) <= config['pool']['memory_budget_mib'],
+                'Selected pool active enrollment memory budget exceeded')
 
 
 def read_config(path, *, trusted_uid=0):
@@ -210,7 +262,7 @@ def validate_enrollment(cm, config, models):
             and enrollment['policy_hash'] == config['policy_hash'], 'Reviewed workspace/profile/policy required')
     pool = config['pool']
     require(all(enrollment[key] == pool[key] for key in ('node', 'node_uid', 'gpu_uuid'))
-            and type(enrollment['cap_mib']) is int and enrollment['cap_mib'] == 5120,
+            and type(enrollment['cap_mib']) is int and enrollment['cap_mib'] == approved.get('cap_mib', 5120),
             'Exact selected GPU2 pool and native5GiB cap required')
     closed(enrollment['intent'], {field.name for field in fields(models.CapIntent)}, 'Exact frozen cap intent required')
     intent = models.CapIntent(**enrollment['intent'])
@@ -240,9 +292,15 @@ def validate_authority_enrollments(cms, config, models, store, journal, kube):
         if entry is None:
             envelopes.append(validate_enrollment(cm, config, models))
             continue
-        old = {key: config[key] for key in ('version', 'enabled', 'authority_namespace', 'pool')}
-        old.update(policy_hash=entry['policy_hash'],
-                   workspaces={str(body.get('source')) + ':' + str(body.get('workspace')): {'profile': entry['profile']}})
+        old = {key: config[key] for key in ('enabled', 'authority_namespace')}
+        old.update(version=1, policy_hash=entry['policy_hash'],
+            pool={key:config['pool'][key] for key in ('node', 'node_uid', 'gpu_uuid')},
+            workspaces={str(body.get('source')) + ':' + str(body.get('workspace')): {'profile': entry['profile']}})
+        old['pool']['max_workspaces'] = 2
+        if 'cap_mib' in entry:
+            old.update(version=2, pool=config['pool'], mode='operator-qualification'
+                if entry['profile'].startswith('interactive-native-qualification-') else 'qualified-group')
+            next(iter(old['workspaces'].values()))['cap_mib'] = entry['cap_mib']
         envelope = validate_enrollment(cm, old, models)
         require(body['binding_id'] == entry['binding_id'] and envelope['configmap_uid'] == entry['enrollment_uid']
                 and canonical_sha256(body) == entry['enrollment_sha256'], 'Changed historical enrollment authority')
@@ -688,6 +746,8 @@ def run(config, bundle, state, kube, driver, *, iterations, interval, crictl, cr
         cms = kube.enrollments(config['authority_namespace'])
         with journal.locked():
             envelopes, historical = validate_authority_enrollments(cms, config, models, store, journal, kube)
+            if config['version'] == 2:
+                validate_pool_epoch(config, abort_current_epoch(config, state, driver, verifier, models))
             accepted = store.synchronize(envelopes)
             intents = [models.CapIntent(**item['enrollment']['intent']) for uid, item in accepted.items() if uid not in historical]
             records = journal.records()
@@ -697,9 +757,8 @@ def run(config, bundle, state, kube, driver, *, iterations, interval, crictl, cr
             current = {uid: item for uid, item in accepted.items() if uid not in historical}
             aborted = recognize_aborts(store, journal, current, kube, None, models,
                 epoch_reader=lambda: abort_current_epoch(config, state, driver, verifier, models))
-            active = sum(journal.read(intent.pod_uid) is None or journal.read(intent.pod_uid).state not in ('cleaned', 'retired-inert-cap')
-                         for intent in intents if intent.pod_uid not in aborted)
-            require(active <= config['pool']['max_workspaces'], 'Selected pool active enrollment capacity exceeded')
+            validate_active_capacity(config, intents, journal, aborted)
+
         for uid in sorted(historical):
             print(json.dumps({'pod_uid': uid, 'state': 'historical-terminal-confirmed',
                 'iteration': iteration, 'production_qualified': False}), flush=True)
@@ -715,6 +774,9 @@ def run(config, bundle, state, kube, driver, *, iterations, interval, crictl, cr
             intent = next(item for item in intents if item.pod_uid == identity.pod_uid)
             pod = kube.pod(intent)
             require(pod is not None, 'Actual enrolled Pod required before gate publication')
+            if config['version'] == 2:
+                validate_pool_epoch(config, abort_current_epoch(config, state, driver, verifier, models))
+                validate_active_capacity(config, intents, journal, aborted)
             validate_actual_pod(pod, accepted[intent.pod_uid]['enrollment'])
             validate_device_identity_barrier(pod, intent)
             validate_cdi_binding(intent, state, driver, verifier, modules['cdi'], models)
