@@ -159,13 +159,31 @@ private output are mandatory CLI inputs. It performs no cap or cleanup writes.
 
 `inspect_stop.py --inspect --manifest PATH --manifest-sha256 RAW_SHA` runs offline.
 The closed manifest pins `binding,before,ledger,pods,physical` and ordered lists
-`enrollments,cleanups`, each as `{path,sha256}`. It binds full immutable enrollment
+`enrollments,cleanups,journals`, each as `{path,sha256}`. Each list contains exactly
+two entries ordered CPS5 then CIT10. `journals` pins the complete original terminal
+journal files as raw bytes, including their actual whitespace and final newline;
+do not normalize these files before pinning them. It binds full immutable enrollment
 to the exact released allocation, attempt, actual cap intent and original UID;
 typed cleanup to original enrollment UID/hash/journal; zero-charge retirement to
 the exact original identity/proof. Every prior retirement must remain identical,
 with exactly the two new terminal lifetimes added. Paginated Pod absence is
 rejected. Its receipt stays `stop-witnesses-consistent-awaiting-Root-review`; the
 orphan claim is limited to original Pod UID/cgroup.
+
+The physical observer's `journal_sha256` is the SHA256 of the raw protected file.
+The immutable cleanup's `retirement.journal_sha256` is the SHA256 of canonical JSON
+for the complete typed terminal record. These digests can differ. The inspector
+checks both against the supplied full record, including its original seal,
+intent, identity, exact finite readback and retirement proof. The output preserves
+both digests as `journal_raw_sha256` and `journal_canonical_sha256`. A missing raw
+journal, stale file pin, swapped lifetime or rehashed replacement seal fails.
+The earlier frozen inspector's direct comparison of these two digest conventions
+can fail on a valid newline-terminated journal; preserve that failed output and
+its frozen source. A later offline replay is a separate inspector result, never
+a replacement hardware observation or a completed restart gate. If Root
+reconstructs bytes from a protected capture's full record, the reconstruction
+must match the captured raw SHA exactly and be identified as an offline byte
+reconstruction, rather than a fresh journal capture.
 
 Root then performs normal Source Start, captures new actual UID/spec bindings,
 and prepares a fresh harness against the complete updated retired capture. Run
@@ -188,5 +206,7 @@ receipt/source/header/ELF/offline-recipe mutations, oversized success without to
 typed OOM/recovery, generated MPS allocation/free methods through41 stepped calls,
 direct untouched CUDA denial, MPS stale receipts/cleanup/
 peer windows, NVML64-bit ABI and negative results, and Stop pagination/changed
-history/foreign cleanup/nonreleased ledger. Hardware boundaries use explicit CPU
-doubles; their data and results are never published as hardware evidence.
+history/foreign cleanup/nonreleased ledger, raw versus canonical journal pins,
+full-record drift, duplicate keys, swapped journals and stale CLI file pins.
+Hardware boundaries use explicit CPU doubles; their data and results are never
+published as hardware evidence.

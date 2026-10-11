@@ -17,9 +17,12 @@ def immutable(cm, key, binding_id):
     p.valid_uuid(meta.get('uid'))
     return p.parse(cm['data'][key])
 
-def validate(binding, before, ledger, pods, physical, enrollments, cleanups):
+def validate(binding, before, ledger, pods, physical, enrollments, cleanups, journals=None):
     from cps_compute.native_gpu_control import validate_cleanup_record
+    from cps_compute.native_gpu_controller import CapRecord
     p.validate_binding(binding)
+    p.require(isinstance(journals, list) and len(journals) == 2
+        and all(type(raw) is bytes for raw in journals), 'Exact pair of raw full journal records required')
     p.require(ledger.get('apiVersion') == 'v1' and ledger.get('kind') == 'ConfigMap'
         and ledger.get('metadata', {}).get('namespace') == 'cps-native-system'
         and ledger['metadata'].get('name') == 'cps-native-gpu-allocations', 'Actual central ledger required')
@@ -81,15 +84,25 @@ def validate(binding, before, ledger, pods, physical, enrollments, cleanups):
         retired = [r for r in physical['retired_caps'] if r.get('pod_uid') == uid]
         p.require(len(retired) == 1, 'Exact original physical retirement required'); retired = retired[0]
         proof = retirement['proof']; identity = native['identity']; inv = retired['inventory_row']
-        p.require(retired['journal_sha256'] == retirement['journal_sha256']
-            and retired['identity'] == identity == proof['identity'] and retired['retirement'] == proof
+        raw_journal = journals[index]; journal = p.parse(raw_journal)
+        record = CapRecord.from_dict(journal)
+        raw_sha = 'sha256:' + p.sha(raw_journal)
+        canonical_sha = 'sha256:' + p.sha(p.canonical(journal).encode())
+        p.require(record.to_dict() == journal and journal['state'] == 'retired-inert-cap'
+            and journal['seal_id'] == native['seal_id'] and journal['intent'] == intent
+            and journal['identity'] == identity and journal['retirement'] == proof
+            and journal['readback'] == {'soft': target['cap_mib'] * p.MIB, 'hard': target['cap_mib'] * p.MIB}
+            and raw_sha == retired['journal_sha256'] and canonical_sha == retirement['journal_sha256'],
+            'Full original terminal journal must match raw physical and canonical cleanup pins')
+        p.require(retired['identity'] == identity == proof['identity'] and retired['retirement'] == proof
             and proof['entry'] == inv and proof['epoch'] == {k: pool[k] for k in ('node_uid', 'boot_id', 'gpu_uuid', 'driver_generation')}
             and inv.get('offline') is True and inv.get('pinned') is True and inv.get('default_hierarchy') is True
             and type(inv.get('used')) is int and inv['used'] == 0 and inv['soft'] == inv['hard'] == target['cap_mib'] * p.MIB
             and inv['inode'] == inv['cgroup_id'] == inv['kernfs_id'] == identity['cgroup_inode'],
             'Original finite cap must be physically inert and zero charge')
         results.append({'source': target['source'], 'workspace': target['workspace'], 'pod_uid': uid,
-            'cap_mib': target['cap_mib'], 'binding_id': binding_id, 'attempt': enrollment['attempt']})
+            'cap_mib': target['cap_mib'], 'binding_id': binding_id, 'attempt': enrollment['attempt'],
+            'journal_raw_sha256': raw_sha, 'journal_canonical_sha256': canonical_sha})
     p.require(len({r['binding_id'] for r in results}) == 2 and len({r['attempt'] for r in results}) == 2,
               'Distinct exact terminal lifetimes required')
     return {'state': 'stop-witnesses-consistent-awaiting-Root-review', 'api_calls': False, 'gpu_calls': False,
@@ -103,12 +116,16 @@ def main(argv=None):
         print(json.dumps({'state': 'inert', 'api_calls': False, 'gpu_calls': False, 'hardware_qualification': False})); return
     manifest = p.parse(p.read_pinned(args.manifest, args.manifest_sha256, private=True))
     p.require(isinstance(manifest, dict) and set(manifest) == {'binding', 'before', 'ledger', 'pods',
-        'physical', 'enrollments', 'cleanups'}, 'Closed actual raw witness manifest required')
+        'physical', 'enrollments', 'cleanups', 'journals'}, 'Closed actual raw witness manifest required')
+    def raw(pin):
+        p.file_pin(pin); return p.read_pinned(Path(pin['path']), pin['sha256'], private=True)
     def read(pin):
-        p.file_pin(pin); return p.parse(p.read_pinned(Path(pin['path']), pin['sha256'], private=True))
-    p.require(len(manifest['enrollments']) == len(manifest['cleanups']) == 2, 'Exact pair of authority records required')
+        return p.parse(raw(pin))
+    p.require(all(isinstance(manifest[k], list) and len(manifest[k]) == 2
+        for k in ('enrollments', 'cleanups', 'journals')), 'Exact pair of authority and full journal records required')
     result = validate(*(read(manifest[k]) for k in ('binding', 'before', 'ledger', 'pods', 'physical')),
-        [read(x) for x in manifest['enrollments']], [read(x) for x in manifest['cleanups']])
+        [read(x) for x in manifest['enrollments']], [read(x) for x in manifest['cleanups']],
+        [raw(x) for x in manifest['journals']])
     print(json.dumps(result, sort_keys=True))
 
 if __name__ == '__main__': main()

@@ -1,6 +1,8 @@
 """CPU tests only. Synthetic values never become hardware receipts."""
 import copy
+import contextlib
 import importlib.util
+import io
 import json
 import os
 from pathlib import Path
@@ -78,7 +80,7 @@ class StopTests(unittest.TestCase):
         physical = {'kind': 'native-group-host-observation', **{k: b['pool'][k] for k in
             ('node', 'node_uid', 'boot_id', 'gpu_uuid', 'driver_generation')}, 'targets': [],
             'retired_caps': copy.deepcopy(before['host']['retired_caps'])}
-        enrollments = []; cleanups = []; allocations = {}
+        enrollments = []; cleanups = []; allocations = {}; self.journals = []
         for i, target in enumerate(b['targets']):
             original = copy.deepcopy(self.record); uid = target['pod_uid']; old_uid = original['identity']['pod_uid']
             intent = original['intent']; intent.update({k: target[k] for k in
@@ -90,7 +92,10 @@ class StopTests(unittest.TestCase):
             proof = original['retirement']; proof['identity'] = identity
             entry = proof['entry']; entry.update(cgroup_id=identity['cgroup_inode'], kernfs_id=identity['cgroup_inode'],
                 inode=identity['cgroup_inode'], soft=target['cap_mib'] * 1048576, hard=target['cap_mib'] * 1048576)
-            native = {'pod_uid': uid, 'intent': intent, 'identity': identity}; before['host']['targets'].append(native)
+            original['readback'] = {'soft': target['cap_mib'] * h.MIB, 'hard': target['cap_mib'] * h.MIB}
+            native = {'pod_uid': uid, 'intent': intent, 'identity': identity, 'seal_id': original['seal_id']}
+            before['host']['targets'].append(native)
+            journal = (h.canonical(original) + '\n').encode(); self.journals.append(journal)
             binding_id = str(i + 7) * 60
             enrollment = {'version': 1, 'binding_id': binding_id, 'source': target['source'], 'actor': target['source'],
                 'workspace': target['workspace'], 'profile': target['profile'], 'policy_hash': b['policy_hash'],
@@ -102,18 +107,95 @@ class StopTests(unittest.TestCase):
                         'labels': {'cps.compute/native-binding': binding_id}}, 'data': {key: h.canonical(doc)}}
             enrollment_cm = cm('cps-native-enrollment-', 'enrollment.json', enrollment, 10 + i)
             retirement = {'proof': proof, 'enrollment_uid': enrollment_cm['metadata']['uid'],
-                'enrollment_sha256': 'sha256:' + h.sha(h.canonical(enrollment).encode()), 'journal_sha256': 'sha256:' + str(i + 7) * 64}
+                'enrollment_sha256': 'sha256:' + h.sha(h.canonical(enrollment).encode()),
+                'journal_sha256': 'sha256:' + h.sha(h.canonical(original).encode())}
             cleanup = {'version': 1, 'binding_id': binding_id, 'attempt': enrollment['attempt'],
                 'intent': intent, 'cleanup_confirmed': True, 'retirement': retirement}
             enrollments.append(enrollment_cm); cleanups.append(cm('cps-native-cleanup-', 'receipt.json', cleanup, 12 + i))
             allocations[binding_id] = {**enrollment, 'state': 'released'}
-            physical['retired_caps'].append({'pod_uid': uid, 'journal_sha256': retirement['journal_sha256'],
+            physical['retired_caps'].append({'pod_uid': uid, 'journal_sha256': 'sha256:' + h.sha(journal),
                 'identity': identity, 'retirement': proof, 'inventory_row': entry})
         ledger = {'apiVersion': 'v1', 'kind': 'ConfigMap', 'metadata': {'namespace': 'cps-native-system',
             'name': 'cps-native-gpu-allocations', 'uid': '00000000-0000-4000-8000-000000000015'},
             'data': {'state.json': h.canonical({'version': 1, 'allocations': allocations})}}
         return [b, before, ledger, {'apiVersion': 'v1', 'kind': 'PodList', 'metadata': {}, 'items': []},
-                physical, enrollments, cleanups]
+                physical, enrollments, cleanups, self.journals]
+
+    def test_raw_journal_and_canonical_cleanup_are_distinct_valid_digests(self):
+        args = self.fixture()
+        for index, raw in enumerate(self.journals):
+            cleanup = h.parse(args[6][index]['data']['receipt.json'])
+            self.assertNotEqual('sha256:' + h.sha(raw), cleanup['retirement']['journal_sha256'])
+        value = self.stop.validate(*args)
+        self.assertEqual(len(value['terminal_lifetimes']), 2)
+        self.assertFalse(value['hardware_qualification'])
+        for index, row in enumerate(value['terminal_lifetimes']):
+            self.assertEqual(row['journal_raw_sha256'], 'sha256:' + h.sha(args[7][index]))
+            self.assertEqual(row['journal_canonical_sha256'],
+                h.parse(args[6][index]['data']['receipt.json'])['retirement']['journal_sha256'])
+
+    def test_both_independent_digest_chains_are_required(self):
+        for kind in ('raw-bytes', 'physical-raw-pin', 'cleanup-canonical-pin', 'swapped-journals', 'missing-journals'):
+            args = self.fixture()
+            if kind == 'raw-bytes': args[7][0] += b'\n'
+            elif kind == 'physical-raw-pin': args[4]['retired_caps'][1]['journal_sha256'] = 'sha256:' + '1' * 64
+            elif kind == 'cleanup-canonical-pin':
+                cleanup = h.parse(args[6][0]['data']['receipt.json'])
+                cleanup['retirement']['journal_sha256'] = 'sha256:' + h.sha(args[7][0])
+                args[6][0]['data']['receipt.json'] = h.canonical(cleanup)
+            elif kind == 'swapped-journals': args[7].reverse()
+            else: args[7] = None
+            with self.subTest(kind=kind), self.assertRaises(ValueError): self.stop.validate(*args)
+
+    def test_rehashed_full_record_drift_cannot_replace_original_seal(self):
+        changes = [('seal_id', '00000000-0000-4000-8000-000000000099'),
+                   ('readback', None), ('schema', True), ('state', 'sealed'),
+                   ('protocol', 'foreign'), ('extra_unreviewed', True)]
+        for key, value in changes:
+            args = self.fixture(); record = h.parse(args[7][0]); record[key] = value
+            args[7][0] = (h.canonical(record) + '\n').encode()
+            args[4]['retired_caps'][1]['journal_sha256'] = 'sha256:' + h.sha(args[7][0])
+            cleanup = h.parse(args[6][0]['data']['receipt.json'])
+            cleanup['retirement']['journal_sha256'] = 'sha256:' + h.sha(h.canonical(record).encode())
+            args[6][0]['data']['receipt.json'] = h.canonical(cleanup)
+            with self.subTest(key=key), self.assertRaises(ValueError): self.stop.validate(*args)
+
+    def test_duplicate_record_keys_cannot_hide_behind_valid_raw_pin(self):
+        args = self.fixture()
+        args[7][0] = args[7][0].replace(b'{', b'{"state":"sealed",', 1)
+        args[4]['retired_caps'][1]['journal_sha256'] = 'sha256:' + h.sha(args[7][0])
+        with self.assertRaises(ValueError): self.stop.validate(*args)
+
+    def test_cli_verifies_raw_journal_file_pin_and_closed_manifest(self):
+        args = self.fixture()
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory); root.chmod(0o700)
+            def write(name, value):
+                raw = value if isinstance(value, bytes) else (h.canonical(value) + '\n').encode()
+                path = root / name; path.write_bytes(raw); path.chmod(0o600)
+                return {'path': str(path), 'sha256': h.sha(raw)}
+            manifest = {key: write(key + '.json', value) for key, value in zip(
+                ('binding', 'before', 'ledger', 'pods', 'physical'), args[:5])}
+            for key, values in zip(('enrollments', 'cleanups', 'journals'), args[5:]):
+                manifest[key] = [write(key + str(i) + '.json', value) for i, value in enumerate(values)]
+            def run(value):
+                pin = write('manifest.json', value)
+                with contextlib.redirect_stdout(io.StringIO()) as output:
+                    self.stop.main(['--inspect', '--manifest', pin['path'], '--manifest-sha256', pin['sha256']])
+                return json.loads(output.getvalue())
+            self.assertFalse(run(manifest)['hardware_qualification'])
+            legacy = copy.deepcopy(manifest); legacy.pop('journals')
+            with self.assertRaises(ValueError): run(legacy)
+            Path(manifest['journals'][0]['path']).write_bytes(args[7][0] + b'\n')
+            with self.assertRaises(ValueError): run(manifest)
+
+    def test_default_inert_does_not_read_manifest_or_journals(self):
+        with patch.object(h, 'read_pinned', side_effect=AssertionError('Default must not read inputs')):
+            with contextlib.redirect_stdout(io.StringIO()) as output:
+                self.stop.main(['--manifest', '/missing', '--manifest-sha256', '0' * 64])
+        value = json.loads(output.getvalue())
+        self.assertEqual(value['state'], 'inert')
+        self.assertFalse(value['api_calls']); self.assertFalse(value['gpu_calls'])
 
     def test_exact_stop_witnesses_remain_unqualified(self):
         value = self.stop.validate(*self.fixture())
