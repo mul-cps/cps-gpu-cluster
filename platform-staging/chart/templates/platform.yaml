@@ -272,6 +272,9 @@ spec:
           ports: [{name: http, containerPort: 10101}]
           env:
             - {name: SSL_CERT_FILE, value: /trust/ca.crt}
+            {{- if $.Values.consoleStatus.configMapRef }}
+            - {name: CPS_PLATFORM_STATUS_PATH, value: /platform-status/status.json}
+            {{- end }}
             - {name: CPS_WORKSPACE_CONTROL_URL, value: {{ $gatewayUrl | quote }}}
             - {name: CPS_WORKSPACE_CONTROL_CA, value: /trust/ca.crt}
             - name: CPS_WORKSPACE_CONTROL_TOKEN
@@ -298,11 +301,17 @@ spec:
             - {name: config, mountPath: /config, readOnly: true}
             - {name: policy, mountPath: /policy, readOnly: true}
             - {name: trust, mountPath: /trust, readOnly: true}
+            {{- if $.Values.consoleStatus.configMapRef }}
+            - {name: platform-status, mountPath: /platform-status, readOnly: true}
+            {{- end }}
       volumes:
         - {name: data, persistentVolumeClaim: {claimName: {{ $name }}-admin-data}}
         - {name: config, configMap: {name: {{ $name }}-admin-config}}
         - {name: policy, configMap: {name: compute-policy}}
         - {name: trust, configMap: {name: {{ $caConfigMap }}}}
+        {{- if $.Values.consoleStatus.configMapRef }}
+        - {name: platform-status, configMap: {name: {{ $.Values.consoleStatus.configMapRef }}}}
+        {{- end }}
 ---
 apiVersion: v1
 kind: Service

@@ -4,6 +4,11 @@
 configuration renders are necessary checks, not acceptance evidence for hardware,
 real authentication, shared kernels or data recovery.
 
+The latest bounded result is the
+[2026-10-09 qualified two-workspace pilot](#2026-10-09-qualified-no-mig-group-pilot).
+Earlier dated failures and pending statements below remain historical evidence;
+the latest receipt supersedes them only for its exact scopes and measured pins.
+
 Run configuration checks with `scripts/compute-platform/verify-config.sh`.
 It verifies pinned chart checksums, catalog/generated artifacts, disabled staging,
 console/store isolation, effective Loki retention, Alloy node discovery and narrow
@@ -219,3 +224,132 @@ K3s/containerd. The verified independent firmware directory/search path
 remains required because the usual firmware path is empty. The
 [rollback receipt](../../platform-staging/gpu/qualification/gpu2-r615-canary/rollback-receipt.md)
 records that temporary deviation and removal of the owned canary/test objects.
+
+## Earlier 2026-10-09 automatic cap and admin checkpoint
+
+The controlled GPU2 no-MIG group pilot passed automatic 5 GiB cap assignment.
+Pod UID prefix `696bab5d` completed its first gate with exit code `0`; native
+limit readback was `5368709120` bytes. The notebook container never executed:
+its management CDI GPU UUID was unresolved. Shutdown cleanup then remained
+blocked by NVML result `17` when querying the removed cgroup. This does not
+qualify notebook startup, automatic cleanup or release of the associated
+allowance.
+
+Root corrected the supplemental CDI file
+`/var/run/cdi/management.nvidia.com-native-pilot-r615.json`, SHA256
+`55d23389ef8745a9ffef4b58181ed350f549100b03d7f8e7cb9590ae4f3bc5fd`.
+It contains only `GPU-16128952-b438-556a-00bb-93039ee24e56`; 57 current R615 mount
+paths were validated, and `nvidia-ctk cdi list` resolves the UUID. This correction
+has not yet passed actual notebook startup or the group OOM/peer matrix. The
+[node-authority runbook](../../platform-staging/gpu/native-group-pilot/README.md)
+also records the required resolved-host `--crictl` override; an absolute k3s
+`data/current` symlink is unusable beneath the container's `/host` mount.
+
+At 14:17 UTC, independent read-only verification found both admin services Ready
+on `ghcr.io/mul-cps/e2x-course-hub@sha256:1689e38c6f87cb1d75e6186a2a177afb3f0e0c8a2ab28e5b79d094ac72851845`
+(source `54cead22f03bed6e37f998b43eaaaab913dbd3d6`). Running as UID/GID
+`10001:10001`, each service read and parsed the same current directory-mounted
+status ConfigMap, updated at `2026-10-09T14:14:42.099193Z`; all 45 Python source
+files and three compiled UI assets matched the qualified image receipt. The
+status panel reports cap assignment **passed**, startup and shutdown cleanup
+**blocked**, and ordinary group GPU access **disabled**. Its mounted status is
+refreshed rather than pinned by a `subPath` mount. CIT human OAuth/browser
+acceptance remains unverified.
+
+Root separately observed both Hubs Ready on
+`ghcr.io/mul-cps/cps-compute@sha256:05b47ef4d78840d58907c3416903d5150c4af98ed8c390499ce93d42cf36be70`.
+Deployment readiness does not establish a successful shared GPU notebook.
+Group startup, OOM/recovery, peer continuity, restart, native shutdown cleanup,
+cross-Hub reservation and MPS qualification remain open. This checkpoint is
+sanitized operational evidence and does not enable general group GPU sharing.
+
+## 2026-10-09 qualified no-MIG group pilot
+
+The later [actual runtime receipt](../../platform-staging/gpu/native-group-pilot/qualification/qualified-runtime-receipt-20261009.json),
+reviewed at `2026-10-09T21:28:09.230649Z`, closes the earlier startup, isolation,
+restart and cleanup blockers for **only CPS `native-group-b` and CIT
+`native-group-a`**. Policy `0.1.1`, hash
+`sha256:78fb2d7ca42585a000e58b52c297d072a11dfbc466b19f50aa9d276d567a413f`,
+admits canonical `interactive-shared-5` on the selected physical A100 on GPU2,
+with a native 5120 MiB cap per workspace and at most two workspaces, without MIG.
+
+All six [bounded hardware gates](../../compute-policy/qualification/native-groups-v1.json)
+passed: cap assignment, OOM with peer continuity, aggregate accounting, memory
+import, restart cleanup and MPS. Both normal source profile handovers and six
+profile-only grant updates passed. CPS used authenticated console Start; CIT
+used its controlled owning source service. Both normal starts and real CUDA
+positive/recovery controls passed with exact caps and stable physical identity.
+Original registered storage identities were preserved. Both fixtures stopped,
+native reservations released, and immutable zero-charge retirement evidence
+remained. CIT's first 409 completed through the same normal Close resume. These
+results do not establish human CIT OAuth or browser collaboration.
+
+The [current release-candidate inventory](../../platform-staging/releases/qualification-20261009.json)
+binds actual source commits, wheel/module hashes, immutable images, policy and
+receipt hashes. Its [local verifier](../../platform-staging/releases/README.md)
+reuses the existing policy compiler and six-report validator. Gateway/Hubs/admin
+use SDK `a5a75b7…`; the notebook and cap gate intentionally retain their distinct
+measured SDK builds. Thus the older complete twelve-image build remains a
+historical candidate, not a current matching SDK/runtime release matrix.
+
+Whole-platform acceptance remains open for:
+
+- Human CIT OAuth and browser collaboration, general reviewed identity/grant
+  migration and same-person simultaneous cross-Hub pooled accounting.
+- Representative pre-pulled teaching bursts, reclaim/protected sessions,
+  production distributed workloads and KAI/Descheduler defragmentation comparison.
+- Cap/Descheduler telemetry qualification, physical free-GPU measurement and
+  operational storage/retention sizing.
+- Scheduled artifact deletion and ambiguous-delete/crash recovery; coordinated
+  connected Hub/application/NFS recovery and approved off-host durability.
+- A current SDK matching twelve-image runtime matrix, reviewed integration/Fleet
+  promotion, compatible release artifacts and actual release tags.
+
+The general compiler release lock and whole-platform production qualification
+remain `unqualified`. The two-scope pilot is an observed qualification snapshot,
+not a continuous operational heartbeat or approval for other profiles,
+workspaces or the eight-GPU fleet. Moodle remains planned/disabled, Hub 6 remains
+a separate target, and direct university Keycloak login through Dex still
+depends on ICT registration.
+
+## 2026-10-11 mixed 5/10 GiB qualification checkpoint
+
+Controlled, normal Source starts on the selected GPU2 A100 assigned a 5120 MiB
+cap to CPS `native-group-b` and a 10240 MiB cap to CIT `native-group-a`, without
+MIG. Profile handovers preserved the existing storage identities and CPU
+permissions. The measured policy hash is
+`sha256:02316f90f705f5550ab54d1d514ed48f73aa6a13324eea7d4aeaaef959af2fd5`.
+
+The main hardware phases passed: real kernel/recovery controls, typed OOM
+with peer continuity, aggregate accounting, same-parent positive controls,
+bidirectional cross-workspace IPC/VMM denial, and scoped MPS OOM/recovery and
+process cleanup. The separate creator-exit test passed retained VMM backing
+accounting, subsequent release and final zero charge. MPS reached OOM early;
+this does not establish a sustained 120-second MPS load. One VMM attempt failed
+because its private bridge directory had not been created. That failed attempt
+remains inconclusive; the independently captured fresh retry passed.
+
+Both genuine Source Stops completed. CIT's initial cleanup-pending 409 was
+retained and the same normal Close operation succeeded after controller cleanup.
+The complete native ledger held 21 released records. Protected host observations
+retained the eight prior inert caps and added exactly these two lifetimes, with
+finite 5/10 GiB limits, offline pinned accounting and zero charge. All three
+qualification notebook Pods were absent.
+
+The frozen automated Stop inspector failed because it compared the raw journal
+file digest with the cleanup receipt's canonical JSON digest. Independent Root
+review verified the full original journal, identity, intent and retirement proof:
+the raw file is the same canonical record plus its stored newline. The failed
+inspector was not relabeled as passing. Its correction and fresh mixed-profile
+normal restart/kernel/final-Stop acceptance remain open. This checkpoint does
+not qualify 20 GiB profiles, new workspaces or the wider GPU fleet.
+
+Twelve audited membership/grant expiry updates restored the original expired
+values. Complete before/after readbacks differed only in those expiry fields;
+profiles, course ceiling, aliases, storage and the version 2 native history
+remained intact. Both admin consoles returned to one Ready replica and the
+temporary operators were removed. The archived
+[admin assessment](../../platform-staging/admin-status/qualification-20261011.json)
+uses `qualification`, with mixed-profile restart pending and general GPU group
+access unavailable. Its timestamp remains a qualification snapshot; do not
+reapply it as a fresh availability assessment.

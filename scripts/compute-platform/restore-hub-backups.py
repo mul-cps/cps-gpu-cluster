@@ -78,7 +78,7 @@ def role_sql(data, bootstrap):
     return data.replace(b'CREATE ROLE postgres;', b"DO $$ BEGIN IF NOT EXISTS (SELECT 1 FROM pg_roles WHERE rolname='postgres') THEN CREATE ROLE postgres; END IF; END $$;")
 
 
-def restore(bundle, output):
+def restore(bundle, output, *, fingerprint_probe=None):
     plan = validate_bundle(bundle)  # Validate everything before any container.
     root = private_directory(bundle)
     output = Path(output)
@@ -114,8 +114,9 @@ def restore(bundle, output):
                 with p.open('ab') as stream: os.chmod(p, 0o600); stream.write(result.stderr)
                 raise RuntimeError('Isolated restore failed; private diagnostic retained')
             return result.stdout
-        def sql(tool, *args, data=None):
-            return command(['exec', '-i', name, 'sh', '-ec', 'export PGPASSWORD="$POSTGRES_PASSWORD"; exec "$@"',
+        def sql(tool, *args, data=None, read_only=False):
+            options = ['--env', 'PGOPTIONS=-c default_transaction_read_only=on'] if read_only else []
+            return command(['exec', '-i', *options, name, 'sh', '-ec', 'export PGPASSWORD="$POSTGRES_PASSWORD"; exec "$@"',
                             'sh', tool, '-h', '127.0.0.1', '-U', user, *args], data)
         try:
             command(['run', '-d', '--pull=never', '--name', name, '--network', 'none',
@@ -133,12 +134,17 @@ def restore(bundle, output):
             sql('pg_restore', '-d', 'restore_bootstrap', '--create', '--exit-on-error', data=snapshots[ns + '.pgdump'])
             databases = sql('psql', '-X', '-d', 'restore_bootstrap', '-Atc', "SELECT datname FROM pg_database WHERE NOT datistemplate AND datname NOT IN ('postgres','restore_bootstrap')").decode().splitlines()
             if len(databases) != 1: raise ValueError('One restored Hub database required')
+            if fingerprint_probe is not None:
+                fingerprint_probe(ns, user, lambda query: sql('psql', '-X', '-qAt', '-d', databases[0],
+                    '-v', 'ON_ERROR_STOP=1', data=query, read_only=True))
             summary = json.loads(sql('psql', '-X', '-d', databases[0], '-Atc', "SELECT json_build_object('schema',(SELECT version_num FROM alembic_version),'users',(SELECT count(*) FROM users),'databaseVersion',current_setting('server_version'))"))
             reports[ns] = {**summary, 'image': settings['image'], 'logicalRestorePassed': True}
         finally:
             # No volumes/host mounts or published ports exist. Delete only this unique fixture.
-            result = subprocess.run(['podman', 'rm', '-f', name], capture_output=True, timeout=60)
-            envfile.unlink(missing_ok=True)
+            try:
+                result = subprocess.run(['podman', 'rm', '-f', name], capture_output=True, timeout=60)
+            finally:
+                envfile.unlink(missing_ok=True)
             if result.returncode: raise RuntimeError('Restore fixture cleanup failed')
     report = {'hubs': reports, 'productionQualified': False,
               'limitations': ['Database logical restore only; source row equality and role/ACL fingerprints require separate comparisons',
@@ -152,11 +158,31 @@ def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('bundle'); parser.add_argument('--execute', action='store_true')
     parser.add_argument('--output', help='New private evidence directory, required with --execute')
+    parser.add_argument('--fingerprint-output', help='Optional new private logical fingerprint directory; requires admin recovery a0d1bd1')
+    parser.add_argument('--cps-source-fingerprint', help='Optional contemporaneous CPS source fingerprint; requires the CIT pair')
+    parser.add_argument('--cit-source-fingerprint', help='Optional contemporaneous CIT source fingerprint; requires the CPS pair')
     args = parser.parse_args()
+    if args.fingerprint_output and not args.execute:
+        parser.error('--fingerprint-output requires --execute')
+    if (args.cps_source_fingerprint or args.cit_source_fingerprint) and not args.fingerprint_output:
+        parser.error('Source fingerprints require --fingerprint-output')
+    if bool(args.cps_source_fingerprint) != bool(args.cit_source_fingerprint):
+        parser.error('Supply both CPS and CIT source fingerprints')
     try:
         if args.execute:
             if not args.output: parser.error('--execute requires --output')
-            print(json.dumps(restore(args.bundle, args.output)))
+            probe = None
+            if args.fingerprint_output:
+                validate_bundle(args.bundle)
+                try:
+                    from e2x_course_hub.cps.recovery import LogicalRestoreProbe
+                except ImportError:
+                    parser.error('--fingerprint-output requires e2x_course_hub.cps.recovery from reviewed admin commit a0d1bd1 on PYTHONPATH')
+                expected = {'cps':args.cps_source_fingerprint, 'cit':args.cit_source_fingerprint} if args.cps_source_fingerprint else None
+                probe = LogicalRestoreProbe(args.fingerprint_output, expected)
+            report = restore(args.bundle, args.output, fingerprint_probe=probe)
+            if probe is not None: probe.finish()
+            print(json.dumps(report))
         else: print(json.dumps({'validated': True, 'plan': validate_bundle(args.bundle), 'restoreExecuted': False}))
     except (ValueError, OSError, RuntimeError, subprocess.TimeoutExpired):
         parser.exit(1, 'Hub recovery failed; verify private inputs or inspect private diagnostics.\n')

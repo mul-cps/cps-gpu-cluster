@@ -1,0 +1,8 @@
+# Reviewed status/readiness image overlay; use with approved platform chart values.
+consoleStatus:
+  configMapRef: cps-platform-status
+consoles:
+  cps:
+    image: ghcr.io/mul-cps/e2x-course-hub@sha256:4d6cc444fdaa2695d93c6f0bf9e235486a272121c67d6d8bb33d04cef3d0fda2
+  cit:
+    image: ghcr.io/mul-cps/e2x-course-hub@sha256:4d6cc444fdaa2695d93c6f0bf9e235486a272121c67d6d8bb33d04cef3d0fda2

@@ -57,6 +57,9 @@ personalArgo:
         enabled: false
         host: ""
         tlsSecretRef: ""
+consoleStatus:
+  # Operator-maintained status; mount a directory so updates reach both consoles.
+  configMapRef: ""
 consoles:
   cps:
     image: ""
