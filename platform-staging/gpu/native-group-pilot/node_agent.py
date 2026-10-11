@@ -6,6 +6,7 @@ A lease, deadline or cancellation request is never evidence of native cleanup.
 """
 from __future__ import annotations
 import argparse
+from contextlib import ExitStack
 from dataclasses import fields
 import fcntl
 import hashlib
@@ -767,7 +768,15 @@ def run(config, bundle, state, kube, driver, *, iterations, interval, crictl, cr
         require(node is not None and node['metadata']['name'] == config['pool']['node']
                 and node['metadata']['uid'] == config['pool']['node_uid'], 'Actual selected node UID changed')
         cms = kube.enrollments(config['authority_namespace'])
-        with journal.locked():
+        with ExitStack() as journal_lock:
+            try:
+                journal_lock.enter_context(journal.locked())
+            except models.ControllerBusy as error:
+                if type(error) is not models.ControllerBusy: raise
+                print(json.dumps({'state': 'skipped-journal-busy', 'iteration': iteration,
+                    'production_qualified': False}), flush=True)
+                if iteration + 1 < iterations: time.sleep(interval)
+                continue
             envelopes, historical = validate_authority_enrollments(cms, config, models, store, journal, kube)
             if config['version'] == 2:
                 validate_pool_epoch(config, abort_current_epoch(config, state, driver, verifier, models))

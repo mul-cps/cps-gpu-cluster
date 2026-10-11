@@ -889,3 +889,111 @@ class TerminalHistoryTest(unittest.TestCase):
                 elif fault=='completion':(Path(tmp)/'pre-gate-aborts'/(POD+'.json')).unlink()
                 else:maps['cps-native-abort-'+BINDING[:40]]['data']['abort.json']='{}'
                 with self.assertRaises(ValueError):self.dispatch(values)
+
+
+class JournalContentionTest(unittest.TestCase):
+    def setUp(self):
+        self.agent = importlib.import_module('node_agent')
+        self.models = self.agent.load_models_from_snapshot()
+        self.config, _, _ = fixtures()
+
+    def run_empty(self, root, *, iterations=2, sleep=None, validation_error=None):
+        from contextlib import ExitStack, redirect_stdout
+        from io import StringIO
+        from types import SimpleNamespace
+        from unittest.mock import patch
+        reads, backends = [], []
+        def enrollments(namespace):
+            reads.append(namespace)
+            return []
+        def backend(*args, **kwargs):
+            backends.append(kwargs['intents'])
+            return SimpleNamespace(seal_gate=lambda *a: self.fail('No GPU gate write'))
+        qualification = SimpleNamespace(cri_reader=lambda *a: None,
+            gpu_clients=lambda *a: self.fail('No GPU client inspection'),
+            health=lambda *a, **k: self.fail('No driver inspection'))
+        bundle = (SimpleNamespace(QualificationNodeBackend=backend), qualification,
+            {'models': self.models, 'manual': object(), 'health': object()})
+        kube = SimpleNamespace(node=lambda name: {'metadata': {'name': name, 'uid': NODE}},
+            enrollments=enrollments, pod=lambda *a: self.fail('No Pod mutation or dispatch'),
+            delete=lambda *a: self.fail('No Pod deletion'),
+            create_configmap=lambda *a: self.fail('No cleanup publication'))
+        store = self.agent.EnrollmentStore
+        output = StringIO()
+        with ExitStack() as patches:
+            patches.enter_context(patch.object(self.agent, 'EnrollmentStore',
+                side_effect=lambda path, models: store(path, models, trusted_uid=os.getuid())))
+            delays = patches.enter_context(patch.object(self.agent.time, 'sleep', side_effect=sleep))
+            if validation_error is not None:
+                patches.enter_context(patch.object(self.agent, 'validate_authority_enrollments',
+                    side_effect=validation_error))
+            patches.enter_context(redirect_stdout(output))
+            self.agent.run(self.config, bundle, root, kube, object(), iterations=iterations,
+                interval=0.1, crictl='unused', cri_socket='unused')
+        return [json.loads(line) for line in output.getvalue().splitlines()], reads, backends, delays.call_count
+
+    def test_real_journal_lock_contention_skips_bounded_iterations_without_gpu_writes(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary); root.chmod(0o700)
+            journal = self.models.PrivateJournal(root / 'journal')
+            with journal.locked():
+                try:
+                    events, reads, backends, sleeps = self.run_empty(root)
+                except self.models.ControllerBusy:
+                    self.fail('Journal lock contention escaped the node polling loop')
+            self.assertEqual([e['state'] for e in events], ['skipped-journal-busy'] * 2)
+            self.assertEqual([e['iteration'] for e in events], [0, 1])
+            self.assertTrue(all(e['production_qualified'] is False for e in events))
+            self.assertEqual(len(reads), 2)
+            self.assertEqual(backends, [])
+            self.assertEqual(sleeps, 1)
+            self.assertEqual(list(root.rglob('*.json')), [])
+
+    def test_real_lock_release_resumes_next_iteration(self):
+        from contextlib import ExitStack
+        with tempfile.TemporaryDirectory() as temporary, ExitStack() as holder:
+            root = Path(temporary); root.chmod(0o700)
+            holder.enter_context(self.models.PrivateJournal(root / 'journal').locked())
+            def release(interval):
+                self.assertEqual(interval, 0.1)
+                holder.close()
+            events, reads, backends, sleeps = self.run_empty(root, sleep=release)
+            self.assertEqual([e['state'] for e in events], ['skipped-journal-busy'])
+            self.assertEqual(len(reads), 2)
+            self.assertEqual(backends, [[]])
+            self.assertEqual(sleeps, 1)
+            self.assertEqual(list(root.rglob('*.json')), [])
+
+    def test_unsafe_real_journal_lock_is_not_treated_as_contention(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary); root.chmod(0o700)
+            journal = self.models.PrivateJournal(root / 'journal')
+            with journal.locked(): pass
+            (root / 'journal' / '.writer.lock').chmod(0o644)
+            with self.assertRaises(self.models.ControllerError): self.run_empty(root)
+
+    def test_controller_busy_from_validation_is_not_swallowed(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary); root.chmod(0o700)
+            with self.assertRaisesRegex(self.models.ControllerBusy, 'validation boundary'):
+                self.run_empty(root, validation_error=self.models.ControllerBusy('validation boundary'))
+
+    def test_other_validation_failure_is_not_swallowed(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary); root.chmod(0o700)
+            with self.assertRaisesRegex(ValueError, 'protected authority'):
+                self.run_empty(root, validation_error=ValueError('protected authority'))
+
+    def test_other_acquisition_exception_is_not_swallowed(self):
+        from contextlib import contextmanager
+        from unittest.mock import patch
+        class OtherBusy(self.models.ControllerBusy): pass
+        @contextmanager
+        def failed_lock(journal):
+            raise OtherBusy('different acquisition failure')
+            yield
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary); root.chmod(0o700)
+            with patch.object(self.models.PrivateJournal, 'locked', failed_lock), \
+                self.assertRaisesRegex(OtherBusy, 'different acquisition failure'):
+                self.run_empty(root)
