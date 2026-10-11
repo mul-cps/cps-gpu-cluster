@@ -4,6 +4,11 @@
 configuration renders are necessary checks, not acceptance evidence for hardware,
 real authentication, shared kernels or data recovery.
 
+The latest bounded result is the
+[2026-10-09 qualified two-workspace pilot](#2026-10-09-qualified-no-mig-group-pilot).
+Earlier dated failures and pending statements below remain historical evidence;
+the latest receipt supersedes them only for its exact scopes and measured pins.
+
 Run configuration checks with `scripts/compute-platform/verify-config.sh`.
 It verifies pinned chart checksums, catalog/generated artifacts, disabled staging,
 console/store isolation, effective Loki retention, Alloy node discovery and narrow
@@ -220,7 +225,7 @@ remains required because the usual firmware path is empty. The
 [rollback receipt](../../platform-staging/gpu/qualification/gpu2-r615-canary/rollback-receipt.md)
 records that temporary deviation and removal of the owned canary/test objects.
 
-## 2026-10-09 automatic cap and admin checkpoint
+## Earlier 2026-10-09 automatic cap and admin checkpoint
 
 The controlled GPU2 no-MIG group pilot passed automatic 5 GiB cap assignment.
 Pod UID prefix `696bab5d` completed its first gate with exit code `0`; native
@@ -257,3 +262,52 @@ Deployment readiness does not establish a successful shared GPU notebook.
 Group startup, OOM/recovery, peer continuity, restart, native shutdown cleanup,
 cross-Hub reservation and MPS qualification remain open. This checkpoint is
 sanitized operational evidence and does not enable general group GPU sharing.
+
+## 2026-10-09 qualified no-MIG group pilot
+
+The later [actual runtime receipt](../../platform-staging/gpu/native-group-pilot/qualification/qualified-runtime-receipt-20261009.json),
+reviewed at `2026-10-09T21:28:09.230649Z`, closes the earlier startup, isolation,
+restart and cleanup blockers for **only CPS `native-group-b` and CIT
+`native-group-a`**. Policy `0.1.1`, hash
+`sha256:78fb2d7ca42585a000e58b52c297d072a11dfbc466b19f50aa9d276d567a413f`,
+admits canonical `interactive-shared-5` on the selected physical A100 on GPU2,
+with a native 5120 MiB cap per workspace and at most two workspaces, without MIG.
+
+All six [bounded hardware gates](../../compute-policy/qualification/native-groups-v1.json)
+passed: cap assignment, OOM with peer continuity, aggregate accounting, memory
+import, restart cleanup and MPS. Both normal source profile handovers and six
+profile-only grant updates passed. CPS used authenticated console Start; CIT
+used its controlled owning source service. Both normal starts and real CUDA
+positive/recovery controls passed with exact caps and stable physical identity.
+Original registered storage identities were preserved. Both fixtures stopped,
+native reservations released, and immutable zero-charge retirement evidence
+remained. CIT's first 409 completed through the same normal Close resume. These
+results do not establish human CIT OAuth or browser collaboration.
+
+The [current release-candidate inventory](../../platform-staging/releases/qualification-20261009.json)
+binds actual source commits, wheel/module hashes, immutable images, policy and
+receipt hashes. Its [local verifier](../../platform-staging/releases/README.md)
+reuses the existing policy compiler and six-report validator. Gateway/Hubs/admin
+use SDK `a5a75b7…`; the notebook and cap gate intentionally retain their distinct
+measured SDK builds. Thus the older complete twelve-image build remains a
+historical candidate, not a current matching SDK/runtime release matrix.
+
+Whole-platform acceptance remains open for:
+
+- Human CIT OAuth and browser collaboration, general reviewed identity/grant
+  migration and same-person simultaneous cross-Hub pooled accounting.
+- Representative pre-pulled teaching bursts, reclaim/protected sessions,
+  production distributed workloads and KAI/Descheduler defragmentation comparison.
+- Cap/Descheduler telemetry qualification, physical free-GPU measurement and
+  operational storage/retention sizing.
+- Scheduled artifact deletion and ambiguous-delete/crash recovery; coordinated
+  connected Hub/application/NFS recovery and approved off-host durability.
+- A current SDK matching twelve-image runtime matrix, reviewed integration/Fleet
+  promotion, compatible release artifacts and actual release tags.
+
+The general compiler release lock and whole-platform production qualification
+remain `unqualified`. The two-scope pilot is an observed qualification snapshot,
+not a continuous operational heartbeat or approval for other profiles,
+workspaces or the eight-GPU fleet. Moodle remains planned/disabled, Hub 6 remains
+a separate target, and direct university Keycloak login through Dex still
+depends on ICT registration.
