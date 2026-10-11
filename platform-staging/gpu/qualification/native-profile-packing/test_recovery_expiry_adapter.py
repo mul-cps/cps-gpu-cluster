@@ -71,7 +71,7 @@ class AdapterTests(unittest.TestCase):
         self.a.adapt_foundation(q,raw,self.history,self.loaded,'d'*64,'ghcr.io/mul-cps/cps-compute@sha256:'+'e'*64)
         self.assertIs(q.build_context.__globals__,original)
         self.assertEqual(hashlib.sha256(raw).hexdigest(),window.QUALIFIED_SHA)
-        self.assertEqual(original['NODE_SOURCE_SHA'],self.a.AGENT_SHA)
+        self.assertEqual(original['NODE_SOURCE_SHA'],'34ce5b9bb8d48aa3459c151acc19464772e498a8946c7f621fed73abc5b0ba5a')
         nested=next(x for x in q.build_context.__code__.co_consts if getattr(x,'co_name',None)=='fence')
         self.assertIn('_recovery_actual_authorities',nested.co_names)
 
@@ -80,6 +80,37 @@ class AdapterTests(unittest.TestCase):
         with tempfile.TemporaryDirectory()as directory:
             path=Path(directory)/'fifo';os.mkfifo(path)
             with self.assertRaisesRegex(ValueError,'regular'):self.a.protected(path,'a'*64)
+
+    def test_closed_review_separates_active_runtime_from_historical_codec(self):
+        from unittest.mock import patch
+        import recovery_source_loader as loader
+        a=self.a
+        source_path=Path(a.__file__)
+        source_sha=hashlib.sha256(source_path.read_bytes()).hexdigest()
+        history_raw=json.dumps(self.history).encode();history_sha=hashlib.sha256(history_raw).hexdigest()
+        approval=json.loads((HERE/'recovery-expiry-adapter-review.template.json').read_bytes())
+        approval.update(enabled=True,source='cit',gateway_image='ghcr.io/mul-cps/cps-compute@sha256:'+'e'*64,
+            adapter_sha256=source_sha,history_raw_sha256=history_sha)
+        window=HERE/'qualified_restart_window.py'
+        argv=['--execute','--adapter-sha256',source_sha,'--adapter-review','review','--adapter-review-sha256','a'*64,
+            '--history','history','--history-sha256',history_sha,'--window-source',str(window),
+            '--model-source','model','--control-source','control','--node-source','historical','--recovery-source','recovery']
+        def protected(path,pin):
+            if str(path)==str(window):return window.read_bytes()
+            if str(path)==str(source_path):return source_path.read_bytes()
+            if path=='review':return json.dumps(approval).encode()
+            if path=='history':return history_raw
+            raise AssertionError('Unexpected protected read')
+        sources=fixture_module.SourceLoaderTests().sources()
+        with patch.object(a.os,'geteuid',return_value=10001),patch.object(a,'protected',protected),patch.object(a.prepare,'bundle',return_value=sources)as bundle:
+            # Correct provenance reaches the genuine frozen CLI's missing Source
+            # input guard. No app, transport or output directory is constructed.
+            with self.assertRaisesRegex(ValueError,'complete actual protected inputs'):a.main(argv)
+            bundle.assert_called_once_with('model','control','historical',a.HISTORICAL_AGENT_SHA,'recovery',a.RECOVERY_SHA)
+            for key,value in [('node_source_sha256',a.HISTORICAL_AGENT_SHA),('historical_node_source_sha256',a.ACTIVE_AGENT_SHA),('version',1),('version',True)]:
+                original=approval[key];approval[key]=value;bundle.reset_mock()
+                with self.subTest(key=key,value=value),self.assertRaisesRegex(ValueError,'adapter review'):a.main(argv)
+                bundle.assert_not_called();approval[key]=original
 
 class AuthorityTests(unittest.IsolatedAsyncioTestCase):
     async def test_actual_authority_gets_must_match_full_immutable_chain(self):
@@ -101,7 +132,7 @@ class AuthorityTests(unittest.IsolatedAsyncioTestCase):
         values[next(key for key in values if key[0].startswith('cps-native-recovery-'))]['metadata']['uid']='00000000-0000-4000-8000-000000000001'
         with self.assertRaises(ValueError):await a.actual_authorities(Backend(),history,state)
 
-    async def genuine_context(self, *, changed_original21=False, changed_audit=False, releasing=False):
+    async def genuine_context(self, *, changed_original21=False, changed_audit=False, releasing=False, old_active_node=False):
         """Execute genuine792+3c807 reset and every runtime fence before Source."""
         import base64
         from unittest.mock import patch
@@ -130,7 +161,9 @@ class AuthorityTests(unittest.IsolatedAsyncioTestCase):
         runtime['gateway']['image_id']=ns['GATEWAY_IMAGE']
         for status in objects['gateway']['status']['containerStatuses']:
             if status['name']=='gateway':status['imageID']=ns['GATEWAY_IMAGE']
-        objects['node_code_cm']['data']['node_agent.py']=(fixture_module.NODE/'node_agent.py').read_text()
+        active=Path('/home/bjoern/git/cps-gpu-cluster-worktrees/native-journal-busy-retry-20261011/platform-staging/gpu/native-group-pilot/node_agent.py')
+        self.assertEqual(hashlib.sha256(active.read_bytes()).hexdigest(),'34ce5b9bb8d48aa3459c151acc19464772e498a8946c7f621fed73abc5b0ba5a')
+        objects['node_code_cm']['data']['node_agent.py']=((fixture_module.NODE/'node_agent.py')if old_active_node else active).read_text()
         runtime['node']['code_data_sha256']=q.sha(objects['node_code_cm']['data'])
         for key in ('enrollment','audit','cleanup'):objects['recovery_'+key+'_cm']=copy.deepcopy(history['recovery'][key])
         if changed_audit:objects['recovery_audit_cm']['metadata']['uid']='00000000-0000-4000-8000-000000000001'
@@ -170,7 +203,7 @@ class AuthorityTests(unittest.IsolatedAsyncioTestCase):
         self_outer=self
         args=SimpleNamespace(source='cit',source_sha256='f'*64,renewal='renewal',handover='handover',audit_helper='audit',source_closure='closure',source_closure_sha256='f'*64,policy='policy',policy_sha256='f'*64,qualification_config='mode',qualification_config_sha256='f'*64,node_config='nodeconf',node_config_sha256='f'*64,physical_retirement_review='retirement',normal_close_receipt='close',protected_retirement_capture='physical',kubeconfig='scoped',kubeconfig_sha256='f'*64,runtime_review='runtime',config='app',config_sha256='f'*64,handover_receipt='handover-receipt',capture=True)
         with patch.dict(ns,{'protected':protected,'install_base':genuine_install}),patch.object(client,'CoreV1Api',Core),patch.object(client,'AppsV1Api',Apps),patch.object(config,'load_kube_config',lambda **kw:configured.append(kw['config_file'])),patch.object(builtins,'SOURCE_LOADS',source_loads,create=True):
-            if changed_original21 or changed_audit or releasing:
+            if changed_original21 or changed_audit or releasing or old_active_node:
                 with self.assertRaises(ValueError):await window.build_context(args,review,baseline,q,{'renewed_expires':'2026-10-11T19:00:00+00:00'})
                 self.assertEqual(source_loads,[])
             else:
@@ -184,5 +217,6 @@ class AuthorityTests(unittest.IsolatedAsyncioTestCase):
     async def test_genuine_context_rejects_changed_original21_before_source(self):await self.genuine_context(changed_original21=True)
     async def test_genuine_context_rejects_changed_actual_audit_before_source(self):await self.genuine_context(changed_audit=True)
     async def test_genuine_context_rejects_unreleased_historical_allocation_before_source(self):await self.genuine_context(releasing=True)
+    async def test_historical_agent_cannot_substitute_for_active_runtime_before_source(self):await self.genuine_context(old_active_node=True)
 
 if __name__=='__main__':unittest.main()

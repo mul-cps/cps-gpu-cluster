@@ -10,7 +10,14 @@ exception. Every future target must have a normal finite retirement.
 The required SDK is commit 9d6f4680d7af040cc1eceef6e34ed65d089545be: controller
 630d43cc… and cleanup codec babeb6ee…. The reviewed node/helper are commit
 6da0214b66d6e86028a8b83e7715859136832bae, source 05a6ca95… / 25c9514f…. The
-actual gateway image, node Pod UID/spec/CM UID/data hashes, operator token/UID
+active runtime node now uses the separately reviewed journal-contention fix
+34ce5b9b… (Root integrated commit5236000). The historical operation validator
+remains frozen05a6ca95… with helper25c9514f…; changing the active poller does
+not change the archived operation's proof or validator source. The version2
+adapter review binds node_source_sha256 to34ce and explicitly binds
+historical_node_source_sha256 to05a6. `--node-source NODE05A6` still supplies
+only that historical codec; the live fence requires actual mounted34ce bytes.
+The actual gateway image, node Pod UID/spec/CM UID/data hashes, operator token/UID
 and all fresh runtime observations are Root inputs. A source pin does not
 substitute for an installed-module or Ready-process receipt.
 

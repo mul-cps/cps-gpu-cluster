@@ -1,11 +1,14 @@
 {
+  "active_node_source_commit": "5ae67f55eb1e84b42d4113c20f730263936137ca",
+  "active_node_source_sha256": "34ce5b9bb8d48aa3459c151acc19464772e498a8946c7f621fed73abc5b0ba5a",
   "api_calls": false,
   "base_cluster_commit": "58bfe46de79515526d4ca6d9c9b29450e236f280",
-  "cpu_methods_passed": 101,
+  "cpu_methods_passed": 103,
   "gpu_calls": false,
   "hardware_qualification": false,
+  "historical_node_source_sha256": "05a6ca95eaaaf79cdbbdffec8172c804676d982a4154a422188639cd6b24f09b",
   "live_recovery_observed": false,
-  "new_cpu_methods_passed": 26,
+  "new_cpu_methods_passed": 28,
   "node_commit": "6da0214b66d6e86028a8b83e7715859136832bae",
   "normal_stop_passed": false,
   "pending": [
@@ -20,20 +23,21 @@
     "qualified_restart_window.py": "3c807348b85139ac90ae83d253019a242da344febcfe106e1ca32eb9a83697c3",
     "run_retirement_witness.py": "c123ebcc73f6158f4eeab9cfe3ad7094074431a1512a842d64fbf9bc5b0df7c7"
   },
+  "previous_source_commit": "7327d40c91776a19686482f430420968f5aa94b6",
   "protocol": "native-packing-historical-recovery-source/v2",
   "sdk_commit": "9d6f4680d7af040cc1eceef6e34ed65d089545be",
   "source_sha256": {
-    "RECOVERY-V2.md": "5584d1e06315ac51fe185232d42ebe673e88c6f63a1612b0cd3d1d18a198d13f",
+    "RECOVERY-V2.md": "c3dc49fd38203402a527e342a3987d705e30908c325865a50ef5687344699cf7",
     "assemble_recovery_history.py": "8949d390ac6004a92cf5fb778a85eaadd214c498957996ffd21634631581c786",
     "physical-history-review.template.json": "f2a70d1c723440096b550bf89b33331376a6eaec476403f27bfa2574eba2f0fc",
     "prepare_recovery_harness.py": "533131979cd12eb03a6a56084fceb9f61652cc50382510619fd22ea281722f3a",
-    "qualified_recovery_expiry_adapter.py": "b6ac823ac303727305658bd5903dfee213d6b538e021762bc79d952aee628b6b",
+    "qualified_recovery_expiry_adapter.py": "b70a544dbbeb4508f9e7d8a571d0a70729068136dc97c8eec7f3131ad0749efa",
     "recovery-baseline-journal-pins.json": "52cb2097c4562d308c77e81aa3c42ff4a961ccbd113f57b065a748ca45b56f17",
-    "recovery-expiry-adapter-review.template.json": "c6b872808e7fbd1ffac8dd5cfa9d196a76ee54f7b60098c71d350bbb071dc72f",
+    "recovery-expiry-adapter-review.template.json": "dc361bb0d4c3cddc58558bfcdbdccde99e8eff6576d845d93f2133afd09dbc48",
     "recovery_history.py": "e5be91b7b70cc3c69cba77190d212028508d4eaa19d444c96a475870b09f3bed",
     "recovery_source_loader.py": "b3fd57f64f1dc7e4fe3b09c563b9a347f2767cfecb5de8e444d27668d735d3b9",
     "run_recovery_retirement_witness.py": "2dbf55ca80861da83a66642166df13988106e96c3a8ac605093db540cf555649",
-    "test_recovery_expiry_adapter.py": "261c1a2f5a00a1c807b81ec544ad7bc9bf48c4b8c13e03865c09e503338c23bb",
+    "test_recovery_expiry_adapter.py": "c251197b7a1f0c696c3edfe96e91750c43668e718bde437e6079ceee035a4da6",
     "test_recovery_history.py": "a0c08e35ea3a5b8f9716a98db095d02fe8d824a215ccfccb3440916e6ea20515"
   },
   "version": 1

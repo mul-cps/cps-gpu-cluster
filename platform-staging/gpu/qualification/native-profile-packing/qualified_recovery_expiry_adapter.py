@@ -22,7 +22,8 @@ import prepare_recovery_harness as prepare
 
 WINDOW_SHA = '3c807348b85139ac90ae83d253019a242da344febcfe106e1ca32eb9a83697c3'
 QUALIFIED_SHA = '79216423877d8079499c13b8d4f6c5abb90077a9174fd9d3a6e2d295bd166990'
-AGENT_SHA = '05a6ca95eaaaf79cdbbdffec8172c804676d982a4154a422188639cd6b24f09b'
+HISTORICAL_AGENT_SHA = '05a6ca95eaaaf79cdbbdffec8172c804676d982a4154a422188639cd6b24f09b'
+ACTIVE_AGENT_SHA = '34ce5b9bb8d48aa3459c151acc19464772e498a8946c7f621fed73abc5b0ba5a'
 RECOVERY_SHA = '25c9514fee19c478d82aa891f2d67a8018b1e799abbedd1d1397ea13b80bd25b'
 POLICY = 'sha256:02316f90f705f5550ab54d1d514ed48f73aa6a13324eea7d4aeaaef959af2fd5'
 
@@ -116,7 +117,7 @@ def adapt_foundation(q, qualified_raw, history, loaded, history_pin, gateway_ima
         return validate_physical_review(retirement,capture,history,runtime,a.source,history_pin)
     async def authority(backend,state):
         await actual_authorities(backend,history,state)
-    ns.update(GATEWAY_IMAGE=gateway_image,NODE_SOURCE_SHA=AGENT_SHA,
+    ns.update(GATEWAY_IMAGE=gateway_image,NODE_SOURCE_SHA=ACTIVE_AGENT_SHA,
         _recovery_physical_review=physical,_recovery_actual_authorities=authority)
     exec(compile(source,'pinned-historical-recovery-expiry-context','exec'),ns)
     q.build_context = ns['build_context']
@@ -138,16 +139,18 @@ def main(argv=None):
     protected(__file__,args.adapter_sha256)
     exec(compile(raw,args.window_source,'exec'),window.__dict__)
     approval=r.parse(protected(args.adapter_review,args.adapter_review_sha256))
-    r.closed(approval,{'version','enabled','operation','source','gateway_image','history_raw_sha256','reader_sha256','loader_sha256','adapter_sha256','node_source_sha256','recovery_source_sha256'})
-    r.require(type(approval['version']) is int and approval['version']==1 and approval['enabled'] is True
+    r.closed(approval,{'version','enabled','operation','source','gateway_image','history_raw_sha256','reader_sha256','loader_sha256','adapter_sha256','node_source_sha256','historical_node_source_sha256','recovery_source_sha256'})
+    r.require(type(approval['version']) is int and approval['version']==2 and approval['enabled'] is True
         and approval['operation']=='restore-expiry' and approval['source'] in ('cps','cit')
         and approval['history_raw_sha256']==args.history_sha256 and approval['adapter_sha256']==args.adapter_sha256
-        and approval['node_source_sha256']==AGENT_SHA and approval['recovery_source_sha256']==RECOVERY_SHA
+        and approval['node_source_sha256']==ACTIVE_AGENT_SHA
+        and approval['historical_node_source_sha256']==HISTORICAL_AGENT_SHA
+        and approval['recovery_source_sha256']==RECOVERY_SHA
         and approval['reader_sha256']==hashlib.sha256(Path(r.__file__).read_bytes()).hexdigest()
         and approval['loader_sha256']==hashlib.sha256(Path(loader.__file__).read_bytes()).hexdigest(),
         'Explicit disabled-by-default Root historical adapter review required')
     history=r.parse(protected(args.history,args.history_sha256))
-    validators=prepare.bundle(args.model_source,args.control_source,args.node_source,AGENT_SHA,args.recovery_source,RECOVERY_SHA)
+    validators=prepare.bundle(args.model_source,args.control_source,args.node_source,HISTORICAL_AGENT_SHA,args.recovery_source,RECOVERY_SHA)
     loaded=loader.load_sources(validators)
     original=window.load_frozen
     def adapted(qualified_raw,renewal_raw,path):
