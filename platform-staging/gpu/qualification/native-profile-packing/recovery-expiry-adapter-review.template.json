@@ -1,0 +1,13 @@
+{
+  "version": 1,
+  "enabled": false,
+  "operation": "restore-expiry",
+  "source": null,
+  "gateway_image": null,
+  "history_raw_sha256": null,
+  "reader_sha256": "e5be91b7b70cc3c69cba77190d212028508d4eaa19d444c96a475870b09f3bed",
+  "loader_sha256": "b3fd57f64f1dc7e4fe3b09c563b9a347f2767cfecb5de8e444d27668d735d3b9",
+  "adapter_sha256": "b6ac823ac303727305658bd5903dfee213d6b538e021762bc79d952aee628b6b",
+  "node_source_sha256": "05a6ca95eaaaf79cdbbdffec8172c804676d982a4154a422188639cd6b24f09b",
+  "recovery_source_sha256": "25c9514fee19c478d82aa891f2d67a8018b1e799abbedd1d1397ea13b80bd25b"
+}
