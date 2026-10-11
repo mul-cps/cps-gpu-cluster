@@ -27,12 +27,13 @@ NAMESPACES = {'cps': 'jupyterhub', 'cit': 'cit-jhub'}
 LABEL = 'cps.compute/native-binding'
 SOURCE_PINS = {
     'cdi_identity.py': '784280a4f670eca067a8cc5b4d558f9d13c0c41141401d47c229de90dd6343c0',
-    'native_gpu_controller.py': 'f40ef40f71c9f1206f23fb7052fd69aafd103c0f03a24e6bf3987395dacfd179',
+    'native_gpu_controller.py': '630d43cc115b5bddf3e5d110a25cc891e0941953bbabd833f0a77a3773ad7880',
     'native_gpu_health.py': '52fdbdae3d5e2f66fd4653d94ef5a62f734e185fabec30450f4a1b70cfee7d67',
     'node_backend.py': 'fb5651ea10118de02ee2e9601a765f947d2ae61f1b2e8670d523912b594afda0',
     'poll.py': '6032d735473813a04df53aba976b900744be5ef17c77d49c5b1d8340c0c183d9',
     'pod_cap.py': '5c84ab668dd276b0216199a964f42886712af9225f9fc702740bfa9bb361a39f',
 }
+RECOVERY_SOURCE_PIN = '25c9514fee19c478d82aa891f2d67a8018b1e799abbedd1d1397ea13b80bd25b'
 _NAME = re.compile(r'[a-z0-9](?:[a-z0-9.-]{0,251}[a-z0-9])?')
 _TOKEN = re.compile(r'[A-Za-z0-9][A-Za-z0-9:_.@/-]{0,255}')
 _IMAGE = re.compile(r'[^\s@]+@sha256:[a-f0-9]{64}')
@@ -169,7 +170,7 @@ def validate_pool_epoch(config, epoch):
 def validate_active_capacity(config, intents, journal, aborted):
     live = [intent for intent in intents if intent.pod_uid not in aborted
         and (journal.read(intent.pod_uid) is None
-             or journal.read(intent.pod_uid).state not in ('cleaned', 'retired-inert-cap'))]
+             or journal.read(intent.pod_uid).state not in ('cleaned', 'retired-inert-cap', 'recovered-cleared-offline-cap'))]
     require(len(live) <= config['pool']['max_workspaces'], 'Selected pool active enrollment capacity exceeded')
     if config['version'] == 2:
         require(sum(intent.cap_mib for intent in live) <= config['pool']['memory_budget_mib'],
@@ -214,6 +215,13 @@ def load_models_from_snapshot():
     sources = snapshot_sources()
     name = 'native_gpu_controller.py'
     return load_source('_native_group_test_models', sources[name].encode(), SOURCE_PINS[name], name)
+
+
+def load_recovery_module():
+    raw = (HERE / 'cleared_offline_recovery.py').read_bytes()
+    require(len(raw) <= 65536, 'Bounded pinned explicit recovery helper required')
+    return load_source('_native_cleared_offline_recovery', raw, RECOVERY_SOURCE_PIN,
+                       'cleared_offline_recovery.py')
 
 
 def load_bundle(directory):
@@ -330,9 +338,11 @@ def validate_authority_enrollments(cms, config, models, store, journal, kube):
                     'Exact released historical allocation and intent required')
             record = journal.read(uid)
             if entry['completion_kind'] == 'cleanup':
-                require(type(record) is models.CapRecord and record.state in ('cleaned', 'retired-inert-cap')
+                audit = kube.configmap(config['authority_namespace'], 'cps-native-recovery-' + body['binding_id'][:40]) \
+                    if record is not None and record.state == 'recovered-cleared-offline-cap' else None
+                require(type(record) is models.CapRecord and record.state in ('cleaned', 'retired-inert-cap', 'recovered-cleared-offline-cap')
                         and canonical_sha256(record.to_dict()) == entry['journal_sha256']
-                        and store.cleanup_published(uid, envelope, record, completion),
+                        and store.cleanup_published(uid, envelope, record, completion, audit=audit),
                         'Previously published protected terminal native journal required')
             else:
                 require(record is None, 'Never-gated historical abort acquired a native journal')
@@ -397,8 +407,13 @@ class EnrollmentStore:
         return by_uid
 
 
-    def mark_cleanup_published(self, uid, envelope, cm, record=None):
-        expected = cleanup_object(envelope, record)
+    def mark_cleanup_published(self, uid, envelope, cm, record=None, *, audit=None):
+        if record is not None and record.state == 'recovered-cleared-offline-cap':
+            require(isinstance(cm,dict) and not cm.get('metadata',{}).get('ownerReferences'),
+                'Recovery cleanup must have independent immutable custody')
+            load_recovery_module().published_provenance(sys.modules[__name__], self.models,
+                self.state, envelope, record, audit, uid=self.uid)
+        expected = cleanup_object(envelope, record, audit=audit)
         validate_cleanup(cm, expected)
         value = {'enrollment_uid': envelope['configmap_uid'], 'receipt_uid': cm['metadata']['uid'],
                  'receipt': parse(expected['data']['receipt.json'])}
@@ -407,13 +422,18 @@ class EnrollmentStore:
         require(previous is None or previous == value, 'Published cleanup tombstone changed')
         if previous is None: self.backend.private_write(path, value, self.uid, create=True)
 
-    def cleanup_published(self, uid, envelope, record, cm):
+    def cleanup_published(self, uid, envelope, record, cm, *, audit=None):
         value = self.backend.private_read(self.state / 'published-cleanup' / (uid + '.json'), self.uid)
         if value is None: return False
-        require(record is not None and record.state in ('cleaned', 'retired-inert-cap')
+        require(record is not None and record.state in ('cleaned', 'retired-inert-cap', 'recovered-cleared-offline-cap')
                 and record.intent.to_dict() == envelope['enrollment']['intent'],
                 'Published cleanup requires its original cleaned native journal')
-        expected = cleanup_object(envelope, record)
+        if record.state == 'recovered-cleared-offline-cap':
+            require(isinstance(cm,dict) and not cm.get('metadata',{}).get('ownerReferences'),
+                'Recovery cleanup must have independent immutable custody')
+            load_recovery_module().published_provenance(sys.modules[__name__], self.models,
+                self.state, envelope, record, audit, uid=self.uid)
+        expected = cleanup_object(envelope, record, audit=audit)
         validate_cleanup(cm, expected)
         require(value == {'enrollment_uid': envelope['configmap_uid'], 'receipt_uid': cm['metadata']['uid'],
                  'receipt': parse(expected['data']['receipt.json'])}, 'Missing/replaced cleanup tombstone blocks authority')
@@ -634,7 +654,7 @@ def cleanup_receipt(envelope, record, backend, pod, models):
     return cleanup_object(envelope, record)
 
 
-def cleanup_object(envelope, record=None):
+def cleanup_object(envelope, record=None, *, audit=None):
     enrollment = envelope['enrollment']
     binding = enrollment['binding_id']
     receipt = {'version': 1, 'binding_id': binding, 'attempt': enrollment['attempt'],
@@ -645,6 +665,9 @@ def cleanup_object(envelope, record=None):
         receipt['retirement'] = {'proof': record.retirement.to_dict(),
             'enrollment_uid': envelope['configmap_uid'], 'enrollment_sha256': canonical_sha256(enrollment),
             'journal_sha256': canonical_sha256(record.to_dict())}
+    if record is not None and record.state == 'recovered-cleared-offline-cap':
+        receipt['recovery'] = load_recovery_module().recovery_extension(
+            sys.modules[__name__], envelope, record, audit)
     return {'apiVersion': 'v1', 'kind': 'ConfigMap', 'immutable': True,
             'metadata': {'name': 'cps-native-cleanup-' + binding[:40],
                          'namespace': envelope['authority_namespace'], 'labels': {LABEL: binding}},
@@ -793,10 +816,18 @@ def run(config, bundle, state, kube, driver, *, iterations, interval, crictl, cr
                 pod = kube.pod(intent)
                 old_cleanup = kube.configmap(config['authority_namespace'], 'cps-native-cleanup-' +
                     accepted[intent.pod_uid]['enrollment']['binding_id'][:40])
-                if store.cleanup_published(intent.pod_uid, accepted[intent.pod_uid], record, old_cleanup):
+                audit = kube.configmap(config['authority_namespace'], 'cps-native-recovery-' +
+                    accepted[intent.pod_uid]['enrollment']['binding_id'][:40]) \
+                    if record is not None and record.state == 'recovered-cleared-offline-cap' else None
+                if store.cleanup_published(intent.pod_uid, accepted[intent.pod_uid], record, old_cleanup, audit=audit):
                     # Durable tombstones do not reconsider a replacement Pod or
                     # require an already-cleared old UID to stop a new peer.
                     print(json.dumps({'pod_uid': intent.pod_uid, 'state': 'cleanup-confirmed',
+                        'iteration': iteration, 'production_qualified': False}), flush=True)
+                    continue
+                if record is not None and record.state == 'recovered-cleared-offline-cap':
+                    print(json.dumps({'pod_uid': intent.pod_uid,
+                        'state': 'retained-explicit-recovery-publication-required',
                         'iteration': iteration, 'production_qualified': False}), flush=True)
                     continue
                 if pod is not None: validate_actual_pod(pod, accepted[intent.pod_uid]['enrollment'])
