@@ -813,7 +813,11 @@ def run(config, bundle, state, kube, driver, *, iterations, interval, crictl, cr
                 elif pod is None or pod.get('status', {}).get('phase') in ('Succeeded', 'Failed'):
                     require(record is not None, 'Terminal Pod has no native cap transaction')
                     stopped = backend.check_cleanup(record.identity)
-                    if stopped.live_tasks or (stopped.cgroup_exists and stopped.gpu_clients):
+                    # Preserve the finite cap until the original cgroup is gone.
+                    # Clearing an empty surviving cgroup can race its removal:
+                    # the offline entry would then be unlimited and cannot prove
+                    # the required exact finite-cap retirement.
+                    if stopped.live_tasks or stopped.cgroup_exists:
                         result = 'retained-awaiting-stop'
                     else:
                         record = controller.cleanup(intent)
