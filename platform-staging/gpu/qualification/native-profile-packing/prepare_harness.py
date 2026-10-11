@@ -12,6 +12,11 @@ import time
 import uuid
 
 MIB = 1048576
+NATIVE_C_SHA = '15119a459ad4611a001ee1e89fb97929efa693d8a1ec3136c1e7d0a9b7b45a86'
+NATIVE_COMPILER_SHA = 'f6c5e80932fe1053efaca1155e6e777941aad7a716d4479d814df6e2e952a8aa'
+CUDA_HEADER_SHA = '7a79d67ca888061b1dfbe4739b51ad64f85a2f3ad874947ce09b2c635b4c7072'
+CPU_IMAGE = 'sha256:9720ec70a8a903914d26fd6a6aa3dec9eb11524ea4fac6f6ebc81827b8e18773'
+CUDA_HEADER = Path('/tmp/cps-native-imports-headers/unpack/usr/local/cuda-13.4/targets/x86_64-linux/include/cuda.h')
 SCOPES = [('cps', 'native-group-b', 'jupyterhub', 'jupyter-cpsnativegroupb--rtc', 5120),
           ('cit', 'native-group-a', 'cit-jhub', 'jupyter-citnativegroupa--rtc', 10240)]
 SOURCE_PINS = {
@@ -111,13 +116,97 @@ def definition(source, name):
     n = nodes[0]
     return '\n'.join(source.splitlines()[n.lineno - 1:n.end_lineno]) + '\n'
 
-def render_sources(sources, binding, retired):
+def native_build_sources():
+    base = Path(__file__).parent.parent / 'native-imports'
+    original = read_pinned(base / 'native_imports.c', NATIVE_C_SHA)
+    compiler = read_pinned(base / 'compile_probe.py', NATIVE_COMPILER_SHA)
+    code = replace(original.decode(), 'else if(!strcmp(n,"5120"))cap_mib=5120;else return 2;',
+        'else if(!strcmp(n,"5120"))cap_mib=5120;else if(!strcmp(n,"10240"))cap_mib=10240;else return 2;')
+    return {'native_imports.c': code.encode(), 'compile_probe.py': compiler}
+
+def cap_lookup(binding):
+    caps = {t['pod_uid']: t['cap_mib'] * MIB for t in binding['targets']}
+    return '\nCAP_BY_UID = ' + repr(caps) + '''
+def expected_cap(pod_uid):
+    require(type(pod_uid) is str and pod_uid in CAP_BY_UID, 'Exact bound CPS5/CIT10 lifetime required')
+    return CAP_BY_UID[pod_uid]
+def bind_cap(pod_uid):
+    global CAP
+    CAP = expected_cap(pod_uid)
+    return CAP
+def cap_row(row, pod_uid):
+    cap = expected_cap(pod_uid)
+    require(type(row) is dict and all(type(row.get(k)) is int for k in ('soft', 'hard', 'used'))
+        and row['soft'] == row['hard'] == cap and 0 <= row['used'] <= cap
+        and row.get('offline') is False and row.get('pinned') is True
+        and row.get('default_hierarchy') is True, 'Exact active finite target-specific native cap required')
+    return True
+'''
+
+def render_cap_sources(sources, binding):
+    """Retain original exchange/process guards; adapt only closed lifetime caps."""
+    lookup = cap_lookup(binding); result = {}
+    for name in ('imports-cross-pod/ipc_endpoint.py', 'vmm-cross-parent-sgid-fix/vmm_endpoint.py',
+                 'vmm-owner-exit/owner_exit_probe.py'):
+        code = sources[name].decode()
+        guard = "if __name__ == '__main__': main()" if name.endswith('ipc_endpoint.py') else "if __name__=='__main__':main()"
+        code = replace(code, guard, lookup + '\n' + guard)
+        if name.endswith('ipc_endpoint.py'):
+            code = replace(code, "    p.add_argument('--wait-for-root', action='store_true')",
+                "    p.add_argument('--wait-for-root', action='store_true')\n    p.add_argument('--expected-pod-uid')")
+            code = replace(code, "    canonical_uuid(args.trial_id)",
+                "    canonical_uuid(args.trial_id)\n    bind_cap(args.expected_pod_uid)")
+        elif name.endswith('vmm_endpoint.py'):
+            code = replace(code, '    global TRIAL,ROLE;TRIAL=args.trial_id;ROLE=args.role',
+                '    global TRIAL,ROLE;TRIAL=args.trial_id;ROLE=args.role\n    bind_cap(args.expected_pod_uid)')
+        else:
+            code = replace(code, '    preflight(args);TRIAL,ROLE=args.trial_id,args.role;',
+                '    preflight(args);bind_cap(args.expected_pod_uid);TRIAL,ROLE=args.trial_id,args.role;')
+        result[name] = code.encode()
+    for name in ('imports-cross-pod/ipc_host_pid.py', 'vmm-cross-parent-sgid-fix/vmm_bridge.py'):
+        code = sources[name].decode()
+        code = replace(code, "    relative = identity['cgroup_relative']",
+            "    cap = expected_cap(identity['pod_uid'])\n    relative = identity['cgroup_relative']")
+        code = replace(code, "actual['soft'] == actual['hard'] == 5368709120", "cap_row(actual, identity['pod_uid'])")
+        code = replace(code, "actual['used'] <= 5368709120", "actual['used'] <= cap")
+        if name.endswith('ipc_host_pid.py'):
+            code = replace(code, "(b'--expect', b'deny')):",
+                "(b'--expect', b'deny'), (b'--expected-pod-uid', identity['pod_uid'].encode())):")
+        if name.endswith('vmm_bridge.py'):
+            code = replace(code, "PODS=frozenset({'4010edf4-f407-409b-aa4c-de0615e8c05c','879a4589-faee-4569-bdb8-f2e7c154ef19'})",
+                'PODS=frozenset(' + repr([t['pod_uid'] for t in binding['targets']]) + ')')
+            suffix = binding['targets'][1]['pod_uid'].replace('-', '')[:12]
+            code = code.replace('/run/cps-native-gpu/operator/vmm-cross-parent-sgid-fix',
+                                '/run/cps-native-gpu/operator/vmm-profile-qualification-' + suffix)
+        guard = "if __name__ == '__main__': main()" if name.endswith('ipc_host_pid.py') else "if __name__=='__main__':main()"
+        code = replace(code, guard, lookup + '\n' + guard)
+        result[name] = code.encode()
+    name = 'vmm-owner-exit/host_owner_observer.py'; code = sources[name].decode()
+    code = replace(code, "def inventory(raw,identity):", "def inventory(raw,identity):\n    cap=expected_cap(identity['pod_uid'])")
+    code = replace(code, "row['soft']==row['hard']==CAP and row['used']<=CAP", "cap_row(row, identity['pod_uid']) and row['used']<=cap")
+    code = replace(code, "    identity=request['identity'];path=identity['cgroup_relative']",
+        "    identity=request['identity'];cap=expected_cap(identity['pod_uid']);path=identity['cgroup_relative']", count=2)
+    code = replace(code, "0<=row['used']<=CAP if request['op']=='post-release' else BYTES<=row['used']<=CAP",
+        "0<=row['used']<=cap if request['op']=='post-release' else BYTES<=row['used']<=cap")
+    code = replace(code, "if __name__=='__main__':main()", lookup + "\nif __name__=='__main__':main()")
+    result[name] = code.encode()
+    return result
+
+def render_sources(sources, binding, retired, *, native_binary=None):
     validate_binding(binding)
     require(set(sources) == set(SOURCE_PINS) and all(sha(sources[k]) == v
         for k, v in SOURCE_PINS.items()), 'Exact complete Oct9 source closure required')
     records = retired['records']; count = len(records)
     require(count <= 32, 'Bounded explicit retirement capture required')
     out = dict(sources)
+    out.update(render_cap_sources(sources, binding))
+    out.update(native_build_sources())
+    if native_binary is not None: out['native-imports'] = native_binary
+    helper = sources['imports/same_pod_imports.py'].decode()
+    helper = replace(helper, 'CAP = 5368709120', 'CAP = 10737418240')
+    helper = replace(helper, "'--cap-mib', '5120'", "'--cap-mib', '10240'")
+    helper = replace(helper, SOURCE_PINS['native-imports'], sha(out['native-imports']))
+    out['imports/same_pod_imports.py'] = helper.encode()
     # The old classifier, raw UUID path, watchdog, tensor touching and cleanup
     # remain unchanged. Both the direct oversized call and stepped exhaustion
     # must fail with a reviewed typed CUDA OOM; no successful over-cap touch.
@@ -216,15 +305,39 @@ def render_sources(sources, binding, retired):
         code = code.replace('b42230628ae39406b4a90ea6c311ce38202d6dcd565b769450938fedac70df5f', sha(whitelist))
         if name == 'imports/run_same_pod.py':
             code = code.replace(SOURCE_PINS['group_probe.py'], probe_sha)
+            code = code.replace(SOURCE_PINS['imports/same_pod_imports.py'], sha(out['imports/same_pod_imports.py']))
+            code = code.replace(SOURCE_PINS['native-imports'], sha(out['native-imports']))
+            code = replace(code, "h=load_preflight();base=Path(__file__).parent",
+                "require(args.side=='cit','This same-parent import experiment requires CIT10');h=load_preflight();base=Path(__file__).parent")
             code = replace(code, "len(after['host'].get('retired_caps',[]))==2", "len(after['host'].get('retired_caps',[]))==" + str(count))
+        if name == 'imports-cross-pod/run_cross_pod.py':
+            code = replace(code, "[*base, '--role', 'exporter']", "[*base, '--role', 'exporter', '--expected-pod-uid', exporter_target['pod_uid']]")
+            code = replace(code, "Session(exporter_target, [*base, '--role', 'importer',",
+                "Session(exporter_target, [*base, '--role', 'importer', '--expected-pod-uid', exporter_target['pod_uid'],")
+            code = replace(code, "Session(importer_target, [*base, '--role', 'importer',",
+                "Session(importer_target, [*base, '--role', 'importer', '--expected-pod-uid', importer_target['pod_uid'],")
         if name == 'vmm-cross-parent-sgid-fix/run_vmm_cross_parent.py':
             code = replace(code, "CPS_UID='4010edf4-f407-409b-aa4c-de0615e8c05c'", 'CPS_UID=' + repr(sanitized[0]['pod_uid']))
             code = replace(code, "CIT_UID='879a4589-faee-4569-bdb8-f2e7c154ef19'", 'CIT_UID=' + repr(sanitized[1]['pod_uid']))
+            suffix = binding['targets'][1]['pod_uid'].replace('-', '')[:12]
+            code = code.replace('/run/cps-native-gpu/operator/vmm-cross-parent-sgid-fix',
+                                '/run/cps-native-gpu/operator/vmm-profile-qualification-' + suffix)
+        if name == 'vmm-owner-exit/run_owner_exit.py':
+            code = replace(code, "    participants=post_release.get('participants');", "    cap=expected_cap(post_release['pod_uid'])\n    participants=post_release.get('participants');")
+            code = replace(code, "row['soft']==row['hard']==5368709120", "row['soft']==row['hard']==cap")
+            code = replace(code, "0<=row['used']<=5368709120", "0<=row['used']<=cap")
+            code = replace(code, "BYTES<=prior['used']<=5368709120", "BYTES<=prior['used']<=cap")
+            code = replace(code, "if __name__=='__main__':main()", cap_lookup(binding) + "\nif __name__=='__main__':main()")
+        for changed, raw in out.items():
+            if changed in SOURCE_PINS and changed != name and raw != sources[changed]:
+                code = code.replace(SOURCE_PINS[changed], sha(raw))
         out[name] = code.encode()
     out['mps/run_mps.py'] = out.pop('mps/root-wrapper-prepared/run_mps.py')
     mps = sources['mps/mps_probe.py'].decode()
     mps = replace(mps, '1048576, 5120, 256, 5376', '1048576, 10240, 256, 10496')
     mps = replace(mps, 'held >= 4096', 'held >= 9216')
+    mps = replace(mps, "require(type(mib) is int and mib in (64, STEP_MIB) and len(self.held) <= 20, 'Fixed bounded allocation required')",
+        "require(type(mib) is int and len(self.held) <= 20 and (mib in (64, STEP_MIB) or (mib == MAX_ATTEMPT_MIB and touch is False and not self.held)), 'Fixed bounded allocation required')")
     mps = replace(mps, 'above5GiB', 'above10GiB')
     mps = replace(mps, "        for step in range(1, MAX_ATTEMPT_MIB // STEP_MIB + 1):", """        oversized=clients[0].request('allocate',mib=MAX_ATTEMPT_MIB,touch=False)
         require(type(oversized.get('cuda_result')) is int and oversized['cuda_result']==2,'Oversized10GiB allocation must deny with CUDA OOM')
@@ -252,7 +365,7 @@ def render_sources(sources, binding, retired):
         if name.endswith('.py'): compile(raw, name, 'exec')
     return out
 
-def read_pinned(path, expected, *, private=False):
+def read_pinned(path, expected, *, private=False, allow_empty=False):
     digest(expected)
     if private:
         parent = path.parent.lstat()
@@ -264,7 +377,8 @@ def read_pinned(path, expected, *, private=False):
         require(stat.S_ISREG(before.st_mode) and before.st_uid == os.getuid() and
                 before.st_nlink == 1 and not before.st_mode & 0o022 and
                 (not private or stat.S_IMODE(before.st_mode) == 0o600) and
-                0 < before.st_size <= 2097152, 'Stable owned bounded input required')
+                (0 <= before.st_size if allow_empty else 0 < before.st_size) and
+                before.st_size <= 2097152, 'Stable owned bounded input required')
         raw = os.read(fd, 2097153); after = os.fstat(fd)
         require(len(raw) == before.st_size and all(getattr(before, k) == getattr(after, k)
             for k in ('st_dev', 'st_ino', 'st_mtime_ns', 'st_ctime_ns', 'st_size')) and
@@ -272,6 +386,53 @@ def read_pinned(path, expected, *, private=False):
         return raw
     finally:
         os.close(fd)
+
+def validate_native_build(build, binary, binary_sha, binary_path):
+    """Validate Root's actual offline CPU build; never create a build receipt."""
+    fields = {'version', 'state', 'gpu_calls', 'hardwareQualified', 'imageId', 'observedAt',
+        'sourceSha256', 'headerSha256', 'binarySha256', 'compileArgv', 'compileExitCode',
+        'compileStdoutSha256', 'compileStderrSha256', 'cpuInertArgv', 'cpuInertExitCode',
+        'cpuInertOutput', 'abiVersionInfoSha256'}
+    require(type(build) is dict and set(build) == fields and type(build['version']) is int
+        and build['version'] == 1 and build['state'] == 'cpu-compiled'
+        and build['gpu_calls'] is False and build['hardwareQualified'] is False
+        and build['imageId'] == CPU_IMAGE and build['headerSha256'] == CUDA_HEADER_SHA
+        and build['sourceSha256'] == sha(native_build_sources()['native_imports.c'])
+        and build['binarySha256'] == binary_sha == sha(binary) and binary.startswith(b'\x7fELF')
+        and binary_sha != SOURCE_PINS['native-imports'], 'Exact actual new CPU build closure required')
+    for key in ('sourceSha256', 'headerSha256', 'binarySha256', 'compileStdoutSha256',
+                'compileStderrSha256', 'abiVersionInfoSha256'): digest(build[key])
+    require(type(build['compileExitCode']) is int and build['compileExitCode'] == 0
+        and type(build['cpuInertExitCode']) is int and build['cpuInertExitCode'] == 0
+        and build['cpuInertOutput'] == {'state': 'inert', 'gpu_calls': False,
+            'payload_mib': 64, 'production_qualified': False}, 'Actual successful inert CPU readback required')
+    argv = build['compileArgv']
+    require(type(argv) is list and len(argv) == 31 and all(type(a) is str for a in argv),
+            'Exact bounded offline compile argv required')
+    mount = argv[13]
+    require(mount.endswith(':/source:ro'), 'Exact read-only source mount required')
+    source_dir = Path(mount[:-len(':/source:ro')])
+    require(source_dir.is_absolute() and str(source_dir) == os.path.normpath(str(source_dir)),
+            'Absolute canonical source directory required')
+    outdir = binary_path.parent
+    expected = ['podman', 'run', '--rm', '--pull=never', '--network=none', '--read-only',
+        '--cap-drop=ALL', '--security-opt=no-new-privileges', '--security-opt=label=disable',
+        '--userns=keep-id', '--tmpfs', '/tmp:rw,nodev,nosuid,size=64m',
+        '-v', str(source_dir) + ':/source:ro', '-v', str(CUDA_HEADER.parent) + ':/headers:ro',
+        '-v', str(outdir) + ':/out:rw', '--entrypoint', 'gcc', CPU_IMAGE,
+        '-std=c11', '-Wall', '-Wextra', '-Werror', '-O2', '-I/headers', '/source/native_imports.c',
+        '-ldl', '-o', '/out/native-imports-10']
+    require(argv == expected and binary_path.name == 'native-imports-10',
+            'Only exact Root-approved offline no-device compiler recipe accepted')
+    require(build['cpuInertArgv'] == ['podman', 'run', '--rm', '--pull=never', '--network=none',
+        '--read-only', '--cap-drop=ALL', '--security-opt=no-new-privileges',
+        '--security-opt=label=disable', '--userns=keep-id', '-v', str(outdir) + ':/out:ro',
+        '--entrypoint', '/out/native-imports-10', CPU_IMAGE], 'Exact offline inert execution recipe required')
+    return {'source': {'path': str(source_dir / 'native_imports.c'), 'sha256': build['sourceSha256']},
+        'header': {'path': str(CUDA_HEADER), 'sha256': build['headerSha256']},
+        'stdout': {'path': str(outdir / 'compile.stdout'), 'sha256': build['compileStdoutSha256']},
+        'stderr': {'path': str(outdir / 'compile.stderr'), 'sha256': build['compileStderrSha256']},
+        'abi': {'path': str(outdir / 'abi-version-info.txt'), 'sha256': build['abiVersionInfoSha256']}}
 
 def parse(raw):
     def unique(pairs):
@@ -370,7 +531,8 @@ def operator_argv(output, binding, out, host_sha):
             'run_retirement_witness exact source/preflight/binding/updated-retired pins', 'inspect_stop actual raw input manifest'],
         'restart': 'Root normal Source Start; new actual binding with new UIDs/spec hashes and all prior retired records, then reprepare and run kernel-controls'}
 
-def prepare(binding_path, binding_sha, source_root, output):
+def prepare(binding_path, binding_sha, source_root, output, *, native_binary_path=None,
+            native_binary_sha=None, native_build_path=None, native_build_sha=None):
     binding = validate_binding(parse(read_pinned(binding_path, binding_sha, private=True)))
     measurement_pin = binding['pool_measurement']
     measured = parse(read_pinned(Path(measurement_pin['path']), measurement_pin['sha256'], private=True))
@@ -388,7 +550,17 @@ def prepare(binding_path, binding_sha, source_root, output):
     retired_pin = binding['retired_capture']
     retired = validate_retired(parse(read_pinned(Path(retired_pin['path']), retired_pin['sha256'], private=True)), binding)
     sources = {name: read_pinned(source_root / name, pin) for name, pin in SOURCE_PINS.items()}
-    out = render_sources(sources, binding, retired)
+    require(native_binary_path is not None and native_binary_sha and native_build_path is not None and native_build_sha,
+            'Actual Ubuntu-compatible ten-cap binary and CPU build receipt pins required')
+    native_binary = read_pinned(native_binary_path, native_binary_sha)
+    build = parse(read_pinned(native_build_path, native_build_sha, private=True))
+    build_inputs = validate_native_build(build, native_binary, native_binary_sha, native_binary_path)
+    for key, pin in build_inputs.items():
+        raw = read_pinned(Path(pin['path']), pin['sha256'], allow_empty=key in ('stdout', 'stderr'))
+        if key == 'abi':
+            versions = [tuple(map(int, v.split('.'))) for v in re.findall(r'GLIBC_([0-9.]+)', raw.decode())]
+            require(versions and max(versions) <= (2, 39), 'Actual ELF ABI exceeds pinned Ubuntu notebook glibc')
+    out = render_sources(sources, binding, retired, native_binary=native_binary)
     scope = {'__file__': str(output / 'run_group_acceptance.py'), '__name__': 'preparation_only'}
     exec(compile(out['run_group_acceptance.py'], 'pinned-pure-pod-validator', 'exec'), scope)
     for target in binding['targets']:
@@ -409,6 +581,12 @@ def prepare(binding_path, binding_sha, source_root, output):
                 *(t['pod_capture'] for t in binding['targets'])],
         'original_sources': SOURCE_PINS, 'rendered_sources': {k: sha(v) for k, v in out.items()},
         'host_source_sha256': scope['HOST_SHA'], 'retired_count': len(retired['records']),
+        'native_import_build': {'binary': {'path': str(native_binary_path), 'sha256': native_binary_sha},
+            'receipt': {'path': str(native_build_path), 'sha256': native_build_sha},
+            'original_c_sha256': NATIVE_C_SHA, 'rendered_c_sha256': build['sourceSha256'],
+            'compiler_sha256': NATIVE_COMPILER_SHA, 'header_sha256': CUDA_HEADER_SHA,
+            'actual_cpu_build_inputs': build_inputs,
+            'runtime_compatibility': 'Root validates new ELF in approved Ubuntu notebook CPU environment'},
         'pending': ['Root actual normal Source Start provenance', 'all controlled hardware measurements',
                     'Root normal Stop/restart, immutable cleanup/released ledger and physical retirement witnesses',
                     'Root hardware review', 'maximum-profile overhead and production capacity qualification']}
@@ -417,19 +595,35 @@ def prepare(binding_path, binding_sha, source_root, output):
 
 def main(argv=None):
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument('--prepare', action='store_true')
+    modes = parser.add_mutually_exclusive_group()
+    modes.add_argument('--prepare', action='store_true')
+    modes.add_argument('--emit-native-import-source', action='store_true')
     parser.add_argument('--binding', type=Path)
     parser.add_argument('--binding-sha256')
     parser.add_argument('--source-root', type=Path)
     parser.add_argument('--output', type=Path)
+    for field in ('native-import-binary', 'native-import-build-receipt'):
+        parser.add_argument('--' + field, type=Path); parser.add_argument('--' + field + '-sha256')
     args = parser.parse_args(argv)
+    if args.emit_native_import_source:
+        require(args.output is not None, 'Fresh private build-source output required')
+        parent = args.output.parent.lstat()
+        require(stat.S_ISDIR(parent.st_mode) and parent.st_uid == os.getuid() and stat.S_IMODE(parent.st_mode) == 0o700,
+                'Private owned build-source parent required')
+        args.output.mkdir(mode=0o700)
+        for name, raw in native_build_sources().items(): write(args.output / name, raw)
+        print(json.dumps({'state': 'native-import-source-prepared-not-built', 'gpu_calls': False, 'api_calls': False,
+            'files': {name: sha(raw) for name, raw in native_build_sources().items()}, 'original_c_sha256': NATIVE_C_SHA,
+            'header_sha256': CUDA_HEADER_SHA, 'hardware_qualification': False})); return
     if not args.prepare:
         print(json.dumps({'state': 'inert', 'gpu_calls': False, 'api_calls': False,
                           'hardware_qualification': False, 'production_qualified': False}))
         return
     require(args.binding is not None and args.binding_sha256 and args.source_root is not None and
             args.output is not None, 'Actual pinned private binding, sources and fresh output required')
-    receipt = prepare(args.binding, args.binding_sha256, args.source_root, args.output)
+    receipt = prepare(args.binding, args.binding_sha256, args.source_root, args.output,
+        native_binary_path=args.native_import_binary, native_binary_sha=args.native_import_binary_sha256,
+        native_build_path=args.native_import_build_receipt, native_build_sha=args.native_import_build_receipt_sha256)
     print(json.dumps({'state': receipt['state'], 'api_calls': False, 'gpu_calls': False,
         'hardware_qualification': False, 'output': str(args.output)}))
 

@@ -69,10 +69,33 @@ PYTHONDONTWRITEBYTECODE=1 /home/bjoern/git/cps-compute/.venv/bin/python prepare_
 
 Root supplies the actual binding path/raw SHA and fresh private output path:
 
+The original native-import ELF accepts only the old caps. First emit the narrowly
+adapted C source (only the closed parser adds10240) into a fresh private directory:
+
+```sh
+PYTHONDONTWRITEBYTECODE=1 /home/bjoern/git/cps-compute/.venv/bin/python prepare_harness.py \
+  --emit-native-import-source --output "$ROOT_PRIVATE_BUILD_SOURCE"
+```
+
+Root compiles that source offline with the approved Ubuntu CPU image
+`sha256:9720ec70a8a903914d26fd6a6aa3dec9eb11524ea4fac6f6ebc81827b8e18773`,
+the pinned original CUDA header `7a79d67ca888061b1dfbe4739b51ad64f85a2f3ad874947ce09b2c635b4c7072`,
+and the original `-std=c11 -Wall -Wextra -Werror -O2 -I/headers ... -ldl` flags.
+The compile recipe must use no network or devices, a read-only container, all
+capabilities dropped and no new privileges. Root captures the actual compile
+exit/logs, inert no-argument readback and ELF ABI version information.
+`validate_native_build` binds those actual source/header/ELF/log/ABI pins, exact
+offline argv/image identity, zero exits and false GPU/hardware flags. The maximum
+required glibc version must fit the pinned Ubuntu notebook's2.39. This preparation
+does not emit a build receipt or treat a CPU build as a hardware result.
+
 ```sh
 PYTHONDONTWRITEBYTECODE=1 /home/bjoern/git/cps-compute/.venv/bin/python prepare_harness.py \
   --prepare --binding "$ROOT_ACTUAL_BINDING" --binding-sha256 "$ROOT_ACTUAL_BINDING_SHA" \
   --source-root /home/bjoern/.local/state/cps-group-native-20261009/group-probes \
+  --native-import-binary "$ROOT_ACTUAL_NATIVE_ELF" --native-import-binary-sha256 "$ROOT_ACTUAL_NATIVE_ELF_SHA" \
+  --native-import-build-receipt "$ROOT_ACTUAL_CPU_BUILD_RECEIPT" \
+  --native-import-build-receipt-sha256 "$ROOT_ACTUAL_CPU_BUILD_RECEIPT_SHA" \
   --output "$ROOT_PRIVATE_HARNESS"
 ```
 
@@ -85,6 +108,11 @@ witness collector/validator/transport and VMM bridge match the generated pins
 before executing import trials. No collector staging or publication is performed
 by this package. The original `managed/run_managed.py` is a pinned library for
 `run_kernel_controls.py`; use the new control wrapper rather than its historical CLI.
+The generated VMM bridge uses a fresh path ending in the actual CIT Pod UID's
+first12 hexadecimal characters; stage only the generated bridge/endpoint there.
+Endpoint and host native-cap guards map only the exact CPS5/CIT10 lifetime UIDs
+to their respective finite caps. Kernel witness sources and attribution fences
+remain unchanged, and every original input source remains pinned.
 
 The controlled measurements are:
 
@@ -99,17 +127,19 @@ The controlled measurements are:
    while fresh native inventory verifies charge and the15360MiB aggregate bound.
    Seals, Pod lifetimes, epochs and all prior retirements must remain unchanged;
    both active parent charges must return to zero.
-4. Exact original same-parent VMM-direct/IPC/VMM positive controls on CIT10;
+4. Original same-parent VMM-direct/IPC/VMM positive controls adapted to CIT10;
    both-direction cross-parent IPC and VMM use the same valid opaque handle,
    same-parent positive control, independent kernels, recovery, actual importer
-   PID/cgroup attribution and marked kernel denial witnesses. Endpoint/collector
-   bytes are retained unchanged. No API error alone qualifies import isolation.
+   PID/cgroup attribution and marked kernel denial witnesses. Endpoints and host
+   observers bind each actual lifetime's5/10GiB cap; kernel collector/validator/
+   transport bytes remain unchanged. No API error alone qualifies import isolation.
 5. MPS on CIT10: the original two clients and private non-root control/server
    must share the exact workload cgroup. An untouched10496MiB allocation and
    alternating held allocations must produce CUDA error2, both clients recover,
    and Root attribution proves all four original process lifetimes and cleanup.
    The CPS5 peer brackets registration, OOM, recovery and daemon cleanup.
-6. Creator-exit retention uses the exact original helper, with Root's fresh
+6. Creator-exit retention uses the original helper with target-specific cap guards,
+   with Root's fresh
    actual singleuser cohort baseline pin supplied separately. Its generated base
    argv intentionally omits those pending arguments.
 
@@ -151,9 +181,12 @@ PYTHONDONTWRITEBYTECODE=1 /home/bjoern/git/cps-compute/.venv/bin/python \
   -m unittest discover -s . -p test_prepare_harness.py -q
 ```
 
-The24 methods exercise changed cap/scope/policy/UID/budget/pins, duplicate JSON,
-inert default and every generated argv, exact retained endpoint/collector bytes,
-oversized success without touch, typed OOM/recovery, MPS stale receipts/cleanup/
+The33 methods exercise changed cap/scope/policy/UID/budget/pins, duplicate JSON,
+inert default and every generated argv, exact retained kernel witness bytes,
+both target-cap guards and swapped-cap/old-lifetime rejection, actual CPU build
+receipt/source/header/ELF/offline-recipe mutations, oversized success without touch,
+typed OOM/recovery, generated MPS allocation/free methods through41 stepped calls,
+direct untouched CUDA denial, MPS stale receipts/cleanup/
 peer windows, NVML64-bit ABI and negative results, and Stop pagination/changed
 history/foreign cleanup/nonreleased ledger. Hardware boundaries use explicit CPU
 doubles; their data and results are never published as hardware evidence.

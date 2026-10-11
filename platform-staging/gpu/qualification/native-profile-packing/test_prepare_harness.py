@@ -170,12 +170,11 @@ class ReuseTests(unittest.TestCase):
                 value = json.loads(result.stdout); self.assertEqual(value['state'], 'inert')
                 self.assertFalse(value.get('production_qualified', False))
 
-    def test_same_handle_import_endpoints_and_kernel_collectors_remain_exact(self):
+    def test_kernel_collectors_and_original_input_binary_remain_exact(self):
         out = self.rendered()
         for name in h.SOURCE_PINS:
-            if name.endswith(('ipc_endpoint.py', 'ipc_host_pid.py', 'vmm_endpoint.py', 'vmm_bridge.py',
-                              'kernel_witness_collector.py', 'kernel_witness_validator.py',
-                              'kernel_witness_transport.py', 'owner_exit_probe.py', 'host_owner_observer.py')):
+            if name.endswith(('kernel_witness_collector.py', 'kernel_witness_validator.py',
+                              'kernel_witness_transport.py')) or name == 'native-imports':
                 self.assertEqual(out[name], (self.root / name).read_bytes())
 
     def test_operator_argv_all_parse_inert_and_remain_unexecuted(self):
@@ -196,6 +195,137 @@ class ReuseTests(unittest.TestCase):
         scope = {'__name__': 'cpu_test_only', '__file__': '/private/' + name}
         exec(compile(self.rendered()[name], name, 'exec'), scope)
         return scope
+
+    def test_rendered_mps_oversized_request_reaches_cuda_without_touch(self):
+        m = self.module('mps/mps_probe.py'); calls = []
+        class Lib:
+            def cuMemAlloc_v2(self, pointer, amount): calls.append(amount); return 2
+            def cuMemsetD8_v2(self, *args): raise AssertionError('Oversized allocation touched')
+        cuda = m['Cuda'].__new__(m['Cuda']); cuda.lib = Lib(); cuda.held = []
+        result = cuda.allocate(10496, touch=False)
+        self.assertEqual(calls, [10496 * h.MIB]); self.assertEqual(result['cuda_result'], 2)
+        for amount, touch in [(10496, True), (10497, False), (10240, False), (True, False)]:
+            with self.subTest(amount=amount, touch=touch), self.assertRaises(ValueError):
+                cuda.allocate(amount, touch=touch)
+        self.assertEqual(len(calls), 1)
+
+    def test_rendered_mps_two_real_allocation_methods_reach_cap_oom_and_recover(self):
+        m = self.module('mps/mps_probe.py'); allocated = {}; calls = []; touched = []; ticks = [0, 0]
+        class Lib:
+            def cuMemAlloc_v2(self, pointer, amount):
+                calls.append(amount)
+                if sum(allocated.values()) + amount > 10240 * h.MIB: return 2
+                pointer._obj.value = len(calls); allocated[len(calls)] = amount; return 0
+            def cuMemsetD8_v2(self, pointer, bias, amount): touched.append(amount); return 0
+            def cuCtxSynchronize(self): return 0
+            def cuMemFree_v2(self, pointer): del allocated[pointer.value]; return 0
+        class Client:
+            def __init__(self, index):
+                self.index = index; self.cuda = m['Cuda'].__new__(m['Cuda'])
+                self.cuda.lib = Lib(); self.cuda.held = []
+            def request(self, operation, **kwargs):
+                if operation == 'tick': ticks[self.index] += 1; return {'cuda_result': 0}
+                return getattr(self.cuda, operation)(**kwargs)
+        events = []
+        with patch.object(m['time'], 'sleep'):
+            value = m['aggregate_sequence']([Client(0), Client(1)], lambda p, x: events.append((p, x)))
+        self.assertEqual(value['typed_oom'], {'cuda_result': 2, 'held_mib': 10240, 'attempted_mib': 10496})
+        self.assertEqual(value['recovery_clients'], 2); self.assertEqual(allocated, {})
+        self.assertIn(10496 * h.MIB, calls); self.assertNotIn(10496 * h.MIB, touched)
+        self.assertEqual(calls.count(256 * h.MIB), 41); self.assertTrue(all(v >= 41 for v in ticks))
+
+    def test_rendered_native_rows_execute_both_caps_and_reject_swaps(self):
+        names = ['imports-cross-pod/ipc_endpoint.py', 'imports-cross-pod/ipc_host_pid.py',
+            'vmm-cross-parent-sgid-fix/vmm_endpoint.py', 'vmm-cross-parent-sgid-fix/vmm_bridge.py',
+            'vmm-owner-exit/owner_exit_probe.py', 'vmm-owner-exit/host_owner_observer.py']
+        for name in names:
+            m = self.module(name)
+            for target in binding()['targets']:
+                uid = target['pod_uid']; cap = target['cap_mib'] * h.MIB
+                self.assertEqual(m['bind_cap'](uid), cap); self.assertEqual(m['CAP'], cap)
+                row = dict(soft=cap, hard=cap, used=cap, offline=False, pinned=True, default_hierarchy=True)
+                self.assertTrue(m['cap_row'](row, uid))
+                for mutation in [dict(soft=15360*h.MIB), dict(hard=5120*h.MIB if cap>5120*h.MIB else 10240*h.MIB),
+                                 dict(used=cap+1), dict(used=True), dict(offline=True)]:
+                    with self.subTest(name=name, uid=uid, mutation=mutation), self.assertRaises(ValueError):
+                        m['cap_row']({**row, **mutation}, uid)
+            with self.assertRaises(ValueError): m['bind_cap']('foreign')
+
+    def test_creator_exit_actual_inventory_uses_target_cap(self):
+        m = self.module('vmm-owner-exit/host_owner_observer.py')
+        for target in binding()['targets']:
+            cap = target['cap_mib'] * h.MIB; identity = {'pod_uid': target['pod_uid'], 'cgroup_inode': 42}
+            row = dict(cgroup_id=42, kernfs_id=42, inode=42, soft=cap, hard=cap, used=cap,
+                       offline=False, pinned=True, default_hierarchy=True)
+            value = dict(version=1, backend='misc-fallback', gpu_uuid=m['GPU'], gpu_id=1, entries=[row])
+            self.assertEqual(m['inventory'](json.dumps(value), identity), row)
+            value['entries'][0]['hard'] = 5120*h.MIB if cap>5120*h.MIB else 10240*h.MIB
+            with self.assertRaises(ValueError): m['inventory'](json.dumps(value), identity)
+
+    def test_vmm_bridge_binds_new_pair_and_fresh_private_stage(self):
+        m = self.module('vmm-cross-parent-sgid-fix/vmm_bridge.py')
+        w = self.module('vmm-cross-parent-sgid-fix/run_vmm_cross_parent.py')
+        self.assertEqual(str(m['ROOT']), w['BRIDGE_ROOT'])
+        self.assertNotIn('vmm-cross-parent-sgid-fix', str(m['ROOT']))
+        def endpoint(t, role, expect):
+            return dict(role=role, expect=expect, namespace_pid=51,
+                identity=dict(pod_uid=t['pod_uid'], driver_generation=m['GENERATION']))
+        request = dict(trial_id='00000000-0000-4000-8000-000000000009', transfer='cross',
+            exporter=endpoint(binding()['targets'][0], 'exporter', 'allow'),
+            importer=endpoint(binding()['targets'][1], 'importer', 'deny'))
+        m['validate_request'](request)
+        request['importer']['identity']['pod_uid'] = '879a4589-faee-4569-bdb8-f2e7c154ef19'
+        with self.assertRaises(ValueError): m['validate_request'](request)
+
+    def test_ipc_runtime_argv_and_host_attribution_bind_each_actual_uid(self):
+        out = self.rendered(); wrapper = out['imports-cross-pod/run_cross_pod.py'].decode()
+        self.assertIn("'--role', 'exporter', '--expected-pod-uid', exporter_target['pod_uid']", wrapper)
+        self.assertIn("'--role', 'importer', '--expected-pod-uid', exporter_target['pod_uid']", wrapper)
+        self.assertIn("'--role', 'importer', '--expected-pod-uid', importer_target['pod_uid']", wrapper)
+        self.assertIn("(b'--expected-pod-uid', identity['pod_uid'].encode())", out['imports-cross-pod/ipc_host_pid.py'].decode())
+
+    def test_actual_cpu_build_receipt_rejects_image_source_binary_and_live_recipe_changes(self):
+        root = Path('/home/bjoern/.local/state/cps-platform-completion-20261011/packing-session-20261011T154440Z/native-import-cpu-build')
+        if not root.exists(): self.skipTest('Actual Root offline CPU build unavailable')
+        raw = (root/'native-imports-10').read_bytes(); receipt = h.parse((root/'build-receipt.json').read_bytes())
+        self.assertEqual(h.sha(raw), '8776c4593144a3c8d87f2f08b8703826a1038fdebc35eb76f4779d0dfd6ff304')
+        inputs = h.validate_native_build(receipt, raw, h.sha(raw), root/'native-imports-10')
+        for key, pin in inputs.items():
+            h.read_pinned(Path(pin['path']), pin['sha256'], allow_empty=key in ('stdout', 'stderr'))
+        for key, value in [('sourceSha256', '0'*64), ('imageId', 'sha256:'+'0'*64),
+                           ('hardwareQualified', True), ('compileExitCode', False), ('gpu_calls', True)]:
+            changed = copy.deepcopy(receipt); changed[key] = value
+            with self.subTest(key=key), self.assertRaises(ValueError):
+                h.validate_native_build(changed, raw, h.sha(raw), root/'native-imports-10')
+        changed = copy.deepcopy(receipt); changed['compileArgv'][4] = '--network=host'
+        with self.assertRaises(ValueError): h.validate_native_build(changed, raw, h.sha(raw), root/'native-imports-10')
+        with self.assertRaises(ValueError): h.validate_native_build(receipt, raw+b'changed', h.sha(raw), root/'native-imports-10')
+
+    def test_rendered_same_parent_uses_ten_gib_native_argv_and_assessment(self):
+        m = self.module('imports/same_pod_imports.py')
+        self.assertEqual(m['CAP'], 10240 * h.MIB)
+        captured = []
+        class Child:
+            def __init__(self, argv, label): captured.append(argv); raise RuntimeError('CPU argv capture')
+        with tempfile.TemporaryDirectory() as root:
+            binary = Path(root) / 'native-imports'; binary.write_bytes(self.rendered()['native-imports']); binary.chmod(0o700)
+            with patch.object(m['os'], 'getuid', return_value=1000), patch.object(m['os'], 'getgid', return_value=100), \
+                 patch.object(m['stat'], 'S_ISREG', return_value=True), patch.dict(m, Child=Child), \
+                 patch.object(Path, 'mkdir'), \
+                 patch.object(Path, 'lstat', return_value=type('S', (), {'st_mode':0o100700,'st_uid':1000,'st_nlink':1})()):
+                with self.assertRaisesRegex(RuntimeError, 'CPU argv capture'):
+                    m['run'](binary, Path('/tmp/cpu-closed-import'), 'vmm-direct')
+        self.assertEqual(captured[0][-2:], ['--cap-mib', '10240'])
+
+    def test_rendered_cap_lookup_binds_both_lifetimes_and_rejects_foreign_uid(self):
+        for name in ['imports-cross-pod/ipc_endpoint.py', 'imports-cross-pod/ipc_host_pid.py',
+                     'vmm-cross-parent-sgid-fix/vmm_endpoint.py', 'vmm-cross-parent-sgid-fix/vmm_bridge.py',
+                     'vmm-owner-exit/owner_exit_probe.py', 'vmm-owner-exit/host_owner_observer.py',
+                     'vmm-owner-exit/run_owner_exit.py']:
+            m = self.module(name)
+            for t in binding()['targets']:
+                self.assertEqual(m['expected_cap'](t['pod_uid']), t['cap_mib'] * h.MIB)
+            with self.subTest(name=name), self.assertRaises(ValueError): m['expected_cap']('foreign')
 
     def test_ten_gib_oversized_and_step_oom_then_recovery_really_call_new_amount(self):
         m = self.module('group_probe.py'); m['CAP_MIB'] = 10240
