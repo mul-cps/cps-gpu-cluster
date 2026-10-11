@@ -1,5 +1,78 @@
 This sibling recognizes one authenticated historical recovery. It does not
 perform recovery, qualify hardware, renew grants, or change a Stop result.
+
+`qualified_recovery_restart_window.py` is a separate default-inert expiry-cycle
+bridge. It reuses frozen3c807/792/360 CRUD/audit and the b70a authenticated
+history context. Only the two existing selected memberships and two existing
+grants per Source may change `expires`, for a positive same-UTC-day window of
+at most60minutes. No Start, profile/ceiling/storage/alias/native write occurs.
+The frozen inverse-only adapter remains unchanged.
+
+Root supplies the actual completed current inverse's `before-full.json`,
+`after-full.json`, `receipt.json`, exact released23 full ledger CM, original21
+baseline/provenance, full registration, and fresh current runtime/physical
+reviews. The actual current Source rows must equal the original qualified
+expired baseline except fresh owning-admin model metadata. The genuine792
+loader still verifies current restricted UID10001 operator/token, Source
+configuration, writer0/current-generation/Pod absence, custody, and scoped
+runtime before Source load. The original three immutable authority GETs plus
+SDK9d6 cleanup authentication remain; a further named ledger GET pins UID,
+resourceVersion and full current23 body before Source and each returned fence.
+
+Stage this helper and unchanged imported modules as protected UID10001 files,
+including `prepare_harness.py` f656, installed SDK model630/controlbabe, frozen
+3c807/792/360 and the b70a history/loader sources. All inputs are explicit
+single-link regular0400/0600 files; outputs need a new owned0700 directory.
+
+```sh
+python qualified_recovery_restart_window.py --execute \
+  --bridge-sha256 NEW_HELPER_RAW_SHA \
+  --bridge-review ROOT_BRIDGE_REVIEW --bridge-review-sha256 REVIEW_RAW_SHA \
+  --history TERMINAL_HISTORY_V2 --history-sha256 HISTORY_RAW_SHA \
+  --window-source FROZEN_3C807 \
+  --post-inverse-before ACTUAL_INVERSE_BEFORE --post-inverse-before-sha256 BEFORE_RAW_SHA \
+  --post-inverse-after ACTUAL_INVERSE_AFTER --post-inverse-after-sha256 AFTER_RAW_SHA \
+  --post-inverse-receipt ACTUAL_INVERSE_RECEIPT --post-inverse-receipt-sha256 RECEIPT_RAW_SHA \
+  --current-baseline-ledger ACTUAL_RELEASED23_CM --current-baseline-ledger-sha256 LEDGER_RAW_SHA \
+  --model-source MODEL630 --control-source CONTROLBABE \
+  --node-source HISTORICAL_NODE05A6 --recovery-source HELPER25C \
+  --capture REMAINING_EXACT_3C807_ARGUMENTS
+```
+
+The closed bridge review has exactly these keys (no implicit defaults):
+`version`1, `enabled`, `operation` (`renew` or `restore-expiry`), `source`,
+`gateway_image`, `history_raw_sha256`, `adapter_sha256` (this new helper),
+`reader_sha256`, `loader_sha256`, `node_source_sha256` (active34ce),
+`historical_node_source_sha256` (05a6), `recovery_source_sha256` (25c),
+`window_source_sha256` (3c807), `inverse_source_sha256` (b70a),
+`baseline_after_raw_sha256`, `baseline_before_raw_sha256`,
+`baseline_inverse_receipt_raw_sha256`, `baseline_ledger_raw_sha256`,
+`baseline_full_sha256`, `baseline_state_sha256`. The final two are bare64
+canonical SHA256 digests of actual after-full and parsed ledger state;
+all other raw pins hash exact full file bytes. Future values remain null and
+enabledfalse until Root supplies/reviews actual inputs; they cannot execute.
+The existing protected3c807 request must name the same Source/operation,
+fresh at-most600s exclusion/custody/runtime/physical reviews, a new cycleUUID,
+and the exact canonical current-full digest before writes. Retain the original
+fixed21 files for the existing historical `--baseline-*` arguments; the new
+`--current-baseline-ledger` is a separate23 preimage. First use `--capture`,
+review full readback, then invoke without it using a fresh exact request/output.
+
+Success preserves the frozen `receipt.json` and appends exclusive
+`cycle-receipt.json` version2. An inverse uses that actual new cycle receipt
+with its own before/after files through existing `--cycle-*` arguments. Old21,
+foreign or incomplete receipts cannot authorize it. This bridge accepts only
+the exact23 preimage: new hardware lifetimes require separately reviewed fresh
+normal finite-Stop/history-growth input before any post-hardware inverse. The
+original17/12 baseline never proves those new targets stopped.
+
+Partial forward writes retain the genuine incomplete receipt and audit. A
+fresh full-state review can resume only exact original/new expiries while the
+same reviewed window remains future. After that window expires, forward
+resumption and incomplete-cycle inverse both fail closed; rows naturally
+expire. Any expiry-only compensation then needs a separate fresh Root review
+and bounded implementation. Never infer completion or retry an ambiguous PUT
+without capturing its actual complete readback.
 The failed CPS lifetime remains `8066366f-6e7e-42ea-83b2-86a58e9c3bad`, binding
 `16d264e00ee6778319a8961f9da510147c3bebc925e674bf95880689cd25`, original inode
 1390814. The original archive remains b1fb3366… raw / 24fb181b… canonical.
