@@ -243,6 +243,80 @@ class GenuineCpsCrudTests(GenuineCrudTests):
 
 
 class RuntimeAdapterTests(unittest.IsolatedAsyncioTestCase):
+    async def genuine_context(self, *, remove_new_records=False, change_new_record=False):
+        """Real frozen792 reset/fence; only file-stat and transports are CPU doubles."""
+        import types,base64
+        from unittest.mock import patch
+        from kubernetes import client,config
+        m=load_module();q=m.load_frozen((WINDOW/'qualified_expiry.py').read_bytes(),(WINDOW/'renew_fixtures.py').read_bytes(),str(WINDOW/'qualified_expiry.py'))
+        ns=q.build_context.__globals__;original_install=ns['install_base'];old_base=ns['R']
+        index=json.loads((SESSION/'expiry-runtime-captures/index.json').read_bytes())
+        objects={}
+        for name,ref in index['objects'].items():
+            raw=Path(ref['path']).read_bytes();self.assertEqual(hashlib.sha256(raw).hexdigest(),ref['sha256']);objects[name]=json.loads(raw)
+        stage=json.loads((SESSION/'operator-stage/cit-stage-current.json').read_bytes())['files']
+        policy=json.loads(base64.b64decode(stage['policy.json']['base64']));mode=json.loads(base64.b64decode(stage['operator-qualification.json']['base64']))
+        runtime=json.loads((SESSION/'expiry-runtime-assembled/cit-runtime.json').read_bytes())
+        baseline=json.loads(json.loads((SESSION/'qualified-expiry-final/ledger-final.json').read_bytes())['data']['state.json'])
+        state=copy.deepcopy(baseline)
+        if remove_new_records:state['allocations']={k:v for k,v in state['allocations'].items()if k in q.R.BASE_ALLOCATION_SHA256}
+        if change_new_record:
+            key=next(k for k in state['allocations']if k not in q.R.BASE_ALLOCATION_SHA256)
+            self.assertIsNotNone(state['allocations'][key]['intent']);state['allocations'][key]['intent']=None
+        self.assertEqual(len(state['allocations']),19 if remove_new_records else 21)
+        objects['ledger']['data']['state.json']=m.canonical(state)
+        runtime.update(ledger_state_sha256=m.digest(state),expected_allocation_count=len(state['allocations']))
+        now=datetime.now(timezone.utc);review=review_fixture(m,'cit',now);review['current_full_sha256']=None
+        retirement={'version':1,'state':'normal-close-and-physical-retirement-root-reviewed','source':'cit','observed_at':now.isoformat(),'policy_hash':q.POLICY,'ledger_uid':q.R.BASE_LEDGER_UID,'ledger_state_sha256':m.digest(state),'normal_close_receipt_sha256':'d'*64,'protected_retirement_capture_sha256':'e'*64,'all_native_released':True,'physical_retirement_verified':True}
+        docs={'runtime':runtime,'retirement':retirement,'policy':policy,'mode':mode,'nodeconf':json.loads(objects['node_config_cm']['data']['config.json']),'closure':{}}
+        # This sentinel marks the exact genuine loader boundary; no Source app is
+        # constructed, and no credential or external transport is ever used.
+        helper=b"import json\ndef decode(raw):return json.loads(raw)\ndef verify_source_closure(value):pass\ndef load_configured_service(*a,**kw):return type('CPUApp',(),{'tornado_settings':{'CPU_SOURCE_LOADER_BOUNDARY':True}})(),None\n"
+        audit_path=PRIVATE/'native-packing-operator-prepared/old-hub-barrier-audit-prepared/audit_old_hub.py'
+        audit_raw=audit_path.read_bytes();self.assertEqual(hashlib.sha256(audit_raw).hexdigest(),q.R.AUDIT_SHA)
+        def protected(path,pin):
+            if path==str(WINDOW/'qualified_expiry.py'):return (WINDOW/'qualified_expiry.py').read_bytes()
+            if path=='renewal':return (WINDOW/'renew_fixtures.py').read_bytes()
+            if path=='handover':return helper
+            if path=='audit':return audit_raw
+            return json.dumps(docs.get(path,{})).encode()
+        def genuine_install(raw):
+            original_install(raw)
+            ns['R'].load.__globals__['protected']=protected
+        pods={(o['metadata']['namespace'],o['metadata']['name']):o for name,o in objects.items()if name.endswith('_operator')or name.endswith('_hub')or name in ('node','gateway')}
+        cms={(o['metadata']['namespace'],o['metadata']['name']):o for name,o in objects.items()if name.endswith('_cm')or name=='ledger'}
+        deployments={(o['metadata']['namespace'],o['metadata']['name']):o for name,o in objects.items()if name in ('cps_admin','cit_admin')}
+        loaded=[]
+        class Core:
+            def __init__(self):self_unused=loaded==['scoped'];require_loaded(self_unused)
+            def read_namespaced_pod(self,name,namespace,**kw):
+                if(namespace,name)not in pods:raise type('Absent',(Exception,),{'status':404})()
+                return copy.deepcopy(pods[namespace,name])
+            def read_namespaced_config_map(self,name,namespace,**kw):return copy.deepcopy(cms[namespace,name])
+            def list_namespaced_pod(self,namespace,label_selector=None,**kw):return copy.deepcopy(objects['cps_admin_pods'if label_selector=='app=cps-admin'else'cit_admin_pods'])
+        class Apps:
+            def __init__(self):require_loaded(loaded==['scoped'])
+            def read_namespaced_deployment(self,name,namespace,**kw):return copy.deepcopy(deployments[namespace,name])
+        def require_loaded(ok):self.assertTrue(ok,'Scoped configuration must precede client construction')
+        args=types.SimpleNamespace(source='cit',source_sha256='f'*64,renewal='renewal',handover='handover',audit_helper='audit',source_closure='closure',source_closure_sha256='f'*64,policy='policy',policy_sha256='f'*64,qualification_config='mode',qualification_config_sha256='f'*64,node_config='nodeconf',node_config_sha256='f'*64,physical_retirement_review='retirement',normal_close_receipt='close',protected_retirement_capture='physical',kubeconfig='scoped',kubeconfig_sha256='f'*64,runtime_review='runtime',config='app',config_sha256='f'*64,handover_receipt='handover-receipt',capture=True)
+        with patch.dict(ns,{'protected':protected,'install_base':genuine_install}),patch.object(client,'CoreV1Api',Core),patch.object(client,'AppsV1Api',Apps),patch.object(config,'load_kube_config',lambda **kw:loaded.append(kw['config_file'])),patch.object(m,'ledger_guard',wraps=m.ledger_guard)as guard:
+            if remove_new_records or change_new_record:
+                with self.assertRaisesRegex(ValueError,'All actual native claims|original twenty-one'):await m.build_context(args,review,baseline,q,{'renewed_expires':'2026-10-11T19:00:00+00:00'})
+            else:
+                settings,fence,_=await m.build_context(args,review,baseline,q,{'renewed_expires':'2026-10-11T19:00:00+00:00'})
+                self.assertEqual(settings,{'CPU_SOURCE_LOADER_BOUNDARY':True});first_calls=guard.call_count
+                self.assertGreaterEqual(first_calls,1,'Added21 must run before Source boundary')
+                returned=await fence();self.assertEqual(returned['ledger_state'],baseline)
+                self.assertGreater(guard.call_count,first_calls,'Returned genuine fence must retain added21')
+            self.assertIsNot(ns['R'],old_base,'Genuine initializer must actually reset its class')
+            self.assertIs(q.R,ns['R'],'Exported class must track the genuine reset')
+            self.assertGreaterEqual(guard.call_count,1,'Added21 guard must run before genuine Source loader')
+    async def test_genuine_frozen_reset_enforces_added21_before_source_loader(self):
+        await self.genuine_context(remove_new_records=True)
+    async def test_genuine_frozen_reset_reaches_source_boundary_only_after_added21(self):
+        await self.genuine_context()
+    async def test_genuine_frozen_reset_rejects_one_changed_new_record_before_source(self):
+        await self.genuine_context(change_new_record=True)
     async def test_fifo_input_rejects_promptly_without_open_block(self):
         import subprocess,tempfile,os,sys
         with tempfile.TemporaryDirectory()as d:
@@ -250,37 +324,6 @@ class RuntimeAdapterTests(unittest.IsolatedAsyncioTestCase):
             script="import importlib.util;spec=importlib.util.spec_from_file_location('m',"+repr(str(HERE/'qualified_restart_window.py'))+");m=importlib.util.module_from_spec(spec);spec.loader.exec_module(m)\ntry:m.protected("+repr(str(fifo))+",'a'*64)\nexcept ValueError:pass\nelse:raise AssertionError('FIFO accepted')"
             result=subprocess.run([sys.executable,'-c',script],capture_output=True,timeout=1)
             self.assertEqual(result.returncode,0,result.stderr.decode())
-    async def test_additional_twenty_one_guard_runs_inside_frozen_context_before_source_loader(self):
-        import types
-        from unittest.mock import patch
-        m=load_module();q=m.load_frozen((WINDOW/'qualified_expiry.py').read_bytes(),(WINDOW/'renew_fixtures.py').read_bytes())
-        state=json.loads(json.loads((SESSION/'qualified-expiry-final/ledger-final.json').read_bytes())['data']['state.json'])
-        review=review_fixture(m,'cit',datetime.now(timezone.utc));events=[]
-        runtime={'ledger_uid':q.R.BASE_LEDGER_UID,'ledger_state_sha256':m.digest(state),'expected_allocation_count':21}
-        original_guard=q.R.ledger_guard
-        async def context(a,legacy):
-            self.assertEqual(a.source_sha256,m.QUALIFIED_SHA);self.assertEqual(legacy['renewed_expires'],'2026-10-11T19:00:00+00:00');self.assertEqual(legacy['operation'],'expire-qualified-fixtures')
-            q.R.ledger_guard(state,runtime,'restore-expiry');events.append('source-loader')
-            async def fence():q.R.ledger_guard(state,runtime,'restore-expiry');return {'ledger_state':state}
-            async def registration():return {}
-            return {},fence,registration
-        q.build_context=context
-        a=types.SimpleNamespace(source='cit',source_sha256='a'*64,capture=True)
-        with patch.object(m,'ledger_guard',wraps=m.ledger_guard)as guard:
-            settings,fence,registration=await m.build_context(a,review,state,q,{'renewed_expires':'2026-10-11T19:00:00+00:00'})
-            self.assertGreaterEqual(guard.call_count,1);self.assertEqual(events,['source-loader']);await fence();self.assertGreaterEqual(guard.call_count,2)
-        self.assertIsNot(q.R.ledger_guard,original_guard)
-    async def test_runtime_cannot_load_source_with_changed_original_twenty_one(self):
-        import types
-        m=load_module();q=m.load_frozen((WINDOW/'qualified_expiry.py').read_bytes(),(WINDOW/'renew_fixtures.py').read_bytes())
-        state=json.loads(json.loads((SESSION/'qualified-expiry-final/ledger-final.json').read_bytes())['data']['state.json']);wrong=copy.deepcopy(state);next(iter(wrong['allocations'].values()))['actor']='changed'
-        runtime={'ledger_uid':q.R.BASE_LEDGER_UID,'ledger_state_sha256':m.digest(wrong),'expected_allocation_count':21};loaded=[]
-        async def context(a,r):
-            q.R.ledger_guard(wrong,runtime,'restore-expiry');loaded.append(True);self.fail('Source loader reached')
-        q.build_context=context
-        a=types.SimpleNamespace(source='cit',source_sha256='a'*64,capture=True)
-        with self.assertRaises(ValueError):await m.build_context(a,review_fixture(m,'cit',datetime.now(timezone.utc)),state,q,{'renewed_expires':'2026-10-11T19:00:00+00:00'})
-        self.assertEqual(loaded,[])
     async def test_default_inert_with_supplied_paths_still_opens_nothing(self):
         import io
         from contextlib import redirect_stdout

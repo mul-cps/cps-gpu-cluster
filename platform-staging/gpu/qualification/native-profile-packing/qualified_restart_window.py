@@ -277,14 +277,26 @@ async def build_context(args, review, baseline_state, q, historical_renewal):
     Pod, writer, registration, profile, cap, history, or credential validation.
     The foundation still checks every runtime object before loading Source.
     """
-    original_guard = q.R.ledger_guard
+    foundation_globals = q.build_context.__globals__
+    frozen_install = foundation_globals['install_base']
 
-    def strengthened(state, runtime, operation):
-        original_guard(state, runtime, operation)
-        request_guard(review, datetime.now(timezone.utc), capture=args.capture)
-        ledger_guard(state, baseline_state, review['operation'], runtime, q, original_guard=original_guard)
+    def install_strengthened(raw):
+        # Genuine792 constructs a NEW FrozenBase inside build_context. Install
+        # the adapter on that actual class, never on its discarded export.
+        frozen_install(raw)
+        base = foundation_globals['R']
+        q.R = base
+        original_guard = base.ledger_guard
 
-    q.R.ledger_guard = strengthened
+        def strengthened(state, runtime, operation):
+            original_guard(state, runtime, operation)
+            request_guard(review, datetime.now(timezone.utc), capture=args.capture)
+            ledger_guard(state, baseline_state, review['operation'], runtime, q, original_guard=original_guard)
+
+        base.ledger_guard = strengthened
+
+    foundation_globals['install_base'] = install_strengthened
+    q.install_base = install_strengthened
     legacy = {k: review[k] for k in ('version', 'enabled', 'source', 'actor', 'observed_at', 'source_writers_stopped', 'fixture_starts_excluded', 'source_token_custody', 'runtime_review_sha256', 'current_full_sha256', 'provenance_sha256', 'physical_retirement_review_sha256')}
     legacy.update(operation='expire-qualified-fixtures', renewed_expires=historical_renewal['renewed_expires'], original_raw_sha256=q.R.ORIGINAL_SHAS[args.source])
     foundation_args = SimpleNamespace(**vars(args))
