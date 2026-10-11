@@ -311,3 +311,45 @@ not a continuous operational heartbeat or approval for other profiles,
 workspaces or the eight-GPU fleet. Moodle remains planned/disabled, Hub 6 remains
 a separate target, and direct university Keycloak login through Dex still
 depends on ICT registration.
+
+## 2026-10-11 mixed 5/10 GiB qualification checkpoint
+
+Controlled, normal Source starts on the selected GPU2 A100 assigned a 5120 MiB
+cap to CPS `native-group-b` and a 10240 MiB cap to CIT `native-group-a`, without
+MIG. Profile handovers preserved the existing storage identities and CPU
+permissions. The measured policy hash is
+`sha256:02316f90f705f5550ab54d1d514ed48f73aa6a13324eea7d4aeaaef959af2fd5`.
+
+The main hardware phases passed: real kernel/recovery controls, typed OOM
+with peer continuity, aggregate accounting, same-parent positive controls,
+bidirectional cross-workspace IPC/VMM denial, and scoped MPS OOM/recovery and
+process cleanup. The separate creator-exit test passed retained VMM backing
+accounting, subsequent release and final zero charge. MPS reached OOM early;
+this does not establish a sustained 120-second MPS load. One VMM attempt failed
+because its private bridge directory had not been created. That failed attempt
+remains inconclusive; the independently captured fresh retry passed.
+
+Both genuine Source Stops completed. CIT's initial cleanup-pending 409 was
+retained and the same normal Close operation succeeded after controller cleanup.
+The complete native ledger held 21 released records. Protected host observations
+retained the eight prior inert caps and added exactly these two lifetimes, with
+finite 5/10 GiB limits, offline pinned accounting and zero charge. All three
+qualification notebook Pods were absent.
+
+The frozen automated Stop inspector failed because it compared the raw journal
+file digest with the cleanup receipt's canonical JSON digest. Independent Root
+review verified the full original journal, identity, intent and retirement proof:
+the raw file is the same canonical record plus its stored newline. The failed
+inspector was not relabeled as passing. Its correction and fresh mixed-profile
+normal restart/kernel/final-Stop acceptance remain open. This checkpoint does
+not qualify 20 GiB profiles, new workspaces or the wider GPU fleet.
+
+Twelve audited membership/grant expiry updates restored the original expired
+values. Complete before/after readbacks differed only in those expiry fields;
+profiles, course ceiling, aliases, storage and the version 2 native history
+remained intact. Both admin consoles returned to one Ready replica and the
+temporary operators were removed. The archived
+[admin assessment](../../platform-staging/admin-status/qualification-20261011.json)
+uses `qualification`, with mixed-profile restart pending and general GPU group
+access unavailable. Its timestamp remains a qualification snapshot; do not
+reapply it as a fresh availability assessment.
