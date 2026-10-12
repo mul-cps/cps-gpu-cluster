@@ -46,7 +46,8 @@ def loaders():
         ('cap_mib in (5120, 10240)','cap_mib in (5120, 10240, 20480)',1),
         ('else if(!strcmp(n,"10240"))cap_mib=10240;else return 2;',
          'else if(!strcmp(n,"10240"))cap_mib=10240;else if(!strcmp(n,"20480"))cap_mib=20480;else return 2;',1),
-        ('native-imports-10','native-imports-20',3)]:code=p.replace(code,old,new,count)
+        ('native-imports-10','native-imports-20',3),
+        ("outdir / 'abi-version-info.txt'","outdir / 'abi.stdout'",1)]:code=p.replace(code,old,new,count)
     h=module('current_operator20_harness',code.encode(),HERE/'prepare_harness.py')
     ccode=p.replace(craw.decode(),"h._validate_binding(binding, 'interactive-shared-')",
         "h._validate_binding(binding, 'interactive-native-qualification-')")
@@ -76,6 +77,8 @@ def loaders():
                 out[name]=value
         return out
     h._render_validated_sources=render
+    h._generated_snapshot=p.replace(code,"controller_sha='"+current.LEGACY_CONTROLLER_SHA256+"'",
+        "controller_sha='"+current.CONTROLLER_SHA256+"'").encode()
     return h,c,p
 
 
@@ -251,6 +254,7 @@ def prepare(manifest_path,manifest_sha,source_root,output,*,native_binary_path,n
     binding,context,cleared=validate_inputs(manifest,h,c,p)
     def render(*a,**kw):
         out=c.render_sources(*a,**kw,cleared_baseline=cleared)
+        out['prepare_harness.py']=h._generated_snapshot
         mps=p.render_probes('cps5-cit20',out['run_group_acceptance.py'])
         for key in ('mps_probe.py','run_mps.py'):out['mps/'+key]=mps[key]
         return out

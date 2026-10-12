@@ -6,13 +6,14 @@ import os
 import base64
 import hashlib
 import tempfile
+import time
 from pathlib import Path
 import unittest
 import prepare_current_operator20 as q
 import prepare_harness as old
 from test_prepare_harness import binding
 from cps_compute.native_gpu_controller import CapIdentity, CapIntent, CapLimit, CapRecord
-from cps_compute.native_gpu_runtime import SPEC_ANNOTATION, native_spec_sha256
+from cps_compute.native_gpu_runtime import GPU_IDENTITY_SOURCE, SPEC_ANNOTATION, native_spec_sha256
 
 
 class Operator20Tests(unittest.TestCase):
@@ -37,8 +38,18 @@ class Operator20Tests(unittest.TestCase):
         seals=[]
         for i,t in enumerate(b['targets']):
             approved=mode['workspaces'][t['source']+':'+t['workspace']]
-            pod={'metadata':{'namespace':t['namespace'],'name':t['name'],'uid':t['pod_uid']},
-                'spec':{'nodeName':pool['node'],'containers':[{'name':'notebook','image':mode['workloadImage']}]}}
+            pod={'apiVersion':'v1','kind':'Pod','metadata':{'namespace':t['namespace'],'name':t['name'],'uid':t['pod_uid']},
+                'spec':{'nodeName':pool['node'],'securityContext':{'runAsUser':1000,'runAsGroup':100},
+                    'containers':[{'name':'notebook','image':mode['workloadImage']}],
+                    'initContainers':[{'name':'cps-native-cap-gate','image':mode['gateImage'],'command':['python','-m','cps_compute.native_gpu_runtime'],'args':['wait-for-cap',
+                        '--namespace',t['namespace'],'--name',t['name'],'--node',pool['node'],'--node-uid',pool['node_uid'],
+                        '--gpu-uuid',pool['gpu_uuid'],'--cap-mib',str(t['cap_mib']),'--policy-hash',q.POLICY_HASH]},
+                        {'name':'cps-native-device-identity','image':mode['workloadImage'],'command':['python','-I','-S','-c',GPU_IDENTITY_SOURCE],'args':[pool['gpu_uuid']]}]},
+                'status':{'phase':'Running','conditions':[{'type':'Ready','status':'True'}],
+                    'containerStatuses':[{'name':'notebook','ready':True,'restartCount':0,'state':{'running':{}},
+                        'imageID':mode['workloadImage'],'containerID':'synthetic-offline-container-'+str(i)}],
+                    'initContainerStatuses':[{'name':'cps-native-cap-gate','imageID':mode['gateImage'],'state':{'terminated':{'exitCode':0}}},
+                        {'name':'cps-native-device-identity','imageID':mode['workloadImage'],'state':{'terminated':{'exitCode':0}}}]}}
             t['spec_sha256']=native_spec_sha256(pod);pod['metadata']['annotations']={SPEC_ANNOTATION:t['spec_sha256']}
             t['pod_capture']=pin('synthetic-pod-'+str(i)+'.json',pod)
             intent=CapIntent(**{k:t[k] for k in ('namespace','name','pod_uid','spec_sha256','cap_mib')},
@@ -80,6 +91,11 @@ class Operator20Tests(unittest.TestCase):
             if row['value']['state']=='retired-inert-cap':
                 retired['records'].append({'pod_uid':name[:-5],'journal_sha256':'sha256:'+old.sha(old.canonical(row['value']).encode()),'record':row['value']})
         b['retired_capture']=pin('retired.json',retired)
+        measurement={'kind':'selected-device-nvml-memory-mig-observation',**{k:b['pool'][k] for k in ('node','boot_id','gpu_uuid')},
+            'mig_current':0,'mig_pending':0,'read_only':True,'nvml_header_sha256':'c9b494b7c8015b6ae7aca62b2ce98e6b13f3277a2bec80de528371e725d54012',
+            'driver_version':'615.71.09','observed_at_ns':time.time_ns(),'total_bytes':b['pool']['measured_free_bytes'],
+            'free_bytes':b['pool']['measured_free_bytes'],'used_bytes':0,'fixture':'synthetic-offline-only'}
+        b['pool_measurement']=pin('measurement.json',measurement);b['pool']['measurement_sha256']=b['pool_measurement']['sha256']
         inv=pin('inventory.json',inventory);host['finiteCaps']=inventory;host['finiteCapsRawSha256']='sha256:'+inv['sha256']
         host['finiteCapsRawBase64']=base64.b64encode(Path(inv['path']).read_bytes()).decode()
         snapshot['observerPodUid']=b['observer_uid'];snapshot['captureSource']=pin('capture.py',None,q.capture_source([t['pod_uid'] for t in b['targets']]))
@@ -89,6 +105,24 @@ class Operator20Tests(unittest.TestCase):
             'authority_after':pin('authority.json',authority),'sealed_targets':seals,
             'inventory_capture':{'inventory':inv,'host_records':pin('host.json',host),'host_snapshot':pin('snapshot.json',snapshot)}}
         return manifest,pin
+
+    def test_full_packet_preparation_validates_ready_pods_build_and_fixed_twenty_protocol(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root=Path(tmp);manifest,pin=self.complete_fixture(root);mp=pin('manifest.json',manifest)
+            sources=Path('/home/bjoern/.local/state/cps-group-native-20261009/group-probes')
+            build=Path('/home/bjoern/.local/state/cps-platform-completion-20261011/native20-probes-source-prepared-20261012/Root-native-import-build')
+            if not sources.exists() or not build.exists():self.skipTest('Reviewed original source/build closure unavailable')
+            receipt=q.prepare(Path(mp['path']),mp['sha256'],sources,root/'packet',
+                native_binary_path=build/'native-imports-20',native_binary_sha=old.sha((build/'native-imports-20').read_bytes()),
+                native_build_path=build/'build-receipt.json',native_build_sha=old.sha((build/'build-receipt.json').read_bytes()))
+            self.assertFalse(receipt['hardware_qualification']);self.assertFalse(receipt['api_calls']);self.assertFalse(receipt['gpu_calls'])
+            self.assertTrue((root/'packet/operator-argv.json').exists())
+            generated=q.module('generated_operator20_snapshot',(root/'packet/prepare_harness.py').read_bytes(),root/'packet/prepare_harness.py')
+            b=json.loads(Path(manifest['binding']['path']).read_bytes());self.assertEqual(generated.validate_binding(b),b)
+            retired=json.loads(Path(b['retired_capture']['path']).read_bytes());self.assertEqual(generated.validate_retired(retired,b),retired)
+            for field,value in [('cap_mib',10240),('profile','interactive-shared-20')]:
+                bad=copy.deepcopy(b);bad['targets'][1][field]=value
+                with self.assertRaises(ValueError):generated.validate_binding(bad)
 
     def test_complete_released_custody_plus_exact_two_synthetic_normal_lifetimes(self):
         with tempfile.TemporaryDirectory() as tmp:
