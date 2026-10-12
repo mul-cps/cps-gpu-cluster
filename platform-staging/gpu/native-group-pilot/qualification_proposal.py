@@ -17,6 +17,10 @@ import node_agent as agent
 
 SCOPES = {'cps:native-group-b': 5, 'cit:native-group-a': 10}
 PRESETS = {'cps5-cit10': SCOPES, 'cps5-cit20': {'cps:native-group-b': 5, 'cit:native-group-a': 20}}
+CURRENT_GROUP_POLICY = 'sha256:d48f6553ed036c2e7adcc97417623fe0308be93ad13b20f246047ada118511b0'
+CURRENT_GROUP_APPROVALS = 'sha256:3449819d393ed8026353effa57e9b4b0265779e0ef547179dc6c8e1cf72c74c5'
+CURRENT_GATE_IMAGE = 'ghcr.io/mul-cps/cps-compute@sha256:bc5b128f582641eae8395e1121d1fb248eddc39a56c9e863b7c564badd94b167'
+CURRENT_CONTROLLER = 'sha256:630d43cc115b5bddf3e5d110a25cc891e0941953bbabd833f0a77a3773ad7880'
 
 
 def checksum(raw): return 'sha256:' + hashlib.sha256(raw).hexdigest()
@@ -256,6 +260,87 @@ def render(inputs, observation_raw, health_raw, *, now=None, preset='cps5-cit10'
     return result
 
 
+def render_current_approved_groups(inputs, observation_raw, health_raw, *,
+        source_runtime_raw, source_runtime_sha256, source_hubs_raw, source_hubs_sha256,
+        source_controller_raw, terminal_authority, now=None):
+    """Separate actual group-mode input, never relabelled as old qualification.
+
+    Outputs are prospective native-field overlays, not complete application
+    configurations or an apply packet. Unrelated CPU/Argo settings are omitted
+    so a later reviewed custody/CAS handover must preserve them unchanged.
+    """
+    from cps_compute.policy import Policy
+    from cps_compute.native_groups import NativeGroupDeployment
+    from cps_compute import native_gpu_controller as models
+    agent.require(checksum(source_controller_raw)==CURRENT_CONTROLLER
+        and source_controller_raw==Path(models.__file__).read_bytes(),
+        'Exact current captured and loaded 630 controller model dependency required')
+    agent.require(checksum(source_runtime_raw)==source_runtime_sha256
+        and checksum(source_hubs_raw)==source_hubs_sha256, 'Exact raw current source pins required')
+    runtime=agent.parse(source_runtime_raw); hubs=agent.parse(source_hubs_raw)
+    agent.closed(runtime, {'policy_hash','nativeGpuGroups','nativeGpuQualification','nativeGpuPilot'},
+        'Closed sanitized actual native runtime projection required')
+    policy=Policy(inputs['catalog'])
+    agent.require(runtime['policy_hash']==policy.hash==CURRENT_GROUP_POLICY
+        and runtime['nativeGpuQualification']==runtime['nativeGpuPilot']=={'enabled':False},
+        'Exact reviewed d48 group mode with qualification/pilot disabled required')
+    group=runtime['nativeGpuGroups']; deployment=NativeGroupDeployment.from_config(group,policy)
+    agent.require(deployment is not None and group['evidence']['version']==2
+        and agent.canonical_sha256(group['workspaces'])==CURRENT_GROUP_APPROVALS
+        and group['gateImage']==CURRENT_GATE_IMAGE
+        and group['evidence']['profile_caps']=={'interactive-shared-5':5120,'interactive-shared-10':10240}
+        and group['node_pool']['max_workspaces']==2 and group['node_pool']['memory_budget_mib']==15360
+        and group['node_pool']['headroom_mib']==1024,
+        'Only the exact two approved current 5/10 group slots are supported')
+    node=inputs['node_config']; agent.validate_config(node)
+    expected={scope:{'profile':body['profiles'][0],'cap_mib':body['ceiling']['gpuMemoryGiB']*1024}
+        for scope,body in group['workspaces'].items()}
+    agent.require(node['version']==2 and node['enabled'] is True and node['mode']=='qualified-group'
+        and node['policy_hash']==policy.hash and node['authority_namespace']==group['authorityNamespace']
+        and node['pool']==group['node_pool'] and node['workspaces']==expected
+        and inputs['approvals']==group['workspaces'] and inputs['gate_image']==group['gateImage'],
+        'Actual current group/node/approval configuration must agree')
+    health=agent.parse(health_raw)
+    agent.require(health['bootId']==group['node_pool']['boot_id']
+        and health['driverGeneration']==group['node_pool']['driver_generation'],
+        'Current group source must remain in the captured actual driver epoch')
+    agent.closed(hubs, {'cps','cit'}, 'Both actual Hub native settings projections required')
+    preserved_profiles={}
+    for source,size in SCOPES.items():
+        hub=source.split(':',1)[0]; settings=hubs[hub]
+        optional={'qualificationDeployment','pilotDeployment'} & set(settings)
+        agent.closed(settings, {'source','groupDeployment','profiles'} | optional,
+            'Closed actual Hub native settings projection required')
+        profiles=settings['profiles']; expected_profile='interactive-shared-'+str(size)
+        agent.require(settings['source']==hub and settings['groupDeployment']==group
+            and all(settings[k]=={'enabled':False} for k in optional)
+            and isinstance(profiles,list) and all(type(p) is str for p in profiles)
+            and len(profiles)==len(set(profiles)) and expected_profile in profiles,
+            'Exact current per-Hub group deployment and permitted profile required')
+        cpu=[p for p in profiles if p!=expected_profile]
+        agent.require(all(p in policy.catalog['profiles']
+            and policy.catalog['profiles'][p].get('gpu',{}).get('mode')=='none'
+            and policy.catalog['profiles'][p].get('kind')=='interactive' for p in cpu),
+            'No foreign, batch or additional GPU Hub profiles are permitted')
+        preserved_profiles[hub]=cpu
+    agent.require(terminal_authority is not None, 'Complete fresh released terminal custody required')
+    result=render(inputs,observation_raw,health_raw,now=now,preset='cps5-cit20',terminal_authority=terminal_authority)
+    mode=result['operator-qualification.json']
+    result['runtime-native-overlay.json']={'policy_hash':mode['policy_hash'],
+        'nativeGpuGroups':{'enabled':False},'nativeGpuPilot':{'enabled':False},'nativeGpuQualification':copy.deepcopy(mode)}
+    result['hub-native-overlays.json']={hub:{'groupDeployment':{'enabled':False},
+        'pilotDeployment':{'enabled':False},'qualificationDeployment':copy.deepcopy(mode),
+        'profiles':profiles+[mode['workspaces'][hub+':native-group-'+('b' if hub=='cps' else 'a')]['profiles'][0]]}
+        for hub,profiles in preserved_profiles.items()}
+    result['current-source.json']={'runtime':runtime,'hubs':hubs}
+    result['acceptance.json'].update(source_mode='current-approved-groups',
+        source_runtime_sha256=source_runtime_sha256,source_hubs_sha256=source_hubs_sha256,
+        source_controller_sha256=CURRENT_CONTROLLER, controller_rollout_required=False,
+        source_policy_hash=policy.hash,source_node_config_sha256=agent.canonical_sha256(node),
+        configuration_application_required=True, unrelated_configuration_must_remain_unchanged=True)
+    return result
+
+
 def private_read(path):
     fd = os.open(path, os.O_RDONLY | os.O_NOFOLLOW | os.O_NONBLOCK)
     try:
@@ -275,17 +360,35 @@ def main(argv=None):
     parser.add_argument('--render', action='store_true')
     parser.add_argument('--terminal-authority', type=Path)
     parser.add_argument('--preset', choices=tuple(PRESETS), default='cps5-cit10')
+    parser.add_argument('--source-mode', choices=('legacy-qualification','current-approved-groups'), default='legacy-qualification')
+    parser.add_argument('--source-runtime', type=Path)
+    parser.add_argument('--source-runtime-sha256')
+    parser.add_argument('--source-hubs', type=Path)
+    parser.add_argument('--source-hubs-sha256')
+    parser.add_argument('--source-controller', type=Path)
     for key in ('input','observation','health','output'): parser.add_argument('--'+key, type=Path)
     args = parser.parse_args(argv)
     if not args.render:
-        agent.require(not any((args.input,args.observation,args.health,args.output,args.terminal_authority)), 'Inputs require explicit offline --render')
+        agent.require(args.source_mode=='legacy-qualification' and not any((args.input,args.observation,args.health,args.output,args.terminal_authority,
+            args.source_runtime,args.source_runtime_sha256,args.source_hubs,args.source_hubs_sha256,args.source_controller)), 'Inputs require explicit offline --render')
         print(json.dumps({'enabled':False, 'live_applied':False, 'hardware_qualified':False}))
         return 0
     agent.require(all((args.input,args.observation,args.health,args.output)), 'Complete private offline input/output paths required')
     agent.require(args.preset!='cps5-cit20' or args.terminal_authority is not None,
         'Twenty preset requires the full terminal authority bundle')
-    values = render(agent.parse(private_read(args.input)), private_read(args.observation), private_read(args.health), preset=args.preset,
-        terminal_authority=agent.parse(private_read(args.terminal_authority)) if args.terminal_authority else None)
+    authority=agent.parse(private_read(args.terminal_authority)) if args.terminal_authority else None
+    if args.source_mode=='current-approved-groups':
+        agent.require(args.preset=='cps5-cit20' and all((args.source_runtime,args.source_runtime_sha256,args.source_hubs,args.source_hubs_sha256,args.source_controller)),
+            'Current source mode requires explicit twenty preset and exact runtime/Hub source pins')
+        values=render_current_approved_groups(agent.parse(private_read(args.input)),private_read(args.observation),private_read(args.health),
+            terminal_authority=authority,source_runtime_raw=private_read(args.source_runtime),source_runtime_sha256=args.source_runtime_sha256,
+            source_hubs_raw=private_read(args.source_hubs),source_hubs_sha256=args.source_hubs_sha256,
+            source_controller_raw=private_read(args.source_controller))
+    else:
+        agent.require(not any((args.source_runtime,args.source_runtime_sha256,args.source_hubs,args.source_hubs_sha256,args.source_controller)),
+            'Current source pins cannot be silently interpreted as legacy qualification mode')
+        values=render(agent.parse(private_read(args.input)),private_read(args.observation),private_read(args.health),preset=args.preset,
+            terminal_authority=authority)
     args.output.mkdir(mode=0o700)
     hashes = {}
     for name,value in values.items():
