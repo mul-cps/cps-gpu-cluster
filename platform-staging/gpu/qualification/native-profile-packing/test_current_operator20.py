@@ -7,8 +7,10 @@ import base64
 import hashlib
 import tempfile
 import time
+from types import SimpleNamespace
 from pathlib import Path
 import unittest
+from unittest.mock import patch
 import prepare_current_operator20 as q
 import prepare_harness as old
 from test_prepare_harness import binding
@@ -125,6 +127,19 @@ class Operator20Tests(unittest.TestCase):
             # authority serialization, even though their parsed records agree.
             preflight=q.module('generated_raw_journal_preflight',(root/'packet/run_group_acceptance.py').read_bytes(),root/'packet/run_group_acceptance.py')
             self.assertEqual(preflight.PROBE_SHA,old.sha((root/'packet/group_probe.py').read_bytes()))
+            vmm=q.module('generated_staging_records',(root/'packet/vmm-cross-parent-sgid-fix/run_vmm_cross_parent.py').read_bytes(),root/'packet/vmm-cross-parent-sgid-fix/run_vmm_cross_parent.py')
+            prerequisite=json.loads((root/'packet/vmm-cross-parent-sgid-fix/bridge-prerequisite.json').read_bytes())
+            expected={'version':1,'state':'exact-vmm-bridge-staged','read_only':True,'root':prerequisite['root'],
+                'files':{name:row['sha256'] for name,row in prerequisite['files'].items()}}
+            stage=root/'stage';stage.mkdir(mode=0o700)
+            def diagnostic(argv,source,output,label,timeout):
+                vmm.write(output/(label+'.json'),{'diagnostic_transport_record':True})
+                return expected
+            with patch.object(vmm,'diagnostic_run',side_effect=diagnostic):
+                vmm.check_vmm_staging(SimpleNamespace(OBSERVER_ARGV=[]),SimpleNamespace(output=stage))
+            self.assertEqual(json.loads((stage/'bridge-staging.json').read_bytes()),{'diagnostic_transport_record':True})
+            self.assertEqual(json.loads((stage/'bridge-staging-proof.json').read_bytes()),expected)
+            with self.assertRaises(FileExistsError):vmm.write(stage/'bridge-staging.json',{})
             assertions=[n for n in ast.walk(ast.parse(preflight.HOST_SOURCE)) if isinstance(n,ast.Expr)
                 and isinstance(n.value,ast.Call) and isinstance(n.value.func,ast.Name)
                 and n.value.func.id=='require' and len(n.value.args)==2

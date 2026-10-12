@@ -264,7 +264,7 @@ def render_sources(sources, binding, retired, *, native_binary=None, cleared_bas
 def check_vmm_staging(h,args):
     proof=diagnostic_run(h.OBSERVER_ARGV,VMM_STAGE_SOURCE.encode(),args.output,'bridge-staging',timeout=10)
     require(proof==''' + repr(expected) + ''','Exact read-only VMM staging proof required before endpoint launch')
-    write(args.output/'bridge-staging.json',proof)
+    write(args.output/'bridge-staging-proof.json',proof)
 \n'''
         wrapper = h.replace(wrapper, 'def main(argv=None):', helper + 'def main(argv=None):')
         wrapper = h.replace(wrapper, '    transport=load_witness()',

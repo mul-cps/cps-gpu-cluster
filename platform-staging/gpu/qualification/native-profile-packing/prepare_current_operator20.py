@@ -16,7 +16,7 @@ import prepare_current_group_harness as current
 
 HERE=Path(__file__).parent
 HARNESS_SHA='c53e536718edc3c4e5daff9c64ddf77ab28847a28457065afbbcf4ce3025c9a3'
-CURRENT_SHA='caddf91ed0f0ab9b3190349e64bdcc85884473dc260cbc916cf2ee68b2773c71'
+CURRENT_SHA='c47592361e63df156fed7f4f38c214f727e76e890b3170039ae5e23255cd0f26'
 PROFILE20_SOURCE=Path('/home/bjoern/.local/state/cps-platform-completion-20261011/native20-probes-source-prepared-20261012/source-v3/prepare_profile20.py')
 PROFILE20_SHA='5d78371154dd0fa4a3564a5ff39b04f2fc7373fc39b4f60403a7ac0033cfd6e8'
 CAPTURE_TEMPLATE=Path('/home/bjoern/.local/state/cps-platform-completion-20261012/current-group-crosspod-20261012/capture-actual-v3/read-only-host-capture.py')
