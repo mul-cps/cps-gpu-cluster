@@ -139,3 +139,8 @@ CPS5 typed OOM while CIT10 peer ticks, and exact CPS5/CIT10 cross-parent IPC and
 VMM import checks. Historical MPS10 execution and host5/20 import results are
 not those live results. Record later independently reviewed evidence separately;
 this frozen source preparation keeps their acceptance flags false.
+
+The separate [2026-10-12 measured receipt](qualification/limited-group-20261012/measured-results.md)
+records fresh CPS5/CIT10 OOM, peer continuity, sustained MPS and same-parent
+import controls. It does not change this frozen preparation record or establish
+fresh cross-Pod import isolation, general access or production qualification.

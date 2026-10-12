@@ -1,0 +1,266 @@
+{
+  "artifact_kind": "sanitized-native-group-measured-receipt",
+  "cross_pod_import_isolation_qualified": false,
+  "epoch": {
+    "boot_id": "209f8bc9-a478-48e4-925a-6e07ffa56f7a",
+    "driver_generation": "b10498fc-9153-4394-875a-ea7cfb498625",
+    "gpu_uuid": "GPU-16128952-b438-556a-00bb-93039ee24e56",
+    "node": "k3s-wk-gpu2",
+    "node_uid": "3336cdd5-d245-436e-b57c-2f66c6dcaa41"
+  },
+  "evidence_manifest_sha256": "15824773e86ce2f964829ac31e1bec04e081bd627dae54963762ae9cbe8e03fe",
+  "full_fleet_qualified": false,
+  "general_group_access_qualified": false,
+  "limits": [
+    "Measurements cover exactly the two recorded Pod lifetimes on the selected GPU and epoch.",
+    "Pair/MPS native samples establish finite charge bounds; their last samples do not establish post-exit zero charge.",
+    "Fresh cross-Pod IPC and VMM import denial was not run for these lifetimes.",
+    "Same-parent import success does not establish cross-Pod isolation.",
+    "General access, production release and the full GPU fleet remain unqualified."
+  ],
+  "measured_date": "2026-10-12",
+  "mps_test": {
+    "aggregate_sequence_passed": true,
+    "binary_sha256": {
+      "/usr/bin/nvidia-cuda-mps-control": "7e91a303b67382a1377f63a4c862605a27e40ac590e91c431fe547308fb71868",
+      "/usr/bin/nvidia-cuda-mps-server": "1d49ca38a96799699118331f0c76a3fd7a76cafc25dbfc0c4d904a98d4e77176"
+    },
+    "both_exit_codes": [
+      0,
+      0
+    ],
+    "classifier_correction": "Original result selector omitted the final qualification-mps kind. Accepted receipt exactly matches the final probe event; original process exits are both zero. No GPU rerun.",
+    "maximum_peer_tick_gap_ns": 563554582,
+    "measurement_classifier_corrected": true,
+    "mps_workspace": "cit:native-group-a",
+    "native_charge": {
+      "combined_cap_bytes": 16106127360,
+      "exact_caps_and_live_pinned_identity_all_samples": true,
+      "last_sample_is_post_exit_zero_proof": false,
+      "last_sample_used_bytes": {
+        "cit:native-group-a": 52224,
+        "cps:native-group-b": 581254848
+      },
+      "maximum_combined_used_bytes": 11145087040,
+      "maximum_used_bytes": {
+        "cit:native-group-a": 10563832192,
+        "cps:native-group-b": 581254848
+      },
+      "sample_count": 53
+    },
+    "oversized_attempt_mib": 10496,
+    "peer_elapsed_seconds": 168.00318549573421,
+    "peer_first_tick_after_mps_registration_ns": 690666592,
+    "peer_loop_passed": true,
+    "peer_ticks": 332,
+    "peer_ticks_bracket_oom_recovery_and_daemon_cleanup": true,
+    "peer_workspace": "cps:native-group-b",
+    "pod_uids_unchanged": true,
+    "private_daemon_cleanup_confirmed": true,
+    "recovery_clients": 2,
+    "source_sha256": "336c036b1938ea272211a8f04b833e6d02d18351c6e5f7cbfae82a56da302893",
+    "sustained_kernel_ticks": 479,
+    "sustained_work_ns": 120081026302,
+    "typed_oom": {
+      "attempted_mib": 9472,
+      "cuda_result": 2,
+      "held_mib": 9216
+    }
+  },
+  "native_readback_path": "/proc/driver/nvidia/gpus/0000:06:10.0/cps_native_caps",
+  "normal_lifecycle": {
+    "all_four_original_finite_native_rows_offline_pinned_zero_charge": true,
+    "all_four_target_pods_absent": true,
+    "all_native_allocations_released": true,
+    "both_native_attempts_null": true,
+    "both_native_reservations_inactive": true,
+    "both_normal_workspace_states_stopped": true,
+    "cit_action_path": "trusted-normal-console-manager",
+    "cit_human_oauth_tested": false,
+    "cps_action_path": "authenticated-console-http",
+    "final_target_native_charge_bytes": 0,
+    "observed_at": "2026-10-12T14:06:36.833227+00:00",
+    "public_ui_assets": {
+      "cit": {
+        "cache_control": null,
+        "selector_present": true,
+        "sha256": "7e6e230c0309aca94ce3410ef7b8df7b7ff1d3c4f004d71b3ad2f62ac104d53b",
+        "status": 200
+      },
+      "cps": {
+        "cache_control": null,
+        "selector_present": true,
+        "sha256": "7e6e230c0309aca94ce3410ef7b8df7b7ff1d3c4f004d71b3ad2f62ac104d53b",
+        "status": 200
+      }
+    },
+    "released_allocation_count": 35,
+    "restart_kernel_ticks_each": 33,
+    "restart_lifetimes": {
+      "cit": {
+        "cap_bytes": 10737418240,
+        "cgroup_inode": 1408668,
+        "pod_uid": "41155333-331f-44cf-b823-fc4ed861be10",
+        "spec_sha256": "305b6f6944d21ce7361f88fd9cca04859ed34aa0bf7a932433cd00e2f6b5e038"
+      },
+      "cps": {
+        "cap_bytes": 5368709120,
+        "cgroup_inode": 1408273,
+        "pod_uid": "eddfadb0-1dce-4868-8ed8-82335ea3d913",
+        "spec_sha256": "a28c47f45591df2ebd46c530ea346a2854fe28b23a31478b6c6a06b798da1f60"
+      }
+    },
+    "source_artifact": "lifecycle-acceptance.json",
+    "source_sha256": "031d83fcff9b935cc19028953c998477ec28f09dccbe2891248858950c9d261d",
+    "start_stop_restart_stop_passed": true,
+    "state": "bounded-normal-lifecycle-passed",
+    "target_profile_start_stop_passed": true
+  },
+  "offline_publication_validation": {
+    "artifact_hashes_verified": 105,
+    "compute_platform": {
+      "passed": true,
+      "tests": 103
+    },
+    "compute_policy": {
+      "passed": true,
+      "tests": 48
+    },
+    "frozen_preparation_bytes_unchanged": true,
+    "lifecycle_copy_byte_identical": true,
+    "local_documentation_links_valid": true,
+    "native_pilot": {
+      "admin_source": "/tmp/e2x-workspace-profile-ui-20261012",
+      "errors": 1,
+      "failures": 1,
+      "interpreter": "/home/bjoern/git/cps-compute/.venv/bin/python",
+      "logs": [
+        "native-group-pilot-sdk-venv.log",
+        "native-group-service-loop-reproduction.log"
+      ],
+      "passed": false,
+      "protected_test_log_locator": "/home/bjoern/.local/state/cps-platform-completion-20261012/pytest-tmp",
+      "sdk_source": "/home/bjoern/git/cps-compute-worktrees/reservation-batch-acceptance-20261012/src",
+      "service_loop_failure": {
+        "actual_journal_state": "sealed",
+        "expected_journal_state": "cleaned",
+        "line": 104,
+        "reproduces_alone": true,
+        "source_path": "platform-staging/gpu/native-group-pilot/test_service_loop.py",
+        "test": "test_service_loop.ServiceLoopTest.test_pending_sealed_restart_terminal_absent_then_busy_peer_tombstone"
+      },
+      "temporary_directory": "/tmp",
+      "tests": 279,
+      "transport_error": {
+        "context": "close after expected Root fence EOF rejection",
+        "error": "BrokenPipeError: [Errno 32] Broken pipe",
+        "test": "test_abort_before_gate.StrictAndTransportTests.test_stale_or_missing_rpc_proof_rejects_and_closes"
+      }
+    },
+    "policy_compiler_check_passed": true
+  },
+  "pair_test": {
+    "both_exit_codes": [
+      0,
+      0
+    ],
+    "bounded_step_sequence_passed": true,
+    "held_before_oom_mib": 4608,
+    "maximum_peer_tick_gap_ns": 563896593,
+    "native_charge": {
+      "combined_cap_bytes": 16106127360,
+      "exact_caps_and_live_pinned_identity_all_samples": true,
+      "last_sample_is_post_exit_zero_proof": false,
+      "last_sample_used_bytes": {
+        "cit:native-group-a": 514198208,
+        "cps:native-group-b": 0
+      },
+      "maximum_combined_used_bytes": 5658855808,
+      "maximum_used_bytes": {
+        "cit:native-group-a": 581307072,
+        "cps:native-group-b": 5077548736
+      },
+      "sample_count": 35
+    },
+    "oom_attempted_total_tensor_mib": 4864,
+    "oom_workspace": "cps:native-group-b",
+    "ordinary_byte": 19,
+    "oversized_attempt_mib": 5376,
+    "oversized_denied": true,
+    "peer_elapsed_seconds": 108.00132766366005,
+    "peer_loop_passed": true,
+    "peer_ticks": 212,
+    "peer_ticks_bracket_oom_and_recovery": true,
+    "peer_workspace": "cit:native-group-a",
+    "pod_uids_unchanged": true,
+    "recovery_byte": 37,
+    "source_sha256": "ed87e7fbf7930852e687632f63b37fcf343b99f38a25163cfdf6d1b04d9a66fe",
+    "typed_oom": {
+      "cuda_error_code": null,
+      "kind": "torch.OutOfMemoryError"
+    }
+  },
+  "production_qualified": false,
+  "same_parent_imports": {
+    "ipc": {
+      "all_cuda_results_zero": true,
+      "cross_pod_import_isolation_qualified": false,
+      "cuda_event_count": 39,
+      "payload_bytes": 67108864,
+      "stage_cleanup_confirmed": true,
+      "state": "bounded-same-parent-measurement-completed",
+      "stderr_bytes": 0,
+      "successful_participants": 2,
+      "workspace": "cit:native-group-a"
+    },
+    "vmm": {
+      "all_cuda_results_zero": true,
+      "cross_pod_import_isolation_qualified": false,
+      "cuda_event_count": 56,
+      "payload_bytes": 67108864,
+      "retained_backing_ns": 9000299966,
+      "stage_cleanup_confirmed": true,
+      "state": "bounded-same-parent-measurement-completed",
+      "stderr_bytes": 0,
+      "successful_participants": 2,
+      "workspace": "cit:native-group-a"
+    }
+  },
+  "scope": "LIMITED",
+  "source_custody": {
+    "executable_source_bytes_published": false,
+    "import_executable_source_bytes_in_current_evidence_boundary": false,
+    "probe_hash_basis": "Retained probe source-hash record and accepted final probe receipt; MPS binary hashes are retained in binary-shas.json.",
+    "raw_artifacts_published": false
+  },
+  "source_preparation_commit": "fd7859c4b38d2b0cc0e0a9f98a8565c115420ea5",
+  "source_preparation_record_sha256": "1c26d1d360fa26f24ae5991b09e25ad6c8265210ee02439bb49928d6f76c6bfd",
+  "status": "bounded-normal-lifecycle-and-hardware-measured-cross-pod-imports-pending",
+  "target_policy_hash": "sha256:4f1dff1a92aba5cd7376dfb897612b7e6f2e6f15a09515dbdf29efa4c522359d",
+  "target_profile_start_stop_passed": true,
+  "version": 1,
+  "workspaces": {
+    "cit:native-group-a": {
+      "cap_bytes": 10737418240,
+      "cap_mib": 10240,
+      "cgroup_inode": 1407698,
+      "namespace": "cit-jhub",
+      "pod": "jupyter-citnativegroupa--rtc",
+      "pod_uid": "533ba8d5-2a8a-4e56-9ad0-b13231cda3fd",
+      "profile": "interactive-shared-10",
+      "seal_id": "14afaa9c-cee8-44f1-97cc-1d769d58dca8",
+      "spec_sha256": "32ce3d14499500fcf2e0be9beeefaf2f6b30c65b5e3109a50a45da28d4068d32"
+    },
+    "cps:native-group-b": {
+      "cap_bytes": 5368709120,
+      "cap_mib": 5120,
+      "cgroup_inode": 1407303,
+      "namespace": "jupyterhub",
+      "pod": "jupyter-cpsnativegroupb--rtc",
+      "pod_uid": "8c92fb62-5f64-4995-8ac2-870a72e71a46",
+      "profile": "interactive-shared-5",
+      "seal_id": "1d1f7ac4-dbdf-4f5a-9286-1a880a1fb3b8",
+      "spec_sha256": "8fe881407500bb432ae98b1d8a3c6b14916107cb1dfd2caac7ab2331a75b2f80"
+    }
+  }
+}
