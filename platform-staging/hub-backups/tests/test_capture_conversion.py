@@ -49,6 +49,61 @@ class CaptureConversion(unittest.TestCase):
     def write_manifest(self, path, manifest):
         p = path / 'manifest.json'; p.write_text(json.dumps(manifest)); p.chmod(0o600)
 
+    def fresh_fixture(self, root, owner):
+        path=self.fixture(root,owner); namespace={'cps':'jupyterhub','cit':'cit-jhub'}[owner]
+        manifest=json.loads((path/'manifest.json').read_bytes())
+        resources={'deployments':['hub'],'statefulsets':['postgresql'],'configmaps':['hub'],'secrets':['hub'],'pods':['postgresql-fixture' if owner=='cps' else 'jupyterhub-postgresql-fixture']}
+        kinds={'deployments':('apps/v1','Deployment'),'statefulsets':('apps/v1','StatefulSet'),'configmaps':('v1','ConfigMap'),'secrets':('v1','Secret')}
+        records=[]; lists={'workloads.json':[],'configmaps.json':[],'secrets.json':[]}
+        for resource,names in resources.items():
+            for name in names:
+                records.append({'resource':resource,'name':name,'uid':resource+'-'+name+'-uid','resource_version':'123'})
+                if resource!='pods':
+                    api,kind=kinds[resource]
+                    obj={'apiVersion':api,'kind':kind,'metadata':{'name':name,'namespace':namespace,'uid':resource+'-'+name+'-uid','resourceVersion':'123'}}
+                    lists['workloads.json' if resource in ('deployments','statefulsets') else resource+'.json'].append(obj)
+        for name,items in lists.items():
+            data=json.dumps({'apiVersion':'v1','kind':'List','items':items}).encode(); (path/name).write_bytes(data)
+        pod=resources['pods'][0]
+        snapshot={'schema_version':1,'source':'kubernetes-api','observed_live':True,'namespace':namespace,'captured_at':'2026-10-12T18:46:49+00:00','capture_image':'example.org/capture@sha256:'+'c'*64,'resources':resources,'objects':records,
+                  'pod_images':[{'name':pod,'uid':'pods-'+pod+'-uid','resource_version':'123','containers':[{'name':'postgresql','image_id':'docker-pullable://'+manifest['image']}]}]}
+        manifest['configuration_snapshot']=snapshot
+        manifest['sha256']={name:hashlib.sha256((path/name).read_bytes()).hexdigest() for name in FILES}
+        self.write_manifest(path,manifest)
+        return path
+
+    def test_fresh_api_capture_converts_with_byte_identical_distinct_provenance(self):
+        with tempfile.TemporaryDirectory(dir=ROOT.parent) as directory:
+            root=Path(directory); cps=self.fresh_fixture(root,'cps'); cit=self.fresh_fixture(root,'cit')
+            originals={owner:(source/'manifest.json').read_bytes() for owner,source in [('cps',cps),('cit',cit)]}
+            output=root/'converted'; converter.convert(cps,cit,output)
+            for owner,namespace in [('cps','jupyterhub'),('cit','cit-jhub')]:
+                self.assertEqual((output/(namespace+'-capture-manifest.json')).read_bytes(),originals[owner])
+                snapshot=json.loads(originals[owner])['configuration_snapshot']
+                self.assertIs(snapshot['observed_live'],True); self.assertEqual(snapshot['source'],'kubernetes-api')
+            manifest=json.loads((output/'manifest.json').read_bytes())
+            self.assertFalse(manifest['recovery_qualified']); self.assertFalse(manifest['coordinated_capture'])
+
+    def test_fresh_provenance_cannot_forge_scope_versions_or_immutable_images(self):
+        for case in ('uid','version','scope','namespace','duplicate','mutable','pod-version','images-text','unknown-schema'):
+            with self.subTest(case=case),tempfile.TemporaryDirectory(dir=ROOT.parent) as directory:
+                root=Path(directory); cps=self.fresh_fixture(root,'cps'); cit=self.fresh_fixture(root,'cit')
+                manifest=json.loads((cps/'manifest.json').read_bytes()); snapshot=manifest['configuration_snapshot']
+                if case=='uid': snapshot['objects'][0]['uid']='forged'
+                if case=='version': snapshot['objects'][0]['resource_version']='999'
+                if case=='scope': snapshot['resources']['secrets']=['another-secret']
+                if case=='namespace': snapshot['namespace']='cit-jhub'
+                if case=='duplicate': snapshot['objects'].append(snapshot['objects'][0])
+                if case=='mutable': snapshot['pod_images'][0]['containers'][0]['image_id']='postgres:latest'
+                if case=='pod-version': snapshot['pod_images'][0]['resource_version']='999'
+                if case=='images-text':
+                    (cps/'running-images.txt').write_bytes(b'forged-running-images')
+                    manifest['sha256']['running-images.txt']=hashlib.sha256(b'forged-running-images').hexdigest()
+                if case=='unknown-schema': snapshot['schema_version']=2
+                self.write_manifest(cps,manifest)
+                with self.assertRaises(ValueError): converter.convert(cps,cit,root/'output')
+                self.assertFalse((root/'output').exists())
+
     def test_byte_identical_dual_bundle_is_accepted_by_unchanged_restore_validator(self):
         with tempfile.TemporaryDirectory(dir=ROOT.parent) as directory:
             root = Path(directory); cps = self.fixture(root, 'cps'); cit = self.fixture(root, 'cit')

@@ -40,6 +40,9 @@ class HubBackupChart(unittest.TestCase):
                 policy = next(r for r in resources if r['kind'] == 'NetworkPolicy')
                 self.assertEqual(policy['spec']['ingress'], [])
                 self.assertEqual({p['port'] for rule in policy['spec']['egress'] for p in rule['ports']}, {53,5432})
+                self.assertNotIn('initContainers',pod)
+                self.assertNotIn('serviceAccountName',pod)
+                self.assertFalse(any(r['kind']=='ServiceAccount' for r in resources))
 
     def test_mutable_images_and_unknown_owner_are_rejected(self):
         for override in [{'image': 'postgres:15'}, {'owner': 'unknown'}, {'databasePodLabels': {}}]:

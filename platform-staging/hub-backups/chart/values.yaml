@@ -25,6 +25,21 @@ roleCapture:
   credentialQualified: false
   qualificationEvidence: ""
   protectedConfigurationSecretRef: ""
+  # Fresh reads are optional and require explicit named objects and API egress.
+  # The init image must provide sh and Python 3 standard library TLS support.
+  freshApi:
+    enabled: false
+    image: ""
+    apiServerHost: ""
+    apiServerPort: 443
+    captureQualified: false
+    qualificationEvidence: ""
+    resources:
+      deployments: []
+      statefulsets: []
+      configmaps: []
+      secrets: []
+      pods: []
   # Operator-declared metadata for this supplied snapshot, not a live API read.
   configurationSnapshot:
     uid: ""

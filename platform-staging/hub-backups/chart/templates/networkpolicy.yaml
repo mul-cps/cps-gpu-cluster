@@ -22,4 +22,9 @@ spec:
           podSelector:
             matchLabels: {k8s-app: kube-dns}
       ports: [{protocol: UDP, port: 53}, {protocol: TCP, port: 53}]
+{{- if .Values.roleCapture.freshApi.enabled }}
+    - to:
+        - ipBlock: {cidr: {{ printf "%s/32" .Values.roleCapture.freshApi.apiServerHost | quote }}}
+      ports: [{protocol: TCP, port: {{ int .Values.roleCapture.freshApi.apiServerPort }}}]
+{{- end }}
 {{- end }}

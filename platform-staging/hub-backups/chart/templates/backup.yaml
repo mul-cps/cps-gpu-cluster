@@ -7,15 +7,39 @@
 {{- $namespace := required "namespace required" .Values.namespace }}
 {{- $secret := required "existing database secret required" .Values.secretRef }}
 {{- $host := required "database service host required" .Values.host }}
+{{- $fresh := .Values.roleCapture.freshApi }}
+{{- if not (kindIs "bool" $fresh.enabled) }}{{ fail "freshApi.enabled must be a boolean" }}{{ end }}
+{{- if $fresh.enabled }}
+{{- if not .Values.roleCapture.enabled }}{{ fail "fresh API capture requires role capture" }}{{ end }}
+{{- if not (regexMatch "^[a-zA-Z0-9./:_-]+@sha256:[a-f0-9]{64}$" $fresh.image) }}{{ fail "immutable fresh capture image required" }}{{ end }}
+{{- if not (regexMatch "^([0-9]{1,3}\\.){3}[0-9]{1,3}$" $fresh.apiServerHost) }}{{ fail "literal IPv4 API server host required" }}{{ end }}
+{{- range $part := splitList "." $fresh.apiServerHost }}{{ if gt (int $part) 255 }}{{ fail "invalid API server host" }}{{ end }}{{ end }}
+{{- if or (lt (int $fresh.apiServerPort) 1) (gt (int $fresh.apiServerPort) 65535) }}{{ fail "invalid API server port" }}{{ end }}
+{{- if not (or $fresh.resources.deployments $fresh.resources.statefulsets) }}{{ fail "named Hub/database workloads required" }}{{ end }}
+{{- range $resource, $names := $fresh.resources }}
+{{- if not (has $resource (list "deployments" "statefulsets" "configmaps" "secrets" "pods")) }}{{ fail "unsupported capture resource" }}{{ end }}
+{{- if and (has $resource (list "configmaps" "secrets" "pods")) (empty $names) }}{{ fail "nonempty named configuration and running Pods required" }}{{ end }}
+{{- if not (kindIs "slice" $names) }}{{ fail "capture resource names must be a list" }}{{ end }}
+{{- if ne (len $names) (len (uniq $names)) }}{{ fail "duplicate capture resource name" }}{{ end }}
+{{- range $name := $names }}{{ if not (regexMatch "^[a-z0-9]([-a-z0-9.]*[a-z0-9])?$" $name) }}{{ fail "literal capture resource name required" }}{{ end }}{{ end }}
+{{- end }}
+{{- if not (kindIs "bool" $fresh.captureQualified) }}{{ fail "fresh capture qualification must be a boolean" }}{{ end }}
+{{- if not .Values.suspend }}
+{{- if not $fresh.captureQualified }}{{ fail "fresh API schedule requires reviewed capture qualification" }}{{ end }}
+{{- $evidence := required "fresh API qualificationEvidence required before scheduling" $fresh.qualificationEvidence }}
+{{- end }}
+{{- end }}
 {{- if .Values.roleCapture.enabled }}
 {{- $roleSecret := required "separate privilegedCredentialSecretRef required" .Values.roleCapture.privilegedCredentialSecretRef }}
 {{- if eq $roleSecret $secret }}{{ fail "role capture credentials must be separate from application credentials" }}{{ end }}
 {{- $roleUserKey := required "roleCapture.userKey required" .Values.roleCapture.userKey }}
 {{- $rolePasswordKey := required "roleCapture.passwordKey required" .Values.roleCapture.passwordKey }}
+{{- if not $fresh.enabled }}
 {{- $configurationSecret := required "protectedConfigurationSecretRef required" .Values.roleCapture.protectedConfigurationSecretRef }}
 {{- $snapshotUID := required "configurationSnapshot.uid required" .Values.roleCapture.configurationSnapshot.uid }}
 {{- $snapshotVersion := required "configurationSnapshot.resourceVersion required" .Values.roleCapture.configurationSnapshot.resourceVersion }}
 {{- $snapshotCapture := required "configurationSnapshot.capturedAt required" .Values.roleCapture.configurationSnapshot.capturedAt }}
+{{- end }}
 {{- if not (kindIs "bool" .Values.roleCapture.credentialQualified) }}{{ fail "roleCapture.credentialQualified must be a boolean" }}{{ end }}
 {{- if not .Values.suspend }}
 {{- if not .Values.roleCapture.credentialQualified }}{{ fail "role capture schedule requires reviewed credential qualification" }}{{ end }}
@@ -64,6 +88,34 @@ spec:
         spec:
           restartPolicy: Never
           automountServiceAccountToken: false
+{{- if $fresh.enabled }}
+          serviceAccountName: {{ $owner }}-hub-backup-capture
+          initContainers:
+            - name: fresh-configuration
+              image: {{ $fresh.image | quote }}
+              command: [sh, /scripts/backup.sh]
+              securityContext:
+                readOnlyRootFilesystem: true
+                allowPrivilegeEscalation: false
+                capabilities: {drop: [ALL]}
+              resources:
+                requests: {cpu: 50m, memory: 64Mi}
+                limits: {cpu: "1", memory: 256Mi}
+              env:
+                - {name: FRESH_CONFIGURATION_CAPTURE, value: "true"}
+                - {name: FRESH_CAPTURE_DIRECTORY, value: /fresh-configuration}
+                - {name: FRESH_API_HOST, value: {{ $fresh.apiServerHost | quote }}}
+                - {name: FRESH_API_PORT, value: {{ $fresh.apiServerPort | quote }}}
+                - {name: FRESH_API_NAMESPACE, value: {{ $namespace | quote }}}
+                - {name: FRESH_API_RESOURCES, value: {{ $fresh.resources | toJson | quote }}}
+                - {name: FRESH_API_TOKEN_FILE, value: /api-credentials/token}
+                - {name: FRESH_API_CA_FILE, value: /api-credentials/ca.crt}
+                - {name: FRESH_CAPTURE_IMAGE, value: {{ $fresh.image | quote }}}
+              volumeMounts:
+                - {name: script, mountPath: /scripts, readOnly: true}
+                - {name: api-credentials, mountPath: /api-credentials, readOnly: true}
+                - {name: fresh-configuration, mountPath: /fresh-configuration}
+{{- end }}
           securityContext:
             runAsNonRoot: true
             runAsUser: 1000
@@ -116,23 +168,43 @@ spec:
                   valueFrom: {secretKeyRef: {name: {{ .Values.roleCapture.privilegedCredentialSecretRef }}, key: {{ .Values.roleCapture.userKey }}}}
                 - name: ROLE_CAPTURE_PGPASSWORD
                   valueFrom: {secretKeyRef: {name: {{ .Values.roleCapture.privilegedCredentialSecretRef }}, key: {{ .Values.roleCapture.passwordKey }}}}
+                - {name: FRESH_API_CAPTURE_ENABLED, value: {{ $fresh.enabled | quote }}}
+{{- if $fresh.enabled }}
+                - {name: PROTECTED_CONFIGURATION_DIRECTORY, value: /fresh-configuration/complete}
+{{- else }}
                 - {name: BACKUP_CONFIGURATION_SECRET_REF, value: {{ .Values.roleCapture.protectedConfigurationSecretRef | quote }}}
                 - {name: BACKUP_CONFIGURATION_UID, value: {{ .Values.roleCapture.configurationSnapshot.uid | quote }}}
                 - {name: BACKUP_CONFIGURATION_RESOURCE_VERSION, value: {{ .Values.roleCapture.configurationSnapshot.resourceVersion | quote }}}
                 - {name: BACKUP_CONFIGURATION_CAPTURED_AT, value: {{ .Values.roleCapture.configurationSnapshot.capturedAt | quote }}}
+{{- end }}
 {{- end }}
               volumeMounts:
                 - {name: backups, mountPath: /backup}
                 - {name: script, mountPath: /scripts, readOnly: true}
                 - {name: temporary, mountPath: /tmp}
 {{- if .Values.roleCapture.enabled }}
+{{- if $fresh.enabled }}
+                - {name: fresh-configuration, mountPath: /fresh-configuration, readOnly: true}
+{{- else }}
                 - {name: protected-configuration, mountPath: /protected-configuration, readOnly: true}
+{{- end }}
 {{- end }}
           volumes:
             - {name: backups, persistentVolumeClaim: {claimName: {{ $owner }}-hub-postgresql-backup}}
             - {name: script, configMap: {name: {{ $owner }}-hub-postgresql-backup}}
             - {name: temporary, emptyDir: {sizeLimit: 64Mi}}
 {{- if .Values.roleCapture.enabled }}
+{{- if $fresh.enabled }}
+            - {name: fresh-configuration, emptyDir: {sizeLimit: 32Mi}}
+            - name: api-credentials
+              projected:
+                defaultMode: 0440
+                sources:
+                  - serviceAccountToken: {path: token, expirationSeconds: 600}
+                  - configMap:
+                      name: kube-root-ca.crt
+                      items: [{key: ca.crt, path: ca.crt}]
+{{- else }}
             - name: protected-configuration
               secret:
                 secretName: {{ .Values.roleCapture.protectedConfigurationSecretRef }}
@@ -142,5 +214,6 @@ spec:
                   - {key: configmaps.json, path: configmaps.json}
                   - {key: secrets.json, path: secrets.json}
                   - {key: running-images.txt, path: running-images.txt}
+{{- end }}
 {{- end }}
 {{- end }}

@@ -59,6 +59,70 @@ def unique_object(pairs):
     return result
 
 
+def validate_fresh_snapshot(snapshot, data, owner):
+    """Bind the exact API scope and observed identities to captured bytes.
+
+    This checks provenance consistency, not historical truth or recovery.
+    Secrets and object contents stay in the private bundle.
+    """
+    keys={'schema_version','source','observed_live','namespace','captured_at','capture_image','resources','objects','pod_images'}
+    if (set(snapshot)!=keys or type(snapshot['schema_version']) is not int or snapshot['schema_version']!=1
+            or snapshot['source']!='kubernetes-api' or snapshot['observed_live'] is not True
+            or snapshot['namespace']!=OWNERS[owner] or not isinstance(snapshot['capture_image'],str)
+            or not DIGEST.fullmatch(snapshot['capture_image'])):
+        raise ValueError('Versioned fresh API provenance required')
+    try:
+        captured=datetime.datetime.fromisoformat(snapshot['captured_at'])
+        if captured.utcoffset()!=datetime.timedelta(0): raise ValueError('UTC capture timestamp required')
+        resources=snapshot['resources']
+        kinds={'deployments':('apps/v1','Deployment'),'statefulsets':('apps/v1','StatefulSet'),'configmaps':('v1','ConfigMap'),'secrets':('v1','Secret'),'pods':('v1','Pod')}
+        if not isinstance(resources,dict) or set(resources)!=set(kinds) or not (resources['deployments'] or resources['statefulsets']): raise ValueError('Incomplete capture scope')
+        for resource,names in resources.items():
+            if (not isinstance(names,list) or len(names)!=len(set(names))
+                    or (resource in ('configmaps','secrets','pods') and not names)
+                    or any(not isinstance(name,str) or not re.fullmatch(r'[a-z0-9](?:[-a-z0-9.]*[a-z0-9])?',name) for name in names)):
+                raise ValueError('Exact named capture resources required')
+        expected={(resource,name) for resource,names in resources.items() for name in names}
+        records={}
+        for record in snapshot['objects']:
+            if not isinstance(record,dict) or set(record)!={'resource','name','uid','resource_version'} or any(not isinstance(value,str) or not value for value in record.values()): raise ValueError('Object identity required')
+            key=(record['resource'],record['name'])
+            if key not in expected or key in records: raise ValueError('Duplicate or unknown observed object')
+            records[key]=record
+        if set(records)!=expected: raise ValueError('Missing observed object')
+        captured_objects={}
+        for filename in ('workloads.json','configmaps.json','secrets.json'):
+            value=json.loads(data[filename],object_pairs_hook=unique_object)
+            if not isinstance(value,dict) or value.get('apiVersion')!='v1' or value.get('kind')!='List' or not isinstance(value.get('items'),list): raise ValueError('Captured object list required')
+            allowed=('deployments','statefulsets') if filename=='workloads.json' else (filename.removesuffix('.json'),)
+            for item in value['items']:
+                resource=next((name for name in allowed if (item.get('apiVersion'),item.get('kind'))==kinds[name]),None)
+                meta=item['metadata']; key=(resource,meta['name'])
+                record=records.get(key)
+                if (record is None or key in captured_objects or meta.get('namespace')!=snapshot['namespace']
+                        or meta.get('uid')!=record['uid'] or meta.get('resourceVersion')!=record['resource_version']): raise ValueError('Captured object disagrees with API provenance')
+                captured_objects[key]=item
+        if set(captured_objects)!={key for key in expected if key[0]!='pods'}: raise ValueError('Incomplete captured configuration')
+        rows=[]; pods=set()
+        for pod in snapshot['pod_images']:
+            if not isinstance(pod,dict) or set(pod)!={'name','uid','resource_version','containers'}: raise ValueError('Pod image provenance required')
+            record=records.get(('pods',pod['name']))
+            if record is None or pod['name'] in pods or (pod['uid'],pod['resource_version'])!=(record['uid'],record['resource_version']): raise ValueError('Pod identity disagrees with observed object')
+            pods.add(pod['name']); containers=pod['containers']
+            if not isinstance(containers,list) or not containers: raise ValueError('Running image provenance required')
+            names=set()
+            for container in containers:
+                if (not isinstance(container,dict) or set(container)!={'name','image_id'}
+                        or not isinstance(container['name'],str) or not re.fullmatch(r'[a-z0-9](?:[-a-z0-9]*[a-z0-9])?',container['name'])
+                        or container['name'] in names or not isinstance(container['image_id'],str)
+                        or not re.fullmatch(r'(?:[a-z-]+://)?[^\s@]+@sha256:[a-f0-9]{64}',container['image_id'])): raise ValueError('Immutable unique running images required')
+                names.add(container['name'])
+            rows.append(pod['name']+'\t'+' '.join(c['name']+'='+c['image_id'] for c in containers)+'\n')
+        if pods!=set(resources['pods']) or data['running-images.txt']!=''.join(rows).encode(): raise ValueError('Running image bytes disagree with provenance')
+    except (KeyError,TypeError,AttributeError) as error:
+        raise ValueError('Invalid fresh API provenance') from error
+
+
 def read_capture(path, owner):
     root = private_directory(path)
     if {p.name for p in root.iterdir()} != set(FILES) | {'manifest.json'}:
@@ -78,10 +142,12 @@ def read_capture(path, owner):
     if not re.fullmatch(r'[0-9]+(?:\.[0-9]+)*', manifest['client_version']):
         raise ValueError('Numeric PostgreSQL client version required')
     snapshot = manifest.get('configuration_snapshot')
-    if (not isinstance(snapshot, dict) or snapshot.get('source') != 'operator-supplied-secret-snapshot'
-            or snapshot.get('observed_live') is not False
-            or any(not isinstance(snapshot.get(k), str) or not snapshot[k] for k in ('secret_ref', 'uid', 'resource_version', 'captured_at'))):
-        raise ValueError('Declared operator snapshot metadata required')
+    if not isinstance(snapshot,dict): raise ValueError('Configuration snapshot provenance required')
+    fresh=snapshot.get('source')=='kubernetes-api'
+    if not fresh:
+        if (snapshot.get('source')!='operator-supplied-secret-snapshot' or snapshot.get('observed_live') is not False
+                or any(not isinstance(snapshot.get(k),str) or not snapshot[k] for k in ('secret_ref','uid','resource_version','captured_at'))):
+            raise ValueError('Declared operator snapshot metadata required')
     hub = manifest.get('hub')
     if (not isinstance(hub, dict) or set(hub) != {'image', 'chart_version', 'app_version'}
             or any(value is not None and (not isinstance(value, str) or not value) for value in hub.values())):
@@ -97,6 +163,7 @@ def read_capture(path, owner):
             raise ValueError('Capture checksum mismatch or empty file')
     if not data['hub.pgdump'].startswith(b'PGDMP'):
         raise ValueError('PostgreSQL custom dump required')
+    if fresh: validate_fresh_snapshot(snapshot,data,owner)
     return manifest, raw_manifest, data
 
 
@@ -157,7 +224,7 @@ def convert(cps_bundle, cit_bundle, output):
                     'files': files, 'scheduled_sources': sources, 'recovery_qualified': False,
                     'productionQualified': False, 'coordinated_capture': False,
                     'limitations': ['Byte-preserving assembly only; no restore executed',
-                        'Original operator-declared snapshots are not verified live or coordinated',
+                        'Sources retain supplied or fresh API provenance; captures are not coordinated',
                         'Hub versions remain as declared or unknown; no connected Hub/NFS or off-host qualification']}
         write_private(staging / 'manifest.json', (json.dumps(manifest, indent=2) + '\n').encode())
         plan = validate_restore_contract(staging)
