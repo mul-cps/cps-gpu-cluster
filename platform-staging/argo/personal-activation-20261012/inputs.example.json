@@ -1,0 +1,15 @@
+{
+  "policy_configmap": "/private/argo-inputs/compute-policy.json",
+  "gateway_deployment": "/private/argo-inputs/gateway-deployment.json",
+  "gateway_runtime_secret": "/private/argo-inputs/gateway-runtime-secret.json",
+  "cps_hub_secret": "/private/argo-inputs/cps-hub-secret.json",
+  "cps_hub_deployment": "/private/argo-inputs/cps-hub-deployment.json",
+  "cit_hub_secret": "/private/argo-inputs/cit-hub-secret.json",
+  "cit_hub_deployment": "/private/argo-inputs/cit-hub-deployment.json",
+  "cit_existing_secret": "/private/argo-inputs/cit-existing-secret.json",
+  "ca_files": [
+    "/private/argo-inputs/public-hub-ca-bundle.pem",
+    "/private/argo-inputs/compute-ca.pem",
+    "/private/argo-inputs/native-argo-ca.pem"
+  ]
+}

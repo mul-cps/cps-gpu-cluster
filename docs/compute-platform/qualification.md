@@ -4,8 +4,8 @@
 configuration renders are necessary checks, not acceptance evidence for hardware,
 real authentication, shared kernels or data recovery.
 
-The latest bounded result is the
-[2026-10-09 qualified two-workspace pilot](#2026-10-09-qualified-no-mig-group-pilot).
+The latest bounded hardware result is the
+[2026-10-12 two-workspace lifecycle](#2026-10-12-limited-group-lifecycle-and-personal-argo-source-checkpoint).
 Earlier dated failures and pending statements below remain historical evidence;
 the latest receipt supersedes them only for its exact scopes and measured pins.
 
@@ -353,3 +353,76 @@ temporary operators were removed. The archived
 uses `qualification`, with mixed-profile restart pending and general GPU group
 access unavailable. Its timestamp remains a qualification snapshot; do not
 reapply it as a fresh availability assessment.
+
+## 2026-10-12 limited group lifecycle and personal Argo source checkpoint
+
+The immutable [measured results](https://github.com/mul-cps/cps-gpu-cluster/blob/079b2b60e7a5fd88c305febada90afec152c81f8/platform-staging/gpu/native-group-pilot/qualification/limited-group-20261012/measured-results.md)
+and [lifecycle receipt](https://github.com/mul-cps/cps-gpu-cluster/blob/079b2b60e7a5fd88c305febada90afec152c81f8/platform-staging/gpu/native-group-pilot/qualification/limited-group-20261012/lifecycle-acceptance.json)
+close the earlier mixed-profile restart and normal Stop gate for exactly CPS
+`native-group-b` at 5 GiB and CIT `native-group-a` at 10 GiB on the selected
+GPU2 A100, without MIG. The measurement is bound to policy hash
+`sha256:4f1dff1a92aba5cd7376dfb897612b7e6f2e6f15a09515dbdf29efa4c522359d`.
+Normal Start/Stop/restart/Stop passed; both replacement Pods received automatic
+finite caps and executed 33 verified kernel ticks. All four lifetime Pods were
+absent at final inspection, all 35 allocation records were released, and the
+retained offline native rows had zero charge. These are dated observations,
+not a continuous availability assessment.
+
+Fresh OOM/recovery and independent peer continuation, 120-second two-client
+MPS at the 10 GiB cap, and same-workspace IPC/retained VMM controls passed.
+Fresh cross-Pod import denials were not exercised for those lifetimes. The
+results do not qualify 20 GiB profiles, additional groups, the eight-GPU fleet,
+same-person concurrent cross-Hub starts or human CIT OAuth/RTC collaboration.
+CPS used authenticated console HTTP; CIT used the trusted normal console
+manager. Their authentication evidence is kept distinct.
+
+The later [source/admin verification](https://github.com/mul-cps/cps-gpu-cluster/blob/079b2b60e7a5fd88c305febada90afec152c81f8/platform-staging/gpu/native-group-pilot/qualification/limited-group-20261012/post-publication-verification.json)
+records the corrected teardown source suite: 280 native tests and 161 cluster
+tests with 139 subtests passed. The GPU runtime was unchanged and the original
+failed test run remains preserved. Source54 passed 44 UI tests and TypeScript/
+Vite; Root confirmed the grant workspace selector in both public assets and
+restored four temporary grants and four memberships after physical shutdown.
+The [source-only personal Argo receipt](../../platform-staging/argo/personal-activation-20261012/source-acceptance.json)
+records the current immutable gateway, console and private frontend pins.
+
+Private frontend acceptance covers actual user information, an empty owned
+workflow list, ignored injected identity headers, bearer-only login rejection,
+and absent-object privacy. Its fixture is explicitly a Root-signed cookie with
+a real Hub user token. Human browser OAuth, nonempty own-versus-foreign workflow
+and artifact access, successful/failed current notebook runs and public personal
+Argo routing remain pending. Both prepared personal ingress settings stay false.
+The historical five-GiB release inventory remains a historical snapshot, not a
+validator for this mixed-profile measurement. General GPU access and the
+full-platform release lock remain unqualified. The scheduling, collaboration,
+recovery and release gates listed above remain open; Moodle stays disabled,
+Hub 6 stays separate, and direct university Dex login awaits ICT registration.
+
+
+## 2026-10-12 CPU policy and current private Argo follow-up
+
+The [CPU-only policy revision](../../platform-staging/gpu/native-group-pilot/qualification/cpu-runner-policy-20261012/README.md)
+adds the locally qualified immutable notebook runner `1fab0663…` to `batch-cpu`
+at two CPU cores and 8 GiB. Its compiled version is `0.1.2`, hash
+`sha256:d48f6553ed036c2e7adcc97417623fe0308be93ad13b20f246047ada118511b0`.
+Local rootless UID 10001 success and intentional failure retained their executed
+notebooks; local acceptance does not establish cluster artifact delivery.
+The original GPU measurements remain byte-identical, and compatibility
+attestations do not claim new GPU measurements. Exactly the reviewed CPS
+five-GiB and CIT ten-GiB group scopes remain; no wider GPU profile is enabled.
+
+Root's [dated historical custody receipt](../../platform-staging/argo/personal-activation-20261012/cpu-policy-historical-custody-receipt.json)
+records immutable node ConfigMap `cps-native-node-cpu-v2-d48f6553ed03-h32`,
+preserving all 28 original history rows and adding four proved released
+lifetimes. Native runtime source is unchanged. Protected ledger and journal
+records were retained separately and must not be replaced by a source recipe.
+
+The [current private Argo inventory](../../platform-staging/argo/personal-activation-20261012/source-acceptance.json)
+records gateway `d3f744bd…` and both dedicated frontends `7e150996…` from Root's
+sanitized deployment receipt. Its [partial private acceptance](../../platform-staging/argo/personal-activation-20261012/current-private-partial-acceptance.json)
+returned owned list/detail 200 and artifact HEAD 200, while actual artifact GET
+returned 502 and logs 503. Foreign and absent detail/log/artifact requests
+returned 404. Artifact bytes and logs remain unqualified. Authentication was
+Root's signed cookie with a real Hub user token; human browser OAuth and public
+personal routing remain pending, and both prepared ingress flags remain false.
+These receipts are dated observations, not ongoing availability checks. General
+GPU access and the full-platform release remain unqualified.

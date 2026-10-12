@@ -26,6 +26,8 @@ gateway:
     enabled: false
   argoUi:
     enabled: false
+    # Root runs and verifies one bounded rotation before enabling the schedule.
+    rotationSuspended: true
     readerSecretRef: cps-argo-ui-reader
     readerServiceAccount: argo-artifact-reader
     readerNamespace: cps-argo
@@ -36,6 +38,7 @@ personalArgo:
   image: ""
   port: 8080
   nativeUrl: ""
+  hubCaFile: /etc/ssl/certs/ca-certificates.crt
   nativeCaFile: /trust/ca.crt
   upstreamCaConfigMapRef: cps-compute-gateway-ca
   sources:

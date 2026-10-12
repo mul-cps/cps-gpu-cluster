@@ -55,7 +55,7 @@ spec:
             - {name: ARGO_USER_HUB_AUTHORIZATION_URL, value: {{ printf "%s/oauth2/authorize" $hub | quote }}}
             - {name: ARGO_USER_COMPUTE_URL, value: {{ $.Values.gateway.url | quote }}}
             - {name: ARGO_USER_NATIVE_ARGO_URL, value: {{ $native | quote }}}
-            - {name: ARGO_USER_HUB_CA_FILE, value: /etc/ssl/certs/ca-certificates.crt}
+            - {name: ARGO_USER_HUB_CA_FILE, value: {{ $.Values.personalArgo.hubCaFile | quote }}}
             - {name: ARGO_USER_COMPUTE_CA_FILE, value: /trust/ca.crt}
             - {name: ARGO_USER_NATIVE_ARGO_CA_FILE, value: {{ $.Values.personalArgo.nativeCaFile | quote }}}
           securityContext:
