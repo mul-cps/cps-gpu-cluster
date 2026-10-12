@@ -1,0 +1,71 @@
+{
+  "assessment": {
+    "checks": [
+      {
+        "id": "scoped-profiles",
+        "label": "Approved workspace GPU profile discovery",
+        "state": "passed"
+      },
+      {
+        "id": "ipc-vmm-isolation",
+        "label": "5/10 GiB cross-workspace IPC and VMM denial",
+        "state": "passed"
+      },
+      {
+        "id": "shared-cap-recovery",
+        "label": "10 GiB shared-cap OOM and recovery",
+        "state": "passed"
+      },
+      {
+        "id": "private-mps",
+        "label": "Private two-client MPS smoke and cleanup",
+        "state": "passed"
+      },
+      {
+        "id": "normal-stop-restore",
+        "label": "Normal Stop, physical release and permission restoration",
+        "state": "passed"
+      },
+      {
+        "id": "profile20",
+        "label": "20 GiB qualification",
+        "state": "pending"
+      },
+      {
+        "id": "compute-enforcement",
+        "label": "Enforced compute sharing and broader rollout",
+        "state": "pending"
+      }
+    ],
+    "declared_lifetime_minutes": 15,
+    "derived_expiry_at": "2026-10-12T20:31:02Z",
+    "refresh_gap": "This is a retained capture. It does not prove a later refresh or the state after expiry.",
+    "state": "limited-pilot",
+    "title": "GPU group sharing: limited 5/10 GiB pilot",
+    "updated_at": "2026-10-12T20:16:02Z"
+  },
+  "cit": {
+    "evidence_kind": "retained read from the configured CPS_PLATFORM_STATUS_PATH inside the application",
+    "http_status_verified": false,
+    "same_state_title_timestamp_as_cps": true
+  },
+  "cps": {
+    "assessment_content_verified": true,
+    "evidence_kind": "retained normal administration API response",
+    "http_status": 200
+  },
+  "enforced_compute_distribution_qualified": false,
+  "general_gpu_access_qualified": false,
+  "human_oauth_verified": false,
+  "measurement_date": "2026-10-12",
+  "private_evidence_raw_sha256": {
+    "cit-configured-mounted-status-read": "8f26cdc5563f59a6594d0b7880762c7f7158c706c61c8b6d4d43d7aac2e6cdfd",
+    "cps-normal-status-api": "37f87c509d20b886eb9bcf778154ae171f9fadb4c1a20ddb92a14eb4ef8fe143"
+  },
+  "production_qualified": false,
+  "profile_20_qualified": false,
+  "rendered_browser_ui_verified": false,
+  "report_performed_live_actions": false,
+  "state": "captured-limited-pilot-status-reviewed",
+  "version": 1
+}

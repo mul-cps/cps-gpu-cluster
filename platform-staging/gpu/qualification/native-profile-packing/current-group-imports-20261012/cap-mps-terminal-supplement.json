@@ -1,0 +1,197 @@
+{
+  "actual_gpu_uuid": "GPU-16128952-b438-556a-00bb-93039ee24e56",
+  "captured_profile_api_check": {
+    "cps_native_group_b_context": {
+      "http_status": 200,
+      "native_group_workspace": "native-group-b",
+      "nominal_gpu_memory_gib": 5,
+      "profile_enabled": true,
+      "profiles": [
+        "batch-cpu",
+        "interactive-cpu",
+        "interactive-shared-5"
+      ]
+    },
+    "evidence_kind": "retained backend API response; source/permission context",
+    "rendered_browser_ui_verified": false,
+    "status_banner_api_verified": false,
+    "unscoped": {
+      "http_status": 200,
+      "profiles": [
+        "batch-cpu",
+        "interactive-cpu"
+      ]
+    }
+  },
+  "controller_model_sha256": "630d43cc115b5bddf3e5d110a25cc891e0941953bbabd833f0a77a3773ad7880",
+  "evidence_boundary": "Sanitized offline review of retained actual measurements and direct terminal snapshots. No live API calls, GPU actions, credential publication or activation changes were performed by this report. The initial import report is immutable.",
+  "fixture_restoration": {
+    "all_eight_records_exact_original": true,
+    "baseline_raw_sha256": "8f54894ce4e70ad3eb660348ad84b9b8f71ff15136fd67915b1b67bca678a001",
+    "credential_material_included": false,
+    "sources": {
+      "cit": {
+        "all_original_fields_including_source_and_expiry_preserved": true,
+        "grants_exact_original": 2,
+        "memberships_exact_original": 2,
+        "normal_audited_application_paths": true,
+        "remaining": 0
+      },
+      "cps": {
+        "all_original_fields_including_source_and_expiry_preserved": true,
+        "grants_exact_original": 2,
+        "memberships_exact_original": 2,
+        "normal_audited_application_paths": true,
+        "remaining": 0
+      }
+    },
+    "whole_hub_database_restore_qualified": false
+  },
+  "initial_measurement_raw_sha256": "c2f214ef291da5fe7e576da6665b18df415ef423a21181c37d35e2fa05e218a8",
+  "initial_report_and_all_counterexamples_preserved": true,
+  "measurement_date": "2026-10-12",
+  "measurements": {
+    "cap-peer-aggregate-execution": {
+      "exit_code": 0,
+      "seconds": 371.12741866498254
+    },
+    "cross-pod": {
+      "aggregate_holder_mib": 0,
+      "both_final_charges_zero": true,
+      "exact_seals_23_retirements_unchanged": true,
+      "held_before_oom_mib": 9728,
+      "measurement_passed": true,
+      "oom_attempted_tensor_mib": 9984,
+      "oversized_attempt_mib": 10496,
+      "peer_ticks": 342,
+      "physical_held_30second_window_verified": true,
+      "physical_held_charge_bytes": {
+        "cit": 10177822400,
+        "cps": 581307072
+      },
+      "production_qualified": false,
+      "recovery_byte": 37,
+      "typed_oom": {
+        "cuda_error_code": null,
+        "kind": "torch.OutOfMemoryError"
+      }
+    },
+    "mps-cit10": {
+      "aggregate_cuda_result": 2,
+      "alternating_client_allocation_sequence_verified": true,
+      "attempted_mib": 9472,
+      "both_clients_recovered": true,
+      "both_final_charges_zero": true,
+      "exact_four_pid_start_namespace_parent_lifetimes": true,
+      "exact_seals_23_retirements_unchanged": true,
+      "held_mib": 9216,
+      "host_cleaned_processes": [],
+      "measurement_passed": true,
+      "oversized_attempt_mib": 10496,
+      "oversized_cuda_result": 2,
+      "peer_ticks": 282,
+      "pinned_raw_cuda_probe_kernel_goldens_enforced": {
+        "bias": 37,
+        "vector_elements": 256
+      },
+      "production_qualified": false,
+      "raw_cuda_client_digest_verified": true,
+      "two_registered_non_root_clients_and_private_daemons": true
+    },
+    "mps-cit10-execution": {
+      "exit_code": 0,
+      "seconds": 156.11623973306268
+    },
+    "same-pod-aggregate": {
+      "aggregate_holder_mib": 2048,
+      "both_final_charges_zero": true,
+      "exact_seals_23_retirements_unchanged": true,
+      "held_before_oom_mib": 6912,
+      "measurement_passed": true,
+      "oom_attempted_tensor_mib": 7168,
+      "oversized_attempt_mib": 10496,
+      "peer_ticks": 342,
+      "physical_held_30second_window_verified": true,
+      "physical_held_charge_bytes": {
+        "cit": 10222258560,
+        "cps": 0
+      },
+      "production_qualified": false,
+      "recovery_byte": 37,
+      "typed_oom": {
+        "cuda_error_code": null,
+        "kind": "torch.OutOfMemoryError"
+      }
+    }
+  },
+  "normal_stop_and_retirement": {
+    "all_ledger_allocations_released": 37,
+    "both_actual_pods_absent_in_direct_get_snapshots": true,
+    "both_current_target_rows_offline_zero_with_original_finite_limits": true,
+    "cit_normal_stop_state": "stopped",
+    "cit_reservation_active": false,
+    "cps_normal_stop_http_status": 200,
+    "post_restoration_raw_inventory_byte_identical": true,
+    "prior_23_finite_retired_rows_exact_unchanged": true,
+    "selected_gpu_inventory_entries_offline_zero": 38
+  },
+  "pending": [
+    "SM compute distribution qualification",
+    "Creator-exit retention and any separate full-isolation gates not measured here",
+    "20 GiB, maximum-profile overhead and production packing",
+    "Browser rendering and fresh status-banner API verification are outside this supplement"
+  ],
+  "policy_hash": "sha256:d48f6553ed036c2e7adcc97417623fe0308be93ad13b20f246047ada118511b0",
+  "post_restoration_pod_absence_observed_at": [
+    "2026-10-12T20:17:22.863246+00:00",
+    "2026-10-12T20:17:22.952813+00:00"
+  ],
+  "private_evidence_raw_sha256": {
+    "captured-cps5-workspace-profile-api": "717f217fd9d9d24b2bc16a04a46c10993a98bc622a511288e82e7b244f142b63",
+    "captured-unscoped-profile-api": "4cd626c1d8950dd4a039e87247297e64b8efca6e49bce793f9fe4afc05374c5d",
+    "cit-fixture-restore-preflight": "5770c53fba705c62946a0826038c212334c184541a02a478b6cd44eb3bec440c",
+    "cit-fixture-restore-result": "99e99b6db8e9e435b9b12d8c33fdac18a7367d5e573ae4d0a87df6c566e0b599",
+    "cit-normal-stop-response": "cc511e78b83d620697f70bc503c16dc7f07cc9c77f080bda2a490b087845cbca",
+    "cps-fixture-restore-preflight": "946b3f0e61302abc50d15bff6bf346f64dd93b4e63003a340c7c55cbe6d96479",
+    "cps-fixture-restore-result": "b33bd6ab61c1ba3640f0b634726903adbd56b5a47c25459121a02a158e1a9601",
+    "cps-normal-stop-response": "f1a9e538491302ec19a116cc9a9c2558d82473b1e4591c52214e75a687714121",
+    "fixture-restoration-receipt": "0e9ceadf904f2f8ea23bdfaab73df89ee5b375f0b82d4aff28688b0243da7494",
+    "last-live-native-seals": "340c40c087e89bd8a926d0fcaf2d0c296dd37287438d76e3afcc1fd30339d000",
+    "original-eight-record-baseline": "8f54894ce4e70ad3eb660348ad84b9b8f71ff15136fd67915b1b67bca678a001",
+    "post-restoration-native-inventory": "9213845bd58e2b6382030c74308e995050f8fd736d2e122a26b07821b424734b",
+    "post-restoration-pod-absence": "a85fb38e6f0cece5ac93f27d02c5d1d966fa51a57234c8c35ece3fb7f9f2e0ff",
+    "private-cap-mps-review-draft": "31da53146eae1dfd732214858ae5a3ed27db6c8c5203466c76aeb27b590769f0",
+    "root-terminal-current5-10": "478cd1621d7eab1cb46cf97fdc65a9916cfb6f91a3d47e36d8ae9790327e00f6",
+    "shutdown-ledger": "7d371f3137c433de8ab1baf74fdab86f2823d4d399d059a2b1aaa6e763653406",
+    "shutdown-native-inventory": "9213845bd58e2b6382030c74308e995050f8fd736d2e122a26b07821b424734b"
+  },
+  "profiles": {
+    "cit": "interactive-shared-10",
+    "cps": "interactive-shared-5"
+  },
+  "qualification": {
+    "complete_isolation_qualified": false,
+    "current_5_10_cap_peer_aggregate_measurements_reviewed": true,
+    "current_cit10_mps_memory_cap_measurements_reviewed": true,
+    "current_normal_stop_and_physical_retirement_reviewed": true,
+    "general_gpu_access_qualified": false,
+    "gitops_activation_changed": false,
+    "maximum_profile_overhead_and_production_packing_qualified": false,
+    "original_eight_fixture_records_restoration_reviewed": true,
+    "production_qualified": false,
+    "profile_20_qualified": false,
+    "sm_distribution_qualified": false
+  },
+  "root_terminal_input_raw_sha256": {
+    "current-original-fixtures.json": "8f54894ce4e70ad3eb660348ad84b9b8f71ff15136fd67915b1b67bca678a001",
+    "harness-v3-measurements-phase-execution.json": "5fa81ccc9ba1b432ea3724a6c8b7d0cdeacc283fd9622d84f1d133075aff40f9",
+    "harness-v4-measurements-phase-execution-vmm.json": "17c68be8d8e20633a97366f38d316a7bce65076eb1711d47f6f05b54d358c5b7",
+    "harness-v4-measurements-phase-execution.json": "76e30d372327bfbccc25638e9416de07298aa1598a919d94be81bba8487b5466",
+    "restoration-current-v1-receipt.json": "0e9ceadf904f2f8ea23bdfaab73df89ee5b375f0b82d4aff28688b0243da7494",
+    "shutdown-actual-caps.json": "9213845bd58e2b6382030c74308e995050f8fd736d2e122a26b07821b424734b",
+    "shutdown-actual-ledger.json": "7d371f3137c433de8ab1baf74fdab86f2823d4d399d059a2b1aaa6e763653406"
+  },
+  "root_terminal_observed_at": "2026-10-12T20:13:39.620586+00:00",
+  "state": "current-5-10-cap-mps-and-terminal-evidence-reviewed",
+  "version": 1
+}
