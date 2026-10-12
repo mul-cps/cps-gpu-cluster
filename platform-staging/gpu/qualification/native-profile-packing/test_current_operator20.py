@@ -124,6 +124,7 @@ class Operator20Tests(unittest.TestCase):
             # assertions. Protected journal bytes are deliberately not canonical
             # authority serialization, even though their parsed records agree.
             preflight=q.module('generated_raw_journal_preflight',(root/'packet/run_group_acceptance.py').read_bytes(),root/'packet/run_group_acceptance.py')
+            self.assertEqual(preflight.PROBE_SHA,old.sha((root/'packet/group_probe.py').read_bytes()))
             assertions=[n for n in ast.walk(ast.parse(preflight.HOST_SOURCE)) if isinstance(n,ast.Expr)
                 and isinstance(n.value,ast.Call) and isinstance(n.value.func,ast.Name)
                 and n.value.func.id=='require' and len(n.value.args)==2

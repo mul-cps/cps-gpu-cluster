@@ -70,6 +70,8 @@ def loaders():
         out['imports/same_pod_imports.py']=helper.encode()
         old_group=out['group_probe.py'];out['group_probe.py']=p.replace(old_group.decode(),
             'choices=(5120,10240)','choices=(5120,10240,20480)').encode()
+        out['run_group_acceptance.py']=p.replace(out['run_group_acceptance.py'].decode(),
+            "PROBE_SHA = "+repr(h.sha(old_group)),"PROBE_SHA = "+repr(h.sha(out['group_probe.py']))).encode()
         for name,value in list(out.items()):
             if name.endswith('.py') and name not in ('run_group_acceptance.py','imports/same_pod_imports.py','group_probe.py'):
                 for before,after in [(old_pre,out['run_group_acceptance.py']),(old_helper,out['imports/same_pod_imports.py']),(old_group,out['group_probe.py'])]:
