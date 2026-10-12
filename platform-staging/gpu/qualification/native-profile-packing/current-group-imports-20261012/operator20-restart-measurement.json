@@ -28,8 +28,6 @@
     "cps": 0
   },
   "pending_gates": [
-    "Fresh post-Stop physical retirement and custody closure",
-    "Configuration inverse and exact original Source fixture restoration",
     "Enforced SM compute distribution and maximum-profile overhead",
     "Production packing and broader course-group/profile activation"
   ],
@@ -251,6 +249,38 @@
       "raw_sha256": "b11dbe69b9b607f43625280a1f97e0fc4e82e22d5df1759c6be625d25a9949d7",
       "relative_path": "profile20-restart-actual-start-capture-v1/nvml.json"
     },
+    "profile20-restart-restored-readback-v1/Root-verified-restoration.json": {
+      "raw_sha256": "f162752dffd524b55bedc8efde8730c9d18d9f0c9be54a687c5505ea8a741711",
+      "relative_path": "profile20-restart-restored-readback-v1/Root-verified-restoration.json"
+    },
+    "profile20-restart-restored-terminal-capture-v1/capture-receipt.json": {
+      "raw_sha256": "d708c55fba863a57fcee2075529efe264b8e8121a7771251e17ace104431217d",
+      "relative_path": "profile20-restart-restored-terminal-capture-v1/capture-receipt.json"
+    },
+    "profile20-restart-restored-terminal-capture-v1/cit-jhub-target-absence.json": {
+      "raw_sha256": "0fcd210d845213223f623de1fec9a119adebaa431eb7c04276b068b4090fb26e",
+      "relative_path": "profile20-restart-restored-terminal-capture-v1/cit-jhub-target-absence.json"
+    },
+    "profile20-restart-restored-terminal-capture-v1/host.json": {
+      "raw_sha256": "77e54b567405088a55e924e88d4b8fad851971784fd8e3a9ca4c8d4067d4a9bb",
+      "relative_path": "profile20-restart-restored-terminal-capture-v1/host.json"
+    },
+    "profile20-restart-restored-terminal-capture-v1/jupyterhub-target-absence.json": {
+      "raw_sha256": "0cd4865c8533d8debc5e16b895d059db8690f5421b7f188a1a1292ae25dce35e",
+      "relative_path": "profile20-restart-restored-terminal-capture-v1/jupyterhub-target-absence.json"
+    },
+    "profile20-restart-restored-terminal-capture-v1/ledger.json": {
+      "raw_sha256": "0f9fbf1296045ea04e6d728b00462ccdd00bf0d5bbb2a4fb089ce4978d7c0eee",
+      "relative_path": "profile20-restart-restored-terminal-capture-v1/ledger.json"
+    },
+    "profile20-restart-restored-terminal-capture-v1/maps.json": {
+      "raw_sha256": "28bfab83fbca3d6b53a801ad1f01bde992ce82ce8525c30dd6096675a49f9938",
+      "relative_path": "profile20-restart-restored-terminal-capture-v1/maps.json"
+    },
+    "profile20-restart-restored-terminal-capture-v1/pods.json": {
+      "raw_sha256": "ba7d9547b210b7c24eb74444d5eb95420896e266d504b98c6481a4f14aace010",
+      "relative_path": "profile20-restart-restored-terminal-capture-v1/pods.json"
+    },
     "profile20-restart-safe-source-v1/actual-node-agent-3bae.py": {
       "raw_sha256": "3bae6d53e4ce42a54b6dcd372839ef5f7286084212c5930d1deeb93da8d6c688",
       "relative_path": "profile20-restart-safe-source-v1/actual-node-agent-3bae.py"
@@ -263,6 +293,10 @@
       "raw_sha256": "7bd1c0e33da57c1bdfc79c52a171bc2e10aac1f056bc871c98cb4b0a10b3294a",
       "relative_path": "profile20-restart-singleuser-collector-v2/preparation-receipt.json"
     },
+    "profile20-restart-source-call-v1/Root-restore-v3-execution.json": {
+      "raw_sha256": "15383e7991771bd0cc6c4afbbcf3c9adf90274165478a1122198a3f404aa79d5",
+      "relative_path": "profile20-restart-source-call-v1/Root-restore-v3-execution.json"
+    },
     "profile20-restart-source-call-v1/Root-start-execution.json": {
       "raw_sha256": "7df99fc13a2d1ff98c71b5758d8647c7f6a91a17ff98befc908d78b91cf9f5a0",
       "relative_path": "profile20-restart-source-call-v1/Root-start-execution.json"
@@ -270,15 +304,48 @@
     "profile20-restart-source-call-v1/Root-stop-execution.json": {
       "raw_sha256": "9b58c8dc1761544e399a12af401c302d4a3431560ecee3b2fdc13db368931ce3",
       "relative_path": "profile20-restart-source-call-v1/Root-stop-execution.json"
+    },
+    "profile20-restart-stop-witness-v1/Root-inspect-execution.json": {
+      "raw_sha256": "2c5b6a16314c1aa35064f3d64e8843f6d0b69d0223b40e82304d3e1213ec3333",
+      "relative_path": "profile20-restart-stop-witness-v1/Root-inspect-execution.json"
+    },
+    "profile20-restart-stop-witness-v1/Root-inspect.stdout": {
+      "raw_sha256": "33e8429d50e2185789055ebf98f773278f427c07487d437f23e9937a0bac7b41",
+      "relative_path": "profile20-restart-stop-witness-v1/Root-inspect.stdout"
+    },
+    "profile20-restart-stop-witness-v1/Root-physical-observer-execution.json": {
+      "raw_sha256": "e2d3749054a224c22e499914ad198d38e4cf61610300630fbe9c82625ae3ab84",
+      "relative_path": "profile20-restart-stop-witness-v1/Root-physical-observer-execution.json"
+    },
+    "profile20-restart-stop-witness-v1/inspect-manifest.json": {
+      "raw_sha256": "fec8d3c8c139fbc7ab60954403ee9796b6ffa71d92175b50aa99730e3058f4c1",
+      "relative_path": "profile20-restart-stop-witness-v1/inspect-manifest.json"
+    },
+    "profile20-restart-stop-witness-v1/physical-observation/physical.json": {
+      "raw_sha256": "494dcdcfe5008d8b3477f6711a409409f56afac592c2273815bad1f8a88e437e",
+      "relative_path": "profile20-restart-stop-witness-v1/physical-observation/physical.json"
+    },
+    "profile20-restart-stop-witness-v1/physical-observation/receipt.json": {
+      "raw_sha256": "817e5199c001f82bfd41cc3cabe16f4732ef3436dfa455ec269bdf788856ed5f",
+      "relative_path": "profile20-restart-stop-witness-v1/physical-observation/receipt.json"
+    },
+    "profile20-restart-stop-witness-v1/projection-provenance.json": {
+      "raw_sha256": "c6e6d8b7c668a8c2e330fc99e28900a0aadd2405e049f3d4835929d2623d25e7",
+      "relative_path": "profile20-restart-stop-witness-v1/projection-provenance.json"
+    },
+    "profile20-restart-stop-witness-v1/updated-finite-retired.json": {
+      "raw_sha256": "770fbee1df8a0e4492a986d996feabad3a88360ec3ee0443f16f057815338445",
+      "relative_path": "profile20-restart-stop-witness-v1/updated-finite-retired.json"
     }
   },
   "qualification": {
     "complete_isolation_qualified": false,
-    "configuration_inverse_and_fixture_restoration_reviewed": false,
+    "configuration_inverse_and_fixture_restoration_reviewed": true,
+    "dynamic_ordinary_course_groups_qualified": false,
     "general_gpu_access_qualified": false,
     "gitops_activation_authorized": false,
     "normal_source_stop_exit_codes_reviewed": true,
-    "physical_retirement_reviewed": false,
+    "physical_retirement_reviewed": true,
     "production_qualified": false,
     "profile20_general_access_qualified": false,
     "renewed_normal_lifetimes_measured": true,
@@ -318,6 +385,38 @@
     "repeat_adapter_commit": "cacaf525b73b8a8c1479d21272e8c8337804ea7a",
     "singleuser_collector_raw_sha256": "147cb7461e5f9a1b33558d8cccae0fefb87e531325b642f3d290029f60a6846c"
   },
-  "state": "operator20-renewed-lifetimes-and-creator-exit-measurements-reviewed-terminal-closure-pending",
+  "state": "operator20-renewed-lifetimes-creator-exit-and-terminal-closure-reviewed",
+  "terminal_closure": {
+    "active_gate_receipt_count": 0,
+    "normal_source_fixture_restore_exit_codes": {
+      "cit": 0,
+      "cps": 0
+    },
+    "physical_cleared_rows": 13,
+    "physical_finite_rows": 29,
+    "sanitized_root_restoration": {
+      "MIG_change": false,
+      "actual_new_terminal_agent_confirmations": true,
+      "at": "2026-10-12T22:36:25.865573+00:00",
+      "driver_change": false,
+      "exact_original_Source_records": true,
+      "full_config_readbacks_passed": true,
+      "human_oauth": false,
+      "ledger_released_count": 41,
+      "physical_all_offline_zero": true,
+      "physical_inventory_count": 42,
+      "policy_hash": "sha256:d48f6553ed036c2e7adcc97417623fe0308be93ad13b20f246047ada118511b0",
+      "production_qualified": false,
+      "retained_agent_sha256": "3bae6d53e4ce42a54b6dcd372839ef5f7286084212c5930d1deeb93da8d6c688",
+      "retained_runtime_history_count": 36,
+      "state": "original-policy-source-hooks-restored-with-full-restart-terminal-custody",
+      "terminal_archive_count": 38
+    },
+    "state": "normal-stop-physical-retirement-and-exact-restoration-reviewed",
+    "target_absence_statuses": {
+      "cit": 404,
+      "cps": 404
+    }
+  },
   "version": 1
 }

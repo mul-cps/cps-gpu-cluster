@@ -1,5 +1,6 @@
 """Offline checks of completed restart/retention evidence; no live calls."""
 import copy
+import base64
 import hashlib
 import importlib.util
 import json
@@ -37,6 +38,7 @@ class Operator20RestartReportTests(unittest.TestCase):
             self.assertIs(self.report['qualification'][name], True)
         for name in ('complete_isolation_qualified', 'sm_compute_distribution_qualified',
                      'general_gpu_access_qualified', 'profile20_general_access_qualified',
+                     'dynamic_ordinary_course_groups_qualified',
                      'production_qualified', 'gitops_activation_authorized'):
             self.assertIs(self.report['qualification'][name], False)
 
@@ -114,6 +116,67 @@ class Operator20RestartReportTests(unittest.TestCase):
             module.validate_backing_charge(retained, changed)
         with self.assertRaises(ValueError):
             module.assess(events, 1, receipt['trial_id'])
+
+    def test_actual_terminal_closure_preserves_full_custody_and_restoration(self):
+        self.assertEqual(self.report['state'], 'operator20-renewed-lifetimes-creator-exit-and-terminal-closure-reviewed')
+        for name in ('physical_retirement_reviewed', 'configuration_inverse_and_fixture_restoration_reviewed'):
+            self.assertIs(self.report['qualification'][name], True)
+        closure = self.report['terminal_closure']
+        path = CROSS / 'profile20-restart-restored-readback-v1/Root-verified-restoration.json'
+        if not path.exists():
+            self.skipTest('Private actual terminal evidence is intentionally unavailable')
+        root = read(path)
+        self.assertEqual(root, closure['sanitized_root_restoration'])
+        for name in ('exact_original_Source_records', 'full_config_readbacks_passed',
+                     'actual_new_terminal_agent_confirmations', 'physical_all_offline_zero'):
+            self.assertIs(root[name], True, name)
+        for name in ('MIG_change', 'driver_change', 'human_oauth', 'production_qualified'):
+            self.assertIs(root[name], False, name)
+        self.assertEqual(root['retained_agent_sha256'], self.report['source_pins']['node_agent_raw_sha256'])
+        self.assertEqual((root['terminal_archive_count'], root['retained_runtime_history_count']), (38, 36))
+        terminal = CROSS / 'profile20-restart-restored-terminal-capture-v1'
+        capture = read(terminal / 'capture-receipt.json')
+        self.assertEqual(capture['exit_code'], 0)
+        self.assertIs(capture['complete'], True)
+        for owner in ('jupyterhub', 'cit-jhub'):
+            self.assertEqual(read(terminal / (owner + '-target-absence.json'))['status'], 404)
+        ledger = json.loads(read(terminal / 'ledger.json')['data']['state.json'])['allocations']
+        self.assertEqual(len(ledger), root['ledger_released_count'])
+        self.assertEqual(len(ledger), 41)
+        self.assertTrue(all(row['state'] == 'released' for row in ledger.values()))
+        host = read(terminal / 'host.json')
+        inventory_raw = base64.b64decode(host['finiteCapsRawBase64'], validate=True)
+        self.assertEqual('sha256:' + hashlib.sha256(inventory_raw).hexdigest(), host['finiteCapsRawSha256'])
+        self.assertEqual(json.loads(inventory_raw), host['finiteCaps'])
+        rows = host['finiteCaps']['entries']
+        self.assertEqual(len(rows), root['physical_inventory_count'])
+        self.assertEqual(len(rows), 42)
+        self.assertEqual(len({row['inode'] for row in rows}), len(rows))
+        self.assertTrue(all(row['offline'] is True and row['used'] == 0 for row in rows))
+        finite = [row for row in rows if row['hard'] < 2**64 - 1]
+        cleared = [row for row in rows if row['hard'] == 2**64 - 1]
+        self.assertEqual((len(finite), len(cleared)), (29, 13))
+        self.assertTrue(all(row['soft'] == 0 and row['pinned'] is True and
+                            row['default_hierarchy'] is True for row in cleared))
+        self.assertEqual(host['gateReceipts'], {})
+        self.assertIs(host['healthPassed'], True)
+        witness = CROSS / 'profile20-restart-stop-witness-v1'
+        for name in ('Root-physical-observer-execution.json', 'Root-inspect-execution.json'):
+            self.assertEqual(read(witness / name)['exit_code'], 0)
+        physical = read(witness / 'physical-observation/physical.json')
+        self.assertEqual(physical['targets'], [])
+        self.assertEqual(physical['inventory_sha256'], host['finiteCapsRawSha256'])
+        self.assertEqual(physical['boot_id'], host['bootId'])
+        self.assertEqual(physical['driver_generation'], host['driverGeneration'])
+        self.assertEqual({row['inventory_row']['inode'] for row in physical['retired_caps']},
+                         {row['inode'] for row in finite})
+        self.assertTrue(all(row['inventory_row']['offline'] is True and row['inventory_row']['used'] == 0
+                            for row in physical['retired_caps']))
+        inspection = read(witness / 'Root-inspect.stdout')
+        self.assertEqual(sorted(row['cap_mib'] for row in inspection['terminal_lifetimes']), [5120, 20480])
+        self.assertIs(inspection['production_qualified'], False)
+        restore = read(CROSS / 'profile20-restart-source-call-v1/Root-restore-v3-execution.json')
+        self.assertEqual({owner: row['exit_code'] for owner, row in restore.items()}, {'cps': 0, 'cit': 0})
 
 
 if __name__ == '__main__':
