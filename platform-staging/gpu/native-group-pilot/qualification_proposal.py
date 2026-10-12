@@ -341,18 +341,28 @@ def render_current_approved_groups(inputs, observation_raw, health_raw, *,
     return result
 
 
-def private_read(path):
+def private_read(path, *, max_bytes=4194304):
+    agent.require(type(max_bytes) is int and max_bytes in (4194304,8388608),
+        'Only legacy4MiB or explicit complete current8MiB capture bounds are supported')
     fd = os.open(path, os.O_RDONLY | os.O_NOFOLLOW | os.O_NONBLOCK)
     try:
         before = os.fstat(fd)
         agent.require(stat.S_ISREG(before.st_mode) and before.st_nlink == 1 and before.st_uid == os.geteuid()
-            and stat.S_IMODE(before.st_mode) in (0o400, 0o600) and 0 < before.st_size <= 4194304,
+            and stat.S_IMODE(before.st_mode) in (0o400, 0o600) and 0 < before.st_size <= max_bytes,
             'Private owned bounded regular proposal input required')
-        raw = os.read(fd, 4194305); after = os.fstat(fd)
+        raw = os.read(fd, max_bytes+1); after = os.fstat(fd)
         agent.require(len(raw) == before.st_size and all(getattr(before,key) == getattr(after,key)
             for key in ('st_dev','st_ino','st_size','st_mtime_ns','st_ctime_ns')), 'Proposal input changed during read')
         return raw
     finally: os.close(fd)
+
+
+def parse_current_capture(raw):
+    """Complete current custody only; retain closed schemas and duplicate denial."""
+    agent.require(isinstance(raw,(str,bytes)) and len(raw)<=8388608,
+        'Bounded complete current8MiB capture JSON required')
+    def nonfinite(value):raise ValueError('Non-finite current capture JSON is forbidden')
+    return json.loads(raw,object_pairs_hook=agent.unique,parse_constant=nonfinite)
 
 
 def main(argv=None):
@@ -376,11 +386,15 @@ def main(argv=None):
     agent.require(all((args.input,args.observation,args.health,args.output)), 'Complete private offline input/output paths required')
     agent.require(args.preset!='cps5-cit20' or args.terminal_authority is not None,
         'Twenty preset requires the full terminal authority bundle')
-    authority=agent.parse(private_read(args.terminal_authority)) if args.terminal_authority else None
+    # Full unchanged actual98-CM custody is 5.4MiB. Only the explicit current
+    # source mode admits bounded8MiB authority/input; legacy remains4MiB.
+    capture_bound=8388608 if args.source_mode=='current-approved-groups' else 4194304
+    capture_parser=parse_current_capture if args.source_mode=='current-approved-groups' else agent.parse
+    authority=capture_parser(private_read(args.terminal_authority,max_bytes=capture_bound)) if args.terminal_authority else None
     if args.source_mode=='current-approved-groups':
         agent.require(args.preset=='cps5-cit20' and all((args.source_runtime,args.source_runtime_sha256,args.source_hubs,args.source_hubs_sha256,args.source_controller)),
             'Current source mode requires explicit twenty preset and exact runtime/Hub source pins')
-        values=render_current_approved_groups(agent.parse(private_read(args.input)),private_read(args.observation),private_read(args.health),
+        values=render_current_approved_groups(capture_parser(private_read(args.input,max_bytes=capture_bound)),private_read(args.observation),private_read(args.health),
             terminal_authority=authority,source_runtime_raw=private_read(args.source_runtime),source_runtime_sha256=args.source_runtime_sha256,
             source_hubs_raw=private_read(args.source_hubs),source_hubs_sha256=args.source_hubs_sha256,
             source_controller_raw=private_read(args.source_controller))

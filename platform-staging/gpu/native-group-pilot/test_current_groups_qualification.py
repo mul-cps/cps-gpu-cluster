@@ -2,6 +2,7 @@
 import copy
 import importlib
 import json
+import os
 from datetime import datetime, timezone
 from pathlib import Path
 import tempfile
@@ -87,6 +88,20 @@ class CurrentGroupQualificationTest(unittest.TestCase):
         actual=json.loads((Path(__file__).parent/'testdata/reviewed-d48-native-source.json').read_bytes())['runtime']
         baselines['runtime']['data']['runtime.json']=base64.b64encode(json.dumps(actual).encode()).decode()
         with self.assertRaises(ValueError):legacy.configuration_intent(proposal,baselines)
+
+    def test_current_complete_authority_bound_does_not_change_legacy_limit(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            p=Path(tmp)/'complete.json'; raw=b' '*(4194304+1);p.write_bytes(raw);p.chmod(0o600)
+            with self.assertRaises(ValueError):self.helper.private_read(p)
+            self.assertEqual(self.helper.private_read(p,max_bytes=8388608),raw)
+            with self.assertRaises(ValueError):self.helper.private_read(p,max_bytes=12582912)
+            p.write_bytes(b' '*8388609)
+            with self.assertRaises(ValueError):self.helper.private_read(p,max_bytes=8388608)
+        raw=json.dumps({'complete_capture':' '*1048576}).encode()
+        with self.assertRaises(ValueError):self.helper.agent.parse(raw)
+        self.assertEqual(self.helper.parse_current_capture(raw),json.loads(raw))
+        for raw in (b'{"a":1,"a":2}',b'{"a":NaN}',b' '*8388609):
+            with self.assertRaises(ValueError):self.helper.parse_current_capture(raw)
 
 
 if __name__=='__main__':unittest.main()
