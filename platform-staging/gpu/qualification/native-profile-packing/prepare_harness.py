@@ -52,6 +52,10 @@ def require(ok, message):
         raise ValueError(message)
 
 def validate_binding(value):
+    return _validate_binding(value, 'interactive-native-qualification-')
+
+def _validate_binding(value, profile_prefix):
+    """Shared fixed pair/epoch checks; public entry points choose a closed mode."""
     require(isinstance(value, dict) and set(value) == {'version', 'state', 'policy_hash',
         'observer_uid', 'pool', 'pool_measurement', 'retired_capture', 'targets'}, 'Closed binding required')
     require(type(value['version']) is int and value['version'] == 1 and
@@ -82,7 +86,7 @@ def validate_binding(value):
             'cap_mib', 'profile', 'pod_uid', 'spec_sha256', 'pod_capture'}, 'Closed actual target required')
         require((t['source'], t['workspace'], t['namespace'], t['name']) == (s, w, n, name)
             and type(t['cap_mib']) is int and t['cap_mib'] == cap
-            and t['profile'] == 'interactive-native-qualification-' + str(cap // 1024),
+            and t['profile'] == profile_prefix + str(cap // 1024),
             'Only CPS B5 and CIT A10 operator scopes allowed')
         valid_uuid(t['pod_uid']); digest(t['spec_sha256']); file_pin(t['pod_capture'])
         require(t['pod_uid'] not in seen, 'Distinct actual lifetime UIDs required'); seen.add(t['pod_uid'])
@@ -194,6 +198,9 @@ def render_cap_sources(sources, binding):
 
 def render_sources(sources, binding, retired, *, native_binary=None):
     validate_binding(binding)
+    return _render_validated_sources(sources, binding, retired, native_binary=native_binary)
+
+def _render_validated_sources(sources, binding, retired, *, native_binary=None):
     require(set(sources) == set(SOURCE_PINS) and all(sha(sources[k]) == v
         for k, v in SOURCE_PINS.items()), 'Exact complete Oct9 source closure required')
     records = retired['records']; count = len(records)
@@ -444,14 +451,17 @@ def parse(raw):
         parse_constant=lambda _: require(False, 'Nonfinite JSON forbidden'))
 
 def validate_retired(retired, binding, *, allow_current=False):
+    return _validate_retired(retired, binding, allow_current=allow_current,
+        controller_sha='f40ef40f71c9f1206f23fb7052fd69aafd103c0f03a24e6bf3987395dacfd179')
+
+def _validate_retired(retired, binding, *, allow_current=False, controller_sha):
     from cps_compute import native_gpu_controller as controller
-    require(sha(Path(controller.__file__).read_bytes()) ==
-        'f40ef40f71c9f1206f23fb7052fd69aafd103c0f03a24e6bf3987395dacfd179',
+    require(sha(Path(controller.__file__).read_bytes()) == controller_sha,
         'Exact reviewed controller models required')
     require(isinstance(retired, dict) and set(retired) == {'version', 'node', 'node_uid', 'boot_id',
         'gpu_uuid', 'driver_generation', 'controller_sha256', 'records'} and type(retired['version']) is int
-        and retired['version'] == 1 and retired['controller_sha256'] ==
-        'f40ef40f71c9f1206f23fb7052fd69aafd103c0f03a24e6bf3987395dacfd179', 'Closed original retirement capture required')
+        and retired['version'] == 1 and retired['controller_sha256'] == controller_sha,
+        'Closed original retirement capture required')
     require(all(retired[k] == binding['pool'][k] for k in
         ('node', 'node_uid', 'boot_id', 'gpu_uuid', 'driver_generation')), 'Retirement epoch changed')
     require(isinstance(retired['records'], list) and 1 <= len(retired['records']) <= 32,
@@ -534,6 +544,13 @@ def operator_argv(output, binding, out, host_sha):
 def prepare(binding_path, binding_sha, source_root, output, *, native_binary_path=None,
             native_binary_sha=None, native_build_path=None, native_build_sha=None):
     binding = validate_binding(parse(read_pinned(binding_path, binding_sha, private=True)))
+    return _prepare_validated_binding(binding, binding_sha, source_root, output,
+        native_binary_path=native_binary_path, native_binary_sha=native_binary_sha,
+        native_build_path=native_build_path, native_build_sha=native_build_sha)
+
+def _prepare_validated_binding(binding, binding_sha, source_root, output, *, native_binary_path=None,
+            native_binary_sha=None, native_build_path=None, native_build_sha=None, receipt_context=None,
+            retirement_validator=None, source_renderer=None):
     measurement_pin = binding['pool_measurement']
     measured = parse(read_pinned(Path(measurement_pin['path']), measurement_pin['sha256'], private=True))
     require(measured.get('kind') == 'selected-device-nvml-memory-mig-observation' and
@@ -548,7 +565,8 @@ def prepare(binding_path, binding_sha, source_root, output, *, native_binary_pat
         and measured['free_bytes'] == binding['pool']['measured_free_bytes'],
         'Actual fresh selected-device NVML/MIG/free-memory capture required')
     retired_pin = binding['retired_capture']
-    retired = validate_retired(parse(read_pinned(Path(retired_pin['path']), retired_pin['sha256'], private=True)), binding)
+    retired = (retirement_validator or validate_retired)(
+        parse(read_pinned(Path(retired_pin['path']), retired_pin['sha256'], private=True)), binding)
     sources = {name: read_pinned(source_root / name, pin) for name, pin in SOURCE_PINS.items()}
     require(native_binary_path is not None and native_binary_sha and native_build_path is not None and native_build_sha,
             'Actual Ubuntu-compatible ten-cap binary and CPU build receipt pins required')
@@ -560,7 +578,7 @@ def prepare(binding_path, binding_sha, source_root, output, *, native_binary_pat
         if key == 'abi':
             versions = [tuple(map(int, v.split('.'))) for v in re.findall(r'GLIBC_([0-9.]+)', raw.decode())]
             require(versions and max(versions) <= (2, 39), 'Actual ELF ABI exceeds pinned Ubuntu notebook glibc')
-    out = render_sources(sources, binding, retired, native_binary=native_binary)
+    out = (source_renderer or render_sources)(sources, binding, retired, native_binary=native_binary)
     scope = {'__file__': str(output / 'run_group_acceptance.py'), '__name__': 'preparation_only'}
     exec(compile(out['run_group_acceptance.py'], 'pinned-pure-pod-validator', 'exec'), scope)
     for target in binding['targets']:
@@ -590,6 +608,9 @@ def prepare(binding_path, binding_sha, source_root, output, *, native_binary_pat
         'pending': ['Root actual normal Source Start provenance', 'all controlled hardware measurements',
                     'Root normal Stop/restart, immutable cleanup/released ledger and physical retirement witnesses',
                     'Root hardware review', 'maximum-profile overhead and production capacity qualification']}
+    if receipt_context is not None:
+        require(not set(receipt_context) & set(receipt), 'Preparation context cannot replace trusted receipt fields')
+        receipt.update(receipt_context)
     write(output / 'preparation-receipt.json', (canonical(receipt) + '\n').encode())
     return receipt
 

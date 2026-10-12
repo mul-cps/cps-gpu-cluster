@@ -14,6 +14,63 @@ starts a Pod, invokes Kubernetes, executes CUDA, sets a cap or releases a
 reservation. Root performs normal Source Start/Stop and reviews measurements.
 No workload manifest or bypass start fixture is generated.
 
+## Current approved group bindings
+
+`prepare_current_group_harness.py` is the separate entry point for the existing
+approved CPS `native-group-b` / `interactive-shared-5` and CIT
+`native-group-a` / `interactive-shared-10` groups. It retains their canonical
+profile names throughout preparation. The historical `prepare_harness.py`
+entry point continues to accept only the retired operator qualification profiles.
+The probe source pins, CUDA protocols, kernel witnesses, deadlines, fixed caps,
+15GiB budget, two slots, selected GPU/epoch and normal Source lifecycle remain
+unchanged. This adapter does not add a workspace or a20GiB profile.
+
+Root supplies an owned0600 private manifest with this closed schema:
+
+```json
+{
+  "version": 1,
+  "state": "Root-reviewed-current-group-plan",
+  "binding": {"path": "/private/current-binding.json", "sha256": "<raw SHA256>"},
+  "policy": {"path": "/private/actual-current-policy.json", "sha256": "<raw SHA256>"},
+  "native_groups": {"path": "/private/actual-enabled-native-groups.json", "sha256": "<raw SHA256>"},
+  "sealed_targets": [
+    {"pod_uid": "<actual CPS Pod UID>", "journal": {"path": "/private/cps-journal.json", "sha256": "<raw SHA256>"}, "gate_receipt": {"path": "/private/cps-gate.json", "sha256": "<raw SHA256>"}},
+    {"pod_uid": "<actual CIT Pod UID>", "journal": {"path": "/private/cit-journal.json", "sha256": "<raw SHA256>"}, "gate_receipt": {"path": "/private/cit-gate.json", "sha256": "<raw SHA256>"}}
+  ]
+}
+```
+
+`binding` retains the fields documented below, using the canonical profiles and
+new actual Pod UID/spec/raw Pod captures after normal Source Start. The current
+policy and enabled group configuration must agree; the typed v2 deployment
+proof and exact reviewed approval subtree are required. Both protected journals
+must be `sealed`, match the actual Pod intent/cap/epoch, and equal their public
+gate receipts. Changed membership, storage, owners or scopes require another
+review. An arbitrary rehashed configuration is insufficient.
+
+```sh
+python prepare_current_group_harness.py --prepare \
+  --manifest /private/current-group-manifest.json --manifest-sha256 "$MANIFEST_SHA" \
+  --source-root /private/exact-oct9-source-root --output /private/fresh-current-group-harness \
+  --native-import-binary /private/actual-native-imports --native-import-binary-sha256 "$ELF_SHA" \
+  --native-import-build-receipt /private/actual-cpu-build.json --native-import-build-receipt-sha256 "$BUILD_SHA"
+```
+
+This command only prepares files. Root still checks actual current Source
+provenance, runs the unchanged live host preflight and exact kernel witness
+protocol for IPC and VMM in both directions, then normally stops/reconciles both
+participants. A fresh start invalidates old UID/spec/seal bindings. The original
+private probes are explicit inputs, not published or reconstructed here.
+The current adapter pins the actual reviewed controller model SHA `630d43cc…`;
+the historical entry point retains `f40ef40f…` (SDK commit `aa3152b`). It adapts
+only that dependency pin in the rendered preflight and updates dependent
+preflight hashes. All original probe/witness source pins remain unchanged.
+Preparation does not authorize changing the active controller or driver.
+A protected current capture or controller compatibility mismatch fails clearly
+and must be reviewed before execution.
+The receipt stays `fresh_cross_pod_hardware_qualified: false`.
+
 ## Actual inputs
 
 `prepare_harness.validate_binding` is the closed schema. Supply an owned0600
@@ -210,3 +267,13 @@ history/foreign cleanup/nonreleased ledger, raw versus canonical journal pins,
 full-record drift, duplicate keys, swapped journals and stale CLI file pins.
 Hardware boundaries use explicit CPU doubles; their data and results are never
 published as hardware evidence.
+
+For the current canonical adapter, use the reviewed SDK source containing the
+`630d43cc…` controller model on `PYTHONPATH` and discover
+`test_current_group_harness.py`. Its eight self-contained CPU tests cover exact
+group approvals, both durable seals and actual Pod spec bindings, denied scope/
+profile/membership/cap/epoch changes, the separate historical profile contract,
+inert preparation, and unchanged witness/protocol bytes during controller
+dependency repinning. They do not execute the private original probe closure.
+When that closure is unavailable, the corresponding original test classes skip;
+a passing CPU result must not be reported as hardware or full render acceptance.
