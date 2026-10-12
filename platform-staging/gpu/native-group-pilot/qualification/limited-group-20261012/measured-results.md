@@ -99,3 +99,23 @@ The private temporary filesystem reports a different device number through
 `fstat` and `/proc/locks`, so the native lock-ownership fixtures were rerun under
 `/tmp`, where those identities agree. The final 279-test result above uses that
 host context and complete existing dependencies; it is not a full-suite pass.
+
+## Subsequent source and admin verification
+
+The 279-test failure/error above records the original publication run. The later
+source-only fix `ddaa3f592272dbd6ff68f0fefba3f218ae6f70b0` corrects the stale
+service-loop fixture to retain its finite cap until cgroup absence, and preserves
+the intended `AbortError` while closing both root-fence pipes. The native suite
+then passed all 280 tests; cluster tests passed 161 tests and 139 subtests.
+The node agent and GPU runtime were unchanged, and no GPU work was rerun.
+
+The separate [post-publication verification](post-publication-verification.json)
+also records Root-accepted Source54 admin checks: 44 UI tests, TypeScript/Vite,
+an unchanged-backend check, and both public assets returning HTTP 200 with the
+new grant workspace selector. Root restored four temporary grants and four
+memberships after physical shutdown while preserving the shared-profile
+migration. Those live admin checks were not independently rerun for this note.
+The original measurement receipts, manifest and historical failed-run claims
+remain preserved. Hardware acceptance still covers exactly the two recorded
+groups; general access, the full fleet, fresh cross-Pod import isolation and
+production release remain unqualified.
