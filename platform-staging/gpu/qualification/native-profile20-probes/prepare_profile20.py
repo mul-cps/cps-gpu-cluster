@@ -213,9 +213,41 @@ def validate_runtime_inputs(index,history,p):
     from cps_compute.policy import Policy
     policy=Policy(input_json(index['policy']))
     need(policy.hash==index['policy_hash'],'Actual policy/catalog hash mismatch')
-    need(config['version']==2 and config['enabled']is True and config['mode']=='operator-qualification'
-        and config['policy_hash']==policy.hash and config['terminal_history']==history,
-        'Exact operator-only full config/policy/history required')
+    need(set(config)=={'version','enabled','mode','policy_hash','authority_namespace','pool','workspaces','terminal_history'}
+        and type(config['version'])is int and config['version']==2 and config['enabled']is True
+        and config['mode']=='operator-qualification' and config['authority_namespace']=='cps-native-system'
+        and config['policy_hash']==policy.hash,'Exact operator-only full node config/policy required')
+    ledger=input_json(index['baseline_ledger']);state=json.loads(ledger['data']['state.json'])
+    need(type(state['allocations'])is dict and all(v['state']=='released'for v in state['allocations'].values()),
+        'Complete original all-released ledger required')
+    rows={v['intent']['pod_uid']:v for v in state['allocations'].values()if v.get('intent')}
+    authorities=config['terminal_history'];journals={v['pod_uid']:v for v in history['records']}
+    need(type(authorities)is dict and set(authorities)==set(rows) and set(journals)<=set(rows)
+        and len(journals)==len(history['records']),'Exact full terminal authority map and full physical history required')
+    keys={'binding_id','completion_kind','completion_sha256','completion_uid','enrollment_sha256',
+        'enrollment_uid','journal_sha256','ledger_uid','policy_hash','profile'}
+    for uid,allocation in rows.items():
+        authority=authorities[uid]
+        need(type(authority)is dict and set(authority)in(keys,keys|{'cap_mib'})
+            and ('cap_mib'not in authority or type(authority['cap_mib'])is int and authority['cap_mib']==allocation['cap_mib'])
+            and authority['ledger_uid']==ledger['metadata']['uid']
+            and all(authority[k]==allocation[k]for k in ('binding_id','policy_hash','profile')),
+            'Terminal authority must bind exact full original allocation identity')
+        for key in ('completion_sha256','enrollment_sha256'):
+            need(type(authority[key])is str and authority[key].startswith('sha256:')
+                and len(authority[key])==71 and all(c in '0123456789abcdef'for c in authority[key][7:]),
+                'Typed immutable terminal authority pins required')
+        for key in ('completion_uid','enrollment_uid'):
+            import uuid
+            need(str(uuid.UUID(authority[key]))==authority[key]and uuid.UUID(authority[key]).int!=0,
+                'Canonical actual immutable terminal authority UID required')
+        if uid in journals:
+            canonical=json.dumps(journals[uid]['record'],sort_keys=True,separators=(',',':'),allow_nan=False).encode()
+            need(authority['completion_kind']=='cleanup'and authority['journal_sha256']=='sha256:'+sha(canonical),
+                'Full original journal canonical pin must match immutable cleanup authority')
+        else:
+            need(authority['completion_kind']=='pre-gate-abort'and authority['journal_sha256']is None,
+                'Only original pre-gate aborts may lack a physical journal')
     pool=config['pool']
     need(pool['memory_budget_mib']==p['budget_mib']and pool['max_workspaces']==2
         and pool['headroom_mib']*MIB==p['headroom_bytes'],'Fixed measured budget/headroom/two-lifetime pool required')

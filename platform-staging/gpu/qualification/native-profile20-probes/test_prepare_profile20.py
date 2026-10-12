@@ -115,6 +115,22 @@ class ProbeTests(unittest.TestCase):
         self.assertTrue(hasattr(self.p,'preset'),'explicit preset validator missing')
         for value in ('cps20-cit5','cps5-cit21',None,True):
             with self.subTest(value=value),self.assertRaises(ValueError):self.p.preset(value)
+    def test_actual_node_authority_map_preserves_full_ledger_and_physical_history(self):
+        root=self.p.BASE/'native20-controlled-cycle-20261012/profile20-config-local-prepared-v1'
+        base=self.p.BASE/'sustained-mps-controlled-cycle-20261012/stop-next-evidence-v1'
+        def pin(path):return {'path':str(path),'sha256':hashlib.sha256(path.read_bytes()).hexdigest()}
+        history=json.loads((base/'history/terminal-history-v2.json').read_text())
+        index={'preset':'cps5-cit20','policy_hash':'sha256:a7bbf3bd475f38e3bed5d274ae4564940fff2665c053c680c5ed5c21f48a30a4',
+            'runtime_config':pin(root/'node-config.json'),'policy':pin(root/'policy.json'),'baseline_ledger':pin(base/'ledger.json')}
+        self.p.validate_runtime_inputs(index,history,self.p.preset(index['preset']))
+        config=json.loads((root/'node-config.json').read_text())
+        for mutation in ('missing','extra','binding','profile','policy','journal','completion'):
+            value=copy.deepcopy(config);uid=history['records'][0]['pod_uid']
+            if mutation=='missing':value['terminal_history'].pop(uid)
+            elif mutation=='extra':value['terminal_history']['2aac573b-2026-4000-8000-000000000003']=copy.deepcopy(value['terminal_history'][uid])
+            else:value['terminal_history'][uid][{'binding':'binding_id','profile':'profile','policy':'policy_hash','journal':'journal_sha256','completion':'completion_kind'}[mutation]]='foreign'
+            with self.subTest(mutation=mutation),patch.object(self.p,'input_json',side_effect=lambda ref: value if ref is index['runtime_config'] else json.loads(Path(ref['path']).read_text())),self.assertRaises(ValueError):
+                self.p.validate_runtime_inputs(index,history,self.p.preset(index['preset']))
     def test_generic_baseline_spans_have_no_fixed29_31_23_25_shape(self):
         self.assertTrue(hasattr(self.p,'generalize_start_assembler'),'full-baseline assembler missing')
         path=Path('/home/bjoern/.local/state/cps-platform-completion-20261011/native-next5-10-harness-source-prepared-20261012/prepare_next.py')

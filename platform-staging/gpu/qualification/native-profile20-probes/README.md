@@ -47,10 +47,31 @@ PYTHONDONTWRITEBYTECODE=1 \
 PYTHONPATH=/tmp/cps-native-authority-test-deps-20261009:/home/bjoern/git/cps-compute-worktrees/cleared-offline-recovery-20261011/src:/tmp/e2x-native-platform-status-20261009 \
 /home/bjoern/git/cps-compute/.venv/bin/python -m unittest discover \
   -s platform-staging/gpu/qualification/native-profile20-probes \
-  -p test_prepare_profile20.py -v
+  -p 'test_prepare_*.py' -v
 ```
 
 These tests include synthetic future shapes and a read-only replay of the full
 actual 31-allocation/25-journal baseline. They make no API, GPU, credentials,
 driver, module, reset, configuration, grant or publication changes. They do not
 constitute actual 20 GiB qualification.
+
+`prepare_stop20.py` emits a default-inert strict Stop collector sibling. Its
+frozen 14-file dependency closure changes only the explicit 5/20 pair, the
+profile-specific preparer, the finite-cap reader allowlist and the resulting
+closure checksum. PodList projection, complete inventories, epoch checks,
+immutable authority checks and the finite inspector remain unchanged.
+
+Its local `--assemble-growth` operation replays the old completed 5/10 baseline
+chain unchanged, derives counts from the full ledger/history/physical bodies,
+and admits exactly two new finite released lifetimes. It requires genuine
+outer Source Stop receipts, their exact nested projection, full PodList
+projection receipts and a separately Root-approved full Source identity
+handover. This proof does not authenticate the handover operation itself;
+the Source handover validator must accept its actual before/after/CRUD/audit/
+registration evidence before Root enables that identity approval.
+
+After a successful new cycle, policy rollback must preserve the two new
+terminal authorities and complete grown history. Restoring the old node
+configuration verbatim after new allocations exist is insufficient. The
+Source worker owns the reviewed whole-intent/expiry inverse; this module
+supplies its complete finite Stop evidence and performs no Source mutation.
