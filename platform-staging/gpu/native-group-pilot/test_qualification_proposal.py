@@ -2,6 +2,8 @@
 import copy
 import importlib
 import json
+import os
+import tempfile
 import unittest
 import sys
 from pathlib import Path
@@ -59,6 +61,56 @@ class ProposalTest(unittest.TestCase):
             with self.assertRaises(ValueError):self.render(args)
 
 
+class TwentyPresetTest(ProposalTest):
+    def render_twenty(self, args, **kwargs):
+        return self.helper.render(*args, preset='cps5-cit20', now=datetime(2026,10,11,16,0,1,tzinfo=timezone.utc), **kwargs)
+
+    def test_explicit_twenty_preset_remains_unqualified_and_uses_two_slots(self):
+        result=self.render_twenty(inputs())
+        mode=result['operator-qualification.json'];policy=result['policy.json']
+        self.assertEqual(mode['profile_caps'], {'interactive-native-qualification-5':5120,
+            'interactive-native-qualification-20':20480})
+        self.assertEqual(mode['node_pool']['memory_budget_mib'],25600)
+        self.assertEqual(mode['node_pool']['headroom_mib'],1024)
+        self.assertEqual(mode['node_pool']['max_workspaces'],2)
+        self.assertFalse(policy['gpuQualification']['qualified'])
+        self.assertTrue(all(policy['profiles'][p]['enabled'] is False for p in mode['profile_caps']))
+        self.assertEqual(result['node-config.json']['workspaces']['cit:native-group-a'],
+            {'profile':'interactive-native-qualification-20','cap_mib':20480})
+        for scope, old in inputs()[0]['approvals'].items():
+            after=result['registration-proposals.json'][scope]
+            self.assertEqual({k:v for k,v in after.items() if k not in ('profiles','ceiling','workspace','policy_hash')},
+                {k:v for k,v in old.items() if k not in ('profiles','ceiling','workspace','policy_hash')})
+        self.assertFalse(result['acceptance.json']['hardware_qualified'])
+        self.assertFalse(result['acceptance.json']['live_applied'])
+
+    def test_twenty_requires_at_least_26624_free_mib(self):
+        for free in (26623,26624):
+            args=list(inputs());gpu=json.loads(args[1]);gpu['gpus'][0]['memoryFreeBytes']=free*1048576
+            gpu['gpus'][0]['memoryUsedBytes']=gpu['gpus'][0]['memoryTotalBytes']-free*1048576
+            args[1]=json.dumps(gpu).encode()
+            if free==26623:
+                with self.assertRaises(ValueError):self.render_twenty(args)
+            else:self.render_twenty(args)
+
+    def test_unknown_preset_and_unsafe_headroom_fail_closed(self):
+        for preset in ('cps20-cit20','cps5-cit21',None,True):
+            with self.assertRaises(ValueError):
+                self.helper.render(*inputs(),preset=preset,now=datetime(2026,10,11,16,0,1,tzinfo=timezone.utc))
+        for headroom in (0,1023,True,1024.0):
+            with self.assertRaises(ValueError):self.render_twenty(inputs(),headroom_mib=headroom)
+
+    def test_existing_five_profile_must_match_the_frozen_template(self):
+        args=list(inputs());old=self.render(inputs())
+        args[0]['catalog']=old['policy.json']
+        result=self.render_twenty(args)
+        self.assertEqual(result['policy.json']['profiles']['interactive-native-qualification-5'],
+            old['policy.json']['profiles']['interactive-native-qualification-5'])
+        for field,value in (('enabled',True),('images',['untrusted:latest'])):
+            bad=copy.deepcopy(args);bad[0]['catalog']['profiles']['interactive-native-qualification-5'][field]=value
+            with self.assertRaises(ValueError):self.render_twenty(bad)
+
+
 class NeverEnrolledTest(unittest.TestCase):
     def test_none_intent_is_not_a_pod_uid_or_terminal_history(self):
         helper=importlib.import_module('qualification_proposal')
@@ -108,3 +160,25 @@ class NeverEnrolledTest(unittest.TestCase):
                 'uid':'eeeeeeee-eeee-4eee-8eee-eeeeeeeeeeee'}}]
             with self.subTest(change=change),self.assertRaises(ValueError):
                 helper.validate_never_enrolled(*args,now=datetime(2026,10,11,16,0,1,tzinfo=timezone.utc))
+
+
+class ProposalCliTest(unittest.TestCase):
+    def test_default_and_explicit_ten_cli_still_render_without_terminal_bundle(self):
+        helper=importlib.import_module('qualification_proposal')
+        for preset in (None,'cps5-cit10'):
+            with self.subTest(preset=preset),tempfile.TemporaryDirectory() as tmp:
+                root=Path(tmp);value,observation,health=inputs()
+                value['observed_at']=datetime.now(timezone.utc).isoformat()
+                for name,raw in (('input.json',json.dumps(value).encode()),('observation.json',observation),('health.json',health)):
+                    (root/name).write_bytes(raw);os.chmod(root/name,0o600)
+                argv=['--render','--input',str(root/'input.json'),'--observation',str(root/'observation.json'),
+                    '--health',str(root/'health.json'),'--output',str(root/'output')]
+                if preset:argv+=['--preset',preset]
+                self.assertEqual(helper.main(argv),0)
+                self.assertEqual(json.loads((root/'output/operator-qualification.json').read_text())['node_pool']['memory_budget_mib'],15360)
+
+    def test_twenty_cli_requires_full_terminal_bundle(self):
+        helper=importlib.import_module('qualification_proposal')
+        with self.assertRaises(ValueError):
+            helper.main(['--render','--preset','cps5-cit20','--input','missing','--observation','missing',
+                '--health','missing','--output','missing'])

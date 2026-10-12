@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Default-inert offline Root proposal for exact 5+10GiB qualification.
+"""Default-inert offline Root proposal for explicit 5+10GiB or 5+20GiB qualification.
 
 No Kubernetes client, subprocess, GPU operation, or passed-evidence writer.
 Root supplies fresh private captures and later owns source handover and Start.
@@ -16,12 +16,13 @@ import stat
 import node_agent as agent
 
 SCOPES = {'cps:native-group-b': 5, 'cit:native-group-a': 10}
+PRESETS = {'cps5-cit10': SCOPES, 'cps5-cit20': {'cps:native-group-b': 5, 'cit:native-group-a': 20}}
 
 
 def checksum(raw): return 'sha256:' + hashlib.sha256(raw).hexdigest()
 
 
-def validate_never_enrolled(evidence, allocations, history, ledger_meta, pool, health, observation, *, now):
+def validate_never_enrolled(evidence, allocations, history, ledger_meta, pool, health, observation, *, now, terminal_authority=None, previous_node=None):
     """Root snapshots distinguish released never-enrolled claims from real Pod history.
 
     This validates captured absence; it never creates an intent or host authority.
@@ -33,6 +34,15 @@ def validate_never_enrolled(evidence, allocations, history, ledger_meta, pool, h
     if not missing:
         agent.require(evidence is None, 'No unrelated never-enrolled absence evidence')
         return []
+    if terminal_authority is not None:
+        from terminal_policy_proposal import map_history
+        agent.require(terminal_authority['authority_maps']==evidence['authority_maps']
+            and terminal_authority['host_snapshot']==evidence['host_snapshot'],
+            'Never-enrolled and terminal authority must use the same complete captures')
+        agent.require(previous_node is not None, 'Full previous node configuration required for recovery authority')
+        checked=map_history(terminal_authority, {'apiVersion':'v1','kind':'ConfigMap',
+            'metadata':ledger_meta,'data':{'state.json':agent.canonical_json({'version':1,'allocations':allocations})}}, previous_node)
+        agent.require(checked==history, 'Complete terminal authority mapping differs from proposal')
     agent.closed(evidence, {'authority_maps','host_snapshot','pods'}, 'Complete actual never-enrolled absence captures required')
     host=evidence['host_snapshot']
     agent.closed(host, {'version','observerPodUid','node','nodeUid','bootId','driverGeneration',
@@ -69,7 +79,10 @@ def validate_never_enrolled(evidence, allocations, history, ledger_meta, pool, h
         and maps.get('kind') in ('List','ConfigMapList') and isinstance(maps.get('items'),list)
         and not maps.get('metadata',{}).get('continue'), 'Complete actual authority ConfigMap list required')
     namespace=ledger_meta['namespace']; by_name={}
-    for cm in maps['items']:
+    for original in maps['items']:
+        cm=copy.deepcopy(original)
+        if terminal_authority is not None and maps['kind']=='ConfigMapList' and isinstance(cm,dict):
+            cm.setdefault('apiVersion','v1');cm.setdefault('kind','ConfigMap')
         meta=cm.get('metadata',{}) if isinstance(cm,dict) else {}
         agent.require(cm.get('apiVersion')=='v1' and cm.get('kind')=='ConfigMap'
             and meta.get('namespace')==namespace and isinstance(meta.get('name'),str)
@@ -100,7 +113,8 @@ def validate_never_enrolled(evidence, allocations, history, ledger_meta, pool, h
     agent.require(set(contents['journal'])==cleanup_uids, 'Never-gated abort or unknown claim acquired native cap authority')
     for pod_uid,body in contents['journal'].items():
         record=models.CapRecord.from_dict(body)
-        agent.require(record.state in ('cleaned','retired-inert-cap') and record.intent.to_dict()==enrolled[pod_uid]['intent']
+        agent.require(record.state in (('cleaned','retired-inert-cap','recovered-cleared-offline-cap')
+                if terminal_authority is not None else ('cleaned','retired-inert-cap')) and record.intent.to_dict()==enrolled[pod_uid]['intent']
             and agent.canonical_sha256(body)==history[pod_uid]['journal_sha256'], 'Original typed terminal cap journal changed')
     pods=evidence['pods'];expected_pods={(record['namespace'],record['name']) for record in missing.values()}
     agent.require(isinstance(pods,list) and len(pods)==len(expected_pods), 'Complete distinct candidate Pod absence GETs required')
@@ -122,16 +136,20 @@ def validate_never_enrolled(evidence, allocations, history, ledger_meta, pool, h
     return sorted(missing)
 
 
-def render(inputs, observation_raw, health_raw, *, now=None):
+def render(inputs, observation_raw, health_raw, *, now=None, preset='cps5-cit10', headroom_mib=1024, terminal_authority=None):
     from cps_compute.policy import Policy
     from cps_compute.native_groups import WORKLOAD_IMAGE, HEALTH_SHA256
     from cps_compute.native_qualification import NativeGroupQualification
     from cps_compute.native_gpu_control import MeasuredNativeAuthority
+    agent.require(type(preset) is str and preset in PRESETS, 'Explicit reviewed 5/10 or 5/20 preset required')
+    agent.require(type(headroom_mib) is int and headroom_mib == 1024, 'Exact additional 1024MiB headroom required')
+    scopes = PRESETS[preset]
+    budget = sum(scopes.values()) * 1024
     agent.closed(inputs, {'version', 'catalog', 'approvals', 'node_config', 'ledger',
         'terminal_history', 'observed_at', 'gate_image', 'never_enrolled_evidence'}, 'Closed offline qualification input required')
     agent.require(type(inputs['version']) is int and inputs['version'] == 1
-        and isinstance(inputs['approvals'], dict) and set(inputs['approvals']) == set(SCOPES),
-        'Only the reviewed CPS5/CIT10 neutral workspace proposal is supported')
+        and isinstance(inputs['approvals'], dict) and set(inputs['approvals']) == set(scopes),
+        'Only the reviewed neutral workspace scopes are supported')
     observed = datetime.fromisoformat(inputs['observed_at'].replace('Z', '+00:00'))
     now = now or datetime.now(timezone.utc)
     agent.require(observed.tzinfo is not None and 0 <= (now - observed).total_seconds() <= 900,
@@ -160,8 +178,8 @@ def render(inputs, observation_raw, health_raw, *, now=None):
         and gpu['memoryFreeBytes'] + gpu['memoryUsedBytes'] == gpu['memoryTotalBytes'],
         'Exact no-MIG physical memory accounting required')
     pool.update(max_workspaces=2, total_memory_mib=gpu['memoryTotalBytes'] // 1048576,
-        free_memory_mib=gpu['memoryFreeBytes'] // 1048576, headroom_mib=1024,
-        memory_budget_mib=15360, boot_id=health['bootId'], driver_generation=health['driverGeneration'])
+        free_memory_mib=gpu['memoryFreeBytes'] // 1048576, headroom_mib=headroom_mib,
+        memory_budget_mib=budget, boot_id=health['bootId'], driver_generation=health['driverGeneration'])
     agent.validate_measured_pool(pool)
     ledger = inputs['ledger']; meta = ledger.get('metadata', {})
     agent.require(ledger.get('kind') == 'ConfigMap' and ledger.get('apiVersion') == 'v1'
@@ -174,6 +192,8 @@ def render(inputs, observation_raw, health_raw, *, now=None):
     # Source-only schema validation uses no constructor, backend, files or clients.
     validator = MeasuredNativeAuthority.__new__(MeasuredNativeAuthority); validator.pool = pool
     validator._validate_allocations(state['allocations'])
+    agent.require(preset!='cps5-cit20' or not state['allocations'] or terminal_authority is not None,
+        'Twenty preset cannot move an existing ledger without complete terminal authority')
     history = inputs['terminal_history']
     agent.require(isinstance(history, dict), 'Actual independently captured terminal history required')
     uids = set()
@@ -186,19 +206,25 @@ def render(inputs, observation_raw, health_raw, *, now=None):
             and entry.get('policy_hash') == record['policy_hash'] and entry.get('profile') == record['profile']
             and entry.get('ledger_uid') == meta['uid'], 'Complete actual terminal history for every previous claim required')
     agent.require(set(history) == uids, 'No omitted or invented historical Pod UID')
-    never_enrolled=validate_never_enrolled(inputs['never_enrolled_evidence'],state['allocations'],history,meta,pool,health,observation,now=now)
+    if terminal_authority is not None:
+        from terminal_policy_proposal import map_history
+        agent.require(preset=='cps5-cit20' and map_history(terminal_authority,ledger,baseline)==history,
+            'Twenty preset requires the unchanged complete terminal authority mapping')
+    never_enrolled=validate_never_enrolled(inputs['never_enrolled_evidence'],state['allocations'],history,meta,pool,health,observation,now=now,terminal_authority=terminal_authority,previous_node=baseline)
     catalog = copy.deepcopy(inputs['catalog']); catalog.pop('policyHash', None)
     agent.require(catalog.get('gpuQualification', {}).get('qualified') is False,
                   'Ordinary global GPU qualification must remain false')
     caps = {}; approvals = copy.deepcopy(inputs['approvals'])
-    for scope, size in SCOPES.items():
+    for scope, size in scopes.items():
         name = 'interactive-native-qualification-' + str(size); caps[name] = size * 1024
-        agent.require(name not in catalog['profiles'], 'Fresh operator qualification profile names required')
         entry = copy.deepcopy(catalog['profiles']['interactive-shared-5'])
         entry.update(enabled=False, kind='interactive', queue='interactive', cpu='4', memory='16Gi', images=[WORKLOAD_IMAGE])
         entry.pop('qualificationRequired', None)
         entry['gpu'] = {'mode':'shared', 'nominalMemoryGiB':size, 'qualification':{
             'mechanism':'r615-native-cgroup-managed-deny', 'status':'pilot-unqualified'}}
+        if name in catalog['profiles']:
+            agent.require(preset == 'cps5-cit20' and catalog['profiles'][name] == entry,
+                'Existing qualification profile must be exactly the trusted disabled template')
         catalog['profiles'][name] = entry
         approvals[scope]['profiles'] = [name]
         approvals[scope]['ceiling'] = {'cpu':'4', 'memory':'16Gi', 'gpuMemoryGiB':size}
@@ -214,16 +240,20 @@ def render(inputs, observation_raw, health_raw, *, now=None):
         'workspaces':{scope:{'profile':body['profiles'][0], 'cap_mib':caps[body['profiles'][0]]}
             for scope,body in approvals.items()}, 'terminal_history':copy.deepcopy(history)}
     agent.validate_config(node)
-    return {'policy.json':catalog, 'operator-qualification.json':mode, 'node-config.json':node,
+    result = {'policy.json':catalog, 'operator-qualification.json':mode, 'node-config.json':node,
         'registration-proposals.json':{scope:{'workspace':scope.split(':',1)[1], 'policy_hash':policy.hash, **body}
             for scope,body in approvals.items()},
         'acceptance.json':{'version':1, 'hardware_qualified':False, 'live_applied':False,
-            'source_handover_required':True, 'scopes':SCOPES, 'budget_mib':15360,
+            'source_handover_required':True, 'scopes':scopes, 'budget_mib':budget,
             'observation_sha256':checksum(observation_raw), 'health_sha256':checksum(health_raw),
             'ledger_uid':meta['uid'], 'ledger_resource_version':meta['resourceVersion'],
             'old_terminal_pod_uids':sorted(uids), 'released_never_enrolled_bindings':never_enrolled,
             'never_enrolled_evidence_sha256':agent.canonical_sha256(inputs['never_enrolled_evidence']) if never_enrolled else None,
             'policy_hash':policy.hash}}
+    if terminal_authority is not None:
+        result['terminal-authority-snapshot.json']=copy.deepcopy({'ledger':ledger, 'previous_node':baseline, **terminal_authority})
+        result['acceptance.json']['terminal_authority_sha256']=agent.canonical_sha256(result['terminal-authority-snapshot.json'])
+    return result
 
 
 def private_read(path):
@@ -243,14 +273,19 @@ def private_read(path):
 def main(argv=None):
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--render', action='store_true')
+    parser.add_argument('--terminal-authority', type=Path)
+    parser.add_argument('--preset', choices=tuple(PRESETS), default='cps5-cit10')
     for key in ('input','observation','health','output'): parser.add_argument('--'+key, type=Path)
     args = parser.parse_args(argv)
     if not args.render:
-        agent.require(not any((args.input,args.observation,args.health,args.output)), 'Inputs require explicit offline --render')
+        agent.require(not any((args.input,args.observation,args.health,args.output,args.terminal_authority)), 'Inputs require explicit offline --render')
         print(json.dumps({'enabled':False, 'live_applied':False, 'hardware_qualified':False}))
         return 0
     agent.require(all((args.input,args.observation,args.health,args.output)), 'Complete private offline input/output paths required')
-    values = render(agent.parse(private_read(args.input)), private_read(args.observation), private_read(args.health))
+    agent.require(args.preset!='cps5-cit20' or args.terminal_authority is not None,
+        'Twenty preset requires the full terminal authority bundle')
+    values = render(agent.parse(private_read(args.input)), private_read(args.observation), private_read(args.health), preset=args.preset,
+        terminal_authority=agent.parse(private_read(args.terminal_authority)) if args.terminal_authority else None)
     args.output.mkdir(mode=0o700)
     hashes = {}
     for name,value in values.items():
