@@ -120,6 +120,13 @@ def validate_config(config):
         extra = {'cap_mib'} if measured and isinstance(entry, dict) and 'cap_mib' in entry else set()
         if extra:
             require(type(entry['cap_mib']) is int and entry['cap_mib'] in (5120, 10240, 20480), 'Exact historical cap required')
+        if measured and isinstance(entry, dict) and 'configuration_authority' in entry:
+            require('cap_mib' in entry and entry.get('completion_kind') == 'cleanup'
+                    and entry['profile'] == 'interactive-native-qualification-' + str(entry['cap_mib'] // 1024)
+                    and entry['cap_mib'] in (5120, 20480),
+                    'Historical configuration reference is terminal qualification5/20 only')
+            validate_configuration_reference(entry['configuration_authority'], config, entry)
+            extra.add('configuration_authority')
         closed(entry, {'binding_id', 'policy_hash', 'profile', 'enrollment_uid', 'enrollment_sha256',
                       'completion_kind', 'completion_uid', 'completion_sha256', 'ledger_uid', 'journal_sha256'} | extra,
                'Closed historical completion pins required')
@@ -139,6 +146,61 @@ def validate_config(config):
         else:
             require(entry['journal_sha256'] is None, 'Never-gated history must have no native journal')
     return config
+
+
+def validate_configuration_reference(reference, config, entry):
+    """A finite terminal reference cannot authorize a current enrollment."""
+    closed(reference, {'namespace', 'name', 'uid', 'data_sha256', 'policy_hash'},
+           'Closed historical immutable configuration reference required')
+    require(reference['namespace'] == config['authority_namespace']
+            and isinstance(reference['name'], str) and _NAME.fullmatch(reference['name'])
+            and reference['name'].startswith('cps-native-node-qualification-')
+            and canonical_uuid(reference['uid']) and uuid.UUID(reference['uid']).int != 0,
+            'Exact historical qualification configuration namespace/name/UID required')
+    require(isinstance(reference['data_sha256'], str)
+            and re.fullmatch('sha256:[a-f0-9]{64}', reference['data_sha256'])
+            and reference['data_sha256'] != 'sha256:' + '0' * 64
+            and reference['policy_hash'] == entry['policy_hash']
+            and reference['policy_hash'] != config['policy_hash'],
+            'Pinned complete historical data and distinct historical policy required')
+
+
+def validate_historical_configuration(cm, reference, config, entry):
+    """Read the original25GiB pool only for already-released finite history.
+
+    No budget is inferred from an allocation or a cap. The immutable original
+    configuration supplies its full measured pool; current capacity is intact.
+    """
+    validate_configuration_reference(reference, config, entry)
+    meta = cm.get('metadata', {}) if isinstance(cm, dict) else {}
+    require(isinstance(cm, dict) and cm.get('apiVersion') == 'v1' and cm.get('kind') == 'ConfigMap'
+            and cm.get('immutable') is True and not cm.get('binaryData')
+            and all(meta.get(k) == reference[k] for k in ('namespace', 'name', 'uid'))
+            and not meta.get('ownerReferences') and not meta.get('deletionTimestamp')
+            and canonical_sha256(cm.get('data')) == reference['data_sha256'],
+            'Exact retained immutable historical configuration required')
+    closed(cm.get('data'), {'config.json'}, 'Single full historical node configuration required')
+    old = validate_config(parse(cm['data']['config.json']))
+    require(config['version'] == old['version'] == 2
+            and config['mode'] == old['mode'] == 'operator-qualification'
+            and old['enabled'] is True and old['authority_namespace'] == config['authority_namespace']
+            and old['policy_hash'] == reference['policy_hash']
+            and not any('configuration_authority' in e for e in old.get('terminal_history', {}).values()),
+            'Original enabled measured qualification configuration required, without recursive authority')
+    require(config['pool']['memory_budget_mib'] == 15360 and old['pool']['memory_budget_mib'] == 25600
+            and all(config['pool'][key] == old['pool'][key] for key in
+                    ('node', 'node_uid', 'gpu_uuid', 'max_workspaces', 'total_memory_mib',
+                     'headroom_mib', 'boot_id', 'driver_generation'))
+            and old['pool']['max_workspaces'] == 2 and old['pool']['headroom_mib'] == 1024,
+            'Historical25GiB and active15GiB pools must retain the same exact bounded physical epoch')
+    require(config['workspaces'] == {
+                'cps:native-group-b': {'profile':'interactive-native-qualification-5', 'cap_mib':5120},
+                'cit:native-group-a': {'profile':'interactive-native-qualification-10', 'cap_mib':10240}}
+            and old['workspaces'] == {
+                'cps:native-group-b': {'profile':'interactive-native-qualification-5', 'cap_mib':5120},
+                'cit:native-group-a': {'profile':'interactive-native-qualification-20', 'cap_mib':20480}},
+            'Only the original controlled5/20 configuration may supply terminal historical capacity')
+    return old
 
 
 def validate_measured_pool(pool):
@@ -292,15 +354,20 @@ def validate_authority_enrollments(cms, config, models, store, journal, kube):
         if entry is None:
             envelopes.append(validate_enrollment(cm, config, models))
             continue
-        old = {key: config[key] for key in ('enabled', 'authority_namespace')}
-        old.update(version=1, policy_hash=entry['policy_hash'],
-            pool={key:config['pool'][key] for key in ('node', 'node_uid', 'gpu_uuid')},
-            workspaces={str(body.get('source')) + ':' + str(body.get('workspace')): {'profile': entry['profile']}})
-        old['pool']['max_workspaces'] = 2
-        if 'cap_mib' in entry:
-            old.update(version=2, pool=config['pool'], mode='operator-qualification'
-                if entry['profile'].startswith('interactive-native-qualification-') else 'qualified-group')
-            next(iter(old['workspaces'].values()))['cap_mib'] = entry['cap_mib']
+        reference = entry.get('configuration_authority')
+        if reference is not None:
+            old = validate_historical_configuration(kube.configmap(reference['namespace'], reference['name']),
+                                                   reference, config, entry)
+        else:
+            old = {key: config[key] for key in ('enabled', 'authority_namespace')}
+            old.update(version=1, policy_hash=entry['policy_hash'],
+                pool={key:config['pool'][key] for key in ('node', 'node_uid', 'gpu_uuid')},
+                workspaces={str(body.get('source')) + ':' + str(body.get('workspace')): {'profile': entry['profile']}})
+            old['pool']['max_workspaces'] = 2
+            if 'cap_mib' in entry:
+                old.update(version=2, pool=config['pool'], mode='operator-qualification'
+                    if entry['profile'].startswith('interactive-native-qualification-') else 'qualified-group')
+                next(iter(old['workspaces'].values()))['cap_mib'] = entry['cap_mib']
         envelope = validate_enrollment(cm, old, models)
         require(body['binding_id'] == entry['binding_id'] and envelope['configmap_uid'] == entry['enrollment_uid']
                 and canonical_sha256(body) == entry['enrollment_sha256'], 'Changed historical enrollment authority')
@@ -315,6 +382,9 @@ def validate_authority_enrollments(cms, config, models, store, journal, kube):
         completion_name = ('cps-native-cleanup-' if entry['completion_kind'] == 'cleanup' else 'cps-native-abort-') + body['binding_id'][:40]
         # Two fresh rounds catch replacement/late journal/Pod/ledger changes.
         for _ in range(2):
+            if reference is not None:
+                require(validate_historical_configuration(kube.configmap(reference['namespace'], reference['name']),
+                        reference, config, entry) == old, 'Historical configuration changed across fresh reads')
             actual = kube.configmap(config['authority_namespace'], envelope['configmap_name'])
             require(validate_enrollment(actual, old, models) == envelope, 'Historical immutable enrollment changed on GET')
             completion = kube.configmap(config['authority_namespace'], completion_name)
@@ -329,6 +399,12 @@ def validate_authority_enrollments(cms, config, models, store, journal, kube):
                     and allocation.get('state') == 'released' and all(allocation.get(k) == v for k, v in body.items()),
                     'Exact released historical allocation and intent required')
             record = journal.read(uid)
+            if reference is not None:
+                require(type(record) is models.CapRecord and record.state == 'retired-inert-cap'
+                        and record.retirement is not None and record.retirement.entry.used == 0
+                        and record.intent.cap_mib == entry['cap_mib'],
+                        'Historical configuration authority requires the original finite zero-charge retirement')
+                validate_pool_epoch(old, record.identity.epoch)
             if entry['completion_kind'] == 'cleanup':
                 require(type(record) is models.CapRecord and record.state in ('cleaned', 'retired-inert-cap')
                         and canonical_sha256(record.to_dict()) == entry['journal_sha256']

@@ -171,6 +171,14 @@ def map_history(authority, ledger, previous_node):
         previous=previous_node.get('terminal_history',{}).get(uid)
         if previous is not None:
             if 'cap_mib' in previous:entry['cap_mib']=intent.cap_mib
+            if 'configuration_authority' in previous:
+                reference=previous['configuration_authority']
+                historical=agent.validate_historical_configuration(by_name.get(reference['name']),
+                    reference,previous_node,previous)
+                agent.require(agent.validate_enrollment(cm,historical,models)==envelope
+                    and record.state=='retired-inert-cap' and record.retirement.entry.used==0,
+                    'Historical configuration reference requires the exact finite released enrollment')
+                entry['configuration_authority']=copy.deepcopy(reference)
             agent.require(previous==entry,'Every previous full terminal mapping must remain unchanged')
             result[uid]=copy.deepcopy(previous)
         else:result[uid]=dict(entry,cap_mib=intent.cap_mib)
