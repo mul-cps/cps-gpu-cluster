@@ -5,6 +5,7 @@ Local preparation only. Root supplies current private captures and still owns
 normal Start/Stop, fresh host preflight, hardware execution and witness review.
 """
 import argparse
+import ast
 import json
 from pathlib import Path
 
@@ -98,13 +99,23 @@ def render_sources(sources, binding, retired, *, native_binary=None):
     out = h._render_validated_sources(sources, binding, retired, native_binary=native_binary)
     old_pre = out['run_group_acceptance.py']
     pre = h.replace(old_pre.decode(), 'CONTROLLER_SHA = ' + repr(LEGACY_CONTROLLER_SHA256),
-                    'CONTROLLER_SHA = ' + repr(CONTROLLER_SHA256)).encode()
+                    'CONTROLLER_SHA = ' + repr(CONTROLLER_SHA256))
+    host_node = next(n.value for n in ast.parse(pre).body
+        if isinstance(n, ast.Assign) and any(isinstance(t, ast.Name) and t.id == 'HOST_SOURCE' for t in n.targets))
+    old_host = ast.literal_eval(host_node)
+    new_host = h.replace(old_host,
+        '/run/cps-native-gpu/driver-inputs-optional-stack/native_gpu_controller.py',
+        '/run/cps-native-gpu/qualification-current-controller-630d43cc/native_gpu_controller.py')
+    new_host = h.replace(new_host, repr(LEGACY_CONTROLLER_SHA256), repr(CONTROLLER_SHA256))
+    pre = h.replace(pre, ast.get_source_segment(pre, host_node), repr(new_host)).encode()
+    compile(pre, 'current-group-preflight', 'exec')
     out['run_group_acceptance.py'] = pre
     # Every trusted wrapper still pins the exact rendered preflight. Source
     # protocol bodies, kernel witnesses, caps and deadlines are unchanged.
     for name, raw in list(out.items()):
         if name != 'run_group_acceptance.py' and name.endswith('.py'):
-            out[name] = raw.replace(h.sha(old_pre).encode(), h.sha(pre).encode())
+            out[name] = raw.replace(h.sha(old_pre).encode(), h.sha(pre).encode()).replace(
+                h.sha(old_host.encode()).encode(), h.sha(new_host.encode()).encode())
     return out
 
 

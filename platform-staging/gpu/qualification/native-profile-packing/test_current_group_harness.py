@@ -1,5 +1,6 @@
 """Self-contained CPU captures, never hardware evidence or Root's private sources."""
 import copy
+import ast
 from dataclasses import replace
 import io
 import contextlib
@@ -176,22 +177,43 @@ class CurrentGroupTests(unittest.TestCase):
     def test_render_adapter_keeps_protocol_witness_and_deadline_bytes_and_repins_preflight(self):
         b = binding()
         for target in b['targets']: target['profile'] = 'interactive-shared-' + str(target['cap_mib'] // 1024)
-        pre = ('CONTROLLER_SHA = ' + repr(current.LEGACY_CONTROLLER_SHA256) + '\n').encode()
+        legacy_path = '/run/cps-native-gpu/driver-inputs-optional-stack/native_gpu_controller.py'
+        current_path = '/run/cps-native-gpu/qualification-current-controller-630d43cc/native_gpu_controller.py'
+        host = ("source=read(" + repr(legacy_path) + ",0o400)\n"
+                "require(hashlib.sha256(source).hexdigest()==c['controller_sha256']==" +
+                repr(current.LEGACY_CONTROLLER_SHA256) + ", 'Current production journal validator required')\n")
+        pre = ('CONTROLLER_SHA = ' + repr(current.LEGACY_CONTROLLER_SHA256) + '\nHOST_SOURCE = ' + repr(host) + '\n').encode()
         protocol = b'kernel-witness-required\nexchange_timeout=120\npayload_mib=64\n'
         rendered = {'run_group_acceptance.py': pre, 'imports-cross-pod/kernel_witness_collector.py': protocol,
                     'vmm-cross-parent-sgid-fix/kernel_witness_transport.py': protocol,
-                    'imports-cross-pod/run_cross_pod.py': protocol + old.sha(pre).encode()}
+                    'imports-cross-pod/run_cross_pod.py': protocol + old.sha(pre).encode() + b'\n' + old.sha(host.encode()).encode()}
         with patch.object(old, '_render_validated_sources', return_value=copy.deepcopy(rendered)) as render:
             output = current.render_sources({}, b, {'records': []})
         self.assertEqual(render.call_args.args[1], b)
         new_pre = output['run_group_acceptance.py']
         self.assertIn(current.CONTROLLER_SHA256.encode(), new_pre)
+        new_host = ast.literal_eval(next(n.value for n in ast.parse(new_pre).body
+            if isinstance(n, ast.Assign) and any(isinstance(t, ast.Name) and t.id == 'HOST_SOURCE' for t in n.targets)))
+        self.assertEqual(new_host, host.replace(legacy_path, current_path).replace(
+            current.LEGACY_CONTROLLER_SHA256, current.CONTROLLER_SHA256))
+        self.assertNotIn(legacy_path, new_host)
+        self.assertNotIn(current.LEGACY_CONTROLLER_SHA256, new_host)
+        self.assertIn("0o400", new_host)
+        self.assertEqual(rendered['run_group_acceptance.py'], pre)
         self.assertEqual(output['imports-cross-pod/kernel_witness_collector.py'], protocol)
         self.assertEqual(output['vmm-cross-parent-sgid-fix/kernel_witness_transport.py'], protocol)
-        self.assertEqual(output['imports-cross-pod/run_cross_pod.py'], protocol + old.sha(new_pre).encode())
+        self.assertEqual(output['imports-cross-pod/run_cross_pod.py'],
+            protocol + old.sha(new_pre).encode() + b'\n' + old.sha(new_host.encode()).encode())
         with self.assertRaises(ValueError):
             with patch.object(old, '_render_validated_sources', return_value={'run_group_acceptance.py': b'changed model span'}):
                 current.render_sources({}, b, {'records': []})
+        for changed in (host.replace(legacy_path, '/unreviewed/controller.py'),
+                        host.replace(current.LEGACY_CONTROLLER_SHA256, '0' * 64)):
+            with self.subTest(unreviewed_host=changed), self.assertRaises(ValueError):
+                bad_pre = ('CONTROLLER_SHA = ' + repr(current.LEGACY_CONTROLLER_SHA256) +
+                           '\nHOST_SOURCE = ' + repr(changed) + '\n').encode()
+                with patch.object(old, '_render_validated_sources', return_value={'run_group_acceptance.py': bad_pre}):
+                    current.render_sources({}, b, {'records': []})
 
 
 if __name__ == '__main__': unittest.main()
