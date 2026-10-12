@@ -7,13 +7,30 @@ never calls Kubernetes or any HTTP API. The gateway and both administrative
 console images remain unchanged.
 
 The frontend image is pinned to
-`ghcr.io/mul-cps/e2x-course-hub@sha256:fd8ba6c022497f06b6f4b42fc0b37b9cf164f3136ac204d753d82a20fdef3a7a`,
-published by Root from admin source `fb6262f7d5d4799c9dca0a2e5d868e05978a4321`.
-The full admin CPU suite passed 179 tests. This source accepts the private
+`ghcr.io/mul-cps/e2x-course-hub@sha256:44c52253f0e486522f59417e1ee28c90e442741fe07ba37abc80cc5b57a3701d`,
+published by Root from privacy fix `4ccb7f53e93401e591087d4c3b79ed0a6640c64e`,
+on the native-assets foundation `fb6262f7d5d4799c9dca0a2e5d868e05978a4321`.
+The privacy source passed 24 focused and 181 backend tests. This source accepts the private
 native asset backend at its HTTPS root; `/argo/main...js` on that native server
 returns the SPA fallback instead of JavaScript. Installed source SHA256:
-`argo_service.py` = `6934f389d653218bfbc1d00c3c06e2df2af3128ec92a0e7d74c89728466f6ee0`,
+`argo_service.py` = `27ae731a53a6a9ccb6feace8bc4a5605b2f2396cc16c3d304b3d157406c16d5a`,
 `argo_app.py` = `d59166c3023920ebf2bce2f4d3f82caf5e25836b635e2425d290943ffb54b06f`.
+
+The focused values also record Root's accepted empty-list gateway
+`ghcr.io/mul-cps/cps-compute@sha256:72a4bed952fb399f936803d69cf93eda859f28c5f4b5faec3393d9bfb2382834`
+from `f835649446de3fcac30ee39d8b5840448acaa166`, and the separate Source54 consoles
+`ghcr.io/mul-cps/e2x-course-hub@sha256:0b48372b05346adfe3e2c018bcfb75c4914b111f44ac59be36f1bcd14f6cdd5f`.
+These pins are a source inventory, not permission to apply the full chart or
+replace the images of captured resources. Both public ingress settings remain
+false. See the [bounded source acceptance receipt](source-acceptance.json).
+
+Root's private frontend checks returned 200 for user information and an empty
+owned workflow list, retained the same identity despite injected Authorization
+and a foreign Hub header, redirected a bearer-only request, and returned 404
+for absent workflow detail and logs. Authentication used a **Root-signed cookie
+containing a real Hub user token**, not a human browser OAuth flow. No successful
+or failed owned notebook/artifact retrieval was tested by those empty-list checks.
+Public routing and full-platform production qualification remain pending.
 
 ## Prepare from current captures
 
@@ -63,7 +80,7 @@ printed on failure. No credential files are generated or printed. Outputs:
 
 The generated policy is taken from the captured ConfigMap, and its name must
 match the gateway's actual `policy` volume. The rotator reuses the captured
-immutable gateway image, while frontend Deployments use the dedicated `fd8`
+immutable gateway image, while frontend Deployments use the dedicated privacy
 image. Do not apply the complete platform chart or historical activation tool.
 
 Hub persistence uses `hub` Secret `data["values.yaml"]`, parsed by the existing

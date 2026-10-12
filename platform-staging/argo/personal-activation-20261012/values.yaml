@@ -1,9 +1,9 @@
 # Focused personal-Argo render only; never apply the full platform chart.
-# Root must supply the newly built personal-only frontend digest via --set-string personalArgo.image.
+# Accepted private frontend; public ingress still requires independent qualification.
 enabled: true
 namespace: cps-compute
 gateway:
-  image: ghcr.io/mul-cps/cps-compute@sha256:05fcb594db96642d8aab5556e6fa5cedaad2329773668fd03e6866b1aba1a39b
+  image: ghcr.io/mul-cps/cps-compute@sha256:72a4bed952fb399f936803d69cf93eda859f28c5f4b5faec3393d9bfb2382834
   argoUi:
     enabled: true
     rotationSuspended: true
@@ -11,14 +11,14 @@ gateway:
     readerNamespace: cps-argo
 consoles:
   cps:
-    image: ghcr.io/mul-cps/e2x-course-hub@sha256:5c13c292b1a50e067285af5b9dbf34373b960db370664b59bfa3ce2fd2ed2340
+    image: ghcr.io/mul-cps/e2x-course-hub@sha256:0b48372b05346adfe3e2c018bcfb75c4914b111f44ac59be36f1bcd14f6cdd5f
     publicCallbackUrl: https://jupyterhub.dshl.unileoben.ac.at/services/cps-admin/oauth_callback
   cit:
-    image: ghcr.io/mul-cps/e2x-course-hub@sha256:5c13c292b1a50e067285af5b9dbf34373b960db370664b59bfa3ce2fd2ed2340
+    image: ghcr.io/mul-cps/e2x-course-hub@sha256:0b48372b05346adfe3e2c018bcfb75c4914b111f44ac59be36f1bcd14f6cdd5f
     publicCallbackUrl: https://jhub.dshl.unileoben.ac.at/services/cit-admin/oauth_callback
 personalArgo:
   enabled: true
-  image: ''
+  image: ghcr.io/mul-cps/e2x-course-hub@sha256:44c52253f0e486522f59417e1ee28c90e442741fe07ba37abc80cc5b57a3701d
   nativeUrl: https://cps-argo-argo-workflows-server.cps-argo.svc.cluster.local:2746
   nativeCaFile: /trust/ca.crt
   upstreamCaConfigMapRef: cps-compute-gateway-ca

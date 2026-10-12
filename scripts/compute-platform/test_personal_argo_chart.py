@@ -78,22 +78,30 @@ class PersonalArgoChart(unittest.TestCase):
         cron = next(o for o in objects if o and o['kind'] == 'CronJob' and o['metadata']['name'] == 'argo-ui-token-rotator')
         self.assertIs(cron['spec']['suspend'], False)
 
-    def test_prepared_activation_waits_for_new_image_and_keeps_both_sources_private(self):
+    def test_prepared_activation_pins_privacy_frontend_and_keeps_both_sources_private(self):
         directory = ROOT / 'platform-staging/argo/personal-activation-20261012'
         values = yaml.safe_load((directory / 'values.yaml').read_text())
         values.update({key: self.values[key] for key in ('policyJson', 'policyHash')})
-        result, _ = self.render(values)
-        self.assertNotEqual(result.returncode, 0)
-        self.assertIn('released service image digest', result.stderr)
-        values['personalArgo']['image'] = IMAGE
+        frontend_image = 'ghcr.io/mul-cps/e2x-course-hub@sha256:44c52253f0e486522f59417e1ee28c90e442741fe07ba37abc80cc5b57a3701d'
+        self.assertEqual(values['personalArgo']['image'], frontend_image)
         result, objects = self.render(values)
         self.assertEqual(result.returncode, 0, result.stderr)
         self.assertFalse(any(o and o['kind'] == 'Ingress' and o['metadata']['name'].endswith('-argo-ui') for o in objects))
         for source in ('cps', 'cit'):
             deployment = next(o for o in objects if o and o['kind'] == 'Deployment' and o['metadata']['name'] == source + '-argo-ui')
+            self.assertEqual(deployment['spec']['template']['spec']['containers'][0]['image'], frontend_image)
             env = {e['name']: e for e in deployment['spec']['template']['spec']['containers'][0]['env']}
             self.assertEqual(env['ARGO_USER_NATIVE_ARGO_URL']['value'], 'https://cps-argo-argo-workflows-server.cps-argo.svc.cluster.local:2746')
             self.assertEqual(env['ARGO_USER_OAUTH_CLIENT_ID']['value'], 'service-' + source + '-argo-ui')
+
+    def test_prepared_activation_still_rejects_missing_frontend_image(self):
+        directory = ROOT / 'platform-staging/argo/personal-activation-20261012'
+        values = yaml.safe_load((directory / 'values.yaml').read_text())
+        values.update({key: self.values[key] for key in ('policyJson', 'policyHash')})
+        values['personalArgo']['image'] = ''
+        result, _ = self.render(values)
+        self.assertNotEqual(result.returncode, 0)
+        self.assertIn('released service image digest', result.stderr)
 
     def test_persistent_hub_fragments_preserve_existing_roles_and_register_own_source(self):
         directory = ROOT / 'platform-staging/argo/personal-activation-20261012'

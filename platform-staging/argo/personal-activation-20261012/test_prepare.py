@@ -13,7 +13,7 @@ import yaml
 
 HERE = Path(__file__).resolve().parent
 ROOT = HERE.parents[2]
-PIN = 'ghcr.io/mul-cps/e2x-course-hub@sha256:fd8ba6c022497f06b6f4b42fc0b37b9cf164f3136ac204d753d82a20fdef3a7a'
+PIN = 'ghcr.io/mul-cps/e2x-course-hub@sha256:44c52253f0e486522f59417e1ee28c90e442741fe07ba37abc80cc5b57a3701d'
 
 
 def apply_patch(original, operations):
@@ -140,6 +140,15 @@ class Prepare(unittest.TestCase):
         self.assertEqual(self.output.stat().st_mode & 0o777, 0o700)
         for path in self.output.iterdir(): self.assertEqual(path.stat().st_mode & 0o777, 0o600)
         objects = [o for o in yaml.safe_load_all((self.output / 'resources.yaml').read_text()) if o]
+        receipt = json.loads((self.output / 'receipt.json').read_text())
+        self.assertEqual(receipt['frontendImage'], PIN)
+        self.assertIs(receipt['preparedOnly'], True)
+        self.assertIs(receipt['apiCalls'], False)
+        self.assertIs(receipt['publicIngressCreated'], False)
+        rendered = yaml.safe_load((self.output / 'render-values.yaml').read_text())
+        self.assertEqual(rendered['gateway']['image'], self.objects['gateway_deployment']['spec']['template']['spec']['containers'][1]['image'])
+        for source in ('cps', 'cit'):
+            self.assertIs(rendered['personalArgo']['sources'][source]['ingress']['enabled'], False)
         self.assertFalse(any(o['kind'] == 'Ingress' for o in objects))
         frontends = [o for o in objects if o['kind'] == 'Deployment']
         self.assertEqual(len(frontends), 2)

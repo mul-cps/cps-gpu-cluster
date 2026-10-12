@@ -1,0 +1,76 @@
+{
+  "schemaVersion": 1,
+  "artifactKind": "source-only-personal-argo-current-pins",
+  "baseCommit": "cf0a18f545912a0ea698a69cf9cc63782e017a4f",
+  "preparedOnly": true,
+  "liveActionsByThisSourceTask": false,
+  "operationalHeartbeat": false,
+  "publicIngressEnabled": false,
+  "generalGroupGpuQualified": false,
+  "productionQualified": false,
+  "releasePublished": false,
+  "components": {
+    "gateway": {
+      "image": "ghcr.io/mul-cps/cps-compute@sha256:72a4bed952fb399f936803d69cf93eda859f28c5f4b5faec3393d9bfb2382834",
+      "sourceCommit": "f835649446de3fcac30ee39d8b5840448acaa166",
+      "change": "Normalize absent or null Argo items to an empty owned list; reject other invalid list shapes"
+    },
+    "privateFrontend": {
+      "image": "ghcr.io/mul-cps/e2x-course-hub@sha256:44c52253f0e486522f59417e1ee28c90e442741fe07ba37abc80cc5b57a3701d",
+      "sourceCommit": "4ccb7f53e93401e591087d4c3b79ed0a6640c64e",
+      "foundationCommit": "fb6262f7d5d4799c9dca0a2e5d868e05978a4321",
+      "argoServiceSha256": "27ae731a53a6a9ccb6feace8bc4a5605b2f2396cc16c3d304b3d157406c16d5a",
+      "change": "Normalize foreign or absent workflow detail, log and artifact object failures to a generic 404"
+    },
+    "consoles": {
+      "image": "ghcr.io/mul-cps/e2x-course-hub@sha256:0b48372b05346adfe3e2c018bcfb75c4914b111f44ac59be36f1bcd14f6cdd5f",
+      "sourceCommit": "e36805560e5f4d07626fd616e9a3b73d64901627",
+      "change": "Approved workspace context for grant profile discovery"
+    }
+  },
+  "rootAcceptedPrivateFrontendChecks": {
+    "independentlyRerunByThisSourceTask": false,
+    "authenticationFixture": "Root-signed-cookie-with-real-Hub-user-token",
+    "humanBrowserOAuthTested": false,
+    "userInfoStatus": 200,
+    "emptyOwnedWorkflowList": {
+      "status": 200,
+      "items": []
+    },
+    "injectedAuthorizationAndForeignHubHeader": {
+      "status": 200,
+      "identityUnchanged": true
+    },
+    "bearerOnlyRequestStatus": 302,
+    "missingWorkflowDetailStatus": 404,
+    "missingWorkflowLogStatus": 404,
+    "nonemptyOwnedWorkflowAccessTested": false,
+    "foreignWorkflowLiveAccessTested": false,
+    "successfulAndFailedOwnedArtifactsTested": false,
+    "publicPersonalArgoRouteTested": false,
+    "readyComponents": ["cps-argo-ui", "cit-argo-ui", "cps-admin", "cit-admin"]
+  },
+  "sourceVerification": {
+    "preparationTestsPassed": 8,
+    "personalArgoChartTestsPassed": 11,
+    "redStaleFrontendPinObserved": true,
+    "capturedGatewayImagePreserved": true,
+    "casAndUnownedRuntimePreservationTested": true,
+    "privateOutputPermissionsTested": true,
+    "missingFrontendImageStillRejected": true,
+    "noPublicIngressRendered": true
+  },
+  "hardwareEvidence": {
+    "commit": "079b2b60e7a5fd88c305febada90afec152c81f8",
+    "path": "platform-staging/gpu/native-group-pilot/qualification/limited-group-20261012",
+    "measurementUnchanged": true,
+    "hardwareRerunByThisSourceTask": false,
+    "scope": ["cps:native-group-b:interactive-shared-5", "cit:native-group-a:interactive-shared-10"]
+  },
+  "remainingGates": [
+    "Normal current-policy successful and failed owned notebook execution and artifact retrieval",
+    "Live nonempty own-versus-foreign workflow, log and artifact authorization",
+    "Human browser OAuth and public personal Argo routing",
+    "General GPU rollout, wider fleet and complete platform release acceptance"
+  ]
+}

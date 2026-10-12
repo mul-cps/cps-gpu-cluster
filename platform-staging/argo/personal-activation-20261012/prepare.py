@@ -17,7 +17,7 @@ import yaml
 
 HERE = Path(__file__).resolve().parent
 ROOT = HERE.parents[2]
-FRONTEND_IMAGE = 'ghcr.io/mul-cps/e2x-course-hub@sha256:fd8ba6c022497f06b6f4b42fc0b37b9cf164f3136ac204d753d82a20fdef3a7a'
+FRONTEND_IMAGE = 'ghcr.io/mul-cps/e2x-course-hub@sha256:44c52253f0e486522f59417e1ee28c90e442741fe07ba37abc80cc5b57a3701d'
 CA_NAME = 'cps-personal-argo-upstream-ca'
 ENV_NAME = 'PERSONAL_ARGO_OAUTH_CLIENT_SECRET'
 CONFIG_KEY = '99-personal-argo-service'
