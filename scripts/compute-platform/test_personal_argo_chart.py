@@ -123,6 +123,26 @@ class PersonalArgoChart(unittest.TestCase):
         self.assertNotEqual(result.returncode, 0)
         self.assertIn('owner-filtering gateway adapter', result.stderr)
 
+    def test_artifact_credentials_are_readable_only_by_configured_backend_reader(self):
+        values=copy.deepcopy(self.values)
+        values['gateway']['argoUi'].update(readerServiceAccount='cps-personal-argo-reader',readerNamespace='cps-argo')
+        result,objects=self.render(values)
+        self.assertEqual(result.returncode,0,result.stderr)
+        role=next((o for o in objects if o and o['kind']=='Role' and o['metadata']['name']=='cps-personal-argo-artifact-credential'),None)
+        self.assertIsNotNone(role,'Backend artifact credential reader grant required')
+        self.assertEqual(role['metadata']['namespace'],'cps-workflows')
+        self.assertEqual(role['rules'],[{'apiGroups':[''],'resources':['secrets'],'resourceNames':['cps-artifact-credentials'],'verbs':['get']}])
+        binding=next(o for o in objects if o and o['kind']=='RoleBinding' and o['metadata']['name']=='cps-personal-argo-artifact-credential')
+        self.assertEqual(binding['metadata']['namespace'],'cps-workflows')
+        self.assertEqual(binding['subjects'],[{'kind':'ServiceAccount','name':'cps-personal-argo-reader','namespace':'cps-argo'}])
+        self.assertEqual(binding['roleRef'],{'apiGroup':'rbac.authorization.k8s.io','kind':'Role','name':'cps-personal-argo-artifact-credential'})
+        for source in ('cps','cit'):
+            deployment=next(o for o in objects if o and o['kind']=='Deployment' and o['metadata']['name']==source+'-argo-ui')
+            pod=deployment['spec']['template']['spec']
+            self.assertFalse(pod['automountServiceAccountToken'])
+            self.assertNotIn('serviceAccountName',pod)
+            self.assertFalse(any(v.get('secret',{}).get('secretName')=='cps-artifact-credentials' for v in pod['volumes']))
+
     def test_public_ingress_cannot_change_callback_origin(self):
         values = copy.deepcopy(self.values); values['personalArgo']['sources']['cps']['ingress']['host'] = 'foreign.invalid'
         result, _ = self.render(values)
