@@ -11,7 +11,7 @@ metadata:
 rules:
   - apiGroups: [""]
     resources: [secrets]
-    resourceNames: [cps-artifact-credentials]
+    resourceNames: [cps-artifact-credentials, cps-artifact-ca]
     verbs: [get]
 ---
 apiVersion: rbac.authorization.k8s.io/v1

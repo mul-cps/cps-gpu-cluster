@@ -77,7 +77,7 @@ class PersonalArgoChart(unittest.TestCase):
         role=next((o for o in objects if o and o['kind']=='Role' and o['metadata']['name']=='cps-personal-argo-artifact-credential'),None)
         self.assertIsNotNone(role,'Backend artifact credential reader grant required')
         self.assertEqual(role['metadata']['namespace'],'cps-workflows')
-        self.assertEqual(role['rules'],[{'apiGroups':[''],'resources':['secrets'],'resourceNames':['cps-artifact-credentials'],'verbs':['get']}])
+        self.assertEqual(role['rules'],[{'apiGroups':[''],'resources':['secrets'],'resourceNames':['cps-artifact-credentials','cps-artifact-ca'],'verbs':['get']}])
         binding=next(o for o in objects if o and o['kind']=='RoleBinding' and o['metadata']['name']=='cps-personal-argo-artifact-credential')
         self.assertEqual(binding['metadata']['namespace'],'cps-workflows')
         self.assertEqual(binding['subjects'],[{'kind':'ServiceAccount','name':'cps-personal-argo-reader','namespace':'cps-argo'}])
