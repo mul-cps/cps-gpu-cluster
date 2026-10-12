@@ -182,6 +182,7 @@ def validate_inputs(manifest,h,c,p):
         and host['healthPassed'] is True and host['sourceSha256']==snapshot['healthSourceSha256']
         =='52fdbdae3d5e2f66fd4653d94ef5a62f734e185fabec30450f4a1b70cfee7d67'
         and host['bootId']==pool['boot_id'] and host['driverGeneration']==pool['driver_generation']
+        and snapshot['directories']==host['directories']
         and host['finiteCaps']==inventory and host['finiteCapsRawSha256']=='sha256:'+capture['inventory']['sha256']
         and legacy.sha(base64.b64decode(host['finiteCapsRawBase64'],validate=True))==capture['inventory']['sha256'],
         'Complete actual raw inventory/current healthy observer epoch required')

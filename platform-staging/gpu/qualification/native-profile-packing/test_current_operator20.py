@@ -29,7 +29,7 @@ class Operator20Tests(unittest.TestCase):
         def load(name):return json.loads((proposal/name).read_bytes())
         catalog=load('policy.json');mode=load('operator-qualification.json');node=load('node-config.json')
         baseline=load('terminal-authority-snapshot.json');host=json.loads((capture/'actual-full-terminal-host-records.json').read_bytes())
-        snapshot=copy.deepcopy(baseline['host_snapshot']);authority=copy.deepcopy(baseline['authority_maps'])
+        snapshot=copy.deepcopy(baseline['host_snapshot']);snapshot['directories']=copy.deepcopy(host['directories']);authority=copy.deepcopy(baseline['authority_maps'])
         ledger=copy.deepcopy(baseline['ledger']);state=json.loads(ledger['data']['state.json'])
         inventory=copy.deepcopy(host['finiteCaps']);device=next(iter(snapshot['directories']['journal']['records'].values()))['value']['identity']['cgroup_device']
         b=self.fixture_binding();pool=mode['node_pool']
@@ -72,6 +72,7 @@ class Operator20Tests(unittest.TestCase):
                 'rawSha256':'sha256:'+old.sha(raw),'rawBase64':base64.b64encode(raw).decode()}
             inventory['entries'].append({'cgroup_id':identity.cgroup_inode,'kernfs_id':identity.cgroup_inode,'inode':identity.cgroup_inode,
                 'offline':False,'pinned':True,'default_hierarchy':True,'soft':intent.cap_bytes,'hard':intent.cap_bytes,'used':0})
+        host['directories']=copy.deepcopy(snapshot['directories'])
         ledger['metadata']['resourceVersion']='synthetic-after';ledger['data']['state.json']=old.canonical(state)
         retired={'version':1,**{k:pool[k] for k in ('node','node_uid','boot_id','gpu_uuid','driver_generation')},
             'controller_sha256':q.current.CONTROLLER_SHA256,'records':[]}
