@@ -87,9 +87,9 @@ class Operator20Tests(unittest.TestCase):
         ledger['metadata']['resourceVersion']='synthetic-after';ledger['data']['state.json']=old.canonical(state)
         retired={'version':1,**{k:pool[k] for k in ('node','node_uid','boot_id','gpu_uuid','driver_generation')},
             'controller_sha256':q.current.CONTROLLER_SHA256,'records':[]}
-        for name,row in baseline['host_snapshot']['directories']['journal']['records'].items():
+        for name,row in snapshot['directories']['journal']['records'].items():
             if row['value']['state']=='retired-inert-cap':
-                retired['records'].append({'pod_uid':name[:-5],'journal_sha256':'sha256:'+old.sha(old.canonical(row['value']).encode()),'record':row['value']})
+                retired['records'].append({'pod_uid':name[:-5],'journal_sha256':row['rawSha256'],'record':row['value']})
         b['retired_capture']=pin('retired.json',retired)
         measurement={'kind':'selected-device-nvml-memory-mig-observation',**{k:b['pool'][k] for k in ('node','boot_id','gpu_uuid')},
             'mig_current':0,'mig_pending':0,'read_only':True,'nvml_header_sha256':'c9b494b7c8015b6ae7aca62b2ce98e6b13f3277a2bec80de528371e725d54012',
@@ -120,6 +120,28 @@ class Operator20Tests(unittest.TestCase):
             generated=q.module('generated_operator20_snapshot',(root/'packet/prepare_harness.py').read_bytes(),root/'packet/prepare_harness.py')
             b=json.loads(Path(manifest['binding']['path']).read_bytes());self.assertEqual(generated.validate_binding(b),b)
             retired=json.loads(Path(b['retired_capture']['path']).read_bytes());self.assertEqual(generated.validate_retired(retired,b),retired)
+            # Execute the actual generated host preflight's raw-byte/typed-record
+            # assertions. Protected journal bytes are deliberately not canonical
+            # authority serialization, even though their parsed records agree.
+            preflight=q.module('generated_raw_journal_preflight',(root/'packet/run_group_acceptance.py').read_bytes(),root/'packet/run_group_acceptance.py')
+            assertions=[n for n in ast.walk(ast.parse(preflight.HOST_SOURCE)) if isinstance(n,ast.Expr)
+                and isinstance(n.value,ast.Call) and isinstance(n.value.func,ast.Name)
+                and n.value.func.id=='require' and len(n.value.args)==2
+                and isinstance(n.value.args[1],ast.Constant)
+                and n.value.args[1].value in ('Explicit original protected retired journal required','Retired journal changed across observation')]
+            self.assertEqual(len(assertions),2)
+            code=compile(ast.fix_missing_locations(ast.Module(body=assertions,type_ignores=[])),'generated-journal-guards','exec')
+            host=json.loads(Path(manifest['inventory_capture']['host_snapshot']['path']).read_bytes())
+            for row in retired['records']:
+                original=host['directories']['journal']['records'][row['pod_uid']+'.json']
+                raw=base64.b64decode(original['rawBase64'],validate=True)
+                canonical='sha256:'+old.sha(old.canonical(original['value']).encode())
+                self.assertNotEqual(original['rawSha256'],canonical)
+                env={'expected':row,'journal_raw':raw,'sha':lambda v:'sha256:'+old.sha(v),
+                    'parse':json.loads,'read':lambda path:raw,'require':old.require}
+                exec(code,env)
+                env['expected']={**row,'journal_sha256':canonical}
+                with self.assertRaisesRegex(ValueError,'Explicit original protected retired journal required'):exec(code,env)
             for field,value in [('cap_mib',10240),('profile','interactive-shared-20')]:
                 bad=copy.deepcopy(b);bad['targets'][1][field]=value
                 with self.assertRaises(ValueError):generated.validate_binding(bad)
@@ -130,6 +152,16 @@ class Operator20Tests(unittest.TestCase):
             b,context,clear=q.validate_inputs(manifest,h,c,p)
             self.assertEqual(context['terminal_history_count'],34);self.assertEqual(context['baseline_allocation_count'],37)
             self.assertEqual(len(clear['rows']),13);self.assertFalse(context['fresh_operator20_hardware_qualified'])
+
+    def test_canonical_provenance_hash_cannot_replace_protected_raw_journal_pin(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            m,pin=self.complete_fixture(Path(tmp));h,c,p=q.loaders()
+            b=json.loads(Path(m['binding']['path']).read_bytes())
+            retired=json.loads(Path(b['retired_capture']['path']).read_bytes())
+            for row in retired['records']:row['journal_sha256']='sha256:'+old.sha(old.canonical(row['record']).encode())
+            b['retired_capture']=pin('canonical-substitute.json',retired);m['binding']=pin('canonical-binding.json',b)
+            with self.assertRaisesRegex(ValueError,'Retirement inputs must equal full actual protected original journals'):
+                q.validate_inputs(m,h,c,p)
 
     def test_missing_or_changed_custody_or_forged_active_inputs_are_rejected(self):
         for change in ('ledger-drop','authority-drop','history-drop','journal','gate','unknown-finite','retired','capture-source','protected-mode','protected-link','protected-raw','mode'):

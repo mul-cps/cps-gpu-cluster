@@ -227,9 +227,9 @@ def validate_inputs(manifest,h,c,p):
     retired=c.validate_retired(read(binding['retired_capture']),binding)
     historical=[models.CapRecord.from_dict(row['record']) for row in retired['records']]
     for row,r in zip(retired['records'],historical):
-        original=projected['directories']['journal']['records'].get(r.intent.pod_uid+'.json')
-        legacy.require(original is not None and original['value']==r.to_dict()
-            and row['journal_sha256']==agent.canonical_sha256(original['value']),
+        original=snapshot['directories']['journal']['records'].get(r.intent.pod_uid+'.json')
+        legacy.require(original is not None and protected(original)==r.to_dict()
+            and row['journal_sha256']==original['rawSha256'],
             'Retirement inputs must equal full actual protected original journals')
     finite={uid for uid,row in projected['directories']['journal']['records'].items() if row['value']['state']=='retired-inert-cap'}
     legacy.require(finite=={r.intent.pod_uid+'.json' for r in historical},'Every actual finite retired lifetime must bind inventory, with no omitted history')
