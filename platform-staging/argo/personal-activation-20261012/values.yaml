@@ -7,6 +7,8 @@ gateway:
   argoUi:
     enabled: true
     rotationSuspended: true
+    readerServiceAccount: cps-personal-argo-reader
+    readerNamespace: cps-argo
 consoles:
   cps:
     image: ghcr.io/mul-cps/e2x-course-hub@sha256:5c13c292b1a50e067285af5b9dbf34373b960db370664b59bfa3ce2fd2ed2340

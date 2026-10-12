@@ -1,98 +1,100 @@
 # Root recipe: personal Argo activation
 
-This package prepares the existing owner-filtered Argo frontend. Nothing here
-has been applied. Root owns credentials, image publication, live reads and
-rollouts. The gateway and both administrative console images remain unchanged.
+This package prepares the existing owner-filtered Argo frontend. Root owns
+fresh captures, credentials, live validation and rollouts. `prepare.py` is
+offline only: it runs local Helm, creates a fresh private output directory and
+never calls Kubernetes or any HTTP API. The gateway and both administrative
+console images remain unchanged.
 
-The browser entry for each Hub is `/argo/workflows/cps-workflows?limit=50` on
-`https://jupyterhub.dshl.unileoben.ac.at` or `https://jhub.dshl.unileoben.ac.at`.
-Ingress must forward `/argo` unchanged to `cps-argo-ui:8080` or
-`cit-argo-ui:8080` in `cps-compute`. OAuth callbacks are exactly
-`<owning-public-origin>/argo/oauth_callback`. The operational Argo server stays
-the private HTTPS asset/backend service; browser API requests go through the
-existing gateway owner adapter.
+The frontend image is pinned to
+`ghcr.io/mul-cps/e2x-course-hub@sha256:fd8ba6c022497f06b6f4b42fc0b37b9cf164f3136ac204d753d82a20fdef3a7a`,
+published by Root from admin source `fb6262f7d5d4799c9dca0a2e5d868e05978a4321`.
+The full admin CPU suite passed 179 tests. This source accepts the private
+native asset backend at its HTTPS root; `/argo/main...js` on that native server
+returns the SPA fallback instead of JavaScript. Installed source SHA256:
+`argo_service.py` = `6934f389d653218bfbc1d00c3c06e2df2af3128ec92a0e7d74c89728466f6ee0`,
+`argo_app.py` = `d59166c3023920ebf2bce2f4d3f82caf5e25836b635e2425d290943ffb54b06f`.
 
-The frontend accepts its signed OAuth cookie, a human user of the owning Hub,
-and the dedicated `access:services!service=cps-argo-ui` or
-`access:services!service=cit-argo-ui` scope. It forwards the visitor's token to
-the gateway. Browser Authorization headers cannot replace the user. Native
-asset requests contain no credentials. No service backend `url` is needed in
-Hub registration: the explicit OAuth client and callback register an external
-service, and the public ingress handles routing.
+## Prepare from current captures
 
-## Build the personal-only frontend
+Root stages the following fresh JSON objects with mode `0600`, in a private
+directory. Individual objects or Kubernetes `List` captures are supported:
 
-The deployed admin image `5c13c292...` contains the launcher, but its native URL
-validator rejects the existing internal asset server's root URL. The patch in
-`/tmp/e2x-personal-argo-native-root-20261012` restores the reviewed HTTPS root
-or `/argo` backend paths. It changes no administrative application or GPU code.
-Twenty-two service tests and ten launcher tests passed with JupyterHub 5.5.2.
+| Input key | Actual resource |
+| --- | --- |
+| `policy_configmap` | `cps-compute/compute-policy` ConfigMap |
+| `gateway_deployment` | `cps-compute/compute-gateway` Deployment |
+| `gateway_runtime_secret` | `cps-compute/cps-compute-runtime` Secret |
+| `cps_hub_secret` | `jupyterhub/hub` Secret |
+| `cps_hub_deployment` | `jupyterhub/hub` Deployment |
+| `cit_hub_secret` | `cit-jhub/hub` Secret |
+| `cit_hub_deployment` | `cit-jhub/hub` Deployment |
+| `cit_existing_secret` | `cit-jhub/jupyterhub-secrets` Secret, required when mounted |
+| `ca_files` | Root-supplied public Hub, compute and native Argo trusted CA PEM bundles |
 
-Root builds and publishes this worktree with the existing dedicated Dockerfile:
+Copy `inputs.example.json` to a private `argo-inputs.json`, set its absolute
+paths, and give it mode `0600`. `ca_files` must include the public trust bundle
+needed by both Hub HTTPS endpoints, the gateway CA and the native Argo CA.
+The preparer validates PEM syntax and deduplicates the certificates into a
+separate `cps-personal-argo-upstream-ca` ConfigMap; it does not change the
+gateway's existing CA ConfigMap. Root verifies the actual upstream trust.
 
-```sh
-cd /tmp/e2x-personal-argo-native-root-20261012
-podman build --file Dockerfile.argo-service \
-  --build-arg SOURCE_REVISION="$(git rev-parse HEAD)" \
-  --tag ghcr.io/mul-cps/e2x-course-hub:personal-argo-native-root-20261012 .
-podman push ghcr.io/mul-cps/e2x-course-hub:personal-argo-native-root-20261012
-```
-
-Record the registry digest, installed `argo_service.py` hash, launcher help and
-`pip check` from that exact image. Fill `personalArgo.image` with the resulting
-digest reference. It is intentionally empty in `values.yaml`, so rendering
-fails until a new frontend pin is supplied. Do not reuse the existing `5c` pin.
-The source commit is `fb6262f7d5d4799c9dca0a2e5d868e05978a4321`; expected file
-SHA256 values are `6934f389d653218bfbc1d00c3c06e2df2af3128ec92a0e7d74c89728466f6ee0`
-for `argo_service.py` and
-`d59166c3023920ebf2bce2f4d3f82caf5e25836b635e2425d290943ffb54b06f` for the unchanged
-`argo_app.py` launcher.
-
-The rotator image alone uses the existing gateway digest
-`05fcb594db96642d8aab5556e6fa5cedaad2329773668fd03e6866b1aba1a39b`, observed in
-`native20-controlled-cycle-20261012/status-after-hardware-v1/cps-compute-compute-gateway.json`
-at October 12 11:02 UTC. Its pin is unrelated to the node-agent image.
-
-## Render the small nonpublic resource set
-
-From the cluster worktree, with `ARGO_FRONTEND_IMAGE` set to the reviewed new
-digest, render only these two existing templates. The generated repository
-policy is a render prerequisite; these output resources contain no policy or
-native runtime replacement.
+From this worktree:
 
 ```sh
-helm template personal-argo platform-staging/chart \
-  --values platform-staging/argo/personal-activation-20261012/values.yaml \
-  --set-file policyJson=compute-policy/generated/policy.json \
-  --set-string policyHash=sha256:051cd754210af2830d67968eea898f674a55ff66f5c88b3db95dff205f04e33d \
-  --set-string personalArgo.image="$ARGO_FRONTEND_IMAGE" \
-  --show-only templates/argo-ui-reader.yaml \
-  --show-only templates/personal-argo.yaml \
-  > /private/personal-argo-resources.yaml
+python platform-staging/argo/personal-activation-20261012/prepare.py \
+  --inputs /private/argo-inputs.json --output /private/argo-prepared
 ```
 
-Review the output and `network-policies.yaml`. No public Ingress is rendered;
-the rotator is suspended. Reject name collisions rather than overwriting an
-existing registration, Secret, rotator, frontend or NetworkPolicy. The focused
-set consists of the reader rotator's named RBAC, its ServiceAccount/CronJob, two
-frontends and Services, and narrow ingress policies. Do not apply the complete
-platform chart or the historical `activation_operator.py prepare` command.
+The fresh output directory is mode `0700`; every file is mode `0600`. Stdout
+contains a sanitized receipt. Raw parser input and private values are never
+printed on failure. No credential files are generated or printed. Outputs:
 
-## Protected setup and activation order
+| File | Purpose |
+| --- | --- |
+| `resources.yaml` | Separate CA ConfigMap, narrow NetworkPolicies, two private frontends/Services, named reader-rotation RBAC and suspended CronJob; no Ingress |
+| `reader-rbac.yaml` | New `cps-argo/cps-personal-argo-reader` SA and read-only Role/Binding in `cps-workflows`; no Secret permissions |
+| `cps-hub-secret.patch.json`, `cit-hub-secret.patch.json` | CAS replacement of only `hub` Secret `data["values.yaml"]` |
+| `cps-hub-deployment.patch.json`, `cit-hub-deployment.patch.json` | CAS append of only the named OAuth environment entry to the `hub` container |
+| `gateway-runtime.patch.json` | CAS replacement of only `data["runtime.json"]`, merging only `argoUi` |
+| `gateway-deployment.patch.json` | CAS append of only the reader volume and mount to the named gateway container |
+| `cps-hub-values.yaml`, `cit-hub-values.yaml` | Private merged values for review and persistence through the owning Hub release |
+| `render-values.yaml`, `receipt.json` | Captured-policy render input and sanitized preparation receipt |
 
-1. Freshly capture the actual gateway runtime and template, both Hub service/role
-   models and reconciled Hub values. Verify the current pins, namespaces, CA
-   contents, native asset TLS/index/base href/JavaScript MIME, and the existing
-   `cps-argo/argo-artifact-reader` read-only authorization. The older root asset
-   receipt is supporting evidence, not a current live acceptance claim. Confirm
-   the adapter prerequisites `artifacts` and `argo_ca_file` already exist in the
-   actual gateway runtime. Preserve private originals for rollback.
-2. Root provisions independent OAuth and cookie files for each Source in private
-   custody. Cookie secrets are stable and at least 32 characters. Create
-   `cps-argo-ui-oauth` and `cit-argo-ui-oauth` in `cps-compute` with keys
-   `oauth-client-secret` and `cookie-secret`. Mirror only the matching OAuth file
-   into each owning Hub's `personal-argo-oauth` Secret, key `oauth-client-secret`.
-   For example, using Root's staged files:
+The generated policy is taken from the captured ConfigMap, and its name must
+match the gateway's actual `policy` volume. The rotator reuses the captured
+immutable gateway image, while frontend Deployments use the dedicated `fd8`
+image. Do not apply the complete platform chart or historical activation tool.
+
+Hub persistence uses `hub` Secret `data["values.yaml"]`, parsed by the existing
+z2jh loader, then sorted `hub.extraConfig`. The preparer merges one
+`99-personal-argo-service` key and one environment entry, preserving all native
+hooks, services, roles and other values. CPS `extraEnv` remains a list; CIT
+remains a dictionary. CIT's later-loading `existing-secret/values.yaml` is
+rejected if present, so it cannot silently override this merge. Deployment
+environment entries also need the separate patches: editing stored Helm
+values alone does not inject an environment variable into a running Pod.
+
+All mutation patches test captured UID and resource version. Secret patches
+also test the original encoded data value. A conflict requires fresh captures
+and a new output directory. The preparer rejects existing owned keys, mounts
+or registrations. Existing services created by another custom extraConfig
+snippet are also rejected by the appended Hub code at startup. Root checks
+new resource names are unused before `kubectl create`.
+
+## Root apply order
+
+1. Review the private merged files and patches. Preserve originals for
+   rollback. Verify actual native TLS/index/base href/JavaScript MIME and the
+   existing gateway `artifacts` and `argo_ca_file` prerequisites. The preparer
+   does not qualify live trust, Kubernetes permissions or browser access.
+2. Root creates independent OAuth/cookie files for each Source. Cookies must
+   be stable and at least 32 characters. Frontend Secrets are
+   `cps-compute/cps-argo-ui-oauth` and `cps-compute/cit-argo-ui-oauth`, with keys
+   `oauth-client-secret` and `cookie-secret`. Mirror only the matching OAuth
+   file into the owning Hub's `personal-argo-oauth`, key `oauth-client-secret`.
+   Create `cps-compute/cps-argo-ui-reader` from an initially empty private token
+   file. Example Root commands (all referenced files are supplied by Root):
 
    ```sh
    kubectl -n cps-compute create secret generic cps-argo-ui-oauth \
@@ -109,59 +111,79 @@ platform chart or the historical `activation_operator.py prepare` command.
      --from-file=token=/private/empty-reader-token
    ```
 
-   The reader token file starts empty. Create it privately; it is populated only
-   by the existing bounded TokenRequest rotator. These commands print object
-   names, not credential values. Keep raw Secret captures private.
-3. Root creates the reviewed nonpublic resources and narrow NetworkPolicies,
-   leaving the schedule suspended. Run one bounded initial rotation and verify
-   the actual token's identity, audience, expiry, permissions and readable mount
-   privately before enabling the gateway adapter:
+3. Create the focused resources, then run one bounded rotation while the
+   schedule remains suspended:
 
    ```sh
-   kubectl create --filename /private/personal-argo-resources.yaml
-   kubectl create --filename platform-staging/argo/personal-activation-20261012/network-policies.yaml
+   kubectl create -f /private/argo-prepared/reader-rbac.yaml
+   kubectl create -f /private/argo-prepared/resources.yaml
    kubectl -n cps-compute create job personal-argo-initial-rotation-20261012 \
      --from=cronjob/argo-ui-token-rotator
    kubectl -n cps-compute wait --for=condition=complete \
      job/personal-argo-initial-rotation-20261012 --timeout=120s
    ```
 
-4. Merge `cps-hub-values-fragment.yaml` and `cit-hub-values-fragment.yaml` into
-   the owning Hub's current reconciled values. **Append the one `extraEnv` entry
-   by name and merge the one `extraConfig` key; do not pass the fragment as a
-   standalone Helm override that replaces the existing environment list.**
-   Preserve all prior services, roles, environment, volumes, native reservation
-   hooks and image pins. Reject existing `99-personal-argo-service`, conflicting
-   env names or duplicate service names. Publish/apply through Root's existing
-   reviewed Hub configuration path and verify both Hubs register their dedicated
-   clients after restart. This uses the baseline's `hub.extraConfig` mechanism
-   and does not depend on an unverified `jupyterhub_config.d` loader.
-5. On freshly read actual resources, add only the gateway reader volume/mount
-   from `gateway-reader-template-patch.json`; use a strategic merge with a fresh
-   metadata resourceVersion precondition. The patch does not set an image,
-   remove existing mounts or replace the Pod spec. Privately merge only the
-   `argoUi` key from `runtime-argo-fragment.json` into the actual runtime JSON,
-   verify every other decoded value equals the original, and CAS the current
-   runtime Secret. Do not apply the October 11 copied runtime proposal. Root
-   starts a reviewed gateway rollout only after the reader credential is valid.
-   Verify installed runtime bytes and readiness before unsuspending rotation.
-6. With both Hub clients and the gateway adapter healthy, Root enables the
-   schedule and verifies renewed tokens are reread from the directory mount:
+   Verify the **actual token's** identity, audience, expiry and permissions
+   privately using in-cluster SelfSubjectAccessReview, including forbidden
+   mutation and Secret reads. The new reader allows workflow get/list/watch,
+   pod get/list and pod logs get only in `cps-workflows`. It does not modify
+   `argo-artifact-reader`; artifact authorization remains separate. Do not
+   accept an impersonation `kubectl auth can-i` result as token qualification.
+4. Apply each freshly fenced Hub patch. These Deployment patches trigger a
+   rollout while retaining all native volumes, hooks and images:
+
+   ```sh
+   kubectl -n jupyterhub patch secret hub --type=json \
+     --patch-file=/private/argo-prepared/cps-hub-secret.patch.json
+   kubectl -n cit-jhub patch secret hub --type=json \
+     --patch-file=/private/argo-prepared/cit-hub-secret.patch.json
+   kubectl -n jupyterhub patch deployment hub --type=json \
+     --patch-file=/private/argo-prepared/cps-hub-deployment.patch.json
+   kubectl -n cit-jhub patch deployment hub --type=json \
+     --patch-file=/private/argo-prepared/cit-hub-deployment.patch.json
+   ```
+
+   Persist the reviewed merged Hub values through the owning release/GitOps
+   path so reconciliation retains them. Verify Hub clients and source-specific
+   user scopes after restart before enabling the gateway adapter.
+5. After validating the rotated credential, apply only the gateway runtime
+   and mount patches. The mount patch triggers the required gateway rollout:
+
+   ```sh
+   kubectl -n cps-compute patch secret cps-compute-runtime --type=json \
+     --patch-file=/private/argo-prepared/gateway-runtime.patch.json
+   kubectl -n cps-compute patch deployment compute-gateway --type=json \
+     --patch-file=/private/argo-prepared/gateway-deployment.patch.json
+   kubectl -n cps-compute rollout status deployment/compute-gateway --timeout=120s
+   ```
+
+   Verify installed runtime bytes and readiness, then enable the schedule and
+   verify renewed tokens are reread through the directory mount:
 
    ```sh
    kubectl -n cps-compute patch cronjob argo-ui-token-rotator --type=merge \
      --patch '{"spec":{"suspend":false}}'
    ```
 
-7. Qualify private frontend startup, actual native asset MIME and same-origin
-   routes. Then root publishes/replaces only the reviewed public `/argo` routes
-   to the personal frontends; do not expose the operational Argo API directly.
-   Require real human owning-Hub OAuth, owner versus foreign workflow/log/artifact
-   access, absent-object/write/issuer negatives, and actual artifact bytes. An
-   empty list or unauthenticated redirect does not complete own-user acceptance.
+6. Verify private frontend startup and native asset MIME, then publish only
+   the reviewed `/argo` routes to the owning personal frontends. Require real
+   human OAuth, owner versus foreign workflow/log/artifact access, absent
+   object/write/issuer negatives, SSE and actual artifact bytes. Empty lists
+   and unauthenticated redirects do not complete own-user acceptance.
+
+The browser entry for each Hub is `/argo/workflows/cps-workflows?limit=50` on
+`https://jupyterhub.dshl.unileoben.ac.at` or `https://jhub.dshl.unileoben.ac.at`.
+Ingress forwards `/argo` unchanged to `cps-argo-ui:8080` or `cit-argo-ui:8080`
+in `cps-compute`. OAuth callbacks are `<owning-public-origin>/argo/oauth_callback`.
+The operational Argo server remains the private asset/backend service;
+browser APIs use the gateway owner adapter. The frontend requires its signed
+OAuth cookie, a human user of the owning Hub and the dedicated
+`access:services!service=cps-argo-ui` or `access:services!service=cit-argo-ui`
+scope. Native asset requests carry no credentials. No service `url` is needed
+in Hub registration because the explicit client and callback register the
+external service.
 
 Rollback restores only owned fields from current resources: suspend rotation,
-restore the prior `argoUi` key and reader mount, remove the added Hub config/env
-keys and restore the prior public route. Preserve concurrent runtime/native
-changes and all credential originals. Fleet reconciliation and browser privacy
-acceptance remain Root's live gates; local CPU tests do not establish them.
+restore the prior `argoUi` key, remove the reader mount and added Hub keys/env,
+and restore the prior public route. Preserve concurrent native/runtime changes.
+Fleet persistence and real browser privacy remain Root's live gates.

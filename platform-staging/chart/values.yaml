@@ -38,6 +38,7 @@ personalArgo:
   image: ""
   port: 8080
   nativeUrl: ""
+  hubCaFile: /etc/ssl/certs/ca-certificates.crt
   nativeCaFile: /trust/ca.crt
   upstreamCaConfigMapRef: cps-compute-gateway-ca
   sources:
