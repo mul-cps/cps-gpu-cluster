@@ -32,6 +32,32 @@ class Repeat20Tests(unittest.TestCase):
             self.assertEqual(context['source_dependency_pins']['deployed_node_agent'], repeat.AGENT_SHA)
             self.assertIs(context['same_policy_terminal_custody_retained'], True)
 
+    def test_post_start_full_replay_uses_previous_node_configuration(self):
+        q = self.actual_validator()
+        with tempfile.TemporaryDirectory() as tmp:
+            manifest, _ = original_tests.Operator20Tests().complete_fixture(Path(tmp))
+            baseline = json.loads(Path(manifest['baseline_terminal_snapshot']['path']).read_bytes())
+            original_module = q.module
+            calls = []
+
+            def checked_module(name, raw, path):
+                result = original_module(name, raw, path)
+                if name == 'operator20_terminal_mapper':
+                    original_map = result.map_history
+
+                    def checked_map(authority, ledger, node):
+                        calls.append(copy.deepcopy(node))
+                        self.assertEqual(node, baseline['previous_node'])
+                        return original_map(authority, ledger, node)
+
+                    result.map_history = checked_map
+                return result
+
+            with patch.object(q, 'module', side_effect=checked_module):
+                h, c, p = q.loaders()
+                q.validate_inputs(manifest, h, c, p)
+            self.assertEqual(len(calls), 2)
+
     def test_full_history_is_not_relabelled_or_mutated_by_runtime_projection(self):
         # Deliberate CPU projection fixture, never supplied as captured authority.
         full = {'old': {'policy_hash': 'sha256:' + '1' * 64, 'source': 'cps'},
@@ -72,6 +98,12 @@ class Repeat20Tests(unittest.TestCase):
         q.REPEAT_AGENT.validate_config(node)
         self.assertEqual(full, unchanged)
         self.assertEqual(sum(row['policy_hash'] == node['policy_hash'] for row in full.values()), 2)
+        target_replay = mapper.map_history({k: snapshot[k] for k in ('authority_maps', 'host_snapshot')},
+                                          snapshot['ledger'], node)
+        # Target runtime deliberately omits same-policy authority references;
+        # replay must use the captured previous configuration to retain them.
+        self.assertNotEqual(target_replay, full)
+        self.assertEqual(len(target_replay), len(full))
         lost = copy.deepcopy(snapshot['ledger'])
         state = json.loads(lost['data']['state.json'])
         bound = next(key for key, row in state['allocations'].items() if row.get('intent'))

@@ -45,7 +45,12 @@ def validator(agent_input):
     code = protocol.replace(code, marker, marker + '\n    terminal.agent = REPEAT_AGENT')
     code = protocol.replace(code, "node['terminal_history']==history",
                             "node['terminal_history']==RUNTIME_HISTORY(history,policy.hash)")
-    # The post-Start full map comparison deliberately remains `==history`.
+    # Runtime omits already-terminal same-policy entries. Replay their full
+    # captured authority against the previous configuration, never that runtime
+    # projection; the full `==history` custody guard remains unchanged.
+    code = protocol.replace(code,
+        "terminal.map_history({'authority_maps':old_authority,'host_snapshot':projected},before,node)==history",
+        "terminal.map_history({'authority_maps':old_authority,'host_snapshot':projected},before,baseline['previous_node'])==history")
     code = protocol.replace(code, "'terminal_history_count':len(history)",
                             "'terminal_history_count':len(history),'runtime_terminal_history_count':len(node['terminal_history'])")
     result = original.module('repeat_operator20_validator', code.encode(), Path(original.__file__))
