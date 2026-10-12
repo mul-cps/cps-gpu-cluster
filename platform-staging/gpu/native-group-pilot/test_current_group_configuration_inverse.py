@@ -130,11 +130,29 @@ class CurrentInverseTest(unittest.TestCase):
         _EXPECTED_ARCHIVE=copy.deepcopy(history)
         for uid in newuids:_EXPECTED_ARCHIVE[uid]['configuration_authority']=copy.deepcopy(reference)
         captures['current']={'authority':copy.deepcopy(captures['baseline']['authority']),'ledger':{'assembly':'only'}}
+        # Kubernetes ConfigMapList items omit GVK even when the GET of the
+        # same immutable object includes it. Full custody still matches.
+        listed_node=copy.deepcopy(node)
+        listed_node.pop('apiVersion');listed_node.pop('kind')
+        captures['current']['authority']['authority_maps']['kind']='ConfigMapList'
+        captures['current']['authority']['authority_maps']['items'].append(listed_node)
         before=copy.deepcopy((args,history))
         with patch.object(helper.custody,'validate_extension',return_value=(history,newuids)),              patch.object(helper,'replay_history',return_value=copy.deepcopy(_EXPECTED_ARCHIVE)):
             result=helper.derive_inverse(proposal,originals,current,captures,{},baseline_history_raw='assembly-only',
                 original_hub_secrets=oldsecrets,current_hub_secrets=secrets,
                 historical_configuration_reference=reference,node_agent_source=extension)
+            for field,value in (('uid','55555555-5555-4555-8555-555555555555'),
+                                ('resourceVersion','changed'),('data',{'config.json':'changed'}),
+                                ('apiVersion','v2'),('kind','Secret'),('listKind','List')):
+                bad=copy.deepcopy(captures)
+                listed=bad['current']['authority']['authority_maps']['items'][-1]
+                if field=='listKind':bad['current']['authority']['authority_maps']['kind']=value
+                elif field in ('uid','resourceVersion'):listed['metadata'][field]=value
+                else:listed[field]=value
+                with self.subTest(field=field),self.assertRaisesRegex(ValueError,'Full fresh captured historical configuration'):
+                    helper.derive_inverse(proposal,originals,current,bad,{},baseline_history_raw='assembly-only',
+                        original_hub_secrets=oldsecrets,current_hub_secrets=secrets,
+                        historical_configuration_reference=reference,node_agent_source=extension)
         restored=result['node-config.json']['terminal_history']
         self.assertNotIn(current_uid,restored);self.assertIn(current_uid,result['full-terminal-authority-archive.json'])
         self.assertTrue(newuids<=set(restored));self.assertEqual(result['full-terminal-authority-archive.json'],_EXPECTED_ARCHIVE)

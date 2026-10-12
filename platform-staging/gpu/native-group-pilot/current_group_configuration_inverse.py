@@ -117,7 +117,10 @@ def derive_inverse(proposal,originals,current,captures,approval,*,baseline_histo
     agent.require(all(runtime_map.get(uid)==entry for uid,entry in oldnode.get('terminal_history',{}).items()),
         'Every original historical configuration pin must remain byte-equivalent')
     authority=copy.deepcopy(captures['current']['authority'])
-    existing=[cm for cm in authority['authority_maps']['items'] if cm.get('metadata',{}).get('name')==ref['name']]
+    existing=[copy.deepcopy(cm) for cm in authority['authority_maps']['items'] if cm.get('metadata',{}).get('name')==ref['name']]
+    if authority['authority_maps'].get('kind')=='ConfigMapList':
+        for cm in existing:
+            cm.setdefault('apiVersion','v1');cm.setdefault('kind','ConfigMap')
     agent.require(not existing or existing==[current['node_config']],
         'Full fresh captured historical configuration must equal actual created immutable object')
     if not existing:authority['authority_maps']['items'].append(copy.deepcopy(current['node_config']))
