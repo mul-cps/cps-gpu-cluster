@@ -1,0 +1,323 @@
+{
+  "creator_exit": {
+    "actual_final_charge_zero": true,
+    "backing_charge": {
+      "production_qualified": false,
+      "retained_backing_charge_measured": true,
+      "retained_minimum_used_bytes": 503450304,
+      "same_context_after_vmm_release_used_bytes": 436341440,
+      "vmm_backing_charge_drop_bytes": 67108864
+    },
+    "measurement": {
+      "creator_exited_before_hold": true,
+      "production_qualified": false,
+      "verified_kernel_ticks": 20,
+      "verified_retained_hold_seconds": 20.009913627058268
+    },
+    "original_participant_pids_absent": true,
+    "root_retained_charge_samples": 2,
+    "singleuser_baseline_raw_sha256": "555d79381ffd2b19749bbd5693753fca91ea7a9049d7e7031402529610aaabad",
+    "unchanged_authorities_and_finalzero": true
+  },
+  "normal_source_start_exit_codes": {
+    "cit": 0,
+    "cps": 0
+  },
+  "normal_source_stop_exit_codes": {
+    "cit": 0,
+    "cps": 0
+  },
+  "pending_gates": [
+    "Fresh post-Stop physical retirement and custody closure",
+    "Configuration inverse and exact original Source fixture restoration",
+    "Enforced SM compute distribution and maximum-profile overhead",
+    "Production packing and broader course-group/profile activation"
+  ],
+  "phases": {
+    "kernel-controls": {
+      "exit_code": 0,
+      "production_qualified": false,
+      "receipt_state": "both-controlled-parents-kernel-controls-measured-awaiting-Root-review",
+      "seconds": 14.833349199034274
+    },
+    "same-parent-vmm": {
+      "exit_code": 0,
+      "production_qualified": false,
+      "receipt_state": "bounded-same-parent-imports-with-peer-observed",
+      "seconds": 127.32572751888074
+    },
+    "vmm-creator-exit": {
+      "exit_code": 0,
+      "production_qualified": false,
+      "receipt_state": "same-parent-vmm-creator-exit-retention-measured",
+      "seconds": 34.597464551916346
+    }
+  },
+  "prior_operator20_report_raw_sha256": "77857bfa2d3208cfdcd3fe1f592a43ddc8fad33c7cc11a7fc7debfb4a2847cb2",
+  "private_evidence": {
+    "harness20-restart-actual-v1/Root-actual-phase-execution-v2.json": {
+      "raw_sha256": "37ce0143b6ff88cbcec905e39158951e615b1d853259b17e126e7f84b62c3f01",
+      "relative_path": "harness20-restart-actual-v1/Root-actual-phase-execution-v2.json"
+    },
+    "harness20-restart-actual-v1/Root-actual-phase-execution.json": {
+      "raw_sha256": "d0d7d492d7361d780c0d9278f7be484abf2dc0c2fdf16ecd7e4c85245674305c",
+      "relative_path": "harness20-restart-actual-v1/Root-actual-phase-execution.json"
+    },
+    "harness20-restart-actual-v1/Root-vmm-creator-exit-execution.json": {
+      "raw_sha256": "de47e65bafd07127a6eb1fbd8557d8ce7610e6820530382c9c6d1637efa90610",
+      "relative_path": "harness20-restart-actual-v1/Root-vmm-creator-exit-execution.json"
+    },
+    "harness20-restart-actual-v1/measurements/kernel-controls/after.json": {
+      "raw_sha256": "d1b073035b58777853c4269e35497269698cd1b29ba5a0d83fb1ae4d30aceb92",
+      "relative_path": "harness20-restart-actual-v1/measurements/kernel-controls/after.json"
+    },
+    "harness20-restart-actual-v1/measurements/kernel-controls/before.json": {
+      "raw_sha256": "5204c1c363593b29761091f31a16f61d7de50fff8638deddc0a2086c0873df08",
+      "relative_path": "harness20-restart-actual-v1/measurements/kernel-controls/before.json"
+    },
+    "harness20-restart-actual-v1/measurements/kernel-controls/probe-cit.json": {
+      "raw_sha256": "75c3c0f59f8a1b4bc8b3ccc413022562a6999dd2093f999f72bf629fa92111d5",
+      "relative_path": "harness20-restart-actual-v1/measurements/kernel-controls/probe-cit.json"
+    },
+    "harness20-restart-actual-v1/measurements/kernel-controls/probe-cps.json": {
+      "raw_sha256": "c9baa9c511a83cd8a1cad41cc73f1aaeafc782fabcfac4509771e5aae0fcdc92",
+      "relative_path": "harness20-restart-actual-v1/measurements/kernel-controls/probe-cps.json"
+    },
+    "harness20-restart-actual-v1/measurements/kernel-controls/receipt.json": {
+      "raw_sha256": "cfc9f50d06c4fadd7fd0561002a7c219093ff828f61886b72c14173415148a1b",
+      "relative_path": "harness20-restart-actual-v1/measurements/kernel-controls/receipt.json"
+    },
+    "harness20-restart-actual-v1/measurements/same-parent-vmm/after.json": {
+      "raw_sha256": "e401a01f9c6ae091bfef44a253602ba2e7ecf2c2f1078aa5861de6f2d787a093",
+      "relative_path": "harness20-restart-actual-v1/measurements/same-parent-vmm/after.json"
+    },
+    "harness20-restart-actual-v1/measurements/same-parent-vmm/before.json": {
+      "raw_sha256": "3231cbdd4596592bc2865ba7dfd2b405bd181e4a044cd89febffb349d323c5de",
+      "relative_path": "harness20-restart-actual-v1/measurements/same-parent-vmm/before.json"
+    },
+    "harness20-restart-actual-v1/measurements/same-parent-vmm/native-events.json": {
+      "raw_sha256": "545cce954af945c70695db3fbca1ab4077189ac67afde949fbfa0efbd5970b07",
+      "relative_path": "harness20-restart-actual-v1/measurements/same-parent-vmm/native-events.json"
+    },
+    "harness20-restart-actual-v1/measurements/same-parent-vmm/peer-events.json": {
+      "raw_sha256": "daf2c0a60b318bb8ed2d9da094d33c87d0b6db73ef16fe36f989d9e4e3bb29bf",
+      "relative_path": "harness20-restart-actual-v1/measurements/same-parent-vmm/peer-events.json"
+    },
+    "harness20-restart-actual-v1/measurements/same-parent-vmm/peer.jsonl": {
+      "raw_sha256": "8d285b8b00c4efb6ff68a29a0c614dac71bd50ba2d5e546dc3c9e3a742d151af",
+      "relative_path": "harness20-restart-actual-v1/measurements/same-parent-vmm/peer.jsonl"
+    },
+    "harness20-restart-actual-v1/measurements/same-parent-vmm/peer.stderr": {
+      "raw_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "relative_path": "harness20-restart-actual-v1/measurements/same-parent-vmm/peer.stderr"
+    },
+    "harness20-restart-actual-v1/measurements/same-parent-vmm/receipt.json": {
+      "raw_sha256": "7a1fb1f48869a8a8f6e8d5f95fa44b3930e5314144db1dc165e2f85fd4e02662",
+      "relative_path": "harness20-restart-actual-v1/measurements/same-parent-vmm/receipt.json"
+    },
+    "harness20-restart-actual-v1/measurements/vmm-creator-exit/after.json": {
+      "raw_sha256": "e47207c2114942c781d7f1efc0d727a9626dd083a5d7e1eba53bd581988224e7",
+      "relative_path": "harness20-restart-actual-v1/measurements/vmm-creator-exit/after.json"
+    },
+    "harness20-restart-actual-v1/measurements/vmm-creator-exit/backing-released-context-live.json": {
+      "raw_sha256": "956a5539e6e678e4fe7d08196049ddb837a20aaff7f1277e03cbd196554255ca",
+      "relative_path": "harness20-restart-actual-v1/measurements/vmm-creator-exit/backing-released-context-live.json"
+    },
+    "harness20-restart-actual-v1/measurements/vmm-creator-exit/before.json": {
+      "raw_sha256": "69542d4b153800e46fd293bb9c0b5ae1c49c5225132a49d7b536c7217c59d01d",
+      "relative_path": "harness20-restart-actual-v1/measurements/vmm-creator-exit/before.json"
+    },
+    "harness20-restart-actual-v1/measurements/vmm-creator-exit/endpoint.jsonl": {
+      "raw_sha256": "983bf13dac6890bc9eb7929cd86fd2a2c172b3e1c33bf8218c1ae81f8ca693c2",
+      "relative_path": "harness20-restart-actual-v1/measurements/vmm-creator-exit/endpoint.jsonl"
+    },
+    "harness20-restart-actual-v1/measurements/vmm-creator-exit/endpoint.stderr": {
+      "raw_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "relative_path": "harness20-restart-actual-v1/measurements/vmm-creator-exit/endpoint.stderr"
+    },
+    "harness20-restart-actual-v1/measurements/vmm-creator-exit/participants-baseline.json": {
+      "raw_sha256": "8adc2ab3bcd38c0b8cab402de31af574622953baa56d4d4a5b5707f11cca4368",
+      "relative_path": "harness20-restart-actual-v1/measurements/vmm-creator-exit/participants-baseline.json"
+    },
+    "harness20-restart-actual-v1/measurements/vmm-creator-exit/participants-final.json": {
+      "raw_sha256": "f4ce54f106e2900ece1eb00167c0407c0dbdec93abef101899ceb674172f5b13",
+      "relative_path": "harness20-restart-actual-v1/measurements/vmm-creator-exit/participants-final.json"
+    },
+    "harness20-restart-actual-v1/measurements/vmm-creator-exit/participants-live.json": {
+      "raw_sha256": "ccdacd5669b6c1c47e570c8cd0fac66099ee63cb630220028112700b101aa42e",
+      "relative_path": "harness20-restart-actual-v1/measurements/vmm-creator-exit/participants-live.json"
+    },
+    "harness20-restart-actual-v1/measurements/vmm-creator-exit/receipt.json": {
+      "raw_sha256": "d6fca8d4c4c0202fe3fcd1408431a2c37f81baf3972122f733c053271b9aa3dc",
+      "relative_path": "harness20-restart-actual-v1/measurements/vmm-creator-exit/receipt.json"
+    },
+    "harness20-restart-actual-v1/measurements/vmm-creator-exit/retained-1.json": {
+      "raw_sha256": "7a69f33c6fa5723ade6648dfb74f36dcf173002d3ae3c80bacd6b12cd315f6ca",
+      "relative_path": "harness20-restart-actual-v1/measurements/vmm-creator-exit/retained-1.json"
+    },
+    "harness20-restart-actual-v1/measurements/vmm-creator-exit/retained-12.json": {
+      "raw_sha256": "f0ea793de5c5ee39fb7e99c68cc66b4e2542866f56d8e141445698530dd893d2",
+      "relative_path": "harness20-restart-actual-v1/measurements/vmm-creator-exit/retained-12.json"
+    },
+    "harness20-restart-actual-v1/operator-argv.json": {
+      "raw_sha256": "b5aeefac384d9a64d49f5f2a52905104cb40cb80cb45947019e7ac18f03cb2d4",
+      "relative_path": "harness20-restart-actual-v1/operator-argv.json"
+    },
+    "harness20-restart-actual-v1/preparation-receipt.json": {
+      "raw_sha256": "191b239610b20b8f83dec9ca9b3239ce407e7830cb8a865db02f039f5239feeb",
+      "relative_path": "harness20-restart-actual-v1/preparation-receipt.json"
+    },
+    "harness20-restart-actual-v1/vmm-owner-exit/host_owner_observer.py": {
+      "raw_sha256": "03a41975b25ded0d5662ebd78806d455247d61748db7ac2f00b1bb3284d920aa",
+      "relative_path": "harness20-restart-actual-v1/vmm-owner-exit/host_owner_observer.py"
+    },
+    "harness20-restart-actual-v1/vmm-owner-exit/owner_exit_probe.py": {
+      "raw_sha256": "c97fff64ebd5ac81dc120085fc27c2d16e901890570491deea6c30aa937a52a5",
+      "relative_path": "harness20-restart-actual-v1/vmm-owner-exit/owner_exit_probe.py"
+    },
+    "harness20-restart-actual-v1/vmm-owner-exit/run_owner_exit.py": {
+      "raw_sha256": "9fc1e9d83dd3ee0bcd14e953aa443ca09c52d309123eca153b028b6c1799afb7",
+      "relative_path": "harness20-restart-actual-v1/vmm-owner-exit/run_owner_exit.py"
+    },
+    "profile20-restart-actual-manifest-v1/actual-binding.json": {
+      "raw_sha256": "bde0ba8e2c634a63ccadfa33b4a181151a4da93f4e871146fcaeac7605b83a07",
+      "relative_path": "profile20-restart-actual-manifest-v1/actual-binding.json"
+    },
+    "profile20-restart-actual-manifest-v1/assembly-receipt.json": {
+      "raw_sha256": "211d2b781ccb112a766265a66498c005582278f2d6bf3a3518af92848c38e93b",
+      "relative_path": "profile20-restart-actual-manifest-v1/assembly-receipt.json"
+    },
+    "profile20-restart-actual-manifest-v1/manifest.json": {
+      "raw_sha256": "2b541d98f3c556786e38f56723043929ebc3dd7068664ed546206ca96df4a654",
+      "relative_path": "profile20-restart-actual-manifest-v1/manifest.json"
+    },
+    "profile20-restart-actual-manifest-v1/repeat-manifest.json": {
+      "raw_sha256": "97c537d2cbff932335ea18d8511feed2167941fc5ace923b997a0cd112d3075c",
+      "relative_path": "profile20-restart-actual-manifest-v1/repeat-manifest.json"
+    },
+    "profile20-restart-actual-singleuser-baseline-v2/capture.stderr": {
+      "raw_sha256": "bc5d5f77c11cceaf53db6b77f173d2d55ca7a339b6f0f2594b2ebaed1bd56ee5",
+      "relative_path": "profile20-restart-actual-singleuser-baseline-v2/capture.stderr"
+    },
+    "profile20-restart-actual-singleuser-baseline-v2/capture.stdout": {
+      "raw_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "relative_path": "profile20-restart-actual-singleuser-baseline-v2/capture.stdout"
+    },
+    "profile20-restart-actual-singleuser-baseline-v2/execution-receipt.json": {
+      "raw_sha256": "77f8db9a5efc4e2f45b1b591f69c455be44176b7f5c211c78d86290634c242f7",
+      "relative_path": "profile20-restart-actual-singleuser-baseline-v2/execution-receipt.json"
+    },
+    "profile20-restart-actual-singleuser-baseline-v2/request.json": {
+      "raw_sha256": "2bf4e7b38f2a034a3f22fdeaf8415082928e2fbf43ec57e7507cc7d058badf42",
+      "relative_path": "profile20-restart-actual-singleuser-baseline-v2/request.json"
+    },
+    "profile20-restart-actual-singleuser-baseline-v3/actual-baseline.json": {
+      "raw_sha256": "555d79381ffd2b19749bbd5693753fca91ea7a9049d7e7031402529610aaabad",
+      "relative_path": "profile20-restart-actual-singleuser-baseline-v3/actual-baseline.json"
+    },
+    "profile20-restart-actual-singleuser-baseline-v3/capture.stderr": {
+      "raw_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "relative_path": "profile20-restart-actual-singleuser-baseline-v3/capture.stderr"
+    },
+    "profile20-restart-actual-singleuser-baseline-v3/capture.stdout": {
+      "raw_sha256": "555d79381ffd2b19749bbd5693753fca91ea7a9049d7e7031402529610aaabad",
+      "relative_path": "profile20-restart-actual-singleuser-baseline-v3/capture.stdout"
+    },
+    "profile20-restart-actual-singleuser-baseline-v3/execution-receipt.json": {
+      "raw_sha256": "1a4ee0192c06ac9210a5cb554e58573ca6bf55065eaddff6308715fa73add2be",
+      "relative_path": "profile20-restart-actual-singleuser-baseline-v3/execution-receipt.json"
+    },
+    "profile20-restart-actual-singleuser-baseline-v3/request.json": {
+      "raw_sha256": "2bf4e7b38f2a034a3f22fdeaf8415082928e2fbf43ec57e7507cc7d058badf42",
+      "relative_path": "profile20-restart-actual-singleuser-baseline-v3/request.json"
+    },
+    "profile20-restart-actual-singleuser-baseline-v3/stdin-transport.py": {
+      "raw_sha256": "d44144e041c6d5d8e7e5f9341be1a69f00958e041646a7a4b3c95ba22ed4ed66",
+      "relative_path": "profile20-restart-actual-singleuser-baseline-v3/stdin-transport.py"
+    },
+    "profile20-restart-actual-start-capture-v1/authority.json": {
+      "raw_sha256": "933f16c422a2d89cc4d82bcc210b5ac2571f725a09ba2d1fbd8c9930bfcd3c52",
+      "relative_path": "profile20-restart-actual-start-capture-v1/authority.json"
+    },
+    "profile20-restart-actual-start-capture-v1/host.json": {
+      "raw_sha256": "1870800cb49e44012a6267424ce77d05b91f7f1cb2c779cb27e95837fd9e3ff6",
+      "relative_path": "profile20-restart-actual-start-capture-v1/host.json"
+    },
+    "profile20-restart-actual-start-capture-v1/ledger.json": {
+      "raw_sha256": "0cab85d48dd9def7287bfb0b13ae5bd5d2600e5ea3c001218858e57dee66ed3b",
+      "relative_path": "profile20-restart-actual-start-capture-v1/ledger.json"
+    },
+    "profile20-restart-actual-start-capture-v1/nvml.json": {
+      "raw_sha256": "b11dbe69b9b607f43625280a1f97e0fc4e82e22d5df1759c6be625d25a9949d7",
+      "relative_path": "profile20-restart-actual-start-capture-v1/nvml.json"
+    },
+    "profile20-restart-safe-source-v1/actual-node-agent-3bae.py": {
+      "raw_sha256": "3bae6d53e4ce42a54b6dcd372839ef5f7286084212c5930d1deeb93da8d6c688",
+      "relative_path": "profile20-restart-safe-source-v1/actual-node-agent-3bae.py"
+    },
+    "profile20-restart-singleuser-collector-v2/capture_singleuser.py": {
+      "raw_sha256": "147cb7461e5f9a1b33558d8cccae0fefb87e531325b642f3d290029f60a6846c",
+      "relative_path": "profile20-restart-singleuser-collector-v2/capture_singleuser.py"
+    },
+    "profile20-restart-singleuser-collector-v2/preparation-receipt.json": {
+      "raw_sha256": "7bd1c0e33da57c1bdfc79c52a171bc2e10aac1f056bc871c98cb4b0a10b3294a",
+      "relative_path": "profile20-restart-singleuser-collector-v2/preparation-receipt.json"
+    },
+    "profile20-restart-source-call-v1/Root-start-execution.json": {
+      "raw_sha256": "7df99fc13a2d1ff98c71b5758d8647c7f6a91a17ff98befc908d78b91cf9f5a0",
+      "relative_path": "profile20-restart-source-call-v1/Root-start-execution.json"
+    },
+    "profile20-restart-source-call-v1/Root-stop-execution.json": {
+      "raw_sha256": "9b58c8dc1761544e399a12af401c302d4a3431560ecee3b2fdc13db368931ce3",
+      "relative_path": "profile20-restart-source-call-v1/Root-stop-execution.json"
+    }
+  },
+  "qualification": {
+    "complete_isolation_qualified": false,
+    "configuration_inverse_and_fixture_restoration_reviewed": false,
+    "general_gpu_access_qualified": false,
+    "gitops_activation_authorized": false,
+    "normal_source_stop_exit_codes_reviewed": true,
+    "physical_retirement_reviewed": false,
+    "production_qualified": false,
+    "profile20_general_access_qualified": false,
+    "renewed_normal_lifetimes_measured": true,
+    "sm_compute_distribution_qualified": false,
+    "vmm_creator_exit_retention_measured": true
+  },
+  "scope": {
+    "approved_workspace_slots": 2,
+    "budget_mib": 25600,
+    "cit_cap_mib": 20480,
+    "cps_cap_mib": 5120,
+    "driver_version": "615.71.09",
+    "gpu_name": "NVIDIA A100-PCIE-40GB",
+    "headroom_mib": 1024,
+    "kind": "temporary-operator-only-normal-lifecycle",
+    "mig_current": 0,
+    "mig_pending": 0,
+    "native_binary_sha256": "4db7dc727af4f8b64432d1431418851919437019675fd8302b73260f2830dcb7",
+    "preparation_mode": "current-normal-lifecycle-operator20-repeat",
+    "prior_finite_retirements": 27,
+    "prior_full_archive_count": 36,
+    "prior_released_allocation_count": 39,
+    "prior_runtime_history_count": 34
+  },
+  "singleuser_baseline": {
+    "baseline_raw_sha256": "555d79381ffd2b19749bbd5693753fca91ea7a9049d7e7031402529610aaabad",
+    "capture_exit_code": 0,
+    "request_bytes": 72428,
+    "request_raw_sha256": "2bf4e7b38f2a034a3f22fdeaf8415082928e2fbf43ec57e7507cc7d058badf42",
+    "transport_kind": "exact-argv-through-stdin-to-avoid-exec-URL-size"
+  },
+  "source_pins": {
+    "collector_bound_fix_commit": "38ed0ab412fd90b1d5352ff6da0e121e031f6c8e",
+    "controller_model_raw_sha256": "630d43cc115b5bddf3e5d110a25cc891e0941953bbabd833f0a77a3773ad7880",
+    "creator_exit_wrapper_raw_sha256": "9fc1e9d83dd3ee0bcd14e953aa443ca09c52d309123eca153b028b6c1799afb7",
+    "node_agent_raw_sha256": "3bae6d53e4ce42a54b6dcd372839ef5f7286084212c5930d1deeb93da8d6c688",
+    "repeat_adapter_commit": "cacaf525b73b8a8c1479d21272e8c8337804ea7a",
+    "singleuser_collector_raw_sha256": "147cb7461e5f9a1b33558d8cccae0fefb87e531325b642f3d290029f60a6846c"
+  },
+  "state": "operator20-renewed-lifetimes-and-creator-exit-measurements-reviewed-terminal-closure-pending",
+  "version": 1
+}
