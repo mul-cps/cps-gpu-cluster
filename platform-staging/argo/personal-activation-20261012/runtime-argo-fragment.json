@@ -1,0 +1,7 @@
+{
+  "argoUi": {
+    "enabled": true,
+    "readerTokenFile": "/argo-reader/token",
+    "temporaryDirectory": "/tmp"
+  }
+}

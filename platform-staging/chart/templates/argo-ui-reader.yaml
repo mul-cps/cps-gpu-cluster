@@ -57,6 +57,7 @@ metadata:
   namespace: {{ .Values.namespace }}
 spec:
   schedule: "*/5 * * * *"
+  suspend: {{ .Values.gateway.argoUi.rotationSuspended }}
   concurrencyPolicy: Forbid
   successfulJobsHistoryLimit: 1
   failedJobsHistoryLimit: 2

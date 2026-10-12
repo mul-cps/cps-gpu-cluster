@@ -1,0 +1,35 @@
+{
+  "spec": {
+    "template": {
+      "spec": {
+        "volumes": [
+          {
+            "name": "argo-ui-reader",
+            "secret": {
+              "secretName": "cps-argo-ui-reader",
+              "defaultMode": 288,
+              "items": [
+                {
+                  "key": "token",
+                  "path": "token"
+                }
+              ]
+            }
+          }
+        ],
+        "containers": [
+          {
+            "name": "gateway",
+            "volumeMounts": [
+              {
+                "name": "argo-ui-reader",
+                "mountPath": "/argo-reader",
+                "readOnly": true
+              }
+            ]
+          }
+        ]
+      }
+    }
+  }
+}

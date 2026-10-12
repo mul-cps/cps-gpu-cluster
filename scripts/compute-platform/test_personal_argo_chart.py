@@ -1,10 +1,13 @@
 """Render the optional personal Argo boundary without live credentials."""
 import copy
 import json
+import os
 from pathlib import Path
 import subprocess
 import tempfile
 import unittest
+from types import SimpleNamespace
+from unittest.mock import patch
 
 import yaml
 
@@ -62,6 +65,49 @@ class PersonalArgoChart(unittest.TestCase):
         gateway = next(o for o in objects if o and o['kind'] == 'Deployment' and o['metadata']['name'] == 'compute-gateway')
         volumes = gateway['spec']['template']['spec']['volumes']
         self.assertEqual(next(v for v in volumes if v['name'] == 'argo-ui-reader')['secret']['items'], [{'key': 'token', 'path': 'token'}])
+
+    def test_reader_rotation_waits_for_explicit_activation(self):
+        result, objects = self.render()
+        self.assertEqual(result.returncode, 0, result.stderr)
+        cron = next(o for o in objects if o and o['kind'] == 'CronJob' and o['metadata']['name'] == 'argo-ui-token-rotator')
+        self.assertIs(cron['spec'].get('suspend'), True)
+        values = copy.deepcopy(self.values)
+        values['gateway']['argoUi']['rotationSuspended'] = False
+        result, objects = self.render(values)
+        self.assertEqual(result.returncode, 0, result.stderr)
+        cron = next(o for o in objects if o and o['kind'] == 'CronJob' and o['metadata']['name'] == 'argo-ui-token-rotator')
+        self.assertIs(cron['spec']['suspend'], False)
+
+    def test_prepared_activation_waits_for_new_image_and_keeps_both_sources_private(self):
+        directory = ROOT / 'platform-staging/argo/personal-activation-20261012'
+        values = yaml.safe_load((directory / 'values.yaml').read_text())
+        values.update({key: self.values[key] for key in ('policyJson', 'policyHash')})
+        result, _ = self.render(values)
+        self.assertNotEqual(result.returncode, 0)
+        self.assertIn('released service image digest', result.stderr)
+        values['personalArgo']['image'] = IMAGE
+        result, objects = self.render(values)
+        self.assertEqual(result.returncode, 0, result.stderr)
+        self.assertFalse(any(o and o['kind'] == 'Ingress' and o['metadata']['name'].endswith('-argo-ui') for o in objects))
+        for source in ('cps', 'cit'):
+            deployment = next(o for o in objects if o and o['kind'] == 'Deployment' and o['metadata']['name'] == source + '-argo-ui')
+            env = {e['name']: e for e in deployment['spec']['template']['spec']['containers'][0]['env']}
+            self.assertEqual(env['ARGO_USER_NATIVE_ARGO_URL']['value'], 'https://cps-argo-argo-workflows-server.cps-argo.svc.cluster.local:2746')
+            self.assertEqual(env['ARGO_USER_OAUTH_CLIENT_ID']['value'], 'service-' + source + '-argo-ui')
+
+    def test_persistent_hub_fragments_preserve_existing_roles_and_register_own_source(self):
+        directory = ROOT / 'platform-staging/argo/personal-activation-20261012'
+        for source, origin in (('cps', 'https://jupyterhub.dshl.unileoben.ac.at'), ('cit', 'https://jhub.dshl.unileoben.ac.at')):
+            values = yaml.safe_load((directory / (source + '-hub-values-fragment.yaml')).read_text())
+            env = values['hub']['extraEnv']
+            self.assertEqual(env, [{'name': 'PERSONAL_ARGO_OAUTH_CLIENT_SECRET', 'valueFrom': {'secretKeyRef': {'name': 'personal-argo-oauth', 'key': 'oauth-client-secret'}}}])
+            original = [{'name': 'user', 'scopes': ['self', 'access:services!service=existing']}, {'name': 'operator', 'scopes': ['read:users']}]
+            c = SimpleNamespace(JupyterHub=SimpleNamespace(services=[{'name': 'existing'}], load_roles=copy.deepcopy(original)))
+            with patch.dict(os.environ, {'PERSONAL_ARGO_OAUTH_CLIENT_SECRET': 'synthetic-' + source}, clear=True):
+                exec(values['hub']['extraConfig']['99-personal-argo-service'], {'c': c})
+            self.assertEqual(c.JupyterHub.services[0], {'name': 'existing'})
+            self.assertEqual(c.JupyterHub.services[1], {'name': source + '-argo-ui', 'api_token': 'synthetic-' + source, 'oauth_client_id': 'service-' + source + '-argo-ui', 'oauth_redirect_uri': origin + '/argo/oauth_callback', 'oauth_client_allowed_scopes': [], 'display': False})
+            self.assertEqual(c.JupyterHub.load_roles, [{'name': 'user', 'scopes': ['self', 'access:services!service=existing', 'access:services!service=' + source + '-argo-ui']}, original[1]])
 
     def test_gateway_owner_adapter_must_be_explicitly_enabled(self):
         values = copy.deepcopy(self.values); values['gateway']['argoUi']['enabled'] = False
