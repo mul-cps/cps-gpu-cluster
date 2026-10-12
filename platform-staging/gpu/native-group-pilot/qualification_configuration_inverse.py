@@ -114,7 +114,7 @@ def physical_records(capture,node,records):
     return indexed
 
 
-def validate_extension(captures,approval,original_node,current_node,baseline_history_raw):
+def validate_extension(captures,approval,original_node,current_node,baseline_history_raw,*,history_mapper=None):
     agent.closed(captures,{'baseline','current','binding'},'Full bounded baseline/current captures and binding required')
     baseline=captures['baseline'];current=captures['current'];binding=captures['binding']
     agent.closed(baseline,{'authority','ledger','history','physical'},'Complete original authority/history/physical required')
@@ -198,8 +198,9 @@ def validate_extension(captures,approval,original_node,current_node,baseline_his
             row=newfiles[uid]
             agent.require(row['rawSha256']==terminal.raw_sha((terminal.canonical(row['value'])+'\n').encode()),
                 'New protected mirrors require their complete original canonical raw bytes')
-    oldmap=terminal.map_history(baseline['authority'],baseline['ledger'],original_node)
-    fullmap=terminal.map_history(current['authority'],current['ledger'],current_node)
+    mapper=terminal.map_history if history_mapper is None else history_mapper
+    oldmap=mapper(baseline['authority'],baseline['ledger'],original_node)
+    fullmap=mapper(current['authority'],current['ledger'],current_node)
     agent.require(set(oldmap)|new_uids==set(fullmap)
         and all(fullmap[uid]==entry for uid,entry in oldmap.items()),'Full prior terminal authority may never be summarized or dropped')
     oldhistory,oldrecords=history_records(baseline,original_node);newhistory,newrecords=history_records(current,current_node)

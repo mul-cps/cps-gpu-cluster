@@ -7,12 +7,15 @@ when the exact reviewed shared 5/10 policy is restored.
 import copy
 import hashlib
 from types import SimpleNamespace
+from types import FunctionType
+from pathlib import Path
 import node_agent as agent
 import historical_configuration_source as prior
 import qualification_transition_proposal as transition
 
 ORIGINAL_SHA256=prior.ORIGINAL_SHA256
 EXTENSION_SHA256=prior.EXTENSION_SHA256
+CURRENT_AGENT_SHA256='3bae6d53e4ce42a54b6dcd372839ef5f7286084212c5930d1deeb93da8d6c688'
 RESTORED_POLICY='sha256:d48f6553ed036c2e7adcc97417623fe0308be93ad13b20f246047ada118511b0'
 QUALIFICATION_POLICY='sha256:39ef15d3b5a76f96d135beb1afcd538775c64301cb51751086b44d68c54f8012'
 
@@ -30,6 +33,10 @@ def historical_validator_source(old):
 
 
 def extend_source(original,extension):
+    if isinstance(original,str) and hashlib.sha256(original.encode()).hexdigest()==CURRENT_AGENT_SHA256:
+        agent.require(isinstance(extension,str) and hashlib.sha256(extension.encode()).hexdigest()==EXTENSION_SHA256,
+            'Exact independently reviewed finite terminal extension source required')
+        return original
     source=prior.extend_source(original,extension)
     old=prior.definitions(source)['validate_historical_configuration']
     new=historical_validator_source(old)
@@ -51,16 +58,40 @@ def validated_agent(original,extension):
     return SimpleNamespace(**namespace)
 
 
+def validation_context(current_agent_source=None):
+    """Pure legacy context or the exact already-deployed reviewed source.
+
+    Bind only the mapper's validator dependency; no global monkeypatch, agent
+    entrypoint or live client is evaluated.
+    """
+    import terminal_policy_proposal as terminal
+    if current_agent_source is None:return agent,terminal.map_history
+    agent.require(isinstance(current_agent_source,str)
+        and hashlib.sha256(current_agent_source.encode()).hexdigest()==CURRENT_AGENT_SHA256,
+        'Exact already-reviewed current node source required for repeated qualification')
+    reviewed=validated_agent(current_agent_source,Path(agent.__file__).read_text())
+    replay=FunctionType(terminal.map_history.__code__,dict(terminal.map_history.__globals__,agent=reviewed))
+    return reviewed,replay
+
+
+def runtime_history(history,policy_hash,current_agent_source=None):
+    """Same-policy lifetimes stay in full custody, never recursive runtime history."""
+    return {uid:copy.deepcopy(row) for uid,row in history.items()
+        if current_agent_source is None or row['policy_hash']!=policy_hash}
+
+
 def code_intent(proposal,originals,original_code,extension):
     """Separate disabled one-key code and coordinated full node-spec CAS intent."""
-    forward=transition.current_group_configuration_intent(proposal,originals)
     meta=transition.object_guard(original_code,'ConfigMap')
     agent.require(meta['namespace']==originals['node_deployment']['metadata']['namespace']
         and original_code.get('immutable') is True and not original_code.get('binaryData')
         and not meta.get('ownerReferences') and not meta.get('deletionTimestamp'),
         'Actual immutable original code object required')
+    retained=hashlib.sha256(original_code['data']['node_agent.py'].encode()).hexdigest()==CURRENT_AGENT_SHA256
+    forward=transition.current_group_configuration_intent(proposal,originals,
+        current_agent_source=original_code['data']['node_agent.py'] if retained else None)
     data=copy.deepcopy(original_code['data']);data['node_agent.py']=extend_source(data['node_agent.py'],extension)
-    cm=transition.immutable_config(original_code,data,'cps-native-node-code')
+    cm=copy.deepcopy(original_code) if retained else transition.immutable_config(original_code,data,'cps-native-node-code')
     spec=copy.deepcopy(forward['deployment_patches']['node'][-1]['value']);changed=0
     for volume in spec['template']['spec']['volumes']:
         if volume.get('name')=='code' and volume.get('configMap',{}).get('name')==meta['name']:
@@ -69,7 +100,8 @@ def code_intent(proposal,originals,original_code,extension):
     return {'version':1,'enabled':False,'live_applied':False,'hardware_qualified':False,
         'node-code-configmap.json':cm,'node-deployment.patch.json':transition.replace_patch(
             originals['node_deployment'],'/spec',originals['node_deployment']['spec'],spec),
-        'one_key_diff':['node_agent.py'],'original_agent_sha256':ORIGINAL_SHA256,
+        'one_key_diff':[] if retained else ['node_agent.py'],'retained_node_code':retained,
+        'original_agent_sha256':CURRENT_AGENT_SHA256 if retained else ORIGINAL_SHA256,
         'extension_source_sha256':EXTENSION_SHA256,
         'prospective_agent_sha256':hashlib.sha256(data['node_agent.py'].encode()).hexdigest(),
         'controller_images_driver_and_all_other_source_files_unchanged':True,

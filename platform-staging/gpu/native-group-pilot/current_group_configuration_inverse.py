@@ -5,6 +5,7 @@ separate path replays the reviewed current-group forward proposal and preserves
 all released authority while restoring the exact original policy and Hub hooks.
 """
 import copy
+import hashlib
 from types import FunctionType
 import current_group_historical_source as historical
 import node_agent as agent
@@ -26,7 +27,16 @@ def validate_configuration_handover(proposal,originals,current,captures,original
     from cps_compute.policy import Policy
     agent.closed(originals,FIELDS,'Full original current-group configuration required')
     agent.closed(current,FIELDS|{'node_code'},'Full fresh configurations and unchanged immutable node code required')
-    forward=transition.current_group_configuration_intent(proposal,originals)
+    olddeploy=custody.deployment_objects(originals);newdeploy=custody.deployment_objects(current)
+    name=custody.code_reference(olddeploy['node']['spec'])
+    matches=[cm for cm in captures['baseline']['authority']['authority_maps']['items']
+        if cm.get('metadata',{}).get('name')==name]
+    agent.require(len(matches)==1,'One full original immutable node code authority required')
+    original_code=copy.deepcopy(matches[0]);original_code.setdefault('apiVersion','v1');original_code.setdefault('kind','ConfigMap')
+    retained=hashlib.sha256(original_code['data']['node_agent.py'].encode()).hexdigest()==historical.CURRENT_AGENT_SHA256
+    current_source=original_code['data']['node_agent.py'] if retained else None
+    reviewed_agent,_=historical.validation_context(current_source)
+    forward=transition.current_group_configuration_intent(proposal,originals,current_agent_source=current_source)
     hooks=transition.current_group_hub_hook_intent(proposal,forward,original_hub_secrets)
     agent.closed(current_hub_secrets,{'cps','cit'},'Both full fresh Hub Secrets required')
     for key,kind in (('policy','ConfigMap'),('runtime','Secret')):
@@ -45,13 +55,7 @@ def validate_configuration_handover(proposal,originals,current,captures,original
             same_owner(original_hub_secrets[source],current_hub_secrets[source],'Secret')
             agent.require(current_hub_secrets[source]['data']==hooks['secret_patches'][source][-1]['value'],
                 'Full current Hub Secret differs from exact reviewed qualification hook handover')
-    olddeploy=custody.deployment_objects(originals);newdeploy=custody.deployment_objects(current)
     code_plan=None
-    name=custody.code_reference(olddeploy['node']['spec'])
-    matches=[cm for cm in captures['baseline']['authority']['authority_maps']['items']
-        if cm.get('metadata',{}).get('name')==name]
-    agent.require(len(matches)==1,'One full original immutable node code authority required')
-    original_code=copy.deepcopy(matches[0]);original_code.setdefault('apiVersion','v1');original_code.setdefault('kind','ConfigMap')
     if node_agent_source is not None:code_plan=historical.code_intent(proposal,originals,original_code,node_agent_source)
     for source,obj in newdeploy.items():
         same_owner(olddeploy[source],obj,'Deployment')
@@ -65,12 +69,12 @@ def validate_configuration_handover(proposal,originals,current,captures,original
     agent.require(code.get('immutable') is True and original_code.get('immutable') is True
         and not code.get('binaryData') and not meta.get('ownerReferences') and not meta.get('deletionTimestamp')
         and all(meta[k]==expected_code['metadata'][k] for k in ('namespace','name'))
-        and (code_plan is not None or meta['uid']==original_code['metadata']['uid'])
+        and ((code_plan is not None and not retained) or meta['uid']==original_code['metadata']['uid'])
         and code['data']==expected_code['data']
         and custody.code_reference(newdeploy['node']['spec'])==meta['name'],
         'Only the explicit pinned one-key terminal extension may change immutable node code')
-    oldnode=agent.validate_config(agent.parse(originals['node_config']['data']['config.json']))
-    node=agent.validate_config(agent.parse(current['node_config']['data']['config.json']))
+    oldnode=reviewed_agent.validate_config(agent.parse(originals['node_config']['data']['config.json']))
+    node=reviewed_agent.validate_config(agent.parse(current['node_config']['data']['config.json']))
     oldpolicy=Policy(agent.parse(originals['policy']['data']['policy.json']))
     return oldnode,node,oldpolicy,olddeploy,newdeploy
 
@@ -94,6 +98,26 @@ def replay_history(authority,ledger,restored,reviewed_agent):
     return replay(authority,ledger,restored)
 
 
+def repeat_history_mapper(original_node,current_node,reviewed_agent):
+    """Replay full custody under the unchanged original historical references.
+
+    Current-policy rows are omitted only from runtime history. Replaying their
+    custody must retain the already-reviewed immutable configuration references.
+    New released rows still pass every original enrollment/journal/ledger check.
+    """
+    reviewed_agent.validate_config(original_node);reviewed_agent.validate_config(current_node)
+    agent.require(original_node['policy_hash']==historical.RESTORED_POLICY
+        and current_node['policy_hash']==historical.QUALIFICATION_POLICY
+        and all(original_node['pool'][key]==current_node['pool'][key]
+            for key in ('node','node_uid','gpu_uuid','boot_id','driver_generation')),
+        'Exact repeated qualification policies and unchanged physical epoch required')
+    previous=copy.deepcopy(original_node);prospective=copy.deepcopy(current_node)
+    def replay(authority,ledger,node):
+        agent.require(node==previous or node==prospective,'Exact reviewed repeat replay configuration required')
+        return replay_history(authority,ledger,previous,reviewed_agent)
+    return replay
+
+
 def derive_inverse(proposal,originals,current,captures,approval,*,baseline_history_raw,
                    original_hub_secrets,current_hub_secrets,historical_configuration_reference,node_agent_source):
     """Prepare disabled CAS only after the exact released controlled pair is proven."""
@@ -102,7 +126,9 @@ def derive_inverse(proposal,originals,current,captures,approval,*,baseline_histo
     original_code=next(cm for cm in captures['baseline']['authority']['authority_maps']['items']
         if cm.get('metadata',{}).get('name')==custody.code_reference(olddeploy['node']['spec']))
     reviewed_agent=historical.validated_agent(original_code['data']['node_agent.py'],node_agent_source)
-    fullmap,newuids=custody.validate_extension(captures,approval,oldnode,node,baseline_history_raw)
+    repeated=hashlib.sha256(original_code['data']['node_agent.py'].encode()).hexdigest()==historical.CURRENT_AGENT_SHA256
+    kwargs={'history_mapper':repeat_history_mapper(oldnode,node,reviewed_agent)} if repeated else {}
+    fullmap,newuids=custody.validate_extension(captures,approval,oldnode,node,baseline_history_raw,**kwargs)
     ref=configuration_reference(current['node_config'],historical_configuration_reference)
     restored=copy.deepcopy(oldnode);archive=copy.deepcopy(fullmap)
     runtime_map={uid:copy.deepcopy(entry) for uid,entry in fullmap.items()

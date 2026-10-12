@@ -54,6 +54,18 @@ class CurrentHistoricalTest(historical_tests.HistoricalConfigurationTest):
 
 
 class ActualSourceTest(unittest.TestCase):
+    def test_reviewed_current_source_is_retained_and_still_rejects_mutations(self):
+        path=os.environ.get('CPS_CURRENT_NATIVE_AGENT_SOURCE')
+        if not path:self.skipTest('Root supplies the safe actual source capture')
+        original=Path(path).read_text();extension=Path(source.agent.__file__).read_text()
+        current=source.extend_source(original,extension)
+        self.assertEqual(hashlib.sha256(current.encode()).hexdigest(),
+            '3bae6d53e4ce42a54b6dcd372839ef5f7286084212c5930d1deeb93da8d6c688')
+        self.assertEqual(source.extend_source(current,extension),current)
+        source.validated_agent(current,extension)
+        for bad,extra in ((current+'\n',extension),(current,extension+'\n')):
+            with self.assertRaises(ValueError):source.validated_agent(bad,extra)
+
     def test_actual_pinned_source_preserves_all_other_definitions_and_recovery(self):
         path=os.environ.get('CPS_CURRENT_NATIVE_AGENT_SOURCE')
         if not path:self.skipTest('Root supplies the safe actual34ce source capture, never credentials')

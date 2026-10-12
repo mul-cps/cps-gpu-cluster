@@ -233,7 +233,7 @@ def _configuration_updates(proposal,baselines,runtime,newruntime,hub_settings):
     return result
 
 
-def current_group_configuration_intent(proposal,baselines):
+def current_group_configuration_intent(proposal,baselines,*,current_agent_source=None):
     """Prepare the explicit d48 group-to-operator handover, without any apply.
 
     Complete objects remain Root-private. Raw capture pins and canonical typed
@@ -246,10 +246,15 @@ def current_group_configuration_intent(proposal,baselines):
     from cps_compute.native_qualification import NativeGroupQualification
     from qualification_proposal import (CURRENT_CONTROLLER,CURRENT_GROUP_POLICY,
         CURRENT_GROUP_APPROVALS,CURRENT_GATE_IMAGE)
-    from terminal_policy_proposal import map_history
+    from current_group_historical_source import validation_context,runtime_history
+    agent,map_history=validation_context(current_agent_source)
     agent.closed(baselines,{'policy','runtime','node_config','node_deployment','gateway_deployment','cps','cit'},
         'Complete current shared policy/runtime/node and both Hub baselines required')
     acceptance=proposal['acceptance.json'];source=proposal['current-source.json']
+    agent.require((current_agent_source is None and 'source_node_agent_sha256' not in acceptance)
+        or (current_agent_source is not None
+            and acceptance.get('source_node_agent_sha256')=='sha256:'+hashlib.sha256(current_agent_source.encode()).hexdigest()),
+        'Exact current node source proposal binding required')
     agent.closed(source,{'runtime','hubs'},'Exact current source native projections required')
     agent.require(acceptance.get('source_mode')=='current-approved-groups'
         and acceptance.get('hardware_qualified') is False and acceptance.get('live_applied') is False
@@ -322,7 +327,7 @@ def current_group_configuration_intent(proposal,baselines):
         'authority_namespace':mode['authorityNamespace'],'policy_hash':policy.hash,'pool':mode['node_pool'],
         'workspaces':{scope:{'profile':row['profiles'][0],
             'cap_mib':mode['profile_caps'][row['profiles'][0]]} for scope,row in mode['workspaces'].items()},
-        'terminal_history':history}
+        'terminal_history':runtime_history(history,policy.hash,current_agent_source)}
     agent.require(target==expected_node and all(history.get(uid)==row for uid,row in node['terminal_history'].items()),
         'Every complete released lifetime and unchanged original historical entry required')
     expected_runtime={'policy_hash':policy.hash,'nativeGpuGroups':{'enabled':False},

@@ -26,7 +26,7 @@ CURRENT_CONTROLLER = 'sha256:630d43cc115b5bddf3e5d110a25cc891e0941953bbabd833f0a
 def checksum(raw): return 'sha256:' + hashlib.sha256(raw).hexdigest()
 
 
-def validate_never_enrolled(evidence, allocations, history, ledger_meta, pool, health, observation, *, now, terminal_authority=None, previous_node=None):
+def validate_never_enrolled(evidence, allocations, history, ledger_meta, pool, health, observation, *, now, terminal_authority=None, previous_node=None,current_agent_source=None):
     """Root snapshots distinguish released never-enrolled claims from real Pod history.
 
     This validates captured absence; it never creates an intent or host authority.
@@ -34,12 +34,13 @@ def validate_never_enrolled(evidence, allocations, history, ledger_meta, pool, h
     original protected journal before publishing a new cap.
     """
     import cps_compute.native_gpu_controller as models
+    from current_group_historical_source import validation_context
+    agent,map_history=validation_context(current_agent_source)
     missing={binding:record for binding,record in allocations.items() if record['intent'] is None}
     if not missing:
         agent.require(evidence is None, 'No unrelated never-enrolled absence evidence')
         return []
     if terminal_authority is not None:
-        from terminal_policy_proposal import map_history
         agent.require(terminal_authority['authority_maps']==evidence['authority_maps']
             and terminal_authority['host_snapshot']==evidence['host_snapshot'],
             'Never-enrolled and terminal authority must use the same complete captures')
@@ -140,11 +141,13 @@ def validate_never_enrolled(evidence, allocations, history, ledger_meta, pool, h
     return sorted(missing)
 
 
-def render(inputs, observation_raw, health_raw, *, now=None, preset='cps5-cit10', headroom_mib=1024, terminal_authority=None):
+def render(inputs, observation_raw, health_raw, *, now=None, preset='cps5-cit10', headroom_mib=1024, terminal_authority=None,current_agent_source=None):
     from cps_compute.policy import Policy
     from cps_compute.native_groups import WORKLOAD_IMAGE, HEALTH_SHA256
     from cps_compute.native_qualification import NativeGroupQualification
     from cps_compute.native_gpu_control import MeasuredNativeAuthority
+    from current_group_historical_source import validation_context,runtime_history
+    agent,map_history=validation_context(current_agent_source)
     agent.require(type(preset) is str and preset in PRESETS, 'Explicit reviewed 5/10 or 5/20 preset required')
     agent.require(type(headroom_mib) is int and headroom_mib == 1024, 'Exact additional 1024MiB headroom required')
     scopes = PRESETS[preset]
@@ -211,10 +214,9 @@ def render(inputs, observation_raw, health_raw, *, now=None, preset='cps5-cit10'
             and entry.get('ledger_uid') == meta['uid'], 'Complete actual terminal history for every previous claim required')
     agent.require(set(history) == uids, 'No omitted or invented historical Pod UID')
     if terminal_authority is not None:
-        from terminal_policy_proposal import map_history
         agent.require(preset=='cps5-cit20' and map_history(terminal_authority,ledger,baseline)==history,
             'Twenty preset requires the unchanged complete terminal authority mapping')
-    never_enrolled=validate_never_enrolled(inputs['never_enrolled_evidence'],state['allocations'],history,meta,pool,health,observation,now=now,terminal_authority=terminal_authority,previous_node=baseline)
+    never_enrolled=validate_never_enrolled(inputs['never_enrolled_evidence'],state['allocations'],history,meta,pool,health,observation,now=now,terminal_authority=terminal_authority,previous_node=baseline,current_agent_source=current_agent_source)
     catalog = copy.deepcopy(inputs['catalog']); catalog.pop('policyHash', None)
     agent.require(catalog.get('gpuQualification', {}).get('qualified') is False,
                   'Ordinary global GPU qualification must remain false')
@@ -242,7 +244,7 @@ def render(inputs, observation_raw, health_raw, *, now=None, preset='cps5-cit10'
     node = {'version':2, 'enabled':True, 'mode':'operator-qualification',
         'authority_namespace':baseline['authority_namespace'], 'policy_hash':policy.hash, 'pool':pool,
         'workspaces':{scope:{'profile':body['profiles'][0], 'cap_mib':caps[body['profiles'][0]]}
-            for scope,body in approvals.items()}, 'terminal_history':copy.deepcopy(history)}
+            for scope,body in approvals.items()}, 'terminal_history':runtime_history(history,policy.hash,current_agent_source)}
     agent.validate_config(node)
     result = {'policy.json':catalog, 'operator-qualification.json':mode, 'node-config.json':node,
         'registration-proposals.json':{scope:{'workspace':scope.split(':',1)[1], 'policy_hash':policy.hash, **body}
@@ -257,12 +259,14 @@ def render(inputs, observation_raw, health_raw, *, now=None, preset='cps5-cit10'
     if terminal_authority is not None:
         result['terminal-authority-snapshot.json']=copy.deepcopy({'ledger':ledger, 'previous_node':baseline, **terminal_authority})
         result['acceptance.json']['terminal_authority_sha256']=agent.canonical_sha256(result['terminal-authority-snapshot.json'])
+    if current_agent_source is not None:
+        result['acceptance.json']['source_node_agent_sha256']=checksum(current_agent_source.encode())
     return result
 
 
 def render_current_approved_groups(inputs, observation_raw, health_raw, *,
         source_runtime_raw, source_runtime_sha256, source_hubs_raw, source_hubs_sha256,
-        source_controller_raw, terminal_authority, now=None):
+        source_controller_raw, terminal_authority, now=None,current_agent_source=None):
     """Separate actual group-mode input, never relabelled as old qualification.
 
     Outputs are prospective native-field overlays, not complete application
@@ -272,6 +276,8 @@ def render_current_approved_groups(inputs, observation_raw, health_raw, *,
     from cps_compute.policy import Policy
     from cps_compute.native_groups import NativeGroupDeployment
     from cps_compute import native_gpu_controller as models
+    from current_group_historical_source import validation_context
+    agent,_=validation_context(current_agent_source)
     agent.require(checksum(source_controller_raw)==CURRENT_CONTROLLER
         and source_controller_raw==Path(models.__file__).read_bytes(),
         'Exact current captured and loaded 630 controller model dependency required')
@@ -324,7 +330,7 @@ def render_current_approved_groups(inputs, observation_raw, health_raw, *,
             'No foreign, batch or additional GPU Hub profiles are permitted')
         preserved_profiles[hub]=cpu
     agent.require(terminal_authority is not None, 'Complete fresh released terminal custody required')
-    result=render(inputs,observation_raw,health_raw,now=now,preset='cps5-cit20',terminal_authority=terminal_authority)
+    result=render(inputs,observation_raw,health_raw,now=now,preset='cps5-cit20',terminal_authority=terminal_authority,current_agent_source=current_agent_source)
     mode=result['operator-qualification.json']
     result['runtime-native-overlay.json']={'policy_hash':mode['policy_hash'],
         'nativeGpuGroups':{'enabled':False},'nativeGpuPilot':{'enabled':False},'nativeGpuQualification':copy.deepcopy(mode)}
