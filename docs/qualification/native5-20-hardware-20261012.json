@@ -1,0 +1,58 @@
+{
+  "version": 1,
+  "scope": "controlled host-cgroup GPU smoke tests",
+  "production_enabled": false,
+  "source_integration_qualified": false,
+  "sm_share_qualified": false,
+  "node": "k3s-wk-gpu2",
+  "gpu_uuid": "GPU-16128952-b438-556a-00bb-93039ee24e56",
+  "driver_version": "615.71.09",
+  "boot_id": "209f8bc9-a478-48e4-925a-6e07ffa56f7a",
+  "tests": [
+    {
+      "test": "fast20-hardware-smoke-v3",
+      "returncode": 0,
+      "stdout_sha256": "0443986106256ffa3cf0bfb1cf95a6ab6f319ce5b4dda56f5761a3ca7e9329e0",
+      "receipt_sha256": "b16c87766afa59b992b254c1104144f10d4dbdeeead925394f72ba84f3cc4d00",
+      "host_source_sha256": "599e8018fe504a270e867a9d2d15eb86f6edca881c8f7369fa10c9489c849bb7",
+      "first_event_ns": 1791793079260027758,
+      "last_event_ns": 1791793079843489550
+    },
+    {
+      "test": "fast5-20-allocator-v1",
+      "returncode": 0,
+      "stdout_sha256": "dc73a2f8e2c14e4985fd46d14d1edf71f2133c52c63e5f7304f840e63b749de0",
+      "receipt_sha256": "a544dc79a2cf2e0b40604c5a677e7537208ec535fad8ad90b4eb56fb344661d3",
+      "host_source_sha256": "cce6678fec4162baba3f9674040ce82b6ce23332fecfac4ac91f3c332bda3c1f",
+      "first_event_ns": 1791793209794798803,
+      "last_event_ns": 1791793224602827154
+    },
+    {
+      "test": "fast20-mps-v1",
+      "returncode": 0,
+      "stdout_sha256": "806a26ba9ba64789178129d10735d82170b6d5df9fbdb62e401b0690088f78fc",
+      "receipt_sha256": "a89d32f3cd5f4dd8cdd7e09a4204a72a9dbcd8a55c71885cd340144ddbd96e51",
+      "host_source_sha256": "da3246a378c8e421b2088b9656140e5dfb63820aa201d87af3cea97d86540fa1",
+      "first_event_ns": 1791793380035481833,
+      "last_event_ns": 1791793410132289129
+    },
+    {
+      "test": "fast5-20-mps120-v1",
+      "returncode": 0,
+      "stdout_sha256": "780d947522969169cad56571bd6ac6666d1780f5e7db9247853481203e356814",
+      "receipt_sha256": "ef25aa8ae9c050538ff9f0d93832275df89a565b48944c9efa6940d58b697963",
+      "host_source_sha256": "93dc4a17244e0f832dfc25c86dcfeecd42653f54de3985fd79e0f7076cf02b2b",
+      "first_event_ns": 1791793790089786819,
+      "last_event_ns": 1791793931183251457
+    },
+    {
+      "test": "fast5-20-imports-v2",
+      "returncode": 0,
+      "stdout_sha256": "8dda779ce39f0079f5c779065d769894b0577c08ab87481a371b523d253b6d38",
+      "receipt_sha256": "99532e2563460e7ceb7c6363df4b6bd4acef4910aa883a2c756f23daae25f233",
+      "host_source_sha256": "38e0ef00bf88c0290cda21dd37b8411493b9ad5eb30606c4a03f8a4b988e0815",
+      "first_event_ns": 1791802519263406351,
+      "last_event_ns": 1791802526686659343
+    }
+  ]
+}
