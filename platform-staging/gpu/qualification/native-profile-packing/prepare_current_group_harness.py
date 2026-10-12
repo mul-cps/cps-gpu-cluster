@@ -192,6 +192,39 @@ require((root_info.st_dev,root_info.st_ino)==(end_info.st_dev,end_info.st_ino),'
 '''.replace('CLEARED_ROWS', repr(rows)).replace('CGROUP_DEVICE', str(device)).replace('GPU_ID', str(gpu_id))
 
 
+def vmm_stage_source(root, pins, pool):
+    """Read bytes/metadata only, before any ordinary endpoint CUDA context."""
+    return '''import hashlib,json,os,socket,stat
+from pathlib import Path
+ROOT=ROOT_VALUE
+PINS=FILE_PINS
+def require(ok,message):
+ if not ok:raise ValueError(message)
+def verify_staged():
+ parent=os.open(ROOT,os.O_RDONLY|os.O_DIRECTORY|os.O_NOFOLLOW|os.O_CLOEXEC)
+ try:
+  info=os.fstat(parent)
+  require(stat.S_ISDIR(info.st_mode) and info.st_uid==info.st_gid==0 and stat.S_IMODE(info.st_mode)==0o700,'Exact Root700 VMM staging directory required before endpoint launch')
+  for name,digest in PINS.items():
+   fd=os.open(name,os.O_RDONLY|os.O_NOFOLLOW|os.O_NONBLOCK|os.O_CLOEXEC,dir_fd=parent)
+   try:
+    a=os.fstat(fd);raw=os.read(fd,100001);b=os.fstat(fd)
+    require(stat.S_ISREG(a.st_mode) and a.st_uid==a.st_gid==0 and a.st_nlink==1 and stat.S_IMODE(a.st_mode)==0o400
+     and 0<len(raw)<=100000 and len(raw)==a.st_size
+     and all(getattr(a,k)==getattr(b,k) for k in ('st_dev','st_ino','st_size','st_mtime_ns','st_ctime_ns'))
+     and hashlib.sha256(raw).hexdigest()==digest,'Exact immutable Root400 VMM source required before endpoint launch')
+   finally:os.close(fd)
+  sessions=os.stat('bridge-sessions',dir_fd=parent,follow_symlinks=False)
+  require(stat.S_ISDIR(sessions.st_mode) and sessions.st_uid==sessions.st_gid==0 and stat.S_IMODE(sessions.st_mode)==0o700,'Exact Root700 VMM bridge sessions required before endpoint launch')
+  return {'version':1,'state':'exact-vmm-bridge-staged','read_only':True,'root':ROOT,'files':PINS}
+ finally:os.close(parent)
+require(os.getuid()==os.geteuid()==os.getgid()==os.getegid()==0 and socket.gethostname()==NODE_VALUE
+ and Path('/proc/sys/kernel/random/boot_id').read_text().strip()==BOOT_VALUE,'Exact reviewed Root host/boot required for VMM staging observation')
+print(json.dumps(verify_staged(),sort_keys=True),flush=True)
+'''.replace('ROOT_VALUE', repr(root)).replace('FILE_PINS', repr(pins)).replace(
+        'NODE_VALUE', repr(pool['node'])).replace('BOOT_VALUE', repr(pool['boot_id']))
+
+
 def render_sources(sources, binding, retired, *, native_binary=None, cleared_baseline=None):
     h._validate_binding(binding, 'interactive-shared-')
     out = h._render_validated_sources(sources, binding, retired, native_binary=native_binary)
@@ -218,6 +251,32 @@ def render_sources(sources, binding, retired, *, native_binary=None, cleared_bas
         if name != 'run_group_acceptance.py' and name.endswith('.py'):
             out[name] = raw.replace(h.sha(old_pre).encode(), h.sha(pre).encode()).replace(
                 h.sha(old_host.encode()).encode(), h.sha(new_host.encode()).encode())
+    wrapper_name = 'vmm-cross-parent-sgid-fix/run_vmm_cross_parent.py'
+    if wrapper_name in out:
+        wrapper = out[wrapper_name].decode()
+        root = ast.literal_eval(next(n.value for n in ast.parse(wrapper).body
+            if isinstance(n, ast.Assign) and any(isinstance(t, ast.Name) and t.id == 'BRIDGE_ROOT' for t in n.targets)))
+        pins = {name: h.sha(out['vmm-cross-parent-sgid-fix/' + name])
+                for name in ('vmm_bridge.py', 'vmm_endpoint.py')}
+        stage = vmm_stage_source(root, pins, binding['pool'])
+        expected = {'version': 1, 'state': 'exact-vmm-bridge-staged', 'read_only': True, 'root': root, 'files': pins}
+        helper = '\nVMM_STAGE_SOURCE = ' + repr(stage) + '''
+def check_vmm_staging(h,args):
+    proof=diagnostic_run(h.OBSERVER_ARGV,VMM_STAGE_SOURCE.encode(),args.output,'bridge-staging',timeout=10)
+    require(proof==''' + repr(expected) + ''','Exact read-only VMM staging proof required before endpoint launch')
+    write(args.output/'bridge-staging.json',proof)
+\n'''
+        wrapper = h.replace(wrapper, 'def main(argv=None):', helper + 'def main(argv=None):')
+        wrapper = h.replace(wrapper, '    transport=load_witness()',
+                            '    check_vmm_staging(h,args)\n    transport=load_witness()')
+        compile(wrapper, 'current-vmm-staging-guard', 'exec')
+        out[wrapper_name] = wrapper.encode()
+        out['vmm-cross-parent-sgid-fix/bridge-prerequisite.json'] = (h.canonical({
+            'version': 1, 'read_only_check': True, 'required_before_endpoint_launch': True,
+            'root': root, 'uid': 0, 'gid': 0, 'directory_mode': 0o700,
+            'files': {name: {'sha256': digest, 'mode': 0o400, 'nlink': 1} for name, digest in pins.items()},
+            'session_directory': {'name': 'bridge-sessions', 'mode': 0o700},
+            'stage_check_source_sha256': h.sha(stage.encode())}) + '\n').encode()
     return out
 
 

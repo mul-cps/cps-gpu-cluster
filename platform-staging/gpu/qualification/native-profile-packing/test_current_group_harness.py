@@ -6,6 +6,7 @@ import io
 import contextlib
 import json
 import stat
+import os
 from types import SimpleNamespace
 from pathlib import Path
 import tempfile
@@ -25,6 +26,40 @@ PUBLISHED = HERE.parents[1] / 'native-group-pilot/qualification/limited-group-20
 
 
 class CurrentGroupTests(unittest.TestCase):
+    def test_vmm_stage_check_precedes_endpoints_and_rejects_missing_or_changed_files(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp); root.chmod(0o700)
+            bridge = root / 'vmm_bridge.py'; endpoint = root / 'vmm_endpoint.py'
+            bridge.write_bytes(b'trusted bridge'); endpoint.write_bytes(b'trusted endpoint')
+            bridge.chmod(0o400); endpoint.chmod(0o400)
+            sessions = root / 'bridge-sessions'; sessions.mkdir(mode=0o700)
+            pins = {'vmm_bridge.py': old.sha(bridge.read_bytes()), 'vmm_endpoint.py': old.sha(endpoint.read_bytes())}
+            source = current.vmm_stage_source(str(root), pins, binding()['pool'])
+            tree = ast.parse(source); tree.body = [n for n in tree.body if not isinstance(n, ast.Expr)]
+            scope = {}; exec(compile(tree, 'read-only-staging-check', 'exec'), scope)
+            actual_fstat, actual_stat = os.fstat, os.stat
+            def root_metadata(info):
+                return SimpleNamespace(**{k: (0 if k in ('st_uid', 'st_gid') else getattr(info, k))
+                    for k in ('st_uid', 'st_gid', 'st_mode', 'st_nlink', 'st_size', 'st_dev', 'st_ino', 'st_mtime_ns', 'st_ctime_ns')})
+            def check():
+                with patch.object(os, 'fstat', side_effect=lambda fd: root_metadata(actual_fstat(fd))), \
+                     patch.object(os, 'stat', side_effect=lambda *a, **kw: root_metadata(actual_stat(*a, **kw))):
+                    return scope['verify_staged']()
+            self.assertEqual(check()['state'], 'exact-vmm-bridge-staged')
+            for target in (bridge, endpoint):
+                target.unlink()
+                with self.assertRaises(FileNotFoundError): check()
+                target.write_bytes(b'trusted bridge' if target == bridge else b'trusted endpoint'); target.chmod(0o400)
+                target.chmod(0o600)
+                with self.assertRaises(ValueError): check()
+                target.chmod(0o400); target.chmod(0o600); target.write_bytes(b'changed'); target.chmod(0o400)
+                with self.assertRaises(ValueError): check()
+                target.chmod(0o600); target.write_bytes(b'trusted bridge' if target == bridge else b'trusted endpoint'); target.chmod(0o400)
+            sessions.chmod(0o755)
+            with self.assertRaises(ValueError): check()
+            root.chmod(0o755)
+            with self.assertRaises(ValueError): check()
+
     def test_cleared_guard_rechecks_exact_inventory_and_bounded_live_inode_absence(self):
         row = {'cgroup_id': 1390814, 'kernfs_id': 1390814, 'inode': 1390814, 'offline': True,
                'pinned': True, 'default_hierarchy': True, 'soft': 0, 'hard': 2**64-1, 'used': 0}
@@ -234,7 +269,10 @@ class CurrentGroupTests(unittest.TestCase):
         protocol = b'kernel-witness-required\nexchange_timeout=120\npayload_mib=64\n'
         rendered = {'run_group_acceptance.py': pre, 'imports-cross-pod/kernel_witness_collector.py': protocol,
                     'vmm-cross-parent-sgid-fix/kernel_witness_transport.py': protocol,
-                    'imports-cross-pod/run_cross_pod.py': protocol + old.sha(pre).encode() + b'\n' + old.sha(host.encode()).encode()}
+                    'imports-cross-pod/run_cross_pod.py': protocol + old.sha(pre).encode() + b'\n' + old.sha(host.encode()).encode(),
+                    'vmm-cross-parent-sgid-fix/run_vmm_cross_parent.py': b"BRIDGE_ROOT='/run/cps-native-gpu/operator/reviewed-vmm-test'\ndef main(argv=None):\n    transport=load_witness()\n    exporter=Session()\n",
+                    'vmm-cross-parent-sgid-fix/vmm_bridge.py': b'trusted-bridge',
+                    'vmm-cross-parent-sgid-fix/vmm_endpoint.py': b'trusted-endpoint'}
         with patch.object(old, '_render_validated_sources', return_value=copy.deepcopy(rendered)) as render:
             output = current.render_sources({}, b, {'records': []})
         self.assertEqual(render.call_args.args[1], b)
@@ -252,6 +290,13 @@ class CurrentGroupTests(unittest.TestCase):
         self.assertEqual(output['vmm-cross-parent-sgid-fix/kernel_witness_transport.py'], protocol)
         self.assertEqual(output['imports-cross-pod/run_cross_pod.py'],
             protocol + old.sha(new_pre).encode() + b'\n' + old.sha(new_host.encode()).encode())
+        wrapper = output['vmm-cross-parent-sgid-fix/run_vmm_cross_parent.py'].decode()
+        self.assertLess(wrapper.index('    check_vmm_staging(h,args)'), wrapper.index('    exporter=Session()'))
+        prerequisite = json.loads(output['vmm-cross-parent-sgid-fix/bridge-prerequisite.json'])
+        self.assertTrue(prerequisite['required_before_endpoint_launch'])
+        self.assertEqual(prerequisite['files']['vmm_bridge.py']['sha256'], old.sha(b'trusted-bridge'))
+        self.assertEqual(prerequisite['files']['vmm_endpoint.py']['sha256'], old.sha(b'trusted-endpoint'))
+        self.assertEqual(output['vmm-cross-parent-sgid-fix/vmm_bridge.py'], b'trusted-bridge')
         with self.assertRaises(ValueError):
             with patch.object(old, '_render_validated_sources', return_value={'run_group_acceptance.py': b'changed model span'}):
                 current.render_sources({}, b, {'records': []})
