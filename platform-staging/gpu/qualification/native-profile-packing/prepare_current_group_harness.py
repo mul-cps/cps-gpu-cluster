@@ -6,6 +6,7 @@ normal Start/Stop, fresh host preflight, hardware execution and witness review.
 """
 import argparse
 import ast
+import base64
 import json
 from pathlib import Path
 
@@ -18,6 +19,32 @@ APPROVALS_SHA256 = '3449819d393ed8026353effa57e9b4b0265779e0ef547179dc6c8e1cf72c
 GATE_IMAGE = 'ghcr.io/mul-cps/cps-compute@sha256:bc5b128f582641eae8395e1121d1fb248eddc39a56c9e863b7c564badd94b167'
 CONTROLLER_SHA256 = '630d43cc115b5bddf3e5d110a25cc891e0941953bbabd833f0a77a3773ad7880'
 LEGACY_CONTROLLER_SHA256 = 'f40ef40f71c9f1206f23fb7052fd69aafd103c0f03a24e6bf3987395dacfd179'
+INVENTORY_CAPTURE_SOURCE_SHA256 = 'e36b9cd5630c4ca9a02440258b58bc7f79d92d5fe0eb7ad72c6afe1fc7c086c1'
+
+
+def validate_cleared_inventory(inventory, pool, bound):
+    h.require(isinstance(inventory, dict) and set(inventory) == {'version', 'backend', 'gpu_uuid', 'gpu_id', 'entries'}
+        and type(inventory['version']) is int and inventory['version'] == 1
+        and inventory['backend'] == 'misc-fallback' and inventory['gpu_uuid'] == pool['gpu_uuid']
+        and type(inventory['gpu_id']) is int and 0 <= inventory['gpu_id'] < 2**32
+        and isinstance(inventory['entries'], list) and len(inventory['entries']) <= 256,
+        'Closed complete selected-device inventory required')
+    rows = {}
+    for row in inventory['entries']:
+        h.require(isinstance(row, dict) and set(row) == {'cgroup_id', 'kernfs_id', 'inode', 'offline',
+            'pinned', 'default_hierarchy', 'soft', 'hard', 'used'}
+            and all(type(row[k]) is int and 0 <= row[k] < 2**64 for k in
+                ('cgroup_id', 'kernfs_id', 'inode', 'soft', 'hard', 'used'))
+            and all(type(row[k]) is bool for k in ('offline', 'pinned', 'default_hierarchy'))
+            and row['cgroup_id'] == row['kernfs_id'] == row['inode'] > 0
+            and row['inode'] not in rows and row['pinned'] is True and row['default_hierarchy'] is True
+            and row['soft'] <= row['hard'], 'Unique typed pinned default inventory rows required')
+        rows[row['inode']] = row
+    h.require(bound <= set(rows), 'All explicit active and retired lifetimes must be present')
+    cleared = [rows[n] for n in sorted(set(rows) - bound)]
+    h.require(all(r['offline'] is True and r['used'] == r['soft'] == 0 and r['hard'] == 2**64-1
+        for r in cleared), 'Unbound rows require exact offline zero-charge cleared limits')
+    return cleared
 
 
 def read_input(pin):
@@ -32,8 +59,8 @@ def validate_inputs(manifest):
     from cps_compute.native_gpu_runtime import validate_native_pod_intent, validate_native_cap_receipt
     from cps_compute.policy import Policy
 
-    h.require(isinstance(manifest, dict) and set(manifest) == {'version', 'state', 'binding',
-        'policy', 'native_groups', 'sealed_targets'} and type(manifest['version']) is int
+    fields = {'version', 'state', 'binding', 'policy', 'native_groups', 'sealed_targets'}
+    h.require(isinstance(manifest, dict) and set(manifest) in (fields, fields | {'inventory_capture'}) and type(manifest['version']) is int
         and manifest['version'] == 1 and manifest['state'] == 'Root-reviewed-current-group-plan',
         'Closed explicit current-group preparation manifest required')
     h.require(h.sha(Path(controller.__file__).read_bytes()) == CONTROLLER_SHA256,
@@ -57,6 +84,7 @@ def validate_inputs(manifest):
     seals = manifest['sealed_targets']
     h.require(isinstance(seals, list) and len(seals) == 2, 'Both actual Pod lifetime seals required')
     identities = set()
+    active_records = []
     for target, row in zip(binding['targets'], seals):
         h.require(isinstance(row, dict) and set(row) == {'pod_uid', 'journal', 'gate_receipt'}
             and row['pod_uid'] == target['pod_uid'], 'Ordered actual CPS5/CIT10 PodUID seals required')
@@ -76,25 +104,95 @@ def validate_inputs(manifest):
         key = (record.identity.cgroup_device, record.identity.cgroup_inode)
         h.require(key not in identities, 'Distinct actual native Pod-parent lifetimes required')
         identities.add(key)
+        active_records.append(record)
         gate = read_input(row['gate_receipt'])
         h.require(gate == record.receipt(), 'Actual public gate must equal the protected durable seal')
         validate_native_cap_receipt(gate, expected_intent, boot_id=pool['boot_id'],
             pid_start_ticks=record.identity.pid_start_ticks, driver_generation=pool['driver_generation'])
         validate_native_pod_intent(read_input(target['pod_capture']), expected_intent)
-    return binding, {'preparation_mode': 'current-approved-groups',
+    context = {'preparation_mode': 'current-approved-groups',
         'fresh_cross_pod_hardware_qualified': False,
         'group_evidence_sha256': config['evidence_sha256'],
         'current_controller_sha256': CONTROLLER_SHA256,
         'approved_workspaces_sha256': 'sha256:' + APPROVALS_SHA256,
         'current_group_inputs': [manifest['binding'], manifest['policy'], manifest['native_groups'],
             *(pin for row in seals for pin in (row['journal'], row['gate_receipt']))]}
+    if 'inventory_capture' in manifest:
+        capture = manifest['inventory_capture']
+        h.require(isinstance(capture, dict) and set(capture) == {'inventory', 'host_records', 'host_snapshot'},
+                  'Exact full inventory and protected capture provenance required')
+        inventory = read_input(capture['inventory'])
+        host = read_input(capture['host_records'])
+        snapshot = read_input(capture['host_snapshot'])
+        source = snapshot['captureSource']
+        h.file_pin(source)
+        h.require(source['sha256'] == INVENTORY_CAPTURE_SOURCE_SHA256,
+                  'Exact reviewed read-only current-group capture source required')
+        h.read_pinned(Path(source['path']), source['sha256'], private=True)
+        h.require(type(snapshot['version']) is int and snapshot['version'] == 1 and snapshot['observerPodUid'] == binding['observer_uid']
+            and all(snapshot[k] == pool[v] for k, v in [('node', 'node'), ('nodeUid', 'node_uid'),
+                ('bootId', 'boot_id'), ('driverGeneration', 'driver_generation')])
+            and host['bootId'] == pool['boot_id'] and host['driverGeneration'] == pool['driver_generation']
+            and host['healthPassed'] is True and host['sourceSha256'] == snapshot['healthSourceSha256']
+            == '52fdbdae3d5e2f66fd4653d94ef5a62f734e185fabec30450f4a1b70cfee7d67'
+            and host['finiteCaps'] == inventory
+            and host['finiteCapsRawSha256'] == 'sha256:' + capture['inventory']['sha256']
+            and h.sha(base64.b64decode(host['finiteCapsRawBase64'], validate=True)) == capture['inventory']['sha256'],
+            'Actual complete raw inventory must bind reviewed capture source and current healthy pool epoch')
+        retired = validate_retired(read_input(binding['retired_capture']), binding)
+        retired_records = [controller.CapRecord.from_dict(r['record']) for r in retired['records']]
+        bound = {r.identity.cgroup_inode for r in active_records + retired_records}
+        h.require(len(bound) == len(active_records) + len(retired_records), 'Distinct complete native lifetimes required')
+        cleared = validate_cleared_inventory(inventory, pool, bound)
+        rows = {r['inode']: r for r in inventory['entries']}
+        for r in active_records:
+            row = rows[r.identity.cgroup_inode]
+            h.require(row['offline'] is False and row['soft'] == row['hard'] == r.intent.cap_bytes
+                and row['used'] <= row['hard'], 'Actual sealed finite active cap required')
+        for r in retired_records:
+            proof = controller.validate_retired_inventory(inventory, r.identity, r.limit)
+            h.require(proof.entry == r.retirement.entry and proof.gpu_id == r.retirement.gpu_id,
+                      'Actual original retired finite proof must match complete inventory')
+        devices = {r.identity.cgroup_device for r in active_records + retired_records}
+        h.require(len(devices) == 1, 'One exact selected native cgroup2 device required')
+        context['cleared_inventory_baseline'] = {'rows': cleared, 'cgroup_device': devices.pop(),
+            'gpu_id': inventory['gpu_id'], 'inventory_capture': capture, 'capture_source': source}
+        context['current_group_inputs'].extend(capture.values())
+    return binding, context
 
 
 def validate_retired(retired, binding):
     return h._validate_retired(retired, binding, controller_sha=CONTROLLER_SHA256)
 
 
-def render_sources(sources, binding, retired, *, native_binary=None):
+def cleared_guard(rows, device, gpu_id):
+    """Exact captured rows; inspect cgroup2 read-only at every host observation."""
+    return '''
+require(inventory['gpu_id']==GPU_ID,'Captured selected GPU identity changed')
+cleared_expected=CLEARED_ROWS
+cleared_inodes={r['inode'] for r in cleared_expected}
+require(len(cleared_inodes)==len(cleared_expected),'Distinct explicit cleared baseline required')
+for expected in cleared_expected:
+ require(expected['offline'] is True and expected['pinned'] is True and expected['default_hierarchy'] is True and expected['used']==expected['soft']==0 and expected['hard']==2**64-1,'Strict cleared baseline form required')
+ require(expected['inode'] not in bound and rows.get(expected['inode'])==expected,'Exact offline cleared row changed or reused');bound.add(expected['inode'])
+root_info=os.stat('/sys/fs/cgroup',follow_symlinks=False)
+require(stat.S_ISDIR(root_info.st_mode) and root_info.st_dev==CGROUP_DEVICE,'Exact selected cgroup2 mount device required')
+deadline=time.monotonic()+10;visited=0
+def walk_error(error):raise error
+for path,children,files in os.walk('/sys/fs/cgroup',topdown=True,onerror=walk_error,followlinks=False):
+ visited+=1
+ require(visited<=4096 and visited+len(children)<=4096 and time.monotonic()<=deadline,'Bounded complete cgroup2 absence walk required')
+ info=os.stat(path,follow_symlinks=False)
+ require(stat.S_ISDIR(info.st_mode) and info.st_dev==CGROUP_DEVICE and info.st_ino not in cleared_inodes,'Cleared native inode is present or reused in live cgroup2')
+ for name in children:
+  child=os.stat(os.path.join(path,name),follow_symlinks=False)
+  require(stat.S_ISDIR(child.st_mode) and child.st_dev==CGROUP_DEVICE,'No followed links or foreign cgroup mount allowed')
+end_info=os.stat('/sys/fs/cgroup',follow_symlinks=False)
+require((root_info.st_dev,root_info.st_ino)==(end_info.st_dev,end_info.st_ino),'Selected cgroup2 mount changed during absence walk')
+'''.replace('CLEARED_ROWS', repr(rows)).replace('CGROUP_DEVICE', str(device)).replace('GPU_ID', str(gpu_id))
+
+
+def render_sources(sources, binding, retired, *, native_binary=None, cleared_baseline=None):
     h._validate_binding(binding, 'interactive-shared-')
     out = h._render_validated_sources(sources, binding, retired, native_binary=native_binary)
     old_pre = out['run_group_acceptance.py']
@@ -107,6 +205,10 @@ def render_sources(sources, binding, retired, *, native_binary=None):
         '/run/cps-native-gpu/driver-inputs-optional-stack/native_gpu_controller.py',
         '/run/cps-native-gpu/qualification-current-controller-630d43cc/native_gpu_controller.py')
     new_host = h.replace(new_host, repr(LEGACY_CONTROLLER_SHA256), repr(CONTROLLER_SHA256))
+    if cleared_baseline is not None:
+        orphan_guard = "require(set(rows)==bound,'Unbound/orphan native inventory entry blocks probes')"
+        new_host = h.replace(new_host, orphan_guard, cleared_guard(cleared_baseline['rows'],
+            cleared_baseline['cgroup_device'], cleared_baseline['gpu_id']) + orphan_guard)
     pre = h.replace(pre, ast.get_source_segment(pre, host_node), repr(new_host)).encode()
     compile(pre, 'current-group-preflight', 'exec')
     out['run_group_acceptance.py'] = pre
@@ -130,7 +232,8 @@ def prepare(manifest_path, manifest_sha, source_root, output, *, native_binary_p
     return h._prepare_validated_binding(binding, manifest['binding']['sha256'], source_root, output,
         native_binary_path=native_binary_path, native_binary_sha=native_binary_sha,
         native_build_path=native_build_path, native_build_sha=native_build_sha, receipt_context=context,
-        retirement_validator=validate_retired, source_renderer=render_sources)
+        retirement_validator=validate_retired, source_renderer=lambda *a, **kw: render_sources(*a, **kw,
+            cleared_baseline=context.get('cleared_inventory_baseline')))
 
 
 def main(argv=None):

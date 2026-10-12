@@ -5,6 +5,8 @@ from dataclasses import replace
 import io
 import contextlib
 import json
+import stat
+from types import SimpleNamespace
 from pathlib import Path
 import tempfile
 import unittest
@@ -23,6 +25,52 @@ PUBLISHED = HERE.parents[1] / 'native-group-pilot/qualification/limited-group-20
 
 
 class CurrentGroupTests(unittest.TestCase):
+    def test_cleared_guard_rechecks_exact_inventory_and_bounded_live_inode_absence(self):
+        row = {'cgroup_id': 1390814, 'kernfs_id': 1390814, 'inode': 1390814, 'offline': True,
+               'pinned': True, 'default_hierarchy': True, 'soft': 0, 'hard': 2**64-1, 'used': 0}
+        code = current.cleared_guard([row], 9, 0) + "\nrequire(set(rows)==bound,'Unbound/orphan native inventory entry blocks probes')"
+        def observe(actual, *, live_inode=999, directories=1, gpu_id=0, device=9, link=False, slow=False):
+            def require(ok, message):
+                if not ok: raise ValueError(message)
+            fake_os = SimpleNamespace(stat=lambda path, **kw: SimpleNamespace(
+                st_mode=stat.S_IFLNK if path.endswith('/link') else stat.S_IFDIR,
+                st_dev=device, st_ino=live_inode), path=SimpleNamespace(join=lambda *p: '/'.join(p)),
+                walk=lambda *a, **kw: iter([('/sys/fs/cgroup', ['link'] if link else [], [])] * directories))
+            ticks = iter([0, 11]) if slow else None
+            namespace = {'rows': copy.deepcopy(actual), 'bound': set(), 'inventory': {'gpu_id': gpu_id},
+                         'os': fake_os, 'stat': stat, 'time': SimpleNamespace(monotonic=lambda: next(ticks) if ticks else 0),
+                         'require': require}
+            exec(compile(code, 'strict-cleared-guard', 'exec'), namespace)
+            return namespace['bound']
+        self.assertEqual(observe({row['inode']: row}), {row['inode']})
+        for field, value in [('soft', 5120*1048576), ('hard', 5120*1048576), ('used', 1),
+                             ('offline', False), ('pinned', False), ('default_hierarchy', False)]:
+            bad = dict(row); bad[field] = value
+            with self.subTest(field=field), self.assertRaises(ValueError): observe({row['inode']: bad})
+        for kwargs in ({'live_inode': row['inode']}, {'directories': 4097}, {'gpu_id': 1},
+                       {'device': 10}, {'link': True}, {'slow': True}):
+            with self.subTest(kwargs=kwargs), self.assertRaises(ValueError): observe({row['inode']: row}, **kwargs)
+        unknown = dict(row, inode=123, cgroup_id=123, kernfs_id=123)
+        with self.assertRaises(ValueError): observe({row['inode']: row, 123: unknown})
+        with self.assertRaises(ValueError): observe({})
+
+    def test_real_thirteen_cleared_rows_require_exact_offline_zero_unbounded_form(self):
+        inodes = [1403936, 1404312, 1404391, 1403778, 1403857, 1404075, 1404154,
+                  1404549, 1404470, 1404233, 1405847, 1405768, 1390814]
+        rows = [{'cgroup_id': n, 'kernfs_id': n, 'inode': n, 'offline': True,
+                 'pinned': True, 'default_hierarchy': True, 'soft': 0, 'hard': 2**64-1, 'used': 0}
+                for n in inodes]
+        pool = binding()['pool']
+        inventory = {'version': 1, 'backend': 'misc-fallback', 'gpu_uuid': pool['gpu_uuid'],
+                     'gpu_id': 0, 'entries': rows}
+        self.assertEqual(current.validate_cleared_inventory(inventory, pool, set()), sorted(rows, key=lambda r: r['inode']))
+        for field, value in [('soft', 5120*1048576), ('hard', 5120*1048576), ('used', 1),
+                             ('offline', False), ('pinned', False), ('default_hierarchy', False),
+                             ('inode', rows[1]['inode']), ('cgroup_id', 1)]:
+            with self.subTest(field=field), self.assertRaises(ValueError):
+                bad = copy.deepcopy(inventory); bad['entries'][0][field] = value
+                current.validate_cleared_inventory(bad, pool, set())
+
     def fixture(self, root):
         root.chmod(0o700)
         def pin(name, value):
