@@ -3,6 +3,7 @@ import copy
 import ast
 import io
 import json
+import hashlib
 from pathlib import Path
 import types
 import unittest
@@ -75,12 +76,58 @@ class SingleuserBaseline20Tests(unittest.TestCase):
         with self.assertRaises(ValueError):
             module.validate_request(self.request, module.helper())
         rendered = p.render(self.binding, self.observer)
-        for name in ('helper', 'sealed', 'capture', 'main'):
-            def source(raw):
-                tree = ast.parse(raw)
-                return ast.get_source_segment(raw.decode(), next(node for node in tree.body
-                    if isinstance(node, ast.FunctionDef) and node.name == name))
-            self.assertEqual(source(original), source(rendered), name)
+        def functions(raw):
+            return {node.name: ast.get_source_segment(raw.decode(), node)
+                    for node in ast.parse(raw).body if isinstance(node, ast.FunctionDef)}
+        before, after = functions(original), functions(rendered)
+        self.assertEqual(set(before), set(after))
+        self.assertEqual({name for name in before if before[name] != after[name]},
+                         {'validate_request', 'main'})
+        for name, expected in before.items():
+            if name == 'validate_request':
+                expected = expected.replace("10737418240:('cit','native-group-a','cit-jhub','jupyter-citnativegroupa--rtc')",
+                                            "21474836480:('cit','native-group-a','cit-jhub','jupyter-citnativegroupa--rtc')")
+                expected = expected.replace(p.OLD_POLICY, self.binding['policy_hash'])
+            elif name == 'main':
+                expected = expected.replace('0<len(a.request.encode())<=65536',
+                                            '0<len(a.request.encode())<=131072')
+            self.assertEqual(expected, after[name], name)
+
+    def test_complete_actual_restart_archive_input_bound_and_raw_pin(self):
+        after_path = CROSS / 'harness20-restart-actual-v1/measurements/same-parent-vmm/after.json'
+        if not after_path.exists():
+            self.skipTest('Private complete actual restart archive is intentionally unavailable')
+        binding = json.loads((CROSS / 'profile20-restart-actual-manifest-v1/actual-binding.json').read_bytes())
+        observer = (CROSS / 'harness20-restart-actual-v1/vmm-owner-exit/host_owner_observer.py').read_bytes()
+        raw = p.render(binding, observer)
+        module = types.ModuleType('generated_restart_baseline20')
+        exec(compile(raw, 'generated-restart-baseline20', 'exec'), module.__dict__)
+        after = json.loads(after_path.read_bytes())
+        request = {k: after[k] for k in ('host', 'pods')}
+        text = json.dumps(request, sort_keys=True, separators=(',', ':'), allow_nan=False)
+        self.assertGreater(len(text.encode()), 65536)
+        self.assertLess(len(text.encode()), 131072)
+        self.assertEqual(len(text.encode()), 72428)
+        pin = hashlib.sha256(text.encode()).hexdigest()
+
+        def cpu_capture(value, helper):
+            self.assertEqual(value, request)
+            self.assertEqual(value['host']['retired_caps'], request['host']['retired_caps'])
+            module.validate_request(value, helper)
+            return {'state': 'cpu-test-not-captured'}
+
+        with patch.object(module.os, 'geteuid', return_value=0), patch.dict(module.os.environ, {}, clear=True), \
+                patch.object(module, 'capture', side_effect=cpu_capture) as capture, redirect_stdout(io.StringIO()):
+            module.main(['--capture', '--request', text, '--request-sha256', pin])
+            capture.assert_called_once()
+        for changed, supplied_pin in ((text + ' ', pin),
+                                     (text + ' ' * (131073 - len(text.encode())), None)):
+            with self.subTest(length=len(changed.encode())), patch.object(module.os, 'geteuid', return_value=0), \
+                    patch.dict(module.os.environ, {}, clear=True), \
+                    patch.object(module, 'capture', side_effect=AssertionError('host capture called')):
+                with self.assertRaises(ValueError):
+                    module.main(['--capture', '--request', changed, '--request-sha256',
+                                 supplied_pin or hashlib.sha256(changed.encode()).hexdigest()])
 
     def test_preparer_default_has_no_capture_or_packet_reads(self):
         with patch.object(p, 'render', side_effect=AssertionError('render called')), redirect_stdout(io.StringIO()) as output:

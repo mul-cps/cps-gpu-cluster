@@ -55,6 +55,10 @@ def render(binding, observer_source):
                             "10737418240:('cit','native-group-a','cit-jhub','jupyter-citnativegroupa--rtc')",
                             "21474836480:('cit','native-group-a','cit-jhub','jupyter-citnativegroupa--rtc')")
     text = protocol.replace(text, OLD_POLICY, binding['policy_hash'])
+    # Complete repeated-lifetime custody exceeds the original 64 KiB argv
+    # bound. Preserve every input field and the existing raw-pin/capture checks.
+    text = protocol.replace(text, '0<len(a.request.encode())<=65536',
+                            '0<len(a.request.encode())<=131072')
     result = text.encode()
     compile(result, 'current-operator20-singleuser-capture', 'exec')
     return result
