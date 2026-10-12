@@ -34,6 +34,26 @@ This is a dated observation from Root's protected receipt, not a current
 availability assessment. Actual output bytes, logs, human browser OAuth and
 public personal routing remain open. See [source-acceptance.json](source-acceptance.json).
 
+The later [owned acceptance receipt](current-private-owned-acceptance.json)
+closes this private CPS gate: owned success/failure list and details, executed
+notebook GET/HEAD and logs all returned 200. The owned list contained only the
+two authorized runs; real foreign detail/log/artifact failures matched absent
+objects with the same 404 body. Both retrieved notebooks retained integer and
+boolean parameters; the success showed the selected helper's 42 result and the
+failure retained its intentional RuntimeError. The earlier 502/503 receipt
+remains byte-identical for diagnosis. Root used its signed cookie containing a
+real owning-Hub user token; human browser OAuth and public routing remain
+pending. This does not qualify human CIT/RTC access, general GPU rollout or the
+full platform release.
+
+The backend reader now has a separate Role/Binding from source
+`c8335b4bf20f531b6c2fb59f4dd77c77dd524331` and its credential-grant prerequisite.
+It allows only `get` on `cps-workflows` Secrets `cps-artifact-credentials` and
+`cps-artifact-ca`. Root's actual reader bearer SelfSubjectAccessReview allowed
+those two named reads and denied an unrelated Secret read and Secret listing.
+The receipt contains only permission booleans and source hashes. Browser
+frontends still receive no Kubernetes service account or artifact credentials.
+
 The current policy is `0.1.2`,
 `sha256:d48f6553ed036c2e7adcc97417623fe0308be93ad13b20f246047ada118511b0`,
 with the locally qualified immutable CPU runner `1fab0663…` permitted only by
@@ -84,7 +104,7 @@ printed on failure. No credential files are generated or printed. Outputs:
 
 | File | Purpose |
 | --- | --- |
-| `resources.yaml` | Separate CA ConfigMap, narrow NetworkPolicies, two private frontends/Services, named reader-rotation RBAC and suspended CronJob; no Ingress |
+| `resources.yaml` | Separate CA ConfigMap, narrow NetworkPolicies, two private frontends/Services, named reader-rotation RBAC, exact backend artifact Secret get Role/Binding and suspended CronJob; no Ingress |
 | `reader-rbac.yaml` | New `cps-argo/cps-personal-argo-reader` SA and read-only Role/Binding in `cps-workflows`; no Secret permissions |
 | `cps-hub-secret.patch.json`, `cit-hub-secret.patch.json` | CAS replacement of only `hub` Secret `data["values.yaml"]` |
 | `cps-hub-deployment.patch.json`, `cit-hub-deployment.patch.json` | CAS append of only the named OAuth environment entry to the `hub` container |
@@ -159,7 +179,10 @@ new resource names are unused before `kubectl create`.
    privately using in-cluster SelfSubjectAccessReview, including forbidden
    mutation and Secret reads. The new reader allows workflow get/list/watch,
    pod get/list and pod logs get only in `cps-workflows`. It does not modify
-   `argo-artifact-reader`; artifact authorization remains separate. Do not
+   `argo-artifact-reader`. The separate backend artifact Role allows only get
+   for `cps-artifact-credentials` and `cps-artifact-ca` in `cps-workflows`; check
+   both allowed named reads and denied unrelated reads/listing with the actual
+   rotated bearer. User artifact ownership remains enforced by the gateway. Do not
    accept an impersonation `kubectl auth can-i` result as token qualification.
 4. Apply each freshly fenced Hub patch. These Deployment patches trigger a
    rollout while retaining all native volumes, hooks and images:

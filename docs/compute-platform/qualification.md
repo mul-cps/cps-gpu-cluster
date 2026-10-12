@@ -426,3 +426,27 @@ Root's signed cookie with a real Hub user token; human browser OAuth and public
 personal routing remain pending, and both prepared ingress flags remain false.
 These receipts are dated observations, not ongoing availability checks. General
 GPU access and the full-platform release remain unqualified.
+
+
+## 2026-10-12 private owned Argo byte and log acceptance
+
+Root's later [sanitized private owned receipt](../../platform-staging/argo/personal-activation-20261012/current-private-owned-acceptance.json)
+closes the earlier private artifact GET/log failures for the same pinned gateway
+and dedicated frontends. The preceding 502/503 receipt is preserved unchanged.
+Own success/failure list and details, executed-notebook GET/HEAD and logs
+returned 200. The owned list contained only the two authorized runs. Actual
+foreign workflow detail/log/artifact failures matched missing objects with the
+same 404 body. Retrieved notebooks preserved typed parameters and selected
+helper execution; the successful run returned 42 and the failed notebook retained
+its intentional RuntimeError. This qualifies the private CPS workflow and
+artifact path with Root's signed cookie containing a real Hub user token.
+
+The dedicated backend reader Role from source
+`c8335b4bf20f531b6c2fb59f4dd77c77dd524331` allows only named `get` for artifact
+credentials and CA Secrets. Root's actual bearer SelfSubjectAccessReview
+allowed those reads and denied unrelated Secret reads and Secret listing.
+Browser frontends retain no Kubernetes identity or artifact credentials.
+Human browser OAuth, public personal ingress, human CIT/RTC collaboration,
+same-person cross-Hub concurrency, broader GPU/fleet and complete release gates
+remain open. Both prepared ingress flags and general production qualification
+remain false. Dated receipts do not establish continuous availability.

@@ -62,7 +62,7 @@
   },
   "sourceVerification": {
     "preparationTestsPassed": 8,
-    "personalArgoChartTestsPassed": 11,
+    "personalArgoChartTestsPassed": 12,
     "redStaleFrontendPinObserved": true,
     "capturedGatewayImagePreserved": true,
     "casAndUnownedRuntimePreservationTested": true,
@@ -81,8 +81,8 @@
     ]
   },
   "remainingGates": [
-    "Actual owned success/failure executed notebook bytes and logs (GET502/log503 in dated receipt)",
     "Human browser OAuth and public personal Argo routing",
+    "Human CIT and RTC collaboration acceptance",
     "Fresh cross-Pod import denials and same-person concurrent cross-Hub starts",
     "General GPU rollout, wider fleet and complete platform release acceptance"
   ],
@@ -124,5 +124,41 @@
     "nativeRuntimeSourceUnchanged": true,
     "originalHardwareEvidenceUnchanged": true,
     "widerGpuScopeEnabled": false
+  },
+  "currentPrivateOwnedAcceptance": {
+    "path": "current-private-owned-acceptance.json",
+    "sha256": "c1e406d789351c116a20d4a11d78940089a419b09ea0eaf5819ecf69d7f92be7",
+    "artifactGetStatuses": [
+      200,
+      200
+    ],
+    "artifactHeadStatuses": [
+      200,
+      200
+    ],
+    "logStatuses": [
+      200,
+      200
+    ],
+    "artifactBytesAccepted": true,
+    "logDeliveryAccepted": true,
+    "foreignExcludedFromList": true,
+    "foreignAndMissingFailuresEqual": true,
+    "humanBrowserOAuthTested": false,
+    "publicPersonalArgoRouteTested": false
+  },
+  "backendReaderRbacSource": {
+    "credentialGrantCommit": "9e4f24c994c13e36e3a3755fa8e96df6aa5651d8",
+    "trustedCaCommit": "c8335b4bf20f531b6c2fb59f4dd77c77dd524331",
+    "namespace": "cps-workflows",
+    "resource": "secrets",
+    "resourceNames": [
+      "cps-artifact-credentials",
+      "cps-artifact-ca"
+    ],
+    "verbs": [
+      "get"
+    ],
+    "browserCredentialsProvided": false
   }
 }
