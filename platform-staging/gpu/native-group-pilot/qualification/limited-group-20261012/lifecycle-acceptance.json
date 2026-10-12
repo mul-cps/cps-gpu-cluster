@@ -1,0 +1,150 @@
+{
+  "schema": 1,
+  "state": "bounded-normal-lifecycle-passed",
+  "observedAt": "2026-10-12T14:06:36.833227+00:00",
+  "policyHash": "sha256:4f1dff1a92aba5cd7376dfb897612b7e6f2e6f15a09515dbdf29efa4c522359d",
+  "node": "k3s-wk-gpu2",
+  "gpuUuid": "GPU-16128952-b438-556a-00bb-93039ee24e56",
+  "migEnabled": false,
+  "groups": [
+    {
+      "owner": "cps",
+      "workspace": "native-group-b",
+      "profile": "interactive-shared-5",
+      "lifetimes": [
+        {
+          "podUid": "8c92fb62-5f64-4995-8ac2-870a72e71a46",
+          "cgroupInode": 1407303,
+          "specSha256": "8fe881407500bb432ae98b1d8a3c6b14916107cb1dfd2caac7ab2331a75b2f80",
+          "capBytes": 5368709120,
+          "sealedAutomaticCap": true,
+          "finalNativeRow": {
+            "cgroup_id": 1407303,
+            "kernfs_id": 1407303,
+            "inode": 1407303,
+            "offline": true,
+            "pinned": true,
+            "default_hierarchy": true,
+            "soft": 5368709120,
+            "hard": 5368709120,
+            "used": 0
+          },
+          "podAbsent": true
+        },
+        {
+          "podUid": "eddfadb0-1dce-4868-8ed8-82335ea3d913",
+          "cgroupInode": 1408273,
+          "specSha256": "a28c47f45591df2ebd46c530ea346a2854fe28b23a31478b6c6a06b798da1f60",
+          "capBytes": 5368709120,
+          "sealedAutomaticCap": true,
+          "finalNativeRow": {
+            "cgroup_id": 1408273,
+            "kernfs_id": 1408273,
+            "inode": 1408273,
+            "offline": true,
+            "pinned": true,
+            "default_hierarchy": true,
+            "soft": 5368709120,
+            "hard": 5368709120,
+            "used": 0
+          },
+          "podAbsent": true
+        }
+      ],
+      "startStopRestartStopPassed": true,
+      "restartKernelTicks": 33,
+      "finalWorkspaceState": "stopped",
+      "reservation": {
+        "workspace": "native-group-b",
+        "active": false,
+        "attempt": null
+      },
+      "startStopPath": "authenticated-console-http",
+      "humanOAuthTested": true
+    },
+    {
+      "owner": "cit",
+      "workspace": "native-group-a",
+      "profile": "interactive-shared-10",
+      "lifetimes": [
+        {
+          "podUid": "533ba8d5-2a8a-4e56-9ad0-b13231cda3fd",
+          "cgroupInode": 1407698,
+          "specSha256": "32ce3d14499500fcf2e0be9beeefaf2f6b30c65b5e3109a50a45da28d4068d32",
+          "capBytes": 10737418240,
+          "sealedAutomaticCap": true,
+          "finalNativeRow": {
+            "cgroup_id": 1407698,
+            "kernfs_id": 1407698,
+            "inode": 1407698,
+            "offline": true,
+            "pinned": true,
+            "default_hierarchy": true,
+            "soft": 10737418240,
+            "hard": 10737418240,
+            "used": 0
+          },
+          "podAbsent": true
+        },
+        {
+          "podUid": "41155333-331f-44cf-b823-fc4ed861be10",
+          "cgroupInode": 1408668,
+          "specSha256": "305b6f6944d21ce7361f88fd9cca04859ed34aa0bf7a932433cd00e2f6b5e038",
+          "capBytes": 10737418240,
+          "sealedAutomaticCap": true,
+          "finalNativeRow": {
+            "cgroup_id": 1408668,
+            "kernfs_id": 1408668,
+            "inode": 1408668,
+            "offline": true,
+            "pinned": true,
+            "default_hierarchy": true,
+            "soft": 10737418240,
+            "hard": 10737418240,
+            "used": 0
+          },
+          "podAbsent": true
+        }
+      ],
+      "startStopRestartStopPassed": true,
+      "restartKernelTicks": 33,
+      "finalWorkspaceState": "stopped",
+      "reservation": {
+        "workspace": "native-group-a",
+        "active": false,
+        "attempt": null
+      },
+      "startStopPath": "trusted-normal-console-manager",
+      "humanOAuthTested": false
+    }
+  ],
+  "allNativeAllocationsReleased": true,
+  "releasedAllocationCount": 35,
+  "finalTargetNativeChargeBytes": 0,
+  "uiPublicAssets": {
+    "cps": {
+      "status": 200,
+      "sha256": "7e6e230c0309aca94ce3410ef7b8df7b7ff1d3c4f004d71b3ad2f62ac104d53b",
+      "selector_present": true,
+      "cache_control": null
+    },
+    "cit": {
+      "status": 200,
+      "sha256": "7e6e230c0309aca94ce3410ef7b8df7b7ff1d3c4f004d71b3ad2f62ac104d53b",
+      "selector_present": true,
+      "cache_control": null
+    }
+  },
+  "memoryOomRecoveryPeerMeasured": true,
+  "mpsAggregate120SecondsMeasured": true,
+  "sameWorkspaceIpcAndRetainedVmmMeasured": true,
+  "freshCrossPodImportDenialsMeasured": false,
+  "generalGroupRolloutQualified": false,
+  "fleetQualified": false,
+  "productionQualified": false,
+  "custody": {
+    "finalCapsSha256": "08964db5dc870714860813665cf786548016d54db71d7c62f580f55aecc6d695",
+    "finalLedgerSha256": "0cf9ed059638510cd802e344d96475d0ab8eceb07689b53b5fab39e3b3f608f6",
+    "restartResultSha256": "84038ab709b1f4a7439abcf801aa1b6eecc1ae1c43216e8b0f4b6ec6e4fe6739"
+  }
+}
