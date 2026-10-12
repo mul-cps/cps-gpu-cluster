@@ -12,6 +12,7 @@ import prepare_current_operator20_repeat as repeat
 import test_current_operator20 as original_tests
 
 AGENT = Path('/home/bjoern/.local/state/cps-platform-completion-20261012/current-group-crosspod-20261012/profile20-restart-safe-source-v1/actual-node-agent-3bae.py')
+ACTUAL = AGENT.parents[1] / 'profile20-restart-proposal-offline-v1'
 
 
 class Repeat20Tests(unittest.TestCase):
@@ -49,6 +50,36 @@ class Repeat20Tests(unittest.TestCase):
     def test_foreign_source_is_rejected_before_any_validator_runs(self):
         with self.assertRaises(ValueError):
             repeat.validator({'path': str(AGENT), 'sha256': '0' * 64})
+
+    def test_actual_complete_archive_is_preserved_while_same_policy_runtime_projects(self):
+        if not (ACTUAL / 'terminal-authority-snapshot.json').exists():
+            self.skipTest('Private retained actual repeat proposal is intentionally unavailable')
+        q = self.actual_validator()
+        snapshot = json.loads((ACTUAL / 'terminal-authority-snapshot.json').read_bytes())
+        node = json.loads((ACTUAL / 'node-config.json').read_bytes())
+        raw = repeat.legacy.read_pinned(q.TERMINAL_SOURCE, q.TERMINAL_SHA)
+        mapper = q.module('actual_repeat_terminal_mapper', raw, q.TERMINAL_SOURCE)
+        mapper.agent = q.REPEAT_AGENT
+        full = mapper.map_history({k: snapshot[k] for k in ('authority_maps', 'host_snapshot')},
+                                  snapshot['ledger'], snapshot['previous_node'])
+        unchanged = copy.deepcopy(full)
+        self.assertEqual(len(full), 36)
+        self.assertEqual(len(json.loads(snapshot['ledger']['data']['state.json'])['allocations']), 39)
+        # This exact real captured projection failed the original full==runtime assumption.
+        self.assertNotEqual(node['terminal_history'], full)
+        self.assertEqual(node['terminal_history'], repeat.runtime_history(full, node['policy_hash']))
+        self.assertEqual(len(node['terminal_history']), 34)
+        q.REPEAT_AGENT.validate_config(node)
+        self.assertEqual(full, unchanged)
+        self.assertEqual(sum(row['policy_hash'] == node['policy_hash'] for row in full.values()), 2)
+        lost = copy.deepcopy(snapshot['ledger'])
+        state = json.loads(lost['data']['state.json'])
+        bound = next(key for key, row in state['allocations'].items() if row.get('intent'))
+        state['allocations'].pop(bound)
+        lost['data']['state.json'] = json.dumps(state)
+        with self.assertRaises(ValueError):
+            mapper.map_history({k: snapshot[k] for k in ('authority_maps', 'host_snapshot')},
+                               lost, snapshot['previous_node'])
 
     def test_default_is_inert_before_source_or_snapshot_reads(self):
         with patch.object(repeat, 'prepare', side_effect=AssertionError('prepare called')), redirect_stdout(io.StringIO()) as out:
