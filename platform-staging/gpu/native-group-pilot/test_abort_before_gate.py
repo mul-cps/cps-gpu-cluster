@@ -250,6 +250,25 @@ for line in sys.stdin:
             with self.assertRaises(abort.AbortError):
                 with fence: pass
             self.assertIsNotNone(fence.process.returncode)
+    def test_closed_rpc_pipes_preserve_abort_error_and_close_both_streams(self):
+        b=Backend()
+        code="import os,time; os.close(0); os.close(1); time.sleep(60)"
+        command=[sys.executable,'-u','-c',code]
+        b.evidence['fence_command_sha256']=sha(command)
+        fence=abort.RootFence(command,b.evidence,timeout=2)
+        try:
+            with self.assertRaisesRegex(abort.AbortError, 'Root fence EOF'):
+                with fence: self.fail('A closed RPC cannot acquire the fence')
+            self.assertIsNotNone(fence.process.returncode)
+            self.assertTrue(fence.process.stdin.closed)
+            self.assertTrue(fence.process.stdout.closed)
+        finally:
+            if fence.process is not None:
+                if fence.process.poll() is None:
+                    fence.process.kill(); fence.process.wait(timeout=5)
+                for stream in (fence.process.stdin, fence.process.stdout):
+                    try: stream.close()
+                    except OSError: pass
     def test_execute_without_evidence_remains_inert(self):
         result=subprocess.run([sys.executable,str(HERE/'abort_before_gate.py'),'--execute'],capture_output=True,text=True)
         self.assertEqual(result.returncode,1)

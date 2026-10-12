@@ -6,6 +6,7 @@ import io
 import json
 import os
 from pathlib import Path
+import shutil
 from types import SimpleNamespace
 import unittest
 from unittest.mock import patch
@@ -100,15 +101,31 @@ class ServiceLoopTest(unittest.TestCase):
         writes = list(self.fixture.driver.writes)
         self.run_loop()  # Restart retains the exact already-sealed transaction.
         self.assertEqual(self.fixture.driver.writes, writes)
+        sealed = self.fixture.journal.read(self.intent.pod_uid)
         self.fixture.stop(); self.run_loop()
-        self.assertEqual(self.fixture.journal.read(self.intent.pod_uid).state, 'cleaned')
+        self.assertEqual(self.fixture.journal.read(self.intent.pod_uid), sealed)
+        self.assertEqual(json.loads(self.output.getvalue().splitlines()[-1])['state'], 'retained-awaiting-stop')
+        self.assertEqual(self.fixture.driver.writes, writes)
         self.assertIsNone(self.api.cleanup)  # Terminal still visible is insufficient.
         self.fixture.pod = None; self.run_loop()
+        self.assertEqual(self.fixture.journal.read(self.intent.pod_uid), sealed)
+        self.assertEqual(json.loads(self.output.getvalue().splitlines()[-1])['state'], 'retained-awaiting-stop')
+        self.assertEqual(self.fixture.driver.writes, writes)
+        self.assertIsNone(self.api.cleanup)  # An empty surviving cgroup retains its finite cap.
+        shutil.rmtree(self.fixture.group)
+        self.fixture.retired_inventory(sealed)
+        self.run_loop()
+        self.assertEqual(self.fixture.journal.read(self.intent.pod_uid).state, 'retired-inert-cap')
+        self.assertEqual(self.fixture.driver.writes, writes)
         self.assertEqual(self.api.created, 1)
-        self.assertEqual(json.loads(self.api.cleanup['data']['receipt.json'])['intent'], self.enrollment['intent'])
+        receipt = json.loads(self.api.cleanup['data']['receipt.json'])
+        self.assertEqual(receipt['intent'], self.enrollment['intent'])
+        self.assertTrue(receipt['cleanup_confirmed'])
         self.fixture.pod = {'metadata': {'uid': '77777777-7777-4777-8777-777777777777'}, 'spec': {}}
         self.fixture.clients = {901}  # New workload may now use the old name/GPU.
         self.run_loop()
+        self.assertEqual(json.loads(self.output.getvalue().splitlines()[-1])['state'], 'cleanup-confirmed')
+        self.assertEqual(self.fixture.driver.writes, writes)
         self.assertEqual(self.api.created, 1)
         self.assertEqual(self.fixture.deleted, [])
 

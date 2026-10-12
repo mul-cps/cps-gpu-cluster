@@ -287,7 +287,10 @@ class RootFence:
             self.process.kill(); self.process.wait(timeout=5)
         finally:
             for stream in (self.process.stdin, self.process.stdout):
-                stream.close()
+                try:
+                    stream.close()
+                except OSError:
+                    pass
     def __exit__(self, exc_type, *_):
         self.close()
         if exc_type is None:
