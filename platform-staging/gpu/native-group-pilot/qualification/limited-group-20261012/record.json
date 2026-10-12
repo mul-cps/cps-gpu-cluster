@@ -1,0 +1,41 @@
+{
+  "authority_namespace": "cps-native-system",
+  "full_fleet_qualified": false,
+  "inputs": {
+    "cit-settings.json": "ea30ba4d96d5962e59737521ac45b5e521fb1d4bbe9e99919c521ba29a4dbab1",
+    "cps-settings.json": "7c917ff7ec3156d76cc38e2b1382b379d5d4c12b48e2b739799f9599ad40e680",
+    "native-groups.json": "e285a9c783a9b1f65d1311817abe9fb7f727976df2da7c81a0cd29c52117e881"
+  },
+  "max_workspaces": 2,
+  "memory_budget_mib": 15360,
+  "production_qualified": false,
+  "related_sources": {
+    "ROOT-READY.md": "f19b8250f8aed738fcc88cb3a22daf4c616a5e82c417c8e833ec4769a8dd29ab",
+    "catalog.json": "3be38e1abfe12e92b693204604adda9588e6413061e0d054758351091d3dec77",
+    "native-group-evidence.json": "ba7e111ae64ba63f9e6b1a43f5ef7866e7197b2d0ee3cd700205eb659ce5bc17",
+    "node-config.json": "11edc286f15077662420b914c5126c4d31c1b63747ecb5852fc45224f2e36e80",
+    "original-released-ledger31.json": "f9706a27f8adf28b83d56fb44d8c67f321b1a8bec6d2a96d2aa073e9183671a1",
+    "policy.json": "4f0f8011bc507bd79a860d0179d73c50dda02433670b25ecfc7b614c3725527f",
+    "terminal-history28.json": "972c176a5c76a22ceaeaa92956cfa3875b632c5180efc83f5461b877944cdd92"
+  },
+  "remaining_live_acceptance": [
+    "Live shared5/10 target-profile Start/Stop cycle",
+    "CPS5 typed OOM while CIT10 peer ticks",
+    "Exact CPS5/CIT10 cross-parent IPC/VMM import checks"
+  ],
+  "scope": "LIMITED",
+  "source_commit": "e351d2b",
+  "target_policy_hash": "sha256:4f1dff1a92aba5cd7376dfb897612b7e6f2e6f15a09515dbdf29efa4c522359d",
+  "target_profile_start_stop_passed": false,
+  "version": 1,
+  "workspaces": {
+    "cit:native-group-a": {
+      "cap_mib": 10240,
+      "profile": "interactive-shared-10"
+    },
+    "cps:native-group-b": {
+      "cap_mib": 5120,
+      "profile": "interactive-shared-5"
+    }
+  }
+}

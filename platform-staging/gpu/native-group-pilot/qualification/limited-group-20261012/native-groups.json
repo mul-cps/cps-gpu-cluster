@@ -1,0 +1,137 @@
+{
+  "authorityNamespace": "cps-native-system",
+  "enabled": true,
+  "evidence": {
+    "capacity_evidence_sha256": "sha256:e126339b309420d57bea2a1fb8bdf03eb31dcf1934dc581711985611466aac64",
+    "core_sha256": "4fdcafcdf7f57b9de81f56e8e17db06a91e27680c6a711f3888fd0b76da46421",
+    "gate_image": "ghcr.io/mul-cps/cps-compute@sha256:bc5b128f582641eae8395e1121d1fb248eddc39a56c9e863b7c564badd94b167",
+    "gates": {
+      "aggregate": {
+        "evidence_sha256": "sha256:e423fbb9601b1843815bd3e7c17c881f5cbda5bbf590502d9d9557cd819cc714",
+        "passed": true
+      },
+      "cap-assignment": {
+        "evidence_sha256": "sha256:e2b3e81cea6943f85668007fa815f38d789e8de03b5088ce71f39026d8bd7a56",
+        "passed": true
+      },
+      "memory-import": {
+        "evidence_sha256": "sha256:d7c034fd57e407fed9bf4566dee43228a190085bad5e42b4913e0a610a8473ff",
+        "passed": true
+      },
+      "mps": {
+        "evidence_sha256": "sha256:5765c00b580fdc901f4e40ead767c9241494767206c7965b6d67da681dd286f3",
+        "passed": true
+      },
+      "oom-peer": {
+        "evidence_sha256": "sha256:9169e83b329378db59db4ac46cdaf794d354fabc48c05b9f0c5ad98df6429ceb",
+        "passed": true
+      },
+      "restart-cleanup": {
+        "evidence_sha256": "sha256:1bb52abe8791d22034b4381aedec1ed8cba7ceea4b7d7fc87d799863375db485",
+        "passed": true
+      }
+    },
+    "health_sha256": "52fdbdae3d5e2f66fd4653d94ef5a62f734e185fabec30450f4a1b70cfee7d67",
+    "node_pool": {
+      "boot_id": "209f8bc9-a478-48e4-925a-6e07ffa56f7a",
+      "driver_generation": "b10498fc-9153-4394-875a-ea7cfb498625",
+      "free_memory_mib": 40470,
+      "gpu_uuid": "GPU-16128952-b438-556a-00bb-93039ee24e56",
+      "headroom_mib": 1024,
+      "max_workspaces": 2,
+      "memory_budget_mib": 15360,
+      "node": "k3s-wk-gpu2",
+      "node_uid": "3336cdd5-d245-436e-b57c-2f66c6dcaa41",
+      "total_memory_mib": 40960
+    },
+    "policy_hash": "sha256:4f1dff1a92aba5cd7376dfb897612b7e6f2e6f15a09515dbdf29efa4c522359d",
+    "policy_version": "0.1.1",
+    "profile_caps": {
+      "interactive-shared-10": 10240,
+      "interactive-shared-5": 5120
+    },
+    "uvm_sha256": "b2ae67722e9e21a70c319aeed2184f5b2d1f23b8e32dea00816cfd5cd2c3ee61",
+    "version": 2,
+    "workload_image": "ghcr.io/mul-cps/cps-jupyter-notebook:qualification-native-group-980408a@sha256:9167861058c1364c58d1c2fca0d6f536c3ffb53a33800dcdb9a1560f14ca4dc0"
+  },
+  "evidence_sha256": "sha256:f768dbfc1d444b806da692a0a23473ba46d8388b88b1fa731dd4c8e959840c11",
+  "gateImage": "ghcr.io/mul-cps/cps-compute@sha256:bc5b128f582641eae8395e1121d1fb248eddc39a56c9e863b7c564badd94b167",
+  "node_pool": {
+    "boot_id": "209f8bc9-a478-48e4-925a-6e07ffa56f7a",
+    "driver_generation": "b10498fc-9153-4394-875a-ea7cfb498625",
+    "free_memory_mib": 40470,
+    "gpu_uuid": "GPU-16128952-b438-556a-00bb-93039ee24e56",
+    "headroom_mib": 1024,
+    "max_workspaces": 2,
+    "memory_budget_mib": 15360,
+    "node": "k3s-wk-gpu2",
+    "node_uid": "3336cdd5-d245-436e-b57c-2f66c6dcaa41",
+    "total_memory_mib": 40960
+  },
+  "policy_hash": "sha256:4f1dff1a92aba5cd7376dfb897612b7e6f2e6f15a09515dbdf29efa4c522359d",
+  "workloadImage": "ghcr.io/mul-cps/cps-jupyter-notebook:qualification-native-group-980408a@sha256:9167861058c1364c58d1c2fca0d6f536c3ffb53a33800dcdb9a1560f14ca4dc0",
+  "workspaces": {
+    "cit:native-group-a": {
+      "ceiling": {
+        "cpu": "4",
+        "gpuMemoryGiB": 10,
+        "memory": "16Gi"
+      },
+      "course_id": "native-gpu-pilot-20261009",
+      "group_id": "native-pilot-group-a",
+      "members": [
+        "386feebb-df1a-4f3c-9ef9-6d9c026d5aea",
+        "d1fb4e43-64ec-4ac5-914f-e9cd39ad1c62"
+      ],
+      "namespace": "cit-jhub",
+      "owner": "citnativegroupa",
+      "pod": "jupyter-citnativegroupa--rtc",
+      "principal": "workspace:cit:native-group-a",
+      "profiles": [
+        "interactive-shared-10"
+      ],
+      "server": "rtc",
+      "storage": {
+        "group_hash": "0f44210436beb2ced30aca63ba08db3b15716a197318bd6e58edb2ef29da21d0",
+        "namespace": "cit-jhub",
+        "path": "/mnt/persistent1/cps_persistent1_shared/compute/cit/0f44210436beb2ced30aca63ba08db3b15716a197318bd6e58edb2ef29da21d0",
+        "pv": "cps-workspace-0f44210436beb2ced30aca63ba08db3b15716a19",
+        "pvc": "cps-workspace-0f44210436beb2ced30aca63ba08db3b15716a19",
+        "readonly_mounts": [],
+        "storage_version": 1
+      },
+      "term_id": "qualification-20261009"
+    },
+    "cps:native-group-b": {
+      "ceiling": {
+        "cpu": "4",
+        "gpuMemoryGiB": 5,
+        "memory": "16Gi"
+      },
+      "course_id": "native-gpu-pilot-20261009",
+      "group_id": "native-pilot-group-b",
+      "members": [
+        "3237c91b-cef3-4f6f-960e-875b9e93c4be",
+        "8edde4a2-257c-42d7-9732-13f1e8742a33"
+      ],
+      "namespace": "jupyterhub",
+      "owner": "cpsnativegroupb",
+      "pod": "jupyter-cpsnativegroupb--rtc",
+      "principal": "workspace:cps:native-group-b",
+      "profiles": [
+        "interactive-shared-5"
+      ],
+      "server": "rtc",
+      "storage": {
+        "group_hash": "5a94b49f1401f012873ef7643e0d9cbc72380dbef1515e2cb74a84d6e2f0d183",
+        "namespace": "jupyterhub",
+        "path": "/mnt/persistent1/cps_persistent1_shared/compute/cps/5a94b49f1401f012873ef7643e0d9cbc72380dbef1515e2cb74a84d6e2f0d183",
+        "pv": "cps-workspace-5a94b49f1401f012873ef7643e0d9cbc72380dbe",
+        "pvc": "cps-workspace-5a94b49f1401f012873ef7643e0d9cbc72380dbe",
+        "readonly_mounts": [],
+        "storage_version": 1
+      },
+      "term_id": "qualification-20261009"
+    }
+  }
+}
