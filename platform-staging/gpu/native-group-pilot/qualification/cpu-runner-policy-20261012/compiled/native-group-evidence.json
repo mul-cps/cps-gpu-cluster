@@ -1,0 +1,53 @@
+{
+  "capacity_evidence_sha256": "sha256:ebfcab70ef8f4575338278152e6539a8c6c7e60bdfae52a40e23c8db845c102f",
+  "core_sha256": "4fdcafcdf7f57b9de81f56e8e17db06a91e27680c6a711f3888fd0b76da46421",
+  "gate_image": "ghcr.io/mul-cps/cps-compute@sha256:bc5b128f582641eae8395e1121d1fb248eddc39a56c9e863b7c564badd94b167",
+  "gates": {
+    "aggregate": {
+      "evidence_sha256": "sha256:c167b366fd2f5188de7d1c2c05dbe7ce2642cfbf24cbd20f975d395389a6bde2",
+      "passed": true
+    },
+    "cap-assignment": {
+      "evidence_sha256": "sha256:528de693f6cb79d5fca2deb40b68500f64e622e5135a667b468243a70c7118b9",
+      "passed": true
+    },
+    "memory-import": {
+      "evidence_sha256": "sha256:e4e54bc75545c5fa215792e8a34b847f120a0c5b26514232a9b05328acc17c07",
+      "passed": true
+    },
+    "mps": {
+      "evidence_sha256": "sha256:057f5974107f038f7d746ad7fd65481331ee3ee5086f9bdd5cf968e27f613a94",
+      "passed": true
+    },
+    "oom-peer": {
+      "evidence_sha256": "sha256:ee766f1353b6d79ba503b532bf320600df30f01e3e5791ab31677431e8da2af4",
+      "passed": true
+    },
+    "restart-cleanup": {
+      "evidence_sha256": "sha256:4873201c95d0030a36ab3940e7ab92a8482866eec5778c36e968aa9588ab9643",
+      "passed": true
+    }
+  },
+  "health_sha256": "52fdbdae3d5e2f66fd4653d94ef5a62f734e185fabec30450f4a1b70cfee7d67",
+  "node_pool": {
+    "boot_id": "209f8bc9-a478-48e4-925a-6e07ffa56f7a",
+    "driver_generation": "b10498fc-9153-4394-875a-ea7cfb498625",
+    "free_memory_mib": 40470,
+    "gpu_uuid": "GPU-16128952-b438-556a-00bb-93039ee24e56",
+    "headroom_mib": 1024,
+    "max_workspaces": 2,
+    "memory_budget_mib": 15360,
+    "node": "k3s-wk-gpu2",
+    "node_uid": "3336cdd5-d245-436e-b57c-2f66c6dcaa41",
+    "total_memory_mib": 40960
+  },
+  "policy_hash": "sha256:d48f6553ed036c2e7adcc97417623fe0308be93ad13b20f246047ada118511b0",
+  "policy_version": "0.1.2",
+  "profile_caps": {
+    "interactive-shared-10": 10240,
+    "interactive-shared-5": 5120
+  },
+  "uvm_sha256": "b2ae67722e9e21a70c319aeed2184f5b2d1f23b8e32dea00816cfd5cd2c3ee61",
+  "version": 2,
+  "workload_image": "ghcr.io/mul-cps/cps-jupyter-notebook:qualification-native-group-980408a@sha256:9167861058c1364c58d1c2fca0d6f536c3ffb53a33800dcdb9a1560f14ca4dc0"
+}

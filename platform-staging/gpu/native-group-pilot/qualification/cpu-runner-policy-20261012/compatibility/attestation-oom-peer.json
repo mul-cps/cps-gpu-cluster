@@ -1,0 +1,16 @@
+{
+  "cpu_local_receipt_sha256": "cb62be5dcebcbf0ec9d1e6f6416a38448430ec659b419f54819c51a4d0fec4bb",
+  "full_fleet_qualified": false,
+  "gate": "oom-peer",
+  "hardware_test_performed": false,
+  "original_policy_hash": "sha256:4f1dff1a92aba5cd7376dfb897612b7e6f2e6f15a09515dbdf29efa4c522359d",
+  "original_policy_version": "0.1.1",
+  "original_report_sha256": "9169e83b329378db59db4ac46cdaf794d354fabc48c05b9f0c5ad98df6429ceb",
+  "passed": true,
+  "policy_hash": "sha256:d48f6553ed036c2e7adcc97417623fe0308be93ad13b20f246047ada118511b0",
+  "policy_version": "0.1.2",
+  "production_qualified": false,
+  "qualification_kind": "cpu-runner-policy-compatibility",
+  "qualified_scope": "existing-cps-5-cit-10-only",
+  "review_basis": "Only batch-cpu image approval and policy version metadata change; GPU resources, workload/gate images, driver pins, pool, members and storage are unchanged."
+}

@@ -1,0 +1,16 @@
+{
+  "activationPerformed": false,
+  "apiVersion": "compute.cps.unileoben.ac.at/v1alpha1",
+  "changed_keys": [
+    "approved-images"
+  ],
+  "current_data_sha256": "f575d285997623ef67a1e9be3e04fe494d481762c8f5c2a1929db05a33009a34",
+  "executor_unchanged": true,
+  "kind": "ComputeAdmissionPolicy",
+  "name": "cps-admission-policy",
+  "namespace": "cps-compute",
+  "parameterNotFoundAction": "Deny",
+  "policy_hash_binding_required_by_image_validation": false,
+  "server_dry_run_required": true,
+  "source": "platform-staging/admission.yaml:103"
+}
