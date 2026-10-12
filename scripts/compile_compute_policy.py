@@ -9,6 +9,7 @@ from pathlib import Path
 import re
 import stat
 import sys
+from uuid import UUID
 
 ROOT = Path(__file__).resolve().parents[1]
 NATIVE_GROUP_PROFILE = 'interactive-shared-5'
@@ -51,19 +52,53 @@ def validate_native_group_evidence(evidence, policy_hash, policy_version, artifa
     """
     fields = {'version','policy_hash','policy_version','node_pool','core_sha256','uvm_sha256',
               'health_sha256','gate_image','workload_image','gates'}
+    version = evidence.get('version') if type(evidence) is dict else None
+    if type(version) is int and version == 2:
+        fields |= {'profile_caps', 'capacity_evidence_sha256'}
     _native_require(type(evidence) is dict and set(evidence) == fields, 'exact deployment evidence fields required')
-    _native_require(type(evidence['version']) is int and evidence['version'] == 1
+    _native_require(type(version) is int and version in (1, 2)
         and evidence['policy_hash'] == policy_hash and evidence['policy_version'] == policy_version,
         'exact target policy/version required')
-    _native_require(type(evidence['node_pool']) is dict and evidence['node_pool'] == NATIVE_GROUP_POOL
-        and type(evidence['node_pool']['max_workspaces']) is int, 'exact bounded selected pool required')
+    if version == 1:
+        _native_require(type(evidence['node_pool']) is dict and evidence['node_pool'] == NATIVE_GROUP_POOL
+            and type(evidence['node_pool']['max_workspaces']) is int, 'exact bounded selected pool required')
+        caps = {NATIVE_GROUP_PROFILE: 5120}
+    else:
+        pool = evidence['node_pool']
+        pool_fields = set(NATIVE_GROUP_POOL) | {'total_memory_mib', 'free_memory_mib',
+            'headroom_mib', 'memory_budget_mib', 'boot_id', 'driver_generation'}
+        _native_require(type(pool) is dict and set(pool) == pool_fields
+            and all(pool[k] == NATIVE_GROUP_POOL[k] for k in ('node', 'node_uid', 'gpu_uuid')),
+            'exact measured selected pool required')
+        _native_require(all(type(pool[k]) is int for k in ('max_workspaces', 'total_memory_mib',
+            'free_memory_mib', 'headroom_mib', 'memory_budget_mib'))
+            and 1 <= pool['max_workspaces'] <= 32 and 0 < pool['total_memory_mib'] <= 40960
+            and 0 < pool['free_memory_mib'] <= pool['total_memory_mib'] and pool['headroom_mib'] >= 1024
+            and 0 < pool['memory_budget_mib'] <= pool['free_memory_mib'] - pool['headroom_mib'],
+            'memory budget must fit measured free memory minus headroom')
+        for key in ('boot_id', 'driver_generation'):
+            try:
+                identity = UUID(pool[key])
+                _native_require(str(identity) == pool[key] and identity.int != 0, 'exact measured epoch required')
+            except (ValueError, TypeError, AttributeError):
+                raise ValueError('native group qualification: exact measured epoch required') from None
+        caps = evidence['profile_caps']
+        expected = {f'interactive-shared-{size}': size * 1024 for size in (5, 10, 20)}
+        _native_require(type(caps) is dict and 1 <= len(caps) <= 3
+            and all(k in expected and type(v) is int and v == expected[k]
+                and v <= pool['memory_budget_mib'] for k, v in caps.items()),
+            'exact measured 5/10/20 GiB profile caps required')
     _native_require(all(evidence[k] == v for k,v in NATIVE_GROUP_PINS.items())
         and evidence['workload_image'] == NATIVE_GROUP_WORKLOAD
         and evidence['gate_image'] == NATIVE_GROUP_GATE, 'exact tested native driver/image pins required')
     gates = evidence['gates']
     _native_require(type(gates) is dict and set(gates) == NATIVE_GROUP_GATES
-        and type(artifacts) is dict and set(artifacts) == NATIVE_GROUP_GATES, 'all six gate records and artifact paths required')
-    for gate, entry in gates.items():
+        and type(artifacts) is dict and set(artifacts) == NATIVE_GROUP_GATES | ({'capacity'} if version == 2 else set()),
+        'all acceptance records and artifact paths required')
+    receipts = dict(gates)
+    if version == 2:
+        receipts['capacity'] = {'passed': True, 'evidence_sha256': evidence['capacity_evidence_sha256']}
+    for gate, entry in receipts.items():
         _native_require(type(entry) is dict and set(entry) == {'passed','evidence_sha256'}
             and entry['passed'] is True and isinstance(entry['evidence_sha256'],str)
             and re.fullmatch(r'sha256:[a-f0-9]{64}',entry['evidence_sha256'])
@@ -85,12 +120,13 @@ def validate_native_group_evidence(evidence, policy_hash, policy_version, artifa
         _native_require(type(report) is dict and report.get('gate') == gate and report.get('passed') is True
             and report.get('policy_hash') == policy_hash and report.get('policy_version') == policy_version,
             'gate report must bind the exact qualified target policy/version')
+    return caps
 
 
-def _native_group_profile(profile, version):
-    expected_gpu = {'mode':'shared','nominalMemoryGiB':5,'qualification':{
+def _native_group_profile(profile, version, cap_mib=5120, proof_version=1):
+    expected_gpu = {'mode':'shared','nominalMemoryGiB':cap_mib // 1024,'qualification':{
         'mechanism':'r615-native-cgroup-managed-deny','status':'qualified-group',
-        'policyVersion':version,'evidence':['native-groups-v1']}}
+        'policyVersion':version,'evidence':[f'native-groups-v{proof_version}']}}
     return (type(profile.get('enabled')) is bool and profile['enabled'] is True
         and profile.get('kind') == profile.get('queue') == 'interactive'
         and profile.get('cpu') == '4' and profile.get('memory') == '16Gi'
@@ -145,11 +181,13 @@ def validate_evidence(evidence, policy_hash):
 
 def compile_catalog(catalog, *, native_group_evidence=None, native_group_artifacts=None):
     native = native_group_evidence is not None or native_group_artifacts is not None
+    native_caps = {}
     if native:
-        _native_require(_native_group_profile(catalog.get('profiles',{}).get(NATIVE_GROUP_PROFILE,{}),catalog.get('version')),
-            'only the exact canonical qualified interactive-shared-5 profile is supported')
-        validate_native_group_evidence(native_group_evidence,
+        native_caps = validate_native_group_evidence(native_group_evidence,
             'sha256:'+hashlib.sha256(canonical(catalog)).hexdigest(), catalog.get('version'), native_group_artifacts)
+        for name, cap_mib in native_caps.items():
+            _native_require(_native_group_profile(catalog.get('profiles',{}).get(name,{}), catalog.get('version'),
+                cap_mib, native_group_evidence['version']), 'exact qualified profile contract required: ' + name)
     if catalog.get('schemaVersion') != 1 or not re.fullmatch(r'\d+\.\d+\.\d+', catalog.get('version', '')):
         raise ValueError('unsupported schema or invalid policy version')
     if catalog['priorities'] != {'exam':90,'lecture':80,'ta':70,'research':60,'project':50,'homework':40,'batch':10,'ci':5}:
@@ -184,7 +222,7 @@ def compile_catalog(catalog, *, native_group_evidence=None, native_group_artifac
         gpu = profile['gpu']
         if gpu['mode'] not in ['none','shared','exclusive']:
             raise ValueError(f'{name}: invalid GPU mode')
-        selected_native = native and name == NATIVE_GROUP_PROFILE
+        selected_native = name in native_caps
         if gpu['mode'] == 'shared' and not selected_native and (gpu['nominalMemoryGiB'] not in [5,10,20] or gpu.get('fraction') != str(gpu['nominalMemoryGiB']/catalog['gpuQualification']['nominalDeviceMemoryGiB'])):
             raise ValueError(f'{name}: invalid nominal GPU profile')
         if gpu['mode'] == 'exclusive' and gpu['count'] not in [1,2,4,8]:

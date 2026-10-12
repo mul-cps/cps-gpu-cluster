@@ -36,6 +36,9 @@ class ReleaseCandidateTests(unittest.TestCase):
         self.repository = Path(self.tmp.name) / 'repository'
         self.private.mkdir(); self.repository.mkdir()
         self.inventory = json.loads((ROOT / 'platform-staging/releases/qualification-20261009.json').read_text())
+        # These synthetic artifacts exercise the current verifier/compiler;
+        # the historical qualification inventory itself remains untouched.
+        self.inventory['compilerSha256'] = sha((ROOT / 'scripts/compile_compute_policy.py').read_bytes())
         spec = importlib.util.spec_from_file_location('native_fixture', ROOT / 'tests/compute_policy/test_native_group.py')
         native = importlib.util.module_from_spec(spec); spec.loader.exec_module(native)
         catalog, proof, self.gate_paths = native.NativeGroupTests().fixture(self.private)
