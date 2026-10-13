@@ -266,6 +266,93 @@ class Delivery:
             driver_epoch=epoch,now=self.now(),ttl_seconds=self.config['ttlSeconds'])
         return proof, records, documents
 
+    def _resume_process_permissions(self, state, path):
+        """Repair installed rollout GETs; neither epoch nor readiness authority.
+
+        A new node publisher needs its own exact Pod GET before it can publish
+        the acknowledgment required by the independent epoch observer. Only a
+        fully installed, durable transition may break that bootstrap cycle.
+        """
+        transition = state['transition']
+        r.require(isinstance(transition, dict) and transition.get('publication') is not None
+            and transition.get('document_access') is not None
+            and all(isinstance(transition.get(key), dict) and set(transition[key])==set(r.COMPONENTS)
+                and all(isinstance(bound,dict) for bound in transition[key].values())
+                for key in ('documents','references','bootstraps')),
+            'Complete durable installed transition required for permission bootstrap')
+        publication, prior = transition['publication'], transition['prior']
+        r.require(prior==state['publication'], 'Retained installed prior publication required')
+        r._revision_access_scope(publication, prior)
+        guards = state.get('role_guards')
+        r.require(isinstance(guards, dict) and set(guards)==set(transition['roles'])
+            and all(guards[key]=={'uid':role['metadata']['uid'], 'rules':role['rules']}
+                for key,role in transition['roles'].items()), 'Original complete Role custody required')
+        old_names = r._revision_process_names(prior, **transition['old_records'], permission_bootstrap=True)
+        document_access = r._revision_role_patches(publication, r._access_rows(prior,old_names),
+            r._access_rows(publication,old_names), transition['roles'])
+        r.require(transition['document_access']['patches']==document_access['patches'],
+            'Exact retained document permission stage required')
+        # Bound lookups cannot create anything: absence/replacement is fatal.
+        for key in ('documents','references','bootstraps'):
+            for bound in transition[key].values():
+                r.object_guard(bound,'ConfigMap')
+        for row in state['baselines'].values():
+            for key in ('previous_document','previous_reference'):
+                r.require(isinstance(row.get(key),dict), 'Prior immutable ConfigMap binding required')
+                r.object_guard(row[key],'ConfigMap')
+                self._ensure(row[key],row[key])
+        for component in r.COMPONENTS:
+            bootstrap = transition['bootstraps'][component]
+            r.require(bootstrap['data']==prior['bootstrap_maps'][component]['data']
+                and all(bootstrap['metadata'].get(key)==prior['bootstrap_maps'][component]['metadata'].get(key)
+                    for key in ('namespace','name')), 'Retained publisher bootstrap required')
+            self._ensure(bootstrap,bootstrap)
+            document = self._ensure(publication['documents'][component],transition['documents'][component])
+            r.require(all(document['metadata'].get(key)==publication['references'][component].get(key)
+                    for key in ('namespace','name','uid'))
+                and publication['reference_maps'][component]['data']==
+                    {'reference.json':r.canonical(publication['references'][component])},
+                'Exact bound document and immutable reference linkage required')
+            self._ensure(publication['reference_maps'][component],transition['references'][component])
+        # Structural verification includes all four full Deployment specs,
+        # owner chains, approved Pod templates and exact projected inputs.
+        records = self.api.processes(publication)
+        names = r._revision_process_names(publication, **records, permission_bootstrap=True)
+        roles = self._roles(publication,guards)
+        if transition['process_access'] is None:
+            transition['process_access'] = {**r._revision_role_patches(publication,
+                r._access_rows(publication,old_names),r._access_rows(publication,names),roles),
+                'actual_process_names':names}
+            save(path,state)
+        intent = transition['process_access']
+        targets = {obj['metadata']['namespace']+'/'+obj['metadata']['name']:obj['rules']
+            for obj in r._access_rows(publication,intent['actual_process_names']) if obj['kind']=='Role'}
+        initial = {key:patch[-1]['value'] for key,patch in document_access['patches'].items()}
+        r.require(set(intent['patches'])==set(targets)==set(guards), 'Complete named permission stage required')
+        for key,patch in intent['patches'].items():
+            r.require(patch[0]['value']==guards[key]['uid'] and patch[-1]['value']==targets[key],
+                'Retained Role identity and exact structural GET targets required')
+            # Even a resumed partial stage may change only singleton Pod/RS
+            # GET names. Every other full rule remains the installed target.
+            for rules in (patch[2]['value'],patch[-1]['value']):
+                r.require(len(rules)==len(initial[key]), 'Complete installed Role rules required')
+                for rule,wanted in zip(rules,initial[key]):
+                    if wanted['resources'] in (['pods'],['replicasets']):
+                        r.require({k:v for k,v in rule.items() if k!='resourceNames'}==
+                            {k:v for k,v in wanted.items() if k!='resourceNames'}
+                            and isinstance(rule.get('resourceNames'),list) and len(rule['resourceNames'])==1
+                            and isinstance(rule['resourceNames'][0],str) and rule['resourceNames'][0],
+                            'Only singleton current process GET names may change')
+                    else:
+                        r.require(rule==wanted, 'Non-process permissions must remain exact')
+        self._apply_roles(intent)
+        if names != intent['actual_process_names']:
+            intent = {**r._revision_role_patches(publication,
+                r._access_rows(publication,intent['actual_process_names']),r._access_rows(publication,names),
+                self._roles(publication,guards)), 'actual_process_names':names}
+            transition['process_access']=intent; save(path,state); self._apply_roles(intent)
+        return {'phase':'processes','ready':False,'revision':publication['revision']}
+
     def tick(self):
         private_directory(self.directory)
         fd = os.open(self.directory/'lock',os.O_CREAT|os.O_RDWR|os.O_NOFOLLOW,0o600)
@@ -284,7 +371,13 @@ class Delivery:
         r.require(isinstance(source,dict) and set(source)=={'version','source_raw','source_sha256',
             'trusted_revision','captured_at'} and type(source['version']) is int and source['version']==1,
             'Closed trusted server capture required')
-        epoch = r.DriverEpoch(**self.epoch_reader())
+        try:
+            observed_epoch = self.epoch_reader()
+        except (RuntimeError,ValueError,Pending,subprocess.TimeoutExpired):
+            if state.get('transition') is not None:
+                return self._resume_process_permissions(state,path)
+            raise
+        epoch = r.DriverEpoch(**observed_epoch)
         pool = self.qualification._config()['node_pool']
         r.require(epoch.__dict__=={k:pool[k] for k in ('node_uid','boot_id','driver_generation','gpu_uuid')},
             'Fresh qualified driver epoch observation required')

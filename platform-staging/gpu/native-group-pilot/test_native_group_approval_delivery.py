@@ -134,9 +134,112 @@ class DeliveryTests(unittest.TestCase):
         self.temp = tempfile.TemporaryDirectory(); self.addCleanup(self.temp.cleanup)
         self.path = Path(self.temp.name) / 'delivery'
 
-    def controller(self):
+    def controller(self, epoch_reader=None):
         return d.Delivery(self.config, self.path, self.api, lambda:copy.deepcopy(self.capture), lambda:NOW,
-            epoch_reader=lambda:self.epoch)
+            epoch_reader=epoch_reader or (lambda:self.epoch))
+
+    @staticmethod
+    def unavailable_epoch():
+        raise RuntimeError('Current node acknowledgment unavailable during rollout')
+
+    def pending_transition(self):
+        self.assertEqual(self.controller().tick()['phase'], 'processes')
+        state = r.parse((self.path/'state.json').read_bytes())
+        self.api.launch(state['transition']['publication'], pending=True, acknowledge=False)
+        return state
+
+    def test_epoch_unavailable_installed_transition_repairs_only_named_process_gets(self):
+        state = self.pending_transition(); publication = state['transition']['publication']
+        before = copy.deepcopy(self.api.objects); count = len(self.api.mutations)
+        result = self.controller(self.unavailable_epoch).tick()
+        self.assertEqual(result, {'phase':'processes', 'ready':False, 'revision':publication['revision']})
+        self.assertEqual(len(self.api.mutations), count + 7)
+        self.assertTrue(all(kind == 'Role' for kind, _, _ in self.api.mutations[count:]))
+        for key, old in before.items():
+            actual = self.api.objects[key]
+            if key[0] != 'Role':
+                self.assertEqual(actual, old)
+                continue
+            self.assertEqual(actual['metadata']['uid'], old['metadata']['uid'])
+            for previous, target in zip(old['rules'], actual['rules']):
+                if previous['resources'] in (['pods'], ['replicasets']):
+                    self.assertEqual({k:v for k,v in previous.items() if k!='resourceNames'},
+                        {k:v for k,v in target.items() if k!='resourceNames'})
+                    self.assertEqual(target['verbs'], ['get'])
+                    self.assertEqual(len(target['resourceNames']), 1)
+                    self.assertTrue(target['resourceNames'][0].startswith('new-'))
+                else:
+                    self.assertEqual(target, previous)
+        # No epoch or readiness is synthesized, even after permission repair.
+        self.assertFalse(self.controller(self.unavailable_epoch).tick()['ready'])
+        self.assertEqual(len(self.api.mutations), count + 7)
+        self.api.launch(publication)
+        self.assertFalse(self.controller(self.unavailable_epoch).tick()['ready'])
+        self.assertTrue(self.controller().tick()['ready'])
+
+    def test_observed_foreign_epoch_cannot_enter_permission_repair(self):
+        self.pending_transition(); count = len(self.api.mutations)
+        with self.assertRaisesRegex(ValueError, 'Fresh qualified driver epoch'):
+            self.controller(lambda:{**self.epoch, 'boot_id':uid(9913)}).tick()
+        self.assertEqual(len(self.api.mutations), count)
+
+    def test_epoch_unavailable_permission_repair_resumes_partial_role_delivery(self):
+        self.pending_transition(); count = len(self.api.mutations)
+        self.api.crash_at = count + 3
+        with self.assertRaisesRegex(RuntimeError, 'injected crash'):
+            self.controller(self.unavailable_epoch).tick()
+        self.api.crash_at = None
+        self.assertFalse(self.controller(self.unavailable_epoch).tick()['ready'])
+        self.assertEqual(len(self.api.mutations), count + 7)
+
+    def test_epoch_unavailable_repair_cannot_plan_newer_source_or_rewrite_other_objects(self):
+        state = self.pending_transition(); installed = state['transition']['publication']
+        registry = r.parse(self.capture['source_raw']); registry['generation'] += 1
+        raw = r.canonical(registry)
+        self.capture.update(source_raw=raw, source_sha256='sha256:'+hashlib.sha256(raw.encode()).hexdigest(),
+            trusted_revision=r.canonical_sha256(registry))
+        result = self.controller(self.unavailable_epoch).tick()
+        self.assertEqual(result['revision'], installed['revision']); self.assertFalse(result['ready'])
+        retained = r.parse((self.path/'state.json').read_bytes())
+        self.assertEqual(retained['transition']['publication'], installed)
+        self.assertEqual(retained['publication'], state['publication'])
+        self.assertIsNotNone(retained['transition'])
+
+    def test_epoch_unavailable_repair_denies_incomplete_stage_or_any_guard_drift(self):
+        for mutation in ('publication', 'document_access', 'documents', 'references', 'deployment',
+                         'document_uid', 'reference_uid', 'bootstrap_uid', 'role_uid', 'role_rules',
+                         'document_unbound', 'reference_unbound', 'pod_template', 'pod_owner'):
+            with self.subTest(mutation=mutation), tempfile.TemporaryDirectory() as temp:
+                self.path = Path(temp)/'delivery'; self.api = MemoryAPI(self.fixture)
+                state = self.pending_transition(); transition = state['transition']
+                if mutation in ('publication', 'document_access'):
+                    transition[mutation] = None
+                elif mutation in ('documents', 'references'):
+                    transition[mutation].pop('node')
+                elif mutation.endswith('_unbound'):
+                    transition[{'document_unbound':'documents', 'reference_unbound':'references'}[mutation]]['node'] = None
+                elif mutation == 'deployment':
+                    obj = transition['baselines']['node']['deployment']; self.api.put(obj)
+                elif mutation.endswith('_uid'):
+                    if mutation == 'role_uid':
+                        obj = next(v for v in self.api.objects.values() if v['kind']=='Role')
+                    else:
+                        field = {'document_uid':'documents', 'reference_uid':'references',
+                            'bootstrap_uid':'bootstraps'}[mutation]
+                        meta = transition[field]['node']['metadata']
+                        obj = self.api.objects['ConfigMap', meta['namespace'], meta['name']]
+                    obj['metadata']['uid'] = uid(9911)
+                elif mutation == 'role_rules':
+                    obj = next(v for v in self.api.objects.values() if v['kind']=='Role')
+                    obj['rules'].append({'apiGroups':[''], 'resources':['secrets'], 'verbs':['get']})
+                elif mutation == 'pod_template':
+                    self.api.current['pods']['node']['spec']['containers'][0]['command'] = ['/foreign']
+                else:
+                    self.api.current['pods']['node']['metadata']['ownerReferences'][0]['uid'] = uid(9912)
+                d.save(self.path/'state.json', state); count = len(self.api.mutations)
+                with self.assertRaises((RuntimeError, ValueError, d.Pending)):
+                    self.controller(self.unavailable_epoch).tick()
+                self.assertEqual(len(self.api.mutations), count)
 
     def test_rollover_waits_for_actual_new_processes_and_fresh_all_four_acks(self):
         result = self.controller().tick()
