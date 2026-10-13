@@ -4,6 +4,8 @@ import importlib.util
 from pathlib import Path
 import unittest
 import tempfile
+import os
+import stat
 from datetime import datetime, timedelta, timezone
 
 BASELINE = Path('/home/bjoern/.local/state/cps-full-project-20261013/normal-source-gpu-acceptance.py')
@@ -40,6 +42,65 @@ class AdmissionTests(unittest.TestCase):
 
 
 class LifecycleTests(unittest.TestCase):
+    def test_historical_fsgroup_widened_parent_is_untouched_and_not_reused(self):
+        module = pair.load_baseline(BASELINE.read_text(), 'native-group-a', None)
+        run_id = 'eba90970-c120-450b-a6de-7afe764238a1'
+        with tempfile.TemporaryDirectory() as td:
+            root = Path(td)
+            old = root/'normal-source-gpu-acceptance'
+            old.mkdir(mode=0o700); old.chmod(0o2770)
+            before = old.stat()
+            try:
+                created = module.evidence_directory(run_id, data_root=root)
+                failure = None
+            except module.AcceptanceFailure as error:
+                failure = str(error)
+            self.assertIsNone(failure, 'pair must use its own fresh private parent')
+            self.assertEqual(created.parent.name, 'normal-source-gpu-acceptance-' + run_id)
+            self.assertEqual(old.stat().st_ino, before.st_ino)
+            self.assertEqual(stat.S_IMODE(old.stat().st_mode), 0o2770)
+
+    def test_new_run_parent_strips_only_its_own_inherited_setgid(self):
+        module = pair.load_baseline(BASELINE.read_text(), 'native-group-a', None)
+        run_id = 'eba90970-c120-450b-a6de-7afe764238a1'
+        with tempfile.TemporaryDirectory() as td:
+            root = Path(td); root.chmod(0o2770)
+            created = module.evidence_directory(run_id, data_root=root)
+            self.assertEqual(stat.S_IMODE(root.stat().st_mode), 0o2770)
+            self.assertEqual(created.parent.name, 'normal-source-gpu-acceptance-' + run_id)
+            self.assertEqual(stat.S_IMODE(created.parent.stat().st_mode), 0o700)
+            self.assertEqual(stat.S_IMODE(created.stat().st_mode), 0o700)
+
+    def test_preexisting_widened_run_parent_is_refused_not_repaired(self):
+        module = pair.load_baseline(BASELINE.read_text(), 'native-group-a', None)
+        run_id = 'eba90970-c120-450b-a6de-7afe764238a1'
+        with tempfile.TemporaryDirectory() as td:
+            root = Path(td); parent = root/('normal-source-gpu-acceptance-' + run_id)
+            parent.mkdir(mode=0o700); parent.chmod(0o2770)
+            with self.assertRaisesRegex(module.AcceptanceFailure, 'private-evidence-directory-required'):
+                module.evidence_directory(run_id, data_root=root)
+            self.assertEqual(stat.S_IMODE(parent.stat().st_mode), 0o2770)
+
+    def test_run_parent_symlink_is_refused(self):
+        module = pair.load_baseline(BASELINE.read_text(), 'native-group-a', None)
+        run_id = 'eba90970-c120-450b-a6de-7afe764238a1'
+        with tempfile.TemporaryDirectory() as td:
+            root = Path(td); target = root/'elsewhere'; target.mkdir()
+            (root/('normal-source-gpu-acceptance-' + run_id)).symlink_to(target, target_is_directory=True)
+            with self.assertRaises(OSError):
+                module.evidence_directory(run_id, data_root=root)
+            self.assertEqual(list(target.iterdir()), [])
+
+    def test_early_guard_reason_is_diagnosed_without_public_unexpected_body(self):
+        self.assertTrue(callable(getattr(pair, 'failure_diagnostic', None)), 'early failures need a private diagnostic')
+        module = pair.load_baseline(BASELINE.read_text(), 'native-group-a', None)
+        result = pair.failure_diagnostic('native-group-a', module,
+            module.AcceptanceFailure('private-evidence-directory-required'))
+        self.assertEqual(result['failure_code'], 'private-evidence-directory-required')
+        unexpected = pair.failure_diagnostic('native-group-a', module, ValueError('sensitive-http-body'))
+        self.assertEqual(unexpected['failure_code'], 'unexpected-see-private-diagnostic')
+        self.assertIn('sensitive-http-body', unexpected['private_diagnostic'])
+
     def test_changed_original_source_cannot_be_adapted(self):
         with self.assertRaisesRegex(RuntimeError, 'baseline-source-changed'):
             pair.load_baseline(BASELINE.read_text() + '\n', 'native-group-a', None)

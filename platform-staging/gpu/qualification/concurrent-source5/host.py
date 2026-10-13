@@ -167,7 +167,8 @@ def main(args):
             try:item=json.loads(line)
             except ValueError:continue
             keys=('stage','run_id','private_directory','hold_seconds','ready','confirmed_shutdown','reservation_released',
-                  'restored_windows','restored_hub_group','lifecycle_passed','hardware_cap_qualified','both_ready','workspace_results')
+                  'restored_windows','restored_hub_group','lifecycle_passed','hardware_cap_qualified','both_ready','workspace_results',
+                  'failure_type','failure_code','workspace_failure_codes')
             print(json.dumps({k:item[k] for k in keys if k in item}),flush=True)
         result=process.wait()
     print(json.dumps({'returncode':result,'private_output':str(output),'private_errors':str(error)}));return result
