@@ -296,3 +296,48 @@ non-identifying receipt fingerprints are:
 
 This document records actual results and their limits. It creates no release tag,
 publication approval, production qualification assertion or deployment mutation.
+
+
+## Corrected GPU-status UI and matching pre-registry backups
+
+Both consoles subsequently completed guarded image-only rollouts to Source
+commit `55585c0de5631610bb840f138696b476ed1bbb6e`, image
+`ghcr.io/mul-cps/e2x-course-hub@sha256:e720c8af11d6a7c43958108221a3154c31753694afc5b524cb06a1ffe0badb14`.
+Actual Ready Pod imageIDs and complete applied Deployment specifications matched.
+Both SQLite databases remain at schema 7 with integrity `ok`, and automatic
+schema upgrades remain disabled. The package has 277 passing Python tests and
+57 passing UI tests. Actual gateway responses use a `sha256:`-prefixed policy
+hash; the corrected UI and backend validate that exact format.
+
+All **11** standalone CPS browser checks passed with zero page errors, blocked
+requests or writes. They exercised the actual app, separate approval/production
+status, Source-scoped GPU registry, permanent account status, approved 5 GiB
+grant/form choices, both existing workspace Start availability, planned Moodle
+and mobile viewport fit. The owning operator-issued user API token is not a
+human OAuth session. The two approved CPS workspaces are available; an absent
+broader qualification report remains explicitly unknown. Historical rollout
+receipts are preserved; the latest image overlay is paired with
+`platform-staging/jupyter-extensions-20261013/live-status-receipt.json`.
+
+Before the separately planned permanent Hub account-registry migration, fresh
+matching-client logical backup Jobs completed during **22:10:45Z–22:10:59Z**:
+
+| Owner | PostgreSQL | Job UID | Archive bytes | Archive SHA-256 |
+| --- | --- | --- | ---: | --- |
+| CPS | 15.17 (Debian 15.17-1.pgdg13+1) | `a0ff1669-b6d6-4795-a2df-8678937fd639` | 65,343 | `30cc26e0ff007128804b2cd52fdf6e9b413d122444f80da70f7330cd97478458` |
+| CIT | 18.4 | `fdc2bd79-0f76-40b2-8871-83d65607dc4b` | 167,018 | `b0ec27bb9f89354a5a5e37a29f82966ec71d1a9910a759619ac7fb98c0b3c23c` |
+
+Each exact-current CronJob clone used the same immutable image as its owning
+live database. Complete Job/Pod ownership, unchanged template/configuration/PVC,
+PGDMP signature, the legacy six-field manifest, remote/local/archive checksums
+and matching-image `pg_restore --list` passed. The selected bundle was the sole
+complete bundle in its actual Job window. Read-only exporters ran without
+ServiceAccount tokens; exact UID-precondition deletion and disappearance passed.
+Archives and full custody receipts remain private. These are matching logical
+migration backups, not a claim of coordinated restored production service,
+roles/ACL preservation, NFS/configuration capture or off-host durability.
+
+The reviewed permanent registry also passed 34 real Hub ORM tests against an
+isolated exact PostgreSQL **18.4** server, in addition to its PostgreSQL 15.17
+qualification. The registry/Source creation adapter remain published candidates
+until the separate configuration and migration rollout completes.

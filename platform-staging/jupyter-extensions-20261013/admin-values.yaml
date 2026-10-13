@@ -2,6 +2,6 @@
 # Never apply this file alone or promote unrelated chart changes.
 consoles:
   cps:
-    image: ghcr.io/mul-cps/e2x-course-hub@sha256:72cb8b044e8e091d038c8c8f4cf983c433629733847db879667c0c51bd2f7411
+    image: ghcr.io/mul-cps/e2x-course-hub@sha256:e720c8af11d6a7c43958108221a3154c31753694afc5b524cb06a1ffe0badb14
   cit:
-    image: ghcr.io/mul-cps/e2x-course-hub@sha256:72cb8b044e8e091d038c8c8f4cf983c433629733847db879667c0c51bd2f7411
+    image: ghcr.io/mul-cps/e2x-course-hub@sha256:e720c8af11d6a7c43958108221a3154c31753694afc5b524cb06a1ffe0badb14

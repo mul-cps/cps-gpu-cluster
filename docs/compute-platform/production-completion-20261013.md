@@ -25,8 +25,8 @@ for the bounded live results of 2026-10-13 and their retained evidence.
 | Gate | Verified state | Remaining completion evidence |
 | --- | --- | --- |
 | Repository ownership and shared policy | Separate application/deployment responsibilities and shared policy implemented; compatibility branches retained | Integrate and promote one tested consumer matrix with its exact policy hash; account for Fleet's watched branches |
-| SDK, Hub and Lab packages | Separate core/Hub/Lab package layout, noneditable installation and Lab/RTC bundle tests passed; reviewed Hub login-guard image published | Deploy the exact reviewed Hub package through a qualified handover; build and qualify all 12 notebook variants from the matched release source |
-| Both admin UI consoles | Actual CPS and CIT public `main.js` returned 200 with the exact packaged bytes; both databases migrated to schema 7 without changing any preexisting rows | CIT neutral-account adoption, actual user OAuth/API acceptance and current package/Hub compatibility |
+| SDK, Hub and Lab packages | Separate core/Hub/Lab packages and installed Lab/RTC tests passed; both Hubs now run the reviewed Hub package image with four fresh component acknowledgments | Activate the permanent account-registry configuration and Source adapter; build and qualify all 12 notebook variants from the matched release source |
+| Both admin UI consoles | Both consoles run the corrected packaged GPU-status UI; schema 7/integrity/full configuration readbacks pass; all 11 CPS live browser checks pass | CIT neutral-account adoption, actual human OAuth/API acceptance and permanent account-registry compatibility |
 | Identity and group ownership | Existing reviewed aliases retained; both CPS legacy neutral accounts have permanent ready provenance and exact live group/storage readbacks; schema upgrade disabled after migration | Complete the CIT adoption and Hub package cutover; real login grant survival/expiry and scoped administration; cross-Hub allowance continuity |
 | Native GPU isolation | Controlled no-MIG 5/20 GiB evidence retained; automatic revoke/approve and restart passed; normal Source-owned 5 GiB Start/Stop passed with an exact live driver cap and restored records | Pair/restart/import/MPS acceptance and broader packing; current bounded pool is 5/10 GiB, not a normal 20 GiB qualification |
 | Shared GPU reservations | Shared accounting implementation and reviewed qualification bindings exist | Actual simultaneous cross-Hub starts, all-member atomicity and partial-conflict rollback; prove permitted CPU sessions and independent batch execution; release only after confirmed stop |
@@ -44,28 +44,41 @@ for the bounded live results of 2026-10-13 and their retained evidence.
 
 ## Current rollout boundary
 
-The existing controlled automatic-delivery runtime has one replica and its
-original persistent journal. Independent strict readback at
+The earlier controlled automatic-delivery runtime's independent readback at
 **2026-10-13T20:37:45.163169Z** verified `ready=true` for Source revision
 `sha256:832e841b6e7b5885a80de27e8850e8e25087b7a26a08a8270f38869f10bf71ca`
 and genuine matching acknowledgments from gateway, CPS Hub, CIT Hub and node
-agent. Source mutation initially returns `ready=false`; current process
+agent. Both Hubs have since completed a guarded image handover to the reviewed
+package image `sha256:bc32b73d244738c3778560a1f48e701efd10f8c57ac4834f486b3f27a30d2623`,
+with unchanged policy, Source revision, GPU epoch and four fresh acknowledgments.
+The controller was restarted on a separate input Secret and journal PVC;
+the old immutable input and journal were preserved. The final independent
+new-journal readback is being completed and is a distinct acceptance gate.
+Source mutation initially returns `ready=false`; current process
 convergence is required before a Start. This result neither enables general GPU
 access nor qualifies the larger scheduling and lifecycle gates above.
 
 Both consoles are Ready on the final reviewed Source image
-`ghcr.io/mul-cps/e2x-course-hub@sha256:8b718d5e789f901b4be7a0b2c48afb875031dc350c1595c3d3f556dc9a8b64b7`.
+`ghcr.io/mul-cps/e2x-course-hub@sha256:e720c8af11d6a7c43958108221a3154c31753694afc5b524cb06a1ffe0badb14`.
+The live status API validates the gateway's `sha256:` policy-hash format. The
+actual desktop/mobile browser checks passed for approved-workspace status,
+owning-console profile choices, permanent account state and disabled Moodle,
+with zero page errors or writes. These operator-token checks are not human OAuth
+acceptance. The UI reports two approved CPS workspaces and their 5 GiB profile;
+it separately reports the unavailable broader production qualification record.
 Both reviewed CPS legacy account adoptions completed through the actual CLI.
 The live group/marker, non-admin, stopped-server and inactive-reservation
 readbacks passed, and an actual SQLite online backup verified two permanent
 `ready` accounts with identity-bound `reviewed_legacy_adoption` receipts. The
 remaining CIT legacy adoption is pending a real login refresh. One normal CPS
 5 GiB lifecycle passed with live driver readback, confirmed shutdown and exact
-restoration. The packaged Hub cutover remains a separate gate. The published
-packaged login guard permanently denies reviewed neutral
-identities independently of mutable grants. It is not yet the live Hub image.
-Generic Source-created accounts still lack the enforced permanent-registry
-publication/creation transaction; new account creation remains gated. Do not
+restoration. The reviewed Hub package is now installed in both live images;
+replacing the existing inline login guard with its released installer and
+activating the permanent registry remain separate configuration gates. The
+registry and Source creation adapter are published candidates and have passed
+real Hub ORM tests on both PostgreSQL 15.17 and CIT's 18.4. Fresh matching logical
+archives for both Hubs were verified before the planned migration. The registry
+transaction is not yet deployed; new account creation remains gated. Do not
 infer neutral identity from usernames, membership, email or transient discovery.
 
 The CIT administrator's upstream Dex session requires a real login refresh.
