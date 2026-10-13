@@ -124,6 +124,42 @@ def validate_request(value):
     require(approval.reference(value['approval_ref'])['namespace']==old.NAMESPACE,'Exact node approval reference required')
 
 
+def verify_cleaned_history(agent,kube,backend,state,models,journals):
+    """Read original completion custody; never initialize or repair state."""
+    store=object.__new__(agent.EnrollmentStore)
+    store.state,store.models,store.uid,store.backend=state,models,0,backend
+    for item in journals:
+        record=models.CapRecord.from_dict(old.parse(base64.b64decode(item['raw_base64'],validate=True)))
+        if record.state!='cleaned':continue
+        uid=record.intent.pod_uid
+        envelope=backend.private_read(state/'enrollments'/(uid+'.json'),0)
+        closed(envelope,('configmap_uid','configmap_name','authority_namespace','enrollment'),
+            'Original protected cleaned enrollment required')
+        body=envelope['enrollment']
+        require(isinstance(body,dict) and set(body) in (old.ENROLLMENT_KEYS,publisher.ENROLLMENT_KEYS)
+            and body['intent']==record.intent.to_dict()
+            and envelope['authority_namespace']==old.NAMESPACE
+            and old.valid_uuid(envelope['configmap_uid'])
+            and envelope['configmap_name']=='cps-native-enrollment-'+body['binding_id'][:40],
+            'Exact original cleaned enrollment identity required')
+        require(backend.private_read(state/'intents'/(uid+'.json'),0)==body['intent'],
+            'Original protected cleaned intent changed')
+        cm=kube.configmap(old.NAMESPACE,envelope['configmap_name'])
+        meta=cm.get('metadata',{}) if isinstance(cm,dict) else {}
+        require(isinstance(cm,dict) and cm.get('apiVersion')=='v1' and cm.get('kind')=='ConfigMap'
+            and cm.get('immutable') is True and not cm.get('binaryData')
+            and meta.get('namespace')==old.NAMESPACE and meta.get('name')==envelope['configmap_name']
+            and meta.get('uid')==envelope['configmap_uid'] and not meta.get('deletionTimestamp')
+            and not meta.get('ownerReferences') and meta.get('labels',{}).get(old.LABEL)==body['binding_id']
+            and set(cm.get('data',{}))=={'enrollment.json'}
+            and old.parse(cm['data']['enrollment.json'])==body,
+            'Original immutable cleaned enrollment changed on actual GET')
+        cleanup=kube.configmap(old.NAMESPACE,'cps-native-cleanup-'+body['binding_id'][:40])
+        require(store.cleanup_published(uid,envelope,record,cleanup),
+            'Original protected immutable cleaned completion required')
+    return True
+
+
 class HostProbe:
     def __init__(self,args,agent,request):
         self.args,self.agent,self.request=args,agent,request
@@ -169,6 +205,7 @@ class HostProbe:
             and old.parse(protected(self.state/'approval-references'/(target+'.json'),modes=(0o600,)))==expected_ref,
             'Original protected enrollment/intent/reference must precede terminal recovery')
         journals=capture_journals(self.state/'journal',target)
+        completed=verify_cleaned_history(self.agent,self.kube,self.adapter,self.state,self.modules['models'],journals)
         for folder in ('receipts','bootstrap'):
             directory(self.state/folder)
             require(not (self.state/folder/(target+'.json')).exists()
@@ -204,7 +241,7 @@ class HostProbe:
         proof=dict(node_epoch=asdict(epoch),journal_device=info.st_dev,journal_inode=info.st_ino,
             journal_protected=True,target_journal_absent=True,gate_receipts_absent=True,
             native_writers_quiesced=quiet,exclusive_lock=True,driver_healthy=True,approval_current=True,
-            approval_ref=self.ref,retired_history_sha256=old.sha256(journals),physical_rows_sha256=old.sha256(rows),
+            completed_history_verified=completed,approval_ref=self.ref,retired_history_sha256=old.sha256(journals),physical_rows_sha256=old.sha256(rows),
             global_gpu_memory_mib=int(fields[1]),global_gpu_clients=clients,
             global_compute_apps=len(apps.splitlines()) if apps else 0,pod_runtime_tasks=task_count)
         materials=dict(proof=proof,retired_journals=journals,physical_rows=rows)

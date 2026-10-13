@@ -20,7 +20,7 @@ import native_approval_revision as approval
 require,closed = old.require,old.closed
 ENROLLMENT_KEYS = old.ENROLLMENT_KEYS | {'approval_ref'}
 PROOF_BOOLEANS = ('journal_protected','target_journal_absent','gate_receipts_absent',
-    'native_writers_quiesced','exclusive_lock','driver_healthy','approval_current')
+    'native_writers_quiesced','exclusive_lock','driver_healthy','approval_current','completed_history_verified')
 
 
 def validate_proof(value,evidence):
@@ -58,12 +58,19 @@ def validate_history(evidence,models):
         require('sha256:'+hashlib.sha256(raw).hexdigest()==item['raw_sha256'],'Protected raw journal bytes changed')
         record=models.CapRecord.from_dict(old.parse(raw))
         require(record.intent.pod_uid==item['pod_uid'] and record.state in
-            ('retired-inert-cap','recovered-cleared-offline-cap'),'Only genuine completed prior journals may be retained')
+            ('retired-inert-cap','recovered-cleared-offline-cap','cleaned'),'Only genuine completed prior journals may be retained')
         require(record.identity.node_uid==old.NODE_UID and record.identity.gpu_uuid==old.GPU,
             'Original physical history pool changed')
-        terminal=record.retirement if record.retirement is not None else record.recovery
-        require(entries.get(record.identity.cgroup_inode)==terminal.entry
-            and record.identity.cgroup_inode not in inodes,'Complete original retired physical entry required')
+        require(record.identity.cgroup_inode not in inodes,'Duplicate original historical cgroup inode')
+        if record.state=='cleaned':
+            # Normal cleanup preserves the original finite seal readback. In
+            # this bounded recovery path its original inode must be absent;
+            # immutable completion is freshly checked by the held host fence.
+            require(record.identity.cgroup_inode not in entries,'Cleaned original inode must be absent from full inventory')
+        else:
+            terminal=record.retirement if record.retirement is not None else record.recovery
+            require(entries.get(record.identity.cgroup_inode)==terminal.entry,
+                'Complete original retired physical entry required')
         uids.add(item['pod_uid']);inodes.add(record.identity.cgroup_inode)
     # Old cleared/unbound rows remain in the complete inventory. Unmatched
     # finite rows cannot disappear from the protected journal closure.

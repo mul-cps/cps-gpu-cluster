@@ -1,7 +1,7 @@
 """Offline actual-schema counterexamples; no Kubernetes/NVML/device access."""
 import base64
 import copy
-from dataclasses import asdict
+from dataclasses import asdict, replace
 import hashlib
 import importlib.util
 import json
@@ -52,7 +52,7 @@ def fixture():
     physical = [asdict(f.record.retirement.entry)]
     proof = dict(node_epoch=asdict(f.record.identity.epoch),journal_device=29,journal_inode=123,
         journal_protected=True,target_journal_absent=True,gate_receipts_absent=True,
-        native_writers_quiesced=True,exclusive_lock=True,driver_healthy=True,approval_current=True,
+        native_writers_quiesced=True,exclusive_lock=True,driver_healthy=True,approval_current=True,completed_history_verified=True,
         approval_ref=f.ref,retired_history_sha256=old.sha256(journals),physical_rows_sha256=old.sha256(physical),
         global_gpu_memory_mib=0,global_gpu_clients=0,global_compute_apps=0,pod_runtime_tasks=0)
     normalized = copy.deepcopy(json.loads(ledger['data']['state.json']))
@@ -163,6 +163,48 @@ class ApprovedAbortTest(unittest.TestCase):
                 b.proof=copy.deepcopy(b.evidence['proof'])
                 with self.assertRaises(ValueError):self.run_abort(b)
                 self.assertEqual(b.writes,[])
+    def test_genuine_cleaned_journal_retains_original_finite_readback_only_when_inode_absent(self):
+        b=Backend();record=replace(b.f.record,state='cleaned',retirement=None)
+        raw=(old.canonical(record.to_dict())+'\n').encode()
+        b.evidence['retired_journals']=[dict(pod_uid=record.intent.pod_uid,
+            raw_base64=base64.b64encode(raw).decode(),raw_sha256='sha256:'+hashlib.sha256(raw).hexdigest())]
+        row=copy.deepcopy(b.evidence['physical_rows'][0]);inode=row['inode']+1
+        row.update(cgroup_id=inode,kernfs_id=inode,inode=inode,soft=0,hard=b.f.models.MAX_LIMIT)
+        b.evidence['physical_rows']=[row]
+        self.assertEqual(self.mod.validate_history(b.evidence,b.f.models),{record.intent.pod_uid})
+        self.assertEqual(record.readback,record.limit)
+        for finite in (False,True):
+            changed=copy.deepcopy(b.evidence);current=copy.deepcopy(row)
+            current.update(cgroup_id=record.identity.cgroup_inode,kernfs_id=record.identity.cgroup_inode,
+                inode=record.identity.cgroup_inode)
+            if finite:current.update(soft=record.limit.soft,hard=record.limit.hard)
+            changed['physical_rows'].append(current)
+            with self.subTest(finite=finite),self.assertRaises(ValueError):
+                self.mod.validate_history(changed,b.f.models)
+
+    @unittest.skipUnless(os.environ.get('CPS_APPROVED_RECOVERY_HISTORY_FIXTURE'), 'Explicit safe actual history capture required')
+    def test_complete_actual_cleaned_and_retired_history_replay_preserves_all_rows(self):
+        actual=json.loads(Path(os.environ['CPS_APPROVED_RECOVERY_HISTORY_FIXTURE']).read_bytes())
+        self.assertTrue(actual['qualification_only']);self.assertTrue(actual['read_only_unfenced_observation'])
+        from cps_compute import native_gpu_controller as models
+        source=Path(models.__file__).read_bytes()
+        self.assertEqual(hashlib.sha256(source).hexdigest(),'630d43cc115b5bddf3e5d110a25cc891e0941953bbabd833f0a77a3773ad7880')
+        evidence=dict(retired_journals=actual['retired_journals'],physical_rows=actual['inventory']['entries'])
+        originals=copy.deepcopy(evidence)
+        self.assertEqual(len(self.mod.validate_history(evidence,models)),35)
+        self.assertEqual(evidence,originals);self.assertEqual(len(evidence['physical_rows']),42)
+        cleaned=[]
+        for item in evidence['retired_journals']:
+            record=models.CapRecord.from_dict(old.parse(base64.b64decode(item['raw_base64'],validate=True)))
+            if record.state=='cleaned':cleaned.append(record)
+        self.assertEqual(len(cleaned),5)
+        for record in cleaned:
+            self.assertEqual(record.readback,record.limit)
+            self.assertNotIn(record.identity.cgroup_inode,{r['inode'] for r in evidence['physical_rows']})
+        omitted=copy.deepcopy(evidence)
+        omitted['retired_journals']=[i for i in omitted['retired_journals'] if i['pod_uid']==cleaned[0].intent.pod_uid]
+        with self.assertRaises(ValueError):self.mod.validate_history(omitted,models)
+
     def test_custody_or_fence_changes_after_abort_never_release_capacity(self):
         b=Backend()
         def drift(value):

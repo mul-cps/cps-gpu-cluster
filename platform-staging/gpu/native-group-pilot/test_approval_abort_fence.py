@@ -52,6 +52,40 @@ class FenceTest(unittest.TestCase):
             with self.assertRaises(ValueError):self.mod.target_tasks(root,fixtures.TARGET,limit=1)
             (root/'foreign').symlink_to(target,target_is_directory=True)
             with self.assertRaises(ValueError):self.mod.target_tasks(root,fixtures.TARGET)
+    def test_cleaned_history_requires_actual_original_completion_without_writing_state(self):
+        f,_,_,_,e=fixtures.fixture();original=f.fixture
+        original.config['authority_namespace']=fixtures.old.NAMESPACE
+        original.cm['metadata']['namespace']=fixtures.old.NAMESPACE
+        _,record=original.agent_cleanup_fixture('cleaned',False,False,'unlimited')
+        envelope=original.check();uid=record.intent.pod_uid
+        cleanup=original.agent.cleanup_object(envelope,record)
+        cleanup['metadata'].update(uid='66666666-6666-4666-8666-666666666666')
+        tombstone=dict(enrollment_uid=envelope['configmap_uid'],receipt_uid=cleanup['metadata']['uid'],
+            receipt=json.loads(cleanup['data']['receipt.json']))
+        raw=(fixtures.old.canonical(record.to_dict())+'\n').encode()
+        journals=[dict(pod_uid=uid,raw_base64=base64.b64encode(raw).decode(),
+            raw_sha256='sha256:'+fixtures.hashlib.sha256(raw).hexdigest())]
+        state=Path('/protected-existing');files={
+            str(state/'enrollments'/(uid+'.json')):envelope,
+            str(state/'intents'/(uid+'.json')):record.intent.to_dict(),
+            str(state/'published-cleanup'/(uid+'.json')):tombstone}
+        maps={original.cm['metadata']['name']:original.cm,cleanup['metadata']['name']:cleanup}
+        def read(path,trusted_uid):return copy.deepcopy(files.get(str(path)))
+        backend=SimpleNamespace(private_read=read)
+        kube=SimpleNamespace(configmap=lambda ns,name:copy.deepcopy(maps.get(name)))
+        self.assertTrue(self.mod.verify_cleaned_history(original.agent,kube,backend,state,f.models,journals))
+        for fault in ('missing_enrollment','replaced_enrollment','intent','receipt','receipt_uid','tombstone'):
+            before_files=copy.deepcopy(files);before_maps=copy.deepcopy(maps)
+            if fault=='missing_enrollment':maps.pop(original.cm['metadata']['name'])
+            elif fault=='replaced_enrollment':maps[original.cm['metadata']['name']]['metadata']['uid']=fixtures.TARGET
+            elif fault=='intent':files[str(state/'intents'/(uid+'.json'))]['cap_mib']=10240
+            elif fault=='receipt':maps.pop(cleanup['metadata']['name'])
+            elif fault=='receipt_uid':maps[cleanup['metadata']['name']]['metadata']['uid']=fixtures.TARGET
+            else:files[str(state/'published-cleanup'/(uid+'.json'))]=None
+            with self.subTest(fault=fault),self.assertRaises(ValueError):
+                self.mod.verify_cleaned_history(original.agent,kube,backend,state,f.models,journals)
+            files.clear();files.update(before_files);maps.clear();maps.update(before_maps)
+
     def test_request_has_exact_reviewed_actual_identity_and_no_unknown_fields(self):
         _,body,cm,_,e=fixtures.fixture()
         request=dict(version=1,qualification_only=True,binding_id=body['binding_id'],attempt=body['attempt'],
