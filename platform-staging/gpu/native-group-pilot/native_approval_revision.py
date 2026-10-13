@@ -15,8 +15,13 @@ import os
 from pathlib import Path
 import re
 import stat
+import uuid
+import urllib.error
+import urllib.request
 
 BASE_SOURCE_SHA256='3bae6d53e4ce42a54b6dcd372839ef5f7286084212c5930d1deeb93da8d6c688'
+PROCESS_SOURCE_SHA256='dc72f653da935bf60d563430b643f18c2852417c138fdb281df563f79da4b772'
+PROCESS_OVERLAY_SHA256='e121dd491d709d945b96fa475902486f783151f76f903344d06871b49aab2875'
 REFERENCE_FIELDS={'namespace','name','uid','data_sha256','revision','policy_hash'}
 APPROVAL_FIELDS={'owner','server','members','principal','profiles','ceiling','namespace','pod','group_id','course_id','term_id','storage'}
 STORAGE_FIELDS={'namespace','pvc','pv','path','group_hash','storage_version','readonly_mounts'}
@@ -373,11 +378,127 @@ def _enrollment_object(envelope):
         'data':{'enrollment.json':canonical(body)}}
 
 
+def render_process_observer(raw):
+    """Stdlib overlay of the reviewed SDK observer; security checks unchanged."""
+    require(isinstance(raw,bytes) and hashlib.sha256(raw).hexdigest()==PROCESS_SOURCE_SHA256,
+        'Exact reviewed process observer source required')
+    source=raw.decode();anchor='from .native_group_revision import _api_document, _uid'
+    replacement="""import uuid
+
+def _api_document(core,value):
+    if isinstance(value,dict):return json.loads(json.dumps(value,allow_nan=False))
+    return core.api_client.sanitize_for_serialization(value)
+
+def _uid(value):
+    try:return isinstance(value,str) and str(uuid.UUID(value))==value and uuid.UUID(value).int!=0
+    except (ValueError,TypeError,AttributeError):return False
+"""
+    require(source.count(anchor)==1,'Exact process import adapter anchor required')
+    result=source.replace(anchor,replacement)
+    original={n.name:ast.get_source_segment(source,n) for n in ast.parse(source).body if isinstance(n,ast.FunctionDef)}
+    derived={n.name:ast.get_source_segment(result,n) for n in ast.parse(result).body if isinstance(n,ast.FunctionDef)}
+    require(all(derived[name]==body for name,body in original.items()),'Unchanged process security matcher required')
+    require(hashlib.sha256(result.encode()).hexdigest()==PROCESS_OVERLAY_SHA256,
+        'Exact process observer overlay closure required')
+    compile(result,'native_approval_process.py','exec');return result
+
+
+def acknowledgment_target(value):
+    require(isinstance(value,dict) and set(value)=={'namespace','name','uid'}
+        and all(isinstance(value[k],str) and NAME.fullmatch(value[k]) for k in ('namespace','name')),
+        'Exact precreated acknowledgment namespace/name required')
+    try:valid=isinstance(value['uid'],str) and str(uuid.UUID(value['uid']))==value['uid'] and uuid.UUID(value['uid']).int!=0
+    except (ValueError,TypeError,AttributeError):valid=False
+    require(valid,'Actual precreated acknowledgment UID required');return copy.deepcopy(value)
+
+
+def _acknowledgment_body(value,target,*,initial=False):
+    if initial and value=={}:return value
+    fields={'version','component','revision','policy_hash','document','process','driver_epoch','observed_at'}
+    require(isinstance(value,dict) and set(value)==fields and type(value['version']) is int and value['version']==1
+        and value['component']=='node','Only the node component acknowledgment may be updated')
+    ref=reference(value['document'])
+    require(ref['namespace']==target['namespace'] and value['revision']==ref['revision']
+        and value['policy_hash']==ref['policy_hash'] and isinstance(value['process'],dict)
+        and value['process'].get('namespace')==target['namespace'],'Exact node acknowledgment document/process scope required')
+    return value
+
+
+def _acknowledgment_map(cm,target):
+    meta=cm.get('metadata',{}) if isinstance(cm,dict) else {}
+    require(isinstance(cm,dict) and cm.get('apiVersion')=='v1' and cm.get('kind')=='ConfigMap'
+        and cm.get('immutable') is not True and not cm.get('binaryData') and isinstance(meta,dict)
+        and all(meta.get(k)==target[k] for k in target) and not meta.get('ownerReferences')
+        and not meta.get('deletionTimestamp') and isinstance(meta.get('resourceVersion'),str)
+        and 0<len(meta['resourceVersion'])<=256 and not any(c.isspace() for c in meta['resourceVersion'])
+        and isinstance(cm.get('data'),dict) and set(cm['data'])=={'ack.json'},
+        'Existing exact mutable acknowledgment ConfigMap required')
+    old=parse(cm['data']['ack.json'])
+    require(cm['data']['ack.json']==canonical(old),'Canonical acknowledgment preimage required')
+    _acknowledgment_body(old,target,initial=True);return cm
+
+
+def patch_acknowledgment(kube,path,operations):
+    """Existing own-SA fixed resource PATCH, never create/list credentials."""
+    require(isinstance(path,str) and re.fullmatch('/api/v1/namespaces/[a-z0-9.-]+/configmaps/[a-z0-9.-]+',path),
+        'Exact named acknowledgment API path required')
+    raw=canonical(operations).encode();require(len(raw)<=65536,'Bounded acknowledgment CAS required')
+    request=urllib.request.Request(kube.base+path,data=raw,method='PATCH',
+        headers={'Authorization':'Bearer '+kube.token,'Content-Type':'application/json-patch+json'})
+    try:
+        with kube.opener.open(request,timeout=5) as response:
+            body=response.read(1048577)
+            require(len(body)<=1048576,'Bounded acknowledgment response required');return parse(body)
+    except urllib.error.HTTPError as error:
+        raise ValueError('Acknowledgment API failed with HTTP '+str(error.code)) from None
+
+
+def publish_existing_acknowledgment(kube,target,ack,verify,*,patch=None):
+    """Full UID/RV/data CAS on one precreated CM after fresh trusted proof."""
+    target=acknowledgment_target(target);_acknowledgment_body(ack,target)
+    require(callable(verify) and verify()==ack,'Fresh protected acknowledgment proof required')
+    path='/api/v1/namespaces/'+target['namespace']+'/configmaps/'+target['name']
+    before=copy.deepcopy(_acknowledgment_map(kube.call('GET',path),target))
+    require(verify()==ack,'Acknowledgment proof changed before CAS')
+    desired={'ack.json':canonical(ack)}
+    operations=[{'op':'test','path':'/metadata/uid','value':target['uid']},
+        {'op':'test','path':'/metadata/resourceVersion','value':before['metadata']['resourceVersion']},
+        {'op':'test','path':'/data','value':before['data']},{'op':'replace','path':'/data','value':desired}]
+    result=(patch or (lambda path,ops:patch_acknowledgment(kube,path,ops)))(path,operations)
+    _acknowledgment_map(result,target)
+    require(result['data']==desired,'Acknowledgment response did not contain the verified proof')
+    after=copy.deepcopy(result);after['data']=before['data']
+    after['metadata']['resourceVersion']=before['metadata']['resourceVersion']
+    original=copy.deepcopy(before)
+    # Kubernetes may record this PATCH's field manager. No user metadata,
+    # immutable identity, data precondition or other field is normalized.
+    after['metadata'].pop('managedFields',None);original['metadata'].pop('managedFields',None)
+    require(after==original,'Acknowledgment CAS changed unrelated fields')
+    observed=_acknowledgment_map(kube.call('GET',path),target)
+    require(observed==result and verify()==ack,'Acknowledgment changed during final observation')
+    return copy.deepcopy(result)
+
+
+class ProcessObservationAPI:
+    """Fixed named GET adapter for the unchanged SDK process observer."""
+    def __init__(self,kube):self.kube=kube
+    def _get(self,group,kind,name,namespace):
+        require(all(isinstance(v,str) and NAME.fullmatch(v) for v in (name,namespace)),
+            'Exact named process observation required')
+        return self.kube.call('GET',group+'/namespaces/'+namespace+'/'+kind+'/'+name)
+    def read_namespaced_pod(self,name,namespace):return self._get('/api/v1','pods',name,namespace)
+    def read_namespaced_deployment(self,name,namespace):return self._get('/apis/apps/v1','deployments',name,namespace)
+    def read_namespaced_replica_set(self,name,namespace):return self._get('/apis/apps/v1','replicasets',name,namespace)
+    def read_namespaced_daemon_set(self,name,namespace):return self._get('/apis/apps/v1','daemonsets',name,namespace)
+
+
 class NodeApprovalRuntime:
     """Optional service-loop bridge. Private ack transport confers no API RBAC."""
-    def __init__(self,agent,reference_path,qualification_path,process_path,state):
+    def __init__(self,agent,reference_path,qualification_path,process_path,state,*,acknowledgment_path=None,process_observer=None):
         self.agent=agent;self.reference_path=reference_path;self.qualification_path=qualification_path
         self.process_path=process_path;self.state=Path(state);self.consumer=None
+        require((acknowledgment_path is None)==(process_observer is None),'Complete optional own-SA publisher inputs required')
+        self.acknowledgment_path=acknowledgment_path;self.process_observer=process_observer
 
     def begin(self,config,kube):
         self.consumer=ApprovalConsumer(self.agent,config,read_private(self.qualification_path),
@@ -400,8 +521,13 @@ class NodeApprovalRuntime:
             'Full native journal/enrollment custody required before acknowledgment')
         document_path=Path(self.reference_path).parent/'approval.json'
         require(read_private(document_path)==consumer.loaded,'Actually mounted and API approval document differ')
-        process=read_private(self.process_path,limit=8192)
-        require(isinstance(process,dict) and set(process)=={'namespace','container','image','service_account'},'Trusted fixed process template required')
+        declaration=read_private(self.process_path,limit=8192)
+        if self.process_observer is not None:
+            declaration=self.process_observer.validate_process_declaration(declaration)
+        else:require(isinstance(declaration,dict) and set(declaration) in (
+            {'namespace','container','image','service_account'},
+            {'namespace','kind','name','uid','container','image','service_account'}),'Trusted fixed process template required')
+        process={k:declaration[k] for k in ('namespace','container','image','service_account')}
         require(os.environ.get('CPS_NATIVE_APPROVAL_POD_NAMESPACE')==process['namespace'],'Downward process namespace disagrees')
         process.update(name=os.environ.get('CPS_NATIVE_APPROVAL_POD_NAME'),uid=os.environ.get('CPS_NATIVE_APPROVAL_POD_UID'))
         require(self.agent.canonical_uuid(process['uid']) and isinstance(process['name'],str) and NAME.fullmatch(process['name']),'Actual downward process identity required')
@@ -410,8 +536,48 @@ class NodeApprovalRuntime:
         def publish(value):
             path=self.state/'approval-loaded.json'
             store.backend.private_write(path,value,store.uid,create=store.backend.private_read(path,store.uid) is None)
-        return consumer.acknowledge(process,pod,dict(node_uid=epoch.node_uid,boot_id=epoch.boot_id,
+        ack=consumer.acknowledge(process,pod,dict(node_uid=epoch.node_uid,boot_id=epoch.boot_id,
             driver_generation=epoch.driver_generation,gpu_uuid=epoch.gpu_uuid),True,publish)
+        if self.process_observer is not None:
+            self.publish(kube,config,models,store,journal,accepted,driver,verifier,declaration,ack)
+        return ack
+
+    def publish(self,kube,config,models,store,journal,accepted,driver,verifier,declaration,ack):
+        """Revalidate private proof and full custody before one named CM CAS."""
+        target=acknowledgment_target(read_private(self.acknowledgment_path,limit=8192))
+        require(target['namespace']==declaration['namespace']==self.consumer.reference['namespace'],
+            'Only the own-node component acknowledgment may be published')
+        api=ProcessObservationAPI(kube);path=self.state/'approval-loaded.json'
+        def verify():
+            require(store.backend.private_read(path,store.uid)==ack,'Original protected private acknowledgment required')
+            fresh,historical=self.consumer.validate_enrollments(kube.enrollments(config['authority_namespace']),models,store,journal,kube)
+            require({e['enrollment']['intent']['pod_uid']:e for e in fresh}==accepted,
+                'Enrollment changed before acknowledgment publication')
+            records=journal.records()
+            require(all(r.intent.pod_uid in accepted and r.intent.to_dict()==accepted[r.intent.pod_uid]['enrollment']['intent'] for r in records),
+                'Full original journal custody required before acknowledgment publication')
+            require(read_private(Path(self.reference_path).parent/'approval.json')==self.consumer.loaded,
+                'Mounted approval changed before acknowledgment publication')
+            pod,expected=self.process_observer.observe_process(api,api,declaration,ack['process'])
+            volumes={row.get('name') for row in pod['spec'].get('volumes',[]) if isinstance(row,dict)
+                and isinstance(row.get('configMap'),dict) and row['configMap'].get('name')==self.consumer.reference['name']}
+            selected=[row for row in pod['spec']['containers'] if row.get('name')==expected['container']]
+            require(len(selected)==1 and any(row.get('name') in volumes and row.get('readOnly') is True
+                and row.get('mountPath')=='/var/run/cps-native-approvals/approval.json' and row.get('subPath')=='approval.json'
+                and not row.get('subPathExpr') for row in selected[0].get('volumeMounts',[])),
+                'Actual readonly own-node approval mount required')
+            current=self.agent.abort_current_epoch(config,self.state,driver,verifier,models)
+            regenerated=self.consumer.acknowledge(expected,pod,dict(node_uid=current.node_uid,boot_id=current.boot_id,
+                driver_generation=current.driver_generation,gpu_uuid=current.gpu_uuid),True,lambda _:None)
+            require({k:v for k,v in regenerated.items() if k!='observed_at'}=={k:v for k,v in ack.items() if k!='observed_at'},
+                'Current process/document/epoch differs from the private proof')
+            try:observed=datetime.fromisoformat(ack['observed_at'].replace('Z','+00:00'))
+            except (ValueError,TypeError,AttributeError):raise ValueError('Aware protected acknowledgment timestamp required') from None
+            require(observed.tzinfo is not None and 0<=(datetime.now(timezone.utc)-observed).total_seconds()<=30,
+                'Stale or future protected node acknowledgment')
+            require(store.backend.private_read(path,store.uid)==ack,'Private proof changed during observation')
+            return copy.deepcopy(ack)
+        return publish_existing_acknowledgment(kube,target,ack,verify)
 
 
 def render_current_agent(original,module_raw):
@@ -439,10 +605,10 @@ def render_current_agent(original,module_raw):
         "                if pod is not None:\n                    if consumer is not None and 'approval_ref' in accepted[intent.pod_uid]['enrollment']:\n                        consumer.validate_approved_pod(pod, accepted[intent.pod_uid])\n                    validate_actual_pod(pod, accepted[intent.pod_uid]['enrollment'])")
     change("        if iteration + 1 < iterations: time.sleep(interval)\n    require(not failures, 'Node agent observed blocked errors; allocations and protection retained')",
         "        if approval is not None:\n            approval.finish(config, models, store, journal, kube, accepted, driver, verifier, not failures)\n        if iteration + 1 < iterations: time.sleep(interval)\n    require(not failures, 'Node agent observed blocked errors; allocations and protection retained')")
-    change("    parser.add_argument('--config', type=Path)","    parser.add_argument('--config', type=Path)\n    parser.add_argument('--approval-reference', type=Path)\n    parser.add_argument('--approval-template', type=Path)\n    parser.add_argument('--approval-process', type=Path)")
-    change("    config = read_config(args.config)","    config = read_config(args.config)\n    require(all(v is not None for v in (args.approval_reference,args.approval_template,args.approval_process)) or\n            all(v is None for v in (args.approval_reference,args.approval_template,args.approval_process)), 'Complete optional approval inputs required')")
+    change("    parser.add_argument('--config', type=Path)","    parser.add_argument('--config', type=Path)\n    parser.add_argument('--approval-reference', type=Path)\n    parser.add_argument('--approval-template', type=Path)\n    parser.add_argument('--approval-process', type=Path)\n    parser.add_argument('--approval-acknowledgment', type=Path)")
+    change("    config = read_config(args.config)","    config = read_config(args.config)\n    require(all(v is not None for v in (args.approval_reference,args.approval_template,args.approval_process)) or\n            all(v is None for v in (args.approval_reference,args.approval_template,args.approval_process)), 'Complete optional approval inputs required')\n    require(args.approval_acknowledgment is None or args.approval_reference is not None, 'Publisher requires installed approval consumer')")
     module_sha=hashlib.sha256(module_raw).hexdigest()
-    change("        driver = modules['manual'].Nvml()", "        approval = None\n        if args.approval_reference is not None:\n            global approval_module\n            approval_module = load_source('_native_approval_revision', (args.bundle / 'native_approval_revision.py').read_bytes(),\n                '"+module_sha+"', 'native_approval_revision.py')\n            approval = approval_module.NodeApprovalRuntime(sys.modules[__name__],args.approval_reference,args.approval_template,args.approval_process,state)\n        driver = modules['manual'].Nvml()")
+    change("        driver = modules['manual'].Nvml()", "        approval = None\n        if args.approval_reference is not None:\n            global approval_module\n            approval_module = load_source('_native_approval_revision', (args.bundle / 'native_approval_revision.py').read_bytes(),\n                '"+module_sha+"', 'native_approval_revision.py')\n            process_observer = None\n            if args.approval_acknowledgment is not None:\n                process_observer = load_source('_native_approval_process', (args.bundle / 'native_approval_process.py').read_bytes(),\n                    '"+PROCESS_OVERLAY_SHA256+"', 'native_approval_process.py')\n            approval = approval_module.NodeApprovalRuntime(sys.modules[__name__],args.approval_reference,args.approval_template,args.approval_process,state,\n                acknowledgment_path=args.approval_acknowledgment,process_observer=process_observer)\n        driver = modules['manual'].Nvml()")
     change('            crictl=args.crictl, cri_socket=args.cri_socket)', '            crictl=args.crictl, cri_socket=args.cri_socket, approval=approval)')
     before={n.name:ast.get_source_segment(original,n) for n in ast.parse(original).body if isinstance(n,(ast.FunctionDef,ast.ClassDef))}
     after={n.name:ast.get_source_segment(result,n) for n in ast.parse(result).body if isinstance(n,(ast.FunctionDef,ast.ClassDef))}
