@@ -6,6 +6,64 @@ from pathlib import Path
 import native_group_approval_renderer as r
 
 
+JOURNAL_PRIVATE_INIT = """
+import fcntl
+import stat
+
+def require_private(value):
+    if not value:
+        raise ValueError('Owned recognized delivery journal required')
+
+parent = os.open('/journal', os.O_RDONLY | os.O_DIRECTORY | os.O_NOFOLLOW)
+directory = None
+files = {}
+try:
+    try:
+        os.mkdir('delivery', mode=0o700, dir_fd=parent)
+    except FileExistsError:
+        pass
+    directory = os.open('delivery', os.O_RDONLY | os.O_DIRECTORY | os.O_NOFOLLOW, dir_fd=parent)
+    info = os.fstat(directory)
+    require_private(info.st_uid == os.getuid() and stat.S_IMODE(info.st_mode) in (0o700, 0o770, 0o2700, 0o2770))
+    names = os.listdir(directory)
+    require_private(set(names) <= {'state.json', 'lock'})
+    for name in names:
+        observed = os.stat(name, dir_fd=directory, follow_symlinks=False)
+        require_private(stat.S_ISREG(observed.st_mode) and observed.st_uid == os.getuid()
+            and observed.st_nlink == 1 and stat.S_IMODE(observed.st_mode) in (0o600, 0o660))
+        handle = os.open(name, os.O_RDWR | os.O_NOFOLLOW, dir_fd=directory)
+        files[name] = handle
+        current = os.fstat(handle)
+        require_private((current.st_dev, current.st_ino) == (observed.st_dev, observed.st_ino)
+            and stat.S_ISREG(current.st_mode) and current.st_uid == os.getuid() and current.st_nlink == 1
+            and stat.S_IMODE(current.st_mode) in (0o600, 0o660))
+    if 'lock' in files:
+        fcntl.flock(files['lock'], fcntl.LOCK_EX | fcntl.LOCK_NB)
+    require_private(set(os.listdir(directory)) == set(names))
+    current = os.stat('delivery', dir_fd=parent, follow_symlinks=False)
+    require_private((current.st_dev, current.st_ino) == (info.st_dev, info.st_ino))
+    for name, handle in files.items():
+        current = os.stat(name, dir_fd=directory, follow_symlinks=False)
+        opened = os.fstat(handle)
+        require_private((current.st_dev, current.st_ino) == (opened.st_dev, opened.st_ino)
+            and stat.S_ISREG(current.st_mode) and current.st_nlink == 1)
+    # Validate every inode before repairing any mode. Never read, rewrite,
+    # unlink or traverse journal contents or change the PVC mount root.
+    for handle in files.values():
+        os.fchmod(handle, 0o600)
+        os.fsync(handle)
+    os.fchmod(directory, 0o700)
+    os.fsync(directory)
+    os.fsync(parent)
+finally:
+    for handle in files.values():
+        os.close(handle)
+    if directory is not None:
+        os.close(directory)
+    os.close(parent)
+"""
+
+
 def role_update_policy(publication, access, namespace, name):
     """Named escalation is paired with fail-closed GET-name-only admission."""
     namespaces=sorted({p['namespace'] for p in publication['process_declarations'].values()})
@@ -107,15 +165,18 @@ def render(seed, *, image, config_secret, journal_pvc, context, namespace='cps-c
     if protected_capture:input_names+=('export.token','gateway-ca.pem')
     copy_inputs="from pathlib import Path; import os; p=Path('/inputs/delivery'); p.mkdir(mode=0o700); " \
         "[(p.joinpath(n).write_bytes(Path('/seed').joinpath(n).read_bytes()),os.chmod(p/n,0o600)) for n in " + repr(input_names) + "]"
+    copy_inputs += '\n' + JOURNAL_PRIVATE_INIT
     security={'runAsNonRoot':True,'runAsUser':1000,'runAsGroup':1000,'allowPrivilegeEscalation':False,
         'readOnlyRootFilesystem':True,'capabilities':{'drop':['ALL']}}
     objects.append({'apiVersion':'apps/v1','kind':'Deployment','metadata':{'namespace':namespace,'name':name},
         'spec':{'replicas':0,'strategy':{'type':'Recreate'},'selector':{'matchLabels':{'app':name}},
             'template':{'metadata':{'labels':{'app':name}},'spec':{'serviceAccountName':name,
-                'securityContext':{'fsGroup':1000,'seccompProfile':{'type':'RuntimeDefault'}},
+                'securityContext':{'fsGroup':1000,'fsGroupChangePolicy':'OnRootMismatch',
+                    'seccompProfile':{'type':'RuntimeDefault'}},
                 'initContainers':[{'name':'private-inputs','image':image,'command':['python','-c',copy_inputs],
                     'securityContext':dict(security),'volumeMounts':[
-                        {'name':'seed','mountPath':'/seed','readOnly':True},{'name':'inputs','mountPath':'/inputs'}]}],
+                        {'name':'seed','mountPath':'/seed','readOnly':True},{'name':'inputs','mountPath':'/inputs'},
+                        {'name':'journal','mountPath':'/journal'}]}],
                 'containers':[{'name':'delivery','image':image,
                     'command':['python','/opt/cps-native-delivery/native_group_approval_delivery.py'],
                     'args':['--run','--config','/inputs/delivery/config.json','--state-dir','/journal/delivery',
