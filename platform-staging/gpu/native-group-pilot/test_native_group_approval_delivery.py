@@ -438,5 +438,22 @@ class DeliveryTests(unittest.TestCase):
         self.assertEqual(policy['spec']['failurePolicy'],'Fail')
         self.assertEqual(policy['spec']['matchConstraints']['resourceRules'][0]['operations'],['CREATE'])
 
+    def test_protected_capture_materials_are_copied_to_owned_private_inputs(self):
+        import native_group_approval_delivery_runtime as runtime
+        objects=runtime.render(self.config,image='ghcr.io/example/delivery@sha256:'+'a'*64,
+            config_secret='operator-delivery-input',journal_pvc='operator-delivery-journal',
+            context='reviewed-context',protected_capture=True)
+        deployment=next(o for o in objects if o['kind']=='Deployment')
+        spec=deployment['spec']['template']['spec']
+        command=spec['initContainers'][0]['command'][-1]
+        self.assertIn('export.token',command)
+        self.assertIn('gateway-ca.pem',command)
+        self.assertIn('os.chmod(p/n,0o600)',command)
+        self.assertEqual(spec['containers'][0]['securityContext']['runAsUser'],1000)
+        self.assertEqual(deployment['spec']['replicas'],0)
+        self.assertFalse(any('secrets' in rule['resources'] for o in objects if o['kind']=='Role'
+            for rule in o['rules']))
+        self.assertFalse(any(e['name'].endswith('TOKEN') for e in spec['containers'][0]['env']))
+
 
 if __name__ == '__main__': unittest.main()

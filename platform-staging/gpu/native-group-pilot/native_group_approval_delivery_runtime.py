@@ -50,7 +50,8 @@ def role_update_policy(publication, access, namespace, name):
             'metadata':{'name':policy_name},'spec':{'policyName':policy_name,'validationActions':['Deny']}}]
 
 
-def render(seed, *, image, config_secret, journal_pvc, context, namespace='cps-compute'):
+def render(seed, *, image, config_secret, journal_pvc, context, namespace='cps-compute', protected_capture=False):
+    r.require(type(protected_capture) is bool, 'Explicit protected capture material setting required')
     r.require(seed['previous_publication_sha256']==r.canonical_sha256(seed['previous_publication']),
         'Reviewed installed publication pin required')
     r.require(isinstance(image,str) and '@sha256:' in image and len(image.rsplit('@sha256:',1)[1])==64
@@ -98,8 +99,10 @@ def render(seed, *, image, config_secret, journal_pvc, context, namespace='cps-c
         {'apiVersion':'admissionregistration.k8s.io/v1','kind':'ValidatingAdmissionPolicyBinding',
             'metadata':{'name':admission_name},'spec':{'policyName':admission_name,'validationActions':['Deny']}}])
     objects.extend(role_update_policy(publication,access,namespace,name))
+    input_names=('config.json','source-command.json','epoch-command.json','kubeconfig')
+    if protected_capture:input_names+=('export.token','gateway-ca.pem')
     copy_inputs="from pathlib import Path; import os; p=Path('/inputs/delivery'); p.mkdir(mode=0o700); " \
-        "[(p.joinpath(n).write_bytes(Path('/seed').joinpath(n).read_bytes()),os.chmod(p/n,0o600)) for n in ('config.json','source-command.json','epoch-command.json','kubeconfig')]"
+        "[(p.joinpath(n).write_bytes(Path('/seed').joinpath(n).read_bytes()),os.chmod(p/n,0o600)) for n in " + repr(input_names) + "]"
     security={'runAsNonRoot':True,'runAsUser':1000,'runAsGroup':1000,'allowPrivilegeEscalation':False,
         'readOnlyRootFilesystem':True,'capabilities':{'drop':['ALL']}}
     objects.append({'apiVersion':'apps/v1','kind':'Deployment','metadata':{'namespace':namespace,'name':name},
@@ -131,9 +134,10 @@ def main(argv=None):
     parser.add_argument('--seed',type=Path,required=True); parser.add_argument('--image',required=True)
     parser.add_argument('--config-secret',required=True); parser.add_argument('--journal-pvc',required=True)
     parser.add_argument('--context',required=True)
+    parser.add_argument('--protected-capture',action='store_true')
     args=parser.parse_args(argv)
     objects=render(r._private_json(args.seed),image=args.image,config_secret=args.config_secret,
-        journal_pvc=args.journal_pvc,context=args.context)
+        journal_pvc=args.journal_pvc,context=args.context,protected_capture=args.protected_capture)
     print(r.canonical({'apiVersion':'v1','kind':'List','items':objects})); return 0
 
 
