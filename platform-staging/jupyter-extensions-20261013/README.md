@@ -43,7 +43,7 @@ Canonical application instructions:
 - [Compute package guide](https://github.com/mul-cps/cps-compute/blob/feat/modular-jupyter-extensions-20261013/docs/extension-packaging.md)
 - [Admin UI source](https://github.com/mul-cps/e2x-course-hub/tree/deploy/ui-settings-20261013)
 - [Notebook consumers](https://github.com/mul-cps/cps-jupyter-notebook/tree/feat/modular-extension-consumers-20261013)
-- [Passing distribution CI](https://github.com/mul-cps/cps-compute/actions/runs/38448404276)
+- [Passing distribution CI](https://github.com/mul-cps/cps-compute/actions/runs/38449234944)
 
 Rollback uses the previous admin image digest from the receipt, with the same
 application/database versions. Preserve the current deployment UID and test the

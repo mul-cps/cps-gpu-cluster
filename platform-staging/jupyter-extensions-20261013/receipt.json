@@ -51,13 +51,19 @@
     "lab_rtc_enabled_standalone": true,
     "real_hub_oauth_two_visitor_test": false,
     "ci": {
-      "url": "https://github.com/mul-cps/cps-compute/actions/runs/38448404276",
-      "source": "eecd940eaa349b378e0c50ae9fbc5d18252f6645",
+      "url": "https://github.com/mul-cps/cps-compute/actions/runs/38449234944",
+      "source": "9969aa31639b6934d66da8ec486462cff18f4cbd",
       "status": "success",
       "wheel_sdist_from_sdist": true,
       "installed_sdk_hub": true,
       "lab_matrix_discovery_uninstall_reinstall": true
-    }
+    },
+    "notebook_ci": {
+      "url": "https://github.com/mul-cps/cps-jupyter-notebook/actions/runs/38449530240",
+      "source": "4f4ce4c5d48055e9eb62a980fa3cc4741d16d755",
+      "status": "success"
+    },
+    "lab_rtc_browser_after_hera_closure": true
   },
   "rollouts": [
     {
