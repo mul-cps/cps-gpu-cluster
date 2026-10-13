@@ -96,6 +96,73 @@ resourceVersion. The empty value acknowledges nothing. Names are operator
 selected; the renderer accepts the actual names rather than guessing them from
 a revision. Preserve these UIDs in runtime reader settings and publisher inputs.
 
+### Advancing an installed publication
+
+Use `revision_projection_intent` for the second and later Source revisions.
+`projection_intent` and `publisher_intent` remain the initial-install path;
+reinstalling the publishers would replace their immutable prerequisites.
+The canonical Source snapshot is available through the trusted in-process
+`NativeGroupApprovalRegistry.snapshot().document` API. No browser export or
+additional HTTP endpoint is required.
+
+Capture the authenticated new snapshot, all four current full Deployments,
+their previous immutable documents/references, all four actual immutable
+publisher bootstrap maps, and the four existing mutable acknowledgment CMs.
+Retain the complete reviewed prior publication packet with an independently
+pinned canonical SHA. Capture the old actual Deployment/ReplicaSet/Ready-Pod
+records and all seven full named Roles before changing projections. Keep these
+records unchanged for the second access step; they describe the prior process
+identity, not a claim that the old Pods still exist after rollout.
+
+After `document_intent` creates the next document candidates and the operator
+captures their actual created UIDs, call the new path with the same document
+request arguments:
+
+```python
+publication = revision_projection_intent(
+    **request, documents=actual_new_documents,
+    previous_publication=reviewed_prior_publication,
+    previous_publication_sha256=independently_pinned_prior_packet_sha,
+    previous_bootstrap_maps=actual_existing_bootstraps,
+    acknowledgments=actual_existing_acknowledgment_configmaps,
+    driver_epoch=unchanged_actual_epoch, ttl_seconds=30)
+```
+
+The helper checks the complete old Deployment spec and exact installed inputs,
+the prior document/reference data and identities, actual immutable bootstrap
+readbacks, existing acknowledgment UIDs, controller declarations, epoch and
+TTL. Unknown fields, conflicting projections, partial rollout or changed prior
+custody fail closed. It preserves all bootstrap maps, publisher arguments/env,
+acknowledgment identities, process declarations and runtime settings. Each
+Deployment patch changes only the two document/reference ConfigMap names and
+tests the captured UID, resourceVersion and complete old spec. Create only the
+new document and reference maps; **do not recreate the returned bootstrap maps
+or acknowledgment maps**. Their existing objects remain prerequisites.
+
+Before applying the Deployment patches, call `revision_access_intent` with
+`projection=publication`, `previous_publication`, the retained old
+`deployments`, `replicasets`, `pods`, and actual `roles` keyed by namespace/name.
+It validates the old owner chains and exact prior named rules, then replaces
+only the document GET name. The actual old Pod/ReplicaSet GET targets and own
+acknowledgment PATCH names stay unchanged. Apply the seven Role patches under
+their UID, resourceVersion and full-rules tests; existing RoleBindings remain
+unchanged.
+
+After the new processes exist, capture their actual full Deployment,
+ReplicaSet and Ready-Pod objects and fresh Role readbacks. Call
+`revision_process_access_intent` with the same two publication packets,
+`previous_process_records` (exact keys `deployments`, `replicasets`, `pods`),
+the new `deployments`, `replicasets`, `pods`, and the fresh `roles`. This second
+guarded step changes only actual Pod/ReplicaSet GET names. No future name or
+acknowledgment is invented. Preserve any separately managed historical custody
+permissions; these helpers own only their seven named approval Roles.
+
+Finally, use the unchanged `readiness_intent` with genuine fresh acknowledgments
+and current processes. A rendered revision remains pending until all four
+loaded-process proofs pass. Old document history is retained in every new
+envelope; neither rendering nor Role delivery qualifies a new hardware path,
+broader GPU access, or production readiness.
+
 After `projection_intent`, call:
 
 ```python

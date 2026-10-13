@@ -320,6 +320,139 @@ def access_name(component):
     return 'cps-native-approval-'+component.replace(':','-')
 
 
+def _installed_publication_rows(component, doc, ref, bootstrap):
+    """Exact first-install projection, including the installed publisher inputs."""
+    volumes,mounts,env=_projection_rows(component,doc,ref,bootstrap if component=='node' else None)
+    if component=='node':
+        volumes[-1]['configMap']['items'].append({'key':'acknowledgment.json','path':'acknowledgment.json'})
+        mounts.append({'name':BOOTSTRAP_VOLUME,'mountPath':DIRECTORY+'/acknowledgment.json',
+            'subPath':'acknowledgment.json','readOnly':True})
+    else:
+        volumes.append({'name':PUBLISHER_VOLUME,'configMap':{'name':bootstrap['metadata']['name'],
+            'defaultMode':0o444,'items':[{'key':'publisher.json','path':'publisher.json'}]}})
+        mounts.append({'name':PUBLISHER_VOLUME,'mountPath':DIRECTORY+'/publisher.json',
+            'subPath':'publisher.json','readOnly':True})
+        env.append({'name':PUBLISHER_ENV,'value':DIRECTORY+'/publisher.json'})
+    return volumes,mounts,env
+
+
+def revision_projection_intent(*, documents, previous_publication, previous_publication_sha256,
+        previous_bootstrap_maps, acknowledgments, driver_epoch, ttl_seconds=30, **kwargs):
+    """Advance an installed revision; preserve publishers and actual ack identities."""
+    allowed={'version','source_sha256','revision','policy_hash','documents','baseline_guards','live_applied',
+        'process_readiness_verified','references','reference_maps','bootstrap_maps','patches',
+        'expected_deployments','requires_actual_process_ack','acknowledgment_references',
+        'process_declarations','runtime_settings'}
+    rollover={'previous_publication_sha256','publisher_reinstall_required'}
+    require(isinstance(previous_publication,dict) and set(previous_publication) in
+        (allowed,allowed|{'initial_access'},allowed|rollover,allowed|rollover|{'initial_access'})
+        and previous_publication_sha256==canonical_sha256(previous_publication),
+        'Exact pinned reviewed previous publication required')
+    if 'publisher_reinstall_required' in previous_publication:
+        require(previous_publication['publisher_reinstall_required'] is False
+            and isinstance(previous_publication['previous_publication_sha256'],str)
+            and previous_publication['previous_publication_sha256'].startswith('sha256:'),
+            'Known previous rollover provenance required')
+    _publisher_scope(previous_publication)
+    policy=kwargs['policy'];qualification=kwargs['qualification'];baselines=kwargs['baselines']
+    previous=_baselines(baselines,policy,qualification)
+    require(set(previous)==set(COMPONENTS),'Fully installed prior revision required')
+    require(type(ttl_seconds) is int and 15<=ttl_seconds<=120,'Bounded acknowledgment TTL required')
+    pool=qualification._config()['node_pool']
+    require(type(driver_epoch) is DriverEpoch and driver_epoch.__dict__=={
+        'node_uid':pool['node_uid'],'boot_id':pool['boot_id'],'driver_generation':pool['driver_generation'],
+        'gpu_uuid':pool['gpu_uuid']},'Unchanged qualified driver epoch required')
+    for values in (documents,previous_bootstrap_maps,acknowledgments):
+        require(isinstance(values,dict) and set(values)==set(COMPONENTS),'All four complete actual readbacks required')
+    settings={'enabled':True,'acknowledgments':previous_publication['acknowledgment_references'],
+        'processes':previous_publication['process_declarations'],'driver_epoch':driver_epoch.__dict__,'ttlSeconds':ttl_seconds}
+    require(previous_publication['runtime_settings']==settings and previous_publication['policy_hash']==policy.hash
+        and previous_publication['revision']==previous['node'].reference['revision'],
+        'Previous process, epoch, TTL and policy custody must remain unchanged')
+    plan=document_intent(**kwargs);references={};reference_maps={};patches={};expected={}
+    for component in COMPONENTS:
+        row=baselines[component];old=previous[component];publication=previous_publication
+        require(publication['references'][component]==old.reference
+            and publication['documents'][component]['data']==row['previous_document']['data']
+            and all(publication['documents'][component]['metadata'].get(k)==row['previous_document']['metadata'][k]
+                for k in ('namespace','name'))
+            and publication['reference_maps'][component]['data']==row['previous_reference']['data']
+            and all(publication['reference_maps'][component]['metadata'].get(k)==row['previous_reference']['metadata'][k]
+                for k in ('namespace','name')),'Exact retained prior document and reference required')
+        process=_process_declaration(row);old_expected=publication['expected_deployments'][component]
+        require(process==publication['process_declarations'][component]
+            and all(old_expected.get(k)==row['deployment']['metadata'][k] for k in ('namespace','name','uid'))
+            and old_expected.get('container')==row['container'] and old_expected.get('spec')==row['deployment']['spec'],
+            'Complete unchanged previously reviewed Deployment spec required')
+        ack=acknowledgments[component];meta=object_guard(ack,'ConfigMap')
+        require(set(ack)<= {'apiVersion','kind','metadata','immutable','data'}
+            and ack.get('apiVersion')=='v1' and ack.get('immutable') in (None,False)
+            and not meta.get('deletionTimestamp') and not meta.get('ownerReferences') and not ack.get('binaryData')
+            and isinstance(ack.get('data'),dict) and set(ack['data'])=={'ack.json'}
+            and isinstance(ack['data']['ack.json'],str) and isinstance(parse(ack['data']['ack.json']),dict)
+            and {k:meta.get(k) for k in ('namespace','name','uid')}==publication['acknowledgment_references'][component],
+            'Original actual acknowledgment identity required')
+        bootstrap=previous_bootstrap_maps[component];bmeta=object_guard(bootstrap,'ConfigMap')
+        if component=='node':
+            data={'template.json':canonical(qualification._config()),'process.json':canonical(process),
+                'acknowledgment.json':canonical(publication['acknowledgment_references'][component])}
+            prefix='cps-native-approval-bootstrap'
+        else:
+            data={'publisher.json':canonical({'version':1,'component':component,
+                'acknowledgment':publication['acknowledgment_references'][component],'process':process,
+                'driver_epoch':driver_epoch.__dict__,'ttlSeconds':ttl_seconds})}
+            prefix='cps-native-approval-publisher'
+        candidate=immutable_config(row['previous_document'],data,prefix)
+        require(set(bootstrap)<= {'apiVersion','kind','metadata','immutable','data'}
+            and bootstrap.get('apiVersion')=='v1' and bootstrap.get('immutable') is True
+            and not bmeta.get('deletionTimestamp') and not bmeta.get('ownerReferences')
+            and bootstrap.get('data')==candidate['data']
+            and all(bmeta.get(k)==candidate['metadata'][k] for k in ('namespace','name'))
+            and publication['bootstrap_maps'][component]['data']==data
+            and all(publication['bootstrap_maps'][component]['metadata'].get(k)==bmeta[k] for k in ('namespace','name')),
+            'Actual immutable unchanged publisher bootstrap required')
+        prior_uid=publication['bootstrap_maps'][component]['metadata'].get('uid')
+        require(prior_uid is None or prior_uid==bmeta['uid'],'Previously bound publisher ConfigMap UID must remain unchanged')
+        actual=documents[component];revision=ApprovalRevision.from_configmap(actual,policy,qualification)
+        object_guard(actual,'ConfigMap')
+        require(actual['data']==plan['documents'][component]['data']
+            and all(actual['metadata'].get(k)==plan['documents'][component]['metadata'][k] for k in ('namespace','name')),
+            'Actual new document must match reviewed candidate')
+        reference=immutable_config(actual,{'reference.json':canonical(revision.reference)},'cps-native-approval-reference')
+        references[component]=revision.reference;reference_maps[component]=reference
+        spec=copy.deepcopy(row['deployment']['spec']);pod=spec['template']['spec']
+        container=next(c for c in pod['containers'] if c['name']==row['container'])
+        old_volumes,old_mounts,old_env=_installed_publication_rows(component,row['previous_document'],row['previous_reference'],bootstrap)
+        require([v for v in pod.get('volumes',[]) if v.get('name') in OWNED_VOLUMES]==old_volumes
+            and [m for m in container.get('volumeMounts',[]) if m.get('name') in OWNED_VOLUMES]==old_mounts
+            and [e for e in container.get('env',[]) if e.get('name') in set(ENV)|{'CPS_NATIVE_APPROVAL_COMPONENT',PUBLISHER_ENV}]==old_env,
+            'Exact installed prior publication inputs required')
+        require(not any(m.get('mountPath','').rstrip('/')==DIRECTORY or m.get('mountPath','').startswith(DIRECTORY+'/')
+            for m in container.get('volumeMounts',[]) if m.get('name') not in OWNED_VOLUMES), 'Approval path mount collision')
+        require(not any(any(v.get('name') in OWNED_VOLUMES for v in c.get('volumeMounts',[]))
+            or any(e.get('name') in set(ENV)|{'CPS_NATIVE_APPROVAL_COMPONENT',PUBLISHER_ENV} for e in c.get('env',[]))
+            for c in pod['containers'] if c['name']!=row['container']), 'Foreign container approval input collision')
+        if component=='node':
+            suffix=[item for name in ('reference','template','process','acknowledgment')
+                for item in ('--approval-'+name,DIRECTORY+'/'+name+'.json')]
+            args=container.get('args',[])
+            require(isinstance(args,list) and args[-8:]==suffix
+                and not any(a=='--approval-'+name or a.startswith('--approval-'+name+'=')
+                    for a in args[:-8] for name in ('reference','template','process','acknowledgment')),
+                'Exact installed node publication arguments required')
+        for volume in pod['volumes']:
+            if volume['name']==DOC_VOLUME:volume['configMap']['name']=actual['metadata']['name']
+            elif volume['name']==REF_VOLUME:volume['configMap']['name']=reference['metadata']['name']
+        patches[component]=replace_patch(row['deployment'],'/spec',row['deployment']['spec'],spec)
+        expected[component]={**{k:row['deployment']['metadata'][k] for k in ('namespace','name','uid')},
+            'container':row['container'],'spec':spec}
+    return {**plan,'references':references,'reference_maps':reference_maps,'bootstrap_maps':copy.deepcopy(previous_bootstrap_maps),
+        'patches':patches,'expected_deployments':expected,'requires_actual_process_ack':True,
+        'acknowledgment_references':copy.deepcopy(settings['acknowledgments']),
+        'process_declarations':copy.deepcopy(settings['processes']),'runtime_settings':copy.deepcopy(settings),
+        'previous_publication_sha256':previous_publication_sha256,'publisher_reinstall_required':False}
+
+
 def _publisher_scope(projection):
     for key in ('acknowledgment_references','process_declarations','references','expected_deployments'):
         require(isinstance(projection.get(key),dict) and set(projection[key])==set(COMPONENTS),'Closed publisher scope required')
@@ -399,6 +532,73 @@ def process_access_intent(*, projection, deployments, replicasets, pods, roles):
             'Actual initial named Role with exact reviewed rules required')
         patches[key]=replace_patch(baseline,'/rules',baseline['rules'],target['rules'])
     return {'version':1,'patches':patches,'actual_process_names':names,'live_applied':False,'process_readiness_verified':False}
+
+
+def _revision_access_scope(projection, previous_publication):
+    _publisher_scope(projection);_publisher_scope(previous_publication)
+    require(projection.get('previous_publication_sha256')==canonical_sha256(previous_publication)
+        and projection.get('publisher_reinstall_required') is False
+        and projection['revision']!=previous_publication['revision']
+        and projection['policy_hash']==previous_publication['policy_hash']
+        and all(projection[key]==previous_publication[key] for key in
+            ('acknowledgment_references','process_declarations','runtime_settings')),
+        'Exact reviewed installed revision transition required')
+
+
+def _revision_process_names(projection, deployments, replicasets, pods):
+    for values in (deployments,replicasets,pods):
+        require(isinstance(values,dict) and set(values)==set(COMPONENTS),'All actual current process records required')
+    core,apps=_captured_apis(deployments,replicasets,pods);names={}
+    for component in COMPONENTS:
+        expected=projection['expected_deployments'][component];deployment=deployments[component]
+        meta=object_guard(deployment,'Deployment')
+        require(all(meta.get(k)==expected[k] for k in ('namespace','name','uid'))
+            and deployment.get('spec')==expected['spec'],'Exact applied reviewed controller required')
+        pod=pods[component];pmeta=object_guard(pod,'Pod');rs=replicasets[component];object_guard(rs,'ReplicaSet')
+        receipt={**{k:projection['process_declarations'][component][k] for k in ('namespace','container','image','service_account')},
+            'name':pmeta['name'],'uid':pmeta['uid']}
+        observed,_=observe_process(core,apps,projection['process_declarations'][component],receipt)
+        require(observed==pod and _owner(pod,rs,'ReplicaSet'),'Exact captured current ReplicaSet required')
+        _observed_projection(pod,expected,component)
+        names[component]={'pod':pmeta['name'],'replicaset':rs['metadata']['name']}
+    return names
+
+
+def _revision_role_patches(projection, old_rows, new_rows, roles):
+    expected={o['metadata']['namespace']+'/'+o['metadata']['name']:o for o in old_rows if o['kind']=='Role'}
+    targets={o['metadata']['namespace']+'/'+o['metadata']['name']:o for o in new_rows if o['kind']=='Role'}
+    require(isinstance(roles,dict) and set(roles)==set(expected)==set(targets),'All exact prior approval Roles required')
+    patches={}
+    for key,baseline in roles.items():
+        meta=object_guard(baseline,'Role');wanted=expected[key]
+        require(set(baseline)=={'apiVersion','kind','metadata','rules'}
+            and baseline['apiVersion']=='rbac.authorization.k8s.io/v1'
+            and not meta.get('deletionTimestamp') and not meta.get('ownerReferences')
+            and all(meta.get(k)==wanted['metadata'][k] for k in ('namespace','name'))
+            and baseline['rules']==wanted['rules'],'Exact complete prior named Role rules required')
+        patches[key]=replace_patch(baseline,'/rules',baseline['rules'],targets[key]['rules'])
+    return {'version':1,'patches':patches,'live_applied':False,'process_readiness_verified':False,
+        'previous_publication_sha256':projection['previous_publication_sha256']}
+
+
+def revision_access_intent(*, projection, previous_publication, deployments, replicasets, pods, roles):
+    """Before rollout, replace named document GET while retaining actual old Pod names."""
+    _revision_access_scope(projection,previous_publication)
+    names=_revision_process_names(previous_publication,deployments,replicasets,pods)
+    result=_revision_role_patches(projection,_access_rows(previous_publication,names),_access_rows(projection,names),roles)
+    return {**result,'previous_process_names':names,'requires_actual_new_process_capture':True}
+
+
+def revision_process_access_intent(*, projection, previous_publication, previous_process_records,
+        deployments, replicasets, pods, roles):
+    """After rollout, replace only old Pod/RS GET targets using genuine new processes."""
+    _revision_access_scope(projection,previous_publication)
+    require(isinstance(previous_process_records,dict)
+        and set(previous_process_records)=={'deployments','replicasets','pods'},'Closed retained prior process capture required')
+    old_names=_revision_process_names(previous_publication,**previous_process_records)
+    names=_revision_process_names(projection,deployments,replicasets,pods)
+    result=_revision_role_patches(projection,_access_rows(projection,old_names),_access_rows(projection,names),roles)
+    return {**result,'actual_process_names':names}
 
 
 def _captured_apis(deployments,replicasets,pods):
