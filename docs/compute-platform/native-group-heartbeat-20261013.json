@@ -1,0 +1,66 @@
+{
+  "version": 1,
+  "observedDate": "2026-10-13",
+  "scope": "source-only",
+  "status": "source-verified-live-acceptance-pending",
+  "sdk": {
+    "commit": "601ecb9b172d6eabcd7bd77e8200e02132d5541f",
+    "previousCommit": "bfe20f29d73804966043de30f484d72a6cd7112d",
+    "nativeAuthorityFile": "src/cps_compute/native_gpu_control.py",
+    "nativeAuthoritySha256": "sha256:1b5068a158886ee2307ad219eef3524ecca238c01145926e8316c0918e453fad"
+  },
+  "gatewayImage": "ghcr.io/mul-cps/cps-compute@sha256:88dca37788b0dfda879836066e68a393e941edab18fbf4cbb9d9d970e8808516",
+  "sourceVerification": {
+    "passed": true,
+    "fullSuite": {
+      "evidenceKind": "operator-reported-source-test-result",
+      "passed": 1477,
+      "skipped": 3,
+      "failed": 0
+    },
+    "independentFocusedVerification": {
+      "passed": 57,
+      "skipped": 0,
+      "failed": 0,
+      "tests": [
+        "tests/test_native_group_reservation_ref.py",
+        "tests/test_native_gpu_control.py",
+        "tests/test_native_group_packing.py::test_two_twenty_gib_claims_race_for_measured_budget_in_uid_rv_cas"
+      ]
+    },
+    "regressions": {
+      "heartbeatProgressDuringBlockingReads": true,
+      "expiredProofDeniedWithoutNativeClaim": true,
+      "repeatedCancellationRetainsAcquisitionFence": true,
+      "measuredBudgetCasRace": true
+    }
+  },
+  "preservedGuards": {
+    "freshSourceAndNodeReferenceChecks": true,
+    "reservationAuthorizerInsideTransaction": true,
+    "asyncLedgerCas": true,
+    "cancellationOwnershipUntilWorkerCompletion": true,
+    "acknowledgmentTtlUnchanged": true,
+    "noReadinessCacheAdded": true,
+    "profilesAndGpuConfigurationUnchanged": true
+  },
+  "liveAcceptance": {
+    "status": "inconclusive",
+    "accepted": false,
+    "receipt": null,
+    "operatorReportedProgress": {
+      "nativeAcquireStatus": 200,
+      "podCreated": true,
+      "registerStatus": 422,
+      "nativeReleaseStatus": 409,
+      "sourceCloseStatus": 409,
+      "receiptReviewed": false
+    }
+  },
+  "scopeClaims": {
+    "newHardwareQualification": false,
+    "generalGroupAccessQualified": false,
+    "productionQualified": false,
+    "migUsed": false
+  }
+}
