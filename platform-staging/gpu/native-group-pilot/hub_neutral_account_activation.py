@@ -95,7 +95,7 @@ def span(raw, node):
     )
 
 
-def edit_configuration(code, source, owners, legacy, backup):
+def edit_configuration(code, source, owners, legacy, backup, configured_role=None):
     raw = code.encode("utf-8")
     tree = ast.parse(code)
     classes = [n for n in tree.body if isinstance(n, ast.ClassDef)]
@@ -211,6 +211,33 @@ def edit_configuration(code, source, owners, legacy, backup):
     r.require(
         isinstance(scope_node, ast.List), "Captured literal Source API scopes required"
     )
+    inherited_role = copy.deepcopy(role)
+    if configured_role is not None:
+        r.require(
+            isinstance(configured_role, dict) and "name" not in configured_role,
+            "Captured own chart role must have its unique mapping-key identity",
+        )
+        inherited_role = {"name": role_name, **copy.deepcopy(configured_role)}
+        normalized = copy.deepcopy(inherited_role)
+        for assignment in ("users", "groups", "services"):
+            normalized.setdefault(assignment, [])
+        r.require(
+            normalized == role,
+            "Complete own configured API role must match captured actual policy",
+        )
+    transition = (
+        "_native_provisioning_before = " + repr(inherited_role) + "\n"
+        "_native_provisioning_matches = [role for role in _native_roles "
+        "if role.get('name') == " + repr(role_name) + "]\n"
+        "if len(_native_provisioning_matches) > 1:\n"
+        "    raise RuntimeError('Duplicate own Source API role')\n"
+        "if _native_provisioning_matches:\n"
+        "    if _native_provisioning_matches[0] != _native_provisioning_before:\n"
+        "        raise RuntimeError('Existing own Source API role differs from captured configuration')\n"
+        "    _native_provisioning_matches[0]['scopes'] = "
+        + repr(role["scopes"] + [SCOPE])
+        + "\n"
+    )
     replacement = (
         "from cps_compute_hub import install_workspace_account_provisioning\n"
         "install_workspace_account_provisioning(\n"
@@ -228,6 +255,7 @@ def edit_configuration(code, source, owners, legacy, backup):
         (*span(raw, classes[0]), replacement.encode()),
         (*span(raw, authority), b""),
         (*span(raw, scope_node), repr(role["scopes"] + [SCOPE]).encode()),
+        (span(raw, loops[0])[0], span(raw, loops[0])[0], transition.encode()),
     ]
     for start, end, value in sorted(edits, reverse=True):
         raw = raw[:start] + value + raw[end:]
@@ -344,9 +372,15 @@ def compile_intent(request, *, backup_sha256, backup_bytes):
         and backup["values_sha256"] == sha256(raw),
         "Actual backup bytes, Source, Hub version and configuration custody must match",
     )
-    replacement, role = edit_configuration(code, source, owners, legacy, backup_sha256)
     service = source + "-admin"
     role_name = service + "-api"
+    configured_roles = values["hub"].get("loadRoles", {})
+    r.require(
+        isinstance(configured_roles, dict), "Captured chart role mapping required"
+    )
+    replacement, role = edit_configuration(
+        code, source, owners, legacy, backup_sha256, configured_roles.get(role_name)
+    )
     actual_service = (
         request["services"].get(service)
         if isinstance(request["services"], dict)
