@@ -149,12 +149,16 @@ their UID, resourceVersion and full-rules tests; existing RoleBindings remain
 unchanged.
 
 After the new processes exist, capture their actual full Deployment,
-ReplicaSet and Ready-Pod objects and fresh Role readbacks. Call
+ReplicaSet and Pod objects and fresh Role readbacks. A new Pod may be Pending
+or Running without Ready at this permission-only step: its publisher needs the
+named GET permission before it can produce a loaded-process proof. Call
 `revision_process_access_intent` with the same two publication packets,
 `previous_process_records` (exact keys `deployments`, `replicasets`, `pods`),
 the new `deployments`, `replicasets`, `pods`, and the fresh `roles`. This second
-guarded step changes only actual Pod/ReplicaSet GET names. No future name or
-acknowledgment is invented. Preserve any separately managed historical custody
+guarded step changes only actual Pod/ReplicaSet GET names. It reuses the shared
+exact controller ownership, current template, selector and executable/security
+checks, including exact approved mounts. It never changes Pod status or claims
+readiness. No future name or acknowledgment is invented. Preserve any separately managed historical custody
 permissions; these helpers own only their seven named approval Roles.
 
 Finally, use the unchanged `readiness_intent` with genuine fresh acknowledgments

@@ -147,6 +147,32 @@ class RolloverTests(unittest.TestCase):
         bad=copy.deepcopy(records);bad['pods']['node']['metadata']['ownerReferences'][0]['uid']=uid(998)
         with self.assertRaises(ValueError):r.revision_access_intent(projection=result,previous_publication=self.prior,roles=self.roles,**bad)
 
+    def test_post_rollout_named_access_bootstraps_pending_pod_without_readiness_claim(self):
+        result=self.render();old_records={key:self.old[key] for key in ('deployments','replicasets','pods')}
+        stage=r.revision_access_intent(projection=result,previous_publication=self.prior,roles=self.roles,**old_records)
+        staged=copy.deepcopy(self.roles)
+        for key,patch in stage['patches'].items():staged[key]['rules']=copy.deepcopy(patch[-1]['value'])
+        current=readiness_fixture(self.initial.f,result,self.kwargs['documents'])
+        current['pods']['node']['status']={'phase':'Pending','conditions':[{'type':'Ready','status':'False'}]}
+        kwargs=dict(projection=result,previous_publication=self.prior,previous_process_records=old_records,
+            roles=staged,**{key:current[key] for key in ('deployments','replicasets','pods')})
+        access=r.revision_process_access_intent(**kwargs)
+        self.assertFalse(access['process_readiness_verified'])
+        self.assertEqual(access['actual_process_names']['node']['pod'],current['pods']['node']['metadata']['name'])
+        self.assertEqual(current['pods']['node']['status']['phase'],'Pending')
+        with self.assertRaises(ValueError):r.readiness_intent(projection=result,documents=self.kwargs['documents'],
+            policy=self.initial.f[0],qualification=self.initial.f[1],**current)
+        for mutate in (
+            lambda d:d['pods']['node']['metadata']['ownerReferences'][0].update(uid=uid(999)),
+            lambda d:d['pods']['node']['spec']['containers'][0].update(command=['/forged']),
+            lambda d:d['pods']['node']['spec']['containers'][0].update(securityContext={'privileged':True}),
+            lambda d:d['pods']['node']['metadata'].update(deletionTimestamp='2026-10-13T00:00:00Z'),
+            lambda d:d['pods']['node']['status'].update(phase='Failed'),
+            lambda d:d['replicasets']['node']['spec']['template']['spec']['containers'][0]['args'].append('--foreign'),
+        ):
+            bad=copy.deepcopy(kwargs);mutate(bad)
+            with self.assertRaises(ValueError):r.revision_process_access_intent(**bad)
+
     def test_third_generation_reuses_same_publishers_and_keeps_eight_prior_refs(self):
         second=self.render();kwargs=copy.deepcopy(self.kwargs)
         registry=r.parse(kwargs['source_raw']);registry['generation']+=1

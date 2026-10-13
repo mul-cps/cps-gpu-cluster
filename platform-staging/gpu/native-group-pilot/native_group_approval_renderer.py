@@ -19,6 +19,7 @@ from cps_compute.native_group_approvals import ApprovalSnapshot
 from cps_compute.native_group_revision import (ApprovalRevision, approval_envelope, validate_ack,
     validate_reference, validate_acknowledgment_reference)
 from cps_compute.native_group_process import validate_process_declaration, observe_process
+from cps_compute import native_group_process as process_validation
 from cps_compute.native_gpu_controller import DriverEpoch
 from cps_compute.native_groups import NativeGroupDeployment, canonical_sha256
 from cps_compute.policy import Policy
@@ -545,7 +546,29 @@ def _revision_access_scope(projection, previous_publication):
         'Exact reviewed installed revision transition required')
 
 
-def _revision_process_names(projection, deployments, replicasets, pods):
+def _permission_bootstrap_target(pod, rs, deployment, declaration):
+    """Structural name permission only; never a Ready or loaded-revision proof."""
+    expected=validate_process_declaration(declaration);namespace=expected['namespace']
+    process_validation._object(deployment,'Deployment',namespace,expected['name'],expected['uid'])
+    process_validation._object(pod,'Pod',namespace,pod['metadata']['name'],pod['metadata']['uid'])
+    owner=process_validation._owner(pod,'ReplicaSet')
+    process_validation._object(rs,'ReplicaSet',namespace,owner['name'],owner['uid'])
+    parent=process_validation._owner(rs,'Deployment')
+    require((parent['name'],parent['uid'])==(expected['name'],expected['uid']),'Foreign permission-bootstrap ReplicaSet')
+    desired=process_validation._template(deployment)
+    normalized=copy.deepcopy(process_validation._template(rs))
+    normalized.get('metadata',{}).get('labels',{}).pop('pod-template-hash',None)
+    require(normalized==desired,'Previous or changed permission-bootstrap template')
+    process_validation._selector(pod['metadata'].get('labels',{}),deployment['spec'].get('selector'))
+    process_validation._match_pod_spec(pod.get('spec'),desired['spec'])
+    require(all(process_validation._contains(pod['metadata'].get(key,{}),desired.get('metadata',{}).get(key,{}))
+        for key in ('labels','annotations')),'Actual permission-bootstrap Pod metadata required')
+    require(isinstance(pod.get('status'),dict) and pod['status'].get('phase') in ('Pending','Running'),
+        'Actual live permission-bootstrap Pod required')
+    return pod
+
+
+def _revision_process_names(projection, deployments, replicasets, pods, *, permission_bootstrap=False):
     for values in (deployments,replicasets,pods):
         require(isinstance(values,dict) and set(values)==set(COMPONENTS),'All actual current process records required')
     core,apps=_captured_apis(deployments,replicasets,pods);names={}
@@ -557,7 +580,10 @@ def _revision_process_names(projection, deployments, replicasets, pods):
         pod=pods[component];pmeta=object_guard(pod,'Pod');rs=replicasets[component];object_guard(rs,'ReplicaSet')
         receipt={**{k:projection['process_declarations'][component][k] for k in ('namespace','container','image','service_account')},
             'name':pmeta['name'],'uid':pmeta['uid']}
-        observed,_=observe_process(core,apps,projection['process_declarations'][component],receipt)
+        if permission_bootstrap:
+            observed=_permission_bootstrap_target(pod,rs,deployment,projection['process_declarations'][component])
+        else:
+            observed,_=observe_process(core,apps,projection['process_declarations'][component],receipt)
         require(observed==pod and _owner(pod,rs,'ReplicaSet'),'Exact captured current ReplicaSet required')
         _observed_projection(pod,expected,component)
         names[component]={'pod':pmeta['name'],'replicaset':rs['metadata']['name']}
@@ -596,7 +622,7 @@ def revision_process_access_intent(*, projection, previous_publication, previous
     require(isinstance(previous_process_records,dict)
         and set(previous_process_records)=={'deployments','replicasets','pods'},'Closed retained prior process capture required')
     old_names=_revision_process_names(previous_publication,**previous_process_records)
-    names=_revision_process_names(projection,deployments,replicasets,pods)
+    names=_revision_process_names(projection,deployments,replicasets,pods,permission_bootstrap=True)
     result=_revision_role_patches(projection,_access_rows(projection,old_names),_access_rows(projection,names),roles)
     return {**result,'actual_process_names':names}
 
