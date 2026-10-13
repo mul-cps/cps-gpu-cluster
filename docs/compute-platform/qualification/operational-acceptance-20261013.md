@@ -368,3 +368,43 @@ The package is installed, but the existing inline guard remains in live Hub
 configuration until the separate permanent-registry installer rollout. This
 receipt does not claim that registry migration, generic account creation,
 human OAuth, general GPU scheduling or production qualification have passed.
+
+## Two concurrent ordinary CPS five-GiB workspaces
+
+The two existing approved CPS groups, with disjoint canonical membership,
+completed concurrent normal Source Start and a common 180-second observation
+window on the unchanged, cordoned, no-MIG GPU2 pilot. Actual Pod UIDs and sealed
+node records established two distinct cgroup caps of **5,368,709,120 bytes**.
+The exact existing notebook images, driver/boot epoch, policy and approval
+revision remained pinned. No group, grant, course ceiling or GPU owner was added.
+
+In each direction, the existing reviewed direct-CUDA VMM probe allocated and
+verified 64 MiB, received typed CUDA result **2** for an untouched oversized
+allocation, then allocated and verified 64 MiB again. Its peer completed **225**
+successful GPU heartbeat ticks over **45 seconds**, spanning the OOM and
+recovery, and confirmed cleanup. The successful private pair receipt SHA256 is
+`ffefcc219230e16f790e5d2e0f57dbd8f107df032d5ad24902d209984800cd3f`;
+the sanitized result is retained in
+`platform-staging/gpu/qualification/concurrent-source5/live-receipt-20261014.json`.
+
+Both normal Close operations confirmed shutdown before releasing reservations,
+restored their permission windows and Hub groups, and returned the reviewed
+Source records, registrations, Shares and storage associations to their exact
+preimages. Fresh readback reported zero active native entries and zero charged
+bytes. Retired inventory history changed as expected; it was retained. This is
+not an inference that a physical GPU is free.
+
+The earlier attempt stopped before Start because an old evidence parent had
+inherited an fsGroup mode. The executor now uses a fresh private directory per
+canonical run ID. The first hardware attempt completed both OOM/recovery probes,
+but shutdown interrupted the second peer window; that receipt remains
+inconclusive. The subsequent complete run passed both directions after the
+trusted-artifact staging code normalized only its newly created, inode-bound
+directory. Existing directories remain untouched and rejected. The frozen
+operator runner SHA256 is
+`d241f8f3ad8ff03c42d18f3a914db578e3138511f9355ef29cd99c5152490bbd`;
+19 focused offline staging/measurement tests passed.
+
+This qualifies bounded two-workspace CUDA cap isolation through the ordinary CPS
+lifecycle. Cross-parent imports, current-pair restarts, MPS, cross-Hub reservations,
+KAI placement, wider packing and production remain separate unfinished gates.
