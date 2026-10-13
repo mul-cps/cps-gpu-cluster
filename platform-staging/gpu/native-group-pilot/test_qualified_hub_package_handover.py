@@ -81,13 +81,13 @@ def observation(base, publication):
         'gateway_runtime':runtime}
 
 
-def post_observation(base, plan):
+def post_observation(base, plan, identity_offset=0):
     p = copy.deepcopy(plan['projection'])
-    for i,c in enumerate(h.HUBS,600):
+    for i,c in enumerate(h.HUBS,600 + identity_offset):
         p['bootstrap_maps'][c]['metadata'].update(uid=uid(i),resourceVersion='2')
     obs = observation(base,p)
     # The actual two replacement processes have new Pod/ReplicaSet identities.
-    for i,c in enumerate(h.HUBS,700):
+    for i,c in enumerate(h.HUBS,700 + identity_offset):
         rs, pod = obs['replicasets'][c], obs['pods'][c]
         rs['metadata'].update(name='new-rs-'+str(i),uid=uid(i))
         pod['metadata'].update(name='new-pod-'+str(i),uid=uid(i+10))
@@ -95,7 +95,7 @@ def post_observation(base, plan):
         ack = r.parse(obs['acknowledgments'][c]['data']['ack.json'])
         ack['process'].update(name=pod['metadata']['name'],uid=pod['metadata']['uid'])
         obs['acknowledgments'][c]['data']['ack.json'] = r.canonical(ack)
-    gateway=obs['pods']['gateway'];gateway['metadata'].update(name='new-gateway-pod',uid=uid(720))
+    gateway=obs['pods']['gateway'];gateway['metadata'].update(name='new-gateway-pod' + ('-' + str(identity_offset) if identity_offset else ''),uid=uid(720 + identity_offset))
     ack=r.parse(obs['acknowledgments']['gateway']['data']['ack.json'])
     ack['process'].update(name=gateway['metadata']['name'],uid=gateway['metadata']['uid'])
     obs['acknowledgments']['gateway']['data']['ack.json']=r.canonical(ack)
@@ -110,6 +110,64 @@ class HandoverTests(unittest.TestCase):
 
     def plan(self):
         return h.plan_intent(self.packet,now=NOW)
+
+    def account_packet(self):
+        """The next request starts from the completed serialized prior journal."""
+        plan, access, obs, final = self.final()
+        packet = copy.deepcopy(self.packet)
+        p = final['publication']
+        packet['previous_publication'] = copy.deepcopy(p)
+        packet['previous_publication_sha256'] = r.canonical_sha256(p)
+        packet['observations'] = copy.deepcopy(obs)
+        packet['gateway_runtime'] = copy.deepcopy(obs['gateway_runtime'])
+        packet['reviewed_images'] = {c: {'previous': h.REVIEWED_IMAGE,
+            'next': 'ghcr.io/mul-cps/cps-compute@sha256:466b8398285a513499440dd00aaf0abc377cc49afe05f19e5556e79908106486'}
+            for c in h.HUBS}
+        state = packet['old_state']
+        state['seed'] = copy.deepcopy(final['seed'])
+        state['seed_sha256'] = r.canonical_sha256(state['seed'])
+        state['journal'] = {'version': 1, 'config_hash': state['seed_sha256'],
+            'publication': copy.deepcopy(p), 'baselines': copy.deepcopy(final['seed']['baselines']),
+            'structural_prior': False, 'transition': None, 'process_refresh': None,
+            'process_names': r._revision_process_names(p, **{k: obs[k] for k in ('deployments','replicasets','pods')}),
+            'role_guards': {k: {'uid': v['metadata']['uid'], 'rules': v['rules']} for k,v in obs['roles'].items()}}
+        state['journal_sha256'] = r.canonical_sha256(state['journal'])
+        state['controller']['spec']['template']['spec']['volumes'][0]['persistentVolumeClaim']['claimName'] = 'current-journal'
+        state['journal_pvc']['metadata'].update(name='current-journal', uid=uid(920))
+        state['next_journal']['name'] = 'account-next-journal'
+        state['next_input_secret']['name'] = 'account-next-input'
+        return r.parse(r.canonical(packet))
+
+    def test_reviewed_account_image_pair_preserves_all_four_fresh_process_gates(self):
+        packet = self.account_packet()
+        plan = h.plan_intent(packet, now=NOW)
+        obs = post_observation(self.base, plan, identity_offset=1000)
+        access = h.process_access_intent(plan, obs, now=NOW)
+        for key, patch in access['role_patches'].items():
+            obs['roles'][key]['rules'] = copy.deepcopy(patch[-1]['value'])
+        final = h.finalize_intent(plan, access, obs, now=NOW)
+        self.assertTrue(final['ready'])
+        for c in h.HUBS:
+            self.assertEqual(final['publication']['process_declarations'][c]['image'],
+                             packet['reviewed_images'][c]['next'])
+        for c in r.COMPONENTS:
+            self.assertEqual(final['seed']['baselines'][c]['deployment'], obs['deployments'][c])
+        self.assertEqual(final['lineage']['previous_journal_sha256'], packet['old_state']['journal_sha256'])
+        self.assertEqual(final['publication']['documents'], packet['previous_publication']['documents'])
+
+    def test_reviewed_account_pair_does_not_permit_other_or_mixed_transitions(self):
+        for case in ('reverse', 'skip', 'foreign', 'mixed'):
+            packet = self.account_packet()
+            if case == 'reverse':
+                for row in packet['reviewed_images'].values(): row['previous'], row['next'] = row['next'], row['previous']
+            elif case == 'skip':
+                for row in packet['reviewed_images'].values(): row['previous'] = h.OLD_IMAGE
+            elif case == 'foreign':
+                packet['reviewed_images']['hub:cps']['next'] = 'ghcr.io/mul-cps/cps-compute@sha256:' + 'f' * 64
+            else:
+                packet['reviewed_images']['hub:cit'] = {'previous': h.OLD_IMAGE, 'next': h.REVIEWED_IMAGE}
+            with self.subTest(case=case), self.assertRaises(ValueError):
+                h.plan_intent(packet, now=NOW)
 
     def final(self):
         plan=self.plan(); obs=post_observation(self.base,plan)
