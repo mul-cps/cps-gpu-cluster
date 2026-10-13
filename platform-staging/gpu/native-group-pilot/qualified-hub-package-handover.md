@@ -13,6 +13,9 @@ hidden in a Source revision or replay. This separate operation keeps the actual
 Source registry, approval documents, references and their UIDs, policy,
 qualification, driver epoch, acknowledgment identities, usernames, storage,
 mounts, Hub configuration and all gateway/node Deployment fields unchanged.
+The actual gateway runtime Secret receives one full-data CAS changing only the
+two Hub images in `nativeGroupApprovals.processes`; every other decoded runtime
+field and every other encoded Secret data key stays exact.
 Only the two Hub service images, their image-bound immutable publisher bootstrap
 files and the corresponding bootstrap volume names change. The structural
 permission step permits only actual singleton Pod and ReplicaSet GET names to
@@ -37,7 +40,10 @@ Create a mode-0600 packet in an owned private directory with these exact keys:
 
 - `version: 1`, `previous_publication`, and its canonical
   `previous_publication_sha256`.
-- Existing exact `policy` and `qualification` configuration.
+- Existing exact `policy` and `qualification` configuration, plus
+  `gateway_runtime`: the complete actual mutable runtime Secret. Its namespace,
+  name and runtime JSON key are derived from the unchanged gateway service
+  container's `CPS_COMPUTE_CONFIG` and read-only Secret volume, not caller guesses.
 - `reviewed_images`: exactly `hub:cps` and `hub:cit`, each containing exactly
   `previous` and `next` with the two full immutable image references above.
 - `old_state`: exact previous `seed`, canonical `seed_sha256`, completed
@@ -47,7 +53,7 @@ Create a mode-0600 packet in an owned private directory with these exact keys:
   `cps-compute`. Never reuse or edit the previous journal or input Secret.
 - `observations`: exactly `documents`, `reference_maps`, `bootstrap_maps`,
   `acknowledgments`, `deployments`, `replicasets`, `pods`, `roles`, `source`,
-  and `epoch`. The first seven maps contain all four component keys;
+  `epoch`, and `gateway_runtime` (the full actual current runtime Secret). The first seven maps contain all four component keys;
   `acknowledgments` contains actual ConfigMaps with `ack.json`, not only their
   data. `roles` is keyed by each of the seven `namespace/name` pairs.
   `source` is the actual closed v1 capture packet. `epoch` is exactly
@@ -77,10 +83,20 @@ is intentional.
 
 Create the two immutable ConfigMap candidates through the operator's existing
 API identity, then retain their actual create/readback UIDs. Preflight both
-Deployment patches before applying either. Apply exactly each four-operation
+Deployment patches before applying either. Also preflight
+`gateway_runtime_patch` against the original runtime Secret UID, resourceVersion
+and complete `/data`; save its full private preimage for recovery. Apply exactly each four-operation
 JSON patch from `deployment_patches[component]`: test original UID, test
 resourceVersion, test complete `/spec`, replace complete `/spec`. Apply to the
-Deployment named by `projection.expected_deployments[component]`. Do not use
+Deployment named by `projection.expected_deployments[component]`. Apply exactly `gateway_runtime_patch` to the named actual Secret; it changes
+only the two trusted Hub image values, preserves every other decoded runtime
+field and every other Secret data key, and retains the Secret UID. Delete only
+the original gateway Pod using the exact UID from
+`gateway_pod_restart_precondition` through an API DELETE with UID preconditions.
+The gateway Deployment spec remains completely unchanged; a genuine new Pod
+from its same ReplicaSet reloads the mounted configuration.
+
+Do not use
 `kubectl set image`, regenerate publisher fields manually, change another
 container, or alter an approval document. If a preimage conflicts, recapture and
 review; do not remove its tests.
@@ -92,7 +108,7 @@ Do not replace either newly created immutable bootstrap.
 
 ## Permit only the actual new process names
 
-Capture the genuine new Hub Pods and their owning ReplicaSets, all four exact
+Capture the genuine new Hub Pods and replacement gateway Pod, and their owning ReplicaSets, all four exact
 Deployment specs and current ConfigMaps/Role readbacks, and fresh protected
 Source and epoch results. Pending/Running Pods may be used for this structural
 step before their acknowledgment publishers can read their own Pod. The full
@@ -100,7 +116,9 @@ owner chain and executable template must match the exact planned target.
 
 Create a new mode-0600 packet with exactly `{version:1,plan,observations}`,
 where `plan` is the complete plan output and `observations` uses the schema
-above. Existing publisher Role rules must still match the old current-process
+above. `observations.gateway_runtime` must be the exact applied runtime Secret
+readback with the original UID and full target data. The gateway Pod UID must
+differ from its original process. Existing publisher Role rules must still match the old current-process
 GET names, with the original Role UIDs.
 
 ```bash
@@ -118,7 +136,10 @@ Keep this exact output: it binds the actual new immutable bootstrap UIDs.
 
 After the two replacement Hub processes publish genuine successful ACKs,
 recapture all four current processes, the original ACK ConfigMap identities,
-the applied Role rules and fresh protected Source/epoch results. Never reuse an
+the applied Role rules, exact new trusted runtime Secret readback, and fresh
+protected Source/epoch results. The capture endpoint can briefly be unavailable
+while the gateway restarts; recapture after it is healthy rather than reusing
+stale results. Never reuse an
 old Pod receipt or an ACK from the previous image. Make a mode-0600 packet with
 exactly `{version:1,plan,access,observations}`; `access` is the complete structural
 permission output.
@@ -152,5 +173,7 @@ for recovery.
 If recovery is needed before the new seed is active, keep the controller
 paused. Restoring the old images also requires their original immutable
 bootstrap names, exact old specs and fresh actual process permissions/ACKs;
-image rollback alone is insufficient. Never reset driver state or GPU caps to
+image rollback alone is insufficient. Restore the old trusted runtime Secret
+data with full UID/resourceVersion/data CAS and replace only its actual current
+gateway Pod with UID-guarded DELETE so the old trusted image declarations reload. Never reset driver state or GPU caps to
 repair this software upgrade.

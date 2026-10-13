@@ -7,6 +7,7 @@ operator's authenticated read-only capture and the actual Kubernetes API.
 from __future__ import annotations
 
 import argparse
+import base64
 import copy
 from datetime import datetime, timezone
 import hashlib
@@ -20,16 +21,17 @@ HUBS = ('hub:cps', 'hub:cit')
 OLD_IMAGE = 'ghcr.io/mul-cps/cps-compute@sha256:c22c7460ae3ddc3cac454a7f0fac41fc7308e4601e06162b91ca7af7ba301233'
 REVIEWED_IMAGE = 'ghcr.io/mul-cps/cps-compute@sha256:bc32b73d244738c3778560a1f48e701efd10f8c57ac4834f486b3f27a30d2623'
 OBSERVATIONS = {'documents','reference_maps','bootstrap_maps','acknowledgments',
-    'deployments','replicasets','pods','roles','source','epoch'}
+    'deployments','replicasets','pods','roles','source','epoch','gateway_runtime'}
 REQUEST = {'version','previous_publication','previous_publication_sha256','policy',
-    'qualification','reviewed_images','old_state','observations'}
+    'qualification','reviewed_images','old_state','observations','gateway_runtime'}
 PUBLICATION = {'version','source_sha256','revision','policy_hash','documents','baseline_guards','live_applied',
     'process_readiness_verified','references','reference_maps','bootstrap_maps','patches','expected_deployments',
     'requires_actual_process_ack','acknowledgment_references','process_declarations','runtime_settings'}
 ACCESS = {'version','kind','plan_sha256','observations','captured_at','role_patches','actual_process_names',
     'bootstrap_maps','ready','requires_actual_fresh_acknowledgments'}
 PLAN = {'version','kind','request','request_sha256','planned_at','projection',
-    'bootstrap_candidates','deployment_patches','lineage','ready'}
+    'bootstrap_candidates','deployment_patches','lineage','ready','gateway_runtime_patch',
+    'gateway_runtime_target','gateway_pod_restart_precondition'}
 
 
 def closed(value, keys, message):
@@ -63,6 +65,68 @@ def same_cm(actual,expected,*,bound=True):
         and all(am[k]==expected['metadata'][k] for k in ('namespace','name'))
         and (not bound or am['uid']==expected['metadata']['uid']),
         'Exact immutable ConfigMap data and actual custody required')
+
+
+
+def runtime_binding(request):
+    """Derive the one actual runtime Secret/key from the unchanged gateway spec."""
+    p=request['previous_publication'];expected=p['expected_deployments']['gateway']
+    pod=expected['spec']['template']['spec']
+    container=next(c for c in pod['containers'] if c['name']==expected['container'])
+    config=[e for e in container.get('env',[]) if e.get('name')=='CPS_COMPUTE_CONFIG']
+    r.require(len(config)==1 and set(config[0])=={'name','value'}
+        and isinstance(config[0]['value'],str) and config[0]['value'].startswith('/')
+        and '..' not in config[0]['value'].split('/'),'One exact static gateway runtime path required')
+    path=config[0]['value'];matches=[]
+    for mount in container.get('volumeMounts',[]):
+        prefix=mount.get('mountPath','').rstrip('/')
+        if path.startswith(prefix+'/') and mount.get('readOnly') is True and 'subPath' not in mount:
+            volumes=[v for v in pod['volumes'] if v.get('name')==mount.get('name') and 'secret' in v]
+            if len(volumes)==1:
+                relative=path[len(prefix)+1:];volume=volumes[0]['secret']
+                key=relative
+                if 'items' in volume:
+                    items=[i for i in volume['items'] if i.get('path')==relative]
+                    r.require(len(items)==1,'One actual mapped gateway runtime key required')
+                    key=items[0]['key']
+                r.require('/' not in key and key,'One exact gateway runtime Secret key required')
+                matches.append((volume['secretName'],key))
+    r.require(len(matches)==1,'One exact read-only runtime Secret projection required')
+    return expected['namespace'],matches[0][0],matches[0][1]
+
+
+def runtime_secret(actual,request,expected_data=None):
+    r.require(isinstance(actual,dict) and set(actual) in ({'apiVersion','kind','metadata','type','data'},
+        {'apiVersion','kind','metadata','type','data','immutable'}),'Closed actual gateway runtime Secret required')
+    meta=identity(actual,'Secret');namespace,name,key=runtime_binding(request)
+    r.require(actual['apiVersion']=='v1' and actual['type']=='Opaque'
+        and actual.get('immutable') in (None,False) and isinstance(actual['data'],dict)
+        and key in actual['data'] and (meta['namespace'],meta['name'])==(namespace,name)
+        and (expected_data is None or (meta==identity(request['gateway_runtime'],'Secret')
+            and actual['data']==expected_data)), 'Original exact mutable gateway runtime Secret custody and data required')
+    try:
+        config=r.parse(base64.b64decode(actual['data'][key],validate=True))
+    except (ValueError,TypeError,UnicodeDecodeError):
+        raise ValueError('Exact encoded gateway runtime JSON required') from None
+    r.require(isinstance(config,dict),'Gateway runtime object required')
+    return config,key
+
+
+def runtime_intent(request,target_publication):
+    actual=request['gateway_runtime'];config,key=runtime_secret(actual,request)
+    r.require(config.get('nativeGroupApprovals')==request['previous_publication']['runtime_settings']
+        and config.get('policy_hash')==request['previous_publication']['policy_hash'],
+        'Original complete image-bound gateway approval trust and policy required')
+    target=copy.deepcopy(config)
+    for c in HUBS:
+        r.require(target['nativeGroupApprovals']['processes'][c]['image']==OLD_IMAGE,
+            'Exact old gateway trusted Hub image required')
+        target['nativeGroupApprovals']['processes'][c]['image']=REVIEWED_IMAGE
+    r.require(target['nativeGroupApprovals']==target_publication['runtime_settings'],
+        'New gateway trust must equal exact target publisher declarations')
+    data=copy.deepcopy(actual['data']);data[key]=base64.b64encode(r.canonical(target).encode()).decode()
+    planned=copy.deepcopy(actual);planned['data']=data
+    return planned,r.replace_patch(actual,'/data',actual['data'],data)
 
 
 def context(request,obs,now):
@@ -223,6 +287,8 @@ def plan_intent(request,*,now):
     publication_inputs(p,obs,qualification,epoch)
     names=r._revision_process_names(p,**{k:obs[k] for k in ('deployments','replicasets','pods')})
     role_guards(p,names,obs['roles']);readiness(p,obs,policy,qualification,epoch,now)
+    r.require(obs['gateway_runtime']==request['gateway_runtime'],
+        'Exact original observed gateway runtime Secret required')
     chain=lineage(request,obs,names);target=copy.deepcopy(p);candidates={};patches={}
     for c in HUBS:
         r.require(p['process_declarations'][c]['image']==OLD_IMAGE,'Exact old Hub image required')
@@ -240,9 +306,16 @@ def plan_intent(request,*,now):
         target['baseline_guards'][c]={'uid':dep['metadata']['uid'],'resourceVersion':dep['metadata']['resourceVersion'],
             'spec_sha256':r.canonical_sha256(dep['spec'])}
     r._publisher_scope(target)
+    runtime_target,runtime_patch=runtime_intent(request,target)
+    chain.update(gateway_runtime=identity(request['gateway_runtime'],'Secret'),
+        gateway_runtime_resource_version=request['gateway_runtime']['metadata']['resourceVersion'],
+        previous_gateway_runtime_data_sha256=r.canonical_sha256(request['gateway_runtime']['data']),
+        next_gateway_runtime_data_sha256=r.canonical_sha256(runtime_target['data']))
     return {'version':1,'kind':'qualified-hub-package-handover','request':copy.deepcopy(request),
         'request_sha256':r.canonical_sha256(request),'planned_at':now.isoformat(),'projection':target,
-        'bootstrap_candidates':candidates,'deployment_patches':patches,'lineage':chain,'ready':False}
+        'bootstrap_candidates':candidates,'deployment_patches':patches,'lineage':chain,'ready':False,
+        'gateway_runtime_target':runtime_target,'gateway_runtime_patch':runtime_patch,
+        'gateway_pod_restart_precondition':{k:obs['pods']['gateway']['metadata'][k] for k in ('namespace','name','uid')}}
 
 
 def validated_plan(plan):
@@ -255,6 +328,10 @@ def validated_plan(plan):
 def post_inputs(plan,obs,now):
     p=validated_plan(plan);request=plan['request']
     policy,qualification,epoch=context(request,obs,now)
+    config,_=runtime_secret(obs['gateway_runtime'],request,plan['gateway_runtime_target']['data'])
+    r.require(config['nativeGroupApprovals']==p['runtime_settings']
+        and obs['pods']['gateway']['metadata']['uid']!=plan['gateway_pod_restart_precondition']['uid'],
+        'Exact new gateway trusted configuration and genuine replacement gateway Pod required')
     target=copy.deepcopy(p)
     for c in r.COMPONENTS:
         same_cm(obs['bootstrap_maps'][c],p['bootstrap_maps'][c],bound=c not in HUBS)

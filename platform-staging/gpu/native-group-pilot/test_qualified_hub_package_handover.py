@@ -1,5 +1,6 @@
 """Offline handover fixtures are not live qualification evidence."""
 import copy
+import base64
 from datetime import datetime, timedelta, timezone
 import os
 from pathlib import Path
@@ -18,6 +19,9 @@ def fixture():
     base = fixtures.PublisherTests(); base.setUp()
     for c in h.HUBS:
         base.f[-1][c]['deployment']['spec']['template']['spec']['containers'][0]['image'] = h.OLD_IMAGE
+    gateway=base.f[-1]['gateway']['deployment']['spec']['template']['spec']
+    gateway['containers'][0]['env'].append({'name':'CPS_COMPUTE_CONFIG','value':'/config/runtime.json'})
+    gateway['volumes'][0]={'name':'config','secret':{'secretName':'actual-gateway-runtime'}}
     base.projection = r.projection_intent(**base.args, documents=base.docs)
     p = base.publisher()
     p['documents'] = copy.deepcopy(base.docs)
@@ -49,7 +53,7 @@ def fixture():
     packet = {'version':1,'previous_publication':p,'previous_publication_sha256':r.canonical_sha256(p),
         'policy':base.f[0].catalog,'qualification':base.f[1]._config(),
         'reviewed_images':{c:{'previous':h.OLD_IMAGE,'next':h.REVIEWED_IMAGE} for c in h.HUBS},
-        'old_state':state,'observations':obs}
+        'old_state':state,'observations':obs,'gateway_runtime':copy.deepcopy(obs['gateway_runtime'])}
     return base, packet
 
 
@@ -65,10 +69,16 @@ def observation(base, publication):
         role['metadata'].update(uid=uid(index),resourceVersion='6')
     source = {'version':1,'source_raw':base.f[3].decode(),'source_sha256':base.args['source_sha256'],
         'trusted_revision':publication['revision'],'captured_at':NOW.isoformat()}
+    runtime={'apiVersion':'v1','kind':'Secret','type':'Opaque','metadata':{'namespace':'cps-compute',
+        'name':'actual-gateway-runtime','uid':uid(580),'resourceVersion':'4'},'data':{
+        'preserved.bin':base64.b64encode(b'unchanged').decode(),'runtime.json':base64.b64encode(r.canonical({
+            'policy_hash':publication['policy_hash'],'nativeGroupApprovals':publication['runtime_settings'],
+            'nativeGpuGroups':{'kept':'exact'},'hubs':{'kept':'exact'},'source':'unchanged'}).encode()).decode()}}
     return {k:records[k] for k in ('deployments','replicasets','pods')} | {
         'documents':copy.deepcopy(base.docs),'reference_maps':copy.deepcopy(publication['reference_maps']),
         'bootstrap_maps':copy.deepcopy(publication['bootstrap_maps']),'acknowledgments':acks,'roles':roles,
-        'source':source,'epoch':{'driver_epoch':records['driver_epoch'].__dict__,'captured_at':NOW.isoformat()}}
+        'source':source,'epoch':{'driver_epoch':records['driver_epoch'].__dict__,'captured_at':NOW.isoformat()},
+        'gateway_runtime':runtime}
 
 
 def post_observation(base, plan):
@@ -85,6 +95,11 @@ def post_observation(base, plan):
         ack = r.parse(obs['acknowledgments'][c]['data']['ack.json'])
         ack['process'].update(name=pod['metadata']['name'],uid=pod['metadata']['uid'])
         obs['acknowledgments'][c]['data']['ack.json'] = r.canonical(ack)
+    gateway=obs['pods']['gateway'];gateway['metadata'].update(name='new-gateway-pod',uid=uid(720))
+    ack=r.parse(obs['acknowledgments']['gateway']['data']['ack.json'])
+    ack['process'].update(name=gateway['metadata']['name'],uid=gateway['metadata']['uid'])
+    obs['acknowledgments']['gateway']['data']['ack.json']=r.canonical(ack)
+    obs['gateway_runtime']=copy.deepcopy(plan['gateway_runtime_target'])
     obs['roles'] = copy.deepcopy(plan['request']['observations']['roles'])
     return obs
 
@@ -211,6 +226,46 @@ class HandoverTests(unittest.TestCase):
         plan=self.plan();obs=post_observation(self.base,plan)
         plan['projection']['expected_deployments']['gateway']['spec']['replicas']=2
         with self.assertRaises(ValueError):h.process_access_intent(plan,obs,now=NOW)
+
+    def test_gateway_runtime_change_is_exact_two_images_and_full_secret_cas(self):
+        plan=self.plan();old=self.packet['gateway_runtime'];new=plan['gateway_runtime_target']
+        patch=plan['gateway_runtime_patch']
+        self.assertEqual([p['op'] for p in patch],['test','test','test','replace'])
+        self.assertEqual(patch[2]['value'],old['data']);self.assertEqual(patch[3]['value'],new['data'])
+        before=r.parse(base64.b64decode(old['data']['runtime.json']))
+        after=r.parse(base64.b64decode(new['data']['runtime.json']))
+        for c in h.HUBS:after['nativeGroupApprovals']['processes'][c]['image']=h.OLD_IMAGE
+        self.assertEqual(after,before);self.assertEqual(new['data']['preserved.bin'],old['data']['preserved.bin'])
+        self.assertEqual(plan['projection']['expected_deployments']['gateway'],self.packet['previous_publication']['expected_deployments']['gateway'])
+
+    def test_runtime_foreign_name_uid_key_images_policy_process_and_other_fields_rejected(self):
+        for kind in ('uid','data','policy','process','scope','tag','other','binary','same_gateway'):
+            with self.subTest(kind=kind):
+                plan,access,obs,_=self.final()
+                secret=obs['gateway_runtime'];cfg=r.parse(base64.b64decode(secret['data']['runtime.json']))
+                if kind=='uid':secret['metadata']['uid']=uid(999)
+                elif kind=='data':secret['data']['preserved.bin']=base64.b64encode(b'foreign').decode()
+                elif kind=='policy':cfg['policy_hash']='sha256:'+'0'*64
+                elif kind=='process':cfg['nativeGroupApprovals']['processes']['node']['image']=h.REVIEWED_IMAGE
+                elif kind=='scope':cfg['nativeGroupApprovals']['processes']['hub:cps']['namespace']='foreign'
+                elif kind=='tag':cfg['nativeGroupApprovals']['processes']['hub:cps']['image']='hub:latest'
+                elif kind=='other':cfg['nativeGpuGroups']['kept']='changed'
+                elif kind=='binary':secret['stringData']={'credential':'foreign'}
+                else:obs['pods']['gateway']['metadata']['uid']=plan['gateway_pod_restart_precondition']['uid']
+                if kind in ('policy','process','scope','tag','other'):
+                    secret['data']['runtime.json']=base64.b64encode(r.canonical(cfg).encode()).decode()
+                with self.assertRaises(ValueError):h.finalize_intent(plan,access,obs,now=NOW)
+        for kind in ('name','key','old_image','full_trust'):
+            with self.subTest(preflight=kind):
+                p=copy.deepcopy(self.packet);secret=p['gateway_runtime']
+                cfg=r.parse(base64.b64decode(secret['data']['runtime.json']))
+                if kind=='name':secret['metadata']['name']='foreign'
+                elif kind=='key':secret['data']['other.json']=secret['data'].pop('runtime.json')
+                elif kind=='old_image':cfg['nativeGroupApprovals']['processes']['hub:cps']['image']=h.REVIEWED_IMAGE
+                else:cfg['nativeGroupApprovals']['processes']['gateway']['service_account']='foreign'
+                if kind in ('old_image','full_trust'):secret['data']['runtime.json']=base64.b64encode(r.canonical(cfg).encode()).decode()
+                p['observations']['gateway_runtime']=copy.deepcopy(secret)
+                with self.assertRaises(ValueError):h.plan_intent(p,now=NOW)
 
     def test_new_seed_remains_compatible_with_ordinary_source_revision_renderer(self):
         plan,access,obs,final=self.final()
