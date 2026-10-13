@@ -455,5 +455,19 @@ class DeliveryTests(unittest.TestCase):
             for rule in o['rules']))
         self.assertFalse(any(e['name'].endswith('TOKEN') for e in spec['containers'][0]['env']))
 
+    def test_operator_image_pull_reference_keeps_delivery_disabled(self):
+        import native_group_approval_delivery_runtime as runtime
+        objects=runtime.render(self.config,image='ghcr.io/example/delivery@sha256:'+'a'*64,
+            config_secret='operator-delivery-input',journal_pvc='operator-delivery-journal',
+            context='reviewed-context',image_pull_secret='operator-image-pull')
+        deployment=next(o for o in objects if o['kind']=='Deployment')
+        self.assertEqual(deployment['spec']['template']['spec']['imagePullSecrets'],
+            [{'name':'operator-image-pull'}])
+        self.assertEqual(deployment['spec']['replicas'],0)
+        with self.assertRaises(ValueError):
+            runtime.render(self.config,image='ghcr.io/example/delivery@sha256:'+'a'*64,
+                config_secret='operator-delivery-input',journal_pvc='operator-delivery-journal',
+                context='reviewed-context',image_pull_secret='foreign/secret')
+
 
 if __name__ == '__main__': unittest.main()

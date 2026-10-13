@@ -50,7 +50,7 @@ def role_update_policy(publication, access, namespace, name):
             'metadata':{'name':policy_name},'spec':{'policyName':policy_name,'validationActions':['Deny']}}]
 
 
-def render(seed, *, image, config_secret, journal_pvc, context, namespace='cps-compute', protected_capture=False):
+def render(seed, *, image, config_secret, journal_pvc, context, namespace='cps-compute', protected_capture=False, image_pull_secret=None):
     r.require(type(protected_capture) is bool, 'Explicit protected capture material setting required')
     r.require(seed['previous_publication_sha256']==r.canonical_sha256(seed['previous_publication']),
         'Reviewed installed publication pin required')
@@ -59,6 +59,10 @@ def render(seed, *, image, config_secret, journal_pvc, context, namespace='cps-c
     for name in (namespace,config_secret,journal_pvc):
         r.require(isinstance(name,str) and name and len(name)<=63
             and all(c in 'abcdefghijklmnopqrstuvwxyz0123456789-.' for c in name), 'Operator runtime identity required')
+    if image_pull_secret is not None:
+        r.require(isinstance(image_pull_secret,str) and image_pull_secret and len(image_pull_secret)<=63
+            and all(c in 'abcdefghijklmnopqrstuvwxyz0123456789-.' for c in image_pull_secret),
+            'Operator image pull Secret name required')
     name='cps-native-approval-delivery'; publication=seed['previous_publication']
     subject={'kind':'ServiceAccount','namespace':namespace,'name':name}
     objects=[{'apiVersion':'v1','kind':'ServiceAccount','metadata':{'namespace':namespace,'name':name}}]
@@ -126,6 +130,8 @@ def render(seed, *, image, config_secret, journal_pvc, context, namespace='cps-c
                 'volumes':[{'name':'seed','secret':{'secretName':config_secret,'defaultMode':0o444}},
                     {'name':'inputs','emptyDir':{}},{'name':'journal','persistentVolumeClaim':{'claimName':journal_pvc}},
                     {'name':'tmp','emptyDir':{}}]}}}})
+    if image_pull_secret is not None:
+        objects[-1]['spec']['template']['spec']['imagePullSecrets']=[{'name':image_pull_secret}]
     return objects
 
 
@@ -135,9 +141,11 @@ def main(argv=None):
     parser.add_argument('--config-secret',required=True); parser.add_argument('--journal-pvc',required=True)
     parser.add_argument('--context',required=True)
     parser.add_argument('--protected-capture',action='store_true')
+    parser.add_argument('--image-pull-secret')
     args=parser.parse_args(argv)
     objects=render(r._private_json(args.seed),image=args.image,config_secret=args.config_secret,
-        journal_pvc=args.journal_pvc,context=args.context,protected_capture=args.protected_capture)
+        journal_pvc=args.journal_pvc,context=args.context,protected_capture=args.protected_capture,
+        image_pull_secret=args.image_pull_secret)
     print(r.canonical({'apiVersion':'v1','kind':'List','items':objects})); return 0
 
 
