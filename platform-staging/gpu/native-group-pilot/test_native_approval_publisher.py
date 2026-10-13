@@ -48,6 +48,75 @@ class FakeKube:
         return self.response(copy.deepcopy(self.cm))
 
 
+class EnrollmentSnapshotTests(unittest.TestCase):
+    def test_real_validated_current_enrollment_append_abandons_publication_without_api_patch(self):
+        import node_agent as base
+        from test_approval_before_gate import Backend
+        fixture=Backend();models=fixture.f.models
+        with tempfile.TemporaryDirectory() as tmp:
+            state=Path(tmp);store=base.EnrollmentStore(state,models,trusted_uid=os.getuid())
+            ack=candidate();ack['document']=fixture.f.ref
+            ack['process']['namespace']=fixture.f.ref['namespace']
+            ack['revision']=fixture.f.ref['revision'];ack['policy_hash']=fixture.f.ref['policy_hash']
+            from dataclasses import asdict
+            ack['driver_epoch']=asdict(fixture.f.record.identity.epoch)
+            ack['observed_at']=n.datetime.now(n.timezone.utc).isoformat()
+            pod={'apiVersion':'v1','kind':'Pod','metadata':{k:ack['process'][k] for k in ('namespace','name','uid')},
+                'spec':{'nodeName':fixture.f.config['pool']['node'],'serviceAccountName':ack['process']['service_account'],
+                    'volumes':[{'name':'approval','configMap':{'name':fixture.f.ref['name']}}],
+                    'containers':[{'name':ack['process']['container'],'image':ack['process']['image'],
+                        'volumeMounts':[{'name':'approval','readOnly':True,'mountPath':'/var/run/cps-native-approvals/approval.json','subPath':'approval.json'}]}]},
+                'status':{'phase':'Running','conditions':[{'type':'Ready','status':'True'}],
+                    'containerStatuses':[{'name':ack['process']['container'],'ready':True,'imageID':ack['process']['image']}]}}
+            process_observer=SimpleNamespace(observe_process=lambda *a:(pod,ack['process']))
+            agent=SimpleNamespace(**vars(base));agent.abort_current_epoch=lambda *a:fixture.f.record.identity.epoch
+            store.backend.private_write(state/'approval-loaded.json',ack,store.uid,create=True)
+            calls=[]
+            def configmap(ns,name):
+                if name=='cps-native-gpu-allocations':return copy.deepcopy(fixture.ledger)
+                if name==fixture.enrollment['metadata']['name']:return copy.deepcopy(fixture.enrollment)
+                return copy.deepcopy(fixture.maps.get(name))
+            kube=SimpleNamespace(enrollments=lambda ns:[copy.deepcopy(fixture.enrollment)],configmap=configmap,
+                call=lambda *args:calls.append(args),pod=lambda _:None)
+            runtime=n.NodeApprovalRuntime(agent,state/'reference.json',state/'template.json',state/'process.json',state,
+                acknowledgment_path=state/'acknowledgment.json',process_observer=process_observer)
+            runtime.consumer=fixture.consumer
+            journal=SimpleNamespace(records=lambda:[])
+            descriptor=dict(TARGET,namespace=fixture.f.ref['namespace'])
+            def private(path,**kwargs):
+                return copy.deepcopy(fixture.consumer.loaded) if Path(path).name=='approval.json' else descriptor
+            with patch.object(n,'read_private',side_effect=private):
+                try:runtime.publish(kube,fixture.f.config,models,store,journal,{},None,None,
+                    {'namespace':fixture.f.ref['namespace']},ack)
+                except ValueError as error:self.assertEqual(type(error).__name__,'EnrollmentSnapshotAdvanced')
+                else:self.fail('Fresh append must abandon the old acknowledgment')
+            self.assertFalse(calls)
+            self.assertIsNone(store.backend.private_read(state/'approval-loaded.json',store.uid))
+            fixture.enrollment['data']['enrollment.json']=fixture.enrollment['data']['enrollment.json'].replace(
+                'interactive-shared-5','interactive-shared-20')
+            store.backend.private_write(state/'approval-loaded.json',ack,store.uid,create=True)
+            with patch.object(n,'read_private',side_effect=private),self.assertRaises(ValueError) as bad:
+                runtime.publish(kube,fixture.f.config,models,store,journal,{},None,None,
+                    {'namespace':fixture.f.ref['namespace']},ack)
+            self.assertNotEqual(type(bad.exception).__name__,'EnrollmentSnapshotAdvanced');self.assertFalse(calls)
+
+    def test_retry_classifier_denies_changed_removed_foreign_duplicate_and_untracked_journal(self):
+        old={'enrollment':{'intent':{'pod_uid':TARGET['uid']},'approval_ref':candidate()['document']},'preserved':'original'}
+        new=copy.deepcopy(old);new['enrollment']['intent']['pod_uid']='aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa'
+        accepted={TARGET['uid']:old};journal=SimpleNamespace(records=lambda:[])
+        for fault in ('changed','removed','foreign','duplicate','journal'):
+            rows=[copy.deepcopy(old),copy.deepcopy(new)]
+            if fault=='changed':rows[0]['preserved']='changed'
+            elif fault=='removed':rows.pop(0)
+            elif fault=='foreign':rows[1]['enrollment']['approval_ref']['uid']=TARGET['uid']
+            elif fault=='duplicate':rows.append(copy.deepcopy(new))
+            else:journal.records=lambda:[SimpleNamespace(intent=SimpleNamespace(pod_uid=new['enrollment']['intent']['pod_uid'],to_dict=lambda:{}))]
+            with self.subTest(fault=fault),self.assertRaises(ValueError) as error:
+                n.require_same_enrollment_snapshot(accepted,rows,candidate()['document'],journal)
+            self.assertNotEqual(type(error.exception).__name__,'EnrollmentSnapshotAdvanced')
+            journal.records=lambda:[]
+
+
 class PublisherTests(unittest.TestCase):
     def publish(self,kube,value=None,verify=None):
         value=value or candidate()
@@ -259,6 +328,19 @@ class RendererPublisherIntegration(unittest.TestCase):
                     with patch.object(models,'PrivateJournal',return_value=journal),patch.object(models,'NativeCapController',Controller),redirect_stdout(io.StringIO()):
                         namespace['run'](config,bundle,root,kube,None,iterations=1,interval=0,crictl='unused',cri_socket='unused',approval=runtime)
                     self.assertEqual(len(writes),1);writes.clear()
+                    original_finish=runtime.finish;iterations=[];backend_calls=[]
+                    def advance_once(*args):
+                        iterations.append(True)
+                        if len(iterations)==1:raise n.EnrollmentSnapshotAdvanced('Validated new immutable enrollment')
+                        return original_finish(*args)
+                    runtime.finish=advance_once;namespace['approval_module']=n
+                    original_backend=bundle[0].QualificationNodeBackend
+                    bundle[0].QualificationNodeBackend=lambda *a,**kw:backend_calls.append(True) or original_backend(*a,**kw)
+                    with patch.object(models,'PrivateJournal',return_value=journal),patch.object(models,'NativeCapController',Controller), \
+                        patch.object(namespace['time'],'sleep',side_effect=AssertionError('Retry must immediately re-enter full iteration')),redirect_stdout(io.StringIO()):
+                        namespace['run'](config,bundle,root,kube,None,iterations=2,interval=2,crictl='unused',cri_socket='unused',approval=runtime)
+                    self.assertEqual(len(iterations),2);self.assertEqual(len(backend_calls),2)
+                    self.assertEqual(len(writes),1);writes.clear();runtime.finish=original_finish
                     ack=store.backend.private_read(root/'approval-loaded.json',store.uid)
                 journal.records=lambda:[SimpleNamespace(intent=SimpleNamespace(pod_uid=TARGET['uid'],to_dict=lambda:{}))]
                 with self.assertRaises(ValueError):runtime.publish(kube,config,models,store,journal,{},None,None,declaration,ack)

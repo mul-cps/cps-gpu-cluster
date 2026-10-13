@@ -499,6 +499,27 @@ class ProcessObservationAPI:
     def read_namespaced_daemon_set(self,name,namespace):return self._get('/apis/apps/v1','daemonsets',name,namespace)
 
 
+class EnrollmentSnapshotAdvanced(ValueError):
+    """A validated current-ref append requires a new complete custody iteration."""
+
+
+def require_same_enrollment_snapshot(accepted,fresh,current_reference,journal):
+    # The caller must first run the full existing authority validator and all
+    # document/process/epoch checks. This never converts a validation denial.
+    actual={e['enrollment']['intent']['pod_uid']:e for e in fresh}
+    require(len(actual)==len(fresh),'Duplicate immutable enrollment snapshot')
+    records=journal.records()
+    require(all(r.intent.pod_uid in accepted and r.intent.to_dict()==accepted[r.intent.pod_uid]['enrollment']['intent']
+        for r in records),'Original full journal custody changed during acknowledgment')
+    if actual==accepted:return
+    require(all(actual.get(uid)==row for uid,row in accepted.items()),
+        'Original accepted enrollment removed or changed before acknowledgment')
+    additions=set(actual)-set(accepted)
+    require(bool(additions) and all(actual[uid]['enrollment'].get('approval_ref')==current_reference for uid in additions),
+        'Only validated new current-reference enrollments may restart custody')
+    raise EnrollmentSnapshotAdvanced('Validated immutable enrollment snapshot advanced; recheck full custody')
+
+
 class NodeApprovalRuntime:
     """Optional service-loop bridge. Private ack transport confers no API RBAC."""
     def __init__(self,agent,reference_path,qualification_path,process_path,state,*,acknowledgment_path=None,process_observer=None):
@@ -522,7 +543,6 @@ class NodeApprovalRuntime:
         require(successful is True,'Blocked custody iteration cannot publish readiness')
         consumer=self.consumer;require(consumer is not None,'Actually loaded approval runtime required')
         fresh,historical=consumer.validate_enrollments(kube.enrollments(config['authority_namespace']),models,store,journal,kube)
-        require({e['enrollment']['intent']['pod_uid']:e for e in fresh}==accepted,'Enrollment changed during custody iteration')
         records=journal.records()
         require(all(r.intent.pod_uid in accepted and r.intent.to_dict()==accepted[r.intent.pod_uid]['enrollment']['intent'] for r in records),
             'Full native journal/enrollment custody required before acknowledgment')
@@ -544,7 +564,9 @@ class NodeApprovalRuntime:
             path=self.state/'approval-loaded.json'
             store.backend.private_write(path,value,store.uid,create=store.backend.private_read(path,store.uid) is None)
         ack=consumer.acknowledge(process,pod,dict(node_uid=epoch.node_uid,boot_id=epoch.boot_id,
-            driver_generation=epoch.driver_generation,gpu_uuid=epoch.gpu_uuid),True,publish)
+            driver_generation=epoch.driver_generation,gpu_uuid=epoch.gpu_uuid),True,lambda _:None)
+        require_same_enrollment_snapshot(accepted,fresh,consumer.reference,journal)
+        publish(ack)
         if self.process_observer is not None:
             self.publish(kube,config,models,store,journal,accepted,driver,verifier,declaration,ack)
         return ack
@@ -558,8 +580,6 @@ class NodeApprovalRuntime:
         def verify():
             require(store.backend.private_read(path,store.uid)==ack,'Original protected private acknowledgment required')
             fresh,historical=self.consumer.validate_enrollments(kube.enrollments(config['authority_namespace']),models,store,journal,kube)
-            require({e['enrollment']['intent']['pod_uid']:e for e in fresh}==accepted,
-                'Enrollment changed before acknowledgment publication')
             records=journal.records()
             require(all(r.intent.pod_uid in accepted and r.intent.to_dict()==accepted[r.intent.pod_uid]['enrollment']['intent'] for r in records),
                 'Full original journal custody required before acknowledgment publication')
@@ -583,8 +603,13 @@ class NodeApprovalRuntime:
             require(observed.tzinfo is not None and 0<=(datetime.now(timezone.utc)-observed).total_seconds()<=30,
                 'Stale or future protected node acknowledgment')
             require(store.backend.private_read(path,store.uid)==ack,'Private proof changed during observation')
+            require_same_enrollment_snapshot(accepted,fresh,self.consumer.reference,journal)
             return copy.deepcopy(ack)
-        return publish_existing_acknowledgment(kube,target,ack,verify)
+        try:return publish_existing_acknowledgment(kube,target,ack,verify)
+        except EnrollmentSnapshotAdvanced:
+            require(store.backend.private_read(path,store.uid)==ack,'Private proof changed while invalidating superseded iteration')
+            path.unlink()
+            raise
 
 
 def render_current_agent(original,module_raw):
@@ -611,7 +636,7 @@ def render_current_agent(original,module_raw):
     change("                if pod is not None: validate_actual_pod(pod, accepted[intent.pod_uid]['enrollment'])",
         "                if pod is not None:\n                    if consumer is not None and 'approval_ref' in accepted[intent.pod_uid]['enrollment']:\n                        consumer.validate_approved_pod(pod, accepted[intent.pod_uid])\n                    validate_actual_pod(pod, accepted[intent.pod_uid]['enrollment'])")
     change("        if iteration + 1 < iterations: time.sleep(interval)\n    require(not failures, 'Node agent observed blocked errors; allocations and protection retained')",
-        "        if approval is not None:\n            approval.finish(config, models, store, journal, kube, accepted, driver, verifier, not failures)\n        if iteration + 1 < iterations: time.sleep(interval)\n    require(not failures, 'Node agent observed blocked errors; allocations and protection retained')")
+        "        if approval is not None:\n            try:\n                approval.finish(config, models, store, journal, kube, accepted, driver, verifier, not failures)\n            except approval_module.EnrollmentSnapshotAdvanced:\n                print(json.dumps({'state': 'approval-snapshot-advanced-retry', 'iteration': iteration, 'production_qualified': False}), flush=True)\n                continue\n        if iteration + 1 < iterations: time.sleep(interval)\n    require(not failures, 'Node agent observed blocked errors; allocations and protection retained')")
     change("    parser.add_argument('--config', type=Path)","    parser.add_argument('--config', type=Path)\n    parser.add_argument('--approval-reference', type=Path)\n    parser.add_argument('--approval-template', type=Path)\n    parser.add_argument('--approval-process', type=Path)\n    parser.add_argument('--approval-acknowledgment', type=Path)")
     change("    config = read_config(args.config)","    config = read_config(args.config)\n    require(all(v is not None for v in (args.approval_reference,args.approval_template,args.approval_process)) or\n            all(v is None for v in (args.approval_reference,args.approval_template,args.approval_process)), 'Complete optional approval inputs required')\n    require(args.approval_acknowledgment is None or args.approval_reference is not None, 'Publisher requires installed approval consumer')")
     module_sha=hashlib.sha256(module_raw).hexdigest()
