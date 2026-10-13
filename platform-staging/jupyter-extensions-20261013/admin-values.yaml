@@ -1,0 +1,7 @@
+# Image-only overlay. Combine with the existing reviewed runtime values.
+# Never apply this file alone or promote unrelated chart changes.
+consoles:
+  cps:
+    image: ghcr.io/mul-cps/e2x-course-hub@sha256:72cb8b044e8e091d038c8c8f4cf983c433629733847db879667c0c51bd2f7411
+  cit:
+    image: ghcr.io/mul-cps/e2x-course-hub@sha256:72cb8b044e8e091d038c8c8f4cf983c433629733847db879667c0c51bd2f7411
