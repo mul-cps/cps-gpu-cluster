@@ -228,7 +228,14 @@ class ApprovalConsumer:
                 'Exact frozen released allocation required')
             record=journal.read(uid)
             if record is None:
-                prior=store.abort_record(uid);require(prior is not None,'Never-gated completion must be protected')
+                prior=store.abort_record(uid)
+                if prior is None:
+                    reader=getattr(self,'abort_epoch_reader',None)
+                    require(callable(reader),'Fresh healthy epoch required before first approved abort recognition')
+                    recognized=self.agent.recognize_aborts(store,journal,{uid:envelope},kube,None,models,epoch_reader=reader)
+                    require(uid in recognized,'Actual immutable never-gated abort proof required')
+                    prior=store.abort_record(uid)
+                require(prior is not None,'Never-gated completion must be protected')
                 completion=kube.configmap(self.base['authority_namespace'],'cps-native-abort-'+body['binding_id'][:40])
                 proof=self.agent.validate_abort(completion,envelope,ledger_cm,models.DriverEpoch(**prior['payload']['node_epoch']),models)
                 require(store.abort_published(uid,envelope,proof),'Original immutable abort completion required')
@@ -594,7 +601,7 @@ def render_current_agent(original,module_raw):
         require(result.count(old)==1,'Exact current node adapter anchor required');result=result.replace(old,new)
     change('def run(config, bundle, state, kube, driver, *, iterations, interval, crictl, cri_socket):',
         'def run(config, bundle, state, kube, driver, *, iterations, interval, crictl, cri_socket, approval=None):')
-    change("        cms = kube.enrollments(config['authority_namespace'])\n", "        cms = kube.enrollments(config['authority_namespace'])\n        consumer = approval.begin(config, kube) if approval is not None else None\n        if consumer is not None: consumer.models = models\n")
+    change("        cms = kube.enrollments(config['authority_namespace'])\n", "        cms = kube.enrollments(config['authority_namespace'])\n        consumer = approval.begin(config, kube) if approval is not None else None\n        if consumer is not None:\n            consumer.models = models\n            consumer.abort_epoch_reader = lambda: abort_current_epoch(config, state, driver, verifier, models)\n")
     change('            envelopes, historical = validate_authority_enrollments(cms, config, models, store, journal, kube)',
         '            envelopes, historical = validate_authority_enrollments(cms, config, models, store, journal, kube) if consumer is None else consumer.validate_enrollments(cms, models, store, journal, kube)')
     change('            accepted = store.synchronize(envelopes)',
