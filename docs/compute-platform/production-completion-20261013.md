@@ -1,9 +1,11 @@
 # CPS/CIT production completion
 
-This ledger carries the original platform plan through deployment and measured
-acceptance. Passing source tests, published candidates and production acceptance
-are separate states. Existing qualified evidence is retained unless a relevant
-change invalidates it.
+**The platform remains `limited-pilot`; the full project and production
+qualification are unfinished.** This ledger follows the original platform plan
+through source implementation, immutable publication, live deployment and
+measured acceptance. Evidence for one stage does not establish the next stage.
+See the [operational acceptance record](qualification/operational-acceptance-20261013.md)
+for the bounded live results of 2026-10-13 and their retained evidence.
 
 ## Binding requirements
 
@@ -12,6 +14,7 @@ change invalidates it.
 - Dynamic GPU sharing without MIG. Run GPU acceptance only with trusted probes.
 - Authoritative identity mapping; no linkage inferred from matching usernames.
 - Retain Authentik/Dex. University OAuth registration stays externally deferred.
+  Email verification is available but is not mandatory.
 - Local courses active; Moodle visibly planned, disabled and inert.
 - NFS addresses remain unchanged; S3 uses the accepted NetBird relay path.
 - Protect existing workloads; confirmed shutdown precedes reservation release.
@@ -19,30 +22,60 @@ change invalidates it.
 
 ## Acceptance ledger
 
-| Gate | Current state | Required completion evidence |
-|---|---|---|
-| Repository ownership and shared policy | Implemented; reconcile branches | One integration revision, policy hash and tested consumers |
-| SDK, Hub and Lab packages | Source/install/browser tests passed | Promote exact Hub/notebook artifacts; installed live checks |
-| Both admin UI consoles | Live; verified 2026-10-13 | Retain API/auth and backend compatibility |
-| Identity and group ownership | Existing mapping; audit in progress | Storage continuity, login grant survival, expiry, scoped admin checks |
-| Native GPU isolation | Controlled 5/20 GiB evidence passed | Automatic approval/cap delivery, restart/import/MPS and current runtime acceptance |
-| Shared GPU reservations | Implementation exists; live acceptance pending | Simultaneous cross-Hub starts, all-member atomicity, conflict rollback, confirmed stop |
-| Workspaces and local assignments | Implemented; acceptance audit | Two visitor identities, RTC, removal access closure, read-only archive |
-| Workflow gateway and admission | Implemented; acceptance audit | Crafted bypass rejection, own-only logs/artifacts/termination, idempotency |
-| Notebook execution | Package/browser tests passed; live audit | Immutable snapshot, selected imports, typed parameters, success/failure outputs |
-| GPU scheduling and packing | Deployed components; unqualified broader use | Borrow/reclaim, protected sessions, distributed retry, physical free-GPU telemetry |
-| Startup and defragmentation | Pending measured load gate | Pre-pulled CPS/CIT p95 <=180s, max <=300s; fallback comparison |
-| NFS and S3 artifacts | Existing storage; relay accepted | Ownership, active-input retention, 14/90-day rules; maintenance runbook |
-| Monitoring | Implemented; live audit | Four dashboards, fresh scrape targets, physical/VRAM/utilization distinction |
-| Restore and recovery | Existing controlled evidence; audit | Matching Hub/console versions, NFS/archive and artifact checks |
-| Moodle scaffold | Implemented; audit | Local CRUD/provenance/fake-provider tests; disabled inert; enable fails clearly |
-| Release train and compatibility | Prepared; production not qualified | Pilot -> RC -> production gates, immutable artifacts, notes, checksums, rollback |
-| Hub 6 | Independent staging work | Remains outside production promotion pending stable compatibility qualification |
+| Gate | Verified state | Remaining completion evidence |
+| --- | --- | --- |
+| Repository ownership and shared policy | Separate application/deployment responsibilities and shared policy implemented; compatibility branches retained | Integrate and promote one tested consumer matrix with its exact policy hash; account for Fleet's watched branches |
+| SDK, Hub and Lab packages | Separate core/Hub/Lab package layout, noneditable installation and Lab/RTC bundle tests passed; reviewed Hub login-guard image published | Deploy the exact reviewed Hub package through a qualified handover; build and qualify all 12 notebook variants from the matched release source |
+| Both admin UI consoles | Actual CPS and CIT public `main.js` returned 200 with the exact packaged bytes; both databases migrated to schema 7 without changing any preexisting rows | CIT neutral-account adoption, actual user OAuth/API acceptance and current package/Hub compatibility |
+| Identity and group ownership | Existing reviewed aliases retained; both CPS legacy neutral accounts have permanent ready provenance and exact live group/storage readbacks; schema upgrade disabled after migration | Complete the CIT adoption and Hub package cutover; real login grant survival/expiry and scoped administration; cross-Hub allowance continuity |
+| Native GPU isolation | Controlled no-MIG 5/20 GiB evidence retained; automatic revoke/approve reached four genuine current process acknowledgments and survived controller restart | Normal Source-owned 5 GiB Start/Stop, pair/restart/import/MPS acceptance and broader packing; current bounded pool is 5/10 GiB, not a normal 20 GiB qualification |
+| Shared GPU reservations | Shared accounting implementation and reviewed qualification bindings exist | Actual simultaneous cross-Hub starts, all-member atomicity and partial-conflict rollback; prove permitted CPU sessions and independent batch execution; release only after confirmed stop |
+| Workspaces and local assignments | Local management, source-neutral reconciliation and RTC implementations exist | Two real visitors retaining their own identity, membership removal closing existing access, retained files and stopped-writer read-only archives |
+| Workflow gateway and admission | Source validation/ownership paths implemented; bounded CPS own-success/failure artifact/log bytes and foreign-versus-absent rejection passed; controller admission/RBAC checks passed | CIT normal-user own/foreign access, human authentication, token renewal and crafted workflow/admin bypass scenarios on the current release |
+| Notebook execution | Immutable runner/package/browser tests and bounded CPS selected-import/typed-parameter success/failure outputs passed | Complete current release/live coverage for saved snapshots, selected files, parameter cells, approved image digests and both owning Hubs |
+| GPU scheduling and packing | KAI/HAMi/MPS components and controlled evidence exist | Full eight-A100 packing, teaching borrow/reclaim, protected sessions, distributed 4/8-GPU JobSet retry without orphans and genuine physical free-GPU telemetry |
+| Startup and defragmentation | Acceptance executors and thresholds are defined; representative measurements pending | Pre-pulled CPS/CIT bursts: p95 <=180s and maximum <=300s; KAI/fallback comparison with free capacity >=95% and waits/start <=110% of baseline, protected sessions unaffected |
+| NFS and S3 artifacts | Existing storage preserved; accepted TLS relay path and owner-filtered artifact access work; actual retention Job dry run passed | Natural 14/90-day expiry, active/retained negatives, conditional deletion/recovery and qualified scheduling; new CIT filer requires its actual endpoint/export |
+| Monitoring | Four dashboards, scraping/rules and unavailable/stale handling implemented; several real targets up | Fresh complete GPU inventory, physical placement/free-capacity and cap/protection telemetry; rendered dashboards, timing data and alert notification delivery |
+| Restore and recovery | Fresh CPS logical backup Job restored with the matching PostgreSQL/Hub images and identical restored row fingerprints; bounded console/gateway/artifact restores retained | Next automatic backup success, coordinated matching application/configuration capture, connected login/spawn, populated NFS/archive/artifact recovery and encrypted off-host durability |
+| Moodle scaffold | Local provider, provenance migration, disabled scaffold and source tests implemented | Retain local CRUD, fake-provider reconciliation, no-network disabled behavior and clear enablement failure in the qualified release; Moodle remains planned/not deployed |
+| Release train and compatibility | Candidate artifacts and compatibility tooling prepared; no unified production release declared | Complete pilot -> RC -> production gates, matched SDK/Hub/Lab/runner/notebook matrix, immutable digests, checksums/SBOMs, release notes, rollback and qualified Fleet promotion |
+| Hub 6 | Separate staging scope | Keep outside production promotion until stable chart compatibility and migration/storage qualification pass |
 
-## Execution record
+## Current rollout boundary
 
-- 2026-10-13: Fresh read-only access confirmed. Both admin deployments are Ready
-  with image `sha256:72cb8b044e8e091d038c8c8f4cf983c433629733847db879667c0c51bd2f7411`.
-- GPU automation, Hub ownership/package migration and remaining operational
-  acceptance are audited independently; the root agent owns live mutations.
-- No production release or broad GPU entitlement is declared by this ledger.
+The existing controlled automatic-delivery runtime has one replica and its
+original persistent journal. Independent strict readback at
+**2026-10-13T20:37:45.163169Z** verified `ready=true` for Source revision
+`sha256:832e841b6e7b5885a80de27e8850e8e25087b7a26a08a8270f38869f10bf71ca`
+and genuine matching acknowledgments from gateway, CPS Hub, CIT Hub and node
+agent. Source mutation initially returns `ready=false`; current process
+convergence is required before a Start. This result neither enables general GPU
+access nor qualifies the larger scheduling and lifecycle gates above.
+
+Both consoles are Ready on the final reviewed Source image
+`ghcr.io/mul-cps/e2x-course-hub@sha256:8b718d5e789f901b4be7a0b2c48afb875031dc350c1595c3d3f556dc9a8b64b7`.
+Both reviewed CPS legacy account adoptions completed through the actual CLI.
+The live group/marker, non-admin, stopped-server and inactive-reservation
+readbacks passed, and an actual SQLite online backup verified two permanent
+`ready` accounts with identity-bound `reviewed_legacy_adoption` receipts. The
+remaining CIT legacy adoption is pending a real login refresh. Normal lifecycle
+acceptance and the packaged Hub cutover remain separate gates. The published packaged login guard permanently denies reviewed neutral
+identities independently of mutable grants. It is not yet the live Hub image.
+Generic Source-created accounts still lack the enforced permanent-registry
+publication/creation transaction; new account creation remains gated. Do not
+infer neutral identity from usernames, membership, email or transient discovery.
+
+The CIT administrator's upstream Dex session requires a real login refresh.
+Operator-created Hub API tokens do not refresh that upstream session and do not
+establish human browser acceptance. CPS work and independent operational tests
+continue while that login is pending.
+
+University OAuth client registration and the new CIT filer endpoint/export are
+external deferred inputs. They do not block independent acceptance work. The
+reported client allowlist addresses are not a substitute for the filer endpoint.
+The existing NAS and NFS paths stay in place; account for the stated Tuesday
+05:00–08:00 fileserver maintenance window before storage-dependent tests.
+
+No production release, full-project completion or broad GPU entitlement is
+asserted by this ledger. Every remaining gate retains its required live evidence.

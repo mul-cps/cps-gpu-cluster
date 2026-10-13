@@ -12,9 +12,10 @@ Role documents remain in private operator evidence. It supplements the
 | --- | --- | --- |
 | CPS logical backup | A newly completed Job's actual archive restored; matching PostgreSQL and Hub initialization preserved all restored row fingerprints | Next automatic scheduled success, coordinated configuration/console/NFS/artifact recovery and off-host durability |
 | Artifact retention | Real cluster Job, projected-token Argo authentication and HTTPS S3 dry run passed | Natural-age expiry, conditional deletion/recovery, retained/active negatives and automatic scheduling |
-| CPS/CIT console schema | Both real databases upgraded from schema 6 to 7; every preexisting table's exact rows preserved; automatic upgrades disabled afterward | Reviewed neutral-account adoption and subsequent Hub/group ownership cutover |
+| CPS/CIT console schema and UI | Both real databases upgraded from schema 6 to 7 without changing preexisting rows; automatic upgrades disabled; both public UI bundles returned 200 with exact packaged bytes; both CPS legacy adoptions have permanent ready provenance | CIT adoption, real user OAuth and subsequent packaged Hub cutover |
 | Approval transport | Trusted TLS and independent export-token checks passed; 17 actual API admission/RBAC checks passed | Broader deployment and credential-rotation qualification |
-| Automatic approval delivery | Actual Source revoke converged to all four independently observed acknowledgments; subsequent approve and fresh controller restart resumed automatically | Normal workspace Start/Stop after account cutover and broader GPU/scheduling acceptance |
+| Automatic approval delivery | Actual revoke and approve converged to four genuine current acknowledgments; fresh controller restart resumed with its original durable journal | Normal workspace Start/Stop after account cutover and broader GPU/scheduling acceptance |
+| Packaged Hub login guard | Reviewed immutable image published; installed tests keep registered neutral identities blocked after group/marker revocation | Qualified live software handover, existing-account cutover and enforced registry publication before any new Source-created account |
 
 ## Actual CPS logical backup and restore
 
@@ -83,9 +84,11 @@ or application of deletion policy.
 
 ## Console schema and packaged UI
 
-Both consoles now use the reviewed immutable image
+The controlled schema migration used the reviewed immutable image
 `ghcr.io/mul-cps/e2x-course-hub@sha256:65927f27b7f81fcc4c7b34e509d21213e9691df33eaf4a4b137fa46f8b8c3e3c`.
-Consistent live SQLite backups preceded the explicitly enabled schema migration.
+Subsequent Source image replacement is a separate rollout and does not relabel
+this migration receipt. Consistent live SQLite backups preceded the explicitly
+enabled schema migration.
 Both upgraded databases passed integrity checking, report schema **7**, and added
 `workspace_accounts`. Exact row comparison with those backups passed for every
 preexisting table:
@@ -99,16 +102,39 @@ preexisting table:
 | `reviewed_account_aliases` | 5 / 5 | 2 / 2 | Yes |
 
 After this controlled migration, `allow_console_schema_upgrade` was returned to
-**false** and both consoles restarted. No reviewed account adoption has yet been
-executed; legacy neutral owners and workspace associations remain unchanged.
-The new adoption API requires an actual owning Hub administrator of `kind=user`,
+**false** and both consoles restarted. The final reviewed Source implementation,
+commit `a35ec33526b2f5082b4fd652a00b6472e89086f6`, was subsequently promoted to
+both consoles; both are Ready on
+`ghcr.io/mul-cps/e2x-course-hub@sha256:8b718d5e789f901b4be7a0b2c48afb875031dc350c1595c3d3f556dc9a8b64b7`.
+It binds the gateway principal to the workspace identifier and checks the
+separate neutral owner without rewriting registration or storage descriptors.
+
+Both existing CPS neutral accounts were adopted through actual CLI plan and
+execute requests after review of the exact pre-upgrade course, term, group and
+workspace records, source binding, raw storage and stopped-owner preimages.
+Actual Hub readbacks confirmed fixed-group membership, the zero-scope marker,
+non-admin status and stopped servers. Reservations were inactive, no attempts
+remained, and original identifiers/storage associations were preserved.
+
+An actual consistent SQLite online backup afterward passed integrity checking
+and schema **7** verification. It contained **two permanent ready accounts** with
+identity-bound `reviewed_legacy_adoption` receipts; backup SHA-256 was
+`7efeb4f309300320cc1652651ff657612b3894726b3f905b46385c25b5990387`.
+The third legacy account, owned by CIT, is not adopted yet. These were
+operator-controlled requests using owning Hub user tokens, **`human_oauth=false`**;
+no complete cross-Hub cutover or normal Start/Stop acceptance is asserted yet.
+The adoption API requires an actual owning Hub administrator of `kind=user`,
 a reviewed exact plan, confirmed stopped writers and durable provenance. A
 same-name service principal does not qualify as that administrator.
 
-The CPS public `main.js` returned HTTP **200** with 437,600 bytes and expected
-SHA-256 `cfc5cdcbccd96bf4f3c4ff6fddbe940a39e090934a987def43a91300568d9875`.
+The CPS **and CIT** public `main.js` each returned HTTP **200** with 437,600
+bytes and expected SHA-256
+`cfc5cdcbccd96bf4f3c4ff6fddbe940a39e090934a987def43a91300568d9875`.
 This proves delivery of the packaged bytes; it is not a real-user browser or
-account-adoption acceptance test. CIT public UI delivery is a separate check.
+account-adoption acceptance test. The CIT administrator's upstream Dex session
+was expired: the Hub rejected even a newly issued API token until a real login
+refresh. Operator-issued tokens do not refresh upstream authentication and are
+not recorded as human OAuth acceptance.
 
 ## Protected transport and automatic delivery
 
@@ -180,17 +206,61 @@ packing, or enable production Fleet promotion. Normal workspace lifecycle after
 reviewed account adoption, broader cross-Hub fairness, isolation, startup bursts
 and scheduling gates remain required by the main acceptance plan.
 
+## Published Hub package and pending cutover
+
+The reviewed login guard is published as
+`ghcr.io/mul-cps/cps-compute@sha256:bc32b73d244738c3778560a1f48e701efd10f8c57ac4834f486b3f27a30d2623`.
+Its exact Hub wheel is SHA-256
+`e99e27dc9e1010ebbcc8a4587b95ea4fff847354781b02cd69d09d5aba1575ed`,
+from source commit `74bf8aea9323ef24e4d0d99e7e3ce643bb74899a`.
+Actual read-only, network-disabled image checks passed on JupyterHub 5.5.2 and
+OAuthenticator 17.4.0. The overlay preserved the other 136 distributions and
+29,272 dependency-file hashes, the core SDK and the runtime configuration.
+
+The permanent reviewed neutral-owner registry denies interactive OAuth even
+after group or marker removal. Temporary legacy marker refresh is a separate
+subset that can be retired without losing that denial. Startup rejects marked
+neutral accounts missing permanent records; runtime discoveries are deny-only
+and cannot replace durable provenance. The bounded existing-owner review passed
+34 installed guard cases, with 1,730 SDK/Hub tests passing and 3 skipped.
+
+This image is **published, not yet deployed**. A qualified operator software
+handover must bind the exact existing Source revision, complete Deployment/Role
+preimages, retained document/reference identities and fresh real process
+acknowledgments; a Source update or a manually edited journal is not a substitute.
+The old journal and its custody must be preserved.
+
+The guard does not implement Source's permanent-registry publication/creation
+transaction. New account creation remains gated until every neutral identity is
+published durably and accepted by its owning Hub before the Hub user is created.
+The existing-account adoption and generic account-creation gates are separate.
+No broader production, normal 20 GiB workspace, full eight-GPU packing, startup
+burst, defragmentation, two-visitor or coordinated recovery claim follows from
+these package tests.
+
 ## Evidence custody
 
 Private operator receipts and exact bytes are retained outside Git with restricted
-directory/file modes. Useful non-identifying receipt fingerprints are:
+directory/file modes. The original strict revoke-readback path was overwritten by
+the later final readback; it is not listed as a retained independent receipt.
+The recorded 20:29 revoke observation is supported by the subsequent configured
+Source approve capture, whose preimage still reports the revoke revision ready.
+The strict current four-component Source2 readback is retained. Useful
+non-identifying receipt fingerprints are:
 
 | Receipt | SHA-256 |
 | --- | --- |
 | Actual backup/restore sanitized receipt | `0ca6b6de2890feebf074e15967f324d4c664b5e6882c4323e0167d494cadc9cd` |
 | Retention actual Job log | `74064fb59c15fc2e06f5d350a688efe3906da2a16de421c259300a762eefc31a` |
-| Strict four-component revoke readback | `65db3082fe58ca038e3585121d1679c8304b558a664ee285cd18ed6ebd91d122` |
+| Configured Source approve capture, including prior revoke readiness | `2d97245835034ee147b4b459160ed68bcb4187ba304640362f0f4c16add8be40` |
 | Strict four-component final approve readback | `0290cda61b595d742ca878d40969e40017f6c1ec4dab79e9fb29cf0cdab0ae2f` |
+| Both CPS permanent reviewed adoption accounts | `66c88f0372e3f8e22f686dde6fb798029361ff2459eb10bfdfc683263703aa4a` |
+| First CPS stopped-account live adoption receipt | `002975e3c0ca30eec8e33b43a1d1d6fcd9c1b4eeca6dc6032b7cc5e5045eb2ef` |
+| Second CPS stopped-account live adoption receipt | `bf06e98ca89bd071bdbd058c9b12b490b7e98bafb26515bb12e526936f5e6b91` |
+| CPS public UI byte receipt | `183263bbce10f17ec5e0eb8132eb8ea031226b4e76629f8dc649ae3cc2f2332a` |
+| CIT public UI byte receipt | `f13dca4d99daaef84b1a43598b76f7c658b127d1ea01d19fe50564ccb322fe66` |
+| CPS exact schema-7 preservation receipt | `c396e3342d26fec4eb3a04c24820db83f851532bfcde98d02812082706be89d2` |
+| CIT exact schema-7 preservation receipt | `ff3fcfbced0d6b977f8f5994eab300e1c487515dcddfcbca09a910f0651105cc` |
 | Fresh private-journal init Deployment readback | `8da7a8197057dcb6209090f59ee3358a9f3c6ed80ce79e45ecae0735b1130497` |
 
 This document records actual results and their limits. It creates no release tag,
