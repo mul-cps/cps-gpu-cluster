@@ -68,6 +68,15 @@ inside `zy-native-group-access` with the released
 `install_workspace_account_provisioning` helper. It retains the remaining
 role-preservation and native lifecycle/Share code. It adds only
 `custom:cps:provision:workspace-account` to the matching Service API role.
+On a cold Hub start, the chart may already have loaded that role before the
+`zy` block runs. The compiler captures the complete original chart role and
+checks it against the captured policy, filling only omitted empty assignment
+lists for that comparison. The emitted code requires the inherited own role to
+equal that exact captured chart dictionary before changing its scopes. Duplicate
+own roles or changed scope, assignment, description or extra fields fail. An
+empty inherited role list still uses the explicit preserved role. Every other
+role keeps the original preservation check; the installer grants no implicit
+scope. This transition stays inside the unique `zy` scalar.
 It replaces only the unique YAML guard scalar and preserves every byte outside
 that scalar, including comments. Duplicate YAML path keys, owner/authenticator
 assignments and captured role keys fail closed. It verifies that the complete

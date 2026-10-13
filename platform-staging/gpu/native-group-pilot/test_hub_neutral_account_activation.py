@@ -1,11 +1,17 @@
 """Secret-byte custody and executed config semantics, with no live access."""
 
 import base64
+import copy
 import hashlib
 from pathlib import Path
 import tempfile
 import unittest
 import uuid
+from unittest.mock import patch
+import types
+
+from traitlets.config import Config
+from jupyterhub.auth import DummyAuthenticator
 
 import yaml
 
@@ -41,7 +47,18 @@ def fixture(source="cps"):
         + repr([{"name": source + "-admin", "roles": [source + "-admin-api"]}])
         + "\n"
     )
-    tail += "for _native_preserved in " + repr([role]) + ":\n    pass\n"
+    tail += "_native_roles = [dict(role) for role in c.JupyterHub.load_roles]\n"
+    tail += "for _native_preserved in " + repr([role]) + ":\n"
+    tail += """    _native_existing = next((role for role in _native_roles if role.get('name') == _native_preserved['name']), None)
+    if _native_existing is None:
+        _native_roles.append(dict(_native_preserved))
+    else:
+        if 'scopes' in _native_preserved and set(_native_existing.get('scopes', [])) != set(_native_preserved['scopes']):
+            raise RuntimeError('Existing role policy differs from captured actual role')
+        for _native_assignment in ('users', 'groups', 'services'):
+            _native_existing[_native_assignment] = sorted(set(_native_existing.get(_native_assignment, [])) | set(_native_preserved[_native_assignment]))
+c.JupyterHub.load_roles = _native_roles
+"""
     tail += "_native_retained_tail = ['unchanged-owner-scopes', 'unchanged-storage']\n"
     values = {
         "hub": {
@@ -123,6 +140,176 @@ class ActivationTests(unittest.TestCase):
             backup_bytes=len(backup),
         )
 
+    def execute_configuration(self, request, backup, inherited):
+        intent = self.compile(request, backup)
+        values = yaml.safe_load(
+            base64.b64decode(intent["secret_patch"][-1]["value"]["values.yaml"])
+        )
+        code = values["hub"]["extraConfig"]["zy-native-group-access"]
+        configuration = Config()
+        configuration.JupyterHub.authenticator_class = DummyAuthenticator
+        configuration.JupyterHub.load_roles = copy.deepcopy(inherited)
+        installer_calls = []
+        installer = types.SimpleNamespace(
+            install_workspace_account_provisioning=lambda *a, **kw: (
+                installer_calls.append((a, kw))
+            )
+        )
+        with patch.dict("sys.modules", {"cps_compute_hub": installer}):
+            exec(
+                compile(code, "combined-cold-Hub-configuration", "exec"),
+                {"c": configuration},
+            )
+        self.assertEqual(len(installer_calls), 1)
+        return configuration.JupyterHub.load_roles
+
+    def test_CPS_and_CIT_cold_combined_configuration_transitions_exact_inherited_own_role(
+        self,
+    ):
+        import hub_neutral_account_activation as activation
+
+        for source in ("cps", "cit"):
+            request, backup = fixture(source)
+            original = copy.deepcopy(request["roles"][source + "-admin-api"])
+            unrelated = {
+                "name": "unrelated-unchanged",
+                "scopes": ["read:metrics"],
+                "services": ["observer"],
+            }
+            with self.subTest(source=source):
+                result = self.execute_configuration(
+                    request, backup, [original, unrelated]
+                )
+                self.assertEqual(
+                    result,
+                    [
+                        {**original, "scopes": original["scopes"] + [activation.SCOPE]},
+                        unrelated,
+                    ],
+                )
+                self.assertNotIn(activation.SCOPE, original["scopes"])
+
+    def test_empty_inherited_roles_still_receive_the_explicit_compiled_role(self):
+        import hub_neutral_account_activation as activation
+
+        for source in ("cps", "cit"):
+            request, backup = fixture(source)
+            with self.subTest(source=source):
+                result = self.execute_configuration(request, backup, [])
+                original = request["roles"][source + "-admin-api"]
+                self.assertEqual(
+                    result,
+                    [{**original, "scopes": original["scopes"] + [activation.SCOPE]}],
+                )
+
+    def test_unexpected_inherited_own_role_cannot_receive_the_scope(self):
+        for source in ("cps", "cit"):
+            request, backup = fixture(source)
+            original = request["roles"][source + "-admin-api"]
+            for key, value in [
+                ("scopes", ["admin:users"]),
+                ("users", ["human"]),
+                ("groups", ["foreign"]),
+                ("services", ["foreign"]),
+                ("description", "unexpected"),
+            ]:
+                changed = {**original, key: value}
+                with (
+                    self.subTest(source=source, field=key),
+                    self.assertRaises(RuntimeError),
+                ):
+                    self.execute_configuration(request, backup, [changed])
+            with (
+                self.subTest(source=source, fault="duplicate"),
+                self.assertRaises(RuntimeError),
+            ):
+                self.execute_configuration(request, backup, [original, original])
+
+    def test_real_chart_role_shape_without_empty_assignment_keys_is_captured_exactly(
+        self,
+    ):
+        import hub_neutral_account_activation as activation
+
+        for source in ("cps", "cit"):
+            request, backup = fixture(source)
+            name = source + "-admin-api"
+            role = request["roles"][name]
+            values = yaml.safe_load(
+                base64.b64decode(request["secret"]["data"]["values.yaml"])
+            )
+            configured = {
+                k: v for k, v in role.items() if k not in ("name", "users", "groups")
+            }
+            values["hub"]["loadRoles"] = {name: configured}
+            self.set_values(request, yaml.safe_dump(values, sort_keys=False).encode())
+            inherited = {"name": name, **configured}
+            with self.subTest(source=source):
+                result = self.execute_configuration(request, backup, [inherited])
+                self.assertEqual(
+                    result[0], {**role, "scopes": role["scopes"] + [activation.SCOPE]}
+                )
+                with self.assertRaises(RuntimeError):
+                    self.execute_configuration(
+                        request, backup, [{**inherited, "extra-policy": "unexpected"}]
+                    )
+
+    def test_other_captured_role_policy_guard_is_unchanged(self):
+        request, backup = fixture()
+        role = request["roles"]["cps-admin-api"]
+        observer = {
+            "name": "preserved-observer",
+            "scopes": ["read:metrics"],
+            "users": [],
+            "groups": [],
+            "services": ["observer"],
+        }
+        values = yaml.safe_load(
+            base64.b64decode(request["secret"]["data"]["values.yaml"])
+        )
+        code = values["hub"]["extraConfig"]["zy-native-group-access"]
+        values["hub"]["extraConfig"]["zy-native-group-access"] = code.replace(
+            "for _native_preserved in " + repr([role]),
+            "for _native_preserved in " + repr([role, observer]),
+        )
+        self.set_values(request, yaml.safe_dump(values, sort_keys=False).encode())
+        with self.assertRaisesRegex(
+            RuntimeError, "Existing role policy differs from captured actual role"
+        ):
+            self.execute_configuration(
+                request, backup, [role, {**observer, "scopes": ["admin:users"]}]
+            )
+        result = self.execute_configuration(request, backup, [role, observer])
+        self.assertEqual(result[1], observer)
+
+    def test_captured_chart_own_role_must_match_every_actual_policy_field(self):
+        for source in ("cps", "cit"):
+            request, backup = fixture(source)
+            name = source + "-admin-api"
+            configured = {
+                k: v for k, v in request["roles"][name].items() if k != "name"
+            }
+            for key, changed in [
+                ("scopes", ["admin:users"]),
+                ("users", ["human"]),
+                ("groups", ["foreign"]),
+                ("services", ["foreign"]),
+                ("description", "unexpected"),
+                ("unexpected", True),
+                ("name", "foreign"),
+            ]:
+                values = yaml.safe_load(
+                    base64.b64decode(request["secret"]["data"]["values.yaml"])
+                )
+                values["hub"]["loadRoles"] = {name: {**configured, key: changed}}
+                self.set_values(
+                    request, yaml.safe_dump(values, sort_keys=False).encode()
+                )
+                with (
+                    self.subTest(source=source, field=key),
+                    self.assertRaises(ValueError),
+                ):
+                    self.compile(request, backup)
+
     def test_only_auth_block_and_own_service_scope_change_with_complete_secret_cas(
         self,
     ):
@@ -150,7 +337,7 @@ class ActivationTests(unittest.TestCase):
             self.assertIn("install_workspace_account_provisioning", new_code)
             self.assertNotIn("class CPSNativeLoginGuard", new_code)
             self.assertEqual(
-                new_code.count("custom:cps:provision:workspace-account"), 1
+                new_code.count("custom:cps:provision:workspace-account"), 2
             )
             self.assertIn(
                 "_native_retained_tail = ['unchanged-owner-scopes', 'unchanged-storage']",
