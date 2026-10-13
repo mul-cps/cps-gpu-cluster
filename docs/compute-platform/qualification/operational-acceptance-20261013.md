@@ -341,3 +341,30 @@ The reviewed permanent registry also passed 34 real Hub ORM tests against an
 isolated exact PostgreSQL **18.4** server, in addition to its PostgreSQL 15.17
 qualification. The registry/Source creation adapter remain published candidates
 until the separate configuration and migration rollout completes.
+
+
+## Qualified Hub image and automatic-delivery handover
+
+Both live Hubs now run the reviewed package image
+`ghcr.io/mul-cps/cps-compute@sha256:bc32b73d244738c3778560a1f48e701efd10f8c57ac4834f486b3f27a30d2623`.
+The guarded handover preserved policy, Source revision and the physical GPU's
+boot/driver epoch, updated only the closed image/bootstrap/runtime trust inputs,
+and read back four genuine matching component acknowledgments. Gateway runtime
+Hub-image pins were verified from actual mounted inputs.
+
+Automatic delivery was activated with a new immutable six-key input Secret and
+a separate 100 MiB Longhorn journal PVC. The original immutable input, journal
+PVC and stable historical bytes remain untouched with no old writer. A strict
+independent verifier checked the actual new controller/ReplicaSet/Pod, complete
+executable/security/mount provenance, exact completed journal seed/publication,
+live process/Role custody and fresh four-component readiness. The new seed is
+`sha256:b08c5131e2111af6771229e6699d065820e4882a23ea824ce4f0e8f19b051a38`.
+The historical mutator and intent remain byte-identical. The corrected read-only
+verifier is separately hash-bound to the reviewed process module, which permits
+only Kubernetes' exact default token projection on approved init containers;
+changed init execution and duplicate volume/mount inputs remain rejected.
+
+The package is installed, but the existing inline guard remains in live Hub
+configuration until the separate permanent-registry installer rollout. This
+receipt does not claim that registry migration, generic account creation,
+human OAuth, general GPU scheduling or production qualification have passed.

@@ -53,7 +53,9 @@ package image `sha256:bc32b73d244738c3778560a1f48e701efd10f8c57ac4834f486b3f27a3
 with unchanged policy, Source revision, GPU epoch and four fresh acknowledgments.
 The controller was restarted on a separate input Secret and journal PVC;
 the old immutable input and journal were preserved. The final independent
-new-journal readback is being completed and is a distinct acceptance gate.
+new-journal readback passed: actual completed state matches the exact new seed,
+publication, live process targets and Role guards. See the retained sanitized
+`hub-handover-receipt.json`; this does not activate the permanent account registry.
 Source mutation initially returns `ready=false`; current process
 convergence is required before a Start. This result neither enables general GPU
 access nor qualifies the larger scheduling and lifecycle gates above.

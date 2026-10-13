@@ -1,0 +1,33 @@
+{
+  "version": 1,
+  "status": "reviewed-hub-package-handover-and-delivery-ready",
+  "production_qualified": false,
+  "policy_hash": "sha256:d48f6553ed036c2e7adcc97417623fe0308be93ad13b20f246047ada118511b0",
+  "source_revision": "sha256:832e841b6e7b5885a80de27e8850e8e25087b7a26a08a8270f38869f10bf71ca",
+  "hub_images": {
+    "cps": "ghcr.io/mul-cps/cps-compute@sha256:bc32b73d244738c3778560a1f48e701efd10f8c57ac4834f486b3f27a30d2623",
+    "cit": "ghcr.io/mul-cps/cps-compute@sha256:bc32b73d244738c3778560a1f48e701efd10f8c57ac4834f486b3f27a30d2623"
+  },
+  "four_genuine_current_acknowledgments": true,
+  "original_policy_and_gpu_epoch_unchanged": true,
+  "gateway_runtime_pins_readback": true,
+  "new_seed_sha256": "sha256:b08c5131e2111af6771229e6699d065820e4882a23ea824ce4f0e8f19b051a38",
+  "controller": {
+    "namespace": "cps-compute",
+    "name": "cps-native-approval-delivery",
+    "uid": "7e6ffd5e-c598-435f-875b-f9bccb03b4bf",
+    "replicas": 1,
+    "ready": true
+  },
+  "new_journal_uid": "b34dd957-23a0-40b8-8e13-13045374ebf0",
+  "old_journal_uid": "e79ed2d0-9597-4aa0-8a2c-e11171ccb693",
+  "old_journal_bytes_sha256": "a22f83effd29163eb7b15d80b3f18fc49bfb2a36d95d6598fbf32ffb8497a838",
+  "old_input_immutable_and_preserved": true,
+  "old_journal_retained_without_writers": true,
+  "completed_new_journal_exact_seed_and_publication": true,
+  "readback_verifier_sha256": "a67f9b944c915de9f0612dc379138f1188c7c7c73fab8670eb5e6f7f0311658a",
+  "reviewed_process_module_sha256": "b6f79bcbf2c2146b85780b9943d57725d9887c248b249c102305f98baaad5a31",
+  "historical_activation_runner_unchanged": true,
+  "permanent_registry_installer_active": false,
+  "human_oauth": false
+}
