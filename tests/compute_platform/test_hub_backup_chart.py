@@ -45,6 +45,34 @@ class HubBackupChart(unittest.TestCase):
         for override in [{'image': 'postgres:15'}, {'owner': 'unknown'}, {'databasePodLabels': {}}]:
             self.assertNotEqual(self.render('cps', override).returncode, 0)
 
+    def test_logical_backups_do_not_require_database_node_colocation(self):
+        for owner in ['cps', 'cit']:
+            with self.subTest(owner=owner):
+                result = self.render(owner)
+                self.assertEqual(result.returncode, 0, result.stderr)
+                resources = list(yaml.safe_load_all(result.stdout))
+                cron = next(r for r in resources if r['kind'] == 'CronJob')
+                pod = cron['spec']['jobTemplate']['spec']['template']['spec']
+                self.assertFalse(pod.get('affinity', {}).get('podAffinity', {}).get(
+                    'requiredDuringSchedulingIgnoredDuringExecution'))
+                self.assertEqual([v['persistentVolumeClaim']['claimName'] for v in pod['volumes']
+                                  if 'persistentVolumeClaim' in v], [owner + '-hub-postgresql-backup'])
+                backup = pod['containers'][0]
+                self.assertEqual(backup['command'], ['sh', '/scripts/backup.sh'])
+                env = {e['name']: e for e in backup['env']}
+                if owner == 'cps':
+                    self.assertEqual(env['PGHOST']['value'], 'postgresql.jupyterhub.svc.cluster.local')
+                    for variable, key in [('PGUSER', 'postgres-user'), ('PGDATABASE', 'postgres-db'),
+                                          ('PGPASSWORD', 'postgres-password')]:
+                        self.assertEqual(env[variable]['valueFrom']['secretKeyRef'],
+                                         {'name': 'postgresql-secret', 'key': key})
+                else:
+                    self.assertEqual(env['PGHOST']['value'], 'jupyterhub-postgresql.cit-jhub.svc.cluster.local')
+                    self.assertEqual(env['PGUSER']['value'], 'jupyterhub')
+                    self.assertEqual(env['PGDATABASE']['value'], 'jupyterhub')
+                    self.assertEqual(env['PGPASSWORD']['valueFrom']['secretKeyRef'],
+                                     {'name': 'jupyterhub-postgres-credentials', 'key': 'password'})
+
     def test_default_chart_is_disabled(self):
         result = subprocess.run(['helm','template','test',str(CHART)], capture_output=True, text=True)
         self.assertEqual(result.returncode, 0)

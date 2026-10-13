@@ -70,13 +70,6 @@ spec:
             runAsGroup: 1000
             fsGroup: 1000
             seccompProfile: {type: RuntimeDefault}
-          affinity:
-            podAffinity:
-              requiredDuringSchedulingIgnoredDuringExecution:
-                - labelSelector:
-                    matchLabels:
-{{ required "databasePodLabels required" .Values.databasePodLabels | toYaml | indent 22 }}
-                  topologyKey: kubernetes.io/hostname
           containers:
             - name: backup
               image: {{ $image | quote }}
