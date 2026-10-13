@@ -1,0 +1,74 @@
+{
+  "acceptance": "new Source approval scope on existing stopped workspace",
+  "accepted": true,
+  "captured_at": "2026-10-13T16:05:14.839973+00:00",
+  "hardware_changes": {
+    "driver_rollout": false,
+    "mig": false,
+    "qualification_tests_rerun": false
+  },
+  "live_checks": {
+    "admin_status_record_updated": true,
+    "all_native_allocation_records_released": 50,
+    "cuda_allocation_fill_free_mib": 64,
+    "driver_epoch_preserved": true,
+    "four_document_copies": 4,
+    "four_genuine_loaded_revision_proofs": true,
+    "four_guarded_deployments": 4,
+    "gpu2_memory_mib": [
+      0,
+      0
+    ],
+    "native_allocation_released": true,
+    "new_profile_migration_retained": true,
+    "node_copy_frozen_in_enrollment": true,
+    "normal_start": true,
+    "normal_stop": true,
+    "ordinary_cpu_migration": true,
+    "original_grants_unchanged_exact": true,
+    "original_memberships_restored_exact": true,
+    "publisher_and_acknowledgment_identities_preserved": true,
+    "running_group_share": true,
+    "seven_guarded_roles": 7,
+    "source_owned_approval": true,
+    "stopped_group_shares_empty": true,
+    "storage_preserved_exact": true,
+    "temporary_grants_revoked": 2
+  },
+  "not_claimed": {
+    "automatic_approval_delivery": false,
+    "compute_percentage_qualification": false,
+    "eight_gpu_fleet_qualification": false,
+    "fresh_neutral_account_automation": false,
+    "human_browser_oauth": false,
+    "overall_plan_complete": false,
+    "production_readiness": false
+  },
+  "offline_checks": {
+    "approval_storage_focused_passed": 101,
+    "independent_reviews": "clear",
+    "renderer_passed": 24,
+    "sdk_existing_skipped": 3,
+    "sdk_passed": 1514
+  },
+  "scope": {
+    "approved_scope_count": 3,
+    "automatic_delivery": false,
+    "cap_mib": 5120,
+    "fresh_workspace_created": false,
+    "maximum_concurrent_workspaces": 2,
+    "node_pool": "GPU2 qualified pilot",
+    "operator_delivery": true,
+    "profile": "interactive-shared-5",
+    "source_generation": 1
+  },
+  "source": {
+    "approval_revision": "sha256:0ebca4cc37cf1cddb156d3d9efd2f6fe3e051270e86cfa1930cc754def58e294",
+    "gateway_image": "ghcr.io/mul-cps/cps-compute@sha256:7ad1b53f6acce766ad276597ecd3c812547473ceccae68eb3fbf16451e9c705b",
+    "policy_hash": "sha256:d48f6553ed036c2e7adcc97417623fe0308be93ad13b20f246047ada118511b0",
+    "renderer_commit": "52c48dfd1e4d5dd5c92725bf93feec08d4c804b7",
+    "sdk_commit": "b814b3ec0e48c3ab50bcef2c54c31656374367f6",
+    "source_raw_sha256": "sha256:0ebca4cc37cf1cddb156d3d9efd2f6fe3e051270e86cfa1930cc754def58e294"
+  },
+  "version": 1
+}
