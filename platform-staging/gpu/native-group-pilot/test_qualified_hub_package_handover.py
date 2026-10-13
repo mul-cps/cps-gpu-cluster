@@ -121,6 +121,66 @@ class HandoverTests(unittest.TestCase):
     def test_default_cli_is_inert(self):
         self.assertEqual(h.main([]),0)
 
+    def candidate_packet(self):
+        """Actual renderer serialization retains UIDs in journal baselines."""
+        packet=copy.deepcopy(self.packet);publication=copy.deepcopy(packet['previous_publication'])
+        packet['previous_publication']=publication
+        for key in ('documents','reference_maps'):
+            for cm in publication[key].values():
+                cm['metadata']={k:cm['metadata'][k] for k in ('namespace','name')}
+        packet['previous_publication_sha256']=r.canonical_sha256(publication)
+        journal=packet['old_state']['journal'];journal['publication']=copy.deepcopy(publication)
+        packet['old_state']['journal_sha256']=r.canonical_sha256(journal)
+        # Test the serialized representation, with no aliases to the fixture.
+        return r.parse(r.canonical(packet))
+
+    def test_serialized_candidate_publication_uses_historical_journal_uid_custody(self):
+        packet=self.candidate_packet();before=r.canonical(packet)
+        plan=h.plan_intent(packet,now=NOW)
+        for key in ('documents','reference_maps'):
+            self.assertEqual(plan['projection'][key],packet['previous_publication'][key])
+            for cm in plan['projection'][key].values():
+                self.assertEqual(set(cm['metadata']),{'namespace','name'})
+        obs=post_observation(self.base,plan)
+        obs['reference_maps']=copy.deepcopy(packet['observations']['reference_maps'])
+        access=h.process_access_intent(plan,obs,now=NOW)
+        for key,patch in access['role_patches'].items():obs['roles'][key]['rules']=copy.deepcopy(patch[-1]['value'])
+        final=h.finalize_intent(plan,access,obs,now=NOW)
+        self.assertTrue(final['ready']);self.assertEqual(r.canonical(packet),before)
+        self.assertEqual(final['publication']['documents'],packet['previous_publication']['documents'])
+        for c in r.COMPONENTS:
+            self.assertEqual(final['seed']['baselines'][c]['previous_reference']['metadata']['uid'],
+                packet['old_state']['journal']['baselines'][c]['previous_reference']['metadata']['uid'])
+
+    def test_candidate_objects_require_exact_completed_historical_journal_custody(self):
+        for field in ('documents','reference_maps'):
+            for c in r.COMPONENTS:
+                with self.subTest(field=field,component=c):
+                    packet=self.candidate_packet()
+                    packet['observations'][field][c]['metadata']['uid']=uid(999)
+                    with self.assertRaises(ValueError):h.plan_intent(packet,now=NOW)
+        for mutation in ('missing_uid','different_uid','different_data','different_name','bad_hash','wrong_publication','transition'):
+            with self.subTest(mutation=mutation):
+                packet=self.candidate_packet();journal=packet['old_state']['journal']
+                cm=journal['baselines']['hub:cps']['previous_reference']
+                if mutation=='missing_uid':del cm['metadata']['uid']
+                elif mutation=='different_uid':cm['metadata']['uid']=uid(999)
+                elif mutation=='different_data':cm['data']['reference.json']='{}'
+                elif mutation=='different_name':cm['metadata']['name']='foreign'
+                elif mutation=='wrong_publication':journal['publication']['revision']='sha256:'+'0'*64
+                elif mutation=='transition':journal['transition']={}
+                if mutation!='bad_hash':packet['old_state']['journal_sha256']=r.canonical_sha256(journal)
+                else:packet['old_state']['journal_sha256']='sha256:'+'0'*64
+                with self.assertRaises(ValueError):h.plan_intent(packet,now=NOW)
+        for field in ('documents','reference_maps'):
+            with self.subTest(foreign_candidate_uid=field):
+                packet=self.candidate_packet()
+                packet['previous_publication'][field]['hub:cps']['metadata']['uid']=uid(999)
+                packet['previous_publication_sha256']=r.canonical_sha256(packet['previous_publication'])
+                packet['old_state']['journal']['publication']=copy.deepcopy(packet['previous_publication'])
+                packet['old_state']['journal_sha256']=r.canonical_sha256(packet['old_state']['journal'])
+                with self.assertRaises(ValueError):h.plan_intent(packet,now=NOW)
+
     def test_exact_two_images_bootstraps_full_spec_cas_and_unchanged_revision(self):
         plan=self.plan()
         self.assertFalse(plan['ready']); self.assertEqual(set(plan['bootstrap_candidates']),set(h.HUBS))

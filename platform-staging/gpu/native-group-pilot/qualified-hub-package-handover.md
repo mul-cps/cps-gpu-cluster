@@ -62,8 +62,15 @@ Create a mode-0600 packet in an owned private directory with these exact keys:
   within 30 seconds when planning.
 
 Use canonical hashes from `native_group_approval_renderer.canonical_sha256`.
-The original publication must already bind all actual document, reference and
-bootstrap UIDs. The helper also checks the complete original journal baselines,
+The original publication is retained byte-for-byte as the completed journal
+recorded it. Renderer document and reference candidates may contain only their
+namespace and name. Their historical UID custody comes from the completed
+journal's `baselines[component].previous_document` and `previous_reference`,
+never from copying a fresh readback UID into the publication. The helper checks
+candidate names/content, each actual document against its published reference,
+and both actual objects against the historical UID-bound baselines. If candidate
+metadata already includes a UID, that UID must also match. Bootstrap UIDs remain
+publication-bound. The helper also checks complete journal Deployment baselines,
 Role UIDs/rules, paused controller and preserved PVC lineage.
 
 ## Plan and apply the two guarded Deployment changes

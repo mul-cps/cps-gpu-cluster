@@ -129,6 +129,24 @@ def runtime_intent(request,target_publication):
     return planned,r.replace_patch(actual,'/data',actual['data'],data)
 
 
+def historical_projection(request,policy,qualification):
+    """Bind renderer candidates through the completed journal's actual UIDs."""
+    state=request.get('old_state',{})
+    r.require(isinstance(state,dict),'Historical journal state required')
+    journal=state.get('journal')
+    required={'version','config_hash','publication','baselines','structural_prior','transition','process_names','role_guards'}
+    r.require(isinstance(journal,dict) and required<=set(journal)<=required|{'process_refresh'}
+        and type(journal['version']) is int and journal['version']==1
+        and state.get('journal_sha256')==r.canonical_sha256(journal)
+        and journal['publication']==request['previous_publication']
+        and journal['transition'] is None and journal.get('process_refresh') is None
+        and journal['structural_prior'] is False,
+        'Exact completed historical journal projection custody required')
+    previous=r._baselines(journal['baselines'],policy,qualification)
+    r.require(set(previous)==set(r.COMPONENTS),'All four historical immutable projection pairs required')
+    return journal['baselines']
+
+
 def context(request,obs,now):
     policy=r.Policy(request['policy'])
     qualification=r.NativeGroupDeployment.from_config(request['qualification'],policy)
@@ -158,11 +176,14 @@ def context(request,obs,now):
     closed(obs['epoch']['driver_epoch'],{'node_uid','boot_id','driver_generation','gpu_uuid'},'Closed driver epoch required')
     epoch=r.DriverEpoch(**obs['epoch']['driver_epoch']);pool=qualification._config()['node_pool']
     r.require(epoch.__dict__=={k:pool[k] for k in epoch.__dict__},'Unchanged actual qualified driver epoch required')
+    historical=historical_projection(request,policy,qualification)
     for c in r.COMPONENTS:
         revision=r.ApprovalRevision.from_configmap(obs['documents'][c],policy,qualification,expected_ref=p['references'][c])
         r.require(revision.document['registry']==snapshot.document,'Source bytes must describe the installed registry exactly')
-        same_cm(obs['documents'][c],p['documents'][c])
-        same_cm(obs['reference_maps'][c],p['reference_maps'][c])
+        same_cm(obs['documents'][c],p['documents'][c],bound='uid' in p['documents'][c]['metadata'])
+        same_cm(obs['reference_maps'][c],p['reference_maps'][c],bound='uid' in p['reference_maps'][c]['metadata'])
+        same_cm(obs['documents'][c],historical[c]['previous_document'])
+        same_cm(obs['reference_maps'][c],historical[c]['previous_reference'])
         ack=obs['acknowledgments'][c];am=identity(ack,'ConfigMap')
         r.require(ack.get('apiVersion')=='v1' and ack.get('immutable') in (None,False)
             and set(ack)<= {'apiVersion','kind','metadata','immutable','data'}
