@@ -68,7 +68,9 @@ requires operator repair. No fabricated UID is accepted as readback evidence.
    the root node process uses `0400`. The node also mounts `template.json` and
    `process.json` from a node-only immutable bootstrap ConfigMap. The first is
    the unchanged reviewed typed qualification; the second contains exactly the
-   actual Deployment's namespace, container, immutable image and service account.
+   actual Deployment's namespace, kind, name, UID, container, immutable image and
+   service account. These seven fields bind the current controller; the running
+   Pod's identity comes separately from the downward API and fresh API reads.
    It receives all three `--approval-reference`, `--approval-template` and
    `--approval-process` paths separately from its unchanged static config. Create
    the reviewed bootstrap ConfigMap before applying the node patch. SDK consumers receive
@@ -86,14 +88,98 @@ requires operator repair. No fabricated UID is accepted as readback evidence.
 5. The resulting `enrollment_approval_reference` is the verified **node** copy.
    Gateway/Hub local-copy references must not be frozen into node enrollment.
 
+## Named acknowledgment publication
+
+The Root operator pre-creates one mutable ConfigMap per component with exactly
+`data: {ack.json: "{}"}`. Capture all four full actual objects, including UID and
+resourceVersion. The empty value acknowledges nothing. Names are operator
+selected; the renderer accepts the actual names rather than guessing them from
+a revision. Preserve these UIDs in runtime reader settings and publisher inputs.
+
+After `projection_intent`, call:
+
+```python
+publication = publisher_intent(
+    projection=projection, documents=actual_documents, baselines=baselines,
+    acknowledgments=actual_acknowledgment_configmaps, policy=policy,
+    qualification=qualification, driver_epoch=actual_epoch, ttl_seconds=30)
+initial_access = access_intent(projection=publication)
+```
+
+`publisher_intent` preserves the complete original static Deployment spec. It
+adds the node's root `0400` `acknowledgment.json` descriptor and
+`--approval-acknowledgment` argument. The descriptor has exactly namespace,
+name and the actual acknowledgment ConfigMap UID. It does not contain an ack.
+Gateway and Hub bootstrap maps contain `publisher.json`, selected by
+`CPS_NATIVE_APPROVAL_PUBLISHER_PATH`. Each bootstrap has exactly version,
+component, acknowledgment, process, driver_epoch and ttlSeconds. The process
+has the seven trusted controller fields. Create the returned immutable
+`bootstrap_maps` and `reference_maps` before applying the guarded Deployment
+patches. All image digests, credentials and static custody remain preserved.
+
+The same preparation is available through the inert-by-default CLI. The extra
+private publisher request has exactly `version: 1`, `acknowledgments` (all four
+full actual mutable ConfigMaps), `driver_epoch` (node_uid, boot_id,
+driver_generation, gpu_uuid) and `ttlSeconds`:
+
+```sh
+python native_group_approval_renderer.py --render --input /private/projection-request.json --publisher-input /private/publisher-request.json --output /private/publication-packet
+```
+
+The returned `initial_access.objects` contain seven namespaced Roles and their
+RoleBindings. Every rule has exact resourceNames. Each component gets GET for
+its immutable document, own acknowledgment and reviewed Deployment, and PATCH
+only for its own pre-created acknowledgment. Gateway additionally gets named
+GET for its three peers' document, acknowledgment and Deployment; it gets no
+peer PATCH permission. These are new named objects, so the operator must
+confirm absence before creation; an existing conflicting object needs explicit
+review rather than an unguarded apply. There is no create, update, delete, list,
+wildcard or Secret permission in this packet.
+
+New Pod and ReplicaSet names are unknown before rollout. Publishers retry a
+transient denied GET without refreshing an acknowledgment. After the actual
+new Pods exist, capture all four full Deployments, ReplicaSets and Ready Pods,
+plus the seven actual initial Roles. Use:
+
+```python
+process_access = process_access_intent(
+    projection=publication, deployments=actual_deployments,
+    replicasets=actual_replicasets, pods=actual_pods,
+    roles=actual_roles_by_namespace_slash_name)
+```
+
+This validates the real Deployment→ReplicaSet→Pod owner chain and exact current
+executable/security template through the shared process observer. It adds only
+the actual Pod/ReplicaSet names to GET rules. Every Role change tests its actual
+UID, resourceVersion and full previous rules before replacement. No future Pod
+UID or name is invented. A private CLI request for this phase has exactly
+version, projection, deployments, replicasets, pods and roles; roles are keyed
+by `namespace/name`:
+
+```sh
+python native_group_approval_renderer.py --render --process-access --input /private/actual-process-request.json --output /private/process-access-packet
+```
+
+The `runtime_settings` fragment uses all four UID-pinned acknowledgment refs,
+seven-field controller declarations, the observed DriverEpoch and bounded TTL.
+Only the gateway consumes all-four API readback. Hubs publish their own proof
+and use the private gateway interface for the current registry head. Node
+publishes its proof after a successful full custody iteration. Each writer
+GETs and PATCHes its existing own acknowledgment with UID/resourceVersion/full
+data CAS. No writer can create an acknowledgment or replace another copy.
+
+The existing cleanup-only node and create-only gateway admission policies in
+`render.py` match ConfigMap **CREATE** only. Named PATCH of an existing
+acknowledgment does not match those policies; this packet changes neither.
+The operator verifies actual deployed admission rules before rollout.
+
 The richer acknowledgment schema is supplied by the compute package:
 `version`, `component`, `revision`, `policy_hash`, `document`, `process`,
 `driver_epoch`, `observed_at`. `process` contains exactly namespace, name, UID,
-container, immutable image and service account. Process acknowledgment transport
-and its RBAC/admission must be reviewed separately; the current node adapter
-writes its actual acknowledgment atomically to private `state/approval-loaded.json`.
-This packet adds no RBAC or cleanup admission exception and never synthesizes
-acknowledgments or transports them as an unauthorized ConfigMap.
+container, immutable image and service account. These six fields identify the
+running process, while the seven-field bootstrap identifies its controller.
+The node also keeps its atomic private `state/approval-loaded.json`. Preparation
+never generates successful receipts or claims loaded-process readiness.
 
 Rollback uses guarded actual Deployment preimages and retains every immutable
 document still referenced by an active or terminal custody record. Do not

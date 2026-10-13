@@ -16,7 +16,9 @@ from pathlib import Path
 import stat
 
 from cps_compute.native_group_approvals import ApprovalSnapshot
-from cps_compute.native_group_revision import ApprovalRevision, approval_envelope, validate_ack, validate_reference
+from cps_compute.native_group_revision import (ApprovalRevision, approval_envelope, validate_ack,
+    validate_reference, validate_acknowledgment_reference)
+from cps_compute.native_group_process import validate_process_declaration, observe_process
 from cps_compute.native_gpu_controller import DriverEpoch
 from cps_compute.native_groups import NativeGroupDeployment, canonical_sha256
 from cps_compute.policy import Policy
@@ -27,7 +29,9 @@ DIRECTORY = '/var/run/cps-native-approvals'
 DOC_VOLUME = 'cps-native-approval-document'
 REF_VOLUME = 'cps-native-approval-reference'
 BOOTSTRAP_VOLUME = 'cps-native-approval-bootstrap'
-OWNED_VOLUMES = {DOC_VOLUME, REF_VOLUME, BOOTSTRAP_VOLUME}
+PUBLISHER_VOLUME = 'cps-native-approval-publisher'
+OWNED_VOLUMES = {DOC_VOLUME, REF_VOLUME, BOOTSTRAP_VOLUME, PUBLISHER_VOLUME}
+PUBLISHER_ENV = 'CPS_NATIVE_APPROVAL_PUBLISHER_PATH'
 ENV = {
     'CPS_NATIVE_GROUP_APPROVALS_PATH': {'value':DIRECTORY+'/approval.json'},
     'CPS_NATIVE_GROUP_APPROVAL_REFERENCE': {'value':DIRECTORY+'/reference.json'},
@@ -129,13 +133,34 @@ def document_intent(*, source_raw, source_sha256, trusted_revision, policy, qual
         'live_applied':False, 'process_readiness_verified':False}
 
 
-def _node_bootstrap(document, row, qualification):
+def _process_declaration(row):
+    meta=object_guard(row['deployment'], 'Deployment')
     pod=row['deployment']['spec']['template']['spec']
     container=next(c for c in pod['containers'] if c['name']==row['container'])
-    process={'namespace':row['deployment']['metadata']['namespace'], 'container':row['container'],
-        'image':container['image'], 'service_account':pod['serviceAccountName']}
+    return validate_process_declaration({'namespace':meta['namespace'],'kind':'Deployment','name':meta['name'],
+        'uid':meta['uid'],'container':row['container'],'image':container['image'],'service_account':pod['serviceAccountName']})
+
+
+def _node_bootstrap(document, row, qualification):
+    process=_process_declaration(row)
     return immutable_config(document, {'template.json':canonical(qualification._config()),
         'process.json':canonical(process)}, 'cps-native-approval-bootstrap')
+
+
+def _projected_preimage(spec, component):
+    """Remove only this packet's known additions for a complete baseline check."""
+    value=copy.deepcopy(spec);pod=value['template']['spec']
+    for container in pod['containers']:
+        if 'volumeMounts' in container:
+            container['volumeMounts']=[m for m in container['volumeMounts'] if m.get('name') not in OWNED_VOLUMES]
+        if 'env' in container:
+            container['env']=[e for e in container['env'] if e.get('name') not in set(ENV)|{'CPS_NATIVE_APPROVAL_COMPONENT',PUBLISHER_ENV}]
+        if component=='node' and 'args' in container:
+            suffix=[item for name in ('reference','template','process') for item in ('--approval-'+name,DIRECTORY+'/'+name+'.json')]
+            require(container['args'][-6:]==suffix,'Exact node projection arguments required')
+            container['args']=container['args'][:-6]
+    if 'volumes' in pod:pod['volumes']=[v for v in pod['volumes'] if v.get('name') not in OWNED_VOLUMES]
+    return value
 
 
 def _projection_rows(component, doc, ref, bootstrap=None):
@@ -212,6 +237,183 @@ def projection_intent(*, documents, **kwargs):
         'expected_deployments':expected, 'requires_actual_process_ack':True}
 
 
+def publisher_intent(*, projection, documents, baselines, acknowledgments, policy, qualification,
+                     driver_epoch, ttl_seconds=30):
+    """Add actual UID-pinned publication prerequisites; never manufacture acks."""
+    _baselines(baselines, policy, qualification)
+    require(type(ttl_seconds) is int and 15<=ttl_seconds<=120, 'Bounded acknowledgment TTL required')
+    pool=qualification._config()['node_pool']
+    require(type(driver_epoch) is DriverEpoch and driver_epoch.__dict__=={
+        'node_uid':pool['node_uid'],'boot_id':pool['boot_id'],'driver_generation':pool['driver_generation'],
+        'gpu_uuid':pool['gpu_uuid']}, 'Actual qualified driver epoch required')
+    require(isinstance(projection,dict) and projection.get('policy_hash')==policy.hash
+        and projection.get('process_readiness_verified') is False
+        and projection.get('live_applied') is False, 'Unapplied reviewed projection required')
+    for values in (documents, acknowledgments, projection.get('references'),projection.get('expected_deployments')):
+        require(isinstance(values,dict) and set(values)==set(COMPONENTS), 'All four actual projection identities required')
+    result=copy.deepcopy(projection);refs={};processes={}
+    for component in COMPONENTS:
+        actual=documents[component]
+        ApprovalRevision.from_configmap(actual,policy,qualification,expected_ref=projection['references'][component])
+        ack=acknowledgments[component];meta=object_guard(ack,'ConfigMap')
+        require(ack.get('apiVersion')=='v1' and ack.get('immutable') in (None,False)
+            and meta.get('namespace')==actual['metadata']['namespace'] and not meta.get('deletionTimestamp')
+            and not meta.get('ownerReferences') and not ack.get('binaryData')
+            and isinstance(ack.get('data'),dict) and set(ack['data'])=={'ack.json'}
+            and isinstance(ack['data']['ack.json'],str) and isinstance(parse(ack['data']['ack.json']),dict),
+            'Actual mutable acknowledgment ConfigMap with one JSON record required')
+        refs[component]=validate_acknowledgment_reference({k:meta[k] for k in ('namespace','name','uid')})
+        row=baselines[component];processes[component]=_process_declaration(row)
+        expected=projection['expected_deployments'][component]
+        require(all(expected.get(k)==row['deployment']['metadata'][k] for k in ('namespace','name','uid'))
+            and expected.get('container')==row['container']
+            and projection['baseline_guards'][component]=={'uid':row['deployment']['metadata']['uid'],
+                'resourceVersion':row['deployment']['metadata']['resourceVersion'],
+                'spec_sha256':canonical_sha256(row['deployment']['spec'])}, 'Exact captured projection baseline required')
+        # Initial installation cannot hide unrelated changes in a supplied packet.
+        if row['previous_document'] is None:
+            preimage=_projected_preimage(expected['spec'],component)
+            original=copy.deepcopy(row['deployment']['spec'])
+            for container in original['template']['spec']['containers']:
+                container.setdefault('env',[]);container.setdefault('volumeMounts',[])
+            original['template']['spec'].setdefault('volumes',[])
+            require(preimage==original,'Projection must preserve the complete original static spec')
+        spec=copy.deepcopy(expected['spec']);pod=spec['template']['spec']
+        container=next(c for c in pod['containers'] if c['name']==row['container'])
+        require(container['image']==processes[component]['image'] and pod['serviceAccountName']==processes[component]['service_account'],
+            'Preserved controller image and service account required')
+        if component=='node':
+            data=copy.deepcopy(result['bootstrap_maps']['node']['data']);data['acknowledgment.json']=canonical(refs[component])
+            require(data['process.json']==canonical(processes[component]),'Exact node controller declaration required')
+            bootstrap=immutable_config(actual,data,'cps-native-approval-bootstrap')
+            volume=next(v for v in pod['volumes'] if v['name']==BOOTSTRAP_VOLUME)
+            volume['configMap']['name']=bootstrap['metadata']['name']
+            volume['configMap']['items'].append({'key':'acknowledgment.json','path':'acknowledgment.json'})
+            container['volumeMounts'].append({'name':BOOTSTRAP_VOLUME,'mountPath':DIRECTORY+'/acknowledgment.json',
+                'subPath':'acknowledgment.json','readOnly':True})
+            require(not any(a=='--approval-acknowledgment' or a.startswith('--approval-acknowledgment=')
+                for a in container.get('args',[])), 'Unexpected prior acknowledgment argument')
+            container['args']+=['--approval-acknowledgment',DIRECTORY+'/acknowledgment.json']
+        else:
+            require(not any(v.get('name')==PUBLISHER_VOLUME for v in pod.get('volumes',[]))
+                and not any(e.get('name')==PUBLISHER_ENV for e in container.get('env',[])),
+                'Unexpected prior publisher projection')
+            value={'version':1,'component':component,'acknowledgment':refs[component],'process':processes[component],
+                'driver_epoch':driver_epoch.__dict__,'ttlSeconds':ttl_seconds}
+            bootstrap=immutable_config(actual,{'publisher.json':canonical(value)},'cps-native-approval-publisher')
+            pod['volumes'].append({'name':PUBLISHER_VOLUME,'configMap':{'name':bootstrap['metadata']['name'],
+                'defaultMode':0o444,'items':[{'key':'publisher.json','path':'publisher.json'}]}})
+            container['volumeMounts'].append({'name':PUBLISHER_VOLUME,'mountPath':DIRECTORY+'/publisher.json',
+                'subPath':'publisher.json','readOnly':True})
+            container['env'].append({'name':PUBLISHER_ENV,'value':DIRECTORY+'/publisher.json'})
+        result['bootstrap_maps'][component]=bootstrap
+        result['patches'][component]=replace_patch(row['deployment'],'/spec',row['deployment']['spec'],spec)
+        result['expected_deployments'][component]['spec']=copy.deepcopy(spec)
+    result['acknowledgment_references']=refs;result['process_declarations']=processes
+    result['runtime_settings']={'enabled':True,'acknowledgments':copy.deepcopy(refs),'processes':copy.deepcopy(processes),
+        'driver_epoch':copy.deepcopy(driver_epoch.__dict__),'ttlSeconds':ttl_seconds}
+    return result
+
+
+def access_name(component):
+    require(component in COMPONENTS,'Known component required')
+    return 'cps-native-approval-'+component.replace(':','-')
+
+
+def _publisher_scope(projection):
+    for key in ('acknowledgment_references','process_declarations','references','expected_deployments'):
+        require(isinstance(projection.get(key),dict) and set(projection[key])==set(COMPONENTS),'Closed publisher scope required')
+    for component in COMPONENTS:
+        process=validate_process_declaration(projection['process_declarations'][component])
+        ref=validate_reference(projection['references'][component])
+        ack=validate_acknowledgment_reference(projection['acknowledgment_references'][component])
+        expected=projection['expected_deployments'][component]
+        container=next(c for c in expected['spec']['template']['spec']['containers'] if c['name']==expected['container'])
+        require(all(process[k]==expected[k] for k in ('namespace','name','uid','container'))
+            and process['image']==container['image']
+            and process['service_account']==expected['spec']['template']['spec']['serviceAccountName']
+            and process['kind']=='Deployment' and ack['namespace']==ref['namespace']==process['namespace']
+            and (component=='node' or process['namespace']=={'gateway':'cps-compute','hub:cps':'jupyterhub','hub:cit':'cit-jhub'}[component]),
+            'Actual same-scope publisher controller and named references required')
+    require(len({p['namespace'] for p in projection['process_declarations'].values()})==4,'Four distinct publisher scopes required')
+
+
+def _access_rows(projection, process_names=None):
+    """Only the gateway reads peers; every publisher patches its own ack only."""
+    result=[];process_names=process_names or {}
+    for reader in COMPONENTS:
+        scope=COMPONENTS if reader=='gateway' else (reader,)
+        process=projection['process_declarations'][reader]
+        subject={'kind':'ServiceAccount','name':process['service_account'],'namespace':process['namespace']}
+        for target in scope:
+            namespace=projection['references'][target]['namespace'];name=access_name(reader)
+            ack=projection['acknowledgment_references'][target]
+            rules=[{'apiGroups':[''],'resources':['configmaps'],'resourceNames':sorted([
+                projection['references'][target]['name'],ack['name']]),'verbs':['get']},
+                {'apiGroups':['apps'],'resources':['deployments'],
+                    'resourceNames':[projection['process_declarations'][target]['name']],'verbs':['get']}]
+            if target==reader:rules.append({'apiGroups':[''],'resources':['configmaps'],
+                'resourceNames':[ack['name']],'verbs':['patch']})
+            if target in process_names:
+                names=process_names[target]
+                rules.extend([{'apiGroups':[''],'resources':['pods'],'resourceNames':[names['pod']],'verbs':['get']},
+                    {'apiGroups':['apps'],'resources':['replicasets'],'resourceNames':[names['replicaset']],'verbs':['get']}])
+            metadata={'namespace':namespace,'name':name}
+            result.extend([{'apiVersion':'rbac.authorization.k8s.io/v1','kind':'Role','metadata':metadata,'rules':rules},
+                {'apiVersion':'rbac.authorization.k8s.io/v1','kind':'RoleBinding','metadata':copy.deepcopy(metadata),
+                    'subjects':[subject],'roleRef':{'apiGroup':'rbac.authorization.k8s.io','kind':'Role','name':name}}])
+    return result
+
+
+def access_intent(*, projection):
+    """Initial named-CM/controller RBAC candidates, with no guessed future Pods."""
+    _publisher_scope(projection)
+    return {'version':1,'objects':_access_rows(projection),'requires_actual_new_process_capture':True,'live_applied':False}
+
+
+def process_access_intent(*, projection, deployments, replicasets, pods, roles):
+    """Bind fresh real Pod/RS names after rollout, guarded by full old Role rules."""
+    _publisher_scope(projection)
+    for values in (deployments,replicasets,pods):
+        require(isinstance(values,dict) and set(values)==set(COMPONENTS),'All actual current process records required')
+    names={}
+    core,apps=_captured_apis(deployments,replicasets,pods)
+    for component in COMPONENTS:
+        expected=projection['expected_deployments'][component];deployment=deployments[component]
+        require(deployment.get('spec')==expected['spec'],'Actual applied process spec required')
+        pod=pods[component];meta=object_guard(pod,'Pod');rs=replicasets[component];object_guard(rs,'ReplicaSet')
+        receipt={**{k:projection['process_declarations'][component][k] for k in ('namespace','container','image','service_account')},
+            'name':meta['name'],'uid':meta['uid']}
+        observed,_=observe_process(core,apps,projection['process_declarations'][component],receipt)
+        require(observed==pod and _owner(pod,rs,'ReplicaSet'),'Exact captured ReplicaSet required')
+        names[component]={'pod':meta['name'],'replicaset':rs['metadata']['name']}
+    initial={o['metadata']['namespace']+'/'+o['metadata']['name']:o for o in _access_rows(projection) if o['kind']=='Role'}
+    require(isinstance(roles,dict) and set(roles)==set(initial),'All exact initial approval Roles required')
+    patches={}
+    for target in _access_rows(projection,names):
+        if target['kind']!='Role':continue
+        namespace=target['metadata']['namespace'];name=target['metadata']['name'];key=namespace+'/'+name;baseline=roles[key]
+        meta=object_guard(baseline,'Role')
+        require(baseline.get('apiVersion')=='rbac.authorization.k8s.io/v1' and not meta.get('deletionTimestamp')
+            and (meta.get('namespace'),meta.get('name'))==(namespace,name) and baseline.get('rules')==initial[key]['rules'],
+            'Actual initial named Role with exact reviewed rules required')
+        patches[key]=replace_patch(baseline,'/rules',baseline['rules'],target['rules'])
+    return {'version':1,'patches':patches,'actual_process_names':names,'live_applied':False,'process_readiness_verified':False}
+
+
+def _captured_apis(deployments,replicasets,pods):
+    def find(values,name,namespace):
+        rows=[p for p in values.values() if (p.get('metadata',{}).get('name'),p.get('metadata',{}).get('namespace'))==(name,namespace)]
+        require(len(rows)==1,'One exact captured process object required')
+        return rows[0]
+    class Core:
+        def read_namespaced_pod(self,name,namespace):return find(pods,name,namespace)
+    class Apps:
+        def read_namespaced_deployment(self,name,namespace):return find(deployments,name,namespace)
+        def read_namespaced_replica_set(self,name,namespace):return find(replicasets,name,namespace)
+    return Core(),Apps()
+
+
 def _owner(child, parent, kind):
     refs=child.get('metadata', {}).get('ownerReferences', [])
     controllers=[row for row in refs if row.get('controller') is True]
@@ -245,8 +447,8 @@ def _observed_projection(pod, expected, component):
     container=containers[0]; target=next(c for c in wanted['containers'] if c['name']==expected['container'])
     require([v for v in container.get('volumeMounts', []) if v.get('name') in OWNED_VOLUMES]
         ==[v for v in target['volumeMounts'] if v.get('name') in OWNED_VOLUMES]
-        and [v for v in container.get('env', []) if v.get('name') in set(ENV)|{'CPS_NATIVE_APPROVAL_COMPONENT'}]
-        ==[v for v in target['env'] if v.get('name') in set(ENV)|{'CPS_NATIVE_APPROVAL_COMPONENT'}]
+        and [v for v in container.get('env', []) if v.get('name') in set(ENV)|{'CPS_NATIVE_APPROVAL_COMPONENT',PUBLISHER_ENV}]
+        ==[v for v in target['env'] if v.get('name') in set(ENV)|{'CPS_NATIVE_APPROVAL_COMPONENT',PUBLISHER_ENV}]
         and (component!='node' or container.get('args')==target.get('args')),
         'Actual process approval inputs must match the applied reviewed projection')
 
@@ -261,6 +463,7 @@ def readiness_intent(*, projection, documents, policy, qualification, deployment
         'node_uid':pool['node_uid'], 'boot_id':pool['boot_id'], 'driver_generation':pool['driver_generation'],
         'gpu_uuid':pool['gpu_uuid']}, 'Actual qualified driver epoch required')
     verified={}
+    core,apps=_captured_apis(deployments,replicasets,pods)
     for component in COMPONENTS:
         actual=ApprovalRevision.from_configmap(documents[component], policy, qualification,
             expected_ref=projection['references'][component])
@@ -283,6 +486,11 @@ def readiness_intent(*, projection, documents, policy, qualification, deployment
             and process.get('namespace')==expected['namespace']
             and process.get('service_account')==expected['spec']['template']['spec']['serviceAccountName'],
             'Process declaration must match reviewed current service scope')
+        trusted={'namespace':expected['namespace'],'kind':'Deployment','name':expected['name'],'uid':expected['uid'],
+            'container':expected['container'],'image':container['image'],
+            'service_account':expected['spec']['template']['spec']['serviceAccountName']}
+        observed,scope=observe_process(core,apps,trusted,process)
+        require(observed==pod and scope==process,'Current exact executable Pod template required')
         verified[component]=validate_ack(acknowledgments[component], component=component, document=actual,
             actual_pod=pod, expected_process=process, driver_epoch=driver_epoch, now=now, ttl_seconds=ttl_seconds)
     return {'version':1, 'ready':True, 'revision':projection['revision'], 'policy_hash':policy.hash,
@@ -301,25 +509,44 @@ def main(argv=None):
     parser=argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--render', action='store_true', help='Offline only: write document or projection intents')
     parser.add_argument('--input', type=Path); parser.add_argument('--output', type=Path)
+    parser.add_argument('--publisher-input', type=Path, help='Actual pre-created acknowledgment readbacks and qualified epoch')
+    parser.add_argument('--process-access', action='store_true', help='Offline guarded named Pod/ReplicaSet access after rollout')
     args=parser.parse_args(argv)
     if not args.render:
         print('Inert: --render requires a private operator input; no cluster access performed.'); return 0
     require(args.input is not None and args.output is not None, 'Private input and new output directory required')
     request=_private_json(args.input)
-    require(isinstance(request, dict) and set(request)=={'version','source_raw','source_sha256','trusted_revision',
-        'policy','qualification','baselines','captured_at','documents'} and type(request['version']) is int
-        and request['version']==1, 'Closed operator render request required')
-    policy=Policy(request['policy']); qualification=NativeGroupDeployment.from_config(request['qualification'], policy)
-    kwargs={k:request[k] for k in ('source_sha256','trusted_revision','baselines')}
-    kwargs.update(source_raw=request['source_raw'].encode(), policy=policy, qualification=qualification,
-        captured_at=datetime.fromisoformat(request['captured_at'].replace('Z','+00:00')), now=datetime.now(timezone.utc))
-    result=(document_intent(**kwargs) if request['documents'] is None
-        else projection_intent(**kwargs, documents=request['documents']))
+    if args.process_access:
+        require(args.publisher_input is None and isinstance(request,dict) and set(request)=={
+            'version','projection','deployments','replicasets','pods','roles'} and type(request['version']) is int
+            and request['version']==1,'Closed actual process access request required')
+        result=process_access_intent(**{k:request[k] for k in request if k!='version'})
+    else:
+        require(isinstance(request, dict) and set(request)=={'version','source_raw','source_sha256','trusted_revision',
+            'policy','qualification','baselines','captured_at','documents'} and type(request['version']) is int
+            and request['version']==1, 'Closed operator render request required')
+        policy=Policy(request['policy']); qualification=NativeGroupDeployment.from_config(request['qualification'], policy)
+        kwargs={k:request[k] for k in ('source_sha256','trusted_revision','baselines')}
+        kwargs.update(source_raw=request['source_raw'].encode(), policy=policy, qualification=qualification,
+            captured_at=datetime.fromisoformat(request['captured_at'].replace('Z','+00:00')), now=datetime.now(timezone.utc))
+        result=(document_intent(**kwargs) if request['documents'] is None
+            else projection_intent(**kwargs, documents=request['documents']))
+        if args.publisher_input is not None:
+            publisher=_private_json(args.publisher_input)
+            require(request['documents'] is not None and isinstance(publisher,dict) and set(publisher)=={
+                'version','acknowledgments','driver_epoch','ttlSeconds'} and type(publisher['version']) is int
+                and publisher['version']==1 and isinstance(publisher['driver_epoch'],dict)
+                and set(publisher['driver_epoch'])=={'node_uid','boot_id','driver_generation','gpu_uuid'},
+                'Closed actual publisher prerequisites required')
+            result=publisher_intent(projection=result,documents=request['documents'],baselines=request['baselines'],
+                acknowledgments=publisher['acknowledgments'],policy=policy,qualification=qualification,
+                driver_epoch=DriverEpoch(**publisher['driver_epoch']),ttl_seconds=publisher['ttlSeconds'])
+            result['initial_access']=access_intent(projection=result)
     args.output.mkdir(mode=0o700, parents=False, exist_ok=False)
     target=args.output/'intent.json'
     with target.open('x', encoding='utf-8') as handle:
         os.chmod(target, 0o600); handle.write(canonical(result)+'\n')
-    print(canonical({'version':1, 'revision':result['revision'], 'components':len(result['documents']),
+    print(canonical({'version':1, 'revision':result.get('revision'), 'components':len(result.get('documents',{})),
         'output_sha256':'sha256:'+hashlib.sha256(target.read_bytes()).hexdigest(), 'live_applied':False}))
     return 0
 

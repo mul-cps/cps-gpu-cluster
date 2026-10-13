@@ -77,12 +77,13 @@ def readiness_fixture(f, projection, documents):
         deployment['status'] = {'observedGeneration':2, 'updatedReplicas':1, 'readyReplicas':1}
         rs = {'apiVersion':'apps/v1', 'kind':'ReplicaSet',
             'metadata':{'namespace':NAMESPACES[component], 'name':'rs-'+str(index), 'uid':uid(index),
-                'resourceVersion':'1', 'ownerReferences':[{'kind':'Deployment', 'name':deployment['metadata']['name'],
+                'resourceVersion':'1', 'ownerReferences':[{'apiVersion':'apps/v1','kind':'Deployment', 'name':deployment['metadata']['name'],
                     'uid':deployment['metadata']['uid'], 'controller':True}]},
             'spec':{'template':copy.deepcopy(deployment['spec']['template'])}}
         pod = {'apiVersion':'v1', 'kind':'Pod',
             'metadata':{'namespace':NAMESPACES[component], 'name':'pod-'+str(index), 'uid':uid(index+10),
-                'resourceVersion':'1', 'ownerReferences':[{'kind':'ReplicaSet', 'name':rs['metadata']['name'],
+                'resourceVersion':'1', 'labels':copy.deepcopy(deployment['spec']['template']['metadata']['labels']),
+                'ownerReferences':[{'apiVersion':'apps/v1','kind':'ReplicaSet', 'name':rs['metadata']['name'],
                     'uid':rs['metadata']['uid'], 'controller':True}]},
             'spec':copy.deepcopy(deployment['spec']['template']['spec']),
             'status':{'phase':'Running', 'conditions':[{'type':'Ready', 'status':'True'}],
@@ -211,7 +212,7 @@ class RendererTests(unittest.TestCase):
             rs['spec']['template']['metadata']['labels']['pod-template-hash']='5d7699686'
             rs['spec']['selector']=copy.deepcopy(ready['deployments'][component]['spec']['selector'])
             rs['spec']['selector']['matchLabels']['pod-template-hash']='5d7699686'
-            ready['pods'][component]['metadata']['labels']={'pod-template-hash':'5d7699686'}
+            ready['pods'][component]['metadata']['labels']['pod-template-hash']='5d7699686'
         self.assertTrue(r.readiness_intent(projection=projection, documents=docs,
             policy=self.f[0], qualification=self.f[1], **ready)['ready'])
         for mutate in (
@@ -231,7 +232,7 @@ class RendererTests(unittest.TestCase):
         bootstrap=result['bootstrap_maps']['node']
         self.assertEqual(json.loads(bootstrap['data']['template.json']), self.f[1]._config())
         self.assertEqual(json.loads(bootstrap['data']['process.json']), {
-            'namespace':'cps-native-system', 'container':'node',
+            'namespace':'cps-native-system', 'kind':'Deployment', 'name':'node', 'uid':uid(4), 'container':'node',
             'image':self.f[-1]['node']['deployment']['spec']['template']['spec']['containers'][0]['image'],
             'service_account':'node'})
         pod=result['patches']['node'][-1]['value']['template']['spec']
@@ -274,10 +275,169 @@ class RendererTests(unittest.TestCase):
             lambda d: d['acknowledgments']['hub:cit'].update(document=projection['references']['hub:cps']),
             lambda d: d['expected_processes']['node'].update(uid=uid(998)),
             lambda d: d['deployments']['node']['status'].update(observedGeneration=1),
+            lambda d: d['pods']['gateway']['spec']['containers'][0].update(command=['/forged']),
+            lambda d: d['pods']['hub:cps']['spec']['containers'][0].update(securityContext={'privileged':True}),
         ):
             bad=copy.deepcopy(ready); mutate(bad)
             with self.assertRaises(ValueError):r.readiness_intent(projection=projection, documents=docs,
                 policy=self.f[0], qualification=self.f[1], **bad)
+
+
+def actual_acknowledgments():
+    return {c:{'apiVersion':'v1', 'kind':'ConfigMap', 'metadata':{'namespace':ns,
+        'name':'cps-native-approval-ack-'+c.replace(':','-'), 'uid':uid(i), 'resourceVersion':'1'},
+        'data':{'ack.json':'{}'}} for i,(c,ns) in enumerate(NAMESPACES.items(),100)}
+
+
+class PublisherTests(unittest.TestCase):
+    def setUp(self):
+        self.f=fixture(); self.args=request(self.f)
+        self.docs=actual_documents(r.document_intent(**self.args))
+        self.projection=r.projection_intent(**self.args, documents=self.docs)
+        self.acks=actual_acknowledgments()
+        pool=self.f[1]._config()['node_pool']
+        self.epoch=DriverEpoch(pool['node_uid'],pool['boot_id'],pool['driver_generation'],pool['gpu_uuid'])
+
+    def publisher(self, **changes):
+        kwargs=dict(projection=self.projection, documents=self.docs,
+            baselines=self.f[-1], acknowledgments=self.acks, policy=self.f[0],qualification=self.f[1],
+            driver_epoch=self.epoch)
+        kwargs.update(changes)
+        return r.publisher_intent(**kwargs)
+
+    def test_uid_pinned_bootstrap_preserves_static_spec_and_no_fake_readiness(self):
+        result=self.publisher()
+        self.assertFalse(result['process_readiness_verified'])
+        self.assertEqual(set(result['bootstrap_maps']),set(r.COMPONENTS))
+        for c in r.COMPONENTS:
+            ref=result['acknowledgment_references'][c]
+            self.assertEqual(ref,{k:self.acks[c]['metadata'][k] for k in ('namespace','name','uid')})
+            self.assertEqual(result['process_declarations'][c]['uid'],self.f[-1][c]['deployment']['metadata']['uid'])
+            self.assertEqual(set(result['process_declarations'][c]),{'namespace','kind','name','uid','container','image','service_account'})
+            spec=result['patches'][c][-1]['value']['template']['spec']
+            old=self.f[-1][c]['deployment']['spec']['template']['spec']
+            self.assertEqual(spec['containers'][0]['image'],old['containers'][0]['image'])
+            self.assertEqual(spec['volumes'][0],old['volumes'][0])
+            self.assertEqual(result['patches'][c][:3],self.projection['patches'][c][:3])
+            data=result['bootstrap_maps'][c]['data']
+            if c=='node':
+                self.assertEqual(json.loads(data['acknowledgment.json']),ref)
+                self.assertEqual(json.loads(data['process.json']),result['process_declarations'][c])
+                self.assertEqual(spec['containers'][0]['args'][-2:],['--approval-acknowledgment',r.DIRECTORY+'/acknowledgment.json'])
+                volume=next(v for v in spec['volumes'] if v['name']==r.BOOTSTRAP_VOLUME)
+                self.assertEqual(volume['configMap']['defaultMode'],0o400)
+            else:
+                bootstrap=json.loads(data['publisher.json'])
+                self.assertEqual(bootstrap['acknowledgment'],ref)
+                self.assertEqual(bootstrap['process'],result['process_declarations'][c])
+                self.assertEqual(bootstrap['driver_epoch'],self.epoch.__dict__)
+                self.assertIn({'name':'CPS_NATIVE_APPROVAL_PUBLISHER_PATH','value':r.DIRECTORY+'/publisher.json'},spec['containers'][0]['env'])
+
+    def test_mutable_actual_ack_identity_epoch_and_scope_required(self):
+        for mutate in (
+            lambda d:d['node']['metadata'].pop('uid'),
+            lambda d:d['node']['metadata'].update(namespace='foreign'),
+            lambda d:d['gateway'].update(immutable=True),
+            lambda d:d['hub:cit']['data'].update({'extra':'secret'}),
+            lambda d:d['hub:cps']['metadata'].update(ownerReferences=[{'uid':uid(777)}]),
+        ):
+            acks=copy.deepcopy(self.acks); mutate(acks)
+            with self.assertRaises(ValueError):self.publisher(acknowledgments=acks)
+        with self.assertRaises(ValueError):self.publisher(driver_epoch=DriverEpoch(self.epoch.node_uid,self.epoch.boot_id,'foreign',self.epoch.gpu_uuid))
+        for ttl in (True,14,121):
+            with self.assertRaises(ValueError):self.publisher(ttl_seconds=ttl)
+
+    def test_supplied_projection_cannot_smuggle_static_or_credential_changes(self):
+        for mutate in (
+            lambda s:s['template']['spec']['containers'][0].update(command=['/forged']),
+            lambda s:s['template']['spec']['containers'][0]['env'][0].update(value='changed'),
+            lambda s:s['template']['spec']['volumes'][0].update(secret={'secretName':'foreign'}),
+            lambda s:s['template']['spec'].update(hostPID=True),
+        ):
+            projection=copy.deepcopy(self.projection)
+            mutate(projection['expected_deployments']['gateway']['spec'])
+            with self.assertRaises(ValueError):self.publisher(projection=projection)
+
+    def test_named_access_contains_get_and_own_patch_only_no_predicted_pods(self):
+        result=self.publisher(); intent=r.access_intent(projection=result)
+        self.assertFalse(intent['live_applied'])
+        for obj in intent['objects']:
+            if obj['kind']!='Role':continue
+            for rule in obj['rules']:
+                self.assertTrue(rule['resourceNames'])
+                self.assertNotIn('*',rule['resourceNames'])
+                self.assertNotIn('pods',rule['resources'])
+                self.assertNotIn('replicasets',rule['resources'])
+                self.assertTrue(set(rule['verbs'])<={'get','patch'})
+                if 'patch' in rule['verbs']:
+                    role=obj['metadata']['name']
+                    component=next(c for c in r.COMPONENTS if role==r.access_name(c))
+                    self.assertEqual(rule['resourceNames'],[self.acks[component]['metadata']['name']])
+        self.assertEqual(set(result['runtime_settings']['acknowledgments']),set(r.COMPONENTS))
+        self.assertEqual(result['runtime_settings']['acknowledgments'],result['acknowledgment_references'])
+        bad=copy.deepcopy(result);bad['acknowledgment_references']['node']['namespace']='foreign'
+        with self.assertRaises(ValueError):r.access_intent(projection=bad)
+
+    def test_process_access_uses_actual_owner_chain_and_guarded_role_rules(self):
+        result=self.publisher(); observations=readiness_fixture(self.f,result,self.docs)
+        for c in r.COMPONENTS:
+            rs=observations['replicasets'][c]; pod=observations['pods'][c]
+            rs['metadata']['ownerReferences'][0]['apiVersion']='apps/v1'
+            pod['metadata']['ownerReferences'][0]['apiVersion']='apps/v1'
+            pod['metadata']['labels']=copy.deepcopy(observations['deployments'][c]['spec']['template']['metadata']['labels'])
+        initial=r.access_intent(projection=result)
+        roles={}
+        for i,obj in enumerate(initial['objects'],200):
+            if obj['kind']=='Role':
+                obj=copy.deepcopy(obj);obj['metadata'].update(uid=uid(i),resourceVersion='2')
+                roles[obj['metadata']['namespace']+'/'+obj['metadata']['name']]=obj
+        intent=r.process_access_intent(projection=result,deployments=observations['deployments'],
+            replicasets=observations['replicasets'],pods=observations['pods'],roles=roles)
+        self.assertFalse(intent['live_applied'])
+        for patch in intent['patches'].values():
+            self.assertEqual([p['path'] for p in patch[:3]],['/metadata/uid','/metadata/resourceVersion','/rules'])
+            self.assertTrue(any(rule['resources']==['pods'] for rule in patch[-1]['value']))
+        bad=copy.deepcopy(observations);bad['pods']['node']['metadata']['ownerReferences'][0]['uid']=uid(999)
+        with self.assertRaises(ValueError):r.process_access_intent(projection=result,deployments=bad['deployments'],
+            replicasets=bad['replicasets'],pods=bad['pods'],roles=roles)
+        for mutate in (
+            lambda d:d['pods']['node']['metadata']['ownerReferences'][0].update(name='unknown'),
+            lambda d:d['pods']['gateway']['spec']['containers'][0].update(command=['/forged']),
+            lambda d:d['replicasets']['hub:cps']['spec']['template']['spec']['containers'][0].update(args=['/old']),
+        ):
+            bad=copy.deepcopy(observations);mutate(bad)
+            with self.assertRaises(ValueError):r.process_access_intent(projection=result,deployments=bad['deployments'],
+                replicasets=bad['replicasets'],pods=bad['pods'],roles=roles)
+        bad=copy.deepcopy(roles);next(iter(bad.values()))['rules'].append({'resources':['secrets'],'verbs':['get']})
+        with self.assertRaises(ValueError):r.process_access_intent(projection=result,deployments=observations['deployments'],
+            replicasets=observations['replicasets'],pods=observations['pods'],roles=bad)
+
+    def test_private_cli_publisher_and_post_rollout_role_packets(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root=Path(directory);source=root/'source.json';publisher=root/'publisher.json'
+            source.write_text(r.canonical({'version':1,'source_raw':self.f[3].decode(),
+                'source_sha256':self.args['source_sha256'],'trusted_revision':self.args['trusted_revision'],
+                'policy':self.f[0].catalog,'qualification':self.f[1]._config(),'baselines':self.f[-1],
+                'captured_at':datetime.now(timezone.utc).isoformat(),'documents':self.docs}))
+            publisher.write_text(r.canonical({'version':1,'acknowledgments':self.acks,
+                'driver_epoch':self.epoch.__dict__,'ttlSeconds':30}))
+            os.chmod(source,0o600);os.chmod(publisher,0o600)
+            self.assertEqual(r.main(['--render','--input',str(source),'--publisher-input',str(publisher),
+                '--output',str(root/'publication')]),0)
+            packet=json.loads((root/'publication'/'intent.json').read_text())
+            self.assertEqual(packet['acknowledgment_references']['node']['uid'],self.acks['node']['metadata']['uid'])
+            observed=readiness_fixture(self.f,packet,self.docs)
+            roles={}
+            for i,obj in enumerate(packet['initial_access']['objects'],200):
+                if obj['kind']=='Role':
+                    obj=copy.deepcopy(obj);obj['metadata'].update(uid=uid(i),resourceVersion='2')
+                    roles[obj['metadata']['namespace']+'/'+obj['metadata']['name']]=obj
+            path=root/'process.json';path.write_text(r.canonical({'version':1,'projection':packet,
+                **{k:observed[k] for k in ('deployments','replicasets','pods')},'roles':roles}));os.chmod(path,0o600)
+            self.assertEqual(r.main(['--render','--process-access','--input',str(path),'--output',str(root/'process')]),0)
+            final=json.loads((root/'process'/'intent.json').read_text())
+            self.assertEqual(len(final['patches']),7)
+            self.assertFalse(final['process_readiness_verified'])
 
 
 if __name__ == '__main__':unittest.main()
