@@ -28,7 +28,7 @@ for the bounded live results of 2026-10-13 and their retained evidence.
 | SDK, Hub and Lab packages | Separate core/Hub/Lab package layout, noneditable installation and Lab/RTC bundle tests passed; reviewed Hub login-guard image published | Deploy the exact reviewed Hub package through a qualified handover; build and qualify all 12 notebook variants from the matched release source |
 | Both admin UI consoles | Actual CPS and CIT public `main.js` returned 200 with the exact packaged bytes; both databases migrated to schema 7 without changing any preexisting rows | CIT neutral-account adoption, actual user OAuth/API acceptance and current package/Hub compatibility |
 | Identity and group ownership | Existing reviewed aliases retained; both CPS legacy neutral accounts have permanent ready provenance and exact live group/storage readbacks; schema upgrade disabled after migration | Complete the CIT adoption and Hub package cutover; real login grant survival/expiry and scoped administration; cross-Hub allowance continuity |
-| Native GPU isolation | Controlled no-MIG 5/20 GiB evidence retained; automatic revoke/approve reached four genuine current process acknowledgments and survived controller restart | Normal Source-owned 5 GiB Start/Stop, pair/restart/import/MPS acceptance and broader packing; current bounded pool is 5/10 GiB, not a normal 20 GiB qualification |
+| Native GPU isolation | Controlled no-MIG 5/20 GiB evidence retained; automatic revoke/approve and restart passed; normal Source-owned 5 GiB Start/Stop passed with an exact live driver cap and restored records | Pair/restart/import/MPS acceptance and broader packing; current bounded pool is 5/10 GiB, not a normal 20 GiB qualification |
 | Shared GPU reservations | Shared accounting implementation and reviewed qualification bindings exist | Actual simultaneous cross-Hub starts, all-member atomicity and partial-conflict rollback; prove permitted CPU sessions and independent batch execution; release only after confirmed stop |
 | Workspaces and local assignments | Local management, source-neutral reconciliation and RTC implementations exist | Two real visitors retaining their own identity, membership removal closing existing access, retained files and stopped-writer read-only archives |
 | Workflow gateway and admission | Source validation/ownership paths implemented; bounded CPS own-success/failure artifact/log bytes and foreign-versus-absent rejection passed; controller admission/RBAC checks passed | CIT normal-user own/foreign access, human authentication, token renewal and crafted workflow/admin bypass scenarios on the current release |
@@ -59,8 +59,10 @@ Both reviewed CPS legacy account adoptions completed through the actual CLI.
 The live group/marker, non-admin, stopped-server and inactive-reservation
 readbacks passed, and an actual SQLite online backup verified two permanent
 `ready` accounts with identity-bound `reviewed_legacy_adoption` receipts. The
-remaining CIT legacy adoption is pending a real login refresh. Normal lifecycle
-acceptance and the packaged Hub cutover remain separate gates. The published packaged login guard permanently denies reviewed neutral
+remaining CIT legacy adoption is pending a real login refresh. One normal CPS
+5 GiB lifecycle passed with live driver readback, confirmed shutdown and exact
+restoration. The packaged Hub cutover remains a separate gate. The published
+packaged login guard permanently denies reviewed neutral
 identities independently of mutable grants. It is not yet the live Hub image.
 Generic Source-created accounts still lack the enforced permanent-registry
 publication/creation transaction; new account creation remains gated. Do not

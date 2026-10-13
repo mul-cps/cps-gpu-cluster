@@ -203,8 +203,39 @@ The source manifest's default controller replica count remains **0**; the
 explicitly controlled runtime has **1**. This operational exercise does not
 activate general GPU access, change MIG or the driver, qualify full eight-GPU
 packing, or enable production Fleet promotion. Normal workspace lifecycle after
-reviewed account adoption, broader cross-Hub fairness, isolation, startup bursts
+reviewed account adoption is recorded below. Broader cross-Hub fairness, isolation, startup bursts
 and scheduling gates remain required by the main acceptance plan.
+
+## Normal Source-owned 5 GiB lifecycle
+
+After both CPS reviewed adoptions, the actual configured Source service started
+the approved 5 GiB workspace through its normal Start operation. It reached Hub
+Ready in **113.0506 seconds**, held the all-member reservation, exposed exactly
+one native group Share and preserved its registered storage binding. While it
+was Ready, an independent operator read bound the actual Pod UID to the sealed
+node journal and the protected driver inventory: soft and hard limits were both
+**5,368,709,120 bytes** on the selected physical GPU, with an online, pinned Pod
+parent cgroup. This was automatic cap assignment; MIG and driver settings were
+unchanged.
+
+Normal Stop confirmed server shutdown, native cleanup and reservation release;
+Shares were empty afterward. The terminal journal state was
+`retired-inert-cap`, not a physical free-GPU measurement. Existing membership and
+grant windows were temporarily refreshed without adding profiles or allowance,
+then restored byte-for-byte through audited APIs. The previous Hub group
+membership was also restored. The retained Source result SHA-256 is
+`c358e039ea14b1052571042971fce904ac3639a3e7d375022a38aeac46bc7115`.
+This is one configured-client lifecycle exercise (`human_oauth=false`), not a
+representative burst, two-visitor, peer-isolation or production-packing result.
+
+Live standalone browser acceptance then verified the deployed CPS forms offer
+the approved 5 GiB GPU profile, exclude unapproved 10 GiB and unqualified 20 GiB
+choices, and show both permanent account receipts as ready. All 25 requests
+returned 200, with no writes, foreign requests or browser errors. Nine of eleven
+assertions passed; two exposed one misleading qualification-status card whose
+missing operator report was presented as unavailable GPU access. That UI fix
+and its new live verification remain pending. Browser authentication used an
+operator-issued user token and does not establish human OAuth acceptance.
 
 ## Published Hub package and pending cutover
 
