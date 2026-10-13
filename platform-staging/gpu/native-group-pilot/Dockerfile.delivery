@@ -1,0 +1,14 @@
+# Build context: four reviewed *.py files, kubectl and SHA256SUMS.
+# Everything is supplied from qualified local artifacts; no network install.
+ARG SDK_IMAGE
+FROM ${SDK_IMAGE}
+USER 0
+WORKDIR /opt/cps-native-delivery
+COPY native_group_approval_delivery.py native_group_approval_renderer.py qualification_transition_proposal.py node_agent.py SHA256SUMS ./
+COPY kubectl /usr/local/bin/kubectl
+RUN sha256sum --check SHA256SUMS && chmod 0555 /usr/local/bin/kubectl \
+    && python -c "import native_group_approval_delivery; import cps_compute.native_group_export" \
+    && kubectl version --client=true -o json
+ENV PYTHONDONTWRITEBYTECODE=1 PYTHONUNBUFFERED=1
+USER 1000:1000
+ENTRYPOINT ["python", "/opt/cps-native-delivery/native_group_approval_delivery.py"]
