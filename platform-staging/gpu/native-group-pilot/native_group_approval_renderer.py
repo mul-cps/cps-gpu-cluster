@@ -26,6 +26,8 @@ COMPONENTS = ('gateway', 'hub:cps', 'hub:cit', 'node')
 DIRECTORY = '/var/run/cps-native-approvals'
 DOC_VOLUME = 'cps-native-approval-document'
 REF_VOLUME = 'cps-native-approval-reference'
+BOOTSTRAP_VOLUME = 'cps-native-approval-bootstrap'
+OWNED_VOLUMES = {DOC_VOLUME, REF_VOLUME, BOOTSTRAP_VOLUME}
 ENV = {
     'CPS_NATIVE_GROUP_APPROVALS_PATH': {'value':DIRECTORY+'/approval.json'},
     'CPS_NATIVE_GROUP_APPROVAL_REFERENCE': {'value':DIRECTORY+'/reference.json'},
@@ -127,7 +129,16 @@ def document_intent(*, source_raw, source_sha256, trusted_revision, policy, qual
         'live_applied':False, 'process_readiness_verified':False}
 
 
-def _projection_rows(component, doc, ref):
+def _node_bootstrap(document, row, qualification):
+    pod=row['deployment']['spec']['template']['spec']
+    container=next(c for c in pod['containers'] if c['name']==row['container'])
+    process={'namespace':row['deployment']['metadata']['namespace'], 'container':row['container'],
+        'image':container['image'], 'service_account':pod['serviceAccountName']}
+    return immutable_config(document, {'template.json':canonical(qualification._config()),
+        'process.json':canonical(process)}, 'cps-native-approval-bootstrap')
+
+
+def _projection_rows(component, doc, ref, bootstrap=None):
     mode=0o400 if component=='node' else 0o444
     volumes=[{'name':DOC_VOLUME, 'configMap':{'name':doc['metadata']['name'], 'defaultMode':mode,
                  'items':[{'key':'approval.json', 'path':'approval.json'}]}},
@@ -135,6 +146,12 @@ def _projection_rows(component, doc, ref):
                  'items':[{'key':'reference.json', 'path':'reference.json'}]}}]
     mounts=[{'name':DOC_VOLUME, 'mountPath':DIRECTORY+'/approval.json', 'subPath':'approval.json', 'readOnly':True},
             {'name':REF_VOLUME, 'mountPath':DIRECTORY+'/reference.json', 'subPath':'reference.json', 'readOnly':True}]
+    if component=='node':
+        require(isinstance(bootstrap, dict), 'Qualified node template and trusted process prerequisite required')
+        volumes.append({'name':BOOTSTRAP_VOLUME, 'configMap':{'name':bootstrap['metadata']['name'], 'defaultMode':0o400,
+            'items':[{'key':name, 'path':name} for name in ('template.json','process.json')]}})
+        mounts.extend({'name':BOOTSTRAP_VOLUME, 'mountPath':DIRECTORY+'/'+name, 'subPath':name, 'readOnly':True}
+            for name in ('template.json','process.json'))
     env=[{'name':name, **copy.deepcopy(value)} for name,value in ENV.items()]
     env.append({'name':'CPS_NATIVE_APPROVAL_COMPONENT', 'value':component})
     return volumes, mounts, env
@@ -151,7 +168,7 @@ def projection_intent(*, documents, **kwargs):
     """Bind actual immutable document UIDs, then minimally project with full CAS."""
     plan=document_intent(**kwargs); baselines=kwargs['baselines']; policy=kwargs['policy']; qualification=kwargs['qualification']
     require(isinstance(documents, dict) and set(documents)==set(COMPONENTS), 'All four actual document readbacks required')
-    references={}; reference_maps={}; patches={}; expected={}
+    references={}; reference_maps={}; bootstrap_maps={}; patches={}; expected={}
     for component, actual in documents.items():
         candidate=plan['documents'][component]
         revision=ApprovalRevision.from_configmap(actual, policy, qualification)
@@ -162,30 +179,36 @@ def projection_intent(*, documents, **kwargs):
         references[component]=revision.reference; reference_maps[component]=ref
         row=baselines[component]; spec=copy.deepcopy(row['deployment']['spec']); pod=spec['template']['spec']
         container=next(c for c in pod['containers'] if c['name']==row['container'])
-        volumes, mounts, env=_projection_rows(component, actual, ref)
+        bootstrap=_node_bootstrap(actual, row, qualification) if component=='node' else None
+        if bootstrap is not None:bootstrap_maps[component]=bootstrap
+        volumes, mounts, env=_projection_rows(component, actual, ref, bootstrap)
         oldvol, oldmount, oldenv=([], [], [])
         if row['previous_document'] is not None:
-            oldvol, oldmount, oldenv=_projection_rows(component, row['previous_document'], row['previous_reference'])
+            oldbootstrap=_node_bootstrap(row['previous_document'], row, qualification) if component=='node' else None
+            oldvol, oldmount, oldenv=_projection_rows(component, row['previous_document'], row['previous_reference'], oldbootstrap)
         pod['volumes']=_replace_owned(pod.get('volumes', []), volumes, oldvol, 'Unknown approval volume collision')
         container['volumeMounts']=_replace_owned(container.get('volumeMounts', []), mounts, oldmount, 'Unknown approval mount collision')
         require(not any(m.get('mountPath','').rstrip('/')==DIRECTORY or m.get('mountPath','').startswith(DIRECTORY+'/')
-            for m in container['volumeMounts'] if m.get('name') not in {DOC_VOLUME,REF_VOLUME}), 'Approval path mount collision')
+            for m in container['volumeMounts'] if m.get('name') not in OWNED_VOLUMES), 'Approval path mount collision')
         container['env']=_replace_owned(container.get('env', []), env, oldenv, 'Unknown approval environment collision')
         if component=='node':
             args=container.get('args', []); require(isinstance(args, list) and all(isinstance(a, str) for a in args), 'Explicit node args required')
-            indices=[i for i,a in enumerate(args) if a=='--approval-reference' or a.startswith('--approval-reference=')]
+            suffix=[item for name in ('reference','template','process') for item in
+                ('--approval-'+name, DIRECTORY+'/'+name+'.json')]
+            indices=[i for i,a in enumerate(args) if any(a=='--approval-'+name or a.startswith('--approval-'+name+'=')
+                for name in ('reference','template','process'))]
             if row['previous_document'] is None:
                 require(not indices, 'Unexpected prior node approval argument')
             else:
-                require(indices==[len(args)-2] and args[-2:]==['--approval-reference',DIRECTORY+'/reference.json'],
+                require(indices==list(range(len(args)-6,len(args),2)) and args[-6:]==suffix,
                     'Exact prior node approval argument required')
-                args=args[:-2]
-            container['args']=args+['--approval-reference',DIRECTORY+'/reference.json']
+                args=args[:-6]
+            container['args']=args+suffix
         patches[component]=replace_patch(row['deployment'], '/spec', row['deployment']['spec'], spec)
         expected[component]={'namespace':row['deployment']['metadata']['namespace'],
             'name':row['deployment']['metadata']['name'], 'uid':row['deployment']['metadata']['uid'],
             'container':row['container'], 'spec':copy.deepcopy(spec)}
-    return {**plan, 'references':references, 'reference_maps':reference_maps, 'patches':patches,
+    return {**plan, 'references':references, 'reference_maps':reference_maps, 'bootstrap_maps':bootstrap_maps, 'patches':patches,
         'expected_deployments':expected, 'requires_actual_process_ack':True}
 
 
@@ -214,14 +237,14 @@ def _replica_template(rs, deployment, pod):
 
 def _observed_projection(pod, expected, component):
     wanted=expected['spec']['template']['spec']; actual=pod.get('spec', {})
-    require([v for v in actual.get('volumes', []) if v.get('name') in {DOC_VOLUME,REF_VOLUME}]
-        ==[v for v in wanted.get('volumes', []) if v.get('name') in {DOC_VOLUME,REF_VOLUME}],
+    require([v for v in actual.get('volumes', []) if v.get('name') in OWNED_VOLUMES]
+        ==[v for v in wanted.get('volumes', []) if v.get('name') in OWNED_VOLUMES],
         'Actual process must mount both exact document and reference projections')
     containers=[c for c in actual.get('containers', []) if c.get('name')==expected['container']]
     require(len(containers)==1, 'One actual approved process container required')
     container=containers[0]; target=next(c for c in wanted['containers'] if c['name']==expected['container'])
-    require([v for v in container.get('volumeMounts', []) if v.get('name') in {DOC_VOLUME,REF_VOLUME}]
-        ==[v for v in target['volumeMounts'] if v.get('name') in {DOC_VOLUME,REF_VOLUME}]
+    require([v for v in container.get('volumeMounts', []) if v.get('name') in OWNED_VOLUMES]
+        ==[v for v in target['volumeMounts'] if v.get('name') in OWNED_VOLUMES]
         and [v for v in container.get('env', []) if v.get('name') in set(ENV)|{'CPS_NATIVE_APPROVAL_COMPONENT'}]
         ==[v for v in target['env'] if v.get('name') in set(ENV)|{'CPS_NATIVE_APPROVAL_COMPONENT'}]
         and (component!='node' or container.get('args')==target.get('args')),

@@ -65,8 +65,13 @@ requires operator repair. No fabricated UID is accepted as readback evidence.
    objects, conflicting mounts/arguments and substituted document data fail.
 3. Each trusted process mounts both files under
    `/var/run/cps-native-approvals/`. Non-root Hub/gateway projections use `0444`;
-   the root node process uses `0400`. The node receives `--approval-reference`
-   separately from its unchanged static config. SDK consumers receive
+   the root node process uses `0400`. The node also mounts `template.json` and
+   `process.json` from a node-only immutable bootstrap ConfigMap. The first is
+   the unchanged reviewed typed qualification; the second contains exactly the
+   actual Deployment's namespace, container, immutable image and service account.
+   It receives all three `--approval-reference`, `--approval-template` and
+   `--approval-process` paths separately from its unchanged static config. Create
+   the reviewed bootstrap ConfigMap before applying the node patch. SDK consumers receive
    `CPS_NATIVE_GROUP_APPROVALS_PATH`, `CPS_NATIVE_GROUP_APPROVAL_REFERENCE` and
    component/process downward fields. These are service mounts, not user Pod
    mounts. Preserve all old immutable documents and active enrollment refs.
@@ -85,8 +90,10 @@ The richer acknowledgment schema is supplied by the compute package:
 `version`, `component`, `revision`, `policy_hash`, `document`, `process`,
 `driver_epoch`, `observed_at`. `process` contains exactly namespace, name, UID,
 container, immutable image and service account. Process acknowledgment transport
-and its RBAC/admission must be reviewed separately; this packet adds no RBAC or
-cleanup admission exception and never synthesizes acknowledgments.
+and its RBAC/admission must be reviewed separately; the current node adapter
+writes its actual acknowledgment atomically to private `state/approval-loaded.json`.
+This packet adds no RBAC or cleanup admission exception and never synthesizes
+acknowledgments or transports them as an unauthorized ConfigMap.
 
 Rollback uses guarded actual Deployment preimages and retains every immutable
 document still referenced by an active or terminal custody record. Do not

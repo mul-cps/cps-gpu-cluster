@@ -196,7 +196,8 @@ class RendererTests(unittest.TestCase):
         self.assertEqual(envelope['history'], [projection['references'][c] for c in r.COMPONENTS])
         result=r.projection_intent(**args, documents=actual_documents(plan))
         self.assertEqual(result['patches']['node'][-1]['value']['template']['spec']['containers'][0]['args'],
-            ['--config','/config/config.json','--approval-reference',r.DIRECTORY+'/reference.json'])
+            ['--config','/config/config.json','--approval-reference',r.DIRECTORY+'/reference.json',
+                '--approval-template',r.DIRECTORY+'/template.json','--approval-process',r.DIRECTORY+'/process.json'])
         with self.assertRaises(ValueError):r.document_intent(**dict(self.args, baselines=baselines))
         bad=copy.deepcopy(baselines); bad['gateway']['previous_document']=None; bad['gateway']['previous_reference']=None
         with self.assertRaises(ValueError):r.document_intent(**dict(args, baselines=bad))
@@ -217,10 +218,30 @@ class RendererTests(unittest.TestCase):
             lambda d: d['pods']['node']['metadata']['labels'].update({'pod-template-hash':'different'}),
             lambda d: d['pods']['hub:cps']['spec']['volumes'][2]['configMap'].update(name='old-reference'),
             lambda d: d['pods']['gateway']['spec']['containers'][0]['env'][-1].update(value='node'),
+            lambda d: d['pods']['node']['spec']['volumes'][3]['configMap'].update(name='foreign-bootstrap'),
         ):
             bad=copy.deepcopy(ready); mutate(bad)
             with self.assertRaises(ValueError):r.readiness_intent(projection=projection, documents=docs,
                 policy=self.f[0], qualification=self.f[1], **bad)
+
+    def test_node_qualified_template_and_fixed_process_bootstrap_are_explicit(self):
+        docs=actual_documents(r.document_intent(**self.args))
+        result=r.projection_intent(**self.args, documents=docs)
+        self.assertEqual(set(result['bootstrap_maps']), {'node'})
+        bootstrap=result['bootstrap_maps']['node']
+        self.assertEqual(json.loads(bootstrap['data']['template.json']), self.f[1]._config())
+        self.assertEqual(json.loads(bootstrap['data']['process.json']), {
+            'namespace':'cps-native-system', 'container':'node',
+            'image':self.f[-1]['node']['deployment']['spec']['template']['spec']['containers'][0]['image'],
+            'service_account':'node'})
+        pod=result['patches']['node'][-1]['value']['template']['spec']
+        volume=next(v for v in pod['volumes'] if v['name']==r.BOOTSTRAP_VOLUME)
+        self.assertEqual(volume['configMap']['defaultMode'], 0o400)
+        self.assertEqual({m['subPath'] for m in pod['containers'][0]['volumeMounts'] if m['name']==r.BOOTSTRAP_VOLUME},
+            {'template.json','process.json'})
+        bad=copy.deepcopy(self.args['baselines'])
+        bad['node']['deployment']['spec']['template']['spec']['containers'][0]['args']+=['--approval-template','/foreign']
+        with self.assertRaises(ValueError):r.projection_intent(**dict(self.args, baselines=bad), documents=docs)
 
     def test_cli_inert_and_private_render_files(self):
         self.assertEqual(r.main([]), 0)
