@@ -166,6 +166,29 @@ class RendererTests(unittest.TestCase):
         bad=copy.deepcopy(docs); bad['gateway']['data']['approval.json']+='\n'
         with self.assertRaises(ValueError):r.projection_intent(**self.args, documents=bad)
 
+    def test_downward_fields_explicitly_match_kubernetes_v1_defaults(self):
+        docs=actual_documents(r.document_intent(**self.args))
+        projection=r.projection_intent(**self.args,documents=docs)
+        for component in r.COMPONENTS:
+            container=projection['expected_deployments'][component]['spec']['template']['spec']['containers'][0]
+            fields=[e['valueFrom']['fieldRef'] for e in container['env'] if e['name'] in {
+                'CPS_NATIVE_APPROVAL_POD_UID','CPS_NATIVE_APPROVAL_POD_NAME','CPS_NATIVE_APPROVAL_POD_NAMESPACE'}]
+            self.assertEqual(len(fields),3)
+            self.assertTrue(all(field.get('apiVersion')=='v1' for field in fields))
+        actual=readiness_fixture(self.f,projection,docs)
+        # Kubernetes returns v1 explicitly in both controller and Pod templates.
+        for component in r.COMPONENTS:
+            for spec in (actual['deployments'][component]['spec']['template']['spec'],
+                         actual['replicasets'][component]['spec']['template']['spec'],actual['pods'][component]['spec']):
+                for env in spec['containers'][0]['env']:
+                    if env['name'] in {'CPS_NATIVE_APPROVAL_POD_UID','CPS_NATIVE_APPROVAL_POD_NAME','CPS_NATIVE_APPROVAL_POD_NAMESPACE'}:
+                        env['valueFrom']['fieldRef']['apiVersion']='v1'
+        self.assertTrue(r.readiness_intent(projection=projection,documents=docs,
+            policy=self.f[0],qualification=self.f[1],**actual)['ready'])
+        actual['pods']['node']['spec']['containers'][0]['env'][-2]['valueFrom']['fieldRef']['apiVersion']='foreign'
+        with self.assertRaises(ValueError):r.readiness_intent(projection=projection,documents=docs,
+            policy=self.f[0],qualification=self.f[1],**actual)
+
     def test_collision_and_node_arg_are_closed(self):
         plan=r.document_intent(**self.args); docs=actual_documents(plan)
         bad=copy.deepcopy(self.args['baselines'])

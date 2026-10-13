@@ -35,9 +35,9 @@ PUBLISHER_ENV = 'CPS_NATIVE_APPROVAL_PUBLISHER_PATH'
 ENV = {
     'CPS_NATIVE_GROUP_APPROVALS_PATH': {'value':DIRECTORY+'/approval.json'},
     'CPS_NATIVE_GROUP_APPROVAL_REFERENCE': {'value':DIRECTORY+'/reference.json'},
-    'CPS_NATIVE_APPROVAL_POD_UID': {'valueFrom':{'fieldRef':{'fieldPath':'metadata.uid'}}},
-    'CPS_NATIVE_APPROVAL_POD_NAME': {'valueFrom':{'fieldRef':{'fieldPath':'metadata.name'}}},
-    'CPS_NATIVE_APPROVAL_POD_NAMESPACE': {'valueFrom':{'fieldRef':{'fieldPath':'metadata.namespace'}}},
+    'CPS_NATIVE_APPROVAL_POD_UID': {'valueFrom':{'fieldRef':{'apiVersion':'v1','fieldPath':'metadata.uid'}}},
+    'CPS_NATIVE_APPROVAL_POD_NAME': {'valueFrom':{'fieldRef':{'apiVersion':'v1','fieldPath':'metadata.name'}}},
+    'CPS_NATIVE_APPROVAL_POD_NAMESPACE': {'valueFrom':{'fieldRef':{'apiVersion':'v1','fieldPath':'metadata.namespace'}}},
 }
 
 
