@@ -20,6 +20,8 @@ import native_group_approval_renderer as r
 HUBS = ('hub:cps', 'hub:cit')
 OLD_IMAGE = 'ghcr.io/mul-cps/cps-compute@sha256:c22c7460ae3ddc3cac454a7f0fac41fc7308e4601e06162b91ca7af7ba301233'
 REVIEWED_IMAGE = 'ghcr.io/mul-cps/cps-compute@sha256:bc32b73d244738c3778560a1f48e701efd10f8c57ac4834f486b3f27a30d2623'
+ACCOUNT_IMAGE = 'ghcr.io/mul-cps/cps-compute@sha256:466b8398285a513499440dd00aaf0abc377cc49afe05f19e5556e79908106486'
+REVIEWED_PAIRS = ((OLD_IMAGE, REVIEWED_IMAGE), (REVIEWED_IMAGE, ACCOUNT_IMAGE))
 OBSERVATIONS = {'documents','reference_maps','bootstrap_maps','acknowledgments',
     'deployments','replicasets','pods','roles','source','epoch','gateway_runtime'}
 REQUEST = {'version','previous_publication','previous_publication_sha256','policy',
@@ -113,15 +115,16 @@ def runtime_secret(actual,request,expected_data=None):
 
 
 def runtime_intent(request,target_publication):
+    previous_image, next_image = reviewed_pair(request)
     actual=request['gateway_runtime'];config,key=runtime_secret(actual,request)
     r.require(config.get('nativeGroupApprovals')==request['previous_publication']['runtime_settings']
         and config.get('policy_hash')==request['previous_publication']['policy_hash'],
         'Original complete image-bound gateway approval trust and policy required')
     target=copy.deepcopy(config)
     for c in HUBS:
-        r.require(target['nativeGroupApprovals']['processes'][c]['image']==OLD_IMAGE,
+        r.require(target['nativeGroupApprovals']['processes'][c]['image']==previous_image,
             'Exact old gateway trusted Hub image required')
-        target['nativeGroupApprovals']['processes'][c]['image']=REVIEWED_IMAGE
+        target['nativeGroupApprovals']['processes'][c]['image']=next_image
     r.require(target['nativeGroupApprovals']==target_publication['runtime_settings'],
         'New gateway trust must equal exact target publisher declarations')
     data=copy.deepcopy(actual['data']);data[key]=base64.b64encode(r.canonical(target).encode()).decode()
@@ -295,15 +298,24 @@ def lineage(request,obs,names):
         'next_journal':copy.deepcopy(state['next_journal']),'next_input_secret':copy.deepcopy(state['next_input_secret'])}
 
 
+def reviewed_pair(request):
+    closed(request['reviewed_images'],HUBS,'Only both reviewed Hub images may change')
+    pairs = []
+    for c,image in request['reviewed_images'].items():
+        closed(image,{'previous','next'},'Closed reviewed immutable image pair required')
+        pair = image['previous'], image['next']
+        r.require(pair in REVIEWED_PAIRS,'Only an exact reviewed package image pair is permitted')
+        pairs.append(pair)
+    r.require(pairs[0] == pairs[1], 'Both Hubs must use the same reviewed image pair')
+    return pairs[0]
+
+
 def plan_intent(request,*,now):
     closed(request,REQUEST,'Closed operator-only reviewed image handover packet required')
     r.require(type(request['version']) is int and request['version']==1
         and request['previous_publication_sha256']==r.canonical_sha256(request['previous_publication']),
         'Exact pinned current reviewed publication required')
-    closed(request['reviewed_images'],HUBS,'Only both reviewed Hub images may change')
-    for c,image in request['reviewed_images'].items():
-        closed(image,{'previous','next'},'Closed reviewed immutable image pair required')
-        r.require(image=={'previous':OLD_IMAGE,'next':REVIEWED_IMAGE},'Only the exact reviewed package image handover is permitted')
+    previous_image, next_image = reviewed_pair(request)
     obs=request['observations'];policy,qualification,epoch=context(request,obs,now);p=request['previous_publication']
     publication_inputs(p,obs,qualification,epoch)
     names=r._revision_process_names(p,**{k:obs[k] for k in ('deployments','replicasets','pods')})
@@ -312,15 +324,15 @@ def plan_intent(request,*,now):
         'Exact original observed gateway runtime Secret required')
     chain=lineage(request,obs,names);target=copy.deepcopy(p);candidates={};patches={}
     for c in HUBS:
-        r.require(p['process_declarations'][c]['image']==OLD_IMAGE,'Exact old Hub image required')
-        target['process_declarations'][c]['image']=REVIEWED_IMAGE
+        r.require(p['process_declarations'][c]['image']==previous_image,'Exact old Hub image required')
+        target['process_declarations'][c]['image']=next_image
     target['runtime_settings']['processes']=copy.deepcopy(target['process_declarations'])
     for c in HUBS:
         data=bootstrap_data(target,c,qualification,epoch)
         bootstrap=r.immutable_config(obs['documents'][c],data,'cps-native-approval-publisher')
         candidates[c]=bootstrap;target['bootstrap_maps'][c]=copy.deepcopy(bootstrap)
         dep=obs['deployments'][c];spec=copy.deepcopy(dep['spec']);pod=spec['template']['spec']
-        next(cn for cn in pod['containers'] if cn['name']==target['expected_deployments'][c]['container'])['image']=REVIEWED_IMAGE
+        next(cn for cn in pod['containers'] if cn['name']==target['expected_deployments'][c]['container'])['image']=next_image
         next(v for v in pod['volumes'] if v['name']==r.PUBLISHER_VOLUME)['configMap']['name']=bootstrap['metadata']['name']
         patches[c]=r.replace_patch(dep,'/spec',dep['spec'],spec)
         target['patches'][c]=copy.deepcopy(patches[c]);target['expected_deployments'][c]['spec']=spec
