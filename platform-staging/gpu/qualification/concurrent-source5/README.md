@@ -22,6 +22,17 @@ the ordinary WorkspaceService APIs concurrently; preimages for both are verified
 before either may mutate. Each invocation writes its own new private evidence
 directory using the original filesystem/foreign-edit guards.
 
+The first paired execution was refused before either Start: a later Source
+fsGroup pass had widened the historical `/data/normal-source-gpu-acceptance`
+parent to02770, correctly failing the original0700 guard. Its failed JSONL/plan
+are preserved. This packet now uses a fresh parent
+`/data/normal-source-gpu-acceptance-<canonical-subplan-run-UUID>` for each ordinary
+invocation. Only new owned inodes may have inherited setgid cleared; existing
+historical/widened/symlink paths are never chmodded, replaced or reused. Changed
+runtime bytes invalidate previous plan metadata: generate and review a fresh plan.
+Early exceptions now retain exact private tracebacks and emit only recognized
+bounded guard codes through the host's output filter.
+
 ## Commands
 
 From this directory, first generate and review a fresh private plan:

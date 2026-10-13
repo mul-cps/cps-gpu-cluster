@@ -3,7 +3,9 @@ import argparse
 import asyncio
 import hashlib
 import json
+import re
 import sys
+import traceback
 import types
 from datetime import datetime, timezone
 
@@ -45,9 +47,12 @@ def check_pair(snapshots, capacity):
 def load_baseline(code, workspace, hold):
     require(hashlib.sha256(code.encode()).hexdigest() == BASELINE_SHA256, 'reviewed-baseline-source-changed')
     # Reuse capture, Start/Close, window edits, private evidence and exact restore.
-    # The only adaptations are a common bounded hold and an additional refusal
-    # to restore permissions while this invocation's shutdown is unconfirmed.
+    # A fresh per-run parent avoids reusing historical directories whose mode
+    # can be widened by a later Kubernetes fsGroup volume ownership pass.
+    # Existing paths retain the original strict guards and are never repaired.
     replacements = {
+        'parent_name = "normal-source-gpu-acceptance"':
+            'parent_name = "normal-source-gpu-acceptance-" + run_id',
         'await asyncio.sleep(60)': 'await pair_hold(WORKSPACE, running)',
         'timedelta(seconds=60)': 'timedelta(seconds=180)',
         '"hold_seconds": 60': '"hold_seconds": 180',
@@ -63,6 +68,15 @@ def load_baseline(code, workspace, hold):
     module.WORKSPACE, module.OWNER = workspace, TARGETS[workspace]
     module.pair_hold = hold
     return module
+
+
+def failure_diagnostic(workspace, module, error):
+    reason = str(error)
+    known = isinstance(error, module.AcceptanceFailure) and re.fullmatch(r'[a-z0-9-]{1,120}', reason)
+    return {'stage': 'workspace-exception', 'workspace': workspace,
+        'failure_type': type(error).__name__,
+        'failure_code': reason if known else 'unexpected-see-private-diagnostic',
+        'private_diagnostic': ''.join(traceback.format_exception(type(error), error, error.__traceback__))}
 
 
 class PairHold:
@@ -126,6 +140,11 @@ async def execute(modules, provider, service, plan, expected_sha, capacity, hold
         try:
             p = plan['plans'][name]
             return await module.execute(provider, service, p, module.digest(p))
+        except BaseException as error:
+            # Full traceback stays in the host wrapper's mode0600 JSONL. Only
+            # bounded known guard codes may be selected for ordinary output.
+            print(json.dumps(failure_diagnostic(name, module, error)), flush=True)
+            raise
         finally:
             if not hold.gate.is_set():
                 hold.abort.set()
@@ -133,6 +152,8 @@ async def execute(modules, provider, service, plan, expected_sha, capacity, hold
     passed = all(type(result) is int and result == 0 for result in results) and hold.gate.is_set()
     print(json.dumps({'stage': 'pair-result', 'lifecycle_passed': passed, 'both_ready': hold.gate.is_set(),
         'workspace_results': [r if type(r) is int else type(r).__name__ for r in results],
+        'workspace_failure_codes': [failure_diagnostic(name, modules[name], result)['failure_code']
+            if isinstance(result, BaseException) else None for name, result in zip(TARGETS, results)],
         'hardware_cap_qualified': False, 'production_qualified': False, 'kai_placement_qualified': False}), flush=True)
     return 0 if passed else 1
 
