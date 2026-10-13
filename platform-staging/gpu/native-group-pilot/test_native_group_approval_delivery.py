@@ -103,6 +103,21 @@ class MemoryAPI:
         self.current = current
 
 
+class ReplacingRoleAPI(MemoryAPI):
+    """Replace a real fake-server Role at one precise fresh GET boundary."""
+    def __init__(self,fixture):
+        super().__init__(fixture)
+        self.role_gets=0; self.replace_at=None; self.replaced_key=None
+
+    def get(self,kind,namespace,name,missing=False):
+        if kind=='Role':
+            self.role_gets+=1
+            if self.role_gets==self.replace_at:
+                self.replaced_key=namespace+'/'+name
+                self.objects[kind,namespace,name]['metadata']['uid']=uid(9876)
+        return super().get(kind,namespace,name,missing)
+
+
 class DeliveryTests(unittest.TestCase):
     def setUp(self):
         self.assertIsNotNone(d, 'Executable approval delivery module is required')
@@ -297,11 +312,49 @@ class DeliveryTests(unittest.TestCase):
         self.api.current['pods']['node']['spec']['containers'][0]['command']=['/foreign']
         with self.assertRaises(ValueError): self.controller().tick()
         self.assertEqual(len(self.api.mutations),count)
+
         self.api.current['pods']['node']['spec']['containers'][0].pop('command')
         role=next(obj for obj in self.api.objects.values() if obj['kind']=='Role')
         role['rules'].append({'apiGroups':[''],'resources':['secrets'],'verbs':['get']})
         with self.assertRaises(ValueError): self.controller().tick()
         self.assertEqual(len(self.api.mutations),count)
+
+    def test_transition_capture_cannot_adopt_role_replaced_after_current_reconciliation(self):
+        api=ReplacingRoleAPI(self.fixture); capture=copy.deepcopy(self.capture)
+        capture['source_raw']=r.canonical(r.parse(
+            self.config['baselines']['node']['previous_document']['data']['approval.json'])['registry'])
+        capture.update(source_sha256='sha256:'+hashlib.sha256(capture['source_raw'].encode()).hexdigest(),
+            trusted_revision=self.fixture[1]['revision'])
+        ctl=lambda:d.Delivery(self.config,self.path,api,lambda:capture,lambda:NOW,epoch_reader=lambda:self.epoch)
+        # Establish original trusted Role UIDs at the installed head without a
+        # Source change; old fixture ACKs are initially empty so no Ready claim.
+        self.assertFalse(ctl().tick()['ready'])
+        original=r.parse((self.path/'state.json').read_bytes())['role_guards']
+        capture.update(self.capture); api.role_gets=0; api.replace_at=8
+        with self.assertRaises(ValueError): ctl().tick()
+        self.assertIsNotNone(api.replaced_key); self.assertEqual(len(api.mutations),0)
+        state=r.parse((self.path/'state.json').read_bytes())
+        self.assertEqual(state['role_guards'],original); self.assertIsNone(state['transition'])
+        # Persisted original identities must also reject this replacement after restart.
+        api.replace_at=None
+        with self.assertRaises(ValueError): ctl().tick()
+        self.assertEqual(len(api.mutations),0)
+
+    def test_process_capture_cannot_adopt_role_replaced_after_document_access_readback(self):
+        api=ReplacingRoleAPI(self.fixture)
+        ctl=lambda:d.Delivery(self.config,self.path,api,lambda:self.capture,lambda:NOW,epoch_reader=lambda:self.epoch)
+        ctl().tick(); state=r.parse((self.path/'state.json').read_bytes())
+        publication=state['transition']['publication']; original=state['role_guards']
+        api.launch(publication,pending=True,acknowledge=False)
+        count=len(api.mutations); api.role_gets=0; api.replace_at=15
+        with self.assertRaises(ValueError): ctl().tick()
+        self.assertIsNotNone(api.replaced_key); self.assertEqual(len(api.mutations),count)
+        state=r.parse((self.path/'state.json').read_bytes())
+        self.assertEqual(state['role_guards'],original)
+        self.assertIsNone(state['transition']['process_access'])
+        api.replace_at=None
+        with self.assertRaises(ValueError): ctl().tick()
+        self.assertEqual(len(api.mutations),count)
 
     def test_exclusive_journal_lock_and_changed_seed_prevent_mutations(self):
         self.path.mkdir(mode=0o700)

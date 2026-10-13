@@ -25,6 +25,10 @@ class Pending(Exception):
     """The API has not yet produced an unambiguous current process."""
 
 
+class RoleIdentityChanged(ValueError):
+    """A fresh Role read must never replace a retained authorization identity."""
+
+
 def private_directory(path):
     path.mkdir(mode=0o700, exist_ok=True)
     info = path.lstat()
@@ -200,9 +204,17 @@ class Delivery:
             trusted_revision=source['trusted_revision'],captured_at=datetime.fromisoformat(source['captured_at'].replace('Z','+00:00')),
             now=self.now(),policy=self.policy,qualification=self.qualification,baselines=baselines)
 
-    def _roles(self, publication):
-        return {obj['metadata']['namespace']+'/'+obj['metadata']['name']:self._get('Role',obj['metadata'])
+    def _roles(self, publication, guards=None, *, check_rules=False):
+        roles={obj['metadata']['namespace']+'/'+obj['metadata']['name']:self._get('Role',obj['metadata'])
             for obj in r.access_intent(projection=publication)['objects'] if obj['kind']=='Role'}
+        if guards is not None:
+            r.require(set(roles)==set(guards),'All retained named Role identities required')
+            for key,actual in roles.items():
+                if actual['metadata']['uid']!=guards[key]['uid']:
+                    raise RoleIdentityChanged('Retained Role UID changed during fresh capture')
+                if check_rules:
+                    r.require(actual.get('rules')==guards[key]['rules'],'Retained full Role rules changed')
+        return roles
 
     def _reconcile_current(self, state, path):
         """Keep named GETs current after ordinary same-template Pod turnover."""
@@ -213,13 +225,8 @@ class Delivery:
             state['process_refresh']=None; state['structural_prior']=True; save(path,state)
         records=self.api.processes(publication)
         names=r._revision_process_names(publication,**records,permission_bootstrap=True)
-        roles=self._roles(publication)
         guards=state.get('role_guards')
-        if guards is not None:
-            r.require(set(roles)==set(guards),'All retained named Role identities required')
-            for key,actual in roles.items():
-                r.require(actual['metadata']['uid']==guards[key]['uid'] and actual.get('rules')==guards[key]['rules'],
-                    'Retained Role UID and full rules changed')
+        roles=self._roles(publication,guards,check_rules=True)
         old_names=state.get('process_names') or names
         # Initial reviewed packet may lack previous_publication_sha256; this
         # pure guard helper uses it only as returned provenance metadata.
@@ -305,7 +312,7 @@ class Delivery:
             candidates = r.document_intent(**kwargs)
             transition = {'source':source,'baselines':baselines,'candidates':candidates['documents'],
                 'documents':{},'references':{},'prior':prior,'old_records':self.api.processes(prior),
-                'roles':self._roles(prior),'bootstraps':{c:self._get('ConfigMap',obj['metadata']) for c,obj in prior['bootstrap_maps'].items()},
+                'roles':self._roles(prior,state['role_guards'],check_rules=True),'bootstraps':{c:self._get('ConfigMap',obj['metadata']) for c,obj in prior['bootstrap_maps'].items()},
                 'acks':{c:self._get('ConfigMap',ref) for c,ref in prior['acknowledgment_references'].items()},
                 'structural_prior':state['structural_prior'],
                 'publication':None,'document_access':None,'process_access':None}
@@ -358,13 +365,15 @@ class Delivery:
                         old_names = r._revision_process_names(transition['prior'],**transition['old_records'],permission_bootstrap=True)
                         names = r._revision_process_names(publication,**records,permission_bootstrap=True)
                         transition['process_access'] = {**r._revision_role_patches(publication,
-                            r._access_rows(publication,old_names),r._access_rows(publication,names),self._roles(publication)),
+                            r._access_rows(publication,old_names),r._access_rows(publication,names),self._roles(publication,state['role_guards'])),
                             'actual_process_names':names}
                     else:
                         transition['process_access'] = r.revision_process_access_intent(projection=publication,
                             previous_publication=transition['prior'],previous_process_records=transition['old_records'],
-                            **records,roles=self._roles(publication))
+                            **records,roles=self._roles(publication,state['role_guards']))
                     save(path,state)
+            except RoleIdentityChanged:
+                raise
             except (Pending,ValueError):
                 return {'phase':'processes','ready':False,'revision':publication['revision']}
             self._apply_roles(transition['process_access'])
@@ -375,7 +384,7 @@ class Delivery:
                 # derive a fresh exact named target from the same renderer.
                 transition['process_access'] = {**r._revision_role_patches(publication,
                     r._access_rows(publication,transition['process_access']['actual_process_names']),
-                    r._access_rows(publication,names),self._roles(publication)), 'actual_process_names':names}
+                    r._access_rows(publication,names),self._roles(publication,state['role_guards'])), 'actual_process_names':names}
                 save(path,state); self._apply_roles(transition['process_access'])
             if source['trusted_revision'] != publication['revision']:
                 documents = {c:self._get('ConfigMap',ref) for c,ref in publication['references'].items()}

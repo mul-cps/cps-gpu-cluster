@@ -121,6 +121,14 @@ without a new Source generation or any acknowledgment write. A durable saved
 permission intent resumes a partially patched Role set before refreshing the
 next observed names. Foreign Role UID/rules or controller/executable changes
 fail closed; genuine fresh replacement acknowledgments restore readiness.
+Every subsequent fresh Role capture remains bound to those retained UIDs,
+including the new-Source transition capture and both active process-permission
+paths. The transition capture also checks the retained complete current rules;
+later permission stages use the renderer's exact expected stage rules instead
+of comparing against obsolete rules from before a legitimate revision update.
+Identical-rule UID replacement between read phases is rejected without adopting
+the replacement into a new journal intent. An identity failure blocks delivery
+and cannot be treated as a transient Pending-Pod observation.
 
 This bounded controller retains immutable history and never rewrites custody,
 policy, driver configuration, hardware qualification, images, credentials, or
