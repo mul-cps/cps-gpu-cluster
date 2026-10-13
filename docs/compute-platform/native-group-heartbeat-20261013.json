@@ -1,38 +1,62 @@
 {
   "version": 1,
   "observedDate": "2026-10-13",
-  "scope": "source-only",
-  "status": "source-verified-live-acceptance-pending",
+  "scope": "source-and-limited-approved-fixture-lifecycle",
+  "status": "limited-approved-fixture-lifecycle-passed-general-qualification-pending",
   "sdk": {
-    "commit": "601ecb9b172d6eabcd7bd77e8200e02132d5541f",
-    "previousCommit": "bfe20f29d73804966043de30f484d72a6cd7112d",
+    "commit": "ed9777ea9361587d185228268f73c5c7bf59bb7c",
+    "previousCommit": "6a490c2dca19b853ca2df175925328cab8c6af49",
+    "acquisitionHeartbeatCommit": "601ecb9b172d6eabcd7bd77e8200e02132d5541f",
+    "registerHeartbeatCommit": "6a490c2dca19b853ca2df175925328cab8c6af49",
     "nativeAuthorityFile": "src/cps_compute/native_gpu_control.py",
-    "nativeAuthoritySha256": "sha256:1b5068a158886ee2307ad219eef3524ecca238c01145926e8316c0918e453fad"
+    "nativeAuthoritySha256": "sha256:3cac570b0ea26eeb54e627dde90a01337ff7e35a68f3a8d40d45c33f40026f41"
   },
-  "gatewayImage": "ghcr.io/mul-cps/cps-compute@sha256:88dca37788b0dfda879836066e68a393e941edab18fbf4cbb9d9d970e8808516",
+  "gatewayImage": "ghcr.io/mul-cps/cps-compute@sha256:eb964da6de7b46884c1168a1c69abc5489e50f9eca5690943d84a0543d935db4",
+  "nodeSnapshotRetry": {
+    "sourceCommit": "c62ef06c251c001a3b996168f1d84581f2990ff0",
+    "moduleSha256": "sha256:ddaaf9593dfbc9cba2d4aa3227102895a435e2537346ddd467c4941c0201658d",
+    "generatedAgentSha256": "sha256:b1deccd3e48b8c38ec0c87416dc04d9ae860e260910ff929f697be5d17e14429",
+    "evidenceKind": "operator-reported-source-test-result",
+    "passed": 132,
+    "skipped": 0,
+    "failed": 0,
+    "independentPublisherTests": {
+      "passed": 8,
+      "skipped": 1,
+      "failed": 0,
+      "skipReason": "Safe actual capture was not supplied to this independent run"
+    },
+    "fullValidatedAppendOnlyRetry": true,
+    "unknownChangedOrRemovedEnrollmentStillDenied": true,
+    "completeCustodyIterationRepeated": true,
+    "ttlAndCacheUnchanged": true
+  },
   "sourceVerification": {
     "passed": true,
     "fullSuite": {
       "evidenceKind": "operator-reported-source-test-result",
-      "passed": 1477,
+      "passed": 1497,
       "skipped": 3,
       "failed": 0
     },
     "independentFocusedVerification": {
-      "passed": 57,
+      "passed": 76,
       "skipped": 0,
       "failed": 0,
       "tests": [
+        "tests/test_native_group_abort_release.py",
         "tests/test_native_group_reservation_ref.py",
-        "tests/test_native_gpu_control.py",
-        "tests/test_native_group_packing.py::test_two_twenty_gib_claims_race_for_measured_budget_in_uid_rv_cas"
+        "tests/test_native_gpu_control.py"
       ]
     },
     "regressions": {
       "heartbeatProgressDuringBlockingReads": true,
       "expiredProofDeniedWithoutNativeClaim": true,
       "repeatedCancellationRetainsAcquisitionFence": true,
-      "measuredBudgetCasRace": true
+      "measuredBudgetCasRace": true,
+      "registrationHeartbeatProgress": true,
+      "immutableAbortRequiredBeforeMemberRelease": true,
+      "missingOrChangedAbortRetainsMembers": true
     }
   },
   "preservedGuards": {
@@ -45,10 +69,172 @@
     "profilesAndGpuConfigurationUnchanged": true
   },
   "liveAcceptance": {
-    "status": "inconclusive",
+    "status": "limited-fixture-lifecycle-passed-broader-qualification-pending",
     "accepted": false,
-    "receipt": null,
-    "operatorReportedProgress": {
+    "receipt": {
+      "path": "native-group-normal-lifecycle-20261013.receipt.json",
+      "sha256": "sha256:de7f7ae434889538092dba11577dbc739ce30763e46adcd5ef5a765e966a4a35",
+      "evidenceKind": "sanitized-operator-captured-live-receipt",
+      "reviewed": true
+    },
+    "operatorReportedReadinessObservation": {
+      "observedAt": "2026-10-13T14:51:11.79+00:00",
+      "allFourReady": true,
+      "revision": "sha256:45d00c4cdbbd0617dfb64abebf4d279d274ccace324756cb75a1fa49f7cf14a5",
+      "generation": 0,
+      "approvedWorkspaceCount": 2,
+      "gatewayPodUid": "4654de57-364d-4407-8025-6d49dd22698d",
+      "acknowledgmentTtlSeconds": 30,
+      "receiptReviewed": false
+    },
+    "operatorReportedRecovery": {
+      "evidenceKind": "operator-reported-live-custody-closure",
+      "completed": true,
+      "observedAt": "2026-10-13T14:29:14+00:00",
+      "sourceCommit": "2253bab90d9ad0ff61933b6b3ce441d0d2273312",
+      "targetPodUid": "e9780ea8-400f-4c1b-9c3e-df20f2f91b42",
+      "abortConfigMap": "cps-native-abort-2dc3cb02319254221652c74fcb0ebc6a00bf32fa",
+      "abortUid": "32fe8ad5-803c-4605-a0cc-939e93cb3d7d",
+      "abortSha256": "sha256:c6329d707e00e636cf273af7da08758ca736884e8486519a727c38b0f82dbcca",
+      "auditSha256": "sha256:aa8c1ccb44514a8cdb54c261534c657ea2f6b1f72dfa1e935b97f3760db6715c",
+      "allThreeWriterLocksHeld": true,
+      "gpuMemoryMiB": 0,
+      "gpuClients": 0,
+      "computeApps": 0,
+      "podTasks": 0,
+      "preservedRawJournals": 35,
+      "preservedPhysicalRows": 42,
+      "otherAllocationsUnchanged": 45,
+      "completedHistoryVerified": true,
+      "nodeRecordedProtectedAbortCompletion": true,
+      "nodeReplicasRestored": 1,
+      "nodeCodeRevision": "cf23952c6f454a56",
+      "nodeImageAndDriverUnchanged": true,
+      "normalSourceCloseSucceeded": true,
+      "hubServerAbsent": true,
+      "reservationActive": false,
+      "reservationAttempt": null,
+      "originalGrantAndMembershipRestored": false,
+      "receiptReviewed": false
+    },
+    "operatorReportedSecondRecovery": {
+      "evidenceKind": "operator-reported-live-custody-closure",
+      "completed": true,
+      "abortUid": "21b17b56-e862-422e-aed8-245bf63d6ab6",
+      "abortSha256": "sha256:b13bd54b42eba4837142d87a58edf2cc46a485f89017ee075d5b2ae575c5f6be",
+      "auditSha256": "sha256:16d8e68a58073fcc39b78c1c62f304ad413d6c2d36e405aaf60129bd53c359da",
+      "preservedRawJournals": 35,
+      "preservedPhysicalRows": 42,
+      "targetJournalAndGateAbsent": true,
+      "gpuMemoryMiB": 0,
+      "gpuClients": 0,
+      "computeApps": 0,
+      "podTasks": 0,
+      "nodeEpochUnchanged": true,
+      "normalSourceCloseSucceeded": true,
+      "hubServerAbsent": true,
+      "reservationActive": false,
+      "originalGrantAndMembershipRestored": true,
+      "originalMembers": 2,
+      "originalGrants": 2,
+      "fixedNodePod": "cps-native-node-agent-985d5884f-rql5z",
+      "receiptReviewed": false
+    },
+    "normalLifecycle": {
+      "status": "passed-limited-existing-approved-fixtures",
+      "accepted": true,
+      "humanOAuthTested": false,
+      "cpsStart": {
+        "evidenceKind": "operator-reported-normal-source-lifecycle",
+        "passed": true,
+        "observedAt": "2026-10-13T14:50:06+00:00",
+        "workspace": "cps:native-group-b",
+        "profile": "interactive-shared-5",
+        "podUid": "fd3fb4ed-34c5-40fb-b31b-f8a79f20c302",
+        "gateExitCode": 0,
+        "mainContainerRunning": true,
+        "workspaceRunning": true,
+        "notice": null,
+        "reservationActive": true,
+        "reservationAttempt": "9fc2bfb7-d2c4-4493-afbf-779c7b456414",
+        "nativeBinding": "8791ec5ddd583f7307d3acba3f19c02118af40f7d7738fa89e55ac150c1e",
+        "capMiB": 5120,
+        "physicalCapReadback": {
+          "evidenceKind": "operator-reported-physical-cap-readback",
+          "inode": 1430318,
+          "softBytes": 5368709120,
+          "hardBytes": 5368709120,
+          "pinned": true,
+          "offline": false
+        },
+        "receiptReviewed": false,
+        "sanitizedReceiptCrossChecked": true
+      },
+      "citStart": {
+        "evidenceKind": "sanitized-operator-captured-live-receipt",
+        "passed": true,
+        "workspace": "cit:native-group-a",
+        "profile": "interactive-shared-10",
+        "podUid": "2768cf82-51d2-45fb-aa0a-558331cb53f8",
+        "capMiB": 10240,
+        "mainContainerRunning": true,
+        "groupShare": "native-pilot-group-a",
+        "hubReady": true,
+        "reservationAttempt": "aed29ae4-2bd6-4e24-8e08-05205a463d02",
+        "nativeBinding": "0f887fd24af5edb1606d104be34de4bad9428794a7551202a3f45ae15785"
+      },
+      "stops": {
+        "evidenceKind": "sanitized-operator-captured-live-receipt",
+        "status": "passed",
+        "passed": true,
+        "cpsShutdownConfirmed": true,
+        "citShutdownConfirmed": true,
+        "bothMemberReservationsReleased": true,
+        "bothSharesRevoked": true,
+        "citSamePodReadyAfterCpsStop": true,
+        "citAllocationMiBPassedAfterCpsStop": 64,
+        "bothOriginalRecordsRestoredExactly": true,
+        "membershipsPerHub": 2,
+        "grantsPerHub": 2
+      },
+      "capturedAt": "2026-10-13T15:05:40.910607+00:00",
+      "scope": "Existing explicitly approved CPS5/CIT10 fixtures through normal audited application paths; not new-group, fleet or human-OAuth qualification",
+      "sourcePins": {
+        "admin": "901a885e921e22cc037d4b64715245cb39a29d72",
+        "node": "c62ef06c251c001a3b996168f1d84581f2990ff0",
+        "sdk": "ed9777ea9361587d185228268f73c5c7bf59bb7c"
+      },
+      "coRunning": {
+        "node": "k3s-wk-gpu2",
+        "gpuUuid": "GPU-16128952-b438-556a-00bb-93039ee24e56",
+        "finiteCapsMiB": [
+          5120,
+          10240
+        ],
+        "bothSmallAllocationsMiB": 64,
+        "bothAllocationsFilledAndFreed": true,
+        "nativeGroupSharesOnly": true
+      },
+      "finalCleanup": {
+        "nativeAllocationCount": 49,
+        "allNativeAllocationsReleased": true,
+        "bothPodsAbsent": true,
+        "onlineCapEntries": 0,
+        "allPhysicalUsedZero": true,
+        "bothGpuMemoryMiB": 0,
+        "journalState": "retired-inert-cap"
+      }
+    },
+    "latestOperatorReportedFailure": {
+      "sdkCommit": "ed9777ea9361587d185228268f73c5c7bf59bb7c",
+      "registerStatus": 422,
+      "reason": "Node acknowledgment became stale after a valid enrollment arrived during publication",
+      "recoveryStatus": "completed",
+      "receiptReviewed": false
+    },
+    "earlierOperatorReportedFailure": {
+      "sdkCommit": "601ecb9b172d6eabcd7bd77e8200e02132d5541f",
+      "gatewayImage": "ghcr.io/mul-cps/cps-compute@sha256:88dca37788b0dfda879836066e68a393e941edab18fbf4cbb9d9d970e8808516",
       "nativeAcquireStatus": 200,
       "podCreated": true,
       "registerStatus": 422,
@@ -61,6 +247,11 @@
     "newHardwareQualification": false,
     "generalGroupAccessQualified": false,
     "productionQualified": false,
-    "migUsed": false
+    "migUsed": false,
+    "newConsoleGroupApprovalDeliveryQualified": false,
+    "fleetQualification": false,
+    "computePercentageQualified": false,
+    "distributedWorkloadsQualified": false,
+    "humanOAuthQualified": false
   }
 }

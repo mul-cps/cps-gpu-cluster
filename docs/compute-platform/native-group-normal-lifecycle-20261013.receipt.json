@@ -1,0 +1,242 @@
+{
+  "both_running": {
+    "allocations": [
+      {
+        "attempt": "aed29ae4-2bd6-4e24-8e08-05205a463d02",
+        "binding_id": "0f887fd24af5edb1606d104be34de4bad9428794a7551202a3f45ae15785",
+        "cap_mib": 10240,
+        "profile": "interactive-shared-10",
+        "source": "cit",
+        "state": "enrolled",
+        "workspace": "native-group-a"
+      },
+      {
+        "attempt": "9fc2bfb7-d2c4-4493-afbf-779c7b456414",
+        "binding_id": "8791ec5ddd583f7307d3acba3f19c02118af40f7d7738fa89e55ac150c1e",
+        "cap_mib": 5120,
+        "profile": "interactive-shared-5",
+        "source": "cps",
+        "state": "enrolled",
+        "workspace": "native-group-b"
+      }
+    ],
+    "cit_pod_uid": "2768cf82-51d2-45fb-aa0a-558331cb53f8",
+    "node": "k3s-wk-gpu2",
+    "online_caps": [
+      {
+        "entries": [
+          {
+            "cgroup_id": 1430773,
+            "default_hierarchy": true,
+            "hard": 10737418240,
+            "inode": 1430773,
+            "kernfs_id": 1430773,
+            "offline": false,
+            "pinned": true,
+            "soft": 10737418240,
+            "used": 0
+          },
+          {
+            "cgroup_id": 1430318,
+            "default_hierarchy": true,
+            "hard": 5368709120,
+            "inode": 1430318,
+            "kernfs_id": 1430318,
+            "offline": false,
+            "pinned": true,
+            "soft": 5368709120,
+            "used": 0
+          }
+        ],
+        "gpu_uuid": "GPU-16128952-b438-556a-00bb-93039ee24e56"
+      },
+      {
+        "entries": [],
+        "gpu_uuid": "GPU-1e6145d5-8ee2-43e2-a0d5-6d345909e8a6"
+      }
+    ]
+  },
+  "captured_at": "2026-10-13T15:05:40.910607+00:00",
+  "checks": {
+    "cit_after_cps_stop": {
+      "direct_user_shares": 0,
+      "group_share": "native-pilot-group-a",
+      "hub_pending": null,
+      "hub_ready": true,
+      "human_oauth": false,
+      "scopes": [
+        "access:servers!server=citnativegroupa/rtc"
+      ],
+      "state": "running",
+      "workspace": "native-group-a"
+    },
+    "cit_cuda64": {
+      "allocated_and_filled_mib": 64,
+      "controlled_gpu_access": "passed",
+      "gpu_uuid": "GPU-16128952-b438-556a-00bb-93039ee24e56"
+    },
+    "cit_cuda64_after_cps_stop": {
+      "allocated_and_filled_mib": 64,
+      "controlled_gpu_access": "passed",
+      "gpu_uuid": "GPU-16128952-b438-556a-00bb-93039ee24e56"
+    },
+    "cit_group_share": {
+      "direct_user_shares": 0,
+      "group_share": "native-pilot-group-a",
+      "hub_pending": null,
+      "hub_ready": true,
+      "human_oauth": false,
+      "scopes": [
+        "access:servers!server=citnativegroupa/rtc"
+      ],
+      "state": "running",
+      "workspace": "native-group-a"
+    },
+    "cit_restored_exact": {
+      "actor": "operator:normal-group-acceptance-20261013",
+      "grants": 2,
+      "human_oauth": false,
+      "memberships": 2,
+      "no_reservations": true,
+      "restored_exact": true,
+      "stopped": true
+    },
+    "cit_shares_revoked": {
+      "hub_absent": true,
+      "human_oauth": false,
+      "share_count": 0,
+      "state": "stopped",
+      "workspace": "native-group-a"
+    },
+    "cit_stop": {
+      "actual_shutdown_confirmed": true,
+      "human_oauth": false,
+      "reservation": {
+        "active": false,
+        "attempt": null,
+        "workspace": "native-group-a"
+      },
+      "workspace": {
+        "archive_pending": false,
+        "course_ceiling": {
+          "cpu": "4",
+          "gpuMemoryGiB": 10,
+          "memory": "16Gi"
+        },
+        "course_id": "native-gpu-pilot-20261009",
+        "external_id": null,
+        "group_id": "native-pilot-group-a",
+        "hub_server": "rtc",
+        "hub_user": "citnativegroupa",
+        "id": "native-group-a",
+        "namespace": "cit-jhub",
+        "notice": null,
+        "pod": "jupyter-citnativegroupa--rtc",
+        "profile": "interactive-shared-10",
+        "source": "local",
+        "state": "stopped",
+        "term_id": "qualification-20261009"
+      }
+    },
+    "cps_cuda64": {
+      "allocated_and_filled_mib": 64,
+      "controlled_gpu_access": "passed",
+      "gpu_uuid": "GPU-16128952-b438-556a-00bb-93039ee24e56"
+    },
+    "cps_group_share": {
+      "direct_user_shares": 0,
+      "group_share": "native-pilot-group-b",
+      "hub_pending": null,
+      "hub_ready": true,
+      "human_oauth": false,
+      "scopes": [
+        "access:servers!server=cpsnativegroupb/rtc"
+      ],
+      "state": "running",
+      "workspace": "native-group-b"
+    },
+    "cps_restored_exact": {
+      "actor": "operator:normal-group-acceptance-20261013",
+      "grants": 2,
+      "human_oauth": false,
+      "memberships": 2,
+      "no_reservations": true,
+      "restored_exact": true,
+      "stopped": true
+    },
+    "cps_shares_revoked": {
+      "hub_absent": true,
+      "human_oauth": false,
+      "share_count": 0,
+      "state": "stopped",
+      "workspace": "native-group-b"
+    },
+    "cps_stop": {
+      "actual_shutdown_confirmed": true,
+      "human_oauth": false,
+      "reservation": {
+        "active": false,
+        "attempt": null,
+        "workspace": "native-group-b"
+      },
+      "workspace": {
+        "archive_pending": false,
+        "course_ceiling": {
+          "cpu": "4",
+          "gpuMemoryGiB": 5,
+          "memory": "16Gi"
+        },
+        "course_id": "native-gpu-pilot-20261009",
+        "external_id": null,
+        "group_id": "native-pilot-group-b",
+        "hub_server": "rtc",
+        "hub_user": "cpsnativegroupb",
+        "id": "native-group-b",
+        "namespace": "jupyterhub",
+        "notice": null,
+        "pod": "jupyter-cpsnativegroupb--rtc",
+        "profile": "interactive-shared-5",
+        "source": "local",
+        "state": "stopped",
+        "term_id": "qualification-20261009"
+      }
+    },
+    "final_cleanup": {
+      "all_physical_used_zero": true,
+      "allocation_count": 49,
+      "gpu_memory": "GPU-16128952-b438-556a-00bb-93039ee24e56, 0\nGPU-1e6145d5-8ee2-43e2-a0d5-6d345909e8a6, 0\n",
+      "journals": [
+        {
+          "cap_mib": 5120,
+          "pod_uid": "fd3fb4ed-34c5-40fb-b31b-f8a79f20c302",
+          "state": "retired-inert-cap"
+        },
+        {
+          "cap_mib": 10240,
+          "pod_uid": "2768cf82-51d2-45fb-aa0a-558331cb53f8",
+          "state": "retired-inert-cap"
+        }
+      ],
+      "native_allocations_all_released": true,
+      "online_cap_entries": 0,
+      "pods_absent": true
+    }
+  },
+  "human_oauth_tested": false,
+  "normal_lifecycle_accepted": true,
+  "scope": "Existing explicitly approved CPS5/CIT10 fixtures through normal audited application paths; not new-group, fleet or human-OAuth qualification",
+  "source_pins": {
+    "admin": "901a885e921e22cc037d4b64715245cb39a29d72",
+    "node": "c62ef06c251c001a3b996168f1d84581f2990ff0",
+    "sdk": "ed9777ea9361587d185228268f73c5c7bf59bb7c"
+  },
+  "still_unqualified": [
+    "new-console-group approval delivery",
+    "general group GPU access",
+    "compute-percentage qualification",
+    "eight-GPU fleet qualification",
+    "distributed workloads",
+    "human OAuth/browser behavior"
+  ],
+  "version": 1
+}
