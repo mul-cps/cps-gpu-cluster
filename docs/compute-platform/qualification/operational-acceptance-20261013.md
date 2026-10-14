@@ -237,7 +237,7 @@ missing operator report was presented as unavailable GPU access. That UI fix
 and its new live verification remain pending. Browser authentication used an
 operator-issued user token and does not establish human OAuth acceptance.
 
-## Published Hub package and pending cutover
+## Historical Hub package publication before cutover
 
 The reviewed login guard is published as
 `ghcr.io/mul-cps/cps-compute@sha256:bc32b73d244738c3778560a1f48e701efd10f8c57ac4834f486b3f27a30d2623`.
@@ -255,7 +255,7 @@ neutral accounts missing permanent records; runtime discoveries are deny-only
 and cannot replace durable provenance. The bounded existing-owner review passed
 34 installed guard cases, with 1,730 SDK/Hub tests passing and 3 skipped.
 
-This image is **published, not yet deployed**. A qualified operator software
+At this historical checkpoint, this image was **published, not yet deployed**. A qualified operator software
 handover must bind the exact existing Source revision, complete Deployment/Role
 preimages, retained document/reference identities and fresh real process
 acknowledgments; a Source update or a manually edited journal is not a substitute.
@@ -339,13 +339,13 @@ roles/ACL preservation, NFS/configuration capture or off-host durability.
 
 The reviewed permanent registry also passed 34 real Hub ORM tests against an
 isolated exact PostgreSQL **18.4** server, in addition to its PostgreSQL 15.17
-qualification. The registry/Source creation adapter remain published candidates
-until the separate configuration and migration rollout completes.
+qualification. At this historical checkpoint the registry/Source creation adapter remained
+published candidates. The later guarded activation is recorded below.
 
 
 ## Qualified Hub image and automatic-delivery handover
 
-Both live Hubs now run the reviewed package image
+Both live Hubs completed the first reviewed package handover to
 `ghcr.io/mul-cps/cps-compute@sha256:bc32b73d244738c3778560a1f48e701efd10f8c57ac4834f486b3f27a30d2623`.
 The guarded handover preserved policy, Source revision and the physical GPU's
 boot/driver epoch, updated only the closed image/bootstrap/runtime trust inputs,
@@ -364,8 +364,8 @@ verifier is separately hash-bound to the reviewed process module, which permits
 only Kubernetes' exact default token projection on approved init containers;
 changed init execution and duplicate volume/mount inputs remain rejected.
 
-The package is installed, but the existing inline guard remains in live Hub
-configuration until the separate permanent-registry installer rollout. This
+At that handover checkpoint, the package was installed while the existing inline
+guard remained until the separate permanent-registry installer rollout. This
 receipt does not claim that registry migration, generic account creation,
 human OAuth, general GPU scheduling or production qualification have passed.
 
@@ -408,3 +408,74 @@ operator runner SHA256 is
 This qualifies bounded two-workspace CUDA cap isolation through the ordinary CPS
 lifecycle. Cross-parent imports, current-pair restarts, MPS, cross-Hub reservations,
 KAI placement, wider packing and production remain separate unfinished gates.
+
+
+## Permanent Hub registry and Source adapter activation
+
+Both owning Hubs subsequently completed the reviewed Hub466 handover and
+permanent registry installation. The exact live image is
+`ghcr.io/mul-cps/cps-compute@sha256:466b8398285a513499440dd00aaf0abc377cc49afe05f19e5556e79908106486`.
+Fresh matching private backups captured each Hub database, application
+configuration and roles before migration. Actual PostgreSQL 15.17/18.4 archive
+listing verified matching tools; archive SHA256s are retained in the sanitized
+registry activation receipt. This records matching backups, not restored service
+or off-host durability.
+
+Both actual registry schemas validated, with zero new rows at activation.
+Each owning Source service role gained the exact narrow custom scope
+`custom:cps:provision:workspace-account`. Migration configuration was then
+returned to false, both Hub processes restarted, and actual independent readback
+at **23:53:43.388084Z** confirmed all four component acknowledgments, exact
+current journal completion, unchanged policy/revision/epoch and retired migration.
+The first failed configuration attempt and its verified inverse remain distinct
+historical evidence. No existing user, storage association or reviewed alias was
+created or changed by the retry.
+
+Both Source consoles now run commit
+`55c9a8865c462e4baeb306965fb1a6ed5da07dbd`, immutable image
+`ghcr.io/mul-cps/e2x-course-hub@sha256:9698e84452c98385155571e570208e362f19ba4127e8cfe1e4320232a4365849`.
+The image contains the permanent account adapter and course concurrency fix;
+303 source and 303 installed-image tests passed. Exact image-only rollout
+preserved every preexisting database table fingerprint, schema 7/integrity,
+sidecars, mounts and complete configuration. Its frontend bytes are unchanged.
+See `hub-registry-activation-receipt-20261014.json` and
+`source-concurrency-live-receipt-20261014.json` under
+`platform-staging/jupyter-extensions-20261013/`.
+Normal new-account create/retry/Start/removal, CIT adoption and human OAuth remain
+separate live gates.
+
+## Current pair IPC denial and restart retirement
+
+A fresh pair of ordinary CPS 5 GiB workspaces passed both A-to-B and B-to-A
+cross-parent CUDA IPC tests. Actual importer/exporter namespace PIDs differed
+before open. Both directions returned **800, CUDA_ERROR_NOT_PERMITTED** with
+matching actual host-TGID driver witnesses (reason 6, status 27, client kind 4).
+Same-parent positive controls, exporter kernel continuity/recovery, importer
+kernels, explicit endpoint cleanup and final zero native charge all passed.
+The importer observation does not infer which human ran a shared-kernel cell.
+
+The fresh current-cap readback also verified that the previous pair's parents
+were retired and inert while the exact two current 5 GiB caps were present.
+Both normal Close operations subsequently confirmed shutdown before reservation
+release and restored their original windows/groups. The sanitized combined
+receipt is
+`platform-staging/gpu/qualification/concurrent-source5/ipc-restart-receipt-20261014.json`.
+The earlier PID collision and launcher-abort attempts remain incomplete; the
+successful new receipt does not relabel them. The main-thread launcher passed
+24 offline regressions, including the held-open stdin shutdown reproducer.
+
+This is bounded current-pair import denial and prior-parent retirement. Full
+restart behavior, MPS, cross-Hub allowance atomicity, KAI placement and production
+remain unqualified. Actual physical free-GPU capacity is not inferred from
+zero native charge or the presence of a stopped Hub model.
+
+## Notebook and scheduler contract packages
+
+All 12 matched local notebook OCI builds passed genuine network-disabled runtime
+checks. Their exact digests and pinned core/Lab provenance are recorded in the
+notebook repository's `release/qualification/notebook-oci-20261014/` artifacts.
+They are not published notebook images or a GPU hardware qualification.
+The separate pending-allocation SDK candidate passed 1,957 source tests with
+3 existing fixture skips and 171 installed-wheel tests. The protected coordinator,
+terminal KAI transport, current-RV Binding, cancellation holds and post-Bind cap
+seal/CDI remain required before its controlled live placement gate.
