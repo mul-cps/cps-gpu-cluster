@@ -1,0 +1,71 @@
+{
+  "base_commit": "c0b368b1a0029484ddcb10e1c1a59d9e52d6d5f7",
+  "branch": "qualification/native-kai-node-epoch-handover-20261014",
+  "capture_input": {
+    "new_data_sha256": "sha256:e05a18097b2daa6b01f5789ee50068f9b9251c310cec217f6aaed12027fb07d6",
+    "new_name": "cps-native-approval-capture-node-e05a18097b2daa6b",
+    "old_name": "cps-native-approval-capture-input",
+    "old_rv": "368234908",
+    "old_uid": "c575bd98-0137-44d9-b27a-b306be394b75",
+    "opaque_token_and_qualification_preserved": true
+  },
+  "code_sha256": {
+    "handover_adapter.py": "a9639977042cf7806af401292b82878aa3a794e1a64fb7d2a2e4250db9a97e88",
+    "handover_cli.py": "dc705972de7c9d4e2c13a24753eb037ebcadd3114aade00360ae73eb42527c87",
+    "handover_execution.py": "a274b099a9f0771d516dbf149aa79f7724c7a48fa3f9fb1e006da0e40121dae9"
+  },
+  "completed_or_uncertain_activation_inverse": "requires separately captured sealed successor",
+  "components": {
+    "gateway": {
+      "image": "ghcr.io/mul-cps/cps-compute@sha256:440711b2bb00151f8625e9df54c97e7ed4d137ca246453aae9ad7524d6681c3d",
+      "spec_sha256": "sha256:feb790630260872c8eddacc3de762995e5ba95903b640e2f1257b6259ea92de6",
+      "uid": "f5f9b266-433d-4825-83de-d51e31c71648"
+    },
+    "hub:cit": {
+      "image": "ghcr.io/mul-cps/cps-compute@sha256:a7155bebb5dff1b70ff79edbf57a1012bb37feed082bac8212c885b46e1cb950",
+      "spec_sha256": "sha256:a00d67690b35d36f3ec05a36665eb7687a7625fa4be451b620b040ca3a46af2a",
+      "uid": "dd90f866-47d3-4b9f-ba41-b4ebf8cb2b1e"
+    },
+    "hub:cps": {
+      "image": "ghcr.io/mul-cps/cps-compute@sha256:a7155bebb5dff1b70ff79edbf57a1012bb37feed082bac8212c885b46e1cb950",
+      "spec_sha256": "sha256:3b3ab66267f03a25b3d85e5e3ae540f5ee2ddb913840764566c4682df6052ba2",
+      "uid": "02fb8421-d323-4636-b006-2490cd6f5b63"
+    },
+    "node": {
+      "image": "ghcr.io/mul-cps/cps-compute@sha256:8c2c456b90330622645d509f94882a11a465ac208a6fa7fc824900d6320e5c0b",
+      "spec_sha256": "sha256:1456196fba42cbb1142cdb815d795ea9b277059e74c7469a79f7451e6be9aa82",
+      "uid": "03e6bf5e-39ab-4c4a-b73f-1d6cf0ee8076"
+    }
+  },
+  "driver_epoch": {
+    "boot_id": "209f8bc9-a478-48e4-925a-6e07ffa56f7a",
+    "driver_generation": "b10498fc-9153-4394-875a-ea7cfb498625",
+    "gpu_uuid": "GPU-16128952-b438-556a-00bb-93039ee24e56",
+    "node_uid": "3336cdd5-d245-436e-b57c-2f66c6dcaa41"
+  },
+  "failed_gateway_recovery": "recover-gateway restores only known Gateway/runtime preimages while exact Node absence remains held; ordinary restore still requires genuine Source/reservations/ledger/fd zero",
+  "focused_offline_tests": 14,
+  "kind": "retained-v2-node-epoch-handover-preparation",
+  "live_applied": false,
+  "live_begin_finish_restore_not_run": true,
+  "live_capture042_probe": {
+    "image": "ghcr.io/mul-cps/cps-compute@sha256:042b8b60c0bbdfd2c4506ddf8007677016ef5d278ad5720d7d6b7ac41d136b1b",
+    "installed_NodeEpochObserver_source_sha256": "325f19011954fc20e53b3bd265445199da9f72d44a07a57d2e708acbaf8c1cc3",
+    "installed_module_sha256": "2bb3153205878a12bde9c1772fffa8bb96f7b745077f4410cfb7889892e1a660",
+    "mounted_config_sha256": "7c5401d94a02b01312b6b754b3edb3066de32125a100819c1f88b7817098f33d",
+    "node_image_pin": "ghcr.io/mul-cps/cps-compute:qualification-native-node-980408a@sha256:5079458fe0fcb3c11231b21f1bbc1f4c12ad3ac578799932aa0bc9f46d5510c7"
+  },
+  "maintenance_review_asgi_cases": 5,
+  "maintenance_review_assertions": 47,
+  "plan_sha256": "sha256:0c29644a479dbe3f8c4da5c206c651822558617a2df6e3bbccdaacf19579866e",
+  "planned_at": "2026-10-14T09:37:58.250630+00:00",
+  "post_barrier_actual_probe_not_run": true,
+  "pre_barrier_actual_protected_inventory_zero": true,
+  "pre_barrier_current_all_four_readiness": true,
+  "pre_barrier_global_native_ledger_released": true,
+  "pre_barrier_source_workspaces_stopped_and_reservations_inactive": true,
+  "private_packet_directory": "/home/bjoern/.local/state/cps-full-project-20261013/native-kai-node-epoch-handover-preparation-20261014/run-9a74a35d",
+  "production_qualified": false,
+  "source_sha256": "sha256:832e841b6e7b5885a80de27e8850e8e25087b7a26a08a8270f38869f10bf71ca",
+  "version": 1
+}
