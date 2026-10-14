@@ -1,3 +1,5 @@
-ok  	github.com/kai-scheduler/KAI-scheduler/pkg/binder/binding	0.096s
-ok  	github.com/kai-scheduler/KAI-scheduler/pkg/binder/binding/resourcereservation	0.234s
-ok  	github.com/kai-scheduler/KAI-scheduler/pkg/binder/controllers	0.096s
+ bdf434e chore(release): prepare changelog for v0.18.1 (#2263)
+ok  	github.com/kai-scheduler/KAI-scheduler/pkg/binder/binding	0.119s
+ok  	github.com/kai-scheduler/KAI-scheduler/pkg/binder/binding/resourcereservation	0.243s
+ok  	github.com/kai-scheduler/KAI-scheduler/pkg/binder/controllers	0.091s
+ok  	github.com/kai-scheduler/KAI-scheduler/cmd/binder/app	0.017s

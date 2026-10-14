@@ -1,4 +1,4 @@
-/home/bjoern/.local/state/cps-full-project-20261013/kai-terminal-binder-plan-20261014/replay-final/binder: go1.26.8
+/home/bjoern/.local/state/cps-full-project-20261013/kai-terminal-binder-plan-20261014/replay-eight-ops-final/binder: go1.26.8
 	path	github.com/kai-scheduler/KAI-scheduler/cmd/binder
 	mod	github.com/kai-scheduler/KAI-scheduler	v0.0.0-20260928154206-bdf434e5e920+dirty
 	dep	cel.dev/expr	v0.25.2	h1:K6j46C81hXtZQfuX60cVWQFBJahKSE2gfRbNuvr5bFs=

@@ -11,7 +11,7 @@ ROOT = pathlib.Path(__file__).resolve().parent
 UPSTREAM = 'https://github.com/kai-scheduler/KAI-Scheduler.git'
 COMMIT = 'bdf434e5e9201cccf4e05fad04d814363653f692'
 GO_VERSION = 'go1.26.8'
-PACKAGES = ('./pkg/binder/binding', './pkg/binder/binding/resourcereservation', './pkg/binder/controllers')
+PACKAGES = ('./pkg/binder/binding', './pkg/binder/binding/resourcereservation', './pkg/binder/controllers', './cmd/binder/app')
 
 
 def sha(path):

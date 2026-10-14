@@ -1,19 +1,33 @@
 {
+  "actual_api_credentials_read": false,
   "all_affected_packages_passed": [
     "./pkg/binder/binding",
     "./pkg/binder/binding/resourcereservation",
-    "./pkg/binder/controllers"
+    "./pkg/binder/controllers",
+    "./cmd/binder/app"
   ],
-  "binary_bytes": 98665924,
-  "binary_sha256": "6791b52af0ccd49f1df1be0164f60e169477dce452025aacf01cbb432dd98f3b",
+  "app_startup_bridge_implemented": true,
+  "binary_bytes": 98712920,
+  "binary_sha256": "16bf6b5294a2604a2c357e07024d10a38dd053c77f54cca3fc3a1a73f7dc062b",
   "coordinator_installed": false,
   "dependency_diff": [],
-  "independent_go_review": "pending; no slot available during this preparation",
-  "installed_cluster_or_gpu_evidence": false,
+  "independent_go_review": "pending; all slots occupied",
+  "installed_native_route_qualified": false,
   "live_operations": false,
-  "patch_sha256": "fb8d6f990e6da23c6d4e947ebbce6250cc3cc083623cd95bad89680c443461d9",
-  "red_test": "Original pinned upstream bound a marked Pod without coordinator/ACK; TestNativeTerminalRejectsWithoutCoordinator failed as expected.",
+  "patch_sha256": "37682dc13b6c0e9e58bb45e8aaa252a05ddd0eabaf8054b574765cca9126adbe",
+  "red_test": "Original pinned KAI bound marked Pod without coordinator/ACK; required guard test failed. New HTTP symbol tests also failed before transport existed.",
   "route_qualified": false,
   "sdk_contract_commit": "0451fd9cc9bcb5ba55b2d35c5aca84fc52f5fad3",
+  "signed_service_auth_enforced_by": "Root-owned coordinator must perform TokenReview audience, current SAUID and current SAR; Go never trusts JWT claims",
+  "transport_operations": [
+    "prepare",
+    "current",
+    "binding",
+    "accepted",
+    "close",
+    "hold",
+    "cleanup-maps",
+    "reservation-delete"
+  ],
   "upstream_commit": "bdf434e5e9201cccf4e05fad04d814363653f692"
 }
