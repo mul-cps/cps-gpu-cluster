@@ -35,7 +35,7 @@ for the bounded live results of 2026-10-13 and their retained evidence.
 | Notebook execution | Immutable runner/package/browser tests and bounded CPS selected-import/typed-parameter success/failure outputs passed | Complete current release/live coverage for saved snapshots, selected files, parameter cells, approved image digests and both owning Hubs |
 | GPU scheduling and packing | Stock KAI/HAMi components and controlled evidence exist; pending native-allocation compiler contracts passed installed-package tests | Protected coordinator, terminal binder and post-Bind cap/CDI integration; eight-A100 packing, teaching reclaim, protected sessions, 4/8-GPU JobSet retry and physical free-GPU telemetry |
 | Startup and defragmentation | Acceptance executors and thresholds are defined; representative measurements pending | Pre-pulled CPS/CIT bursts: p95 <=180s and maximum <=300s; KAI/fallback comparison with free capacity >=95% and waits/start <=110% of baseline, protected sessions unaffected |
-| NFS and S3 artifacts | Existing storage preserved; accepted TLS relay path and owner-filtered artifact access work; actual retention Job dry run passed | Owned-object 14/90-day policy expiry using a bounded test clock, active/retained negatives, conditional deletion/recovery and scheduling; new CIT filer requires its actual endpoint/export |
+| NFS and S3 artifacts | Existing storage preserved; accepted TLS relay path and owner-filtered artifact access work; ten owned-prefix 14/90-day retention cases passed against real S3 and Argo with least-privilege authentication | Real gateway-created notebook lifecycle, scheduled cleanup and off-host recovery; new CIT filer requires its actual endpoint/export |
 | Monitoring | Four dashboards, scraping/rules and unavailable/stale handling implemented; several real targets up | Fresh complete GPU inventory, physical placement/free-capacity and cap/protection telemetry; rendered dashboards, timing data and alert notification delivery |
 | Restore and recovery | Fresh CPS logical backup Job restored with the matching PostgreSQL/Hub images and identical restored row fingerprints; bounded console/gateway/artifact restores retained | Next automatic backup success, coordinated matching application/configuration capture, connected login/spawn, populated NFS/archive/artifact recovery and encrypted off-host durability |
 | Moodle scaffold | Local provider, provenance migration, disabled scaffold and source tests implemented | Retain local CRUD, fake-provider reconciliation, no-network disabled behavior and clear enablement failure in the qualified release; Moodle remains planned/not deployed |
@@ -92,6 +92,25 @@ operations then released reservations and restored windows/groups. These are
 bounded results, recorded separately from the earlier incomplete attempts in
 `platform-staging/gpu/qualification/concurrent-source5/ipc-restart-receipt-20261014.json`.
 MPS, full restart semantics, KAI placement and wider packing remain unqualified.
+
+The next two normal Source pair starts did not reach simultaneous readiness;
+no MPS workload executed. The first aborted pair eventually closed both
+workspaces and restored all windows/groups. The second timed out in the Hub's
+native binding acquisition HTTP calls before either Pod existed. Its two
+reservations remain held while normal shutdown and the acquisition completion
+are investigated. Pod absence alone does not authorize clearing those holds.
+The frozen MPS runner and mapper passed their CPU controls; that is preparation,
+not hardware evidence.
+
+The controlled retention run passed all ten cases against the actual S3
+endpoint: 14/90-day boundaries, active/retained preservation, stale-ETag HTTP
+412, acknowledgement ambiguity and fresh-process recovery. Its CPU Pod used
+only ten exact named-workflow permissions; an unrelated workflow read was
+denied. All fifteen owned Kubernetes resources are now absent, and the
+production CronJob's exact UID/spec remain unchanged and suspended. Terminal
+workflow states were explicitly synthetic. Real notebook lifecycle and
+automatic cleanup remain unqualified. See
+`platform-staging/artifacts/qualification/retention-controlled-20261014/`.
 
 The matched core and Lab extensions built and passed runtime checks in **all
 12 local notebook OCI variants**. Installed discovery/uninstall/reinstall,

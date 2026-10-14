@@ -11,7 +11,7 @@ Role documents remain in private operator evidence. It supplements the
 | Check | Observed result | Scope still requiring qualification |
 | --- | --- | --- |
 | CPS logical backup | A newly completed Job's actual archive restored; matching PostgreSQL and Hub initialization preserved all restored row fingerprints | Next automatic scheduled success, coordinated configuration/console/NFS/artifact recovery and off-host durability |
-| Artifact retention | Real cluster Job, projected-token Argo authentication and HTTPS S3 dry run passed | Natural-age expiry, conditional deletion/recovery, retained/active negatives and automatic scheduling |
+| Artifact retention | Real cluster dry run plus ten controlled 14/90-day S3/Argo cases passed, including active/retained negatives, conditional deletion and fresh-process ambiguity recovery | Real gateway-created notebook lifecycle, automatic scheduling and off-host recovery |
 | CPS/CIT console schema and UI | Both real databases upgraded from schema 6 to 7 without changing preexisting rows; automatic upgrades disabled; both public UI bundles returned 200 with exact packaged bytes; both CPS legacy adoptions have permanent ready provenance | CIT adoption, real user OAuth and subsequent packaged Hub cutover |
 | Approval transport | Trusted TLS and independent export-token checks passed; 17 actual API admission/RBAC checks passed | Broader deployment and credential-rotation qualification |
 | Automatic approval delivery | Actual revoke and approve converged to four genuine current acknowledgments; fresh controller restart resumed with its original durable journal | Normal workspace Start/Stop after account cutover and broader GPU/scheduling acceptance |
@@ -518,3 +518,27 @@ Private mode-0600 evidence is retained in
 The owned account, Source records, first failure and subsequent readbacks are
 preserved. The CPU lifecycle, access removal and restart gate remains failed
 until the released custody fix passes the original normal HTTP path.
+
+## Controlled retention boundaries — 2026-10-14
+
+The unchanged installed retention controller passed ten owned-prefix cases
+against real SeaweedFS S3 and authenticated Argo HTTPS. Temporary inputs were
+preserved before 14 days and deleted at the boundary; run outputs behaved
+likewise at 90 days. Active workflows, retained tags and durable retain claims
+preserved their objects. A changed ETag caused the actual conditional delete to
+return HTTP 412. Injected lost responses before/after deletion persisted the
+deletion claims; fresh processes did not retry uncertain deletes or expire the
+claims. No service or host clock changed.
+
+The dedicated CPU Pod had only get/patch on the ten explicitly named QA
+workflows; an unrelated workflow read returned HTTP 403. Root independently
+verified the exact report hash, all fifteen resource absences, and the original
+CronJob UID/full-spec hash with suspension unchanged. Four new guard tests and
+Ruff passed. The exact executed fixture, runner, report and qualification limits
+are retained in
+`platform-staging/artifacts/qualification/retention-controlled-20261014/`.
+
+Workflow terminal statuses were synthetic, and transport ambiguity was injected
+at the real conditional-delete boundary. This does not establish the actual
+gateway notebook execution/retention lifecycle, automatic production deletion
+or coordinated off-host restore.
