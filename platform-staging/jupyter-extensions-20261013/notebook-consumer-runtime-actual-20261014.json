@@ -1,0 +1,173 @@
+{
+  "actual_executor_exit_code": 0,
+  "actual_lab": {
+    "actual_named_server_navigation_status": 200,
+    "auth_mode": "operator_existing_user_bearer_same_origin_only",
+    "automatic_account_read_observed": true,
+    "html_dom_sha256": "c8f760697ee688493b9edb2baebcb1f4b51f5f6d6a7549a675f3f478ce144eac",
+    "human_oauth": false,
+    "loaded_lab_asset": [
+      "/user/cps-ws-0e5f017fd55d683782e7af742177b07c/rtc/lab/extensions/@cps/compute-jupyterlab/static/remoteEntry.c80eef21c9609e6e95b5.js",
+      "/user/cps-ws-0e5f017fd55d683782e7af742177b07c/rtc/lab/extensions/@cps/compute-jupyterlab/static/997.af2abb24a21277815968.js"
+    ],
+    "page_config_gateway": "/services/cps-admin/api/compute/v1/",
+    "panel_loaded": true,
+    "synthetic_api_responses": false
+  },
+  "actual_notebook": {
+    "automount_service_account_token": false,
+    "gid": 100,
+    "image": "ghcr.io/mul-cps/cps-jupyter-notebook@sha256:86c4fd58afe7a4e18b850da9f007d3c9e8cc8c058d85c0b8fee667ed72779d59",
+    "namespace": "jupyterhub",
+    "pod_name": "jupyter-cps-ws-0e5f017fd55d683782e7af742177b07c--rtc",
+    "pod_uid": "802358c5-2084-4cd4-9f0c-34d1143e3c23",
+    "previous_pod_uid": "ec7e630c-82c0-4a1e-9944-312827302377",
+    "resources": {
+      "limits": {
+        "cpu": "2",
+        "memory": "8589934592"
+      },
+      "requests": {
+        "cpu": "2",
+        "memory": "8589934592"
+      }
+    },
+    "uid": 1000
+  },
+  "completed_at": "2026-10-14T14:15:24.022961+00:00",
+  "completed_seed_sha256": "sha256:7b040075d4c4dd5b8fe9f2dcb25ba24b20bb05256687faa8d14eba541cc5c810",
+  "configuration_receipt_sha256": "0453bebaeef63008b3e08506bda4881f921ff1bc178b2254d8296a69c009916f",
+  "distributed": {
+    "expected_disabled_launcher_response": true,
+    "jobsets_enabled": false,
+    "observed_status": 503,
+    "qualified": false,
+    "scope": "Workflows200 and JobSets503 are distinct; no all-distributed-UI/API success claim"
+  },
+  "draft_predecessor_sha256": "ed2be8bcd6767addaca557da7c0a828a4178f5526814a3409b71b658b55522b6",
+  "evidence_sha256": {
+    "actual-cit-me/me-read-receipt.json": "571502d5e0102c4d3ff74cd3cd08ffa0fb63f83b7853b3b0c4c2dbcc8959bab6",
+    "actual-cit-me/own-token-revocation.json": "46c72b6dcb5fea2ff749b23998edd81ef18bea888895552cc143d120a841c6b6",
+    "actual-consumer-proof-6516765676934c75a02b2f1d2c4038a3/browser/receipt.json": "1badfd500f530d75305c9cab81d1fc3669e3c69dce31cd08475645eafccb14ac",
+    "actual-consumer-proof-6516765676934c75a02b2f1d2c4038a3/installed-runtime-proof.json": "76e38565721ed2b40fa6353f5c9326f46446c90c23a105435d6562311fa0e7f9",
+    "actual-consumer-proof-6516765676934c75a02b2f1d2c4038a3/me-actual.json": "1032630b896e53cdc314ca3e72d7a497aab91545ce379859325c78d95fe070cc",
+    "actual-consumer-proof-6516765676934c75a02b2f1d2c4038a3/profiles-actual.json": "bb3dc266b110bb560766ffb6d4ffc3d877ceaea04a9e9aac8a25b9df96acbf1e",
+    "actual-consumer-proof-6516765676934c75a02b2f1d2c4038a3/session-actual.json": "acd0bf1f998b56a78fd6587297185866388b2466c46f35887f202d0d1cc6b565",
+    "actual-consumer-proof-6516765676934c75a02b2f1d2c4038a3/workflows-actual.json": "24f87cd6fe5b669f8a999a02b54ddbcfaedc6d2b68e9cec4e0a69a0a1fd18a20",
+    "actual-consumer-proof-6516765676934c75a02b2f1d2c4038a3/workspaces-actual.json": "37517e5f3dc66819f61f5a7bb8ace1921282415f10551d2defa5c3eb0985b570",
+    "actual-normal-http/original-owned-windows-groups-restoration.json": "590dad50419ccc4cd7ca59128c70784108f42c5d278b7fb7b210baeb5bb378c5",
+    "actual-v9-execution/actual-runtime-marker.json": "15d889a926a4f733e18ee25e8c707342c9d46066639e4d7bbdd38d81dd2bda86",
+    "actual-v9-execution/result.json": "3e1c4a554caa6add488948bc74f45bba7f002b49ae7082230b687ecf5e79baf4",
+    "root-actual-execution/execution-receipt.json": "adc47901ec6635959c3600f5e65e5a0cf6b6083c6a52c1523aba5d4ddd654eee",
+    "token-revocation-receipt.json": "8c257d6c2aa2eec77c24189f6417d3b18599ae20071cd40d2e2b3378af58bfad"
+  },
+  "fresh_post_acceptance_cleanup_readonly_proof": {
+    "captured_at": "2026-10-14T14:25:22.231929+00:00",
+    "central_reservation_inactive": true,
+    "evidence_sha256": "953fb6d307256e6f818edac2e7ca704fbbf4d3866b95d357ad670a618d0c6261",
+    "exact_pv_pvc_uids_and_specs_retained": true,
+    "hub_qa_stopped_and_tokenless": true,
+    "pod_absent": true,
+    "source_stopped": true,
+    "status": "passed"
+  },
+  "installed_runtime": [
+    {
+      "applicable_apps": {},
+      "closure_packages_verified": 112,
+      "core_python_files_verified": 43,
+      "lab_assets_verified": 6,
+      "prefix": "/opt/conda",
+      "python": [
+        3,
+        13,
+        13
+      ],
+      "sdk_location": "/opt/conda/lib/python3.13/site-packages/cps_compute/__init__.py",
+      "uid": 1000,
+      "variant": "standard-cpu",
+      "versions": {
+        "cps-compute": "0.1.0",
+        "cps-compute-jupyterlab": "0.1.0",
+        "hera-workflows": "7.1.0",
+        "ipykernel": "7.4.0",
+        "jupyter-collaboration": "4.4.2",
+        "jupyterlab": "4.5.7",
+        "papermill": "2.7.0",
+        "setuptools": "80.9.0"
+      }
+    },
+    {
+      "browser_gateway_environment": "/services/cps-admin/api/compute/v1/",
+      "fixed_lab_payloads_verified": 8,
+      "offline_hook_test_is_not_live_html": true,
+      "sdk_python_entrypoints_callable": true
+    }
+  ],
+  "kind": "actual-managed-cpu86-notebook-and-visitor-acceptance",
+  "nfs_persistence": {
+    "data_retained": true,
+    "new_marker_bytes": 95,
+    "new_marker_mode": "0o600",
+    "new_marker_sha256": "a791accdb987d1e60cd6256639bd21450d8ab1fd449ab385a792776b4d97c34c",
+    "previous_genuine_proof_sha256": "589466d73791c46db08b1f6586d4a94d9f1ff167de0545c344dc43720fa673cc",
+    "prior_95_byte_marker_verified": true,
+    "restart_persistence_verified": true,
+    "retained_marker_sha256": "a791accdb987d1e60cd6256639bd21450d8ab1fd449ab385a792776b4d97c34c",
+    "same_pv_uid": "c275e58a-e706-43f1-9195-10c54b75bef0",
+    "same_pvc_uid": "1c2ba300-105e-4223-b762-cb55582820f8"
+  },
+  "normal_source_http_lifecycle": {
+    "normal_stop": true,
+    "original_owned_windows_groups_restored": {
+      "all_other_grants_byte_equal": true,
+      "authenticated_user_groups_exact": true,
+      "exact_owned_windows_restored": true,
+      "no_direct_sql_writes": true,
+      "source_group_record_exact": true
+    },
+    "own_token_revoke_exit_code": 0,
+    "pod_absence_confirmed": true,
+    "ready": true
+  },
+  "production_qualified": false,
+  "remaining": [
+    "Ordinary immutable batch notebook success/failure with typed parameters/helper imports, logs and artifact retrieval",
+    "Current installed retention dryrun on those genuine terminal objects",
+    "Human browser OAuth acceptance remains separate",
+    "Distributed JobSet execution remains disabled/unqualified"
+  ],
+  "schemaVersion": 1,
+  "visitor_api": {
+    "cit_canonical_person_id": "d98fbadd-d9a0-4981-8d20-1ab58bb75745",
+    "cit_own_token_revoked": true,
+    "cit_status": 200,
+    "cps_canonical_person_id": "d98fbadd-d9a0-4981-8d20-1ab58bb75745",
+    "cps_route_statuses": [
+      {
+        "path": "/services/cps-admin/api/compute/v1/jobsets",
+        "status": 503
+      },
+      {
+        "path": "/services/cps-admin/api/compute/v1/me",
+        "status": 200
+      },
+      {
+        "path": "/services/cps-admin/api/compute/v1/profiles",
+        "status": 200
+      },
+      {
+        "path": "/services/cps-admin/api/compute/v1/session",
+        "status": 200
+      },
+      {
+        "path": "/services/cps-admin/api/compute/v1/workflows",
+        "status": 200
+      },
+      {
+        "path": "/services/cps-admin/api/compute/v1/workspaces",
+        "status": 200
+      }
+    ]
+  }
+}

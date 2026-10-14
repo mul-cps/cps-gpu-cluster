@@ -25,9 +25,9 @@ for the bounded live results of 2026-10-13 and their retained evidence.
 | Gate | Verified state | Remaining completion evidence |
 | --- | --- | --- |
 | Repository ownership and shared policy | Separate application/deployment responsibilities and shared policy implemented; compatibility branches retained | Integrate and promote one tested consumer matrix with its exact policy hash; account for Fleet's watched branches |
-| SDK, Hub and Lab packages | All 12 notebook OCI variants with the packaged PageConfig hook and refreshed Lab addon are published; integrated Hub/Gateway images passed installed-package tests and actual remote overlay checks. Both live Hubs run the packaged CPU fix; normal CPU startup, NFS writes, restart persistence and Stop passed | Adopt the qualified notebook packages, then verify actual visitor authentication and live API refresh |
-| Both admin UI consoles | Both consoles run Source87a1 with visible-view API refresh; 66 synthetic-API browser tests passed and actual installed bytes match. Authenticated CIT `akadmin` API/browser checks now confirm real polling, zero page errors and the 10 GiB choice for its approved pilot workspace; supplied token revoked through normal HTTP | New-account HTTP lifecycle, reviewed CIT person linkage and ordinary-user API acceptance; API-token browser checks do not establish fresh human OAuth |
-| Identity and group ownership | Existing reviewed aliases retained; both CPS legacy neutral accounts have permanent ready provenance; explicit custody migration and exact QA repair passed; both Hubs restarted without changing the repaired or legitimate legacy roles | Complete CIT adoption, real login grant survival/expiry and scoped administration; cross-Hub allowance continuity |
+| SDK, Hub and Lab packages | All 12 notebook OCI variants are published. Both Hubs select notebook86 for registered CPU workspaces. Actual CPU86 runtime verified SDK/Lab payloads, trusted PageConfig, live panel API polling, NFS restart persistence and normal Stop | Genuine human OAuth, ordinary visitor identity separation and remaining notebook modes; CIT personal profile hooks retain their independent images |
+| Both admin UI consoles | Both consoles run Source87a1 with visible-view API refresh; 66 synthetic-API browser tests passed and actual installed bytes match. Authenticated CIT `akadmin` API/browser checks now confirm real polling, zero page errors and the 10 GiB choice for its approved pilot workspace; supplied token revoked through normal HTTP | Normal registered CPU lifecycle and reviewed CIT `akadmin` canonical API linkage passed; ordinary-user/human OAuth and remaining modes are separate gates |
+| Identity and group ownership | Existing reviewed aliases retained; both CPS legacy neutral accounts have permanent ready provenance; explicit custody migration and exact QA repair passed; both Hubs restarted without changing the repaired or legitimate legacy roles | Reviewed CIT alias is live in Source, Hub and Gateway and `/me` resolves the same person; real login grant survival/expiry, scoped administration and cross-Hub allowance continuity remain |
 | Native GPU isolation | Controlled no-MIG 5/20 GiB history retained; current CPS pair passed distinct 5 GiB OOM/recovery with peer progress, IPC denial in both directions, positive controls, kernel witnesses, restart retirement, complete bounded MPS OOM/recovery and observer cleanup, and confirmed normal closure | Complete restart behavior and broader packing; current bounded pool is 5/10 GiB, not a normal 20 GiB or cross-Hub qualification |
 | Shared GPU reservations | Shared accounting implementation and reviewed qualification bindings exist | Actual simultaneous cross-Hub starts, all-member atomicity and partial-conflict rollback; prove permitted CPU sessions and independent batch execution; release only after confirmed stop |
 | Workspaces and local assignments | Local management, source-neutral reconciliation and RTC implementations exist | Two real visitors retaining their own identity, membership removal closing existing access, retained files and stopped-writer read-only archives |
@@ -43,6 +43,46 @@ for the bounded live results of 2026-10-13 and their retained evidence.
 | Hub 6 | Separate staging scope | Keep outside production promotion until stable chart compatibility and migration/storage qualification pass |
 
 ## Current rollout boundary
+
+The consumer configuration rollout completed at **2026-10-14 14:07 UTC**.
+Both Hubs run Hub29b, Gateway08f and Node8c retain their images, and both consoles
+run Source87. Four fresh process acknowledgments and a completed new delivery
+journal confirm the unchanged policy and GPU driver epoch. No maintenance fence
+remains held. The canonical policy hash is
+`sha256:d48f6553ed036c2e7adcc97417623fe0308be93ad13b20f246047ada118511b0`.
+See [configuration evidence](../../platform-staging/jupyter-extensions-20261013/notebook-consumer-config-actual-20261014.json).
+
+Both registered CPU configurations now select
+`ghcr.io/mul-cps/cps-jupyter-notebook@sha256:86c4fd58afe7a4e18b850da9f007d3c9e8cc8c058d85c0b8fee667ed72779d59`.
+The normal Source lifecycle passed at **14:15 UTC**: Start, Ready, actual SDK/Lab
+package verification, the live Compute panel, automatic account polling, NFS
+writes and restart persistence, then normal Stop. The five ordinary visitor API
+routes returned 200. Fresh read-only cleanup at **14:25 UTC** confirmed Pod
+absence, a stopped and tokenless Hub account, inactive reservation and exact
+retained PV/PVC identities and specifications. Original owned windows/groups
+were restored and the temporary token was revoked. CIT personal profile hooks
+retain their independently selected images.
+See [runtime evidence](../../platform-staging/jupyter-extensions-20261013/notebook-consumer-runtime-actual-20261014.json).
+
+The reviewed CIT `akadmin` alias is consumed by Source, its Hub and Gateway.
+A normal authenticated `/compute/v1/me` read returned the reviewed canonical
+person ID shared with CPS `bjoern`; its temporary token was revoked through the
+Hub API. These checks used short-lived tokens for existing users issued through
+the JupyterHub ORM. They establish actual API/browser behavior; fresh human
+OAuth and distinct ordinary visitor RTC remain open.
+
+Dynamic no-MIG GPU sharing remains bounded to the approved 5/10 GiB pilot and
+two parents within a 15 GiB pool. The passed current pair isolation/MPS history
+is retained below. KAI coordinator/binder activation and wider GPU packing
+remain unqualified. Distributed JobSets are disabled: `/jobsets` returned the
+expected 503 while workflow reads succeeded. The platform remains
+**limited-pilot**, with broader scheduling, recovery and production release
+gates open in the ledger above.
+
+## Earlier rollout and retained diagnostics
+
+### Superseded Hub and CPU rollout diagnostics
+
 
 Both Hubs are Ready on the corrected package image
 `ghcr.io/mul-cps/cps-compute@sha256:a7155bebb5dff1b70ff79edbf57a1012bb37feed082bac8212c885b46e1cb950`.
@@ -108,7 +148,7 @@ acceptance remain open.
 See `platform-staging/jupyter-extensions-20261013/admin-ui-live-refresh-receipt-20261014.json`
 and `platform-staging/jupyter-extensions-20261013/lab-live-refresh-qualification-20261014.json`.
 
-## Earlier rollout and retained diagnostics
+### Earlier platform deployments
 
 The following captures describe the preceding deployments and failed attempts.
 They do not supersede the current healthy Hub/Source boundary above.
