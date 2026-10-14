@@ -1,0 +1,71 @@
+{
+  "actual_active_caps": 0,
+  "actual_used_bytes": 0,
+  "all_native_allocations_released": true,
+  "approval_revision": "sha256:832e841b6e7b5885a80de27e8850e8e25087b7a26a08a8270f38869f10bf71ca",
+  "evidence_time_scope": "2026-10-14 Gateway cutover completion; native zero is the final handover observation, not a claim about later workloads.",
+  "executed_rederived_plan_sha256": "sha256:4c4003dbd43a51ab436a58727be757a3a7af4e187b864ce5aee10f5563f4d760",
+  "four_process_readiness_passed": true,
+  "gpu_execution": false,
+  "hub_and_source_images_unchanged": true,
+  "mounted_runtime_matches_guarded_target": true,
+  "new_delivery_objects": {
+    "pvc": {
+      "name": "cps-native-delivery-journal-gateway-440711b2",
+      "namespace": "cps-compute",
+      "uid": "0232c56d-8f61-4c57-a9a1-9c756a02ea5e"
+    },
+    "secret": {
+      "name": "cps-native-delivery-input-gateway-440711b2",
+      "namespace": "cps-compute",
+      "uid": "e2537566-417f-4cb0-9493-411d0241ff36"
+    }
+  },
+  "new_delivery_pod": {
+    "name": "cps-native-approval-delivery-795494b77f-bs7f8",
+    "namespace": "cps-compute",
+    "uid": "a4ef8861-488d-408e-8863-64aa1b043658"
+  },
+  "new_delivery_seed_sha256": "sha256:68e6ff08ee002c6daf0cc8fd3cd00b62cd417d16aefc891d7715e567e4fb74dd",
+  "new_gateway_image": "ghcr.io/mul-cps/cps-compute@sha256:440711b2bb00151f8625e9df54c97e7ed4d137ca246453aae9ad7524d6681c3d",
+  "new_gateway_pod_uid": "c3493d98-1dff-42e2-b903-98f79bf990e1",
+  "old_gateway_pod_absent": true,
+  "private_receipt_sha256": "057fef84b6d2e036c229ce7dc890d47d29365f15c590c3e7db0408c416176191",
+  "production_qualified": false,
+  "proof_file_sha256": {
+    "final-readback-native.json": "3dbf818e755415ad6316ea12c977ce0e7e7581a8e67c578da3e6743a171bda81",
+    "final.json": "45ca40ed2c56674cb1f6b7ae094f2dc117c578dea195abf0631e15afabc50d34",
+    "gateway-loaded-runtime-proof.json": "60b76cc87c927f03997742519417dd3165399b206eb141592dcb90b673b738bd",
+    "new-delivery-activation-readback.json": "ae7023a4668ed65eb49e326e2d3a7887f662283204de16add24e55e6355bb599",
+    "old-journal-byte-receipt.json": "3a68fb42298bf02611efffc168c9aaffa6e5c0c6e10bb577aa3fffc3144e3428"
+  },
+  "retained_old_pvc": {
+    "name": "cps-native-delivery-journal-accounts-c15174b3",
+    "namespace": "cps-compute",
+    "uid": "648b79b8-dcf5-461e-ad06-c2f3237cb4f7"
+  },
+  "retained_old_secret": {
+    "name": "cps-native-delivery-input-accounts-c15174b3",
+    "namespace": "cps-compute",
+    "uid": "dce2fd9c-5cfb-4186-847e-a2b7f99243ad"
+  },
+  "retained_original_journal_bytes_sha256": "191abda78a6fa9d9c337425e2a569b2f10f28e86d63f0d972a9faaaeb5344c3c",
+  "reviewed_plan_sha256": "sha256:8167185d3a6ed1ee448bc2daa85d238be300ba60e21f94f500f1e14b2266a334",
+  "scope_limits": [
+    "Controlled qualification-image handover only",
+    "MPS and overall production qualification remain pending",
+    "Hub and Source image/config changes excluded",
+    "No GPU jobs or driver changes executed by this handover"
+  ],
+  "source_revision": "8ecb7e38",
+  "state": "gateway-only-qualified-package-handover-passed",
+  "validation": {
+    "core_tests_passed": 1863,
+    "installed_python_files_exact": 43,
+    "pip_check_passed": true,
+    "private_operator_cpu_tests_passed": 6,
+    "ruff_passed": true,
+    "runtime_uid": 10001
+  },
+  "version": 1
+}
