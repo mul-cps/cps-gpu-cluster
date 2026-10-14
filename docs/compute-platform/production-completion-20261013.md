@@ -25,7 +25,7 @@ for the bounded live results of 2026-10-13 and their retained evidence.
 | Gate | Verified state | Remaining completion evidence |
 | --- | --- | --- |
 | Repository ownership and shared policy | Separate application/deployment responsibilities and shared policy implemented; compatibility branches retained | Integrate and promote one tested consumer matrix with its exact policy hash; account for Fleet's watched branches |
-| SDK, Hub and Lab packages | All 12 notebook OCI variants with the packaged PageConfig hook and refreshed Lab addon are published; integrated Hub/Gateway images passed installed-package tests and actual remote overlay checks. Both live Hubs run the earlier registered CPU adapter | Complete normal new-account lifecycle; adopt the qualified Hub and notebook packages through the controlled handover, then verify actual visitor authentication and live API refresh |
+| SDK, Hub and Lab packages | All 12 notebook OCI variants with the packaged PageConfig hook and refreshed Lab addon are published; integrated Hub/Gateway images passed installed-package tests and actual remote overlay checks. Both live Hubs now run the packaged writable-runtime CPU fix | Complete normal new-account lifecycle; adopt the qualified notebook packages, then verify actual visitor authentication and live API refresh |
 | Both admin UI consoles | Both consoles run Source87a1 with visible-view API refresh; 66 synthetic-API browser tests passed and actual installed bytes match. Authenticated CIT `akadmin` API/browser checks now confirm real polling, zero page errors and the 10 GiB choice for its approved pilot workspace; supplied token revoked through normal HTTP | New-account HTTP lifecycle, reviewed CIT person linkage and ordinary-user API acceptance; API-token browser checks do not establish fresh human OAuth |
 | Identity and group ownership | Existing reviewed aliases retained; both CPS legacy neutral accounts have permanent ready provenance; explicit custody migration and exact QA repair passed; both Hubs restarted without changing the repaired or legitimate legacy roles | Complete CIT adoption, real login grant survival/expiry and scoped administration; cross-Hub allowance continuity |
 | Native GPU isolation | Controlled no-MIG 5/20 GiB history retained; current CPS pair passed distinct 5 GiB OOM/recovery with peer progress, IPC denial in both directions, positive controls, kernel witnesses, restart retirement, complete bounded MPS OOM/recovery and observer cleanup, and confirmed normal closure | Complete restart behavior and broader packing; current bounded pool is 5/10 GiB, not a normal 20 GiB or cross-Hub qualification |
@@ -266,7 +266,14 @@ the actual readonly-image constructor regression and remote overlay readback.
 Generic personal servers, native GPU workspaces and security/resource/mount
 settings retain their existing behavior. Publication evidence is
 `platform-staging/jupyter-extensions-20261013/neutral-cpu-bootstrap-hub-fix-publication-20261014.json`.
-Paired-Hub adoption and the normal CPU Ready/NFS marker gate remain open.
+Paired-Hub adoption completed at 12:16 UTC. Both Hubs run `29b7b3e`, all
+four processes acknowledged the new configuration, delivery completed its new
+journal and the final native allocation check was zero. Only the two Hub images,
+their immutable bootstrap references and matching runtime trust pins changed.
+The existing notebook image, identity maps, Source, Gateway, Node and storage
+remain unchanged. Actual evidence is
+`platform-staging/jupyter-extensions-20261013/neutral-cpu-bootstrap-hub-handover-actual-20261014.json`.
+The normal CPU Ready/NFS marker gate remains open.
 Actual authenticated CIT browser/API evidence is retained in
 `platform-staging/jupyter-extensions-20261013/cit-authenticated-ui-api-readback-20261014.json`.
 The owning `akadmin` token successfully read the admin API. A fresh headless
