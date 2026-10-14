@@ -29,7 +29,7 @@ for the bounded live results of 2026-10-13 and their retained evidence.
 | Both admin UI consoles | Both consoles run Source87a1 with visible-view API refresh; 66 synthetic-API browser tests passed and actual installed bytes match. Authenticated CIT `akadmin` API/browser checks now confirm real polling, zero page errors and the 10 GiB choice for its approved pilot workspace; supplied token revoked through normal HTTP | Normal registered CPU lifecycle and reviewed CIT `akadmin` canonical API linkage passed; ordinary-user/human OAuth and remaining modes are separate gates |
 | Identity and group ownership | Existing reviewed aliases retained; both CPS legacy neutral accounts have permanent ready provenance; explicit custody migration and exact QA repair passed; both Hubs restarted without changing the repaired or legitimate legacy roles | Reviewed CIT alias is live in Source, Hub and Gateway and `/me` resolves the same person; real login grant survival/expiry, scoped administration and cross-Hub allowance continuity remain |
 | Native GPU isolation | Controlled no-MIG 5/20 GiB history retained; current CPS pair passed distinct 5 GiB OOM/recovery with peer progress, IPC denial in both directions, positive controls, kernel witnesses, restart retirement, complete bounded MPS OOM/recovery and observer cleanup, and confirmed normal closure | Complete restart behavior and broader packing; current bounded pool is 5/10 GiB, not a normal 20 GiB or cross-Hub qualification |
-| Shared GPU reservations | Shared accounting implementation and reviewed qualification bindings exist | Actual simultaneous cross-Hub starts, all-member atomicity and partial-conflict rollback; prove permitted CPU sessions and independent batch execution; release only after confirmed stop |
+| Shared GPU reservations | Actual simultaneous CPS5/CIT10 pilot starts passed: one winner held both shared members once, loser had no server/Pod/binding; confirmed Stop preceded successful retry on the other Hub; exact windows/groups/grants restored | Different-member partial-conflict rollback, permitted CPU sessions and independent batch execution while held; broader pool and ordinary-user qualification |
 | Workspaces and local assignments | Local management, source-neutral reconciliation and RTC implementations exist | Two real visitors retaining their own identity, membership removal closing existing access, retained files and stopped-writer read-only archives |
 | Workflow gateway and admission | Source validation/ownership paths implemented; bounded CPS own-success/failure artifact/log bytes and foreign-versus-absent rejection passed; controller admission/RBAC checks passed | CIT normal-user own/foreign access, human authentication, token renewal and crafted workflow/admin bypass scenarios on the current release |
 | Notebook execution | Immutable runner/package/browser tests and bounded CPS selected-import/typed-parameter success/failure outputs passed | Complete current release/live coverage for saved snapshots, selected files, parameter cells, approved image digests and both owning Hubs |
@@ -70,6 +70,23 @@ person ID shared with CPS `bjoern`; its temporary token was revoked through the
 Hub API. These checks used short-lived tokens for existing users issued through
 the JupyterHub ORM. They establish actual API/browser behavior; fresh human
 OAuth and distinct ordinary visitor RTC remain open.
+
+The existing CIT `citnativegroupa` workspace account was adopted through the
+normal authenticated Source plan/execute API. Its name, created identity, roles,
+workspace descriptor and storage binding were preserved; only the neutral group
+membership and Source adoption receipt were added. It now reports `ready`.
+A later native server run exposed HTTP 403 for its activity callback; explicit
+scoped legacy runtime custody remains a production gate.
+See [adoption evidence](../../platform-staging/jupyter-extensions-20261013/cit-neutral-adoption-actual-20261014.json).
+
+The simultaneous cross-Hub pilot reservation test passed at **15:32 UTC**.
+CIT held both shared canonical members once while CPS was denied; CPS then
+reached Ready after CIT's confirmed shutdown. Both workspaces closed and original
+windows/groups/grants were restored. The two owned tokens were revoked. Source
+reported the losing asynchronous spawn as 503; a fresh exact Gateway
+`reservation_conflict` audit is required to classify it, so ordinary startup
+failures are not accepted as conflicts.
+See [reservation evidence](../../platform-staging/jupyter-extensions-20261013/cross-hub-reservation-actual-20261014.json).
 
 Dynamic no-MIG GPU sharing remains bounded to the approved 5/10 GiB pilot and
 two parents within a 15 GiB pool. The passed current pair isolation/MPS history
