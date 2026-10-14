@@ -25,7 +25,7 @@ for the bounded live results of 2026-10-13 and their retained evidence.
 | Gate | Verified state | Remaining completion evidence |
 | --- | --- | --- |
 | Repository ownership and shared policy | Separate application/deployment responsibilities and shared policy implemented; compatibility branches retained | Integrate and promote one tested consumer matrix with its exact policy hash; account for Fleet's watched branches |
-| SDK, Hub and Lab packages | All 12 notebook OCI variants with the packaged PageConfig hook and refreshed Lab addon are published; integrated Hub/Gateway images passed installed-package tests and actual remote overlay checks. Both live Hubs now run the packaged writable-runtime CPU fix | Complete normal new-account lifecycle; adopt the qualified notebook packages, then verify actual visitor authentication and live API refresh |
+| SDK, Hub and Lab packages | All 12 notebook OCI variants with the packaged PageConfig hook and refreshed Lab addon are published; integrated Hub/Gateway images passed installed-package tests and actual remote overlay checks. Both live Hubs run the packaged CPU fix; normal CPU startup, NFS writes, restart persistence and Stop passed | Adopt the qualified notebook packages, then verify actual visitor authentication and live API refresh |
 | Both admin UI consoles | Both consoles run Source87a1 with visible-view API refresh; 66 synthetic-API browser tests passed and actual installed bytes match. Authenticated CIT `akadmin` API/browser checks now confirm real polling, zero page errors and the 10 GiB choice for its approved pilot workspace; supplied token revoked through normal HTTP | New-account HTTP lifecycle, reviewed CIT person linkage and ordinary-user API acceptance; API-token browser checks do not establish fresh human OAuth |
 | Identity and group ownership | Existing reviewed aliases retained; both CPS legacy neutral accounts have permanent ready provenance; explicit custody migration and exact QA repair passed; both Hubs restarted without changing the repaired or legitimate legacy roles | Complete CIT adoption, real login grant survival/expiry and scoped administration; cross-Hub allowance continuity |
 | Native GPU isolation | Controlled no-MIG 5/20 GiB history retained; current CPS pair passed distinct 5 GiB OOM/recovery with peer progress, IPC denial in both directions, positive controls, kernel witnesses, restart retirement, complete bounded MPS OOM/recovery and observer cleanup, and confirmed normal closure | Complete restart behavior and broader packing; current bounded pool is 5/10 GiB, not a normal 20 GiB or cross-Hub qualification |
@@ -273,7 +273,22 @@ their immutable bootstrap references and matching runtime trust pins changed.
 The existing notebook image, identity maps, Source, Gateway, Node and storage
 remain unchanged. Actual evidence is
 `platform-staging/jupyter-extensions-20261013/neutral-cpu-bootstrap-hub-handover-actual-20261014.json`.
-The normal CPU Ready/NFS marker gate remains open.
+The normal CPU Ready/NFS marker gate then passed at 12:44 UTC with exit code
+zero. An existing CPS administrator's short-lived API token used normal Source
+Start/Stop: the notebook became Ready with zero restarts, authenticated API
+access worked, and a UID 1000/GID 100 process wrote and read its NFS marker at
+`/workspace`. A newly spawned Pod read the previous marker with the same hash
+on the retained volume, confirming restart persistence. Stop removed server
+access and Shares. Full creation audit checks passed; original grant/membership
+windows and groups were restored exactly, and only the test token was revoked.
+The runner required canonical Kubernetes quantity comparison and an 8 MiB
+allowance for the exact audit endpoint, whose complete history exceeded its
+ordinary 1 MiB response bound. These were test-harness corrections; workload
+resources and storage configuration were unchanged. Actual evidence is
+`platform-staging/jupyter-extensions-20261013/neutral-cpu-nfs-lifecycle-actual-20261014.json`.
+The original `ff0c30d` notebook image was retained for this acceptance. Notebook
+package adoption, fresh human OAuth and distinct ordinary visitor RTC remain
+separate gates.
 Actual authenticated CIT browser/API evidence is retained in
 `platform-staging/jupyter-extensions-20261013/cit-authenticated-ui-api-readback-20261014.json`.
 The owning `akadmin` token successfully read the admin API. A fresh headless
