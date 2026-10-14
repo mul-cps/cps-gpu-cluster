@@ -1,0 +1,31 @@
+{
+  "cluster_writes": false,
+  "combined_candidate": "sha256:4dca3af5e19161c21cb851d188d026f8a4e7894e195dcd904b155c3ea9f2fc2d",
+  "combined_core_wheel_sha256": "7adc5763b237b5f13b398ea06f7f938d5aa48a1850e5d01b1e1b5e12a6b815fd",
+  "cpu_successor_required": "52785e9cb01a790a0840f0a617da20b81e9a7e73",
+  "credentials_or_secrets_read": false,
+  "focused_tests": 18,
+  "green_log_sha256": "4fbfe0b2c326209cdd318cb4bc315f4ff4bc437d80e9898c1ae537c63f35375d",
+  "hardware_qualified": false,
+  "pod_execs": false,
+  "production_qualified": false,
+  "red_log_sha256": "487e164bb0c1c39e098771939cce5b471706e05f39e76353fb8e1c29af2c5dd9",
+  "source_base": "d761be1867a4fe76f998a378b5265b92256b00b8",
+  "state": "frozen-inert-packet-with-explicit-epoch-seam-blocker",
+  "static_binder": {
+    "CGO_ENABLED": "0",
+    "bytes": 98235650,
+    "disabled_default_flag_visible": true,
+    "go_packages_passed": [
+      "pkg/binder/binding",
+      "pkg/binder/binding/resourcereservation",
+      "pkg/binder/controllers",
+      "cmd/binder/app"
+    ],
+    "help_exit": 0,
+    "ldd": "not a dynamic executable",
+    "sha256": "1bc9ea1396ccb227ec60cf508178910c074da3f7590bee0687ebd398ed71e7e3",
+    "trimpath": true
+  },
+  "version": 1
+}

@@ -1,0 +1,59 @@
+{
+  "authorityNamespace": "cps-native-system",
+  "capacity_observation_sha256": "sha256:ebfcab70ef8f4575338278152e6539a8c6c7e60bdfae52a40e23c8db845c102f",
+  "enabled": true,
+  "gateImage": "ghcr.io/mul-cps/cps-compute@sha256:bc5b128f582641eae8395e1121d1fb248eddc39a56c9e863b7c564badd94b167",
+  "node_pool": {
+    "boot_id": "209f8bc9-a478-48e4-925a-6e07ffa56f7a",
+    "driver_generation": "b10498fc-9153-4394-875a-ea7cfb498625",
+    "free_memory_mib": 40470,
+    "gpu_uuid": "GPU-16128952-b438-556a-00bb-93039ee24e56",
+    "headroom_mib": 1024,
+    "max_workspaces": 2,
+    "memory_budget_mib": 15360,
+    "node": "k3s-wk-gpu2",
+    "node_uid": "3336cdd5-d245-436e-b57c-2f66c6dcaa41",
+    "total_memory_mib": 40960
+  },
+  "operator_only": true,
+  "policy_hash": "sha256:db156bee273d87b0d2bb732a167775ee25deca9b2ce0580e151df1400c28db68",
+  "policy_version": "0.1.2",
+  "profile_caps": {
+    "interactive-native-qualification-10": 10240
+  },
+  "version": 1,
+  "workloadImage": "ghcr.io/mul-cps/cps-jupyter-notebook:qualification-native-group-980408a@sha256:9167861058c1364c58d1c2fca0d6f536c3ffb53a33800dcdb9a1560f14ca4dc0",
+  "workspaces": {
+    "cit:native-group-a": {
+      "ceiling": {
+        "cpu": "4",
+        "gpuMemoryGiB": 10,
+        "memory": "16Gi"
+      },
+      "course_id": "native-gpu-pilot-20261009",
+      "group_id": "native-pilot-group-a",
+      "members": [
+        "386feebb-df1a-4f3c-9ef9-6d9c026d5aea",
+        "d1fb4e43-64ec-4ac5-914f-e9cd39ad1c62"
+      ],
+      "namespace": "cit-jhub",
+      "owner": "citnativegroupa",
+      "pod": "jupyter-citnativegroupa--rtc",
+      "principal": "workspace:cit:native-group-a",
+      "profiles": [
+        "interactive-native-qualification-10"
+      ],
+      "server": "rtc",
+      "storage": {
+        "group_hash": "0f44210436beb2ced30aca63ba08db3b15716a197318bd6e58edb2ef29da21d0",
+        "namespace": "cit-jhub",
+        "path": "/mnt/persistent1/cps_persistent1_shared/compute/cit/0f44210436beb2ced30aca63ba08db3b15716a197318bd6e58edb2ef29da21d0",
+        "pv": "cps-workspace-0f44210436beb2ced30aca63ba08db3b15716a19",
+        "pvc": "cps-workspace-0f44210436beb2ced30aca63ba08db3b15716a19",
+        "readonly_mounts": [],
+        "storage_version": 1
+      },
+      "term_id": "qualification-20261009"
+    }
+  }
+}

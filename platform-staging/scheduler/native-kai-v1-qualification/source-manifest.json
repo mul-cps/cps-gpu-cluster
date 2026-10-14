@@ -1,0 +1,23 @@
+{
+  "Dockerfile.binder": "2c4a284bd61929ec15d1f747c32eb6936e46d019f4ee8ba4879880d58eb39365",
+  "README.md": "a7c63ba50d05ce2e38dad15c9fc1055e366072af3b37591155cd77b9dca13026",
+  "acceptance.json": "6064b5ac1d2ece26afc2dafc50d869c9fd7977e2221602b0fc51cd5ba06195b4",
+  "binder-static-verification.json": "415224a6c465828eac43aac9daad826776ca5d7e6543ccc383c33d003bdf44ee",
+  "catalog.json": "eca8fb2682b7b047419383abe68adb968c32cfb1d9344db884ae9101d2f049ee",
+  "coordinator-required-values.json": "11aa0d04a05ac253d7509584396baf7cf75e3fbcf995da7d89489b16cd62e095",
+  "execute_source.py": "72767488c894829f105aa11dbaf7b66b85e5d723582a1dc66577fa729149a4f4",
+  "gateway-runtime-overlay.json": "5d3dbc19c70ce0463f8afe864ae427d4f16605cb1f0959fd40c68d88c74aec93",
+  "gateway_observer.py": "ae1bf5a8e2dafc2a0a65dc251a33cc21a61ceb1f0b16d0f4ce2b5fd980ec4d94",
+  "hub-pending.json": "683052c64ad268118f2253dc435a334ce5b8faabe989ef425e80bdba58ae08a3",
+  "hub_pending_installer.py": "d4bea1ba3d7e71c5aa0323bf77b9940117fced0cdaa263a7c83418ebd8013e75",
+  "internal-service-rbac-proposal.json": "444058d1eb2c359dff591ab50fe10fb9d389eae1f9b3b1d3ef339c7cf4fb2280",
+  "node-config-before.json": "d7a878541c18f6a9e628e89235719227562962c94f4f2a91241834f37ec74132",
+  "node-config.json": "708aa0f1aa8fe8dfd31159e510695c2a97e2f318454152da3be7019f4ebd9ddf",
+  "observe_node.py": "7d4bcbc50deed0cc70cac0983cb48bf36ed37dbb49499bacd76309166d331792",
+  "operator-qualification.json": "2c48e43aaa4301a660e1e980e67a57d7ec3358ea3a74d3d96fa9fddeb298219c",
+  "packet.py": "4dbca05a1c9c9c13c1d79a07136810afd3323b3702f113c83ce2e84cda66ff1b",
+  "policy.json": "564444ac1f96107c456a66aa6d583340ac3afacba87778796f2a9d561390fa4e",
+  "read-only-preimage-receipt.json": "75b76f364264d814cafafeab36917f370386f742ae47215d7301277477a9ba1c",
+  "registration-proposal.json": "f04b9018301a57ff526f2ca73cf58beb3989e402bed5edf214ce916543547a69",
+  "test_packet.py": "14eacc10870c9564dbd3a44fd5db542df9e596b80099fe53aa00789ddd2610d0"
+}

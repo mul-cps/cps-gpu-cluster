@@ -1,0 +1,15 @@
+{
+  "sha256": "1bc9ea1396ccb227ec60cf508178910c074da3f7590bee0687ebd398ed71e7e3",
+  "bytes": 98235650,
+  "CGO_ENABLED": "0",
+  "trimpath": true,
+  "help_exit": 0,
+  "disabled_default_flag_visible": true,
+  "ldd": "not a dynamic executable",
+  "go_packages_passed": [
+    "pkg/binder/binding",
+    "pkg/binder/binding/resourcereservation",
+    "pkg/binder/controllers",
+    "cmd/binder/app"
+  ]
+}

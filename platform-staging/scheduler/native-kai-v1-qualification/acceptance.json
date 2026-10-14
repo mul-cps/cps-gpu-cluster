@@ -1,0 +1,16 @@
+{
+  "candidate": "ghcr.io/mul-cps/cps-compute@sha256:4dca3af5e19161c21cb851d188d026f8a4e7894e195dcd904b155c3ea9f2fc2d",
+  "cap_mib": 10240,
+  "capacity_observation_is_prior_evidence_only": true,
+  "enabled": false,
+  "fresh_capacity_health_epoch_and_terminal_history_revalidation_required": true,
+  "hardware_qualified": false,
+  "live_applied": false,
+  "maintenance_and_signed_service_authorization_required": true,
+  "normal_source_start_stop_required": true,
+  "policy_hash": "sha256:db156bee273d87b0d2bb732a167775ee25deca9b2ce0580e151df1400c28db68",
+  "profile": "interactive-native-qualification-10",
+  "scope": "cit:native-group-a",
+  "source_owned_audited_profile_and_grant_delta_required": true,
+  "version": 1
+}

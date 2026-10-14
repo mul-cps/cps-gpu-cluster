@@ -1,0 +1,33 @@
+{
+  "ceiling": {
+    "cpu": "4",
+    "gpuMemoryGiB": 10,
+    "memory": "16Gi"
+  },
+  "course_id": "native-gpu-pilot-20261009",
+  "group_id": "native-pilot-group-a",
+  "members": [
+    "386feebb-df1a-4f3c-9ef9-6d9c026d5aea",
+    "d1fb4e43-64ec-4ac5-914f-e9cd39ad1c62"
+  ],
+  "namespace": "cit-jhub",
+  "owner": "citnativegroupa",
+  "pod": "jupyter-citnativegroupa--rtc",
+  "policy_hash": "sha256:db156bee273d87b0d2bb732a167775ee25deca9b2ce0580e151df1400c28db68",
+  "principal": "workspace:cit:native-group-a",
+  "profiles": [
+    "interactive-native-qualification-10"
+  ],
+  "server": "rtc",
+  "storage": {
+    "group_hash": "0f44210436beb2ced30aca63ba08db3b15716a197318bd6e58edb2ef29da21d0",
+    "namespace": "cit-jhub",
+    "path": "/mnt/persistent1/cps_persistent1_shared/compute/cit/0f44210436beb2ced30aca63ba08db3b15716a197318bd6e58edb2ef29da21d0",
+    "pv": "cps-workspace-0f44210436beb2ced30aca63ba08db3b15716a19",
+    "pvc": "cps-workspace-0f44210436beb2ced30aca63ba08db3b15716a19",
+    "readonly_mounts": [],
+    "storage_version": 1
+  },
+  "term_id": "qualification-20261009",
+  "workspace": "native-group-a"
+}

@@ -1,0 +1,89 @@
+{
+  "api": {
+    "audience": "REQUIRED_ACTUAL_APISERVER_ACCEPTED_AUDIENCE",
+    "caFile": "/var/run/cps-kai-api/ca.crt",
+    "origin": "https://kubernetes.default.svc",
+    "serviceAccountUID": "24078fd1-30f4-4f3c-9ed4-106f11817e60",
+    "tokenFile": "/var/run/cps-kai-api/token"
+  },
+  "audience": "cps-native-kai-qualification-v1",
+  "custodyPath": "/data/native-kai/private/custody.sqlite",
+  "enabled": true,
+  "epoch": {
+    "nodeAcknowledgment": {
+      "name": "cps-native-kai-epoch-node",
+      "namespace": "cps-native-system",
+      "uid": "REQUIRED_CREATED_EPOCH_ACK_UID"
+    },
+    "nodeProcess": {
+      "container": "node-agent",
+      "image": "ghcr.io/mul-cps/cps-compute:qualification-native-node-980408a@sha256:5079458fe0fcb3c11231b21f1bbc1f4c12ad3ac578799932aa0bc9f46d5510c7",
+      "kind": "Deployment",
+      "name": "cps-native-node-agent",
+      "namespace": "cps-native-system",
+      "service_account": "cps-native-node-agent",
+      "uid": "03e6bf5e-39ab-4c4a-b73f-1d6cf0ee8076"
+    },
+    "policyPath": "/var/run/cps-kai-pilot/policy.json",
+    "qualificationPath": "REQUIRED_REVIEWED_ATTESTED_OPERATOR_NODE_EPOCH_CONTRACT",
+    "ttlSeconds": 30
+  },
+  "reservationTemplate": {
+    "appLabel": "kai-resource-reservation",
+    "containerResources": {
+      "limits": {
+        "nvidia.com/gpu": "1"
+      },
+      "requests": {
+        "nvidia.com/gpu": "1"
+      }
+    },
+    "containerSecurityContext": {
+      "allowPrivilegeEscalation": false,
+      "capabilities": {
+        "drop": [
+          "all"
+        ]
+      },
+      "runAsNonRoot": true,
+      "runAsUser": 10000
+    },
+    "image": "ghcr.io/kai-scheduler/kai-scheduler/resourcereservation@sha256:f476965d65e49059da53b3999494a33814a45408111d12010086acfadc0131d3",
+    "namespace": "kai-resource-reservation",
+    "podSecurityContext": {},
+    "runtimeClassName": "nvidia",
+    "serviceAccount": "kai-resource-reservation"
+  },
+  "runtime": {
+    "readonlyNfsMounts": [],
+    "writableMountPaths": [
+      "/workspace"
+    ],
+    "writablePvcClaims": [
+      "cps-workspace-0f44210436beb2ced30aca63ba08db3b15716a19"
+    ]
+  },
+  "service_rules": [
+    {
+      "actor": "system:serviceaccount:kai-scheduler:binder",
+      "role": "binder",
+      "uid": "0ed4f47d-dc7f-4136-9174-6744f03f3d35"
+    },
+    {
+      "actor": "system:serviceaccount:cit-jhub:hub",
+      "central_actor": "REQUIRED_EXISTING_CIT_CENTRAL_ACTOR",
+      "role": "hub",
+      "source": "cit",
+      "uid": "1d488626-fb46-4633-99b0-903bcde4c76f"
+    }
+  ],
+  "settings": {
+    "authority_namespace": "cps-native-system",
+    "binder_actor": "system:serviceaccount:kai-scheduler:binder",
+    "coordinator_actor": "system:serviceaccount:cps-compute:cps-compute-controller",
+    "fence_seconds": 30,
+    "gpu_memory_mib": 40960,
+    "queue": "cps-interactive"
+  },
+  "version": 1
+}

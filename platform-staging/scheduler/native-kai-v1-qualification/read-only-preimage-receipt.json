@@ -1,0 +1,727 @@
+{
+  "captures": {
+    "all-four-ack-before.json": "f9203152c4b5d6f9ec6c5b88fb17caaa35b3f4dc4d5e3bbe9de54891bd2eeeef",
+    "config-metadata.json": "cf2095805aecb606e50a62b941cc419b67576225c9c345410382d5a280294c95",
+    "deployments.json": "388d521dca5609cb8276e83f4e12a75d987080fee9de621f251eea57f574e6e6",
+    "epoch-current-refs.json": "1bd5026eab4b1ba5a39daf26f6f8a5508a6d8d965091e3355e161224b15a1295",
+    "node-driver-epoch.json": "d87e35e76fa5a15ee400dfc64d766909e5cd4ba2f8f7b09546304894e6ba7040",
+    "node.json": "a10fb70592a43535694f16e56103f8e930ffa34097235c6bf646021f7476d2f3",
+    "publisher-declarations-before.json": "9b7c0b939983b10673a1829240faf472e58da49c2de79c3dca65aee6afb65a97",
+    "rbac-preimage.json": "2082e96e8933656e0f7828f5fbde998d515a895d63589eec401705711fce6f56",
+    "running-image-identities.json": "9d090a59e6e3df0d1f9c16ca4ae688ac13e0b9119527c16440f997734a63fc48",
+    "runtime-routing-metadata.json": "483d3c66142b0f09116d3d8ae7133d32bc63009b1e67bb177a0eaaf15639275e",
+    "service-accounts.json": "fa317d79602509217551a19db08c0fe1eeb4399869982089e4dd3f241cabd12b"
+  },
+  "current_images": [
+    {
+      "configMaps": [
+        "hub",
+        "cps-native-hub-cpu-v2-cit-d48f6553ed03",
+        "cps-native-approvals-a82c95c813e61314",
+        "cps-native-approval-reference-2a5245e13fdf77da",
+        "cps-native-approval-publisher-3995b69e7f938945"
+      ],
+      "containers": [
+        {
+          "args": [
+            "jupyterhub",
+            "--config",
+            "/usr/local/etc/jupyterhub/jupyterhub_config.py"
+          ],
+          "command": [],
+          "configEnv": [],
+          "image": "ghcr.io/mul-cps/cps-compute@sha256:145bfde0bc7848ed3a2dde77de7909638a7069d08168aa2fd90f730d3360eb7e",
+          "name": "hub"
+        }
+      ],
+      "generation": 65,
+      "name": "hub",
+      "namespace": "cit-jhub",
+      "observedGeneration": 65,
+      "readyReplicas": 1,
+      "replicas": 1,
+      "resourceVersion": "368609961",
+      "secretNames": [
+        "hub",
+        "jupyterhub-secrets"
+      ],
+      "serviceAccountName": "hub",
+      "uid": "dd90f866-47d3-4b9f-ba41-b4ebf8cb2b1e"
+    },
+    {
+      "configMaps": [],
+      "containers": [
+        {
+          "args": [],
+          "command": [
+            "python",
+            "-m",
+            "cps_compute.artifact_downloads"
+          ],
+          "configEnv": [],
+          "image": "ghcr.io/mul-cps/cps-compute@sha256:79e933dcf6a042aa9966aec5de9ad4050e8a328254efa6df44e990613838b734",
+          "name": "downloads"
+        }
+      ],
+      "generation": 7,
+      "name": "argo-artifact-downloads",
+      "namespace": "cps-argo",
+      "observedGeneration": 7,
+      "readyReplicas": 1,
+      "replicas": 1,
+      "resourceVersion": "362056118",
+      "secretNames": [
+        "argo-ui-upstream-ca"
+      ],
+      "serviceAccountName": "argo-artifact-reader",
+      "uid": "6980833f-7cd0-4e07-a8be-5c5a6a6a889f"
+    },
+    {
+      "configMaps": [
+        "cit-admin-config",
+        "compute-policy",
+        "cps-compute-gateway-ca",
+        "cps-platform-status"
+      ],
+      "containers": [
+        {
+          "args": [
+            "--config=/config/config.py"
+          ],
+          "command": [
+            "python",
+            "-m",
+            "e2x_course_hub.course_service.app"
+          ],
+          "configEnv": [],
+          "image": "ghcr.io/mul-cps/e2x-course-hub@sha256:8d86a5bc0859c2dfb6b65b4e9106531fe231e667b605f2621785a245327f69b8",
+          "name": "console"
+        }
+      ],
+      "generation": 57,
+      "name": "cit-admin",
+      "namespace": "cps-compute",
+      "observedGeneration": 57,
+      "readyReplicas": 1,
+      "replicas": 1,
+      "resourceVersion": "368614092",
+      "secretNames": [],
+      "serviceAccountName": "default",
+      "uid": "54466777-ece9-4d63-bcd8-8156caba55af"
+    },
+    {
+      "configMaps": [
+        "cps-personal-argo-upstream-ca"
+      ],
+      "containers": [
+        {
+          "args": [
+            "--host",
+            "0.0.0.0",
+            "--port",
+            "8080"
+          ],
+          "command": [
+            "python",
+            "-m",
+            "e2x_course_hub.cps.argo_app"
+          ],
+          "configEnv": [],
+          "image": "ghcr.io/mul-cps/e2x-course-hub@sha256:7e1509969062bc3b0855671c12f181548494cb6095669b949e0426a5e74c2b2e",
+          "name": "argo-ui"
+        }
+      ],
+      "generation": 3,
+      "name": "cit-argo-ui",
+      "namespace": "cps-compute",
+      "observedGeneration": 3,
+      "readyReplicas": 1,
+      "replicas": 1,
+      "resourceVersion": "367043588",
+      "secretNames": [],
+      "serviceAccountName": "default",
+      "uid": "f12deafb-3df5-4f5a-a896-05995c8da901"
+    },
+    {
+      "configMaps": [
+        "compute-policy",
+        "cps-compute-gateway-ca",
+        "cps-native-approvals-a82c95c813e61314",
+        "cps-native-approval-reference-7de11d8bf45f1c9a",
+        "cps-native-approval-publisher-1444ce8eecf8f0ed"
+      ],
+      "containers": [
+        {
+          "args": [],
+          "command": [
+            "uvicorn",
+            "cps_compute.runtime:create_runtime",
+            "--factory",
+            "--workers",
+            "1",
+            "--host",
+            "0.0.0.0",
+            "--port",
+            "8000",
+            "--ssl-keyfile",
+            "/tls/tls.key",
+            "--ssl-certfile",
+            "/tls/tls.crt"
+          ],
+          "configEnv": [
+            {
+              "name": "CPS_COMPUTE_CONFIG",
+              "value": "/config/runtime.json"
+            }
+          ],
+          "image": "ghcr.io/mul-cps/cps-compute@sha256:440711b2bb00151f8625e9df54c97e7ed4d137ca246453aae9ad7524d6681c3d",
+          "name": "gateway"
+        },
+        {
+          "args": [
+            "--config",
+            "/capture-private/server/config.json"
+          ],
+          "command": [
+            "python",
+            "-m",
+            "cps_compute.native_group_capture_server"
+          ],
+          "configEnv": [],
+          "image": "ghcr.io/mul-cps/cps-compute@sha256:042b8b60c0bbdfd2c4506ddf8007677016ef5d278ad5720d7d6b7ac41d136b1b",
+          "name": "approval-capture"
+        }
+      ],
+      "generation": 65,
+      "name": "compute-gateway",
+      "namespace": "cps-compute",
+      "observedGeneration": 65,
+      "readyReplicas": 1,
+      "replicas": 1,
+      "resourceVersion": "368609860",
+      "secretNames": [
+        "cps-compute-runtime",
+        "cps-compute-gateway-tls",
+        "cps-workspace-control-bridge",
+        "cps-argo-ui-reader",
+        "cps-native-approval-capture-input"
+      ],
+      "serviceAccountName": "cps-compute-controller",
+      "uid": "f5f9b266-433d-4825-83de-d51e31c71648"
+    },
+    {
+      "configMaps": [
+        "cps-admin-config",
+        "compute-policy",
+        "cps-compute-gateway-ca",
+        "cps-platform-status"
+      ],
+      "containers": [
+        {
+          "args": [
+            "--config=/config/config.py"
+          ],
+          "command": [
+            "python",
+            "-m",
+            "e2x_course_hub.course_service.app"
+          ],
+          "configEnv": [],
+          "image": "ghcr.io/mul-cps/e2x-course-hub@sha256:8d86a5bc0859c2dfb6b65b4e9106531fe231e667b605f2621785a245327f69b8",
+          "name": "console"
+        }
+      ],
+      "generation": 57,
+      "name": "cps-admin",
+      "namespace": "cps-compute",
+      "observedGeneration": 57,
+      "readyReplicas": 1,
+      "replicas": 1,
+      "resourceVersion": "368613616",
+      "secretNames": [],
+      "serviceAccountName": "default",
+      "uid": "cea488be-b5c5-481f-b41d-169d22f56f33"
+    },
+    {
+      "configMaps": [
+        "cps-personal-argo-upstream-ca"
+      ],
+      "containers": [
+        {
+          "args": [
+            "--host",
+            "0.0.0.0",
+            "--port",
+            "8080"
+          ],
+          "command": [
+            "python",
+            "-m",
+            "e2x_course_hub.cps.argo_app"
+          ],
+          "configEnv": [],
+          "image": "ghcr.io/mul-cps/e2x-course-hub@sha256:7e1509969062bc3b0855671c12f181548494cb6095669b949e0426a5e74c2b2e",
+          "name": "argo-ui"
+        }
+      ],
+      "generation": 3,
+      "name": "cps-argo-ui",
+      "namespace": "cps-compute",
+      "observedGeneration": 3,
+      "readyReplicas": 1,
+      "replicas": 1,
+      "resourceVersion": "367043586",
+      "secretNames": [],
+      "serviceAccountName": "default",
+      "uid": "1186bdd0-7aba-4293-84a1-ad82f0c4bf93"
+    },
+    {
+      "configMaps": [],
+      "containers": [
+        {
+          "args": [
+            "--run",
+            "--config",
+            "/inputs/delivery/config.json",
+            "--state-dir",
+            "/journal/delivery",
+            "--capture-command",
+            "/inputs/delivery/source-command.json",
+            "--epoch-command",
+            "/inputs/delivery/epoch-command.json",
+            "--context",
+            "incluster"
+          ],
+          "command": [
+            "python",
+            "/opt/cps-native-delivery/native_group_approval_delivery.py"
+          ],
+          "configEnv": [],
+          "image": "ghcr.io/mul-cps/cps-compute@sha256:9cd73355e7f46e586516daf4e2c982a841f865c51c511de740fc45c67d5baaac",
+          "name": "delivery"
+        }
+      ],
+      "generation": 17,
+      "name": "cps-native-approval-delivery",
+      "namespace": "cps-compute",
+      "observedGeneration": 17,
+      "readyReplicas": 1,
+      "replicas": 1,
+      "resourceVersion": "368610817",
+      "secretNames": [
+        "cps-native-delivery-input-hub-145bfde0"
+      ],
+      "serviceAccountName": "cps-native-approval-delivery",
+      "uid": "7e6ffd5e-c598-435f-875b-f9bccb03b4bf"
+    },
+    {
+      "configMaps": [
+        "reviewed-code-r2",
+        "reviewed-quota-source",
+        "empty-registry"
+      ],
+      "containers": [
+        {
+          "args": [
+            "--registry=/registry/registry.json",
+            "--tls-cert=/tls/tls.crt",
+            "--tls-key=/tls/tls.key",
+            "--api-server=https://kubernetes.default.svc",
+            "--decision-log"
+          ],
+          "command": [
+            "python",
+            "-B",
+            "/qualification/dynamic-coordination/service.py"
+          ],
+          "configEnv": [],
+          "image": "ghcr.io/mul-cps/cps-compute@sha256:627f093c3c96038c7ecd9e9b99f0138198c23c9460cabb7bd11b19e94f465096",
+          "name": "webhook"
+        }
+      ],
+      "generation": 3,
+      "name": "generation-fence",
+      "namespace": "cps-dynamic-coordination-live-20261008",
+      "observedGeneration": 3,
+      "readyReplicas": 0,
+      "replicas": 0,
+      "resourceVersion": "362000988",
+      "secretNames": [
+        "generation-fence-tls"
+      ],
+      "serviceAccountName": "generation-fence",
+      "uid": "b95150fe-3eae-4685-b716-5c6785d3fe76"
+    },
+    {
+      "configMaps": [
+        "cps-native-node-code-458e77184d1a5c56",
+        "cps-native-node-qualification-c2ae3af20952ef1f",
+        "cps-native-approvals-a82c95c813e61314",
+        "cps-native-approval-reference-3e4ad197d79a1f32",
+        "cps-native-approval-bootstrap-e37142645ccb04fa"
+      ],
+      "containers": [
+        {
+          "args": [
+            "--execute",
+            "--config",
+            "/config/config.json",
+            "--bundle",
+            "/opt/native",
+            "--iterations",
+            "10000",
+            "--interval",
+            "2",
+            "--crictl",
+            "/host/var/lib/rancher/k3s/data/65415f7708224bbfc7865f032e84da4a5123a3acebef70c8ee40fa991aa68555/bin/crictl",
+            "--approval-reference",
+            "/var/run/cps-native-approvals/reference.json",
+            "--approval-template",
+            "/var/run/cps-native-approvals/template.json",
+            "--approval-process",
+            "/var/run/cps-native-approvals/process.json",
+            "--approval-acknowledgment",
+            "/var/run/cps-native-approvals/acknowledgment.json"
+          ],
+          "command": [
+            "python3",
+            "/opt/native/node_agent.py"
+          ],
+          "configEnv": [],
+          "image": "ghcr.io/mul-cps/cps-compute:qualification-native-node-980408a@sha256:5079458fe0fcb3c11231b21f1bbc1f4c12ad3ac578799932aa0bc9f46d5510c7",
+          "name": "node-agent"
+        }
+      ],
+      "generation": 55,
+      "name": "cps-native-node-agent",
+      "namespace": "cps-native-system",
+      "observedGeneration": 55,
+      "readyReplicas": 1,
+      "replicas": 1,
+      "resourceVersion": "368271196",
+      "secretNames": [],
+      "serviceAccountName": "cps-native-node-agent",
+      "uid": "03e6bf5e-39ab-4c4a-b73f-1d6cf0ee8076"
+    },
+    {
+      "configMaps": [
+        "scratch-compute-ca"
+      ],
+      "containers": [
+        {
+          "args": [
+            "--host",
+            "0.0.0.0",
+            "--port",
+            "8080"
+          ],
+          "command": [
+            "python",
+            "-m",
+            "e2x_course_hub.cps.argo_app"
+          ],
+          "configEnv": [],
+          "image": "ghcr.io/mul-cps/e2x-course-hub:qualification-native-assets-373dc09@sha256:c4df863a35a46d598cb319508b7d4e45caae3d1f9b71e24b2f1692c65e5f07bc",
+          "name": "argo-ui"
+        }
+      ],
+      "generation": 3,
+      "name": "cps-argo-ui",
+      "namespace": "cps-personal-argo-qualification-20261008",
+      "observedGeneration": 3,
+      "readyReplicas": 1,
+      "replicas": 1,
+      "resourceVersion": "361860410",
+      "secretNames": [],
+      "serviceAccountName": "default",
+      "uid": "9b1bb8b8-80c8-464f-a7e3-5fc177aa528d"
+    },
+    {
+      "configMaps": [
+        "hub",
+        "harica-ca",
+        "cps-native-hub-cpu-v2-cps-d48f6553ed03",
+        "cps-native-approvals-a82c95c813e61314",
+        "cps-native-approval-reference-8779115d62bc0d28",
+        "cps-native-approval-publisher-57fa382804c963bc"
+      ],
+      "containers": [
+        {
+          "args": [
+            "jupyterhub",
+            "--config",
+            "/usr/local/etc/jupyterhub/jupyterhub_config.py",
+            "--upgrade-db"
+          ],
+          "command": [],
+          "configEnv": [],
+          "image": "ghcr.io/mul-cps/cps-compute@sha256:145bfde0bc7848ed3a2dde77de7909638a7069d08168aa2fd90f730d3360eb7e",
+          "name": "hub"
+        }
+      ],
+      "generation": 110,
+      "name": "hub",
+      "namespace": "jupyterhub",
+      "observedGeneration": 110,
+      "readyReplicas": 1,
+      "replicas": 1,
+      "resourceVersion": "368610066",
+      "secretNames": [
+        "hub"
+      ],
+      "serviceAccountName": "hub",
+      "uid": "02fb8421-d323-4636-b006-2490cd6f5b63"
+    },
+    {
+      "configMaps": [],
+      "containers": [
+        {
+          "args": [
+            "--scheduler-name",
+            "kai-scheduler",
+            "--webhook-addr",
+            "9443",
+            "--health-probe-bind-address",
+            ":8081",
+            "--metrics-bind-address",
+            ":8080",
+            "--gpu-sharing-enabled=true",
+            "--hami-core-enabled=true",
+            "--gpu-fraction-runtime-class-name",
+            "nvidia",
+            "--gpu-pod-runtime-class-name",
+            "nvidia",
+            "--qps",
+            "20",
+            "--burst",
+            "100"
+          ],
+          "command": [],
+          "configEnv": [],
+          "image": "ghcr.io/kai-scheduler/kai-scheduler/admission:v0.18.1",
+          "name": "admission"
+        }
+      ],
+      "generation": 156,
+      "name": "admission",
+      "namespace": "kai-scheduler",
+      "observedGeneration": 156,
+      "readyReplicas": 1,
+      "replicas": 1,
+      "resourceVersion": "358762513",
+      "secretNames": [
+        "kai-admission-webhook-tls-secret"
+      ],
+      "serviceAccountName": "admission",
+      "uid": "a9663d18-8628-4a77-b729-d29010354968"
+    },
+    {
+      "configMaps": [],
+      "containers": [
+        {
+          "args": [
+            "--scheduler-name",
+            "kai-scheduler",
+            "--resource-reservation-namespace",
+            "kai-resource-reservation",
+            "--resource-reservation-service-account",
+            "kai-resource-reservation",
+            "--resource-reservation-app-label",
+            "kai-resource-reservation",
+            "--resource-reservation-pod-image",
+            "ghcr.io/kai-scheduler/kai-scheduler/resourcereservation:v0.18.1",
+            "--scale-adjust-namespace",
+            "kai-scale-adjust",
+            "--health-probe-bind-address",
+            ":8081",
+            "--metrics-bind-address",
+            ":8080",
+            "--plugins",
+            "{\"dynamicresources\":{\"enabled\":true,\"priority\":200,\"arguments\":{\"bindTimeoutSeconds\":\"120\"}},\"gpusharing\":{\"enabled\":true,\"priority\":100,\"arguments\":{\"cdiEnabled\":\"true\",\"nriPluginEnabled\":\"false\"}},\"hamicore\":{\"enabled\":true,\"priority\":50},\"nvfractions\":{\"enabled\":false,\"priority\":90,\"arguments\":{\"cdiEnabled\":\"true\"}},\"volumebinding\":{\"enabled\":true,\"priority\":300,\"arguments\":{\"bindTimeoutSeconds\":\"120\"}}}",
+            "--qps",
+            "20",
+            "--burst",
+            "100",
+            "--resource-reservation-container-security-context",
+            "{\"capabilities\":{\"drop\":[\"all\"]},\"runAsUser\":10000,\"runAsNonRoot\":true,\"allowPrivilegeEscalation\":false}"
+          ],
+          "command": [],
+          "configEnv": [],
+          "image": "ghcr.io/kai-scheduler/kai-scheduler/binder:v0.18.1",
+          "name": "binder"
+        }
+      ],
+      "generation": 233,
+      "name": "binder",
+      "namespace": "kai-scheduler",
+      "observedGeneration": 233,
+      "readyReplicas": 1,
+      "replicas": 1,
+      "resourceVersion": "363810155",
+      "secretNames": [],
+      "serviceAccountName": "binder",
+      "uid": "dc2e1960-6d4f-4038-89e8-5fe66e84651d"
+    },
+    {
+      "configMaps": [],
+      "containers": [
+        {
+          "args": [
+            "--metrics-bind-address=:8080",
+            "--health-probe-bind-address=:8081",
+            "--leader-elect=false",
+            "--qps=50",
+            "--burst=300",
+            "--namespace=kai-scheduler"
+          ],
+          "command": [],
+          "configEnv": [],
+          "image": "ghcr.io/kai-scheduler/kai-scheduler/operator:v0.18.1",
+          "name": "operator"
+        }
+      ],
+      "generation": 11,
+      "name": "kai-operator",
+      "namespace": "kai-scheduler",
+      "observedGeneration": 11,
+      "readyReplicas": 1,
+      "replicas": 1,
+      "resourceVersion": "363810952",
+      "secretNames": [],
+      "serviceAccountName": "kai-operator",
+      "uid": "5f9fee16-1340-47ce-be6c-2b410c2171a5"
+    },
+    {
+      "configMaps": [
+        "kai-scheduler-default"
+      ],
+      "containers": [
+        {
+          "args": [
+            "--scheduler-conf=/etc/config/config.yaml",
+            "--scheduler-name=kai-scheduler",
+            "--namespace=kai-scheduler",
+            "--nodepool-label-key=kai.scheduler/node-pool",
+            "--partition-label-value=",
+            "--resource-reservation-app-label=kai-resource-reservation",
+            "--queue-label-key=kai.scheduler/queue",
+            "--gpu-sharing-mode=HamiCore",
+            "--listen-address=:8080"
+          ],
+          "command": [],
+          "configEnv": [],
+          "image": "ghcr.io/kai-scheduler/kai-scheduler/scheduler:v0.18.1",
+          "name": "kai-scheduler-default"
+        }
+      ],
+      "generation": 1222,
+      "name": "kai-scheduler-default",
+      "namespace": "kai-scheduler",
+      "observedGeneration": 1222,
+      "readyReplicas": 1,
+      "replicas": 1,
+      "resourceVersion": "363810288",
+      "secretNames": [],
+      "serviceAccountName": "scheduler",
+      "uid": "cbd81ddd-2fbc-4f1e-a2fe-9892985eac78"
+    },
+    {
+      "configMaps": [],
+      "containers": [
+        {
+          "args": [
+            "--scheduler-name",
+            "kai-scheduler",
+            "--queue-label-key",
+            "kai.scheduler/queue",
+            "--nodepool-label-key",
+            "kai.scheduler/node-pool",
+            "--generic-karta-fallback=true"
+          ],
+          "command": [],
+          "configEnv": [],
+          "image": "ghcr.io/kai-scheduler/kai-scheduler/podgrouper:v0.18.1",
+          "name": "pod-grouper"
+        }
+      ],
+      "generation": 137,
+      "name": "pod-grouper",
+      "namespace": "kai-scheduler",
+      "observedGeneration": 137,
+      "readyReplicas": 1,
+      "replicas": 1,
+      "resourceVersion": "363810396",
+      "secretNames": [],
+      "serviceAccountName": "pod-grouper",
+      "uid": "905c1ae3-2a46-4269-99e8-14b3dbdcdac8"
+    },
+    {
+      "configMaps": [],
+      "containers": [
+        {
+          "args": [
+            "--scheduler-name",
+            "kai-scheduler",
+            "--qps",
+            "20",
+            "--burst",
+            "100"
+          ],
+          "command": [],
+          "configEnv": [],
+          "image": "ghcr.io/kai-scheduler/kai-scheduler/podgroupcontroller:v0.18.1",
+          "name": "podgroup-controller"
+        }
+      ],
+      "generation": 65,
+      "name": "podgroup-controller",
+      "namespace": "kai-scheduler",
+      "observedGeneration": 65,
+      "readyReplicas": 1,
+      "replicas": 1,
+      "resourceVersion": "363810799",
+      "secretNames": [
+        "podgroup-webhook-tls-secret"
+      ],
+      "serviceAccountName": "podgroup-controller",
+      "uid": "de171ef0-5b08-4627-8a8a-d7a8eb4211b9"
+    },
+    {
+      "configMaps": [],
+      "containers": [
+        {
+          "args": [
+            "--metrics-listen-address",
+            ":8080",
+            "--qps",
+            "20",
+            "--burst",
+            "100"
+          ],
+          "command": [],
+          "configEnv": [],
+          "image": "ghcr.io/kai-scheduler/kai-scheduler/queuecontroller:v0.18.1",
+          "name": "queue-controller"
+        }
+      ],
+      "generation": 156,
+      "name": "queue-controller",
+      "namespace": "kai-scheduler",
+      "observedGeneration": 156,
+      "readyReplicas": 1,
+      "replicas": 1,
+      "resourceVersion": "363810160",
+      "secretNames": [
+        "queue-webhook-tls-secret"
+      ],
+      "serviceAccountName": "queue-controller",
+      "uid": "a1bdcfe2-4742-4b60-8e89-c92f063280b9"
+    }
+  ],
+  "node_execs": false,
+  "private_directory": "/home/bjoern/.local/state/cps-full-project-20261013/kai-v1-live-qualification-preparation-20261014",
+  "scope": "CIT native-group-a only",
+  "secrets_read": false,
+  "version": 1,
+  "writes": false
+}
