@@ -1,0 +1,3 @@
+ok  	github.com/kai-scheduler/KAI-scheduler/pkg/binder/binding	0.096s
+ok  	github.com/kai-scheduler/KAI-scheduler/pkg/binder/binding/resourcereservation	0.234s
+ok  	github.com/kai-scheduler/KAI-scheduler/pkg/binder/controllers	0.096s

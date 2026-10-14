@@ -1,0 +1,54 @@
+{
+  "dependency_diff": [],
+  "files": [
+    {
+      "original_sha256": "f7828478d782299e1636182d593ccced4e79f0dd03bc06b5d1e7d6b50e884a4b",
+      "patched_bytes": 6069,
+      "patched_sha256": "2d334a4dbf0142907ffe002332db539758256dd5cfeabaa71e1ee1bec86e9dba",
+      "path": "pkg/binder/binding/binder.go"
+    },
+    {
+      "original_sha256": null,
+      "patched_bytes": 12233,
+      "patched_sha256": "81ea148d21b918889b55626f8da3a75502d2dd83d0d051521b6e9ccbff3f1123",
+      "path": "pkg/binder/binding/native_terminal.go"
+    },
+    {
+      "original_sha256": null,
+      "patched_bytes": 15476,
+      "patched_sha256": "d75a9135f7b8afc045ea3ed8170a501f54ae8c4ee92e91bcbfd2f3ec50e84eb1",
+      "path": "pkg/binder/binding/native_terminal_test.go"
+    },
+    {
+      "original_sha256": null,
+      "patched_bytes": 3107,
+      "patched_sha256": "b46fa21e46499e3324e5cb1586f3324ebd08f57e6da1777e136ae9b64bb7117a",
+      "path": "pkg/binder/binding/resourcereservation/native_custody_test.go"
+    },
+    {
+      "original_sha256": "b66b864330fc271a309db0dc3ac59ae81505356db372c2aa7d64eabf55d5a4e7",
+      "patched_bytes": 23782,
+      "patched_sha256": "76a8645493ef508edf7cac01a89cecc16c2c52a9ad7a23b61768f9fc9844be9a",
+      "path": "pkg/binder/binding/resourcereservation/resource_reservation.go"
+    },
+    {
+      "original_sha256": "5cd40ad9aee6ee762322a385a7e3f4502fce1698d9168ba89e2a3aa7d20099d6",
+      "patched_bytes": 11580,
+      "patched_sha256": "b02ca89df49c6c622f6799de05e52935d507b4a1eb881e3c2c7ab6f0d5b396f1",
+      "path": "pkg/binder/controllers/bindrequest_controller.go"
+    },
+    {
+      "original_sha256": null,
+      "patched_bytes": 3471,
+      "patched_sha256": "44828f0338942cb67d515e5e289da5dc4fa27577a945aa09ccfac911935f812b",
+      "path": "pkg/binder/controllers/native_custody_test.go"
+    }
+  ],
+  "go_mod_sha256": "b5f815389a3bb0c88029095a83a9cabdfd7e55f9a3da7638e76c7dcebc39478e",
+  "go_sum_sha256": "30fc1facb3f4ede3658046e5e948f4bceea53354aa44c054737c54190c3ad583",
+  "go_version": "go1.26.8",
+  "patch_sha256": "fb8d6f990e6da23c6d4e947ebbce6250cc3cc083623cd95bad89680c443461d9",
+  "sdk_commit": "0451fd9cc9bcb5ba55b2d35c5aca84fc52f5fad3",
+  "upstream_commit": "bdf434e5e9201cccf4e05fad04d814363653f692",
+  "upstream_url": "https://github.com/kai-scheduler/KAI-Scheduler.git"
+}

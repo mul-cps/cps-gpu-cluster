@@ -1,0 +1,19 @@
+{
+  "all_affected_packages_passed": [
+    "./pkg/binder/binding",
+    "./pkg/binder/binding/resourcereservation",
+    "./pkg/binder/controllers"
+  ],
+  "binary_bytes": 98665924,
+  "binary_sha256": "6791b52af0ccd49f1df1be0164f60e169477dce452025aacf01cbb432dd98f3b",
+  "coordinator_installed": false,
+  "dependency_diff": [],
+  "independent_go_review": "pending; no slot available during this preparation",
+  "installed_cluster_or_gpu_evidence": false,
+  "live_operations": false,
+  "patch_sha256": "fb8d6f990e6da23c6d4e947ebbce6250cc3cc083623cd95bad89680c443461d9",
+  "red_test": "Original pinned upstream bound a marked Pod without coordinator/ACK; TestNativeTerminalRejectsWithoutCoordinator failed as expected.",
+  "route_qualified": false,
+  "sdk_contract_commit": "0451fd9cc9bcb5ba55b2d35c5aca84fc52f5fad3",
+  "upstream_commit": "bdf434e5e9201cccf4e05fad04d814363653f692"
+}
