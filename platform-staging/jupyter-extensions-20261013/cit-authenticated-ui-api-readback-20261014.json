@@ -1,0 +1,53 @@
+{
+  "actor": "akadmin",
+  "actualAdministratorVerified": true,
+  "actualOwningHubIdentityVerified": true,
+  "actualSourceAPIs": true,
+  "approvedWorkspaceGrantProfiles": [
+    "batch-cpu",
+    "interactive-cpu",
+    "interactive-shared-10"
+  ],
+  "availability": {
+    "approvedProfiles": [
+      "interactive-shared-10"
+    ],
+    "approvedWorkspaceCount": 1,
+    "checkedAt": "2026-10-14T09:24:23Z",
+    "state": "ready"
+  },
+  "browser": {
+    "actualPollingObserved": true,
+    "apiMutations": [],
+    "firstStatusReads": 1,
+    "laterStatusReads": 3,
+    "overviewAuthenticated": true,
+    "pageErrors": [],
+    "scopedGPUGrantChoiceVisible": true
+  },
+  "defaultGrantProfiles": [
+    "batch-cpu",
+    "interactive-cpu"
+  ],
+  "gatewayPersonalAPIStillRejectsUnlinkedIdentity": true,
+  "humanOAuthQualified": false,
+  "identityLinkageStillPending": true,
+  "kind": "authenticated-cit-admin-ui-and-api-readback",
+  "liveIdentityMutations": [],
+  "normalHTTPBoundedTokenIssuance": true,
+  "origin": "https://jhub.dshl.unileoben.ac.at",
+  "privateEvidenceSHA256": {
+    "actual-browser-read-receipt.json": "cd68ab173f47587cacfb5d372944d25c7ae840b33aeaa9b423b3ab970d23fa2f",
+    "actual-canonical-map.private.json": "8b359fbe25c4ad35cac738f5458cd2a97702ab629d6322f861396b6154c6f352",
+    "actual-overview.png": "11e41e670fc70593c53f4a30dc7a4d1e55108f989e4df2d5c1ee17a4b58fcf5c",
+    "actual-workspace-grant-dialog.png": "7255963d93c861d427bb4b2ee091270120ee839182327935cfde7c923915e8cb",
+    "bounded-token-issuance-receipt.json": "9008df3182b25fa01592111c53b4ee712ba05c678f7c05bdab397b246c9a03f3",
+    "provided-token-revocation-receipt.json": "f1f359f6080a4eb0a45054da3e5747b708dbdb527f971bab5bdc068a4c67ca44"
+  },
+  "productionQualified": false,
+  "schemaVersion": 1,
+  "sourceImage": "ghcr.io/mul-cps/e2x-course-hub@sha256:87a1c0b99331259199ff56d52b83c5bc5fcff1c05d0965a9f097138208ea1e61",
+  "suppliedTokenExactOwnerLookupReadOnly": true,
+  "suppliedTokenRevokedViaNormalHTTP": true,
+  "syntheticAPIs": false
+}

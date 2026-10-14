@@ -26,7 +26,7 @@ for the bounded live results of 2026-10-13 and their retained evidence.
 | --- | --- | --- |
 | Repository ownership and shared policy | Separate application/deployment responsibilities and shared policy implemented; compatibility branches retained | Integrate and promote one tested consumer matrix with its exact policy hash; account for Fleet's watched branches |
 | SDK, Hub and Lab packages | All 12 notebook OCI variants with the packaged PageConfig hook and refreshed Lab addon are published; integrated Hub/Gateway images passed installed-package tests and actual remote overlay checks. Both live Hubs run the earlier registered CPU adapter | Complete normal new-account lifecycle; adopt the qualified Hub and notebook packages through the controlled handover, then verify actual visitor authentication and live API refresh |
-| Both admin UI consoles | Both consoles run Source87a1 with visible-view API refresh; 66 synthetic-API browser tests passed, actual installed bytes match, and both SQLite databases/configuration/credentials are unchanged. The user confirmed a current CIT console login as `akadmin`; a fresh authenticated Hub read confirms administrator access, and two installed-client approval reads return ready in under 0.2 seconds | New-account HTTP lifecycle, CIT adoption and normal-user HTTP/API acceptance; the screenshot does not establish cross-Hub person linkage |
+| Both admin UI consoles | Both consoles run Source87a1 with visible-view API refresh; 66 synthetic-API browser tests passed and actual installed bytes match. Authenticated CIT `akadmin` API/browser checks now confirm real polling, zero page errors and the 10 GiB choice for its approved pilot workspace; supplied token revoked through normal HTTP | New-account HTTP lifecycle, reviewed CIT person linkage and ordinary-user API acceptance; API-token browser checks do not establish fresh human OAuth |
 | Identity and group ownership | Existing reviewed aliases retained; both CPS legacy neutral accounts have permanent ready provenance; explicit custody migration and exact QA repair passed; both Hubs restarted without changing the repaired or legitimate legacy roles | Complete CIT adoption, real login grant survival/expiry and scoped administration; cross-Hub allowance continuity |
 | Native GPU isolation | Controlled no-MIG 5/20 GiB history retained; current CPS pair passed distinct 5 GiB OOM/recovery with peer progress, IPC denial in both directions, positive controls, kernel witnesses, restart retirement, complete bounded MPS OOM/recovery and observer cleanup, and confirmed normal closure | Complete restart behavior and broader packing; current bounded pool is 5/10 GiB, not a normal 20 GiB or cross-Hub qualification |
 | Shared GPU reservations | Shared accounting implementation and reviewed qualification bindings exist | Actual simultaneous cross-Hub starts, all-member atomicity and partial-conflict rollback; prove permitted CPU sessions and independent batch execution; release only after confirmed stop |
@@ -235,6 +235,15 @@ The integrated Gateway and Hub publication is recorded at
 [`cps-compute` revision 04404d3](https://github.com/mul-cps/cps-compute/blob/04404d3/docker/qualification/integrated-consumer-20261014/publication-receipt.json).
 Those immutable artifacts have installed-package and remote byte evidence; they
 are not deployed runtime acceptance evidence.
+Actual authenticated CIT browser/API evidence is retained in
+`platform-staging/jupyter-extensions-20261013/cit-authenticated-ui-api-readback-20261014.json`.
+The owning `akadmin` token successfully read the admin API. A fresh headless
+browser rendered the real deployed console, observed another status poll, and
+showed `interactive-shared-10` after selecting its approved shared workspace.
+No browser API mutation or page error occurred. Unscoped grant choices remain
+CPU-only. The separate operator report was stale, while the live approval API
+was ready; these states must not be conflated. The account alias and shared
+Gateway/Hub canonical mappings still need the reviewed coordinated update.
 The separate KAI coordinator, signed-lease Hub glue and terminal-cleanup
 contracts passed **2,036 source tests** (3 existing fixture skips), **314
 installed-wheel tests**, and the pinned official KAI replay/build. The inert
