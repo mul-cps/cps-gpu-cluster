@@ -1,0 +1,39 @@
+{
+  "actual_remote_manifest_config_and_new_layer_bodies_verified": true,
+  "changed_hub_modules": [
+    "cps_compute_hub/hub.py"
+  ],
+  "core_modules_unchanged": 48,
+  "dependency_count_unchanged": 137,
+  "evidence_base": "private operator state cps-full-project-20261013",
+  "evidence_sha256": {
+    "cpu-startup-log-diagnostic-20261014/actual-owned-notebook-logs/007-current.private.stdout": "e7181af9504f21a1d59bbd0ca49dea356a36eec1e17082e73985b5a833f314ec",
+    "cpu-startup-log-diagnostic-20261014/actual-owned-notebook-logs/observer-result.json": "3afa05c3fdafb79fde3c6f08aa12e830bcbc6f6949816b7d11d7655a8a58d036",
+    "cpu-startup-log-diagnostic-20261014/cleanup-readonly-proof/cleanup-receipt.json": "07969ed55e72f7dd520cbb72dc56cb5d7a95e65d29ad235e34247492593b8ad4",
+    "hub-cpu-writable-bootstrap-20261014/qualification-receipt.json": "5ad2a5ae0ddfb2b5445d8fcaef1e5d0753928ca77f691b029bd7b3c786f37dd2",
+    "hub-cpu-writable-bootstrap-20261014/readonly-constructor-proof.json": "d8eb831aa0f0af0c452bdf42b3149dc8d1377f56d7147be4704942ef26f3d271",
+    "hub-cpu-writable-bootstrap-20261014/root-publication/remote-closure-receipt.json": "8abd2dcbbdf1b322aadf4e1af3131b35014d3ace782e179021b2fea086bca7f9"
+  },
+  "image": "ghcr.io/mul-cps/cps-compute@sha256:29b7b3e9a9af380ebeff8de06c2ab187f370acca7e52828a1c2b2f4001259973",
+  "installed_tests_passed": 187,
+  "kind": "published-neutral-cpu-bootstrap-hub-fix",
+  "live_crash_reproduced": "OSError 30: read-only /home/jovyan/.local/share/jupyter",
+  "live_hub_deployment_completed": false,
+  "normal_cpu_lifecycle_passed": false,
+  "observed_at": "2026-10-14T11:51:44.453630+00:00",
+  "other_hub_modules_unchanged": 13,
+  "production_qualified": false,
+  "qualified_base_image": "ghcr.io/mul-cps/cps-compute@sha256:dc67bf96db0f26bccb8a67e53ddee87e641111120c88d2d28c891a0552571235",
+  "registered_cpu_tests_passed": 25,
+  "runtime_environment_fix": {
+    "HOME": "/workspace",
+    "JUPYTER_CONFIG_DIR": "/workspace/.jupyter",
+    "JUPYTER_RUNTIME_DIR": "/workspace/.local/share/jupyter/runtime",
+    "XDG_CACHE_HOME": "/workspace/.cache"
+  },
+  "scope": "Registered CPU workspaces only; generic personal servers and native GPU workspaces retain existing environment behavior.",
+  "security_resources_and_mounts_unchanged": true,
+  "source_revision": "acb34b06e415a79aa031d78920988e500cd3426e",
+  "source_tests_passed": 2159,
+  "source_tests_skipped": 5
+}

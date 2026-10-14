@@ -253,6 +253,20 @@ remain unchanged. Fresh hardware zero, four-process acknowledgments and the
 new delivery journal passed. The actual handover receipt is
 `platform-staging/jupyter-extensions-20261013/gateway-storage-resume-handover-actual-20261014.json`.
 The normal CPU Start, Ready, NFS marker and Stop gate remains separate.
+The following normal CPU retry passed registration/provisioning and KAI
+placement, but the notebook repeatedly crashed. A bounded repeat captured
+the actual startup exception before automatic shutdown: Jupyter attempted to
+create `/home/jovyan/.local/share/jupyter` on the immutable filesystem.
+Both failed attempts have genuine stopped-state, reservation, token, Shares
+and original-window restoration proof.
+The packaged Hub fix at source `acb34b06` sets four trusted directory paths
+inside the writable workspace for registered CPU workspaces. Its immutable
+`29b7b3e` image passed 2,159 source and 187 installed tests, independent review,
+the actual readonly-image constructor regression and remote overlay readback.
+Generic personal servers, native GPU workspaces and security/resource/mount
+settings retain their existing behavior. Publication evidence is
+`platform-staging/jupyter-extensions-20261013/neutral-cpu-bootstrap-hub-fix-publication-20261014.json`.
+Paired-Hub adoption and the normal CPU Ready/NFS marker gate remain open.
 Actual authenticated CIT browser/API evidence is retained in
 `platform-staging/jupyter-extensions-20261013/cit-authenticated-ui-api-readback-20261014.json`.
 The owning `akadmin` token successfully read the admin API. A fresh headless
