@@ -25,7 +25,7 @@ for the bounded live results of 2026-10-13 and their retained evidence.
 | Gate | Verified state | Remaining completion evidence |
 | --- | --- | --- |
 | Repository ownership and shared policy | Separate application/deployment responsibilities and shared policy implemented; compatibility branches retained | Integrate and promote one tested consumer matrix with its exact policy hash; account for Fleet's watched branches |
-| SDK, Hub and Lab packages | All 12 notebook OCI variants were published with exact manifest/config/layer verification; both Hubs now run the registered CPU adapter with 158 installed-image tests, exact wheel modules and a completed scoped handover | Complete normal new-account lifecycle and adopt the newly qualified Lab refresh package in actual notebook consumers; promote one qualified consumer matrix |
+| SDK, Hub and Lab packages | All 12 notebook OCI variants with the packaged PageConfig hook and refreshed Lab addon are published; integrated Hub/Gateway images passed installed-package tests and actual remote overlay checks. Both live Hubs run the earlier registered CPU adapter | Complete normal new-account lifecycle; adopt the qualified Hub and notebook packages through the controlled handover, then verify actual visitor authentication and live API refresh |
 | Both admin UI consoles | Both consoles run Source87a1 with visible-view API refresh; 66 synthetic-API browser tests passed, actual installed bytes match, and both SQLite databases/configuration/credentials are unchanged. The user confirmed a current CIT console login as `akadmin`; a fresh authenticated Hub read confirms administrator access, and two installed-client approval reads return ready in under 0.2 seconds | New-account HTTP lifecycle, CIT adoption and normal-user HTTP/API acceptance; the screenshot does not establish cross-Hub person linkage |
 | Identity and group ownership | Existing reviewed aliases retained; both CPS legacy neutral accounts have permanent ready provenance; explicit custody migration and exact QA repair passed; both Hubs restarted without changing the repaired or legitimate legacy roles | Complete CIT adoption, real login grant survival/expiry and scoped administration; cross-Hub allowance continuity |
 | Native GPU isolation | Controlled no-MIG 5/20 GiB history retained; current CPS pair passed distinct 5 GiB OOM/recovery with peer progress, IPC denial in both directions, positive controls, kernel witnesses, restart retirement, complete bounded MPS OOM/recovery and observer cleanup, and confirmed normal closure | Complete restart behavior and broader packing; current bounded pool is 5/10 GiB, not a normal 20 GiB or cross-Hub qualification |
@@ -33,7 +33,7 @@ for the bounded live results of 2026-10-13 and their retained evidence.
 | Workspaces and local assignments | Local management, source-neutral reconciliation and RTC implementations exist | Two real visitors retaining their own identity, membership removal closing existing access, retained files and stopped-writer read-only archives |
 | Workflow gateway and admission | Source validation/ownership paths implemented; bounded CPS own-success/failure artifact/log bytes and foreign-versus-absent rejection passed; controller admission/RBAC checks passed | CIT normal-user own/foreign access, human authentication, token renewal and crafted workflow/admin bypass scenarios on the current release |
 | Notebook execution | Immutable runner/package/browser tests and bounded CPS selected-import/typed-parameter success/failure outputs passed | Complete current release/live coverage for saved snapshots, selected files, parameter cells, approved image digests and both owning Hubs |
-| GPU scheduling and packing | Stock KAI/HAMi components and controlled evidence exist; the combined coordinator/Hub release passed 2,080 source and installed-image tests with three known skips; activation remains disabled | Coordinator/binder deployment and post-Bind cap/CDI qualification; eight-A100 packing, teaching reclaim, protected sessions, 4/8-GPU JobSet retry and physical free-GPU telemetry |
+| GPU scheduling and packing | Stock KAI/HAMi components and controlled evidence exist; integrated Core/Hub source passed 2,151 tests with three known skips, plus separate installed Gateway/Hub suites. The packaged Node epoch image is published; activation remains disabled | Node package handover, coordinator/binder deployment and actual post-Bind cap/CDI qualification; eight-A100 packing, teaching reclaim, protected sessions, 4/8-GPU JobSet retry and physical free-GPU telemetry |
 | Startup and defragmentation | Acceptance executors and thresholds are defined; representative measurements pending | Pre-pulled CPS/CIT bursts: p95 <=180s and maximum <=300s; KAI/fallback comparison with free capacity >=95% and waits/start <=110% of baseline, protected sessions unaffected |
 | NFS and S3 artifacts | Existing storage preserved; accepted TLS relay path and owner-filtered artifact access work; ten owned-prefix 14/90-day retention cases passed against real S3 and Argo with least-privilege authentication | Real gateway-created notebook lifecycle, scheduled cleanup and off-host recovery; new CIT filer requires its actual endpoint/export |
 | Monitoring | All four deployed dashboards rendered through actual Grafana with seven panels each and no browser page errors; unavailable physical/cap data was visibly marked | Promote and verify the newer dashboard definitions; complete eight-GPU inventory, physical placement/free-capacity and cap/protection telemetry, timing data and alert notification delivery |
@@ -87,14 +87,24 @@ The tested neutral-template fix now runs in both Hubs. Its subsequent normal
 HTTP retry stopped earlier at a gateway storage-provisioning 409 and did not
 reach Hub Start. Normal Stop again confirmed the workspace stopped with no
 servers or Shares; exact owned grant/membership windows and groups were restored
-through the API. The provisioning conflict is being diagnosed. The CPU lifecycle
-gate remains open and is separate from the passed GPU pair. The admin and Lab APIs authenticate the actual browser visitor;
+through the API. One subsequent normal Start returned 409 at central workspace
+registration before a new storage operation or Pod. The existing provisioning
+fence rejects even identical registration, preventing the trusted provisioning
+resume path from being reached. Its minimal recovery fix is under test; the
+fence has not been forcibly reset. Normal Stop, Pod absence, original windows,
+memberships and grants were verified, and the retry's scoped tokens were revoked.
+The CPU lifecycle gate remains open and is separate from the passed GPU pair.
+See `platform-staging/jupyter-extensions-20261013/registered-cpu-v8-attempt-20261014.json`.
+The admin and Lab APIs authenticate the actual browser visitor;
 visible admin records now refresh after each 20-second interval, with stale data
 marked and drafts preserved. The Lab package passed 30 Node tests, four
 wheel/sdist tests, actual Lumino polling/lifecycle regressions and all seven
 views in installed JupyterLab 4.6.4. Those browser APIs were synthetic. The active
 trusted CPU notebook image has neither compute package nor the Lab addon;
-trusted CPS/CIT PageConfig injection and notebook consumer adoption remain open.
+The packaged CPS/CIT PageConfig hook now passes actual installed Jupyter Server
+HTML tests across all 12 image variants; Hub/Gateway packages and the notebook
+images are published. Live notebook adoption and actual normal-user OAuth/API
+acceptance remain open.
 See `platform-staging/jupyter-extensions-20261013/admin-ui-live-refresh-receipt-20261014.json`
 and `platform-staging/jupyter-extensions-20261013/lab-live-refresh-qualification-20261014.json`.
 
@@ -219,6 +229,12 @@ Hera/RTC, UID 1000 and pinned inherited image/package provenance were checked.
 All twelve images are now published as qualification artifacts; none is promoted
 to production. The publication receipt is in the notebook repository at
 [`cps-jupyter-notebook` revision 1424a20](https://github.com/mul-cps/cps-jupyter-notebook/blob/1424a20/release/qualification/publication-20261014/receipt.json).
+The newer browser-hook matrix is recorded at
+[`cps-jupyter-notebook` revision 563d74e](https://github.com/mul-cps/cps-jupyter-notebook/blob/563d74e/release/qualification/notebook-browser-consumer-20261014/publication-receipt.json).
+The integrated Gateway and Hub publication is recorded at
+[`cps-compute` revision 04404d3](https://github.com/mul-cps/cps-compute/blob/04404d3/docker/qualification/integrated-consumer-20261014/publication-receipt.json).
+Those immutable artifacts have installed-package and remote byte evidence; they
+are not deployed runtime acceptance evidence.
 The separate KAI coordinator, signed-lease Hub glue and terminal-cleanup
 contracts passed **2,036 source tests** (3 existing fixture skips), **314
 installed-wheel tests**, and the pinned official KAI replay/build. The inert
