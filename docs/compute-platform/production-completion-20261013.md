@@ -246,6 +246,13 @@ journal. The receipt is
 `platform-staging/jupyter-extensions-20261013/native-node-handover-actual-20261014.json`.
 This closes the Node handover gate; coordinator activation and actual post-Bind
 cap/CDI execution remain open.
+The Gateway then completed its `08f7720` image handover at 10:47 UTC. This
+includes the exact unchanged-workspace registration fix for a resumable
+provisioning fence. Both Hubs, Source, the Node image and capture companion
+remain unchanged. Fresh hardware zero, four-process acknowledgments and the
+new delivery journal passed. The actual handover receipt is
+`platform-staging/jupyter-extensions-20261013/gateway-storage-resume-handover-actual-20261014.json`.
+The normal CPU Start, Ready, NFS marker and Stop gate remains separate.
 Actual authenticated CIT browser/API evidence is retained in
 `platform-staging/jupyter-extensions-20261013/cit-authenticated-ui-api-readback-20261014.json`.
 The owning `akadmin` token successfully read the admin API. A fresh headless
@@ -253,8 +260,14 @@ browser rendered the real deployed console, observed another status poll, and
 showed `interactive-shared-10` after selecting its approved shared workspace.
 No browser API mutation or page error occurred. Unscoped grant choices remain
 CPU-only. The separate operator report was stale, while the live approval API
-was ready; these states must not be conflated. The account alias and shared
-Gateway/Hub canonical mappings still need the reviewed coordinated update.
+was ready; these states must not be conflated. The reviewed CIT `akadmin` alias
+to the existing CPS `bjoern` person was subsequently persisted through normal
+authenticated Source HTTP, without email matching or mandatory verification.
+Its receipt is
+`platform-staging/jupyter-extensions-20261013/cit-reviewed-source-alias-actual-20261014.json`.
+Gateway and CIT Hub canonical mapping propagation and runtime linkage still
+need the coordinated update; Source alias persistence alone does not close
+that gate.
 The separate KAI coordinator, signed-lease Hub glue and terminal-cleanup
 contracts passed **2,036 source tests** (3 existing fixture skips), **314
 installed-wheel tests**, and the pinned official KAI replay/build. The inert
