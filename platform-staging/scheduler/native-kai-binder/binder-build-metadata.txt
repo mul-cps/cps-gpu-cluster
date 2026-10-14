@@ -1,6 +1,6 @@
-/home/bjoern/.local/state/cps-full-project-20261013/kai-terminal-binder-plan-20261014/replay-eight-ops-final/binder: go1.26.8
+/home/bjoern/.local/state/cps-full-project-20261013/kai-terminal-binder-plan-20261014/replay-never-enrolled-final/binder: go1.26.8
 	path	github.com/kai-scheduler/KAI-scheduler/cmd/binder
-	mod	github.com/kai-scheduler/KAI-scheduler	v0.0.0-20260928154206-bdf434e5e920+dirty
+	mod	github.com/kai-scheduler/KAI-scheduler	v0.0.0-20260928154206-bdf434e5e920+dirty	
 	dep	cel.dev/expr	v0.25.2	h1:K6j46C81hXtZQfuX60cVWQFBJahKSE2gfRbNuvr5bFs=
 	dep	github.com/antlr4-go/antlr/v4	v4.13.1	h1:SqQKkuVZ+zWkMMNkjy5FZe5mr5WURWnlpmOuzYWrPrQ=
 	dep	github.com/awslabs/operatorpkg	v0.0.0-20241205163410-0fff9f28d115	h1:9nhjY3dzCpEmhpQ0vMlhB7wqucAiftLjAIEQu8uT2J4=
@@ -84,11 +84,11 @@
 	dep	gopkg.in/inf.v0	v0.9.1	h1:73M5CoZyi3ZLMOyDlQh031Cx6N9NDJ2Vvfl76EDAgDc=
 	dep	k8s.io/api	v0.36.2
 	=>	k8s.io/api	v0.35.4	h1:P7nFYKl5vo9AGUp1Z+Pmd3p2tA7bX2wbFWCvDeRv988=
-
+	
 	dep	k8s.io/apiextensions-apiserver	v0.35.4	h1:HeP+Upp7ItdvnyGmub0yoix+2z5+ev4M5cE5TCgtOUU=
 	dep	k8s.io/apimachinery	v0.36.2
 	=>	k8s.io/apimachinery	v0.35.4	h1:xtdom9RG7e+yDp71uoXoJDWEE2eOiHgeO4GdBzwWpds=
-
+	
 	dep	k8s.io/apiserver	v0.35.4	h1:vtuFqNFmF9bPRdHDL2lpK6qCTPWDreZJL4LRPwVM6ho=
 	dep	k8s.io/autoscaler/vertical-pod-autoscaler	v1.5.1	h1:LlVtM3IKqIVHz1ZXC3ahe/mAtDWb7Eob0tyTzqFULqg=
 	dep	k8s.io/cli-runtime	v0.35.4	h1:8QRCXSDvopflFNM65Vkkdv42BljPdRSiqf6HFyI1iik=

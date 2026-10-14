@@ -75,6 +75,9 @@ def main():
     receipt = {'upstream_commit': COMMIT, 'patch_sha256': sha(patch),
         'sdk_contract_commit': manifest['sdk_commit'], 'dependency_diff': [],
         'live_operations': False, 'coordinator_installed': False, 'route_qualified': False}
+    if 'coordinator_source_commit' in manifest:
+        receipt['coordinator_source_commit'] = manifest['coordinator_source_commit']
+        receipt['sdk_profile_correction_commit'] = manifest['sdk_profile_correction_commit']
     if args.test:
         logs.append(run([str(args.go_bin), 'test', '-p', '2', *PACKAGES, '-count=1'], directory))
         receipt['all_affected_packages_passed'] = list(PACKAGES)
