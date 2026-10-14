@@ -479,3 +479,20 @@ The separate pending-allocation SDK candidate passed 1,957 source tests with
 3 existing fixture skips and 171 installed-wheel tests. The protected coordinator,
 terminal KAI transport, current-RV Binding, cancellation holds and post-Bind cap
 seal/CDI remain required before its controlled live placement gate.
+
+
+## Installed K3s Binding preconditions
+
+A trusted CPU-only experiment on the actual **v1.34.9+k3s1** API server
+verified both Pod Binding preconditions. Each of two new owned Pods rejected a
+wrong PodUID and wrong resourceVersion with HTTP **409**; immediate reads
+confirmed the original UID and absent node assignment. Exact current UID/RV
+Binding then assigned the intended CPU-only control-plane node.
+
+A separate negative Target.NodeUID also bound by Node name: **NodeUID is not an
+API-server Binding precondition**. The coordinator's current NodeUID/epoch
+checks and the strict post-Bind cap gate therefore remain required. Neither
+Pod requested a GPU or mounted a volume, Secret or service-account token.
+Exact UID-precondition deletion and actual absence were verified for both.
+See `platform-staging/scheduler/qualification/dynamic-admission/k3s-binding-cas-receipt-20261014.json`.
+This measures installed API behavior; it does not qualify native KAI placement.
