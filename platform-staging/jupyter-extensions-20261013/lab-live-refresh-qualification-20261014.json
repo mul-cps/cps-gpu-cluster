@@ -1,0 +1,27 @@
+{
+  "actual_compute_panel_lumino_refresh_probe_passed": true,
+  "actual_installed_prebuilt_lab_seven_views_passed": true,
+  "deployed_notebook_runtime_qualified": false,
+  "extension_entry": "static/remoteEntry.c80eef21c9609e6e95b5.js",
+  "human_hub_oauth_qualified": false,
+  "jupyterlab_test_version": "4.6.4",
+  "node_tests_passed": 30,
+  "package_version": "0.1.0",
+  "packaging_tests_passed": 4,
+  "page_errors": [],
+  "private_qualification_receipt_sha256": "fb6056488e26f707e0dfeb79b70c4efddbeec0f93f075d60cd1d14cb4ebd464a",
+  "production_qualified": false,
+  "python_package": "cps-compute-jupyterlab",
+  "refresh": {
+    "draft_detail_cursor_focus_preserved": true,
+    "interval_after_read_seconds": 20,
+    "no_store": true,
+    "read_deadline_seconds": 8,
+    "visible_only": true
+  },
+  "sdist_sha256": "e285f69be02b2f56565282212187a379be9b8b4c72735007feac5f88153393d4",
+  "source_revision": "3e352ea257e3e94d844b0da0a022bff8e48de650",
+  "test_api": "synthetic-local-only",
+  "version": 1,
+  "wheel_sha256": "496dd6fc23df71f7582b3f82c7b76a98bd38e40760f54724d20499a7cffeaf79"
+}

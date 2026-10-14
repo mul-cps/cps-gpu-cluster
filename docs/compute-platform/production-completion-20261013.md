@@ -25,8 +25,8 @@ for the bounded live results of 2026-10-13 and their retained evidence.
 | Gate | Verified state | Remaining completion evidence |
 | --- | --- | --- |
 | Repository ownership and shared policy | Separate application/deployment responsibilities and shared policy implemented; compatibility branches retained | Integrate and promote one tested consumer matrix with its exact policy hash; account for Fleet's watched branches |
-| SDK, Hub and Lab packages | All 12 notebook OCI variants were published with exact manifest/config/layer verification; both Hubs now run the registered CPU adapter with 158 installed-image tests, exact wheel modules and a completed scoped handover | Complete normal new-account lifecycle, automatic Lab state refresh and promote one qualified consumer matrix |
-| Both admin UI consoles | Both consoles run Source8d86 with the registered-account runtime-role fix; full SQLite bytes, all mounted configuration and preexisting identity receipts were preserved; unchanged UI assets previously passed 11 CPS browser checks | New-account HTTP lifecycle, CIT adoption and actual human OAuth/API acceptance |
+| SDK, Hub and Lab packages | All 12 notebook OCI variants were published with exact manifest/config/layer verification; both Hubs now run the registered CPU adapter with 158 installed-image tests, exact wheel modules and a completed scoped handover | Complete normal new-account lifecycle and adopt the newly qualified Lab refresh package in actual notebook consumers; promote one qualified consumer matrix |
+| Both admin UI consoles | Both consoles run Source87a1 with visible-view API refresh; 66 synthetic-API browser tests passed, actual installed bytes match, and both SQLite databases/configuration/credentials are unchanged | New-account HTTP lifecycle, CIT adoption and actual human OAuth/API acceptance |
 | Identity and group ownership | Existing reviewed aliases retained; both CPS legacy neutral accounts have permanent ready provenance; explicit custody migration and exact QA repair passed; both Hubs restarted without changing the repaired or legitimate legacy roles | Complete CIT adoption, real login grant survival/expiry and scoped administration; cross-Hub allowance continuity |
 | Native GPU isolation | Controlled no-MIG 5/20 GiB history retained; current CPS pair passed distinct 5 GiB OOM/recovery with peer progress, IPC denial in both directions, positive controls, kernel witnesses, restart retirement, complete bounded MPS OOM/recovery and observer cleanup, and confirmed normal closure | Complete restart behavior and broader packing; current bounded pool is 5/10 GiB, not a normal 20 GiB or cross-Hub qualification |
 | Shared GPU reservations | Shared accounting implementation and reviewed qualification bindings exist | Actual simultaneous cross-Hub starts, all-member atomicity and partial-conflict rollback; prove permitted CPU sessions and independent batch execution; release only after confirmed stop |
@@ -45,8 +45,8 @@ for the bounded live results of 2026-10-13 and their retained evidence.
 ## Current rollout boundary
 
 Both Hubs are Ready on the corrected package image
-`ghcr.io/mul-cps/cps-compute@sha256:6c016afdfa50ff5c9827cf747988909c7f1ddbdda63d458a0987065e5239bb9b`.
-All 13 installed Hub code modules match wheel `3fe45e37`; the actual image passed
+`ghcr.io/mul-cps/cps-compute@sha256:a7155bebb5dff1b70ff79edbf57a1012bb37feed082bac8212c885b46e1cb950`.
+All 13 installed Hub code modules match wheel `abcd84c0`; the actual image passed
 158 focused tests, including 24 actual-installer/KubeSpawner cases. The full
 source suite passed 1,838 tests with three existing
 fixture skips. Four fresh component acknowledgments and a separate completed
@@ -57,8 +57,8 @@ See `platform-staging/gpu/qualification/hub-registered-cpu-20261014/`
 and `platform-staging/gpu/qualification/neutral-custody-migration-20261014/`.
 
 Both admin consoles are Ready on
-`ghcr.io/mul-cps/e2x-course-hub@sha256:8d86a5bc0859c2dfb6b65b4e9106531fe231e667b605f2621785a245327f69b8`,
-Source revision `d49dec7c51337552d4a7761e5c0ea057bb92046e`.
+`ghcr.io/mul-cps/e2x-course-hub@sha256:87a1c0b99331259199ff56d52b83c5bc5fcff1c05d0965a9f097138208ea1e61`,
+Source revision `1443b05a5d2f3aa33b2f2c2a70c136a9e5023e04`.
 Only the console image changed. Both online SQLite database byte hashes, schema 7,
 all five mounted configuration objects and the original identity receipt were
 preserved. Actual post-startup QA identity, service and runtime/control role
@@ -80,13 +80,20 @@ Earlier transport/observer failures remain retained as inconclusive attempts.
 
 The released CPU adapter addresses the missing legacy profile slug and passes
 the immutable operator image through the real native wrapper. A new normal
-registered CPU HTTP run returned 503 because the new owner inherited unresolved
-callable init-container configuration. Normal Stop restored `state=stopped`,
-with empty servers and Shares; the trusted neutral-template fix is being tested
-against the actual installer configuration. The CPU lifecycle gate remains open and is separate from the passed
+registered CPU HTTP run returned 503 because the new owner inherited an actual
+chart `V1Container` init object that was not normalized by the fixed neutral
+template. Normal Stop restored `state=stopped`, with empty servers and Shares.
+The tested neutral-template fix now runs in both Hubs; its normal HTTP retry
+remains the next lifecycle gate. The CPU lifecycle gate remains open and is separate from the passed
 GPU pair. The admin and Lab APIs authenticate the actual browser visitor;
-automatic record/view refresh is being qualified separately from the already
-deployed 20-second admin platform-status refresh.
+visible admin records now refresh after each 20-second interval, with stale data
+marked and drafts preserved. The Lab package passed 30 Node tests, four
+wheel/sdist tests, actual Lumino polling/lifecycle regressions and all seven
+views in installed JupyterLab 4.6.4. Those browser APIs were synthetic. The active
+trusted CPU notebook image has neither compute package nor the Lab addon;
+trusted CPS/CIT PageConfig injection and notebook consumer adoption remain open.
+See `platform-staging/jupyter-extensions-20261013/admin-ui-live-refresh-receipt-20261014.json`
+and `platform-staging/jupyter-extensions-20261013/lab-live-refresh-qualification-20261014.json`.
 
 ## Earlier rollout and retained diagnostics
 
