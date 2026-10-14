@@ -26,7 +26,7 @@ for the bounded live results of 2026-10-13 and their retained evidence.
 | --- | --- | --- |
 | Repository ownership and shared policy | Separate application/deployment responsibilities and shared policy implemented; compatibility branches retained | Integrate and promote one tested consumer matrix with its exact policy hash; account for Fleet's watched branches |
 | SDK, Hub and Lab packages | All 12 notebook OCI variants are published. Both Hubs select notebook86 for registered CPU workspaces. Actual CPU86 runtime verified SDK/Lab payloads, trusted PageConfig, live panel API polling, NFS restart persistence and normal Stop | Genuine human OAuth, ordinary visitor identity separation and remaining notebook modes; CIT personal profile hooks retain their independent images |
-| Both admin UI consoles | Both consoles now run Sourceb36 with the reviewed legacy runtime validator; frontend and dependencies remain equal to Source87a1. The existing API/browser refresh checks and approved CIT 10 GiB choice remain bounded evidence; matching new Hub enrollment is pending | Normal registered CPU lifecycle and reviewed CIT `akadmin` canonical API linkage passed; ordinary-user/human OAuth and remaining modes are separate gates |
+| Both admin UI consoles | Both consoles run Sourceb36 with the reviewed legacy runtime validator; frontend and dependencies remain equal to Source87a1. CIT legacy runtime enrollment, cold startup and real notebook activity reporting passed; the existing UI and approved 10 GiB choice remain bounded evidence | Normal registered CPU lifecycle and reviewed CIT `akadmin` canonical API linkage passed; ordinary-user/human OAuth and remaining modes are separate gates |
 | Identity and group ownership | Existing reviewed aliases retained; both CPS legacy neutral accounts have permanent ready provenance; explicit custody migration and exact QA repair passed; both Hubs restarted without changing the repaired or legitimate legacy roles | Reviewed CIT alias is live in Source, Hub and Gateway and `/me` resolves the same person; real login grant survival/expiry, scoped administration and cross-Hub allowance continuity remain |
 | Native GPU isolation | Controlled no-MIG 5/20 GiB history retained; current CPS pair passed distinct 5 GiB OOM/recovery with peer progress, IPC denial in both directions, positive controls, kernel witnesses, restart retirement, complete bounded MPS OOM/recovery and observer cleanup, and confirmed normal closure | Complete restart behavior and broader packing; current bounded pool is 5/10 GiB, not a normal 20 GiB or cross-Hub qualification |
 | Shared GPU reservations | Actual simultaneous CPS5/CIT10 pilot starts passed: one winner held both shared members once, loser had no server/Pod/binding; confirmed Stop preceded successful retry on the other Hub; exact windows/groups/grants restored. Installed current Gateway code also passed first-free/second-busy transaction rollback in an isolated SQLite database | Different-member live API partial-conflict rollback, permitted CPU sessions and independent batch execution while held; broader pool and ordinary-user qualification |
@@ -45,15 +45,18 @@ for the bounded live results of 2026-10-13 and their retained evidence.
 ## Current rollout boundary
 
 The consumer configuration rollout completed at **2026-10-14 14:07 UTC**.
-At the recorded first-stage stop-persistence boundary, both Hubs run Hubd920,
+Both Hubs run Hubd920,
 Gateway08f and Node8c retain their images, and both consoles run Sourceb36.
 Four fresh process acknowledgments and a completed new delivery journal confirm
-the unchanged policy and GPU driver epoch. The subsequent same-image legacy
-runtime enrollment and cold handover remain pending at this recorded boundary.
+the unchanged policy and GPU driver epoch. The subsequent same-image CIT legacy
+runtime enrollment and cold handover also completed, with the delivery
+controller running and the final native allocation check at zero. Its seed is
+`sha256:6b69b858f3d91fa6fa8201ea144ac8165e145a6589525af5723227089f786456`.
 The canonical policy hash is
 `sha256:d48f6553ed036c2e7adcc97417623fe0308be93ad13b20f246047ada118511b0`.
 See [configuration evidence](../../platform-staging/jupyter-extensions-20261013/notebook-consumer-config-actual-20261014.json).
 See [first-stage Hub adoption](../../platform-staging/jupyter-extensions-20261013/hub-stop-persistence-adoption-actual-20261014.json).
+See [CIT runtime enrollment and cold handover](../../platform-staging/jupyter-extensions-20261013/cit-legacy-runtime-cold-handover-actual-20261014.json).
 
 Both registered CPU configurations now select
 `ghcr.io/mul-cps/cps-jupyter-notebook@sha256:86c4fd58afe7a4e18b850da9f007d3c9e8cc8c058d85c0b8fee667ed72779d59`.
@@ -78,10 +81,16 @@ The existing CIT `citnativegroupa` workspace account was adopted through the
 normal authenticated Source plan/execute API. Its name, created identity, roles,
 workspace descriptor and storage binding were preserved; only the neutral group
 membership and Source adoption receipt were added. It now reports `ready`.
-A later native server run exposed HTTP 403 for its activity callback. Explicit
-scoped legacy runtime enrollment remains pending at the recorded first-stage
-boundary; normal Stop persistence is verified separately below.
+A later native server run exposed HTTP 403 for its activity callback. The
+released operator CLI then enrolled the existing account with exactly its own
+RTC-server access and activity-reporting scopes. Both Hubs restarted with the
+permanent identity and role intact. A subsequent normal CIT Start/Stop test
+verified HTTP 200 from the notebook's actual server token, automatic state and
+token cleanup, the retained PVC and exact grant/group restoration. Ordinary SDK
+defaults remain a separate open gate: the installed client currently lacks its
+three connection environment variables in the GPU notebook deployment.
 See [adoption evidence](../../platform-staging/jupyter-extensions-20261013/cit-neutral-adoption-actual-20261014.json).
+See [enrolled notebook activity and cleanup](../../platform-staging/jupyter-extensions-20261013/cit-enrolled-notebook-activity-actual-20261014.json).
 
 The simultaneous cross-Hub pilot reservation test passed at **15:32 UTC**.
 CIT held both shared canonical members once while CPS was denied; CPS then
