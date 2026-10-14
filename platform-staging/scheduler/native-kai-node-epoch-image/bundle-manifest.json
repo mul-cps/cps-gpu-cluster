@@ -1,0 +1,24 @@
+{
+  "base_sha256": "b1deccd3e48b8c38ec0c87416dc04d9ae860e260910ff929f697be5d17e14429",
+  "files": {
+    "abort_before_gate.py": "aa8c26edf0544284450570be57307f826eed6a985baf3a1a2c09cb3577fd4f65",
+    "approval_abort_fence.py": "131e37e4cb9d7fc487fe798cfe3e2052d7365887252f6e52b20207003b1af002",
+    "approval_before_gate.py": "e6acfa1d111168c5726155ecc0f25dd080d666fde84bea8a6baf2f263c0489e8",
+    "cdi_identity.py": "784280a4f670eca067a8cc5b4d558f9d13c0c41141401d47c229de90dd6343c0",
+    "cleared_offline_recovery.py": "25c9514fee19c478d82aa891f2d67a8018b1e799abbedd1d1397ea13b80bd25b",
+    "driver_loader.py": "e4f6e26a7a555d713e3cff12baf4d67ccd25f02820548df225f36f3657b9852b",
+    "native_approval_process.py": "e121dd491d709d945b96fa475902486f783151f76f903344d06871b49aab2875",
+    "native_approval_revision.py": "ddaaf9593dfbc9cba2d4aa3227102895a435e2537346ddd467c4941c0201658d",
+    "native_gpu_controller.py": "630d43cc115b5bddf3e5d110a25cc891e0941953bbabd833f0a77a3773ad7880",
+    "native_gpu_health.py": "52fdbdae3d5e2f66fd4653d94ef5a62f734e185fabec30450f4a1b70cfee7d67",
+    "native_operator_epoch.py": "890cebd7c1903a680e4dc836ec6f81f097198c2fed438ade6b2fa62157864bbd",
+    "node_agent.py": "f01b24bc984a153e9995549ef09f73167500f375d79e078a7e7aa9e1171c3664",
+    "node_backend.py": "fb5651ea10118de02ee2e9601a765f947d2ae61f1b2e8670d523912b594afda0",
+    "pod_cap.py": "5c84ab668dd276b0216199a964f42886712af9225f9fc702740bfa9bb361a39f",
+    "poll.py": "6032d735473813a04df53aba976b900744be5ef17c77d49c5b1d8340c0c183d9",
+    "source-snapshot.json": "2a4a89fcdac0743e4ae52f325d3444e9ace5ab85834c3b3258242af5db40077e"
+  },
+  "hardware_qualified": false,
+  "live_applied": false,
+  "module_sha256": "2c8b45dd37773d9a9d5edd279c11980585a2628aa7731b39fb2fd51434449a74"
+}

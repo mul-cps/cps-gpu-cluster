@@ -1,0 +1,358 @@
+{
+  "configmaps": [
+    {
+      "data_keys": [
+        "abort_before_gate.py",
+        "approval_abort_fence.py",
+        "approval_before_gate.py",
+        "cdi_identity.py",
+        "cleared_offline_recovery.py",
+        "driver_loader.py",
+        "native_approval_process.py",
+        "native_approval_revision.py",
+        "native_gpu_controller.py",
+        "native_gpu_health.py",
+        "node_agent.py",
+        "node_backend.py",
+        "pod_cap.py",
+        "poll.py",
+        "source-snapshot.json"
+      ],
+      "full_data_sha256": "458e77184d1a5c56565c2c353db25ce084f9bf864260dfd014d034726ccf4886",
+      "immutable": true,
+      "name": "cps-native-node-code-458e77184d1a5c56",
+      "resourceVersion": "367985380",
+      "uid": "6e67ad3a-3379-4f05-bc70-ca6b781d6f0e"
+    },
+    {
+      "data_keys": [
+        "config.json"
+      ],
+      "full_data_sha256": "c2ae3af20952ef1f8d39ba25c4ebfc2c3be963a06ed931bbefe689dacb90c1e2",
+      "immutable": true,
+      "name": "cps-native-node-qualification-c2ae3af20952ef1f",
+      "resourceVersion": "367200133",
+      "uid": "0d434260-05cf-4bce-9c11-d9a0b757b258"
+    },
+    {
+      "data_keys": [
+        "approval.json"
+      ],
+      "full_data_sha256": "a82c95c813e61314596a7c0f32604fcf06cc6199cdd27352904e0275446a282a",
+      "immutable": true,
+      "name": "cps-native-approvals-a82c95c813e61314",
+      "resourceVersion": "368270113",
+      "uid": "179499b3-168d-4b86-9ad8-6f9b00990d31"
+    },
+    {
+      "data_keys": [
+        "reference.json"
+      ],
+      "full_data_sha256": "3e4ad197d79a1f3215d1c734c158e7d47c333a6971781a22c5f66d9187ab626a",
+      "immutable": true,
+      "name": "cps-native-approval-reference-3e4ad197d79a1f32",
+      "resourceVersion": "368270144",
+      "uid": "8c2caa1f-5581-4686-b0c6-34a77cc12bf9"
+    },
+    {
+      "data_keys": [
+        "acknowledgment.json",
+        "process.json",
+        "template.json"
+      ],
+      "full_data_sha256": "e37142645ccb04fa11ca5fc5b36c9896fe111765ecb03bf7c89ff13ec4dace66",
+      "immutable": true,
+      "name": "cps-native-approval-bootstrap-e37142645ccb04fa",
+      "resourceVersion": "367868294",
+      "uid": "397eef8c-fc37-4cb2-8900-49922837df1b"
+    }
+  ],
+  "containers": [
+    {
+      "args": [
+        "--execute",
+        "--config",
+        "/config/config.json",
+        "--bundle",
+        "/opt/native",
+        "--iterations",
+        "10000",
+        "--interval",
+        "2",
+        "--crictl",
+        "/host/var/lib/rancher/k3s/data/65415f7708224bbfc7865f032e84da4a5123a3acebef70c8ee40fa991aa68555/bin/crictl",
+        "--approval-reference",
+        "/var/run/cps-native-approvals/reference.json",
+        "--approval-template",
+        "/var/run/cps-native-approvals/template.json",
+        "--approval-process",
+        "/var/run/cps-native-approvals/process.json",
+        "--approval-acknowledgment",
+        "/var/run/cps-native-approvals/acknowledgment.json"
+      ],
+      "command": [
+        "python3",
+        "/opt/native/node_agent.py"
+      ],
+      "image": "ghcr.io/mul-cps/cps-compute:qualification-native-node-980408a@sha256:5079458fe0fcb3c11231b21f1bbc1f4c12ad3ac578799932aa0bc9f46d5510c7",
+      "name": "node-agent",
+      "volumeMounts": [
+        {
+          "mountPath": "/opt/native",
+          "name": "code",
+          "readOnly": true
+        },
+        {
+          "mountPath": "/config/config.json",
+          "name": "config",
+          "readOnly": true,
+          "subPath": "config.json"
+        },
+        {
+          "mountPath": "/run/cps-native-gpu",
+          "name": "state"
+        },
+        {
+          "mountPath": "/host",
+          "name": "host",
+          "readOnly": true
+        },
+        {
+          "mountPath": "/sys/fs/cgroup",
+          "name": "cgroups",
+          "readOnly": true
+        },
+        {
+          "mountPath": "/sys/module",
+          "name": "modules",
+          "readOnly": true
+        },
+        {
+          "mountPath": "/dev",
+          "name": "devices",
+          "readOnly": true
+        },
+        {
+          "mountPath": "/var/run/cps-native-approvals/approval.json",
+          "name": "cps-native-approval-document",
+          "readOnly": true,
+          "subPath": "approval.json"
+        },
+        {
+          "mountPath": "/var/run/cps-native-approvals/reference.json",
+          "name": "cps-native-approval-reference",
+          "readOnly": true,
+          "subPath": "reference.json"
+        },
+        {
+          "mountPath": "/var/run/cps-native-approvals/template.json",
+          "name": "cps-native-approval-bootstrap",
+          "readOnly": true,
+          "subPath": "template.json"
+        },
+        {
+          "mountPath": "/var/run/cps-native-approvals/process.json",
+          "name": "cps-native-approval-bootstrap",
+          "readOnly": true,
+          "subPath": "process.json"
+        },
+        {
+          "mountPath": "/var/run/cps-native-approvals/acknowledgment.json",
+          "name": "cps-native-approval-bootstrap",
+          "readOnly": true,
+          "subPath": "acknowledgment.json"
+        }
+      ]
+    }
+  ],
+  "currentness_requires_raw_reread": true,
+  "deployment": {
+    "generation": 55,
+    "name": "cps-native-node-agent",
+    "namespace": "cps-native-system",
+    "resourceVersion": "368271196",
+    "uid": "03e6bf5e-39ab-4c4a-b73f-1d6cf0ee8076"
+  },
+  "node_service_account": {
+    "name": "cps-native-node-agent",
+    "namespace": "cps-native-system",
+    "resourceVersion": "363173305",
+    "uid": "71b54a98-78aa-4566-bd0c-f8da0e46625e"
+  },
+  "observed_at": "2026-10-14T07:37:00.449873+00:00",
+  "operator_create_proposal": {
+    "actual_created_UID_RV_refs": "not_created; must derive from real API readback under Root approval",
+    "config_name": "cps-native-kai-node-config-194f25fb7948930e",
+    "full_private_plan_sha256": "55fdc1fc3372c622c859895e150f0529936cbef30077a3fff96c0bca08814f5b"
+  },
+  "rbac": [
+    {
+      "name": "cps-native-approval-node",
+      "resourceVersion": "368270860",
+      "rules": [
+        {
+          "apiGroups": [
+            ""
+          ],
+          "resourceNames": [
+            "cps-native-approval-ack-node",
+            "cps-native-approvals-a82c95c813e61314"
+          ],
+          "resources": [
+            "configmaps"
+          ],
+          "verbs": [
+            "get"
+          ]
+        },
+        {
+          "apiGroups": [
+            "apps"
+          ],
+          "resourceNames": [
+            "cps-native-node-agent"
+          ],
+          "resources": [
+            "deployments"
+          ],
+          "verbs": [
+            "get"
+          ]
+        },
+        {
+          "apiGroups": [
+            ""
+          ],
+          "resourceNames": [
+            "cps-native-approval-ack-node"
+          ],
+          "resources": [
+            "configmaps"
+          ],
+          "verbs": [
+            "patch"
+          ]
+        },
+        {
+          "apiGroups": [
+            ""
+          ],
+          "resourceNames": [
+            "cps-native-node-agent-7fbbbc4b48-hjmv4"
+          ],
+          "resources": [
+            "pods"
+          ],
+          "verbs": [
+            "get"
+          ]
+        },
+        {
+          "apiGroups": [
+            "apps"
+          ],
+          "resourceNames": [
+            "cps-native-node-agent-7fbbbc4b48"
+          ],
+          "resources": [
+            "replicasets"
+          ],
+          "verbs": [
+            "get"
+          ]
+        }
+      ],
+      "uid": "7078ba3d-99d9-4bf8-8222-5c60a4fda16e"
+    },
+    {
+      "name": "cps-native-node-agent-authority",
+      "resourceVersion": "363173314",
+      "rules": [
+        {
+          "apiGroups": [
+            ""
+          ],
+          "resources": [
+            "configmaps"
+          ],
+          "verbs": [
+            "get",
+            "list",
+            "create"
+          ]
+        }
+      ],
+      "uid": "767a019f-c0b6-4f8c-8cc2-74b5c7bb369c"
+    }
+  ],
+  "retained_v2_proposal": {
+    "bootstrap_name": "cps-native-approval-bootstrap-970c039dbfa010c4",
+    "full_private_plan_sha256": "081a6d58cde54d83460a2dbf6b6bb1bc6b76d12f60e52c48ddb4040ba6f9a3ed",
+    "spec_sha256": "1456196fba42cbb1142cdb815d795ea9b277059e74c7469a79f7451e6be9aa82"
+  },
+  "serviceAccountName": "cps-native-node-agent",
+  "spec_sha256": "cfbcf00c3ff88834f51aecb7c25f60c9b11f36822beb5c28df8fc00f5ef1f5a6",
+  "volumes": [
+    {
+      "configMap": {
+        "defaultMode": 292,
+        "name": "cps-native-node-code-458e77184d1a5c56"
+      },
+      "name": "code"
+    },
+    {
+      "configMap": {
+        "defaultMode": 256,
+        "name": "cps-native-node-qualification-c2ae3af20952ef1f"
+      },
+      "name": "config"
+    },
+    {
+      "configMap": {
+        "defaultMode": 256,
+        "items": [
+          {
+            "key": "approval.json",
+            "path": "approval.json"
+          }
+        ],
+        "name": "cps-native-approvals-a82c95c813e61314"
+      },
+      "name": "cps-native-approval-document"
+    },
+    {
+      "configMap": {
+        "defaultMode": 256,
+        "items": [
+          {
+            "key": "reference.json",
+            "path": "reference.json"
+          }
+        ],
+        "name": "cps-native-approval-reference-3e4ad197d79a1f32"
+      },
+      "name": "cps-native-approval-reference"
+    },
+    {
+      "configMap": {
+        "defaultMode": 256,
+        "items": [
+          {
+            "key": "template.json",
+            "path": "template.json"
+          },
+          {
+            "key": "process.json",
+            "path": "process.json"
+          },
+          {
+            "key": "acknowledgment.json",
+            "path": "acknowledgment.json"
+          }
+        ],
+        "name": "cps-native-approval-bootstrap-e37142645ccb04fa"
+      },
+      "name": "cps-native-approval-bootstrap"
+    }
+  ]
+}

@@ -1,0 +1,20 @@
+{
+  "added_diffid": "sha256:5c0fca149f4cd202f9c981c6c4034d958e4fa54a8c8bb4328a7c09f6436354e9",
+  "bundle_files_exact": 16,
+  "candidate_config_digest": "88b67945c3f182cfc230c60463a08edf105e72ccc16902be1f6f637b0837e332",
+  "hub_absent_unchanged": true,
+  "installed_core_modules_unchanged": 30,
+  "installed_record_file_hashes_unchanged": 15863,
+  "packages_unchanged": 79,
+  "runtime_config_fields_unchanged": [
+    "User",
+    "WorkingDir",
+    "Entrypoint",
+    "Cmd",
+    "Env",
+    "ExposedPorts",
+    "Volumes",
+    "Healthcheck",
+    "StopSignal"
+  ]
+}

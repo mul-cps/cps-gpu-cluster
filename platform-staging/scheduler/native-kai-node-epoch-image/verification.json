@@ -1,0 +1,49 @@
+{
+  "GPU_calls": false,
+  "Hub_wheel_installed": false,
+  "base": "ghcr.io/mul-cps/cps-compute@sha256:5079458fe0fcb3c11231b21f1bbc1f4c12ad3ac578799932aa0bc9f46d5510c7",
+  "candidate": "ghcr.io/mul-cps/cps-compute@sha256:8c2c456b90330622645d509f94882a11a465ac208a6fa7fc824900d6320e5c0b",
+  "candidate_config": "sha256:88b67945c3f182cfc230c60463a08edf105e72ccc16902be1f6f637b0837e332",
+  "cluster_writes": false,
+  "dependencies_diff": {},
+  "earlier_manifest_not_final": "sha256:53b34d585905c24d85950ebbca428fbf7a758b4c5d23858bd6f81717332d2edb",
+  "epoch_source": "58cec1acebbcc920a4ef1e4cd83d3518297fd39d",
+  "full_core_wheel_installed": false,
+  "hardware_qualified": false,
+  "host_inert_plan_tests": 8,
+  "host_original_source_golden_tests": 1,
+  "installed_functional_tests": 10,
+  "installed_legacy_runtime_tests": 36,
+  "live_applied": false,
+  "materializer_actual_image_positive_and_corrupt_negative": [
+    {
+      "corrupt": false,
+      "output_created": true,
+      "returncode": 0,
+      "stdout": "private settings exact0600/0700 accepted"
+    },
+    {
+      "corrupt": true,
+      "output_created": false,
+      "returncode": 1,
+      "stdout": ""
+    }
+  ],
+  "private_full_payload_sha256": {
+    "base-payload.json": "f1848ee3c897f9278039afcdcec96b251249a395d8e8cc44f598c59424a5de9e",
+    "candidate-payload.json": "36a686db639d0f8aadfe53a17a9f3c433db4900c7f2d864e55d45d1fd487bae6",
+    "materializer-fixture.json": "970dc944f975b806ebe49f7605356aa352af909c6fb73f378c3760f3024016d7",
+    "oci-closure-remote.json": "b9c6aec3ce376e010f0b237a084e67d1f2d220dfe9baa2f3095f7d61a28aedc2"
+  },
+  "published_inert": true,
+  "qualification_only_native_runtime_core_reconciliation_required": true,
+  "source_base": "76460b31ba3e5343510e0259da98dcb5443d9a15",
+  "test_logs": {
+    "base-installed-transport-green.log": "33a1dcf3ce97d0522cc70fdf71dab220a7b859dae6a8a1b453202fcaf69c5fc4",
+    "base-runtime-legacy.log": "59f8ec9de2403a4aaaa445605407a45f69370e0229882c977776b8666f5ee99f",
+    "golden-source-existing-pin.log": "06d83bdfd530b5e13366a8d232e1fa1f11aea8a0f36c423c620a7a40442f0640",
+    "image-installed-green-final.log": "fb8197b101c31b17bfe8fc38c65ad064420adaa98c6a39138ff0d476331d509a",
+    "image-legacy-green.log": "6acedb1ffc770205c7cd1b0f2487e72caeea3a55e8de23552ff04d3e609c784b"
+  },
+  "version": 1
+}

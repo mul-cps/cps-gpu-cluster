@@ -1,0 +1,267 @@
+{
+  "config": {
+    "authority_namespace": "cps-compute",
+    "enabled": true,
+    "mode": "operator-qualification",
+    "policy_hash": "sha256:559bbae7b3baf67c770492b9e6a3ffd4fe86dca02d6a285031c0733b9c372fc9",
+    "pool": {
+      "boot_id": "209f8bc9-a478-48e4-925a-6e07ffa56f7a",
+      "driver_generation": "b10498fc-9153-4394-875a-ea7cfb498625",
+      "free_memory_mib": 40470,
+      "gpu_uuid": "GPU-16128952-b438-556a-00bb-93039ee24e56",
+      "headroom_mib": 1024,
+      "max_workspaces": 2,
+      "memory_budget_mib": 15360,
+      "node": "k3s-wk-gpu2",
+      "node_uid": "3336cdd5-d245-436e-b57c-2f66c6dcaa41",
+      "total_memory_mib": 40960
+    },
+    "terminal_history": {},
+    "version": 2,
+    "workspaces": {
+      "cps:group-10": {
+        "cap_mib": 10240,
+        "profile": "interactive-native-qualification-10"
+      }
+    }
+  },
+  "config_cm": {
+    "apiVersion": "v1",
+    "data": {
+      "config.json": "{\"authority_namespace\": \"cps-compute\", \"enabled\": true, \"mode\": \"operator-qualification\", \"policy_hash\": \"sha256:559bbae7b3baf67c770492b9e6a3ffd4fe86dca02d6a285031c0733b9c372fc9\", \"pool\": {\"boot_id\": \"209f8bc9-a478-48e4-925a-6e07ffa56f7a\", \"driver_generation\": \"b10498fc-9153-4394-875a-ea7cfb498625\", \"free_memory_mib\": 40470, \"gpu_uuid\": \"GPU-16128952-b438-556a-00bb-93039ee24e56\", \"headroom_mib\": 1024, \"max_workspaces\": 2, \"memory_budget_mib\": 15360, \"node\": \"k3s-wk-gpu2\", \"node_uid\": \"3336cdd5-d245-436e-b57c-2f66c6dcaa41\", \"total_memory_mib\": 40960}, \"terminal_history\": {}, \"version\": 2, \"workspaces\": {\"cps:group-10\": {\"cap_mib\": 10240, \"profile\": \"interactive-native-qualification-10\"}}}"
+    },
+    "immutable": true,
+    "kind": "ConfigMap",
+    "metadata": {
+      "name": "operator-node-config",
+      "namespace": "cps-compute",
+      "resourceVersion": "2",
+      "uid": "44444444-4444-4444-8444-444444444444"
+    }
+  },
+  "config_ref": {
+    "data_sha256": "sha256:e633c2924ccbcdd97ee27d5135d972d1190c3f2ec360cf893581ebc1f5e07481",
+    "name": "operator-node-config",
+    "namespace": "cps-compute",
+    "resourceVersion": "2",
+    "uid": "44444444-4444-4444-8444-444444444444"
+  },
+  "controller": {
+    "apiVersion": "apps/v1",
+    "kind": "Deployment",
+    "metadata": {
+      "name": "approved-gateway",
+      "namespace": "cps-compute",
+      "uid": "11111111-1111-4111-8111-111111111111"
+    },
+    "spec": {
+      "selector": {
+        "matchLabels": {
+          "app": "approved-gateway"
+        }
+      },
+      "template": {
+        "metadata": {
+          "labels": {
+            "app": "approved-gateway"
+          }
+        },
+        "spec": {
+          "containers": [
+            {
+              "image": "registry.example/compute@sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+              "name": "gateway",
+              "volumeMounts": [
+                {
+                  "mountPath": "/var/run/cps-native-approvals/approval.json",
+                  "name": "approved-groups",
+                  "readOnly": true,
+                  "subPath": "approval.json"
+                }
+              ]
+            }
+          ],
+          "nodeName": "k3s-wk-gpu2",
+          "serviceAccountName": "compute-gateway",
+          "volumes": [
+            {
+              "configMap": {
+                "name": "approved-groups-test"
+              },
+              "name": "approved-groups"
+            }
+          ]
+        }
+      }
+    }
+  },
+  "declaration": {
+    "container": "gateway",
+    "image": "registry.example/compute@sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+    "kind": "Deployment",
+    "name": "approved-gateway",
+    "namespace": "cps-compute",
+    "service_account": "compute-gateway",
+    "service_account_uid": "33333333-3333-4333-8333-333333333333",
+    "uid": "11111111-1111-4111-8111-111111111111"
+  },
+  "epoch": {
+    "boot_id": "209f8bc9-a478-48e4-925a-6e07ffa56f7a",
+    "driver_generation": "b10498fc-9153-4394-875a-ea7cfb498625",
+    "gpu_uuid": "GPU-16128952-b438-556a-00bb-93039ee24e56",
+    "node_uid": "3336cdd5-d245-436e-b57c-2f66c6dcaa41"
+  },
+  "node": {
+    "apiVersion": "v1",
+    "kind": "Node",
+    "metadata": {
+      "name": "k3s-wk-gpu2",
+      "uid": "3336cdd5-d245-436e-b57c-2f66c6dcaa41"
+    },
+    "status": {
+      "nodeInfo": {
+        "bootID": "209f8bc9-a478-48e4-925a-6e07ffa56f7a"
+      }
+    }
+  },
+  "pod": {
+    "apiVersion": "v1",
+    "kind": "Pod",
+    "metadata": {
+      "labels": {
+        "app": "approved-gateway",
+        "pod-template-hash": "generated"
+      },
+      "name": "gateway-current",
+      "namespace": "cps-compute",
+      "ownerReferences": [
+        {
+          "apiVersion": "apps/v1",
+          "controller": true,
+          "kind": "ReplicaSet",
+          "name": "approved-gateway-rs",
+          "uid": "22222222-2222-4222-8222-222222222222"
+        }
+      ],
+      "uid": "88888888-8888-4888-8888-888888888888"
+    },
+    "spec": {
+      "containers": [
+        {
+          "image": "registry.example/compute@sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "name": "gateway",
+          "volumeMounts": [
+            {
+              "mountPath": "/var/run/cps-native-approvals/approval.json",
+              "name": "approved-groups",
+              "readOnly": true,
+              "subPath": "approval.json"
+            }
+          ]
+        }
+      ],
+      "nodeName": "k3s-wk-gpu2",
+      "serviceAccountName": "compute-gateway",
+      "volumes": [
+        {
+          "configMap": {
+            "name": "approved-groups-test"
+          },
+          "name": "approved-groups"
+        }
+      ]
+    },
+    "status": {
+      "conditions": [
+        {
+          "status": "True",
+          "type": "Ready"
+        }
+      ],
+      "containerStatuses": [
+        {
+          "imageID": "docker-pullable://registry.example/compute@sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "name": "gateway",
+          "ready": true
+        }
+      ],
+      "phase": "Running"
+    }
+  },
+  "process": {
+    "container": "gateway",
+    "image": "registry.example/compute@sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+    "name": "gateway-current",
+    "namespace": "cps-compute",
+    "service_account": "compute-gateway",
+    "uid": "88888888-8888-4888-8888-888888888888"
+  },
+  "rs": {
+    "apiVersion": "apps/v1",
+    "kind": "ReplicaSet",
+    "metadata": {
+      "name": "approved-gateway-rs",
+      "namespace": "cps-compute",
+      "ownerReferences": [
+        {
+          "apiVersion": "apps/v1",
+          "controller": true,
+          "kind": "Deployment",
+          "name": "approved-gateway",
+          "uid": "11111111-1111-4111-8111-111111111111"
+        }
+      ],
+      "uid": "22222222-2222-4222-8222-222222222222"
+    },
+    "spec": {
+      "template": {
+        "metadata": {
+          "labels": {
+            "app": "approved-gateway",
+            "pod-template-hash": "generated"
+          }
+        },
+        "spec": {
+          "containers": [
+            {
+              "image": "registry.example/compute@sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+              "name": "gateway",
+              "volumeMounts": [
+                {
+                  "mountPath": "/var/run/cps-native-approvals/approval.json",
+                  "name": "approved-groups",
+                  "readOnly": true,
+                  "subPath": "approval.json"
+                }
+              ]
+            }
+          ],
+          "nodeName": "k3s-wk-gpu2",
+          "serviceAccountName": "compute-gateway",
+          "volumes": [
+            {
+              "configMap": {
+                "name": "approved-groups-test"
+              },
+              "name": "approved-groups"
+            }
+          ]
+        }
+      }
+    }
+  },
+  "sa": {
+    "apiVersion": "v1",
+    "kind": "ServiceAccount",
+    "metadata": {
+      "name": "compute-gateway",
+      "namespace": "cps-compute",
+      "uid": "33333333-3333-4333-8333-333333333333"
+    }
+  },
+  "target": {
+    "name": "cps-native-kai-epoch-node",
+    "namespace": "cps-compute",
+    "uid": "55555555-5555-4555-8555-555555555555"
+  }
+}
