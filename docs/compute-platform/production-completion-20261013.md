@@ -45,12 +45,15 @@ for the bounded live results of 2026-10-13 and their retained evidence.
 ## Current rollout boundary
 
 The consumer configuration rollout completed at **2026-10-14 14:07 UTC**.
-Both Hubs run Hub29b, Gateway08f and Node8c retain their images, and both consoles
-run Source87. Four fresh process acknowledgments and a completed new delivery
-journal confirm the unchanged policy and GPU driver epoch. No maintenance fence
-remains held. The canonical policy hash is
+At the recorded first-stage stop-persistence boundary, both Hubs run Hubd920,
+Gateway08f and Node8c retain their images, and both consoles run Sourceb36.
+Four fresh process acknowledgments and a completed new delivery journal confirm
+the unchanged policy and GPU driver epoch. The subsequent same-image legacy
+runtime enrollment and cold handover remain pending at this recorded boundary.
+The canonical policy hash is
 `sha256:d48f6553ed036c2e7adcc97417623fe0308be93ad13b20f246047ada118511b0`.
 See [configuration evidence](../../platform-staging/jupyter-extensions-20261013/notebook-consumer-config-actual-20261014.json).
+See [first-stage Hub adoption](../../platform-staging/jupyter-extensions-20261013/hub-stop-persistence-adoption-actual-20261014.json).
 
 Both registered CPU configurations now select
 `ghcr.io/mul-cps/cps-jupyter-notebook@sha256:86c4fd58afe7a4e18b850da9f007d3c9e8cc8c058d85c0b8fee667ed72779d59`.
@@ -75,8 +78,9 @@ The existing CIT `citnativegroupa` workspace account was adopted through the
 normal authenticated Source plan/execute API. Its name, created identity, roles,
 workspace descriptor and storage binding were preserved; only the neutral group
 membership and Source adoption receipt were added. It now reports `ready`.
-A later native server run exposed HTTP 403 for its activity callback; explicit
-scoped legacy runtime custody remains a production gate.
+A later native server run exposed HTTP 403 for its activity callback. Explicit
+scoped legacy runtime enrollment remains pending at the recorded first-stage
+boundary; normal Stop persistence is verified separately below.
 See [adoption evidence](../../platform-staging/jupyter-extensions-20261013/cit-neutral-adoption-actual-20261014.json).
 
 The simultaneous cross-Hub pilot reservation test passed at **15:32 UTC**.
@@ -91,11 +95,19 @@ See [reservation evidence](../../platform-staging/jupyter-extensions-20261013/cr
 Both console image-only updates to **Sourceb36** completed with guarded
 Deployment UID/spec/resourceVersion comparisons and fresh matching SQLite
 backups. Each console has one ready application replica and zero restarts;
-configuration, frontend and runtime dependencies are preserved. The candidate
-Hub CLI still rejects stale stopped-server bookkeeping, so no legacy runtime
-enrollment has been applied. Its saved Longhorn PVC remains intact.
+configuration, frontend and runtime dependencies are preserved. Before the Hub
+update, its CLI rejected stale stopped-server bookkeeping. The Hubd920 package
+from source `406a7a40342fd9fc021a3eb09a191ac987c135a7` then passed 421 installed
+tests with three explicit root-fixture skips and completed paired-Hub adoption.
+Normal Source CIT Start/Stop subsequently passed: automatic cleanup left all
+four native runtime fields empty, Hub and ORM server records absent, and zero
+notebook tokens and OAuth codes. The original Longhorn PVC UID was preserved;
+owned windows, all grants, Hub group membership and actor groups were restored
+exactly through the normal paths, without direct SQL writes. This acceptance did
+not perform legacy runtime enrollment or qualify human OAuth or hardware caps.
 See [console adoption](../../platform-staging/jupyter-extensions-20261013/console-legacy-runtime-adoption-actual-20261014.json)
 and [installed partial rollback](../../platform-staging/jupyter-extensions-20261013/reservation-installed-partial-rollback-actual-20261014.json).
+See [normal CIT Stop persistence](../../platform-staging/jupyter-extensions-20261013/cit-normal-stop-persistence-actual-20261014.json).
 
 Dynamic no-MIG GPU sharing remains bounded to the approved 5/10 GiB pilot and
 two parents within a 15 GiB pool. The passed current pair isolation/MPS history
@@ -332,12 +344,13 @@ the actual readonly-image constructor regression and remote overlay readback.
 Generic personal servers, native GPU workspaces and security/resource/mount
 settings retain their existing behavior. Publication evidence is
 `platform-staging/jupyter-extensions-20261013/neutral-cpu-bootstrap-hub-fix-publication-20261014.json`.
-Paired-Hub adoption completed at 12:16 UTC. Both Hubs run `29b7b3e`, all
+Paired-Hub adoption completed at 12:16 UTC. At that earlier boundary both Hubs
+ran `29b7b3e`, all
 four processes acknowledged the new configuration, delivery completed its new
 journal and the final native allocation check was zero. Only the two Hub images,
 their immutable bootstrap references and matching runtime trust pins changed.
 The existing notebook image, identity maps, Source, Gateway, Node and storage
-remain unchanged. Actual evidence is
+remained unchanged. Actual evidence is
 `platform-staging/jupyter-extensions-20261013/neutral-cpu-bootstrap-hub-handover-actual-20261014.json`.
 The normal CPU Ready/NFS marker gate then passed at 12:44 UTC with exit code
 zero. An existing CPS administrator's short-lived API token used normal Source
