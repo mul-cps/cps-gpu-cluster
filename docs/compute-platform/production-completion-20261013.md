@@ -25,7 +25,7 @@ for the bounded live results of 2026-10-13 and their retained evidence.
 | Gate | Verified state | Remaining completion evidence |
 | --- | --- | --- |
 | Repository ownership and shared policy | Separate application/deployment responsibilities and shared policy implemented; compatibility branches retained | Integrate and promote one tested consumer matrix with its exact policy hash; account for Fleet's watched branches |
-| SDK, Hub and Lab packages | All 12 notebook OCI variants were published with exact manifest/config/layer verification; both Hubs recovered on the tested legacy-role retention fix, with all installed modules matching the released wheel | Complete normal new-account lifecycle and promote one qualified consumer matrix |
+| SDK, Hub and Lab packages | All 12 notebook OCI variants were published with exact manifest/config/layer verification; both Hubs now run the registered CPU adapter with 158 installed-image tests, exact wheel modules and a completed scoped handover | Complete normal new-account lifecycle, automatic Lab state refresh and promote one qualified consumer matrix |
 | Both admin UI consoles | Both consoles run Source8d86 with the registered-account runtime-role fix; full SQLite bytes, all mounted configuration and preexisting identity receipts were preserved; unchanged UI assets previously passed 11 CPS browser checks | New-account HTTP lifecycle, CIT adoption and actual human OAuth/API acceptance |
 | Identity and group ownership | Existing reviewed aliases retained; both CPS legacy neutral accounts have permanent ready provenance; explicit custody migration and exact QA repair passed; both Hubs restarted without changing the repaired or legitimate legacy roles | Complete CIT adoption, real login grant survival/expiry and scoped administration; cross-Hub allowance continuity |
 | Native GPU isolation | Controlled no-MIG 5/20 GiB history retained; current CPS pair passed distinct 5 GiB OOM/recovery with peer progress, IPC denial in both directions, positive controls, kernel witnesses, restart retirement, complete bounded MPS OOM/recovery and observer cleanup, and confirmed normal closure | Complete restart behavior and broader packing; current bounded pool is 5/10 GiB, not a normal 20 GiB or cross-Hub qualification |
@@ -36,7 +36,7 @@ for the bounded live results of 2026-10-13 and their retained evidence.
 | GPU scheduling and packing | Stock KAI/HAMi components and controlled evidence exist; the combined coordinator/Hub release passed 2,080 source and installed-image tests with three known skips; activation remains disabled | Coordinator/binder deployment and post-Bind cap/CDI qualification; eight-A100 packing, teaching reclaim, protected sessions, 4/8-GPU JobSet retry and physical free-GPU telemetry |
 | Startup and defragmentation | Acceptance executors and thresholds are defined; representative measurements pending | Pre-pulled CPS/CIT bursts: p95 <=180s and maximum <=300s; KAI/fallback comparison with free capacity >=95% and waits/start <=110% of baseline, protected sessions unaffected |
 | NFS and S3 artifacts | Existing storage preserved; accepted TLS relay path and owner-filtered artifact access work; ten owned-prefix 14/90-day retention cases passed against real S3 and Argo with least-privilege authentication | Real gateway-created notebook lifecycle, scheduled cleanup and off-host recovery; new CIT filer requires its actual endpoint/export |
-| Monitoring | Four dashboards, scraping/rules and unavailable/stale handling implemented; several real targets up | Fresh complete GPU inventory, physical placement/free-capacity and cap/protection telemetry; rendered dashboards, timing data and alert notification delivery |
+| Monitoring | All four deployed dashboards rendered through actual Grafana with seven panels each and no browser page errors; unavailable physical/cap data was visibly marked | Promote and verify the newer dashboard definitions; complete eight-GPU inventory, physical placement/free-capacity and cap/protection telemetry, timing data and alert notification delivery |
 | Restore and recovery | All five overnight automatic backup jobs succeeded; three corrected console/gateway runs verified current application/policy provenance, checksums, SQLite integrity and cleanup; matching logical restore history retained | Next automatic schedule after provenance correction, coordinated matching application/configuration capture, connected login/spawn, populated NFS/archive/artifact recovery and encrypted off-host durability |
 | Moodle scaffold | Local provider, provenance migration, disabled scaffold and source tests implemented | Retain local CRUD, fake-provider reconciliation, no-network disabled behavior and clear enablement failure in the qualified release; Moodle remains planned/not deployed |
 | Release train and compatibility | Candidate artifacts and compatibility tooling prepared; no unified production release declared | Complete pilot -> RC -> production gates, matched SDK/Hub/Lab/runner/notebook matrix, immutable digests, checksums/SBOMs, release notes, rollback and qualified Fleet promotion |
@@ -45,14 +45,15 @@ for the bounded live results of 2026-10-13 and their retained evidence.
 ## Current rollout boundary
 
 Both Hubs are Ready on the corrected package image
-`ghcr.io/mul-cps/cps-compute@sha256:145bfde0bc7848ed3a2dde77de7909638a7069d08168aa2fd90f730d3360eb7e`.
-All 12 installed Hub modules match wheel `36483c8d`; the actual image passed
-134 focused tests. The full source suite passed 1,814 tests with three existing
+`ghcr.io/mul-cps/cps-compute@sha256:6c016afdfa50ff5c9827cf747988909c7f1ddbdda63d458a0987065e5239bb9b`.
+All 13 installed Hub code modules match wheel `3fe45e37`; the actual image passed
+158 focused tests, including 24 actual-installer/KubeSpawner cases. The full
+source suite passed 1,838 tests with three existing
 fixture skips. Four fresh component acknowledgments and a separate completed
 immutable delivery journal confirm the current unchanged policy/driver epoch.
 The successful recovery preserved the explicit custody migrations, repaired QA
 roles and legitimate legacy accounts; it did not recreate revoked ownership.
-See `platform-staging/gpu/qualification/hub-legacy-startup-recovery-20261014/`
+See `platform-staging/gpu/qualification/hub-registered-cpu-20261014/`
 and `platform-staging/gpu/qualification/neutral-custody-migration-20261014/`.
 
 Both admin consoles are Ready on
@@ -77,11 +78,15 @@ The exact successful hardware receipt is
 `877d6d496e327a264f5b936a34f8a7fc20830d88ccd75b634a0b457bce3448d4`.
 Earlier transport/observer failures remain retained as inconclusive attempts.
 
-The current normal registered CPU HTTP Start reached Hub admission but failed
-before notebook creation: the legacy KubeSpawner list does not contain the
-central `interactive-cpu` slug. A narrow released adapter fix is in progress;
-normal Stop and stopped-account/empty-Share readbacks completed. This gate is
-separate from the passed GPU pair and does not justify broadening GPU access.
+The released CPU adapter addresses the missing legacy profile slug and passes
+the immutable operator image through the real native wrapper. A new normal
+registered CPU HTTP run returned 503 because the new owner inherited unresolved
+callable init-container configuration. Normal Stop restored `state=stopped`,
+with empty servers and Shares; the trusted neutral-template fix is being tested
+against the actual installer configuration. The CPU lifecycle gate remains open and is separate from the passed
+GPU pair. The admin and Lab APIs authenticate the actual browser visitor;
+automatic record/view refresh is being qualified separately from the already
+deployed 20-second admin platform-status refresh.
 
 ## Earlier rollout and retained diagnostics
 
