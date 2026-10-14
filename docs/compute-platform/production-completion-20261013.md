@@ -25,15 +25,15 @@ for the bounded live results of 2026-10-13 and their retained evidence.
 | Gate | Verified state | Remaining completion evidence |
 | --- | --- | --- |
 | Repository ownership and shared policy | Separate application/deployment responsibilities and shared policy implemented; compatibility branches retained | Integrate and promote one tested consumer matrix with its exact policy hash; account for Fleet's watched branches |
-| SDK, Hub and Lab packages | All 12 notebook OCI variants were published with exact manifest/config/layer verification; the replacement Hub candidate passed 126 installed tests, but its paired rollout failed startup on both Hubs | Recover both Hubs with the narrow role-retention correction, complete normal new-account lifecycle and promote one qualified consumer matrix |
-| Both admin UI consoles | Both consoles run Source9698 with neutral creation and concurrent Start fixes; all preexisting rows and complete configuration preserved; unchanged UI assets previously passed 11 CPS browser checks | New-account HTTP lifecycle, CIT adoption and actual human OAuth/API acceptance |
-| Identity and group ownership | Existing reviewed aliases retained; both CPS legacy neutral accounts have permanent ready provenance; explicit custody-table migration passed in both Hub databases, and the exact stopped CPS QA account repair passed | Recover compatible startup, complete CIT adoption, real login grant survival/expiry and scoped administration; cross-Hub allowance continuity |
+| SDK, Hub and Lab packages | All 12 notebook OCI variants were published with exact manifest/config/layer verification; both Hubs recovered on the tested legacy-role retention fix, with all installed modules matching the released wheel | Complete normal new-account lifecycle and promote one qualified consumer matrix |
+| Both admin UI consoles | Both consoles run Source8d86 with the registered-account runtime-role fix; full SQLite bytes, all mounted configuration and preexisting identity receipts were preserved; unchanged UI assets previously passed 11 CPS browser checks | New-account HTTP lifecycle, CIT adoption and actual human OAuth/API acceptance |
+| Identity and group ownership | Existing reviewed aliases retained; both CPS legacy neutral accounts have permanent ready provenance; explicit custody migration and exact QA repair passed; both Hubs restarted without changing the repaired or legitimate legacy roles | Complete CIT adoption, real login grant survival/expiry and scoped administration; cross-Hub allowance continuity |
 | Native GPU isolation | Controlled no-MIG 5/20 GiB history retained; current CPS pair passed distinct 5 GiB OOM/recovery with peer progress, IPC denial in both directions, positive controls, kernel witnesses, restart retirement and confirmed normal closure | MPS, complete restart behavior and broader packing; current bounded pool is 5/10 GiB, not a normal 20 GiB or cross-Hub qualification |
 | Shared GPU reservations | Shared accounting implementation and reviewed qualification bindings exist | Actual simultaneous cross-Hub starts, all-member atomicity and partial-conflict rollback; prove permitted CPU sessions and independent batch execution; release only after confirmed stop |
 | Workspaces and local assignments | Local management, source-neutral reconciliation and RTC implementations exist | Two real visitors retaining their own identity, membership removal closing existing access, retained files and stopped-writer read-only archives |
 | Workflow gateway and admission | Source validation/ownership paths implemented; bounded CPS own-success/failure artifact/log bytes and foreign-versus-absent rejection passed; controller admission/RBAC checks passed | CIT normal-user own/foreign access, human authentication, token renewal and crafted workflow/admin bypass scenarios on the current release |
 | Notebook execution | Immutable runner/package/browser tests and bounded CPS selected-import/typed-parameter success/failure outputs passed | Complete current release/live coverage for saved snapshots, selected files, parameter cells, approved image digests and both owning Hubs |
-| GPU scheduling and packing | Stock KAI/HAMi components and controlled evidence exist; protected coordinator, signed-lease Hub glue and terminal-binder contracts passed source, installed-wheel and official KAI replay/build tests, with activation disabled | Combined release integration, coordinator/binder deployment and post-Bind cap/CDI qualification; eight-A100 packing, teaching reclaim, protected sessions, 4/8-GPU JobSet retry and physical free-GPU telemetry |
+| GPU scheduling and packing | Stock KAI/HAMi components and controlled evidence exist; the combined coordinator/Hub release passed 2,080 source and installed-image tests with three known skips; activation remains disabled | Coordinator/binder deployment and post-Bind cap/CDI qualification; eight-A100 packing, teaching reclaim, protected sessions, 4/8-GPU JobSet retry and physical free-GPU telemetry |
 | Startup and defragmentation | Acceptance executors and thresholds are defined; representative measurements pending | Pre-pulled CPS/CIT bursts: p95 <=180s and maximum <=300s; KAI/fallback comparison with free capacity >=95% and waits/start <=110% of baseline, protected sessions unaffected |
 | NFS and S3 artifacts | Existing storage preserved; accepted TLS relay path and owner-filtered artifact access work; ten owned-prefix 14/90-day retention cases passed against real S3 and Argo with least-privilege authentication | Real gateway-created notebook lifecycle, scheduled cleanup and off-host recovery; new CIT filer requires its actual endpoint/export |
 | Monitoring | Four dashboards, scraping/rules and unavailable/stale handling implemented; several real targets up | Fresh complete GPU inventory, physical placement/free-capacity and cap/protection telemetry; rendered dashboards, timing data and alert notification delivery |
@@ -43,6 +43,40 @@ for the bounded live results of 2026-10-13 and their retained evidence.
 | Hub 6 | Separate staging scope | Keep outside production promotion until stable chart compatibility and migration/storage qualification pass |
 
 ## Current rollout boundary
+
+Both Hubs are Ready on the corrected package image
+`ghcr.io/mul-cps/cps-compute@sha256:145bfde0bc7848ed3a2dde77de7909638a7069d08168aa2fd90f730d3360eb7e`.
+All 12 installed Hub modules match wheel `36483c8d`; the actual image passed
+134 focused tests. The full source suite passed 1,814 tests with three existing
+fixture skips. Four fresh component acknowledgments and a separate completed
+immutable delivery journal confirm the current unchanged policy/driver epoch.
+The successful recovery preserved the explicit custody migrations, repaired QA
+roles and legitimate legacy accounts; it did not recreate revoked ownership.
+See `platform-staging/gpu/qualification/hub-legacy-startup-recovery-20261014/`
+and `platform-staging/gpu/qualification/neutral-custody-migration-20261014/`.
+
+Both admin consoles are Ready on
+`ghcr.io/mul-cps/e2x-course-hub@sha256:8d86a5bc0859c2dfb6b65b4e9106531fe231e667b605f2621785a245327f69b8`,
+Source revision `d49dec7c51337552d4a7761e5c0ea057bb92046e`.
+Only the console image changed. Both online SQLite database byte hashes, schema 7,
+all five mounted configuration objects and the original identity receipt were
+preserved. Actual post-startup QA identity, service and runtime/control role
+readbacks matched the successful repair. The normal CPU HTTP lifecycle and human
+OAuth are separate acceptance gates.
+
+A fresh pair of ordinary Source-managed GPU workspaces reached Ready together
+with exact 5 GiB caps. Both completed normal Close, confirmed shutdown,
+reservation release and restoration of original membership/grant windows and Hub
+groups. The attempted MPS run then failed at the exec proxy with HTTP 414 before
+any MPS daemon or workload launched. Native cap records, epoch and inventory
+were unchanged with zero charged bytes. This is a transport failure, not an
+isolation result; MPS qualification remains open. The frozen failed receipt is
+`34fd924f2397bfeeab313c4947982f47ad87b4922690a8a98952fba2bcd4f76c`.
+
+## Earlier rollout and retained diagnostics
+
+The following captures describe the preceding deployments and failed attempts.
+They do not supersede the current healthy Hub/Source boundary above.
 
 The preceding healthy Hub baseline was the reviewed package image
 `ghcr.io/mul-cps/cps-compute@sha256:466b8398285a513499440dd00aaf0abc377cc49afe05f19e5556e79908106486`.
