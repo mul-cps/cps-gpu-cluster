@@ -92,6 +92,14 @@ three connection environment variables in the GPU notebook deployment.
 See [adoption evidence](../../platform-staging/jupyter-extensions-20261013/cit-neutral-adoption-actual-20261014.json).
 See [enrolled notebook activity and cleanup](../../platform-staging/jupyter-extensions-20261013/cit-enrolled-notebook-activity-actual-20261014.json).
 
+Authenticated profile/status API checks passed on both consoles. Selecting the
+approved `native-group-a` workspace returns an enabled 5 GiB profile on CPS and
+10 GiB on CIT, with `nativeGroupReady=true`. The global profile list retains its
+CPU baseline while broader GPU qualification is disabled. Each workspace gets
+its own approved profile; this does not enable arbitrary new GPU workspaces.
+Both temporary API-reader tokens were revoked through the normal Hub endpoint.
+See [paired admin profile APIs](../../platform-staging/jupyter-extensions-20261013/admin-scoped-gpu-profiles-actual-20261014.json).
+
 The simultaneous cross-Hub pilot reservation test passed at **15:32 UTC**.
 CIT held both shared canonical members once while CPS was denied; CPS then
 reached Ready after CIT's confirmed shutdown. Both workspaces closed and original
