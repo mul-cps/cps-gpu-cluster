@@ -1,11 +1,12 @@
-This overlay pins both administration consoles to the published status and
-workspace-readiness image from admin commit
-`1e3f6d12c9814325a4f5dc9f0949685c8e060a72`. Add `values.yaml` after the
-approved platform chart values. It selects the existing operator-owned
-`cps-platform-status` ConfigMap through `consoleStatus.configMapRef`.
+This display overlay selects the existing operator-owned
+`cps-platform-status` ConfigMap for both administration consoles. Add
+`values.yaml` after the approved platform release values. Application image pins
+come from those base release values; a display refresh uses the already
+qualified console application and database versions.
 
 The [canonical admin status documentation](https://github.com/mul-cps/e2x-course-hub/blob/1e3f6d12c9814325a4f5dc9f0949685c8e060a72/docs/platform-status.md)
-defines the version 1 JSON contract. Root owns the ConfigMap in the chart's
+defines the version 1 JSON contract, retained by Source revision `d49dec7c`.
+Root owns the ConfigMap in the chart's
 namespace, with `data.status.json`. The chart mounts its directory read-only at
 `/platform-status` and sets `CPS_PLATFORM_STATUS_PATH=/platform-status/status.json`.
 A directory mount allows ConfigMap updates to reach running consoles.
@@ -37,3 +38,10 @@ This display records an operator assessment. Real GPU group-sharing
 qualification still requires the actual startup, memory-limit, peer isolation,
 restart, cleanup, and cross-Hub gates. The overlay does not enable or qualify
 GPU profiles.
+
+The current operator assessment separates approved workspace availability from
+broader production qualification. The live access result comes from the
+source-owned approval registry and fresh component readiness. The display
+record can report a passed bounded behavior while the complete hardware gate
+remains pending. Refresh the record from retained evidence; its timestamp alone
+does not establish a new qualification result.

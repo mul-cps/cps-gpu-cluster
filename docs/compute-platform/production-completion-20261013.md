@@ -28,7 +28,7 @@ for the bounded live results of 2026-10-13 and their retained evidence.
 | SDK, Hub and Lab packages | All 12 notebook OCI variants were published with exact manifest/config/layer verification; both Hubs recovered on the tested legacy-role retention fix, with all installed modules matching the released wheel | Complete normal new-account lifecycle and promote one qualified consumer matrix |
 | Both admin UI consoles | Both consoles run Source8d86 with the registered-account runtime-role fix; full SQLite bytes, all mounted configuration and preexisting identity receipts were preserved; unchanged UI assets previously passed 11 CPS browser checks | New-account HTTP lifecycle, CIT adoption and actual human OAuth/API acceptance |
 | Identity and group ownership | Existing reviewed aliases retained; both CPS legacy neutral accounts have permanent ready provenance; explicit custody migration and exact QA repair passed; both Hubs restarted without changing the repaired or legitimate legacy roles | Complete CIT adoption, real login grant survival/expiry and scoped administration; cross-Hub allowance continuity |
-| Native GPU isolation | Controlled no-MIG 5/20 GiB history retained; current CPS pair passed distinct 5 GiB OOM/recovery with peer progress, IPC denial in both directions, positive controls, kernel witnesses, restart retirement and confirmed normal closure | MPS, complete restart behavior and broader packing; current bounded pool is 5/10 GiB, not a normal 20 GiB or cross-Hub qualification |
+| Native GPU isolation | Controlled no-MIG 5/20 GiB history retained; current CPS pair passed distinct 5 GiB OOM/recovery with peer progress, IPC denial in both directions, positive controls, kernel witnesses, restart retirement, complete bounded MPS OOM/recovery and observer cleanup, and confirmed normal closure | Complete restart behavior and broader packing; current bounded pool is 5/10 GiB, not a normal 20 GiB or cross-Hub qualification |
 | Shared GPU reservations | Shared accounting implementation and reviewed qualification bindings exist | Actual simultaneous cross-Hub starts, all-member atomicity and partial-conflict rollback; prove permitted CPU sessions and independent batch execution; release only after confirmed stop |
 | Workspaces and local assignments | Local management, source-neutral reconciliation and RTC implementations exist | Two real visitors retaining their own identity, membership removal closing existing access, retained files and stopped-writer read-only archives |
 | Workflow gateway and admission | Source validation/ownership paths implemented; bounded CPS own-success/failure artifact/log bytes and foreign-versus-absent rejection passed; controller admission/RBAC checks passed | CIT normal-user own/foreign access, human authentication, token renewal and crafted workflow/admin bypass scenarios on the current release |
@@ -65,13 +65,23 @@ readbacks matched the successful repair. The normal CPU HTTP lifecycle and human
 OAuth are separate acceptance gates.
 
 A fresh pair of ordinary Source-managed GPU workspaces reached Ready together
-with exact 5 GiB caps. Both completed normal Close, confirmed shutdown,
-reservation release and restoration of original membership/grant windows and Hub
-groups. The attempted MPS run then failed at the exec proxy with HTTP 414 before
-any MPS daemon or workload launched. Native cap records, epoch and inventory
-were unchanged with zero charged bytes. This is a transport failure, not an
-isolation result; MPS qualification remains open. The frozen failed receipt is
-`34fd924f2397bfeeab313c4947982f47ad87b4922690a8a98952fba2bcd4f76c`.
+with exact 5 GiB caps. The complete bounded MPS run passed: the over-cap
+allocation failed with CUDA result 2, both clients recovered and the peer
+continued verified kernels. All 479 native samples stayed within the respective
+caps. Private processes and endpoints exited, staged sources were removed and
+the observer confirmed exact baseline restoration with zero charged bytes.
+Both subsequent normal Close operations confirmed shutdown, released
+reservations and restored the original membership/grant windows and Hub groups.
+See `platform-staging/gpu/qualification/current-source-pair-mps-20261014/`.
+The exact successful hardware receipt is
+`877d6d496e327a264f5b936a34f8a7fc20830d88ccd75b634a0b457bce3448d4`.
+Earlier transport/observer failures remain retained as inconclusive attempts.
+
+The current normal registered CPU HTTP Start reached Hub admission but failed
+before notebook creation: the legacy KubeSpawner list does not contain the
+central `interactive-cpu` slug. A narrow released adapter fix is in progress;
+normal Stop and stopped-account/empty-Share readbacks completed. This gate is
+separate from the passed GPU pair and does not justify broadening GPU access.
 
 ## Earlier rollout and retained diagnostics
 
