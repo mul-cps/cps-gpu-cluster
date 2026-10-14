@@ -1,7 +1,10 @@
 """Offline actual private operator wiring; no Kubernetes/network/GPU calls."""
-import importlib.util,json,subprocess,tempfile,unittest
+import hashlib,importlib.util,json,subprocess,tempfile,unittest
+from contextlib import redirect_stdout
+from io import StringIO
 from pathlib import Path
 from types import SimpleNamespace
+from unittest.mock import patch
 
 ROOT=Path(__file__).resolve().parent.parent
 PRIVATE=Path('/home/bjoern/.local/state/cps-full-project-20261013/native-kai-node-epoch-handover-preparation-20261014')
@@ -15,6 +18,18 @@ class Tests(unittest.TestCase):
     def test_default_entrypoint_is_inert_before_loading_or_any_api(self):
         p=subprocess.run(['/home/bjoern/git/cps-compute/.venv/bin/python',str(ROOT/'handover_cli.py')],capture_output=True,text=True,check=True)
         self.assertEqual(json.loads(p.stdout),{'inert':True,'api_calls':False,'mutations':False})
+
+    def test_first_transient_readback_then_success_uses_real_event_signature(self):
+        c,m,h,r,adapter,e,old=self.cli.setup();calls=[];out=StringIO()
+        def readback():
+            calls.append('read')
+            if len(calls)==1:raise ValueError('transient old process presence')
+            return 'actual absence'
+        with patch.object(self.cli.time,'sleep'),redirect_stdout(out):
+            self.assertEqual(self.cli.bounded(m,readback,'exact-old-node-process-absence'),'actual absence')
+        self.assertEqual(calls,['read','read'])
+        self.assertEqual(json.loads(out.getvalue()),{'stage':'awaiting_actual_readback',
+            'wait_stage':'exact-old-node-process-absence','error':'ValueError'})
 
     def test_exact_existing_activation_software_accepts_bound_actual_observers(self):
         c,m,h,r,adapter,e,old=self.cli.setup();a=old.activation()
@@ -41,7 +56,10 @@ class Tests(unittest.TestCase):
         self.assertEqual(calls,['actual-create-uid'])
 
     def test_private_executable_and_observer_bytes_match_source_controlled_copies(self):
-        self.assertEqual((ROOT/'handover_cli.py').read_bytes(),(PRIVATE/'execute.py').read_bytes())
+        original=(PRIVATE/'execute.py').read_bytes();successor=(ROOT/'handover_cli.py').read_bytes()
+        self.assertEqual(hashlib.sha256(original).hexdigest(),'dc705972de7c9d4e2c13a24753eb037ebcadd3114aade00360ae73eb42527c87')
+        self.assertEqual(successor.replace(b'wait_stage=stage',b'stage=stage'),original)
+        self.assertEqual(successor,(PRIVATE/'execute-loggerfix.py').read_bytes())
         for name in ('capture.py','source_snapshot_code.py','source_reservation_code.py'):
             self.assertEqual((ROOT/'handover_observers'/name).read_bytes(),(PRIVATE/name).read_bytes())
 

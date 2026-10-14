@@ -35,7 +35,7 @@ def bounded(m,action,stage,seconds=150):
         try:return action()
         except (ValueError,RuntimeError,m.delivery.Pending) as error:
             if time.monotonic()>=deadline:raise RuntimeError('Bounded readback failed: '+stage) from error
-            m.event('awaiting_actual_readback',stage=stage,error=type(error).__name__);time.sleep(3)
+            m.event('awaiting_actual_readback',wait_stage=stage,error=type(error).__name__);time.sleep(3)
 
 def source_status(api,m,directory,*,require_zero=True):
     result={}
