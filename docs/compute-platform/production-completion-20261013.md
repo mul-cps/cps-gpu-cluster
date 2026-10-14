@@ -25,15 +25,15 @@ for the bounded live results of 2026-10-13 and their retained evidence.
 | Gate | Verified state | Remaining completion evidence |
 | --- | --- | --- |
 | Repository ownership and shared policy | Separate application/deployment responsibilities and shared policy implemented; compatibility branches retained | Integrate and promote one tested consumer matrix with its exact policy hash; account for Fleet's watched branches |
-| SDK, Hub and Lab packages | Both Hubs run Hub466 with the permanent registry installed, migration disabled and four fresh acknowledgments; all 12 notebook OCI variants were published with exact manifest/config/layer verification; the replacement Hub candidate passed 126 installed tests | Roll out the repaired account/Hub contract, complete normal new-account lifecycle and promote one qualified consumer matrix |
+| SDK, Hub and Lab packages | All 12 notebook OCI variants were published with exact manifest/config/layer verification; the replacement Hub candidate passed 126 installed tests, but its paired rollout failed startup on both Hubs | Recover both Hubs with the narrow role-retention correction, complete normal new-account lifecycle and promote one qualified consumer matrix |
 | Both admin UI consoles | Both consoles run Source9698 with neutral creation and concurrent Start fixes; all preexisting rows and complete configuration preserved; unchanged UI assets previously passed 11 CPS browser checks | New-account HTTP lifecycle, CIT adoption and actual human OAuth/API acceptance |
-| Identity and group ownership | Existing reviewed aliases retained; both CPS legacy neutral accounts have permanent ready provenance; both owning Hub registries are installed with explicit scoped service creation | Complete CIT adoption, real login grant survival/expiry and scoped administration; cross-Hub allowance continuity |
+| Identity and group ownership | Existing reviewed aliases retained; both CPS legacy neutral accounts have permanent ready provenance; explicit custody-table migration passed in both Hub databases, and the exact stopped CPS QA account repair passed | Recover compatible startup, complete CIT adoption, real login grant survival/expiry and scoped administration; cross-Hub allowance continuity |
 | Native GPU isolation | Controlled no-MIG 5/20 GiB history retained; current CPS pair passed distinct 5 GiB OOM/recovery with peer progress, IPC denial in both directions, positive controls, kernel witnesses, restart retirement and confirmed normal closure | MPS, complete restart behavior and broader packing; current bounded pool is 5/10 GiB, not a normal 20 GiB or cross-Hub qualification |
 | Shared GPU reservations | Shared accounting implementation and reviewed qualification bindings exist | Actual simultaneous cross-Hub starts, all-member atomicity and partial-conflict rollback; prove permitted CPU sessions and independent batch execution; release only after confirmed stop |
 | Workspaces and local assignments | Local management, source-neutral reconciliation and RTC implementations exist | Two real visitors retaining their own identity, membership removal closing existing access, retained files and stopped-writer read-only archives |
 | Workflow gateway and admission | Source validation/ownership paths implemented; bounded CPS own-success/failure artifact/log bytes and foreign-versus-absent rejection passed; controller admission/RBAC checks passed | CIT normal-user own/foreign access, human authentication, token renewal and crafted workflow/admin bypass scenarios on the current release |
 | Notebook execution | Immutable runner/package/browser tests and bounded CPS selected-import/typed-parameter success/failure outputs passed | Complete current release/live coverage for saved snapshots, selected files, parameter cells, approved image digests and both owning Hubs |
-| GPU scheduling and packing | Stock KAI/HAMi components and controlled evidence exist; protected coordinator and terminal-binder source contracts passed source, installed-wheel and official KAI replay/build tests, with activation disabled | Signed-lease Hub integration, coordinator/binder deployment and post-Bind cap/CDI qualification; eight-A100 packing, teaching reclaim, protected sessions, 4/8-GPU JobSet retry and physical free-GPU telemetry |
+| GPU scheduling and packing | Stock KAI/HAMi components and controlled evidence exist; protected coordinator, signed-lease Hub glue and terminal-binder contracts passed source, installed-wheel and official KAI replay/build tests, with activation disabled | Combined release integration, coordinator/binder deployment and post-Bind cap/CDI qualification; eight-A100 packing, teaching reclaim, protected sessions, 4/8-GPU JobSet retry and physical free-GPU telemetry |
 | Startup and defragmentation | Acceptance executors and thresholds are defined; representative measurements pending | Pre-pulled CPS/CIT bursts: p95 <=180s and maximum <=300s; KAI/fallback comparison with free capacity >=95% and waits/start <=110% of baseline, protected sessions unaffected |
 | NFS and S3 artifacts | Existing storage preserved; accepted TLS relay path and owner-filtered artifact access work; ten owned-prefix 14/90-day retention cases passed against real S3 and Argo with least-privilege authentication | Real gateway-created notebook lifecycle, scheduled cleanup and off-host recovery; new CIT filer requires its actual endpoint/export |
 | Monitoring | Four dashboards, scraping/rules and unavailable/stale handling implemented; several real targets up | Fresh complete GPU inventory, physical placement/free-capacity and cap/protection telemetry; rendered dashboards, timing data and alert notification delivery |
@@ -44,7 +44,7 @@ for the bounded live results of 2026-10-13 and their retained evidence.
 
 ## Current rollout boundary
 
-Both live Hubs now run the reviewed package image
+The preceding healthy Hub baseline was the reviewed package image
 `ghcr.io/mul-cps/cps-compute@sha256:466b8398285a513499440dd00aaf0abc377cc49afe05f19e5556e79908106486`.
 The permanent neutral-account registry and scoped Source service API are active.
 Both actual PostgreSQL schemas passed validation, and automatic registry
@@ -78,10 +78,13 @@ receipt. The saved receipt and administrator-visible timestamp match exactly;
 the installed Source validator reproduced the denial read-only. The service
 also lacks server lifecycle permission for this new owner. Actual SQL revealed
 that the neutral account receives the ordinary `user` role as well as its
-restricted group; its inherited `self` privilege needs removal. These are
-concrete package/custody defects with tested replacement packages available;
-the explicit migration, exact-account repair and deployment remain pending.
-The new identity and all owned records remain preserved for guarded retry.
+restricted group; its inherited `self` privilege needed removal. Explicit custody
+migrations now passed in both Hub PostgreSQL databases. The exact stopped CPS QA
+account was repaired with only its registered runtime/control roles and owned
+empty course group; its original identity receipt and every unrelated account,
+role, group and service remained unchanged. All three temporary CPU operator
+Jobs and Pods are confirmed absent. The normal HTTP lifecycle still awaits
+compatible Hub/Source rollout.
 
 Two ordinary approved CPS workspaces completed distinct 5 GiB cap tests, OOM
 recovery with peer progress and normal confirmed shutdown. A subsequent current
@@ -130,7 +133,15 @@ Its 126 installed tests include a real TCP server closing the first connection,
 and all 12 Hub code modules exactly match the wheel while the core package is
 unchanged. The published candidate is
 `ghcr.io/mul-cps/cps-compute@sha256:f5bff2df99281b659f550f8cddbdfafbdbc6593d827c1f417779263658998396`.
-It is not yet live. See the application verification record at
+The paired rollout applied this candidate, then stopped before fresh delivery
+activation because both Hubs failed startup with
+`Kernel role configuration cannot restore revoked ownership`. The configured
+legacy owners still hold their direct kernel-role assignments in both databases;
+the new startup guard omits them from its registered-account subset. Delivery
+remains paused and no workspace Start is attempted before convergence. Recovery
+must preserve current legitimate assignments while continuing to reject restored
+revoked ownership. The successful migrations and exact QA repair remain intact.
+See the application verification record at
 [`cps-compute` revision 6d87231](https://github.com/mul-cps/cps-compute/blob/6d87231/docs/hub-disconnected-read-verification.json).
 
 The controlled retention run passed all ten cases against the actual S3
@@ -149,11 +160,13 @@ Hera/RTC, UID 1000 and pinned inherited image/package provenance were checked.
 All twelve images are now published as qualification artifacts; none is promoted
 to production. The publication receipt is in the notebook repository at
 [`cps-jupyter-notebook` revision 1424a20](https://github.com/mul-cps/cps-jupyter-notebook/blob/1424a20/release/qualification/publication-20261014/receipt.json).
-The separate KAI coordinator/terminal-cleanup contracts passed **2,017 source
-tests** (3 existing fixture skips), **295 installed-wheel tests**, and the pinned
-official KAI replay/build. Activation stays disabled. Source contracts do not
+The separate KAI coordinator, signed-lease Hub glue and terminal-cleanup
+contracts passed **2,036 source tests** (3 existing fixture skips), **314
+installed-wheel tests**, and the pinned official KAI replay/build. The inert
+qualification OCI was published with exact remote digest verification.
+Activation stays disabled. Source contracts do not
 establish actual placement, Node UID API preconditions or post-Bind cap/CDI
-qualification; Hub integration and the live controlled pilot remain open.
+qualification; combined release integration and the live controlled pilot remain open.
 
 The approved CPS pilot remains bounded to its two existing workspaces and
 5/10 GiB policy. Source mutation initially reports `ready=false`; actual current
