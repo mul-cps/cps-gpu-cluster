@@ -83,9 +83,12 @@ the immutable operator image through the real native wrapper. A new normal
 registered CPU HTTP run returned 503 because the new owner inherited an actual
 chart `V1Container` init object that was not normalized by the fixed neutral
 template. Normal Stop restored `state=stopped`, with empty servers and Shares.
-The tested neutral-template fix now runs in both Hubs; its normal HTTP retry
-remains the next lifecycle gate. The CPU lifecycle gate remains open and is separate from the passed
-GPU pair. The admin and Lab APIs authenticate the actual browser visitor;
+The tested neutral-template fix now runs in both Hubs. Its subsequent normal
+HTTP retry stopped earlier at a gateway storage-provisioning 409 and did not
+reach Hub Start. Normal Stop again confirmed the workspace stopped with no
+servers or Shares; exact owned grant/membership windows and groups were restored
+through the API. The provisioning conflict is being diagnosed. The CPU lifecycle
+gate remains open and is separate from the passed GPU pair. The admin and Lab APIs authenticate the actual browser visitor;
 visible admin records now refresh after each 20-second interval, with stale data
 marked and drafts preserved. The Lab package passed 30 Node tests, four
 wheel/sdist tests, actual Lumino polling/lifecycle regressions and all seven
