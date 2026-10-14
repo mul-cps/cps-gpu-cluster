@@ -33,7 +33,7 @@ for the bounded live results of 2026-10-13 and their retained evidence.
 | Workspaces and local assignments | Local management, source-neutral reconciliation and RTC implementations exist | Two real visitors retaining their own identity, membership removal closing existing access, retained files and stopped-writer read-only archives |
 | Workflow gateway and admission | Source validation/ownership paths implemented; bounded CPS own-success/failure artifact/log bytes and foreign-versus-absent rejection passed; controller admission/RBAC checks passed | CIT normal-user own/foreign access, human authentication, token renewal and crafted workflow/admin bypass scenarios on the current release |
 | Notebook execution | Immutable runner/package/browser tests and bounded CPS selected-import/typed-parameter success/failure outputs passed | Complete current release/live coverage for saved snapshots, selected files, parameter cells, approved image digests and both owning Hubs |
-| GPU scheduling and packing | Stock KAI/HAMi components and controlled evidence exist; integrated Core/Hub source passed 2,151 tests with three known skips, plus separate installed Gateway/Hub suites. The packaged Node epoch image is published; activation remains disabled | Node package handover, coordinator/binder deployment and actual post-Bind cap/CDI qualification; eight-A100 packing, teaching reclaim, protected sessions, 4/8-GPU JobSet retry and physical free-GPU telemetry |
+| GPU scheduling and packing | Stock KAI/HAMi components and controlled evidence exist; integrated Core/Hub source passed 2,151 tests with three known skips, plus separate installed Gateway/Hub suites. The Node image handover passed actual hardware zero and four-process epoch checks; coordinator activation remains disabled | Coordinator/binder deployment and actual post-Bind cap/CDI qualification; eight-A100 packing, teaching reclaim, protected sessions, 4/8-GPU JobSet retry and physical free-GPU telemetry |
 | Startup and defragmentation | Acceptance executors and thresholds are defined; representative measurements pending | Pre-pulled CPS/CIT bursts: p95 <=180s and maximum <=300s; KAI/fallback comparison with free capacity >=95% and waits/start <=110% of baseline, protected sessions unaffected |
 | NFS and S3 artifacts | Existing storage preserved; accepted TLS relay path and owner-filtered artifact access work; ten owned-prefix 14/90-day retention cases passed against real S3 and Argo with least-privilege authentication | Real gateway-created notebook lifecycle, scheduled cleanup and off-host recovery; new CIT filer requires its actual endpoint/export |
 | Monitoring | All four deployed dashboards rendered through actual Grafana with seven panels each and no browser page errors; unavailable physical/cap data was visibly marked | Promote and verify the newer dashboard definitions; complete eight-GPU inventory, physical placement/free-capacity and cap/protection telemetry, timing data and alert notification delivery |
@@ -235,6 +235,17 @@ The integrated Gateway and Hub publication is recorded at
 [`cps-compute` revision 04404d3](https://github.com/mul-cps/cps-compute/blob/04404d3/docker/qualification/integrated-consumer-20261014/publication-receipt.json).
 Those immutable artifacts have installed-package and remote byte evidence; they
 are not deployed runtime acceptance evidence.
+The Node package handover subsequently completed at 10:37 UTC on 14 October.
+Its immutable `8c2c456` image is running, both Hub images and the Gateway main
+image remain unchanged, and the capture companion now targets that Node image.
+The controlled read-only hardware probe required the driver's root plus
+`CAP_SYS_ADMIN` read permission and confirmed zero native allocations after
+the stop barrier. All four current processes acknowledged the new epoch,
+and delivery resumed with a new completed journal while retaining the previous
+journal. The receipt is
+`platform-staging/jupyter-extensions-20261013/native-node-handover-actual-20261014.json`.
+This closes the Node handover gate; coordinator activation and actual post-Bind
+cap/CDI execution remain open.
 Actual authenticated CIT browser/API evidence is retained in
 `platform-staging/jupyter-extensions-20261013/cit-authenticated-ui-api-readback-20261014.json`.
 The owning `akadmin` token successfully read the admin API. A fresh headless
