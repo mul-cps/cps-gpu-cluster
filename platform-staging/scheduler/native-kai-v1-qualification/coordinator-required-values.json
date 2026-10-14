@@ -22,10 +22,11 @@
       "name": "cps-native-node-agent",
       "namespace": "cps-native-system",
       "service_account": "cps-native-node-agent",
+      "service_account_uid": "71b54a98-78aa-4566-bd0c-f8da0e46625e",
       "uid": "03e6bf5e-39ab-4c4a-b73f-1d6cf0ee8076"
     },
     "policyPath": "/var/run/cps-kai-pilot/policy.json",
-    "qualificationPath": "REQUIRED_REVIEWED_ATTESTED_OPERATOR_NODE_EPOCH_CONTRACT",
+    "qualificationPath": "/var/run/cps-kai-pilot/operator-qualification.json",
     "ttlSeconds": 30
   },
   "reservationTemplate": {

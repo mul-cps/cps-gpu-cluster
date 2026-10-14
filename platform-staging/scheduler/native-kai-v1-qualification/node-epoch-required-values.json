@@ -1,0 +1,27 @@
+{
+  "enabled": true,
+  "node_configuration": {
+    "data_sha256": "REQUIRED_ACTUAL_CONFIGMAP_FULL_DATA_SHA256",
+    "name": "REQUIRED_CREATED_IMMUTABLE_OPERATOR_CONFIG_NAME",
+    "namespace": "cps-native-system",
+    "resourceVersion": "REQUIRED_CURRENT_IMMUTABLE_OPERATOR_CONFIG_RV",
+    "uid": "REQUIRED_CREATED_IMMUTABLE_OPERATOR_CONFIG_UID"
+  },
+  "process": {
+    "container": "node-agent",
+    "image": "ghcr.io/mul-cps/cps-compute:qualification-native-node-980408a@sha256:5079458fe0fcb3c11231b21f1bbc1f4c12ad3ac578799932aa0bc9f46d5510c7",
+    "kind": "Deployment",
+    "name": "cps-native-node-agent",
+    "namespace": "cps-native-system",
+    "service_account": "cps-native-node-agent",
+    "service_account_uid": "71b54a98-78aa-4566-bd0c-f8da0e46625e",
+    "uid": "03e6bf5e-39ab-4c4a-b73f-1d6cf0ee8076"
+  },
+  "target": {
+    "name": "cps-native-kai-epoch-node",
+    "namespace": "cps-native-system",
+    "uid": "REQUIRED_CREATED_EPOCH_ACK_UID"
+  },
+  "ttlSeconds": 30,
+  "version": 1
+}

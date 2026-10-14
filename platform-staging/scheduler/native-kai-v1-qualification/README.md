@@ -31,7 +31,7 @@ python gateway_observer.py               # genuinely inert
 `read-only-preimage-receipt.json` pins private current deployment/SA/RBAC/config
 and all-four ACK captures. No Secrets, complete environments or Podexec were
 read. Actual images are145bf Hub,8d86 Source,440 Gateway and507 node; candidate
-4dca contains the reviewed core857/Hub4999 integration. SDK CPU successor52785e9
+4dca contains the reviewed core857/Hub4999 integration. SDK CPU successors52785e9 and50fa545
 must be retained when subsequently combining this candidate. No rollout here.
 NodeUID3336cdd5-d245-436e-b57c-2f66c6dcaa41, boot209f8bc9-a478-48e4-925a-6e07ffa56f7a,
 driver-generationb10498fc-9153-4394-875a-ea7cfb498625 and actual fixed GPU UUID
@@ -69,8 +69,9 @@ history entries are copied unchanged, then independently revalidated.
 4. Node config stays numericversion2, modeoperator-qualification at measured10,
    enrollment protocolv1. Numericversion1 would default to5 and is incorrect.
    Mount the one prospective node-config and retain all prior terminal evidence.
-   The attested operator epoch heartbeat seam below must be implemented and verified
-   before removing the v2 consumer flags or enabling traffic.
+   The reviewed dedicated operator epoch patch below must be installed and its
+   actual heartbeat independently read back before removing the v2 consumer
+   flags or enabling traffic.
 5. Replace the existing sole KAI binder using the reviewed officialbdf434e5 patch,
    an exact static binary and original official base1d10b1b. Preserve global
    HamiCore: pinned admission/binder plugins only set the SDK-expected
@@ -156,8 +157,62 @@ separate reviewed envelope. CUDA cap overflow/recovery and actual CRI/CDI eviden
 remain hardware gates, not passing offline booleans. The v1 pilot does not close
 normal approved v2 KAI route integration.
 
-The current fresh Node ACK conflict is real:507 requires the v2 consumer to
-publish a node approval heartbeat, while the coordinator requires the typed v1
-operator authority. A dedicated mode-bound attested node heartbeat independent
-of that template consumer is the next narrowly owned offline implementation.
-No prospective v1 all-four dynamic approval ACK is invented by this packet.
+The former507 heartbeat conflict is addressed by the default-off, offline-tested
+`node_epoch_patch.py` recipe and the Core `OperatorNodeEpochObserver`. The patch
+adds only an optional `--operator-epoch-config`, rejects every overlap with v2
+approval inputs, and reuses the unchanged process and driver health validators.
+The old v2 consumer/publisher/client are unchanged. No prospective v1 all-four
+dynamic approval ACK is invented by this packet.
+
+## Exact node epoch recipe and remaining installation values
+
+`node_epoch_patch.py` checks the full exact507 node code SHA and actual unchanged
+process/revision helper hashes before producing a new private source bundle.
+The new optional module is generated from the tested Core source with only two
+vendored import substitutions and the explicit node startup/transport factory.
+All other original source bytes are retained. The source-snapshot bytes are
+unchanged: the opt-in module is separately hashed by the node entry point.
+No image, node object, ConfigMap or source file is changed on the cluster.
+
+```sh
+python node_epoch_patch.py                 # no API, credentials or GPU calls
+python node_epoch_patch.py --base-bundle ACTUAL_PRIVATE_507_BUNDLE_JSON \
+  --core-source EXACT_CORE_NATIVE_SCHEDULER_NODE_EPOCH_PY \
+  --output NEW_PRIVATE_NODE_SOURCE_DIR
+CPS_KAI_ACTUAL507_SOURCE_BUNDLE=ACTUAL_PRIVATE_507_BUNDLE_JSON \
+CPS_KAI_OPERATOR_EPOCH_SOURCE=EXACT_CORE_NATIVE_SCHEDULER_NODE_EPOCH_PY \
+  EXACT_TESTED_SDK_PYTHON -m pytest -q test_packet.py test_node_epoch_patch.py
+```
+
+The test recipe needs the exact pinned source bundle and Core test fixtures;
+`PYTHONPATH` must select that Core source and tests. No missing prerequisite is
+silently skipped.31 local packet tests pass, including real local TLS transport,
+actual507 parser/default-off behavior, installed vendored module import and
+actual507 config validation. Tests remain offline and never qualify hardware.
+
+Root must create the one protected mutable epoch CM with only
+`data:{"epoch.json":"{}"}`, save its actual UID and keep it separate from the
+four original ACKs. The Gateway's `epoch.qualificationPath` is the same complete
+central operator document; `nodeProcess.service_account_uid` is a custom config
+pin of the actual current SAUID, not Kubernetes metadata. Capture the immutable
+operator node-config actual UID/RV/full data hash and new actual node controller
+template/Pod identity, then fill `node-epoch-required-values.json`. It is an
+incomplete proposal and is deliberately invalid until every required actual
+value is filled. `node-epoch-disabled.json` is the valid no-I/O disabled shape.
+Materialize the reviewed completed file as root-owned0600, regular/no-symlink
+under a private0700 directory; the existing node backend checks these exact
+properties. A projected ConfigMap symlink is not directly accepted for this
+private settings file. Add the one optional flag only inside the explicit Root
+maintenance stage, preserving the exact settings preimage and inverse.
+
+Add actual downward API `CPS_NATIVE_OPERATOR_POD_NAME`, `_UID`, `_NAMESPACE`
+fields. Keep the current signed node SA and current verified Kubernetes CA;
+the opt-in transport disables proxy/redirects, rereads a confined rotated token
+for each call, uses5second I/O timeouts,1MiB bounds and JSON Patch UID/RV/full-data
+tests. Permit only GET/PATCH of the named epoch CM, reads of the exact immutable
+configuration, own SA/Pod/Deployment/ReplicaSet and selected node. The Gateway
+observer needs those reads; binder and Hub receive no authority write access.
+After actual startup, verify current epoch against the typed central contract
+before Source traffic. Unknown outcome denies and retains custody. This fixes
+the missing operator heartbeat seam; actual cap/CRI/CDI/maintenance/post-Bind
+qualification and the normal approved v2 pending route remain separate gates.

@@ -9,7 +9,7 @@ import re
 import stat
 import sys
 
-NODE_CODE_SHA = 'b1deccd3e48b8c38ec0c87416dc04d9ae860e260910ff929f697be5d17e14429'
+NODE_CODE_SHA = 'f01b24bc984a153e9995549ef09f73167500f375d79e078a7e7aa9e1171c3664'
 NODE_UID = '3336cdd5-d245-436e-b57c-2f66c6dcaa41'
 BOOT = '209f8bc9-a478-48e4-925a-6e07ffa56f7a'
 GENERATION = 'b10498fc-9153-4394-875a-ea7cfb498625'
@@ -112,7 +112,7 @@ def main():
     if not a.execute: print(json.dumps({'state':'inert','api_calls':False,'gpu_calls':False}));return
     need(os.geteuid()==0 and a.phase and a.pod_uid and re.fullmatch('[a-f0-9]{60}',a.binding_id or '')
          and a.crictl and a.crictl.startswith('/host/var/lib/rancher/k3s/data/'),'Explicit bounded root witness required')
-    source=Path('/opt/native/node_agent.py');need(hashlib.sha256(source.read_bytes()).hexdigest()==NODE_CODE_SHA,'Exact live507 node code required')
+    source=Path('/opt/native/node_agent.py');need(hashlib.sha256(source.read_bytes()).hexdigest()==NODE_CODE_SHA,'Exact reviewed507 operator epoch patch required')
     sys.path.insert(0,'/opt/native');spec=importlib.util.spec_from_file_location('_verified_node_agent',source)
     na=importlib.util.module_from_spec(spec);sys.modules[spec.name]=na;spec.loader.exec_module(na)
     print(json.dumps(observer(na,a.pod_uid,a.binding_id,a.phase,Path(a.crictl)),sort_keys=True))
