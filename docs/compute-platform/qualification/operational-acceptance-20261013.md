@@ -542,3 +542,24 @@ Workflow terminal statuses were synthetic, and transport ambiguity was injected
 at the real conditional-delete boundary. This does not establish the actual
 gateway notebook execution/retention lifecycle, automatic production deletion
 or coordinated off-host restore.
+
+## Gateway acquisition timeout recovery — 2026-10-14
+
+Both failed pair starts were closed by the normal Source service. Actual Pod
+and enrollment absence, inactive generic reservations, released exact native
+ledger rows, unchanged registrations/storage and stopped workspace state were
+confirmed before restoring the original permission windows and Hub groups.
+The final protected driver readback reported zero active caps and zero charged
+bytes. An initial HTTP 414 transport failure occurred before any Source mutation;
+the bounded stdin-loader retry passed all recovery guards.
+
+The gateway readiness candidate passed 1,863 core tests and installed-wheel
+verification, with the published OCI manifest digest independently checked.
+Read-only timings improved from 4,076 to 504 ms for workspace validation,
+422 to 297 ms for approval references, and 4,615 to 740 ms for current claims.
+Immutable fields no longer trigger component observations; authorizations
+still check fresh readiness and revocation. No TTL cache or permission widening
+was added. Live handover and the new concurrent MPS run remain pending.
+
+The compact evidence is retained in
+`platform-staging/gpu/qualification/concurrent-source5/gateway-readiness-receipt-20261014.json`.

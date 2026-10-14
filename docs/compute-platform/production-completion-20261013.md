@@ -97,8 +97,19 @@ The next two normal Source pair starts did not reach simultaneous readiness;
 no MPS workload executed. The first aborted pair eventually closed both
 workspaces and restored all windows/groups. The second timed out in the Hub's
 native binding acquisition HTTP calls before either Pod existed. Its two
-reservations remain held while normal shutdown and the acquisition completion
-are investigated. Pod absence alone does not authorize clearing those holds.
+reservations were subsequently released through confirmed normal Source Close.
+Exact saved memberships, grants and Hub groups were restored afterward. Root
+independently reread both released ledger rows; the protected hardware readback
+reported zero active caps and zero charged bytes. No force clear was used.
+
+Read-only tracing found repeated component readiness observations during
+immutable configuration reads. A tested released-package candidate removes
+that repetition while retaining fresh authorization, readiness-loss and
+revocation checks. All 1,863 core tests passed; 43 installed modules matched
+the built wheel, and the remote image digest matched the reviewed local image.
+The candidate has not yet replaced the live gateway. The exact candidate and
+recovery boundaries are recorded in
+`platform-staging/gpu/qualification/concurrent-source5/gateway-readiness-receipt-20261014.json`.
 The frozen MPS runner and mapper passed their CPU controls; that is preparation,
 not hardware evidence.
 

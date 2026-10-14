@@ -1,0 +1,50 @@
+{
+  "core_tests": {
+    "existing_fixture_skips": 3,
+    "passed": 1863
+  },
+  "failed_pair_recovery": {
+    "exact_preimages_restored": true,
+    "final_active_caps": 0,
+    "final_charged_bytes": 0,
+    "force_clears": false,
+    "mps_executed": false,
+    "normal_source_closes_confirmed": true,
+    "plan_sha256": "16d9ff87290f6d50b7510e70d65829cfe5e8c10c66ea046ff7c6d0739b6cd3c8",
+    "receipt_sha256": "d786a9d1c540158d1ca79bf092475a679ac21b42aa624059f43a5ea57757e76b",
+    "root_fresh_ledger_matches_receipt": true
+  },
+  "image": "ghcr.io/mul-cps/cps-compute@sha256:440711b2bb00151f8625e9df54c97e7ed4d137ca246453aae9ad7524d6681c3d",
+  "installed_code_files_matched_to_wheel": 43,
+  "live_image_updated": false,
+  "oci_config_digest": "sha256:2dc2025e0607fefc289d262b505bc9c79149c9031a8e1e4bd3b55a20ce8f95d4",
+  "production_qualified": false,
+  "read_only_gateway_timings": {
+    "approval_reference_ms": {
+      "after": 297,
+      "before": 422
+    },
+    "claim_current_ms": {
+      "after": 740,
+      "before": 4615
+    },
+    "workspace_ms": {
+      "after": 504,
+      "before": 4076
+    }
+  },
+  "readiness_contract": {
+    "authorization_checks_fresh": true,
+    "immutable_fields_skip_component_observation": true,
+    "readiness_loss_and_revocation_deny": true,
+    "ttl_cache_added": false
+  },
+  "runtime_uid_gid": [
+    10001,
+    10001
+  ],
+  "source_revision": "8ecb7e38c26d4be5b5e753e62ae4d0957aa84071",
+  "state": "gateway-readiness-candidate-published-and-tested",
+  "version": 1,
+  "wheel_sha256": "e3788ee0f995f9dd35d497d76d824a26baf3f353a7539cf44aa87ca02fb948d0"
+}
