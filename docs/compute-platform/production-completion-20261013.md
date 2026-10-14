@@ -70,6 +70,18 @@ gate. Existing CPS legacy adoptions remain durable; CIT adoption still requires
 an actual administrator login refresh. No identity is inferred from names or
 email equality.
 
+The bounded normal HTTP CPU run created its owned course, term, group,
+membership and workspace, then created the new permanent Hub identity. Start
+failed before any notebook Pod: the owning console's actual service-token user
+response omits `created`, which Source requires to verify the saved identity
+receipt. The saved receipt and administrator-visible timestamp match exactly;
+the installed Source validator reproduced the denial read-only. The service
+also lacks server lifecycle permission for this new owner. Actual SQL revealed
+that the neutral account receives the ordinary `user` role as well as its
+restricted group; its inherited `self` privilege needs removal. These are
+concrete package/custody defects under repair, not GPU or network failures.
+The new identity and all owned records remain preserved for guarded retry.
+
 Two ordinary approved CPS workspaces completed distinct 5 GiB cap tests, OOM
 recovery with peer progress and normal confirmed shutdown. A subsequent current
 pair denied cross-parent IPC in **both directions** with CUDA result 800,

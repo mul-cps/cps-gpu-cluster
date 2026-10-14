@@ -496,3 +496,25 @@ Pod requested a GPU or mounted a volume, Secret or service-account token.
 Exact UID-precondition deletion and actual absence were verified for both.
 See `platform-staging/scheduler/qualification/dynamic-admission/k3s-binding-cas-receipt-20261014.json`.
 This measures installed API behavior; it does not qualify native KAI placement.
+
+## New-account normal HTTP CPU acceptance
+
+The controlled run created five Source records through the normal authenticated
+HTTP API and the permanent neutral Hub identity through Source Start. It did
+not spawn a notebook Pod. The account registry receipt retains the actual
+identity ID and creation timestamp; the full administrator-visible model
+matches that timestamp exactly. Source persisted the receipt in state `created`.
+
+The owning console service's actual GET response returns HTTP 200 but omits
+`created`. A read-only invocation of the installed Source account validator
+reproduced its `PermissionError` with that response and the valid persisted
+receipt. Actual service permissions also exclude new-owner server deletion.
+The service token inherits its Service roles; no token is replaced or broadened
+by the diagnostic. Actual Hub SQL further shows ordinary `user`/`self` privilege
+on this neutral account, which must become the restricted kernel role alone.
+
+Private mode-0600 evidence is retained in
+`source-cpu-http-account-seam-v2-20261014/` beneath the operator state directory.
+The owned account, Source records, first failure and subsequent readbacks are
+preserved. The CPU lifecycle, access removal and restart gate remains failed
+until the released custody fix passes the original normal HTTP path.
