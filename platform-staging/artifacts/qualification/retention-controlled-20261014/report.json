@@ -1,0 +1,916 @@
+{
+  "actualImageId": "ghcr.io/mul-cps/cps-compute@sha256:7a9caff2fe4874adad523dd2be3fc6dcb00930b7dc4d3ddbc2f3141de20d15ea",
+  "automaticCleanupActivated": false,
+  "cleanup": [
+    {
+      "deleteAccepted": true,
+      "kind": "Pod",
+      "name": "cps-retention-qa-a1aa95a89e",
+      "namespace": "cps-compute",
+      "removed": true,
+      "uid": "00e04bf6-5a35-4763-9342-bfdaeb746098"
+    },
+    {
+      "deleteAccepted": true,
+      "kind": "ConfigMap",
+      "name": "cps-retention-qa-a1aa95a89e",
+      "namespace": "cps-compute",
+      "removed": true,
+      "uid": "225947bf-96f2-4320-9afb-b6d3e5432a19"
+    },
+    {
+      "deleteAccepted": true,
+      "kind": "Workflow",
+      "name": "cps-37f47c1f-2174-4743-8673-4c6cdbaddd6a",
+      "namespace": "cps-workflows",
+      "removed": true,
+      "uid": "a3d15632-b624-46d9-95f3-affc411ccf40"
+    },
+    {
+      "deleteAccepted": true,
+      "kind": "Workflow",
+      "name": "cps-98fb1551-5a50-4bb2-a008-10738d41c280",
+      "namespace": "cps-workflows",
+      "removed": true,
+      "uid": "ed29d014-04ab-44e9-b358-14bda8554a55"
+    },
+    {
+      "deleteAccepted": true,
+      "kind": "Workflow",
+      "name": "cps-4c3bedab-8c2b-4ec9-b229-2e0012a1229a",
+      "namespace": "cps-workflows",
+      "removed": true,
+      "uid": "71aacfd6-f6c3-4108-beb5-762fa24c4425"
+    },
+    {
+      "deleteAccepted": true,
+      "kind": "Workflow",
+      "name": "cps-d297d1c7-64d1-4128-a091-bb8c6d41940f",
+      "namespace": "cps-workflows",
+      "removed": true,
+      "uid": "ef225d48-fc09-4b57-a8d6-ef1178f5abf1"
+    },
+    {
+      "deleteAccepted": true,
+      "kind": "Workflow",
+      "name": "cps-4b9f19c8-9231-436b-ae42-69cd3dad9f21",
+      "namespace": "cps-workflows",
+      "removed": true,
+      "uid": "5e45ebaa-8ace-4cdc-900a-8f1d26636461"
+    },
+    {
+      "deleteAccepted": true,
+      "kind": "Workflow",
+      "name": "cps-16e9bec7-68b1-4631-a377-1e8b0180e270",
+      "namespace": "cps-workflows",
+      "removed": true,
+      "uid": "bae9feba-e03c-4671-9bd4-3d7911e6a5ff"
+    },
+    {
+      "deleteAccepted": true,
+      "kind": "Workflow",
+      "name": "cps-e603cc51-fcf1-4bf7-bf67-df430d4dfea9",
+      "namespace": "cps-workflows",
+      "removed": true,
+      "uid": "dde33862-6279-472d-8234-ebc9ac4031a9"
+    },
+    {
+      "deleteAccepted": true,
+      "kind": "Workflow",
+      "name": "cps-04a1b8ce-b35a-4862-9bda-1ba4f27ee226",
+      "namespace": "cps-workflows",
+      "removed": true,
+      "uid": "0eaaf172-b810-47ad-92ae-2d00caf608a0"
+    },
+    {
+      "deleteAccepted": true,
+      "kind": "Workflow",
+      "name": "cps-a1f760cb-e76b-452c-8431-823bf820f1f2",
+      "namespace": "cps-workflows",
+      "removed": true,
+      "uid": "a303178f-522c-4f89-843e-5f5a6bf4adfd"
+    },
+    {
+      "deleteAccepted": true,
+      "kind": "Workflow",
+      "name": "cps-68557694-0b8f-4946-aa7f-6f03663deba9",
+      "namespace": "cps-workflows",
+      "removed": true,
+      "uid": "784ef00d-f43d-4538-9e45-9238bd0ac498"
+    },
+    {
+      "deleteAccepted": true,
+      "kind": "RoleBinding",
+      "name": "cps-retention-qa-a1aa95a89e",
+      "namespace": "cps-workflows",
+      "removed": true,
+      "uid": "e441ca6c-2167-476b-b4d2-a0f0867acc60"
+    },
+    {
+      "deleteAccepted": true,
+      "kind": "Role",
+      "name": "cps-retention-qa-a1aa95a89e",
+      "namespace": "cps-workflows",
+      "removed": true,
+      "uid": "c0a37c18-b35e-4332-b5c5-56797c224204"
+    },
+    {
+      "deleteAccepted": true,
+      "kind": "ServiceAccount",
+      "name": "cps-retention-qa-a1aa95a89e",
+      "namespace": "cps-compute",
+      "removed": true,
+      "uid": "2ed7cf14-9ecc-447a-bf0b-a80a26431085"
+    }
+  ],
+  "executionPodsCreated": 0,
+  "fixture": {
+    "cases": [
+      {
+        "actualFinishedAt": "2026-10-14T00:51:43Z",
+        "beforeBoundary": {
+          "apply": false,
+          "deleted": 0,
+          "eligible": 0,
+          "errors": 0,
+          "examined": 1,
+          "objects": [],
+          "reconciled": 0,
+          "skipped": 1,
+          "truncated": false
+        },
+        "case": "boundary",
+        "days": 14,
+        "faultOutcome": {},
+        "freshProcessRecovery": {
+          "body_hash": null,
+          "new_process": true,
+          "recovery_passed": true,
+          "sweep": {
+            "apply": true,
+            "deleted": 0,
+            "eligible": 0,
+            "errors": 0,
+            "examined": 0,
+            "objects": [],
+            "reconciled": 0,
+            "skipped": 0,
+            "truncated": false
+          }
+        },
+        "key": "notebook-inputs/68557694-0b8f-4946-aa7f-6f03663deba9/snapshot.tar",
+        "lifecycle": {
+          "artifacts": {
+            "snapshot": {
+              "actor": "retention",
+              "at": "2026-10-28T00:51:49+00:00",
+              "etag": "\"103be215707037ff2979d1eb938f3af9\"",
+              "state": "deleting",
+              "token": "35280c14756840ce8cf5950ba3cf7778"
+            }
+          },
+          "version": 1
+        },
+        "objectLastModified": "2026-10-14T00:51:49+00:00",
+        "originalEtag": "\"103be215707037ff2979d1eb938f3af9\"",
+        "owner": "57a83dc33f7fdc9d8b8cc1cbe23af17627055d35531da6bf530e691e019be7a",
+        "presentBodySha256": null,
+        "sweep": {
+          "apply": true,
+          "deleted": 1,
+          "eligible": 1,
+          "errors": 0,
+          "examined": 1,
+          "objects": [
+            {
+              "key": "notebook-inputs/68557694-0b8f-4946-aa7f-6f03663deba9/snapshot.tar",
+              "time": "2026-10-28T00:51:49+00:00",
+              "workflow_uid": "784ef00d-f43d-4538-9e45-9238bd0ac498"
+            }
+          ],
+          "reconciled": 0,
+          "skipped": 0,
+          "truncated": false
+        },
+        "testNow": "2026-10-28T00:51:49+00:00",
+        "workflowUid": "784ef00d-f43d-4538-9e45-9238bd0ac498"
+      },
+      {
+        "actualFinishedAt": "2026-10-14T00:51:43Z",
+        "beforeBoundary": {
+          "apply": false,
+          "deleted": 0,
+          "eligible": 0,
+          "errors": 0,
+          "examined": 1,
+          "objects": [],
+          "reconciled": 0,
+          "skipped": 1,
+          "truncated": false
+        },
+        "case": "boundary",
+        "days": 90,
+        "faultOutcome": {},
+        "freshProcessRecovery": {
+          "body_hash": null,
+          "new_process": true,
+          "recovery_passed": true,
+          "sweep": {
+            "apply": true,
+            "deleted": 0,
+            "eligible": 0,
+            "errors": 0,
+            "examined": 0,
+            "objects": [],
+            "reconciled": 0,
+            "skipped": 0,
+            "truncated": false
+          }
+        },
+        "key": "run-artifacts/a1f760cb-e76b-452c-8431-823bf820f1f2/executed.ipynb",
+        "lifecycle": {
+          "artifacts": {
+            "executed-notebook": {
+              "actor": "retention",
+              "at": "2027-01-12T00:51:51+00:00",
+              "etag": "\"24cce12457770312d0d070e4013ea5d9\"",
+              "state": "deleting",
+              "token": "c977fb123d8e4f9f8b7cc1424db878be"
+            }
+          },
+          "version": 1
+        },
+        "objectLastModified": "2026-10-14T00:51:51+00:00",
+        "originalEtag": "\"24cce12457770312d0d070e4013ea5d9\"",
+        "owner": "57a83dc33f7fdc9d8b8cc1cbe23af17627055d35531da6bf530e691e019be7a",
+        "presentBodySha256": null,
+        "sweep": {
+          "apply": true,
+          "deleted": 1,
+          "eligible": 1,
+          "errors": 0,
+          "examined": 1,
+          "objects": [
+            {
+              "key": "run-artifacts/a1f760cb-e76b-452c-8431-823bf820f1f2/executed.ipynb",
+              "time": "2027-01-12T00:51:51+00:00",
+              "workflow_uid": "a303178f-522c-4f89-843e-5f5a6bf4adfd"
+            }
+          ],
+          "reconciled": 0,
+          "skipped": 0,
+          "truncated": false
+        },
+        "testNow": "2027-01-12T00:51:51+00:00",
+        "workflowUid": "a303178f-522c-4f89-843e-5f5a6bf4adfd"
+      },
+      {
+        "actualFinishedAt": "2026-10-14T00:51:44Z",
+        "beforeBoundary": {
+          "apply": false,
+          "deleted": 0,
+          "eligible": 0,
+          "errors": 0,
+          "examined": 1,
+          "objects": [],
+          "reconciled": 0,
+          "skipped": 1,
+          "truncated": false
+        },
+        "case": "active",
+        "days": 14,
+        "faultOutcome": {},
+        "freshProcessRecovery": {
+          "body_hash": "f75f4bcb71d71460011af88ffd5d13ae39625c88518a80522efc37a7cdd0c7f7",
+          "new_process": true,
+          "recovery_passed": true,
+          "sweep": {
+            "apply": true,
+            "deleted": 0,
+            "eligible": 0,
+            "errors": 0,
+            "examined": 1,
+            "objects": [],
+            "reconciled": 0,
+            "skipped": 1,
+            "truncated": false
+          }
+        },
+        "key": "notebook-inputs/04a1b8ce-b35a-4862-9bda-1ba4f27ee226/snapshot.tar",
+        "lifecycle": {
+          "artifacts": {},
+          "version": 1
+        },
+        "objectLastModified": "2026-10-14T00:51:53+00:00",
+        "originalEtag": "\"0759d0f2464686d04943bead0b5ad8e5\"",
+        "owner": "57a83dc33f7fdc9d8b8cc1cbe23af17627055d35531da6bf530e691e019be7a",
+        "presentBodySha256": "f75f4bcb71d71460011af88ffd5d13ae39625c88518a80522efc37a7cdd0c7f7",
+        "sweep": {
+          "apply": true,
+          "deleted": 0,
+          "eligible": 0,
+          "errors": 0,
+          "examined": 1,
+          "objects": [],
+          "reconciled": 0,
+          "skipped": 1,
+          "truncated": false
+        },
+        "testNow": "2026-10-29T00:51:53+00:00",
+        "workflowUid": "0eaaf172-b810-47ad-92ae-2d00caf608a0"
+      },
+      {
+        "actualFinishedAt": "2026-10-14T00:51:44Z",
+        "beforeBoundary": {
+          "apply": false,
+          "deleted": 0,
+          "eligible": 0,
+          "errors": 0,
+          "examined": 1,
+          "objects": [],
+          "reconciled": 0,
+          "skipped": 1,
+          "truncated": false
+        },
+        "case": "active",
+        "days": 90,
+        "faultOutcome": {},
+        "freshProcessRecovery": {
+          "body_hash": "f5cc1a78fd2daa984455d97bed5a7930e2ff94da9eaaa533a9ea0a9ad1b377b2",
+          "new_process": true,
+          "recovery_passed": true,
+          "sweep": {
+            "apply": true,
+            "deleted": 0,
+            "eligible": 0,
+            "errors": 0,
+            "examined": 1,
+            "objects": [],
+            "reconciled": 0,
+            "skipped": 1,
+            "truncated": false
+          }
+        },
+        "key": "run-artifacts/e603cc51-fcf1-4bf7-bf67-df430d4dfea9/executed.ipynb",
+        "lifecycle": {
+          "artifacts": {},
+          "version": 1
+        },
+        "objectLastModified": "2026-10-14T00:51:55+00:00",
+        "originalEtag": "\"6f9851e119180a3577bb6a20d6aeef75\"",
+        "owner": "57a83dc33f7fdc9d8b8cc1cbe23af17627055d35531da6bf530e691e019be7a",
+        "presentBodySha256": "f5cc1a78fd2daa984455d97bed5a7930e2ff94da9eaaa533a9ea0a9ad1b377b2",
+        "sweep": {
+          "apply": true,
+          "deleted": 0,
+          "eligible": 0,
+          "errors": 0,
+          "examined": 1,
+          "objects": [],
+          "reconciled": 0,
+          "skipped": 1,
+          "truncated": false
+        },
+        "testNow": "2027-01-13T00:51:55+00:00",
+        "workflowUid": "dde33862-6279-472d-8234-ebc9ac4031a9"
+      },
+      {
+        "actualFinishedAt": "2026-10-14T00:51:44Z",
+        "beforeBoundary": {
+          "apply": false,
+          "deleted": 0,
+          "eligible": 0,
+          "errors": 0,
+          "examined": 1,
+          "objects": [],
+          "reconciled": 0,
+          "skipped": 1,
+          "truncated": false
+        },
+        "case": "retained-tag",
+        "days": 14,
+        "faultOutcome": {},
+        "freshProcessRecovery": {
+          "body_hash": "917b07847159f4d619da95ea0d2673e88ea217cee07bc9657e7b3b5c5cc7786d",
+          "new_process": true,
+          "recovery_passed": true,
+          "sweep": {
+            "apply": true,
+            "deleted": 0,
+            "eligible": 0,
+            "errors": 0,
+            "examined": 1,
+            "objects": [],
+            "reconciled": 0,
+            "skipped": 1,
+            "truncated": false
+          }
+        },
+        "key": "notebook-inputs/16e9bec7-68b1-4631-a377-1e8b0180e270/snapshot.tar",
+        "lifecycle": {
+          "artifacts": {},
+          "version": 1
+        },
+        "objectLastModified": "2026-10-14T00:51:57+00:00",
+        "originalEtag": "\"d3ffba62ad5e18106e4f5efe871eb51d\"",
+        "owner": "57a83dc33f7fdc9d8b8cc1cbe23af17627055d35531da6bf530e691e019be7a",
+        "presentBodySha256": "917b07847159f4d619da95ea0d2673e88ea217cee07bc9657e7b3b5c5cc7786d",
+        "sweep": {
+          "apply": true,
+          "deleted": 0,
+          "eligible": 0,
+          "errors": 0,
+          "examined": 1,
+          "objects": [],
+          "reconciled": 0,
+          "skipped": 1,
+          "truncated": false
+        },
+        "testNow": "2026-10-29T00:51:57+00:00",
+        "workflowUid": "bae9feba-e03c-4671-9bd4-3d7911e6a5ff"
+      },
+      {
+        "actualFinishedAt": "2026-10-14T00:51:44Z",
+        "beforeBoundary": {
+          "apply": false,
+          "deleted": 0,
+          "eligible": 0,
+          "errors": 0,
+          "examined": 1,
+          "objects": [],
+          "reconciled": 0,
+          "skipped": 1,
+          "truncated": false
+        },
+        "case": "retained-tag",
+        "days": 90,
+        "faultOutcome": {},
+        "freshProcessRecovery": {
+          "body_hash": "2a3873791976fcdbd4807c25b46913f3faa78b8f576bba69242bb26bd2c7ea98",
+          "new_process": true,
+          "recovery_passed": true,
+          "sweep": {
+            "apply": true,
+            "deleted": 0,
+            "eligible": 0,
+            "errors": 0,
+            "examined": 1,
+            "objects": [],
+            "reconciled": 0,
+            "skipped": 1,
+            "truncated": false
+          }
+        },
+        "key": "run-artifacts/4b9f19c8-9231-436b-ae42-69cd3dad9f21/executed.ipynb",
+        "lifecycle": {
+          "artifacts": {},
+          "version": 1
+        },
+        "objectLastModified": "2026-10-14T00:51:58+00:00",
+        "originalEtag": "\"bd23c4cb8a634807943b54ab4d9aa1db\"",
+        "owner": "57a83dc33f7fdc9d8b8cc1cbe23af17627055d35531da6bf530e691e019be7a",
+        "presentBodySha256": "2a3873791976fcdbd4807c25b46913f3faa78b8f576bba69242bb26bd2c7ea98",
+        "sweep": {
+          "apply": true,
+          "deleted": 0,
+          "eligible": 0,
+          "errors": 0,
+          "examined": 1,
+          "objects": [],
+          "reconciled": 0,
+          "skipped": 1,
+          "truncated": false
+        },
+        "testNow": "2027-01-13T00:51:58+00:00",
+        "workflowUid": "5e45ebaa-8ace-4cdc-900a-8f1d26636461"
+      },
+      {
+        "actualFinishedAt": "2026-10-14T00:51:45Z",
+        "beforeBoundary": {
+          "apply": false,
+          "deleted": 0,
+          "eligible": 0,
+          "errors": 0,
+          "examined": 1,
+          "objects": [],
+          "reconciled": 0,
+          "skipped": 1,
+          "truncated": false
+        },
+        "case": "retained-claim",
+        "days": 90,
+        "faultOutcome": {},
+        "freshProcessRecovery": {
+          "body_hash": "dca720037462c0ec5901a465b7dcb9c4bbd781c19e0d84ed38a995481cfcd4f6",
+          "new_process": true,
+          "recovery_passed": true,
+          "sweep": {
+            "apply": true,
+            "deleted": 0,
+            "eligible": 0,
+            "errors": 0,
+            "examined": 1,
+            "objects": [],
+            "reconciled": 0,
+            "skipped": 1,
+            "truncated": false
+          }
+        },
+        "key": "run-artifacts/d297d1c7-64d1-4128-a091-bb8c6d41940f/executed.ipynb",
+        "lifecycle": {
+          "artifacts": {
+            "executed-notebook": {
+              "actor": "cps-retention-qa-a1aa95a89e",
+              "at": "2026-10-14T00:51:27.995000+00:00",
+              "state": "retained"
+            }
+          },
+          "version": 1
+        },
+        "objectLastModified": "2026-10-14T00:52:00+00:00",
+        "originalEtag": "\"b5a0f0e40824d8a81b6d8dbee80bf801\"",
+        "owner": "57a83dc33f7fdc9d8b8cc1cbe23af17627055d35531da6bf530e691e019be7a",
+        "presentBodySha256": "dca720037462c0ec5901a465b7dcb9c4bbd781c19e0d84ed38a995481cfcd4f6",
+        "sweep": {
+          "apply": true,
+          "deleted": 0,
+          "eligible": 0,
+          "errors": 0,
+          "examined": 1,
+          "objects": [],
+          "reconciled": 0,
+          "skipped": 1,
+          "truncated": false
+        },
+        "testNow": "2027-01-13T00:52:00+00:00",
+        "workflowUid": "ef225d48-fc09-4b57-a8d6-ef1178f5abf1"
+      },
+      {
+        "actualFinishedAt": "2026-10-14T00:51:45Z",
+        "beforeBoundary": {
+          "apply": false,
+          "deleted": 0,
+          "eligible": 0,
+          "errors": 0,
+          "examined": 1,
+          "objects": [],
+          "reconciled": 0,
+          "skipped": 1,
+          "truncated": false
+        },
+        "case": "etag-conflict",
+        "days": 14,
+        "faultOutcome": {
+          "deleteHTTPStatus": 412
+        },
+        "freshProcessRecovery": {
+          "body_hash": "d0c964639fbf2ce7626afccc980b97f039f24bbac0eab4d09ede1e915ba8c524",
+          "new_process": true,
+          "recovery_passed": true,
+          "sweep": {
+            "apply": true,
+            "deleted": 0,
+            "eligible": 0,
+            "errors": 0,
+            "examined": 1,
+            "objects": [],
+            "reconciled": 0,
+            "skipped": 1,
+            "truncated": false
+          }
+        },
+        "key": "notebook-inputs/4c3bedab-8c2b-4ec9-b229-2e0012a1229a/snapshot.tar",
+        "lifecycle": {
+          "artifacts": {
+            "snapshot": {
+              "actor": "retention",
+              "at": "2026-10-29T00:52:02+00:00",
+              "etag": "\"1540580e3b4161d908d59e3249e8c3c2\"",
+              "state": "deleting",
+              "token": "fa4784c164244e0c9e33521ebc91bb9e"
+            }
+          },
+          "version": 1
+        },
+        "objectLastModified": "2026-10-14T00:52:02+00:00",
+        "originalEtag": "\"1540580e3b4161d908d59e3249e8c3c2\"",
+        "owner": "57a83dc33f7fdc9d8b8cc1cbe23af17627055d35531da6bf530e691e019be7a",
+        "presentBodySha256": "d0c964639fbf2ce7626afccc980b97f039f24bbac0eab4d09ede1e915ba8c524",
+        "sweep": {
+          "apply": true,
+          "deleted": 0,
+          "eligible": 1,
+          "errors": 1,
+          "examined": 1,
+          "objects": [],
+          "reconciled": 0,
+          "skipped": 0,
+          "truncated": false
+        },
+        "testNow": "2026-10-29T00:52:02+00:00",
+        "workflowUid": "71aacfd6-f6c3-4108-beb5-762fa24c4425"
+      },
+      {
+        "actualFinishedAt": "2026-10-14T00:51:45Z",
+        "beforeBoundary": {
+          "apply": false,
+          "deleted": 0,
+          "eligible": 0,
+          "errors": 0,
+          "examined": 1,
+          "objects": [],
+          "reconciled": 0,
+          "skipped": 1,
+          "truncated": false
+        },
+        "case": "ambiguous-before",
+        "days": 14,
+        "faultOutcome": {},
+        "freshProcessRecovery": {
+          "body_hash": "f5627387eebae68a19d88bd0932a86c641cf1de6b049d7638c3aed45873e4206",
+          "new_process": true,
+          "recovery_passed": true,
+          "sweep": {
+            "apply": true,
+            "deleted": 0,
+            "eligible": 0,
+            "errors": 0,
+            "examined": 1,
+            "objects": [],
+            "reconciled": 0,
+            "skipped": 1,
+            "truncated": false
+          }
+        },
+        "key": "notebook-inputs/98fb1551-5a50-4bb2-a008-10738d41c280/snapshot.tar",
+        "lifecycle": {
+          "artifacts": {
+            "snapshot": {
+              "actor": "retention",
+              "at": "2026-10-29T00:52:04+00:00",
+              "etag": "\"d27fd3d60d2b9772717e387001dbc83d\"",
+              "state": "deleting",
+              "token": "3ae7fce44a154124a6641c9ed769a92b"
+            }
+          },
+          "version": 1
+        },
+        "objectLastModified": "2026-10-14T00:52:04+00:00",
+        "originalEtag": "\"d27fd3d60d2b9772717e387001dbc83d\"",
+        "owner": "57a83dc33f7fdc9d8b8cc1cbe23af17627055d35531da6bf530e691e019be7a",
+        "presentBodySha256": "f5627387eebae68a19d88bd0932a86c641cf1de6b049d7638c3aed45873e4206",
+        "sweep": {
+          "apply": true,
+          "deleted": 0,
+          "eligible": 1,
+          "errors": 1,
+          "examined": 1,
+          "objects": [],
+          "reconciled": 0,
+          "skipped": 0,
+          "truncated": false
+        },
+        "testNow": "2026-10-29T00:52:04+00:00",
+        "workflowUid": "ed29d014-04ab-44e9-b358-14bda8554a55"
+      },
+      {
+        "actualFinishedAt": "2026-10-14T00:51:45Z",
+        "beforeBoundary": {
+          "apply": false,
+          "deleted": 0,
+          "eligible": 0,
+          "errors": 0,
+          "examined": 1,
+          "objects": [],
+          "reconciled": 0,
+          "skipped": 1,
+          "truncated": false
+        },
+        "case": "ambiguous-after",
+        "days": 90,
+        "faultOutcome": {},
+        "freshProcessRecovery": {
+          "body_hash": null,
+          "new_process": true,
+          "recovery_passed": true,
+          "sweep": {
+            "apply": true,
+            "deleted": 0,
+            "eligible": 0,
+            "errors": 0,
+            "examined": 0,
+            "objects": [],
+            "reconciled": 0,
+            "skipped": 0,
+            "truncated": false
+          }
+        },
+        "key": "run-artifacts/37f47c1f-2174-4743-8673-4c6cdbaddd6a/executed.ipynb",
+        "lifecycle": {
+          "artifacts": {
+            "executed-notebook": {
+              "actor": "retention",
+              "at": "2027-01-13T00:52:06+00:00",
+              "etag": "\"4b331617ed3519142531520f25f82dcd\"",
+              "state": "deleting",
+              "token": "6c84cf332449426eb467242d68d41ae3"
+            }
+          },
+          "version": 1
+        },
+        "objectLastModified": "2026-10-14T00:52:06+00:00",
+        "originalEtag": "\"4b331617ed3519142531520f25f82dcd\"",
+        "owner": "57a83dc33f7fdc9d8b8cc1cbe23af17627055d35531da6bf530e691e019be7a",
+        "presentBodySha256": null,
+        "sweep": {
+          "apply": true,
+          "deleted": 0,
+          "eligible": 1,
+          "errors": 1,
+          "examined": 1,
+          "objects": [],
+          "reconciled": 0,
+          "skipped": 0,
+          "truncated": false
+        },
+        "testNow": "2027-01-13T00:52:06+00:00",
+        "workflowUid": "a3d15632-b624-46d9-95f3-affc411ccf40"
+      }
+    ],
+    "controllerSha256": "9cadec1f0229222f34923b18f456a0506ae5e92826ea78ab7e791e1e72e73542",
+    "leastPrivilegeUnownedWorkflowDenied": true,
+    "passed": true,
+    "productionQualified": false,
+    "scope": "Real SeaweedFS, Argo HTTPS and Kubernetes CAS; controlled synthetic terminal status and per-sweep clocks; no notebook execution",
+    "version": 1
+  },
+  "ownedResources": [
+    {
+      "kind": "ServiceAccount",
+      "name": "cps-retention-qa-a1aa95a89e",
+      "namespace": "cps-compute",
+      "uid": "2ed7cf14-9ecc-447a-bf0b-a80a26431085"
+    },
+    {
+      "kind": "Role",
+      "name": "cps-retention-qa-a1aa95a89e",
+      "namespace": "cps-workflows",
+      "uid": "c0a37c18-b35e-4332-b5c5-56797c224204"
+    },
+    {
+      "kind": "RoleBinding",
+      "name": "cps-retention-qa-a1aa95a89e",
+      "namespace": "cps-workflows",
+      "uid": "e441ca6c-2167-476b-b4d2-a0f0867acc60"
+    },
+    {
+      "kind": "Workflow",
+      "name": "cps-68557694-0b8f-4946-aa7f-6f03663deba9",
+      "namespace": "cps-workflows",
+      "uid": "784ef00d-f43d-4538-9e45-9238bd0ac498"
+    },
+    {
+      "kind": "Workflow",
+      "name": "cps-a1f760cb-e76b-452c-8431-823bf820f1f2",
+      "namespace": "cps-workflows",
+      "uid": "a303178f-522c-4f89-843e-5f5a6bf4adfd"
+    },
+    {
+      "kind": "Workflow",
+      "name": "cps-04a1b8ce-b35a-4862-9bda-1ba4f27ee226",
+      "namespace": "cps-workflows",
+      "uid": "0eaaf172-b810-47ad-92ae-2d00caf608a0"
+    },
+    {
+      "kind": "Workflow",
+      "name": "cps-e603cc51-fcf1-4bf7-bf67-df430d4dfea9",
+      "namespace": "cps-workflows",
+      "uid": "dde33862-6279-472d-8234-ebc9ac4031a9"
+    },
+    {
+      "kind": "Workflow",
+      "name": "cps-16e9bec7-68b1-4631-a377-1e8b0180e270",
+      "namespace": "cps-workflows",
+      "uid": "bae9feba-e03c-4671-9bd4-3d7911e6a5ff"
+    },
+    {
+      "kind": "Workflow",
+      "name": "cps-4b9f19c8-9231-436b-ae42-69cd3dad9f21",
+      "namespace": "cps-workflows",
+      "uid": "5e45ebaa-8ace-4cdc-900a-8f1d26636461"
+    },
+    {
+      "kind": "Workflow",
+      "name": "cps-d297d1c7-64d1-4128-a091-bb8c6d41940f",
+      "namespace": "cps-workflows",
+      "uid": "ef225d48-fc09-4b57-a8d6-ef1178f5abf1"
+    },
+    {
+      "kind": "Workflow",
+      "name": "cps-4c3bedab-8c2b-4ec9-b229-2e0012a1229a",
+      "namespace": "cps-workflows",
+      "uid": "71aacfd6-f6c3-4108-beb5-762fa24c4425"
+    },
+    {
+      "kind": "Workflow",
+      "name": "cps-98fb1551-5a50-4bb2-a008-10738d41c280",
+      "namespace": "cps-workflows",
+      "uid": "ed29d014-04ab-44e9-b358-14bda8554a55"
+    },
+    {
+      "kind": "Workflow",
+      "name": "cps-37f47c1f-2174-4743-8673-4c6cdbaddd6a",
+      "namespace": "cps-workflows",
+      "uid": "a3d15632-b624-46d9-95f3-affc411ccf40"
+    },
+    {
+      "kind": "ConfigMap",
+      "name": "cps-retention-qa-a1aa95a89e",
+      "namespace": "cps-compute",
+      "uid": "225947bf-96f2-4320-9afb-b6d3e5432a19"
+    },
+    {
+      "kind": "Pod",
+      "name": "cps-retention-qa-a1aa95a89e",
+      "namespace": "cps-compute",
+      "uid": "00e04bf6-5a35-4763-9342-bfdaeb746098"
+    }
+  ],
+  "passed": true,
+  "plan": {
+    "cases": [
+      {
+        "case": "boundary",
+        "days": 14,
+        "identifier": "68557694-0b8f-4946-aa7f-6f03663deba9"
+      },
+      {
+        "case": "boundary",
+        "days": 90,
+        "identifier": "a1f760cb-e76b-452c-8431-823bf820f1f2"
+      },
+      {
+        "case": "active",
+        "days": 14,
+        "identifier": "04a1b8ce-b35a-4862-9bda-1ba4f27ee226"
+      },
+      {
+        "case": "active",
+        "days": 90,
+        "identifier": "e603cc51-fcf1-4bf7-bf67-df430d4dfea9"
+      },
+      {
+        "case": "retained-tag",
+        "days": 14,
+        "identifier": "16e9bec7-68b1-4631-a377-1e8b0180e270"
+      },
+      {
+        "case": "retained-tag",
+        "days": 90,
+        "identifier": "4b9f19c8-9231-436b-ae42-69cd3dad9f21"
+      },
+      {
+        "case": "retained-claim",
+        "days": 90,
+        "identifier": "d297d1c7-64d1-4128-a091-bb8c6d41940f"
+      },
+      {
+        "case": "etag-conflict",
+        "days": 14,
+        "identifier": "4c3bedab-8c2b-4ec9-b229-2e0012a1229a"
+      },
+      {
+        "case": "ambiguous-before",
+        "days": 14,
+        "identifier": "98fb1551-5a50-4bb2-a008-10738d41c280"
+      },
+      {
+        "case": "ambiguous-after",
+        "days": 90,
+        "identifier": "37f47c1f-2174-4743-8673-4c6cdbaddd6a"
+      }
+    ],
+    "configSha256": "0464f6c023ec0f9614e15e6ce620b71011e9b5d63a96e68f29b64c19c2b9694c",
+    "configmapUid": "497ad498-57d0-47c5-9102-3821c07f72b7",
+    "controllerSha256": "9cadec1f0229222f34923b18f456a0506ae5e92826ea78ab7e791e1e72e73542",
+    "createdAt": "2026-10-14T00:51:27.995000+00:00",
+    "cronSpecSha256": "5ae3c48b516c001f1cc7dc7222f003f69c2d7b4d1deba5cfce249c8b0c84861c",
+    "cronUid": "cbb1c416-4c05-43f2-bf74-ec8cc6ac30ce",
+    "fixtureSha256": "7d1b0d4d2688da204dc417be7a599f13a330cb69b93bcd9ffe54eecbd5c239ee",
+    "globalClockMutation": false,
+    "image": "ghcr.io/mul-cps/cps-compute:qualification-25e2190@sha256:7a9caff2fe4874adad523dd2be3fc6dcb00930b7dc4d3ddbc2f3141de20d15ea",
+    "name": "cps-retention-qa-a1aa95a89e",
+    "namespace": "cps-compute",
+    "policyHash": "sha256:d48f6553ed036c2e7adcc97417623fe0308be93ad13b20f246047ada118511b0",
+    "productionQualified": false,
+    "runnerSha256": "c7ea0916c86a31bc78e31bfd32595170c1e951dec3dd2e44a746324683516e8d",
+    "syntheticTerminalStatus": true,
+    "version": 1
+  },
+  "planSha256": "2deb18cb99d86cc6054e5cb4375c0dd9456cba37640939c91af016e72d962705",
+  "podUid": "00e04bf6-5a35-4763-9342-bfdaeb746098",
+  "productionCronSpecUnchanged": true,
+  "productionQualified": false,
+  "survivingOwnedS3EvidencePreserved": true,
+  "version": 1
+}
