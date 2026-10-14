@@ -1,8 +1,9 @@
 """Offline actual-identity boundary tests; no API or GPU calls."""
-import copy,hashlib,importlib.util,json
+import copy,hashlib,importlib.util,json,tempfile
 from pathlib import Path
 from types import SimpleNamespace
 import unittest
+from unittest.mock import patch
 
 ROOT=Path(__file__).resolve().parent.parent
 def module(name,path):
@@ -41,7 +42,7 @@ class Tests(unittest.TestCase):
     def test_probe_is_only_readonly_proc_boot_authority_no_token_devices_or_privilege(self):
         r=e.readonly_probe(self.m,self.plan,'print("fixture")');s=r['spec'];c=s['containers'][0]
         self.assertFalse(s['automountServiceAccountToken']);self.assertIs(c['securityContext']['privileged'],False)
-        self.assertEqual(c['securityContext']['capabilities'],{'drop':['ALL']})
+        self.assertEqual(c['securityContext']['capabilities'],{'drop':['ALL'],'add':['SYS_ADMIN']})
         self.assertTrue(all(v['readOnly'] for v in c['volumeMounts']))
         self.assertEqual(s['volumes'][-1]['hostPath']['path'],'/actual/private-node-state/authority')
         self.assertTrue(all(not v['hostPath']['path'].startswith('/dev') for v in s['volumes']))
@@ -52,7 +53,9 @@ class Tests(unittest.TestCase):
         e.probe_spec(candidate['spec'],candidate['spec'])
         for path,value in [(('hostPID',),True),(('hostIPC',),True),(('hostNetwork',),True),
              (('containers',0,'securityContext','privileged'),True),
-             (('containers',0,'securityContext','capabilities','add'),['SYS_ADMIN']),
+             (('containers',0,'securityContext','capabilities','add'),['SYS_ADMIN','SYS_RAWIO']),
+             (('containers',0,'volumeMounts',0,'readOnly'),False),
+             (('containers',0,'command'),['python3','-c','print("tampered")']),
              (('containers',0,'volumeDevices'),[{'name':'gpu','devicePath':'/dev/nvidia0'}]),
              (('initContainers',),[{'name':'foreign'}])]:
             actual=copy.deepcopy(candidate['spec']);v=actual
@@ -78,6 +81,24 @@ class Tests(unittest.TestCase):
         api.pod['metadata']['uid']='foreign-replacement';before=len(api.calls)
         with self.assertRaises(ValueError):e.delete_probe(api,self.m,created)
         self.assertEqual(len(api.calls),before+1)
+
+    def test_full_raw_terminal_logs_are_retained_before_reporting_actual_error(self):
+        meta={'namespace':'cps-native-system','name':'owned-reader','uid':'owned-created-uid'}
+        raw=b'Traceback (most recent call last):\nPermissionError: [Errno 1] Operation not permitted: cps_native_caps\n'
+        api=SimpleNamespace(prefix=['kubectl','--context','fixture'],get=lambda *a:{'metadata':{'uid':meta['uid']},
+            'status':{'containerStatuses':[{'name':'reader','state':{'terminated':{'exitCode':1,'reason':'Error'}}}]}})
+        with tempfile.TemporaryDirectory() as d:
+            root=Path(d)/'private-logs'
+            def write(path,value,raw=False):
+                path.write_bytes(value if raw else json.dumps(value).encode());path.chmod(0o600)
+            m=SimpleNamespace(write=write,r=SimpleNamespace(parse=json.loads))
+            with patch.object(e,'PROBE_LOG_ROOT',root),patch.object(e.subprocess,'run',return_value=SimpleNamespace(stdout=raw,stderr=b'',returncode=0)) as run:
+                with self.assertRaisesRegex(e.ProbeTerminalError,'PermissionError.*cps_native_caps'):e.probe_log(api,m,meta)
+                self.assertNotIn('--tail=1',run.call_args.args[0])
+            logs=list(root.iterdir());self.assertEqual(len(logs),1)
+            self.assertEqual((logs[0]/'stdout.private').read_bytes(),raw)
+            receipt=json.loads((logs[0]/'receipt.json').read_text());self.assertEqual(receipt['terminal']['exitCode'],1)
+            self.assertEqual(receipt['stdout_sha256'],hashlib.sha256(raw).hexdigest())
 
 
 if __name__=='__main__':unittest.main()

@@ -3,8 +3,15 @@
 No default action. No Source grant/record mutation, credential creation, expiry
 release, driver write or replacement UID inference occurs here.
 """
-import base64,copy,hashlib
+import base64,copy,hashlib,json,os,stat,subprocess,uuid
 from datetime import datetime,timezone
+from pathlib import Path
+
+PROBE_LOG_ROOT=Path('/home/bjoern/.local/state/cps-full-project-20261013/native-kai-node-epoch-handover-preparation-20261014/retained-probe-logs')
+
+
+class ProbeTerminalError(Exception):
+    """A real terminated reader is not a retryable absence/readiness wait."""
 
 
 def need(ok,text):
@@ -52,7 +59,7 @@ def absent_node(api,m,plan):
 
 
 def readonly_probe(m,plan,reader_code):
-    """No token, devices, privilege or writable host mount; actual fd reader."""
+    """Trusted readonly fd reader: only SYS_ADMIN, no token/device/host write."""
     old=plan['request']['observations']['deployments']['node'];pod=old['spec']['template']['spec']
     state=[v for v in pod['volumes'] if v['name']=='state'];need(len(state)==1 and set(state[0])=={'name','hostPath'},'Retained actual state host path required')
     state_path=state[0]['hostPath']['path'];need(state_path.startswith('/') and '..' not in state_path.split('/'),'Confined actual state path required')
@@ -69,7 +76,7 @@ def readonly_probe(m,plan,reader_code):
             'securityContext':{'runAsUser':0,'runAsGroup':0,'seccompProfile':{'type':'RuntimeDefault'}},
             'containers':[{'name':'reader','image':plan['projection']['process_declarations']['node']['image'],
                 'command':['python3','-c',launcher],
-                'securityContext':{'privileged':False,'allowPrivilegeEscalation':False,'readOnlyRootFilesystem':True,'capabilities':{'drop':['ALL']}},
+                'securityContext':{'privileged':False,'allowPrivilegeEscalation':False,'readOnlyRootFilesystem':True,'capabilities':{'drop':['ALL'],'add':['SYS_ADMIN']}},
                 'resources':{'requests':{'cpu':'10m','memory':'32Mi'},'limits':{'cpu':'100m','memory':'128Mi'}},
                 'volumeMounts':[{'name':'gpu-proc','mountPath':'/host/proc/driver/nvidia/gpus','readOnly':True},
                     {'name':'boot-id','mountPath':'/host/proc/sys/kernel/random/boot_id','readOnly':True},
@@ -126,9 +133,8 @@ def inspect_probe(api,m,plan,created,candidate):
     statuses=[x for x in actual.get('status',{}).get('containerStatuses',[]) if x['name']=='reader']
     need(len(statuses)==1 and statuses[0].get('imageID','').endswith(candidate['spec']['containers'][0]['image'].split('@')[1]),
          'Actual candidate probe image must be resolved exactly')
-    raw=api.command(['logs','-n',meta['namespace'],meta['name'],'-c','reader','--tail=1','--limit-bytes=1048576'])
-    # Kubectl.command parses JSON for this exact one-line JSON log as well.
-    native=raw;need(isinstance(native,dict) and set(native)=={'inventory','epoch','records','previous'},'Closed actual native fd readback required')
+    native=probe_log(api,m,meta)
+    need(isinstance(native,dict) and set(native)=={'inventory','epoch','records','previous'},'Closed actual native fd readback required')
     need(native['epoch']=={k:pool[k] for k in ('boot_id','driver_generation')}
          and native['inventory']['gpu_uuid']==pool['gpu_uuid'] and native['records']==native['previous']=={},'Actual protected epoch changed')
     entries=native['inventory']['entries'];need(isinstance(entries,list),'Actual bounded cap inventory required')
@@ -137,6 +143,38 @@ def inspect_probe(api,m,plan,created,candidate):
     need(after['metadata']['uid']==meta['uid'] and after['spec']==actual['spec'] and node_after['metadata']['uid']==pool['node_uid'],
          'Probe/Node changed during observation')
     return native
+
+
+def retain_probe_log(m,meta,stdout,stderr,returncode,terminal):
+    """Full bounded raw bytes are private and persisted before any parse."""
+    need(isinstance(meta['uid'],str) and meta['uid'] and '/' not in meta['uid'] and '..' not in meta['uid'],
+         'Actual created UID required for owned log custody')
+    PROBE_LOG_ROOT.mkdir(mode=0o700,exist_ok=True)
+    s=PROBE_LOG_ROOT.lstat()
+    need(stat.S_ISDIR(s.st_mode) and s.st_uid==os.getuid() and stat.S_IMODE(s.st_mode)==0o700,'Private operator log directory required')
+    path=PROBE_LOG_ROOT/(meta['uid']+'-'+uuid.uuid4().hex[:8]);path.mkdir(mode=0o700)
+    need(len(stdout)<=1048576 and len(stderr)<=1048576,'Bounded full probe logs required')
+    m.write(path/'stdout.private',stdout,raw=True);m.write(path/'stderr.private',stderr,raw=True)
+    m.write(path/'receipt.json',{'pod':{k:meta[k] for k in ('namespace','name','uid')},'returncode':returncode,
+        'stdout_sha256':hashlib.sha256(stdout).hexdigest(),'stderr_sha256':hashlib.sha256(stderr).hexdigest(),
+        'terminal':terminal,'captured_at':datetime.now(timezone.utc).isoformat()})
+    return path
+
+
+def probe_log(api,m,meta):
+    result=subprocess.run(api.prefix+['logs','-n',meta['namespace'],meta['name'],'-c','reader','--limit-bytes=1048576'],
+        capture_output=True,timeout=25,check=False)
+    actual=api.get('Pod',meta['namespace'],meta['name'])
+    need(actual['metadata']['uid']==meta['uid'],'Actual probe UID must remain exact while retaining logs')
+    states=[s for s in actual.get('status',{}).get('containerStatuses',[]) if s.get('name')=='reader']
+    terminal=states[0].get('state',{}).get('terminated') if len(states)==1 else None
+    path=retain_probe_log(m,meta,result.stdout,result.stderr,result.returncode,terminal)
+    if terminal is not None and terminal.get('exitCode')!=0:
+        lines=(result.stdout+b'\n'+result.stderr).decode('utf-8','replace').splitlines()
+        detail=next((s for s in reversed(lines) if s.strip()),'no terminal text')[-512:]
+        raise ProbeTerminalError('Readonly native reader exited '+str(terminal.get('exitCode'))+': '+detail+'; full private logs '+str(path))
+    need(result.returncode==0,'Probe log command failed; full private logs retained '+str(path))
+    return m.r.parse(result.stdout)
 
 
 def delete_probe(api,m,created):
