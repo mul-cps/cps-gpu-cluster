@@ -12,6 +12,7 @@ import sys
 import uuid
 
 BASE_SHA256 = 'f01b24bc984a153e9995549ef09f73167500f375d79e078a7e7aa9e1171c3664'
+EPOCH_SHA256 = '890cebd7c1903a680e4dc836ec6f81f097198c2fed438ade6b2fa62157864bbd'
 OLD_POLICIES = {
     'sha256:d48f6553ed036c2e7adcc97417623fe0308be93ad13b20f246047ada118511b0',
     'sha256:39ef15d3b5a76f96d135beb1afcd538775c64301cb51751086b44d68c54f8012',
@@ -114,6 +115,43 @@ def successor_source(original, contract_raw, reviewed_raw_sha256):
     return result
 
 
+def successor_bundle(original, epoch_original, contract_raw, reviewed_raw_sha256):
+    """Return the matched finite helper and exact helper-pinned Node source."""
+    contract = validate_contract(contract_raw, reviewed_raw_sha256)
+    node_source = successor_source(original, contract_raw, reviewed_raw_sha256)
+    require(isinstance(epoch_original, bytes) and hashlib.sha256(epoch_original).hexdigest() == EPOCH_SHA256,
+            'Exact published Node8c flat epoch helper required')
+    source = epoch_original.decode('utf-8')
+    node = next(n for n in ast.parse(source).body if isinstance(n, ast.FunctionDef) and n.name == 'node_configuration')
+    before = ''.join(source.splitlines(True)[node.lineno - 1:node.end_lineno])
+    marker = "    require(isinstance(config['workspaces'],dict) and 1<=len(config['workspaces'])<=2\n"
+    guard = f'''    # Independently reviewed Root contract raw SHA256: {reviewed_raw_sha256}
+    prospective_pair = (config['policy_hash'] == {contract['policy_hash']!r}
+        and config['workspaces'] == {contract['workspaces']!r}
+        and canonical_sha(config['terminal_history']) == {contract['terminal_history_sha256']!r}
+        and isinstance(config['pool'],dict)
+        and all(type(config['pool'].get(k)) is int for k in
+                ('max_workspaces','memory_budget_mib','headroom_mib','free_memory_mib'))
+        and config['pool']['max_workspaces'] == 2
+        and config['pool']['memory_budget_mib'] == 25600
+        and config['pool']['headroom_mib'] == 1024
+        and config['pool']['free_memory_mib'] >= 26624)
+'''
+    after = before.replace(marker, guard + marker.replace('require(', 'require(prospective_pair or (', 1), 1)
+    after = after.replace("for k,v in config['workspaces'].items()),'Only exact bounded qualification10 scopes are admitted')",
+        "for k,v in config['workspaces'].items())),'Only exact bounded qualification10 or pinned prospective pair scopes are admitted')", 1)
+    after = after.replace("require(type(pool.get('max_workspaces')) is int", "require(prospective_pair or (type(pool.get('max_workspaces')) is int", 1)
+    after = after.replace("10240<=pool['memory_budget_mib']<=15360)", "10240<=pool['memory_budget_mib']<=15360))", 1)
+    require(after != before and source.count(before) == 1, 'Unique exact flat helper validator replacement required')
+    epoch_source = source.replace(before, after, 1)
+    epoch_pin = hashlib.sha256(epoch_source.encode()).hexdigest()
+    require(node_source.count(EPOCH_SHA256) == 1, 'Unique exact Node epoch helper pin required')
+    node_source = node_source.replace(EPOCH_SHA256, epoch_pin, 1)
+    for name, text in [('node_agent.py', node_source), ('native_operator_epoch.py', epoch_source)]:
+        compile(text, name, 'exec')
+    return {'node_agent.py': node_source, 'native_operator_epoch.py': epoch_source}
+
+
 def bounded_contract(path):
     fd = os.open(path, os.O_RDONLY | os.O_NONBLOCK | os.O_NOFOLLOW)
     try:
@@ -128,18 +166,25 @@ def bounded_contract(path):
 
 def main(argv=None):
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument('--emit', action='store_true')
+    emit = parser.add_mutually_exclusive_group()
+    emit.add_argument('--emit', action='store_true')
+    emit.add_argument('--emit-bundle', action='store_true')
     parser.add_argument('--contract', type=Path)
     parser.add_argument('--contract-sha256')
     args = parser.parse_args(argv)
-    if not args.emit:
+    if not (args.emit or args.emit_bundle):
         print(json.dumps({'state': 'inert', 'source_only': True, 'production_qualified': False}))
         return 0
     raw_pin(args.contract_sha256)
     require(args.contract is not None, 'Explicit reviewed contract path required')
     raw = bounded_contract(args.contract)
+    validate_contract(raw, args.contract_sha256)
     original = Path(__file__).with_name('node8c.py').read_bytes()
-    sys.stdout.write(successor_source(original, raw, args.contract_sha256))
+    if args.emit_bundle:
+        epoch_original = Path(__file__).with_name('epoch8c.py').read_bytes()
+        print(json.dumps(successor_bundle(original, epoch_original, raw, args.contract_sha256), sort_keys=True))
+    else:
+        sys.stdout.write(successor_source(original, raw, args.contract_sha256))
     return 0
 
 
