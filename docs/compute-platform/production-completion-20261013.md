@@ -26,7 +26,7 @@ for the bounded live results of 2026-10-13 and their retained evidence.
 | --- | --- | --- |
 | Repository ownership and shared policy | Separate application/deployment responsibilities and shared policy implemented; compatibility branches retained | Integrate and promote one tested consumer matrix with its exact policy hash; account for Fleet's watched branches |
 | SDK, Hub and Lab packages | Both Hubs now run Hub8e with the persistent personal root and inherited SDK environment fix and select CPUd75 with the prebuilt Lab XSRF fix. The actual Hub 5.5.2/Chromium regression and panel tests passed, with 43 Node and 9 installed Lab tests. A fresh personal CPS CPU kernel returned HTTP 200 for `/v1/me`, `/v1/profiles` and `/v1/session` using zero-argument `sdk.client()` and the reviewed person identity. The existing bjoern/cpsadmin notebook Pods remain unchanged on CPUad | The fixed frontend is installed in both running CPS personal servers without a restart; human page reload/panel and CIT personal SDK acceptance remain pending. Other notebook variants, ordinary visitor identity separation and human RTC remain separate gates; CIT personal profile hooks retain their independent images |
-| Both admin UI consoles | Both consoles run Sourceb36 with the reviewed legacy runtime validator; frontend and dependencies remain equal to Source87a1. CIT legacy runtime enrollment, cold startup and real notebook activity reporting passed; the existing UI and approved 10 GiB choice remain bounded evidence | Normal registered CPU lifecycle and reviewed CIT `akadmin` canonical API linkage passed; ordinary-user/human OAuth and remaining modes are separate gates |
+| Both admin UI consoles | Both consoles run Source51f with authenticated download-header forwarding and the reviewed legacy runtime validator; frontend and dependencies remain equal to Source87a1. CIT legacy runtime enrollment, cold startup and real notebook activity reporting passed; the existing UI and approved 10 GiB choice remain bounded evidence | Normal registered CPU lifecycle and reviewed CIT `akadmin` canonical API linkage passed; ordinary-user/human OAuth and remaining modes are separate gates |
 | Identity and group ownership | Existing reviewed aliases retained; both CPS legacy neutral accounts have permanent ready provenance; explicit custody migration and exact QA repair passed; both Hubs restarted without changing the repaired or legitimate legacy roles | Reviewed CIT alias is live in Source, Hub and Gateway and `/me` resolves the same person; real login grant survival/expiry, scoped administration and cross-Hub allowance continuity remain |
 | Native GPU isolation | Controlled no-MIG 5/20 GiB history retained; current CPS pair passed distinct 5 GiB OOM/recovery with peer progress, IPC denial in both directions, positive controls, kernel witnesses, restart retirement, complete bounded MPS OOM/recovery and observer cleanup, and confirmed normal closure | Complete restart behavior and broader packing; current bounded pool is 5/10 GiB, not a normal 20 GiB or cross-Hub qualification |
 | Shared GPU reservations | Actual simultaneous CPS5/CIT10 pilot starts passed: one winner held both shared members once, loser had no server/Pod/binding; confirmed Stop preceded successful retry on the other Hub; exact windows/groups/grants restored. Installed current Gateway code also passed first-free/second-busy transaction rollback in an isolated SQLite database | Different-member live API partial-conflict rollback, permitted CPU sessions and independent batch execution while held; broader pool and ordinary-user qualification |
@@ -55,7 +55,8 @@ dependencies and successful UID1000 imports. The earlier candidate failed its
 UID1000 packaging check and was never published.
 See [persistent-home adoption](../../platform-staging/jupyter-extensions-20261013/personal-root-adoption-actual-20261015.json).
 The latest same-policy Gateway rollout adopted Gateway6d from source `846c02cf`
-for the S3 end-of-file fix. Node8c and both consoles on Sourceb36 retain their images.
+for the S3 end-of-file fix. Node8c retains its image. Both consoles now run Source51f for the authenticated
+artifact-header fix; their databases, configuration, credentials and PVCs are preserved.
 Four fresh process acknowledgments and a completed new delivery journal confirm
 the unchanged policy and GPU driver epoch. The delivery controller is ready and
 the final native allocation check is zero. The current delivery seed after these rollouts is
@@ -596,3 +597,14 @@ The existing NAS and NFS paths stay in place; account for the stated Tuesday
 
 No production release, full-project completion or broad GPU entitlement is
 asserted by this ledger. Every remaining gate retains its required live evidence.
+
+The Source51f image-only rollout passed strict before/after online SQLite checks:
+schema7, integrity and all six table row fingerprints are unchanged for each console.
+New Source Pod observer bindings replace the old Pod-UID closure for future work;
+the completed75b/seed6c4 journal remains unchanged. Read-only successor checks passed
+with four fresh ACKs, unchanged central approval raw hash and native zero.
+See [Source adoption](../../platform-staging/jupyter-extensions-20261013/source-artifact-header-adoption-actual-20261015.json).
+Four actual CPS proxy downloads (snapshot/executed notebook for success and failure)
+returned HTTP200, matched the original SDK bytes, and retained attachment/no-store/
+nosniff/sandbox headers. Token a695 was revoked; this is API-token acceptance, not
+human browser or CIT acceptance. See [download checks](../../platform-staging/jupyter-extensions-20261013/source-artifact-header-downloads-actual-20261015.json).

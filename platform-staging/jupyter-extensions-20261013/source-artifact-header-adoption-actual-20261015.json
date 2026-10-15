@@ -1,0 +1,71 @@
+{
+  "actual_native_zero": true,
+  "actual_sources": [
+    {
+      "image_id": "ghcr.io/mul-cps/e2x-course-hub@sha256:51f7f392397e41be512b356fbee91980fb233296cee7557d25a758b99b045f44",
+      "pod": "cps-admin-79b8d4d585-8s67l",
+      "ready": true,
+      "restart_count": 0,
+      "source": "cps-admin",
+      "uid": "3c2d8ec1-da75-449b-a10c-925e4e7e2f9a"
+    },
+    {
+      "image_id": "ghcr.io/mul-cps/e2x-course-hub@sha256:51f7f392397e41be512b356fbee91980fb233296cee7557d25a758b99b045f44",
+      "pod": "cit-admin-7d95458dc6-qfgtb",
+      "ready": true,
+      "restart_count": 0,
+      "source": "cit-admin",
+      "uid": "81fcc965-8894-45e4-9a87-56ba3b124958"
+    }
+  ],
+  "all_four_fresh_acknowledgments": true,
+  "all_six_table_rows_and_schema_preserved_each": true,
+  "corrected_readonly_continuation": {
+    "current_completed_seed": "sha256:6c4ce996c37b72de155d50fddb8813b71b6bd369f0caf5ea292198d0d1935f3b",
+    "old_software_ancestor_seed": "sha256:0e99ef04a8d9b6f28a1a77d0969d90c1a9e74c3358fa742e1240147b0ce53f93",
+    "other_software_fields_exact": true,
+    "path": "/home/bjoern/.local/state/cps-full-project-20261013/source-artifact-header-handover-preparation-20261015/root_verify_existing_lineage.py",
+    "pure_guard_tests_passed": 6,
+    "sha256": "2de730c217b05cf49836e43cbff36253b78edfdb3cae6e8fd27a3f3a87c3e16d"
+  },
+  "hubs8e_gateway6d_node8c_policy_d48_unchanged": true,
+  "image": "ghcr.io/mul-cps/e2x-course-hub@sha256:51f7f392397e41be512b356fbee91980fb233296cee7557d25a758b99b045f44",
+  "mounted_configuration_and_secrets_preserved": true,
+  "new_journal_created": false,
+  "new_source_observer": {
+    "binding_raw_sha256": "1d5b8621d3384f54c65ca1e06a3f1877232cf84728cabcb44b99b71002b9990a",
+    "directory": "/home/bjoern/.local/state/cps-full-project-20261013/source-artifact-header-handover-preparation-20261015/source-observer",
+    "files": {
+      "cit-console-preimage.json": "d1d6098c71feb8a45951e49e16d7c616e57429b6826fe23ad5cf22019c4e7026",
+      "cps-console-preimage.json": "675c8b588e33b5a5459adb86493cd92bb8091bc0d3556457265653479611fffb",
+      "source_reservation_code.py": "4e2191a11cdf600d4f92b30d4c294d8bc04133200a8f23e5841cd8d62e83a76e",
+      "source_snapshot_code.py": "5652ab2555b73981ec7be59ce66a1b4e83fb7905b9ae2cc9d71828d205a4302f"
+    }
+  },
+  "old_completed_lineage_files_unchanged": true,
+  "online_backup_before_and_after": true,
+  "only_source_images_changed": true,
+  "original_readonly_verifier_failed_before_readback": "Preparation software ancestor was compared with completed current seed; no rollout replay",
+  "postimage_receipt_sha256": "dad99b41aefbc7b41263b74854034c7a17b6989d6be4e508dd57c106c959589e",
+  "previous_image": "ghcr.io/mul-cps/e2x-course-hub@sha256:b36c54a57f526e6cb4595bf9e552d80d217a72ba6a7ee30767d8b3bc3d3ec5c7",
+  "production_qualified": false,
+  "ready": true,
+  "recorded_at": "2026-10-15T12:17:44.102645+00:00",
+  "retained_delivery_authority": {
+    "directory": "/home/bjoern/.local/state/cps-full-project-20261013/personal-root-handover-75b813a6/phase-75b813a6",
+    "files": {
+      "delivery-activation-intent.json": "d8ef3a1eee79cf1fa95cc8a2846ba569bbb04908aeaad2b6237b346b4f992eba",
+      "final.json": "787df5b7018708bda3f6e2e1c84dd8582b67fb2f4ec842d764d550a371f8b0f8",
+      "new-delivery-activation-readback.json": "52ea93f81d835003fae325a9f86f0bf804721ae7eadf3cb073468ed196e85677",
+      "new-delivery-seed.json": "fbd16d06f96f23f27b9fef4e5494801dcb6fae932ab25795f037fe8f03a2694a"
+    },
+    "seed_sha256": "sha256:6c4ce996c37b72de155d50fddb8813b71b6bd369f0caf5ea292198d0d1935f3b"
+  },
+  "schema_version": 7,
+  "source_commit": "621ea4007e3a5bb04c9c2de00717a881a19daaba",
+  "source_pvc_uids_specs_and_bound_state_preserved": true,
+  "source_raw_sha256": "sha256:832e841b6e7b5885a80de27e8850e8e25087b7a26a08a8270f38869f10bf71ca",
+  "successor_receipt_sha256": "2f189585e58deb94100c676c2c2cce54906b4b20bbcc79b3abb47a41cdcb85cf",
+  "trusted_revision": "sha256:832e841b6e7b5885a80de27e8850e8e25087b7a26a08a8270f38869f10bf71ca",
+  "version": "cps-source-artifact-header-adoption/v1"
+}
