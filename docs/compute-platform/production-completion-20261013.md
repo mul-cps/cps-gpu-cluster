@@ -126,10 +126,26 @@ The CA transport fix at `a7b2850d1881b2bff8c0a9b865dfb3fa5ba9f94b` is
 published as immutable qualification images: Hub `624a98b3`, CPU `ad693e5d` and
 GPU `7e3f6f7d`. Actual installed tests passed (Hub 481 with four known skips;
 CPU 14; GPU 14). Dependencies and original compressed base layers are preserved.
-These artifacts remain ineligible for live adoption until the policy/workload
-transition, runtime validator and coordinated trust rollover gates pass. The
-current production/pilot deployment still runs the earlier images. See
+CPU image adoption uses the independently pinned Hub CPU image input and does
+not require a catalog edit. Its next gate is the coordinated trust and Hub
+rollover, followed by real kernel submissions from both Hubs. The legacy CIT
+neutral account additionally needs a proven CPU adapter path; a profile switch
+alone does not supply its trusted CPU image. The GPU image update retains its
+separate policy/workload transition gate. The current production/pilot
+deployment still runs the earlier images. See
 [package and remote publication evidence](../../platform-staging/jupyter-extensions-20261013/sdk-ca-publication-actual-20261015.json).
+
+Notebook submissions already snapshot saved inputs, strip outputs and execute
+through the approved batch runner. The new owner-authenticated artifact byte API
+also supports shared kernel principals, without using the personal-only Argo UI
+route or an S3 presigned URL. The exact Gateway candidate `bb6113b7` passed 235
+installed tests, preserves all 48 Core modules apart from the three reviewed
+source changes, and is published but not deployed. A frozen 32-test kernel
+harness covers successful/failed notebooks, selected helper files, typed
+parameters, immutable snapshots, logs/results and ordinary Hera submission.
+No new live kernel submission acceptance is claimed. A fresh read-only policy
+check confirms only `batch-cpu` is enabled; all seven GPU batch profiles remain
+disabled. See [notebook batch preparation and package evidence](../../platform-staging/jupyter-extensions-20261013/notebook-batch-preparation-20261015.json).
 
 Authenticated profile/status API checks passed on both consoles. Selecting the
 approved `native-group-a` workspace returns an enabled 5 GiB profile on CPS and
