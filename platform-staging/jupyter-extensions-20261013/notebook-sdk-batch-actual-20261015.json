@@ -1,0 +1,139 @@
+{
+  "cases": [
+    {
+      "case": "success",
+      "executed_notebook_retained": true,
+      "logs_http_status": 200,
+      "name": "cps-98aa00cf34d6894b52873ea0740cc8bcb75d03c1f8722c7a",
+      "phase": "Succeeded",
+      "selected_helper_exact": true,
+      "stage": "complete",
+      "stripped_snapshot": true,
+      "typed_parameters_exact": true,
+      "uid": "0f742113-1eed-4eb4-94d4-37a7ed5994a1"
+    },
+    {
+      "case": "failure",
+      "executed_notebook_retained": true,
+      "logs_http_status": 200,
+      "name": "cps-b6f81f5e640eb40cdecfb66072cbffb7f9ae2707f71566a0",
+      "phase": "Failed",
+      "selected_helper_exact": true,
+      "stage": "complete",
+      "stripped_snapshot": true,
+      "typed_parameters_exact": true,
+      "uid": "3dab2503-c22e-43aa-9e48-3c88da3c9ffc"
+    }
+  ],
+  "default_personal_pods_preserved": true,
+  "environment_injection": false,
+  "events": [
+    {
+      "environment_injection": false,
+      "person": "d98fbadd-d9a0-4981-8d20-1ab58bb75745",
+      "sdk_zero_arguments": true,
+      "stage": "identity"
+    },
+    {
+      "case": "success",
+      "name": "cps-98aa00cf34d6894b52873ea0740cc8bcb75d03c1f8722c7a",
+      "profile": "batch-cpu",
+      "sdk_submit_notebook": true,
+      "stage": "submitted",
+      "uid": "0f742113-1eed-4eb4-94d4-37a7ed5994a1"
+    },
+    {
+      "artifact": "snapshot",
+      "bytes": 20480,
+      "case": "success",
+      "name": "cps-98aa00cf34d6894b52873ea0740cc8bcb75d03c1f8722c7a",
+      "sha256": "3bbb73aa3bacd1d5d88ce6fa48285cbcb473bbe085313a98449fdd0cb1081ea9",
+      "stage": "artifact",
+      "status": 200
+    },
+    {
+      "artifact": "executed-notebook",
+      "bytes": 4725,
+      "case": "success",
+      "name": "cps-98aa00cf34d6894b52873ea0740cc8bcb75d03c1f8722c7a",
+      "sha256": "c0dfe31096da8645d8c453af67dc9fd5de1dbc5eea8f988df4526914587608b3",
+      "stage": "artifact",
+      "status": 200
+    },
+    {
+      "case": "success",
+      "executed_notebook_retained": true,
+      "logs_http_status": 200,
+      "name": "cps-98aa00cf34d6894b52873ea0740cc8bcb75d03c1f8722c7a",
+      "phase": "Succeeded",
+      "selected_helper_exact": true,
+      "stage": "complete",
+      "stripped_snapshot": true,
+      "typed_parameters_exact": true,
+      "uid": "0f742113-1eed-4eb4-94d4-37a7ed5994a1"
+    },
+    {
+      "case": "failure",
+      "name": "cps-b6f81f5e640eb40cdecfb66072cbffb7f9ae2707f71566a0",
+      "profile": "batch-cpu",
+      "sdk_submit_notebook": true,
+      "stage": "submitted",
+      "uid": "3dab2503-c22e-43aa-9e48-3c88da3c9ffc"
+    },
+    {
+      "artifact": "snapshot",
+      "bytes": 20480,
+      "case": "failure",
+      "name": "cps-b6f81f5e640eb40cdecfb66072cbffb7f9ae2707f71566a0",
+      "sha256": "4781baffff624f79fa3d1de1bb72a8b1482d3bd0e56f8c6e60df67423ef4aaef",
+      "stage": "artifact",
+      "status": 200
+    },
+    {
+      "artifact": "executed-notebook",
+      "bytes": 6751,
+      "case": "failure",
+      "name": "cps-b6f81f5e640eb40cdecfb66072cbffb7f9ae2707f71566a0",
+      "sha256": "3a914c5eed5b326704b0dbab3c2d3ffb9c4999c4262cc5543f5ca33416f28cb7",
+      "stage": "artifact",
+      "status": 200
+    },
+    {
+      "case": "failure",
+      "executed_notebook_retained": true,
+      "logs_http_status": 200,
+      "name": "cps-b6f81f5e640eb40cdecfb66072cbffb7f9ae2707f71566a0",
+      "phase": "Failed",
+      "selected_helper_exact": true,
+      "stage": "complete",
+      "stripped_snapshot": true,
+      "typed_parameters_exact": true,
+      "uid": "3dab2503-c22e-43aa-9e48-3c88da3c9ffc"
+    }
+  ],
+  "evidence_sha256": {
+    "failure-executed-notebook.private.body": "3a914c5eed5b326704b0dbab3c2d3ffb9c4999c4262cc5543f5ca33416f28cb7",
+    "failure-snapshot.private.body": "4781baffff624f79fa3d1de1bb72a8b1482d3bd0e56f8c6e60df67423ef4aaef",
+    "start-response.private.body": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "success-executed-notebook.private.body": "c0dfe31096da8645d8c453af67dc9fd5de1dbc5eea8f988df4526914587608b3",
+    "success-snapshot.private.body": "3bbb73aa3bacd1d5d88ce6fa48285cbcb473bbe085313a98449fdd0cb1081ea9"
+  },
+  "gateway_image": "sha256:6d8aa34e6d0f2d7381cf7e9266bcbc9dda185af7d36e2a728230d4991cd732dc",
+  "hub_image": "sha256:1e8bdc639ecc6f07a0f101f9157a724637bcc4468138fe1e19ff7dfe4bc73da4",
+  "human_oauth": false,
+  "human_panel_acceptance_pending": true,
+  "normal_stop_status": 204,
+  "notebook_image": "sha256:d75d54d9b2b3b1b497e577124a30ca4c82993dd8458550a0b1fa73c37159b64f",
+  "own_actor_id": "a689",
+  "own_actor_revoke_status": 204,
+  "own_kernel_delete_status": 204,
+  "own_pod_absent": true,
+  "passed": true,
+  "phase": "notebook-sdk-batch-actual-20261015-02",
+  "production_qualified": false,
+  "profile": "batch-cpu",
+  "recorded_at": "2026-10-15T11:07:38.554507+00:00",
+  "remove": false,
+  "saved_target": "compute-demo-20261015-5df04787/batch_task.ipynb",
+  "sdk_submit_notebook_actual_kernel": true
+}

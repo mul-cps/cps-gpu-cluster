@@ -32,7 +32,7 @@ for the bounded live results of 2026-10-13 and their retained evidence.
 | Shared GPU reservations | Actual simultaneous CPS5/CIT10 pilot starts passed: one winner held both shared members once, loser had no server/Pod/binding; confirmed Stop preceded successful retry on the other Hub; exact windows/groups/grants restored. Installed current Gateway code also passed first-free/second-busy transaction rollback in an isolated SQLite database | Different-member live API partial-conflict rollback, permitted CPU sessions and independent batch execution while held; broader pool and ordinary-user qualification |
 | Workspaces and local assignments | Local management, source-neutral reconciliation and RTC implementations exist | Two real visitors retaining their own identity, membership removal closing existing access, retained files and stopped-writer read-only archives |
 | Workflow gateway and admission | Source validation/ownership paths implemented; bounded CPS own-success/failure artifact/log bytes and foreign-versus-absent rejection passed; controller admission/RBAC checks passed | CIT normal-user own/foreign access, human authentication, token renewal and crafted workflow/admin bypass scenarios on the current release |
-| Notebook execution | Immutable runner/package/browser tests and bounded CPS selected-import/typed-parameter success/failure outputs passed | Complete current release/live coverage for saved snapshots, selected files, parameter cells, approved image digests and both owning Hubs |
+| Notebook execution | A real personal CPS kernel used the installed SDK to submit successful and intentionally failing CPU notebook jobs. Saved snapshots, exact selected helper, typed parameters, executed notebooks on both outcomes, artifact downloads and HTTP 200 log responses passed | Human Submit UI, CIT personal/shared-kernel runs and broader current-release coverage remain open |
 | GPU scheduling and packing | Stock KAI/HAMi components and controlled evidence exist; integrated Core/Hub source passed 2,151 tests with three known skips, plus separate installed Gateway/Hub suites. The Node image handover passed actual hardware zero and four-process epoch checks; coordinator activation remains disabled | Coordinator/binder deployment and actual post-Bind cap/CDI qualification; eight-A100 packing, teaching reclaim, protected sessions, 4/8-GPU JobSet retry and physical free-GPU telemetry |
 | Startup and defragmentation | Acceptance executors and thresholds are defined; representative measurements pending | Pre-pulled CPS/CIT bursts: p95 <=180s and maximum <=300s; KAI/fallback comparison with free capacity >=95% and waits/start <=110% of baseline, protected sessions unaffected |
 | NFS and S3 artifacts | Existing storage preserved; accepted TLS relay path and owner-filtered artifact access work; ten owned-prefix 14/90-day retention cases passed against real S3 and Argo with least-privilege authentication | Real gateway-created notebook lifecycle, scheduled cleanup and off-host recovery; new CIT filer requires its actual endpoint/export |
@@ -199,6 +199,23 @@ previous mutations. The temporary API actor was revoked with HTTP 204. Source
 attachment/security-header forwarding remains a separate staged fix. See
 [EOF rollout and download evidence](../../platform-staging/jupyter-extensions-20261013/artifact-eof-adoption-actual-20261015.json).
 This is a visitor-token test, not human OAuth or the fresh-kernel SDK gate.
+
+A subsequent fresh personal CPS kernel used the ordinary installed SDK to submit
+both a successful and intentionally failing notebook job. Both immutable snapshots
+and executed notebooks were downloaded and validated; selected helper bytes,
+stripped input outputs and typed parameters matched. The log API returned HTTP 200
+for both cases. The owned kernel, temporary server and API token were removed or
+revoked normally, preserving both default servers. These are real SDK submissions,
+not the earlier visitor-token-only test. See [SDK batch evidence](../../platform-staging/jupyter-extensions-20261013/notebook-sdk-batch-actual-20261015.json).
+
+That test also exposed an existing personal-storage hazard: image CWD and the
+notebook root fall back to `/home/jovyan/work`, which the Hub mounts as `emptyDir`.
+The persistent home PVC is mounted at `/home/jovyan`. Both default users' current
+work files have now been copied into private, hash-verified point-in-time backups
+on their persistent homes, without changing the source files or stopping kernels.
+The demo also has a persistent home copy. Future saves need the personal-only
+packaged root/CWD correction; restart remains pending. Take another current backup
+before any approved restart. See [preservation evidence](../../platform-staging/jupyter-extensions-20261013/personal-work-preservation-actual-20261015.json).
 
 The personal notebook's startup Longhorn attachment warning recovered without
 intervention: the same PVC became attached/healthy, and the notebook became
