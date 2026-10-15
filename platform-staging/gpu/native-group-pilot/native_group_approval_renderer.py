@@ -68,6 +68,28 @@ def _namespaces(qualification):
     return result
 
 
+def _epoch_transition(transition, old_hash, new_hash):
+    from cps_compute.native_policy_transition import PolicyWorkloadTransition
+    require(isinstance(transition,PolicyWorkloadTransition),'Explicit protected policy transition required')
+    new=transition.registry_epoch(transition.record['new']['registry'])
+    require(new.hash==new_hash and Policy(transition.record['old']['policy']).hash==old_hash,
+        'Only the explicitly bound old/new policy epochs may cross')
+    return transition
+
+
+def _prior_document(cm, policy, qualification):
+    value=parse(cm['data']['approval.json'])
+    if value.get('policy_hash')==policy.hash:
+        return ApprovalRevision.from_configmap(cm,policy,qualification)
+    transition=_epoch_transition(getattr(qualification,'transition_authority',None),value.get('policy_hash'),policy.hash)
+    old_policy=transition.registry_epoch(value['registry'])
+    document=ApprovalRevision.from_configmap(cm,old_policy,transition.qualification(old_policy))
+    require(canonical(value['registry'])==canonical(transition.retired_registry)
+        and document.reference in transition.record['retired_references'],
+        'Exact retained old registry and immutable document identity required')
+    return document
+
+
 def _baselines(baselines, policy, qualification):
     require(isinstance(baselines, dict) and set(baselines)==set(COMPONENTS), 'All four component baselines required')
     namespaces=_namespaces(qualification); previous={}
@@ -86,7 +108,7 @@ def _baselines(baselines, policy, qualification):
             and all(c in '0123456789abcdef' for c in image.split('@sha256:')[-1]), 'Preserved immutable service image required')
         require((row['previous_document'] is None)==(row['previous_reference'] is None), 'Complete prior projection pair required')
         if row['previous_document'] is not None:
-            doc=ApprovalRevision.from_configmap(row['previous_document'], policy, qualification)
+            doc=_prior_document(row['previous_document'], policy, qualification)
             ref=row['previous_reference']; refmeta=object_guard(ref, 'ConfigMap')
             require(ref.get('apiVersion')=='v1' and ref.get('immutable') is True
                 and refmeta.get('namespace')==namespaces[component] and doc.reference['namespace']==namespaces[component]
@@ -100,22 +122,37 @@ def _baselines(baselines, policy, qualification):
     return previous
 
 
-def document_intent(*, source_raw, source_sha256, trusted_revision, policy, qualification, baselines,
+def _source_snapshot(*, source_raw, source_sha256, trusted_revision, policy, qualification,
                     captured_at, now):
-    """Create candidates without inventing API identity or mutating registry state."""
+    """Validate a fresh server export without constructing publication candidates."""
     require(isinstance(source_raw, bytes) and 0<len(source_raw)<=1024*1024
         and source_sha256=='sha256:'+hashlib.sha256(source_raw).hexdigest(), 'Exact trusted Source export raw pin required')
     require(isinstance(captured_at, datetime) and captured_at.tzinfo is not None
         and isinstance(now, datetime) and now.tzinfo is not None
         and 0<=(now-captured_at).total_seconds()<=120, 'Fresh authenticated Source capture required')
-    snapshot=ApprovalSnapshot.from_document(parse(source_raw), policy, qualification, expected_revision=trusted_revision)
+    return ApprovalSnapshot.from_document(parse(source_raw), policy, qualification, expected_revision=trusted_revision)
+
+
+def document_intent(*, source_raw, source_sha256, trusted_revision, policy, qualification, baselines,
+                    captured_at, now):
+    """Create candidates without inventing API identity or mutating registry state."""
+    snapshot=_source_snapshot(source_raw=source_raw,source_sha256=source_sha256,trusted_revision=trusted_revision,
+        policy=policy,qualification=qualification,captured_at=captured_at,now=now)
     previous=_baselines(baselines, policy, qualification)
+    transition=getattr(qualification,'transition_authority',None)
+    require(transition is None or set(previous)==set(COMPONENTS),
+        'Policy transition plans require the complete retained publication baselines')
     history=[]
     if previous:
         old=previous['node'].document
         require(snapshot.document['generation']>old['registry']['generation'], 'Source generation must advance')
         history=copy.deepcopy(old['history'])+[previous[c].reference for c in COMPONENTS]
         require(len(history)<=256, 'Approval history bound reached; retain custody and review compaction')
+        if old['policy_hash']!=policy.hash:
+            transition=_epoch_transition(getattr(qualification,'transition_authority',None),old['policy_hash'],policy.hash)
+            require(canonical(snapshot.document)==canonical(transition.record['new']['registry']),
+                'Cross-epoch publication requires the exact approved new registry')
+    if transition is not None:transition.validate_history(history,snapshot.document)
     document=approval_envelope(snapshot, history)
     data={'approval.json':canonical(document)}; name='cps-native-approvals-'+canonical_sha256(data)[7:23]
     documents={}
@@ -358,6 +395,11 @@ def revision_projection_intent(*, documents, previous_publication, previous_publ
     policy=kwargs['policy'];qualification=kwargs['qualification'];baselines=kwargs['baselines']
     previous=_baselines(baselines,policy,qualification)
     require(set(previous)==set(COMPONENTS),'Fully installed prior revision required')
+    old_policy_hash=previous['node'].reference['policy_hash']
+    crossing=old_policy_hash!=policy.hash
+    transition=(_epoch_transition(getattr(qualification,'transition_authority',None),old_policy_hash,policy.hash)
+        if crossing else None)
+    old_qualification=transition.qualification(Policy(transition.record['old']['policy'])) if crossing else qualification
     require(type(ttl_seconds) is int and 15<=ttl_seconds<=120,'Bounded acknowledgment TTL required')
     pool=qualification._config()['node_pool']
     require(type(driver_epoch) is DriverEpoch and driver_epoch.__dict__=={
@@ -367,10 +409,11 @@ def revision_projection_intent(*, documents, previous_publication, previous_publ
         require(isinstance(values,dict) and set(values)==set(COMPONENTS),'All four complete actual readbacks required')
     settings={'enabled':True,'acknowledgments':previous_publication['acknowledgment_references'],
         'processes':previous_publication['process_declarations'],'driver_epoch':driver_epoch.__dict__,'ttlSeconds':ttl_seconds}
-    require(previous_publication['runtime_settings']==settings and previous_publication['policy_hash']==policy.hash
+    require(previous_publication['runtime_settings']==settings and previous_publication['policy_hash']==old_policy_hash
         and previous_publication['revision']==previous['node'].reference['revision'],
         'Previous process, epoch, TTL and policy custody must remain unchanged')
     plan=document_intent(**kwargs);references={};reference_maps={};patches={};expected={}
+    bootstrap_maps=copy.deepcopy(previous_bootstrap_maps)
     for component in COMPONENTS:
         row=baselines[component];old=previous[component];publication=previous_publication
         require(publication['references'][component]==old.reference
@@ -395,7 +438,7 @@ def revision_projection_intent(*, documents, previous_publication, previous_publ
             'Original actual acknowledgment identity required')
         bootstrap=previous_bootstrap_maps[component];bmeta=object_guard(bootstrap,'ConfigMap')
         if component=='node':
-            data={'template.json':canonical(qualification._config()),'process.json':canonical(process),
+            data={'template.json':canonical(old_qualification._config()),'process.json':canonical(process),
                 'acknowledgment.json':canonical(publication['acknowledgment_references'][component])}
             prefix='cps-native-approval-bootstrap'
         else:
@@ -413,7 +456,11 @@ def revision_projection_intent(*, documents, previous_publication, previous_publ
             and all(publication['bootstrap_maps'][component]['metadata'].get(k)==bmeta[k] for k in ('namespace','name')),
             'Actual immutable unchanged publisher bootstrap required')
         prior_uid=publication['bootstrap_maps'][component]['metadata'].get('uid')
+        require(not crossing or prior_uid==bmeta['uid'],'Policy epoch requires the retained actual bootstrap UID')
         require(prior_uid is None or prior_uid==bmeta['uid'],'Previously bound publisher ConfigMap UID must remain unchanged')
+        if crossing and component=='node':
+            target={**data,'template.json':canonical(qualification._config())}
+            bootstrap_maps[component]=immutable_config(row['previous_document'],target,prefix)
         actual=documents[component];revision=ApprovalRevision.from_configmap(actual,policy,qualification)
         object_guard(actual,'ConfigMap')
         require(actual['data']==plan['documents'][component]['data']
@@ -444,10 +491,12 @@ def revision_projection_intent(*, documents, previous_publication, previous_publ
         for volume in pod['volumes']:
             if volume['name']==DOC_VOLUME:volume['configMap']['name']=actual['metadata']['name']
             elif volume['name']==REF_VOLUME:volume['configMap']['name']=reference['metadata']['name']
+            elif crossing and component=='node' and volume['name']==BOOTSTRAP_VOLUME:
+                volume['configMap']['name']=bootstrap_maps[component]['metadata']['name']
         patches[component]=replace_patch(row['deployment'],'/spec',row['deployment']['spec'],spec)
         expected[component]={**{k:row['deployment']['metadata'][k] for k in ('namespace','name','uid')},
             'container':row['container'],'spec':spec}
-    return {**plan,'references':references,'reference_maps':reference_maps,'bootstrap_maps':copy.deepcopy(previous_bootstrap_maps),
+    return {**plan,'references':references,'reference_maps':reference_maps,'bootstrap_maps':bootstrap_maps,
         'patches':patches,'expected_deployments':expected,'requires_actual_process_ack':True,
         'acknowledgment_references':copy.deepcopy(settings['acknowledgments']),
         'process_declarations':copy.deepcopy(settings['processes']),'runtime_settings':copy.deepcopy(settings),
@@ -535,12 +584,23 @@ def process_access_intent(*, projection, deployments, replicasets, pods, roles):
     return {'version':1,'patches':patches,'actual_process_names':names,'live_applied':False,'process_readiness_verified':False}
 
 
-def _revision_access_scope(projection, previous_publication):
+def _revision_access_scope(projection, previous_publication, *, transition=None):
     _publisher_scope(projection);_publisher_scope(previous_publication)
+    if projection['policy_hash']!=previous_publication['policy_hash']:
+        transition=_epoch_transition(transition,previous_publication['policy_hash'],projection['policy_hash'])
+        require(previous_publication['revision']==canonical_sha256(transition.retired_registry)
+            and projection['revision']==canonical_sha256(transition.record['new']['registry'])
+            and all(ref in transition.record['retired_references'] for ref in previous_publication['references'].values()),
+            'Exact approved prior and successor registry revisions required')
+        for cm in projection['documents'].values():
+            document=parse(cm['data']['approval.json'])
+            require(canonical(document['registry'])==canonical(transition.record['new']['registry']),
+                'Exact approved successor document required')
+            transition.validate_history(document['history'],document['registry'])
     require(projection.get('previous_publication_sha256')==canonical_sha256(previous_publication)
         and projection.get('publisher_reinstall_required') is False
         and projection['revision']!=previous_publication['revision']
-        and projection['policy_hash']==previous_publication['policy_hash']
+        and (projection['policy_hash']==previous_publication['policy_hash'] or transition is not None)
         and all(projection[key]==previous_publication[key] for key in
             ('acknowledgment_references','process_declarations','runtime_settings')),
         'Exact reviewed installed revision transition required')
@@ -607,18 +667,18 @@ def _revision_role_patches(projection, old_rows, new_rows, roles):
         'previous_publication_sha256':projection['previous_publication_sha256']}
 
 
-def revision_access_intent(*, projection, previous_publication, deployments, replicasets, pods, roles):
+def revision_access_intent(*, projection, previous_publication, deployments, replicasets, pods, roles, transition=None):
     """Before rollout, replace named document GET while retaining actual old Pod names."""
-    _revision_access_scope(projection,previous_publication)
+    _revision_access_scope(projection,previous_publication,transition=transition)
     names=_revision_process_names(previous_publication,deployments,replicasets,pods)
     result=_revision_role_patches(projection,_access_rows(previous_publication,names),_access_rows(projection,names),roles)
     return {**result,'previous_process_names':names,'requires_actual_new_process_capture':True}
 
 
 def revision_process_access_intent(*, projection, previous_publication, previous_process_records,
-        deployments, replicasets, pods, roles):
+        deployments, replicasets, pods, roles, transition=None):
     """After rollout, replace only old Pod/RS GET targets using genuine new processes."""
-    _revision_access_scope(projection,previous_publication)
+    _revision_access_scope(projection,previous_publication,transition=transition)
     require(isinstance(previous_process_records,dict)
         and set(previous_process_records)=={'deployments','replicasets','pods'},'Closed retained prior process capture required')
     old_names=_revision_process_names(previous_publication,**previous_process_records)

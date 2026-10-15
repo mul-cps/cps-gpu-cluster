@@ -129,7 +129,7 @@ class CommandCapture:
 
 class Delivery:
     def __init__(self, config, directory, api, capture, now=None, *, epoch_reader):
-        r.require(isinstance(config,dict) and set(config) == {'version','policy','qualification',
+        r.require(isinstance(config,dict) and set(config)-{'policyTransition'} == {'version','policy','qualification',
             'previous_publication','previous_publication_sha256','baselines','ttlSeconds'}
             and type(config['version']) is int and config['version']==1,
             'Closed reviewed installed-publication seed required')
@@ -141,7 +141,13 @@ class Delivery:
         self.epoch_reader = epoch_reader
         self.now = now or (lambda:datetime.now(timezone.utc))
         self.policy = r.Policy(config['policy'])
-        self.qualification = r.NativeGroupDeployment.from_config(config['qualification'],self.policy)
+        self.transition = None
+        if 'policyTransition' in config:
+            from cps_compute.native_policy_transition_config import load_policy_transition
+            self.transition = load_policy_transition(config['policyTransition'])
+            r.require(self.transition is not None,'Explicit protected policy transition required')
+        self.qualification = r.NativeGroupDeployment.from_config(config['qualification'],self.policy,
+            **({'transition':self.transition} if self.transition is not None else {}))
         self.config_hash = r.canonical_sha256(config)
 
     def _get(self, kind, identity):
@@ -203,6 +209,28 @@ class Delivery:
         return dict(source_raw=source['source_raw'].encode(),source_sha256=source['source_sha256'],
             trusted_revision=source['trusted_revision'],captured_at=datetime.fromisoformat(source['captured_at'].replace('Z','+00:00')),
             now=self.now(),policy=self.policy,qualification=self.qualification,baselines=baselines)
+
+    def _epoch_bootstraps(self, transition, *, create):
+        """Retain old UID/data custody and bind only the approved new Node map."""
+        publication, prior = transition['publication'], transition['prior']
+        r._revision_access_scope(publication,prior,transition=self.transition)
+        targets = transition.get('bootstrap_targets',{})
+        r.require(create or set(targets)==set(r.COMPONENTS),'Bound successor bootstrap identities required')
+        for component,candidate in publication['bootstrap_maps'].items():
+            old = transition['bootstraps'][component]
+            if candidate['metadata']['name']==old['metadata']['name']:
+                r.require(candidate['data']==old['data'],'Retained publisher bootstrap bytes changed')
+                bound = old
+            else:
+                r.require(component=='node' and self.transition is not None
+                    and set(candidate['data'])==set(old['data'])=={'template.json','process.json','acknowledgment.json'}
+                    and candidate['data']['template.json']==r.canonical(self.qualification._config())
+                    and all(candidate['data'][key]==old['data'][key] for key in ('process.json','acknowledgment.json')),
+                    'Only the bound new policy Node template may replace a bootstrap')
+                bound = targets.get(component)
+                r.require(create or bound is not None,'Previously bound successor bootstrap required')
+            targets[component] = self._ensure(candidate,bound)
+        transition['bootstrap_targets'] = targets
 
     def _roles(self, publication, guards=None, *, check_rules=False):
         roles={obj['metadata']['namespace']+'/'+obj['metadata']['name']:self._get('Role',obj['metadata'])
@@ -282,7 +310,7 @@ class Delivery:
             'Complete durable installed transition required for permission bootstrap')
         publication, prior = transition['publication'], transition['prior']
         r.require(prior==state['publication'], 'Retained installed prior publication required')
-        r._revision_access_scope(publication, prior)
+        r._revision_access_scope(publication, prior,transition=self.transition)
         guards = state.get('role_guards')
         r.require(isinstance(guards, dict) and set(guards)==set(transition['roles'])
             and all(guards[key]=={'uid':role['metadata']['uid'], 'rules':role['rules']}
@@ -314,6 +342,8 @@ class Delivery:
                     {'reference.json':r.canonical(publication['references'][component])},
                 'Exact bound document and immutable reference linkage required')
             self._ensure(publication['reference_maps'][component],transition['references'][component])
+        if publication['policy_hash']!=prior['policy_hash']:
+            self._epoch_bootstraps(transition,create=False)
         # Structural verification includes all four full Deployment specs,
         # owner chains, approved Pod templates and exact projected inputs.
         records = self.api.processes(publication)
@@ -385,7 +415,11 @@ class Delivery:
         # when generation has not advanced; ignore this initial-install plan.
         bare = copy.deepcopy(state['baselines'])
         for row in bare.values(): row.update(previous_document=None,previous_reference=None)
-        r.document_intent(**self._request(source,bare))
+        if self.transition is None:
+            r.document_intent(**self._request(source,bare))
+        else:
+            validation=self._request(source,bare);validation.pop('baselines')
+            r._source_snapshot(**validation)
         transition = state['transition']
         # Refresh can never overwrite a bound immutable UID, including an
         # identically named/content reference replaced after a completed head.
@@ -432,18 +466,20 @@ class Delivery:
             for component,candidate in publication['reference_maps'].items():
                 transition['references'][component] = self._ensure(candidate,transition['references'].get(component))
                 save(path,state)
+            if publication['policy_hash']!=transition['prior']['policy_hash']:
+                self._epoch_bootstraps(transition,create=True); save(path,state)
             if transition['document_access'] is None:
                 if transition['structural_prior']:
                     # Same bundled renderer's reviewed Pending permission-only
                     # path, preserving every owner/template/executable guard.
                     # No old loaded-head or Pod Ready proof is asserted here.
-                    r._revision_access_scope(publication,transition['prior'])
+                    r._revision_access_scope(publication,transition['prior'],transition=self.transition)
                     names = r._revision_process_names(transition['prior'],**transition['old_records'],permission_bootstrap=True)
                     transition['document_access'] = r._revision_role_patches(publication,
                         r._access_rows(transition['prior'],names),r._access_rows(publication,names),transition['roles'])
                 else:
                     transition['document_access'] = r.revision_access_intent(projection=publication,
-                        previous_publication=transition['prior'],**transition['old_records'],roles=transition['roles'])
+                        previous_publication=transition['prior'],**transition['old_records'],roles=transition['roles'],transition=self.transition)
                 save(path,state)
             # After process permission delivery the initial Role target is
             # intentionally superseded. Its saved guard remains provenance.
@@ -463,7 +499,7 @@ class Delivery:
                     else:
                         transition['process_access'] = r.revision_process_access_intent(projection=publication,
                             previous_publication=transition['prior'],previous_process_records=transition['old_records'],
-                            **records,roles=self._roles(publication,state['role_guards']))
+                            **records,roles=self._roles(publication,state['role_guards']),transition=self.transition)
                     save(path,state)
             except RoleIdentityChanged:
                 raise
@@ -501,6 +537,9 @@ class Delivery:
             'ready':source['trusted_revision']==proof['revision'],'revision':proof['revision']}
 
     def _complete(self, state, publication, records, documents, *, structural):
+        if 'bootstrap_targets' in state['transition']:
+            publication=copy.deepcopy(publication)
+            publication['bootstrap_maps']=copy.deepcopy(state['transition']['bootstrap_targets'])
         state['publication'] = publication
         for component,row in state['baselines'].items():
             row.update(deployment=records['deployments'][component],previous_document=documents[component],
