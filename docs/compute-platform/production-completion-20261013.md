@@ -122,6 +122,15 @@ its normal Stop, exact restoration, retained PV/PVC and token cleanup passed a
 fresh read-only check. Both temporary operator tokens were revoked with HTTP
 204. See [connection diagnosis and bounded cleanup](../../platform-staging/jupyter-extensions-20261013/sdk-connection-diagnosis-actual-20261015.json).
 
+The CA transport fix at `a7b2850d1881b2bff8c0a9b865dfb3fa5ba9f94b` is
+published as immutable qualification images: Hub `624a98b3`, CPU `ad693e5d` and
+GPU `7e3f6f7d`. Actual installed tests passed (Hub 481 with four known skips;
+CPU 14; GPU 14). Dependencies and original compressed base layers are preserved.
+These artifacts remain ineligible for live adoption until the policy/workload
+transition, runtime validator and coordinated trust rollover gates pass. The
+current production/pilot deployment still runs the earlier images. See
+[package and remote publication evidence](../../platform-staging/jupyter-extensions-20261013/sdk-ca-publication-actual-20261015.json).
+
 Authenticated profile/status API checks passed on both consoles. Selecting the
 approved `native-group-a` workspace returns an enabled 5 GiB profile on CPS and
 10 GiB on CIT, with `nativeGroupReady=true`. The global profile list retains its
