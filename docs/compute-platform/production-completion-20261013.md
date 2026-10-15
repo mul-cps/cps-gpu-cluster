@@ -143,6 +143,39 @@ were not replayed. Four fresh ACKs, the new completed journal and native zero
 passed. See [paired Hub adoption](../../platform-staging/jupyter-extensions-20261013/notebook-batch-hub-adoption-actual-20261015.json) and
 [package and remote publication evidence](../../platform-staging/jupyter-extensions-20261013/sdk-ca-publication-actual-20261015.json).
 
+The actual personal CPS notebook exposed a second browser boundary on October
+15: its same-origin Compute API was configured correctly, but an unauthenticated
+fetch encountered the console's OAuth redirect. Completing that redirect in the
+browser then failed because nginx rejected the callback response headers as too
+large. Both Hub ingresses now use a 16 KiB response-header buffer and 32 KiB busy
+buffers. All four controllers passed their compiled configuration checks; the
+existing notebook was not restarted. Human OAuth retesting remains pending.
+The prebuilt frontend fix at `49c9b972` separately adds an explicit Connect action
+and distinguishes authentication, permission and network failures; its source is
+pushed, but the updated notebook image is not yet deployed. See
+[browser connection evidence](../../platform-staging/jupyter-extensions-20261013/compute-browser-connection-actual-20261015.json).
+
+The walkthrough notebook and its separate batch target/helper are delivered to
+`bjoern` in `compute-demo-20261015-5df04787`; existing notebooks were preserved.
+Its network access and job submissions require explicit opt-in. A real CPU
+submission through the authenticated visitor API succeeded as workflow
+`cps-3d0ee6ec7090b84ee51fdf46b3c32979a110c9dca8079ad7`.
+The saved and executed notebook objects exist, but artifact listing/downloads
+remain failed by a reproduced S3-stream EOF bug. Its narrow fix is source-tested
+and pushed at `846c02cf`; deployment and real downloads remain pending.
+This is a visitor-token test, not human OAuth or the fresh-kernel SDK gate.
+
+The personal notebook's startup Longhorn attachment warning recovered without
+intervention: the same PVC became attached/healthy, and the notebook became
+Ready with no restart. Managed CPU Start remains separately blocked by the
+storage privacy guard: the personal notebook's existing parent NFS mount exposes
+the retained V1 workspace subtree. The attempted lifecycle was stopped and its
+owned changes restored. Do not weaken that guard or stop the personal notebook
+to force acceptance; a reviewed migration to the existing private V2 root is
+still needed. Personal zero-argument SDK configuration was also found absent;
+the fix at `9b7df79b` passed 524 actual installed Hub tests with five existing
+skips, but is not yet deployed.
+
 Notebook submissions already snapshot saved inputs, strip outputs and execute
 through the approved batch runner. The new owner-authenticated artifact byte API
 also supports shared kernel principals, without using the personal-only Argo UI

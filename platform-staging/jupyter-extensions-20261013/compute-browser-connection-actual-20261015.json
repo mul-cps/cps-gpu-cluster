@@ -1,0 +1,40 @@
+{
+  "all_four_nginx_config_tests_passed": true,
+  "compiled_config_receipt_sha256": "08f1a8aa198e62d10eb41275dd80c10d13b82dfb7c21002707ae6a5cec4ac257",
+  "confirmed_cause": "nginx upstream sent too big header on Source OAuth callback; Hub code exchange succeeded",
+  "docs": "https://kubernetes.github.io/ingress-nginx/user-guide/nginx-configuration/annotations/#proxy-buffer-size",
+  "existing_personal_pod_preserved": true,
+  "frontend_error_handling": {
+    "deployed": false,
+    "separates_authorization_permissions_and_network_failure": true,
+    "source_commit": "49c9b9722a7539f322baed88da90cdebd27da66f",
+    "source_pushed": true
+  },
+  "gitops_promotion_pending": true,
+  "human_oauth_retest_pending": true,
+  "ingress_change": [
+    {
+      "busy_buffers": "32k",
+      "name": "jupyterhub",
+      "namespace": "jupyterhub",
+      "only_two_annotations_changed": true,
+      "response_header_buffer": "16k",
+      "uid": "81b66ff8-2fdb-4449-b900-bc10f8d51151",
+      "uid_and_spec_preserved": true
+    },
+    {
+      "busy_buffers": "32k",
+      "name": "jupyterhub",
+      "namespace": "cit-jhub",
+      "only_two_annotations_changed": true,
+      "response_header_buffer": "16k",
+      "uid": "0947e3c3-568c-431d-bcbf-abec382bc107",
+      "uid_and_spec_preserved": true
+    }
+  ],
+  "notebook_restart_required_for_ingress_fix": false,
+  "production_qualified": false,
+  "recorded_at": "2026-10-15T09:36:13.784802+00:00",
+  "schema_version": 1,
+  "symptom": "Compute plugin Failed to fetch; human OAuth callback returned nginx502"
+}
