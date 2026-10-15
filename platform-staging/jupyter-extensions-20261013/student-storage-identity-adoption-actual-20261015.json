@@ -1,0 +1,26 @@
+{
+  "source_commit": "f10e1927b8283160b28ba3c00965aeafb1425771",
+  "image": "ghcr.io/mul-cps/cps-compute@sha256:eea5b2927d7ea7c12205669f18a68c5cf40c70a082a048b23db6aec0a6f2997a",
+  "deployed": true,
+  "ready": true,
+  "authority": "student-private-workspace-handover-7e2f72af/phase-7e2f72af",
+  "seed_sha256": "sha256:2636966bd7b468e7fb0a50fc45d9d6fb00458fa54f01f43b1ec4653b71ad7129",
+  "four_raw_hashes": {
+    "final.json": "4c39d79dd3f2952f2af864e8e9c221ce9c6655a596381a9d2caaa662d6244d9e",
+    "new-delivery-seed.json": "28087f176ec4609465bdd17a1f2c5929fdb27a834dc127add12eefca21f1d52f",
+    "new-delivery-activation-readback.json": "086dccf8b57ef268a15e7987e5b62d39ec2883a90c549642b86f02672a85b411",
+    "delivery-activation-intent.json": "e13cbeb9ebaa41f0d474782a8901783eaf1887412a5a76350f321c995630986a"
+  },
+  "storage_version_for_new_workspaces": 2,
+  "existing_workspace_storage_version_retained": 1,
+  "cps_canonical_people_added": [
+    "mikasa",
+    "armin"
+  ],
+  "hub_image_unchanged": true,
+  "personal_notebooks_restarted": false,
+  "policy_hash_unchanged": true,
+  "gpu_workspaces_started": false,
+  "production_qualified": false,
+  "recorded_at": "2026-10-15T14:17:19.217843+00:00"
+}

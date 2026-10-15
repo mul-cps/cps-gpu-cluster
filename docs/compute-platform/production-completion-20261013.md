@@ -54,13 +54,17 @@ Its installed image passed 529 tests with five existing skips, unchanged runtime
 dependencies and successful UID1000 imports. The earlier candidate failed its
 UID1000 packaging check and was never published.
 See [persistent-home adoption](../../platform-staging/jupyter-extensions-20261013/personal-root-adoption-actual-20261015.json).
-The latest same-policy Gateway rollout adopted Gateway6d from source `846c02cf`
-for the S3 end-of-file fix. Node8c retains its image. Both consoles now run Source51f for the authenticated
+The latest same-policy Gateway rollout adopted Gatewayeea5 from source `f10e1927`
+for versioned storage routing, retaining the earlier S3 end-of-file fix. New
+workspaces select private storage version 2; existing version 1 bindings retain
+their paths. Explicit CPS mappings for the two newly created student test
+accounts were added without matching names or email addresses. Node8c retains its image. Both consoles now run Source51f for the authenticated
 artifact-header fix; their databases, configuration, credentials and PVCs are preserved.
 Four fresh process acknowledgments and a completed new delivery journal confirm
 the unchanged policy and GPU driver epoch. The delivery controller is ready and
 the final native allocation check is zero. The current delivery seed after these rollouts is
-`sha256:6c4ce996c37b72de155d50fddb8813b71b6bd369f0caf5ea292198d0d1935f3b`.
+`sha256:2636966bd7b468e7fb0a50fc45d9d6fb00458fa54f01f43b1ec4653b71ad7129`.
+See [student storage and identity adoption](../../platform-staging/jupyter-extensions-20261013/student-storage-identity-adoption-actual-20261015.json).
 The earlier CIT legacy runtime enrollment and same-image cold handover remain
 retained evidence; their previous seed is preserved in the new handover lineage.
 The canonical policy hash is
@@ -617,3 +621,41 @@ with 12 subtests, and the rendered panel test. Both running servers serve the
 new bundle; their Pod specs and four existing kernels are unchanged. A browser
 reload is required. Notebook image defaults are not changed by this user-package
 update. See [live update](../../platform-staging/jupyter-extensions-20261013/workloads-optional-jobsets-live-20261015.json).
+
+
+## Student Compute access and personal server sharing, 2026-10-15
+
+The two ordinary test accounts, Mikasa and Armin, use the existing CIT directory
+through Dex on the CPS Hub. They remain non-administrators. Their explicit
+reviewed directory identities map to distinct canonical people; no account was
+linked by name or email. Their course/project CPU grants are time bounded.
+
+Armin completed a normal directory login and opened Mikasa's existing CPU server
+with HTTP 200. The server reported the actual visitor as Armin. His Share grants
+only `access:servers!server=mikasa/`; an OAuth authorization URL itself is not
+a Share. Open the stable [workspace URL](https://jupyterhub.dshl.unileoben.ac.at/user/mikasa/lab)
+while logged in as Armin. This does not establish simultaneous RTC editing or
+pooled GPU execution.
+
+Both dedicated Compute visitor services are deployed with separate OAuth/cookie
+credentials, verified Hub/Gateway TLS and working proxy redirects. Mikasa and
+Armin each completed ordinary CPS Compute OAuth and saw their own canonical
+identity and project grants. Mikasa's My Workloads view renders normally with
+the optional distributed service visibly unavailable; her admin-console request
+returns HTTP 403. No admin-console service scope was granted to either student.
+
+The latest prebuilt addon includes the five Snippets refinement passes, ordinary
+Hera examples, permitted profile/project/image choices, safe cell insertion and
+the optional JobSet fix. Its visitor-prefix compatibility wheel is installed in
+the three running CPS servers without a restart. Their kernel IDs are preserved.
+
+Hub restart exposed that a database-only custom role is removed during startup.
+Student access was restored through a new scoped group while a default-user-role
+fix was qualified with actual Hub 5.5.2 restart tests. The combined Hub image also
+closes the unqualified legacy CIT personal GPU path. Its 52 installed tests pass
+and the immutable image is published; controlled live adoption is still pending.
+CIT's existing personal runtime also still needs its preserving Compute/RTC image.
+
+See [student access and addon evidence](../../platform-staging/jupyter-extensions-20261013/student-compute-sharing-actual-20261015.json).
+The managed GPU workspace, grant activation, RTC editing/revocation, job ownership
+and the broader production gates remain distinct acceptance work.

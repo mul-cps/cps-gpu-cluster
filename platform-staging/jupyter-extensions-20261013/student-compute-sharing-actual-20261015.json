@@ -1,0 +1,85 @@
+{
+  "version": 1,
+  "scope": "ordinary CPS student Compute and exact personal CPU server sharing; not full production qualification",
+  "recorded_at": "2026-10-15T14:27:28.855435+00:00",
+  "accounts": {
+    "mikasa": {
+      "admin": false,
+      "canonical_person": "15164372-7ae5-4cfd-8b5d-fd402aa891bd"
+    },
+    "armin": {
+      "admin": false,
+      "canonical_person": "85de720c-94b0-4bc7-807e-c04512133494"
+    }
+  },
+  "identity_linkage": "Explicit reviewed identities for the two newly created CIT-directory test accounts; no name or email matching",
+  "source_project": "shared-gpu-lab",
+  "personal_cpu_share": {
+    "owner": "mikasa",
+    "server": "",
+    "recipient": "armin",
+    "scope": "access:servers!server=mikasa/",
+    "normal_directory_login": true,
+    "server_status": 200,
+    "actual_visitor_identity": "armin",
+    "server_identity_status": 200,
+    "administrator_token_used": false
+  },
+  "compute_visitor": {
+    "services": [
+      "cps-compute-ui",
+      "cit-compute-ui"
+    ],
+    "both_services_deployed_and_oauth_registered": true,
+    "both_anonymous_proxy_redirects_verified": true,
+    "both_hub_and_gateway_tls_verified": true,
+    "cps_armin_normal_oauth_and_own_panel_identity_verified": true,
+    "cps_mikasa_normal_oauth_and_own_panel_identity_verified": true,
+    "mikasa_workloads_live_verified": true,
+    "distributed_disabled_notice_visible": true,
+    "mikasa_admin_console_status": 403,
+    "student_admin_console_scope_granted": false,
+    "cps_temporary_group_role_restored_after_role_sweep": true,
+    "restart_persistent_default_user_role_image_published_not_deployed": "sha256:f6c40516a180407aa42d64e4b1b4205ef44879e9f98b997b7ea1a01469c37fe4"
+  },
+  "addon": {
+    "source_commit": "ab0202e56aa20d0e2d4671fb661637830b6bcafc",
+    "wheel_sha256": "1050c39bb9caed73b0350e5e7dc784e83a62d9c618f0e06f282f7ca3c9a5beaa",
+    "entry": "static/remoteEntry.c7eaea5553822765e8f8.js",
+    "installed_users": {
+      "bjoern": {
+        "pod_uid": "915b3fac-53fa-469c-8c3f-0180fb285504",
+        "kernel_count": 3,
+        "kernel_ids_preserved": true,
+        "server_restart": false,
+        "kernel_restart": false
+      },
+      "cpsadmin": {
+        "pod_uid": "a984023f-eb34-4af1-b01d-bad6ea159ef4",
+        "kernel_count": 1,
+        "kernel_ids_preserved": true,
+        "server_restart": false,
+        "kernel_restart": false
+      },
+      "mikasa": {
+        "pod_uid": "31846900-989b-48d1-95b3-846e9526fbb5",
+        "kernel_count": 0,
+        "kernel_ids_preserved": true,
+        "server_restart": false,
+        "kernel_restart": false
+      }
+    },
+    "node_tests": 57,
+    "packaging_hook_tests": 10,
+    "snippets_refinement_passes": 5,
+    "control_cells_inserted_without_execution": true
+  },
+  "limitations": [
+    "Restart-persistent visitor-role image is published and awaits controlled Hub adoption",
+    "This personal CPU Share does not establish RTC editing or pooled GPU execution",
+    "Managed GPU group approval, GPU grants and Start remain separate follow-up",
+    "CIT personal runtime still needs the preserving Compute/RTC image",
+    "Two-user job ownership, membership-removal connection closure and production qualification remain separate gates"
+  ],
+  "production_qualified": false
+}
