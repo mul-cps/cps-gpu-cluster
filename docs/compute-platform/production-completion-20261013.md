@@ -25,7 +25,7 @@ for the bounded live results of 2026-10-13 and their retained evidence.
 | Gate | Verified state | Remaining completion evidence |
 | --- | --- | --- |
 | Repository ownership and shared policy | Separate application/deployment responsibilities and shared policy implemented; compatibility branches retained | Integrate and promote one tested consumer matrix with its exact policy hash; account for Fleet's watched branches |
-| SDK, Hub and Lab packages | Both Hubs now run Hub1e with the personal SDK environment fix and select CPUd75 with the prebuilt Lab XSRF fix. The actual Hub 5.5.2/Chromium regression and panel tests passed, with 43 Node and 9 installed Lab tests. The existing bjoern/cpsadmin notebook Pods remain unchanged on CPUad | Personal server restart and actual panel/zero-argument SDK acceptance remain pending. Other notebook variants, ordinary visitor identity separation and human RTC remain separate gates; CIT personal profile hooks retain their independent images |
+| SDK, Hub and Lab packages | Both Hubs now run Hub1e with the personal SDK environment fix and select CPUd75 with the prebuilt Lab XSRF fix. The actual Hub 5.5.2/Chromium regression and panel tests passed, with 43 Node and 9 installed Lab tests. A fresh personal CPS CPU kernel returned HTTP 200 for `/v1/me`, `/v1/profiles` and `/v1/session` using zero-argument `sdk.client()` and the reviewed person identity. The existing bjoern/cpsadmin notebook Pods remain unchanged on CPUad | Personal server restart, human panel and CIT personal SDK acceptance remain pending. Other notebook variants, ordinary visitor identity separation and human RTC remain separate gates; CIT personal profile hooks retain their independent images |
 | Both admin UI consoles | Both consoles run Sourceb36 with the reviewed legacy runtime validator; frontend and dependencies remain equal to Source87a1. CIT legacy runtime enrollment, cold startup and real notebook activity reporting passed; the existing UI and approved 10 GiB choice remain bounded evidence | Normal registered CPU lifecycle and reviewed CIT `akadmin` canonical API linkage passed; ordinary-user/human OAuth and remaining modes are separate gates |
 | Identity and group ownership | Existing reviewed aliases retained; both CPS legacy neutral accounts have permanent ready provenance; explicit custody migration and exact QA repair passed; both Hubs restarted without changing the repaired or legitimate legacy roles | Reviewed CIT alias is live in Source, Hub and Gateway and `/me` resolves the same person; real login grant survival/expiry, scoped administration and cross-Hub allowance continuity remain |
 | Native GPU isolation | Controlled no-MIG 5/20 GiB history retained; current CPS pair passed distinct 5 GiB OOM/recovery with peer progress, IPC denial in both directions, positive controls, kernel witnesses, restart retirement, complete bounded MPS OOM/recovery and observer cleanup, and confirmed normal closure | Complete restart behavior and broader packing; current bounded pool is 5/10 GiB, not a normal 20 GiB or cross-Hub qualification |
@@ -50,11 +50,12 @@ Gatewaybb and the paired Hub CA/CPU rollouts completed on **2026-10-15**. The su
 personal SDK and Lab XSRF handover now runs Hub1e from source
 `9b7df79ba591ccc6fd6eb29b32e1e27ef0cc90e1` on both Hubs:
 `ghcr.io/mul-cps/cps-compute@sha256:1e8bdc639ecc6f07a0f101f9157a724637bcc4468138fe1e19ff7dfe4bc73da4`.
-A later same-policy Gateway rollout on 2026-10-15 adopted Gatewaybb for notebook artifact downloads. Node8c and both consoles on Sourceb36 retain their images.
+The latest same-policy Gateway rollout adopted Gateway6d from source `846c02cf`
+for the S3 end-of-file fix. Node8c and both consoles on Sourceb36 retain their images.
 Four fresh process acknowledgments and a completed new delivery journal confirm
 the unchanged policy and GPU driver epoch. The delivery controller is ready and
 the final native allocation check is zero. The current delivery seed after these rollouts is
-`sha256:ae233b2b33e3707cf89cee36db3aa7fdc26e7a5ca260fb48330fa19d680608b8`.
+`sha256:0e99ef04a8d9b6f28a1a77d0969d90c1a9e74c3358fa742e1240147b0ce53f93`.
 The earlier CIT legacy runtime enrollment and same-image cold handover remain
 retained evidence; their previous seed is preserved in the new handover lineage.
 The canonical policy hash is
@@ -68,8 +69,13 @@ Both managed CPU configurations now select
 `ghcr.io/mul-cps/cps-jupyter-notebook@sha256:d75d54d9b2b3b1b497e577124a30ca4c82993dd8458550a0b1fa73c37159b64f`.
 The running personal bjoern/cpsadmin Pods are preserved on CPUad; loading the new
 plugin requires a user-approved stop/start. Their current kernels have not been stopped.
-The earlier CPU86 lifecycle evidence below remains historical; a fresh personal
-SDK and panel run remains pending. See [latest adoption evidence](../../platform-staging/jupyter-extensions-20261013/lab-xsrf-adoption-actual-20261015.json).
+The earlier CPU86 lifecycle evidence below remains historical. A temporary personal
+CPS CPU named server has now verified the zero-argument SDK in an actual fresh kernel;
+identity, profiles and session returned HTTP 200 as the reviewed bjoern person.
+Its served prebuilt Lab entry exactly matched the qualified wheel. The test kernel
+was deleted and the temporary server was stopped without removal; both original
+personal Pods and the shared home PVC remain intact. Human panel and CIT personal
+runtime acceptance remain pending. See [personal runtime evidence](../../platform-staging/jupyter-extensions-20261013/personal-sdk-runtime-actual-20261015.json). See [latest adoption evidence](../../platform-staging/jupyter-extensions-20261013/lab-xsrf-adoption-actual-20261015.json).
 The normal Source lifecycle passed at **14:15 UTC**: Start, Ready, actual SDK/Lab
 package verification, the live Compute panel, automatic account polling, NFS
 writes and restart persistence, then normal Stop. The five ordinary visitor API
@@ -140,8 +146,8 @@ Hub4e image passed 509 installed Hub tests (five skips), 13 SDK tests (one skip)
 and the configured UID1000 check; that adoption preceded the current Hub1e. A profile
 switch alone on the earlier Hub does not supply its trusted CPU image. The GPU image update retains its
 separate policy/workload transition gate. The current production/pilot
-deployment subsequently moved to Hub1e with CPUd75 selected; Gatewaybb and native GPU image916
-remain unchanged. A stale acknowledgment during finalization was recovered by
+deployment subsequently moved to Hub1e with CPUd75 selected and then Gateway6d;
+native GPU image916 remains unchanged. A stale acknowledgment during finalization was recovered by
 repeating read-only finalization at the unchanged 30-second TTL; previous mutations
 were not replayed. Four fresh ACKs, the new completed journal and native zero
 passed. See [paired Hub adoption](../../platform-staging/jupyter-extensions-20261013/notebook-batch-hub-adoption-actual-20261015.json) and
@@ -182,9 +188,16 @@ The walkthrough notebook and its separate batch target/helper are delivered to
 Its network access and job submissions require explicit opt-in. A real CPU
 submission through the authenticated visitor API succeeded as workflow
 `cps-3d0ee6ec7090b84ee51fdf46b3c32979a110c9dca8079ad7`.
-The saved and executed notebook objects exist, but artifact listing/downloads
-remain failed by a reproduced S3-stream EOF bug. Its narrow fix is source-tested
-and pushed at `846c02cf`; deployment and real downloads remain pending.
+The reproduced S3-stream EOF fix at `846c02cf` is now deployed as Gateway6d.
+Authenticated reads of this existing workflow, artifact listing, 20,480-byte
+snapshot and 4,315-byte executed notebook all returned HTTP 200. Retained download
+bytes verified the exact selected helper, stripped input outputs, typed parameters
+and completed execution cells. No new workflow was submitted. The rollout completed
+with four fresh process acknowledgments, a new delivery journal and native zero.
+Two pre-image helper failures were retained and corrected without replaying
+previous mutations. The temporary API actor was revoked with HTTP 204. Source
+attachment/security-header forwarding remains a separate staged fix. See
+[EOF rollout and download evidence](../../platform-staging/jupyter-extensions-20261013/artifact-eof-adoption-actual-20261015.json).
 This is a visitor-token test, not human OAuth or the fresh-kernel SDK gate.
 
 The personal notebook's startup Longhorn attachment warning recovered without
@@ -197,7 +210,8 @@ to force acceptance; a reviewed migration to the existing private V2 root is
 still needed. Personal zero-argument SDK configuration was also found absent;
 the fix at `9b7df79b` passed 524 actual installed Hub tests with five existing
 skips and is deployed as Hub1e. Existing servers receive its environment on their
-next start. The reviewed bjoern mapping is retained; cpsadmin is not automatically
+next start; a fresh personal CPS named-server kernel has now verified HTTP 200
+using its own token and zero-argument SDK. The reviewed bjoern mapping is retained; cpsadmin is not automatically
 linked to that person. Its identity relationship requires an explicit decision.
 
 Notebook submissions already snapshot saved inputs, strip outputs and execute
@@ -205,7 +219,7 @@ through the approved batch runner. The new owner-authenticated artifact byte API
 also supports shared kernel principals, without using the personal-only Argo UI
 route or an S3 presigned URL. The exact Gateway candidate `bb6113b7` passed 235
 installed tests, preserves all 48 Core modules apart from the three reviewed
-source changes, and is now deployed. The coordinated TLS and capture credential
+source changes, and was deployed before the current EOF correction. The coordinated TLS and capture credential
 rollover passed all four process acknowledgments, the new completed delivery
 journal and native-zero checks. See [gateway adoption evidence](../../platform-staging/jupyter-extensions-20261013/notebook-batch-gateway-adoption-actual-20261015.json). A frozen 32-test kernel
 harness covers successful/failed notebooks, selected helper files, typed
