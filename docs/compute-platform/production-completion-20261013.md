@@ -25,7 +25,7 @@ for the bounded live results of 2026-10-13 and their retained evidence.
 | Gate | Verified state | Remaining completion evidence |
 | --- | --- | --- |
 | Repository ownership and shared policy | Separate application/deployment responsibilities and shared policy implemented; compatibility branches retained | Integrate and promote one tested consumer matrix with its exact policy hash; account for Fleet's watched branches |
-| SDK, Hub and Lab packages | Both Hubs now run Hub1e with the personal SDK environment fix and select CPUd75 with the prebuilt Lab XSRF fix. The actual Hub 5.5.2/Chromium regression and panel tests passed, with 43 Node and 9 installed Lab tests. A fresh personal CPS CPU kernel returned HTTP 200 for `/v1/me`, `/v1/profiles` and `/v1/session` using zero-argument `sdk.client()` and the reviewed person identity. The existing bjoern/cpsadmin notebook Pods remain unchanged on CPUad | Personal server restart, human panel and CIT personal SDK acceptance remain pending. Other notebook variants, ordinary visitor identity separation and human RTC remain separate gates; CIT personal profile hooks retain their independent images |
+| SDK, Hub and Lab packages | Both Hubs now run Hub1e with the personal SDK environment fix and select CPUd75 with the prebuilt Lab XSRF fix. The actual Hub 5.5.2/Chromium regression and panel tests passed, with 43 Node and 9 installed Lab tests. A fresh personal CPS CPU kernel returned HTTP 200 for `/v1/me`, `/v1/profiles` and `/v1/session` using zero-argument `sdk.client()` and the reviewed person identity. The existing bjoern/cpsadmin notebook Pods remain unchanged on CPUad | The fixed frontend is installed in both running CPS personal servers without a restart; human page reload/panel and CIT personal SDK acceptance remain pending. Other notebook variants, ordinary visitor identity separation and human RTC remain separate gates; CIT personal profile hooks retain their independent images |
 | Both admin UI consoles | Both consoles run Sourceb36 with the reviewed legacy runtime validator; frontend and dependencies remain equal to Source87a1. CIT legacy runtime enrollment, cold startup and real notebook activity reporting passed; the existing UI and approved 10 GiB choice remain bounded evidence | Normal registered CPU lifecycle and reviewed CIT `akadmin` canonical API linkage passed; ordinary-user/human OAuth and remaining modes are separate gates |
 | Identity and group ownership | Existing reviewed aliases retained; both CPS legacy neutral accounts have permanent ready provenance; explicit custody migration and exact QA repair passed; both Hubs restarted without changing the repaired or legitimate legacy roles | Reviewed CIT alias is live in Source, Hub and Gateway and `/me` resolves the same person; real login grant survival/expiry, scoped administration and cross-Hub allowance continuity remain |
 | Native GPU isolation | Controlled no-MIG 5/20 GiB history retained; current CPS pair passed distinct 5 GiB OOM/recovery with peer progress, IPC denial in both directions, positive controls, kernel witnesses, restart retirement, complete bounded MPS OOM/recovery and observer cleanup, and confirmed normal closure | Complete restart behavior and broader packing; current bounded pool is 5/10 GiB, not a normal 20 GiB or cross-Hub qualification |
@@ -67,8 +67,14 @@ See [current trusted SDK Hub adoption](../../platform-staging/jupyter-extensions
 
 Both managed CPU configurations now select
 `ghcr.io/mul-cps/cps-jupyter-notebook@sha256:d75d54d9b2b3b1b497e577124a30ca4c82993dd8458550a0b1fa73c37159b64f`.
-The running personal bjoern/cpsadmin Pods are preserved on CPUad; loading the new
-plugin requires a user-approved stop/start. Their current kernels have not been stopped.
+The running personal bjoern/cpsadmin Pods remain on CPUad. The qualified prebuilt
+frontend is now installed through the standard user package prefix in both homes;
+fresh Lab HTML and both JavaScript bundles match the fixed wheel. The three bjoern
+kernels and one cpsadmin kernel retained their IDs, and neither server restarted.
+A browser reload is required to replace already loaded JavaScript. Human panel
+acceptance remains pending. Remove the recorded user override after an approved
+restart onto a qualified fixed image so it does not shadow future image upgrades.
+See [live frontend update evidence](../../platform-staging/jupyter-extensions-20261013/compute-live-ui-update-actual-20261015.json).
 The earlier CPU86 lifecycle evidence below remains historical. A temporary personal
 CPS CPU named server has now verified the zero-argument SDK in an actual fresh kernel;
 identity, profiles and session returned HTTP 200 as the reviewed bjoern person.
@@ -179,7 +185,8 @@ completed with four fresh process acknowledgments, a new completed delivery jour
 and native zero. A stale acknowledgment at activation was recovered through readonly
 freshness checks at the unchanged 30-second TTL followed by the single remaining
 original controller CAS; prior mutations were not replayed. Existing personal Pods
-remain unchanged; restart and actual panel acceptance remain pending. See
+remain unchanged; the subsequent standard user-prefix frontend update now serves
+the fix without a restart, while actual human panel acceptance remains pending. See
 [adoption evidence](../../platform-staging/jupyter-extensions-20261013/lab-xsrf-adoption-actual-20261015.json) and
 [browser connection evidence](../../platform-staging/jupyter-extensions-20261013/compute-browser-connection-actual-20261015.json).
 
