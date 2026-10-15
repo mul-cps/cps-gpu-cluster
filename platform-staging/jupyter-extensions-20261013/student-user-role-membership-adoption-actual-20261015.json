@@ -1,19 +1,19 @@
 {
   "version": 1,
   "kind": "student-default-user-role-membership-adoption",
-  "recorded_at": "2026-10-15T15:35:25.490175+00:00",
+  "recorded_at": "2026-10-15T16:41:31.668049+00:00",
   "source_commit": "47e01f738817d425fdf0e2b26b4ff1e7ff418fe9",
   "image": "ghcr.io/mul-cps/cps-compute@sha256:604c94e62da8c3594579dcec21b3b5810479fadece94abfc0e90aec542165b62",
   "deployed": true,
   "ready": true,
-  "authority": "student-membership-handover-fdef85f9/phase-fdef85f9",
-  "seed_sha256": "sha256:ce5ecdcc5a4a7d89be18fc03546a4c0b169a13f228e03f828debf5dc6b92b8b1",
-  "activation_intent_sha256": "sha256:a106654c97f12b0db9cee553375bd62e72b47f9b219bc5c0fa6fed0ef4fe15a5",
+  "authority": "gateway-discovery-handover-8bfcb51c/phase-8bfcb51c",
+  "seed_sha256": "sha256:ef1d257be57411fb94548657e1214ec8c19f328415f4c713b5e3ffb52aa0ebe5",
+  "activation_intent_sha256": "sha256:917c0b9c9e465d895ff9dc676fba37fbf249f6a74dac228bdff2e76306c763d1",
   "four_raw_hashes": {
-    "final.json": "689c5e1399eccfbb5aa11cd40812c5243564d63df2d0093d16d1a345afe7731a",
-    "new-delivery-seed.json": "ac53b30160524a8a3b81926b3b5d43303f7a26d2d4a5c4efe548b1d90775e9c2",
-    "new-delivery-activation-readback.json": "e44fbd2e38aa3af51123e148ba4105f3097f4ba7279504689506cbc92c14a596",
-    "delivery-activation-intent.json": "d2dd502c1cc4c806e42100b57f14f5f172866644766054b312fb665ba8498f89"
+    "final.json": "dc1a62802884c9ad681d0f53f336c8b9c45fb130834ac5b7c51d411e2d6ed31b",
+    "new-delivery-seed.json": "ff80c815e12f7cc14a69f345681ff1b7d5124409dbb015e464cccbb86328f744",
+    "new-delivery-activation-readback.json": "8fff4875e0a26bbd9f65fc432d5a948bd7f653339638f1670c7ac729cd596a1b",
+    "delivery-activation-intent.json": "559c221bc632afe201efbbba9d3e043e6e1d6b5ea1fab995cfbd3e08ce0fa2b8"
   },
   "installed_tests_passed": 93,
   "installed_hub_version": "5.5.2",
@@ -113,8 +113,11 @@
     "normal_source_start_http": 200,
     "native_cap_gib": 5,
     "global_reservation_row_count_verified": true,
-    "acceptance_receipt": "shared-gpu-lab-native5-actual-20261015.json",
-    "active_global_member_reservations": 3
+    "acceptance_receipt": "student-discovery-adoption-actual-20261015.json",
+    "active_global_member_reservations": 3,
+    "latest_normal_restart_verified": true,
+    "current_pod_uid": "79388657-dea1-4d49-b5e6-6c7d7e6a514b",
+    "saved_demo_and_outputs_survived_restart": true
   },
   "historical_f6_adoption": {
     "source_commit": "53f5c75283c38927aa5bb97e5c5270230ece380e",
@@ -141,9 +144,37 @@
   "limitations": [
     "Personal two-way RTC edit acceptance remains the earlier pre-f6 evidence; this receipt verifies post-604c personal Share access and visitor identity.",
     "CIT browser acceptance here covers retained cookies and default user role; no new CIT Compute request or notebook spawn was performed.",
-    "Managed 5 GiB Start, Ready, RTC and GPU execution passed; ordinary GPU916 addon/SDK and Gateway workspace discovery remain open.",
+    "Managed 5 GiB Start, Ready, RTC and GPU execution passed; ordinary GPU916 addon/SDK remain open; Gateway workspace discovery passed after d974 adoption.",
     "Membership-removal connection revocation, CIT personal runtime adoption and broader production qualification remain separate gates."
   ],
   "credential_values_included": false,
-  "managed_workspace_acceptance_receipt": "shared-gpu-lab-native5-actual-20261015.json"
+  "managed_workspace_acceptance_receipt": "student-discovery-adoption-actual-20261015.json",
+  "current_authority": {
+    "authority": "gateway-discovery-handover-8bfcb51c/phase-8bfcb51c",
+    "seed_sha256": "sha256:ef1d257be57411fb94548657e1214ec8c19f328415f4c713b5e3ffb52aa0ebe5",
+    "activation_intent_sha256": "sha256:917c0b9c9e465d895ff9dc676fba37fbf249f6a74dac228bdff2e76306c763d1",
+    "four_raw_hashes": {
+      "final.json": "dc1a62802884c9ad681d0f53f336c8b9c45fb130834ac5b7c51d411e2d6ed31b",
+      "new-delivery-seed.json": "ff80c815e12f7cc14a69f345681ff1b7d5124409dbb015e464cccbb86328f744",
+      "new-delivery-activation-readback.json": "8fff4875e0a26bbd9f65fc432d5a948bd7f653339638f1670c7ac729cd596a1b",
+      "delivery-activation-intent.json": "559c221bc632afe201efbbba9d3e043e6e1d6b5ea1fab995cfbd3e08ce0fa2b8"
+    },
+    "ready": true,
+    "actual_controller_readback_ready": true,
+    "receipt": "student-discovery-adoption-actual-20261015.json"
+  },
+  "current_gateway_discovery_adoption_receipt": "student-discovery-adoption-actual-20261015.json",
+  "historical_hub604_completion": {
+    "authority": "student-membership-handover-fdef85f9/phase-fdef85f9",
+    "seed_sha256": "sha256:ce5ecdcc5a4a7d89be18fc03546a4c0b169a13f228e03f828debf5dc6b92b8b1",
+    "activation_intent_sha256": "sha256:a106654c97f12b0db9cee553375bd62e72b47f9b219bc5c0fa6fed0ef4fe15a5",
+    "four_raw_hashes": {
+      "final.json": "689c5e1399eccfbb5aa11cd40812c5243564d63df2d0093d16d1a345afe7731a",
+      "new-delivery-seed.json": "ac53b30160524a8a3b81926b3b5d43303f7a26d2d4a5c4efe548b1d90775e9c2",
+      "new-delivery-activation-readback.json": "e44fbd2e38aa3af51123e148ba4105f3097f4ba7279504689506cbc92c14a596",
+      "delivery-activation-intent.json": "d2dd502c1cc4c806e42100b57f14f5f172866644766054b312fb665ba8498f89"
+    }
+  },
+  "historical_summary_recorded_at": "2026-10-15T15:35:25.490175+00:00",
+  "authority_scope": "Current completed four-process delivery; historical_hub604_completion retains the original Hub604 adoption authority"
 }

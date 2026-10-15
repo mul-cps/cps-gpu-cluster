@@ -10,8 +10,12 @@ for the bounded live results of 2026-10-13 and their retained evidence.
 The ordinary-student `shared-gpu-lab` pilot now passes normal Source Start,
 Ready, a current native 5 GiB cap, two-browser RTC and GPU execution without MIG.
 [Open the shared GPU demo](https://jupyterhub.dshl.unileoben.ac.at/user/cps-ws-27c474f74f9d41c53eac0be01fcca8a3/rtc/lab/tree/shared-gpu-demo-20261015.ipynb).
-The GPU916 Compute addon and ordinary SDK still fail, and workspace discovery
-remains open. Three active global member reservations are verified. See the
+Gatewayd974 now exposes the authorized workspace in both students’ normal
+**Compute → Shared Workspaces → Open workspace** flow. A normal Stop/Start
+verified shutdown before reservation release, a fresh capped Pod, persisted demo
+files/output, and renewed two-way RTC/GPU execution. The GPU916 Compute addon
+and ordinary SDK still fail. Three active global member reservations are
+verified. See the
 [current status and limits](shared-gpu-lab-20261015.md).
 
 ## Binding requirements
@@ -37,7 +41,7 @@ remains open. Three active global member reservations are verified. See the
 | Identity and group ownership | Existing reviewed aliases retained; both CPS legacy neutral accounts have permanent ready provenance; explicit custody migration and exact QA repair passed; both Hubs restarted without changing the repaired or legitimate legacy roles | Reviewed CIT alias is live in Source, Hub and Gateway and `/me` resolves the same person; real login grant survival/expiry, scoped administration and cross-Hub allowance continuity remain |
 | Native GPU isolation | Controlled no-MIG 5/20 GiB history retained; current CPS pair passed distinct 5 GiB OOM/recovery with peer progress, IPC denial in both directions, positive controls, kernel witnesses, restart retirement, complete bounded MPS OOM/recovery and observer cleanup, and confirmed normal closure | Complete restart behavior and broader packing; current bounded pool is 5/10 GiB, not a normal 20 GiB or cross-Hub qualification |
 | Shared GPU reservations | Actual simultaneous CPS5/CIT10 pilot starts passed: one winner held both shared members once, loser had no server/Pod/binding; confirmed Stop preceded successful retry on the other Hub; exact windows/groups/grants restored. Installed first-free/second-busy rollback also passed. The current student workspace has three actual global member reservations bound to one attempt; a normal GUI CPU batch succeeded in 22 seconds while its GPU Pod remained Ready | Different-member live API partial-conflict rollback, permitted CPU sessions while held and broader pool qualification |
-| Workspaces and local assignments | The ordinary shared-gpu-lab 5 GiB workspace passed normal Source Start, Ready, actual native cap verification, two-browser RTC and live GPU output. Mikasa/Armin retained distinct visitor identities and the same demo kernel. Storage version 2, exact group Share and three seven-day grants are verified | GPU916 addon/SDK compatibility and Gateway workspace discovery; membership removal closing existing access, retained files and stopped-writer read-only archives |
+| Workspaces and local assignments | The ordinary shared-gpu-lab 5 GiB workspace passed normal Source Start, Ready, actual native cap verification, two-browser RTC and live GPU output. Mikasa/Armin retained distinct visitor identities and the same demo kernel. Storage version 2, exact group Share and three seven-day grants are verified. After Gatewayd974 adoption both students discover and open the workspace through Compute; normal Stop/Start preserved the saved demo/output and renewed RTC/GPU execution on a fresh capped Pod | GPU916 addon/SDK compatibility; membership removal closing existing access and stopped-writer read-only archives |
 | Workflow gateway and admission | Source validation/ownership paths implemented; bounded CPS own-success/failure artifact/log bytes and foreign-versus-absent rejection passed; controller admission/RBAC checks passed | CIT normal-user own/foreign access, human authentication, token renewal and crafted workflow/admin bypass scenarios on the current release |
 | Notebook execution | Personal CPS SDK success/failure jobs passed. Ordinary Mikasa Submit UI jobs passed typed parameters, selected support imports, authenticated executed-notebook downloads and logs, with Armin denied personal job access. A further GUI CPU job succeeded in 22 seconds while the shared GPU workspace remained Ready with its three reservations | CIT personal/shared-kernel runs and broader current-release coverage remain open |
 | GPU scheduling and packing | Stock KAI/HAMi components and controlled evidence exist; integrated Core/Hub source passed 2,151 tests with three known skips, plus separate installed Gateway/Hub suites. The Node image handover passed actual hardware zero and four-process epoch checks; coordinator activation remains disabled | Coordinator/binder deployment and actual post-Bind cap/CDI qualification; eight-A100 packing, teaching reclaim, protected sessions, 4/8-GPU JobSet retry and physical free-GPU telemetry |
@@ -73,23 +77,32 @@ readbacks are ready with `production_qualified: false`. Historical f6
 publication/adoption receipts remain retained. The earlier persistent-home
 candidate failed its UID1000 packaging check and was never published.
 See [persistent-home adoption](../../platform-staging/jupyter-extensions-20261013/personal-root-adoption-actual-20261015.json).
-The latest same-policy Gateway rollout adopted Gatewayeea5 from source `f10e1927`
-for versioned storage routing, retaining the earlier S3 end-of-file fix. New
-workspaces select private storage version 2; existing version 1 bindings retain
-their paths. Explicit CPS mappings for the two newly created student test
-accounts were added without matching names or email addresses. Node8c retains its image. Both consoles now run Source51f for the authenticated
-artifact-header fix; their databases, configuration, credentials and PVCs are preserved.
-Four fresh process acknowledgments and a completed new delivery journal confirm
-the unchanged policy and GPU driver epoch. The delivery controller is ready and
-the final native allocation check at handover completion is zero. The current
-delivery seed after these rollouts is
-`sha256:ce5ecdcc5a4a7d89be18fc03546a4c0b169a13f228e03f828debf5dc6b92b8b1`.
-The activation intent is
-`sha256:a106654c97f12b0db9cee553375bd62e72b47f9b219bc5c0fa6fed0ef4fe15a5`.
-The f6 seed `0474dec6` and preceding storage/identity seed `2636966b` remain
-historical lineage.
-See [student storage and identity adoption](../../platform-staging/jupyter-extensions-20261013/student-storage-identity-adoption-actual-20261015.json).
-See [604c membership adoption](../../platform-staging/jupyter-extensions-20261013/student-user-role-membership-adoption-actual-20261015.json).
+The earlier Gatewayeea5 storage adoption enabled versioned storage routing,
+retaining the S3 end-of-file fix. New workspaces select private storage version
+2; existing version 1 bindings retain their paths. Explicit CPS mappings for
+the two student accounts remain preserved. The latest Gateway-only handover
+`8bfcb51c` adopted
+`ghcr.io/mul-cps/cps-compute@sha256:d974acab8ee692fd68419875f8e0519f5bca482b83b33d36f990abc526959c38`
+from source `3e053ba82461f8c95ea0e725400b9c82135b2afc`. Its 341 installed
+tests and the 32 offline handover checks passed. Four fresh component
+acknowledgments, the final completed journal and actual controller activation
+readback are ready. Both Hub604 processes, Node8c, Source51f, GPU916, storage,
+canonical mappings, policy and driver epoch were retained. No activation
+continuation was needed.
+
+The current delivery seed is
+`sha256:ef1d257be57411fb94548657e1214ec8c19f328415f4c713b5e3ffb52aa0ebe5`;
+the activation intent is
+`sha256:917c0b9c9e465d895ff9dc676fba37fbf249f6a74dac228bdff2e76306c763d1`.
+The earlier ce5/a106 membership completion, f6 seed `0474dec6` and storage seed
+`2636966b` remain historical lineage. Handover completed at native zero; a
+subsequent normal Source Start runs the test group with three actual member
+reservations on fresh Pod `79388657-dea1-4d49-b5e6-6c7d7e6a514b`.
+Root revoked its temporary operator access at 16:41:31 UTC; ordinary human OAuth
+sessions were untouched. Four personal Pods retained their UIDs and restart
+counts. See [discovery adoption and restart acceptance](../../platform-staging/jupyter-extensions-20261013/student-discovery-adoption-actual-20261015.json).
+See [student storage and identity adoption](../../platform-staging/jupyter-extensions-20261013/student-storage-identity-adoption-actual-20261015.json)
+and [604c membership adoption](../../platform-staging/jupyter-extensions-20261013/student-user-role-membership-adoption-actual-20261015.json).
 The earlier CIT legacy runtime enrollment and same-image cold handover remain
 retained evidence; their previous seed is preserved in the new handover lineage.
 The canonical policy hash is
@@ -721,9 +734,13 @@ shows `Failed to fetch`; its ordinary SDK still fails CA trust. Explicit trusted
 CA plus both SDK headers passed diagnostic `/v1/me` as the workspace principal,
 and a separate 64 MiB CUDA allocation/sum passed with CUDA reporting 5 GiB.
 Those diagnostics do not establish ordinary addon/SDK compatibility. The
-replacement package remains in preparation. Personal C7 also returns an empty
-`/v1/workspaces` list despite group server access; Gateway discovery wiring is
-still being implemented. A separate Root-reviewed read-only Gateway observer
+replacement GPU531 image is packaged and published but has not been adopted.
+The earlier empty personal C7 workspace list was fixed by Gatewayd974; both
+normal students now find and open the authorized group workspace through
+**Compute → Shared Workspaces → Open workspace**, preserving their own canonical
+identities. After a normal Source Stop/Start, the saved demo and output remained,
+the fresh Pod passed the current 5 GiB cap check, and two-way RTC plus same-kernel
+GPU execution/live peer output passed again. A Root-reviewed read-only Gateway observer
 confirms the three registered canonical people each hold an actual global
 reservation bound to one attempt for `cps:shared-gpu-lab`. A normal Mikasa GUI
 CPU batch was accepted with HTTP 200 and succeeded in 22 seconds while the GPU
@@ -732,8 +749,12 @@ selected helper import, authenticated notebook download and logs passed; Armin
 could not list, inspect or read the personal job's logs, artifacts or download.
 See [CPU batch during the shared GPU session](../../platform-staging/jupyter-extensions-20261013/cpu-batch-during-shared-gpu-actual-20261015.json).
 
-See the [working shared GPU lab guide](shared-gpu-lab-20261015.md) and
-[native 5 GiB acceptance receipt](../../platform-staging/jupyter-extensions-20261013/shared-gpu-lab-native5-actual-20261015.json).
+See the [working shared GPU lab guide](shared-gpu-lab-20261015.md),
+[current discovery/restart receipt](../../platform-staging/jupyter-extensions-20261013/student-discovery-adoption-actual-20261015.json),
+and [historical initial native 5 GiB acceptance](../../platform-staging/jupyter-extensions-20261013/shared-gpu-lab-native5-actual-20261015.json).
+The prospective-only `efa3c8ab` validator and two qualified Gateway/Hub image
+candidates are unpublished and not live; no fresh six-category hardware gates
+have run for GPU531. GPU batch remains disabled.
 Membership-removal connection revocation, CIT own/foreign workflows, CIT
 personal runtime adoption, wider GPU packing and production qualification remain
 distinct work.

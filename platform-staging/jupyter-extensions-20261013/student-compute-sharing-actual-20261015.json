@@ -1,7 +1,7 @@
 {
   "version": 1,
   "scope": "ordinary CPS student Compute and exact personal CPU server sharing; not full production qualification",
-  "recorded_at": "2026-10-15T15:35:25.490175+00:00",
+  "recorded_at": "2026-10-15T16:41:31.668049+00:00",
   "accounts": {
     "mikasa": {
       "admin": false,
@@ -61,7 +61,8 @@
       "static_default_user_membership_snapshot_removed": true,
       "legacy_cit_personal_gpu_path_requires_central_policy": true,
       "policy_and_driver_epoch_unchanged": true,
-      "production_qualified": false
+      "production_qualified": false,
+      "authority_scope": "Historical Hub604 adoption; current four-process custody is current_authority"
     },
     "ordinary_student_compute_browser_acceptance_epoch": "after the 604c paired-Hub restart, retaining the original browser cookies",
     "historical_f6_default_user_role_adoption": {
@@ -139,7 +140,7 @@
     "control_cells_inserted_without_execution": true
   },
   "limitations": [
-    "The managed 5 GiB workspace passed normal Start, Ready, RTC and GPU execution; its GPU916 Compute panel, ordinary SDK and personal Shared Workspaces discovery still need the reviewed package/API fixes.",
+    "The managed 5 GiB workspace passed normal Start, Ready, RTC and GPU execution; its GPU916 Compute panel and ordinary SDK still need the reviewed package fixes; personal Shared Workspaces discovery passed after Gatewayd974 adoption.",
     "Post-604c personal Share access and distinct visitor identity passed; the two-way RTC edit test remains historical pre-f6 evidence.",
     "CIT personal runtime still needs its preserving SDK/Compute/RTC image.",
     "Membership-removal connection revocation, CIT own/foreign workflow coverage and production qualification remain separate gates."
@@ -190,9 +191,56 @@
     "normal_source_start_http": 200,
     "native_cap_gib": 5,
     "global_reservation_row_count_verified": true,
-    "acceptance_receipt": "shared-gpu-lab-native5-actual-20261015.json",
-    "active_global_member_reservations": 3
+    "acceptance_receipt": "student-discovery-adoption-actual-20261015.json",
+    "active_global_member_reservations": 3,
+    "latest_normal_restart_verified": true,
+    "current_pod_uid": "79388657-dea1-4d49-b5e6-6c7d7e6a514b",
+    "saved_demo_and_outputs_survived_restart": true
   },
   "ordinary_student_gui_batch_receipt": "ordinary-student-gui-batch-actual-20261015.json",
-  "managed_workspace_acceptance_receipt": "shared-gpu-lab-native5-actual-20261015.json"
+  "managed_workspace_acceptance_receipt": "student-discovery-adoption-actual-20261015.json",
+  "current_authority": {
+    "authority": "gateway-discovery-handover-8bfcb51c/phase-8bfcb51c",
+    "seed_sha256": "sha256:ef1d257be57411fb94548657e1214ec8c19f328415f4c713b5e3ffb52aa0ebe5",
+    "activation_intent_sha256": "sha256:917c0b9c9e465d895ff9dc676fba37fbf249f6a74dac228bdff2e76306c763d1",
+    "four_raw_hashes": {
+      "final.json": "dc1a62802884c9ad681d0f53f336c8b9c45fb130834ac5b7c51d411e2d6ed31b",
+      "new-delivery-seed.json": "ff80c815e12f7cc14a69f345681ff1b7d5124409dbb015e464cccbb86328f744",
+      "new-delivery-activation-readback.json": "8fff4875e0a26bbd9f65fc432d5a948bd7f653339638f1670c7ac729cd596a1b",
+      "delivery-activation-intent.json": "559c221bc632afe201efbbba9d3e043e6e1d6b5ea1fab995cfbd3e08ce0fa2b8"
+    },
+    "ready": true,
+    "actual_controller_readback_ready": true,
+    "receipt": "student-discovery-adoption-actual-20261015.json"
+  },
+  "current_gateway_discovery_adoption_receipt": "student-discovery-adoption-actual-20261015.json",
+  "shared_workspace_discovery": {
+    "navigation": [
+      "Compute",
+      "Shared Workspaces",
+      "Open workspace"
+    ],
+    "gateway_discovery_wiring_fixed": true,
+    "results": {
+      "mikasa": {
+        "http_status": 200,
+        "normal_student_oauth": true,
+        "own_canonical_identity_verified": true,
+        "authorized_workspace_found": true,
+        "panel_link_present": true
+      },
+      "armin": {
+        "http_status": 200,
+        "normal_student_oauth": true,
+        "own_canonical_identity_verified": true,
+        "authorized_workspace_found": true,
+        "panel_link_present": true
+      }
+    }
+  },
+  "student_urls": {
+    "group": "https://jupyterhub.dshl.unileoben.ac.at/user/cps-ws-27c474f74f9d41c53eac0be01fcca8a3/rtc/lab/tree/shared-gpu-demo-20261015.ipynb",
+    "personal_mikasa_share": "https://jupyterhub.dshl.unileoben.ac.at/user/mikasa/lab"
+  },
+  "historical_summary_recorded_at": "2026-10-15T15:35:25.490175+00:00"
 }
