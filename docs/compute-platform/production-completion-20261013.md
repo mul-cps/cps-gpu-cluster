@@ -956,3 +956,29 @@ Shares, GPU settings or storage were changed during this verification. One
 earlier empty discovery response was transient and its exact guard remains
 unidentified. See the
 [fresh-login receipt](../../platform-staging/jupyter-extensions-20261013/student-sharing-fresh-login-actual-20261015.json).
+
+The coherent b336 Gateway3d82 and Hube906 candidates are now published as
+immutable digests. Proper wheel installation, installed module bytes,
+dependency preservation and remote manifests passed. Hub installed checks
+passed 137 Core and 107 adapter tests; Gateway passed 83 epoch tests and 49
+discovery/registry/identity tests, including all 25 discovery tests. Five
+Hub-only Gateway tests are explicitly excluded. These images are not deployed.
+
+Two explicitly automated QA principals now exist in the existing directory.
+Both passed fresh normal CPS Hub home logins without admin rights or servers,
+and the owning Source API accepted their reviewed aliases with audited
+directory UUID provenance. No existing human or student linkage was changed.
+Trusted Hub/Gateway maps, grants, workspace records/PVCs and actual GPU gates
+remain pending. Their temporary Root API token was revoked. See the
+[candidate and QA receipt](../../platform-staging/jupyter-extensions-20261013/coherent-b336-candidates-and-qa-actual-20261015.json).
+
+Normal student artifact retention now has actual Gateway evidence: Armin's
+owner request returned 200 and persisted a retained output; Mikasa's foreign
+request returned 403 and an invalid artifact returned 422. The executed
+notebook still downloads with identical bytes. The real scheduled retention
+code, restricted to that job's two objects with all write methods unavailable,
+preserved the retained output and classified only the unretained snapshot as
+eligible under a per-call 91-day test clock. No objects were deleted. The owned
+Job and Pods are absent; production cleanup stays suspended until its remaining
+active-input, conditional-deletion and full lifecycle gates pass. See the
+[Gateway retention receipt](../../platform-staging/artifacts/gateway-retain-and-readonly-actual-20261015.json).

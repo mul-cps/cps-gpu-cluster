@@ -1,0 +1,58 @@
+{
+  "version": 1,
+  "scope": "Published coherent application candidates and independently authenticated automated QA principals; not production qualification",
+  "source_commit": "b336285eabf3f8dc8a32d31a6b52eb116e3b230f",
+  "gateway": {
+    "image": "ghcr.io/mul-cps/cps-compute@sha256:3d825b15e257f02463e8fb0911f563d0be497e86892d2d01fbd9a4224e07fe99",
+    "published": true,
+    "deployed": false,
+    "installed_epoch_tests_passed": 83,
+    "hub_only_epoch_tests_deselected": 2,
+    "installed_discovery_registry_identity_tests_passed": 49,
+    "all_25_discovery_tests_included": true,
+    "hub_only_registry_tests_deselected": 3
+  },
+  "hub": {
+    "image": "ghcr.io/mul-cps/cps-compute@sha256:e906c9ab5cd5a7a541560842c47013f567f6c0f8cbe2cecf0f30fd6d475280a5",
+    "published": true,
+    "deployed": false,
+    "installed_core_tests_passed": 137,
+    "installed_adapter_tests_passed": 107,
+    "jupyterhub": "5.5.2",
+    "kubespawner": "7.1.0"
+  },
+  "packaging": {
+    "proper_wheel_installs": true,
+    "core_wheel_sha256": "9741f45782c84469e9469d2fafa760e9bdc4c953c7ec02e4166428a04003c77b",
+    "hub_wheel_sha256": "9649920d678aff57bf1e873cec0fad88f6e38c40e64310bc59232d3151905b79",
+    "all_49_core_and_16_hub_modules_match_source": true,
+    "original_runtime_config_and_dependency_bytes_preserved": true,
+    "remote_tag_and_digest_manifests_match_qualified_bytes": true,
+    "qualification_sha256": "b6f46df16f34d0c33941345bbb9bc3c74816a9b19ef38fff4c48970c1c10be92",
+    "publication_sha256": "6a885033eb6b0ea7b28a8e8360ba7be0db98acf4c9929ca372479e94ed243091",
+    "gateway_discovery_supplement_sha256": "89d1d26594f0a5cdad0ec1c563db1a2c002f91a2160e9c55dd85e740d8114577"
+  },
+  "automated_qa_principals": [
+    {"username": "cps-qa531-a-20261015", "directory_uuid": "62038eb4-28fe-40be-89e5-4a52d8b0d357", "canonical_id": "0949db38-7f66-4524-a3f4-cd38a3e6db69", "hub_user_id": 19, "admin": false},
+    {"username": "cps-qa531-b-20261015", "directory_uuid": "1793d964-7ba2-4d08-ae1b-09954e93f59d", "canonical_id": "0f88a2d4-7f47-4693-a59e-0ad54b727c24", "hub_user_id": 20, "admin": false}
+  ],
+  "qa_evidence": {
+    "fresh_directory_and_cps_home_logins_passed": true,
+    "qa_servers_created": false,
+    "source_reviewed_alias_post_status": 200,
+    "authority": "reviewed_account_alias",
+    "email_verification_claimed": false,
+    "existing_human_or_student_links_changed": false,
+    "gateway_and_hub_maps_changed": false,
+    "grants_created": false,
+    "workspaces_created": false,
+    "directory_and_login_sha256": "b65f2c08ccd6b8106a8888c5616dff3bf25c601433d6f6a80e42c67a49dc54a9",
+    "source_aliases_sha256": "5d6a0c629dd8d5b6a3c1d7ec161faad681a50b7c8ab5bc50eee74887c9a5b8e8",
+    "temporary_operator_token_revoked": true,
+    "cleanup_due": "2026-10-16T19:13:00Z"
+  },
+  "remaining": ["controlled consumer handover and exact trusted maps", "normal time-bounded grants and stopped operator workspace/PVC enrollment", "finite Node package and actual Root contract", "GPU531 hardware gates", "broader production acceptance"],
+  "formal_release": false,
+  "gpu531_adopted": false,
+  "production_ready": false
+}
