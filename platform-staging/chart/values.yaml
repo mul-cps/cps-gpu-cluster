@@ -60,6 +60,32 @@ personalArgo:
         enabled: false
         host: ""
         tlsSecretRef: ""
+# Independent visitor-only OAuth frontends; no Hub registration is performed here.
+# Existing Secrets contain oauth-client-secret and a stable >=32-character cookie-secret.
+computeVisitor:
+  enabled: false
+  image: ""
+  port: 8080
+  # Must name the same trusted CA as gateway.caConfigMapRef; never an inline CA/Secret.
+  gatewayCaConfigMapRef: ""
+  # Memory is deliberately fixed at 2Gi requested / 4Gi limited for the released
+  # eight concurrent requests, 72MiB request / 100MiB response buffering limits.
+  sources:
+    cps:
+      enabled: false
+      publicOrigin: ""
+      hubApiUrl: ""
+      secretRef: ""
+      hubCaConfigMapRef: ""
+      # Reviewed host /32 or /128 addresses of the public Hub HTTPS endpoint.
+      hubHttpsCidrs: []
+    cit:
+      enabled: false
+      publicOrigin: ""
+      hubApiUrl: ""
+      secretRef: ""
+      hubCaConfigMapRef: ""
+      hubHttpsCidrs: []
 consoleStatus:
   # Operator-maintained status; mount a directory so updates reach both consoles.
   configMapRef: ""
