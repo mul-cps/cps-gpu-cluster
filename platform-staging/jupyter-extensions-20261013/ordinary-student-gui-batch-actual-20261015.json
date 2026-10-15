@@ -1,0 +1,42 @@
+{
+  "kind": "ordinary-student-notebook-gui-batch-acceptance",
+  "checked_at": "2026-10-15T15:14:21.452985+00:00",
+  "user": "mikasa",
+  "normal_student_oauth": true,
+  "admin_credentials_used_for_submission": false,
+  "profile": "batch-cpu",
+  "project": "shared-gpu-lab",
+  "saved_notebook": "compute-batch-demo-20261015T150452.ipynb",
+  "immutable_snapshot_submitted": true,
+  "typed_parameters": {
+    "name": "Mikasa and Armin",
+    "repeat": 2,
+    "use_upper": true
+  },
+  "explicit_support_files": [
+    "demo_support.py"
+  ],
+  "workflow": "cps-21554adbb58287e2995e7853fbed6842a6e7e8d5edceede7",
+  "workflow_succeeded": true,
+  "started_at": "2026-10-15T15:06:35Z",
+  "finished_at": "2026-10-15T15:06:55Z",
+  "browser_download_verified": true,
+  "executed_notebook_sha256": "340c25f9a37a0d804a59ecc561cdcf11f8fa7316beb853c9a63eff4204231574",
+  "selected_file_import_and_typed_parameters_verified": true,
+  "mikasa_logs_http": 200,
+  "armin_cannot_list_mikasa_workflow": true,
+  "armin_inspect_http": 403,
+  "armin_denied_personal_artifacts_logs_download": {
+    "logs": 403,
+    "artifacts": 403,
+    "download": 403
+  },
+  "only_own_demo_kernel_stopped": true,
+  "production_qualified": false,
+  "evidence": {
+    "student-gui-batch-receipt.json": "defc8ea626c72999c89457fcd97b94c3ef89b59c493dc8e86b1b7133271db7c9",
+    "student-gui-batch-completion-receipt.json": "b42be6dd986e94a1e65fd2f2e7bec80d0cc9e031c421519b71ae6e80aef909db",
+    "student-batch-readback.private.json": "05753cf04a26b35b38faa24208cfc02ba66c64a95bfc6ba20b2e8fc7ba22f6bf"
+  },
+  "credential_values_included": false
+}
