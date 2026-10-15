@@ -40,7 +40,7 @@ verified. See the
 | Both admin UI consoles | Both consoles run Source51f with authenticated download-header forwarding and the reviewed legacy runtime validator; frontend and dependencies remain equal to Source87a1. CIT legacy runtime enrollment, cold startup and real notebook activity reporting passed; the existing UI and approved 10 GiB choice remain bounded evidence | Normal registered CPU lifecycle and reviewed CIT `akadmin` canonical API linkage passed; ordinary-user/human OAuth and remaining modes are separate gates |
 | Identity and group ownership | Existing reviewed aliases retained; both CPS legacy neutral accounts have permanent ready provenance; explicit custody migration and exact QA repair passed; both Hubs restarted without changing the repaired or legitimate legacy roles | Reviewed CIT alias is live in Source, Hub and Gateway and `/me` resolves the same person; real login grant survival/expiry, scoped administration and cross-Hub allowance continuity remain |
 | Native GPU isolation | Controlled no-MIG 5/20 GiB history retained; current CPS pair passed distinct 5 GiB OOM/recovery with peer progress, IPC denial in both directions, positive controls, kernel witnesses, restart retirement, complete bounded MPS OOM/recovery and observer cleanup, and confirmed normal closure | Complete restart behavior and broader packing; current bounded pool is 5/10 GiB, not a normal 20 GiB or cross-Hub qualification |
-| Shared GPU reservations | Actual simultaneous CPS5/CIT10 pilot starts passed: one winner held both shared members once, loser had no server/Pod/binding; confirmed Stop preceded successful retry on the other Hub; exact windows/groups/grants restored. Installed first-free/second-busy rollback also passed. The current student workspace has three actual global member reservations bound to one attempt; a normal GUI CPU batch succeeded in 22 seconds while its GPU Pod remained Ready | Different-member live API partial-conflict rollback, permitted CPU sessions while held and broader pool qualification |
+| Shared GPU reservations | Actual simultaneous CPS5/CIT10 pilot starts passed: one winner held both shared members once, loser had no server/Pod/binding; confirmed Stop preceded successful retry on the other Hub; exact windows/groups/grants restored. Installed first-free/second-busy rollback also passed. The current student workspace has three actual global member reservations bound to one attempt; a normal GUI CPU batch succeeded in 22 seconds while its GPU Pod remained Ready | Different-member live API partial-conflict rollback and broader pool qualification; Armin’s normal interactive CPU start also passed while the same three GPU reservations remained held |
 | Workspaces and local assignments | The ordinary shared-gpu-lab 5 GiB workspace passed normal Source Start, Ready, actual native cap verification, two-browser RTC and live GPU output. Mikasa/Armin retained distinct visitor identities and the same demo kernel. Storage version 2, exact group Share and three seven-day grants are verified. After Gatewayd974 adoption both students discover and open the workspace through Compute; normal Stop/Start preserved the saved demo/output and renewed RTC/GPU execution on a fresh capped Pod | GPU916 addon/SDK compatibility; membership removal closing existing access and stopped-writer read-only archives |
 | Workflow gateway and admission | Source validation/ownership paths implemented; bounded CPS own-success/failure artifact/log bytes and foreign-versus-absent rejection passed; controller admission/RBAC checks passed | CIT normal-user own/foreign access, human authentication, token renewal and crafted workflow/admin bypass scenarios on the current release |
 | Notebook execution | Personal CPS SDK success/failure jobs passed. Ordinary Mikasa Submit UI jobs passed typed parameters, selected support imports, authenticated executed-notebook downloads and logs, with Armin denied personal job access. A further GUI CPU job succeeded in 22 seconds while the shared GPU workspace remained Ready with its three reservations | CIT personal/shared-kernel runs and broader current-release coverage remain open |
@@ -790,3 +790,18 @@ The full-plan audit also retains these explicit gaps: Fleet still pins KAI
 0.16.3 while 0.18.1 has only staging evidence; checked-in authenticator group
 replacement remains enabled pending grant migration; the production release
 lock remains unqualified. These must be resolved before production promotion.
+
+
+Armin also completed a normal `cpu-default` student form start while the same
+GPU workspace and three reservations remained active. His actual CPUd75 Pod
+was Ready, requested no GPU, and returned his own identity; access to Bjoern's
+unshared server remained403. See the [CPU independence and frontend regression
+receipt](../../platform-staging/jupyter-extensions-20261013/student-cpu-independence-actual-20261015.json).
+
+That fresh spawn exposed a confirmed packaging gap: CPUd75 serves the older
+`remoteEntry.a86b8ef07ff4bf434c95.js`; its Connect action still targets the
+administrative service and receives403. Direct visitor-API reads succeeded,
+but this does not establish a working Lab frontend. The corrected C7 extension
+must be shipped and adopted in the CPU image; existing-user browser acceptance
+does not qualify fresh spawns. Armin's new CPU server remains running, and no
+student was granted administrative service access.

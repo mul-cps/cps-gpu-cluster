@@ -1,0 +1,92 @@
+{
+  "GPU_reservation_proof_source": "Independent Root read-only pre/post Pod and ledger observations, not the session allowance API",
+  "actual_Connect_target_path": "/services/cps-admin/api/compute/v1/me",
+  "actual_PageConfig_Compute_path": "/services/cps-admin/api/compute/v1/",
+  "actual_federated_entry": "static/remoteEntry.a86b8ef07ff4bf434c95.js",
+  "addon_C7_acceptance_passed": false,
+  "admin_access_granted_or_bypass_used": false,
+  "approved_profile": "cpu-default",
+  "arbitrary_resource_image_options": false,
+  "bare_browser_fetch_without_client_CSRF_bootstrap": "opaque redirect; not treated as the qualified C7 client path",
+  "cpu_gpu_resources_requested": false,
+  "cpu_imageID_matches_spec": true,
+  "cpu_immutable_image": "ghcr.io/mul-cps/cps-jupyter-notebook@sha256:d75d54d9b2b3b1b497e577124a30ca4c82993dd8458550a0b1fa73c37159b64f",
+  "cpu_left_running": true,
+  "cpu_pod_uid": "58200c04-d310-442c-aee5-df907a83640c",
+  "cpu_ready_at": "2026-10-15T17:12:21.935773+00:00",
+  "cpu_start_passed": true,
+  "credential_values_included": false,
+  "dedicated_visitor_API_cookie_request_context": {
+    "me": {
+      "http": 200,
+      "value": {
+        "identity": "85de720c-94b0-4bc7-807e-c04512133494",
+        "principal_kind": "person"
+      }
+    },
+    "workspaces": {
+      "http": 200,
+      "value": [
+        {
+          "id": "shared-gpu-lab",
+          "name": "shared-gpu-lab",
+          "profile": "interactive-shared-5",
+          "source": "cps",
+          "status": "running",
+          "url": "/user/cps-ws-27c474f74f9d41c53eac0be01fcca8a3/rtc/"
+        }
+      ]
+    }
+  },
+  "default_server_absent_before": true,
+  "display_profile": "Standard Small (CPU)",
+  "existing_personal_or_CIT_servers_stopped_restarted": false,
+  "kernel_cleanup_required": false,
+  "limitations": [
+    "CPU independence is proved only for this current three-member shared5 workspace; no wider-pool or production claim",
+    "The fresh image does not ship C7; direct cookie-context API success does not close the failed Lab GUI path",
+    "One initial browser harness waited for same-tab navigation although Connect opens a popup; the corrected popup capture reproduced actual403 without changing permissions"
+  ],
+  "live_package_or_config_changes_performed": false,
+  "member_reservations_before_after": [
+    3,
+    3
+  ],
+  "new_CPU_runtime_addon_gap_reproduced": true,
+  "normal_Connect_oauth_authorization_http": 403,
+  "normal_UI_form_submission": true,
+  "normal_student_not_admin": true,
+  "notebooks_or_kernels_created": false,
+  "own_lab_http": 200,
+  "own_notebook_identity": "armin",
+  "own_notebook_me_http": 200,
+  "production_qualified": false,
+  "recorded_at": "2026-10-15T17:16:56.683466+00:00",
+  "reservation_bindings_before_after": [
+    1,
+    1
+  ],
+  "scope": "One normal CPS student interactive CPU start while existing shared GPU reservations remain held",
+  "shared_gpu_pod_uid": "79388657-dea1-4d49-b5e6-6c7d7e6a514b",
+  "shared_gpu_pod_unchanged_ready": true,
+  "source_receipt_sha256": {
+    "browser-path-readback.json": "7b4fdb3ab218bc63e4323335bf22c630a432ecba7daf39e7a3a5318e50870998",
+    "lab-readback.json": "09da6719185e0c0fccbadeea4cabd087d77bd402ceb90b1ca3fcdd63a4a8f919",
+    "legacy-connect-denial.json": "735e5f707a464e2bdb25d788212a698c45f5fc7223f66a32eb3c440fc1595b2c",
+    "normal-cpu-start.json": "e4d156e3093fcc103d6cf6a0318b904c8d5b61eb7f54894450b3acfecb70d09b",
+    "preflight.json": "4576b284b9e427b3082d5f1f5ae2de87d164b2240604fe0799238bf126938274",
+    "root-armin-pod.json": "b7f5dde24b395020b768a9ebe57b4e9ce83a480f6441aea10a9b7cdf870f20ec",
+    "root-reservations-after.json": "70a9a59b052c87bb280bc7f8cd9b69d6af2b0e73a50b9ded09c98215744f7f21",
+    "root-reservations-before.json": "65f12e23aa99f4ad283bef7921286360458892212ea09ad30f0019153e38ff7e",
+    "unshared-personal-server-denied.json": "3b437555f77ca7167edf4edc8d2fed693ebcced99dde2bc99321e95aa9242085"
+  },
+  "unshared_personal_server_negative": {
+    "content_or_kernel_inspection": false,
+    "denied": true,
+    "final_http": 403,
+    "request_path": "/user/bjoern/api/me",
+    "visitor": "armin"
+  },
+  "version": 1,
+  "visitor": "armin"
+}
