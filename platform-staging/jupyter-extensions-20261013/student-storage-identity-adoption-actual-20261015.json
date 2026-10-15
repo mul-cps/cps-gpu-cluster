@@ -3,13 +3,13 @@
   "image": "ghcr.io/mul-cps/cps-compute@sha256:eea5b2927d7ea7c12205669f18a68c5cf40c70a082a048b23db6aec0a6f2997a",
   "deployed": true,
   "ready": true,
-  "authority": "student-private-workspace-handover-7e2f72af/phase-7e2f72af",
-  "seed_sha256": "sha256:2636966bd7b468e7fb0a50fc45d9d6fb00458fa54f01f43b1ec4653b71ad7129",
+  "authority": "legacy-guard-handover-81a6f1ca/phase-81a6f1ca",
+  "seed_sha256": "sha256:0474dec64a79185d4882e356534c11b3dbdd3d58517826fdcf6ee7be5465aced",
   "four_raw_hashes": {
-    "final.json": "4c39d79dd3f2952f2af864e8e9c221ce9c6655a596381a9d2caaa662d6244d9e",
-    "new-delivery-seed.json": "28087f176ec4609465bdd17a1f2c5929fdb27a834dc127add12eefca21f1d52f",
-    "new-delivery-activation-readback.json": "086dccf8b57ef268a15e7987e5b62d39ec2883a90c549642b86f02672a85b411",
-    "delivery-activation-intent.json": "e13cbeb9ebaa41f0d474782a8901783eaf1887412a5a76350f321c995630986a"
+    "final.json": "170badca7f0143f1095713de7b51713abf7dd4048eab5a1aa30a1fc49cb8110b",
+    "new-delivery-seed.json": "93d42506fa5d3367cced3df4fcf858d8500565caf1e1e96324bee19f96e721c8",
+    "new-delivery-activation-readback.json": "74935bc263a32d197b1e0f9547734ce9004f9ed2d28b87aee13b1692e0c73a78",
+    "delivery-activation-intent.json": "0fd7b8b9d52e4007ea7670c8909405517cec26b938c9c2a316c25aac38569642"
   },
   "storage_version_for_new_workspaces": 2,
   "existing_workspace_storage_version_retained": 1,
@@ -17,10 +17,44 @@
     "mikasa",
     "armin"
   ],
-  "hub_image_unchanged": true,
   "personal_notebooks_restarted": false,
   "policy_hash_unchanged": true,
   "gpu_workspaces_started": false,
   "production_qualified": false,
-  "recorded_at": "2026-10-15T14:17:19.217843+00:00"
+  "recorded_at": "2026-10-15T14:56:00.156044+00:00",
+  "historical_storage_adoption": {
+    "authority": "student-private-workspace-handover-7e2f72af/phase-7e2f72af",
+    "seed_sha256": "sha256:2636966bd7b468e7fb0a50fc45d9d6fb00458fa54f01f43b1ec4653b71ad7129",
+    "four_raw_hashes": {
+      "final.json": "4c39d79dd3f2952f2af864e8e9c221ce9c6655a596381a9d2caaa662d6244d9e",
+      "new-delivery-seed.json": "28087f176ec4609465bdd17a1f2c5929fdb27a834dc127add12eefca21f1d52f",
+      "new-delivery-activation-readback.json": "086dccf8b57ef268a15e7987e5b62d39ec2883a90c549642b86f02672a85b411",
+      "delivery-activation-intent.json": "e13cbeb9ebaa41f0d474782a8901783eaf1887412a5a76350f321c995630986a"
+    },
+    "hub_image_unchanged": true
+  },
+  "activation_intent_sha256": "sha256:826f8f5d5d40dc4071c92cda9a98a3e9bc7da63836f50c6d3c44f64387d61be7",
+  "current_paired_hub_adoption": {
+    "source_commit": "53f5c75283c38927aa5bb97e5c5270230ece380e",
+    "image": "ghcr.io/mul-cps/cps-compute@sha256:f6c40516a180407aa42d64e4b1b4205ef44879e9f98b997b7ea1a01469c37fe4",
+    "deployed": true,
+    "ready": true,
+    "authority": "legacy-guard-handover-81a6f1ca/phase-81a6f1ca",
+    "seed_sha256": "sha256:0474dec64a79185d4882e356534c11b3dbdd3d58517826fdcf6ee7be5465aced",
+    "activation_intent_sha256": "sha256:826f8f5d5d40dc4071c92cda9a98a3e9bc7da63836f50c6d3c44f64387d61be7",
+    "four_raw_hashes": {
+      "final.json": "170badca7f0143f1095713de7b51713abf7dd4048eab5a1aa30a1fc49cb8110b",
+      "new-delivery-seed.json": "93d42506fa5d3367cced3df4fcf858d8500565caf1e1e96324bee19f96e721c8",
+      "new-delivery-activation-readback.json": "74935bc263a32d197b1e0f9547734ce9004f9ed2d28b87aee13b1692e0c73a78",
+      "delivery-activation-intent.json": "0fd7b8b9d52e4007ea7670c8909405517cec26b938c9c2a316c25aac38569642"
+    },
+    "installed_tests_passed": 52,
+    "installed_hub_version": "5.5.2",
+    "installed_kubespawner_version": "7.1.0",
+    "restart_persistent_default_user_compute_scopes": true,
+    "legacy_cit_personal_gpu_path_requires_central_policy": true,
+    "policy_and_driver_epoch_unchanged": true,
+    "production_qualified": false
+  },
+  "gateway_storage_image_unchanged_during_paired_hub_adoption": true
 }

@@ -1,7 +1,7 @@
 {
   "version": 1,
   "scope": "ordinary CPS student Compute and exact personal CPU server sharing; not full production qualification",
-  "recorded_at": "2026-10-15T14:27:28.855435+00:00",
+  "recorded_at": "2026-10-15T14:56:00.156044+00:00",
   "accounts": {
     "mikasa": {
       "admin": false,
@@ -39,8 +39,31 @@
     "distributed_disabled_notice_visible": true,
     "mikasa_admin_console_status": 403,
     "student_admin_console_scope_granted": false,
-    "cps_temporary_group_role_restored_after_role_sweep": true,
-    "restart_persistent_default_user_role_image_published_not_deployed": "sha256:f6c40516a180407aa42d64e4b1b4205ef44879e9f98b997b7ea1a01469c37fe4"
+    "temporary_group_role_was_restored_before_default_role_adoption": true,
+    "restart_persistent_default_user_role_adoption": {
+      "source_commit": "53f5c75283c38927aa5bb97e5c5270230ece380e",
+      "image": "ghcr.io/mul-cps/cps-compute@sha256:f6c40516a180407aa42d64e4b1b4205ef44879e9f98b997b7ea1a01469c37fe4",
+      "deployed": true,
+      "ready": true,
+      "authority": "legacy-guard-handover-81a6f1ca/phase-81a6f1ca",
+      "seed_sha256": "sha256:0474dec64a79185d4882e356534c11b3dbdd3d58517826fdcf6ee7be5465aced",
+      "activation_intent_sha256": "sha256:826f8f5d5d40dc4071c92cda9a98a3e9bc7da63836f50c6d3c44f64387d61be7",
+      "four_raw_hashes": {
+        "final.json": "170badca7f0143f1095713de7b51713abf7dd4048eab5a1aa30a1fc49cb8110b",
+        "new-delivery-seed.json": "93d42506fa5d3367cced3df4fcf858d8500565caf1e1e96324bee19f96e721c8",
+        "new-delivery-activation-readback.json": "74935bc263a32d197b1e0f9547734ce9004f9ed2d28b87aee13b1692e0c73a78",
+        "delivery-activation-intent.json": "0fd7b8b9d52e4007ea7670c8909405517cec26b938c9c2a316c25aac38569642"
+      },
+      "installed_tests_passed": 52,
+      "installed_hub_version": "5.5.2",
+      "installed_kubespawner_version": "7.1.0",
+      "restart_persistent_default_user_compute_scopes": true,
+      "legacy_cit_personal_gpu_path_requires_central_policy": true,
+      "policy_and_driver_epoch_unchanged": true,
+      "production_qualified": false
+    },
+    "ordinary_student_compute_browser_acceptance_epoch": "before the f6 paired-Hub restart",
+    "post_f6_restart_student_compute_browser_retest": "pending"
   },
   "addon": {
     "source_commit": "ab0202e56aa20d0e2d4671fb661637830b6bcafc",
@@ -75,11 +98,29 @@
     "control_cells_inserted_without_execution": true
   },
   "limitations": [
-    "Restart-persistent visitor-role image is published and awaits controlled Hub adoption",
-    "This personal CPU Share does not establish RTC editing or pooled GPU execution",
-    "Managed GPU group approval, GPU grants and Start remain separate follow-up",
+    "Fresh ordinary-student Compute and personal RTC checks after the f6 Hub restart remain pending",
+    "Managed GPU group approval, GPU grants and Start remain separate follow-up; no managed GPU Start is established here",
     "CIT personal runtime still needs the preserving Compute/RTC image",
     "Two-user job ownership, membership-removal connection closure and production qualification remain separate gates"
   ],
-  "production_qualified": false
+  "production_qualified": false,
+  "personal_cpu_rtc": {
+    "verified": true,
+    "server_owner": "mikasa",
+    "normal_directory_browsers": [
+      "mikasa",
+      "armin"
+    ],
+    "visitor_identities": {
+      "mikasa": "mikasa",
+      "armin": "armin"
+    },
+    "edits_synced_both_directions_without_reload": true,
+    "code_executed": false,
+    "kernel_cleanup_confirmed": true,
+    "demo_sessions_deleted": 1,
+    "private_receipt_raw_sha256": "ce37577abc1cd839ddf064378548b8e30e94ada88f4fab7032463ca4022049a7",
+    "acceptance_epoch": "before the f6 paired-Hub restart",
+    "post_f6_restart_retest": "pending"
+  }
 }

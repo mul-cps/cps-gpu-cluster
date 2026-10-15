@@ -25,12 +25,12 @@ for the bounded live results of 2026-10-13 and their retained evidence.
 | Gate | Verified state | Remaining completion evidence |
 | --- | --- | --- |
 | Repository ownership and shared policy | Separate application/deployment responsibilities and shared policy implemented; compatibility branches retained | Integrate and promote one tested consumer matrix with its exact policy hash; account for Fleet's watched branches |
-| SDK, Hub and Lab packages | Both Hubs now run Hub8e with the persistent personal root and inherited SDK environment fix and select CPUd75 with the prebuilt Lab XSRF fix. The actual Hub 5.5.2/Chromium regression and panel tests passed, with 43 Node and 9 installed Lab tests. A fresh personal CPS CPU kernel returned HTTP 200 for `/v1/me`, `/v1/profiles` and `/v1/session` using zero-argument `sdk.client()` and the reviewed person identity. The existing bjoern/cpsadmin notebook Pods remain unchanged on CPUad | The fixed frontend is installed in both running CPS personal servers without a restart; human page reload/panel and CIT personal SDK acceptance remain pending. Other notebook variants, ordinary visitor identity separation and human RTC remain separate gates; CIT personal profile hooks retain their independent images |
+| SDK, Hub and Lab packages | Both Hubs now run Hubf6 from source53f with restart-persistent default-user Compute access and the central-policy guard for legacy CIT personal GPU choices, retaining the persistent personal root and SDK fixes. Its 52 installed tests passed under Hub 5.5.2/KubeSpawner 7.1.0. Both managed CPU configurations select CPUd75; existing bjoern/cpsadmin Pods remain on CPUad. A fresh personal CPS kernel previously passed zero-argument SDK identity/profiles/session reads | Fresh ordinary-student Compute and RTC checks after the f6 restart remain pending. CIT personal SDK/Compute/RTC image adoption and other notebook variants remain separate gates |
 | Both admin UI consoles | Both consoles run Source51f with authenticated download-header forwarding and the reviewed legacy runtime validator; frontend and dependencies remain equal to Source87a1. CIT legacy runtime enrollment, cold startup and real notebook activity reporting passed; the existing UI and approved 10 GiB choice remain bounded evidence | Normal registered CPU lifecycle and reviewed CIT `akadmin` canonical API linkage passed; ordinary-user/human OAuth and remaining modes are separate gates |
 | Identity and group ownership | Existing reviewed aliases retained; both CPS legacy neutral accounts have permanent ready provenance; explicit custody migration and exact QA repair passed; both Hubs restarted without changing the repaired or legitimate legacy roles | Reviewed CIT alias is live in Source, Hub and Gateway and `/me` resolves the same person; real login grant survival/expiry, scoped administration and cross-Hub allowance continuity remain |
 | Native GPU isolation | Controlled no-MIG 5/20 GiB history retained; current CPS pair passed distinct 5 GiB OOM/recovery with peer progress, IPC denial in both directions, positive controls, kernel witnesses, restart retirement, complete bounded MPS OOM/recovery and observer cleanup, and confirmed normal closure | Complete restart behavior and broader packing; current bounded pool is 5/10 GiB, not a normal 20 GiB or cross-Hub qualification |
 | Shared GPU reservations | Actual simultaneous CPS5/CIT10 pilot starts passed: one winner held both shared members once, loser had no server/Pod/binding; confirmed Stop preceded successful retry on the other Hub; exact windows/groups/grants restored. Installed current Gateway code also passed first-free/second-busy transaction rollback in an isolated SQLite database | Different-member live API partial-conflict rollback, permitted CPU sessions and independent batch execution while held; broader pool and ordinary-user qualification |
-| Workspaces and local assignments | Local management, source-neutral reconciliation and RTC implementations exist | Two real visitors retaining their own identity, membership removal closing existing access, retained files and stopped-writer read-only archives |
+| Workspaces and local assignments | Local management and source-neutral reconciliation exist. Ordinary Mikasa/Armin directory browsers retained distinct visitor identities and passed two-way personal CPU RTC edits without reload or code execution before the f6 Hub restart | Fresh post-restart RTC readback, managed GPU workspace acceptance, membership removal closing existing access, retained files and stopped-writer read-only archives |
 | Workflow gateway and admission | Source validation/ownership paths implemented; bounded CPS own-success/failure artifact/log bytes and foreign-versus-absent rejection passed; controller admission/RBAC checks passed | CIT normal-user own/foreign access, human authentication, token renewal and crafted workflow/admin bypass scenarios on the current release |
 | Notebook execution | A real personal CPS kernel used the installed SDK to submit successful and intentionally failing CPU notebook jobs. Saved snapshots, exact selected helper, typed parameters, executed notebooks on both outcomes, artifact downloads and HTTP 200 log responses passed | Human Submit UI, CIT personal/shared-kernel runs and broader current-release coverage remain open |
 | GPU scheduling and packing | Stock KAI/HAMi components and controlled evidence exist; integrated Core/Hub source passed 2,151 tests with three known skips, plus separate installed Gateway/Hub suites. The Node image handover passed actual hardware zero and four-process epoch checks; coordinator activation remains disabled | Coordinator/binder deployment and actual post-Bind cap/CDI qualification; eight-A100 packing, teaching reclaim, protected sessions, 4/8-GPU JobSet retry and physical free-GPU telemetry |
@@ -47,12 +47,20 @@ for the bounded live results of 2026-10-13 and their retained evidence.
 The consumer configuration rollout completed at **2026-10-14 14:07 UTC**.
 The earlier Hub8a adoption completed at **20:58 UTC on 2026-10-14**.
 Gatewaybb and the paired Hub CA/CPU rollouts completed on **2026-10-15**. The subsequent
-personal SDK/Lab XSRF handover ran Hub1e; the latest persistent-home rollout
-now runs Hub8e from source `13d6604821caacff0a07190c041792fe56747354` on both Hubs:
-`ghcr.io/mul-cps/cps-compute@sha256:8e5854cb46870a3a09d8108f592ba507d494f3df028ec7f844cd9e96ae6e7e33`.
-Its installed image passed 529 tests with five existing skips, unchanged runtime
-dependencies and successful UID1000 imports. The earlier candidate failed its
-UID1000 packaging check and was never published.
+personal SDK/Lab XSRF handover ran Hub1e. The persistent-home rollout adopted
+Hub8e from source `13d6604821caacff0a07190c041792fe56747354`; that historical
+image passed 529 installed tests with five existing skips. The subsequent
+paired-Hub handover `81a6f1ca` now runs Hubf6 from source
+`53f5c75283c38927aa5bb97e5c5270230ece380e` on both Hubs:
+`ghcr.io/mul-cps/cps-compute@sha256:f6c40516a180407aa42d64e4b1b4205ef44879e9f98b997b7ea1a01469c37fe4`.
+Its 52 installed tests passed under Hub 5.5.2/KubeSpawner 7.1.0, including actual
+default-role restart tests, the CIT personal GPU guard, and native 5/10 GiB and
+CPU preservation. Only two Hub modules and their RECORD rows changed; all 48
+Core modules, the other 14 Hub modules, 137 dependencies and the base runtime
+configuration are preserved. Final and activation readbacks are ready with
+`production_qualified: false`. Historical publication/adoption receipts remain
+retained. The earlier persistent-home candidate failed its UID1000 packaging
+check and was never published.
 See [persistent-home adoption](../../platform-staging/jupyter-extensions-20261013/personal-root-adoption-actual-20261015.json).
 The latest same-policy Gateway rollout adopted Gatewayeea5 from source `f10e1927`
 for versioned storage routing, retaining the earlier S3 end-of-file fix. New
@@ -63,7 +71,10 @@ artifact-header fix; their databases, configuration, credentials and PVCs are pr
 Four fresh process acknowledgments and a completed new delivery journal confirm
 the unchanged policy and GPU driver epoch. The delivery controller is ready and
 the final native allocation check is zero. The current delivery seed after these rollouts is
-`sha256:2636966bd7b468e7fb0a50fc45d9d6fb00458fa54f01f43b1ec4653b71ad7129`.
+`sha256:0474dec64a79185d4882e356534c11b3dbdd3d58517826fdcf6ee7be5465aced`.
+The activation intent is
+`sha256:826f8f5d5d40dc4071c92cda9a98a3e9bc7da63836f50c6d3c44f64387d61be7`.
+The preceding storage/identity seed `2636966b` remains historical lineage.
 See [student storage and identity adoption](../../platform-staging/jupyter-extensions-20261013/student-storage-identity-adoption-actual-20261015.json).
 The earlier CIT legacy runtime enrollment and same-image cold handover remain
 retained evidence; their previous seed is preserved in the new handover lineage.
@@ -634,8 +645,12 @@ Armin completed a normal directory login and opened Mikasa's existing CPU server
 with HTTP 200. The server reported the actual visitor as Armin. His Share grants
 only `access:servers!server=mikasa/`; an OAuth authorization URL itself is not
 a Share. Open the stable [workspace URL](https://jupyterhub.dshl.unileoben.ac.at/user/mikasa/lab)
-while logged in as Armin. This does not establish simultaneous RTC editing or
-pooled GPU execution.
+while logged in as Armin. The subsequent actual two-browser personal CPU RTC
+test passed edits in both directions without reload, retaining Mikasa and
+Armin as distinct visitors. No notebook code was executed, and only the demo
+sessions were cleaned up. These are retained checks from before the latest f6
+Hub restart; fresh post-restart browser checks remain pending. They do not
+establish pooled GPU execution.
 
 Both dedicated Compute visitor services are deployed with separate OAuth/cookie
 credentials, verified Hub/Gateway TLS and working proxy redirects. Mikasa and
@@ -652,10 +667,15 @@ the three running CPS servers without a restart. Their kernel IDs are preserved.
 Hub restart exposed that a database-only custom role is removed during startup.
 Student access was restored through a new scoped group while a default-user-role
 fix was qualified with actual Hub 5.5.2 restart tests. The combined Hub image also
-closes the unqualified legacy CIT personal GPU path. Its 52 installed tests pass
-and the immutable image is published; controlled live adoption is still pending.
+closes the unqualified legacy CIT personal GPU path. Its 52 installed tests pass,
+and the immutable f6 image is now live on both Hubs through the completed
+`81a6f1ca` handover. The final and activation readbacks are ready, with production
+qualification still false. Root is retesting both ordinary student Compute
+identities and personal RTC after the restart; earlier successful browser checks
+remain historical until those fresh results are recorded.
 CIT's existing personal runtime also still needs its preserving Compute/RTC image.
 
 See [student access and addon evidence](../../platform-staging/jupyter-extensions-20261013/student-compute-sharing-actual-20261015.json).
-The managed GPU workspace, grant activation, RTC editing/revocation, job ownership
-and the broader production gates remain distinct acceptance work.
+Managed GPU workspace approval, grant activation and Start have not passed in
+this receipt. Membership-removal connection revocation, two-user job ownership,
+CIT personal runtime adoption and broader production gates remain distinct work.
