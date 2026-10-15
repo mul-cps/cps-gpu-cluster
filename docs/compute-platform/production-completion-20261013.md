@@ -25,7 +25,7 @@ for the bounded live results of 2026-10-13 and their retained evidence.
 | Gate | Verified state | Remaining completion evidence |
 | --- | --- | --- |
 | Repository ownership and shared policy | Separate application/deployment responsibilities and shared policy implemented; compatibility branches retained | Integrate and promote one tested consumer matrix with its exact policy hash; account for Fleet's watched branches |
-| SDK, Hub and Lab packages | All 12 notebook OCI variants are published. Both Hubs select notebook86 for registered CPU workspaces. Actual CPU86 runtime verified SDK/Lab payloads, trusted PageConfig, live panel API polling, NFS restart persistence and normal Stop | Genuine human OAuth, ordinary visitor identity separation and remaining notebook modes; CIT personal profile hooks retain their independent images |
+| SDK, Hub and Lab packages | All 12 notebook OCI variants are published. Both Hubs run Hub8a and select notebook86 for registered CPU workspaces. Actual CPU86 runtime verified SDK/Lab payloads, trusted PageConfig, live panel API polling, NFS restart persistence and normal Stop. The fresh CIT GPU notebook receives the trusted SDK environment | Ordinary SDK `/v1/me` is not accepted: CIT reports `ConnectError`, and the current registered CPU run remains under diagnosis. Genuine human OAuth, ordinary visitor identity separation and remaining notebook modes remain open; CIT personal profile hooks retain their independent images |
 | Both admin UI consoles | Both consoles run Sourceb36 with the reviewed legacy runtime validator; frontend and dependencies remain equal to Source87a1. CIT legacy runtime enrollment, cold startup and real notebook activity reporting passed; the existing UI and approved 10 GiB choice remain bounded evidence | Normal registered CPU lifecycle and reviewed CIT `akadmin` canonical API linkage passed; ordinary-user/human OAuth and remaining modes are separate gates |
 | Identity and group ownership | Existing reviewed aliases retained; both CPS legacy neutral accounts have permanent ready provenance; explicit custody migration and exact QA repair passed; both Hubs restarted without changing the repaired or legitimate legacy roles | Reviewed CIT alias is live in Source, Hub and Gateway and `/me` resolves the same person; real login grant survival/expiry, scoped administration and cross-Hub allowance continuity remain |
 | Native GPU isolation | Controlled no-MIG 5/20 GiB history retained; current CPS pair passed distinct 5 GiB OOM/recovery with peer progress, IPC denial in both directions, positive controls, kernel witnesses, restart retirement, complete bounded MPS OOM/recovery and observer cleanup, and confirmed normal closure | Complete restart behavior and broader packing; current bounded pool is 5/10 GiB, not a normal 20 GiB or cross-Hub qualification |
@@ -45,18 +45,22 @@ for the bounded live results of 2026-10-13 and their retained evidence.
 ## Current rollout boundary
 
 The consumer configuration rollout completed at **2026-10-14 14:07 UTC**.
-Both Hubs run Hubd920,
+The later paired Hub extension adoption completed at **20:58 UTC**. Both Hubs
+run Hub8a from source `f8d9417065559226f1f0aace122a318daceb78de`:
+`ghcr.io/mul-cps/cps-compute@sha256:8a51a7beca628b18a13d8f0d1982e981e0a80b049ccf0efee96532a36b5b2718`.
 Gateway08f and Node8c retain their images, and both consoles run Sourceb36.
 Four fresh process acknowledgments and a completed new delivery journal confirm
-the unchanged policy and GPU driver epoch. The subsequent same-image CIT legacy
-runtime enrollment and cold handover also completed, with the delivery
-controller running and the final native allocation check at zero. Its seed is
-`sha256:6b69b858f3d91fa6fa8201ea144ac8165e145a6589525af5723227089f786456`.
+the unchanged policy and GPU driver epoch. The delivery controller is ready and
+the final native allocation check is zero. The current delivery seed is
+`sha256:56f562306835b31c4cf1c3156fad0b59d26cf0291c001e8a30ff693a4759fd70`.
+The earlier CIT legacy runtime enrollment and same-image cold handover remain
+retained evidence; their previous seed is preserved in the new handover lineage.
 The canonical policy hash is
 `sha256:d48f6553ed036c2e7adcc97417623fe0308be93ad13b20f246047ada118511b0`.
 See [configuration evidence](../../platform-staging/jupyter-extensions-20261013/notebook-consumer-config-actual-20261014.json).
 See [first-stage Hub adoption](../../platform-staging/jupyter-extensions-20261013/hub-stop-persistence-adoption-actual-20261014.json).
 See [CIT runtime enrollment and cold handover](../../platform-staging/jupyter-extensions-20261013/cit-legacy-runtime-cold-handover-actual-20261014.json).
+See [current trusted SDK Hub adoption](../../platform-staging/jupyter-extensions-20261013/trusted-sdk-hub-adoption-actual-20261015.json).
 
 Both registered CPU configurations now select
 `ghcr.io/mul-cps/cps-jupyter-notebook@sha256:86c4fd58afe7a4e18b850da9f007d3c9e8cc8c058d85c0b8fee667ed72779d59`.
@@ -86,11 +90,37 @@ released operator CLI then enrolled the existing account with exactly its own
 RTC-server access and activity-reporting scopes. Both Hubs restarted with the
 permanent identity and role intact. A subsequent normal CIT Start/Stop test
 verified HTTP 200 from the notebook's actual server token, automatic state and
-token cleanup, the retained PVC and exact grant/group restoration. Ordinary SDK
-defaults remain a separate open gate: the installed client currently lacks its
-three connection environment variables in the GPU notebook deployment.
+token cleanup, the retained PVC and exact grant/group restoration.
 See [adoption evidence](../../platform-staging/jupyter-extensions-20261013/cit-neutral-adoption-actual-20261014.json).
 See [enrolled notebook activity and cleanup](../../platform-staging/jupyter-extensions-20261013/cit-enrolled-notebook-activity-actual-20261014.json).
+
+Hub8a supplies the SDK connection environment after successful managed workspace
+preparation, using the current notebook token. Its package passed 72 focused and
+426 installed tests, with three unchanged root-fixture skips. The fresh CIT GPU
+run on **2026-10-15** reached Ready, reported activity with HTTP 200 and received
+all three SDK environment variables without probe injection. The ordinary
+installed SDK request then failed with `ConnectError`; it did not produce an
+authenticated `/v1/me` result. Normal Stop cleared native state, Hub/ORM server
+records, notebook tokens and OAuth codes, preserved the PVC, and restored owned
+windows, grants and groups. The current registered CPU attempt remains under
+diagnosis. SDK acceptance and human OAuth remain open.
+See [package publication](../../platform-staging/jupyter-extensions-20261013/trusted-sdk-hub-publication-actual-20261014.json)
+and [adoption and subsequent SDK attempt](../../platform-staging/jupyter-extensions-20261013/trusted-sdk-hub-adoption-actual-20261015.json).
+The publication receipt retains `deployed=false` at its original publication
+boundary; the separate adoption receipt records the later live deployment.
+
+Subsequent unauthenticated probes in both Hub namespaces resolved the initial
+TCP refusal within five seconds, then consistently reached the gateway. Default
+HTTPX verification failed because the SDK lacks the private CA; loading the
+current CA exposed a missing Authority Key Identifier on the gateway leaf. A
+local leaf repair then exposed a missing Key Usage extension on the CA. A local
+renewal using the same CA key, subject and Subject Key Identifier passed strict
+TLS while preserving hostname and trust rejection. Neither the renewed
+certificates nor the new packaged CA transport has been deployed. The latest
+CPU attempt failed during its NFS marker command before package or SDK capture;
+its normal Stop, exact restoration, retained PV/PVC and token cleanup passed a
+fresh read-only check. Both temporary operator tokens were revoked with HTTP
+204. See [connection diagnosis and bounded cleanup](../../platform-staging/jupyter-extensions-20261013/sdk-connection-diagnosis-actual-20261015.json).
 
 Authenticated profile/status API checks passed on both consoles. Selecting the
 approved `native-group-a` workspace returns an enabled 5 GiB profile on CPS and
