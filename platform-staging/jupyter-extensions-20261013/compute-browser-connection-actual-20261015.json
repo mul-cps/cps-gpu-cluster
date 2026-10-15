@@ -3,6 +3,11 @@
   "compiled_config_receipt_sha256": "08f1a8aa198e62d10eb41275dd80c10d13b82dfb7c21002707ae6a5cec4ac257",
   "confirmed_cause": "nginx upstream sent too big header on Source OAuth callback; Hub code exchange succeeded",
   "cps_console_browser_apis_return_200": true,
+  "current_identity_links": {
+    "bjoern_reviewed": true,
+    "cpsadmin_reviewed": false,
+    "no_alias_added_by_assumption": true
+  },
   "docs": "https://kubernetes.github.io/ingress-nginx/user-guide/nginx-configuration/annotations/#proxy-buffer-size",
   "existing_personal_pod_preserved": true,
   "frontend_error_handling": {
@@ -49,10 +54,23 @@
     "token_bootstrap_also_requires_correct_fetch_mode": true
   },
   "lab_visitor_api_retest_passed": false,
-  "lab_visitor_api_retest_pending": false,
+  "lab_visitor_api_retest_pending": true,
   "notebook_restart_required_for_ingress_fix": false,
   "production_qualified": false,
-  "recorded_at": "2026-10-15T09:49:28.277489+00:00",
+  "recorded_at": "2026-10-15T10:18:34.278727+00:00",
   "schema_version": 1,
-  "symptom": "Compute plugin Failed to fetch; human OAuth callback returned nginx502"
+  "symptom": "Compute plugin Failed to fetch; human OAuth callback returned nginx502",
+  "xsrf_fix": {
+    "installed_tests_passed": 9,
+    "node_tests_passed": 43,
+    "personal_restart_pending": true,
+    "post_restart_live_api_acceptance_pending": true,
+    "published": true,
+    "real_hub_5_5_2_browser_regression_passed": true,
+    "running_old_personal_servers_preserved": true,
+    "selected_for_future_cpu_starts": true,
+    "selected_image": "ghcr.io/mul-cps/cps-jupyter-notebook@sha256:d75d54d9b2b3b1b497e577124a30ca4c82993dd8458550a0b1fa73c37159b64f",
+    "source_auth_checks_unchanged": true,
+    "source_commit": "6854d532fca5be53f326ecea46dfbe3264c13698"
+  }
 }

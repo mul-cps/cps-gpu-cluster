@@ -25,7 +25,7 @@ for the bounded live results of 2026-10-13 and their retained evidence.
 | Gate | Verified state | Remaining completion evidence |
 | --- | --- | --- |
 | Repository ownership and shared policy | Separate application/deployment responsibilities and shared policy implemented; compatibility branches retained | Integrate and promote one tested consumer matrix with its exact policy hash; account for Fleet's watched branches |
-| SDK, Hub and Lab packages | All 12 notebook OCI variants are published. Both Hubs now run Hub4e and select notebookad for managed CPU workspaces, including the enrolled CIT legacy owner. Actual CPU86 runtime verified SDK/Lab payloads, trusted PageConfig, live panel API polling, NFS restart persistence and normal Stop. The fresh CIT GPU notebook receives the trusted SDK environment | Ordinary SDK `/v1/me` is not accepted: CIT reports `ConnectError`, and the current registered CPU run remains under diagnosis. Genuine human OAuth, ordinary visitor identity separation and remaining notebook modes remain open; CIT personal profile hooks retain their independent images |
+| SDK, Hub and Lab packages | Both Hubs now run Hub1e with the personal SDK environment fix and select CPUd75 with the prebuilt Lab XSRF fix. The actual Hub 5.5.2/Chromium regression and panel tests passed, with 43 Node and 9 installed Lab tests. The existing bjoern/cpsadmin notebook Pods remain unchanged on CPUad | Personal server restart and actual panel/zero-argument SDK acceptance remain pending. Other notebook variants, ordinary visitor identity separation and human RTC remain separate gates; CIT personal profile hooks retain their independent images |
 | Both admin UI consoles | Both consoles run Sourceb36 with the reviewed legacy runtime validator; frontend and dependencies remain equal to Source87a1. CIT legacy runtime enrollment, cold startup and real notebook activity reporting passed; the existing UI and approved 10 GiB choice remain bounded evidence | Normal registered CPU lifecycle and reviewed CIT `akadmin` canonical API linkage passed; ordinary-user/human OAuth and remaining modes are separate gates |
 | Identity and group ownership | Existing reviewed aliases retained; both CPS legacy neutral accounts have permanent ready provenance; explicit custody migration and exact QA repair passed; both Hubs restarted without changing the repaired or legitimate legacy roles | Reviewed CIT alias is live in Source, Hub and Gateway and `/me` resolves the same person; real login grant survival/expiry, scoped administration and cross-Hub allowance continuity remain |
 | Native GPU isolation | Controlled no-MIG 5/20 GiB history retained; current CPS pair passed distinct 5 GiB OOM/recovery with peer progress, IPC denial in both directions, positive controls, kernel witnesses, restart retirement, complete bounded MPS OOM/recovery and observer cleanup, and confirmed normal closure | Complete restart behavior and broader packing; current bounded pool is 5/10 GiB, not a normal 20 GiB or cross-Hub qualification |
@@ -46,14 +46,15 @@ for the bounded live results of 2026-10-13 and their retained evidence.
 
 The consumer configuration rollout completed at **2026-10-14 14:07 UTC**.
 The earlier Hub8a adoption completed at **20:58 UTC on 2026-10-14**.
-Gatewaybb and the paired Hub CA/CPU rollouts completed on **2026-10-15**. Both Hubs
-now run Hub4e from source `31ff2e72a1d87c08fe395e96ff139518b3e01a26`:
-`ghcr.io/mul-cps/cps-compute@sha256:4e8603e1e3480b37e5b395c74712e0f70f84aedd467c98fdc3e79aeb97a7ea30`.
+Gatewaybb and the paired Hub CA/CPU rollouts completed on **2026-10-15**. The subsequent
+personal SDK and Lab XSRF handover now runs Hub1e from source
+`9b7df79ba591ccc6fd6eb29b32e1e27ef0cc90e1` on both Hubs:
+`ghcr.io/mul-cps/cps-compute@sha256:1e8bdc639ecc6f07a0f101f9157a724637bcc4468138fe1e19ff7dfe4bc73da4`.
 A later same-policy Gateway rollout on 2026-10-15 adopted Gatewaybb for notebook artifact downloads. Node8c and both consoles on Sourceb36 retain their images.
 Four fresh process acknowledgments and a completed new delivery journal confirm
 the unchanged policy and GPU driver epoch. The delivery controller is ready and
-the final native allocation check is zero. The current delivery seed after both rollouts is
-`sha256:73b35ee4bd464a64b96e4b6f2f01346c1aa8245f30636ab9a794eebda5ce4a77`.
+the final native allocation check is zero. The current delivery seed after these rollouts is
+`sha256:ae233b2b33e3707cf89cee36db3aa7fdc26e7a5ca260fb48330fa19d680608b8`.
 The earlier CIT legacy runtime enrollment and same-image cold handover remain
 retained evidence; their previous seed is preserved in the new handover lineage.
 The canonical policy hash is
@@ -64,8 +65,11 @@ See [CIT runtime enrollment and cold handover](../../platform-staging/jupyter-ex
 See [current trusted SDK Hub adoption](../../platform-staging/jupyter-extensions-20261013/trusted-sdk-hub-adoption-actual-20261015.json).
 
 Both managed CPU configurations now select
-`ghcr.io/mul-cps/cps-jupyter-notebook@sha256:ad693e5d49ef208449d0bc5d3de86288da7aac1799c1f7f9a1d84c2f893c00c1`.
-The earlier CPU86 lifecycle evidence below remains historical; a real CPUad kernel SDK and batch run is pending.
+`ghcr.io/mul-cps/cps-jupyter-notebook@sha256:d75d54d9b2b3b1b497e577124a30ca4c82993dd8458550a0b1fa73c37159b64f`.
+The running personal bjoern/cpsadmin Pods are preserved on CPUad; loading the new
+plugin requires a user-approved stop/start. Their current kernels have not been stopped.
+The earlier CPU86 lifecycle evidence below remains historical; a fresh personal
+SDK and panel run remains pending. See [latest adoption evidence](../../platform-staging/jupyter-extensions-20261013/lab-xsrf-adoption-actual-20261015.json).
 The normal Source lifecycle passed at **14:15 UTC**: Start, Ready, actual SDK/Lab
 package verification, the live Compute panel, automatic account polling, NFS
 writes and restart persistence, then normal Stop. The five ordinary visitor API
@@ -133,11 +137,11 @@ not require a catalog edit. The coordinated trust and Hub
 rollover is complete; real kernel submissions from both Hubs are the next gate. The legacy CIT
 neutral account now has a packaged CPU adapter at source `31ff2e72`. Its exact
 Hub4e image passed 509 installed Hub tests (five skips), 13 SDK tests (one skip),
-and the configured UID1000 check; it is now deployed on both Hubs. A profile
+and the configured UID1000 check; that adoption preceded the current Hub1e. A profile
 switch alone on the earlier Hub does not supply its trusted CPU image. The GPU image update retains its
 separate policy/workload transition gate. The current production/pilot
-deployment now runs Gatewaybb and Hub4e with CPUad selected; native GPU image916
-remains unchanged. A stale acknowledgment during finalization was recovered by
+deployment subsequently moved to Hub1e with CPUd75 selected; Gatewaybb and native GPU image916
+remain unchanged. A stale acknowledgment during finalization was recovered by
 repeating read-only finalization at the unchanged 30-second TTL; previous mutations
 were not replayed. Four fresh ACKs, the new completed journal and native zero
 passed. See [paired Hub adoption](../../platform-staging/jupyter-extensions-20261013/notebook-batch-hub-adoption-actual-20261015.json) and
@@ -156,14 +160,21 @@ API retest still failed: Hub 5.5.2 requires the Source-bound XSRF token even on
 browser GET requests, while the old addon only obtains it for mutations. The
 existing authenticated bootstrap route also needs the intended same-origin
 read-only `no-cors` fetch mode. A real Chromium check confirms that this response
-is readable, while OAuth redirects remain opaque. The fix must bootstrap that
-token and send it on every normal API request, retaining Hub authentication and
-XSRF checks. It must not substitute the kernel's identity. The earlier candidate
+is readable, while OAuth redirects remain opaque. The prebuilt fix at `6854d532`
+now bootstraps that token and sends it on every normal API request, retaining Hub
+authentication and XSRF checks without substituting the kernel's identity. The earlier candidate
 CPU722 is published for traceability but must not be deployed as the functional
 connection fix; it only improves the error message.
-The prebuilt frontend fix at `49c9b972` separately adds an explicit Connect action
-and distinguishes authentication, permission and network failures; its source is
-pushed, but the updated notebook image is not yet deployed. See
+The fix includes the explicit Connect action from `49c9b972` and distinguishes
+authentication, permission and network failures. Its CPUd75 image is published and
+selected for future CPU starts on both Hubs. The actual Hub 5.5.2 Chromium regression,
+panel browser tests, 43 Node tests and 9 installed Lab tests passed. The handover
+completed with four fresh process acknowledgments, a new completed delivery journal
+and native zero. A stale acknowledgment at activation was recovered through readonly
+freshness checks at the unchanged 30-second TTL followed by the single remaining
+original controller CAS; prior mutations were not replayed. Existing personal Pods
+remain unchanged; restart and actual panel acceptance remain pending. See
+[adoption evidence](../../platform-staging/jupyter-extensions-20261013/lab-xsrf-adoption-actual-20261015.json) and
 [browser connection evidence](../../platform-staging/jupyter-extensions-20261013/compute-browser-connection-actual-20261015.json).
 
 The walkthrough notebook and its separate batch target/helper are delivered to
@@ -185,7 +196,9 @@ owned changes restored. Do not weaken that guard or stop the personal notebook
 to force acceptance; a reviewed migration to the existing private V2 root is
 still needed. Personal zero-argument SDK configuration was also found absent;
 the fix at `9b7df79b` passed 524 actual installed Hub tests with five existing
-skips, but is not yet deployed.
+skips and is deployed as Hub1e. Existing servers receive its environment on their
+next start. The reviewed bjoern mapping is retained; cpsadmin is not automatically
+linked to that person. Its identity relationship requires an explicit decision.
 
 Notebook submissions already snapshot saved inputs, strip outputs and execute
 through the approved batch runner. The new owner-authenticated artifact byte API
