@@ -2,16 +2,22 @@
   "all_four_nginx_config_tests_passed": true,
   "compiled_config_receipt_sha256": "08f1a8aa198e62d10eb41275dd80c10d13b82dfb7c21002707ae6a5cec4ac257",
   "confirmed_cause": "nginx upstream sent too big header on Source OAuth callback; Hub code exchange succeeded",
+  "cps_console_browser_apis_return_200": true,
   "docs": "https://kubernetes.github.io/ingress-nginx/user-guide/nginx-configuration/annotations/#proxy-buffer-size",
   "existing_personal_pod_preserved": true,
   "frontend_error_handling": {
+    "candidate_functionally_rejected": true,
     "deployed": false,
+    "published_candidate": "ghcr.io/mul-cps/cps-jupyter-notebook@sha256:72200df82907e250cdf9f5390ffccbb538949c981d1827e8ec55a8fadc6e7a78",
+    "reason": "Clearer sign-in error alone does not fix XSRF bootstrap",
     "separates_authorization_permissions_and_network_failure": true,
     "source_commit": "49c9b9722a7539f322baed88da90cdebd27da66f",
     "source_pushed": true
   },
   "gitops_promotion_pending": true,
-  "human_oauth_retest_pending": true,
+  "human_oauth_callback_cps_passed": true,
+  "human_oauth_retest_pending": false,
+  "human_retry_receipt_sha256": "f1dff710ac40fa7990d5fe1745d97020e3cdcbfa0c3085bbc9ff0afb2092b86b",
   "ingress_change": [
     {
       "busy_buffers": "32k",
@@ -32,9 +38,21 @@
       "uid_and_spec_preserved": true
     }
   ],
+  "lab_visitor_api_failure": {
+    "confirmed": "Hub5.5.2 requires Source-bound XSRF token on cors/same-origin browser GET; old Lab sends none",
+    "current_notebook_owner": "cpsadmin",
+    "kernel_identity_substitution": false,
+    "observed_path": "/services/cps-admin/api/compute/v1/me",
+    "observed_status": 302,
+    "proposed_fix": "authenticated same-origin no-cors GET bootstrap, followed by X-XSRFToken on every API request",
+    "source_auth_exceptions": false,
+    "token_bootstrap_also_requires_correct_fetch_mode": true
+  },
+  "lab_visitor_api_retest_passed": false,
+  "lab_visitor_api_retest_pending": false,
   "notebook_restart_required_for_ingress_fix": false,
   "production_qualified": false,
-  "recorded_at": "2026-10-15T09:36:13.784802+00:00",
+  "recorded_at": "2026-10-15T09:49:28.277489+00:00",
   "schema_version": 1,
   "symptom": "Compute plugin Failed to fetch; human OAuth callback returned nginx502"
 }

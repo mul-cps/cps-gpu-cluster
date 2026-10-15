@@ -149,7 +149,18 @@ fetch encountered the console's OAuth redirect. Completing that redirect in the
 browser then failed because nginx rejected the callback response headers as too
 large. Both Hub ingresses now use a 16 KiB response-header buffer and 32 KiB busy
 buffers. All four controllers passed their compiled configuration checks; the
-existing notebook was not restarted. Human OAuth retesting remains pending.
+existing notebook was not restarted. The user subsequently logged in again;
+ingress logs confirm the CPS OAuth callback redirected successfully and console
+browser APIs returned HTTP 200, without another header error. The Lab visitor
+API retest still failed: Hub 5.5.2 requires the Source-bound XSRF token even on
+browser GET requests, while the old addon only obtains it for mutations. The
+existing authenticated bootstrap route also needs the intended same-origin
+read-only `no-cors` fetch mode. A real Chromium check confirms that this response
+is readable, while OAuth redirects remain opaque. The fix must bootstrap that
+token and send it on every normal API request, retaining Hub authentication and
+XSRF checks. It must not substitute the kernel's identity. The earlier candidate
+CPU722 is published for traceability but must not be deployed as the functional
+connection fix; it only improves the error message.
 The prebuilt frontend fix at `49c9b972` separately adds an explicit Connect action
 and distinguishes authentication, permission and network failures; its source is
 pushed, but the updated notebook image is not yet deployed. See
