@@ -805,3 +805,33 @@ but this does not establish a working Lab frontend. The corrected C7 extension
 must be shipped and adopted in the CPU image; existing-user browser acceptance
 does not qualify fresh spawns. Armin's new CPU server remains running, and no
 student was granted administrative service access.
+
+
+Both students then passed truly fresh directory logins in empty browser
+contexts: their three groups and user roles were unchanged, personal and GPU
+Shares returned200 with distinct actual visitor identities, and admin access
+remained403. Original sessions stayed valid. All six checked servers retained
+their UIDs, readiness and zero restarts. See the [fresh-login Share
+receipt](../../platform-staging/jupyter-extensions-20261013/student-fresh-login-sharing-actual-20261015.json).
+This qualifies these two pilot users; population-wide group ownership migration
+and permission expiry remain open.
+
+The proper C7 CPS CPU image is now published as `9444a023`, from source
+`06e942a9`, with all Core/SDK bytes and316 dependency versions preserved. Actual
+offline Lab startup, RTC, trusted SDK, Hera and Papermill success/failure tests
+passed, including the final imported OCI image. It is **not deployed**. See its
+[publication receipt](../../platform-staging/jupyter-extensions-20261013/cps-cpu-compute-c7-publication-actual-20261015.json).
+
+The preserving prospective Hub candidate `6bbd8788`, source `9739a9ec`, is
+also published and **not deployed**. Its119 installed tests cover the current
+Hub5.5.2/KubeSpawner7.1 environment, qualification guards, neutral identities and
+CIT CPU image selection. The existing enrolled-workspace custody helper and
+production916 guard remain byte-identical. See its [publication
+receipt](../../platform-staging/jupyter-extensions-20261013/prospective531-cit-hub-publication-actual-20261015.json).
+
+Next software adoption must bind current ef1/917 authority, the exact new
+images and CPU consumer configuration, and the matching gateway backup image
+in one reviewed change. Its prerequisite is normal closure and confirmed
+release of the controlled GPU workspace; existing personal servers remain
+protected. Publication alone does not repair the frontend in Armin's running
+CPUd75 server or qualify GPU531 hardware.

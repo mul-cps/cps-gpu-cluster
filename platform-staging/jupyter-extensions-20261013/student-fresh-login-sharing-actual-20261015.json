@@ -1,0 +1,91 @@
+{
+  "all_six_expected_Pod_UIDs_preserved": true,
+  "blocked_mutation_attempt_count": 0,
+  "browser_mutating_server_requests_allowed": false,
+  "config_policy_or_driver_changes": false,
+  "credential_values_included": false,
+  "evidence_sha256": {
+    "armin-receipt.json": "03d35b54a3ed402a9ae09fe6c8801bb1468f6ed5b5db9e468d8b8a861397586d",
+    "before.json": "cdddd193d712cd7ef3bd74925e25c0788bfb4dcbd23bfd22da63b46e3bb735ea",
+    "check_fresh_login.py": "420c7a518f7cb1177c24ea0c31d2463331f024144af12523de2b5c18d20f0c0a",
+    "mikasa-receipt.json": "ac398c863a4182ac8ec0c2e370c0611119d3a58bea9fbf0f436519048fe3c757",
+    "original-sessions-retained.json": "2690069819760dc4bd95a0067eb8e1348263e6926b9f4e148153bf8dc0098416",
+    "root-server-preservation.json": "a1523d7e691cbd0e649ca3b998945138126f20d5c9aa20dfd34ba93190543866"
+  },
+  "independent_root_server_preservation_receipt": "root-server-preservation.json",
+  "manual_group_role_DB_or_token_mutation": false,
+  "notebook_content_changes": false,
+  "notebooks_or_kernels_created": false,
+  "original_cookie_readback_receipt": "original-sessions-retained.json",
+  "passed": true,
+  "preexisting_sessions_logged_out_or_revoked": false,
+  "production_qualified": false,
+  "recorded_at": "2026-10-15T17:25:17.128104+00:00",
+  "root_confirmed_all_six_Ready_restarts_zero": true,
+  "scope": "Two controlled ordinary students fresh directory logins preserve current pilot personal/GPU Shares; not all-user grant migration or full production qualification",
+  "server_spawn_stop_restart_requested": false,
+  "users": {
+    "armin": {
+      "admin": false,
+      "admin_service_http": 403,
+      "fresh_empty_browser_context": true,
+      "group_count_before_after": [
+        3,
+        3
+      ],
+      "group_sets_exactly_equal": true,
+      "groups_added": [],
+      "groups_removed": [],
+      "home_http": 200,
+      "hub_self_http": 200,
+      "normal_CIT_Authentik_login": true,
+      "original_saved_cookie_still_valid": true,
+      "personal_mikasa_share_lab_http": 200,
+      "personal_server_actual_visitor": "armin",
+      "personal_server_api_me_http": 200,
+      "roles_before_after": [
+        [
+          "user"
+        ],
+        [
+          "user"
+        ]
+      ],
+      "shared_gpu_actual_visitor": "armin",
+      "shared_gpu_api_me_http": 200,
+      "shared_gpu_lab_http": 200
+    },
+    "mikasa": {
+      "admin": false,
+      "admin_service_http": 403,
+      "fresh_empty_browser_context": true,
+      "group_count_before_after": [
+        3,
+        3
+      ],
+      "group_sets_exactly_equal": true,
+      "groups_added": [],
+      "groups_removed": [],
+      "home_http": 200,
+      "hub_self_http": 200,
+      "normal_CIT_Authentik_login": true,
+      "original_saved_cookie_still_valid": true,
+      "personal_mikasa_share_lab_http": 200,
+      "personal_server_actual_visitor": "mikasa",
+      "personal_server_api_me_http": 200,
+      "roles_before_after": [
+        [
+          "user"
+        ],
+        [
+          "user"
+        ]
+      ],
+      "shared_gpu_actual_visitor": "mikasa",
+      "shared_gpu_api_me_http": 200,
+      "shared_gpu_lab_http": 200
+    }
+  },
+  "version": 1,
+  "visitors_distinct": true
+}
