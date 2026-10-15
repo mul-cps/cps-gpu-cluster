@@ -82,9 +82,12 @@ def validate_config(config):
     measured = isinstance(config, dict) and type(config.get('version')) is int and config['version'] == 2
     if measured: required.add('mode')
     require(isinstance(config, dict) and required.issubset(config)
-            and not set(config) - required - {'terminal_history'}, 'Closed node authority configuration required')
+            and not set(config) - required - {'terminal_history', 'policyTransition'}, 'Closed node authority configuration required')
     require(type(config['version']) is int and config['version'] in (1, 2) and type(config['enabled']) is bool,
             'Versioned explicit node activation required')
+    if 'policyTransition' in config:
+        require(measured and config.get('mode') == 'qualified-group' and config['enabled'] is True
+                and isinstance(config['policyTransition'], dict), 'Protected transition requires enabled qualified group mode')
     require(isinstance(config['authority_namespace'], str) and _NAME.fullmatch(config['authority_namespace'])
             and config['authority_namespace'] not in NAMESPACES.values(), 'Separate authority namespace required')
     require(isinstance(config['policy_hash'], str) and re.fullmatch(r'sha256:[a-f0-9]{64}', config['policy_hash']),
@@ -169,7 +172,7 @@ def validate_configuration_reference(reference, config, entry):
             'Pinned complete historical data and distinct historical policy required')
 
 
-def validate_historical_configuration(cm, reference, config, entry):
+def validate_historical_configuration(cm, reference, config, entry, *, transition=None):
     """Read the original25GiB pool only for already-released finite history.
 
     No budget is inferred from an allocation or a cap. The immutable original
@@ -185,9 +188,20 @@ def validate_historical_configuration(cm, reference, config, entry):
             'Exact retained immutable historical configuration required')
     closed(cm.get('data'), {'config.json'}, 'Single full historical node configuration required')
     old = validate_config(parse(cm['data']['config.json']))
+    current_policy = config['policy_hash']
+    if transition is not None:
+        from cps_compute.native_policy_transition import PolicyWorkloadTransition
+        from cps_compute.policy import Policy
+        require(isinstance(transition, PolicyWorkloadTransition), 'Typed protected transition required')
+        record = transition.record
+        previous = transition.qualification(Policy(record['old']['policy']))
+        require(current_policy == Policy(record['new']['policy']).hash
+                and config['pool'] == previous.node_pool and config['authority_namespace'] == previous.authority_namespace,
+                'Historical configuration must retain the exact prior qualified pool')
+        current_policy = previous.policy_hash
     require(config['version'] == old['version'] == 2
             and config['mode'] == 'qualified-group' and old['mode'] == 'operator-qualification'
-            and config['policy_hash'] == 'sha256:d48f6553ed036c2e7adcc97417623fe0308be93ad13b20f246047ada118511b0'
+            and current_policy == 'sha256:d48f6553ed036c2e7adcc97417623fe0308be93ad13b20f246047ada118511b0'
             and old['policy_hash'] == 'sha256:39ef15d3b5a76f96d135beb1afcd538775c64301cb51751086b44d68c54f8012'
             and old['enabled'] is True and old['authority_namespace'] == config['authority_namespace']
             and old['policy_hash'] == reference['policy_hash']
@@ -348,7 +362,7 @@ def validate_enrollment(cm, config, models):
             'authority_namespace': meta['namespace'], 'enrollment': enrollment}
 
 
-def validate_authority_enrollments(cms, config, models, store, journal, kube):
+def validate_authority_enrollments(cms, config, models, store, journal, kube, *, transition=None):
     """Historical records are only revalidated prior completion, never intents.
 
     The strict current-policy validator stays unchanged. A separate Root pin
@@ -370,7 +384,7 @@ def validate_authority_enrollments(cms, config, models, store, journal, kube):
         reference = entry.get('configuration_authority')
         if reference is not None:
             old = validate_historical_configuration(kube.configmap(reference['namespace'], reference['name']),
-                                                   reference, config, entry)
+                                                   reference, config, entry, transition=transition)
         else:
             old = {key: config[key] for key in ('enabled', 'authority_namespace')}
             old.update(version=1, policy_hash=entry['policy_hash'],
@@ -397,7 +411,7 @@ def validate_authority_enrollments(cms, config, models, store, journal, kube):
         for _ in range(2):
             if reference is not None:
                 require(validate_historical_configuration(kube.configmap(reference['namespace'], reference['name']),
-                        reference, config, entry) == old, 'Historical configuration changed across fresh reads')
+                        reference, config, entry, transition=transition) == old, 'Historical configuration changed across fresh reads')
             actual = kube.configmap(config['authority_namespace'], envelope['configmap_name'])
             require(validate_enrollment(actual, old, models) == envelope, 'Historical immutable enrollment changed on GET')
             completion = kube.configmap(config['authority_namespace'], completion_name)
@@ -891,6 +905,7 @@ def run(config, bundle, state, kube, driver, *, iterations, interval, crictl, cr
         def checked_seal(identity, receipt):
             # Last authority boundary before CPU first-gate exit. A stale CDI
             # mapping cannot release GPU-capable user initialization.
+            if consumer is not None: consumer.require_admission()
             intent = next(item for item in intents if item.pod_uid == identity.pod_uid)
             pod = kube.pod(intent)
             require(pod is not None, 'Actual enrolled Pod required before gate publication')
@@ -962,6 +977,7 @@ def run(config, bundle, state, kube, driver, *, iterations, interval, crictl, cr
                             result = 'cleanup-confirmed'
                         else: result = 'cleaned-awaiting-pod-absence'
                 else:
+                    if consumer is not None: consumer.require_admission()
                     validate_device_identity_barrier(pod, intent)
                     validate_cdi_binding(intent, state, driver, verifier, modules['cdi'], models)
                     record = controller.reconcile(intent)
@@ -1011,6 +1027,13 @@ def main(argv=None):
             'Operator epoch and dynamic v2 consumer cannot overlap')
     require(config['enabled'], 'Node authority deployment is disabled')
     require(1 <= args.iterations <= 10000 and 0.1 <= args.interval <= 30, 'Bounded node iteration window required')
+    transition = None
+    if 'policyTransition' in config:
+        require(args.approval_reference is not None and args.operator_epoch_config is None,
+                'Protected transition requires the actual dynamic approval consumer')
+        from cps_compute.native_policy_transition_config import load_policy_transition
+        transition = load_policy_transition(config['policyTransition'])
+        require(transition is not None, 'Explicit protected policy transition required')
     bundle = load_bundle(args.bundle)
     adapter, qualification, modules = bundle
     state = adapter.private_directory(args.state_root)
@@ -1026,18 +1049,18 @@ def main(argv=None):
         if args.approval_reference is not None:
             global approval_module
             approval_module = load_source('_native_approval_revision', (args.bundle / 'native_approval_revision.py').read_bytes(),
-                'ddaaf9593dfbc9cba2d4aa3227102895a435e2537346ddd467c4941c0201658d', 'native_approval_revision.py')
+                'd423c94527ec9f52baeaff1683702bac8f8438509f6dd49e6e6a8ac69afb02e3', 'native_approval_revision.py')
             process_observer = None
             if args.approval_acknowledgment is not None:
                 process_observer = load_source('_native_approval_process', (args.bundle / 'native_approval_process.py').read_bytes(),
                     'e121dd491d709d945b96fa475902486f783151f76f903344d06871b49aab2875', 'native_approval_process.py')
             approval = approval_module.NodeApprovalRuntime(sys.modules[__name__],args.approval_reference,args.approval_template,args.approval_process,state,
-                acknowledgment_path=args.approval_acknowledgment,process_observer=process_observer)
+                acknowledgment_path=args.approval_acknowledgment,process_observer=process_observer,transition=transition)
         driver = modules['manual'].Nvml()
         operator_epoch = None
         if args.operator_epoch_config is not None:
             # Reuse exactly the unchanged vendored process proof and raw API codecs.
-            revision = load_source('native_approval_revision',(args.bundle/'native_approval_revision.py').read_bytes(),'ddaaf9593dfbc9cba2d4aa3227102895a435e2537346ddd467c4941c0201658d','native_approval_revision.py')
+            revision = load_source('native_approval_revision',(args.bundle/'native_approval_revision.py').read_bytes(),'d423c94527ec9f52baeaff1683702bac8f8438509f6dd49e6e6a8ac69afb02e3','native_approval_revision.py')
             process = load_source('native_approval_process',(args.bundle/'native_approval_process.py').read_bytes(),'e121dd491d709d945b96fa475902486f783151f76f903344d06871b49aab2875','native_approval_process.py')
             epoch_module = load_source('_native_operator_epoch',(args.bundle/'native_operator_epoch.py').read_bytes(),'890cebd7c1903a680e4dc836ec6f81f097198c2fed438ade6b2fa62157864bbd','native_operator_epoch.py')
             operator_epoch = epoch_module.build_installed(sys.modules[__name__],kube,config,args.bundle,state,driver,modules['health'],modules['models'],args.operator_epoch_config,args.service_account)

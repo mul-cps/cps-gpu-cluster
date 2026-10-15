@@ -95,10 +95,12 @@ def validate_approvals(rows,caps):
 
 
 class ApprovalConsumer:
-    def __init__(self,agent,base_config,qualification,expected_ref,get_configmap):
+    def __init__(self,agent,base_config,qualification,expected_ref,get_configmap,*,transition=None):
         agent.validate_config(base_config)
         require(base_config.get('version')==2 and base_config.get('mode')=='qualified-group','Unchanged qualified group base required')
         self.agent=agent;self.base=copy.deepcopy(base_config);self.template=copy.deepcopy(qualification)
+        self.transition=transition
+        require(('policyTransition' in base_config) == (transition is not None), 'Explicit protected transition wiring required')
         self.reference=reference(expected_ref);self.get=get_configmap
         require(isinstance(qualification,dict) and set(qualification)=={'enabled','policy_hash','node_pool','authorityNamespace',
             'gateImage','workloadImage','evidence','evidence_sha256','workspaces'} and qualification['enabled'] is True
@@ -109,7 +111,20 @@ class ApprovalConsumer:
         require(self.caps=={'interactive-shared-5':5120,'interactive-shared-10':10240}
             and all(isinstance(qualification[k],str) and IMAGE.fullmatch(qualification[k]) for k in ('gateImage','workloadImage')),
             'Only existing measured 5/10 profiles and pinned images are supported')
+        if transition is not None:
+            from cps_compute.native_policy_transition import PolicyWorkloadTransition
+            from cps_compute.policy import Policy
+            require(isinstance(transition,PolicyWorkloadTransition),'Typed protected transition required')
+            epoch=transition.record['new'];policy=Policy(epoch['policy'])
+            transition.validate_config(qualification,policy)
+            expected={scope:{'profile':row['profiles'][0],'cap_mib':self.caps[row['profiles'][0]]}
+                      for scope,row in epoch['registry']['deployment']['workspaces'].items()}
+            require(self.base['policy_hash']==policy.hash and self.base['workspaces']==expected,
+                    'Current node must bind the exact new policy and retained workspace caps')
         self.loaded=None
+
+    def require_admission(self):
+        if self.transition is not None:self.transition.require_runtime(self.base['policy_hash'])
 
     def document(self,ref):
         ref=reference(ref);cm=self.get(ref['namespace'],ref['name'])
@@ -124,6 +139,16 @@ class ApprovalConsumer:
         require(raw==canonical(doc) and isinstance(doc,dict) and set(doc)=={'version','revision','policy_hash','registry','history'}
             and type(doc['version']) is int and doc['version']==1,'Closed canonical approval document required')
         registry=doc['registry']
+        if self.transition is not None:
+            from cps_compute.native_group_revision import ApprovalRevision
+            policy=self.transition.registry_epoch(registry)
+            qualification=self.transition.qualification(policy)
+            loaded=ApprovalRevision.from_configmap(cm,policy,qualification,expected_ref=ref)
+            if ref==self.reference:
+                require(policy.hash==self.base['policy_hash'],'Retired epoch cannot become the current node document')
+            else:
+                require(ref in self.current()['history'],'Only fully retained historical references are readable')
+            return loaded.document
         require(isinstance(registry,dict) and set(registry)=={'version','generation','deployment'}
             and type(registry['version']) is int and registry['version']==1 and type(registry['generation']) is int
             and registry['generation']>=0 and isinstance(registry['deployment'],dict)
@@ -158,11 +183,19 @@ class ApprovalConsumer:
         structural=copy.deepcopy(cm);structural_body=copy.deepcopy(body);del structural_body['approval_ref']
         structural['data']['enrollment.json']=self.agent.canonical_json(structural_body)
         config=copy.deepcopy(self.base);config['terminal_history']={}
+        if self.transition is not None:
+            # Only terminal replay passes a retired document. Live admission
+            # always passes current(), so old policies cannot open a new gate.
+            policy=self.transition.registry_epoch(doc['registry'])
+            qualification=self.transition.qualification(policy)
+            config['policy_hash']=policy.hash;config['pool']=qualification.node_pool
+            config.pop('policyTransition',None)
         config['workspaces']={scope:{'profile':approval['profiles'][0],'cap_mib':self.caps[approval['profiles'][0]]}}
         envelope=self.agent.validate_enrollment(structural,config,models)
         envelope['enrollment']=copy.deepcopy(body);return envelope
 
     def validate_enrollment(self,cm,models,store=None,journal=None):
+        self.require_admission()
         current=self.current();body=self.agent.parse(cm.get('data',{}).get('enrollment.json','{}'))
         ref=reference(body.get('approval_ref'))
         require(ref['namespace']==self.reference['namespace'] and (ref==self.reference or ref in current['history']),
@@ -266,7 +299,10 @@ class ApprovalConsumer:
         for cm in cms:
             body=self.agent.parse(cm.get('data',{}).get('enrollment.json','{}'))
             (dynamic if 'approval_ref' in body else legacy).append(cm)
-        envelopes,historical=self.agent.validate_authority_enrollments(legacy,self.base,models,store,journal,kube)
+        if self.transition is None:
+            envelopes,historical=self.agent.validate_authority_enrollments(legacy,self.base,models,store,journal,kube)
+        else:
+            envelopes,historical=self.agent.validate_authority_enrollments(legacy,self.base,models,store,journal,kube,transition=self.transition)
         ledger=self.agent.abort_ledger(kube.configmap(self.base['authority_namespace'],'cps-native-gpu-allocations'),self.base['authority_namespace'])
         for envelope in list(envelopes):
             body=envelope['enrollment'];uid=body['intent']['pod_uid']
@@ -278,6 +314,7 @@ class ApprovalConsumer:
                     self.agent.validate_enrollment(kube.configmap(envelope['authority_namespace'],envelope['configmap_name']),self.base,models))
                 historical.add(uid)
             else:
+                self.require_admission()
                 scope=body['source']+':'+body['workspace']
                 approval=current['registry']['deployment']['workspaces'].get(scope)
                 require(approval is not None and approval==self.template['workspaces'].get(scope)
@@ -522,15 +559,16 @@ def require_same_enrollment_snapshot(accepted,fresh,current_reference,journal):
 
 class NodeApprovalRuntime:
     """Optional service-loop bridge. Private ack transport confers no API RBAC."""
-    def __init__(self,agent,reference_path,qualification_path,process_path,state,*,acknowledgment_path=None,process_observer=None):
+    def __init__(self,agent,reference_path,qualification_path,process_path,state,*,acknowledgment_path=None,process_observer=None,transition=None):
         self.agent=agent;self.reference_path=reference_path;self.qualification_path=qualification_path
         self.process_path=process_path;self.state=Path(state);self.consumer=None
         require((acknowledgment_path is None)==(process_observer is None),'Complete optional own-SA publisher inputs required')
         self.acknowledgment_path=acknowledgment_path;self.process_observer=process_observer
+        self.transition=transition
 
     def begin(self,config,kube):
         self.consumer=ApprovalConsumer(self.agent,config,read_private(self.qualification_path),
-            read_private(self.reference_path,limit=8192),kube.configmap)
+            read_private(self.reference_path,limit=8192),kube.configmap,transition=self.transition)
         self.consumer.current()
         # An interrupted/failed iteration must not leave a newly current ack.
         backend=self.agent.load_source('_approval_private_backend',self.agent.snapshot_sources()['node_backend.py'].encode(),
