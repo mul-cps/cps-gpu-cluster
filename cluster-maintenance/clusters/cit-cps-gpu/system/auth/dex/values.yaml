@@ -112,6 +112,9 @@ config:
         clientID: qlPmVf0I9embINVWrDqSjWIjoD6HrTwx6TbEUYXq
         clientSecret: $DEX_CIT_CLIENT_SECRET
         redirectURI: https://dex.dshl.unileoben.ac.at/callback
+        # Preserve Dex's default identity scopes and request Authentik refresh.
+        # Provider 3 must also include its existing offline_access scope mapping.
+        scopes: [profile, email, offline_access]
         insecureEnableGroups: true
 
   staticClients:
