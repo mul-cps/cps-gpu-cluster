@@ -608,3 +608,12 @@ Four actual CPS proxy downloads (snapshot/executed notebook for success and fail
 returned HTTP200, matched the original SDK bytes, and retained attachment/no-store/
 nosniff/sandbox headers. Token a695 was revoked; this is API-token acceptance, not
 human browser or CIT acceptance. See [download checks](../../platform-staging/jupyter-extensions-20261013/source-artifact-header-downloads-actual-20261015.json).
+
+The current `bjoern` and `cpsadmin` Compute extensions now preserve regular
+workflow cards when the optional distributed launcher reports its exact
+not-configured response. Other service, workflow, network and authentication
+failures still surface. Source `db49a558` passed 45 Node tests, 10 packaging tests
+with 12 subtests, and the rendered panel test. Both running servers serve the
+new bundle; their Pod specs and four existing kernels are unchanged. A browser
+reload is required. Notebook image defaults are not changed by this user-package
+update. See [live update](../../platform-staging/jupyter-extensions-20261013/workloads-optional-jobsets-live-20261015.json).
