@@ -73,4 +73,9 @@ language, separate snippet repository or Moodle deployment was introduced.
 SeaweedFS is running on the existing TrueNAS with authenticated TLS on port 8333.
 Its [deployment and recovery runbook](https://github.com/mul-cps/cps-gpu-cluster/blob/feat/compute-platform-v1/platform-staging/artifacts/truenas/README.md)
 records persistence and authorization checks. The existing cluster/NFS addresses
-are preserved. Hub-to-S3 connectivity and automated retention remain unqualified.
+are preserved. [Recorded staging tests](qualification.md#2026-10-05-live-staging-evidence)
+verified both Hubs' relay connectivity, authenticated TLS and signed 50 MiB
+upload/download with cleanup. Current student notebook artifact acceptance is
+recorded in the [completion ledger](production-completion-20261013.md).
+Automated retention and matching-version production restore remain separate
+qualification gates.
