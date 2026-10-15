@@ -1,0 +1,15 @@
+{
+  "version": 1,
+  "published_image": "ghcr.io/mul-cps/cps-compute@sha256:8c2c456b90330622645d509f94882a11a465ac208a6fa7fc824900d6320e5c0b",
+  "source_layer_sha256": "94ed6d9c933d9f3fc5f7f53d40a6d7a6c4b00e1dd05817af41e5ea704f286dde",
+  "source_member": "opt/native/node_agent.py",
+  "source_sha256": "f01b24bc984a153e9995549ef09f73167500f375d79e078a7e7aa9e1171c3664",
+  "source_size_bytes": 68413,
+  "retained_source": "node8c.py",
+  "transformer": "node_successor.py",
+  "only_changed_definition": "validate_historical_configuration",
+  "candidate_contract_supplied": false,
+  "candidate_image_built": false,
+  "deployed": false,
+  "hardware_qualified": false
+}
