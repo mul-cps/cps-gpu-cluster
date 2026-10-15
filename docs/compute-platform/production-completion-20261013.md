@@ -915,3 +915,25 @@ acceptance on CPU9444, with the shared GPU workspace unaffected. This does not
 qualify CIT runtime, GPU916 addon/SDK compatibility, GPU531 hardware or complete
 workspace resource-card details. See the
 [current software adoption receipt](../../platform-staging/jupyter-extensions-20261013/compute-runtime-consumer-adoption-actual-20261015.json).
+
+
+The compatible application source is now consolidated at
+[`64fa3d70`](https://github.com/mul-cps/cps-compute/blob/64fa3d704763e3eb88c29dbfe54902991e321b52/docs/releases/compatible-source-composition-20261015.json).
+Its 49 Core modules, 16 actual Hub modules and complete C7 Lab subtree were
+checked against the current qualified components. The composed source passed
+107 Hub tests under JupyterHub 5.5.2/KubeSpawner 7.1, 57 Lab tests, TypeScript,
+and package-hook/wheel checks. This fixes the missing source integration of the
+live Hub behavior; it does not relabel existing images or publish a new release.
+
+The next trusted GPU531 test can now describe an exact operator-only CPS 5+20 GiB
+pair with independent source pins, disjoint canonical members, a 25 GiB budget
+and at least 26 GiB measured free memory. Root reran its 123 passing leaf tests
+and 39 subtests; two tests still require actual source captures. The finite Node
+history transformer passed 25 tests against the exact published Node8c source.
+It remains a partial source artifact: the selected epoch publisher and
+coordinator observer retain qualification10-only bounds. Those helpers, two
+reviewed operator identities/registrations and actual hardware gates remain
+required before pair activation. See the
+[source progress receipt](../../platform-staging/jupyter-extensions-20261013/compatible-source-and-pair-progress-20261015.json),
+[pair contract](../../platform-staging/gpu/native-group-pilot/PROSPECTIVE531-PAIR.md)
+and [Node successor boundary](../../platform-staging/gpu/native-group-pilot/prospective-pair/NODE-SUCCESSOR.md).

@@ -27,7 +27,7 @@ The contract is a closed JSON object with these fields:
 | `operator_members` | Exact scope keys; nonempty disjoint UUID lists whose union equals that allowlist |
 
 The prospective configuration must additionally be enabled version 2,
-`operator-qualification`, with max 2 workspaces, budget 25600 MiB, unsold headroom
+`operator-qualification`, with max 2 workspaces, budget 25600 MiB, headroom
 1024 MiB and measured free memory at least 26624 MiB. The original immutable 39ef
 configuration, its raw data reference, original5/20 scopes, nonrecursive history,
 physical node/device/boot/driver epoch and original25GiB budget are still checked.
@@ -74,6 +74,13 @@ qualification10/cap 10240 and a budget at most 15360 MiB. Its
 transformer alone cannot run the protected prospective pair. A separately reviewed
 finite change to that helper and the Node's exact helper pin is still required.
 No such change, image build or runtime adoption is included here.
+
+The coordinator-side `cps_compute.native_scheduler_node_epoch` observer also
+requires the qualification10 profile in its constructor and a 10240 MiB cap in
+`observe`; `native_scheduler_coordinator_server` selects it for operator-only
+configuration. Future work must qualify both the selected Node publisher and
+matching coordinator observer. These history-transformer tests qualify neither
+protected execution path.
 
 The selected Node publisher does not invoke `NativeGroupQualification.from_config`.
 The separate `OperatorNodeEpochObserver` (119–155) imports that type only inside
