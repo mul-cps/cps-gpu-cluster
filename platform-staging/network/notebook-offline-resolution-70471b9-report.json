@@ -1,0 +1,130 @@
+{
+  "observedAt": "2026-10-07T06:00:11.766337+00:00",
+  "scope": "pip offline dry-run dependency resolution as build-stage root with explicit host-owner mapping in disposable local containers; no installation, network or GPU access",
+  "productionQualified": false,
+  "lockSha256": "b6aec8e295406eb6c1a060de170f825c26c169af12c88430a8b560f3cf309c91",
+  "variants": [
+    {
+      "variant": "standard-cpu",
+      "exitCode": 0,
+      "offlineResolutionPassed": true,
+      "logSha256": "04a4e4d8f9f6c015985017b9300f83f2e88cd3a12ee6a38f7774fc1af03adcc1",
+      "localImage": "localhost/cps-notebook:qualification-70471b9-standard-cpu",
+      "postRunImageConfigId": "sha256:46cd2a71c8e692cc42a9a109746458901790c328d05dedce62b687bd16d1fa23",
+      "postRunImageConfigIdMatched": true
+    },
+    {
+      "variant": "base-cpu",
+      "exitCode": 0,
+      "offlineResolutionPassed": true,
+      "logSha256": "04a4e4d8f9f6c015985017b9300f83f2e88cd3a12ee6a38f7774fc1af03adcc1",
+      "localImage": "localhost/cps-notebook:qualification-70471b9-base-cpu",
+      "postRunImageConfigId": "sha256:3c82c82bf353b41a92e09f443a6c241d236f09e856ae8c5e8776be222e1c0ac8",
+      "postRunImageConfigIdMatched": true
+    },
+    {
+      "variant": "base-gpu",
+      "exitCode": 0,
+      "offlineResolutionPassed": true,
+      "logSha256": "04a4e4d8f9f6c015985017b9300f83f2e88cd3a12ee6a38f7774fc1af03adcc1",
+      "localImage": "localhost/cps-notebook:qualification-70471b9-base-gpu",
+      "postRunImageConfigId": "sha256:64007d0a27873c5cf99833c14f4c57bc2b3f6cbc80b05b98c651bf7b7885e5d5",
+      "postRunImageConfigIdMatched": true
+    },
+    {
+      "variant": "mujoco-base-gpu",
+      "exitCode": 0,
+      "offlineResolutionPassed": true,
+      "logSha256": "04a4e4d8f9f6c015985017b9300f83f2e88cd3a12ee6a38f7774fc1af03adcc1",
+      "localImage": "localhost/cps-notebook:qualification-70471b9-mujoco-base-gpu",
+      "postRunImageConfigId": "sha256:c3a7f01b3ba8b0201579bf331be9916d45e84884e932ad902f0bf24da8bb513a",
+      "postRunImageConfigIdMatched": true
+    },
+    {
+      "variant": "pytorch-runtime-base",
+      "exitCode": 0,
+      "offlineResolutionPassed": true,
+      "logSha256": "04a4e4d8f9f6c015985017b9300f83f2e88cd3a12ee6a38f7774fc1af03adcc1",
+      "localImage": "localhost/cps-notebook:qualification-70471b9-pytorch-runtime-base",
+      "postRunImageConfigId": "sha256:d3e60fb58bbe054c34c4c05fce170ae9d20229f343250e20e00d26e5ebd2725f",
+      "postRunImageConfigIdMatched": true
+    },
+    {
+      "variant": "pytorch-code",
+      "exitCode": 0,
+      "offlineResolutionPassed": true,
+      "logSha256": "04a4e4d8f9f6c015985017b9300f83f2e88cd3a12ee6a38f7774fc1af03adcc1",
+      "localImage": "localhost/cps-notebook:qualification-70471b9-pytorch-code",
+      "postRunImageConfigId": "sha256:5a0946d9aa1b404cd1dd64a05a241af6f02271d999bf2df591ed3684f46fc2e6",
+      "postRunImageConfigIdMatched": true
+    },
+    {
+      "variant": "tf-code",
+      "exitCode": 0,
+      "offlineResolutionPassed": true,
+      "logSha256": "04a4e4d8f9f6c015985017b9300f83f2e88cd3a12ee6a38f7774fc1af03adcc1",
+      "localImage": "localhost/cps-notebook:qualification-70471b9-tf-code",
+      "postRunImageConfigId": "sha256:e8eaf0059cdc115a7d6f296189b7ce51aba3fbc882284d3e86a4ddfb4b517b8b",
+      "postRunImageConfigIdMatched": true
+    },
+    {
+      "variant": "desktop-xpra-base",
+      "exitCode": 0,
+      "offlineResolutionPassed": true,
+      "logSha256": "04a4e4d8f9f6c015985017b9300f83f2e88cd3a12ee6a38f7774fc1af03adcc1",
+      "localImage": "localhost/cps-notebook:qualification-70471b9-desktop-xpra-base",
+      "postRunImageConfigId": "sha256:af973e1ab18022b3717e9cfd237cf0760be51ed8b2b1d33a606cd1fb47913940",
+      "postRunImageConfigIdMatched": true
+    },
+    {
+      "variant": "desktop-ros2",
+      "exitCode": 0,
+      "offlineResolutionPassed": true,
+      "logSha256": "04a4e4d8f9f6c015985017b9300f83f2e88cd3a12ee6a38f7774fc1af03adcc1",
+      "localImage": "localhost/cps-notebook:qualification-70471b9-desktop-ros2",
+      "postRunImageConfigId": "sha256:61f493b03cd5adde8e6c05e9be6eb1d35e29c109f698ae7cb963643b089d8d09",
+      "postRunImageConfigIdMatched": true
+    },
+    {
+      "variant": "desktop-ros2-xpra",
+      "exitCode": 0,
+      "offlineResolutionPassed": true,
+      "logSha256": "04a4e4d8f9f6c015985017b9300f83f2e88cd3a12ee6a38f7774fc1af03adcc1",
+      "localImage": "localhost/cps-notebook:qualification-70471b9-desktop-ros2-xpra",
+      "postRunImageConfigId": "sha256:459d16995481f8cc5c655bcac5b3bec957b2026032b9a75e780f680b56c25558",
+      "postRunImageConfigIdMatched": true
+    },
+    {
+      "variant": "mujoco-xpra",
+      "exitCode": 0,
+      "offlineResolutionPassed": true,
+      "logSha256": "04a4e4d8f9f6c015985017b9300f83f2e88cd3a12ee6a38f7774fc1af03adcc1",
+      "localImage": "localhost/cps-notebook:qualification-70471b9-mujoco-xpra",
+      "postRunImageConfigId": "sha256:bc28d0b5be1fdff39e2c64b36eda75ea47f0aa8ef21fcc6e60b0b6cd0150c3b0",
+      "postRunImageConfigIdMatched": true
+    },
+    {
+      "variant": "comfyui",
+      "exitCode": 0,
+      "offlineResolutionPassed": true,
+      "logSha256": "04a4e4d8f9f6c015985017b9300f83f2e88cd3a12ee6a38f7774fc1af03adcc1",
+      "localImage": "localhost/cps-notebook:qualification-70471b9-comfyui",
+      "postRunImageConfigId": "sha256:5017e250c691fd1825d5cb43eddd4e9b96283d821edfb9fea28a3ddd97469268",
+      "postRunImageConfigIdMatched": true
+    }
+  ],
+  "allVariantsPassed": true,
+  "packagesLocked": 133,
+  "wheelsChecksummed": 146,
+  "defaultPythonInterpreterOnly": true,
+  "packagesInstalled": false,
+  "sourceTagBuildPassed": false,
+  "releasePublished": false,
+  "limitations": [
+    "Dependency resolution dry-run only; no package installation or image build.",
+    "Only each image default Python interpreter was tested; secondary kernels/interpreters remain separate.",
+    "Initial non-root and unmapped-root harness attempts could not read private inputs. Explicit host-owner mapping and disabled container labeling fixed fixture access without changing file permissions.",
+    "Post-run local image config IDs match the candidate reports; containers used named local qualification references.",
+    "No production, network, GPU access or release promotion."
+  ]
+}

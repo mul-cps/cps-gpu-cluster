@@ -1,0 +1,45 @@
+{
+  "schemaVersion": 1,
+  "experimental": true,
+  "productionQualified": false,
+  "hostileIsolationQualified": false,
+  "workerPerformedLiveMutations": false,
+  "workerPerformedGpuCalls": false,
+  "cpuTests": {
+    "hostPassed": 16,
+    "pinnedSdkPython312Passed": 9,
+    "actualPatchedCWithMockKernelDependencies": true
+  },
+  "sdkImage": "ghcr.io/mul-cps/cps-compute@sha256:b3802a7f70077ff56adbc060d1177409eeff76c8b3cf8ccf9f39047c1e6716bf",
+  "sdkPythonVersion": "3.12.15",
+  "sdkHasTorch": false,
+  "rootReportedCompile": {
+    "passed": true,
+    "kernel": "6.8.0-134-generic",
+    "driverVersion": "615.71.09",
+    "candidateUvmSha256": "b2ae67722e9e21a70c319aeed2184f5b2d1f23b8e32dea00816cfd5cd2c3ee61",
+    "originalUvmSha256": "05c2e1319dacdca062bfddc4368be02b66307e0cda31abcd7d28fb37eeefff01",
+    "unchangedOriginalCoreSha256": "94df0cd9b062ef42091a4f2639438b3596c6a49bcb1b56640ac6ef0f792f2020",
+    "candidateAndOriginalCompleteVersionsHexSha256": "0054b45bf40416a31ae6e77554935731d29b0235c5a49452590408ebb0f5184a",
+    "versionsSectionBytes": 10017,
+    "versionVermagicCrcMatch": true,
+    "independentReadonlyPeerConfirmed": true,
+    "builtCoreMustNeverBeInstalledOrLoaded": true
+  },
+  "hardwareProbeQualification": "pending root execution and actual receipts",
+  "sourceFilesSha256": {
+    "test_fixture.py": "d7d0d9d1d7f56bce10890f490bf35b25af158f5804c8af95d855ee4568edea7c",
+    "fixture-proposal.json": "9f202c28dcaf95b5a5470511cc215bd4170ef3c3cd15eb2796e26a441e55c5a0",
+    "render_fixture.py": "8cbeeaf49f86831c171a4244ddd656d13d2ce1da50b10a2b6ea618c20d244ef7",
+    "README.md": "d0c35d0811e56d8f57f11127dec54b26e9d8bee834ddda7dc221a4bb978a2a19",
+    "runtime_probe.py": "52312f3d87b12523291ef5128f5b92640662876557448b4eb1696c4038e7b287",
+    "test_runtime_probe.py": "0712991262f34b60e7048e3a0fd51bb0c49ae7433a40b9b9c44523f4bc689001",
+    "source-manifest.json": "ac5e147c457d628a535f9324d5bba2c10bbd9f05d456fd8f9a5a8c286ccdc7c0",
+    "uvm-deny-managed-mmap.patch": "1666be7d7e8a23523370b5b1cfbb1496921bafc67f24554bce33d8ec90f83608",
+    "build_candidate.py": "5b4fba28c3cf25744b2c3453ad8ad236472de34c088ad2aedf0393873ef5cdee",
+    "test_build_candidate.py": "404234fae2d7676d20cd00e4b2ab93ab74ac02e1d5b3170fe75de40f75f05801",
+    "test_guard.py": "d34664e6db810ecd169d59a022f4a3cdc288a51dcb9ecdf5a6084652fb40ad38",
+    "cpu_harness.c": "d9cc53f312fd71976a4e71d8a1d02c5d320f9f8273abd53522d9762a3a0f08bb",
+    "guard.py": "70e6719709c8f5e5eb33a02a7323473e48dede3e4c74021b8992ea8ee0605114"
+  }
+}

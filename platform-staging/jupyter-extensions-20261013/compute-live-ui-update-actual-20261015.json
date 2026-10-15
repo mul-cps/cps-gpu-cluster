@@ -1,0 +1,48 @@
+{
+  "dependencies_changed": false,
+  "fixture": {
+    "exact_old_image": true,
+    "kernel_ram_sentinel_retained": true,
+    "network": "none; loopback only",
+    "receipt_sha256": "509c994bc421ff5a1c37d4ac10d3efb277a34d4a31e3b50d57f492d2daac07c5",
+    "same_actual_kernel_id": true,
+    "server_pid_unchanged": true
+  },
+  "human_browser_reload_verified": false,
+  "maintenance": "The standard user installation persists in each home and shadows image versions. Remove only this recorded user override after the server runs a qualified image containing this fix, before future frontend upgrades. Preserve other user packages.",
+  "method": "pip --user --ignore-installed --no-deps --no-index; exact qualified wheel",
+  "new_remote_entry": "static/remoteEntry.a86b8ef07ff4bf434c95.js",
+  "next_action": "Hard reload existing JupyterLab page to load new frontend, then verify authenticated Compute panel",
+  "old_remote_entry": "static/remoteEntry.c80eef21c9609e6e95b5.js",
+  "passed": true,
+  "production_ready": false,
+  "python_hook_bytes_unchanged": true,
+  "recorded_at": "2026-10-15T11:31:29.656152+00:00",
+  "scope": "Update prebuilt Compute frontend on two existing CPS personal servers without restarting servers or kernels",
+  "served_chunk_cache_control_both": "no-cache",
+  "served_chunk_http_status_both": 200,
+  "served_chunk_sha256": "838a365974dcfdc3d68572e1459dd6125c0000d2a3302f4eeea779e7366efc4f",
+  "served_remote_entry_sha256": "a86b8ef07ff4bf434c9556e4e7fa6c76874ac709c331e196abee1e6dc58a53d5",
+  "source_commit": "6854d532fca5be53f326ecea46dfbe3264c13698",
+  "users": [
+    {
+      "kernels_restarted": false,
+      "name": "bjoern",
+      "pod_spec_preserved": true,
+      "pod_uid": "915b3fac-53fa-469c-8c3f-0180fb285504",
+      "preserved_kernel_count": 3,
+      "receipt_sha256": "f92ca6e8d80d5f744305721a8653ef95c79c8f2d07ec14e5a2f9cef07617d720",
+      "server_restarted": false
+    },
+    {
+      "kernels_restarted": false,
+      "name": "cpsadmin",
+      "pod_spec_preserved": true,
+      "pod_uid": "a984023f-eb34-4af1-b01d-bad6ea159ef4",
+      "preserved_kernel_count": 1,
+      "receipt_sha256": "02c66fc7af62deac073d1fee8e8f44fb7d390c0bd410a742fabae18757e86c11",
+      "server_restarted": false
+    }
+  ],
+  "wheel_sha256": "f905f2715be21b9b6f59ea7059f4b3656ffebbe27828ca7f01b1071e223c1c68"
+}

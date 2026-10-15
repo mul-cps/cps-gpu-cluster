@@ -1,0 +1,93 @@
+{
+  "sourceCommit": "1a71bc713aac8b9ea263860b8b7ca0c878892619",
+  "wheel": "cps_compute-0.1.0-py3-none-any.whl",
+  "sha256": "8a37f7d0fc32d1c9316d57535c7bb608e545efe97ca6c1ea10b1651ade3a69fe",
+  "bytes": 58623,
+  "tests": 234,
+  "python": "3.12.13",
+  "sourceFilesMatched": 20,
+  "scope": "installed wheel in existing qualification dependency environment; untagged candidate, no published release or new gateway image",
+  "productionGatewayContainsChange": false,
+  "checks": [
+    {
+      "path": "cps_compute/__init__.py",
+      "sha256": "ffb033e72c0aca7026cd83c20c167b1f1272f2901f83cc40d81faefbba262df3"
+    },
+    {
+      "path": "cps_compute/argo.py",
+      "sha256": "3346d830bb78a0a45b0d70d23ec919c8d917d9300ac89569ae25b5b43a4f1c2a"
+    },
+    {
+      "path": "cps_compute/artifacts.py",
+      "sha256": "fd111aaf5c3f525f962e48cddcbdbaa8fe3e5b76d321206414a0cecc3189bcb3"
+    },
+    {
+      "path": "cps_compute/federation.py",
+      "sha256": "ecda3cdc5dcdc8db33aff696cd8b4e62b9c89992900069fa5ce8419a7a12c1a8"
+    },
+    {
+      "path": "cps_compute/gateway.py",
+      "sha256": "f9da0c83303f039739723f7a4d22d1d8f064c19d47a56453dfacda7f2bbff293"
+    },
+    {
+      "path": "cps_compute/hub.py",
+      "sha256": "932f988d43349096be1a92ae5213fd71658ab00bae4ccad5a88955ff26122acc"
+    },
+    {
+      "path": "cps_compute/identity.py",
+      "sha256": "6203b740fbaadc93199807e809e6eb7a970f1f7b5f343029bb8d09c6d2a65282"
+    },
+    {
+      "path": "cps_compute/internal.py",
+      "sha256": "57543812336b65eba548d936b5cfea51368ae312d03fd0e7266cf4ef98308fbb"
+    },
+    {
+      "path": "cps_compute/jobsets.py",
+      "sha256": "76d994a473188f5452e86b3b4004b8b43ce8cd28a45ff26074788a93900cd9b6"
+    },
+    {
+      "path": "cps_compute/lifecycle.py",
+      "sha256": "61a5906adb81ca8c34d2e03910855109ee3cb90db1a699e10d0e038dc1857df5"
+    },
+    {
+      "path": "cps_compute/notebooks.py",
+      "sha256": "886985d8303ce62eb210432cb202b0ee94eed124a9997a24cd2e9d4b82de66a2"
+    },
+    {
+      "path": "cps_compute/policy.py",
+      "sha256": "cba6a04b750a26ca75e7eb91d3705a400dc4e94b72e224dfbb09cb36a6142ef4"
+    },
+    {
+      "path": "cps_compute/reservations.py",
+      "sha256": "492804a580a89235a7b30a3b2a06656f4fd9e75c4ef5fb6d29e3d1cefca88f57"
+    },
+    {
+      "path": "cps_compute/runner.py",
+      "sha256": "22edcacbff289fa85799cf067a0b2ec3ddfc644a9d12b2175c0aef14070f2ef3"
+    },
+    {
+      "path": "cps_compute/runtime.py",
+      "sha256": "4d4f980af41a0061c83b80213924c21127a403928f23fd580a48a8fbb12d98c9"
+    },
+    {
+      "path": "cps_compute/sdk.py",
+      "sha256": "fd3456fba4cfdcece2567ed2aaed2539ebee80aa33bb639cafcd355e9e9cf8fa"
+    },
+    {
+      "path": "cps_compute/server.py",
+      "sha256": "6683634cdb37b3281c51c927a8e7616a769bb2d3c85df774a641f2ee3393294f"
+    },
+    {
+      "path": "cps_compute/shutdown.py",
+      "sha256": "1ef9b0ac3ba2561591341447eb8e1a08867dfcd80129984b7cdbaa6d912f55df"
+    },
+    {
+      "path": "cps_compute/storage.py",
+      "sha256": "019f152ef935660d99c4949463ed8afdc623d93cd17710c150d2f4855649d5ae"
+    },
+    {
+      "path": "cps_compute/submissions.py",
+      "sha256": "967142166f42681c06127e732e7317b25a59dcfbce6b634dfe7fc374597250fe"
+    }
+  ]
+}

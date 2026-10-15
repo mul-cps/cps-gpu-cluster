@@ -1,0 +1,123 @@
+{
+  "observedAt": "2026-10-07T05:50:51.054866+00:00",
+  "scope": "read-only parameter comparison and server-side Pod admission dry runs; no runtime test",
+  "matrix": "notebook-matrix-70471b9.json",
+  "matrixSha256": "05ccb3a4cfd0f3d4110099f09ff18265f7f2bffbc26dbb6aafbc8c2d2f796c4b",
+  "parameter": {
+    "name": "cps-admission-policy",
+    "namespace": "cps-compute",
+    "uid": "f0f501fb-7eb4-440f-b80d-1120811e8029",
+    "resourceVersion": "359544207",
+    "approvedImages": [
+      "quay.io/argoproj/argoexec:v3.7.18@sha256:8651f0d1a1050be46ef28a7362cbb7387b5f5c29ce691ebddd5d99a0bb7281a9"
+    ]
+  },
+  "candidatesCompared": 12,
+  "candidatesPresent": 0,
+  "notebookImageReadinessComplete": false,
+  "productionQualified": false,
+  "productionChanged": false,
+  "artifacts": [
+    {
+      "component": "standard-cpu",
+      "image": "ghcr.io/mul-cps/cps-jupyter-notebook@sha256:1fab06639346f69e96cda6c8f551d761cc51c47de85cdc0ec42ef31bf2ef2c7f",
+      "presentInApprovedImageParameter": false,
+      "serverDryRunAccepted": false,
+      "imageApprovalDeniedBy": "cps-compute-workload-boundary",
+      "denialResponseSha256": "b96b6b8f31109a51aedfcea3b4c379f564c362879b7f742c36f72358c045b149"
+    },
+    {
+      "component": "base-cpu",
+      "image": "ghcr.io/mul-cps/cps-jupyter-notebook-base-cpu@sha256:2c18d8bb45cc9cbcaa98a71228e7c0cf4fcdfa6e9f52ba5e768a466abffe64fe",
+      "presentInApprovedImageParameter": false,
+      "serverDryRunAccepted": false,
+      "imageApprovalDeniedBy": "cps-compute-workload-boundary",
+      "denialResponseSha256": "b96b6b8f31109a51aedfcea3b4c379f564c362879b7f742c36f72358c045b149"
+    },
+    {
+      "component": "base-gpu",
+      "image": "ghcr.io/mul-cps/cps-jupyter-notebook-base-gpu@sha256:fa3bcc50744ff5d791b816678180027f23800048e89740be7dceb8499c978182",
+      "presentInApprovedImageParameter": false,
+      "serverDryRunAccepted": false,
+      "imageApprovalDeniedBy": "cps-compute-workload-boundary",
+      "denialResponseSha256": "b96b6b8f31109a51aedfcea3b4c379f564c362879b7f742c36f72358c045b149"
+    },
+    {
+      "component": "mujoco-base-gpu",
+      "image": "ghcr.io/mul-cps/cps-jupyter-notebook-mujoco-base-gpu@sha256:83d9660953874c98b8e50e20d6dd4293428e5dbfd8449d444d39171275386968",
+      "presentInApprovedImageParameter": false,
+      "serverDryRunAccepted": false,
+      "imageApprovalDeniedBy": "cps-compute-workload-boundary",
+      "denialResponseSha256": "b96b6b8f31109a51aedfcea3b4c379f564c362879b7f742c36f72358c045b149"
+    },
+    {
+      "component": "pytorch-runtime-base",
+      "image": "ghcr.io/mul-cps/cps-jupyter-notebook@sha256:7bafcf19207bdbc900f566106e08d0ff04edc1ff5e7241c82ce0966ca6dc40cf",
+      "presentInApprovedImageParameter": false,
+      "serverDryRunAccepted": false,
+      "imageApprovalDeniedBy": "cps-compute-workload-boundary",
+      "denialResponseSha256": "b96b6b8f31109a51aedfcea3b4c379f564c362879b7f742c36f72358c045b149"
+    },
+    {
+      "component": "pytorch-code",
+      "image": "ghcr.io/mul-cps/cps-jupyter-notebook@sha256:e93bd9e1e3f0dfe88e828c806c6215443ec6c4586ec4d17c6f8cd20e0afacefe",
+      "presentInApprovedImageParameter": false,
+      "serverDryRunAccepted": false,
+      "imageApprovalDeniedBy": "cps-compute-workload-boundary",
+      "denialResponseSha256": "b96b6b8f31109a51aedfcea3b4c379f564c362879b7f742c36f72358c045b149"
+    },
+    {
+      "component": "tf-code",
+      "image": "ghcr.io/mul-cps/cps-jupyter-notebook@sha256:1e286682dc58c73d68e978b87e051694091db2411f9866c05f5e4472b9d107b4",
+      "presentInApprovedImageParameter": false,
+      "serverDryRunAccepted": false,
+      "imageApprovalDeniedBy": "cps-compute-workload-boundary",
+      "denialResponseSha256": "b96b6b8f31109a51aedfcea3b4c379f564c362879b7f742c36f72358c045b149"
+    },
+    {
+      "component": "desktop-xpra-base",
+      "image": "ghcr.io/mul-cps/cps-jupyter-notebook@sha256:d47b1a5e304a5f9a4af0989c907d25042875897ff0f68d3fe20a23a3bb9fbb4e",
+      "presentInApprovedImageParameter": false,
+      "serverDryRunAccepted": false,
+      "imageApprovalDeniedBy": "cps-compute-workload-boundary",
+      "denialResponseSha256": "b96b6b8f31109a51aedfcea3b4c379f564c362879b7f742c36f72358c045b149"
+    },
+    {
+      "component": "mujoco-xpra",
+      "image": "ghcr.io/mul-cps/cps-jupyter-notebook@sha256:7d812b828092949357a35618d53220ef3bc4f52c11b29230d8de1ae4346507c4",
+      "presentInApprovedImageParameter": false,
+      "serverDryRunAccepted": false,
+      "imageApprovalDeniedBy": "cps-compute-workload-boundary",
+      "denialResponseSha256": "b96b6b8f31109a51aedfcea3b4c379f564c362879b7f742c36f72358c045b149"
+    },
+    {
+      "component": "comfyui",
+      "image": "ghcr.io/mul-cps/cps-jupyter-notebook@sha256:241ab05db9274e74c472a0033c2b69f5ff4aa6203060b1872323827da930e4af",
+      "presentInApprovedImageParameter": false,
+      "serverDryRunAccepted": false,
+      "imageApprovalDeniedBy": "cps-compute-workload-boundary",
+      "denialResponseSha256": "b96b6b8f31109a51aedfcea3b4c379f564c362879b7f742c36f72358c045b149"
+    },
+    {
+      "component": "desktop-ros2",
+      "image": "ghcr.io/mul-cps/cps-jupyter-notebook@sha256:c4e6f2b3f9e1173a7815e122e5192d4295473e9763cf206cc37af025ac3e144b",
+      "presentInApprovedImageParameter": false,
+      "serverDryRunAccepted": false,
+      "imageApprovalDeniedBy": "cps-compute-workload-boundary",
+      "denialResponseSha256": "b96b6b8f31109a51aedfcea3b4c379f564c362879b7f742c36f72358c045b149"
+    },
+    {
+      "component": "desktop-ros2-xpra",
+      "image": "ghcr.io/mul-cps/cps-jupyter-notebook@sha256:15282af21c4256432742d5e4b7b139d80d2863606e20c963eeb600cf98cd3ea0",
+      "presentInApprovedImageParameter": false,
+      "serverDryRunAccepted": false,
+      "imageApprovalDeniedBy": "cps-compute-workload-boundary",
+      "denialResponseSha256": "b96b6b8f31109a51aedfcea3b4c379f564c362879b7f742c36f72358c045b149"
+    }
+  ],
+  "dryRunRequests": 13,
+  "approvedExecutorBaselineAccepted": true,
+  "notebookCandidateImageDenials": 12,
+  "configurationUnchangedVerified": true,
+  "podsCreated": 0
+}

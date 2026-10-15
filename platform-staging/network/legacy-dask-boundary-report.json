@@ -1,0 +1,13 @@
+{
+  "before": {
+    "status": 201,
+    "uid_present": true
+  },
+  "after": {
+    "status": 422,
+    "guard_message": true
+  },
+  "typeChecking": {},
+  "production_changed": false,
+  "persisted_workloads": 0
+}

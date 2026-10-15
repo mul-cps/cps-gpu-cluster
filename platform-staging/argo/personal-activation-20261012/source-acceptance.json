@@ -1,0 +1,164 @@
+{
+  "schemaVersion": 1,
+  "artifactKind": "source-only-personal-argo-current-pins",
+  "baseCommit": "46c4878fab85fa02737fe7c9d03accf348c4a191",
+  "preparedOnly": true,
+  "liveActionsByThisSourceTask": false,
+  "operationalHeartbeat": false,
+  "publicIngressEnabled": false,
+  "generalGroupGpuQualified": false,
+  "productionQualified": false,
+  "releasePublished": false,
+  "components": {
+    "gateway": {
+      "image": "ghcr.io/mul-cps/cps-compute@sha256:d3f744bd6b0982587be1dbaf0bae3dccd507be6b05ca9d5e7ebbbf8d8695622e",
+      "sourceCommit": "918b5a1df996bdc57cf0af2bb95fb4ed20892971",
+      "change": "Current Root-deployed artifact proxy fix; runtime credentials and owner filtering retained"
+    },
+    "privateFrontend": {
+      "image": "ghcr.io/mul-cps/e2x-course-hub@sha256:7e1509969062bc3b0855671c12f181548494cb6095669b949e0426a5e74c2b2e",
+      "sourceCommit": "0e4f433d19c4b6ca1f0e26ab5293ab34a064eb40",
+      "foundationCommit": "fb6262f7d5d4799c9dca0a2e5d868e05978a4321",
+      "change": "Current Root-deployed artifact proxy fix, preserving generic foreign/absent failures",
+      "privacyFoundationCommit": "4ccb7f53e93401e591087d4c3b79ed0a6640c64e"
+    },
+    "consoles": {
+      "image": "ghcr.io/mul-cps/e2x-course-hub@sha256:0b48372b05346adfe3e2c018bcfb75c4914b111f44ac59be36f1bcd14f6cdd5f",
+      "sourceCommit": "e36805560e5f4d07626fd616e9a3b73d64901627",
+      "change": "Approved workspace context for grant profile discovery"
+    }
+  },
+  "rootAcceptedPrivateFrontendChecks": {
+    "independentlyRerunByThisSourceTask": false,
+    "authenticationFixture": "Root-signed-cookie-with-real-Hub-user-token",
+    "humanBrowserOAuthTested": false,
+    "userInfoStatus": 200,
+    "emptyOwnedWorkflowList": {
+      "status": 200,
+      "items": []
+    },
+    "injectedAuthorizationAndForeignHubHeader": {
+      "status": 200,
+      "identityUnchanged": true
+    },
+    "bearerOnlyRequestStatus": 302,
+    "missingWorkflowDetailStatus": 404,
+    "missingWorkflowLogStatus": 404,
+    "nonemptyOwnedWorkflowAccessTested": false,
+    "foreignWorkflowLiveAccessTested": false,
+    "successfulAndFailedOwnedArtifactsTested": false,
+    "publicPersonalArgoRouteTested": false,
+    "readyComponents": [
+      "cps-argo-ui",
+      "cit-argo-ui",
+      "cps-admin",
+      "cit-admin"
+    ],
+    "historicalSourcePackageCommit": "fe59e035c151fcc919be1ec8c31d6e906ea60109",
+    "historicalImages": {
+      "gateway": "ghcr.io/mul-cps/cps-compute@sha256:72a4bed952fb399f936803d69cf93eda859f28c5f4b5faec3393d9bfb2382834",
+      "privateFrontend": "ghcr.io/mul-cps/e2x-course-hub@sha256:44c52253f0e486522f59417e1ee28c90e442741fe07ba37abc80cc5b57a3701d"
+    }
+  },
+  "sourceVerification": {
+    "preparationTestsPassed": 8,
+    "personalArgoChartTestsPassed": 12,
+    "redStaleFrontendPinObserved": true,
+    "capturedGatewayImagePreserved": true,
+    "casAndUnownedRuntimePreservationTested": true,
+    "privateOutputPermissionsTested": true,
+    "missingFrontendImageStillRejected": true,
+    "noPublicIngressRendered": true
+  },
+  "hardwareEvidence": {
+    "commit": "079b2b60e7a5fd88c305febada90afec152c81f8",
+    "path": "platform-staging/gpu/native-group-pilot/qualification/limited-group-20261012",
+    "measurementUnchanged": true,
+    "hardwareRerunByThisSourceTask": false,
+    "scope": [
+      "cps:native-group-b:interactive-shared-5",
+      "cit:native-group-a:interactive-shared-10"
+    ]
+  },
+  "remainingGates": [
+    "Human browser OAuth and public personal Argo routing",
+    "Human CIT and RTC collaboration acceptance",
+    "Fresh cross-Pod import denials and same-person concurrent cross-Hub starts",
+    "General GPU rollout, wider fleet and complete platform release acceptance"
+  ],
+  "preparedPackageCommit": "fe59e035c151fcc919be1ec8c31d6e906ea60109",
+  "currentDeploymentReceipt": {
+    "path": "current-deployment-receipt.json",
+    "sha256": "aa5becb59e72661abf57e7397f95704f27d908de08fca465e187e01cf4541dd1",
+    "independentlyRerunByThisSourceTask": false
+  },
+  "currentPrivatePartialAcceptance": {
+    "path": "current-private-partial-acceptance.json",
+    "sha256": "7c0ba37641b1d93820ed2e2489f186a3a08a970b653ec342d9bf3ab6c0226e8d",
+    "artifactGetStatuses": [
+      502,
+      502
+    ],
+    "artifactHeadStatuses": [
+      200,
+      200
+    ],
+    "logStatuses": [
+      503,
+      503
+    ],
+    "artifactBytesAccepted": false,
+    "logDeliveryAccepted": false,
+    "humanBrowserOAuthTested": false,
+    "publicPersonalArgoRouteTested": false
+  },
+  "currentPolicy": {
+    "version": "0.1.2",
+    "policyHash": "sha256:d48f6553ed036c2e7adcc97417623fe0308be93ad13b20f246047ada118511b0",
+    "compiledPolicyPath": "../../gpu/native-group-pilot/qualification/cpu-runner-policy-20261012/compiled/policy.json",
+    "cpuRunnerImage": "ghcr.io/mul-cps/cps-jupyter-notebook@sha256:1fab06639346f69e96cda6c8f551d761cc51c47de85cdc0ec42ef31bf2ef2c7f",
+    "historicalCustodyReceipt": "cpu-policy-historical-custody-receipt.json",
+    "nodeConfigMap": "cps-native-node-cpu-v2-d48f6553ed03-h32",
+    "originalHistoryPreserved": 28,
+    "actualTerminalHistoryAdded": 4,
+    "nativeRuntimeSourceUnchanged": true,
+    "originalHardwareEvidenceUnchanged": true,
+    "widerGpuScopeEnabled": false
+  },
+  "currentPrivateOwnedAcceptance": {
+    "path": "current-private-owned-acceptance.json",
+    "sha256": "c1e406d789351c116a20d4a11d78940089a419b09ea0eaf5819ecf69d7f92be7",
+    "artifactGetStatuses": [
+      200,
+      200
+    ],
+    "artifactHeadStatuses": [
+      200,
+      200
+    ],
+    "logStatuses": [
+      200,
+      200
+    ],
+    "artifactBytesAccepted": true,
+    "logDeliveryAccepted": true,
+    "foreignExcludedFromList": true,
+    "foreignAndMissingFailuresEqual": true,
+    "humanBrowserOAuthTested": false,
+    "publicPersonalArgoRouteTested": false
+  },
+  "backendReaderRbacSource": {
+    "credentialGrantCommit": "9e4f24c994c13e36e3a3755fa8e96df6aa5651d8",
+    "trustedCaCommit": "c8335b4bf20f531b6c2fb59f4dd77c77dd524331",
+    "namespace": "cps-workflows",
+    "resource": "secrets",
+    "resourceNames": [
+      "cps-artifact-credentials",
+      "cps-artifact-ca"
+    ],
+    "verbs": [
+      "get"
+    ],
+    "browserCredentialsProvided": false
+  }
+}

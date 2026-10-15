@@ -1,0 +1,29 @@
+{{- if .Values.legacyDaskBoundary.enabled }}
+# Independent switch: transition the legacy launcher before promoting this guard.
+apiVersion: admissionregistration.k8s.io/v1
+kind: ValidatingAdmissionPolicy
+metadata:
+  name: cps-compute-legacy-dask-boundary
+spec:
+  failurePolicy: Fail
+  matchConstraints:
+    resourceRules:
+      - apiGroups: [kubernetes.dask.org]
+        apiVersions: ['*']
+        operations: [CREATE, UPDATE, DELETE]
+        resources: [daskclusters, daskworkergroups, daskworkergroups/scale, daskjobs, daskautoscalers]
+  validations:
+    - expression: >-
+        !(request.userInfo.username in [
+          'system:serviceaccount:jupyterhub:dask-sa',
+          'system:serviceaccount:cit-jhub:dask-sa'])
+      message: Notebook Dask credentials cannot mutate cluster workloads; use the policy-controlled compute submission service
+---
+apiVersion: admissionregistration.k8s.io/v1
+kind: ValidatingAdmissionPolicyBinding
+metadata:
+  name: cps-compute-legacy-dask-boundary
+spec:
+  policyName: cps-compute-legacy-dask-boundary
+  validationActions: [Deny]
+{{- end }}

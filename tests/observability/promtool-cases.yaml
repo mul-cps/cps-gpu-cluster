@@ -1,0 +1,67 @@
+rule_files: [rules.yaml]
+evaluation_interval: 30s
+tests:
+  - name: Fresh spawn histogram without observations is unavailable
+    interval: 30s
+    input_series:
+      - series: 'jupyterhub_server_spawn_duration_seconds_bucket{namespace="jupyterhub",le="100"}'
+        values: '0+0x6'
+      - series: 'jupyterhub_server_spawn_duration_seconds_bucket{namespace="jupyterhub",le="+Inf"}'
+        values: '0+0x6'
+    promql_expr_test:
+      - expr: cps:hub_spawn_p95_seconds
+        eval_time: 3m
+        exp_samples: []
+  - name: Observed spawn latency remains available
+    interval: 30s
+    input_series:
+      - series: 'jupyterhub_server_spawn_duration_seconds_bucket{namespace="jupyterhub",le="100"}'
+        values: '0+1x6'
+      - series: 'jupyterhub_server_spawn_duration_seconds_bucket{namespace="jupyterhub",le="+Inf"}'
+        values: '0+1x6'
+    promql_expr_test:
+      - expr: cps:hub_spawn_p95_seconds
+        eval_time: 3m
+        exp_samples:
+          - labels: 'cps:hub_spawn_p95_seconds{namespace="jupyterhub"}'
+            value: 95
+  - name: Stale VRAM must disappear from recording rather than report free memory
+    interval: 30s
+    input_series:
+      - series: 'DCGM_FI_DEV_FB_FREE{UUID="gpu1",Hostname="node1"}'
+        values: '1024 _ _ _ _ _ _'
+    promql_expr_test:
+      - expr: cps:gpu_unused_vram_mib
+        eval_time: 1m
+        exp_samples:
+          - labels: 'cps:gpu_unused_vram_mib{UUID="gpu1",Hostname="node1"}'
+            value: 1024
+      - expr: cps:gpu_unused_vram_mib
+        eval_time: 3m
+        exp_samples: []
+  - name: Duplicate healthy CPS targets must not hide missing CIT
+    interval: 30s
+    input_series:
+      - series: 'up{namespace="jupyterhub",service="hub",instance="a"}'
+        values: '1+0x16'
+      - series: 'up{namespace="jupyterhub",service="hub",instance="b"}'
+        values: '1+0x16'
+    alert_rule_test:
+      - eval_time: 8m
+        alertname: ComputeHubScrapingIncomplete
+        exp_alerts:
+          - exp_labels: {namespace: cit-jhub, service: hub, severity: warning}
+            exp_annotations:
+              summary: Both CPS and CIT Hub metrics must be available
+              description: Missing metrics are unknown; check each Hub ServiceMonitor, auth and NetworkPolicy.
+  - name: Both healthy Hubs do not alert
+    interval: 30s
+    input_series:
+      - series: 'up{namespace="jupyterhub",service="hub"}'
+        values: '1+0x16'
+      - series: 'up{namespace="cit-jhub",service="hub"}'
+        values: '1+0x16'
+    alert_rule_test:
+      - eval_time: 8m
+        alertname: ComputeHubScrapingIncomplete
+        exp_alerts: []

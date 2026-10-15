@@ -1,0 +1,51 @@
+{
+  "observedAt": "2026-10-08T09:25:39.450088+00:00",
+  "scope": "scratch-startup-supporting-not-production",
+  "namespace": "cps-personal-argo-qualification-20261008",
+  "frontendSource": "f5c005c",
+  "sdkSource": "40b9525",
+  "requestedImage": "ghcr.io/mul-cps/e2x-course-hub:qualification-reviewed-alias-f5c005c@sha256:735f891ba008c58a9d3f4d324c22893d13b094dabe7ea39f80c776ffb6c89767",
+  "actualImageID": "ghcr.io/mul-cps/e2x-course-hub@sha256:735f891ba008c58a9d3f4d324c22893d13b094dabe7ea39f80c776ffb6c89767",
+  "ready": true,
+  "configuration": {
+    "source": "cps",
+    "clientId": "service-cps-argo-ui",
+    "publicOrigin": "https://jupyterhub.dshl.unileoben.ac.at",
+    "nativeArgoUrl": "https://jupyterhub.dshl.unileoben.ac.at/argo",
+    "caParsingPassed": true
+  },
+  "unauthenticatedFailClosed": [
+    {
+      "path": "/argo/",
+      "status": 302,
+      "authorizationUrlWithoutQuery": "https://jupyterhub.dshl.unileoben.ac.at/hub/api/oauth2/authorize",
+      "clientId": "service-cps-argo-ui",
+      "redirectUri": "https://jupyterhub.dshl.unileoben.ac.at/argo/oauth_callback",
+      "queryKeys": [
+        "client_id",
+        "code_challenge",
+        "code_challenge_method",
+        "redirect_uri",
+        "response_type",
+        "state"
+      ]
+    },
+    {
+      "path": "/argo/api/v1/workflows/cps-workflows",
+      "status": 302,
+      "authorizationUrlWithoutQuery": "https://jupyterhub.dshl.unileoben.ac.at/hub/api/oauth2/authorize",
+      "clientId": "service-cps-argo-ui",
+      "redirectUri": "https://jupyterhub.dshl.unileoben.ac.at/argo/oauth_callback",
+      "queryKeys": [
+        "client_id",
+        "code_challenge",
+        "code_challenge_method",
+        "redirect_uri",
+        "response_type",
+        "state"
+      ]
+    }
+  ],
+  "hubOAuthFlowQualified": false,
+  "ownerPrivacyQualified": false
+}

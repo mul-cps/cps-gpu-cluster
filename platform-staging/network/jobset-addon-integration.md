@@ -1,0 +1,13 @@
+# Distributed workload API and addon integration candidate
+
+Status: source, packaged addon and controlled backend fixtures passed; no production promotion or browser rendering qualification.
+
+The compute qualification branch now lists canonically owned JobSets in bounded pages and exposes their logs. My Workloads adds a separate Distributed workloads section with logs, authorized termination and next-page navigation. Missing or disabled distributed runtime is reported without hiding ordinary workflow controls. No JobSet artifact button is offered. Malformed or encoded workload identifiers cannot become action routes. The prebuilt addon was rebuilt from the same source and checked byte-for-byte against the Python wheel's embedded extension.
+
+The admin qualification branch explicitly allowlists JobSet listing, inspection and logs by GET, plus submission/termination by POST. It retains the actual visitor token and trusted console Hub selection. Two-visitor proxy tests verified token separation despite spoofed browser Authorization headers, and denied internal, encoded, Pod and unsupported artifact paths. Submission still passes central gateway policy; these routes do not grant Kubernetes privileges or enable unqualified profiles.
+
+A real CPU fixture created two JobSets for two synthetic HTTP identities in a disposable namespace. Real Kubernetes selectors and local ownership checks returned only each identity's own run. Real JobSet-to-Job-to-Pod UID verification and log-marker retrieval passed, while a separate standalone Job with the same discovery label was filtered. Anonymous/other-person log calls failed with 401/403. This source gateway ran locally using operator-owned Kubernetes adapters, not the production Hub OAuth bridge. The namespace and all its resources were deleted and deletion was verified.
+
+Qualification: 267 source tests, 267 installed-wheel tests, seven addon helper tests, TypeScript/prebuilt extension compilation, and 58 admin backend tests passed. Exact source revisions, wheel checksum and live fixture scope are recorded in `jobset-addon-integration-report.json`. Existing unrelated dirty files in shared/qualification trees were preserved.
+
+Next promotion requirements remain: publish compatible immutable gateway/notebook/admin images, qualify the actual authenticated Hub bridge and rendered addon, complete launcher/Pod isolation and identity/grant gates, and pass GPU qualification before enabling those profiles. Existing production images and flags are unchanged. API/application documentation remains in the compute/admin repositories; this file records deployment qualification only.

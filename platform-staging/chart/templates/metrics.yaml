@@ -1,0 +1,50 @@
+{{- if and .Values.enabled .Values.metrics.enabled }}
+{{- range $source := list "cps" "cit" }}
+{{- $credential := index $.Values.metrics.credentials $source }}
+---
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: compute-metrics-{{ $source }}
+  namespace: {{ $.Values.namespace }}
+  labels: {release: rancher-monitoring}
+spec:
+  selector:
+    matchLabels: {app: compute-gateway}
+  namespaceSelector:
+    matchNames: [{{ $.Values.namespace | quote }}]
+  endpoints:
+    - port: http
+      scheme: https
+      path: /internal/v1/metrics
+      interval: 30s
+      authorization:
+        type: Bearer
+        credentials:
+          name: {{ required "metrics credential Secret name required" $credential.name | quote }}
+          key: {{ required "metrics credential Secret key required" $credential.key | quote }}
+      tlsConfig:
+        ca:
+          configMap: {name: {{ $.Values.gateway.caConfigMapRef | quote }}, key: ca.crt}
+        serverName: compute-gateway.{{ $.Values.namespace }}.svc.cluster.local
+        insecureSkipVerify: false
+{{- end }}
+---
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: compute-metrics-ingress
+  namespace: {{ .Values.namespace }}
+spec:
+  podSelector:
+    matchLabels: {app: compute-gateway}
+  policyTypes: [Ingress]
+  ingress:
+    - from:
+        - namespaceSelector:
+            matchLabels:
+              kubernetes.io/metadata.name: {{ required "Prometheus namespace required" .Values.metrics.prometheusNamespace | quote }}
+          podSelector:
+            matchLabels: {app.kubernetes.io/name: prometheus}
+      ports: [{protocol: TCP, port: {{ .Values.gateway.port }}}]
+{{- end }}

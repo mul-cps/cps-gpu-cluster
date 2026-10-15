@@ -1,0 +1,40 @@
+{
+  "qualified": false,
+  "scope": "base GPU image compatibility only; GPU isolation and full release matrix incomplete",
+  "digest": "sha256:5278b7ee0230491da8789992d975ac65e52c07f6f255d055d2fd44527c4e2708",
+  "linuxManifest": "sha256:36189d865b17cfc9c2fea83fd86ccbef72fa309effea6922f8e3281c8986a063",
+  "user": "1000",
+  "predicateTypes": [
+    "https://spdx.dev/Document",
+    "https://slsa.dev/provenance/v1"
+  ],
+  "offlinePackageInstallation": true,
+  "pipCheckPassed": true,
+  "releaseRunnerTestsPassed": 14,
+  "variant": "base-gpu",
+  "computeSourceRevision": "6bb6a57bc8d8426e281c0654ac8eedd1668ae600",
+  "wheelSha256": "05d82345b0f65a3a94c715c68788f52d14c545cba41a5e622249870e0e848667",
+  "installedHashes": {
+    "modulesMatched": 21,
+    "addonAssetsMatched": 5,
+    "uid": 1000
+  },
+  "runtime": {
+    "uid": 1000,
+    "python": "3.13.14",
+    "compute": "0.1.0",
+    "rtc": "4.4.1",
+    "lab": "4.5.7",
+    "freshKernelSuccess": true,
+    "typedParameters": true,
+    "immutableInput": true,
+    "failedExecutedNotebookRetained": true,
+    "qualified": false,
+    "scope": "base GPU image runtime only; no GPU isolation or Hub browser qualification"
+  },
+  "published": true,
+  "deployed": false,
+  "gpuExecution": false,
+  "image": "ghcr.io/mul-cps/cps-jupyter-notebook-base-gpu:qualification-storage-resources-6bb6a57@sha256:5278b7ee0230491da8789992d975ac65e52c07f6f255d055d2fd44527c4e2708",
+  "remoteIndexAndChildrenVerified": true
+}

@@ -1,0 +1,57 @@
+{
+  "cases": [
+    {
+      "allow": true,
+      "name": "binding-reviewed-storage-unavailable",
+      "object": {
+        "apiVersion": "v1",
+        "kind": "Binding",
+        "metadata": {
+          "name": "offline-argo-5-declared-i1",
+          "namespace": "cps-dynamic-admission-live-20261008",
+          "uid": "11111111-1111-1111-1111-111111111111"
+        },
+        "target": {
+          "kind": "Node",
+          "name": "offline-node"
+        }
+      }
+    },
+    {
+      "allow": false,
+      "name": "binding-wrong-node-deny",
+      "object": {
+        "apiVersion": "v1",
+        "kind": "Binding",
+        "metadata": {
+          "name": "offline-argo-5-declared-i1",
+          "namespace": "cps-dynamic-admission-live-20261008",
+          "uid": "11111111-1111-1111-1111-111111111111"
+        },
+        "target": {
+          "kind": "Node",
+          "name": "unreviewed-node"
+        }
+      }
+    },
+    {
+      "allow": false,
+      "name": "binding-wrong-pod-uid-deny",
+      "object": {
+        "apiVersion": "v1",
+        "kind": "Binding",
+        "metadata": {
+          "name": "offline-argo-5-declared-i1",
+          "namespace": "cps-dynamic-admission-live-20261008",
+          "uid": "aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa"
+        },
+        "target": {
+          "kind": "Node",
+          "name": "offline-node"
+        }
+      }
+    }
+  ],
+  "finish": true,
+  "name": "binding-storage-boundary"
+}

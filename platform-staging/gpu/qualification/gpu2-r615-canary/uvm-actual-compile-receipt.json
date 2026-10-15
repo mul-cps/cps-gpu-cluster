@@ -1,0 +1,40 @@
+{
+  "schemaVersion": 1,
+  "experimental": true,
+  "compileOnly": true,
+  "hardwareQualified": false,
+  "source": "/usr/src/nvidia-615.71.09",
+  "output": "/var/tmp/cps-r615-uvm-guard-build-20261008",
+  "sourceInventory": {
+    "bytes": 32699607,
+    "files": 457
+  },
+  "sourceHashes": {
+    "nvidia-uvm/uvm_va_range.c": "cf8d21c77f7db22f11b1a9c80f4197644d736d145afc2ea01bf057f83faaf8af",
+    "nvidia-uvm/uvm.c": "81870dad066249991b39e2f1e70ddf0a48e4803eb48f487d0de7708c835a621a",
+    "common/inc/nvstatuscodes.h": "4a9a39b51862d21cfa446414135386616a4a4914dd34dc83f98099295fea7b56",
+    "Makefile": "eec07e6dfc0d204af6f8a7c0dfc4af70a037bf92d61ec2b03166a242bf7536ec",
+    "nvidia/nv-kernel.o_binary": "cf9b219820207251c18b166f26f14d0ad41a25e4e337954905a114dbd0986a21"
+  },
+  "command": [
+    "make",
+    "-j2",
+    "NV_KERNEL_MODULES=nvidia nvidia-uvm",
+    "KERNEL_UNAME=6.8.0-134-generic",
+    "SYSSRC=/usr/src/linux-headers-6.8.0-134-generic",
+    "modules"
+  ],
+  "originalUvmSha256": "05c2e1319dacdca062bfddc4368be02b66307e0cda31abcd7d28fb37eeefff01",
+  "originalCoreSha256": "94df0cd9b062ef42091a4f2639438b3596c6a49bcb1b56640ac6ef0f792f2020",
+  "originalUvmVersionsSha256": "0054b45bf40416a31ae6e77554935731d29b0235c5a49452590408ebb0f5184a",
+  "originalVermagic": "6.8.0-134-generic SMP preempt mod_unload modversions",
+  "coreCandidateMustNeverBeInstalledOrLoaded": true,
+  "patchedSourceSha256": "e49447593565bef4ff899ab65283169387a9992f941598a978bb939aca6a2871",
+  "compileExitCode": 0,
+  "candidateUvmPath": "/var/tmp/cps-r615-uvm-guard-build-20261008/source/nvidia-uvm.ko",
+  "candidateUvmSha256": "b2ae67722e9e21a70c319aeed2184f5b2d1f23b8e32dea00816cfd5cd2c3ee61",
+  "candidateVermagic": "6.8.0-134-generic SMP preempt mod_unload modversions",
+  "candidateVersion": "615.71.09",
+  "candidateUvmVersionsSha256": "0054b45bf40416a31ae6e77554935731d29b0235c5a49452590408ebb0f5184a",
+  "crcAndVermagicMatch": true
+}

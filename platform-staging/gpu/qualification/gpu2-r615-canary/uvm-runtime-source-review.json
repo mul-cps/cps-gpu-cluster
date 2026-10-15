@@ -1,0 +1,16 @@
+{
+  "observedAt": "2026-10-08T15:04:10.382019+00:00",
+  "sourceFilesSHA256": {
+    "guard.py": "70e6719709c8f5e5eb33a02a7323473e48dede3e4c74021b8992ea8ee0605114",
+    "build_candidate.py": "5b4fba28c3cf25744b2c3453ad8ad236472de34c088ad2aedf0393873ef5cdee",
+    "runtime_probe.py": "52312f3d87b12523291ef5128f5b92640662876557448b4eb1696c4038e7b287",
+    "render_fixture.py": "8cbeeaf49f86831c171a4244ddd656d13d2ce1da50b10a2b6ea618c20d244ef7",
+    "test_runtime_probe.py": "0712991262f34b60e7048e3a0fd51bb0c49ae7433a40b9b9c44523f4bc689001",
+    "test_build_candidate.py": "404234fae2d7676d20cd00e4b2ab93ab74ac02e1d5b3170fe75de40f75f05801"
+  },
+  "independentCpuTestsPassed": 13,
+  "rawElfUvmSectionHexSHA256": "0054b45bf40416a31ae6e77554935731d29b0235c5a49452590408ebb0f5184a",
+  "runtimeSourceReviewed": true,
+  "actualCudaOutcomesPending": true,
+  "originalUvmRestorePending": true
+}

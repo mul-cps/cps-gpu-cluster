@@ -1,0 +1,70 @@
+{
+  "variant": "mujoco-base-gpu",
+  "computeSourceRevision": "70471b9793f21a87d74ac7a673f871dfa9620101",
+  "wheelSha256": "86a0fa74cb6e15dd408fcfe36945ca1f614af14ff3bda555f49aaf4e85408d37",
+  "parentConfigId": "895aa9c35745b6d5444e8a134b9cb783f62a6cd428a149cebac1c079cd92ac52",
+  "imageConfigId": "c3a7f01b3ba8b0201579bf331be9916d45e84884e932ad902f0bf24da8bb513a",
+  "image": "ghcr.io/mul-cps/cps-jupyter-notebook-mujoco-base-gpu@sha256:83d9660953874c98b8e50e20d6dd4293428e5dbfd8449d444d39171275386968",
+  "published": true,
+  "remoteManifestAndConfigVerified": true,
+  "installedHashes": {
+    "modulesMatched": 21,
+    "addonAssetsMatched": 5,
+    "uid": 1000
+  },
+  "runtime": {
+    "uid": 1000,
+    "python": "3.13.12",
+    "compute": "0.1.0",
+    "rtc": "4.4.1",
+    "lab": "4.5.7",
+    "freshKernelSuccess": true,
+    "typedParameters": true,
+    "immutableInput": true,
+    "failedExecutedNotebookRetained": true,
+    "qualified": false,
+    "scope": "CPU notebook execution only; GPU and variant-specific application runtime not qualified"
+  },
+  "runtimeArtifacts": {
+    "failure-input.ipynb": "9e20a044e675d6c31f82f17e69f7751fde6a83084f127a96df3144c918750302",
+    "failure.ipynb": "d86b1e4a65cc40635bad88e6038592917edcad391b0232ed8aa5b363528ac75a",
+    "input.ipynb": "6219885305f1ac934e46556ba5fe7484fa72e2a818d456e20e19af69fd622390",
+    "report.json": "936860bae1914d0bfc0960b61ba49a5cf5c98ff44e7d7161123871db0cf3f553",
+    "success.ipynb": "c11efd9e418b0c2b33af3246ed4a3bb66ecc42b01e1a4254578c879dc3b02971"
+  },
+  "parentStartupConfigurationPreserved": true,
+  "pipCheckPassed": true,
+  "qualified": false,
+  "deployed": false,
+  "limitations": [
+    "Layered qualification build; common-source release tag and full matrix remain open.",
+    "No GPU devices mounted; hardware isolation and variant-specific GPU behavior unqualified."
+  ],
+  "sbom": {
+    "variant": "mujoco-base-gpu",
+    "subject": "ghcr.io/mul-cps/cps-jupyter-notebook-mujoco-base-gpu@sha256:83d9660953874c98b8e50e20d6dd4293428e5dbfd8449d444d39171275386968",
+    "sourceImageId": "sha256:c3a7f01b3ba8b0201579bf331be9916d45e84884e932ad902f0bf24da8bb513a",
+    "packages": 817,
+    "files": 43215,
+    "requiredPackagesVerified": [
+      "cps-compute",
+      "hera-workflows",
+      "jupyter-collaboration",
+      "jupyterlab",
+      "papermill"
+    ],
+    "checksums": {
+      "sbom.spdx.json": "3fc2e4da6566552123d144cdc59905484f0bb8041b49cb21686b4845c28acda0",
+      "sbom.syft.json": "d2a9c17ab9f77cbbc4bb56429a5c9fc12914f7278325e9a9b4b2c5b329210915"
+    },
+    "attachment": "ghcr.io/mul-cps/cps-jupyter-notebook-mujoco-base-gpu@sha256:df97c53daf7fce94064a5a0692915e4e0fc7439693196900711ba0a33c34d992",
+    "subjectVerified": true,
+    "downloadHashesMatched": true,
+    "scannerSha256": "dbf75864e7a7ff9e1fbf00552c31483f693188632a9f68f343cd7653dac513d6",
+    "productionQualified": false,
+    "createdAt": "2026-10-07T04:48:05.666713+00:00",
+    "fileCoverage": "package-owned files (Syft metadata selection owned-by-package); not every image file",
+    "variantBoundary": "Graphics/runtime base; Python mujoco installation belongs to Dockerfile.mujoco-xpra, not this base"
+  },
+  "sbomPublished": true
+}

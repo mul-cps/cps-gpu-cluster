@@ -1,0 +1,33 @@
+# Candidate only: restart the standalone MPS daemon in a qualified GPU maintenance
+# window. This ConfigMap is never used by the physical GPU device plugin.
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: cps-mps-variable-profiles
+  namespace: gpu-operator
+data:
+  mps-sharing: |
+    version: v1
+    sharing:
+      mps:
+        failRequestsGreaterThanOne: true
+        resources:
+          - name: nvidia.com/gpu
+            # The daemon ceiling must cover the whole device. Per-client
+            # trusted profile settings plus HAMi enforce 5/10/20 GiB budgets.
+            # This is NOT a partition count or Kubernetes resource replica.
+            replicas: 1
+---
+# Strategic merge patch for the existing standalone DaemonSet, not a new daemon.
+apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+  name: mps-control-daemon-standalone
+  namespace: gpu-operator
+spec:
+  template:
+    spec:
+      volumes:
+        - name: device-plugin-config
+          configMap:
+            name: cps-mps-variable-profiles

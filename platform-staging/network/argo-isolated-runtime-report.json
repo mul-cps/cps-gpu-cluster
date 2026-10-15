@@ -1,0 +1,66 @@
+{
+  "namespace": "cps-argo-qualification-b8c97e94",
+  "productionChanged": false,
+  "runtimeQualified": true,
+  "cases": [
+    {
+      "name": "candidate-runner",
+      "accepted": true
+    },
+    {
+      "name": "mutable-image",
+      "accepted": false
+    },
+    {
+      "name": "host-network",
+      "accepted": false
+    },
+    {
+      "name": "automatic-token",
+      "accepted": false
+    },
+    {
+      "name": "secret-env",
+      "accepted": false
+    }
+  ],
+  "enforcementReadinessProbeDenied": true,
+  "productionRunnerRemainsDenied": true,
+  "workflow": {
+    "uid": "bd4327f8-11e0-42ac-b487-3a060e7462a9",
+    "phase": "Succeeded",
+    "message": null
+  },
+  "generatedPods": [
+    {
+      "uid": "8b881e1e-1800-4b43-9587-5f8f723748eb",
+      "phase": "Succeeded",
+      "containers": [
+        {
+          "name": "wait",
+          "image": "quay.io/argoproj/argoexec:v3.7.18@sha256:8651f0d1a1050be46ef28a7362cbb7387b5f5c29ce691ebddd5d99a0bb7281a9"
+        },
+        {
+          "name": "main",
+          "image": "ghcr.io/mul-cps/cps-jupyter-notebook:qualification-storage-resources-6bb6a57-cpu@sha256:2eebb5496efc59badc74dda10d9149dc59c6e1794cfb9c171d5edf81ca7bdfee"
+        }
+      ]
+    }
+  ],
+  "cleanupVerified": true,
+  "notebookChecks": {
+    "outputsStripped": true,
+    "immutableInput": true,
+    "selectedImport": true,
+    "typedParameters": true,
+    "freshKernel": true,
+    "executedHash": "8904bfb52a5427f7a744ddd0e824e207dcc5ee04506b81796d6cb6c315c269d6"
+  },
+  "reportCollectionCorrection": "Argo appends a log trailer; notebook JSON was recovered from its marked result line after cleanup, without rerunning the successful workflow",
+  "scope": "Real controller-generated Argo CPU notebook execution with local immutable snapshot, isolated admission and executor S3 log archival; no gateway HTTP submission or S3 notebook input/output lifecycle",
+  "temporaryRelayIngressRemoved": true,
+  "launcherRegressionTests": {
+    "passed": 267,
+    "environmentSplit": "262 general tests plus 5 Hub tests in Hub-equipped environment"
+  }
+}

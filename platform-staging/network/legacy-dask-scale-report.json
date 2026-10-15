@@ -1,0 +1,76 @@
+{
+  "before": {
+    "cps": {
+      "identity": "system:serviceaccount:cps-dask-scale-01d36fd6:dask-cps-sa",
+      "scale": {
+        "PATCH": {
+          "status": 200,
+          "guardMessage": false
+        },
+        "PUT": {
+          "status": 200,
+          "guardMessage": false
+        }
+      }
+    },
+    "cit": {
+      "identity": "system:serviceaccount:cps-dask-scale-01d36fd6:dask-cit-sa",
+      "scale": {
+        "PATCH": {
+          "status": 200,
+          "guardMessage": false
+        },
+        "PUT": {
+          "status": 200,
+          "guardMessage": false
+        }
+      }
+    }
+  },
+  "after": {
+    "cps": {
+      "identity": "system:serviceaccount:cps-dask-scale-01d36fd6:dask-cps-sa",
+      "scale": {
+        "PATCH": {
+          "status": 422,
+          "guardMessage": true
+        },
+        "PUT": {
+          "status": 422,
+          "guardMessage": true
+        }
+      }
+    },
+    "cit": {
+      "identity": "system:serviceaccount:cps-dask-scale-01d36fd6:dask-cit-sa",
+      "scale": {
+        "PATCH": {
+          "status": 422,
+          "guardMessage": true
+        },
+        "PUT": {
+          "status": 422,
+          "guardMessage": true
+        }
+      }
+    }
+  },
+  "operatorScaleDryRunAllowed": true,
+  "idleWorkerGroupSpecPreserved": true,
+  "executionPodsCreated": 0,
+  "namespace": "cps-dask-scale-01d36fd6",
+  "policyName": "cps-dask-scale-01d36fd6",
+  "productionChanged": false,
+  "qualified": false,
+  "typeChecking": {},
+  "limitations": [
+    "Namespace-scoped operator fixture; no production transition, actual operator scaling/reconciliation, alternative principals or full privacy qualification."
+  ],
+  "observedAt": "2026-10-07T03:26:02.609349+00:00",
+  "fixtureSha256": "9d596b2da62f615283ed76f157d959678ccfbe60ea253ed9ed260c85d6b63079",
+  "cleanupVerified": true,
+  "servedScalePaths": {
+    "specReplicasPath": ".spec.worker.replicas",
+    "statusReplicasPath": ".status.replicas"
+  }
+}

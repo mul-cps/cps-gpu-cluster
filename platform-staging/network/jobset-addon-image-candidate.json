@@ -1,0 +1,95 @@
+{
+  "applicationCommit": "ecca9028cf11c263f1753c4d01200ca753fcfce8",
+  "compatibleAdminCommit": "cdbc1d7ea848f1d6d791f6bc3aeeba807b7d95b9",
+  "image": "ghcr.io/mul-cps/cps-compute:qualification-addon-ecca902@sha256:f0b96b871d2615d0873ac3437a9f3c65138aaf7a4a3418dc16b77835d538c6e3",
+  "wheelSha256": "31c1b5307236a3a56feb0945f31e268ac71e750fee66441d9a1a2644c6e97369",
+  "sourceTestsPassed": 267,
+  "installedWheelTestsPassed": 267,
+  "addonTestsPassed": 7,
+  "imageVerification": {
+    "uid": 10001,
+    "source_modules_matched": 21,
+    "addon_assets_matched": 5,
+    "fastapi": "0.142.2",
+    "starlette": "1.3.1"
+  },
+  "imagePipCheck": "passed",
+  "attestations": {
+    "platformManifest": "sha256:d1914a6f378102c41f3aa488a9f70fb90852c304e543c5204a67eac4f12aab07",
+    "attestationManifest": "sha256:75cd93615f445dc8cdf749f3f55192c84f1c806254af237399de8b5f9ca68824",
+    "predicates": [
+      "https://spdx.dev/Document",
+      "https://slsa.dev/provenance/v1"
+    ],
+    "subjectsVerified": true
+  },
+  "remoteIndexAndChildDigestsVerified": true,
+  "productionDeployed": false,
+  "qualificationPending": [
+    "Matching admin and notebook immutable images",
+    "Authenticated CPS/CIT Hub bridge and rendered addon",
+    "Released gateway authenticated JobSet/log HTTP integration",
+    "Production identity/grant and Pod-isolation transition",
+    "GPU qualification and remaining platform release gates"
+  ],
+  "serviceAccountPermissions": {
+    "principal": "system:serviceaccount:cps-compute:cps-compute-controller",
+    "uid": 10001,
+    "image_api_methods_present": true,
+    "access_reviews": [
+      {
+        "group": "jobset.x-k8s.io",
+        "resource": "jobsets",
+        "subresource": null,
+        "verb": "get",
+        "allowed": true
+      },
+      {
+        "group": "jobset.x-k8s.io",
+        "resource": "jobsets",
+        "subresource": null,
+        "verb": "list",
+        "allowed": true
+      },
+      {
+        "group": "batch",
+        "resource": "jobs",
+        "subresource": null,
+        "verb": "get",
+        "allowed": true
+      },
+      {
+        "group": "batch",
+        "resource": "jobs",
+        "subresource": null,
+        "verb": "list",
+        "allowed": true
+      },
+      {
+        "group": "",
+        "resource": "pods",
+        "subresource": null,
+        "verb": "get",
+        "allowed": true
+      },
+      {
+        "group": "",
+        "resource": "pods",
+        "subresource": null,
+        "verb": "list",
+        "allowed": true
+      },
+      {
+        "group": "",
+        "resource": "pods",
+        "subresource": "log",
+        "verb": "get",
+        "allowed": true
+      }
+    ],
+    "empty_owned_list_requests_passed": true,
+    "rbac_changed": false,
+    "distributed_workload_started": false
+  },
+  "probeCleanupVerified": true
+}

@@ -1,0 +1,19 @@
+{
+  "fixtureRemoved": true,
+  "temporaryRelayRuleRemoved": true,
+  "verifierJobRemoved": "jupyterhub/cps-archive-verify-938f3d44cb1a40b1",
+  "workspaceClaimRemoved": "jupyterhub/cps-workspace-103ce88e646bd6558b3779497abf8ab109372cc1",
+  "retainedWorkspacePv": {
+    "name": "cps-workspace-103ce88e646bd6558b3779497abf8ab109372cc1",
+    "phase": "Released",
+    "path": "/mnt/persistent1/cps_compute_workspaces/cps/103ce88e646bd6558b3779497abf8ab109372cc18027b1ca473e4b2f724d1782",
+    "nasImmutableProof": {
+      "dataset": "persistent1/cps_compute_workspaces/cps/103ce88e646bd6558b3779497abf8ab109372cc18027b1ca473e4b2f724d1782",
+      "readonly": true,
+      "mechanism": "zfs-readonly"
+    }
+  },
+  "syntheticStateClaimAndCsiPvRemoved": true,
+  "statePvRemoved": "pvc-95acfcb3-6131-46b3-8fcb-2180d8c97ec6",
+  "productionGatewayImageUnchanged": "ghcr.io/mul-cps/cps-compute:qualification-5771df5@sha256:627f093c3c96038c7ecd9e9b99f0138198c23c9460cabb7bd11b19e94f465096"
+}

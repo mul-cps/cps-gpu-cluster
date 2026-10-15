@@ -1,0 +1,180 @@
+{
+  "schemaVersion": 1,
+  "createdAt": "2026-10-07T07:25:18.966726+00:00",
+  "productionQualified": false,
+  "releasePublished": false,
+  "sources": {
+    "admin": "c91a24d5b234a7ab15c61386625b7c25b025de22",
+    "compute": "34d519d0a2d510f3abbb0fb288d1964c3857bab3"
+  },
+  "tests": {
+    "admin": 69,
+    "computeGeneral": 273,
+    "computeHubShares": 5
+  },
+  "workspaceIntegration": {
+    "scope": "Authenticated ASGI gateway and real admin client/lifecycle with synthetic reviewed people, test-qualified catalog, real SQLite reservations and simulated Hub/storage adapters",
+    "checks": {
+      "unregistered_normal_start": "accepted through preview -> registration -> provisioning -> strict policy -> Hub spawn",
+      "actual_registration_group_forwarding": "accepted 200 with stable group_id",
+      "wrong_group": {
+        "status": 409,
+        "rejected": true
+      },
+      "wrong_source_namespace": {
+        "status": 422,
+        "rejected": true
+      },
+      "pre_registered_normal_start": "accepted with refreshed single-member central registration and strict principal/hash validation",
+      "removed_member_absent_from_central_registration": true,
+      "hub_spawn_before_registration_or_policy_acceptance": false,
+      "changed_course_ceiling_restart": "accepted after central registration refresh",
+      "preview_rejection_retryable_without_mutating_registration": true,
+      "registration_rejection_retryable_without_unknown_release": true,
+      "central_group_binding_preserved": true
+    },
+    "privateProofSha256": {
+      "qualify.py": "27537cb32d0f05bc6301b0c4def288cc05d9d757d26c9c01a5959f7e16663af8",
+      "results.json": "2b8a675cf01740965c46ac9b862f4a8b7c953a4ffb79308dfe849f486c14cee8",
+      "trace.json": "024f87199c40ee5f650553d63f076e331f4077536537a6f0573027e323849679"
+    },
+    "limitations": [
+      "No production user directory or human OAuth session.",
+      "No production Hub spawn, NAS provisioning, Kubernetes shutdown observation or GPU execution in this fixture."
+    ]
+  },
+  "gatewayCandidate": {
+    "image": "ghcr.io/mul-cps/cps-compute@sha256:026b85b2e04099fa6f50fe67d030d1e5076baa451aa7a0d239268cd485d3e056",
+    "wheelSha256": "42ba0fc812342060010c220a432a53143bc8c101624fec405b86eafe8dc7af2f",
+    "checks": {
+      "nonRootUid10001": true,
+      "installedSourceHashMatches": true,
+      "pipCheck": true
+    },
+    "metadataSha256": "ebce869b3c59201e132aa179c76960274da088bd2aeb803209a514262adcda0e",
+    "verificationSha256": "5be083b6a68dbe7b7198b3c1ec8986118941b37254f9f94f4e5a4badd73dc2ab",
+    "sbomAndReleaseQualification": "pending"
+  },
+  "hardwareStartup": {
+    "status": "passed",
+    "scope": "four-exclusive-GPU-placement-and-CUDA-startup",
+    "nodes": [
+      "k3s-wk-gpu2",
+      "k3s-wk-gpu3"
+    ],
+    "checks": {
+      "all_four_server_dry_runs_passed": true,
+      "fresh_no_allocations_zero_mps_clients_no_unexpected_cuda_processes": true,
+      "four_fixed_node_distinct_gpu_uuids": true,
+      "all_four_cuda_ready_within_90seconds": true,
+      "all_four_60_heartbeat_ticks_and_successful_finish": true,
+      "uid_precondition_cleanup_no_owned_pods_allocations_or_cuda_processes": true,
+      "captured_one_user_pod_uid_restarts_node_phase_unchanged": true,
+      "gpu1_user_pods_captured_by_selector": 1
+    },
+    "results": [
+      {
+        "created_at": "2026-10-07T07:21:28+00:00",
+        "node": "k3s-wk-gpu2",
+        "scheduled_at": "2026-10-07T07:21:28+00:00",
+        "container_started_at": "2026-10-07T07:21:29+00:00",
+        "container_finished_at": "2026-10-07T07:22:29+00:00",
+        "cuda_ready_at": "2026-10-07T07:21:29.332197617Z",
+        "gpu_uuid": "16128952b438556a00bb93039ee24e56",
+        "heartbeat_count": 60,
+        "exit_code": 0,
+        "image_id": "ghcr.io/mul-cps/cps-compute@sha256:f107b407f3e6c9218a4a9b5ec4df9f0ea013f4abd0a177e474013ff6b682c893"
+      },
+      {
+        "created_at": "2026-10-07T07:21:28+00:00",
+        "node": "k3s-wk-gpu2",
+        "scheduled_at": "2026-10-07T07:21:29+00:00",
+        "container_started_at": "2026-10-07T07:21:30+00:00",
+        "container_finished_at": "2026-10-07T07:22:30+00:00",
+        "cuda_ready_at": "2026-10-07T07:21:30.399275875Z",
+        "gpu_uuid": "1e6145d58ee243e2a0d56d345909e8a6",
+        "heartbeat_count": 60,
+        "exit_code": 0,
+        "image_id": "ghcr.io/mul-cps/cps-compute@sha256:f107b407f3e6c9218a4a9b5ec4df9f0ea013f4abd0a177e474013ff6b682c893"
+      },
+      {
+        "created_at": "2026-10-07T07:21:28+00:00",
+        "node": "k3s-wk-gpu3",
+        "scheduled_at": "2026-10-07T07:21:29+00:00",
+        "container_started_at": "2026-10-07T07:21:33+00:00",
+        "container_finished_at": "2026-10-07T07:22:34+00:00",
+        "cuda_ready_at": "2026-10-07T07:21:33.897612761Z",
+        "gpu_uuid": "0a9f2da859f51cb09eadd9fce56b69e5",
+        "heartbeat_count": 60,
+        "exit_code": 0,
+        "image_id": "ghcr.io/mul-cps/cps-compute@sha256:f107b407f3e6c9218a4a9b5ec4df9f0ea013f4abd0a177e474013ff6b682c893"
+      },
+      {
+        "created_at": "2026-10-07T07:21:28+00:00",
+        "node": "k3s-wk-gpu3",
+        "scheduled_at": "2026-10-07T07:21:29+00:00",
+        "container_started_at": "2026-10-07T07:21:33+00:00",
+        "container_finished_at": "2026-10-07T07:22:34+00:00",
+        "cuda_ready_at": "2026-10-07T07:21:33.883003739Z",
+        "gpu_uuid": "e7a56fadce29f7d7380a3b5ae62a0b2a",
+        "heartbeat_count": 60,
+        "exit_code": 0,
+        "image_id": "ghcr.io/mul-cps/cps-compute@sha256:f107b407f3e6c9218a4a9b5ec4df9f0ea013f4abd0a177e474013ff6b682c893"
+      }
+    ],
+    "privateReportSha256": "21805a8412764cfeffab339d710e893e21515b416cf0ac7370400b4daee225cb",
+    "checksumsSha256": "fd8ae4332ec0355a686abecb7cc60a40cba960ba6b0bdcb63f1c36ca2fe4fe06",
+    "limitations": [
+      "Synthetic raw operator Pods, not user gateway/profile activation.",
+      "Four affinity-constrained slots in an eight-GPU global scheduler pool.",
+      "Small 1 MiB allocation and60 heartbeat ticks, not representative startup load.",
+      "User preservation is limited to the captured before/after Pod baseline.",
+      "GPU1 excluded for active workloads; GPU4 excluded because MPS control query timed out."
+    ],
+    "productionQualified": false,
+    "fairnessQualified": false,
+    "reclaimQualified": false,
+    "teachingProtectionQualified": false,
+    "userPreservationScope": {
+      "namespaces": [
+        "jupyterhub",
+        "cit-jhub"
+      ],
+      "label_selector": "component=singleuser-server",
+      "captured_pod_count": 1,
+      "captured_uid": "a663ab6b-e927-418f-9671-fc0b36a27b3a",
+      "verified_fields": [
+        "uid",
+        "container_restart_counts",
+        "node",
+        "phase"
+      ],
+      "earlier_cit_notebook_preservation_qualified": false
+    }
+  },
+  "remainingGates": [
+    "Shared-GPU hard memory isolation and measured profile packing.",
+    "Teaching reclaim/protection, representative startup bursts and defragmentation.",
+    "Actual human OAuth/RTC and native Shares revocation.",
+    "Reviewed canonical directory linkage and grants migration.",
+    "Production notebook admission/runtime lifecycle.",
+    "Coordinated off-host recovery.",
+    "Matched source-bound artifacts and formal pilot/RC/production promotion."
+  ],
+  "adminCandidate": {
+    "image": "ghcr.io/mul-cps/e2x-course-hub@sha256:97ab94735ff93ff309a96d4f0de234a16ffe57ffb3ed1811d1477957aba52c31",
+    "adminCommit": "c91a24d5b234a7ab15c61386625b7c25b025de22",
+    "computeCommit": "34d519d0a2d510f3abbb0fb288d1964c3857bab3",
+    "computeWheelSha256": "42ba0fc812342060010c220a432a53143bc8c101624fec405b86eafe8dc7af2f",
+    "verificationSha256": "82143f3ec1dcb446bf50d4b931e463856e08dad25ac35505a6e7faea99853814",
+    "checks": {
+      "registryDigestMatches": true,
+      "imageRevisionLabelMatches": true,
+      "nonRootUidGid10001": true,
+      "pipCheck": true,
+      "all42AdminAnd21ComputeSourceHashesMatch": true
+    },
+    "productionQualified": false,
+    "sbomAndReleaseQualification": "pending"
+  }
+}

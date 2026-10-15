@@ -1,0 +1,131 @@
+{
+  "version": 1,
+  "captured_at": "2026-10-15T18:14:09.523585+00:00",
+  "console_gateway": {
+    "version": 1,
+    "captured_at": "2026-10-15T18:09:55.299238+00:00",
+    "automatic_jobs_succeeded": [],
+    "corrected_cronjob_provenance": true,
+    "current_policy_hash": "sha256:d48f6553ed036c2e7adcc97417623fe0308be93ad13b20f246047ada118511b0",
+    "owned_verification_jobs_and_pods_absent": true,
+    "backups_preserved": true,
+    "results": [
+      {
+        "cronjob": "cps-admin-backup",
+        "cronjob_uid": "c708081a-dac4-4396-a1fb-3af6363e2e8d",
+        "job": "qual-current-cps-admin-58126b5c",
+        "image": "ghcr.io/mul-cps/e2x-course-hub@sha256:51f7f392397e41be512b356fbee91980fb233296cee7557d25a758b99b045f44",
+        "policy_hash": "sha256:d48f6553ed036c2e7adcc97417623fe0308be93ad13b20f246047ada118511b0",
+        "script": "/scripts/backup-console.py",
+        "job_uid": "eab852aa-9c08-4a37-9d28-e2d4336812e0",
+        "pod_uid": "a43ddaf6-1d02-47ed-b3bc-c39acb4ca180",
+        "completion_time": "2026-10-15T18:09:28+00:00",
+        "proof": {
+          "backup_path": "20261015T180925.348090Z-2f381ea964e64e3b84856e49224ca980",
+          "manifest_sha256": "d9573768f2200ab61ff7d074e0fd94602acd2efd23c2cd115894e492f46c074d",
+          "application_image": "ghcr.io/mul-cps/e2x-course-hub@sha256:51f7f392397e41be512b356fbee91980fb233296cee7557d25a758b99b045f44",
+          "policy_hash": "sha256:d48f6553ed036c2e7adcc97417623fe0308be93ad13b20f246047ada118511b0",
+          "file_sha256": {
+            "console.sqlite": "42d93e68b4c7b0bfbd8a8203c351253954483806afccdbfa653c6643077d1c9c"
+          },
+          "script_sha256": "3238c37f373ea84667221f3c964c0fd4634bbe4d472518faea69222a50ad5838",
+          "restored_integrity_check": true,
+          "production_qualified": false
+        }
+      },
+      {
+        "cronjob": "cit-admin-backup",
+        "cronjob_uid": "9e8ea225-9bec-409e-b046-b9254856f640",
+        "job": "qual-current-cit-admin-8218d76f",
+        "image": "ghcr.io/mul-cps/e2x-course-hub@sha256:51f7f392397e41be512b356fbee91980fb233296cee7557d25a758b99b045f44",
+        "policy_hash": "sha256:d48f6553ed036c2e7adcc97417623fe0308be93ad13b20f246047ada118511b0",
+        "script": "/scripts/backup-console.py",
+        "job_uid": "1fea6a85-895b-417c-87bf-3ed4daf3cf77",
+        "pod_uid": "c4ac49c8-792e-494c-9fcf-d82152467c5a",
+        "completion_time": "2026-10-15T18:09:27+00:00",
+        "proof": {
+          "backup_path": "20261015T180925.089660Z-88fa14b7ba7c42898f09d6535363a4e9",
+          "manifest_sha256": "b38f2c165e9b09b5330bc3c5c43b3a6862db91dae8bd2d3ca1e919585185e69a",
+          "application_image": "ghcr.io/mul-cps/e2x-course-hub@sha256:51f7f392397e41be512b356fbee91980fb233296cee7557d25a758b99b045f44",
+          "policy_hash": "sha256:d48f6553ed036c2e7adcc97417623fe0308be93ad13b20f246047ada118511b0",
+          "file_sha256": {
+            "console.sqlite": "f0b57ea31ebc7b28ceabef478f15b8d3b6e5f5421d9f9fe9c4bfd7f8bc0bc96b"
+          },
+          "script_sha256": "3238c37f373ea84667221f3c964c0fd4634bbe4d472518faea69222a50ad5838",
+          "restored_integrity_check": true,
+          "production_qualified": false
+        }
+      },
+      {
+        "cronjob": "compute-state-backup",
+        "cronjob_uid": "8924e2ab-df98-466f-924c-3100bae8b5b3",
+        "job": "qual-current-compute-state-1666089c",
+        "image": "ghcr.io/mul-cps/cps-compute@sha256:511e42cb71a120b5a7d399ad40fde4a6befdf472ed29ae0bf9fc7f004d85bdea",
+        "policy_hash": "sha256:d48f6553ed036c2e7adcc97417623fe0308be93ad13b20f246047ada118511b0",
+        "script": "/scripts/backup-state.py",
+        "job_uid": "949b2dd6-4c1e-490e-93b6-c353b6ccbf8f",
+        "pod_uid": "03069f68-47b4-4680-9aa8-1ba59a90bf7b",
+        "completion_time": "2026-10-15T18:09:28+00:00",
+        "proof": {
+          "backup_path": "20261015T180925.376360Z",
+          "manifest_sha256": "a02ffad89240179f3f6e0b81277eff71b7791381e329e2c9c89b463913226755",
+          "application_image": "ghcr.io/mul-cps/cps-compute@sha256:511e42cb71a120b5a7d399ad40fde4a6befdf472ed29ae0bf9fc7f004d85bdea",
+          "policy_hash": "sha256:d48f6553ed036c2e7adcc97417623fe0308be93ad13b20f246047ada118511b0",
+          "file_sha256": {
+            "control.sqlite": "fac10d84f11a4a3de7eee850a0ac6ed45e7da8b723bfb043d5fb4f4dd79620fa",
+            "reservations.sqlite": "2bec8a865988a683f771d2b0c25eb2b585220e806864d369684c6aa1489e8d4e"
+          },
+          "script_sha256": "826457d6d45a1498b44a5c4094e9f0e66c081fd1e8900024c5375cbaa8759cd8",
+          "restored_integrity_check": true,
+          "production_qualified": false
+        }
+      }
+    ],
+    "production_qualified": false,
+    "limitations": [
+      "Owned corrected backup run, not the next automatic schedule after this correction",
+      "SQLite integrity and checksums only; connected application recovery remains open",
+      "No coordinated Hub/gateway/console/NFS capture or encrypted off-host durability"
+    ]
+  },
+  "hub_capture": {
+    "version": 1,
+    "captured_at": "2026-10-15T18:11:58.293542+00:00",
+    "verified_at": "2026-10-15T18:13:04.033661+00:00",
+    "manifest_sha256": "8dc2fbf918a2d740ae2f00991cbc7607b074a8ac6e85f48253ec7490a9fe00ac",
+    "twelve_files_checksum_and_permissions_verified": true,
+    "hubs": [
+      {
+        "namespace": "jupyterhub",
+        "hub_image": "ghcr.io/mul-cps/cps-compute@sha256:6bbd8788d5c84b9e5aa3d968d54350bf4de9fed8e08922cf136abf75b892d488",
+        "hub_uid": "02fb8421-d323-4636-b006-2490cd6f5b63",
+        "live_and_captured_hub_spec_match": true,
+        "actual_running_imageID_match": true,
+        "database_dump_sha256": "1e2e206308150a9d105b68b0678e650a39cd1df211070d05500dbf208b96b5b4",
+        "roles_sha256": "ac678c8f145a0708490035f887537bf57e189eee38b7fc81e2bf8ac9d602ef59"
+      },
+      {
+        "namespace": "cit-jhub",
+        "hub_image": "ghcr.io/mul-cps/cps-compute@sha256:6bbd8788d5c84b9e5aa3d968d54350bf4de9fed8e08922cf136abf75b892d488",
+        "hub_uid": "dd90f866-47d3-4b9f-ba41-b4ebf8cb2b1e",
+        "live_and_captured_hub_spec_match": true,
+        "actual_running_imageID_match": true,
+        "database_dump_sha256": "273aa8e0ec9e6589bab230d3bd30fc34e70fc51da71f857931bff37dba6e61f4",
+        "roles_sha256": "0fdddc42f3cff1aaf5b6687b10617b45ccc88a75be509d4a56dba7f6435afd85"
+      }
+    ],
+    "connected_restore_qualified": false,
+    "off_host_copy_verified": false,
+    "production_qualified": false,
+    "limitations": [
+      "Sequential captures, not a cluster-wide atomic snapshot",
+      "Role and database captures are sequential; changes require a coordinated window",
+      "Tablespaces and cluster-wide configuration are excluded",
+      "No NFS data or volume backup",
+      "No off-host copy",
+      "Successful capture is not demonstrated recovery"
+    ]
+  },
+  "current_delivery_seed_sha256": "sha256:7f08bd0b1a37c5081ca58174da0b3ccd9a542146d05eb95beecc94649892c4f9",
+  "production_qualified": false
+}

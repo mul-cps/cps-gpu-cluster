@@ -1,0 +1,34 @@
+{
+  "version": 1,
+  "scope": "Actual normal-student Gateway retention and read-only scheduled-code classification; no automatic deletion qualification",
+  "workflow": "cps-00151a154b3e8d5e93a7350c24a7e26337df80e38607e6e0",
+  "workflow_uid": "77ed87fe-cda5-451c-aca0-2e68ba705426",
+  "owner": "armin",
+  "foreign_retain_status": 403,
+  "invalid_artifact_status": 422,
+  "owner_retain_status": 200,
+  "persisted_retained_state_verified": true,
+  "executed_notebook_download_status": 200,
+  "executed_notebook_bytes": 3902,
+  "executed_notebook_sha256": "f1d478dd7e5249efade0ee47706476805cc6d18bd2e37b676332508f19518a32",
+  "evidence_writer_recovery": "The writer failed after the owner request. Read-only workflow and download checks verified persisted state; retain was not repeated.",
+  "sweeps": {
+    "real_clock": {"examined": 2, "eligible": 0, "deleted": 0, "skipped": 2, "errors": 0},
+    "per_call_91_day_test_clock": {"examined": 2, "eligible": 1, "deleted": 0, "skipped": 1, "errors": 0},
+    "real_s3_last_modified_and_workflow_finish_used": true,
+    "retained_output_preserved": true,
+    "unretained_snapshot_becomes_eligible": true,
+    "etags_and_tags_unchanged": true,
+    "s3_write_methods_available_to_wrapper": false,
+    "kubernetes_patch_method_available_to_wrapper": false
+  },
+  "trusted_job": {"name": "cps-retention-owned-read-c91bc2c338", "uid": "c4e2446a-579f-46e3-9846-92f1a566650e", "succeeded": true, "job_and_owned_pods_confirmed_absent": true},
+  "production_cron_spec_unchanged": true,
+  "production_cron_remains_suspended": true,
+  "evidence_sha256": {
+    "retain_readback": "d86214add02a6bbe78f4e2b425a4a94618abf6d904446383ac9be9b7bad3b6b9",
+    "sweeps": "268b22918273f744364897b00491adfd4a0852fc2d58404d8968eda5ae5c5965",
+    "cleanup": "f966a30232ad8aa5b990d428005b120f8e2f97914b1910e0272b0a8de86245aa"
+  },
+  "not_qualified": ["actual running Gateway input protection", "Gateway-created object conditional deletion", "full lifecycle automatic cleanup activation", "off-host restore"]
+}

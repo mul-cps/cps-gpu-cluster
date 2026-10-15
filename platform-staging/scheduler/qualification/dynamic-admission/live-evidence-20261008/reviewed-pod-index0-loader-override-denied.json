@@ -1,0 +1,329 @@
+{
+  "command": [
+    "kubectl",
+    "--request-timeout=20s",
+    "--as",
+    "system:serviceaccount:offline:declared-argo-controller",
+    "create",
+    "--dry-run=server",
+    "-f",
+    "-",
+    "-o",
+    "json"
+  ],
+  "exitCode": 1,
+  "expected": "policy-deny",
+  "input": {
+    "apiVersion": "v1",
+    "kind": "Pod",
+    "metadata": {
+      "annotations": {
+        "gpu-fraction-container-name": "main",
+        "gpu-memory": "5120",
+        "nvidia.com/container.main.gpu-memory.request": "5Gi",
+        "runai/shared-gpu-configmap": "offline-argo-5-bcdfgh2-shared-gpu"
+      },
+      "labels": {
+        "kai.scheduler/queue": "cps-batch"
+      },
+      "name": "offline-argo-5-declared",
+      "namespace": "cps-dynamic-admission-live-20261008",
+      "ownerReferences": [
+        {
+          "apiVersion": "argoproj.io/v1alpha1",
+          "controller": true,
+          "kind": "Workflow",
+          "name": "offline-argo-5",
+          "uid": "4e1dac1f-2e7e-5abc-9020-3340ed89d836"
+        }
+      ]
+    },
+    "spec": {
+      "activeDeadlineSeconds": 180,
+      "automountServiceAccountToken": false,
+      "containers": [
+        {
+          "args": [
+            "print(\"offline fixture only\")"
+          ],
+          "command": [
+            "python",
+            "-c"
+          ],
+          "env": [
+            {
+              "name": "CUDA_DEVICE_MEMORY_LIMIT_0",
+              "value": "5120m"
+            },
+            {
+              "name": "CUDA_DEVICE_MEMORY_SHARED_CACHE",
+              "value": "/tmp/cps-workspace-usage.cache"
+            },
+            {
+              "name": "CUDA_MPS_PIPE_DIRECTORY",
+              "value": "/mps/pipe"
+            },
+            {
+              "name": "NVIDIA_VISIBLE_DEVICES",
+              "valueFrom": {
+                "configMapKeyRef": {
+                  "key": "NVIDIA_VISIBLE_DEVICES",
+                  "name": "offline-argo-5-bcdfgh2-shared-gpu-0"
+                }
+              }
+            },
+            {
+              "name": "RUNAI_NUM_OF_GPUS",
+              "valueFrom": {
+                "configMapKeyRef": {
+                  "key": "RUNAI_NUM_OF_GPUS",
+                  "name": "offline-argo-5-bcdfgh2-shared-gpu-0"
+                }
+              }
+            },
+            {
+              "name": "GPU_PORTION",
+              "valueFrom": {
+                "configMapKeyRef": {
+                  "key": "GPU_PORTION",
+                  "name": "offline-argo-5-bcdfgh2-shared-gpu-0"
+                }
+              }
+            },
+            {
+              "name": "CUDA_DEVICE_MEMORY_LIMIT",
+              "valueFrom": {
+                "configMapKeyRef": {
+                  "key": "CUDA_DEVICE_MEMORY_LIMIT",
+                  "name": "offline-argo-5-bcdfgh2-shared-gpu-0",
+                  "optional": true
+                }
+              }
+            },
+            {
+              "name": "POD_UID",
+              "valueFrom": {
+                "fieldRef": {
+                  "apiVersion": "v1",
+                  "fieldPath": "metadata.uid"
+                }
+              }
+            },
+            {
+              "name": "CONTAINER_NAME",
+              "value": "main"
+            },
+            {
+              "name": "CONTAINER_VGPU_MOUNT",
+              "value": "/usr/local/vgpu"
+            },
+            {
+              "name": "LD_PRELOAD",
+              "value": "/tmp/unreviewed.so"
+            }
+          ],
+          "envFrom": [
+            {
+              "configMapRef": {
+                "name": "offline-argo-5-bcdfgh2-shared-gpu-0-evar",
+                "optional": false
+              }
+            }
+          ],
+          "image": "ghcr.io/mul-cps/cps-compute:qualification-40b9525@sha256:b3802a7f70077ff56adbc060d1177409eeff76c8b3cf8ccf9f39047c1e6716bf",
+          "name": "main",
+          "resources": {
+            "limits": {
+              "cpu": "4",
+              "memory": "16Gi"
+            },
+            "requests": {
+              "cpu": "4",
+              "memory": "16Gi"
+            }
+          },
+          "securityContext": {
+            "allowPrivilegeEscalation": false,
+            "capabilities": {
+              "drop": [
+                "ALL"
+              ]
+            },
+            "runAsGroup": 100,
+            "runAsNonRoot": true,
+            "runAsUser": 1000,
+            "seccompProfile": {
+              "type": "RuntimeDefault"
+            }
+          },
+          "volumeMounts": [
+            {
+              "mountPath": "/tmp/cps-workspace-usage.cache",
+              "name": "cps-gpu-cache",
+              "subPath": "private/usage.cache"
+            },
+            {
+              "mountPath": "/mps/pipe",
+              "name": "cps-mps-pipe"
+            },
+            {
+              "mountPath": "/dev/shm",
+              "name": "cps-mps-shm"
+            },
+            {
+              "mountPath": "/usr/local/vgpu",
+              "name": "kai-resource-isolator-vgpu",
+              "readOnly": false
+            },
+            {
+              "mountPath": "/etc/ld.so.preload",
+              "name": "kai-resource-isolator-vgpu",
+              "readOnly": true,
+              "subPath": "ld.so.preload"
+            },
+            {
+              "mountPath": "/usr/local/vgpu/containers",
+              "name": "kai-resource-isolator-containers",
+              "readOnly": false
+            },
+            {
+              "mountPath": "/tmp/vgpulock",
+              "name": "kai-resource-isolator-vgpulock",
+              "readOnly": false
+            }
+          ]
+        }
+      ],
+      "hostIPC": false,
+      "hostNetwork": false,
+      "hostPID": false,
+      "initContainers": [
+        {
+          "args": [
+            "initialize-cache",
+            "--directory",
+            "/cache-root",
+            "--uid",
+            "1000",
+            "--gid",
+            "100"
+          ],
+          "command": [
+            "python",
+            "-m",
+            "cps_compute.gpu_runtime"
+          ],
+          "env": [
+            {
+              "name": "PYTHONDONTWRITEBYTECODE",
+              "value": "1"
+            }
+          ],
+          "image": "ghcr.io/mul-cps/cps-compute:qualification-40b9525@sha256:b3802a7f70077ff56adbc060d1177409eeff76c8b3cf8ccf9f39047c1e6716bf",
+          "imagePullPolicy": "IfNotPresent",
+          "name": "cps-gpu-cache-init",
+          "resources": {
+            "limits": {
+              "cpu": "100m",
+              "memory": "128Mi"
+            },
+            "requests": {
+              "cpu": "10m",
+              "memory": "32Mi"
+            }
+          },
+          "securityContext": {
+            "allowPrivilegeEscalation": false,
+            "capabilities": {
+              "drop": [
+                "ALL"
+              ]
+            },
+            "readOnlyRootFilesystem": true,
+            "runAsGroup": 100,
+            "runAsNonRoot": true,
+            "runAsUser": 1000,
+            "seccompProfile": {
+              "type": "RuntimeDefault"
+            }
+          },
+          "volumeMounts": [
+            {
+              "mountPath": "/cache-root",
+              "name": "cps-gpu-cache"
+            }
+          ]
+        }
+      ],
+      "priorityClassName": "cps-batch",
+      "restartPolicy": "Never",
+      "runtimeClassName": "nvidia",
+      "schedulerName": "kai-scheduler",
+      "securityContext": {
+        "fsGroup": 100,
+        "runAsGroup": 100,
+        "runAsNonRoot": true,
+        "runAsUser": 1000,
+        "seccompProfile": {
+          "type": "RuntimeDefault"
+        }
+      },
+      "serviceAccountName": "cps-workflow",
+      "shareProcessNamespace": false,
+      "volumes": [
+        {
+          "emptyDir": {
+            "sizeLimit": "64Mi"
+          },
+          "name": "cps-gpu-cache"
+        },
+        {
+          "hostPath": {
+            "path": "/run/nvidia/mps/nvidia.com/gpu/pipe",
+            "type": "Directory"
+          },
+          "name": "cps-mps-pipe"
+        },
+        {
+          "hostPath": {
+            "path": "/run/nvidia/mps/shm",
+            "type": "Directory"
+          },
+          "name": "cps-mps-shm"
+        },
+        {
+          "configMap": {
+            "name": "offline-argo-5-bcdfgh2-shared-gpu-0"
+          },
+          "name": "offline-argo-5-bcdfgh2-shared-gpu-0-vol"
+        },
+        {
+          "hostPath": {
+            "path": "/usr/local/vgpu",
+            "type": "DirectoryOrCreate"
+          },
+          "name": "kai-resource-isolator-vgpu"
+        },
+        {
+          "hostPath": {
+            "path": "/usr/local/vgpu/containers",
+            "type": "DirectoryOrCreate"
+          },
+          "name": "kai-resource-isolator-containers"
+        },
+        {
+          "hostPath": {
+            "path": "/tmp/vgpulock",
+            "type": "DirectoryOrCreate"
+          },
+          "name": "kai-resource-isolator-vgpulock"
+        }
+      ]
+    }
+  },
+  "inputSha256": "6653a392990720c12a60d04cf6ffc31fd01fe7b3fdb2764deefd4eca88568b2c",
+  "matchedExpectation": true,
+  "name": "reviewed-pod-index0-loader-override-denied",
+  "stderr": "The pods \"offline-argo-5-declared\" is invalid: : ValidatingAdmissionPolicy 'cps-dynamic-admission-live-20261008-boundary' with binding 'cps-dynamic-admission-live-20261008-boundary' denied request: Every qualification Pod request requires an explicitly observed and approved creator\n",
+  "stdout": ""
+}

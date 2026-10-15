@@ -1,0 +1,7 @@
+# Frontend-only qualification update; all other qualified runtime values remain required.
+# Do not deploy this file alone or promote unrelated chart/source changes.
+consoles:
+  cps:
+    image: ghcr.io/mul-cps/e2x-course-hub:qualification-ui-240350a@sha256:3c9a6241fd53263c6a7037c205adc7662cfd95d56672deed535eb811c7369d1f
+  cit:
+    image: ghcr.io/mul-cps/e2x-course-hub:qualification-ui-240350a@sha256:3c9a6241fd53263c6a7037c205adc7662cfd95d56672deed535eb811c7369d1f

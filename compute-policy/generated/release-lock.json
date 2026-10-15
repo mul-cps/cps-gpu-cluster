@@ -1,0 +1,40 @@
+{
+  "compatibility": {
+    "productionTarget": {
+      "chart": "4.4.2",
+      "jupyterhub": "5.5.2",
+      "kubespawner": "7.x"
+    },
+    "qualified": [],
+    "releases": [
+      {
+        "admin": "cps-v0.1.0",
+        "cluster": "v1.1.0",
+        "compute": "0.1.0",
+        "notebooks": "0.1.0",
+        "stage": "pilot"
+      },
+      {
+        "admin": "cps-v1.0.0-rc.1",
+        "cluster": "v2.0.0-rc.1",
+        "compute": "1.0.0-rc.1",
+        "notebooks": "1.0.0-rc.1",
+        "stage": "candidate"
+      },
+      {
+        "admin": "cps-v1.0.0",
+        "cluster": "v2.0.0",
+        "compute": "1.0.0",
+        "notebooks": "1.0.0",
+        "stage": "production"
+      }
+    ],
+    "stagingTarget": {
+      "jupyterhub": "6.0.1",
+      "promote": false
+    }
+  },
+  "policyHash": "sha256:051cd754210af2830d67968eea898f674a55ff66f5c88b3db95dff205f04e33d",
+  "policyVersion": "0.1.0",
+  "status": "unqualified"
+}

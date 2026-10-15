@@ -1,0 +1,55 @@
+{
+  "command": "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=/tmp/cps-cel-qualification-20261008 /home/bjoern/git/cps-compute-worktrees/release-qualification/.venv/bin/python -m unittest discover -s platform-staging/scheduler/qualification/dynamic-coordination -v",
+  "inputCommit": "c934e7e158de8ee2c7a4d5962e183061527b84eb",
+  "limitations": [
+    "Manual protected pre-seal and sealed registry generations; no registry writer/controller",
+    "Two map seals are not atomic; partial and uncertain receipts require review",
+    "Old quota binding must be deliberately replaced by the separately rendered QA transition",
+    "KAI rollback is incompatible while original Pod UID exists; cancellation/recreation is not integrated",
+    "Parent and Node cross-object races, initial in-flight admission, Node/device remapping and webhook/registry rollouts remain unqualified"
+  ],
+  "python": "3.13.12 | packaged by conda-forge | (main, Feb  5 2026, 05:53:46) [GCC 14.3.0]",
+  "pythonExecutable": "/home/bjoern/git/cps-compute-worktrees/release-qualification/.venv/bin/python",
+  "qualification": {
+    "actualKubernetesAdmissionExecuted": false,
+    "automaticRegistryCoordination": false,
+    "clusterMutations": false,
+    "deviceChanges": false,
+    "gpuJobs": false,
+    "imageBuiltOrPublished": false,
+    "kaiBinderHookQualified": false,
+    "literalNewCELExecuted": true,
+    "localTLSAdmissionReview": true,
+    "newCELKubernetesTypechecked": false,
+    "productionActivation": false,
+    "productionAtomicity": false
+  },
+  "schemaVersion": 1,
+  "sourceSha256": {
+    "Dockerfile": "f70740f3402d47fecd7f60cbfc969e7f70a1a6ebb144a39a4c1e5d2dea850de1",
+    "README.md": "481313445ab0443bf6a7fea87a80f36f1247935a2b24a636246f7d3732be5408",
+    "fence.py": "cf757a7787c02fe5d107add5229d0136024e32d9f7afbf00d40737acf895e779",
+    "quota_transition.py": "d1f13867c7d5ac740b531efcb441eeece4be78c65b1b037debdb4256eec991dd",
+    "render.py": "ea422fc800a63972187df2813175084d6c7b4e8040650b9858f152d90c70b38c",
+    "sealer.py": "67db6f92e27a815d65ce8bb923404906d6a5cbba21bba99856a9da070611c3a1",
+    "service.py": "3eeaa71f063ccce11601a7c01725a3a5df943dff4deec103b42e55f5442446c5",
+    "test_fence.py": "988617d5886df6e39ec9b4f536a01d4255664bfb474cd93e53c9ff2b5b2f9087",
+    "test_render.py": "8ec9a7c26d8486d5e28fc553e08366c1485df9e0cb5cdc0af09ba0db3e9133c6",
+    "test_sealer.py": "9878c58e1c4115a70cd20d53a0a739a7bb3253ccacab2784ce0837450139bc80",
+    "test_service.py": "59aadf618ea7848a89911b0f28c46d4b28bbbb65cbf01df5e4214796f05b5aa7",
+    "test_transition_cel.py": "a3b2115f5906b98ed19476e421f9816445f504c0df4c51fd368103a28637cf7b"
+  },
+  "status": "qa-only-offline-source-candidate",
+  "tests": {
+    "failed": 0,
+    "passed": 43,
+    "suites": {
+      "fence": 18,
+      "literalTransitionCEL": 4,
+      "render": 6,
+      "sealer": 8,
+      "service": 7
+    }
+  },
+  "verifiedAt": "2026-10-08T09:48:54.305447+00:00"
+}

@@ -1,0 +1,43 @@
+{
+  "version": 1,
+  "state": "Root-review-pending",
+  "policy_hash": "sha256:02316f90f705f5550ab54d1d514ed48f73aa6a13324eea7d4aeaaef959af2fd5",
+  "observer_uid": null,
+  "pool": {
+    "node": "k3s-wk-gpu2",
+    "node_uid": "3336cdd5-d245-436e-b57c-2f66c6dcaa41",
+    "boot_id": "209f8bc9-a478-48e4-925a-6e07ffa56f7a",
+    "gpu_uuid": "GPU-16128952-b438-556a-00bb-93039ee24e56",
+    "driver_generation": "b10498fc-9153-4394-875a-ea7cfb498625",
+    "budget_mib": 15360,
+    "measured_free_bytes": null,
+    "headroom_bytes": null,
+    "measurement_sha256": null
+  },
+  "pool_measurement": {"path": null, "sha256": null},
+  "retired_capture": {"path": null, "sha256": null},
+  "targets": [
+    {
+      "source": "cps",
+      "workspace": "native-group-b",
+      "namespace": "jupyterhub",
+      "name": "jupyter-cpsnativegroupb--rtc",
+      "cap_mib": 5120,
+      "profile": "interactive-native-qualification-5",
+      "pod_uid": null,
+      "spec_sha256": null,
+      "pod_capture": {"path": null, "sha256": null}
+    },
+    {
+      "source": "cit",
+      "workspace": "native-group-a",
+      "namespace": "cit-jhub",
+      "name": "jupyter-citnativegroupa--rtc",
+      "cap_mib": 10240,
+      "profile": "interactive-native-qualification-10",
+      "pod_uid": null,
+      "spec_sha256": null,
+      "pod_capture": {"path": null, "sha256": null}
+    }
+  ]
+}

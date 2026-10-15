@@ -1,0 +1,37 @@
+# Outside Fleet watched paths; qualify a one-shot Job before unsuspending.
+enabled: false
+suspend: true
+owner: ""
+namespace: ""
+image: ""
+schedule: "31 2 * * *"
+storageClass: longhorn
+storage: 1Gi
+host: ""
+user: ""
+database: jupyterhub
+secretRef: ""
+passwordKey: ""
+userKey: ""
+databaseKey: ""
+databasePodLabels: {}
+# A separate existing PostgreSQL superuser identity; never promote the app user.
+# Leave disabled until a suspended one-shot capture and restore are reviewed.
+roleCapture:
+  enabled: false
+  privilegedCredentialSecretRef: ""
+  userKey: ""
+  passwordKey: ""
+  credentialQualified: false
+  qualificationEvidence: ""
+  protectedConfigurationSecretRef: ""
+  # Operator-declared metadata for this supplied snapshot, not a live API read.
+  configurationSnapshot:
+    uid: ""
+    resourceVersion: ""
+    capturedAt: ""
+# Optional trusted operator settings. Empty values remain unknown in the bundle.
+hub:
+  image: ""
+  chartVersion: ""
+  appVersion: ""

@@ -1,0 +1,21 @@
+{
+  "namespace": "cps-jobset-logs-b8c8e4b2",
+  "production_changed": false,
+  "qualification_scope": "operator-owned CPU JobSet and local authenticated HTTP fixture; not production Hub bridge",
+  "jobset_uid_verified": true,
+  "returned_pod_uid_verified": true,
+  "returned_pods": 1,
+  "foreign_label_only_job_filtered": true,
+  "http": {
+    "anonymous": 401,
+    "other_person": 403,
+    "owner": 200,
+    "excessive_tail": 422
+  },
+  "owned_log_marker": true,
+  "compute_revision": "e97d7e1e1374aaf8d3cd43809bf61e22257fa1bc",
+  "source_tests_passed": 266,
+  "installed_wheel_tests_passed": 266,
+  "wheel_sha256": "ad46dff5e5612099aa187450f3cbaa7cb6f2b3a261d584a2c4cfc975b3d84087",
+  "fixture_cleanup_verified": true
+}

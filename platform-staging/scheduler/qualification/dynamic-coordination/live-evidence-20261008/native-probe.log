@@ -1,0 +1,10 @@
+Traceback (most recent call last):
+  File "/qualification/dynamic-coordination/cpu_probe.py", line 184, in <module>
+    print(json.dumps(run(API()), sort_keys=True), flush=True)
+                     ^^^^^^^^^^
+  File "/qualification/dynamic-coordination/cpu_probe.py", line 170, in run
+    must('apiserver-webhook-unregistered-map-denial', api.request('POST', 'configmaps', 'unregistered-map',
+  File "/qualification/dynamic-coordination/cpu_probe.py", line 105, in must
+    if status not in statuses: raise RuntimeError(label + ': unexpected status ' + str(status))
+                               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+RuntimeError: apiserver-webhook-unregistered-map-denial: unexpected status 500

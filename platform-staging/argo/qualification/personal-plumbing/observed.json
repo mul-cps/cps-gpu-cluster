@@ -1,0 +1,178 @@
+{
+  "schemaVersion": 1,
+  "scope": "supporting-not-production",
+  "observedAt": "2026-10-08T09:10:14.377887+00:00",
+  "namespace": "cps-personal-argo-qualification-20261008",
+  "clusterSource": "faaebdae4cd2d566856496c20aad6cd962bacd53",
+  "compute": {
+    "image": "ghcr.io/mul-cps/cps-compute@sha256:74cfb93dcf0078c116b88662b19b6ef14611f616e34ae3141f1fd24ceb3e12ce",
+    "sourceCommit": "40b9525"
+  },
+  "frontend": {
+    "image": "ghcr.io/mul-cps/e2x-course-hub@sha256:ead8754358daf3fe0462f2d9990eea9ab04c2078b8d1b20b0d256ff1d038e272",
+    "sourceCommit": "5bf026f"
+  },
+  "boundaries": {
+    "productionActivation": false,
+    "dynamicSharingActivation": false,
+    "hubOAuthRegistration": false,
+    "publicIngress": false,
+    "existingNetworkPolicyEdits": false,
+    "productionCredentialReads": false,
+    "gpuUse": false
+  },
+  "publicHttps": [
+    {
+      "url": "https://jupyterhub.dshl.unileoben.ac.at/hub/api",
+      "status": 200,
+      "systemCaVerified": true
+    },
+    {
+      "url": "https://jupyterhub.dshl.unileoben.ac.at/argo/",
+      "status": 200,
+      "systemCaVerified": true,
+      "argoBaseHref": true
+    }
+  ],
+  "pods": [
+    {
+      "name": "bounded-personal-probe-dpflh",
+      "node": "k3s-wk-gpu2",
+      "phase": "Succeeded",
+      "containers": [
+        {
+          "name": "rotate",
+          "runtimeImage": "sha256:6f0029ce1b1fa5ba41190d6b06423a21a44ed1d016cd55a15fd78e154fb685e9",
+          "requestedImage": "ghcr.io/mul-cps/cps-compute@sha256:74cfb93dcf0078c116b88662b19b6ef14611f616e34ae3141f1fd24ceb3e12ce",
+          "imageID": "ghcr.io/mul-cps/cps-compute@sha256:74cfb93dcf0078c116b88662b19b6ef14611f616e34ae3141f1fd24ceb3e12ce",
+          "ready": false,
+          "state": "terminated",
+          "reason": "Completed",
+          "exitCode": 0
+        }
+      ]
+    },
+    {
+      "name": "cps-argo-ui-7459556969-gggxd",
+      "node": "k3s-wk-gpu2",
+      "phase": "Running",
+      "containers": [
+        {
+          "name": "argo-ui",
+          "runtimeImage": "sha256:39154e473898d9c4fe553c10c19aa35b1315e5912a8f39d4b71d2f0a3efb7c7f",
+          "requestedImage": "ghcr.io/mul-cps/e2x-course-hub@sha256:ead8754358daf3fe0462f2d9990eea9ab04c2078b8d1b20b0d256ff1d038e272",
+          "imageID": "ghcr.io/mul-cps/e2x-course-hub@sha256:ead8754358daf3fe0462f2d9990eea9ab04c2078b8d1b20b0d256ff1d038e272",
+          "ready": true,
+          "state": "running",
+          "reason": null,
+          "exitCode": null
+        }
+      ]
+    }
+  ],
+  "tokenProbe": {
+    "status": "passed",
+    "chart_rotator_unmodified": "passed",
+    "extra_secret_patch": 403,
+    "extra_secret_read": 403,
+    "extra_serviceaccount_token_request": 403,
+    "issued_reader_token_authenticated": true,
+    "rotated_token_authenticated": true,
+    "secret_credential_rotated_and_projected": true,
+    "target_secret_read": 403,
+    "token_lifetime_seconds": 900
+  },
+  "frontendProbe": {
+    "status": "startup-and-unauthenticated-failclosed-passed",
+    "browserOwnerAuthorizationQualified": false,
+    "unauthenticatedRequests": [
+      {
+        "path": "/argo/",
+        "status": 302,
+        "locationOrigin": "https://jupyterhub.dshl.unileoben.ac.at",
+        "locationPath": "/hub/api/oauth2/authorize",
+        "clientId": [
+          "service-cps-argo-ui"
+        ],
+        "redirectUri": [
+          "https://jupyterhub.dshl.unileoben.ac.at/argo/oauth_callback"
+        ],
+        "queryKeys": [
+          "client_id",
+          "code_challenge",
+          "code_challenge_method",
+          "redirect_uri",
+          "response_type",
+          "state"
+        ]
+      },
+      {
+        "path": "/argo/api/v1/workflows/cps-workflows",
+        "status": 302,
+        "locationOrigin": "https://jupyterhub.dshl.unileoben.ac.at",
+        "locationPath": "/hub/api/oauth2/authorize",
+        "clientId": [
+          "service-cps-argo-ui"
+        ],
+        "redirectUri": [
+          "https://jupyterhub.dshl.unileoben.ac.at/argo/oauth_callback"
+        ],
+        "queryKeys": [
+          "client_id",
+          "code_challenge",
+          "code_challenge_method",
+          "redirect_uri",
+          "response_type",
+          "state"
+        ]
+      }
+    ],
+    "trustedCaParsing": {
+      "computeCaParsed": true,
+      "hubNativeSystemCaParsed": true
+    }
+  },
+  "rotatorTemplateSha256": "63243e4d3ea81eca6369571577e4799749da52eaebe2d9f069e1fd2af1bd741a",
+  "rotatorSuspended": true,
+  "qualificationHistory": [
+    {
+      "stage": "unmodified-8a05bc8-chart",
+      "outcome": "failed",
+      "error": "AttributeError: module 'kubernetes.client' has no attribute 'V1TokenRequest'"
+    },
+    {
+      "stage": "root-chart-correction",
+      "change": "Use API TokenRequest dictionary to avoid generated Python client model-name drift"
+    },
+    {
+      "stage": "reader-probe-client",
+      "change": "Disable in-cluster rotating-SA credential refresh hook before testing a distinct issued-reader token"
+    },
+    {
+      "stage": "image-auth",
+      "change": "Operator independently provisioned scratch imagePullSecret; harness reads only its reference"
+    }
+  ],
+  "imagePullFailures": [
+    {
+      "reason": "Failed",
+      "message": "Failed to pull image \"ghcr.io/mul-cps/cps-compute@sha256:74cfb93dcf0078c116b88662b19b6ef14611f616e34ae3141f1fd24ceb3e12ce\": rpc error: code = NotFound desc = failed to pull and unpack image \"ghcr.io/mul-cps/cps-compute@sha256:74cfb93dcf0078c116b88662b19b6ef14611f616e34ae3141f1fd24ceb3e12ce\": failed to resolve reference \"ghcr.io/mul-cps/cps-compute@sha256:74cfb93dcf0078c116b88662b19b6ef14611f616e34ae3141f1fd24ceb3e12ce\": ghcr.io/mul-cps/cps-compute@sha256:74cfb93dcf0078c116b88662b19b6ef14611f616e34ae3141f1fd24ceb3e12ce: not found"
+    },
+    {
+      "reason": "Failed",
+      "message": "Failed to pull image \"ghcr.io/mul-cps/e2x-course-hub@sha256:ead8754358daf3fe0462f2d9990eea9ab04c2078b8d1b20b0d256ff1d038e272\": rpc error: code = NotFound desc = failed to pull and unpack image \"ghcr.io/mul-cps/e2x-course-hub@sha256:ead8754358daf3fe0462f2d9990eea9ab04c2078b8d1b20b0d256ff1d038e272\": failed to resolve reference \"ghcr.io/mul-cps/e2x-course-hub@sha256:ead8754358daf3fe0462f2d9990eea9ab04c2078b8d1b20b0d256ff1d038e272\": ghcr.io/mul-cps/e2x-course-hub@sha256:ead8754358daf3fe0462f2d9990eea9ab04c2078b8d1b20b0d256ff1d038e272: not found"
+    }
+  ],
+  "correctedChartSource": {
+    "baseCommit": "2e3654ad7ef3f408f8037510f5addbaff4a1582a",
+    "templateWorktreeSha256": "63243e4d3ea81eca6369571577e4799749da52eaebe2d9f069e1fd2af1bd741a",
+    "uncommittedTemplateAtQualification": true
+  },
+  "liveJobDurationSeconds": 143,
+  "retainedResources": {
+    "frontend": "private scratch Service/Deployment for review; no public Ingress",
+    "cronJob": "suspended",
+    "runner": "Completed; bounded CPU-only",
+    "cleanup": "delete only the scratch namespace after review"
+  }
+}

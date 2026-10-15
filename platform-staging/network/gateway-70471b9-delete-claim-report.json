@@ -1,0 +1,27 @@
+{
+  "name": "cps-retain-fixture-daaa6fca",
+  "productionPromotion": false,
+  "fixture": {
+    "scope": "packaged gateway HTTPS owner retention refusal after an operator-controlled deletion claim on a suspended workflow, real fixed namespace/Kubernetes CAS/S3; synthetic identity; no execution or real Hub login",
+    "passed": true,
+    "workflow": {
+      "name": "cps-9d207ea070184831de6b1ee9cc016470ae0584c882dfd836",
+      "uid": "cf03adb7-90ab-41b5-9b4d-7b4786bd98c0"
+    },
+    "tlsVerified": true,
+    "otherOwnerDenied": true,
+    "committedDeletionClaimVerified": true,
+    "ownerRetainConflict": 409,
+    "retryRetainConflict": 409,
+    "deletionClaimPreserved": true,
+    "snapshotStillExists": true,
+    "retainedTagNotSet": true,
+    "executionPodsCreated": 0
+  },
+  "workflowDeleteAccepted": true,
+  "gatewayRemoved": true,
+  "ingressRemoved": true,
+  "workflowRemoved": true,
+  "objectDeletionPerformed": false,
+  "liveDeletionControllerRaceQualified": false
+}

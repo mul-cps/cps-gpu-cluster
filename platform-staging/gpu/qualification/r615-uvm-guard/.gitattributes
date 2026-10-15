@@ -1,0 +1,2 @@
+# Unified diff context markers precede blank source lines.
+uvm-deny-managed-mmap.patch whitespace=-blank-at-eol

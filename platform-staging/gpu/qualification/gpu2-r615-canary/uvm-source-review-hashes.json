@@ -1,0 +1,15 @@
+{
+  "reviewedSourceDirectory": "/tmp/cps-r615-pod-cap/platform-staging/gpu/qualification/r615-uvm-guard",
+  "reviewScope": "Independent source and CPU-only compile proposal; no module load performed",
+  "sourceFilesSHA256": {
+    "guard.py": "70e6719709c8f5e5eb33a02a7323473e48dede3e4c74021b8992ea8ee0605114",
+    "build_candidate.py": "033d77c8a2cdd964195d5a749dd0ac06d46db8a8e44503d7379d47711b0e896f",
+    "cpu_harness.c": "d9cc53f312fd71976a4e71d8a1d02c5d320f9f8273abd53522d9762a3a0f08bb",
+    "test_guard.py": "d34664e6db810ecd169d59a022f4a3cdc288a51dcb9ecdf5a6084652fb40ad38",
+    "test_build_candidate.py": "b423e0cb6ce1fdfc7b25de281dfccb0047571df9dd1f5590658672bf893f851b",
+    "uvm-deny-managed-mmap.patch": "1666be7d7e8a23523370b5b1cfbb1496921bafc67f24554bce33d8ec90f83608",
+    "source-manifest.json": "ac5e147c457d628a535f9324d5bba2c10bbd9f05d456fd8f9a5a8c286ccdc7c0"
+  },
+  "independentCpuTestsPassed": 9,
+  "actualGuardedCudaQualified": false
+}

@@ -1,0 +1,118 @@
+{
+  "date": "2026-10-13",
+  "status": "admin-ui-deployed-extension-packages-qualified-offline",
+  "production_qualified": false,
+  "images": {
+    "admin": "ghcr.io/mul-cps/e2x-course-hub@sha256:72cb8b044e8e091d038c8c8f4cf983c433629733847db879667c0c51bd2f7411",
+    "gateway": "ghcr.io/mul-cps/cps-compute@sha256:c254283d4e5373fa40bdf73710bd8b97075ae5048c152b015b57ece1cab568c3",
+    "hub": "ghcr.io/mul-cps/cps-compute@sha256:03a09494784f6f9b298b3eef7262ad7614a3220f5564b336df2d450c67393239"
+  },
+  "artifacts_sha256": {
+    "cps_compute-0.1.0-py3-none-any.whl": "278b6685792a551cf67aae124870c697d56837e03a06d9c0e47051d921f15c15",
+    "cps_compute_hub-0.1.0-py3-none-any.whl": "74342cc0ec8c324851700b2a4ad36e6a48f7efaae4e045b59bfa7fd476ae27a0",
+    "cps_compute_jupyterlab-0.1.0-py3-none-any.whl": "d2b116f57671be41da85e204c15007db36ee90b6159f2b7def73eb84cdc07bb2",
+    "e2x_course_hub-0.1.1-py3-none-any.whl": "c3b12c5f803ae080c5dd91f9773c2f9796f08ad94fed8d8579fbd35e8931dbe9"
+  },
+  "sources": {
+    "compute": "9969aa31639b6934d66da8ec486462cff18f4cbd",
+    "compute_image_revision": "eecd940eaa349b378e0c50ae9fbc5d18252f6645",
+    "admin": "0f1256f08e3eb8a680f0a733ed1a2622a1ab056d",
+    "admin_backend": "901a885e921e22cc037d4b64715245cb39a29d72",
+    "notebook": "4f4ce4c5d48055e9eb62a980fa3cc4741d16d755"
+  },
+  "compatibility": {
+    "hub": "5.5.2",
+    "kubespawner": "7.1.0",
+    "kubernetes_asyncio": "36.1.0",
+    "lab": [
+      "4.5.7",
+      "4.6.4"
+    ],
+    "core_hub_lab_distributions": "0.1.0",
+    "admin_distribution": "0.1.1",
+    "hera": "7.1.0"
+  },
+  "checks": {
+    "compute_pytest_passed": 1563,
+    "compute_pytest_skipped": 5,
+    "compute_without_kubeconfig": true,
+    "lab_node_tests_passed": 24,
+    "admin_browser_tests_passed": 52,
+    "admin_python_tests_passed": 215,
+    "admin_python_subtests_passed": 212,
+    "notebook_tests_passed": 32,
+    "comfy_installed_wheel_tests_passed": 6,
+    "notebook_offline_pinned_packages": 112,
+    "admin_backend_files_identical": 46,
+    "admin_dependencies_identical": true,
+    "admin_wheel_owned_static_assets": 3,
+    "lab_wheel_owned_assets": 6,
+    "lab_browser_checks_each": 13,
+    "lab_rtc_enabled_standalone": true,
+    "real_hub_oauth_two_visitor_test": false,
+    "ci": {
+      "url": "https://github.com/mul-cps/cps-compute/actions/runs/38449234944",
+      "source": "9969aa31639b6934d66da8ec486462cff18f4cbd",
+      "status": "success",
+      "wheel_sdist_from_sdist": true,
+      "installed_sdk_hub": true,
+      "lab_matrix_discovery_uninstall_reinstall": true
+    },
+    "notebook_ci": {
+      "url": "https://github.com/mul-cps/cps-jupyter-notebook/actions/runs/38449530240",
+      "source": "4f4ce4c5d48055e9eb62a980fa3cc4741d16d755",
+      "status": "success"
+    },
+    "lab_rtc_browser_after_hera_closure": true
+  },
+  "rollouts": [
+    {
+      "name": "cps-admin",
+      "namespace": "cps-compute",
+      "deployment_uid": "cea488be-b5c5-481f-b41d-169d22f56f33",
+      "generation": 49,
+      "old_image": "ghcr.io/mul-cps/e2x-course-hub@sha256:12af62e86125a59ef4292e834c8bd1b4d25b686d631c6a37dca206d20b233a03",
+      "new_image": "ghcr.io/mul-cps/e2x-course-hub@sha256:72cb8b044e8e091d038c8c8f4cf983c433629733847db879667c0c51bd2f7411",
+      "pod": "cps-admin-577b6fc64d-5sq84",
+      "pod_uid": "f6f4a55b-cca6-4be1-b8ea-02eafe211981",
+      "imageID": "ghcr.io/mul-cps/e2x-course-hub@sha256:72cb8b044e8e091d038c8c8f4cf983c433629733847db879667c0c51bd2f7411",
+      "strategy": "Recreate",
+      "replicas": 1,
+      "image_only_spec_change": true,
+      "ready": true
+    },
+    {
+      "name": "cit-admin",
+      "namespace": "cps-compute",
+      "deployment_uid": "54466777-ece9-4d63-bcd8-8156caba55af",
+      "generation": 49,
+      "old_image": "ghcr.io/mul-cps/e2x-course-hub@sha256:12af62e86125a59ef4292e834c8bd1b4d25b686d631c6a37dca206d20b233a03",
+      "new_image": "ghcr.io/mul-cps/e2x-course-hub@sha256:72cb8b044e8e091d038c8c8f4cf983c433629733847db879667c0c51bd2f7411",
+      "pod": "cit-admin-655846445c-4glrn",
+      "pod_uid": "7837acfb-acaf-456d-b382-9d7bd545e895",
+      "imageID": "ghcr.io/mul-cps/e2x-course-hub@sha256:72cb8b044e8e091d038c8c8f4cf983c433629733847db879667c0c51bd2f7411",
+      "strategy": "Recreate",
+      "replicas": 1,
+      "image_only_spec_change": true,
+      "ready": true
+    }
+  ],
+  "live_http": {
+    "cps_ingress_js_sha256_matches": true,
+    "cps_unauthenticated_protected_api_status": 302,
+    "cit_internal_js_sha256_matches": true
+  },
+  "unchanged": [
+    "database schema",
+    "OAuth credentials and visitor identity",
+    "usernames and storage mappings",
+    "GPU configuration and access policy"
+  ],
+  "pending": [
+    "live Hub/gateway/notebook package-image promotion",
+    "existing neutral-account ownership migration",
+    "two-visitor Hub OAuth/RTC and start/stop/restore qualification",
+    "production GPU concurrency and scheduling/load/restore qualification",
+    "production release tags and all notebook image variants"
+  ]
+}

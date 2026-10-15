@@ -1,0 +1,41 @@
+{
+  "all_four_current_process_acknowledgments": true,
+  "capture_companion_and_both_hubs_unchanged": true,
+  "changed_gateway_spec_paths": [
+    "/template/spec/containers/0/image",
+    "/template/spec/volumes/10/configMap/name"
+  ],
+  "changed_runtime_json_paths": [
+    "/nativeGroupApprovals/processes/gateway/image"
+  ],
+  "evidence_base": "private operator state cps-full-project-20261013",
+  "evidence_sha256": {
+    "gateway-only-handover-01bc0dbd/operator-code.json": "604bcd4f0df2b466dbc568f14e86792b4de6edbbbc5b62aa8a0378be898c86fd",
+    "gateway-only-handover-01bc0dbd/phase-01bc0dbd/final.json": "04fa7f66589efa412a2c4017ef0758c92610393145b3dae596bddaffec1c0977",
+    "gateway-only-handover-01bc0dbd/phase-01bc0dbd/gateway-deployment-applied.json": "06f20e6c08659e3137c247899bd6a4eadf0ac1564f31ffdb636ca53cb57056d9",
+    "gateway-only-handover-01bc0dbd/phase-01bc0dbd/gateway-runtime-applied.json": "d907491b077a6239931696fba5ec8c0f86dcd4ac9f1ad4dc2986a9d63853622f",
+    "gateway-only-handover-01bc0dbd/phase-01bc0dbd/native-zero-before-apply.json": "2d0704d39a8f9249868fe21c13b9960d53e73aa4f64832d1c3a74b958041b069",
+    "gateway-only-handover-01bc0dbd/phase-01bc0dbd/native-zero-before-delivery-activation.json": "dc87d30ca4eab0f8ee42183b437a7f345ce14002fb64c5bb5ed18caaf8cadf76",
+    "gateway-only-handover-01bc0dbd/phase-01bc0dbd/native-zero-final-readback.json": "82064358dff368d688c3744ce8daf7e260f88928ce674f024526fa1e5ef48e75",
+    "gateway-only-handover-01bc0dbd/phase-01bc0dbd/new-delivery-activation-readback.json": "1b7fb84b26f9a7c5a73ca85509e23ddc29b30f50806cc4f10d69b9eb1e68854d",
+    "gateway-only-handover-01bc0dbd/plan.json": "035c6161ea80b8ade8381d1367e40b7542f2208a810b94d5b77e3938249504fb",
+    "gateway-only-handover-01bc0dbd/root-actual-execution/execution-receipt.json": "a78bf5aa36dc87827e5999198ba1d6cee90990f4a31ae8eb38af689205d25c94"
+  },
+  "execution_exit_code": 0,
+  "executor_sha256": "bc2f17e26cee7dc4db2ba54c0794f0104a9a9d89d265ee8341fa876a6d297ca1",
+  "gateway_image": "ghcr.io/mul-cps/cps-compute@sha256:08f7720eb59874c117ad0920fc87609152e87023a013699ed30e92e6620c1d4b",
+  "kind": "actual-gateway-exact-registration-resume-image-handover",
+  "limits": [
+    "The image handover passed; the normal Source CPU provisioning resume and NFS write gate is still separate.",
+    "Coordinator activation, post-Bind cap/CDI and broader production qualification remain open."
+  ],
+  "new_delivery_journal_completed": true,
+  "new_delivery_seed_sha256": "sha256:3a4c4925562566b6d6916d856cd4b065c1bbea7eeca78651520bf5944ebf6b2e",
+  "node_image": "ghcr.io/mul-cps/cps-compute@sha256:8c2c456b90330622645d509f94882a11a465ac208a6fa7fc824900d6320e5c0b",
+  "normal_cpu_lifecycle_passed": false,
+  "observed_at": "2026-10-14T10:47:02.334521+00:00",
+  "old_journal_bytes_sha256": "4f18076d81b212760c67e614413f4a225b51117ef5a99bda0ee4ca35e8da27a8",
+  "production_qualified": false,
+  "reviewed_plan_sha256": "sha256:fdddd55cf823b3a014ad7c27cbb19874a6f723a15a85e7957a7dd83ba3a88802",
+  "source_and_entitlements_unchanged": true
+}

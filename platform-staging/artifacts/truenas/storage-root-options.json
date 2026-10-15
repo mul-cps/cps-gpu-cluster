@@ -1,0 +1,15 @@
+{
+  "candidates": [
+    {
+      "root": "/mnt/persistent1/cps_persistent1_shared/compute",
+      "activeAncestorMounts": [
+        "/mnt/persistent1/cps_persistent1_shared"
+      ]
+    },
+    {
+      "root": "/mnt/persistent1/cps_compute_workspaces",
+      "activeAncestorMounts": []
+    }
+  ],
+  "scope": "Read-only live inventory; placement option only, no storage migration"
+}

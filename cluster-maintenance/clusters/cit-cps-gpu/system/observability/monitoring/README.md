@@ -243,6 +243,45 @@ helm:
 
 Fleet will automatically apply updates when configuration changes are committed.
 
+## Kubernetes unallocated whole-GPU estimate
+
+`cps:gpu_kubernetes_unallocated_devices` is a recording rule over the installed
+`kube-state-metrics` job, not a new exporter. It subtracts deduplicated physical
+`nvidia_com_gpu` container requests for bound Pending/Running Pods from node
+inventory. This includes the whole-GPU reservation Pods backing fractional KAI
+workloads. Terminal and unbound Pods do not occupy devices in this estimate;
+KAI queue allocations, CUDA utilization and unused VRAM are not inputs.
+
+The reviewed inventory is four nodes with eight whole devices. Capacity,
+allocatable inventory, node readiness, Pod phase and the KSM scrape must be
+fresh within 120 seconds. Reduced allocatable inventory, incomplete phase or
+inventory, unsupported GPU init-container requests, and missing/stale request
+accounting suppress the result. An entirely idle pool with no physical-request
+series remains unknown: absence does not establish an authoritative zero.
+A fresh observed allocation of all eight devices produces a valid zero.
+
+This is Kubernetes request accounting, not device UUID placement or process
+quiescence. It cannot detect direct device access outside resource requests,
+prove an informer cache is current, qualify a changed sharing/MIG/DRA mode, or
+guarantee placement of a four/eight-GPU gang. Scheduler placement and process
+quiescence remain independent qualification gates and unknown dashboard
+contracts. Requalify inventory and collector semantics after topology changes.
+
+Read-only qualification on 2026-10-07 at 07:41 UTC evaluated the source
+expression directly against existing Prometheus: eight inventory devices,
+one bound physical reservation, estimate seven. KAI reported fractional 0.2
+at both leaf and parent queues, confirming those gauges cannot count whole
+devices. Private machine proof is under
+`/home/bjoern/cps-platform-evidence/2026-10-07/physical-gpu-metrics/`.
+The rule and generated dashboards are source candidates; this work did not
+deploy monitoring, change Fleet, inspect Grafana, or qualify GPU isolation.
+
+Run `python scripts/compute-platform/generate-dashboards.py` and
+`python -m unittest discover -s tests/observability -p test_monitoring.py -v`.
+The latter executes the actual rules and dashboard expressions with promtool,
+including missing/stale, reservation, Pending, terminal, duplicate-target,
+unsupported-init, partial-inventory, and observed-zero fixtures.
+
 ## Security Notes
 
 1. **Admin password**: SOPS-encrypted in `grafana-sopssecret.yaml`; retrieve with `sops -d grafana-sopssecret.yaml` if you have decrypt access. Rotate via that file, not values.yaml. See `docs/sops-secrets-migration.md` for migration details.

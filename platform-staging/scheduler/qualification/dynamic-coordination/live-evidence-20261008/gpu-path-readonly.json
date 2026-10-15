@@ -1,0 +1,429 @@
+{
+  "observedAt": "2026-10-08T12:35:00.895573+00:00",
+  "readOnly": true,
+  "nodes": [
+    {
+      "name": "k3s-cp1",
+      "uid": "fa674ef4-923b-46a6-be90-887f21afe7f5",
+      "resourceVersion": "362001797",
+      "gpuAllocatable": null,
+      "gpuLabels": {}
+    },
+    {
+      "name": "k3s-cp2",
+      "uid": "b989d3ff-0372-4564-9d9a-88dcd7d63987",
+      "resourceVersion": "361999988",
+      "gpuAllocatable": null,
+      "gpuLabels": {}
+    },
+    {
+      "name": "k3s-cp3",
+      "uid": "6fa889a4-1d0d-4ce5-b62c-32d37e40a924",
+      "resourceVersion": "362001779",
+      "gpuAllocatable": null,
+      "gpuLabels": {}
+    },
+    {
+      "name": "k3s-wk-gpu1",
+      "uid": "b13bebdd-60c2-4bbd-8fce-a39312ec264d",
+      "resourceVersion": "362001497",
+      "gpuAllocatable": "2",
+      "gpuLabels": {
+        "nvidia.com/gpu.compute.major": "8",
+        "nvidia.com/gpu.compute.minor": "0",
+        "nvidia.com/gpu.count": "2",
+        "nvidia.com/gpu.deploy.container-toolkit": "true",
+        "nvidia.com/gpu.deploy.dcgm": "true",
+        "nvidia.com/gpu.deploy.dcgm-exporter": "true",
+        "nvidia.com/gpu.deploy.device-plugin": "true",
+        "nvidia.com/gpu.deploy.driver": "true",
+        "nvidia.com/gpu.deploy.gpu-feature-discovery": "true",
+        "nvidia.com/gpu.deploy.mig-manager": "true",
+        "nvidia.com/gpu.deploy.node-status-exporter": "true",
+        "nvidia.com/gpu.deploy.nvsm": "true",
+        "nvidia.com/gpu.deploy.operator-validator": "true",
+        "nvidia.com/gpu.family": "ampere",
+        "nvidia.com/gpu.machine": "Standard-PC-Q35-ICH9-2009",
+        "nvidia.com/gpu.memory": "40960",
+        "nvidia.com/gpu.mode": "compute",
+        "nvidia.com/gpu.present": "true",
+        "nvidia.com/gpu.product": "NVIDIA-A100-PCIE-40GB",
+        "nvidia.com/gpu.replicas": "1",
+        "nvidia.com/gpu.sharing-strategy": "none"
+      }
+    },
+    {
+      "name": "k3s-wk-gpu2",
+      "uid": "3336cdd5-d245-436e-b57c-2f66c6dcaa41",
+      "resourceVersion": "361994507",
+      "gpuAllocatable": "2",
+      "gpuLabels": {
+        "nvidia.com/gpu.compute.major": "8",
+        "nvidia.com/gpu.compute.minor": "0",
+        "nvidia.com/gpu.count": "2",
+        "nvidia.com/gpu.deploy.container-toolkit": "true",
+        "nvidia.com/gpu.deploy.dcgm": "true",
+        "nvidia.com/gpu.deploy.dcgm-exporter": "true",
+        "nvidia.com/gpu.deploy.device-plugin": "true",
+        "nvidia.com/gpu.deploy.driver": "true",
+        "nvidia.com/gpu.deploy.gpu-feature-discovery": "true",
+        "nvidia.com/gpu.deploy.mig-manager": "true",
+        "nvidia.com/gpu.deploy.node-status-exporter": "true",
+        "nvidia.com/gpu.deploy.nvsm": "true",
+        "nvidia.com/gpu.deploy.operator-validator": "true",
+        "nvidia.com/gpu.family": "ampere",
+        "nvidia.com/gpu.machine": "Standard-PC-Q35-ICH9-2009",
+        "nvidia.com/gpu.memory": "40960",
+        "nvidia.com/gpu.mode": "compute",
+        "nvidia.com/gpu.present": "true",
+        "nvidia.com/gpu.product": "NVIDIA-A100-PCIE-40GB",
+        "nvidia.com/gpu.replicas": "1",
+        "nvidia.com/gpu.sharing-strategy": "none"
+      }
+    },
+    {
+      "name": "k3s-wk-gpu3",
+      "uid": "7b3b5113-158d-4e0d-bd63-898a508fe806",
+      "resourceVersion": "361994812",
+      "gpuAllocatable": "2",
+      "gpuLabels": {
+        "nvidia.com/gpu.compute.major": "8",
+        "nvidia.com/gpu.compute.minor": "0",
+        "nvidia.com/gpu.count": "2",
+        "nvidia.com/gpu.deploy.container-toolkit": "true",
+        "nvidia.com/gpu.deploy.dcgm": "true",
+        "nvidia.com/gpu.deploy.dcgm-exporter": "true",
+        "nvidia.com/gpu.deploy.device-plugin": "true",
+        "nvidia.com/gpu.deploy.driver": "true",
+        "nvidia.com/gpu.deploy.gpu-feature-discovery": "true",
+        "nvidia.com/gpu.deploy.mig-manager": "true",
+        "nvidia.com/gpu.deploy.node-status-exporter": "true",
+        "nvidia.com/gpu.deploy.nvsm": "true",
+        "nvidia.com/gpu.deploy.operator-validator": "true",
+        "nvidia.com/gpu.family": "ampere",
+        "nvidia.com/gpu.machine": "Standard-PC-Q35-ICH9-2009",
+        "nvidia.com/gpu.memory": "40960",
+        "nvidia.com/gpu.mode": "compute",
+        "nvidia.com/gpu.present": "true",
+        "nvidia.com/gpu.product": "NVIDIA-A100-PCIE-40GB",
+        "nvidia.com/gpu.replicas": "1",
+        "nvidia.com/gpu.sharing-strategy": "none"
+      }
+    },
+    {
+      "name": "k3s-wk-gpu4",
+      "uid": "f0e6c6ee-3984-423f-9cfb-734c558c35cb",
+      "resourceVersion": "361998812",
+      "gpuAllocatable": "2",
+      "gpuLabels": {
+        "nvidia.com/gpu.compute.major": "8",
+        "nvidia.com/gpu.compute.minor": "0",
+        "nvidia.com/gpu.count": "2",
+        "nvidia.com/gpu.deploy.container-toolkit": "true",
+        "nvidia.com/gpu.deploy.dcgm": "true",
+        "nvidia.com/gpu.deploy.dcgm-exporter": "true",
+        "nvidia.com/gpu.deploy.device-plugin": "true",
+        "nvidia.com/gpu.deploy.driver": "true",
+        "nvidia.com/gpu.deploy.gpu-feature-discovery": "true",
+        "nvidia.com/gpu.deploy.mig-manager": "true",
+        "nvidia.com/gpu.deploy.node-status-exporter": "true",
+        "nvidia.com/gpu.deploy.nvsm": "true",
+        "nvidia.com/gpu.deploy.operator-validator": "true",
+        "nvidia.com/gpu.family": "ampere",
+        "nvidia.com/gpu.machine": "Standard-PC-Q35-ICH9-2009",
+        "nvidia.com/gpu.memory": "40960",
+        "nvidia.com/gpu.mode": "compute",
+        "nvidia.com/gpu.present": "true",
+        "nvidia.com/gpu.product": "NVIDIA-A100-PCIE-40GB",
+        "nvidia.com/gpu.replicas": "1",
+        "nvidia.com/gpu.sharing-strategy": "none"
+      }
+    }
+  ],
+  "kai": [
+    {
+      "name": "admission",
+      "uid": "a9663d18-8628-4a77-b729-d29010354968",
+      "containers": [
+        {
+          "name": "admission",
+          "image": "ghcr.io/kai-scheduler/kai-scheduler/admission:v0.18.1",
+          "args": [
+            "--scheduler-name",
+            "kai-scheduler",
+            "--webhook-addr",
+            "9443",
+            "--health-probe-bind-address",
+            ":8081",
+            "--metrics-bind-address",
+            ":8080",
+            "--gpu-sharing-enabled=true",
+            "--hami-core-enabled=true",
+            "--gpu-fraction-runtime-class-name",
+            "nvidia",
+            "--gpu-pod-runtime-class-name",
+            "nvidia",
+            "--qps",
+            "20",
+            "--burst",
+            "100"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "binder",
+      "uid": "dc2e1960-6d4f-4038-89e8-5fe66e84651d",
+      "containers": [
+        {
+          "name": "binder",
+          "image": "ghcr.io/kai-scheduler/kai-scheduler/binder:v0.18.1",
+          "args": [
+            "--scheduler-name",
+            "kai-scheduler",
+            "--resource-reservation-namespace",
+            "kai-resource-reservation",
+            "--resource-reservation-service-account",
+            "kai-resource-reservation",
+            "--resource-reservation-app-label",
+            "kai-resource-reservation",
+            "--resource-reservation-pod-image",
+            "ghcr.io/kai-scheduler/kai-scheduler/resourcereservation:v0.18.1",
+            "--scale-adjust-namespace",
+            "kai-scale-adjust",
+            "--health-probe-bind-address",
+            ":8081",
+            "--metrics-bind-address",
+            ":8080",
+            "--plugins",
+            "{\"dynamicresources\":{\"enabled\":true,\"priority\":200,\"arguments\":{\"bindTimeoutSeconds\":\"120\"}},\"gpusharing\":{\"enabled\":true,\"priority\":100,\"arguments\":{\"cdiEnabled\":\"true\",\"nriPluginEnabled\":\"false\"}},\"hamicore\":{\"enabled\":true,\"priority\":50},\"nvfractions\":{\"enabled\":false,\"priority\":90,\"arguments\":{\"cdiEnabled\":\"true\"}},\"volumebinding\":{\"enabled\":true,\"priority\":300,\"arguments\":{\"bindTimeoutSeconds\":\"120\"}}}",
+            "--qps",
+            "20",
+            "--burst",
+            "100",
+            "--resource-reservation-container-security-context",
+            "{\"capabilities\":{\"drop\":[\"all\"]},\"runAsUser\":10000,\"runAsNonRoot\":true,\"allowPrivilegeEscalation\":false}"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "kai-operator",
+      "uid": "5f9fee16-1340-47ce-be6c-2b410c2171a5",
+      "containers": [
+        {
+          "name": "operator",
+          "image": "ghcr.io/kai-scheduler/kai-scheduler/operator:v0.18.1",
+          "args": [
+            "--metrics-bind-address=:8080",
+            "--health-probe-bind-address=:8081",
+            "--leader-elect=false",
+            "--qps=50",
+            "--burst=300",
+            "--namespace=kai-scheduler"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "kai-scheduler-default",
+      "uid": "cbd81ddd-2fbc-4f1e-a2fe-9892985eac78",
+      "containers": [
+        {
+          "name": "kai-scheduler-default",
+          "image": "ghcr.io/kai-scheduler/kai-scheduler/scheduler:v0.18.1",
+          "args": [
+            "--scheduler-conf=/etc/config/config.yaml",
+            "--scheduler-name=kai-scheduler",
+            "--namespace=kai-scheduler",
+            "--nodepool-label-key=kai.scheduler/node-pool",
+            "--partition-label-value=",
+            "--resource-reservation-app-label=kai-resource-reservation",
+            "--queue-label-key=kai.scheduler/queue",
+            "--gpu-sharing-mode=HamiCore",
+            "--listen-address=:8080"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "pod-grouper",
+      "uid": "905c1ae3-2a46-4269-99e8-14b3dbdcdac8",
+      "containers": [
+        {
+          "name": "pod-grouper",
+          "image": "ghcr.io/kai-scheduler/kai-scheduler/podgrouper:v0.18.1",
+          "args": [
+            "--scheduler-name",
+            "kai-scheduler",
+            "--queue-label-key",
+            "kai.scheduler/queue",
+            "--nodepool-label-key",
+            "kai.scheduler/node-pool",
+            "--generic-karta-fallback=true"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "podgroup-controller",
+      "uid": "de171ef0-5b08-4627-8a8a-d7a8eb4211b9",
+      "containers": [
+        {
+          "name": "podgroup-controller",
+          "image": "ghcr.io/kai-scheduler/kai-scheduler/podgroupcontroller:v0.18.1",
+          "args": [
+            "--scheduler-name",
+            "kai-scheduler",
+            "--qps",
+            "20",
+            "--burst",
+            "100"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "queue-controller",
+      "uid": "a1bdcfe2-4742-4b60-8e89-c92f063280b9",
+      "containers": [
+        {
+          "name": "queue-controller",
+          "image": "ghcr.io/kai-scheduler/kai-scheduler/queuecontroller:v0.18.1",
+          "args": [
+            "--metrics-listen-address",
+            ":8080",
+            "--qps",
+            "20",
+            "--burst",
+            "100"
+          ]
+        }
+      ]
+    }
+  ],
+  "gpuDaemonsets": [
+    {
+      "namespace": "gpu-operator",
+      "name": "mps-control-daemon-standalone",
+      "uid": "745af83d-1192-4c6c-98ae-3feb26d95bb8",
+      "containers": [
+        {
+          "name": "mps-control-daemon-ctr",
+          "image": "nvcr.io/nvidia/k8s-device-plugin:v0.18.0"
+        },
+        {
+          "name": "config-manager",
+          "image": "nvcr.io/nvidia/k8s-device-plugin:v0.18.0"
+        }
+      ]
+    },
+    {
+      "namespace": "gpu-operator",
+      "name": "nvidia-container-toolkit-daemonset",
+      "uid": "fb9dcb72-8854-4da9-84c6-f4a2079eb4a5",
+      "containers": [
+        {
+          "name": "nvidia-container-toolkit-ctr",
+          "image": "nvcr.io/nvidia/k8s/container-toolkit:v1.18.0"
+        }
+      ]
+    },
+    {
+      "namespace": "gpu-operator",
+      "name": "nvidia-dcgm-exporter",
+      "uid": "4c3ea7ec-7452-4d84-acab-c80989296e12",
+      "containers": [
+        {
+          "name": "nvidia-dcgm-exporter",
+          "image": "nvcr.io/nvidia/k8s/dcgm-exporter:4.4.1-4.6.0-distroless"
+        }
+      ]
+    },
+    {
+      "namespace": "gpu-operator",
+      "name": "nvidia-device-plugin-daemonset",
+      "uid": "4087fa99-455e-4bc3-b9f2-61ce8218f226",
+      "containers": [
+        {
+          "name": "nvidia-device-plugin",
+          "image": "nvcr.io/nvidia/k8s-device-plugin:v0.18.0"
+        },
+        {
+          "name": "config-manager",
+          "image": "nvcr.io/nvidia/k8s-device-plugin:v0.18.0"
+        }
+      ]
+    },
+    {
+      "namespace": "gpu-operator",
+      "name": "nvidia-device-plugin-mps-control-daemon",
+      "uid": "b7e22237-a664-4db7-9f40-2f53d599c3b7",
+      "containers": [
+        {
+          "name": "mps-control-daemon-ctr",
+          "image": "nvcr.io/nvidia/k8s-device-plugin:v0.18.0"
+        },
+        {
+          "name": "config-manager",
+          "image": "nvcr.io/nvidia/k8s-device-plugin:v0.18.0"
+        }
+      ]
+    },
+    {
+      "namespace": "gpu-operator",
+      "name": "nvidia-driver-daemonset",
+      "uid": "7347875f-1243-4b54-9fe7-8aed76a75a05",
+      "containers": [
+        {
+          "name": "nvidia-driver-ctr",
+          "image": "nvcr.io/nvidia/driver:580.95.05-ubuntu24.04"
+        }
+      ]
+    },
+    {
+      "namespace": "gpu-operator",
+      "name": "nvidia-mig-manager",
+      "uid": "3cf03c39-1c54-4dbe-af1b-08fc34be6ee5",
+      "containers": [
+        {
+          "name": "nvidia-mig-manager",
+          "image": "nvcr.io/nvidia/cloud-native/k8s-mig-manager:v0.13.0"
+        }
+      ]
+    },
+    {
+      "namespace": "gpu-operator",
+      "name": "nvidia-operator-validator",
+      "uid": "e750740b-2c50-4291-87ee-889e9b40b12f",
+      "containers": [
+        {
+          "name": "nvidia-operator-validator",
+          "image": "nvcr.io/nvidia/gpu-operator:v25.10.0"
+        }
+      ]
+    },
+    {
+      "namespace": "kai-resource-isolator",
+      "name": "kai-resource-isolator-libsync",
+      "uid": "e33b4665-127e-4dff-9530-7ab2c3372b95",
+      "containers": [
+        {
+          "name": "libsync",
+          "image": "docker.io/projecthami/kai-resource-isolator:v1.1.0@sha256:2743f1684721f6368e87f98a17d7e7392805786cdb70b44ce0e8fdc10b1e13d0"
+        }
+      ]
+    },
+    {
+      "namespace": "kai-resource-isolator",
+      "name": "kai-resource-isolator-monitor",
+      "uid": "57340167-22e1-40f9-9a3a-7c67259e5702",
+      "containers": [
+        {
+          "name": "monitor",
+          "image": "docker.io/projecthami/kai-resource-isolator:v1.1.0@sha256:2743f1684721f6368e87f98a17d7e7392805786cdb70b44ce0e8fdc10b1e13d0"
+        }
+      ]
+    }
+  ]
+}

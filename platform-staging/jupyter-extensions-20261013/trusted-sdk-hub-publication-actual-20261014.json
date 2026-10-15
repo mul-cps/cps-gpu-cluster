@@ -1,0 +1,38 @@
+{
+  "base_layers_exact": 61,
+  "changed_installed_paths": [
+    "/usr/local/lib/python3.12/site-packages/cps_compute_hub-0.1.0.dist-info/RECORD",
+    "/usr/local/lib/python3.12/site-packages/cps_compute_hub/hub.py"
+  ],
+  "config_digest": "sha256:9383af9684797fd3410e857d3fd5b99c04cdf148e13fac7bec41b47844efdfb1",
+  "deployed": false,
+  "image": "ghcr.io/mul-cps/cps-compute@sha256:8a51a7beca628b18a13d8f0d1982e981e0a80b049ccf0efee96532a36b5b2718",
+  "installed_tests": {
+    "duration_seconds": 28.68,
+    "jupyterhub": "5.5.2",
+    "kubespawner": "7.1.0",
+    "network": "none",
+    "passed": 426,
+    "skip_reason": "Unchanged parametrized root-gate CLI tests require a separately opted-in disposable UID0 CPU fixture; candidate UID1000 fixture does not opt in.",
+    "skipped": 3,
+    "test_dependencies_mounted_only": true,
+    "warnings": 31
+  },
+  "kind": "published-managed-notebook-sdk-hub-extension-fix",
+  "noneditable": true,
+  "oci_descriptors_root_verified": 65,
+  "ordinary_sdk_live_accepted": false,
+  "personal_notebook_sdk_accepted": false,
+  "pip_check": true,
+  "preserved_core_files": 48,
+  "preserved_dependencies": 137,
+  "production_qualified": false,
+  "qualification_receipt_raw_sha256": "048c59dc55de72276db4f394d9822881a88eaaf8116434ea7380f0d99ee95393",
+  "registry_raw_manifest_sha256": "8a51a7beca628b18a13d8f0d1982e981e0a80b049ccf0efee96532a36b5b2718",
+  "rootfs_entries": 43735,
+  "scope": "Trusted SDK connection environment for successfully prepared native and registered CPU spawners; uses the current existing notebook token. No new credentials, permissions or resource changes.",
+  "source_commit": "f8d9417065559226f1f0aace122a318daceb78de",
+  "source_focused_tests_passed": 72,
+  "version": 1,
+  "wheel_sha256": "06efa06bbc31eca509fc41dc32539ddc531cd9318bbd770984d22540710ebc00"
+}

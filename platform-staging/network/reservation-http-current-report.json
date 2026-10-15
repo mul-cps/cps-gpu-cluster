@@ -1,0 +1,45 @@
+{
+  "status": "passed",
+  "source_sha": "70471b9793f21a87d74ac7a673f871dfa9620101",
+  "evidence_class": "controlled-fixture",
+  "production_qualification": false,
+  "policy_fixture": "tests.test_completion.qualified_catalog; GPU evidence test-fixture-only",
+  "checks": {
+    "independent_server_processes_and_readiness_callbacks": true,
+    "missing_invalid_and_metrics_control_credentials_denied": true,
+    "wrong_console_grant_mutation_denied": true,
+    "central_registration_source_namespace_and_grant_profile_policy_enforced": true,
+    "actual_http_race_exactly_one_winner_and_partial_rollback": true,
+    "state_is_source_scoped_and_attempt_bound": true,
+    "request_cannot_assert_shutdown_and_stale_attempt_cannot_release": true,
+    "synthetic_observer_confirmed_correct_attempt_releases": true,
+    "losing_workspace_retry_succeeds_through_http": true
+  },
+  "limits": [
+    "Synthetic service tokens, canonical identities, neutral-owner provenance and shutdown observer.",
+    "Actual HTTP loopback and separate server/client processes; no production gateway deployment.",
+    "No real Hub authentication/owner lookup, Kubernetes shutdown observation, GPU allocation, or storage provisioned."
+  ],
+  "environment": {
+    "python": "3.13.12",
+    "sqlite": "3.51.2",
+    "uvicorn": "0.54.0",
+    "httpx": "0.28.1",
+    "start_method": "spawn"
+  },
+  "source_files_sha256": {
+    "src/cps_compute/internal.py": "7ce0c466ee3ceeceacb88aedc0148640e2773fac2f30dab4e4ffd8189b45a21c",
+    "src/cps_compute/reservations.py": "492804a580a89235a7b30a3b2a06656f4fd9e75c4ef5fb6d29e3d1cefca88f57",
+    "src/cps_compute/policy.py": "cba6a04b750a26ca75e7eb91d3705a400dc4e94b72e224dfbb09cb36a6142ef4",
+    "src/cps_compute/identity.py": "6203b740fbaadc93199807e809e6eb7a970f1f7b5f343029bb8d09c6d2a65282",
+    "tests/test_completion.py": "a1dda7e30f06c535002ca768072c73b36d703cdcf51cf875f30e019f555b0046"
+  },
+  "raceStatuses": [
+    200,
+    409
+  ],
+  "serverProcesses": 2,
+  "clientProcesses": 2,
+  "reportSha256": "4567e3a1387143a811235b37fce77b4002aeff013d46ed45a49dc436d9f59f79",
+  "scriptSha256": "f9055b9227ca3ea62dfb1f34b6fa33b6b90303fdc9235e43d1866579d10f8a6f"
+}

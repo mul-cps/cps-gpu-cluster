@@ -1,0 +1,180 @@
+{
+  "claims": {
+    "cit_trusted_sdk_environment_present": true,
+    "controller_delivery_completed": true,
+    "fresh_four_process_acknowledgments": true,
+    "hardware_cap_qualified": false,
+    "human_oauth": false,
+    "native_active_caps_zero": true,
+    "ordinary_sdk_live_accepted": false,
+    "paired_hub_image_adoption": true,
+    "personal_notebook_sdk_accepted": false,
+    "production_qualified": false
+  },
+  "delivery_completion": {
+    "controller_process_uid": "b3341d04-0314-4d81-8568-152a8c7f8c03",
+    "controller_uid": "7e6ffd5e-c598-435f-875b-f9bccb03b4bf",
+    "journal_matches_final_publication": true,
+    "journal_process_refresh_empty": true,
+    "journal_raw_sha256": "b5342798c545e10a8c0e9579488bb845668762a1b559001af4cfe5a5d5a59988",
+    "journal_seed_sha256": "sha256:56f562306835b31c4cf1c3156fad0b59d26cf0291c001e8a30ff693a4759fd70",
+    "journal_transition_empty": true,
+    "ready": true,
+    "ready_replicas": 1,
+    "retained_previous_journal_sha256": "db0da3298399da2be369c87e15978aedd420a15b4a36de61b8c2ffbc2b8d20c6",
+    "structural_prior": false
+  },
+  "evidence": {
+    "cit_result": {
+      "artifact": "cit-sdk-trusted-url-acceptance-preparation-20261015/actual-run-v1/result.json",
+      "payload_published": false,
+      "raw_sha256": "0d69473ad3639952409f48d902b69440ccd014101e1ce65d98fa27173b901a3a"
+    },
+    "cit_sdk_activity_proof": {
+      "artifact": "cit-sdk-trusted-url-acceptance-preparation-20261015/actual-run-v1/actual-notebook-activity-sdk-proof.json",
+      "payload_published": false,
+      "raw_sha256": "23969e1b4f2506a65ce06bfdff920c2be9a223e05be49fba0558a72c58ef1f01"
+    },
+    "cit_stop_proof": {
+      "artifact": "cit-sdk-trusted-url-acceptance-preparation-20261015/actual-run-v1/automatic-stopped-runtime-proof.json",
+      "payload_published": false,
+      "raw_sha256": "14e5b7adebe521f4a9c8bada9ac867ec8667c371ac04ca584bab0abc6b67059a"
+    },
+    "delivery_activation_intent": {
+      "artifact": "phase-d96222a7/delivery-activation-intent.json",
+      "payload_published": false,
+      "raw_sha256": "06136dd07b28c470d42cb29af683a0e9877eb993aae8ed4f7cd9cb82d5aa670b"
+    },
+    "delivery_activation_readback": {
+      "artifact": "phase-d96222a7/new-delivery-activation-readback.json",
+      "payload_published": false,
+      "raw_sha256": "154fc7230b0bcddbd5be2d1c2f9efe444b282f23b40c3e3da99fa0a0088c5501"
+    },
+    "native_zero_final": {
+      "artifact": "phase-d96222a7/native-zero-final-readback.json",
+      "payload_published": false,
+      "raw_sha256": "036fc89787974e44765611d3e946909274a4e4f578c307103ee00088280ff0a8"
+    },
+    "phase_final": {
+      "artifact": "phase-d96222a7/final.json",
+      "payload_published": false,
+      "raw_sha256": "7b9223a857b3679c291b2dbe58965f9f5b69fed51700daedf1f9d1fe7d4a03f7"
+    },
+    "prior_publication": {
+      "artifact": "trusted-sdk-hub-publication-actual-20261014.json",
+      "raw_sha256": "c68f2d0978a36520fa92d431ca7d12c25502f796d70cbfcb743bf56f62219b76"
+    }
+  },
+  "handover": {
+    "approval_revision": "sha256:832e841b6e7b5885a80de27e8850e8e25087b7a26a08a8270f38869f10bf71ca",
+    "driver_epoch": {
+      "boot_id": "209f8bc9-a478-48e4-925a-6e07ffa56f7a",
+      "driver_generation": "b10498fc-9153-4394-875a-ea7cfb498625",
+      "gpu_uuid": "GPU-16128952-b438-556a-00bb-93039ee24e56",
+      "node_uid": "3336cdd5-d245-436e-b57c-2f66c6dcaa41"
+    },
+    "four_process_acknowledgments": {
+      "gateway": {
+        "acknowledgment_sha256": "sha256:b8dbbbba02dbbe7864d6b659f2131dcd4b16b326d1521c7a7e16272cd4501d6f",
+        "deployment_uid": "f5f9b266-433d-4825-83de-d51e31c71648",
+        "document_data_sha256": "sha256:a82c95c813e61314596a7c0f32604fcf06cc6199cdd27352904e0275446a282a",
+        "document_uid": "e483a437-21fd-4133-99fb-c456ec25290c",
+        "image": "ghcr.io/mul-cps/cps-compute@sha256:08f7720eb59874c117ad0920fc87609152e87023a013699ed30e92e6620c1d4b",
+        "observed_at": "2026-10-14T20:57:50.418385+00:00",
+        "process_uid": "580a155a-c60d-4976-996b-fcdcf098e141"
+      },
+      "hub:cit": {
+        "acknowledgment_sha256": "sha256:6028e3671f9d4204356647a56320ce15fed9a950af8871aa43da66aee7c7d347",
+        "deployment_uid": "dd90f866-47d3-4b9f-ba41-b4ebf8cb2b1e",
+        "document_data_sha256": "sha256:a82c95c813e61314596a7c0f32604fcf06cc6199cdd27352904e0275446a282a",
+        "document_uid": "53829fdb-7f38-40e8-91bd-1b43a2eef4e6",
+        "image": "ghcr.io/mul-cps/cps-compute@sha256:8a51a7beca628b18a13d8f0d1982e981e0a80b049ccf0efee96532a36b5b2718",
+        "observed_at": "2026-10-14T20:57:55.609739+00:00",
+        "process_uid": "75a695f0-5b7a-4ca6-b42d-f54df835ca8b"
+      },
+      "hub:cps": {
+        "acknowledgment_sha256": "sha256:b464d227a158d7692e8e489372c195a61c77d36ae6691cebff4efa429e7cabbf",
+        "deployment_uid": "02fb8421-d323-4636-b006-2490cd6f5b63",
+        "document_data_sha256": "sha256:a82c95c813e61314596a7c0f32604fcf06cc6199cdd27352904e0275446a282a",
+        "document_uid": "d21b157f-2ee2-4ccf-9289-ae00adf5dcd3",
+        "image": "ghcr.io/mul-cps/cps-compute@sha256:8a51a7beca628b18a13d8f0d1982e981e0a80b049ccf0efee96532a36b5b2718",
+        "observed_at": "2026-10-14T20:57:55.674405+00:00",
+        "process_uid": "d5ce93db-dd1f-45e8-bec4-d4933ce4eb60"
+      },
+      "node": {
+        "acknowledgment_sha256": "sha256:16f2cf484767a98c5a42ccb3f3f85b74edf3737edcc79921b52018444bd55e62",
+        "deployment_uid": "03e6bf5e-39ab-4c4a-b73f-1d6cf0ee8076",
+        "document_data_sha256": "sha256:a82c95c813e61314596a7c0f32604fcf06cc6199cdd27352904e0275446a282a",
+        "document_uid": "179499b3-168d-4b86-9ad8-6f9b00990d31",
+        "image": "ghcr.io/mul-cps/cps-compute@sha256:8c2c456b90330622645d509f94882a11a465ac208a6fa7fc824900d6320e5c0b",
+        "observed_at": "2026-10-14T20:57:48.548954+00:00",
+        "process_uid": "33b919f3-11e6-4c24-9c38-51edbc965484"
+      }
+    },
+    "gateway_and_node_images_unchanged": true,
+    "new_seed_sha256": "sha256:56f562306835b31c4cf1c3156fad0b59d26cf0291c001e8a30ff693a4759fd70",
+    "observed_at": "2026-10-14T20:58:43.659913+00:00",
+    "plan_sha256": "sha256:3e0b6cb67019831371488a8f72e42b4618792cfee89be201ca4eb2038b688bbb",
+    "policy_hash": "sha256:d48f6553ed036c2e7adcc97417623fe0308be93ad13b20f246047ada118511b0",
+    "previous_hub_image": "ghcr.io/mul-cps/cps-compute@sha256:d920a278df8c920f8e4c143e42b082e7ff8ed8755e08a1d3944b8bbcc0559beb",
+    "previous_seed_sha256": "sha256:6b69b858f3d91fa6fa8201ea144ac8165e145a6589525af5723227089f786456",
+    "publication_sha256": "sha256:e29b582877a245f0980c12acd5f869639e563a85d3ad053c462b95167f293648"
+  },
+  "hub_package": {
+    "config_digest": "sha256:9383af9684797fd3410e857d3fd5b99c04cdf148e13fac7bec41b47844efdfb1",
+    "image": "ghcr.io/mul-cps/cps-compute@sha256:8a51a7beca628b18a13d8f0d1982e981e0a80b049ccf0efee96532a36b5b2718",
+    "source_commit": "f8d9417065559226f1f0aace122a318daceb78de",
+    "wheel_sha256": "06efa06bbc31eca509fc41dc32539ddc531cd9318bbd770984d22540710ebc00"
+  },
+  "kind": "actual-paired-hub-trusted-sdk-environment-adoption",
+  "native_zero": {
+    "actual_active_caps": 0,
+    "actual_used_bytes": 0
+  },
+  "open_gates": [
+    "Ordinary installed native and registered CPU SDK client /v1/me success with the expected workspace principal and normal cleanup.",
+    "Diagnose the CIT ConnectError without weakening TLS or changing permissions; no HTTP response or causal TLS/network diagnosis is established by this receipt.",
+    "Human OAuth, ordinary visitor collaboration, broader GPU scheduling/capacity, recovery and full production qualification remain open."
+  ],
+  "phase": "d96222a7",
+  "scope": "Paired Hub extension image adoption and completed delivery with a separate failed ordinary SDK follow-up. Publication includes only explicitly selected identifiers, status and hashes; protected deployment, configuration, credential and journal payloads remain private.",
+  "status": "paired-hub-adoption-completed-sdk-acceptance-open",
+  "subsequent_notebook_acceptance": {
+    "cit": {
+      "activity_http_200": true,
+      "hub_and_orm_servers_absent": true,
+      "native_runtime_empty": true,
+      "normal_source_ready": true,
+      "normal_stop_confirmed": true,
+      "notebook_tokens_absent": true,
+      "oauth_codes_absent": true,
+      "ordinary_sdk_default_accepted": false,
+      "restoration": {
+        "actor_groups_restored": true,
+        "all_grants_byte_equal": true,
+        "confirmed_stopped": true,
+        "exact_windows_restored": true,
+        "group_members_restored": true,
+        "no_direct_sql_writes": true
+      },
+      "retained_pvc_uid": "28f66788-df70-4f6a-a902-4ce2270544e5",
+      "runtime_role_id": 21,
+      "sdk_default": {
+        "default_environment_configured": true,
+        "explicit_probe_environment_injected": false,
+        "failure_type": "ConnectError",
+        "gate": "blocked_client",
+        "installed_distribution_version": "0.1.0",
+        "installed_module_available": true,
+        "installed_sdk_module_sha256": "fd3456fba4cfdcece2567ed2aaed2539ebee80aa33bb639cafcd355e9e9cf8fa",
+        "missing_environment_names": []
+      }
+    },
+    "registered_cpu": {
+      "ordinary_sdk_default_accepted": false,
+      "scope": "The current run is not accepted; Root is investigating its missing initial marker proof. This receipt does not attribute it to the CIT SDK connection failure.",
+      "status": "pending-diagnosis"
+    }
+  },
+  "version": 1
+}

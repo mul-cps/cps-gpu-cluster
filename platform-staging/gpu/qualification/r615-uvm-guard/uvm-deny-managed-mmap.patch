@@ -1,0 +1,29 @@
+--- a/nvidia-uvm/uvm_va_range.c
++++ b/nvidia-uvm/uvm_va_range.c
+@@ -42,6 +42,11 @@
+ 
+ #include <linux/sched.h>
+ 
++// Experimental global canary guard. Load-time only; production use unqualified.
++static bool uvm_deny_managed_mmap = false;
++module_param(uvm_deny_managed_mmap, bool, 0444);
++MODULE_PARM_DESC(uvm_deny_managed_mmap, "Experimental deny of new managed mmap ranges; default off");
++
+ #if UVM_PROVIDES_DMA_BUF_IMPORTER()
+ #include <linux/dma-buf.h>
+ #include <linux/dma-resv.h>
+@@ -236,6 +241,14 @@
+     NV_STATUS status;
+     struct vm_area_struct *vma = vma_wrapper->vma;
+     uvm_va_range_managed_t *managed_range = NULL;
++
++    if (uvm_deny_managed_mmap) {
++        // Preserve collisions for the caller's exact semaphore/P2P fallback.
++        if (uvm_range_tree_iter_first(&va_space->va_range_tree, vma->vm_start, vma->vm_end - 1) != NULL)
++            return NV_ERR_UVM_ADDRESS_IN_USE;
++
++        return NV_ERR_NOT_SUPPORTED;
++    }
+ 
+     // Check for no overlap with HMM blocks.
+     status = uvm_hmm_va_block_reclaim(va_space, mm, vma->vm_start, vma->vm_end - 1);

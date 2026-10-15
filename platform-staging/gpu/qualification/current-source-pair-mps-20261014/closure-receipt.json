@@ -1,0 +1,58 @@
+{
+  "pair": {
+    "both_ready": true,
+    "hardware_cap_qualified": false,
+    "kai_placement_qualified": false,
+    "lifecycle_passed": true,
+    "production_qualified": false,
+    "stage": "pair-result",
+    "workspace_failure_codes": [
+      null,
+      null
+    ],
+    "workspace_results": [
+      0,
+      0
+    ]
+  },
+  "private_event_sha256": "63ce5d8b2227f1dfc806e5bfd413e87c625c06a3ba5169f28435e1c90ad4c8e0",
+  "production_qualified": false,
+  "qualification": "two-normal-source-workspaces-confirmed-close-and-reservation-release",
+  "version": 1,
+  "workspaces": [
+    {
+      "confirmed_shutdown": true,
+      "exact_group_share": true,
+      "hardware_cap_qualified": false,
+      "human_oauth": false,
+      "lifecycle_passed": true,
+      "ready": true,
+      "ready_elapsed_seconds": 98.90790251269937,
+      "reservation_released": true,
+      "restored_hub_group": true,
+      "restored_windows": true,
+      "retained_storage_after_stop": true,
+      "retained_storage_binding": true,
+      "run_id": "88beff2e-feac-4feb-be61-2832a8d4aa89",
+      "source_revision": "sha256:832e841b6e7b5885a80de27e8850e8e25087b7a26a08a8270f38869f10bf71ca",
+      "stopped_shares_empty": true
+    },
+    {
+      "confirmed_shutdown": true,
+      "exact_group_share": true,
+      "hardware_cap_qualified": false,
+      "human_oauth": false,
+      "lifecycle_passed": true,
+      "ready": true,
+      "ready_elapsed_seconds": 87.94951335527003,
+      "reservation_released": true,
+      "restored_hub_group": true,
+      "restored_windows": true,
+      "retained_storage_after_stop": true,
+      "retained_storage_binding": true,
+      "run_id": "d57a1ffb-9cba-43f4-b4fa-19948433d434",
+      "source_revision": "sha256:832e841b6e7b5885a80de27e8850e8e25087b7a26a08a8270f38869f10bf71ca",
+      "stopped_shares_empty": true
+    }
+  ]
+}

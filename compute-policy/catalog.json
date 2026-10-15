@@ -1,0 +1,428 @@
+{
+  "schemaVersion": 1,
+  "version": "0.1.0",
+  "status": "pilot-unqualified",
+  "profiles": {
+    "interactive-cpu": {
+      "kind": "interactive",
+      "enabled": true,
+      "cpu": "2",
+      "memory": "8Gi",
+      "gpu": {
+        "mode": "none"
+      },
+      "queue": "interactive",
+      "maxAgeSeconds": 86400,
+      "idleSeconds": 3600,
+      "images": []
+    },
+    "interactive-shared-5": {
+      "kind": "interactive",
+      "enabled": false,
+      "cpu": "4",
+      "memory": "16Gi",
+      "gpu": {
+        "mode": "shared",
+        "nominalMemoryGiB": 5,
+        "fraction": "0.125"
+      },
+      "queue": "interactive",
+      "qualificationRequired": "gpu-isolation-packing",
+      "maxAgeSeconds": 14400,
+      "idleSeconds": 1800,
+      "images": []
+    },
+    "interactive-shared-10": {
+      "kind": "interactive",
+      "enabled": false,
+      "cpu": "4",
+      "memory": "16Gi",
+      "gpu": {
+        "mode": "shared",
+        "nominalMemoryGiB": 10,
+        "fraction": "0.25"
+      },
+      "queue": "interactive",
+      "qualificationRequired": "gpu-isolation-packing",
+      "maxAgeSeconds": 14400,
+      "idleSeconds": 1800,
+      "images": []
+    },
+    "interactive-shared-20": {
+      "kind": "interactive",
+      "enabled": false,
+      "cpu": "4",
+      "memory": "16Gi",
+      "gpu": {
+        "mode": "shared",
+        "nominalMemoryGiB": 20,
+        "fraction": "0.5"
+      },
+      "queue": "interactive",
+      "qualificationRequired": "gpu-isolation-packing",
+      "maxAgeSeconds": 14400,
+      "idleSeconds": 1800,
+      "images": []
+    },
+    "batch-cpu": {
+      "kind": "batch",
+      "enabled": true,
+      "cpu": "2",
+      "memory": "8Gi",
+      "gpu": {
+        "mode": "none"
+      },
+      "queue": "batch",
+      "maxAgeSeconds": 14400,
+      "idleSeconds": null,
+      "images": []
+    },
+    "batch-shared-5": {
+      "kind": "batch",
+      "enabled": false,
+      "cpu": "4",
+      "memory": "16Gi",
+      "gpu": {
+        "mode": "shared",
+        "nominalMemoryGiB": 5,
+        "fraction": "0.125"
+      },
+      "queue": "batch",
+      "qualificationRequired": "gpu-isolation-packing",
+      "maxAgeSeconds": 14400,
+      "idleSeconds": null,
+      "images": []
+    },
+    "batch-shared-10": {
+      "kind": "batch",
+      "enabled": false,
+      "cpu": "4",
+      "memory": "16Gi",
+      "gpu": {
+        "mode": "shared",
+        "nominalMemoryGiB": 10,
+        "fraction": "0.25"
+      },
+      "queue": "batch",
+      "qualificationRequired": "gpu-isolation-packing",
+      "maxAgeSeconds": 14400,
+      "idleSeconds": null,
+      "images": []
+    },
+    "batch-shared-20": {
+      "kind": "batch",
+      "enabled": false,
+      "cpu": "4",
+      "memory": "16Gi",
+      "gpu": {
+        "mode": "shared",
+        "nominalMemoryGiB": 20,
+        "fraction": "0.5"
+      },
+      "queue": "batch",
+      "qualificationRequired": "gpu-isolation-packing",
+      "maxAgeSeconds": 14400,
+      "idleSeconds": null,
+      "images": []
+    },
+    "batch-exclusive-1": {
+      "kind": "batch",
+      "enabled": false,
+      "cpu": "8",
+      "memory": "32Gi",
+      "gpu": {
+        "mode": "exclusive",
+        "count": 1
+      },
+      "queue": "batch",
+      "qualificationRequired": "gpu-isolation-packing",
+      "launcher": "container",
+      "maxAgeSeconds": 14400,
+      "idleSeconds": null,
+      "images": []
+    },
+    "batch-exclusive-2": {
+      "kind": "batch",
+      "enabled": false,
+      "cpu": "16",
+      "memory": "64Gi",
+      "gpu": {
+        "mode": "exclusive",
+        "count": 2
+      },
+      "queue": "batch",
+      "qualificationRequired": "gpu-isolation-packing",
+      "launcher": "container",
+      "maxAgeSeconds": 14400,
+      "idleSeconds": null,
+      "images": []
+    },
+    "batch-exclusive-4": {
+      "kind": "batch",
+      "enabled": false,
+      "cpu": "32",
+      "memory": "128Gi",
+      "gpu": {
+        "mode": "exclusive",
+        "count": 4
+      },
+      "queue": "batch",
+      "qualificationRequired": "jobset-distributed",
+      "launcher": "jobset",
+      "maxAgeSeconds": 14400,
+      "idleSeconds": null,
+      "images": []
+    },
+    "batch-exclusive-8": {
+      "kind": "batch",
+      "enabled": false,
+      "cpu": "64",
+      "memory": "256Gi",
+      "gpu": {
+        "mode": "exclusive",
+        "count": 8
+      },
+      "queue": "batch",
+      "qualificationRequired": "jobset-distributed",
+      "launcher": "jobset",
+      "maxAgeSeconds": 14400,
+      "idleSeconds": null,
+      "images": []
+    },
+    "interactive-debug-exclusive-1": {
+      "kind": "interactive",
+      "enabled": false,
+      "cpu": "8",
+      "memory": "32Gi",
+      "gpu": {
+        "mode": "exclusive",
+        "count": 1
+      },
+      "queue": "interactive",
+      "administrativeExceptionRequired": true,
+      "qualificationRequired": "gpu-isolation-packing",
+      "maxAgeSeconds": 3600,
+      "idleSeconds": 900,
+      "images": []
+    }
+  },
+  "approvedImages": [],
+  "priorities": {
+    "exam": 90,
+    "lecture": 80,
+    "ta": 70,
+    "research": 60,
+    "project": 50,
+    "homework": 40,
+    "batch": 10,
+    "ci": 5
+  },
+  "queues": {
+    "interactive": {
+      "gpu": {
+        "deserved": 8,
+        "limit": 8
+      },
+      "cpu": {
+        "deserved": 0,
+        "limit": 256
+      },
+      "memory": {
+        "deserved": 0,
+        "limit": 1048576
+      }
+    },
+    "batch": {
+      "gpu": {
+        "deserved": 0,
+        "limit": 8
+      },
+      "cpu": {
+        "deserved": 0,
+        "limit": 256
+      },
+      "memory": {
+        "deserved": 0,
+        "limit": 1048576
+      }
+    }
+  },
+  "entitlements": {
+    "student": {
+      "profiles": [
+        "interactive-cpu"
+      ],
+      "priorities": [
+        "homework"
+      ],
+      "interactiveAllowances": 0
+    },
+    "teaching-gpu": {
+      "profiles": [
+        "interactive-cpu",
+        "interactive-shared-5",
+        "interactive-shared-10",
+        "interactive-shared-20"
+      ],
+      "priorities": [
+        "lecture",
+        "ta",
+        "homework"
+      ],
+      "interactiveAllowances": 1
+    },
+    "research": {
+      "profiles": [
+        "interactive-cpu",
+        "interactive-shared-5",
+        "interactive-shared-10",
+        "interactive-shared-20"
+      ],
+      "priorities": [
+        "research",
+        "project"
+      ],
+      "interactiveAllowances": 1
+    },
+    "batch": {
+      "profiles": [
+        "batch-cpu",
+        "batch-shared-5",
+        "batch-shared-10",
+        "batch-shared-20",
+        "batch-exclusive-1",
+        "batch-exclusive-2",
+        "batch-exclusive-4",
+        "batch-exclusive-8"
+      ],
+      "priorities": [
+        "batch"
+      ],
+      "interactiveAllowances": 0
+    },
+    "admin-debug": {
+      "profiles": [
+        "interactive-debug-exclusive-1"
+      ],
+      "priorities": [
+        "research"
+      ],
+      "interactiveAllowances": 1,
+      "administrativeExceptionRequired": true
+    }
+  },
+  "labels": {
+    "person": "compute.cps.unileoben.ac.at/person",
+    "owner": "compute.cps.unileoben.ac.at/owner",
+    "project": "compute.cps.unileoben.ac.at/project",
+    "policyVersion": "compute.cps.unileoben.ac.at/policy-version",
+    "policyHash": "compute.cps.unileoben.ac.at/policy-hash",
+    "hub": "compute.cps.unileoben.ac.at/hub",
+    "workspace": "compute.cps.unileoben.ac.at/workspace"
+  },
+  "gpuQualification": {
+    "qualified": false,
+    "nominalDeviceMemoryGiB": 40,
+    "measuredUsableMemoryGiB": null,
+    "runtimeOverheadGiB": null,
+    "safePacking": null,
+    "evidence": null,
+    "targets": {
+      "kai": "0.18.1",
+      "hamiCore": "qualification-required",
+      "mps": true
+    },
+    "poolPhysicalGPUs": 8
+  },
+  "reservationPolicy": {
+    "scope": "canonical-person-across-cps-cit",
+    "sharedWorkspace": "one-interactive-allowance-per-member",
+    "release": "confirmed-shutdown",
+    "leaseExpiryReleasesCapacity": false,
+    "batchIndependent": true
+  },
+  "notebook": {
+    "snapshotLimitBytes": 52428800,
+    "stripOutputs": true,
+    "parameterCellTag": "parameters",
+    "executor": "papermill",
+    "immutableSnapshot": true
+  },
+  "artifacts": {
+    "backend": "s3",
+    "selectedDeployment": "seaweedfs-on-truenas",
+    "temporaryRetentionDays": 14,
+    "runRetentionDays": 90,
+    "preserveActiveInputs": true,
+    "preserveExplicitlyRetainedOutputs": true
+  },
+  "courseProviders": {
+    "local": {
+      "enabled": true
+    },
+    "moodle": {
+      "enabled": false,
+      "baseUrl": null,
+      "authSecretRef": null,
+      "syncInterval": "10m",
+      "readOnly": true
+    }
+  },
+  "compatibility": {
+    "productionTarget": {
+      "chart": "4.4.2",
+      "jupyterhub": "5.5.2",
+      "kubespawner": "7.x"
+    },
+    "stagingTarget": {
+      "jupyterhub": "6.0.1",
+      "promote": false
+    },
+    "qualified": [],
+    "releases": [
+      {
+        "stage": "pilot",
+        "compute": "0.1.0",
+        "admin": "cps-v0.1.0",
+        "cluster": "v1.1.0",
+        "notebooks": "0.1.0"
+      },
+      {
+        "stage": "candidate",
+        "compute": "1.0.0-rc.1",
+        "admin": "cps-v1.0.0-rc.1",
+        "cluster": "v2.0.0-rc.1",
+        "notebooks": "1.0.0-rc.1"
+      },
+      {
+        "stage": "production",
+        "compute": "1.0.0",
+        "admin": "cps-v1.0.0",
+        "cluster": "v2.0.0",
+        "notebooks": "1.0.0"
+      }
+    ]
+  },
+  "trusted": {
+    "namespace": "cps-workflows",
+    "serviceAccountName": "cps-workflow",
+    "schedulerName": "kai-scheduler",
+    "queue": "cps-batch",
+    "priorityClassName": "cps-batch"
+  },
+  "queueUnits": {
+    "gpu": "physical GPU fractions",
+    "cpu": "cores",
+    "memory": "MiB"
+  },
+  "workloadScheduling": {
+    "interactive": {
+      "queue": "cps-interactive",
+      "priorityClassName": "cps-homework"
+    },
+    "batch": {
+      "queue": "cps-batch",
+      "priorityClassName": "cps-batch"
+    }
+  }
+}

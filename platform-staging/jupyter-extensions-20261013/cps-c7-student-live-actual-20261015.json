@@ -1,0 +1,204 @@
+{
+  "schemaVersion": 1,
+  "kind": "cps-c7-armin-browser-acceptance",
+  "passed": true,
+  "capturedAt": "2026-10-15T18:16:18.054179+00:00",
+  "rawBrowserReceiptSha256": "d6ffed05d89ceb5e181a2efeb94ac775384c1f4434a16ef8b210a219f1b4ae82",
+  "handoverActivationReceiptRawSha256": "f410e83bae0a811faa7b757a6c7c0af07cb1f5394eff5775b3617f26ac04b6ec",
+  "visitor": {
+    "username": "armin",
+    "canonicalIdentity": "85de720c-94b0-4bc7-807e-c04512133494",
+    "principalKind": "person",
+    "admin": false
+  },
+  "RootObservedServer": {
+    "uid": "921b8b7c-e8de-45e3-856c-b2426ed1ed7b",
+    "image": "ghcr.io/mul-cps/cps-jupyter-notebook@sha256:9444a023984ffe792ba6588b5f54d459edae1c69b13399597498a659b591df7f",
+    "source": "Root live readback message; Root retains Kubernetes proof"
+  },
+  "oldServerUID": "58200c04-d310-442c-aee5-df907a83640c",
+  "ordinaryCPUStopStartExactlyOnce": true,
+  "servedEntry": "static/remoteEntry.c7eaea5553822765e8f8.js",
+  "rawPageConfigPath": "/services/cps-admin/api/compute/v1/",
+  "actualConnectPath": "/services/cps-compute-ui/api/compute/v1/me",
+  "normalStudentOAuth": true,
+  "views": {
+    "Account & Access": {
+      "rendered": true,
+      "screenshotSha256": "507e2ba38db5624cb5cab52d3e8b2b90690f1f77f17496dac28f24b1fce09334"
+    },
+    "Current Session": {
+      "rendered": true,
+      "screenshotSha256": "a934700772610bd35c91c5213b0a7aea64ea3f505a9da90d1d2765064cfce2ca"
+    },
+    "Shared Workspaces": {
+      "rendered": true,
+      "screenshotSha256": "97fa83769206b00fe0bfc6497e68dee255695b70655ab19cd8cd32d20b12ff41"
+    },
+    "My Workloads": {
+      "rendered": true,
+      "screenshotSha256": "5779aca8e31d75617b880b66a62b434e19fcd6b91c0dfea8e6be32d29169915d"
+    },
+    "Snippets": {
+      "rendered": true,
+      "screenshotSha256": "d48225bcfdec9556bac702a6d17b1363ebdf9fe1ac36a503afed5681ba806941"
+    },
+    "Documentation": {
+      "rendered": true,
+      "screenshotSha256": "a41f539f199b53e912648493cfb0d6a0489b90f668abdaa70c4afc6f3e3d1a87"
+    }
+  },
+  "visitorRequests": [
+    {
+      "path": "/services/cps-compute-ui/api/compute/v1/me",
+      "status": 200,
+      "phase": "before-connect"
+    },
+    {
+      "path": "/services/cps-compute-ui/api/compute/v1/me",
+      "status": 200,
+      "phase": "connected"
+    },
+    {
+      "path": "/services/cps-compute-ui/api/compute/v1/session",
+      "status": 200,
+      "phase": "connected"
+    },
+    {
+      "path": "/services/cps-compute-ui/api/compute/v1/profiles",
+      "status": 200,
+      "phase": "connected"
+    },
+    {
+      "path": "/services/cps-compute-ui/api/compute/v1/workspaces",
+      "status": 200,
+      "phase": "connected"
+    },
+    {
+      "path": "/services/cps-compute-ui/api/compute/v1/jobsets",
+      "status": 503,
+      "phase": "connected"
+    },
+    {
+      "path": "/services/cps-compute-ui/api/compute/v1/workflows",
+      "status": 200,
+      "phase": "connected"
+    },
+    {
+      "path": "/services/cps-compute-ui/api/compute/v1/profiles",
+      "status": 200,
+      "phase": "connected"
+    },
+    {
+      "path": "/services/cps-compute-ui/api/compute/v1/me",
+      "status": 200,
+      "phase": "connected"
+    }
+  ],
+  "adminConsoleDenied": 403,
+  "unsharedBjoernDenied": 403,
+  "browserFailures": [],
+  "kernelSessionCounts": {
+    "before": {
+      "sessions": 0,
+      "kernels": 0,
+      "username": "armin"
+    },
+    "after": {
+      "sessions": 0,
+      "kernels": 0,
+      "username": "armin"
+    },
+    "end": {
+      "sessions": 0,
+      "kernels": 0,
+      "username": "armin"
+    }
+  },
+  "sharedWorkspace": {
+    "name": "shared-gpu-lab",
+    "cardAndOpenLinkRendered": true,
+    "readinessNotDisplayed": true,
+    "projectionLimitations": [
+      "Kernel principal: Not reported",
+      "Profiles: None reported"
+    ]
+  },
+  "optionalJobsetsNotice": "Distributed workloads are unavailable on this service.",
+  "notebooksOrKernelsCreated": false,
+  "gpuRequests": false,
+  "otherServersModified": false,
+  "rootKubernetesReadback": {
+    "checked_at": "2026-10-15T18:19:57.638130+00:00",
+    "all_other_personal_pod_uids_preserved": true,
+    "controlled_armin_normal_restart_only": true,
+    "pods": [
+      {
+        "namespace": "jupyterhub",
+        "name": "jupyter-bjoern",
+        "uid": "915b3fac-53fa-469c-8c3f-0180fb285504",
+        "ready": true,
+        "restarts": 0,
+        "containers": [
+          {
+            "name": "notebook",
+            "imageID": "ghcr.io/mul-cps/cps-jupyter-notebook@sha256:ad693e5d49ef208449d0bc5d3de86288da7aac1799c1f7f9a1d84c2f893c00c1"
+          }
+        ]
+      },
+      {
+        "namespace": "jupyterhub",
+        "name": "jupyter-cpsadmin",
+        "uid": "a984023f-eb34-4af1-b01d-bad6ea159ef4",
+        "ready": true,
+        "restarts": 0,
+        "containers": [
+          {
+            "name": "notebook",
+            "imageID": "ghcr.io/mul-cps/cps-jupyter-notebook@sha256:ad693e5d49ef208449d0bc5d3de86288da7aac1799c1f7f9a1d84c2f893c00c1"
+          }
+        ]
+      },
+      {
+        "namespace": "jupyterhub",
+        "name": "jupyter-mikasa",
+        "uid": "31846900-989b-48d1-95b3-846e9526fbb5",
+        "ready": true,
+        "restarts": 0,
+        "containers": [
+          {
+            "name": "notebook",
+            "imageID": "ghcr.io/mul-cps/cps-jupyter-notebook@sha256:d75d54d9b2b3b1b497e577124a30ca4c82993dd8458550a0b1fa73c37159b64f"
+          }
+        ]
+      },
+      {
+        "namespace": "jupyterhub",
+        "name": "jupyter-armin",
+        "uid": "921b8b7c-e8de-45e3-856c-b2426ed1ed7b",
+        "ready": true,
+        "restarts": 0,
+        "containers": [
+          {
+            "name": "notebook",
+            "imageID": "ghcr.io/mul-cps/cps-jupyter-notebook@sha256:9444a023984ffe792ba6588b5f54d459edae1c69b13399597498a659b591df7f"
+          }
+        ]
+      },
+      {
+        "namespace": "cit-jhub",
+        "name": "jupyter-mikasa",
+        "uid": "cc40cf41-a793-4bbf-a395-086d32972596",
+        "ready": true,
+        "restarts": 0,
+        "containers": [
+          {
+            "name": "notebook",
+            "imageID": "ghcr.io/mul-cps/cit-jupyter-notebook@sha256:7cbef42fe051178e209bf5e245d6811bc8f8c24dff1bd07a639e1d812adbfd63"
+          }
+        ]
+      }
+    ]
+  },
+  "productionQualified": false
+}

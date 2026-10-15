@@ -1,0 +1,77 @@
+{{- if and .Values.enabled .Values.gateway.kubernetes.enabled }}
+# Protect the isolated V2 tree independently of NFS hostname/IP aliases.
+# Legacy V1 shared-home storage needs a reviewed migration; it is not covered.
+apiVersion: admissionregistration.k8s.io/v1
+kind: ValidatingAdmissionPolicy
+metadata:
+  name: cps-compute-private-workspace-pv
+spec:
+  failurePolicy: Fail
+  matchConstraints:
+    resourceRules:
+      - apiGroups: [""]
+        apiVersions: [v1]
+        operations: [CREATE, UPDATE]
+        resources: [persistentvolumes]
+  variables:
+    - name: path
+      expression: "has(object.spec.nfs) ? object.spec.nfs.path : ''"
+  validations:
+    - expression: >-
+        !has(object.spec.nfs) ||
+        (variables.path.startsWith('/') && !variables.path.contains('//') &&
+         !variables.path.split('/').exists(s, s in ['.', '..']) &&
+         !variables.path.matches('^/(mnt(/persistent1(/cps_compute_workspaces(/(cps|cit))?)?)?)?/*$') &&
+         (!variables.path.startsWith('/mnt/persistent1/cps_compute_workspaces/') ||
+          (variables.path.matches('^/mnt/persistent1/cps_compute_workspaces/(cps|cit)/[a-f0-9]{64}$') &&
+           object.spec.nfs.server == '193.170.30.58' &&
+           object.spec.persistentVolumeReclaimPolicy == 'Retain' &&
+           object.spec.accessModes == ['ReadWriteMany'] &&
+           has(object.spec.claimRef) && object.spec.claimRef.name == object.metadata.name &&
+           (variables.path.matches('/cps/[a-f0-9]{64}$') ? object.spec.claimRef.namespace == 'jupyterhub' : object.spec.claimRef.namespace == 'cit-jhub') &&
+           (request.userInfo.username == 'system:serviceaccount:{{ .Values.namespace }}:cps-compute-controller' ||
+            (request.operation == 'UPDATE' && has(oldObject.spec.nfs) &&
+             oldObject.spec.nfs == object.spec.nfs &&
+             object.spec.persistentVolumeReclaimPolicy == 'Retain' &&
+             has(oldObject.spec.claimRef) && has(object.spec.claimRef) &&
+             oldObject.spec.claimRef.name == object.spec.claimRef.name &&
+             oldObject.spec.claimRef.namespace == object.spec.claimRef.namespace)))))
+      message: Private workspace ancestors cannot be exported through PVs; exact V2 workspace bindings require the compute controller
+---
+apiVersion: admissionregistration.k8s.io/v1
+kind: ValidatingAdmissionPolicyBinding
+metadata:
+  name: cps-compute-private-workspace-pv
+spec:
+  policyName: cps-compute-private-workspace-pv
+  validationActions: [Deny]
+---
+apiVersion: admissionregistration.k8s.io/v1
+kind: ValidatingAdmissionPolicy
+metadata:
+  name: cps-compute-private-workspace-pod
+spec:
+  failurePolicy: Fail
+  matchConstraints:
+    resourceRules:
+      - apiGroups: [""]
+        apiVersions: [v1]
+        operations: [CREATE, UPDATE]
+        resources: [pods]
+  validations:
+    - expression: >-
+        !has(object.spec.volumes) || object.spec.volumes.all(v,
+          !has(v.nfs) ||
+          (v.nfs.path.startsWith('/') && !v.nfs.path.contains('//') &&
+           !v.nfs.path.split('/').exists(s, s in ['.', '..']) &&
+           !v.nfs.path.matches('^/(mnt(/persistent1(/cps_compute_workspaces(/.*)?)?)?)?/*$')))
+      message: Direct NFS mounts cannot expose private workspace roots or groups; use the authorized workspace PVC
+---
+apiVersion: admissionregistration.k8s.io/v1
+kind: ValidatingAdmissionPolicyBinding
+metadata:
+  name: cps-compute-private-workspace-pod
+spec:
+  policyName: cps-compute-private-workspace-pod
+  validationActions: [Deny]
+{{- end }}

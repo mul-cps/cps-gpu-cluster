@@ -1,0 +1,470 @@
+{
+  "tlsVerified": true,
+  "sources": {
+    "cps": {
+      "registration": {
+        "workspace": "qualification-recovery-a50a207ebc114648",
+        "owner": "qualification-neutral",
+        "server": "",
+        "members": [
+          "fixture-person"
+        ],
+        "principal": "workspace:cps:qualification-recovery-a50a207ebc114648",
+        "profiles": [
+          "interactive-cpu"
+        ],
+        "ceiling": {
+          "cpu": "2",
+          "memory": "8Gi"
+        },
+        "namespace": "jupyterhub",
+        "pod": "qualification-absent-c14275a081514ace",
+        "policy_hash": "sha256:051cd754210af2830d67968eea898f674a55ff66f5c88b3db95dff205f04e33d",
+        "group_id": "qualification-recovery-c8718d9dda934bca8fe8a9f9450db497"
+      },
+      "initialFailureFenced": true,
+      "storage": {
+        "pvc": "cps-workspace-5c76a32628758fcf7a551083828101cf55234a18",
+        "pv": "cps-workspace-5c76a32628758fcf7a551083828101cf55234a18",
+        "namespace": "jupyterhub",
+        "server": "193.170.30.58",
+        "path": "/mnt/persistent1/cps_compute_workspaces/cps/5c76a32628758fcf7a551083828101cf55234a185542e30a14b2389c94762904",
+        "group_hash": "5c76a32628758fcf7a551083828101cf55234a185542e30a14b2389c94762904",
+        "storage_version": 2,
+        "state": "active",
+        "readonly_mounts": [],
+        "evidence": {
+          "dataset": "persistent1/cps_compute_workspaces/cps/5c76a32628758fcf7a551083828101cf55234a185542e30a14b2389c94762904",
+          "readonly": false,
+          "mechanism": "zfs-readonly",
+          "permissions_verified": true,
+          "acltype": "POSIX1E",
+          "aclmode": "DISCARD",
+          "uid": 1000,
+          "gid": 1000,
+          "mode": "0770",
+          "default_acl": false
+        }
+      },
+      "provisionRetryWithoutReset": true,
+      "failedVerifierArchiveFenced": true,
+      "provisionBlockedDuringArchive": true,
+      "nasReadonlyBeforeRestart": {
+        "path": "/mnt/persistent1/cps_compute_workspaces/cps/5c76a32628758fcf7a551083828101cf55234a185542e30a14b2389c94762904",
+        "read_only": true,
+        "immutable": true,
+        "files_preserved": true,
+        "evidence": {
+          "dataset": "persistent1/cps_compute_workspaces/cps/5c76a32628758fcf7a551083828101cf55234a185542e30a14b2389c94762904",
+          "readonly": true,
+          "mechanism": "zfs-readonly"
+        }
+      },
+      "archive": {
+        "state": "archived",
+        "read_only_verified": true,
+        "evidence": {
+          "nas": {
+            "dataset": "persistent1/cps_compute_workspaces/cps/5c76a32628758fcf7a551083828101cf55234a185542e30a14b2389c94762904",
+            "readonly": true,
+            "mechanism": "zfs-readonly"
+          },
+          "mount": {
+            "job": "jupyterhub/cps-archive-verify-d5b07fd88ded4acb",
+            "read_only_verified": true
+          }
+        }
+      },
+      "archiveRetryAfterRestart": true,
+      "archivedProvisionDenied": true,
+      "verifierJob": {
+        "job": "jupyterhub/cps-archive-verify-d5b07fd88ded4acb",
+        "succeeded": 1,
+        "uid": 1000,
+        "rwClientMount": true,
+        "image": "ghcr.io/mul-cps/cps-compute:qualification-fa48334@sha256:409231d125fb9e2ace3b4356ea4ff5d142dd351bdde7d6ac5be8ad80c56caafe"
+      },
+      "auditGenerationsVerified": true
+    },
+    "cit": {
+      "registration": {
+        "workspace": "qualification-recovery-5c74dcc52dc34e38",
+        "owner": "qualification-neutral",
+        "server": "",
+        "members": [
+          "fixture-person"
+        ],
+        "principal": "workspace:cit:qualification-recovery-5c74dcc52dc34e38",
+        "profiles": [
+          "interactive-cpu"
+        ],
+        "ceiling": {
+          "cpu": "2",
+          "memory": "8Gi"
+        },
+        "namespace": "cit-jhub",
+        "pod": "qualification-absent-118ad0ae585849f4",
+        "policy_hash": "sha256:051cd754210af2830d67968eea898f674a55ff66f5c88b3db95dff205f04e33d",
+        "group_id": "qualification-recovery-fbb0eed354824e9e96414af50ef071d0"
+      },
+      "initialFailureFenced": true,
+      "storage": {
+        "pvc": "cps-workspace-c2f12313299b996ce63dd952a09b9cba8303d7bb",
+        "pv": "cps-workspace-c2f12313299b996ce63dd952a09b9cba8303d7bb",
+        "namespace": "cit-jhub",
+        "server": "193.170.30.58",
+        "path": "/mnt/persistent1/cps_compute_workspaces/cit/c2f12313299b996ce63dd952a09b9cba8303d7bbaebe16d61fdfc2643e12b585",
+        "group_hash": "c2f12313299b996ce63dd952a09b9cba8303d7bbaebe16d61fdfc2643e12b585",
+        "storage_version": 2,
+        "state": "active",
+        "readonly_mounts": [],
+        "evidence": {
+          "dataset": "persistent1/cps_compute_workspaces/cit/c2f12313299b996ce63dd952a09b9cba8303d7bbaebe16d61fdfc2643e12b585",
+          "readonly": false,
+          "mechanism": "zfs-readonly",
+          "permissions_verified": true,
+          "acltype": "POSIX1E",
+          "aclmode": "DISCARD",
+          "uid": 1000,
+          "gid": 1000,
+          "mode": "0770",
+          "default_acl": false
+        }
+      },
+      "provisionRetryWithoutReset": true,
+      "failedVerifierArchiveFenced": true,
+      "provisionBlockedDuringArchive": true,
+      "nasReadonlyBeforeRestart": {
+        "path": "/mnt/persistent1/cps_compute_workspaces/cit/c2f12313299b996ce63dd952a09b9cba8303d7bbaebe16d61fdfc2643e12b585",
+        "read_only": true,
+        "immutable": true,
+        "files_preserved": true,
+        "evidence": {
+          "dataset": "persistent1/cps_compute_workspaces/cit/c2f12313299b996ce63dd952a09b9cba8303d7bbaebe16d61fdfc2643e12b585",
+          "readonly": true,
+          "mechanism": "zfs-readonly"
+        }
+      },
+      "archive": {
+        "state": "archived",
+        "read_only_verified": true,
+        "evidence": {
+          "nas": {
+            "dataset": "persistent1/cps_compute_workspaces/cit/c2f12313299b996ce63dd952a09b9cba8303d7bbaebe16d61fdfc2643e12b585",
+            "readonly": true,
+            "mechanism": "zfs-readonly"
+          },
+          "mount": {
+            "job": "cit-jhub/cps-archive-verify-711583c25cc44d20",
+            "read_only_verified": true
+          }
+        }
+      },
+      "archiveRetryAfterRestart": true,
+      "archivedProvisionDenied": true,
+      "verifierJob": {
+        "job": "cit-jhub/cps-archive-verify-711583c25cc44d20",
+        "succeeded": 1,
+        "uid": 1000,
+        "rwClientMount": true,
+        "image": "ghcr.io/mul-cps/cps-compute:qualification-fa48334@sha256:409231d125fb9e2ace3b4356ea4ff5d142dd351bdde7d6ac5be8ad80c56caafe"
+      },
+      "auditGenerationsVerified": true
+    }
+  },
+  "fixtureNonce": "a5ec36f9768544bd971887eb63d129da",
+  "audit": [
+    {
+      "actor": "cps",
+      "target": "cps:qualification-recovery-a50a207ebc114648",
+      "previous": null,
+      "new": {
+        "workspace": "qualification-recovery-a50a207ebc114648",
+        "owner": "qualification-neutral",
+        "server": "",
+        "members": [
+          "fixture-person"
+        ],
+        "principal": "workspace:cps:qualification-recovery-a50a207ebc114648",
+        "profiles": [
+          "interactive-cpu"
+        ],
+        "ceiling": {
+          "cpu": "2",
+          "memory": "8Gi"
+        },
+        "namespace": "jupyterhub",
+        "pod": "qualification-absent-c14275a081514ace",
+        "policy_hash": "sha256:051cd754210af2830d67968eea898f674a55ff66f5c88b3db95dff205f04e33d",
+        "group_id": "qualification-recovery-c8718d9dda934bca8fe8a9f9450db497",
+        "workspace_label": "compute.cps.unileoben.ac.at/workspace",
+        "workspace_hash": "82c81ea9d0c8808fdef4b216bb1826a7fa4971d07bb9d6f6a8fe0729e195b80"
+      },
+      "time": "2026-10-06T22:51:29.712043+00:00",
+      "outcome": "success"
+    },
+    {
+      "actor": "cps",
+      "target": "cps:qualification-recovery-c8718d9dda934bca8fe8a9f9450db497",
+      "previous": null,
+      "new": {
+        "generation": 1,
+        "state": "provisioning"
+      },
+      "time": "2026-10-06T22:51:29.733630+00:00",
+      "outcome": "storage_started"
+    },
+    {
+      "actor": "cps",
+      "target": "cps:qualification-recovery-c8718d9dda934bca8fe8a9f9450db497",
+      "previous": {
+        "generation": 1,
+        "state": "provisioning"
+      },
+      "new": {
+        "generation": 1,
+        "state": "provisioning"
+      },
+      "time": "2026-10-06T22:51:34.146862+00:00",
+      "outcome": "storage_failed"
+    },
+    {
+      "actor": "cit",
+      "target": "cit:qualification-recovery-5c74dcc52dc34e38",
+      "previous": null,
+      "new": {
+        "workspace": "qualification-recovery-5c74dcc52dc34e38",
+        "owner": "qualification-neutral",
+        "server": "",
+        "members": [
+          "fixture-person"
+        ],
+        "principal": "workspace:cit:qualification-recovery-5c74dcc52dc34e38",
+        "profiles": [
+          "interactive-cpu"
+        ],
+        "ceiling": {
+          "cpu": "2",
+          "memory": "8Gi"
+        },
+        "namespace": "cit-jhub",
+        "pod": "qualification-absent-118ad0ae585849f4",
+        "policy_hash": "sha256:051cd754210af2830d67968eea898f674a55ff66f5c88b3db95dff205f04e33d",
+        "group_id": "qualification-recovery-fbb0eed354824e9e96414af50ef071d0",
+        "workspace_label": "compute.cps.unileoben.ac.at/workspace",
+        "workspace_hash": "6a90adaa53b74764b252da16ea5b0446b0767544f1450e985d1fb753ab7a0fe"
+      },
+      "time": "2026-10-06T22:51:34.172055+00:00",
+      "outcome": "success"
+    },
+    {
+      "actor": "cit",
+      "target": "cit:qualification-recovery-fbb0eed354824e9e96414af50ef071d0",
+      "previous": null,
+      "new": {
+        "generation": 1,
+        "state": "provisioning"
+      },
+      "time": "2026-10-06T22:51:34.191558+00:00",
+      "outcome": "storage_started"
+    },
+    {
+      "actor": "cit",
+      "target": "cit:qualification-recovery-fbb0eed354824e9e96414af50ef071d0",
+      "previous": {
+        "generation": 1,
+        "state": "provisioning"
+      },
+      "new": {
+        "generation": 1,
+        "state": "provisioning"
+      },
+      "time": "2026-10-06T22:51:38.455665+00:00",
+      "outcome": "storage_failed"
+    },
+    {
+      "actor": "cps",
+      "target": "cps:qualification-recovery-c8718d9dda934bca8fe8a9f9450db497",
+      "previous": {
+        "generation": 1,
+        "state": "provisioning"
+      },
+      "new": {
+        "generation": 2,
+        "state": "provisioning"
+      },
+      "time": "2026-10-06T22:51:44.579781+00:00",
+      "outcome": "storage_resumed"
+    },
+    {
+      "actor": "cps",
+      "target": "cps:qualification-recovery-c8718d9dda934bca8fe8a9f9450db497",
+      "previous": {
+        "generation": 2,
+        "state": "provisioning"
+      },
+      "new": {
+        "generation": 2,
+        "state": "active"
+      },
+      "time": "2026-10-06T22:51:50.988758+00:00",
+      "outcome": "storage_completed"
+    },
+    {
+      "actor": "cps",
+      "target": "cps:qualification-recovery-c8718d9dda934bca8fe8a9f9450db497",
+      "previous": {
+        "generation": 2,
+        "state": "active"
+      },
+      "new": {
+        "generation": 3,
+        "state": "archiving"
+      },
+      "time": "2026-10-06T22:51:51.043675+00:00",
+      "outcome": "storage_started"
+    },
+    {
+      "actor": "cps",
+      "target": "cps:qualification-recovery-c8718d9dda934bca8fe8a9f9450db497",
+      "previous": {
+        "generation": 3,
+        "state": "archiving"
+      },
+      "new": {
+        "generation": 3,
+        "state": "archiving"
+      },
+      "time": "2026-10-06T22:51:56.216577+00:00",
+      "outcome": "storage_failed"
+    },
+    {
+      "actor": "cit",
+      "target": "cit:qualification-recovery-fbb0eed354824e9e96414af50ef071d0",
+      "previous": {
+        "generation": 1,
+        "state": "provisioning"
+      },
+      "new": {
+        "generation": 2,
+        "state": "provisioning"
+      },
+      "time": "2026-10-06T22:51:56.246009+00:00",
+      "outcome": "storage_resumed"
+    },
+    {
+      "actor": "cit",
+      "target": "cit:qualification-recovery-fbb0eed354824e9e96414af50ef071d0",
+      "previous": {
+        "generation": 2,
+        "state": "provisioning"
+      },
+      "new": {
+        "generation": 2,
+        "state": "active"
+      },
+      "time": "2026-10-06T22:52:02.453611+00:00",
+      "outcome": "storage_completed"
+    },
+    {
+      "actor": "cit",
+      "target": "cit:qualification-recovery-fbb0eed354824e9e96414af50ef071d0",
+      "previous": {
+        "generation": 2,
+        "state": "active"
+      },
+      "new": {
+        "generation": 3,
+        "state": "archiving"
+      },
+      "time": "2026-10-06T22:52:02.505628+00:00",
+      "outcome": "storage_started"
+    },
+    {
+      "actor": "cit",
+      "target": "cit:qualification-recovery-fbb0eed354824e9e96414af50ef071d0",
+      "previous": {
+        "generation": 3,
+        "state": "archiving"
+      },
+      "new": {
+        "generation": 3,
+        "state": "archiving"
+      },
+      "time": "2026-10-06T22:52:07.745542+00:00",
+      "outcome": "storage_failed"
+    },
+    {
+      "actor": "cps",
+      "target": "cps:qualification-recovery-c8718d9dda934bca8fe8a9f9450db497",
+      "previous": {
+        "generation": 3,
+        "state": "archiving"
+      },
+      "new": {
+        "generation": 4,
+        "state": "archiving"
+      },
+      "time": "2026-10-06T22:54:59.432500+00:00",
+      "outcome": "storage_resumed"
+    },
+    {
+      "actor": "cps",
+      "target": "cps:qualification-recovery-c8718d9dda934bca8fe8a9f9450db497",
+      "previous": {
+        "generation": 4,
+        "state": "archiving"
+      },
+      "new": {
+        "generation": 4,
+        "state": "archived"
+      },
+      "time": "2026-10-06T22:55:08.812836+00:00",
+      "outcome": "storage_completed"
+    },
+    {
+      "actor": "cit",
+      "target": "cit:qualification-recovery-fbb0eed354824e9e96414af50ef071d0",
+      "previous": {
+        "generation": 3,
+        "state": "archiving"
+      },
+      "new": {
+        "generation": 4,
+        "state": "archiving"
+      },
+      "time": "2026-10-06T22:55:08.869607+00:00",
+      "outcome": "storage_resumed"
+    },
+    {
+      "actor": "cit",
+      "target": "cit:qualification-recovery-fbb0eed354824e9e96414af50ef071d0",
+      "previous": {
+        "generation": 4,
+        "state": "archiving"
+      },
+      "new": {
+        "generation": 4,
+        "state": "archived"
+      },
+      "time": "2026-10-06T22:55:18.491491+00:00",
+      "outcome": "storage_completed"
+    }
+  ],
+  "restart": {
+    "uid": "d2fbd6ae-8570-4ab2-ab6d-61f5677c743d",
+    "samePod": true,
+    "stateVolumeRecreated": false,
+    "gatewayRestartCount": 1,
+    "gatewayPreviousExitCode": 0,
+    "gatewayRestartSignal": "SIGTERM (Uvicorn handled)",
+    "hubRestartCount": 0,
+    "ignoredSignalAttempt": "SIGKILL from inside PID namespace did not terminate PID 1; not counted as crash evidence"
+  },
+  "image": "ghcr.io/mul-cps/cps-compute:qualification-recovery-111dc2d@sha256:30c09221af83a13cb46c81e1c98b66f7c80467726f6bd38e3ce6fdb06880a520",
+  "applicationCommit": "111dc2d41346027fae1b747646b47e982d0be628",
+  "noDatabaseReset": true,
+  "serviceAccount": "cps-compute-controller",
+  "productionDeployed": false,
+  "scope": "Controlled empty-workspace CPS/CIT HTTP recovery fixture; SIGTERM restart after failures, not hard crash during a NAS mutation"
+}

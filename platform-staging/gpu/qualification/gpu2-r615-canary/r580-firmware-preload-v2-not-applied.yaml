@@ -1,0 +1,98 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: gpu2-r580-firmware-preload-v2
+  namespace: gpu-operator
+  labels:
+    qualification.cps/owner: gpu2-r580-firmware-preload
+  annotations:
+    qualification.cps/state: proposal-not-applied
+    qualification.cps/expected-node-uid: 3336cdd5-d245-436e-b57c-2f66c6dcaa41
+spec:
+  backoffLimit: 0
+  activeDeadlineSeconds: 300
+  template:
+    metadata:
+      labels:
+        qualification.cps/owner: gpu2-r580-firmware-preload
+    spec:
+      nodeName: k3s-wk-gpu2
+      restartPolicy: Never
+      automountServiceAccountToken: false
+      securityContext:
+        runAsUser: 0
+        runAsGroup: 0
+        seccompProfile:
+          type: RuntimeDefault
+      containers:
+      - name: extract-firmware-only
+        image: nvcr.io/nvidia/driver@sha256:41515698692bd5e192186e620b65717af960a66d22dbb5a06e3656575a5d9148
+        imagePullPolicy: Never
+        command:
+        - /bin/bash
+        - -ec
+        args:
+        - "set -euo pipefail\narchive=/drivers/NVIDIA-Linux-x86_64-580.95.05.run\n\
+          printf '%s  %s\\n' 849ef0ef8e842b9806b2cde9f11c1303d54f1a9a769467e4e5d961b2fe1182a7\
+          \ \"$archive\" | sha256sum -c -\n# Cached makeself header508-511 emits only\
+          \ its embedded decoder and exits.\n# Full wrapper extraction hid tar stderr\
+          \ and killed its parent on failure.\n# List of this exact archive confirmed\
+          \ exactly these two regular members.\nsh \"$archive\" --extract-decompress\
+          \ > /scratch/zstd\nchmod 0700 /scratch/zstd\nmkdir /scratch/r580\ntail -n\
+          \ +1019 \"$archive\" | /scratch/zstd -d | tar --extract --file=- \\\n  \
+          \  --directory=/scratch/r580 --no-same-owner --no-same-permissions \\\n\
+          \    firmware/gsp_tu10x.bin firmware/gsp_ga10x.bin\ntest ! -L /owned-firmware/nvidia\n\
+          test ! -L /owned-firmware/nvidia/580.95.05\nmkdir -p /owned-firmware/nvidia/580.95.05\n\
+          for name in gsp_tu10x.bin gsp_ga10x.bin; do\n    matches=$(find /scratch/r580\
+          \ -type f -name \"$name\")\n    test \"$(printf '%s\\n' \"$matches\" | wc\
+          \ -l)\" -eq 1\n    test -n \"$matches\" && test -f \"$matches\" && test\
+          \ ! -L \"$matches\"\n    source_hash=$(sha256sum \"$matches\" | cut -d '\
+          \ ' -f 1)\n    destination=/owned-firmware/nvidia/580.95.05/$name\n    if\
+          \ test -e \"$destination\" || test -L \"$destination\"; then\n        test\
+          \ ! -L \"$destination\" && test -f \"$destination\"\n        test \"$(sha256sum\
+          \ \"$destination\" | cut -d ' ' -f 1)\" = \"$source_hash\"\n        printf\
+          \ 'EXISTING_MATCH %s %s\\n' \"$name\" \"$source_hash\"\n    else\n     \
+          \   temporary=$destination.$POD_UID.tmp\n        test ! -e \"$temporary\"\
+          \ && test ! -L \"$temporary\"\n        cp -- \"$matches\" \"$temporary\"\
+          \n        chmod 0644 \"$temporary\"\n        ln -- \"$temporary\" \"$destination\"\
+          \n        rm -- \"$temporary\"\n        printf 'CREATED %s %s\\n' \"$name\"\
+          \ \"$source_hash\"\n    fi\ndone\nprintf 'EXTRACTION_ONLY_NO_DRIVER_INSTALL_COMPLETE\\\
+          n'\n"
+        env:
+        - name: NVIDIA_VISIBLE_DEVICES
+          value: void
+        - name: TMPDIR
+          value: /scratch
+        - name: POD_UID
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.uid
+        securityContext:
+          privileged: false
+          allowPrivilegeEscalation: false
+          readOnlyRootFilesystem: true
+          capabilities:
+            drop:
+            - ALL
+        resources:
+          requests:
+            cpu: 100m
+            memory: 128Mi
+            ephemeral-storage: 1Gi
+          limits:
+            cpu: '1'
+            memory: 512Mi
+            ephemeral-storage: 3Gi
+        volumeMounts:
+        - name: scratch
+          mountPath: /scratch
+        - name: owned-firmware
+          mountPath: /owned-firmware
+      volumes:
+      - name: scratch
+        emptyDir:
+          sizeLimit: 3Gi
+      - name: owned-firmware
+        hostPath:
+          path: /run/nvidia/firmware-r615-canary
+          type: Directory

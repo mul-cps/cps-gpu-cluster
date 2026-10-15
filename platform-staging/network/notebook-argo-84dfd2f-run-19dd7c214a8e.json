@@ -1,0 +1,128 @@
+{
+  "status": "incomplete",
+  "scope": "one controlled CPU notebook Argo attempt, qualification-only IAM and observed cleanup",
+  "run": "19dd7c214a8e",
+  "sourceRevision": "84dfd2fa09b68e77a46f62d1a0fd6da0a42b359b",
+  "wheelSHA256": "f4390d13cd158700904091bffe8607534230a06dd46e16fdc77a0317a3882821",
+  "gatewayImage": "ghcr.io/mul-cps/cps-compute@sha256:2cc3b7924ea3a051ea871aac35e833e9dff020932e381f04d2b557e06aa99cc9",
+  "runnerImage": "ghcr.io/mul-cps/cps-jupyter-notebook@sha256:eac3085e567e85de3df63b84f985ef3f20dffcc75a55ccccbc4be66026384f1d",
+  "candidatePolicyHash": "sha256:6dbebbee79f1700266d00fcc9475896df7802a3f64cbd2a292a769ec2df1ca0c",
+  "deploymentPolicyHash": "sha256:051cd754210af2830d67968eea898f674a55ff66f5c88b3db95dff205f04e33d",
+  "workflow": {
+    "name": "cps-963ce82a43d31aa3e1393ec5cfdca999631286f5d933a438",
+    "uid": "ab0bab9e-6be6-44b4-a9bc-af5385adbf33",
+    "phase": "Succeeded",
+    "podUID": "5fe4f220-2179-458c-ba4c-97ff59d246d3",
+    "node": "k3s-wk-gpu2",
+    "CPU": 2,
+    "memory": "8Gi",
+    "mainImageID": "ghcr.io/mul-cps/cps-jupyter-notebook@sha256:eac3085e567e85de3df63b84f985ef3f20dffcc75a55ccccbc4be66026384f1d",
+    "mainCredentialFree": true,
+    "fixedPlacementOutsideGPU1": true,
+    "otherOwnerDenied": {
+      "/artifacts": 403,
+      "/logs": 403,
+      "inspect": 403,
+      "retain": 403,
+      "terminate": 403
+    }
+  },
+  "rootCollectedExecutionFacts": {
+    "freshKernel": true,
+    "typedParameters": true,
+    "selectedHelperImported": true,
+    "RESULT": 21,
+    "archivedMainLogS3Bytes": 907,
+    "evidenceScope": "root-reported in-memory S3 collection facts; no standalone notebook/log bodies saved as proof; documentation worker did not independently read or verify artifact contents"
+  },
+  "identityQualification": {
+    "checksPassed": 19,
+    "runtimeIAMRefreshObserved": true,
+    "ownedUser": "cps-notebook-qualification-c4487688ca7a",
+    "ownedBucket": "cps-notebook-qualification-c4487688ca7a",
+    "actions": [
+      "Read:cps-notebook-qualification-c4487688ca7a",
+      "Write:cps-notebook-qualification-c4487688ca7a",
+      "List:cps-notebook-qualification-c4487688ca7a",
+      "Tagging:cps-notebook-qualification-c4487688ca7a"
+    ],
+    "authorizationGranularity": "SeaweedFS bucket-only; coarse Write includes delete",
+    "publicIAMConfigurationChanged": false,
+    "serviceRestart": false,
+    "operatorCredentialsInPods": false,
+    "signedIAMDenialHTTPStatus": 403,
+    "signedIAMDenialTransport": "botocore SDK HTTPSession with explicit CA verification"
+  },
+  "projectedServiceAccount": {
+    "serverIdentity": "system:serviceaccount:cps-notebook-gateway-19dd7c214a8e:fixture-gateway",
+    "SSARChecksPassed": 7,
+    "KubernetesCAValidated": true,
+    "operatorProxyImpersonationUsed": false
+  },
+  "logsGate": {
+    "initialMissingPodWatchHTTPStatus": 403,
+    "afterOwnedRoleWatchHTTPStatus": 200,
+    "afterOwnedRoleWatchResponseBytes": 0,
+    "strictNonemptyLogCheckPassed": false,
+    "sourceFollowupRevision": "30e10e0044aef468a384e9edd9d37ce8fc618c31",
+    "sourceFollowupScope": "qualification source; does not establish complete logs or CPU runtime qualification"
+  },
+  "fixtureOutcome": {
+    "harnessStatus": "failed",
+    "harnessErrorType": "AssertionError",
+    "intentionalFailureWorkflowCreated": false,
+    "successAndFailureMatrixComplete": false,
+    "retentionEndpointQualified": false
+  },
+  "cleanup": {
+    "UIDFencedTargetCount": 6,
+    "allTargetsAbsenceObserved": true,
+    "ownedIdentityRetirementObserved": true,
+    "retiredKeyReadDenied": true,
+    "existingIdentitiesPreserved": true,
+    "productionBucketPresent": true,
+    "ownedTestBucketRetained": true,
+    "artifactObjectsRetained": 6,
+    "protectedGPU1Pod": {
+      "namespace": "jupyterhub",
+      "name": "jupyter-bjoern",
+      "uid": "a663ab6b-e927-418f-9671-fc0b36a27b3a",
+      "phase": "Running",
+      "restarts": 0,
+      "verificationScope": "fresh post-cleanup-preservation-report.json metadata"
+    },
+    "originalControlsUnchanged": 5
+  },
+  "proofSHA256": {
+    "implementation/collected-report.json": "b464c910271e43e1d5da2530aac021d2e92b072052c1a786704d3735f0630c25",
+    "actual-projected-identity-report.json": "b75a04df29d61d36f4ff700faf04ff24021b1818140ac39995deca1d3efbfffd",
+    "app-admin-route/attempt-three-identity-report.json": "f70a0173ace236e8dcd8b8f3fe1a3df3eda13268341d8eefcb5fc631ef2650b9",
+    "owned-log-api-probe.json": "a339594b091b9ce2f88f46a9d8de2ad6206da1a78080831622c1ae24bc3618a5",
+    "owned-log-api-after-watch.json": "319570280952bbd20d464f1cc90727a0c021577e9b7c45176a07fc331762e0c4",
+    "pod-watch-role-fix.json": "fd572c3bb33d83b0f3659cec3b519b286c6e9b55ceb18dca6a32aae2f588f279",
+    "cleanup-absence-report.json": "8d100fb6ce507969a7e743d1d88e48b99378167c89a6d3d2283286d0e304c614",
+    "app-admin-route/qualification-identity-retirement.json": "22118a231f3ee0fb0b3715604712585c95c258e89fa6902b129660c3eb45e8b9",
+    "cleanup-readiness-report.json": "c2046e9721921b12b6fa48abbc18ae2d419b946444491f8af7c30d239ac18af5",
+    "metadata-observation-report.json": "a6a4e0cba4cee380a96562c33c918afec4fdf0c19b0354abf34a9f3a45e285ad",
+    "post-cleanup-preservation-report.json": "69b4468921d310a219b5d3929f95b68042e36460ea36d52e3a2b720fef69938f"
+  },
+  "limitations": [
+    "Full CPU notebook gate remains incomplete: authenticated Argo log API returns HTTP200 with an empty body; deliberate failure Workflow was not created.",
+    "One CPU workload on GPU2 with CPU2/8Gi does not qualify GPU isolation, scheduling or GPU execution.",
+    "Synthetic fixture identity, authenticated loopback HTTP and separate owned bucket do not qualify human OAuth, collaboration or production HTTPS.",
+    "The thin CPU image has no attached provenance/SBOM; canonical12 artifacts remain the separate historical704 build.",
+    "Source Pod-watch fix and this record do not declare a production deployment, main promotion, formal release or full-plan completion.",
+    "RESULT21 and archived-log907B are root-reported in-memory collection facts, not independent saved-artifact proof; the full artifact/log gate remains open."
+  ],
+  "CPUArgoRuntimeQualified": false,
+  "productionQualified": false,
+  "formalReleasePublished": false,
+  "fullPlanComplete": false,
+  "documentationReview": {
+    "liveActions": false,
+    "privateCredentialValuesRead": false,
+    "podLogsRead": false,
+    "notebookContentRead": false
+  },
+  "artifactContentsIndependentlyVerifiedInThisRecord": false
+}

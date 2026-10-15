@@ -25,3 +25,10 @@ resources:
   # targets cattle-monitoring-system, so the Secret can ride along here.
   # See docs/sops-secrets-migration.md.
   - grafana-sopssecret.yaml
+
+  - compute-servicemonitors.yaml
+  - compute-rules.yaml
+  - cps-compute-overview-dashboard.yaml
+  - cps-gpu-packing-dashboard.yaml
+  - cps-kai-fairness-dashboard.yaml
+  - cps-teaching-readiness-dashboard.yaml

@@ -1,0 +1,30 @@
+{
+  "status": "bounded-api-server-create-gate-passed",
+  "serverVersion": "v1.34.9+k3s1",
+  "qualified": {
+    "schemas": true,
+    "celTypechecking": true,
+    "emptyRegistryDenial": true,
+    "craftedPodCreate": true,
+    "craftedQuotaMapCreate": true,
+    "reviewedBindingCreate": false,
+    "argoMaterialization": false,
+    "kaiIntegration": false,
+    "gpuExecutionOrIsolation": false,
+    "productionActivation": false
+  },
+  "counts": {
+    "finalCreateMatrix": 20,
+    "allowed": 8,
+    "denied": 12,
+    "emptyRegistryMatrix": 3,
+    "registrySchemaMatrix": 5
+  },
+  "targetPodsPersisted": 0,
+  "registriesResetEmpty": true,
+  "limitations": [
+    "Reviewed Binding reaches storage NotFound because no target Pod is persisted",
+    "All Workflow owners, GPU assignments and quota-map generations remain synthetic",
+    "Live UPDATE/DELETE and real controller/binder coordination are not qualified"
+  ]
+}

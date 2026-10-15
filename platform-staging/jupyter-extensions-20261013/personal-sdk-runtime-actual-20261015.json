@@ -1,0 +1,77 @@
+{
+  "api_statuses": {
+    "/v1/me": 200,
+    "/v1/profiles": 200,
+    "/v1/session": 200
+  },
+  "canonical_person": "d98fbadd-d9a0-4981-8d20-1ab58bb75745",
+  "cit_personal_runtime_acceptance_pending": true,
+  "cleanup": {
+    "home_pvc_bound": true,
+    "home_pvc_uid": "3d0143d2-4476-4eaf-90b3-2c2890de9408",
+    "human_oauth": false,
+    "normal_stop_without_remove": true,
+    "own_actor_revoked_status": 204,
+    "own_kernel_delete_status": 204,
+    "own_named_pod_absent": true,
+    "personal_servers": [
+      {
+        "name": "jupyter-bjoern",
+        "ready": true,
+        "restarts": 0,
+        "same_uid_and_spec": true,
+        "uid": "915b3fac-53fa-469c-8c3f-0180fb285504"
+      },
+      {
+        "name": "jupyter-cpsadmin",
+        "ready": true,
+        "restarts": 0,
+        "same_uid_and_spec": true,
+        "uid": "a984023f-eb34-4af1-b01d-bad6ea159ef4"
+      }
+    ],
+    "recorded_at": "2026-10-15T10:30:57.255401+00:00",
+    "token_revocation_pending": false,
+    "updated_at": "2026-10-15T10:51:43.868774+00:00"
+  },
+  "cpsadmin_identity_not_inferred": true,
+  "default_server_plugin_restart_pending": true,
+  "evidence_sha256": {
+    "fresh-kernel-sdk-result.json": "d260ee13adaca3137d6bf533a14f4ac3fb9a0de88b54854c3a8683b130a256e2",
+    "own-kernel-cleanup.json": "4a5cdd96628e9c23e9c806c48da78204ecc14ba668fc00f23fa5068217d6ef52",
+    "revocation-a685.json": "bd65973de1e0798c60d386ddec80bef89a9bfb5c53178b3a096d74423c90f494",
+    "runtime-cleanup-receipt.json": "c3c039e27972d4dcccec376df76458c452304ee59c0765c78f7f01d5c2d055c6",
+    "served-remote-entry-receipt.json": "98c0efffbb0cff8cec633d70cf5004c69ea57237b7713d00829fe4a2822cea6a"
+  },
+  "hub_image": "sha256:1e8bdc639ecc6f07a0f101f9157a724637bcc4468138fe1e19ff7dfe4bc73da4",
+  "human_oauth": false,
+  "lab_bundle": {
+    "human_oauth": false,
+    "qualified_wheel_bytes_exact": true,
+    "remote_entry": "static/remoteEntry.a86b8ef07ff4bf434c95.js",
+    "same_origin_compute_api": "/services/cps-admin/api/compute/v1/",
+    "served_sha256": "a86b8ef07ff4bf434c9556e4e7fa6c76874ac709c331e196abee1e6dc58a53d5",
+    "status": 200
+  },
+  "notebook_image": "sha256:d75d54d9b2b3b1b497e577124a30ca4c82993dd8458550a0b1fa73c37159b64f",
+  "own_actor_revoked": {
+    "normal_hub_api": true,
+    "only_own_token": true,
+    "own_actor_id": "a685",
+    "revoked_at": "2026-10-15T10:51:43.868774+00:00",
+    "status": 204
+  },
+  "policy_hash": "sha256:d48f6553ed036c2e7adcc97417623fe0308be93ad13b20f246047ada118511b0",
+  "principal_kind": "person",
+  "probe_environment_injection": false,
+  "production_qualified": false,
+  "profile": "cpu-default",
+  "recorded_at": "2026-10-15T10:38:25.435838+00:00",
+  "scope": "Temporary personal CPS CPU named server; existing default servers preserved",
+  "sdk_zero_arguments": true,
+  "source": "cps",
+  "token_matches_own_server": true,
+  "updated_at": "2026-10-15T10:55:06.298945+00:00",
+  "username": "bjoern",
+  "version": 1
+}

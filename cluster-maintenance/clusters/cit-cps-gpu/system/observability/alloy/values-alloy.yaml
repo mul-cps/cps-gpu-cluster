@@ -1,7 +1,13 @@
 controller:
   type: daemonset
-
+  tolerations:
+  - operator: Exists
 alloy:
+  extraEnv:
+  - name: HOSTNAME
+    valueFrom:
+      fieldRef:
+        fieldPath: spec.nodeName
   configMap:
     create: true
     content: |
@@ -11,6 +17,10 @@ alloy:
 
       discovery.kubernetes "pods" {
         role = "pod"
+        selectors {
+          role = "pod"
+          field = "spec.nodeName=" + sys.env("HOSTNAME")
+        }
       }
 
       loki.source.kubernetes "pods" {
@@ -23,15 +33,10 @@ alloy:
           url = "http://loki.loki.svc.cluster.local:3100/loki/api/v1/push"
         }
       }
-
-resources:
-  requests:
-    cpu: 100m
-    memory: 256Mi
-  limits:
-    memory: 512Mi
-
-tolerations:
-  - operator: Exists
-
+  resources:
+    requests:
+      cpu: 100m
+      memory: 256Mi
+    limits:
+      memory: 512Mi
 hostNetwork: false

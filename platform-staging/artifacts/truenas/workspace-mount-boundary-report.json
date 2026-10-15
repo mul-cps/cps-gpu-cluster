@@ -1,0 +1,567 @@
+{
+  "operator": {
+    "cases": [
+      {
+        "kind": "PersistentVolume",
+        "path": "/",
+        "server": "193.170.30.58",
+        "readOnly": true,
+        "allowed": false,
+        "expected": false,
+        "error": "The persistentvolumes \"qualification-mount-67fd6b4ae7c2\" is invalid: : ValidatingAdmissionPolicy 'cps-compute-private-workspace-pv' with binding 'cps-compute-private-workspace-pv' denied request: Private workspace ancestors cannot be exported through PVs; exact V2 workspace bindings require the compute controller\n"
+      },
+      {
+        "kind": "PersistentVolume",
+        "path": "/",
+        "server": "truenas.local",
+        "readOnly": true,
+        "allowed": false,
+        "expected": false,
+        "error": "The persistentvolumes \"qualification-mount-e04e2856da68\" is invalid: : ValidatingAdmissionPolicy 'cps-compute-private-workspace-pv' with binding 'cps-compute-private-workspace-pv' denied request: Private workspace ancestors cannot be exported through PVs; exact V2 workspace bindings require the compute controller\n"
+      },
+      {
+        "kind": "PersistentVolume",
+        "path": "/mnt",
+        "server": "193.170.30.58",
+        "readOnly": true,
+        "allowed": false,
+        "expected": false,
+        "error": "The persistentvolumes \"qualification-mount-cd94744069d8\" is invalid: : ValidatingAdmissionPolicy 'cps-compute-private-workspace-pv' with binding 'cps-compute-private-workspace-pv' denied request: Private workspace ancestors cannot be exported through PVs; exact V2 workspace bindings require the compute controller\n"
+      },
+      {
+        "kind": "PersistentVolume",
+        "path": "/mnt",
+        "server": "truenas.local",
+        "readOnly": true,
+        "allowed": false,
+        "expected": false,
+        "error": "The persistentvolumes \"qualification-mount-6968d2c446d6\" is invalid: : ValidatingAdmissionPolicy 'cps-compute-private-workspace-pv' with binding 'cps-compute-private-workspace-pv' denied request: Private workspace ancestors cannot be exported through PVs; exact V2 workspace bindings require the compute controller\n"
+      },
+      {
+        "kind": "PersistentVolume",
+        "path": "/mnt/persistent1",
+        "server": "193.170.30.58",
+        "readOnly": true,
+        "allowed": false,
+        "expected": false,
+        "error": "The persistentvolumes \"qualification-mount-1dfba997dbb2\" is invalid: : ValidatingAdmissionPolicy 'cps-compute-private-workspace-pv' with binding 'cps-compute-private-workspace-pv' denied request: Private workspace ancestors cannot be exported through PVs; exact V2 workspace bindings require the compute controller\n"
+      },
+      {
+        "kind": "PersistentVolume",
+        "path": "/mnt/persistent1",
+        "server": "truenas.local",
+        "readOnly": true,
+        "allowed": false,
+        "expected": false,
+        "error": "The persistentvolumes \"qualification-mount-ce347df8418f\" is invalid: : ValidatingAdmissionPolicy 'cps-compute-private-workspace-pv' with binding 'cps-compute-private-workspace-pv' denied request: Private workspace ancestors cannot be exported through PVs; exact V2 workspace bindings require the compute controller\n"
+      },
+      {
+        "kind": "PersistentVolume",
+        "path": "/mnt/persistent1/cps_compute_workspaces",
+        "server": "193.170.30.58",
+        "readOnly": true,
+        "allowed": false,
+        "expected": false,
+        "error": "The persistentvolumes \"qualification-mount-375cc4280071\" is invalid: : ValidatingAdmissionPolicy 'cps-compute-private-workspace-pv' with binding 'cps-compute-private-workspace-pv' denied request: Private workspace ancestors cannot be exported through PVs; exact V2 workspace bindings require the compute controller\n"
+      },
+      {
+        "kind": "PersistentVolume",
+        "path": "/mnt/persistent1/cps_compute_workspaces",
+        "server": "truenas.local",
+        "readOnly": true,
+        "allowed": false,
+        "expected": false,
+        "error": "The persistentvolumes \"qualification-mount-e3a6e100bc82\" is invalid: : ValidatingAdmissionPolicy 'cps-compute-private-workspace-pv' with binding 'cps-compute-private-workspace-pv' denied request: Private workspace ancestors cannot be exported through PVs; exact V2 workspace bindings require the compute controller\n"
+      },
+      {
+        "kind": "PersistentVolume",
+        "path": "/mnt/persistent1/cps_compute_workspaces/cps",
+        "server": "193.170.30.58",
+        "readOnly": true,
+        "allowed": false,
+        "expected": false,
+        "error": "The persistentvolumes \"qualification-mount-6d2d08e7e2a4\" is invalid: : ValidatingAdmissionPolicy 'cps-compute-private-workspace-pv' with binding 'cps-compute-private-workspace-pv' denied request: Private workspace ancestors cannot be exported through PVs; exact V2 workspace bindings require the compute controller\n"
+      },
+      {
+        "kind": "PersistentVolume",
+        "path": "/mnt/persistent1/cps_compute_workspaces/cps",
+        "server": "truenas.local",
+        "readOnly": true,
+        "allowed": false,
+        "expected": false,
+        "error": "The persistentvolumes \"qualification-mount-4fd2ee14eb96\" is invalid: : ValidatingAdmissionPolicy 'cps-compute-private-workspace-pv' with binding 'cps-compute-private-workspace-pv' denied request: Private workspace ancestors cannot be exported through PVs; exact V2 workspace bindings require the compute controller\n"
+      },
+      {
+        "kind": "PersistentVolume",
+        "path": "/mnt/persistent1/cps_compute_workspaces/cit/",
+        "server": "193.170.30.58",
+        "readOnly": true,
+        "allowed": false,
+        "expected": false,
+        "error": "The persistentvolumes \"qualification-mount-30bf15f40d84\" is invalid: : ValidatingAdmissionPolicy 'cps-compute-private-workspace-pv' with binding 'cps-compute-private-workspace-pv' denied request: Private workspace ancestors cannot be exported through PVs; exact V2 workspace bindings require the compute controller\n"
+      },
+      {
+        "kind": "PersistentVolume",
+        "path": "/mnt/persistent1/cps_compute_workspaces/cit/",
+        "server": "truenas.local",
+        "readOnly": true,
+        "allowed": false,
+        "expected": false,
+        "error": "The persistentvolumes \"qualification-mount-c7eb5ec1db17\" is invalid: : ValidatingAdmissionPolicy 'cps-compute-private-workspace-pv' with binding 'cps-compute-private-workspace-pv' denied request: Private workspace ancestors cannot be exported through PVs; exact V2 workspace bindings require the compute controller\n"
+      },
+      {
+        "kind": "PersistentVolume",
+        "path": "/mnt//persistent1/cps_compute_workspaces",
+        "server": "193.170.30.58",
+        "readOnly": true,
+        "allowed": false,
+        "expected": false,
+        "error": "The persistentvolumes \"qualification-mount-a3c61544518c\" is invalid: : ValidatingAdmissionPolicy 'cps-compute-private-workspace-pv' with binding 'cps-compute-private-workspace-pv' denied request: Private workspace ancestors cannot be exported through PVs; exact V2 workspace bindings require the compute controller\n"
+      },
+      {
+        "kind": "PersistentVolume",
+        "path": "/mnt//persistent1/cps_compute_workspaces",
+        "server": "truenas.local",
+        "readOnly": true,
+        "allowed": false,
+        "expected": false,
+        "error": "The persistentvolumes \"qualification-mount-3aca718d376e\" is invalid: : ValidatingAdmissionPolicy 'cps-compute-private-workspace-pv' with binding 'cps-compute-private-workspace-pv' denied request: Private workspace ancestors cannot be exported through PVs; exact V2 workspace bindings require the compute controller\n"
+      },
+      {
+        "kind": "PersistentVolume",
+        "path": "/mnt/persistent1/../persistent1/cps_compute_workspaces",
+        "server": "193.170.30.58",
+        "readOnly": true,
+        "allowed": false,
+        "expected": false,
+        "error": "The persistentvolumes \"qualification-mount-f667bdb8bfe7\" is invalid: : ValidatingAdmissionPolicy 'cps-compute-private-workspace-pv' with binding 'cps-compute-private-workspace-pv' denied request: Private workspace ancestors cannot be exported through PVs; exact V2 workspace bindings require the compute controller\n"
+      },
+      {
+        "kind": "PersistentVolume",
+        "path": "/mnt/persistent1/../persistent1/cps_compute_workspaces",
+        "server": "truenas.local",
+        "readOnly": true,
+        "allowed": false,
+        "expected": false,
+        "error": "The persistentvolumes \"qualification-mount-0a0f4185aaf9\" is invalid: : ValidatingAdmissionPolicy 'cps-compute-private-workspace-pv' with binding 'cps-compute-private-workspace-pv' denied request: Private workspace ancestors cannot be exported through PVs; exact V2 workspace bindings require the compute controller\n"
+      },
+      {
+        "kind": "PersistentVolume",
+        "path": "/mnt/persistent1/cps_compute_workspaces-elsewhere",
+        "server": "193.170.30.58",
+        "readOnly": true,
+        "allowed": true,
+        "expected": true,
+        "error": ""
+      },
+      {
+        "kind": "PersistentVolume",
+        "path": "/mnt/persistent1/cps_compute_workspaces-elsewhere",
+        "server": "truenas.local",
+        "readOnly": true,
+        "allowed": true,
+        "expected": true,
+        "error": ""
+      },
+      {
+        "kind": "PersistentVolume",
+        "path": "/mnt/persistent1/cps_persistent1_shared",
+        "server": "193.170.30.58",
+        "readOnly": true,
+        "allowed": true,
+        "expected": true,
+        "error": ""
+      },
+      {
+        "kind": "PersistentVolume",
+        "path": "/mnt/persistent1/cps_persistent1_shared",
+        "server": "truenas.local",
+        "readOnly": true,
+        "allowed": true,
+        "expected": true,
+        "error": ""
+      },
+      {
+        "kind": "PersistentVolume",
+        "path": "/mnt/persistent1/cps_persistent1_users",
+        "server": "193.170.30.58",
+        "readOnly": true,
+        "allowed": true,
+        "expected": true,
+        "error": ""
+      },
+      {
+        "kind": "PersistentVolume",
+        "path": "/mnt/persistent1/cps_persistent1_users",
+        "server": "truenas.local",
+        "readOnly": true,
+        "allowed": true,
+        "expected": true,
+        "error": ""
+      },
+      {
+        "kind": "PersistentVolume",
+        "path": "/mnt/scratch1",
+        "server": "193.170.30.58",
+        "readOnly": true,
+        "allowed": true,
+        "expected": true,
+        "error": ""
+      },
+      {
+        "kind": "PersistentVolume",
+        "path": "/mnt/scratch1",
+        "server": "truenas.local",
+        "readOnly": true,
+        "allowed": true,
+        "expected": true,
+        "error": ""
+      },
+      {
+        "kind": "PersistentVolume",
+        "path": "/mnt/persistent1/cps_compute_workspaces/cps/aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "server": "193.170.30.58",
+        "readOnly": true,
+        "allowed": false,
+        "expected": false,
+        "error": "The persistentvolumes \"qualification-mount-6f9dfbd8f2ab\" is invalid: : ValidatingAdmissionPolicy 'cps-compute-private-workspace-pv' with binding 'cps-compute-private-workspace-pv' denied request: Private workspace ancestors cannot be exported through PVs; exact V2 workspace bindings require the compute controller\n"
+      },
+      {
+        "kind": "PersistentVolume",
+        "path": "/mnt/persistent1/cps_compute_workspaces/cps/aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "server": "truenas.local",
+        "readOnly": true,
+        "allowed": false,
+        "expected": false,
+        "error": "The persistentvolumes \"qualification-mount-ce40f72da1c2\" is invalid: : ValidatingAdmissionPolicy 'cps-compute-private-workspace-pv' with binding 'cps-compute-private-workspace-pv' denied request: Private workspace ancestors cannot be exported through PVs; exact V2 workspace bindings require the compute controller\n"
+      },
+      {
+        "kind": "Pod",
+        "path": "/",
+        "server": "193.170.30.58",
+        "readOnly": true,
+        "allowed": false,
+        "expected": false,
+        "error": "The pods \"qualification-mount-088baa8eff9f\" is invalid: : ValidatingAdmissionPolicy 'cps-compute-private-workspace-pod' with binding 'cps-compute-private-workspace-pod' denied request: Direct NFS mounts cannot expose private workspace roots or groups; use the authorized workspace PVC\n"
+      },
+      {
+        "kind": "Pod",
+        "path": "/",
+        "server": "truenas.local",
+        "readOnly": true,
+        "allowed": false,
+        "expected": false,
+        "error": "The pods \"qualification-mount-6f49d61d66ec\" is invalid: : ValidatingAdmissionPolicy 'cps-compute-private-workspace-pod' with binding 'cps-compute-private-workspace-pod' denied request: Direct NFS mounts cannot expose private workspace roots or groups; use the authorized workspace PVC\n"
+      },
+      {
+        "kind": "Pod",
+        "path": "/mnt",
+        "server": "193.170.30.58",
+        "readOnly": true,
+        "allowed": false,
+        "expected": false,
+        "error": "The pods \"qualification-mount-7f058b872514\" is invalid: : ValidatingAdmissionPolicy 'cps-compute-private-workspace-pod' with binding 'cps-compute-private-workspace-pod' denied request: Direct NFS mounts cannot expose private workspace roots or groups; use the authorized workspace PVC\n"
+      },
+      {
+        "kind": "Pod",
+        "path": "/mnt",
+        "server": "truenas.local",
+        "readOnly": true,
+        "allowed": false,
+        "expected": false,
+        "error": "The pods \"qualification-mount-cb5d822fedea\" is invalid: : ValidatingAdmissionPolicy 'cps-compute-private-workspace-pod' with binding 'cps-compute-private-workspace-pod' denied request: Direct NFS mounts cannot expose private workspace roots or groups; use the authorized workspace PVC\n"
+      },
+      {
+        "kind": "Pod",
+        "path": "/mnt/persistent1",
+        "server": "193.170.30.58",
+        "readOnly": true,
+        "allowed": false,
+        "expected": false,
+        "error": "The pods \"qualification-mount-1cd3dfe94a6a\" is invalid: : ValidatingAdmissionPolicy 'cps-compute-private-workspace-pod' with binding 'cps-compute-private-workspace-pod' denied request: Direct NFS mounts cannot expose private workspace roots or groups; use the authorized workspace PVC\n"
+      },
+      {
+        "kind": "Pod",
+        "path": "/mnt/persistent1",
+        "server": "truenas.local",
+        "readOnly": true,
+        "allowed": false,
+        "expected": false,
+        "error": "The pods \"qualification-mount-0e0a264ee732\" is invalid: : ValidatingAdmissionPolicy 'cps-compute-private-workspace-pod' with binding 'cps-compute-private-workspace-pod' denied request: Direct NFS mounts cannot expose private workspace roots or groups; use the authorized workspace PVC\n"
+      },
+      {
+        "kind": "Pod",
+        "path": "/mnt/persistent1/cps_compute_workspaces",
+        "server": "193.170.30.58",
+        "readOnly": true,
+        "allowed": false,
+        "expected": false,
+        "error": "The pods \"qualification-mount-4c32834bf4a8\" is invalid: : ValidatingAdmissionPolicy 'cps-compute-private-workspace-pod' with binding 'cps-compute-private-workspace-pod' denied request: Direct NFS mounts cannot expose private workspace roots or groups; use the authorized workspace PVC\n"
+      },
+      {
+        "kind": "Pod",
+        "path": "/mnt/persistent1/cps_compute_workspaces",
+        "server": "truenas.local",
+        "readOnly": true,
+        "allowed": false,
+        "expected": false,
+        "error": "The pods \"qualification-mount-e62bba00c61c\" is invalid: : ValidatingAdmissionPolicy 'cps-compute-private-workspace-pod' with binding 'cps-compute-private-workspace-pod' denied request: Direct NFS mounts cannot expose private workspace roots or groups; use the authorized workspace PVC\n"
+      },
+      {
+        "kind": "Pod",
+        "path": "/mnt/persistent1/cps_compute_workspaces/cps",
+        "server": "193.170.30.58",
+        "readOnly": true,
+        "allowed": false,
+        "expected": false,
+        "error": "The pods \"qualification-mount-6f737acd0565\" is invalid: : ValidatingAdmissionPolicy 'cps-compute-private-workspace-pod' with binding 'cps-compute-private-workspace-pod' denied request: Direct NFS mounts cannot expose private workspace roots or groups; use the authorized workspace PVC\n"
+      },
+      {
+        "kind": "Pod",
+        "path": "/mnt/persistent1/cps_compute_workspaces/cps",
+        "server": "truenas.local",
+        "readOnly": true,
+        "allowed": false,
+        "expected": false,
+        "error": "The pods \"qualification-mount-e50d3637f22a\" is invalid: : ValidatingAdmissionPolicy 'cps-compute-private-workspace-pod' with binding 'cps-compute-private-workspace-pod' denied request: Direct NFS mounts cannot expose private workspace roots or groups; use the authorized workspace PVC\n"
+      },
+      {
+        "kind": "Pod",
+        "path": "/mnt/persistent1/cps_compute_workspaces/cit/",
+        "server": "193.170.30.58",
+        "readOnly": true,
+        "allowed": false,
+        "expected": false,
+        "error": "The pods \"qualification-mount-c98dd9942708\" is invalid: : ValidatingAdmissionPolicy 'cps-compute-private-workspace-pod' with binding 'cps-compute-private-workspace-pod' denied request: Direct NFS mounts cannot expose private workspace roots or groups; use the authorized workspace PVC\n"
+      },
+      {
+        "kind": "Pod",
+        "path": "/mnt/persistent1/cps_compute_workspaces/cit/",
+        "server": "truenas.local",
+        "readOnly": true,
+        "allowed": false,
+        "expected": false,
+        "error": "The pods \"qualification-mount-fa4b082eeb00\" is invalid: : ValidatingAdmissionPolicy 'cps-compute-private-workspace-pod' with binding 'cps-compute-private-workspace-pod' denied request: Direct NFS mounts cannot expose private workspace roots or groups; use the authorized workspace PVC\n"
+      },
+      {
+        "kind": "Pod",
+        "path": "/mnt//persistent1/cps_compute_workspaces",
+        "server": "193.170.30.58",
+        "readOnly": true,
+        "allowed": false,
+        "expected": false,
+        "error": "The pods \"qualification-mount-a3f2eed00d00\" is invalid: : ValidatingAdmissionPolicy 'cps-compute-private-workspace-pod' with binding 'cps-compute-private-workspace-pod' denied request: Direct NFS mounts cannot expose private workspace roots or groups; use the authorized workspace PVC\n"
+      },
+      {
+        "kind": "Pod",
+        "path": "/mnt//persistent1/cps_compute_workspaces",
+        "server": "truenas.local",
+        "readOnly": true,
+        "allowed": false,
+        "expected": false,
+        "error": "The pods \"qualification-mount-d773c0c0eae0\" is invalid: : ValidatingAdmissionPolicy 'cps-compute-private-workspace-pod' with binding 'cps-compute-private-workspace-pod' denied request: Direct NFS mounts cannot expose private workspace roots or groups; use the authorized workspace PVC\n"
+      },
+      {
+        "kind": "Pod",
+        "path": "/mnt/persistent1/../persistent1/cps_compute_workspaces",
+        "server": "193.170.30.58",
+        "readOnly": true,
+        "allowed": false,
+        "expected": false,
+        "error": "The pods \"qualification-mount-bea367978fa9\" is invalid: : ValidatingAdmissionPolicy 'cps-compute-private-workspace-pod' with binding 'cps-compute-private-workspace-pod' denied request: Direct NFS mounts cannot expose private workspace roots or groups; use the authorized workspace PVC\n"
+      },
+      {
+        "kind": "Pod",
+        "path": "/mnt/persistent1/../persistent1/cps_compute_workspaces",
+        "server": "truenas.local",
+        "readOnly": true,
+        "allowed": false,
+        "expected": false,
+        "error": "The pods \"qualification-mount-e2bea306906e\" is invalid: : ValidatingAdmissionPolicy 'cps-compute-private-workspace-pod' with binding 'cps-compute-private-workspace-pod' denied request: Direct NFS mounts cannot expose private workspace roots or groups; use the authorized workspace PVC\n"
+      },
+      {
+        "kind": "Pod",
+        "path": "/mnt/persistent1/cps_compute_workspaces-elsewhere",
+        "server": "193.170.30.58",
+        "readOnly": true,
+        "allowed": true,
+        "expected": true,
+        "error": ""
+      },
+      {
+        "kind": "Pod",
+        "path": "/mnt/persistent1/cps_compute_workspaces-elsewhere",
+        "server": "truenas.local",
+        "readOnly": true,
+        "allowed": true,
+        "expected": true,
+        "error": ""
+      },
+      {
+        "kind": "Pod",
+        "path": "/mnt/persistent1/cps_persistent1_shared",
+        "server": "193.170.30.58",
+        "readOnly": true,
+        "allowed": true,
+        "expected": true,
+        "error": ""
+      },
+      {
+        "kind": "Pod",
+        "path": "/mnt/persistent1/cps_persistent1_shared",
+        "server": "truenas.local",
+        "readOnly": true,
+        "allowed": true,
+        "expected": true,
+        "error": ""
+      },
+      {
+        "kind": "Pod",
+        "path": "/mnt/persistent1/cps_persistent1_users",
+        "server": "193.170.30.58",
+        "readOnly": true,
+        "allowed": true,
+        "expected": true,
+        "error": ""
+      },
+      {
+        "kind": "Pod",
+        "path": "/mnt/persistent1/cps_persistent1_users",
+        "server": "truenas.local",
+        "readOnly": true,
+        "allowed": true,
+        "expected": true,
+        "error": ""
+      },
+      {
+        "kind": "Pod",
+        "path": "/mnt/scratch1",
+        "server": "193.170.30.58",
+        "readOnly": true,
+        "allowed": true,
+        "expected": true,
+        "error": ""
+      },
+      {
+        "kind": "Pod",
+        "path": "/mnt/scratch1",
+        "server": "truenas.local",
+        "readOnly": true,
+        "allowed": true,
+        "expected": true,
+        "error": ""
+      },
+      {
+        "kind": "Pod",
+        "path": "/mnt/persistent1/cps_compute_workspaces/cps/aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "server": "193.170.30.58",
+        "readOnly": true,
+        "allowed": false,
+        "expected": false,
+        "error": "The pods \"qualification-mount-3c4f4b8b2a53\" is invalid: : ValidatingAdmissionPolicy 'cps-compute-private-workspace-pod' with binding 'cps-compute-private-workspace-pod' denied request: Direct NFS mounts cannot expose private workspace roots or groups; use the authorized workspace PVC\n"
+      },
+      {
+        "kind": "Pod",
+        "path": "/mnt/persistent1/cps_compute_workspaces/cps/aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "server": "truenas.local",
+        "readOnly": true,
+        "allowed": false,
+        "expected": false,
+        "error": "The pods \"qualification-mount-6675e36e2469\" is invalid: : ValidatingAdmissionPolicy 'cps-compute-private-workspace-pod' with binding 'cps-compute-private-workspace-pod' denied request: Direct NFS mounts cannot expose private workspace roots or groups; use the authorized workspace PVC\n"
+      }
+    ],
+    "passed": true,
+    "namespace": "cps-mount-boundary-qualification",
+    "onlyServerDryRuns": true,
+    "controllerIdentity": "Positive cases tested separately with actual in-cluster service-account token; Rancher impersonation ignored"
+  },
+  "controller": {
+    "identity": "system:serviceaccount:cps-compute:cps-compute-controller",
+    "cases": [
+      {
+        "source": "cps",
+        "case": "valid",
+        "allowed": true,
+        "expected": true
+      },
+      {
+        "source": "cps",
+        "case": "wrong_namespace",
+        "allowed": false,
+        "expected": false
+      },
+      {
+        "source": "cps",
+        "case": "wrong_server",
+        "allowed": false,
+        "expected": false
+      },
+      {
+        "source": "cps",
+        "case": "delete_policy",
+        "allowed": false,
+        "expected": false
+      },
+      {
+        "source": "cps",
+        "case": "parent_root",
+        "allowed": false,
+        "expected": false
+      },
+      {
+        "source": "cit",
+        "case": "valid",
+        "allowed": true,
+        "expected": true
+      },
+      {
+        "source": "cit",
+        "case": "wrong_namespace",
+        "allowed": false,
+        "expected": false
+      },
+      {
+        "source": "cit",
+        "case": "wrong_server",
+        "allowed": false,
+        "expected": false
+      },
+      {
+        "source": "cit",
+        "case": "delete_policy",
+        "allowed": false,
+        "expected": false
+      },
+      {
+        "source": "cit",
+        "case": "parent_root",
+        "allowed": false,
+        "expected": false
+      }
+    ],
+    "onlyServerDryRuns": true,
+    "passed": true
+  },
+  "baselineBypasses": 36,
+  "admissionActive": true,
+  "existingDirectParentMounts": 0,
+  "existingAncestorPVs": 0,
+  "limits": [
+    "V2 Kubernetes PV/direct-Pod NFS boundary only; legacy V1 shared-home root not isolated",
+    "No Pod-level NFS/RPC egress or cross-group privacy proof",
+    "Only Longhorn CSI driver currently installed; future NFS CSI integration requires equivalent enforcement",
+    "Rancher ignores --as; controller checks used actual in-cluster token"
+  ],
+  "updateChecks": [
+    {
+      "case": "metadata",
+      "allowed": true,
+      "onlyServerDryRun": true
+    },
+    {
+      "case": "Delete",
+      "allowed": false,
+      "onlyServerDryRun": true
+    }
+  ]
+}

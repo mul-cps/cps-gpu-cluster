@@ -1,0 +1,31 @@
+hub:
+  loadRoles:
+    cps-compute-observer-api:
+      description: Read-only source-owned compute observer
+      scopes:
+      - read:users:name
+      - read:users:groups
+      - read:roles:users
+      - read:servers
+      services:
+      - cps-compute-observer
+    cps-admin-api:
+      description: Read-only console bootstrap; reviewed group/workspace scopes added
+        separately
+      scopes:
+      - read:users:name
+      - read:users:groups
+      - read:roles:users
+      - read:servers
+      - list:users
+      services:
+      - cps-admin
+    cps-workspace-kernel:
+      description: Operator-controlled neutral workspace principal marker
+      scopes: []
+    cps-compute-metrics-api:
+      description: Source-owned metrics scrape only
+      scopes:
+      - read:metrics
+      services:
+      - cps-compute-metrics

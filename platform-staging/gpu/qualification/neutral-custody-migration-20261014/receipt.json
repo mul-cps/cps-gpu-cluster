@@ -1,0 +1,99 @@
+{
+  "acceptance_state": {
+    "both_hubs_startup_failed": true,
+    "cpu_source_lifecycle_qualified": false,
+    "hub_candidate_rollout_attempted": true,
+    "mps_witness": false,
+    "production_qualified": false,
+    "real_batch_notebook_qualified": false,
+    "source_candidate_rollout_executed": false,
+    "startup_error": "ValueError: Kernel role configuration cannot restore revoked ownership"
+  },
+  "actual_execution_receipt_sha256": "996975fdb0ca17c5b7f8a1594a019c8b82036dd2be7933a184157185fffadb7d",
+  "backup_manifest_sha256": "26eb1c58e5a1090d5b22f1222c17695039b6669deec5a373492699a72f97b997",
+  "cleanup": {
+    "all_owned_jobs_and_pods_absent": true,
+    "private_actual_cleanup_sha256": "0ce34f3e171fcd87d167dbf1bc42d5b5e97b82890bf22803f98ad45c0a69c6b1",
+    "receipt": "operator-cleanup.json",
+    "receipt_sha256": "e6bf3126212126e9a740821877b0e8c47dc4cc1432b2b5915e0003dbb9d88689"
+  },
+  "custody_module_sha256": "fd7d9ec5b7502747901d880210f8f2fddc508898f9c88300036f72e2116a84fa",
+  "full_postgresql_database_sha256": {
+    "cit": "0b138ffedda96646f100e66d96a17a7781d245ef8c6b1bfe5e6ca4935aa522d6",
+    "cps": "76084f3bb95b10c6a3c2d794d76a3c283a3c48d4a6d8b64a5058a81e895e6710"
+  },
+  "helper_sha256": "9009346c57c4a060e901a383729110697dc0ba2cbf352032769efbf69371030e",
+  "kind": "observed-neutral-custody-migration",
+  "limitations": [
+    "Hash bindings identify retained observed evidence; they do not create runtime authority or expand GPU qualification",
+    "Sequential backup/capture; no platform-atomic/off-host/NFS recovery qualification",
+    "Full raw DB/configuration/credential/actual-readback/operator logs remain private",
+    "Hub startup policy fix and healthy matching handover are required before Source rollout or further Starts"
+  ],
+  "observed_changes": {
+    "both_hub_custody_schemas_created": true,
+    "cps_qa_only_two_scoped_roles_and_one_empty_role_free_group_created": true,
+    "cps_qa_owning_service_id": 5,
+    "cps_qa_user_id": 15,
+    "gpu_hardware_mutated": false,
+    "grants_mutated": false,
+    "original_registry_creation_receipts_unchanged": true,
+    "source_database_mutated": false,
+    "unrelated_identity_role_group_service_inventory_unchanged": true
+  },
+  "operator_image": "ghcr.io/mul-cps/cps-compute@sha256:f5bff2df99281b659f550f8cddbdfafbdbc6593d827c1f417779263658998396",
+  "operator_pods": {
+    "cit-migrate": {
+      "image": "ghcr.io/mul-cps/cps-compute@sha256:f5bff2df99281b659f550f8cddbdfafbdbc6593d827c1f417779263658998396",
+      "job_uid": "38586897-b983-4d31-b760-b4334beed148",
+      "namespace": "cit-jhub",
+      "pod_name": "cps-custody-cit-migrate-41363fd6-b8544",
+      "pod_uid": "069b4569-015e-43eb-912e-6e5927fe2e30"
+    },
+    "cps-migrate": {
+      "image": "ghcr.io/mul-cps/cps-compute@sha256:f5bff2df99281b659f550f8cddbdfafbdbc6593d827c1f417779263658998396",
+      "job_uid": "b355ebfd-8e16-4b17-84a5-c9e51f5df95f",
+      "namespace": "jupyterhub",
+      "pod_name": "cps-custody-cps-migrate-41363fd6-nncz7",
+      "pod_uid": "4f085cf1-bb6c-440d-9519-2e3fd6364720"
+    },
+    "cps-repair": {
+      "image": "ghcr.io/mul-cps/cps-compute@sha256:f5bff2df99281b659f550f8cddbdfafbdbc6593d827c1f417779263658998396",
+      "job_uid": "af54cac1-f557-401f-a010-d4d48ea4e26e",
+      "namespace": "jupyterhub",
+      "pod_name": "cps-custody-cps-repair-41363fd6-nqz4t",
+      "pod_uid": "57be3665-aef4-4129-ad7e-b9faeff86962"
+    }
+  },
+  "packet_sha256": "41363fd6e290781dd66915bf911e9b049c1d9029de2645efc820a410d3f222e1",
+  "phases": {
+    "cit-migrate": {
+      "private_actual_readback_sha256": "4a27e505dc6afb02c0ba8f44a092b6a317789dc6df03f2fddcd84584c634f9c4",
+      "private_actual_receipt_sha256": "47105d36ac6c8c6fa502aed74dafbb88ba6348ff0971fa6f5a57b9920e204cab",
+      "receipt": "cit-migrate-receipt.json",
+      "receipt_sha256": "47105d36ac6c8c6fa502aed74dafbb88ba6348ff0971fa6f5a57b9920e204cab"
+    },
+    "cps-migrate": {
+      "private_actual_readback_sha256": "b5b3fb9a3913106458a7dc016bb20e163fa6a43ec28f92c4910c5b00878ff293",
+      "private_actual_receipt_sha256": "606a892498e2755065e7840afdc49c32cb814ef4c196390e40ab9b5693aff306",
+      "receipt": "cps-migrate-receipt.json",
+      "receipt_sha256": "606a892498e2755065e7840afdc49c32cb814ef4c196390e40ab9b5693aff306"
+    },
+    "cps-repair": {
+      "private_actual_readback_sha256": "4578e14e3116e1c1b74fdc928d3011d9dba15dc8091916ea6bdf0af22952cf8c",
+      "private_actual_receipt_sha256": "89ce6a76b97e016c95f5789cc3c3dabf639a16f10e33759bfd922c165bb069fd",
+      "receipt": "cps-repair-receipt.json",
+      "receipt_sha256": "89ce6a76b97e016c95f5789cc3c3dabf639a16f10e33759bfd922c165bb069fd"
+    }
+  },
+  "postgresql_roles_sha256": {
+    "cit": "827e592234b08a5ebfc50bf3413c23f65797e403a5a2e4fc3ac85763197410f4",
+    "cps": "4caa19461a8e3f52524055a33c1e8c5245e0bf03c0082783a45c6d00b4ba1c93"
+  },
+  "root_admission_sha256": "7e72f0b71f59934aa5e73b6960c987b04d3e6f9bb7260db4201f76f820652498",
+  "source_sqlite_sha256": {
+    "cit": "20632df56288cfbeb80f3b3c98dfae5f7de42f1319f78934c0ec71c9636af237",
+    "cps": "43ac346a743d879f202a41bedbab764fc6600a505a6b7b1c340c8089452a463e"
+  },
+  "version": 1
+}

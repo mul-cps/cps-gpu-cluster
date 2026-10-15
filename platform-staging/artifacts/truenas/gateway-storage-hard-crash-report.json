@@ -1,0 +1,258 @@
+{
+  "fixtureNonce": "40488ad975f243599529bbf85f35625d",
+  "registration": {
+    "workspace": "qualification-hard-crash-b2b031e5a9514921",
+    "owner": "qualification-neutral",
+    "server": "",
+    "members": [
+      "fixture-person"
+    ],
+    "principal": "workspace:cps:qualification-hard-crash-b2b031e5a9514921",
+    "profiles": [
+      "interactive-cpu"
+    ],
+    "ceiling": {
+      "cpu": "2",
+      "memory": "8Gi"
+    },
+    "namespace": "jupyterhub",
+    "pod": "qualification-absent-b51c9abe6d8a4d1f",
+    "policy_hash": "sha256:051cd754210af2830d67968eea898f674a55ff66f5c88b3db95dff205f04e33d",
+    "group_id": "qualification-hard-crash-b377358e415b4bd6bd101b5982525215"
+  },
+  "source": "cps",
+  "provisionBeforeCrash": {
+    "action": "provision",
+    "source": "cps",
+    "group_id": "qualification-hard-crash-b377358e415b4bd6bd101b5982525215",
+    "nas": {
+      "path": "/mnt/persistent1/cps_compute_workspaces/cps/103ce88e646bd6558b3779497abf8ab109372cc18027b1ca473e4b2f724d1782",
+      "read_only": false,
+      "immutable": false,
+      "files_preserved": true,
+      "evidence": {
+        "dataset": "persistent1/cps_compute_workspaces/cps/103ce88e646bd6558b3779497abf8ab109372cc18027b1ca473e4b2f724d1782",
+        "readonly": false,
+        "mechanism": "zfs-readonly",
+        "permissions_verified": true,
+        "acltype": "POSIX1E",
+        "aclmode": "DISCARD",
+        "uid": 1000,
+        "gid": 1000,
+        "mode": "0770",
+        "default_acl": false
+      }
+    }
+  },
+  "provisionGenerationBeforeCrash": 1,
+  "storage": {
+    "pvc": "cps-workspace-103ce88e646bd6558b3779497abf8ab109372cc1",
+    "pv": "cps-workspace-103ce88e646bd6558b3779497abf8ab109372cc1",
+    "namespace": "jupyterhub",
+    "server": "193.170.30.58",
+    "path": "/mnt/persistent1/cps_compute_workspaces/cps/103ce88e646bd6558b3779497abf8ab109372cc18027b1ca473e4b2f724d1782",
+    "group_hash": "103ce88e646bd6558b3779497abf8ab109372cc18027b1ca473e4b2f724d1782",
+    "storage_version": 2,
+    "state": "active",
+    "readonly_mounts": [],
+    "evidence": {
+      "dataset": "persistent1/cps_compute_workspaces/cps/103ce88e646bd6558b3779497abf8ab109372cc18027b1ca473e4b2f724d1782",
+      "readonly": false,
+      "mechanism": "zfs-readonly",
+      "permissions_verified": true,
+      "acltype": "POSIX1E",
+      "aclmode": "DISCARD",
+      "uid": 1000,
+      "gid": 1000,
+      "mode": "0770",
+      "default_acl": false
+    }
+  },
+  "provisionRetryAfterHardCrash": true,
+  "archiveBeforeCrash": {
+    "action": "archive",
+    "source": "cps",
+    "group_id": "qualification-hard-crash-b377358e415b4bd6bd101b5982525215",
+    "nas": {
+      "path": "/mnt/persistent1/cps_compute_workspaces/cps/103ce88e646bd6558b3779497abf8ab109372cc18027b1ca473e4b2f724d1782",
+      "read_only": true,
+      "immutable": true,
+      "files_preserved": true,
+      "evidence": {
+        "dataset": "persistent1/cps_compute_workspaces/cps/103ce88e646bd6558b3779497abf8ab109372cc18027b1ca473e4b2f724d1782",
+        "readonly": true,
+        "mechanism": "zfs-readonly"
+      }
+    }
+  },
+  "provisionDeniedWhileArchiveInFlight": true,
+  "archive": {
+    "state": "archived",
+    "read_only_verified": true,
+    "evidence": {
+      "nas": {
+        "dataset": "persistent1/cps_compute_workspaces/cps/103ce88e646bd6558b3779497abf8ab109372cc18027b1ca473e4b2f724d1782",
+        "readonly": true,
+        "mechanism": "zfs-readonly"
+      },
+      "mount": {
+        "job": "jupyterhub/cps-archive-verify-938f3d44cb1a40b1",
+        "read_only_verified": true
+      }
+    }
+  },
+  "archiveRetryAfterHardCrashAndPodReplacement": true,
+  "archivedProvisionDenied": true,
+  "audit": [
+    {
+      "actor": "cps",
+      "target": "cps:qualification-hard-crash-b2b031e5a9514921",
+      "previous": null,
+      "new": {
+        "workspace": "qualification-hard-crash-b2b031e5a9514921",
+        "owner": "qualification-neutral",
+        "server": "",
+        "members": [
+          "fixture-person"
+        ],
+        "principal": "workspace:cps:qualification-hard-crash-b2b031e5a9514921",
+        "profiles": [
+          "interactive-cpu"
+        ],
+        "ceiling": {
+          "cpu": "2",
+          "memory": "8Gi"
+        },
+        "namespace": "jupyterhub",
+        "pod": "qualification-absent-b51c9abe6d8a4d1f",
+        "policy_hash": "sha256:051cd754210af2830d67968eea898f674a55ff66f5c88b3db95dff205f04e33d",
+        "group_id": "qualification-hard-crash-b377358e415b4bd6bd101b5982525215",
+        "workspace_label": "compute.cps.unileoben.ac.at/workspace",
+        "workspace_hash": "1fa7990d41f2821d512f406d8268793ddde590d95874ff26d8da81b9355c2ba"
+      },
+      "time": "2026-10-06T22:59:15.341957+00:00",
+      "outcome": "success"
+    },
+    {
+      "actor": "cps",
+      "target": "cps:qualification-hard-crash-b377358e415b4bd6bd101b5982525215",
+      "previous": null,
+      "new": {
+        "generation": 1,
+        "state": "provisioning"
+      },
+      "time": "2026-10-06T22:59:15.372800+00:00",
+      "outcome": "storage_started"
+    },
+    {
+      "actor": "cps",
+      "target": "cps:qualification-hard-crash-b377358e415b4bd6bd101b5982525215",
+      "previous": {
+        "generation": 1,
+        "state": "provisioning"
+      },
+      "new": {
+        "generation": 2,
+        "state": "provisioning"
+      },
+      "time": "2026-10-06T23:00:01.635806+00:00",
+      "outcome": "storage_resumed"
+    },
+    {
+      "actor": "cps",
+      "target": "cps:qualification-hard-crash-b377358e415b4bd6bd101b5982525215",
+      "previous": {
+        "generation": 2,
+        "state": "provisioning"
+      },
+      "new": {
+        "generation": 2,
+        "state": "active"
+      },
+      "time": "2026-10-06T23:00:07.510461+00:00",
+      "outcome": "storage_completed"
+    },
+    {
+      "actor": "cps",
+      "target": "cps:qualification-hard-crash-b377358e415b4bd6bd101b5982525215",
+      "previous": {
+        "generation": 2,
+        "state": "active"
+      },
+      "new": {
+        "generation": 3,
+        "state": "archiving"
+      },
+      "time": "2026-10-06T23:00:07.571376+00:00",
+      "outcome": "storage_started"
+    },
+    {
+      "actor": "cps",
+      "target": "cps:qualification-hard-crash-b377358e415b4bd6bd101b5982525215",
+      "previous": {
+        "generation": 3,
+        "state": "archiving"
+      },
+      "new": {
+        "generation": 4,
+        "state": "archiving"
+      },
+      "time": "2026-10-06T23:01:16.044209+00:00",
+      "outcome": "storage_resumed"
+    },
+    {
+      "actor": "cps",
+      "target": "cps:qualification-hard-crash-b377358e415b4bd6bd101b5982525215",
+      "previous": {
+        "generation": 4,
+        "state": "archiving"
+      },
+      "new": {
+        "generation": 4,
+        "state": "archived"
+      },
+      "time": "2026-10-06T23:01:25.505535+00:00",
+      "outcome": "storage_completed"
+    }
+  ],
+  "crashes": {
+    "provision": {
+      "podUid": "3dfbe561-1f08-4d8e-8a03-b29fa68f0881",
+      "gatewayRestartCount": 1,
+      "gatewayPreviousExitCode": 137,
+      "reason": "Error",
+      "hubRestartCount": 0
+    },
+    "archive": {
+      "podUid": "3dfbe561-1f08-4d8e-8a03-b29fa68f0881",
+      "gatewayRestartCount": 2,
+      "gatewayPreviousExitCode": 137,
+      "reason": "Error",
+      "gatewayLastTermination": "2026-10-06T23:00:12Z",
+      "statePvcUid": "95acfcb3-6131-46b3-8fcb-2180d8c97ec6",
+      "statePv": "pvc-95acfcb3-6131-46b3-8fcb-2180d8c97ec6",
+      "hubRestartCount": 0
+    }
+  },
+  "replacement": {
+    "newPodUid": "94a3fac2-2a17-48f4-8168-2e34342b58fb",
+    "oldPodUid": "3dfbe561-1f08-4d8e-8a03-b29fa68f0881",
+    "statePvcUid": "95acfcb3-6131-46b3-8fcb-2180d8c97ec6",
+    "statePv": "pvc-95acfcb3-6131-46b3-8fcb-2180d8c97ec6",
+    "driver": "driver.longhorn.io",
+    "sameDatabaseNonce": true,
+    "stateVolumeRecreated": false
+  },
+  "applicationCommit": "111dc2d41346027fae1b747646b47e982d0be628",
+  "image": "ghcr.io/mul-cps/cps-compute:qualification-recovery-111dc2d@sha256:30c09221af83a13cb46c81e1c98b66f7c80467726f6bd38e3ce6fdb06880a520",
+  "faultInjection": "Fixture-only transport wrapper pauses after real forced-SSH NAS result, before Kubernetes binding or mount proof/database completion; SIGUSR1 handler invokes os._exit(137)",
+  "scope": "CPS empty synthetic workspace; external NAS mutation succeeded before each hard crash. Does not prove mid-RPC interruption, off-host restore or data-bearing recovery.",
+  "productionDeployed": false,
+  "verifier": {
+    "job": "jupyterhub/cps-archive-verify-938f3d44cb1a40b1",
+    "succeeded": 1,
+    "uid": 1000,
+    "rwClientMount": true,
+    "image": "ghcr.io/mul-cps/cps-compute:qualification-fa48334@sha256:409231d125fb9e2ace3b4356ea4ff5d142dd351bdde7d6ac5be8ad80c56caafe"
+  }
+}

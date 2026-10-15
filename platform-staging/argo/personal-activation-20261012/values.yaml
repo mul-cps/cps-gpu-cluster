@@ -1,0 +1,39 @@
+# Focused personal-Argo render only; never apply the full platform chart.
+# Accepted private frontend; public ingress still requires independent qualification.
+enabled: true
+namespace: cps-compute
+gateway:
+  image: ghcr.io/mul-cps/cps-compute@sha256:d3f744bd6b0982587be1dbaf0bae3dccd507be6b05ca9d5e7ebbbf8d8695622e
+  argoUi:
+    enabled: true
+    rotationSuspended: true
+    readerServiceAccount: cps-personal-argo-reader
+    readerNamespace: cps-argo
+consoles:
+  cps:
+    image: ghcr.io/mul-cps/e2x-course-hub@sha256:0b48372b05346adfe3e2c018bcfb75c4914b111f44ac59be36f1bcd14f6cdd5f
+    publicCallbackUrl: https://jupyterhub.dshl.unileoben.ac.at/services/cps-admin/oauth_callback
+  cit:
+    image: ghcr.io/mul-cps/e2x-course-hub@sha256:0b48372b05346adfe3e2c018bcfb75c4914b111f44ac59be36f1bcd14f6cdd5f
+    publicCallbackUrl: https://jhub.dshl.unileoben.ac.at/services/cit-admin/oauth_callback
+personalArgo:
+  enabled: true
+  image: ghcr.io/mul-cps/e2x-course-hub@sha256:7e1509969062bc3b0855671c12f181548494cb6095669b949e0426a5e74c2b2e
+  nativeUrl: https://cps-argo-argo-workflows-server.cps-argo.svc.cluster.local:2746
+  nativeCaFile: /trust/ca.crt
+  upstreamCaConfigMapRef: cps-compute-gateway-ca
+  sources:
+    cps:
+      enabled: true
+      publicOrigin: https://jupyterhub.dshl.unileoben.ac.at
+      hubApiUrl: https://jupyterhub.dshl.unileoben.ac.at/hub/api
+      secretRef: cps-argo-ui-oauth
+      ingress:
+        enabled: false
+    cit:
+      enabled: true
+      publicOrigin: https://jhub.dshl.unileoben.ac.at
+      hubApiUrl: https://jhub.dshl.unileoben.ac.at/hub/api
+      secretRef: cit-argo-ui-oauth
+      ingress:
+        enabled: false

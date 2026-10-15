@@ -1,0 +1,79 @@
+{
+  "schemaVersion": 1,
+  "artifactKind": "dated-private-personal-argo-partial-acceptance",
+  "preparedOnly": true,
+  "liveChecksByThisSourceTask": false,
+  "sourceReceipt": "Root protected owned-jobs-acceptance.json",
+  "sourceReceiptSha256": "2044be3a3dfa4cf239ec065a65a72a7ff8c9de3d917efe32e7689d4d3990f5ca",
+  "authenticationFixture": "Root-signed-cookie-with-real-Hub-user-token",
+  "humanBrowserOAuthTested": false,
+  "publicPersonalArgoRouteTested": false,
+  "artifactBytesAccepted": false,
+  "logDeliveryAccepted": false,
+  "results": {
+    "own-list": {
+      "status": 200,
+      "content_type": "application/json"
+    },
+    "success-detail": {
+      "status": 200,
+      "content_type": "application/json"
+    },
+    "success-artifact": {
+      "status": 502,
+      "content_type": "text/html; charset=UTF-8"
+    },
+    "success-artifact-head": {
+      "status": 200,
+      "content_type": "application/octet-stream"
+    },
+    "success-logs": {
+      "status": 200,
+      "content_type": "text/event-stream"
+    },
+    "failure-detail": {
+      "status": 200,
+      "content_type": "application/json"
+    },
+    "failure-artifact": {
+      "status": 502,
+      "content_type": "text/html; charset=UTF-8"
+    },
+    "failure-artifact-head": {
+      "status": 200,
+      "content_type": "application/octet-stream"
+    },
+    "failure-logs": {
+      "status": 200,
+      "content_type": "text/event-stream"
+    },
+    "foreign-detail": {
+      "status": 404,
+      "content_type": "text/html; charset=UTF-8"
+    },
+    "foreign-logs": {
+      "status": 404,
+      "content_type": "text/html; charset=UTF-8"
+    },
+    "foreign-artifact": {
+      "status": 404,
+      "content_type": "text/html; charset=UTF-8"
+    },
+    "missing-detail": {
+      "status": 404,
+      "content_type": "text/html; charset=UTF-8"
+    },
+    "missing-logs": {
+      "status": 404,
+      "content_type": "text/html; charset=UTF-8"
+    },
+    "missing-artifact": {
+      "status": 404,
+      "content_type": "text/html; charset=UTF-8"
+    }
+  },
+  "remainingGates": [
+    "Actual successful/failed executed notebook bytes and log delivery",
+    "Human browser OAuth and public personal Argo routing"
+  ]
+}

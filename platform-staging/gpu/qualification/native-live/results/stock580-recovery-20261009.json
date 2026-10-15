@@ -1,0 +1,64 @@
+{
+  "schema": "cps-native-stock-driver-recovery-assessment/v1",
+  "date": "2026-10-09",
+  "status": "stock580-restored-with-maintenance-exception",
+  "productionQualified": false,
+  "groupSharingEnabled": false,
+  "customDriverProductionActivation": false,
+  "experimentalCustomModulesLoaded": false,
+  "experimentRetired": true,
+  "shutdown": {
+    "observedNs": 1791536861491602465,
+    "allOwnedCapsCleaned": true,
+    "experimentalR615Unloaded": true,
+    "nativeDriverAuthorityRevoked": true,
+    "noRebootNoMigNoGpuReset": true
+  },
+  "recovery": {
+    "observedNs": 1791538119258316095,
+    "driverVersion": "580.95.05",
+    "officialDriverImageDigest": "sha256:41515698692bd5e192186e620b65717af960a66d22dbb5a06e3656575a5d9148",
+    "allSevenNodesReadyAndSchedulable": true,
+    "operatorReadyReplicas": 1,
+    "originalDriverDaemonSetUidAndFullSpecRestored": true,
+    "otherDriverPodUidsUnchanged": true,
+    "otherProtectedDriverPodCount": 3,
+    "protectedPodCount": 6,
+    "allProtectedPodsReady": true
+  },
+  "qualificationNodeRecoveryException": {
+    "managerFreePod": true,
+    "independentFirmwarePath": "/run/nvidia/firmware-r615-canary",
+    "firmwareDirectoryMustBeRetainedForStock580": true,
+    "automaticUpgradeHold": {
+      "label": "nvidia.com/gpu-driver-upgrade.skip",
+      "value": "true",
+      "removeOnlyDuringReviewedDriverMaintenance": true
+    }
+  },
+  "preservedStockFirmwareSha256": {
+    "nvidia/580.95.05/gsp_ga10x.bin": "aca0afdf6587afa641639f555fbe148b2fe1b1138445731d5dfce05a87acb021",
+    "nvidia/580.95.05/gsp_tu10x.bin": "2eb1c5015cec34a7b43e0c390139d2ad2f8fc2ad8ce7813ed4c38f6c626e5aea"
+  },
+  "remainingDecisions": {
+    "userPreferenceForMaintainingCustomDriver": "unanswered"
+  },
+  "limitations": [
+    "The custom R615 core and managed-denial UVM experiment is retired; these receipts document recovery to stock580.95.05.",
+    "The manager-free recovery Pod and automatic-upgrade hold remain maintenance exceptions, not a routine production rollout.",
+    "SDK/runtime health enforcement and native Hub integration remain activation gates; production and group sharing remain disabled.",
+    "No preference to maintain a custom driver has been assumed."
+  ],
+  "provenance": [
+    {
+      "capture": "stock580-recovery-receipt.json",
+      "sha256": "a2f21c035ff8a2f848cb5ba251f62a982a17b5184f45b62279e9b53b3f103fee",
+      "bytes": 1870
+    },
+    {
+      "capture": "final-r615-shutdown-receipt.json",
+      "sha256": "b9b63868b132e8cbad3249081d2bbd2fae802d7e0fb26e34b7465452a9f4ed13",
+      "bytes": 785
+    }
+  ]
+}

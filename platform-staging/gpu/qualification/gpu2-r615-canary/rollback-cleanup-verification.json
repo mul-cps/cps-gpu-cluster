@@ -1,0 +1,15 @@
+{
+  "observedAt": "2026-10-08T15:35:17.316720+00:00",
+  "ownedFirmwareJobsAndPodsAbsent": true,
+  "ownedR615CanaryDaemonSetAndPodAbsent": true,
+  "uvmQaNamespaceHasNoPods": true,
+  "toolkitPod": "nvidia-container-toolkit-daemonset-v69hf",
+  "toolkitLogSHA256": "5209886ad30c97f80326dc457de1204dcee072772a5e1a9203b81dd11c0af2e5",
+  "toolkitRestartEvidenceLines": [
+    "2026-10-08T15:31:03.873434757Z time=\"2026-10-08T15:31:03Z\" level=info msg=\"Using CRI runtime plugin name \\\"io.containerd.cri.v1.runtime\\\"\"",
+    "2026-10-08T15:31:04.138056346Z time=\"2026-10-08T15:31:04Z\" level=info msg=\"Using CRI runtime plugin name \\\"io.containerd.cri.v1.runtime\\\"\"",
+    "2026-10-08T15:31:04.138719413Z time=\"2026-10-08T15:31:04Z\" level=info msg=\"Sending SIGHUP signal to containerd\"",
+    "2026-10-08T15:31:04.139041245Z time=\"2026-10-08T15:31:04Z\" level=info msg=\"Successfully signaled containerd\"",
+    "2026-10-08T15:31:04.139055982Z time=\"2026-10-08T15:31:04Z\" level=info msg=\"Waiting for signal\""
+  ]
+}

@@ -1,0 +1,19 @@
+{
+  "schemaVersion": 1,
+  "capturedAt": null,
+  "nodeName": "k3s-wk-gpu2",
+  "nodeUID": null,
+  "inventoryComplete": false,
+  "cards": [
+    {"gpuIndex": null, "uuid": null, "productName": null, "migMode": null}
+  ],
+  "activeGpuWorkloads": null,
+  "activeGpuProcesses": null,
+  "protectedWorkload": {
+    "nodeName": "k3s-wk-gpu1",
+    "name": "jupyter-bjoern",
+    "uid": "a663ab6b-e927-418f-9671-fc0b36a27b3a",
+    "untouched": null
+  },
+  "exclusiveSelectorInventoryComplete": false
+}

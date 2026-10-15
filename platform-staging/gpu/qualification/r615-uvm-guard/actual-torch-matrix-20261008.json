@@ -1,0 +1,501 @@
+{
+  "schemaVersion": 1,
+  "evidenceKind": "actual-trusted-global-guard-canary",
+  "sourceDataSha256": "ec7fef1466c7d873e59fa23172a773dc8f38d404348bad8e95212cccdbe39e2f",
+  "configmap": {
+    "name": "r615-uvm-torch-ec7fef1466c7",
+    "uid": "46389167-7f07-4d21-b62d-e9a455baefec",
+    "resourceVersion": "362146039"
+  },
+  "productionQualified": false,
+  "hostileIsolationQualified": false,
+  "automaticKaiOrchestratorQualified": false,
+  "capApplication": "root native operator CLI and sealed first-init receipt; automatic helper unqualified",
+  "pods": {
+    "uvm-guard-torch": {
+      "uid": "5fbe5b19-7b4e-4ea0-b274-cfc091eee412",
+      "resourceVersion": "362147010",
+      "phase": "Succeeded",
+      "mainSecurityContext": {
+        "allowPrivilegeEscalation": false,
+        "capabilities": {
+          "drop": [
+            "ALL"
+          ]
+        },
+        "readOnlyRootFilesystem": true,
+        "runAsGroup": 100,
+        "runAsNonRoot": true,
+        "runAsUser": 1000,
+        "seccompProfile": {
+          "type": "RuntimeDefault"
+        }
+      },
+      "hostPaths": [
+        "/sys/fs/cgroup",
+        "/sys/module/nvidia_uvm/parameters"
+      ],
+      "automountServiceAccountToken": false,
+      "containers": [
+        {
+          "name": "cps-driver-cap-gate",
+          "containerID": "containerd://d7221f8394b271d5dcb6443106da43faccaccb8872044331c3db7b20e0218d97",
+          "imageID": "ghcr.io/mul-cps/cps-compute@sha256:b3802a7f70077ff56adbc060d1177409eeff76c8b3cf8ccf9f39047c1e6716bf",
+          "state": {
+            "terminated": {
+              "containerID": "containerd://d7221f8394b271d5dcb6443106da43faccaccb8872044331c3db7b20e0218d97",
+              "exitCode": 0,
+              "finishedAt": "2026-10-08T15:20:35Z",
+              "reason": "Completed",
+              "startedAt": "2026-10-08T15:19:32Z"
+            }
+          },
+          "restartCount": 0
+        },
+        {
+          "name": "main",
+          "containerID": "containerd://9def6c72be868903d7ce0aea92c8671bf898b40d8be808244572d9e6a7867e20",
+          "imageID": "ghcr.io/mul-cps/cps-jupyter-notebook@sha256:6b6a8d6a225df1b938fe98bcdad9e547aef249347392ce8f29adb3fedda512ae",
+          "state": {
+            "terminated": {
+              "containerID": "containerd://9def6c72be868903d7ce0aea92c8671bf898b40d8be808244572d9e6a7867e20",
+              "exitCode": 0,
+              "finishedAt": "2026-10-08T15:20:39Z",
+              "reason": "Completed",
+              "startedAt": "2026-10-08T15:20:36Z"
+            }
+          },
+          "restartCount": 0
+        }
+      ]
+    },
+    "uvm-guard-torch-peer": {
+      "uid": "941d15a4-93a1-491b-8ebc-18a8a4658b91",
+      "resourceVersion": "362148223",
+      "phase": "Succeeded",
+      "mainSecurityContext": {
+        "allowPrivilegeEscalation": false,
+        "capabilities": {
+          "drop": [
+            "ALL"
+          ]
+        },
+        "readOnlyRootFilesystem": true,
+        "runAsGroup": 100,
+        "runAsNonRoot": true,
+        "runAsUser": 1000,
+        "seccompProfile": {
+          "type": "RuntimeDefault"
+        }
+      },
+      "hostPaths": [
+        "/sys/fs/cgroup",
+        "/sys/module/nvidia_uvm/parameters"
+      ],
+      "automountServiceAccountToken": false,
+      "containers": [
+        {
+          "name": "cps-driver-cap-gate",
+          "containerID": "containerd://1e9d62fc1668e9cefe56d2dc7f72d159fc2e7f9526a8806b3e89ed4b7f2c5dc4",
+          "imageID": "ghcr.io/mul-cps/cps-compute@sha256:b3802a7f70077ff56adbc060d1177409eeff76c8b3cf8ccf9f39047c1e6716bf",
+          "state": {
+            "terminated": {
+              "containerID": "containerd://1e9d62fc1668e9cefe56d2dc7f72d159fc2e7f9526a8806b3e89ed4b7f2c5dc4",
+              "exitCode": 0,
+              "finishedAt": "2026-10-08T15:20:00Z",
+              "reason": "Completed",
+              "startedAt": "2026-10-08T15:19:32Z"
+            }
+          },
+          "restartCount": 0
+        },
+        {
+          "name": "main",
+          "containerID": "containerd://016508787559f8337967f168437a81e54cf61d70482d47be944fe94d63e39cbe",
+          "imageID": "ghcr.io/mul-cps/cps-compute@sha256:b3802a7f70077ff56adbc060d1177409eeff76c8b3cf8ccf9f39047c1e6716bf",
+          "state": {
+            "terminated": {
+              "containerID": "containerd://016508787559f8337967f168437a81e54cf61d70482d47be944fe94d63e39cbe",
+              "exitCode": 0,
+              "finishedAt": "2026-10-08T15:22:00Z",
+              "reason": "Completed",
+              "startedAt": "2026-10-08T15:20:00Z"
+            }
+          },
+          "restartCount": 0
+        }
+      ]
+    }
+  },
+  "mainRecords": [
+    {
+      "kind": "torch-phase",
+      "parent": {
+        "limits": {
+          "hard": 5368709120,
+          "soft": 5368709120,
+          "used": 0
+        },
+        "observed_ns": 1791472838611244718,
+        "parent_memory_current": 314023936
+      },
+      "phase": "before-initialize",
+      "pid": 1
+    },
+    {
+      "kind": "torch-phase",
+      "parent": {
+        "limits": {
+          "hard": 5368709120,
+          "soft": 5368709120,
+          "used": 0
+        },
+        "observed_ns": 1791472838633016444,
+        "parent_memory_current": 314544128
+      },
+      "phase": "after-initialize",
+      "pid": 1,
+      "torch_allocated_bytes": 0,
+      "torch_reserved_bytes": 0
+    },
+    {
+      "kind": "torch-phase",
+      "parent": {
+        "limits": {
+          "hard": 5368709120,
+          "soft": 5368709120,
+          "used": 0
+        },
+        "observed_ns": 1791472838633608621,
+        "parent_memory_current": 314544128
+      },
+      "phase": "before-allocate64",
+      "pid": 1,
+      "torch_allocated_bytes": 0,
+      "torch_reserved_bytes": 0
+    },
+    {
+      "kind": "torch-phase",
+      "parent": {
+        "limits": {
+          "hard": 5368709120,
+          "soft": 5368709120,
+          "used": 501300928
+        },
+        "observed_ns": 1791472838797196223,
+        "parent_memory_current": 344408064
+      },
+      "phase": "after-allocate64",
+      "pid": 1,
+      "torch_allocated_bytes": 67108864,
+      "torch_reserved_bytes": 67108864
+    },
+    {
+      "kind": "torch-phase",
+      "parent": {
+        "limits": {
+          "hard": 5368709120,
+          "soft": 5368709120,
+          "used": 501300928
+        },
+        "observed_ns": 1791472838797819487,
+        "parent_memory_current": 344408064
+      },
+      "phase": "before-touch64",
+      "pid": 1,
+      "torch_allocated_bytes": 67108864,
+      "torch_reserved_bytes": 67108864
+    },
+    {
+      "kind": "torch-phase",
+      "parent": {
+        "limits": {
+          "hard": 5368709120,
+          "soft": 5368709120,
+          "used": 581254848
+        },
+        "observed_ns": 1791472838807263742,
+        "parent_memory_current": 353845248
+      },
+      "phase": "after-touch64",
+      "pid": 1,
+      "torch_allocated_bytes": 67108864,
+      "torch_reserved_bytes": 67108864
+    },
+    {
+      "kind": "torch-phase",
+      "parent": {
+        "limits": {
+          "hard": 5368709120,
+          "soft": 5368709120,
+          "used": 514145984
+        },
+        "observed_ns": 1791472838820362394,
+        "parent_memory_current": 357806080
+      },
+      "phase": "after-free64",
+      "pid": 1,
+      "torch_allocated_bytes": 0,
+      "torch_reserved_bytes": 0
+    },
+    {
+      "kind": "torch-phase",
+      "parent": {
+        "limits": {
+          "hard": 5368709120,
+          "soft": 5368709120,
+          "used": 514145984
+        },
+        "observed_ns": 1791472838821090374,
+        "parent_memory_current": 357806080
+      },
+      "phase": "before-over-allocation",
+      "pid": 1,
+      "torch_allocated_bytes": 0,
+      "torch_reserved_bytes": 0
+    },
+    {
+      "cuda_error_code": null,
+      "error_type": "OutOfMemoryError",
+      "kind": "torch-phase",
+      "parent": {
+        "limits": {
+          "hard": 5368709120,
+          "soft": 5368709120,
+          "used": 514145984
+        },
+        "observed_ns": 1791472838829627745,
+        "parent_memory_current": 359641088
+      },
+      "phase": "over-allocation-error",
+      "pid": 1,
+      "torch_allocated_bytes": 0,
+      "torch_reserved_bytes": 0,
+      "typed_oom": true
+    },
+    {
+      "kind": "torch-phase",
+      "parent": {
+        "limits": {
+          "hard": 5368709120,
+          "soft": 5368709120,
+          "used": 514145984
+        },
+        "observed_ns": 1791472838830413723,
+        "parent_memory_current": 359641088
+      },
+      "phase": "after-over-cleanup",
+      "pid": 1,
+      "torch_allocated_bytes": 0,
+      "torch_reserved_bytes": 0
+    },
+    {
+      "kind": "torch-phase",
+      "parent": {
+        "limits": {
+          "hard": 5368709120,
+          "soft": 5368709120,
+          "used": 514145984
+        },
+        "observed_ns": 1791472838830863363,
+        "parent_memory_current": 359641088
+      },
+      "phase": "before-recovery64",
+      "pid": 1,
+      "torch_allocated_bytes": 0,
+      "torch_reserved_bytes": 0
+    },
+    {
+      "kind": "torch-phase",
+      "parent": {
+        "limits": {
+          "hard": 5368709120,
+          "soft": 5368709120,
+          "used": 581254848
+        },
+        "observed_ns": 1791472838831534577,
+        "parent_memory_current": 359641088
+      },
+      "phase": "after-recovery-allocate64",
+      "pid": 1,
+      "torch_allocated_bytes": 67108864,
+      "torch_reserved_bytes": 67108864
+    },
+    {
+      "kind": "torch-phase",
+      "parent": {
+        "limits": {
+          "hard": 5368709120,
+          "soft": 5368709120,
+          "used": 581254848
+        },
+        "observed_ns": 1791472838832147593,
+        "parent_memory_current": 359641088
+      },
+      "phase": "after-recovery-touch64",
+      "pid": 1,
+      "torch_allocated_bytes": 67108864,
+      "torch_reserved_bytes": 67108864
+    },
+    {
+      "kind": "torch-phase",
+      "parent": {
+        "limits": {
+          "hard": 5368709120,
+          "soft": 5368709120,
+          "used": 514145984
+        },
+        "observed_ns": 1791472838832860304,
+        "parent_memory_current": 359641088
+      },
+      "phase": "after-recovery-free64",
+      "pid": 1,
+      "torch_allocated_bytes": 0,
+      "torch_reserved_bytes": 0
+    },
+    {
+      "attributes": {
+        "88": 0,
+        "100": 0
+      },
+      "bounded_torch_sequence_passed": true,
+      "cap_mib": 5120,
+      "finished_ns": 1791472838833135168,
+      "gid": 100,
+      "kind": "r615-guard-torch-only",
+      "last_phase": "after-recovery-free64",
+      "mode": "torch",
+      "module_parameters": {
+        "uvm_ats_mode": "0",
+        "uvm_deny_managed_mmap": "Y",
+        "uvm_disable_hmm": "Y",
+        "uvm_enable_builtin_tests": "0"
+      },
+      "ordinary_byte": 19,
+      "ordinary_mib": 64,
+      "over_allocation_mib": 5120,
+      "over_denied": true,
+      "over_error": {
+        "cuda_error_code": null,
+        "kind": "torch.OutOfMemoryError"
+      },
+      "over_mib": 5120,
+      "pid": 1,
+      "production_qualified": false,
+      "recovery_byte": 37,
+      "started_ns": 1791472836947648363,
+      "status": "measurement-completed",
+      "torch_cuda_version": "12.9",
+      "torch_device_name": "NVIDIA A100-PCIE-40GB",
+      "torch_version": "2.11.0+cu129",
+      "uid": 1000
+    }
+  ],
+  "peer": {
+    "ticks": 597,
+    "allCudaResultsZero": true,
+    "firstObservedNs": 1791472800802733011,
+    "lastObservedNs": 1791472920603573280,
+    "maxGapMs": 204.134933,
+    "terminalSucceeded": true,
+    "reportedDurationSeconds": 120.328482408
+  },
+  "phaseCoverage": [
+    {
+      "mode": "torch",
+      "launch": null,
+      "startedNs": 1791472836947648363,
+      "finishedNs": 1791472838833135168,
+      "ticksInside": 10,
+      "bracketedWithinOneSecond": true,
+      "leftGapMs": 157.079915,
+      "rightGapMs": 169.356219
+    }
+  ],
+  "evidenceFiles": {
+    "uvm-guard-torch-cps-driver-cap-gate.log": {
+      "sha256": "1f45e67d26faac887efd4dc07ee4ecb90568b8da26450e91efe59b68d22ce825",
+      "bytes": 126
+    },
+    "uvm-guard-torch-main.log": {
+      "sha256": "833ac6cb4a431997d9dc13cffb04baa011e891a0570be87b33d1176c98449576",
+      "bytes": 5181
+    },
+    "uvm-guard-torch-peer-cps-driver-cap-gate.log": {
+      "sha256": "47a3d0d5cd20ef551e2764caf466f5e6c965341bfdd5d41482539d144496d97b",
+      "bytes": 126
+    },
+    "uvm-guard-torch-peer-main.log": {
+      "sha256": "0955ed8dd060f4c622d48baa22921e02cc0779704c96f8e4a9860eee7efcb7e5",
+      "bytes": 228325
+    }
+  },
+  "namespace": {
+    "name": "cps-r615-uvm-guard-20261008",
+    "uid": "748fbe60-5a25-49fe-8bfa-ff7a9fc336ce"
+  },
+  "completePeerCoverage": true,
+  "rootNativeCapProofs": [
+    {
+      "state": "applied-before-main",
+      "pod_uid": "5fbe5b19-7b4e-4ea0-b274-cfc091eee412",
+      "gpu_uuid": "GPU-16128952-b438-556a-00bb-93039ee24e56",
+      "cap_bytes": 5368709120,
+      "boot_id": "209f8bc9-a478-48e4-925a-6e07ffa56f7a",
+      "pid_start_ticks": 811013861,
+      "host_pid": 1770380,
+      "container_id": "d7221f8394b271d5dcb6443106da43faccaccb8872044331c3db7b20e0218d97",
+      "cgroup_relative": "/kubepods.slice/kubepods-burstable.slice/kubepods-burstable-pod5fbe5b19_7b4e_4ea0_b274_cfc091eee412.slice",
+      "manual_driver_canary": true,
+      "automatic_orchestration_qualified": false,
+      "spec_sha256": "c73a02962b5cb7be91106ffbb96f90e2bf36677463ed31b0180ca2761828b4a6",
+      "readback": {
+        "soft": 5368709120,
+        "hard": 5368709120,
+        "used": 0
+      },
+      "actual_cli_readback": "GPU 0: NVIDIA A100-PCIE-40GB (UUID: GPU-16128952-b438-556a-00bb-93039ee24e56)\n  namespace:      /sys/fs/cgroup/kubepods.slice/kubepods-burstable.slice/kubepods-burstable-pod5fbe5b19_7b4e_4ea0_b274_cfc091eee412.slice\n  soft limit:     5120 MiB\n  hard limit:     5120 MiB\n  current used:   0 MiB\n",
+      "evidenceSha256": "7abf87344405d80b055fb582ff1ada977ad7f8ca1028e437c54a02ece5477dd4"
+    },
+    {
+      "state": "applied-before-main",
+      "pod_uid": "941d15a4-93a1-491b-8ebc-18a8a4658b91",
+      "gpu_uuid": "GPU-16128952-b438-556a-00bb-93039ee24e56",
+      "cap_bytes": 536870912,
+      "boot_id": "209f8bc9-a478-48e4-925a-6e07ffa56f7a",
+      "pid_start_ticks": 811013861,
+      "host_pid": 1770378,
+      "container_id": "1e9d62fc1668e9cefe56d2dc7f72d159fc2e7f9526a8806b3e89ed4b7f2c5dc4",
+      "cgroup_relative": "/kubepods.slice/kubepods-burstable.slice/kubepods-burstable-pod941d15a4_93a1_491b_8ebc_18a8a4658b91.slice",
+      "manual_driver_canary": true,
+      "automatic_orchestration_qualified": false,
+      "spec_sha256": "5421f3b1bd846aaadc6088934c5329d70bceb745d59335169a0a9997d24e12ea",
+      "readback": {
+        "soft": 536870912,
+        "hard": 536870912,
+        "used": 0
+      },
+      "actual_cli_readback": "GPU 0: NVIDIA A100-PCIE-40GB (UUID: GPU-16128952-b438-556a-00bb-93039ee24e56)\n  namespace:      /sys/fs/cgroup/kubepods.slice/kubepods-burstable.slice/kubepods-burstable-pod941d15a4_93a1_491b_8ebc_18a8a4658b91.slice\n  soft limit:     512 MiB\n  hard limit:     512 MiB\n  current used:   0 MiB\n",
+      "evidenceSha256": "8c3ebf8fd587ecf5c183e3feeb62efb047b30f31abf7e1f17cb735863b409e97"
+    }
+  ],
+  "physicalMemory": {
+    "sourceSha256": "2c19af9d48c3dd11d340c2a1a9517d73dccc765e6d9c994c448212cbb3e7ce56",
+    "samples": 45,
+    "firstObservedNs": 1791472818669573813,
+    "lastObservedNs": 1791472871018282856,
+    "gpus": {
+      "GPU-16128952-b438-556a-00bb-93039ee24e56": {
+        "minUsedMiB": 427,
+        "maxUsedMiB": 925,
+        "maxUtilPercent": null
+      },
+      "GPU-1e6145d5-8ee2-43e2-a0d5-6d345909e8a6": {
+        "minUsedMiB": 0,
+        "maxUsedMiB": 0,
+        "maxUtilPercent": null
+      }
+    },
+    "scope": "physical trace covers main phase, not entire120s peer interval"
+  }
+}

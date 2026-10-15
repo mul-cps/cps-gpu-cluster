@@ -1,0 +1,110 @@
+{
+  "observedAt": "2026-10-08T15:13:30.198082+00:00",
+  "scope": "First trusted global UVM-guard matrix; exact original fixtures",
+  "mainLogRecords": 5,
+  "peerLogRecords": 598,
+  "peerHeartbeatTicks": 597,
+  "peerAllTicksCudaZero": true,
+  "peerDurationNs": 119854357129,
+  "phaseCoverage": [
+    {
+      "mode": "raw",
+      "launch": "direct",
+      "status": "measurement-completed",
+      "startedNs": 1791472008101309954,
+      "finishedNs": 1791472008395752292,
+      "coveringPeerTicks": 3,
+      "firstPeerNs": 1791472008053391891,
+      "lastPeerNs": 1791472008460284755,
+      "maxGapNs": 205893176,
+      "allCudaResultsZero": true
+    },
+    {
+      "mode": "managed-only",
+      "launch": "direct",
+      "status": "measurement-completed",
+      "startedNs": 1791472008514489945,
+      "finishedNs": 1791472008769687259,
+      "coveringPeerTicks": 3,
+      "firstPeerNs": 1791472008460284755,
+      "lastPeerNs": 1791472008862381734,
+      "maxGapNs": 201082993,
+      "allCudaResultsZero": true
+    },
+    {
+      "mode": "managed-only",
+      "launch": "fork-before-cuda",
+      "status": "measurement-completed",
+      "startedNs": 1791472008889002761,
+      "finishedNs": 1791472009131380612,
+      "coveringPeerTicks": 3,
+      "firstPeerNs": 1791472008862381734,
+      "lastPeerNs": 1791472009265605133,
+      "maxGapNs": 202374773,
+      "allCudaResultsZero": true
+    },
+    {
+      "mode": "torch",
+      "launch": "direct",
+      "status": "inconclusive",
+      "startedNs": 1791472009249242763,
+      "finishedNs": 1791472013084155624,
+      "coveringPeerTicks": 21,
+      "firstPeerNs": 1791472009064756507,
+      "lastPeerNs": 1791472013084420117,
+      "maxGapNs": 201235679,
+      "allCudaResultsZero": true
+    }
+  ],
+  "physicalSamples": 116,
+  "physicalMemory": {
+    "GPU-16128952-b438-556a-00bb-93039ee24e56": {
+      "minMemoryMiB": 427,
+      "maxMemoryMiB": 575,
+      "maxUtilizationPercent": 11
+    },
+    "GPU-1e6145d5-8ee2-43e2-a0d5-6d345909e8a6": {
+      "minMemoryMiB": 0,
+      "maxMemoryMiB": 0,
+      "maxUtilizationPercent": 0
+    }
+  },
+  "rawSequencePassed": true,
+  "managedFreshAndForkDenied": true,
+  "torch512Status": "inconclusive",
+  "torch512ErrorType": "AcceleratorError",
+  "matrixExitCodes": [
+    {
+      "exit_code": 0,
+      "launch": "direct",
+      "mode": "raw"
+    },
+    {
+      "exit_code": 0,
+      "launch": "direct",
+      "mode": "managed-only"
+    },
+    {
+      "exit_code": 0,
+      "launch": "fork-before-cuda",
+      "mode": "managed-only"
+    },
+    {
+      "exit_code": 1,
+      "launch": "direct",
+      "mode": "torch"
+    }
+  ],
+  "torchQualified": false,
+  "tenantIsolationQualified": false,
+  "artifactSHA256": {
+    "caps.json": "e8ef32d092a7c65bea64fae1b4a65d907f2e7d7230bb6ea5983a21240b1cebe8",
+    "configmaps.json": "8177e0fbcab200d0152a506ffc5e71ccab7475aec6c43938cce1bcf22985165a",
+    "events.json": "79777fca9c1003708155fdceede9c1975f717c2e383e1121d729ada79f09fc94",
+    "physical-memory.jsonl": "a8eec63f617f0b2d4298bda3247c4974bfae11da30adf9f44df49030ddef2b0e",
+    "pods.json": "05fd710685c34dfa5c7a67f8203878bae695633cc4708611e2a0d24cc66b3543",
+    "uvm-guard-main.jsonl": "c1f2caadaed19dcbaf7f4a5228072834c019ea27f2392971f86864c2a33e1ab3",
+    "uvm-guard-peer.jsonl": "990bbf20b74196714ca3eb7bae6dcf1f664372c86b46a14b800bfca0dcd01bbe",
+    "README.md": "4e1bfb90290ae6486ce4dfc0c014f142192aafc9950d7521bcc46e25bc230e2a"
+  }
+}

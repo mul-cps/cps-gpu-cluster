@@ -1,0 +1,16 @@
+{
+  "revision": "9e5682a310ff317058eb62e954c7e63a3f3ba09c",
+  "sourceFilesVerified": 20,
+  "uid": 10001,
+  "dependencyCheck": "No broken requirements found.",
+  "wheelTests": 243,
+  "testWarnings": 22,
+  "wheelSHA256": "fa78cbf73db7a916dc811e45bb9e380680c46d3f495d64915738cdf152f94613",
+  "reference": "ghcr.io/mul-cps/cps-compute:qualification-parent-guard-9e5682a",
+  "digest": "sha256:dfdd74bf37ec0dd990d08ab81d1d7f080124256c5b498951687ecf8a4c48443e",
+  "imageManifest": "sha256:4dd28341e8e70f05f22c84a33230b5fea3dd923baa6125f444fc0d892772163c",
+  "attestationManifest": "sha256:ec5aab6a3ba2e7c0290a2cac6d1db1728cdd6348680ca2e5c7c15a24d959b55a",
+  "attestationReferencesImage": true,
+  "productionDeployed": false,
+  "fullLifecycleQualified": false
+}

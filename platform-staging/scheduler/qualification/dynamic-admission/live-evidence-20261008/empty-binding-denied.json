@@ -1,0 +1,33 @@
+{
+  "command": [
+    "kubectl",
+    "--request-timeout=20s",
+    "--as",
+    "system:serviceaccount:offline:declared-binder",
+    "create",
+    "--raw",
+    "/api/v1/namespaces/cps-dynamic-admission-live-20261008/pods/offline-argo-5-declared/binding?dryRun=All",
+    "-f",
+    "-"
+  ],
+  "exitCode": 1,
+  "expected": "policy-deny",
+  "input": {
+    "apiVersion": "v1",
+    "kind": "Binding",
+    "metadata": {
+      "name": "offline-argo-5-declared",
+      "namespace": "cps-dynamic-admission-live-20261008",
+      "uid": "11111111-1111-1111-1111-111111111111"
+    },
+    "target": {
+      "kind": "Node",
+      "name": "offline-node"
+    }
+  },
+  "inputSha256": "38097949eaf144a7b67a02a77bd428242e6ed8b658faf7206a35a2ca2625f433",
+  "matchedExpectation": true,
+  "name": "empty-binding-denied",
+  "stderr": "The pods \"offline-argo-5-declared\" is invalid: : ValidatingAdmissionPolicy 'cps-dynamic-admission-live-20261008-binding' with binding 'cps-dynamic-admission-live-20261008-binding' denied request: The authenticated binder username must be explicitly observed and approved\n",
+  "stdout": ""
+}

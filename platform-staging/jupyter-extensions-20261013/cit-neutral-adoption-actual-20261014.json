@@ -1,0 +1,102 @@
+{
+  "checks": {
+    "name_and_created_preserved": true,
+    "nonadmin_sole_kernel_role_preserved": true,
+    "only_added_group": "cps-workspace-kernel-accounts",
+    "owner_model_changed_keys": [
+      "groups"
+    ],
+    "registration_storage_reviewed_against_actual_generation3": true,
+    "servers_empty_before_and_after": true,
+    "workspace_account_state_after": "ready",
+    "workspace_account_state_before": "review_required",
+    "workspace_changed_keys": [
+      "account_state"
+    ],
+    "workspace_descriptor_preserved": true,
+    "workspace_remained_stopped": true
+  },
+  "draft_predecessor_sha256": "2f0effd2eb37260d624d09ad0fac331956a3f6030894cd4d54e71ee082a951d7",
+  "evidence": {
+    "root-cit-adoption/actual-execute-response.json": {
+      "bytes": 57,
+      "sha256": "837dd93e216082889c17ae5d2cc3e4ae2c959d5072b66a61937c3adb12a1ac58"
+    },
+    "root-cit-adoption/actual-owner-postimage.json": {
+      "bytes": 258,
+      "sha256": "a4647c2b8e84c529e102234af748442dd1ca8b4ae5b7c972cb3f0fbee042a7b0"
+    },
+    "root-cit-adoption/actual-plan-response.json": {
+      "bytes": 6976,
+      "sha256": "6ee251f737457073d6c63518de92d299bc2ddd19358d9555bb611ab006bbb7e2"
+    },
+    "root-cit-adoption/actual-workspaces-postimage.json": {
+      "bytes": 467,
+      "sha256": "8b7c9f4b244269bd93bccadd060dd9f49b666b3829c0bdae26defcc773c048e1"
+    },
+    "root-cit-adoption/adoption-receipt.json": {
+      "bytes": 354,
+      "sha256": "5f4d4539044d0cd0f9ebe98064f49ec7d7279fc0b23addf4a6079ee1fd025849"
+    },
+    "root-cit-adoption/exact-reviewed-execute-body.json": {
+      "bytes": 6987,
+      "sha256": "4ca8eaeb362fd191bccfdc51414712b8f6922daabfbb5e4b3a9a91587b64826f"
+    },
+    "root-cit-adoption/review-request.json": {
+      "bytes": 319,
+      "sha256": "cd8774d1a39d06f744d31c8d0587098483f925ab3df063fba3f163d0cefa8dc0"
+    },
+    "root-readonly-preimages/cit-owner.json": {
+      "bytes": 277,
+      "sha256": "239f06c759f0c122bb21ba01a02e594b31c135f5cd5cc2c91c476e543fb00e64"
+    },
+    "root-readonly-preimages/cit-workspaces.json": {
+      "bytes": 661,
+      "sha256": "d32340d7a496310a71003cbfedda96f642df3fddf58e31145d7552b803a93cfc"
+    }
+  },
+  "evidence_root": "cross-hub-reservation-acceptance-20261014",
+  "kind": "cit-reviewed-legacy-neutral-adoption-actual",
+  "limits": [
+    "Adoption receipt covers the existing CIT neutral account and its reviewed Source binding.",
+    "Cross-Hub reservation behavior and GPU runtime acceptance are separate gates.",
+    "No human OAuth, KAI activation, general fleet or production qualification is claimed."
+  ],
+  "neutral_owner": "citnativegroupa",
+  "operation": {
+    "execute": {
+      "method": "POST",
+      "path": "/services/cit-admin/api/workspace-account-adoptions/native-group-a/execute",
+      "status": 200
+    },
+    "execute_body_exact_fresh_plan": true,
+    "plan": {
+      "method": "POST",
+      "path": "/services/cit-admin/api/workspace-account-adoptions/native-group-a/plan",
+      "status": 200
+    },
+    "provenance": "reviewed_legacy_adoption"
+  },
+  "production_qualified": false,
+  "reviewed_authority": {
+    "binding_sha256": "6b0a6414eb1b284ae8499a6da3f83106492a1161c5c448cd438ac367bfb96dc9",
+    "policy_hash": "sha256:d48f6553ed036c2e7adcc97417623fe0308be93ad13b20f246047ada118511b0",
+    "registration_sha256": "a79a6a2cbc039c297f4b827dcf7dc97910401ae446b8b05fa17e5115945b132b",
+    "source_records_sha256": "75bfac0d811f143378c2bdc8868fdd9fcfd574e288443bbaee5d7a111e872127",
+    "storage_sha256": "99e9a562862e430422853bae420e52ffe82564d0ea9313cdd1377e486d63b836"
+  },
+  "runtime_activity_qualification": {
+    "actual_singleuser_activity_http_status": 403,
+    "required": "Explicit permanent scoped legacy runtime custody; do not grant the user role or relax identity guards",
+    "status": "open"
+  },
+  "status": "actual_readbacks_pass",
+  "tenant": "cit",
+  "verification": {
+    "basis": "Read-only comparison of Root-retained actual normal HTTP request and response artifacts.",
+    "live_calls_by_receipt_author": false,
+    "source_or_cluster_mutations_by_receipt_author": false
+  },
+  "version": 1,
+  "workspace": "native-group-a"
+}

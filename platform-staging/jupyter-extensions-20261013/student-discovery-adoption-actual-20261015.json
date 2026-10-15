@@ -1,0 +1,120 @@
+{
+  "version": 1,
+  "kind": "gateway-discovery-adoption-and-native5-restart",
+  "recorded_at": "2026-10-15T16:41:31.668049+00:00",
+  "status": "passed",
+  "scope": "Gateway shared-workspace discovery and managed native5 restart; no GPU531 adoption",
+  "gateway": {
+    "source_commit": "3e053ba82461f8c95ea0e725400b9c82135b2afc",
+    "image": "ghcr.io/mul-cps/cps-compute@sha256:d974acab8ee692fd68419875f8e0519f5bca482b83b33d36f990abc526959c38",
+    "deployed": true,
+    "installed_tests_passed": 341,
+    "offline_handover_tests_passed": 32,
+    "qualification_receipt_raw_sha256": "315c986bbba72da31d1ae9527c8a86649a59b2835cd2903e456b4768454135c9",
+    "publication_receipt_raw_sha256": "1a06c8b3273e54d82df40beed8be8558fb367777f716962965890b2688463bab",
+    "four_process_acknowledgments_verified": true
+  },
+  "current_authority": {
+    "authority": "gateway-discovery-handover-8bfcb51c/phase-8bfcb51c",
+    "seed_sha256": "sha256:ef1d257be57411fb94548657e1214ec8c19f328415f4c713b5e3ffb52aa0ebe5",
+    "activation_intent_sha256": "sha256:917c0b9c9e465d895ff9dc676fba37fbf249f6a74dac228bdff2e76306c763d1",
+    "four_raw_hashes": {
+      "final.json": "dc1a62802884c9ad681d0f53f336c8b9c45fb130834ac5b7c51d411e2d6ed31b",
+      "new-delivery-seed.json": "ff80c815e12f7cc14a69f345681ff1b7d5124409dbb015e464cccbb86328f744",
+      "new-delivery-activation-readback.json": "8fff4875e0a26bbd9f65fc432d5a948bd7f653339638f1670c7ac729cd596a1b",
+      "delivery-activation-intent.json": "559c221bc632afe201efbbba9d3e043e6e1d6b5ea1fab995cfbd3e08ce0fa2b8"
+    },
+    "ready": true,
+    "actual_controller_readback_ready": true,
+    "receipt": "student-discovery-adoption-actual-20261015.json"
+  },
+  "retained_images": {
+    "hub": "sha256:604c94e62da8c3594579dcec21b3b5810479fadece94abfc0e90aec542165b62",
+    "node": "sha256:8c2c456b90330622645d509f94882a11a465ac208a6fa7fc824900d6320e5c0b",
+    "source": "sha256:51f7f392397e41be512b356fbee91980fb233296cee7557d25a758b99b045f44",
+    "gpu_notebook": "sha256:9167861058c1364c58d1c2fca0d6f536c3ffb53a33800dcdb9a1560f14ca4dc0"
+  },
+  "workspace": "shared-gpu-lab",
+  "source": "cps",
+  "profile": "interactive-shared-5",
+  "storage_version": 2,
+  "source_lifecycle": {
+    "stop_http": 200,
+    "confirmed_shutdown_before_reservation_release": true,
+    "old_pod_absent": true,
+    "reservations_after_shutdown": 0,
+    "start_http": 200,
+    "new_pod_uid": "79388657-dea1-4d49-b5e6-6c7d7e6a514b",
+    "ready": true,
+    "reservations_after_restart": 3
+  },
+  "native_cap": {
+    "soft_bytes": 5368709120,
+    "hard_bytes": 5368709120,
+    "current_boot_and_cgroup_binding_verified": true,
+    "mig_used": false
+  },
+  "normal_student_discovery": {
+    "navigation": [
+      "Compute",
+      "Shared Workspaces",
+      "Open workspace"
+    ],
+    "gateway_discovery_wiring_fixed": true,
+    "results": {
+      "mikasa": {
+        "http_status": 200,
+        "normal_student_oauth": true,
+        "own_canonical_identity_verified": true,
+        "authorized_workspace_found": true,
+        "panel_link_present": true
+      },
+      "armin": {
+        "http_status": 200,
+        "normal_student_oauth": true,
+        "own_canonical_identity_verified": true,
+        "authorized_workspace_found": true,
+        "panel_link_present": true
+      }
+    }
+  },
+  "browser_rtc_after_restart": {
+    "two_way_edits": true,
+    "same_kernel_gpu_cell_and_peer_live_output": true,
+    "saved_demo_and_outputs_survived": true,
+    "only_owned_test_kernel_cleaned": true
+  },
+  "student_urls": {
+    "group": "https://jupyterhub.dshl.unileoben.ac.at/user/cps-ws-27c474f74f9d41c53eac0be01fcca8a3/rtc/lab/tree/shared-gpu-demo-20261015.ipynb",
+    "personal_mikasa_share": "https://jupyterhub.dshl.unileoben.ac.at/user/mikasa/lab"
+  },
+  "personal_preservation": {
+    "pods_unchanged_count": 4,
+    "pod_uids_and_restart_counts_unchanged": true
+  },
+  "operator_cleanup": {
+    "temporary_operator_access_revoked_at": "2026-10-15T16:41:31Z",
+    "human_oauth_sessions_untouched": true
+  },
+  "private_composed_receipt_raw_sha256": "70ef02da806e4608300678eb24e44d888336921d0a23a0955f26d85614085661",
+  "private_proof_raw_sha256": {
+    "workspaces-present-receipt.json": "6f8d61c28d14197de54c73b652eb4d3234da4264e4e0d0e0f1025f83a7cd2c13",
+    "native5-browser-rtc-receipt.json": "343f606bc2de96799aff0f55fdbfab1943a6950057a5ae04b294f46dbf8f7121",
+    "native5-cap-receipt.json": "4d8def9f38f6bef718dd9be99d9241db79919a8c4e3af7c358d05751a570a8f4",
+    "native5-reservations-receipt.json": "1db1f777254f15efb9eb12c86d155e565eb45388deb6a7fc10760dfacec2fc4e",
+    "stop-receipt.json": "30ca4837e4d385379871b3825efba2126ea05d76ea44d8ce2b794616904cb2ca",
+    "stop-reservations-receipt.json": "4bb163a0d71f4eac4a651360385a04240f2778eb841908a9b5643cae6ae857c9",
+    "handover-custody-and-personal-preservation-receipt.json": "66320b28fbc5205ef9e9f10a90a620371113c11a37832964f9dba0f62f3db758"
+  },
+  "limitations": [
+    "GPU916 still has the old f5 addon/PageConfig failure and ordinary SDK CA trust failure; successful personal discovery does not fix those notebook packages.",
+    "GPU531 is packaged and published but not adopted; no current workload uses it.",
+    "Prospective-only source efa3c8ab9c9e7cfffa223a7ae3577e3fe368901c and its two qualified Gateway/Hub candidate images are now published for prospective operator qualification but are not deployed; fresh six-category hardware qualification has not run and production916 is unchanged.",
+    "This is a bounded native5/10 pilot without MIG; broader production qualification and GPU batch remain open."
+  ],
+  "gpu_batch_enabled": false,
+  "production_qualified": false,
+  "credential_values_included": false,
+  "prospective_runtime_publication_receipt": "prospective531-runtime-publication-actual-20261015.json",
+  "publication_status_updated_at": "2026-10-15T16:44:17.132135+00:00"
+}

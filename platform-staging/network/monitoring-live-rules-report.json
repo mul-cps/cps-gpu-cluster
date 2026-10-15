@@ -1,0 +1,173 @@
+{
+  "createdAt": "2026-10-07T04:14:21.313554+00:00",
+  "scope": "read-only live Prometheus evaluation and deployed rule comparison",
+  "candidateRulesMatchLive": true,
+  "groups": [
+    {
+      "name": "cps.compute",
+      "rules": [
+        {
+          "name": "cps:hub_spawn_p95_seconds",
+          "health": "ok",
+          "lastError": ""
+        },
+        {
+          "name": "cps:gpu_unused_vram_mib",
+          "health": "ok",
+          "lastError": ""
+        },
+        {
+          "name": "ComputeHubScrapingIncomplete",
+          "health": "ok",
+          "lastError": ""
+        },
+        {
+          "name": "ComputeGPUCollectorUnavailable",
+          "health": "ok",
+          "lastError": ""
+        },
+        {
+          "name": "ComputeHubSpawnLatencyHigh",
+          "health": "ok",
+          "lastError": ""
+        }
+      ]
+    }
+  ],
+  "queries": {
+    "gpu_free_vram_devices": {
+      "resultType": "vector",
+      "result": [
+        {
+          "metric": {},
+          "value": [
+            1791346461.166,
+            "8"
+          ]
+        }
+      ]
+    },
+    "gpu_total_devices": {
+      "resultType": "vector",
+      "result": [
+        {
+          "metric": {},
+          "value": [
+            1791346461.176,
+            "8"
+          ]
+        }
+      ]
+    },
+    "hub_scrape": {
+      "resultType": "vector",
+      "result": [
+        {
+          "metric": {
+            "namespace": "jupyterhub"
+          },
+          "value": [
+            1791346461.185,
+            "1"
+          ]
+        },
+        {
+          "metric": {
+            "namespace": "cit-jhub"
+          },
+          "value": [
+            1791346461.185,
+            "1"
+          ]
+        }
+      ]
+    },
+    "kai_scrape": {
+      "resultType": "vector",
+      "result": [
+        {
+          "metric": {
+            "namespace": "kai-scheduler",
+            "service": "binder"
+          },
+          "value": [
+            1791346461.192,
+            "1"
+          ]
+        },
+        {
+          "metric": {
+            "namespace": "kai-scheduler",
+            "service": "queue-controller"
+          },
+          "value": [
+            1791346461.192,
+            "1"
+          ]
+        },
+        {
+          "metric": {
+            "namespace": "kai-scheduler",
+            "service": "kai-scheduler-default"
+          },
+          "value": [
+            1791346461.192,
+            "1"
+          ]
+        },
+        {
+          "metric": {
+            "namespace": "kai-scheduler",
+            "service": "admission"
+          },
+          "value": [
+            1791346461.192,
+            "1"
+          ]
+        }
+      ]
+    },
+    "gpu_telemetry_age": {
+      "resultType": "vector",
+      "result": [
+        {
+          "metric": {},
+          "value": [
+            1791346461.2,
+            "13.403000116348267"
+          ]
+        }
+      ]
+    },
+    "hub_spawn_p95": {
+      "resultType": "vector",
+      "result": [
+        {
+          "metric": {
+            "__name__": "cps:hub_spawn_p95_seconds",
+            "namespace": "jupyterhub"
+          },
+          "value": [
+            1791346461.207,
+            "NaN"
+          ]
+        },
+        {
+          "metric": {
+            "__name__": "cps:hub_spawn_p95_seconds",
+            "namespace": "cit-jhub"
+          },
+          "value": [
+            1791346461.207,
+            "NaN"
+          ]
+        }
+      ]
+    }
+  },
+  "limitations": [
+    "No workload or collector was interrupted to induce missing/stale telemetry.",
+    "Live spawn series are operational observations, not representative burst acceptance.",
+    "Free VRAM is not a count of physically unallocated GPUs."
+  ]
+}

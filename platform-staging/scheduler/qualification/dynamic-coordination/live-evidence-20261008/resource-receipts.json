@@ -1,0 +1,122 @@
+[
+  {
+    "kind": "Namespace",
+    "name": "cps-dynamic-admission-coord-live-20261008",
+    "uid": "5442d1b1-73a0-4c05-9ee1-c6c20336b2be",
+    "resourceVersion": "361995753"
+  },
+  {
+    "kind": "Namespace",
+    "name": "cps-dynamic-coordination-live-20261008",
+    "uid": "545a5f6f-262e-4a55-a3f0-816125e5f771",
+    "resourceVersion": "361995768"
+  },
+  {
+    "kind": "ResourceQuota",
+    "name": "cpu-only-ceiling",
+    "uid": "cabd37c4-1107-48d7-a7ef-f0ae9891977a",
+    "resourceVersion": "361995783"
+  },
+  {
+    "kind": "ServiceAccount",
+    "name": "cpu-workload",
+    "uid": "1340d7c2-4582-4efa-9653-5430cf84172e",
+    "resourceVersion": "361995790"
+  },
+  {
+    "kind": "ServiceAccount",
+    "name": "native-probe",
+    "uid": "6c229246-c032-4e7c-baf9-9b88c3145c5c",
+    "resourceVersion": "361995794"
+  },
+  {
+    "kind": "ServiceAccount",
+    "name": "generation-fence",
+    "uid": "1e3da0d2-1bf6-4012-8993-e18e77efa766",
+    "resourceVersion": "361995800"
+  },
+  {
+    "kind": "ConfigMap",
+    "name": "reviewed-code",
+    "uid": "3d635046-9530-41d6-925a-e997a555b25e",
+    "resourceVersion": "361995808"
+  },
+  {
+    "kind": "ConfigMap",
+    "name": "reviewed-quota-source",
+    "uid": "1b30fa0e-be05-4e13-b41b-b05eab4ed86a",
+    "resourceVersion": "361995814"
+  },
+  {
+    "kind": "ConfigMap",
+    "name": "reviewed-code",
+    "uid": "d6b61e0a-1bff-4813-a3c6-dadd0fcb9b3d",
+    "resourceVersion": "361995821"
+  },
+  {
+    "kind": "ConfigMap",
+    "name": "reviewed-quota-source",
+    "uid": "2d61d80c-0397-45f3-803e-f43ef8b6687e",
+    "resourceVersion": "361995829"
+  },
+  {
+    "kind": "ConfigMap",
+    "name": "empty-registry",
+    "uid": "c49511ed-6ecc-4965-acdf-bfd0e4e7d677",
+    "resourceVersion": "361995834"
+  },
+  {
+    "kind": "Role",
+    "name": "native-probe",
+    "uid": "a4cab2ac-db88-45e0-a8da-64c9e0851492",
+    "resourceVersion": "361995838"
+  },
+  {
+    "kind": "RoleBinding",
+    "name": "native-probe",
+    "uid": "29de7dd7-0db2-4f43-ae1c-152ab3a0ab4f",
+    "resourceVersion": "361995842"
+  },
+  {
+    "kind": "Service",
+    "name": "generation-fence",
+    "uid": "741b049a-7335-4a00-bdd2-93d2e77287b7",
+    "resourceVersion": "361995846"
+  },
+  {
+    "kind": "Role",
+    "name": "generation-fence",
+    "uid": "5a7ece6a-7719-4815-adc1-194b7fc576c5",
+    "resourceVersion": "361995852"
+  },
+  {
+    "kind": "RoleBinding",
+    "name": "generation-fence",
+    "uid": "99fe0459-e1c7-4ffd-8760-bee87efd7ea3",
+    "resourceVersion": "361995854"
+  },
+  {
+    "kind": "ClusterRole",
+    "name": "cps-dynamic-coordination-live-20261008-node-read",
+    "uid": "285d6aa5-ad20-4fb0-8e22-7dedc57dc457",
+    "resourceVersion": "361995859"
+  },
+  {
+    "kind": "ClusterRoleBinding",
+    "name": "cps-dynamic-coordination-live-20261008-node-read",
+    "uid": "6ac3f4ae-34d4-4693-b610-5c199b250439",
+    "resourceVersion": "361995862"
+  },
+  {
+    "kind": "Deployment",
+    "name": "generation-fence",
+    "uid": "b95150fe-3eae-4685-b716-5c6785d3fe76",
+    "resourceVersion": "361995868"
+  },
+  {
+    "kind": "ValidatingWebhookConfiguration",
+    "name": "cps-dynamic-coordination-live-20261008-transport",
+    "uid": "7d86da32-3998-41d7-a6c3-51be9b93ddb4",
+    "resourceVersion": "361995974"
+  }
+]

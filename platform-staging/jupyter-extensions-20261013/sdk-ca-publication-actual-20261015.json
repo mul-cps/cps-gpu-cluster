@@ -1,0 +1,103 @@
+{
+  "core_module_counts": {
+    "cpu": 43,
+    "gpu": 30,
+    "hub": 48
+  },
+  "deployed": false,
+  "eligible_for_live_adoption": false,
+  "images": {
+    "cpu": {
+      "base_compressed_layers_and_diffids_preserved": true,
+      "base_layer_count": 66,
+      "base_manifest": "sha256:86c4fd58afe7a4e18b850da9f007d3c9e8cc8c058d85c0b8fee667ed72779d59",
+      "changed_rootfs_paths": [
+        "opt/conda/lib/python3.13/site-packages/cps_compute/sdk.py",
+        "opt/conda/lib/python3.13/site-packages/cps_compute-0.1.0.dist-info/RECORD"
+      ],
+      "config": "sha256:41e7e328aa0360b3446ef215e25764e7a6fdabe8b166dc69997c44aa52e9f400",
+      "image": "ghcr.io/mul-cps/cps-jupyter-notebook@sha256:ad693e5d49ef208449d0bc5d3de86288da7aac1799c1f7f9a1d84c2f893c00c1",
+      "payload_proof_sha256": "sha256:ef820a15f22800aa60457a0f6aafd7e655f9f66d5d1dd1ed4df26c4e156f7ab2",
+      "published_at": "2026-10-15T06:59:18.657965+00:00",
+      "remote_raw_manifest_exact": true,
+      "runtime_config_unchanged_except_revision_and_provenance_labels": true,
+      "tag": "qualification-sdk-ca-a7b2850d-cpu-20261015"
+    },
+    "gpu": {
+      "base_compressed_layers_and_diffids_preserved": true,
+      "base_layer_count": 80,
+      "base_manifest": "sha256:9167861058c1364c58d1c2fca0d6f536c3ffb53a33800dcdb9a1560f14ca4dc0",
+      "changed_rootfs_paths": [
+        "opt/conda/lib/python3.13/site-packages/cps_compute/sdk.py",
+        "opt/conda/lib/python3.13/site-packages/cps_compute-0.1.0.dist-info/RECORD"
+      ],
+      "config": "sha256:64e168cd44edc5c155a8c72d610dbf0ef0147c75dd36d7d1cc57a8de79cf3b2a",
+      "image": "ghcr.io/mul-cps/cps-jupyter-notebook@sha256:7e3f6f7d3fc4c42f22574269e8c4c8fcce3fcabbecf4b528a1d82ac2ca364c85",
+      "payload_proof_sha256": "sha256:1f11ec53e183f40fbec6a712a73c5c7f4bd63bb9d7b93b611bf3b2d26ee12dd8",
+      "published_at": "2026-10-15T06:59:35.085852+00:00",
+      "remote_raw_manifest_exact": true,
+      "runtime_config_unchanged_except_revision_and_provenance_labels": true,
+      "tag": "qualification-sdk-ca-a7b2850d-gpu-20261015"
+    },
+    "hub": {
+      "base_compressed_layers_and_diffids_preserved": true,
+      "base_layer_count": 63,
+      "base_manifest": "sha256:8a51a7beca628b18a13d8f0d1982e981e0a80b049ccf0efee96532a36b5b2718",
+      "changed_rootfs_paths": [
+        "usr/local/lib/python3.12/site-packages/cps_compute/sdk.py",
+        "usr/local/lib/python3.12/site-packages/cps_compute-0.1.0.dist-info/RECORD",
+        "usr/local/lib/python3.12/site-packages/cps_compute_hub/hub.py",
+        "usr/local/lib/python3.12/site-packages/cps_compute_hub/native_hub_config.py",
+        "usr/local/lib/python3.12/site-packages/cps_compute_hub-0.1.0.dist-info/RECORD"
+      ],
+      "config": "sha256:3f594c5497661e65f05a8ce8f8b22c02ad7bf2dedbadd90cfd30428c6aaecc2d",
+      "image": "ghcr.io/mul-cps/cps-compute@sha256:624a98b31bb55bad219bc7b2b03fdc8f4454fa8486edc18c1103748106b2e8fd",
+      "payload_proof_sha256": "sha256:f2a7b8c747ee138b1cd8598b7e56c67eb40967a4dcdf33109de9c7937294d81d",
+      "published_at": "2026-10-15T06:59:03.984838+00:00",
+      "remote_raw_manifest_exact": true,
+      "runtime_config_unchanged_except_revision_and_provenance_labels": true,
+      "tag": "qualification-sdk-ca-a7b2850d-hub-20261015"
+    }
+  },
+  "installed_tests": {
+    "cpu": {
+      "passed": 14,
+      "skipped": 0
+    },
+    "gpu": {
+      "passed": 14,
+      "skipped": 0
+    },
+    "hub": {
+      "passed": 481,
+      "skip_reasons": [
+        "three unchanged root-only fixtures",
+        "Python3.12 default X509 flags are not strict; same missing-AKI denial passed on host and both notebook Py3.13 runtimes"
+      ],
+      "skipped": 4
+    }
+  },
+  "kind": "sdk-ca-package-publication",
+  "live_qualified": false,
+  "pip_check_all_passed": true,
+  "production_qualified": false,
+  "published": true,
+  "qualification_receipt_raw_sha256": "183619adbd9eec77295c1d09ca1510aa32165d03bbec05bbcd66a2f1dd12c5a5",
+  "remaining_adoption_prerequisites": [
+    "Explicit reviewed old-to-new policy and native-workload image transition",
+    "Adopt compatible runtime validators and operator paths actually used by each component",
+    "Coordinated strict certificate/CA renewal and internal export credential rotation",
+    "Reconcile all retained workspace registrations through owning console APIs",
+    "Actual inherited SDK authentication and notebook/kernel batch submission acceptance from both Hubs"
+  ],
+  "root_publication_receipt_raw_sha256": "80adbe4de0fbd0810600354d100f4f09c33abe0080ca9348ccce96ae77c8f10d",
+  "source_branch": "proposal/sdk-trusted-ca-20261015",
+  "source_commit": "a7b2850d1881b2bff8c0a9b865dfb3fa5ba9f94b",
+  "source_remote": "https://github.com/mul-cps/cps-compute.git",
+  "unchanged_runtime_distribution_counts": {
+    "cpu": 316,
+    "gpu": 423,
+    "hub": 137
+  },
+  "version": 1
+}

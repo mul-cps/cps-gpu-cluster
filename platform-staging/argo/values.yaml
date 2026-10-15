@@ -1,0 +1,76 @@
+# Private staging controller; workflows remain in the separately restricted namespace.
+crds:
+  install: false
+createAggregateRoles: false
+singleNamespace: false
+workflow:
+  serviceAccount:
+    create: false
+    name: cps-workflow
+  rbac:
+    create: false
+controller:
+  image:
+    tag: v3.7.18@sha256:e89fcdf8ba947589a0982a3fce867c63c235c56631c5c20428c536db21635004
+  workflowNamespaces: [cps-workflows]
+  # Internal read-only metrics, restricted to Prometheus by NetworkPolicy.
+  metricsConfig:
+    enabled: true
+    secure: false
+    port: 9090
+    portName: metrics
+  rbac:
+    accessAllSecrets: false
+    secretWhitelist:
+      - cps-workflow-executor.service-account-token
+      - cps-artifact-credentials
+      - cps-artifact-ca
+  resources:
+    requests: {cpu: 100m, memory: 256Mi}
+    limits: {cpu: '1', memory: 1Gi}
+  workflowDefaults:
+    spec:
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 10001
+        fsGroup: 10001
+        seccompProfile: {type: RuntimeDefault}
+      podGC: {strategy: OnWorkflowCompletion, deleteDelayDuration: 10m}
+      ttlStrategy: {secondsAfterCompletion: 8035200}
+executor:
+  image:
+    tag: v3.7.18@sha256:8651f0d1a1050be46ef28a7362cbb7387b5f5c29ce691ebddd5d99a0bb7281a9
+  resources:
+    requests: {cpu: 100m, memory: 64Mi}
+    limits: {cpu: '1', memory: 256Mi}
+  securityContext:
+    runAsNonRoot: true
+    runAsUser: 10001
+    allowPrivilegeEscalation: false
+    capabilities: {drop: [ALL]}
+mainContainer:
+  securityContext:
+    runAsNonRoot: true
+    allowPrivilegeEscalation: false
+    capabilities: {drop: [ALL]}
+server:
+  enabled: true
+  image:
+    tag: v3.7.18@sha256:b1029d3c8b92a6ecc7e466539533fff9dbceea5b0246dc6ce7eae1bdfc18a740
+  secure: true
+  authModes: [client]
+  extraArgs: [--tls-certificate-secret-name=cps-argo-server-tls]
+  serviceType: ClusterIP
+  ingress: {enabled: false}
+  resources:
+    requests: {cpu: 100m, memory: 128Mi}
+    limits: {cpu: '1', memory: 512Mi}
+artifactRepository:
+  archiveLogs: true
+  s3:
+    endpoint: artifacts.cps-artifacts-relay.svc.cluster.local:8333
+    bucket: cps-compute
+    insecure: false
+    caSecret: {name: cps-artifact-ca, key: ca.crt}
+    accessKeySecret: {name: cps-artifact-credentials, key: accessKey}
+    secretKeySecret: {name: cps-artifact-credentials, key: secretKey}

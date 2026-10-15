@@ -1,0 +1,49 @@
+name: Compute platform tests
+on:
+  pull_request:
+    paths:
+      - 'compute-policy/**'
+      - 'platform-staging/**'
+      - 'scripts/compute-platform/**'
+      - 'scripts/compile_compute_policy.py'
+      - 'tests/compute_platform/**'
+      - 'tests/compute_policy/**'
+      - '.github/workflows/compute-platform.yml'
+  push:
+    paths:
+      - 'compute-policy/**'
+      - 'platform-staging/**'
+      - 'scripts/compute-platform/**'
+      - 'scripts/compile_compute_policy.py'
+      - 'tests/compute_platform/**'
+      - 'tests/compute_policy/**'
+      - '.github/workflows/compute-platform.yml'
+permissions:
+  contents: read
+jobs:
+  unit-and-render:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        with:
+          persist-credentials: false
+      - name: Install pinned test dependencies
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 -m venv "$RUNNER_TEMP/cps-compute-tests"
+          "$RUNNER_TEMP/cps-compute-tests/bin/python" -m pip install PyYAML==6.0.3
+          mkdir -p "$RUNNER_TEMP/cps-helm"
+          cd "$RUNNER_TEMP/cps-helm"
+          curl --fail --location --retry 3 --output helm-v4.1.4-linux-amd64.tar.gz https://get.helm.sh/helm-v4.1.4-linux-amd64.tar.gz
+          echo '70b2c30a19da4db264dfd68c8a3664e05093a361cefd89572ffb36f8abfa3d09  helm-v4.1.4-linux-amd64.tar.gz' | sha256sum --check
+          tar -xzf helm-v4.1.4-linux-amd64.tar.gz linux-amd64/helm
+          echo "$RUNNER_TEMP/cps-helm/linux-amd64" >> "$GITHUB_PATH"
+      - name: Validate policy, unit tests and Helm output
+        shell: bash
+        run: |
+          set -euo pipefail
+          "$RUNNER_TEMP/cps-compute-tests/bin/python" -m unittest discover -s tests/compute_policy -v
+          "$RUNNER_TEMP/cps-compute-tests/bin/python" scripts/compile_compute_policy.py --check
+          "$RUNNER_TEMP/cps-compute-tests/bin/python" -m unittest discover -s tests/compute_platform -v

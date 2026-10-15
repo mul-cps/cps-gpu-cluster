@@ -1,0 +1,607 @@
+{
+  "schemaVersion": 1,
+  "evidenceKind": "actual-trusted-global-guard-canary",
+  "sourceDataSha256": "59cf0a816fbc4c118e5e442a6ae654c5733cc1f586ac40f79086899f73012e86",
+  "configmap": {
+    "name": "r615-uvm-guard-59cf0a816fbc",
+    "uid": "fc2d140e-b8ba-485a-9373-4f846a3f9c70",
+    "resourceVersion": "362133616"
+  },
+  "productionQualified": false,
+  "hostileIsolationQualified": false,
+  "automaticKaiOrchestratorQualified": false,
+  "capApplication": "root native operator CLI and sealed first-init receipt; automatic helper unqualified",
+  "pods": {
+    "uvm-guard-main": {
+      "uid": "567b84be-5bd3-48bf-9ee1-0633a6676acd",
+      "resourceVersion": "362135107",
+      "phase": "Failed",
+      "mainSecurityContext": {
+        "allowPrivilegeEscalation": false,
+        "capabilities": {
+          "drop": [
+            "ALL"
+          ]
+        },
+        "readOnlyRootFilesystem": true,
+        "runAsGroup": 100,
+        "runAsNonRoot": true,
+        "runAsUser": 1000,
+        "seccompProfile": {
+          "type": "RuntimeDefault"
+        }
+      },
+      "hostPaths": [
+        "/sys/fs/cgroup",
+        "/sys/module/nvidia_uvm/parameters"
+      ],
+      "automountServiceAccountToken": false,
+      "containers": [
+        {
+          "name": "cps-driver-cap-gate",
+          "containerID": "containerd://b94f528628526b222ec1e62a33d5b23c0cdb00e8a3d9d1c7c2150f3eec7ece8b",
+          "imageID": "ghcr.io/mul-cps/cps-compute@sha256:b3802a7f70077ff56adbc060d1177409eeff76c8b3cf8ccf9f39047c1e6716bf",
+          "state": {
+            "terminated": {
+              "containerID": "containerd://b94f528628526b222ec1e62a33d5b23c0cdb00e8a3d9d1c7c2150f3eec7ece8b",
+              "exitCode": 0,
+              "finishedAt": "2026-10-08T15:06:46Z",
+              "reason": "Completed",
+              "startedAt": "2026-10-08T15:05:10Z"
+            }
+          },
+          "restartCount": 0
+        },
+        {
+          "name": "main",
+          "containerID": "containerd://6243d0865ccfa54764097423afe3ea5b29bc983462f2edacf4b71df0a413c14a",
+          "imageID": "ghcr.io/mul-cps/cps-jupyter-notebook@sha256:6b6a8d6a225df1b938fe98bcdad9e547aef249347392ce8f29adb3fedda512ae",
+          "state": {
+            "terminated": {
+              "containerID": "containerd://6243d0865ccfa54764097423afe3ea5b29bc983462f2edacf4b71df0a413c14a",
+              "exitCode": 1,
+              "finishedAt": "2026-10-08T15:06:54Z",
+              "reason": "Error",
+              "startedAt": "2026-10-08T15:06:47Z"
+            }
+          },
+          "restartCount": 0
+        }
+      ]
+    },
+    "uvm-guard-peer": {
+      "uid": "1f02616c-6d0e-4cfd-ae34-a8bb31ee5f39",
+      "resourceVersion": "362136044",
+      "phase": "Succeeded",
+      "mainSecurityContext": {
+        "allowPrivilegeEscalation": false,
+        "capabilities": {
+          "drop": [
+            "ALL"
+          ]
+        },
+        "readOnlyRootFilesystem": true,
+        "runAsGroup": 100,
+        "runAsNonRoot": true,
+        "runAsUser": 1000,
+        "seccompProfile": {
+          "type": "RuntimeDefault"
+        }
+      },
+      "hostPaths": [
+        "/sys/fs/cgroup",
+        "/sys/module/nvidia_uvm/parameters"
+      ],
+      "automountServiceAccountToken": false,
+      "containers": [
+        {
+          "name": "cps-driver-cap-gate",
+          "containerID": "containerd://e0322f1f7d934741fa7766cef1817ae512c64491a899230174f2830545e141b2",
+          "imageID": "ghcr.io/mul-cps/cps-compute@sha256:b3802a7f70077ff56adbc060d1177409eeff76c8b3cf8ccf9f39047c1e6716bf",
+          "state": {
+            "terminated": {
+              "containerID": "containerd://e0322f1f7d934741fa7766cef1817ae512c64491a899230174f2830545e141b2",
+              "exitCode": 0,
+              "finishedAt": "2026-10-08T15:05:57Z",
+              "reason": "Completed",
+              "startedAt": "2026-10-08T15:05:11Z"
+            }
+          },
+          "restartCount": 0
+        },
+        {
+          "name": "main",
+          "containerID": "containerd://73a6a2140010ec4a87735bb80da71cca54cddf3b7f26f8f1158259a863653ffc",
+          "imageID": "ghcr.io/mul-cps/cps-compute@sha256:b3802a7f70077ff56adbc060d1177409eeff76c8b3cf8ccf9f39047c1e6716bf",
+          "state": {
+            "terminated": {
+              "containerID": "containerd://73a6a2140010ec4a87735bb80da71cca54cddf3b7f26f8f1158259a863653ffc",
+              "exitCode": 0,
+              "finishedAt": "2026-10-08T15:07:58Z",
+              "reason": "Completed",
+              "startedAt": "2026-10-08T15:05:58Z"
+            }
+          },
+          "restartCount": 0
+        }
+      ]
+    }
+  },
+  "mainRecords": [
+    {
+      "after": {
+        "limits": {
+          "hard": 536870912,
+          "soft": 536870912,
+          "used": 436289216
+        },
+        "observed_ns": 1791472008297997829,
+        "parent_memory_current": 67510272
+      },
+      "after_context": {
+        "limits": {
+          "hard": 536870912,
+          "soft": 536870912,
+          "used": 436289216
+        },
+        "observed_ns": 1791472008295424759,
+        "parent_memory_current": 67248128
+      },
+      "attributes": {
+        "83": 1,
+        "88": 0,
+        "89": 1,
+        "100": 0
+      },
+      "before": {
+        "limits": {
+          "hard": 536870912,
+          "soft": 536870912,
+          "used": 436289216
+        },
+        "observed_ns": 1791472008295690714,
+        "parent_memory_current": 67248128
+      },
+      "before_context": {
+        "limits": {
+          "hard": 536870912,
+          "soft": 536870912,
+          "used": 0
+        },
+        "observed_ns": 1791472008107764373,
+        "parent_memory_current": 44503040
+      },
+      "driver_api_version": 13040,
+      "driver_object": "/usr/lib/x86_64-linux-gnu/libcuda.so.1",
+      "finished_ns": 1791472008395752292,
+      "free_256": {
+        "cuda_result": 0,
+        "memory": {
+          "cuda_result": 0,
+          "free_bytes": 100581696,
+          "total_bytes": 536870912
+        }
+      },
+      "free_64": {
+        "cuda_result": 0,
+        "memory": {
+          "cuda_result": 0,
+          "free_bytes": 100581696,
+          "total_bytes": 536870912
+        }
+      },
+      "free_recovery": {
+        "cuda_result": 0,
+        "memory": {
+          "cuda_result": 0,
+          "free_bytes": 100581696,
+          "total_bytes": 536870912
+        }
+      },
+      "gid": 100,
+      "heartbeat_after": {
+        "cuda_result": 0,
+        "memory": {
+          "cuda_result": 0,
+          "free_bytes": 100581696,
+          "total_bytes": 536870912
+        },
+        "monotonic_ns": 8109374575991618
+      },
+      "kind": "r615-global-guard-canary",
+      "launch": "direct",
+      "managed_64": {
+        "allocation_mib": 64,
+        "cuda_result": 801,
+        "memory": {
+          "cuda_result": 0,
+          "free_bytes": 100581696,
+          "total_bytes": 536870912
+        },
+        "prefetch_result": null,
+        "touch_result": null
+      },
+      "managed_allocation_denied": true,
+      "mode": "raw",
+      "module_parameters": {
+        "uvm_ats_mode": "0",
+        "uvm_deny_managed_mmap": "Y",
+        "uvm_disable_hmm": "Y",
+        "uvm_enable_builtin_tests": "0"
+      },
+      "ordinary_256": {
+        "allocation_mib": 256,
+        "cuda_result": 2,
+        "memory": {
+          "cuda_result": 0,
+          "free_bytes": 100581696,
+          "total_bytes": 536870912
+        },
+        "prefetch_result": null,
+        "touch_result": null
+      },
+      "ordinary_64": {
+        "allocation_mib": 64,
+        "cuda_result": 0,
+        "memory": {
+          "cuda_result": 0,
+          "free_bytes": 33472832,
+          "total_bytes": 536870912
+        },
+        "prefetch_result": null,
+        "touch_result": 0
+      },
+      "ordinary_recovery_64": {
+        "allocation_mib": 64,
+        "cuda_result": 0,
+        "memory": {
+          "cuda_result": 0,
+          "free_bytes": 33472832,
+          "total_bytes": 536870912
+        },
+        "prefetch_result": null,
+        "touch_result": 0
+      },
+      "pid": 50,
+      "ppid": 1,
+      "production_qualified": false,
+      "raw_sequence_passed": true,
+      "started_ns": 1791472008101309954,
+      "status": "measurement-completed",
+      "uid": 1000
+    },
+    {
+      "after_context": {
+        "limits": {
+          "hard": 536870912,
+          "soft": 536870912,
+          "used": 436289216
+        },
+        "observed_ns": 1791472008678799866,
+        "parent_memory_current": 66940928
+      },
+      "attributes": {
+        "83": 1,
+        "88": 0,
+        "89": 1,
+        "100": 0
+      },
+      "before_context": {
+        "limits": {
+          "hard": 536870912,
+          "soft": 536870912,
+          "used": 0
+        },
+        "observed_ns": 1791472008520949795,
+        "parent_memory_current": 44728320
+      },
+      "driver_api_version": 13040,
+      "driver_object": "/usr/lib/x86_64-linux-gnu/libcuda.so.1",
+      "finished_ns": 1791472008769687259,
+      "gid": 100,
+      "heartbeat_after": {
+        "cuda_result": 0,
+        "memory": {
+          "cuda_result": 0,
+          "free_bytes": 100581696,
+          "total_bytes": 536870912
+        },
+        "monotonic_ns": 8109374956955327
+      },
+      "kind": "r615-global-guard-canary",
+      "launch": "direct",
+      "managed_64": {
+        "allocation_mib": 64,
+        "cuda_result": 801,
+        "memory": {
+          "cuda_result": 0,
+          "free_bytes": 100581696,
+          "total_bytes": 536870912
+        },
+        "prefetch_result": null,
+        "touch_result": null
+      },
+      "managed_allocation_denied": true,
+      "mode": "managed-only",
+      "module_parameters": {
+        "uvm_ats_mode": "0",
+        "uvm_deny_managed_mmap": "Y",
+        "uvm_disable_hmm": "Y",
+        "uvm_enable_builtin_tests": "0"
+      },
+      "pid": 54,
+      "ppid": 1,
+      "production_qualified": false,
+      "started_ns": 1791472008514489945,
+      "status": "measurement-completed",
+      "uid": 1000
+    },
+    {
+      "after_context": {
+        "limits": {
+          "hard": 536870912,
+          "soft": 536870912,
+          "used": 436289216
+        },
+        "observed_ns": 1791472009049199468,
+        "parent_memory_current": 70295552
+      },
+      "attributes": {
+        "83": 1,
+        "88": 0,
+        "89": 1,
+        "100": 0
+      },
+      "before_context": {
+        "limits": {
+          "hard": 536870912,
+          "soft": 536870912,
+          "used": 0
+        },
+        "observed_ns": 1791472008895522893,
+        "parent_memory_current": 47710208
+      },
+      "driver_api_version": 13040,
+      "driver_object": "/usr/lib/x86_64-linux-gnu/libcuda.so.1",
+      "finished_ns": 1791472009131380612,
+      "fork_before_cuda": true,
+      "gid": 100,
+      "heartbeat_after": {
+        "cuda_result": 0,
+        "memory": {
+          "cuda_result": 0,
+          "free_bytes": 100581696,
+          "total_bytes": 536870912
+        },
+        "monotonic_ns": 8109375327352496
+      },
+      "kind": "r615-global-guard-canary",
+      "launch": "fork-before-cuda",
+      "managed_64": {
+        "allocation_mib": 64,
+        "cuda_result": 801,
+        "memory": {
+          "cuda_result": 0,
+          "free_bytes": 100581696,
+          "total_bytes": 536870912
+        },
+        "prefetch_result": null,
+        "touch_result": null
+      },
+      "managed_allocation_denied": true,
+      "mode": "managed-only",
+      "module_parameters": {
+        "uvm_ats_mode": "0",
+        "uvm_deny_managed_mmap": "Y",
+        "uvm_disable_hmm": "Y",
+        "uvm_enable_builtin_tests": "0"
+      },
+      "pid": 59,
+      "ppid": 58,
+      "production_qualified": false,
+      "started_ns": 1791472008889002761,
+      "status": "measurement-completed",
+      "uid": 1000
+    },
+    {
+      "attributes": {
+        "88": 0,
+        "100": 0
+      },
+      "before_context": {
+        "limits": {
+          "hard": 536870912,
+          "soft": 536870912,
+          "used": 0
+        },
+        "observed_ns": 1791472009255818719,
+        "parent_memory_current": 44449792
+      },
+      "error": "CUDA error: out of memory\nSearch for `cudaErrorMemoryAllocation' in https://docs.nvidia.com/cuda/cuda-runtime-api/group__CUDART__TYPES.html for more information.\nCUDA kernel errors might be asynchronously reported at some other API call, so the stacktrace below might be incorrect.\nFor debugging consider passing CUDA_LAUNCH_BLOCKING=1\nCompile with `TORCH_USE_CUDA_DSA` to enable device-side assertions.\n",
+      "error_type": "AcceleratorError",
+      "finished_ns": 1791472013084155624,
+      "gid": 100,
+      "kind": "r615-global-guard-canary",
+      "launch": "direct",
+      "mode": "torch",
+      "module_parameters": {
+        "uvm_ats_mode": "0",
+        "uvm_deny_managed_mmap": "Y",
+        "uvm_disable_hmm": "Y",
+        "uvm_enable_builtin_tests": "0"
+      },
+      "pid": 63,
+      "ppid": 1,
+      "production_qualified": false,
+      "started_ns": 1791472009249242763,
+      "status": "inconclusive",
+      "torch_cuda_version": "12.9",
+      "torch_device_name": "NVIDIA A100-PCIE-40GB",
+      "torch_version": "2.11.0+cu129",
+      "uid": 1000
+    },
+    {
+      "kind": "fresh-process-matrix",
+      "production_qualified": false,
+      "results": [
+        {
+          "exit_code": 0,
+          "launch": "direct",
+          "mode": "raw"
+        },
+        {
+          "exit_code": 0,
+          "launch": "direct",
+          "mode": "managed-only"
+        },
+        {
+          "exit_code": 0,
+          "launch": "fork-before-cuda",
+          "mode": "managed-only"
+        },
+        {
+          "exit_code": 1,
+          "launch": "direct",
+          "mode": "torch"
+        }
+      ]
+    }
+  ],
+  "peer": {
+    "ticks": 597,
+    "allCudaResultsZero": true,
+    "firstObservedNs": 1791471958792158690,
+    "lastObservedNs": 1791472078646515819,
+    "maxGapMs": 220.682003,
+    "terminalSucceeded": true,
+    "reportedDurationSeconds": 120.373997642
+  },
+  "phaseCoverage": [
+    {
+      "mode": "raw",
+      "launch": "direct",
+      "startedNs": 1791472008101309954,
+      "finishedNs": 1791472008395752292,
+      "ticksInside": 1,
+      "bracketedWithinOneSecond": true,
+      "leftGapMs": 47.918063,
+      "rightGapMs": 64.532463
+    },
+    {
+      "mode": "managed-only",
+      "launch": "direct",
+      "startedNs": 1791472008514489945,
+      "finishedNs": 1791472008769687259,
+      "ticksInside": 1,
+      "bracketedWithinOneSecond": true,
+      "leftGapMs": 54.20519,
+      "rightGapMs": 92.694475
+    },
+    {
+      "mode": "managed-only",
+      "launch": "fork-before-cuda",
+      "startedNs": 1791472008889002761,
+      "finishedNs": 1791472009131380612,
+      "ticksInside": 1,
+      "bracketedWithinOneSecond": true,
+      "leftGapMs": 26.621027,
+      "rightGapMs": 134.224521
+    },
+    {
+      "mode": "torch",
+      "launch": "direct",
+      "startedNs": 1791472009249242763,
+      "finishedNs": 1791472013084155624,
+      "ticksInside": 19,
+      "bracketedWithinOneSecond": true,
+      "leftGapMs": 184.486256,
+      "rightGapMs": 0.264493
+    }
+  ],
+  "evidenceFiles": {
+    "uvm-guard-main-cps-driver-cap-gate.log": {
+      "sha256": "e4d02728a42d6cb23b66b7e84bce29727340aec338830de63df52cc5bab5ce55",
+      "bytes": 126
+    },
+    "uvm-guard-main-main.log": {
+      "sha256": "460251d214422c9dc08fc8eec9c39719785ebd12e0fabdffa2077304ae95137e",
+      "bytes": 6536
+    },
+    "uvm-guard-peer-cps-driver-cap-gate.log": {
+      "sha256": "2f6bc2bc368b1690cdcdf2af7cc0ab638bb65d1cbedbd6f5038d588a34b06fd3",
+      "bytes": 126
+    },
+    "uvm-guard-peer-main.log": {
+      "sha256": "462b6e36cf4c12ab698846b6cdf87908fa3beedc0c032387dfa17ffa8e9ecf1b",
+      "bytes": 228325
+    }
+  },
+  "namespace": {
+    "name": "cps-r615-uvm-guard-20261008",
+    "uid": "748fbe60-5a25-49fe-8bfa-ff7a9fc336ce"
+  },
+  "completePeerCoverage": true,
+  "rootNativeCapProofs": [
+    {
+      "state": "applied-before-main",
+      "pod_uid": "1f02616c-6d0e-4cfd-ae34-a8bb31ee5f39",
+      "gpu_uuid": "GPU-16128952-b438-556a-00bb-93039ee24e56",
+      "cap_bytes": 536870912,
+      "boot_id": "209f8bc9-a478-48e4-925a-6e07ffa56f7a",
+      "pid_start_ticks": 810927720,
+      "host_pid": 1736880,
+      "container_id": "e0322f1f7d934741fa7766cef1817ae512c64491a899230174f2830545e141b2",
+      "cgroup_relative": "/kubepods.slice/kubepods-burstable.slice/kubepods-burstable-pod1f02616c_6d0e_4cfd_ae34_a8bb31ee5f39.slice",
+      "manual_driver_canary": true,
+      "automatic_orchestration_qualified": false,
+      "spec_sha256": "7c8e9e934e17648487e6549f11cad6fc21ebb749b759abae2ef1937d60e7d2d5",
+      "readback": {
+        "soft": 536870912,
+        "hard": 536870912,
+        "used": 0
+      },
+      "actual_cli_readback": "GPU 0: NVIDIA A100-PCIE-40GB (UUID: GPU-16128952-b438-556a-00bb-93039ee24e56)\n  namespace:      /sys/fs/cgroup/kubepods.slice/kubepods-burstable.slice/kubepods-burstable-pod1f02616c_6d0e_4cfd_ae34_a8bb31ee5f39.slice\n  soft limit:     512 MiB\n  hard limit:     512 MiB\n  current used:   0 MiB\n",
+      "evidenceSha256": "30911f76a21ec9664715401ce873ba50332dda8c07a4e98638eaa97144080457"
+    },
+    {
+      "state": "applied-before-main",
+      "pod_uid": "567b84be-5bd3-48bf-9ee1-0633a6676acd",
+      "gpu_uuid": "GPU-16128952-b438-556a-00bb-93039ee24e56",
+      "cap_bytes": 536870912,
+      "boot_id": "209f8bc9-a478-48e4-925a-6e07ffa56f7a",
+      "pid_start_ticks": 810927720,
+      "host_pid": 1736878,
+      "container_id": "b94f528628526b222ec1e62a33d5b23c0cdb00e8a3d9d1c7c2150f3eec7ece8b",
+      "cgroup_relative": "/kubepods.slice/kubepods-burstable.slice/kubepods-burstable-pod567b84be_5bd3_48bf_9ee1_0633a6676acd.slice",
+      "manual_driver_canary": true,
+      "automatic_orchestration_qualified": false,
+      "spec_sha256": "5cca5fa963756e38f6c5365df37873391548947e4600948d341f7dee542c6b8f",
+      "readback": {
+        "soft": 536870912,
+        "hard": 536870912,
+        "used": 0
+      },
+      "actual_cli_readback": "GPU 0: NVIDIA A100-PCIE-40GB (UUID: GPU-16128952-b438-556a-00bb-93039ee24e56)\n  namespace:      /sys/fs/cgroup/kubepods.slice/kubepods-burstable.slice/kubepods-burstable-pod567b84be_5bd3_48bf_9ee1_0633a6676acd.slice\n  soft limit:     512 MiB\n  hard limit:     512 MiB\n  current used:   0 MiB\n",
+      "evidenceSha256": "ed4caabc8316eab9189b77321d0d86133c617aa75b737bede67e03a01b076f77"
+    }
+  ],
+  "physicalMemory": {
+    "sourceSha256": "a8eec63f617f0b2d4298bda3247c4974bfae11da30adf9f44df49030ddef2b0e",
+    "samples": 116,
+    "firstObservedNs": 1791471998858160047,
+    "lastObservedNs": 1791472043840200337,
+    "gpus": {
+      "GPU-16128952-b438-556a-00bb-93039ee24e56": {
+        "minUsedMiB": 427,
+        "maxUsedMiB": 575,
+        "maxUtilPercent": 11
+      },
+      "GPU-1e6145d5-8ee2-43e2-a0d5-6d345909e8a6": {
+        "minUsedMiB": 0,
+        "maxUsedMiB": 0,
+        "maxUtilPercent": 0
+      }
+    },
+    "scope": "physical trace covers main phase, not entire120s peer interval"
+  }
+}

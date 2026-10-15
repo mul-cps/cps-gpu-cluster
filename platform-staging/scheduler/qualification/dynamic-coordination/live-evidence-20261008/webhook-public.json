@@ -1,0 +1,57 @@
+{
+  "apiVersion": "admissionregistration.k8s.io/v1",
+  "kind": "ValidatingWebhookConfiguration",
+  "metadata": {
+    "name": "cps-dynamic-coordination-live-20261008-transport"
+  },
+  "webhooks": [
+    {
+      "name": "cpu-transport.qa.compute.cps.unileoben.ac.at",
+      "admissionReviewVersions": [
+        "v1"
+      ],
+      "sideEffects": "None",
+      "failurePolicy": "Fail",
+      "matchPolicy": "Exact",
+      "timeoutSeconds": 5,
+      "namespaceSelector": {
+        "matchLabels": {
+          "kubernetes.io/metadata.name": "cps-dynamic-admission-coord-live-20261008"
+        }
+      },
+      "matchConditions": [
+        {
+          "name": "two-exact-cpu-probes-only",
+          "expression": "request.name in ['kai-cpu-deny', 'unregistered-map']"
+        }
+      ],
+      "rules": [
+        {
+          "apiGroups": [
+            ""
+          ],
+          "apiVersions": [
+            "v1"
+          ],
+          "operations": [
+            "CREATE"
+          ],
+          "resources": [
+            "pods/binding",
+            "configmaps"
+          ],
+          "scope": "Namespaced"
+        }
+      ],
+      "clientConfig": {
+        "caBundle": "LS0tLS1CRUdJTiBDRVJUSUZJQ0FURS0tLS0tCk1JSUR0ekNDQXArZ0F3SUJBZ0lVZUM1b2JVaHkwTDkrbWlwTTdwVkNoK0E5WUY4d0RRWUpLb1pJaHZjTkFRRUwKQlFBd1JqRkVNRUlHQTFVRUF3dzdaMlZ1WlhKaGRHbHZiaTFtWlc1alpTNWpjSE10WkhsdVlXMXBZeTFqYjI5eQpaR2x1WVhScGIyNHRiR2wyWlMweU1ESTJNVEF3T0M1emRtTXdIaGNOTWpZeE1EQTRNVEl5T1RBeVdoY05Nall4Ck1EQTVNVEl5T1RBeVdqQkdNVVF3UWdZRFZRUURERHRuWlc1bGNtRjBhVzl1TFdabGJtTmxMbU53Y3kxa2VXNWgKYldsakxXTnZiM0prYVc1aGRHbHZiaTFzYVhabExUSXdNall4TURBNExuTjJZekNDQVNJd0RRWUpLb1pJaHZjTgpBUUVCQlFBRGdnRVBBRENDQVFvQ2dnRUJBSitOblNhb1JaSkIvZ0tKQ1k3dnU1T1p5Sk8yOS9IN1JLY2MvN1dxCnNFWkNZTjFhUWNGZ2phdFlMMlc1ZkZwN2NNYk0rVkpBWWFOL1VOY1Z5b1Z1RkxrdE1yOFZia3FFUUxHcXlKTkwKa0ZlRUlId0ttelQ5eU5CeU9LNjFhbW9FUUZiVy84UnJaU2dqK1d6Zi8wOGxDQzRpZjNSRG50ZU41eStuSGRMYwo0TjZlV3FiM1ZmWnd0b0xCWCtvWmUvMEpLTUhqQnc0S0JLMXJlSFZDaHhIckVuNEplVTY1WC80aDFPYXpicEZLCkxPWFBEKy82b0V5MW1QMXFWMmRWVHpnYlFCNzNPU1M5RDVHMDVsU3ZVTUtXVklaNkRRT2VPQUJONHZ6Tlk3bG8KSStwOHAxL0NDL051SDhSOEJoT09TQXdpRmQxbnZqZDZtaVR3OWRNNUN4a3FkOWtDQXdFQUFhT0JuRENCbVRBZApCZ05WSFE0RUZnUVVUZjVodDV0Ujl6T3dxN3lSQUNtdEwxZnpTT1F3SHdZRFZSMGpCQmd3Rm9BVVRmNWh0NXRSCjl6T3dxN3lSQUNtdEwxZnpTT1F3RHdZRFZSMFRBUUgvQkFVd0F3RUIvekJHQmdOVkhSRUVQekE5Z2p0blpXNWwKY21GMGFXOXVMV1psYm1ObExtTndjeTFrZVc1aGJXbGpMV052YjNKa2FXNWhkR2x2Ymkxc2FYWmxMVEl3TWpZeApNREE0TG5OMll6QU5CZ2txaGtpRzl3MEJBUXNGQUFPQ0FRRUFiRXBJV1lBbGRETE1ZT2ttVmFMUGQ0Rk83aTJjCkttU0RER3NjOGRqZytrQVl5cVVVVEhtR0JxeU5jSWtwV0NsNkc2bk1kSHJ5aDA3MGhsMHV3UGYrUURpWUxFMXEKOFI4SUlnZGphdFQ0Q25hSU13dnA1OTB2bTh4UG04WHN2Q0FGUjJ2bTNnQnowcW5kOW9FeWVvQjhOLyt2d1M2Qgp6UXdYczJzaXBXVG44REhVUGhmWDR3cWJWUnVkbkVwZTlXelh6REZWdmtRak5tTUd3eG5ONmNJRkxMME4wOUdaClA3Q3ZBU3JrZGFPOEw1TzIyTnNCcTNxeVIxTVRCd0ZmOU15UFZ2eitFZk1oS2MrcXM5TkVyZmpWdGNYaUMva3YKeklodlhWT20xNUxtSUJ4ZkVZeWFMbUFTOXBRT1NmdmpzRWNKcGV5aTd6ekUyMUovM25iZitJTUhtdz09Ci0tLS0tRU5EIENFUlRJRklDQVRFLS0tLS0K",
+        "service": {
+          "namespace": "cps-dynamic-coordination-live-20261008",
+          "name": "generation-fence",
+          "path": "/validate",
+          "port": 443
+        }
+      }
+    }
+  ]
+}

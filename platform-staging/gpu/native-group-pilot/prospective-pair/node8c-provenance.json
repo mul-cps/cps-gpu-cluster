@@ -1,0 +1,34 @@
+{
+  "version": 2,
+  "published_image": "ghcr.io/mul-cps/cps-compute@sha256:8c2c456b90330622645d509f94882a11a465ac208a6fa7fc824900d6320e5c0b",
+  "source_layer_sha256": "94ed6d9c933d9f3fc5f7f53d40a6d7a6c4b00e1dd05817af41e5ea704f286dde",
+  "source_member": "opt/native/node_agent.py",
+  "source_sha256": "f01b24bc984a153e9995549ef09f73167500f375d79e078a7e7aa9e1171c3664",
+  "source_size_bytes": 68413,
+  "retained_source": "node8c.py",
+  "transformer": "node_successor.py",
+  "only_changed_definition": "validate_historical_configuration",
+  "flat_epoch_reference": {
+    "source_member": "opt/native/native_operator_epoch.py",
+    "source_sha256": "890cebd7c1903a680e4dc836ec6f81f097198c2fed438ade6b2fa62157864bbd",
+    "source_size_bytes": 20613,
+    "retained_source": "epoch8c.py",
+    "only_changed_definition": "node_configuration"
+  },
+  "paired_node_additional_change": "The single exact flat epoch helper SHA256 in main is replaced by the emitted helper SHA256",
+  "unchanged_flat_dependencies": {
+    "native_approval_revision.py": "ddaaf9593dfbc9cba2d4aa3227102895a435e2537346ddd467c4941c0201658d",
+    "native_approval_process.py": "e121dd491d709d945b96fa475902486f783151f76f903344d06871b49aab2875",
+    "cdi_identity.py": "784280a4f670eca067a8cc5b4d558f9d13c0c41141401d47c229de90dd6343c0",
+    "native_gpu_controller.py": "630d43cc115b5bddf3e5d110a25cc891e0941953bbabd833f0a77a3773ad7880",
+    "native_gpu_health.py": "52fdbdae3d5e2f66fd4653d94ef5a62f734e185fabec30450f4a1b70cfee7d67",
+    "node_backend.py": "fb5651ea10118de02ee2e9601a765f947d2ae61f1b2e8670d523912b594afda0",
+    "poll.py": "6032d735473813a04df53aba976b900744be5ef17c77d49c5b1d8340c0c183d9",
+    "pod_cap.py": "5c84ab668dd276b0216199a964f42886712af9225f9fc702740bfa9bb361a39f"
+  },
+  "unchanged_recovery_helper_sha256": "25c9514fee19c478d82aa891f2d67a8018b1e799abbedd1d1397ea13b80bd25b",
+  "candidate_contract_supplied": false,
+  "candidate_image_built": false,
+  "deployed": false,
+  "hardware_qualified": false
+}

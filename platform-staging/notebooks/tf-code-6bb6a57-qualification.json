@@ -1,0 +1,52 @@
+{
+  "qualified": false,
+  "scope": "TensorFlow code image compatibility only; GPU isolation and full release matrix incomplete",
+  "digest": "sha256:07d42da7e80a89c53a939fbd73513119de9ddf54311ce8ce7c7b6f717fa88b6f",
+  "linuxManifest": "sha256:51d88ae96a3e2b3e651319a36e92570c48d834a4f897b3f084023975287b34d0",
+  "user": "1000",
+  "predicateTypes": [
+    "https://spdx.dev/Document",
+    "https://slsa.dev/provenance/v1"
+  ],
+  "offlinePackageInstallation": true,
+  "pipCheckPassed": true,
+  "releaseRunnerTestsPassed": 14,
+  "variant": "tf-code",
+  "computeSourceRevision": "6bb6a57bc8d8426e281c0654ac8eedd1668ae600",
+  "wheelSha256": "05d82345b0f65a3a94c715c68788f52d14c545cba41a5e622249870e0e848667",
+  "installedHashes": {
+    "modulesMatched": 21,
+    "addonAssetsMatched": 5,
+    "uid": 1000
+  },
+  "runtime": {
+    "uid": 1000,
+    "python": "3.13.14",
+    "compute": "0.1.0",
+    "rtc": "4.4.1",
+    "lab": "4.5.7",
+    "freshKernelSuccess": true,
+    "typedParameters": true,
+    "immutableInput": true,
+    "failedExecutedNotebookRetained": true,
+    "qualified": false,
+    "scope": "TensorFlow code image runtime only; no GPU isolation or Hub browser qualification",
+    "freshKernelSourceHashesVerified": true,
+    "tensorflowCpuVerified": true,
+    "tensorflowGradientVerified": true,
+    "kerasTrainOnBatchVerified": true,
+    "tensorflowVersion": "2.21.0"
+  },
+  "published": true,
+  "deployed": false,
+  "gpuExecution": false,
+  "image": "ghcr.io/mul-cps/cps-jupyter-notebook:qualification-storage-resources-6bb6a57-tf-code@sha256:07d42da7e80a89c53a939fbd73513119de9ddf54311ce8ce7c7b6f717fa88b6f",
+  "remoteIndexAndChildrenVerified": true,
+  "parent": "ghcr.io/mul-cps/cps-jupyter-notebook@sha256:bfa7d83af8752390c616b6632e9854e24064895dc504916be7b9a58ceef978d4",
+  "parentScope": "Previously repaired TF qualification candidate; not a common-tag production parent",
+  "credentialCleanup": {
+    "temporaryHostConfigRemoved": true,
+    "temporaryContainerConfigRemoved": true,
+    "credentialInBuildContext": false
+  }
+}
