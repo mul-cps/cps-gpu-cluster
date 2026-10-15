@@ -25,7 +25,7 @@ for the bounded live results of 2026-10-13 and their retained evidence.
 | Gate | Verified state | Remaining completion evidence |
 | --- | --- | --- |
 | Repository ownership and shared policy | Separate application/deployment responsibilities and shared policy implemented; compatibility branches retained | Integrate and promote one tested consumer matrix with its exact policy hash; account for Fleet's watched branches |
-| SDK, Hub and Lab packages | All 12 notebook OCI variants are published. Both Hubs run Hub8a and select notebook86 for registered CPU workspaces. Actual CPU86 runtime verified SDK/Lab payloads, trusted PageConfig, live panel API polling, NFS restart persistence and normal Stop. The fresh CIT GPU notebook receives the trusted SDK environment | Ordinary SDK `/v1/me` is not accepted: CIT reports `ConnectError`, and the current registered CPU run remains under diagnosis. Genuine human OAuth, ordinary visitor identity separation and remaining notebook modes remain open; CIT personal profile hooks retain their independent images |
+| SDK, Hub and Lab packages | All 12 notebook OCI variants are published. Both Hubs now run Hub4e and select notebookad for managed CPU workspaces, including the enrolled CIT legacy owner. Actual CPU86 runtime verified SDK/Lab payloads, trusted PageConfig, live panel API polling, NFS restart persistence and normal Stop. The fresh CIT GPU notebook receives the trusted SDK environment | Ordinary SDK `/v1/me` is not accepted: CIT reports `ConnectError`, and the current registered CPU run remains under diagnosis. Genuine human OAuth, ordinary visitor identity separation and remaining notebook modes remain open; CIT personal profile hooks retain their independent images |
 | Both admin UI consoles | Both consoles run Sourceb36 with the reviewed legacy runtime validator; frontend and dependencies remain equal to Source87a1. CIT legacy runtime enrollment, cold startup and real notebook activity reporting passed; the existing UI and approved 10 GiB choice remain bounded evidence | Normal registered CPU lifecycle and reviewed CIT `akadmin` canonical API linkage passed; ordinary-user/human OAuth and remaining modes are separate gates |
 | Identity and group ownership | Existing reviewed aliases retained; both CPS legacy neutral accounts have permanent ready provenance; explicit custody migration and exact QA repair passed; both Hubs restarted without changing the repaired or legitimate legacy roles | Reviewed CIT alias is live in Source, Hub and Gateway and `/me` resolves the same person; real login grant survival/expiry, scoped administration and cross-Hub allowance continuity remain |
 | Native GPU isolation | Controlled no-MIG 5/20 GiB history retained; current CPS pair passed distinct 5 GiB OOM/recovery with peer progress, IPC denial in both directions, positive controls, kernel witnesses, restart retirement, complete bounded MPS OOM/recovery and observer cleanup, and confirmed normal closure | Complete restart behavior and broader packing; current bounded pool is 5/10 GiB, not a normal 20 GiB or cross-Hub qualification |
@@ -45,14 +45,15 @@ for the bounded live results of 2026-10-13 and their retained evidence.
 ## Current rollout boundary
 
 The consumer configuration rollout completed at **2026-10-14 14:07 UTC**.
-The later paired Hub extension adoption completed at **20:58 UTC**. Both Hubs
-run Hub8a from source `f8d9417065559226f1f0aace122a318daceb78de`:
-`ghcr.io/mul-cps/cps-compute@sha256:8a51a7beca628b18a13d8f0d1982e981e0a80b049ccf0efee96532a36b5b2718`.
+The earlier Hub8a adoption completed at **20:58 UTC on 2026-10-14**.
+Gatewaybb and the paired Hub CA/CPU rollouts completed on **2026-10-15**. Both Hubs
+now run Hub4e from source `31ff2e72a1d87c08fe395e96ff139518b3e01a26`:
+`ghcr.io/mul-cps/cps-compute@sha256:4e8603e1e3480b37e5b395c74712e0f70f84aedd467c98fdc3e79aeb97a7ea30`.
 A later same-policy Gateway rollout on 2026-10-15 adopted Gatewaybb for notebook artifact downloads. Node8c and both consoles on Sourceb36 retain their images.
 Four fresh process acknowledgments and a completed new delivery journal confirm
 the unchanged policy and GPU driver epoch. The delivery controller is ready and
-the final native allocation check is zero. The current delivery seed after the Gateway rollout is
-`sha256:c25c62f019cddee40740b6ab1498b67d1a1eb26550c39d478c05ff31fb35d1d8`.
+the final native allocation check is zero. The current delivery seed after both rollouts is
+`sha256:73b35ee4bd464a64b96e4b6f2f01346c1aa8245f30636ab9a794eebda5ce4a77`.
 The earlier CIT legacy runtime enrollment and same-image cold handover remain
 retained evidence; their previous seed is preserved in the new handover lineage.
 The canonical policy hash is
@@ -62,8 +63,9 @@ See [first-stage Hub adoption](../../platform-staging/jupyter-extensions-2026101
 See [CIT runtime enrollment and cold handover](../../platform-staging/jupyter-extensions-20261013/cit-legacy-runtime-cold-handover-actual-20261014.json).
 See [current trusted SDK Hub adoption](../../platform-staging/jupyter-extensions-20261013/trusted-sdk-hub-adoption-actual-20261015.json).
 
-Both registered CPU configurations now select
-`ghcr.io/mul-cps/cps-jupyter-notebook@sha256:86c4fd58afe7a4e18b850da9f007d3c9e8cc8c058d85c0b8fee667ed72779d59`.
+Both managed CPU configurations now select
+`ghcr.io/mul-cps/cps-jupyter-notebook@sha256:ad693e5d49ef208449d0bc5d3de86288da7aac1799c1f7f9a1d84c2f893c00c1`.
+The earlier CPU86 lifecycle evidence below remains historical; a real CPUad kernel SDK and batch run is pending.
 The normal Source lifecycle passed at **14:15 UTC**: Start, Ready, actual SDK/Lab
 package verification, the live Compute panel, automatic account polling, NFS
 writes and restart persistence, then normal Stop. The five ordinary visitor API
@@ -116,7 +118,7 @@ current CA exposed a missing Authority Key Identifier on the gateway leaf. A
 local leaf repair then exposed a missing Key Usage extension on the CA. A local
 renewal using the same CA key, subject and Subject Key Identifier passed strict
 TLS while preserving hostname and trust rejection. The renewed
-certificates were subsequently deployed with Gatewaybb; the new packaged CA transport awaits the Hub/notebook rollout. The latest
+certificates were subsequently deployed with Gatewaybb, followed by the packaged CA transport in Hub4e and the selected CPUad notebook. The latest
 CPU attempt failed during its NFS marker command before package or SDK capture;
 its normal Stop, exact restoration, retained PV/PVC and token cleanup passed a
 fresh read-only check. Both temporary operator tokens were revoked with HTTP
@@ -127,14 +129,18 @@ published as immutable qualification images: Hub `624a98b3`, CPU `ad693e5d` and
 GPU `7e3f6f7d`. Actual installed tests passed (Hub 481 with four known skips;
 CPU 14; GPU 14). Dependencies and original compressed base layers are preserved.
 CPU image adoption uses the independently pinned Hub CPU image input and does
-not require a catalog edit. Its next gate is the coordinated trust and Hub
-rollover, followed by real kernel submissions from both Hubs. The legacy CIT
+not require a catalog edit. The coordinated trust and Hub
+rollover is complete; real kernel submissions from both Hubs are the next gate. The legacy CIT
 neutral account now has a packaged CPU adapter at source `31ff2e72`. Its exact
 Hub4e image passed 509 installed Hub tests (five skips), 13 SDK tests (one skip),
-and the configured UID1000 check; it is published and awaits rollout. A profile
+and the configured UID1000 check; it is now deployed on both Hubs. A profile
 switch alone on the earlier Hub does not supply its trusted CPU image. The GPU image update retains its
 separate policy/workload transition gate. The current production/pilot
-deployment still runs the earlier images. See
+deployment now runs Gatewaybb and Hub4e with CPUad selected; native GPU image916
+remains unchanged. A stale acknowledgment during finalization was recovered by
+repeating read-only finalization at the unchanged 30-second TTL; previous mutations
+were not replayed. Four fresh ACKs, the new completed journal and native zero
+passed. See [paired Hub adoption](../../platform-staging/jupyter-extensions-20261013/notebook-batch-hub-adoption-actual-20261015.json) and
 [package and remote publication evidence](../../platform-staging/jupyter-extensions-20261013/sdk-ca-publication-actual-20261015.json).
 
 Notebook submissions already snapshot saved inputs, strip outputs and execute
