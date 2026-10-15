@@ -14,7 +14,10 @@ The completed `5c4d9d40` software handover now runs Gateway511e and both Hub6bb
 processes. Approved CPS CPU consumers select CPU9444; ordinary CIT CPU consumers
 select CIT6acd. Armin's fresh CPU9444 C7 GUI acceptance now passed after a
 normal empty-server Stop/Start, as did fresh sharing/identity checks for both
-students. SDK and new CPU batch acceptance on that image remain pending. Earlier
+students. Its ordinary installed SDK and a ten-second CPU batch now also passed,
+including typed parameters, a selected helper, logs and verified executed output.
+The shared GPU Pod retained Ready/zero restarts and its three reservations after
+the batch. Earlier
 Gatewayd974 acceptance established both students’ normal
 **Compute → Shared Workspaces → Open workspace** flow, persisted demo/output
 and renewed two-way RTC/GPU execution. After the latest rollout, normal Source
@@ -41,14 +44,14 @@ reservations. The GPU916 Compute addon and ordinary SDK still fail. See the
 | Gate | Verified state | Remaining completion evidence |
 | --- | --- | --- |
 | Repository ownership and shared policy | Separate application/deployment responsibilities and shared policy implemented; compatibility branches retained | Integrate and promote one tested consumer matrix with its exact policy hash; account for Fleet's watched branches |
-| SDK, Hub and Lab packages | Both Hubs now run Hub6bb from source9739, retaining the membership fix, Compute scopes, CIT personal GPU guard, enrolled-workspace custody and persistent personal root. Its 119 installed tests passed under Hub 5.5.2/KubeSpawner 7.1.0. Approved CPS/Source-managed CPU paths select CPU9444; ordinary CIT CPU paths select CIT6acd. Configuration adoption preserved existing personal servers; Armin subsequently passed an authorized empty-server Stop/Start onto CPU9444, normal visitor OAuth and six C7 views. Both students passed fresh sharing/identity checks; admin and unshared access remained denied | CPU9444 SDK/new batch checks, complete workspace resource/readiness card details, CIT personal SDK/Compute/RTC, fresh personal RTC edits and other variants remain separate gates |
+| SDK, Hub and Lab packages | Both Hubs now run Hub6bb from source9739, retaining the membership fix, Compute scopes, CIT personal GPU guard, enrolled-workspace custody and persistent personal root. Its 119 installed tests passed under Hub 5.5.2/KubeSpawner 7.1.0. Approved CPS/Source-managed CPU paths select CPU9444; ordinary CIT CPU paths select CIT6acd. Configuration adoption preserved existing personal servers; Armin subsequently passed an authorized empty-server Stop/Start onto CPU9444, normal visitor OAuth and six C7 views. Both students passed fresh sharing/identity checks; admin and unshared access remained denied. On fresh CPU9444, the ordinary SDK returned Armin's identity and a ten-second CPU batch passed typed parameters, selected helper, logs and executed artifacts; normal My Workloads rendered Succeeded | Complete workspace resource/readiness card details, CIT personal SDK/Compute/RTC, fresh personal RTC edits and other variants remain separate gates |
 | Both admin UI consoles | Both consoles run Source51f with authenticated download-header forwarding and the reviewed legacy runtime validator; frontend and dependencies remain equal to Source87a1. CIT legacy runtime enrollment, cold startup and real notebook activity reporting passed; the existing UI and approved 10 GiB choice remain bounded evidence | Normal registered CPU lifecycle and reviewed CIT `akadmin` canonical API linkage passed; ordinary-user/human OAuth and remaining modes are separate gates |
 | Identity and group ownership | Existing reviewed aliases retained; both CPS legacy neutral accounts have permanent ready provenance; explicit custody migration and exact QA repair passed; both Hubs restarted without changing the repaired or legitimate legacy roles | Reviewed CIT alias is live in Source, Hub and Gateway and `/me` resolves the same person; real login grant survival/expiry, scoped administration and cross-Hub allowance continuity remain |
 | Native GPU isolation | Controlled no-MIG 5/20 GiB history retained; current CPS pair passed distinct 5 GiB OOM/recovery with peer progress, IPC denial in both directions, positive controls, kernel witnesses, restart retirement, complete bounded MPS OOM/recovery and observer cleanup, and confirmed normal closure | Complete restart behavior and broader packing; current bounded pool is 5/10 GiB, not a normal 20 GiB or cross-Hub qualification |
 | Shared GPU reservations | Actual simultaneous CPS5/CIT10 pilot starts passed: one winner held both shared members once, loser had no server/Pod/binding; confirmed Stop preceded successful retry on the other Hub; exact windows/groups/grants restored. Installed first-free/second-busy rollback also passed. The current student workspace has three actual global member reservations bound to one attempt; a normal GUI CPU batch succeeded in 22 seconds while its GPU Pod remained Ready | Different-member live API partial-conflict rollback and broader pool qualification; Armin’s normal interactive CPU start also passed while the same three GPU reservations remained held |
 | Workspaces and local assignments | The ordinary shared-gpu-lab 5 GiB workspace retains two-browser RTC/GPU acceptance, distinct visitor identities, storage version 2, exact group Share and three seven-day grants. Gatewayd974 established normal Compute discovery. After the current Gateway511e/Hub6bb handover, normal Source Stop confirmed old Pod absence and global reservations zero; Start reached Running/Ready with zero restarts, a sealed current 5 GiB cap, three member reservations and one binding. Fresh post-handover sharing checks returned 200 for both students with correct identities and admin403 | GPU916 addon/SDK compatibility, complete workspace card details, membership removal closing existing access and stopped-writer read-only archives remain open |
 | Workflow gateway and admission | Source validation/ownership paths implemented; bounded CPS own-success/failure artifact/log bytes and foreign-versus-absent rejection passed; controller admission/RBAC checks passed | CIT normal-user own/foreign access, human authentication, token renewal and crafted workflow/admin bypass scenarios on the current release |
-| Notebook execution | Personal CPS SDK success/failure jobs passed. Ordinary Mikasa Submit UI jobs passed typed parameters, selected support imports, authenticated executed-notebook downloads and logs, with Armin denied personal job access. A further GUI CPU job succeeded in 22 seconds while the shared GPU workspace remained Ready with its three reservations | CIT personal/shared-kernel runs and broader current-release coverage remain open |
+| Notebook execution | Personal CPS SDK success/failure and earlier Mikasa GUI jobs passed. Fresh Armin CPU9444 ordinary SDK identity returned 200 under D48, then a ten-second CPU batch passed typed parameters, selected helper/result 7.5, logs and verified executed artifacts. Normal C7 My Workloads showed the exact job Succeeded with download links. Mikasa's own identity returned 200 while Armin's job inspection/log/artifact reads returned 403. GPU Pod 63cb remained Ready/zero restarts with three reservations and one binding afterward | CIT personal/shared-kernel runs and broader current-release coverage remain open |
 | GPU scheduling and packing | Stock KAI/HAMi components and controlled evidence exist; integrated Core/Hub source passed 2,151 tests with three known skips, plus separate installed Gateway/Hub suites. The Node image handover passed actual hardware zero and four-process epoch checks; coordinator activation remains disabled | Coordinator/binder deployment and actual post-Bind cap/CDI qualification; eight-A100 packing, teaching reclaim, protected sessions, 4/8-GPU JobSet retry and physical free-GPU telemetry |
 | Startup and defragmentation | Acceptance executors and thresholds are defined; representative measurements pending | Pre-pulled CPS/CIT bursts: p95 <=180s and maximum <=300s; KAI/fallback comparison with free capacity >=95% and waits/start <=110% of baseline, protected sessions unaffected |
 | NFS and S3 artifacts | Existing storage preserved; accepted TLS relay path and owner-filtered artifact access work; ten owned-prefix 14/90-day retention cases passed against real S3 and Argo with least-privilege authentication | Real gateway-created notebook lifecycle, scheduled cleanup and off-host recovery; new CIT filer requires its actual endpoint/export |
@@ -878,8 +881,22 @@ and Bjoern's unshared server access returned 403. See the
 [fresh student C7 GUI receipt](../../platform-staging/jupyter-extensions-20261013/cps-c7-student-live-actual-20261015.json).
 The workspace card has an Open link but lacks readiness/resource details;
 it displays “Kernel principal: Not reported” and “Profiles: None reported”.
-This is not complete resource-UI qualification. Fresh CPU9444 SDK and batch
-acceptance remain pending.
+This is not complete resource-UI qualification.
+
+The ordinary installed `sdk.client().get('/v1/me')` then returned 200 as Armin
+under policyD48, without environment or token overrides. One `batch-cpu` SDK
+submission in project `shared-gpu-lab` used typed parameters and a selected
+helper and produced result 7.5. Workflow
+`cps-00151a154b3e8d5e93a7350c24a7e26337df80e38607e6e0` succeeded from
+18:21:11 to 18:21:21 UTC (10 seconds). Logs and artifact reads returned HTTP 200, and
+the executed notebook was verified. Normal C7 My Workloads showed that exact
+job Succeeded; workflow/log/artifact metadata returned HTTP 200 and download links
+were present. Mikasa's own identity returned HTTP 200, but inspection, logs and
+artifacts for Armin's job returned HTTP 403. The owned CPU kernel and temporary files
+were cleaned up, leaving zero sessions/kernels. An independent readback at
+18:22 UTC found GPU Pod 63cb still Ready with zero restarts, three member
+reservations and one binding. See the
+[fresh student SDK/batch receipt](../../platform-staging/jupyter-extensions-20261013/cps-c7-student-sdk-batch-actual-20261015.json).
 
 The preserving prospective Hub candidate `6bbd8788`, source `9739a9ec`, is
 now deployed on both Hubs by `5c4d9d40`. Its119 installed tests cover the current
@@ -893,6 +910,8 @@ approved CPU consumer configuration and the matching Gateway511e backup image
 in one reviewed change. Normal Source closure confirmed the old controlled
 GPU Pod absent and global reservations zero before the handover; existing
 personal servers were protected. Current authority is seed7f08/intent5be3.
-Armin subsequently passed actual fresh C7 GUI acceptance; SDK and new CPU batch
-checks on CPU9444 remain pending. This does not qualify GPU531 hardware. See the
+Armin subsequently passed actual fresh C7 GUI, ordinary SDK and CPU batch
+acceptance on CPU9444, with the shared GPU workspace unaffected. This does not
+qualify CIT runtime, GPU916 addon/SDK compatibility, GPU531 hardware or complete
+workspace resource-card details. See the
 [current software adoption receipt](../../platform-staging/jupyter-extensions-20261013/compute-runtime-consumer-adoption-actual-20261015.json).

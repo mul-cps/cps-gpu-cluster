@@ -150,7 +150,7 @@
   "gpu531_hardware_qualified": false,
   "production_qualified": false,
   "limitations": [
-    "Armin fresh CPU9444 C7 browser frontend passed; SDK and batch tests are separate.",
+    "Armin fresh CPU9444 C7 frontend, installed SDK, CPU notebook batch and foreign-job denial passed; other runtime modes remain separate.",
     "Existing personal notebooks are preserved; future image configuration does not upgrade their running processes",
     "GPU531 remains published only; the running GPU916 addon and SDK remain unqualified",
     "Broader production completion ledger gates remain open"
@@ -227,5 +227,7 @@
         ]
       }
     ]
-  }
+  },
+  "fresh_armin_cpu_sdk_and_batch_qualified": true,
+  "fresh_armin_cpu_sdk_and_batch_receipt": "cps-c7-student-sdk-batch-actual-20261015.json"
 }

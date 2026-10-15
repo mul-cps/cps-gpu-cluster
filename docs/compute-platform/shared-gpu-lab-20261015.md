@@ -7,8 +7,9 @@ Start reached Running/Ready with zero restarts, a sealed current 5 GiB cap and
 three member reservations. Earlier Gatewayd974 acceptance established normal
 Compute discovery, persisted demo/output and renewed RTC/GPU execution. Fresh
 post-handover sharing/identity checks passed for both students, and Armin's
-fresh CPU9444 C7 GUI acceptance passed. Fresh SDK and CPU batch checks on
-CPU9444 remain pending.
+fresh CPU9444 C7 GUI acceptance passed. Its ordinary installed SDK and a
+ten-second CPU batch also passed; the shared GPU workspace remained Ready with
+zero restarts and its three reservations afterward.
 The platform remains a limited pilot without MIG; full production qualification
 is unfinished.
 
@@ -59,8 +60,19 @@ shown as distributed workloads unavailable. Admin and Bjoern's unshared server
 returned 403. See the [fresh C7 GUI receipt](../../platform-staging/jupyter-extensions-20261013/cps-c7-student-live-actual-20261015.json).
 The workspace card has an Open link but no readiness/resource details, showing
 “Kernel principal: Not reported” and “Profiles: None reported”. Full resource-UI
-qualification, fresh CPU9444 SDK/batch checks and ordinary CIT runtime
-acceptance remain open.
+qualification and ordinary CIT runtime acceptance remain open.
+
+On fresh CPU9444, Armin's ordinary installed `sdk.client().get('/v1/me')`
+returned HTTP 200 with his own person identity and policyD48, without environment or
+token overrides. A `batch-cpu` SDK job in project `shared-gpu-lab` succeeded in
+10 seconds using typed parameters and a selected helper, with result 7.5.
+Logs/artifact reads returned HTTP 200 and the executed notebook was verified. Normal
+C7 My Workloads showed the exact job Succeeded with metadata HTTP 200 and download
+links. Mikasa's own identity returned HTTP 200 while Armin's job inspection, logs
+and artifacts returned HTTP 403. Owned CPU kernel/files were cleaned up, leaving
+zero sessions/kernels. At 18:22 UTC an independent readback confirmed GPU Pod 63cb
+still Ready with zero restarts, three reservations and one binding. See the
+[fresh SDK/batch receipt](../../platform-staging/jupyter-extensions-20261013/cps-c7-student-sdk-batch-actual-20261015.json).
 
 The GPU916 notebook package still has two known failures:
 
