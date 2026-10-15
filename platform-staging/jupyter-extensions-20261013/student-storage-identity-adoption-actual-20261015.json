@@ -97,10 +97,16 @@
     "grant_duration_days": 7,
     "state_at_start_request": "stopped",
     "normal_source_start_requested": true,
-    "start_outcome": "pending",
-    "ready_verified": false,
-    "managed_rtc_verified": false,
-    "gpu_allocation_verified": false,
-    "evidence_basis": "Root-reported normal Source approval/profile/grant verification and Start request; no Start outcome asserted"
-  }
+    "start_outcome": "running",
+    "ready_verified": true,
+    "managed_rtc_verified": true,
+    "gpu_allocation_verified": true,
+    "evidence_basis": "Root normal Source Start plus current-driver cap, two-browser RTC/GPU and read-only Gateway reservation proof receipts",
+    "normal_source_start_http": 200,
+    "native_cap_gib": 5,
+    "global_reservation_row_count_verified": true,
+    "acceptance_receipt": "shared-gpu-lab-native5-actual-20261015.json",
+    "active_global_member_reservations": 3
+  },
+  "managed_workspace_acceptance_receipt": "shared-gpu-lab-native5-actual-20261015.json"
 }

@@ -139,7 +139,7 @@
     "control_cells_inserted_without_execution": true
   },
   "limitations": [
-    "Managed 5 GiB workspace Source approval, profile provision and three seven-day grants are verified; normal Start has been requested, with Ready, managed RTC and GPU allocation pending.",
+    "The managed 5 GiB workspace passed normal Start, Ready, RTC and GPU execution; its GPU916 Compute panel, ordinary SDK and personal Shared Workspaces discovery still need the reviewed package/API fixes.",
     "Post-604c personal Share access and distinct visitor identity passed; the two-way RTC edit test remains historical pre-f6 evidence.",
     "CIT personal runtime still needs its preserving SDK/Compute/RTC image.",
     "Membership-removal connection revocation, CIT own/foreign workflow coverage and production qualification remain separate gates."
@@ -182,11 +182,17 @@
     "grant_duration_days": 7,
     "state_at_start_request": "stopped",
     "normal_source_start_requested": true,
-    "start_outcome": "pending",
-    "ready_verified": false,
-    "managed_rtc_verified": false,
-    "gpu_allocation_verified": false,
-    "evidence_basis": "Root-reported normal Source approval/profile/grant verification and Start request; no Start outcome asserted"
+    "start_outcome": "running",
+    "ready_verified": true,
+    "managed_rtc_verified": true,
+    "gpu_allocation_verified": true,
+    "evidence_basis": "Root normal Source Start plus current-driver cap, two-browser RTC/GPU and read-only Gateway reservation proof receipts",
+    "normal_source_start_http": 200,
+    "native_cap_gib": 5,
+    "global_reservation_row_count_verified": true,
+    "acceptance_receipt": "shared-gpu-lab-native5-actual-20261015.json",
+    "active_global_member_reservations": 3
   },
-  "ordinary_student_gui_batch_receipt": "ordinary-student-gui-batch-actual-20261015.json"
+  "ordinary_student_gui_batch_receipt": "ordinary-student-gui-batch-actual-20261015.json",
+  "managed_workspace_acceptance_receipt": "shared-gpu-lab-native5-actual-20261015.json"
 }

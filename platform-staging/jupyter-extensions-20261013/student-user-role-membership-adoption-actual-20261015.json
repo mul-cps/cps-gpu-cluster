@@ -105,11 +105,16 @@
     "grant_duration_days": 7,
     "state_at_start_request": "stopped",
     "normal_source_start_requested": true,
-    "start_outcome": "pending",
-    "ready_verified": false,
-    "managed_rtc_verified": false,
-    "gpu_allocation_verified": false,
-    "evidence_basis": "Root-reported normal Source approval/profile/grant verification and Start request; no Start outcome asserted"
+    "start_outcome": "running",
+    "ready_verified": true,
+    "managed_rtc_verified": true,
+    "gpu_allocation_verified": true,
+    "evidence_basis": "Root normal Source Start plus current-driver cap, two-browser RTC/GPU and read-only Gateway reservation proof receipts",
+    "normal_source_start_http": 200,
+    "native_cap_gib": 5,
+    "global_reservation_row_count_verified": true,
+    "acceptance_receipt": "shared-gpu-lab-native5-actual-20261015.json",
+    "active_global_member_reservations": 3
   },
   "historical_f6_adoption": {
     "source_commit": "53f5c75283c38927aa5bb97e5c5270230ece380e",
@@ -136,8 +141,9 @@
   "limitations": [
     "Personal two-way RTC edit acceptance remains the earlier pre-f6 evidence; this receipt verifies post-604c personal Share access and visitor identity.",
     "CIT browser acceptance here covers retained cookies and default user role; no new CIT Compute request or notebook spawn was performed.",
-    "Managed 5 GiB workspace Start outcome, Ready, RTC and GPU allocation remain pending.",
+    "Managed 5 GiB Start, Ready, RTC and GPU execution passed; ordinary GPU916 addon/SDK and Gateway workspace discovery remain open.",
     "Membership-removal connection revocation, CIT personal runtime adoption and broader production qualification remain separate gates."
   ],
-  "credential_values_included": false
+  "credential_values_included": false,
+  "managed_workspace_acceptance_receipt": "shared-gpu-lab-native5-actual-20261015.json"
 }

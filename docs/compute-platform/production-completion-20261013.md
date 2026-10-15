@@ -7,6 +7,13 @@ measured acceptance. Evidence for one stage does not establish the next stage.
 See the [operational acceptance record](qualification/operational-acceptance-20261013.md)
 for the bounded live results of 2026-10-13 and their retained evidence.
 
+The ordinary-student `shared-gpu-lab` pilot now passes normal Source Start,
+Ready, a current native 5 GiB cap, two-browser RTC and GPU execution without MIG.
+[Open the shared GPU demo](https://jupyterhub.dshl.unileoben.ac.at/user/cps-ws-27c474f74f9d41c53eac0be01fcca8a3/rtc/lab/tree/shared-gpu-demo-20261015.ipynb).
+The GPU916 Compute addon and ordinary SDK still fail, and workspace discovery
+remains open. Three active global member reservations are verified. See the
+[current status and limits](shared-gpu-lab-20261015.md).
+
 ## Binding requirements
 
 - Separate CPS/CIT consoles and databases; shared policy and person allowance.
@@ -29,10 +36,10 @@ for the bounded live results of 2026-10-13 and their retained evidence.
 | Both admin UI consoles | Both consoles run Source51f with authenticated download-header forwarding and the reviewed legacy runtime validator; frontend and dependencies remain equal to Source87a1. CIT legacy runtime enrollment, cold startup and real notebook activity reporting passed; the existing UI and approved 10 GiB choice remain bounded evidence | Normal registered CPU lifecycle and reviewed CIT `akadmin` canonical API linkage passed; ordinary-user/human OAuth and remaining modes are separate gates |
 | Identity and group ownership | Existing reviewed aliases retained; both CPS legacy neutral accounts have permanent ready provenance; explicit custody migration and exact QA repair passed; both Hubs restarted without changing the repaired or legitimate legacy roles | Reviewed CIT alias is live in Source, Hub and Gateway and `/me` resolves the same person; real login grant survival/expiry, scoped administration and cross-Hub allowance continuity remain |
 | Native GPU isolation | Controlled no-MIG 5/20 GiB history retained; current CPS pair passed distinct 5 GiB OOM/recovery with peer progress, IPC denial in both directions, positive controls, kernel witnesses, restart retirement, complete bounded MPS OOM/recovery and observer cleanup, and confirmed normal closure | Complete restart behavior and broader packing; current bounded pool is 5/10 GiB, not a normal 20 GiB or cross-Hub qualification |
-| Shared GPU reservations | Actual simultaneous CPS5/CIT10 pilot starts passed: one winner held both shared members once, loser had no server/Pod/binding; confirmed Stop preceded successful retry on the other Hub; exact windows/groups/grants restored. Installed current Gateway code also passed first-free/second-busy transaction rollback in an isolated SQLite database | Different-member live API partial-conflict rollback, permitted CPU sessions and independent batch execution while held; broader pool and ordinary-user qualification |
-| Workspaces and local assignments | Local management and source-neutral reconciliation exist. Mikasa/Armin retain distinct visitor identities; personal Share access passed after the 604c restart, and earlier two-way personal CPU RTC edits remain retained. The shared-gpu-lab Source approval, 5 GiB profile provision and three seven-day grants are verified; normal Start was requested while stopped | Managed workspace Start outcome, Ready, RTC and GPU allocation; a fresh personal RTC edit test, membership removal closing existing access, retained files and stopped-writer read-only archives |
+| Shared GPU reservations | Actual simultaneous CPS5/CIT10 pilot starts passed: one winner held both shared members once, loser had no server/Pod/binding; confirmed Stop preceded successful retry on the other Hub; exact windows/groups/grants restored. Installed first-free/second-busy rollback also passed. The current student workspace has three actual global member reservations bound to one attempt; a normal GUI CPU batch succeeded in 22 seconds while its GPU Pod remained Ready | Different-member live API partial-conflict rollback, permitted CPU sessions while held and broader pool qualification |
+| Workspaces and local assignments | The ordinary shared-gpu-lab 5 GiB workspace passed normal Source Start, Ready, actual native cap verification, two-browser RTC and live GPU output. Mikasa/Armin retained distinct visitor identities and the same demo kernel. Storage version 2, exact group Share and three seven-day grants are verified | GPU916 addon/SDK compatibility and Gateway workspace discovery; membership removal closing existing access, retained files and stopped-writer read-only archives |
 | Workflow gateway and admission | Source validation/ownership paths implemented; bounded CPS own-success/failure artifact/log bytes and foreign-versus-absent rejection passed; controller admission/RBAC checks passed | CIT normal-user own/foreign access, human authentication, token renewal and crafted workflow/admin bypass scenarios on the current release |
-| Notebook execution | Personal CPS SDK success/failure jobs passed. Ordinary Mikasa also used the Submit UI for a successful CPU notebook with typed parameters and a selected support import; authenticated executed-notebook download passed, and Armin was denied its inspection, logs and artifacts | CIT personal/shared-kernel runs and broader current-release coverage remain open |
+| Notebook execution | Personal CPS SDK success/failure jobs passed. Ordinary Mikasa Submit UI jobs passed typed parameters, selected support imports, authenticated executed-notebook downloads and logs, with Armin denied personal job access. A further GUI CPU job succeeded in 22 seconds while the shared GPU workspace remained Ready with its three reservations | CIT personal/shared-kernel runs and broader current-release coverage remain open |
 | GPU scheduling and packing | Stock KAI/HAMi components and controlled evidence exist; integrated Core/Hub source passed 2,151 tests with three known skips, plus separate installed Gateway/Hub suites. The Node image handover passed actual hardware zero and four-process epoch checks; coordinator activation remains disabled | Coordinator/binder deployment and actual post-Bind cap/CDI qualification; eight-A100 packing, teaching reclaim, protected sessions, 4/8-GPU JobSet retry and physical free-GPU telemetry |
 | Startup and defragmentation | Acceptance executors and thresholds are defined; representative measurements pending | Pre-pulled CPS/CIT bursts: p95 <=180s and maximum <=300s; KAI/fallback comparison with free capacity >=95% and waits/start <=110% of baseline, protected sessions unaffected |
 | NFS and S3 artifacts | Existing storage preserved; accepted TLS relay path and owner-filtered artifact access work; ten owned-prefix 14/90-day retention cases passed against real S3 and Argo with least-privilege authentication | Real gateway-created notebook lifecycle, scheduled cleanup and off-host recovery; new CIT filer requires its actual endpoint/export |
@@ -697,7 +704,36 @@ See [student access and addon evidence](../../platform-staging/jupyter-extension
 See [604c membership adoption and browser readbacks](../../platform-staging/jupyter-extensions-20261013/student-user-role-membership-adoption-actual-20261015.json).
 For `shared-gpu-lab`, normal Source structural approval, provision of
 `interactive-shared-5` with storage version 2, and seven-day grants for Mikasa,
-Armin and Bjoern are verified. Normal Source Start was requested while the
-workspace was stopped. Its outcome, Ready, managed RTC and GPU allocation remain
-pending. Membership-removal connection revocation, CIT own/foreign workflows,
-CIT personal runtime adoption and broader production gates remain distinct work.
+Armin and Bjoern are verified. Normal Source Start returned HTTP 200 and reached
+Ready in 26 seconds. The existing GPU916 Pod on GPU2 has a current driver row
+with both soft and hard limits of 5,368,709,120 bytes, matching its current boot
+and cgroup. Mikasa and Armin opened the exact shared server with HTTP 200,
+retained their own visitor identities, shared the same demo kernel and passed
+RTC edits in both directions. The GPU cell executed and the peer saw its live
+output. Only the one owned demo session/kernel was cleaned up. The neutral
+account remains non-admin without the default `user` role; its exact server
+Share belongs to the three-member `mikasa-armin` group.
+
+The earlier Start/Hub capture's RTC/allocation flags were false because those
+checks had not yet run. The later cap and browser receipts establish the bounded
+GPU/RTC result. The old GPU916 addon still has a null Compute PageConfig URL and
+shows `Failed to fetch`; its ordinary SDK still fails CA trust. Explicit trusted
+CA plus both SDK headers passed diagnostic `/v1/me` as the workspace principal,
+and a separate 64 MiB CUDA allocation/sum passed with CUDA reporting 5 GiB.
+Those diagnostics do not establish ordinary addon/SDK compatibility. The
+replacement package remains in preparation. Personal C7 also returns an empty
+`/v1/workspaces` list despite group server access; Gateway discovery wiring is
+still being implemented. A separate Root-reviewed read-only Gateway observer
+confirms the three registered canonical people each hold an actual global
+reservation bound to one attempt for `cps:shared-gpu-lab`. A normal Mikasa GUI
+CPU batch was accepted with HTTP 200 and succeeded in 22 seconds while the GPU
+workspace stayed Running and Ready on the same Pod. Its typed parameters,
+selected helper import, authenticated notebook download and logs passed; Armin
+could not list, inspect or read the personal job's logs, artifacts or download.
+See [CPU batch during the shared GPU session](../../platform-staging/jupyter-extensions-20261013/cpu-batch-during-shared-gpu-actual-20261015.json).
+
+See the [working shared GPU lab guide](shared-gpu-lab-20261015.md) and
+[native 5 GiB acceptance receipt](../../platform-staging/jupyter-extensions-20261013/shared-gpu-lab-native5-actual-20261015.json).
+Membership-removal connection revocation, CIT own/foreign workflows, CIT
+personal runtime adoption, wider GPU packing and production qualification remain
+distinct work.
