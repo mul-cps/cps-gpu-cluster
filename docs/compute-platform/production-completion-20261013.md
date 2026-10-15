@@ -48,7 +48,7 @@ verified. See the
 | Startup and defragmentation | Acceptance executors and thresholds are defined; representative measurements pending | Pre-pulled CPS/CIT bursts: p95 <=180s and maximum <=300s; KAI/fallback comparison with free capacity >=95% and waits/start <=110% of baseline, protected sessions unaffected |
 | NFS and S3 artifacts | Existing storage preserved; accepted TLS relay path and owner-filtered artifact access work; ten owned-prefix 14/90-day retention cases passed against real S3 and Argo with least-privilege authentication | Real gateway-created notebook lifecycle, scheduled cleanup and off-host recovery; new CIT filer requires its actual endpoint/export |
 | Monitoring | All four deployed dashboards rendered through actual Grafana with seven panels each and no browser page errors; unavailable physical/cap data was visibly marked | Promote and verify the newer dashboard definitions; complete eight-GPU inventory, physical placement/free-capacity and cap/protection telemetry, timing data and alert notification delivery |
-| Restore and recovery | All five overnight automatic backup jobs succeeded; three corrected console/gateway runs verified current application/policy provenance, checksums, SQLite integrity and cleanup; matching logical restore history retained | Next automatic schedule after provenance correction, coordinated matching application/configuration capture, connected login/spawn, populated NFS/archive/artifact recovery and encrypted off-host durability |
+| Restore and recovery | Historical automatic and logical restore results retained. Fresh console/gateway backup runs now use Source51f/Gatewayd974 with policyD48; checksums and read-only SQLite integrity passed, and their owned Jobs/Pods were removed. Both Hub604 database/role dumps and private configuration captures passed checksum verification | Next automatic schedule after the current correction, coordinated point-in-time capture, connected login/spawn recovery, populated NFS/archive/artifact recovery and encrypted off-host durability |
 | Moodle scaffold | Local provider, provenance migration, disabled scaffold and source tests implemented | Retain local CRUD, fake-provider reconciliation, no-network disabled behavior and clear enablement failure in the qualified release; Moodle remains planned/not deployed |
 | Release train and compatibility | Candidate artifacts and compatibility tooling prepared; no unified production release declared | Complete pilot -> RC -> production gates, matched SDK/Hub/Lab/runner/notebook matrix, immutable digests, checksums/SBOMs, release notes, rollback and qualified Fleet promotion |
 | Hub 6 | Separate staging scope | Keep outside production promotion until stable chart compatibility and migration/storage qualification pass |
@@ -761,3 +761,32 @@ GPU batch remains disabled.
 Membership-removal connection revocation, CIT own/foreign workflows, CIT
 personal runtime adoption, wider GPU packing and production qualification remain
 distinct work.
+
+## Current image, permission and backup follow-up
+
+The CIT standard CPU Compute/RTC candidate is now published as
+`ghcr.io/mul-cps/cit-jupyter-notebook@sha256:6acd8bfe2b56968f7db0f9a033cdec329888a0e90cc73d4fa1e511f2561b18f9`.
+Remote bytes match the offline-qualified artifact from source `c812c69c`.
+Publication did not change CIT's consumer configuration or restart a notebook;
+ordinary CIT browser/runtime acceptance remains open. See the
+[publication receipt](../../platform-staging/jupyter-extensions-20261013/cit-cpu-compute-rtc-publication-actual-20261015.json).
+
+A fresh normal-student browser check at **17:04 UTC on 2026-10-15** confirmed
+Mikasa and Armin can each access Mikasa's shared personal server with their own
+identity, discover the running group workspace through Compute, and remain
+denied from the administrative console. See the
+[permission receipt](../../platform-staging/jupyter-extensions-20261013/student-sharing-permission-recheck-actual-20261015.json).
+The stable server URL is `/user/mikasa/lab`; a copied OAuth `state` URL is not a
+workspace link.
+
+The three automatic console/gateway backup definitions now match the running
+Source51f/Gatewayd974 images and policyD48. Their fresh owned executions passed
+checksums and SQLite integrity; both Hub604 database dumps, role exports and
+private configuration captures were also verified. This is sequential capture,
+not connected application recovery or encrypted off-host restoration. See the
+[current backup capture receipt](../../platform-staging/backups/current-version-capture-20261015/receipt.json).
+
+The full-plan audit also retains these explicit gaps: Fleet still pins KAI
+0.16.3 while 0.18.1 has only staging evidence; checked-in authenticator group
+replacement remains enabled pending grant migration; the production release
+lock remains unqualified. These must be resolved before production promotion.

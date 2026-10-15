@@ -1,0 +1,17 @@
+{
+  "published": true,
+  "deployed": false,
+  "scope": "CIT standard CPU Compute/RTC image candidate; no current user restart",
+  "image": "ghcr.io/mul-cps/cit-jupyter-notebook@sha256:6acd8bfe2b56968f7db0f9a033cdec329888a0e90cc73d4fa1e511f2561b18f9",
+  "tag": "qualification-compute-rtc-cpu-c812c69c-20261015",
+  "source_repository": "https://github.com/mul-cps/cit-jupyter-notebook.git",
+  "source_commit": "c812c69cbafe23f61e39c64c12ae4fde0d3046e5",
+  "qualification_receipt_sha256": "bfda5ed1a5a05168e9fa2fd0183ac1616769e19f8fbc136179d13102e6332f8b",
+  "remote_manifest_exact": true,
+  "remote_raw_manifest_matches": true,
+  "remote_manifest_matches_qualified_bytes": true,
+  "base_manifest": "sha256:e40e6cf1f3a57a3265ada5d9088ffd5b494ea4d7fef1b1d7a74c72de455b8cbb",
+  "production_qualified": false,
+  "live_hub_browser_qualified": false,
+  "recorded_at": "2026-10-15T17:01:57.625798+00:00"
+}
