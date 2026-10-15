@@ -925,15 +925,34 @@ checked against the current qualified components. The composed source passed
 and package-hook/wheel checks. This fixes the missing source integration of the
 live Hub behavior; it does not relabel existing images or publish a new release.
 
+The reviewed successor is now composed at
+[`b336285e`](https://github.com/mul-cps/cps-compute/blob/b336285eabf3f8dc8a32d31a6b52eb116e3b230f/docs/releases/unified-epoch-and-discovery-delta-20261015.json).
+It contains the finite epoch path and authorized workspace-card metadata fix,
+with exactly three changed production files. The combined source passed 137
+Python tests, 60 Lab tests and full TypeScript compilation; the frozen base
+manifest, package versions and all other production files remain unchanged.
+No image build, runtime adoption or new GPU hardware qualification is implied.
+
 The next trusted GPU531 test can now describe an exact operator-only CPS 5+20 GiB
 pair with independent source pins, disjoint canonical members, a 25 GiB budget
 and at least 26 GiB measured free memory. Root reran its 123 passing leaf tests
 and 39 subtests; two tests still require actual source captures. The finite Node
 history transformer passed 25 tests against the exact published Node8c source.
-It remains a partial source artifact: the selected epoch publisher and
-coordinator observer retain qualification10-only bounds. Those helpers, two
-reviewed operator identities/registrations and actual hardware gates remain
+The next source successor now includes both the selected flat epoch publisher
+and the matching coordinator observer. The finite CPS531 5+20 path passed 85
+Core epoch/coordinator tests, and the exact Node factory, helper pins and
+retained history passed 51 tests. Legacy10 behavior remains covered. These are
+source results; actual Root contracts/captures, two reviewed independent
+operator identities/registrations, immutable packages and hardware gates remain
 required before pair activation. See the
 [source progress receipt](../../platform-staging/jupyter-extensions-20261013/compatible-source-and-pair-progress-20261015.json),
 [pair contract](../../platform-staging/gpu/native-group-pilot/PROSPECTIVE531-PAIR.md)
 and [Node successor boundary](../../platform-staging/gpu/native-group-pilot/prospective-pair/NODE-SUCCESSOR.md).
+
+At 19:02 UTC fresh directory logins for Mikasa and Armin passed personal-server
+sharing, visitor identity, Compute OAuth and running shared-workspace discovery.
+The admin console and unrelated server remained denied. No servers, roles,
+Shares, GPU settings or storage were changed during this verification. One
+earlier empty discovery response was transient and its exact guard remains
+unidentified. See the
+[fresh-login receipt](../../platform-staging/jupyter-extensions-20261013/student-sharing-fresh-login-actual-20261015.json).

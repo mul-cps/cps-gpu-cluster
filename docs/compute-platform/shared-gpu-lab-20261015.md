@@ -30,6 +30,18 @@ kernel was cleaned up. Mikasa’s personal CPU server Share also has a stable
 [personal workspace URL](https://jupyterhub.dshl.unileoben.ac.at/user/mikasa/lab),
 which Armin opens while logged in as himself.
 
+At 19:02 UTC both students repeated this flow after fresh directory logins with
+empty browser contexts. Mikasa's server returned 200 with the actual visitor's
+identity, normal Compute OAuth completed, and `shared-gpu-lab` was visible as
+running. Armin's persisted personal Share grants exactly
+`access:servers!server=mikasa/`. Both students remained non-admin users; the
+admin console and an unrelated personal server returned 403. Open the stable
+Lab URL above to begin OAuth; copied authorization URLs contain temporary state.
+An earlier Armin discovery response was briefly empty; both the repeat and
+fresh-login checks passed without policy changes. Its exact readiness or
+authorization guard was not identified. See the
+[fresh-login sharing receipt](../../platform-staging/jupyter-extensions-20261013/student-sharing-fresh-login-actual-20261015.json).
+
 The approved profile is `interactive-shared-5`, using storage version 2. The
 `mikasa-armin` Hub group contains Mikasa, Armin and Bjoern, with three verified
 seven-day grants. Its Share grants access to this exact workspace server. The
@@ -61,6 +73,13 @@ returned 403. See the [fresh C7 GUI receipt](../../platform-staging/jupyter-exte
 The workspace card has an Open link but no readiness/resource details, showing
 “Kernel principal: Not reported” and “Profiles: None reported”. Full resource-UI
 qualification and ordinary CIT runtime acceptance remain open.
+
+The card's missing metadata is fixed in source commit
+[`69120239`](https://github.com/mul-cps/cps-compute/commit/69120239a3b745f9981bda20f36cca5d160181b4).
+The API projects only the authorized selected profile, workspace principal,
+course ceilings and provenance; the Lab card consumes the actual singular
+profile, status and Hub fields. This passed 52 backend tests, 60 Lab tests and
+TypeScript compilation. New images and live adoption remain required.
 
 On fresh CPU9444, Armin's ordinary installed `sdk.client().get('/v1/me')`
 returned HTTP 200 with his own person identity and policyD48, without environment or
