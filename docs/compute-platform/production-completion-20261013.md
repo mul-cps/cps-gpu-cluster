@@ -226,8 +226,12 @@ work files have now been copied into private, hash-verified point-in-time backup
 on their persistent homes, without changing the source files or stopping kernels.
 The demo also has a persistent home copy. Both Hubs now apply the personal-only
 root/CWD correction to new servers; the existing default servers retain their
-current runtime root until an approved restart. Actual temporary-server save and
-restart acceptance is next. Take another current backup
+current runtime root until an approved restart. Actual temporary-server acceptance
+now passed: a notebook and text file saved through the normal ContentsAPI retained
+exact hashes after normal Stop/restart, on the same home claim/PV. Both test
+starts used `/home/jovyan` as root/CWD; temporary files/server were cleaned up and
+token a692 was revoked. All four existing kernels retained their IDs.
+See [persistence acceptance](../../platform-staging/jupyter-extensions-20261013/personal-root-persistence-actual-20261015.json). Take another current backup
 before any approved restart. See [preservation evidence](../../platform-staging/jupyter-extensions-20261013/personal-work-preservation-actual-20261015.json).
 
 The personal notebook's startup Longhorn attachment warning recovered without
