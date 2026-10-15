@@ -173,7 +173,12 @@ def _render(inputs, observation_raw, health_raw, *, now=None, preset='cps5-cit10
     agent,map_history=validation
     agent.require(type(preset) is str and preset in PRESETS, 'Explicit reviewed 5/10 or 5/20 preset required')
     agent.require(type(headroom_mib) is int and headroom_mib == 1024, 'Exact additional 1024MiB headroom required')
-    scopes = PRESETS[preset] if candidate is None else {'cps:'+candidate['workspace']:5}
+    if candidate is None:
+        scopes = PRESETS[preset]
+    elif 'targets' in candidate:
+        scopes = {'cps:'+t['workspace']:int(t['profile'].rsplit('-',1)[1]) for t in candidate['targets']}
+    else:
+        scopes = {'cps:'+candidate['workspace']:5}
     workload_image = WORKLOAD_IMAGE if candidate is None else CANDIDATE_IMAGE
     budget = sum(scopes.values()) * 1024
     agent.closed(inputs, {'version', 'catalog', 'approvals', 'node_config', 'ledger',
@@ -208,7 +213,7 @@ def _render(inputs, observation_raw, health_raw, *, now=None, preset='cps5-cit10
             for key in ('memoryTotalBytes', 'memoryFreeBytes', 'memoryUsedBytes'))
         and gpu['memoryFreeBytes'] + gpu['memoryUsedBytes'] == gpu['memoryTotalBytes'],
         'Exact no-MIG physical memory accounting required')
-    pool.update(max_workspaces=2 if candidate is None else 1, total_memory_mib=gpu['memoryTotalBytes'] // 1048576,
+    pool.update(max_workspaces=2 if candidate is None else len(scopes), total_memory_mib=gpu['memoryTotalBytes'] // 1048576,
         free_memory_mib=gpu['memoryFreeBytes'] // 1048576, headroom_mib=headroom_mib,
         memory_budget_mib=budget, boot_id=health['bootId'], driver_generation=health['driverGeneration'])
     agent.validate_measured_pool(pool)
@@ -289,8 +294,9 @@ def _render(inputs, observation_raw, health_raw, *, now=None, preset='cps5-cit10
 
 
 def render_prospective_candidate(inputs, observation_raw, health_raw, *, target_snapshot_raw,
-        target_snapshot_sha256, source_closure_raw, source_closure_sha256, terminal_authority, now=None):
-    """Pure Root-pinned single-scope proposal, never a live observation or proof."""
+        target_snapshot_sha256, source_closure_raw, source_closure_sha256, terminal_authority, now=None,
+        peer_target_snapshot_raw=None, peer_target_snapshot_sha256=None):
+    """Pure Root-pinned single5 or CPS5+20 proposal, never a hardware proof."""
     from cps_compute.native_groups import APPROVAL_FIELDS,canonical_sha256
     from cps_compute.native_qualification import NativeGroupQualification
     from cps_compute.policy import Policy
@@ -313,51 +319,69 @@ def render_prospective_candidate(inputs, observation_raw, health_raw, *, target_
     agent.closed(target,{'version','source','workspace','profile','workload_image','operator_members','source_policy_hash',
         'source_closure_sha256','current_authority_sha256','source_instance','registration','state','observed_at'},
         'Closed Root operator target snapshot required')
-    workspace=target['workspace'];source_policy=Policy(inputs['catalog']);now=now or datetime.now(timezone.utc)
-    agent.require(type(target['version']) is int and target['version']==1 and target['source']=='cps'
-        and isinstance(workspace,str) and re.fullmatch(r'operator-qualification-531-[a-z0-9](?:[a-z0-9-]{0,36}[a-z0-9])?',workspace)
-        and target['profile']=='interactive-native-qualification-5' and target['workload_image']==CANDIDATE_IMAGE
-        and target['source_policy_hash']==source_policy.hash==inputs['node_config']['policy_hash']
-        and target['source_closure_sha256']==source_closure_sha256 and target['state']=='stopped',
-        'Dedicated stopped CPS candidate5 scope and unchanged source policy required')
-    instance=target['source_instance'];agent.closed(instance,{'namespace','deployment_uid','pod_uid','image'},'Closed actual Source instance required')
-    agent.require(instance['namespace']=='cps-compute' and instance['image']==CANDIDATE_SOURCE_IMAGE
-        and all(agent.canonical_uuid(instance[k]) and instance[k]!='00000000-0000-0000-0000-000000000000'
-            for k in ('deployment_uid','pod_uid')),'Exact current Source51f namespace/image/UIDs required')
-    for timestamp in (target['observed_at'],inputs['observed_at'],(terminal_authority or {}).get('host_snapshot',{}).get('observedAt')):
-        agent.require(isinstance(timestamp,str),'Fresh target and full retired authority timestamps required')
-        observed=datetime.fromisoformat(timestamp.replace('Z','+00:00'))
-        agent.require(observed.tzinfo is not None and observed.utcoffset().total_seconds()==0
-            and 0<=(now-observed).total_seconds()<=900,'Fresh Root UTC source/authority snapshot required')
-    agent.require(isinstance(terminal_authority,dict) and target['current_authority_sha256']==canonical_sha256(
-        dict(ledger=inputs['ledger'],previous_node=inputs['node_config'],**terminal_authority)),
-        'Complete independently pinned current retired authority required')
-    registered=target['registration'];agent.closed(registered,set(APPROVAL_FIELDS)|{'workspace','policy_hash','workspace_label','workspace_hash'},
-        'Exact normal Source registered workspace required')
-    members=target['operator_members']
-    agent.require(isinstance(members,list) and 1<=len(members)<=8 and len(set(members))==len(members)
-        and all(agent.canonical_uuid(p) and p!='00000000-0000-0000-0000-000000000000' for p in members)
-        and not set(members)&{'15164372-7ae5-4cfd-8b5d-fd402aa891bd','85de720c-94b0-4bc7-807e-c04512133494'}
-        and registered['members']==members,'Only explicit nonstudent canonical operator members required')
-    owner=registered['owner'];scope='cps:'+workspace
-    agent.require(isinstance(owner,str) and re.fullmatch('cps-ws-[a-f0-9]{32}',owner)
-        and owner!='cps-ws-27c474f74f9d41c53eac0be01fcca8a3'
-        and registered['workspace']==workspace and registered['policy_hash']==source_policy.hash
-        and registered['namespace']=='jupyterhub' and registered['server']=='rtc'
-        and registered['pod']=='jupyter-'+owner+'--rtc' and registered['principal']=='workspace:'+scope
-        and registered['profiles']==['interactive-cpu']
-        and registered['workspace_label']==source_policy.labels['workspace'] and registered['workspace_hash']==source_policy.owner_label(scope)
-        and all(isinstance(registered[k],str) and registered[k].startswith('operator-') for k in ('course_id','term_id','group_id')),
-        'Exact dedicated neutral owner/descriptor/CPU registration required')
-    approval={k:copy.deepcopy(registered[k]) for k in APPROVAL_FIELDS}
-    agent.require(approval['storage'].pop('state',None)=='active','Current provisioned operator storage required')
-    agent.require(inputs['approvals']=={scope:approval} and inputs['gate_image']==CURRENT_GATE_IMAGE,
-        'Exact captured Source registration/storage and unchanged Gate required')
-    result=_render(inputs,observation_raw,health_raw,now=now,terminal_authority=terminal_authority,candidate=target)
+    source_policy=Policy(inputs['catalog']);now=now or datetime.now(timezone.utc)
+    targets=[target]
+    if peer_target_snapshot_raw is not None or peer_target_snapshot_sha256 is not None:
+        agent.require(isinstance(peer_target_snapshot_raw,bytes) and len(peer_target_snapshot_raw)<=1048576
+            and isinstance(peer_target_snapshot_sha256,str) and re.fullmatch('[0-9a-f]{64}',peer_target_snapshot_sha256)
+            and hashlib.sha256(peer_target_snapshot_raw).hexdigest()==peer_target_snapshot_sha256,
+            'Independent Root peer raw pin required before pair interpretation')
+        peer=agent.parse(peer_target_snapshot_raw)
+        agent.require(target.get('profile')=='interactive-native-qualification-5'
+            and peer.get('profile')=='interactive-native-qualification-20','Primary5 and independently pinned peer20 must retain their raw target identities')
+        from prospective_source_qualification_workspace import validate_pair_targets
+        targets=validate_pair_targets(target,peer,now=now)
+    captured_approvals={}
+    for index,target in enumerate(targets):
+        workspace=target['workspace']
+        agent.require(type(target['version']) is int and target['version']==1 and target['source']=='cps'
+            and isinstance(workspace,str) and re.fullmatch(r'operator-qualification-531-[a-z0-9](?:[a-z0-9-]{0,36}[a-z0-9])?',workspace)
+            and target['profile']==('interactive-native-qualification-5' if index==0 else 'interactive-native-qualification-20') and target['workload_image']==CANDIDATE_IMAGE
+            and target['source_policy_hash']==source_policy.hash==inputs['node_config']['policy_hash']
+            and target['source_closure_sha256']==source_closure_sha256 and target['state']=='stopped',
+            'Dedicated stopped CPS candidate5 scope and unchanged source policy required')
+        instance=target['source_instance'];agent.closed(instance,{'namespace','deployment_uid','pod_uid','image'},'Closed actual Source instance required')
+        agent.require(instance['namespace']=='cps-compute' and instance['image']==CANDIDATE_SOURCE_IMAGE
+            and all(agent.canonical_uuid(instance[k]) and instance[k]!='00000000-0000-0000-0000-000000000000'
+                for k in ('deployment_uid','pod_uid')),'Exact current Source51f namespace/image/UIDs required')
+        for timestamp in (target['observed_at'],inputs['observed_at'],(terminal_authority or {}).get('host_snapshot',{}).get('observedAt')):
+            agent.require(isinstance(timestamp,str),'Fresh target and full retired authority timestamps required')
+            observed=datetime.fromisoformat(timestamp.replace('Z','+00:00'))
+            agent.require(observed.tzinfo is not None and observed.utcoffset().total_seconds()==0
+                and 0<=(now-observed).total_seconds()<=900,'Fresh Root UTC source/authority snapshot required')
+        agent.require(isinstance(terminal_authority,dict) and target['current_authority_sha256']==canonical_sha256(
+            dict(ledger=inputs['ledger'],previous_node=inputs['node_config'],**terminal_authority)),
+            'Complete independently pinned current retired authority required')
+        registered=target['registration'];agent.closed(registered,set(APPROVAL_FIELDS)|{'workspace','policy_hash','workspace_label','workspace_hash'},
+            'Exact normal Source registered workspace required')
+        members=target['operator_members']
+        agent.require(isinstance(members,list) and 1<=len(members)<=8 and len(set(members))==len(members)
+            and all(agent.canonical_uuid(p) and p!='00000000-0000-0000-0000-000000000000' for p in members)
+            and not set(members)&{'15164372-7ae5-4cfd-8b5d-fd402aa891bd','85de720c-94b0-4bc7-807e-c04512133494'}
+            and registered['members']==members,'Only explicit nonstudent canonical operator members required')
+        owner=registered['owner'];scope='cps:'+workspace
+        agent.require(isinstance(owner,str) and re.fullmatch('cps-ws-[a-f0-9]{32}',owner)
+            and owner!='cps-ws-27c474f74f9d41c53eac0be01fcca8a3'
+            and registered['workspace']==workspace and registered['policy_hash']==source_policy.hash
+            and registered['namespace']=='jupyterhub' and registered['server']=='rtc'
+            and registered['pod']=='jupyter-'+owner+'--rtc' and registered['principal']=='workspace:'+scope
+            and registered['profiles']==['interactive-cpu']
+            and registered['workspace_label']==source_policy.labels['workspace'] and registered['workspace_hash']==source_policy.owner_label(scope)
+            and all(isinstance(registered[k],str) and registered[k].startswith('operator-') for k in ('course_id','term_id','group_id')),
+            'Exact dedicated neutral owner/descriptor/CPU registration required')
+        approval={k:copy.deepcopy(registered[k]) for k in APPROVAL_FIELDS}
+        agent.require(approval['storage'].pop('state',None)=='active','Current provisioned operator storage required')
+        captured_approvals[scope]=approval
+    agent.require(inputs['approvals']==captured_approvals and inputs['gate_image']==CURRENT_GATE_IMAGE,
+        'Exact captured Source registrations/storage and unchanged Gate required')
+    result=_render(inputs,observation_raw,health_raw,now=now,terminal_authority=terminal_authority,candidate=target if len(targets)==1 else {'targets':targets})
     result['acceptance.json'].update(source_mode='prospective-candidate',target_snapshot_sha256=target_snapshot_sha256,
         source_closure_sha256=source_closure_sha256,current_authority_sha256=target['current_authority_sha256'],
         terminal_history_sha256=canonical_sha256(result['node-config.json']['terminal_history']))
-    result['target-snapshot.json']=copy.deepcopy(target);result['source-closure.json']=copy.deepcopy(closure)
+    result['target-snapshot.json']=copy.deepcopy(targets[0]);result['source-closure.json']=copy.deepcopy(closure)
+    if len(targets)==2:
+        result['peer-target-snapshot.json']=copy.deepcopy(targets[1])
+        result['acceptance.json']['peer_target_snapshot_sha256']=peer_target_snapshot_sha256
     return result
 
 
@@ -473,17 +497,19 @@ def main(argv=None):
     parser.add_argument('--target-snapshot-sha256')
     parser.add_argument('--source-closure',type=Path)
     parser.add_argument('--source-closure-sha256')
+    parser.add_argument('--peer-target-snapshot',type=Path)
+    parser.add_argument('--peer-target-snapshot-sha256')
     for key in ('input','observation','health','output'): parser.add_argument('--'+key, type=Path)
     args = parser.parse_args(argv)
     if not args.render:
         agent.require(args.source_mode=='legacy-qualification' and not any((args.input,args.observation,args.health,args.output,args.terminal_authority,
             args.source_runtime,args.source_runtime_sha256,args.source_hubs,args.source_hubs_sha256,args.source_controller,
-            args.target_snapshot,args.target_snapshot_sha256,args.source_closure,args.source_closure_sha256)), 'Inputs require explicit offline --render')
+            args.target_snapshot,args.target_snapshot_sha256,args.source_closure,args.source_closure_sha256,args.peer_target_snapshot,args.peer_target_snapshot_sha256)), 'Inputs require explicit offline --render')
         print(json.dumps({'enabled':False, 'live_applied':False, 'hardware_qualified':False}))
         return 0
     agent.require(all((args.input,args.observation,args.health,args.output)), 'Complete private offline input/output paths required')
     candidate=args.source_mode=='prospective-candidate'
-    agent.require(not any((args.target_snapshot,args.target_snapshot_sha256,args.source_closure,args.source_closure_sha256)) or candidate,
+    agent.require(not any((args.target_snapshot,args.target_snapshot_sha256,args.source_closure,args.source_closure_sha256,args.peer_target_snapshot,args.peer_target_snapshot_sha256)) or candidate,
         'Candidate target/closure pins require explicit prospective-candidate mode')
     if candidate:
         agent.require(args.preset=='cps5-cit10' and all((args.target_snapshot,args.source_closure,args.terminal_authority))
@@ -491,13 +517,19 @@ def main(argv=None):
                 for pin in (args.target_snapshot_sha256,args.source_closure_sha256))
             and not any((args.source_runtime,args.source_runtime_sha256,args.source_hubs,args.source_hubs_sha256,args.source_controller)),
             'Explicit candidate raw pins and complete retired authority required before private input')
+    agent.require((args.peer_target_snapshot is None and args.peer_target_snapshot_sha256 is None) or
+        (candidate and args.peer_target_snapshot is not None and isinstance(args.peer_target_snapshot_sha256,str)
+         and re.fullmatch('[a-f0-9]{64}',args.peer_target_snapshot_sha256) and args.peer_target_snapshot_sha256!='0'*64),
+        'Complete independent Root peer raw pins required before private input')
     agent.require(args.preset!='cps5-cit20' or args.terminal_authority is not None,
         'Twenty preset requires the full terminal authority bundle')
     authority=agent.parse(private_read(args.terminal_authority)) if args.terminal_authority else None
     if candidate:
         values=render_prospective_candidate(agent.parse(private_read(args.input)),private_read(args.observation),private_read(args.health),
             target_snapshot_raw=private_read(args.target_snapshot),target_snapshot_sha256=args.target_snapshot_sha256,
-            source_closure_raw=private_read(args.source_closure),source_closure_sha256=args.source_closure_sha256,terminal_authority=authority)
+            source_closure_raw=private_read(args.source_closure),source_closure_sha256=args.source_closure_sha256,terminal_authority=authority,
+            peer_target_snapshot_raw=private_read(args.peer_target_snapshot) if args.peer_target_snapshot else None,
+            peer_target_snapshot_sha256=args.peer_target_snapshot_sha256)
     elif args.source_mode=='current-approved-groups':
         agent.require(args.preset=='cps5-cit20' and all((args.source_runtime,args.source_runtime_sha256,args.source_hubs,args.source_hubs_sha256,args.source_controller)),
             'Current source mode requires explicit twenty preset and exact runtime/Hub source pins')
