@@ -36,6 +36,17 @@ physical node/device/boot/driver epoch and original25GiB budget are still checke
 The unchanged enrollment path still verifies retained enrollment/completion UIDs,
 full hashes, released ledgers, inert journals and absent historical Pods.
 
+The same successor permits the finite return to the exact D48 qualified-group
+policy and its 15360 MiB pool. A retained pair configuration must match the
+independently reviewed Root policy, complete terminal-history hash and exact
+two CPS qualification5/20 scopes, remain enabled in operator-qualification mode,
+and retain the measured 25600 MiB budget, max 2, 1024 MiB headroom and at least
+26624 MiB free memory. Only this exact pair may supply historical capacity after
+return; all immutable-reference, physical-epoch and terminal-custody checks remain
+in force. A current D48 workspace requesting 20480 MiB still fails the unchanged
+active-cap validator. This adds no general recursive authority or new contract
+fields.
+
 The Node config itself has no people or workload-image fields. Contract membership
 is provenance for this finite source output; it does not establish Directory or
 Source identity. Before any runtime use, Root must independently review the real
