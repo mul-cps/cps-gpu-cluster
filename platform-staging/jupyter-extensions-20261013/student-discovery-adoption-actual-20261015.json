@@ -109,10 +109,12 @@
   "limitations": [
     "GPU916 still has the old f5 addon/PageConfig failure and ordinary SDK CA trust failure; successful personal discovery does not fix those notebook packages.",
     "GPU531 is packaged and published but not adopted; no current workload uses it.",
-    "Prospective-only source efa3c8ab9c9e7cfffa223a7ae3577e3fe368901c and its two qualified Gateway/Hub candidate images are unpublished and not live; fresh six-category hardware qualification has not run.",
+    "Prospective-only source efa3c8ab9c9e7cfffa223a7ae3577e3fe368901c and its two qualified Gateway/Hub candidate images are now published for prospective operator qualification but are not deployed; fresh six-category hardware qualification has not run and production916 is unchanged.",
     "This is a bounded native5/10 pilot without MIG; broader production qualification and GPU batch remain open."
   ],
   "gpu_batch_enabled": false,
   "production_qualified": false,
-  "credential_values_included": false
+  "credential_values_included": false,
+  "prospective_runtime_publication_receipt": "prospective531-runtime-publication-actual-20261015.json",
+  "publication_status_updated_at": "2026-10-15T16:44:17.132135+00:00"
 }

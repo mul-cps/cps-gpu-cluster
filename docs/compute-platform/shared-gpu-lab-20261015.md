@@ -51,8 +51,11 @@ The GPU916 notebook package still has two known failures:
   workspace principal. That diagnostic does not close ordinary SDK compatibility.
 
 GPU531 is packaged and published but has not been adopted. The prospective-only
-`efa3c8ab` validator and two qualified Gateway/Hub candidate images are unpublished
-and not live; fresh six-category hardware qualification has not run. Gatewayd974
+`efa3c8ab` validator is now published in Gateway511e and Hub1f8f for future
+trusted operator qualification. Neither candidate is deployed; configuration,
+registry, Node and production916 remain unchanged. Fresh six-category hardware
+qualification has not run. See the [publication receipt](../../platform-staging/jupyter-extensions-20261013/prospective531-runtime-publication-actual-20261015.json).
+Gatewayd974
 fixed the earlier empty personal Shared Workspaces list. Both Mikasa and Armin
 received HTTP 200 through normal Compute OAuth, retained their own canonical
 identity, and received the authorized workspace and Open link. A reviewed

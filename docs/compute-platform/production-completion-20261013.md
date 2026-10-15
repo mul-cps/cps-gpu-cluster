@@ -752,9 +752,12 @@ See [CPU batch during the shared GPU session](../../platform-staging/jupyter-ext
 See the [working shared GPU lab guide](shared-gpu-lab-20261015.md),
 [current discovery/restart receipt](../../platform-staging/jupyter-extensions-20261013/student-discovery-adoption-actual-20261015.json),
 and [historical initial native 5 GiB acceptance](../../platform-staging/jupyter-extensions-20261013/shared-gpu-lab-native5-actual-20261015.json).
-The prospective-only `efa3c8ab` validator and two qualified Gateway/Hub image
-candidates are unpublished and not live; no fresh six-category hardware gates
-have run for GPU531. GPU batch remains disabled.
+The prospective-only `efa3c8ab` validator is now published in Gateway511e and
+Hub1f8f for future trusted operator qualification. Neither image is deployed;
+configuration, registry, Node and production916 remain unchanged. Fresh
+six-category hardware gates have not run for GPU531. See the
+[prospective runtime publication receipt](../../platform-staging/jupyter-extensions-20261013/prospective531-runtime-publication-actual-20261015.json).
+GPU batch remains disabled.
 Membership-removal connection revocation, CIT own/foreign workflows, CIT
 personal runtime adoption, wider GPU packing and production qualification remain
 distinct work.
