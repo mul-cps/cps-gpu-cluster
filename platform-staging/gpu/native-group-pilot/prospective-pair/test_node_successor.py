@@ -94,6 +94,73 @@ def test_successor_accepts_only_pinned_pair_retained_original_history():
     assert candidate.validate_historical_configuration(cm, ref, config, entry)['policy_hash'] == OLD
 
 
+def returned_fixture():
+    old, _, _, _, contract = fixture()
+    cm = dict(apiVersion='v1', kind='ConfigMap', immutable=True,
+        metadata=dict(namespace='cps-native-system', name='cps-native-node-qualification-returned-pair',
+                      uid=str(uuid.UUID(int=100))),
+        data={'config.json': baseline.canonical_json(old)})
+    reference = {k: cm['metadata'][k] for k in ('namespace', 'name', 'uid')}
+    reference.update(data_sha256=baseline.canonical_sha256(cm['data']), policy_hash=old['policy_hash'])
+    config = copy.deepcopy(old)
+    config.update(mode='qualified-group', policy_hash=D48, workspaces={
+        'cps:native-group-b': {'profile': 'interactive-shared-5', 'cap_mib': 5120},
+        'cit:native-group-a': {'profile': 'interactive-shared-10', 'cap_mib': 10240}})
+    config['pool']['memory_budget_mib'] = 15360
+    for index, original in enumerate(old['terminal_history'].values(), 101):
+        entry = copy.deepcopy(original)
+        entry.update(policy_hash=old['policy_hash'], configuration_authority=reference)
+        config['terminal_history'][str(uuid.UUID(int=index))] = entry
+    return config, cm, reference, config['terminal_history'][str(uuid.UUID(int=101))], contract
+
+
+@pytest.mark.parametrize('cap', [5120, 20480])
+def test_successor_returns_to_d48_with_exact_root_pair_retained_as_terminal_history(cap):
+    config, cm, ref, entry, contract = returned_fixture()
+    entry = next(e for e in config['terminal_history'].values()
+                 if e['policy_hash'] == contract['policy_hash'] and e['cap_mib'] == cap)
+    candidate = successor(contract)
+    candidate.validate_config(config)
+    restored = candidate.validate_historical_configuration(cm, ref, config, entry)
+    assert restored['policy_hash'] == 'sha256:' + 'a' * 64
+    assert restored['workspaces'] == PAIR
+
+
+@pytest.mark.parametrize('fault', ['policy', 'history', 'workspace', 'cap', 'budget', 'maximum',
+                                  'free', 'headroom', 'epoch', 'reference', 'mutable', 'members', 'image'])
+def test_returned_pair_history_drift_is_denied(fault):
+    config, cm, ref, entry, contract = returned_fixture()
+    candidate = successor(contract)
+    old = json.loads(cm['data']['config.json'])
+    if fault == 'policy':
+        old['policy_hash'] = 'sha256:' + 'b' * 64
+        ref['policy_hash'] = entry['policy_hash'] = old['policy_hash']
+    elif fault == 'history': old['terminal_history'].pop(next(iter(old['terminal_history'])))
+    elif fault == 'workspace': old['workspaces']['cps:operator-qualification-531-other-five'] = old['workspaces'].pop(next(iter(PAIR)))
+    elif fault == 'cap':
+        old['workspaces'][list(PAIR)[1]] = {'profile': 'interactive-native-qualification-10', 'cap_mib': 10240}
+    elif fault in ('budget', 'maximum', 'free', 'headroom'):
+        key, value = {'budget': ('memory_budget_mib', 24576), 'maximum': ('max_workspaces', 1),
+                      'free': ('free_memory_mib', 26623), 'headroom': ('headroom_mib', 2048)}[fault]
+        old['pool'][key] = value
+    elif fault == 'epoch': old['pool']['boot_id'] = str(uuid.UUID(int=999))
+    elif fault == 'reference': cm['metadata']['uid'] = str(uuid.UUID(int=999))
+    elif fault == 'mutable': cm['immutable'] = False
+    elif fault == 'members': old['operator_members'] = copy.deepcopy(contract['operator_members'])
+    else: old['workloadImage'] = 'ghcr.io/mul-cps/unreviewed@sha256:' + 'b' * 64
+    cm['data']['config.json'] = baseline.canonical_json(old)
+    ref['data_sha256'] = baseline.canonical_sha256(cm['data'])
+    with pytest.raises(ValueError): candidate.validate_historical_configuration(cm, ref, config, entry)
+
+
+def test_returned_d48_cannot_authorize_an_active20_in_its15gib_pool():
+    config, _, _, _, contract = returned_fixture()
+    config['workspaces']['cps:operator-qualification-531-active-twenty'] = {
+        'profile': 'interactive-shared-20', 'cap_mib': 20480}
+    with pytest.raises(ValueError, match='profile/cap'):
+        successor(contract).validate_config(config)
+
+
 def test_legacy_d48_behavior_and_all_other_function_bytes_are_preserved():
     import ast
     config, cm, ref, entry, contract = fixture()

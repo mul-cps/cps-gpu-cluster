@@ -106,6 +106,27 @@ def successor_source(original, contract_raw, reviewed_raw_sha256):
     after = before.replace(marker, guard + marker, 1)
     legacy = "config['mode'] == 'qualified-group' and old['mode'] == 'operator-qualification'\n            and config['policy_hash'] == 'sha256:d48f6553ed036c2e7adcc97417623fe0308be93ad13b20f246047ada118511b0'"
     after = after.replace(legacy, "(prospective_pair or (config['mode'] == 'qualified-group'\n                 and config['policy_hash'] == 'sha256:d48f6553ed036c2e7adcc97417623fe0308be93ad13b20f246047ada118511b0'))\n            and old['mode'] == 'operator-qualification'", 1)
+    returned_guard = f'''    returned_pair = (config['mode'] == 'qualified-group'
+        and config['policy_hash'] == 'sha256:d48f6553ed036c2e7adcc97417623fe0308be93ad13b20f246047ada118511b0'
+        and old['version'] == 2 and old['enabled'] is True
+        and old['mode'] == 'operator-qualification'
+        and old['policy_hash'] == {contract['policy_hash']!r}
+        and old['workspaces'] == {contract['workspaces']!r}
+        and canonical_sha256(old.get('terminal_history')) == {contract['terminal_history_sha256']!r}
+        and old['pool']['max_workspaces'] == 2
+        and old['pool']['memory_budget_mib'] == 25600
+        and old['pool']['headroom_mib'] == 1024
+        and old['pool']['free_memory_mib'] >= 26624)
+'''
+    after = after.replace("and old['policy_hash'] == 'sha256:39ef15d3b5a76f96d135beb1afcd538775c64301cb51751086b44d68c54f8012'",
+        "and (returned_pair or old['policy_hash'] == 'sha256:39ef15d3b5a76f96d135beb1afcd538775c64301cb51751086b44d68c54f8012')", 1)
+    after = after.replace("and not any('configuration_authority' in e for e in old.get('terminal_history', {}).values())",
+        "and (returned_pair or not any('configuration_authority' in e for e in old.get('terminal_history', {}).values()))", 1)
+    after = after.replace("and old['workspaces'] == {", "and (returned_pair or old['workspaces'] == {", 1)
+    after = after.replace("'cit:native-group-a': {'profile':'interactive-native-qualification-20', 'cap_mib':20480}},",
+        "'cit:native-group-a': {'profile':'interactive-native-qualification-20', 'cap_mib':20480}}),", 1)
+    old_marker = "    old = validate_config(parse(cm['data']['config.json']))\n"
+    after = after.replace(old_marker, old_marker + returned_guard, 1)
     after = after.replace("config['pool']['memory_budget_mib'] == 15360", "config['pool']['memory_budget_mib'] == (25600 if prospective_pair else 15360)", 1)
     after = after.replace("require(config['workspaces'] == {", "require((prospective_pair or config['workspaces'] == {", 1)
     after = after.replace("'cit:native-group-a': {'profile':'interactive-shared-10', 'cap_mib':10240}}", "'cit:native-group-a': {'profile':'interactive-shared-10', 'cap_mib':10240}})", 1)
