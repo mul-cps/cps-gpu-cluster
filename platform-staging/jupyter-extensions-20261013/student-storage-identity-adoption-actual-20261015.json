@@ -3,13 +3,13 @@
   "image": "ghcr.io/mul-cps/cps-compute@sha256:eea5b2927d7ea7c12205669f18a68c5cf40c70a082a048b23db6aec0a6f2997a",
   "deployed": true,
   "ready": true,
-  "authority": "legacy-guard-handover-81a6f1ca/phase-81a6f1ca",
-  "seed_sha256": "sha256:0474dec64a79185d4882e356534c11b3dbdd3d58517826fdcf6ee7be5465aced",
+  "authority": "student-membership-handover-fdef85f9/phase-fdef85f9",
+  "seed_sha256": "sha256:ce5ecdcc5a4a7d89be18fc03546a4c0b169a13f228e03f828debf5dc6b92b8b1",
   "four_raw_hashes": {
-    "final.json": "170badca7f0143f1095713de7b51713abf7dd4048eab5a1aa30a1fc49cb8110b",
-    "new-delivery-seed.json": "93d42506fa5d3367cced3df4fcf858d8500565caf1e1e96324bee19f96e721c8",
-    "new-delivery-activation-readback.json": "74935bc263a32d197b1e0f9547734ce9004f9ed2d28b87aee13b1692e0c73a78",
-    "delivery-activation-intent.json": "0fd7b8b9d52e4007ea7670c8909405517cec26b938c9c2a316c25aac38569642"
+    "final.json": "689c5e1399eccfbb5aa11cd40812c5243564d63df2d0093d16d1a345afe7731a",
+    "new-delivery-seed.json": "ac53b30160524a8a3b81926b3b5d43303f7a26d2d4a5c4efe548b1d90775e9c2",
+    "new-delivery-activation-readback.json": "e44fbd2e38aa3af51123e148ba4105f3097f4ba7279504689506cbc92c14a596",
+    "delivery-activation-intent.json": "d2dd502c1cc4c806e42100b57f14f5f172866644766054b312fb665ba8498f89"
   },
   "storage_version_for_new_workspaces": 2,
   "existing_workspace_storage_version_retained": 1,
@@ -21,7 +21,7 @@
   "policy_hash_unchanged": true,
   "gpu_workspaces_started": false,
   "production_qualified": false,
-  "recorded_at": "2026-10-15T14:56:00.156044+00:00",
+  "recorded_at": "2026-10-15T15:35:25.490175+00:00",
   "historical_storage_adoption": {
     "authority": "student-private-workspace-handover-7e2f72af/phase-7e2f72af",
     "seed_sha256": "sha256:2636966bd7b468e7fb0a50fc45d9d6fb00458fa54f01f43b1ec4653b71ad7129",
@@ -33,8 +33,32 @@
     },
     "hub_image_unchanged": true
   },
-  "activation_intent_sha256": "sha256:826f8f5d5d40dc4071c92cda9a98a3e9bc7da63836f50c6d3c44f64387d61be7",
+  "activation_intent_sha256": "sha256:a106654c97f12b0db9cee553375bd62e72b47f9b219bc5c0fa6fed0ef4fe15a5",
   "current_paired_hub_adoption": {
+    "source_commit": "47e01f738817d425fdf0e2b26b4ff1e7ff418fe9",
+    "image": "ghcr.io/mul-cps/cps-compute@sha256:604c94e62da8c3594579dcec21b3b5810479fadece94abfc0e90aec542165b62",
+    "deployed": true,
+    "ready": true,
+    "authority": "student-membership-handover-fdef85f9/phase-fdef85f9",
+    "seed_sha256": "sha256:ce5ecdcc5a4a7d89be18fc03546a4c0b169a13f228e03f828debf5dc6b92b8b1",
+    "activation_intent_sha256": "sha256:a106654c97f12b0db9cee553375bd62e72b47f9b219bc5c0fa6fed0ef4fe15a5",
+    "four_raw_hashes": {
+      "final.json": "689c5e1399eccfbb5aa11cd40812c5243564d63df2d0093d16d1a345afe7731a",
+      "new-delivery-seed.json": "ac53b30160524a8a3b81926b3b5d43303f7a26d2d4a5c4efe548b1d90775e9c2",
+      "new-delivery-activation-readback.json": "e44fbd2e38aa3af51123e148ba4105f3097f4ba7279504689506cbc92c14a596",
+      "delivery-activation-intent.json": "d2dd502c1cc4c806e42100b57f14f5f172866644766054b312fb665ba8498f89"
+    },
+    "installed_tests_passed": 93,
+    "installed_hub_version": "5.5.2",
+    "installed_kubespawner_version": "7.1.0",
+    "restart_persistent_default_user_compute_scopes": true,
+    "static_default_user_membership_snapshot_removed": true,
+    "legacy_cit_personal_gpu_path_requires_central_policy": true,
+    "policy_and_driver_epoch_unchanged": true,
+    "production_qualified": false
+  },
+  "gateway_storage_image_unchanged_during_paired_hub_adoption": true,
+  "historical_f6_paired_hub_adoption": {
     "source_commit": "53f5c75283c38927aa5bb97e5c5270230ece380e",
     "image": "ghcr.io/mul-cps/cps-compute@sha256:f6c40516a180407aa42d64e4b1b4205ef44879e9f98b997b7ea1a01469c37fe4",
     "deployed": true,
@@ -56,5 +80,27 @@
     "policy_and_driver_epoch_unchanged": true,
     "production_qualified": false
   },
-  "gateway_storage_image_unchanged_during_paired_hub_adoption": true
+  "membership_adoption_receipt": "student-user-role-membership-adoption-actual-20261015.json",
+  "managed_workspace_start_request": {
+    "workspace": "shared-gpu-lab",
+    "source": "cps",
+    "profile": "interactive-shared-5",
+    "storage_version": 2,
+    "source_structural_approval_verified": true,
+    "source_profile_provision_verified": true,
+    "grant_people": [
+      "mikasa",
+      "armin",
+      "bjoern"
+    ],
+    "grant_count": 3,
+    "grant_duration_days": 7,
+    "state_at_start_request": "stopped",
+    "normal_source_start_requested": true,
+    "start_outcome": "pending",
+    "ready_verified": false,
+    "managed_rtc_verified": false,
+    "gpu_allocation_verified": false,
+    "evidence_basis": "Root-reported normal Source approval/profile/grant verification and Start request; no Start outcome asserted"
+  }
 }
