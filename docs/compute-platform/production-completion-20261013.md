@@ -48,11 +48,11 @@ The consumer configuration rollout completed at **2026-10-14 14:07 UTC**.
 The later paired Hub extension adoption completed at **20:58 UTC**. Both Hubs
 run Hub8a from source `f8d9417065559226f1f0aace122a318daceb78de`:
 `ghcr.io/mul-cps/cps-compute@sha256:8a51a7beca628b18a13d8f0d1982e981e0a80b049ccf0efee96532a36b5b2718`.
-Gateway08f and Node8c retain their images, and both consoles run Sourceb36.
+A later same-policy Gateway rollout on 2026-10-15 adopted Gatewaybb for notebook artifact downloads. Node8c and both consoles on Sourceb36 retain their images.
 Four fresh process acknowledgments and a completed new delivery journal confirm
 the unchanged policy and GPU driver epoch. The delivery controller is ready and
-the final native allocation check is zero. The current delivery seed is
-`sha256:56f562306835b31c4cf1c3156fad0b59d26cf0291c001e8a30ff693a4759fd70`.
+the final native allocation check is zero. The current delivery seed after the Gateway rollout is
+`sha256:c25c62f019cddee40740b6ab1498b67d1a1eb26550c39d478c05ff31fb35d1d8`.
 The earlier CIT legacy runtime enrollment and same-image cold handover remain
 retained evidence; their previous seed is preserved in the new handover lineage.
 The canonical policy hash is
@@ -115,8 +115,8 @@ HTTPX verification failed because the SDK lacks the private CA; loading the
 current CA exposed a missing Authority Key Identifier on the gateway leaf. A
 local leaf repair then exposed a missing Key Usage extension on the CA. A local
 renewal using the same CA key, subject and Subject Key Identifier passed strict
-TLS while preserving hostname and trust rejection. Neither the renewed
-certificates nor the new packaged CA transport has been deployed. The latest
+TLS while preserving hostname and trust rejection. The renewed
+certificates were subsequently deployed with Gatewaybb; the new packaged CA transport awaits the Hub/notebook rollout. The latest
 CPU attempt failed during its NFS marker command before package or SDK capture;
 its normal Stop, exact restoration, retained PV/PVC and token cleanup passed a
 fresh read-only check. Both temporary operator tokens were revoked with HTTP
@@ -129,8 +129,10 @@ CPU 14; GPU 14). Dependencies and original compressed base layers are preserved.
 CPU image adoption uses the independently pinned Hub CPU image input and does
 not require a catalog edit. Its next gate is the coordinated trust and Hub
 rollover, followed by real kernel submissions from both Hubs. The legacy CIT
-neutral account additionally needs a proven CPU adapter path; a profile switch
-alone does not supply its trusted CPU image. The GPU image update retains its
+neutral account now has a packaged CPU adapter at source `31ff2e72`. Its exact
+Hub4e image passed 509 installed Hub tests (five skips), 13 SDK tests (one skip),
+and the configured UID1000 check; it is published and awaits rollout. A profile
+switch alone on the earlier Hub does not supply its trusted CPU image. The GPU image update retains its
 separate policy/workload transition gate. The current production/pilot
 deployment still runs the earlier images. See
 [package and remote publication evidence](../../platform-staging/jupyter-extensions-20261013/sdk-ca-publication-actual-20261015.json).
@@ -140,7 +142,9 @@ through the approved batch runner. The new owner-authenticated artifact byte API
 also supports shared kernel principals, without using the personal-only Argo UI
 route or an S3 presigned URL. The exact Gateway candidate `bb6113b7` passed 235
 installed tests, preserves all 48 Core modules apart from the three reviewed
-source changes, and is published but not deployed. A frozen 32-test kernel
+source changes, and is now deployed. The coordinated TLS and capture credential
+rollover passed all four process acknowledgments, the new completed delivery
+journal and native-zero checks. See [gateway adoption evidence](../../platform-staging/jupyter-extensions-20261013/notebook-batch-gateway-adoption-actual-20261015.json). A frozen 32-test kernel
 harness covers successful/failed notebooks, selected helper files, typed
 parameters, immutable snapshots, logs/results and ordinary Hera submission.
 No new live kernel submission acceptance is claimed. A fresh read-only policy
