@@ -1,0 +1,231 @@
+{
+  "schemaVersion": 1,
+  "status": "limited-pilot",
+  "checked_at": "2026-10-15T18:14:09.523840+00:00",
+  "handover": {
+    "phase": "5c4d9d40",
+    "seed_sha256": "sha256:7f08bd0b1a37c5081ca58174da0b3ccd9a542146d05eb95beecc94649892c4f9",
+    "activation_intent_sha256": "sha256:5be320cfadb1df243f95cb369ce551ee13e163457a18d0966302e678396adc8a",
+    "actual_readiness": true,
+    "controller_activation_readiness": true,
+    "four_component_acknowledgments_verified": true,
+    "old_journal_retained": true,
+    "post_create_suffix_only": true,
+    "initial_failure": "Read-only approval capture exec failed after two new object creates; original stderr was not retained. Exact subsequent capture and post-create read-only review passed.",
+    "private_file_raw_sha256": {
+      "final.json": "bb2df73c112398ebdfa6ded8616dea631a294cd9f6e5f51de2d0fcb5a362727d",
+      "new-delivery-seed.json": "c5079860d03e60936a958208afd3028658bb80bcedf5fddacf884a4db10932db",
+      "delivery-activation-intent.json": "8e1456793a8f212e6b4a7548748c16f2f607e9bb510d50358ad1bbc7d0e5af8b",
+      "new-delivery-activation-readback.json": "f410e83bae0a811faa7b757a6c7c0af07cb1f5394eff5775b3617f26ac04b6ec"
+    },
+    "independent_offline_checks": {
+      "main_packet": 42,
+      "root_recovery_constant_tests": 11
+    }
+  },
+  "images": {
+    "gateway": "ghcr.io/mul-cps/cps-compute@sha256:511e42cb71a120b5a7d399ad40fde4a6befdf472ed29ae0bf9fc7f004d85bdea",
+    "both_hubs": "ghcr.io/mul-cps/cps-compute@sha256:6bbd8788d5c84b9e5aa3d968d54350bf4de9fed8e08922cf136abf75b892d488",
+    "future_cps_cpu": "ghcr.io/mul-cps/cps-jupyter-notebook@sha256:9444a023984ffe792ba6588b5f54d459edae1c69b13399597498a659b591df7f",
+    "future_ordinary_cit_cpu": "ghcr.io/mul-cps/cit-jupyter-notebook@sha256:6acd8bfe2b56968f7db0f9a033cdec329888a0e90cc73d4fa1e511f2561b18f9",
+    "retained_source": "ghcr.io/mul-cps/e2x-course-hub@sha256:51f7f392397e41be512b356fbee91980fb233296cee7557d25a758b99b045f44",
+    "retained_gpu_notebook": "ghcr.io/mul-cps/cps-jupyter-notebook@sha256:9167861058c1364c58d1c2fca0d6f536c3ffb53a33800dcdb9a1560f14ca4dc0"
+  },
+  "consumer_targets_exact_full_readback": [
+    {
+      "id": "cps-hub-secret-hub",
+      "uid": "11419586-2125-4fb4-a6df-40acd7937d88",
+      "exact_full_data_match": true
+    },
+    {
+      "id": "cit-hub-secret-hub",
+      "uid": "ad92b761-beb9-4824-8dd6-6c1f7b8f841e",
+      "exact_full_data_match": true
+    },
+    {
+      "id": "backup-cronjob",
+      "uid": "8924e2ab-df98-466f-924c-3100bae8b5b3",
+      "exact_full_spec_match": true
+    }
+  ],
+  "native_group": {
+    "workspace": "shared-gpu-lab",
+    "previous_pod_uid": "79388657-dea1-4d49-b5e6-6c7d7e6a514b",
+    "normal_shutdown_confirmed": true,
+    "zero_reservations_and_active_native_caps_before_deployment": true,
+    "normal_source_start_http": 200,
+    "actual_pod_uid": "63cb095a-153e-4ca9-8216-85df3b6944bf",
+    "native_cap": {
+      "pod_uid": "63cb095a-153e-4ca9-8216-85df3b6944bf",
+      "node": "k3s-wk-gpu2",
+      "current_boot_and_cgroup_match": true,
+      "gpu": {
+        "pci": "0000:06:10.0",
+        "gpu_uuid": "GPU-16128952-b438-556a-00bb-93039ee24e56",
+        "row": {
+          "cgroup_id": 1475095,
+          "kernfs_id": 1475095,
+          "inode": 1475095,
+          "offline": false,
+          "pinned": true,
+          "default_hierarchy": true,
+          "soft": 5368709120,
+          "hard": 5368709120,
+          "used": 0
+        }
+      },
+      "driver_generation": "b10498fc-9153-4394-875a-ea7cfb498625",
+      "journal_sha256": "9651c23a246c365ab004b050e0b19be128848d321e65a9199a80b703dabbad0a",
+      "gate_sha256": "4fd0be2ccc2e1ca780503af58edfea5a9ebfb63fb3da6d94278f31c42ed49fb1",
+      "cap_mib": 5120,
+      "read_only": true
+    },
+    "reservations": {
+      "workspace": "cps:shared-gpu-lab",
+      "member_reservations": 3,
+      "reservation_bindings": 1,
+      "read_only": true
+    },
+    "browser_permissions": {
+      "expectation": "present",
+      "status": "passed",
+      "checked_at": "2026-10-15T18:12:18.580614+00:00",
+      "results": [
+        {
+          "user": "mikasa",
+          "normal_student_oauth": true,
+          "http_status": 200,
+          "authorized_workspace_found": true,
+          "workspace_records": [
+            {
+              "id": "shared-gpu-lab",
+              "name": "shared-gpu-lab",
+              "source": "cps",
+              "profile": "interactive-shared-5",
+              "status": "running",
+              "url": "/user/cps-ws-27c474f74f9d41c53eac0be01fcca8a3/rtc/"
+            }
+          ],
+          "compute_identity_verified": "15164372-7ae5-4cfd-8b5d-fd402aa891bd",
+          "panel_link_present": true,
+          "admin_console_denied": 403,
+          "personal_share_identity_verified": true
+        },
+        {
+          "user": "armin",
+          "normal_student_oauth": true,
+          "http_status": 200,
+          "authorized_workspace_found": true,
+          "workspace_records": [
+            {
+              "id": "shared-gpu-lab",
+              "name": "shared-gpu-lab",
+              "source": "cps",
+              "profile": "interactive-shared-5",
+              "status": "running",
+              "url": "/user/cps-ws-27c474f74f9d41c53eac0be01fcca8a3/rtc/"
+            }
+          ],
+          "compute_identity_verified": "85de720c-94b0-4bc7-807e-c04512133494",
+          "panel_link_present": true,
+          "admin_console_denied": 403,
+          "personal_share_identity_verified": true
+        }
+      ]
+    },
+    "saved_files_deleted": false
+  },
+  "operator_token_cleanup": {
+    "api_id": "a734",
+    "owning_user": "bjoern",
+    "revoked": true,
+    "delete_http_status": 204,
+    "revoked_token_http_status": 403,
+    "human_oauth_untouched": true,
+    "checked_at": "2026-10-15T18:13:23.616712+00:00"
+  },
+  "backup_receipt": "../backups/post-consumer-capture-20261015/receipt.json",
+  "fresh_armin_cpu_frontend_qualified": true,
+  "cit_cpu_frontend_qualified": false,
+  "gpu531_hardware_qualified": false,
+  "production_qualified": false,
+  "limitations": [
+    "Armin fresh CPU9444 C7 browser frontend passed; SDK and batch tests are separate.",
+    "Existing personal notebooks are preserved; future image configuration does not upgrade their running processes",
+    "GPU531 remains published only; the running GPU916 addon and SDK remain unqualified",
+    "Broader production completion ledger gates remain open"
+  ],
+  "fresh_armin_cpu_frontend_receipt": "cps-c7-student-live-actual-20261015.json",
+  "personal_server_readback": {
+    "checked_at": "2026-10-15T18:19:57.638130+00:00",
+    "all_other_personal_pod_uids_preserved": true,
+    "controlled_armin_normal_restart_only": true,
+    "pods": [
+      {
+        "namespace": "jupyterhub",
+        "name": "jupyter-bjoern",
+        "uid": "915b3fac-53fa-469c-8c3f-0180fb285504",
+        "ready": true,
+        "restarts": 0,
+        "containers": [
+          {
+            "name": "notebook",
+            "imageID": "ghcr.io/mul-cps/cps-jupyter-notebook@sha256:ad693e5d49ef208449d0bc5d3de86288da7aac1799c1f7f9a1d84c2f893c00c1"
+          }
+        ]
+      },
+      {
+        "namespace": "jupyterhub",
+        "name": "jupyter-cpsadmin",
+        "uid": "a984023f-eb34-4af1-b01d-bad6ea159ef4",
+        "ready": true,
+        "restarts": 0,
+        "containers": [
+          {
+            "name": "notebook",
+            "imageID": "ghcr.io/mul-cps/cps-jupyter-notebook@sha256:ad693e5d49ef208449d0bc5d3de86288da7aac1799c1f7f9a1d84c2f893c00c1"
+          }
+        ]
+      },
+      {
+        "namespace": "jupyterhub",
+        "name": "jupyter-mikasa",
+        "uid": "31846900-989b-48d1-95b3-846e9526fbb5",
+        "ready": true,
+        "restarts": 0,
+        "containers": [
+          {
+            "name": "notebook",
+            "imageID": "ghcr.io/mul-cps/cps-jupyter-notebook@sha256:d75d54d9b2b3b1b497e577124a30ca4c82993dd8458550a0b1fa73c37159b64f"
+          }
+        ]
+      },
+      {
+        "namespace": "jupyterhub",
+        "name": "jupyter-armin",
+        "uid": "921b8b7c-e8de-45e3-856c-b2426ed1ed7b",
+        "ready": true,
+        "restarts": 0,
+        "containers": [
+          {
+            "name": "notebook",
+            "imageID": "ghcr.io/mul-cps/cps-jupyter-notebook@sha256:9444a023984ffe792ba6588b5f54d459edae1c69b13399597498a659b591df7f"
+          }
+        ]
+      },
+      {
+        "namespace": "cit-jhub",
+        "name": "jupyter-mikasa",
+        "uid": "cc40cf41-a793-4bbf-a395-086d32972596",
+        "ready": true,
+        "restarts": 0,
+        "containers": [
+          {
+            "name": "notebook",
+            "imageID": "ghcr.io/mul-cps/cit-jupyter-notebook@sha256:7cbef42fe051178e209bf5e245d6811bc8f8c24dff1bd07a639e1d812adbfd63"
+          }
+        ]
+      }
+    ]
+  }
+}
