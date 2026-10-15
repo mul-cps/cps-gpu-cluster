@@ -25,7 +25,7 @@ for the bounded live results of 2026-10-13 and their retained evidence.
 | Gate | Verified state | Remaining completion evidence |
 | --- | --- | --- |
 | Repository ownership and shared policy | Separate application/deployment responsibilities and shared policy implemented; compatibility branches retained | Integrate and promote one tested consumer matrix with its exact policy hash; account for Fleet's watched branches |
-| SDK, Hub and Lab packages | Both Hubs now run Hub1e with the personal SDK environment fix and select CPUd75 with the prebuilt Lab XSRF fix. The actual Hub 5.5.2/Chromium regression and panel tests passed, with 43 Node and 9 installed Lab tests. A fresh personal CPS CPU kernel returned HTTP 200 for `/v1/me`, `/v1/profiles` and `/v1/session` using zero-argument `sdk.client()` and the reviewed person identity. The existing bjoern/cpsadmin notebook Pods remain unchanged on CPUad | The fixed frontend is installed in both running CPS personal servers without a restart; human page reload/panel and CIT personal SDK acceptance remain pending. Other notebook variants, ordinary visitor identity separation and human RTC remain separate gates; CIT personal profile hooks retain their independent images |
+| SDK, Hub and Lab packages | Both Hubs now run Hub8e with the persistent personal root and inherited SDK environment fix and select CPUd75 with the prebuilt Lab XSRF fix. The actual Hub 5.5.2/Chromium regression and panel tests passed, with 43 Node and 9 installed Lab tests. A fresh personal CPS CPU kernel returned HTTP 200 for `/v1/me`, `/v1/profiles` and `/v1/session` using zero-argument `sdk.client()` and the reviewed person identity. The existing bjoern/cpsadmin notebook Pods remain unchanged on CPUad | The fixed frontend is installed in both running CPS personal servers without a restart; human page reload/panel and CIT personal SDK acceptance remain pending. Other notebook variants, ordinary visitor identity separation and human RTC remain separate gates; CIT personal profile hooks retain their independent images |
 | Both admin UI consoles | Both consoles run Sourceb36 with the reviewed legacy runtime validator; frontend and dependencies remain equal to Source87a1. CIT legacy runtime enrollment, cold startup and real notebook activity reporting passed; the existing UI and approved 10 GiB choice remain bounded evidence | Normal registered CPU lifecycle and reviewed CIT `akadmin` canonical API linkage passed; ordinary-user/human OAuth and remaining modes are separate gates |
 | Identity and group ownership | Existing reviewed aliases retained; both CPS legacy neutral accounts have permanent ready provenance; explicit custody migration and exact QA repair passed; both Hubs restarted without changing the repaired or legitimate legacy roles | Reviewed CIT alias is live in Source, Hub and Gateway and `/me` resolves the same person; real login grant survival/expiry, scoped administration and cross-Hub allowance continuity remain |
 | Native GPU isolation | Controlled no-MIG 5/20 GiB history retained; current CPS pair passed distinct 5 GiB OOM/recovery with peer progress, IPC denial in both directions, positive controls, kernel witnesses, restart retirement, complete bounded MPS OOM/recovery and observer cleanup, and confirmed normal closure | Complete restart behavior and broader packing; current bounded pool is 5/10 GiB, not a normal 20 GiB or cross-Hub qualification |
@@ -47,15 +47,19 @@ for the bounded live results of 2026-10-13 and their retained evidence.
 The consumer configuration rollout completed at **2026-10-14 14:07 UTC**.
 The earlier Hub8a adoption completed at **20:58 UTC on 2026-10-14**.
 Gatewaybb and the paired Hub CA/CPU rollouts completed on **2026-10-15**. The subsequent
-personal SDK and Lab XSRF handover now runs Hub1e from source
-`9b7df79ba591ccc6fd6eb29b32e1e27ef0cc90e1` on both Hubs:
-`ghcr.io/mul-cps/cps-compute@sha256:1e8bdc639ecc6f07a0f101f9157a724637bcc4468138fe1e19ff7dfe4bc73da4`.
+personal SDK/Lab XSRF handover ran Hub1e; the latest persistent-home rollout
+now runs Hub8e from source `13d6604821caacff0a07190c041792fe56747354` on both Hubs:
+`ghcr.io/mul-cps/cps-compute@sha256:8e5854cb46870a3a09d8108f592ba507d494f3df028ec7f844cd9e96ae6e7e33`.
+Its installed image passed 529 tests with five existing skips, unchanged runtime
+dependencies and successful UID1000 imports. The earlier candidate failed its
+UID1000 packaging check and was never published.
+See [persistent-home adoption](../../platform-staging/jupyter-extensions-20261013/personal-root-adoption-actual-20261015.json).
 The latest same-policy Gateway rollout adopted Gateway6d from source `846c02cf`
 for the S3 end-of-file fix. Node8c and both consoles on Sourceb36 retain their images.
 Four fresh process acknowledgments and a completed new delivery journal confirm
 the unchanged policy and GPU driver epoch. The delivery controller is ready and
 the final native allocation check is zero. The current delivery seed after these rollouts is
-`sha256:0e99ef04a8d9b6f28a1a77d0969d90c1a9e74c3358fa742e1240147b0ce53f93`.
+`sha256:6c4ce996c37b72de155d50fddb8813b71b6bd369f0caf5ea292198d0d1935f3b`.
 The earlier CIT legacy runtime enrollment and same-image cold handover remain
 retained evidence; their previous seed is preserved in the new handover lineage.
 The canonical policy hash is
@@ -220,8 +224,10 @@ notebook root fall back to `/home/jovyan/work`, which the Hub mounts as `emptyDi
 The persistent home PVC is mounted at `/home/jovyan`. Both default users' current
 work files have now been copied into private, hash-verified point-in-time backups
 on their persistent homes, without changing the source files or stopping kernels.
-The demo also has a persistent home copy. Future saves need the personal-only
-packaged root/CWD correction; restart remains pending. Take another current backup
+The demo also has a persistent home copy. Both Hubs now apply the personal-only
+root/CWD correction to new servers; the existing default servers retain their
+current runtime root until an approved restart. Actual temporary-server save and
+restart acceptance is next. Take another current backup
 before any approved restart. See [preservation evidence](../../platform-staging/jupyter-extensions-20261013/personal-work-preservation-actual-20261015.json).
 
 The personal notebook's startup Longhorn attachment warning recovered without
