@@ -68,6 +68,17 @@ bounded registration retry (181 relevant tests; independent focused review and
 mitigation. Durable post-CAS publication and normal Stop after mid-registration
 revocation still need a verified protocol fix; the strict custody refusal remains.
 
+The follow-up protocol is under test in the application worktree. It uses an
+immutable enrollment-slot barrier for a stopped attempt that never published an
+enrollment, and a node-produced cleanup proof before releasing capacity. The
+actual Gateway-to-node software integration now exercises Stop, proof creation,
+reservation release and readiness recovery without driver writes. Independent
+targeted verification passes 78 tests, including the established-enrollment-loss
+regression found by the broader suite. An established enrollment whose artifact
+disappears remains a hard custody failure. Same-name subsequent attempts and
+terminal-history packaging remain under review; these changes are not deployed.
+The live node remains Ready and all 93 live claims remain released.
+
 See the [active start test receipt](../../platform-staging/jupyter-extensions-20261013/native-active-start-qualification-20261016.json).
 
 See the [actual renewal adoption receipt](../../platform-staging/jupyter-extensions-20261013/native-node-renewal-adoption-20261016.json).
