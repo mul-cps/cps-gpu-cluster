@@ -34,7 +34,7 @@ def allocation_state(cm,node):
     state=agent.parse(cm['data']['state.json'])
     agent.closed(state,{'version','allocations'},'Closed full allocation state required')
     agent.require(type(state['version']) is int and state['version']==1
-        and isinstance(state['allocations'],dict) and len(state['allocations'])<=64
+        and isinstance(state['allocations'],dict) and len(state['allocations'])<=128
         and all(row.get('state')=='released' for row in state['allocations'].values()),
         'Every full original and new allocation must be released')
     verifier=object.__new__(MeasuredNativeAuthority);verifier.pool=node['pool']

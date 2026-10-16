@@ -1,0 +1,23 @@
+{
+  "allocations": 85,
+  "hardware_qualified": false,
+  "immutable_references_retrieved_live_and_verified": [
+    {
+      "data_sha256": "sha256:b67145eb1aeec583d986db76f676fc00be6a641d10ad2578c731a8ee5d2c931f",
+      "name": "cps-native-node-qualification-b67145eb1aeec583",
+      "namespace": "cps-native-system",
+      "policy_hash": "sha256:39ef15d3b5a76f96d135beb1afcd538775c64301cb51751086b44d68c54f8012",
+      "uid": "4be1ad85-9b6e-4571-af3f-3759062b1e84"
+    }
+  ],
+  "input_pins": {
+    "ledger.json": "ee0321618f8662f7391dc1a7a695c6fcc73bcf97a85c117fba4fd233186e7707",
+    "node-configmap.json": "39893298e4c41c78bd0759642346031facf4c8f5c061eedccbf8245b0f0d0d80",
+    "terminal-authority.json": "4c8828cccba6def606132d0cbe60fc38968b2859ef515a6260216cf916537d43"
+  },
+  "live_applied": false,
+  "offline_replay": true,
+  "released": true,
+  "terminal_entries": 75,
+  "version": 1
+}

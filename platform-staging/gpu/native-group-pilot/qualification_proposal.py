@@ -155,8 +155,15 @@ def _candidate_history_context():
     from current_group_historical_source import historical_validator_source
     import terminal_policy_proposal as terminal
     namespace=dict(vars(agent))
-    source=historical_validator_source(definitions(Path(agent.__file__).read_text())['validate_historical_configuration'])
+    frozen=definitions(Path(agent.__file__).read_text())
+    source=historical_validator_source(frozen['validate_historical_configuration'])
     exec(compile(source,'<existing-finite-retired-configuration-validator>','exec'),namespace)
+    history_guard="len(history) <= 64, 'Bounded explicit terminal history required'"
+    config_source=frozen['validate_config']
+    agent.require(config_source.count(history_guard)==1,'Unique exact terminal history bound required')
+    config_source=config_source.replace(history_guard,
+        "len(history) <= 128, 'Bounded explicit terminal history required'",1)
+    exec(compile(config_source,'<candidate-complete-history-validator>','exec'),namespace)
     reviewed=SimpleNamespace(**namespace)
     mapper=FunctionType(terminal.map_history.__code__,dict(terminal.map_history.__globals__,agent=reviewed))
     return reviewed,mapper

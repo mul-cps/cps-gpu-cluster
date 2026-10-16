@@ -66,7 +66,7 @@ def map_history(authority, ledger, previous_node):
     state=agent.parse(ledger.get('data',{}).get('state.json','{}'))
     agent.closed(state,{'version','allocations'},'Full closed allocation state required')
     agent.require(type(state['version']) is int and state['version']==1
-        and isinstance(state['allocations'],dict) and len(state['allocations'])<=64,
+        and isinstance(state['allocations'],dict) and len(state['allocations'])<=128,
         'Bounded complete allocation state required')
     maps=authority['authority_maps']
     agent.require(isinstance(maps,dict) and maps.get('apiVersion')=='v1'

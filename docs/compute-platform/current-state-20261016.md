@@ -72,9 +72,10 @@ do not qualify notebook531 or the full eight-GPU service.
    is now published as `dbaad518`, with legacy/candidate model checks, unchanged
    application/dependencies and no production qualification claim. Both live
    consoles still run Source51f; coherent adoption remains required.
-2. The complete 15 October capture contained 85 allocation records and 75
-   enrollments, exceeding the qualification tooling's 64-record bound. Preserve
-   full history while completing bounded support and finite restoration.
+2. Qualification history support now accepts 128 records in the offline
+   candidate and prospective Node generator; replay validated all 85 allocations
+   and 75 terminal entries without truncation. The deployed Node is unchanged.
+   Fresh CPS+CPS finite restoration and coherent deployment remain required.
 3. Execute the current-image 5+20 GiB test after those prerequisites pass.
 4. Close the API/Hera/distributed gaps, adopt the Argo revocation fix, then finish
    the scale, lifecycle, recovery and release gates above.

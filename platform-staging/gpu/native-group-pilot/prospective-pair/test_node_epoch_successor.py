@@ -243,4 +243,7 @@ def test_only_epoch_validator_and_node_history_plus_pin_change():
     assert replace_definition(EPOCH.decode(), 'node_configuration') == replace_definition(selected['native_operator_epoch.py'], 'node_configuration')
     pin = hashlib.sha256(selected['native_operator_epoch.py'].encode()).hexdigest()
     node = selected['node_agent.py'].replace(pin, EPOCH_SHA)
+    assert node.count("len(history) <= 128, 'Bounded explicit terminal history required'") == 1
+    node = node.replace("len(history) <= 128, 'Bounded explicit terminal history required'",
+        "len(history) <= 64, 'Bounded explicit terminal history required'", 1)
     assert replace_definition(BASE.decode(), 'validate_historical_configuration') == replace_definition(node, 'validate_historical_configuration')

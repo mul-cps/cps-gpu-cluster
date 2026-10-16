@@ -2,6 +2,8 @@
 import copy
 import importlib
 import json
+import hashlib
+import uuid
 import tempfile
 from pathlib import Path
 import unittest
@@ -85,3 +87,88 @@ class HistoricalAbortEpochTest(TerminalProposalTest):
             self.assertEqual(self.helper.map_history(authority,ledger,node),node['terminal_history'])
             node['terminal_history']={}
             with self.assertRaises(ValueError):self.helper.map_history(authority,ledger,node)
+
+
+class CompleteLedgerCapacityTest(TerminalProposalTest):
+    def expanded(self, root, count):
+        authority, ledger, config = self.fixture_values(root, retired=True)
+        state = json.loads(ledger['data']['state.json'])
+        original = next(iter(state['allocations'].values()))
+        for index in range(count - 1):
+            row = copy.deepcopy(original)
+            row.update(intent=None, attempt='retained-' + str(index))
+            row.pop('pre_gate_abort', None)
+            identity = {k: v for k, v in row.items() if k not in {'version', 'binding_id', 'state', 'intent'}}
+            row['binding_id'] = hashlib.sha256(self.helper.agent.canonical_json(identity).encode()).hexdigest()[:60]
+            state['allocations'][row['binding_id']] = row
+        ledger['data']['state.json'] = json.dumps(state)
+        return authority, ledger, config
+
+    def test_complete_85_and_128_record_ledger_is_not_truncated(self):
+        for count in (85, 128):
+            with self.subTest(count=count), tempfile.TemporaryDirectory() as tmp:
+                args = self.expanded(Path(tmp), count)
+                before = copy.deepcopy(args)
+                assert self.helper.map_history(*args) == args[2]['terminal_history']
+                assert args == before
+
+    def test_129_or_active_record_still_denied(self):
+        for fault in ('overflow', 'active'):
+            with self.subTest(fault=fault), tempfile.TemporaryDirectory() as tmp:
+                args = self.expanded(Path(tmp), 129 if fault == 'overflow' else 85)
+                if fault == 'active':
+                    state = json.loads(args[1]['data']['state.json'])
+                    next(iter(state['allocations'].values()))['state'] = 'enrolled'
+                    args[1]['data']['state.json'] = json.dumps(state)
+                with self.assertRaises(ValueError): self.helper.map_history(*args)
+
+    def test_inverse_accepts_complete_valid_released_ledger(self):
+        from qualification_configuration_inverse import allocation_state
+        for count in (85, 128):
+            with self.subTest(count=count), tempfile.TemporaryDirectory() as tmp:
+                _, ledger, config = self.expanded(Path(tmp), count)
+                before = copy.deepcopy(ledger)
+                result = allocation_state(ledger, config)
+                assert len(result) == count
+                assert ledger == before
+
+    def test_candidate_context_accepts_128_valid_entries_but_frozen_validator_stays_64(self):
+        from qualification_proposal import _candidate_history_context
+        with tempfile.TemporaryDirectory() as tmp:
+            _, _, config = self.fixture_values(Path(tmp), retired=True)
+            entry = next(iter(config['terminal_history'].values()))
+            config['terminal_history'] = {str(uuid.UUID(int=1000+i)): copy.deepcopy(entry) for i in range(128)}
+            with self.assertRaisesRegex(ValueError, 'Bounded explicit terminal history'):
+                self.helper.agent.validate_config(config)
+            candidate, _ = _candidate_history_context()
+            assert candidate.validate_config(config) == config
+            config['terminal_history'][str(uuid.UUID(int=9999))] = copy.deepcopy(entry)
+            with self.assertRaises(ValueError): candidate.validate_config(config)
+
+    def test_inverse_preserves_overflow_live_and_claim_checksum_checks(self):
+        from qualification_configuration_inverse import allocation_state
+        from cps_compute.native_gpu_control import NativeAuthorityError
+        for fault in ('overflow', 'active', 'checksum'):
+            with self.subTest(fault=fault), tempfile.TemporaryDirectory() as tmp:
+                _, ledger, config = self.expanded(Path(tmp), 129 if fault == 'overflow' else 85)
+                state = json.loads(ledger['data']['state.json'])
+                if fault == 'checksum':
+                    # The legacy fixture predates measured claim checksums.
+                    # Exercise the measured verifier with valid released claims.
+                    config['pool']['memory_budget_mib'] = 15360
+                    measured = {}
+                    for row in state['allocations'].values():
+                        row.update(intent=None, group_id='synthetic-group', ceiling=5120)
+                        identity = {k: v for k, v in row.items()
+                                    if k not in {'version', 'binding_id', 'state', 'intent'}}
+                        row['binding_id'] = hashlib.sha256(self.helper.agent.canonical_json(identity).encode()).hexdigest()[:60]
+                        measured[row['binding_id']] = row
+                    state['allocations'] = measured
+                    ledger['data']['state.json'] = json.dumps(state)
+                    assert len(allocation_state(ledger, config)) == 85
+                row = next(iter(state['allocations'].values()))
+                if fault == 'active': row['state'] = 'enrolled'
+                elif fault == 'checksum': row['actor'] = 'changed'
+                ledger['data']['state.json'] = json.dumps(state)
+                with self.assertRaises((ValueError, NativeAuthorityError)):
+                    allocation_state(ledger, config)

@@ -128,3 +128,29 @@ PYTHONDONTWRITEBYTECODE=1 /home/bjoern/git/cps-compute/.venv/bin/python -m pytes
   platform-staging/gpu/native-group-pilot/prospective-pair/test_node_successor.py \
   platform-staging/gpu/native-group-pilot/prospective-pair/test_node_epoch_successor.py
 ```
+
+## Complete retained history capacity (16 October 2026)
+
+The prospective Node generator and offline candidate mapper now accept at most
+128 terminal entries and 128 complete allocation records. The frozen Node8c
+source and ordinary legacy validator remain unchanged at 64 entries. The only
+additional generated Node difference is the exact terminal collection bound;
+entry validation, physical/source pins, member limits and custody checks remain
+unchanged. Overflow, active ledger records and changed claim checksums fail.
+
+An offline replay retained all 85 released allocations and 75 enrolled terminal
+entries from the 15 October capture. Its authority list omitted the referenced
+immutable configuration; the replay retrieved it read-only and verified its
+original UID and canonical data hash before validating any historical entry.
+The original capture bytes remain unchanged. This replay is not a fresh capture,
+a GPU test, a live deployment, or evidence of production qualification.
+
+The legacy configuration inverse still describes CPS+CIT qualification. This
+capacity change does not turn it into a fresh CPS+CPS pair inverse. A reviewed
+finite pair restoration path remains required before the hardware run.
+
+Validation: the native-group pilot suite passed with **631 tests and 851
+subtests**, with 14 explicitly private-input skips. The test environment uses
+the compute and Hub adapter source paths, the admin release-integration source
+and isolated `cel-python==0.4.0` test dependencies. No cluster mutation or
+hardware run was performed by this change.

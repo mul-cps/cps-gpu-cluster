@@ -132,6 +132,12 @@ def successor_source(original, contract_raw, reviewed_raw_sha256):
     after = after.replace("'cit:native-group-a': {'profile':'interactive-shared-10', 'cap_mib':10240}}", "'cit:native-group-a': {'profile':'interactive-shared-10', 'cap_mib':10240}})", 1)
     require(after != before and source.count(before) == 1, 'Unique exact validator replacement required')
     result = source.replace(before, after, 1)
+    # Change only the retained terminal collection bound; all entry validation
+    # and all unrelated workspace/member bounds remain byte-for-byte exact.
+    history_guard = "len(history) <= 64, 'Bounded explicit terminal history required'"
+    require(result.count(history_guard) == 1, 'Unique exact terminal history bound required')
+    result = result.replace(history_guard,
+        "len(history) <= 128, 'Bounded explicit terminal history required'", 1)
     compile(result, 'prospective_node_successor.py', 'exec')
     return result
 

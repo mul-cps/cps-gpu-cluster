@@ -177,7 +177,10 @@ def test_legacy_d48_behavior_and_all_other_function_bytes_are_preserved():
         return {n.name: ''.join(text.splitlines(True)[n.lineno-1:n.end_lineno]) for n in ast.parse(text).body if isinstance(n, (ast.FunctionDef, ast.ClassDef))}
     a, b = definitions(BASE), definitions(result)
     assert a.keys() == b.keys()
-    assert {name for name in a if a[name] != b[name]} == {'validate_historical_configuration'}
+    assert {name for name in a if a[name] != b[name]} == {'validate_config', 'validate_historical_configuration'}
+    assert b['validate_config'] == a['validate_config'].replace(
+        "len(history) <= 64, 'Bounded explicit terminal history required'",
+        "len(history) <= 128, 'Bounded explicit terminal history required'", 1)
 
 
 @pytest.mark.parametrize('fault', ['policy', 'history', 'workspace', 'source', 'free', 'budget', 'maximum', 'headroom', 'epoch', 'reference', 'old-policy', 'recursive'])
@@ -226,3 +229,28 @@ def test_default_and_missing_pin_do_not_read_files(monkeypatch, capsys):
     assert json.loads(capsys.readouterr().out)['state'] == 'inert'
     with pytest.raises(ValueError, match='independent'):
         module.main(['--emit', '--contract', '/must-not-read'])
+
+
+@pytest.mark.parametrize('count', [75, 85, 128])
+def test_successor_retains_complete_bounded_history_without_changing_frozen_node(count):
+    config, _, _, _, contract = fixture()
+    entry = next(iter(config['terminal_history'].values()))
+    config['terminal_history'] = {str(uuid.UUID(int=1000+i)): copy.deepcopy(entry) for i in range(count)}
+    contract['terminal_history_sha256'] = baseline.canonical_sha256(config['terminal_history'])
+    before = copy.deepcopy(config)
+    with pytest.raises(ValueError, match='Bounded explicit terminal history'):
+        baseline.validate_config(config)
+    assert successor(contract).validate_config(config) == before
+    assert config == before
+
+
+@pytest.mark.parametrize('fault', ['overflow', 'invalid-record', 'current-policy'])
+def test_successor_extended_history_still_denies_invalid_or_unbounded_history(fault):
+    config, _, _, _, contract = fixture()
+    entry = next(iter(config['terminal_history'].values()))
+    config['terminal_history'] = {str(uuid.UUID(int=1000+i)): copy.deepcopy(entry) for i in range(128)}
+    if fault == 'overflow': config['terminal_history'][str(uuid.UUID(int=9999))] = copy.deepcopy(entry)
+    elif fault == 'invalid-record': next(iter(config['terminal_history'].values()))['completion_sha256'] = 'invalid'
+    else: next(iter(config['terminal_history'].values()))['policy_hash'] = config['policy_hash']
+    contract['terminal_history_sha256'] = baseline.canonical_sha256(config['terminal_history'])
+    with pytest.raises(ValueError): successor(contract).validate_config(config)
