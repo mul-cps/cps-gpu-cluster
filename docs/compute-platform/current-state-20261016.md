@@ -100,32 +100,30 @@ originally proposed HAMi-only enforcement path. KAI placement is not evidence of
 memory isolation. Earlier measured 5/10 GiB isolation and older 5/20 GiB results
 do not qualify notebook531 or the full eight-GPU service.
 
-## Immediate remaining blockers
+## Immediate remaining production work
 
-1. The Source531 consumer blocker is cleared: both consoles now run
-   [consumer `dbaad518`](../../platform-staging/admin/qualification/compute-consumer-531-20261016/adoption-receipt.json).
-   Their live 16-module closures, matching backups and the authenticated capture
-   API passed. A fresh CPU-to-qualification Source handover adapter now passes real provider
-   and ASGI registration tests for both5 and20, retaining the frozen admin,
-   freeze, grants and storage guards. Source restoration now passes 27 application/API tests, including completed
-   enrollments, typed cleanup and retry after partial commits. A separate physical-release adapter now replays the full Node custody validator
-   in all three failure phases before producing a fresh Source proof (14 tests).
-   Wiring the actual live collector and coordinated execution remain required; image adoption does not qualify notebook531 hardware.
-2. Qualification history support now accepts 128 records in the offline
-   candidate and prospective Node generator; replay validated all 85 allocations
-   and 75 terminal entries without truncation. The deployed Node is unchanged.
-   Fresh CPS+CPS Node restoration and its UID/spec-tested Deployment inverse
-   are now implemented and CPU-tested separately from the legacy CPS+CIT path.
-   Gateway policy/runtime forward and inverse CAS planning and Node rollback
-   for unstarted, one-started and both-started cases are now CPU-tested. Integration
-   with Source handover/restoration and coherent execution
-   remains required before the hardware test. A CPS-only Hub configuration/hook
-   forward/inverse planner now projects both operator targets and image-pull owners;
-   CIT is unchanged. Qualification planning disables and restores the incompatible
-   dynamic group reader/heartbeat explicitly.
-3. Execute the current-image 5+20 GiB test after those prerequisites pass.
-4. Close the API/Hera/distributed gaps, adopt the Argo revocation fix, then finish
-   the scale, lifecycle, recovery and release gates above.
+1. Package and integrate the node lifecycle as a released application component.
+   The current `cps-compute` wheel contains transaction/approval modules, but its
+   Dockerfile starts only the gateway. Its native controller documentation still
+   explicitly requires qualification-only operation. The deployed node loop and
+   generated compatibility overlay live here in cluster staging. Hardware
+   evidence alone does not close that application/release gap. Move ownership
+   without weakening gate, cap, epoch, journal or completion checks; qualify the
+   packaged entrypoint against the current full retained state before adoption.
+2. Replace finite policy/physical-scope patches and manual exact Pod/ReplicaSet
+   RBAC refreshes with the released controller lifecycle. Introduce reviewed
+   archival/migration so retained history and the allocation ledger do not reach
+   their128-record limits. The current92 allocations/82 terminal records remain
+   complete; do not truncate them to make a deployment pass.
+3. Finish current-image10GiB/all intended GPUs and runtime variants, automatic
+   MPS lifecycle, and the live workspace/reservation/revocation matrix. Current
+   GPU2 5/20GiB evidence is now complete for the listed isolation probes; no-MIG
+   dynamic sharing remains the selected approach.
+4. Close the API/Hera/distributed gaps, adopt and qualify Argo OAuth revocation,
+   then finish scheduling/scale, observability, connected/off-host recovery and
+   pilot/RC/production releases against the full plan table above. Apply the
+   agreed lifetime catalog through the supported policy migration, not a live
+   edit that invalidates existing grants or retained provenance.
 
 Moodle stays planned, disabled and inert, with local management active. Email
 verification is optional. Direct university Keycloak awaits ICT registration;
