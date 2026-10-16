@@ -146,17 +146,9 @@ def successor_source(original, contract_raw, reviewed_raw_sha256):
                      ("len(raw) <= 32768, 'Oversized node config'", "len(raw) <= 262144, 'Oversized node config'")]:
         require(reader_after.count(old) == 1, 'Unique exact operator file size guard required')
         reader_after = reader_after.replace(old, new, 1)
-    original_return = '        return validate_config(parse(raw))'
-    require(reader_after.count(original_return) == 1, 'Unique exact operator reader validation required')
-    reader_after = reader_after.replace(original_return, f"""        config = validate_config(parse(raw))
-        # Full preserved history may exceed the legacy 32 KiB file limit.
-        # Only the independently pinned pair receives the larger bound.
-        require(len(raw) <= 32768 or (config['mode'] == 'operator-qualification'
-            and config['policy_hash'] == {contract['policy_hash']!r}
-            and config['workspaces'] == {contract['workspaces']!r}
-            and canonical_sha256(config['terminal_history']) == {contract['terminal_history_sha256']!r}),
-            'Oversized node config outside reviewed pair')
-        return config""", 1)
+    # Both the qualification and restored baseline retain the same bounded
+    # terminal history. Size is a parser bound, not a policy authorization:
+    # every configuration still passes the unchanged semantic validators.
     require(result.count(reader_before) == 1, 'Unique exact operator configuration reader required')
     result = result.replace(reader_before, reader_after, 1)
     historical = next(n for n in ast.parse(result).body if isinstance(n, ast.FunctionDef)

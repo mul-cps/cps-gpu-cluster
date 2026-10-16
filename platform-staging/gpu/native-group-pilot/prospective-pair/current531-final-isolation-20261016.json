@@ -1,0 +1,106 @@
+{
+  "checks": {
+    "baseline_restore": {
+      "all_92_allocations_released": true,
+      "complete_gateway_hub_source_configuration_restored": true,
+      "native_active_entries": 0,
+      "native_used_bytes": 0,
+      "node_reader_only_fix": true,
+      "passed": true,
+      "personal_pod_uids_preserved": true,
+      "production_qualified": false,
+      "terminal_records_retained": 82
+    },
+    "device_filter": {
+      "caps_mib": [
+        5120,
+        20480
+      ],
+      "only_assigned_gpu_exposed": true,
+      "passed": true,
+      "production_qualified": false,
+      "visibility_environment_not_required": true
+    },
+    "managed_allocation": {
+      "caps_mib": [
+        5120,
+        20480
+      ],
+      "managed_memory_denied_code": 801,
+      "ordinary_kernels_survive": true,
+      "passed": true,
+      "production_qualified": false,
+      "unexpected_success_never_touched": true
+    },
+    "mps20": {
+      "independent_host_parent_attribution": true,
+      "mps_cap_mib": 20480,
+      "mps_clients": 2,
+      "ordinary_aggregate_oom_code": 2,
+      "parent_caps_continuously_exact": true,
+      "passed": true,
+      "peer_cap_mib": 5120,
+      "peer_progress_spans_oom_recovery": true,
+      "private_daemon_cleanup": true,
+      "production_qualified": false,
+      "recovery_clients": 2
+    },
+    "unprivileged_limits": {
+      "cuda_allocations": false,
+      "driver_limits_unchanged": true,
+      "effective_capabilities": 0,
+      "gid": 100,
+      "no_permission_code": 4,
+      "passed": true,
+      "production_qualified": false,
+      "targets": 2,
+      "uid": 1000
+    },
+    "vmm": {
+      "cross_parent_vmm_fd_denial_code": 800,
+      "directions": 2,
+      "endpoint_cleanup": true,
+      "fd_and_witness_cleanup": true,
+      "kernel_witness_correlated": true,
+      "no_mount_or_driver_changes": true,
+      "passed": true,
+      "production_qualified": false,
+      "same_parent_positive_controls": true
+    }
+  },
+  "cpu_tests": {
+    "passed": 886,
+    "skipped": 14,
+    "subtests_passed": 880
+  },
+  "date": "2026-10-16",
+  "evidence_sha256": {
+    "baseline_restore": "e8d1814a1c806e1d2854f9bc0a272572cdcf87269818c0608e29c066057d9ad6",
+    "cpu_registration": "e2518abde3ef6e3ff3cc3e7c477609c68e903c6016bca154d8ad23447984b917",
+    "device_filter": "ff32cbdda5cc44081c0f5a882fdd755e17e73623650bc54ff81252804d15b1b8",
+    "managed_allocation": "310b45647965a2523ca6c8a6d36bc7194fe120bd9865d6b7e5175de72f0a1fed",
+    "mps20": "258daf6c4fc2aeff3e1522761f37315c0274af4763a08b24644a93d385e3d0d2",
+    "node_reader": "7c6831c2fb430d71e98c198cd06bc19c02384b0ed806ffc9e17fc5ee9392d788",
+    "unprivileged_limits": "fa5a5744bbafc39a019c5a656a989d08705da77b3f6191af0196a5b807bb3bf0",
+    "vmm": "e1759934793f50303211bb2037d047b6a93f9a72bca273e7c64616e811ec2691"
+  },
+  "production_qualified": false,
+  "remaining": [
+    "Current-image 10 GiB and other physical GPUs/runtime images",
+    "Released generic policy/controller lifecycle and bounded history archival",
+    "Automatic MPS service lifecycle and simultaneous independent MPS parents",
+    "Normal user GPU rollout and full shared-workspace revocation/lifecycle matrix",
+    "Scheduling, scale, restore, monitoring and release acceptance gates"
+  ],
+  "scope": {
+    "caps_mib": [
+      5120,
+      20480
+    ],
+    "driver": "615.71.09",
+    "gpu_uuid": "GPU-16128952-b438-556a-00bb-93039ee24e56",
+    "node": "k3s-wk-gpu2",
+    "workload_image": "ghcr.io/mul-cps/cps-jupyter-notebook@sha256:531027c8e330d4ce818598e998a29d502433e9064f06a32dfc208a06ef2d0ba4"
+  },
+  "version": 1
+}

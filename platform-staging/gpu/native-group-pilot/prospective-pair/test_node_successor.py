@@ -267,11 +267,14 @@ def test_generated_entrypoint_reads_bounded_full_history_configuration(tmp_path,
   with pytest.raises(ValueError):node.read_config(path,trusted_uid=os.getuid())
 
 
-def test_larger_reader_bound_does_not_expand_unreviewed_legacy_configurations(tmp_path):
+def test_baseline_restore_reads_retained_history_with_same_bounded_reader(tmp_path):
  import os
  import test_gateway_transition as gateway
  _,_,_,_,contract=fixture();raw=json.dumps(contract,sort_keys=True,separators=(',',':')).encode();pin=hashlib.sha256(raw).hexdigest()
  node=loaded(generator().successor_source(BASE,raw,pin),'legacy_large_file_guard')
  config=gateway.fixture()['originals']['node_config']
  path=tmp_path/'legacy.json';path.write_text(' '*40000+json.dumps(config));path.chmod(0o400)
- with pytest.raises(ValueError,match='outside reviewed pair'):node.read_config(path,trusted_uid=os.getuid())
+ assert node.read_config(path,trusted_uid=os.getuid()) == config
+ config['pool']['memory_budget_mib'] = -1
+ path.chmod(0o600);path.write_text(' '*40000+json.dumps(config));path.chmod(0o400)
+ with pytest.raises(ValueError):node.read_config(path,trusted_uid=os.getuid())

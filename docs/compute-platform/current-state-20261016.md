@@ -4,6 +4,38 @@ The platform remains **limited-pilot**. Production qualification and the full
 project are unfinished. This record supersedes current-state statements in the
 older completion ledger; their dated acceptance results remain historical evidence.
 
+## Latest verified checkpoint
+
+The current notebook531 image passed GPU2 5/20 GiB ordinary PyTorch OOM/recovery,
+restart/reacquisition, bidirectional CUDA IPC and VMM/POSIX-FD isolation, and
+private MPS aggregate OOM/recovery with cleanup. VMM same-parent controls passed;
+both cross-parent imports returned CUDA800 with correlated kernel denials.
+Unprivileged NVML quota changes returned NO_PERMISSION; managed allocation was
+rejected with CUDA801; removing visibility environment variables still exposed
+only the assigned GPU. This is measured scope, not full production approval.
+
+Both QA workspaces are stopped CPU workspaces with GPU grants removed. All92
+allocations are released, all82 terminal records retained, native active entries
+and charged bytes are zero, and four personal Pod UIDs are unchanged. Full
+Gateway/Hub/Source specs and policy/runtime/Hub Secret data were restored. Both
+consoles, gateway, Hub and node agent are ready; the node progressed beyond its
+first reconciliation iteration. CPU registrations were reconciled through the
+normal owning-console API without changing workspace rows; its token was revoked.
+
+Restoration exposed a32 KiB reader guard that covered the temporary policy but
+not its growing baseline history. The generated reader now applies the same
+256 KiB bound to every semantically valid configuration, with unchanged0400,
+owner, no-symlink, link-count, policy, cap and provenance checks. A regression
+reproduced the failure before the fix. The combined suite passed886 tests and880
+subtests, with14 skipped. No driver, MIG or hardware settings changed.
+
+The immediate work is released controller/policy/admin integration and the
+remaining lifecycle, all-runtime/all-GPU, scheduling, recovery and release gates.
+Avoid extending one-off qualification as a substitute for that integration.
+See the [final current-image isolation receipt](../../platform-staging/gpu/native-group-pilot/prospective-pair/current531-final-isolation-20261016.json).
+The dated sections below preserve the earlier sequence and its then-open gates;
+this checkpoint supersedes their current-status claims.
+
 ## Verified deployment and recovery
 
 Gateway `9e695015` from compute source `de90610f` is now deployed. Both Hubs
@@ -49,7 +81,7 @@ for immutable image identifiers, journal/plan hashes and evidence boundaries.
 | Ownership and policy | Separate application/deployment repositories and shared policy | Integrate and promote a complete tested consumer matrix |
 | Hubs and consoles | Stable baseline, two persistent consoles, local management APIs/UI | Complete current-release identity/group migration, instructor boundaries, grant expiry/login survival |
 | Identity and sharing | Reviewed aliases; live retained student sessions preserve visitor identity and exact personal-server sharing | CIT Mikasa/Armin mapping, full directory coverage, removal of existing connections |
-| Dynamic GPU groups | Historical bounded native R615/cgroup isolation; current 5 GiB group Start and cap assignment restored | Current 5/20 GiB qualification, broader packing and all runtime variants; no MIG |
+| Dynamic GPU groups | Historical bounded native R615/cgroup isolation; current 5 GiB group Start and cap assignment restored | Released integration, current 10 GiB/all GPUs/runtime variants and broader packing; no MIG |
 | Shared reservations | Historical cross-Hub contention/retry; current three-member reservation | Live different-member partial-conflict rollback and full lifecycle/revocation matrix |
 | Account/session APIs | All six API families, grants and pooled allowance | Effective permission/membership information and live allocation, age, idle/lifetime projection |
 | SDK and notebook jobs | Actual CPS CPU success/failure, parameters, helper files, logs, executed artifacts and ownership checks | Current GPU/shared-kernel/CIT matrix |
@@ -341,3 +373,11 @@ Gateway/Hub specs and policy/runtime/Hub Secret data, both ready Source consoles
 and all four personal Pod UIDs were restored. CPU registration reconciliation
 after policy restoration uses the normal profile API; workspace rows remain
 unchanged. Broad GPU access and full production qualification remain disabled.
+
+## Third current531 cycle and completed isolation checks
+
+The latest checkpoint and final receipt above close the earlier20GiB MPS cleanup
+and VMM import gates. The restoration reader fix changes only file-size handling,
+not semantic authorization. The retained terminal archive now has82 records.
+The production qualification flag remains false; ordinary broad GPU rollout is
+not implied by operator-only qualification.
