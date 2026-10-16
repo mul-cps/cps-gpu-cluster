@@ -123,3 +123,21 @@ reviewed16-module Source531 closure. The native ledger has86 allocations, one
 active; the controlled running group must be normally stopped in the coordinated
 transition before a zero-charge proof or qualification handover is valid.
 No current-image GPU qualification was performed by this renewal.
+
+## Latest controlled shutdown and release baseline
+
+The controlled shared-gpu-lab workspace is now **stopped**, superseding the
+earlier Running state above. Normal Source Stop initially returned409 during
+cleanup; actual Pod disappearance, native cleanup and inactive reservations were
+read back before a second normal Stop returned200/stopped. Both temporary tokens
+were revoked. All four personal-server Pod UIDs present at operation start were
+preserved. Actual post-stop device observation shows zero active entries, zero
+charge and all86 ledger claims released.
+
+Full inventory reconciliation now checks65 finite retirements, one existing
+authenticated recovery and12 explicitly pinned unattributed default rows. Those
+12 complete rows were unchanged since the previous evening in the same epoch;
+they cannot replace workflow evidence or admit unknown additions. The new helper
+passes13 focused tests and the full pilot suite passes768 tests/851 subtests
+(14 skipped). No notebook531 handover or current5+20 hardware test is claimed.
+Fresh full custody collection and coordinated transition remain the next steps.
