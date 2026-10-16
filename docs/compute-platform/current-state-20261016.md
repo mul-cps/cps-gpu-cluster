@@ -281,8 +281,14 @@ artifact was corrected and its full script executed successfully on CPU before
 retry. The first custody snapshot then failed because a shared validator imported
 FastAPI, excluded from the node-only image. No cap mutation path was reached.
 The candidate is now stopped (replicas zero), readiness withdrawn and GPU starts
-fenced while the lazy web dependency boundary and installed-node runtime test
-are fixed. This is not successful adoption or GPU qualification.
+fenced pending adoption of the corrected runtime artifact. Commit
+`c162e5893285392c2a24a59ad0abbf1867d969e8` defers web imports until HTTP route
+installation or actor checks; no web dependencies were added to the node image.
+Its exact full suite passed 2,747 tests and 68 subtests (six skipped). Two actual
+installed-node-only custody tests and the real 82-lifetime archive replay passed
+with 30 installed distributions and no web extras; lean SDK/node checks and
+byte-identical sdist rebuild passed. CI run 38955639154 and the corrected image
+build are in progress. This is not successful live adoption or GPU qualification.
 
 All 26 existing Hub Pod UIDs remain unchanged. A separate read-only controlled
 Job verified all 401 original protected files against their recorded hashes,

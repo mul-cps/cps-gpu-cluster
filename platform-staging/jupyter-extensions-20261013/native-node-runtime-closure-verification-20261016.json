@@ -1,0 +1,32 @@
+{
+  "application_commit": "c162e5893285392c2a24a59ad0abbf1867d969e8",
+  "ci_run": 38955639154,
+  "ci_status": "in_progress",
+  "gateway_routes_unchanged_and_tested": true,
+  "installed_node_distributions": 30,
+  "installed_node_only_snapshot_tests_passed": 2,
+  "installed_node_verification_passed": true,
+  "lazy_http_import_boundary_review": "clear",
+  "lean_sdk_verification_passed": true,
+  "live_custody_acknowledged": false,
+  "local_tests": {
+    "passed": 2747,
+    "skipped": 6,
+    "subtests_passed": 68
+  },
+  "old_image_failure_reproduced": true,
+  "private_actual_replay": {
+    "authority_objects": 170,
+    "auxiliaries": 5,
+    "basis_sha256": "sha256:1faaefb088388d6cbe0a6033d8e0e3cd7efc95a33d71a717a1d75eb8fe624f4e",
+    "never_enrolled_claims": 10,
+    "released_claims": 92,
+    "terminal_lifetimes": 82
+  },
+  "production_qualified": false,
+  "sdist_rebuild_byte_identical": true,
+  "source_test_log_sha256": "f5c6e4e5d0d29dea67cffef5d67023e3805b8b6b79c82a099acdb91e1bd2eae1",
+  "version": 1,
+  "web_extras_absent": true,
+  "wheel_sha256": "313f2cd976029525a0c26a6995ef4f8c5c78d5df72c0733e412f68588a16651a"
+}
