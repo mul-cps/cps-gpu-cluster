@@ -45,6 +45,18 @@
       "uid": "ec618152-9b9b-4d0b-90cb-56672c1789e9"
     }
   },
+  "installed_gateway_consumer": {
+    "component_count": 4,
+    "module": "/usr/local/lib/python3.12/site-packages/cps_compute/runtime.py",
+    "module_sha256": "70dacbbb26efb8a524e99393393827989e7786b5c259be8bffd3a3111cc52a62",
+    "observed_at": "2026-10-16T21:16:42.177516+00:00",
+    "policy_hash": "sha256:d48f6553ed036c2e7adcc97417623fe0308be93ad13b20f246047ada118511b0",
+    "released_consumer_call": true,
+    "released_consumer_observe": true,
+    "revision": "sha256:5517ea8f342ecbb6b4ed817aa9b0ca5788984217e46e4ba90b5707cee509b427",
+    "state": "ready",
+    "ttl_seconds": 60
+  },
   "observed_at": "2026-10-16T21:16:17.384292+00:00",
   "preservation": {
     "cit": {
@@ -62,7 +74,6 @@
     "cps": "passed in actual Hub container"
   },
   "remaining": [
-    "released consumer readiness validation",
     "controlled active-group start, cap, renewal, stop and cleanup",
     "full production acceptance and release gates"
   ],

@@ -26,11 +26,14 @@ Gateway and both Hubs from the same source are now **deployed and healthy**,
 with unchanged Hub 5.5.2/KubeSpawner 7.1.0 and no Hub dependency upgrades. Their
 version-3 proof/current approval configuration and exact new process observation
 permissions are installed. All four components publish fresh acknowledgments for
-approval `5517ea8f…b427` within the unchanged 30-second TTL, with zero restarts.
+approval `5517ea8f…b427`, observed less than 30 seconds old, with zero restarts.
 Both actual Hub containers passed the protected qualification-reference check as
 UID1000. All 24 non-Hub Pods, including four existing user servers, retain their
-identities. Released consumer readiness and controlled active-group cadence,
-start/cap/stop cleanup and end-to-end qualification are the next gates. Quiescent
+identities. The installed Gateway consumer's `observe()` and a separate fresh
+read both passed actual process ownership, images, epoch and all four current
+acknowledgments (its configured TTL is 60 seconds; the node renewal gate remains
+30 seconds). Controlled active-group cadence, start/cap/stop cleanup and
+end-to-end qualification are the next gates. Quiescent
 success does not prove active GPU-group behavior or production readiness.
 
 See the [peer promotion receipt](../../platform-staging/jupyter-extensions-20261013/native-peer-promotion-20261016.json).
