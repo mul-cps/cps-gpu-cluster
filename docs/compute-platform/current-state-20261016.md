@@ -47,6 +47,24 @@ above. Failed-spawn ghost-state recovery, independent peer isolation,
 MPS and the broader production gates remain unqualified. No MIG, driver change,
 GPU reset or reboot was performed.
 
+## Same-workspace aggregate allocation qualification
+
+The [trusted raw CUDA probe and receipt](../../qualification-artifacts/native-parent-aggregate-20261017/README.md)
+passed on a fresh normally started 5 GiB workspace. Two distinct child processes
+used direct libcuda allocations with full writes, synchronization and readback.
+With process A holding 2 GiB, B reached 2 GiB before typed driver OOM. After A
+reduced its allocation to 256 MiB, B reached 3.75 GiB before another typed OOM.
+A continued CUDA heartbeat/readback through both OOM windows. Both children
+exited 0, and cleanup completed in 32.82 seconds.
+
+Six independent host samples confirmed the unchanged 5 GiB sealed cap, charged
+usage of 5,163,403,648 bytes at both OOM holds, more than 34 GiB physical free
+memory throughout, and zero charged usage after child cleanup. Normal Stop then
+returned 200, removed the Pod and released all 97 native claims. The one-hour
+test token was revoked and removed locally. This establishes ordinary same-Pod
+allocation aggregation only; independent Pod isolation, VMM/managed/import routes
+and MPS remain unqualified.
+
 ## Previous checkpoint — packaged node renewal (16 October)
 
 Released application source `f67224e06cd152a8c554822ddb0738685e291995` was deployed

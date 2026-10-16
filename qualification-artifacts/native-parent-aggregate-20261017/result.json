@@ -1,0 +1,164 @@
+{
+  "probe_sha256": "a99361ffa34fe6c38ddfd44b0273c0717874ab3efdd3fa6bb9b3b9f9dc4e6f76",
+  "result": {
+    "event": "probe-passed",
+    "time_ns": 1792195092192825078,
+    "monotonic_ns": 8832458470706058,
+    "pod_uid": "7751a64d-58b8-4fae-8daa-1103e7619a46",
+    "first_b_peak_bytes": 2147483648,
+    "second_b_peak_bytes": 4026531840,
+    "typed_driver_oom_results": [
+      2,
+      2
+    ],
+    "sibling_progress": true,
+    "elapsed_seconds": 32.48221823014319,
+    "scope": "same-Pod ordinary CUDA allocation accounting",
+    "independent_physical_free_gt6GiB_witness_required": true,
+    "vmm_qualified": false,
+    "managed_qualified": false,
+    "cross_pod_qualified": false,
+    "production_qualified": false
+  },
+  "host_sample_count": 6,
+  "returncode": 0,
+  "source": "7273ad70c497cafcd7116867343a4b5ae9b6909c",
+  "host_samples": [
+    {
+      "checkpoint": "before",
+      "cap": {
+        "at": "2026-10-16T23:57:39.434865+00:00",
+        "pod_uid": "7751a64d-58b8-4fae-8daa-1103e7619a46",
+        "state": "sealed",
+        "soft": 5368709120,
+        "hard": 5368709120,
+        "used": 0,
+        "journal_unchanged": true,
+        "read_only": true
+      },
+      "physical": {
+        "physical_total": 42949672960,
+        "physical_free": 42436526080,
+        "physical_used": 513146880,
+        "gpu_uuid": "GPU-16128952-b438-556a-00bb-93039ee24e56"
+      }
+    },
+    {
+      "checkpoint": "a2GiB-b256MiB",
+      "cap": {
+        "at": "2026-10-16T23:57:40.523834+00:00",
+        "pod_uid": "7751a64d-58b8-4fae-8daa-1103e7619a46",
+        "state": "sealed",
+        "soft": 5368709120,
+        "hard": 5368709120,
+        "used": 3284355456,
+        "journal_unchanged": true,
+        "read_only": true
+      },
+      "physical": {
+        "physical_total": 42949672960,
+        "physical_free": 39133118464,
+        "physical_used": 3816554496,
+        "gpu_uuid": "GPU-16128952-b438-556a-00bb-93039ee24e56"
+      }
+    },
+    {
+      "checkpoint": "aggregate-driver-OOM-both-held",
+      "cap": {
+        "at": "2026-10-16T23:57:48.718341+00:00",
+        "pod_uid": "7751a64d-58b8-4fae-8daa-1103e7619a46",
+        "state": "sealed",
+        "soft": 5368709120,
+        "hard": 5368709120,
+        "used": 5163403648,
+        "journal_unchanged": true,
+        "read_only": true
+      },
+      "physical": {
+        "physical_total": 42949672960,
+        "physical_free": 37254070272,
+        "physical_used": 5695602688,
+        "gpu_uuid": "GPU-16128952-b438-556a-00bb-93039ee24e56"
+      }
+    },
+    {
+      "checkpoint": "b-free-recovery-a-still2GiB",
+      "cap": {
+        "at": "2026-10-16T23:57:56.519324+00:00",
+        "pod_uid": "7751a64d-58b8-4fae-8daa-1103e7619a46",
+        "state": "sealed",
+        "soft": 5368709120,
+        "hard": 5368709120,
+        "used": 3284355456,
+        "journal_unchanged": true,
+        "read_only": true
+      },
+      "physical": {
+        "physical_total": 42949672960,
+        "physical_free": 39133118464,
+        "physical_used": 3816554496,
+        "gpu_uuid": "GPU-16128952-b438-556a-00bb-93039ee24e56"
+      }
+    },
+    {
+      "checkpoint": "a256MiB-b-larger-second-OOM",
+      "cap": {
+        "at": "2026-10-16T23:58:04.807568+00:00",
+        "pod_uid": "7751a64d-58b8-4fae-8daa-1103e7619a46",
+        "state": "sealed",
+        "soft": 5368709120,
+        "hard": 5368709120,
+        "used": 5163403648,
+        "journal_unchanged": true,
+        "read_only": true
+      },
+      "physical": {
+        "physical_total": 42949672960,
+        "physical_free": 37254070272,
+        "physical_used": 5695602688,
+        "gpu_uuid": "GPU-16128952-b438-556a-00bb-93039ee24e56"
+      }
+    },
+    {
+      "checkpoint": "after",
+      "cap": {
+        "at": "2026-10-16T23:58:12.907011+00:00",
+        "pod_uid": "7751a64d-58b8-4fae-8daa-1103e7619a46",
+        "state": "sealed",
+        "soft": 5368709120,
+        "hard": 5368709120,
+        "used": 0,
+        "journal_unchanged": true,
+        "read_only": true
+      },
+      "physical": {
+        "physical_total": 42949672960,
+        "physical_free": 42436526080,
+        "physical_used": 513146880,
+        "gpu_uuid": "GPU-16128952-b438-556a-00bb-93039ee24e56"
+      }
+    }
+  ],
+  "children_cleanup": {
+    "event": "children-cleaned",
+    "time_ns": 1792195092527946810,
+    "monotonic_ns": 8832458805828261,
+    "returncodes": {
+      "a": 0,
+      "b": 0
+    },
+    "cleanup_failures": [],
+    "elapsed_seconds": 32.817338889464736
+  },
+  "raw_stdout_sha256": "c740642279b7ae8059ac242d0ecdb972e04ee01e29557c44996850e318ccde29",
+  "raw_event_count": 263,
+  "scope": "ordinary CUDA allocations across two processes in one pre-capped Pod",
+  "production_ready": false,
+  "normal_stop": {
+    "http": 200,
+    "pod_absent": true,
+    "claims": 97,
+    "all_released": true,
+    "test_token_revoked": true
+  }
+}
