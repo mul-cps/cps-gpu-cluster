@@ -1,8 +1,21 @@
 {
   "api_list_pages": 3,
   "application_commit": "003e0334399dec5e696c00a57f76df7f6bb3d8cd",
+  "ci_conclusion": "success",
+  "ci_jobs": {
+    "build": "success",
+    "installed-lab (4.5.7)": "success",
+    "installed-lab (4.6.4)": "success",
+    "installed-sdk-hub": "success"
+  },
   "ci_run": 38941964491,
-  "ci_status": "in_progress",
+  "ci_status": "completed",
+  "ci_tests": {
+    "passed": 2682,
+    "python": "3.12",
+    "skipped": 7,
+    "subtests_passed": 68
+  },
   "continuous_daemon": false,
   "deployment_adopted": false,
   "driver_changes": false,
@@ -18,6 +31,7 @@
     "skipped": 6,
     "subtests_passed": 68
   },
+  "private_ci_log_sha256": "35d13034f468dab3772270bbf647872bc879fca76f1e254a26a339cdfd410863",
   "production_qualified": false,
   "sdist_rebuild_byte_identical": true,
   "source_test_log_sha256": "1fdde7ec4799454af961b6bd8e6b50478983caee0214388dd49d104fb53abdd2",

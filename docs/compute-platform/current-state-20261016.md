@@ -150,7 +150,9 @@ records and released claims over three API pages/two immutable index pages.
 Missing pages, journal changes, completion replacement, changed epoch and
 advanced approval block acknowledgment and further cap writes.
 [CI run 38941964491](https://github.com/mul-cps/cps-compute/actions/runs/38941964491)
-is in progress. See the [verification receipt](../../platform-staging/jupyter-extensions-20261013/native-node-service-verification-20261016.json).
+passed all four jobs: build, installed SDK/Hub and installed Lab 4.5.7/4.6.4.
+The CI Python 3.12 suite passed 2,682 tests and 68 subtests, with seven skipped.
+See the [verification receipt](../../platform-staging/jupyter-extensions-20261013/native-node-service-verification-20261016.json).
 
 This is a one-iteration qualification service, not a production rollout.
 Continuous daemon operation, actual legacy-format migration (including original
