@@ -123,6 +123,41 @@ Its Python 3.12 suite passed 2,637 tests and 68 subtests, with seven skipped.
 No deployment or hardware setting changed. Complete custody,
 service execution, migration and released-image live qualification remain open.
 
+## Packaged one-iteration node service
+
+Application commit `003e0334399dec5e696c00a57f76df7f6bb3d8cd` packages the real
+node reconciliation service, complete paginated custody consumer, protected
+terminal-history verifier and explicit operator bootstrap. It uses the existing
+controller/journal and packaged backend rather than a substitute execution path.
+A separate iteration lock prevents interleaving. Durable prior readiness is
+invalidated before configuration/proof loading, including service reconstruction
+and CLI startup. Released rows cannot execute; verified scope revocation targets
+only the protected original Pod UID and retains capacity until confirmed stop.
+Unchanged sealed lifetimes survive unrelated approval changes.
+
+The full isolated source suite passed 2,683 tests and 68 subtests (six skipped).
+Independent review found no remaining runtime blocker in this bounded unit.
+A test portability correction was then retested with both actual module entry
+points and no inherited source path. Installed lean SDK/node checks, dependency
+checks and inert installed CLI startup passed. Wheel rebuilding from the source
+distribution was byte-identical, SHA-256
+`3f67f30fa1e1dd10c8b48bf068b9b43d3ecef77eb36a482b05bda83b8cc796a3`.
+
+The integration matrix uses actual protected files, controller, journal,
+process/health/CDI checks and fake API/CRI/NVML boundaries. It includes a complete
+lifetime and 129 original terminal journals, enrollments, intents, completion
+records and released claims over three API pages/two immutable index pages.
+Missing pages, journal changes, completion replacement, changed epoch and
+advanced approval block acknowledgment and further cap writes.
+[CI run 38941964491](https://github.com/mul-cps/cps-compute/actions/runs/38941964491)
+is in progress. See the [verification receipt](../../platform-staging/jupyter-extensions-20261013/native-node-service-verification-20261016.json).
+
+This is a one-iteration qualification service, not a production rollout.
+Continuous daemon operation, actual legacy-format migration (including original
+never-enrolled released claims), immutable image/RBAC/GitOps adoption and live
+qualification of these artifacts remain open. No deployment, GPU or driver
+setting changed in this package verification.
+
 ## Verified deployment and recovery
 
 Gateway `9e695015` from compute source `de90610f` is now deployed. Both Hubs

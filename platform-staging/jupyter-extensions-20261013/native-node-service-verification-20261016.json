@@ -1,0 +1,26 @@
+{
+  "api_list_pages": 3,
+  "application_commit": "003e0334399dec5e696c00a57f76df7f6bb3d8cd",
+  "ci_run": 38941964491,
+  "ci_status": "in_progress",
+  "continuous_daemon": false,
+  "deployment_adopted": false,
+  "driver_changes": false,
+  "final_cli_portability_cases_passed": 2,
+  "focused_service_bootstrap_custody_history_import_cases_passed": 46,
+  "gpu_execution": false,
+  "historical_terminal_lifetimes_verified": 129,
+  "immutable_index_pages": 2,
+  "installed_inert_cli_verified": true,
+  "installed_lean_node_sdk_verified": true,
+  "local_tests": {
+    "passed": 2683,
+    "skipped": 6,
+    "subtests_passed": 68
+  },
+  "production_qualified": false,
+  "sdist_rebuild_byte_identical": true,
+  "source_test_log_sha256": "1fdde7ec4799454af961b6bd8e6b50478983caee0214388dd49d104fb53abdd2",
+  "version": 1,
+  "wheel_sha256": "3f67f30fa1e1dd10c8b48bf068b9b43d3ecef77eb36a482b05bda83b8cc796a3"
+}
