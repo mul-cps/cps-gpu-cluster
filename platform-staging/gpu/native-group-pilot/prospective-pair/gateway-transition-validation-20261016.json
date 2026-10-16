@@ -1,0 +1,24 @@
+{
+  "focused_tests_passed": 48,
+  "hardware_qualified": false,
+  "live_applied": false,
+  "observed_at": "2026-10-16T09:54:24.874580+00:00",
+  "original_policy_terminal_history_retained": true,
+  "restoration_phases": [
+    "unstarted",
+    "partial",
+    "complete"
+  ],
+  "source_hub_coordinated_execution_complete": false,
+  "source_sha256": {
+    "configuration_inverse.py": "38f7df9e5929351486df35fba770d74f020c659ccddbbf652b0aa3f51f4e8132",
+    "gateway_transition.py": "0380340c998bf934246999d7470b17ecf5128ba863ae77025b2c435a7522b9f5",
+    "test_configuration_inverse.py": "2406b539af62b69266113bb7e6d2bcd7679468c10f8d3f9723c062f42b8337c5",
+    "test_gateway_transition.py": "3f9d1c74377303e18cba2a32097335fc2d0621db0f9a349eff91c6f89556b3ed"
+  },
+  "suite_skipped": 14,
+  "suite_subtests_passed": 851,
+  "suite_tests_passed": 679,
+  "test_log_sha256": "4817db36c32c509451d1693e2caf91c2f8b88664516edae39999248e8fddb2ad",
+  "version": 1
+}

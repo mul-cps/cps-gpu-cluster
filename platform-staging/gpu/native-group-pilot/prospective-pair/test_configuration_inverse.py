@@ -98,9 +98,12 @@ def fixture(retained=True):
             ledger['data']['state.json']=terminal.canonical(state)
         if historical:
             baseline = dict(authority=copy.deepcopy(authority),ledger=copy.deepcopy(ledger),history=copy.deepcopy(history),physical=copy.deepcopy(physical))
+            current['terminal_history'] = terminal.map_history(authority,ledger,original)
+            contract['terminal_history_sha256'] = terminal.agent.canonical_sha256(current['terminal_history'])
         else:
             claims.append({k:copy.deepcopy(identity[k]) for k in custody.IDENTITY})
     final = dict(authority=authority,ledger=ledger,history=history,physical=physical,pods=dict(apiVersion='v1',kind='PodList',metadata={},items=[]))
+    current_cm['data']['config.json'] = terminal.canonical(current)
     approval = dict(version=1, original_data_sha256=terminal.agent.canonical_sha256(original_cm['data']),
         current_data_sha256=terminal.agent.canonical_sha256(current_cm['data']),
         baseline_ledger_sha256=pin(baseline['ledger']['data']['state.json'].encode()), claims=claims)
@@ -210,3 +213,57 @@ def test_node_handover_rejects_drift_outside_exact_two_reference_changes(fault):
     elif fault=='config': args['current_deployment']['spec']['template']['spec']['volumes'][1]['configMap']['name']='foreign'
     else: args['current_code']['immutable']=False
     with pytest.raises(ValueError): module().derive_node_handover_inverse(**args)
+
+
+def unstarted_fixture():
+    args=fixture()
+    args['final']={k:copy.deepcopy(v) for k,v in args['baseline'].items()}
+    args['final']['physical']['observed_at_ns']=2
+    args['final']['pods']=dict(apiVersion='v1',kind='PodList',metadata={},items=[])
+    return args
+
+
+def test_unstarted_inverse_restores_exact_original_without_inventing_pair_lifetimes():
+    args=unstarted_fixture();inverse=module()
+    assert hasattr(inverse,'derive_unstarted_node_inverse'), 'Pre-start pair unwind is required'
+    result=inverse.derive_unstarted_node_inverse(**args)
+    assert result['node-config.json']==json.loads(args['original']['data']['config.json'])
+    assert len(result['full-terminal-authority-archive.json'])==1
+    assert result['live_applied'] is result['hardware_qualified'] is False
+
+
+def test_unstarted_inverse_cannot_be_used_after_either_new_claim_exists():
+    args=fixture();inverse=module()
+    assert hasattr(inverse,'derive_unstarted_node_inverse'), 'Pre-start pair unwind is required'
+    with pytest.raises(ValueError): inverse.derive_unstarted_node_inverse(**args)
+
+
+def partial_fixture():
+    args=fixture();final=args['final'];state=json.loads(final['ledger']['data']['state.json'])
+    binding,row=next((b,r) for b,r in state['allocations'].items() if r['workspace'].startswith('operator-qualification-531-') and r['cap_mib']==20480)
+    pod_uid=row['intent']['pod_uid'];state['allocations'].pop(binding)
+    final['ledger']['data']['state.json']=terminal.canonical(state)
+    final['authority']['authority_maps']['items']=[c for c in final['authority']['authority_maps']['items'] if c['metadata']['name'] not in ('cps-native-enrollment-'+binding[:40],'cps-native-cleanup-'+binding[:40])]
+    for directory in final['authority']['host_snapshot']['directories'].values(): directory['records'].pop(pod_uid+'.json')
+    final['history']['records']=[r for r in final['history']['records'] if r['pod_uid']!=pod_uid]
+    final['physical']['retired_caps']=[r for r in final['physical']['retired_caps'] if r['pod_uid']!=pod_uid]
+    return args
+
+
+def test_partial_start_failure_can_restore_after_the_one_started_peer_is_released():
+    args=partial_fixture();inverse=module()
+    assert hasattr(inverse,'derive_partial_node_inverse'), 'Single-peer failure inverse is required'
+    result=inverse.derive_partial_node_inverse(**args)
+    assert len(result['node-config.json']['terminal_history'])==1
+    assert len(result['full-terminal-authority-archive.json'])==2
+    with pytest.raises(ValueError): inverse.derive_unstarted_node_inverse(**args)
+    with pytest.raises(ValueError): inverse.derive_node_inverse(**args)
+
+
+@pytest.mark.parametrize('phase',['unstarted','partial'])
+def test_node_deployment_inverse_supports_both_failure_phases(phase):
+    args=handover_fixture();args['terminal_inputs']=unstarted_fixture() if phase=='unstarted' else partial_fixture()
+    result=module().derive_node_handover_inverse(phase=phase,**args)
+    code=result['node-deployment.patch.json'][-1]['value']['template']['spec']['volumes'][0]['configMap']['name']
+    assert code==args['original_code' if phase=='unstarted' else 'current_code']['metadata']['name']
+    assert result['restoration_phase']==phase

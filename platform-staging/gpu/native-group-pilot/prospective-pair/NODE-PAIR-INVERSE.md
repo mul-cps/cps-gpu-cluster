@@ -57,3 +57,28 @@ represent a completed hardware run or a deployed production release.
 Validation on 16 October 2026: **27 new tests passed**; the complete native-group
 pilot suite passed **658 tests and 851 subtests**, with 14 skips. No live or
 hardware acceptance is inferred from these CPU tests.
+
+## Baseline mapping and failure phases
+
+The Root history hash binds the **complete verified baseline authority mapping**,
+not merely the original D48 active configuration's `terminal_history` field.
+That active field excludes D48 lifetimes because D48 is its current policy.
+Those lifetimes must become retained history under the prospective policy, so
+the inverse verifies them against the full baseline ledger, journal and immutable
+completion objects before accepting the prospective mapping. Every original
+historical configuration reference must remain unchanged.
+
+`derive_unstarted_node_inverse` requires zero added claims and unchanged complete
+custody. `derive_partial_node_inverse` requires exactly one reviewed new lifetime
+to have been released and retired; `derive_node_inverse` requires both. The three
+paths reject captures from the wrong phase. All require fresh zero-charge physical
+evidence and absence of both prospective workspace Pod names.
+
+`derive_node_handover_inverse(phase=...)` accepts exactly `unstarted`, `partial`
+or `complete` (the default). The unstarted path restores the original Node code;
+the other paths retain the reviewed generated code because new lifetime references
+need its finite historical interpretation.
+
+The [Gateway transition planner](GATEWAY-TRANSITION.md) separately produces exact
+forward and reverse policy/runtime/Deployment CAS artifacts. Source and Hub
+handover/restoration still require integration before execution.

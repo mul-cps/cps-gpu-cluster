@@ -24,7 +24,7 @@ The contract is a closed JSON object with these fields:
 | `version` | Integer 1 |
 | `policy_hash` | Nonzero canonical SHA256, distinct from D48 and 39ef |
 | `workspaces` | Exactly two bounded `cps:operator-qualification-531-*` scopes; qualification5/5120MiB and qualification20/20480MiB |
-| `terminal_history_sha256` | Canonical SHA256 of the complete unchanged current terminal-history mapping |
+| `terminal_history_sha256` | Canonical SHA256 of the complete verified baseline authority mapping used as prospective history, including released D48 lifetimes |
 | `operator_people` | Independent Root allowlist of canonical nonstudent UUIDs |
 | `operator_members` | Exact scope keys; nonempty disjoint UUID lists whose union equals that allowlist |
 
