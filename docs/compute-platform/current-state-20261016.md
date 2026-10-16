@@ -36,6 +36,31 @@ See the [final current-image isolation receipt](../../platform-staging/gpu/nativ
 The dated sections below preserve the earlier sequence and its then-open gates;
 this checkpoint supersedes their current-status claims.
 
+## Application-owned node backend foundation
+
+`cps-compute` commit `5c8b4de7032487cb274221235243589bf5ebe672` now packages the
+injected backend, NVML adapter, exact identity discovery, Kubernetes/CRI transport
+and pure Pending-gate decision in the existing SDK wheel. There are no Root
+contracts, physical GPU/workspace defaults, driver loaders or manual cap scripts
+in this extraction. The installed transaction core/health verifier are reused.
+Per-instance gate binding replaces helper-module mutation; failed NVML
+construction now closes a successfully initialized session.
+
+The full application suite passed 2,537 tests and 68 subtests (six skipped).
+A fresh lean virtualenv passed dependency checks, inert module imports and 32
+backend unittest cases from the installed wheel. Wheel rebuilding from the
+sdist was byte-identical. Separate CPU performance review found no added hot-path
+I/O/NVML calls; Pending decisions took 12.49/12.62 microseconds in the two measured
+cases. CI now exercises installed native-module imports alongside SDK imports.
+The remote workflow is running; no remote success is claimed yet.
+
+See [canonical application documentation](https://github.com/mul-cps/cps-compute/blob/5c8b4de7032487cb274221235243589bf5ebe672/docs/native-node-package.md)
+and its [artifact/CPU verification receipt](https://github.com/mul-cps/cps-compute/blob/5c8b4de7032487cb274221235243589bf5ebe672/docs/contracts/native-node-package-verification.json).
+This is application ownership and packaging, not a deployed node service.
+Generic orchestration, explicit CDI/runtime pins, history/custody migration,
+immutable image/RBAC/GitOps adoption and live qualification of the packaged
+artifacts remain open. Existing node deployments are unchanged by this commit.
+
 ## Verified deployment and recovery
 
 Gateway `9e695015` from compute source `de90610f` is now deployed. Both Hubs
@@ -103,8 +128,8 @@ do not qualify notebook531 or the full eight-GPU service.
 ## Immediate remaining production work
 
 1. Package and integrate the node lifecycle as a released application component.
-   The current `cps-compute` wheel contains transaction/approval modules, but its
-   Dockerfile starts only the gateway. Its native controller documentation still
+   The current `cps-compute` wheel now owns the injected backend as well as
+   transaction/approval modules, but its Dockerfile starts only the gateway. Its native controller documentation still
    explicitly requires qualification-only operation. The deployed node loop and
    generated compatibility overlay live here in cluster staging. Hardware
    evidence alone does not close that application/release gap. Move ownership
