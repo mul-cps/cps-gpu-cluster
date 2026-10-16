@@ -1,0 +1,43 @@
+{
+  "application_source_revision": "754621304d088c6307c5465e757457a1e83aa80e",
+  "constraints_sha256": "e294e36f252814208701797589c95c509f414d3ab85123c6db3268881e963a73",
+  "deployment_adopted": false,
+  "entrypoint": [
+    "python",
+    "-m",
+    "cps_compute.native_node.service"
+  ],
+  "final_recipe_verified": true,
+  "image": "localhost/cps-native-node:75462130-qualification",
+  "image_id": "4dbcda150fba19de614b4063f6cc65d409815a4d503c5cf8a94269c4bca6da7d",
+  "inert": {
+    "api_calls": false,
+    "gpu_calls": false,
+    "production_qualified": false,
+    "state": "inert"
+  },
+  "installed_node_verifier": true,
+  "live_operations": false,
+  "malformed_revision_build_rejected": true,
+  "missing_revision_build_rejected": true,
+  "passed": true,
+  "pip_check": true,
+  "production_qualified": false,
+  "published": true,
+  "recipe_commit": "d449307d4dbbcda1b1ce70f2f360a4984e94d11a",
+  "recipe_sha256": "6094b66dc4dc168942d071af8f77b9cb6e3c5a1ebbe9834a2798507291542f42",
+  "registry_digest": "sha256:f312267e949cbac262468d6afdf27193e2e06fd14b7a4c9c325a0e80e0d37f78",
+  "registry_inspection_verified": true,
+  "registry_reference": "ghcr.io/mul-cps/cps-native-node@sha256:f312267e949cbac262468d6afdf27193e2e06fd14b7a4c9c325a0e80e0d37f78",
+  "runtime": {
+    "cps_compute": "0.1.0",
+    "kubernetes": "35.0.0",
+    "python": "3.12.15"
+  },
+  "source_revision": "754621304d088c6307c5465e757457a1e83aa80e",
+  "user": "0",
+  "verifier_sha256": "ca7f5197dab3b27477f6a5cfe88beb12cb473d547f556b30b28e8024701542d6",
+  "version": 1,
+  "wheel_sha256": "20b4d3ec17c23876c0cbd38a8708e10bcc3858e22c250fdc5d291ad011979e83",
+  "wrong_checksum_build_rejected": true
+}

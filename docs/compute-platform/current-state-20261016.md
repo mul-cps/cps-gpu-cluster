@@ -208,6 +208,23 @@ SDK/Hub and both JupyterLab compatibility checks). The private archive remains
 unpublished. Immutable
 image/RBAC/GitOps promotion and live artifact qualification remain open. This does not qualify general GPU access or production readiness.
 
+## Packaged node image published, not adopted
+
+Recipe commit `d449307d4dbbcda1b1ce70f2f360a4984e94d11a` builds the reviewed
+application wheel from `754621304d088c6307c5465e757457a1e83aa80e` with the node
+extra and exact runtime constraints. The tested qualification image is published:
+
+`ghcr.io/mul-cps/cps-native-node@sha256:f312267e949cbac262468d6afdf27193e2e06fd14b7a4c9c325a0e80e0d37f78`
+
+Registry inspection confirms the digest and application/wheel provenance.
+The final image passed installed node imports, dependency checks and inert
+startup with a read-only root, no network, no capabilities and no new privileges.
+Actual builds rejected wrong wheel checksums and missing/malformed source
+revisions before installation. Ten focused image/import tests passed. This image
+contains no host driver tools or private configuration; deployment supplies them
+explicitly. The existing node agent has not been replaced. Adoption, rollback,
+restart/cancellation and real GPU isolation tests remain open.
+
 ## Verified deployment and recovery
 
 Gateway `9e695015` from compute source `de90610f` is now deployed. Both Hubs
