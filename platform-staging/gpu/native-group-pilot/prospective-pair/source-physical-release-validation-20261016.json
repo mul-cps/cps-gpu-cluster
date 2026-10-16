@@ -1,0 +1,16 @@
+{
+  "focused_tests_passed": 41,
+  "full_suite_note": "Two actual-target ceiling tests added afterward and passed in the focused suite.",
+  "full_suite_result": "753 passed, 14 skipped, 851 subtests passed in 44.33s",
+  "hardware_qualified": false,
+  "live_applied": false,
+  "live_collector_wired": false,
+  "observed_at": "2026-10-16T11:11:48.622159+00:00",
+  "source_sha256": {
+    "source_physical_release.py": "ef3a38d7ab577a0130f66fd31f74aa10ceef91cda6bed318ac14277f92e23206",
+    "test_source_physical_release.py": "f0fb564b41616f0d6e9c4d74af40d3a183df09a74d198f8811f1fcbfa6d6d9ce",
+    "test_source_restoration.py": "0829fa18a64d416e362a52ea7234155ba8abf1a264989c5e5c2fbeca5215383d"
+  },
+  "test_log_sha256": "64ca87722684684598120741740ca72ab42dc595709d5963ef1cc9f9dd9e6e53",
+  "version": 1
+}

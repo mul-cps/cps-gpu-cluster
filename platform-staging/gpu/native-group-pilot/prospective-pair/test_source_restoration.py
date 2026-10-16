@@ -25,9 +25,9 @@ def helper():
     module=importlib.util.module_from_spec(spec);spec.loader.exec_module(module);return module
 
 
-async def prepare(f, phase):
+async def prepare(f, phase, *, cpu_ceiling=None):
     # CPU registrations omit GPU ceilings; a zero GPU ceiling is invalid.
-    ceiling={k:v for k,v in f.local['course_ceiling'].items() if k!='gpuMemoryGiB'}
+    ceiling=cpu_ceiling or {k:v for k,v in f.local['course_ceiling'].items() if k!='gpuMemoryGiB'}
     f.local={**f.local,'course_ceiling':ceiling}
     f.review['original_local']=copy.deepcopy(f.local)
     f.review['original_course']['resource_ceiling']=ceiling
@@ -184,5 +184,20 @@ def test_partial_restoration_is_retryable_without_losing_original_records(bounda
                 result=await helper().restore(context,f.review,contract_raw=raw,contract_sha256=pin,verify_physical_release=physical)
                 assert result['state']=='restored-cpu-stopped'
                 assert await f.service.get(f.workspace)=={**f.review['original_local'],'archive_pending':False}
+            finally:await f.close()
+    asyncio.run(run())
+
+
+@pytest.mark.parametrize('size',[5,20])
+def test_cpu_restoration_preserves_positive_course_gpu_ceiling_used_by_actual_targets(size):
+    async def run():
+        with tempfile.TemporaryDirectory() as d:
+            f=await prior.Fixture().setup(Path(d),fresh_profile=size)
+            try:
+                ceiling={'cpu':'4','memory':'16Gi','gpuMemoryGiB':size}
+                context,raw,pin,physical=await prepare(f,'complete',cpu_ceiling=ceiling)
+                await helper().restore(context,f.review,contract_raw=raw,contract_sha256=pin,verify_physical_release=physical)
+                assert (await f.service.get(f.workspace))['course_ceiling']==ceiling
+                assert f.store.workspace('cps',f.workspace)['ceiling']==ceiling
             finally:await f.close()
     asyncio.run(run())
