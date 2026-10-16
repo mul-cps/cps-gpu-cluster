@@ -1,0 +1,6 @@
+FROM ghcr.io/mul-cps/e2x-course-hub@sha256:51f7f392397e41be512b356fbee91980fb233296cee7557d25a758b99b045f44
+USER 0
+COPY cps_compute-0.1.0-py3-none-any.whl /tmp/cps_compute-0.1.0-py3-none-any.whl
+RUN python -c "import hashlib; assert hashlib.sha256(open('/tmp/cps_compute-0.1.0-py3-none-any.whl','rb').read()).hexdigest() == '85aa2fdc2aff746f563c6d91f7cedae5b2cfc8f474887301167b7e484e793503'" && python -m pip install --no-index --no-deps --force-reinstall --no-cache-dir --disable-pip-version-check /tmp/cps_compute-0.1.0-py3-none-any.whl && python -m pip check && rm /tmp/cps_compute-0.1.0-py3-none-any.whl
+USER 1000
+LABEL org.opencontainers.image.cps-compute-revision="de90610f3250a14cb5e3a33473afe547797358a0"

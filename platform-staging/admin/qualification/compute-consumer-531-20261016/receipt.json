@@ -1,0 +1,44 @@
+{
+  "schemaVersion": 1,
+  "kind": "source-compute-consumer-candidate",
+  "image": "ghcr.io/mul-cps/e2x-course-hub@sha256:dbaad51899ccb634f5a07c44bd9f7022dbca71724d7cfd66e5d67abf9d569ace",
+  "tag": "ghcr.io/mul-cps/e2x-course-hub:candidate-compute531-de90610f-20261016",
+  "baseSourceImage": "ghcr.io/mul-cps/e2x-course-hub@sha256:51f7f392397e41be512b356fbee91980fb233296cee7557d25a758b99b045f44",
+  "computeSourceCommit": "de90610f3250a14cb5e3a33473afe547797358a0",
+  "computeWheelSha256": "85aa2fdc2aff746f563c6d91f7cedae5b2cfc8f474887301167b7e484e793503",
+  "published": true,
+  "remoteTagAndDigestMatch": true,
+  "deployed": false,
+  "productionQualified": false,
+  "formalRelease": false,
+  "qualification": {
+    "properOfflinePipInstall": true,
+    "imageDefaultUserPreserved": "1000",
+    "deploymentUidTested": 10001,
+    "runtimeConfigPreserved": true,
+    "baseLayersPreserved": 52,
+    "nonCoreFilesAndModesPreserved": 13959,
+    "dependencyVersionsPreserved": 106,
+    "installedCoreModulesMatchSourceAndWheel": 49,
+    "legacy916AndCandidate531ModelsPassed": true,
+    "unsafeImageBudgetAndEvidenceInputsRejected": true,
+    "profilesRemainDisabled": true,
+    "productionEvidenceNotClaimed": true,
+    "sourceAppImportsPassed": true,
+    "pipCheckPassed": true,
+    "courseCrudLiveTestsRepeated": false,
+    "hardwareTestsExecuted": false
+  },
+  "privateEvidenceSha256": {
+    "qualification-receipt.json": "6d2cacd8710eb314e42fd31b1f45ccbeeb234c87059ac591458dacabeae77fa7",
+    "publication-receipt.json": "734ca4c6640f28193d69e1c38e2d2d5f06ed45d8d5d0628c534124fde780ae65",
+    "core-module-sha256.json": "e39f33a1c73cdeecab8882f354f7ef4936e374f6376da8790da5ab7bfc1cc27a",
+    "package-preservation-receipt.json": "047fe01d4e40f86983853c300ac2cd55972c1545cc1fe19fad8aad0b0a7ae157"
+  },
+  "remaining": [
+    "Coherent Source console and capture-trust adoption",
+    "Fresh actual Source module closure and candidate target snapshots",
+    "Complete bounded terminal-history and finite restoration support",
+    "Current notebook531 hardware qualification"
+  ]
+}

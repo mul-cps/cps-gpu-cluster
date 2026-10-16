@@ -68,6 +68,10 @@ do not qualify notebook531 or the full eight-GPU service.
 ## Immediate remaining blockers
 
 1. Source51f's compute dependency does not accept notebook531 qualification.
+   A [proper-wheel console consumer candidate](../../platform-staging/admin/qualification/compute-consumer-531-20261016/README.md)
+   is now published as `dbaad518`, with legacy/candidate model checks, unchanged
+   application/dependencies and no production qualification claim. Both live
+   consoles still run Source51f; coherent adoption remains required.
 2. The complete 15 October capture contained 85 allocation records and 75
    enrollments, exceeding the qualification tooling's 64-record bound. Preserve
    full history while completing bounded support and finite restoration.
