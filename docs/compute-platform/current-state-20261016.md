@@ -89,7 +89,11 @@ wall-clock sleep with manual triggering of the real deadline and explicit
 cleanup completion. Runtime deadlines and safety checks are unchanged. The full
 local suite again passed 2,597 tests and 68 subtests (six skipped).
 [CI run 38937037169](https://github.com/mul-cps/cps-compute/actions/runs/38937037169)
-is in progress; CI qualification remains incomplete. Generic service orchestration, complete custody migration and
+passed all four jobs: build, installed SDK/Hub, and installed Lab 4.5.7/4.6.4.
+Its Python 3.12 suite passed 2,596 tests and 68 subtests (seven skipped); local
+Python 3.13 results are above. All three wheels and source distributions built
+and rebuilt successfully. This is build/package qualification only. Generic
+service orchestration, complete custody migration and
 immutable deployment adoption remain the next integration gates.
 
 ## Verified deployment and recovery
