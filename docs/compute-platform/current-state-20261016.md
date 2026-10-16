@@ -315,3 +315,29 @@ This closes the current-image5/20 ordinary PyTorch OOM/recovery gate. It does no
 close restart/reacquisition, memory-import, MPS, or broader production gates.
 Evidence hashes and limits are recorded in
 `platform-staging/gpu/native-group-pilot/prospective-pair/current531-torch-isolation-20261016.json`.
+
+## Second current531 GPU cycle: restart, CUDA IPC and MPS
+
+Both QA workspaces restarted through the normal console APIs with fresh Pod
+UIDs and native parent inodes in the same physical GPU/boot/driver epoch. Their
+old lifetimes stayed retired. Automatic5/20GiB caps and concurrent PyTorch
+OOM/recovery passed again. CUDA IPC same-parent positive controls succeeded;
+cross-parent imports returnedCUDA_ERROR_NOT_PERMITTED in both directions with
+correlated kernel denial evidence, distinct namespace PIDs and explicit cleanup.
+
+Two MPS clients in the5GiB parent hit aggregate OOM, recovered and cleaned up
+while the20GiB peer progressed. A bounded20GiB variant held19456MiB before typed
+OOM and both clients recovered while the5GiB peer progressed. Its daemon scan
+reportedPermissionError. Both clients exited0;32 subsequent independent root
+samples showed no MPS process and zero charge in that parent. The automated
+20GiB cleanup gate therefore remains open. A fail-closed PID-descriptor observer
+fix and cap-forwarding probe have11 passing CPU tests; a live rerun is required.
+CUDA IPC evidence does not qualify current-image cross-parent VMM/FD imports.
+
+Both workspaces stopped through normal APIs and returned to CPU with their
+original grants. All90 allocations are released; zero active entries and zero
+charged bytes remain. The complete inverse retained80 terminal records. Original
+Gateway/Hub specs and policy/runtime/Hub Secret data, both ready Source consoles
+and all four personal Pod UIDs were restored. CPU registration reconciliation
+after policy restoration uses the normal profile API; workspace rows remain
+unchanged. Broad GPU access and full production qualification remain disabled.

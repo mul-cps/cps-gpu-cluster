@@ -1,0 +1,33 @@
+{
+  "all_allocations_released": 90,
+  "baseline_restored": true,
+  "cleanup_observer_fix_cpu_tests": 11,
+  "cleanup_observer_fix_hardware_qualified": false,
+  "complete_terminal_records_retained": 80,
+  "cuda_ipc_bidirectional_positive_and_kernel_denial_passed": true,
+  "date": "2026-10-16",
+  "evidence_sha256": {
+    "baseline_restore": "d0d62cf799ccc60c4f0ee061b0cd3b5254a45017389eec4996714d18adeda980",
+    "cuda_ipc": "0f054256443f19442add8c28d3663992f330cc28e1e9104032f56628608715cc",
+    "mps20": "129b9fbcd6031df48eaad71e0fca84f17c03123235b81b598d33d20cc6741faf",
+    "mps5": "6753ec08c0b14c5b214f66c8758b469bbc127aa041398fdd3aabca3cde807abe",
+    "repeat_torch": "ece497c7b7ae481ec6155c1c8b85939ab7794c5a415307aa5d7f4fab0964b9bf",
+    "restart": "8dd6f7a7560fb070b5c0ee9c7a166b7da2a673e93f1ec82e4f9c532b0181aba5"
+  },
+  "mig_current": 0,
+  "mig_pending": 0,
+  "mps20_automated_cleanup_observer_passed": false,
+  "mps20_oom_recovery_and_root_cleanup_observed": true,
+  "mps5_two_clients_oom_recovery_and_cleanup_passed": true,
+  "native_active_entries_after_stop": 0,
+  "native_used_bytes_after_stop": 0,
+  "personal_pod_uids_preserved": true,
+  "production_qualified": false,
+  "qa_profiles_cpu": true,
+  "repeated_5_20_torch_isolation_passed": true,
+  "restart_reacquisition_passed": true,
+  "temporary_gpu_grants_removed": true,
+  "version": 1,
+  "vmm_cross_parent_import_current_image_qualified": false,
+  "workload_image": "ghcr.io/mul-cps/cps-jupyter-notebook@sha256:531027c8e330d4ce818598e998a29d502433e9064f06a32dfc208a06ef2d0ba4"
+}
