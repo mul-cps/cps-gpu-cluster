@@ -160,3 +160,15 @@ Node8c image, with no existing code ConfigMap volume. The earlier Node inverse
 assumed such a volume. An explicit image-backed code-overlay transition and
 matching inverse are therefore required before handover. No handover deployment
 changes were applied; the controlled workspace remains stopped.
+
+## Image-backed Node transition correction
+
+The actual Node8c image-backed shape now has a separate forward/inverse planner.
+It overlays only the exact Root-generated Node/epoch files as read-only mounts,
+preserves the image/driver/host mounts and removes four dynamic approval argument
+pairs during operator mode. Inverse tests cover zero/one/two completed lifetimes
+and restore the original group bootstrap. With zero new lifetimes the complete
+original image-backed spec returns. Actual image source hashes match the frozen
+references. The two ConfigMap creates and Deployment patch passed server dry-run
+with exact spec readback; explicit0644 avoids API-default drift. All17 focused
+tests pass. No live handover or current5+20 hardware run occurred in this step.

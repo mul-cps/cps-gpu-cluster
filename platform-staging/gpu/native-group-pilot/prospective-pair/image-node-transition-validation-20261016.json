@@ -1,0 +1,24 @@
+{
+  "actual_deployment_shape_validated": true,
+  "actual_image_sources_match": true,
+  "epoch_source_sha256": "890cebd7c1903a680e4dc836ec6f81f097198c2fed438ade6b2fa62157864bbd",
+  "focused_tests_passed": 17,
+  "hardware_qualified": false,
+  "inverse_actual_runtime_qualified": false,
+  "inverse_phases_tested": [
+    "unstarted",
+    "partial",
+    "complete"
+  ],
+  "live_applied": false,
+  "live_deployment_unchanged_after_dry_runs": true,
+  "node_source_sha256": "f01b24bc984a153e9995549ef09f73167500f375d79e078a7e7aa9e1171c3664",
+  "observed_at": "2026-10-16T11:47:15.605409+00:00",
+  "root_contract_sha256": "d29ac9051cd5bd50f155d694cdb8623da558f1df582071cf360125e45c5c494f",
+  "server_dry_run_objects": 3,
+  "suite_log_sha256": "b19aede829345e7eb845735df17b52071aa6d50cf8685dbc2416722ab97ad93b",
+  "suite_skipped": 14,
+  "suite_subtests_passed": 851,
+  "suite_tests_passed": 789,
+  "version": 1
+}
