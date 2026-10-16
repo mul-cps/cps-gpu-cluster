@@ -1,0 +1,60 @@
+{
+  "source": "7273ad70c497cafcd7116867343a4b5ae9b6909c",
+  "stage": "limited-pilot",
+  "production_ready": false,
+  "first_run": {
+    "pod_uid": "e92edb4d-df2d-46e8-b1c6-77add740af9a",
+    "cap_bytes": 5368709120,
+    "oom_observed": true,
+    "peak_pytorch_allocator_bytes": 4831838208,
+    "recovery": true,
+    "oom_evidence": "observed trusted probe stdout in session; host cap artifacts retained privately"
+  },
+  "first_stop": {
+    "http": 200,
+    "pod_absent": true,
+    "released_claims": 95,
+    "reservation_rows": 0,
+    "reservation_binding_rows": 0
+  },
+  "readiness_transition": {
+    "first_restart_preflight_rejected": true,
+    "recovered_without_intervention": true,
+    "exception_cause": "unproven"
+  },
+  "restart": {
+    "http": 200,
+    "pod_uid": "f0a54c4a-bbc6-4dfe-98e5-eabc3c913cb7",
+    "cap": {
+      "at": "2026-10-16T23:53:01.203368+00:00",
+      "pod_uid": "f0a54c4a-bbc6-4dfe-98e5-eabc3c913cb7",
+      "state": "sealed",
+      "soft": 5368709120,
+      "hard": 5368709120,
+      "used": 0,
+      "journal_unchanged": true,
+      "read_only": true
+    },
+    "cuda": {
+      "allocated_bytes": 268435456,
+      "cuda_readback": true
+    }
+  },
+  "second_stop": {
+    "http": 200,
+    "pod_absent": true,
+    "released_claims": 96,
+    "reservation_rows": 0,
+    "reservation_binding_rows": 0
+  },
+  "test_token": {
+    "revoked": true,
+    "local_file_removed": true
+  },
+  "unqualified": [
+    "independent peer isolation",
+    "MPS",
+    "all memory allocation/import routes",
+    "broader production acceptance"
+  ]
+}

@@ -23,19 +23,27 @@ relationship between allocator bytes and the driver's charged-usage counter
 remains unexplained; this result does not establish every memory route or MPS
 isolation.
 
-Normal Stop subsequently returned HTTP 200/stopped. The Pod is absent and all
-95 native ledger claims are released. A fresh Start was rejected by the
-preflight before a spawn request: the node agent withdrew readiness after
-cleanup and reports ValueError. Restart qualification is therefore **not
-passed**. Investigation is active; no reservation or readiness bypass was used.
-The private evidence is under
+Normal Stop returned HTTP 200/stopped, removed the Pod and released all 95
+native ledger claims; both SQL reservation tables were empty. The first fresh
+Start was rejected before mutation while readiness was withdrawn during cleanup.
+All four acknowledgments recovered without intervention. A second normal Start
+returned HTTP 200/running with a new Pod UID
+`f0a54c4a-bbc6-4dfe-98e5-eabc3c913cb7`; independent NVML reads confirmed another
+sealed 5 GiB cap, and a 256 MiB CUDA allocation/fill/readback passed. Thus the
+normal Stop/restart gate passed, with a temporary readiness transition. The
+specific transient ValueError is not explained by the available logs.
+The second normal Stop also returned HTTP 200/stopped. The Pod is absent, all
+96 claims are released and both SQL reservation tables are empty. The temporary
+test token was revoked (204; subsequent authentication denied) and removed locally.
+The [lifecycle receipt](../../platform-staging/jupyter-extensions-20261013/native-group-lifecycle-20261017.json)
+records this checkpoint. Private evidence is under
 `~/.local/state/cps-full-project-20261013/native-archive-live-qualification-7273ad7-20261017/`.
 
 The earlier `610814a` rollout and failed pre-enrollment attempt remain historical
 in the [protocol verification receipt](../../platform-staging/jupyter-extensions-20261013/native-enrollment-protocol-verification-20261017.json)
 and [adoption receipt](../../platform-staging/jupyter-extensions-20261013/native-enrollment-protocol-adoption-20261017.json).
 The subsequent archive and bounded Hub cleanup fixes enabled the execution
-above. Failed-spawn ghost-state recovery, restart, independent peer isolation,
+above. Failed-spawn ghost-state recovery, independent peer isolation,
 MPS and the broader production gates remain unqualified. No MIG, driver change,
 GPU reset or reboot was performed.
 
