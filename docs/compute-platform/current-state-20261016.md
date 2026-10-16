@@ -250,3 +250,29 @@ Ready1/1 and all four personal server Pod UIDs remained unchanged.
 Full qualification suite:841 passed,14 skipped,851 subtests passed. The live
 Source loader path is now exercised; Source migration, candidate grants and
 current notebook5315+20 hardware qualification remain unexecuted.
+
+## Actual rollout boot findings and fixes
+
+Two controlled unstarted switches exercised actual runtime boot. The first
+revealed that qualification mode disabled the dynamic group runtime but retained
+its capture sidecar, preventing Gateway readiness. The planner now removes only
+the exact pinned capture server; the inverse restores the full original spec.
+The second attempt used a real loop-progress readiness check and exposed Node
+operator configuration0644 projection plus a32 KiB reader limit for56,968 bytes
+of preserved history. Projection now uses0400. Only the Root-pinned pair receives
+a256 KiB reader bound; other modes retain32 KiB. The real full candidate passes
+the generated reader in the deployed Node image without driver calls.
+
+Rollback was verified against complete original Node/Gateway/Hub/Source specs,
+policy/runtime/Hub Secret data, ledger contents and personal Pod UIDs. All are
+restored; Node progressed beyond iteration1. Exact Pod GET targets in three
+control-plane Roles were refreshed after replacement. Future rollout/rollback
+must refresh those bindings and restore configuration data before waiting for
+restarted processes. A Kubernetes Ready count alone was too weak for Node boot.
+
+The normal console profile-change API was exercised for both QA CPU workspaces;
+all workspace records remained unchanged. This existing guarded API is the path
+for the QA profile transition. The expired Source operator, its SA/helper map and
+two temporary Roles/Bindings were deleted by UID; backups/PVCs remain intact.
+850 tests/851 subtests pass;14 skipped. No GPU alias grants or GPU Starts occurred.
+The current notebook5315+20 isolation run remains the next unfinished gate.

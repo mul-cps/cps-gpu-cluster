@@ -90,6 +90,11 @@ def forward_intent(*,original_deployment,original_configuration,proposed_node,
     code=transition.immutable_config(original_configuration,bundle,'cps-native-node-code-qualification')
     config=transition.immutable_config(original_configuration,{'config.json':transition.canonical(new)},'cps-native-node-qualification')
     configuration_reference(spec,oldmeta['name'],config['metadata']['name'])
+    configuration=next(v['configMap'] for v in spec['template']['spec']['volumes'] if v['name']=='config')
+    configuration['defaultMode']=0o400
+    for item in configuration.get('items',[]):
+        guard.require(item.get('key')==item.get('path')=='config.json','Exact operator configuration projection required')
+        item['mode']=0o400
     spec=overlay(spec,code['metadata']['name'])
     return dict(version=1,enabled=False,live_applied=False,hardware_qualified=False,
         **{'code.json':code,'configuration.json':config,

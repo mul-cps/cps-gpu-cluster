@@ -113,3 +113,27 @@ def test_gateway_qualification_target_disables_only_dynamic_group_reader_and_hea
     env=forward['gateway-deployment.patch.json'][-1]['value']['template']['spec']['containers'][0]['env']
     assert [e['name'] for e in env]==['PRIVATE_SETTING']
     assert env[0]==args['originals']['gateway_deployment']['spec']['template']['spec']['containers'][0]['env'][1]
+
+CAPTURE_IMAGE='ghcr.io/mul-cps/cps-compute@sha256:042b8b60c0bbdfd2c4506ddf8007677016ef5d278ad5720d7d6b7ac41d136b1b'
+
+def capture_fixture():
+ args=fixture();containers=args['originals']['gateway_deployment']['spec']['template']['spec']['containers']
+ containers.extend([dict(name='approval-capture',image=CAPTURE_IMAGE,command=['python','-m','cps_compute.native_group_capture_server'],args=['--config','/capture-private/server/config.json']),dict(name='unrelated-observer',image='registry.example/observer')])
+ return args
+
+
+def test_qualification_removes_only_the_pinned_group_capture_and_inverse_restores_it():
+ args=capture_fixture();forward=tool().forward_intent(**args)
+ desired=forward['gateway-deployment.patch.json'][-1]['value']
+ assert [c['name'] for c in desired['template']['spec']['containers']]==['gateway','unrelated-observer']
+ current={}
+ for key,file,field in [('policy','policy.patch.json','data'),('runtime','runtime.patch.json','data'),('gateway_deployment','gateway-deployment.patch.json','spec')]:
+  current[key]=copy.deepcopy(args['originals'][key]);current[key]['metadata']['resourceVersion']='99';current[key][field]=forward[file][-1]['value']
+ inverse=tool().inverse_intent(current=current,**args)
+ assert inverse['gateway-deployment.patch.json'][-1]['value']==args['originals']['gateway_deployment']['spec']
+
+
+@pytest.mark.parametrize('field,value',[('image','foreign'),('command',['python','foreign']),('args',['--config','/foreign.json'])])
+def test_foreign_capture_container_is_never_silently_removed(field,value):
+ args=capture_fixture();args['originals']['gateway_deployment']['spec']['template']['spec']['containers'][1][field]=value
+ with pytest.raises(ValueError):tool().forward_intent(**args)

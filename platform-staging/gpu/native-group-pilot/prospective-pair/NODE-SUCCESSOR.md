@@ -159,3 +159,9 @@ The separate [fresh-pair Node inverse](NODE-PAIR-INVERSE.md) now derives a
 complete terminal archive and Node configuration/Deployment restoration for
 the exact CPS+CPS pair. Coordinated Gateway policy/runtime and Source restoration
 remain separate execution prerequisites; the legacy CPS+CIT inverse is unchanged.
+
+The operator file reader also changes for the reviewed pair: full preserved
+history can exceed32 KiB, so it permits up to256 KiB only after matching the
+pinned contract policy/workspaces/history. Other modes retain32 KiB. The original
+root0400/no-follow/link-count guards remain. Tests execute this reader with large,
+oversized and wrong-mode files, including unchanged small legacy behavior.

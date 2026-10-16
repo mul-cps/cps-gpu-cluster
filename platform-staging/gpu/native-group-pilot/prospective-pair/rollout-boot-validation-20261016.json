@@ -1,0 +1,68 @@
+{
+  "files": {
+    "gateway_transition.py": "99a260de53c75c249eebe690283005cbf4550867b1cbc3462be5c560ef960772",
+    "image_node_transition.py": "bdb4a37318fb22a486c9076167de7828756dbde0b88e0da6490c22f736ade145",
+    "node_successor.py": "5a6145eef570e4b160593579b16a26b6e4af65fdfb53103ed1c44d22d43a61aa"
+  },
+  "hardware_5_20_executed": false,
+  "node_entrypoint": {
+    "actual_published_image_runtime": true,
+    "configuration_bytes": 56968,
+    "driver_api_calls": false,
+    "kubernetes_mutations": false,
+    "node_source_sha256": "292f02413cd394404c433214c93dfc91223f9ff8a1d307cd5053190fa8ba06c4",
+    "passed": true,
+    "policy_hash": "sha256:2fad5aadc6174bf3ba727564b1d7f282d50549cfc5bc12cef877c59b2d2e6494",
+    "root_owned_0400": true,
+    "terminal_history": 76
+  },
+  "normal_profile_api": {
+    "all_workspace_records_unchanged": true,
+    "gpu_profiles_granted": false,
+    "passed": true,
+    "results": [
+      {
+        "normal_profile_api": true,
+        "profile": "interactive-cpu",
+        "state": "stopped",
+        "workspace": "operator-qualification-531-a-20261015"
+      },
+      {
+        "normal_profile_api": true,
+        "profile": "interactive-cpu",
+        "state": "stopped",
+        "workspace": "operator-qualification-531-b-20261015"
+      }
+    ],
+    "workspaces_started": false
+  },
+  "restoration": {
+    "checks": {
+      "cit": true,
+      "cps": true,
+      "gateway": true,
+      "hub": true,
+      "hub-secret": true,
+      "ledger_unchanged": true,
+      "node": true,
+      "personal_pod_uids_preserved": true,
+      "policy": true,
+      "runtime": true
+    },
+    "gpu_started": false,
+    "passed": true
+  },
+  "source_cleanup": {
+    "application_records_changed": false,
+    "database_backup_preserved": true,
+    "deleted_owned_resources": 7,
+    "persistent_volumes_deleted": false,
+    "temporary_rolebindings_deleted": 2,
+    "temporary_roles_deleted": 2,
+    "terminal_operator_deleted": true
+  },
+  "suite_skipped": 14,
+  "suite_subtests_passed": 851,
+  "suite_tests_passed": 850,
+  "version": 1
+}

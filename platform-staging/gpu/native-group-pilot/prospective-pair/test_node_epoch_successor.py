@@ -232,13 +232,17 @@ def test_unreviewed_flat_helper_bytes_are_denied():
         generator().successor_bundle(BASE, EPOCH + b'\n', raw, hashlib.sha256(raw).hexdigest())
 
 
-def test_only_epoch_validator_and_node_history_plus_pin_change():
+def test_only_reviewed_epoch_history_reader_and_pin_change():
     s = scope()
     selected = sources(s['contract'])
     def replace_definition(source, name):
-        n = next(n for n in ast.parse(source).body if isinstance(n, ast.FunctionDef) and n.name == name)
+        names = {name} if isinstance(name,str) else set(name)
+        nodes = [n for n in ast.parse(source).body if isinstance(n,ast.FunctionDef) and n.name in names]
+        assert len(nodes)==len(names)
         lines = source.splitlines(True)
-        return ''.join(lines[:n.lineno - 1]) + '<definition>\n' + ''.join(lines[n.end_lineno:])
+        for n in sorted(nodes,key=lambda n:n.lineno,reverse=True):
+            lines[n.lineno-1:n.end_lineno]=['<definition>\n']
+        return ''.join(lines)
     assert hashlib.sha256(EPOCH).hexdigest() == EPOCH_SHA
     assert replace_definition(EPOCH.decode(), 'node_configuration') == replace_definition(selected['native_operator_epoch.py'], 'node_configuration')
     pin = hashlib.sha256(selected['native_operator_epoch.py'].encode()).hexdigest()
@@ -246,4 +250,4 @@ def test_only_epoch_validator_and_node_history_plus_pin_change():
     assert node.count("len(history) <= 128, 'Bounded explicit terminal history required'") == 1
     node = node.replace("len(history) <= 128, 'Bounded explicit terminal history required'",
         "len(history) <= 64, 'Bounded explicit terminal history required'", 1)
-    assert replace_definition(BASE.decode(), 'validate_historical_configuration') == replace_definition(node, 'validate_historical_configuration')
+    assert replace_definition(BASE.decode(), ('validate_historical_configuration','read_config')) == replace_definition(node, ('validate_historical_configuration','read_config'))

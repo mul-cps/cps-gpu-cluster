@@ -138,6 +138,27 @@ def successor_source(original, contract_raw, reviewed_raw_sha256):
     require(result.count(history_guard) == 1, 'Unique exact terminal history bound required')
     result = result.replace(history_guard,
         "len(history) <= 128, 'Bounded explicit terminal history required'", 1)
+    reader = next(n for n in ast.parse(result).body if isinstance(n, ast.FunctionDef) and n.name == 'read_config')
+    reader_before = ''.join(result.splitlines(True)[reader.lineno - 1:reader.end_lineno])
+    reader_after = reader_before
+    for old, new in [('info.st_size <= 32768', 'info.st_size <= 262144'),
+                     ('os.read(fd, 32769)', 'os.read(fd, 262145)'),
+                     ("len(raw) <= 32768, 'Oversized node config'", "len(raw) <= 262144, 'Oversized node config'")]:
+        require(reader_after.count(old) == 1, 'Unique exact operator file size guard required')
+        reader_after = reader_after.replace(old, new, 1)
+    original_return = '        return validate_config(parse(raw))'
+    require(reader_after.count(original_return) == 1, 'Unique exact operator reader validation required')
+    reader_after = reader_after.replace(original_return, f"""        config = validate_config(parse(raw))
+        # Full preserved history may exceed the legacy 32 KiB file limit.
+        # Only the independently pinned pair receives the larger bound.
+        require(len(raw) <= 32768 or (config['mode'] == 'operator-qualification'
+            and config['policy_hash'] == {contract['policy_hash']!r}
+            and config['workspaces'] == {contract['workspaces']!r}
+            and canonical_sha256(config['terminal_history']) == {contract['terminal_history_sha256']!r}),
+            'Oversized node config outside reviewed pair')
+        return config""", 1)
+    require(result.count(reader_before) == 1, 'Unique exact operator configuration reader required')
+    result = result.replace(reader_before, reader_after, 1)
     compile(result, 'prospective_node_successor.py', 'exec')
     return result
 

@@ -77,3 +77,9 @@ def test_inverse_refuses_changed_actual_readbacks_or_unreleased_work(fault):
   row=next(r for r in json.loads(terminal['final']['ledger']['data']['state.json'])['allocations'].values() if r['workspace'].startswith('operator-qualification-531-'))
   terminal['final']['pods']['items']=[dict(metadata=dict(uid=row['intent']['pod_uid'],name=row['name'],namespace=row['namespace']))]
  with pytest.raises(ValueError):tool.inverse_intent(forward_inputs=args,current_deployment=current,current_configuration=config,current_code=code,terminal_inputs=terminal,phase='complete')
+
+
+def test_forward_projects_operator_configuration_with_required_root0400_mode():
+ args,_=fixture();result=helper().forward_intent(**args)
+ volume=next(v for v in result['deployment.patch.json'][-1]['value']['template']['spec']['volumes'] if v['name']=='config')
+ assert volume['configMap']['defaultMode']==0o400

@@ -91,6 +91,18 @@ def forward_intent(*,proposal,originals,contract_raw,contract_sha256):
             container['env']=[e for e in container['env'] if e.get('name')!='CPS_NATIVE_APPROVAL_PUBLISHER_PATH']
     agent.require(len(publishers)==(1 if dynamic is not None else 0),
         'Dynamic approval mode must match exactly one explicit Gateway heartbeat bootstrap')
+    captures=[c for c in spec['template']['spec']['containers'] if c.get('name')=='approval-capture']
+    agent.require(len(captures)<=1,'At most one dynamic group capture container required')
+    for capture in captures:
+        agent.require(dynamic is not None
+            and capture.get('image')=='ghcr.io/mul-cps/cps-compute@sha256:042b8b60c0bbdfd2c4506ddf8007677016ef5d278ad5720d7d6b7ac41d136b1b'
+            and capture.get('command')==['python','-m','cps_compute.native_group_capture_server']
+            and capture.get('args')==['--config','/capture-private/server/config.json'],
+            'Only the reviewed dynamic-group capture server may be removed')
+    # This server requires the dynamic group runtime that is disabled above.
+    # Keep unrelated containers and every original volume/private setting.
+    spec['template']['spec']['containers']=[c for c in spec['template']['spec']['containers']
+        if c.get('name')!='approval-capture']
     spec['template'].setdefault('metadata',{}).setdefault('annotations',{})['cps.compute/native-qualification-config']=transition.digest({'policy_hash':policy.hash,'mode':mode})
     return {'version':1,'enabled':False,'live_applied':False,'hardware_qualified':False,
         'policy.patch.json':transition.replace_patch(originals['policy'],'/data',originals['policy']['data'],policy_data),

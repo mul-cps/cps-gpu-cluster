@@ -38,3 +38,9 @@ API spec readback. Server dry-run is not deployment or runtime qualification.
 The generated overlay is a bounded pilot artifact. A production release still
 requires a released Node source/image matrix and actual current-image GPU gates.
 No live transition, driver change, MIG operation or GPU qualification is claimed.
+
+Operator configuration projection explicitly uses0400. The generated reader
+accepts at most262144 bytes only for the independent Root-pinned pair, matching
+its policy/workspaces/history; legacy configurations retain their32768-byte
+limit. Ownership, no-follow, link-count, permission and typed schema guards remain.
+The actual56968-byte/76-entry candidate passed this reader in the deployed8c image.

@@ -15,7 +15,9 @@ Only the two trusted **disabled** qualification aliases may extend the catalog.
 Ordinary profiles, global qualification and all other catalog fields remain exact.
 Only the native modes, optional dynamic approval reader and policy hash change in the decoded runtime. Other runtime
 fields and other Secret data entries remain exact. Gateway Deployment changes are the qualification rollout annotation and removal
-of the exact owning dynamic approval heartbeat bootstrap when present. Image,
+of the exact owning dynamic approval heartbeat bootstrap when present. The exact
+pinned dynamic-only approval-capture container is also removed; its server requires
+the group runtime disabled by qualification mode. Retained container images,
 credentials, other environment entries, volumes, resources and other fields remain unchanged.
 
 `inverse_intent` recomputes that exact forward plan and compares all fresh current

@@ -177,7 +177,7 @@ def test_legacy_d48_behavior_and_all_other_function_bytes_are_preserved():
         return {n.name: ''.join(text.splitlines(True)[n.lineno-1:n.end_lineno]) for n in ast.parse(text).body if isinstance(n, (ast.FunctionDef, ast.ClassDef))}
     a, b = definitions(BASE), definitions(result)
     assert a.keys() == b.keys()
-    assert {name for name in a if a[name] != b[name]} == {'validate_config', 'validate_historical_configuration'}
+    assert {name for name in a if a[name] != b[name]} == {'validate_config', 'validate_historical_configuration', 'read_config'}
     assert b['validate_config'] == a['validate_config'].replace(
         "len(history) <= 64, 'Bounded explicit terminal history required'",
         "len(history) <= 128, 'Bounded explicit terminal history required'", 1)
@@ -254,3 +254,24 @@ def test_successor_extended_history_still_denies_invalid_or_unbounded_history(fa
     else: next(iter(config['terminal_history'].values()))['policy_hash'] = config['policy_hash']
     contract['terminal_history_sha256'] = baseline.canonical_sha256(config['terminal_history'])
     with pytest.raises(ValueError): successor(contract).validate_config(config)
+
+@pytest.mark.parametrize('padding,mode,accepted',[(40000,0o400,True),(262145,0o400,False),(0,0o600,False)])
+def test_generated_entrypoint_reads_bounded_full_history_configuration(tmp_path,padding,mode,accepted):
+ import os
+ config,_,_,_,contract=fixture();raw=json.dumps(contract,sort_keys=True,separators=(',',':')).encode();pin=hashlib.sha256(raw).hexdigest()
+ bundle=generator().successor_bundle(BASE,(HERE/'epoch8c.py').read_bytes(),raw,pin)
+ node=loaded(bundle['node_agent.py'],'full_history_entrypoint_'+str(padding)+'_'+str(mode))
+ path=tmp_path/'config.json';path.write_text(' '*padding+json.dumps(config));path.chmod(mode)
+ if accepted:assert node.read_config(path,trusted_uid=os.getuid())==config
+ else:
+  with pytest.raises(ValueError):node.read_config(path,trusted_uid=os.getuid())
+
+
+def test_larger_reader_bound_does_not_expand_unreviewed_legacy_configurations(tmp_path):
+ import os
+ import test_gateway_transition as gateway
+ _,_,_,_,contract=fixture();raw=json.dumps(contract,sort_keys=True,separators=(',',':')).encode();pin=hashlib.sha256(raw).hexdigest()
+ node=loaded(generator().successor_source(BASE,raw,pin),'legacy_large_file_guard')
+ config=gateway.fixture()['originals']['node_config']
+ path=tmp_path/'legacy.json';path.write_text(' '*40000+json.dumps(config));path.chmod(0o400)
+ with pytest.raises(ValueError,match='outside reviewed pair'):node.read_config(path,trusted_uid=os.getuid())
