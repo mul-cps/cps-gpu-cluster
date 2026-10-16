@@ -280,21 +280,43 @@ identities. Its generated init loop initially missed `.items()`; the operator
 artifact was corrected and its full script executed successfully on CPU before
 retry. The first custody snapshot then failed because a shared validator imported
 FastAPI, excluded from the node-only image. No cap mutation path was reached.
-The candidate is now stopped (replicas zero), readiness withdrawn and GPU starts
-fenced pending adoption of the corrected runtime artifact. Commit
+That failed candidate was stopped (replicas zero) with readiness withdrawn. Commit
 `c162e5893285392c2a24a59ad0abbf1867d969e8` defers web imports until HTTP route
 installation or actor checks; no web dependencies were added to the node image.
 Its exact full suite passed 2,747 tests and 68 subtests (six skipped). Two actual
 installed-node-only custody tests and the real 82-lifetime archive replay passed
 with 30 installed distributions and no web extras; lean SDK/node checks and
-byte-identical sdist rebuild passed. CI run 38955639154 and the corrected image
-build are in progress. This is not successful live adoption or GPU qualification.
+byte-identical sdist rebuild passed. CI run 38955639154 completed successfully in all four jobs: 2,746 Python tests
+and 68 subtests passed (seven skipped), 60 addon tests passed, and both installed
+node-only snapshot tests passed. The corrected image was published and adopted
+as described below. This does not qualify GPU access.
 
 All 26 existing Hub Pod UIDs remain unchanged. A separate read-only controlled
 Job verified all 401 original protected files against their recorded hashes,
 owner/mode/link counts and sizes; the completed Job and temporary pins were
 removed. Personal servers, original history files and driver settings were
 preserved.
+
+## Packaged node adoption and readiness gap
+
+The node-only image `2fb00bf0a389bd4aeb5e99131eb702b2bdef859f4f4c27c47d3840c3e716ac17`
+is running on the existing cordoned qualification node. Actual Pod
+`cps-native-node-agent-865b7f5686-89dfc` has UID
+`c812d4d8-a091-4fe6-9dc3-b81275a96c0e`; its original Deployment UID is preserved.
+Real custody acknowledgments were observed for the complete retained history.
+The process has one startup restart after its own Pod was not yet Ready.
+
+Continuous readiness is **not qualified**. The service withdraws its acknowledgment
+at each iteration, and completed checks were about 75 seconds apart. A read-only
+actual-process snapshot measured 13.31 seconds for 82 historical lifetimes and
+zero active intents: 1,077 ConfigMap GETs for 200 distinct ConfigMaps, two
+ConfigMap LISTs and 184 Pod GETs. The most repeated ConfigMap was read 56 times.
+A fresh observation at 19:47:42 UTC again found the acknowledgment empty while
+the Pod remained Running with one restart. Snapshot-local immutable historical
+read deduplication is under test; current authority, ledger, Pod and final-fence
+checks must remain fresh. No cap mutation or GPU workload was run for this
+measurement. Gateway and Hub consumer promotion and hardware qualification
+remain open; group GPU starts remain fenced.
 
 ## Verified deployment and recovery
 

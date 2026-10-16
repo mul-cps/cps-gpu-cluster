@@ -1,14 +1,24 @@
 {
   "application_commit": "c162e5893285392c2a24a59ad0abbf1867d969e8",
   "ci_run": 38955639154,
-  "ci_status": "in_progress",
+  "ci_status": "success",
+  "ci_tests": {
+    "addon_tests_passed": 60,
+    "installed_node_only_tests_passed": 2,
+    "jobs_successful": 4,
+    "passed": 2746,
+    "skipped": 7,
+    "subtests_passed": 68
+  },
+  "continuous_live_readiness_qualified": false,
   "gateway_routes_unchanged_and_tested": true,
   "installed_node_distributions": 30,
   "installed_node_only_snapshot_tests_passed": 2,
   "installed_node_verification_passed": true,
   "lazy_http_import_boundary_review": "clear",
   "lean_sdk_verification_passed": true,
-  "live_custody_acknowledged": false,
+  "live_custody_acknowledged": true,
+  "live_image": "ghcr.io/mul-cps/cps-native-node@sha256:2fb00bf0a389bd4aeb5e99131eb702b2bdef859f4f4c27c47d3840c3e716ac17",
   "local_tests": {
     "passed": 2747,
     "skipped": 6,
