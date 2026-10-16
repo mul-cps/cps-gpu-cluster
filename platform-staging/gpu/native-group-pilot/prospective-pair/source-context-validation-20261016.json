@@ -1,0 +1,14 @@
+{
+  "version": 1,
+  "scope": "genuine Source context CPU qualification",
+  "focused_tests_passed": 11,
+  "suite_tests_passed": 837,
+  "suite_skipped": 14,
+  "suite_subtests_passed": 851,
+  "live_source_freeze_executed": false,
+  "gpu_5_20_executed": false,
+  "files": {
+    "source_context.py": "6baaf87db5cc1d2729f29bef3dd3fc53cbd64a88764c913ef5264e46f332a51e",
+    "test_source_context.py": "ea9a1decd8711a5d39679ba57bd7bf1559485b4165b6870d05289d58f16ef368"
+  }
+}

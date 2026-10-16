@@ -200,3 +200,14 @@ Both actual registrations were read and match full captured Source records.
 No application/provider was instantiated in the operator, neither Source
 database was opened and both frontends remain active. Context/operation callback
 wiring and actual freeze/handover remain next; current5+20 is still unexecuted.
+
+## Genuine Source context factory
+
+The pair operator now composes the genuine released CourseServiceApp loader with
+fresh Source writer exclusion and the scoped Gateway reader. Forward/restoration
+policy modes are explicit. Exact module closure, Root members/caps, existing
+SQLite/config paths and local-only provider settings are checked. Registration
+callbacks revalidate the actual freeze, and altered reader code is rejected.
+Eleven focused CPU tests pass. This is implementation evidence, not a live
+freeze, Source migration or notebook531 hardware result. Both frontends have not
+been intentionally paused by this change; observer RBAC and live execution remain.
