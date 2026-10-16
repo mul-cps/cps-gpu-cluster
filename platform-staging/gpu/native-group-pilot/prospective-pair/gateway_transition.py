@@ -20,7 +20,7 @@ def owner(obj,kind):
     return meta
 
 
-def forward_intent(*,proposal,originals,contract_raw,contract_sha256):
+def forward_intent(*,proposal,originals,contract_raw,contract_sha256,retained_qualification=None):
     from cps_compute.policy import Policy
     from cps_compute.native_groups import NativeGroupDeployment
     from cps_compute.native_qualification import NativeGroupQualification
@@ -35,6 +35,11 @@ def forward_intent(*,proposal,originals,contract_raw,contract_sha256):
     NativeGroupQualification.from_config(mode,policy)
     validator,_=_candidate_history_context()
     old=validator.validate_config(originals['node_config']);node=validator.validate_config(proposal['node-config.json'])
+    if retained_qualification is not None:
+        from configuration_inverse import immutable_node, retained_as_current
+        agent.require(immutable_node(retained_qualification,validator)==node
+            and retained_qualification['data']=={'config.json':transition.canonical(node)},
+            'Exact retained immutable qualification configuration required')
     agent.require(oldpolicy.hash==old['policy_hash']=='sha256:d48f6553ed036c2e7adcc97417623fe0308be93ad13b20f246047ada118511b0'
         and old['mode']=='qualified-group' and old['enabled'] is True
         and oldpolicy.catalog['gpuQualification']['qualified'] is False
@@ -42,7 +47,9 @@ def forward_intent(*,proposal,originals,contract_raw,contract_sha256):
         and policy.catalog['gpuQualification']['qualified'] is False
         and node['enabled'] is True and node['mode']=='operator-qualification'
         and node['workspaces']==contract['workspaces']
-        and all(node['terminal_history'].get(u)==e for u,e in old['terminal_history'].items())
+        and all(node['terminal_history'].get(u)==e or (retained_qualification is not None
+            and retained_as_current(e,retained_qualification,node))
+            for u,e in old['terminal_history'].items())
         and transition.digest(node['terminal_history'])==contract['terminal_history_sha256']
         and node['pool']==mode['node_pool'] and node['authority_namespace']==mode['authorityNamespace']==old['authority_namespace']
         and node['pool']['memory_budget_mib']==25600 and node['pool']['max_workspaces']==2

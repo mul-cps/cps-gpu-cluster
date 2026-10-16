@@ -35,3 +35,10 @@ standalone Gateway change. No live deployment or hardware qualification is claim
 Validation on 16 October 2026: the focused Node/Gateway matrix passed **48 tests**.
 The complete native-group pilot suite passed **679 tests and 851 subtests**, with
 14 skips. These results are CPU evidence, not deployment or GPU acceptance.
+
+Repeated cycles accept the same optional retained immutable qualification map as
+the Node planner. Prior completed same-policy lifetimes may be parsed as current
+again only when their original configuration UID/full-data reference matches
+that exact map. Gateway and Hub share this guarded forward input. No ledger,
+protected journal, enrollment or completion record is removed. Full regression
+suite:853 passed,14 skipped,851 subtests.

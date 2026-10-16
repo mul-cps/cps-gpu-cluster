@@ -137,3 +137,22 @@ def test_qualification_removes_only_the_pinned_group_capture_and_inverse_restore
 def test_foreign_capture_container_is_never_silently_removed(field,value):
  args=capture_fixture();args['originals']['gateway_deployment']['spec']['template']['spec']['containers'][1][field]=value
  with pytest.raises(ValueError):tool().forward_intent(**args)
+
+
+def test_gateway_reentry_requires_exact_prior_qualification_reference():
+ args=fixture();node=args['proposal']['node-config.json']
+ cm=dict(apiVersion='v1',kind='ConfigMap',immutable=True,metadata=dict(namespace='cps-native-system',name='cps-native-node-qualification-repeat',uid=uid(905),resourceVersion='1'),data={'config.json':transition.canonical(node)})
+ from test_node_successor import fixture as node_fixture
+ entry=copy.deepcopy(node_fixture()[3]);entry.update(policy_hash=node['policy_hash'],profile='interactive-native-qualification-5',cap_mib=5120)
+ entry['configuration_authority']={k:cm['metadata'][k] for k in ('namespace','name','uid')}
+ entry['configuration_authority'].update(data_sha256=transition.digest(cm['data']),policy_hash=node['policy_hash'])
+ args['originals']['node_config']['terminal_history'][uid(906)]=entry
+ with pytest.raises(ValueError):tool().forward_intent(**args)
+ args['retained_qualification']=cm
+ result=tool().forward_intent(**args);assert result['live_applied'] is False
+ for fault in ('uid','data','mutable'):
+  bad=copy.deepcopy(args)
+  if fault=='uid':bad['retained_qualification']['metadata']['uid']=uid(907)
+  elif fault=='data':bad['retained_qualification']['data']['config.json']+=' '
+  else:bad['retained_qualification']['immutable']=False
+  with pytest.raises(ValueError):tool().forward_intent(**bad)
