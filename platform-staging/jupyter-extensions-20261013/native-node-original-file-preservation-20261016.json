@@ -1,0 +1,17 @@
+{
+  "api_token_mounted": false,
+  "gpu_devices_mounted": false,
+  "image": "ghcr.io/mul-cps/cps-native-node@sha256:ff65b54750d800e705295e14df85e256badb6dd04fe6dedb9f9884a64c18b224",
+  "job_uid": "8ee53b35-0f17-4071-b8e0-e921642eaad0",
+  "node": "k3s-wk-gpu2",
+  "production_qualified": false,
+  "result": {
+    "gpu_calls": false,
+    "input_sha256": "dbc9ce748a5a158c642158c8ed7b9d3c24156f360db4da82e930f46a88d8eb3f",
+    "original_files_verified": 401,
+    "passed": true,
+    "writes": false
+  },
+  "state_mount_read_only": true,
+  "version": 1
+}

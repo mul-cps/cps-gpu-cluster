@@ -1,0 +1,47 @@
+{
+  "candidate_image": "ghcr.io/mul-cps/cps-native-node@sha256:ff65b54750d800e705295e14df85e256badb6dd04fe6dedb9f9884a64c18b224",
+  "claims": 92,
+  "custody_acknowledged": false,
+  "deployment_uid": "03e6bf5e-39ab-4c4a-b73f-1d6cf0ee8076",
+  "fence": {
+    "ack_invalidated": true,
+    "all_released": true,
+    "barrier_resource_version": "372078642",
+    "before_resource_version": "371886446",
+    "claims": 92,
+    "node_publisher_absent": true,
+    "original_ledger_uid": "33ab24b0-8e9a-4bee-b308-12a19c076924",
+    "raw_state_unchanged": true
+  },
+  "gpu_workloads_started": false,
+  "init_loop_items_fixed_and_fully_executed": true,
+  "ledger_raw_sha256": "222b543df73c3772519f4ec91ded514d95ecf512fcd39021bde8044537f7ff20",
+  "ledger_resource_version": "372078642",
+  "ledger_uid": "33ab24b0-8e9a-4bee-b308-12a19c076924",
+  "missing_runtime_module": "fastapi",
+  "native_cap_mutations_reached": false,
+  "node_only_image_red_reproduced": true,
+  "original_files_verified": 401,
+  "original_hub_pod_uid_sets_unchanged": {
+    "cit-jhub": 10,
+    "jupyterhub": 16
+  },
+  "production_qualified": false,
+  "replicas": 0,
+  "sql_lock_barrier": {
+    "active_member_reservations": 0,
+    "active_workspace_bindings": 0,
+    "gateway_image_id": "ghcr.io/mul-cps/cps-compute@sha256:9e695015ebd110a44bc3cb83e178508251ca33f601e3ae5aa360c514ee9caff5",
+    "gateway_uid": "7197e792-f90f-4f1a-9e7c-dd610946e156",
+    "lock_acquired_at": "2026-10-16T19:11:34.447196+00:00",
+    "lock_timeout_seconds": 10,
+    "missing_binding_reservations": 0,
+    "orphan_bindings": 0,
+    "quiescent": true,
+    "rollback_completed_at": "2026-10-16T19:11:34.447395+00:00",
+    "row_mutations": false,
+    "schema_changes": false
+  },
+  "status": "paused-candidate-awaiting-node-only-runtime-fix",
+  "version": 1
+}

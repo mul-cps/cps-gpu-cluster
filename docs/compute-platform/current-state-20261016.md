@@ -266,6 +266,30 @@ metadata HTTP forbidden, 60 addon tests and actual installed checks on Lab
 4.5.7/4.6.4 passed. CI run 38950947128 passed all four jobs: 2,744 tests and 68 subtests
 (seven skipped), 60 addon tests and both installed Lab/Hub/SDK checks.
 
+## Controlled adoption found a node-only runtime dependency defect
+
+The old publisher was stopped and its ACK withdrawn. A UID/RV/full-data-tested,
+metadata-only ledger barrier advanced resourceVersion 371886446 to 372078642;
+all original state bytes and 92 released claims remain unchanged. A lock-only
+SQLite BEGIN IMMEDIATE barrier observed zero reservations and rolled back with
+no row/schema changes. Source writer ordering was verified from the actual
+Gateway image before relying on this fence.
+
+The replacement used the published corrected image and actual Pod/ReplicaSet/SA
+identities. Its generated init loop initially missed `.items()`; the operator
+artifact was corrected and its full script executed successfully on CPU before
+retry. The first custody snapshot then failed because a shared validator imported
+FastAPI, excluded from the node-only image. No cap mutation path was reached.
+The candidate is now stopped (replicas zero), readiness withdrawn and GPU starts
+fenced while the lazy web dependency boundary and installed-node runtime test
+are fixed. This is not successful adoption or GPU qualification.
+
+All 26 existing Hub Pod UIDs remain unchanged. A separate read-only controlled
+Job verified all 401 original protected files against their recorded hashes,
+owner/mode/link counts and sizes; the completed Job and temporary pins were
+removed. Personal servers, original history files and driver settings were
+preserved.
+
 ## Verified deployment and recovery
 
 Gateway `9e695015` from compute source `de90610f` is now deployed. Both Hubs
