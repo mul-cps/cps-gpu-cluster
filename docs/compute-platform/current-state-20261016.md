@@ -287,3 +287,31 @@ all completion/journal/ledger/Pod-absence checks. A read-only check on the actua
 Node validated all76 records and rejected four individual tampering cases. No
 driver was opened, authority written or GPU workload started. The850-test suite
 plus851 subtests passes (14 skipped). The actual5/20GiB hardware run is still open.
+
+## Current531 actual GPU5/20 Start, OOM/recovery and Stop
+
+The normal console grant/profile APIs selected the two bounded operator aliases,
+and both normal Start calls returned200. The node agent automatically sealed the
+5GiB and20GiB caps. Both current531 notebook Pods ran on GPU2. Concurrent PyTorch
+clients saw their exact assigned memory limits, rejected a cap+64MiB allocation
+with typed `torch.OutOfMemoryError`, recovered with a verified small allocation,
+and continued computing while their peer crossed OOM/recovery. Each client
+touched at most128MiB; unexpected large allocations would never be touched.
+Both Pod UIDs and zero restart counts survived.
+
+Both normal Stop calls returned200. All88 allocations are released; actual node
+inventory reports zero active entries and zero charged bytes. Both QA workspaces
+returned to CPU and their original CPU grants. MIG current/pending remain0 and
+the driver is615.71.09. Complete terminal inverse validation passed for all78
+records, including physical zero witnesses and original protected raw files.
+The baseline rollout completed: complete original Gateway/Hub specs and policy/runtime/Hub
+Secret data are restored. Both Source consoles are ready with their original specs;
+all four personal Pod UIDs survive. Node retains the exact generated compatibility
+source and restored D48 configuration with the two new immutable qualification
+references. It progressed through iteration2. The new Node ReplicaSet required
+refreshing exact GET targets in two Roles; no other rules changed.
+
+This closes the current-image5/20 ordinary PyTorch OOM/recovery gate. It does not
+close restart/reacquisition, memory-import, MPS, or broader production gates.
+Evidence hashes and limits are recorded in
+`platform-staging/gpu/native-group-pilot/prospective-pair/current531-torch-isolation-20261016.json`.

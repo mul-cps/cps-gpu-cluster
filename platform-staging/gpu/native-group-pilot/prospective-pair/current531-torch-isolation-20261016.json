@@ -1,0 +1,43 @@
+{
+  "automatic_caps_observed": true,
+  "baseline_restoration_verified": true,
+  "date": "2026-10-16",
+  "driver": "615.71.09",
+  "evidence_sha256": {
+    "native-after.private.json": "0969f07859c31db8cede80385faa2d46a6a155c54d7e719cb9f5563d08b1a0d5",
+    "pods-before.private.json": "2c4c2260b4f58e838016e23d97888f636f8b57ac4678a15e4e595c85b59239fe",
+    "probe.py": "233179bc12a29d339c492d796ea0b12128dfc9c1597a1c4f4c66e64db9b66e09",
+    "result-a.private.json": "ed781b9ff6559f97e6a07184ccf1e345e0622b2d12efd9762858cf7e62a6dba4",
+    "result-b.private.json": "f3ba2c757f10923de0e29e692eaed0fc54002d643e6ac53e45741922cf298c0f"
+  },
+  "full_production_qualified": false,
+  "full_terminal_authority_records": 78,
+  "maximum_touched_mib_per_client": 128,
+  "mig_current": 0,
+  "mig_pending": 0,
+  "native_entries_after_stop": 0,
+  "native_used_bytes_after_stop": 0,
+  "normal_profile_and_start_stop_apis": true,
+  "passed": true,
+  "peer_progress_spans_oom_and_recovery": true,
+  "personal_pod_uids_preserved": true,
+  "pod_uids_and_zero_restarts_preserved": true,
+  "profiles_mib": [
+    5120,
+    20480
+  ],
+  "qa_profiles_restored_to_cpu": true,
+  "released_allocations_after_stop": 88,
+  "remaining_gates": [
+    "restart/reacquisition",
+    "memory-import isolation",
+    "MPS qualification",
+    "broader scheduling/startup/recovery/release qualification"
+  ],
+  "services_ready": true,
+  "temporary_gpu_grants_removed": true,
+  "terminal_history_retained": true,
+  "typed_oom_both": true,
+  "version": 1,
+  "workload_image": "ghcr.io/mul-cps/cps-jupyter-notebook@sha256:531027c8e330d4ce818598e998a29d502433e9064f06a32dfc208a06ef2d0ba4"
+}
