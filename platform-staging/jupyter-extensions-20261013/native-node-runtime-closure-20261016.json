@@ -1,0 +1,25 @@
+{
+  "api_token_mounted": false,
+  "cri_socket_mounted": false,
+  "gpu_devices_mounted": false,
+  "gpu_resources_requested": false,
+  "image": "ghcr.io/mul-cps/cps-native-node@sha256:f312267e949cbac262468d6afdf27193e2e06fd14b7a4c9c325a0e80e0d37f78",
+  "job_uid": "61bf4f5a-524d-40cd-877b-d34829355eea",
+  "node": "k3s-wk-gpu2",
+  "node_cordon_preserved": true,
+  "pod_image_id": "ghcr.io/mul-cps/cps-native-node@sha256:f312267e949cbac262468d6afdf27193e2e06fd14b7a4c9c325a0e80e0d37f78",
+  "pod_uid": "b684fcaf-adcb-474a-a95b-93a0536ad8ad",
+  "production_qualified": false,
+  "result": {
+    "cri_socket_mounted": false,
+    "crictl_version": "crictl github.com/k3s-io/containerd/v2 v1.34.0-k3s2",
+    "files_verified": 3,
+    "gpu_calls": false,
+    "nvml_initialized": false,
+    "nvml_library_load": true,
+    "passed": true
+  },
+  "runtime_library_load_only": true,
+  "source_manifest_sha256": "d4f01f496054479eaee40951bc68b3aaf87c3083541bf6783f81631155b0db7c",
+  "version": 1
+}

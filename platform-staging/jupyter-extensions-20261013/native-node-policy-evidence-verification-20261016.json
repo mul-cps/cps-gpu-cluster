@@ -1,0 +1,24 @@
+{
+  "application_commit": "66fb45acc3aafceb471b9e8b7d2441e61dc9246b",
+  "ci_run": 38950947128,
+  "ci_status": "in_progress",
+  "combined_head": "419e29197a4797710935c5acd2ac4777b36e3fa7",
+  "deployment_adopted": false,
+  "independent_review": "clear",
+  "installed_lean_node_sdk_verified": true,
+  "legacy_v1_v2_unchanged": true,
+  "local_tests": {
+    "passed": 2745,
+    "skipped": 6,
+    "subtests_passed": 68
+  },
+  "production_qualified": false,
+  "sdist_rebuild_byte_identical": true,
+  "source_test_log_sha256": "5bc4ecad548dc3d9e16862164dce4b26451972d8b337e6813bec7490dbfa79ab",
+  "v3_policy_evidence_required_exact_integer": [
+    2,
+    3
+  ],
+  "version": 1,
+  "wheel_sha256": "2387ea2897d942c1e64a9245b9bc18d7fc4062f3c85e42db8743620876248802"
+}

@@ -228,20 +228,37 @@ contains no host driver tools or private configuration; deployment supplies them
 explicitly. The existing node agent has not been replaced. Adoption, rollback,
 restart/cancellation and real GPU isolation tests remain open.
 
-## Cutover contract correction in progress
+## Cutover contract corrected; image adoption pending
 
 Actual typed validation of the rendered v3 deployment rejected the retained
 `d48f6553...511b0` catalog: policy/runtime guards derived `native-groups-v3`
 from the authority schema version, while the catalog records its measured
 `native-groups-v2` evidence. Deployment and approval publication stopped before
-adoption. An explicit authenticated policy-evidence version is being added to
-v3 proof data so transport schema changes preserve the measured policy label;
-legacy v1/v2 guards remain unchanged. A rebuilt image and fresh validation are
-required. One unreferenced v3 proof ConfigMap was created before this guard;
+adoption. Application commit `66fb45acc3aafceb471b9e8b7d2441e61dc9246b` now requires
+an explicit authenticated policy-evidence version in v3 proof data, preserving
+the measured policy label across transport changes; legacy v1/v2 guards remain
+unchanged. The exact isolated suite passed 2,745 tests and 68 subtests (six
+skipped); installed lean SDK/node checks and byte-identical sdist rebuild passed.
+The rebuilt image and fresh deployment validation are pending. One unreferenced v3 proof ConfigMap was created before this guard;
 it grants no access and is superseded by the corrected explicit proof schema.
 The existing agent remains running, and the original 92-claim ledger retains
 its UID, resourceVersion and raw bytes. The five-object terminal archive is
 valid independently of this correction.
+
+## Host runtime and Lab build verification
+
+A controlled CPU-only Job on GPU2 verified all three read-only runtime file
+hashes, loaded the mounted NVML library without initializing it, and executed
+`crictl --version`. It mounted no GPU devices, CRI socket or API token and
+requested no GPU resources. The node remained cordoned; the completed test Job
+was removed. This proves loader/tool compatibility for the earlier qualification
+image, not GPU isolation or the corrected image's live adoption.
+
+Commit `419e29197a4797710935c5acd2ac4777b36e3fa7` fixes the CI build's remote
+metadata fallback by building with pinned Lab 4.5.7 and the existing npm builder
+4.5.11. All 446 locked dependency entries are unchanged. A fresh build with
+metadata HTTP forbidden, 60 addon tests and actual installed checks on Lab
+4.5.7/4.6.4 passed. CI run 38950947128 is in progress.
 
 ## Verified deployment and recovery
 

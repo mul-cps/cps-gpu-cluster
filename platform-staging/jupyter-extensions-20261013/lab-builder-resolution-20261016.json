@@ -1,0 +1,34 @@
+{
+  "application_commit": "419e29197a4797710935c5acd2ac4777b36e3fa7",
+  "build_lab": "4.5.7",
+  "ci_run": 38950947128,
+  "ci_status": "in_progress",
+  "failed_ci_run": 38948406416,
+  "files": {
+    ".github/workflows/test.yml": "c0be3b973a9042c45566844b633cff2aa9e66dfcfe59f32515df4b1df19042a8",
+    "jupyterlab-addon/package-lock.json": "b61c979a3a702f47b9501a3d3bee8c39aa7bad1dc3e2bf226685f7b6894291ff",
+    "jupyterlab-addon/package.json": "3a52c9d3b71075e3cd4fa02b188ec4b508aeebbc157e996c53adbf2669357312"
+  },
+  "fresh_npm_ci": true,
+  "generated_committed_assets_changed": false,
+  "installed_labextension_list_ok": true,
+  "installed_labs": [
+    "4.5.7",
+    "4.6.4"
+  ],
+  "installed_pip_check": true,
+  "installed_wheel_record_verification": true,
+  "live_operations": false,
+  "metadata_http_forbidden_build_passed": true,
+  "npm_builder": "4.5.11",
+  "npm_locked_dependency_nodes_unchanged": 446,
+  "npm_tests": {
+    "failed": 0,
+    "passed": 60
+  },
+  "passed": true,
+  "runtime_api_changes": false,
+  "version": 1,
+  "wheel_owned_assets_per_lab": 6,
+  "wheel_sha256": "0aef05fb8579e85c6117f1a8d0e6a3e6a3c326eed6b9b72213635bd83efa1b9f"
+}
