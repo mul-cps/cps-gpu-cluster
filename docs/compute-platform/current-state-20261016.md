@@ -328,7 +328,8 @@ filesystem/API mutations were actively blocked and no driver was initialized.
 This diagnostic did not deploy the new source. The qualification image
 `ghcr.io/mul-cps/cps-native-node@sha256:05b052277f84789ff39be6cea38e5eef3b393c4216c5c39b2a3dc94db8557b4e`
 is published and registry verified. Its installed isolated custody tests and
-82-lifetime replay passed with node-only dependencies. CI run 38958413047 is pending. Continuous acknowledgment renewal still needs a separate
+82-lifetime replay passed with node-only dependencies. CI run 38958413047 passed all four jobs: 2,774 Python tests and 68 subtests
+(seven skipped), 60 addon tests and two installed node-only snapshot tests. Continuous acknowledgment renewal still needs a separate
 safe read-only path; neither a short snapshot nor passing tests proves that gate.
 
 ## Verified deployment and recovery

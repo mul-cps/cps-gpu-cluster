@@ -11,7 +11,15 @@
   },
   "application_commit": "b4cfa046e51645e49288e66e98649724ff2b48a7",
   "ci_run": 38958413047,
-  "ci_status": "in_progress",
+  "ci_status": "success",
+  "ci_tests": {
+    "addon_tests_passed": 60,
+    "installed_node_only_tests_passed": 2,
+    "jobs_successful": 4,
+    "passed": 2774,
+    "skipped": 7,
+    "subtests_passed": 68
+  },
   "continuous_readiness_qualified": false,
   "deployed": false,
   "live_read_only_diagnostic": {
