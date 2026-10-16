@@ -1,0 +1,19 @@
+{
+  "fresh_source_tests_passed": 14,
+  "frozen_source_migration_sha256": "53c5ed41ad95729a6f4248cf9d3f384c4c5c834b0bbef92134fe25c9ede8f870",
+  "hardware_qualified": false,
+  "live_applied": false,
+  "normal_audited_provider_and_http_registration_used": true,
+  "observed_at": "2026-10-16T10:54:31.978545+00:00",
+  "source_and_legacy_tests_passed": 30,
+  "source_restoration_complete": false,
+  "source_sha256": {
+    "source_handover.py": "fedde05b326c1eb7c70f2c54448c198b2549c187aa3589422a21f932b41b7d35",
+    "test_source_handover.py": "2744e33620af9fd1ebf87bd47d219e12036f58f732ab5b4b912f8f3e238f4f34"
+  },
+  "suite_skipped": 14,
+  "suite_subtests_passed": 851,
+  "suite_tests_passed": 714,
+  "test_log_sha256": "8a4cad6b284cd3e6c5980df5237b02123d341383b153df14dd0d845fc54b5553",
+  "version": 1
+}

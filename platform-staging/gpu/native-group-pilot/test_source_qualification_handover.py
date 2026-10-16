@@ -50,16 +50,18 @@ class Core:
 
 
 class Fixture:
-    async def setup(self, directory, source='cps'):
+    async def setup(self, directory, source='cps', *, fresh_profile=None):
         self.policy, config = group_fixture()
-        self.source = source; self.workspace = 'native-group-b' if source == 'cps' else 'native-group-a'; self.members = [
+        self.source = source; self.workspace = ('operator-qualification-531-test-'+str(fresh_profile) if fresh_profile else ('native-group-b' if source == 'cps' else 'native-group-a')); self.members = [
             '00000000-0000-4000-8000-000000000001','00000000-0000-4000-8000-000000000002']
         approval = config['workspaces'].pop('cps:group-a')
         approval.update(owner=source+'nativegroup'+self.workspace[-1], group_id='native-pilot-group-'+self.workspace[-1],
             pod='jupyter-'+source+'nativegroup'+self.workspace[-1]+'--rtc', members=self.members,
             namespace='jupyterhub' if source=='cps' else 'cit-jhub', principal='workspace:'+source+':'+self.workspace)
+        if fresh_profile:
+            approval.update(owner='cps-ws-'+'a'*32,pod='jupyter-cps-ws-'+'a'*32+'--rtc')
         approval['storage']['namespace']=approval['namespace']
-        name=h.PROFILES[source];size=5 if source=='cps' else 10
+        name=h.PROFILES[source] if fresh_profile is None else 'interactive-native-qualification-'+str(fresh_profile);size=fresh_profile or (5 if source=='cps' else 10)
         catalog=copy.deepcopy(self.policy.catalog)
         profile=copy.deepcopy(catalog['profiles']['interactive-shared-5'])
         profile['enabled']=False;profile['gpu']['nominalMemoryGiB']=size
@@ -68,13 +70,28 @@ class Fixture:
         from cps_compute.policy import Policy
         self.policy=Policy(catalog)
         approval['profiles']=[name];approval['ceiling']['gpuMemoryGiB']=size
-        pool=copy.deepcopy(config['node_pool']);pool.update(total_memory_mib=40960,free_memory_mib=40470,headroom_mib=1024,memory_budget_mib=15360,boot_id='209f8bc9-a478-48e4-925a-6e07ffa56f7a',driver_generation='b10498fc-9153-4394-875a-ea7cfb498625')
+        pool=copy.deepcopy(config['node_pool']);pool.update(total_memory_mib=40960,free_memory_mib=40470,headroom_mib=1024,memory_budget_mib=25600 if fresh_profile else 15360,boot_id='209f8bc9-a478-48e4-925a-6e07ffa56f7a',driver_generation='b10498fc-9153-4394-875a-ea7cfb498625')
         config={'enabled':True,'version':1,'operator_only':True,'policy_hash':self.policy.hash,'policy_version':self.policy.version,
             'node_pool':pool,'authorityNamespace':'cps-native-system','gateImage':config['gateImage'],'workloadImage':config['workloadImage'],
             'profile_caps':{name:size*1024},'capacity_observation_sha256':'sha256:'+'d'*64,
             'workspaces':{source+':'+self.workspace:approval}}
         self.groups=NativeGroupQualification.from_config(config,self.policy)
-        original_ceiling={'cpu':'4','memory':'16Gi','gpuMemoryGiB':5}
+        if fresh_profile:
+            mode=json.loads(self.groups.document);mode['node_pool'].update(memory_budget_mib=25600,max_workspaces=2)
+            image='ghcr.io/mul-cps/cps-jupyter-notebook@sha256:531027c8e330d4ce818598e998a29d502433e9064f06a32dfc208a06ef2d0ba4'
+            mode['workloadImage']=image;catalog['profiles'][name]['images']=[image]
+            peer=copy.deepcopy(approval);peer_scope='cps:operator-qualification-531-peer-'+str(20 if size==5 else 5)
+            peer.update(owner='cps-ws-'+'b'*32,pod='jupyter-cps-ws-'+'b'*32+'--rtc',principal='workspace:'+peer_scope,members=['00000000-0000-4000-8000-000000000003'],profiles=['interactive-native-qualification-'+str(20 if size==5 else 5)])
+            peer['storage']['pvc']='peer-pvc';peer['storage']['pv']='peer-pv';peer['storage']['path']='/mnt/peer'
+            peer['ceiling']['gpuMemoryGiB']=20 if size==5 else 5
+            mode['profile_caps'][peer['profiles'][0]]=(20 if size==5 else 5)*1024
+            mode['workspaces'][peer_scope]=peer
+            peer_profile=copy.deepcopy(profile);peer_profile['gpu']['nominalMemoryGiB']=20 if size==5 else 5;peer_profile['images']=[image]
+            catalog['profiles'][peer['profiles'][0]]=peer_profile
+            self.policy=Policy(catalog);mode['policy_hash']=self.policy.hash
+            self.groups=NativeGroupQualification.from_config(mode,self.policy)
+        old_profile='interactive-cpu' if fresh_profile else h.OLD_PROFILE
+        original_ceiling={'cpu':'4','memory':'16Gi','gpuMemoryGiB':0 if fresh_profile else 5}
         self.provider = LocalCourseProvider(directory / 'console.sqlite',self.source)
         self.calls = []
         await self.provider.put('courses',{'id':'course','resource_ceiling':original_ceiling,
@@ -89,14 +106,14 @@ class Fixture:
             await self.provider.put('memberships',{'id':'m'+str(index),'course_id':'course','term_id':'term',
                 'group_id':approval['group_id'],'person_id':'member'+str(index),'canonical_person_id':member},actor='admin')
         local = {'id':self.workspace,'course_id':'course','term_id':'term','group_id':approval['group_id'],
-            'hub_user':approval['owner'],'hub_server':'rtc','profile':h.OLD_PROFILE,'state':'stopped',
+            'hub_user':approval['owner'],'hub_server':'rtc','profile':old_profile,'state':'stopped',
             'course_ceiling':original_ceiling,'namespace':approval['namespace'],'pod':approval['pod'],
             'notice':'Files retained; revalidation required.'}
         self.local = await self.provider.put('workspaces',local,actor='admin')
         self.store = ControlStore(directory / 'central.sqlite')
         self.reservations = Reservations(directory / 'reservations.sqlite')
         old = {'workspace':self.workspace,'policy_hash':'sha256:'+'e'*64,**copy.deepcopy(approval),
-            'profiles':[h.OLD_PROFILE],'workspace_label':self.policy.labels['workspace'],
+            'profiles':[old_profile],'workspace_label':self.policy.labels['workspace'],
             'workspace_hash':self.policy.owner_label(self.source+':'+self.workspace)}
         old['ceiling']=copy.deepcopy(original_ceiling)
         old['storage'].update(state='active', proof_of_preservation={'sentinel':'unchanged'})
@@ -158,6 +175,10 @@ class Fixture:
                 'ledger_uid':self.core.maps[LEDGER_NAME]['metadata']['uid'],
                 'enrollment_uid':self.core.maps[self.enrollment_name]['metadata']['uid'],'enrollment_sha256':h.digest(enrollment),
                 'cleanup_uid':self.core.maps[self.cleanup_name]['metadata']['uid'],'cleanup_sha256':h.digest(cleanup)}}
+        if fresh_profile:
+            self.ledger={'version':1,'allocations':{}};self.set_ledger(self.ledger)
+            self.core.maps.pop(self.enrollment_name);self.core.maps.pop(self.cleanup_name)
+            self.review['stopped']={'kind':'never-enrolled','ledger_uid':self.core.maps[LEDGER_NAME]['metadata']['uid'],'attempt':None}
         self.review['original_course']=copy.deepcopy((await self.provider.courses())[0])
         self.review['target_ceiling']=copy.deepcopy(approval['ceiling'])
         self.freeze_calls = 0; self.fail_freeze_at = None

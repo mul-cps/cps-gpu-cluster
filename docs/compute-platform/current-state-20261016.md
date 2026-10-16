@@ -73,8 +73,10 @@ do not qualify notebook531 or the full eight-GPU service.
 1. The Source531 consumer blocker is cleared: both consoles now run
    [consumer `dbaad518`](../../platform-staging/admin/qualification/compute-consumer-531-20261016/adoption-receipt.json).
    Their live 16-module closures, matching backups and the authenticated capture
-   API passed. Source record handover/restoration for the operator workspaces
-   remains required; the image adoption does not qualify notebook531 hardware.
+   API passed. A fresh CPU-to-qualification Source handover adapter now passes real provider
+   and ASGI registration tests for both5 and20, retaining the frozen admin,
+   freeze, grants and storage guards. Source restoration and coordinated live
+   execution remain required; image adoption does not qualify notebook531 hardware.
 2. Qualification history support now accepts 128 records in the offline
    candidate and prospective Node generator; replay validated all 85 allocations
    and 75 terminal entries without truncation. The deployed Node is unchanged.
