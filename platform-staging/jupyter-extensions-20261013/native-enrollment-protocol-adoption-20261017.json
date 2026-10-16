@@ -1,0 +1,115 @@
+{
+  "version": 1,
+  "observed_at": "2026-10-16T23:24:48.945828+00:00",
+  "source_revision": "610814a28dbccd26f47cfd99597d3479ff17daa1",
+  "stage": "deployed; active GPU qualification failed",
+  "images": {
+    "node": {
+      "tag": "ghcr.io/mul-cps/cps-native-node:enrollment-610814a",
+      "digest": "sha256:5496e116fbf5db20e6bb277ae353b15d4416f0fa386c24ee6d5d48c0fb67c248",
+      "immutable": "ghcr.io/mul-cps/cps-native-node@sha256:5496e116fbf5db20e6bb277ae353b15d4416f0fa386c24ee6d5d48c0fb67c248"
+    },
+    "gateway": {
+      "tag": "ghcr.io/mul-cps/cps-compute:gateway-enrollment-610814a",
+      "digest": "sha256:d43bbe3da5072948da06eb1ad959bad4a2392cd9a2e7d8765a7bb963161fbd58",
+      "immutable": "ghcr.io/mul-cps/cps-compute@sha256:d43bbe3da5072948da06eb1ad959bad4a2392cd9a2e7d8765a7bb963161fbd58"
+    },
+    "hub": {
+      "tag": "ghcr.io/mul-cps/cps-compute:hub-enrollment-610814a",
+      "digest": "sha256:c61f8b13f8cb00b8359d509425f173e727afd61db47891955068c97a54eb0c28",
+      "immutable": "ghcr.io/mul-cps/cps-compute@sha256:c61f8b13f8cb00b8359d509425f173e727afd61db47891955068c97a54eb0c28"
+    }
+  },
+  "installed_consumer": {
+    "component_count": 4,
+    "components": {
+      "gateway": {
+        "observed_at": "2026-10-16T23:21:30.196866+00:00",
+        "process": {
+          "container": "gateway",
+          "image": "ghcr.io/mul-cps/cps-compute@sha256:d43bbe3da5072948da06eb1ad959bad4a2392cd9a2e7d8765a7bb963161fbd58",
+          "name": "compute-gateway-7695cc756-kqqj2",
+          "namespace": "cps-compute",
+          "service_account": "cps-compute-controller",
+          "uid": "a4c7a87c-6cd0-4743-a8c8-6f31e6c31b06"
+        },
+        "revision": "sha256:5517ea8f342ecbb6b4ed817aa9b0ca5788984217e46e4ba90b5707cee509b427"
+      },
+      "hub:cit": {
+        "observed_at": "2026-10-16T23:21:21.612021+00:00",
+        "process": {
+          "container": "hub",
+          "image": "ghcr.io/mul-cps/cps-compute@sha256:c61f8b13f8cb00b8359d509425f173e727afd61db47891955068c97a54eb0c28",
+          "name": "hub-859cd57cd-6jx4c",
+          "namespace": "cit-jhub",
+          "service_account": "hub",
+          "uid": "7b91d6d0-303c-4685-9bba-196b3b0f853e"
+        },
+        "revision": "sha256:5517ea8f342ecbb6b4ed817aa9b0ca5788984217e46e4ba90b5707cee509b427"
+      },
+      "hub:cps": {
+        "observed_at": "2026-10-16T23:21:27.154089+00:00",
+        "process": {
+          "container": "hub",
+          "image": "ghcr.io/mul-cps/cps-compute@sha256:c61f8b13f8cb00b8359d509425f173e727afd61db47891955068c97a54eb0c28",
+          "name": "hub-5b845677cd-xzmk6",
+          "namespace": "jupyterhub",
+          "service_account": "hub",
+          "uid": "7715f982-716d-4fa1-9d59-adcd757f1fb6"
+        },
+        "revision": "sha256:5517ea8f342ecbb6b4ed817aa9b0ca5788984217e46e4ba90b5707cee509b427"
+      },
+      "node": {
+        "observed_at": "2026-10-16T23:21:25.325910+00:00",
+        "process": {
+          "container": "node-agent",
+          "image": "ghcr.io/mul-cps/cps-native-node@sha256:5496e116fbf5db20e6bb277ae353b15d4416f0fa386c24ee6d5d48c0fb67c248",
+          "name": "cps-native-node-agent-7b586bfcbb-fm75n",
+          "namespace": "cps-native-system",
+          "service_account": "cps-native-node-agent",
+          "uid": "1d73013d-dd33-4af0-86e7-9245b58077b4"
+        },
+        "revision": "sha256:5517ea8f342ecbb6b4ed817aa9b0ca5788984217e46e4ba90b5707cee509b427"
+      }
+    },
+    "module": "/usr/local/lib/python3.12/site-packages/cps_compute/runtime.py",
+    "module_sha256": "c05a6cf9d9d2b22fbd0ca330c9edc49da85c5b38da4c5471e16b1d624bf60f72",
+    "observed_at": "2026-10-16T23:21:31.291074+00:00",
+    "policy_hash": "sha256:d48f6553ed036c2e7adcc97417623fe0308be93ad13b20f246047ada118511b0",
+    "released_consumer_call": true,
+    "released_consumer_observe": true,
+    "revision": "sha256:5517ea8f342ecbb6b4ed817aa9b0ca5788984217e46e4ba90b5707cee509b427",
+    "state": "ready",
+    "ttl_seconds": 60
+  },
+  "preserved_non_hub_pods": 24,
+  "live_test": {
+    "workspace": "shared-gpu-lab",
+    "profile": "interactive-shared-5",
+    "start_status": 500,
+    "stage_reached": "reserved allocation and real gated Pod before enrollment publication",
+    "cap_assignment_verified": false,
+    "root_cause": "Reviewed never-enrolled archive entry requires replacement enrollment before its first publication",
+    "first_stops_status": [
+      409,
+      409
+    ],
+    "recovery": "targeted CPS Hub restart; ordinary Stop returned 200",
+    "ghost_ready_cause_resolved": false
+  },
+  "cleanup": {
+    "released_claims": 94,
+    "reservation_rows": 0,
+    "reservation_binding_rows": 0,
+    "test_pod_absent": true,
+    "workspace_state": "stopped",
+    "operator_token_revoked": true,
+    "grants_changed": false
+  },
+  "production_ready": false,
+  "pending": [
+    "Publish and deploy reviewed archive replacement fix",
+    "Finish actual Hub failure cleanup review and live validation",
+    "Actual cap assignment, OOM/recovery and normal stop/restart qualification"
+  ]
+}

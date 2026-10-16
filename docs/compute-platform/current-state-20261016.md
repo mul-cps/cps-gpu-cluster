@@ -1,12 +1,39 @@
-# CPS/CIT current state — 16 October 2026
+# CPS/CIT current state — 17 October 2026
 
 The platform remains **limited-pilot**. Production qualification and the full
 project are unfinished. This record supersedes current-state statements in the
 older completion ledger; their dated acceptance results remain historical evidence.
 
-## Latest verified checkpoint — packaged node renewal
+## Latest verified checkpoint — enrollment protocol deployed; active gate failed
 
-Released application source `f67224e06cd152a8c554822ddb0738685e291995` is deployed
+Application `610814a28dbccd26f47cfd99597d3479ff17daa1` is deployed on the node,
+Gateway and both Hubs. All four CI jobs passed, all three registry digests were
+independently verified, and the installed Gateway consumer verifies all four
+current processes after rollout. All 24 non-Hub Pods retain their identities.
+The image digests and software checks are in the
+[protocol verification receipt](../../platform-staging/jupyter-extensions-20261013/native-enrollment-protocol-verification-20261017.json).
+The [adoption and active-test receipt](../../platform-staging/jupyter-extensions-20261013/native-enrollment-protocol-adoption-20261017.json)
+records the deployed processes, failed gate and confirmed cleanup.
+
+The normal 5 GiB group Start reached a real gated Pod but failed before enrollment
+publication or GPU execution. An original reviewed archive entry for a
+never-enrolled attempt rejects a legitimate new same-name reserved Pod before its
+immutable enrollment exists. This is now reproduced by an actual archive plus SDK
+acquisition regression; the bounded follow-up fix passes 160 focused tests and 69
+independent checks, but is not deployed. The first live run also exposed delayed
+Hub failure cleanup. Its actual User.spawn regression and bounded cleanup fix are
+being verified separately; the ghost-ready symptom is not yet proven resolved.
+
+Normal Stop initially retained reservations because Hub shutdown was unconfirmed.
+A targeted CPS Hub restart recovered the stale server state; normal Stop then
+returned 200. All 94 claims are released, reservation/binding tables are empty,
+the test Pod is absent, all four components are ready, and the one-hour test token
+was revoked (204; subsequent authentication denied). No files or grants were
+removed. Automatic cap enforcement and live isolation remain unqualified.
+
+## Previous checkpoint — packaged node renewal (16 October)
+
+Released application source `f67224e06cd152a8c554822ddb0738685e291995` was deployed
 on the isolated node as image
 `ghcr.io/mul-cps/cps-native-node@sha256:5a614a6d79bac7911f98a588413126a1b181a65ed28f0e50e33f419618f7916b`.
 The complete suite passed 2,819 tests and 68 subtests (six skipped). CI run
@@ -22,7 +49,7 @@ the 92 released ledger allocations retain identical data bytes. The SQL cutover
 barrier made no row/schema changes. No GPU workload or driver modification was
 performed during this rollout.
 
-Gateway and both Hubs from the same source are now **deployed and healthy**,
+At that checkpoint, Gateway and both Hubs from the same source were deployed and healthy,
 with unchanged Hub 5.5.2/KubeSpawner 7.1.0 and no Hub dependency upgrades. Their
 version-3 proof/current approval configuration and exact new process observation
 permissions are installed. All four components publish fresh acknowledgments for
@@ -85,9 +112,8 @@ and the lean node image build pass. All three candidate images are published wit
 independently verified registry digests, and SDK/Hub wheels are built. CI
 [38977494335](https://github.com/mul-cps/cps-compute/actions/runs/38977494335)
 passed all four jobs, including installed SDK/Hub and both Lab versions.
-These changes are **not deployed** and these software tests
-do not prove live cap enforcement or hardware isolation.
-The live node remains Ready and all 93 live claims remain released.
+These changes were subsequently deployed as recorded in the latest checkpoint.
+The software tests do not prove live cap enforcement or hardware isolation.
 
 See the [active start test receipt](../../platform-staging/jupyter-extensions-20261013/native-active-start-qualification-20261016.json).
 
