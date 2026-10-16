@@ -109,3 +109,17 @@ CPU profile limits are not proof of enforcement. CIT currently uses idle24h and
 max-age24h, independently read from its Hub configuration. A stable-chart culler overlay
 is staged outside Fleet. Coordinated live policy/hash and enforcement promotion
 is still required; the running D48 qualification scope is unchanged.
+
+## Fresh operator membership check
+
+The 16 October Source capture initially failed because both controlled QA
+memberships had expired. Normal owning-console API updates changed only the
+two expiry fields to 17:18 UTC on 16 October; all other membership records were
+read back unchanged. Grants, registrations, workspaces and Pods were untouched.
+The temporary administrator token was revoked (DELETE204, subsequent read403).
+Fresh genuine Source application readback now resolves both canonical member
+sets, verifies both stopped CPU registrations/no reservations and matches the
+reviewed16-module Source531 closure. The native ledger has86 allocations, one
+active; the controlled running group must be normally stopped in the coordinated
+transition before a zero-charge proof or qualification handover is valid.
+No current-image GPU qualification was performed by this renewal.

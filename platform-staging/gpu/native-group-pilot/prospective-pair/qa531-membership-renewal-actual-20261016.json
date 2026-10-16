@@ -1,0 +1,26 @@
+{
+  "canonical_members_resolved": true,
+  "expires": "2026-10-16T17:18:49.925999+00:00",
+  "grants_changed": false,
+  "hardware_qualified": false,
+  "live_native_allocations": 1,
+  "memberships_renewed": 2,
+  "observed_at": "2026-10-16T11:20:14.146028+00:00",
+  "operation": "normal-owning-console-expiry-only-membership-renewal",
+  "other_membership_records_unchanged": true,
+  "private_evidence_sha256": {
+    "after.private.json": "934d6b6fff7536cb9f49983304e0857eb479ab20836daf3d721bfbe69d7bbad4",
+    "before.private.json": "cfe6c31b29baacf515d91baf1c2a7a6ed0a31ffc1f0aa26cae7eb1e6e48ffb8a",
+    "receipt.json": "8edc83d64aa202ba9fd3168fc15b27b6bf6519b727170180f699c0bf5a247d2f",
+    "revocation.json": "256d7a8f7a558ec55873e992cf4483e56d7bdd32a54c5a3246430970f11a1fdd"
+  },
+  "production_qualified": false,
+  "revoked_token_read_status": 403,
+  "servers_started": false,
+  "source_recheck_raw_sha256": "6b4d55358442e93c395e10c05f6edb3445cb6e8e740f2ce77c99c4587cf68556",
+  "source_runtime_closure_matches": true,
+  "source_target_recheck_passed": true,
+  "temporary_token_delete_status": 204,
+  "version": 1,
+  "workspaces_changed": false
+}
