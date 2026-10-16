@@ -22,7 +22,8 @@ CURRENT_GROUP_APPROVALS = 'sha256:3449819d393ed8026353effa57e9b4b0265779e0ef5471
 CURRENT_GATE_IMAGE = 'ghcr.io/mul-cps/cps-compute@sha256:bc5b128f582641eae8395e1121d1fb248eddc39a56c9e863b7c564badd94b167'
 CURRENT_CONTROLLER = 'sha256:630d43cc115b5bddf3e5d110a25cc891e0941953bbabd833f0a77a3773ad7880'
 CANDIDATE_IMAGE = 'ghcr.io/mul-cps/cps-jupyter-notebook@sha256:531027c8e330d4ce818598e998a29d502433e9064f06a32dfc208a06ef2d0ba4'
-CANDIDATE_SOURCE_IMAGE = 'ghcr.io/mul-cps/e2x-course-hub@sha256:51f7f392397e41be512b356fbee91980fb233296cee7557d25a758b99b045f44'
+CANDIDATE_SOURCE_IMAGE = 'ghcr.io/mul-cps/e2x-course-hub@sha256:dbaad51899ccb634f5a07c44bd9f7022dbca71724d7cfd66e5d67abf9d569ace'
+CANDIDATE_SOURCE_CLOSURE_SHA256 = '5f68ec802212eb4c3a8dd8bf37e96354c27a4c68724e525c0ef41c87af356905'
 
 
 def checksum(raw): return 'sha256:' + hashlib.sha256(raw).hexdigest()
@@ -311,7 +312,7 @@ def render_prospective_candidate(inputs, observation_raw, health_raw, *, target_
     agent.require(isinstance(target_snapshot_raw,bytes) and len(target_snapshot_raw)<=1048576
         and hashlib.sha256(target_snapshot_raw).hexdigest()==target_snapshot_sha256
         and isinstance(source_closure_raw,bytes) and len(source_closure_raw)<=65536
-        and hashlib.sha256(source_closure_raw).hexdigest()==source_closure_sha256,'Independent Root raw target/source closure pins required')
+        and hashlib.sha256(source_closure_raw).hexdigest()==source_closure_sha256==CANDIDATE_SOURCE_CLOSURE_SHA256,'Independent Root raw target/source closure pins required')
     target=agent.parse(target_snapshot_raw);closure=agent.parse(source_closure_raw)
     agent.closed(closure,{'version','modules'},'Closed runtime source closure required')
     modules={'e2x_course_hub.course_service.app','e2x_course_hub.cps.compute','e2x_course_hub.cps.workspaces',
@@ -350,7 +351,7 @@ def render_prospective_candidate(inputs, observation_raw, health_raw, *, target_
         instance=target['source_instance'];agent.closed(instance,{'namespace','deployment_uid','pod_uid','image'},'Closed actual Source instance required')
         agent.require(instance['namespace']=='cps-compute' and instance['image']==CANDIDATE_SOURCE_IMAGE
             and all(agent.canonical_uuid(instance[k]) and instance[k]!='00000000-0000-0000-0000-000000000000'
-                for k in ('deployment_uid','pod_uid')),'Exact current Source51f namespace/image/UIDs required')
+                for k in ('deployment_uid','pod_uid')),'Exact reviewed notebook531-capable Source namespace/image/UIDs required')
         for timestamp in (target['observed_at'],inputs['observed_at'],(terminal_authority or {}).get('host_snapshot',{}).get('observedAt')):
             agent.require(isinstance(timestamp,str),'Fresh target and full retired authority timestamps required')
             observed=datetime.fromisoformat(timestamp.replace('Z','+00:00'))

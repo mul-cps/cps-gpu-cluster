@@ -40,7 +40,7 @@ from unittest.mock import AsyncMock
 def arguments():
     fields={key:'/offline/'+key+'.json' for key in proposal.PINNED_FILES}
     fields.update({key+'_sha256':'1'*64 for key in proposal.PINNED_FILES})
-    fields.update(source='cps',operation='get',source_sha256='2'*64,handover_file_sha256=proposal.HANDOVER_SHA,
+    fields.update(source='cps',operation='get',source_sha256='2'*64,handover_file_sha256=proposal.HANDOVER_SHA,source_closure_sha256=proposal.SOURCE_CLOSURE_SHA256,
         current_authority_sha256='sha256:'+'3'*64,terminal_history_sha256='sha256:'+'4'*64)
     return SimpleNamespace(**fields)
 
@@ -71,7 +71,7 @@ def configuration():
     old['storage']['state']='active'
     now=datetime.now(timezone.utc)
     target={'version':1,'source':'cps','workspace':workspace,'profile':proposal.PROFILE,'workload_image':proposal.WORKLOAD_IMAGE,
-        'operator_members':copy.deepcopy(body['members']),'source_policy_hash':source_policy.hash,'source_closure_sha256':'1'*64,
+        'operator_members':copy.deepcopy(body['members']),'source_policy_hash':source_policy.hash,'source_closure_sha256':proposal.SOURCE_CLOSURE_SHA256,
         'current_authority_sha256':'sha256:'+'3'*64,'source_instance':{'namespace':'cps-compute',
             'deployment_uid':'22222222-2222-4222-8222-222222222222','pod_uid':'33333333-3333-4333-8333-333333333333','image':proposal.SOURCE_IMAGE},
         'registration':old,'state':'stopped','observed_at':now.isoformat()}

@@ -18,7 +18,8 @@ from uuid import UUID
 HANDOVER_SHA = '53c5ed41ad95729a6f4248cf9d3f384c4c5c834b0bbef92134fe25c9ede8f870'
 WORKLOAD_IMAGE = 'ghcr.io/mul-cps/cps-jupyter-notebook@sha256:531027c8e330d4ce818598e998a29d502433e9064f06a32dfc208a06ef2d0ba4'
 GATE_IMAGE = 'ghcr.io/mul-cps/cps-compute@sha256:bc5b128f582641eae8395e1121d1fb248eddc39a56c9e863b7c564badd94b167'
-SOURCE_IMAGE = 'ghcr.io/mul-cps/e2x-course-hub@sha256:51f7f392397e41be512b356fbee91980fb233296cee7557d25a758b99b045f44'
+SOURCE_IMAGE = 'ghcr.io/mul-cps/e2x-course-hub@sha256:dbaad51899ccb634f5a07c44bd9f7022dbca71724d7cfd66e5d67abf9d569ace'
+SOURCE_CLOSURE_SHA256 = '5f68ec802212eb4c3a8dd8bf37e96354c27a4c68724e525c0ef41c87af356905'
 PROFILE = 'interactive-native-qualification-5'
 CEILING = {'cpu':'4','memory':'16Gi','gpuMemoryGiB':5}
 ACTOR = 'bjoern'
@@ -80,7 +81,7 @@ def validate_arguments(args):
         'Complete independent Root peer path/raw pin required before private access')
     require(raw_sha(args.source_sha256) and all(isinstance(getattr(args,key,None),str)
         and Path(getattr(args,key)).is_absolute() and raw_sha(getattr(args,key+'_sha256',None)) for key in PINNED_FILES)
-        and args.handover_file_sha256==HANDOVER_SHA and canonical_sha(args.current_authority_sha256)
+        and args.handover_file_sha256==HANDOVER_SHA and args.source_closure_sha256==SOURCE_CLOSURE_SHA256 and canonical_sha(args.current_authority_sha256)
         and canonical_sha(args.terminal_history_sha256),'All explicit Root file, current authority and history pins required before private/API access')
 
 
@@ -102,7 +103,7 @@ def validate_target(target,*,now=None,allow_pair=False):
     instance=target['source_instance']
     require(type(instance) is dict and set(instance)=={'namespace','deployment_uid','pod_uid','image'}
         and instance['namespace']=='cps-compute' and instance['image']==SOURCE_IMAGE
-        and uuid_value(instance['deployment_uid']) and uuid_value(instance['pod_uid']),'Exact actual Source51f instance binding required')
+        and uuid_value(instance['deployment_uid']) and uuid_value(instance['pod_uid']),'Exact actual notebook531-capable Source instance binding required')
     registered=target['registration']
     require(type(registered) is dict and set(registered)==APPROVAL_FIELDS|{'workspace','policy_hash','workspace_label','workspace_hash'},
         'Closed full existing Source registration required')

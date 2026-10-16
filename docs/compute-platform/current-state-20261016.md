@@ -8,7 +8,10 @@ older completion ledger; their dated acceptance results remain historical eviden
 
 Gateway `9e695015` from compute source `de90610f` is now deployed. Both Hubs
 retain `e906c9ab`, JupyterHub 5.5.2, KubeSpawner 7.1.0 and chart 4.4.2. Both
-separate admin consoles retain Source `51f7f392` and their separate databases.
+separate admin consoles now run consumer `dbaad518` with Core `de90610f` and
+their original separate databases. All 16 source-closure modules match in both
+live Pods; both are Ready with zero restarts. Their backup images are aligned
+and new matching backups passed independent checksum/SQLite integrity checks.
 Policy `d48f6553` and the existing driver, NFS paths and canonical mappings remain
 unchanged. The gateway deployment changed; the Hub deployments did not restart.
 
@@ -67,11 +70,11 @@ do not qualify notebook531 or the full eight-GPU service.
 
 ## Immediate remaining blockers
 
-1. Source51f's compute dependency does not accept notebook531 qualification.
-   A [proper-wheel console consumer candidate](../../platform-staging/admin/qualification/compute-consumer-531-20261016/README.md)
-   is now published as `dbaad518`, with legacy/candidate model checks, unchanged
-   application/dependencies and no production qualification claim. Both live
-   consoles still run Source51f; coherent adoption remains required.
+1. The Source531 consumer blocker is cleared: both consoles now run
+   [consumer `dbaad518`](../../platform-staging/admin/qualification/compute-consumer-531-20261016/adoption-receipt.json).
+   Their live 16-module closures, matching backups and the authenticated capture
+   API passed. Source record handover/restoration for the operator workspaces
+   remains required; the image adoption does not qualify notebook531 hardware.
 2. Qualification history support now accepts 128 records in the offline
    candidate and prospective Node generator; replay validated all 85 allocations
    and 75 terminal entries without truncation. The deployed Node is unchanged.
@@ -79,7 +82,7 @@ do not qualify notebook531 or the full eight-GPU service.
    are now implemented and CPU-tested separately from the legacy CPS+CIT path.
    Gateway policy/runtime forward and inverse CAS planning and Node rollback
    for unstarted, one-started and both-started cases are now CPU-tested. Integration
-   with Source handover/restoration, console adoption and coherent execution
+   with Source handover/restoration and coherent execution
    remains required before the hardware test. A CPS-only Hub configuration/hook
    forward/inverse planner now projects both operator targets and image-pull owners;
    CIT is unchanged. Qualification planning disables and restores the incompatible

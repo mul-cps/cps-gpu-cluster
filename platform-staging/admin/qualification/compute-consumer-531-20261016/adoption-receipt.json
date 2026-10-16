@@ -1,0 +1,52 @@
+{
+  "application_image": "ghcr.io/mul-cps/e2x-course-hub@sha256:dbaad51899ccb634f5a07c44bd9f7022dbca71724d7cfd66e5d67abf9d569ace",
+  "backup_files_retained": true,
+  "baseline_source_capture_sha256": "de253b3f95d092b2f950c3700c0c880f04c48cdd442160380f8940d82e74a280",
+  "capture_api_succeeded": true,
+  "capture_sha256": "919c29de87f4e2d757db83dce6b5c61dd4551e2a05f00d3652ee545a4f7cfaaa",
+  "compute_source": "de90610f3250a14cb5e3a33473afe547797358a0",
+  "discovery_image_pin_change_required": false,
+  "formal_release": false,
+  "live_applied": true,
+  "notebook531_hardware_qualified": false,
+  "observed_at": "2026-10-16T10:32:38.625366+00:00",
+  "owned_jobs_and_pods_cleaned": 6,
+  "pilot_subtests_passed": 851,
+  "pilot_tests_passed": 700,
+  "pilot_tests_skipped": 14,
+  "production_qualified": false,
+  "released_wheel_compute_modules": 9,
+  "running_gpu_group_pod_uid_preserved": "7e78a1a2-a643-4d15-8ae5-1346d25df858",
+  "running_gpu_group_ready_zero_restarts": true,
+  "source_closure_sha256": "5f68ec802212eb4c3a8dd8bf37e96354c27a4c68724e525c0ef41c87af356905",
+  "sources": {
+    "cit": {
+      "backup_checksum_matches": true,
+      "backup_image_aligned": true,
+      "backup_manifest_sha256": "11c0053a0fe71e55e15b82b1450e2b6b027105f8985e8c26a7f05ac3821b7c0a",
+      "backup_sqlite_integrity": "ok",
+      "deployment_uid": "54466777-ece9-4d63-bcd8-8156caba55af",
+      "module_closure_verified": 16,
+      "original_deployment_spec_except_image_preserved": true,
+      "pod": "cit-admin-74d7f87b67-ntwj5",
+      "pod_uid": "4ae61b37-697c-43c5-83b5-2fb9cf044c83",
+      "ready_replicas": 1,
+      "restarts": 0
+    },
+    "cps": {
+      "backup_checksum_matches": true,
+      "backup_image_aligned": true,
+      "backup_manifest_sha256": "ea32ebfb7250f0664aa8b24900542b6b2609acabe6b4165ada8f065aa7762ee3",
+      "backup_sqlite_integrity": "ok",
+      "deployment_uid": "cea488be-b5c5-481f-b41d-169d22f56f33",
+      "module_closure_verified": 16,
+      "original_deployment_spec_except_image_preserved": true,
+      "pod": "cps-admin-76bcc9c8f8-qgl5f",
+      "pod_uid": "ef8ee9fb-8554-4202-a23f-1f4588acf047",
+      "ready_replicas": 1,
+      "restarts": 0
+    }
+  },
+  "unchanged_application_modules": 7,
+  "version": 1
+}

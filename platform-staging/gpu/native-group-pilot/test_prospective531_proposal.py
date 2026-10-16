@@ -13,7 +13,7 @@ from cps_compute.native_qualification import NativeGroupQualification
 from cps_compute.policy import Policy
 
 IMAGE='ghcr.io/mul-cps/cps-jupyter-notebook@sha256:531027c8e330d4ce818598e998a29d502433e9064f06a32dfc208a06ef2d0ba4'
-SOURCE='ghcr.io/mul-cps/e2x-course-hub@sha256:51f7f392397e41be512b356fbee91980fb233296cee7557d25a758b99b045f44'
+SOURCE='ghcr.io/mul-cps/e2x-course-hub@sha256:dbaad51899ccb634f5a07c44bd9f7022dbca71724d7cfd66e5d67abf9d569ace'
 SCOPE='cps:operator-qualification-531-5'
 NOW=datetime(2026,10,12,20,20,30,tzinfo=timezone.utc)
 
@@ -34,7 +34,7 @@ def fixture():
         workspace_label=policy.labels['workspace'],workspace_hash=policy.owner_label(SCOPE))
     registration['storage']=dict(approval['storage'],state='active')
     body['approvals']={SCOPE:approval};body['observed_at']=NOW.isoformat()
-    closure=json.loads((Path(__file__).parent/'source-qualification-closure.json').read_bytes())
+    closure=json.loads((Path(__file__).parent/'source531-qualification-closure.json').read_bytes())
     import cps_compute.native_qualification as loaded
     closure['modules']['cps_compute.native_qualification']=hashlib.sha256(Path(loaded.__file__).read_bytes()).hexdigest()
     snapshot=dict(version=1,source='cps',workspace=workspace,profile='interactive-native-qualification-5',
