@@ -7,8 +7,24 @@ measured acceptance. Evidence for one stage does not establish the next stage.
 See the [operational acceptance record](qualification/operational-acceptance-20261013.md)
 for the bounded live results of 2026-10-13 and their retained evidence.
 
-The ordinary-student `shared-gpu-lab` pilot now passes normal Source Start,
-Ready, a current native 5 GiB cap, two-browser RTC and GPU execution without MIG.
+## Current boundary — 16 October 2026
+
+The [current-state audit and adoption record](current-state-20261016.md) is the
+authoritative current summary. Gateway9e695 and both Hube906 processes are
+deployed; Source51f remains unchanged. Normal `shared-gpu-lab` Start is restored,
+with a Ready 5 GiB cap, three member reservations, and 45 successful readiness
+checks over 80 seconds. The backup schedule now matches Gateway9e695 and a fresh
+matching backup passed integrity checks. Full production qualification remains
+open, including GPU916 SDK/addon compatibility and current notebook531 tests.
+
+## Historical rollout summary — through 15 October 2026
+
+The acceptance ledger and rollout narrative below retain dated historical
+results. Image labels described there as "current" refer to those earlier runs;
+they do not override the current-state record above.
+
+The ordinary-student `shared-gpu-lab` pilot previously passed normal Source Start,
+Ready, a native 5 GiB cap, two-browser RTC and GPU execution without MIG.
 [Open the shared GPU demo](https://jupyterhub.dshl.unileoben.ac.at/user/cps-ws-27c474f74f9d41c53eac0be01fcca8a3/rtc/lab/tree/shared-gpu-demo-20261015.ipynb).
 The completed `5c4d9d40` software handover now runs Gateway511e and both Hub6bb
 processes. Approved CPS CPU consumers select CPU9444; ordinary CIT CPU consumers
@@ -962,7 +978,10 @@ immutable digests. Proper wheel installation, installed module bytes,
 dependency preservation and remote manifests passed. Hub installed checks
 passed 137 Core and 107 adapter tests; Gateway passed 83 epoch tests and 49
 discovery/registry/identity tests, including all 25 discovery tests. Five
-Hub-only Gateway tests are explicitly excluded. These images are not deployed.
+Hub-only Gateway tests are explicitly excluded. These images were subsequently
+adopted by the completed `4bf712b8` handover. Gateway3d82 was then superseded by
+Gateway9e695 on 16 October; both Hube906 processes remain deployed. See the
+[current-state record](current-state-20261016.md).
 
 Two explicitly automated QA principals now exist in the existing directory.
 Both passed fresh normal CPS Hub home logins without admin rights or servers,

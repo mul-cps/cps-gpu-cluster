@@ -1,0 +1,98 @@
+{
+  "schemaVersion": 1,
+  "observedAt": "2026-10-16T09:04:10.678409+00:00",
+  "stage": "limited-pilot",
+  "productionQualified": false,
+  "formalRelease": false,
+  "policyHash": "sha256:d48f6553ed036c2e7adcc97417623fe0308be93ad13b20f246047ada118511b0",
+  "runtime": {
+    "gatewayImage": "ghcr.io/mul-cps/cps-compute@sha256:9e695015ebd110a44bc3cb83e178508251ca33f601e3ae5aa360c514ee9caff5",
+    "gatewaySourceCommit": "de90610f3250a14cb5e3a33473afe547797358a0",
+    "hubImages": {
+      "hub:cps": "ghcr.io/mul-cps/cps-compute@sha256:e906c9ab5cd5a7a541560842c47013f567f6c0f8cbe2cecf0f30fd6d475280a5",
+      "hub:cit": "ghcr.io/mul-cps/cps-compute@sha256:e906c9ab5cd5a7a541560842c47013f567f6c0f8cbe2cecf0f30fd6d475280a5"
+    },
+    "sourceImage": "ghcr.io/mul-cps/e2x-course-hub@sha256:51f7f392397e41be512b356fbee91980fb233296cee7557d25a758b99b045f44",
+    "nodeImage": "ghcr.io/mul-cps/cps-compute@sha256:8c2c456b90330622645d509f94882a11a465ac208a6fa7fc824900d6320e5c0b",
+    "acknowledgmentTtlSeconds": 60
+  },
+  "handover": {
+    "phasePlanSha256": "sha256:64f96fc73f01a6ff65a1f272b27a73be51763e64ec69219683f824eddb51efde",
+    "seedSha256": "sha256:0e093aeb2d2dd8ef80c4580e8b84d3bd6ef010ca3cede013222e0667c65130f9",
+    "fourProcessReadbackReady": true,
+    "controllerJournalReadbackReady": true,
+    "oldJournalRetained": true,
+    "oldJournalRawSha256": "cf4c423edc3a33b79d5ee458dae41e0cd0d10841684c83e6f5f944d9e6331c32",
+    "gatewayOnlyDeploymentChanged": true,
+    "retainedPersonalPodCount": 5,
+    "retainedPersonalPodUids": [
+      "cc40cf41-a793-4bbf-a395-086d32972596",
+      "921b8b7c-e8de-45e3-856c-b2426ed1ed7b",
+      "915b3fac-53fa-469c-8c3f-0180fb285504",
+      "a984023f-eb34-4af1-b01d-bad6ea159ef4",
+      "31846900-989b-48d1-95b3-846e9526fbb5"
+    ],
+    "personalPodsReadyWithZeroRestarts": true
+  },
+  "sharedWorkspace": {
+    "id": "shared-gpu-lab",
+    "normalSourceStartStatus": 200,
+    "state": "running",
+    "profile": "interactive-shared-5",
+    "podUid": "7e78a1a2-a643-4d15-8ae5-1346d25df858",
+    "podReady": true,
+    "podRestarts": 0,
+    "workloadImage": "ghcr.io/mul-cps/cps-jupyter-notebook:qualification-native-group-980408a@sha256:9167861058c1364c58d1c2fca0d6f536c3ffb53a33800dcdb9a1560f14ca4dc0",
+    "memberReservations": 3,
+    "bindingCount": 1,
+    "nativeHardCapBytes": 5368709120,
+    "nativeSoftCapBytes": 5368709120,
+    "nativeCapPinned": true,
+    "actualCudaExecutionRepeated": false,
+    "rtcBrowserTestRepeated": false,
+    "gpu916SdkAddonCompatibilityPassed": false
+  },
+  "readinessStability": {
+    "samples": 45,
+    "duration_seconds": 80.0,
+    "all_ready": true,
+    "approval_unchanged": true
+  },
+  "backups": {
+    "cronAlignedWithGateway": true,
+    "matchingBackupAndIntegrityPassed": true,
+    "backupManifestSha256": "da475b1c5995fcfce0622cdc8a5d886ec3aeced472ec20432acbf63855b17cd9",
+    "connectedRestoreQualified": false,
+    "offHostRestoreQualified": false
+  },
+  "temporaryOperatorAccess": {
+    "revoked": true,
+    "deleteStatus": 204,
+    "revokedHubReadStatus": 403
+  },
+  "verification": {
+    "handoverTestsPassed": 15,
+    "activationContinuationTestsPassed": 10,
+    "activationRegressionRedObserved": true,
+    "allRemainingProjectGatesPassed": false
+  },
+  "privateEvidenceSha256": {
+    "gateway-discovery-handover-e428d8c4/phase-e428d8c4/final.json": "5bacb901d5b6080b36f431b0600f40ab1bd2222beba40e4d9c7d463e2508c3f7",
+    "gateway-discovery-handover-e428d8c4/phase-e428d8c4/new-delivery-activation-readback.json": "abf6fe54fdb5dee727949939239f2f5ffe5d23cdc366c4408bcabadb99775001",
+    "qualified-group-after-clock-20261016/readiness-stability.json": "d33c72cbba7113ca2012c2b719159f5776a4f9f262a363df3f5bd2ed69a01bf1",
+    "qualified-group-after-clock-20261016/native-capacity.private.json": "50ca34d4aed1cbbcd65f070bd91603f1432f955e35b97177fb04c49fd2da9735",
+    "qualified-group-after-clock-20261016/reservations-after.private.json": "26175b0747c212a8213038c49a469e1419bcb5378b05197817e35db28492d791",
+    "qualified-group-after-clock-20261016/qualified-group-restore-receipt.json": "8b4332808453a5a13173c3ef0396ac643d776abf007ba386e66470b2406e3ab8",
+    "qualified-group-after-clock-20261016/revocation-receipt.json": "0ed42582b422039a82e2cac7edef82f0831694947882bb3a202d2a4bedb81b90",
+    "gateway-backup-alignment-20261016/verification-receipt.json": "cc1a79559b45d56072aa06186d395d366f25ffa513751348440399a36a5de787"
+  },
+  "remaining": [
+    "Source51f does not support candidate notebook531 qualification",
+    "Full terminal history exceeds the qualification tool64-record bound",
+    "Current image531 5+20GiB acceptance and finite restoration not completed",
+    "GPU916 ordinary SDK and Compute addon remain incompatible",
+    "Account/session API details and referenced Hera templates incomplete",
+    "Distributed launcher and4/8GPU acceptance incomplete",
+    "Full scheduling,startup,revocation,retention,restore and release gates remain open"
+  ]
+}
