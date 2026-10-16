@@ -75,8 +75,9 @@ do not qualify notebook531 or the full eight-GPU service.
    Their live 16-module closures, matching backups and the authenticated capture
    API passed. A fresh CPU-to-qualification Source handover adapter now passes real provider
    and ASGI registration tests for both5 and20, retaining the frozen admin,
-   freeze, grants and storage guards. Source restoration and coordinated live
-   execution remain required; image adoption does not qualify notebook531 hardware.
+   freeze, grants and storage guards. Source restoration now passes 25 application/API tests, including completed
+   enrollments, typed cleanup and retry after partial commits. Its independent
+   physical collector and coordinated live execution remain required; image adoption does not qualify notebook531 hardware.
 2. Qualification history support now accepts 128 records in the offline
    candidate and prospective Node generator; replay validated all 85 allocations
    and 75 terminal entries without truncation. The deployed Node is unchanged.

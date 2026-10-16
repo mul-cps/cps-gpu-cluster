@@ -1,0 +1,17 @@
+{
+  "focused_tests_passed": 25,
+  "full_suite_note": "Full suite preceded addition of two further passing focused denial cases.",
+  "full_suite_skipped": 14,
+  "full_suite_subtests_passed": 851,
+  "full_suite_tests_passed": 737,
+  "hardware_qualified": false,
+  "live_applied": false,
+  "observed_at": "2026-10-16T11:08:37.533998+00:00",
+  "physical_collector_integrated": false,
+  "source_sha256": {
+    "source_restoration.py": "3816b606bf9f2a729acf5f1a0124f282583085ae28da1e3d5f807fc4570346c5",
+    "test_source_restoration.py": "26e6be6f0928494e3a9d34d2eb88ded6efc364405a35dd5ddb942f7edeaa7af6"
+  },
+  "test_log_sha256": "ed08367d2284cebbcbb2f321c170ceb1a776d8261f8eae4b17c1e6fbe00129f6",
+  "version": 1
+}
