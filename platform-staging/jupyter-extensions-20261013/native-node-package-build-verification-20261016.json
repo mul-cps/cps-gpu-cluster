@@ -1,0 +1,33 @@
+{
+  "application_commit": "5c8b4de7032487cb274221235243589bf5ebe672",
+  "ci_python": "3.12",
+  "ci_tests": {
+    "passed": 2536,
+    "skipped": 7,
+    "subtests_passed": 68,
+    "warnings": 84
+  },
+  "conclusion": "success",
+  "deployed": false,
+  "hardware_qualified": false,
+  "installed_backend_unittest_cases": 32,
+  "installed_import_host_io": false,
+  "jobs": [
+    "build",
+    "installed-sdk-hub",
+    "installed-lab (4.5.7)",
+    "installed-lab (4.6.4)"
+  ],
+  "local_python": "3.13",
+  "local_tests": {
+    "passed": 2537,
+    "skipped": 6,
+    "subtests_passed": 68,
+    "warnings": 83
+  },
+  "production_qualified": false,
+  "sdist_rebuilt_wheel_byte_identical": true,
+  "version": 1,
+  "workflow_run": 38932949445,
+  "workflow_url": "https://github.com/mul-cps/cps-compute/actions/runs/38932949445"
+}

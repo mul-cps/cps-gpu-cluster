@@ -52,7 +52,10 @@ backend unittest cases from the installed wheel. Wheel rebuilding from the
 sdist was byte-identical. Separate CPU performance review found no added hot-path
 I/O/NVML calls; Pending decisions took 12.49/12.62 microseconds in the two measured
 cases. CI now exercises installed native-module imports alongside SDK imports.
-The remote workflow is running; no remote success is claimed yet.
+[CI run 38932949445](https://github.com/mul-cps/cps-compute/actions/runs/38932949445)
+passed all four jobs: build, installed SDK/Hub, and Lab 4.5.7/4.6.4. Its Python 3.12
+suite passed 2,536 tests and 68 subtests, with seven skipped. Local Python 3.13
+results are reported above. Both are CPU/build evidence; live adoption is open.
 
 See [canonical application documentation](https://github.com/mul-cps/cps-compute/blob/5c8b4de7032487cb274221235243589bf5ebe672/docs/native-node-package.md)
 and its [artifact/CPU verification receipt](https://github.com/mul-cps/cps-compute/blob/5c8b4de7032487cb274221235243589bf5ebe672/docs/contracts/native-node-package-verification.json).
