@@ -4,39 +4,40 @@ The platform remains **limited-pilot**. Production qualification and the full
 project are unfinished. This record supersedes current-state statements in the
 older completion ledger; their dated acceptance results remain historical evidence.
 
-## Latest verified checkpoint — enrollment protocol deployed; active gate failed
+## Latest verified checkpoint — native 5 GiB execution and normal Stop passed
 
-Application `610814a28dbccd26f47cfd99597d3479ff17daa1` is deployed on the node,
-Gateway and both Hubs. All four CI jobs passed, all three registry digests were
-independently verified, and the installed Gateway consumer verifies all four
-current processes after rollout. All 24 non-Hub Pods retain their identities.
-The image digests and software checks are in the
-[protocol verification receipt](../../platform-staging/jupyter-extensions-20261013/native-enrollment-protocol-verification-20261017.json).
-The [adoption and active-test receipt](../../platform-staging/jupyter-extensions-20261013/native-enrollment-protocol-adoption-20261017.json)
-records the deployed processes, failed gate and confirmed cleanup.
+Application `7273ad70c497cafcd7116867343a4b5ae9b6909c` is deployed on the node,
+Gateway and both Hubs. Its full application suite passed 2,614 tests and 49
+subtests (3 skipped). All four jobs in
+[CI 38981766707](https://github.com/mul-cps/cps-compute/actions/runs/38981766707)
+passed, and the three published image digests were independently verified.
+All 24 existing non-Hub Pod identities were preserved during adoption.
 
-The normal 5 GiB group Start reached a real gated Pod but failed before enrollment
-publication or GPU execution. An original reviewed archive entry for a
-never-enrolled attempt rejects a legitimate new same-name reserved Pod before its
-immutable enrollment exists. This is now reproduced by an actual archive plus SDK
-acquisition regression; the bounded follow-up fix passes 160 focused tests and 69
-independent checks, but is not deployed. The first live run also exposed delayed
-Hub failure cleanup. Its actual User.spawn regression and bounded cleanup fix are
-being verified separately; the ghost-ready symptom is not yet proven resolved.
+The normal console Start of `shared-gpu-lab` returned HTTP 200/running and
+created Pod UID `e92edb4d-df2d-46e8-b1c6-77add740af9a`. Independent host NVML
+reads confirmed sealed soft and hard caps of 5,368,709,120 bytes. The approved
+PyTorch runtime reached OOM at a 4,831,838,208-byte allocator peak, freed its
+allocations, and successfully allocated and read back another 256 MiB. No
+HAMi preload, limit environment or mapped interposer was observed. The
+relationship between allocator bytes and the driver's charged-usage counter
+remains unexplained; this result does not establish every memory route or MPS
+isolation.
 
-The combined follow-up is now published as
-`7273ad70c497cafcd7116867343a4b5ae9b6909c`: 2,614 application tests and 49 subtests
-pass (3 skipped), with independent archive and actual Hub lifecycle review. It
-preserves late-task custody and the native start fence through cancellation.
-CI [38981766707](https://github.com/mul-cps/cps-compute/actions/runs/38981766707)
-and matching image builds are running; this follow-up is not deployed.
+Normal Stop subsequently returned HTTP 200/stopped. The Pod is absent and all
+95 native ledger claims are released. A fresh Start was rejected by the
+preflight before a spawn request: the node agent withdrew readiness after
+cleanup and reports ValueError. Restart qualification is therefore **not
+passed**. Investigation is active; no reservation or readiness bypass was used.
+The private evidence is under
+`~/.local/state/cps-full-project-20261013/native-archive-live-qualification-7273ad7-20261017/`.
 
-Normal Stop initially retained reservations because Hub shutdown was unconfirmed.
-A targeted CPS Hub restart recovered the stale server state; normal Stop then
-returned 200. All 94 claims are released, reservation/binding tables are empty,
-the test Pod is absent, all four components are ready, and the one-hour test token
-was revoked (204; subsequent authentication denied). No files or grants were
-removed. Automatic cap enforcement and live isolation remain unqualified.
+The earlier `610814a` rollout and failed pre-enrollment attempt remain historical
+in the [protocol verification receipt](../../platform-staging/jupyter-extensions-20261013/native-enrollment-protocol-verification-20261017.json)
+and [adoption receipt](../../platform-staging/jupyter-extensions-20261013/native-enrollment-protocol-adoption-20261017.json).
+The subsequent archive and bounded Hub cleanup fixes enabled the execution
+above. Failed-spawn ghost-state recovery, restart, independent peer isolation,
+MPS and the broader production gates remain unqualified. No MIG, driver change,
+GPU reset or reboot was performed.
 
 ## Previous checkpoint — packaged node renewal (16 October)
 
