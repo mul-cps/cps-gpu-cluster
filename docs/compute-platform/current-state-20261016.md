@@ -211,3 +211,23 @@ callbacks revalidate the actual freeze, and altered reader code is rejected.
 Eleven focused CPU tests pass. This is implementation evidence, not a live
 freeze, Source migration or notebook531 hardware result. Both frontends have not
 been intentionally paused by this change; observer RBAC and live execution remain.
+
+## Live Source context rejection and bounded grant renewal
+
+The existing operator Pod executed the actual context factory with the reviewed
+installed application closure and real Kubernetes clients. A truthful unarmed
+freeze review was rejected before any provider/configuration was opened. This
+proves the live unarmed-review denial, not successful acquisition of a freeze.
+Both console Deployment specs remained unchanged and active.
+
+The operator's own token now permits GET of the named CPS/CIT Deployments and
+namespace Pod LIST through `cps-qa531-source-observer`. Deployment PATCH and Secret
+GET remain denied. This complements the earlier exact-Gateway reader Role. These
+operator-only RoleBindings must be removed with the owned runtime after the run.
+
+The two existing dedicated operator CPU grants were renewed by expiry only via
+the authenticated owning-console API, with full person grant lists read back.
+They expire at2026-10-16T14:38:39.930258+00:00. Other grants remain unchanged; no GPU
+profile was granted. The temporary admin token was revoked204 and reread403.
+GPU qualification aliases are absent from live D48; their bounded grants belong
+after the candidate policy handover. The current5+20 hardware run remains open.

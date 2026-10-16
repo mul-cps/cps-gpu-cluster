@@ -1,0 +1,45 @@
+{
+  "hardware_5_20_executed": false,
+  "observer_namespace": "cps-compute",
+  "observer_role": "cps-qa531-source-observer",
+  "qa_grants": {
+    "changes": [
+      {
+        "expires": "2026-10-16T14:38:39.930258+00:00",
+        "id": "operator-531-a-cpu-20261015",
+        "lane": "a"
+      },
+      {
+        "expires": "2026-10-16T14:38:39.930258+00:00",
+        "id": "operator-531-b-cpu-20261015",
+        "lane": "b"
+      }
+    ],
+    "gpu_profiles_granted": false,
+    "grants_renewed": 2,
+    "other_grants_unchanged": true,
+    "profiles": [
+      "interactive-cpu"
+    ],
+    "workspaces_started": false
+  },
+  "scope": "Live unarmed-freeze denial and two expiry-only CPU grants; no GPU qualification",
+  "source_context_live": {
+    "checks": {
+      "get:deployments:cit-admin": true,
+      "get:deployments:cps-admin": true,
+      "get:secrets:cps-compute-runtime": false,
+      "list:pods:*": true,
+      "patch:deployments:cps-admin": false
+    },
+    "frontends_paused": false,
+    "passed": true,
+    "source_provider_opened": false,
+    "unarmed_freeze_rejected": true
+  },
+  "temporary_token_revocation": {
+    "delete_status": 204,
+    "read_status": 403
+  },
+  "version": 1
+}
