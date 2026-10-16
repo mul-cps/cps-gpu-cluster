@@ -1,0 +1,48 @@
+{
+  "application_commit": "b4cfa046e51645e49288e66e98649724ff2b48a7",
+  "ci_run": 38958413047,
+  "ci_status": "in_progress",
+  "continuous_readiness_qualified": false,
+  "deployed": false,
+  "live_read_only_diagnostic": {
+    "after": {
+      "configmap_gets": 202,
+      "current_intents": 0,
+      "driver_initialized": false,
+      "elapsed_seconds": 8.320655148476362,
+      "filesystem_and_api_mutations_blocked": true,
+      "historical_records": 82,
+      "maximum_repeated_get": 3,
+      "method_calls": {
+        "list_namespaced_config_map": 2,
+        "read_namespaced_config_map": 202,
+        "read_namespaced_pod": 184
+      },
+      "unique_configmap_gets": 200
+    },
+    "before": {
+      "elapsed_seconds": 13.310699826106429,
+      "maximum_repeated_get": 56,
+      "method_calls": {
+        "list_namespaced_config_map": 2,
+        "read_namespaced_config_map": 1077,
+        "read_namespaced_pod": 184
+      },
+      "unique_configmap_gets": 200
+    },
+    "current_intents": 0,
+    "historical_records": 82
+  },
+  "local_tests": {
+    "passed": 2775,
+    "skipped": 6,
+    "subtests_passed": 68
+  },
+  "production_qualified": false,
+  "review": "independent focused review clear; current authority and mutable state remain fresh",
+  "sdist_rebuild_byte_identical": true,
+  "startup_retry": "bounded retry for exact not-ready error; all identity guards rerun before driver initialization",
+  "test_log_sha256": "6d3d8d44b0515d164feeeadd759b84b4ab50e67ea1e51b9a240b5e050839af4c",
+  "version": 1,
+  "wheel_sha256": "f6c370582ef30a4498222f58cfef9706bf44eba5bf704d5e5219eb24309ac5ef"
+}

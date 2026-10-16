@@ -318,6 +318,17 @@ checks must remain fresh. No cap mutation or GPU workload was run for this
 measurement. Gateway and Hub consumer promotion and hardware qualification
 remain open; group GPU starts remain fenced.
 
+The bounded optimization and startup retry fix are committed and published as
+`b4cfa046e51645e49288e66e98649724ff2b48a7`. The full frozen-source suite passed
+2,775 tests and 68 subtests (six skipped); the wheel rebuilt identically from its
+sdist. In a separate actual-process **read-only, in-memory source diagnostic**,
+ConfigMap GETs fell from 1,077 to 202 (200 distinct), and elapsed snapshot time
+fell from 13.31 to 8.32 seconds. All 184 Pod GETs and two inventory LISTs remained;
+filesystem/API mutations were actively blocked and no driver was initialized.
+This diagnostic did not deploy the new source. A new image build and CI run
+38958413047 are pending. Continuous acknowledgment renewal still needs a separate
+safe read-only path; neither a short snapshot nor passing tests proves that gate.
+
 ## Verified deployment and recovery
 
 Gateway `9e695015` from compute source `de90610f` is now deployed. Both Hubs
