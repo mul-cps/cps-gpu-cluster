@@ -12,16 +12,25 @@
     },
     {
       "cleanup": "normal console stop HTTP200; all 93 claims released; reservations and bindings empty; no native Pod",
-      "gpu_pod_created": false,
+      "failure_phase": "before enrolling CAS: released claim has intent null",
+      "gpu_pod_created": "gated Pod observed by Hub registration; removed during failure cleanup",
       "gpu_workload_started": false,
       "preflight": "three active memberships, three eligible grants, ready approval and no parent writer exposure",
       "result": "storage succeeded; Hub intent registration failed current four-component acknowledgment fence after allocation acquisition",
       "scope": "existing approved CPS shared-gpu-lab v2 profile5"
     }
   ],
+  "hub_retry": {
+    "deployed": false,
+    "independent_focused_tests_passed": 20,
+    "published_source": true,
+    "relevant_tests_passed": 181,
+    "scope": "partial retry only; durable publication and revoked-permission cleanup remain open",
+    "source": "ccdbf379b160f09fbe19f2d5cf5d55826cd7ca4f"
+  },
   "production_ready": false,
   "remaining": [
-    "reproduce and fix native acquisition-to-registration acknowledgment transition",
+    "complete acquisition/registration acknowledgment handoff, including reproduced post-CAS enrollment publication gap",
     "controlled active cap and renewal qualification",
     "CIT normal reauthentication before actor API testing",
     "broader production acceptance and release gates"
@@ -29,5 +38,12 @@
   "revision": "sha256:5517ea8f342ecbb6b4ed817aa9b0ca5788984217e46e4ba90b5707cee509b427",
   "runtime_source": "f67224e06cd152a8c554822ddb0738685e291995",
   "state": "active-start-qualification-not-passed",
+  "temporary_operator_tokens": {
+    "created": 2,
+    "existing_user_roles_unchanged": true,
+    "local_generated_token_files_removed": true,
+    "revoked": 2
+  },
+  "temporary_test_permissions": "original expired grants and memberships restored via normal audited APIs",
   "version": 1
 }

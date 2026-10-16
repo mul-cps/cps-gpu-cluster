@@ -50,10 +50,23 @@ memberships and grants are current. Normal Start passed storage and reached Hub
 native-intent registration, where the current four-component acknowledgment fence
 refused the request after allocation acquisition. The active reservation/readiness
 transition needs reproduction and repair before active-group qualification can
-pass. No GPU Pod or workload started. Normal Stop returned HTTP200; all 93 ledger
+pass. Hub registration observed a gated Pod, which was removed during failure
+cleanup; no GPU workload started. The released claim has no intent, confirming
+the observed refusal preceded enrollment CAS. A separate CPU interleaving also
+exposes the post-CAS enrollment-publication gap; fixing only the observed retry
+window is insufficient for production qualification. Normal Stop returned
+HTTP200; all 93 ledger
 claims are released, reservations/bindings are empty, and no native Pod remains.
 CIT actor testing also requires a normal akadmin login: its stored upstream OIDC
 session expired; a valid Hub API token cannot bypass that refresh requirement.
+Both one-hour operator tokens created for these tests were revoked and their
+local credential files removed. Original test grants and memberships are restored.
+
+Hub commit `ccdbf379b160f09fbe19f2d5cf5d55826cd7ca4f` adds an exact-response,
+bounded registration retry (181 relevant tests; independent focused review and
+20 tests passed). It is published source, **not deployed**, and is only a partial
+mitigation. Durable post-CAS publication and normal Stop after mid-registration
+revocation still need a verified protocol fix; the strict custody refusal remains.
 
 See the [active start test receipt](../../platform-staging/jupyter-extensions-20261013/native-active-start-qualification-20261016.json).
 
