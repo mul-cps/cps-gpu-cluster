@@ -203,7 +203,9 @@ and the wheel rebuilt byte-identically from its sdist. The ordinary-user offline
 CLI replay verified all 82 lifetimes and 92 released claims against complete,
 explicitly scoped raw Pod snapshots; missing/foreign scopes fail closed.
 [CI run 38947667461](https://github.com/mul-cps/cps-compute/actions/runs/38947667461)
-is in progress. The private archive remains unpublished. Immutable
+passed all four jobs (2,724 tests, seven skipped and 68 subtests, plus installed
+SDK/Hub and both JupyterLab compatibility checks). The private archive remains
+unpublished. Immutable
 image/RBAC/GitOps promotion and live artifact qualification remain open. This does not qualify general GPU access or production readiness.
 
 ## Verified deployment and recovery

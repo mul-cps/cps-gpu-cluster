@@ -1,7 +1,13 @@
 {
   "application_commit": "754621304d088c6307c5465e757457a1e83aa80e",
+  "ci_jobs_passed": 4,
   "ci_run": 38947667461,
-  "ci_status": "in_progress",
+  "ci_status": "success",
+  "ci_tests": {
+    "passed": 2724,
+    "skipped": 7,
+    "subtests_passed": 68
+  },
   "deployment_adopted": false,
   "driver_changes": false,
   "gpu_execution": false,
