@@ -29,8 +29,20 @@ def owner(obj,kind):
     return meta
 
 
-def overlay(spec,code_name):
+def overlay(spec,code_name,reuse=False):
     value=copy.deepcopy(spec);pod=value['template']['spec'];container=pod['containers'][0]
+    if reuse:
+        expected=dict(name=VOLUME,configMap={'name':code_name,'defaultMode':0o644})
+        existing=[v for v in pod.get('volumes',[]) if v.get('name')==VOLUME]
+        mounts=[m for m in container.get('volumeMounts',[]) if m.get('name')==VOLUME]
+        wanted=[dict(name=VOLUME,mountPath='/opt/native/'+name,subPath=name,readOnly=True)
+                for name in ('node_agent.py','native_operator_epoch.py')]
+        guard.require(existing==[expected] and mounts==wanted, 'Exact retained generated code overlay required')
+        other=copy.deepcopy(value)
+        other['template']['spec']['volumes'].remove(expected)
+        other['template']['spec']['containers'][0]['volumeMounts']=[m for m in container['volumeMounts'] if m not in wanted]
+        guard.require(overlay(other,code_name)==value, 'No unrelated code overlap may survive reentry')
+        return value
     guard.require(all(v.get('name')!=VOLUME for v in pod.get('volumes',[])),'Code overlay volume already exists')
     for mount in container.get('volumeMounts',[]):
         path=mount.get('mountPath','')
@@ -52,7 +64,7 @@ def configuration_reference(spec,old_name,new_name):
 
 
 def forward_intent(*,original_deployment,original_configuration,proposed_node,
-                   original_node_source,original_epoch_source,contract_raw,contract_sha256):
+                   original_node_source,original_epoch_source,contract_raw,contract_sha256,retained_qualification=None):
     meta=owner(original_deployment,'Deployment');oldmeta=owner(original_configuration,'ConfigMap')
     guard.require(original_deployment.get('apiVersion')=='apps/v1' and meta['name']=='cps-native-node-agent'
         and original_configuration.get('apiVersion')=='v1' and original_configuration.get('immutable') is True
@@ -63,12 +75,20 @@ def forward_intent(*,original_deployment,original_configuration,proposed_node,
     exec(compile(bundle['node_agent.py'],'<reviewed-image-backed-node>','exec'),agent.__dict__)
     old=agent.validate_config(json.loads(original_configuration['data']['config.json']))
     new=agent.validate_config(copy.deepcopy(proposed_node))
-    guard.require(old['mode']=='qualified-group' and old['enabled'] is True
+    if retained_qualification is not None:
+        owner(retained_qualification,'ConfigMap')
+        guard.require(retained_qualification.get('apiVersion')=='v1'
+            and retained_qualification.get('immutable') is True and not retained_qualification.get('binaryData')
+            and retained_qualification.get('data')=={'config.json':transition.canonical(new)},
+            'Exact immutable original qualification configuration required for reentry')
+    guard.require(old['mode']=='qualified-group'  and old['enabled'] is True
         and old['policy_hash']=='sha256:d48f6553ed036c2e7adcc97417623fe0308be93ad13b20f246047ada118511b0'
         and new['mode']=='operator-qualification' and new['enabled'] is True
         and new['policy_hash']==contract['policy_hash'] and new['workspaces']==contract['workspaces']
         and agent.canonical_sha256(new['terminal_history'])==contract['terminal_history_sha256']
-        and all(new['terminal_history'].get(k)==v for k,v in old['terminal_history'].items())
+        and all(new['terminal_history'].get(k)==v or (retained_qualification is not None
+            and inverse.retained_as_current(v,retained_qualification,new))
+            for k,v in old['terminal_history'].items())
         and new['authority_namespace']==old['authority_namespace']=='cps-native-system'
         and all(new['pool'][k]==old['pool'][k] for k in ('node','node_uid','gpu_uuid','boot_id','driver_generation','total_memory_mib'))
         and new['pool']['memory_budget_mib']==25600 and new['pool']['max_workspaces']==2
@@ -95,7 +115,7 @@ def forward_intent(*,original_deployment,original_configuration,proposed_node,
     for item in configuration.get('items',[]):
         guard.require(item.get('key')==item.get('path')=='config.json','Exact operator configuration projection required')
         item['mode']=0o400
-    spec=overlay(spec,code['metadata']['name'])
+    spec=overlay(spec,code['metadata']['name'],reuse=retained_qualification is not None)
     return dict(version=1,enabled=False,live_applied=False,hardware_qualified=False,
         **{'code.json':code,'configuration.json':config,
            'deployment.patch.json':transition.replace_patch(original_deployment,'/spec',original_deployment['spec'],spec)})
@@ -121,7 +141,7 @@ def inverse_intent(*,forward_inputs,current_deployment,current_configuration,cur
     result=derive(**terminal_inputs)
     desired=copy.deepcopy(original['spec'])
     if phase!='unstarted':
-        desired=overlay(desired,current_code['metadata']['name'])
+        desired=overlay(desired,current_code['metadata']['name'],reuse=forward_inputs.get('retained_qualification') is not None)
         configuration_reference(desired,forward_inputs['original_configuration']['metadata']['name'],result['node-configmap.json']['metadata']['name'])
     result.update(restoration_phase=phase,**{'node-deployment.patch.json':transition.replace_patch(current_deployment,'/spec',current_deployment['spec'],desired)})
     return result

@@ -34,6 +34,16 @@ def immutable_node(cm, agent):
     return node
 
 
+def retained_as_current(entry, current, node):
+    """A completed lifetime remains in the ledger, mirrors and strict current parser."""
+    reference = {k: current['metadata'][k] for k in ('namespace', 'name', 'uid')}
+    reference.update(data_sha256=frozen.canonical_sha256(current['data']), policy_hash=node['policy_hash'])
+    return (entry.get('policy_hash') == node['policy_hash']
+        and entry.get('configuration_authority') == reference
+        and any(entry.get('profile') == value['profile'] and entry.get('cap_mib') == value['cap_mib']
+                for value in node['workspaces'].values()))
+
+
 def _derive_node_inverse(*, expected_added, original, current, baseline, final, contract_raw, contract_sha256,
                         approval_raw, approval_sha256, original_node_source, original_epoch_source, now_ns):
     contract = node_successor.validate_contract(contract_raw, contract_sha256)
@@ -47,7 +57,8 @@ def _derive_node_inverse(*, expected_added, original, current, baseline, final, 
         and old['policy_hash'] == 'sha256:d48f6553ed036c2e7adcc97417623fe0308be93ad13b20f246047ada118511b0'
         and node['mode'] == 'operator-qualification' and node['enabled'] is True
         and node['policy_hash'] == contract['policy_hash'] and node['workspaces'] == contract['workspaces']
-        and all(node['terminal_history'].get(u) == e for u,e in old['terminal_history'].items())
+        and all(node['terminal_history'].get(u) == e or retained_as_current(e, current, node)
+                for u,e in old['terminal_history'].items())
         and agent.canonical_sha256(node['terminal_history']) == contract['terminal_history_sha256']
         and node['authority_namespace'] == old['authority_namespace']
         and old['pool']['memory_budget_mib'] == 15360 and node['pool']['memory_budget_mib'] == 25600
@@ -104,9 +115,17 @@ def _derive_node_inverse(*, expected_added, original, current, baseline, final, 
     frozen.require(len(new_uids) == expected_added, 'Every added claim must match one reviewed pair member')
     mapper = FunctionType(terminal.map_history.__code__, dict(terminal.map_history.__globals__, agent=agent))
     oldmap = mapper(baseline['authority'],baseline['ledger'],old)
-    frozen.require(node['terminal_history'] == oldmap,
+    frozen.require(node['terminal_history'] == {u:e for u,e in oldmap.items()
+        if not (e['policy_hash'] == node['policy_hash'] and retained_as_current(old['terminal_history'].get(u, {}), current, node))},
         'Prospective history must equal the complete verified baseline, including original-policy lifetimes')
     fullmap = mapper(final['authority'],final['ledger'],node)
+    # Same-policy lifetimes are parsed as current enrollments on reentry, but
+    # their earlier immutable configuration references remain archival authority.
+    for u,e in oldmap.items():
+        if retained_as_current(old['terminal_history'].get(u, {}), current, node):
+            frozen.require(fullmap.get(u) == {k:v for k,v in e.items() if k!='configuration_authority'},
+                'Completed reentry lifetime changed outside its retained configuration reference')
+            fullmap[u] = copy.deepcopy(e)
     frozen.require(set(fullmap) == set(oldmap)|new_uids and all(fullmap[k] == v for k,v in oldmap.items()),
         'Complete old terminal authority must remain unchanged; only the exact pair may grow')
     for directory in ('enrollments','intents','journal'):

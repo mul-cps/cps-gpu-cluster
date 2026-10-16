@@ -83,3 +83,41 @@ def test_forward_projects_operator_configuration_with_required_root0400_mode():
  args,_=fixture();result=helper().forward_intent(**args)
  volume=next(v for v in result['deployment.patch.json'][-1]['value']['template']['spec']['volumes'] if v['name']=='config')
  assert volume['configMap']['defaultMode']==0o400
+
+
+def test_reentry_preserves_completed_same_configuration_lifetimes():
+ args,terminal=fixture();tool=helper();first=tool.forward_intent(**args)
+ current,config,code=actual_objects(first,args,terminal);terminal['current']=config
+ closed=tool.inverse_intent(forward_inputs=args,current_deployment=current,current_configuration=config,current_code=code,terminal_inputs=terminal,phase='complete')
+ again=copy.deepcopy(args);again['original_configuration']=copy.deepcopy(closed['node-configmap.json'])
+ again['original_configuration']['metadata'].update(uid=prior.uid(996),resourceVersion='6')
+ again['original_deployment']['spec']=closed['node-deployment.patch.json'][-1]['value']
+ again['retained_qualification']=config
+ result=tool.forward_intent(**again)
+ assert result['configuration.json']['data']==first['configuration.json']['data']
+ assert result['deployment.patch.json'][-1]['value']==first['deployment.patch.json'][-1]['value']
+ for fault in ('uid','data','mutable'):
+  bad=copy.deepcopy(again)
+  if fault=='uid':bad['retained_qualification']['metadata']['uid']=prior.uid(995)
+  elif fault=='data':bad['retained_qualification']['data']['config.json']+=' '
+  else:bad['retained_qualification']['immutable']=False
+  with pytest.raises(ValueError):tool.forward_intent(**bad)
+
+
+def test_unstarted_reentry_inverse_retains_every_prior_qualification_reference():
+ args,terminal=fixture();tool=helper();first=tool.forward_intent(**args)
+ current,config,code=actual_objects(first,args,terminal);terminal['current']=config
+ closed=tool.inverse_intent(forward_inputs=args,current_deployment=current,current_configuration=config,current_code=code,terminal_inputs=terminal,phase='complete')
+ again=copy.deepcopy(args);again['original_configuration']=copy.deepcopy(closed['node-configmap.json'])
+ again['original_configuration']['metadata'].update(uid=prior.uid(996),resourceVersion='6')
+ again['original_deployment']['spec']=closed['node-deployment.patch.json'][-1]['value'];again['retained_qualification']=config
+ second=tool.forward_intent(**again);second_deployment=copy.deepcopy(current);second_deployment['spec']=second['deployment.patch.json'][-1]['value']
+ inputs=copy.deepcopy(terminal);inputs['original']=again['original_configuration'];inputs['current']=config
+ baseline={k:copy.deepcopy(terminal['final'][k]) for k in ('authority','ledger','history','physical')}
+ baseline['authority']=copy.deepcopy(closed['authority-replay.json'])
+ inputs['baseline']=baseline;inputs['final']=copy.deepcopy(baseline);inputs['final']['pods']=dict(apiVersion='v1',kind='PodList',metadata={},items=[])
+ approval=json.loads(inputs['approval_raw']);approval.update(original_data_sha256=prior.terminal.agent.canonical_sha256(inputs['original']['data']),baseline_ledger_sha256=prior.pin(baseline['ledger']['data']['state.json'].encode()))
+ inputs['approval_raw']=prior.raw(approval);inputs['approval_sha256']=prior.pin(inputs['approval_raw'])
+ result=tool.inverse_intent(forward_inputs=again,current_deployment=second_deployment,current_configuration=config,current_code=code,terminal_inputs=inputs,phase='unstarted')
+ assert result['node-config.json']==json.loads(again['original_configuration']['data']['config.json'])
+ assert len(result['full-terminal-authority-archive.json'])==3

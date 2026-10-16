@@ -44,3 +44,22 @@ accepts at most262144 bytes only for the independent Root-pinned pair, matching
 its policy/workspaces/history; legacy configurations retain their32768-byte
 limit. Ownership, no-follow, link-count, permission and typed schema guards remain.
 The actual56968-byte/76-entry candidate passed this reader in the deployed8c image.
+
+## Re-entering the identical qualification configuration
+
+After a completed run, the restored D48 history includes references to the
+immutable qualification configuration. An optional `retained_qualification`
+permits re-entry only into that exact canonical configuration and generated code
+overlay. Its full immutable UID/data reference must match every prior lifetime
+which becomes current-policy history again. All original records remain in the
+ledger, protected mirrors and journals; no record is deleted or recreated.
+The inverse revalidates the complete baseline and preserves those earlier
+configuration references when mapping current-policy lifetimes back to D48.
+Changed UIDs, data, mutable maps and unrelated code mounts fail closed.
+
+Regression coverage includes a first completed cycle followed by re-entry and
+an unstarted second-cycle inverse. The actual restored Node passes server-side
+dry-run; read-only replay validates all78 records (76 explicit historical and
+two already completed current-policy records), with no driver or authority write.
+The full suite passes852 tests and851 subtests (14 skipped). Hardware restart
+qualification remains a separate live gate.
