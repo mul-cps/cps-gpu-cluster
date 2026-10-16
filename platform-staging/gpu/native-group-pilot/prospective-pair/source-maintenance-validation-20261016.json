@@ -1,0 +1,26 @@
+{
+  "application_instantiated": false,
+  "database_opened": false,
+  "focused_tests_passed": 15,
+  "freeze_armed": false,
+  "frontend_specs_unchanged": true,
+  "frontends_paused": false,
+  "hardware_qualified": false,
+  "new_role_bindings": 0,
+  "observed_at": "2026-10-16T12:02:37.137065+00:00",
+  "operator_ready": true,
+  "own_token_permission_checks": {
+    "create pods": false,
+    "create pods/exec": false,
+    "get secrets": false,
+    "patch deployments": false
+  },
+  "private_runtime_receipt_sha256": "48611c05eb0521dde212cd019b16c3288c81119dd9ad439da7812ec4e7e8f875",
+  "runtime_modules_match": 16,
+  "sdk_exec_transport_available": true,
+  "suite_log_sha256": "b0f730b09e5b33344d947434d93d9fb8956f1bb4d541ed29fba634d5488f4bf4",
+  "suite_skipped": 14,
+  "suite_subtests_passed": 851,
+  "suite_tests_passed": 804,
+  "version": 1
+}

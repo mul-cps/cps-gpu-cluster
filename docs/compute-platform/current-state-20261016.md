@@ -172,3 +172,16 @@ original image-backed spec returns. Actual image source hashes match the frozen
 references. The two ConfigMap creates and Deployment patch passed server dry-run
 with exact spec readback; explicit0644 avoids API-default drift. All17 focused
 tests pass. No live handover or current5+20 hardware run occurred in this step.
+
+## Source maintenance preparation
+
+A restricted idle operator Pod is prepared on the original Source node using the
+reviewed dbaad consumer and original configuration/PVC bindings. It exposes no
+HTTP service and opens no SQLite provider. All16 runtime module hashes match;
+the SDK exec transport is installed. Actual service-account token checks deny
+Deployment patch, Pod create, Secret get and Pod exec. No RoleBindings were added.
+Both admin frontends remain Ready1/1 with unchanged specs; freeze is not armed.
+The new exclusive-writer verifier passes15 tests, and the full suite passes804
+tests/851 subtests with14 skipped. Scoped reader permissions and genuine
+application callback wiring remain necessary before pausing frontends/migrating.
+The idle Pod expires after one hour; inspect live state before reuse.
