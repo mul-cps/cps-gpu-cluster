@@ -1,0 +1,21 @@
+{
+  "application_commit": "84a6263d08ebff1d17f474302364225a28101898",
+  "candidate_module_sha256": "41f82ef8ec3c4d5bf7011abc1436b52e4cf1329d16059def77a193b7baeac8af",
+  "complete_allocation_ledger_unchanged": true,
+  "configuration_changes": false,
+  "deployment_adopted": false,
+  "driver_changes": false,
+  "epoch_unchanged": true,
+  "gpu_api_calls": false,
+  "node_pod_and_deployment_unchanged": true,
+  "observations_match": true,
+  "owned_stage_removed": true,
+  "passed": true,
+  "physical_inventory_count": 2,
+  "pin_source_sha256": "784280a4f670eca067a8cc5b4d558f9d13c0c41141401d47c229de90dd6343c0",
+  "production_qualified": false,
+  "read_only": true,
+  "scope": "Packaged CDI reader compared with deployed reader on existing GPU2 node agent; no GPU execution",
+  "version": 1,
+  "wheel_sha256": "6dbc59ef358a73b481488d517ae7a4363aea49705fd3abba1050f179f0f0f4ba"
+}

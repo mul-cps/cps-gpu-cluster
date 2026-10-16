@@ -60,9 +60,34 @@ results are reported above. Both are CPU/build evidence; live adoption is open.
 See [canonical application documentation](https://github.com/mul-cps/cps-compute/blob/5c8b4de7032487cb274221235243589bf5ebe672/docs/native-node-package.md)
 and its [artifact/CPU verification receipt](https://github.com/mul-cps/cps-compute/blob/5c8b4de7032487cb274221235243589bf5ebe672/docs/contracts/native-node-package-verification.json).
 This is application ownership and packaging, not a deployed node service.
-Generic orchestration, explicit CDI/runtime pins, history/custody migration,
+Generic orchestration, history/custody migration,
 immutable image/RBAC/GitOps adoption and live qualification of the packaged
 artifacts remain open. Existing node deployments are unchanged by this commit.
+
+## Packaged CDI reader: live read-only comparison
+
+Application commit `84a6263d08ebff1d17f474302364225a28101898` adds explicit,
+immutable CDI/runtime pins and a protected read-only observer to the SDK wheel.
+The local application suite passed 2,597 tests and 68 subtests (six skipped).
+The wheel rebuilt byte-identically from its source distribution and passed
+installed SDK/native-module checks in a lean environment.
+
+The installed candidate reader was compared with the deployed reader in the
+existing GPU2 node agent. Both produced identical current CDI mapping, search
+proof and two-GPU physical inventory. Pins came from the deployed reader's
+reviewed constants, rather than candidate defaults. No GPU API, driver or
+configuration change occurred. The complete allocation ledger, node Pod UID,
+Deployment specification and driver epoch stayed unchanged; the owned temporary
+wheel and staging directory were removed.
+
+See the [read-only receipt](../../platform-staging/jupyter-extensions-20261013/native-node-cdi-read-qualification-20261016.json).
+This validates reader compatibility, not workload isolation or node-service
+adoption. Initial CI run 38935616473 failed in a coordinator test whose real
+100 ms deadline expired during preparation. Runtime correctly rejected the
+closed fence; deterministic test synchronization is being corrected without
+changing runtime deadlines. CI qualification of this application commit remains
+incomplete. Generic service orchestration, complete custody migration and
+immutable deployment adoption remain the next integration gates.
 
 ## Verified deployment and recovery
 
