@@ -228,6 +228,21 @@ contains no host driver tools or private configuration; deployment supplies them
 explicitly. The existing node agent has not been replaced. Adoption, rollback,
 restart/cancellation and real GPU isolation tests remain open.
 
+## Cutover contract correction in progress
+
+Actual typed validation of the rendered v3 deployment rejected the retained
+`d48f6553...511b0` catalog: policy/runtime guards derived `native-groups-v3`
+from the authority schema version, while the catalog records its measured
+`native-groups-v2` evidence. Deployment and approval publication stopped before
+adoption. An explicit authenticated policy-evidence version is being added to
+v3 proof data so transport schema changes preserve the measured policy label;
+legacy v1/v2 guards remain unchanged. A rebuilt image and fresh validation are
+required. One unreferenced v3 proof ConfigMap was created before this guard;
+it grants no access and is superseded by the corrected explicit proof schema.
+The existing agent remains running, and the original 92-claim ledger retains
+its UID, resourceVersion and raw bytes. The five-object terminal archive is
+valid independently of this correction.
+
 ## Verified deployment and recovery
 
 Gateway `9e695015` from compute source `de90610f` is now deployed. Both Hubs
