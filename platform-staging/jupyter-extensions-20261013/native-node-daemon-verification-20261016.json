@@ -1,7 +1,13 @@
 {
   "application_commit": "333c1daa2966c558a86a60ec62fb885e11665a88",
+  "ci_jobs_passed": 4,
   "ci_run": 38946012484,
-  "ci_status": "in_progress",
+  "ci_status": "success",
+  "ci_tests": {
+    "passed": 2698,
+    "skipped": 7,
+    "subtests_passed": 68
+  },
   "continuous_daemon_implemented": true,
   "deployment_adopted": false,
   "driver_changes": false,

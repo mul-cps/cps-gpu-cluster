@@ -183,7 +183,9 @@ Installed lean SDK/node verification, dependency checks and inert CLI startup
 passed. The wheel rebuilt byte-identically from its source distribution:
 `d98f16fe677120e98e84aa4ce6916be3f0904e03ffdea7a0af9789b661fb0982`.
 [CI run 38946012484](https://github.com/mul-cps/cps-compute/actions/runs/38946012484)
-is in progress. No live deployment or driver setting changed.
+passed all four jobs: 2,698 tests and 68 subtests, with seven skipped; installed
+SDK/Hub and JupyterLab 4.5.7/4.6.4 checks passed. No live deployment or driver
+setting changed.
 
 A separate read-only cutover audit found all 92 original ledger claims released,
 including ten never-enrolled claims, and 82 terminal lifetimes across 170 labeled
