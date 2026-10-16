@@ -1,0 +1,73 @@
+{
+  "active_group_cadence_qualified": false,
+  "application_commit": "f67224e06cd152a8c554822ddb0738685e291995",
+  "ci_run": 38960813947,
+  "ci_status": "success",
+  "ci_tests": {
+    "addon_passed": 60,
+    "installed_node_snapshots_passed": 2,
+    "jobs_successful": 4,
+    "passed": 2818,
+    "skipped": 7,
+    "subtests_passed": 68
+  },
+  "hardware_workloads_executed_in_this_rollout": false,
+  "hub_namespace_pod_uids_preserved": {
+    "cit-jhub": 10,
+    "jupyterhub": 16
+  },
+  "live_quiescent_observation": {
+    "distinct_acks": 9,
+    "first_valid": "2026-10-16T20:27:35.968236+00:00",
+    "gaps": [],
+    "gpu_api_calls": false,
+    "image": "ghcr.io/mul-cps/cps-native-node@sha256:5a614a6d79bac7911f98a588413126a1b181a65ed28f0e50e33f419618f7916b",
+    "last_valid": "2026-10-16T20:29:38.471715+00:00",
+    "max_ack_age_seconds": 14.673321,
+    "max_restarts": 0,
+    "passed": true,
+    "pod_uid": "ec618152-9b9b-4d0b-90cb-56672c1789e9",
+    "renewal_intervals_seconds": [
+      14.999332,
+      14.996436,
+      14.835251,
+      14.989919,
+      14.796659,
+      14.888201,
+      14.914144,
+      14.726091
+    ],
+    "strict_chain_refreshes": 5,
+    "total_samples": 50,
+    "valid_samples": 50,
+    "window_seconds": 122.503479,
+    "writes": false
+  },
+  "local_tests": {
+    "passed": 2819,
+    "skipped": 6,
+    "subtests_passed": 68
+  },
+  "metadata_only_ledger_barrier_resourceVersion": "372150118",
+  "node_configuration": {
+    "data_sha256": "sha256:45e4c4ee31816ac71663ad7235d99f4646426fea1e1057664bd6e588546fef28",
+    "name": "cps-packaged-node-config-v3-45e4c4ee31816ac7",
+    "resourceVersion": "372146273",
+    "uid": "18f84f71-c9d8-4410-9616-bb1948649c3e"
+  },
+  "node_deployment_uid": "03e6bf5e-39ab-4c4a-b73f-1d6cf0ee8076",
+  "original_files_preserved": 401,
+  "original_ledger_data_unchanged": true,
+  "peer_images": {
+    "gateway": "ghcr.io/mul-cps/cps-compute@sha256:848beda02b6333c2a3e9ad188de0359aa521c54dae71325956cff25f80f44f79",
+    "hub": "ghcr.io/mul-cps/cps-compute@sha256:2e5d5826632f41e890b748a5d9f8be18068e1dc7080b07d5f9d61e4ae3551076"
+  },
+  "peer_images_deployed": false,
+  "production_qualified": false,
+  "released_claims": 92,
+  "sdist_rebuild_byte_identical": true,
+  "sql_barrier": "BEGIN IMMEDIATE then ROLLBACK; no row/schema changes",
+  "test_log_sha256": "6f655970ce5d0b83d29656355b1b702d46ef03621e7d88281c0d83a907670f63",
+  "version": 1,
+  "wheel_sha256": "601ece9768f4bda79456d091d938a129fa30c19ac94e9cede9d676da210d98fd"
+}

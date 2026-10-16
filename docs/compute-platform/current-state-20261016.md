@@ -4,7 +4,34 @@ The platform remains **limited-pilot**. Production qualification and the full
 project are unfinished. This record supersedes current-state statements in the
 older completion ledger; their dated acceptance results remain historical evidence.
 
-## Latest verified checkpoint
+## Latest verified checkpoint — packaged node renewal
+
+Released application source `f67224e06cd152a8c554822ddb0738685e291995` is deployed
+on the isolated node as image
+`ghcr.io/mul-cps/cps-native-node@sha256:5a614a6d79bac7911f98a588413126a1b181a65ed28f0e50e33f419618f7916b`.
+The complete suite passed 2,819 tests and 68 subtests (six skipped). CI run
+38960813947 passed all four jobs, including installed node-only and Lab checks.
+The wheel rebuilt identically from its sdist. Startup completed without restart.
+
+An independent **quiescent** live run measured 50/50 strict valid acknowledgments
+over 122.5 seconds, no empty/stale samples or restarts, renewal intervals
+14.73–15.00 seconds and maximum observed acknowledgment age 14.67 seconds against
+the unchanged 30-second TTL. Five fresh authority/process/epoch checks passed.
+All 401 original protected files and all 26 Hub-namespace Pod UIDs were preserved;
+the 92 released ledger allocations retain identical data bytes. The SQL cutover
+barrier made no row/schema changes. No GPU workload or driver modification was
+performed during this rollout.
+
+Gateway and Hub candidates from the same source are published and registry
+verified, with unchanged Hub 5.5.2/KubeSpawner 7.1.0 and no Hub dependency upgrades.
+They are **not deployed**. Current work is their version-3 proof/current approval
+configuration rollout, followed by controlled active-group cadence and end-to-end
+qualification. Group GPU starts remain fenced. Quiescent success does not prove
+active GPU-group behavior or production readiness.
+
+See the [actual renewal adoption receipt](../../platform-staging/jupyter-extensions-20261013/native-node-renewal-adoption-20261016.json).
+
+## Retained notebook hardware qualification checkpoint
 
 The current notebook531 image passed GPU2 5/20 GiB ordinary PyTorch OOM/recovery,
 restart/reacquisition, bidirectional CUDA IPC and VMM/POSIX-FD isolation, and
