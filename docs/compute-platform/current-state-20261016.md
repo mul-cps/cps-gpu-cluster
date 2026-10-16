@@ -118,7 +118,9 @@ a regression now rejects that dependency during import. The wheel rebuilt
 byte-identically from its source distribution, SHA-256
 `d5e5bcb7ca4bdf111d483dd7c9cf31f26dc9d9adfb18d89996a42fa853f2f489`.
 [CI run 38938819760](https://github.com/mul-cps/cps-compute/actions/runs/38938819760)
-is in progress. No deployment or hardware setting changed. Complete custody,
+passed all four jobs (build, installed SDK/Hub, installed Lab 4.5.7/4.6.4).
+Its Python 3.12 suite passed 2,637 tests and 68 subtests, with seven skipped.
+No deployment or hardware setting changed. Complete custody,
 service execution, migration and released-image live qualification remain open.
 
 ## Verified deployment and recovery
