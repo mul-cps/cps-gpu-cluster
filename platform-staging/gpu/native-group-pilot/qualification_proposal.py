@@ -382,7 +382,20 @@ def render_prospective_candidate(inputs, observation_raw, health_raw, *, target_
         captured_approvals[scope]=approval
     agent.require(inputs['approvals']==captured_approvals and inputs['gate_image']==CURRENT_GATE_IMAGE,
         'Exact captured Source registrations/storage and unchanged Gate required')
-    result=_render(inputs,observation_raw,health_raw,now=now,terminal_authority=terminal_authority,candidate=target if len(targets)==1 else {'targets':targets})
+    # Real provisioned registrations retain NFS provenance metadata. Runtime
+    # approvals carry only the fixed descriptor; snapshots keep every byte.
+    from cps_compute.native_groups import STORAGE_FIELDS
+    candidate_inputs=copy.deepcopy(inputs)
+    for approval in candidate_inputs['approvals'].values():
+        storage=approval['storage']
+        agent.require(isinstance(storage,dict) and STORAGE_FIELDS <= set(storage)
+            and not set(storage)-(STORAGE_FIELDS|{'server','evidence'})
+            and ('server' not in storage or (isinstance(storage['server'],str)
+                and re.fullmatch(r'[A-Za-z0-9.-]{1,253}',storage['server'])))
+            and ('evidence' not in storage or isinstance(storage['evidence'],dict)),
+            'Only typed provisioning metadata may accompany a fixed native storage descriptor')
+        approval['storage']={key:copy.deepcopy(storage[key]) for key in STORAGE_FIELDS}
+    result=_render(candidate_inputs,observation_raw,health_raw,now=now,terminal_authority=terminal_authority,candidate=target if len(targets)==1 else {'targets':targets})
     result['acceptance.json'].update(source_mode='prospective-candidate',target_snapshot_sha256=target_snapshot_sha256,
         source_closure_sha256=source_closure_sha256,current_authority_sha256=target['current_authority_sha256'],
         terminal_history_sha256=canonical_sha256(result['node-config.json']['terminal_history']))

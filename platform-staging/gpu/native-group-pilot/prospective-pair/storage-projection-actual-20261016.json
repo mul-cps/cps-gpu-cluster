@@ -1,0 +1,19 @@
+{
+  "actual_capture_allocations": 86,
+  "actual_cps_hub_forward_validated": true,
+  "actual_gateway_forward_validated": true,
+  "actual_proposal_policy_hash": "sha256:2fad5aadc6174bf3ba727564b1d7f282d50549cfc5bc12cef877c59b2d2e6494",
+  "actual_terminal_history": 76,
+  "focused_tests_passed": 33,
+  "hardware_qualified": false,
+  "live_applied": false,
+  "native_storage_descriptor_projected": true,
+  "node_transition_limitation": "Actual Node code is image-backed; previous inverse assumes an existing code ConfigMap volume.",
+  "node_transition_ready": false,
+  "observed_at": "2026-10-16T11:36:16.682140+00:00",
+  "root_contract_sha256": "d29ac9051cd5bd50f155d694cdb8623da558f1df582071cf360125e45c5c494f",
+  "source_storage_provenance_preserved": true,
+  "suite_log_sha256": "cb0c99aca6257770143cf4a442c443d43b5c6758e7d48c8cb46c69366b7daf6c",
+  "suite_result": "772 passed, 14 skipped, 851 subtests passed in 36.24s",
+  "version": 1
+}

@@ -168,3 +168,30 @@ def test_candidate_cli_writes_only_fresh_unqualified_offline_proposal(tmp_path):
     assert accepted['source_mode']=='prospective-candidate' and accepted['hardware_qualified'] is False
     assert accepted['target_snapshot_sha256']==raw_sha(files['target-snapshot'])
     assert accepted['terminal_history_sha256']==proposal.agent.canonical_sha256(body['terminal_history'])
+
+
+def test_real_provisioning_metadata_is_retained_but_not_part_of_native_descriptor():
+    values=fixture();args,authority,target,closure=values
+    metadata={'server':'nas.example.edu','evidence':{'provisioning':'reviewed-storage-proof'}}
+    target['registration']['storage'].update(copy.deepcopy(metadata))
+    args[0]['approvals'][SCOPE]['storage'].update(copy.deepcopy(metadata))
+    before=copy.deepcopy(values)
+    result=render(values)
+    mode=NativeGroupQualification.from_config(result['operator-qualification.json'],Policy(result['policy.json']))
+    descriptor=mode.workspaces[SCOPE]['storage']
+    assert set(descriptor)=={'namespace','pvc','pv','path','group_hash','storage_version','readonly_mounts'}
+    assert result['target-snapshot.json']['registration']['storage']==target['registration']['storage']
+    from prospective_source_qualification_workspace import expected_registration
+    body=expected_registration(target,Policy(result['policy.json']))
+    mode.authorize('cps',body,target['profile'])
+    assert body['storage']['server']=='nas.example.edu'
+    assert body['storage']['evidence']==metadata['evidence']
+    assert values==before
+
+
+@pytest.mark.parametrize('field,value',[('hostPath','/host'),('server',[]),('evidence','untyped-proof')])
+def test_storage_projection_never_silently_drops_unknown_or_untyped_metadata(field,value):
+    values=fixture();args,_,target,_=values
+    target['registration']['storage'][field]=value
+    args[0]['approvals'][SCOPE]['storage'][field]=value
+    with pytest.raises(ValueError):render(values)

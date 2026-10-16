@@ -141,3 +141,22 @@ they cannot replace workflow evidence or admit unknown additions. The new helper
 passes13 focused tests and the full pilot suite passes768 tests/851 subtests
 (14 skipped). No notebook531 handover or current5+20 hardware test is claimed.
 Fresh full custody collection and coordinated transition remain the next steps.
+
+## Fresh proposal integration
+
+Actual post-stop capture now contains86 released allocations and76 terminal
+entries, including the independently retained immutable configuration references.
+The Source16-module declaration matches the reviewed manifest; original serialized
+capture bytes are retained separately from the verified canonical manifest.
+Provisioned storage includes server/evidence metadata, which previously broke
+proposal construction. The proposal now verifies the complete captured metadata
+and projects only the strict seven-field native descriptor, preserving the full
+registration in its target snapshot. Unknown or untyped metadata fails. All33
+prospective tests pass; the real capture now produces a typed two-workspace
+proposal and validates actual Gateway/CPS Hub forward artifacts.
+
+A separate live Node mismatch was caught before apply: code is supplied by the
+Node8c image, with no existing code ConfigMap volume. The earlier Node inverse
+assumed such a volume. An explicit image-backed code-overlay transition and
+matching inverse are therefore required before handover. No handover deployment
+changes were applied; the controlled workspace remains stopped.
