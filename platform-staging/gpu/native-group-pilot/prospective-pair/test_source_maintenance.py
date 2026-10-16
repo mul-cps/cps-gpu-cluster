@@ -67,3 +67,15 @@ def test_unresolved_writer_or_unreviewed_start_exclusion_denies_freeze(fault):
  elif fault=='review':review['no_alternate_group_start_path']=False
  else:review['observed_at']='2000-01-01T00:00:00+00:00'
  with pytest.raises(ValueError):helper().verify_freeze(originals=a,current=live,pods={'apiVersion':'v1','kind':'PodList','metadata':metadata,'items':items},operator=pod,review=review,gateway={'pod_uid':uid(6),'policy_hash':'sha256:'+'b'*64,'contract_sha256':'a'*64})
+
+@pytest.mark.parametrize('shape',['omitted','null','foreign-version','foreign-kind'])
+def test_core_v1_pod_list_items_inherit_type_from_list_without_accepting_foreign_types(shape):
+ a,live,pod,review=observations()
+ pod.pop('apiVersion');pod.pop('kind')
+ if shape=='null':pod.update(apiVersion=None,kind=None)
+ elif shape=='foreign-version':pod['apiVersion']='foreign/v1'
+ elif shape=='foreign-kind':pod['kind']='Deployment'
+ kwargs=dict(originals=a,current=live,pods={'apiVersion':'v1','kind':'PodList','metadata':{},'items':[pod]},operator=pod,review=review,gateway={'pod_uid':uid(6),'policy_hash':'sha256:'+'b'*64,'contract_sha256':'a'*64})
+ if shape.startswith('foreign'):
+  with pytest.raises(ValueError):helper().verify_freeze(**kwargs)
+ else:assert helper().verify_freeze(**kwargs)['active'] is True

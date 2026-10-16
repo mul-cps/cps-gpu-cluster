@@ -1,0 +1,38 @@
+{
+  "actual_registrations_read": 2,
+  "backup": {
+    "backup_exported": true,
+    "sha256": "10068faa8c613730f3ad6ff0ae54f1f4301fd016d36e46ee0c2e27ea0ac8d710",
+    "size": 4599808,
+    "sqlite_integrity": "ok"
+  },
+  "database_backup_integrity": true,
+  "database_logical_dump_unchanged": true,
+  "first_attempt_rejected_missing_item_gvk": true,
+  "frontends_restored_ready": true,
+  "genuine_contexts_constructed": 2,
+  "hardware_qualified": false,
+  "maintenance_sha256": "865b0face5a27b782fffedb84d4ee9a20c36e9db61191204f46e05994200c8cf",
+  "operator_uid": "3f3db863-045f-4f86-984d-c271e74e8af8",
+  "passed": true,
+  "personal_pod_uids_preserved": true,
+  "records": [
+    {
+      "profile": "interactive-cpu",
+      "registration_matches_cpu": true,
+      "state": "stopped",
+      "workspace": "operator-qualification-531-a-20261015"
+    },
+    {
+      "profile": "interactive-cpu",
+      "registration_matches_cpu": true,
+      "state": "stopped",
+      "workspace": "operator-qualification-531-b-20261015"
+    }
+  ],
+  "suite_skipped": 14,
+  "suite_subtests_passed": 851,
+  "suite_tests_passed": 841,
+  "version": 1,
+  "workspaces_started": false
+}

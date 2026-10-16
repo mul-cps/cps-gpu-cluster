@@ -231,3 +231,22 @@ They expire at2026-10-16T14:38:39.930258+00:00. Other grants remain unchanged; n
 profile was granted. The temporary admin token was revoked204 and reread403.
 GPU qualification aliases are absent from live D48; their bounded grants belong
 after the candidate policy handover. The current5+20 hardware run remains open.
+
+## Genuine Source context positively exercised live
+
+Both Source frontends were temporarily paused with UID/full-spec compare-and-swap
+and restored automatically to their exact original specs. The first attempt
+rejected valid CoreV1 PodList items because item GVK was omitted by the API.
+Four regression cases now cover absent/null and conflicting type fields; the
+verifier inherits only missing type from the validated enclosing v1 PodList.
+
+The retry constructed the genuine configured application twice under the actual
+exclusive writer observation and read both current Gateway registrations. Both
+QA records remained stopped CPU workspaces. A4,599,808-byte SQLite backup passed
+integrity and was exported to private host storage. The complete logical dump
+before/after application construction was identical. Both consoles returned
+Ready1/1 and all four personal server Pod UIDs remained unchanged.
+
+Full qualification suite:841 passed,14 skipped,851 subtests passed. The live
+Source loader path is now exercised; Source migration, candidate grants and
+current notebook5315+20 hardware qualification remain unexecuted.

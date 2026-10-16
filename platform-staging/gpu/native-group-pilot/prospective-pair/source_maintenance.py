@@ -75,8 +75,12 @@ def verify_freeze(*,originals,current,pods,operator,review,gateway):
         and review['source_service_token_custody']=='root-exclusive-during-external-freeze'
         and observed.tzinfo is not None and 0<=(datetime.now(timezone.utc)-observed).total_seconds()<=600,
         'Fresh reviewed active start exclusion and service-token custody required')
+    require(pods.get('apiVersion')=='v1' and pods.get('kind')=='PodList' and isinstance(pods.get('items'),list)
+        and isinstance(pods.get('metadata'),dict) and not pods['metadata'].get('continue'),'Complete unpaginated actual PodList required')
+    # CoreV1 PodList items omit their individual GVK; the typed enclosing
+    # list supplies it. An explicit conflicting item type remains invalid.
     meta=operator.get('metadata',{});spec=operator.get('spec',{});containers=spec.get('containers',[])
-    require(operator.get('apiVersion')=='v1' and operator.get('kind')=='Pod' and meta.get('namespace')=='cps-compute'
+    require(operator.get('apiVersion') in (None,'v1') and operator.get('kind') in (None,'Pod') and meta.get('namespace')=='cps-compute'
         and digest(spec)==review['operator_spec_sha256'] and meta.get('uid')==review['operator_uid'] and meta.get('labels',{}).get(MARKER)==review['freeze_id']
         and not meta.get('deletionTimestamp') and operator.get('status',{}).get('phase')=='Running'
         and spec.get('serviceAccountName')==ACCOUNT and not spec.get('initContainers') and not spec.get('ephemeralContainers')
@@ -87,8 +91,6 @@ def verify_freeze(*,originals,current,pods,operator,review,gateway):
         and container.get('command')==['python','-B','-c'] and container.get('args')==['import time; time.sleep(3600)']
         and all(security.get(k)==v for k,v in {'runAsUser':10001,'runAsGroup':10001,'runAsNonRoot':True,'allowPrivilegeEscalation':False,'readOnlyRootFilesystem':True,'capabilities':{'drop':['ALL']}}.items())
         and not any('hostPath' in v for v in spec.get('volumes',[])), 'Original runtime and restricted maintenance command required')
-    require(pods.get('apiVersion')=='v1' and pods.get('kind')=='PodList' and isinstance(pods.get('items'),list)
-        and isinstance(pods.get('metadata'),dict) and not pods['metadata'].get('continue'),'Complete unpaginated actual PodList required')
     require(sum(p.get('metadata',{}).get('uid')==meta['uid'] for p in pods['items'])==1
         and next(p for p in pods['items'] if p.get('metadata',{}).get('uid')==meta['uid'])==operator,
         'Actual operator must occur once in the same complete observation')
