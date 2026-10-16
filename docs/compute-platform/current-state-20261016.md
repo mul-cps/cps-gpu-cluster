@@ -96,6 +96,31 @@ and rebuilt successfully. This is build/package qualification only. Generic
 service orchestration, complete custody migration and
 immutable deployment adoption remain the next integration gates.
 
+## Shared authority and node configuration v3
+
+Application commit `3be38cdae748fab133a35629567b8355bbfdef27` adds explicit
+qualification authority pinned independently by trusted deployment configuration.
+The gateway, Hub, capture/export, registry and approval consumers retain that
+authority when reconstructing deployments. V3 permits only the measured pool,
+immutable runtime image and 5/10/20 GiB profiles covered by its actual immutable
+qualification object. Existing V1/V2 image/device restrictions remain unchanged.
+New V3 starts require a current authenticated approval reference.
+
+The node configuration resolves the pinned node → deployment → qualification
+chain and derives resources from that deployment. It validates a terminal-index
+reference but does not yet consume terminal custody or run the node service.
+Those lifecycle modules are unfinished and excluded from this commit.
+
+The exact committed source snapshot passed 2,638 tests and 68 subtests (six
+skipped). Independent boundary review found no blocking issue. Installed lean
+SDK/node verification passed after fixing an eager optional-Kubernetes import;
+a regression now rejects that dependency during import. The wheel rebuilt
+byte-identically from its source distribution, SHA-256
+`d5e5bcb7ca4bdf111d483dd7c9cf31f26dc9d9adfb18d89996a42fa853f2f489`.
+[CI run 38938819760](https://github.com/mul-cps/cps-compute/actions/runs/38938819760)
+is in progress. No deployment or hardware setting changed. Complete custody,
+service execution, migration and released-image live qualification remain open.
+
 ## Verified deployment and recovery
 
 Gateway `9e695015` from compute source `de90610f` is now deployed. Both Hubs
