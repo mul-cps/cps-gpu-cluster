@@ -68,15 +68,23 @@ bounded registration retry (181 relevant tests; independent focused review and
 mitigation. Durable post-CAS publication and normal Stop after mid-registration
 revocation still need a verified protocol fix; the strict custody refusal remains.
 
-The follow-up protocol is under test in the application worktree. It uses an
+The follow-up protocol is published in application commit
+`610814a28dbccd26f47cfd99597d3479ff17daa1`. It uses an
 immutable enrollment-slot barrier for a stopped attempt that never published an
 enrollment, and a node-produced cleanup proof before releasing capacity. The
 actual Gateway-to-node software integration now exercises Stop, proof creation,
 reservation release and readiness recovery without driver writes. Independent
-targeted verification passes 78 tests, including the established-enrollment-loss
-regression found by the broader suite. An established enrollment whose artifact
-disappears remains a hard custody failure. Same-name subsequent attempts and
-terminal-history packaging remain under review; these changes are not deployed.
+verification passes 2,596 tests and 49 subtests (3 skipped), including the
+established-enrollment-loss regression found by the broader suite. An established
+enrollment whose artifact disappears remains a hard custody failure. Three
+vertical race variants cover actual SDK acquisition, a compiled same-name gated
+Pod, node readiness before enrollment, registration, subsequent Stop and released
+capacity. Canonical Unicode wire/provenance tests pass without changing legacy
+binding hashes. Independent review cleared the protocol; node import verification
+and the lean node image build pass. Gateway and SDK/Hub wheels are built; CI
+[38977494335](https://github.com/mul-cps/cps-compute/actions/runs/38977494335)
+is still running. These changes are **not deployed** and these software tests
+do not prove live cap enforcement or hardware isolation.
 The live node remains Ready and all 93 live claims remain released.
 
 See the [active start test receipt](../../platform-staging/jupyter-extensions-20261013/native-active-start-qualification-20261016.json).

@@ -1,0 +1,39 @@
+{
+  "version": 1,
+  "observed_at": "2026-10-16T22:47:23.353684+00:00",
+  "source_revision": "610814a28dbccd26f47cfd99597d3479ff17daa1",
+  "remote_revision_verified": true,
+  "tests": {
+    "root_application_suite": {
+      "passed": 2596,
+      "skipped": 3,
+      "subtests_passed": 49,
+      "seconds": 45.47
+    },
+    "owner_focused": {
+      "passed": 294
+    },
+    "independent_bounded_cases": {
+      "passed": 6
+    },
+    "node_import_verifier": "passed"
+  },
+  "wheels": {
+    "cps_compute-0.1.0-py3-none-any.whl": "d4747244d5efbd47fb62df56281f599837fb862968f3b2d4079ee1b34073fab8",
+    "cps_compute_hub-0.1.0-py3-none-any.whl": "f8a1df838b8e2a39537ff9feef10ef0aadcd963e4ad6e47b26a3874b06398a3f"
+  },
+  "local_images": {
+    "node": "4fb63aa47911b2d87a44ab27d469df61e64d354937228a222d0419b67e8354e2",
+    "gateway": "0161dec65636f096d37e3b245540f8f2b15abf028f8a91cfa9653feed9dcf952",
+    "hub": "15106218494760eca8e25e4bc7c81b25031255e983df5a06494d7362a5d4b076"
+  },
+  "image_status": "local builds only; registry publication and deployment not yet verified",
+  "ci": {
+    "run_id": 38977494335,
+    "status": "in_progress",
+    "url": "https://github.com/mul-cps/cps-compute/actions/runs/38977494335"
+  },
+  "live_changes": false,
+  "live_cap_qualification": false,
+  "production_ready": false
+}
