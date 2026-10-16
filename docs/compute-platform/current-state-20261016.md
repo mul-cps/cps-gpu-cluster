@@ -24,6 +24,13 @@ independent checks, but is not deployed. The first live run also exposed delayed
 Hub failure cleanup. Its actual User.spawn regression and bounded cleanup fix are
 being verified separately; the ghost-ready symptom is not yet proven resolved.
 
+The combined follow-up is now published as
+`7273ad70c497cafcd7116867343a4b5ae9b6909c`: 2,614 application tests and 49 subtests
+pass (3 skipped), with independent archive and actual Hub lifecycle review. It
+preserves late-task custody and the native start fence through cancellation.
+CI [38981766707](https://github.com/mul-cps/cps-compute/actions/runs/38981766707)
+and matching image builds are running; this follow-up is not deployed.
+
 Normal Stop initially retained reservations because Hub shutdown was unconfirmed.
 A targeted CPS Hub restart recovered the stale server state; normal Stop then
 returned 200. All 94 claims are released, reservation/binding tables are empty,
