@@ -84,9 +84,12 @@ See the [read-only receipt](../../platform-staging/jupyter-extensions-20261013/n
 This validates reader compatibility, not workload isolation or node-service
 adoption. Initial CI run 38935616473 failed in a coordinator test whose real
 100 ms deadline expired during preparation. Runtime correctly rejected the
-closed fence; deterministic test synchronization is being corrected without
-changing runtime deadlines. CI qualification of this application commit remains
-incomplete. Generic service orchestration, complete custody migration and
+closed fence. Commit `80d16f6b70bd8f8e9853fab134112d3c4e97ecfb` replaces the
+wall-clock sleep with manual triggering of the real deadline and explicit
+cleanup completion. Runtime deadlines and safety checks are unchanged. The full
+local suite again passed 2,597 tests and 68 subtests (six skipped).
+[CI run 38937037169](https://github.com/mul-cps/cps-compute/actions/runs/38937037169)
+is in progress; CI qualification remains incomplete. Generic service orchestration, complete custody migration and
 immutable deployment adoption remain the next integration gates.
 
 ## Verified deployment and recovery
