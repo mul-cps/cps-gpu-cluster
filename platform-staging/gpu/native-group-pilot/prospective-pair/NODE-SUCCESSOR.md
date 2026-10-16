@@ -154,3 +154,8 @@ subtests**, with 14 explicitly private-input skips. The test environment uses
 the compute and Hub adapter source paths, the admin release-integration source
 and isolated `cel-python==0.4.0` test dependencies. No cluster mutation or
 hardware run was performed by this change.
+
+The separate [fresh-pair Node inverse](NODE-PAIR-INVERSE.md) now derives a
+complete terminal archive and Node configuration/Deployment restoration for
+the exact CPS+CPS pair. Coordinated Gateway policy/runtime and Source restoration
+remain separate execution prerequisites; the legacy CPS+CIT inverse is unchanged.

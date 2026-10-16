@@ -1,0 +1,18 @@
+{
+  "coordinated_gateway_source_inverse_complete": false,
+  "hardware_qualified": false,
+  "legacy_cps_cit_inverse_changed": false,
+  "live_applied": false,
+  "new_tests_passed": 27,
+  "observed_at": "2026-10-16T09:43:34.881557+00:00",
+  "source_sha256": {
+    "configuration_inverse.py": "5c98dbb6691a93bb6b862bf178c1e47ad972c15879ae400a515a93d514ebf9ed",
+    "test_configuration_inverse.py": "e87faf24474313d19a35c25096309483564624c209e20ea961bd53dd00d5a874"
+  },
+  "suite": "platform-staging/gpu/native-group-pilot",
+  "suite_skipped": 14,
+  "suite_subtests_passed": 851,
+  "suite_tests_passed": 658,
+  "test_log_sha256": "d1eb0f8e2af70682952d754a70581bd751f836a06bd6d022f2646362525994ea",
+  "version": 1
+}

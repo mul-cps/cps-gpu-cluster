@@ -75,7 +75,10 @@ do not qualify notebook531 or the full eight-GPU service.
 2. Qualification history support now accepts 128 records in the offline
    candidate and prospective Node generator; replay validated all 85 allocations
    and 75 terminal entries without truncation. The deployed Node is unchanged.
-   Fresh CPS+CPS finite restoration and coherent deployment remain required.
+   Fresh CPS+CPS Node restoration and its UID/spec-tested Deployment inverse
+   are now implemented and CPU-tested separately from the legacy CPS+CIT path.
+   Coordinated Gateway policy/runtime and Source restoration, pre-start unwind
+   and coherent deployment remain required before the hardware test.
 3. Execute the current-image 5+20 GiB test after those prerequisites pass.
 4. Close the API/Hera/distributed gaps, adopt the Argo revocation fix, then finish
    the scale, lifecycle, recovery and release gates above.
