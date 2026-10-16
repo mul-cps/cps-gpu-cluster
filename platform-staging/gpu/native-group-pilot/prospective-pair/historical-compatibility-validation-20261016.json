@@ -1,0 +1,17 @@
+{
+  "version": 1,
+  "historical_enrollments_validated": 76,
+  "dynamic_historical_enrollments": 38,
+  "negative_checks": [
+    "changed-enrollment-reference",
+    "missing-protected-approval-mirror",
+    "mutable-approval-document",
+    "new-live-dynamic-intent"
+  ],
+  "driver_instantiated": false,
+  "authority_writes": false,
+  "tests_passed": 850,
+  "subtests_passed": 851,
+  "tests_skipped": 14,
+  "hardware_qualified": false
+}

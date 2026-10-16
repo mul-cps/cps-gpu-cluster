@@ -250,4 +250,4 @@ def test_only_reviewed_epoch_history_reader_and_pin_change():
     assert node.count("len(history) <= 128, 'Bounded explicit terminal history required'") == 1
     node = node.replace("len(history) <= 128, 'Bounded explicit terminal history required'",
         "len(history) <= 64, 'Bounded explicit terminal history required'", 1)
-    assert replace_definition(BASE.decode(), ('validate_historical_configuration','read_config')) == replace_definition(node, ('validate_historical_configuration','read_config'))
+    assert replace_definition(BASE.decode(), ('validate_historical_configuration','read_config','validate_authority_enrollments')) == replace_definition(node, ('validate_historical_configuration','read_config','validate_authority_enrollments'))

@@ -159,6 +159,53 @@ def successor_source(original, contract_raw, reviewed_raw_sha256):
         return config""", 1)
     require(result.count(reader_before) == 1, 'Unique exact operator configuration reader required')
     result = result.replace(reader_before, reader_after, 1)
+    historical = next(n for n in ast.parse(result).body if isinstance(n, ast.FunctionDef)
+                      and n.name == 'validate_authority_enrollments')
+    historical_before = ''.join(result.splitlines(True)[historical.lineno - 1:historical.end_lineno])
+    historical_after = historical_before
+    bridge = f'''        def historical_envelope(actual):
+            if 'approval_ref' not in body:
+                return validate_enrollment(actual, old, models)
+            # Historical-only custody bridge. Never admit a new live intent.
+            require(config.get('mode') == 'operator-qualification'
+                and config['policy_hash'] == {contract['policy_hash']!r}
+                and config['workspaces'] == {contract['workspaces']!r}
+                and canonical_sha256(history) == {contract['terminal_history_sha256']!r}
+                and reference is None and entry['policy_hash'] ==
+                'sha256:d48f6553ed036c2e7adcc97417623fe0308be93ad13b20f246047ada118511b0'
+                and canonical_sha256(body) == entry['enrollment_sha256'],
+                'Only Root-pinned completed dynamic history may use approval custody')
+            approval = load_source('_historical_approval_revision',
+                (HERE / 'native_approval_revision.py').read_bytes(),
+                'ddaaf9593dfbc9cba2d4aa3227102895a435e2537346ddd467c4941c0201658d',
+                'native_approval_revision.py')
+            ref = approval.reference(body['approval_ref'])
+            require(ref['namespace'] == config['authority_namespace']
+                and ref['policy_hash'] == entry['policy_hash'], 'Historical approval policy/namespace required')
+            document_cm = kube.configmap(ref['namespace'], ref['name'])
+            # The frozen consumer verifies this entire immutable document against
+            # the full-data reference already pinned in the original enrollment.
+            template = parse(document_cm['data']['approval.json'])['registry']['deployment']
+            base = dict(old, pool=template['node_pool'], terminal_history={{}})
+            require(all(base['pool'].get(k) == config['pool'].get(k) for k in
+                ('node', 'node_uid', 'gpu_uuid', 'boot_id', 'driver_generation', 'total_memory_mib')),
+                'Historical approval must retain the current physical GPU epoch')
+            consumer = approval.ApprovalConsumer(sys.modules[__name__], base, template, ref, kube.configmap)
+            document = consumer.document(ref)
+            value = consumer._envelope(actual, models, document, ref)
+            expected = dict(version=1, approval_ref=ref, enrollment_uid=value['configmap_uid'],
+                            enrollment_sha256=canonical_sha256(value['enrollment']))
+            require(store.backend.private_read(store.state / 'approval-references' / (uid + '.json'), store.uid)
+                    == expected, 'Original protected historical approval reference required')
+            return value
+'''
+    target = '        envelope = validate_enrollment(cm, old, models)'
+    require(historical_after.count(target) == 1, 'Unique historical envelope validation required')
+    historical_after = historical_after.replace(target, bridge + '        envelope = historical_envelope(cm)', 1)
+    target = 'require(validate_enrollment(actual, old, models) == envelope,'
+    require(historical_after.count(target) == 1, 'Unique fresh historical envelope validation required')
+    historical_after = historical_after.replace(target, 'require(historical_envelope(actual) == envelope,', 1)
+    result = result.replace(historical_before, historical_after, 1)
     compile(result, 'prospective_node_successor.py', 'exec')
     return result
 

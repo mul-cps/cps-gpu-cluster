@@ -13,7 +13,8 @@ when reading retained39ef terminal history: its current-policy predicate permits
 only D48 with the original CPS5/CIT10 scopes. The regression first reproduced
 that rejection against `node8c.py`. The successor permits one additional finite
 configuration bound to an independently reviewed raw contract SHA256. It changes
-only `validate_historical_configuration` in the historical-only output. The paired
+`validate_historical_configuration`, the bounded configuration reader, terminal-history
+collection bound and historical enrollment compatibility in the output. The paired
 output additionally replaces the single exact helper SHA256 in Node main and
 only `node_configuration` in the flat helper. All other source bytes remain exact.
 
@@ -165,3 +166,19 @@ history can exceed32 KiB, so it permits up to256 KiB only after matching the
 pinned contract policy/workspaces/history. Other modes retain32 KiB. The original
 root0400/no-follow/link-count guards remain. Tests execute this reader with large,
 oversized and wrong-mode files, including unchanged small legacy behavior.
+
+## Completed dynamic enrollment custody
+
+For the exact Root-pinned prospective history only, D48 completed dynamic
+enrollments retain their original `approval_ref`. The frozen approval consumer
+validates the immutable document UID, full data hash, registry revision, Source
+membership/Pod/profile and original measured pool. Its physical GPU epoch must
+match the selected device. The original protected per-UID approval reference,
+enrollment and intent mirrors are required. Both fresh-read rounds use that same
+validation; completion, journal, released ledger and Pod-absence checks remain.
+Current live enrollments continue through the unchanged strict parser.
+
+Read-only execution in the actual Node image validated all76 historical entries
+and rejected changed references, missing protected approval mirrors, mutable
+approval documents and new dynamic live intents. No driver was instantiated and
+no authority was written. This proves historical compatibility, not GPU isolation.

@@ -276,3 +276,14 @@ for the QA profile transition. The expired Source operator, its SA/helper map an
 two temporary Roles/Bindings were deleted by UID; backups/PVCs remain intact.
 850 tests/851 subtests pass;14 skipped. No GPU alias grants or GPU Starts occurred.
 The current notebook5315+20 isolation run remains the next unfinished gate.
+
+## Full historical enrollment compatibility
+
+The third unstarted candidate boot exposed38 completed dynamic enrollments whose
+`approval_ref` was rejected by the static qualification parser. The generated
+Node now bridges only the exact Root-pinned terminal history through the frozen
+approval consumer, retaining full original document/protected-mirror custody and
+all completion/journal/ledger/Pod-absence checks. A read-only check on the actual
+Node validated all76 records and rejected four individual tampering cases. No
+driver was opened, authority written or GPU workload started. The850-test suite
+plus851 subtests passes (14 skipped). The actual5/20GiB hardware run is still open.

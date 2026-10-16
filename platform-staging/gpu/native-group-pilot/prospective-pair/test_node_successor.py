@@ -177,7 +177,7 @@ def test_legacy_d48_behavior_and_all_other_function_bytes_are_preserved():
         return {n.name: ''.join(text.splitlines(True)[n.lineno-1:n.end_lineno]) for n in ast.parse(text).body if isinstance(n, (ast.FunctionDef, ast.ClassDef))}
     a, b = definitions(BASE), definitions(result)
     assert a.keys() == b.keys()
-    assert {name for name in a if a[name] != b[name]} == {'validate_config', 'validate_historical_configuration', 'read_config'}
+    assert {name for name in a if a[name] != b[name]} == {'validate_config', 'validate_historical_configuration', 'read_config', 'validate_authority_enrollments'}
     assert b['validate_config'] == a['validate_config'].replace(
         "len(history) <= 64, 'Bounded explicit terminal history required'",
         "len(history) <= 128, 'Bounded explicit terminal history required'", 1)
