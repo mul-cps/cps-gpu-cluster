@@ -1,0 +1,18 @@
+{
+  "actual_own_token_scope_passed": true,
+  "actual_sdk_gateway_reads": 2,
+  "complete_source_registrations_match": true,
+  "database_mutation_performed": false,
+  "focused_tests_passed": 22,
+  "frozen_reader_sha256": "bc16a76773fefb1d6c1b97385a08d815222064b2a888bb250313949b07466fe4",
+  "hardware_qualified": false,
+  "observed_at": "2026-10-16T12:21:10.280629+00:00",
+  "private_check_sha256": "c92ce97c12e1402d0d6d984833c607f4bfbcd8e9e4942e36722cfa41ca13aa49",
+  "source_database_opened": false,
+  "source_frontends_paused": false,
+  "suite_log_sha256": "2df0c8a8941d0d2b23ed98c00ed43ae2dc64572ca867fbc3638a92f8ab7bea9d",
+  "suite_skipped": 14,
+  "suite_subtests_passed": 851,
+  "suite_tests_passed": 826,
+  "version": 1
+}

@@ -185,3 +185,18 @@ The new exclusive-writer verifier passes15 tests, and the full suite passes804
 tests/851 subtests with14 skipped. Scoped reader permissions and genuine
 application callback wiring remain necessary before pausing frontends/migrating.
 The idle Pod expires after one hour; inspect live state before reuse.
+
+## Scoped live Gateway reader
+
+The maintenance runtime now has a Root-contract-scoped SDK registration reader.
+It retains every byte of the frozen readonly logic except the exact allowed
+workspace guard. A short fixed argv plus length-framed stdin avoids ingress URL
+limits. UID/spec/image checks fence both sides of each read.22 focused tests
+pass, including real unchanged SQLite reads and bounded websocket failures.
+
+Actual own-token reviews permit GET of only the current Gateway Pod and its
+exec subresource, while rejecting other-Pod exec, Secrets and Deployment patch.
+Both actual registrations were read and match full captured Source records.
+No application/provider was instantiated in the operator, neither Source
+database was opened and both frontends remain active. Context/operation callback
+wiring and actual freeze/handover remain next; current5+20 is still unexecuted.
