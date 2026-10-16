@@ -73,11 +73,24 @@ def forward_intent(*,proposal,originals,contract_raw,contract_sha256):
     agent.require(group is not None and runtime['policy_hash']==oldpolicy.hash
         and runtime['nativeGpuPilot']==runtime['nativeGpuQualification']=={'enabled':False}
         and group.node_pool==old['pool'],'Exact current native group runtime and Node pool required')
+    from cps_compute.runtime import native_group_approval_configuration
+    dynamic=native_group_approval_configuration(runtime)
     newruntime=dict(copy.deepcopy(runtime),policy_hash=policy.hash,nativeGpuGroups={'enabled':False},
         nativeGpuPilot={'enabled':False},nativeGpuQualification=copy.deepcopy(mode))
+    if dynamic is not None:newruntime['nativeGroupApprovals']={'enabled':False}
     policy_data=dict(originals['policy']['data'],**{'policy.json':transition.canonical(policy.catalog)})
     runtime_data=dict(runtime_secret['data'],**{'runtime.json':base64.b64encode(transition.canonical(newruntime).encode()).decode()})
     spec=copy.deepcopy(originals['gateway_deployment']['spec'])
+    publishers=[]
+    for container in spec['template']['spec']['containers']:
+        selected=[e for e in container.get('env',[]) if e.get('name')=='CPS_NATIVE_APPROVAL_PUBLISHER_PATH']
+        if selected:
+            agent.require(dynamic is not None and container.get('name')==dynamic['processes']['gateway']['container']
+                and len(selected)==1,'Only exact owning Gateway heartbeat bootstrap may be removed')
+            publishers.extend(selected)
+            container['env']=[e for e in container['env'] if e.get('name')!='CPS_NATIVE_APPROVAL_PUBLISHER_PATH']
+    agent.require(len(publishers)==(1 if dynamic is not None else 0),
+        'Dynamic approval mode must match exactly one explicit Gateway heartbeat bootstrap')
     spec['template'].setdefault('metadata',{}).setdefault('annotations',{})['cps.compute/native-qualification-config']=transition.digest({'policy_hash':policy.hash,'mode':mode})
     return {'version':1,'enabled':False,'live_applied':False,'hardware_qualified':False,
         'policy.patch.json':transition.replace_patch(originals['policy'],'/data',originals['policy']['data'],policy_data),

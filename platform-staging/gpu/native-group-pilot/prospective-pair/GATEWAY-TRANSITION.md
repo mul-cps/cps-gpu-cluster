@@ -13,10 +13,10 @@ disjoint Root people, fixed profile ceilings, 531 workload and retained gate ima
 
 Only the two trusted **disabled** qualification aliases may extend the catalog.
 Ordinary profiles, global qualification and all other catalog fields remain exact.
-Only the native mode and policy hash change in the decoded runtime. Other runtime
-fields and other Secret data entries remain exact. The only Gateway Deployment
-change is the qualification rollout annotation; image, credentials, volumes,
-resources and every other field remain unchanged.
+Only the native modes, optional dynamic approval reader and policy hash change in the decoded runtime. Other runtime
+fields and other Secret data entries remain exact. Gateway Deployment changes are the qualification rollout annotation and removal
+of the exact owning dynamic approval heartbeat bootstrap when present. Image,
+credentials, other environment entries, volumes, resources and other fields remain unchanged.
 
 `inverse_intent` recomputes that exact forward plan and compares all fresh current
 object data/specs and ownership against it. It then produces inverse patches with

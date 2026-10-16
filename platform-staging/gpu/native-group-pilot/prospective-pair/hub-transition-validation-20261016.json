@@ -1,0 +1,23 @@
+{
+  "dynamic_group_reader_heartbeat_transition_tested": true,
+  "hardware_qualified": false,
+  "hub_tests_passed": 17,
+  "live_applied": false,
+  "live_cps_hook_readonly_hash_matched": "bd3a50f7e581ebf84fdcb7527a3cdd50105c81b866a997137d5b4c87a929e1ef",
+  "modified_hubs": [
+    "cps"
+  ],
+  "observed_at": "2026-10-16T10:06:18.915288+00:00",
+  "source_adoption_restoration_complete": false,
+  "source_sha256": {
+    "gateway_transition.py": "75c28b0c13bb816e27921e9ccc650b133a27750ef1347c75d39bb83c832b128a",
+    "hub_transition.py": "102a8d8824a6e5969b2484045518c8a6db43eb9a5d52122dd37e6b04dca1ed49",
+    "test_gateway_transition.py": "6cfa77e2cb2efdf547cbb5184d312af78b80422540544bb4199bd330d36fa868",
+    "test_hub_transition.py": "78df9a57fd56fdfffb62fc6db3f96384aafe31ad5e3be70cf5703a1e19c22bca"
+  },
+  "suite_skipped": 14,
+  "suite_subtests_passed": 851,
+  "suite_tests_passed": 697,
+  "test_log_sha256": "2fd727b110aa5140a86654507edc749b5761dc4831d2bef46ca5f43c2e39fc10",
+  "version": 1
+}

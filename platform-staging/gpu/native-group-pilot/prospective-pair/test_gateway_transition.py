@@ -30,11 +30,16 @@ def fixture():
     values,peer=pair.pair_fixture();proposal=pair.render(values,peer);body=values[0][0]
     source=json.loads((HERE.parent/'testdata/reviewed-d48-native-source.json').read_bytes())
     runtime=copy.deepcopy(source['runtime']);runtime['privateSetting']='preserve-exactly'
+    components={'gateway':'cps-compute','hub:cps':'jupyterhub','hub:cit':'cit-jhub','node':'cps-native-system'}
+    runtime['nativeGroupApprovals']=dict(enabled=True,ttlSeconds=60,
+        driver_epoch={k:body['node_config']['pool'][k] for k in ('node_uid','boot_id','driver_generation','gpu_uuid')},
+        acknowledgments={c:dict(namespace=ns,name='epoch-'+str(i),uid=uid(400+i)) for i,(c,ns) in enumerate(components.items())},
+        processes={c:dict(namespace=ns,kind='Deployment',name='process-'+str(i),uid=uid(410+i),container='gateway' if c=='gateway' else 'component',image='registry.example/process@sha256:'+'9'*64,service_account='component') for i,(c,ns) in enumerate(components.items())})
     obj=lambda kind,name,n,data:dict(apiVersion='v1',kind=kind,metadata=dict(namespace='cps-compute',name=name,uid=uid(n),resourceVersion='10'),data=data)
     policy=obj('ConfigMap','compute-policy',100,{'policy.json':transition.canonical(body['catalog']),'unrelated':'preserve'})
     secret=obj('Secret','compute-runtime',101,{'runtime.json':base64.b64encode(raw(runtime)).decode(),'unrelated':'cHJlc2VydmU='})
     gateway=dict(apiVersion='apps/v1',kind='Deployment',metadata=dict(namespace='cps-compute',name='compute-gateway',uid=uid(102),resourceVersion='11'),
-        spec=dict(replicas=1,template=dict(metadata={'annotations':{'other':'preserve'}},spec=dict(containers=[dict(name='gateway',image='registry.example/gateway@sha256:'+'9'*64)],volumes=[dict(name='runtime',secret={'secretName':'compute-runtime'})]))))
+        spec=dict(replicas=1,template=dict(metadata={'annotations':{'other':'preserve'}},spec=dict(containers=[dict(name='gateway',image='registry.example/gateway@sha256:'+'9'*64,env=[dict(name='CPS_NATIVE_APPROVAL_PUBLISHER_PATH',value='/etc/cps-native/bootstrap.json'),dict(name='PRIVATE_SETTING',valueFrom={'secretKeyRef':{'name':'credentials','key':'private'}})])],volumes=[dict(name='runtime',secret={'secretName':'compute-runtime'})]))))
     originals=dict(policy=policy,runtime=secret,gateway_deployment=gateway,node_config=body['node_config'])
     node=proposal['node-config.json']
     people={scope:proposal['operator-qualification.json']['workspaces'][scope]['members'] for scope in node['workspaces']}
@@ -94,3 +99,17 @@ def test_gateway_inverse_requires_exact_full_fresh_forward_readbacks(fault):
     elif fault=='owner': current['gateway_deployment']['metadata']['uid']=uid(9999)
     else: current['runtime']['metadata']['uid']=uid(9999)
     with pytest.raises(ValueError): tool().inverse_intent(current=current,**args)
+
+
+def test_gateway_qualification_target_disables_only_dynamic_group_reader_and_heartbeat():
+    from cps_compute.runtime import native_group_approval_configuration, native_gpu_group_configuration, native_gpu_qualification_configuration
+    from cps_compute.policy import Policy
+    args=fixture();forward=tool().forward_intent(**args)
+    runtime=json.loads(base64.b64decode(forward['runtime.patch.json'][-1]['value']['runtime.json']))
+    policy=Policy(args['proposal']['policy.json'])
+    assert native_group_approval_configuration(runtime) is None
+    assert native_gpu_group_configuration(runtime,policy) is None
+    assert native_gpu_qualification_configuration(runtime,policy) is not None
+    env=forward['gateway-deployment.patch.json'][-1]['value']['template']['spec']['containers'][0]['env']
+    assert [e['name'] for e in env]==['PRIVATE_SETTING']
+    assert env[0]==args['originals']['gateway_deployment']['spec']['template']['spec']['containers'][0]['env'][1]

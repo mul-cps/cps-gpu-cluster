@@ -79,8 +79,11 @@ do not qualify notebook531 or the full eight-GPU service.
    are now implemented and CPU-tested separately from the legacy CPS+CIT path.
    Gateway policy/runtime forward and inverse CAS planning and Node rollback
    for unstarted, one-started and both-started cases are now CPU-tested. Integration
-   with Source/Hub handover/restoration, console adoption and coherent execution
-   remains required before the hardware test.
+   with Source handover/restoration, console adoption and coherent execution
+   remains required before the hardware test. A CPS-only Hub configuration/hook
+   forward/inverse planner now projects both operator targets and image-pull owners;
+   CIT is unchanged. Qualification planning disables and restores the incompatible
+   dynamic group reader/heartbeat explicitly.
 3. Execute the current-image 5+20 GiB test after those prerequisites pass.
 4. Close the API/Hera/distributed gaps, adopt the Argo revocation fix, then finish
    the scale, lifecycle, recovery and release gates above.
