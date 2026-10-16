@@ -22,12 +22,18 @@ the 92 released ledger allocations retain identical data bytes. The SQL cutover
 barrier made no row/schema changes. No GPU workload or driver modification was
 performed during this rollout.
 
-Gateway and Hub candidates from the same source are published and registry
-verified, with unchanged Hub 5.5.2/KubeSpawner 7.1.0 and no Hub dependency upgrades.
-They are **not deployed**. Current work is their version-3 proof/current approval
-configuration rollout, followed by controlled active-group cadence and end-to-end
-qualification. Group GPU starts remain fenced. Quiescent success does not prove
-active GPU-group behavior or production readiness.
+Gateway and both Hubs from the same source are now **deployed and healthy**,
+with unchanged Hub 5.5.2/KubeSpawner 7.1.0 and no Hub dependency upgrades. Their
+version-3 proof/current approval configuration and exact new process observation
+permissions are installed. All four components publish fresh acknowledgments for
+approval `5517ea8f…b427` within the unchanged 30-second TTL, with zero restarts.
+Both actual Hub containers passed the protected qualification-reference check as
+UID1000. All 24 non-Hub Pods, including four existing user servers, retain their
+identities. Released consumer readiness and controlled active-group cadence,
+start/cap/stop cleanup and end-to-end qualification are the next gates. Quiescent
+success does not prove active GPU-group behavior or production readiness.
+
+See the [peer promotion receipt](../../platform-staging/jupyter-extensions-20261013/native-peer-promotion-20261016.json).
 
 See the [actual renewal adoption receipt](../../platform-staging/jupyter-extensions-20261013/native-node-renewal-adoption-20261016.json).
 
@@ -57,10 +63,10 @@ applied the exact reviewed plan with fresh process, acknowledgment, ledger and
 Pod checks under both database writer locks. An independent live read confirmed
 head `5517ea8f…b427`, six revision records and audit count 2,201 (previously 2,200).
 
-Three namespace-local immutable approval copies have been created without
-changing workloads, credentials or permissions. Gateway/Hub workload promotion
-and active-group qualification remain pending; the running node does not need
-recreation for peer image changes. Group GPU starts remain fenced.
+Three namespace-local immutable approval copies were created before the
+Gateway/Hub workload promotion. Active-group qualification remains pending; the
+running node was not recreated for peer image changes. No additional profiles
+or grants were enabled by the migration or peer promotion.
 See the [live migration receipt](../../platform-staging/jupyter-extensions-20261013/native-registry-migration-adoption-20261016.json).
 See the [migration verification receipt](../../platform-staging/jupyter-extensions-20261013/native-registry-migration-verification-20261016.json).
 

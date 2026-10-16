@@ -21,7 +21,17 @@
     "independent_readback_audit_count": 2201,
     "independent_readback_revision": "sha256:5517ea8f342ecbb6b4ed817aa9b0ca5788984217e46e4ba90b5707cee509b427",
     "independent_readback_revision_count": 6,
-    "operator_tests_passed": 17
+    "operator_tests_passed": 17,
+    "row_preservation_verified": {
+      "both_integrity_checks": "ok",
+      "grant_record": "unchanged",
+      "historical_audit": "all 2200 preserved; one added",
+      "historical_revisions": "all five preserved; one added",
+      "reservation": "unchanged",
+      "reservation_binding": "unchanged",
+      "storage_lifecycle": "unchanged",
+      "workspace_record": "unchanged"
+    }
   },
   "plan": {
     "from_generation": 4,

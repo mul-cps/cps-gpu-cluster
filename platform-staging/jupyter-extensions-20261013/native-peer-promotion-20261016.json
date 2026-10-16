@@ -1,0 +1,72 @@
+{
+  "components": {
+    "cit": {
+      "ack_observed_at": "2026-10-16T21:16:07.929270+00:00",
+      "ack_revision": "sha256:5517ea8f342ecbb6b4ed817aa9b0ca5788984217e46e4ba90b5707cee509b427",
+      "image": "ghcr.io/mul-cps/cps-compute@sha256:2e5d5826632f41e890b748a5d9f8be18068e1dc7080b07d5f9d61e4ae3551076",
+      "namespace": "cit-jhub",
+      "observed_ack_age_seconds": 9.332612,
+      "pod": "hub-69779d474c-k6hlj",
+      "ready": true,
+      "restart_count": 0,
+      "uid": "4fa7f787-1d2d-4be0-a273-7393a16a655e"
+    },
+    "cps": {
+      "ack_observed_at": "2026-10-16T21:16:06.773425+00:00",
+      "ack_revision": "sha256:5517ea8f342ecbb6b4ed817aa9b0ca5788984217e46e4ba90b5707cee509b427",
+      "image": "ghcr.io/mul-cps/cps-compute@sha256:2e5d5826632f41e890b748a5d9f8be18068e1dc7080b07d5f9d61e4ae3551076",
+      "namespace": "jupyterhub",
+      "observed_ack_age_seconds": 10.352631,
+      "pod": "hub-58d8b5bbc4-gr6dc",
+      "ready": true,
+      "restart_count": 0,
+      "uid": "0708d818-bd22-4d60-af24-254ca6c60a52"
+    },
+    "gateway": {
+      "ack_observed_at": "2026-10-16T21:16:14.474798+00:00",
+      "ack_revision": "sha256:5517ea8f342ecbb6b4ed817aa9b0ca5788984217e46e4ba90b5707cee509b427",
+      "image": "ghcr.io/mul-cps/cps-compute@sha256:848beda02b6333c2a3e9ad188de0359aa521c54dae71325956cff25f80f44f79",
+      "namespace": "cps-compute",
+      "observed_ack_age_seconds": 2.507803,
+      "pod": "compute-gateway-69594b9c76-7jz6r",
+      "ready": true,
+      "restart_count": 0,
+      "uid": "0fbc3983-7c2b-442e-b3a9-f65903936632"
+    },
+    "node": {
+      "ack_observed_at": "2026-10-16T21:16:04.736880+00:00",
+      "ack_revision": "sha256:5517ea8f342ecbb6b4ed817aa9b0ca5788984217e46e4ba90b5707cee509b427",
+      "image": "ghcr.io/mul-cps/cps-native-node@sha256:5a614a6d79bac7911f98a588413126a1b181a65ed28f0e50e33f419618f7916b",
+      "namespace": "cps-native-system",
+      "observed_ack_age_seconds": 12.647392,
+      "pod": "cps-native-node-agent-587bfd9598-mw4fw",
+      "ready": true,
+      "restart_count": 0,
+      "uid": "ec618152-9b9b-4d0b-90cb-56672c1789e9"
+    }
+  },
+  "observed_at": "2026-10-16T21:16:17.384292+00:00",
+  "preservation": {
+    "cit": {
+      "non_hub_pods_preserved": 9,
+      "user_pods_preserved": 0
+    },
+    "cps": {
+      "non_hub_pods_preserved": 15,
+      "user_pods_preserved": 4
+    }
+  },
+  "production_ready": false,
+  "protected_proof_reference_uid1000": {
+    "cit": "passed in actual Hub container",
+    "cps": "passed in actual Hub container"
+  },
+  "remaining": [
+    "released consumer readiness validation",
+    "controlled active-group start, cap, renewal, stop and cleanup",
+    "full production acceptance and release gates"
+  ],
+  "runtime_source": "f67224e06cd152a8c554822ddb0738685e291995",
+  "state": "peer-workloads-promoted-active-group-not-yet-qualified",
+  "version": 1
+}
