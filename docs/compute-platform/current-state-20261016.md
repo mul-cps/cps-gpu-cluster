@@ -325,8 +325,10 @@ sdist. In a separate actual-process **read-only, in-memory source diagnostic**,
 ConfigMap GETs fell from 1,077 to 202 (200 distinct), and elapsed snapshot time
 fell from 13.31 to 8.32 seconds. All 184 Pod GETs and two inventory LISTs remained;
 filesystem/API mutations were actively blocked and no driver was initialized.
-This diagnostic did not deploy the new source. A new image build and CI run
-38958413047 are pending. Continuous acknowledgment renewal still needs a separate
+This diagnostic did not deploy the new source. The qualification image
+`ghcr.io/mul-cps/cps-native-node@sha256:05b052277f84789ff39be6cea38e5eef3b393c4216c5c39b2a3dc94db8557b4e`
+is published and registry verified. Its installed isolated custody tests and
+82-lifetime replay passed with node-only dependencies. CI run 38958413047 is pending. Continuous acknowledgment renewal still needs a separate
 safe read-only path; neither a short snapshot nor passing tests proves that gate.
 
 ## Verified deployment and recovery

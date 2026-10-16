@@ -1,4 +1,14 @@
 {
+  "actual_image_tests": {
+    "historical_lifetimes_replayed": 82,
+    "inert_no_io_guard": true,
+    "installed_isolated_snapshots_passed": 2,
+    "node_only_distributions": 30,
+    "pip_check": true,
+    "registry_config_matches_local_image": true,
+    "registry_immutable_manifest_verified": true,
+    "released_claims_replayed": 92
+  },
   "application_commit": "b4cfa046e51645e49288e66e98649724ff2b48a7",
   "ci_run": 38958413047,
   "ci_status": "in_progress",
@@ -39,6 +49,7 @@
     "subtests_passed": 68
   },
   "production_qualified": false,
+  "published_image": "ghcr.io/mul-cps/cps-native-node@sha256:05b052277f84789ff39be6cea38e5eef3b393c4216c5c39b2a3dc94db8557b4e",
   "review": "independent focused review clear; current authority and mutable state remain fresh",
   "sdist_rebuild_byte_identical": true,
   "startup_retry": "bounded retry for exact not-ready error; all identity guards rerun before driver initialization",
