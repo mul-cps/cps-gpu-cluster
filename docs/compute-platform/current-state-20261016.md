@@ -31,6 +31,30 @@ active GPU-group behavior or production readiness.
 
 See the [actual renewal adoption receipt](../../platform-staging/jupyter-extensions-20261013/native-node-renewal-adoption-20261016.json).
 
+## Peer promotion migration preflight
+
+The persistent Gateway approval head is still registry version1/generation4
+(`e9ed7284…d415`). The node's authenticated current approval is version2/generation5
+(`5517ea8f…b427`). Their four complete workspace approvals and all normalized
+measured facts match exactly, but the new consumer correctly refuses the old
+registry transport. A direct image/configuration swap is therefore unsafe.
+
+Application commit `a192850dfc30462804bd041fa2fcee9361eb7c64` adds an explicit
+operator migration with a read-only deterministic plan, reviewed-plan hash,
+both database writer locks, exact head CAS, pre/post external native-fence
+checks, one append-only revision and one audit event. It neither resets the
+database nor accepts old authority as current. The full suite passed 2,834 tests
+and 68 subtests (six skipped); CI run38965390310 passed all four jobs. Independent
+replay of all five actual immutable revision rows reached the existing node
+approval and passed new-consumer startup/capture validation.
+
+The **live migration is not applied**. A coordinated backup and separate-process
+operator preflight precede it. Three namespace-local immutable approval copies
+have been created without changing workloads, credentials or permissions.
+Gateway/Hub deployment drafts remain gated on migration and actual reference
+identities; the running node does not need recreation for peer image changes.
+See the [migration verification receipt](../../platform-staging/jupyter-extensions-20261013/native-registry-migration-verification-20261016.json).
+
 ## Retained notebook hardware qualification checkpoint
 
 The current notebook531 image passed GPU2 5/20 GiB ordinary PyTorch OOM/recovery,

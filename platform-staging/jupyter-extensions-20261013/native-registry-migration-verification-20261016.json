@@ -1,0 +1,30 @@
+{
+  "actual_five_revision_replay_passed": true,
+  "application_commit": "a192850dfc30462804bd041fa2fcee9361eb7c64",
+  "ci_run": 38965390310,
+  "ci_status": "success",
+  "independent_tests_passed": 88,
+  "inert_namespace_local_approval_copies_created": 3,
+  "live_database_migration_applied": false,
+  "local_tests": {
+    "passed": 2834,
+    "skipped": 6,
+    "subtests_passed": 68
+  },
+  "migration_tests_passed": 15,
+  "peer_workloads_promoted": false,
+  "prior_revision_rows": 5,
+  "production_qualified": false,
+  "sdist_rebuild_byte_identical": true,
+  "source_generation": 4,
+  "source_registry_version": 1,
+  "source_revision": "sha256:e9ed7284138d3d54749f94a992c1e0b2c7900f52eefe5e2848a61dadefb2d415",
+  "target_generation": 5,
+  "target_registry_version": 2,
+  "target_revision": "sha256:5517ea8f342ecbb6b4ed817aa9b0ca5788984217e46e4ba90b5707cee509b427",
+  "target_workspace_values_unchanged": true,
+  "test_log_sha256": "0eb7a7aef7cd4adec7d82c3ceb5aa9221dfff3427ecee9fabd09320ef60be7a6",
+  "version": 1,
+  "wheel_sha256": "6788d3649327d6073f5a77d703158bd87e6ba8c159fe892d186fb88e5fde8bf6",
+  "workspace_count": 4
+}
