@@ -1,0 +1,57 @@
+{
+  "application_commit": "754621304d088c6307c5465e757457a1e83aa80e",
+  "basis_sha256": "sha256:1faaefb088388d6cbe0a6033d8e0e3cd7efc95a33d71a717a1d75eb8fe624f4e",
+  "deployment_adopted": false,
+  "entries_sha256": "sha256:739dfc9ef05ab307dc71be9f959f805300791adfda2cdd463fb8fda15a5e4bc1",
+  "gpu_execution": false,
+  "objects": [
+    {
+      "immutable": true,
+      "logical": "terminal-basis",
+      "name": "cps-packaged-terminal-basis-18f878a3ff99f47f",
+      "namespace": "cps-native-system",
+      "resourceVersion": "372052113",
+      "uid": "1102e831-cbbd-4c22-af3a-35e9e4b6fcc2"
+    },
+    {
+      "immutable": true,
+      "logical": "terminal-index",
+      "name": "cps-packaged-terminal-index-c6f44c30478996c6",
+      "namespace": "cps-native-system",
+      "resourceVersion": "372054265",
+      "uid": "750a8143-5c1b-4bc2-8ad3-5606bff2147a"
+    },
+    {
+      "immutable": true,
+      "logical": "terminal-page-0",
+      "name": "cps-packaged-terminal-page-0-7ef05048043f0056",
+      "namespace": "cps-native-system",
+      "resourceVersion": "372052685",
+      "uid": "bbc17367-2c7d-45eb-971f-457bb9337ddd"
+    },
+    {
+      "immutable": true,
+      "logical": "terminal-page-1",
+      "name": "cps-packaged-terminal-page-1-87ae638b14036d12",
+      "namespace": "cps-native-system",
+      "resourceVersion": "372052688",
+      "uid": "e13fba3c-ab46-415f-976e-07cd8e1c7685"
+    },
+    {
+      "immutable": true,
+      "logical": "terminal-page-2",
+      "name": "cps-packaged-terminal-page-2-eeadcf144b2d5c2a",
+      "namespace": "cps-native-system",
+      "resourceVersion": "372052690",
+      "uid": "274b1bb9-6cb5-4875-9863-29716a167f94"
+    }
+  ],
+  "original_ledger_raw_sha256": "222b543df73c3772519f4ec91ded514d95ecf512fcd39021bde8044537f7ff20",
+  "original_ledger_resource_version": "371886446",
+  "original_ledger_uid": "33ab24b0-8e9a-4bee-b308-12a19c076924",
+  "production_qualified": false,
+  "published": true,
+  "released_claims_preserved": 92,
+  "terminal_records_loaded_from_live_api": 82,
+  "version": 1
+}

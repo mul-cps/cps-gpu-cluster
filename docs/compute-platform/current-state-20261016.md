@@ -204,8 +204,11 @@ CLI replay verified all 82 lifetimes and 92 released claims against complete,
 explicitly scoped raw Pod snapshots; missing/foreign scopes fail closed.
 [CI run 38947667461](https://github.com/mul-cps/cps-compute/actions/runs/38947667461)
 passed all four jobs (2,724 tests, seven skipped and 68 subtests, plus installed
-SDK/Hub and both JupyterLab compatibility checks). The private archive remains
-unpublished. Immutable
+SDK/Hub and both JupyterLab compatibility checks). The reviewed archive has now been published as five immutable ConfigMaps
+(basis, three pages and index); the released terminal-index loader read all
+82 entries through fresh API GETs and validated their actual UID/RV/data pins.
+The original ledger UID, resourceVersion and raw bytes remain unchanged.
+The running agent has not adopted the index. Immutable
 image/RBAC/GitOps promotion and live artifact qualification remain open. This does not qualify general GPU access or production readiness.
 
 ## Packaged node image published, not adopted
