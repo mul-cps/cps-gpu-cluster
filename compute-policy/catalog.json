@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "version": "0.1.0",
+  "version": "0.2.0",
   "status": "pilot-unqualified",
   "profiles": {
     "interactive-cpu": {
@@ -12,7 +12,7 @@
         "mode": "none"
       },
       "queue": "interactive",
-      "maxAgeSeconds": 86400,
+      "maxAgeSeconds": 28800,
       "idleSeconds": 3600,
       "images": []
     },
@@ -73,7 +73,7 @@
         "mode": "none"
       },
       "queue": "batch",
-      "maxAgeSeconds": 14400,
+      "maxAgeSeconds": 259200,
       "idleSeconds": null,
       "images": []
     },
@@ -89,7 +89,7 @@
       },
       "queue": "batch",
       "qualificationRequired": "gpu-isolation-packing",
-      "maxAgeSeconds": 14400,
+      "maxAgeSeconds": 86400,
       "idleSeconds": null,
       "images": []
     },
@@ -105,7 +105,7 @@
       },
       "queue": "batch",
       "qualificationRequired": "gpu-isolation-packing",
-      "maxAgeSeconds": 14400,
+      "maxAgeSeconds": 86400,
       "idleSeconds": null,
       "images": []
     },
@@ -121,7 +121,7 @@
       },
       "queue": "batch",
       "qualificationRequired": "gpu-isolation-packing",
-      "maxAgeSeconds": 14400,
+      "maxAgeSeconds": 86400,
       "idleSeconds": null,
       "images": []
     },
@@ -137,7 +137,7 @@
       "queue": "batch",
       "qualificationRequired": "gpu-isolation-packing",
       "launcher": "container",
-      "maxAgeSeconds": 14400,
+      "maxAgeSeconds": 86400,
       "idleSeconds": null,
       "images": []
     },
@@ -153,7 +153,7 @@
       "queue": "batch",
       "qualificationRequired": "gpu-isolation-packing",
       "launcher": "container",
-      "maxAgeSeconds": 14400,
+      "maxAgeSeconds": 86400,
       "idleSeconds": null,
       "images": []
     },
@@ -169,7 +169,7 @@
       "queue": "batch",
       "qualificationRequired": "jobset-distributed",
       "launcher": "jobset",
-      "maxAgeSeconds": 14400,
+      "maxAgeSeconds": 86400,
       "idleSeconds": null,
       "images": []
     },
@@ -185,7 +185,7 @@
       "queue": "batch",
       "qualificationRequired": "jobset-distributed",
       "launcher": "jobset",
-      "maxAgeSeconds": 14400,
+      "maxAgeSeconds": 86400,
       "idleSeconds": null,
       "images": []
     },

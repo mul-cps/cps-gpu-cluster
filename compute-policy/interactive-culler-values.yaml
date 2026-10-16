@@ -1,0 +1,12 @@
+# Staged Z2JH 4.4.2 overlay for both Hubs; not automatically deployed.
+# This is the CPU/default ceiling. Qualified GPU sessions also require the
+# profile-aware adapter loop to enforce their tighter age/idle settings.
+cull:
+  enabled: true
+  timeout: 3600
+  maxAge: 28800
+  every: 300
+  users: false
+  adminUsers: false
+  removeNamedServers: false
+  concurrency: 10

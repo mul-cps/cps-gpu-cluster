@@ -15,6 +15,35 @@ class PolicyTests(unittest.TestCase):
     def setUp(self):
         self.catalog = json.loads((ROOT / 'compute-policy/catalog.json').read_text())
 
+    def test_cpu_batch_outlives_interactive_without_an_idle_timeout(self):
+        compiled = policy.compile_catalog(self.catalog)
+        batch = compiled['profiles']['batch-cpu']
+        interactive = compiled['profiles']['interactive-cpu']
+        self.assertEqual(batch['maxAgeSeconds'], 72 * 3600)
+        self.assertIsNone(batch['idleSeconds'])
+        self.assertEqual(interactive['maxAgeSeconds'], 8 * 3600)
+        self.assertEqual(interactive['idleSeconds'], 3600)
+        self.assertGreater(batch['maxAgeSeconds'], interactive['maxAgeSeconds'])
+        self.assertLess(interactive['idleSeconds'], interactive['maxAgeSeconds'])
+
+    def test_gpu_batch_limits_exceed_interactive_without_enabling_profiles(self):
+        profiles = policy.compile_catalog(self.catalog)['profiles']
+        gpu_profiles = {name: row for name, row in profiles.items() if row['gpu']['mode'] != 'none'}
+        self.assertTrue(gpu_profiles)
+        for name, row in gpu_profiles.items():
+            with self.subTest(profile=name):
+                self.assertFalse(row['enabled'])
+                if row['kind'] == 'batch':
+                    self.assertEqual(row['maxAgeSeconds'], 24 * 3600)
+                    self.assertIsNone(row['idleSeconds'])
+                elif row.get('administrativeExceptionRequired'):
+                    self.assertEqual(row['maxAgeSeconds'], 3600)
+                    self.assertEqual(row['idleSeconds'], 900)
+                else:
+                    self.assertEqual(row['maxAgeSeconds'], 4 * 3600)
+                    self.assertEqual(row['idleSeconds'], 1800)
+                    self.assertLess(row['maxAgeSeconds'], profiles['interactive-cpu']['maxAgeSeconds'])
+
     def test_workload_scheduling_matches_generated_queues_and_priorities(self):
         compiled=policy.compile_catalog(self.catalog)
         objects=policy.manifests(compiled)['items']

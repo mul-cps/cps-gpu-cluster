@@ -149,7 +149,7 @@
     "snapshotLimitBytes": 52428800,
     "stripOutputs": true
   },
-  "policyHash": "sha256:051cd754210af2830d67968eea898f674a55ff66f5c88b3db95dff205f04e33d",
+  "policyHash": "sha256:47c8d3d2df1356aeb124f447b62a1ffc769372b89c171f04b99b29a1839b7b0b",
   "priorities": {
     "batch": 10,
     "ci": 5,
@@ -170,7 +170,7 @@
       "idleSeconds": null,
       "images": [],
       "kind": "batch",
-      "maxAgeSeconds": 14400,
+      "maxAgeSeconds": 259200,
       "memory": "8Gi",
       "queue": "batch"
     },
@@ -185,7 +185,7 @@
       "images": [],
       "kind": "batch",
       "launcher": "container",
-      "maxAgeSeconds": 14400,
+      "maxAgeSeconds": 86400,
       "memory": "32Gi",
       "qualificationRequired": "gpu-isolation-packing",
       "queue": "batch"
@@ -201,7 +201,7 @@
       "images": [],
       "kind": "batch",
       "launcher": "container",
-      "maxAgeSeconds": 14400,
+      "maxAgeSeconds": 86400,
       "memory": "64Gi",
       "qualificationRequired": "gpu-isolation-packing",
       "queue": "batch"
@@ -217,7 +217,7 @@
       "images": [],
       "kind": "batch",
       "launcher": "jobset",
-      "maxAgeSeconds": 14400,
+      "maxAgeSeconds": 86400,
       "memory": "128Gi",
       "qualificationRequired": "jobset-distributed",
       "queue": "batch"
@@ -233,7 +233,7 @@
       "images": [],
       "kind": "batch",
       "launcher": "jobset",
-      "maxAgeSeconds": 14400,
+      "maxAgeSeconds": 86400,
       "memory": "256Gi",
       "qualificationRequired": "jobset-distributed",
       "queue": "batch"
@@ -249,7 +249,7 @@
       "idleSeconds": null,
       "images": [],
       "kind": "batch",
-      "maxAgeSeconds": 14400,
+      "maxAgeSeconds": 86400,
       "memory": "16Gi",
       "qualificationRequired": "gpu-isolation-packing",
       "queue": "batch"
@@ -265,7 +265,7 @@
       "idleSeconds": null,
       "images": [],
       "kind": "batch",
-      "maxAgeSeconds": 14400,
+      "maxAgeSeconds": 86400,
       "memory": "16Gi",
       "qualificationRequired": "gpu-isolation-packing",
       "queue": "batch"
@@ -281,7 +281,7 @@
       "idleSeconds": null,
       "images": [],
       "kind": "batch",
-      "maxAgeSeconds": 14400,
+      "maxAgeSeconds": 86400,
       "memory": "16Gi",
       "qualificationRequired": "gpu-isolation-packing",
       "queue": "batch"
@@ -295,7 +295,7 @@
       "idleSeconds": 3600,
       "images": [],
       "kind": "interactive",
-      "maxAgeSeconds": 86400,
+      "maxAgeSeconds": 28800,
       "memory": "8Gi",
       "queue": "interactive"
     },
@@ -415,7 +415,7 @@
     "schedulerName": "kai-scheduler",
     "serviceAccountName": "cps-workflow"
   },
-  "version": "0.1.0",
+  "version": "0.2.0",
   "workloadScheduling": {
     "batch": {
       "priorityClassName": "cps-batch",

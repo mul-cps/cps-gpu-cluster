@@ -39,3 +39,35 @@ The application provider boundary must fail startup if enabled. Local course
 management remains active. Temporary artifacts default to 14 days, run artifacts
 to 90 days, preserving active inputs and explicitly retained outputs. Notebook
 snapshots default to 50 MiB and stripped outputs.
+
+## Runtime limits — policy 0.2.0
+
+| Use | Maximum runtime | Idle timeout |
+| --- | ---: | ---: |
+| CPU batch | 72 hours | Not applicable |
+| GPU batch, shared or exclusive | 24 hours | Not applicable |
+| Interactive CPU | 8 hours | 1 hour |
+| Interactive shared GPU | 4 hours | 30 minutes |
+| Administrative exclusive GPU debugging | 1 hour | 15 minutes |
+
+These are the revised **staged** limits. GPU profiles retain their independent
+qualification gates; changing a time limit does not enable them. A batch maximum
+is a ceiling, not a guarantee against reclamation. Jobs may request a shorter
+walltime and must remain checkpointable where required.
+
+The live CPS generic culler was read on 16 October: `--timeout=172800`, interval
+600 seconds, no `--max-age`, administrators excluded. The CIT culler was also read: idle24h, max-age24h, interval300s and named-server
+removal enabled. Advertised CPU profile limits therefore do not prove consistent
+live enforcement across the two Hubs. `interactive-culler-values.yaml`
+provides the reviewed CPU/default ceiling for both stable Hub releases. The
+profile-aware GPU loop must additionally enforce tighter GPU limits. Verify
+installation, invocation and actual stopped/cleanup behavior before promotion.
+The overlay preserves the existing administrator exemption; policy cards must
+not imply that the generic culler enforces limits on exempt administrator servers.
+
+Promotion requires a coordinated policy revision in Gateway, both Hubs, approval
+readers and native history references, together with the culler overlay. Preserve
+existing qualified runtime image/storage/identity bindings and archive historical
+policy references. Do not replace the live qualified catalog with this unqualified
+base catalog or re-stamp old isolation evidence for the new hash. No live limits
+changed when this artifact was generated.

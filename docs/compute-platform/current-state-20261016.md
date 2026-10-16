@@ -98,3 +98,14 @@ do not qualify notebook531 or the full eight-GPU service.
 Moodle stays planned, disabled and inert, with local management active. Email
 verification is optional. Direct university Keycloak awaits ICT registration;
 Hub 6 remains separately staged. These are not required v1 promotions.
+
+## Runtime-limit correction staged
+
+Policy catalog 0.2.0 now specifies CPU batch72h, GPU batch24h, interactive CPU8h
+(idle1h), shared GPU4h (idle30m), debugging GPU1h (idle15m). Generated artifacts
+and policy tests agree. GPU enablement remains unchanged. The live CPS generic
+culler was independently read with idle48h and no maximum-age flag, so advertised
+CPU profile limits are not proof of enforcement. CIT currently uses idle24h and
+max-age24h, independently read from its Hub configuration. A stable-chart culler overlay
+is staged outside Fleet. Coordinated live policy/hash and enforcement promotion
+is still required; the running D48 qualification scope is unchanged.

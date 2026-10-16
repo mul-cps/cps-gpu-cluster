@@ -34,7 +34,7 @@
       "promote": false
     }
   },
-  "policyHash": "sha256:051cd754210af2830d67968eea898f674a55ff66f5c88b3db95dff205f04e33d",
-  "policyVersion": "0.1.0",
+  "policyHash": "sha256:47c8d3d2df1356aeb124f447b62a1ffc769372b89c171f04b99b29a1839b7b0b",
+  "policyVersion": "0.2.0",
   "status": "unqualified"
 }
