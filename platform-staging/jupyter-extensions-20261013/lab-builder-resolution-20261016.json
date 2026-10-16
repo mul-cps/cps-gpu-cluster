@@ -1,8 +1,15 @@
 {
   "application_commit": "419e29197a4797710935c5acd2ac4777b36e3fa7",
   "build_lab": "4.5.7",
+  "ci_addon_tests_passed": 60,
+  "ci_jobs_passed": 4,
   "ci_run": 38950947128,
-  "ci_status": "in_progress",
+  "ci_status": "success",
+  "ci_tests": {
+    "passed": 2744,
+    "skipped": 7,
+    "subtests_passed": 68
+  },
   "failed_ci_run": 38948406416,
   "files": {
     ".github/workflows/test.yml": "c0be3b973a9042c45566844b633cff2aa9e66dfcfe59f32515df4b1df19042a8",

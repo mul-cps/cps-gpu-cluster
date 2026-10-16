@@ -239,7 +239,12 @@ an explicit authenticated policy-evidence version in v3 proof data, preserving
 the measured policy label across transport changes; legacy v1/v2 guards remain
 unchanged. The exact isolated suite passed 2,745 tests and 68 subtests (six
 skipped); installed lean SDK/node checks and byte-identical sdist rebuild passed.
-The rebuilt image and fresh deployment validation are pending. One unreferenced v3 proof ConfigMap was created before this guard;
+The corrected image is published at
+`ghcr.io/mul-cps/cps-native-node@sha256:ff65b54750d800e705295e14df85e256badb6dd04fe6dedb9f9884a64c18b224`.
+A fresh corrected proof, deployment, approval and node-config chain is published
+and passed all actual typed factories through live API GETs. It preserves the
+original d48 policy hash, 5/10 GiB scope and measured facts; the running agent
+has not adopted it. One unreferenced v3 proof ConfigMap was created before this guard;
 it grants no access and is superseded by the corrected explicit proof schema.
 The existing agent remains running, and the original 92-claim ledger retains
 its UID, resourceVersion and raw bytes. The five-object terminal archive is
@@ -258,7 +263,8 @@ Commit `419e29197a4797710935c5acd2ac4777b36e3fa7` fixes the CI build's remote
 metadata fallback by building with pinned Lab 4.5.7 and the existing npm builder
 4.5.11. All 446 locked dependency entries are unchanged. A fresh build with
 metadata HTTP forbidden, 60 addon tests and actual installed checks on Lab
-4.5.7/4.6.4 passed. CI run 38950947128 is in progress.
+4.5.7/4.6.4 passed. CI run 38950947128 passed all four jobs: 2,744 tests and 68 subtests
+(seven skipped), 60 addon tests and both installed Lab/Hub/SDK checks.
 
 ## Verified deployment and recovery
 

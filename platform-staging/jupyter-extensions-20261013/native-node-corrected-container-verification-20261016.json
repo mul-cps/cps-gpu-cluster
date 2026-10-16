@@ -1,0 +1,30 @@
+{
+  "application_source_revision": "66fb45acc3aafceb471b9e8b7d2441e61dc9246b",
+  "cluster_changes": false,
+  "destination": "ghcr.io/mul-cps/cps-native-node:qualification-66fb45ac-d449307d",
+  "image": "localhost/cps-native-node:66fb45ac-qualification",
+  "immutable_image": "ghcr.io/mul-cps/cps-native-node@sha256:ff65b54750d800e705295e14df85e256badb6dd04fe6dedb9f9884a64c18b224",
+  "inert": {
+    "api_calls": false,
+    "gpu_calls": false,
+    "production_qualified": false,
+    "state": "inert"
+  },
+  "installed_node_verifier": true,
+  "installed_source": {
+    "native_groups_sha256": "f662a5e32a15132f34e6a3c3c9ab80459f937bd284ba9471e6af11040d1baf2d"
+  },
+  "local_image_id": "35893efcf18210206aac0c70c7dc870fbfcdc33c7276b6a3d7a0c994ff3ce5a4",
+  "local_verification_passed": true,
+  "passed": true,
+  "pip_check": true,
+  "production_qualified": false,
+  "published": true,
+  "recipe_sha256": "6094b66dc4dc168942d071af8f77b9cb6e3c5a1ebbe9834a2798507291542f42",
+  "registry_config_matches_local_image": true,
+  "registry_digest": "sha256:ff65b54750d800e705295e14df85e256badb6dd04fe6dedb9f9884a64c18b224",
+  "registry_immutable_manifest_verified": true,
+  "registry_tag_verified": true,
+  "version": 1,
+  "wheel_sha256": "2387ea2897d942c1e64a9245b9bc18d7fc4062f3c85e42db8743620876248802"
+}

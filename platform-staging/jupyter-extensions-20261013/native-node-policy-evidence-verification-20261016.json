@@ -1,7 +1,14 @@
 {
   "application_commit": "66fb45acc3aafceb471b9e8b7d2441e61dc9246b",
+  "ci_addon_tests_passed": 60,
+  "ci_jobs_passed": 4,
   "ci_run": 38950947128,
-  "ci_status": "in_progress",
+  "ci_status": "success",
+  "ci_tests": {
+    "passed": 2744,
+    "skipped": 7,
+    "subtests_passed": 68
+  },
   "combined_head": "419e29197a4797710935c5acd2ac4777b36e3fa7",
   "deployment_adopted": false,
   "independent_review": "clear",

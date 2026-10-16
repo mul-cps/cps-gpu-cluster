@@ -1,0 +1,80 @@
+{
+  "actual_authority_deployment_approval_factories_passed": true,
+  "actual_node_configuration_factory_passed": true,
+  "application_commit": "66fb45acc3aafceb471b9e8b7d2441e61dc9246b",
+  "deployment_adopted": false,
+  "objects": [
+    {
+      "logical": "terminal-basis",
+      "name": "cps-packaged-terminal-basis-18f878a3ff99f47f",
+      "namespace": "cps-native-system",
+      "resourceVersion": "372052113",
+      "uid": "1102e831-cbbd-4c22-af3a-35e9e4b6fcc2"
+    },
+    {
+      "logical": "terminal-index",
+      "name": "cps-packaged-terminal-index-c6f44c30478996c6",
+      "namespace": "cps-native-system",
+      "resourceVersion": "372054265",
+      "uid": "750a8143-5c1b-4bc2-8ad3-5606bff2147a"
+    },
+    {
+      "logical": "terminal-page-0",
+      "name": "cps-packaged-terminal-page-0-7ef05048043f0056",
+      "namespace": "cps-native-system",
+      "resourceVersion": "372052685",
+      "uid": "bbc17367-2c7d-45eb-971f-457bb9337ddd"
+    },
+    {
+      "logical": "terminal-page-1",
+      "name": "cps-packaged-terminal-page-1-87ae638b14036d12",
+      "namespace": "cps-native-system",
+      "resourceVersion": "372052688",
+      "uid": "e13fba3c-ab46-415f-976e-07cd8e1c7685"
+    },
+    {
+      "logical": "terminal-page-2",
+      "name": "cps-packaged-terminal-page-2-eeadcf144b2d5c2a",
+      "namespace": "cps-native-system",
+      "resourceVersion": "372052690",
+      "uid": "274b1bb9-6cb5-4875-9863-29716a167f94"
+    },
+    {
+      "logical": "qualification-v3",
+      "name": "cps-packaged-qualification-v3-b4b1d9201a73204c",
+      "namespace": "cps-native-system",
+      "resourceVersion": "372069235",
+      "uid": "147c6664-7262-4009-bfb7-2b6e9d26a442"
+    },
+    {
+      "logical": "deployment-v3",
+      "name": "cps-packaged-deployment-v3-56cb732598f50652",
+      "namespace": "cps-native-system",
+      "resourceVersion": "372069242",
+      "uid": "c24edb28-b5e9-4c91-966c-31585bb9ee56"
+    },
+    {
+      "logical": "approval-v2",
+      "name": "cps-packaged-approval-v2-16a5c538c774d433",
+      "namespace": "cps-native-system",
+      "resourceVersion": "372069247",
+      "uid": "249eb98d-a352-4750-a0c5-ddf756cf25dc"
+    },
+    {
+      "logical": "node-config-v3",
+      "name": "cps-packaged-node-config-v3-82d52a76c7cb51bd",
+      "namespace": "cps-native-system",
+      "resourceVersion": "372069252",
+      "uid": "973b37b8-3c3c-4863-820e-c41960f8f95e"
+    }
+  ],
+  "original_measured_facts_preserved": true,
+  "policy_evidence_version": 2,
+  "policy_hash": "sha256:d48f6553ed036c2e7adcc97417623fe0308be93ad13b20f246047ada118511b0",
+  "production_qualified": false,
+  "profile_caps": {
+    "interactive-shared-10": 10240,
+    "interactive-shared-5": 5120
+  },
+  "version": 1
+}
