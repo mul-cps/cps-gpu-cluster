@@ -81,9 +81,11 @@ vertical race variants cover actual SDK acquisition, a compiled same-name gated
 Pod, node readiness before enrollment, registration, subsequent Stop and released
 capacity. Canonical Unicode wire/provenance tests pass without changing legacy
 binding hashes. Independent review cleared the protocol; node import verification
-and the lean node image build pass. Gateway and SDK/Hub wheels are built; CI
+and the lean node image build pass. All three candidate images are published with
+independently verified registry digests, and SDK/Hub wheels are built. CI
 [38977494335](https://github.com/mul-cps/cps-compute/actions/runs/38977494335)
-is still running. These changes are **not deployed** and these software tests
+passed all four jobs, including installed SDK/Hub and both Lab versions.
+These changes are **not deployed** and these software tests
 do not prove live cap enforcement or hardware isolation.
 The live node remains Ready and all 93 live claims remain released.
 

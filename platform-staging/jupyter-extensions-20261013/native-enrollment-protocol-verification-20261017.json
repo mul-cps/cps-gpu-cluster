@@ -27,13 +27,49 @@
     "gateway": "0161dec65636f096d37e3b245540f8f2b15abf028f8a91cfa9653feed9dcf952",
     "hub": "15106218494760eca8e25e4bc7c81b25031255e983df5a06494d7362a5d4b076"
   },
-  "image_status": "local builds only; registry publication and deployment not yet verified",
+  "image_status": "All three registry manifest digests independently verified; not deployed",
   "ci": {
     "run_id": 38977494335,
-    "status": "in_progress",
-    "url": "https://github.com/mul-cps/cps-compute/actions/runs/38977494335"
+    "status": "completed",
+    "url": "https://github.com/mul-cps/cps-compute/actions/runs/38977494335",
+    "conclusion": "success",
+    "jobs": [
+      {
+        "name": "build",
+        "conclusion": "success"
+      },
+      {
+        "name": "installed-sdk-hub",
+        "conclusion": "success"
+      },
+      {
+        "name": "installed-lab (4.6.4)",
+        "conclusion": "success"
+      },
+      {
+        "name": "installed-lab (4.5.7)",
+        "conclusion": "success"
+      }
+    ]
   },
   "live_changes": false,
   "live_cap_qualification": false,
-  "production_ready": false
+  "production_ready": false,
+  "published_images": {
+    "node": {
+      "tag": "ghcr.io/mul-cps/cps-native-node:enrollment-610814a",
+      "digest": "sha256:5496e116fbf5db20e6bb277ae353b15d4416f0fa386c24ee6d5d48c0fb67c248",
+      "immutable": "ghcr.io/mul-cps/cps-native-node@sha256:5496e116fbf5db20e6bb277ae353b15d4416f0fa386c24ee6d5d48c0fb67c248"
+    },
+    "gateway": {
+      "tag": "ghcr.io/mul-cps/cps-compute:gateway-enrollment-610814a",
+      "digest": "sha256:d43bbe3da5072948da06eb1ad959bad4a2392cd9a2e7d8765a7bb963161fbd58",
+      "immutable": "ghcr.io/mul-cps/cps-compute@sha256:d43bbe3da5072948da06eb1ad959bad4a2392cd9a2e7d8765a7bb963161fbd58"
+    },
+    "hub": {
+      "tag": "ghcr.io/mul-cps/cps-compute:hub-enrollment-610814a",
+      "digest": "sha256:c61f8b13f8cb00b8359d509425f173e727afd61db47891955068c97a54eb0c28",
+      "immutable": "ghcr.io/mul-cps/cps-compute@sha256:c61f8b13f8cb00b8359d509425f173e727afd61db47891955068c97a54eb0c28"
+    }
+  }
 }
