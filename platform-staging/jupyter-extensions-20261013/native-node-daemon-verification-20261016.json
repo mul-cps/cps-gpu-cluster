@@ -1,0 +1,22 @@
+{
+  "application_commit": "333c1daa2966c558a86a60ec62fb885e11665a88",
+  "ci_run": 38946012484,
+  "ci_status": "in_progress",
+  "continuous_daemon_implemented": true,
+  "deployment_adopted": false,
+  "driver_changes": false,
+  "gpu_execution": false,
+  "installed_inert_cli_verified": true,
+  "installed_lean_node_sdk_verified": true,
+  "late_cancellation_native_gate_ack_regressions_passed": true,
+  "local_tests": {
+    "passed": 2699,
+    "skipped": 6,
+    "subtests_passed": 68
+  },
+  "production_qualified": false,
+  "sdist_rebuild_byte_identical": true,
+  "source_test_log_sha256": "d7753e5bf93fc98768d1eb45e7114310d11b1556e7e726920698bcfe94c34670",
+  "version": 1,
+  "wheel_sha256": "d98f16fe677120e98e84aa4ce6916be3f0904e03ffdea7a0af9789b661fb0982"
+}

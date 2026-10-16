@@ -160,6 +160,43 @@ never-enrolled released claims), immutable image/RBAC/GitOps adoption and live
 qualification of these artifacts remain open. No deployment, GPU or driver
 setting changed in this package verification.
 
+## Continuous qualification daemon
+
+Application commit `333c1daa2966c558a86a60ec62fb885e11665a88` adds continuous
+operation while retaining inert defaults and explicit `--execute --once`.
+One service/NVML instance and bounded synchronous API client are reused. API
+calls have finite connect/read timeouts and no implicit HTTP mutation retries.
+Retries and waits are bounded; inability to withdraw readiness aborts the daemon
+conservatively. SIGTERM/SIGINT request cooperative cancellation; shutdown
+withdraws readiness and closes clients while preserving caps, journals and
+reservations.
+
+Final protected mutation guards cover the actual native setter, gate receipt
+write and acknowledgment PATCH after all existing validation. Independent
+reproductions confirmed late cancellation prevents each new mutation. Already
+entered I/O may finish; the single-threaded daemon narrowly defers its stop
+signals around that final check/operation. Validation/API reads stay outside
+the native/gate mutation guard.
+
+The isolated full suite passed 2,699 tests and 68 subtests (six skipped).
+Installed lean SDK/node verification, dependency checks and inert CLI startup
+passed. The wheel rebuilt byte-identically from its source distribution:
+`d98f16fe677120e98e84aa4ce6916be3f0904e03ffdea7a0af9789b661fb0982`.
+[CI run 38946012484](https://github.com/mul-cps/cps-compute/actions/runs/38946012484)
+is in progress. No live deployment or driver setting changed.
+
+A separate read-only cutover audit found all 92 original ledger claims released,
+including ten never-enrolled claims, and 82 terminal lifetimes across 170 labeled
+authority objects. Original protected bytes remain unchanged. Actual legacy
+configuration formatting, five teardown auxiliaries and missing historical
+configuration causality require explicit migration support; the private v2
+archive proposal has replayed these records but is not published or adopted.
+Its terminal-only basis distinguishes 38 recorded approval references, ten
+recorded node-configuration references and 34 unrecorded configuration origins;
+unique semantic candidates do not establish historical causality. Migration
+code/review, immutable image/RBAC/GitOps promotion and live artifact qualification
+remain open. This does not qualify general GPU access or production readiness.
+
 ## Verified deployment and recovery
 
 Gateway `9e695015` from compute source `de90610f` is now deployed. Both Hubs
