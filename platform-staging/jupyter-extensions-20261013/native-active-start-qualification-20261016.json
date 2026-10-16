@@ -1,0 +1,33 @@
+{
+  "attempts": [
+    {
+      "cleanup": "temporary grants and memberships restored",
+      "result": "expired membership refused before spawn; exact mappings verified",
+      "scope": "dedicated CPS v1 pilot"
+    },
+    {
+      "cleanup": "no personal server stopped; temporary records restored",
+      "result": "parent NFS privacy guard refused provisioning while personal parent writers run",
+      "scope": "dedicated CPS v1 pilot with bounded valid membership/grants"
+    },
+    {
+      "cleanup": "normal console stop HTTP200; all 93 claims released; reservations and bindings empty; no native Pod",
+      "gpu_pod_created": false,
+      "gpu_workload_started": false,
+      "preflight": "three active memberships, three eligible grants, ready approval and no parent writer exposure",
+      "result": "storage succeeded; Hub intent registration failed current four-component acknowledgment fence after allocation acquisition",
+      "scope": "existing approved CPS shared-gpu-lab v2 profile5"
+    }
+  ],
+  "production_ready": false,
+  "remaining": [
+    "reproduce and fix native acquisition-to-registration acknowledgment transition",
+    "controlled active cap and renewal qualification",
+    "CIT normal reauthentication before actor API testing",
+    "broader production acceptance and release gates"
+  ],
+  "revision": "sha256:5517ea8f342ecbb6b4ed817aa9b0ca5788984217e46e4ba90b5707cee509b427",
+  "runtime_source": "f67224e06cd152a8c554822ddb0738685e291995",
+  "state": "active-start-qualification-not-passed",
+  "version": 1
+}

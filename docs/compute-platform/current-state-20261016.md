@@ -38,6 +38,25 @@ success does not prove active GPU-group behavior or production readiness.
 
 See the [peer promotion receipt](../../platform-staging/jupyter-extensions-20261013/native-peer-promotion-20261016.json).
 
+## Active start gate — not passed
+
+Actual normal-console tests exposed expired membership/grant records on the old
+dedicated pilots, then the expected storage privacy refusal: their v1 paths are
+beneath active personal-server NFS parent mounts. Temporary test records were
+restored; personal servers and the privacy guard were preserved.
+
+The existing approved `shared-gpu-lab` v2 path avoids that exposure. Its three
+memberships and grants are current. Normal Start passed storage and reached Hub
+native-intent registration, where the current four-component acknowledgment fence
+refused the request after allocation acquisition. The active reservation/readiness
+transition needs reproduction and repair before active-group qualification can
+pass. No GPU Pod or workload started. Normal Stop returned HTTP200; all 93 ledger
+claims are released, reservations/bindings are empty, and no native Pod remains.
+CIT actor testing also requires a normal akadmin login: its stored upstream OIDC
+session expired; a valid Hub API token cannot bypass that refresh requirement.
+
+See the [active start test receipt](../../platform-staging/jupyter-extensions-20261013/native-active-start-qualification-20261016.json).
+
 See the [actual renewal adoption receipt](../../platform-staging/jupyter-extensions-20261013/native-node-renewal-adoption-20261016.json).
 
 ## Peer promotion migration preflight
