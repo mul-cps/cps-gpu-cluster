@@ -1,0 +1,48 @@
+{
+  "actual_backup_clone_rehearsal": {
+    "audit_rows_added": 1,
+    "new_revision_rows": 6,
+    "old_revision_rows": 5,
+    "original_backups_unchanged": true,
+    "reservations_clone_unchanged": true
+  },
+  "application_source": "a192850dfc30462804bd041fa2fcee9361eb7c64",
+  "backup": {
+    "both_source_write_locks_held": true,
+    "control_sha256": "c039deef2304c93ce45cab6cedd89ec733241da8e22556cff80f41617e4c21c9",
+    "locked_seconds": 0.019426807761192322,
+    "observed_at": "2026-10-16T21:07:00.114048+00:00",
+    "reservations_sha256": "698dbf2a204455f6e8aa49046ebe9ef03fa9c35c9cdcdf56667e5881f5c541ef",
+    "source_row_changes": 0
+  },
+  "live_apply": {
+    "committed": true,
+    "expected_ledger_resource_version": "372150118",
+    "independent_readback_audit_count": 2201,
+    "independent_readback_revision": "sha256:5517ea8f342ecbb6b4ed817aa9b0ca5788984217e46e4ba90b5707cee509b427",
+    "independent_readback_revision_count": 6,
+    "operator_tests_passed": 17
+  },
+  "plan": {
+    "from_generation": 4,
+    "from_revision": "sha256:e9ed7284138d3d54749f94a992c1e0b2c7900f52eefe5e2848a61dadefb2d415",
+    "operation": "qualification_transport_migration",
+    "policy_hash": "sha256:d48f6553ed036c2e7adcc97417623fe0308be93ad13b20f246047ada118511b0",
+    "preserved_revision_rows": 5,
+    "revision_rows_sha256": "sha256:d5446365354ec1d8f8417ea1e589f89d27fd48644a37566e1a6e4b5970361357",
+    "to_generation": 5,
+    "to_revision": "sha256:5517ea8f342ecbb6b4ed817aa9b0ca5788984217e46e4ba90b5707cee509b427",
+    "version": 1,
+    "workspace_count": 4
+  },
+  "plan_sha256": "sha256:7ec81cab3a991a6f89b31adcdf8fe0b83b7e172a8ca27bb2cb51fa6ba2a482a2",
+  "production_ready": false,
+  "remaining": [
+    "Gateway and CPS/CIT Hub workload promotion",
+    "controlled active GPU shared-workspace qualification",
+    "broader production acceptance and release gates"
+  ],
+  "state": "live-migration-committed-peer-workloads-not-promoted",
+  "version": 1,
+  "wheel_sha256": "6788d3649327d6073f5a77d703158bd87e6ba8c159fe892d186fb88e5fde8bf6"
+}

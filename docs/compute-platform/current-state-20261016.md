@@ -33,7 +33,7 @@ See the [actual renewal adoption receipt](../../platform-staging/jupyter-extensi
 
 ## Peer promotion migration preflight
 
-The persistent Gateway approval head is still registry version1/generation4
+The persistent Gateway approval head was registry version1/generation4
 (`e9ed7284…d415`). The node's authenticated current approval is version2/generation5
 (`5517ea8f…b427`). Their four complete workspace approvals and all normalized
 measured facts match exactly, but the new consumer correctly refuses the old
@@ -48,11 +48,20 @@ and 68 subtests (six skipped); CI run38965390310 passed all four jobs. Independe
 replay of all five actual immutable revision rows reached the existing node
 approval and passed new-consumer startup/capture validation.
 
-The **live migration is not applied**. A coordinated backup and separate-process
-operator preflight precede it. Three namespace-local immutable approval copies
-have been created without changing workloads, credentials or permissions.
-Gateway/Hub deployment drafts remain gated on migration and actual reference
-identities; the running node does not need recreation for peer image changes.
+The **live migration committed** after a coordinated paired backup and rehearsal
+on copies of those exact databases. Both source databases were writer-locked for
+0.020 seconds during backup, with zero source row changes. Rehearsal preserved
+all five historical revision rows, added one revision and audit event, and left
+the reservation copy and original backups unchanged. The isolated operator then
+applied the exact reviewed plan with fresh process, acknowledgment, ledger and
+Pod checks under both database writer locks. An independent live read confirmed
+head `5517ea8f…b427`, six revision records and audit count 2,201 (previously 2,200).
+
+Three namespace-local immutable approval copies have been created without
+changing workloads, credentials or permissions. Gateway/Hub workload promotion
+and active-group qualification remain pending; the running node does not need
+recreation for peer image changes. Group GPU starts remain fenced.
+See the [live migration receipt](../../platform-staging/jupyter-extensions-20261013/native-registry-migration-adoption-20261016.json).
 See the [migration verification receipt](../../platform-staging/jupyter-extensions-20261013/native-registry-migration-verification-20261016.json).
 
 ## Retained notebook hardware qualification checkpoint
