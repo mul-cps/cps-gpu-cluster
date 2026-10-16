@@ -196,8 +196,15 @@ archive proposal has replayed these records but is not published or adopted.
 Its terminal-only basis distinguishes 38 recorded approval references, ten
 recorded node-configuration references and 34 unrecorded configuration origins;
 unique semantic candidates do not establish historical causality. Migration
-code/review, immutable image/RBAC/GitOps promotion and live artifact qualification
-remain open. This does not qualify general GPU access or production readiness.
+code and independent review are now complete in application commit
+`754621304d088c6307c5465e757457a1e83aa80e`: the isolated full suite passed
+2,725 tests and 68 subtests (six skipped), installed lean SDK/node checks passed,
+and the wheel rebuilt byte-identically from its sdist. The ordinary-user offline
+CLI replay verified all 82 lifetimes and 92 released claims against complete,
+explicitly scoped raw Pod snapshots; missing/foreign scopes fail closed.
+[CI run 38947667461](https://github.com/mul-cps/cps-compute/actions/runs/38947667461)
+is in progress. The private archive remains unpublished. Immutable
+image/RBAC/GitOps promotion and live artifact qualification remain open. This does not qualify general GPU access or production readiness.
 
 ## Verified deployment and recovery
 

@@ -1,0 +1,33 @@
+{
+  "application_commit": "754621304d088c6307c5465e757457a1e83aa80e",
+  "ci_run": 38947667461,
+  "ci_status": "in_progress",
+  "deployment_adopted": false,
+  "driver_changes": false,
+  "gpu_execution": false,
+  "independent_review": "clear",
+  "installed_inert_cli_verified": true,
+  "installed_lean_node_sdk_verified": true,
+  "local_tests": {
+    "passed": 2725,
+    "skipped": 6,
+    "subtests_passed": 68
+  },
+  "private_readonly_replay": {
+    "authority_objects": 170,
+    "basis_sha256": "sha256:1faaefb088388d6cbe0a6033d8e0e3cd7efc95a33d71a717a1d75eb8fe624f4e",
+    "entries_sha256": "sha256:739dfc9ef05ab307dc71be9f959f805300791adfda2cdd463fb8fda15a5e4bc1",
+    "missing_foreign_pod_scopes_rejected": true,
+    "never_enrolled_claims": 10,
+    "ordinary_uid_cli_verified": true,
+    "released_claims": 92,
+    "teardown_auxiliaries": 5,
+    "terminal_lifetimes": 82
+  },
+  "production_qualified": false,
+  "published": false,
+  "sdist_rebuild_byte_identical": true,
+  "source_test_log_sha256": "f5215839211e72d9614a0cba3f36c3d400bdbc3ce4e6f93af8ac113ef7a8f701",
+  "version": 1,
+  "wheel_sha256": "20b4d3ec17c23876c0cbd38a8708e10bcc3858e22c250fdc5d291ad011979e83"
+}
