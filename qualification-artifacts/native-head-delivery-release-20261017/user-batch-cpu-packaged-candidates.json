@@ -1,0 +1,75 @@
+{
+  "schema_version": 1,
+  "recorded_at": "2026-10-17T15:17:29.344356+00:00",
+  "source": {
+    "repository": "https://github.com/mul-cps/cps-compute",
+    "revision": "c75f3ac3d75cb1821b551192995d367dac4d7de4",
+    "pushed_remote_verified": true,
+    "archive_sha256": "7ecb0f0ccba7f20f5b8fe246d05fec73ed5a1c84d7868c2374599f4bb9cc6728"
+  },
+  "changes": [
+    "Normalize missing or null owner-filtered Argo workflow items to an empty list; preserve list and HTTP error contracts.",
+    "Opt-in personal CPU profile aliases derive CPU and memory requests and limits from the trusted catalog after the existing hook succeeds."
+  ],
+  "qualification": {
+    "full_source": {
+      "passed": 3447,
+      "skipped": 3,
+      "subtests": 49,
+      "log_sha256": "1a019f6d63eae8d1651337cce99e7a91f85de5f1d56b97f00558fde1b84d9a92"
+    },
+    "installed_gateway": {
+      "passed": 104,
+      "sdk_from_installed_packages": true,
+      "actual_runtime_uid": 10001,
+      "log_sha256": "9d1c43ee9392840648a3f52fcaf7e653e4c5598f8fc05bfd005b64100219a3e2"
+    },
+    "installed_hub": {
+      "passed": 672,
+      "runtime_from_installed_packages": true,
+      "log_sha256": "14f3e51fe10d6943bfadf226224d795c74dfe9d5264145384655890746b037d1",
+      "fixture_note": "Final read-only test mount includes exact-source package metadata. Earlier attempts retained for audit; missing mounts were corrected without application changes."
+    },
+    "ci": {
+      "url": "https://github.com/mul-cps/cps-compute/actions/runs/39043748459",
+      "conclusion": "success",
+      "jobs": 4
+    },
+    "wheel_source_correspondence": {
+      "sdk_python_files": 72,
+      "hub_python_files": 18
+    },
+    "images": {
+      "gateway": {
+        "reference": "ghcr.io/mul-cps/cps-compute@sha256:4cb8f7bf334c91ebbf4813040a2fc312af3974968bffcaef8c7bd1bca1a259e4",
+        "tag": "ghcr.io/mul-cps/cps-compute:user-batch-cpu-gateway-c75f3ac3d75c",
+        "config_digest": "sha256:5ab303592bee7fc0622b23634460fdeb985b12b18f81c58b6dd2f023ae56b941",
+        "exact_local_image": true,
+        "deployed": false
+      },
+      "hub": {
+        "reference": "ghcr.io/mul-cps/cps-compute@sha256:7adac14ef4a25d88942fbd4c0891c8405a287be896a8b72dff587e9f85354699",
+        "tag": "ghcr.io/mul-cps/cps-compute:user-batch-cpu-hub-c75f3ac3d75c",
+        "config_digest": "sha256:678168df6b7fbb03f8251bb028b9618251ec92e8430708e95d4db668bfe2bd21",
+        "exact_local_image": true,
+        "deployed": false
+      }
+    }
+  },
+  "deployment": {
+    "candidate_images_published": true,
+    "gateway_adopted": false,
+    "hub_pair_adopted": false,
+    "personal_cpu_alias_enabled": false,
+    "policy_changed": false,
+    "production_ready": false
+  },
+  "remaining_gates": [
+    "Adapt reviewed Gateway-only trust rotation to preserve the installed live coordinator and repaired private init command; do not replay the coordinator-absent recipe.",
+    "Adopt Gateway then paired Hubs with separate journal rotations and live readiness checks.",
+    "Repeat ordinary owner-filtered empty list and retained workflow ownership reads after Gateway adoption.",
+    "Verify fresh normal-student personal CPU Pod requests and limits after opt-in Hub adoption.",
+    "Legacy Hub CPU profile cards still need catalog resource alignment.",
+    "Browser OAuth and GPU hardware execution are not qualified by these CPU package tests."
+  ]
+}
