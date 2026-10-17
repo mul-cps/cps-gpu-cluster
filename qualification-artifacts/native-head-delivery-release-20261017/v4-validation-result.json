@@ -1,0 +1,10 @@
+{
+  "version": 1,
+  "actual_v4_node_configuration_validated": true,
+  "actual_heads_validated": 4,
+  "readiness_candidate_validated": true,
+  "readiness_authority_preserved": true,
+  "actual_named_configmaps_read": 17,
+  "processes_changed": false,
+  "gpu_activation": false
+}

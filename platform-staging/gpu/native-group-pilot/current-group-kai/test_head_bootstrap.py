@@ -183,3 +183,33 @@ def test_replaced_deployment_uid_is_not_a_new_migration_baseline():
     for controller in controllers.values():controller['metadata']['resourceVersion']='21'
     controllers['gateway']['metadata']['uid']=str(uuid.uuid4())
     with pytest.raises(ValueError):f.module.bind_runtime(f.configuration,f.approvals,f.f.policy,pointers,anchors,bindings,controllers)
+
+
+def readiness_fixture(f):
+    body=f.configuration.document
+    return {'enabled':True,'ttlSeconds':60,
+        'acknowledgments':copy.deepcopy(body['acknowledgment_targets']),
+        'processes':{c:{k:v for k,v in d.items() if k!='service_account_uid'}
+            for c,d in body['component_declarations'].items()},
+        'driver_epoch':{k:f.configuration.deployment.node_pool[k]
+            for k in ('node_uid','boot_id','driver_generation','gpu_uuid')}}
+
+
+def test_readiness_migration_preserves_exact_existing_authority_and_adds_four_heads():
+    f=fixture();pointers,anchors=stages(f);settings=readiness_fixture(f);before=copy.deepcopy(settings)
+    migrated=f.module.readiness_settings(f.configuration,f.approvals,f.f.policy,pointers,anchors,settings)
+    expected=copy.deepcopy(before);expected.update(version=2,heads=f.module.bind(
+        f.configuration,f.approvals,f.f.policy,pointers,anchors)['heads'])
+    assert migrated==expected and settings==before
+    from cps_compute.runtime import native_group_approval_configuration
+    assert native_group_approval_configuration({'nativeGroupApprovals':migrated})==migrated
+
+
+@pytest.mark.parametrize('change',['process','ack','epoch','already-dynamic'])
+def test_readiness_migration_rejects_different_authority_or_repeat_migration(change):
+    f=fixture();pointers,anchors=stages(f);settings=readiness_fixture(f)
+    if change=='process':settings['processes']['hub:cps']['image']='example.invalid/hub@sha256:'+'b'*64
+    elif change=='ack':settings['acknowledgments']['node']['uid']=str(uuid.uuid4())
+    elif change=='epoch':settings['driver_epoch']['driver_generation']='sha256:'+'b'*64
+    else:settings.update(version=2,heads=f.module.bind(f.configuration,f.approvals,f.f.policy,pointers,anchors)['heads'])
+    with pytest.raises(ValueError):f.module.readiness_settings(f.configuration,f.approvals,f.f.policy,pointers,anchors,settings)

@@ -55,3 +55,13 @@ binding reader rejects symlinked parents. CPU probes at both actual runtime
 UIDs confirmed rejection of the old path and successful protected reads from
 `/etc`. The separate ACK-attested anchor mount remains
 `/var/run/cps-native-approvals/head-anchor.json`.
+
+`readiness_settings(...)` validates the exact enabled legacy Gateway readiness
+settings against the reviewed Node configuration before adding `version: 2`
+and the four actual head bindings. It preserves ACK/process identities, driver
+epoch and TTL; mismatched authority and repeat migration fail. This returns
+settings only. Compose it with the capture server's explicit v2 configuration,
+held Node bootstrap, runtime mounts and observer release before changing the
+Gateway Secret. Component publisher settings remain schema v1: their protected
+head-binding environment selects genuine v2 ACK publication. Changing publisher
+settings to an invented schema v2 is invalid.

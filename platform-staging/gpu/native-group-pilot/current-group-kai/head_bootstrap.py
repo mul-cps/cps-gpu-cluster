@@ -155,3 +155,27 @@ def bind_runtime(configuration,approvals,policy,pointers,anchors,bindings,contro
             {'op':'test','path':'/spec','value':deepcopy(original['spec'])},
             {'op':'replace','path':'/spec','value':desired}]
     return result
+
+
+def readiness_settings(configuration,approvals,policy,pointers,anchors,settings):
+    """Pure one-time Gateway v1-to-v2 readback migration, without new authority.
+
+    Qualify the exact old cohort before adding the actual bound heads. This
+    changes neither the runtime Secret nor a process; compose it with the held
+    Node, capture, observer and mount rollout before applying.
+    """
+    from cps_compute.runtime import native_group_approval_configuration
+    heads=bind(configuration,approvals,policy,pointers,anchors)['heads']
+    original=native_group_approval_configuration({'nativeGroupApprovals':settings})
+    require(original is not None and original.get('version') is None,
+        'Enabled legacy readiness settings required for one-time migration')
+    body=configuration.document
+    declarations={c:{k:v for k,v in d.items() if k!='service_account_uid'}
+        for c,d in body['component_declarations'].items()}
+    epoch={k:configuration.deployment.node_pool[k]
+        for k in ('node_uid','boot_id','driver_generation','gpu_uuid')}
+    require(original['acknowledgments']==body['acknowledgment_targets']
+        and original['processes']==declarations and original['driver_epoch']==epoch,
+        'Existing readiness authority differs from the reviewed Node cohort')
+    result=deepcopy(original);result.update(version=2,heads=heads)
+    return native_group_approval_configuration({'nativeGroupApprovals':result})

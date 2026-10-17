@@ -29,6 +29,12 @@ pregrant only authenticated named ConfigMap reads and require genuine component
 ACKs. The old delivery seed/journal must not be reset. The coordinated v3-compatible image rollout is complete. V4 migration,
 continuous delivery and further GPU hardware qualification remain open.
 
+The next v4 state is staged from actual identities: four pointers, four anchors,
+three binding files and an immutable Node configuration. All four heads and the
+v4 Node configuration pass actual SDK validation; 16 bootstrap/readiness tests
+pass. This staging changed no process. Coordinated capture/observer/runtime
+adoption and original-journal migration remain open.
+
 The sections below retain dated checkpoints; image references in those sections
 describe those checkpoints rather than the published successor cohort above.
 

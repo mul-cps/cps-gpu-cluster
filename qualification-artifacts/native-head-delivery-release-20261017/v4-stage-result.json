@@ -1,0 +1,13 @@
+{
+  "version": 1,
+  "source_revision": "551379c6902791d0dd192596046669f1fe274562",
+  "actual_pointers": 4,
+  "immutable_anchors": 4,
+  "binding_files": 3,
+  "v4_node_config_staged": true,
+  "runtime_intents": 4,
+  "processes_changed": false,
+  "protected_personal_pods_preserved": true,
+  "ledger_preserved": true,
+  "gpu_activation": false
+}

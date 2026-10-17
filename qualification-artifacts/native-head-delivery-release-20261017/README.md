@@ -30,3 +30,18 @@ migration, production admission, wider GPU caps/routes/MPS, cross-Hub bursts,
 recovery and full production release remain open.
 
 The coordinated v3-compatible rollout completed at 2026-10-17T09:30:17.418103+00:00. Both public installed Gateway readiness calls verified all four actual fresh ACKs. All seven observer permission bindings verified before Node release. Three pre-upgrade database backup Jobs succeeded. Four personal Pods and all 117 released claims were preserved, with empty SQL reservation/binding tables. The old delivery writer remains paused for the explicit v4 migration; no dynamic-head or new GPU hardware qualification follows from this rollout.
+
+## Subsequent v4 staging
+
+Four fixed pointers, four immutable anchors, three binding files and the v4
+Node configuration have now been CREATEd and validated from actual UID/RV
+readbacks. All candidates first passed server dry-run. SDK validation read 17
+actual named ConfigMaps, reconstructed the v4 Node configuration and consumed
+all four initial heads. The Gateway readiness candidate retains the exact old
+ACK/process/epoch authority. These steps changed no process or GPU activation;
+the live cohort still uses the verified v3-compatible configuration. See
+[v4 staging](v4-stage-result.json) and [validation](v4-validation-result.json).
+Sixteen bootstrap/readiness source tests passed, including five new checks
+observed failing before the helper implementation and passing afterward.
+The coordinated v4 capture/observer/runtime rollout and journal migration are
+still required; actual Root reads do not prove service-account permissions.
