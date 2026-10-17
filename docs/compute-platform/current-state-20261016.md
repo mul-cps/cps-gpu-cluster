@@ -1317,3 +1317,45 @@ Evidence: `platform-staging/jupyter-extensions-20261013/notebook-nfs-egress-live
 ### Distinct-process IPC positive — 17 October
 
 [Hardware receipt](../../qualification-artifacts/native-ipc-distinct-process-20261017/README.md): two simultaneous processes in the normally started5GiB shared-gpu-lab successfully imported/read the same allocation, executed kernels before/after, recovered and explicitly cleaned up. Exact current approved image916786 and policyd48 were checked; initial stale531preflight was corrected before GPU execution. Stop200, Podgone,100/100nativeclaimsreleased, SQLreservation/binding0, temporarytokenrevoked. This does not qualify cross-Poddenial or distinct-processVMM. A freshv2secondworkspace through normal APIs is the next safe cross-Pod path; oldv1storage cannot be silently rebound. Fullproject remains unfinished.
+
+
+## 17 October normal-student access and artifact acceptance
+
+The fresh v2 CPU shared-workspace test passed with two ordinary student accounts.
+Both accessed the same Python kernel. Controlled membership removal stopped the
+writer and closed the removed member's existing kernel WebSocket. A normal
+restart produced a fresh Pod: the remaining member received200 and the removed
+member403. The fixture returned to stopped state, temporary memberships were
+removed, temporary CPU grants expired, Shares cleared and test tokens revoked.
+Protected personal Pod UIDs/specs/Running state were preserved. This is real
+API/kernel-channel evidence, not browser RTC/YDoc or GPU qualification.
+[Live sharing receipt](../../qualification-artifacts/native-head-delivery-release-20261017/shared-cpu-authorization-live-result.json).
+
+An earlier v1 fixture remained safely fenced because the protected bjoern
+notebook mounted its parent NFS tree. One trusted provisioning resume was
+rejected; no database edit, guard bypass, personal-server stop or data migration
+was performed. The fresh fixture uses the separate v2 workspace tree.
+[Rejected attempt and cleanup](../../qualification-artifacts/native-head-delivery-release-20261017/shared-cpu-authorization-first-attempt.json).
+
+Actual Gateway calls as a non-admin student returned200 for identity, profiles,
+session, workspace discovery and workflows. Expired test grants produced no
+profiles and removed workspaces were absent. The owner could inspect both a
+successful and intentionally failed notebook workflow, read logs and artifact
+metadata, and download both executed notebooks. The failed notebook retained
+its error output. Another ordinary student received403 for all ten cross-user
+inspection/log/artifact/download/termination requests. All test credentials
+were revoked without changing human roles or entitlements.
+[API and artifact receipt](../../qualification-artifacts/native-head-delivery-release-20261017/normal-student-api-artifact-authorization-live-result.json).
+
+The visitor boundary intentionally ignores API-token headers and requires an
+OAuth cookie; the admin service remains inaccessible to ordinary students. An
+HTTP-only OAuth attempt stopped at the Hub login-cookie requirement and issued
+no OAuth token. This does not establish actual browser login or addon rendering.
+
+Remaining concrete blockers include the unconfigured distributed launcher
+(`/v1/jobsets`503 and no trusted JobSet policy contract), live lifetime policy
+drift (CPU interactive24h/batch4h versus agreed8h/72h), current-generation
+no-MIG GPU qualification and pooled reservations, browser RTC/identity checks,
+scale/scheduling qualification, coordinated restore and release promotion.
+GPU2 remains cordoned and the KAI pending bridge disabled pending the existing
+activation decision. Production readiness has not been declared.

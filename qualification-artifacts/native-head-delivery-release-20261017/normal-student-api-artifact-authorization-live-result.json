@@ -1,0 +1,229 @@
+{
+  "version": 1,
+  "observed_at": "2026-10-17T17:17:38.329280+00:00",
+  "kind": "live-normal-student-gateway-and-notebook-artifact-authorization",
+  "scope": {
+    "backend_gateway_with_real_hub_tokens": true,
+    "live_browser_or_cookie_login": false,
+    "gpu_execution": false,
+    "production_complete": false
+  },
+  "cohort": {
+    "compute-gateway": {
+      "uid": "f5f9b266-433d-4825-83de-d51e31c71648",
+      "ready": 1,
+      "images": {
+        "gateway": "ghcr.io/mul-cps/cps-compute@sha256:4cb8f7bf334c91ebbf4813040a2fc312af3974968bffcaef8c7bd1bca1a259e4",
+        "approval-capture": "ghcr.io/mul-cps/cps-compute@sha256:4cb8f7bf334c91ebbf4813040a2fc312af3974968bffcaef8c7bd1bca1a259e4"
+      }
+    },
+    "cps-compute-ui": {
+      "uid": "a6b7171e-8471-442f-8b7c-cabb3d3da35b",
+      "ready": 1,
+      "images": {
+        "compute-visitor": "ghcr.io/mul-cps/cps-compute@sha256:669bb550a2c47a2b5591c0fd8c0a7f3782886695ed58309ed271f5539af5cf57"
+      }
+    },
+    "cit-compute-ui": {
+      "uid": "dc93dfdb-d448-4a81-a556-492d531cd49a",
+      "ready": 1,
+      "images": {
+        "compute-visitor": "ghcr.io/mul-cps/cps-compute@sha256:669bb550a2c47a2b5591c0fd8c0a7f3782886695ed58309ed271f5539af5cf57"
+      }
+    }
+  },
+  "read_routes": {
+    "me": {
+      "status": 200,
+      "shape": [
+        "identity",
+        "principal_kind",
+        "grants",
+        "policy_hash"
+      ],
+      "count": null,
+      "sha256": "c0ac550b858c47e76f9e0de4ce1dcd03c721acf7b8a3c94bf7c37ca8c4de7415"
+    },
+    "profiles": {
+      "status": 200,
+      "shape": [],
+      "count": null,
+      "sha256": "44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a"
+    },
+    "session": {
+      "status": 200,
+      "shape": [
+        "interactive_allowance"
+      ],
+      "count": null,
+      "sha256": "47eb6a61b7676ef7a5cd174ddd84696c431bca774939edb983493968c0b02f32"
+    },
+    "workspaces": {
+      "status": 200,
+      "shape": "list",
+      "count": 0,
+      "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    "workflows": {
+      "status": 200,
+      "shape": "list",
+      "count": 2,
+      "sha256": "ce60d59f077ead72cc110dc30dfa5320ae9f63a8483372e990a43fa78ff5a583"
+    },
+    "jobsets": {
+      "status": 503,
+      "shape": [
+        "detail"
+      ],
+      "count": null,
+      "sha256": "4aed018cb34f38fcf1dea414d39acf3f18abfc16416e9e2598e3cb5bce19bd0f",
+      "detail": "Distributed launcher is not configured"
+    }
+  },
+  "artifact_and_cross_user_authorization": {
+    "own": [
+      {
+        "workflow": "cps-71fc3c55bb6730c5a415e910d7fbef4aed325bb707cefdfa",
+        "phase": "Failed",
+        "inspect": {
+          "status": 200,
+          "sha256": "d64bed94bb151837c87079d3321152daa027831278d249549ee6bfac5aa05ff2",
+          "bytes": 6964
+        },
+        "/logs": {
+          "status": 200,
+          "sha256": "f038c2d8efc73c4ff6fc82f63e12dcc4aea83872695b96a34d041efa28426165",
+          "bytes": 3333
+        },
+        "/artifacts": {
+          "status": 200,
+          "sha256": "f174f81399b92bf7822d468228f27cf88bb724dd3839a8e3188245427e71abcf",
+          "bytes": 1091
+        },
+        "/artifacts?download=executed-notebook": {
+          "status": 200,
+          "sha256": "fe615a826198fc7fb27923726a28bccd2ddf793ade4739addb850bb1f06cee3a",
+          "bytes": 6822
+        },
+        "executed_notebook": {
+          "cells": 5,
+          "error_outputs": 1,
+          "no_store": true,
+          "sandbox": true
+        }
+      },
+      {
+        "workflow": "cps-6a60918245490228fadabf0bcd66c7f34b3af504a9fe82b2",
+        "phase": "Succeeded",
+        "inspect": {
+          "status": 200,
+          "sha256": "9a60f2be135479a414ca47375754dbc572ef85dd4a6f025d06343fbcb6b81f64",
+          "bytes": 6897
+        },
+        "/logs": {
+          "status": 200,
+          "sha256": "c687487dffc6aebe8fcba57077dd0327b0e9bf53aba89c80e145aaebdf273a78",
+          "bytes": 965
+        },
+        "/artifacts": {
+          "status": 200,
+          "sha256": "56a93a235201f73f7536c8d8612b5e6898b1ec97fd85cb53145992948f44fc76",
+          "bytes": 1091
+        },
+        "/artifacts?download=executed-notebook": {
+          "status": 200,
+          "sha256": "e6a6665a1f3ac677bd060d8ee48cd04aa9cc45a323664d31e945e8598abcdd9f",
+          "bytes": 4751
+        },
+        "executed_notebook": {
+          "cells": 3,
+          "error_outputs": 0,
+          "no_store": true,
+          "sandbox": true
+        }
+      }
+    ],
+    "cross_user": [
+      {
+        "workflow": "cps-71fc3c55bb6730c5a415e910d7fbef4aed325bb707cefdfa",
+        "suffix": "",
+        "status": 403
+      },
+      {
+        "workflow": "cps-71fc3c55bb6730c5a415e910d7fbef4aed325bb707cefdfa",
+        "suffix": "/logs",
+        "status": 403
+      },
+      {
+        "workflow": "cps-71fc3c55bb6730c5a415e910d7fbef4aed325bb707cefdfa",
+        "suffix": "/artifacts",
+        "status": 403
+      },
+      {
+        "workflow": "cps-71fc3c55bb6730c5a415e910d7fbef4aed325bb707cefdfa",
+        "suffix": "/artifacts?download=executed-notebook",
+        "status": 403
+      },
+      {
+        "workflow": "cps-71fc3c55bb6730c5a415e910d7fbef4aed325bb707cefdfa",
+        "suffix": "/terminate",
+        "status": 403
+      },
+      {
+        "workflow": "cps-6a60918245490228fadabf0bcd66c7f34b3af504a9fe82b2",
+        "suffix": "",
+        "status": 403
+      },
+      {
+        "workflow": "cps-6a60918245490228fadabf0bcd66c7f34b3af504a9fe82b2",
+        "suffix": "/logs",
+        "status": 403
+      },
+      {
+        "workflow": "cps-6a60918245490228fadabf0bcd66c7f34b3af504a9fe82b2",
+        "suffix": "/artifacts",
+        "status": 403
+      },
+      {
+        "workflow": "cps-6a60918245490228fadabf0bcd66c7f34b3af504a9fe82b2",
+        "suffix": "/artifacts?download=executed-notebook",
+        "status": 403
+      },
+      {
+        "workflow": "cps-6a60918245490228fadabf0bcd66c7f34b3af504a9fe82b2",
+        "suffix": "/terminate",
+        "status": 403
+      }
+    ],
+    "passed": true
+  },
+  "authentication_boundaries": {
+    "admin_service_denies_unprivileged_user": true,
+    "visitor_service_ignores_bearer_header_and_requires_oauth_cookie": true,
+    "hub_authorization_requires_login_cookie": true,
+    "http_oauth_attempt_reached_login_redirect_and_issued_zero_tokens": true,
+    "permissions_widened": false
+  },
+  "cleanup": {
+    "all_test_tokens_revoked_and_unlinked": true,
+    "errors": [],
+    "user_roles_or_grants_changed": false,
+    "workflows_modified": false
+  },
+  "open_gates": [
+    "Distributed JobSet launcher is unconfigured: GET /v1/jobsets returns503, although its Kubernetes controller is Ready. Live policy has no trusted.jobsets contract.",
+    "Live CPU interactive/batch maximum ages remain24h/4h rather than agreed8h/72h; coordinated policy migration/enforcement still required.",
+    "Browser OAuth, rendered addon and RTC document synchronization remain unverified in this session.",
+    "Current no-MIG GPU placement/isolation/pooling, scheduling, recovery and release gates remain open."
+  ],
+  "evidence_sha256": {
+    "normal-student-gateway-api-20261017/result.private.json": "e849e929d12fed2b261cdc827c9965a1b182a77dbf8e11b76a4b703a46c4a8b1",
+    "normal-student-gateway-api-20261017/raw.private.json": "ebededd66a9b95c82294b341884f5ba30460bc48b951f2ece1d0a2aa7834a068",
+    "normal-student-gateway-api-20261017/read_gateway.py": "0254f6289c2d77b4a35b9a62b80a62c81078048f7de2657f03b0f869eb61c787",
+    "normal-student-artifact-ownership-20261017/result.private.json": "176c8f77153ede9072bb786341ce437eade38474415492e9b516b77a64dc3ace",
+    "normal-student-artifact-ownership-20261017/check.py": "6efe16f14c42f85514af5bbfc57a2fc034b3737bb56f79a9464c1a074471d211",
+    "normal-student-compute-api-20261017/result.private.json": "4c61491712287540df4a32b5920627415bec6a77b5a21250fdcd543ce79f5df4",
+    "normal-student-compute-visitor-api-20261017/result.private.json": "11a52197c1f96acfb1563ca7f2c2d423c60301e28e26311b5b1758f5ee9b9f5b",
+    "normal-student-compute-oauth-api-20261017/result.private.json": "1bb55dfb3e541bb729d8061201b640ab7160403a91e08235c81c9532ed8b378e"
+  }
+}
