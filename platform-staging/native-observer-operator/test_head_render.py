@@ -87,3 +87,53 @@ def test_configmap_capture_remains_bounded_for_each_release_version(version,limi
             'namespace':'unused','name':'unused-'+str(len(capture['configmaps']))},'data':{}})
     with pytest.raises(ValueError,match='Bounded explicit ConfigMap'):
         m.render(release,m.digest(release),policy,capture,'registry.example/operator@sha256:'+'b'*64)
+
+
+def test_legacy_four_namespace_history_is_retained_without_rewriting_evidence():
+    """Legacy delivery used one envelope containing all four predecessor refs."""
+    import json
+    from cps_compute.native_group_revision import ApprovalRevision
+    f=fixture()
+    predecessors=[head.reference for head in f.current.values()]
+    advance(f)
+    for component,current in list(f.current.items()):
+        key=(current.reference['namespace'],current.reference['name'])
+        cm=f.objects[key]
+        body=current.document
+        body['history']=predecessors
+        cm['data']['approval.json']=json.dumps(body,sort_keys=True,separators=(',',':'))
+        actual=ApprovalRevision.from_configmap(cm,f.f.policy,f.qualification)
+        f.current[component]=actual
+        f.pointers[component]['data']['head.json']=json.dumps({
+            'version':1,'generation':actual.document['registry']['generation'],
+            'reference':actual.reference},sort_keys=True,separators=(',',':'))
+    docs=rendered(f)
+    for ref in predecessors:
+        role=next(d for d in docs if d['kind']=='Role' and d['metadata']['namespace']==ref['namespace'])
+        row=next(r for r in role['rules'] if r['resources']==['configmaps'])
+        assert ref['name'] in row['resourceNames']
+        assert row['verbs']==['get'] and '*' not in row['resourceNames']
+
+
+def test_retained_history_outside_reviewed_component_namespaces_is_refused():
+    import json
+    import uuid
+    from cps_compute.native_group_revision import ApprovalRevision
+    f=fixture()
+    original=next(iter(f.current.values()))
+    foreign=copy.deepcopy(f.objects[(original.reference['namespace'],original.reference['name'])])
+    foreign['metadata'].update(namespace='unreviewed-namespace',uid=str(uuid.uuid4()))
+    actual_foreign=ApprovalRevision.from_configmap(foreign,f.f.policy,f.qualification)
+    key=(actual_foreign.reference['namespace'],actual_foreign.reference['name'])
+    f.objects[key]=foreign;f.allowed.add(key)
+    advance(f)
+    for component,current in list(f.current.items()):
+        cm=f.objects[(current.reference['namespace'],current.reference['name'])]
+        body=current.document;body['history'].append(actual_foreign.reference)
+        cm['data']['approval.json']=json.dumps(body,sort_keys=True,separators=(',',':'))
+        actual=ApprovalRevision.from_configmap(cm,f.f.policy,f.qualification)
+        f.current[component]=actual
+        f.pointers[component]['data']['head.json']=json.dumps({
+            'version':1,'generation':actual.document['registry']['generation'],
+            'reference':actual.reference},sort_keys=True,separators=(',',':'))
+    with pytest.raises(ValueError):rendered(f)
