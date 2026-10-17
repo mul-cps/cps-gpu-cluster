@@ -1,0 +1,20 @@
+{
+  "applied": false,
+  "both_server_dryruns_passed": true,
+  "binder_only_change": "native-pending-coordinator-enabled false to true",
+  "gpu2_only_change": "unschedulable true to false",
+  "gpu2_ready": true,
+  "reboot_reset_driver_mig_changes": false,
+  "actual_gpu_execution_qualified": false,
+  "uncordon_authorization_required": true,
+  "fresh_revalidation_required_before_apply": true,
+  "inverse_requires_actual_uid_rv_and_full_spec_match": true,
+  "observed_at": "2026-10-17T17:39:05.630010+00:00",
+  "typed_configuration_load_passed": true,
+  "driver_epoch_matches_current_configuration": true,
+  "physical_gpu_resolved_non_mig": true,
+  "driver_version": "615.71.09",
+  "cuda_executed": false,
+  "caps_modified": false,
+  "scope": "Read-only current-cohort prerequisite check and server-side dry-run only; no activation or hardware execution"
+}
