@@ -1,0 +1,32 @@
+{
+  "version": 1,
+  "source_revision": "db9f453fc4289a95f6ef495be921fedd7bdb71b0",
+  "source_pushed_and_remote_verified": true,
+  "root_reproduced_startup_regressions": 15,
+  "independent_review_tests": 37,
+  "cluster_successor_interoperability_tests": 81,
+  "full_source_suite": {
+    "passed": 3283,
+    "subtests_passed": 49,
+    "skipped": 3,
+    "skip_reason": "Explicit disposable UID0 CPU fixture cases require CPS_NATIVE_ROOT_CPU_FIXTURE=1."
+  },
+  "sdk_wheel_sha256": "f2fcaf4d322c3cc8faa057601c848f593374570aa78bc8f9c87e8215d2cdd11b",
+  "sdist_sha256": "c829e66db0a56d15d6a96220f24d4569c7b54db456aed436b786fa0750993f78",
+  "wheel_source_parity_modules": 72,
+  "sdist_rebuilt_wheel_identical": true,
+  "only_changed_sdk_module": "native_scheduler_coordinator_server.py",
+  "gateway_image_local_build": "passed",
+  "gateway_installed_source_dependency_runtime_defaults_and_pip_check": "passed",
+  "gateway_image_published": false,
+  "gateway_image_deployed": false,
+  "ci_run": 39027784955,
+  "ci_status_at_capture": "in_progress",
+  "remaining": [
+    "Installed startup regression and disposable-root cases",
+    "Registry publication and readback",
+    "Guarded v4 component/config/journal migration preserving history",
+    "Live coordinator and Hub pending-path activation",
+    "Dynamic shared GPU workload qualification and full production gates"
+  ]
+}

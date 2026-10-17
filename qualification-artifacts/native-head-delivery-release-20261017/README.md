@@ -17,6 +17,14 @@ rollouts remain unapplied and the binder bridge remains disabled. Dynamic-head
 claim validation is the next required fix; shrinking the authorized head is not
 a solution.
 
+The [cold-start source fix](coordinator-startup-fix-source-result.json) is pushed
+as `db9f453`. It passes 3,283 source tests and 49 subtests, plus 81 cluster
+interoperability checks. Three disposable-root qualification cases remain open.
+The successor Gateway image builds locally and passes installed source/dependency,
+runtime-default and `pip check` verification. It is not published or deployed.
+See the [Gateway successor migration contract](../../docs/compute-platform/qualification/native-kai-gateway-successor-migration-20261017.md)
+for the required v4 trust and journal rotation before activation.
+
 The [coordinator staging checkpoint](coordinator-staging-result.json) verifies 17
 created configuration/RBAC objects and two immutable Hub settings objects. The
 Gateway and both Hub Secret/Deployment patches passed server dry-run. Independent
