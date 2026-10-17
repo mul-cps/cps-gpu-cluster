@@ -2309,7 +2309,37 @@ singleuser:
         ports:
           - port: 2200
             protocol: TCP
+    # Block direct notebook NFS/RPC on every IPv4 alias; kubelet mounts are node traffic.
+    # Requires NetworkPolicy endPort (deployed k3s kube-router implements ranges).
+    # ICMP is provider-defined; standard kube-router PMTU/ping accepts remain.
     egress:
+      - to:
+        - ipBlock:
+            cidr: 0.0.0.0/0
+            except:
+            - 169.254.169.254/32
+        ports:
+        - protocol: TCP
+          port: 1
+          endPort: 110
+        - protocol: TCP
+          port: 112
+          endPort: 2048
+        - protocol: TCP
+          port: 2050
+          endPort: 65535
+        - protocol: UDP
+          port: 1
+          endPort: 110
+        - protocol: UDP
+          port: 112
+          endPort: 2048
+        - protocol: UDP
+          port: 2050
+          endPort: 65535
+        - protocol: SCTP
+          port: 1
+          endPort: 65535
       - ports:
           - port: 443
             protocol: TCP
@@ -2322,8 +2352,9 @@ singleuser:
       dnsPortsCloudMetadataServer: true
       dnsPortsKubeSystemNamespace: true
       dnsPortsPrivateIPs: true
-      nonPrivateIPs: true
-      privateIPs: true
+      # Unbounded additive rules would reopen TCP/UDP 111 and 2049.
+      nonPrivateIPs: false
+      privateIPs: false
 
   extraFiles:
     jupyter-server-config:
