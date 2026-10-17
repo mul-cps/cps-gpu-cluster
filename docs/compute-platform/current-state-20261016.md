@@ -986,6 +986,10 @@ CPU profile limits are not proof of enforcement. CIT currently uses idle24h and
 max-age24h, independently read from its Hub configuration. A stable-chart culler overlay
 is staged outside Fleet. Coordinated live policy/hash and enforcement promotion
 is still required; the running D48 qualification scope is unchanged.
+Fresh17October Gateway ConfigMap readback confirms the drift remains: CPU
+interactive24h/batch4h, versus catalog8h/72h; shared GPU4h agrees. Disabled GPU
+batch profiles still show4h versus catalog24h. No live update or enforcement
+claim follows. [Actual policy readback](../../qualification-artifacts/profile-lifetime-drift-20261017/result.json).
 
 ## Fresh operator membership check
 

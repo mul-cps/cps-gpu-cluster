@@ -1,0 +1,187 @@
+{
+  "version": 1,
+  "observedAt": "2026-10-17T08:16:07.047017+00:00",
+  "scope": "Gateway mounted policy ConfigMap; other consumer/lifecycle enforcement not asserted",
+  "liveObject": {
+    "namespace": "cps-compute",
+    "name": "compute-policy",
+    "uid": "f40a6697-b39a-4fca-bb27-88704f1494bf",
+    "resourceVersion": "371903127"
+  },
+  "livePolicyHash": "sha256:d48f6553ed036c2e7adcc97417623fe0308be93ad13b20f246047ada118511b0",
+  "catalogPolicyHash": "sha256:47c8d3d2df1356aeb124f447b62a1ffc769372b89c171f04b99b29a1839b7b0b",
+  "profiles": {
+    "batch-cpu": {
+      "desired": {
+        "kind": "batch",
+        "maxAgeSeconds": 259200,
+        "idleSeconds": null
+      },
+      "observed": {
+        "kind": "batch",
+        "maxAgeSeconds": 14400,
+        "idleSeconds": null
+      },
+      "matches": false
+    },
+    "batch-exclusive-1": {
+      "desired": {
+        "kind": "batch",
+        "maxAgeSeconds": 86400,
+        "idleSeconds": null
+      },
+      "observed": {
+        "kind": "batch",
+        "maxAgeSeconds": 14400,
+        "idleSeconds": null
+      },
+      "matches": false
+    },
+    "batch-exclusive-2": {
+      "desired": {
+        "kind": "batch",
+        "maxAgeSeconds": 86400,
+        "idleSeconds": null
+      },
+      "observed": {
+        "kind": "batch",
+        "maxAgeSeconds": 14400,
+        "idleSeconds": null
+      },
+      "matches": false
+    },
+    "batch-exclusive-4": {
+      "desired": {
+        "kind": "batch",
+        "maxAgeSeconds": 86400,
+        "idleSeconds": null
+      },
+      "observed": {
+        "kind": "batch",
+        "maxAgeSeconds": 14400,
+        "idleSeconds": null
+      },
+      "matches": false
+    },
+    "batch-exclusive-8": {
+      "desired": {
+        "kind": "batch",
+        "maxAgeSeconds": 86400,
+        "idleSeconds": null
+      },
+      "observed": {
+        "kind": "batch",
+        "maxAgeSeconds": 14400,
+        "idleSeconds": null
+      },
+      "matches": false
+    },
+    "batch-shared-10": {
+      "desired": {
+        "kind": "batch",
+        "maxAgeSeconds": 86400,
+        "idleSeconds": null
+      },
+      "observed": {
+        "kind": "batch",
+        "maxAgeSeconds": 14400,
+        "idleSeconds": null
+      },
+      "matches": false
+    },
+    "batch-shared-20": {
+      "desired": {
+        "kind": "batch",
+        "maxAgeSeconds": 86400,
+        "idleSeconds": null
+      },
+      "observed": {
+        "kind": "batch",
+        "maxAgeSeconds": 14400,
+        "idleSeconds": null
+      },
+      "matches": false
+    },
+    "batch-shared-5": {
+      "desired": {
+        "kind": "batch",
+        "maxAgeSeconds": 86400,
+        "idleSeconds": null
+      },
+      "observed": {
+        "kind": "batch",
+        "maxAgeSeconds": 14400,
+        "idleSeconds": null
+      },
+      "matches": false
+    },
+    "interactive-cpu": {
+      "desired": {
+        "kind": "interactive",
+        "maxAgeSeconds": 28800,
+        "idleSeconds": 3600
+      },
+      "observed": {
+        "kind": "interactive",
+        "maxAgeSeconds": 86400,
+        "idleSeconds": 3600
+      },
+      "matches": false
+    },
+    "interactive-debug-exclusive-1": {
+      "desired": {
+        "kind": "interactive",
+        "maxAgeSeconds": 3600,
+        "idleSeconds": 900
+      },
+      "observed": {
+        "kind": "interactive",
+        "maxAgeSeconds": 3600,
+        "idleSeconds": 900
+      },
+      "matches": true
+    },
+    "interactive-shared-10": {
+      "desired": {
+        "kind": "interactive",
+        "maxAgeSeconds": 14400,
+        "idleSeconds": 1800
+      },
+      "observed": {
+        "kind": "interactive",
+        "maxAgeSeconds": 14400,
+        "idleSeconds": 1800
+      },
+      "matches": true
+    },
+    "interactive-shared-20": {
+      "desired": {
+        "kind": "interactive",
+        "maxAgeSeconds": 14400,
+        "idleSeconds": 1800
+      },
+      "observed": {
+        "kind": "interactive",
+        "maxAgeSeconds": 14400,
+        "idleSeconds": 1800
+      },
+      "matches": true
+    },
+    "interactive-shared-5": {
+      "desired": {
+        "kind": "interactive",
+        "maxAgeSeconds": 14400,
+        "idleSeconds": 1800
+      },
+      "observed": {
+        "kind": "interactive",
+        "maxAgeSeconds": 14400,
+        "idleSeconds": 1800
+      },
+      "matches": true
+    }
+  },
+  "applied": false,
+  "productionQualified": false,
+  "requiredGate": "Coordinated policy-hash and qualification-consumer handover; preserve protected running notebooks."
+}
