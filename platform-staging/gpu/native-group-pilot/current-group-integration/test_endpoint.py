@@ -115,6 +115,48 @@ def test_signed_routes_tokens_mounts_and_no_new_gateway(request,monkeypatch,tmp_
         assert result['hubs'][s]['settings']['coordinator']['origin']==endpoint.ORIGIN
 
 
+def test_nested_token_paths_keep_full_rotating_projections_and_original_trust(request,monkeypatch,tmp_path):
+    c,*_=harness(request,monkeypatch,tmp_path)
+    r=endpoint.render(c.group_context,**inputs(c))
+    assert r['coordinator']['api']['tokenFile']=='/var/run/cps-kai-api/credentials/token'
+    assert r['coordinator']['api']['caFile']=='/var/run/cps-kai-api/ca.crt'
+    assert '--native-coordinator-token-file=/var/run/cps-kai-service/credentials/token' in r['binder']['args']
+    assert r['binder']['args'][1:]==r['binder']['opt_in_args'][1:]
+    for fragment,audience in [(r['gateway'],'reviewed-api-audience'),(r['binder'],endpoint.AUDIENCE),
+                              *((r['hubs'][s],endpoint.AUDIENCE)for s in ('cps','cit'))]:
+        volume=next(v for v in fragment['volumes']if 'projected'in v)
+        token,ca=volume['projected']['sources']
+        assert volume['projected']['defaultMode']==0o440
+        assert token=={'serviceAccountToken':{'audience':audience,'expirationSeconds':3600,'path':'credentials/token'}}
+        assert ca=={'configMap':{'name':'kube-root-ca.crt','items':[{'key':'ca.crt','path':'ca.crt'}]}}
+        mount=next(v for v in fragment['volumeMounts']if v['name']==volume['name'])
+        assert mount['readOnly'] is True and 'subPath'not in mount and 'subPathExpr'not in mount
+    for source in ('cps','cit'):
+        assert r['hubs'][source]['settings']['coordinator']['tokenFile']=='/var/run/cps-kai-service/credentials/token'
+
+
+def test_emitted_nested_token_is_read_by_strict_sdk_across_atomic_rotation(request,monkeypatch,tmp_path):
+    from cps_compute.native_scheduler_coordinator_auth import projected_token
+    c,*_=harness(request,monkeypatch,tmp_path)
+    r=endpoint.render(c.group_context,**inputs(c))
+    volume=r['gateway']['volumes'][0]
+    relative=volume['projected']['sources'][0]['serviceAccountToken']['path']
+    root=tmp_path/'projection';root.mkdir();root.chmod(0o3777)
+    # Kube's AtomicWriter projects a stable top-level symlink through ..data.
+    # A nested file gives the strict reader a non-writable credentials parent.
+    for generation,value in (('generation-1','header.payload.first'),('generation-2','header.payload.rotated')):
+        target=root/generation/relative;target.parent.mkdir(parents=True,mode=0o755)
+        target.write_text(value);target.chmod(0o440)
+    (root/'..data').symlink_to('generation-1',target_is_directory=True)
+    top=relative.split('/')[0];(root/top).symlink_to('..data/'+top,target_is_directory='/'in relative)
+    path=str(root/relative)
+    assert projected_token(path)=='header.payload.first'
+    (root/'..data-next').symlink_to('generation-2',target_is_directory=True)
+    (root/'..data-next').replace(root/'..data')
+    assert projected_token(path)=='header.payload.rotated'
+    assert root.stat().st_mode&0o7777==0o3777
+
+
 def test_untrusted_or_incomplete_operator_input_rejected(request,monkeypatch,tmp_path):
     c,*_=harness(request,monkeypatch,tmp_path)
     with pytest.raises(ValueError):endpoint.render({},**inputs(c))

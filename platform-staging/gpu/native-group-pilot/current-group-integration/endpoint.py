@@ -32,7 +32,7 @@ def actor(account):
 
 def projected(name, audience):
     return {'name':name, 'projected':{'defaultMode':0o440, 'sources':[
-        {'serviceAccountToken':{'audience':audience, 'expirationSeconds':3600, 'path':'token'}},
+        {'serviceAccountToken':{'audience':audience, 'expirationSeconds':3600, 'path':'credentials/token'}},
         {'configMap':{'name':'kube-root-ca.crt','items':[{'key':'ca.crt','path':'ca.crt'}]}}]}}
 
 
@@ -67,7 +67,7 @@ def render(context, *, gateway_account, binder_account, hub_accounts, hub_settin
                 'Existing Hub trust and measured policy required')
         rules.append({'actor':name,'uid':account['metadata']['uid'],'role':'hub','source':source,'central_actor':source})
         hubs[source]={'settings':{'enabled':True,'version':2,'groupHub':plain,'coordinator':{
-            'origin':ORIGIN,'caFile':plain['gatewayCAFile'],'tokenFile':'/var/run/cps-kai-service/token','queue':queue}},
+            'origin':ORIGIN,'caFile':plain['gatewayCAFile'],'tokenFile':'/var/run/cps-kai-service/credentials/token','queue':queue}},
             'volumes':[projected('cps-kai-service',AUDIENCE)],
             'volumeMounts':[{'name':'cps-kai-service','mountPath':'/var/run/cps-kai-service','readOnly':True}],
             'ca_requirement':{'path':plain['gatewayCAFile'],'source_configmap':'cps-compute-gateway-ca','key':'ca.crt'}}
@@ -82,7 +82,7 @@ def render(context, *, gateway_account, binder_account, hub_accounts, hub_settin
     require(observed==declared,'Readiness node process must match exact typed NodeConfiguration declaration')
     config={'enabled':True,'version':2,'mode':'current-groups','settings':settings,'audience':AUDIENCE,
         'service_rules':rules,'api':{'origin':'https://kubernetes.default.svc','caFile':'/var/run/cps-kai-api/ca.crt',
-        'tokenFile':'/var/run/cps-kai-api/token','audience':api_audience,'serviceAccountUID':gateway_account['metadata']['uid']},
+        'tokenFile':'/var/run/cps-kai-api/credentials/token','audience':api_audience,'serviceAccountUID':gateway_account['metadata']['uid']},
         'custodyPath':'/data/native-kai-private/custody.sqlite',
         'writerLockPath':'/data/native-kai-private/writer.lock',
         'nodeConfigurationRef':context.node_configuration_ref,
@@ -129,7 +129,7 @@ def render(context, *, gateway_account, binder_account, hub_accounts, hub_settin
     # A fresh emptyDir, explicit UID and root-owned immutable seed avoid the
     # projected-volume symlink rejection of private_bytes without weakening it.
     flags=['--native-pending-coordinator-enabled=false','--native-coordinator-url='+ORIGIN,
-           '--native-coordinator-authority-namespace='+namespace,'--native-coordinator-token-file=/var/run/cps-kai-service/token',
+           '--native-coordinator-authority-namespace='+namespace,'--native-coordinator-token-file=/var/run/cps-kai-service/credentials/token',
            '--native-coordinator-ca-file=/etc/cps-kai-trust/ca.crt',
            '--resource-reservation-pod-image='+reservation_template['image']]
     return {'binder':{'podSecurityContext':{'fsGroup':10000},'args':flags,'opt_in_args':['--native-pending-coordinator-enabled=true',*flags[1:]],

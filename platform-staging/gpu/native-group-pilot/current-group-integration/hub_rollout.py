@@ -58,7 +58,7 @@ def settings(namespace,hub):
     require(isinstance(remote,dict) and set(remote)=={'origin','caFile','tokenFile','queue'}
         and remote['origin']==plain.get('gatewayUrl')==ORIGIN
         and remote['caFile']==plain.get('gatewayCAFile')=='/etc/cps-native-hub/ca.crt'
-        and remote['tokenFile']=='/var/run/cps-kai-service/token'
+        and remote['tokenFile']=='/var/run/cps-kai-service/credentials/token'
         and isinstance(remote['queue'],str) and re.fullmatch(r'[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?',remote['queue']),
         'Existing trusted TLS, CA, token path and bounded queue required')
     require(hub['volumes']==[projected('cps-kai-service',AUDIENCE)]

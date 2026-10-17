@@ -50,7 +50,7 @@ def inputs(source='cps',replicas=1):
     plain={'enabled':True,'source':source,'gatewayUrl':ORIGIN,'gatewayCAFile':'/etc/cps-native-hub/ca.crt',
         'groupDeployment':{'enabled':True,'policy_hash':'sha256:'+'c'*64}}
     hub={'settings':{'enabled':True,'version':2,'groupHub':plain,'coordinator':{'origin':ORIGIN,
-        'caFile':plain['gatewayCAFile'],'tokenFile':'/var/run/cps-kai-service/token','queue':'cps-interactive'}},
+        'caFile':plain['gatewayCAFile'],'tokenFile':'/var/run/cps-kai-service/credentials/token','queue':'cps-interactive'}},
         'volumes':[projected('cps-kai-service',AUDIENCE)],'volumeMounts':[{'name':'cps-kai-service',
         'mountPath':'/var/run/cps-kai-service','readOnly':True}],
         'ca_requirement':{'path':plain['gatewayCAFile'],'source_configmap':'cps-compute-gateway-ca','key':'ca.crt'}}
@@ -191,3 +191,29 @@ def test_cas_refuses_stale_secret_and_deployment_preimages():
         if key=='secret_patch':stale['data']['untouched']='changed'
         else:stale['spec']['replicas']=0
         with pytest.raises(AssertionError):apply_patch(stale,result[key])
+
+
+@pytest.mark.parametrize('source',['cps','cit'])
+def test_nested_token_path_requires_new_wrapper_and_rotation_safe_whole_volume(source):
+    m=load();dep,secret,hub=inputs(source)
+    hub['settings']['coordinator']['tokenFile']='/var/run/cps-kai-service/credentials/token'
+    namespace=dep['metadata']['namespace']
+    old_settings=copy.deepcopy(hub['settings'])
+    old_settings['coordinator']['tokenFile']='/var/run/cps-kai-service/token'
+    old_data={'settings.json':m.canonical(old_settings)}
+    old_cm=created({'apiVersion':'v1','kind':'ConfigMap','metadata':{'namespace':namespace,
+        'name':'cps-native-kai-hub-settings-'+m.digest(old_data)[7:23]},'immutable':True,'data':old_data})
+    candidate=m.candidate(namespace,hub)
+    assert candidate['metadata']['name']!=old_cm['metadata']['name']
+    cm=created(candidate);result=m.compose(dep,secret,hub,cm)
+    assert json.loads(cm['data']['settings.json'])['coordinator']['tokenFile']=='/var/run/cps-kai-service/credentials/token'
+    with pytest.raises(ValueError):m.compose(dep,secret,hub,old_cm)
+    old_hub=copy.deepcopy(hub);old_hub['settings']=old_settings
+    with pytest.raises(ValueError):m.candidate(namespace,old_hub)
+    pod=apply_patch(dep,result['deployment_patch'])['spec']['template']['spec']
+    mounts=[mount for mount in pod['containers'][0]['volumeMounts']if mount['name']=='cps-kai-service']
+    assert mounts==[{'name':'cps-kai-service','mountPath':'/var/run/cps-kai-service','readOnly':True}]
+    assert not any('subPath' in mount or 'subPathExpr' in mount for mount in mounts)
+    projected=next(v for v in pod['volumes']if v['name']=='cps-kai-service')['projected']
+    token=[s['serviceAccountToken']for s in projected['sources']if 'serviceAccountToken'in s]
+    assert len(token)==1 and token[0]['path']=='credentials/token'

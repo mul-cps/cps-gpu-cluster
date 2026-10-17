@@ -61,6 +61,16 @@ Hub/binder protected-authority ConfigMap creation as part of these role grants.
 Root must mount a namespace-local public CA ConfigMap at each emitted
 ca_requirement.path (copy existing public CA only; no private TLS key).
 
+Signed tokens are projected at `credentials/token` inside each complete,
+read-only volume mount. Gateway uses
+`/var/run/cps-kai-api/credentials/token`; Hubs and binder use
+`/var/run/cps-kai-service/credentials/token`. The nested parent satisfies the
+unchanged strict SDK reader while whole-volume mounts retain kubelet token
+rotation; do not add `subPath`. Re-render and create/read back the new
+content-addressed Coordinator seed and Hub wrapper ConfigMaps before composing
+their rollout. Old immutable ConfigMaps containing root-level token paths
+cannot be reused. CA paths, audiences and route permissions remain unchanged.
+
 NetworkPolicy intent permits only the exact dedicated binder selector in its
 namespace to Gateway TCP8000. Existing compute-private-ingress does not allow
 kai-scheduler. Preserve all existing Hub/admin ingress union; also check binder
