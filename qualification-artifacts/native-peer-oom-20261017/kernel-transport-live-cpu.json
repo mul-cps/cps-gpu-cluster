@@ -1,0 +1,73 @@
+{
+  "schema_version": 1,
+  "recorded_at": "2026-10-17T16:34:32.517363+00:00",
+  "scope": "Live normal-student CPU Jupyter kernel transport; no GPU qualification",
+  "source": {
+    "cluster": "659ec8e02a0ec6e70d6debbb915d86480387ecf8",
+    "module_sha256": {
+      "kernel_transport.py": "0b1bce9b8a7efb2c5efe5ed882fe445f842bc87c38cc9e2c897135fa5f1f8851",
+      "kernel_probe_run.py": "d6a1071e5aab601f353d213e97848a0203fa26c1d55a59d609be6b4ba3cdbd96"
+    },
+    "private_composition_actor_sha256": "21a4d32912379dce73ff67f3e651991ed13933d75a3b831cc5a3b06e39cede5a"
+  },
+  "ci": {
+    "conclusion": "success",
+    "databaseId": 39049832833,
+    "headSha": "659ec8e02a0ec6e70d6debbb915d86480387ecf8",
+    "status": "completed",
+    "url": "https://github.com/mul-cps/cps-gpu-cluster/actions/runs/39049832833"
+  },
+  "validation": {
+    "cpu_tests_passed": 48,
+    "normal_non_admin_student_identity_verified": true,
+    "cpu_server_requests_and_limits": {
+      "cpu": "2",
+      "memory": "8Gi"
+    },
+    "server_start_attempts": 1,
+    "authenticated_jupyter_kernel_api": true,
+    "authenticated_jupyter_websocket": true,
+    "fresh_owned_python3_kernel": true,
+    "single_execute_request": true,
+    "correlated_child_events": 2,
+    "isolated_child_source_sha256": "2aa1ca5fc6d3e18d1108aba1380d2b02131746152e4a0e06f379535f1e7c4af4",
+    "owned_kernel_delete_and_absence_verified": true,
+    "normal_server_stop_http_status": 204,
+    "test_server_absent": true,
+    "temporary_cpu_only_grant_expired": true,
+    "preexisting_grants_unchanged": true,
+    "temporary_tokens_revoked": 2,
+    "local_token_files_removed": true,
+    "protected_personal_pod_uids_and_specs_preserved": true,
+    "six_services_ready": true,
+    "four_current_component_acknowledgments": [
+      "gateway",
+      "hub:cit",
+      "hub:cps",
+      "node"
+    ],
+    "active_gpu_reservations": 0,
+    "active_gpu_reservation_bindings": 0
+  },
+  "not_qualified": {
+    "cuda_execution": false,
+    "gpu_isolation": false,
+    "browser_oauth": false,
+    "rtc_or_shared_server_authorization": false,
+    "full_platform_production_readiness": false
+  },
+  "retained_holds": {
+    "gpu2_cordoned": true,
+    "native_binder_bridge_enabled": false
+  },
+  "evidence_sha256": {
+    "kernel_receipt": "35f0c5c28ef5e96e9390522a5366ec4fc2a544d8ae6ecde0574b738eb48c263b",
+    "kernel_events": "019d0ef50f80c8636845bdba6c4d61a9dfff3c28223c28b4a051385f919eae39",
+    "kernel_transport_result": "92768da15b2e9182b559e623c787920412c6a08dac7c3ba1cc13611fae30cb7f",
+    "actor_result": "520d94a7c60bcfbeb16d3cfd06c0fb081056c97aac69040d8a24e68c8b7d9072",
+    "server_stop": "66221a8ae3034e72b6ced78e0f3d9ace340eac0b7c8b1f91098ecd77b18bf863",
+    "token_cleanup": "0214bb8baa2edd8bca80d062551afc317f58ef10ed5dcd3c6e50244a847930c6",
+    "final_health": "8249e7c010930cce12e05118477fc564f06911f47ad00ed9763b8c8be09ee3d6",
+    "four_acknowledgments": "0127f94dc39f50876d0f16015fe9af0d649b459856038c73f6e029faf580a221"
+  }
+}
