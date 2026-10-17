@@ -83,8 +83,21 @@ OOM at 4096 MiB held / 4352 MiB attempted, both recovered and verified kernels,
 and both clients and their ordinary-user daemon exited cleanly. Nine independent
 host samples confirmed the unchanged sealed cap, over 34 GiB physical free memory,
 and zero charged usage after cleanup. These results do not establish cross-Pod
-isolation, VMM/import paths or other profile sizes. The workspace remains running
-for the next controlled peer test; no grant renewal has yet been applied.
+isolation, VMM/import paths or other profile sizes.
+
+For the next peer test, two existing fixture grants and course memberships were
+renewed temporarily by changing expiry only, with exact normal API readbacks.
+Normal Start for `native-group-a` then failed before Pod creation: its legacy v1
+storage path is exposed by parent NFS mounts in `jupyter-bjoern` and
+`jupyter-cpsadmin`. The privacy guard correctly returned 409; an admin exception
+mapping bug exposed 500 instead. That error-handling fix is in progress. No
+storage guard, identity, policy or approval binding was bypassed. The two personal
+notebook servers remain running; permission to interrupt their kernels is pending.
+
+Both test workspaces were stopped normally. All 98 native claims are released,
+both SQL reservation tables are empty, and both fixture grants and memberships
+were restored exactly to their original records through the audited APIs. The
+temporary token was revoked and removed locally. All four components are ready.
 
 ## Previous checkpoint — packaged node renewal (16 October)
 

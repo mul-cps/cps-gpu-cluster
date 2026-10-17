@@ -281,5 +281,23 @@
     "VMM/import routes",
     "10/20GiB runtime modes",
     "broader production gates"
-  ]
+  ],
+  "cleanup": {
+    "both_test_workspaces_stopped": true,
+    "native_claims": 98,
+    "all_native_claims_released": true,
+    "reservation_rows": 0,
+    "reservation_binding_rows": 0,
+    "fixture_grants_restored": true,
+    "fixture_memberships_restored": true,
+    "test_token_revoked": true,
+    "all_four_components_ready": true
+  },
+  "peer_start": {
+    "created_pod": false,
+    "storage_status": 409,
+    "console_status": 500,
+    "cause": "legacy private path exposed by running parent NFS mounts",
+    "guard_preserved": true
+  }
 }
