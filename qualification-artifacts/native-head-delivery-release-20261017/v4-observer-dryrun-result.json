@@ -1,0 +1,49 @@
+{
+  "version": 1,
+  "cases": [
+    {
+      "role": "cit-jhub/cps-native-approval-gateway",
+      "success": true,
+      "error": ""
+    },
+    {
+      "role": "cit-jhub/cps-native-approval-hub-cit",
+      "success": true,
+      "error": ""
+    },
+    {
+      "role": "cps-compute/cps-native-approval-gateway",
+      "success": true,
+      "error": ""
+    },
+    {
+      "role": "cps-native-system/cps-native-approval-gateway",
+      "success": true,
+      "error": ""
+    },
+    {
+      "role": "cps-native-system/cps-native-approval-node",
+      "success": true,
+      "error": ""
+    },
+    {
+      "role": "jupyterhub/cps-native-approval-gateway",
+      "success": true,
+      "error": ""
+    },
+    {
+      "role": "jupyterhub/cps-native-approval-hub-cps",
+      "success": true,
+      "error": ""
+    },
+    {
+      "role": "prospective-manifest",
+      "success": true,
+      "error": ""
+    }
+  ],
+  "prospective_manifest_objects": 11,
+  "prospective": true,
+  "actual_processes_verified": false,
+  "live_applied": false
+}

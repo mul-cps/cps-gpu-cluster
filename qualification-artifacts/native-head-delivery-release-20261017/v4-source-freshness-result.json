@@ -1,0 +1,11 @@
+{
+  "version": 1,
+  "authenticated_https_export": true,
+  "capture_server_v2_runtime": true,
+  "sdk_capture_validator_passed": true,
+  "source_revision": "sha256:1e2b09e4f7a30389a78ac82eb9243ba8466a0e5e396dc312b7d76672501d88a1",
+  "source_generation": 6,
+  "source_registry_version": 2,
+  "all_four_initial_registries_current": true,
+  "live_changed": false
+}

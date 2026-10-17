@@ -4,41 +4,38 @@ The platform remains **limited-pilot**. Production qualification and the full
 project are unfinished. This record supersedes current-state statements in the
 older completion ledger; their dated acceptance results remain historical evidence.
 
-## Dynamic approval delivery — images published, held configuration staged
+## Dynamic approval delivery — v4 live; journal migration open
 
-Current qualified source is `551379c6902791d0dd192596046669f1fe274562`.
-It includes versioned dynamic heads, automatic production/delivery, strict
-historical-reference authentication and explicit original-journal adoption.
-The SDK/Hub matrix passed 3,282 tests and 49 subtests; addon checks passed seven
-tests and 19 subtests. All six environment-specific skips were separately
-executed. All four exact-source compatibility CI jobs succeeded.
+Qualified application source is `551379c6902791d0dd192596046669f1fe274562`.
+Gateway, both Hubs, Node and observer run the published exact-source successor
+images. The one-time v4 head configuration migration is now live: all four
+installed consumers publish genuine v2 acknowledgements, verified by the public
+Gateway readiness consumer at 09:49:06 UTC on 17 October. All seven observer
+Role targets verify with no pending patches. Authenticated HTTPS Source export
+passes SDK validation and matches the four initial generation-6 registries.
+[Exact live receipt and source export](../../qualification-artifacts/native-head-delivery-release-20261017/README.md).
 
-Gateway, Hub, Node and observer successor images have been built and their
-published registry manifests independently verified. The actual installed Node
-image passed six CPU functional cases, with all 72 SDK modules byte-verified.
-The successor Gateway, both Hubs, Node and observer are now deployed. All four
-installed consumer acknowledgements verified at 2026-10-17T09:30:17.418103+00:00.
-All seven observer permission bindings passed before Node release. Three fresh
-database backup Jobs succeeded; four personal Pods and 117 released claims
-were preserved. The old delivery writer is paused for explicit v4 migration.
-[Image references, staging receipt and exact scope](../../qualification-artifacts/native-head-delivery-release-20261017/README.md).
+The source migration matrix passes 77 bootstrap/runtime/observer checks.
+Independent source reviews found no blocking findings. The observer was rendered
+again using only actual post-rollout API readbacks (63 ConfigMaps, seven Roles,
+four controllers) before activation. An API default-mode mismatch was caught
+before process starts; explicit equivalent modes and regenerated template hashes
+restored exact full-spec equality. No equality or authorization check was bypassed.
 
-The pure one-time bootstrap and explicit adoption Job remain distinct from
-routine head advances. Routine updates preserve unchanged sealed workloads,
-pregrant only authenticated named ConfigMap reads and require genuine component
-ACKs. The old delivery seed/journal must not be reset. The coordinated v3-compatible image rollout is complete. V4 migration,
-continuous delivery and further GPU hardware qualification remain open.
+Three matching database backup Jobs succeeded. All four protected personal
+notebook identities, all 117 released claim records, empty SQL reservations and
+bindings, existing images, policy/qualification, driver and storage were preserved.
+GPU2 remains cordoned. This establishes protocol/runtime adoption, not additional
+GPU hardware qualification or production readiness.
 
-The next v4 state is staged from actual identities: four pointers, four anchors,
-three binding files and an immutable Node configuration. The held bootstrap and
-immutable v2 capture seed are also staged. All four heads and the
-v4 Node configuration pass actual SDK validation; 25 bootstrap/runtime tests
-pass, including an independent review rerun. All five runtime patches passed
-server dry-run. This staging changed no process. Coordinated capture/observer/runtime
-adoption and original-journal migration remain open.
+The original delivery writer remains paused pending explicit journal adoption.
+The seed/journal must not be reset. Continuous head delivery and unchanged-peer
+continuation must be qualified live, followed by the remaining no-MIG GPU gates.
+Routine head advances must not rerun this maintenance or restart unchanged peers.
+The full production goal remains active and unfinished.
 
-The sections below retain dated checkpoints; image references in those sections
-describe those checkpoints rather than the published successor cohort above.
+The sections below retain dated checkpoints; their image and protocol references
+describe those checkpoints rather than superseding the verified live state above.
 
 ## Current gate — 5/5 GiB peer continuity and synchronized startup passed
 

@@ -1,0 +1,45 @@
+{
+  "version": 1,
+  "checked_at": "2026-10-17T09:50:10.687629+00:00",
+  "sdk_source": "551379c6902791d0dd192596046669f1fe274562",
+  "cluster_source": "ba69455",
+  "components": {
+    "gateway": {
+      "uid_preserved": true,
+      "ready_replicas": 1,
+      "spec_exact": true
+    },
+    "hub:cit": {
+      "uid_preserved": true,
+      "ready_replicas": 1,
+      "spec_exact": true
+    },
+    "hub:cps": {
+      "uid_preserved": true,
+      "ready_replicas": 1,
+      "spec_exact": true
+    },
+    "node": {
+      "uid_preserved": true,
+      "ready_replicas": 1,
+      "spec_exact": true
+    }
+  },
+  "all_four_v2_acknowledgments_verified": true,
+  "readiness_observed_at": "2026-10-17T09:49:06.006292+00:00",
+  "observer_seven_roles_verified_no_pending_patches": true,
+  "observer_ready": true,
+  "original_117_released_claims_preserved": true,
+  "sql": {
+    "reservation": 0,
+    "reservation_binding": 0
+  },
+  "protected_personal_pods_preserved": true,
+  "gpu2_cordoned": true,
+  "matching_preupgrade_backups_succeeded": 3,
+  "original_delivery_writer_paused": true,
+  "legacy_journal_migrated": false,
+  "continuous_head_delivery_active": false,
+  "new_gpu_hardware_qualification": false,
+  "production_qualified": false
+}

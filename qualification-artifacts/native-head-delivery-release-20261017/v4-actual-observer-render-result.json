@@ -1,0 +1,10 @@
+{
+  "release_sha256": "sha256:0272704ce1749a4debc425543a38a66f94351b66eb797f7ac577f2a039a9fd64",
+  "actual_readbacks_only": true,
+  "controllers": 4,
+  "roles": 7,
+  "configmaps": 63,
+  "server_dryrun_passed": true,
+  "node_release_held": true,
+  "observer_activated": false
+}

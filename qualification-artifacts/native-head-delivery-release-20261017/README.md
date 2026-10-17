@@ -54,3 +54,37 @@ Deployment patches and Gateway runtime Secret patch all passed server dry-run.
 See [runtime staging](v4-runtime-stage-result.json) and
 [API dry-run](v4-runtime-dryrun-result.json). This does not establish observer
 composition, runtime migration, new GPU access or journal adoption.
+
+## Verified live v4 adoption
+
+The [live v4 receipt](v4-live-adoption-result.json) supersedes staging-only state.
+All four controllers are Ready with exact proposed specs; the installed Gateway
+consumer verifies four genuine v2 acknowledgements. The actual observer has no
+pending changes across its seven fixed Role targets. The
+[authenticated HTTPS Source export](v4-source-freshness-result.json) passes the
+SDK packet validator and still matches generation 6 in all four initial heads.
+
+The actual-state observer render used 63 actual named ConfigMaps, seven actual
+Roles and four actual controllers, and passed server dry-run before activation.
+Its final release digest is
+`sha256:0272704ce1749a4debc425543a38a66f94351b66eb797f7ac577f2a039a9fd64`.
+The earlier prospective digest is historical planning evidence, not this release.
+The source matrix (bootstrap, runtime composer, observer composer and observer
+renderer) passes 77 tests. Independent reviewers separately passed their 25,
+67 and 17-check selections, with no blocking findings; these counts are not
+added together as unique tests.
+
+The maintenance guard initially stopped before restarting controllers because
+Kubernetes inserted `defaultMode: 420` into the seven new ConfigMap volumes.
+The helper now emits that exact effective mode explicitly; a new regression
+failed before this fix and passed afterward. Root verified full stored and
+server-returned spec equality for all four controllers, regenerated the observer
+template hash, and resumed without weakening the equality guard.
+[Defaulting correction](v4-defaults-verified-result.json).
+
+Three matching pre-upgrade database backup Jobs succeeded. Four protected
+personal Pods, all 117 released claim records, empty SQL reservation/binding
+tables and GPU2's cordon were preserved. No driver change, reset, reboot, MIG
+configuration or new GPU hardware qualification occurred. The original delivery
+writer remains paused. Original-journal adoption, continuous delivery, remaining
+GPU lifecycle gates and full production qualification are still open.

@@ -1,0 +1,8 @@
+{
+  "only_explicit_defaultMode_added": true,
+  "api_returned_spec_equal": 4,
+  "all_writer_pods_absent": true,
+  "node_held": true,
+  "runtime_secret_and_seven_roles_unchanged_since_apply": true,
+  "no_pod_restart_yet": true
+}
