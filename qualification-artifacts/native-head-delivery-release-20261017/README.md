@@ -19,9 +19,12 @@ a solution.
 
 The [cold-start source fix](coordinator-startup-fix-source-result.json) is pushed
 as `db9f453`. It passes 3,283 source tests and 49 subtests, plus 81 cluster
-interoperability checks. Three disposable-root qualification cases remain open.
-The successor Gateway image builds locally and passes installed source/dependency,
-runtime-default and `pip check` verification. It is not published or deployed.
+interoperability checks. The three disposable-root qualification cases subsequently passed inside the
+installed Gateway image with no GPU, network or cluster access. All 15 startup
+checks also passed against the installed wheel, without source package imports.
+All four CI jobs succeeded. The [successor Gateway image](gateway-startup-fix-image.json)
+is published and registry-verified; installed source/dependency, runtime-default
+and `pip check` verification pass. It is not deployed.
 See the [Gateway successor migration contract](../../docs/compute-platform/qualification/native-kai-gateway-successor-migration-20261017.md)
 for the required v4 trust and journal rotation before activation.
 
