@@ -1,0 +1,122 @@
+{
+  "schema_version": 1,
+  "recorded_at": "2026-10-17T15:43:38.247497+00:00",
+  "scope": "Gateway workload list fix adopted with installed Coordinator preserved",
+  "source": {
+    "compute": "c75f3ac3d75cb1821b551192995d367dac4d7de4",
+    "cluster": "ce674e7f887a04997160e3d3a2bebe9b1a3f206c",
+    "pushed_remote_verified": true
+  },
+  "gateway": {
+    "image": "ghcr.io/mul-cps/cps-compute@sha256:4cb8f7bf334c91ebbf4813040a2fc312af3974968bffcaef8c7bd1bca1a259e4",
+    "installed_argo_module_matches_qualified_source": true,
+    "five_reviewed_runtime_intents_applied": true,
+    "coordinator_preserved": {
+      "independent_endpoint_proposal_sha256": "sha256:3a4cf2b9eb7d48a77c5265337f06c160c2dc395e9bef42953ef45327b398d8e6",
+      "full_initializer_command_preserved": true,
+      "private_writer_lock_mode": "0600",
+      "mounts_and_credential_projections_preserved": true
+    }
+  },
+  "validation": {
+    "matching_database_backups": 3,
+    "cluster_rotation_tests_passed": 149,
+    "exact_source_ci": {
+      "conclusion": "success",
+      "runs": [
+        {
+          "repository": "cps-compute",
+          "name": "Test and build",
+          "headSha": "c75f3ac3d75cb1821b551192995d367dac4d7de4",
+          "id": 39043748459,
+          "status": "completed",
+          "conclusion": "success",
+          "url": "https://github.com/mul-cps/cps-compute/actions/runs/39043748459"
+        },
+        {
+          "repository": "cps-gpu-cluster",
+          "name": "Compute platform tests",
+          "headSha": "ce674e7f887a04997160e3d3a2bebe9b1a3f206c",
+          "id": 39045193874,
+          "status": "completed",
+          "conclusion": "success",
+          "url": "https://github.com/mul-cps/cps-gpu-cluster/actions/runs/39045193874"
+        },
+        {
+          "repository": "cps-gpu-cluster",
+          "name": "Compute deployment configuration",
+          "headSha": "ce674e7f887a04997160e3d3a2bebe9b1a3f206c",
+          "id": 39045193859,
+          "status": "completed",
+          "conclusion": "success",
+          "url": "https://github.com/mul-cps/cps-gpu-cluster/actions/runs/39045193859"
+        }
+      ]
+    },
+    "services_ready": [
+      "gateway",
+      "hub:cit",
+      "hub:cps",
+      "node",
+      "observer",
+      "writer"
+    ],
+    "independent_component_acknowledgments": [
+      "gateway",
+      "hub:cit",
+      "hub:cps",
+      "node"
+    ],
+    "observer_pending_changes": 0,
+    "journal": {
+      "rotations_before": 2,
+      "rotations_after": 3,
+      "original_anchor_and_inode_preserved": true,
+      "all_previous_archives_preserved": true,
+      "single_rotation_job_ready": true
+    },
+    "normal_user_http_tls_reads": {
+      "owner_identity_verified": true,
+      "visitor_identity_verified": true,
+      "visitor_workflow_list": [],
+      "owner_workflow_list_count": 2,
+      "retained_workflows_verified": 2,
+      "owner_detail_and_logs_http_status": 200,
+      "exact_snapshot_and_executed_artifacts_verified": 4,
+      "foreign_detail_logs_and_artifact_reads_denied": 8,
+      "denial_http_status": 403,
+      "new_notebook_jobs_submitted": 0,
+      "temporary_tokens_revoked": 2,
+      "local_token_files_removed": true,
+      "result_sha256": "b285714689cfaa074eec9db3af7a6968cd6db8ad68578e513c75b94cbdee6df4",
+      "human_browser_oauth_qualified": false,
+      "source_ui_browser_qualified": false
+    }
+  },
+  "cleanup": {
+    "temporary_rotation_rbac_objects_removed": 8,
+    "completed_rotation_job_removed": true,
+    "readonly_sql_reader_removed": true,
+    "permanent_narrow_observer_read_permissions_retained": true
+  },
+  "preserved": {
+    "policy_hash": "sha256:d48f6553ed036c2e7adcc97417623fe0308be93ad13b20f246047ada118511b0",
+    "protected_personal_notebook_uids": true,
+    "cpsadmin_remains_absent": true,
+    "gpu2_remains_cordoned": true,
+    "binder_bridge_enabled": false
+  },
+  "remaining": {
+    "hub_cpu_image_adopted": false,
+    "personal_cpu_alias_opt_in_enabled": false,
+    "actual_personal_cpu_resources_aligned": false,
+    "gpu_hardware_execution_qualified": false,
+    "full_platform_production_ready": false
+  },
+  "evidence_sha256": {
+    "final_health": "dd79fc4e338dd5fe0a5f1767a197385d10a571ecf29e64b39ab5616be0abcd66",
+    "journal_after": "4fb7097339db26ce44760226d5b98b8361b7177aa40412415b9d3ec42e181385",
+    "token_cleanup": "60669cf129b7d03b7e4a5bbabbc68a703ca3573ae071682863b35cdcb74ba2d5",
+    "temporary_rotation_cleanup": "f0769371a32053daf9ded6a7bc61126b064cdc23ce1dcf669db25e9acc965d7e"
+  }
+}
