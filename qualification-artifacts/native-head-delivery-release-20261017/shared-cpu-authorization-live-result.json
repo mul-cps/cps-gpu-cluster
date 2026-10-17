@@ -1,0 +1,96 @@
+{
+  "version": 1,
+  "observed_at": "2026-10-17T17:06:14.840071+00:00",
+  "kind": "live-normal-student-shared-cpu-access-and-revocation",
+  "acceptance_passed": true,
+  "scope": {
+    "hub": "cps",
+    "profile": "interactive-cpu",
+    "cpu": "2",
+    "memory": "8Gi",
+    "storage_version": 2,
+    "browser_oauth": false,
+    "browser_rtc_ydoc": false,
+    "gpu_execution": false,
+    "production_qualification_complete": false
+  },
+  "fixture_setup": {
+    "normal_source_crud": true,
+    "normal_start_ready_and_stop": true,
+    "neutral_owner_is_not_admin": true,
+    "temporary_setup_membership_expired": true,
+    "setup_admin_token_revoked": true
+  },
+  "sharing": {
+    "both_visitors_are_non_admin": true,
+    "first_access": {
+      "a": {
+        "pod_uid": "522b84a2-b35f-4327-baf0-9109715d68b9",
+        "status": 200
+      },
+      "b": {
+        "pod_uid": "522b84a2-b35f-4327-baf0-9109715d68b9",
+        "status": 200
+      }
+    },
+    "group_share_scope": "access:servers!server=cps-ws-3ee438b6484d45cc6230e26bcd3ec9cb/rtc",
+    "fresh_kernel_created_by_a": true,
+    "same_kernel_info_reply_received_by_b": {
+      "language": "python",
+      "msg_type": "kernel_info_reply",
+      "request_id": "5b4c15e0-8520-45c4-945a-712346fa8bd8"
+    },
+    "b_channel_closed_on_removal": true,
+    "after_removal_and_new_pod_ready": {
+      "a": 200,
+      "b": 403,
+      "pod_uid": "003a0b57-f7e3-4138-9a82-9bfe135d6415"
+    }
+  },
+  "cleanup": {
+    "normal_source_stop_used": true,
+    "workspace_stopped_and_pod_absent": true,
+    "new_memberships_removed": true,
+    "source_business_preimage_restored": true,
+    "allowed_service_metadata": [
+      "reconciliation_pending=false",
+      "membership_removal_pending=null",
+      "membership_removal_group_id=null"
+    ],
+    "new_cpu_only_grants_expired": true,
+    "preexisting_grants_preserved": true,
+    "shares_empty": true,
+    "all_test_tokens_revoked_and_unlinked": true,
+    "protected_personal_pod_uids_specs_running_preserved": true,
+    "cpsadmin_absent": true,
+    "gpu2_still_cordoned": true,
+    "active_gpu_reservations": 0
+  },
+  "cpu_tests": {
+    "shared_actor": 14,
+    "fixture_creator": 3,
+    "kernel_transport": 33,
+    "kernel_transport_subtests": 5
+  },
+  "evidence_sha256": {
+    "actual-01/receipt.private.json": "ece6850841a5a440456d36136681dcc81973a78e50d1ad545fcb0ad5de12510d",
+    "actual-01/first-pod.private.json": "26dcbfb8569cf0e033e9c563f808a4d9390d3eb6817ce1d865b5f6cb79a8cac2",
+    "actual-01/second-pod.private.json": "02a2a1aa849c93887aa232c5ab37408e9cc099d7f24fcb0c4ec0c2b5647909a8",
+    "actual-01/token-receipt-pins.private.json": "86d7ea1a1a72ccd72ae3f201490c69b6b3669292fdf45732f1666951d6494ead",
+    "root-actual-01/result.json": "0214bb8baa2edd8bca80d062551afc317f58ef10ed5dcd3c6e50244a847930c6",
+    "setup-01/receipt.private.json": "e79eaacf7ed1541e4af09d9ddc45a057a00ac23f04bc812dcddb6cf9e693ae0e",
+    "setup-root-01/result.json": "245fae13c31e4404b08bee52ededd1804a031973dd2606cd948421350056a19c",
+    "setup-01/source-before.private.json": "56c2bfded53163a34bd4c918bb4cc1ca311b72443731940977d3151820474f60",
+    "plan.private.json": "44668162f5116d9dd4664b6a1a7ecd3fec85322f8cf5a413580c72fc39e2cc67",
+    "shared_cpu_actor.py": "e8d8eeee21c91f16aadef0caf41bb74db96f5f91d87af6c160385cae711f07dd",
+    "test_shared_cpu_actor.py": "284b907e8a6c82cb5a0b87572dfa4ffad17d1029c3b7c48962ff45fb25f2e774",
+    "create_fixture.py": "9fb82c198b23d2d0ddf832ef01ede79025492e3d3c6d3d1b2ef1baffc88aa746",
+    "test_create_fixture.py": "da16f24e1e8771ab9118ab7d32aac2e013ba5e30424982d6a6398ce6fa7e82bc"
+  },
+  "limits": [
+    "API-token authentication and real kernel WebSocket proof; browser OAuth and RTC document synchronization were not tested.",
+    "CPU access/revocation proof does not qualify GPU scheduling, isolation or pooling.",
+    "The original legacy v1 fixture remains fenced behind a protected parent writer; its data was preserved.",
+    "Production readiness, restore, release and broader acceptance gates remain open."
+  ]
+}
