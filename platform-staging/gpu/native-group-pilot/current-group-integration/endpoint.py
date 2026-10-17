@@ -111,9 +111,17 @@ def render(context, *, gateway_account, binder_account, hub_accounts, hub_settin
     files={'coordinator.json':config,'policy.json':deepcopy(context._policy.catalog),'deployment.json':json.loads(dep.document)}
     data={k:json.dumps(v,sort_keys=True,separators=(',',':'),ensure_ascii=False) for k,v in files.items()}
     seed='cps-native-kai-config-'+hashlib.sha256(json.dumps(data,sort_keys=True,separators=(',',':')).encode()).hexdigest()[:16]
-    init_code=("from pathlib import Path; import os; p=Path('/kai-private/config'); p.mkdir(mode=0o700); "
-               "[(p.joinpath(n).write_bytes(Path('/kai-seed').joinpath(n).read_bytes()),os.chmod(p/n,0o600)) "
-               "for n in ('coordinator.json','policy.json','deployment.json')]; "
+    init_code=("from pathlib import Path; import os,stat; os.umask(0o077); p=Path('/kai-private/config'); p.mkdir(mode=0o700,exist_ok=True); "
+               "directory=os.open(p,os.O_RDONLY|os.O_DIRECTORY|os.O_NOFOLLOW); "
+               "assert os.fstat(directory).st_uid==os.geteuid(), 'Private config owner differs'; "
+               "os.fchmod(directory,0o700); "
+               "exec(\"for n in ('coordinator.json','policy.json','deployment.json'):\\n "
+               "fd=os.open(n,os.O_WRONLY|os.O_CREAT|os.O_NOFOLLOW,0o600,dir_fd=directory)\\n "
+               "s=os.fstat(fd)\\n "
+               "assert stat.S_ISREG(s.st_mode) and s.st_uid==os.geteuid() and s.st_nlink==1 and stat.S_IMODE(s.st_mode)==0o600\\n "
+               "os.ftruncate(fd,0)\\n "
+               "stream=os.fdopen(fd,'wb'); stream.write(Path('/kai-seed').joinpath(n).read_bytes()); stream.flush(); os.fsync(stream.fileno()); stream.close()\"); "
+               "os.close(directory); "
                "state=Path('/data/native-kai-private'); state.mkdir(mode=0o700,exist_ok=True); "
                "fd=os.open(state,os.O_RDONLY|os.O_DIRECTORY|os.O_NOFOLLOW); "
                "assert os.fstat(fd).st_uid==os.geteuid(), 'Private state owner differs'; "

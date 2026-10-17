@@ -1,0 +1,30 @@
+{
+  "version": 1,
+  "created_configuration_rbac_objects": 17,
+  "created_immutable_hub_settings": 2,
+  "actual_uid_resource_version_and_contents_verified": true,
+  "server_dry_run": {
+    "gateway_deployment": "passed",
+    "cps_hub_secret_deployment": "passed",
+    "cit_hub_secret_deployment": "passed"
+  },
+  "tests": {
+    "gateway_endpoint_head_epoch": 51,
+    "hub_rollout": 30,
+    "existing_deprecation_warnings": true
+  },
+  "independent_initializer_review": "clear after SGID and retry regressions",
+  "backup_capture": {
+    "gateway_sqlite": "integrity checked",
+    "both_hub_postgresql": "captured",
+    "restore_exercise": false
+  },
+  "gateway_hub_rollout_applied": false,
+  "binder_bridge_enabled": false,
+  "gpu_workload_qualification": false,
+  "limitations": [
+    "Staging and dry-runs do not prove live coordinator startup or signed Hub requests.",
+    "Observer permission proofs and controlled maintenance must precede activation.",
+    "GPU2 remains cordoned; ordinary scheduler placement remains unqualified."
+  ]
+}

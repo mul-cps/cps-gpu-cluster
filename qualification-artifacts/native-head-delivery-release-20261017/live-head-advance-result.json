@@ -1,0 +1,54 @@
+{
+  "observed_at": "2026-10-17T10:40:53.272199+00:00",
+  "owning_api_request": {
+    "workspace": "native-isolated-b-20261017",
+    "status": 200,
+    "operation": "reapprove existing interactive-shared-5",
+    "audit_time": "2026-10-17T10:40:05.377900+00:00"
+  },
+  "source_generation_before": 6,
+  "source_generation_after": 7,
+  "source_revision_before": "sha256:1e2b09e4f7a30389a78ac82eb9243ba8466a0e5e396dc312b7d76672501d88a1",
+  "source_revision_after": "sha256:0e07a19d870394cc4798a1ccca2581b84db8202fc9b60c548f8cb8558f18eb31",
+  "complete_deployment_and_permissions_identical": true,
+  "actual_capture_validated": true,
+  "four_genuine_v2_acknowledgements": true,
+  "public_reader_call_verified": true,
+  "all_four_process_identities_unchanged": true,
+  "no_consumer_container_restarted_during_advance": true,
+  "container_start_times": [
+    {
+      "component": "gateway",
+      "restart_count": 0,
+      "running_started_at": "2026-10-17T09:47:32Z",
+      "previous_finished_at": null
+    },
+    {
+      "component": "hub:cit",
+      "restart_count": 2,
+      "running_started_at": "2026-10-17T09:47:53Z",
+      "previous_finished_at": "2026-10-17T09:47:31Z"
+    },
+    {
+      "component": "hub:cps",
+      "restart_count": 0,
+      "running_started_at": "2026-10-17T09:47:31Z",
+      "previous_finished_at": null
+    },
+    {
+      "component": "node",
+      "restart_count": 0,
+      "running_started_at": "2026-10-17T09:48:39Z",
+      "previous_finished_at": null
+    }
+  ],
+  "writer_recovered_to_ready_automatically": true,
+  "transient_fail_closed_propagation_observed": true,
+  "sealed_workspace_continuity_tested": false,
+  "gpu_activation_performed": false,
+  "remaining_storage_fences": {
+    "cps:native-group-a": "provisioning; protected parent NFS mounts prevent resume",
+    "cps:native-group-b": "provisioning; resume not attempted"
+  },
+  "production_ready": false
+}

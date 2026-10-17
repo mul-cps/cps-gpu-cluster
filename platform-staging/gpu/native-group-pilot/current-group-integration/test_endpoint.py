@@ -229,13 +229,15 @@ def test_new_custody_and_writer_lock_use_owned_private_pvc_child(request,monkeyp
     assert result['coordinator']['writerLockPath']=='/data/native-kai-private/writer.lock'
     init=result['gateway']['initContainer']
     assert {'name':'data','mountPath':'/data'} in init['volumeMounts']
-    seed=tmp_path/'seed';seed.mkdir();private=tmp_path/'private';private.mkdir();data=tmp_path/'data';data.mkdir(mode=0o775);data.chmod(0o2775)
+    seed=tmp_path/'seed';seed.mkdir();private=tmp_path/'private';private.mkdir();private.chmod(0o2770);data=tmp_path/'data';data.mkdir(mode=0o775);data.chmod(0o2775)
     db=data/'control.sqlite';db.write_bytes(b'existing database sentinel')
     before=(data.stat().st_mode,db.read_bytes(),db.stat().st_mode)
     for name,raw in result['seed']['data'].items():(seed/name).write_text(raw)
     code=init['command'][2].replace('/kai-private/config',str(private/'config')).replace('/kai-seed',str(seed)).replace('/data/native-kai-private',str(data/'native-kai-private'))
     subprocess.run([sys.executable,'-I','-c',code],check=True)
     state=data/'native-kai-private'
+    assert stat.S_IMODE((private/'config').stat().st_mode)==0o700
+    subprocess.run([sys.executable,'-I','-c',code],check=True)
     assert stat.S_IMODE(state.stat().st_mode)==0o700
     assert before==(data.stat().st_mode,db.read_bytes(),db.stat().st_mode)
     # A preexisting symbolic link cannot redirect the persistent writer lock.

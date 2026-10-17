@@ -1,13 +1,23 @@
 # Dynamic head delivery release candidate — 17 October 2026
 
-Latest: [live delivery](live-delivery-result.json) verifies production admission,
-hash-pinned original-journal adoption and the continuous writer Ready with ten
-successful processing results and zero restarts. The actual isolated admission
-matrix passes all 37 requests and three barriers, with zero type warnings or
-residue; 130 CPU checks pass. All four consumer process identities are unchanged.
-Live head advancement, sealed-peer continuation/revocation and the remaining
-no-MIG GPU and full production gates are still open. The records below describe
-their individual historical staging and rollout checkpoints.
+Latest: [live head advancement](live-head-advance-result.json) verifies a real
+owning-source approval update from generation 6 to 7. All four current consumers
+acknowledged the new revision without restarting during the update; the continuous
+writer recovered after the expected fail-closed propagation interval. This is
+not a GPU workload start or sealed-peer continuation/revocation test.
+
+The [coordinator staging checkpoint](coordinator-staging-result.json) verifies 17
+created configuration/RBAC objects and two immutable Hub settings objects. The
+Gateway and both Hub Secret/Deployment patches passed server dry-run. Independent
+review found and regression-tested inherited SGID and initializer-retry faults;
+the corrected Gateway/Hub materializers pass focused tests. No Gateway/Hub rollout
+or binder bridge activation has occurred at this checkpoint. Matching Gateway
+SQLite and both Hub PostgreSQL backups were captured, but not restore-tested.
+
+Production admission and original-journal adoption remain verified by the
+[earlier live delivery record](live-delivery-result.json). Sealed-peer
+continuation/revocation and the remaining no-MIG GPU and full production gates
+are still open. The records below are historical checkpoints.
 
 Source `551379c6902791d0dd192596046669f1fe274562` implements the automatic
 approval producer and explicit legacy-journal adoption. The full SDK/Hub matrix
