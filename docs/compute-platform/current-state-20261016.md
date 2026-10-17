@@ -20,6 +20,13 @@ namespaces. Its 43 focused SDK checks and 37 cluster renderer checks passed,
 including rejection of fully formed history outside those namespaces. The
 full compatibility CI above applies to `1dafcfe`, not this follow-up revision.
 
+The pure [one-time head bootstrap](../../platform-staging/gpu/native-group-pilot/current-group-kai/HEAD-BOOTSTRAP.md)
+now stages pointer candidates, actual UID-bound immutable anchors and the v4
+Node candidate. Eight bootstrap checks and the 37 observer-renderer checks
+passed together. Independent review confirmed full initial v3 history
+preservation and typed v4 reconstruction. This helper performs no API calls
+and does not enable starts or replace the coordinated adoption.
+
 Automatic producer/delivery journal migration and live adoption remain open.
 Routine head advances must preserve unchanged sealed workloads, pregrant only
 exact authenticated ConfigMap GET names, and wait for genuine component ACKs.
