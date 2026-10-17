@@ -1,0 +1,11 @@
+{
+  "version": 1,
+  "source_revision": "551379c6902791d0dd192596046669f1fe274562",
+  "immutable_objects_staged": 5,
+  "actual_node_config_bound": true,
+  "held_bootstrap_staged": true,
+  "processes_changed": false,
+  "gpu_activated": false,
+  "protected_personal_pods_preserved": true,
+  "gpu2_cordoned": true
+}

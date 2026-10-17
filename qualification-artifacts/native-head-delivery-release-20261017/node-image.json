@@ -1,0 +1,10 @@
+{
+  "component": "node",
+  "revision": "551379c6902791d0dd192596046669f1fe274562",
+  "tag": "ghcr.io/mul-cps/cps-native-node:head-551379c69027-node",
+  "reference": "ghcr.io/mul-cps/cps-native-node@sha256:7e319bfcb546efa9ae2fea975dcf082460802578da0c804f60eb0c8f64c08bb0",
+  "manifest_sha256": "sha256:7e319bfcb546efa9ae2fea975dcf082460802578da0c804f60eb0c8f64c08bb0",
+  "config_sha256": "sha256:b935ece408845d932b5a0d8f9a9b6b34b5cc3a9728644cbd8f47734fa7db9577",
+  "registry_verified": true,
+  "deployed": false
+}

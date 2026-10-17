@@ -1,0 +1,10 @@
+{
+  "component": "observer",
+  "revision": "551379c6902791d0dd192596046669f1fe274562",
+  "tag": "ghcr.io/mul-cps/cps-native-observer:head-551379c69027-observer",
+  "reference": "ghcr.io/mul-cps/cps-native-observer@sha256:c05f8ba81aec59d3b21fb5d3b045787b1320b416eab2d3ff27c36b8c9e7280f0",
+  "manifest_sha256": "sha256:c05f8ba81aec59d3b21fb5d3b045787b1320b416eab2d3ff27c36b8c9e7280f0",
+  "config_sha256": "sha256:0271ef380a0b23e22d9fac933e06a1d147356e2d95cf47550202bde92b082efc",
+  "registry_verified": true,
+  "deployed": false
+}

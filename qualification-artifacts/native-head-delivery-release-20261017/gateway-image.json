@@ -1,0 +1,10 @@
+{
+  "component": "gateway",
+  "revision": "551379c6902791d0dd192596046669f1fe274562",
+  "tag": "ghcr.io/mul-cps/cps-compute:head-551379c69027-gateway",
+  "reference": "ghcr.io/mul-cps/cps-compute@sha256:d27458efd36427d61eaed111d7e59e84dc9008b1c30e2d76c79e66096f9d2a0f",
+  "manifest_sha256": "sha256:d27458efd36427d61eaed111d7e59e84dc9008b1c30e2d76c79e66096f9d2a0f",
+  "config_sha256": "sha256:2a0aa736519dc562dde3c873b9dc099ce95568f03964776191a57e02991df4a3",
+  "registry_verified": true,
+  "deployed": false
+}

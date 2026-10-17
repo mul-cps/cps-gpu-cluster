@@ -1,0 +1,37 @@
+{
+  "version": 1,
+  "scope": "Fresh actual four-component image adoption proposal; five candidate API dry-runs only, no actual UID bindings or process rollout",
+  "candidates": [
+    {
+      "label": "node-config",
+      "kind": "ConfigMap",
+      "exit_code": 0,
+      "stderr_empty": true
+    },
+    {
+      "label": "gateway.capture-seed",
+      "kind": "Secret",
+      "exit_code": 0,
+      "stderr_empty": true
+    },
+    {
+      "label": "gateway.publisher",
+      "kind": "ConfigMap",
+      "exit_code": 0,
+      "stderr_empty": true
+    },
+    {
+      "label": "hub:cps.publisher",
+      "kind": "ConfigMap",
+      "exit_code": 0,
+      "stderr_empty": true
+    },
+    {
+      "label": "hub:cit.publisher",
+      "kind": "ConfigMap",
+      "exit_code": 0,
+      "stderr_empty": true
+    }
+  ],
+  "live_changed": false
+}

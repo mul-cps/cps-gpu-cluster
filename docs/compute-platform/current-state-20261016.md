@@ -4,42 +4,30 @@ The platform remains **limited-pilot**. Production qualification and the full
 project are unfinished. This record supersedes current-state statements in the
 older completion ledger; their dated acceptance results remain historical evidence.
 
-## Dynamic approval delivery — source qualified, live migration open
+## Dynamic approval delivery — images published, held configuration staged
 
-Application revision `1dafcfe5baa75c894b01c8521095f962a22d7567` adds
-versioned dynamic approval heads across Node, Hub, Gateway, Coordinator and
-observer. The explicit Python matrix passed 3,230 tests and 68 subtests; all
-six environment-specific skips were separately executed for that revision.
-Six installed node-only functional cases passed, and SDK/Hub wheel rebuilds
-from sdists were byte-identical. This is source/package evidence, not live
-GPU qualification. [Exact artifacts and limits](../../qualification-artifacts/dynamic-approval-head-source-20261017/README.md).
+Current qualified source is `551379c6902791d0dd192596046669f1fe274562`.
+It includes versioned dynamic heads, automatic production/delivery, strict
+historical-reference authentication and explicit original-journal adoption.
+The SDK/Hub matrix passed 3,282 tests and 49 subtests; addon checks passed seven
+tests and 19 subtests. All six environment-specific skips were separately
+executed. All four exact-source compatibility CI jobs succeeded.
 
-The follow-up SDK revision `a4037d3a0f5c1bc62afb69561adaf87797466768`
-preserves authentic legacy history spanning the four reviewed component
-namespaces. Its 43 focused SDK checks and 37 cluster renderer checks passed,
-including rejection of fully formed history outside those namespaces. The
-full compatibility CI above applies to `1dafcfe`, not this follow-up revision.
+Gateway, Hub, Node and observer successor images have been built and their
+published registry manifests independently verified. The actual installed Node
+image passed six CPU functional cases, with all 72 SDK modules byte-verified.
+Five immutable configuration objects and an actual-identity-bound held bootstrap
+are now staged. No process changed and no GPU was activated by staging.
+[Image references, staging receipt and exact scope](../../qualification-artifacts/native-head-delivery-release-20261017/README.md).
 
-The pure [one-time head bootstrap](../../platform-staging/gpu/native-group-pilot/current-group-kai/HEAD-BOOTSTRAP.md)
-now stages pointer candidates, actual UID-bound immutable anchors and the v4
-Node candidate. Eleven bootstrap/mount checks and the 37 observer-renderer checks
-passed together. Independent review confirmed full initial v3 history
-preservation and typed v4 reconstruction. This helper performs no API calls
-and does not enable starts or replace the coordinated adoption.
+The pure one-time bootstrap and explicit adoption Job remain distinct from
+routine head advances. Routine updates preserve unchanged sealed workloads,
+pregrant only authenticated named ConfigMap reads and require genuine component
+ACKs. The old delivery seed/journal must not be reset. Coordinated live image
+adoption, v4 migration, continuous delivery and GPU qualification remain open.
 
-The default-zero-replica dynamic delivery runtime renderer is also staged:
-57 checks passed with the official Go CEL evaluator, and six synthetic
-admission definitions passed actual server dry-run. These definitions are not
-installed. The read-only live bootstrap preflight passed, but revealed that
-the retained legacy Node approval is v1 historical evidence; the migration
-must authenticate that evidence without making it current GPU authority.
-[Preflight scope and results](../../qualification-artifacts/native-head-bootstrap-20261017/README.md).
-
-Automatic producer/delivery journal migration and live adoption remain open.
-Routine head advances must preserve unchanged sealed workloads, pregrant only
-exact authenticated ConfigMap GET names, and wait for genuine component ACKs.
-The old delivery seed/journal must not be reset to bypass migration. No dynamic
-head deployment or GPU activation is claimed by these source checks.
+The sections below retain dated checkpoints; image references in those sections
+describe those checkpoints rather than the published successor cohort above.
 
 ## Current gate — 5/5 GiB peer continuity and synchronized startup passed
 
