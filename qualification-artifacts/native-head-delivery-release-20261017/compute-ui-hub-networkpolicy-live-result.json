@@ -1,0 +1,94 @@
+{
+  "after": {
+    "cit-jhub": [
+      {
+        "errno": 111,
+        "error_type": "ConnectionRefusedError",
+        "reachable": false,
+        "target": "cps-compute-ui"
+      },
+      {
+        "http_status": "HTTP/1.1 404 Not Found",
+        "reachable": true,
+        "target": "cit-compute-ui"
+      }
+    ],
+    "jupyterhub": [
+      {
+        "http_status": "HTTP/1.1 404 Not Found",
+        "reachable": true,
+        "target": "cps-compute-ui"
+      },
+      {
+        "errno": 111,
+        "error_type": "ConnectionRefusedError",
+        "reachable": false,
+        "target": "cit-compute-ui"
+      }
+    ]
+  },
+  "allowed_change": "Add only owning-namespace app=jupyterhub,component=hub ingress on TCP8080.",
+  "before": {
+    "cit-jhub": [
+      {
+        "errno": 111,
+        "error_type": "ConnectionRefusedError",
+        "reachable": false,
+        "target": "cps-compute-ui"
+      },
+      {
+        "errno": 111,
+        "error_type": "ConnectionRefusedError",
+        "reachable": false,
+        "target": "cit-compute-ui"
+      }
+    ],
+    "jupyterhub": [
+      {
+        "errno": 111,
+        "error_type": "ConnectionRefusedError",
+        "reachable": false,
+        "target": "cps-compute-ui"
+      },
+      {
+        "errno": 111,
+        "error_type": "ConnectionRefusedError",
+        "reachable": false,
+        "target": "cit-compute-ui"
+      }
+    ]
+  },
+  "changed_objects": [
+    "cps-compute/NetworkPolicy/cps-compute-ui",
+    "cps-compute/NetworkPolicy/cit-compute-ui"
+  ],
+  "correct_service_routes": {
+    "cit": {
+      "bytes": 2061,
+      "content_type": "text/html; charset=utf-8",
+      "status": 200
+    },
+    "cps": {
+      "bytes": 6583,
+      "content_type": "text/html",
+      "status": 200
+    }
+  },
+  "focused_tests": {
+    "passed": 6,
+    "subtests_passed": 18
+  },
+  "full_production_qualified": false,
+  "kind": "owning-hub-compute-ui-networkpolicy-qualification",
+  "live_applied": true,
+  "observed_at": "2026-10-17T12:46:58.006203+00:00",
+  "preserved": {
+    "cross_source_denial": true,
+    "egress_rules": true,
+    "no_hub_restart": true,
+    "no_notebook_mutations": true,
+    "proxy_access_rule": true
+  },
+  "source_commit": "df042df",
+  "version": 1
+}
