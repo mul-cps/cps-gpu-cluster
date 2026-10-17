@@ -1,0 +1,62 @@
+{
+  "source": "0612c18e928cae68d82bf32270fbf76eebd5922f",
+  "image": "ghcr.io/mul-cps/cps-compute@sha256:636fb066f645596aa1c5b561c4338e9e7c8a1c521b27baaf6e6ac38ab312a741",
+  "registry_config_digest": "sha256:9196f601f8763964db44cea4c197c7933f662d8ded23a1e195ba3291237b2a0d",
+  "registry_verified": true,
+  "package_verification": {
+    "source": "0612c18e928cae68d82bf32270fbf76eebd5922f",
+    "wheels": {
+      "cps_compute-0.1.0-py3-none-any.whl": {
+        "sha256": "dc2e2dcce491b7d75e654b6f3544840cfe9ca3ee52199b6cb0b02ff40f9754ba",
+        "python_files_verified": 72
+      },
+      "cps_compute_hub-0.1.0-py3-none-any.whl": {
+        "sha256": "58251cf5601676fc1950cede4881e091c6a72e2460422ae63a7f2dae45e1913c",
+        "python_files_verified": 18
+      }
+    },
+    "all_python_bytes_match_source": true,
+    "base_image": "ghcr.io/mul-cps/cps-compute@sha256:06a79e3e5f4a1bbcb618b74c4f417a022ace64943076f5794e64cb708dedaba6"
+  },
+  "qualification": {
+    "tested_config": "sha256:a5da3cfc9b6a4c8677f981deab923fe37d3b2b83db27a3af119d7ac06d1fb3dd",
+    "final_config": "sha256:9196f601f8763964db44cea4c197c7933f662d8ded23a1e195ba3291237b2a0d",
+    "rootfs_identical": true,
+    "runtime_configuration_identical": true,
+    "corrected_labels_verified": true,
+    "user": "1000",
+    "installed_hub_tests_passed": 660,
+    "full_source_tests_passed": 3426,
+    "image_metadata_only_successor": true
+  },
+  "runtime": {
+    "jupyterhub": "5.5.2",
+    "kubespawner": "7.1.0",
+    "lifetime_default_enabled": false,
+    "lifetime_sha256": "d85f626a4a588bc3f5e93cd41e77dae206d67fc3b420728a5f57ea7b37b81255",
+    "neutral_config_sha256": "a0243302b75c5c7b6ba907ad776eda7c6b758b60bae9c556fb765fc5c0caca8c"
+  },
+  "source_subtests_passed": 49,
+  "source_skips": {
+    "count": 3,
+    "reason": "explicit disposable root CPU container fixture only"
+  },
+  "evidence_sha256": {
+    "full-source.log": "3263331d049f1b60da340859d97c634801bc1e5038450fd2bafcb190d0d1867f",
+    "installed-hub-suite-04.log": "bb62bebcfbef6a4a7da494fe015bac310a8c7acf216359c8aecf4dd11c4b0db8",
+    "installed-pip-check.log": "3c2dd27f4008dbea78feeace4cf9ac22958f0ad7ae845e052955bb0fd1a91278",
+    "metadata-equivalence.json": "6b8a72b12540b06d431837278c1dbf266bbff15773c4d112a4e510764597577d",
+    "final-runtime-qualification.json": "03b92d9e9251b80fde16620660d47904a271b1dc39141d8771b1c6df0858f723",
+    "source.tar.gz": "b03d84182f38f759dac0f75b9175cc6e792d31a910d489f281d467132273c04a"
+  },
+  "deployed": false,
+  "production_lifetime_enforcement_enabled": false,
+  "hardware_qualified": false,
+  "adoption_blocker": "Current journal transition supports Gateway-only rotation; explicit paired Hub-image transition and composer are in progress. Never reset journal/history to adopt this image.",
+  "limits": [
+    "Installed consumer tests use isolated fake Kubernetes configuration and no network; they are not live server lifecycle evidence.",
+    "Metadata-only final image has byte-identical root filesystem and identical runtime configuration to the 660-test image.",
+    "No current KAI placement, CUDA, GPU memory-isolation or stop/revocation hardware qualification is implied.",
+    "Live D48 lifetime policy remains unchanged; desired duration handover and production enablement are still required."
+  ]
+}
