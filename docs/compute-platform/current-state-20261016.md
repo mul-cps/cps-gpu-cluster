@@ -87,9 +87,27 @@ grant and membership expiry changes are restored, token a844 is revoked, and
 personal notebook Pod UIDs are unchanged. Installed four-component readiness
 passed afterward. Application `855d75d` fixes the complete early/late authorization
 readiness classification path; 2,992 tests and 49 subtests passed (3 skipped).
-Its Gateway image is not yet deployed. **Registration, concurrent startup and
+Its Gateway image is now deployed (see the following checkpoint). **Registration, concurrent startup and
 peer OOM remain unqualified.**
 [Run, admission repair and cleanup](../../platform-staging/jupyter-extensions-20261013/concurrent-registration-cleanup-20261017.json).
+
+Gateway `66778a0a…2fda67` now contains application `855d75d`; both installed
+authorization module hashes match the reviewed source. The Node configuration
+and trusted observer release bind this image; Hub and Node application images,
+policy and driver epoch are unchanged. All four installed consumers verified
+ready after adoption. The next concurrent run created both controlled Pods but
+did not reach two running servers: a later registration returned HTTP 422, whose
+exact historical detail was discarded by the existing logs. Read-only current
+static validators pass, so the cause remains unproven. No peer-OOM test ran.
+
+Cleanup is **not complete**: both controlled Pods are absent, but the Hub still
+reports the lab server ready and normal Stop returns 409. The lab cap is retired
+with zero charged memory; 111 of 112 native claims are released, with the lab
+claim retained. Node readiness recovered after a transient withdrawal. Do not
+treat physical retirement as proof of complete Hub/reservation cleanup. Personal
+notebook Pod identities are unchanged. The next gate is reliable normal cleanup
+and precise failure diagnostics, followed by the two-workspace hardware test.
+[Gateway adoption and failed concurrent run](../../platform-staging/jupyter-extensions-20261013/registration-readiness-adoption-20261017.json).
 
 ## Earlier verified checkpoint — native 5 GiB execution and normal Stop passed
 

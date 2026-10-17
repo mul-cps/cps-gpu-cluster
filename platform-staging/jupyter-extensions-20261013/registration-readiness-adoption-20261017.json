@@ -1,0 +1,36 @@
+{
+  "schema_version": 1,
+  "source": "855d75d071481ce8f70860070bb5aad12adeeaaa",
+  "image": "ghcr.io/mul-cps/cps-compute@sha256:66778a0ae5b7f376db82b17557b5d844c3b5603187004d249473ede4882fda67",
+  "gateway_wheel_sha256": "4dffa100818e451940afb4c83fa6da26072844a16d7bd727f9c8ce11c11aedff",
+  "ci_run": 39002288400,
+  "ci_success": true,
+  "full_suite": {"passed": 2992, "skipped": 3, "subtests": 49},
+  "installed_module_sha256": {
+    "native_groups.py": "a489f08ebad2ff3d8654f3f174325a25cd5954b4cb1bc1077f2b592f12832728",
+    "native_gpu_control.py": "bc7f9cbbbc6d14d0440482ce9cbd5f38443b9012de531a2e9f348092af00bd78"
+  },
+  "gateway_pod_uid": "0a25be52-2087-4e7b-9185-d719e843bc24",
+  "node_config": "cps-packaged-node-config-v3-8efd07528a6ee8d0",
+  "observer_release": "sha256:5e5720c3d6a8405eddf339977254ce48c4c9772151fbcad099a717f52e220a91",
+  "policy_hash": "sha256:d48f6553ed036c2e7adcc97417623fe0308be93ad13b20f246047ada118511b0",
+  "approval_revision": "sha256:1e2b09e4f7a30389a78ac82eb9243ba8466a0e5e396dc312b7d76672501d88a1",
+  "adoption_readiness_observed_at": "2026-10-17T04:32:00.488093+00:00",
+  "all_four_installed_consumers_ready_at_adoption": true,
+  "hub_and_node_application_images_unchanged": true,
+  "personal_pod_uids_preserved": true,
+  "following_concurrent_run": {
+    "both_pods_created": true,
+    "both_pods_reached_running_and_ready": false,
+    "registration_http_status": 422,
+    "exact_historical_denial_available": false,
+    "peer_oom_executed": false,
+    "cleanup_complete": false,
+    "normal_stop_blocker": "Hub reports lab server ready after its Pod is absent",
+    "native_ledger_allocations": 112,
+    "native_ledger_released": 111,
+    "native_ledger_enrolled": 1
+  },
+  "concurrent_start_qualified": false,
+  "production_qualified": false
+}
