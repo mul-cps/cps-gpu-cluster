@@ -27,13 +27,89 @@ def item(kind, name, namespace=None, **fields):
     return value
 
 
-def render(config=None, *, image=DEFAULT_IMAGE, enable=False):
+def pending_current_group_forms():
+    """Closed canonical SDK36 v2 wires, not API/grant/hash authentication.
+
+    Keep this explicit opt-in boundary synchronized with group_registry and
+    validate_group_allocation_record. CEL cannot parse JSON or authenticate
+    referenced objects; the typed SDK/Node must still validate every live pin.
+    """
+    uid = r'[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}'
+    pod_uid = '@POD_UID@'  # Substituted only after the exact name/UUID guard.
+    name = r'[a-z0-9](?:[a-z0-9.-]{0,251}[a-z0-9])?'
+    namespace = r'[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?'
+    sha = r'[a-f0-9]{64}'
+    q = lambda pattern: '"' + pattern + '"'
+    literal = lambda value: re.escape(json.dumps(value, separators=(',', ':')))
+    def document(**fields):
+        return r'\{' + ','.join(literal(k) + ':' + fields[k] for k in sorted(fields)) + r'\}'
+    approval = document(data_sha256=q('sha256:' + sha), name=q(name), namespace=q(namespace),
+        policy_hash=q('sha256:' + sha), revision=q('sha256:' + sha), uid=q(uid))
+    configuration = document(data_sha256=q('sha256:' + sha), key=literal('config.json'),
+        name=q(name), namespace=q(namespace), resourceVersion=q('[1-9][0-9]*'), uid=q(uid))
+    epoch = document(boot_id=q(uid), driver_generation=q(uid), gpu_uuid=q('GPU-' + uid), node_uid=q(uid))
+    common = dict(approval_ref=approval, attempt=q(uid), epoch=epoch,
+        node_configuration_ref=configuration, profile=q(name),
+        protocol=literal('cps-native-pending-allocation/v2'),
+        kai_commit=literal('bdf434e5e9201cccf4e05fad04d814363653f692'))
+    registry = document(**common, binding_id=q('[a-f0-9]{60}'), bound_spec_sha256=q(sha),
+        capabilities_configmap=q('cps-native-[a-f0-9]{32}-shared-gpu-0'),
+        container_index='0', container_name=literal('notebook'),
+        env_configmap=q('cps-native-[a-f0-9]{32}-shared-gpu-0-evar'), gpu_uuid=q('GPU-' + uid),
+        kind=literal('protected-pending-registry'), name=q(name), namespace=q(namespace),
+        node=q(name), node_uid=q(uid), pending_spec_sha256=q(sha), pod_uid=q(pod_uid),
+        policy_hash=q('sha256:' + sha))
+    ref = dict(name=q(name), namespace=q(namespace), resourceVersion=q('[1-9][0-9]*'), uid=q(uid))
+    owner = document(apiVersion=literal('v1'), kind=literal('Pod'), name=q(name), uid=q(pod_uid))
+    maps = [document(**dict(ref, name=q('cps-native-[a-f0-9]{32}-shared-gpu-0' + suffix)),
+                     data_sha256=q(sha), owner=owner) for suffix in ('', '-evar')]
+    member = lambda identity, cap: document(cap_mib=cap, pod_uid=q(identity))
+    # One or two entries and at most 15 GiB, with this Pod represented. The
+    # typed validator additionally checks distinctness, sort order and claims.
+    current = member(pod_uid, '(?:5120|10240)')
+    current5, current10 = member(pod_uid, '5120'), member(pod_uid, '10240')
+    other5, other = member(uid, '5120'), member(uid, '(?:5120|10240)')
+    capacity = r'\[(?:' + '|'.join((current, current5 + ',' + other,
+        current10 + ',' + other5, other + ',' + current5, other5 + ',' + current10)) + r')\]'
+    allocation = document(**common,
+        bind_request=document(**ref, generation='[1-9][0-9]*', spec_sha256=q(sha)),
+        capacity=capacity, enrollment=document(**dict(ref, name=q('cps-native-enrollment-[a-f0-9]{40}')),
+                                             document_sha256=q(sha)),
+        intent=document(cap_mib='(?:5120|10240)', gpu_uuid=q('GPU-' + uid), name=q(name),
+            namespace=q(namespace), node=q(name), node_uid=q(uid), pod_uid=q(pod_uid),
+            policy_hash=q('sha256:' + sha), spec_sha256=q(sha)),
+        maps=r'\[' + ','.join(maps) + r'\]', max_workspaces='2', memory_budget_mib='15360',
+        node=document(name=q(name), resourceVersion=q('[1-9][0-9]*'), uid=q(uid)),
+        pending_spec_sha256=q(sha), pod=document(**dict(ref, uid=q(pod_uid)), metadata_sha256=q(sha)),
+        registry=document(**dict(ref, name=q('cps-pending-registry-' + pod_uid)), document_sha256=q(sha)),
+        state=literal('allocation-enrolled-before-bind'))
+    forms = []
+    for prefix, key, pattern in (('cps-pending-registry-', 'registry.json', registry),
+                                 ('cps-pending-allocation-', 'allocation.json', allocation)):
+        identity = 'object.metadata.name.substring(' + str(len(prefix)) + ')'
+        # UUIDs contain no regex operators. The static exact-name check precedes
+        # every substring and dynamic regular expression use.
+        wire = (' + ' + identity + ' + ').join(json.dumps(part) for part in ('^' + pattern + '$').split(pod_uid))
+        text = 'object.data[' + json.dumps(key) + ']'
+        forms.append('(' + ' && '.join((
+            'object.metadata.name.matches(' + json.dumps('^' + prefix + uid + '$') + ')',
+            'has(object.immutable) && object.immutable == true',
+            'has(object.data) && size(object.data) == 1 && ' + json.dumps(key) + ' in object.data',
+            'size(' + text + ') <= 65536', text + '.matches(' + wire + ')')) + ')')
+    metadata = ' && '.join('(!has(object.metadata.' + field + ') || size(object.metadata.' + field + ') == 0)'
+        for field in ('labels', 'annotations', 'ownerReferences', 'finalizers', 'generateName'))
+    metadata += ' && !has(object.metadata.deletionTimestamp) && !has(object.metadata.deletionGracePeriodSeconds)'
+    return '(' + ' || '.join(forms) + ') && !has(object.binaryData) && ' + metadata
+
+
+def render(config=None, *, image=DEFAULT_IMAGE, enable=False, allow_pending_current_groups=False):
     config = agent.validate_config(config if config is not None else agent.parse((HERE / 'config.example.json').read_bytes()))
     agent.require(isinstance(image, str) and re.fullmatch(r'[^\s@]+@sha256:[a-f0-9]{64}', image),
                   'Immutable CPU service image digest required')
     agent.require(not enable or (config['enabled'] and not image.endswith('0' * 64)
                   and config['policy_hash'] != 'sha256:' + '0' * 64),
                   'Activation requires enabled operator config, actual policy and built digest image')
+    agent.require(type(allow_pending_current_groups) is bool, 'Explicit boolean pending-current-groups opt-in required')
     namespace, node = config['authority_namespace'], config['pool']['node']
     sources = agent.snapshot_sources()
     sources.update({name: (HERE / name).read_text() for name in ('node_agent.py', 'driver_loader.py')})
@@ -114,6 +190,12 @@ def render(config=None, *, image=DEFAULT_IMAGE, enable=False):
     ledger = ("object.metadata.name == 'cps-native-gpu-allocations' && "
         "(!has(object.immutable) || object.immutable == false) && has(object.data) && size(object.data) == 1 && "
         "'state.json' in object.data && object.data['state.json'] == '{\"allocations\":{},\"version\":1}'")
+    pending = pending_current_group_forms() if allow_pending_current_groups else None
+    gateway_forms = '(' + ledger + ') || (' + enrollment + ')'
+    gateway_message = 'The gateway may create only an empty native ledger or one immutable enrollment/terminal v2 abort-barrier slot.'
+    if pending is not None:
+        gateway_forms += ' || (' + pending + ')'
+        gateway_message += ' Explicit current-group mode also permits exact immutable v2 pending records.'
     objects.extend([
         item('ClusterRole', gateway_name + '-node', rules=[
             {'apiGroups': [''], 'resources': ['nodes'], 'resourceNames': [node], 'verbs': ['get']}]),
@@ -130,13 +212,31 @@ def render(config=None, *, image=DEFAULT_IMAGE, enable=False):
             'matchConditions': [{'name': 'gateway-authority-create', 'expression':
                 'request.namespace == ' + json.dumps(namespace) + ' && request.userInfo.username == ' + json.dumps(gateway_username)}],
             'validations': [
-                {'expression': '(' + ledger + ') || (' + enrollment + ')',
-                 'message': 'The gateway may create only an empty native ledger or one immutable enrollment/terminal v2 abort-barrier slot.'},
+                {'expression': gateway_forms, 'message': gateway_message},
                 {'expression': '!has(object.binaryData)', 'message': 'Authority records must use text data.'},
                 {'expression': '!has(object.metadata.ownerReferences) || size(object.metadata.ownerReferences) == 0',
                  'message': 'Native authority records cannot have garbage-collection owners.'}]}),
         item('ValidatingAdmissionPolicyBinding', gateway_name + '-create-only',
              spec={'policyName': gateway_name + '-create-only', 'validationActions': ['Deny']})])
+    if pending is not None:
+        # Unlike the legacy actor-scoped VAP, these prefixes must reject a
+        # foreign writer even if some unrelated RBAC grant accidentally exists.
+        # Do not match unrelated names or change the Node cleanup policy.
+        pending_name = 'cps-native-gateway-pending-current-groups'
+        objects.extend([item('ValidatingAdmissionPolicy', pending_name, spec={
+            'failurePolicy': 'Fail', 'matchConstraints': {'resourceRules': [{'apiGroups': [''],
+                'apiVersions': ['v1'], 'operations': ['CREATE'], 'resources': ['configmaps'], 'scope': 'Namespaced'}]},
+            'matchConditions': [{'name': 'pending-name', 'expression':
+                "object.metadata.name.startsWith('cps-pending-registry-') || object.metadata.name.startsWith('cps-pending-allocation-')"}],
+            'validations': [
+                {'expression': 'request.userInfo.username == ' + json.dumps(gateway_username),
+                 'message': 'Only the native Gateway may publish current-group pending records.'},
+                {'expression': 'request.namespace == ' + json.dumps(namespace) +
+                    ' && object.metadata.namespace == ' + json.dumps(namespace),
+                 'message': 'Pending records stay in the configured authority namespace.'},
+                {'expression': pending, 'message': 'One exact immutable ownerless canonical v2 pending record is required.'}]}),
+            item('ValidatingAdmissionPolicyBinding', pending_name,
+                spec={'policyName': pending_name, 'validationActions': ['Deny']})])
     volumes = [{'name': 'code', 'configMap': {'name': code_name, 'defaultMode': 0o444}},
         {'name': 'config', 'configMap': {'name': config_name, 'defaultMode': 0o400}},
         {'name': 'state', 'hostPath': {'path': '/run/cps-native-gpu', 'type': 'Directory'}},
@@ -172,8 +272,11 @@ def main(argv=None):
     parser.add_argument('--config', type=Path)
     parser.add_argument('--image', default=DEFAULT_IMAGE)
     parser.add_argument('--enable', action='store_true')
+    parser.add_argument('--allow-pending-current-groups', action='store_true',
+                        help='Opt in to canonical SDK v2 pending publication admission only; does not grant RBAC or activate KAI')
     args = parser.parse_args(argv)
     config = agent.parse(args.config.read_bytes()) if args.config else None
-    print(json.dumps(render(config, image=args.image, enable=args.enable), sort_keys=True, indent=2))
+    print(json.dumps(render(config, image=args.image, enable=args.enable,
+                            allow_pending_current_groups=args.allow_pending_current_groups), sort_keys=True, indent=2))
 
 if __name__ == '__main__': main()
