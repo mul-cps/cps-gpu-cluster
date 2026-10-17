@@ -161,3 +161,27 @@ The pure helper cannot establish those live conditions. Initial pointer/anchor
 bootstrap and admission qualification remain separate gates. A failed Job must
 be reviewed with retained journal evidence before an explicitly named successor
 attempt; deleting state or archives is not a retry procedure.
+
+## Guarded current-configuration rotation
+
+`rotation_job.py` renders a one-attempt, finite-deadline Job using the installed
+SDK rotation command and the existing `head-delivery` PVC child. Root supplies
+the exact previous config/state/anchor byte hashes and the previous normalized
+Node template. Extra fixed Secret inputs `previous-config.json` and
+`previous-node-template.json` are hash-checked before copying to private files.
+The Job preserves the normal runtime Pod security and adds no writer grants.
+
+Before running it, render `rotation_read_permissions.py` from the actual typed
+NodeConfiguration. Create and verify its four namespace-local read-only Roles
+and bindings: exact component Role GETs and Pod LISTs needed for the existing
+observer proof. These are temporary prerequisites; do not append their names to
+existing PATCH/escalate rules. Stop the writer, establish fresh backup/SQL/ledger
+fences, and verify the SDK's genuine current process/head/epoch proofs. Remove
+the temporary bindings and Roles after the Job finishes, with exact UID/RV
+preconditions. A rendered Job or a successful server dry-run is not a completed
+journal migration.
+
+The initializer recognizes only the original journal files plus strict
+`rotation-<16 lowercase hex>-{state,anchor,previous-config,config,node-template}.json`
+archives and their exact `.new` temporaries. It validates every inode and lock
+before repairing owned modes, and never rewrites archive or journal contents.

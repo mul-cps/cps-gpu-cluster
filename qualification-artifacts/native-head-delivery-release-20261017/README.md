@@ -28,6 +28,16 @@ and `pip check` verification pass. It is not deployed.
 See the [Gateway successor migration contract](../../docs/compute-platform/qualification/native-kai-gateway-successor-migration-20261017.md)
 for the required v4 trust and journal rotation before activation.
 
+The [guarded successor staging result](gateway-successor-rotation-stage-result.json)
+records the implemented journal rotation (`1824a97`), 3,313 source tests plus
+49 subtests, 107 installed-wheel checks, all three disposable-root image cases,
+and four successful CI jobs. Root independently passed 32 migration Job/read
+permission/initializer cases and 31 component rotation cases. Four inert
+successor configuration objects were created with actual UID/data readbacks;
+prospective observer rendering passes against fresh cluster captures. No running
+process or journal was changed. Temporary read-only proof permissions, fresh
+maintenance fences and genuine post-rollout ACKs remain mandatory live gates.
+
 The [coordinator staging checkpoint](coordinator-staging-result.json) verifies 17
 created configuration/RBAC objects and two immutable Hub settings objects. The
 Gateway and both Hub Secret/Deployment patches passed server dry-run. Independent

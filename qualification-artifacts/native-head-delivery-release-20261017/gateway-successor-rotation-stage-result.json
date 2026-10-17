@@ -1,0 +1,30 @@
+{
+  "version": 1,
+  "source_revision": "1824a97fd2e5f0a527df76a94165bbfc3526d3ad",
+  "full_source_suite": {
+    "passed": 3313,
+    "subtests_passed": 49,
+    "skipped": 3
+  },
+  "installed_wheel_focused_tests": 107,
+  "installed_image_disposable_root_tests": 3,
+  "cluster_rotation_and_initializer_job_read_permissions_tests": 32,
+  "cluster_component_rotation_tests": 31,
+  "source_wheel_module_parity": 72,
+  "sdist_rebuilt_wheel_identical": true,
+  "ci_run": 39028673266,
+  "ci_all_four_jobs": "success",
+  "successor_objects_created_and_actual_uid_data_verified": 4,
+  "successor_objects_server_dry_run": "passed",
+  "actual_capture_prospective_observer_render": "passed",
+  "running_deployments_changed": false,
+  "delivery_journal_rotated": false,
+  "gateway_startup_fix_deployed": false,
+  "gpu_workload_qualified": false,
+  "temporary_reader_permissions_applied": false,
+  "limitations": [
+    "Source/package, CPU and inert object staging only; no live rotation or new GPU execution proof.",
+    "Before rotation, create and read back temporary read-only proof Roles/Bindings; remove afterward.",
+    "Fresh backups, quiescent ledger/SQL fences, controlled rollout and genuine four-component ACKs remain required."
+  ]
+}

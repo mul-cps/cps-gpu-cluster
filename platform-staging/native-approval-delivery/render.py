@@ -120,6 +120,7 @@ def _policies(config, namespace):
 JOURNAL_PRIVATE_INIT = """
 import fcntl
 import stat
+import re
 
 def require_private(value):
     if not value:
@@ -137,8 +138,11 @@ try:
     info = os.fstat(directory)
     require_private(info.st_uid == os.getuid() and stat.S_IMODE(info.st_mode) in (0o700, 0o770, 0o2700, 0o2770))
     names = os.listdir(directory)
-    require_private(set(names) <= {'state.json', 'lock', 'anchor.json', 'legacy-state.json', 'legacy-seed.json',
-        'state.json.new', 'anchor.json.new', 'legacy-state.json.new', 'legacy-seed.json.new'})
+    fixed = {'state.json', 'lock', 'anchor.json', 'legacy-state.json', 'legacy-seed.json',
+        'state.json.new', 'anchor.json.new', 'legacy-state.json.new', 'legacy-seed.json.new'}
+    require_private(all(name in fixed or re.fullmatch(
+        'rotation-[0-9a-f]{16}-(state|anchor|previous-config|config|node-template)[.]json([.]new)?', name)
+        for name in names))
     for name in names:
         observed = os.stat(name, dir_fd=directory, follow_symlinks=False)
         require_private(stat.S_ISREG(observed.st_mode) and observed.st_uid == os.getuid()

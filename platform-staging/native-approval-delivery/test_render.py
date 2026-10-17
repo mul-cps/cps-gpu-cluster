@@ -269,3 +269,25 @@ def test_static_policy_rule_field_values_and_presence_are_frozen(side, field, pr
         if mutation == 'remove': del target[field]
         else: target[field] = [] if mutation == 'empty' else ['unreviewed']
         assert evaluate(policy, changed_obj, changed_old, row['namespace'], actor) == 'deny'
+
+
+@pytest.mark.parametrize('fault', ['none', 'short-id', 'uppercase-id', 'unknown-kind', 'extra-suffix'])
+def test_private_initializer_preserves_exact_rotation_archives(tmp_path, fault):
+    root=tmp_path/'journal';root.mkdir();directory=root/'head-delivery';directory.mkdir(mode=0o700)
+    archives=[f'rotation-{identity}-{kind}.json{suffix}'
+        for identity in ('0123456789abcdef','fedcba9876543210')
+        for kind in ('state','anchor','previous-config','config','node-template')
+        for suffix in ('','.new')]
+    for name in archives:
+        path=directory/name;path.write_bytes(name.encode());path.chmod(0o660)
+    invalid={'short-id':'rotation-abc-state.json','uppercase-id':'rotation-0123456789abcdeF-state.json',
+        'unknown-kind':'rotation-0123456789abcdef-secret.json',
+        'extra-suffix':'rotation-0123456789abcdef-config.json.new.new'}
+    if fault!='none':(directory/invalid[fault]).write_bytes(b'refuse')
+    code='import os\n'+module().JOURNAL_PRIVATE_INIT.replace("'/journal'",repr(str(root)))
+    result=subprocess.run([sys.executable,'-I','-c',code],capture_output=True,text=True)
+    assert result.returncode==(0 if fault=='none' else 1)
+    for name in archives:
+        path=directory/name
+        assert path.read_bytes()==name.encode()
+        assert path.stat().st_mode&0o7777==(0o600 if fault=='none' else 0o660)
