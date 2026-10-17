@@ -1,0 +1,9 @@
+{
+  "spec": {
+    "binder": {
+      "service": {
+        "enabled": false
+      }
+    }
+  }
+}

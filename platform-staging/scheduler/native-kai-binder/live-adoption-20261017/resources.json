@@ -1,0 +1,159 @@
+{
+  "apiVersion": "v1",
+  "kind": "List",
+  "items": [
+    {
+      "apiVersion": "apps/v1",
+      "kind": "Deployment",
+      "metadata": {
+        "namespace": "kai-scheduler",
+        "name": "binder",
+        "labels": {
+          "app": "binder",
+          "app.kubernetes.io/managed-by": "cps-compute-gitops"
+        }
+      },
+      "spec": {
+        "progressDeadlineSeconds": 600,
+        "replicas": 1,
+        "revisionHistoryLimit": 10,
+        "selector": {
+          "matchLabels": {
+            "app": "binder"
+          }
+        },
+        "strategy": {
+          "type": "Recreate"
+        },
+        "template": {
+          "metadata": {
+            "labels": {
+              "app": "binder"
+            }
+          },
+          "spec": {
+            "containers": [
+              {
+                "args": [
+                  "--scheduler-name",
+                  "kai-scheduler",
+                  "--resource-reservation-namespace",
+                  "kai-resource-reservation",
+                  "--resource-reservation-service-account",
+                  "kai-resource-reservation",
+                  "--resource-reservation-app-label",
+                  "kai-resource-reservation",
+                  "--resource-reservation-pod-image",
+                  "ghcr.io/kai-scheduler/kai-scheduler/resourcereservation:v0.18.1",
+                  "--scale-adjust-namespace",
+                  "kai-scale-adjust",
+                  "--health-probe-bind-address",
+                  ":8081",
+                  "--metrics-bind-address",
+                  ":8080",
+                  "--plugins",
+                  "{\"dynamicresources\":{\"enabled\":true,\"priority\":200,\"arguments\":{\"bindTimeoutSeconds\":\"120\"}},\"gpusharing\":{\"enabled\":true,\"priority\":100,\"arguments\":{\"cdiEnabled\":\"true\",\"nriPluginEnabled\":\"false\"}},\"hamicore\":{\"enabled\":true,\"priority\":50},\"nvfractions\":{\"enabled\":false,\"priority\":90,\"arguments\":{\"cdiEnabled\":\"true\"}},\"volumebinding\":{\"enabled\":true,\"priority\":300,\"arguments\":{\"bindTimeoutSeconds\":\"120\"}}}",
+                  "--qps",
+                  "20",
+                  "--burst",
+                  "100",
+                  "--resource-reservation-container-security-context",
+                  "{\"capabilities\":{\"drop\":[\"all\"]},\"runAsUser\":10000,\"runAsNonRoot\":true,\"allowPrivilegeEscalation\":false}",
+                  "--native-pending-coordinator-enabled=false"
+                ],
+                "image": "ghcr.io/mul-cps/cps-native-kai-binder@sha256:3d88ba9a102d09a124559d6082ecd8a9779c9f0a33d239530fba041ced70384e",
+                "imagePullPolicy": "IfNotPresent",
+                "name": "binder",
+                "resources": {
+                  "limits": {
+                    "cpu": "100m",
+                    "memory": "200Mi"
+                  },
+                  "requests": {
+                    "cpu": "50m",
+                    "memory": "200Mi"
+                  }
+                },
+                "securityContext": {
+                  "allowPrivilegeEscalation": false,
+                  "capabilities": {
+                    "drop": [
+                      "all"
+                    ]
+                  },
+                  "runAsNonRoot": true,
+                  "runAsUser": 10000
+                },
+                "terminationMessagePath": "/dev/termination-log",
+                "terminationMessagePolicy": "File"
+              }
+            ],
+            "dnsPolicy": "ClusterFirst",
+            "imagePullSecrets": [
+              {
+                "name": "cps-native-kai-image-pull"
+              }
+            ],
+            "restartPolicy": "Always",
+            "schedulerName": "default-scheduler",
+            "securityContext": {},
+            "serviceAccount": "binder",
+            "serviceAccountName": "binder",
+            "terminationGracePeriodSeconds": 30
+          }
+        }
+      }
+    },
+    {
+      "apiVersion": "v1",
+      "kind": "ServiceAccount",
+      "metadata": {
+        "namespace": "kai-scheduler",
+        "name": "binder",
+        "labels": {
+          "app": "binder",
+          "app.kubernetes.io/managed-by": "cps-compute-gitops"
+        }
+      }
+    },
+    {
+      "apiVersion": "v1",
+      "kind": "Service",
+      "metadata": {
+        "namespace": "kai-scheduler",
+        "name": "binder",
+        "labels": {
+          "app": "binder",
+          "app.kubernetes.io/managed-by": "cps-compute-gitops"
+        }
+      },
+      "spec": {
+        "internalTrafficPolicy": "Cluster",
+        "ports": [
+          {
+            "name": "http-metrics",
+            "port": 8080,
+            "protocol": "TCP",
+            "targetPort": 8080
+          }
+        ],
+        "selector": {
+          "app": "binder"
+        },
+        "sessionAffinity": "None",
+        "type": "ClusterIP"
+      }
+    },
+    {
+      "apiVersion": "v1",
+      "kind": "ServiceAccount",
+      "metadata": {
+        "namespace": "kai-resource-reservation",
+        "name": "kai-resource-reservation",
+        "labels": {
+          "app.kubernetes.io/managed-by": "cps-compute-gitops"
+        }
+      }
+    }
+  ]
+}
