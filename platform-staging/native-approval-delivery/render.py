@@ -13,6 +13,7 @@ from urllib.parse import urlsplit
 NAME = 'cps-native-head-delivery'
 INPUTS = '/inputs/delivery'
 APPROVAL_NAME = '^cps-native-approvals-[0-9a-f]{16}$'
+POLICY_RULE_FIELDS = ('apiGroups', 'resources', 'verbs', 'resourceNames', 'nonResourceURLs')
 
 
 def require(value, message):
@@ -21,6 +22,13 @@ def require(value, message):
 
 def canonical(value):
     return json.dumps(value, sort_keys=True, separators=(',', ':'), ensure_ascii=False, allow_nan=False)
+
+
+def _static_rule_equal(path, rule):
+    # Admission supplies typed PolicyRule objects, not maps. Freeze every
+    # field explicitly, including absence, in both object and oldObject.
+    return ['has(' + path + '.' + field + ') && ' + path + '.' + field + ' == ' + canonical(rule[field])
+        if field in rule else '!has(' + path + '.' + field + ')' for field in POLICY_RULE_FIELDS]
 
 
 def _metadata_unchanged():
@@ -90,9 +98,10 @@ def _policies(config, namespace):
             'object.metadata.uid == ' + canonical(row['uid']), 'oldObject.metadata.uid == object.metadata.uid',
             'size(object.rules) == ' + str(len(row['rules'])), 'size(oldObject.rules) == ' + str(len(row['rules']))]
         for offset, rule in enumerate(row['rules']):
+            require(isinstance(rule, dict) and set(rule) <= set(POLICY_RULE_FIELDS), 'Closed PolicyRule baseline required')
             if offset != index:
-                conditions.extend(['object.rules[' + str(offset) + '] == ' + canonical(rule),
-                                   'oldObject.rules[' + str(offset) + '] == ' + canonical(rule)])
+                for prefix in ('object', 'oldObject'):
+                    conditions.extend(_static_rule_equal(prefix + '.rules[' + str(offset) + ']', rule))
         for rule in (current, old):
             conditions.extend([rule + '.apiGroups == [""]', rule + '.resources == ["configmaps"]',
                 rule + '.verbs == ["get"]', '(!has(' + rule + '.nonResourceURLs) || size(' + rule + '.nonResourceURLs) == 0)',

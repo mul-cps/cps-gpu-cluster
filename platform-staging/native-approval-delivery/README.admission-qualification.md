@@ -60,6 +60,10 @@ approval authentication, Source authority, GPU behavior, or production rollout.
 Available policy type-check warnings are recorded and fail qualification;
 the receipt retains up to 16 expression warnings with each field reference
 and warning string bounded to 2048 characters, alongside the full count.
+Static PolicyRule pins compare all five allowed fields individually on both
+old and new objects, preserving absent fields and rejecting unknown baseline
+keys. Offline Go CEL checks preserve these semantics; actual Kubernetes type
+checking and admission remain required for each regenerated policy cohort.
 Policy/binding UID/specs are reread before and after the matrix. Cleanup always
 runs in `finally`, using each original UID and freshly read resourceVersion,
 refusing replacement identities and retrying bounded conflicts. All created

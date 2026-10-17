@@ -239,3 +239,33 @@ def test_unrelated_foreign_actor_is_not_matched_by_bounded_policies():
 def test_default_script_entrypoint_is_inert():
     result = subprocess.run([sys.executable, '-I', '-B', str(HERE / 'render.py')], check=True, capture_output=True, text=True)
     assert json.loads(result.stdout) == {'enabled': False, 'api_calls': False, 'gpu_calls': False}
+
+
+@pytest.mark.parametrize('offset', [0, 1])
+def test_pregrant_policy_rejects_unknown_baseline_rule_fields(offset):
+    config, _ = fixture(); config['pregrant_roles'][0]['rules'][offset]['unreviewed'] = []
+    with pytest.raises(ValueError, match='PolicyRule'):
+        module()._policies(config, 'cps-compute')
+
+
+@pytest.mark.parametrize('side', ['old', 'new'])
+@pytest.mark.parametrize('field,present', [
+    ('apiGroups', True), ('resources', True), ('verbs', True), ('resourceNames', True),
+    ('nonResourceURLs', True), ('resourceNames', False), ('nonResourceURLs', False)])
+def test_static_policy_rule_field_values_and_presence_are_frozen(side, field, present):
+    config, _ = fixture(); row = config['pregrant_roles'][0]
+    if field == 'nonResourceURLs' and present:
+        row['rules'][1] = {'verbs': ['get'], 'nonResourceURLs': ['/healthz']}
+    elif field == 'resourceNames' and present: row['rules'][1][field] = ['static-pod']
+    policy = next(p for p in module()._policies(config, 'cps-compute') if p['kind'] == 'ValidatingAdmissionPolicy' and p['metadata']['name'].endswith('-pregrant-update'))
+    old = {'apiVersion': 'rbac.authorization.k8s.io/v1', 'kind': 'Role', 'metadata': {
+        'namespace': row['namespace'], 'name': row['name'], 'uid': row['uid'], 'resourceVersion': '20'}, 'rules': copy.deepcopy(row['rules'])}
+    obj = copy.deepcopy(old); obj['rules'][0]['resourceNames'].append('cps-native-approvals-' + 'a' * 16)
+    actor = 'system:serviceaccount:cps-compute:cps-native-head-delivery'
+    assert evaluate(policy, obj, old, row['namespace'], actor) == 'pass'
+    for mutation in ('change', 'remove') if present else ('empty', 'nonempty'):
+        changed_old, changed_obj = copy.deepcopy(old), copy.deepcopy(obj)
+        target = (changed_old if side == 'old' else changed_obj)['rules'][1]
+        if mutation == 'remove': del target[field]
+        else: target[field] = [] if mutation == 'empty' else ['unreviewed']
+        assert evaluate(policy, changed_obj, changed_old, row['namespace'], actor) == 'deny'
