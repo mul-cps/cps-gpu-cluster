@@ -1,0 +1,46 @@
+{
+  "source": "81b936adc75d2a992eaceecddab883fdccf1c97d",
+  "image": "ghcr.io/mul-cps/e2x-course-hub@sha256:e26ecf6fe2bfec12b08c394cdb4a46c82a1a5b46c62fc18e548c3bcd23194b97",
+  "deployments": [
+    {
+      "deployment": "cps-admin",
+      "uid": "cea488be-b5c5-481f-b41d-169d22f56f33",
+      "image": "ghcr.io/mul-cps/e2x-course-hub@sha256:e26ecf6fe2bfec12b08c394cdb4a46c82a1a5b46c62fc18e548c3bcd23194b97",
+      "ready_replicas": 1,
+      "handler_sha256": "b53fb16146d978c38536dfc778fa94199118c7b159f7f45da4cac84d97f0dc0d",
+      "image_only_spec_change": true
+    },
+    {
+      "deployment": "cit-admin",
+      "uid": "54466777-ece9-4d63-bcd8-8156caba55af",
+      "image": "ghcr.io/mul-cps/e2x-course-hub@sha256:e26ecf6fe2bfec12b08c394cdb4a46c82a1a5b46c62fc18e548c3bcd23194b97",
+      "ready_replicas": 1,
+      "handler_sha256": "b53fb16146d978c38536dfc778fa94199118c7b159f7f45da4cac84d97f0dc0d",
+      "image_only_spec_change": true
+    }
+  ],
+  "container_http_tests": 9,
+  "pip_check": "passed",
+  "sqlite_backups_integrity": "ok",
+  "live_cps_conflict": {
+    "actual_http_status": 409,
+    "internal_url_hidden": true,
+    "membership_originals_restored": true,
+    "native_allocations_all_released": true,
+    "no_hub_server_or_pod": true,
+    "reservation_binding_rows": 0,
+    "reservation_rows": 0,
+    "source_workspace_stopped": true
+  },
+  "fixture_grants_restored": true,
+  "test_token_revoked": true,
+  "concurrent_reschedule": {
+    "gateway_and_both_hubs_replaced": true,
+    "personal_notebook_pods_unchanged": true,
+    "named_get_roles_updated": 5,
+    "four_component_consumer": "ready"
+  },
+  "transport_followup_source": "4d51f4e2420d9c90508cfdc19e641f73df72a706",
+  "transport_followup_deployed": false,
+  "production_ready": false
+}

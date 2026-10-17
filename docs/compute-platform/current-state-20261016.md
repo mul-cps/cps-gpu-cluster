@@ -93,7 +93,12 @@ storage path is exposed by parent NFS mounts in `jupyter-bjoern` and
 mapping bug exposed 500 instead. The error-handling fix is published as admin source
 `81b936adc75d2a992eaceecddab883fdccf1c97d`: 328 tests and 458 subtests pass,
 including an actual HTTP regression and installed-wheel checks. It preserves
-upstream 4xx codes with a safe error message and is **not deployed**. No
+upstream 4xx codes with a safe error message. It is now deployed to both consoles
+as image `sha256:e26ecf6fe2bfec12b08c394cdb4a46c82a1a5b46c62fc18e548c3bcd23194b97`.
+A fresh authenticated CPS Start returned the expected safe storage 409, with no
+Pod/server and all temporary fixture changes restored. The
+[adoption receipt](../../platform-staging/jupyter-extensions-20261013/admin-storage-conflict-adoption-20261017.json)
+records image-only changes, installed-image checks and backups. No
 storage guard, identity, policy or approval binding was bypassed. The two personal
 notebook servers remain running; permission to interrupt their kernels is pending.
 
@@ -894,3 +899,16 @@ and VMM import gates. The restoration reader fix changes only file-size handling
 not semantic authorization. The retained terminal archive now has82 records.
 The production qualification flag remains false; ordinary broad GPU rollout is
 not implied by operator-only qualification.
+
+## Concurrent process recovery and transport follow-up
+
+During console validation, a concurrent worker reschedule replaced the Gateway
+and both Hubs. All four personal notebook Pods retained their original identities.
+Five exact named-GET Role updates bound the replacement processes; the installed
+Gateway consumer again verifies all four acknowledgments. No workload restart or
+readiness bypass was used for recovery. A Start during the service interruption
+failed with ConnectionRefusedError before storage. The additional admin fix
+`4d51f4e2420d9c90508cfdc19e641f73df72a706` returns safe 503 for explicit transport
+failures: 331 tests and 458 subtests pass, with independent review. This transport
+follow-up is published as source but not deployed. All fixture originals have
+been restored and the temporary validation token revoked.
