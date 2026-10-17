@@ -1,8 +1,14 @@
 {
   "branch": "fix/custody-snapshot-consistency-20261017",
+  "ci": {
+    "conclusion": "success",
+    "head_sha": "67c61386595006f2f58aefdc7388e9add8ba462b",
+    "url": "https://github.com/mul-cps/cps-compute/actions/runs/38992086339"
+  },
   "deployed": false,
   "fix": "Bracket immutable enrollment LIST with fresh allocation ledger GETs; at most three attempts; reject ledger UID replacement and genuine missing enrollments",
   "image_verification": {
+    "both_wheel_provenance_labels_match": true,
     "default_inert_verified": true,
     "pip_check": true,
     "registry_digest_verified": true,
@@ -11,7 +17,7 @@
     "unchanged_dependency_versions": 30
   },
   "production_qualified": false,
-  "published_node_image": "ghcr.io/mul-cps/cps-native-node@sha256:78a8462d19c96942a503810b847ecd7395945d2e8ed94308c254872800b9adbf",
+  "published_node_image": "ghcr.io/mul-cps/cps-native-node@sha256:47d8e532409337c864d02fc608600b4aecea650075573690b4f17dcb7a670c7f",
   "regressions": [
     "registration between list and ledger read retries with actual new enrollment",
     "stable missing enrollment rejected",
@@ -20,6 +26,8 @@
   ],
   "remaining": "Protected Node image adoption and live concurrent-start qualification",
   "source_commit": "67c61386595006f2f58aefdc7388e9add8ba462b",
+  "superseded_node_image": "ghcr.io/mul-cps/cps-native-node@sha256:78a8462d19c96942a503810b847ecd7395945d2e8ed94308c254872800b9adbf",
+  "superseded_reason": "Inherited legacy wheel-hash label disagreed with actual wheel; corrected in published replacement before deployment",
   "verification": {
     "full_application_and_hub": {
       "passed": 2922,
