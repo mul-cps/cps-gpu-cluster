@@ -13,7 +13,7 @@ The actual installed Node image passed six CPU-only functional cases; all 72 SDK
 modules matched the qualified wheel. These are not GPU hardware tests.
 
 The four image receipts record published registry manifests and config digests,
-independently read back from GHCR. **These successor images are not yet deployed.**
+independently read back from GHCR. These receipts describe publication time. The subsequent [live adoption](live-adoption-result.json) now verifies all four component consumers and the observer on those successor images.
 
 The actual staging receipt proves five immutable objects and a held bootstrap
 were created and bound using actual Kubernetes identities. Five immutable
@@ -28,3 +28,5 @@ migration; continuous delivery and no-MIG GPU lifecycle qualification. The Job
 renderer and dynamic delivery renderer passed 74 source checks together. Runtime
 migration, production admission, wider GPU caps/routes/MPS, cross-Hub bursts,
 recovery and full production release remain open.
+
+The coordinated v3-compatible rollout completed at 2026-10-17T09:30:17.418103+00:00. Both public installed Gateway readiness calls verified all four actual fresh ACKs. All seven observer permission bindings verified before Node release. Three pre-upgrade database backup Jobs succeeded. Four personal Pods and all 117 released claims were preserved, with empty SQL reservation/binding tables. The old delivery writer remains paused for the explicit v4 migration; no dynamic-head or new GPU hardware qualification follows from this rollout.

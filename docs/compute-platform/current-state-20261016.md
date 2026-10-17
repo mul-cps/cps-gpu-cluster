@@ -16,15 +16,18 @@ executed. All four exact-source compatibility CI jobs succeeded.
 Gateway, Hub, Node and observer successor images have been built and their
 published registry manifests independently verified. The actual installed Node
 image passed six CPU functional cases, with all 72 SDK modules byte-verified.
-Five immutable configuration objects and an actual-identity-bound held bootstrap
-are now staged. No process changed and no GPU was activated by staging.
+The successor Gateway, both Hubs, Node and observer are now deployed. All four
+installed consumer acknowledgements verified at 2026-10-17T09:30:17.418103+00:00.
+All seven observer permission bindings passed before Node release. Three fresh
+database backup Jobs succeeded; four personal Pods and 117 released claims
+were preserved. The old delivery writer is paused for explicit v4 migration.
 [Image references, staging receipt and exact scope](../../qualification-artifacts/native-head-delivery-release-20261017/README.md).
 
 The pure one-time bootstrap and explicit adoption Job remain distinct from
 routine head advances. Routine updates preserve unchanged sealed workloads,
 pregrant only authenticated named ConfigMap reads and require genuine component
-ACKs. The old delivery seed/journal must not be reset. Coordinated live image
-adoption, v4 migration, continuous delivery and GPU qualification remain open.
+ACKs. The old delivery seed/journal must not be reset. The coordinated v3-compatible image rollout is complete. V4 migration,
+continuous delivery and further GPU hardware qualification remain open.
 
 The sections below retain dated checkpoints; image references in those sections
 describe those checkpoints rather than the published successor cohort above.

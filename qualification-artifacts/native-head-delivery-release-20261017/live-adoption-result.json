@@ -1,0 +1,45 @@
+{
+  "checked_at": "2026-10-17T09:30:42.608161+00:00",
+  "components": {
+    "gateway": {
+      "image": "ghcr.io/mul-cps/cps-compute@sha256:d27458efd36427d61eaed111d7e59e84dc9008b1c30e2d76c79e66096f9d2a0f",
+      "uid_preserved": true,
+      "ready_replicas": 1
+    },
+    "hub:cit": {
+      "image": "ghcr.io/mul-cps/cps-compute@sha256:06a79e3e5f4a1bbcb618b74c4f417a022ace64943076f5794e64cb708dedaba6",
+      "uid_preserved": true,
+      "ready_replicas": 1
+    },
+    "hub:cps": {
+      "image": "ghcr.io/mul-cps/cps-compute@sha256:06a79e3e5f4a1bbcb618b74c4f417a022ace64943076f5794e64cb708dedaba6",
+      "uid_preserved": true,
+      "ready_replicas": 1
+    },
+    "node": {
+      "image": "ghcr.io/mul-cps/cps-native-node@sha256:7e319bfcb546efa9ae2fea975dcf082460802578da0c804f60eb0c8f64c08bb0",
+      "uid_preserved": true,
+      "ready_replicas": 1
+    }
+  },
+  "sql": {
+    "reservation": 0,
+    "reservation_binding": 0
+  },
+  "released_claims": 117,
+  "ledger_data_preserved": true,
+  "protected_personal_pods_preserved": true,
+  "gpu2_cordoned": true,
+  "gpu_hardware_run": false,
+  "dynamic_head_migration_complete": false,
+  "source_revision": "551379c6902791d0dd192596046669f1fe274562",
+  "four_component_readiness_verified": true,
+  "readiness_observed_at": "2026-10-17T09:30:17.418103+00:00",
+  "observer_ready": true,
+  "observer_image": "ghcr.io/mul-cps/cps-native-observer@sha256:c05f8ba81aec59d3b21fb5d3b045787b1320b416eab2d3ff27c36b8c9e7280f0",
+  "seven_role_bindings_verified": true,
+  "database_backup_jobs_succeeded": 3,
+  "old_delivery_writer_paused": true,
+  "v3_compatibility_cohort_deployed": true,
+  "production_qualified": false
+}
