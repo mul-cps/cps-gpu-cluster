@@ -129,3 +129,27 @@ def test_full_cli_renders_only_after_reviewed_hash_and_explicit_flag(tmp_path):
 @pytest.mark.parametrize('raw',['{"version":1,"version":1}','{"version":NaN}'])
 def test_duplicate_or_nonfinite_release_cannot_be_read(raw):
     with pytest.raises(ValueError):module().document(raw)
+
+
+def test_operator_preserves_only_validated_node_image_pull_references():
+    f=fixture();node_ns=f['release']['node_configuration']['namespace']
+    node=next(d for d in f['capture']['deployments'] if d['metadata']['namespace']==node_ns)
+    refs=[{'name':'cps-native-image-pull'}]
+    node['spec']['template']['spec']['imagePullSecrets']=refs
+    objects=render(f)
+    pod_spec=objects[-1]['spec']['template']['spec']
+    assert pod_spec['imagePullSecrets']==refs
+    refs[0]['name']='caller-mutated'
+    assert pod_spec['imagePullSecrets']==[{'name':'cps-native-image-pull'}]
+    for role in [x for x in objects if x['kind']=='Role']:
+        assert all('secrets' not in rule['resources'] for rule in role['rules'])
+
+
+@pytest.mark.parametrize('references',[None,{},[{'name':'secret','namespace':'other'}],
+    [{'name':'secret','token':'polluted'}],[{'name':'../secret'}],[{'name':'UPPER'}],
+    [{'name':'a..b'}],[{'name':'-edge'}],[{'name':'secret'}]*2,[{'name':'a'}]*9,[]])
+def test_malformed_or_polluted_image_pull_references_are_refused(references):
+    f=fixture();node_ns=f['release']['node_configuration']['namespace']
+    node=next(d for d in f['capture']['deployments'] if d['metadata']['namespace']==node_ns)
+    node['spec']['template']['spec']['imagePullSecrets']=references
+    with pytest.raises(ValueError):render(f)
