@@ -292,3 +292,61 @@ def test_new_custody_and_writer_lock_use_owned_private_pvc_child(request,monkeyp
     shutil.rmtree(private/'config');state.rmdir();state.symlink_to(seed,target_is_directory=True)
     refused=subprocess.run([sys.executable,'-I','-c',code],capture_output=True,text=True)
     assert refused.returncode!=0
+
+
+def _existing_private_state_init(request,monkeypatch,tmp_path):
+    c,*_=harness(request,monkeypatch,tmp_path)
+    result=endpoint.render(c.group_context,**inputs(c))
+    seed=tmp_path/'seed';seed.mkdir()
+    for name,raw in result['seed']['data'].items():(seed/name).write_text(raw)
+    private=tmp_path/'private';private.mkdir(mode=0o700)
+    state=tmp_path/'state';state.mkdir(mode=0o700)
+    code=result['gateway']['initContainer']['command'][2].replace('/kai-private/config',str(private/'config')).replace('/kai-seed',str(seed)).replace('/data/native-kai-private',str(state))
+    return state,code
+
+
+def test_existing_fsgroup_widened_private_state_is_repaired_without_replacing_inodes(request,monkeypatch,tmp_path):
+    import stat,subprocess,sys
+    state,code=_existing_private_state_init(request,monkeypatch,tmp_path)
+    names=('writer.lock','custody.sqlite','custody.sqlite-journal','custody.sqlite-wal','custody.sqlite-shm')
+    before={}
+    for name in names:
+        path=state/name;path.write_bytes(('unchanged '+name).encode());path.chmod(0o660)
+        before[name]=(path.stat().st_dev,path.stat().st_ino,path.read_bytes())
+    unrelated=state/'not-coordinator-owned';unrelated.write_bytes(b'unchanged');unrelated.chmod(0o660)
+    for _ in range(2):
+        subprocess.run([sys.executable,'-I','-B','-c',code],check=True)
+        for name in names:
+            path=state/name
+            assert stat.S_IMODE(path.stat().st_mode)==0o600
+            assert before[name]==(path.stat().st_dev,path.stat().st_ino,path.read_bytes())
+    assert stat.S_IMODE(unrelated.stat().st_mode)==0o660
+    assert unrelated.read_bytes()==b'unchanged'
+
+
+@pytest.mark.parametrize('fault',['symlink','hardlink','foreign-owner','locked','missing-lock'])
+def test_private_state_repair_refuses_unsafe_existing_inodes(request,monkeypatch,tmp_path,fault):
+    import os,fcntl,subprocess,sys,stat
+    state,code=_existing_private_state_init(request,monkeypatch,tmp_path)
+    lock=state/'writer.lock';lock.write_bytes(b'lock contents');lock.chmod(0o660)
+    db=state/'custody.sqlite';db.write_bytes(b'custody contents');db.chmod(0o660)
+    descriptor=None
+    if fault=='symlink':
+        db.unlink();db.symlink_to(lock)
+    elif fault=='hardlink':
+        os.link(db,state/'extra-link')
+    elif fault=='foreign-owner':
+        # Tests run without chown privilege. Change only fstat's reported owner
+        # for this real open inode; all opens/modes/link checks remain real.
+        code="import os; original_fstat=os.fstat\n"+"def foreign_stat(fd):\n s=original_fstat(fd)\n if os.readlink('/proc/self/fd/'+str(fd)).endswith('/custody.sqlite'):\n  v=list(s);v[4]=os.geteuid()+1;return os.stat_result(v)\n return s\nos.fstat=foreign_stat\n"+code
+    elif fault=='locked':
+        descriptor=os.open(lock,os.O_RDONLY);fcntl.flock(descriptor,fcntl.LOCK_EX|fcntl.LOCK_NB)
+    elif fault=='missing-lock':
+        lock.unlink()
+    try:
+        result=subprocess.run([sys.executable,'-I','-B','-c',code],capture_output=True,text=True)
+        assert result.returncode!=0
+        assert db.read_bytes() in (b'custody contents',b'lock contents')
+        assert stat.S_IMODE(db.stat().st_mode)==0o660
+    finally:
+        if descriptor is not None:os.close(descriptor)
