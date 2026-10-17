@@ -1,0 +1,14 @@
+{
+  "concrete_defects_found": 0,
+  "cpu_tests_passed": 13,
+  "external_calls_during_review": false,
+  "hardware_qualified": false,
+  "production_qualified": false,
+  "reviewed_sources_sha256": {
+    "current_preflight.py": "44dfad5ff67aa07acd6eea393dc577a84019aaa3acf92e74234504699edaf287",
+    "peer_probe.py": "b915e0b76003676eb612816af369dbd77b2155f52320d8cf392eab12989faffd",
+    "run_peer_oom.py": "5ac177b54e3596935f738734658817800b5a36010d6782fb0e19e5d64116658c"
+  },
+  "schema_version": 1,
+  "scope": "Independent offline review of unequal harness only"
+}

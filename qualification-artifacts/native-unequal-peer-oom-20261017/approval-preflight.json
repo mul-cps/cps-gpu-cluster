@@ -1,0 +1,49 @@
+{
+  "approval_revision": "sha256:1e2b09e4f7a30389a78ac82eb9243ba8466a0e5e396dc312b7d76672501d88a1",
+  "cit_checks": {
+    "api_http_status": 403,
+    "current_ingress_host": "jhub.dshl.unileoben.ac.at",
+    "fresh_interactive_login_required": true,
+    "hub_log_oidc_token_expiry": "2026-10-15T06:40:55Z",
+    "status": "blocked-by-expired-upstream-authentication",
+    "username": "akadmin"
+  },
+  "cps_check_at": "2026-10-17T05:44:00.486040+00:00",
+  "cps_checks": {
+    "active_members_exact": true,
+    "approved_profile": "interactive-shared-5",
+    "hub_server_absent": true,
+    "member_grants_current": [
+      true,
+      true,
+      true
+    ],
+    "readiness": true,
+    "stored_profile": "interactive-shared-5",
+    "stored_profile_matches": true,
+    "workspace_stopped": true
+  },
+  "credential_cleanup": {
+    "all_local_plaintext_removed": true,
+    "cit_a470_confirmed_absent": true,
+    "cit_a471_confirmed_absent": true,
+    "cps_a855_confirmed_absent": true,
+    "loopback_port_forwards_stopped": true
+  },
+  "evidence_sha256": {
+    "approval-inventory.private.json": "d106cdf0d675bd9be03705c35b0d2d5c0fcef910fc0a56b060707ca6007a1be5",
+    "cit-current-host-01/confirmed-token-row-absent.private.json": "e66b96d1e25de65a4c0d9c179fb6cfbfa998a625b2df508054fa9d15436456d8",
+    "cit-mint-target-revocation.private.json": "d07741ffe3e03b3abba68e248e2ea2b7ed27670cf2757d5ed46adef019f30c67",
+    "confirmed-token-row-absent.private.json": "1d7850e2e2c13486bbf8b33ef16d6775956845697e40a7f847f238869a04ab21",
+    "cps-permission-details.private.json": "b049125933bd9e7f6017dd57f469650abe317dceed5a4ae3fe590f847411ca52"
+  },
+  "hardware_test_executed": false,
+  "new_approval_required": false,
+  "pair_cap_sum_mib": 15360,
+  "permission_mutations": false,
+  "pilot_budget_mib": 15360,
+  "production_qualified": false,
+  "schema_version": 1,
+  "scope": "Existing CPS 5 GiB and CIT 10 GiB approval pair",
+  "workloads_started": false
+}

@@ -36,6 +36,15 @@ continuity, not whole-fleet or production qualification. The cancellation fix
 has source and installed-image tests; deliberate live cancellation remains a
 separate qualification. The full project remains active and unfinished.
 
+The next unequal-cap gate has a separately pinned, independently reviewed
+[CPS5/CIT10 harness](../../qualification-artifacts/native-unequal-peer-oom-20261017/README.md).
+Its 13 CPU checks pass; the original 5/5 harness is unchanged. The existing
+CIT 10 GiB approval fits the unchanged 15 GiB pool with CPS5. CPS live grants,
+roster and stopped-state checks passed. CIT returns 403 because `akadmin`'s
+upstream Dex login expired; a fresh interactive login is required before that
+hardware run. No authentication check was disabled. Test credentials were
+removed and no workload or grant was changed during this preflight.
+
 ## Qualification history — earlier checkpoints, superseded by the current gate
 
 The following pending statements describe their dated checkpoint, not current
