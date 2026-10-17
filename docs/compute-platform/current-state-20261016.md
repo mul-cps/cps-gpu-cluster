@@ -34,6 +34,16 @@ continuation must be qualified live, followed by the remaining no-MIG GPU gates.
 Routine head advances must not rerun this maintenance or restart unchanged peers.
 The full production goal remains active and unfinished.
 
+Admission qualification now authenticates its temporary service account directly
+from the existing Gateway container: the Rancher proxy replaced impersonation
+headers with the operator identity. The actual cluster passed three enforcement
+barriers and all 37 request cases, including genuine replacement-UID checks,
+with zero test residue. Qualification still fails on a Kubernetes type-check
+warning: a frozen Role rule is compared with a map literal rather than typed
+fields. The warning is being corrected; production policies, journal adoption
+and the continuous writer remain inactive. The supporting CPU suite passes
+114 checks. [Partial admission evidence](../../qualification-artifacts/native-head-delivery-release-20261017/admission-partial-result.json).
+
 The sections below retain dated checkpoints; their image and protocol references
 describe those checkpoints rather than superseding the verified live state above.
 

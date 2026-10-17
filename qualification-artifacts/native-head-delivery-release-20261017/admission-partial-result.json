@@ -1,0 +1,30 @@
+{
+  "qualification_passed": false,
+  "observed_at": "2026-10-17T10:24:02.330037+00:00",
+  "source_commit": "ecaa024",
+  "identity_transport": "in-cluster-token",
+  "writer_identity_verified": true,
+  "enforced_barriers": 3,
+  "passing_request_cases": 37,
+  "replacement_uid_cases_passed": 2,
+  "residual_count": 0,
+  "type_warning": {
+    "fieldRef": "spec.validations[1].expression",
+    "cause": "Typed Kubernetes PolicyRule compared with map literal has no matching CEL equality overload",
+    "count": 1
+  },
+  "cpu_checks": {
+    "passed": 114,
+    "duration_seconds": 4.04
+  },
+  "production_admission_installed": false,
+  "migration_job_started": false,
+  "continuous_writer_active": false,
+  "supersedes_for_diagnostics": [
+    "qa01-proxy-impersonation",
+    "qa02-response-code-recognition",
+    "qa03-asynchronous-delete",
+    "qa04-foreground-finalizer",
+    "qa05-warning-text-missing"
+  ]
+}
