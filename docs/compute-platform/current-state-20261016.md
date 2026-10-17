@@ -170,6 +170,13 @@ The current five-scope configuration passes the source constructor/parser
 and delivery migration gates, then exercise the actual native KAI lifecycle.
 Stock KAI rejects cordoned GPU2; automatic placement remains unqualified and
 the cordon remains unchanged.
+Dynamic-head source integration now includes versioned observer rendering. CPU
+integration checks passed115tests/25subtests; independent renderer checks passed
+35new-SDK and29legacy-SDK cases. Fixed seven-Role baselines and exact named
+head/history reads are preserved; the producer's prepromotion named-read grant
+phase remains required and unqualified. This is not live adoption.
+[Observer rendering evidence](../../qualification-artifacts/native-observer-head-renderer-20261017/README.md).
+
 Dynamic no-MIG sharing remains the primary acceptance goal; wider memory caps,
 all-eight-GPU coverage, scheduling/scale and recovery/release gates remain open.
 

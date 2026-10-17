@@ -1,0 +1,34 @@
+{
+  "version": 1,
+  "scope": "Synthetic CPU-only deployment renderer qualification",
+  "sdkRequires": "ObserverRelease v2 and observe_head_permissions",
+  "clusterIntegration": {
+    "passed": 115,
+    "subtestsPassed": 25,
+    "dependencyWarnings": 2
+  },
+  "independentRendererChecks": {
+    "dynamicSDKPassed": 35,
+    "legacy7f3SDKPassed": 29
+  },
+  "redRegressionsReproduced": [
+    "missing head read permissions",
+    "reconciled current/history names rejected",
+    "mixed current heads accepted",
+    "valid 38-ConfigMap capture rejected"
+  ],
+  "v1ConfigMapCaptureLimit": 32,
+  "v2ConfigMapCaptureLimit": 544,
+  "otherCaptureLimitsChanged": false,
+  "exactRoleUIDAndStaticBaselinePreserved": true,
+  "namedReadOnlyHeadDerivation": true,
+  "wildcardOrUnnamedConfigMapReads": false,
+  "producerPrepromotionNamedReadGrantRequired": true,
+  "deployed": false,
+  "automaticDeliveryQualified": false,
+  "productionQualified": false,
+  "sourceFiles": {
+    "platform-staging/native-observer-operator/render.py": "c2641066bc551122259852958532a2d92cebcc2d5f608304fc7885341d6ec706",
+    "platform-staging/native-observer-operator/test_head_render.py": "c6129f0bc4aaf3f1667be9f13c3cf3bb510ba18ddc27cfcd365fd50bc88b9dd5"
+  }
+}

@@ -37,8 +37,8 @@ def document(raw):
         parse_constant=lambda _:require(False,'Nonfinite input JSON'))
 
 
-def _inventory(values,kind,version):
-    require(isinstance(values,list) and 1<=len(values)<=32,'Bounded explicit '+kind+' inventory required')
+def _inventory(values,kind,version,*,limit=32):
+    require(isinstance(values,list) and 1<=len(values)<=limit,'Bounded explicit '+kind+' inventory required')
     result={}
     for value in values:
         require(isinstance(value,dict) and value.get('kind')==kind and value.get('apiVersion')==version,
@@ -51,19 +51,21 @@ def _inventory(values,kind,version):
 
 
 def render(release,reviewed_sha256,catalog,capture,image,*,activate=False):
-    from cps_compute.native_observer_permissions import ObserverRelease,mutable_rows,role_targets
+    from cps_compute.native_observer_permissions import ObserverRelease,mutable_rows,role_targets,names
     from cps_compute.native_node.config import NodeConfiguration,ImmutableConfigMapRef
     from cps_compute.native_group_process import _object,_template
     from cps_compute.policy import Policy
     require(isinstance(reviewed_sha256,str) and reviewed_sha256==digest(release),
             'Reviewed independent baseline hash mismatch')
-    trusted=ObserverRelease.from_dict(release).document
+    validated_release=ObserverRelease.from_dict(release)
+    trusted=validated_release.document
     require(isinstance(image,str) and re.fullmatch(r'[^\s@]+@sha256:[a-f0-9]{64}',image)
             and not image.endswith('0'*64),'Exact published immutable operator image required')
     require(type(activate) is bool,'Explicit activation boolean required')
     require(isinstance(capture,dict) and set(capture)=={'version','configmaps','deployments','roles'}
             and type(capture['version']) is int and capture['version']==1,'Closed version1 capture required')
-    maps=_inventory(capture['configmaps'],'ConfigMap','v1')
+    # Four bounded 128-name head read sets plus the original static inventory.
+    maps=_inventory(capture['configmaps'],'ConfigMap','v1',limit=4*128+32 if trusted['version']==2 else 32)
     deployments=_inventory(capture['deployments'],'Deployment','apps/v1')
     roles=_inventory(capture['roles'],'Role','rbac.authorization.k8s.io/v1')
     reads=set()
@@ -80,6 +82,11 @@ def render(release,reviewed_sha256,catalog,capture,image,*,activate=False):
     require(set(baseline)==targets and set(roles)==targets,'Exact seven baseline and actual target Roles required')
     require(set(deployments)=={(d['namespace'],d['name']) for d in declarations.values()},
             'Exact four declared controller captures required')
+    head_rows,head_names={},{}
+    if trusted['version']==2:
+        from cps_compute.native_observer_permissions import observe_head_permissions
+        _,head_names=observe_head_permissions(CapturedCore(),validated_release,configuration,policy)
+        head_rows={(r['namespace'],r['name']):r['index'] for r in trusted['head_get_rows']}
     for key,pinned in baseline.items():
         actual=roles[key];meta=actual['metadata']
         require(meta.get('uid')==pinned['uid'] and isinstance(meta.get('resourceVersion'),str)
@@ -87,6 +94,14 @@ def render(release,reviewed_sha256,catalog,capture,image,*,activate=False):
         indexes=mutable_rows(pinned['rules']);require(mutable_rows(actual.get('rules'))==indexes,'Role schema differs from baseline')
         comparison=copy.deepcopy(actual['rules'])
         for index in indexes.values():comparison[index]['resourceNames']=pinned['rules'][index]['resourceNames']
+        if key in head_rows:
+            index=head_rows[key]
+            required=set(pinned['rules'][index]['resourceNames'])
+            allowed=required|set(head_names[key[0]])
+            names(sorted(allowed))
+            require(required<=set(actual['rules'][index]['resourceNames'])<=allowed,
+                    'Actual ConfigMap GET names escaped authenticated head evidence')
+            comparison[index]['resourceNames']=pinned['rules'][index]['resourceNames']
         require(comparison==pinned['rules'],'Actual nonmutable rules differ from independently reviewed baseline')
         component=next(c for c,d in declarations.items() if d['namespace']==key[0])
         for row in pinned['rules']:

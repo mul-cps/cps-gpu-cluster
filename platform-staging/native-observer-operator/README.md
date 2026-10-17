@@ -20,7 +20,7 @@ and live rescheduling qualification.
 Use a Python environment containing the reviewed SDK and its node dependencies.
 Supply three explicit JSON documents; keep actual release data out of Git:
 
-* `release.reviewed.json`: closed application `ObserverRelease` version 1.
+* `release.reviewed.json`: closed application `ObserverRelease` version 1 or explicitly selected version 2.
   It pins the exact immutable six-key NodeConfiguration reference and all seven
   target Role UIDs and **full independently reviewed baseline rules**. Supply
   its separately reviewed canonical SHA256 as an argument. The renderer never
@@ -39,6 +39,27 @@ and ReplicaSets GET `resourceNames` surfaces may differ; their current contents
 are not copied into the trusted input. At runtime those names become baseline
 names plus freshly verified current chains. Release upgrades must update the
 protected input coherently; old arbitrary API additions are not history.
+
+Version 2 additionally pins four namespace-local immutable head-anchor bindings
+and exactly one eligible ConfigMap GET row in each of the seven Role baselines.
+The renderer invokes the SDK `observe_head_permissions` helper against actual
+captured objects, requires matching current registries, authenticates retained
+immutable history, and admits only baseline names plus those derived names.
+Other ConfigMap rows, ACK PATCH privileges, UIDs and nonmutable rules stay fixed.
+The operator's rendered read Roles include the exact resolved anchor, pointer,
+current and history names. No unnamed ConfigMap GET, ConfigMap LIST or wildcard
+is introduced. Before each future head promotion, the trusted producer must
+explicitly pregrant the operator's own named reads for the newly created immutable
+objects; missing reads fail closed. That producer phase remains a separate
+integration requirement, not an implicit privilege of this renderer.
+
+The v1 capture limit stays32 ConfigMaps. V2 permits at most544: four bounded
+128-name head read sets plus the original32 static authorities. Deployment and
+Role inventory limits remain32, with exact4/7 identity sets still required.
+This permits retained history without dropping the bounded capture contract.
+The v2 helper is imported only for v2 releases, preserving v1 operation with the
+older SDK. CPU fixtures here are synthetic and do not prove live adoption.
+
 
 `held_node_template_sha256` is null by default: held Node binding is prohibited.
 An explicit nonzero canonical full Node Deployment template hash permits only
@@ -88,7 +109,8 @@ namespace-local Roles/Bindings grant only:
   `update`, RoleBinding write, ClusterRole write or wildcard is granted.
 * GET of each fixed Deployment and ServiceAccount name.
 * GET of the exact immutable authority ConfigMaps actually resolved offline,
-  plus the Node's exact **mutable bootstrap release-gate ConfigMap**.
+  plus the Node's exact **mutable bootstrap release-gate ConfigMap** and, for v2,
+  the exact validated namespace-local head pointer/anchor/history objects.
 * Pods GET/LIST and ReplicaSets GET in only the four controller namespaces.
   Dynamic Pod/RS names preclude `resourceNames` restrictions here. The
   application LISTs only the fixed Deployment's exact label selector; Kubernetes
