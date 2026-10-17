@@ -25,9 +25,7 @@ transport/watchdog checks remain. `a-to-b` pressures CIT10 with CPS5 as peer;
 ## Execution prerequisites
 
 [Read-only preflight](approval-preflight.json) verified CPS membership/grants,
-stopped state and absence of its Hub server. CIT API authorization currently
-fails because `akadmin`'s upstream Dex authentication expired. Sign in at
-<https://jhub.dshl.unileoben.ac.at>, then repeat current permission checks.
+stopped state and absence of its Hub server. The historical CIT attempt failed because `akadmin`'s upstream Dex authentication had expired. That receipt does not establish current authentication state; repeat current permission checks through the configured CIT Hub before execution.
 All temporary test token rows are confirmed absent, local plaintext removed,
 and loopback port-forwards stopped. No workload was started or grant changed.
 
@@ -60,3 +58,5 @@ revocation, personal Pod preservation and fresh readiness. No automatic replay.
 
 MPS, 20 GiB, concurrent starts, whole-fleet isolation and production readiness
 remain separate gates. The original 5/5 GiB source pins and results are unchanged.
+
+The current adapter requires deployed Node image `7e319bf…08bb0` and rejects the superseded `47d8e532` process before any cap query. This source refresh uses the current installed typed configuration/epoch evidence recorded by the [paired-test preflight](../native-peer-oom-20261017/current-activation-preflight.json); it adds no hardware qualification. GPU2 uncordoning and KAI bridge activation remain held pending the existing decision.
