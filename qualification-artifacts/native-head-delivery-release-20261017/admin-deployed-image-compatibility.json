@@ -1,0 +1,31 @@
+{
+  "conclusion": "The historical Course.workspace_bindings compatibility failure is not reproducible on the exact currently deployed revision and runtime. No application fix was necessary.",
+  "deployed_both_consoles_image": "ghcr.io/mul-cps/e2x-course-hub@sha256:1130748e6805f3f93decfe406c69eb4594d54d3588296ce46c8ecc614d6001bb",
+  "exact_image_config_id": "sha256:8164b8c5f4833b357a272246a52c25be7035116f92b6cf931141ae972ef7c813",
+  "exact_image_test": {
+    "offline": true,
+    "pydantic": "2.14.0",
+    "pydantic_core": "2.50.0",
+    "python": "3.12.15",
+    "raw_log_sha256": "ce5fb777346e7d6bbebe1c889b347df9367168f967b41e76939a0acfbb9423c8",
+    "read_only_source_and_image": true,
+    "seconds": 20.516,
+    "temporary_writable_home": true,
+    "tests_passed": 331
+  },
+  "full_production_qualified": false,
+  "harness_note": "Initial exact-image attempt had 20 recovery-fixture directory errors because HOME was a read-only bind mount. Corrected only the offline harness HOME to tmpfs; final unchanged-source suite passed. Initial raw failed log was overwritten; its terminal summary was retained in the execution transcript.",
+  "kind": "deployed-admin-workspace-bindings-compatibility",
+  "live_application_mutations": false,
+  "observed_at": "2026-10-17T12:49:07.758677+00:00",
+  "source_commit": "4d51f4e2420d9c90508cfdc19e641f73df72a706",
+  "source_test": {
+    "pydantic": "2.13.5",
+    "python": "3.13.12",
+    "raw_log_sha256": "defb3bc96ee4b1e3572f81aba835ae46b23ed5d40ecec5eccb2915550e6710e7",
+    "seconds": 16.14,
+    "subtests_passed": 458,
+    "tests_passed": 331
+  },
+  "version": 1
+}
