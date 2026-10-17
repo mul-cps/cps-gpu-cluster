@@ -1,0 +1,37 @@
+{
+  "all_four_live_acknowledgments": true,
+  "approval_generation": 7,
+  "approval_revision": "sha256:0e07a19d870394cc4798a1ccca2581b84db8202fc9b60c548f8cb8558f18eb31",
+  "kind": "current-generation-normal-workspace-preflight",
+  "normal_authenticated_api_check": {
+    "blocking_check": "Exact active approved canonical roster required",
+    "expected_members": 2,
+    "matching_membership_records": 2,
+    "membership_expiry_utc": [
+      "2026-10-17T02:53:01.593824+00:00"
+    ],
+    "passed": false,
+    "records_match_expected_people": true
+  },
+  "observed_at": "2026-10-17T12:42:36.457668+00:00",
+  "production_qualified": false,
+  "remaining": [
+    "Renew only the dedicated qualification memberships and grants immediately before the bounded test through normal audited APIs.",
+    "Resolve hardware evidence provenance for the deployed workload and policy compatibility chain.",
+    "Obtain authorization to temporarily lift the existing cordon restriction and prepare scoped placement controls.",
+    "Qualify ordinary Start, KAI placement, native seal, Ready/CUDA, normal Stop and complete reservation release."
+  ],
+  "safety": {
+    "gpu_allocation_created": false,
+    "node_mutated": false,
+    "personal_notebooks_mutated": false,
+    "temporary_api_tokens_revoked": true,
+    "workspace_start_attempted": false
+  },
+  "scheduler_observation": {
+    "binder_pending_coordinator_enabled": false,
+    "gpu2_cordoned": true,
+    "pending_pods_cluster_wide": 0
+  },
+  "version": 1
+}
