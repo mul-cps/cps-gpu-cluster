@@ -1,0 +1,16 @@
+{
+  "version": 1,
+  "observer_actual_and_prospective_render": "passed",
+  "observer_release_or_rbac_changes_required": false,
+  "gateway_coordinator_activation": "failed at runtime configuration validation",
+  "failure": "Dynamic coordinator head has five PVC claims; legacy Gateway authority has four; one authenticated current-head claim rejected against static baseline.",
+  "gateway_previous_spec_exactly_restored": true,
+  "gateway_ready_replicas": 1,
+  "post_rollback_four_component_readiness": "passed",
+  "hub_rollouts_applied": false,
+  "binder_bridge_enabled": false,
+  "protected_personal_pods_running_with_original_uids": 4,
+  "gpu2_cordoned": true,
+  "new_gpu_qualification": false,
+  "next_gate": "Test and correct authenticated dynamic-head claim validation; retain legacy behavior and per-request restrictions."
+}

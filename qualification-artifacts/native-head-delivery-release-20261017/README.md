@@ -6,6 +6,15 @@ acknowledged the new revision without restarting during the update; the continuo
 writer recovered after the expected fail-closed propagation interval. This is
 not a GPU workload start or sealed-peer continuation/revocation test.
 
+A subsequent [live coordinator activation](coordinator-activation-attempt-result.json)
+passed fresh actual/prospective observer rendering but failed startup validation:
+the authenticated current head contains five PVC claims, while the Gateway's
+older static authority contains four. The previous Gateway spec was restored
+exactly and is Ready; all four component acknowledgements verify. Both Hub
+rollouts remain unapplied and the binder bridge remains disabled. Dynamic-head
+claim validation is the next required fix; shrinking the authorized head is not
+a solution.
+
 The [coordinator staging checkpoint](coordinator-staging-result.json) verifies 17
 created configuration/RBAC objects and two immutable Hub settings objects. The
 Gateway and both Hub Secret/Deployment patches passed server dry-run. Independent
