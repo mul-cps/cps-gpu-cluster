@@ -1,0 +1,34 @@
+{
+  "source_repository": "mul-cps/cps-compute",
+  "source_commit": "7b291d17ab5ced84525056a0b7a6809f26c8d54d",
+  "source_module": "packages/hub/src/cps_compute_hub/native_hub_config.py",
+  "source_module_sha256": "a0243302b75c5c7b6ba907ad776eda7c6b758b60bae9c556fb765fc5c0caca8c",
+  "diagnosis": {
+    "observed_event_loop_stall_seconds": 5.02,
+    "cause": "Managed neutral pre-spawn unnecessarily awaited a legacy hook containing synchronous LDAP I/O, before applying the fixed neutral template."
+  },
+  "fix": "Exact registered managed owners use their fixed template without invoking discarded legacy setup. Other owners retain the previous hook. No prefix matching.",
+  "tests": {
+    "full_source_passed": 3331,
+    "full_source_skipped": 3,
+    "full_source_subtests_passed": 49,
+    "full_source_seconds": 94.37,
+    "full_source_log_sha256": "9786011291c4e1f650e5b958912fdc5051e723cd2a5d26328e5e59182569c040",
+    "new_installed_hook_cases_passed": 4,
+    "focused_native_configuration_cases_passed": 47,
+    "additional_dynamic_head_cases_passed": 8
+  },
+  "boundaries": {
+    "source_pushed_remote_verified": true,
+    "root_reviewed_source": true,
+    "image_built": false,
+    "deployed": false,
+    "live_timing_retested": false,
+    "hardware_qualified": false
+  },
+  "remaining": [
+    "Combine compatible source successors and qualify the changed Hub component through the native trust/cohort transition before deployment.",
+    "Verify actual managed-start latency after adoption. Other event-loop stalls are not claimed fixed.",
+    "Current ordinary GPU placement/CUDA/Stop qualification remains open; GPU2 stays cordoned."
+  ]
+}
