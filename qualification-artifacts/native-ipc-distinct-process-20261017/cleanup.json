@@ -1,0 +1,14 @@
+{
+  "normal_start_http": 200,
+  "normal_stop_http": 200,
+  "workspace_state": "stopped",
+  "pod_absent": true,
+  "ledger_total": 100,
+  "ledger_all_released": true,
+  "sql_reservations": {
+    "reservation": 0,
+    "reservation_binding": 0
+  },
+  "temporary_token_revoked": true,
+  "temporary_token_file_removed": true
+}
