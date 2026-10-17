@@ -101,7 +101,7 @@ def exchange(socket, code, session, consume, *, timeout):
             continue
         kind = value.get('msg_type', value.get('header', {}).get('msg_type'))
         content = value.get('content', {})
-        if kind == 'stream':
+        if kind == 'stream' and value.get('channel') == 'iopub':
             if content.get('name', 'stdout') != 'stdout':
                 continue  # Never expose kernel stderr traceback.
             buffer += content.get('text', '')

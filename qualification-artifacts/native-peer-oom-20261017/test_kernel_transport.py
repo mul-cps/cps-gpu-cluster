@@ -1,4 +1,5 @@
-import hashlib, json, subprocess, sys, unittest, time
+import ast, contextlib, hashlib, io, json, subprocess, sys, unittest, time
+from pathlib import Path
 from unittest.mock import patch
 import kernel_transport as transport
 
@@ -31,6 +32,22 @@ class Tests(unittest.TestCase):
   wrong=message('execute_reply',status='ok');wrong['channel']='iopub'
   socket=Socket([wrong,message('status',execution_state='idle')])
   with self.assertRaises(TimeoutError):transport.exchange(socket,'code','s',lambda x:None,timeout=.01)
+ def test_stream_requires_iopub(self):
+  events=[]
+  for channel in ('shell',None):
+   wrong=message('stream',text='{"wrong":true}\n')
+   if channel is None:wrong.pop('channel')
+   else:wrong['channel']=channel
+   events.append(wrong)
+  events.extend([message('stream',text='{"right":true}\n'),message('execute_reply',status='ok'),message('status',execution_state='idle')])
+  seen=[];transport.exchange(Socket(events),'c','s',seen.append,timeout=1)
+  self.assertEqual(seen,[{'right':True}])
+ def test_cases_match_unchanged_probe(self):
+  tree=ast.parse(Path(__file__).with_name('peer_probe.py').read_text())
+  choices=next(ast.literal_eval(k.value) for n in ast.walk(tree) if isinstance(n,ast.Call) and isinstance(n.func,ast.Attribute) and n.func.attr=='add_argument' and n.args and isinstance(n.args[0],ast.Constant) and n.args[0].value=='--case' for k in n.keywords if k.arg=='choices')
+  for case in choices:
+   transport.probe_code('',hashlib.sha256(b'').hexdigest(),case,5)
+  self.assertEqual(choices,('peer','oom','aggregate-peer','aggregate-oom'))
  def test_runtime_hash_checked_before_child(self):
   code=self.code("print('SECRET')").replace("_source = ","_source = '#changed' + ",1)
   result=subprocess.run([sys.executable,'-I','-u','-c',code],capture_output=True,text=True,timeout=5)
@@ -61,11 +78,30 @@ class Tests(unittest.TestCase):
   finally:
    if child.poll() is None:child.kill();child.wait()
    child.stdout.close();child.stderr.close()
- def test_child_deadline(self):
-  started=time.monotonic()
-  result=subprocess.run([sys.executable,'-I','-u','-c',self.code('import time; time.sleep(60)')],capture_output=True,text=True,timeout=15)
-  self.assertNotEqual(result.returncode,0);self.assertLess(time.monotonic()-started,14)
-  self.assertIn('Bounded probe child timed out',result.stderr)
+ def test_failure_and_timeout_reap_only_child_kernel_stays_usable(self):
+  real_popen=subprocess.Popen
+  unrelated=real_popen([sys.executable,'-I','-c','import time; time.sleep(60)'])
+  try:
+   for source,error in [('import time; time.sleep(60)',TimeoutError),("import time; print('x'*65537,flush=True); time.sleep(60)",ValueError)]:
+    children=[];kills=[]
+    def launch(*args,**kwargs):
+     child=real_popen(*args,**kwargs);children.append(child)
+     original_kill=child.kill
+     def kill():kills.append(child.pid);return original_kill()
+     child.kill=kill
+     return child
+    namespace={}
+    with patch('subprocess.Popen',side_effect=launch),contextlib.redirect_stdout(io.StringIO()):
+     with self.assertRaises(error):exec(self.code(source),namespace)
+    exec('still_usable = 6 * 7',namespace)
+    self.assertEqual(namespace['still_usable'],42)
+    self.assertEqual(len(children),1);child=children[0]
+    self.assertEqual(kills,[child.pid]);self.assertIsNotNone(child.returncode)
+    with self.assertRaises(ChildProcessError):__import__('os').waitpid(child.pid,__import__('os').WNOHANG)
+    self.assertTrue(child.stdout.closed);self.assertTrue(child.stderr.closed)
+    self.assertIsNone(unrelated.poll())
+  finally:
+   unrelated.kill();unrelated.wait(timeout=5)
  def test_stderr_bound(self):
   result=subprocess.run([sys.executable,'-I','-u','-c',self.code("import sys; sys.stderr.write('SECRET'*12000)")],capture_output=True,text=True,timeout=10)
   self.assertNotEqual(result.returncode,0);self.assertNotIn('SECRET',result.stderr)
