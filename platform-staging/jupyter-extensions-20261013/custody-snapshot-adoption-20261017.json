@@ -1,0 +1,125 @@
+{
+  "actual_node_configuration": {
+    "data_sha256": "sha256:650c558f5b25bde8e0c1d66fdb7badc730b9a49a69d42a81354e670542d22b9b",
+    "key": "config.json",
+    "name": "cps-packaged-node-config-v3-650c558f5b25bde8",
+    "namespace": "cps-native-system",
+    "resourceVersion": "372492658",
+    "uid": "d94fdf9d-0f18-45d9-9fb2-067e8df236bd"
+  },
+  "all_four_ready": true,
+  "approval_revision": "sha256:1e2b09e4f7a30389a78ac82eb9243ba8466a0e5e396dc312b7d76672501d88a1",
+  "capture_materialization": {
+    "export_token_bytes_preserved": true,
+    "gateway_uid": "6a085bf7-12d0-4168-b1bc-c1bf712b65bb",
+    "materialized_capture_config_verified": true,
+    "node_image": "ghcr.io/mul-cps/cps-native-node@sha256:47d8e532409337c864d02fc608600b4aecea650075573690b4f17dcb7a670c7f"
+  },
+  "driver_epoch": {
+    "boot_id": "209f8bc9-a478-48e4-925a-6e07ffa56f7a",
+    "driver_generation": "b10498fc-9153-4394-875a-ea7cfb498625",
+    "gpu_uuid": "GPU-16128952-b438-556a-00bb-93039ee24e56",
+    "node_uid": "3336cdd5-d245-436e-b57c-2f66c6dcaa41"
+  },
+  "gateway_uid": "6a085bf7-12d0-4168-b1bc-c1bf712b65bb",
+  "hub_uids": {
+    "hub:cit": "66fb2a05-8813-4ee5-b514-928a04bada24",
+    "hub:cps": "275ee97a-b013-4a8a-bcd3-534fc8a11e9c"
+  },
+  "installed_readiness": {
+    "component_count": 4,
+    "components": {
+      "gateway": {
+        "observed_at": "2026-10-17T02:23:16.778924+00:00",
+        "process": {
+          "container": "gateway",
+          "image": "ghcr.io/mul-cps/cps-compute@sha256:c5cff82e383ea32ebdbd1491007972e9b829a1d27d18fa1da5f45d31e793162e",
+          "name": "compute-gateway-76fccdd4bb-fjh8c",
+          "namespace": "cps-compute",
+          "service_account": "cps-compute-controller",
+          "uid": "6a085bf7-12d0-4168-b1bc-c1bf712b65bb"
+        },
+        "revision": "sha256:1e2b09e4f7a30389a78ac82eb9243ba8466a0e5e396dc312b7d76672501d88a1"
+      },
+      "hub:cit": {
+        "observed_at": "2026-10-17T02:23:21.114840+00:00",
+        "process": {
+          "container": "hub",
+          "image": "ghcr.io/mul-cps/cps-compute@sha256:2ca5afcdbd199e2bc253aaa4d70d38abaec9570f592dce28c14792a5fb2079c6",
+          "name": "hub-8c48c856c-s6v2v",
+          "namespace": "cit-jhub",
+          "service_account": "hub",
+          "uid": "66fb2a05-8813-4ee5-b514-928a04bada24"
+        },
+        "revision": "sha256:1e2b09e4f7a30389a78ac82eb9243ba8466a0e5e396dc312b7d76672501d88a1"
+      },
+      "hub:cps": {
+        "observed_at": "2026-10-17T02:23:20.944594+00:00",
+        "process": {
+          "container": "hub",
+          "image": "ghcr.io/mul-cps/cps-compute@sha256:2ca5afcdbd199e2bc253aaa4d70d38abaec9570f592dce28c14792a5fb2079c6",
+          "name": "hub-85df5fcfb4-fktk4",
+          "namespace": "jupyterhub",
+          "service_account": "hub",
+          "uid": "275ee97a-b013-4a8a-bcd3-534fc8a11e9c"
+        },
+        "revision": "sha256:1e2b09e4f7a30389a78ac82eb9243ba8466a0e5e396dc312b7d76672501d88a1"
+      },
+      "node": {
+        "observed_at": "2026-10-17T02:23:27.672245+00:00",
+        "process": {
+          "container": "node-agent",
+          "image": "ghcr.io/mul-cps/cps-native-node@sha256:47d8e532409337c864d02fc608600b4aecea650075573690b4f17dcb7a670c7f",
+          "name": "cps-native-node-agent-7c656496d5-d9nrw",
+          "namespace": "cps-native-system",
+          "service_account": "cps-native-node-agent",
+          "uid": "686f8c3e-1506-478c-8205-a23f914db000"
+        },
+        "revision": "sha256:1e2b09e4f7a30389a78ac82eb9243ba8466a0e5e396dc312b7d76672501d88a1"
+      }
+    },
+    "module": "/usr/local/lib/python3.12/site-packages/cps_compute/runtime.py",
+    "module_sha256": "d1b62a56cd51fb5ad2b301365534aada6d11eda22c46cb57ac0f6dbd54422f07",
+    "observed_at": "2026-10-17T02:23:30.724486+00:00",
+    "policy_hash": "sha256:d48f6553ed036c2e7adcc97417623fe0308be93ad13b20f246047ada118511b0",
+    "released_consumer_call": true,
+    "released_consumer_observe": true,
+    "revision": "sha256:1e2b09e4f7a30389a78ac82eb9243ba8466a0e5e396dc312b7d76672501d88a1",
+    "state": "ready",
+    "ttl_seconds": 60
+  },
+  "ledger_raw_bytes_preserved": true,
+  "ledger_uid": "33ab24b0-8e9a-4bee-b308-12a19c076924",
+  "live_concurrent_start_qualified": false,
+  "maintenance": {
+    "automatic_observer_rebinding_still_required": true,
+    "evidence_lines": [
+      "2026-10-17T02:16:42.517017339Z time=\"2026-10-17T02:16:42Z\" level=info msg=\"Reboot required\"",
+      "2026-10-17T02:16:42.529471113Z time=\"2026-10-17T02:16:42Z\" level=info msg=\"Draining node k3s-wk-gpu1\"",
+      "2026-10-17T02:16:46.122076452Z evicting pod cps-compute/compute-gateway-76fccdd4bb-2tzb4",
+      "2026-10-17T02:16:46.123162117Z evicting pod jupyterhub/hub-85df5fcfb4-7tvkd"
+    ],
+    "forced_drain_by_root": false,
+    "source": "kubectl -n kured logs kured-l7knp --since-time=2026-10-17T02:14:00Z --timestamps"
+  },
+  "native_allocations_released": 106,
+  "node_image": "ghcr.io/mul-cps/cps-native-node@sha256:47d8e532409337c864d02fc608600b4aecea650075573690b4f17dcb7a670c7f",
+  "node_module_sha256": "ccd6c88868b5628fd7a5e7edb6750306a215e255b5467448928d2c49418fd54c",
+  "node_uid": "686f8c3e-1506-478c-8205-a23f914db000",
+  "personal_pod_uids_preserved": {
+    "jupyter-armin": "921b8b7c-e8de-45e3-856c-b2426ed1ed7b",
+    "jupyter-bjoern": "915b3fac-53fa-469c-8c3f-0180fb285504",
+    "jupyter-cpsadmin": "a984023f-eb34-4af1-b01d-bad6ea159ef4",
+    "jupyter-mikasa": "31846900-989b-48d1-95b3-846e9526fbb5"
+  },
+  "policy_hash": "sha256:d48f6553ed036c2e7adcc97417623fe0308be93ad13b20f246047ada118511b0",
+  "production_qualified": false,
+  "remaining": "Live concurrent startup, peer OOM continuity and automatic trusted observer-role reconciliation",
+  "rollout_helper_sha256": "be5d5338dbdd1be068e0808dbd2166c70db7c85518bb7fa6a09b9c7d0e1b2017",
+  "rollout_helper_tests_passed": 8,
+  "source_commit": "67c61386595006f2f58aefdc7388e9add8ba462b",
+  "sql_reservations": {
+    "reservation": 0,
+    "reservation_binding": 0
+  }
+}

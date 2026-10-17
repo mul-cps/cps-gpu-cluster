@@ -38,9 +38,20 @@ continuity, MPS, and concurrent startup. One
 parallel Start failed while a custody snapshot observed an allocated intent
 before its immutable enrollment; sequential fresh Starts later succeeded.
 Application `67c6138` fixes the inconsistent ledger/inventory snapshot; 2,922
-application/Hub tests and 49 subtests passed (3 skipped). Its Node image is
-published but not deployed. Concurrent startup and broader production
-qualification remain unqualified.
+application/Hub tests and 49 subtests passed (3 skipped). Its corrected Node image `47d8e532…a670c7f` is deployed. All four installed
+consumers verify the same approval revision and unchanged driver epoch. The
+live custody module hash matches reviewed source; capture credentials and all
+106 ledger rows are preserved. Reservation tables remain empty and personal
+notebook Pod identities unchanged.
+[Node adoption receipt](../../platform-staging/jupyter-extensions-20261013/custody-snapshot-adoption-20261017.json).
+
+Scheduled kured maintenance on GPU1 then evicted the Gateway and CPS Hub. Both
+recovered with their existing application images; the replacement Gateway
+required manual verified observer-role rebinding before aggregate readiness
+recovered. An automatic trusted reconciler is being implemented as a released
+compute module. No drain was forced and GPU2 was not rebooted or reconfigured.
+Concurrent startup, peer OOM continuity, automatic recovery and broader
+production qualification remain unqualified.
 
 ## Earlier verified checkpoint — native 5 GiB execution and normal Stop passed
 
