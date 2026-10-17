@@ -237,3 +237,17 @@ def test_remote_static_program_rejects_production_request_before_network():
         'body':{},'dryrun':True,'token':'synthetic-token-never-print'}),text=True,capture_output=True,check=True)
     assert json.loads(response.stdout)['status']==0
     assert 'synthetic-token' not in response.stdout+response.stderr
+
+
+@pytest.mark.parametrize('status,reason,policy,binding,detail,expected', [
+    (422, 'Invalid', 'qa-policy', 'qa-policy', 'Only the reviewed dynamic delivery write is permitted', True),
+    (422, 'Invalid', 'qa-policy', 'qa-policy', 'CEL evaluation error: no such key', False),
+    (422, 'Invalid', 'other-policy', 'qa-policy', 'Only the reviewed dynamic delivery write is permitted', False),
+    (422, 'Invalid', 'qa-policy', 'other-binding', 'Only the reviewed dynamic delivery write is permitted', False),
+    (422, 'Invalid', 'qa-policy-suffix', 'qa-policy', 'Only the reviewed dynamic delivery write is permitted', False),
+    (422, 'Forbidden', 'qa-policy', 'qa-policy', 'Only the reviewed dynamic delivery write is permitted', False),
+    (403, 'Forbidden', 'other-policy', 'qa-policy', 'Only the reviewed dynamic delivery write is permitted', False),
+    (403, 'Forbidden', 'qa-policy', 'other-binding', 'Only the reviewed dynamic delivery write is permitted', False)])
+def test_kubernetes_default_invalid_requires_exact_policy_binding_and_validation(status, reason, policy, binding, detail, expected):
+    message = 'configmaps "unapproved-name" is forbidden: ValidatingAdmissionPolicy ' + repr(policy) + ' with binding ' + repr(binding) + ' denied request: ' + detail
+    assert module().policy_denial({'status': status, 'reason': reason, 'message': message}, 'qa-policy') is expected

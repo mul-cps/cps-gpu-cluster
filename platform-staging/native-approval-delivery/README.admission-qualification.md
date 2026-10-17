@@ -36,8 +36,12 @@ pointer PATCH and named Role GET growth in all four namespaces. Negative cases
 cover extra data, name/namespace targets, mutability, owners/labels, unsafe Role
 verbs/static rows/wildcards/removal/foreign names, and foreign operator writes.
 Unrelated foreign operator operations must succeed. A denial counts only when
-HTTP403/Forbidden names the exact temporary ValidatingAdmissionPolicy and says
-it denied the request; RBAC refusal, API422, or another policy cannot pass.
+HTTP403/Forbidden identifies the exact temporary policy (and its binding when
+present), or HTTP422/Invalid ends with the exact policy + same-name binding
+`denied request` signature and fixed validation message `Only the reviewed
+dynamic delivery write is permitted`. Kubernetes uses Invalid/422 by default
+for validation denial. Generic API422, RBAC refusal, mismatched names, and CEL
+evaluation errors cannot pass.
 
 UID cases run last: the qualifier deletes and recreates isolated same-name
 fixtures, then patches their genuine replacement UIDs against the old pins.
