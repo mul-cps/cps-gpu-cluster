@@ -119,3 +119,42 @@ suffix. Packaging never pushes an image or applies cluster configuration.
 `oci-verification.json` records the independently reproducible local image gate;
 publication, coordinated operator ownership, signed coordinator configuration,
 and actual scheduler/GPU qualification remain separate Root-owned steps.
+
+## Operator-aware binder ownership
+
+KAI v0.18.1's Config API has no binder extra-arguments or volume fields. Editing
+its generated Deployment alone is therefore not a persistent activation path.
+`operator_handover.py` renders CAS patches only; it makes no API/process calls.
+The intended sequence is:
+
+1. Capture the actual Config, operator Deployment, complete operator Pod list,
+   binder Deployment/Service/ServiceAccount, reservation ServiceAccount and any
+   `binder-pdb`. Confirm no nonterminal BindRequests and preserve rollback copies.
+2. Pause only the operator with the rendered replicas CAS; wait for its observed
+   zero replicas and actual absence of all operator Pods, including terminating
+   Pods. Other KAI controllers and the existing binder remain running.
+3. Remove only the captured Config owner from the four required operands and any
+   binder PDB, assigning their management label to `cps-compute-gitops`. Preserve
+   every spec and existing UID, particularly both ServiceAccounts. Then disable
+   only `spec.binder.service.enabled` in the Config, with UID/RV/value tests.
+4. Freshly read all transferred objects and the disabled operand before rendering
+   the operator resume CAS. Resume its other reconciliation. Do not start a second
+   binder. The existing single Recreate Deployment can now consume reviewed flags,
+   token/CA mounts and a digest-pinned image through the cluster deployment source.
+
+The pinned operator's collectible indexes use the Config controller reference;
+objects without that owner are outside its current-state set. Its binder operand
+returns no desired objects when disabled. This is an explicit ownership transfer,
+not a change to KAI's scheduling predicates. Enabled VPA is rejected because it
+would require an additional, separately reviewed operand transfer.
+
+The helper refuses running/unobserved operators, remaining Pods, missing/extra or
+foreign-owned operands, deletion/replacement drift, overlapping binder strategies
+and incomplete resume readback. Partial failure must leave the operator paused
+until either all transfers finish or exact recorded ownership is restored; never
+resume a disabled operand while any of its still-owned resources can be pruned.
+Rollback stops any successor binder first, restores captured fields/ownership and
+enables the stock operand before restoring operator reconciliation. No GPU driver,
+node cordon, workload Pod or storage setting is changed by these metadata/Config
+patches. An applied handover and successful live binder health check are separate
+gates from these offline tests.
