@@ -1,5 +1,14 @@
 # Dynamic head delivery release candidate — 17 October 2026
 
+Latest: [live delivery](live-delivery-result.json) verifies production admission,
+hash-pinned original-journal adoption and the continuous writer Ready with ten
+successful processing results and zero restarts. The actual isolated admission
+matrix passes all 37 requests and three barriers, with zero type warnings or
+residue; 130 CPU checks pass. All four consumer process identities are unchanged.
+Live head advancement, sealed-peer continuation/revocation and the remaining
+no-MIG GPU and full production gates are still open. The records below describe
+their individual historical staging and rollout checkpoints.
+
 Source `551379c6902791d0dd192596046669f1fe274562` implements the automatic
 approval producer and explicit legacy-journal adoption. The full SDK/Hub matrix
 passed 3,282 tests and 49 subtests (three environment-specific skips); the addon
@@ -22,7 +31,7 @@ no GPU, preserved the four personal notebook Pods and retained GPU2's cordon.
 Private configuration/Secrets, snapshots and original migration journals remain
 outside Git. These receipts intentionally contain no raw authority documents.
 
-Next: matching database backups and writer quiescence; coordinated image adoption;
+At publication, remaining work was matching database backups and writer quiescence; coordinated image adoption;
 actual four-component ACK checks; one-time v4 head adoption and original-journal
 migration; continuous delivery and no-MIG GPU lifecycle qualification. The Job
 renderer and dynamic delivery renderer passed 74 source checks together. Runtime

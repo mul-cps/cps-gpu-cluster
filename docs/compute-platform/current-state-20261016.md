@@ -4,7 +4,7 @@ The platform remains **limited-pilot**. Production qualification and the full
 project are unfinished. This record supersedes current-state statements in the
 older completion ledger; their dated acceptance results remain historical evidence.
 
-## Dynamic approval delivery — v4 live; journal migration open
+## Dynamic approval delivery — v4, journal adoption and continuous writer live
 
 Qualified application source is `551379c6902791d0dd192596046669f1fe274562`.
 Gateway, both Hubs, Node and observer run the published exact-source successor
@@ -28,21 +28,27 @@ bindings, existing images, policy/qualification, driver and storage were preserv
 GPU2 remains cordoned. This establishes protocol/runtime adoption, not additional
 GPU hardware qualification or production readiness.
 
-The original delivery writer remains paused pending explicit journal adoption.
-The seed/journal must not be reset. Continuous head delivery and unchanged-peer
-continuation must be qualified live, followed by the remaining no-MIG GPU gates.
-Routine head advances must not rerun this maintenance or restart unchanged peers.
-The full production goal remains active and unfinished.
+The original writer remains stopped; its journal was adopted by a one-time,
+hash-pinned Job with no retries. The old journal's bytes, inode and permissions
+remain unchanged; the archived state and seed match their original hashes.
+The new private journal is version 2. The continuous head writer is now Ready
+with zero restarts and ten successful processing results observed. All four
+consumers retained their exact process identities and publish fresh matching v2
+acknowledgements. The seed/journal must never be reset.
 
-Admission qualification now authenticates its temporary service account directly
-from the existing Gateway container: the Rancher proxy replaced impersonation
+Admission qualification authenticates its temporary service account directly
+from the existing Gateway container: the Rancher proxy replaces impersonation
 headers with the operator identity. The actual cluster passed three enforcement
 barriers and all 37 request cases, including genuine replacement-UID checks,
-with zero test residue. Qualification still fails on a Kubernetes type-check
-warning: a frozen Role rule is compared with a map literal rather than typed
-fields. The warning is being corrected; production policies, journal adoption
-and the continuous writer remain inactive. The supporting CPU suite passes
-114 checks. [Partial admission evidence](../../qualification-artifacts/native-head-delivery-release-20261017/admission-partial-result.json).
+with zero test residue. Typed field comparisons resolved the Role policy warning;
+all three production policies and bindings are installed with exact UID/spec
+verification and zero type-check warnings. The supporting CPU suite passes
+130 checks. [Live delivery evidence](../../qualification-artifacts/native-head-delivery-release-20261017/live-delivery-result.json).
+
+A live head advance without consumer restarts, sealed unchanged-peer continuation
+and targeted revocation remain to be qualified, followed by the remaining no-MIG
+GPU gates. Routine advances must not rerun maintenance or restart unchanged peers.
+The full production goal remains active and unfinished.
 
 The sections below retain dated checkpoints; their image and protocol references
 describe those checkpoints rather than superseding the verified live state above.

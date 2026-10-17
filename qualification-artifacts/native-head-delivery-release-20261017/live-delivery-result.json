@@ -1,0 +1,79 @@
+{
+  "observed_at": "2026-10-17T10:32:08.284673+00:00",
+  "source_commit": "46a2beb",
+  "production_ready": false,
+  "admission": {
+    "qualified": true,
+    "request_cases": 37,
+    "barriers": 3,
+    "all_typed_policies_warning_free": true,
+    "residual_count": 0,
+    "production_renderer_sha256": "8475a7c5211ec5dbcae1f2150e9dc3ccb169c0eb9f4131e0cca613eabd004c18"
+  },
+  "cpu_tests": {
+    "passed": 130,
+    "duration_seconds": 5.88
+  },
+  "production_policies": {
+    "observed_at": "2026-10-17T10:28:21.672172+00:00",
+    "installed_definitions": 6,
+    "exact_uid_spec_verified": true,
+    "typed_policies": [
+      {
+        "name": "cps-native-head-delivery-pointer-update",
+        "uid": "1e3de9e0-1cf7-411c-afe7-373373b737f8",
+        "generation": 1,
+        "warning_count": 0
+      },
+      {
+        "name": "cps-native-head-delivery-approval-create",
+        "uid": "677a05ab-fa61-4083-9031-79a401d61b0b",
+        "generation": 1,
+        "warning_count": 0
+      },
+      {
+        "name": "cps-native-head-delivery-pregrant-update",
+        "uid": "2191d8de-2bb7-4ba0-8472-92f4ed90a3b0",
+        "generation": 1,
+        "warning_count": 0
+      }
+    ],
+    "writer_started": false
+  },
+  "journal_adoption": {
+    "job_succeeded": true,
+    "backoffLimit": 0,
+    "old_bytes_inode_and_permissions_unchanged": true,
+    "archived_state_sha256": "sha256:94a1b12b10c12028ccedde0a5806bb5d7b29cc73f4753e0301eb81b5650f5896",
+    "archived_seed_sha256": "sha256:0e093aeb2d2dd8ef80c4580e8b84d3bd6ef010ca3cede013222e0667c65130f9",
+    "new_state_version": 2,
+    "new_private_directory": true,
+    "private_files": [
+      "anchor.json",
+      "legacy-seed.json",
+      "legacy-state.json",
+      "lock",
+      "state.json"
+    ]
+  },
+  "continuous_writer": {
+    "ready": true,
+    "available_replicas": 1,
+    "pod_uid": "09095848-03f7-4181-9ddd-b5377a6d4521",
+    "container_restarts": 0,
+    "ready_results_observed": 10,
+    "original_writer_stopped": true
+  },
+  "consumers": {
+    "fresh_v2_acknowledgements": 4,
+    "revision": "sha256:1e2b09e4f7a30389a78ac82eb9243ba8466a0e5e396dc312b7d76672501d88a1",
+    "same_process_identities_before_and_after": true,
+    "observed_at": "2026-10-17T10:31:36.610200+00:00"
+  },
+  "not_yet_qualified": [
+    "live head advance without consumer restarts",
+    "sealed unchanged-peer continuation and targeted revocation",
+    "remaining no-MIG GPU isolation and KAI lifecycle gates",
+    "full production acceptance and release"
+  ]
+}
