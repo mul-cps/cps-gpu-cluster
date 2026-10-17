@@ -1,0 +1,51 @@
+{
+  "source": "b5154983612440aed34376f566e67aca58405124",
+  "test_fixture_revision": "955ecf51ce954b61f3e51d0e35279665460bdeca",
+  "test_only_successor_runtime_identical": true,
+  "image": "ghcr.io/mul-cps/cps-compute@sha256:7e7976d5408cd4c69d16d5a09893752d1ebebb0034e5ecd92951ad9151eea17b",
+  "config_digest": "sha256:58c9a2fb30b8ae132dfa6a256a03cf04e33858a733ec0083bc01ce30be25516f",
+  "registry_verified": true,
+  "package": {
+    "source": "b5154983612440aed34376f566e67aca58405124",
+    "wheel_sha256": "748c2c980b5cbe00f0efa1905044dff4a47b33b01e0648f80ff79767d08c8734",
+    "python_files_verified": 72,
+    "base": "ghcr.io/mul-cps/cps-compute@sha256:0b2d972f661485176d624dc17d57b77e56d25f9b6d727c2c00cd2322bf97e68b",
+    "base_config": "sha256:211031de3199b075203091c998307d725312f322d557ddc71079f7da3e2f51df",
+    "labels": {
+      "org.opencontainers.image.revision": "b5154983612440aed34376f566e67aca58405124",
+      "org.opencontainers.image.base.name": "ghcr.io/mul-cps/cps-compute@sha256:0b2d972f661485176d624dc17d57b77e56d25f9b6d727c2c00cd2322bf97e68b",
+      "org.opencontainers.image.base.digest": "sha256:0b2d972f661485176d624dc17d57b77e56d25f9b6d727c2c00cd2322bf97e68b",
+      "io.cps.compute.sdk-revision": "b5154983612440aed34376f566e67aca58405124",
+      "io.cps.compute.base-digest": "sha256:0b2d972f661485176d624dc17d57b77e56d25f9b6d727c2c00cd2322bf97e68b",
+      "io.cps.compute.base-config-digest": "sha256:211031de3199b075203091c998307d725312f322d557ddc71079f7da3e2f51df",
+      "io.cps.compute.source-sha256": "085352de60401873fca4a5ec8a2cc2676d90f7b96b3175706dddb877f118a3f5",
+      "io.cps.compute.source-archive-sha256": "33a48ce50bae791d5c4fdf38ecc0e71d2cde5ff3333aa5bbb89e8e25af884efa",
+      "io.cps.compute.wheel-sha256": "748c2c980b5cbe00f0efa1905044dff4a47b33b01e0648f80ff79767d08c8734",
+      "org.mul-cps.wheel-sha256": "748c2c980b5cbe00f0efa1905044dff4a47b33b01e0648f80ff79767d08c8734",
+      "science.ai-lab.cps.sdk-wheel-sha256": "748c2c980b5cbe00f0efa1905044dff4a47b33b01e0648f80ff79767d08c8734",
+      "io.mul-cps.consumer-core-wheel": "748c2c980b5cbe00f0efa1905044dff4a47b33b01e0648f80ff79767d08c8734",
+      "io.mul-cps.consumer-base": "ghcr.io/mul-cps/cps-compute@sha256:0b2d972f661485176d624dc17d57b77e56d25f9b6d727c2c00cd2322bf97e68b"
+    }
+  },
+  "full_source_tests_passed": 3442,
+  "full_source_skipped": 3,
+  "full_source_subtests_passed": 49,
+  "installed_delivery_tests_passed": 103,
+  "independent_cluster_composer_tests_passed": 147,
+  "independent_cluster_subtests_passed": 25,
+  "pip_check_passed": true,
+  "deployed": false,
+  "journal_rotated": false,
+  "hardware_qualified": false,
+  "evidence_sha256": {
+    "installed-delivery-suite-03.log": "317e95b8a84de29ad30ad03419637bfdc84751396afe91a79d450cebc523880a",
+    "root-cluster-source-02.log": "d63210b78120bcfd5766c393cfc7a95fde2cafde8d9f9fec500e1a5b2894e2f8",
+    "installed-pip-check.log": "9ba684d105cef021825c40232f7b3800f52162c40edbc07587b6302a5a81793d",
+    "source.tar.gz": "33a48ce50bae791d5c4fdf38ecc0e71d2cde5ff3333aa5bbb89e8e25af884efa"
+  },
+  "limits": [
+    "Only explicit Gateway-only or paired-Hub image deltas are accepted; no policy/driver/controller identity change is authorized.",
+    "Installed tests run offline with genuine installed runtime modules; no actual journal or cluster mutation was made.",
+    "Live adoption requires fresh backups, quiescent workspace/reservation checks and guarded current API readbacks."
+  ]
+}
