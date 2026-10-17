@@ -1,0 +1,24 @@
+{
+  "version": 1,
+  "binderImage": "ghcr.io/mul-cps/cps-native-kai-binder@sha256:3d88ba9a102d09a124559d6082ecd8a9779c9f0a33d239530fba041ced70384e",
+  "binderConfigSHA256": "e6f8c8e5781146e71adb5c4cfeba5200c65cb0337aef00da559102328ea33a9e",
+  "binarySHA256": "5f518d0e13dca26492f3ac821825cdc587b4f165e86a23263aad4cebe37381fa",
+  "binderPodUID": "1c924d4a-1801-4a28-866c-61cba7dfa31f",
+  "binderReady": true,
+  "binderRestarts": 0,
+  "sameDeploymentAndServiceAccountUIDs": true,
+  "stockBinderOperandEnabled": false,
+  "operatorReady": true,
+  "nativeCoordinatorEnabled": false,
+  "trustedCPUKAISmoke": {
+    "result": "passed",
+    "bindRequestPhase": "Succeeded",
+    "notGPUQualification": true,
+    "allTemporaryResourcesAbsent": true
+  },
+  "protectedNotebookUIDsPreserved": 4,
+  "ledgerReleasedClaimsUnchanged": 117,
+  "gpu2StillCordoned": true,
+  "driverOrGPUChanges": false,
+  "productionQualified": false
+}

@@ -106,7 +106,8 @@ Published, registry-verified successor images (not deployed):
 The canonical binder patch now has an offline, pinned build recipe. Four Go
 package suites and 14 recipe checks passed; two static builds were byte-identical
 (SHA-256 `5f518d0e13dca26492f3ac821825cdc587b4f165e86a23263aad4cebe37381fa`).
-The binder still needs an OCI package and live integration.
+The binder now has a verified OCI package and bounded live adoption with its
+Coordinator bridge disabled; native GPU integration remains open.
 
 Pending-record admission is explicit opt-in; the default bundle is unchanged.
 Focused checks passed **25 tests and 114 subtests**. Actual Kubernetes admission
@@ -121,8 +122,21 @@ admin checkout exposed 32 schema failures across three source-qualification
 modules (`Course.workspace_bindings`). This is not an all-suite pass or proof of
 a deployed-console defect. Resolve the compatible dependency before that gate.
 
-Next: package the binder, integrate the protected Coordinator endpoint and
-coordinated Gateway/Hub/Node adoption, then exercise the actual KAI lifecycle.
+The binder successor is now installed at
+`ghcr.io/mul-cps/cps-native-kai-binder@sha256:3d88ba9a102d09a124559d6082ecd8a9779c9f0a33d239530fba041ced70384e`.
+Its native Coordinator bridge is explicitly disabled. A real trusted CPU-only KAI
+Job reached BindRequest success and exited zero; all test resources were removed.
+The operator-aware handover preserved operand/ServiceAccount UIDs and restored
+operator readiness. All four personal notebooks and 117 released claims were
+preserved. The image pull initially failed due to missing namespace credentials;
+a verified existing GHCR pull credential resolved it. Both Hubs passed actual
+Gateway TLS/SAN verification.
+[Binder adoption receipt](../../qualification-artifacts/native-kai-binder-20261017/result.json).
+
+Next: integrate the protected Coordinator endpoint and coordinated Gateway/Hub/Node
+adoption, then exercise the actual native KAI lifecycle. Stock KAI rejects the
+cordoned GPU2 node, so automatic placement also requires a reviewed maintenance
+transition; the cordon remains unchanged.
 Dynamic no-MIG sharing remains the primary acceptance goal; wider memory caps,
 all-eight-GPU coverage, scheduling/scale and recovery/release gates remain open.
 
