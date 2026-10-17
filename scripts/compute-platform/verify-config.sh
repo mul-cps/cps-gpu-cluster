@@ -19,6 +19,7 @@ pull descheduler-0.34.0.tgz descheduler --repo https://kubernetes-sigs.github.io
 pull kai-scheduler-v0.18.1.tgz oci://ghcr.io/kai-scheduler/kai-scheduler/kai-scheduler --version v0.18.1
 pull kai-resource-isolator-1.1.0-chart.tgz oci://docker.io/projecthami/kai-resource-isolator --version 1.1.0-chart
 (cd "$cache" && sha256sum -c "$root/platform-staging/chart-checksums.sha256")
+export JUPYTERHUB_CHART="$cache/jupyterhub-4.4.2.tgz"
 for suite in compute_policy compute_platform observability descheduler; do
   python3 -m unittest discover -s "tests/$suite" -v
 done

@@ -40,6 +40,11 @@ jobs:
           echo '70b2c30a19da4db264dfd68c8a3664e05093a361cefd89572ffb36f8abfa3d09  helm-v4.1.4-linux-amd64.tar.gz' | sha256sum --check
           tar -xzf helm-v4.1.4-linux-amd64.tar.gz linux-amd64/helm
           echo "$RUNNER_TEMP/cps-helm/linux-amd64" >> "$GITHUB_PATH"
+          mkdir -p "$RUNNER_TEMP/cps-charts"
+          chart="$RUNNER_TEMP/cps-charts/jupyterhub-4.4.2.tgz"
+          curl --fail --location --retry 3 --output "$chart" https://hub.jupyter.org/helm-chart/jupyterhub-4.4.2.tgz
+          echo "0ddfa517050d16f2e1b50c62b5b6377b12574f9a2b88f3b352bd211ef3173c3e  $chart" | sha256sum --check
+          echo "JUPYTERHUB_CHART=$chart" >> "$GITHUB_ENV"
       - name: Validate policy, unit tests and Helm output
         shell: bash
         run: |

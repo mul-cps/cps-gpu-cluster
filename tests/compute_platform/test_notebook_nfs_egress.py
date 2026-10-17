@@ -8,7 +8,9 @@ import ipaddress
 import os
 from pathlib import Path
 import subprocess
+import tempfile
 import unittest
+from unittest.mock import patch
 
 import yaml
 
@@ -72,8 +74,11 @@ class NotebookNFSEgressTests(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
         chart = Path(os.environ.get('JUPYTERHUB_CHART', Path.home() / '.cache/helm/jupyterhub-4.4.2.tgz'))
-        result = subprocess.run(['helm', 'template', RELEASE, str(chart), '--namespace', NAMESPACE,
-                                 '-f', str(VALUES)], capture_output=True, text=True, check=True)
+        try:
+            result = subprocess.run(['helm', 'template', RELEASE, str(chart), '--namespace', NAMESPACE,
+                                     '-f', str(VALUES)], capture_output=True, text=True, check=True)
+        except subprocess.CalledProcessError as error:
+            raise RuntimeError(f'Helm render failed for {chart}:\n{error.stderr}') from error
         cls.policies = [x for x in yaml.safe_load_all(result.stdout) if x and x['kind'] == 'NetworkPolicy']
         cls.labels = {'app': 'jupyterhub', 'component': 'singleuser-server', 'release': RELEASE,
                       'hub.jupyter.org/network-access-hub': 'true', 'hub.jupyter.org/username': 'student'}
@@ -122,6 +127,16 @@ class NotebookNFSEgressTests(unittest.TestCase):
         self.assertTrue(ranges, 'Actual rendered chart must retain port ranges')
         self.assertTrue(all(type(x['port']) is int and type(x['endPort']) is int
                             and 1 <= x['port'] <= x['endPort'] <= 65535 for x in ranges))
+
+
+class NotebookRenderDiagnosticsTests(unittest.TestCase):
+    def test_missing_chart_reports_actual_helm_stderr_without_skipping(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            missing = Path(temporary) / 'jupyterhub-4.4.2.tgz'
+            with patch.dict(os.environ, {'JUPYTERHUB_CHART': str(missing)}):
+                with self.assertRaises(Exception) as raised:
+                    NotebookNFSEgressTests.setUpClass()
+            self.assertIn(f'Error: path "{missing}" not found', str(raised.exception))
 
 
 if __name__ == '__main__':
