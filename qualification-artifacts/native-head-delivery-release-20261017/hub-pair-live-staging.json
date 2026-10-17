@@ -1,0 +1,63 @@
+{
+  "preparation": {
+    "read_only": true,
+    "api_mutations": false,
+    "object_count": 91,
+    "policy_hash": "sha256:d48f6553ed036c2e7adcc97417623fe0308be93ad13b20f246047ada118511b0",
+    "head_revision": "sha256:0e07a19d870394cc4798a1ccca2581b84db8202fc9b60c548f8cb8558f18eb31",
+    "new_hub_image": "ghcr.io/mul-cps/cps-compute@sha256:636fb066f645596aa1c5b561c4338e9e7c8a1c521b27baaf6e6ac38ab312a741",
+    "prepared_node_config": "cps-native-head-config-44cba8d4cf3836c9",
+    "journal_rotation_required": true,
+    "hardware_qualified": false
+  },
+  "staging": {
+    "objects_created": 7,
+    "guarded_patch_dryruns_passed": 7,
+    "running_services_patched": false,
+    "policy_changed": false,
+    "live_hub_images_changed": false,
+    "hardware_qualified": false,
+    "new_node_config_ref": {
+      "data_sha256": "sha256:44cba8d4cf3836c954f3c05289f46c232e0e348793017a9a0e33f8626acf630c",
+      "key": "config.json",
+      "name": "cps-native-head-config-44cba8d4cf3836c9",
+      "namespace": "cps-native-system",
+      "resourceVersion": "373190509",
+      "uid": "2ddf8023-762b-4f06-b8df-ed217f593b36"
+    },
+    "journal_rotation_performed": false,
+    "journal_bytes_compared": false
+  },
+  "prospective_observer": {
+    "prospective_renderer_passed": true,
+    "objects_rendered": 11,
+    "same_observer_image": true,
+    "operator_roles_to_apply": 0,
+    "supplemental_permissions_already_staged": true,
+    "live_observer_changed": false,
+    "configmap_candidate": "cps-native-observer-operator-63fb6424a9b319cc"
+  },
+  "protected_personal_pods_unchanged": true,
+  "all_six_current_services_ready": true,
+  "gpu2_cordoned": true,
+  "actual_images_adopted": false,
+  "temporary_staged_objects_active": false,
+  "evidence_sha256": {
+    "prepared.private.json": "2014f3cb59510ffce25639543ddaef1e18ed30ada0112d0a6375335ab850e86d",
+    "rotation.verified.private.json": "2cbdd67d5d381b5cc86a0f5f9d4317404b96d6441095407dc75b1a7fdd32eb4d",
+    "staging-result.json": "c35c75ff4d08aeb71abd5a3281eb42a6d8fdcaf266b6127aa717e1473fdaadec",
+    "observer.prospective.private.json": "d0c2724ed315a6cc1f12b94e6d11ddb6051e3da05c5f39c342f64aa61e88c52b"
+  },
+  "next": [
+    "Fresh consistent matching Hub/Gateway backups and quiescent reservation/workspace preflight.",
+    "Guarded cohort maintenance using actual readbacks and existing identities.",
+    "Explicit same-journal rotation with qualified writer image; retain original anchor and archives.",
+    "Verify current four ACKs and managed startup/cancellation before enabling anything further."
+  ],
+  "limits": [
+    "Staging adds seven isolated objects and narrow read permissions; no Deployment, original Role, runtime Secret or policy was patched.",
+    "Observer render contains prospective operator Roles that must not be applied; preserve current producer-owned Roles and use the already-staged supplemental readers.",
+    "No actual journal bytes were compared during staging; the staging actors never accessed or rotated the journal.",
+    "Hardware placement, isolation and lifetime policy enablement remain unqualified."
+  ]
+}
