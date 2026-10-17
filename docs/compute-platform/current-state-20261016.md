@@ -4,9 +4,10 @@ The platform remains **limited-pilot**. Production qualification and the full
 project are unfinished. This record supersedes current-state statements in the
 older completion ledger; their dated acceptance results remain historical evidence.
 
-## Current gate — both-direction peer OOM continuity passed at 5/5 GiB
+## Current gate — 5/5 GiB peer continuity and synchronized startup passed
 
-The deployed Gateway `7e618184…ce8717f` and both Hubs `8efcc148…e51a506`
+The current Gateway is `7e618184…ce8717f`; both Hubs now run
+`413bdee6…ca68a8`. Earlier, with Hub `8efcc148…e51a506`, they
 passed sequential normal Starts and Stops for the two approved CPS isolated
 workspaces. The unchanged Node `47d8e532…a670c7f` and notebook runtime
 `91678610…4ca4dc0` enforced a fixed 5 GiB cap per workspace.
@@ -31,7 +32,7 @@ ready after cleanup at 05:31:04 UTC on 17 October 2026.
 No MIG, GPU reset, reboot or driver change was used.
 
 **Remaining primary GPU gates:** unequal/larger caps, other memory routes, MPS,
-and concurrent startup. This establishes scoped 5/5 GiB memory-pressure
+current-approval KAI integration, cross-Hub and representative burst startup. This establishes scoped 5/5 GiB memory-pressure
 continuity, not whole-fleet or production qualification. The cancellation fix
 has source and installed-image tests; deliberate live cancellation remains a
 separate qualification. The full project remains active and unfinished.
@@ -854,18 +855,16 @@ do not qualify notebook531 or the full eight-GPU service.
 ## Immediate remaining production work
 
 1. Package and integrate the node lifecycle as a released application component.
-   The current `cps-compute` wheel now owns the injected backend as well as
-   transaction/approval modules, but its Dockerfile starts only the gateway. Its native controller documentation still
-   explicitly requires qualification-only operation. The deployed node loop and
-   generated compatibility overlay live here in cluster staging. Hardware
-   evidence alone does not close that application/release gap. Move ownership
-   without weakening gate, cap, epoch, journal or completion checks; qualify the
-   packaged entrypoint against the current full retained state before adoption.
-2. Replace finite policy/physical-scope patches and manual exact Pod/ReplicaSet
-   RBAC refreshes with the released controller lifecycle. Introduce reviewed
-   archival/migration so retained history and the allocation ledger do not reach
-   their128-record limits. The current92 allocations/82 terminal records remain
-   complete; do not truncate them to make a deployment pass.
+   The packaged Node entrypoint is now deployed and participates in the
+   four-component readiness gate. Integrate the current approval generation
+   with the KAI Coordinator and Hub pending path, including normal cancellation
+   and release, then publish and qualify that combined release. Current source
+   CPU tests and installed-package checks do not prove live scheduler adoption.
+2. Qualify the deployed observer controller across Node replacement and the
+   remaining cancellation/recovery scenarios; Gateway replacement has bounded
+   evidence. Finish policy/physical-scope lifecycle and retained-history
+   archival/migration qualification. All 117 allocation records are preserved;
+   verify actual capacity before further tests, never truncate history.
 3. Finish current-image10GiB/all intended GPUs and runtime variants, automatic
    MPS lifecycle, and the live workspace/reservation/revocation matrix. Current
    GPU2 5/20GiB evidence is now complete for the listed isolation probes; no-MIG
