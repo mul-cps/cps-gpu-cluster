@@ -50,7 +50,7 @@ def test_clones_keep_production_validations_and_add_only_isolated_namespace_scop
 
 
 @pytest.mark.parametrize('status,reason,message,allowed', [
-    (403, 'Forbidden', 'ValidatingAdmissionPolicy qa-policy denied request', True),
+    (403, 'Forbidden', 'ValidatingAdmissionPolicy qa-policy denied request', False),
     (403, 'Forbidden', 'RBAC forbidden', False), (422, 'Invalid', 'qa-policy', False),
     (403, 'Forbidden', 'another-policy denied request', False), (200, '', 'qa-policy', False)])
 def test_expected_denial_requires_our_policy_not_rbac_or_api_validation(status, reason, message, allowed):
@@ -142,7 +142,7 @@ def test_whole_isolated_flow_with_actual_go_cel_and_no_live_client(tmp_path, mon
                         text=True, capture_output=True, check=True)
                     decision = json.loads(result.stdout)['decision']; assert decision != 'error', result.stdout
                     if decision == 'deny': return {'status': 403, 'reason': 'Forbidden',
-                        'message': 'ValidatingAdmissionPolicy ' + policy['metadata']['name'] + ' denied request'}
+                        'message': "ValidatingAdmissionPolicy '" + policy['metadata']['name'] + "' with binding '" + policy['metadata']['name'] + "' denied request: Only the reviewed dynamic delivery write is permitted"}
                 return {'status': 200, 'object': obj}
             assert method == 'POST'
             target = path + '/' + obj['metadata']['name']; assert target not in objects
@@ -240,6 +240,8 @@ def test_remote_static_program_rejects_production_request_before_network():
 
 
 @pytest.mark.parametrize('status,reason,policy,binding,detail,expected', [
+    (403, 'Forbidden', 'qa-policy', 'qa-policy', 'Only the reviewed dynamic delivery write is permitted', True),
+    (403, 'Forbidden', 'qa-policy', 'qa-policy', 'CEL evaluation error: no such key', False),
     (422, 'Invalid', 'qa-policy', 'qa-policy', 'Only the reviewed dynamic delivery write is permitted', True),
     (422, 'Invalid', 'qa-policy', 'qa-policy', 'CEL evaluation error: no such key', False),
     (422, 'Invalid', 'other-policy', 'qa-policy', 'Only the reviewed dynamic delivery write is permitted', False),

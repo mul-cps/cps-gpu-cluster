@@ -148,11 +148,7 @@ def policy_denial(result, policy):
     # Accept only this exact policy/binding and our fixed validation message;
     # generic schema errors and CEL evaluation failures are not evidence.
     signature = "ValidatingAdmissionPolicy '" + policy + "' with binding '" + policy + "' denied request: Only the reviewed dynamic delivery write is permitted"
-    if result['status'] == 422 and result.get('reason') == 'Invalid':
-        return message.endswith(signature)
-    quoted = r"(?:'" + re.escape(policy) + r"'|\"" + re.escape(policy) + r"\"|" + re.escape(policy) + r")"
-    named = r'ValidatingAdmissionPolicy ' + quoted + r'(?: with binding ' + quoted + r')? denied request(?::|$)'
-    return result['status'] == 403 and result.get('reason') == 'Forbidden' and bool(re.search(named, message))
+    return (result['status'], result.get('reason')) in ((403, 'Forbidden'), (422, 'Invalid')) and message.endswith(signature)
 
 
 def private_directory(value):
