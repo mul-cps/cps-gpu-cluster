@@ -1,0 +1,1176 @@
+{
+  "capture": {
+    "configmaps": [
+      {
+        "apiVersion": "v1",
+        "data": {
+          "config.json": "{\"acknowledgment_targets\":{\"gateway\":{\"name\":\"ack-gateway\",\"namespace\":\"gateway-system\",\"uid\":\"00000000-0000-0000-0000-00000000012d\"},\"hub:cit\":{\"name\":\"ack-hub-cit\",\"namespace\":\"cit-hub\",\"uid\":\"00000000-0000-0000-0000-00000000012f\"},\"hub:cps\":{\"name\":\"ack-hub-cps\",\"namespace\":\"cps-hub\",\"uid\":\"00000000-0000-0000-0000-00000000012e\"},\"node\":{\"name\":\"ack-node\",\"namespace\":\"cps-compute\",\"uid\":\"00000000-0000-0000-0000-000000000130\"}},\"approval_ref\":{\"data_sha256\":\"sha256:c475cab85de6ab1a0f50856a6b544503fca6dba08a1b7ac3f90d29876d8c3a1a\",\"name\":\"approval\",\"namespace\":\"cps-compute\",\"policy_hash\":\"sha256:da04b302985c11a6ee429e2308376655afff9482724989e8aa07f1ca210a66e5\",\"revision\":\"sha256:80b29980d7d10fb2414a715abaa90bb0928a45f441fbc3189d148f57383b8d9e\",\"uid\":\"55555555-5555-4555-8555-555555555555\"},\"cdi_pins\":{\"common_edits_sha256\":\"54938128a1e30bfdb15ed4ad1430252d68749e1a20c515c02aceaf5f2821e83e\",\"other_cdi_files\":{\"other.yaml\":\"deaf54ddb5966f5874f064864a1c283a2611a075097d1a135e63474dd112993d\"},\"runtime_files\":{\"etc/runtime/config.toml\":\"99d3e4df3b5b9671424d7bd4c2d8386555293ac470b51526a29990da7422a790\"},\"selected_filename\":\"selected.json\",\"version\":1},\"component_declarations\":{\"gateway\":{\"container\":\"main\",\"image\":\"registry/node@sha256:cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc\",\"kind\":\"Deployment\",\"name\":\"gateway\",\"namespace\":\"gateway-system\",\"service_account\":\"node-sa\",\"service_account_uid\":\"00000000-0000-0000-0000-0000000000c9\",\"uid\":\"00000000-0000-0000-0000-000000000065\"},\"hub:cit\":{\"container\":\"main\",\"image\":\"registry/node@sha256:cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc\",\"kind\":\"Deployment\",\"name\":\"hub-cit\",\"namespace\":\"cit-hub\",\"service_account\":\"node-sa\",\"service_account_uid\":\"00000000-0000-0000-0000-0000000000cb\",\"uid\":\"00000000-0000-0000-0000-000000000067\"},\"hub:cps\":{\"container\":\"main\",\"image\":\"registry/node@sha256:cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc\",\"kind\":\"Deployment\",\"name\":\"hub-cps\",\"namespace\":\"cps-hub\",\"service_account\":\"node-sa\",\"service_account_uid\":\"00000000-0000-0000-0000-0000000000ca\",\"uid\":\"00000000-0000-0000-0000-000000000066\"},\"node\":{\"container\":\"main\",\"image\":\"registry/node@sha256:cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc\",\"kind\":\"Deployment\",\"name\":\"node\",\"namespace\":\"cps-compute\",\"service_account\":\"node-sa\",\"service_account_uid\":\"00000000-0000-0000-0000-0000000000cc\",\"uid\":\"00000000-0000-0000-0000-000000000068\"}},\"enabled\":true,\"qualification_ref\":{\"data_sha256\":\"sha256:cce062b3e3bf797f993049343c945f18406b28d51dd7bd06aa5c320414e5cca6\",\"key\":\"deployment.json\",\"name\":\"deployment\",\"namespace\":\"cps-compute\",\"resourceVersion\":\"31\",\"uid\":\"44444444-4444-4444-8444-444444444444\"},\"terminal_index_ref\":{\"data_sha256\":\"sha256:f75cdb2773d15bd0cef37b4330822210bc842c85ba7551e001d192d26f66b20d\",\"key\":\"index.json\",\"name\":\"terminal-index\",\"namespace\":\"cps-compute\",\"resourceVersion\":\"31\",\"uid\":\"66666666-6666-4666-8666-666666666666\"},\"version\":3}"
+        },
+        "immutable": true,
+        "kind": "ConfigMap",
+        "metadata": {
+          "name": "node-config",
+          "namespace": "cps-compute",
+          "resourceVersion": "31",
+          "uid": "11111111-1111-4111-8111-111111111111"
+        }
+      },
+      {
+        "apiVersion": "v1",
+        "data": {
+          "deployment.json": "{\"authorityNamespace\":\"cps-compute\",\"enabled\":true,\"evidence\":{\"capacity_evidence_sha256\":\"sha256:eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee\",\"core_sha256\":\"4fdcafcdf7f57b9de81f56e8e17db06a91e27680c6a711f3888fd0b76da46421\",\"gate_image\":\"registry.invalid/gate@sha256:cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc\",\"gates\":{\"aggregate\":{\"evidence_sha256\":\"sha256:dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd\",\"passed\":true},\"cap-assignment\":{\"evidence_sha256\":\"sha256:dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd\",\"passed\":true},\"memory-import\":{\"evidence_sha256\":\"sha256:dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd\",\"passed\":true},\"mps\":{\"evidence_sha256\":\"sha256:dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd\",\"passed\":true},\"oom-peer\":{\"evidence_sha256\":\"sha256:dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd\",\"passed\":true},\"restart-cleanup\":{\"evidence_sha256\":\"sha256:dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd\",\"passed\":true}},\"health_sha256\":\"52fdbdae3d5e2f66fd4653d94ef5a62f734e185fabec30450f4a1b70cfee7d67\",\"node_pool\":{\"boot_id\":\"209f8bc9-a478-48e4-925a-6e07ffa56f7a\",\"driver_generation\":\"b10498fc-9153-4394-875a-ea7cfb498625\",\"free_memory_mib\":40470,\"gpu_uuid\":\"GPU-22222222-2222-4222-8222-222222222222\",\"headroom_mib\":1024,\"max_workspaces\":6,\"memory_budget_mib\":30720,\"node\":\"another-node\",\"node_uid\":\"11111111-1111-4111-8111-111111111111\",\"total_memory_mib\":40960},\"policy_evidence_version\":3,\"policy_hash\":\"sha256:da04b302985c11a6ee429e2308376655afff9482724989e8aa07f1ca210a66e5\",\"policy_version\":\"1\",\"profile_caps\":{\"interactive-shared-10\":10240,\"interactive-shared-20\":20480,\"interactive-shared-5\":5120},\"uvm_sha256\":\"b2ae67722e9e21a70c319aeed2184f5b2d1f23b8e32dea00816cfd5cd2c3ee61\",\"version\":3,\"workload_image\":\"ghcr.io/mul-cps/runtime@sha256:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb\"},\"evidence_sha256\":\"sha256:cb3103b149bf76abca025baf476c79d2fa32b419267f4b0d6ba7bad90b01d542\",\"gateImage\":\"registry.invalid/gate@sha256:cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc\",\"node_pool\":{\"boot_id\":\"209f8bc9-a478-48e4-925a-6e07ffa56f7a\",\"driver_generation\":\"b10498fc-9153-4394-875a-ea7cfb498625\",\"free_memory_mib\":40470,\"gpu_uuid\":\"GPU-22222222-2222-4222-8222-222222222222\",\"headroom_mib\":1024,\"max_workspaces\":6,\"memory_budget_mib\":30720,\"node\":\"another-node\",\"node_uid\":\"11111111-1111-4111-8111-111111111111\",\"total_memory_mib\":40960},\"policy_hash\":\"sha256:da04b302985c11a6ee429e2308376655afff9482724989e8aa07f1ca210a66e5\",\"qualification_ref\":{\"data_sha256\":\"sha256:7aea1dac4985eacff2d39ac8eb4a2fe5f593aeda36a932b7c235125d496fead6\",\"key\":\"qualification.json\",\"name\":\"reviewed-proof\",\"namespace\":\"cps-compute\",\"resourceVersion\":\"42\",\"uid\":\"33333333-3333-4333-8333-333333333333\"},\"version\":3,\"workloadImage\":\"ghcr.io/mul-cps/runtime@sha256:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb\",\"workspaces\":{\"cit:group-10\":{\"ceiling\":{\"cpu\":\"4\",\"gpuMemoryGiB\":10,\"memory\":\"16Gi\"},\"course_id\":\"course\",\"group_id\":\"group-10\",\"members\":[\"person-group-10\"],\"namespace\":\"cit-jhub\",\"owner\":\"neutral-group-10\",\"pod\":\"jupyter-group-10\",\"principal\":\"workspace:cit:group-10\",\"profiles\":[\"interactive-shared-10\"],\"server\":\"rtc\",\"storage\":{\"group_hash\":\"group-10\",\"namespace\":\"cit-jhub\",\"path\":\"/mnt/project/group-10\",\"pv\":\"group-10-pv\",\"pvc\":\"group-10-pvc\",\"readonly_mounts\":[],\"storage_version\":2},\"term_id\":\"term\"},\"cps:group-20\":{\"ceiling\":{\"cpu\":\"4\",\"gpuMemoryGiB\":20,\"memory\":\"16Gi\"},\"course_id\":\"course\",\"group_id\":\"group-20\",\"members\":[\"person-group-20\"],\"namespace\":\"jupyterhub\",\"owner\":\"neutral-group-20\",\"pod\":\"jupyter-group-20\",\"principal\":\"workspace:cps:group-20\",\"profiles\":[\"interactive-shared-20\"],\"server\":\"rtc\",\"storage\":{\"group_hash\":\"group-20\",\"namespace\":\"jupyterhub\",\"path\":\"/mnt/project/group-20\",\"pv\":\"group-20-pv\",\"pvc\":\"group-20-pvc\",\"readonly_mounts\":[],\"storage_version\":2},\"term_id\":\"term\"},\"cps:group-5\":{\"ceiling\":{\"cpu\":\"4\",\"gpuMemoryGiB\":5,\"memory\":\"16Gi\"},\"course_id\":\"course\",\"group_id\":\"group-5\",\"members\":[\"person-group-5\"],\"namespace\":\"jupyterhub\",\"owner\":\"neutral-group-5\",\"pod\":\"jupyter-group-5\",\"principal\":\"workspace:cps:group-5\",\"profiles\":[\"interactive-shared-5\"],\"server\":\"rtc\",\"storage\":{\"group_hash\":\"group-5\",\"namespace\":\"jupyterhub\",\"path\":\"/mnt/project/group-5\",\"pv\":\"group-5-pv\",\"pvc\":\"group-5-pvc\",\"readonly_mounts\":[],\"storage_version\":2},\"term_id\":\"term\"}}}"
+        },
+        "immutable": true,
+        "kind": "ConfigMap",
+        "metadata": {
+          "name": "deployment",
+          "namespace": "cps-compute",
+          "resourceVersion": "31",
+          "uid": "44444444-4444-4444-8444-444444444444"
+        }
+      },
+      {
+        "apiVersion": "v1",
+        "data": {
+          "qualification.json": "{\"capacity_evidence_sha256\":\"sha256:eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee\",\"core_sha256\":\"4fdcafcdf7f57b9de81f56e8e17db06a91e27680c6a711f3888fd0b76da46421\",\"gate_image\":\"registry.invalid/gate@sha256:cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc\",\"gates\":{\"aggregate\":{\"evidence_sha256\":\"sha256:dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd\",\"passed\":true},\"cap-assignment\":{\"evidence_sha256\":\"sha256:dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd\",\"passed\":true},\"memory-import\":{\"evidence_sha256\":\"sha256:dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd\",\"passed\":true},\"mps\":{\"evidence_sha256\":\"sha256:dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd\",\"passed\":true},\"oom-peer\":{\"evidence_sha256\":\"sha256:dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd\",\"passed\":true},\"restart-cleanup\":{\"evidence_sha256\":\"sha256:dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd\",\"passed\":true}},\"health_sha256\":\"52fdbdae3d5e2f66fd4653d94ef5a62f734e185fabec30450f4a1b70cfee7d67\",\"node_pool\":{\"boot_id\":\"209f8bc9-a478-48e4-925a-6e07ffa56f7a\",\"driver_generation\":\"b10498fc-9153-4394-875a-ea7cfb498625\",\"free_memory_mib\":40470,\"gpu_uuid\":\"GPU-22222222-2222-4222-8222-222222222222\",\"headroom_mib\":1024,\"max_workspaces\":6,\"memory_budget_mib\":30720,\"node\":\"another-node\",\"node_uid\":\"11111111-1111-4111-8111-111111111111\",\"total_memory_mib\":40960},\"policy_evidence_version\":3,\"policy_hash\":\"sha256:da04b302985c11a6ee429e2308376655afff9482724989e8aa07f1ca210a66e5\",\"policy_version\":\"1\",\"profile_caps\":{\"interactive-shared-10\":10240,\"interactive-shared-20\":20480,\"interactive-shared-5\":5120},\"uvm_sha256\":\"b2ae67722e9e21a70c319aeed2184f5b2d1f23b8e32dea00816cfd5cd2c3ee61\",\"version\":3,\"workload_image\":\"ghcr.io/mul-cps/runtime@sha256:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb\"}"
+        },
+        "immutable": true,
+        "kind": "ConfigMap",
+        "metadata": {
+          "name": "reviewed-proof",
+          "namespace": "cps-compute",
+          "resourceVersion": "42",
+          "uid": "33333333-3333-4333-8333-333333333333"
+        }
+      },
+      {
+        "apiVersion": "v1",
+        "data": {
+          "approval.json": "{\"history\":[],\"policy_hash\":\"sha256:da04b302985c11a6ee429e2308376655afff9482724989e8aa07f1ca210a66e5\",\"registry\":{\"deployment\":{\"authorityNamespace\":\"cps-compute\",\"enabled\":true,\"evidence\":{\"capacity_evidence_sha256\":\"sha256:eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee\",\"core_sha256\":\"4fdcafcdf7f57b9de81f56e8e17db06a91e27680c6a711f3888fd0b76da46421\",\"gate_image\":\"registry.invalid/gate@sha256:cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc\",\"gates\":{\"aggregate\":{\"evidence_sha256\":\"sha256:dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd\",\"passed\":true},\"cap-assignment\":{\"evidence_sha256\":\"sha256:dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd\",\"passed\":true},\"memory-import\":{\"evidence_sha256\":\"sha256:dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd\",\"passed\":true},\"mps\":{\"evidence_sha256\":\"sha256:dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd\",\"passed\":true},\"oom-peer\":{\"evidence_sha256\":\"sha256:dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd\",\"passed\":true},\"restart-cleanup\":{\"evidence_sha256\":\"sha256:dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd\",\"passed\":true}},\"health_sha256\":\"52fdbdae3d5e2f66fd4653d94ef5a62f734e185fabec30450f4a1b70cfee7d67\",\"node_pool\":{\"boot_id\":\"209f8bc9-a478-48e4-925a-6e07ffa56f7a\",\"driver_generation\":\"b10498fc-9153-4394-875a-ea7cfb498625\",\"free_memory_mib\":40470,\"gpu_uuid\":\"GPU-22222222-2222-4222-8222-222222222222\",\"headroom_mib\":1024,\"max_workspaces\":6,\"memory_budget_mib\":30720,\"node\":\"another-node\",\"node_uid\":\"11111111-1111-4111-8111-111111111111\",\"total_memory_mib\":40960},\"policy_evidence_version\":3,\"policy_hash\":\"sha256:da04b302985c11a6ee429e2308376655afff9482724989e8aa07f1ca210a66e5\",\"policy_version\":\"1\",\"profile_caps\":{\"interactive-shared-10\":10240,\"interactive-shared-20\":20480,\"interactive-shared-5\":5120},\"uvm_sha256\":\"b2ae67722e9e21a70c319aeed2184f5b2d1f23b8e32dea00816cfd5cd2c3ee61\",\"version\":3,\"workload_image\":\"ghcr.io/mul-cps/runtime@sha256:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb\"},\"evidence_sha256\":\"sha256:cb3103b149bf76abca025baf476c79d2fa32b419267f4b0d6ba7bad90b01d542\",\"gateImage\":\"registry.invalid/gate@sha256:cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc\",\"node_pool\":{\"boot_id\":\"209f8bc9-a478-48e4-925a-6e07ffa56f7a\",\"driver_generation\":\"b10498fc-9153-4394-875a-ea7cfb498625\",\"free_memory_mib\":40470,\"gpu_uuid\":\"GPU-22222222-2222-4222-8222-222222222222\",\"headroom_mib\":1024,\"max_workspaces\":6,\"memory_budget_mib\":30720,\"node\":\"another-node\",\"node_uid\":\"11111111-1111-4111-8111-111111111111\",\"total_memory_mib\":40960},\"policy_hash\":\"sha256:da04b302985c11a6ee429e2308376655afff9482724989e8aa07f1ca210a66e5\",\"qualification_ref\":{\"data_sha256\":\"sha256:7aea1dac4985eacff2d39ac8eb4a2fe5f593aeda36a932b7c235125d496fead6\",\"key\":\"qualification.json\",\"name\":\"reviewed-proof\",\"namespace\":\"cps-compute\",\"resourceVersion\":\"42\",\"uid\":\"33333333-3333-4333-8333-333333333333\"},\"version\":3,\"workloadImage\":\"ghcr.io/mul-cps/runtime@sha256:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb\",\"workspaces\":{\"cit:group-10\":{\"ceiling\":{\"cpu\":\"4\",\"gpuMemoryGiB\":10,\"memory\":\"16Gi\"},\"course_id\":\"course\",\"group_id\":\"group-10\",\"members\":[\"person-group-10\"],\"namespace\":\"cit-jhub\",\"owner\":\"neutral-group-10\",\"pod\":\"jupyter-group-10\",\"principal\":\"workspace:cit:group-10\",\"profiles\":[\"interactive-shared-10\"],\"server\":\"rtc\",\"storage\":{\"group_hash\":\"group-10\",\"namespace\":\"cit-jhub\",\"path\":\"/mnt/project/group-10\",\"pv\":\"group-10-pv\",\"pvc\":\"group-10-pvc\",\"readonly_mounts\":[],\"storage_version\":2},\"term_id\":\"term\"},\"cps:group-20\":{\"ceiling\":{\"cpu\":\"4\",\"gpuMemoryGiB\":20,\"memory\":\"16Gi\"},\"course_id\":\"course\",\"group_id\":\"group-20\",\"members\":[\"person-group-20\"],\"namespace\":\"jupyterhub\",\"owner\":\"neutral-group-20\",\"pod\":\"jupyter-group-20\",\"principal\":\"workspace:cps:group-20\",\"profiles\":[\"interactive-shared-20\"],\"server\":\"rtc\",\"storage\":{\"group_hash\":\"group-20\",\"namespace\":\"jupyterhub\",\"path\":\"/mnt/project/group-20\",\"pv\":\"group-20-pv\",\"pvc\":\"group-20-pvc\",\"readonly_mounts\":[],\"storage_version\":2},\"term_id\":\"term\"},\"cps:group-5\":{\"ceiling\":{\"cpu\":\"4\",\"gpuMemoryGiB\":5,\"memory\":\"16Gi\"},\"course_id\":\"course\",\"group_id\":\"group-5\",\"members\":[\"person-group-5\"],\"namespace\":\"jupyterhub\",\"owner\":\"neutral-group-5\",\"pod\":\"jupyter-group-5\",\"principal\":\"workspace:cps:group-5\",\"profiles\":[\"interactive-shared-5\"],\"server\":\"rtc\",\"storage\":{\"group_hash\":\"group-5\",\"namespace\":\"jupyterhub\",\"path\":\"/mnt/project/group-5\",\"pv\":\"group-5-pv\",\"pvc\":\"group-5-pvc\",\"readonly_mounts\":[],\"storage_version\":2},\"term_id\":\"term\"}}},\"generation\":1,\"version\":2},\"revision\":\"sha256:80b29980d7d10fb2414a715abaa90bb0928a45f441fbc3189d148f57383b8d9e\",\"version\":2}"
+        },
+        "immutable": true,
+        "kind": "ConfigMap",
+        "metadata": {
+          "name": "approval",
+          "namespace": "cps-compute",
+          "resourceVersion": "31",
+          "uid": "55555555-5555-4555-8555-555555555555"
+        }
+      },
+      {
+        "apiVersion": "v1",
+        "data": {
+          "index.json": "{\"version\":1}"
+        },
+        "immutable": true,
+        "kind": "ConfigMap",
+        "metadata": {
+          "name": "terminal-index",
+          "namespace": "cps-compute",
+          "resourceVersion": "31",
+          "uid": "66666666-6666-4666-8666-666666666666"
+        }
+      },
+      {
+        "apiVersion": "v1",
+        "data": {
+          "config-ref.json": "{\"data_sha256\": \"sha256:ffa73ea805c2a0caaf741b044076689678a3fed00895d5978d6cbe72197be3f1\", \"key\": \"config.json\", \"name\": \"node-config\", \"namespace\": \"cps-compute\", \"resourceVersion\": \"31\", \"uid\": \"11111111-1111-4111-8111-111111111111\"}",
+          "policy.json": "{\"version\": \"1\", \"labels\": {\"owner\": \"compute.cps.unileoben.ac.at/owner\", \"project\": \"compute.cps.unileoben.ac.at/project\", \"policyHash\": \"compute.cps.unileoben.ac.at/policy-hash\", \"policyVersion\": \"compute.cps.unileoben.ac.at/policy-version\", \"workspace\": \"compute.cps.unileoben.ac.at/workspace\"}, \"profiles\": {\"cpu\": {\"kind\": \"interactive\", \"queue\": \"interactive\", \"cpu\": \"1\", \"memory\": \"1Gi\", \"gpu\": \"0\", \"images\": [\"registry.example/runner@sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\"]}, \"shared\": {\"enabled\": true, \"kind\": \"interactive\", \"queue\": \"interactive\", \"cpu\": \"2\", \"memory\": \"4Gi\", \"images\": [\"registry.example/runner@sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\"], \"maxAgeSeconds\": 3600, \"idleSeconds\": 600, \"gpu\": {\"mode\": \"shared\", \"nominalMemoryGiB\": 5, \"fraction\": \"0.1\", \"qualification\": {\"status\": \"qualified\", \"mechanism\": \"kai-hami\", \"policyVersion\": \"1\", \"evidence\": [\"test-fixture-only\"], \"annotations\": {\"gpu-memory\": \"5120\"}, \"resources\": {}}}}, \"interactive-shared-5\": {\"enabled\": true, \"kind\": \"interactive\", \"queue\": \"interactive\", \"cpu\": \"4\", \"memory\": \"16Gi\", \"images\": [\"ghcr.io/mul-cps/runtime@sha256:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb\"], \"gpu\": {\"mode\": \"shared\", \"nominalMemoryGiB\": 5, \"qualification\": {\"mechanism\": \"r615-native-cgroup-managed-deny\", \"status\": \"qualified-group\", \"policyVersion\": \"1\", \"evidence\": [\"native-groups-v3\"]}}}, \"interactive-shared-10\": {\"enabled\": true, \"kind\": \"interactive\", \"queue\": \"interactive\", \"cpu\": \"4\", \"memory\": \"16Gi\", \"images\": [\"ghcr.io/mul-cps/runtime@sha256:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb\"], \"gpu\": {\"mode\": \"shared\", \"nominalMemoryGiB\": 10, \"qualification\": {\"mechanism\": \"r615-native-cgroup-managed-deny\", \"status\": \"qualified-group\", \"policyVersion\": \"1\", \"evidence\": [\"native-groups-v3\"]}}}, \"interactive-shared-20\": {\"enabled\": true, \"kind\": \"interactive\", \"queue\": \"interactive\", \"cpu\": \"4\", \"memory\": \"16Gi\", \"images\": [\"ghcr.io/mul-cps/runtime@sha256:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb\"], \"gpu\": {\"mode\": \"shared\", \"nominalMemoryGiB\": 20, \"qualification\": {\"mechanism\": \"r615-native-cgroup-managed-deny\", \"status\": \"qualified-group\", \"policyVersion\": \"1\", \"evidence\": [\"native-groups-v3\"]}}}}, \"trusted\": {\"namespace\": \"argo\", \"serviceAccountName\": \"runner\", \"schedulerName\": \"kai-scheduler\", \"queue\": \"batch\", \"priorityClassName\": \"batch\", \"sharedGpuRuntime\": {\"initializerImage\": \"registry.example/runner@sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\", \"approvedInitializerImages\": [\"registry.example/runner@sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\"], \"uid\": 10001, \"gid\": 10001}}, \"workloadScheduling\": {\"interactive\": {\"queue\": \"cps-interactive\", \"priorityClassName\": \"cps-homework\"}, \"batch\": {\"queue\": \"cps-batch\", \"priorityClassName\": \"cps-batch\"}}, \"gpuQualification\": {\"qualified\": false}, \"priorities\": {\"homework\": 40}}",
+          "release": "true"
+        },
+        "kind": "ConfigMap",
+        "metadata": {
+          "name": "bootstrap",
+          "namespace": "cps-compute"
+        }
+      }
+    ],
+    "deployments": [
+      {
+        "apiVersion": "apps/v1",
+        "kind": "Deployment",
+        "metadata": {
+          "name": "gateway",
+          "namespace": "gateway-system",
+          "uid": "00000000-0000-0000-0000-000000000065"
+        },
+        "spec": {
+          "selector": {
+            "matchLabels": {
+              "app": "approved-gateway"
+            }
+          },
+          "template": {
+            "metadata": {
+              "labels": {
+                "app": "approved-gateway"
+              }
+            },
+            "spec": {
+              "containers": [
+                {
+                  "image": "registry/node@sha256:cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
+                  "name": "main",
+                  "volumeMounts": [
+                    {
+                      "mountPath": "/var/run/cps-native-approvals/approval.json",
+                      "name": "approved-groups",
+                      "readOnly": true,
+                      "subPath": "approval.json"
+                    }
+                  ]
+                }
+              ],
+              "serviceAccountName": "node-sa",
+              "volumes": [
+                {
+                  "configMap": {
+                    "name": "approved-groups-test"
+                  },
+                  "name": "approved-groups"
+                }
+              ]
+            }
+          }
+        }
+      },
+      {
+        "apiVersion": "apps/v1",
+        "kind": "Deployment",
+        "metadata": {
+          "name": "hub-cit",
+          "namespace": "cit-hub",
+          "uid": "00000000-0000-0000-0000-000000000067"
+        },
+        "spec": {
+          "selector": {
+            "matchLabels": {
+              "app": "approved-gateway"
+            }
+          },
+          "template": {
+            "metadata": {
+              "labels": {
+                "app": "approved-gateway"
+              }
+            },
+            "spec": {
+              "containers": [
+                {
+                  "image": "registry/node@sha256:cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
+                  "name": "main",
+                  "volumeMounts": [
+                    {
+                      "mountPath": "/var/run/cps-native-approvals/approval.json",
+                      "name": "approved-groups",
+                      "readOnly": true,
+                      "subPath": "approval.json"
+                    }
+                  ]
+                }
+              ],
+              "serviceAccountName": "node-sa",
+              "volumes": [
+                {
+                  "configMap": {
+                    "name": "approved-groups-test"
+                  },
+                  "name": "approved-groups"
+                }
+              ]
+            }
+          }
+        }
+      },
+      {
+        "apiVersion": "apps/v1",
+        "kind": "Deployment",
+        "metadata": {
+          "name": "hub-cps",
+          "namespace": "cps-hub",
+          "uid": "00000000-0000-0000-0000-000000000066"
+        },
+        "spec": {
+          "selector": {
+            "matchLabels": {
+              "app": "approved-gateway"
+            }
+          },
+          "template": {
+            "metadata": {
+              "labels": {
+                "app": "approved-gateway"
+              }
+            },
+            "spec": {
+              "containers": [
+                {
+                  "image": "registry/node@sha256:cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
+                  "name": "main",
+                  "volumeMounts": [
+                    {
+                      "mountPath": "/var/run/cps-native-approvals/approval.json",
+                      "name": "approved-groups",
+                      "readOnly": true,
+                      "subPath": "approval.json"
+                    }
+                  ]
+                }
+              ],
+              "serviceAccountName": "node-sa",
+              "volumes": [
+                {
+                  "configMap": {
+                    "name": "approved-groups-test"
+                  },
+                  "name": "approved-groups"
+                }
+              ]
+            }
+          }
+        }
+      },
+      {
+        "apiVersion": "apps/v1",
+        "kind": "Deployment",
+        "metadata": {
+          "name": "node",
+          "namespace": "cps-compute",
+          "uid": "00000000-0000-0000-0000-000000000068"
+        },
+        "spec": {
+          "selector": {
+            "matchLabels": {
+              "app": "approved-gateway"
+            }
+          },
+          "template": {
+            "metadata": {
+              "labels": {
+                "app": "approved-gateway"
+              }
+            },
+            "spec": {
+              "containers": [
+                {
+                  "image": "registry/node@sha256:cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
+                  "name": "main",
+                  "volumeMounts": [
+                    {
+                      "mountPath": "/var/run/cps-native-approvals/approval.json",
+                      "name": "approved-groups",
+                      "readOnly": true,
+                      "subPath": "approval.json"
+                    }
+                  ]
+                }
+              ],
+              "nodeName": "another-node",
+              "serviceAccountName": "node-sa",
+              "volumes": [
+                {
+                  "configMap": {
+                    "name": "approved-groups-test"
+                  },
+                  "name": "approved-groups"
+                },
+                {
+                  "configMap": {
+                    "name": "bootstrap"
+                  },
+                  "name": "packaged-bootstrap-input"
+                }
+              ]
+            }
+          }
+        }
+      }
+    ],
+    "roles": [
+      {
+        "apiVersion": "rbac.authorization.k8s.io/v1",
+        "kind": "Role",
+        "metadata": {
+          "name": "cps-native-approval-gateway",
+          "namespace": "gateway-system",
+          "resourceVersion": "1",
+          "uid": "d2586d6e-ce5e-40f6-a720-96631f120df6"
+        },
+        "rules": [
+          {
+            "apiGroups": [
+              ""
+            ],
+            "resourceNames": [
+              "authority"
+            ],
+            "resources": [
+              "configmaps"
+            ],
+            "verbs": [
+              "get"
+            ]
+          },
+          {
+            "apiGroups": [
+              ""
+            ],
+            "resourceNames": [
+              "baseline-pod"
+            ],
+            "resources": [
+              "pods"
+            ],
+            "verbs": [
+              "get"
+            ]
+          },
+          {
+            "apiGroups": [
+              "apps"
+            ],
+            "resourceNames": [
+              "baseline-rs"
+            ],
+            "resources": [
+              "replicasets"
+            ],
+            "verbs": [
+              "get"
+            ]
+          }
+        ]
+      },
+      {
+        "apiVersion": "rbac.authorization.k8s.io/v1",
+        "kind": "Role",
+        "metadata": {
+          "name": "cps-native-approval-hub-cps",
+          "namespace": "cps-hub",
+          "resourceVersion": "1",
+          "uid": "a1cfd644-6fcd-4d4c-bf0e-c399e04d195b"
+        },
+        "rules": [
+          {
+            "apiGroups": [
+              ""
+            ],
+            "resourceNames": [
+              "authority"
+            ],
+            "resources": [
+              "configmaps"
+            ],
+            "verbs": [
+              "get"
+            ]
+          },
+          {
+            "apiGroups": [
+              ""
+            ],
+            "resourceNames": [
+              "baseline-pod"
+            ],
+            "resources": [
+              "pods"
+            ],
+            "verbs": [
+              "get"
+            ]
+          },
+          {
+            "apiGroups": [
+              "apps"
+            ],
+            "resourceNames": [
+              "baseline-rs"
+            ],
+            "resources": [
+              "replicasets"
+            ],
+            "verbs": [
+              "get"
+            ]
+          }
+        ]
+      },
+      {
+        "apiVersion": "rbac.authorization.k8s.io/v1",
+        "kind": "Role",
+        "metadata": {
+          "name": "cps-native-approval-gateway",
+          "namespace": "cps-hub",
+          "resourceVersion": "1",
+          "uid": "0abb8221-e9c5-4c07-b687-234418dce496"
+        },
+        "rules": [
+          {
+            "apiGroups": [
+              ""
+            ],
+            "resourceNames": [
+              "authority"
+            ],
+            "resources": [
+              "configmaps"
+            ],
+            "verbs": [
+              "get"
+            ]
+          },
+          {
+            "apiGroups": [
+              ""
+            ],
+            "resourceNames": [
+              "baseline-pod"
+            ],
+            "resources": [
+              "pods"
+            ],
+            "verbs": [
+              "get"
+            ]
+          },
+          {
+            "apiGroups": [
+              "apps"
+            ],
+            "resourceNames": [
+              "baseline-rs"
+            ],
+            "resources": [
+              "replicasets"
+            ],
+            "verbs": [
+              "get"
+            ]
+          }
+        ]
+      },
+      {
+        "apiVersion": "rbac.authorization.k8s.io/v1",
+        "kind": "Role",
+        "metadata": {
+          "name": "cps-native-approval-hub-cit",
+          "namespace": "cit-hub",
+          "resourceVersion": "1",
+          "uid": "46bf5721-ac40-4089-9393-a458c143c3d1"
+        },
+        "rules": [
+          {
+            "apiGroups": [
+              ""
+            ],
+            "resourceNames": [
+              "authority"
+            ],
+            "resources": [
+              "configmaps"
+            ],
+            "verbs": [
+              "get"
+            ]
+          },
+          {
+            "apiGroups": [
+              ""
+            ],
+            "resourceNames": [
+              "baseline-pod"
+            ],
+            "resources": [
+              "pods"
+            ],
+            "verbs": [
+              "get"
+            ]
+          },
+          {
+            "apiGroups": [
+              "apps"
+            ],
+            "resourceNames": [
+              "baseline-rs"
+            ],
+            "resources": [
+              "replicasets"
+            ],
+            "verbs": [
+              "get"
+            ]
+          }
+        ]
+      },
+      {
+        "apiVersion": "rbac.authorization.k8s.io/v1",
+        "kind": "Role",
+        "metadata": {
+          "name": "cps-native-approval-gateway",
+          "namespace": "cit-hub",
+          "resourceVersion": "1",
+          "uid": "f9292603-11a5-4799-a443-b8fdada96c80"
+        },
+        "rules": [
+          {
+            "apiGroups": [
+              ""
+            ],
+            "resourceNames": [
+              "authority"
+            ],
+            "resources": [
+              "configmaps"
+            ],
+            "verbs": [
+              "get"
+            ]
+          },
+          {
+            "apiGroups": [
+              ""
+            ],
+            "resourceNames": [
+              "baseline-pod"
+            ],
+            "resources": [
+              "pods"
+            ],
+            "verbs": [
+              "get"
+            ]
+          },
+          {
+            "apiGroups": [
+              "apps"
+            ],
+            "resourceNames": [
+              "baseline-rs"
+            ],
+            "resources": [
+              "replicasets"
+            ],
+            "verbs": [
+              "get"
+            ]
+          }
+        ]
+      },
+      {
+        "apiVersion": "rbac.authorization.k8s.io/v1",
+        "kind": "Role",
+        "metadata": {
+          "name": "cps-native-approval-node",
+          "namespace": "cps-compute",
+          "resourceVersion": "1",
+          "uid": "24eca49b-462e-4f1a-8380-a29d50587a01"
+        },
+        "rules": [
+          {
+            "apiGroups": [
+              ""
+            ],
+            "resourceNames": [
+              "authority"
+            ],
+            "resources": [
+              "configmaps"
+            ],
+            "verbs": [
+              "get"
+            ]
+          },
+          {
+            "apiGroups": [
+              ""
+            ],
+            "resourceNames": [
+              "baseline-pod"
+            ],
+            "resources": [
+              "pods"
+            ],
+            "verbs": [
+              "get"
+            ]
+          },
+          {
+            "apiGroups": [
+              "apps"
+            ],
+            "resourceNames": [
+              "baseline-rs"
+            ],
+            "resources": [
+              "replicasets"
+            ],
+            "verbs": [
+              "get"
+            ]
+          }
+        ]
+      },
+      {
+        "apiVersion": "rbac.authorization.k8s.io/v1",
+        "kind": "Role",
+        "metadata": {
+          "name": "cps-native-approval-gateway",
+          "namespace": "cps-compute",
+          "resourceVersion": "1",
+          "uid": "592c3e17-b7d1-4e26-8ff6-226bfb14e103"
+        },
+        "rules": [
+          {
+            "apiGroups": [
+              ""
+            ],
+            "resourceNames": [
+              "authority"
+            ],
+            "resources": [
+              "configmaps"
+            ],
+            "verbs": [
+              "get"
+            ]
+          },
+          {
+            "apiGroups": [
+              ""
+            ],
+            "resourceNames": [
+              "baseline-pod"
+            ],
+            "resources": [
+              "pods"
+            ],
+            "verbs": [
+              "get"
+            ]
+          },
+          {
+            "apiGroups": [
+              "apps"
+            ],
+            "resourceNames": [
+              "baseline-rs"
+            ],
+            "resources": [
+              "replicasets"
+            ],
+            "verbs": [
+              "get"
+            ]
+          }
+        ]
+      }
+    ],
+    "version": 1
+  },
+  "policy": {
+    "gpuQualification": {
+      "qualified": false
+    },
+    "labels": {
+      "owner": "compute.cps.unileoben.ac.at/owner",
+      "policyHash": "compute.cps.unileoben.ac.at/policy-hash",
+      "policyVersion": "compute.cps.unileoben.ac.at/policy-version",
+      "project": "compute.cps.unileoben.ac.at/project",
+      "workspace": "compute.cps.unileoben.ac.at/workspace"
+    },
+    "priorities": {
+      "homework": 40
+    },
+    "profiles": {
+      "cpu": {
+        "cpu": "1",
+        "gpu": "0",
+        "images": [
+          "registry.example/runner@sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+        ],
+        "kind": "interactive",
+        "memory": "1Gi",
+        "queue": "interactive"
+      },
+      "interactive-shared-10": {
+        "cpu": "4",
+        "enabled": true,
+        "gpu": {
+          "mode": "shared",
+          "nominalMemoryGiB": 10,
+          "qualification": {
+            "evidence": [
+              "native-groups-v3"
+            ],
+            "mechanism": "r615-native-cgroup-managed-deny",
+            "policyVersion": "1",
+            "status": "qualified-group"
+          }
+        },
+        "images": [
+          "ghcr.io/mul-cps/runtime@sha256:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
+        ],
+        "kind": "interactive",
+        "memory": "16Gi",
+        "queue": "interactive"
+      },
+      "interactive-shared-20": {
+        "cpu": "4",
+        "enabled": true,
+        "gpu": {
+          "mode": "shared",
+          "nominalMemoryGiB": 20,
+          "qualification": {
+            "evidence": [
+              "native-groups-v3"
+            ],
+            "mechanism": "r615-native-cgroup-managed-deny",
+            "policyVersion": "1",
+            "status": "qualified-group"
+          }
+        },
+        "images": [
+          "ghcr.io/mul-cps/runtime@sha256:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
+        ],
+        "kind": "interactive",
+        "memory": "16Gi",
+        "queue": "interactive"
+      },
+      "interactive-shared-5": {
+        "cpu": "4",
+        "enabled": true,
+        "gpu": {
+          "mode": "shared",
+          "nominalMemoryGiB": 5,
+          "qualification": {
+            "evidence": [
+              "native-groups-v3"
+            ],
+            "mechanism": "r615-native-cgroup-managed-deny",
+            "policyVersion": "1",
+            "status": "qualified-group"
+          }
+        },
+        "images": [
+          "ghcr.io/mul-cps/runtime@sha256:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
+        ],
+        "kind": "interactive",
+        "memory": "16Gi",
+        "queue": "interactive"
+      },
+      "shared": {
+        "cpu": "2",
+        "enabled": true,
+        "gpu": {
+          "fraction": "0.1",
+          "mode": "shared",
+          "nominalMemoryGiB": 5,
+          "qualification": {
+            "annotations": {
+              "gpu-memory": "5120"
+            },
+            "evidence": [
+              "test-fixture-only"
+            ],
+            "mechanism": "kai-hami",
+            "policyVersion": "1",
+            "resources": {},
+            "status": "qualified"
+          }
+        },
+        "idleSeconds": 600,
+        "images": [
+          "registry.example/runner@sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+        ],
+        "kind": "interactive",
+        "maxAgeSeconds": 3600,
+        "memory": "4Gi",
+        "queue": "interactive"
+      }
+    },
+    "trusted": {
+      "namespace": "argo",
+      "priorityClassName": "batch",
+      "queue": "batch",
+      "schedulerName": "kai-scheduler",
+      "serviceAccountName": "runner",
+      "sharedGpuRuntime": {
+        "approvedInitializerImages": [
+          "registry.example/runner@sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+        ],
+        "gid": 10001,
+        "initializerImage": "registry.example/runner@sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "uid": 10001
+      }
+    },
+    "version": "1",
+    "workloadScheduling": {
+      "batch": {
+        "priorityClassName": "cps-batch",
+        "queue": "cps-batch"
+      },
+      "interactive": {
+        "priorityClassName": "cps-homework",
+        "queue": "cps-interactive"
+      }
+    }
+  },
+  "release": {
+    "held_node_template_sha256": null,
+    "node_configuration": {
+      "data_sha256": "sha256:ffa73ea805c2a0caaf741b044076689678a3fed00895d5978d6cbe72197be3f1",
+      "key": "config.json",
+      "name": "node-config",
+      "namespace": "cps-compute",
+      "resourceVersion": "31",
+      "uid": "11111111-1111-4111-8111-111111111111"
+    },
+    "roles": [
+      {
+        "name": "cps-native-approval-gateway",
+        "namespace": "gateway-system",
+        "rules": [
+          {
+            "apiGroups": [
+              ""
+            ],
+            "resourceNames": [
+              "authority"
+            ],
+            "resources": [
+              "configmaps"
+            ],
+            "verbs": [
+              "get"
+            ]
+          },
+          {
+            "apiGroups": [
+              ""
+            ],
+            "resourceNames": [
+              "baseline-pod"
+            ],
+            "resources": [
+              "pods"
+            ],
+            "verbs": [
+              "get"
+            ]
+          },
+          {
+            "apiGroups": [
+              "apps"
+            ],
+            "resourceNames": [
+              "baseline-rs"
+            ],
+            "resources": [
+              "replicasets"
+            ],
+            "verbs": [
+              "get"
+            ]
+          }
+        ],
+        "uid": "d2586d6e-ce5e-40f6-a720-96631f120df6"
+      },
+      {
+        "name": "cps-native-approval-hub-cps",
+        "namespace": "cps-hub",
+        "rules": [
+          {
+            "apiGroups": [
+              ""
+            ],
+            "resourceNames": [
+              "authority"
+            ],
+            "resources": [
+              "configmaps"
+            ],
+            "verbs": [
+              "get"
+            ]
+          },
+          {
+            "apiGroups": [
+              ""
+            ],
+            "resourceNames": [
+              "baseline-pod"
+            ],
+            "resources": [
+              "pods"
+            ],
+            "verbs": [
+              "get"
+            ]
+          },
+          {
+            "apiGroups": [
+              "apps"
+            ],
+            "resourceNames": [
+              "baseline-rs"
+            ],
+            "resources": [
+              "replicasets"
+            ],
+            "verbs": [
+              "get"
+            ]
+          }
+        ],
+        "uid": "a1cfd644-6fcd-4d4c-bf0e-c399e04d195b"
+      },
+      {
+        "name": "cps-native-approval-gateway",
+        "namespace": "cps-hub",
+        "rules": [
+          {
+            "apiGroups": [
+              ""
+            ],
+            "resourceNames": [
+              "authority"
+            ],
+            "resources": [
+              "configmaps"
+            ],
+            "verbs": [
+              "get"
+            ]
+          },
+          {
+            "apiGroups": [
+              ""
+            ],
+            "resourceNames": [
+              "baseline-pod"
+            ],
+            "resources": [
+              "pods"
+            ],
+            "verbs": [
+              "get"
+            ]
+          },
+          {
+            "apiGroups": [
+              "apps"
+            ],
+            "resourceNames": [
+              "baseline-rs"
+            ],
+            "resources": [
+              "replicasets"
+            ],
+            "verbs": [
+              "get"
+            ]
+          }
+        ],
+        "uid": "0abb8221-e9c5-4c07-b687-234418dce496"
+      },
+      {
+        "name": "cps-native-approval-hub-cit",
+        "namespace": "cit-hub",
+        "rules": [
+          {
+            "apiGroups": [
+              ""
+            ],
+            "resourceNames": [
+              "authority"
+            ],
+            "resources": [
+              "configmaps"
+            ],
+            "verbs": [
+              "get"
+            ]
+          },
+          {
+            "apiGroups": [
+              ""
+            ],
+            "resourceNames": [
+              "baseline-pod"
+            ],
+            "resources": [
+              "pods"
+            ],
+            "verbs": [
+              "get"
+            ]
+          },
+          {
+            "apiGroups": [
+              "apps"
+            ],
+            "resourceNames": [
+              "baseline-rs"
+            ],
+            "resources": [
+              "replicasets"
+            ],
+            "verbs": [
+              "get"
+            ]
+          }
+        ],
+        "uid": "46bf5721-ac40-4089-9393-a458c143c3d1"
+      },
+      {
+        "name": "cps-native-approval-gateway",
+        "namespace": "cit-hub",
+        "rules": [
+          {
+            "apiGroups": [
+              ""
+            ],
+            "resourceNames": [
+              "authority"
+            ],
+            "resources": [
+              "configmaps"
+            ],
+            "verbs": [
+              "get"
+            ]
+          },
+          {
+            "apiGroups": [
+              ""
+            ],
+            "resourceNames": [
+              "baseline-pod"
+            ],
+            "resources": [
+              "pods"
+            ],
+            "verbs": [
+              "get"
+            ]
+          },
+          {
+            "apiGroups": [
+              "apps"
+            ],
+            "resourceNames": [
+              "baseline-rs"
+            ],
+            "resources": [
+              "replicasets"
+            ],
+            "verbs": [
+              "get"
+            ]
+          }
+        ],
+        "uid": "f9292603-11a5-4799-a443-b8fdada96c80"
+      },
+      {
+        "name": "cps-native-approval-node",
+        "namespace": "cps-compute",
+        "rules": [
+          {
+            "apiGroups": [
+              ""
+            ],
+            "resourceNames": [
+              "authority"
+            ],
+            "resources": [
+              "configmaps"
+            ],
+            "verbs": [
+              "get"
+            ]
+          },
+          {
+            "apiGroups": [
+              ""
+            ],
+            "resourceNames": [
+              "baseline-pod"
+            ],
+            "resources": [
+              "pods"
+            ],
+            "verbs": [
+              "get"
+            ]
+          },
+          {
+            "apiGroups": [
+              "apps"
+            ],
+            "resourceNames": [
+              "baseline-rs"
+            ],
+            "resources": [
+              "replicasets"
+            ],
+            "verbs": [
+              "get"
+            ]
+          }
+        ],
+        "uid": "24eca49b-462e-4f1a-8380-a29d50587a01"
+      },
+      {
+        "name": "cps-native-approval-gateway",
+        "namespace": "cps-compute",
+        "rules": [
+          {
+            "apiGroups": [
+              ""
+            ],
+            "resourceNames": [
+              "authority"
+            ],
+            "resources": [
+              "configmaps"
+            ],
+            "verbs": [
+              "get"
+            ]
+          },
+          {
+            "apiGroups": [
+              ""
+            ],
+            "resourceNames": [
+              "baseline-pod"
+            ],
+            "resources": [
+              "pods"
+            ],
+            "verbs": [
+              "get"
+            ]
+          },
+          {
+            "apiGroups": [
+              "apps"
+            ],
+            "resourceNames": [
+              "baseline-rs"
+            ],
+            "resources": [
+              "replicasets"
+            ],
+            "verbs": [
+              "get"
+            ]
+          }
+        ],
+        "uid": "592c3e17-b7d1-4e26-8ff6-226bfb14e103"
+      }
+    ],
+    "version": 1
+  }
+}
