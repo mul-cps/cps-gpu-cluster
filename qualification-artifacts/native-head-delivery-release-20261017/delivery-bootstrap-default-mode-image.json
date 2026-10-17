@@ -1,0 +1,26 @@
+{
+  "component": "delivery-only",
+  "revision": "d66abdeb6b5bcafa639129b7f3172232ce2ae15f",
+  "tag": "ghcr.io/mul-cps/cps-compute:head-d66abdeb6b5b-delivery",
+  "reference": "ghcr.io/mul-cps/cps-compute@sha256:0b2d972f661485176d624dc17d57b77e56d25f9b6d727c2c00cd2322bf97e68b",
+  "manifest_sha256": "sha256:0b2d972f661485176d624dc17d57b77e56d25f9b6d727c2c00cd2322bf97e68b",
+  "config_sha256": "sha256:211031de3199b075203091c998307d725312f322d557ddc71079f7da3e2f51df",
+  "registry_verified": true,
+  "deployed": false,
+  "full_source_tests_passed": 3330,
+  "subtests_passed": 49,
+  "host_skipped_cases_passed_in_image": 3,
+  "installed_rotation_tests_passed": 33,
+  "independent_rotation_tests_passed": 33,
+  "source_modules_verified": 72,
+  "sdist_wheel_identical": true,
+  "wheel_sha256": "c67cd7595c080818c17448937f8ab687ccf0e004da76096d9f1e9e03fbc0b3da",
+  "sdist_sha256": "df602104f2b7563cf95258b73141a425378ae14061f3e07169212b13db8966e5",
+  "ci": {
+    "run_id": 39031116056,
+    "last_observed": "in_progress"
+  },
+  "rotation_retry_applied": false,
+  "coordinator_admission_preflight_passed": true,
+  "both_pending_hub_preflights_passed": true
+}
