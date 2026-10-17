@@ -1,0 +1,24 @@
+{
+  "gateway_revision": "1f4d647bb4cedda5f521f09f9f54a74aa9e521ef",
+  "gateway_image": "ghcr.io/mul-cps/cps-compute@sha256:31e7904c1389398c3a2a7b04bff94ab382a691898c060b36d91a4b0ce6bd2321",
+  "trust_handover_applied": true,
+  "gateway_ready": true,
+  "both_hubs_ready": true,
+  "node_ready": true,
+  "observer_reconciliation_plan_empty": true,
+  "four_genuine_acknowledgments_verified": true,
+  "original_operator_roles_preserved": true,
+  "protected_notebook_uids_preserved": true,
+  "gpu2_cordoned": true,
+  "coordinator_installed": false,
+  "head_writer_replicas": 0,
+  "journal_rotation": {
+    "job_failed_before_commit": true,
+    "reason": "Validator rejected Kubernetes-default configMap.defaultMode=420 on authenticated old bootstrap template",
+    "state_and_anchor_bytes_inode_device_unchanged": true,
+    "version": 2,
+    "state_sha256": "sha256:3d4a637873cafb2f6978bd54f5de4946a2766c46d6a870ba6af0b6d135d3daba",
+    "anchor_sha256": "sha256:4d7cab1a83741b099ed192dd540e53c55c8f212a9c6b72c77e9f6a3a8579e71d"
+  },
+  "production_ready": false
+}

@@ -171,3 +171,21 @@ Publication is not deployment: the old six inert successor objects still
 reference the superseded Gateway candidate. Refresh actual successor refs,
 finish exact-source CI, then perform the guarded maintenance and live GPU
 acceptance gates. No journal rotation or live successor rollout is claimed.
+
+### Live trust handover and rotation attempt
+
+The fixed Gateway `1f4d647` is now deployed with its actual successor Node
+reference and observer release. Gateway, both unchanged Hub applications,
+Node and observer recovered; the observer reconciliation plan was empty and
+four genuine current ACK2s passed. Original operator Roles and four protected
+notebook Pod UIDs were preserved; GPU2 remains cordoned.
+
+The explicit same-journal rotation Job then rejected Kubernetes' default
+`configMap.defaultMode: 420` on the authenticated old Node bootstrap volume.
+It failed before commit. A fresh read-only snapshot proved state and anchor
+bytes, inode and device identities unchanged; the journal remains version2.
+The writer is intentionally paused until the delivery validator fix is
+qualified and rotation succeeds. Coordinator installation, Hub pending-path
+activation and live shared-GPU acceptance remain open. See the separate
+`gateway-fixed-successor-live-result.json` receipt; earlier staging receipts
+remain historical observations.

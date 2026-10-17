@@ -6,7 +6,7 @@
   "manifest_sha256": "sha256:31e7904c1389398c3a2a7b04bff94ab382a691898c060b36d91a4b0ce6bd2321",
   "config_sha256": "sha256:ea388d41aac7b21736d368c41f1f9131308d8d27c790f18b6fe9a6ee9bb373f6",
   "registry_verified": true,
-  "deployed": false,
+  "deployed": true,
   "source_tests": {
     "passed": 3327,
     "subtests_passed": 49,
