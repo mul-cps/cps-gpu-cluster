@@ -71,3 +71,30 @@ PYTHONDONTWRITEBYTECODE=1 "$CPS_COMPUTE_PYTHON" -B -m unittest discover \
   -s platform-staging/gpu/native-group-pilot/current-group-kai \
   -p test_image_adoption.py -v
 ```
+
+## Observer successor for image adoption
+
+`observer_adoption.compose` composes a successor from an independently hashed
+previous observer release, catalog, exact image snapshot/plan, actual immutable
+NodeConfig and all three publisher readbacks, an actual `release=false` bootstrap,
+and a fresh four-Deployment/seven-Role/ConfigMap capture. `actual_configmaps`
+accepts the three publisher objects as a list or a closed labelled dictionary;
+the actual NodeConfig/bootstrap may also be included consistently.
+
+The previous seven Role identities and baseline rules remain independent of live
+permissions. Only the unique existing static ConfigMap GET rows receive the new
+NodeConfig and **all three** Gateway/CPS Hub/CIT Hub publisher names. Other static
+names, rows, verbs and writes are rejected, even when present in the live API.
+Mutable Pod/ReplicaSet GET names may differ without becoming trusted baseline
+permissions. Returned static patches test the actual Role UID/resourceVersion
+and complete rules preimage.
+
+The successor pins the actual new NodeConfig six-field reference and exact held
+Node template digest. The prospective capture carries actual controller and
+ConfigMap identities with only reviewed future controller/static-rule values;
+it never invents a new API UID/resourceVersion. Both the old and prospective
+states pass the existing pure observer renderer. Outputs explicitly retain
+`prospective=true`, `live_applied=false`, `process_readiness_verified=false` and
+`actual_only_render_required=true`. Root must obtain and validate actual fresh
+post-apply captures with the existing renderer before activating this release.
+This helper performs no apply, observer activation, process or GPU operation.
