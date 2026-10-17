@@ -1,0 +1,28 @@
+{
+  "component": "gateway",
+  "revision": "1f4d647bb4cedda5f521f09f9f54a74aa9e521ef",
+  "tag": "ghcr.io/mul-cps/cps-compute:head-1f4d647bb4ce-gateway",
+  "reference": "ghcr.io/mul-cps/cps-compute@sha256:31e7904c1389398c3a2a7b04bff94ab382a691898c060b36d91a4b0ce6bd2321",
+  "manifest_sha256": "sha256:31e7904c1389398c3a2a7b04bff94ab382a691898c060b36d91a4b0ce6bd2321",
+  "config_sha256": "sha256:ea388d41aac7b21736d368c41f1f9131308d8d27c790f18b6fe9a6ee9bb373f6",
+  "registry_verified": true,
+  "deployed": false,
+  "source_tests": {
+    "passed": 3327,
+    "subtests_passed": 49,
+    "skipped_host_only": 3
+  },
+  "independent_focused_tests_passed": 29,
+  "installed_wheel_focused_tests_passed": 29,
+  "disposable_image_root_tests_passed": 3,
+  "wheel_sha256": "dc2e2dcce491b7d75e654b6f3544840cfe9ca3ee52199b6cb0b02ff40f9754ba",
+  "sdist_sha256": "6f2c5fe0950ef9a3c3011081e73d4a35e23423a273e1b7f0f5b52a4fe8dd9773",
+  "source_module_count": 72,
+  "sdist_wheel_byte_identical": true,
+  "ci": {
+    "run_id": 39030164366,
+    "status": "in_progress_last_observed"
+  },
+  "live_successor_refs_refreshed": false,
+  "live_gpu_acceptance_complete": false
+}

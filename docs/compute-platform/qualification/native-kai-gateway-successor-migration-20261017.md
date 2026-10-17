@@ -148,3 +148,26 @@ registry manifest/config digests after review.
 Do not run `build_one.py` unchanged: it selects `contexts-551379c` explicitly.
 Do not reuse `docker/kai-reviewed-release/build_hub.sh` unchanged: its old wheel
 hashes are hardcoded. Neither is a generic successor publication command.
+
+### Revocation and restart regression closure
+
+The first startup candidate (`db9f453`) is superseded by SDK `1f4d647`: a
+normal approval/use/release/revocation cycle exposed a restart failure when
+the captured startup PVC list contained a now-revoked workspace. The fix
+accepts startup provenance only from current approvals or exact authenticated
+retained registry-v2 history, with a fresh exact-head check. Request-time
+leases, compilation and writable mounts remain current-approval-only.
+
+The real-runtime regression verifies revoked requests remain denied and a
+surviving approved peer can still lease and compile. Unknown, unretained,
+tampered or missing historical evidence and source/head races fail closed.
+Full source qualification passed 3,327 tests and 49 subtests; 29 focused
+cases passed independently and from the installed wheel. The three host-only
+skips passed in the actual candidate image in a disposable CPU container.
+
+The published Gateway digest and package checksums are in
+`qualification-artifacts/native-head-delivery-release-20261017/gateway-revoked-pvc-restart-image.json`.
+Publication is not deployment: the old six inert successor objects still
+reference the superseded Gateway candidate. Refresh actual successor refs,
+finish exact-source CI, then perform the guarded maintenance and live GPU
+acceptance gates. No journal rotation or live successor rollout is claimed.
