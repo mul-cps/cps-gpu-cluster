@@ -4,7 +4,44 @@ The platform remains **limited-pilot**. Production qualification and the full
 project are unfinished. This record supersedes current-state statements in the
 older completion ledger; their dated acceptance results remain historical evidence.
 
-## Current gate — legacy IPC and distinct-process VMM passed at 5/5 GiB
+## Current gate — both-direction peer OOM continuity passed at 5/5 GiB
+
+The deployed Gateway `7e618184…ce8717f` and both Hubs `8efcc148…e51a506`
+passed sequential normal Starts and Stops for the two approved CPS isolated
+workspaces. The unchanged Node `47d8e532…a670c7f` and notebook runtime
+`91678610…4ca4dc0` enforced a fixed 5 GiB cap per workspace.
+
+Both pressure directions passed: the allocating workspace held 4,608 MiB before
+a typed `torch.OutOfMemoryError`, retained it for eight seconds, then recovered.
+Its peer completed 16 independent CUDA kernel ticks strictly inside each hold;
+the maximum observed gap was below 0.504 seconds. Four host NVML observations
+inside each hold showed 36,491,493,376 physical bytes free. Thus the observed OOM
+occurred with physical memory still available. Pre/post Pod, process, seal and
+journal identities matched, and charged bytes returned to zero for both parents.
+Offline replay of the frozen assessment passes for both directions.
+[Measurements, source/raw hashes and scope](../../qualification-artifacts/native-peer-oom-20261017/results/README.md).
+
+Both normal Stops returned HTTP 200. All 114 native claims are released; the
+previous 112 records and ledger UID are preserved. SQL reservation and binding
+tables are empty. Two temporary grant expiry changes and two membership changes
+are restored; the temporary token is revoked and removed locally. All four
+personal notebook Pod UIDs are preserved. All four installed consumers verified
+ready after cleanup at 05:31:04 UTC on 17 October 2026.
+[Live image adoption](../../platform-staging/jupyter-extensions-20261013/gpu-lifecycle-recovery-adoption-20261017.json).
+No MIG, GPU reset, reboot or driver change was used.
+
+**Remaining primary GPU gates:** unequal/larger caps, other memory routes, MPS,
+and concurrent startup. This establishes scoped 5/5 GiB memory-pressure
+continuity, not whole-fleet or production qualification. The cancellation fix
+has source and installed-image tests; deliberate live cancellation remains a
+separate qualification. The full project remains active and unfinished.
+
+## Qualification history — earlier checkpoints, superseded by the current gate
+
+The following pending statements describe their dated checkpoint, not current
+peer-OOM or image-adoption status.
+
+### Legacy IPC and distinct-process VMM at 5/5 GiB
 
 Application `5ca3b4c5b6b0481011ae24958ea2de0cc5652c15` fixes the readiness
 clock race by sampling trusted time after external reads. The full application
@@ -131,11 +168,10 @@ task-local, static denial-stage/category logging without exposing raw unknown
 exception text or changing authorization/retry behavior. Its full suite passed
 3,001 tests and 49 subtests (3 skipped); Gateway image `7e618184…ce8717f` is
 published. All four CI jobs passed for each exact source, and installed module,
-dependency and raw registry proofs passed. **Neither follow-up image is deployed
-yet.** The coordinated renderer preserves Node/driver, policy, approval, storage
-and database state; all 12 initial server dry runs passed without live writes.
-After adoption, run sequential Starts for peer-OOM isolation;
-concurrent startup remains a separate open gate.
+dependency and raw registry proofs passed. Both follow-up images are now deployed;
+the coordinated adoption preserved Node/driver, policy, approval, storage and
+database state. Sequential Starts and the scoped peer-OOM run passed as recorded
+in the current gate above; concurrent startup remains a separate open gate.
 [Published image evidence](../../platform-staging/jupyter-extensions-20261013/gpu-lifecycle-recovery-images-20261017.json).
 
 ## Earlier verified checkpoint — native 5 GiB execution and normal Stop passed

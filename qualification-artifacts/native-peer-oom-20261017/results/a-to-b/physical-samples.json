@@ -1,0 +1,34 @@
+[
+  {
+    "gpu_uuid": "GPU-16128952-b438-556a-00bb-93039ee24e56",
+    "node_pod_uid": "24ddbe79-6c53-4a21-8ccd-ec857560747c",
+    "observed_monotonic_ns": 8852122354653904,
+    "observer_pod_uid": "8a3a0296-2a41-49e0-ba20-28f503ec5887",
+    "physical_free_bytes": 36491493376,
+    "physical_total_bytes": 42949672960
+  },
+  {
+    "gpu_uuid": "GPU-16128952-b438-556a-00bb-93039ee24e56",
+    "node_pod_uid": "24ddbe79-6c53-4a21-8ccd-ec857560747c",
+    "observed_monotonic_ns": 8852122884185116,
+    "observer_pod_uid": "8a3a0296-2a41-49e0-ba20-28f503ec5887",
+    "physical_free_bytes": 36491493376,
+    "physical_total_bytes": 42949672960
+  },
+  {
+    "gpu_uuid": "GPU-16128952-b438-556a-00bb-93039ee24e56",
+    "node_pod_uid": "24ddbe79-6c53-4a21-8ccd-ec857560747c",
+    "observed_monotonic_ns": 8852123418604744,
+    "observer_pod_uid": "8a3a0296-2a41-49e0-ba20-28f503ec5887",
+    "physical_free_bytes": 36491493376,
+    "physical_total_bytes": 42949672960
+  },
+  {
+    "gpu_uuid": "GPU-16128952-b438-556a-00bb-93039ee24e56",
+    "node_pod_uid": "24ddbe79-6c53-4a21-8ccd-ec857560747c",
+    "observed_monotonic_ns": 8852123949316309,
+    "observer_pod_uid": "8a3a0296-2a41-49e0-ba20-28f503ec5887",
+    "physical_free_bytes": 36491493376,
+    "physical_total_bytes": 42949672960
+  }
+]

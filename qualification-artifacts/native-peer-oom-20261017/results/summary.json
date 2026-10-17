@@ -1,0 +1,104 @@
+{
+  "caps_mib": {
+    "a": 5120,
+    "b": 5120
+  },
+  "cleanup": {
+    "all_four_installed_consumers_ready": true,
+    "all_native_claims_released": 114,
+    "controlled_pods_and_hub_servers_absent": true,
+    "exact_grant_expiry_restoration_count": 2,
+    "exact_membership_restoration_count": 2,
+    "local_token_removed": true,
+    "normal_lab_stop_http": 200,
+    "normal_secondary_stop_http": 200,
+    "original_ledger_uid_preserved": true,
+    "peer_oom_both_directions_passed": true,
+    "personal_pod_uids_preserved": true,
+    "prior_112_history_records_unchanged": true,
+    "production_qualified": false,
+    "readiness_observed_at": "2026-10-17T05:31:04.961030+00:00",
+    "readiness_proof_sha256": "2fc9d06189f17a20d8cd3b59a417b97fe61d461f2ffb39ea09973c63eacfa77a",
+    "sql_binding_count": 0,
+    "sql_reservation_count": 0,
+    "temporary_token_auth_status": 403,
+    "temporary_token_revoked": true
+  },
+  "concurrent_start_qualified": false,
+  "directions": {
+    "a-to-b": {
+      "assessment": "a-to-b/assessment.json",
+      "held_seconds": 8.000529897,
+      "hold_end_utc": "2026-10-17T05:26:03.881037+00:00",
+      "hold_start_utc": "2026-10-17T05:25:55.880544+00:00",
+      "max_peer_tick_gap_seconds": 0.503059432,
+      "minimum_physical_free_bytes": 36491493376,
+      "offline_assessment_replay_passed": true,
+      "parent_charged_bytes": [
+        {
+          "after": 0,
+          "before": 0
+        },
+        {
+          "after": 0,
+          "before": 0
+        }
+      ],
+      "private_raw_sha256": {
+        "after.json": "9152569659c83595e3496e8a33eac7d99482ba2c577c945e0ca71a2400657147",
+        "assessment.json": "212e12a80e401d474a866ba14be52aa964d60ead0d3ff9bda31181b1332d75d4",
+        "before.json": "9152569659c83595e3496e8a33eac7d99482ba2c577c945e0ca71a2400657147",
+        "oom.jsonl": "703ac730e0ad970a82d13b37aa93868c9c1e578288e1d089d881493ca07b04ef",
+        "oom.stderr": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "peer.jsonl": "7231f1fa32f99c663d235b61890ede5557c06ec02d80083b66d6524406078b45",
+        "peer.stderr": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "physical-samples.json": "bbe9f7bc4778edec3487da9758ac87606a6f40431dfbe6b143bf83630dc646d0"
+      }
+    },
+    "b-to-a": {
+      "assessment": "b-to-a/assessment.json",
+      "held_seconds": 8.000383785,
+      "hold_end_utc": "2026-10-17T05:27:27.468203+00:00",
+      "hold_start_utc": "2026-10-17T05:27:19.467868+00:00",
+      "max_peer_tick_gap_seconds": 0.502596968,
+      "minimum_physical_free_bytes": 36491493376,
+      "offline_assessment_replay_passed": true,
+      "parent_charged_bytes": [
+        {
+          "after": 0,
+          "before": 0
+        },
+        {
+          "after": 0,
+          "before": 0
+        }
+      ],
+      "private_raw_sha256": {
+        "after.json": "9152569659c83595e3496e8a33eac7d99482ba2c577c945e0ca71a2400657147",
+        "assessment.json": "e190d3e2033bd7dea8cecaa52cb501040ee6f04258db4b36ff76046e725d9c3a",
+        "before.json": "9152569659c83595e3496e8a33eac7d99482ba2c577c945e0ca71a2400657147",
+        "oom.jsonl": "dbb591e61ab008bce0cd9039b3fa183a2e77b73f80b238d8a236ce13786d2719",
+        "oom.stderr": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "peer.jsonl": "054f49f6c0bafbbf5cc57653b7803a3d31d7c6c24aa6d909a516844b681c693b",
+        "peer.stderr": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "physical-samples.json": "cb21ddd01c02de6cb1ce7ecd8978b717ba7b07bf7bec9eb2ba926f9ef96a646e"
+      }
+    }
+  },
+  "evidence_sha256": {
+    "final-cleanup.private.json": "f96dbde84555ea9596ef7a566be711545453c19751d2283ad1b8b0cbc3f79bcb",
+    "final-preservation.private.json": "9b2e4642dedaf6e42cc9d7a9b7d194ef194ae11f087ffe6ade5dbe54f0187438",
+    "final-readiness.private.json": "2fc9d06189f17a20d8cd3b59a417b97fe61d461f2ffb39ea09973c63eacfa77a"
+  },
+  "larger_caps_qualified": false,
+  "manifest_sha256": "9de40b90ee256eb417994c5581540802494a88cabaac464f203cf890aad1d105",
+  "mps_qualified": false,
+  "production_qualified": false,
+  "schema_version": 1,
+  "scope": "Two CPS isolated workspaces, sequential normal starts, fixed 5 GiB cap per workspace, both pressure directions",
+  "source_sha256": {
+    "current_preflight.py": "b50d4061fe0b08d88dc34955ccd141bfaad08b4cc29238e0bd5776339586ef06",
+    "peer_probe.py": "ea49812f2f68371a27f63e709534f08aa1b23028395c4b76b2efc07b88d86834",
+    "run_peer_oom.py": "eb6c52f8eeda3977ca9d80b1ab7c10f77890075a8e510431e3834e1b5b9c7850"
+  }
+}

@@ -1,0 +1,62 @@
+{
+  "component_count": 4,
+  "components": {
+    "gateway": {
+      "observed_at": "2026-10-17T05:30:46.429740+00:00",
+      "process": {
+        "container": "gateway",
+        "image": "ghcr.io/mul-cps/cps-compute@sha256:7e618184e44ecd62362220794da9635eda694c73acbb4c3de82ff5a91ce8717f",
+        "name": "compute-gateway-6f4dc76745-597wq",
+        "namespace": "cps-compute",
+        "service_account": "cps-compute-controller",
+        "uid": "4338bd16-d859-48fd-b1c6-403d64897670"
+      },
+      "revision": "sha256:1e2b09e4f7a30389a78ac82eb9243ba8466a0e5e396dc312b7d76672501d88a1"
+    },
+    "hub:cit": {
+      "observed_at": "2026-10-17T05:30:55.445042+00:00",
+      "process": {
+        "container": "hub",
+        "image": "ghcr.io/mul-cps/cps-compute@sha256:8efcc1485ce6890e915965304e451c31377d202ca82767aa2a0ea1cd4e51a506",
+        "name": "hub-67ccfb68cf-brctq",
+        "namespace": "cit-jhub",
+        "service_account": "hub",
+        "uid": "13251515-5386-411e-aa82-aed456106fc2"
+      },
+      "revision": "sha256:1e2b09e4f7a30389a78ac82eb9243ba8466a0e5e396dc312b7d76672501d88a1"
+    },
+    "hub:cps": {
+      "observed_at": "2026-10-17T05:31:02.762500+00:00",
+      "process": {
+        "container": "hub",
+        "image": "ghcr.io/mul-cps/cps-compute@sha256:8efcc1485ce6890e915965304e451c31377d202ca82767aa2a0ea1cd4e51a506",
+        "name": "hub-bf477944f-vqlsl",
+        "namespace": "jupyterhub",
+        "service_account": "hub",
+        "uid": "09fb08cf-d606-4581-81f4-5fdcd30797c5"
+      },
+      "revision": "sha256:1e2b09e4f7a30389a78ac82eb9243ba8466a0e5e396dc312b7d76672501d88a1"
+    },
+    "node": {
+      "observed_at": "2026-10-17T05:30:58.822242+00:00",
+      "process": {
+        "container": "node-agent",
+        "image": "ghcr.io/mul-cps/cps-native-node@sha256:47d8e532409337c864d02fc608600b4aecea650075573690b4f17dcb7a670c7f",
+        "name": "cps-native-node-agent-6b65c67476-pfzf9",
+        "namespace": "cps-native-system",
+        "service_account": "cps-native-node-agent",
+        "uid": "24ddbe79-6c53-4a21-8ccd-ec857560747c"
+      },
+      "revision": "sha256:1e2b09e4f7a30389a78ac82eb9243ba8466a0e5e396dc312b7d76672501d88a1"
+    }
+  },
+  "module": "/usr/local/lib/python3.12/site-packages/cps_compute/runtime.py",
+  "module_sha256": "d1b62a56cd51fb5ad2b301365534aada6d11eda22c46cb57ac0f6dbd54422f07",
+  "observed_at": "2026-10-17T05:31:04.961030+00:00",
+  "policy_hash": "sha256:d48f6553ed036c2e7adcc97417623fe0308be93ad13b20f246047ada118511b0",
+  "released_consumer_call": true,
+  "released_consumer_observe": true,
+  "revision": "sha256:1e2b09e4f7a30389a78ac82eb9243ba8466a0e5e396dc312b7d76672501d88a1",
+  "state": "ready",
+  "ttl_seconds": 60
+}

@@ -1,0 +1,14 @@
+{
+  "direction": "a-to-b",
+  "held_before_oom_mib": 4608,
+  "measurement_passed": true,
+  "peer_ticks_inside_oom_hold": 16,
+  "physical_samples": 4,
+  "production_qualified": false,
+  "recovery_byte": 37,
+  "typed_oom": {
+    "cuda_error_code": null,
+    "kind": "torch.OutOfMemoryError"
+  },
+  "unchanged_seals_and_processes": true
+}
