@@ -21,7 +21,14 @@
   "sdist_wheel_byte_identical": true,
   "ci": {
     "run_id": 39030164366,
-    "status": "in_progress_last_observed"
+    "status": "completed",
+    "conclusion": "success",
+    "jobs": {
+      "build": "success",
+      "installed-lab (4.6.4)": "success",
+      "installed-lab (4.5.7)": "success",
+      "installed-sdk-hub": "success"
+    }
   },
   "live_successor_refs_refreshed": false,
   "live_gpu_acceptance_complete": false

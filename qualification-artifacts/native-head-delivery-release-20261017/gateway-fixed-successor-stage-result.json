@@ -25,6 +25,11 @@
   "running_deployments_changed": false,
   "journal_rotated": false,
   "ci_run": 39030164366,
-  "ci_last_observed": "in_progress",
-  "production_qualified": false
+  "ci_last_observed": "completed_success",
+  "production_qualified": false,
+  "fresh_matching_backup_jobs_succeeded": 3,
+  "consistent_gateway_sqlite_backups_integrity_ok": 2,
+  "live_four_component_readiness_verified": true,
+  "successor_producer_configuration_typed_render_passed": true,
+  "restore_exercise_complete": false
 }
