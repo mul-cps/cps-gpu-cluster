@@ -111,6 +111,30 @@ def render(context, *, gateway_account, binder_account, hub_accounts, hub_settin
     files={'coordinator.json':config,'policy.json':deepcopy(context._policy.catalog),'deployment.json':json.loads(dep.document)}
     data={k:json.dumps(v,sort_keys=True,separators=(',',':'),ensure_ascii=False) for k,v in files.items()}
     seed='cps-native-kai-config-'+hashlib.sha256(json.dumps(data,sort_keys=True,separators=(',',':')).encode()).hexdigest()[:16]
+    # Kubelet fsGroup can widen existing PVC files to0660 on remount.
+    # Preserve the original lock inode; no recursive chmod or SDK relaxation.
+    state_repair="""import fcntl
+children=[]
+try:
+ names=('writer.lock','custody.sqlite','custody.sqlite-journal','custody.sqlite-wal','custody.sqlite-shm')
+ present=[]
+ for name in names:
+  try: os.stat(name,dir_fd=fd,follow_symlinks=False)
+  except FileNotFoundError: continue
+  present.append(name)
+ assert not present or 'writer.lock' in present, 'Existing custody requires its original writer lock'
+ for name in present:
+  child=os.open(name,os.O_RDONLY|os.O_NOFOLLOW|os.O_NONBLOCK,dir_fd=fd)
+  children.append(child)
+  info=os.fstat(child)
+  assert stat.S_ISREG(info.st_mode) and info.st_uid==os.geteuid() and info.st_nlink==1, 'Owned single-link private state inode required'
+  assert stat.S_IMODE(info.st_mode) in (0o600,0o660), 'Unexpected private state permissions'
+  if name=='writer.lock': fcntl.flock(child,fcntl.LOCK_EX|fcntl.LOCK_NB)
+ # Normalize only fixed owned inodes after every proof, under the old lock.
+ for child in children: os.fchmod(child,0o600)
+finally:
+ for child in reversed(children): os.close(child)
+"""
     init_code=("from pathlib import Path; import os,stat; os.umask(0o077); p=Path('/kai-private/config'); p.mkdir(mode=0o700,exist_ok=True); "
                "directory=os.open(p,os.O_RDONLY|os.O_DIRECTORY|os.O_NOFOLLOW); "
                "assert os.fstat(directory).st_uid==os.geteuid(), 'Private config owner differs'; "
@@ -125,7 +149,8 @@ def render(context, *, gateway_account, binder_account, hub_accounts, hub_settin
                "state=Path('/data/native-kai-private'); state.mkdir(mode=0o700,exist_ok=True); "
                "fd=os.open(state,os.O_RDONLY|os.O_DIRECTORY|os.O_NOFOLLOW); "
                "assert os.fstat(fd).st_uid==os.geteuid(), 'Private state owner differs'; "
-               "os.fchmod(fd,0o700); os.close(fd)")
+               "os.fchmod(fd,0o700); "
+               +"exec("+repr(state_repair)+"); os.close(fd)")
     # A fresh emptyDir, explicit UID and root-owned immutable seed avoid the
     # projected-volume symlink rejection of private_bytes without weakening it.
     flags=['--native-pending-coordinator-enabled=false','--native-coordinator-url='+ORIGIN,
