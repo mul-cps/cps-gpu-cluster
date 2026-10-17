@@ -160,16 +160,18 @@ def test_only_the_single_existing_trusted_installer_can_be_replaced(fault):
     with pytest.raises(ValueError):m.compose(dep,secret,hub,created(m.candidate('jupyterhub',hub)))
 
 
-def test_materializer_creates_regular_private_bytes_restarts_and_refuses_mutated_seed(tmp_path):
+@pytest.mark.parametrize("parent_mode",[0o700,0o2770])
+def test_materializer_creates_regular_private_bytes_restarts_and_refuses_mutated_seed(tmp_path,parent_mode):
     import subprocess,sys,stat
     from cps_compute.native_scheduler_coordinator_auth import private_bytes
     m=load();dep,secret,hub=inputs();cm=created(m.candidate('jupyterhub',hub));r=m.compose(dep,secret,hub,cm)
     desired=apply_patch(dep,r['deployment_patch']);init=desired['spec']['template']['spec']['initContainers'][-1]
     seed=tmp_path/'seed';seed.mkdir();(seed/'settings.json').write_text(cm['data']['settings.json'])
-    private=tmp_path/'private';private.mkdir()
+    private=tmp_path/'private';private.mkdir();private.chmod(parent_mode)
     code=init['command'][-1].replace('/kai-hub-seed',str(seed)).replace('/kai-hub-private',str(private))
     for _ in range(2):subprocess.run([sys.executable,'-I','-S','-c',code],check=True,capture_output=True)
     directory=private/'config';actual=directory/'settings.json'
+    assert stat.S_IMODE(private.stat().st_mode)==parent_mode
     assert stat.S_IMODE(directory.stat().st_mode)==0o700 and stat.S_IMODE(actual.stat().st_mode)==0o600
     assert json.loads(private_bytes(str(actual)))==hub['settings'] and actual.stat().st_nlink==1
     (seed/'settings.json').write_text('{}')

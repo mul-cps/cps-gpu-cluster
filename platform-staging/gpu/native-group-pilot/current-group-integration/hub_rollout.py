@@ -206,11 +206,11 @@ def compose(deployment,secret,hub,actual_configmap):
     code=("from pathlib import Path; import os, stat, hashlib; os.umask(0o077); "
         "raw=Path('/kai-hub-seed/settings.json').read_bytes(); "
         f"assert hashlib.sha256(raw).hexdigest()=={sha!r}, 'Immutable settings bytes differ'; "
-        "p=Path('/kai-hub-private/config'); p.mkdir(mode=0o700,exist_ok=True); s=p.lstat(); "
-        "assert stat.S_ISDIR(s.st_mode) and s.st_uid==os.geteuid() and stat.S_IMODE(s.st_mode)==0o700; "
-        "fd=os.open(p/'settings.json',os.O_WRONLY|os.O_CREAT|os.O_NOFOLLOW,0o600); s=os.fstat(fd); "
+        "p=Path('/kai-hub-private/config'); p.mkdir(mode=0o700,exist_ok=True); dfd=os.open(p,os.O_RDONLY|os.O_DIRECTORY|os.O_NOFOLLOW); s=os.fstat(dfd); "
+        "assert stat.S_ISDIR(s.st_mode) and s.st_uid==os.geteuid() and stat.S_IMODE(s.st_mode) in (0o700,0o2700); os.fchmod(dfd,0o700); "
+        "fd=os.open('settings.json',os.O_WRONLY|os.O_CREAT|os.O_NOFOLLOW,0o600,dir_fd=dfd); s=os.fstat(fd); "
         "assert stat.S_ISREG(s.st_mode) and s.st_uid==os.geteuid() and s.st_nlink==1 and stat.S_IMODE(s.st_mode)==0o600; "
-        "os.ftruncate(fd,0); stream=os.fdopen(fd,'wb'); stream.write(raw); stream.flush(); os.fsync(stream.fileno()); stream.close()")
+        "os.ftruncate(fd,0); stream=os.fdopen(fd,'wb'); stream.write(raw); stream.flush(); os.fsync(stream.fileno()); stream.close(); os.fsync(dfd); os.close(dfd)")
     desired=deepcopy(spec);newpod=desired['template']['spec']
     newpod.setdefault('volumes',[]).extend(deepcopy(hub['volumes'])+[
         {'name':SEED,'configMap':{'name':reference['name'],'defaultMode':0o444,'items':[{'key':'settings.json','path':'settings.json'}]}},
