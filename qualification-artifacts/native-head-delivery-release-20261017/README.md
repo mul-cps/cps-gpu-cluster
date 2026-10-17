@@ -39,11 +39,17 @@ process or journal was changed. Temporary read-only proof permissions, fresh
 maintenance fences and genuine post-rollout ACKs remain mandatory live gates.
 
 The [delivery rotation image](delivery-rotation-image.json) is now published
-and independently registry-verified. Five guarded rollout patches passed live
-server dry-run; the existing operator Role patch was rejected by production
-admission. Running services and the protected Role remain unchanged. The
-composer is being adjusted to preserve all four operator baselines and use a
-separate, narrowly scoped two-ConfigMap reader; admission will remain unchanged.
+and independently registry-verified. The replacement plan's five guarded rollout patches passed live server
+dry-run after exact readbacks of a separate two-ConfigMap reader Role/binding.
+All four original operator Role UIDs/rules and production admission are unchanged.
+The previously rejected protected-Role patch is superseded and must not be used.
+Running services and the journal remain unchanged.
+
+A subsequent real-runtime regression found that revoking an approved scope
+correctly blocks requests but prevents Gateway restart with the formerly valid
+captured PVC. The historical-footprint startup fix is in progress. The published
+Gateway candidate must not be promoted as production-ready on the earlier test
+results alone.
 
 The [coordinator staging checkpoint](coordinator-staging-result.json) verifies 17
 created configuration/RBAC objects and two immutable Hub settings objects. The

@@ -30,9 +30,17 @@
   "delivery_successor_image_registry_verified": true,
   "guarded_patch_dry_run": {
     "passed": 5,
-    "rejected": 1,
-    "rejected_target": "existing Node-namespace observer operator Role",
-    "reason": "Existing admission policy permits only reviewed dynamic delivery updates.",
-    "resolution_in_progress": "Preserve protected Role baselines and bind a separate two-ConfigMap read-only Role."
+    "rejected": 0,
+    "supersedes": "The original protected operator Role patch was rejected; it is not part of the replacement plan."
+  },
+  "observer_static_reader_objects_created_and_verified": 2,
+  "original_operator_role_uids_and_rules_unchanged": 4,
+  "admission_policy_changed": false,
+  "observer_can_get_exact_two_successor_configmaps": true,
+  "known_gateway_lifecycle_regression": {
+    "confirmed": true,
+    "scenario": "Approve and use a scope, release it, revoke it, then restart Gateway with its formerly valid captured PVC footprint.",
+    "effect": "Revoked requests deny correctly, but startup rejects the stale captured PVC.",
+    "fix_status": "In progress; no live deployment of affected candidate."
   }
 }
