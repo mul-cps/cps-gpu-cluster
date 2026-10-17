@@ -107,6 +107,24 @@ both SQL reservation tables are empty, and both fixture grants and memberships
 were restored exactly to their original records through the audited APIs. The
 temporary token was revoked and removed locally. All four components are ready.
 
+## Single-process VMM cap qualification
+
+The [trusted VMM probe and receipt](../../qualification-artifacts/native-vmm-single-20261017/README.md)
+passed with full writes/readback across distinct physical allocations. Typed
+cuMemCreate OOM occurred at 4,898,947,072 bytes held under the independently verified
+5 GiB cap; driver charged usage was 5,333,191,360 bytes, with over 34 GiB physical
+memory still free. Same-process FD alias coherence, explicit maps/handles/FD/context
+cleanup, and fresh-context recovery passed. After normal Stop the Pod was absent,
+all 99 native claims were released, both reservation tables were empty and the test
+token was revoked. Cross-Pod and distinct-process import isolation remain open.
+
+A related read-only privacy audit confirmed that both Hubs' notebook egress rules
+permit direct NAS NFS/RPC traffic. Minimal PVC mounts alone do not prove NFS
+isolation; a bounded network-policy fix is being prepared. The legacy provisioning
+parent-writer check also lacks a reverse check when a broad parent CPU server
+starts later. These remain production gates; no NFS mount, export or data access
+was attempted during this audit.
+
 ## Previous checkpoint — packaged node renewal (16 October)
 
 Released application source `f67224e06cd152a8c554822ddb0738685e291995` was deployed

@@ -1,0 +1,97 @@
+{
+  "probe_sha256": "fc159e394d12f07548cbac259257b21560ff5da746c15bcd433164037d2aff2c",
+  "returncode": 0,
+  "receipt": {
+    "event": "receipt",
+    "time_ns": 1792196867186746859,
+    "monotonic_ns": 8834233464628410,
+    "namespace_pid": 203,
+    "pod_uid": "51aaa598-6397-45f3-b0e6-03d0e10a0bbb",
+    "passed": true,
+    "typed_oom2": true,
+    "same_process_same_parent_FD_positive": true,
+    "held_bytes": 4898947072,
+    "recovery": true,
+    "explicit_cleanup": [
+      "stress-context-all-maps-handles-FDs",
+      "final-context-all-maps-handles-FDs"
+    ],
+    "error": null,
+    "seconds": 8.646257258951664,
+    "independent_host_cap_and_physical_headroom_witness_required": true,
+    "cross_pod_qualified": false,
+    "distinct_process_import_qualified": false,
+    "managed_memory_qualified": false,
+    "production_qualified": false
+  },
+  "host_samples": [
+    {
+      "checkpoint": "before",
+      "cap": {
+        "at": "2026-10-17T00:27:38.208731+00:00",
+        "pod_uid": "51aaa598-6397-45f3-b0e6-03d0e10a0bbb",
+        "state": "sealed",
+        "soft": 5368709120,
+        "hard": 5368709120,
+        "used": 0,
+        "journal_unchanged": true,
+        "read_only": true
+      },
+      "physical": {
+        "physical_total": 42949672960,
+        "physical_free": 42436526080,
+        "physical_used": 513146880,
+        "gpu_uuid": "GPU-16128952-b438-556a-00bb-93039ee24e56"
+      }
+    },
+    {
+      "checkpoint": "oom-held",
+      "cap": {
+        "at": "2026-10-17T00:27:39.393491+00:00",
+        "pod_uid": "51aaa598-6397-45f3-b0e6-03d0e10a0bbb",
+        "state": "sealed",
+        "soft": 5368709120,
+        "hard": 5368709120,
+        "used": 5333191360,
+        "journal_unchanged": true,
+        "read_only": true
+      },
+      "physical": {
+        "physical_total": 42949672960,
+        "physical_free": 37092130816,
+        "physical_used": 5857542144,
+        "gpu_uuid": "GPU-16128952-b438-556a-00bb-93039ee24e56"
+      }
+    },
+    {
+      "checkpoint": "after",
+      "cap": {
+        "at": "2026-10-17T00:27:47.890964+00:00",
+        "pod_uid": "51aaa598-6397-45f3-b0e6-03d0e10a0bbb",
+        "state": "sealed",
+        "soft": 5368709120,
+        "hard": 5368709120,
+        "used": 0,
+        "journal_unchanged": true,
+        "read_only": true
+      },
+      "physical": {
+        "physical_total": 42949672960,
+        "physical_free": 42436526080,
+        "physical_used": 513146880,
+        "gpu_uuid": "GPU-16128952-b438-556a-00bb-93039ee24e56"
+      }
+    }
+  ],
+  "raw_stdout_sha256": "91881cb987fc899c019860a0a1b090c02b6add0e4310b22e4f25aa4caae58688",
+  "production_ready": false,
+  "cleanup": {
+    "normal_stop_http": 200,
+    "pod_absent": true,
+    "native_claims": 99,
+    "all_claims_released": true,
+    "reservation_rows": 0,
+    "reservation_binding_rows": 0,
+    "test_token_revoked": true
+  }
+}
