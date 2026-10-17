@@ -53,6 +53,16 @@ compute module. No drain was forced and GPU2 was not rebooted or reconfigured.
 Concurrent startup, peer OOM continuity, automatic recovery and broader
 production qualification remain unqualified.
 
+A subsequent concurrent Start still failed: the Gateway required all four current
+component acknowledgments during a legitimate readiness withdrawal window.
+Registration later recovered; acquire did not retry. The exact missing component
+was not captured, so no individual acknowledgment is blamed. The snapshot fix
+remains installed, but concurrent startup is not qualified. The peer-OOM hardware
+run has not occurred. Both normal Stops completed; all 108 native claims are
+released, both SQL reservation tables are empty, temporary grants are restored,
+the token is revoked, and personal notebook Pod UIDs are unchanged.
+[Concurrent run and cleanup receipt](../../platform-staging/jupyter-extensions-20261013/concurrent-start-cleanup-20261017.json).
+
 ## Earlier verified checkpoint — native 5 GiB execution and normal Stop passed
 
 Application `7273ad70c497cafcd7116867343a4b5ae9b6909c` is deployed on the node,

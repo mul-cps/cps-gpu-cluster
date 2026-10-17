@@ -1,0 +1,49 @@
+{
+  "schema_version": 1,
+  "scope": "concurrent normal workspace starts after custody snapshot fix",
+  "observed_date": "2026-10-17",
+  "concurrent_start_qualified": false,
+  "peer_oom_run": false,
+  "observations": {
+    "secondary_start_http": 503,
+    "lab_start_http": 409,
+    "gateway_denial": "All four current component process acknowledgments required",
+    "registration_eventually_recovered": true,
+    "specific_missing_ack_not_captured": true
+  },
+  "cleanup": {
+    "ledger_uid": "33ab24b0-8e9a-4bee-b308-12a19c076924",
+    "allocation_count": 108,
+    "all_released": true,
+    "controlled_pods_absent": true,
+    "personal_pod_uids_preserved": {
+      "jupyter-armin": "921b8b7c-e8de-45e3-856c-b2426ed1ed7b",
+      "jupyter-bjoern": "915b3fac-53fa-469c-8c3f-0180fb285504",
+      "jupyter-cpsadmin": "a984023f-eb34-4af1-b01d-bad6ea159ef4",
+      "jupyter-mikasa": "31846900-989b-48d1-95b3-846e9526fbb5"
+    },
+    "sql_reservations": {
+      "reservation": 0,
+      "reservation_binding": 0
+    },
+    "normal_stop_http": {
+      "lab": 200,
+      "secondary": 200
+    },
+    "temporary_grant_expiries_restored": 2,
+    "token_revoked": true,
+    "subsequent_authentication_status": 403,
+    "local_token_removed": true
+  },
+  "final_readiness": {
+    "state": "ready",
+    "component_count": 4,
+    "ttl_seconds": 60
+  },
+  "evidence_sha256": {
+    "final-cleanup.private.json": "de7b6c3e5e0ea18eb4697fbf152f1062f460b7e24479ff13125c3500d3d81332",
+    "final-readiness.private.json": "474f9b45049b174ce8e4d07c62a939b1cc72fcd1016c6e5fcb7574e2c70136eb"
+  },
+  "next_gate": "Bounded identical-request acquire retry with real post-CAS idempotency regression, followed by concurrent starts with per-component ACK sampling and peer-OOM hardware test",
+  "production_qualified": false
+}
