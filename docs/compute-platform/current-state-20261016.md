@@ -65,6 +65,14 @@ test token was revoked and removed locally. This establishes ordinary same-Pod
 allocation aggregation only; independent Pod isolation, VMM/managed/import routes
 and MPS remain unqualified.
 
+A subsequent read-only check of all four current approval scopes using the
+released workspace authorization code found only `cps:shared-gpu-lab` eligible.
+Both members of CPS `native-group-a` and CIT `native-group-a` lack effective
+allowance/profile grants; CPS `native-group-b` additionally has a storage lifecycle
+fence. A second independent workspace requires valid grants through the normal
+policy path before cross-Pod testing. No grant or storage checks were bypassed.
+All four current component acknowledgments were verified ready after cleanup.
+
 ## Previous checkpoint — packaged node renewal (16 October)
 
 Released application source `f67224e06cd152a8c554822ddb0738685e291995` was deployed
