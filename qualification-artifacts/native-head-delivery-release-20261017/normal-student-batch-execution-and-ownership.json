@@ -1,0 +1,169 @@
+{
+  "version": 1,
+  "observed_at": "2026-10-17T15:02:40.528852+00:00",
+  "actor_overall_passed": false,
+  "actor_remaining_failure": "workflow-list JSON null; harness also assumed dictionary rather than released bare-list contract",
+  "normal_student_notebook_execution_qualified": true,
+  "kernel_create_http": 201,
+  "kernel_result": {
+    "cleanup": [
+      {
+        "name": "cps-6a60918245490228fadabf0bcd66c7f34b3af504a9fe82b2",
+        "phase": "Succeeded",
+        "terminal": true,
+        "uid": "1946460e-2549-49ff-b9f4-95c5295fa5a9"
+      },
+      {
+        "name": "cps-71fc3c55bb6730c5a415e910d7fbef4aed325bb707cefdfa",
+        "phase": "Failed",
+        "terminal": true,
+        "uid": "44cb3e59-0588-4de8-aa3f-599b8216e491"
+      }
+    ],
+    "human_oauth": false,
+    "installed_sdk_sha256": "ee0a69ffcd54bdb9a69160086e223a63cbdd4f6bf0ecaacb6a9ecd8963f6b6cc",
+    "issues": [],
+    "jobs": [
+      {
+        "expected_failure": false,
+        "fresh_runner_kernel": true,
+        "kind": "success",
+        "logs_available": true,
+        "manifest_sha256": "1adf04865ceb8e08abc7631a0708fd8feb170d31f9b66325614085293d2a4cff",
+        "name": "cps-6a60918245490228fadabf0bcd66c7f34b3af504a9fe82b2",
+        "notebook_id": "6a60918245490228fadabf0bcd66c7f34b3af504a9fe82b2",
+        "outputs_stripped": true,
+        "phase": "Succeeded",
+        "runner_connection_sha256": "671aa4e443fe376264c49d36b750179402d12fd4b3bb85e9f03996fd58e8423d",
+        "selected_file_exact": true,
+        "selected_helper": true,
+        "snapshot_immutable": true,
+        "typed_parameters": true,
+        "uid": "1946460e-2549-49ff-b9f4-95c5295fa5a9"
+      },
+      {
+        "expected_failure": true,
+        "fresh_runner_kernel": true,
+        "kind": "failure",
+        "logs_available": true,
+        "manifest_sha256": "241b59637a077c6b6c8425efcefa41675d980ab4de825591b42d9e6815039de6",
+        "name": "cps-71fc3c55bb6730c5a415e910d7fbef4aed325bb707cefdfa",
+        "notebook_id": "71fc3c55bb6730c5a415e910d7fbef4aed325bb707cefdfa",
+        "outputs_stripped": true,
+        "phase": "Failed",
+        "runner_connection_sha256": "6c322b5007e6a1c0f8ff2c9ea7e65b0a93277a51b11b35df47d956f185b68999",
+        "selected_file_exact": true,
+        "selected_helper": true,
+        "snapshot_immutable": true,
+        "typed_parameters": true,
+        "uid": "44cb3e59-0588-4de8-aa3f-599b8216e491"
+      }
+    ],
+    "me": {
+      "identity": "386feebb-df1a-4f3c-9ef9-6d9c026d5aea",
+      "policy_hash": "sha256:d48f6553ed036c2e7adcc97417623fe0308be93ad13b20f246047ada118511b0",
+      "principal_kind": "person"
+    },
+    "passed": true,
+    "sdk_environment_injected": false,
+    "source_ui_verified": false
+  },
+  "cross_user_read_authorization_qualified": true,
+  "ownership_result": {
+    "source_ui_verified": false,
+    "human_browser_oauth_verified": false,
+    "checks": [
+      {
+        "job": "cps-6a60918245490228fadabf0bcd66c7f34b3af504a9fe82b2",
+        "route": "detail",
+        "artifact": null,
+        "http_status": 403,
+        "no_workflow_or_artifact_contents": true
+      },
+      {
+        "job": "cps-6a60918245490228fadabf0bcd66c7f34b3af504a9fe82b2",
+        "route": "/logs",
+        "artifact": null,
+        "http_status": 403,
+        "no_workflow_or_artifact_contents": true
+      },
+      {
+        "job": "cps-6a60918245490228fadabf0bcd66c7f34b3af504a9fe82b2",
+        "route": "/artifacts",
+        "artifact": "snapshot",
+        "http_status": 403,
+        "no_workflow_or_artifact_contents": true
+      },
+      {
+        "job": "cps-6a60918245490228fadabf0bcd66c7f34b3af504a9fe82b2",
+        "route": "/artifacts",
+        "artifact": "executed-notebook",
+        "http_status": 403,
+        "no_workflow_or_artifact_contents": true
+      },
+      {
+        "job": "cps-71fc3c55bb6730c5a415e910d7fbef4aed325bb707cefdfa",
+        "route": "detail",
+        "artifact": null,
+        "http_status": 403,
+        "no_workflow_or_artifact_contents": true
+      },
+      {
+        "job": "cps-71fc3c55bb6730c5a415e910d7fbef4aed325bb707cefdfa",
+        "route": "/logs",
+        "artifact": null,
+        "http_status": 403,
+        "no_workflow_or_artifact_contents": true
+      },
+      {
+        "job": "cps-71fc3c55bb6730c5a415e910d7fbef4aed325bb707cefdfa",
+        "route": "/artifacts",
+        "artifact": "snapshot",
+        "http_status": 403,
+        "no_workflow_or_artifact_contents": true
+      },
+      {
+        "job": "cps-71fc3c55bb6730c5a415e910d7fbef4aed325bb707cefdfa",
+        "route": "/artifacts",
+        "artifact": "executed-notebook",
+        "http_status": 403,
+        "no_workflow_or_artifact_contents": true
+      }
+    ],
+    "visitor_list": {
+      "http_status": 200,
+      "json_type": "NoneType",
+      "body_sha256": "74234e98afe7498fb5daf1f36ac2d78acc339464f950703b8c019892f982b90b",
+      "empty_list_contract_passed": false
+    },
+    "foreign_reads_denied": true,
+    "owner_artifacts_exact": true
+  },
+  "cleanup": {
+    "kernel_delete_http": 204,
+    "normal_stop_http": 204,
+    "owned_pod_absent": true,
+    "protected_personal_pods_preserved": true,
+    "grant": {
+      "run_grant_expired": true,
+      "preexisting_grants_unchanged": true,
+      "gpu_permissions_added": false
+    },
+    "execution_tokens": {
+      "minted": 3,
+      "errors": [],
+      "all_local_tokens_removed": true
+    },
+    "ownership_tokens": {
+      "minted": 2,
+      "errors": [],
+      "all_local_tokens_removed": true
+    }
+  },
+  "workflow_listing_qualified": false,
+  "interactive_cpu_resource_alignment_qualified": false,
+  "source_ui_verified": false,
+  "human_browser_oauth_verified": false,
+  "gpu_execution_tested": false,
+  "production_ready": false
+}
