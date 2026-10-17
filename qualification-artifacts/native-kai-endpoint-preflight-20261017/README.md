@@ -7,3 +7,5 @@ All 30 impersonated Gateway service-account permission checks returned yes. No r
 Pinned KAI source and current binder arguments establish the exact reservation template. The current binder still uses the v0.18.1 image tag. The proposal now emits the same immutable reservation image digest as the Coordinator template in both disabled and opt-in flag sets. Merge by replacing the existing flag, never adding a duplicate.
 
 Regression test failed before the source fix and passed after it. Focused verification: 108 tests and 25 subtests pass, with two dependency deprecation warnings. No live rollout, Coordinator operation, test workload or GPU mutation occurred. GPU2 remains cordoned; native KAI lifecycle and production qualification remain open.
+
+Server dry runs subsequently passed for all 17 seed/authentication-RBAC objects and the proposed existing Gateway Deployment plus Pod. The existing image, Deployment UID, Recreate strategy and replica count remain preserved. This checks API admission only; no persistent resources or Coordinator activation followed from these dry runs.

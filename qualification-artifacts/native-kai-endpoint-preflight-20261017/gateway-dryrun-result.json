@@ -1,0 +1,14 @@
+{
+  "version": 1,
+  "serverDeploymentDryRunPassed": true,
+  "serverPodDryRunPassed": true,
+  "deploymentUID": "f5f9b266-433d-4825-83de-d51e31c71648",
+  "imagePreserved": "ghcr.io/mul-cps/cps-compute@sha256:fe55347cb64fba4c84de71c1d86c8350035f80db93641839a7a4657392b47e71",
+  "originalTemplateSHA256": "ac9e56f3d7c46f3c0452a261929d34afd0991cdcc2911acce8b23e81eb4dd995",
+  "proposedTemplateSHA256": "5cf5c67d6894877e9ed25c45d0abba00e80a1861f784b0259cc69b9bf168ea23",
+  "newVolumes": 3,
+  "newInitContainers": 1,
+  "existingReplicaCountPreserved": 1,
+  "persistentWrites": false,
+  "coordinatorActivated": false
+}

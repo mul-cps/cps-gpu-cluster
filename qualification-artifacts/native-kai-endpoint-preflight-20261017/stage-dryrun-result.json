@@ -1,0 +1,127 @@
+{
+  "version": 1,
+  "proposalSHA256": "d84141c173305f54a9522edc26eb2f85c32c5d5b3c7ce9474ed7630932086a7b",
+  "objects": [
+    {
+      "kind": "ConfigMap",
+      "name": "cps-native-kai-config-da5ecc1f47e37940",
+      "namespace": "cps-compute",
+      "exists": false,
+      "serverCreateDryRun": true
+    },
+    {
+      "kind": "ClusterRole",
+      "name": "cps-native-kai-hub-cps",
+      "namespace": null,
+      "exists": false,
+      "serverCreateDryRun": true
+    },
+    {
+      "kind": "ClusterRoleBinding",
+      "name": "cps-native-kai-hub-cps",
+      "namespace": null,
+      "exists": false,
+      "serverCreateDryRun": true
+    },
+    {
+      "kind": "ClusterRole",
+      "name": "cps-native-kai-hub-cit",
+      "namespace": null,
+      "exists": false,
+      "serverCreateDryRun": true
+    },
+    {
+      "kind": "ClusterRoleBinding",
+      "name": "cps-native-kai-hub-cit",
+      "namespace": null,
+      "exists": false,
+      "serverCreateDryRun": true
+    },
+    {
+      "kind": "ClusterRole",
+      "name": "cps-native-kai-terminal",
+      "namespace": null,
+      "exists": false,
+      "serverCreateDryRun": true
+    },
+    {
+      "kind": "ClusterRoleBinding",
+      "name": "cps-native-kai-terminal",
+      "namespace": null,
+      "exists": false,
+      "serverCreateDryRun": true
+    },
+    {
+      "kind": "ClusterRole",
+      "name": "cps-native-kai-auth-review",
+      "namespace": null,
+      "exists": false,
+      "serverCreateDryRun": true
+    },
+    {
+      "kind": "ClusterRoleBinding",
+      "name": "cps-native-kai-auth-review",
+      "namespace": null,
+      "exists": false,
+      "serverCreateDryRun": true
+    },
+    {
+      "kind": "Role",
+      "name": "cps-native-kai-review-cps-compute-controller",
+      "namespace": "cps-compute",
+      "exists": false,
+      "serverCreateDryRun": true
+    },
+    {
+      "kind": "RoleBinding",
+      "name": "cps-native-kai-review-cps-compute-controller",
+      "namespace": "cps-compute",
+      "exists": false,
+      "serverCreateDryRun": true
+    },
+    {
+      "kind": "Role",
+      "name": "cps-native-kai-review-binder",
+      "namespace": "kai-scheduler",
+      "exists": false,
+      "serverCreateDryRun": true
+    },
+    {
+      "kind": "RoleBinding",
+      "name": "cps-native-kai-review-binder",
+      "namespace": "kai-scheduler",
+      "exists": false,
+      "serverCreateDryRun": true
+    },
+    {
+      "kind": "Role",
+      "name": "cps-native-kai-review-hub",
+      "namespace": "jupyterhub",
+      "exists": false,
+      "serverCreateDryRun": true
+    },
+    {
+      "kind": "RoleBinding",
+      "name": "cps-native-kai-review-hub",
+      "namespace": "jupyterhub",
+      "exists": false,
+      "serverCreateDryRun": true
+    },
+    {
+      "kind": "Role",
+      "name": "cps-native-kai-review-hub",
+      "namespace": "cit-jhub",
+      "exists": false,
+      "serverCreateDryRun": true
+    },
+    {
+      "kind": "RoleBinding",
+      "name": "cps-native-kai-review-hub",
+      "namespace": "cit-jhub",
+      "exists": false,
+      "serverCreateDryRun": true
+    }
+  ],
+  "persistentWrites": false,
+  "coordinatorActivated": false
+}
