@@ -94,6 +94,7 @@ def render(release,reviewed_sha256,catalog,capture,image,*,activate=False):
                 own='cps-native-approval-'+{'node':'node','gateway':'gateway','hub:cps':'hub-cps','hub:cit':'hub-cit'}[component]
                 require(key[1]==own and row['resourceNames']==[config['acknowledgment_targets'][component]['name']],
                         'Only exact own ACK PATCH baseline is admitted')
+    pull_secrets=[]
     for component,declared in declarations.items():
         require(declared['kind']=='Deployment','Only fixed Deployment components supported')
         dep=deployments[(declared['namespace'],declared['name'])]
@@ -103,6 +104,16 @@ def render(release,reviewed_sha256,catalog,capture,image,*,activate=False):
         require(len(selected)==1 and selected[0].get('image')==declared['image']
                 and spec.get('serviceAccountName')==declared['service_account'],'Declared controller image or SA drift')
         if component=='node':
+            if 'imagePullSecrets' in spec:
+                references=spec['imagePullSecrets']
+                require(isinstance(references,list) and 1<=len(references)<=8
+                        and all(isinstance(ref,dict) and set(ref)=={'name'}
+                            and isinstance(ref['name'],str) and 1<=len(ref['name'])<=253
+                            and all(re.fullmatch(r'[a-z0-9](?:[-a-z0-9]{0,61}[a-z0-9])?',part)
+                                    for part in ref['name'].split('.')) for ref in references),
+                        'Closed canonical namespace-local imagePullSecrets references required')
+                require(len({ref['name'] for ref in references})==len(references),'Duplicate imagePullSecrets reference')
+                pull_secrets=copy.deepcopy(references)
             pin=trusted['held_node_template_sha256']
             require(pin is None or pin==digest(template),'Reviewed held Node template pin differs from actual controller')
             volumes=[v for v in spec.get('volumes',[]) if v.get('name')=='packaged-bootstrap-input']
@@ -154,6 +165,8 @@ def render(release,reviewed_sha256,catalog,capture,image,*,activate=False):
                 'volumeMounts':[{'name':'trusted-inputs','mountPath':'/etc/cps-observer/'+key,
                                 'subPath':key,'readOnly':True} for key in ('release.json','policy.json')]}],
             'volumes':[{'name':'trusted-inputs','configMap':{'name':input_name,'defaultMode':0o444}}]}}}))
+    if pull_secrets:
+        result[-1]['spec']['template']['spec']['imagePullSecrets']=pull_secrets
     return result
 
 

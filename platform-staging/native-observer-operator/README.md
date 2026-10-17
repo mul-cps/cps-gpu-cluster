@@ -94,6 +94,11 @@ namespace-local Roles/Bindings grant only:
   application LISTs only the fixed Deployment's exact label selector; Kubernetes
   RBAC cannot enforce that selector. ReplicaSets LIST is not granted.
 
+The operator preserves only validated namespace-local `imagePullSecrets` name
+references from the trusted Node Deployment capture, enabling the same private
+registry pull. It does not read or copy Secret contents, mint credentials or add
+Secret API permissions. References are closed, canonical, unique and bounded.
+
 There is no Secret API access, GPU request, host mount or privileged container.
 The Deployment uses Recreate, UID/GID 10001, drops all capabilities, forbids
 privilege escalation and uses a read-only root filesystem. An immutable input
