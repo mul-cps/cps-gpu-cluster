@@ -104,7 +104,8 @@ Cleanup initially stalled: both controlled Pods were absent, but the Hub still
 reported the lab server ready and normal Stop returned 409. A real JupyterHub
 5.5.2 CPU reproduction confirms that cancelled User.spawn can leave its private
 starting flag set after the public pending state clears. That stale flag blocks
-the adapter's normal recovery path. A narrowly fenced fix is under test.
+the adapter's normal recovery path. A narrowly fenced fix has passed source and
+installed-image tests; it is not yet deployed.
 
 The current test is now fully cleaned up. Replacing only the CPS Hub Pod with the
 same image let startup recognize the absent server and remove its stale route.
@@ -118,6 +119,24 @@ The restart recovers this test but does not fix cancellation handling. The next
 gate is deploying the tested cancellation fix and precise failure diagnostics,
 followed by the two-workspace hardware test.
 [Gateway adoption and failed concurrent run](../../platform-staging/jupyter-extensions-20261013/registration-readiness-adoption-20261017.json).
+
+Follow-up application `cd88bb6` fixes that cancellation path, including legitimate
+state publication during final Pod construction and authenticated recovery of a
+binding when cancellation occurs earlier. It preserves task, server, ORM,
+attempt, future and draining-task fences, then uses fresh authority release and
+Pod absence before normal Hub Stop. Its full suite passed 3,005 tests and 49
+subtests (3 skipped); independent real-Hub cancellation review passed 13 cases.
+The Hub image `8efcc148…e51a506` is published. Gateway application `85de762` adds
+task-local, static denial-stage/category logging without exposing raw unknown
+exception text or changing authorization/retry behavior. Its full suite passed
+3,001 tests and 49 subtests (3 skipped); Gateway image `7e618184…ce8717f` is
+published. All four CI jobs passed for each exact source, and installed module,
+dependency and raw registry proofs passed. **Neither follow-up image is deployed
+yet.** The coordinated renderer preserves Node/driver, policy, approval, storage
+and database state; all 12 initial server dry runs passed without live writes.
+After adoption, run sequential Starts for peer-OOM isolation;
+concurrent startup remains a separate open gate.
+[Published image evidence](../../platform-staging/jupyter-extensions-20261013/gpu-lifecycle-recovery-images-20261017.json).
 
 ## Earlier verified checkpoint — native 5 GiB execution and normal Stop passed
 

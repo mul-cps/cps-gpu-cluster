@@ -1,0 +1,37 @@
+{
+  "schema_version": 1,
+  "gateway": {
+    "source": "85de762804d91b9b04e91e53a9e36f52d07e53a5",
+    "image": "ghcr.io/mul-cps/cps-compute@sha256:7e618184e44ecd62362220794da9635eda694c73acbb4c3de82ff5a91ce8717f",
+    "wheel_sha256": "918d5f6c5076fc4718006f3fa4b49ecb4ab89d8c8435ee37d495a44a80eccb4a",
+    "ci_run": 39004422566,
+    "ci_success": true,
+    "full_suite": {"passed": 3001, "skipped": 3, "subtests": 49},
+    "independent_focused_tests_passed": 57,
+    "installed_sdk_modules_verified": 68,
+    "change": "Task-local static denial stage/category logging; authority and HTTP behavior unchanged"
+  },
+  "hub": {
+    "source": "cd88bb6bdebb218ee9b8e06f51bbc0ca44f8c9bb",
+    "image": "ghcr.io/mul-cps/cps-compute@sha256:8efcc1485ce6890e915965304e451c31377d202ca82767aa2a0ea1cd4e51a506",
+    "wheel_sha256": "c905f05433581af411b008502f4115013982ce65d73791f931ad2d8d9f80d254",
+    "ci_run": 39004719927,
+    "ci_success": true,
+    "full_suite": {"passed": 3005, "skipped": 3, "subtests": 49},
+    "independent_cancellation_tests_passed": 13,
+    "installed_synthetic_cases_passed": 11,
+    "installed_hub_modules_verified": 16,
+    "installed_sdk_modules_unchanged": 67,
+    "hub_version": "5.5.2",
+    "kubespawner_version": "7.1.0",
+    "change": "Recognize only the exact terminal, drained cancelled native start generation before normal Hub Stop recovery"
+  },
+  "both_images_registry_manifest_and_raw_config_verified": true,
+  "runtime_dependencies_unchanged": true,
+  "initial_rollout_server_dry_runs_passed": 12,
+  "deployed": false,
+  "node_binary_or_driver_changed": false,
+  "policy_or_approval_changed": false,
+  "peer_oom_executed": false,
+  "production_qualified": false
+}
