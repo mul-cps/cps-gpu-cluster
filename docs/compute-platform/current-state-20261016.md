@@ -22,7 +22,7 @@ full compatibility CI above applies to `1dafcfe`, not this follow-up revision.
 
 The pure [one-time head bootstrap](../../platform-staging/gpu/native-group-pilot/current-group-kai/HEAD-BOOTSTRAP.md)
 now stages pointer candidates, actual UID-bound immutable anchors and the v4
-Node candidate. Eight bootstrap checks and the 37 observer-renderer checks
+Node candidate. Eleven bootstrap/mount checks and the 37 observer-renderer checks
 passed together. Independent review confirmed full initial v3 history
 preservation and typed v4 reconstruction. This helper performs no API calls
 and does not enable starts or replace the coordinated adoption.

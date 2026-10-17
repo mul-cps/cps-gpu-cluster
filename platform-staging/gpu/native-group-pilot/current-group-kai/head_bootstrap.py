@@ -91,3 +91,67 @@ def bind(configuration,approvals,policy,pointers,anchors):
     name='cps-native-node-head-'+canonical_sha256(body).removeprefix('sha256:')[:16]
     return {'heads':heads,'node_configuration':_candidate(configuration.reference.to_dict()['namespace'],
         name,'config.json',body,immutable=True)}
+
+
+def runtime_candidates(configuration,approvals,policy,pointers,anchors):
+    """Stage immutable binding files; each is distinct from the anchor payload."""
+    heads=bind(configuration,approvals,policy,pointers,anchors)['heads']
+    result={}
+    for component,head in heads.items():
+        if component=='node':continue
+        name='cps-native-head-binding-'+canonical_sha256(head).removeprefix('sha256:')[:16]
+        result[component]=_candidate(head['projection']['namespace'],name,'head-binding.json',head,immutable=True)
+    return result
+
+
+def bind_runtime(configuration,approvals,policy,pointers,anchors,bindings,controllers):
+    """CAS intents for the one-time held rollout; never used for head advances.
+
+    Call only after image adoption. Existing image/SA/commands/resources stay
+    unchanged. Node bootstrap, observer release and Gateway readiness adoption
+    must be composed separately before these intents can be released.
+    """
+    heads=bind(configuration,approvals,policy,pointers,anchors)['heads']
+    candidates=runtime_candidates(configuration,approvals,policy,pointers,anchors)
+    require(isinstance(bindings,dict) and set(bindings)==set(candidates),'Three actual binding readbacks required')
+    for component,candidate in candidates.items():_readback(candidate,bindings[component],immutable=True)
+    require(isinstance(controllers,dict) and set(controllers)==COMPONENTS,'Four actual Deployment readbacks required')
+    result={}
+    for component,original in controllers.items():
+        declaration=configuration.document['component_declarations'][component]
+        meta=original.get('metadata',{})
+        require(original.get('apiVersion')=='apps/v1' and original.get('kind')=='Deployment'
+            and all(meta.get(key)==declaration[key] for key in ('namespace','name','uid'))
+            and _uid(meta.get('uid')) and isinstance(meta.get('resourceVersion'),str)
+            and re.fullmatch(r'[1-9][0-9]*',meta['resourceVersion']) and not meta.get('deletionTimestamp'),
+            'Actual declared Deployment UID/resourceVersion required')
+        desired=deepcopy(original['spec']);pod=desired['template']['spec']
+        require(pod.get('serviceAccountName')==declaration['service_account'],'Declared service account changed')
+        matches=[c for c in pod['containers'] if c.get('name')==declaration['container']]
+        require(len(matches)==1 and matches[0].get('image')==declaration['image'],'Exact selected declared image/container required')
+        container=matches[0]
+        volumes=pod.setdefault('volumes',[]);mounts=container.setdefault('volumeMounts',[])
+        names={'cps-native-head-anchor','cps-native-head-binding'}
+        require(not any(v.get('name') in names for v in volumes)
+            and not any(m.get('name') in names or m.get('mountPath') in {
+                '/var/run/cps-native-approvals/head-anchor.json','/etc/cps-native-head-binding.json'} for m in mounts),
+            'Head mount collision; compare original staged adoption instead of overwriting')
+        require(not any(e.get('name')=='CPS_NATIVE_GROUP_APPROVAL_HEAD' for e in container.get('env',[])),
+            'Head binding environment already installed')
+        volumes.append({'name':'cps-native-head-anchor','configMap':{
+            'name':heads[component]['projection']['name'],'items':[{'key':'anchor.json','path':'anchor.json'}]}})
+        mounts.append({'name':'cps-native-head-anchor','mountPath':'/var/run/cps-native-approvals/head-anchor.json',
+            'subPath':'anchor.json','readOnly':True})
+        if component!='node':
+            volumes.append({'name':'cps-native-head-binding','configMap':{'name':bindings[component]['metadata']['name'],
+                'items':[{'key':'head-binding.json','path':'head-binding.json'}]}})
+            mounts.append({'name':'cps-native-head-binding','mountPath':'/etc/cps-native-head-binding.json',
+                'subPath':'head-binding.json','readOnly':True})
+            container.setdefault('env',[]).append({'name':'CPS_NATIVE_GROUP_APPROVAL_HEAD',
+                'value':'/etc/cps-native-head-binding.json'})
+        result[component]=[
+            {'op':'test','path':'/metadata/uid','value':meta['uid']},
+            {'op':'test','path':'/metadata/resourceVersion','value':meta['resourceVersion']},
+            {'op':'test','path':'/spec','value':deepcopy(original['spec'])},
+            {'op':'replace','path':'/spec','value':desired}]
+    return result

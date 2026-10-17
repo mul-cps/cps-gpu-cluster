@@ -39,3 +39,19 @@ The CPU tests use actual SDK validators, actual-shaped fixture readbacks and
 no cluster/GPU access. They exercise successful v4 typed reconstruction,
 missing/foreign components, mixed registries/history, pointer UID/RV/data
 changes, garbage-collection/deletion metadata, and altered immutable anchors.
+
+`runtime_candidates(...)` then creates three immutable binding-file candidates.
+After actual readback, `bind_runtime(..., bindings, controllers)` emits guarded
+four-Deployment mount intents. Every target must match its declared UID,
+namespace, name, selected image and service account; UID, resourceVersion and
+full original spec are tested before replacement. Existing images, commands,
+resources and other containers stay unchanged. These intents must be composed
+with the held Node/bootstrap/observer/Gateway adoption before release.
+
+The binding file mounts at `/etc/cps-native-head-binding.json`, with
+`CPS_NATIVE_GROUP_APPROVAL_HEAD` pointing to that direct path. The actual
+reviewed Gateway and Hub filesystems have `/var/run -> /run`; the protected
+binding reader rejects symlinked parents. CPU probes at both actual runtime
+UIDs confirmed rejection of the old path and successful protected reads from
+`/etc`. The separate ACK-attested anchor mount remains
+`/var/run/cps-native-approvals/head-anchor.json`.

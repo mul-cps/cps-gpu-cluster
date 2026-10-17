@@ -1,0 +1,40 @@
+{
+  "application_source": "a4037d3a0f5c1bc62afb69561adaf87797466768",
+  "bootstrap_module_sha256": "1d6ea75d432a29d0c5acc497f3fd7d77463779bad89e67da0739a02e4e9327f7",
+  "cluster_tests": {
+    "bootstrap_and_mount": 11,
+    "observer_rendering": 37,
+    "passed": 48,
+    "seconds": 2.28
+  },
+  "gpu_qualified": false,
+  "isolation": {
+    "GPU_CRI_or_authority_mounts": false,
+    "capabilities": "all dropped",
+    "network": "none",
+    "no_new_privileges": true,
+    "root_filesystem": "read-only"
+  },
+  "live_changed": false,
+  "production_ready": false,
+  "results": [
+    {
+      "base": "ghcr.io/mul-cps/cps-compute@sha256:fe55347cb64fba4c84de71c1d86c8350035f80db93641839a7a4657392b47e71",
+      "component": "gateway",
+      "exit_code": 0,
+      "stderr": "",
+      "stdout": "protected binding path passed\n",
+      "uid_gid": "10001:10001"
+    },
+    {
+      "base": "ghcr.io/mul-cps/cps-compute@sha256:f1e4ce53391172dc3567044bf02a87cf2af77e0a98a6de1116a4ead7cb07552d",
+      "component": "hub",
+      "exit_code": 0,
+      "stderr": "",
+      "stdout": "protected binding path passed\n",
+      "uid_gid": "1000:1000"
+    }
+  ],
+  "scope": "Actual predecessor filesystem and current SDK protected-reader CPU probe only",
+  "version": 1
+}

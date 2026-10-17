@@ -129,3 +129,57 @@ def test_initial_v3_history_must_agree_before_any_bootstrap_candidates():
     f.approvals['hub:cps']['data']['approval.json']=_canonical(body).decode()
     ApprovalRevision.from_configmap(f.approvals['hub:cps'],f.f.policy,f.configuration.deployment)
     with pytest.raises(ValueError):f.module.pointer_candidates(f.configuration,f.approvals,f.f.policy)
+
+
+def test_runtime_mounts_use_actual_bound_anchor_and_three_protected_binding_files():
+    f=fixture();pointers,anchors=stages(f)
+    candidates=f.module.runtime_candidates(f.configuration,f.approvals,f.f.policy,pointers,anchors)
+    assert set(candidates)=={'gateway','hub:cps','hub:cit'}
+    bindings={key:actual(value) for key,value in candidates.items()}
+    controllers={key:f.f.apps.read_namespaced_deployment(value['name'],value['namespace'])
+        for key,value in f.configuration.document['component_declarations'].items()}
+    for controller in controllers.values():controller['metadata']['resourceVersion']='21'
+    before=copy.deepcopy(controllers)
+    patches=f.module.bind_runtime(f.configuration,f.approvals,f.f.policy,pointers,anchors,bindings,controllers)
+    assert set(patches)=={'gateway','hub:cps','hub:cit','node'}
+    for component,patch in patches.items():
+        original=controllers[component]
+        assert patch[:3]==[
+            {'op':'test','path':'/metadata/uid','value':original['metadata']['uid']},
+            {'op':'test','path':'/metadata/resourceVersion','value':original['metadata']['resourceVersion']},
+            {'op':'test','path':'/spec','value':original['spec']}]
+        desired=patch[3]['value'];pod=desired['template']['spec']
+        declaration=f.configuration.document['component_declarations'][component]
+        container=next(c for c in pod['containers'] if c['name']==declaration['container'])
+        assert container['image']==declaration['image']
+        anchor_mount=next(m for m in container['volumeMounts'] if m['name']=='cps-native-head-anchor')
+        assert anchor_mount==dict(name='cps-native-head-anchor',mountPath='/var/run/cps-native-approvals/head-anchor.json',subPath='anchor.json',readOnly=True)
+        volume=next(v for v in pod['volumes'] if v['name']=='cps-native-head-anchor')
+        assert volume['configMap']['name']==anchors[component]['metadata']['name']
+        if component!='node':
+            assert next(e for e in container['env'] if e['name']=='CPS_NATIVE_GROUP_APPROVAL_HEAD')['value']=='/etc/cps-native-head-binding.json'
+        else:
+            assert not any(e['name']=='CPS_NATIVE_GROUP_APPROVAL_HEAD' for e in container.get('env',[]))
+    assert controllers==before
+
+
+def test_runtime_refuses_binding_drift_and_unreviewed_controller_identity():
+    f=fixture();pointers,anchors=stages(f)
+    bindings={key:actual(value) for key,value in f.module.runtime_candidates(f.configuration,f.approvals,f.f.policy,pointers,anchors).items()}
+    controllers={key:f.f.apps.read_namespaced_deployment(value['name'],value['namespace'])
+        for key,value in f.configuration.document['component_declarations'].items()}
+    for controller in controllers.values():controller['metadata']['resourceVersion']='21'
+    changed=copy.deepcopy(bindings);changed['gateway']['data']['head-binding.json']='{}'
+    with pytest.raises(ValueError):f.module.bind_runtime(f.configuration,f.approvals,f.f.policy,pointers,anchors,changed,controllers)
+    changed=copy.deepcopy(controllers);changed['gateway']['metadata']['name']='unreviewed'
+    with pytest.raises(ValueError):f.module.bind_runtime(f.configuration,f.approvals,f.f.policy,pointers,anchors,bindings,changed)
+
+
+def test_replaced_deployment_uid_is_not_a_new_migration_baseline():
+    f=fixture();pointers,anchors=stages(f)
+    bindings={key:actual(value) for key,value in f.module.runtime_candidates(f.configuration,f.approvals,f.f.policy,pointers,anchors).items()}
+    controllers={key:f.f.apps.read_namespaced_deployment(value['name'],value['namespace'])
+        for key,value in f.configuration.document['component_declarations'].items()}
+    for controller in controllers.values():controller['metadata']['resourceVersion']='21'
+    controllers['gateway']['metadata']['uid']=str(uuid.uuid4())
+    with pytest.raises(ValueError):f.module.bind_runtime(f.configuration,f.approvals,f.f.policy,pointers,anchors,bindings,controllers)
