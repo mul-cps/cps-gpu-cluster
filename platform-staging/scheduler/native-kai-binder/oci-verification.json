@@ -1,0 +1,47 @@
+{
+  "base_config_id": "6feba5219841bf1164547ecea2ab578b896b5e223f259d6789037ab475467dac",
+  "base_image": "ghcr.io/kai-scheduler/kai-scheduler/binder@sha256:1d10b1b212faddab22cdaea5da2f9d17e1d4154d68d7d0f4bfc44dc6a343624b",
+  "binary_sha256": "5f518d0e13dca26492f3ac821825cdc587b4f165e86a23263aad4cebe37381fa",
+  "ca_bundle_sha256": "714d457d580922dbf1d0be8bd35ba236a842b50b0072ae791582a19adef772a5",
+  "cpu_tests_passed": 28,
+  "dockerfile_sha256": "c02188d3bdc016e58e734a48272924eb019745e8b479584e668a515177d7d7a3",
+  "help_exit": 0,
+  "help_sha256": "05533b70f56c56decc1469f801d79bc00372a201a3979498307637a94cccf04f",
+  "image_config_id": "e6f8c8e5781146e71adb5c4cfeba5200c65cb0337aef00da559102328ea33a9e",
+  "installed_static_elf": {
+    "PT_INTERP": false,
+    "format": "ELF64-LSB-AMD64",
+    "program_headers": 5
+  },
+  "live_operations": false,
+  "local_image": "localhost/cps-native-kai-binder:qualification-bdf434e-9f6511d3",
+  "local_oci_only": true,
+  "oci_config_digest": "sha256:e6f8c8e5781146e71adb5c4cfeba5200c65cb0337aef00da559102328ea33a9e",
+  "oci_manifest_digest": "sha256:d482fe8c5e7b1890329f1c22605f401b691fe4176c9314f036571a474101b55e",
+  "oci_recipe_sha256": "2e407e37d6a5ab3a03f1d7b618cf3014defbf034f230dc9ba092579d9804a9cd",
+  "patch_sha256": "9f6511d36d2cc1f910ab940ccb1186ac5936dec2e061e447740113965e9b220b",
+  "private_receipt_sha256": "b7c6c28964f13a99f9c6c0e960c6824a497596a4019db8c55db4ab3e90e3b3f0",
+  "production_qualified": false,
+  "published": false,
+  "rebuilt_image_identical": true,
+  "runtime_config": {
+    "Entrypoint": [
+      "/workspace/app"
+    ],
+    "Env": [
+      "PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin",
+      "TARGETARCH=amd64",
+      "SERVICE_NAME=binder"
+    ],
+    "Labels": {
+      "org.mul-cps.binary-sha256": "5f518d0e13dca26492f3ac821825cdc587b4f165e86a23263aad4cebe37381fa",
+      "org.mul-cps.kai.patch-sha256": "9f6511d36d2cc1f910ab940ccb1186ac5936dec2e061e447740113965e9b220b",
+      "org.mul-cps.kai.upstream-revision": "bdf434e5e9201cccf4e05fad04d814363653f692"
+    },
+    "User": "65532:65532",
+    "WorkingDir": "/workspace"
+  },
+  "unchanged_filesystem_entries": 6,
+  "upstream_commit": "bdf434e5e9201cccf4e05fad04d814363653f692",
+  "version": 1
+}

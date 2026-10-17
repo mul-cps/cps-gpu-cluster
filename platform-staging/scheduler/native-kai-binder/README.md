@@ -79,3 +79,43 @@ Focused tests exercise final-annotation/ACK/Binding ordering; missing coordinato
 The fresh successor recipe passed all four packages and built a98,713,592-byte binder with SHA256 `8c451ff2f7f9dedb02febd1d73de8d92ffb3fab2a38214afabf68062aaa2b314`; patch SHA256 is `9f6511d36d2cc1f910ab940ccb1186ac5936dec2e061e447740113965e9b220b`. go.mod/go.sum and dependency versions are unchanged. The rendered metadata text trims trailing whitespace; the private exact recipe receipt retains raw `go version -m` output.
 
 Activation still requires installing the tested disabled coordinator/Hub pending hook, exact signed-SA RBAC/config/bootstrap and every writer guard, current operator/node maintenance fencing, post-Bind strict CRI/cgroup/native-cap readiness, and supervised live/GPU evidence. Root's separate actual CPU-only k3s1.34.9 acceptance qualified Pod UID/RV Binding CAS, not NodeUID API CAS or native cap sealing. These artifacts remain an offline implementation handoff.
+
+## Local OCI packaging
+
+`Dockerfile` inherits the exact inspected stock binder image
+`ghcr.io/kai-scheduler/kai-scheduler/binder@sha256:1d10b1b212faddab22cdaea5da2f9d17e1d4154d68d7d0f4bfc44dc6a343624b`.
+It changes only `/workspace/app` to the reviewed static binary and adds three
+provenance labels. Stock user `65532:65532`, entrypoint `/workspace/app`, workdir
+`/workspace`, environment, CA certificates and NOTICE are retained. No Go build,
+package install, shell or credential is added to the image.
+
+The base image must already be available locally. With the binary and successful
+receipt produced above:
+
+```sh
+python3 -B oci.py
+python3 -B -m pytest -q test_recipe.py test_oci.py
+python3 -B oci.py --build \
+  --binary /private/build-03/binder \
+  --receipt /private/build-03/recipe-receipt.json \
+  --output /private/NEW_OCI_OUTPUT
+```
+
+Default invocation is inert. Explicit packaging verifies the exact binary,
+ELF static proof, original twelve source-file pins and successful Go test/build
+receipt. It requires the pinned base config, builds twice with
+`--pull=never --network=none --timestamp 0 --no-cache`, and compares image IDs.
+It compares every exported filesystem entry except `/workspace/app`, including
+ownership, mode, link target and content hash. The installed binary must have
+exact bytes, uid65532/gid0 and mode0755. It then executes only `--help`, as the
+inherited nonroot user, with no network, read-only root filesystem, no Linux
+capabilities, no-new-privileges and bounded CPU/memory. This does not start KAI,
+read Kubernetes credentials or exercise scheduling/GPU operations.
+
+Output includes `image.oci/` (a local OCI layout), `verification.json`, build
+log and installed help output. The local tags are
+`localhost/cps-native-kai-binder:qualification-bdf434e-9f6511d3` and its rebuild
+suffix. Packaging never pushes an image or applies cluster configuration.
+`oci-verification.json` records the independently reproducible local image gate;
+publication, coordinated operator ownership, signed coordinator configuration,
+and actual scheduler/GPU qualification remain separate Root-owned steps.
