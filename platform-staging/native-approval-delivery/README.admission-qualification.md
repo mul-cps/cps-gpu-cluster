@@ -58,7 +58,9 @@ permission is granted. Wire fixtures exercise admission shape only, not SDK
 approval authentication, Source authority, GPU behavior, or production rollout.
 
 Available policy type-check warnings are recorded and fail qualification;
-policy/binding UID/specs are reread before and after the matrix. Cleanup always
+the receipt retains up to 16 expression warnings with each field reference
+and warning string bounded to 2048 characters, alongside the full count.
+Policy/binding UID/specs are reread before and after the matrix. Cleanup always
 runs in `finally`, using each original UID and freshly read resourceVersion,
 refusing replacement identities and retrying bounded conflicts. All created
 objects must subsequently return404; residue makes the receipt fail. Namespace

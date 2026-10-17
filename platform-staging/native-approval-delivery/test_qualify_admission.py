@@ -106,13 +106,14 @@ def test_case_matrix_uses_only_server_dryrun_test_resources_and_all_four_namespa
     assert all(c.get('policy') for c in cases if not c['accepted'])
 
 
-@pytest.mark.parametrize('proxy_strips', [False, True])
-@pytest.mark.parametrize('async_delete', [False, True])
-def test_whole_isolated_flow_with_actual_go_cel_and_no_live_client(tmp_path, monkeypatch, proxy_strips, async_delete):
+@pytest.mark.parametrize('proxy_strips,async_delete,warning_case', [
+    (False, False, False), (True, False, False), (False, True, False), (True, True, False), (False, False, True)])
+def test_whole_isolated_flow_with_actual_go_cel_and_no_live_client(tmp_path, monkeypatch, proxy_strips, async_delete, warning_case):
     import subprocess
     executable = os.environ.get('CPS_NATIVE_PENDING_CEL_EVALUATOR')
     if not executable: pytest.skip('Qualified official Go CEL evaluator required for complete offline matrix')
     m = module(); objects = {}; calls = []; terminating = {}; delayed_gets = []; delete_uids = []; propagation = []
+    policy_reads = {}; warning = {'fieldRef': 'spec.validations[0].expression', 'warning': 'Actual type-check detail: ' + 'x' * 3000}
     clock = [0.0]
     if async_delete:
         monkeypatch.setattr(m.time, 'monotonic', lambda: clock[0])
@@ -124,6 +125,9 @@ def test_whole_isolated_flow_with_actual_go_cel_and_no_live_client(tmp_path, mon
             if path == m.SSR: return {'status':200,'object':{'status':{'userInfo':{'username':(actor if not proxy_strips else None) or 'root-operator','groups':['system:authenticated']}}}}
             old = copy.deepcopy(objects.get(path)); obj = copy.deepcopy(body)
             if method == 'GET':
+                if warning_case and old and old['kind'] == 'ValidatingAdmissionPolicy' and '-pregrant-update-qa-' in old['metadata']['name']:
+                    policy_reads[path] = policy_reads.get(path, 0) + 1
+                    if policy_reads[path] == 2: old['status']['typeChecking']['expressionWarnings'] = [warning] + [dict(warning, fieldRef='f' * 3000)] * 16
                 if path in terminating:
                     if old['metadata'].get('finalizers') == ['foregroundDeletion']:
                         # Removing the GC finalizer requires an UPDATE. The
@@ -182,6 +186,15 @@ def test_whole_isolated_flow_with_actual_go_cel_and_no_live_client(tmp_path, mon
     if proxy_strips:
         assert result['passed'] is False and result['stage'] == 'identity-proof' and not result['barriers']
         assert result['identity_checks']['test']['matches_expected'] is False
+        return
+    if warning_case:
+        assert result['passed'] is False and len(result['tests']) == 37
+        row = next(row for row in result['type_checking'] if '-pregrant-update-qa-' in row['policy'])
+        assert row['warning_count'] == 17 and len(row['expressionWarnings']) == 16
+        assert row['expressionWarnings'][0] == {'fieldRef': warning['fieldRef'], 'warning': warning['warning'][:2048]}
+        assert len(row['expressionWarnings'][1]['fieldRef']) == 2048
+        saved = json.loads((tmp_path / 'private' / 'receipt.private.json').read_text())
+        assert saved['type_checking'] == result['type_checking']
         return
     assert result['passed'] is True
     if async_delete: assert delayed_gets and len(delete_uids) == len(set(delete_uids))

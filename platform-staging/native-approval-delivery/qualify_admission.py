@@ -420,7 +420,9 @@ def execute(private_dir, context=None, broker=None):
                 if definition['kind'] != 'ValidatingAdmissionPolicy': continue
                 status = state['object'].get('status', {}); warnings = status.get('typeChecking', {}).get('expressionWarnings', [])
                 report['type_checking'].append({'policy': definition['metadata']['name'], 'available': 'typeChecking' in status,
-                    'warning_count': len(warnings), 'observed_generation': status.get('observedGeneration')})
+                    'warning_count': len(warnings), 'observed_generation': status.get('observedGeneration'),
+                    'expressionWarnings': [{'fieldRef': str(w.get('fieldRef', ''))[:2048],
+                        'warning': str(w.get('warning', ''))[:2048]} for w in warnings[:16]]})
                 require(not warnings, 'Admission type checking warnings')
         check_policies()
         report['namespace_selectors'] = []
