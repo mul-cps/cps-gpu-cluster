@@ -133,8 +133,17 @@ a verified existing GHCR pull credential resolved it. Both Hubs passed actual
 Gateway TLS/SAN verification.
 [Binder adoption receipt](../../qualification-artifacts/native-kai-binder-20261017/result.json).
 
-Next: integrate the protected Coordinator endpoint and coordinated Gateway/Hub/Node
-adoption, then exercise the actual native KAI lifecycle. Stock KAI rejects the
+The coordinated image-adoption renderer and protected endpoint proposal now pass
+66 focused tests and 25 subtests (two dependency deprecation warnings). Review
+caught and fixed the stale bootstrap `NODE_IMAGE` declaration before rollout.
+The proposals preserve protected authority/history and require actual NodeConfig
+UID/RV/data readback. Signed token, CA, exact route RBAC and private-file fragments
+are prepared, including the binder's nonroot file group. These proposals are not
+applied; Gateway/Hub/Node images and production admission remain unchanged.
+[Integration source receipt](../../qualification-artifacts/native-kai-binder-20261017/integration-source.json).
+
+Next: apply the coordinated Gateway/Hub/Node adoption and protected Coordinator
+configuration, then exercise the actual native KAI lifecycle. Stock KAI rejects the
 cordoned GPU2 node, so automatic placement also requires a reviewed maintenance
 transition; the cordon remains unchanged.
 Dynamic no-MIG sharing remains the primary acceptance goal; wider memory caps,

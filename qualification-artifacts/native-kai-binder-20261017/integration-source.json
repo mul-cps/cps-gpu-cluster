@@ -1,0 +1,22 @@
+{
+  "version": 1,
+  "applicationSource": "be0f37ceb7d93c53e8d2e8321dc5a212cb0f686b",
+  "sourceFiles": {
+    "platform-staging/gpu/native-group-pilot/current-group-kai/image_adoption.py": "184d8024fcc6da674497defe154e8b243d1b2767bee6bc8bed5d660a47997b46",
+    "platform-staging/gpu/native-group-pilot/current-group-integration/endpoint.py": "208d830c39e41670290448236a35557793b178f000b6ebfc6a37246f2a116ea7",
+    "platform-staging/scheduler/native-kai-binder/operator_handover.py": "f40cf1125fd35c49300054f5f7a3bf12f18c9aba396f8d13de94b8c9286728d7"
+  },
+  "tests": {
+    "passed": 66,
+    "subtestsPassed": 25,
+    "dependencyDeprecationWarnings": 2
+  },
+  "sourceOnlyStages": [
+    "coordinated Gateway/Hub/Node image adoption",
+    "protected current-group Coordinator endpoint"
+  ],
+  "liveNativeCoordinatorEnabled": false,
+  "liveGatewayHubNodeImagesChanged": false,
+  "liveBinderAdoptionReceipt": "result.json",
+  "productionQualified": false
+}
