@@ -41,7 +41,6 @@
   "all_six_current_services_ready": true,
   "gpu2_cordoned": true,
   "actual_images_adopted": false,
-  "temporary_staged_objects_active": false,
   "evidence_sha256": {
     "prepared.private.json": "2014f3cb59510ffce25639543ddaef1e18ed30ada0112d0a6375335ab850e86d",
     "rotation.verified.private.json": "2cbdd67d5d381b5cc86a0f5f9d4317404b96d6441095407dc75b1a7fdd32eb4d",
@@ -59,5 +58,7 @@
     "Observer render contains prospective operator Roles that must not be applied; preserve current producer-owned Roles and use the already-staged supplemental readers.",
     "No actual journal bytes were compared during staging; the staging actors never accessed or rotated the journal.",
     "Hardware placement, isolation and lifetime policy enablement remain unqualified."
-  ]
+  ],
+  "successor_runtime_inputs_mounted": false,
+  "supplemental_read_permissions_created": true
 }
