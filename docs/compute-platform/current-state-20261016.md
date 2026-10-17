@@ -48,8 +48,10 @@ notebook Pod identities unchanged.
 Scheduled kured maintenance on GPU1 then evicted the Gateway and CPS Hub. Both
 recovered with their existing application images; the replacement Gateway
 required manual verified observer-role rebinding before aggregate readiness
-recovered. An automatic trusted reconciler is being implemented as a released
-compute module. No drain was forced and GPU2 was not rebooted or reconfigured.
+recovered. An automatic trusted reconciler is now deployed as a released compute module.
+Its controlled same-image Gateway replacement test passed: permissions repaired
+automatically and all four installed consumers returned ready without manual
+Role repair. Other replacement types remain unqualified. No drain was forced and GPU2 was not rebooted or reconfigured.
 Concurrent startup, peer OOM continuity, automatic recovery and broader
 production qualification remain unqualified.
 
@@ -62,6 +64,17 @@ run has not occurred. Both normal Stops completed; all 108 native claims are
 released, both SQL reservation tables are empty, temporary grants are restored,
 the token is revoked, and personal notebook Pod UIDs are unchanged.
 [Concurrent run and cleanup receipt](../../platform-staging/jupyter-extensions-20261013/concurrent-start-cleanup-20261017.json).
+
+Application `56e4c93` adds a bounded retry of the identical acquire request for
+the exact four-acknowledgment readiness denial. Other denials and ambiguous
+transport failures are not retried. The full suite passed 2,974 tests and 49
+subtests (3 skipped); exact-source CI passed. Both Hubs now run verified image
+`265e4f5e…ab41729` and installed hashes match. The unchanged Gateway was restarted
+to consume the new trusted Hub image pins; Node47, policy, approval revision and
+personal notebook Pod identities are preserved. All four installed consumers
+verify ready. **Concurrent startup and peer OOM remain unqualified.**
+[Hub adoption](../../platform-staging/jupyter-extensions-20261013/hub-acquire-readiness-adoption-20261017.json)
+and [observer recovery](../../platform-staging/jupyter-extensions-20261013/observer-permissions-adoption-20261017.json).
 
 ## Earlier verified checkpoint — native 5 GiB execution and normal Stop passed
 

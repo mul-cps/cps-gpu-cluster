@@ -1,0 +1,25 @@
+{
+  "schema_version": 1,
+  "source": "699c457f3e6f2a9c4bca777c7f594306f196c112",
+  "image": "ghcr.io/mul-cps/cps-native-observer@sha256:979567428e891b6861c55bba3eb746b7284fc5e7f82b7e31be4d8b3da2cb075e",
+  "live_deployed": true,
+  "operator_pod_uid": "90fd59d3-fd86-4a51-ab93-aa79022e8cbd",
+  "operator_restarts": 0,
+  "renderer_tests_independent_passed": 29,
+  "exact_seven_roles_converged": true,
+  "dedicated_service_account": true,
+  "secret_api_access": false,
+  "image_pull_reference": "cps-native-image-pull",
+  "existing_registry_credential_reused": true,
+  "gateway_replacement_test": {
+    "old_pod_uid": "df88400f-ecf2-4a97-8e33-28626d334175",
+    "new_pod_uid": "350b1cde-d9af-46ec-a181-7ddad96b91a6",
+    "automatic_role_rebinding": true,
+    "manual_role_repair": false,
+    "all_four_installed_consumers_ready": true
+  },
+  "held_node_template_pin": null,
+  "node_and_hub_replacement_recovery_qualified": false,
+  "production_qualified": false,
+  "release_sha256": "sha256:acea88fbb3ea275695082291ba9dc8effa93105a4ec9339ec68ca773ea86ccd7"
+}

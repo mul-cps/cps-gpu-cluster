@@ -1,0 +1,28 @@
+{
+  "schema_version": 1,
+  "source": "56e4c93db31f247e7a44a6face4a0ad18603167b",
+  "image": "ghcr.io/mul-cps/cps-compute@sha256:265e4f5ef31d987c884defad576fcee7d55f5ac49c8cfaafc4a5f8c8aab41729",
+  "hub_wheel_sha256": "89d716551af8c2a66381ccaf1e0c1cbf5371c90b1c8ec80f2cc82a622ab46437",
+  "ci_run": 38997895741,
+  "ci_success": true,
+  "full_suite": {
+    "passed": 2974,
+    "skipped": 3,
+    "subtests": 49
+  },
+  "focused_tests_independent_passed": 17,
+  "live_deployed_both_hubs": true,
+  "installed_module_sha256": "508328dc9d1f924af1cb6ade9268b7014fa236fe6e74922f8a051ead0ed31f44",
+  "sdk_bytes_unchanged": true,
+  "hub_version": "5.5.2",
+  "kubespawner_version": "7.1.0",
+  "node_image_unchanged": true,
+  "policy_hash": "sha256:d48f6553ed036c2e7adcc97417623fe0308be93ad13b20f246047ada118511b0",
+  "approval_revision": "sha256:1e2b09e4f7a30389a78ac82eb9243ba8466a0e5e396dc312b7d76672501d88a1",
+  "all_four_installed_consumers_ready": true,
+  "personal_pod_uids_preserved": true,
+  "concurrent_start_qualified": false,
+  "peer_oom_run": false,
+  "production_qualified": false,
+  "readiness_proof_sha256": "bd4fbf8465f994a8d80e420f82321e953aa7a91470011b1eb5adf28f0593a800"
+}
