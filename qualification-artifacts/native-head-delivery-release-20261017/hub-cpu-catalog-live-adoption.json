@@ -1,0 +1,126 @@
+{
+  "schema_version": 1,
+  "recorded_at": "2026-10-17T16:14:51.092316+00:00",
+  "scope": "Paired Hub personal CPU catalog allocation live adoption",
+  "source": {
+    "compute": "c37287a86e333fbc9ea9b013dfe1f5a25911c2df",
+    "cluster": "966aa7c0c73aeda610aa029464384fe1565544f2"
+  },
+  "hub": {
+    "image": "ghcr.io/mul-cps/cps-compute@sha256:0cf5d0fc6118bcf264e086bdd7a6166d87590afa5eb94e26cb6b9364d85ebd80",
+    "both_hubs_deployed": true,
+    "both_installed_hub_modules_match_source": true,
+    "personal_cpu_aliases": {
+      "cpu-default": "interactive-cpu"
+    },
+    "environment_scope": "Hub main container only"
+  },
+  "validation": {
+    "matching_database_backups": 3,
+    "root_actor_and_rollout_tests_passed": 29,
+    "exact_source_ci": {
+      "conclusion": "success",
+      "runs": [
+        {
+          "repository": "cps-compute",
+          "id": 39046889851,
+          "conclusion": "success",
+          "headSha": "c37287a86e333fbc9ea9b013dfe1f5a25911c2df",
+          "name": "Test and build",
+          "status": "completed",
+          "url": "https://github.com/mul-cps/cps-compute/actions/runs/39046889851"
+        },
+        {
+          "repository": "cps-gpu-cluster",
+          "id": 39047002517,
+          "conclusion": "success",
+          "headSha": "966aa7c0c73aeda610aa029464384fe1565544f2",
+          "name": "Compute platform tests",
+          "status": "completed",
+          "url": "https://github.com/mul-cps/cps-gpu-cluster/actions/runs/39047002517"
+        },
+        {
+          "repository": "cps-gpu-cluster",
+          "id": 39047002571,
+          "conclusion": "success",
+          "headSha": "966aa7c0c73aeda610aa029464384fe1565544f2",
+          "name": "Compute deployment configuration",
+          "status": "completed",
+          "url": "https://github.com/mul-cps/cps-gpu-cluster/actions/runs/39047002571"
+        }
+      ]
+    },
+    "services_ready": [
+      "jupyterhub/hub",
+      "cit-jhub/hub",
+      "cps-compute/compute-gateway",
+      "cps-compute/cps-native-head-delivery",
+      "cps-native-system/cps-native-node-agent",
+      "cps-native-system/cps-native-observer-operator"
+    ],
+    "independent_component_acknowledgments": [
+      "gateway",
+      "hub:cit",
+      "hub:cps",
+      "node"
+    ],
+    "policy_revision": "sha256:0e07a19d870394cc4798a1ccca2581b84db8202fc9b60c548f8cb8558f18eb31",
+    "policy_hash": "sha256:d48f6553ed036c2e7adcc97417623fe0308be93ad13b20f246047ada118511b0",
+    "journal": {
+      "rotations_before": 3,
+      "rotations_after": 4,
+      "original_anchor_and_inode_preserved": true,
+      "all_previous_archives_preserved": true,
+      "single_transition_job_ready": true
+    },
+    "normal_student_cpu": {
+      "start_attempts": 1,
+      "reached_hub_and_pod_ready": true,
+      "requests": {
+        "cpu": "2",
+        "memory": "8Gi"
+      },
+      "limits": {
+        "cpu": "2",
+        "memory": "8Gi"
+      },
+      "approved_notebook_image": "ghcr.io/mul-cps/cps-jupyter-notebook@sha256:9444a023984ffe792ba6588b5f54d459edae1c69b13399597498a659b591df7f",
+      "existing_pvc_nfs_and_security_preserved": true,
+      "normal_stop_http_status": 204,
+      "test_pod_absent": true,
+      "temporary_grant_expired": true,
+      "preexisting_grants_unchanged": true,
+      "temporary_tokens_revoked": 2,
+      "local_token_files_removed": true,
+      "kernels_created": 0,
+      "batch_jobs_submitted": 0,
+      "gpu_execution": false,
+      "browser_qualified": false
+    }
+  },
+  "cleanup": {
+    "temporary_rbac_objects_removed": 8,
+    "completed_transition_job_removed": true,
+    "readonly_sql_reader_removed": true
+  },
+  "preserved": {
+    "three_personal_notebook_uids_and_specs": true,
+    "cpsadmin_absent": true,
+    "gpu2_cordoned": true,
+    "binder_bridge_enabled": false
+  },
+  "remaining": {
+    "legacy_profile_card_ui_aligned": false,
+    "lifetime_policy_migration_deployed": false,
+    "gpu_hardware_execution_qualified": false,
+    "full_platform_production_ready": false
+  },
+  "evidence_sha256": {
+    "final_health": "e8258b35dbbacec9aebd26d81a98791d72b517a31c0e54d574719091f2917ba5",
+    "journal_after": "546e896cecfce4068c7da1dc4d3b8a14d3e1266a61768c6dad7137bad6ebcf8a",
+    "normal_cpu_result": "5debf1105891c325dc30be90cc4901d0d20cce33212315a5621c54f32ed337e9",
+    "normal_cpu_pod": "7a81751eac9bfe881f85f2a7a431ea705f14195f15b2ca993a71f6f7e538e2cd",
+    "normal_cpu_stop": "66221a8ae3034e72b6ced78e0f3d9ace340eac0b7c8b1f91098ecd77b18bf863",
+    "token_cleanup": "0214bb8baa2edd8bca80d062551afc317f58ef10ed5dcd3c6e50244a847930c6"
+  }
+}
