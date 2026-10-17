@@ -1,0 +1,21 @@
+hint: Using 'master' as the name for the initial branch. This default branch name
+hint: will change to "main" in Git 3.0. To configure the initial branch name
+hint: to use in all of your new repositories, which will suppress this warning,
+hint: call:
+hint:
+hint: 	git config --global init.defaultBranch <name>
+hint:
+hint: Names commonly chosen instead of 'master' are 'main', 'trunk' and
+hint: 'development'. The just-created branch can be renamed via this command:
+hint:
+hint: 	git branch -m <name>
+hint:
+hint: Disable this message with "git config set advice.defaultBranchName false"
+Initialized empty Git repository in /home/bjoern/.local/state/cps-full-project-20261013/kai-terminal-binder-plan-20261014/replay-never-enrolled-final/.git/
+From https://github.com/kai-scheduler/KAI-Scheduler
+ * branch            bdf434e5e9201cccf4e05fad04d814363653f692 -> FETCH_HEAD
+HEAD is now at bdf434e chore(release): prepare changelog for v0.18.1 (#2263)
+ok  	github.com/kai-scheduler/KAI-scheduler/pkg/binder/binding	0.117s
+ok  	github.com/kai-scheduler/KAI-scheduler/pkg/binder/binding/resourcereservation	0.242s
+ok  	github.com/kai-scheduler/KAI-scheduler/pkg/binder/controllers	0.096s
+ok  	github.com/kai-scheduler/KAI-scheduler/cmd/binder/app	0.017s

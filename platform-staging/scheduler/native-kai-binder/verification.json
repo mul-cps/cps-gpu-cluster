@@ -1,0 +1,58 @@
+{
+  "actual_api_credentials_read": false,
+  "actual_both_map_absence_recheck_tested": true,
+  "all_affected_packages_passed": [
+    "./pkg/binder/binding",
+    "./pkg/binder/binding/resourcereservation",
+    "./pkg/binder/controllers",
+    "./cmd/binder/app"
+  ],
+  "app_startup_bridge_implemented": true,
+  "binary_bytes": 98712920,
+  "binary_sha256": "16bf6b5294a2604a2c357e07024d10a38dd053c77f54cca3fc3a1a73f7dc062b",
+  "coordinator_installed": false,
+  "coordinator_source_commit": "74ccb2d9cdb1e91ea9750d335e1389c0d2d3a916",
+  "dependency_diff": [],
+  "fresh_recipe_successor": {
+    "all_affected_packages_passed": [
+      "./pkg/binder/binding",
+      "./pkg/binder/binding/resourcereservation",
+      "./pkg/binder/controllers",
+      "./cmd/binder/app"
+    ],
+    "binary_bytes": 98713592,
+    "binary_sha256": "8c451ff2f7f9dedb02febd1d73de8d92ffb3fab2a38214afabf68062aaa2b314",
+    "coordinator_installed": false,
+    "coordinator_source_commit": "74ccb2d9cdb1e91ea9750d335e1389c0d2d3a916",
+    "dependency_diff": [],
+    "live_operations": false,
+    "patch_sha256": "9f6511d36d2cc1f910ab940ccb1186ac5936dec2e061e447740113965e9b220b",
+    "route_qualified": false,
+    "sdk_contract_commit": "0451fd9cc9bcb5ba55b2d35c5aca84fc52f5fad3",
+    "sdk_profile_correction_commit": "74ccb2d9cdb1e91ea9750d335e1389c0d2d3a916",
+    "upstream_commit": "bdf434e5e9201cccf4e05fad04d814363653f692"
+  },
+  "independent_go_review": "pending; all slots occupied",
+  "installed_native_route_qualified": false,
+  "live_operations": false,
+  "native_post_bind_hardware_qualified": false,
+  "never_enrolled_cleanup_empty_array_tested": true,
+  "null_cleanup_array_denied": true,
+  "patch_sha256": "9f6511d36d2cc1f910ab940ccb1186ac5936dec2e061e447740113965e9b220b",
+  "red_test": "Original pinned KAI bound marked Pod without coordinator/ACK; required guard test failed. New HTTP symbol tests also failed before transport existed.",
+  "route_qualified": false,
+  "sdk_contract_commit": "0451fd9cc9bcb5ba55b2d35c5aca84fc52f5fad3",
+  "signed_service_auth_enforced_by": "Root-owned coordinator must perform TokenReview audience, current SAUID and current SAR; Go never trusts JWT claims",
+  "source_scope": "version1 operator qualification10 only; no20/v2",
+  "transport_operations": [
+    "prepare",
+    "current",
+    "binding",
+    "accepted",
+    "close",
+    "hold",
+    "cleanup-maps",
+    "reservation-delete"
+  ],
+  "upstream_commit": "bdf434e5e9201cccf4e05fad04d814363653f692"
+}

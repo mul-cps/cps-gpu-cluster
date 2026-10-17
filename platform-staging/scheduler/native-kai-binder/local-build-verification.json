@@ -1,0 +1,45 @@
+{
+  "CGO_ENABLED": 0,
+  "GOMAXPROCS": 4,
+  "all_affected_packages_passed": [
+    "./pkg/binder/binding",
+    "./pkg/binder/binding/resourcereservation",
+    "./pkg/binder/controllers",
+    "./cmd/binder/app"
+  ],
+  "application_contract_commit": "36b91d33da4508e54de74a900ee039cd01d14cb4",
+  "binary_bytes": 98235582,
+  "binary_sha256": "5f518d0e13dca26492f3ac821825cdc587b4f165e86a23263aad4cebe37381fa",
+  "dependency_diff": [],
+  "go_package_test_output": [
+    "ok  \tgithub.com/kai-scheduler/KAI-scheduler/pkg/binder/binding\t0.112s",
+    "ok  \tgithub.com/kai-scheduler/KAI-scheduler/pkg/binder/binding/resourcereservation\t0.239s",
+    "ok  \tgithub.com/kai-scheduler/KAI-scheduler/pkg/binder/controllers\t0.102s",
+    "ok  \tgithub.com/kai-scheduler/KAI-scheduler/cmd/binder/app\t0.019s"
+  ],
+  "go_parallelism": 2,
+  "go_version": "go1.26.8",
+  "live_operations": false,
+  "manifest_sha256": "b081cd82fab6ed018c6f0fea7addd6c105bca2115e47ecd9f191b50fed8e7bee",
+  "original_dirty_prototype_unchanged": true,
+  "package_import_commit": "1060fd1",
+  "patch_sha256": "9f6511d36d2cc1f910ab940ccb1186ac5936dec2e061e447740113965e9b220b",
+  "private_log_sha256": "512ac1d3823ef6e928848100f4792794981690ba56d94e0c88d45f7d4c0b2094",
+  "private_receipt_sha256": "8555ae9c532e3e32de0bd5d1b8e06f3b7a4c71e8ce07293783d8ee0361b0d88f",
+  "production_qualified": false,
+  "published": false,
+  "rebuild_identical": true,
+  "recipe_sha256": "faf8d5da34295065912578272cafefa9905bd19a80695ebf72d82591bf54f122",
+  "recipe_tests_command": "python -B -m pytest -q -p no:cacheprovider platform-staging/scheduler/native-kai-binder/test_recipe.py",
+  "recipe_tests_passed": 14,
+  "security_scope": "Unchanged reviewed terminal guard; CPU packaging only. No current-group live or production qualification.",
+  "source_checkout_preserved_clean": true,
+  "static_elf": {
+    "PT_INTERP": false,
+    "format": "ELF64-LSB-AMD64",
+    "program_headers": 5
+  },
+  "toolchain_sha256": "d0f743b33e8d8945e6b1f432edd15785c70507121d6e2a723b21285eddf8b57b",
+  "upstream_commit": "bdf434e5e9201cccf4e05fad04d814363653f692",
+  "verification_date": "2026-10-17"
+}

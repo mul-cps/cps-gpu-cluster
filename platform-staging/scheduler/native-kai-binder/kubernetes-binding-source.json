@@ -1,0 +1,9 @@
+{
+  "bytes": 16385,
+  "installed_binding_cas_qualified": false,
+  "root_observed_server": "v1.34.9+k3s1",
+  "root_observed_server_git": "5f72184f2d188f75171bbd21953b1c16268e425f",
+  "sha256": "3688dcbfd6cd0a175eb706264f91ba7d12c7ee682a9c010d255f020510d95bd4",
+  "upstream_tag": "v1.34.9",
+  "url": "https://raw.githubusercontent.com/kubernetes/kubernetes/v1.34.9/pkg/registry/core/pod/storage/storage.go"
+}

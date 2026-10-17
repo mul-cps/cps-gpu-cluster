@@ -1,0 +1,91 @@
+{
+  "coordinator_source_commit": "74ccb2d9cdb1e91ea9750d335e1389c0d2d3a916",
+  "current_group_contract_commit": "36b91d33da4508e54de74a900ee039cd01d14cb4",
+  "dependency_diff": [],
+  "files": [
+    {
+      "original_sha256": "244134aba5633f2fd2aeebcf27a89e9b480b65ae4b0965098454dcf62ed6b891",
+      "patched_bytes": 8114,
+      "patched_sha256": "da754fa6ee7436e5cd12840f6c608abcefce6e04603b119afedd3b10b3da1263",
+      "path": "cmd/binder/app/app.go"
+    },
+    {
+      "original_sha256": null,
+      "patched_bytes": 1003,
+      "patched_sha256": "ba6ce8061b26a8fa91ce39c8a9a759948ea7f2d7dbf1fa7a4ecea512d8d49365",
+      "path": "cmd/binder/app/native_options_test.go"
+    },
+    {
+      "original_sha256": "743b4b36cb98913e480c12acab960f96efd8fcd105fb4102a2c52742125167b8",
+      "patched_bytes": 5960,
+      "patched_sha256": "574845593a36a743721006c0454adb6f13d7687f799b7c7357d654c6709b96a6",
+      "path": "cmd/binder/app/options.go"
+    },
+    {
+      "original_sha256": "f7828478d782299e1636182d593ccced4e79f0dd03bc06b5d1e7d6b50e884a4b",
+      "patched_bytes": 6069,
+      "patched_sha256": "2d334a4dbf0142907ffe002332db539758256dd5cfeabaa71e1ee1bec86e9dba",
+      "path": "pkg/binder/binding/binder.go"
+    },
+    {
+      "original_sha256": null,
+      "patched_bytes": 13146,
+      "patched_sha256": "1cabb2b4a790162b40030e84aad53e730aa41cdbe38b9d7dd72215e15743531e",
+      "path": "pkg/binder/binding/native_terminal.go"
+    },
+    {
+      "original_sha256": null,
+      "patched_bytes": 17192,
+      "patched_sha256": "37432a065b783d9520dbbe16287dde9ececb0adf3839dc9cb1a62c9737262ec7",
+      "path": "pkg/binder/binding/native_terminal_test.go"
+    },
+    {
+      "original_sha256": null,
+      "patched_bytes": 10980,
+      "patched_sha256": "447a496667b0493bb67c70455f44e65627ff8bc30496a55083a31e77834ca7c5",
+      "path": "pkg/binder/binding/native_transport.go"
+    },
+    {
+      "original_sha256": null,
+      "patched_bytes": 9309,
+      "patched_sha256": "29dda384cb26f01a0eb7c625598f081816090abbe3f4d8b9b5cdc4ec11fdde49",
+      "path": "pkg/binder/binding/native_transport_test.go"
+    },
+    {
+      "original_sha256": null,
+      "patched_bytes": 3107,
+      "patched_sha256": "b46fa21e46499e3324e5cb1586f3324ebd08f57e6da1777e136ae9b64bb7117a",
+      "path": "pkg/binder/binding/resourcereservation/native_custody_test.go"
+    },
+    {
+      "original_sha256": "b66b864330fc271a309db0dc3ac59ae81505356db372c2aa7d64eabf55d5a4e7",
+      "patched_bytes": 23782,
+      "patched_sha256": "76a8645493ef508edf7cac01a89cecc16c2c52a9ad7a23b61768f9fc9844be9a",
+      "path": "pkg/binder/binding/resourcereservation/resource_reservation.go"
+    },
+    {
+      "original_sha256": "5cd40ad9aee6ee762322a385a7e3f4502fce1698d9168ba89e2a3aa7d20099d6",
+      "patched_bytes": 11580,
+      "patched_sha256": "b02ca89df49c6c622f6799de05e52935d507b4a1eb881e3c2c7ab6f0d5b396f1",
+      "path": "pkg/binder/controllers/bindrequest_controller.go"
+    },
+    {
+      "original_sha256": null,
+      "patched_bytes": 3471,
+      "patched_sha256": "44828f0338942cb67d515e5e289da5dc4fa27577a945aa09ccfac911935f812b",
+      "path": "pkg/binder/controllers/native_custody_test.go"
+    }
+  ],
+  "go_mod_sha256": "b5f815389a3bb0c88029095a83a9cabdfd7e55f9a3da7638e76c7dcebc39478e",
+  "go_sum_sha256": "30fc1facb3f4ede3658046e5e948f4bceea53354aa44c054737c54190c3ad583",
+  "go_version": "go1.26.8",
+  "patch_sha256": "9f6511d36d2cc1f910ab940ccb1186ac5936dec2e061e447740113965e9b220b",
+  "sdk_commit": "0451fd9cc9bcb5ba55b2d35c5aca84fc52f5fad3",
+  "sdk_profile_correction_commit": "74ccb2d9cdb1e91ea9750d335e1389c0d2d3a916",
+  "toolchain_archive": {
+    "sha256": "d0f743b33e8d8945e6b1f432edd15785c70507121d6e2a723b21285eddf8b57b",
+    "url": "https://go.dev/dl/go1.26.8.linux-amd64.tar.gz"
+  },
+  "upstream_commit": "bdf434e5e9201cccf4e05fad04d814363653f692",
+  "upstream_url": "https://github.com/kai-scheduler/KAI-Scheduler.git"
+}
