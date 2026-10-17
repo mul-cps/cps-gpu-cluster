@@ -83,7 +83,7 @@ def test_rejects_mismatched_node_process_and_missing_materializer_group(request,
 def test_binder_staged_off_flags_and_signed_projection(request,monkeypatch,tmp_path):
     c,*_=harness(request,monkeypatch,tmp_path)
     r=endpoint.render(c.group_context,**inputs(c));b=r['binder']
-    assert len(b['args'])==5 and b['args'][0]=='--native-pending-coordinator-enabled=false'
+    assert len(b['args'])==6 and b['args'][0]=='--native-pending-coordinator-enabled=false'
     assert b['opt_in_args'][0]=='--native-pending-coordinator-enabled=true'
     assert b['volumes'][0]['projected']['sources'][0]['serviceAccountToken']['audience']==endpoint.AUDIENCE
     assert all(x['readOnly'] for x in b['volumeMounts'])
@@ -140,3 +140,14 @@ def test_binder_projection_declares_readable_nonroot_group(request,monkeypatch,t
     # The actual stock binder has no Pod fsGroup. Its added 0440 projected
     # volume must be readable by its unchanged runAsUser10000 container.
     assert binder['podSecurityContext']=={'fsGroup':10000}
+
+
+def test_binder_reservation_flag_matches_exact_coordinator_template(request,monkeypatch,tmp_path):
+    c,*_=harness(request,monkeypatch,tmp_path)
+    args=inputs(c)
+    result=endpoint.render(c.group_context,**args)
+    required='--resource-reservation-pod-image='+args['reservation_template']['image']
+    for mode in ('args','opt_in_args'):
+        flags=result['binder'][mode]
+        assert [x for x in flags if x.startswith('--resource-reservation-pod-image=')]==[required]
+    assert result['coordinator']['reservationTemplate']['image']==args['reservation_template']['image']

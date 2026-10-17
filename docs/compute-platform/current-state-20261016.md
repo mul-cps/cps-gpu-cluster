@@ -148,7 +148,14 @@ An explicit versioned migration must preserve journal/history and qualify resume
 a client-only upgrade or journal reset is insufficient. Diagnosis was read-only.
 
 The protected Coordinator endpoint, signed-token/CA/RBAC configuration and
-production pending admission remain unapplied. Next: finish those activation
+production pending admission remain unapplied. Fresh activation preflight passed
+all 30 required resource-permission checks, so these operations need no broader
+resource grants. The proposal now also pins the binder reservation image to the
+Coordinator template digest; the live binder still uses the tag until rollout.
+The current five-scope configuration passes the source constructor/parser
+(no runtime operations). Focused checks: 108 tests and 25 subtests passed.
+[Endpoint preflight](../../qualification-artifacts/native-kai-endpoint-preflight-20261017/README.md).
+ Next: finish those activation
 and delivery migration gates, then exercise the actual native KAI lifecycle.
 Stock KAI rejects cordoned GPU2; automatic placement remains unqualified and
 the cordon remains unchanged.

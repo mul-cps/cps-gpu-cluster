@@ -35,7 +35,7 @@ fragments with fresh UID/RV/full-preimage CAS; this file does not generate a
 blind Deployment overwrite. The init image is the exact authenticated Gateway
 component image and must follow coordinated declaration updates.
 
-Binder fragments contain all5native flags with native-pending-coordinator-enabled=false by default and a separate explicit opt-in flag set. The binder gets its own cps-native-kai projected token and a read-only namespace-local public Gateway CA mount; existing service-account identity is caller-supplied, not a fixed replacement identity. Root may preserve the actual existing binder SA UID through reviewed operator handover.
+Binder fragments contain all5native flags plus the exact reservation image flag with native-pending-coordinator-enabled=false by default and a separate explicit opt-in flag set. The binder gets its own cps-native-kai projected token and a read-only namespace-local public Gateway CA mount; existing service-account identity is caller-supplied, not a fixed replacement identity. Root may preserve the actual existing binder SA UID through reviewed operator handover.
 
 Hub proposal preserves all groupHub settings and existing Source bearer env.
 A distinct projected signed token uses `cps-native-kai` audience; Hub route
@@ -69,7 +69,7 @@ is claimed. Fixed measured GPU2 5/10GiB pilot only, no MIG/driver/reset actions.
 CPU verification (SDK source pinned be0f37ceb7d93c53e8d2e8321dc5a212cb0f686b):
 set PYTHONPATH to this directory plus that SDK's src, packages/hub/src and tests
 and the qualified test dependencies; run `pytest -q test_endpoint.py`.
-Eight tests use actual central-authority/current-context fixtures, execute both source Hub pending settings parsers (infrastructure construction substituted; actual closed groupHub structural parser and typed pending adapter execute), validate the v2
+Ten tests use actual central-authority/current-context fixtures, execute both source Hub pending settings parsers (infrastructure construction substituted; actual closed groupHub structural parser and typed pending adapter execute), validate the v2
 installer configuration and independent epoch parser, closed path grants,
 separate projected audiences, staged-off binder flags, explicit fsGroup/process mismatch negatives and actual private materializer.
 
@@ -79,3 +79,5 @@ The binder fragments include `podSecurityContext.fsGroup: 10000` so its added
 0440 projected token/CA files are readable by the unchanged nonroot binder. Merge
 this with the actual Pod security context during activation; both current Hubs
 already have fsGroup1000, and the Gateway has the required fsGroup10001.
+
+The emitted binder flags also pin `--resource-reservation-pod-image` to the exact Coordinator reservation-template digest in both disabled and opt-in modes. Replace the existing tag-valued flag when merging; do not append a duplicate flag. Actual live tag remains unchanged until explicit activation.

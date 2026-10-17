@@ -1,0 +1,26 @@
+{
+  "namespace": "kai-resource-reservation",
+  "serviceAccount": "kai-resource-reservation",
+  "image": "ghcr.io/kai-scheduler/kai-scheduler/resourcereservation@sha256:f476965d65e49059da53b3999494a33814a45408111d12010086acfadc0131d3",
+  "appLabel": "kai-resource-reservation",
+  "runtimeClassName": "",
+  "containerResources": {
+    "requests": {
+      "nvidia.com/gpu": "1"
+    },
+    "limits": {
+      "nvidia.com/gpu": "1"
+    }
+  },
+  "podSecurityContext": {},
+  "containerSecurityContext": {
+    "capabilities": {
+      "drop": [
+        "all"
+      ]
+    },
+    "runAsUser": 10000,
+    "runAsNonRoot": true,
+    "allowPrivilegeEscalation": false
+  }
+}

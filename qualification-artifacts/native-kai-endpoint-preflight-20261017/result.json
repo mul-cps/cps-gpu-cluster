@@ -1,0 +1,16 @@
+{
+  "version": 1,
+  "actualTypedContext": true,
+  "configurationParserPassed": true,
+  "nodeConfigurationUID": "2754dd81-86df-40e3-b6d7-6482558cfced",
+  "workspaceScopes": 5,
+  "policyHash": "sha256:d48f6553ed036c2e7adcc97417623fe0308be93ad13b20f246047ada118511b0",
+  "proposalSHA256": "d84141c173305f54a9522edc26eb2f85c32c5d5b3c7ce9474ed7630932086a7b",
+  "reservationImage": "ghcr.io/kai-scheduler/kai-scheduler/resourcereservation@sha256:f476965d65e49059da53b3999494a33814a45408111d12010086acfadc0131d3",
+  "binderBridgeEnabled": false,
+  "liveApplied": false,
+  "hardwareQualified": false,
+  "configurationValidation": "source constructor and closed parser only; offline backend, no runtime operations",
+  "focusedTests": 108,
+  "focusedSubtests": 25
+}

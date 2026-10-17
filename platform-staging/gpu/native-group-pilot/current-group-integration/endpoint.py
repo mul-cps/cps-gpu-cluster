@@ -115,7 +115,8 @@ def render(context, *, gateway_account, binder_account, hub_accounts, hub_settin
     # projected-volume symlink rejection of private_bytes without weakening it.
     flags=['--native-pending-coordinator-enabled=false','--native-coordinator-url='+ORIGIN,
            '--native-coordinator-authority-namespace='+namespace,'--native-coordinator-token-file=/var/run/cps-kai-service/token',
-           '--native-coordinator-ca-file=/etc/cps-kai-trust/ca.crt']
+           '--native-coordinator-ca-file=/etc/cps-kai-trust/ca.crt',
+           '--resource-reservation-pod-image='+reservation_template['image']]
     return {'binder':{'podSecurityContext':{'fsGroup':10000},'args':flags,'opt_in_args':['--native-pending-coordinator-enabled=true',*flags[1:]],
         'volumes':[projected('cps-kai-service',AUDIENCE),{'name':'cps-kai-trust','configMap':{'name':'cps-compute-gateway-ca','items':[{'key':'ca.crt','path':'ca.crt'}],'defaultMode':0o444}}],
         'volumeMounts':[{'name':'cps-kai-service','mountPath':'/var/run/cps-kai-service','readOnly':True},{'name':'cps-kai-trust','mountPath':'/etc/cps-kai-trust','readOnly':True}],
