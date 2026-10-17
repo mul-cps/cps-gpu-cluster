@@ -15,7 +15,12 @@ def inputs(c):
 
 
 def test_actual_qualified_configuration_and_epoch_interoperability(request,monkeypatch,tmp_path):
-    c,api,h,*_=harness(request,monkeypatch,tmp_path)
+    c,api,h,service,f,current,maps,core,node=harness(request,monkeypatch,tmp_path)
+    # The production installer reloads authenticated Node/head references from
+    # the actual backend Core client; expose the same captured API in this fixture.
+    from types import SimpleNamespace
+    captured_core=SimpleNamespace(read_namespaced_config_map=lambda name,namespace,**kwargs: core.read_namespaced_config_map(name,namespace))
+    monkeypatch.setattr(h.native.backend,'core',captured_core,raising=False)
     args=inputs(c); before=copy.deepcopy(args)
     result=endpoint.render(c.group_context,**args)
     settings,rules=validate_configuration(result['coordinator'],h.native)
