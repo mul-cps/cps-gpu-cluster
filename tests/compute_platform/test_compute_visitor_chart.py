@@ -101,7 +101,7 @@ class ComputeVisitorChart(unittest.TestCase):
         self.assertFalse(any(doc['kind'] in ('Ingress', 'Role', 'RoleBinding', 'ServiceAccount', 'Secret')
             and '-compute-ui' in doc['metadata']['name'] for doc in docs))
 
-    def test_network_boundary_permits_only_own_hub_proxy_dns_https_hub_and_gateway(self):
+    def test_network_boundary_permits_only_own_hub_and_proxy_dns_https_hub_and_gateway(self):
         docs = self.documents(enabled_values())
         for source, hub_namespace, cidr in (('cps', 'jupyterhub', '192.0.2.10/32'),
                                             ('cit', 'cit-jhub', '2001:db8::10/128')):
@@ -112,7 +112,9 @@ class ComputeVisitorChart(unittest.TestCase):
             self.assertEqual(boundary['spec']['policyTypes'], ['Ingress', 'Egress'])
             self.assertEqual(boundary['spec']['ingress'], [{'from': [{
                 'namespaceSelector': {'matchLabels': {'kubernetes.io/metadata.name': hub_namespace}},
-                'podSelector': {'matchLabels': {'app': 'jupyterhub', 'component': 'proxy'}}}],
+                'podSelector': {'matchLabels': {'app': 'jupyterhub', 'component': 'proxy'}}},
+                {'namespaceSelector': {'matchLabels': {'kubernetes.io/metadata.name': hub_namespace}},
+                 'podSelector': {'matchLabels': {'app': 'jupyterhub', 'component': 'hub'}}}],
                 'ports': [{'protocol': 'TCP', 'port': 8080}]}])
             self.assertEqual(boundary['spec']['egress'], [
                 {'to': [{'namespaceSelector': {'matchLabels': {'kubernetes.io/metadata.name': 'kube-system'}},
@@ -126,6 +128,31 @@ class ComputeVisitorChart(unittest.TestCase):
             self.assertEqual(gateway['spec'], {'podSelector': {'matchLabels': {'app': 'compute-gateway'}},
                 'policyTypes': ['Ingress'], 'ingress': [{'from': [{'podSelector': {'matchLabels': {'app': name}}}],
                     'ports': [{'protocol': 'TCP', 'port': 8000}]}]})
+
+    def test_service_health_checks_allow_own_hub_but_not_foreign_hub_or_user_pods(self):
+        docs = self.documents(enabled_values())
+        for source, own, foreign in (('cps', 'jupyterhub', 'cit-jhub'),
+                                     ('cit', 'cit-jhub', 'jupyterhub')):
+            policy = next(doc for doc in docs if doc['kind'] == 'NetworkPolicy'
+                and doc['metadata']['name'] == source + '-compute-ui')
+
+            def permits(namespace, component, port=8080):
+                namespace_labels = {'kubernetes.io/metadata.name': namespace}
+                labels = {'app': 'jupyterhub', 'component': component}
+                return any(any(all(namespace_labels.get(k) == v
+                    for k, v in peer['namespaceSelector']['matchLabels'].items())
+                    and all(labels.get(k) == v
+                    for k, v in peer['podSelector']['matchLabels'].items())
+                    for peer in rule['from'])
+                    and {'protocol': 'TCP', 'port': port} in rule['ports']
+                    for rule in policy['spec']['ingress'])
+
+            self.assertTrue(permits(own, 'hub'))
+            self.assertTrue(permits(own, 'proxy'))
+            self.assertFalse(permits(foreign, 'hub'))
+            self.assertFalse(permits(foreign, 'proxy'))
+            self.assertFalse(permits(own, 'singleuser-server'))
+            self.assertFalse(permits(own, 'hub', 8000))
 
     def test_source_disable_does_not_create_that_sources_workload_or_network_permissions(self):
         values = enabled_values()

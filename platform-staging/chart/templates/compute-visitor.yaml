@@ -130,6 +130,10 @@ spec:
             matchLabels: {kubernetes.io/metadata.name: {{ $hubNamespace }}}
           podSelector:
             matchLabels: {app: jupyterhub, component: proxy}
+        - namespaceSelector:
+            matchLabels: {kubernetes.io/metadata.name: {{ $hubNamespace }}}
+          podSelector:
+            matchLabels: {app: jupyterhub, component: hub}
       ports: [{protocol: TCP, port: {{ $port }}}]
   egress:
     - to:
