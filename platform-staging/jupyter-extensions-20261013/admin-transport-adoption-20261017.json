@@ -1,0 +1,32 @@
+{
+  "source": "4d51f4e2420d9c90508cfdc19e641f73df72a706",
+  "image": "ghcr.io/mul-cps/e2x-course-hub@sha256:1130748e6805f3f93decfe406c69eb4594d54d3588296ce46c8ecc614d6001bb",
+  "deployments": [
+    {
+      "name": "cps-admin",
+      "uid": "cea488be-b5c5-481f-b41d-169d22f56f33",
+      "image": "ghcr.io/mul-cps/e2x-course-hub@sha256:1130748e6805f3f93decfe406c69eb4594d54d3588296ce46c8ecc614d6001bb",
+      "ready_replicas": 1,
+      "handler_sha256": "782eda3fc508ccdb608f27211e9a1055135ee7672bbe37ac22a7db6c10e203fd",
+      "image_only_spec_change": true
+    },
+    {
+      "name": "cit-admin",
+      "uid": "54466777-ece9-4d63-bcd8-8156caba55af",
+      "image": "ghcr.io/mul-cps/e2x-course-hub@sha256:1130748e6805f3f93decfe406c69eb4594d54d3588296ce46c8ecc614d6001bb",
+      "ready_replicas": 1,
+      "handler_sha256": "782eda3fc508ccdb608f27211e9a1055135ee7672bbe37ac22a7db6c10e203fd",
+      "image_only_spec_change": true
+    }
+  ],
+  "installed_image_http_tests": 12,
+  "dependency_check": "passed",
+  "prior_storage_409_behavior_preserved": true,
+  "live_outage_not_induced": true,
+  "production_ready": false,
+  "full_admin_tests": 331,
+  "full_admin_subtests": 458,
+  "sqlite_backups_integrity": "ok",
+  "notebook_servers_restarted": false,
+  "credentials_and_storage_preserved": true
+}

@@ -910,5 +910,11 @@ readiness bypass was used for recovery. A Start during the service interruption
 failed with ConnectionRefusedError before storage. The additional admin fix
 `4d51f4e2420d9c90508cfdc19e641f73df72a706` returns safe 503 for explicit transport
 failures: 331 tests and 458 subtests pass, with independent review. This transport
-follow-up is published as source but not deployed. All fixture originals have
+follow-up is now deployed to both consoles as
+`sha256:1130748e6805f3f93decfe406c69eb4594d54d3588296ce46c8ecc614d6001bb`.
+All 12 HTTP tests passed against the installed container image; dependency checks
+and both actual deployed module hashes passed. The
+[transport adoption receipt](../../platform-staging/jupyter-extensions-20261013/admin-transport-adoption-20261017.json)
+records image-only changes and unchanged credentials/storage. No live service outage
+was induced to validate the 503 path. All fixture originals have
 been restored and the temporary validation token revoked.
