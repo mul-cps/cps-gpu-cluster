@@ -1,8 +1,13 @@
 {
-  "ledger_uid": "33ab24b0-8e9a-4bee-b308-12a19c076924",
-  "allocations": 103,
   "all_released": true,
+  "allocations": 103,
   "controlled_pods_absent": true,
+  "gateway_reservation_check": "Read-only live SQLite query after normal Stops",
+  "gateway_reservation_tables": {
+    "reservation": 0,
+    "reservation_binding": 0
+  },
+  "ledger_uid": "33ab24b0-8e9a-4bee-b308-12a19c076924",
   "personal_pod_uids_preserved": {
     "jupyter-armin": "921b8b7c-e8de-45e3-856c-b2426ed1ed7b",
     "jupyter-bjoern": "915b3fac-53fa-469c-8c3f-0180fb285504",
