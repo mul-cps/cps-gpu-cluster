@@ -1,0 +1,43 @@
+{
+  "version": 1,
+  "observed_at": "2026-10-17T14:34:17.247509+00:00",
+  "test": "dedicated-neutral-workspace-pending-start-cancellation",
+  "result": {
+    "hub_pending_spawn_observed": true,
+    "pending_pod_observed": false,
+    "pod_unbound": false,
+    "start_http": 409,
+    "stop_http": 200,
+    "stop_seconds": 5.971,
+    "start_cancelled": true,
+    "json_cancellation_contract_verified": true,
+    "cleanup_confirmed": true,
+    "gpu_execution_tested": false,
+    "gpu2_cordoned": true,
+    "binder_bridge_enabled": false
+  },
+  "cleanup": {
+    "workspace_and_reservations_clean": true,
+    "permissions_exactly_restored": true,
+    "protected_pods_unchanged": true,
+    "gpu2_cordoned": true
+  },
+  "temporary_token": {
+    "revoked": true,
+    "local_token_removed": true
+  },
+  "operational_prerequisite_repair": {
+    "repaired": true,
+    "file": "writer.lock",
+    "inode_preserved": true,
+    "contents_unchanged": true,
+    "old_mode": "0660",
+    "new_mode": "0600",
+    "exclusive_lock_acquired": true,
+    "owner_uid": 10001
+  },
+  "startup_repair_source_status": "regression implementation in progress; live operational repair only",
+  "neutral_ldap_hook_execution_verified": false,
+  "gpu_execution_tested": false,
+  "production_ready": false
+}
