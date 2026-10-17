@@ -310,7 +310,7 @@ class Broker:
         return value
 
 
-def cleanup(api, resources):
+def cleanup(api, resources, *, propagation='Foreground'):
     results = []
     for item in reversed(resources):
         row = dict(item, deleted=False)
@@ -321,7 +321,7 @@ def cleanup(api, resources):
             meta = response['object'].get('metadata', {})
             if meta.get('uid') != item['uid']: row['uid_changed'] = True; break
             response = api.request('DELETE', endpoint(item), {'apiVersion': 'v1', 'kind': 'DeleteOptions',
-                'preconditions': {'uid': item['uid'], 'resourceVersion': meta['resourceVersion']}, 'propagationPolicy': 'Foreground'})
+                'preconditions': {'uid': item['uid'], 'resourceVersion': meta['resourceVersion']}, 'propagationPolicy': propagation})
             if response['status'] in (200, 202, 404): row['deleted'] = True; break
             if response['status'] != 409: break
         results.append(row)
@@ -447,7 +447,7 @@ def execute(private_dir, context=None, broker=None):
         for kind, old, field, value, family in [('ConfigMap', pointers[0], 'data', pointers[0]['data'], 'pointer-update'),
                 ('Role', roles[0], 'rules', roles[0]['rules'], 'pregrant-update')]:
             report['stage'] = 'replacement-delete-' + kind.lower()
-            require(cleanup(api, [identity(old)])[0]['deleted'], 'Isolated UID replacement delete failed')
+            require(cleanup(api, [identity(old)], propagation='Background')[0]['deleted'], 'Isolated UID replacement delete failed')
             report['stage'] = 'replacement-wait-' + kind.lower()
             wait_fixture_absent(api, identity(old))
             report['stage'] = 'replacement-create-' + kind.lower()

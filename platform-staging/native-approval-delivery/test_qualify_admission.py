@@ -90,6 +90,7 @@ def test_cleanup_uses_fresh_resource_version_and_original_uid():
     assert result[0]['deleted'] is True
     assert calls[-1][0] == 'DELETE'
     assert calls[-1][2]['preconditions'] == {'uid': original['metadata']['uid'], 'resourceVersion': '19'}
+    assert calls[-1][2]['propagationPolicy'] == 'Foreground'
     live['metadata']['uid'] = str(uuid.uuid4()); calls.clear()
     result = m.cleanup(Api(), [m.identity(original)])
     assert result[0]['deleted'] is False and not any(c[0] == 'DELETE' for c in calls)
@@ -111,8 +112,11 @@ def test_whole_isolated_flow_with_actual_go_cel_and_no_live_client(tmp_path, mon
     import subprocess
     executable = os.environ.get('CPS_NATIVE_PENDING_CEL_EVALUATOR')
     if not executable: pytest.skip('Qualified official Go CEL evaluator required for complete offline matrix')
-    m = module(); objects = {}; calls = []; terminating = {}; delayed_gets = []; delete_uids = []
-    if async_delete: monkeypatch.setattr(m.time, 'sleep', lambda seconds: None)
+    m = module(); objects = {}; calls = []; terminating = {}; delayed_gets = []; delete_uids = []; propagation = []
+    clock = [0.0]
+    if async_delete:
+        monkeypatch.setattr(m.time, 'monotonic', lambda: clock[0])
+        monkeypatch.setattr(m.time, 'sleep', lambda seconds: clock.__setitem__(0, clock[0] + seconds))
     class OfflineApi:
         def __init__(self, context): pass
         def request(self, method, path, body=None, *, actor=None, dryrun=False):
@@ -121,6 +125,13 @@ def test_whole_isolated_flow_with_actual_go_cel_and_no_live_client(tmp_path, mon
             old = copy.deepcopy(objects.get(path)); obj = copy.deepcopy(body)
             if method == 'GET':
                 if path in terminating:
+                    if old['metadata'].get('finalizers') == ['foregroundDeletion']:
+                        # Removing the GC finalizer requires an UPDATE. The
+                        # protected metadata/foreign-actor policy denies it
+                        # until finally removes the temporary policies.
+                        active = any(p['kind'] == 'ValidatingAdmissionPolicy' and not p['metadata'].get('deletionTimestamp') for p in objects.values())
+                        if active: return {'status': 200, 'object': old}
+                        del objects[path]['metadata']['finalizers']
                     if terminating[path] == 0:
                         del terminating[path]; del objects[path]; return {'status': 404}
                     terminating[path] -= 1; delayed_gets.append(path)
@@ -129,8 +140,11 @@ def test_whole_isolated_flow_with_actual_go_cel_and_no_live_client(tmp_path, mon
                 if not old: return {'status': 404}
                 assert body['preconditions'] == {k: old['metadata'][k] for k in ('uid', 'resourceVersion')}
                 delete_uids.append(old['metadata']['uid'])
+                propagation.append((old['kind'], old['metadata']['namespace'] if 'namespace' in old['metadata'] else None, old['metadata']['name'], body['propagationPolicy']))
                 if async_delete:
                     objects[path]['metadata']['deletionTimestamp'] = '2026-10-17T00:00:00Z'
+                    if old['metadata']['name'] in ('qa-head', m.ROLE) and body['propagationPolicy'] == 'Foreground':
+                        objects[path]['metadata']['finalizers'] = ['foregroundDeletion']
                     terminating.setdefault(path, 2); return {'status': 202, 'object': copy.deepcopy(objects[path])}
                 del objects[path]; return {'status': 200}
             if method == 'PATCH':
@@ -171,6 +185,10 @@ def test_whole_isolated_flow_with_actual_go_cel_and_no_live_client(tmp_path, mon
         return
     assert result['passed'] is True
     if async_delete: assert delayed_gets and len(delete_uids) == len(set(delete_uids))
+    backgrounds = [row for row in propagation if row[3] == 'Background']
+    assert {(kind, name) for kind, _, name, _ in backgrounds} == {('ConfigMap', 'qa-head'), ('Role', m.ROLE)}
+    assert len(backgrounds) == 2 and len({ns for _, ns, _, _ in backgrounds}) == 1
+    assert all(mode == 'Foreground' for row in propagation if row not in backgrounds for mode in [row[3]])
     assert len(result['barriers']) == 3 and all(b['enforced'] for b in result['barriers'])
     assert {'configmap-actual-replaced-uid', 'role-actual-replaced-uid'} <= {row['name'] for row in result['tests']}
     assert all(dryrun for method, path, dryrun in calls if method == 'PATCH')

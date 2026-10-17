@@ -44,7 +44,11 @@ evaluation errors cannot pass.
 
 UID cases run last: the qualifier deletes and recreates isolated same-name
 fixtures, then patches their genuine replacement UIDs against the old pins.
-After DELETE acceptance it polls GET for at most30 seconds until404, allowing
+These two fixtures use Background deletion because they have no owned
+dependents. The observed Foreground timeout is consistent with the protected
+policy denying a GC finalizer UPDATE; this cause has not been audit-confirmed.
+Background avoids that metadata update. All final cleanup retains Foreground.
+After DELETE acceptance it polls GET for at most 30 seconds until 404, allowing
 the exact old UID to remain terminating and refusing any replacement UID.
 This wait never repeats DELETE; its receipt stage identifies the fixture wait.
 This avoids counting an API-invalid fabricated metadata UID/name as admission
