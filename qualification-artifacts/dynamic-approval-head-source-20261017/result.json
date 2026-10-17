@@ -10,8 +10,29 @@
   "automatic_delivery_deployed": false,
   "automatic_delivery_migration_complete": false,
   "ci": {
+    "conclusion": "success",
     "id": 39017427697,
-    "status": "in_progress"
+    "jobs": [
+      {
+        "conclusion": "success",
+        "name": "build"
+      },
+      {
+        "conclusion": "success",
+        "name": "installed-sdk-hub"
+      },
+      {
+        "conclusion": "success",
+        "name": "installed-lab (4.5.7)"
+      },
+      {
+        "conclusion": "success",
+        "name": "installed-lab (4.6.4)"
+      }
+    ],
+    "publishes_container_images": false,
+    "status": "completed",
+    "url": "https://github.com/mul-cps/cps-compute/actions/runs/39017427697"
   },
   "components": {
     "hub": {

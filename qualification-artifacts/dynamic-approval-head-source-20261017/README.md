@@ -6,4 +6,4 @@ The explicit SDK/Hub and addon Python commands passed 3,230 tests and 68 subtest
 
 Six installed node-only functional cases passed. All 71 installed SDK modules matched the final wheel; the node-only environment retained 30 distributions and passed `pip check`. SDK and Hub wheels rebuilt from sdists were byte-identical. Artifact digests are recorded in `result.json`.
 
-CI run [39017427697](https://github.com/mul-cps/cps-compute/actions/runs/39017427697) was still running at capture. JupyterLab build/tests had passed; the complete CI, published images, automatic delivery migration, live adoption and hardware qualification remain separate gates. No live configuration was changed by these checks.
+CI run [39017427697](https://github.com/mul-cps/cps-compute/actions/runs/39017427697) completed successfully: build, installed SDK/Hub, and installed JupyterLab 4.5.7 and 4.6.4. This workflow does not publish container images. Published images, automatic delivery migration, live adoption and hardware qualification remain separate gates. No live configuration was changed by these checks.
