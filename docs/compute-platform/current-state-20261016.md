@@ -1380,3 +1380,9 @@ The live policy is still D48 and JobSets remain disabled; no live consumer or
 qualification binding was changed. A coordinated policy/runtime handover and
 full distributed qualification remain open.
 [Staged contract and runtime check](../../qualification-artifacts/native-head-delivery-release-20261017/jobset-policy-staged-runtime-result.json).
+
+### Actual scheduled console media restore — 2026-10-17
+
+Both deployed console CronJob templates produced successful backup Jobs. Their actual backup-PVC media passed manifest/image/policy/checksum verification and offline restoration in the exact recorded `d4443600` application image, with networking disabled. Schema 7, installed record validators and all-table logical equality passed for CPS and CIT. Read-only exporter Pods and test Jobs were removed; console Pod UIDs/readiness and protected notebook UIDs/Running state were preserved. GPU2 remains cordoned.
+
+Evidence: `qualification-artifacts/native-head-delivery-release-20261017/console-scheduled-media-restore-live-result.json`. This closes the console scheduled-media offline restore check only. Coordinated/off-host recovery, connected authentication/spawning, NFS/archive and artifact recovery remain unqualified. Dynamic no-MIG GPU sharing remains the primary outstanding gate.

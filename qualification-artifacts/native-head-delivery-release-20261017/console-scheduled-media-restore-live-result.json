@@ -1,0 +1,61 @@
+{
+  "observed_at": "2026-10-17T17:36:58.183242+00:00",
+  "scope": "Actual console CronJob-template backup media restored offline in exact recorded application image",
+  "consoles": {
+    "cps": {
+      "passed": true,
+      "application_image": "ghcr.io/mul-cps/e2x-course-hub@sha256:d44436000ea1fe31ab05e89364846a9a2ee7e0d36284d9a83a1900679e633dab",
+      "manifest_sha256": "a2182cf82c39209178d98f737d7612b6ca9b92c1560fba33230f41620953382f",
+      "snapshot_sha256": "35d59d63b8f75399ad1046a2b645f498ca521fe91f846043e5d7ddb869c8095d",
+      "snapshot_bytes": 12222464,
+      "policy_hash": "sha256:d48f6553ed036c2e7adcc97417623fe0308be93ad13b20f246047ada118511b0",
+      "schema_provenance": {
+        "schema_sha256": "1def3b061df3ab0d7a74d7b007994715b3b1a9954fd2f97e9ab0f7d545aa0f5a",
+        "schema_version": 1,
+        "user_version": 7
+      },
+      "scheduled_media": true,
+      "network": "none",
+      "normal_record_validation_passed": true,
+      "logical_equality_passed": true
+    },
+    "cit": {
+      "passed": true,
+      "application_image": "ghcr.io/mul-cps/e2x-course-hub@sha256:d44436000ea1fe31ab05e89364846a9a2ee7e0d36284d9a83a1900679e633dab",
+      "manifest_sha256": "90f0b8bbedff006fc19a09731baedbebe063cacfa32b32f9b87df04cbe94ac13",
+      "snapshot_sha256": "f0b57ea31ebc7b28ceabef478f15b8d3b6e5f5421d9f9fe9c4bfd7f8bc0bc96b",
+      "snapshot_bytes": 950272,
+      "policy_hash": "sha256:d48f6553ed036c2e7adcc97417623fe0308be93ad13b20f246047ada118511b0",
+      "schema_provenance": {
+        "schema_sha256": "1def3b061df3ab0d7a74d7b007994715b3b1a9954fd2f97e9ab0f7d545aa0f5a",
+        "schema_version": 1,
+        "user_version": 7
+      },
+      "scheduled_media": true,
+      "network": "none",
+      "normal_record_validation_passed": true,
+      "logical_equality_passed": true
+    }
+  },
+  "cleanup": {
+    "cps": {
+      "console_uid": "a195e993-a1c7-44e4-9c3f-9e6d33a612c4",
+      "console_ready": true,
+      "backup_job_cleaned": true
+    },
+    "cit": {
+      "console_uid": "7e7af502-d491-48e2-94c7-dfdcebfb8b9a",
+      "console_ready": true,
+      "backup_job_cleaned": true
+    },
+    "gpu2_cordoned": true,
+    "protected_notebook_uids_running": true
+  },
+  "production_recovery_qualified": false,
+  "limitations": [
+    "No connected OAuth, workspace spawning or browser validation",
+    "No coordinated Hub-console restore or off-host recovery",
+    "No NFS archive or artifact retention recovery claim"
+  ],
+  "validator_sha256": "f14f9cb517d8267833991713afa14aaf37c7c71db97a8d46da5b6909910e5aab"
+}
