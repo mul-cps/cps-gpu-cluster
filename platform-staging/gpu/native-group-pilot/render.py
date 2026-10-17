@@ -62,15 +62,27 @@ def render(config=None, *, image=DEFAULT_IMAGE, enable=False):
     # that gap: node credentials can publish cleanup, never enrollment/ledger.
     policy_name = ACCOUNT + '-cleanup-only'
     username = 'system:serviceaccount:' + namespace + ':' + ACCOUNT
+    # CEL does not decode JSON strings: these are bounded wire discriminators,
+    # not substitutes for the SDK/Node's exact claim, hash and custody validation.
+    binding = "object.metadata.labels['cps.compute/native-binding']"
+    proof_text = "object.data['abort.json']"
+    proof_wire = ("size(" + proof_text + ") <= 65536 && " + proof_text + ".startsWith('{\"attempt\":') && "
+        + proof_text + ".contains('\"cleanup_confirmed\":true,') && has(object.metadata.labels) && "
+        "'cps.compute/native-binding' in object.metadata.labels && " + proof_text + ".contains('\"binding_id\":\"' + " + binding + " + '\",') && ("
+        + proof_text + ".endsWith(',\"outcome\":\"enrollment-never-published\",\"slot_kind\":\"abort-barrier\",\"version\":2}') || "
+        + proof_text + ".endsWith(',\"outcome\":\"enrollment-never-programmed\",\"slot_kind\":\"enrollment\",\"version\":2}'))")
     expressions = [
         ("request.namespace == " + json.dumps(namespace), 'Cleanup publication stays in the authority namespace.'),
-        ("object.metadata.name.matches('^cps-native-cleanup-[a-f0-9]{40}$') && has(object.immutable) && object.immutable == true",
-         'The node agent may create only immutable native cleanup ConfigMaps.'),
-        ("has(object.data) && size(object.data) == 1 && 'receipt.json' in object.data && !has(object.binaryData)",
-         'Exactly one cleanup receipt is required.'),
+        ("(object.metadata.name.matches('^cps-native-cleanup-[a-f0-9]{40}$') || object.metadata.name.matches('^cps-native-abort-[a-f0-9]{40}$')) && has(object.immutable) && object.immutable == true",
+         'The node agent may create only immutable native cleanup or terminal abort ConfigMaps.'),
+        ("has(object.data) && size(object.data) == 1 && !has(object.binaryData) && (("
+         "object.metadata.name.matches('^cps-native-cleanup-[a-f0-9]{40}$') && 'receipt.json' in object.data) || ("
+         "object.metadata.name.matches('^cps-native-abort-[a-f0-9]{40}$') && 'abort.json' in object.data && " + proof_wire + "))",
+         'Exactly one name-bound cleanup receipt or terminal v2 abort proof is required.'),
         ("has(object.metadata.labels) && size(object.metadata.labels) == 1 && 'cps.compute/native-binding' in object.metadata.labels && "
          "object.metadata.labels['cps.compute/native-binding'].matches('^[a-f0-9]{60}$') && "
-         "object.metadata.name == 'cps-native-cleanup-' + object.metadata.labels['cps.compute/native-binding'].substring(0, 40)",
+         "(('cps-native-cleanup-' + object.metadata.labels['cps.compute/native-binding']).startsWith(object.metadata.name) || "
+         "('cps-native-abort-' + object.metadata.labels['cps.compute/native-binding']).startsWith(object.metadata.name))",
          'Cleanup names and labels carry one exact binding identity.'),
         ("!has(object.metadata.ownerReferences) || size(object.metadata.ownerReferences) == 0",
          'Cleanup tombstones must not be garbage-collected through Pod ownership.'),
@@ -88,12 +100,17 @@ def render(config=None, *, image=DEFAULT_IMAGE, enable=False):
     gateway_name = 'cps-native-gateway-authority'
     gateway_subject = [{'kind': 'ServiceAccount', 'name': 'cps-compute-controller', 'namespace': 'cps-compute'}]
     gateway_username = 'system:serviceaccount:cps-compute:cps-compute-controller'
+    barrier_text = "object.data['abort-barrier.json']"
+    barrier_pattern = r'^\{"claim":\{[^\r\n]*\},"claim_sha256":"sha256:[a-f0-9]{64}","kind":"enrollment-abort-barrier","version":2\}$'
+    barrier_wire = ("size(" + barrier_text + ") <= 65536 && " + barrier_text + ".matches(" + json.dumps(barrier_pattern) + ") && "
+        + barrier_text + ".contains('\"binding_id\":\"' + " + binding + " + '\",')")
     enrollment = ("object.metadata.name.matches('^cps-native-enrollment-[a-f0-9]{40}$') && "
         "has(object.immutable) && object.immutable == true && has(object.data) && size(object.data) == 1 && "
-        "'enrollment.json' in object.data && has(object.metadata.labels) && size(object.metadata.labels) == 1 && "
+        "has(object.metadata.labels) && size(object.metadata.labels) == 1 && "
         "'cps.compute/native-binding' in object.metadata.labels && "
         "object.metadata.labels['cps.compute/native-binding'].matches('^[a-f0-9]{60}$') && "
-        "object.metadata.name == 'cps-native-enrollment-' + object.metadata.labels['cps.compute/native-binding'].substring(0, 40)")
+        "('cps-native-enrollment-' + object.metadata.labels['cps.compute/native-binding']).startsWith(object.metadata.name) && "
+        "('enrollment.json' in object.data || ('abort-barrier.json' in object.data && " + barrier_wire + "))")
     ledger = ("object.metadata.name == 'cps-native-gpu-allocations' && "
         "(!has(object.immutable) || object.immutable == false) && has(object.data) && size(object.data) == 1 && "
         "'state.json' in object.data && object.data['state.json'] == '{\"allocations\":{},\"version\":1}'")
@@ -114,7 +131,7 @@ def render(config=None, *, image=DEFAULT_IMAGE, enable=False):
                 'request.namespace == ' + json.dumps(namespace) + ' && request.userInfo.username == ' + json.dumps(gateway_username)}],
             'validations': [
                 {'expression': '(' + ledger + ') || (' + enrollment + ')',
-                 'message': 'The gateway may create only an empty native ledger or immutable native enrollment.'},
+                 'message': 'The gateway may create only an empty native ledger or one immutable enrollment/terminal v2 abort-barrier slot.'},
                 {'expression': '!has(object.binaryData)', 'message': 'Authority records must use text data.'},
                 {'expression': '!has(object.metadata.ownerReferences) || size(object.metadata.ownerReferences) == 0',
                  'message': 'Native authority records cannot have garbage-collection owners.'}]}),
