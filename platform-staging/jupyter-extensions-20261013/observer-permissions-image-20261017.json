@@ -1,0 +1,40 @@
+{
+  "all_sdk_module_hashes_match": 68,
+  "base_image": "ghcr.io/mul-cps/cps-compute@sha256:c5cff82e383ea32ebdbd1491007972e9b829a1d27d18fa1da5f45d31e793162e",
+  "capabilities": "none",
+  "ci_run": 38996048151,
+  "ci_success": true,
+  "default_inert": {
+    "api_calls": false,
+    "state": "inert"
+  },
+  "distribution_count": 44,
+  "dockerfile_sha256": "dfca85f15ba6ae8162ab01c79595a0811d62ddf2dd55026235f47e2124f878a5",
+  "gpu_devices_or_host_mounts": false,
+  "image": "ghcr.io/mul-cps/cps-native-observer@sha256:979567428e891b6861c55bba3eb746b7284fc5e7f82b7e31be4d8b3da2cb075e",
+  "image_id": "d1638f7e820fd6852f0ea18d9b6445aaafd6633bbcf47f778a8227b7001051d7",
+  "live_deployed": false,
+  "module_sha256": "16504c86c536051d939acb916aef726d47bc4c56beaebf9e0032937a792468b8",
+  "network": "none",
+  "no_new_privileges": true,
+  "pip_check": true,
+  "protected_root_owned_0444_inputs_readable_uid": 10001,
+  "registry_config_digest": "sha256:d1638f7e820fd6852f0ea18d9b6445aaafd6633bbcf47f778a8227b7001051d7",
+  "registry_manifest_sha256": "sha256:979567428e891b6861c55bba3eb746b7284fc5e7f82b7e31be4d8b3da2cb075e",
+  "registry_provenance_verified": true,
+  "registry_rendered_config_sha256": "f95d5dd079a5d869417324bc86df7c350648ec5de229236945e1eaa0d0724bba",
+  "root_independent_inert_proof": "root-independent-default-proof.json",
+  "rootfs": "read-only",
+  "runtime_dependencies_identical": true,
+  "source": "699c457f3e6f2a9c4bca777c7f594306f196c112",
+  "tag": "ghcr.io/mul-cps/cps-native-observer:qualification-699c457f",
+  "wheel_sha256": "538b860deb2409c8470d3aa6e39fdac1cb1efe485883d02bcc1b2916afeebd31",
+  "root_independent_registry_manifest_verified": true,
+  "production_qualified": false,
+  "full_suite": {
+    "passed": 2957,
+    "skipped": 3,
+    "subtests": 49
+  },
+  "focused_tests_passed": 35
+}
