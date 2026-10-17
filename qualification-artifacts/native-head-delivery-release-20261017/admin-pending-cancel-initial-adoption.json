@@ -1,0 +1,74 @@
+{
+  "backup_metadata": {
+    "corrected_to_matching_preupgrade_image_before_fresh_backup": true,
+    "new_image_metadata_matches_both_running_consoles": true,
+    "old_provenance_was_stale": true
+  },
+  "cleanup": {
+    "gpu2_cordoned": true,
+    "permissions_exactly_restored": true,
+    "protected_pods_unchanged": true,
+    "workspace_and_reservations_clean": true
+  },
+  "consoles": {
+    "cit": {
+      "future_backup_image_matches": true,
+      "image": "ghcr.io/mul-cps/e2x-course-hub@sha256:234fd9ac4c0e6e4ecf7c129abdaaa2ca22eb846d8f93638b7f4e0d90f56cf805",
+      "only_console_image_changed": true,
+      "ready": true,
+      "runtime": {
+        "backend_sha256": "4e399792eb139c82fd93ccd3d8f084d654990564b744a1f80325bbedfb94a17b",
+        "schema_version": 7,
+        "ui_sha256": "ccf499b7e35b460cbbc082a674975056145c3d3ad2d93b7851fce717bb9a2cad"
+      }
+    },
+    "cps": {
+      "future_backup_image_matches": true,
+      "image": "ghcr.io/mul-cps/e2x-course-hub@sha256:234fd9ac4c0e6e4ecf7c129abdaaa2ca22eb846d8f93638b7f4e0d90f56cf805",
+      "only_console_image_changed": true,
+      "ready": true,
+      "runtime": {
+        "backend_sha256": "4e399792eb139c82fd93ccd3d8f084d654990564b744a1f80325bbedfb94a17b",
+        "schema_version": 7,
+        "ui_sha256": "ccf499b7e35b460cbbc082a674975056145c3d3ad2d93b7851fce717bb9a2cad"
+      }
+    }
+  },
+  "controlled_live_test": {
+    "binder_bridge_enabled": false,
+    "cleanup_confirmed": true,
+    "gpu2_cordoned": true,
+    "gpu_execution_tested": false,
+    "pending_pod_observed": false,
+    "pod_unbound": false,
+    "start_cancelled": false,
+    "start_http": 500,
+    "stop_http": 200,
+    "stop_seconds": 9.035
+  },
+  "failure": "JupyterHub returns transient HTTP500 while cancelling a still-pending spawn. Console stop confirmation aborted on that error; later ordinary Stop confirmed complete cleanup. Follow-up regression fix in progress.",
+  "gpu_qualified": false,
+  "image": "ghcr.io/mul-cps/e2x-course-hub@sha256:234fd9ac4c0e6e4ecf7c129abdaaa2ca22eb846d8f93638b7f4e0d90f56cf805",
+  "image_config_id": "sha256:30d134526d1403e094724658902daa1a08907497e1b4666bbe8bbe05d9486d22",
+  "kind": "pending-workspace-cancellation-initial-adoption",
+  "live_test_passed": false,
+  "observed_at": "2026-10-17T13:17:55.869064+00:00",
+  "production_ready": false,
+  "source": "8cdb5147239b7ec43f4b4af33879bb8ba1da3760",
+  "temporary_credentials_revoked": true,
+  "tests": {
+    "backend_source_passed": 336,
+    "backend_subtests_passed": 458,
+    "frontend_browser_passed": 70,
+    "installed_package_import_excludes_source_checkout": true,
+    "installed_package_passed": 336,
+    "pip_check_passed": true
+  },
+  "version": 1,
+  "wheel": {
+    "backend_source_bytes_verified": true,
+    "rebuilt_ui_asset_sha256": "ccf499b7e35b460cbbc082a674975056145c3d3ad2d93b7851fce717bb9a2cad",
+    "source": "8cdb5147239b7ec43f4b4af33879bb8ba1da3760",
+    "wheel_sha256": "99c5257c502827ad031d9a7ce7f62d967e6072dca60412c3fd98a6d55c94bb7f"
+  }
+}
