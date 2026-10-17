@@ -1,0 +1,43 @@
+{
+  "deployment_source_commit": "f905d39",
+  "images_node_reference_epoch_rbac_unchanged": true,
+  "gateway_coordinator_ready": true,
+  "coordinator_identity_checks": {
+    "unauthenticated": 401,
+    "trusted_cps": 400,
+    "trusted_cit": 400,
+    "wrong_audience": 401,
+    "unauthorized_actor": 401
+  },
+  "coordinator_role_checks": {
+    "binder_prepare": 400,
+    "hub_cannot_prepare": 401,
+    "binder_cannot_lease": 401
+  },
+  "checks_use_invalid_envelopes_without_creating_leases": true,
+  "cps_hub": {
+    "source": "cps",
+    "private_inputs_owned_1000_mode_600": true,
+    "private_directory_mode_700": true,
+    "version": 2,
+    "mounted_projected_identity_accepted": true,
+    "invalid_envelope_status": 400
+  },
+  "cit_hub": {
+    "source": "cit",
+    "private_inputs_owned_1000_mode_600": true,
+    "private_directory_mode_700": true,
+    "version": 2,
+    "mounted_projected_identity_accepted": true,
+    "invalid_envelope_status": 400
+  },
+  "both_hubs_ready": true,
+  "four_genuine_acknowledgments_verified_after_both_hubs": true,
+  "protected_notebook_pod_uids_preserved": true,
+  "binder_nested_projection_staged_ready": true,
+  "binder_gateway_ca_installed_from_exact_existing_bundle": true,
+  "binder_bridge_enabled": false,
+  "end_to_end_gpu_start_qualified": false,
+  "gpu2_cordoned": true,
+  "production_ready": false
+}

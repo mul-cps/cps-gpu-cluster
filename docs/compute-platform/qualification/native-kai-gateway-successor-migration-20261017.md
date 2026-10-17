@@ -206,3 +206,30 @@ CPU-only Pod proved a nested `credentials/token` projection has parent
 mode02755 and is accepted by the existing reader. SDK and binder path
 validators support this layout and reread credentials per request; deploy
 the nested projection rather than weakening the reader.
+
+### Coordinator and pending Hub paths activated
+
+Deployment source `f905d39` uses nested projected credentials; no SDK token
+reader change was promoted. The existing strict reader accepts the protected
+nested parent and continues rereading kubelet-rotated tokens. Admission
+proved the Gateway manifest changed only its token item path and immutable
+seed name. Images, Node reference, epoch, policy and RBAC stayed unchanged.
+
+Live TLS/authentication checks accepted both Hub identities and the binder
+identity, while rejecting missing credentials, wrong audiences, unauthorized
+actors and cross-role operations. Invalid request envelopes were used, so
+these checks created no leases and do not prove a complete GPU start.
+
+Both Hubs were upgraded sequentially to the pending-workspace hook after
+fresh PostgreSQL backups. Each is Ready, has owner1000 mode0600 private
+configuration in a mode0700 directory, and authenticated using its actual
+mounted projected credential. Four genuine ACK2s passed after both updates;
+four protected notebook Pod UIDs remained unchanged. The first CPS actor
+attempt restored its original spec/Secret after a local argument-size limit;
+the successful retry used patch files.
+
+The binder's nested credential and pinned reservation image are staged and
+Ready, with its bridge explicitly false. Its public trust bundle was copied
+from the exact existing Gateway CA. Actual KAI placement remains unqualified
+while GPU2 stays cordoned. Isolation/import/restart/MPS and broader production
+acceptance gates remain open.

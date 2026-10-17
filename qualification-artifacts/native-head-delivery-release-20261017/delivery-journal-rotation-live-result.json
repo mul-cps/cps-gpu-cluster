@@ -13,13 +13,13 @@
   "four_genuine_acknowledgments_verified_after_resume": true,
   "gateway_coordinator_installed": true,
   "gateway_ready": true,
-  "coordinator_service_authorization_qualified": false,
-  "open_authentication_issue": "Projected credential root directory mode 03777 rejected by strict reader; nested credential path accepted in actual read-only projected-volume check",
+  "coordinator_service_authorization_qualified": true,
   "nested_projection_actual_result": {
     "directory_uid": 0,
     "directory_mode": "0o2755",
     "mount_readonly": true,
     "existing_reader_accepted": true
   },
-  "production_ready": false
+  "production_ready": false,
+  "coordinator_authentication_issue_resolved_by_nested_projection": true
 }
