@@ -132,3 +132,11 @@ async def test_actual_pending_hub_parser_both_sources(request,monkeypatch,tmp_pa
         assert adapter.native_pilot.pending_authority.route_prefix=='/internal/native-kai/v2/'
     finally:
         await adapter.native_pilot.pending_authority.close()
+
+
+def test_binder_projection_declares_readable_nonroot_group(request,monkeypatch,tmp_path):
+    c,*_=harness(request,monkeypatch,tmp_path)
+    binder=endpoint.render(c.group_context,**inputs(c))['binder']
+    # The actual stock binder has no Pod fsGroup. Its added 0440 projected
+    # volume must be readable by its unchanged runAsUser10000 container.
+    assert binder['podSecurityContext']=={'fsGroup':10000}

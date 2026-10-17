@@ -74,3 +74,8 @@ installer configuration and independent epoch parser, closed path grants,
 separate projected audiences, staged-off binder flags, explicit fsGroup/process mismatch negatives and actual private materializer.
 
 Root-verified operator inputs: accepted API audience https://kubernetes.default.svc.cluster.local; preserved binder SA UID0ed4f47d-dc7f-4136-9174-6744f03f3d35; reservation v0.18.1 registry manifest digest sha256:f476965d65e49059da53b3999494a33814a45408111d12010086acfadc0131d3. These are recorded evidence, not defaults or authority injected by this renderer. No live calls were made for these follow-up checks.
+
+The binder fragments include `podSecurityContext.fsGroup: 10000` so its added
+0440 projected token/CA files are readable by the unchanged nonroot binder. Merge
+this with the actual Pod security context during activation; both current Hubs
+already have fsGroup1000, and the Gateway has the required fsGroup10001.
