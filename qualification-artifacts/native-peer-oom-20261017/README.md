@@ -45,3 +45,9 @@ Normal workspace Stop, expiry restoration, four-process readiness and physical/k
 The adapter now pins packaged Node image `7e319bf…08bb0`. The installed typed loader authenticated NodeConfig, deployment and qualification; read-only observations confirmed the current boot, driver generation and non-MIG physical GPU. The GPU workload remains the qualified `916786…14ca4dc0` image; CPU notebook image `9444a0…df7f` is not a substitute. See `current-cohort-authority.json`.
 
 This refresh does not repeat or extend historical hardware results. The current cohort still needs actual placement, sealed cap and CDI/CRI provenance before CUDA. GPU2 remains cordoned and the native binder bridge disabled.
+
+## Jupyter kernel transport helper
+
+`kernel_transport.py` provides a one-request Jupyter protocol exchange and generates code that runs the SHA-checked probe in an isolated Python child of an owned kernel. Child stdout streams in real time; deadlines and output limits apply, stderr is bounded, and failure kills and reaps only that child. The caller must authenticate the socket, create and pin its own kernel UUID, and clean up that kernel.
+
+The existing `run_peer_oom.py` entry point still uses its original kubectl transport. The new helper has CPU protocol and real-child containment tests, but has not yet been integrated into a live normal-user GPU run. No browser, shared-workspace authorization or current-cohort hardware qualification is claimed. These CPU tests run on the hosted CI runner without GPU or cluster access.

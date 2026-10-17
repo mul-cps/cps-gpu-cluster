@@ -8,6 +8,7 @@ on:
       - 'scripts/compile_compute_policy.py'
       - 'tests/compute_platform/**'
       - 'tests/compute_policy/**'
+      - 'qualification-artifacts/native-peer-oom-20261017/**'
       - '.github/workflows/compute-platform.yml'
   push:
     paths:
@@ -17,6 +18,7 @@ on:
       - 'scripts/compile_compute_policy.py'
       - 'tests/compute_platform/**'
       - 'tests/compute_policy/**'
+      - 'qualification-artifacts/native-peer-oom-20261017/**'
       - '.github/workflows/compute-platform.yml'
 permissions:
   contents: read
@@ -52,3 +54,8 @@ jobs:
           "$RUNNER_TEMP/cps-compute-tests/bin/python" -m unittest discover -s tests/compute_policy -v
           "$RUNNER_TEMP/cps-compute-tests/bin/python" scripts/compile_compute_policy.py --check
           "$RUNNER_TEMP/cps-compute-tests/bin/python" -m unittest discover -s tests/compute_platform -v
+      - name: Validate GPU probe transport without GPU or cluster access
+        shell: bash
+        run: |
+          set -euo pipefail
+          "$RUNNER_TEMP/cps-compute-tests/bin/python" -B -m unittest discover -s qualification-artifacts/native-peer-oom-20261017 -p 'test_*.py' -v
