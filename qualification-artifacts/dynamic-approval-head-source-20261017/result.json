@@ -1,0 +1,81 @@
+{
+  "addon_python": {
+    "command": "qualified pytest -q jupyterlab-addon",
+    "passed": 7,
+    "seconds": 0.93,
+    "skipped": 3,
+    "subtests": 19
+  },
+  "archive_sha256": "4df33bad86a8a69abbe9a029ad4961ada689164ce857f6c4da031210cff62672",
+  "automatic_delivery_deployed": false,
+  "automatic_delivery_migration_complete": false,
+  "ci": {
+    "id": 39017427697,
+    "status": "in_progress"
+  },
+  "components": {
+    "hub": {
+      "sdist": "cps_compute_hub-0.1.0.tar.gz",
+      "sdist_sha256": "c112ce30c6428baf78bda5d6114e66f869662430a24e3a44376cb83e3bc31eac",
+      "sdist_wheel_byte_identical": true,
+      "wheel": "cps_compute_hub-0.1.0-py3-none-any.whl",
+      "wheel_sha256": "184c1cf168ab4fadea7989165c578502d80769b57f946942f60d56afb84ab50f"
+    },
+    "sdk": {
+      "sdist": "cps_compute-0.1.0.tar.gz",
+      "sdist_sha256": "463643a91653e9730acf27422b5edc5e6f05db03733415a1a52a370275379dcd",
+      "sdist_wheel_byte_identical": true,
+      "wheel": "cps_compute-0.1.0-py3-none-any.whl",
+      "wheel_sha256": "8b3b3a90022dcf0aaa2835e39aec283812595340b72ef649be8d8ab0e72d4237"
+    }
+  },
+  "environment_specific_closure": {
+    "addon_artifacts": {
+      "artifacts": {
+        "cps_compute_jupyterlab-0.1.0-py3-none-any.whl": {
+          "bytes": 30505,
+          "sha256": "1050c39bb9caed73b0350e5e7dc784e83a62d9c618f0e06f282f7ca3c9a5beaa"
+        },
+        "cps_compute_jupyterlab-0.1.0.tar.gz": {
+          "bytes": 136857,
+          "sha256": "79180603f91e5c498dcfb868775764c2442e4a3d5cce7959349b91ae1d5fd718"
+        }
+      },
+      "build_from_sdist": true,
+      "passed": 3
+    },
+    "root_cpu": {
+      "passed": 3,
+      "receipt_sha256": "9eff6447f5a301f27a3937374be00b84ec8021146ce3bd133df915174d1afd72",
+      "source_modules_verified": 71
+    }
+  },
+  "full_python": {
+    "command": "PYTHONPATH=src:packages/hub/src:O/node-package-test-dependencies-20261016 /home/bjoern/git/cps-compute/.venv/bin/python -m pytest -q tests packages/hub/tests",
+    "passed": 3223,
+    "seconds": 79.64,
+    "skipped": 3,
+    "subtests": 49
+  },
+  "installed_node": {
+    "all_module_bytes_match_final_wheel": true,
+    "constraints_verified": true,
+    "distributions": 30,
+    "functional_cases": 6,
+    "module_count": 71,
+    "pip_check": true,
+    "web_sql_extras": false
+  },
+  "live_changed": false,
+  "production_ready": false,
+  "remote_revision_verified": true,
+  "revision": "1dafcfe5baa75c894b01c8521095f962a22d7567",
+  "scope": "Source and CPU/package qualification only; no live GPU or production qualification",
+  "source_date_epoch": 1792225639,
+  "total_python": {
+    "all_six_skipped_scenarios_executed_separately": true,
+    "passed": 3230,
+    "skipped": 6,
+    "subtests": 68
+  }
+}

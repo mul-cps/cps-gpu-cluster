@@ -4,6 +4,22 @@ The platform remains **limited-pilot**. Production qualification and the full
 project are unfinished. This record supersedes current-state statements in the
 older completion ledger; their dated acceptance results remain historical evidence.
 
+## Dynamic approval delivery — source qualified, live migration open
+
+Application revision `1dafcfe5baa75c894b01c8521095f962a22d7567` adds
+versioned dynamic approval heads across Node, Hub, Gateway, Coordinator and
+observer. The explicit Python matrix passed 3,230 tests and 68 subtests; all
+six environment-specific skips were separately executed for that revision.
+Six installed node-only functional cases passed, and SDK/Hub wheel rebuilds
+from sdists were byte-identical. This is source/package evidence, not live
+GPU qualification. [Exact artifacts and limits](../../qualification-artifacts/dynamic-approval-head-source-20261017/README.md).
+
+Automatic producer/delivery journal migration and live adoption remain open.
+Routine head advances must preserve unchanged sealed workloads, pregrant only
+exact authenticated ConfigMap GET names, and wait for genuine component ACKs.
+The old delivery seed/journal must not be reset to bypass migration. No dynamic
+head deployment or GPU activation is claimed by these source checks.
+
 ## Current gate — 5/5 GiB peer continuity and synchronized startup passed
 
 The current Gateway is `7e618184…ce8717f`; both Hubs now run
