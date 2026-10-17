@@ -1,0 +1,39 @@
+{
+  "branch": "feat/native-kai-current-groups-20261017",
+  "evidence_sha256": {
+    "final-package-verification.json": "40f8483ab50d6bf6e78aa5be02d38742811b749f2e0fbbb6d7b0a40ebd1ff40a",
+    "full-source.log": "6fb93d56bf3eb1e0c95310b7fc8369a7d1d68a53af3db02a6b7387218ba8147d",
+    "root-final-review.private.json": "4264b3218728e1c4d12dfabea118fa7911be2e5a87dfdb2cdc31597fdaac3169"
+  },
+  "features": [
+    "typed current-group approval and Node configuration context",
+    "central grants and pooled reservation ownership",
+    "preBind pending provenance without GPU/CRI/CDI/cap operations",
+    "immutable enrollment and allocation acknowledgment before UID/RV binding",
+    "existing postBind CRI/CDI/cgroup seal",
+    "owned-generation Hub cancellation and normal release cleanup"
+  ],
+  "full_suite": {
+    "passed": 3094,
+    "seconds": 71.5,
+    "skipped": 3,
+    "subtests": 49
+  },
+  "independent_review": "CLEAR after two independently reproduced RED-to-GREEN regressions",
+  "live_deployed": false,
+  "live_kai_qualified": false,
+  "node_only_installed_cases_passed": 4,
+  "node_only_pip_check_passed": true,
+  "production_qualified": false,
+  "remaining": [
+    "immutable images and coordinated deployment",
+    "canonical Go KAI scheduler provenance",
+    "trusted live KAI startup/cancellation/release",
+    "broader hardware scheduling and production qualification"
+  ],
+  "scope": "fixed GPU2 existing 5/10 GiB pilot; not generic eight-GPU scheduling",
+  "sdist_source_byte_identical": true,
+  "source": "36b91d33da4508e54de74a900ee039cd01d14cb4",
+  "source_pushed_remote_exact": true,
+  "wheel_sha256": "2679be3741f70ce4b9f5c93a610e00222f8aefbccd30b998077837887c82fe9a"
+}

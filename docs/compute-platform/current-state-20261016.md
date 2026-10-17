@@ -76,6 +76,17 @@ and production readiness remain unqualified.
 [Live adoption receipt](../../platform-staging/jupyter-extensions-20261013/hub-fresh-http-adoption-20261017.json).
 [Image and verification receipt](../../platform-staging/jupyter-extensions-20261013/hub-fresh-http-image-20261017.json).
 
+The current-approval KAI source integration is now committed and pushed as
+application `36b91d3`. Independent review reproduced and closed two fail-closed
+edge cases: lost bound provenance before journal creation, and cancellation
+while compiling after a counted lease was published. The full source suite
+passed 3,094 tests and 49 subtests (3 skipped); the exact final wheel passed four
+installed Node-only closure cases and `pip check`, with source-identical sdist.
+This is implementation/package evidence only. The fixed GPU2 5/10 GiB pilot
+still needs image publication, coordinated adoption and actual KAI lifecycle
+qualification; no 20 GiB, generic eight-GPU or production claim follows.
+[Source qualification receipt](../../platform-staging/jupyter-extensions-20261013/native-kai-current-groups-source-20261017.json).
+
 ## Qualification history — earlier checkpoints, superseded by the current gate
 
 The following pending statements describe their dated checkpoint, not current
