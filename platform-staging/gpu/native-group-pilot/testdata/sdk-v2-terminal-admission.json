@@ -1,0 +1,84 @@
+{
+  "objects": {
+    "barrier_proof": {
+      "apiVersion": "v1",
+      "data": {
+        "abort.json": "{\"attempt\":\"test-attempt\",\"audit_sha256\":\"sha256:703cff002d683a1d822e30e2ee3f782840cedf7b1c14c0110386ebaf96c56ef6\",\"barrier\":{\"data_sha256\":\"sha256:711ecd56a4d5d4a716c18da4d876997e517b0142281a784d6976eb7c313a9fad\",\"key\":\"abort-barrier.json\",\"name\":\"cps-native-enrollment-7576195ffda6696bd09264300812e814b8cde5e9\",\"namespace\":\"cps-compute\",\"resourceVersion\":\"55\",\"uid\":\"99999999-9999-4999-8999-999999999999\"},\"binding_id\":\"7576195ffda6696bd09264300812e814b8cde5e95769d8ba9bfdc461ba74\",\"claim_sha256\":\"sha256:e961dceb86aa30cf31511f7a45bf0605faa74cde27a80f6febc44338fe327119\",\"cleanup_confirmed\":true,\"node_epoch\":{\"boot_id\":\"209f8bc9-a478-48e4-925a-6e07ffa56f7a\",\"driver_generation\":\"b10498fc-9153-4394-875a-ea7cfb498625\",\"gpu_uuid\":\"GPU-22222222-2222-4222-8222-222222222222\",\"node_uid\":\"11111111-1111-4111-8111-111111111111\"},\"outcome\":\"enrollment-never-published\",\"slot_kind\":\"abort-barrier\",\"version\":2}"
+      },
+      "immutable": true,
+      "kind": "ConfigMap",
+      "metadata": {
+        "labels": {
+          "cps.compute/native-binding": "7576195ffda6696bd09264300812e814b8cde5e95769d8ba9bfdc461ba74"
+        },
+        "name": "cps-native-abort-7576195ffda6696bd09264300812e814b8cde5e9",
+        "namespace": "cps-compute",
+        "resourceVersion": "100",
+        "uid": "aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa"
+      }
+    },
+    "barrier_slot": {
+      "apiVersion": "v1",
+      "data": {
+        "abort-barrier.json": "{\"claim\":{\"actor\":\"operator\",\"approval_ref\":{\"data_sha256\":\"sha256:c475cab85de6ab1a0f50856a6b544503fca6dba08a1b7ac3f90d29876d8c3a1a\",\"name\":\"approval\",\"namespace\":\"cps-compute\",\"policy_hash\":\"sha256:da04b302985c11a6ee429e2308376655afff9482724989e8aa07f1ca210a66e5\",\"revision\":\"sha256:80b29980d7d10fb2414a715abaa90bb0928a45f441fbc3189d148f57383b8d9e\",\"uid\":\"55555555-5555-4555-8555-555555555555\"},\"attempt\":\"test-attempt\",\"binding_id\":\"7576195ffda6696bd09264300812e814b8cde5e95769d8ba9bfdc461ba74\",\"cap_mib\":5120,\"ceiling\":{\"cpu\":\"4\",\"gpuMemoryGiB\":5,\"memory\":\"16Gi\"},\"gpu_uuid\":\"GPU-22222222-2222-4222-8222-222222222222\",\"group_id\":\"group-5\",\"intent\":{\"cap_mib\":5120,\"gpu_uuid\":\"GPU-22222222-2222-4222-8222-222222222222\",\"name\":\"jupyter-group-5\",\"namespace\":\"jupyterhub\",\"node\":\"another-node\",\"node_uid\":\"11111111-1111-4111-8111-111111111111\",\"pod_uid\":\"d3a1659e-6345-43cc-9ca5-7b8ef1aa5378\",\"policy_hash\":\"sha256:da04b302985c11a6ee429e2308376655afff9482724989e8aa07f1ca210a66e5\",\"spec_sha256\":\"b511008d889170cc9168deb1832f209a407cf762873c50cb424c64ceba7332c1\"},\"members\":[\"person-group-5\"],\"name\":\"jupyter-group-5\",\"namespace\":\"jupyterhub\",\"node\":\"another-node\",\"node_uid\":\"11111111-1111-4111-8111-111111111111\",\"policy_hash\":\"sha256:da04b302985c11a6ee429e2308376655afff9482724989e8aa07f1ca210a66e5\",\"principal\":\"workspace:cps:group-5\",\"profile\":\"interactive-shared-5\",\"source\":\"cps\",\"state\":\"releasing\",\"version\":1,\"workspace\":\"group-5\"},\"claim_sha256\":\"sha256:e961dceb86aa30cf31511f7a45bf0605faa74cde27a80f6febc44338fe327119\",\"kind\":\"enrollment-abort-barrier\",\"version\":2}"
+      },
+      "immutable": true,
+      "kind": "ConfigMap",
+      "metadata": {
+        "labels": {
+          "cps.compute/native-binding": "7576195ffda6696bd09264300812e814b8cde5e95769d8ba9bfdc461ba74"
+        },
+        "name": "cps-native-enrollment-7576195ffda6696bd09264300812e814b8cde5e9",
+        "namespace": "cps-compute",
+        "resourceVersion": "55",
+        "uid": "99999999-9999-4999-8999-999999999999"
+      }
+    },
+    "enrollment_proof": {
+      "apiVersion": "v1",
+      "data": {
+        "abort.json": "{\"attempt\":\"test-attempt\",\"audit_sha256\":\"sha256:da2e06da57e5fec4a82c39db62b94ea45230e52eeb301679afe270446c553536\",\"binding_id\":\"7576195ffda6696bd09264300812e814b8cde5e95769d8ba9bfdc461ba74\",\"claim_sha256\":\"sha256:e961dceb86aa30cf31511f7a45bf0605faa74cde27a80f6febc44338fe327119\",\"cleanup_confirmed\":true,\"enrollment\":{\"data_sha256\":\"sha256:9ea393383c3d7f6645621fc60263dbbd74aad7806cbf525b159a9308617c5c8b\",\"key\":\"enrollment.json\",\"name\":\"cps-native-enrollment-7576195ffda6696bd09264300812e814b8cde5e9\",\"namespace\":\"cps-compute\",\"resourceVersion\":\"55\",\"uid\":\"99999999-9999-4999-8999-999999999999\"},\"node_epoch\":{\"boot_id\":\"209f8bc9-a478-48e4-925a-6e07ffa56f7a\",\"driver_generation\":\"b10498fc-9153-4394-875a-ea7cfb498625\",\"gpu_uuid\":\"GPU-22222222-2222-4222-8222-222222222222\",\"node_uid\":\"11111111-1111-4111-8111-111111111111\"},\"outcome\":\"enrollment-never-programmed\",\"slot_kind\":\"enrollment\",\"version\":2}"
+      },
+      "immutable": true,
+      "kind": "ConfigMap",
+      "metadata": {
+        "labels": {
+          "cps.compute/native-binding": "7576195ffda6696bd09264300812e814b8cde5e95769d8ba9bfdc461ba74"
+        },
+        "name": "cps-native-abort-7576195ffda6696bd09264300812e814b8cde5e9",
+        "namespace": "cps-compute",
+        "resourceVersion": "100",
+        "uid": "aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa"
+      }
+    },
+    "enrollment_slot": {
+      "apiVersion": "v1",
+      "data": {
+        "enrollment.json": "{\"actor\":\"operator\",\"approval_ref\":{\"data_sha256\":\"sha256:c475cab85de6ab1a0f50856a6b544503fca6dba08a1b7ac3f90d29876d8c3a1a\",\"name\":\"approval\",\"namespace\":\"cps-compute\",\"policy_hash\":\"sha256:da04b302985c11a6ee429e2308376655afff9482724989e8aa07f1ca210a66e5\",\"revision\":\"sha256:80b29980d7d10fb2414a715abaa90bb0928a45f441fbc3189d148f57383b8d9e\",\"uid\":\"55555555-5555-4555-8555-555555555555\"},\"attempt\":\"test-attempt\",\"binding_id\":\"7576195ffda6696bd09264300812e814b8cde5e95769d8ba9bfdc461ba74\",\"cap_mib\":5120,\"gpu_uuid\":\"GPU-22222222-2222-4222-8222-222222222222\",\"intent\":{\"cap_mib\":5120,\"gpu_uuid\":\"GPU-22222222-2222-4222-8222-222222222222\",\"name\":\"jupyter-group-5\",\"namespace\":\"jupyterhub\",\"node\":\"another-node\",\"node_uid\":\"11111111-1111-4111-8111-111111111111\",\"pod_uid\":\"d3a1659e-6345-43cc-9ca5-7b8ef1aa5378\",\"policy_hash\":\"sha256:da04b302985c11a6ee429e2308376655afff9482724989e8aa07f1ca210a66e5\",\"spec_sha256\":\"b511008d889170cc9168deb1832f209a407cf762873c50cb424c64ceba7332c1\"},\"members\":[\"person-group-5\"],\"name\":\"jupyter-group-5\",\"namespace\":\"jupyterhub\",\"node\":\"another-node\",\"node_uid\":\"11111111-1111-4111-8111-111111111111\",\"policy_hash\":\"sha256:da04b302985c11a6ee429e2308376655afff9482724989e8aa07f1ca210a66e5\",\"principal\":\"workspace:cps:group-5\",\"profile\":\"interactive-shared-5\",\"source\":\"cps\",\"version\":1,\"workspace\":\"group-5\"}"
+      },
+      "immutable": true,
+      "kind": "ConfigMap",
+      "metadata": {
+        "labels": {
+          "cps.compute/native-binding": "7576195ffda6696bd09264300812e814b8cde5e95769d8ba9bfdc461ba74"
+        },
+        "name": "cps-native-enrollment-7576195ffda6696bd09264300812e814b8cde5e9",
+        "namespace": "cps-compute",
+        "resourceVersion": "55",
+        "uid": "99999999-9999-4999-8999-999999999999"
+      }
+    }
+  },
+  "provenance": {
+    "fixture": "test_native_node_abort.abort_fixture / test_native_node_service.service_fixture; synthetic API/files/driver only",
+    "live_api_calls": 0,
+    "native_driver_writes": 0,
+    "node_module_sha256": "0063cb4218b6075ac7d9d3e918e02ad77c60223f649db3691a9260c4f5ef412e",
+    "producers": [
+      "cps_compute.native_enrollment_abort.build_barrier",
+      "cps_compute.native_node.abort.publish"
+    ],
+    "shared_module_sha256": "4acbb099919140f66d4c346f0dcfea205cdfd3f0940c066591e6683bb851a0e0",
+    "source_commit": "56e4c93db31f247e7a44a6face4a0ad18603167b"
+  }
+}
