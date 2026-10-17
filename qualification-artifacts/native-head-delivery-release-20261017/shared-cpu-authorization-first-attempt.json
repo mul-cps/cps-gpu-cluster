@@ -1,0 +1,53 @@
+{
+  "version": 1,
+  "observed_at": "2026-10-17T17:01:08.786054+00:00",
+  "kind": "shared-cpu-authorization-first-attempt",
+  "acceptance_passed": false,
+  "first_start": {
+    "http_status": 409,
+    "pod_created": false,
+    "source_state_after_rejection": "stopped"
+  },
+  "cause": {
+    "retained_storage_version": 1,
+    "default_for_new_storage": 2,
+    "stored_version_router_supports_1_and_2": true,
+    "preexisting_lifecycle_generation": 13,
+    "preexisting_lifecycle_state": "provisioning",
+    "preexisting_failure_time": "2026-10-15T08:46:01.184724+00:00",
+    "trusted_resume_attempts": 1,
+    "trusted_resume_http_status": 409,
+    "actual_parent_writer": "jupyterhub/jupyter-bjoern",
+    "conclusion": "A protected personal notebook mounts a parent of the retained v1 workspace tree. Provisioning must remain fenced. Use a fresh v2 workspace for acceptance; do not stop the protected writer or bypass the storage guard."
+  },
+  "cleanup": {
+    "clean": true,
+    "fixture_business_records_restored": true,
+    "token_revoked": true
+  },
+  "first_run_tokens": {
+    "actor_returncode": 1,
+    "cleanup_errors": [],
+    "local_tokens_absent": true
+  },
+  "tests": {
+    "shared_actor_cpu_tests_passed": 14,
+    "kernel_transport_tests_passed": 33,
+    "kernel_transport_subtests_passed": 5,
+    "hardware_or_browser_proof": false
+  },
+  "evidence_sha256": {
+    "actual-01/receipt.private.json": "49b4430e539bd959c3b0ceb4c52ebbf8cf137b39652edded0b40a06ef8d32428",
+    "root-actual-01/result.json": "22de2531f65fe54ed03a6aa298f79345daa510038ef1ca2546231dd7375c1759",
+    "recovery-01/result.json": "80866c16e9c6fe29e4d29eabe6f7febf090dbb23716a8c66368fca839d80eb37",
+    "resume-storage.stdout.private.json": "483bae73802eada80ff2ccad4eaeded08ba38f7c4d16b8e4c6a5aa90898319c0",
+    "shared_cpu_actor.py": "2285e3facfb100b1ec1117c610d443b9e471cc0a5208ce74c06fa584cc303c00",
+    "test_shared_cpu_actor.py": "284b907e8a6c82cb5a0b87572dfa4ffad17d1029c3b7c48962ff45fb25f2e774",
+    "plan.private.json": "ea56f99f95ebd1cf2fa7ff61206bf4ce80394b7f79c00cf9b0edbc406a892d26"
+  },
+  "limits": [
+    "Two-student shared access and revocation not yet tested live.",
+    "No GPU execution, MIG, driver, scheduling or protected notebook changes.",
+    "Legacy fixture storage remains safely fenced; no migration or database edits performed."
+  ]
+}
