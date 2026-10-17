@@ -1359,3 +1359,24 @@ no-MIG GPU qualification and pooled reservations, browser RTC/identity checks,
 scale/scheduling qualification, coordinated restore and release promotion.
 GPU2 remains cordoned and the KAI pending bridge disabled pending the existing
 activation decision. Production readiness has not been declared.
+
+
+## 17 October staged JobSet policy integration
+
+The central catalog now supplies the missing bounded JobSet launcher contract
+(namespace/account, fixed Python worker command, eight-worker ceiling, bounded
+retries and cleanup retention, reviewed checkpoint mappings). The compiler and
+JSON schema reject malformed settings and unsafe PVC/subpath mappings before
+startup. Legacy catalogs with neither JobSet settings nor qualification remain
+compilable without changing their contents.
+
+The actual installed Gateway package accepted the staged contract and rejected
+an unqualified distributed descriptor before any Kubernetes client call. All
+63 policy and116 platform tests pass. Distributed qualification remains false,
+GPU targets remain disabled, and the staged policy hash is
+`sha256:e3f53a9a82fa92e9263c2b737a2c40412cdf610354a22683b4d34ed334d9e544`.
+
+The live policy is still D48 and JobSets remain disabled; no live consumer or
+qualification binding was changed. A coordinated policy/runtime handover and
+full distributed qualification remain open.
+[Staged contract and runtime check](../../qualification-artifacts/native-head-delivery-release-20261017/jobset-policy-staged-runtime-result.json).

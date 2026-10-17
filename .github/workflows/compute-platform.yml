@@ -35,7 +35,7 @@ jobs:
         run: |
           set -euo pipefail
           python3 -m venv "$RUNNER_TEMP/cps-compute-tests"
-          "$RUNNER_TEMP/cps-compute-tests/bin/python" -m pip install PyYAML==6.0.3
+          "$RUNNER_TEMP/cps-compute-tests/bin/python" -m pip install PyYAML==6.0.3 jsonschema==4.26.0
           mkdir -p "$RUNNER_TEMP/cps-helm"
           cd "$RUNNER_TEMP/cps-helm"
           curl --fail --location --retry 3 --output helm-v4.1.4-linux-amd64.tar.gz https://get.helm.sh/helm-v4.1.4-linux-amd64.tar.gz

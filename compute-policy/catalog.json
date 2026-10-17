@@ -408,7 +408,18 @@
     "serviceAccountName": "cps-workflow",
     "schedulerName": "kai-scheduler",
     "queue": "cps-batch",
-    "priorityClassName": "cps-batch"
+    "priorityClassName": "cps-batch",
+    "jobsets": {
+      "namespace": "cps-workflows",
+      "serviceAccountName": "cps-workflow",
+      "command": [
+        "python"
+      ],
+      "maxWorkers": 8,
+      "maxRetries": 2,
+      "ttlSecondsAfterFinished": 600,
+      "checkpointClaims": {}
+    }
   },
   "queueUnits": {
     "gpu": "physical GPU fractions",
@@ -424,5 +435,8 @@
       "queue": "cps-batch",
       "priorityClassName": "cps-batch"
     }
+  },
+  "distributedQualification": {
+    "qualified": false
   }
 }

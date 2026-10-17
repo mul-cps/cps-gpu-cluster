@@ -1,0 +1,49 @@
+{
+  "version": 1,
+  "observed_at": "2026-10-17T17:29:02.114131+00:00",
+  "kind": "staged-jobset-policy-installed-runtime-acceptance",
+  "staged_policy_hash": "sha256:e3f53a9a82fa92e9263c2b737a2c40412cdf610354a22683b4d34ed334d9e544",
+  "installed_runtime_configuration_test": {
+    "policy_hash": "sha256:e3f53a9a82fa92e9263c2b737a2c40412cdf610354a22683b4d34ed334d9e544",
+    "constructor_accepted": true,
+    "unqualified_submission_denied": true,
+    "network_calls": false,
+    "cluster_writes": false,
+    "module_sha256": {
+      "policy": "3f47a11dee56cdf4b1768663b5f94d5cca7abbeb831ec4d5b5bc1431e2a5a955",
+      "jobsets": "bc9d06276669cba9fbd4468a6c3c87ee7cfd49ebce617b44ac6f2c146372736e"
+    }
+  },
+  "tests": {
+    "policy_tests_passed": 63,
+    "platform_tests_passed": 116,
+    "targeted_jobset_tests_included": 7,
+    "schema": "Draft202012 meta-schema and catalog validation passed",
+    "generated_artifacts_consistent": true,
+    "review_finding_fixed": "Invalid checkpoint claim names/subpaths accepted by compiler but rejected at Gateway startup; now compiler and schema reject them."
+  },
+  "live_state": {
+    "policy_hash": "sha256:d48f6553ed036c2e7adcc97417623fe0308be93ad13b20f246047ada118511b0",
+    "jobsets_enabled": false,
+    "cleanup_interval_seconds": 60,
+    "changed": false
+  },
+  "qualification": {
+    "distributed_qualified": false,
+    "gpu_profiles_enabled": false,
+    "hardware_execution_performed": false,
+    "production_ready": false
+  },
+  "evidence_sha256": {
+    "runtime.stdout.json": "324a475ab1b3e2767cd2fe2be75bd1e6ba16e4f9281dc1d01cfbfeac137c6a33",
+    "tested-policy.json": "dfbee507eb7002421c58504072811e4317474177c4a2cd2c298d9f8d566c2521",
+    "policy-suite.log": "f39603276054b847fbd9cfdfd920239b031fc52417e250a52b4fb73a116f4474",
+    "platform-suite.log": "171b05361fcf65f0dd5b57a103cb66e4e3d7c368210a5328d9efb3cdca0f998d"
+  },
+  "limits": [
+    "Only constructor/qualification guard was executed in the installed Gateway image, in a separate Python process; no JobSet Kubernetes client calls or submissions occurred.",
+    "This is a staged configuration artifact; live /v1/jobsets remains503 until a coordinated policy/runtime handover.",
+    "Do not replace the live qualified policy with this unqualified base catalog; retain immutable image, identity, storage and native-history bindings.",
+    "Four/eight-GPU execution, checkpoints, coordinated lifetime rollout and the remaining production gates are still required."
+  ]
+}

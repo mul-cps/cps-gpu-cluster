@@ -55,6 +55,9 @@
       "syncInterval": "10m"
     }
   },
+  "distributedQualification": {
+    "qualified": false
+  },
   "entitlements": {
     "admin-debug": {
       "administrativeExceptionRequired": true,
@@ -149,7 +152,7 @@
     "snapshotLimitBytes": 52428800,
     "stripOutputs": true
   },
-  "policyHash": "sha256:47c8d3d2df1356aeb124f447b62a1ffc769372b89c171f04b99b29a1839b7b0b",
+  "policyHash": "sha256:e3f53a9a82fa92e9263c2b737a2c40412cdf610354a22683b4d34ed334d9e544",
   "priorities": {
     "batch": 10,
     "ci": 5,
@@ -409,6 +412,17 @@
   "schemaVersion": 1,
   "status": "pilot-unqualified",
   "trusted": {
+    "jobsets": {
+      "checkpointClaims": {},
+      "command": [
+        "python"
+      ],
+      "maxRetries": 2,
+      "maxWorkers": 8,
+      "namespace": "cps-workflows",
+      "serviceAccountName": "cps-workflow",
+      "ttlSecondsAfterFinished": 600
+    },
     "namespace": "cps-workflows",
     "priorityClassName": "cps-batch",
     "queue": "cps-batch",

@@ -6,7 +6,7 @@
       "kind": "Queue",
       "metadata": {
         "annotations": {
-          "compute.cps.unileoben.ac.at/policy-hash": "sha256:47c8d3d2df1356aeb124f447b62a1ffc769372b89c171f04b99b29a1839b7b0b"
+          "compute.cps.unileoben.ac.at/policy-hash": "sha256:e3f53a9a82fa92e9263c2b737a2c40412cdf610354a22683b4d34ed334d9e544"
         },
         "labels": {
           "compute.cps.unileoben.ac.at/policy-version": "0.2.0"
@@ -38,7 +38,7 @@
       "kind": "Queue",
       "metadata": {
         "annotations": {
-          "compute.cps.unileoben.ac.at/policy-hash": "sha256:47c8d3d2df1356aeb124f447b62a1ffc769372b89c171f04b99b29a1839b7b0b"
+          "compute.cps.unileoben.ac.at/policy-hash": "sha256:e3f53a9a82fa92e9263c2b737a2c40412cdf610354a22683b4d34ed334d9e544"
         },
         "labels": {
           "compute.cps.unileoben.ac.at/policy-version": "0.2.0"
@@ -72,7 +72,7 @@
       "kind": "PriorityClass",
       "metadata": {
         "annotations": {
-          "compute.cps.unileoben.ac.at/policy-hash": "sha256:47c8d3d2df1356aeb124f447b62a1ffc769372b89c171f04b99b29a1839b7b0b"
+          "compute.cps.unileoben.ac.at/policy-hash": "sha256:e3f53a9a82fa92e9263c2b737a2c40412cdf610354a22683b4d34ed334d9e544"
         },
         "labels": {
           "compute.cps.unileoben.ac.at/policy-version": "0.2.0"
@@ -89,7 +89,7 @@
       "kind": "PriorityClass",
       "metadata": {
         "annotations": {
-          "compute.cps.unileoben.ac.at/policy-hash": "sha256:47c8d3d2df1356aeb124f447b62a1ffc769372b89c171f04b99b29a1839b7b0b"
+          "compute.cps.unileoben.ac.at/policy-hash": "sha256:e3f53a9a82fa92e9263c2b737a2c40412cdf610354a22683b4d34ed334d9e544"
         },
         "labels": {
           "compute.cps.unileoben.ac.at/policy-version": "0.2.0"
@@ -106,7 +106,7 @@
       "kind": "PriorityClass",
       "metadata": {
         "annotations": {
-          "compute.cps.unileoben.ac.at/policy-hash": "sha256:47c8d3d2df1356aeb124f447b62a1ffc769372b89c171f04b99b29a1839b7b0b"
+          "compute.cps.unileoben.ac.at/policy-hash": "sha256:e3f53a9a82fa92e9263c2b737a2c40412cdf610354a22683b4d34ed334d9e544"
         },
         "labels": {
           "compute.cps.unileoben.ac.at/policy-version": "0.2.0"
@@ -123,7 +123,7 @@
       "kind": "PriorityClass",
       "metadata": {
         "annotations": {
-          "compute.cps.unileoben.ac.at/policy-hash": "sha256:47c8d3d2df1356aeb124f447b62a1ffc769372b89c171f04b99b29a1839b7b0b"
+          "compute.cps.unileoben.ac.at/policy-hash": "sha256:e3f53a9a82fa92e9263c2b737a2c40412cdf610354a22683b4d34ed334d9e544"
         },
         "labels": {
           "compute.cps.unileoben.ac.at/policy-version": "0.2.0"
@@ -140,7 +140,7 @@
       "kind": "PriorityClass",
       "metadata": {
         "annotations": {
-          "compute.cps.unileoben.ac.at/policy-hash": "sha256:47c8d3d2df1356aeb124f447b62a1ffc769372b89c171f04b99b29a1839b7b0b"
+          "compute.cps.unileoben.ac.at/policy-hash": "sha256:e3f53a9a82fa92e9263c2b737a2c40412cdf610354a22683b4d34ed334d9e544"
         },
         "labels": {
           "compute.cps.unileoben.ac.at/policy-version": "0.2.0"
@@ -157,7 +157,7 @@
       "kind": "PriorityClass",
       "metadata": {
         "annotations": {
-          "compute.cps.unileoben.ac.at/policy-hash": "sha256:47c8d3d2df1356aeb124f447b62a1ffc769372b89c171f04b99b29a1839b7b0b"
+          "compute.cps.unileoben.ac.at/policy-hash": "sha256:e3f53a9a82fa92e9263c2b737a2c40412cdf610354a22683b4d34ed334d9e544"
         },
         "labels": {
           "compute.cps.unileoben.ac.at/policy-version": "0.2.0"
@@ -174,7 +174,7 @@
       "kind": "PriorityClass",
       "metadata": {
         "annotations": {
-          "compute.cps.unileoben.ac.at/policy-hash": "sha256:47c8d3d2df1356aeb124f447b62a1ffc769372b89c171f04b99b29a1839b7b0b"
+          "compute.cps.unileoben.ac.at/policy-hash": "sha256:e3f53a9a82fa92e9263c2b737a2c40412cdf610354a22683b4d34ed334d9e544"
         },
         "labels": {
           "compute.cps.unileoben.ac.at/policy-version": "0.2.0"
@@ -191,7 +191,7 @@
       "kind": "PriorityClass",
       "metadata": {
         "annotations": {
-          "compute.cps.unileoben.ac.at/policy-hash": "sha256:47c8d3d2df1356aeb124f447b62a1ffc769372b89c171f04b99b29a1839b7b0b"
+          "compute.cps.unileoben.ac.at/policy-hash": "sha256:e3f53a9a82fa92e9263c2b737a2c40412cdf610354a22683b4d34ed334d9e544"
         },
         "labels": {
           "compute.cps.unileoben.ac.at/policy-version": "0.2.0"

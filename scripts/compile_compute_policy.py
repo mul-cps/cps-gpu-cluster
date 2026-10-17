@@ -203,6 +203,43 @@ def compile_catalog(catalog, *, native_group_evidence=None, native_group_artifac
         for resource in ['cpu', 'memory']:
             if set(queue[resource]) != {'deserved','limit'} or not 0 <= queue[resource]['deserved'] <= queue[resource]['limit']:
                 raise ValueError('queue CPU/memory capacities must be explicit and bounded')
+    jobsets = catalog['trusted'].get('jobsets')
+    distributed = catalog.get('distributedQualification')
+    if 'jobsets' in catalog['trusted'] or 'distributedQualification' in catalog:
+        fields = {'namespace','serviceAccountName','command','maxWorkers','maxRetries',
+                  'ttlSecondsAfterFinished','checkpointClaims'}
+        if (not isinstance(jobsets, dict) or set(jobsets) != fields
+                or jobsets['namespace'] != catalog['trusted']['namespace']
+                or jobsets['serviceAccountName'] != catalog['trusted']['serviceAccountName']
+                or jobsets['command'] != ['python']
+                or not isinstance(jobsets['checkpointClaims'], dict)
+                or len(jobsets['checkpointClaims']) > 128):
+            raise ValueError('invalid trusted JobSet namespace/account/command/checkpoint contract')
+        for project, entry in jobsets['checkpointClaims'].items():
+            if not isinstance(project, str) or not project.strip() or len(project) > 253:
+                raise ValueError('invalid trusted JobSet checkpoint project')
+            if isinstance(entry, str):
+                entry = {'claimName': entry}
+            if not isinstance(entry, dict) or set(entry) - {'claimName','subPath'}:
+                raise ValueError('invalid trusted JobSet checkpoint entry')
+            claim = entry.get('claimName')
+            if (not isinstance(claim, str) or not claim or len(claim) > 253
+                    or any(len(part) > 63 or not re.fullmatch(r'[a-z0-9](?:[a-z0-9-]*[a-z0-9])?', part)
+                           for part in claim.split('.'))):
+                raise ValueError('invalid trusted JobSet checkpoint claim name')
+            path = entry.get('subPath')
+            if 'subPath' in entry and (not isinstance(path, str) or not path or len(path) > 1024
+                    or '\\' in path or '\x00' in path
+                    or any(part in ('', '.', '..') for part in path.split('/'))):
+                raise ValueError('invalid trusted JobSet checkpoint subpath')
+        for field, minimum, maximum in [('maxWorkers', 1, 8), ('maxRetries', 0, 3),
+                                         ('ttlSecondsAfterFinished', 60, 86400)]:
+            value = jobsets[field]
+            if type(value) is not int or not minimum <= value <= maximum:
+                raise ValueError('invalid trusted JobSet ' + field)
+        if (not isinstance(distributed, dict) or set(distributed) != {'qualified'}
+                or distributed['qualified'] is not False):
+            raise ValueError('distributed qualification requires independently reviewed evidence, not catalog assertions')
     for image in catalog['approvedImages']:
         if not re.fullmatch(r'[^\s@]+@sha256:[a-f0-9]{64}', image):
             raise ValueError('approved images must use immutable sha256 digests')

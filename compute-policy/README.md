@@ -71,3 +71,29 @@ existing qualified runtime image/storage/identity bindings and archive historica
 policy references. Do not replace the live qualified catalog with this unqualified
 base catalog or re-stamp old isolation evidence for the new hash. No live limits
 changed when this artifact was generated.
+
+
+## Distributed JobSet contract — staged, unqualified
+
+The catalog now includes `trusted.jobsets`: the same bounded namespace and
+service account as normal batch workflows, `python` as the fixed worker command,
+at most eight workers, two retries, and a ten-minute termination tombstone
+retention. Checkpoint claims start empty; callers cannot supply PVCs or Pod
+configuration through the distributed descriptor. Retry and cleanup settings
+are administrator policy, separate from a job's requested walltime.
+
+`distributedQualification.qualified` remains explicitly false. The compiler
+rejects a bare true assertion, unsupported fields and malformed launcher bounds.
+The launcher configuration and qualification marker must be provided together;
+historical catalogs with neither remain compilable without rewriting their
+contents. The installed Gateway's actual `JobSetLauncher` accepts this staged
+contract and rejects generation before any Kubernetes call while unqualified.
+
+This supplies the missing configuration artifact, not a deployment or a completed
+distributed-runtime qualification. The live D48 policy and runtime remain
+unchanged; `/v1/jobsets` still reports that its launcher is unconfigured. Do not
+replace live D48 with this base catalog: it intentionally lacks approved runtime
+images and keeps GPU profiles disabled. A coordinated, evidence-preserving
+policy/consumer handover must retain current image, identity, storage and
+qualification bindings. Four/eight-GPU execution and checkpoint/cleanup
+qualification remain separate acceptance gates before submission is enabled.
