@@ -109,3 +109,55 @@ to the selected Gateway's private TCP/8001 capture listener. Authenticated TLS
 and the protected export token remain mandatory. It does not expose a public
 endpoint or alter the old policy. A non-default namespace/origin requires a
 separately reviewed policy; do not widen this file to all Pods or ports.
+
+## One-time legacy adoption Job
+
+`adoption_job.py` exposes a pure `render(...)` helper with the same validated
+runtime inputs plus required `job_name`, `legacy_state_sha256`, and
+`legacy_seed_sha256`. Both pins must be explicit canonical `sha256:<64 lower
+hex>` values for the exact original bytes. It returns only a Job and reuses the
+runtime's existing ServiceAccount, Pod security, private initialization, mounted
+inputs, and permission contract; it emits no grants or credentials. `render.py`
+and the default-zero continuous Deployment are unchanged.
+
+```python
+job = adoption_job.render(
+    config, configuration=actual_typed_node_configuration,
+    image=qualified_sdk_image_digest, config_secret=existing_adoption_secret,
+    journal_pvc=existing_delivery_journal_pvc, job_name=explicit_reviewed_name,
+    legacy_state_sha256=reviewed_original_state_hash,
+    legacy_seed_sha256=reviewed_original_seed_hash)
+```
+
+The existing adoption input Secret must contain the four routine keys plus
+`legacy-seed.json`, whose value is the exact original raw seed bytes. Init
+preserves the reviewed initializer and appends only a copy of this fixed key,
+verifying the seed hash before creating its owned private `0600` copy. No seed
+bytes, Secret contents, or token values are embedded in the Job. The SDK also
+checks both original hashes and retained custody during adoption.
+
+The installed command adds:
+
+```text
+--adopt-legacy --legacy-state /legacy/delivery/state.json \
+--legacy-seed /inputs/delivery/legacy-seed.json \
+--legacy-state-sha256 <explicit original byte hash> \
+--legacy-seed-sha256 <explicit original byte hash>
+```
+
+The same PVC's `head-delivery` child remains writable at `/journal/delivery`.
+Its original `delivery` child is separately mounted **read-only** at
+`/legacy/delivery`; the SDK opens the existing old lock read-only and takes an
+exclusive flock without changing old file bytes or inodes. The Job uses
+`backoffLimit: 0`, `restartPolicy: Never`, one completion and one parallel Pod,
+and a default 300-second deadline (explicit integer overrides must be 1–900).
+Failure remains available for review; no automatic retry or reset is emitted.
+
+Before Root applies this Job, both the old writer and the new continuous
+Deployment must be stopped. Root must verify the qualified installed image,
+actual four v4 head bindings and genuine ACK2s, exact protected Role baselines,
+all-released actual ledger, matching backups, and zero SQL reservations/bindings.
+The pure helper cannot establish those live conditions. Initial pointer/anchor
+bootstrap and admission qualification remain separate gates. A failed Job must
+be reviewed with retained journal evidence before an explicitly named successor
+attempt; deleting state or archives is not a retry procedure.
