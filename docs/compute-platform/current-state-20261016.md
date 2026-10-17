@@ -83,9 +83,48 @@ while compiling after a counted lease was published. The full source suite
 passed 3,094 tests and 49 subtests (3 skipped); the exact final wheel passed four
 installed Node-only closure cases and `pip check`, with source-identical sdist.
 This is implementation/package evidence only. The fixed GPU2 5/10 GiB pilot
-still needs image publication, coordinated adoption and actual KAI lifecycle
-qualification; no 20 GiB, generic eight-GPU or production claim follows.
+now has published successor images; coordinated adoption and actual KAI lifecycle
+qualification remain open. No 20 GiB, generic eight-GPU or production claim follows.
 [Source qualification receipt](../../platform-staging/jupyter-extensions-20261013/native-kai-current-groups-source-20261017.json).
+
+### Current-group integration verification, 17 October
+
+Application successor `be0f37c` fixes version-specific authorization for the
+current-group seed route while retaining v1 authorization for binder terminal
+routes. The full suite passed **3,119 tests, 49 subtests, 3 skipped**; all four
+CI jobs passed for the exact commit. Installed-image checks passed for the
+Gateway authorization matrix, Hub adapter and Node custody path.
+
+Published, registry-verified successor images (not deployed):
+
+| Component | Image |
+|---|---|
+| Gateway | `ghcr.io/mul-cps/cps-compute@sha256:fe55347cb64fba4c84de71c1d86c8350035f80db93641839a7a4657392b47e71` |
+| Hub | `ghcr.io/mul-cps/cps-compute@sha256:f1e4ce53391172dc3567044bf02a87cf2af77e0a98a6de1116a4ead7cb07552d` |
+| Node | `ghcr.io/mul-cps/cps-native-node@sha256:806311adafdc27ff3046c4080ae1d459f9a190d19235d4023033854eb9a7ed67` |
+
+The canonical binder patch now has an offline, pinned build recipe. Four Go
+package suites and 14 recipe checks passed; two static builds were byte-identical
+(SHA-256 `5f518d0e13dca26492f3ac821825cdc587b4f165e86a23263aad4cebe37381fa`).
+The binder still needs an OCI package and live integration.
+
+Pending-record admission is explicit opt-in; the default bundle is unchanged.
+Focused checks passed **25 tests and 114 subtests**. Actual Kubernetes admission
+passed **17 cases** in isolated temporary namespaces, including genuine Gateway
+identity requests and malformed-record rejection. All temporary resources were
+removed; no pending authority documents were stored and production admission
+policies were unchanged. The offline CEL helper is diagnostic only and documents
+its eager-variable differences from Kubernetes evaluation.
+
+The broader source-qualification test gate remains open: using an unqualified
+admin checkout exposed 32 schema failures across three source-qualification
+modules (`Course.workspace_bindings`). This is not an all-suite pass or proof of
+a deployed-console defect. Resolve the compatible dependency before that gate.
+
+Next: package the binder, integrate the protected Coordinator endpoint and
+coordinated Gateway/Hub/Node adoption, then exercise the actual KAI lifecycle.
+Dynamic no-MIG sharing remains the primary acceptance goal; wider memory caps,
+all-eight-GPU coverage, scheduling/scale and recovery/release gates remain open.
 
 ## Qualification history — earlier checkpoints, superseded by the current gate
 
