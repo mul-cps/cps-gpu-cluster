@@ -90,7 +90,10 @@ renewed temporarily by changing expiry only, with exact normal API readbacks.
 Normal Start for `native-group-a` then failed before Pod creation: its legacy v1
 storage path is exposed by parent NFS mounts in `jupyter-bjoern` and
 `jupyter-cpsadmin`. The privacy guard correctly returned 409; an admin exception
-mapping bug exposed 500 instead. That error-handling fix is in progress. No
+mapping bug exposed 500 instead. The error-handling fix is published as admin source
+`81b936adc75d2a992eaceecddab883fdccf1c97d`: 328 tests and 458 subtests pass,
+including an actual HTTP regression and installed-wheel checks. It preserves
+upstream 4xx codes with a safe error message and is **not deployed**. No
 storage guard, identity, policy or approval binding was bypassed. The two personal
 notebook servers remain running; permission to interrupt their kernels is pending.
 
