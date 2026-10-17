@@ -91,6 +91,19 @@ class SafetyTests(unittest.TestCase):
   with patch.object(Path,'read_bytes',side_effect=AssertionError('I/O')),patch('subprocess.run',side_effect=AssertionError('API')):
    with self.assertRaises(ValueError):runner.main(['--execute'])
 
+class KernelWiringTests(unittest.TestCase):
+ def test_kernel_mode_default_inert_before_reads(self):
+  with patch.object(runner,'verified_source',side_effect=AssertionError('source read')),patch.object(runner.current,'read_targets',side_effect=AssertionError('manifest read')),patch('builtins.print')as output:
+   runner.main(['--mode','kernel','--kernel-manifest','/not/read'])
+  self.assertTrue(json.loads(output.call_args.args[0])['inert'])
+ def test_abandon_uses_owned_kernel_close_not_process_kill(self):
+  from unittest.mock import Mock
+  run=Mock(spec=['close']);runner.abandon(run);run.close.assert_called_once()
+ def test_kernel_mode_requires_separate_sha_before_import_or_tokens(self):
+  argv=['--execute','--mode','kernel','--manifest','manifest','--manifest-sha256','a'*64,'--output','unused','--probe-sha256','b'*64,'--preflight-sha256','c'*64,'--runner-sha256','d'*64]
+  with patch.object(runner,'verified_source',return_value=b'source'),patch.object(runner.current,'read_targets',return_value={'pods':{}}),patch('kernel_probe_run.read_token',side_effect=AssertionError('token read')):
+   with self.assertRaisesRegex(ValueError,'Separately reviewed'):runner.main(argv)
+
 class TransportTests(unittest.TestCase):
  def test_remote_python_is_isolated_from_notebook_cwd_and_pythonpath(self):
   from unittest.mock import Mock

@@ -140,6 +140,8 @@ def verified_source(path,digest):
 
 def abandon(run):
  if run is None:return
+ if hasattr(run,'close'):
+  run.close();return
  try:
   if run.process.poll()is None:run.process.kill()
   run.process.wait(timeout=5)
@@ -149,6 +151,8 @@ def abandon(run):
 def main(argv=None):
  parser=argparse.ArgumentParser(description=__doc__)
  parser.add_argument('--execute',action='store_true');parser.add_argument('--manifest');parser.add_argument('--manifest-sha256');parser.add_argument('--output')
+ parser.add_argument('--mode',choices=('kubectl','kernel'),default='kubectl')
+ parser.add_argument('--kernel-manifest');parser.add_argument('--kernel-manifest-sha256');parser.add_argument('--kernel-transport-sha256');parser.add_argument('--kernel-lifecycle-sha256')
  parser.add_argument('--probe-sha256');parser.add_argument('--preflight-sha256');parser.add_argument('--runner-sha256');parser.add_argument('--direction',choices=('a-to-b','b-to-a'),default='a-to-b')
  args=parser.parse_args(argv)
  if not args.execute:
@@ -158,14 +162,23 @@ def main(argv=None):
  verified_source(here/'run_peer_oom.py',args.runner_sha256);verified_source(here/'current_preflight.py',args.preflight_sha256)
  source=verified_source(here/'peer_probe.py',args.probe_sha256)
  targets=current.read_targets(args.manifest,args.manifest_sha256)
+ plans=None
+ if args.mode=='kernel':
+  require(all((args.kernel_manifest,args.kernel_manifest_sha256,args.kernel_transport_sha256,args.kernel_lifecycle_sha256)),'Separately reviewed kernel manifest and helper source SHA required')
+  verified_source(here/'kernel_transport.py',args.kernel_transport_sha256);verified_source(here/'kernel_probe_run.py',args.kernel_lifecycle_sha256)
+  from kernel_probe_run import KernelProbeRun,read_plans
+  plans=read_plans(args.kernel_manifest,args.kernel_manifest_sha256,targets)
+ def launch(name,case,duration):
+  if plans is None:return ProbeRun(targets['pods'][name],case,duration,source,output)
+  return KernelProbeRun(targets['pods'][name],case,duration,source,output,plan=plans[name],expected_sha=args.probe_sha256)
  output=Path(args.output);output.mkdir(mode=0o700);os.chmod(output,0o700)
  peer=oom=None
  try:
   before=current.preflight({'manifest':targets});write_json(output/'before.json',before)
   a,b=('a','b')if args.direction=='a-to-b'else('b','a')
-  peer=ProbeRun(targets['pods'][a],'peer',60,source,output)
+  peer=launch(a,'peer',60)
   peer.wait(lambda events:sum(e.get('phase')=='peer_tick'for e in events)>=2,30)
-  oom=ProbeRun(targets['pods'][b],'oom',45,source,output)
+  oom=launch(b,'oom',45)
   oom.wait(lambda events:any(e.get('phase')=='oom-held-start'for e in events),30)
   samples=physical_samples(targets);write_json(output/'physical-samples.json',samples)
   oom_events=oom.complete();peer_events=peer.complete()
@@ -175,7 +188,7 @@ def main(argv=None):
   for prior,latest in zip(before['host']['targets'],after['host']['targets']):
    require({k:v for k,v in prior.items()if k!='inventory_row'}=={k:v for k,v in latest.items()if k!='inventory_row'},'Seal/journal/identity drift')
    require(latest['inventory_row']['used']<=prior['inventory_row']['used'],'Probe charge not recovered to baseline')
-  write_json(output/'assessment.json',{**result,'direction':args.direction,'unchanged_seals_and_processes':True})
+  write_json(output/'assessment.json',{**result,'direction':args.direction,'transport':args.mode,'unchanged_seals_and_processes':True})
  finally:
   # Every local transport is cleaned even if another cleanup fails. Remote
   # trusted probes independently watchdog-exit within60seconds; no Pod deletion.
