@@ -26,5 +26,13 @@
     "Source/package, CPU and inert object staging only; no live rotation or new GPU execution proof.",
     "Before rotation, create and read back temporary read-only proof Roles/Bindings; remove afterward.",
     "Fresh backups, quiescent ledger/SQL fences, controlled rollout and genuine four-component ACKs remain required."
-  ]
+  ],
+  "delivery_successor_image_registry_verified": true,
+  "guarded_patch_dry_run": {
+    "passed": 5,
+    "rejected": 1,
+    "rejected_target": "existing Node-namespace observer operator Role",
+    "reason": "Existing admission policy permits only reviewed dynamic delivery updates.",
+    "resolution_in_progress": "Preserve protected Role baselines and bind a separate two-ConfigMap read-only Role."
+  }
 }

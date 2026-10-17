@@ -1,0 +1,10 @@
+{
+  "component": "delivery",
+  "revision": "1824a97fd2e5f0a527df76a94165bbfc3526d3ad",
+  "tag": "ghcr.io/mul-cps/cps-compute:head-1824a97fd2e5-delivery",
+  "reference": "ghcr.io/mul-cps/cps-compute@sha256:ef381b1d1ba755c91f09d1d552232b92fd81ddabfeedd48559dc8abf85642d30",
+  "manifest_sha256": "sha256:ef381b1d1ba755c91f09d1d552232b92fd81ddabfeedd48559dc8abf85642d30",
+  "config_sha256": "sha256:4761b634e03036faf5ec0d4497955cef50e028691df8088b2cd8dfea1383494a",
+  "registry_verified": true,
+  "deployed": false
+}
