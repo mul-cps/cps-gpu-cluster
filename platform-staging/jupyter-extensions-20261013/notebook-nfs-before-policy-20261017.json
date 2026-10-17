@@ -1,0 +1,16 @@
+{
+  "uid": 1000,
+  "results": [
+    {
+      "port": 2049,
+      "tcp_connect": true,
+      "application_bytes_sent": 0
+    },
+    {
+      "port": 111,
+      "tcp_connect": false,
+      "error_type": "TimeoutError"
+    }
+  ],
+  "file_or_rpc_access": false
+}

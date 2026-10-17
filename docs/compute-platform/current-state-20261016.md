@@ -122,8 +122,12 @@ A related read-only privacy audit confirmed that both Hubs' notebook egress rule
 permit direct NAS NFS/RPC traffic. Minimal PVC mounts alone do not prove NFS
 isolation; a bounded network-policy fix is being prepared. The legacy provisioning
 parent-writer check also lacks a reverse check when a broad parent CPU server
-starts later. These remain production gates; no NFS mount, export or data access
-was attempted during this audit.
+starts later. These remain production gates. A controlled TCP-only probe from
+student `armin` (UID 1000) successfully connected to the NAS on port 2049; it sent
+no application bytes or RPC requests. Port 111 timed out. An owned temporary file
+written/synced/read/removed through the existing mounted path passed as a baseline
+for the upcoming policy change; no existing user files were read or changed.
+Both policy patches are prepared but not applied; live enforcement remains open.
 
 ## Previous checkpoint — packaged node renewal (16 October)
 
