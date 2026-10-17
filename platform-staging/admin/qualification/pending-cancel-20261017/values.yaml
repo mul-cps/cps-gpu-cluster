@@ -1,0 +1,6 @@
+# Merge with the complete qualified platform values; this is not a standalone deployment.
+consoles:
+  cit:
+    image: ghcr.io/mul-cps/e2x-course-hub@sha256:d44436000ea1fe31ab05e89364846a9a2ee7e0d36284d9a83a1900679e633dab
+  cps:
+    image: ghcr.io/mul-cps/e2x-course-hub@sha256:d44436000ea1fe31ab05e89364846a9a2ee7e0d36284d9a83a1900679e633dab

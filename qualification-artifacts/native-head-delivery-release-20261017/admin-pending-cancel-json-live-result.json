@@ -1,0 +1,87 @@
+{
+  "source": "1bb4f9b4f9114f3edf32760372caf870b30e9c13",
+  "image": "ghcr.io/mul-cps/e2x-course-hub@sha256:d44436000ea1fe31ab05e89364846a9a2ee7e0d36284d9a83a1900679e633dab",
+  "installed_image_verification": {
+    "image": "ghcr.io/mul-cps/e2x-course-hub@sha256:d44436000ea1fe31ab05e89364846a9a2ee7e0d36284d9a83a1900679e633dab",
+    "config_id": "sha256:524922072a51a74391257420ec55d1e60c86514b216bd6a05deb3d2b1ddd67d6",
+    "source": "1bb4f9b4f9114f3edf32760372caf870b30e9c13",
+    "registry_matches_tested_image": true,
+    "installed_suite_tests_passed": 346,
+    "installed_suite_seconds": 20.952,
+    "pip_check_passed": true
+  },
+  "rollout": {
+    "cps": {
+      "ready": true,
+      "image": "ghcr.io/mul-cps/e2x-course-hub@sha256:d44436000ea1fe31ab05e89364846a9a2ee7e0d36284d9a83a1900679e633dab",
+      "only_console_image_changed": true,
+      "runtime": {
+        "handler_sha256": "5683b6425f7263bb879ebb9029b7f10da2c0e68bc2e3df2ec8b4392d612c8923",
+        "backend_sha256": "7281939a2e4063516ba59a2c029d0dd107121492a89c79c0bf53dac98b560a31",
+        "ui_sha256": "ccf499b7e35b460cbbc082a674975056145c3d3ad2d93b7851fce717bb9a2cad",
+        "schema_version": 7
+      },
+      "future_backup_image_matches": true
+    },
+    "cit": {
+      "ready": true,
+      "image": "ghcr.io/mul-cps/e2x-course-hub@sha256:d44436000ea1fe31ab05e89364846a9a2ee7e0d36284d9a83a1900679e633dab",
+      "only_console_image_changed": true,
+      "runtime": {
+        "handler_sha256": "5683b6425f7263bb879ebb9029b7f10da2c0e68bc2e3df2ec8b4392d612c8923",
+        "backend_sha256": "7281939a2e4063516ba59a2c029d0dd107121492a89c79c0bf53dac98b560a31",
+        "ui_sha256": "ccf499b7e35b460cbbc082a674975056145c3d3ad2d93b7851fce717bb9a2cad",
+        "schema_version": 7
+      },
+      "future_backup_image_matches": true
+    }
+  },
+  "render": {
+    "console_and_backup_images_match": [
+      "cps",
+      "cit"
+    ],
+    "policy_hash": "sha256:d48f6553ed036c2e7adcc97417623fe0308be93ad13b20f246047ada118511b0",
+    "render_only": true,
+    "full_chart_applied": false
+  },
+  "live_pre_pod_cancellation": {
+    "hub_pending_spawn_observed": true,
+    "pending_pod_observed": false,
+    "pod_unbound": false,
+    "start_http": 409,
+    "stop_http": 200,
+    "stop_seconds": 8.563,
+    "start_cancelled": true,
+    "json_cancellation_contract_verified": true,
+    "cleanup_confirmed": true,
+    "gpu_execution_tested": false,
+    "gpu2_cordoned": true,
+    "binder_bridge_enabled": false
+  },
+  "cleanup": {
+    "workspace_and_reservations_clean": true,
+    "permissions_exactly_restored": true,
+    "protected_pods_unchanged": true,
+    "gpu2_cordoned": true
+  },
+  "test_token_cleanup": {
+    "revoked": true,
+    "local_token_removed": true
+  },
+  "evidence_sha256": {
+    "native-pending-cancel-20261017/run-03/lifecycle-result.json": "bb9e42dc929795eb2507913035515211fa8f864c08686c7d262b8f0ae0534305",
+    "native-pending-cancel-20261017/run-03/cleanup-result.json": "b07e4329b473c7e6395d3d9d2fbeeb624ce981baecd712fff7fc1b09dd43c47e",
+    "native-pending-cancel-20261017/run-03/token-revocation.json": "1e867694f42b9e77910dc684075e42c1064afd2a1e0bb15ce6c49be1dd0f521f",
+    "admin-pending-cancel-json-build-20261017/rollout-result.json": "3d3bddc40bdaa785657863c3cf759bfab6a7dbc643e341796288f1894a849b15",
+    "admin-pending-cancel-json-build-20261017/installed-full-suite.log": "a218f971cda0817fc90abc5f76c10a586ea867e46016a773e01810ac12fe43a8",
+    "admin-pending-cancel-json-build-20261017/rendered.private.yaml": "040265fb9d9d29c5f7dc4c8b825b1c12a7378148f18bb35a319de78c6f280444"
+  },
+  "limits": [
+    "No GPU Pod was created; pod_unbound=false denotes absence, not successful placement.",
+    "GPU placement, binding, CUDA, isolation and full production qualification remain unproven.",
+    "No live browser verification; HTTP response contract and offline browser regressions only.",
+    "Full chart was rendered, not applied.",
+    "Policy D48 and GPU cordon/disabled binder bridge preserved."
+  ]
+}
