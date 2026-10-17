@@ -1,0 +1,17 @@
+{
+  "begin_sequence": 336760,
+  "capture_sha256": "sha256:85fa8a319b2bc1fd8673756b6838bfbe4406328f731aff6be2283a1abb3b148b",
+  "client_kind": 4,
+  "clock_offset_rule_used": false,
+  "end_sequence": 336762,
+  "gpu_id": 1552,
+  "host_tgid": 1970700,
+  "kernel_reason": 6,
+  "kernel_sequence": 336761,
+  "kernel_status": 27,
+  "kernel_witness_correlated": true,
+  "pid_start_ticks": 883784059,
+  "production_qualified": false,
+  "state": "bounded-kernel-ipc-witness-correlated",
+  "trial_id": "c85c088f-94bc-47c1-a5ba-b20505d7b549"
+}

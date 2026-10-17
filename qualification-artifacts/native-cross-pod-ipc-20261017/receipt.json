@@ -1,0 +1,10 @@
+{
+  "cross_parent_denial_code": 800,
+  "directions": 2,
+  "explicit_endpoint_and_witness_cleanup": true,
+  "exporter_and_importer_kernels_survive": true,
+  "full_production_qualified": false,
+  "kernel_witness_correlated": true,
+  "passed": true,
+  "same_parent_positive_controls": true
+}

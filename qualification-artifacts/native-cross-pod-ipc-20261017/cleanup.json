@@ -1,0 +1,12 @@
+{
+  "ledger_uid": "33ab24b0-8e9a-4bee-b308-12a19c076924",
+  "allocations": 103,
+  "all_released": true,
+  "controlled_pods_absent": true,
+  "personal_pod_uids_preserved": {
+    "jupyter-armin": "921b8b7c-e8de-45e3-856c-b2426ed1ed7b",
+    "jupyter-bjoern": "915b3fac-53fa-469c-8c3f-0180fb285504",
+    "jupyter-cpsadmin": "a984023f-eb34-4af1-b01d-bad6ea159ef4",
+    "jupyter-mikasa": "31846900-989b-48d1-95b3-846e9526fbb5"
+  }
+}

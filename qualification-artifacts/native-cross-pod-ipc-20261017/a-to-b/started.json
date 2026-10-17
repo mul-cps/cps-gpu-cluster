@@ -1,0 +1,29 @@
+{
+  "endpoint_caps_bytes": {
+    "a": 5368709120,
+    "b": 5368709120
+  },
+  "endpoint_source_pins": {
+    "a": "0faa5fddc8db4e81b4cc49784cf6eb5933c1cb95366ea0218c9b367e6c2a9aad",
+    "b": "0faa5fddc8db4e81b4cc49784cf6eb5933c1cb95366ea0218c9b367e6c2a9aad"
+  },
+  "mapper_source_pins": {
+    "a": "0ec320a9ab119bd15bf104d98d43a321299d9ac78f5a3d64a64356b9e56ac570",
+    "b": "0ec320a9ab119bd15bf104d98d43a321299d9ac78f5a3d64a64356b9e56ac570"
+  },
+  "observer_image": "nvcr.io/nvidia/driver@sha256:41515698692bd5e192186e620b65717af960a66d22dbb5a06e3656575a5d9148",
+  "observer_uid": "8a3a0296-2a41-49e0-ba20-28f503ec5887",
+  "pod_uids": {
+    "a": "c0df0f2f-1d20-49ab-8b31-44ef8cf01f13",
+    "b": "6f76a038-b20b-4e77-b909-4d9f2711e639"
+  },
+  "source_pins": {
+    "ipc_endpoint.py": "0faa5fddc8db4e81b4cc49784cf6eb5933c1cb95366ea0218c9b367e6c2a9aad",
+    "ipc_host_pid.py": "0ec320a9ab119bd15bf104d98d43a321299d9ac78f5a3d64a64356b9e56ac570",
+    "kernel_witness_collector.py": "d641b29b52e8f06af48a95ad3ab4841c488c097090473e51e4fe63717ff1588c",
+    "kernel_witness_transport.py": "56a5983c0686154a3b34e694642846f6b6af7681203d1b256a3a379e2902a30a",
+    "kernel_witness_validator.py": "8141665b34d61ce1293232ef79876b2acab19d3f20c70b945d32b46916da265a",
+    "run_cross_pod.py": "ee8772c7caa0ba5eceaba18b4b8a3c7373ab35ac67b9426384513f1998570c87"
+  },
+  "trial": "8144a4cb-d3e8-4034-acad-669919f87b8e"
+}

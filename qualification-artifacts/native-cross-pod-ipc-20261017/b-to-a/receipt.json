@@ -1,0 +1,22 @@
+{
+  "call_ended_time_ns": 1792200474982878299,
+  "call_started_time_ns": 1792200474982575234,
+  "cross_parent_isolation_qualified": false,
+  "cuda_name": "CUDA_ERROR_NOT_PERMITTED",
+  "cuda_result": 800,
+  "direction": "b-to-a",
+  "distinct_namespace_pids": true,
+  "explicit_endpoint_cleanup": true,
+  "exporter_kernel_continuity": true,
+  "exporter_recovery": true,
+  "full_production_qualified": false,
+  "handle_sha256": "0eddb18b2cff48721bf38b0a88950f1ad0dc03dc8e88bed9a1adb30b11c153d9",
+  "importer_kernels_survived": true,
+  "importer_namespace_pid": 229,
+  "kernel_witness_correlated": true,
+  "passed": true,
+  "production_qualified": false,
+  "same_parent_positive_control": true,
+  "state": "api-denial-observed-awaiting-kernel-witness",
+  "trial_id": "c85c088f-94bc-47c1-a5ba-b20505d7b549"
+}

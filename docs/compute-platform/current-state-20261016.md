@@ -4,21 +4,30 @@ The platform remains **limited-pilot**. Production qualification and the full
 project are unfinished. This record supersedes current-state statements in the
 older completion ledger; their dated acceptance results remain historical evidence.
 
-## Current gate — fifth workspace adopted; readiness clock race reproduced
+## Current gate — clock fix deployed; bidirectional legacy IPC passed
 
-The fifth isolated v2 workspace was created and approved through normal APIs.
-All four installed consumers verified revision `1e2b09e4…01d88a1` at one
-checkpoint, with unchanged policy, images and driver epoch. Personal notebook
-Pod identities were preserved. [Adoption and failure evidence](../../qualification-artifacts/native-fifth-scope-20261017/README.md).
+Application `5ca3b4c5b6b0481011ae24958ea2de0cc5652c15` fixes the readiness
+clock race by sampling trusted time after external reads. The full application
+and Hub suite passed 2,918 tests and 49 subtests (3 skipped). Corrected Gateway
+and Hub images are deployed; installed module hashes match the reviewed source.
+Six delayed live reads passed, including a real heartbeat arriving during reads.
+A fresh post-cleanup read verifies all four consumers ready on revision
+`1e2b09e4…01d88a1`. Policy and driver epoch are unchanged.
 
-Both subsequent controlled Starts failed at native acquire/readiness; no
-cross-Pod hardware test ran. A read-only diagnostic reproduced a real heartbeat
-being misclassified as future-dated because validation sampled time before
-sequential API reads. A bounded application fix is in progress; TTL and future
-receipt rejection must remain intact. Both workspaces are stopped, all 101
-native claims released, temporary grants restored and the admin token revoked.
-No MIG, driver reset or personal notebook interruption occurred. Full production
-qualification remains unfinished.
+Two normally started isolated workspace Pods with sealed 5 GiB caps passed
+bidirectional legacy CUDA IPC tests: same-parent positive controls, cross-Pod
+error 800, matching kernel denial and surviving kernels. Independent offline
+review confirmed source pins, process attribution and witness correlations.
+[Scoped evidence and cleanup](../../qualification-artifacts/native-cross-pod-ipc-20261017/README.md).
+Both normal Stops completed; all 103 native allocations are released. Temporary
+grants were restored, the test token revoked, and all four personal notebook
+Pod UIDs preserved. No MIG, reset, reboot or personal interruption occurred.
+
+**Remaining primary gates:** distinct-process VMM/POSIX-FD and other memory
+routes, larger caps and peer OOM continuity, MPS, and concurrent startup. One
+parallel Start failed while a custody snapshot observed an allocated intent
+before its immutable enrollment; sequential fresh Starts later succeeded.
+Concurrent startup and broader production qualification remain unqualified.
 
 ## Earlier verified checkpoint — native 5 GiB execution and normal Stop passed
 
