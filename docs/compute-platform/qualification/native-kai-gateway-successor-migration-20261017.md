@@ -189,3 +189,20 @@ qualified and rotation succeeds. Coordinator installation, Hub pending-path
 activation and live shared-GPU acceptance remain open. See the separate
 `gateway-fixed-successor-live-result.json` receipt; earlier staging receipts
 remain historical observations.
+
+### Journal recovery completed
+
+The corrected delivery image `d66abdeb` passed all four CI jobs. Its
+explicit same-PVC/subpath rotation Job succeeded; the journal is version3,
+the original anchor bytes are unchanged, and five rotation archives remain.
+The corrected continuous writer is Ready. Eight temporary read RBAC objects
+and both terminal rotation Jobs were removed with UID/RV preconditions after
+evidence capture. Four genuine acknowledgments passed after recovery.
+
+Coordinator installation now reaches Ready, but signed service authorization
+is not yet qualified. Kubernetes' projected-volume root mode03777 is rejected
+by the strict credential reader even on its read-only mount. A controlled
+CPU-only Pod proved a nested `credentials/token` projection has parent
+mode02755 and is accepted by the existing reader. SDK and binder path
+validators support this layout and reread credentials per request; deploy
+the nested projection rather than weakening the reader.

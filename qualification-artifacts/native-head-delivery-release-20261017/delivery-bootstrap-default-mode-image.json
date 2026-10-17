@@ -6,7 +6,7 @@
   "manifest_sha256": "sha256:0b2d972f661485176d624dc17d57b77e56d25f9b6d727c2c00cd2322bf97e68b",
   "config_sha256": "sha256:211031de3199b075203091c998307d725312f322d557ddc71079f7da3e2f51df",
   "registry_verified": true,
-  "deployed": false,
+  "deployed": true,
   "full_source_tests_passed": 3330,
   "subtests_passed": 49,
   "host_skipped_cases_passed_in_image": 3,
@@ -18,7 +18,14 @@
   "sdist_sha256": "df602104f2b7563cf95258b73141a425378ae14061f3e07169212b13db8966e5",
   "ci": {
     "run_id": 39031116056,
-    "last_observed": "in_progress"
+    "status": "completed",
+    "conclusion": "success",
+    "jobs": {
+      "build": "success",
+      "installed-sdk-hub": "success",
+      "installed-lab (4.6.4)": "success",
+      "installed-lab (4.5.7)": "success"
+    }
   },
   "rotation_retry_applied": false,
   "coordinator_admission_preflight_passed": true,

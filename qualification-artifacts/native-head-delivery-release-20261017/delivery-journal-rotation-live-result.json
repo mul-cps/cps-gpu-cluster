@@ -1,0 +1,25 @@
+{
+  "delivery_revision": "d66abdeb6b5bcafa639129b7f3172232ce2ae15f",
+  "delivery_reference": "ghcr.io/mul-cps/cps-compute@sha256:0b2d972f661485176d624dc17d57b77e56d25f9b6d727c2c00cd2322bf97e68b",
+  "rotation_job_succeeded": true,
+  "same_pvc_and_subpath": true,
+  "journal_version": 3,
+  "original_anchor_sha256": "sha256:4d7cab1a83741b099ed192dd540e53c55c8f212a9c6b72c77e9f6a3a8579e71d",
+  "anchor_bytes_unchanged": true,
+  "retained_rotation_archive_count": 5,
+  "continuous_writer_ready": true,
+  "temporary_rbac_deleted": 8,
+  "terminal_rotation_jobs_deleted": 2,
+  "four_genuine_acknowledgments_verified_after_resume": true,
+  "gateway_coordinator_installed": true,
+  "gateway_ready": true,
+  "coordinator_service_authorization_qualified": false,
+  "open_authentication_issue": "Projected credential root directory mode 03777 rejected by strict reader; nested credential path accepted in actual read-only projected-volume check",
+  "nested_projection_actual_result": {
+    "directory_uid": 0,
+    "directory_mode": "0o2755",
+    "mount_readonly": true,
+    "existing_reader_accepted": true
+  },
+  "production_ready": false
+}
