@@ -1,0 +1,26 @@
+{
+  "boot_id": "209f8bc9-a478-48e4-925a-6e07ffa56f7a",
+  "cmdline_sha256": "5991df7bfb6f139f9893fc26b91c592638277160a5a640b9e5183709e177ebc0",
+  "driver_generation": "b10498fc-9153-4394-875a-ea7cfb498625",
+  "gpu_calls": false,
+  "gpu_id": 1552,
+  "gpu_uuid": "GPU-16128952-b438-556a-00bb-93039ee24e56",
+  "host_pid": 2029261,
+  "host_tgid": 2029261,
+  "kind": "root-read-only-importer-attribution",
+  "namespace_pid": 203,
+  "network_namespace_inode": 4026535520,
+  "nspid": [
+    2029261,
+    203
+  ],
+  "observed_monotonic_ns": 8839361770101151,
+  "observed_time_ns": 1792201995492219680,
+  "pid_namespace_inode": 4026536106,
+  "pid_start_ticks": 883936106,
+  "pod_cgroup_inode": 1507730,
+  "pod_uid": "0f5aa7aa-caea-466a-bedd-cef04e1c2be0",
+  "process_cgroup_relative": "/kubepods.slice/kubepods-burstable.slice/kubepods-burstable-pod0f5aa7aa_caea_466a_bedd_cef04e1c2be0.slice/cri-containerd-ba4ad15c0347a38bb836cc2fe9ecc5315e36b06433df91c730816a06408e1e10.scope",
+  "source_sha256": "f0900a55d6bde651fe1e987e1ae9a6178533deee2effe862aea3e82e76e1c08e",
+  "trial_id": "1dd5a6ad-1c98-4946-bea5-acf9d69d3c81"
+}

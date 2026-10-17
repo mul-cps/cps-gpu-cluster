@@ -4,7 +4,7 @@ The platform remains **limited-pilot**. Production qualification and the full
 project are unfinished. This record supersedes current-state statements in the
 older completion ledger; their dated acceptance results remain historical evidence.
 
-## Current gate — clock fix deployed; bidirectional legacy IPC passed
+## Current gate — legacy IPC and distinct-process VMM passed at 5/5 GiB
 
 Application `5ca3b4c5b6b0481011ae24958ea2de0cc5652c15` fixes the readiness
 clock race by sampling trusted time after external reads. The full application
@@ -23,11 +23,24 @@ Both normal Stops completed; all 103 native allocations are released. Temporary
 grants were restored, the test token revoked, and all four personal notebook
 Pod UIDs preserved. No MIG, reset, reboot or personal interruption occurred.
 
-**Remaining primary gates:** distinct-process VMM/POSIX-FD and other memory
-routes, larger caps and peer OOM continuity, MPS, and concurrent startup. One
+The next actual run also passed both directions of distinct-process VMM/POSIX-FD
+import isolation at 5/5 GiB. The same actual 64 MiB FD imported successfully in
+a separate same-parent process; cross-parent import returned CUDA800 with exact
+kernel attribution (reason6/status27/clientKind4). Both endpoint kernel streams,
+cleanup and unchanged authority checks passed; independent offline replay cleared
+the evidence. [VMM results](../../qualification-artifacts/native-vmm-distinct-process-20261017/results/).
+Both normal Stops completed, all 106 native claims are released, SQL reservations
+are empty, temporary grant expiry changes restored and the test token revoked.
+Personal notebook Pod identities remain unchanged.
+
+**Remaining primary gates:** other memory routes, larger caps and peer OOM
+continuity, MPS, and concurrent startup. One
 parallel Start failed while a custody snapshot observed an allocated intent
 before its immutable enrollment; sequential fresh Starts later succeeded.
-Concurrent startup and broader production qualification remain unqualified.
+Application `67c6138` fixes the inconsistent ledger/inventory snapshot; 2,922
+application/Hub tests and 49 subtests passed (3 skipped). Its Node image is
+published but not deployed. Concurrent startup and broader production
+qualification remain unqualified.
 
 ## Earlier verified checkpoint — native 5 GiB execution and normal Stop passed
 

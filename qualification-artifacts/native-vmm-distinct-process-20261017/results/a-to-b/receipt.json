@@ -1,0 +1,86 @@
+{
+  "config": {
+    "manifest": {
+      "node": {
+        "name": "cps-native-node-agent-54cb796888-b6dsn",
+        "namespace": "cps-native-system",
+        "uid": "eae7fe7b-109b-408a-a76c-53e720ce89d0"
+      },
+      "observer": {
+        "name": "cps-native-driver-control",
+        "namespace": "gpu-operator",
+        "uid": "8a3a0296-2a41-49e0-ba20-28f503ec5887"
+      },
+      "pods": {
+        "a": {
+          "cap_mib": 5120,
+          "name": "jupyter-cps-ws-27c474f74f9d41c53eac0be01fcca8a3--rtc",
+          "namespace": "jupyterhub",
+          "uid": "21f8c48b-55fc-4387-ac45-a1e0660d1cc7"
+        },
+        "b": {
+          "cap_mib": 5120,
+          "name": "jupyter-cps-ws-0cdb92eef382c11e182bfc11773236bf--rtc",
+          "namespace": "jupyterhub",
+          "uid": "0f5aa7aa-caea-466a-bedd-cef04e1c2be0"
+        }
+      }
+    },
+    "targets": [
+      {
+        "name": "jupyter-cps-ws-27c474f74f9d41c53eac0be01fcca8a3--rtc",
+        "namespace": "jupyterhub",
+        "pod_uid": "21f8c48b-55fc-4387-ac45-a1e0660d1cc7"
+      },
+      {
+        "name": "jupyter-cps-ws-0cdb92eef382c11e182bfc11773236bf--rtc",
+        "namespace": "jupyterhub",
+        "pod_uid": "0f5aa7aa-caea-466a-bedd-cef04e1c2be0"
+      }
+    ]
+  },
+  "cross_parent_isolation_qualified": false,
+  "direction": "a-to-b",
+  "explicitly_completed_endpoints": [
+    "cross-parent-importer",
+    "exporter",
+    "same-parent-positive"
+  ],
+  "final_postflight_observed": true,
+  "kernel_witness_correlated": true,
+  "kernel_witness_correlation": {
+    "begin_sequence": 336865,
+    "capture_sha256": "sha256:de046f42b9a4301c74203e3ec787587706e67f3c50e3131b3131fa5334138fab",
+    "client_kind": 4,
+    "clock_offset_rule_used": false,
+    "end_sequence": 336869,
+    "gpu_id": 1552,
+    "host_tgid": 2029261,
+    "kernel_reason": 6,
+    "kernel_sequence": 336866,
+    "kernel_status": 27,
+    "kernel_witness_correlated": true,
+    "pid_start_ticks": 883936106,
+    "production_qualified": false,
+    "state": "bounded-kernel-vmm-witness-correlated",
+    "trial_id": "1dd5a6ad-1c98-4946-bea5-acf9d69d3c81"
+  },
+  "peer_vector_continuity": true,
+  "preflight_sha256": "c941169d0579d401fd210564c2c948bfa4a3624b7c6156f324b1d78fb69920de",
+  "production_qualified": false,
+  "remote_endpoint_cleanup": "verified",
+  "same_parent_positive_control": true,
+  "source_sha256": {
+    "current_preflight.py": "c941169d0579d401fd210564c2c948bfa4a3624b7c6156f324b1d78fb69920de",
+    "kernel_witness_collector.py": "beab9579a163397089489bf974cd75cdd11a5f2d06c93aa26e9f7a9ae5d6cf64",
+    "kernel_witness_transport.py": "3d6b0a7b383d5cb05f20ca76479e78eff1ce9c1964441718138596dcbc6caaea",
+    "kernel_witness_validator.py": "c54badfd88f0e30f8b8948aa48e3c24f59027779cd59bcfb9413e032d417096e",
+    "run_vmm_cross_parent.py": "0599b182280aaafd01b9888041dfeda7ad2263108a201e7d5884984b70cd6515",
+    "vmm_bridge.py": "475f60b1c4441dc59aee7941baa8fc8612abebbc7440c50e0ebd5f21c3e579e9",
+    "vmm_endpoint.py": "f0900a55d6bde651fe1e987e1ae9a6178533deee2effe862aea3e82e76e1c08e"
+  },
+  "state": "bounded-cross-parent-vmm-kernel-denial-measured",
+  "targets_sha256": "0283e84f54b82f91a7da0e9631243049c572bb841a929d8983ca6226537dedf8",
+  "trial_id": "1dd5a6ad-1c98-4946-bea5-acf9d69d3c81",
+  "unchanged_native_authorities": true
+}

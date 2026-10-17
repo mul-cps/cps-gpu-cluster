@@ -2,14 +2,23 @@
   "branch": "fix/custody-snapshot-consistency-20261017",
   "deployed": false,
   "fix": "Bracket immutable enrollment LIST with fresh allocation ledger GETs; at most three attempts; reject ledger UID replacement and genuine missing enrollments",
+  "image_verification": {
+    "default_inert_verified": true,
+    "pip_check": true,
+    "registry_digest_verified": true,
+    "runtime_configuration_preserved": true,
+    "source_wheel_installed_module_hashes": 67,
+    "unchanged_dependency_versions": 30
+  },
   "production_qualified": false,
+  "published_node_image": "ghcr.io/mul-cps/cps-native-node@sha256:78a8462d19c96942a503810b847ecd7395945d2e8ed94308c254872800b9adbf",
   "regressions": [
     "registration between list and ledger read retries with actual new enrollment",
     "stable missing enrollment rejected",
     "continuous ledger churn fails after three attempts",
     "ledger identity replacement rejected immediately"
   ],
-  "remaining": "Build, protected Node image adoption and live concurrent-start qualification",
+  "remaining": "Protected Node image adoption and live concurrent-start qualification",
   "source_commit": "67c61386595006f2f58aefdc7388e9add8ba462b",
   "verification": {
     "full_application_and_hub": {
@@ -21,5 +30,6 @@
     "root_independent_snapshot_tests_passed": 19,
     "stable_snapshot_ledger_gets": 4,
     "stable_snapshot_total_gets": 20
-  }
+  },
+  "wheel_sha256": "3200adba31a3b149047b77b2997892819cce7b46cccc49d9c7df143f3493b803"
 }

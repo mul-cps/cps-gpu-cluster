@@ -1,0 +1,88 @@
+{
+  "backing_bytes": 67108864,
+  "bridge_source_sha256": "475f60b1c4441dc59aee7941baa8fc8612abebbc7440c50e0ebd5f21c3e579e9",
+  "descriptor_count": 1,
+  "endpoint_source_sha256": "f0900a55d6bde651fe1e987e1ae9a6178533deee2effe862aea3e82e76e1c08e",
+  "exporter_attribution": {
+    "boot_id": "209f8bc9-a478-48e4-925a-6e07ffa56f7a",
+    "cmdline_sha256": "30b9e8b1b66e4044bd124fec7075ae31d67d431420644fabe68ebc520a973abc",
+    "driver_generation": "b10498fc-9153-4394-875a-ea7cfb498625",
+    "gpu_calls": false,
+    "gpu_id": 1552,
+    "gpu_uuid": "GPU-16128952-b438-556a-00bb-93039ee24e56",
+    "host_pid": 2029124,
+    "host_tgid": 2029124,
+    "kind": "root-read-only-importer-attribution",
+    "namespace_pid": 203,
+    "network_namespace_inode": 4026536108,
+    "nspid": [
+      2029124,
+      203
+    ],
+    "observed_monotonic_ns": 8839361741994042,
+    "observed_time_ns": 1792201995464112351,
+    "pid_namespace_inode": 4026536515,
+    "pid_start_ticks": 883935892,
+    "pod_cgroup_inode": 1508185,
+    "pod_uid": "21f8c48b-55fc-4387-ac45-a1e0660d1cc7",
+    "process_cgroup_relative": "/kubepods.slice/kubepods-burstable.slice/kubepods-burstable-pod21f8c48b_55fc_4387_ac45_a1e0660d1cc7.slice/cri-containerd-369ada89faec5e49b57543a773feb9fb7488ac4d1bbcb849210d11b4beac1e09.scope",
+    "source_sha256": "f0900a55d6bde651fe1e987e1ae9a6178533deee2effe862aea3e82e76e1c08e",
+    "trial_id": "1dd5a6ad-1c98-4946-bea5-acf9d69d3c81"
+  },
+  "fd_identity": {
+    "device": 2097385,
+    "inode": 15,
+    "mode": 8630,
+    "rdev": 50175
+  },
+  "gpu_calls": false,
+  "importer_attribution": {
+    "boot_id": "209f8bc9-a478-48e4-925a-6e07ffa56f7a",
+    "cmdline_sha256": "5991df7bfb6f139f9893fc26b91c592638277160a5a640b9e5183709e177ebc0",
+    "driver_generation": "b10498fc-9153-4394-875a-ea7cfb498625",
+    "gpu_calls": false,
+    "gpu_id": 1552,
+    "gpu_uuid": "GPU-16128952-b438-556a-00bb-93039ee24e56",
+    "host_pid": 2029261,
+    "host_tgid": 2029261,
+    "kind": "root-read-only-importer-attribution",
+    "namespace_pid": 203,
+    "network_namespace_inode": 4026535520,
+    "nspid": [
+      2029261,
+      203
+    ],
+    "observed_monotonic_ns": 8839361770101151,
+    "observed_time_ns": 1792201995492219680,
+    "pid_namespace_inode": 4026536106,
+    "pid_start_ticks": 883936106,
+    "pod_cgroup_inode": 1507730,
+    "pod_uid": "0f5aa7aa-caea-466a-bedd-cef04e1c2be0",
+    "process_cgroup_relative": "/kubepods.slice/kubepods-burstable.slice/kubepods-burstable-pod0f5aa7aa_caea_466a_bedd_cef04e1c2be0.slice/cri-containerd-ba4ad15c0347a38bb836cc2fe9ecc5315e36b06433df91c730816a06408e1e10.scope",
+    "source_sha256": "f0900a55d6bde651fe1e987e1ae9a6178533deee2effe862aea3e82e76e1c08e",
+    "trial_id": "1dd5a6ad-1c98-4946-bea5-acf9d69d3c81"
+  },
+  "network_namespace_entered": false,
+  "production_qualified": false,
+  "socket_proofs": {
+    "exporter": {
+      "device": 2049,
+      "gid": 100,
+      "host_tgid": 2029124,
+      "inode": 1322786,
+      "path": "/proc/2029124/root/tmp/cpv-1dd5a6ad1c984946-exporter/s",
+      "uid": 1000
+    },
+    "importer": {
+      "device": 2049,
+      "gid": 100,
+      "host_tgid": 2029261,
+      "inode": 1322790,
+      "path": "/proc/2029261/root/tmp/cpv-1dd5a6ad1c984946-importer/s",
+      "uid": 1000
+    }
+  },
+  "state": "one-bounded-vmm-descriptor-forwarded",
+  "transfer": "cross",
+  "trial_id": "1dd5a6ad-1c98-4946-bea5-acf9d69d3c81"
+}

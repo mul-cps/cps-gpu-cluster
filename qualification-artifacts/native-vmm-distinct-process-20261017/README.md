@@ -6,8 +6,17 @@ failure by explicitly chmodding **only successfully newly created** source and
 socket directories to0700. Existing directories still fail; strict Root0700
 attribution is unchanged. No old workload Pod UID is executable configuration.
 
-No hardware run is recorded here. Default invocation is inert, including no
-manifest reads/API calls/NVML initialization. CPU tests do not qualify isolation.
+Both actual directions passed on 17 October 2026; see [results](results/).
+Independent offline replay verified the same actual FD in positive/cross transfers,
+positive import/readback, CUDA800 denial with exact kernel correlation, continued
+kernels, cleanup and unchanged sealed authorities. Both normal Stops completed;
+all 106 native allocations were released and Gateway reservation tables empty.
+Personal notebook Pod UIDs were preserved, temporary grant expiries restored and
+the test token revoked. Raw event/witness logs remain private.
+
+This is a bounded 5/5 GiB VMM/POSIX-FD result. Broad isolation and production flags
+remain false. Default invocation is inert, including no manifest reads/API calls
+or NVML initialization. CPU tests alone do not qualify isolation.
 
 ## Current pinned scope
 

@@ -1,0 +1,17 @@
+{
+  "begin_sequence": 336870,
+  "capture_sha256": "sha256:d23a3719839fb17a7a794c48083fae2c227f4698c862a377e4878d4aaed8e97f",
+  "client_kind": 4,
+  "clock_offset_rule_used": false,
+  "end_sequence": 336874,
+  "gpu_id": 1552,
+  "host_tgid": 2030491,
+  "kernel_reason": 6,
+  "kernel_sequence": 336871,
+  "kernel_status": 27,
+  "kernel_witness_correlated": true,
+  "pid_start_ticks": 883938816,
+  "production_qualified": false,
+  "state": "bounded-kernel-vmm-witness-correlated",
+  "trial_id": "26c95402-6fe0-4079-a856-39a4cd5adc14"
+}

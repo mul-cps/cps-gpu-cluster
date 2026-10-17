@@ -1,0 +1,54 @@
+[
+  {
+    "cap_mib": 5120,
+    "identity": {
+      "boot_id": "209f8bc9-a478-48e4-925a-6e07ffa56f7a",
+      "cgroup_device": 29,
+      "cgroup_inode": 1508185,
+      "cgroup_path": "/sys/fs/cgroup/kubepods.slice/kubepods-burstable.slice/kubepods-burstable-pod21f8c48b_55fc_4387_ac45_a1e0660d1cc7.slice",
+      "cgroup_relative": "/kubepods.slice/kubepods-burstable.slice/kubepods-burstable-pod21f8c48b_55fc_4387_ac45_a1e0660d1cc7.slice",
+      "container_id": "18067ad85f252ad0986dbba1bac61d5392f3df9ba9a631a4c8f2091c0e3ff0a8",
+      "driver_generation": "b10498fc-9153-4394-875a-ea7cfb498625",
+      "gpu_uuid": "GPU-16128952-b438-556a-00bb-93039ee24e56",
+      "host_pid": 2024799,
+      "node_uid": "3336cdd5-d245-436e-b57c-2f66c6dcaa41",
+      "pid_start_ticks": 883925603,
+      "pod_uid": "21f8c48b-55fc-4387-ac45-a1e0660d1cc7",
+      "spec_sha256": "d6b09082c8c6eda362be9039040abcc24d76e518b733caaefb86fdb6df60e598"
+    },
+    "inventory_row": {
+      "hard": 5368709120,
+      "soft": 5368709120,
+      "used": 0
+    },
+    "pod_uid": "21f8c48b-55fc-4387-ac45-a1e0660d1cc7",
+    "policy_hash": "sha256:d48f6553ed036c2e7adcc97417623fe0308be93ad13b20f246047ada118511b0",
+    "seal_id": "15a15a62-eb23-4560-82f4-5435c2c83543"
+  },
+  {
+    "cap_mib": 5120,
+    "identity": {
+      "boot_id": "209f8bc9-a478-48e4-925a-6e07ffa56f7a",
+      "cgroup_device": 29,
+      "cgroup_inode": 1507730,
+      "cgroup_path": "/sys/fs/cgroup/kubepods.slice/kubepods-burstable.slice/kubepods-burstable-pod0f5aa7aa_caea_466a_bedd_cef04e1c2be0.slice",
+      "cgroup_relative": "/kubepods.slice/kubepods-burstable.slice/kubepods-burstable-pod0f5aa7aa_caea_466a_bedd_cef04e1c2be0.slice",
+      "container_id": "41f53eef0d462af2b955da964979fba0c5794dbf1ff7df75f6e78664a1382a2a",
+      "driver_generation": "b10498fc-9153-4394-875a-ea7cfb498625",
+      "gpu_uuid": "GPU-16128952-b438-556a-00bb-93039ee24e56",
+      "host_pid": 2020365,
+      "node_uid": "3336cdd5-d245-436e-b57c-2f66c6dcaa41",
+      "pid_start_ticks": 883913653,
+      "pod_uid": "0f5aa7aa-caea-466a-bedd-cef04e1c2be0",
+      "spec_sha256": "4a65a0d2099c85fde61719992d64f500befecf953318f7cf2e5e7d4a5982a490"
+    },
+    "inventory_row": {
+      "hard": 5368709120,
+      "soft": 5368709120,
+      "used": 0
+    },
+    "pod_uid": "0f5aa7aa-caea-466a-bedd-cef04e1c2be0",
+    "policy_hash": "sha256:d48f6553ed036c2e7adcc97417623fe0308be93ad13b20f246047ada118511b0",
+    "seal_id": "b9c52d59-570e-4bd0-b1f7-fd4bd89e8d8e"
+  }
+]
