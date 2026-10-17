@@ -1,0 +1,1 @@
+{"rc": 0, "stdout": "{\"2049\": \"ConnectionRefusedError\", \"111\": \"ConnectionRefusedError\", \"jupyterhub.dshl.unileoben.ac.at DNS\": \"10.21.0.50\", \"jupyterhub.dshl.unileoben.ac.at TLS\": \"verified\", \"example.com DNS\": \"104.20.23.154\", \"example.com TLS\": \"verified\"}\n", "stderr": ""}

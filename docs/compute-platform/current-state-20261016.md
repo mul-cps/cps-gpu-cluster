@@ -940,3 +940,10 @@ and both actual deployed module hashes passed. The
 records image-only changes and unchanged credentials/storage. No live service outage
 was induced to validate the 503 path. All fixture originals have
 been restored and the temporary validation token revoked.
+
+
+### Direct notebook NFS egress repair — 17 October
+
+Applied UID/resourceVersion/egress-guarded patches to both singleuser NetworkPolicies. Actual new TCP connections from CPS student armin and a restricted CIT diagnostic Pod reached 193.170.30.58:2049 before, and were refused after. Port 111 had already timed out before. DNS and verified public HTTPS passed after; CPS Hub TLS passed. CIT Hub resolves to private 10.21.0.50 and was refused both before and after, a separate unchanged gap. Existing mounted NFS passed an owned temporary-file write/fsync/readback/unlink after. Diagnostic Pod removed; no notebooks restarted.
+
+Evidence: `platform-staging/jupyter-extensions-20261013/notebook-nfs-egress-live-20261017/`. CPS source e88903b (upstream a6faadee); CIT source a21ae0426e352938105e83f3c88c043ede5bbd81. Rules preserve CIT public-only access. Existing conntrack flows may survive; UDP policy coverage is source-tested, not a live positive UDP service test. Some unsolicited ICMP differs. This does not close reverse broad-parent mount exposure, cross-Pod GPU import qualification, or full production acceptance.

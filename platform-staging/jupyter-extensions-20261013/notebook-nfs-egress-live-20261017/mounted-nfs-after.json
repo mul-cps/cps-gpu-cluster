@@ -1,0 +1,1 @@
+{"rc": 0, "stdout": "{\"uid\": 1000, \"mounted_nfs_write_fsync_readback\": true, \"only_owned_temporary_canary\": true}\n", "stderr": ""}
