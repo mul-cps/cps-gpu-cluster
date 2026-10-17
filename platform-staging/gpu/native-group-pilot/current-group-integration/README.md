@@ -10,7 +10,7 @@ Public CA GET shows CPS Compute Artifact Service CA, valid2026–2036; the CA
 alone does not prove the serving certificate hostname/SAN. Root must verify
 actual TLS peer identity with that CA before activation (no insecure fallback).
 
-`endpoint.render` accepts an actual be0f37c SDK `GroupPendingContext` (loaded
+`endpoint.render` accepts an actual qualified SDK551 `GroupPendingContext` (loaded
 from protected exact6-key NodeConfig ref and actual immutable API objects),
 actual undeleted ServiceAccount objects including a separately created dedicated
 binder SA, current Hub settings/readiness, exact reservation template/digest,
@@ -22,9 +22,24 @@ prints disabled/API-false/GPU-false. No API client or executor is provided.
 explicit protected NodeConfig reference. It authenticates the full typed chain
 and rejects active ledger rows, returning only the public configuration subset;
 no service bearer or export token is returned. Do not copy that original bundle
-to Git or pass an untrusted reference from browser/submission input. The actual
-Root baseline loaded successfully with5scopes/current1e2 approval/d48policy;
-refresh inputs and exact process/image bindings after Root's image promotion.
+to Git or pass an untrusted reference from browser/submission input. Capture
+fresh policy, runtime readiness2, both Hub settings, released ledger, actual
+ServiceAccounts, and the exact Node4 ConfigMap plus its qualification, anchor,
+pointer, current and retained approval documents. Refresh the four complete
+controller templates, seven independently pinned Roles and ObserverRelease2
+before building a rollout proposal; an earlier endpoint snapshot is historical.
+
+For Node4, the protected NodeConfig supplies the namespace-local head binding.
+The unchanged coordinator configuration version2 lets SDK551 select
+`HeadNodeEpochObserver` automatically and follow current heads without replacing
+the NodeConfig. Gateway/Hub template changes still require reviewed prospective
+and actual observer captures and fresh process proofs. Keep the held Node
+template digest unchanged only when the complete Node template is unchanged.
+
+Open limitation: this renderer requires a nonempty current deployment. A global
+empty head has `context.deployment is None` and is not supported here, although
+SDK551 can install an inert consumer. Do not synthesize scopes to bypass it;
+empty-head rendering remains separate future work.
 
 The seed ConfigMap is immutable/public configuration; the generated init copies
 only3named documents into fresh emptyDir/config0700 and files0600 owned10001.
@@ -66,12 +81,18 @@ node.Spec.Unschedulable. True automatic placement cannot pass until separately
 reviewed maintenance changes; no scheduler workaround or live qualification
 is claimed. Fixed measured GPU2 5/10GiB pilot only, no MIG/driver/reset actions.
 
-CPU verification (SDK source pinned 7f3f6d67aa60c72bd9033f0b33df8880c88b6cab):
+CPU verification (qualified SDK source `551379c6902791d0dd192596046669f1fe274562`):
 set PYTHONPATH to this directory plus that SDK's src, packages/hub/src and tests
 and the qualified test dependencies; run `pytest -q test_endpoint.py`.
-Eleven tests use actual central-authority/current-context fixtures, execute both source Hub pending settings parsers (infrastructure construction substituted; actual closed groupHub structural parser and typed pending adapter execute), validate the v2
+Twelve tests use actual central-authority/current-context fixtures, execute both source Hub pending settings parsers (infrastructure construction substituted; actual closed groupHub structural parser and typed pending adapter execute), validate the v2
 installer configuration and independent epoch parser, closed path grants,
 separate projected audiences, staged-off binder flags, explicit fsGroup/process mismatch negatives and actual private materializer.
+The v4 regression advances real fixture registry/head generations 1 through 7
+with the same NodeConfig reference. It runs the actual SDK configuration parser,
+installer, `HeadNodeEpochObserver` constructor and authenticated head loader;
+external transport and receipt/process I/O are substituted. Replacing that
+observer with its legacy parent is rejected. The SDK's separate
+`tests/test_native_head_epoch.py` tests cover actual fixture ACK2 consumption.
 
 Root-verified operator inputs: accepted API audience https://kubernetes.default.svc.cluster.local; preserved binder SA UID0ed4f47d-dc7f-4136-9174-6744f03f3d35; reservation v0.18.1 registry manifest digest sha256:f476965d65e49059da53b3999494a33814a45408111d12010086acfadc0131d3. These are recorded evidence, not defaults or authority injected by this renderer. No live calls were made for these follow-up checks.
 
@@ -82,4 +103,4 @@ already have fsGroup1000, and the Gateway has the required fsGroup10001.
 
 The emitted binder flags also pin `--resource-reservation-pod-image` to the exact Coordinator reservation-template digest in both disabled and opt-in modes. Replace the existing tag-valued flag when merging; do not append a duplicate flag. Actual live tag remains unchanged until explicit activation.
 
-Private-state activation correction: the live PVC root is UID0/mode02775, so the old sibling-of-control.sqlite lock and root-level custody path cannot satisfy the SDK private-state contract. The proposal now requires the actual Gateway data PVC volume name (authenticated from its complete writable `/data` mount), mounts that same PVC in the nonroot initializer, and creates only `native-kai-private` owned by UID10001. It opens the child with `O_DIRECTORY|O_NOFOLLOW`, verifies ownership, and applies0700, clearing inherited SGID. Existing databases and the PVC root retain their bytes and permissions. All guards and execution fences must consume the explicit `writerLockPath`. This requires SDK private-writer-lock successor `7f3f6d67aa60c72bd9033f0b33df8880c88b6cab`; the currently deployed be0 image is incompatible with that new configuration field. Do not apply an earlier dry-run patch as an activation artifact.
+Private-state activation correction: the captured PVC root was UID0/mode02775, so the old sibling-of-control.sqlite lock and root-level custody path cannot satisfy the SDK private-state contract. The proposal requires the actual Gateway data PVC volume name (authenticated from its complete writable `/data` mount), mounts that same PVC in the nonroot initializer, and creates only `native-kai-private` owned by UID10001. It opens the child with `O_DIRECTORY|O_NOFOLLOW`, verifies ownership, and applies0700, clearing inherited SGID. Existing databases and the PVC root retain their bytes and permissions. All guards and execution fences must consume the explicit `writerLockPath`, supported by qualified SDK551. Do not apply an earlier dry-run patch as an activation artifact.

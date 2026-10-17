@@ -14,7 +14,7 @@ def inputs(c):
     return dict(gateway_account=sa('cps-compute','cps-compute-controller',1),binder_account=sa('kai-scheduler','binder',2),hub_accounts={s:sa(ns,'hub',i) for s,ns,i in (('cps','jupyterhub',3),('cit','cit-jhub',4))},hub_settings=plain,readiness=readiness,reservation_template=reservation,api_audience='reviewed-api-audience',binder_pod_labels={'app':'cps-native-binder'},gateway_pod_security_context={'fsGroup':10001},gateway_data_volume_name='data')
 
 
-def test_actual_be0_configuration_and_epoch_interoperability(request,monkeypatch,tmp_path):
+def test_actual_qualified_configuration_and_epoch_interoperability(request,monkeypatch,tmp_path):
     c,api,h,*_=harness(request,monkeypatch,tmp_path)
     args=inputs(c); before=copy.deepcopy(args)
     result=endpoint.render(c.group_context,**args)
@@ -26,6 +26,74 @@ def test_actual_be0_configuration_and_epoch_interoperability(request,monkeypatch
     epoch,_=node_epoch_contract(h.policy,result['gateway']['private_files']['deployment.json'],h.native)
     assert epoch.node_pool==h.group.node_pool
     assert args==before
+
+
+@pytest.mark.asyncio
+async def test_v4_head_generations_one_through_seven_keep_node_ref_and_select_head_epoch(request,monkeypatch,tmp_path):
+    from types import SimpleNamespace
+    from fastapi import FastAPI
+    from cps_compute import native_scheduler_coordinator_server as server
+    from cps_compute import native_group_capture_server as capture
+    from cps_compute.native_approval_head import HeadSnapshot
+    from cps_compute.native_group_revision import ApprovalRevision
+    from cps_compute.native_groups import _canonical
+    from cps_compute.native_scheduler_group_contract import GroupPendingContext
+    from test_native_head_coordinator import dynamic,advance
+    from test_native_node_config import ref
+
+    values=dynamic(request,monkeypatch,tmp_path)
+    c,api,h,service,f,current,maps,core,node=values
+    def advance_head(generation):
+        actual=advance(values)
+        cm=maps.pop(actual.reference['name']);cm['metadata']['name']='endpoint-head-'+str(generation)
+        actual=ApprovalRevision.from_configmap(cm,h.policy,h.group)
+        maps[cm['metadata']['name']]=cm;h.documents.update(cm=cm,actual=actual)
+        pointer=json.loads(maps['coordinator-head']['data']['head.json']);pointer['reference']=actual.reference
+        maps['coordinator-head']['data']['head.json']=_canonical(pointer).decode()
+    advance_head(1)
+    c.group_context=GroupPendingContext.load(core,ref(node),h.policy)
+    stable=c.group_context.node_configuration_ref
+    proposal=endpoint.render(c.group_context,**inputs(c))
+    config=copy.deepcopy(proposal['coordinator'])
+    private=tmp_path/'endpoint-private';private.mkdir(mode=0o700)
+    config.update(custodyPath=str(private/'custody.sqlite'),writerLockPath=str(c.writer_lock_path))
+    for field,name in (('policyPath','policy.json'),('qualificationPath','deployment.json')):
+        config['epoch'][field]=str(private/name)
+    files=dict(proposal['gateway']['private_files'],**{'coordinator.json':config})
+    for name,value in files.items():
+        path=private/name;path.write_text(json.dumps(value));path.chmod(0o600)
+    class ConfigMaps:
+        def read_namespaced_config_map(self,name,namespace,**kwargs):
+            assert kwargs=={'_request_timeout':(5,15)}
+            return core.read_namespaced_config_map(name,namespace)
+    monkeypatch.setattr(h.native.backend,'core',ConfigMaps(),raising=False)
+    monkeypatch.setattr(server,'RawKubernetesAPI',lambda *a,**kw:api)
+    observed=[]
+    def receipt_io(observer):
+        assert type(observer) is capture.HeadNodeEpochObserver
+        assert observer.head_binding==c.group_context._configuration.approval_head
+        head=HeadSnapshot.load(core,observer.head_binding,h.policy,observer.qualification)
+        observed.append(head.document['generation'])
+        return c.group_context.epoch
+    # Only external receipt/process I/O is substituted. The real installer,
+    # closed config parser, head observer constructor and head loader execute.
+    monkeypatch.setattr(capture.HeadNodeEpochObserver,'observe',receipt_io)
+    installed=server.install_from_environment(FastAPI(),h.native,
+        environ={'CPS_NATIVE_KAI_COORDINATOR_CONFIG':str(private/'coordinator.json')})
+    with monkeypatch.context() as legacy_observer:
+        legacy_observer.setattr(capture,'HeadNodeEpochObserver',capture.NodeEpochObserver)
+        with pytest.raises(TypeError,match='head_binding'):await installed.epoch()
+    for generation in range(1,8):
+        context=GroupPendingContext.load(core,ref(node),h.policy)
+        assert context._configuration.document['version']==4
+        assert context._approval.document['registry']['generation']==generation
+        result=endpoint.render(context,**inputs(SimpleNamespace(group_context=context)))
+        validate_configuration(result['coordinator'],h.native)
+        assert result['coordinator']['nodeConfigurationRef']==stable==installed.group_context.node_configuration_ref
+        assert await installed.epoch()==context.epoch
+        if generation==7:break
+        advance_head(generation+1)
+    assert observed==list(range(1,8))
 
 
 def test_signed_routes_tokens_mounts_and_no_new_gateway(request,monkeypatch,tmp_path):
