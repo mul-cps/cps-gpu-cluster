@@ -23,6 +23,17 @@ def _context(inputs):
         and image.sha(operators) == inputs['expected_operator_baselines_sha256'],
         'Independent snapshot, release and operator baseline pins required')
     policy, configuration = image._context(snapshot); document = configuration.document
+    aliases=inputs.get('personal_cpu_profile_aliases')
+    if aliases is not None:
+        image.require(type(aliases) is dict and aliases=={'cpu-default':'interactive-cpu'},
+            'Exact reviewed personal CPU profile alias required')
+        profile=policy.catalog['profiles'].get('interactive-cpu')
+        image.require(isinstance(profile,dict) and profile.get('enabled',True) is True
+            and profile.get('kind')=='interactive', 'Enabled interactive CPU profile required')
+        gpu=profile.get('gpu')
+        image.require(gpu.get('mode')=='none' if isinstance(gpu,dict) else str(gpu)=='0',
+            'Personal CPU alias cannot select GPU resources')
+        policy.resources('interactive-cpu')
     release = ObserverRelease.from_dict(previous)
     image.require(document['version'] == 4 and previous['version'] == 2
         and previous['node_configuration'] == configuration.reference.to_dict(),
@@ -101,6 +112,12 @@ def _context(inputs):
         helper=image._one(hpod.get('initContainers',[]),'cps-native-kai-hub-inputs')
         image.require(helper['image']==declarations[component]['image'],
             'Current Hub private-input helper must match original Hub image')
+        if aliases is not None:
+            main=image._one(hpod['containers'],declarations[component]['container'])
+            env=main.get('env',[]);names=[row['name'] for row in env]
+            literal={'name':'CPS_PERSONAL_CPU_PROFILE_ALIASES','value':image.canonical(aliases)}
+            image.require(len(names)==len(set(names)) and [row for row in env if row['name']==literal['name']] in ([],[literal]),
+                'Duplicate, indirect or conflicting personal CPU profile environment')
     capture = image._immutable(image.secret_volume(snapshot, 'gateway', 'capture-seed'))
     settings = image._decode(capture['data']['config.json'])
     image.require(settings['version'] == 2 and settings['approval_head'] == previous['heads']['node']
@@ -142,8 +159,9 @@ def _context(inputs):
 
 
 def prepare(snapshot,previous_release,operator_baselines,hub_image,*,expected_snapshot_sha256,
-            expected_release_sha256,expected_operator_baselines_sha256,expected_revision):
+            expected_release_sha256,expected_operator_baselines_sha256,expected_revision,personal_cpu_profile_aliases=None):
     inputs=deepcopy(locals())
+    if personal_cpu_profile_aliases is None:inputs.pop('personal_cpu_profile_aliases')
     try:
         _,configuration,*_=_context(inputs)
         document=configuration.document
@@ -182,7 +200,12 @@ def bind_node(snapshot,prepared,actual_node_config):
             publisher,body=publishers[component];body['process']['image']=prepared['inputs']['hub_image']
             creates[component+'.publisher']=image._candidate(publisher,'cps-native-approval-publisher',{'publisher.json':image.canonical(body)})
             pod=specs[component]['template']['spec'];decl=old.document['component_declarations'][component]
-            image._one(pod['containers'],decl['container'])['image']=prepared['inputs']['hub_image']
+            main=image._one(pod['containers'],decl['container']);main['image']=prepared['inputs']['hub_image']
+            aliases=prepared['inputs'].get('personal_cpu_profile_aliases')
+            if aliases is not None:
+                env=main.setdefault('env',[])
+                literal={'name':'CPS_PERSONAL_CPU_PROFILE_ALIASES','value':image.canonical(aliases)}
+                if not any(row['name']==literal['name'] for row in env):env.append(literal)
             image._one(pod['initContainers'],'cps-native-kai-hub-inputs')['image']=prepared['inputs']['hub_image']
             image._one(pod['volumes'],'cps-native-approval-publisher')['configMap']['name']=creates[component+'.publisher']['metadata']['name']
             runtime['nativeGroupApprovals']['processes'][component]['image']=prepared['inputs']['hub_image']

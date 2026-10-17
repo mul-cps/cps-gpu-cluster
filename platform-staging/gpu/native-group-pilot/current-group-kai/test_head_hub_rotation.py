@@ -33,6 +33,79 @@ def phases(values):
     b=m.bind_node(values['snapshot'],p,node);created={k:actual(v)for k,v in b['creates'].items()}
     return m,p,node,b,created
 
+
+def personal_cpu_fixture(monkeypatch):
+    import test_native_groups
+    original=test_native_groups.qualified_catalog
+    def catalog():
+        value=original()
+        value['profiles']['interactive-cpu']={**copy.deepcopy(value['profiles']['cpu']),'enabled':True}
+        return value
+    # Seed the profile before any policy hashes or immutable authorities exist.
+    monkeypatch.setattr(test_native_groups,'qualified_catalog',catalog)
+    return fixture()
+
+
+@pytest.mark.parametrize('existing',[False,True])
+def test_personal_cpu_opt_in_changes_only_two_hub_main_envs_and_reuses_exact_literal(monkeypatch,existing):
+    v=personal_cpu_fixture(monkeypatch);literal={'name':'CPS_PERSONAL_CPU_PROFILE_ALIASES','value':'{"cpu-default":"interactive-cpu"}'}
+    if existing:
+        for component in ('hub:cps','hub:cit'):
+            dep=v['snapshot']['deployments'][component]
+            dep['spec']['template']['spec']['containers'][0].setdefault('env',[]).append(copy.deepcopy(literal))
+            meta=dep['metadata'];v['snapshot']['objects'][image._key('Deployment',meta['namespace'],meta['name'])]=copy.deepcopy(dep)
+        v['expected_snapshot_sha256']=canonical_sha256(v['snapshot'])
+    ordinary=copy.deepcopy(v);v['personal_cpu_profile_aliases']={'cpu-default':'interactive-cpu'}
+    before=copy.deepcopy(v);m,p,node,b,created=phases(v)
+    old=m.bind_node(v['snapshot'],m.prepare(**ordinary),node)
+    for component,spec in old['runtime_specs'].items():
+        expected=copy.deepcopy(spec)
+        if component in ('hub:cps','hub:cit'):
+            env=expected['template']['spec']['containers'][0].setdefault('env',[])
+            if not existing:env.append(literal)
+            assert [e for e in b['runtime_specs'][component]['template']['spec']['containers'][0]['env']
+                if e['name']==literal['name']]==[literal]
+        assert b['runtime_specs'][component]==expected
+    pending=m.bind(v['snapshot'],b,created)
+    permissions={k:actual(o)for k,o in pending['creates'].items()}
+    result=m.bind(v['snapshot'],b,created,actual_permissions=permissions)
+    namespace=image._context(v['snapshot'])[1].document['component_declarations']['node']['namespace']
+    assert set(result['patches'])=={'gateway.runtime-secret','node.deployment','gateway.deployment',
+        'hub:cps.deployment','hub:cit.deployment','component-role:'+namespace+'/cps-native-approval-node',
+        'component-role:'+namespace+'/cps-native-approval-gateway'}
+    assert result['runtime_specs']==b['runtime_specs'] and v==before
+    assert result['observer_release']['heads']==v['previous_release']['heads']
+    assert result['operator_baselines']==v['operator_baselines']
+
+
+@pytest.mark.parametrize('aliases',[{},[],True,{'cpu-default':'cpu'},
+    {'other':'interactive-cpu'},{'cpu-default':'interactive-cpu','extra':'interactive-cpu'}])
+def test_personal_cpu_opt_in_rejects_any_other_mapping(monkeypatch,aliases):
+    v=personal_cpu_fixture(monkeypatch);v['personal_cpu_profile_aliases']=aliases
+    with pytest.raises(ValueError):module().prepare(**v)
+
+
+@pytest.mark.parametrize('fault',['duplicate','value-from','conflict'])
+def test_personal_cpu_opt_in_rejects_ambiguous_existing_hub_environment(monkeypatch,fault):
+    v=personal_cpu_fixture(monkeypatch);v['personal_cpu_profile_aliases']={'cpu-default':'interactive-cpu'}
+    dep=v['snapshot']['deployments']['hub:cps'];env=dep['spec']['template']['spec']['containers'][0].setdefault('env',[])
+    entry={'name':'CPS_PERSONAL_CPU_PROFILE_ALIASES','value':'{"cpu-default":"interactive-cpu"}'}
+    if fault=='duplicate':env.extend([copy.deepcopy(entry),copy.deepcopy(entry)])
+    elif fault=='value-from':env.append({'name':entry['name'],'valueFrom':{'configMapKeyRef':{'name':'foreign','key':'aliases'}}})
+    else:env.append({'name':entry['name'],'value':'{"cpu-default":"foreign"}'})
+    meta=dep['metadata'];v['snapshot']['objects'][image._key('Deployment',meta['namespace'],meta['name'])]=copy.deepcopy(dep)
+    v['expected_snapshot_sha256']=canonical_sha256(v['snapshot'])
+    with pytest.raises(ValueError):
+        m=module();p=m.prepare(**v);m.bind_node(v['snapshot'],p,actual(p['creates']['node-config']))
+
+
+def test_existing_hub_prepared_plan_without_personal_cpu_option_still_binds():
+    v=fixture();m=module();p=m.prepare(**v)
+    p['inputs'].pop('personal_cpu_profile_aliases',None)
+    node=actual(p['creates']['node-config']);bound=m.bind_node(v['snapshot'],p,node)
+    assert bound['prepared']==p and bound['actual_node_config']==node
+
+
 def test_hub_pair_updates_only_reviewed_images_and_immutable_projections():
     v=fixture();before=copy.deepcopy(v);m,p,node,b,created=phases(v)
     assert set(created)=={'node.bootstrap','hub:cps.publisher','hub:cit.publisher','coordinator.seed'}
