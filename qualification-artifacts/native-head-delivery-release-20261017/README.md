@@ -8,8 +8,10 @@ not a GPU workload start or sealed-peer continuation/revocation test.
 
 A subsequent [live coordinator activation](coordinator-activation-attempt-result.json)
 passed fresh actual/prospective observer rendering but failed startup validation:
-the authenticated current head contains five PVC claims, while the Gateway's
-older static authority contains four. The previous Gateway spec was restored
+the authenticated current head contains five PVC claims, while startup's
+readiness-dependent workspace view returned four. Source investigation found
+that this view falls back to the original seed while acknowledgements are
+unavailable; a cold-start regression is in progress. The previous Gateway spec was restored
 exactly and is Ready; all four component acknowledgements verify. Both Hub
 rollouts remain unapplied and the binder bridge remains disabled. Dynamic-head
 claim validation is the next required fix; shrinking the authorized head is not
