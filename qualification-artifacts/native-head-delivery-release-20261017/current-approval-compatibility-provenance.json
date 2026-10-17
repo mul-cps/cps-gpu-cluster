@@ -1,0 +1,74 @@
+{
+  "checks": [
+    {
+      "compatibility_report": "platform-staging/gpu/native-group-pilot/qualification/cpu-runner-policy-20261012/compatibility/attestation-aggregate.json",
+      "compatibility_report_sha256": "c167b366fd2f5188de7d1c2c05dbe7ce2642cfbf24cbd20f975d395389a6bde2",
+      "gate": "aggregate",
+      "hardware_test_performed": false,
+      "original_hash_matches": true,
+      "original_report_exists": true,
+      "original_report_sha256": "e423fbb9601b1843815bd3e7c17c881f5cbda5bbf590502d9d9557cd819cc714",
+      "production_qualified": false,
+      "qualification_kind": "cpu-runner-policy-compatibility"
+    },
+    {
+      "compatibility_report": "platform-staging/gpu/native-group-pilot/qualification/cpu-runner-policy-20261012/compatibility/attestation-cap-assignment.json",
+      "compatibility_report_sha256": "528de693f6cb79d5fca2deb40b68500f64e622e5135a667b468243a70c7118b9",
+      "gate": "cap-assignment",
+      "hardware_test_performed": false,
+      "original_hash_matches": true,
+      "original_report_exists": true,
+      "original_report_sha256": "e2b3e81cea6943f85668007fa815f38d789e8de03b5088ce71f39026d8bd7a56",
+      "production_qualified": false,
+      "qualification_kind": "cpu-runner-policy-compatibility"
+    },
+    {
+      "compatibility_report": "platform-staging/gpu/native-group-pilot/qualification/cpu-runner-policy-20261012/compatibility/attestation-memory-import.json",
+      "compatibility_report_sha256": "e4e54bc75545c5fa215792e8a34b847f120a0c5b26514232a9b05328acc17c07",
+      "gate": "memory-import",
+      "hardware_test_performed": false,
+      "original_hash_matches": true,
+      "original_report_exists": true,
+      "original_report_sha256": "d7c034fd57e407fed9bf4566dee43228a190085bad5e42b4913e0a610a8473ff",
+      "production_qualified": false,
+      "qualification_kind": "cpu-runner-policy-compatibility"
+    },
+    {
+      "compatibility_report": "platform-staging/gpu/native-group-pilot/qualification/cpu-runner-policy-20261012/compatibility/attestation-mps.json",
+      "compatibility_report_sha256": "057f5974107f038f7d746ad7fd65481331ee3ee5086f9bdd5cf968e27f613a94",
+      "gate": "mps",
+      "hardware_test_performed": false,
+      "original_hash_matches": true,
+      "original_report_exists": true,
+      "original_report_sha256": "5765c00b580fdc901f4e40ead767c9241494767206c7965b6d67da681dd286f3",
+      "production_qualified": false,
+      "qualification_kind": "cpu-runner-policy-compatibility"
+    },
+    {
+      "compatibility_report": "platform-staging/gpu/native-group-pilot/qualification/cpu-runner-policy-20261012/compatibility/attestation-oom-peer.json",
+      "compatibility_report_sha256": "ee766f1353b6d79ba503b532bf320600df30f01e3e5791ab31677431e8da2af4",
+      "gate": "oom-peer",
+      "hardware_test_performed": false,
+      "original_hash_matches": true,
+      "original_report_exists": true,
+      "original_report_sha256": "9169e83b329378db59db4ac46cdaf794d354fabc48c05b9f0c5ad98df6429ceb",
+      "production_qualified": false,
+      "qualification_kind": "cpu-runner-policy-compatibility"
+    },
+    {
+      "compatibility_report": "platform-staging/gpu/native-group-pilot/qualification/cpu-runner-policy-20261012/compatibility/attestation-restart-cleanup.json",
+      "compatibility_report_sha256": "4873201c95d0030a36ab3940e7ab92a8482866eec5778c36e968aa9588ab9643",
+      "gate": "restart-cleanup",
+      "hardware_test_performed": false,
+      "original_hash_matches": true,
+      "original_report_exists": true,
+      "original_report_sha256": "1bb52abe8791d22034b4381aedec1ed8cba7ceea4b7d7fc87d799863375db485",
+      "production_qualified": false,
+      "qualification_kind": "cpu-runner-policy-compatibility"
+    }
+  ],
+  "conclusion": "Exact compatibility provenance is verified. These wrappers are not fresh hardware measurements and do not establish current end-to-end KAI qualification.",
+  "kind": "current-approval-compatibility-provenance",
+  "production_qualified": false,
+  "version": 1
+}
