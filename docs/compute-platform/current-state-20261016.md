@@ -76,6 +76,21 @@ verify ready. **Concurrent startup and peer OOM remain unqualified.**
 [Hub adoption](../../platform-staging/jupyter-extensions-20261013/hub-acquire-readiness-adoption-20261017.json)
 and [observer recovery](../../platform-staging/jupyter-extensions-20261013/observer-permissions-adoption-20261017.json).
 
+The next concurrent run reached HTTP 200 for **both native acquisitions**, but
+registration failed when a later readiness read hid the valid nonseed scope.
+No peer-OOM test ran. It also exposed old create-only admission rules rejecting
+the existing v2 abort-barrier and Node abort-proof formats. The narrowly scoped
+admission fix is deployed: both policies report generation 2 without Kubernetes
+type warnings; independent CEL/render tests passed. Normal Stop then succeeded.
+All 110 claims are released, both SQL reservation tables are empty, both temporary
+grant and membership expiry changes are restored, token a844 is revoked, and
+personal notebook Pod UIDs are unchanged. Installed four-component readiness
+passed afterward. Application `855d75d` fixes the complete early/late authorization
+readiness classification path; 2,992 tests and 49 subtests passed (3 skipped).
+Its Gateway image is not yet deployed. **Registration, concurrent startup and
+peer OOM remain unqualified.**
+[Run, admission repair and cleanup](../../platform-staging/jupyter-extensions-20261013/concurrent-registration-cleanup-20261017.json).
+
 ## Earlier verified checkpoint — native 5 GiB execution and normal Stop passed
 
 Application `7273ad70c497cafcd7116867343a4b5ae9b6909c` is deployed on the node,

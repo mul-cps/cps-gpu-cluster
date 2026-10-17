@@ -1,0 +1,81 @@
+{
+  "schema_version": 1,
+  "scope": "Concurrent normal 5 GiB workspace starts after acquire retry deployment",
+  "source_hub": "56e4c93db31f247e7a44a6face4a0ad18603167b",
+  "both_acquires_http_200": true,
+  "registration_qualified": false,
+  "peer_oom_run": false,
+  "blockers": {
+    "registration": "A later readiness check hid a valid current nonseed scope, producing a fatal qualification denial",
+    "cleanup": "Live create-only admission policies lacked existing SDK v2 abort-barrier and Node abort-proof wire formats"
+  },
+  "raw_ack_observation": {
+    "samples": 150,
+    "node_first_empty_at": "2026-10-17T04:03:34.729219+00:00",
+    "secondary_registration_denial_at": "2026-10-17T04:03:34.916222865Z",
+    "raw_samples_are_not_authority_validation": true
+  },
+  "admission_fix": {
+    "source": "abcf763022de171c53ba13d7799644511dddc79b",
+    "live_deployed": true,
+    "policies": [
+      "cps-native-gateway-authority-create-only",
+      "cps-native-node-agent-cleanup-only"
+    ],
+    "observed_generation": 2,
+    "kubernetes_type_warnings": [],
+    "independent_cel_tests_passed": 9,
+    "independent_render_tests_passed": 4,
+    "identity_namespace_operation_and_rbac_constraints_unchanged": true,
+    "normal_stop_after_fix_http": 200,
+    "full_body_validation_remains_sdk_and_node": true
+  },
+  "authorization_fix": {
+    "source": "855d75d071481ce8f70860070bb5aad12adeeaaa",
+    "full_suite_passed": 2992,
+    "full_suite_skipped": 3,
+    "subtests": 49,
+    "live_deployed": false
+  },
+  "cleanup": {
+    "allocation_count": 110,
+    "all_released": true,
+    "sql_reservations": {
+      "reservation": 0,
+      "reservation_binding": 0
+    },
+    "controlled_pods_absent": true,
+    "personal_pod_uids_preserved": {
+      "jupyter-armin": "921b8b7c-e8de-45e3-856c-b2426ed1ed7b",
+      "jupyter-bjoern": "915b3fac-53fa-469c-8c3f-0180fb285504",
+      "jupyter-cpsadmin": "a984023f-eb34-4af1-b01d-bad6ea159ef4",
+      "jupyter-mikasa": "31846900-989b-48d1-95b3-846e9526fbb5"
+    },
+    "temporary_grant_expiries_restored": 2,
+    "temporary_membership_expiries_restored": 2,
+    "token_revoked": true,
+    "local_token_removed": true,
+    "normal_stop_http": {
+      "lab_after_admission": 200,
+      "secondary": 200
+    },
+    "peer_oom_run": false,
+    "controlled_pods_verified_from_approved_receipt": {
+      "lab": {
+        "namespace": "jupyterhub",
+        "name": "jupyter-cps-ws-27c474f74f9d41c53eac0be01fcca8a3--rtc"
+      },
+      "secondary": {
+        "namespace": "jupyterhub",
+        "name": "jupyter-cps-ws-0cdb92eef382c11e182bfc11773236bf--rtc"
+      }
+    }
+  },
+  "final_four_component_readiness": "ready",
+  "production_qualified": false,
+  "evidence_sha256": {
+    "final-cleanup.private.json": "dd168fd2dcb5ca5946edba91b8c3d220fc3978822c5d2335b76da3c912a658c1",
+    "final-readiness.private.json": "006c707fa5c910e046523fc6c2d8f795473e352c24487b8832280e953fb0e377",
+    "ack-transitions.private.json": "d95a94a1df4c49585e5989395c20d17aeaaa5c7e2cd1d2486b854cbabaa03499"
+  }
+}
