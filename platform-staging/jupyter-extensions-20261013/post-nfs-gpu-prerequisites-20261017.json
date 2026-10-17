@@ -1,0 +1,101 @@
+{
+  "observed_at": "2026-10-17T00:43:42.662755+00:00",
+  "readiness": {
+    "component_count": 4,
+    "components": {
+      "gateway": {
+        "observed_at": "2026-10-17T00:43:36.499433+00:00",
+        "process": {
+          "container": "gateway",
+          "image": "ghcr.io/mul-cps/cps-compute@sha256:52383c07fae63a5f1f8013441aad30c31e4ea716d4eddac2b35f6e1882e659e1",
+          "name": "compute-gateway-7bd5585b5b-9lnh9",
+          "namespace": "cps-compute",
+          "service_account": "cps-compute-controller",
+          "uid": "a49ad6a4-35dc-4fff-8a20-68a23747dd9b"
+        },
+        "revision": "sha256:5517ea8f342ecbb6b4ed817aa9b0ca5788984217e46e4ba90b5707cee509b427"
+      },
+      "hub:cit": {
+        "observed_at": "2026-10-17T00:43:34.667028+00:00",
+        "process": {
+          "container": "hub",
+          "image": "ghcr.io/mul-cps/cps-compute@sha256:13fbe2071c0d98c09f4e289fa84879660cd2411cf54a9ce63097d9df54d495ac",
+          "name": "hub-57f8d89f5f-f64b4",
+          "namespace": "cit-jhub",
+          "service_account": "hub",
+          "uid": "c2edf9ad-beee-43fd-9663-3af43120b081"
+        },
+        "revision": "sha256:5517ea8f342ecbb6b4ed817aa9b0ca5788984217e46e4ba90b5707cee509b427"
+      },
+      "hub:cps": {
+        "observed_at": "2026-10-17T00:43:32.021112+00:00",
+        "process": {
+          "container": "hub",
+          "image": "ghcr.io/mul-cps/cps-compute@sha256:13fbe2071c0d98c09f4e289fa84879660cd2411cf54a9ce63097d9df54d495ac",
+          "name": "hub-5449d5bd7-rbfsv",
+          "namespace": "jupyterhub",
+          "service_account": "hub",
+          "uid": "31986e74-8aad-426b-8197-abf52ba20644"
+        },
+        "revision": "sha256:5517ea8f342ecbb6b4ed817aa9b0ca5788984217e46e4ba90b5707cee509b427"
+      },
+      "node": {
+        "observed_at": "2026-10-17T00:43:38.309526+00:00",
+        "process": {
+          "container": "node-agent",
+          "image": "ghcr.io/mul-cps/cps-native-node@sha256:6083e06a2f342a145ff83b84d6edfea2f9f7a1bb43f484ae83facc7faf32e0e1",
+          "name": "cps-native-node-agent-7fcdd94c66-lbs6c",
+          "namespace": "cps-native-system",
+          "service_account": "cps-native-node-agent",
+          "uid": "69a3487c-c638-41b4-91b2-e90ce0863a2c"
+        },
+        "revision": "sha256:5517ea8f342ecbb6b4ed817aa9b0ca5788984217e46e4ba90b5707cee509b427"
+      }
+    },
+    "module": "/usr/local/lib/python3.12/site-packages/cps_compute/runtime.py",
+    "module_sha256": "c05a6cf9d9d2b22fbd0ca330c9edc49da85c5b38da4c5471e16b1d624bf60f72",
+    "observed_at": "2026-10-17T00:43:42.662755+00:00",
+    "policy_hash": "sha256:d48f6553ed036c2e7adcc97417623fe0308be93ad13b20f246047ada118511b0",
+    "released_consumer_call": true,
+    "released_consumer_observe": true,
+    "revision": "sha256:5517ea8f342ecbb6b4ed817aa9b0ca5788984217e46e4ba90b5707cee509b427",
+    "state": "ready",
+    "ttl_seconds": 60
+  },
+  "workspace_scope_status": [
+    {
+      "scope": "cit:native-group-a",
+      "profile": "interactive-shared-10",
+      "storage_version": 1,
+      "policy_authorized": false,
+      "policy_denial": "ValueError: Member lacks interactive allowance",
+      "running_servers": []
+    },
+    {
+      "scope": "cps:native-group-a",
+      "profile": "interactive-shared-5",
+      "storage_version": 1,
+      "policy_authorized": false,
+      "policy_denial": "ValueError: Workspace storage lifecycle fenced",
+      "running_servers": []
+    },
+    {
+      "scope": "cps:native-group-b",
+      "profile": "interactive-shared-5",
+      "storage_version": 1,
+      "policy_authorized": false,
+      "policy_denial": "ValueError: Workspace storage lifecycle fenced",
+      "running_servers": []
+    },
+    {
+      "scope": "cps:shared-gpu-lab",
+      "profile": "interactive-shared-5",
+      "storage_version": 2,
+      "policy_authorized": true,
+      "policy_denial": null,
+      "running_servers": []
+    }
+  ],
+  "production_ready": false,
+  "next_gate": "distinct-process and cross-Pod GPU import isolation; no legacy storage rebind or personal notebook shutdown"
+}
