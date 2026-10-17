@@ -25,11 +25,26 @@
     "registration_http_status": 422,
     "exact_historical_denial_available": false,
     "peer_oom_executed": false,
-    "cleanup_complete": false,
+    "cleanup_complete": true,
     "normal_stop_blocker": "Hub reports lab server ready after its Pod is absent",
     "native_ledger_allocations": 112,
-    "native_ledger_released": 111,
-    "native_ledger_enrolled": 1
+    "native_ledger_released": 112,
+    "native_ledger_enrolled": 0,
+    "recovery": {
+      "cps_hub_same_image_replacement": true,
+      "cps_hub_new_uid": "2570038f-954e-4c58-9b7c-a25187b53172",
+      "normal_console_stop_http": 200,
+      "sql_reservation_count": 0,
+      "sql_binding_count": 0,
+      "temporary_grants_and_memberships_restored": true,
+      "temporary_token_revoked": true,
+      "subsequent_token_authentication_http": 403,
+      "local_token_removed": true,
+      "personal_pod_uids_preserved": true,
+      "observer_permissions_recovered_without_manual_role_repair": true,
+      "all_four_installed_consumers_ready_at": "2026-10-17T04:53:45.810954+00:00",
+      "readiness_proof_sha256": "85328562ba49c4b73ae21037f4c5f91e0ab22fcad9cc412e2de966b24bcb1b62"
+    }
   },
   "concurrent_start_qualified": false,
   "production_qualified": false

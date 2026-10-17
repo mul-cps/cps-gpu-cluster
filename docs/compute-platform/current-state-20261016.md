@@ -100,13 +100,23 @@ did not reach two running servers: a later registration returned HTTP 422, whose
 exact historical detail was discarded by the existing logs. Read-only current
 static validators pass, so the cause remains unproven. No peer-OOM test ran.
 
-Cleanup is **not complete**: both controlled Pods are absent, but the Hub still
-reports the lab server ready and normal Stop returns 409. The lab cap is retired
-with zero charged memory; 111 of 112 native claims are released, with the lab
-claim retained. Node readiness recovered after a transient withdrawal. Do not
-treat physical retirement as proof of complete Hub/reservation cleanup. Personal
-notebook Pod identities are unchanged. The next gate is reliable normal cleanup
-and precise failure diagnostics, followed by the two-workspace hardware test.
+Cleanup initially stalled: both controlled Pods were absent, but the Hub still
+reported the lab server ready and normal Stop returned 409. A real JupyterHub
+5.5.2 CPU reproduction confirms that cancelled User.spawn can leave its private
+starting flag set after the public pending state clears. That stale flag blocks
+the adapter's normal recovery path. A narrowly fenced fix is under test.
+
+The current test is now fully cleaned up. Replacing only the CPS Hub Pod with the
+same image let startup recognize the absent server and remove its stale route.
+Normal console Stop then returned 200: all 112 native claims are released, both
+SQL reservation tables are empty, original grant and membership expiries are
+restored, and the temporary token is revoked (subsequent authentication 403) and
+removed locally. All four personal notebook Pod identities are unchanged.
+Observer permissions recovered automatically for the new Hub without manual
+Role repair; the installed four-component reader verified ready at 04:53:45 UTC.
+The restart recovers this test but does not fix cancellation handling. The next
+gate is deploying the tested cancellation fix and precise failure diagnostics,
+followed by the two-workspace hardware test.
 [Gateway adoption and failed concurrent run](../../platform-staging/jupyter-extensions-20261013/registration-readiness-adoption-20261017.json).
 
 ## Earlier verified checkpoint — native 5 GiB execution and normal Stop passed
