@@ -328,6 +328,18 @@ def cleanup(api, resources):
     return results
 
 
+def wait_fixture_absent(api, item):
+    deadline = time.monotonic() + 30
+    while True:
+        response = api.request('GET', endpoint(item))
+        if response['status'] == 404: return
+        require(response['status'] == 200, 'Isolated fixture disappearance read failed')
+        require(response['object'].get('metadata', {}).get('uid') == item['uid'], 'Isolated fixture UID changed during disappearance wait')
+        remaining = deadline - time.monotonic()
+        require(remaining > 0, 'Isolated fixture disappearance timed out')
+        time.sleep(min(0.25, remaining))
+
+
 def execute(private_dir, context=None, broker=None):
     directory = private_directory(private_dir); api = Kube(context); suffix = uuid.uuid4().hex[:12]
     namespaces = [PREFIX + suffix + '-' + str(i) for i in range(4)]
@@ -434,9 +446,11 @@ def execute(private_dir, context=None, broker=None):
         # updates then reach admission with a genuine changed UID, not a 422.
         for kind, old, field, value, family in [('ConfigMap', pointers[0], 'data', pointers[0]['data'], 'pointer-update'),
                 ('Role', roles[0], 'rules', roles[0]['rules'], 'pregrant-update')]:
+            report['stage'] = 'replacement-delete-' + kind.lower()
             require(cleanup(api, [identity(old)])[0]['deleted'], 'Isolated UID replacement delete failed')
-            latest = api.request('GET', endpoint(identity(old)))
-            require(latest['status'] == 404, 'Old fixture must be gone before same-name replacement')
+            report['stage'] = 'replacement-wait-' + kind.lower()
+            wait_fixture_absent(api, identity(old))
+            report['stage'] = 'replacement-create-' + kind.lower()
             replacement = create(kind, old['metadata']['name'], old['metadata']['namespace'], **{field: value})
             record({'name': kind.lower() + '-actual-replaced-uid', 'method': 'PATCH', 'path': endpoint(identity(replacement)),
                 'body': patch(replacement, field, value), 'accepted': False, 'actor': 'test', 'policy': SA + '-' + family + '-qa-' + suffix})

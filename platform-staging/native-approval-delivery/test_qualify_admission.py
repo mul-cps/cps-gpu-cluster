@@ -106,21 +106,32 @@ def test_case_matrix_uses_only_server_dryrun_test_resources_and_all_four_namespa
 
 
 @pytest.mark.parametrize('proxy_strips', [False, True])
-def test_whole_isolated_flow_with_actual_go_cel_and_no_live_client(tmp_path, monkeypatch, proxy_strips):
+@pytest.mark.parametrize('async_delete', [False, True])
+def test_whole_isolated_flow_with_actual_go_cel_and_no_live_client(tmp_path, monkeypatch, proxy_strips, async_delete):
     import subprocess
     executable = os.environ.get('CPS_NATIVE_PENDING_CEL_EVALUATOR')
     if not executable: pytest.skip('Qualified official Go CEL evaluator required for complete offline matrix')
-    m = module(); objects = {}; calls = []
+    m = module(); objects = {}; calls = []; terminating = {}; delayed_gets = []; delete_uids = []
+    if async_delete: monkeypatch.setattr(m.time, 'sleep', lambda seconds: None)
     class OfflineApi:
         def __init__(self, context): pass
         def request(self, method, path, body=None, *, actor=None, dryrun=False):
             calls.append((method, path, dryrun))
             if path == m.SSR: return {'status':200,'object':{'status':{'userInfo':{'username':(actor if not proxy_strips else None) or 'root-operator','groups':['system:authenticated']}}}}
             old = copy.deepcopy(objects.get(path)); obj = copy.deepcopy(body)
-            if method == 'GET': return {'status': 200, 'object': old} if old else {'status': 404}
+            if method == 'GET':
+                if path in terminating:
+                    if terminating[path] == 0:
+                        del terminating[path]; del objects[path]; return {'status': 404}
+                    terminating[path] -= 1; delayed_gets.append(path)
+                return {'status': 200, 'object': old} if old else {'status': 404}
             if method == 'DELETE':
                 if not old: return {'status': 404}
                 assert body['preconditions'] == {k: old['metadata'][k] for k in ('uid', 'resourceVersion')}
+                delete_uids.append(old['metadata']['uid'])
+                if async_delete:
+                    objects[path]['metadata']['deletionTimestamp'] = '2026-10-17T00:00:00Z'
+                    terminating.setdefault(path, 2); return {'status': 202, 'object': copy.deepcopy(objects[path])}
                 del objects[path]; return {'status': 200}
             if method == 'PATCH':
                 assert dryrun and old
@@ -159,12 +170,29 @@ def test_whole_isolated_flow_with_actual_go_cel_and_no_live_client(tmp_path, mon
         assert result['identity_checks']['test']['matches_expected'] is False
         return
     assert result['passed'] is True
+    if async_delete: assert delayed_gets and len(delete_uids) == len(set(delete_uids))
     assert len(result['barriers']) == 3 and all(b['enforced'] for b in result['barriers'])
     assert {'configmap-actual-replaced-uid', 'role-actual-replaced-uid'} <= {row['name'] for row in result['tests']}
     assert all(dryrun for method, path, dryrun in calls if method == 'PATCH')
     for filename in ('resources.private.json', 'receipt.private.json'):
         assert (tmp_path / 'private' / filename).stat().st_mode & 0o7777 == 0o600
     assert not any('/secrets' in path or '/pods' in path for _, path, _ in calls)
+
+
+@pytest.mark.parametrize('fault', ['timeout', 'replaced-uid'])
+def test_replacement_wait_rejects_timeout_or_changed_uid_without_delete(monkeypatch, fault):
+    m = module(); _, pointers, _, _ = fixture(); original = pointers[0]; calls = []; clock = [0.0]
+    live = copy.deepcopy(original); live['metadata']['deletionTimestamp'] = '2026-10-17T00:00:00Z'
+    if fault == 'replaced-uid': live['metadata']['uid'] = str(uuid.uuid4())
+    class Api:
+        def request(self, method, path):
+            calls.append((method, path)); return {'status': 200, 'object': live}
+    monkeypatch.setattr(m.time, 'monotonic', lambda: clock[0])
+    monkeypatch.setattr(m.time, 'sleep', lambda seconds: clock.__setitem__(0, clock[0] + seconds))
+    with pytest.raises(ValueError, match='disappearance timed out|UID changed'):
+        m.wait_fixture_absent(Api(), m.identity(original))
+    assert clock[0] <= 30 and all(method == 'GET' for method, _ in calls)
+    if fault == 'replaced-uid': assert len(calls) == 1 and clock[0] == 0
 
 
 def test_proxy_identity_mismatch_is_explicit_and_real_username_redacted():

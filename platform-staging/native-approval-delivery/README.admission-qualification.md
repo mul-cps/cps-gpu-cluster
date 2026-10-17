@@ -44,6 +44,9 @@ evaluation errors cannot pass.
 
 UID cases run last: the qualifier deletes and recreates isolated same-name
 fixtures, then patches their genuine replacement UIDs against the old pins.
+After DELETE acceptance it polls GET for at most30 seconds until404, allowing
+the exact old UID to remain terminating and refusing any replacement UID.
+This wait never repeats DELETE; its receipt stage identifies the fixture wait.
 This avoids counting an API-invalid fabricated metadata UID/name as admission
 enforcement. API byte-size/immutable-field validation is not attributed to the
 VAP. Writer CREATE outside the four QA namespaces is omitted; no outside
