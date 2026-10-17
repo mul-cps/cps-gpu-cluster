@@ -4,7 +4,23 @@ The platform remains **limited-pilot**. Production qualification and the full
 project are unfinished. This record supersedes current-state statements in the
 older completion ledger; their dated acceptance results remain historical evidence.
 
-## Latest verified checkpoint — native 5 GiB execution and normal Stop passed
+## Current gate — fifth workspace adopted; readiness clock race reproduced
+
+The fifth isolated v2 workspace was created and approved through normal APIs.
+All four installed consumers verified revision `1e2b09e4…01d88a1` at one
+checkpoint, with unchanged policy, images and driver epoch. Personal notebook
+Pod identities were preserved. [Adoption and failure evidence](../../qualification-artifacts/native-fifth-scope-20261017/README.md).
+
+Both subsequent controlled Starts failed at native acquire/readiness; no
+cross-Pod hardware test ran. A read-only diagnostic reproduced a real heartbeat
+being misclassified as future-dated because validation sampled time before
+sequential API reads. A bounded application fix is in progress; TTL and future
+receipt rejection must remain intact. Both workspaces are stopped, all 101
+native claims released, temporary grants restored and the admin token revoked.
+No MIG, driver reset or personal notebook interruption occurred. Full production
+qualification remains unfinished.
+
+## Earlier verified checkpoint — native 5 GiB execution and normal Stop passed
 
 Application `7273ad70c497cafcd7116867343a4b5ae9b6909c` is deployed on the node,
 Gateway and both Hubs. Its full application suite passed 2,614 tests and 49

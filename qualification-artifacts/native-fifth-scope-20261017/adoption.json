@@ -1,0 +1,83 @@
+{
+  "personal_notebook_uids_unchanged": {
+    "jupyter-armin": "921b8b7c-e8de-45e3-856c-b2426ed1ed7b",
+    "jupyter-bjoern": "915b3fac-53fa-469c-8c3f-0180fb285504",
+    "jupyter-cpsadmin": "a984023f-eb34-4af1-b01d-bad6ea159ef4",
+    "jupyter-mikasa": "31846900-989b-48d1-95b3-846e9526fbb5"
+  },
+  "all_100_ledger_rows_unchanged_released": true,
+  "ledger_uid": "33ab24b0-8e9a-4bee-b308-12a19c076924",
+  "new_revision": "sha256:1e2b09e4f7a30389a78ac82eb9243ba8466a0e5e396dc312b7d76672501d88a1",
+  "four_component_readiness": {
+    "component_count": 4,
+    "components": {
+      "gateway": {
+        "observed_at": "2026-10-17T01:01:57.956978+00:00",
+        "process": {
+          "container": "gateway",
+          "image": "ghcr.io/mul-cps/cps-compute@sha256:52383c07fae63a5f1f8013441aad30c31e4ea716d4eddac2b35f6e1882e659e1",
+          "name": "compute-gateway-cf7756d76-xhnf2",
+          "namespace": "cps-compute",
+          "service_account": "cps-compute-controller",
+          "uid": "21090500-339f-4087-9a4f-cbd4aece166f"
+        },
+        "revision": "sha256:1e2b09e4f7a30389a78ac82eb9243ba8466a0e5e396dc312b7d76672501d88a1"
+      },
+      "hub:cit": {
+        "observed_at": "2026-10-17T01:01:56.908904+00:00",
+        "process": {
+          "container": "hub",
+          "image": "ghcr.io/mul-cps/cps-compute@sha256:13fbe2071c0d98c09f4e289fa84879660cd2411cf54a9ce63097d9df54d495ac",
+          "name": "hub-5c8bbcccd5-g6cs8",
+          "namespace": "cit-jhub",
+          "service_account": "hub",
+          "uid": "79624c7b-6007-4923-b55a-9c03aaeef7b0"
+        },
+        "revision": "sha256:1e2b09e4f7a30389a78ac82eb9243ba8466a0e5e396dc312b7d76672501d88a1"
+      },
+      "hub:cps": {
+        "observed_at": "2026-10-17T01:01:57.572752+00:00",
+        "process": {
+          "container": "hub",
+          "image": "ghcr.io/mul-cps/cps-compute@sha256:13fbe2071c0d98c09f4e289fa84879660cd2411cf54a9ce63097d9df54d495ac",
+          "name": "hub-bfcc8577f-t7ntq",
+          "namespace": "jupyterhub",
+          "service_account": "hub",
+          "uid": "6a5e282b-25d0-4fc4-97f8-f8d5e8ddfa52"
+        },
+        "revision": "sha256:1e2b09e4f7a30389a78ac82eb9243ba8466a0e5e396dc312b7d76672501d88a1"
+      },
+      "node": {
+        "observed_at": "2026-10-17T01:01:58.762821+00:00",
+        "process": {
+          "container": "node-agent",
+          "image": "ghcr.io/mul-cps/cps-native-node@sha256:6083e06a2f342a145ff83b84d6edfea2f9f7a1bb43f484ae83facc7faf32e0e1",
+          "name": "cps-native-node-agent-8468db65dd-h28sc",
+          "namespace": "cps-native-system",
+          "service_account": "cps-native-node-agent",
+          "uid": "24c12422-df67-4219-b5f0-4094faf3c1f0"
+        },
+        "revision": "sha256:1e2b09e4f7a30389a78ac82eb9243ba8466a0e5e396dc312b7d76672501d88a1"
+      }
+    },
+    "module": "/usr/local/lib/python3.12/site-packages/cps_compute/runtime.py",
+    "module_sha256": "c05a6cf9d9d2b22fbd0ca330c9edc49da85c5b38da4c5471e16b1d624bf60f72",
+    "observed_at": "2026-10-17T01:02:04.115093+00:00",
+    "policy_hash": "sha256:d48f6553ed036c2e7adcc97417623fe0308be93ad13b20f246047ada118511b0",
+    "released_consumer_call": true,
+    "released_consumer_observe": true,
+    "revision": "sha256:1e2b09e4f7a30389a78ac82eb9243ba8466a0e5e396dc312b7d76672501d88a1",
+    "state": "ready",
+    "ttl_seconds": 60
+  },
+  "production_ready": false,
+  "post_failed_starts_cleanup": {
+    "both_normal_stops_http": 200,
+    "workspace_pods_absent": true,
+    "all_native_claims_released": true,
+    "ledger_total": 101,
+    "both_pilot_grants_restored_exactly": true,
+    "temporary_admin_token_revoked": true,
+    "cross_pod_test_executed": false
+  }
+}
