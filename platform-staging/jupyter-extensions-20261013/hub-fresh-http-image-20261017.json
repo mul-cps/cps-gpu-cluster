@@ -1,6 +1,7 @@
 {
   "actual_sdk_source": "5ca3b4c5b6b0481011ae24958ea2de0cc5652c15",
   "actual_sdk_wheel_sha256": "070569235b620abbc6315393f5c21b9ed14bb2833506f1288c473ae58a1fc075",
+  "adoption_receipt": "hub-fresh-http-adoption-20261017.json",
   "behavior_change": "Only idle HTTP/1 connection reuse disabled in both trusted Hub clients; active connection limit100 and authorization/TLS/timeouts retained; no POST replay",
   "changed_hub_modules": {
     "hub.py": "4386ef5c58aa8889a1025fab163673de24b14d310ca6d14ac4e50cecd426a6c7",
@@ -10,7 +11,7 @@
   "ci_run": 39008388594,
   "concurrent_start_qualified": false,
   "config_sha256": "sha256:58f81cdcd461f0a34fc8106700e5cc295c69de73960e8e027dba7193d389a991",
-  "coordinated_adoption_applied": false,
+  "coordinated_adoption_applied": true,
   "dependencies_and_defaults_unchanged": true,
   "evidence_sha256": {
     "ci.json": "7b59dc01f58fe49da6601aeeacd73c92fe496eaa77d0f25dd0c70eff99962a02",
@@ -41,7 +42,7 @@
   "initial_server_dry_runs_passed": 11,
   "installed_cancelled_generation_cases_passed": 11,
   "installed_http_cases_passed": 5,
-  "live_deployed": false,
+  "live_deployed": true,
   "live_failure_cause_proven": false,
   "production_qualified": false,
   "pure_rollout_independent_review_passed": true,

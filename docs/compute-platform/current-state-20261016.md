@@ -60,8 +60,14 @@ the live cause. Application `d606032` disables idle reuse in both Hub clients,
 retaining the 100-active-connection limit, CA/authentication/timeouts and no POST
 replay. The full suite passed 3,010 tests and 49 subtests (3 skipped); independent
 review and baseline RED/candidate GREEN passed. All four exact-source CI jobs
-and five installed-image TLS cases passed. Image `413bdee6…ca68a8` is published
-but **not deployed**; live startup and production latency remain unqualified.
+and five installed-image TLS cases passed. Image `413bdee6…ca68a8` is now
+deployed in both Hubs; installed module hashes match. Gateway and Node images
+are unchanged. The coordinated observer update passed independent review and
+server dry runs, all four installed consumers are ready, all 115 ledger history
+records and four personal Pod UIDs are preserved. A fresh synchronized startup
+attempt is in progress; concurrent startup and production latency remain
+unqualified.
+[Live adoption receipt](../../platform-staging/jupyter-extensions-20261013/hub-fresh-http-adoption-20261017.json).
 [Image and verification receipt](../../platform-staging/jupyter-extensions-20261013/hub-fresh-http-image-20261017.json).
 
 ## Qualification history — earlier checkpoints, superseded by the current gate

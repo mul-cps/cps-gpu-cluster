@@ -1,0 +1,24 @@
+{
+  "concurrent_start_qualified": false,
+  "coordinated_adoption_applied": true,
+  "evidence_sha256": {
+    "applied-02/four-component-readiness-before-observer.private.json": "27ad34d6ff707563ab6d8694417c1f38d3dc8daddbc82a1570ba2a3f42a7f4d1",
+    "applied-02/installed-hub-module-hashes.private.json": "218f6597f82cd962312269889ced4d37d725e10310ea9262b6ad182783f92202",
+    "applied-02/preservation-check.private.json": "b4bb947080353dc883142c20f91c0a69baef0665fa3d7ed932a788732668d8c6",
+    "observer-stage-05/activated-apply.private.json": "ecff6643b16ee0770e974594d7ff696adc6d7fc106b9915f4e9ea9a1f443a224",
+    "observer-stage-05/activated-dryrun.private.json": "17c519a94501a8374c8e2b5badf0489e60b03511f01eed44c97f11ab60047f37",
+    "observer-stage-05/inactive-dryrun.private.json": "af3aacf15602011cc03e93b0514b1a71a944c008b6199cb09ba06723bc2ea184",
+    "observer-stage-05/independent-review.private.json": "77fdd17ff98cace25d72730c3b6325e4650a599453abdcd54fa65d0abb4dd79f"
+  },
+  "gateway_and_node_images_unchanged": true,
+  "hub_module_hashes_match": true,
+  "image": "ghcr.io/mul-cps/cps-compute@sha256:413bdee650fd3c246ca35a7dd16347945dad6a92ec07e96678abb5cbd5ca68a8",
+  "installed_four_consumer_readiness": "2026-10-17T06:26:54.279892+00:00",
+  "ledger_uid_and_all_115_history_bytes_preserved": true,
+  "live_deployed": true,
+  "observer_same_image_ready": true,
+  "personal_pod_uids_preserved": 4,
+  "production_qualified": false,
+  "source_sdk_policy_approval_driver_storage_authentication_unchanged": true,
+  "static_named_get_additions": 3
+}
