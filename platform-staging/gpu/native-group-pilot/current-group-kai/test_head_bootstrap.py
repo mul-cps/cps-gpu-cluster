@@ -213,3 +213,15 @@ def test_readiness_migration_rejects_different_authority_or_repeat_migration(cha
     elif change=='epoch':settings['driver_epoch']['driver_generation']='sha256:'+'b'*64
     else:settings.update(version=2,heads=f.module.bind(f.configuration,f.approvals,f.f.policy,pointers,anchors)['heads'])
     with pytest.raises(ValueError):f.module.readiness_settings(f.configuration,f.approvals,f.f.policy,pointers,anchors,settings)
+
+
+def test_new_configmap_volumes_pin_api_default_mode_for_exact_spec_adoption():
+    f=fixture();pointers,anchors=stages(f)
+    bindings={c:actual(v) for c,v in f.module.runtime_candidates(f.configuration,f.approvals,f.f.policy,pointers,anchors).items()}
+    controllers={c:f.f.apps.read_namespaced_deployment(d['name'],d['namespace']) for c,d in f.configuration.document['component_declarations'].items()}
+    for d in controllers.values():d['metadata']['resourceVersion']='21'
+    patches=f.module.bind_runtime(f.configuration,f.approvals,f.f.policy,pointers,anchors,bindings,controllers)
+    for patch in patches.values():
+        volumes=patch[-1]['value']['template']['spec']['volumes']
+        selected=[v for v in volumes if v['name'] in {'cps-native-head-anchor','cps-native-head-binding'}]
+        assert selected and all(v['configMap'].get('defaultMode')==0o644 for v in selected)

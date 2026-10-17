@@ -139,11 +139,11 @@ def bind_runtime(configuration,approvals,policy,pointers,anchors,bindings,contro
         require(not any(e.get('name')=='CPS_NATIVE_GROUP_APPROVAL_HEAD' for e in container.get('env',[])),
             'Head binding environment already installed')
         volumes.append({'name':'cps-native-head-anchor','configMap':{
-            'name':heads[component]['projection']['name'],'items':[{'key':'anchor.json','path':'anchor.json'}]}})
+            'name':heads[component]['projection']['name'],'defaultMode':0o644,'items':[{'key':'anchor.json','path':'anchor.json'}]}})
         mounts.append({'name':'cps-native-head-anchor','mountPath':'/var/run/cps-native-approvals/head-anchor.json',
             'subPath':'anchor.json','readOnly':True})
         if component!='node':
-            volumes.append({'name':'cps-native-head-binding','configMap':{'name':bindings[component]['metadata']['name'],
+            volumes.append({'name':'cps-native-head-binding','configMap':{'name':bindings[component]['metadata']['name'],'defaultMode':0o644,
                 'items':[{'key':'head-binding.json','path':'head-binding.json'}]}})
             mounts.append({'name':'cps-native-head-binding','mountPath':'/etc/cps-native-head-binding.json',
                 'subPath':'head-binding.json','readOnly':True})
