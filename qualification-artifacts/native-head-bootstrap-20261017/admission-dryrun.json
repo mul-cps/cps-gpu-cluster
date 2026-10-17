@@ -1,0 +1,7 @@
+{
+  "exit_code": 0,
+  "live_changed": false,
+  "objects": 6,
+  "scope": "Server dry-run of six synthetic admission definitions only; no installed-policy evaluation or production UID binding",
+  "version": 1
+}

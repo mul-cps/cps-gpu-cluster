@@ -1,0 +1,15 @@
+{
+  "components": [
+    "gateway",
+    "hub:cit",
+    "hub:cps",
+    "node"
+  ],
+  "hardware_qualified": false,
+  "live_changed": false,
+  "node_version": 3,
+  "pointer_candidates": 4,
+  "policy_hash": "sha256:d48f6553ed036c2e7adcc97417623fe0308be93ad13b20f246047ada118511b0",
+  "scope": "Read-only actual v3 authority and mounted four-approval bootstrap preflight; no Source freshness or readiness claim",
+  "version": 1
+}

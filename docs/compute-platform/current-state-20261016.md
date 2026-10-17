@@ -27,6 +27,14 @@ passed together. Independent review confirmed full initial v3 history
 preservation and typed v4 reconstruction. This helper performs no API calls
 and does not enable starts or replace the coordinated adoption.
 
+The default-zero-replica dynamic delivery runtime renderer is also staged:
+57 checks passed with the official Go CEL evaluator, and six synthetic
+admission definitions passed actual server dry-run. These definitions are not
+installed. The read-only live bootstrap preflight passed, but revealed that
+the retained legacy Node approval is v1 historical evidence; the migration
+must authenticate that evidence without making it current GPU authority.
+[Preflight scope and results](../../qualification-artifacts/native-head-bootstrap-20261017/README.md).
+
 Automatic producer/delivery journal migration and live adoption remain open.
 Routine head advances must preserve unchanged sealed workloads, pregrant only
 exact authenticated ConfigMap GET names, and wait for genuine component ACKs.

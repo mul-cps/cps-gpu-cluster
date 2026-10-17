@@ -1,0 +1,34 @@
+{
+  "gateway": {
+    "actual_data_sha256_matches": true,
+    "actual_uid_matches": true,
+    "envelope_version": 1,
+    "registry_revision_matches": true,
+    "registry_version": 1,
+    "retained_by_current_component": false
+  },
+  "hub:cit": {
+    "actual_data_sha256_matches": true,
+    "actual_uid_matches": true,
+    "envelope_version": 1,
+    "registry_revision_matches": true,
+    "registry_version": 1,
+    "retained_by_current_component": false
+  },
+  "hub:cps": {
+    "actual_data_sha256_matches": true,
+    "actual_uid_matches": true,
+    "envelope_version": 1,
+    "registry_revision_matches": true,
+    "registry_version": 1,
+    "retained_by_current_component": false
+  },
+  "node": {
+    "actual_data_sha256_matches": true,
+    "actual_uid_matches": true,
+    "envelope_version": 1,
+    "registry_revision_matches": true,
+    "registry_version": 1,
+    "retained_by_current_component": true
+  }
+}

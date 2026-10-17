@@ -7,6 +7,12 @@
     "passed": 48,
     "seconds": 2.28
   },
+  "delivery_renderer": {
+    "official_go_cel": true,
+    "passed": 57,
+    "seconds": 2.41,
+    "skipped": 0
+  },
   "gpu_qualified": false,
   "isolation": {
     "GPU_CRI_or_authority_mounts": false,
@@ -16,6 +22,7 @@
     "root_filesystem": "read-only"
   },
   "live_changed": false,
+  "observed_at": "2026-10-17T08:54:54.459734+00:00",
   "production_ready": false,
   "results": [
     {
