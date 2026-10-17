@@ -1,0 +1,30 @@
+{
+  "gateway_revision": "1f4d647bb4cedda5f521f09f9f54a74aa9e521ef",
+  "gateway_reference": "ghcr.io/mul-cps/cps-compute@sha256:31e7904c1389398c3a2a7b04bff94ab382a691898c060b36d91a4b0ce6bd2321",
+  "fresh_actual_capture_validated": true,
+  "new_inert_configmaps_created": 4,
+  "new_narrow_observer_reader_objects_created": 2,
+  "prospective_observer_render_passed": true,
+  "server_dryrun": {
+    "gateway.runtime-secret": {
+      "exit_code": 0
+    },
+    "component-role:cps-native-system/cps-native-approval-gateway": {
+      "exit_code": 0
+    },
+    "component-role:cps-native-system/cps-native-approval-node": {
+      "exit_code": 0
+    },
+    "gateway.deployment": {
+      "exit_code": 0
+    },
+    "node.deployment": {
+      "exit_code": 0
+    }
+  },
+  "running_deployments_changed": false,
+  "journal_rotated": false,
+  "ci_run": 39030164366,
+  "ci_last_observed": "in_progress",
+  "production_qualified": false
+}
