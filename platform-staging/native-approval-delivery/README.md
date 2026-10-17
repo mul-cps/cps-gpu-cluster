@@ -100,3 +100,12 @@ such a run is not the complete local matrix. Actual K3s compilation and isolated
 admission decisions, exact image-installed behavior, legacy adoption, genuine
 ACK2 publication, and activation remain Root's live gates. No GPU qualification
 is implied by these CPU tests.
+
+The default CPS deployment also needs `capture-network-policy.yaml` before
+activation. The existing `native-approval-capture-private` policy admits only
+the old delivery Pod label. This separate policy admits the new continuous
+controller and adoption Job label, only from the same `cps-compute` namespace
+to the selected Gateway's private TCP/8001 capture listener. Authenticated TLS
+and the protected export token remain mandatory. It does not expose a public
+endpoint or alter the old policy. A non-default namespace/origin requires a
+separately reviewed policy; do not widen this file to all Pods or ports.

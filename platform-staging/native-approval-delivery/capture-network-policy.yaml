@@ -1,0 +1,19 @@
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: native-head-capture-private
+  namespace: cps-compute
+spec:
+  podSelector:
+    matchLabels:
+      app: compute-gateway
+  policyTypes:
+    - Ingress
+  ingress:
+    - from:
+        - podSelector:
+            matchLabels:
+              app: cps-native-head-delivery
+      ports:
+        - protocol: TCP
+          port: 8001
