@@ -1,0 +1,32 @@
+{
+  "version": 1,
+  "cases": [
+    {
+      "component": "gateway",
+      "success": true,
+      "error": ""
+    },
+    {
+      "component": "hub:cit",
+      "success": true,
+      "error": ""
+    },
+    {
+      "component": "hub:cps",
+      "success": true,
+      "error": ""
+    },
+    {
+      "component": "node",
+      "success": true,
+      "error": ""
+    },
+    {
+      "component": "gateway-runtime",
+      "success": true,
+      "error": ""
+    }
+  ],
+  "live_applied": false,
+  "hardware_qualification": false
+}

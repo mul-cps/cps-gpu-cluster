@@ -45,3 +45,12 @@ Sixteen bootstrap/readiness source tests passed, including five new checks
 observed failing before the helper implementation and passing afterward.
 The coordinated v4 capture/observer/runtime rollout and journal migration are
 still required; actual Root reads do not prove service-account permissions.
+
+The coordinated runtime helper now has nine CPU tests, plus 16 bootstrap tests
+(25 total), independently rerun during review. Review found no blocking
+Secret-preservation, authority, readback or CAS issue. Two further actual staged
+objects hold the new Node bootstrap and immutable capture v2 seed. The four
+Deployment patches and Gateway runtime Secret patch all passed server dry-run.
+See [runtime staging](v4-runtime-stage-result.json) and
+[API dry-run](v4-runtime-dryrun-result.json). This does not establish observer
+composition, runtime migration, new GPU access or journal adoption.

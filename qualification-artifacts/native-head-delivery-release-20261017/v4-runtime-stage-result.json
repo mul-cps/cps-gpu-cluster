@@ -1,0 +1,11 @@
+{
+  "version": 1,
+  "snapshot_sha256": "sha256:c07edcaf344b44e3aef2098bd003cb30531d78ff05098b593eb3b300f86e6489",
+  "runtime_specs_sha256": "sha256:e83d0a5cc83d05365aac10e6e25f7ac6072d498cfcc40f2d14509050d6ace73f",
+  "held_bootstrap_staged": true,
+  "immutable_capture_seed_v2_staged": true,
+  "four_runtime_patches_composed": 4,
+  "gateway_readiness_patch_composed": true,
+  "live_processes_changed": false,
+  "gpu_activation": false
+}

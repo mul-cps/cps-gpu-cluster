@@ -65,3 +65,20 @@ held Node bootstrap, runtime mounts and observer release before changing the
 Gateway Secret. Component publisher settings remain schema v1: their protected
 head-binding environment selects genuine v2 ACK publication. Changing publisher
 settings to an invented schema v2 is invalid.
+
+`head_runtime_adoption.prepare(...)` composes the four head mount specs with
+Gateway readiness v2, capture server v2 and an actual v4 Node reference in a
+held bootstrap. It requires a separately pinned complete preimage snapshot,
+matching duplicate controller captures and a fully released claim ledger. The
+capture configuration must be the closed legacy schema and match the exact
+existing Node process and ACK authority; all other Secret keys stay byte-exact.
+It returns two CREATE candidates, four future specs and one guarded runtime
+Secret patch. Keep all inputs and outputs private.
+
+After actual CREATE readbacks, `bind(...)` recomputes the complete plan and
+validates the held mutable bootstrap and immutable capture Secret before
+emitting four UID/RV/full-spec CAS patches. The independently reviewed observer
+v2 release and exact reader permissions must be composed before applying those
+patches. Root separately verifies SQL quiescence, backups, actual Pod shutdown,
+protected personal servers, API dry-run and fresh actual four-component ACKs.
+This renderer does not perform any of those live operations or journal migration.
