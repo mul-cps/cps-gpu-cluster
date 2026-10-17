@@ -1,0 +1,59 @@
+{
+  "version": 1,
+  "observed_at": "2026-10-17T14:53:35.643670+00:00",
+  "stage": "normal-user-kernel-authorization-failed",
+  "normal_student_gateway_identities_verified": 2,
+  "fresh_named_cpu_server_ready": true,
+  "notebook_image": "ghcr.io/mul-cps/cps-jupyter-notebook@sha256:9444a023984ffe792ba6588b5f54d459edae1c69b13399597498a659b591df7f",
+  "kernel_create_http": 403,
+  "jobs_submitted": 0,
+  "actual_cleanup": {
+    "cleanup_errors": [],
+    "environment_injection": false,
+    "gateway_transport": {
+      "deployment_uid": "f5f9b266-433d-4825-83de-d51e31c71648",
+      "image": "ghcr.io/mul-cps/cps-compute@sha256:31e7904c1389398c3a2a7b04bff94ab382a691898c060b36d91a4b0ce6bd2321",
+      "name": "compute-gateway-cdd7f7856-s9mv2",
+      "uid": "fedc6af9-0258-4ced-8e28-3377cd7f8523"
+    },
+    "generation_hold": false,
+    "human_browser_oauth_verified": false,
+    "human_oauth": false,
+    "normal_stop_status": 204,
+    "own_pod_absent": true,
+    "passed": false,
+    "production_qualified": false,
+    "protected_personal_pods_preserved": true,
+    "source_ui_verified": false
+  },
+  "grant_cleanup": {
+    "run_grant_expired": true,
+    "preexisting_grants_unchanged": true,
+    "gpu_permissions_added": false
+  },
+  "credential_cleanup": {
+    "minted": 3,
+    "errors": [],
+    "all_local_tokens_removed": true
+  },
+  "observed_interactive_cpu_resources": {
+    "limits": {
+      "cpu": "2",
+      "memory": "2147483648"
+    },
+    "requests": {
+      "cpu": "500m",
+      "memory": "1073741824"
+    }
+  },
+  "expected_policy_interactive_cpu": {
+    "cpu": "2",
+    "memory": "8Gi"
+  },
+  "interactive_resource_alignment_qualified": false,
+  "source_ui_verified": false,
+  "human_browser_oauth_verified": false,
+  "batch_end_to_end_qualified": false,
+  "gpu_execution_tested": false,
+  "production_ready": false
+}
