@@ -39,3 +39,9 @@ python -B run_peer_oom.py --execute \
 Repeat with `--direction b-to-a` and a different fresh output directory if Root requires both directions. Each probe has a remote watchdog (peer 60 seconds, pressure 45 seconds); source transfer, API observation and local child waits are bounded separately. Failure is nonzero and never retries hardware work or stops a workspace. Local transport cleanup is attempted for every child even after another cleanup fails. On an interrupted/failed run, a remote child can remain until its own watchdog; inspect and wait for it to finish before normal workspace Stop. A missing `assessment.json` means inconclusive. Do not infer successful restoration from a failed run; inspect final Pod/cap state through the existing read-only controls.
 
 Normal workspace Stop, expiry restoration, four-process readiness and physical/kernel interpretation remain Root's separate protocol. This harness does not mutate or approve those states.
+
+## Current authority refresh
+
+The adapter now pins packaged Node image `7e319bf…08bb0`. The installed typed loader authenticated NodeConfig, deployment and qualification; read-only observations confirmed the current boot, driver generation and non-MIG physical GPU. The GPU workload remains the qualified `916786…14ca4dc0` image; CPU notebook image `9444a0…df7f` is not a substitute. See `current-cohort-authority.json`.
+
+This refresh does not repeat or extend historical hardware results. The current cohort still needs actual placement, sealed cap and CDI/CRI provenance before CUDA. GPU2 remains cordoned and the native binder bridge disabled.

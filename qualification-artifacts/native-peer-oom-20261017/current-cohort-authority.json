@@ -1,0 +1,41 @@
+{
+  "schema_version": 1,
+  "recorded_at": "2026-10-17T16:21:24.921532+00:00",
+  "scope": "Current peer probe preflight authority refresh; no GPU execution",
+  "node_image": "ghcr.io/mul-cps/cps-native-node@sha256:7e319bfcb546efa9ae2fea975dcf082460802578da0c804f60eb0c8f64c08bb0",
+  "typed_configuration_chain_authenticated": true,
+  "configuration_ref": {
+    "data_sha256": "sha256:c005a34f883757414a049e4efa3f163640eba4e86281eb67313778f71ca81720",
+    "key": "config.json",
+    "name": "cps-native-head-config-c005a34f88375741",
+    "namespace": "cps-native-system",
+    "resourceVersion": "373304665",
+    "uid": "e426be9b-7508-4724-868d-532065e522af"
+  },
+  "workload_image": "ghcr.io/mul-cps/cps-jupyter-notebook:qualification-native-group-980408a@sha256:9167861058c1364c58d1c2fca0d6f536c3ffb53a33800dcdb9a1560f14ca4dc0",
+  "gate_image": "ghcr.io/mul-cps/cps-compute@sha256:bc5b128f582641eae8395e1121d1fb248eddc39a56c9e863b7c564badd94b167",
+  "actual_epoch": {
+    "boot_id": "209f8bc9-a478-48e4-925a-6e07ffa56f7a",
+    "driver_generation": "b10498fc-9153-4394-875a-ea7cfb498625",
+    "gpu_uuid": "GPU-16128952-b438-556a-00bb-93039ee24e56",
+    "node_uid": "3336cdd5-d245-436e-b57c-2f66c6dcaa41"
+  },
+  "driver_version": "615.71.09",
+  "physical_gpu_resolved_non_mig": true,
+  "unchanged_constraints": {
+    "profile": "interactive-shared-5",
+    "per_parent_cap_mib": 5120,
+    "distinct_sealed_parents_required": true,
+    "physical_headroom_required": true,
+    "typed_oom_recovery_and_peer_progress_required": true
+  },
+  "hardware_execution_performed": false,
+  "full_gpu_sharing_qualified": false,
+  "gpu2_cordoned": true,
+  "binder_bridge_enabled": false,
+  "evidence_sha256": {
+    "typed-qualification.stdout.private.json": "caf2eaddb9a87e713aaf3c28c00f2c49892b35e3340106d4ded5d28a49cb78d0",
+    "actual-epoch.stdout.private.json": "fbb96b0650ddc14ec804ace8faafcb28d4105f7adf75d679dd48f9c385254e85"
+  },
+  "preflight_sha256": "3fb26b23cf2846497bf995e9e5720037e1f4f1ab909fdee649c5bc299a9ec861"
+}

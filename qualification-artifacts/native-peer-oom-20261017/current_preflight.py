@@ -4,7 +4,7 @@ from pathlib import Path
 GPU='GPU-16128952-b438-556a-00bb-93039ee24e56'
 BOOT='209f8bc9-a478-48e4-925a-6e07ffa56f7a'
 GENERATION='b10498fc-9153-4394-875a-ea7cfb498625'
-NODE_IMAGE='ghcr.io/mul-cps/cps-native-node@sha256:47d8e532409337c864d02fc608600b4aecea650075573690b4f17dcb7a670c7f'
+NODE_IMAGE='ghcr.io/mul-cps/cps-native-node@sha256:7e319bfcb546efa9ae2fea975dcf082460802578da0c804f60eb0c8f64c08bb0'
 NOTEBOOK_IMAGE='ghcr.io/mul-cps/cps-jupyter-notebook:qualification-native-group-980408a@sha256:9167861058c1364c58d1c2fca0d6f536c3ffb53a33800dcdb9a1560f14ca4dc0'
 OBSERVER_ARGV=[]
 def require(ok,message):
