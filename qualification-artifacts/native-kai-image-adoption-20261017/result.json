@@ -1,0 +1,38 @@
+{
+  "version": 1,
+  "applicationSource": "be0f37ceb7d93c53e8d2e8321dc5a212cb0f686b",
+  "images": {
+    "gateway": "ghcr.io/mul-cps/cps-compute@sha256:fe55347cb64fba4c84de71c1d86c8350035f80db93641839a7a4657392b47e71",
+    "hub:cps": "ghcr.io/mul-cps/cps-compute@sha256:f1e4ce53391172dc3567044bf02a87cf2af77e0a98a6de1116a4ead7cb07552d",
+    "hub:cit": "ghcr.io/mul-cps/cps-compute@sha256:f1e4ce53391172dc3567044bf02a87cf2af77e0a98a6de1116a4ead7cb07552d",
+    "node": "ghcr.io/mul-cps/cps-native-node@sha256:806311adafdc27ff3046c4080ae1d459f9a190d19235d4023033854eb9a7ed67"
+  },
+  "allFourImagesAdopted": true,
+  "actualInstalledFourComponentConsumerReady": true,
+  "readinessObservedAt": "2026-10-17T07:42:57.859355+00:00",
+  "approvalRevision": "sha256:1e2b09e4f7a30389a78ac82eb9243ba8466a0e5e396dc312b7d76672501d88a1",
+  "policyHash": "sha256:d48f6553ed036c2e7adcc97417623fe0308be93ad13b20f246047ada118511b0",
+  "observerReleaseSHA256": "sha256:f09eb16c65b8fafc533105a1049f5a63d9dc2729d2cc4e6f8be558e37867b6ed",
+  "observerActualTokenReadOnlyPlanValid": true,
+  "protectedPersonalPodUIDsPreserved": 4,
+  "releasedLedgerClaimsPreserved": 117,
+  "ledgerDataSHA256": "512b64b25de685844bef9316b9af9f72e21b34b51adc62ceb1cf71d33791804e",
+  "sqlReservations": 0,
+  "sqlBindings": 0,
+  "preupgradeHubDatabaseBackups": 2,
+  "preupgradeGatewaySQLiteBackups": 2,
+  "temporaryReaderAndBackupJobsAbsent": true,
+  "nodeBootstrapReleasedAfterSevenRoleVerification": true,
+  "gpu2StillCordoned": true,
+  "driverChanges": false,
+  "nativeCoordinatorEnabled": false,
+  "nativeKAILifecycleQualified": false,
+  "approvalDeliveryFunctionalState": "blocked: old capture requires registry v1; current client accepts v2, but old seed/journal require explicit v3 packaged-contract migration",
+  "productionQualified": false,
+  "operationalIssueResolved": "Ledger CAS exceeded argv limit before execution; resumed using patch file after authoritative quiescence recheck.",
+  "focusedTests": {
+    "passed": 107,
+    "subtestsPassed": 25,
+    "dependencyWarnings": 2
+  }
+}

@@ -83,8 +83,7 @@ while compiling after a counted lease was published. The full source suite
 passed 3,094 tests and 49 subtests (3 skipped); the exact final wheel passed four
 installed Node-only closure cases and `pip check`, with source-identical sdist.
 This is implementation/package evidence only. The fixed GPU2 5/10 GiB pilot
-now has published successor images; coordinated adoption and actual KAI lifecycle
-qualification remain open. No 20 GiB, generic eight-GPU or production claim follows.
+now has live successor images; actual KAI lifecycle qualification remains open. No 20 GiB, generic eight-GPU or production claim follows.
 [Source qualification receipt](../../platform-staging/jupyter-extensions-20261013/native-kai-current-groups-source-20261017.json).
 
 ### Current-group integration verification, 17 October
@@ -95,7 +94,7 @@ routes. The full suite passed **3,119 tests, 49 subtests, 3 skipped**; all four
 CI jobs passed for the exact commit. Installed-image checks passed for the
 Gateway authorization matrix, Hub adapter and Node custody path.
 
-Published, registry-verified successor images (not deployed):
+Published, registry-verified successor images (now deployed to Gateway, both Hubs and Node):
 
 | Component | Image |
 |---|---|
@@ -133,19 +132,26 @@ a verified existing GHCR pull credential resolved it. Both Hubs passed actual
 Gateway TLS/SAN verification.
 [Binder adoption receipt](../../qualification-artifacts/native-kai-binder-20261017/result.json).
 
-The coordinated image-adoption renderer and protected endpoint proposal now pass
-66 focused tests and 25 subtests (two dependency deprecation warnings). Review
-caught and fixed the stale bootstrap `NODE_IMAGE` declaration before rollout.
-The proposals preserve protected authority/history and require actual NodeConfig
-UID/RV/data readback. Signed token, CA, exact route RBAC and private-file fragments
-are prepared, including the binder's nonroot file group. These proposals are not
-applied; Gateway/Hub/Node images and production admission remain unchanged.
-[Integration source receipt](../../qualification-artifacts/native-kai-binder-20261017/integration-source.json).
+The coordinated image adoption is now live. At 07:42:57 UTC on 17 October,
+the installed Gateway consumer verified all four fresh component acknowledgements.
+The actual observer validated its seven Role bindings with no pending patches.
+All four personal notebook identities and 117 released claims were preserved;
+SQL reservations and bindings were zero. Both Hub databases and both Gateway
+SQLite databases were backed up; temporary reader and backup jobs were removed.
+Focused source checks passed **107 tests and 25 subtests**, with two dependency
+warnings. [Image adoption receipt](../../qualification-artifacts/native-kai-image-adoption-20261017/result.json).
 
-Next: apply the coordinated Gateway/Hub/Node adoption and protected Coordinator
-configuration, then exercise the actual native KAI lifecycle. Stock KAI rejects the
-cordoned GPU2 node, so automatic placement also requires a reviewed maintenance
-transition; the cordon remains unchanged.
+Approval delivery remains functionally blocked despite its restored replica:
+the installed old capture parser rejects registry version 2. The current parser
+accepts that export, but the old seed also fails the current projection validator.
+An explicit versioned migration must preserve journal/history and qualify resume;
+a client-only upgrade or journal reset is insufficient. Diagnosis was read-only.
+
+The protected Coordinator endpoint, signed-token/CA/RBAC configuration and
+production pending admission remain unapplied. Next: finish those activation
+and delivery migration gates, then exercise the actual native KAI lifecycle.
+Stock KAI rejects cordoned GPU2; automatic placement remains unqualified and
+the cordon remains unchanged.
 Dynamic no-MIG sharing remains the primary acceptance goal; wider memory caps,
 all-eight-GPU coverage, scheduling/scale and recovery/release gates remain open.
 
