@@ -1,0 +1,285 @@
+{
+  "application_source": "7273ad70c497cafcd7116867343a4b5ae9b6909c",
+  "pod_uid": "95e0eaaf-d875-4793-aca8-16936f8f1029",
+  "cap_bytes": 5368709120,
+  "managed_probe_sha256": "9fade0524dcc92046a8072d15549cd223a5c6a1e954ea8540e5b4aeda5667fd5",
+  "managed_events": [
+    {
+      "cap_bytes": 5368709120,
+      "driver_api_version": 13040,
+      "free_bytes": 4934464832,
+      "gid": 100,
+      "gpu_uuid": "GPU-16128952-b438-556a-00bb-93039ee24e56",
+      "kind": "controlled-vmm-endpoint",
+      "monotonic_ns": 8832784088407983,
+      "namespace_pid": 209,
+      "phase": "identity",
+      "production_qualified": false,
+      "time_ns": 1792195417810514781,
+      "uid": 1000
+    },
+    {
+      "event": "ordinary-kernel-before",
+      "time_ns": 1792195417825741859,
+      "monotonic_ns": 8832784103625513,
+      "pod_uid": "95e0eaaf-d875-4793-aca8-16936f8f1029",
+      "pod_name": "jupyter-cps-ws-27c474f74f9d41c53eac0be01fcca8a3--rtc",
+      "gpu_uuid": "GPU-16128952-b438-556a-00bb-93039ee24e56",
+      "namespace_pid": 209,
+      "cgroup": "0::/",
+      "cap_mib": 5120,
+      "kernel_readback": 11,
+      "endpoint_source_sha256": "9c533aa22d91a9c09febd77ee6fd515b4ce34107ff3b04f5a63fa777fea609cd"
+    },
+    {
+      "event": "managed-result",
+      "time_ns": 1792195417826040766,
+      "monotonic_ns": 8832784103921826,
+      "pod_uid": "95e0eaaf-d875-4793-aca8-16936f8f1029",
+      "cuda_result": 801,
+      "cuda_name": "CUDA_ERROR_NOT_SUPPORTED",
+      "managed_bytes": 67108864,
+      "managed_never_touched": true,
+      "unexpected_success_freed": false,
+      "ordinary_kernel_after": 17
+    },
+    {
+      "event": "receipt",
+      "time_ns": 1792195417931394708,
+      "monotonic_ns": 8832784209276479,
+      "pod_uid": "95e0eaaf-d875-4793-aca8-16936f8f1029",
+      "pod_name": "jupyter-cps-ws-27c474f74f9d41c53eac0be01fcca8a3--rtc",
+      "endpoint_source_sha256": "9c533aa22d91a9c09febd77ee6fd515b4ce34107ff3b04f5a63fa777fea609cd",
+      "passed": true,
+      "typed_managed_denial": true,
+      "explicit_cleanup_complete": true,
+      "unexpected_success_never_touched": true,
+      "cap_independently_verified_by_probe": false,
+      "production_qualified": false,
+      "error": null
+    }
+  ],
+  "mps": {
+    "returncode": 0,
+    "source_sha256": "de3da0e1593cf118544ab755ae4ba3131658e2059d52bfed7e8b2007efc5d6ef",
+    "passed": {
+      "aggregate_sequence_passed": true,
+      "api_calls": false,
+      "cap_mib": 5120,
+      "case": "oom",
+      "driver_generation_verified_by_probe": false,
+      "duration_seconds": 120,
+      "gpu_calls": true,
+      "kind": "qualification-mps",
+      "max_attempted_mib": 5376,
+      "monotonic_ns": 8832811210093639,
+      "native_cap_verified_by_probe": false,
+      "production_qualified": false,
+      "recovery_clients": 2,
+      "source_sha256": "de3da0e1593cf118544ab755ae4ba3131658e2059d52bfed7e8b2007efc5d6ef",
+      "state": "bounded-sequence-passed",
+      "typed_oom": {
+        "attempted_mib": 4352,
+        "cuda_result": 2,
+        "held_mib": 4096
+      },
+      "utc": "2026-10-17T00:04:04.932207+00:00",
+      "wall_ns": 1792195444932212799
+    },
+    "cleanup": {
+      "cleanup_errors": [],
+      "client_exit_codes": [
+        0,
+        0
+      ],
+      "completed": true,
+      "monotonic_ns": 8832811209959499,
+      "phase": "daemon-cleanup-confirmed",
+      "private_mps_processes": [],
+      "run_id": "cps-mps-lvfmnhhe",
+      "utc": "2026-10-17T00:04:04.932050+00:00",
+      "wall_ns": 1792195444932078149
+    },
+    "host_samples": [
+      {
+        "checkpoint": "before",
+        "cap": {
+          "at": "2026-10-17T00:03:57.085955+00:00",
+          "pod_uid": "95e0eaaf-d875-4793-aca8-16936f8f1029",
+          "state": "sealed",
+          "soft": 5368709120,
+          "hard": 5368709120,
+          "used": 0,
+          "journal_unchanged": true,
+          "read_only": true
+        },
+        "physical": {
+          "physical_total": 42949672960,
+          "physical_free": 42436526080,
+          "physical_used": 513146880,
+          "gpu_uuid": "GPU-16128952-b438-556a-00bb-93039ee24e56"
+        }
+      },
+      {
+        "checkpoint": "mps-registered",
+        "cap": {
+          "at": "2026-10-17T00:03:58.911807+00:00",
+          "pod_uid": "95e0eaaf-d875-4793-aca8-16936f8f1029",
+          "state": "sealed",
+          "soft": 5368709120,
+          "hard": 5368709120,
+          "used": 900155776,
+          "journal_unchanged": true,
+          "read_only": true
+        },
+        "physical": {
+          "physical_total": 42949672960,
+          "physical_free": 41520332800,
+          "physical_used": 1429340160,
+          "gpu_uuid": "GPU-16128952-b438-556a-00bb-93039ee24e56"
+        }
+      },
+      {
+        "checkpoint": "held-1024",
+        "cap": {
+          "at": "2026-10-17T00:04:02.705534+00:00",
+          "pod_uid": "95e0eaaf-d875-4793-aca8-16936f8f1029",
+          "state": "sealed",
+          "soft": 5368709120,
+          "hard": 5368709120,
+          "used": 2779203968,
+          "journal_unchanged": true,
+          "read_only": true
+        },
+        "physical": {
+          "physical_total": 42949672960,
+          "physical_free": 39372849152,
+          "physical_used": 3576823808,
+          "gpu_uuid": "GPU-16128952-b438-556a-00bb-93039ee24e56"
+        }
+      },
+      {
+        "checkpoint": "held-3072",
+        "cap": {
+          "at": "2026-10-17T00:04:04.213007+00:00",
+          "pod_uid": "95e0eaaf-d875-4793-aca8-16936f8f1029",
+          "state": "sealed",
+          "soft": 5368709120,
+          "hard": 5368709120,
+          "used": 4926687616,
+          "journal_unchanged": true,
+          "read_only": true
+        },
+        "physical": {
+          "physical_total": 42949672960,
+          "physical_free": 37493800960,
+          "physical_used": 5455872000,
+          "gpu_uuid": "GPU-16128952-b438-556a-00bb-93039ee24e56"
+        }
+      },
+      {
+        "checkpoint": "held-4096",
+        "cap": {
+          "at": "2026-10-17T00:04:05.012008+00:00",
+          "pod_uid": "95e0eaaf-d875-4793-aca8-16936f8f1029",
+          "state": "sealed",
+          "soft": 5368709120,
+          "hard": 5368709120,
+          "used": 0,
+          "journal_unchanged": true,
+          "read_only": true
+        },
+        "physical": {
+          "physical_total": 42949672960,
+          "physical_free": 42436526080,
+          "physical_used": 513146880,
+          "gpu_uuid": "GPU-16128952-b438-556a-00bb-93039ee24e56"
+        }
+      },
+      {
+        "checkpoint": "typed-oom",
+        "cap": {
+          "at": "2026-10-17T00:04:05.714297+00:00",
+          "pod_uid": "95e0eaaf-d875-4793-aca8-16936f8f1029",
+          "state": "sealed",
+          "soft": 5368709120,
+          "hard": 5368709120,
+          "used": 0,
+          "journal_unchanged": true,
+          "read_only": true
+        },
+        "physical": {
+          "physical_total": 42949672960,
+          "physical_free": 42436526080,
+          "physical_used": 513146880,
+          "gpu_uuid": "GPU-16128952-b438-556a-00bb-93039ee24e56"
+        }
+      },
+      {
+        "checkpoint": "after-aggregate-free",
+        "cap": {
+          "at": "2026-10-17T00:04:06.513781+00:00",
+          "pod_uid": "95e0eaaf-d875-4793-aca8-16936f8f1029",
+          "state": "sealed",
+          "soft": 5368709120,
+          "hard": 5368709120,
+          "used": 0,
+          "journal_unchanged": true,
+          "read_only": true
+        },
+        "physical": {
+          "physical_total": 42949672960,
+          "physical_free": 42436526080,
+          "physical_used": 513146880,
+          "gpu_uuid": "GPU-16128952-b438-556a-00bb-93039ee24e56"
+        }
+      },
+      {
+        "checkpoint": "recovery-passed",
+        "cap": {
+          "at": "2026-10-17T00:04:07.291631+00:00",
+          "pod_uid": "95e0eaaf-d875-4793-aca8-16936f8f1029",
+          "state": "sealed",
+          "soft": 5368709120,
+          "hard": 5368709120,
+          "used": 0,
+          "journal_unchanged": true,
+          "read_only": true
+        },
+        "physical": {
+          "physical_total": 42949672960,
+          "physical_free": 42436526080,
+          "physical_used": 513146880,
+          "gpu_uuid": "GPU-16128952-b438-556a-00bb-93039ee24e56"
+        }
+      },
+      {
+        "checkpoint": "after",
+        "cap": {
+          "at": "2026-10-17T00:04:08.093203+00:00",
+          "pod_uid": "95e0eaaf-d875-4793-aca8-16936f8f1029",
+          "state": "sealed",
+          "soft": 5368709120,
+          "hard": 5368709120,
+          "used": 0,
+          "journal_unchanged": true,
+          "read_only": true
+        },
+        "physical": {
+          "physical_total": 42949672960,
+          "physical_free": 42436526080,
+          "physical_used": 513146880,
+          "gpu_uuid": "GPU-16128952-b438-556a-00bb-93039ee24e56"
+        }
+      }
+    ],
+    "production_ready": false
+  },
+  "production_ready": false,
+  "unqualified": [
+    "cross-Pod isolation",
+    "VMM/import routes",
+    "10/20GiB runtime modes",
+    "broader production gates"
+  ]
+}

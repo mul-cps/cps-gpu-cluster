@@ -73,6 +73,19 @@ fence. A second independent workspace requires valid grants through the normal
 policy path before cross-Pod testing. No grant or storage checks were bypassed.
 All four current component acknowledgments were verified ready after cleanup.
 
+## Managed memory and private MPS qualification
+
+The [managed-memory and MPS receipt](../../qualification-artifacts/native-managed-mps-20261017/README.md)
+records a fresh normally started 5 GiB workspace. Managed allocation returned
+CUDA 801/NOT_SUPPORTED; ordinary kernels passed before and after, and explicit
+cleanup completed. Two actual registered private MPS clients reached aggregate
+OOM at 4096 MiB held / 4352 MiB attempted, both recovered and verified kernels,
+and both clients and their ordinary-user daemon exited cleanly. Nine independent
+host samples confirmed the unchanged sealed cap, over 34 GiB physical free memory,
+and zero charged usage after cleanup. These results do not establish cross-Pod
+isolation, VMM/import paths or other profile sizes. The workspace remains running
+for the next controlled peer test; no grant renewal has yet been applied.
+
 ## Previous checkpoint — packaged node renewal (16 October)
 
 Released application source `f67224e06cd152a8c554822ddb0738685e291995` was deployed
