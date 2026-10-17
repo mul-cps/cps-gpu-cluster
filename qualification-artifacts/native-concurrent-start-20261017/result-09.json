@@ -1,0 +1,43 @@
+{
+  "all_native_claims_released": 117,
+  "attempt": 9,
+  "both_normal_starts_http": 200,
+  "caps_mib": [
+    5120,
+    5120
+  ],
+  "concurrent_start_qualified": true,
+  "controlled_pods_and_hub_servers_absent": true,
+  "evidence_sha256": {
+    "concurrent-start-result.private.json": "82e5e13c6239a32665144fcea6da2323c9dcf0930d56fd327eb0451c9a200e36",
+    "final-cleanup.private.json": "bbe24ceeab53e64fb8b94883b8291bbc1f86815adee355c636fd948460987d73",
+    "final-readiness.private.json": "ba2305228f16c08c6c4b859c2609f54c6d266bd4f533670237205d89ff2a9605",
+    "running-confirmed.private.json": "0d14d9c1f18e5a8ee2cf54f84441a9d922a6eb5a91564d881bc22f2682c409ce",
+    "token-revocation.private.json": "821b6c2b4edd1d826ba8e3d5484e25cec41f86ebe25a47421942197b11fcc030"
+  },
+  "gate_exit_codes": [
+    0,
+    0,
+    0,
+    0
+  ],
+  "grants_restored_exactly": true,
+  "hub_image": "sha256:413bdee650fd3c246ca35a7dd16347945dad6a92ec07e96678abb5cbd5ca68a8",
+  "ledger_uid_preserved": true,
+  "memberships_restored_exactly": true,
+  "no_automatic_post_replay": true,
+  "normal_stops_http": 200,
+  "old_history_records_unchanged": 115,
+  "personal_pod_uids_preserved": 4,
+  "production_qualified": false,
+  "same_physical_gpu": true,
+  "scope": "one synchronized CPS5/CPS5 normal lifecycle on fixed GPU2",
+  "send_separation_ms": 0.053341,
+  "sql_binding_count": 0,
+  "sql_reservation_count": 0,
+  "start_elapsed_seconds": {
+    "lab": 97.821071098,
+    "secondary": 115.960199005
+  },
+  "temporary_token_revoked_and_plaintext_removed": true
+}

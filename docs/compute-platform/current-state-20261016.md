@@ -54,7 +54,7 @@ inferred. Both normal Stops succeeded, all 115 claims are released, original
 114 history records preserved, SQL tables empty, temporary grants/memberships
 restored and token revoked. All four installed consumers verified ready afterward.
 [Concurrent attempt and cleanup](../../qualification-artifacts/native-concurrent-start-20261017/README.md).
-Concurrent startup remains unqualified. A controlled real-TLS test reproduced
+At that checkpoint concurrent startup remained unqualified. A controlled real-TLS test reproduced
 an EOF after a simulated commit on a reused HTTP/1 connection; it does not prove
 the live cause. Application `d606032` disables idle reuse in both Hub clients,
 retaining the 100-active-connection limit, CA/authentication/timeouts and no POST
@@ -64,9 +64,14 @@ and five installed-image TLS cases passed. Image `413bdee6…ca68a8` is now
 deployed in both Hubs; installed module hashes match. Gateway and Node images
 are unchanged. The coordinated observer update passed independent review and
 server dry runs, all four installed consumers are ready, all 115 ledger history
-records and four personal Pod UIDs are preserved. A fresh synchronized startup
-attempt is in progress; concurrent startup and production latency remain
-unqualified.
+records and four personal Pod UIDs are preserved. A fresh synchronized CPS5/CPS5 startup
+passed: both normal starts returned 200, both Pods became Ready with gate
+exit codes zero and distinct 5 GiB allocations on the same GPU. Both normal
+Stops passed; all 117 claims are released, original 115 records preserved,
+SQL reservations/bindings zero, expiry changes restored and token revoked.
+This closes one controlled concurrent lifecycle; cross-Hub bursts, p95 latency
+and production readiness remain unqualified.
+[Concurrent lifecycle receipt](../../qualification-artifacts/native-concurrent-start-20261017/result-09.json).
 [Live adoption receipt](../../platform-staging/jupyter-extensions-20261013/hub-fresh-http-adoption-20261017.json).
 [Image and verification receipt](../../platform-staging/jupyter-extensions-20261013/hub-fresh-http-image-20261017.json).
 

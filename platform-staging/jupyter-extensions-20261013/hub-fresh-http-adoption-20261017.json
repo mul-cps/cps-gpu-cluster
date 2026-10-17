@@ -1,5 +1,6 @@
 {
-  "concurrent_start_qualified": false,
+  "concurrent_start_qualified": true,
+  "concurrent_start_scope": "one controlled synchronized CPS5/CPS5 lifecycle; cross-Hub and burst/p95 not qualified",
   "coordinated_adoption_applied": true,
   "evidence_sha256": {
     "applied-02/four-component-readiness-before-observer.private.json": "27ad34d6ff707563ab6d8694417c1f38d3dc8daddbc82a1570ba2a3f42a7f4d1",

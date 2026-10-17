@@ -24,3 +24,19 @@ The prior bidirectional 5/5 GiB peer-OOM result remains valid for its scope.
 Concurrent startup, deliberate cancellation and production qualification remain
 open. A controlled real-TCP/TLS CPU reproduction is the next diagnostic step;
 a passing synthetic transport test alone cannot qualify the live startup gate.
+
+## Attempt 9 — synchronized normal startup passed
+
+After the reviewed Hub fresh-connection image was deployed, requests sent
+0.053341 ms apart both returned HTTP 200 and reached Ready with zero restarts.
+All four init gates exited zero; distinct 5 GiB allocations occupied the same
+qualified GPU. Normal start latency was 97.82 s and 115.96 s. Both normal Stops
+returned HTTP 200; all 117 claims were released, the original 115 history
+records were unchanged, SQL reservations/bindings were zero, and the exact
+temporary grant and membership expiry changes were restored. The test token
+was revoked and its plaintext removed; all four personal Pod UIDs survived.
+Final installed four-component readiness passed.
+
+This proves one controlled CPS5/CPS5 concurrent lifecycle, not cross-Hub or
+representative burst/p95 qualification, cancellation, scheduler integration,
+20 GiB access, or production readiness. [Bounded receipt](result-09.json).
