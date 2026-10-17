@@ -105,7 +105,8 @@ def test_case_matrix_uses_only_server_dryrun_test_resources_and_all_four_namespa
     assert all(c.get('policy') for c in cases if not c['accepted'])
 
 
-def test_whole_isolated_flow_with_actual_go_cel_and_no_live_client(tmp_path, monkeypatch):
+@pytest.mark.parametrize('proxy_strips', [False, True])
+def test_whole_isolated_flow_with_actual_go_cel_and_no_live_client(tmp_path, monkeypatch, proxy_strips):
     import subprocess
     executable = os.environ.get('CPS_NATIVE_PENDING_CEL_EVALUATOR')
     if not executable: pytest.skip('Qualified official Go CEL evaluator required for complete offline matrix')
@@ -114,6 +115,7 @@ def test_whole_isolated_flow_with_actual_go_cel_and_no_live_client(tmp_path, mon
         def __init__(self, context): pass
         def request(self, method, path, body=None, *, actor=None, dryrun=False):
             calls.append((method, path, dryrun))
+            if path == m.SSR: return {'status':200,'object':{'status':{'userInfo':{'username':(actor if not proxy_strips else None) or 'root-operator','groups':['system:authenticated']}}}}
             old = copy.deepcopy(objects.get(path)); obj = copy.deepcopy(body)
             if method == 'GET': return {'status': 200, 'object': old} if old else {'status': 404}
             if method == 'DELETE':
@@ -145,15 +147,93 @@ def test_whole_isolated_flow_with_actual_go_cel_and_no_live_client(tmp_path, mon
             assert method == 'POST'
             target = path + '/' + obj['metadata']['name']; assert target not in objects
             obj['metadata'].update(uid=str(uuid.uuid4()), resourceVersion='1')
+            if obj['kind']=='Namespace':obj['metadata']['labels']['kubernetes.io/metadata.name']=obj['metadata']['name']
             if obj['kind'] == 'ValidatingAdmissionPolicy':
                 obj['metadata']['generation'] = 1; obj['status'] = {'observedGeneration': 1, 'typeChecking': {'expressionWarnings': []}}
             objects[target] = obj; return {'status': 200, 'object': copy.deepcopy(obj)}
     monkeypatch.setattr(m, 'Kube', OfflineApi)
     result = m.execute(tmp_path / 'private')
-    assert result['passed'] is True and result['residual_count'] == 0 and not objects
+    assert result['residual_count'] == 0 and not objects
+    if proxy_strips:
+        assert result['passed'] is False and result['stage'] == 'identity-proof' and not result['barriers']
+        assert result['identity_checks']['test']['matches_expected'] is False
+        return
+    assert result['passed'] is True
     assert len(result['barriers']) == 3 and all(b['enforced'] for b in result['barriers'])
     assert {'configmap-actual-replaced-uid', 'role-actual-replaced-uid'} <= {row['name'] for row in result['tests']}
     assert all(dryrun for method, path, dryrun in calls if method == 'PATCH')
     for filename in ('resources.private.json', 'receipt.private.json'):
         assert (tmp_path / 'private' / filename).stat().st_mode & 0o7777 == 0o600
     assert not any('/secrets' in path or '/pods' in path for _, path, _ in calls)
+
+
+def test_proxy_identity_mismatch_is_explicit_and_real_username_redacted():
+    m = module(); expected = 'system:serviceaccount:cps-head-admission-qa-' + 'a' * 12 + '-0:' + m.SA
+    response = {'status': 200, 'object': {'status': {'userInfo': {'username': 'proxy-real-person', 'groups': ['system:masters']}}}}
+    diagnostic = m.user_info_diagnostic(response, expected)
+    assert diagnostic['matches_expected'] is False and diagnostic['group_classes']['masters'] is True
+    assert 'proxy-real-person' not in json.dumps(diagnostic)
+    response['object']['status']['userInfo']['username'] = expected
+    assert m.user_info_diagnostic(response, expected)['matches_expected'] is True
+
+
+@pytest.mark.parametrize('method,path,dryrun,allowed', [
+    ('POST', '/apis/authentication.k8s.io/v1/selfsubjectreviews', False, True),
+    ('POST', '/api/v1/namespaces/cps-head-admission-qa-aaaaaaaaaaaa-0/configmaps', True, True),
+    ('PATCH', '/apis/rbac.authorization.k8s.io/v1/namespaces/cps-head-admission-qa-aaaaaaaaaaaa-3/roles/cps-native-observer-operator', True, True),
+    ('POST', '/api/v1/namespaces/cps-compute/configmaps', True, False),
+    ('POST', '/api/v1/namespaces/cps-head-admission-qa-aaaaaaaaaaaa-0/configmaps', False, False),
+    ('GET', '/api/v1/namespaces/cps-head-admission-qa-aaaaaaaaaaaa-0/secrets', True, False)])
+def test_static_broker_accepts_only_nonpersistent_review_or_qa_dryruns(method, path, dryrun, allowed):
+    m = module(); namespaces, *_ = fixture()
+    assert m.broker_request_allowed(method, path, dryrun, namespaces) is allowed
+
+
+def test_last_response_diagnostic_is_bounded_and_contains_no_object_or_token():
+    token = 'eyJ' + 'a' * 30 + '.bbbb.cccc'
+    result = module().response_diagnostic({'status': 403, 'reason': 'Forbidden',
+        'message': 'Bearer ' + token + ' ' + 'x' * 5000, 'object': {'secret': token}}, 'qa-user')
+    assert len(result['message']) <= 1024 and token not in json.dumps(result)
+    assert 'object' not in result and result['intended_username'] == 'qa-user'
+
+
+def test_broker_uses_fixed_code_and_token_only_in_stdin_then_rechecks_identity(monkeypatch):
+    from types import SimpleNamespace
+    m=module();namespaces,*_=fixture();actor='system:serviceaccount:'+namespaces[0]+':'+m.SA
+    options={'namespace':'gateway-system','deployment':'gateway','deployment_uid':str(uuid.uuid4()),
+        'pod':'gateway-pod','pod_uid':str(uuid.uuid4()),'container':'gateway',
+        'image':'ghcr.io/mul-cps/cps-compute@sha256:'+'a'*64,'audience':'https://kubernetes.default.svc.cluster.local'}
+    token='synthetic-token-only-in-memory-0123456789';calls=[];rsuid=str(uuid.uuid4())
+    dep={'metadata':{'uid':options['deployment_uid']},'spec':{'template':{'spec':{
+        'serviceAccountName':'gateway','containers':[{'name':'gateway','image':options['image']}]}}}}
+    pod={'metadata':{'uid':options['pod_uid'],'ownerReferences':[{'kind':'ReplicaSet','name':'gateway-rs','uid':rsuid,'controller':True}]},
+        'spec':copy.deepcopy(dep['spec']['template']['spec']),'status':{'phase':'Running','conditions':[{'type':'Ready','status':'True'}],
+        'containerStatuses':[{'name':'gateway','ready':True,'imageID':'containerd://sha256:'+'a'*64}]}}
+    rs={'metadata':{'uid':rsuid,'ownerReferences':[{'kind':'Deployment','name':'gateway','uid':options['deployment_uid'],'controller':True}]}}
+    class Api:
+        def request(self,method,path,body=None,**kwargs):
+            if path.endswith('/token'):
+                assert body['spec']=={'audiences':[options['audience']],'expirationSeconds':600}
+                return {'status':200,'object':{'status':{'token':token}}}
+            return {'status':200,'object':dep if '/deployments/' in path else pod if '/pods/' in path else rs}
+    def run(args,**kwargs):
+        assert token not in repr(args) and args[-1]==m.BROKER_CODE
+        assert json.loads(kwargs['input'])['token']==token
+        calls.append(args)
+        return SimpleNamespace(returncode=0,stdout='{"status":200}')
+    monkeypatch.setattr(m.subprocess,'run',run)
+    broker=m.Broker(Api(),options,namespaces,actor,None)
+    assert broker.request('POST',m.SSR,{},actor=actor)['status']==200 and len(calls)==1
+    pod['metadata']['uid']=str(uuid.uuid4())
+    with pytest.raises(ValueError):broker.request('POST',m.SSR,{},actor=actor)
+    assert len(calls)==1
+
+
+def test_remote_static_program_rejects_production_request_before_network():
+    import subprocess
+    m=module();namespaces,*_=fixture()
+    response=subprocess.run([__import__('sys').executable,'-I','-B','-c',m.BROKER_CODE],input=json.dumps({
+        'namespaces':namespaces,'method':'POST','path':'/api/v1/namespaces/cps-compute/configmaps',
+        'body':{},'dryrun':True,'token':'synthetic-token-never-print'}),text=True,capture_output=True,check=True)
+    assert json.loads(response.stdout)['status']==0
+    assert 'synthetic-token' not in response.stdout+response.stderr

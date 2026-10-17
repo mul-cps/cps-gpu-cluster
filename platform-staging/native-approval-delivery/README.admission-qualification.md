@@ -2,7 +2,9 @@
 
 `qualify_admission.py` is inert without `--execute`: no API, credential, or file
 access. Root must review the source before running the explicit command with an
-administrative kubeconfig identity allowed to impersonate the fresh test SA:
+administrative kubeconfig identity. Direct transport requires working QA SA
+impersonation; the broker alternative below uses TokenRequest and existing-Pod
+exec permissions instead:
 
 ```text
 python -I -B qualify_admission.py --execute \
@@ -60,3 +62,45 @@ against the qualified official Go CEL evaluator and a local API fixture. Set
 matrix; otherwise this integration test skips. Root still owns actual execution
 and must require a passing receipt with zero residual resources before binding
 production policies or starting the adoption Job.
+
+## Token transport through an existing qualified Gateway
+
+Some API proxies strip or replace `Impersonate-User`. Direct mode now verifies
+both actual identities using nonpersistent SelfSubjectReview before any policy
+barrier. An identity mismatch fails immediately and cleans up. It does not
+change policy predicates to accommodate a proxy identity.
+
+For such a proxy, Root can explicitly use an existing, unchanged qualified
+Gateway container as an HTTPS transport:
+
+```text
+python -I -B qualify_admission.py --execute --private-dir /absolute/new/private-dir \
+  --broker-namespace <gateway namespace> --broker-deployment <deployment> \
+  --broker-deployment-uid <actual UID> --broker-pod <actual Ready Pod> \
+  --broker-pod-uid <actual UID> --broker-container <actual container> \
+  --broker-image ghcr.io/mul-cps/cps-compute@sha256:<qualified digest> \
+  --broker-audience <actual Kubernetes API token audience>
+```
+
+Root must supply all eight broker flags together. The qualifier verifies the
+actual Deployment/Pod/ReplicaSet owner chain, exact UIDs, Ready state, and
+container image/digest before minting a 600-second TokenRequest for the fresh QA
+SA. It repeats those read-only broker checks immediately before every exec.
+The token remains only in memory and stdin to fixed Python code; it is never an
+argument, environment value, Secret, receipt, log, or file. Cleanup deletes the
+QA SA and its rights. No new Pod or broker configuration is created.
+
+The fixed remote code uses only the mounted Kubernetes CA, service host and
+fresh QA token, with environment proxies disabled. It permits only
+SelfSubjectReview or ConfigMap/Role requests in the four fresh QA namespaces
+with `dryRun=All`. It cannot send persistent mutations, generic API paths, or
+caller-supplied executable code. Foreign-operator tests and cleanup continue
+through Root's ordinary API client. Fresh SSR must prove the broker is the exact
+QA SA and Root is a different identity before the matrix can begin.
+
+Policy/binding status/spec and namespace selector labels are now captured before
+the first barrier. Each barrier retains its bounded last status/reason/message
+and sanitized intended/observed identity proof. Unexpected real usernames are
+hashed rather than written; bearer/JWT-shaped text is redacted. These diagnostics
+distinguish transport identity failure from policy matching/compilation failure
+without recording credentials or treating an ineffective barrier as success.

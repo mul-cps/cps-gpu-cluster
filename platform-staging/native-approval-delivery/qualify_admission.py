@@ -14,12 +14,14 @@ import os
 from pathlib import Path
 import re
 import stat
+import subprocess
 import time
 import uuid
 
 SA = 'cps-native-head-delivery'
 ROLE = 'cps-native-observer-operator'
 PREFIX = 'cps-head-admission-qa-'
+SSR = '/apis/authentication.k8s.io/v1/selfsubjectreviews'
 ROUTES = {'Namespace': ('/api/v1', 'namespaces'), 'ConfigMap': ('/api/v1', 'configmaps'),
     'ServiceAccount': ('/api/v1', 'serviceaccounts'), 'Role': ('/apis/rbac.authorization.k8s.io/v1', 'roles'),
     'RoleBinding': ('/apis/rbac.authorization.k8s.io/v1', 'rolebindings'),
@@ -190,6 +192,122 @@ class Kube:
                 'message': value.get('message', ''), 'error_class': type(error).__name__}
 
 
+def response_diagnostic(response, intended_username):
+    message = str(response.get('message', ''))
+    message = re.sub(r'(?i)bearer\s+\S+', 'Bearer [REDACTED]', message)
+    message = re.sub(r'eyJ[A-Za-z0-9_-]+\.[A-Za-z0-9_-]+\.[A-Za-z0-9_-]+', '[REDACTED]', message)
+    return {'http_status': response.get('http_status', response['status']), 'reason': str(response.get('reason', ''))[:128],
+        'message': message[:1024], 'intended_username': intended_username}
+
+
+def user_info_diagnostic(response, expected):
+    info = response.get('object', {}).get('status', {}).get('userInfo', {})
+    username = info.get('username'); groups = info.get('groups', [])
+    matches = response['status'] == 200 and username == expected
+    return {'http_status': response['status'], 'matches_expected': matches, 'expected_username': expected,
+        'observed_username': username if matches else None,
+        'observed_username_sha256': hashlib.sha256(str(username).encode()).hexdigest(),
+        'group_classes': {'authenticated': 'system:authenticated' in groups,
+            'serviceaccounts': 'system:serviceaccounts' in groups, 'masters': 'system:masters' in groups}}
+
+
+def broker_request_allowed(method, path, dryrun, namespaces):
+    if method == 'POST' and path == SSR: return True
+    if dryrun is not True or method not in ('POST', 'PATCH') or len(namespaces) != 4: return False
+    for ns in namespaces:
+        if not re.fullmatch(PREFIX + r'[a-f0-9]{12}-[0-3]', ns): return False
+    for ns in namespaces:
+        base = '/api/v1/namespaces/' + ns + '/configmaps'
+        if method == 'POST' and path == base: return True
+        if method == 'PATCH' and re.fullmatch(re.escape(base) + r'/[a-z0-9][-a-z0-9.]{0,252}', path): return True
+        if method == 'PATCH' and path == '/apis/rbac.authorization.k8s.io/v1/namespaces/' + ns + '/roles/' + ROLE: return True
+    return False
+
+
+# Fixed program, never caller-provided code. Token exists only in stdin/memory.
+BROKER_CODE = r"""
+import json,os,re,ssl,sys,urllib.request,urllib.error
+try:
+    raw=sys.stdin.read(1048577)
+    assert len(raw)<=1048576
+    p=json.loads(raw);method=p['method'];path=p['path'];namespaces=p['namespaces']
+    assert len(namespaces)==4 and all(re.fullmatch('cps-head-admission-qa-[a-f0-9]{12}-[0-3]',n) for n in namespaces)
+    review=method=='POST' and path=='/apis/authentication.k8s.io/v1/selfsubjectreviews'
+    allowed=review
+    if p['dryrun'] is True:
+        for ns in namespaces:
+            base='/api/v1/namespaces/'+ns+'/configmaps'
+            allowed=allowed or (method=='POST' and path==base) or (method=='PATCH' and bool(re.fullmatch(re.escape(base)+'/[a-z0-9][-a-z0-9.]{0,252}',path)))
+            allowed=allowed or (method=='PATCH' and path=='/apis/rbac.authorization.k8s.io/v1/namespaces/'+ns+'/roles/cps-native-observer-operator')
+    assert allowed and isinstance(p['token'],str) and len(p['token'])>20 and not any(c.isspace() for c in p['token'])
+    host=os.environ['KUBERNETES_SERVICE_HOST'];host='['+host+']' if ':' in host else host
+    url='https://'+host+':'+os.environ.get('KUBERNETES_SERVICE_PORT_HTTPS','443')+path+('?dryRun=All' if p['dryrun'] else '')
+    context=ssl.create_default_context(cafile='/var/run/secrets/kubernetes.io/serviceaccount/ca.crt')
+    request=urllib.request.Request(url,data=json.dumps(p['body']).encode(),method=method,headers={
+        'Authorization':'Bearer '+p['token'],'Accept':'application/json',
+        'Content-Type':'application/json-patch+json' if method=='PATCH' else 'application/json'})
+    try:
+        opener=urllib.request.build_opener(urllib.request.ProxyHandler({}),urllib.request.HTTPSHandler(context=context))
+        with opener.open(request,timeout=15) as response:
+            value=json.loads(response.read(1048576));result={'status':200,'http_status':response.status}
+            if review:result['object']={'status':{'userInfo':value.get('status',{}).get('userInfo',{})}}
+    except urllib.error.HTTPError as error:
+        value=json.loads(error.read(1048576));result={'status':error.code,'http_status':error.code,
+            'reason':value.get('reason','Unknown'),'message':value.get('message','').replace(p['token'],'[REDACTED]')[:1024]}
+except Exception as error:
+    result={'status':0,'error_class':type(error).__name__,'reason':'BrokerFailure'}
+print(json.dumps(result))
+"""
+
+
+class Broker:
+    def __init__(self, api, options, namespaces, actor, context):
+        self.options=options;self.namespaces=namespaces;self.actor=actor;self.context=context;self.api=api
+        required={'namespace','deployment','deployment_uid','pod','pod_uid','container','image','audience'}
+        require(set(options)==required and all(isinstance(v,str) and v for v in options.values()), 'Complete explicitly pinned broker required')
+        for field in ('namespace','deployment','pod','container'):
+            require(re.fullmatch(r'[a-z0-9][-a-z0-9.]{0,252}',options[field]), 'Canonical broker identity required')
+        for field in ('deployment_uid','pod_uid'): require(str(uuid.UUID(options[field]))==options[field], 'Exact broker UID required')
+        require(re.fullmatch(r'ghcr.io/mul-cps/cps-compute@sha256:[a-f0-9]{64}',options['image'])
+            and not options['image'].endswith('0'*64) and len(options['audience'])<=256
+            and not any(c.isspace() for c in options['audience']), 'Qualified image and explicit audience required')
+        self.verify(api)
+        response=api.request('POST','/api/v1/namespaces/'+namespaces[0]+'/serviceaccounts/'+SA+'/token',
+            {'apiVersion':'authentication.k8s.io/v1','kind':'TokenRequest','spec':{'audiences':[options['audience']],'expirationSeconds':600}})
+        self.token=response.get('object',{}).get('status',{}).get('token')
+        require(response['status']==200 and isinstance(self.token,str) and len(self.token)>20, 'Ephemeral QA token request failed')
+    def verify(self,api):
+        o=self.options;ns=o['namespace']
+        def read(path):
+            response=api.request('GET',path);require(response['status']==200,'Pinned broker readback failed');return response['object']
+        dep=read('/apis/apps/v1/namespaces/'+ns+'/deployments/'+o['deployment'])
+        pod=read('/api/v1/namespaces/'+ns+'/pods/'+o['pod'])
+        require(dep['metadata']['uid']==o['deployment_uid'] and pod['metadata']['uid']==o['pod_uid']
+            and not dep['metadata'].get('deletionTimestamp') and not pod['metadata'].get('deletionTimestamp'), 'Pinned broker identity changed')
+        owners=[r for r in pod['metadata'].get('ownerReferences',[]) if r.get('controller') is True and r.get('kind')=='ReplicaSet']
+        require(len(owners)==1,'Actual broker ReplicaSet owner required')
+        rs=read('/apis/apps/v1/namespaces/'+ns+'/replicasets/'+owners[0]['name'])
+        require(rs['metadata']['uid']==owners[0]['uid'] and any(r.get('controller') is True and r.get('kind')=='Deployment'
+            and r.get('name')==o['deployment'] and r.get('uid')==o['deployment_uid'] for r in rs['metadata'].get('ownerReferences',[])), 'Broker ownership changed')
+        for spec in (dep['spec']['template']['spec'],pod['spec']):
+            selected=[c for c in spec['containers'] if c['name']==o['container']]
+            require(len(selected)==1 and selected[0]['image']==o['image'],'Broker image changed')
+        require(pod['spec'].get('serviceAccountName')==dep['spec']['template']['spec'].get('serviceAccountName')
+            and pod.get('status',{}).get('phase')=='Running' and any(c.get('type')=='Ready' and c.get('status')=='True' for c in pod['status'].get('conditions',[]))
+            and any(c.get('name')==o['container'] and c.get('ready') is True and c.get('imageID','').endswith(o['image'].split('@')[1])
+                for c in pod['status'].get('containerStatuses',[])), 'Actual broker is not ready at the pinned digest')
+    def request(self,method,path,body=None,*,actor=None,dryrun=False):
+        require(actor==self.actor and broker_request_allowed(method,path,dryrun,self.namespaces),'Only QA review/dryrun requests may use broker')
+        self.verify(self.api)
+        args=['kubectl']+(['--context',self.context] if self.context else [])+['--request-timeout=25s','-n',self.options['namespace'],
+            'exec',self.options['pod'],'-c',self.options['container'],'-i','--','python','-I','-B','-c',BROKER_CODE]
+        result=subprocess.run(args,input=json.dumps({'method':method,'path':path,'body':body,'dryrun':dryrun,
+            'namespaces':self.namespaces,'token':self.token}),text=True,capture_output=True,timeout=30)
+        if result.returncode:return {'status':0,'reason':'BrokerExecutionFailure'}
+        value=json.loads(result.stdout);require(isinstance(value,dict) and type(value.get('status')) is int,'Closed broker response required')
+        return value
+
+
 def cleanup(api, resources):
     results = []
     for item in reversed(resources):
@@ -208,10 +326,11 @@ def cleanup(api, resources):
     return results
 
 
-def execute(private_dir, context=None):
+def execute(private_dir, context=None, broker=None):
     directory = private_directory(private_dir); api = Kube(context); suffix = uuid.uuid4().hex[:12]
     namespaces = [PREFIX + suffix + '-' + str(i) for i in range(4)]
     actor = 'system:serviceaccount:' + namespaces[0] + ':' + SA
+    actor_api = api
     resources = []; report = {'version': 1, 'created_at': datetime.now(timezone.utc).isoformat(), 'passed': False,
         'namespaces': namespaces, 'tests': [], 'barriers': [], 'type_checking': [], 'cleanup': [], 'stage': 'setup',
         'production_source_sha256': hashlib.sha256(Path(__file__).with_name('render.py').read_bytes()).hexdigest(),
@@ -237,7 +356,8 @@ def execute(private_dir, context=None):
         actual = response['object']; resources.append(identity(actual)); write_private(directory, 'resources.private.json', resources)
         return actual
     def request(case):
-        return api.request(case['method'], case['path'], case['body'], actor=actor if case['actor'] == 'test' else None, dryrun=True)
+        return (actor_api if case['actor'] == 'test' else api).request(case['method'], case['path'], case['body'],
+            actor=actor if case['actor'] == 'test' else None, dryrun=True)
     def record(case):
         report['stage'] = case['name']
         response = request(case); accepted = response['status'] == 200
@@ -262,6 +382,14 @@ def execute(private_dir, context=None):
             create('Role', SA + '-qa-access', ns, rules=access)
             create('RoleBinding', SA + '-qa-access', ns, roleRef={'apiGroup': 'rbac.authorization.k8s.io', 'kind': 'Role', 'name': SA + '-qa-access'},
                 subjects=[{'kind': 'ServiceAccount', 'namespace': namespaces[0], 'name': SA}])
+        report['stage']='identity-proof'
+        if broker is not None: actor_api=Broker(api,broker,namespaces,actor,context)
+        review={'apiVersion':'authentication.k8s.io/v1','kind':'SelfSubjectReview','spec':{}}
+        root_user=user_info_diagnostic(api.request('POST',SSR,review),actor)
+        test_user=user_info_diagnostic(actor_api.request('POST',SSR,review,actor=actor),actor)
+        report['identity_checks']={'root':root_user,'test':test_user,'transport':'in-cluster-token' if broker else 'impersonation'}
+        require(root_user['http_status']==200 and not root_user['matches_expected'] and test_user['matches_expected'],
+            'Actual request identity differs from intended isolated writer')
         definitions = isolated_policies(policy_config(pointers, roles), namespaces, suffix)
         deployed = [create(d['kind'], d['metadata']['name'], spec=d['spec']) for d in definitions]
         matrix = cases(pointers, roles, foreign, suffix)
@@ -269,17 +397,6 @@ def execute(private_dir, context=None):
         # fail an API precondition rather than prove unrelated VAP matching.
         case = next(c for c in matrix if c['name'] == 'foreign-root-unrelated-role')
         case['body'] = patch(unrelated[0], 'rules', unrelated[0]['rules'])
-        for family in ('approval-create', 'pointer-update', 'pregrant-update'):
-            barrier = next(c for c in matrix if c.get('policy') == SA + '-' + family + '-qa-' + suffix)
-            deadline = time.monotonic() + 45
-            report['stage'] = 'barrier-' + family
-            row = {'policy': barrier['policy'], 'attempts': 0, 'enforced': False}
-            report['barriers'].append(row)
-            while True:
-                response = request(barrier); row['attempts'] += 1; row['http_status'] = response['status']
-                if policy_denial(response, barrier['policy']): row['enforced'] = True; break
-                require(time.monotonic() < deadline and response['status'] in (200, 403), 'Admission propagation barrier failed')
-                time.sleep(0.25)
         def check_policies():
             report['type_checking'] = []
             for definition in deployed:
@@ -292,6 +409,24 @@ def execute(private_dir, context=None):
                     'warning_count': len(warnings), 'observed_generation': status.get('observedGeneration')})
                 require(not warnings, 'Admission type checking warnings')
         check_policies()
+        report['namespace_selectors'] = []
+        for ns in namespaces:
+            observed=api.request('GET','/api/v1/namespaces/'+ns)
+            label=observed.get('object',{}).get('metadata',{}).get('labels',{}).get('kubernetes.io/metadata.name')
+            report['namespace_selectors'].append({'namespace':ns,'name_label':label,'matches':label==ns})
+            require(observed['status']==200 and label==ns,'Actual namespace selector label differs')
+        for family in ('approval-create', 'pointer-update', 'pregrant-update'):
+            barrier = next(c for c in matrix if c.get('policy') == SA + '-' + family + '-qa-' + suffix)
+            deadline = time.monotonic() + 45
+            report['stage'] = 'barrier-' + family
+            row = {'policy': barrier['policy'], 'attempts': 0, 'enforced': False}
+            report['barriers'].append(row)
+            while True:
+                response = request(barrier); row['attempts'] += 1; row['http_status'] = response['status']
+                row['last_response']=response_diagnostic(response,actor);row['user_info']=report['identity_checks']['test']
+                if policy_denial(response, barrier['policy']): row['enforced'] = True; break
+                require(time.monotonic() < deadline and response['status'] in (200, 403), 'Admission propagation barrier failed')
+                time.sleep(0.25)
         for case in matrix: record(case)
         # Recreate only isolated fixtures after normal cases. Same-name API
         # updates then reach admission with a genuine changed UID, not a 422.
@@ -326,12 +461,16 @@ def execute(private_dir, context=None):
 def main(argv=None):
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--execute', action='store_true'); parser.add_argument('--private-dir'); parser.add_argument('--context')
+    fields=('namespace','deployment','deployment-uid','pod','pod-uid','container','image','audience')
+    for field in fields: parser.add_argument('--broker-'+field)
     args = parser.parse_args(argv)
     if not args.execute:
         print(json.dumps({'state': 'inert', 'api_calls': False})); return 0
     try:
         require(args.private_dir, 'Explicit private evidence directory required')
-        result = execute(args.private_dir, args.context)
+        options={field.replace('-','_'):getattr(args,'broker_'+field.replace('-','_')) for field in fields}
+        if not any(options.values()): options=None
+        result = execute(args.private_dir, args.context, broker=options)
         print(json.dumps({'passed': result['passed'], 'tests': len(result['tests']), 'residual_count': result['residual_count']}))
         return 0 if result['passed'] else 1
     except Exception as error:
