@@ -1,0 +1,57 @@
+{
+  "actual_sdk_source": "5ca3b4c5b6b0481011ae24958ea2de0cc5652c15",
+  "actual_sdk_wheel_sha256": "070569235b620abbc6315393f5c21b9ed14bb2833506f1288c473ae58a1fc075",
+  "behavior_change": "Only idle HTTP/1 connection reuse disabled in both trusted Hub clients; active connection limit100 and authorization/TLS/timeouts retained; no POST replay",
+  "changed_hub_modules": {
+    "hub.py": "4386ef5c58aa8889a1025fab163673de24b14d310ca6d14ac4e50cecd426a6c7",
+    "native_hub_config.py": "55e2531673cafecf1bf3e941dcb8850de2552aa8659168a836dfbaf2425e7898"
+  },
+  "ci_all_four_jobs_success": true,
+  "ci_run": 39008388594,
+  "concurrent_start_qualified": false,
+  "config_sha256": "sha256:58f81cdcd461f0a34fc8106700e5cc295c69de73960e8e027dba7193d389a991",
+  "coordinated_adoption_applied": false,
+  "dependencies_and_defaults_unchanged": true,
+  "evidence_sha256": {
+    "ci.json": "7b59dc01f58fe49da6601aeeacd73c92fe496eaa77d0f25dd0c70eff99962a02",
+    "initial_server_dryruns": "574a60fb1c1d0fddc104d6e3946bbfcb94b5d3b1456ef7190fb003bcb668cb7f",
+    "installed-http-checks/receipt.json": "92794f88638d57cac08da54a99e1a456aeb1b7dc2ced3b7dfdc044646b8fb235",
+    "published-image.json": "37e5bfda280da8a6cf12dfb1eaec44728a39d540110fd89343b46f2a9e001e9e",
+    "registry-config.raw.json": "58f81cdcd461f0a34fc8106700e5cc295c69de73960e8e027dba7193d389a991",
+    "registry-manifest.raw.json": "413bdee650fd3c246ca35a7dd16347945dad6a92ec07e96678abb5cbd5ca68a8",
+    "rollout_pure_review": "1404c47ba923e8ecbd6cb58e35d44172331eeedfbd3e4ea79872fc0d3b0dd04b",
+    "verification.json": "19137d9db6e92781a494526897ca1eafa3e91dbba0fd3d5c0bb1841377c940d6",
+    "wheel.json": "dc4ef820c1e3b1a3522f2291797070fe7f7601da14ad32f3a2dceb65781f0b56"
+  },
+  "existing_gateway_publisher_reuse_verified": true,
+  "full_suite": {
+    "passed": 3010,
+    "skipped": 3,
+    "subtests": 49
+  },
+  "hub_modules_source_wheel_installed": 16,
+  "hub_wheel_sha256": "b0e900c48fbe9ade7cb71aa576eca1d43fab0df855018a2dd1b34faa30e92e45",
+  "image": "ghcr.io/mul-cps/cps-compute@sha256:413bdee650fd3c246ca35a7dd16347945dad6a92ec07e96678abb5cbd5ca68a8",
+  "independent_local_tls_microbenchmark": {
+    "extra_ms_per_request": 1.568,
+    "fresh_ms_per_request": 2.049,
+    "pooled_ms_per_request": 0.481,
+    "production_latency_measured": false
+  },
+  "initial_server_dry_runs_passed": 11,
+  "installed_cancelled_generation_cases_passed": 11,
+  "installed_http_cases_passed": 5,
+  "live_deployed": false,
+  "live_failure_cause_proven": false,
+  "production_qualified": false,
+  "pure_rollout_independent_review_passed": true,
+  "sdk_installation_changed": false,
+  "sdk_modules_unchanged": 67,
+  "source": "d60603211eaeb2a81a2ca50853b42dcebef3e402",
+  "source_red_green": {
+    "baseline_failed": 2,
+    "baseline_passed": 3,
+    "candidate_passed": 5,
+    "independently_reproduced": true
+  }
+}
