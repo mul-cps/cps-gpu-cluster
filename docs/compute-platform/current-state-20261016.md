@@ -45,6 +45,18 @@ upstream Dex login expired; a fresh interactive login is required before that
 hardware run. No authentication check was disabled. Test credentials were
 removed and no workload or grant was changed during this preflight.
 
+The next barrier-synchronized concurrent CPS5/CPS5 attempt failed despite
+successful preflights. Requests were sent 0.058269 ms apart; the secondary reached
+Running, but the lab's reservation-acquire POST raised an HTTPX transport EOF and
+the console returned 503. Gateway identity was unchanged with zero container
+restarts. The transport failure is observed; its cause and commit status are not
+inferred. Both normal Stops succeeded, all 115 claims are released, original
+114 history records preserved, SQL tables empty, temporary grants/memberships
+restored and token revoked. All four installed consumers verified ready afterward.
+[Concurrent attempt and cleanup](../../qualification-artifacts/native-concurrent-start-20261017/README.md).
+Concurrent startup remains unqualified; reproduce the transport class before
+adopting a mitigation, without replaying ambiguous POSTs.
+
 ## Qualification history — earlier checkpoints, superseded by the current gate
 
 The following pending statements describe their dated checkpoint, not current

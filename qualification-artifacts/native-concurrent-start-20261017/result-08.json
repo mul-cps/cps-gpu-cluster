@@ -1,0 +1,71 @@
+{
+  "cleanup": {
+    "all_native_claims_released": 115,
+    "concurrent_start_qualified": false,
+    "controlled_pods_and_hub_servers_absent": true,
+    "grants_restored_exactly": 2,
+    "ledger_uid_preserved": true,
+    "memberships_restored_exactly": 2,
+    "normal_stops_http": [
+      200,
+      200
+    ],
+    "old_history_records_unchanged": 114,
+    "personal_pod_uids_preserved": true,
+    "production_qualified": false,
+    "sql_binding_count": 0,
+    "sql_reservation_count": 0,
+    "temporary_token_revoked_and_plaintext_removed": true
+  },
+  "concurrent_start_qualified": false,
+  "evidence_sha256": {
+    "concurrent-start-lab/response.private.json": "a268ee2a3037fdea1492bcc48491597cfd5939627de83c73a371aa2338e5b29d",
+    "concurrent-start-lab/sent.private.json": "8f27b73d1380531bb15b11961ae7a389bfe8227133437aea452a0905ffd1cb3b",
+    "concurrent-start-result.private.json": "3660528cee2189099d0d58cfc4e9e4642aff1a56fc079dde1d3a310e5bfd203d",
+    "concurrent-start-secondary/response.private.json": "a2e174504e690dcfa4fa90c24e74a445a157a92929fcc1f415eed7bdf9ce34d7",
+    "concurrent-start-secondary/sent.private.json": "08a36e3d584b59293851199686d381b794ffc4cae9a96b5bc4a16bbb7a8e2e44",
+    "concurrent_start.py": "ddb31a129d713464bbe4b43486c800f838d46e225f912228f89538040538682f",
+    "final-cleanup.private.json": "5bd2a2d5cc23bab82094e3f0ace8c9cb009fc6e5a9f7bff59d356fb4655bb268",
+    "final-readiness.private.json": "7f76497ecc47099dba428619875c1f3c3a32753ca3f4c8503855926fa9acd47d",
+    "gateway-final.private.log": "c3a3a4b7d2967ab81bb07b2270190f92b0d18c8b39a016461b7a051cfa9dbceb",
+    "hub-final.private.log": "e75f55481f60c70c5962d9c53528cb6f7edcc80956cd3848ec34807b2a8ffc03",
+    "ledger-before.private.json": "bb3539a2446648ba3df6c2eb7320c8a6ff5f66ee72a67279ea3acb49a5679b42",
+    "ledger-final.private.json": "aff830179dfccc92f50d23fa60df3666c3d809e96866b9a7efaa46089f048234",
+    "membership-restoration-confirmed.private.json": "ea7e3bbe02785717d58f1ac357ff38fc1c5468c4db3051e6269844d559dbcf26",
+    "restore/receipt.private.json": "7efbb8aa550b658dd021fa675dcb6a1363386d2f5e969dace3cb1c1686767f33",
+    "token-revocation.private.json": "87aac0207eb8cea5597b6e896f3410bdd750afafcbe23c5e7f4bf7515d27f27a"
+  },
+  "failure": {
+    "cause_proven": false,
+    "exception_type": "httpx.RemoteProtocolError",
+    "gateway_pod_uid": "4338bd16-d859-48fd-b1c6-403d64897670",
+    "gateway_restart_count": 0,
+    "lab_console_detail": "Hub spawn failed: workspace is neither ready nor starting",
+    "message": "Server disconnected without sending a response.",
+    "post_processing_or_commit_status_inferred_from_absent_access_log": false,
+    "stage": "Hub POST /internal/v1/reservations/acquire",
+    "transport_requests_replayed": false
+  },
+  "normal_start_results": {
+    "lab": {
+      "elapsed_seconds": 20.652365401,
+      "http": 503
+    },
+    "secondary": {
+      "elapsed_seconds": 92.821466258,
+      "http": 200
+    }
+  },
+  "post_cleanup_readiness": {
+    "approval_revision": "sha256:1e2b09e4f7a30389a78ac82eb9243ba8466a0e5e396dc312b7d76672501d88a1",
+    "component_count": 4,
+    "observed_at": "2026-10-17T05:56:25.303969+00:00",
+    "policy_hash": "sha256:d48f6553ed036c2e7adcc97417623fe0308be93ad13b20f246047ada118511b0",
+    "state": "ready"
+  },
+  "production_qualified": false,
+  "qualification": "concurrent normal CPS5/CPS5 startup",
+  "request_start_gap_milliseconds": 0.058269,
+  "result": "failed",
+  "schema_version": 1
+}
