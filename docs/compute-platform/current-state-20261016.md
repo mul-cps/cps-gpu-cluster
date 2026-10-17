@@ -14,6 +14,12 @@ Six installed node-only functional cases passed, and SDK/Hub wheel rebuilds
 from sdists were byte-identical. This is source/package evidence, not live
 GPU qualification. [Exact artifacts and limits](../../qualification-artifacts/dynamic-approval-head-source-20261017/README.md).
 
+The follow-up SDK revision `a4037d3a0f5c1bc62afb69561adaf87797466768`
+preserves authentic legacy history spanning the four reviewed component
+namespaces. Its 43 focused SDK checks and 37 cluster renderer checks passed,
+including rejection of fully formed history outside those namespaces. The
+full compatibility CI above applies to `1dafcfe`, not this follow-up revision.
+
 Automatic producer/delivery journal migration and live adoption remain open.
 Routine head advances must preserve unchanged sealed workloads, pregrant only
 exact authenticated ConfigMap GET names, and wait for genuine component ACKs.
