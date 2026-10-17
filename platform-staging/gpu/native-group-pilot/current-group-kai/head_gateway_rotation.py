@@ -24,7 +24,15 @@ def _module(path):
 
 def _guard(obj, kind):
     from cps_compute.native_observer_permissions import valid_uid
-    meta = image._guard(obj, kind)
+    if kind == 'RoleBinding':
+        image.require(isinstance(obj, dict) and obj.get('apiVersion') == 'rbac.authorization.k8s.io/v1'
+            and obj.get('kind') == kind, 'Exact actual RoleBinding required')
+        meta = obj.get('metadata', {})
+        image.require(isinstance(meta.get('resourceVersion'), str)
+            and re.fullmatch(r'[1-9][0-9]*', meta['resourceVersion']) and meta.get('namespace')
+            and meta.get('name') and not meta.get('deletionTimestamp'), 'Actual named UID/RV resource required')
+    else:
+        meta = image._guard(obj, kind)
     image.require(valid_uid(meta['uid']) and not meta.get('ownerReferences'),
                   'Actual nonzero ownerless UID required')
     return meta
@@ -291,8 +299,51 @@ def _grow(pinned, actual, index, additions):
     return trusted, desired
 
 
-def bind(snapshot, plan, actual_creates):
-    """Return guarded mutations and prospective observer proof, never actual ACKs."""
+def _permissions(snapshot, plan, actual_creates, actual_permissions):
+    """Separate static reads from the existing head-producer-owned reader Roles."""
+    from cps_compute.native_observer_permissions import names
+    namespace = plan['node_config_ref']['namespace']
+    account_name = 'cps-native-observer-operator'
+    subject = {'kind': 'ServiceAccount', 'namespace': namespace, 'name': account_name}
+    account_key = image._key('ServiceAccount', namespace, account_name)
+    account = image._get(snapshot, 'ServiceAccount', namespace, account_name) if account_key in snapshot['objects'] else None
+    account_ref = {'namespace': namespace, 'name': account_name}
+    if account is not None:
+        account_ref['uid'] = _guard(account, 'ServiceAccount')['uid']
+    reads = sorted({plan['node_config_ref']['name'], actual_creates['node.bootstrap']['metadata']['name']})
+    image.require(len(reads) == 2, 'Two distinct actual new Node configuration/bootstrap names required')
+    names(reads)
+    rules = [{'apiGroups': [''], 'resources': ['configmaps'], 'verbs': ['get'], 'resourceNames': reads}]
+    suffix = image.sha({'namespace': namespace, 'subject': subject, 'rules': rules})[7:23]
+    name = 'cps-native-observer-rotation-' + suffix
+    metadata = {'namespace': namespace, 'name': name}
+    role = {'apiVersion': 'rbac.authorization.k8s.io/v1', 'kind': 'Role',
+            'metadata': deepcopy(metadata), 'rules': rules}
+    binding = {'apiVersion': 'rbac.authorization.k8s.io/v1', 'kind': 'RoleBinding',
+        'metadata': deepcopy(metadata), 'roleRef': {'apiGroup': 'rbac.authorization.k8s.io', 'kind': 'Role', 'name': name},
+        'subjects': [subject]}
+    candidates = {'observer.read-role': role, 'observer.read-binding': binding}
+    if actual_permissions is None:
+        return candidates, {}, account_ref
+    image.require(isinstance(actual_permissions, dict) and set(actual_permissions) == set(candidates),
+                  'Exactly two actual supplemental permission readbacks required')
+    for label, candidate in candidates.items():
+        actual = actual_permissions[label]; meta = _guard(actual, candidate['kind'])
+        image.require(all(meta[k] == candidate['metadata'][k] for k in ('namespace', 'name'))
+            and {k: v for k, v in actual.items() if k != 'metadata'}
+                == {k: v for k, v in candidate.items() if k != 'metadata'},
+            'Actual supplemental permission rules, subject, reference or identity differ')
+    return {}, deepcopy(actual_permissions), account_ref
+
+
+def bind(snapshot, plan, actual_creates, *, actual_permissions=None):
+    """Return CAS patches only after exact supplemental permission readbacks.
+
+    The fixed observer subject retains its existing name-based Kubernetes RBAC
+    identity. Its actual UID is validated when included in the pinned capture;
+    RoleBinding itself cannot pin a ServiceAccount UID. The four original
+    producer-owned operator Roles and their independent baselines stay exact.
+    """
     try:
         expected = bind_node(snapshot, plan['prepared'], plan['actual_node_config'])
         image.require(plan == expected, 'Exact bound Node/config/dependent plan required')
@@ -318,12 +369,7 @@ def bind(snapshot, plan, actual_creates):
             release['roles'][offset] = trusted
             value = deepcopy(actual); value['rules'] = desired; roles.append(value)
             if desired != actual['rules']: patches['component-role:' + '/'.join(key)] = image._patch(actual, '/rules', desired)
-        operators = []
-        for pinned in inputs['operator_baselines']:
-            ns = pinned['namespace']; actual = image._get(snapshot, 'Role', ns, pinned['name'])
-            extra = ({plan['node_config_ref']['name'], actual_creates['node.bootstrap']['metadata']['name']} if ns == node_ns else set())
-            trusted, desired = _grow(pinned, actual, pinned['index'], extra); operators.append(trusted)
-            if desired != actual['rules']: patches['operator-role:' + ns] = image._patch(actual, '/rules', desired)
+        operators = deepcopy(inputs['operator_baselines'])
         controllers = []
         for component, original in snapshot['deployments'].items():
             value = deepcopy(original); value['spec'] = deepcopy(plan['runtime_specs'][component]); controllers.append(value)
@@ -334,9 +380,13 @@ def bind(snapshot, plan, actual_creates):
             maps[image._key('ConfigMap', value['metadata']['namespace'], value['metadata']['name'])] = deepcopy(value)
         from cps_compute.native_observer_permissions import ObserverRelease
         ObserverRelease.from_dict(release)
+        permissions, verified_permissions, observer_account = _permissions(snapshot, plan, actual_creates, actual_permissions)
+        pending = actual_permissions is None
         return {'version': 1, 'observer_release': release, 'prospective_capture': {'version': 1,
             'configmaps': list(maps.values()), 'deployments': controllers, 'roles': roles},
-            'patches': patches, 'operator_baselines': operators, 'endpoint_proposal': deepcopy(plan['endpoint_proposal']),
+            'creates': permissions, 'permissions_pending': pending,
+            'actual_permissions': verified_permissions, 'observer_service_account': observer_account,
+            'patches': {} if pending else patches, 'operator_baselines': operators, 'endpoint_proposal': deepcopy(plan['endpoint_proposal']),
             'actual_endpoint_seed': deepcopy(actual_creates['coordinator.seed']), 'node_config_ref': deepcopy(plan['node_config_ref']),
             'previous_node_template': old_template, 'previous_node_template_sha256': image.sha(old_template),
             'runtime_specs': deepcopy(plan['runtime_specs']), 'prospective': True, 'live_applied': False,

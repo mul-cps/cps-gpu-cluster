@@ -132,12 +132,22 @@ def phases(values):
     return module,prepared,node,bound,created
 
 
+def ready_bind(values,module,bound,created):
+    pending=module.bind(values['snapshot'],bound,created)
+    permissions={label:actual(obj)for label,obj in pending['creates'].items()}
+    result=module.bind(values['snapshot'],bound,created,actual_permissions=permissions)
+    assert result['permissions_pending'] is False
+    assert result['operator_baselines']==values['operator_baselines']
+    assert not any(label.startswith('operator-role:')for label in result['patches'])
+    return result
+
+
 def test_complete_rotation_preserves_head_history_peer_images_and_all_role_identities():
     values=fixture();before=copy.deepcopy(values)
     module,prepared,node,bound,created=phases(values)
     assert set(bound['creates'])=={'node.bootstrap','gateway.publisher','coordinator.seed'}
     assert created['node.bootstrap']['data']['release']=='false'
-    result=module.bind(values['snapshot'],bound,created)
+    result=ready_bind(values,module,bound,created)
     assert values==before
     old_cfg=image._parse(image.volume(values['snapshot'],'node','packaged-bootstrap-input')['data']['config-ref.json'])
     old_node=image._get(values['snapshot'],'ConfigMap',old_cfg['namespace'],old_cfg['name'])
@@ -241,7 +251,7 @@ def test_mounted_head_drift_is_rejected_even_after_snapshot_repin(component):
 def test_actual_observer_renderer_accepts_prospective_capture_with_exact_operator_deltas():
     from cps_compute.native_group_process import _template
     values=fixture();module,prepared,node,bound,created=phases(values)
-    result=module.bind(values['snapshot'],bound,created)
+    result=ready_bind(values,module,bound,created)
     release=result['observer_release'];capture=result['prospective_capture']
     policy=image._context(values['snapshot'])[0]
     path=HERE.parents[2]/'native-observer-operator'/'render.py'
@@ -251,18 +261,68 @@ def test_actual_observer_renderer_accepts_prospective_capture_with_exact_operato
         'ghcr.io/mul-cps/cps-native-observer@sha256:'+'8'*64)
     deployment=next(v for v in rendered if v['kind']=='Deployment')
     assert deployment['spec']['replicas']==0  # Prospective validation is not live readiness.
-    namespace=node['metadata']['namespace']
-    for old,new in zip(values['operator_baselines'],result['operator_baselines']):
-        if old['namespace']!=namespace:
-            assert new==old
-            continue
-        expected=copy.deepcopy(old)
-        names=expected['rules'][old['index']]['resourceNames']
-        expected['rules'][old['index']]['resourceNames']=sorted(set(names)|{
-            node['metadata']['name'],created['node.bootstrap']['metadata']['name']})
-        assert new==expected
+    assert result['operator_baselines']==values['operator_baselines']
     assert result['previous_node_template_sha256']==canonical_sha256(result['previous_node_template'])
     assert result['previous_node_template_sha256']==values['previous_release']['held_node_template_sha256']
     future_node=next(d for d in capture['deployments']if d['metadata']['uid']==values['snapshot']['deployments']['node']['metadata']['uid'])
     assert release['held_node_template_sha256']==canonical_sha256(_template(future_node))
     assert release['held_node_template_sha256']!=values['previous_release']['held_node_template_sha256']
+
+
+def test_separate_read_grants_must_be_published_before_any_active_patches():
+    values=fixture();module,prepared,node,bound,created=phases(values)
+    pending=module.bind(values['snapshot'],bound,created)
+    assert pending['permissions_pending'] is True and pending['patches']=={}
+    assert pending['operator_baselines']==values['operator_baselines']
+    assert set(pending['creates'])=={'observer.read-role','observer.read-binding'}
+    role=pending['creates']['observer.read-role'];binding=pending['creates']['observer.read-binding']
+    namespace=node['metadata']['namespace']
+    assert role['kind']=='Role' and role['metadata']['namespace']==namespace
+    assert role['rules']==[{'apiGroups':[''],'resources':['configmaps'],'verbs':['get'],
+        'resourceNames':sorted([node['metadata']['name'],created['node.bootstrap']['metadata']['name']])}]
+    assert binding['kind']=='RoleBinding' and binding['metadata']['namespace']==namespace
+    assert binding['subjects']==[{'kind':'ServiceAccount','name':'cps-native-observer-operator','namespace':namespace}]
+    assert binding['roleRef']=={'apiGroup':'rbac.authorization.k8s.io','kind':'Role','name':role['metadata']['name']}
+    assert module.bind(values['snapshot'],bound,created)['creates']==pending['creates']
+    assert 'uid' not in role['metadata'] and 'resourceVersion' not in role['metadata']
+    ready=ready_bind(values,module,bound,created)
+    assert len(ready['patches'])==5
+
+
+@pytest.mark.parametrize('fault',['missing','extra','role-uid','role-rv','binding-uid','binding-rv',
+    'role-owner','binding-owner','rules','subject','role-ref','role-name','binding-name','namespace'])
+def test_active_patches_require_exact_actual_separate_permission_readbacks(fault):
+    values=fixture();module,prepared,node,bound,created=phases(values)
+    pending=module.bind(values['snapshot'],bound,created)
+    permissions={label:actual(obj)for label,obj in pending['creates'].items()}
+    role=permissions['observer.read-role'];binding=permissions['observer.read-binding']
+    if fault=='missing':permissions.pop('observer.read-role')
+    elif fault=='extra':permissions['extra']=copy.deepcopy(role)
+    elif fault.endswith('-uid'):(role if fault.startswith('role-')else binding)['metadata']['uid']=str(uuid.UUID(int=0))
+    elif fault.endswith('-rv'):(role if fault.startswith('role-')else binding)['metadata']['resourceVersion']='0'
+    elif fault.endswith('-owner'):(role if fault.startswith('role-')else binding)['metadata']['ownerReferences']=[{'uid':str(uuid.uuid4())}]
+    elif fault=='rules':role['rules'][0]['verbs'].append('list')
+    elif fault=='subject':binding['subjects'][0]['name']='foreign-operator'
+    elif fault=='role-ref':binding['roleRef']['name']='foreign-role'
+    elif fault=='role-name':role['metadata']['name']='foreign-role'
+    elif fault=='binding-name':binding['metadata']['name']='foreign-binding'
+    else:binding['metadata']['namespace']='foreign-system'
+    with pytest.raises(ValueError):
+        module.bind(values['snapshot'],bound,created,actual_permissions=permissions)
+
+
+@pytest.mark.parametrize('fault',[None,'zero-uid','owner'])
+def test_captured_observer_service_account_uid_is_preserved_or_rejected(fault):
+    values=fixture();namespace=image._context(values['snapshot'])[1].reference.to_dict()['namespace']
+    account={'apiVersion':'v1','kind':'ServiceAccount','metadata':{'namespace':namespace,
+        'name':'cps-native-observer-operator','uid':str(uuid.uuid4()),'resourceVersion':'73'}}
+    if fault=='zero-uid':account['metadata']['uid']=str(uuid.UUID(int=0))
+    elif fault=='owner':account['metadata']['ownerReferences']=[{'uid':str(uuid.uuid4())}]
+    values['snapshot']['objects'][image._key('ServiceAccount',namespace,account['metadata']['name'])]=account
+    values['expected_snapshot_sha256']=canonical_sha256(values['snapshot'])
+    module,prepared,node,bound,created=phases(values)
+    if fault is not None:
+        with pytest.raises(ValueError):module.bind(values['snapshot'],bound,created)
+    else:
+        pending=module.bind(values['snapshot'],bound,created)
+        assert pending['observer_service_account']=={k:account['metadata'][k]for k in ('namespace','name','uid')}
