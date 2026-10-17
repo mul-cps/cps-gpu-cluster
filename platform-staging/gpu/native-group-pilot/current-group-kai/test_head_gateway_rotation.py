@@ -114,6 +114,102 @@ def prepare(values):
     return load('head_gateway_rotation').prepare(**values)
 
 
+def mounted_fixture(*, api_defaults=False):
+    values=fixture();snapshot=values['snapshot'];deployment=snapshot['deployments']['gateway']
+    path=HERE.parent/'current-group-integration'/'gateway_rollout.py'
+    spec=importlib.util.spec_from_file_location('mounted_gateway_rollout',path)
+    rollout=importlib.util.module_from_spec(spec);spec.loader.exec_module(rollout)
+    desired=rollout.compose_gateway(deployment,values['endpoint_proposal'],values['actual_endpoint_seed'],
+        expected={k:deployment['metadata'][k]for k in ('namespace','name','uid','resourceVersion')})['spec']
+    # Model an independently reviewed permission repair without accepting an
+    # arbitrary command copied from the captured live Deployment.
+    marker='\n# Independently reviewed 0660-to-0600 permission repair fixture\n'
+    values['endpoint_proposal']['gateway']['initContainer']['command'][-1]+=marker
+    values['expected_endpoint_proposal_sha256']=canonical_sha256(values['endpoint_proposal'])
+    initializer=next(c for c in desired['template']['spec']['initContainers']if c['name']=='native-kai-private-inputs')
+    initializer['command'][-1]+=marker
+    if api_defaults:
+        defaults={'imagePullPolicy':'IfNotPresent','resources':{},
+            'terminationMessagePath':'/dev/termination-log','terminationMessagePolicy':'File'}
+        assert not set(defaults)&set(values['endpoint_proposal']['gateway']['initContainer'])
+        initializer.update(defaults)
+    deployment['spec']=desired
+    meta=deployment['metadata']
+    snapshot['objects'][image._key('Deployment',meta['namespace'],meta['name'])]=copy.deepcopy(deployment)
+    values['expected_snapshot_sha256']=canonical_sha256(snapshot)
+    return values
+
+
+@pytest.mark.parametrize('api_defaults',[False,True])
+def test_mounted_coordinator_rotation_preserves_reviewed_repair_and_full_spec(api_defaults):
+    values=mounted_fixture(api_defaults=api_defaults);before=copy.deepcopy(values)
+    module,prepared,node,bound,created=phases(values)
+    result=ready_bind(values,module,bound,created)
+    assert values==before
+    expected=copy.deepcopy(values['snapshot']['deployments']['gateway']['spec'])
+    pod=expected['template']['spec']
+    for section,names in [('containers',{'gateway','approval-capture'}),
+                          ('initContainers',{'capture-private-inputs','native-kai-private-inputs'})]:
+        for container in pod[section]:
+            if container['name']in names:container['image']=values['gateway_image']
+    next(v for v in pod['volumes']if v['name']=='cps-native-approval-publisher')['configMap']['name']=created['gateway.publisher']['metadata']['name']
+    next(v for v in pod['volumes']if v['name']=='kai-seed')['configMap']['name']=created['coordinator.seed']['metadata']['name']
+    assert bound['runtime_specs']['gateway']==expected
+    assert result['runtime_specs']['gateway']==expected
+    reviewed=values['endpoint_proposal']['gateway']['initContainer']['command']
+    assert next(c for c in pod['initContainers']if c['name']=='native-kai-private-inputs')['command']==reviewed
+    assert result['endpoint_proposal']['gateway']['initContainer']['command']==reviewed
+    assert result['observer_release']['heads']==values['previous_release']['heads']
+    assert len(result['operator_baselines'])==4
+    assert result['operator_baselines']==values['operator_baselines']
+    namespace=image._context(values['snapshot'])[1].document['component_declarations']['node']['namespace']
+    assert set(result['patches'])=={'gateway.runtime-secret','gateway.deployment','node.deployment',
+        'component-role:'+namespace+'/cps-native-approval-node',
+        'component-role:'+namespace+'/cps-native-approval-gateway'}
+
+
+@pytest.mark.parametrize('field,value',[
+    ('imagePullPolicy','Always'),('resources',{'requests':{'cpu':'100m'}}),
+    ('terminationMessagePath','/foreign/log'),('terminationMessagePolicy','FallbackToLogsOnError'),
+    ('stdin',True)])
+def test_mounted_initializer_rejects_nondefault_or_unknown_api_fields(field,value):
+    values=mounted_fixture(api_defaults=True);snapshot=values['snapshot']
+    deployment=snapshot['deployments']['gateway'];meta=deployment['metadata']
+    initializer=next(c for c in deployment['spec']['template']['spec']['initContainers']if c['name']=='native-kai-private-inputs')
+    initializer[field]=value
+    snapshot['objects'][image._key('Deployment',meta['namespace'],meta['name'])]=copy.deepcopy(deployment)
+    values['expected_snapshot_sha256']=canonical_sha256(snapshot)
+    with pytest.raises(ValueError):prepare(values)
+
+
+@pytest.mark.parametrize('fault',['env','mount','seed','current-node-ref','init-image','init-command'])
+def test_mounted_coordinator_drift_is_rejected_after_snapshot_repin(fault):
+    values=mounted_fixture();snapshot=values['snapshot']
+    pod=snapshot['deployments']['gateway']['spec']['template']['spec']
+    main=next(c for c in pod['containers']if c['name']=='gateway')
+    initializer=next(c for c in pod['initContainers']if c['name']=='native-kai-private-inputs')
+    if fault=='env':next(e for e in main['env']if e['name']=='CPS_NATIVE_KAI_COORDINATOR_CONFIG')['value']='/foreign/coordinator.json'
+    elif fault=='mount':main['volumeMounts'][-1]['mountPath']+='/foreign'
+    elif fault=='seed':next(v for v in pod['volumes']if v['name']=='kai-seed')['configMap']['name']='foreign-seed'
+    elif fault=='current-node-ref':
+        seed=values['actual_endpoint_seed'];body=json.loads(seed['data']['coordinator.json'])
+        body['nodeConfigurationRef']['uid']=str(uuid.uuid4());seed['data']['coordinator.json']=json.dumps(body)
+    elif fault=='init-image':initializer['image']='ghcr.io/mul-cps/cps-compute@sha256:'+'7'*64
+    else:initializer['command'][-1]+='\n# Unreviewed live-only command change\n'
+    deployment=snapshot['deployments']['gateway'];meta=deployment['metadata']
+    snapshot['objects'][image._key('Deployment',meta['namespace'],meta['name'])]=copy.deepcopy(deployment)
+    values['expected_snapshot_sha256']=canonical_sha256(snapshot)
+    with pytest.raises(ValueError):prepare(values)
+
+
+@pytest.mark.parametrize('pin',[None,'sha256:'+'0'*64])
+def test_mounted_coordinator_requires_independent_reviewed_endpoint_pin(pin):
+    values=mounted_fixture()
+    if pin is None:values.pop('expected_endpoint_proposal_sha256')
+    else:values['expected_endpoint_proposal_sha256']=pin
+    with pytest.raises(ValueError):prepare(values)
+
+
 def test_staged_endpoint_seed_is_not_an_existing_mounted_coordinator():
     values=fixture();snapshot=values['snapshot'];gateway=snapshot['deployments']['gateway']['spec']['template']['spec']
     assert len({d['metadata']['namespace']for d in snapshot['deployments'].values()})==4
@@ -215,6 +311,17 @@ def test_node_bind_refuses_changed_actual_node_config_or_prepared_plan(fault):
     elif fault=='node-mutable':node['immutable']=False
     else:prepared['creates']['node-config']['data']['config.json']='{}'
     with pytest.raises(ValueError):module.bind_node(values['snapshot'],prepared,node)
+
+
+def test_existing_staged_prepared_plan_without_optional_proposal_pin_still_binds():
+    values=fixture();module=load('head_gateway_rotation');prepared=prepare(values)
+    # Retained staged plans predate the mounted-only independent proposal pin.
+    prepared['inputs'].pop('expected_endpoint_proposal_sha256',None)
+    node=actual(prepared['creates']['node-config'])
+    bound=module.bind_node(values['snapshot'],prepared,node)
+    assert bound['actual_node_config']==node
+    assert bound['prepared']==prepared
+    assert set(bound['creates'])=={'node.bootstrap','gateway.publisher','coordinator.seed'}
 
 
 @pytest.mark.parametrize('fault',['missing','extra','uid','data','owner','mutable','plan'])

@@ -1,8 +1,8 @@
 """Pure, private v4 Gateway successor intents; never apply or qualify them.
 
-The endpoint seed is staged, not installed. Root must separately compose its
-Gateway fragments, rotate the protected delivery journal and re-render the
-observer with actual post-rollout captures. Plans retain private input data.
+The endpoint seed may be staged or installed. Installed Coordinator fragments
+must match an independently reviewed proposal pin. Root owns journal rotation
+and actual post-rollout observer captures. Plans retain private input data.
 """
 from copy import deepcopy
 import hashlib
@@ -171,8 +171,6 @@ def _context(inputs):
     image.require(bootstrap['data']['release'] == 'true' and bootstrap.get('immutable') is not True,
                   'Actual released mutable old bootstrap required')
     pod = snapshot['deployments']['gateway']['spec']['template']['spec']
-    image.require(not any(e.get('name') == 'CPS_NATIVE_KAI_COORDINATOR_CONFIG'
-        for c in pod['containers'] for e in c.get('env', [])), 'Coordinator already mounted; staged baseline required')
     rollout = _module(Path(__file__).parent.parent / 'current-group-integration' / 'gateway_rollout.py')
     proposal = inputs['endpoint_proposal']; seed = inputs['actual_endpoint_seed']
     _guard(seed, 'ConfigMap'); rollout._seed(proposal, seed, declarations['gateway']['namespace'])
@@ -182,8 +180,47 @@ def _context(inputs):
         and image._parse(proposal['seed']['data']['coordinator.json']) == proposal['coordinator']
         and proposal['gateway']['initContainer']['image'] == declarations['gateway']['image'],
         'Staged endpoint Coordinator config differs from actual old Node/Gateway')
-    image.require(not any(v.get('configMap', {}).get('name') == seed['metadata']['name'] for v in pod['volumes']),
-                  'Endpoint seed must be staged but not mounted')
+    installed_env = [(c['name'], e) for c in pod['containers'] for e in c.get('env', [])
+                     if e.get('name') == 'CPS_NATIVE_KAI_COORDINATOR_CONFIG']
+    mounted = bool(installed_env) or any(v.get('name') == 'kai-seed' for v in pod['volumes']) \
+        or any(c.get('name') == 'native-kai-private-inputs' for c in pod.get('initContainers', []))
+    if mounted:
+        image.require(inputs.get('expected_endpoint_proposal_sha256') == image.sha(proposal),
+                      'Independent reviewed mounted endpoint proposal pin required')
+        fragment = proposal['gateway']; main_name = declarations['gateway']['container']
+        expected_env = {'name': 'CPS_NATIVE_KAI_COORDINATOR_CONFIG', 'value': '/kai-private/config/coordinator.json'}
+        image.require(fragment['env'] == [expected_env] and installed_env == [(main_name, expected_env)]
+            and image._one(pod['volumes'], 'kai-private') == {'name': 'kai-private', 'emptyDir': {}}
+            and image._one(image._one(pod['containers'], main_name)['volumeMounts'], 'kai-private') == {
+                'name': 'kai-private', 'mountPath': '/kai-private', 'readOnly': True},
+            'Exact installed Coordinator environment and private read-only mount required')
+        initializer = deepcopy(image._one(pod.get('initContainers', []), 'native-kai-private-inputs'))
+        api_defaults = {}
+        for field, default in {'imagePullPolicy': 'IfNotPresent', 'resources': {},
+                'terminationMessagePath': '/dev/termination-log', 'terminationMessagePolicy': 'File'}.items():
+            if field not in fragment['initContainer'] and field in initializer:
+                image.require(initializer[field] == default, 'Unreviewed Coordinator initializer API default differs')
+                api_defaults[field] = initializer.pop(field)
+        image.require(initializer == fragment['initContainer'],
+                      'Installed Coordinator initializer differs from independently reviewed full command and spec')
+        # Reuse the original append-only compositor to prove the complete mounted
+        # fragments, data PVC, fsGroup and collision rules against the reviewed input.
+        absent = deepcopy(snapshot['deployments']['gateway']); absent_pod = absent['spec']['template']['spec']
+        main = image._one(absent_pod['containers'], main_name)
+        for field in ('env', 'volumeMounts'):
+            names = {v['name'] for v in fragment[field]}
+            main[field] = [v for v in main.get(field, []) if v.get('name') not in names]
+        for field, values in (('volumes', fragment['volumes']), ('initContainers', [fragment['initContainer']])):
+            names = {v['name'] for v in values}
+            absent_pod[field] = [v for v in absent_pod.get(field, []) if v.get('name') not in names]
+        expected = {k: absent['metadata'][k] for k in ('namespace', 'name', 'uid', 'resourceVersion')}
+        rebuilt = rollout.compose_gateway(absent, proposal, seed, expected=expected, container=main_name)
+        image._one(rebuilt['spec']['template']['spec']['initContainers'], 'native-kai-private-inputs').update(api_defaults)
+        image.require(rebuilt['spec'] == snapshot['deployments']['gateway']['spec'],
+                      'Installed Coordinator fragments differ from reviewed append-only proposal')
+    else:
+        image.require(not any(v.get('configMap', {}).get('name') == seed['metadata']['name'] for v in pod['volumes']),
+                      'Endpoint seed must be staged but not mounted')
     image.require(image._get(snapshot, 'ConfigMap', seed['metadata']['namespace'], seed['metadata']['name']) == seed,
                   'Duplicate actual staged endpoint seed differs')
     capture = image._immutable(image.secret_volume(snapshot, 'gateway', 'capture-seed'))
@@ -225,9 +262,11 @@ def _context(inputs):
 
 
 def prepare(snapshot, previous_release, operator_baselines, gateway_image, endpoint_proposal, actual_endpoint_seed,
-            *, expected_snapshot_sha256, expected_release_sha256, expected_operator_baselines_sha256, expected_revision):
+            *, expected_snapshot_sha256, expected_release_sha256, expected_operator_baselines_sha256, expected_revision, expected_endpoint_proposal_sha256=None):
     """First phase: create only a Gateway-image-only immutable Node4 candidate."""
     inputs = deepcopy(locals())
+    if expected_endpoint_proposal_sha256 is None:
+        inputs.pop('expected_endpoint_proposal_sha256')
     try:
         policy, configuration, _, _, _ = _context(inputs)
         document = configuration.document; document['component_declarations']['gateway']['image'] = gateway_image
@@ -276,6 +315,9 @@ def bind_node(snapshot, prepared, actual_node_config):
             child = image._one(gateway_pod[section], name)
             image.require(child['image'] == old_image, 'Same-component Gateway capture/helper image drift')
             child['image'] = prepared['inputs']['gateway_image']
+        if any(c.get('name') == 'native-kai-private-inputs' for c in gateway_pod.get('initContainers', [])):
+            image._one(gateway_pod['initContainers'], 'native-kai-private-inputs')['image'] = prepared['inputs']['gateway_image']
+            image._one(gateway_pod['volumes'], 'kai-seed')['configMap']['name'] = proposal['seed']['metadata']['name']
         image._one(gateway_pod['volumes'], 'cps-native-approval-publisher')['configMap']['name'] = publisher_candidate['metadata']['name']
         runtime['nativeGroupApprovals']['processes']['gateway']['image'] = prepared['inputs']['gateway_image']
         secret = image.secret_volume(snapshot, 'gateway', 'config'); runtime_data = deepcopy(secret['data'])
