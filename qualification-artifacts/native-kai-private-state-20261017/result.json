@@ -1,0 +1,44 @@
+{
+  "version": 1,
+  "applicationSource": "7f3f6d67aa60c72bd9033f0b33df8880c88b6cab",
+  "applicationSourcePublished": true,
+  "fullCPUVerification": {
+    "passed": 3135,
+    "skipped": 6,
+    "subtestsPassed": 68,
+    "skipReasons": {
+      "builtArtifactTests": {
+        "count": 3,
+        "reason": "CPS_LAB_DIST not set; built wheel/sdist inspection requires separate artifact gate"
+      },
+      "rootGateCLITests": {
+        "count": 3,
+        "reason": "Explicit disposable root CPU container fixture required"
+      }
+    }
+  },
+  "clusterIntegration": {
+    "passed": 109,
+    "subtestsPassed": 25,
+    "dependencyWarnings": 2
+  },
+  "actualPreactivationFilesystem": {
+    "effectiveUID": 10001,
+    "dataUID": 0,
+    "dataMode": "02775",
+    "controlUID": 10001,
+    "controlMode": "0664",
+    "custodyExists": false
+  },
+  "custodyPath": "/data/native-kai-private/custody.sqlite",
+  "writerLockPath": "/data/native-kai-private/writer.lock",
+  "privateDirectoryMode": "0700",
+  "preservesExistingDatabasePathsAndPermissions": true,
+  "sameLockBoundAcrossGuardsAndFences": true,
+  "divergentLockBindingRejected": true,
+  "symbolicLinkRejected": true,
+  "inheritedSGIDCleared": true,
+  "gatewayBackupsVerified": 2,
+  "deployed": false,
+  "productionQualified": false
+}

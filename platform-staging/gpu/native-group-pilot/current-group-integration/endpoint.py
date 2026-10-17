@@ -2,6 +2,7 @@
 from copy import deepcopy
 import json
 import hashlib
+import re
 
 ORIGIN = 'https://compute-gateway.cps-compute.svc.cluster.local:8000'
 AUDIENCE = 'cps-native-kai'
@@ -36,7 +37,7 @@ def projected(name, audience):
 
 
 def render(context, *, gateway_account, binder_account, hub_accounts, hub_settings,
-           readiness, reservation_template, api_audience, binder_pod_labels, gateway_pod_security_context, queue='cps-interactive'):
+           readiness, reservation_template, api_audience, binder_pod_labels, gateway_pod_security_context, gateway_data_volume_name, queue='cps-interactive'):
     """Inputs are actual typed context and public captured objects, never tokens.
 
     This is an additive configuration proposal; no RBAC/deployment is applied.
@@ -49,6 +50,7 @@ def render(context, *, gateway_account, binder_account, hub_accounts, hub_settin
     require(isinstance(api_audience,str) and bool(api_audience), 'Explicit accepted API audience required')
     dep=context.deployment; namespace=dep.authority_namespace
     require(type(gateway_pod_security_context.get('fsGroup')) is int and gateway_pod_security_context['fsGroup']==10001, 'Gateway fsGroup10001 required for emptyDir materializer')
+    require(isinstance(gateway_data_volume_name,str) and re.fullmatch(r'[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?',gateway_data_volume_name), 'Actual Gateway data PVC volume name required')
     gateway,binder=actor(gateway_account),actor(binder_account)
     require(binder_pod_labels and all(isinstance(k,str) and isinstance(v,str) and k and v for k,v in binder_pod_labels.items()), 'Exact dedicated binder Pod labels required')
     require(set(hub_accounts)==set(hub_settings)=={'cps','cit'}, 'Both source Hubs required')
@@ -81,7 +83,8 @@ def render(context, *, gateway_account, binder_account, hub_accounts, hub_settin
     config={'enabled':True,'version':2,'mode':'current-groups','settings':settings,'audience':AUDIENCE,
         'service_rules':rules,'api':{'origin':'https://kubernetes.default.svc','caFile':'/var/run/cps-kai-api/ca.crt',
         'tokenFile':'/var/run/cps-kai-api/token','audience':api_audience,'serviceAccountUID':gateway_account['metadata']['uid']},
-        'custodyPath':'/data/native-kai-custody.sqlite',
+        'custodyPath':'/data/native-kai-private/custody.sqlite',
+        'writerLockPath':'/data/native-kai-private/writer.lock',
         'nodeConfigurationRef':context.node_configuration_ref,
         'runtime':{'writablePvcClaims':sorted({v['storage']['pvc'] for v in dep.workspaces.values()}),
                    'writableMountPaths':['/workspace'],'readonlyNfsMounts':[]},
@@ -110,7 +113,11 @@ def render(context, *, gateway_account, binder_account, hub_accounts, hub_settin
     seed='cps-native-kai-config-'+hashlib.sha256(json.dumps(data,sort_keys=True,separators=(',',':')).encode()).hexdigest()[:16]
     init_code=("from pathlib import Path; import os; p=Path('/kai-private/config'); p.mkdir(mode=0o700); "
                "[(p.joinpath(n).write_bytes(Path('/kai-seed').joinpath(n).read_bytes()),os.chmod(p/n,0o600)) "
-               "for n in ('coordinator.json','policy.json','deployment.json')]")
+               "for n in ('coordinator.json','policy.json','deployment.json')]; "
+               "state=Path('/data/native-kai-private'); state.mkdir(mode=0o700,exist_ok=True); "
+               "fd=os.open(state,os.O_RDONLY|os.O_DIRECTORY|os.O_NOFOLLOW); "
+               "assert os.fstat(fd).st_uid==os.geteuid(), 'Private state owner differs'; "
+               "os.fchmod(fd,0o700); os.close(fd)")
     # A fresh emptyDir, explicit UID and root-owned immutable seed avoid the
     # projected-volume symlink rejection of private_bytes without weakening it.
     flags=['--native-pending-coordinator-enabled=false','--native-coordinator-url='+ORIGIN,
@@ -128,7 +135,7 @@ def render(context, *, gateway_account, binder_account, hub_accounts, hub_settin
                         {'name':'kai-private','mountPath':PRIVATE,'readOnly':True}],
         'initContainer':{'name':'native-kai-private-inputs','image':gateway_image,'command':['python','-c',init_code],
             'securityContext':{'runAsUser':10001,'runAsGroup':10001,'runAsNonRoot':True,'readOnlyRootFilesystem':True,'allowPrivilegeEscalation':False,'capabilities':{'drop':['ALL']}},
-            'volumeMounts':[{'name':'kai-seed','mountPath':'/kai-seed','readOnly':True},{'name':'kai-private','mountPath':PRIVATE}]},
+            'volumeMounts':[{'name':'kai-seed','mountPath':'/kai-seed','readOnly':True},{'name':'kai-private','mountPath':PRIVATE},{'name':gateway_data_volume_name,'mountPath':'/data'}]},
         'private_files':files,
         'materialization_requirement':'UID10001 owns directory0700 and regular files0600; config/policy/deployment copied by reviewed init before Gateway starts.'},
         'network_policy_intent':{'namespace':'cps-compute','podSelector':{'matchLabels':{'app':'compute-gateway'}},
@@ -163,7 +170,13 @@ def snapshot_inputs(snapshot, node_reference):
                     if k.startswith('configmap/'+ns+'/') and 'settings.json' in x.get('data',{})]
         require(len(candidates)==1,'One exact captured Hub settings projection required')
         settings[source]=candidates[0]
-    return context, {'gateway_account':objects['serviceaccount/cps-compute/cps-compute-controller'],
+    gateway_pod=snapshot['deployments']['gateway']['spec']['template']['spec']
+    gateway_container=next(c for c in gateway_pod['containers'] if c['name']==context._configuration.document['component_declarations']['gateway']['container'])
+    data_mounts=[m for m in gateway_container.get('volumeMounts',[]) if m.get('mountPath')=='/data' and not m.get('readOnly') and not m.get('subPath') and not m.get('subPathExpr')]
+    require(len(data_mounts)==1,'One actual writable complete Gateway data PVC mount required')
+    data_volume=next(v for v in gateway_pod['volumes'] if v['name']==data_mounts[0]['name'])
+    require(set(data_volume)=={'name','persistentVolumeClaim'} and not data_volume['persistentVolumeClaim'].get('readOnly'),'Existing writable Gateway data PVC required')
+    return context, {'gateway_data_volume_name':data_volume['name'],'gateway_account':objects['serviceaccount/cps-compute/cps-compute-controller'],
         'hub_accounts':{s:objects['serviceaccount/'+ns+'/hub'] for s,ns in (('cps','jupyterhub'),('cit','cit-jhub'))},
         'hub_settings':settings,'readiness':runtime['nativeGroupApprovals'],
         'gateway_pod_security_context':snapshot['deployments']['gateway']['spec']['template']['spec']['securityContext']}

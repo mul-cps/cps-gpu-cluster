@@ -11,7 +11,7 @@ def inputs(c):
     plain={s:{'enabled':True,'source':s,'gatewayUrl':endpoint.ORIGIN,'gatewayCAFile':'/etc/cps-native-hub/ca.crt','groupDeployment':json.loads(dep.document)} for s in ('cps','cit')}
     readiness={'enabled':True,'ttlSeconds':30,'acknowledgments':{'node':{'namespace':dep.authority_namespace,'name':'ack-node','uid':'99999999-1111-4111-8111-111111111111'}},'processes':{'node':c.group_context._configuration.document['component_declarations']['node']}}
     reservation={'namespace':'kai-resource-reservation','serviceAccount':'kai-resource-reservation','image':'ghcr.io/example/reservation@sha256:'+'a'*64,'appLabel':'kai-resource-reservation','runtimeClassName':'','containerResources':{'requests':{'nvidia.com/gpu':'1'},'limits':{'nvidia.com/gpu':'1'}},'podSecurityContext':{},'containerSecurityContext':{}}
-    return dict(gateway_account=sa('cps-compute','cps-compute-controller',1),binder_account=sa('kai-scheduler','binder',2),hub_accounts={s:sa(ns,'hub',i) for s,ns,i in (('cps','jupyterhub',3),('cit','cit-jhub',4))},hub_settings=plain,readiness=readiness,reservation_template=reservation,api_audience='reviewed-api-audience',binder_pod_labels={'app':'cps-native-binder'},gateway_pod_security_context={'fsGroup':10001})
+    return dict(gateway_account=sa('cps-compute','cps-compute-controller',1),binder_account=sa('kai-scheduler','binder',2),hub_accounts={s:sa(ns,'hub',i) for s,ns,i in (('cps','jupyterhub',3),('cit','cit-jhub',4))},hub_settings=plain,readiness=readiness,reservation_template=reservation,api_audience='reviewed-api-audience',binder_pod_labels={'app':'cps-native-binder'},gateway_pod_security_context={'fsGroup':10001},gateway_data_volume_name='data')
 
 
 def test_actual_be0_configuration_and_epoch_interoperability(request,monkeypatch,tmp_path):
@@ -61,7 +61,7 @@ def test_private_materializer_matches_exact_owned_file_contract(request,monkeypa
     r=endpoint.render(c.group_context,**inputs(c))
     seed=tmp_path/'seed';seed.mkdir();target=tmp_path/'private';target.mkdir()
     for name,raw in r['seed']['data'].items():(seed/name).write_text(raw)
-    code=r['gateway']['initContainer']['command'][2].replace('/kai-private/config',str(target/'config')).replace('/kai-seed',str(seed))
+    code=r['gateway']['initContainer']['command'][2].replace('/kai-private/config',str(target/'config')).replace('/kai-seed',str(seed)).replace('/data/native-kai-private',str(tmp_path/'state'))
     subprocess.run([sys.executable,'-I','-c',code],check=True)
     assert stat.S_IMODE((target/'config').stat().st_mode)==0o700
     for name,body in r['gateway']['private_files'].items():
@@ -151,3 +151,27 @@ def test_binder_reservation_flag_matches_exact_coordinator_template(request,monk
         flags=result['binder'][mode]
         assert [x for x in flags if x.startswith('--resource-reservation-pod-image=')]==[required]
     assert result['coordinator']['reservationTemplate']['image']==args['reservation_template']['image']
+
+
+def test_new_custody_and_writer_lock_use_owned_private_pvc_child(request,monkeypatch,tmp_path):
+    import subprocess,sys,stat
+    c,*_=harness(request,monkeypatch,tmp_path)
+    result=endpoint.render(c.group_context,**inputs(c))
+    assert result['coordinator']['custodyPath']=='/data/native-kai-private/custody.sqlite'
+    assert result['coordinator']['writerLockPath']=='/data/native-kai-private/writer.lock'
+    init=result['gateway']['initContainer']
+    assert {'name':'data','mountPath':'/data'} in init['volumeMounts']
+    seed=tmp_path/'seed';seed.mkdir();private=tmp_path/'private';private.mkdir();data=tmp_path/'data';data.mkdir(mode=0o775);data.chmod(0o2775)
+    db=data/'control.sqlite';db.write_bytes(b'existing database sentinel')
+    before=(data.stat().st_mode,db.read_bytes(),db.stat().st_mode)
+    for name,raw in result['seed']['data'].items():(seed/name).write_text(raw)
+    code=init['command'][2].replace('/kai-private/config',str(private/'config')).replace('/kai-seed',str(seed)).replace('/data/native-kai-private',str(data/'native-kai-private'))
+    subprocess.run([sys.executable,'-I','-c',code],check=True)
+    state=data/'native-kai-private'
+    assert stat.S_IMODE(state.stat().st_mode)==0o700
+    assert before==(data.stat().st_mode,db.read_bytes(),db.stat().st_mode)
+    # A preexisting symbolic link cannot redirect the persistent writer lock.
+    import shutil
+    shutil.rmtree(private/'config');state.rmdir();state.symlink_to(seed,target_is_directory=True)
+    refused=subprocess.run([sys.executable,'-I','-c',code],capture_output=True,text=True)
+    assert refused.returncode!=0

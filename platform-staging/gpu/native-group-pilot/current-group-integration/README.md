@@ -30,7 +30,7 @@ The seed ConfigMap is immutable/public configuration; the generated init copies
 only3named documents into fresh emptyDir/config0700 and files0600 owned10001.
 Main Gateway reads that private volume read-only, matching SDK private_bytes
 without relaxing symlink/ownership checks. Retain existing data PVC and single
-Gateway Recreate strategy; custody DB is /data/native-kai-custody.sqlite. Merge
+Gateway Recreate strategy; new custody DB is /data/native-kai-private/custody.sqlite and the shared writer lock is /data/native-kai-private/writer.lock. Merge
 fragments with fresh UID/RV/full-preimage CAS; this file does not generate a
 blind Deployment overwrite. The init image is the exact authenticated Gateway
 component image and must follow coordinated declaration updates.
@@ -66,10 +66,10 @@ node.Spec.Unschedulable. True automatic placement cannot pass until separately
 reviewed maintenance changes; no scheduler workaround or live qualification
 is claimed. Fixed measured GPU2 5/10GiB pilot only, no MIG/driver/reset actions.
 
-CPU verification (SDK source pinned be0f37ceb7d93c53e8d2e8321dc5a212cb0f686b):
+CPU verification (SDK source pinned 7f3f6d67aa60c72bd9033f0b33df8880c88b6cab):
 set PYTHONPATH to this directory plus that SDK's src, packages/hub/src and tests
 and the qualified test dependencies; run `pytest -q test_endpoint.py`.
-Ten tests use actual central-authority/current-context fixtures, execute both source Hub pending settings parsers (infrastructure construction substituted; actual closed groupHub structural parser and typed pending adapter execute), validate the v2
+Eleven tests use actual central-authority/current-context fixtures, execute both source Hub pending settings parsers (infrastructure construction substituted; actual closed groupHub structural parser and typed pending adapter execute), validate the v2
 installer configuration and independent epoch parser, closed path grants,
 separate projected audiences, staged-off binder flags, explicit fsGroup/process mismatch negatives and actual private materializer.
 
@@ -81,3 +81,5 @@ this with the actual Pod security context during activation; both current Hubs
 already have fsGroup1000, and the Gateway has the required fsGroup10001.
 
 The emitted binder flags also pin `--resource-reservation-pod-image` to the exact Coordinator reservation-template digest in both disabled and opt-in modes. Replace the existing tag-valued flag when merging; do not append a duplicate flag. Actual live tag remains unchanged until explicit activation.
+
+Private-state activation correction: the live PVC root is UID0/mode02775, so the old sibling-of-control.sqlite lock and root-level custody path cannot satisfy the SDK private-state contract. The proposal now requires the actual Gateway data PVC volume name (authenticated from its complete writable `/data` mount), mounts that same PVC in the nonroot initializer, and creates only `native-kai-private` owned by UID10001. It opens the child with `O_DIRECTORY|O_NOFOLLOW`, verifies ownership, and applies0700, clearing inherited SGID. Existing databases and the PVC root retain their bytes and permissions. All guards and execution fences must consume the explicit `writerLockPath`. This requires SDK private-writer-lock successor `7f3f6d67aa60c72bd9033f0b33df8880c88b6cab`; the currently deployed be0 image is incompatible with that new configuration field. Do not apply an earlier dry-run patch as an activation artifact.

@@ -148,7 +148,15 @@ An explicit versioned migration must preserve journal/history and qualify resume
 a client-only upgrade or journal reset is insufficient. Diagnosis was read-only.
 
 The protected Coordinator endpoint, signed-token/CA/RBAC configuration and
-production pending admission remain unapplied. Fresh activation preflight passed
+production pending admission remain unapplied. A subsequent actual filesystem
+check found a runtime blocker missed by API dry runs: `/data` is root-owned02775,
+so strict root-level custody and writer locks would break ordinary mutations.
+SDK successor `7f3f6d6` adds one explicit shared private lock path; the corrected
+proposal provisions only a UID10001-owned0700 PVC child, preserving existing DBs.
+Full CPU checks:3135passed/6skipped/68subtests; cluster integration109passed/25subtests.
+This fix is published source, not deployed; old be0 cannot accept the new field.
+[Private-state correction](../../qualification-artifacts/native-kai-private-state-20261017/README.md).
+ Fresh activation preflight passed
 all 30 required resource-permission checks, so these operations need no broader
 resource grants. The proposal now also pins the binder reservation image to the
 Coordinator template digest; the live binder still uses the tag until rollout.
