@@ -154,6 +154,9 @@ so strict root-level custody and writer locks would break ordinary mutations.
 SDK successor `7f3f6d6` adds one explicit shared private lock path; the corrected
 proposal provisions only a UID10001-owned0700 PVC child, preserving existing DBs.
 Full CPU checks:3135passed/6skipped/68subtests; cluster integration109passed/25subtests.
+All six skipped scenarios subsequently passed in their explicit environments: three
+fresh addon wheel/sdist inspections and three disposable-root CPU gate CLI cases.
+These qualify exact7f3f6d6 source; the combined dynamic-head release remains open.
 This fix is published source, not deployed; old be0 cannot accept the new field.
 [Private-state correction](../../qualification-artifacts/native-kai-private-state-20261017/README.md).
  Fresh activation preflight passed

@@ -40,5 +40,12 @@
   "inheritedSGIDCleared": true,
   "gatewayBackupsVerified": 2,
   "deployed": false,
-  "productionQualified": false
+  "productionQualified": false,
+  "environmentSpecificSkipClosure": {
+    "applicationSource": "7f3f6d67aa60c72bd9033f0b33df8880c88b6cab",
+    "addonArtifactTestsPassed": 3,
+    "rootCPUFixtureTestsPassed": 3,
+    "allSixScenariosExecutedSeparately": true,
+    "finalCombinedDynamicHeadReleaseMustRequalify": true
+  }
 }

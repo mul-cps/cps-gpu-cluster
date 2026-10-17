@@ -1,0 +1,71 @@
+{
+  "container_provenance": {
+    "devices": [
+      "core",
+      "fd",
+      "full",
+      "mqueue",
+      "null",
+      "ptmx",
+      "pts",
+      "random",
+      "shm",
+      "stderr",
+      "stdin",
+      "stdout",
+      "tty",
+      "urandom",
+      "zero"
+    ],
+    "effective_capabilities": "CapEff:\t0000000000000000",
+    "imports": {
+      "/fixtures/test_native_gpu_runtime.py": "95554eae3a68509a78e0d276fafd9f0f6551056cc872d031779bc80c45546555",
+      "/sdk/cps_compute/native_gpu_health.py": "52fdbdae3d5e2f66fd4653d94ef5a62f734e185fabec30450f4a1b70cfee7d67",
+      "/sdk/cps_compute/native_gpu_runtime.py": "035fa64027c09965fcb7557f4346b449b637aa39de804a94565deffe067b0e74"
+    },
+    "python": "3.12.15 (main, Oct  1 2026, 21:47:32) [GCC 14.2.0]",
+    "uid": 0,
+    "uid_map": "         0       1000          1\n         1     524288      65536\n"
+  },
+  "evidence_files": {
+    "command-cpu-root-final.json": "aaa8b97999e15d59d32bd0b9fc5eb16d4d95c5e2cc702484dfa099572f56238b",
+    "evidence/results.xml": "c55edd46ef273a849fe22f40c1f12e5a087fc18b78d39e51981f0c92f51463a9",
+    "evidence/stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "evidence/stdout.log": "1f85707ead8bbcde6fe8c541cd5c8f6a0a56c0bf809a8b63a0a241704aff29fb",
+    "inputs/fixtures/run.py": "1b9565c74dd5b06681b4effb1d4c426eb26acf3e28e7ec58d619aa5f414fba1d"
+  },
+  "image_config_sha256": "21d01e4c401e5893bd37b776d404a542b9f73b078326bff0e4089bdf6dc5e01b",
+  "isolation": {
+    "capabilities": "all dropped",
+    "fake_authority": "disposable /run tmpfs only",
+    "host_GPU_CRI_or_authority_mounts": false,
+    "network": "none",
+    "no_new_privileges": true,
+    "root_filesystem": "readonly",
+    "rootless": true,
+    "source_and_test_inputs": "private byte-identical readonly copies"
+  },
+  "results": [
+    {
+      "name": "test_root_gate_cli_blocks_without_seal_then_validates_actual_process_lifetime[None]",
+      "seconds": "0.289",
+      "status": "passed"
+    },
+    {
+      "name": "test_root_gate_cli_blocks_without_seal_then_validates_actual_process_lifetime[cap]",
+      "seconds": "0.292",
+      "status": "passed"
+    },
+    {
+      "name": "test_root_gate_cli_blocks_without_seal_then_validates_actual_process_lifetime[epoch]",
+      "seconds": "0.276",
+      "status": "passed"
+    }
+  ],
+  "scope": "CPU gate CLI fixture qualification only; not GPU isolation or production readiness",
+  "source_clean_after": true,
+  "source_commit": "7f3f6d67aa60c72bd9033f0b33df8880c88b6cab",
+  "source_manifest_sha256": "bdeb048e7f1c48a9647fc8cd41f8914b4c6e783fdddca0892848ecf41f93eca4",
+  "source_snapshot_modules_verified": 69,
+  "test_sha256": "95554eae3a68509a78e0d276fafd9f0f6551056cc872d031779bc80c45546555"
+}
