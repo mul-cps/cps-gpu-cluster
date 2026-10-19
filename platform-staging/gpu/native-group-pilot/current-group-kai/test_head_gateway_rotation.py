@@ -488,30 +488,32 @@ def test_node_successor_requires_exact_reviewed_repository_digest(value):
 
 
 STOCK_CDI_FILE='k8s.device-plugin.nvidia.com-gpu.json'
+CDI_FILES={'stock_cdi_update':STOCK_CDI_FILE,'management_cdi_update':'management.nvidia.com-gpu.yaml'}
 
 
-def stock_cdi_fixture(monkeypatch):
+def stock_cdi_fixture(monkeypatch,provider='stock_cdi_update'):
     from test_observer_adoption import image_tests
     original=image_tests.node_fixture
     def node_fixture():
         policy,node,core,maps=original()
         document=json.loads(node['data']['config.json'])
-        document['cdi_pins']['other_cdi_files'][STOCK_CDI_FILE]='a'*64
+        document['cdi_pins']['other_cdi_files'].update({name:'a'*64 for name in CDI_FILES.values()})
         node['data']['config.json']=image.canonical(document)
         return policy,node,core,maps
     monkeypatch.setattr(image_tests,'node_fixture',node_fixture)
     values=mounted_fixture(api_defaults=True)
     _,old=image._context(values['snapshot'])
     values['gateway_image']=old.document['component_declarations']['gateway']['image']
-    values['stock_cdi_update']={'previous_sha256':'a'*64,'sha256':'b'*64}
+    values[provider]={'previous_sha256':'a'*64,'sha256':'b'*64}
     return values,old
 
 
-def test_stock_cdi_only_rotation_preserves_every_other_pin_and_process(monkeypatch):
-    values,old=stock_cdi_fixture(monkeypatch);before=copy.deepcopy(values)
+@pytest.mark.parametrize('provider',CDI_FILES)
+def test_cdi_only_rotation_preserves_every_other_pin_and_process(monkeypatch,provider):
+    values,old=stock_cdi_fixture(monkeypatch,provider);before=copy.deepcopy(values)
     module,prepared,node,bound,created=phases(values)
     expected=old.document
-    expected['cdi_pins']['other_cdi_files'][STOCK_CDI_FILE]='b'*64
+    expected['cdi_pins']['other_cdi_files'][CDI_FILES[provider]]='b'*64
     assert json.loads(node['data']['config.json'])==expected
     assert values==before
     for component,spec in bound['runtime_specs'].items():
@@ -548,20 +550,38 @@ def test_stock_cdi_only_rotation_preserves_every_other_pin_and_process(monkeypat
     *[{'previous_sha256':'a'*64,'sha256':'b'*64,key:'foreign'} for key in (
         'filename','selected_filename','common_edits_sha256','runtime_files','other_cdi_files')],
 ])
-def test_stock_cdi_update_rejects_stale_malformed_or_expanded_scope(monkeypatch,update):
-    values,_=stock_cdi_fixture(monkeypatch);values['stock_cdi_update']=update
+@pytest.mark.parametrize('provider',CDI_FILES)
+def test_cdi_update_rejects_stale_malformed_or_expanded_scope(monkeypatch,update,provider):
+    values,_=stock_cdi_fixture(monkeypatch,provider);values[provider]=update
     with pytest.raises(ValueError):prepare(values)
 
 
 def test_absent_stock_cdi_update_preserves_existing_plan_exactly():
     values=mounted_fixture();module=load('head_gateway_rotation')
-    assert module.prepare(**values,stock_cdi_update=None)==module.prepare(**values)
+    assert module.prepare(**values,stock_cdi_update=None,management_cdi_update=None)==module.prepare(**values)
 
 
 
-def test_stock_cdi_update_cannot_add_a_missing_provider_pin():
+@pytest.mark.parametrize('provider',CDI_FILES)
+def test_cdi_update_cannot_add_a_missing_provider_pin(provider):
     values=mounted_fixture();_,old=image._context(values['snapshot'])
-    assert STOCK_CDI_FILE not in old.document['cdi_pins']['other_cdi_files']
+    assert CDI_FILES[provider] not in old.document['cdi_pins']['other_cdi_files']
     values['gateway_image']=old.document['component_declarations']['gateway']['image']
-    values['stock_cdi_update']={'previous_sha256':'a'*64,'sha256':'b'*64}
+    values[provider]={'previous_sha256':'a'*64,'sha256':'b'*64}
+    with pytest.raises(ValueError):prepare(values)
+
+
+
+@pytest.mark.parametrize('provider',CDI_FILES)
+@pytest.mark.parametrize('component',['gateway','node'])
+def test_cdi_pin_updates_cannot_be_combined_with_image_changes(monkeypatch,provider,component):
+    values,_=stock_cdi_fixture(monkeypatch,provider)
+    if component=='gateway':values['gateway_image']='ghcr.io/mul-cps/cps-compute@sha256:'+'8'*64
+    else:values['node_image']='ghcr.io/mul-cps/cps-native-node@sha256:'+'8'*64
+    with pytest.raises(ValueError):prepare(values)
+
+
+def test_management_and_stock_pin_updates_are_mutually_exclusive(monkeypatch):
+    values,_=stock_cdi_fixture(monkeypatch)
+    values['management_cdi_update']={'previous_sha256':'a'*64,'sha256':'c'*64}
     with pytest.raises(ValueError):prepare(values)
