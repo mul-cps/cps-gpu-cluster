@@ -51,6 +51,8 @@ spec:
             runAsNonRoot: true
             runAsUser: 10001
             fsGroup: 10001
+            # Do not widen live private lock/custody inodes on the shared PVC.
+            fsGroupChangePolicy: OnRootMismatch
             seccompProfile: {type: RuntimeDefault}
           containers:
             - name: backup

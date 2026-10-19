@@ -1,0 +1,32 @@
+{
+  "observed_at": "2026-10-19T12:28:07.379643+00:00",
+  "root_cause": "Backup PVC mount widened live private writer directory and file permissions through default fsGroup handling",
+  "before": {
+    "directory_mode": "2770",
+    "lock_mode": "0660",
+    "writer_guard_error": "Owned private state directory required",
+    "registration_http": 422
+  },
+  "repair": {
+    "directory_mode": "0700",
+    "lock_mode": "0600",
+    "original_lock_inode_preserved": true,
+    "registration_http": 200
+  },
+  "persistent_fix": {
+    "cronjob": "compute-state-backup",
+    "fsGroupChangePolicy": "OnRootMismatch",
+    "controlled_backup_completed": true,
+    "private_modes_and_inodes_preserved_after_backup": true,
+    "writer_lock_acquisition_passed_after_backup": true,
+    "own_job_cleaned": true
+  },
+  "normal_start_after_repair": {
+    "registration_http": 200,
+    "storage_provision_http": 200,
+    "gpu_pod_created": false,
+    "next_failure": "Caller scheduler, GPU or isolator metadata forbidden",
+    "normal_stop_http": 200
+  },
+  "production_qualified": false
+}
