@@ -180,8 +180,9 @@ hash-parity negatives passed with all four affected Go packages. A separate
 private CPU vector reused the actual failed attempt's captured admission seed
 with an explicitly synthetic registry envelope; it is not a live registry proof.
 
-This commit pins source and recipe inputs only. The previous OCI binary/image
-pins and historical receipts are retained; Root must run the offline recipe's
-repeated static build and then review/pin the actual new binary and OCI labels
-before building or adopting an image. No image publication or live operation is
-part of this source change.
+Root subsequently completed the offline recipe: all four affected packages
+passed and both static builds produced binary SHA256
+`4c99d890064a4024f0dc9b4b69c641b16a4f14718a0c2d98c6944a4d215c3bb0`.
+The OCI wrapper and Dockerfile now pin those actual bytes and the new patch;
+historical receipts remain unchanged. Building, publishing and adopting the
+new image remain separate Root operations.
