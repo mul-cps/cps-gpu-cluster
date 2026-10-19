@@ -1,0 +1,51 @@
+{
+  "status": "partial-not-production-qualified",
+  "date": "2026-10-19",
+  "changes": {
+    "node_image": "ghcr.io/mul-cps/cps-native-node@sha256:c5e4afa6c26bd3eff35c35a7d7ae187d09f9fee83dcf581e77318cf3dd6e99f7",
+    "node_source": "889007cd03cb6462c84bfec4ce4ebea18ed05b55",
+    "delivery_image": "ghcr.io/mul-cps/cps-compute@sha256:7be892f088d8af1496fb584843b614b37142aa2bd229951f5e382a259abc2e56",
+    "delivery_source": "b0dd52b5898e50c9beab9d4a19e377802ce628c2",
+    "bootstrap_renderer_fix": "aa4c60b5327112b7c23d0666b37d9156030361d6"
+  },
+  "verification": {
+    "bootstrap_rotation_tests": 180,
+    "policy_tests": 63,
+    "platform_tests": 117,
+    "delivery_source_tests": 3146,
+    "delivery_source_skipped": 3,
+    "delivery_installed_tests": 108,
+    "journal_before": 8,
+    "journal_after": 9,
+    "original_anchor_and_inode_preserved": true,
+    "all_prior_archives_preserved": true,
+    "temporary_rotation_permissions_removed": 8,
+    "gateway_hubs_node_observer_writer_ready": true
+  },
+  "normal_start": {
+    "lease_http": 200,
+    "compile_http": 200,
+    "created_http": 409,
+    "failure": "current Pod reference changed before registration; cleanup Pod-read argument order also incorrect",
+    "cuda_execution_verified": false,
+    "group_gpu_qualification": "open"
+  },
+  "cleanup": {
+    "normal_stop_after_confirmed_pod_absence_http": 200,
+    "manual_uid_rv_delete_of_never_scheduled_pending_pod": true,
+    "sql_reservations": 0,
+    "active_native_claims": 0,
+    "released_native_claims": 126,
+    "controlled_binder_bridge_enabled": false,
+    "temporary_admin_token_revoked": true,
+    "protected_notebook_unchanged": true,
+    "gpu2_schedulable": true,
+    "driver_changes": false,
+    "mig_used": false
+  },
+  "remaining": [
+    "Deploy tested Pod-registration freshness and Hub cleanup argument fixes, then repeat normal Start",
+    "Current CUDA isolation and cross-Hub pooling qualification",
+    "Remaining full-platform production acceptance and release gates"
+  ]
+}
