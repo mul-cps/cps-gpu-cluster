@@ -1,5 +1,6 @@
 import importlib.util
 import json
+import re
 from pathlib import Path
 import sys
 
@@ -10,6 +11,13 @@ sys.path.insert(0,str(ROOT))
 spec=importlib.util.spec_from_file_location('binder_oci',ROOT/'oci.py')
 module=importlib.util.module_from_spec(spec)
 if spec.loader is not None and (ROOT/'oci.py').exists():spec.loader.exec_module(module)
+
+
+def test_dockerfile_provenance_matches_verified_binary_and_patch():
+    dockerfile=(ROOT/'Dockerfile').read_text()
+    labels=dict(re.findall(r'(org\.mul-cps\.[\w.-]+)="([^"]+)"',dockerfile))
+    assert labels==module.LABELS
+    assert dockerfile.splitlines()[0]=='FROM '+module.BASE
 
 
 def test_default_does_no_build_io(monkeypatch,capsys):
