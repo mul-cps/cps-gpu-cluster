@@ -320,7 +320,7 @@ def bind_node(snapshot, prepared, actual_node_config):
         image._one(node_pod['volumes'], 'packaged-bootstrap-input')['configMap']['name'] = bootstrap_candidate['metadata']['name']
         if node_image is not None:
             image._one(node_pod['containers'], old.document['component_declarations']['node']['container'])['image'] = node_image
-            image._one(node_pod['initContainers'], 'packaged-bootstrap')['image'] = node_image
+            image._node_initializer_image(node_pod, old.document['component_declarations']['node']['image'], node_image)
         gateway_pod = specs['gateway']['template']['spec']; old_image = old.document['component_declarations']['gateway']['image']
         main = image._one(gateway_pod['containers'], old.document['component_declarations']['gateway']['container'])
         main['image'] = prepared['inputs']['gateway_image']

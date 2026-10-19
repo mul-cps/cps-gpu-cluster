@@ -451,6 +451,8 @@ def test_node_only_successor_updates_all_node_image_pins_and_preserves_hubs():
     pod=bound['runtime_specs']['node']['template']['spec']
     assert next(c for c in pod['containers'] if c['name']==old.document['component_declarations']['node']['container'])['image']==values['node_image']
     assert next(c for c in pod['initContainers'] if c['name']=='packaged-bootstrap')['image']==values['node_image']
+    bootstrap=next(c for c in pod['initContainers'] if c['name']=='packaged-bootstrap')
+    assert next(e for e in bootstrap['env'] if e['name']=='NODE_IMAGE')=={'name':'NODE_IMAGE','value':values['node_image']}
     runtime=image._decode(bound['gateway_runtime_patch']['patch'][-1]['value']['runtime.json'])
     assert runtime['nativeGroupApprovals']['processes']['node']['image']==values['node_image']
     expected_runtime=image._decode(image.secret_volume(snapshot,'gateway','config')['data']['runtime.json'])
