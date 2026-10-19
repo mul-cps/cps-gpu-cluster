@@ -18,5 +18,9 @@
   "cleanSourceSdkSuite": true,
   "cleanSourceSha": "1f1613981facdf0d4223c85504d5d0d26c80d783",
   "ciRun": 39271713090,
-  "ciStatusAtRecording": "in_progress"
+  "ciStatusAtRecording": "in_progress",
+  "disposition": "do-not-promote",
+  "capturedRealPodReplayPassed": false,
+  "reason": "Pre-registration metadata comparison rejected the existing KAI pod-group-name controller addition",
+  "supersedingSdkSource": "889007cd03cb6462c84bfec4ce4ebea18ed05b55"
 }
