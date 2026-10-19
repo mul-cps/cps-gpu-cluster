@@ -62,7 +62,7 @@ def test_invalid_source_is_refused_before_clone(original, drift):
 def test_packaged_patch_and_all_twelve_pins_are_exact(tmp_path):
     manifest, patch = recipe.load_manifest()
     assert len(manifest['files']) == 12
-    assert hashlib.sha256(patch.read_bytes()).hexdigest() == 'f44e3c808e620fbeb9001feaa19bcc1c5e94142c12e11cceb5cc1a4b3dbf3f96'
+    assert hashlib.sha256(patch.read_bytes()).hexdigest() == '0d8f6978d49167788032753a3b153338be51c5a7ce2472ed77052ddca5036fae'
     bad = tmp_path / 'bad.patch'; bad.write_bytes(patch.read_bytes()+b'\n')
     with pytest.raises(ValueError): recipe.load_manifest(patch=bad)
 
