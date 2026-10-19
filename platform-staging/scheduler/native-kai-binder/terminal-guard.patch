@@ -92,7 +92,7 @@ index c5702d0..0f806da 100644
  	fs.StringVar(&options.SchedulerName,
  		"scheduler-name", constants.DefaultSchedulerName,
 diff --git a/pkg/binder/binding/binder.go b/pkg/binder/binding/binder.go
-index fbc73c8..29448ae 100644
+index fbc73c8..785733a 100644
 --- a/pkg/binder/binding/binder.go
 +++ b/pkg/binder/binding/binder.go
 @@ -29,6 +29,9 @@ type Binder struct {
@@ -105,7 +105,7 @@ index fbc73c8..29448ae 100644
  }
  
  func NewBinder(kubeClient client.Client, rrs resourcereservation.Interface, plugins *plugins.BinderPlugins) *Binder {
-@@ -40,6 +43,11 @@ func NewBinder(kubeClient client.Client, rrs resourcereservation.Interface, plug
+@@ -40,6 +43,15 @@ func NewBinder(kubeClient client.Client, rrs resourcereservation.Interface, plug
  }
  
  func (b *Binder) Bind(ctx context.Context, pod *v1.Pod, node *v1.Node, bindRequest *v1alpha2.BindRequest) error {
@@ -113,11 +113,15 @@ index fbc73c8..29448ae 100644
 +		if err := b.nativeConfigured(pod); err != nil {
 +			return err
 +		}
++		// Hub records the exact CREATE UID before any stock plugin can write maps.
++		if err := b.nativeRegistryReady(ctx, pod); err != nil {
++			return errors.Join(ErrNativeCustodyHeld, err)
++		}
 +	}
  	logger := log.FromContext(ctx)
  	err := b.resourceReservationService.SyncForNode(ctx, bindRequest.Spec.SelectedNode)
  	if err != nil {
-@@ -76,6 +84,13 @@ func (b *Binder) Bind(ctx context.Context, pod *v1.Pod, node *v1.Node, bindReque
+@@ -76,6 +88,13 @@ func (b *Binder) Bind(ctx context.Context, pod *v1.Pod, node *v1.Node, bindReque
  	if err != nil {
  		return fmt.Errorf("failed to patch pod <%s/%s> with bind annotations: %w", pod.Namespace, pod.Name, err)
  	}
@@ -131,7 +135,7 @@ index fbc73c8..29448ae 100644
  
  	logger.Info("Binding pod", "namespace", pod.Namespace, "name", pod.Name, "hostname", node.Name)
  	binding := &v1.Binding{
-@@ -94,6 +109,9 @@ func (b *Binder) Bind(ctx context.Context, pod *v1.Pod, node *v1.Node, bindReque
+@@ -94,6 +113,9 @@ func (b *Binder) Bind(ctx context.Context, pod *v1.Pod, node *v1.Node, bindReque
  }
  
  func (b *Binder) Rollback(ctx context.Context, pod *v1.Pod, node *v1.Node, bindRequest *v1alpha2.BindRequest) error {
@@ -143,18 +147,23 @@ index fbc73c8..29448ae 100644
  	logger.Info("Rolling back for failed bind attempt...",
 diff --git a/pkg/binder/binding/native_terminal.go b/pkg/binder/binding/native_terminal.go
 new file mode 100644
-index 0000000..8bbc7a4
+index 0000000..5c4687d
 --- /dev/null
 +++ b/pkg/binder/binding/native_terminal.go
-@@ -0,0 +1,285 @@
+@@ -0,0 +1,452 @@
 +// SPDX-License-Identifier: Apache-2.0
 +
 +package binding
 +
 +import (
++	"bytes"
 +	"context"
++	"crypto/sha256"
++	"encoding/hex"
++	"encoding/json"
 +	"errors"
 +	"fmt"
++	"io"
 +	"reflect"
 +	"regexp"
 +	"time"
@@ -432,19 +441,183 @@ index 0000000..8bbc7a4
 +	}
 +	return b.resourceReservationService.SyncForNode(cleanupCtx, br.Spec.SelectedNode)
 +}
++
++// This is a read-only publication prerequisite, not allocation/Binding authority.
++// Prepare still validates all current policy, registry, maps, enrollment and ACK.
++func (b *Binder) nativeProtectedDocument(ctx context.Context, name, key string) (map[string]interface{}, error) {
++	cm := &v1.ConfigMap{}
++	if err := b.nativeReader.Get(ctx, client.ObjectKey{Namespace: b.nativeAuthorityNamespace, Name: name}, cm); err != nil {
++		return nil, err
++	}
++	if cm.Namespace != b.nativeAuthorityNamespace || cm.Name != name || cm.UID == "" || cm.ResourceVersion == "" || cm.DeletionTimestamp != nil || cm.Immutable == nil || !*cm.Immutable || len(cm.OwnerReferences) != 0 || len(cm.BinaryData) != 0 || len(cm.Data) != 1 {
++		return nil, fmt.Errorf("original immutable %s identity required", key)
++	}
++	raw, ok := cm.Data[key]
++	if !ok || len(raw) == 0 || len(raw) > 1048576 {
++		return nil, fmt.Errorf("bounded closed %s required", key)
++	}
++	decoder := json.NewDecoder(bytes.NewBufferString(raw))
++	decoder.UseNumber()
++	value, err := nativeJSONValue(decoder)
++	if err != nil {
++		return nil, err
++	}
++	if _, err = decoder.Token(); err != io.EOF {
++		return nil, fmt.Errorf("trailing protected JSON")
++	}
++	document, ok := value.(map[string]interface{})
++	if !ok {
++		return nil, fmt.Errorf("protected JSON object required")
++	}
++	return document, nil
++}
++func nativeRegistryHash(value interface{}) (string, error) {
++	var buffer bytes.Buffer
++	encoder := json.NewEncoder(&buffer)
++	encoder.SetEscapeHTML(false)
++	if err := encoder.Encode(value); err != nil {
++		return "", err
++	}
++	// Go escapes the two JavaScript line separators; Python ensure_ascii=False
++	// leaves them UTF8. Skip escaped backslashes so literal \u2028 stays literal.
++	raw := bytes.TrimSuffix(buffer.Bytes(), []byte("\n"))
++	canonical := make([]byte, 0, len(raw))
++	for i := 0; i < len(raw); {
++		if raw[i] == '\\' && i+1 < len(raw) {
++			if bytes.HasPrefix(raw[i:], []byte(`\u2028`)) {
++				canonical = append(canonical, []byte(" ")...)
++				i += 6
++				continue
++			}
++			if bytes.HasPrefix(raw[i:], []byte(`\u2029`)) {
++				canonical = append(canonical, []byte(" ")...)
++				i += 6
++				continue
++			}
++			canonical = append(canonical, raw[i], raw[i+1])
++			i += 2
++			continue
++		}
++		canonical = append(canonical, raw[i])
++		i++
++	}
++	sum := sha256.Sum256(canonical)
++	return hex.EncodeToString(sum[:]), nil
++}
++func (b *Binder) nativeRegistryReady(ctx context.Context, pod *v1.Pod) error {
++	// Read directly through APIReader, never the informer cache. An absent registry
++	// returns the existing custody sentinel before Sync/reservation/PreBind writes.
++	current := &v1.Pod{}
++	if err := b.nativeReader.Get(ctx, client.ObjectKeyFromObject(pod), current); err != nil {
++		return err
++	}
++	if current.UID == "" || current.UID != pod.UID || current.DeletionTimestamp != nil || current.Spec.NodeName != "" || !reflect.DeepEqual(current.Spec, pod.Spec) || current.Status.Phase != "" && current.Status.Phase != v1.PodPending || len(current.Status.ContainerStatuses) != 0 || len(current.Status.InitContainerStatuses) != 0 {
++		return fmt.Errorf("original unexecuted pending Pod required")
++	}
++	if current.ResourceVersion == "" || current.Annotations[NativePendingAnnotation] != NativePendingProtocol || pod.Annotations[NativePendingAnnotation] != current.Annotations[NativePendingAnnotation] || pod.Annotations["runai/shared-gpu-configmap"] != current.Annotations["runai/shared-gpu-configmap"] || pod.Annotations["cps.compute/native-spec-sha256"] != current.Annotations["cps.compute/native-spec-sha256"] {
++		return fmt.Errorf("current pending compiler metadata differs")
++	}
++	registry, err := b.nativeProtectedDocument(ctx, "cps-pending-registry-"+string(pod.UID), "registry.json")
++	if err != nil {
++		return err
++	}
++	protocol := registry["protocol"]
++	if protocol != "cps-native-pending-allocation/v1" && protocol != "cps-native-pending-allocation/v2" {
++		return fmt.Errorf("protected registry protocol differs")
++	}
++	keys := []string{"protocol", "kind", "pod_uid", "namespace", "name", "attempt", "profile", "policy_hash", "pending_spec_sha256", "bound_spec_sha256", "node", "node_uid", "gpu_uuid", "container_name", "container_index", "capabilities_configmap", "env_configmap", "kai_commit"}
++	if protocol == "cps-native-pending-allocation/v2" {
++		keys = append(keys, "binding_id", "approval_ref", "node_configuration_ref", "epoch")
++	}
++	if len(registry) != len(keys) {
++		return fmt.Errorf("closed protected registry required")
++	}
++	for _, key := range keys {
++		if _, ok := registry[key]; !ok {
++			return fmt.Errorf("missing protected registry field")
++		}
++	}
++	attempt, ok := registry["attempt"].(string)
++	if !ok || !regexp.MustCompile(`^[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}$`).MatchString(attempt) || attempt == "00000000-0000-0000-0000-000000000000" {
++		return fmt.Errorf("canonical registry attempt required")
++	}
++	prefix := pod.Annotations["runai/shared-gpu-configmap"]
++	if !regexp.MustCompile(`^cps-native-[a-f0-9]{32}-shared-gpu$`).MatchString(prefix) || registry["kind"] != "protected-pending-registry" || registry["pod_uid"] != string(pod.UID) || registry["namespace"] != pod.Namespace || registry["name"] != pod.Name || registry["node"] != nativeApprovedNode || registry["node_uid"] != nativeApprovedNodeUID || registry["gpu_uuid"] != nativeApprovedGPU || registry["container_name"] != "notebook" || registry["container_index"] != json.Number("0") || registry["capabilities_configmap"] != prefix+"-0" || registry["env_configmap"] != prefix+"-0-evar" || registry["kai_commit"] != "bdf434e5e9201cccf4e05fad04d814363653f692" {
++		return fmt.Errorf("protected registry original Pod/scope/maps differ")
++	}
++	for _, key := range []string{"pending_spec_sha256", "bound_spec_sha256"} {
++		v, ok := registry[key].(string)
++		if !ok || !regexp.MustCompile(`^[a-f0-9]{64}$`).MatchString(v) {
++			return fmt.Errorf("registry spec hash required")
++		}
++	}
++	if protocol == "cps-native-pending-allocation/v1" {
++		return nil
++	}
++	binding, ok := registry["binding_id"].(string)
++	if !ok || !regexp.MustCompile(`^[a-f0-9]{60}$`).MatchString(binding) {
++		return fmt.Errorf("registry binding required")
++	}
++	seed, err := b.nativeProtectedDocument(ctx, "cps-pending-compiler-"+binding[:40], "seed.json")
++	if err != nil {
++		return err
++	}
++	source := map[string]string{"jupyterhub": "cps", "cit-jhub": "cit"}[pod.Namespace]
++	actor, actorOK := seed["actor"].(string)
++	if len(seed) != 6 {
++		return fmt.Errorf("closed compiler seed required")
++	}
++	for _, key := range []string{"binding_id", "attempt", "source", "actor", "source_pod", "admitted"} {
++		if _, ok := seed[key]; !ok {
++			return fmt.Errorf("missing compiler seed field")
++		}
++	}
++	if source == "" || seed["source"] != source || !actorOK || actor == "" || seed["binding_id"] != binding || seed["attempt"] != registry["attempt"] {
++		return fmt.Errorf("original compiler source/binding/attempt required")
++	}
++	admitted := &v1.Pod{}
++	original := &v1.Pod{}
++	if nativeDecodeObject(seed["admitted"], admitted) != nil || nativeDecodeObject(seed["source_pod"], original) != nil || admitted.Namespace != pod.Namespace || admitted.Name != pod.Name || original.Namespace != pod.Namespace || original.Name != pod.Name || !reflect.DeepEqual(admitted.Spec, current.Spec) {
++		return fmt.Errorf("original frozen admitted Pod differs")
++	}
++	rawAdmitted, ok := seed["admitted"].(map[string]interface{})
++	if !ok {
++		return fmt.Errorf("original admitted document required")
++	}
++	spec, ok := rawAdmitted["spec"].(map[string]interface{})
++	if !ok {
++		return fmt.Errorf("original admitted spec required")
++	}
++	pending, err := nativeRegistryHash(spec)
++	if err != nil || pending != registry["pending_spec_sha256"] {
++		return fmt.Errorf("frozen pending spec hash differs")
++	}
++	boundSpec := map[string]interface{}{}
++	for k, v := range spec {
++		boundSpec[k] = v
++	}
++	boundSpec["nodeName"] = nativeApprovedNode
++	bound, err := nativeRegistryHash(boundSpec)
++	if err != nil || bound != registry["bound_spec_sha256"] || pod.Annotations["cps.compute/native-spec-sha256"] != bound {
++		return fmt.Errorf("frozen bound spec hash differs")
++	}
++	return nil
++}
 diff --git a/pkg/binder/binding/native_terminal_test.go b/pkg/binder/binding/native_terminal_test.go
 new file mode 100644
-index 0000000..d683e6a
+index 0000000..8445b97
 --- /dev/null
 +++ b/pkg/binder/binding/native_terminal_test.go
-@@ -0,0 +1,411 @@
+@@ -0,0 +1,640 @@
 +package binding
 +
 +import (
 +	"context"
++	"encoding/json"
 +	"errors"
 +	"fmt"
 +	"reflect"
++	"strings"
 +	"testing"
 +
 +	v1 "k8s.io/api/core/v1"
@@ -458,6 +631,7 @@ index 0000000..d683e6a
 +
 +	"github.com/kai-scheduler/KAI-scheduler/pkg/apis/scheduling/v1alpha2"
 +	"github.com/kai-scheduler/KAI-scheduler/pkg/binder/plugins"
++	"github.com/kai-scheduler/KAI-scheduler/pkg/binder/plugins/gpusharing"
 +	"github.com/kai-scheduler/KAI-scheduler/pkg/binder/plugins/state"
 +)
 +
@@ -505,6 +679,26 @@ index 0000000..d683e6a
 +	}
 +	if err := v1alpha2.AddToScheme(scheme); err != nil {
 +		t.Fatal(err)
++	}
++	// Existing terminal tests use the legacy protected registry. No fixture is
++	// allocation authority; those tests still use their explicit fake coordinator.
++	hasRegistry := false
++	for _, obj := range objects {
++		if obj.GetNamespace() == "authority" && obj.GetName() == "cps-pending-registry-"+string(pod.UID) {
++			hasRegistry = true
++		}
++	}
++	if !hasRegistry {
++		registry, _ := nativeRegistryFixtures(pod)
++		var value map[string]interface{}
++		_ = json.Unmarshal([]byte(registry.Data["registry.json"]), &value)
++		value["protocol"] = "cps-native-pending-allocation/v1"
++		for _, key := range []string{"binding_id", "approval_ref", "node_configuration_ref", "epoch"} {
++			delete(value, key)
++		}
++		raw, _ := json.Marshal(value)
++		registry.Data["registry.json"] = string(raw)
++		objects = append(objects, registry)
 +	}
 +	objects = append(objects, pod, node, br)
 +	return fake.NewClientBuilder().WithScheme(scheme).WithObjects(objects...).WithInterceptorFuncs(interceptor.Funcs{
@@ -845,6 +1039,212 @@ index 0000000..d683e6a
 +			}
 +			if deletes != 0 {
 +				t.Fatal("absence response caused an object deletion")
++			}
++		})
++	}
++}
++
++// The real stock GPUSharing plugin must not write its two maps while Hub's
++// after-CREATE registry publication is still pending.
++type nativeCountingReservation struct {
++	nativeTestReservation
++	syncs int
++}
++
++func (r *nativeCountingReservation) SyncForNode(context.Context, string) error { r.syncs++; return nil }
++func TestNativeRegistryAbsentPrecedesReservationAndStockMapWrites(t *testing.T) {
++	pod, node, br := nativeTestInputs()
++	pod.Annotations["gpu-fraction-container-name"] = "notebook"
++	pod.Annotations["nvidia.com/container.notebook.gpu-memory.request"] = "5120Mi"
++	br.Spec.ReceivedResourceType = "Fraction"
++	br.Spec.ReceivedGPU = &v1alpha2.ReceivedGPU{Portion: "0.1"}
++	br.Spec.SelectedNode = node.Name
++	br.Spec.SelectedFractionalGpuGroups = []v1alpha2.FractionalGpuGroup{{ID: "group", ComputeSharingMode: v1alpha2.GPUComputeSharingModeTimeSlicing}}
++	kube := nativeTestClient(t, pod, node, br, func(*v1.Binding) error { t.Fatal("registry absent must never Bind"); return nil })
++	if err := kube.Delete(context.Background(), &v1.ConfigMap{ObjectMeta: metav1.ObjectMeta{Namespace: "authority", Name: "cps-pending-registry-" + string(pod.UID)}}); err != nil {
++		t.Fatal(err)
++	}
++	reservation := &nativeCountingReservation{}
++	ps := plugins.New()
++	ps.RegisterPlugin(gpusharing.New(kube, true, false))
++	binder := NewBinder(kube, reservation, ps)
++	binder.SetNativeTerminal(kube, "authority", &nativeTestCoordinator{})
++	err := binder.Bind(context.Background(), pod, node, br)
++	cms := &v1.ConfigMapList{}
++	if e := kube.List(context.Background(), cms, client.InNamespace(pod.Namespace)); e != nil {
++		t.Fatal(e)
++	}
++	if reservation.syncs != 0 || len(cms.Items) != 0 {
++		t.Fatalf("side effects before protected registry: sync=%d maps=%d error=%v", reservation.syncs, len(cms.Items), err)
++	}
++	if !errors.Is(err, ErrNativeCustodyHeld) {
++		t.Fatalf("absent registry must use bounded custody requeue, got %v", err)
++	}
++}
++
++func nativeRegistryFixtures(pod *v1.Pod) (*v1.ConfigMap, *v1.ConfigMap) {
++	yes := true
++	spec, _ := json.Marshal(pod.Spec)
++	var rawSpec map[string]interface{}
++	_ = json.Unmarshal(spec, &rawSpec)
++	pending, _ := nativeRegistryHash(rawSpec)
++	rawSpec["nodeName"] = nativeApprovedNode
++	bound, _ := nativeRegistryHash(rawSpec)
++	pod.Annotations["cps.compute/native-spec-sha256"] = bound
++	admitted := pod.DeepCopy()
++	source := pod.DeepCopy()
++	binding := strings.Repeat("a", 60)
++	attempt := "11111111-2222-4333-8444-555555555559"
++	prefix := pod.Annotations["runai/shared-gpu-configmap"]
++	reg := map[string]interface{}{"protocol": "cps-native-pending-allocation/v2", "kind": "protected-pending-registry", "pod_uid": string(pod.UID), "namespace": pod.Namespace, "name": pod.Name, "attempt": attempt, "profile": "interactive-shared-5", "policy_hash": "sha256:" + strings.Repeat("a", 64), "pending_spec_sha256": pending, "bound_spec_sha256": bound, "node": nativeApprovedNode, "node_uid": nativeApprovedNodeUID, "gpu_uuid": nativeApprovedGPU, "container_name": "notebook", "container_index": 0, "capabilities_configmap": prefix + "-0", "env_configmap": prefix + "-0-evar", "kai_commit": "bdf434e5e9201cccf4e05fad04d814363653f692", "binding_id": binding, "approval_ref": map[string]interface{}{}, "node_configuration_ref": map[string]interface{}{}, "epoch": map[string]interface{}{}}
++	seed := map[string]interface{}{"binding_id": binding, "attempt": attempt, "source": "cps", "actor": "hub-cps", "source_pod": source, "admitted": admitted}
++	makeCM := func(name, key string, value interface{}) *v1.ConfigMap {
++		raw, _ := json.Marshal(value)
++		return &v1.ConfigMap{ObjectMeta: metav1.ObjectMeta{Namespace: "authority", Name: name, UID: "11111111-2222-4333-8444-555555555558", ResourceVersion: "8"}, Immutable: &yes, Data: map[string]string{key: string(raw)}}
++	}
++	return makeCM("cps-pending-registry-"+string(pod.UID), "registry.json", reg), makeCM("cps-pending-compiler-"+binding[:40], "seed.json", seed)
++}
++func TestNativeRegistryRejectsMissingAttemptWithExtraSeedKey(t *testing.T) {
++	pod, node, br := nativeTestInputs()
++	pod.Namespace = "jupyterhub"
++	br.Namespace = pod.Namespace
++	registry, seed := nativeRegistryFixtures(pod)
++	for _, pair := range []struct {
++		cm  *v1.ConfigMap
++		key string
++	}{{registry, "registry.json"}, {seed, "seed.json"}} {
++		var value map[string]interface{}
++		_ = json.Unmarshal([]byte(pair.cm.Data[pair.key]), &value)
++		delete(value, "attempt")
++		if pair.cm == seed {
++			value["extra"] = true
++		}
++		raw, _ := json.Marshal(value)
++		pair.cm.Data[pair.key] = string(raw)
++	}
++	kube := nativeTestClient(t, pod, node, br, func(*v1.Binding) error { return nil }, registry, seed)
++	binder := NewBinder(kube, &nativeTestReservation{}, plugins.New())
++	binder.SetNativeTerminal(kube, "authority", &nativeTestCoordinator{})
++	if err := binder.nativeRegistryReady(context.Background(), pod); err == nil {
++		t.Fatal("missing attempt plus unknown seed field accepted")
++	}
++}
++
++func TestNativeRegistryHashSDKParityUnicode(t *testing.T) {
++	got, err := nativeRegistryHash(map[string]interface{}{"arg": "a\u2028b\u2029"})
++	if err != nil || got != "2fea91ddf447a23d8a4f50c75ddc322aa433540cc4db4a06596fc2e1a5bcb009" {
++		t.Fatalf("SDK hash parity: %s %v", got, err)
++	}
++}
++
++func TestNativeRegistryHashSDKParityLiteral(t *testing.T) {
++	got, err := nativeRegistryHash(map[string]interface{}{"arg": "a\\u2028b\\u2029"})
++	if err != nil || got != "787bee83bf6807abe2ac47c7bc0e9e7f62863876da133a8b02c8604b6d840166" {
++		t.Fatalf("SDK hash parity: %s %v", got, err)
++	}
++}
++
++func TestNativeRegistryPublicationAllowsStockMapsThenTerminalPrepare(t *testing.T) {
++	pod, node, br := nativeTestInputs()
++	pod.Namespace = "jupyterhub"
++	br.Namespace = pod.Namespace
++	pod.Annotations["gpu-fraction-container-name"] = "notebook"
++	pod.Annotations["nvidia.com/container.notebook.gpu-memory.request"] = "5120Mi"
++	br.Spec.ReceivedResourceType = "Fraction"
++	br.Spec.ReceivedGPU = &v1alpha2.ReceivedGPU{Portion: "0.1"}
++	br.Spec.SelectedNode = node.Name
++	br.Spec.SelectedFractionalGpuGroups = []v1alpha2.FractionalGpuGroup{{ID: "group", ComputeSharingMode: v1alpha2.GPUComputeSharingModeTimeSlicing}}
++	registry, seed := nativeRegistryFixtures(pod)
++	ack := nativeTestACK(pod)
++	binds := 0
++	kube := nativeTestClient(t, pod, node, br, func(*v1.Binding) error { binds++; return nil }, registry, seed, ack)
++	reservation := &nativeCountingReservation{}
++	coord := &nativeTestCoordinator{ack: ack}
++	coord.prepare = func(NativeTerminalSnapshot) {
++		cms := &v1.ConfigMapList{}
++		if err := kube.List(context.Background(), cms, client.InNamespace(pod.Namespace)); err != nil || len(cms.Items) != 2 {
++			t.Fatalf("Prepare must follow real stock two-map creation: %v/%d", err, len(cms.Items))
++		}
++	}
++	ps := plugins.New()
++	ps.RegisterPlugin(gpusharing.New(kube, true, false))
++	binder := NewBinder(kube, reservation, ps)
++	binder.SetNativeTerminal(kube, "authority", coord)
++	if err := binder.Bind(context.Background(), pod, node, br); err != nil {
++		t.Fatal(err)
++	}
++	if reservation.syncs != 1 || binds != 1 {
++		t.Fatalf("expected one normal reservation/Bind, got %d/%d", reservation.syncs, binds)
++	}
++}
++func TestNativeRegistryProofDriftNeverMutatesReservationOrMaps(t *testing.T) {
++	for _, fault := range []string{"pod-uid", "pod-name", "namespace", "registry-immutable", "registry-owner", "unknown-key", "attempt", "binding", "source", "seed-attempt", "seed-extra", "admission", "pending-hash", "bound-hash", "current-marker", "current-prefix"} {
++		t.Run(fault, func(t *testing.T) {
++			pod, node, br := nativeTestInputs()
++			pod.Namespace = "jupyterhub"
++			br.Namespace = pod.Namespace
++			registry, seed := nativeRegistryFixtures(pod)
++			var r, s map[string]interface{}
++			_ = json.Unmarshal([]byte(registry.Data["registry.json"]), &r)
++			_ = json.Unmarshal([]byte(seed.Data["seed.json"]), &s)
++			switch fault {
++			case "pod-uid":
++				r["pod_uid"] = "11111111-2222-4333-8444-555555555599"
++			case "pod-name":
++				r["name"] = "foreign"
++			case "namespace":
++				r["namespace"] = "cit-jhub"
++			case "registry-immutable":
++				v := false
++				registry.Immutable = &v
++			case "registry-owner":
++				registry.OwnerReferences = []metav1.OwnerReference{{Kind: "Pod", Name: pod.Name, UID: pod.UID}}
++			case "unknown-key":
++				r["unknown"] = true
++			case "attempt":
++				delete(r, "attempt")
++			case "binding":
++				s["binding_id"] = strings.Repeat("b", 60)
++			case "source":
++				s["source"] = "cit"
++			case "seed-attempt":
++				s["attempt"] = "11111111-2222-4333-8444-555555555599"
++			case "seed-extra":
++				s["extra"] = true
++			case "admission":
++				s["admitted"].(map[string]interface{})["spec"].(map[string]interface{})["containers"].([]interface{})[0].(map[string]interface{})["image"] = "foreign"
++			case "pending-hash":
++				r["pending_spec_sha256"] = strings.Repeat("b", 64)
++			case "bound-hash":
++				r["bound_spec_sha256"] = strings.Repeat("b", 64)
++			}
++			raw, _ := json.Marshal(r)
++			registry.Data["registry.json"] = string(raw)
++			raw, _ = json.Marshal(s)
++			seed.Data["seed.json"] = string(raw)
++			kube := nativeTestClient(t, pod, node, br, func(*v1.Binding) error { t.Fatal("invalid registry bound Pod"); return nil }, registry, seed)
++			if fault == "current-marker" || fault == "current-prefix" {
++				current := pod.DeepCopy()
++				if fault == "current-marker" {
++					current.Annotations[NativePendingAnnotation] = "foreign"
++				} else {
++					current.Annotations["runai/shared-gpu-configmap"] = "foreign"
++				}
++				if err := kube.Update(context.Background(), current); err != nil {
++					t.Fatal(err)
++				}
++			}
++			reservation := &nativeCountingReservation{}
++			ps := plugins.New()
++			ps.RegisterPlugin(gpusharing.New(kube, true, false))
++			binder := NewBinder(kube, reservation, ps)
++			binder.SetNativeTerminal(kube, "authority", &nativeTestCoordinator{})
++			if err := binder.Bind(context.Background(), pod, node, br); !errors.Is(err, ErrNativeCustodyHeld) {
++				t.Fatalf("proof drift requires custody hold: %v", err)
++			}
++			cms := &v1.ConfigMapList{}
++			if err := kube.List(context.Background(), cms, client.InNamespace(pod.Namespace)); err != nil || reservation.syncs != 0 || len(cms.Items) != 0 {
++				t.Fatalf("proof drift produced side effects: %v/%d/%d", err, reservation.syncs, len(cms.Items))
 +			}
 +		})
 +	}

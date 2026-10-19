@@ -158,3 +158,30 @@ enables the stock operand before restoring operator reconciliation. No GPU drive
 node cordon, workload Pod or storage setting is changed by these metadata/Config
 patches. An applied handover and successful live binder health check are separate
 gates from these offline tests.
+
+
+### Registry-before-PreBind successor (2026-10-19)
+
+The native Binder now reads the original immutable protected registry through
+its uncached API reader before reservation synchronization or any stock PreBind
+plugin writes. An absent or invalid registry returns the existing custody-held
+error, preserving the controller's bounded requeue and pending generation. The
+v2 gate also verifies the original immutable compiler seed, owning Source,
+binding/attempt, complete admitted spec and SDK-compatible spec hashes. This
+read-only prerequisite does not authorize allocation: the unchanged terminal
+Prepare still follows stock map creation and validates the full current contract.
+The SDK's after-CREATE absent-map guard remains unchanged.
+
+The race test used the real stock GPUSharing plugin: before the fix it wrote two
+maps and synchronized reservations before registry publication; after the fix
+neither occurs. A valid registry permits the original map/Prepare/Binding order.
+Identity, frozen admission, current metadata, missing/extra fields and Unicode
+hash-parity negatives passed with all four affected Go packages. A separate
+private CPU vector reused the actual failed attempt's captured admission seed
+with an explicitly synthetic registry envelope; it is not a live registry proof.
+
+This commit pins source and recipe inputs only. The previous OCI binary/image
+pins and historical receipts are retained; Root must run the offline recipe's
+repeated static build and then review/pin the actual new binary and OCI labels
+before building or adopting an image. No image publication or live operation is
+part of this source change.
