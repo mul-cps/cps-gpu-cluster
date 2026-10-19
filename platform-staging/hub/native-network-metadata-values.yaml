@@ -1,0 +1,8 @@
+# Merge into both Hub releases. Verify all matching NetworkPolicies before rollout.
+singleuser:
+  cloudMetadata:
+    blockWithIptables: false
+  networkPolicy:
+    enabled: true
+    egressAllowRules:
+      cloudMetadataServer: false
