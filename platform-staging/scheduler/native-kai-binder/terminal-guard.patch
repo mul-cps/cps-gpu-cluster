@@ -156,12 +156,575 @@ index fbc73c8..530a499 100644
  	logger := log.FromContext(ctx)
  
  	logger.Info("Rolling back for failed bind attempt...",
+diff --git a/pkg/binder/binding/native_operator.go b/pkg/binder/binding/native_operator.go
+new file mode 100644
+index 0000000..6ac76f0
+--- /dev/null
++++ b/pkg/binder/binding/native_operator.go
+@@ -0,0 +1,266 @@
++package binding
++
++import (
++	"context"
++	"encoding/json"
++	"fmt"
++	"github.com/google/uuid"
++	v1 "k8s.io/api/core/v1"
++	"reflect"
++	"regexp"
++	"sigs.k8s.io/controller-runtime/pkg/client"
++	"strings"
++)
++
++const nativeOperatorProtocol = "cps-native-pending-allocation/v3"
++const nativeOperatorImage = "ghcr.io/mul-cps/cps-jupyter-notebook@sha256:531027c8e330d4ce818598e998a29d502433e9064f06a32dfc208a06ef2d0ba4"
++
++func operatorClosed(value interface{}, keys string) (map[string]interface{}, bool) {
++	object, ok := value.(map[string]interface{})
++	names := strings.Fields(keys)
++	if !ok || len(object) != len(names) {
++		return nil, false
++	}
++	for _, name := range names {
++		if _, ok := object[name]; !ok {
++			return nil, false
++		}
++	}
++	return object, true
++}
++func operatorUID(value interface{}) bool {
++	raw, ok := value.(string)
++	if !ok {
++		return false
++	}
++	id, err := uuid.Parse(raw)
++	return err == nil && id != uuid.Nil && id.String() == raw
++}
++func operatorInteger(value interface{}) (int64, bool) {
++	n, ok := value.(json.Number)
++	if !ok {
++		return 0, false
++	}
++	v, err := n.Int64()
++	return v, err == nil
++}
++
++// Resolve one exact immutable reference in a single API read. Document parsing
++// and duplicate/size checks are shared unchanged with the v1/v2 seed reader.
++func (b *Binder) nativeOperatorDocument(ctx context.Context, value interface{}, key string) (map[string]interface{}, error) {
++	ref, ok := operatorClosed(value, "namespace name uid resourceVersion data_sha256 key")
++	if !ok || ref["namespace"] != b.nativeAuthorityNamespace || ref["key"] != key || !operatorUID(ref["uid"]) {
++		return nil, fmt.Errorf("exact operator immutable reference required")
++	}
++	name, nameOK := ref["name"].(string)
++	rv, rvOK := ref["resourceVersion"].(string)
++	hash, hashOK := ref["data_sha256"].(string)
++	if !nameOK || !regexp.MustCompile(`^[a-z0-9](?:[a-z0-9.-]{0,251}[a-z0-9])?$`).MatchString(name) || !rvOK || !regexp.MustCompile(`^[1-9][0-9]*$`).MatchString(rv) || !hashOK || !regexp.MustCompile(`^sha256:[a-f0-9]{64}$`).MatchString(hash) {
++		return nil, fmt.Errorf("canonical operator API reference required")
++	}
++	cm := &v1.ConfigMap{}
++	if err := b.nativeReader.Get(ctx, client.ObjectKey{Namespace: b.nativeAuthorityNamespace, Name: name}, cm); err != nil {
++		return nil, err
++	}
++	digest, err := nativeRegistryHash(cm.Data)
++	if err != nil || string(cm.UID) != ref["uid"] || cm.ResourceVersion != rv || "sha256:"+digest != hash {
++		return nil, fmt.Errorf("operator immutable reference replaced")
++	}
++	return nativeProtectedCMDocument(cm, b.nativeAuthorityNamespace, name, key)
++}
++
++// This authenticates an inert operator-only registry prerequisite, not passed
++// GPU qualification. The SDK still checks current policy/grants/disabled
++// profiles, placement, census, exact maps and readiness before any Binding.
++func (b *Binder) nativeOperatorCap(ctx context.Context, registry map[string]interface{}, source, admitted *v1.Pod) (int64, error) {
++	fail := func() (int64, error) { return 0, fmt.Errorf("closed immutable operator qualification differs") }
++	config, err := b.nativeOperatorDocument(ctx, registry["node_configuration_ref"], "config.json")
++	if err != nil {
++		return 0, err
++	}
++	version, ok := operatorInteger(config["version"])
++	approval := "approval_head"
++	if version == 3 {
++		approval = "approval_ref"
++	}
++	if !ok || (version != 3 && version != 4) || config["enabled"] != true {
++		return fail()
++	}
++	if _, ok := operatorClosed(config, "version enabled qualification_ref cdi_pins "+approval+" terminal_index_ref component_declarations acknowledgment_targets operator_qualification_ref"); !ok || !reflect.DeepEqual(config["operator_qualification_ref"], registry["operator_qualification_ref"]) {
++		return fail()
++	}
++	qualification, err := b.nativeOperatorDocument(ctx, registry["operator_qualification_ref"], "qualification.json")
++	if err != nil {
++		return 0, err
++	}
++	if _, ok := operatorClosed(qualification, "enabled version operator_only policy_hash policy_version node_pool authorityNamespace gateImage workloadImage profile_caps capacity_observation_sha256 workspaces"); !ok {
++		return fail()
++	}
++	policyHash, policyOK := registry["policy_hash"].(string)
++	if !policyOK || !regexp.MustCompile(`^sha256:[a-f0-9]{64}$`).MatchString(policyHash) {
++		return fail()
++	}
++	if qualification["enabled"] != true || qualification["version"] != json.Number("1") || qualification["operator_only"] != true || qualification["policy_hash"] != policyHash || qualification["authorityNamespace"] != b.nativeAuthorityNamespace || qualification["workloadImage"] != nativeOperatorImage {
++		return fail()
++	}
++	gate, gateOK := qualification["gateImage"].(string)
++	capacity, capacityOK := qualification["capacity_observation_sha256"].(string)
++	if !gateOK || !regexp.MustCompile(`^[^\s@]+@sha256:[a-f0-9]{64}$`).MatchString(gate) || !capacityOK || !regexp.MustCompile(`^sha256:[a-f0-9]{64}$`).MatchString(capacity) || capacity == "sha256:"+strings.Repeat("0", 64) {
++		return fail()
++	}
++	switch v := qualification["policy_version"].(type) {
++	case string:
++		if v == "" {
++			return fail()
++		}
++	case json.Number:
++		if _, err := v.Int64(); err != nil {
++			return fail()
++		}
++	default:
++		return fail()
++	}
++	caps, ok := operatorClosed(qualification["profile_caps"], "interactive-native-qualification-5 interactive-native-qualification-20")
++	if !ok || caps["interactive-native-qualification-5"] != json.Number("5120") || caps["interactive-native-qualification-20"] != json.Number("20480") {
++		return fail()
++	}
++	pool, ok := operatorClosed(qualification["node_pool"], "node node_uid gpu_uuid boot_id driver_generation total_memory_mib free_memory_mib headroom_mib memory_budget_mib max_workspaces")
++	if !ok || pool["node"] != nativeApprovedNode || pool["node_uid"] != nativeApprovedNodeUID || pool["gpu_uuid"] != nativeApprovedGPU || !operatorUID(pool["boot_id"]) || !operatorUID(pool["driver_generation"]) || pool["headroom_mib"] != json.Number("1024") || pool["memory_budget_mib"] != json.Number("25600") || pool["max_workspaces"] != json.Number("2") {
++		return fail()
++	}
++	total, totalOK := operatorInteger(pool["total_memory_mib"])
++	free, freeOK := operatorInteger(pool["free_memory_mib"])
++	if !totalOK || !freeOK || total > 40960 || free < 26624 || free > total {
++		return fail()
++	}
++	epoch, ok := operatorClosed(registry["epoch"], "node_uid boot_id driver_generation gpu_uuid")
++	if !ok {
++		return fail()
++	}
++	for key, value := range epoch {
++		if value != pool[key] {
++			return fail()
++		}
++	}
++	deployment, err := b.nativeOperatorDocument(ctx, config["qualification_ref"], "deployment.json")
++	if err != nil {
++		return 0, err
++	}
++	basePool, ok := deployment["node_pool"].(map[string]interface{})
++	if !ok {
++		return fail()
++	}
++	for _, key := range []string{"node", "node_uid", "gpu_uuid", "boot_id", "driver_generation", "total_memory_mib"} {
++		if pool[key] != basePool[key] {
++			return fail()
++		}
++	}
++	node := &v1.Node{}
++	if err := b.nativeReader.Get(ctx, client.ObjectKey{Name: nativeApprovedNode}, node); err != nil {
++		return 0, err
++	}
++	if string(node.UID) != nativeApprovedNodeUID || node.DeletionTimestamp != nil || node.Status.NodeInfo.BootID != pool["boot_id"] || node.Labels["kubernetes.io/hostname"] != nativeApprovedNode || node.Labels["nvidia.com/gpu.memory"] != fmt.Sprint(total) {
++		return fail()
++	}
++	workspaces, ok := qualification["workspaces"].(map[string]interface{})
++	if !ok || len(workspaces) != 2 {
++		return fail()
++	}
++	members := map[string]bool{"15164372-7ae5-4cfd-8b5d-fd402aa891bd": true, "85de720c-94b0-4bc7-807e-c04512133494": true}
++	profiles := map[string]bool{}
++	owners, pods, pvcs := map[string]bool{}, map[string]bool{}, map[string]bool{}
++	matches := 0
++	var exactCap int64
++	for scope, value := range workspaces {
++		if !regexp.MustCompile(`^cps:operator-qualification-531-[a-z0-9](?:[a-z0-9-]{0,36}[a-z0-9])?$`).MatchString(scope) {
++			return fail()
++		}
++		row, ok := operatorClosed(value, "owner server members principal profiles ceiling namespace pod group_id course_id term_id storage")
++		if !ok || row["namespace"] != "jupyterhub" || row["principal"] != "workspace:"+scope {
++			return fail()
++		}
++		for _, key := range []string{"owner", "server", "pod", "group_id", "course_id", "term_id"} {
++			v, ok := row[key].(string)
++			if !ok || !regexp.MustCompile(`^[A-Za-z0-9][A-Za-z0-9_.@-]{0,127}$`).MatchString(v) {
++				return fail()
++			}
++		}
++		selected, ok := row["profiles"].([]interface{})
++		if !ok || len(selected) != 1 {
++			return fail()
++		}
++		profile, ok := selected[0].(string)
++		if !ok || profiles[profile] {
++			return fail()
++		}
++		cap, ok := operatorInteger(caps[profile])
++		if !ok {
++			return fail()
++		}
++		profiles[profile] = true
++		roster, ok := row["members"].([]interface{})
++		if !ok || len(roster) < 1 || len(roster) > 128 {
++			return fail()
++		}
++		for _, person := range roster {
++			v, ok := person.(string)
++			if !ok || !operatorUID(v) || members[v] || person == row["owner"] {
++				return fail()
++			}
++			members[v] = true
++		}
++		ceiling, ok := operatorClosed(row["ceiling"], "cpu memory gpuMemoryGiB")
++		if !ok || ceiling["cpu"] != "4" || ceiling["memory"] != "16Gi" || ceiling["gpuMemoryGiB"] != json.Number(fmt.Sprint(cap/1024)) {
++			return fail()
++		}
++		storage, ok := operatorClosed(row["storage"], "namespace pvc pv path group_hash storage_version readonly_mounts")
++		if !ok || storage["namespace"] != row["namespace"] || (storage["storage_version"] != json.Number("1") && storage["storage_version"] != json.Number("2")) {
++			return fail()
++		}
++		for _, key := range []string{"pvc", "pv", "path", "group_hash"} {
++			v, ok := storage[key].(string)
++			if !ok || v == "" {
++				return fail()
++			}
++		}
++		owner, podName, pvc := row["owner"].(string), row["pod"].(string), storage["pvc"].(string)
++		if owners[owner] || pods[podName] || pvcs[pvc] {
++			return fail()
++		}
++		owners[owner] = true
++		pods[podName] = true
++		pvcs[pvc] = true
++		location := storage["path"].(string)
++		if !strings.HasPrefix(location, "/mnt/") || strings.Contains("/"+location+"/", "/../") {
++			return fail()
++		}
++		mounts, ok := storage["readonly_mounts"].([]interface{})
++		if !ok {
++			return fail()
++		}
++		for _, mount := range mounts {
++			m, ok := operatorClosed(mount, "server path mount_path read_only")
++			if !ok || m["read_only"] != true {
++				return fail()
++			}
++			host, ok := m["server"].(string)
++			if !ok || !regexp.MustCompile(`^[A-Za-z0-9.-]{1,253}$`).MatchString(host) {
++				return fail()
++			}
++			for _, key := range []string{"path", "mount_path"} {
++				p, ok := m[key].(string)
++				if !ok || !strings.HasPrefix(p, "/") || strings.HasPrefix(p, "//") || strings.Contains("/"+p+"/", "/../") || p == "/" || p == "/workspace" || key == "mount_path" && strings.HasPrefix(p, "/workspace/") {
++					return fail()
++				}
++			}
++		}
++		if row["namespace"] == source.Namespace && row["pod"] == source.Name && profile == registry["profile"] {
++			matches++
++			exactCap = cap
++		}
++	}
++	if matches != 1 || len(profiles) != 2 || source.Namespace != "jupyterhub" || len(source.Spec.Containers) != 1 || source.Spec.Containers[0].Image != nativeOperatorImage || len(admitted.Spec.Containers) != 1 || admitted.Spec.Containers[0].Image != nativeOperatorImage {
++		return fail()
++	}
++	return exactCap, nil
++}
+diff --git a/pkg/binder/binding/native_operator_test.go b/pkg/binder/binding/native_operator_test.go
+new file mode 100644
+index 0000000..d1dc3e9
+--- /dev/null
++++ b/pkg/binder/binding/native_operator_test.go
+@@ -0,0 +1,285 @@
++package binding
++
++import (
++	"context"
++	"encoding/json"
++	"errors"
++	"fmt"
++	"github.com/kai-scheduler/KAI-scheduler/pkg/apis/scheduling/v1alpha2"
++	"github.com/kai-scheduler/KAI-scheduler/pkg/binder/plugins"
++	"github.com/kai-scheduler/KAI-scheduler/pkg/binder/plugins/gpusharing"
++	"github.com/kai-scheduler/KAI-scheduler/pkg/binder/plugins/hamicore"
++	v1 "k8s.io/api/core/v1"
++	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
++	"k8s.io/apimachinery/pkg/types"
++	"reflect"
++	"sigs.k8s.io/controller-runtime/pkg/client"
++	"strings"
++	"testing"
++)
++
++const operatorImage = "ghcr.io/mul-cps/cps-jupyter-notebook@sha256:531027c8e330d4ce818598e998a29d502433e9064f06a32dfc208a06ef2d0ba4"
++
++func operatorCM(name, key string, body map[string]interface{}, uid string) *v1.ConfigMap {
++	raw, _ := json.Marshal(body)
++	yes := true
++	return &v1.ConfigMap{ObjectMeta: metav1.ObjectMeta{Namespace: "authority", Name: name, UID: types.UID(uid), ResourceVersion: "1"}, Immutable: &yes, Data: map[string]string{key: string(raw)}}
++}
++
++func operatorRef(cm *v1.ConfigMap, key string) map[string]interface{} {
++	data := map[string]interface{}{}
++	for k, v := range cm.Data {
++		data[k] = v
++	}
++	hash, _ := nativeRegistryHash(data)
++	return map[string]interface{}{"namespace": cm.Namespace, "name": cm.Name, "uid": string(cm.UID), "resourceVersion": cm.ResourceVersion, "key": key, "data_sha256": "sha256:" + hash}
++}
++func nativeOperatorFixtures(pod *v1.Pod, size int) (*v1.ConfigMap, *v1.ConfigMap, *v1.ConfigMap, *v1.ConfigMap, *v1.ConfigMap) {
++	pod.Spec.Containers[0].Image = operatorImage
++	pod.Annotations["gpu-memory"] = fmt.Sprint(size * 1024)
++	pod.Annotations["nvidia.com/container.notebook.gpu-memory.request"] = fmt.Sprintf("%dGi", size)
++	registry, seed := nativeRegistryFixtures(pod)
++	var r, s map[string]interface{}
++	_ = json.Unmarshal([]byte(registry.Data["registry.json"]), &r)
++	_ = json.Unmarshal([]byte(seed.Data["seed.json"]), &s)
++	profile := fmt.Sprintf("interactive-native-qualification-%d", size)
++	annotations := s["admitted"].(map[string]interface{})["metadata"].(map[string]interface{})["annotations"].(map[string]interface{})
++	annotations["gpu-memory"] = fmt.Sprint(size * 1024)
++	annotations["nvidia.com/container.notebook.gpu-memory.request"] = fmt.Sprintf("%dGi", size)
++	pool := map[string]interface{}{"node": nativeApprovedNode, "node_uid": nativeApprovedNodeUID, "gpu_uuid": nativeApprovedGPU, "boot_id": "10000000-0000-4000-8000-000000000001", "driver_generation": "10000000-0000-4000-8000-000000000002", "total_memory_mib": 40960, "free_memory_mib": 40000, "headroom_mib": 1024, "memory_budget_mib": 25600, "max_workspaces": 2}
++	workspaces := map[string]interface{}{}
++	for _, gib := range []int{5, 20} {
++		scope := fmt.Sprintf("cps:operator-qualification-531-test-%d", gib)
++		name := fmt.Sprintf("other-%d", gib)
++		if gib == size {
++			name = pod.Name
++		}
++		workspaces[scope] = map[string]interface{}{"owner": fmt.Sprintf("operator-owner-%d", gib), "server": "workspace", "members": []interface{}{fmt.Sprintf("20000000-0000-4000-8000-%012d", gib)}, "principal": "workspace:" + scope, "profiles": []interface{}{fmt.Sprintf("interactive-native-qualification-%d", gib)}, "ceiling": map[string]interface{}{"cpu": "4", "memory": "16Gi", "gpuMemoryGiB": gib}, "namespace": "jupyterhub", "pod": name, "group_id": fmt.Sprintf("group-%d", gib), "course_id": "operator-course", "term_id": "operator-term", "storage": map[string]interface{}{"namespace": "jupyterhub", "pvc": fmt.Sprintf("workspace-%d", gib), "pv": fmt.Sprintf("volume-%d", gib), "path": fmt.Sprintf("/mnt/operator/%d", gib), "group_hash": strings.Repeat("a", 64), "storage_version": 2, "readonly_mounts": []interface{}{}}}
++	}
++	qualification := operatorCM("operator-qualification", "qualification.json", map[string]interface{}{"version": 1, "enabled": true, "operator_only": true, "policy_hash": r["policy_hash"], "policy_version": "1", "node_pool": pool, "authorityNamespace": "authority", "gateImage": "ghcr.io/mul-cps/gate@sha256:" + strings.Repeat("a", 64), "workloadImage": operatorImage, "profile_caps": map[string]interface{}{"interactive-native-qualification-5": 5120, "interactive-native-qualification-20": 20480}, "capacity_observation_sha256": "sha256:" + strings.Repeat("b", 64), "workspaces": workspaces}, "30000000-0000-4000-8000-000000000001")
++	deployment := operatorCM("operator-base-deployment", "deployment.json", map[string]interface{}{"node_pool": pool}, "30000000-0000-4000-8000-000000000002")
++	config := operatorCM("operator-node-config", "config.json", map[string]interface{}{"version": 4, "enabled": true, "operator_qualification_ref": operatorRef(qualification, "qualification.json"), "qualification_ref": operatorRef(deployment, "deployment.json"), "approval_head": map[string]interface{}{}, "cdi_pins": map[string]interface{}{}, "terminal_index_ref": map[string]interface{}{}, "component_declarations": map[string]interface{}{}, "acknowledgment_targets": map[string]interface{}{}}, "30000000-0000-4000-8000-000000000003")
++	delete(r, "approval_ref")
++	r["protocol"] = "cps-native-pending-allocation/v3"
++	r["profile"] = profile
++	r["operator_qualification_ref"] = operatorRef(qualification, "qualification.json")
++	r["node_configuration_ref"] = operatorRef(config, "config.json")
++	r["epoch"] = map[string]interface{}{}
++	for _, key := range []string{"node_uid", "boot_id", "driver_generation", "gpu_uuid"} {
++		r["epoch"].(map[string]interface{})[key] = pool[key]
++	}
++	raw, _ := json.Marshal(r)
++	registry.Data["registry.json"] = string(raw)
++	raw, _ = json.Marshal(s)
++	seed.Data["seed.json"] = string(raw)
++	return registry, seed, qualification, config, deployment
++}
++func TestOperatorRegistryDerivesExactQualificationCaps(t *testing.T) {
++	for _, gib := range []int{5, 20} {
++		t.Run(fmt.Sprint(gib), func(t *testing.T) {
++			pod, node, br := nativeTestInputs()
++			pod.Namespace = "jupyterhub"
++			br.Namespace = pod.Namespace
++			r, s, q, c, d := nativeOperatorFixtures(pod, gib)
++			node.Status.NodeInfo.BootID = "10000000-0000-4000-8000-000000000001"
++			node.Labels = map[string]string{"kubernetes.io/hostname": nativeApprovedNode, "nvidia.com/gpu.memory": "40960"}
++			kube := nativeTestClient(t, pod, node, br, func(*v1.Binding) error { return nil }, r, s, q, c, d)
++			binder := NewBinder(kube, &nativeTestReservation{}, plugins.New())
++			binder.SetNativeTerminal(kube, "authority", &nativeTestCoordinator{})
++			var cap int64
++			if err := binder.nativeRegistryProof(context.Background(), pod, &cap); err != nil || cap != int64(gib*1024) {
++				t.Fatalf("typed operator proof failed: cap%d error%v", cap, err)
++			}
++		})
++	}
++}
++
++func TestOperatorRegistryDeniesDriftBeforeStockMutation(t *testing.T) {
++	faults := []string{"rv-nondecimal", "duplicate-owner", "duplicate-pod", "duplicate-pvc", "v3-approval-key", "live-memory", "config-uid", "config-rv", "config-hash", "ref-extra", "ref-namespace", "qualification-uid", "qualification-rv", "qualification-hash", "config-link", "config-extra", "qualification-mutable", "qualification-owner", "operator-false", "qualification-extra", "workload", "policy", "caps-extra", "cap-20", "budget", "headroom", "free", "max-workspaces", "physical-uuid", "epoch", "node-boot", "student", "overlap", "member-format", "roster-extra", "roster-profile", "roster-namespace", "roster-pod", "ceiling", "storage-extra", "admitted-memory", "source-image", "compiler-attempt"}
++	for _, fault := range faults {
++		t.Run(fault, func(t *testing.T) {
++			pod, node, br := nativeTestInputs()
++			pod.Namespace = "jupyterhub"
++			br.Namespace = pod.Namespace
++			r, s, q, c, d := nativeOperatorFixtures(pod, 5)
++			node.Status.NodeInfo.BootID = "10000000-0000-4000-8000-000000000001"
++			node.Labels = map[string]string{"kubernetes.io/hostname": nativeApprovedNode, "nvidia.com/gpu.memory": "40960"}
++			var reg, qual, config, seed map[string]interface{}
++			_ = json.Unmarshal([]byte(r.Data["registry.json"]), &reg)
++			_ = json.Unmarshal([]byte(q.Data["qualification.json"]), &qual)
++			_ = json.Unmarshal([]byte(c.Data["config.json"]), &config)
++			_ = json.Unmarshal([]byte(s.Data["seed.json"]), &seed)
++			rows := qual["workspaces"].(map[string]interface{})
++			five := rows["cps:operator-qualification-531-test-5"].(map[string]interface{})
++			twenty := rows["cps:operator-qualification-531-test-20"].(map[string]interface{})
++			pool := qual["node_pool"].(map[string]interface{})
++			switch fault {
++			case "rv-nondecimal":
++				q.ResourceVersion = "opaque"
++			case "duplicate-owner":
++				twenty["owner"] = five["owner"]
++			case "duplicate-pod":
++				twenty["pod"] = five["pod"]
++			case "duplicate-pvc":
++				twenty["storage"].(map[string]interface{})["pvc"] = five["storage"].(map[string]interface{})["pvc"]
++			case "v3-approval-key":
++				reg["approval_ref"] = map[string]interface{}{}
++			case "live-memory":
++				pod.Annotations["gpu-memory"] = "5324"
++			case "qualification-mutable":
++				no := false
++				q.Immutable = &no
++			case "qualification-owner":
++				q.OwnerReferences = []metav1.OwnerReference{{Kind: "Pod", Name: pod.Name, UID: pod.UID}}
++			case "operator-false":
++				qual["operator_only"] = false
++			case "qualification-extra":
++				qual["approval_ref"] = map[string]interface{}{}
++			case "workload":
++				qual["workloadImage"] = "foreign"
++			case "policy":
++				qual["policy_hash"] = "sha256:" + strings.Repeat("c", 64)
++			case "caps-extra":
++				qual["profile_caps"].(map[string]interface{})["interactive-native-qualification-10"] = 10240
++			case "cap-20":
++				qual["profile_caps"].(map[string]interface{})["interactive-native-qualification-20"] = 10240
++			case "budget":
++				pool["memory_budget_mib"] = 15360
++			case "headroom":
++				pool["headroom_mib"] = 0
++			case "free":
++				pool["free_memory_mib"] = 26623
++			case "max-workspaces":
++				pool["max_workspaces"] = 3
++			case "physical-uuid":
++				pool["gpu_uuid"] = "GPU-1e6145d5-8ee2-43e2-a0d5-6d345909e8a6"
++			case "epoch":
++				reg["epoch"].(map[string]interface{})["boot_id"] = "10000000-0000-4000-8000-000000000009"
++			case "node-boot":
++				node.Status.NodeInfo.BootID = "10000000-0000-4000-8000-000000000009"
++			case "student":
++				five["members"] = []interface{}{"15164372-7ae5-4cfd-8b5d-fd402aa891bd"}
++			case "overlap":
++				twenty["members"] = five["members"]
++			case "member-format":
++				five["members"] = []interface{}{"uncanonical-operator"}
++			case "roster-extra":
++				five["arbitrary"] = true
++			case "roster-profile":
++				five["profiles"] = []interface{}{"interactive-native-qualification-20"}
++			case "roster-namespace":
++				five["namespace"] = "cit-jhub"
++			case "roster-pod":
++				five["pod"] = "unapproved"
++			case "ceiling":
++				five["ceiling"].(map[string]interface{})["gpuMemoryGiB"] = 20
++			case "storage-extra":
++				five["storage"].(map[string]interface{})["arbitrary"] = true
++			case "admitted-memory":
++				seed["admitted"].(map[string]interface{})["metadata"].(map[string]interface{})["annotations"].(map[string]interface{})["gpu-memory"] = "5324"
++			case "source-image":
++				seed["source_pod"].(map[string]interface{})["spec"].(map[string]interface{})["containers"].([]interface{})[0].(map[string]interface{})["image"] = "foreign"
++			case "compiler-attempt":
++				reg["attempt"] = "10000000-0000-4000-8000-000000000009"
++			}
++			raw, _ := json.Marshal(qual)
++			q.Data["qualification.json"] = string(raw)
++			config["operator_qualification_ref"] = operatorRef(q, "qualification.json")
++			reg["operator_qualification_ref"] = operatorRef(q, "qualification.json")
++			if fault == "config-link" {
++				config["operator_qualification_ref"].(map[string]interface{})["uid"] = "10000000-0000-4000-8000-000000000009"
++			}
++			if fault == "config-extra" {
++				config["approval_ref"] = map[string]interface{}{}
++			}
++			raw, _ = json.Marshal(config)
++			c.Data["config.json"] = string(raw)
++			reg["node_configuration_ref"] = operatorRef(c, "config.json")
++			if fault == "config-uid" {
++				reg["node_configuration_ref"].(map[string]interface{})["uid"] = "10000000-0000-4000-8000-000000000009"
++			}
++			if fault == "config-rv" {
++				reg["node_configuration_ref"].(map[string]interface{})["resourceVersion"] = "2"
++			}
++			if fault == "config-hash" {
++				reg["node_configuration_ref"].(map[string]interface{})["data_sha256"] = "sha256:" + strings.Repeat("f", 64)
++			}
++			if fault == "ref-extra" {
++				reg["node_configuration_ref"].(map[string]interface{})["arbitrary"] = true
++			}
++			if fault == "ref-namespace" {
++				reg["node_configuration_ref"].(map[string]interface{})["namespace"] = "jupyterhub"
++			}
++			if fault == "qualification-uid" {
++				reg["operator_qualification_ref"].(map[string]interface{})["uid"] = "10000000-0000-4000-8000-000000000009"
++			}
++			if fault == "qualification-rv" {
++				reg["operator_qualification_ref"].(map[string]interface{})["resourceVersion"] = "2"
++			}
++			if fault == "qualification-hash" {
++				reg["operator_qualification_ref"].(map[string]interface{})["data_sha256"] = "sha256:" + strings.Repeat("f", 64)
++			}
++			raw, _ = json.Marshal(reg)
++			r.Data["registry.json"] = string(raw)
++			raw, _ = json.Marshal(seed)
++			s.Data["seed.json"] = string(raw)
++			kube := nativeTestClient(t, pod, node, br, func(*v1.Binding) error { t.Fatal("unexpected Binding"); return nil }, r, s, q, c, d)
++			reservation := &nativeCountingReservation{}
++			coord := &nativeTestCoordinator{}
++			ps := plugins.New()
++			ps.RegisterPlugin(gpusharing.New(kube, true, false))
++			ps.RegisterPlugin(hamicore.New(kube))
++			binder := NewBinder(kube, reservation, ps)
++			binder.SetNativeTerminal(kube, "authority", coord)
++			err := binder.Bind(context.Background(), pod, node, br)
++			maps := &v1.ConfigMapList{}
++			_ = kube.List(context.Background(), maps, client.InNamespace(pod.Namespace))
++			if !errors.Is(err, ErrNativeCustodyHeld) || reservation.syncs != 0 || len(maps.Items) != 0 || len(coord.calls) != 0 {
++				t.Fatalf("operator drift reached stock writes: %v sync%d maps%d calls%v", err, reservation.syncs, len(maps.Items), coord.calls)
++			}
++		})
++	}
++}
++
++func TestOperatorProofFeedsExactCapThroughRealStockPlugins(t *testing.T) {
++	for _, gib := range []int{5, 20} {
++		t.Run(fmt.Sprint(gib), func(t *testing.T) {
++			pod, node, br := nativeTestInputs()
++			pod.Namespace = "jupyterhub"
++			br.Namespace = pod.Namespace
++			prefix := pod.Annotations["runai/shared-gpu-configmap"]
++			for _, key := range []string{"NVIDIA_VISIBLE_DEVICES", "RUNAI_NUM_OF_GPUS", "GPU_PORTION", "CUDA_DEVICE_MEMORY_LIMIT"} {
++				pod.Spec.Containers[0].Env = append(pod.Spec.Containers[0].Env, v1.EnvVar{Name: key, ValueFrom: &v1.EnvVarSource{ConfigMapKeyRef: &v1.ConfigMapKeySelector{LocalObjectReference: v1.LocalObjectReference{Name: prefix + "-0"}, Key: key}}})
++			}
++			r, s, q, c, d := nativeOperatorFixtures(pod, gib)
++			node.Status.NodeInfo.BootID = "10000000-0000-4000-8000-000000000001"
++			node.Labels = map[string]string{"kubernetes.io/hostname": nativeApprovedNode, "nvidia.com/gpu.memory": "40960"}
++			portion := map[int]string{5: "0.13", 20: "0.50"}[gib]
++			br.Spec.ReceivedResourceType = "Fraction"
++			br.Spec.ReceivedGPU = &v1alpha2.ReceivedGPU{Count: 1, Portion: portion}
++			br.Spec.SelectedFractionalGpuGroups = []v1alpha2.FractionalGpuGroup{{ID: "operator-group", ComputeSharingMode: v1alpha2.GPUComputeSharingModeTimeSlicing}}
++			ack := nativeTestACK(pod)
++			binds := 0
++			kube := nativeTestClient(t, pod, node, br, func(*v1.Binding) error { binds++; return nil }, r, s, q, c, d, ack)
++			coord := &nativeTestCoordinator{ack: ack}
++			coord.prepare = func(NativeTerminalSnapshot) {
++				cm := &v1.ConfigMap{}
++				if err := kube.Get(context.Background(), client.ObjectKey{Namespace: pod.Namespace, Name: prefix + "-0"}, cm); err != nil {
++					t.Fatal(err)
++				}
++				want := map[string]string{"NVIDIA_VISIBLE_DEVICES": "k8s.device-plugin.nvidia.com/gpu=" + nativeApprovedGPU, "RUNAI_NUM_OF_GPUS": portion, "GPU_PORTION": portion, "CUDA_DEVICE_MEMORY_LIMIT": fmt.Sprintf("%dm", gib*1024)}
++				if !reflect.DeepEqual(cm.Data, want) {
++					t.Fatalf("wrong exact operator cap: %v", cm.Data)
++				}
++			}
++			ps := plugins.New()
++			ps.RegisterPlugin(gpusharing.New(kube, true, false))
++			ps.RegisterPlugin(hamicore.New(kube))
++			binder := NewBinder(kube, &nativeTestReservation{}, ps)
++			binder.SetNativeTerminal(kube, "authority", coord)
++			if err := binder.Bind(context.Background(), pod, node, br); err != nil || binds != 1 {
++				t.Fatalf("operator real Bind failed: %v binds%d", err, binds)
++			}
++		})
++	}
++}
 diff --git a/pkg/binder/binding/native_terminal.go b/pkg/binder/binding/native_terminal.go
 new file mode 100644
-index 0000000..3ae53e0
+index 0000000..499eddd
 --- /dev/null
 +++ b/pkg/binder/binding/native_terminal.go
-@@ -0,0 +1,473 @@
+@@ -0,0 +1,495 @@
 +// SPDX-License-Identifier: Apache-2.0
 +
 +package binding
@@ -466,7 +1029,11 @@ index 0000000..3ae53e0
 +	if err := b.nativeReader.Get(ctx, client.ObjectKey{Namespace: b.nativeAuthorityNamespace, Name: name}, cm); err != nil {
 +		return nil, err
 +	}
-+	if cm.Namespace != b.nativeAuthorityNamespace || cm.Name != name || cm.UID == "" || cm.ResourceVersion == "" || cm.DeletionTimestamp != nil || cm.Immutable == nil || !*cm.Immutable || len(cm.OwnerReferences) != 0 || len(cm.BinaryData) != 0 || len(cm.Data) != 1 {
++	return nativeProtectedCMDocument(cm, b.nativeAuthorityNamespace, name, key)
++}
++
++func nativeProtectedCMDocument(cm *v1.ConfigMap, namespace, name, key string) (map[string]interface{}, error) {
++	if cm.Namespace != namespace || cm.Name != name || cm.UID == "" || cm.ResourceVersion == "" || cm.DeletionTimestamp != nil || cm.Immutable == nil || !*cm.Immutable || len(cm.OwnerReferences) != 0 || len(cm.BinaryData) != 0 || len(cm.Data) != 1 {
 +		return nil, fmt.Errorf("original immutable %s identity required", key)
 +	}
 +	raw, ok := cm.Data[key]
@@ -543,12 +1110,15 @@ index 0000000..3ae53e0
 +		return err
 +	}
 +	protocol := registry["protocol"]
-+	if protocol != "cps-native-pending-allocation/v1" && protocol != "cps-native-pending-allocation/v2" {
++	if protocol != "cps-native-pending-allocation/v1" && protocol != "cps-native-pending-allocation/v2" && protocol != "cps-native-pending-allocation/v3" {
 +		return fmt.Errorf("protected registry protocol differs")
 +	}
 +	keys := []string{"protocol", "kind", "pod_uid", "namespace", "name", "attempt", "profile", "policy_hash", "pending_spec_sha256", "bound_spec_sha256", "node", "node_uid", "gpu_uuid", "container_name", "container_index", "capabilities_configmap", "env_configmap", "kai_commit"}
 +	if protocol == "cps-native-pending-allocation/v2" {
 +		keys = append(keys, "binding_id", "approval_ref", "node_configuration_ref", "epoch")
++	}
++	if protocol == "cps-native-pending-allocation/v3" {
++		keys = append(keys, "binding_id", "operator_qualification_ref", "node_configuration_ref", "epoch")
 +	}
 +	if len(registry) != len(keys) {
 +		return fmt.Errorf("closed protected registry required")
@@ -622,10 +1192,25 @@ index 0000000..3ae53e0
 +	if err != nil || bound != registry["bound_spec_sha256"] || pod.Annotations["cps.compute/native-spec-sha256"] != bound {
 +		return fmt.Errorf("frozen bound spec hash differs")
 +	}
++	var operatorCap int64
++	if protocol == "cps-native-pending-allocation/v3" {
++		operatorCap, err = b.nativeOperatorCap(ctx, registry, original, admitted)
++		if err != nil {
++			return err
++		}
++		for _, key := range []string{"gpu-memory", "gpu-fraction-container-name", "nvidia.com/container.notebook.gpu-memory.request"} {
++			if pod.Annotations[key] != admitted.Annotations[key] || current.Annotations[key] != admitted.Annotations[key] {
++				return fmt.Errorf("original operator compiler metadata differs")
++			}
++		}
++	}
 +	if exactCap != nil {
 +		caps := map[string]int64{"interactive-shared-5": 5120, "interactive-shared-10": 10240, "interactive-shared-20": 20480}
 +		profile, ok := registry["profile"].(string)
 +		cap := caps[profile]
++		if protocol == "cps-native-pending-allocation/v3" {
++			cap = operatorCap
++		}
 +		expected := fmt.Sprintf("%dGi", cap/1024)
 +		key := "nvidia.com/container.notebook.gpu-memory.request"
 +		if !ok || cap == 0 || admitted.Annotations[key] != expected || admitted.Annotations["gpu-memory"] != fmt.Sprint(cap) || admitted.Annotations["gpu-fraction-container-name"] != "notebook" || len(original.Spec.Containers) != 1 || original.Spec.Containers[0].Name != "notebook" || len(admitted.Spec.Containers) != 1 || admitted.Spec.Containers[0].Name != "notebook" {

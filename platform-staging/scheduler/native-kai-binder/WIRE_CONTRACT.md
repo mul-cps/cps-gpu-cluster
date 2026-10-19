@@ -38,3 +38,27 @@ Binder/Hub service authentication uses actual TokenReview audience/current Servi
 `reservation-delete` must validate the actual reservation UID/RV and every live/pending/enrolling/enrolled/releasing allocation. Before returning `may_delete:true`, the coordinator must retain a durable deletion barrier for that exact reservation UID so a new native enrollment cannot race between the response and the API DELETE. New preparations remain denied until actual reservation absence or explicit safe reconciliation of the failed deletion. A false result retains the reservation. API deletion uses current UID/RV preconditions, and no caller can turn Pod absence alone into native-zero/capacity release. This persistent barrier is required because the boolean response alone cannot hold a server mutex across the subsequent binder DELETE.
 
 The server authenticates every method anew. It binds each fence to authenticated original binder identity, PodUID, current attempt, selected node/epoch and prepared generation. A different actor, Pod, attempt, request generation, authority namespace, node, maps, enrollment, ACK or driver epoch is denied. Fence IDs alone are not bearer authority. Normal UI/user Source endpoints never expose this interface. Root owns the Python implementation and any installation; Go transport/startup tests remain offline.
+
+## Prospective operator-only registry v3 (source candidate)
+
+`cps-native-pending-allocation/v3` has the same closed registry fields as v2,
+with `operator_qualification_ref` replacing `approval_ref`. It does not claim
+passed production qualification. The unchanged compiler seed is the six-field
+immutable `seed.json` at `cps-pending-compiler-<binding_id[:40]>`.
+
+Before reservation or stock PreBind mutation, the consumer resolves the exact
+immutable Node configuration and its identical operator qualification reference
+(namespace/name/UID/positive decimal resourceVersion/key/raw data hash). It
+checks the closed operator-only CPS531 pair, exact qualification5/20 caps,
+disjoint canonical nonstudent roster and distinct owners/Pods/PVCs, same physical
+GPU/epoch, and the fresh Node UID/boot. Original source/admitted spec/hash proofs
+remain mandatory. Only the admitted immutable memory metadata supplies the
+native HAMI limit; nominal scheduling shares cannot enlarge it. Existing v1/v2
+behavior, current SDK authorization, readiness, execution fence, frozen maps,
+enrollment, ACK, Binding and cleanup checks remain required.
+
+The paired operator SDK/Node integration is not yet pinned by this source-only
+candidate. Existing contract pins describe the ordinary route. Do not claim an
+operator image or deployment from this commit: final SDK commit correlation,
+installed validation, actual binary/OCI provenance and reviewed immutable
+operator configuration remain separate acceptance gates.
