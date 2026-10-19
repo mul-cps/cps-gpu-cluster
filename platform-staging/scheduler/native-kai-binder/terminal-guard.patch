@@ -1251,10 +1251,10 @@ index 0000000..8445b97
 +}
 diff --git a/pkg/binder/binding/native_transport.go b/pkg/binder/binding/native_transport.go
 new file mode 100644
-index 0000000..6439bd5
+index 0000000..4c4cf0f
 --- /dev/null
 +++ b/pkg/binder/binding/native_transport.go
-@@ -0,0 +1,290 @@
+@@ -0,0 +1,298 @@
 +// SPDX-License-Identifier: Apache-2.0
 +package binding
 +
@@ -1406,7 +1406,15 @@ index 0000000..6439bd5
 +	}
 +	request.Header.Set("Authorization", "Bearer "+token)
 +	request.Header.Set("Content-Type", "application/json")
-+	response, err := bridge.client.Do(request)
++	client := bridge.client
++	if operation == "prepare" {
++		// Prepare may wait up to 60s for independently refreshed readiness.
++		// Keep other operations and earlier caller cancellation unchanged.
++		bounded := *client
++		bounded.Timeout = 90 * time.Second
++		client = &bounded
++	}
++	response, err := client.Do(request)
 +	if err != nil {
 +		return nil, fmt.Errorf("coordinator %s transport failed", operation)
 +	}
@@ -1547,16 +1555,18 @@ index 0000000..6439bd5
 +}
 diff --git a/pkg/binder/binding/native_transport_test.go b/pkg/binder/binding/native_transport_test.go
 new file mode 100644
-index 0000000..996b891
+index 0000000..ed832fc
 --- /dev/null
 +++ b/pkg/binder/binding/native_transport_test.go
-@@ -0,0 +1,238 @@
+@@ -0,0 +1,311 @@
 +package binding
 +
 +import (
++	"bytes"
 +	"context"
 +	"encoding/json"
 +	"encoding/pem"
++	"io"
 +	v1 "k8s.io/api/core/v1"
 +	"k8s.io/apimachinery/pkg/apis/meta/v1/unstructured"
 +	"net/http"
@@ -1566,6 +1576,7 @@ index 0000000..996b891
 +	"reflect"
 +	"strings"
 +	"testing"
++	"time"
 +)
 +
 +func TestNativeHTTPDisabledDoesNotReadCredentials(t *testing.T) {
@@ -1787,6 +1798,76 @@ index 0000000..996b891
 +				t.Fatalf("non-array cleanup evidence accepted: %s", mode)
 +			}
 +		})
++	}
++}
++
++type nativeDeadlineTransport struct {
++	t         *testing.T
++	operation string
++	calls     int
++}
++
++func (transport *nativeDeadlineTransport) RoundTrip(request *http.Request) (*http.Response, error) {
++	transport.calls++
++	deadline, ok := request.Context().Deadline()
++	expected := 15 * time.Second
++	if transport.operation == "prepare" {
++		expected = 90 * time.Second
++	}
++	remaining := time.Until(deadline)
++	if !ok || remaining > expected || remaining < expected-time.Second {
++		transport.t.Errorf("%s request deadline %v; need bounded %v", transport.operation, remaining, expected)
++	}
++	var body map[string]interface{}
++	if err := json.NewDecoder(request.Body).Decode(&body); err != nil {
++		transport.t.Fatal(err)
++	}
++	response := map[string]interface{}{"protocol": body["protocol"], "operation": body["operation"], "request_id": body["request_id"]}
++	raw, _ := json.Marshal(response)
++	return &http.Response{StatusCode: http.StatusOK, Header: http.Header{"Content-Type": []string{"application/json"}}, Body: io.NopCloser(bytes.NewReader(raw))}, nil
++}
++func TestNativeHTTPPrepareWaitBudgetDoesNotChangeOtherOperations(t *testing.T) {
++	for _, operation := range []string{"prepare", "current", "hold", "close", "reservation-delete"} {
++		t.Run(operation, func(t *testing.T) {
++			bridge, _ := nativeTransportFixture(t, func(http.ResponseWriter, *http.Request) { t.Fatal("unexpected external call") })
++			transport := &nativeDeadlineTransport{t: t, operation: operation}
++			bridge.client.Transport = transport
++			if _, err := bridge.call(context.Background(), operation, nil); err != nil {
++				t.Fatal(err)
++			}
++			if transport.calls != 1 {
++				t.Fatalf("state-changing request replayed %d times", transport.calls)
++			}
++			if bridge.client.Timeout != 15*time.Second {
++				t.Fatal("shared client timeout mutated")
++			}
++		})
++	}
++}
++func TestNativeHTTPPrepareHonorsEarlierCancellationWithoutRetry(t *testing.T) {
++	entered := make(chan struct{})
++	bridge, _ := nativeTransportFixture(t, func(w http.ResponseWriter, r *http.Request) {
++		io.Copy(io.Discard, r.Body)
++		close(entered)
++		<-r.Context().Done()
++	})
++	ctx, cancel := context.WithCancel(context.Background())
++	defer cancel()
++	done := make(chan error, 1)
++	go func() { _, err := bridge.call(ctx, "prepare", nil); done <- err }()
++	select {
++	case <-entered:
++	case <-time.After(time.Second):
++		t.Fatal("request not received")
++	}
++	cancel()
++	select {
++	case err := <-done:
++		if err == nil {
++			t.Fatal("cancelled Prepare succeeded")
++		}
++	case <-time.After(time.Second):
++		t.Fatal("Prepare ignored caller cancellation")
 +	}
 +}
 diff --git a/pkg/binder/binding/resourcereservation/native_custody_test.go b/pkg/binder/binding/resourcereservation/native_custody_test.go

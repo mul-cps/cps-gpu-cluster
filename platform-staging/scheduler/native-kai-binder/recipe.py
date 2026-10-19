@@ -11,7 +11,7 @@ ROOT = pathlib.Path(__file__).resolve().parent
 UPSTREAM = 'https://github.com/kai-scheduler/KAI-Scheduler.git'
 COMMIT = 'bdf434e5e9201cccf4e05fad04d814363653f692'
 GO_VERSION = 'go1.26.8'
-PATCH_SHA256 = '0d8f6978d49167788032753a3b153338be51c5a7ce2472ed77052ddca5036fae'
+PATCH_SHA256 = 'a8e759aa2aa023b8ec7e63204d1c2c2fd9158cdf2c043c661faa1e31e8d7755b'
 TOOLCHAIN_SHA256 = 'd0f743b33e8d8945e6b1f432edd15785c70507121d6e2a723b21285eddf8b57b'
 PACKAGES = ('./pkg/binder/binding', './pkg/binder/binding/resourcereservation', './pkg/binder/controllers', './cmd/binder/app')
 
