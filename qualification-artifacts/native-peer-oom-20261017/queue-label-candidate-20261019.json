@@ -1,0 +1,12 @@
+{
+  "source_revision": "24f0977ff7e6241fc5b55839e5b48d3e0a61d4a3",
+  "base_image": "ghcr.io/mul-cps/cps-compute@sha256:0cf5d0fc6118bcf264e086bdd7a6166d87590afa5eb94e26cb6b9364d85ebd80",
+  "candidate_image": "ghcr.io/mul-cps/cps-compute@sha256:040d74bfd20c0fc86ae07b6468b3ee43001121da588f5561468d0867889150ba",
+  "focused_tests_passed": 107,
+  "installed_image_offline_tests_passed": 107,
+  "full_suite_passed": 3469,
+  "full_suite_skipped": 6,
+  "full_suite_failure": "Addon real identity hook requires jupyter_server missing from the local test environment",
+  "deployed": false,
+  "production_qualified": false
+}
