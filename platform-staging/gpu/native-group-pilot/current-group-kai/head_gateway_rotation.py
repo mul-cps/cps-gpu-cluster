@@ -138,8 +138,16 @@ def _context(inputs):
         image.require(isinstance(node_image, str) and re.fullmatch(r'ghcr.io/mul-cps/cps-native-node@sha256:[a-f0-9]{64}', node_image)
             and not node_image.endswith('0' * 64) and node_image != declarations['node']['image'],
             'Distinct qualified immutable Node successor image required')
-    image.require(gateway_image != declarations['gateway']['image'] or node_image is not None,
-                  'Distinct qualified immutable Gateway or Node successor required')
+    stock_cdi_update = inputs.get('stock_cdi_update')
+    if stock_cdi_update is not None:
+        image.require(type(stock_cdi_update) is dict and set(stock_cdi_update) == {'previous_sha256','sha256'}
+            and all(isinstance(v,str) and re.fullmatch(r'[a-f0-9]{64}',v) and v != '0'*64
+                for v in stock_cdi_update.values())
+            and stock_cdi_update['previous_sha256'] != stock_cdi_update['sha256']
+            and document['cdi_pins']['other_cdi_files'].get('k8s.device-plugin.nvidia.com-gpu.json')
+                == stock_cdi_update['previous_sha256'], 'Exact reviewed stock CDI preimage and successor digest required')
+    image.require(gateway_image != declarations['gateway']['image'] or node_image is not None or stock_cdi_update is not None,
+                  'Distinct qualified immutable Gateway, Node or stock CDI successor required')
     runtime_secret = image.secret_volume(snapshot, 'gateway', 'config')
     _guard(runtime_secret, 'Secret')
     image.require(runtime_secret.get('type') == 'Opaque' and runtime_secret.get('immutable') is not True,
@@ -268,16 +276,19 @@ def _context(inputs):
 
 
 def prepare(snapshot, previous_release, operator_baselines, gateway_image, endpoint_proposal, actual_endpoint_seed,
-            *, expected_snapshot_sha256, expected_release_sha256, expected_operator_baselines_sha256, expected_revision, expected_endpoint_proposal_sha256=None, node_image=None):
-    """First phase: create an immutable Node4 image successor candidate."""
+            *, expected_snapshot_sha256, expected_release_sha256, expected_operator_baselines_sha256, expected_revision, expected_endpoint_proposal_sha256=None, node_image=None, stock_cdi_update=None):
+    """First phase: create an immutable Node4 image or stock CDI successor candidate."""
     inputs = deepcopy(locals())
     if node_image is None: inputs.pop('node_image')
+    if stock_cdi_update is None: inputs.pop('stock_cdi_update')
     if expected_endpoint_proposal_sha256 is None:
         inputs.pop('expected_endpoint_proposal_sha256')
     try:
         policy, configuration, _, _, _ = _context(inputs)
         document = configuration.document; document['component_declarations']['gateway']['image'] = gateway_image
         if node_image is not None: document['component_declarations']['node']['image'] = node_image
+        if stock_cdi_update is not None:
+            document['cdi_pins']['other_cdi_files']['k8s.device-plugin.nvidia.com-gpu.json'] = stock_cdi_update['sha256']
         old = image._get(snapshot, 'ConfigMap', configuration.reference.to_dict()['namespace'], configuration.reference.to_dict()['name'])
         return {'version': 1, 'kind': 'head-gateway-rotation', 'inputs': inputs,
             'creates': {'node-config': image._candidate(old, 'cps-native-head-config', {'config.json': image.canonical(document)})},

@@ -485,3 +485,83 @@ def test_node_only_successor_updates_all_node_image_pins_and_preserves_hubs():
 def test_node_successor_requires_exact_reviewed_repository_digest(value):
     values=mounted_fixture();values['node_image']=value
     with pytest.raises(ValueError):prepare(values)
+
+
+STOCK_CDI_FILE='k8s.device-plugin.nvidia.com-gpu.json'
+
+
+def stock_cdi_fixture(monkeypatch):
+    from test_observer_adoption import image_tests
+    original=image_tests.node_fixture
+    def node_fixture():
+        policy,node,core,maps=original()
+        document=json.loads(node['data']['config.json'])
+        document['cdi_pins']['other_cdi_files'][STOCK_CDI_FILE]='a'*64
+        node['data']['config.json']=image.canonical(document)
+        return policy,node,core,maps
+    monkeypatch.setattr(image_tests,'node_fixture',node_fixture)
+    values=mounted_fixture(api_defaults=True)
+    _,old=image._context(values['snapshot'])
+    values['gateway_image']=old.document['component_declarations']['gateway']['image']
+    values['stock_cdi_update']={'previous_sha256':'a'*64,'sha256':'b'*64}
+    return values,old
+
+
+def test_stock_cdi_only_rotation_preserves_every_other_pin_and_process(monkeypatch):
+    values,old=stock_cdi_fixture(monkeypatch);before=copy.deepcopy(values)
+    module,prepared,node,bound,created=phases(values)
+    expected=old.document
+    expected['cdi_pins']['other_cdi_files'][STOCK_CDI_FILE]='b'*64
+    assert json.loads(node['data']['config.json'])==expected
+    assert values==before
+    for component,spec in bound['runtime_specs'].items():
+        previous=values['snapshot']['deployments'][component]['spec']['template']['spec']
+        for section in ('containers','initContainers'):
+            assert [(c['name'],c['image']) for c in spec['template']['spec'].get(section,[])]==[
+                (c['name'],c['image']) for c in previous.get(section,[])]
+    assert set(created)=={'node.bootstrap','gateway.publisher','coordinator.seed'}
+    result=ready_bind(values,module,bound,created)
+    assert result['observer_release']['heads']==values['previous_release']['heads']
+    assert result['operator_baselines']==values['operator_baselines']
+    for component in ('hub:cps','hub:cit'):
+        assert result['runtime_specs'][component]==values['snapshot']['deployments'][component]['spec']
+    runtime=image._decode(bound['gateway_runtime_patch']['patch'][-1]['value']['runtime.json'])
+    assert runtime==image._decode(image.secret_volume(values['snapshot'],'gateway','config')['data']['runtime.json'])
+    changed=copy.deepcopy(node);document=json.loads(changed['data']['config.json'])
+    document['cdi_pins']['selected_filename']='foreign.json'
+    changed['data']['config.json']=image.canonical(document)
+    with pytest.raises(ValueError):module.bind_node(values['snapshot'],prepared,changed)
+    changed=copy.deepcopy(bound);changed['runtime_specs']['node']['template']['spec']['initContainers'][0]['image']='foreign'
+    with pytest.raises(ValueError):module.bind(values['snapshot'],changed,created)
+
+
+@pytest.mark.parametrize('update',[
+    {'previous_sha256':'c'*64,'sha256':'b'*64},
+    {'previous_sha256':'0'*64,'sha256':'b'*64},
+    {'previous_sha256':'A'*64,'sha256':'b'*64},
+    {'previous_sha256':'a'*64,'sha256':'a'*64},
+    {'previous_sha256':'a'*64,'sha256':'0'*64},
+    {'previous_sha256':'a'*64,'sha256':'B'*64},
+    {'previous_sha256':'a'*64,'sha256':'sha256:'+'b'*64},
+    {'previous_sha256':'a'*64,'sha256':False},
+    {'previous_sha256':'a'*64},
+    *[{'previous_sha256':'a'*64,'sha256':'b'*64,key:'foreign'} for key in (
+        'filename','selected_filename','common_edits_sha256','runtime_files','other_cdi_files')],
+])
+def test_stock_cdi_update_rejects_stale_malformed_or_expanded_scope(monkeypatch,update):
+    values,_=stock_cdi_fixture(monkeypatch);values['stock_cdi_update']=update
+    with pytest.raises(ValueError):prepare(values)
+
+
+def test_absent_stock_cdi_update_preserves_existing_plan_exactly():
+    values=mounted_fixture();module=load('head_gateway_rotation')
+    assert module.prepare(**values,stock_cdi_update=None)==module.prepare(**values)
+
+
+
+def test_stock_cdi_update_cannot_add_a_missing_provider_pin():
+    values=mounted_fixture();_,old=image._context(values['snapshot'])
+    assert STOCK_CDI_FILE not in old.document['cdi_pins']['other_cdi_files']
+    values['gateway_image']=old.document['component_declarations']['gateway']['image']
+    values['stock_cdi_update']={'previous_sha256':'a'*64,'sha256':'b'*64}
+    with pytest.raises(ValueError):prepare(values)
