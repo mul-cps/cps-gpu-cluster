@@ -26,13 +26,35 @@
     "testTokenRevoked": true,
     "reservationRows": 0,
     "bindingRows": 0,
-    "ledgerClaims": 123,
+    "ledgerClaims": 124,
     "allClaimsReleased": true,
     "protectedNotebookUid": "915b3fac-53fa-469c-8c3f-0180fb285504"
   },
   "remaining": [
-    "Apply namespaced Coordinator Pod-create RBAC after reviewed source tests",
-    "Verify actual projected token dry-run succeeds in both Hub namespaces",
+    "Extend explicit pending admission to cover canonical compiler seed records, preserving negative tests",
+    "Review exact native Coordinator API operations against actual-token access checks and source-rendered RBAC",
     "Retry normal shared GPU workspace start and CUDA isolation qualification"
-  ]
+  ],
+  "rbacPromotion": {
+    "source": "55b67290170a16de4dd29b284d6212642e74f018",
+    "ciRuns": [
+      39266140062,
+      39266140245
+    ],
+    "ciConclusion": "success",
+    "fourNamespacedObjectsApplied": true,
+    "actualProjectedTokenPodDryRun": {
+      "jupyterhub": 201,
+      "cit-jhub": 201,
+      "default": 403
+    },
+    "noPersistentDiagnosticPods": true
+  },
+  "postRbacNormalStart": {
+    "podDryRunPassed": true,
+    "compilerSeedPublicationStatus": 422,
+    "denyingPolicy": "cps-native-gateway-authority-create-only",
+    "workloadPodCreated": false,
+    "compilerSeedAdmissionDeniedByIndependentDryRun": true
+  }
 }
