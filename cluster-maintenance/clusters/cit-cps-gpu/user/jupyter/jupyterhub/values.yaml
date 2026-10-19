@@ -2291,6 +2291,9 @@ hub:
       }
 
 singleuser:
+  # NetworkPolicy blocks metadata; GPU Pods cannot use a privileged iptables init.
+  cloudMetadata:
+    blockWithIptables: false
   image:
     name: quay.io/jupyter/tensorflow-notebook
     tag: "2025-11-06"
