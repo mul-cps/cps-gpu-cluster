@@ -147,10 +147,10 @@ index fbc73c8..785733a 100644
  	logger.Info("Rolling back for failed bind attempt...",
 diff --git a/pkg/binder/binding/native_terminal.go b/pkg/binder/binding/native_terminal.go
 new file mode 100644
-index 0000000..5c4687d
+index 0000000..11a9fb2
 --- /dev/null
 +++ b/pkg/binder/binding/native_terminal.go
-@@ -0,0 +1,452 @@
+@@ -0,0 +1,458 @@
 +// SPDX-License-Identifier: Apache-2.0
 +
 +package binding
@@ -189,6 +189,9 @@ index 0000000..5c4687d
 +// retries must not run the upstream unconditional rollback or change the ACK's
 +// BindRequest generation by writing Failed status.
 +var ErrNativeCustodyHeld = errors.New("native allocation custody held; reconciliation required")
++
++// Only an authenticated, correlated pre-fence Prepare response permits a fresh snapshot.
++var ErrNativePrepareSnapshotRefresh = errors.New("registered native Prepare snapshot refresh required")
 +
 +// NativeTerminalSnapshot contains actual upstream types, never a new wire ACK
 +// schema. The coordinator must perform the full strict SDK comparisons, central
@@ -316,6 +319,9 @@ index 0000000..5c4687d
 +		}()
 +	}
 +	if err != nil {
++		if fence == nil && errors.Is(err, ErrNativeCustodyHeld) && errors.Is(err, ErrNativePrepareSnapshotRefresh) {
++			failureHandled = true
++		}
 +		return err
 +	}
 +	if fence == nil {
@@ -605,10 +611,10 @@ index 0000000..5c4687d
 +}
 diff --git a/pkg/binder/binding/native_terminal_test.go b/pkg/binder/binding/native_terminal_test.go
 new file mode 100644
-index 0000000..8445b97
+index 0000000..89cb6df
 --- /dev/null
 +++ b/pkg/binder/binding/native_terminal_test.go
-@@ -0,0 +1,640 @@
+@@ -0,0 +1,712 @@
 +package binding
 +
 +import (
@@ -616,6 +622,7 @@ index 0000000..8445b97
 +	"encoding/json"
 +	"errors"
 +	"fmt"
++	"net/http"
 +	"reflect"
 +	"strings"
 +	"testing"
@@ -1249,12 +1256,83 @@ index 0000000..8445b97
 +		})
 +	}
 +}
++
++func TestNativeStockBindRefreshDoesNotHoldOrBindAndNeverReplays(t *testing.T) {
++	for _, typed := range []bool{true, false} {
++		t.Run(fmt.Sprint(typed), func(t *testing.T) {
++			pod, node, br := nativeTestInputs()
++			pod.Namespace = "jupyterhub"
++			br.Namespace = pod.Namespace
++			pod.Annotations["gpu-fraction-container-name"] = "notebook"
++			pod.Annotations["nvidia.com/container.notebook.gpu-memory.request"] = "5120Mi"
++			br.Spec.ReceivedResourceType = "Fraction"
++			br.Spec.ReceivedGPU = &v1alpha2.ReceivedGPU{Portion: "0.1"}
++			br.Spec.SelectedNode = node.Name
++			br.Spec.SelectedFractionalGpuGroups = []v1alpha2.FractionalGpuGroup{{ID: "group", ComputeSharingMode: v1alpha2.GPUComputeSharingModeTimeSlicing}}
++			registry, seed := nativeRegistryFixtures(pod)
++			binds := 0
++			kube := nativeTestClient(t, pod, node, br, func(*v1.Binding) error { binds++; return nil }, registry, seed)
++			prepares, holds := 0, 0
++			bridge, _ := nativeTransportFixture(t, func(w http.ResponseWriter, r *http.Request) {
++				var request map[string]interface{}
++				_ = json.NewDecoder(r.Body).Decode(&request)
++				w.Header().Set("Content-Type", "application/json")
++				if request["operation"] == "hold" {
++					holds++
++					_ = json.NewEncoder(w).Encode(map[string]interface{}{"protocol": nativeWireProtocol, "operation": "hold", "request_id": request["request_id"]})
++					return
++				}
++				prepares++
++				cms := &v1.ConfigMapList{}
++				if err := kube.List(context.Background(), cms, client.InNamespace(pod.Namespace)); err != nil || len(cms.Items) != 2 {
++					t.Errorf("real stock maps missing: %v %d", err, len(cms.Items))
++				}
++				w.WriteHeader(http.StatusConflict)
++				if typed {
++					_ = json.NewEncoder(w).Encode(map[string]interface{}{"protocol": nativeWireProtocol, "operation": "prepare", "request_id": request["request_id"], "retry": map[string]interface{}{"version": 1, "code": "registered-snapshot-refresh", "pod_uid": string(pod.UID)}})
++				} else {
++					_, _ = w.Write([]byte(`{"error":"generic conflict"}`))
++				}
++			})
++			reservation := &nativeCountingReservation{}
++			ps := plugins.New()
++			ps.RegisterPlugin(gpusharing.New(kube, true, false))
++			binder := NewBinder(kube, reservation, ps)
++			binder.SetNativeTerminal(kube, "authority", bridge)
++			err := binder.Bind(context.Background(), pod, node, br)
++			wantHolds := 1
++			if typed {
++				wantHolds = 0
++			}
++			if !errors.Is(err, ErrNativeCustodyHeld) || errors.Is(err, ErrNativePrepareSnapshotRefresh) != typed || prepares != 1 || holds != wantHolds || binds != 0 || reservation.syncs != 1 {
++				t.Fatalf("incorrect refresh/hold boundary: %v prepare=%d hold=%d binds=%d sync=%d", err, prepares, holds, binds, reservation.syncs)
++			}
++		})
++	}
++}
++
++func TestNativeRefreshMarkerAfterFenceStillHolds(t *testing.T) {
++	pod, node, br := nativeTestInputs()
++	pod.Annotations["received-resource-type"] = "Fraction"
++	ack := nativeTestACK(pod)
++	binds := 0
++	kube := nativeTestClient(t, pod, node, br, func(*v1.Binding) error { binds++; return nil }, ack)
++	coord := &nativeTestCoordinator{ack: ack, validate: func(NativeTerminalSnapshot) error {
++		return errors.Join(ErrNativeCustodyHeld, ErrNativePrepareSnapshotRefresh)
++	}}
++	binder := NewBinder(kube, &nativeTestReservation{}, plugins.New())
++	binder.SetNativeTerminal(kube, "authority", coord)
++	err := binder.bindNativeTerminal(context.Background(), pod, node, br, nativeTestState())
++	if !errors.Is(err, ErrNativeCustodyHeld) || binds != 0 || !reflect.DeepEqual(coord.calls, []string{"prepare", "validate", "hold", "close"}) {
++		t.Fatalf("post-fence refresh bypassed custody: %v %v binds%d", err, coord.calls, binds)
++	}
++}
 diff --git a/pkg/binder/binding/native_transport.go b/pkg/binder/binding/native_transport.go
 new file mode 100644
-index 0000000..4c4cf0f
+index 0000000..78771c3
 --- /dev/null
 +++ b/pkg/binder/binding/native_transport.go
-@@ -0,0 +1,298 @@
+@@ -0,0 +1,310 @@
 +// SPDX-License-Identifier: Apache-2.0
 +package binding
 +
@@ -1419,7 +1497,8 @@ index 0000000..4c4cf0f
 +		return nil, fmt.Errorf("coordinator %s transport failed", operation)
 +	}
 +	defer response.Body.Close()
-+	if response.StatusCode != http.StatusOK {
++	refresh := operation == "prepare" && response.StatusCode == http.StatusConflict
++	if response.StatusCode != http.StatusOK && !refresh {
 +		return nil, fmt.Errorf("coordinator %s HTTP %d", operation, response.StatusCode)
 +	}
 +	media, _, err := mime.ParseMediaType(response.Header.Get("Content-Type"))
@@ -1440,6 +1519,17 @@ index 0000000..4c4cf0f
 +		return nil, errors.New("trailing coordinator JSON")
 +	}
 +	object, ok := value.(map[string]interface{})
++	if refresh {
++		retry, retryOK := object["retry"].(map[string]interface{})
++		pod, podOK := fields["pod"].(map[string]interface{})
++		podUID, podUIDOK := pod["uid"].(string)
++		retryUID, retryUIDOK := retry["pod_uid"].(string)
++		parsedUID, uidErr := uuid.Parse(podUID)
++		if !ok || len(object) != 4 || object["protocol"] != nativeWireProtocol || object["operation"] != operation || object["request_id"] != id || !retryOK || len(retry) != 3 || retry["version"] != json.Number("1") || retry["code"] != "registered-snapshot-refresh" || !podOK || !podUIDOK || !retryUIDOK || uidErr != nil || parsedUID.String() != podUID || retryUID != podUID {
++			return nil, errors.New("coordinator refresh envelope differs")
++		}
++		return nil, errors.Join(ErrNativeCustodyHeld, ErrNativePrepareSnapshotRefresh)
++	}
 +	if !ok || len(object) != 3+len(responseFields) || object["protocol"] != nativeWireProtocol || object["operation"] != operation || object["request_id"] != id {
 +		return nil, errors.New("coordinator response envelope differs")
 +	}
@@ -1555,10 +1645,10 @@ index 0000000..4c4cf0f
 +}
 diff --git a/pkg/binder/binding/native_transport_test.go b/pkg/binder/binding/native_transport_test.go
 new file mode 100644
-index 0000000..ed832fc
+index 0000000..86f1b73
 --- /dev/null
 +++ b/pkg/binder/binding/native_transport_test.go
-@@ -0,0 +1,311 @@
+@@ -0,0 +1,386 @@
 +package binding
 +
 +import (
@@ -1566,6 +1656,7 @@ index 0000000..ed832fc
 +	"context"
 +	"encoding/json"
 +	"encoding/pem"
++	"errors"
 +	"io"
 +	v1 "k8s.io/api/core/v1"
 +	"k8s.io/apimachinery/pkg/apis/meta/v1/unstructured"
@@ -1870,6 +1961,80 @@ index 0000000..ed832fc
 +		t.Fatal("Prepare ignored caller cancellation")
 +	}
 +}
++
++func TestNativeHTTPPrepareRegisteredSnapshotRefreshIsCorrelatedAndNotReplayed(t *testing.T) {
++	pod, node, br := nativeTestInputs()
++	calls := 0
++	bridge, _ := nativeTransportFixture(t, func(w http.ResponseWriter, r *http.Request) {
++		calls++
++		var request map[string]interface{}
++		_ = json.NewDecoder(r.Body).Decode(&request)
++		w.Header().Set("Content-Type", "application/json")
++		w.WriteHeader(http.StatusConflict)
++		_ = json.NewEncoder(w).Encode(map[string]interface{}{"protocol": nativeWireProtocol, "operation": "prepare", "request_id": request["request_id"], "retry": map[string]interface{}{"version": 1, "code": "registered-snapshot-refresh", "pod_uid": string(pod.UID)}})
++	})
++	fence, err := bridge.Prepare(context.Background(), NativeTerminalSnapshot{Pod: pod, Node: node, BindRequest: br, BindingState: nativeTestState()})
++	if fence != nil || !errors.Is(err, ErrNativeCustodyHeld) || !errors.Is(err, ErrNativePrepareSnapshotRefresh) || calls != 1 {
++		t.Fatalf("typed pre-fence refresh must retain one request without fence: %v %v %d", fence, err, calls)
++	}
++}
++
++func TestNativeHTTPRefreshRejectsAmbiguousResponses(t *testing.T) {
++	for _, fault := range []string{"extra", "retry-extra", "version-string", "version-bool", "wrong-pod", "null-pod", "wrong-request", "wrong-operation", "duplicate", "nonfinite", "success-status", "wrong-route"} {
++		t.Run(fault, func(t *testing.T) {
++			pod, node, br := nativeTestInputs()
++			calls := 0
++			bridge, _ := nativeTransportFixture(t, func(w http.ResponseWriter, r *http.Request) {
++				calls++
++				var request map[string]interface{}
++				_ = json.NewDecoder(r.Body).Decode(&request)
++				retry := map[string]interface{}{"version": 1, "code": "registered-snapshot-refresh", "pod_uid": string(pod.UID)}
++				body := map[string]interface{}{"protocol": nativeWireProtocol, "operation": request["operation"], "request_id": request["request_id"], "retry": retry}
++				switch fault {
++				case "extra":
++					body["fence_id"] = "unexpected"
++				case "retry-extra":
++					retry["ack"] = nil
++				case "version-string":
++					retry["version"] = "1"
++				case "version-bool":
++					retry["version"] = true
++				case "wrong-pod":
++					retry["pod_uid"] = "different"
++				case "null-pod":
++					retry["pod_uid"] = nil
++				case "wrong-request":
++					body["request_id"] = "different"
++				case "wrong-operation":
++					body["operation"] = "hold"
++				}
++				w.Header().Set("Content-Type", "application/json")
++				status := http.StatusConflict
++				if fault == "success-status" {
++					status = http.StatusOK
++				}
++				w.WriteHeader(status)
++				raw, _ := json.Marshal(body)
++				if fault == "duplicate" {
++					raw = append(raw[:len(raw)-1], []byte(`,"retry":{}}`)...)
++				}
++				if fault == "nonfinite" {
++					raw = []byte(`{"retry":NaN}`)
++				}
++				_, _ = w.Write(raw)
++			})
++			var err error
++			if fault == "wrong-route" {
++				_, err = bridge.call(context.Background(), "hold", nativeSnapshotFields(NativeTerminalSnapshot{Pod: pod, Node: node, BindRequest: br, BindingState: nativeTestState()}))
++			} else {
++				_, err = bridge.Prepare(context.Background(), NativeTerminalSnapshot{Pod: pod, Node: node, BindRequest: br, BindingState: nativeTestState()})
++			}
++			if err == nil || errors.Is(err, ErrNativePrepareSnapshotRefresh) || errors.Is(err, ErrNativeCustodyHeld) || calls != 1 {
++				t.Fatalf("ambiguous response granted refresh/replayed: %v %d", err, calls)
++			}
++		})
++	}
++}
 diff --git a/pkg/binder/binding/resourcereservation/native_custody_test.go b/pkg/binder/binding/resourcereservation/native_custody_test.go
 new file mode 100644
 index 0000000..463d597
@@ -2147,10 +2312,10 @@ index 72a6959..65c848f 100644
 +}
 diff --git a/pkg/binder/controllers/native_custody_test.go b/pkg/binder/controllers/native_custody_test.go
 new file mode 100644
-index 0000000..63add1f
+index 0000000..5310976
 --- /dev/null
 +++ b/pkg/binder/controllers/native_custody_test.go
-@@ -0,0 +1,155 @@
+@@ -0,0 +1,159 @@
 +package controllers
 +
 +import (
@@ -2228,8 +2393,9 @@ index 0000000..63add1f
 +}
 +
 +func TestNativeCustodyOuterBoundaryPreservesPendingAndOrdinaryErrors(t *testing.T) {
-+	for _, held := range []bool{true, false} {
-+		t.Run(map[bool]string{true: "joined-custody", false: "ordinary-error"}[held], func(t *testing.T) {
++	for _, mode := range []string{"joined-custody", "ordinary-error", "snapshot-refresh"} {
++		held := mode != "ordinary-error"
++		t.Run(mode, func(t *testing.T) {
 +			scheme := runtime.NewScheme()
 +			_ = v1.AddToScheme(scheme)
 +			_ = v1alpha2.AddToScheme(scheme)
@@ -2244,6 +2410,9 @@ index 0000000..63add1f
 +			failure := cause
 +			if held {
 +				failure = errors.Join(binding.ErrNativeCustodyHeld, cause)
++				if mode == "snapshot-refresh" {
++					failure = errors.Join(failure, binding.ErrNativePrepareSnapshotRefresh)
++				}
 +			}
 +			mock.EXPECT().Bind(gomock.Any(), gomock.Any(), gomock.Any(), gomock.Any()).Return(failure)
 +			if !held {
