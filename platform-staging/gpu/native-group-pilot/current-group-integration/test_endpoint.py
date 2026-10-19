@@ -350,3 +350,17 @@ def test_private_state_repair_refuses_unsafe_existing_inodes(request,monkeypatch
         assert stat.S_IMODE(db.stat().st_mode)==0o660
     finally:
         if descriptor is not None:os.close(descriptor)
+
+
+def test_coordinator_can_dry_run_pods_only_in_declared_hub_namespaces(request,monkeypatch,tmp_path):
+    c,*_=harness(request,monkeypatch,tmp_path)
+    result=endpoint.render(c.group_context,**inputs(c))
+    roles=[r for r in result['rbac'] if r['kind']=='Role' and r['metadata']['name']=='cps-native-kai-pod-review']
+    assert {r['metadata']['namespace'] for r in roles}=={'jupyterhub','cit-jhub'}
+    for role in roles:
+        assert role['rules']==[{'apiGroups':[''],'resources':['pods'],'verbs':['create']}]
+        bindings=[r for r in result['rbac'] if r['kind']=='RoleBinding' and r['metadata']==role['metadata']]
+        assert len(bindings)==1
+        assert bindings[0]['roleRef']=={'apiGroup':'rbac.authorization.k8s.io','kind':'Role','name':role['metadata']['name']}
+        assert bindings[0]['subjects']==[{'kind':'ServiceAccount','name':'cps-compute-controller','namespace':'cps-compute'}]
+    assert not any(r['kind']=='ClusterRole' and any('pods' in rule.get('resources',[]) for rule in r.get('rules',[])) for r in result['rbac'])

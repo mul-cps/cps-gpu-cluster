@@ -1,0 +1,38 @@
+{
+  "schemaVersion": 1,
+  "productionQualified": false,
+  "gatewayImage": "ghcr.io/mul-cps/cps-compute@sha256:9fb837c85f804e7a9a7d2aff383ca2d3d2b99fc35dede64ee44f1bb3fdbddec0",
+  "sdkSource": "f5e01259286d31ebb800b2ff218f603f0f2db3e1",
+  "sdkCiRun": 39263410394,
+  "sdkCiConclusion": "success",
+  "normalSharedWorkspaceStart": "failed-before-pod-create",
+  "kubernetesDryRun": {
+    "status": 403,
+    "reason": "Forbidden",
+    "actualTokenSubject": "system:serviceaccount:cps-compute:cps-compute-controller",
+    "namespace": "jupyterhub",
+    "operation": "create pods",
+    "minimalPodDryRunAlsoDenied": true,
+    "impersonatedCanIWasMisleading": true
+  },
+  "diagnosticRollout": {
+    "journalRotation": 8,
+    "originalAnchorAndArchivesPreserved": true,
+    "allFourComponentsReady": true
+  },
+  "cleanup": {
+    "workspaceStopped": true,
+    "bridgeEnabled": false,
+    "testTokenRevoked": true,
+    "reservationRows": 0,
+    "bindingRows": 0,
+    "ledgerClaims": 123,
+    "allClaimsReleased": true,
+    "protectedNotebookUid": "915b3fac-53fa-469c-8c3f-0180fb285504"
+  },
+  "remaining": [
+    "Apply namespaced Coordinator Pod-create RBAC after reviewed source tests",
+    "Verify actual projected token dry-run succeeds in both Hub namespaces",
+    "Retry normal shared GPU workspace start and CUDA isolation qualification"
+  ]
+}

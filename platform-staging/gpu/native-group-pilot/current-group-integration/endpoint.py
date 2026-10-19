@@ -105,8 +105,15 @@ def render(context, *, gateway_account, binder_account, hub_accounts, hub_settin
         m=account['metadata']; role='cps-native-kai-review-'+m['name']
         objects.extend([obj('Role',role,m['namespace'],rules=[{'apiGroups':[''],'resources':['serviceaccounts'],'resourceNames':[m['name']],'verbs':['get']}]),
             obj('RoleBinding',role,m['namespace'],roleRef={'apiGroup':'rbac.authorization.k8s.io','kind':'Role','name':role},subjects=subjects)])
-    # TokenReview validates a separate signed identity; ordinary API calls still
-    # use existing, separately reviewed Gateway resource permissions.
+    # Kubernetes authorizes dryRun=All exactly like a real Pod CREATE. This
+    # permission cannot be restricted to dry-run or resourceNames with RBAC.
+    # Keep it namespaced to the declared Hubs and bound only to the Coordinator;
+    # the compiler and admission remain responsible for trusted Pod contents.
+    for namespace in sorted({a['metadata']['namespace'] for a in hub_accounts.values()}):
+        role='cps-native-kai-pod-review'
+        objects.extend([obj('Role',role,namespace,rules=[{'apiGroups':[''],'resources':['pods'],'verbs':['create']}]),
+            obj('RoleBinding',role,namespace,roleRef={'apiGroup':'rbac.authorization.k8s.io','kind':'Role','name':role},subjects=deepcopy(subjects))])
+    # Other ordinary API calls retain separately reviewed Gateway permissions.
     gateway_image=context._configuration.document['component_declarations']['gateway']['image']
     files={'coordinator.json':config,'policy.json':deepcopy(context._policy.catalog),'deployment.json':json.loads(dep.document)}
     data={k:json.dumps(v,sort_keys=True,separators=(',',':'),ensure_ascii=False) for k,v in files.items()}
