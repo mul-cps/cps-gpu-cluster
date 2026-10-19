@@ -57,8 +57,9 @@ native HAMI limit; nominal scheduling shares cannot enlarge it. Existing v1/v2
 behavior, current SDK authorization, readiness, execution fence, frozen maps,
 enrollment, ACK, Binding and cleanup checks remain required.
 
-The paired operator SDK/Node integration is not yet pinned by this source-only
-candidate. Existing contract pins describe the ordinary route. Do not claim an
-operator image or deployment from this commit: final SDK commit correlation,
-installed validation, actual binary/OCI provenance and reviewed immutable
-operator configuration remain separate acceptance gates.
+The paired operator SDK/Node contract is pinned to
+`1d89f00a13fb123ade4f9f4fc47e82fab2797ad1`, including the reviewed census
+pagination fix. Its final integrated operator/Node/census/head replay passed
+97 tests. This is source correlation only: installed validation, actual
+binary/OCI provenance and reviewed immutable operator configuration remain
+separate acceptance gates. No operator image or deployment is claimed.
