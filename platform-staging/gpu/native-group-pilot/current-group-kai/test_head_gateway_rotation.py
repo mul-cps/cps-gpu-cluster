@@ -433,3 +433,53 @@ def test_captured_observer_service_account_uid_is_preserved_or_rejected(fault):
     else:
         pending=module.bind(values['snapshot'],bound,created)
         assert pending['observer_service_account']=={k:account['metadata'][k]for k in ('namespace','name','uid')}
+
+
+def test_node_only_successor_updates_all_node_image_pins_and_preserves_hubs():
+    values=mounted_fixture(api_defaults=True);snapshot=values['snapshot']
+    _,old=image._context(snapshot)
+    values['gateway_image']=old.document['component_declarations']['gateway']['image']
+    values['node_image']='ghcr.io/mul-cps/cps-native-node@sha256:'+'8'*64
+    prepared=prepare(values);node=actual(prepared['creates']['node-config'])
+    bound=load('head_gateway_rotation').bind_node(snapshot,prepared,node)
+    new=json.loads(node['data']['config.json'])
+    assert new['component_declarations']['node']['image']==values['node_image']
+    expected_document=copy.deepcopy(old.document)
+    expected_document['component_declarations']['node']['image']=values['node_image']
+    assert new==expected_document
+    assert new['component_declarations']['gateway']==old.document['component_declarations']['gateway']
+    pod=bound['runtime_specs']['node']['template']['spec']
+    assert next(c for c in pod['containers'] if c['name']==old.document['component_declarations']['node']['container'])['image']==values['node_image']
+    assert next(c for c in pod['initContainers'] if c['name']=='packaged-bootstrap')['image']==values['node_image']
+    runtime=image._decode(bound['gateway_runtime_patch']['patch'][-1]['value']['runtime.json'])
+    assert runtime['nativeGroupApprovals']['processes']['node']['image']==values['node_image']
+    expected_runtime=image._decode(image.secret_volume(snapshot,'gateway','config')['data']['runtime.json'])
+    expected_runtime['nativeGroupApprovals']['processes']['node']['image']=values['node_image']
+    assert runtime==expected_runtime
+    capture=bound['creates']['gateway.capture-seed']
+    assert capture['kind']=='Secret' and capture['type']=='Opaque' and capture['immutable'] is True
+    assert image._decode(capture['data']['config.json'])['node_process']['image']==values['node_image']
+    expected_capture=copy.deepcopy(image.secret_volume(snapshot,'gateway','capture-seed')['data'])
+    capture_settings=image._decode(expected_capture['config.json'])
+    capture_settings['node_process']['image']=values['node_image']
+    expected_capture['config.json']=image._encoded(capture_settings)
+    assert capture['data']==expected_capture
+    assert bound['endpoint_proposal']['coordinator']['epoch']['nodeProcess']['image']==values['node_image']
+    assert next(v for v in bound['runtime_specs']['gateway']['template']['spec']['volumes'] if v['name']=='capture-seed')['secret']['secretName']==capture['metadata']['name']
+    for source in ('cps','cit'):assert bound['runtime_specs']['hub:'+source]==snapshot['deployments']['hub:'+source]['spec']
+    actuals={label:actual(candidate) for label,candidate in bound['creates'].items()}
+    pending=load('head_gateway_rotation').bind(snapshot,bound,actuals)
+    complete=load('head_gateway_rotation').bind(snapshot,bound,actuals,
+        actual_permissions={label:actual(candidate) for label,candidate in pending['creates'].items()})
+    assert set(complete['patches'])=={'gateway.runtime-secret','gateway.deployment','node.deployment',
+        'component-role:'+old.document['component_declarations']['node']['namespace']+'/cps-native-approval-gateway',
+        'component-role:'+old.document['component_declarations']['node']['namespace']+'/cps-native-approval-node'}
+    assert all(o['kind']=='ConfigMap' for o in complete['prospective_capture']['configmaps'])
+
+
+@pytest.mark.parametrize('value',['ghcr.io/mul-cps/cps-native-node:latest',
+    'ghcr.io/mul-cps/cps-native-node@sha256:'+'0'*64,
+    'ghcr.io/foreign/node@sha256:'+'8'*64,False])
+def test_node_successor_requires_exact_reviewed_repository_digest(value):
+    values=mounted_fixture();values['node_image']=value
+    with pytest.raises(ValueError):prepare(values)

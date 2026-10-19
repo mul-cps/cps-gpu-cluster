@@ -1,4 +1,4 @@
-"""Pure, private v4 Gateway successor intents; never apply or qualify them.
+"""Pure, private v4 Gateway/Node successor intents; never apply or qualify them.
 
 The endpoint seed may be staged or installed. Installed Coordinator fragments
 must match an independently reviewed proposal pin. Root owns journal rotation
@@ -132,8 +132,14 @@ def _context(inputs):
         'Independently pinned current Source revision differs')
     gateway_image = inputs['gateway_image']; declarations = document['component_declarations']
     image.require(isinstance(gateway_image, str) and re.fullmatch(r'ghcr.io/mul-cps/cps-compute@sha256:[a-f0-9]{64}', gateway_image)
-        and not gateway_image.endswith('0' * 64) and gateway_image != declarations['gateway']['image'],
-        'Distinct qualified immutable Gateway successor image required')
+        and not gateway_image.endswith('0' * 64), 'Qualified immutable Gateway image required')
+    node_image = inputs.get('node_image')
+    if node_image is not None:
+        image.require(isinstance(node_image, str) and re.fullmatch(r'ghcr.io/mul-cps/cps-native-node@sha256:[a-f0-9]{64}', node_image)
+            and not node_image.endswith('0' * 64) and node_image != declarations['node']['image'],
+            'Distinct qualified immutable Node successor image required')
+    image.require(gateway_image != declarations['gateway']['image'] or node_image is not None,
+                  'Distinct qualified immutable Gateway or Node successor required')
     runtime_secret = image.secret_volume(snapshot, 'gateway', 'config')
     _guard(runtime_secret, 'Secret')
     image.require(runtime_secret.get('type') == 'Opaque' and runtime_secret.get('immutable') is not True,
@@ -262,14 +268,16 @@ def _context(inputs):
 
 
 def prepare(snapshot, previous_release, operator_baselines, gateway_image, endpoint_proposal, actual_endpoint_seed,
-            *, expected_snapshot_sha256, expected_release_sha256, expected_operator_baselines_sha256, expected_revision, expected_endpoint_proposal_sha256=None):
-    """First phase: create only a Gateway-image-only immutable Node4 candidate."""
+            *, expected_snapshot_sha256, expected_release_sha256, expected_operator_baselines_sha256, expected_revision, expected_endpoint_proposal_sha256=None, node_image=None):
+    """First phase: create an immutable Node4 image successor candidate."""
     inputs = deepcopy(locals())
+    if node_image is None: inputs.pop('node_image')
     if expected_endpoint_proposal_sha256 is None:
         inputs.pop('expected_endpoint_proposal_sha256')
     try:
         policy, configuration, _, _, _ = _context(inputs)
         document = configuration.document; document['component_declarations']['gateway']['image'] = gateway_image
+        if node_image is not None: document['component_declarations']['node']['image'] = node_image
         old = image._get(snapshot, 'ConfigMap', configuration.reference.to_dict()['namespace'], configuration.reference.to_dict()['name'])
         return {'version': 1, 'kind': 'head-gateway-rotation', 'inputs': inputs,
             'creates': {'node-config': image._candidate(old, 'cps-native-head-config', {'config.json': image.canonical(document)})},
@@ -299,6 +307,8 @@ def bind_node(snapshot, prepared, actual_node_config):
         publisher_candidate = image._candidate(publisher, 'cps-native-approval-publisher', {'publisher.json': image.canonical(publisher_body)})
         proposal = deepcopy(prepared['inputs']['endpoint_proposal'])
         proposal['coordinator']['nodeConfigurationRef'] = reference.to_dict()
+        node_image = prepared['inputs'].get('node_image')
+        if node_image is not None: proposal['coordinator']['epoch']['nodeProcess']['image'] = node_image
         proposal['seed']['data']['coordinator.json'] = image.canonical(proposal['coordinator'])
         suffix = hashlib.sha256(json.dumps(proposal['seed']['data'], sort_keys=True, separators=(',', ':')).encode()).hexdigest()[:16]
         proposal['seed']['metadata']['name'] = 'cps-native-kai-config-' + suffix
@@ -308,6 +318,9 @@ def bind_node(snapshot, prepared, actual_node_config):
         specs = {c: deepcopy(d['spec']) for c, d in snapshot['deployments'].items()}
         node_pod = specs['node']['template']['spec']
         image._one(node_pod['volumes'], 'packaged-bootstrap-input')['configMap']['name'] = bootstrap_candidate['metadata']['name']
+        if node_image is not None:
+            image._one(node_pod['containers'], old.document['component_declarations']['node']['container'])['image'] = node_image
+            image._one(node_pod['initContainers'], 'packaged-bootstrap')['image'] = node_image
         gateway_pod = specs['gateway']['template']['spec']; old_image = old.document['component_declarations']['gateway']['image']
         main = image._one(gateway_pod['containers'], old.document['component_declarations']['gateway']['container'])
         main['image'] = prepared['inputs']['gateway_image']
@@ -320,11 +333,20 @@ def bind_node(snapshot, prepared, actual_node_config):
             image._one(gateway_pod['volumes'], 'kai-seed')['configMap']['name'] = proposal['seed']['metadata']['name']
         image._one(gateway_pod['volumes'], 'cps-native-approval-publisher')['configMap']['name'] = publisher_candidate['metadata']['name']
         runtime['nativeGroupApprovals']['processes']['gateway']['image'] = prepared['inputs']['gateway_image']
+        creates = {'node.bootstrap': bootstrap_candidate, 'gateway.publisher': publisher_candidate,
+                   'coordinator.seed': deepcopy(proposal['seed'])}
+        if node_image is not None:
+            runtime['nativeGroupApprovals']['processes']['node']['image'] = node_image
+            capture = image.secret_volume(snapshot, 'gateway', 'capture-seed')
+            capture_data = deepcopy(capture['data']); settings = image._decode(capture_data['config.json'])
+            settings['node_process']['image'] = node_image
+            capture_data['config.json'] = image._encoded(settings)
+            creates['gateway.capture-seed'] = image._candidate(capture, 'cps-native-head-capture', capture_data)
+            image._one(gateway_pod['volumes'], 'capture-seed')['secret']['secretName'] = creates['gateway.capture-seed']['metadata']['name']
         secret = image.secret_volume(snapshot, 'gateway', 'config'); runtime_data = deepcopy(secret['data'])
         runtime_data['runtime.json'] = image._encoded(runtime)
         return {'version': 1, 'prepared': deepcopy(prepared), 'actual_node_config': deepcopy(actual_node_config),
-            'node_config_ref': reference.to_dict(), 'creates': {'node.bootstrap': bootstrap_candidate,
-                'gateway.publisher': publisher_candidate, 'coordinator.seed': deepcopy(proposal['seed'])},
+            'node_config_ref': reference.to_dict(), 'creates': creates,
             'endpoint_proposal': proposal, 'runtime_specs': specs,
             'gateway_runtime_patch': image._patch(secret, '/data', runtime_data),
             'live_applied': False, 'hardware_qualified': False}
@@ -390,7 +412,7 @@ def bind(snapshot, plan, actual_creates, *, actual_permissions=None):
         expected = bind_node(snapshot, plan['prepared'], plan['actual_node_config'])
         image.require(plan == expected, 'Exact bound Node/config/dependent plan required')
         image.require(isinstance(actual_creates, dict) and set(actual_creates) == set(plan['creates']),
-                      'Exactly three actual dependent CREATE readbacks required')
+                      'Exact actual dependent CREATE readbacks required')
         for label, candidate in plan['creates'].items():
             _actual(candidate, actual_creates[label], immutable=label != 'node.bootstrap')
         inputs = plan['prepared']['inputs']; previous = inputs['previous_release']
@@ -419,6 +441,7 @@ def bind(snapshot, plan, actual_creates, *, actual_permissions=None):
         maps = {image._key('ConfigMap', o['metadata']['namespace'], o['metadata']['name']): deepcopy(o)
                 for o in snapshot['objects'].values() if o['kind'] == 'ConfigMap'}
         for value in [plan['actual_node_config'], *actual_creates.values()]:
+            if value['kind'] != 'ConfigMap': continue
             maps[image._key('ConfigMap', value['metadata']['namespace'], value['metadata']['name'])] = deepcopy(value)
         from cps_compute.native_observer_permissions import ObserverRelease
         ObserverRelease.from_dict(release)

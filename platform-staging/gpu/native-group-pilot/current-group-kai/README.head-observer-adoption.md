@@ -55,3 +55,16 @@ before observer activation. This proposal is neither live readiness evidence
 nor permission to skip the existing maintenance, backup, ledger, SQL or ACK2
 gates. Future per-head operator-own named GET pregrants remain a separate
 producer prerequisite; no broad GET/LIST grant or restart-per-head is added.
+
+### Node image successors after v4 adoption
+
+`head_gateway_rotation.prepare(..., node_image=<reviewed digest>)` also supports
+node-only successors: pass the existing Gateway digest as `gateway_image`.
+The explicit node image must be a distinct immutable `mul-cps/cps-native-node`
+reference. The proposal updates the node service/bootstrap, NodeConfiguration,
+Gateway runtime, Coordinator epoch and a new immutable capture Secret together.
+Other capture data and both Hub specifications remain unchanged. An unchanged
+publisher ConfigMap may be reused only after matching its captured UID and full
+immutable data; never overwrite an existing object. Supplemental reads, the
+five guarded runtime intents, held-node observer validation and same-journal
+rotation still apply. Rendering and image publication do not qualify hardware.
