@@ -81,6 +81,25 @@ def _seed(proposal,actual,namespace):
     return {k:meta[k] for k in ('namespace','name','uid','resourceVersion')}
 
 
+def _network_policy(proposal):
+    policy=proposal['network_policy'];spec=policy.get('spec',{})
+    require(policy.get('apiVersion')=='networking.k8s.io/v1' and policy.get('kind')=='NetworkPolicy'
+        and policy.get('metadata')=={'namespace':'cps-compute','name':'cps-native-kai-binder-to-gateway'}
+        and set(spec)=={'podSelector','policyTypes','ingress'}
+        and spec['podSelector']=={'matchLabels':{'app':'compute-gateway'}} and spec['policyTypes']==['Ingress'],
+        'Exact Gateway ingress policy required')
+    ingress=spec['ingress'];require(isinstance(ingress,list) and len(ingress)==1 and set(ingress[0])=={'from','ports'}
+        and ingress[0]['ports']==[{'protocol':'TCP','port':8000}], 'Exact Binder Gateway TCP8000 ingress required')
+    peers=ingress[0]['from'];require(isinstance(peers,list) and len(peers)==1
+        and set(peers[0])=={'namespaceSelector','podSelector'},'One combined namespace and Binder Pod peer required')
+    namespace=proposal['coordinator']['settings']['binder_actor'].split(':')[2]
+    require(peers[0]['namespaceSelector']=={'matchLabels':{'kubernetes.io/metadata.name':namespace}}
+        and set(peers[0]['podSelector'])=={'matchLabels'},'Exact Binder namespace and Pod selector required')
+    labels=peers[0]['podSelector']['matchLabels'];require(isinstance(labels,dict) and labels
+        and all(isinstance(k,str) and k and isinstance(v,str) and v for k,v in labels.items()),'Dedicated Binder Pod labels required')
+    return deepcopy(policy)
+
+
 def compose_gateway(deployment,proposal,actual_seed,*,expected,container='gateway'):
     """Append the reviewed Gateway fragments after actual seed CREATE readback."""
     seed_ref=_seed(proposal,actual_seed,expected['namespace'])
@@ -102,7 +121,9 @@ def compose_gateway(deployment,proposal,actual_seed,*,expected,container='gatewa
     pod['volumes']=_append(pod.get('volumes',[]),fragment['volumes'])
     require(fragment['initContainer']['name'] not in _named(pod['containers']),'Initializer/main name collision')
     pod['initContainers']=_append(pod.get('initContainers',[]),[fragment['initContainer']])
-    result=_plan(deployment,spec);result['seed_ref']=seed_ref
+    policy=_network_policy(proposal)
+    require(all(deployment['spec']['template']['metadata'].get('labels',{}).get(k)==v for k,v in policy['spec']['podSelector']['matchLabels'].items()),'Gateway labels differ from ingress target')
+    result=_plan(deployment,spec);result['seed_ref']=seed_ref;result['create_resources']=[policy]
     return result
 
 
@@ -118,6 +139,9 @@ def _flag(args,name):
 
 def compose_binder(deployment,proposal,*,expected,container='binder'):
     """Stage the existing binder with the native bridge explicitly false."""
+    policy=_network_policy(proposal)
+    peer=policy['spec']['ingress'][0]['from'][0]
+    require(all(deployment['spec']['template']['metadata'].get('labels',{}).get(k)==v for k,v in peer['podSelector']['matchLabels'].items()),'Binder Pod labels differ from ingress peer')
     config=proposal['coordinator'];fragment=proposal['binder']
     spec,pod,main=_start(deployment,expected,container,config['settings']['binder_actor'])
     security=pod.setdefault('securityContext',{})

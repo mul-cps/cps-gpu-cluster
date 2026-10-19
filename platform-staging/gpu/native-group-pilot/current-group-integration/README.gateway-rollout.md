@@ -45,3 +45,12 @@ Root separately owns immutable seed/CA staging, RBAC, backups, full-template
 review, prospective and actual observer captures, and actual fresh ACK2 process
 proof after rollout. These composers do not alter NodeConfig, heads, Node,
 images, personal workloads or permissions and do not establish live readiness.
+
+`endpoint.render` now emits a complete `network_policy` object, also carried in
+`compose_gateway(...)["create_resources"]`. Create and read back this policy
+before enabling the Binder bridge. It permits only the captured Binder Pod
+labels in its service-account namespace to reach Gateway TCP8000; namespace and
+Pod selectors are combined in one peer. Both rollout composers check the actual
+Pod labels against the policy selectors. The older `network_policy_intent`
+projection remains available for existing readers, but is not a Kubernetes
+resource and must not substitute for creating the complete policy.

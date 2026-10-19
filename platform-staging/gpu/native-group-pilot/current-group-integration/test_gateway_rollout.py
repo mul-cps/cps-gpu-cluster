@@ -27,6 +27,7 @@ def cohort(request,monkeypatch,tmp_path):
                     'volumeMounts':[{'name':'data','mountPath':'/data'}]}]}}}}
     gateway=deployment('cps-compute','compute-gateway','gateway','cps-compute-controller',proposal['gateway']['initContainer']['image'],10001)
     binder=deployment('kai-scheduler','binder','binder','binder','ghcr.io/example/binder@sha256:'+'b'*64,10000)
+    binder['spec']['template']['metadata']['labels']={'app':'cps-native-binder'}
     seed=deepcopy(proposal['seed']);seed['metadata'].update(uid=str(uuid.uuid4()),resourceVersion='31')
     return proposal,gateway,binder,seed
 
@@ -133,3 +134,33 @@ def test_binder_rejects_unsafe_or_ambiguous_merges(cohort,fault):
     elif fault=='digest':proposal['coordinator']['reservationTemplate']['image']='unreviewed:tag'
     elif fault=='unknown-flag':proposal['binder']['args'][1]='--unreviewed=bad'
     with pytest.raises(ValueError):compose(cohort,'binder',expected=expected)
+
+
+def test_gateway_plan_carries_deployable_binder_only_ingress(cohort):
+    proposal,gateway,binder,seed=cohort
+    expected={'apiVersion':'networking.k8s.io/v1','kind':'NetworkPolicy',
+        'metadata':{'namespace':'cps-compute','name':'cps-native-kai-binder-to-gateway'},
+        'spec':{'podSelector':{'matchLabels':{'app':'compute-gateway'}},'policyTypes':['Ingress'],
+            'ingress':[{'from':[{'namespaceSelector':{'matchLabels':{'kubernetes.io/metadata.name':'kai-scheduler'}},
+                'podSelector':{'matchLabels':{'app':'cps-native-binder'}}}], 'ports':[{'protocol':'TCP','port':8000}]}]}}
+    assert proposal['network_policy']==expected
+    result=compose(cohort,'gateway')
+    assert result['create_resources']==[expected]
+    assert proposal['network_policy_intent']=={'namespace':'cps-compute',**{k:v for k,v in expected['spec'].items() if k!='policyTypes'}}
+
+
+def test_binder_plan_rejects_network_peer_selector_mismatch(cohort):
+    cohort[2]['spec']['template']['metadata']['labels']={'app':'foreign'}
+    with pytest.raises(ValueError,match='Binder.*labels'):
+        compose(cohort,'binder')
+
+@pytest.mark.parametrize('fault',['namespace-wide','all-pods','other-namespace','other-port','egress','extra-peer'])
+def test_policy_composition_rejects_broad_or_foreign_ingress(cohort,fault):
+    policy=cohort[0]['network_policy'];rule=policy['spec']['ingress'][0];peer=rule['from'][0]
+    if fault=='namespace-wide':del peer['podSelector']
+    elif fault=='all-pods':peer['podSelector']['matchLabels']={}
+    elif fault=='other-namespace':peer['namespaceSelector']['matchLabels']['kubernetes.io/metadata.name']='other'
+    elif fault=='other-port':rule['ports'][0]['port']=443
+    elif fault=='egress':policy['spec']['egress']=[{}]
+    else:rule['from'].append({'podSelector':{}})
+    with pytest.raises(ValueError):compose(cohort,'gateway')

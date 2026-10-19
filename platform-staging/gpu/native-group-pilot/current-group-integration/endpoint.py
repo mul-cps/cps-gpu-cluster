@@ -174,6 +174,11 @@ finally:
            '--native-coordinator-authority-namespace='+namespace,'--native-coordinator-token-file=/var/run/cps-kai-service/credentials/token',
            '--native-coordinator-ca-file=/etc/cps-kai-trust/ca.crt',
            '--resource-reservation-pod-image='+reservation_template['image']]
+    network_policy={'apiVersion':'networking.k8s.io/v1','kind':'NetworkPolicy',
+        'metadata':{'namespace':'cps-compute','name':'cps-native-kai-binder-to-gateway'},
+        'spec':{'podSelector':{'matchLabels':{'app':'compute-gateway'}},'policyTypes':['Ingress'],
+            'ingress':[{'from':[{'namespaceSelector':{'matchLabels':{'kubernetes.io/metadata.name':binder_account['metadata']['namespace']}},
+                'podSelector':{'matchLabels':deepcopy(binder_pod_labels)}}],'ports':[{'protocol':'TCP','port':8000}]}]}}
     return {'binder':{'podSecurityContext':{'fsGroup':10000},'args':flags,'opt_in_args':['--native-pending-coordinator-enabled=true',*flags[1:]],
         'volumes':[projected('cps-kai-service',AUDIENCE),{'name':'cps-kai-trust','configMap':{'name':'cps-compute-gateway-ca','items':[{'key':'ca.crt','path':'ca.crt'}],'defaultMode':0o444}}],
         'volumeMounts':[{'name':'cps-kai-service','mountPath':'/var/run/cps-kai-service','readOnly':True},{'name':'cps-kai-trust','mountPath':'/etc/cps-kai-trust','readOnly':True}],
@@ -188,9 +193,9 @@ finally:
             'volumeMounts':[{'name':'kai-seed','mountPath':'/kai-seed','readOnly':True},{'name':'kai-private','mountPath':PRIVATE},{'name':gateway_data_volume_name,'mountPath':'/data'}]},
         'private_files':files,
         'materialization_requirement':'UID10001 owns directory0700 and regular files0600; config/policy/deployment copied by reviewed init before Gateway starts.'},
-        'network_policy_intent':{'namespace':'cps-compute','podSelector':{'matchLabels':{'app':'compute-gateway'}},
-            'ingress':[{'from':[{'namespaceSelector':{'matchLabels':{'kubernetes.io/metadata.name':binder_account['metadata']['namespace']}},
-                                  'podSelector':{'matchLabels':deepcopy(binder_pod_labels)}}],'ports':[{'protocol':'TCP','port':8000}]}]},
+        'network_policy':network_policy,
+        'network_policy_intent':{'namespace':network_policy['metadata']['namespace'],
+            **{k:deepcopy(v) for k,v in network_policy['spec'].items() if k!='policyTypes'}},
         'open_gates':['Actual resource RBAC/API audience/reservation digest and certificate SAN must be verified before activation.',
                       'Node remains cordoned: automatic scheduler placement is not qualified.']}
 

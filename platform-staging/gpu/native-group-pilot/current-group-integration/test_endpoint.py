@@ -383,3 +383,12 @@ def test_coordinator_workspace_runtime_permissions_cover_seal_and_abort_only(req
     assert not any(r['metadata'].get('namespace')=='kai-resource-reservation' and r['kind']=='Role'
                    and any('create' in rule.get('verbs',[]) or 'delete' in rule.get('verbs',[]) for rule in r.get('rules',[]))
                    for r in result['rbac'])
+
+
+def test_actual_binder_labels_emit_narrow_deployable_gateway_policy(request,monkeypatch,tmp_path):
+    c,*_=harness(request,monkeypatch,tmp_path);args=inputs(c);args['binder_pod_labels']={'app':'binder'}
+    result=endpoint.render(c.group_context,**args);policy=result['network_policy']
+    assert policy['metadata']=={'namespace':'cps-compute','name':'cps-native-kai-binder-to-gateway'}
+    assert policy['spec']=={'podSelector':{'matchLabels':{'app':'compute-gateway'}},'policyTypes':['Ingress'],
+        'ingress':[{'from':[{'namespaceSelector':{'matchLabels':{'kubernetes.io/metadata.name':'kai-scheduler'}},
+            'podSelector':{'matchLabels':{'app':'binder'}}}],'ports':[{'protocol':'TCP','port':8000}]}]}
