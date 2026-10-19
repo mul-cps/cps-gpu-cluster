@@ -1,0 +1,46 @@
+{
+  "version": 1,
+  "date": "2026-10-19",
+  "deployed_hub_image": "ghcr.io/mul-cps/cps-compute@sha256:040d74bfd20c0fc86ae07b6468b3ee43001121da588f5561468d0867889150ba",
+  "hubs": [
+    "cps",
+    "cit"
+  ],
+  "all_four_components_authenticated_ready": true,
+  "ci_success_run": "https://github.com/mul-cps/cps-compute/actions/runs/39254584206",
+  "journal": {
+    "original_anchor_hash_and_inode_preserved": true,
+    "original_archives_preserved": true,
+    "rotation_before": 4,
+    "rotation_after": 5,
+    "initial_job_failed_before_writes": "Node bootstrap still held; capture epoch unavailable",
+    "second_one_attempt_job_succeeded": true
+  },
+  "normal_gpu_start": {
+    "queue_label_guard_passed": true,
+    "running": false,
+    "pod_created": false,
+    "failure": "Pending native route requires one notebook, no caller init and default scheduler",
+    "cause": "HubAdapter.prepare injects trusted kai-scheduler; pending compiler expects default scheduler input"
+  },
+  "successor_fix": {
+    "source": "14b635ed4de737b1522524088c72c6b307e318b1",
+    "focused_tests": 108,
+    "installed_image_focused_tests": 108,
+    "foreign_scheduler_denied_before_lease": true,
+    "deployed": false
+  },
+  "cleanup": {
+    "workspace_stopped": true,
+    "bridge_enabled": false,
+    "reservation_count": 0,
+    "reservation_binding_count": 0,
+    "native_claims": 120,
+    "all_claims_released": true,
+    "test_token_revoked_rejected_unlinked": true,
+    "temporary_rotation_read_permissions_removed": 8,
+    "protected_bjoern_pod_uid_unchanged": true
+  },
+  "gpu_hardware_qualified": false,
+  "production_ready": false
+}
