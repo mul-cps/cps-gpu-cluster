@@ -1,0 +1,70 @@
+{
+  "schemaVersion": 1,
+  "productionQualified": false,
+  "source": "648936114533830e55b044e13f4892e45e080475",
+  "ciRuns": [
+    39267919606,
+    39267920740
+  ],
+  "ciConclusion": "success",
+  "offlineTests": {
+    "admission": 28,
+    "admissionSubtests": 129,
+    "endpointAndRollout": 54,
+    "platform": 117
+  },
+  "promotion": {
+    "runtimeRolesCreated": 4,
+    "pendingPolicyCreated": true,
+    "pendingBindingCreated": true,
+    "legacyPolicyFullSpecCasPassed": true,
+    "legacyMatchScopeAndOtherValidationsPreserved": true,
+    "policyTypeWarnings": []
+  },
+  "actualTokenChecks": {
+    "accessChecks": 21,
+    "negativeAccessChecks": 7,
+    "compilerSeedDryRunStatuses": {
+      "validCps": 201,
+      "validCit": 201,
+      "wrongBinding": 422,
+      "mixedSource": 422,
+      "extraField": 422,
+      "mutable": 422,
+      "extraData": 422
+    },
+    "dryRunOnly": true
+  },
+  "normalStart": {
+    "leaseStatus": 200,
+    "compileStatus": 200,
+    "compilerSeedPublished": true,
+    "workloadPodCreated": true,
+    "workloadPodUid": "9c271911-7846-4feb-9d29-25f2203fc508",
+    "workloadPodScheduled": false,
+    "workloadContainersExecuted": false,
+    "createdRegistrationStatus": 409,
+    "failureBoundary": "fresh workspace authorization",
+    "nodeReadinessWithdrawnDuringAttempt": true,
+    "cudaExecuted": false
+  },
+  "cleanup": {
+    "bridgeEnabled": false,
+    "normalConsoleStopInitiallyRejected": true,
+    "hubStopStatus": 204,
+    "orphanUnboundPodRequiredRootUidRvDeletion": true,
+    "normalConsoleStopAfterPodAbsenceStatus": 200,
+    "workspaceStopped": true,
+    "reservationRows": 0,
+    "bindingRows": 0,
+    "allLedgerClaimsReleased": true,
+    "ledgerClaims": 125,
+    "testTokenRevoked": true,
+    "protectedNotebookUid": "915b3fac-53fa-469c-8c3f-0180fb285504"
+  },
+  "remaining": [
+    "Confirm root cause of node readiness withdrawal while the newly created pending Pod awaits protected registry publication",
+    "Fix and test normal pending-start registration and cancellation without bypassing freshness or custody guards",
+    "Repeat normal start and CUDA memory isolation qualification"
+  ]
+}
