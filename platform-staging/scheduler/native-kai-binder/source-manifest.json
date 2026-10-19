@@ -1,6 +1,6 @@
 {
   "coordinator_source_commit": "74ccb2d9cdb1e91ea9750d335e1389c0d2d3a916",
-  "current_group_contract_commit": "52a31d76593e635c285f700fa064623bb87393f3",
+  "current_group_contract_commit": "6f8dcf325eaed5acc4c785305eb49d8bba60bd3a",
   "dependency_diff": [],
   "files": [
     {
@@ -23,20 +23,20 @@
     },
     {
       "original_sha256": "f7828478d782299e1636182d593ccced4e79f0dd03bc06b5d1e7d6b50e884a4b",
-      "patched_bytes": 6258,
-      "patched_sha256": "35b1d3b750ae888c37a18c2263f9d945a9b3dbf78be035c5b8353a1e2d28fcdd",
+      "patched_bytes": 6365,
+      "patched_sha256": "cde894d36c0b655142e1ecb9134b70d640791ddb025d81624351f18d16cd452b",
       "path": "pkg/binder/binding/binder.go"
     },
     {
       "original_sha256": null,
-      "patched_bytes": 21611,
-      "patched_sha256": "d03ecb2622f67c6ed00d772e3a8ac20f96d0b622ea02e14e3a2d52ec62dbdd24",
+      "patched_bytes": 22540,
+      "patched_sha256": "e5d33678cd7967127d3f00949125ead6cf7527366b2f77404003c16ab01edb96",
       "path": "pkg/binder/binding/native_terminal.go"
     },
     {
       "original_sha256": null,
-      "patched_bytes": 31882,
-      "patched_sha256": "8f94b8aa749947d9336347365e548dc731644a469cfc9bcff66916ad0ab0234e",
+      "patched_bytes": 39058,
+      "patched_sha256": "ebdb4e308ac1b7d0630160ace512c85f6260032bce94d8d2497e2a957fd13ff2",
       "path": "pkg/binder/binding/native_terminal_test.go"
     },
     {
@@ -74,12 +74,30 @@
       "patched_bytes": 9684,
       "patched_sha256": "efd580168032f48545182293dfa070f366adfaea5c73efe603fb8a16383a0284",
       "path": "pkg/binder/controllers/native_custody_test.go"
+    },
+    {
+      "original_sha256": "337b84c939a36060990fb9b70c1e5223133444a5bc56da55575ab827a787f60f",
+      "patched_bytes": 3037,
+      "patched_sha256": "457f5e03c907c3b8d79330430b240ed20f7f3dcc81fbd0ca5e8532c2afd9b50e",
+      "path": "pkg/binder/plugins/hamicore/hami_core.go"
+    },
+    {
+      "original_sha256": "30c9e5f5eb9a27270da4f2712d1fbe7aef7815c5e886221d34b0daaca3690669",
+      "patched_bytes": 1446,
+      "patched_sha256": "b215580e20a681470350439c23105653c6f10607943489d30c45b144b79ba38c",
+      "path": "pkg/binder/plugins/hamicore/hami_core_test.go"
+    },
+    {
+      "original_sha256": "5169dfaa7ff120b22ec81ee21b7cb459ea922a59401d1b3494ef0622663e2853",
+      "patched_bytes": 379,
+      "patched_sha256": "bc2449c85ad03a01ae89c85d1f543c46c1d7b1df4c497f6a36aff4c40ad2c936",
+      "path": "pkg/binder/plugins/state/state.go"
     }
   ],
   "go_mod_sha256": "b5f815389a3bb0c88029095a83a9cabdfd7e55f9a3da7638e76c7dcebc39478e",
   "go_sum_sha256": "30fc1facb3f4ede3658046e5e948f4bceea53354aa44c054737c54190c3ad583",
   "go_version": "go1.26.8",
-  "patch_sha256": "daaf09e1bd1429eb008aad1226a1874ceebad7026fcd179a5782771502fd0056",
+  "patch_sha256": "ab6717f5af2a42f87923e19e220d1463dbe74b82520a1fbd59d8dca121f4b983",
   "sdk_commit": "0451fd9cc9bcb5ba55b2d35c5aca84fc52f5fad3",
   "sdk_profile_correction_commit": "74ccb2d9cdb1e91ea9750d335e1389c0d2d3a916",
   "toolchain_archive": {

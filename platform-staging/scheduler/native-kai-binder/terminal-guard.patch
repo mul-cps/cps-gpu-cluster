@@ -92,7 +92,7 @@ index c5702d0..0f806da 100644
  	fs.StringVar(&options.SchedulerName,
  		"scheduler-name", constants.DefaultSchedulerName,
 diff --git a/pkg/binder/binding/binder.go b/pkg/binder/binding/binder.go
-index fbc73c8..785733a 100644
+index fbc73c8..530a499 100644
 --- a/pkg/binder/binding/binder.go
 +++ b/pkg/binder/binding/binder.go
 @@ -29,6 +29,9 @@ type Binder struct {
@@ -105,23 +105,34 @@ index fbc73c8..785733a 100644
  }
  
  func NewBinder(kubeClient client.Client, rrs resourcereservation.Interface, plugins *plugins.BinderPlugins) *Binder {
-@@ -40,6 +43,15 @@ func NewBinder(kubeClient client.Client, rrs resourcereservation.Interface, plug
+@@ -40,6 +43,16 @@ func NewBinder(kubeClient client.Client, rrs resourcereservation.Interface, plug
  }
  
  func (b *Binder) Bind(ctx context.Context, pod *v1.Pod, node *v1.Node, bindRequest *v1alpha2.BindRequest) error {
++	var nativeMemoryLimitMiB int64
 +	if nativeMarked(pod) {
 +		if err := b.nativeConfigured(pod); err != nil {
 +			return err
 +		}
 +		// Hub records the exact CREATE UID before any stock plugin can write maps.
-+		if err := b.nativeRegistryReady(ctx, pod); err != nil {
++		if err := b.nativeRegistryProof(ctx, pod, &nativeMemoryLimitMiB); err != nil {
 +			return errors.Join(ErrNativeCustodyHeld, err)
 +		}
 +	}
  	logger := log.FromContext(ctx)
  	err := b.resourceReservationService.SyncForNode(ctx, bindRequest.Spec.SelectedNode)
  	if err != nil {
-@@ -76,6 +88,13 @@ func (b *Binder) Bind(ctx context.Context, pod *v1.Pod, node *v1.Node, bindReque
+@@ -57,7 +70,8 @@ func (b *Binder) Bind(ctx context.Context, pod *v1.Pod, node *v1.Node, bindReque
+ 		BindingPodAnnotations: map[string]string{
+ 			constants.ReceivedResourceType: bindRequest.Spec.ReceivedResourceType,
+ 		},
+-		ReservedGPUIds: reservedGPUIds,
++		ReservedGPUIds:       reservedGPUIds,
++		NativeMemoryLimitMiB: nativeMemoryLimitMiB,
+ 	}
+ 	if len(bindRequest.Spec.PredictedNUMAZones) > 0 {
+ 		placement, err := json.Marshal(bindRequest.Spec.PredictedNUMAZones)
+@@ -76,6 +90,13 @@ func (b *Binder) Bind(ctx context.Context, pod *v1.Pod, node *v1.Node, bindReque
  	if err != nil {
  		return fmt.Errorf("failed to patch pod <%s/%s> with bind annotations: %w", pod.Namespace, pod.Name, err)
  	}
@@ -135,7 +146,7 @@ index fbc73c8..785733a 100644
  
  	logger.Info("Binding pod", "namespace", pod.Namespace, "name", pod.Name, "hostname", node.Name)
  	binding := &v1.Binding{
-@@ -94,6 +113,9 @@ func (b *Binder) Bind(ctx context.Context, pod *v1.Pod, node *v1.Node, bindReque
+@@ -94,6 +115,9 @@ func (b *Binder) Bind(ctx context.Context, pod *v1.Pod, node *v1.Node, bindReque
  }
  
  func (b *Binder) Rollback(ctx context.Context, pod *v1.Pod, node *v1.Node, bindRequest *v1alpha2.BindRequest) error {
@@ -147,10 +158,10 @@ index fbc73c8..785733a 100644
  	logger.Info("Rolling back for failed bind attempt...",
 diff --git a/pkg/binder/binding/native_terminal.go b/pkg/binder/binding/native_terminal.go
 new file mode 100644
-index 0000000..11a9fb2
+index 0000000..3ae53e0
 --- /dev/null
 +++ b/pkg/binder/binding/native_terminal.go
-@@ -0,0 +1,458 @@
+@@ -0,0 +1,473 @@
 +// SPDX-License-Identifier: Apache-2.0
 +
 +package binding
@@ -511,6 +522,10 @@ index 0000000..11a9fb2
 +	return hex.EncodeToString(sum[:]), nil
 +}
 +func (b *Binder) nativeRegistryReady(ctx context.Context, pod *v1.Pod) error {
++	return b.nativeRegistryProof(ctx, pod, nil)
++}
++
++func (b *Binder) nativeRegistryProof(ctx context.Context, pod *v1.Pod, exactCap *int64) error {
 +	// Read directly through APIReader, never the informer cache. An absent registry
 +	// returns the existing custody sentinel before Sync/reservation/PreBind writes.
 +	current := &v1.Pod{}
@@ -607,14 +622,25 @@ index 0000000..11a9fb2
 +	if err != nil || bound != registry["bound_spec_sha256"] || pod.Annotations["cps.compute/native-spec-sha256"] != bound {
 +		return fmt.Errorf("frozen bound spec hash differs")
 +	}
++	if exactCap != nil {
++		caps := map[string]int64{"interactive-shared-5": 5120, "interactive-shared-10": 10240, "interactive-shared-20": 20480}
++		profile, ok := registry["profile"].(string)
++		cap := caps[profile]
++		expected := fmt.Sprintf("%dGi", cap/1024)
++		key := "nvidia.com/container.notebook.gpu-memory.request"
++		if !ok || cap == 0 || admitted.Annotations[key] != expected || admitted.Annotations["gpu-memory"] != fmt.Sprint(cap) || admitted.Annotations["gpu-fraction-container-name"] != "notebook" || len(original.Spec.Containers) != 1 || original.Spec.Containers[0].Name != "notebook" || len(admitted.Spec.Containers) != 1 || admitted.Spec.Containers[0].Name != "notebook" {
++			return fmt.Errorf("authenticated original native profile memory required")
++		}
++		*exactCap = cap
++	}
 +	return nil
 +}
 diff --git a/pkg/binder/binding/native_terminal_test.go b/pkg/binder/binding/native_terminal_test.go
 new file mode 100644
-index 0000000..89cb6df
+index 0000000..a88bf59
 --- /dev/null
 +++ b/pkg/binder/binding/native_terminal_test.go
-@@ -0,0 +1,712 @@
+@@ -0,0 +1,847 @@
 +package binding
 +
 +import (
@@ -639,6 +665,7 @@ index 0000000..89cb6df
 +	"github.com/kai-scheduler/KAI-scheduler/pkg/apis/scheduling/v1alpha2"
 +	"github.com/kai-scheduler/KAI-scheduler/pkg/binder/plugins"
 +	"github.com/kai-scheduler/KAI-scheduler/pkg/binder/plugins/gpusharing"
++	"github.com/kai-scheduler/KAI-scheduler/pkg/binder/plugins/hamicore"
 +	"github.com/kai-scheduler/KAI-scheduler/pkg/binder/plugins/state"
 +)
 +
@@ -719,7 +746,7 @@ index 0000000..89cb6df
 +}
 +
 +func nativeTestInputs() (*v1.Pod, *v1.Node, *v1alpha2.BindRequest) {
-+	pod := &v1.Pod{ObjectMeta: metav1.ObjectMeta{Name: "notebook", Namespace: "cps", UID: "11111111-2222-4333-8444-555555555555", ResourceVersion: "1", Annotations: map[string]string{"cps.compute/native-pending": "kai-v0.18.1-gpu2-cm/v1", "runai/shared-gpu-configmap": "cps-native-aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa-shared-gpu"}}, Spec: v1.PodSpec{Containers: []v1.Container{{Name: "notebook", Image: "fixed"}}}}
++	pod := &v1.Pod{ObjectMeta: metav1.ObjectMeta{Name: "notebook", Namespace: "cps", UID: "11111111-2222-4333-8444-555555555555", ResourceVersion: "1", Annotations: map[string]string{"cps.compute/native-pending": "kai-v0.18.1-gpu2-cm/v1", "gpu-fraction-container-name": "notebook", "nvidia.com/container.notebook.gpu-memory.request": "5120Mi", "runai/shared-gpu-configmap": "cps-native-aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa-shared-gpu"}}, Spec: v1.PodSpec{Containers: []v1.Container{{Name: "notebook", Image: "fixed"}}}}
 +	node := &v1.Node{ObjectMeta: metav1.ObjectMeta{Name: "k3s-wk-gpu2", UID: "3336cdd5-d245-436e-b57c-2f66c6dcaa41", ResourceVersion: "1"}}
 +	br := &v1alpha2.BindRequest{ObjectMeta: metav1.ObjectMeta{Name: "request", Namespace: "cps", UID: "11111111-2222-4333-8444-555555555556", ResourceVersion: "1", Generation: 1}, Spec: v1alpha2.BindRequestSpec{PodName: pod.Name, SelectedNode: node.Name, ReceivedResourceType: "cpu"}}
 +	return pod, node, br
@@ -1099,7 +1126,12 @@ index 0000000..89cb6df
 +	bound, _ := nativeRegistryHash(rawSpec)
 +	pod.Annotations["cps.compute/native-spec-sha256"] = bound
 +	admitted := pod.DeepCopy()
++	admitted.Annotations["nvidia.com/container.notebook.gpu-memory.request"] = "5Gi"
++	admitted.Annotations["gpu-memory"] = "5120"
 +	source := pod.DeepCopy()
++	delete(source.Annotations, "gpu-memory")
++	delete(source.Annotations, "gpu-fraction-container-name")
++	delete(source.Annotations, "nvidia.com/container.notebook.gpu-memory.request")
 +	binding := strings.Repeat("a", 60)
 +	attempt := "11111111-2222-4333-8444-555555555559"
 +	prefix := pod.Annotations["runai/shared-gpu-configmap"]
@@ -1325,6 +1357,135 @@ index 0000000..89cb6df
 +	err := binder.bindNativeTerminal(context.Background(), pod, node, br, nativeTestState())
 +	if !errors.Is(err, ErrNativeCustodyHeld) || binds != 0 || !reflect.DeepEqual(coord.calls, []string{"prepare", "validate", "hold", "close"}) {
 +		t.Fatalf("post-fence refresh bypassed custody: %v %v binds%d", err, coord.calls, binds)
++	}
++}
++
++func TestNativeExactCapProducerBeforePrepare(t *testing.T) {
++	for _, item := range []struct {
++		gib     int
++		portion string
++	}{{5, "0.13"}, {10, "0.25"}, {20, "0.50"}} {
++		t.Run(fmt.Sprint(item.gib), func(t *testing.T) {
++			pod, node, br := nativeTestInputs()
++			pod.Namespace = "jupyterhub"
++			br.Namespace = pod.Namespace
++			pod.Annotations["gpu-fraction-container-name"] = "notebook"
++			pod.Annotations["nvidia.com/container.notebook.gpu-memory.request"] = fmt.Sprintf("%dGi", item.gib)
++			pod.Annotations["gpu-memory"] = fmt.Sprint(item.gib * 1024)
++			node.Labels = map[string]string{"nvidia.com/gpu.memory": "40960"}
++			br.Spec.ReceivedResourceType = "Fraction"
++			br.Spec.ReceivedGPU = &v1alpha2.ReceivedGPU{Count: 1, Portion: item.portion}
++			br.Spec.SelectedFractionalGpuGroups = []v1alpha2.FractionalGpuGroup{{ID: "group", ComputeSharingMode: v1alpha2.GPUComputeSharingModeTimeSlicing}}
++			for _, key := range []string{"NVIDIA_VISIBLE_DEVICES", "RUNAI_NUM_OF_GPUS", "GPU_PORTION", "CUDA_DEVICE_MEMORY_LIMIT"} {
++				optional := key == "CUDA_DEVICE_MEMORY_LIMIT"
++				pod.Spec.Containers[0].Env = append(pod.Spec.Containers[0].Env, v1.EnvVar{Name: key, ValueFrom: &v1.EnvVarSource{ConfigMapKeyRef: &v1.ConfigMapKeySelector{LocalObjectReference: v1.LocalObjectReference{Name: pod.Annotations["runai/shared-gpu-configmap"] + "-0"}, Key: key, Optional: &optional}}})
++			}
++			registry, seed := nativeRegistryFixtures(pod)
++			var reg, document map[string]interface{}
++			_ = json.Unmarshal([]byte(registry.Data["registry.json"]), &reg)
++			reg["profile"] = fmt.Sprintf("interactive-shared-%d", item.gib)
++			raw, _ := json.Marshal(reg)
++			registry.Data["registry.json"] = string(raw)
++			_ = json.Unmarshal([]byte(seed.Data["seed.json"]), &document)
++			admitted := document["admitted"].(map[string]interface{})
++			annotations := admitted["metadata"].(map[string]interface{})["annotations"].(map[string]interface{})
++			annotations["gpu-memory"] = fmt.Sprint(item.gib * 1024)
++			annotations["nvidia.com/container.notebook.gpu-memory.request"] = fmt.Sprintf("%dGi", item.gib)
++			raw, _ = json.Marshal(document)
++			seed.Data["seed.json"] = string(raw)
++			ack := nativeTestACK(pod)
++			kube := nativeTestClient(t, pod, node, br, func(*v1.Binding) error { return nil }, registry, seed, ack)
++			coord := &nativeTestCoordinator{ack: ack}
++			coord.prepare = func(NativeTerminalSnapshot) {
++				cm := &v1.ConfigMap{}
++				if err := kube.Get(context.Background(), client.ObjectKey{Namespace: pod.Namespace, Name: pod.Annotations["runai/shared-gpu-configmap"] + "-0"}, cm); err != nil {
++					t.Fatal(err)
++				}
++				if !reflect.DeepEqual(cm.Data, map[string]string{"CUDA_DEVICE_MEMORY_LIMIT": fmt.Sprintf("%dm", item.gib*1024), "GPU_PORTION": item.portion, "RUNAI_NUM_OF_GPUS": item.portion, "NVIDIA_VISIBLE_DEVICES": "k8s.device-plugin.nvidia.com/gpu=" + nativeApprovedGPU}) {
++					t.Fatalf("exact native cap lost to rounded scheduler portion: %v", cm.Data)
++				}
++			}
++			ps := plugins.New()
++			ps.RegisterPlugin(gpusharing.New(kube, true, false))
++			ps.RegisterPlugin(hamicore.New(kube))
++			binder := NewBinder(kube, &nativeTestReservation{}, ps)
++			binder.SetNativeTerminal(kube, "authority", coord)
++			if err := binder.Bind(context.Background(), pod, node, br); err != nil {
++				t.Fatal(err)
++			}
++		})
++	}
++}
++
++func TestNativeMemoryProducerRejectsUntrustedCompilerCapBeforeWrites(t *testing.T) {
++	for _, fault := range []string{"unknown-profile", "profile-mismatch", "memory", "container-memory", "container-name", "source-name", "seed-attempt", "live-only"} {
++		t.Run(fault, func(t *testing.T) {
++			pod, node, br := nativeTestInputs()
++			pod.Namespace = "jupyterhub"
++			br.Namespace = pod.Namespace
++			registry, seed := nativeRegistryFixtures(pod)
++			var reg, document map[string]interface{}
++			_ = json.Unmarshal([]byte(registry.Data["registry.json"]), &reg)
++			_ = json.Unmarshal([]byte(seed.Data["seed.json"]), &document)
++			admitted := document["admitted"].(map[string]interface{})
++			annotations := admitted["metadata"].(map[string]interface{})["annotations"].(map[string]interface{})
++			switch fault {
++			case "unknown-profile":
++				reg["profile"] = "arbitrary"
++			case "profile-mismatch":
++				reg["profile"] = "interactive-shared-10"
++			case "memory":
++				annotations["gpu-memory"] = "5324"
++			case "container-memory":
++				annotations["nvidia.com/container.notebook.gpu-memory.request"] = "5324Mi"
++			case "container-name":
++				annotations["gpu-fraction-container-name"] = "other"
++			case "source-name":
++				document["source_pod"].(map[string]interface{})["metadata"].(map[string]interface{})["name"] = "other"
++			case "seed-attempt":
++				document["attempt"] = "11111111-2222-4333-8444-555555555500"
++			case "live-only":
++				delete(annotations, "gpu-memory")
++				pod.Annotations["gpu-memory"] = "5120"
++			}
++			raw, _ := json.Marshal(reg)
++			registry.Data["registry.json"] = string(raw)
++			raw, _ = json.Marshal(document)
++			seed.Data["seed.json"] = string(raw)
++			kube := nativeTestClient(t, pod, node, br, func(*v1.Binding) error { t.Fatal("unexpected Bind"); return nil }, registry, seed)
++			reservation := &nativeCountingReservation{}
++			binder := NewBinder(kube, reservation, plugins.New())
++			binder.SetNativeTerminal(kube, "authority", &nativeTestCoordinator{})
++			err := binder.Bind(context.Background(), pod, node, br)
++			cms := &v1.ConfigMapList{}
++			_ = kube.List(context.Background(), cms, client.InNamespace(pod.Namespace))
++			if !errors.Is(err, ErrNativeCustodyHeld) || reservation.syncs != 0 || len(cms.Items) != 0 {
++				t.Fatalf("untrusted cap reached side effects: %v sync%d maps%d", err, reservation.syncs, len(cms.Items))
++			}
++		})
++	}
++}
++
++func TestLegacyNativeRegistryKeepsStockMemoryScalar(t *testing.T) {
++	pod, node, br := nativeTestInputs()
++	kube := nativeTestClient(t, pod, node, br, func(*v1.Binding) error { return nil })
++	registry := &v1.ConfigMap{}
++	if err := kube.Get(context.Background(), client.ObjectKey{Namespace: "authority", Name: "cps-pending-registry-" + string(pod.UID)}, registry); err != nil {
++		t.Fatal(err)
++	}
++	var document map[string]interface{}
++	_ = json.Unmarshal([]byte(registry.Data["registry.json"]), &document)
++	document["profile"] = "interactive-native-qualification-10"
++	raw, _ := json.Marshal(document)
++	registry.Data["registry.json"] = string(raw)
++	if err := kube.Update(context.Background(), registry); err != nil {
++		t.Fatal(err)
++	}
++	binder := NewBinder(kube, &nativeTestReservation{}, plugins.New())
++	binder.SetNativeTerminal(kube, "authority", &nativeTestCoordinator{})
++	var cap int64
++	if err := binder.nativeRegistryProof(context.Background(), pod, &cap); err != nil || cap != 0 {
++		t.Fatalf("legacy route changed: cap%d error%v", cap, err)
 +	}
 +}
 diff --git a/pkg/binder/binding/native_transport.go b/pkg/binder/binding/native_transport.go
@@ -2475,3 +2636,60 @@ index 0000000..5310976
 +		})
 +	}
 +}
+diff --git a/pkg/binder/plugins/hamicore/hami_core.go b/pkg/binder/plugins/hamicore/hami_core.go
+index 7567ca5..41aa78e 100644
+--- a/pkg/binder/plugins/hamicore/hami_core.go
++++ b/pkg/binder/plugins/hamicore/hami_core.go
+@@ -31,13 +31,20 @@ func (p *Plugin) Name() string {
+ }
+ 
+ func (p *Plugin) PreBind(
+-	ctx context.Context, pod *v1.Pod, node *v1.Node, bindRequest *v1alpha2.BindRequest, _ *state.BindingState,
++	ctx context.Context, pod *v1.Pod, node *v1.Node, bindRequest *v1alpha2.BindRequest, bindingState *state.BindingState,
+ ) error {
+ 	if !common.IsSharedGPUAllocation(bindRequest) {
+ 		return nil
+ 	}
+ 
+ 	cudaDeviceMemoryLimit, err := calculateCudaDeviceMemoryLimit(node, bindRequest)
++	if bindingState != nil && bindingState.NativeMemoryLimitMiB != 0 {
++		cap := bindingState.NativeMemoryLimitMiB
++		if cap != 5120 && cap != 10240 && cap != 20480 {
++			return fmt.Errorf("invalid authenticated native memory limit")
++		}
++		cudaDeviceMemoryLimit = fmt.Sprintf("%dm", cap)
++	}
+ 	if err != nil {
+ 		return fmt.Errorf("failed to calculate CUDA_DEVICE_MEMORY_LIMIT for pod <%s/%s>: %w",
+ 			pod.Namespace, pod.Name, err)
+diff --git a/pkg/binder/plugins/hamicore/hami_core_test.go b/pkg/binder/plugins/hamicore/hami_core_test.go
+index 12ba043..fcfa522 100644
+--- a/pkg/binder/plugins/hamicore/hami_core_test.go
++++ b/pkg/binder/plugins/hamicore/hami_core_test.go
+@@ -35,3 +35,13 @@ func TestPreBindFailsClosedWhenMemoryLimitCannotBeCalculated(t *testing.T) {
+ 			constants.NvidiaGpuMemory)
+ 	}
+ }
++
++func TestOrdinaryRoundedSchedulerPortionKeepsStockMemoryCalculation(t *testing.T) {
++	node := &v1.Node{}
++	node.Labels = map[string]string{constants.NvidiaGpuMemory: "40960"}
++	request := &v1alpha2.BindRequest{Spec: v1alpha2.BindRequestSpec{ReceivedGPU: &v1alpha2.ReceivedGPU{Portion: "0.13"}}}
++	got, err := calculateCudaDeviceMemoryLimit(node, request)
++	if err != nil || got != "5324m" {
++		t.Fatalf("ordinary HAMI behavior changed: %q %v", got, err)
++	}
++}
+diff --git a/pkg/binder/plugins/state/state.go b/pkg/binder/plugins/state/state.go
+index 9ae5d01..1bb7cab 100644
+--- a/pkg/binder/plugins/state/state.go
++++ b/pkg/binder/plugins/state/state.go
+@@ -4,6 +4,8 @@
+ package state
+ 
+ type BindingState struct {
++	// Set only after the native immutable compiler and registry proof. Zero keeps stock behavior.
++	NativeMemoryLimitMiB  int64
+ 	BindingPodAnnotations map[string]string // Annotations that will be added to the pod after binding.
+ 	ReservedGPUIds        []string
+ }

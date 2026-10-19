@@ -11,9 +11,9 @@ ROOT = pathlib.Path(__file__).resolve().parent
 UPSTREAM = 'https://github.com/kai-scheduler/KAI-Scheduler.git'
 COMMIT = 'bdf434e5e9201cccf4e05fad04d814363653f692'
 GO_VERSION = 'go1.26.8'
-PATCH_SHA256 = 'daaf09e1bd1429eb008aad1226a1874ceebad7026fcd179a5782771502fd0056'
+PATCH_SHA256 = 'ab6717f5af2a42f87923e19e220d1463dbe74b82520a1fbd59d8dca121f4b983'
 TOOLCHAIN_SHA256 = 'd0f743b33e8d8945e6b1f432edd15785c70507121d6e2a723b21285eddf8b57b'
-PACKAGES = ('./pkg/binder/binding', './pkg/binder/binding/resourcereservation', './pkg/binder/controllers', './cmd/binder/app')
+PACKAGES = ('./pkg/binder/binding', './pkg/binder/plugins/hamicore', './pkg/binder/binding/resourcereservation', './pkg/binder/controllers', './cmd/binder/app')
 
 
 def sha(path):
@@ -31,8 +31,8 @@ def load_manifest(*, patch=None):
     if (manifest['upstream_url'], manifest['upstream_commit'], manifest['go_version'],
         manifest['patch_sha256'], sha(patch)) != (UPSTREAM, COMMIT, GO_VERSION, PATCH_SHA256, PATCH_SHA256):
         raise ValueError('Frozen source/patch provenance differs')
-    if len(manifest['files']) != 12 or len({r['path'] for r in manifest['files']}) != 12:
-        raise ValueError('Exact twelve source paths required')
+    if len(manifest['files']) != 15 or len({r['path'] for r in manifest['files']}) != 15:
+        raise ValueError('Exact fifteen source paths required')
     for row in manifest['files']:
         path = pathlib.PurePosixPath(row['path'])
         if path.is_absolute() or '..' in path.parts or str(path) != row['path']:
