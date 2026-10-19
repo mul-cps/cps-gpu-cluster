@@ -1,0 +1,22 @@
+{
+  "source": "1f1613981facdf0d4223c85504d5d0d26c80d783",
+  "runtimeFixSource": "4a398ea65d758f40900782196eb7914bd6f683f8",
+  "baseImage": "ghcr.io/mul-cps/cps-native-node@sha256:7e319bfcb546efa9ae2fea975dcf082460802578da0c804f60eb0c8f64c08bb0",
+  "baseSource": "551379c6902791d0dd192596046669f1fe274562",
+  "image": "ghcr.io/mul-cps/cps-native-node@sha256:6caeaa446c8b38472c713c7f658b30994066bd081d46d8d135b3b11f8f5dbca0",
+  "remoteManifestVerified": true,
+  "pipCheckPassed": true,
+  "installedNodeOnlyCasesPassed": 3,
+  "network": "none",
+  "hostGpuAccess": false,
+  "sourceFocusedTestsPassed": 84,
+  "sdkSuitePassed": 3194,
+  "sdkSuiteSkipped": 3,
+  "liveDeployed": false,
+  "gpuQualified": false,
+  "supersedesCandidateResultSha256": "36fc2c4495feacfd16b0fbc35f8b489564dad35bf31031706f2239c99e075323",
+  "cleanSourceSdkSuite": true,
+  "cleanSourceSha": "1f1613981facdf0d4223c85504d5d0d26c80d783",
+  "ciRun": 39271713090,
+  "ciStatusAtRecording": "in_progress"
+}
