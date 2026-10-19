@@ -113,6 +113,16 @@ def render(context, *, gateway_account, binder_account, hub_accounts, hub_settin
         role='cps-native-kai-pod-review'
         objects.extend([obj('Role',role,namespace,rules=[{'apiGroups':[''],'resources':['pods'],'verbs':['create']}]),
             obj('RoleBinding',role,namespace,roleRef={'apiGroup':'rbac.authorization.k8s.io','kind':'Role','name':role},subjects=deepcopy(subjects))])
+        # Coordinator.created/prepare freeze and validate KAI-owned maps;
+        # abandon/cleanup use UID/RV-fenced deletion after exact contract checks.
+        # KAI retains creation of maps and reservation Pods. No Secrets, exec,
+        # bindings, workload ConfigMap CREATE or reservation mutation is granted.
+        role='cps-native-kai-workspace-runtime'
+        objects.extend([obj('Role',role,namespace,rules=[
+            {'apiGroups':[''],'resources':['pods'],'verbs':['delete']},
+            {'apiGroups':[''],'resources':['configmaps'],'verbs':['get','patch','delete']},
+            {'apiGroups':['scheduling.run.ai'],'resources':['bindrequests'],'verbs':['get']}]),
+            obj('RoleBinding',role,namespace,roleRef={'apiGroup':'rbac.authorization.k8s.io','kind':'Role','name':role},subjects=deepcopy(subjects))])
     # Other ordinary API calls retain separately reviewed Gateway permissions.
     gateway_image=context._configuration.document['component_declarations']['gateway']['image']
     files={'coordinator.json':config,'policy.json':deepcopy(context._policy.catalog),'deployment.json':json.loads(dep.document)}

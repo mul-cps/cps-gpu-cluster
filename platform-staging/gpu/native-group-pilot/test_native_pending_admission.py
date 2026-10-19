@@ -303,5 +303,50 @@ class PendingAdmissionTests(unittest.TestCase):
         self.assertIn(original_node, policies)
 
 
+    def compiler_seed(self, source='cps'):
+        binding = 'a' * 60
+        pod = {'apiVersion': 'v1', 'kind': 'Pod', 'metadata': {'name': 'test', 'namespace': 'jupyterhub'},
+               'spec': {'containers': [{'name': 'notebook', 'image': 'example@sha256:' + 'b' * 64}]}}
+        seed = {'actor': source, 'source': source, 'binding_id': binding,
+                'attempt': '22222222-2222-4222-8222-222222222222', 'source_pod': pod, 'admitted': pod}
+        return {'apiVersion': 'v1', 'kind': 'ConfigMap', 'immutable': True,
+                'metadata': {'name': 'cps-pending-compiler-' + binding[:40], 'namespace': 'cps-compute'},
+                'data': {'seed.json': canonical(seed)}}
+
+    def test_compiler_seed_envelope_requires_explicit_opt_in(self):
+        for source in ('cps', 'cit'):
+            obj = self.compiler_seed(source)
+            self.assertTrue(self.admitted(obj))
+            gateway = next(p for p in self.policies(False)
+                           if p['metadata']['name'] == 'cps-native-gateway-authority-create-only')
+            self.assertEqual(self.evaluate(gateway, obj)['decision'], 'deny')
+
+    def test_compiler_seed_denies_foreign_writer_and_namespace(self):
+        obj = self.compiler_seed()
+        self.assertFalse(self.admitted(obj, username='system:serviceaccount:foreign:foreign'))
+        obj['metadata']['namespace'] = 'foreign'
+        self.assertFalse(self.admitted(obj))
+
+    def test_compiler_seed_rejects_malformed_envelopes(self):
+        original = self.compiler_seed()
+        mutations = []
+        for field, value in [('binding_id', 'b' * 60), ('actor', 'cit'), ('source', 'foreign'),
+                             ('attempt', 'not-a-uuid'), ('extra', True)]:
+            obj = copy.deepcopy(original); seed = json.loads(obj['data']['seed.json']); seed[field] = value
+            obj['data']['seed.json'] = canonical(seed); mutations.append(obj)
+        for field, value in [('immutable', False), ('binaryData', {'payload': 'eA=='})]:
+            obj = copy.deepcopy(original); obj[field] = value; mutations.append(obj)
+        for field, value in [('labels', {'unexpected': 'label'}), ('annotations', {'x': 'y'}),
+                             ('finalizers', ['foreign']), ('ownerReferences', [{'apiVersion': 'v1', 'kind': 'Pod', 'name': 'x', 'uid': '22222222-2222-4222-8222-222222222222'}])]:
+            obj = copy.deepcopy(original); obj['metadata'][field] = value; mutations.append(obj)
+        obj = copy.deepcopy(original); obj['data']['seed.json'] += ' '; mutations.append(obj)
+        obj = copy.deepcopy(original); obj['data']['seed.json'] = 'x' * 1048577; mutations.append(obj)
+        obj = copy.deepcopy(original); obj['data']['extra'] = '{}'; mutations.append(obj)
+        obj = copy.deepcopy(original); obj['metadata']['name'] += '-extra'; mutations.append(obj)
+        for obj in mutations:
+            with self.subTest(obj=obj):
+                self.assertFalse(self.admitted(obj))
+
+
 if __name__ == '__main__':
     unittest.main()

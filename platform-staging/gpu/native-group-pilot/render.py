@@ -28,7 +28,7 @@ def item(kind, name, namespace=None, **fields):
 
 
 def pending_current_group_forms():
-    """Closed canonical SDK36 v2 wires, not API/grant/hash authentication.
+    """Closed SDK v2 allocation wires and canonical compiler seed envelopes.
 
     Keep this explicit opt-in boundary synchronized with group_registry and
     validate_group_allocation_record. CEL cannot parse JSON or authenticate
@@ -96,6 +96,25 @@ def pending_current_group_forms():
             'has(object.immutable) && object.immutable == true',
             'has(object.data) && size(object.data) == 1 && ' + json.dumps(key) + ' in object.data',
             'size(' + text + ') <= 65536', text + '.matches(' + wire + ')')) + ')')
+    # Compiler seeds carry opaque Kubernetes Pods. CEL checks the bounded
+    # canonical envelope and name/binding/source identity; the typed compiler
+    # still authenticates and validates both complete Pod documents.
+    prefix = 'cps-pending-compiler-'
+    identity = 'object.metadata.name.substring(' + str(len(prefix)) + ')'
+    seed_patterns = []
+    for source in ('cps', 'cit'):
+        pattern = document(actor=literal(source), admitted=r'\{[^\r\n]+\}',
+            attempt=q(uid), binding_id=q('@BINDING_PREFIX@' + '[a-f0-9]{20}'),
+            source=literal(source), source_pod=r'\{[^\r\n]+\}')
+        seed_patterns.append((' + ' + identity + ' + ').join(
+            json.dumps(part) for part in ('^' + pattern + '$').split('@BINDING_PREFIX@')))
+    text = 'object.data["seed.json"]'
+    forms.append('(' + ' && '.join((
+        'object.metadata.name.matches(' + json.dumps('^' + prefix + '[a-f0-9]{40}$') + ')',
+        'has(object.immutable) && object.immutable == true',
+        'has(object.data) && size(object.data) == 1 && "seed.json" in object.data',
+        'size(' + text + ') <= 1048576',
+        '(' + ' || '.join(text + '.matches(' + wire + ')' for wire in seed_patterns) + ')')) + ')')
     metadata = ' && '.join('(!has(object.metadata.' + field + ') || size(object.metadata.' + field + ') == 0)'
         for field in ('labels', 'annotations', 'ownerReferences', 'finalizers', 'generateName'))
     metadata += ' && !has(object.metadata.deletionTimestamp) && !has(object.metadata.deletionGracePeriodSeconds)'
@@ -195,7 +214,7 @@ def render(config=None, *, image=DEFAULT_IMAGE, enable=False, allow_pending_curr
     gateway_message = 'The gateway may create only an empty native ledger or one immutable enrollment/terminal v2 abort-barrier slot.'
     if pending is not None:
         gateway_forms += ' || (' + pending + ')'
-        gateway_message += ' Explicit current-group mode also permits exact immutable v2 pending records.'
+        gateway_message += ' Explicit current-group mode also permits immutable v2 pending records and bounded compiler seeds.'
     objects.extend([
         item('ClusterRole', gateway_name + '-node', rules=[
             {'apiGroups': [''], 'resources': ['nodes'], 'resourceNames': [node], 'verbs': ['get']}]),
@@ -227,7 +246,7 @@ def render(config=None, *, image=DEFAULT_IMAGE, enable=False, allow_pending_curr
             'failurePolicy': 'Fail', 'matchConstraints': {'resourceRules': [{'apiGroups': [''],
                 'apiVersions': ['v1'], 'operations': ['CREATE'], 'resources': ['configmaps'], 'scope': 'Namespaced'}]},
             'matchConditions': [{'name': 'pending-name', 'expression':
-                "object.metadata.name.startsWith('cps-pending-registry-') || object.metadata.name.startsWith('cps-pending-allocation-')"}],
+                "object.metadata.name.startsWith('cps-pending-registry-') || object.metadata.name.startsWith('cps-pending-allocation-') || object.metadata.name.startsWith('cps-pending-compiler-')"}],
             'validations': [
                 {'expression': 'request.userInfo.username == ' + json.dumps(gateway_username),
                  'message': 'Only the native Gateway may publish current-group pending records.'},

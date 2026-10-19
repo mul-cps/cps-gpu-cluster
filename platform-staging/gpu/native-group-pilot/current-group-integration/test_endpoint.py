@@ -364,3 +364,22 @@ def test_coordinator_can_dry_run_pods_only_in_declared_hub_namespaces(request,mo
         assert bindings[0]['roleRef']=={'apiGroup':'rbac.authorization.k8s.io','kind':'Role','name':role['metadata']['name']}
         assert bindings[0]['subjects']==[{'kind':'ServiceAccount','name':'cps-compute-controller','namespace':'cps-compute'}]
     assert not any(r['kind']=='ClusterRole' and any('pods' in rule.get('resources',[]) for rule in r.get('rules',[])) for r in result['rbac'])
+
+
+def test_coordinator_workspace_runtime_permissions_cover_seal_and_abort_only(request,monkeypatch,tmp_path):
+    c,*_=harness(request,monkeypatch,tmp_path)
+    result=endpoint.render(c.group_context,**inputs(c))
+    roles=[r for r in result['rbac'] if r['kind']=='Role' and r['metadata']['name']=='cps-native-kai-workspace-runtime']
+    assert {r['metadata']['namespace'] for r in roles}=={'jupyterhub','cit-jhub'}
+    expected=[{'apiGroups':[''],'resources':['pods'],'verbs':['delete']},
+              {'apiGroups':[''],'resources':['configmaps'],'verbs':['get','patch','delete']},
+              {'apiGroups':['scheduling.run.ai'],'resources':['bindrequests'],'verbs':['get']}]
+    for role in roles:
+        assert role['rules']==expected
+        bindings=[r for r in result['rbac'] if r['kind']=='RoleBinding' and r['metadata']==role['metadata']]
+        assert len(bindings)==1
+        assert bindings[0]['roleRef']=={'apiGroup':'rbac.authorization.k8s.io','kind':'Role','name':role['metadata']['name']}
+        assert bindings[0]['subjects']==[{'kind':'ServiceAccount','name':'cps-compute-controller','namespace':'cps-compute'}]
+    assert not any(r['metadata'].get('namespace')=='kai-resource-reservation' and r['kind']=='Role'
+                   and any('create' in rule.get('verbs',[]) or 'delete' in rule.get('verbs',[]) for rule in r.get('rules',[]))
+                   for r in result['rbac'])
