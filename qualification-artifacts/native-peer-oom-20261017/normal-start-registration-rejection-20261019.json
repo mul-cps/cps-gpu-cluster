@@ -1,0 +1,20 @@
+{
+  "observed_at": "2026-10-19T12:19:00.199840+00:00",
+  "gpu2_schedulable": true,
+  "binder_restored_disabled": true,
+  "gpu_test_executed": false,
+  "normal_start_attempts": 2,
+  "http_status": 422,
+  "failure_stage": "workspace registration before Pod creation",
+  "private_clone_exact_handler_passed": true,
+  "all_118_native_allocations_released": true,
+  "active_reservations": 0,
+  "active_reservation_bindings": 0,
+  "temporary_admin_token_revoked_and_unlinked": true,
+  "production_qualified": false,
+  "test_pod_absent": true,
+  "limitations": [
+    "No Pod or CUDA execution; normal registration rejection remains unresolved",
+    "No claim for unrelated personal servers absent from current observation"
+  ]
+}
