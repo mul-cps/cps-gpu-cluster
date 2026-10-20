@@ -180,8 +180,15 @@ finally:
 """
 
 
-def render(config, *, configuration, image, config_secret, journal_pvc, namespace='cps-compute', image_pull_secret=None):
+def render(config, *, configuration, image, config_secret, journal_pvc, namespace='cps-compute', image_pull_secret=None,
+           checkpoint_reference=None):
     from cps_compute.native_node.config import NodeConfiguration
+    checkpoint_argument=None
+    if checkpoint_reference is not None:
+        from cps_compute.immutable_configmap import ImmutableConfigMapRef
+        reference=ImmutableConfigMapRef.from_dict(checkpoint_reference).to_dict()
+        require(reference['key']=='checkpoint.json','Exact protected checkpoint payload key required')
+        checkpoint_argument=canonical(reference)
     from cps_compute.native_observer_permissions import ObserverRelease, names, valid_uid
     optional={'node_cpu_rotation'} if isinstance(config,dict) and 'node_cpu_rotation' in config else set()
     if optional:
@@ -273,6 +280,8 @@ def render(config, *, configuration, image, config_secret, journal_pvc, namespac
         {'name': 'seed', 'secret': {'secretName': config_secret, 'defaultMode': 0o444}},
         {'name': 'inputs', 'emptyDir': {}}, {'name': 'journal', 'persistentVolumeClaim': {'claimName': journal_pvc}},
         {'name': 'tmp', 'emptyDir': {}}]}
+    if checkpoint_argument is not None:
+        pod['containers'][0]['args'] += ['--checkpoint-reference-json',checkpoint_argument]
     if image_pull_secret is not None: pod['imagePullSecrets'] = [{'name': image_pull_secret}]
     result.append(obj('Deployment', NAME, namespace, spec={'replicas': 0, 'strategy': {'type': 'Recreate'},
         'selector': {'matchLabels': {'app': NAME}}, 'template': {'metadata': {'labels': {'app': NAME}}, 'spec': pod}}))

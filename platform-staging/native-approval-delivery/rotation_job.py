@@ -19,7 +19,7 @@ def _runtime():
 def render(config, *, configuration, image, config_secret, journal_pvc, job_name,
            previous_config_sha256, previous_state_sha256, anchor_sha256,
            previous_node_template_sha256, namespace='cps-compute',
-           image_pull_secret=None, active_deadline_seconds=300):
+           image_pull_secret=None, active_deadline_seconds=300, checkpoint_reference=None):
     runtime=_runtime()
     for value in (previous_config_sha256,previous_state_sha256,anchor_sha256,previous_node_template_sha256):
         runtime.require(isinstance(value,str) and re.fullmatch(r'sha256:[a-f0-9]{64}',value)
@@ -29,7 +29,8 @@ def render(config, *, configuration, image, config_secret, journal_pvc, job_name
     runtime.require(type(active_deadline_seconds) is int and 1<=active_deadline_seconds<=900,
         'Finite one-attempt rotation deadline required')
     docs=runtime.render(config,configuration=configuration,image=image,config_secret=config_secret,
-        journal_pvc=journal_pvc,namespace=namespace,image_pull_secret=image_pull_secret)
+        journal_pvc=journal_pvc,namespace=namespace,image_pull_secret=image_pull_secret,
+        checkpoint_reference=checkpoint_reference)
     extras={'previous-config.json':previous_config_sha256,'previous-node-template.json':previous_node_template_sha256}
     current={'delivery.json',*(PurePosixPath(path).name for path in
         (config['policy_path'],config['capture']['ca_file'],config['capture']['token_file']))}
