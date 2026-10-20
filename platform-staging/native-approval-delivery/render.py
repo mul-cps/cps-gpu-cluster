@@ -183,8 +183,12 @@ finally:
 def render(config, *, configuration, image, config_secret, journal_pvc, namespace='cps-compute', image_pull_secret=None):
     from cps_compute.native_node.config import NodeConfiguration
     from cps_compute.native_observer_permissions import ObserverRelease, names, valid_uid
+    optional={'node_cpu_rotation'} if isinstance(config,dict) and 'node_cpu_rotation' in config else set()
+    if optional:
+        from cps_compute.native_approval_delivery import configuration as validate_delivery_configuration
+        validate_delivery_configuration(config)
     require(isinstance(config, dict) and set(config) == {'version', 'enabled', 'policy_path', 'node_configuration',
-        'observer_release', 'pregrant_roles', 'capture', 'ttlSeconds'} and type(config['version']) is int
+        'observer_release', 'pregrant_roles', 'capture', 'ttlSeconds'} | optional and type(config['version']) is int
         and config['version'] == 1 and config['enabled'] is True, 'Explicit closed enabled producer config v1 required')
     require(type(configuration) is NodeConfiguration and configuration.document['version'] == 4,
             'Actual immutable NodeConfiguration v4 required')

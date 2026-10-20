@@ -96,3 +96,24 @@ def test_rotation_initializer_checks_extra_seed_bytes_without_touching_journal(t
         for name,raw in [('previous-config.json',old),('previous-node-template.json',template)]:
             target=private/'delivery'/name
             assert target.read_bytes()==raw and target.stat().st_mode&0o7777==0o600
+
+@pytest.mark.parametrize('fault',[None,'extra','wrong-cpu','wrong-hash','missing-field'])
+def test_rotation_job_uses_typed_closed_node_cpu_descriptor(fault):
+    values=inputs()
+    values['config']['observer_release']['held_node_template_sha256']='sha256:'+'f'*64
+    marker={'version':1,'previous_requests_cpu':'100m','requests_cpu':'500m',
+            'previous_limits_cpu':'500m','limits_cpu':'2',
+            'previous_template_sha256':values['previous_node_template_sha256'],
+            'template_sha256':values['config']['observer_release']['held_node_template_sha256']}
+    if fault=='extra':marker['memory']='2Gi'
+    elif fault=='wrong-cpu':marker['requests_cpu']='1'
+    elif fault=='wrong-hash':marker['template_sha256']='not-a-hash'
+    elif fault=='missing-field':del marker['previous_limits_cpu']
+    values['config']['node_cpu_rotation']=marker
+    if fault:
+        with pytest.raises(ValueError):load('rotation_job').render(**values)
+    else:
+        before=copy.deepcopy(values['config']);job=load('rotation_job').render(**values)
+        assert job['spec']['backoffLimit']==0
+        assert '--rotate-config' in job['spec']['template']['spec']['containers'][0]['args']
+        assert values['config']==before
