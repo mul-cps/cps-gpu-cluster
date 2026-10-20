@@ -1,0 +1,43 @@
+{
+  "base_config_id": "6feba5219841bf1164547ecea2ab578b896b5e223f259d6789037ab475467dac",
+  "base_image": "ghcr.io/kai-scheduler/kai-scheduler/binder@sha256:1d10b1b212faddab22cdaea5da2f9d17e1d4154d68d7d0f4bfc44dc6a343624b",
+  "binary_sha256": "deb86f93952e184265961d23203aa42f6bfcd5a42e2f89d8e2e7d82a82d43ce8",
+  "ca_bundle_sha256": "714d457d580922dbf1d0be8bd35ba236a842b50b0072ae791582a19adef772a5",
+  "dockerfile_sha256": "5658b39d9ac0a4e6c60e269fa2fb848ae9925d260f44e565b66ee896b31d80ec",
+  "help_exit": 0,
+  "help_sha256": "05533b70f56c56decc1469f801d79bc00372a201a3979498307637a94cccf04f",
+  "image_config_id": "9170968d5f0da300308d23f9d87210647ccc15dbb07970ed8f1be0aa21ad063c",
+  "installed_static_elf": {
+    "PT_INTERP": false,
+    "format": "ELF64-LSB-AMD64",
+    "program_headers": 5
+  },
+  "live_operations": false,
+  "local_image": "localhost/cps-native-kai-binder:accepted-budget-bdf434e-32efc37c",
+  "oci_manifest_digest": "sha256:9000d577f74871f29c990d7d94e315dedf8922823db19fadab4f92abda759994",
+  "oci_recipe_sha256": "2199a96bba0e2a9871e812f7a240b8dae9943ebab696e74fb0642c48782d162a",
+  "patch_sha256": "32efc37caeee2150515554a159618afb85051beb62f81b1a2008629fd4c72f7c",
+  "production_qualified": false,
+  "published": false,
+  "rebuilt_image_identical": true,
+  "runtime_config": {
+    "Entrypoint": [
+      "/workspace/app"
+    ],
+    "Env": [
+      "PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin",
+      "TARGETARCH=amd64",
+      "SERVICE_NAME=binder"
+    ],
+    "Labels": {
+      "org.mul-cps.binary-sha256": "deb86f93952e184265961d23203aa42f6bfcd5a42e2f89d8e2e7d82a82d43ce8",
+      "org.mul-cps.kai.patch-sha256": "32efc37caeee2150515554a159618afb85051beb62f81b1a2008629fd4c72f7c",
+      "org.mul-cps.kai.upstream-revision": "bdf434e5e9201cccf4e05fad04d814363653f692"
+    },
+    "User": "65532:65532",
+    "WorkingDir": "/workspace"
+  },
+  "unchanged_filesystem_entries": 6,
+  "upstream_commit": "bdf434e5e9201cccf4e05fad04d814363653f692",
+  "version": 1
+}

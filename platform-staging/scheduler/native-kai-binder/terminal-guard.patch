@@ -1663,10 +1663,10 @@ index 0000000..a88bf59
 +}
 diff --git a/pkg/binder/binding/native_transport.go b/pkg/binder/binding/native_transport.go
 new file mode 100644
-index 0000000..78771c3
+index 0000000..426a98a
 --- /dev/null
 +++ b/pkg/binder/binding/native_transport.go
-@@ -0,0 +1,310 @@
+@@ -0,0 +1,313 @@
 +// SPDX-License-Identifier: Apache-2.0
 +package binding
 +
@@ -1819,11 +1819,14 @@ index 0000000..78771c3
 +	request.Header.Set("Authorization", "Bearer "+token)
 +	request.Header.Set("Content-Type", "application/json")
 +	client := bridge.client
-+	if operation == "prepare" {
-+		// Prepare may wait up to 60s for independently refreshed readiness.
-+		// Keep other operations and earlier caller cancellation unchanged.
++	if operation == "prepare" || operation == "accepted" {
++		// Accepted may wait for readiness under the existing server fence.
++		// A client copy preserves other operations and earlier cancellation.
 +		bounded := *client
 +		bounded.Timeout = 90 * time.Second
++		if operation == "accepted" {
++			bounded.Timeout = 60 * time.Second
++		}
 +		client = &bounded
 +	}
 +	response, err := client.Do(request)
@@ -1979,10 +1982,10 @@ index 0000000..78771c3
 +}
 diff --git a/pkg/binder/binding/native_transport_test.go b/pkg/binder/binding/native_transport_test.go
 new file mode 100644
-index 0000000..86f1b73
+index 0000000..417b0af
 --- /dev/null
 +++ b/pkg/binder/binding/native_transport_test.go
-@@ -0,0 +1,386 @@
+@@ -0,0 +1,493 @@
 +package binding
 +
 +import (
@@ -2002,6 +2005,8 @@ index 0000000..86f1b73
 +	"strings"
 +	"testing"
 +	"time"
++
++	"github.com/kai-scheduler/KAI-scheduler/pkg/binder/plugins"
 +)
 +
 +func TestNativeHTTPDisabledDoesNotReadCredentials(t *testing.T) {
@@ -2238,6 +2243,8 @@ index 0000000..86f1b73
 +	expected := 15 * time.Second
 +	if transport.operation == "prepare" {
 +		expected = 90 * time.Second
++	} else if transport.operation == "accepted" {
++		expected = 60 * time.Second
 +	}
 +	remaining := time.Until(deadline)
 +	if !ok || remaining > expected || remaining < expected-time.Second {
@@ -2252,7 +2259,7 @@ index 0000000..86f1b73
 +	return &http.Response{StatusCode: http.StatusOK, Header: http.Header{"Content-Type": []string{"application/json"}}, Body: io.NopCloser(bytes.NewReader(raw))}, nil
 +}
 +func TestNativeHTTPPrepareWaitBudgetDoesNotChangeOtherOperations(t *testing.T) {
-+	for _, operation := range []string{"prepare", "current", "hold", "close", "reservation-delete"} {
++	for _, operation := range []string{"prepare", "accepted", "current", "binding", "hold", "close", "reservation-delete"} {
 +		t.Run(operation, func(t *testing.T) {
 +			bridge, _ := nativeTransportFixture(t, func(http.ResponseWriter, *http.Request) { t.Fatal("unexpected external call") })
 +			transport := &nativeDeadlineTransport{t: t, operation: operation}
@@ -2367,6 +2374,109 @@ index 0000000..86f1b73
 +				t.Fatalf("ambiguous response granted refresh/replayed: %v %d", err, calls)
 +			}
 +		})
++	}
++}
++
++func TestNativeHTTPAcceptedWaitsPastDefaultWithoutRetry(t *testing.T) {
++	calls := 0
++	bridge, _ := nativeTransportFixture(t, func(w http.ResponseWriter, r *http.Request) {
++		calls++
++		if r.Method != "POST" || r.URL.Path != "/api/native-kai/v1/accepted" || r.Header.Get("Authorization") != "Bearer unit.header.signature" {
++			t.Error("accepted route/auth changed")
++		}
++		var body map[string]interface{}
++		if err := json.NewDecoder(r.Body).Decode(&body); err != nil {
++			t.Error(err)
++			return
++		}
++		if body["fence_id"] != "fence" || !reflect.DeepEqual(body["binding"], map[string]interface{}{"kind": "Binding"}) {
++			t.Error("accepted payload changed")
++		}
++		time.Sleep(16 * time.Second)
++		w.Header().Set("Content-Type", "application/json")
++		_ = json.NewEncoder(w).Encode(map[string]interface{}{"protocol": body["protocol"], "operation": body["operation"], "request_id": body["request_id"]})
++	})
++	fence := &nativeHTTPFence{bridge: bridge, id: "fence"}
++	start := time.Now()
++	err := fence.BindingAccepted(context.Background(), &unstructured.Unstructured{Object: map[string]interface{}{"kind": "Binding"}})
++	if err != nil {
++		t.Fatal(err)
++	}
++	if elapsed := time.Since(start); elapsed <= 15*time.Second || elapsed >= 60*time.Second {
++		t.Fatalf("unexpected acceptance wait %v", elapsed)
++	}
++	if calls != 1 {
++		t.Fatalf("accepted retried or Hold/Close issued: %d calls", calls)
++	}
++	if bridge.client.Timeout != 15*time.Second {
++		t.Fatal("shared timeout mutated")
++	}
++}
++
++func TestNativeHTTPAcceptedHonorsEarlierCancellationWithoutRetry(t *testing.T) {
++	entered := make(chan struct{})
++	bridge, _ := nativeTransportFixture(t, func(w http.ResponseWriter, r *http.Request) {
++		_, _ = io.Copy(io.Discard, r.Body)
++		close(entered)
++		<-r.Context().Done()
++	})
++	ctx, cancel := context.WithCancel(context.Background())
++	defer cancel()
++	done := make(chan error, 1)
++	go func() { _, err := bridge.call(ctx, "accepted", nil); done <- err }()
++	select {
++	case <-entered:
++	case <-time.After(time.Second):
++		t.Fatal("request not received")
++	}
++	cancel()
++	select {
++	case err := <-done:
++		if err == nil {
++			t.Fatal("cancelled acceptance succeeded")
++		}
++	case <-time.After(time.Second):
++		t.Fatal("acceptance ignored cancellation")
++	}
++}
++
++func TestNativeHTTPAcceptedFailureHoldsBeforeClose(t *testing.T) {
++	pod, node, br := nativeTestInputs()
++	pod.Annotations["received-resource-type"] = "Fraction"
++	ack := nativeTestACK(pod)
++	operations := []string{}
++	bridge, _ := nativeTransportFixture(t, func(w http.ResponseWriter, r *http.Request) {
++		var body map[string]interface{}
++		if err := json.NewDecoder(r.Body).Decode(&body); err != nil {
++			t.Error(err)
++			return
++		}
++		op := body["operation"].(string)
++		operations = append(operations, op)
++		if op == "accepted" {
++			w.WriteHeader(http.StatusServiceUnavailable)
++			return
++		}
++		response := map[string]interface{}{"protocol": body["protocol"], "operation": op, "request_id": body["request_id"]}
++		if op == "prepare" {
++			response["fence_id"] = "aaaaaaaa-bbbb-4ccc-8ddd-eeeeeeeeeeee"
++			response["ack"] = ack
++		}
++		w.Header().Set("Content-Type", "application/json")
++		_ = json.NewEncoder(w).Encode(response)
++	})
++	binds := 0
++	kube := nativeTestClient(t, pod, node, br, func(*v1.Binding) error { binds++; return nil }, ack)
++	reservation := &nativeTestReservation{}
++	binder := NewBinder(kube, reservation, plugins.New())
++	binder.SetNativeTerminal(kube, "authority", bridge)
++	err := binder.bindNativeTerminal(context.Background(), pod, node, br, nativeTestState())
++	if !errors.Is(err, ErrNativeCustodyHeld) {
++		t.Fatalf("accepted failure did not hold custody: %v", err)
++	}
++	expected := []string{"prepare", "current", "binding", "accepted", "hold", "close"}
++	if !reflect.DeepEqual(operations, expected) || binds != 1 || reservation.removed != 0 {
++		t.Fatalf("accepted failure retried/released or reordered: %v binds=%d removed=%d", operations, binds, reservation.removed)
 +	}
 +}
 diff --git a/pkg/binder/binding/resourcereservation/native_custody_test.go b/pkg/binder/binding/resourcereservation/native_custody_test.go

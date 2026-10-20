@@ -1,0 +1,44 @@
+{
+  "version": 1,
+  "upstream_commit": "bdf434e5e9201cccf4e05fad04d814363653f692",
+  "baseline_patch_sha256": "f79250086dfab6e2600c07941b42d151c67307388f6803b38b489846764a879b",
+  "candidate_patch_sha256": "32efc37caeee2150515554a159618afb85051beb62f81b1a2008629fd4c72f7c",
+  "runtime_changed_files": [
+    "pkg/binder/binding/native_transport.go"
+  ],
+  "test_changed_files": [
+    "pkg/binder/binding/native_transport_test.go"
+  ],
+  "client_budgets_seconds": {
+    "accepted": 60,
+    "prepare": 90,
+    "other": 15
+  },
+  "earlier_caller_cancellation_preserved": true,
+  "shared_client_unmodified": true,
+  "post_retry_added": false,
+  "server_deadlines_changed": false,
+  "fresh_upstream_patch_applies": true,
+  "all_seventeen_patched_files_byte_identical": true,
+  "red_exit_code": 1,
+  "green_exit_code": 0,
+  "required_go_packages_passed": 5,
+  "source_hashes": {
+    "pkg/binder/binding/native_transport.go": "525489381a0590ee2a73640b6f15e4e6eab8815e1609df9c8b2880820cc680e4",
+    "pkg/binder/binding/native_transport_test.go": "64676ea7e298a4bc2e446ced3e9c6cc377646a7ef47b9efc9713ecb7f69a1702"
+  },
+  "private_log_hashes": {
+    "red-exact-deployed.private.log": "582708e653b4f26d3e1f7f13beb0970daae56e0fbd84a179dc15c9fd8d81f09a",
+    "green-required.private.log": "a3bc20ae3c1249338b9e4f74ccaca7ab8a4fb27a7c3a12be68f3acaac47bbbde"
+  },
+  "binary_built": true,
+  "image_published": false,
+  "live_deployed": false,
+  "gpu_qualified": false,
+  "binary_sha256": "deb86f93952e184265961d23203aa42f6bfcd5a42e2f89d8e2e7d82a82d43ce8",
+  "binary_rebuild_identical": true,
+  "oci_built": true,
+  "oci_rebuild_identical": true,
+  "canonical_tests_passed": 46,
+  "image_config_id": "9170968d5f0da300308d23f9d87210647ccc15dbb07970ed8f1be0aa21ad063c"
+}

@@ -1,0 +1,7 @@
+# Accepted observation budget
+
+The Binder accepted RPC now observes the existing authenticated readiness work for at most 60seconds instead of 15seconds. Prepare remains 90seconds and other operations 15seconds; an earlier caller cancellation still wins. The shared HTTP client is copied. No POST retry or server deadline change is introduced. This does not calculate the execution fence’s remaining lifetime.
+
+A real TLS accepted POST delayed 16seconds fails against the exact deployed transport and succeeds against this change, with unchanged authentication/payload and one POST. The deadline matrix includes accepted; cancellation stops observation promptly. A real 503 accepted response through the terminal path holds custody before closing the fence and retains the reservation. The five affected Go packages pass. Fresh upstream patch application reproduces all 17 tested source files exactly.
+
+This is source qualification only. The new static binary and offline OCI image were each rebuilt twice with identical results. The installed binary, stock runtime configuration, CA bundle and remaining filesystem were verified, and sandboxed help passed. Canonical packaging tests:46passed. No image publication or deployment is claimed by this source receipt; historical deployed-image receipts remain unchanged. Normal Hub start, CUDA and production qualification are not claimed.
