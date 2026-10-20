@@ -105,3 +105,9 @@ For KAI, use Go 1.26.8 and `CGO_ENABLED=0`, `GOOS=linux`, `GOARCH=amd64`, `-mod=
 The image references in `inventory-images.json` and `operator-images.json` are qualification artifacts. Their registry manifests and raw configurations were compared to the locally tested images. They are not deployment instructions and are not proof of GPU isolation. The native inventory image's OCI conversion omits Docker's build-only `Shell` field; runtime command, arguments, environment, user and other runtime fields are unchanged.
 
 The next live step requires a new inventory-transition baseline and rollback receipt. Keep existing capacity-two captures and their guards unchanged. Confirm idle native sessions, released global reservations, unchanged protected notebook identity and current operator ownership before changing the pilot's advertised capacity. Qualify placement and CUDA isolation afterwards; a one-device pilot does not satisfy the planned eight-GPU pool acceptance criteria.
+
+## Recorded runtime smoke
+
+`runtime-smoke.json` records the default-inventory image rollout and the initial missing-pull-secret rollback. The cluster credential was verified against the image and made available through `devicePlugin.imagePullSecrets`; no credential contents are stored here. All four plugin pods subsequently became Ready on the exact published image digest, with eight GPUs still advertised. This is a temporary qualification deployment, not GitOps production promotion or CUDA isolation acceptance.
+
+The captured GPU2 node has no physical-count GFD label. Preserve that absence. Its current scheduler fallback already uses advertised allocatable capacity; the accounting patch is still required before restricting inventory on nodes whose physical-count label exceeds their advertised capacity. Do not enable GFD or synthesize a count label merely to fit an older snapshot.

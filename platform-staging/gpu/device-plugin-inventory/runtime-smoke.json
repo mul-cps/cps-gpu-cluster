@@ -1,0 +1,33 @@
+{
+  "recorded_at": "2026-10-20T05:04:03.993156+00:00",
+  "stage": "default-inventory-runtime-smoke",
+  "image": "ghcr.io/mul-cps/cps-native-device-plugin@sha256:2258429b6bc7afb0d98f7fd61b32159ba40d49c3f3c571d6625b268e345449c1",
+  "ready_plugin_nodes": 4,
+  "advertised_gpu_count": 8,
+  "allowlist_active": false,
+  "pilot_physical_gpu_count": 2,
+  "pilot_mig_disabled": true,
+  "pilot_compute_process_count": 0,
+  "native_four_component_readiness_validated": true,
+  "protected_notebook_restarts_unchanged": true,
+  "ledger_data_unchanged": true,
+  "initial_missing_pull_secret_attempt_rolled_back_and_verified": true,
+  "authenticated_pull_probe_succeeded_and_removed": true,
+  "pull_secret_namespace": "gpu-operator",
+  "pull_secret_name": "cps-native-image-pull",
+  "credential_data_in_git": false,
+  "gpu_isolation_qualified": false,
+  "production_ready": false,
+  "evidence_sha256": {
+    "rollout.verified.private.json": "8d53b86cf076bd0e870dd9c8080f37ca32c342658eb17d3e23707b5ed37eb0dc",
+    "readiness-check-01/four-readiness.verified.private.json": "3d2cc4918131b3e6e5aa76742dd3432e7b6b3c79ce80275c410ff6a024d6abe7",
+    "physical-gpus.driver.private.csv": "598f6b5f4ae5a0032342a9a5e437960c37f0f2ab21691b16e5365db694ec6aff",
+    "compute-processes.driver.private.csv": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "remaining": [
+    "GPU2 qualified-UUID inventory transition with direct CDI/epoch readback",
+    "normal shared-workspace placement and CUDA execution",
+    "5/20 GiB peer isolation, imports, restart and MPS qualification",
+    "all-eight dynamic placement and remaining production acceptance gates"
+  ]
+}
