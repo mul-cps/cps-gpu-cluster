@@ -4,6 +4,12 @@
 configuration renders are necessary checks, not acceptance evidence for hardware,
 real authentication, shared kernels or data recovery.
 
+The [20 October census correction and Gateway handover](../../qualification-artifacts/native-census-provenance-20261020/README.md)
+records 3975 source/969 installed tests and the completed 42/210 journal rotation,
+preserving 205 prior archives, unchanged Node/Hub/writer images and 160 released
+ledger rows. This resolves the provenance-classification defect; the next normal
+Hub Start/CUDA and broader production gates were not qualified by that rollout.
+
 The latest bounded hardware result is the
 [2026-10-20 trusted no-MIG 5/20 GiB pair](../../qualification-artifacts/native-trusted-pair-20261020/README.md).
 Both fixed caps rejected allocation growth while the other workspace continued;

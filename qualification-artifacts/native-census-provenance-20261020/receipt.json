@@ -1,0 +1,67 @@
+{
+  "schema_version": 1,
+  "scope": "Gateway census classifier correction and completed trust handover; not GPU workload qualification",
+  "observed_at": "2026-10-20T14:16:59.163190+00:00",
+  "source_sha": "2575fa1233d55f6e9f196c4faa377c672bef7d02",
+  "gateway_image": "ghcr.io/mul-cps/cps-compute@sha256:d3da41df09a02c5480608e6948626513989f0cc639b3a62e2be8cbfa5f5551ca",
+  "tests": {
+    "source_passed": 3975,
+    "installed_passed": 969
+  },
+  "classification": {
+    "provenance_only_annotation": "cps.compute/native-hub-consumer-revision",
+    "excluded_only_as_gpu_execution_signal": true,
+    "gpu_execution_signals_still_denied": [
+      "nvidia.com/gpu resource",
+      "cps.compute native resource",
+      "native-pending annotation",
+      "unknown native annotation",
+      "CDI annotation",
+      "run.ai annotation",
+      "runai-gpu-group label"
+    ],
+    "paginated_regression_pages": [
+      0,
+      20,
+      40
+    ]
+  },
+  "handover": {
+    "gateway_only_image_change": true,
+    "journal_rotations": 42,
+    "journal_archives": 210,
+    "prior_archive_count_preserved": 205,
+    "node_image": "ghcr.io/mul-cps/cps-native-node@sha256:79370b88bdef23e31af824c6a48a5b07080a15922e8e5b65c5c6d6b261e0dc3b",
+    "hub_image": "ghcr.io/mul-cps/cps-compute@sha256:9088ea8188ac4ee49881a5b0feb84d62e191a09cf972d5baac8f8eecb97bdadd",
+    "writer_image": "ghcr.io/mul-cps/cps-compute@sha256:a52bc24a28dcaa36e2404f146a1c6fab8278c21bcc030ecdd854d8f109401405",
+    "all_six_components_ready": true,
+    "released_ledger_rows": 160,
+    "original_ledger_bytes_unchanged": true,
+    "protected_notebook_spec_and_restarts_unchanged": true,
+    "temporary_rotation_permissions_absent": true
+  },
+  "qualification": {
+    "new_normal_hub_start": false,
+    "cuda": false,
+    "cross_hub_pooling": false,
+    "production": false
+  },
+  "evidence_sha256": {
+    "failed_normal_hub_pilot": {
+      "file": "run-summary.verified.private.json",
+      "sha256": "25dd7faf1dbe63976179c0b466e3e13334c14fef13abd76af1a2e484f469dcc3"
+    },
+    "gateway_publication": {
+      "file": "gateway-publication.verified.private.json",
+      "sha256": "f00b3c94ab341a8eccddbcbd1db16032b55c6061ef46e85cf88a5d346a05ad54"
+    },
+    "source_verification": {
+      "file": "committed-source.verified.private.json",
+      "sha256": "83e8deffede7a95c35d0a6132ffa3edf98d822fa5911ea4836d74265e04b2426"
+    },
+    "completed_rollout": {
+      "file": "rollout-complete.private.json",
+      "sha256": "b8f3024adafcfb9a766c6a5a9a5644defa4eeea723cfd7bda6dcc1a5d6a007ec"
+    }
+  }
+}

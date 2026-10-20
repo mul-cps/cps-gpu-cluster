@@ -7,6 +7,12 @@ measured acceptance. Evidence for one stage does not establish the next stage.
 See the [operational acceptance record](qualification/operational-acceptance-20261013.md)
 for the bounded live results of 2026-10-13 and their retained evidence.
 
+The [20 October census correction and Gateway handover](../../qualification-artifacts/native-census-provenance-20261020/README.md)
+records 3975 source/969 installed tests and the completed 42/210 journal rotation,
+preserving 205 prior archives, unchanged Node/Hub/writer images and 160 released
+ledger rows. This resolves the provenance-classification defect; the next normal
+Hub Start/CUDA and broader production gates were not qualified by that rollout.
+
 ## 20 October 2026 — trusted GPU pair checkpoint
 
 The [sanitized trusted no-MIG 5/20 GiB result](../../qualification-artifacts/native-trusted-pair-20261020/README.md)
