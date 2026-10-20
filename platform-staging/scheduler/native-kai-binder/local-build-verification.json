@@ -3,37 +3,137 @@
   "GOMAXPROCS": 4,
   "all_affected_packages_passed": [
     "./pkg/binder/binding",
+    "./pkg/binder/plugins/hamicore",
     "./pkg/binder/binding/resourcereservation",
     "./pkg/binder/controllers",
     "./cmd/binder/app"
   ],
-  "application_contract_commit": "36b91d33da4508e54de74a900ee039cd01d14cb4",
-  "binary_bytes": 98235582,
-  "binary_sha256": "5f518d0e13dca26492f3ac821825cdc587b4f165e86a23263aad4cebe37381fa",
+  "application_contract_commit": "6f8dcf325eaed5acc4c785305eb49d8bba60bd3a",
+  "binary_bytes": 98268460,
+  "binary_sha256": "2bbaa3083511b2ec8ee5263e664f7a5b5a034d006b8cd3d6b20fcb9e4f5afb4b",
   "dependency_diff": [],
-  "go_package_test_output": [
-    "ok  \tgithub.com/kai-scheduler/KAI-scheduler/pkg/binder/binding\t0.112s",
-    "ok  \tgithub.com/kai-scheduler/KAI-scheduler/pkg/binder/binding/resourcereservation\t0.239s",
-    "ok  \tgithub.com/kai-scheduler/KAI-scheduler/pkg/binder/controllers\t0.102s",
-    "ok  \tgithub.com/kai-scheduler/KAI-scheduler/cmd/binder/app\t0.019s"
-  ],
+  "go_package_test_output": "ok  \tgithub.com/kai-scheduler/KAI-scheduler/pkg/binder/binding\t0.204s\nok  \tgithub.com/kai-scheduler/KAI-scheduler/pkg/binder/plugins/hamicore\t0.008s\nok  \tgithub.com/kai-scheduler/KAI-scheduler/pkg/binder/binding/resourcereservation\t0.239s\nok  \tgithub.com/kai-scheduler/KAI-scheduler/pkg/binder/controllers\t0.118s\nok  \tgithub.com/kai-scheduler/KAI-scheduler/cmd/binder/app\t0.018s\n/home/bjoern/.local/state/cps-full-project-20261013/binder-json-canonical-build-20261020/binder: go1.26.8\n\tpath\tgithub.com/kai-scheduler/KAI-scheduler/cmd/binder\n\tmod\tgithub.com/kai-scheduler/KAI-scheduler\t(devel)\t\n\tdep\tcel.dev/expr\tv0.25.2\th1:K6j46C81hXtZQfuX60cVWQFBJahKSE2gfRbNuvr5bFs=\n\tdep\tgithub.com/antlr4-go/antlr/v4\tv4.13.1\th1:SqQKkuVZ+zWkMMNkjy5FZe5mr5WURWnlpmOuzYWrPrQ=\n\tdep\tgithub.com/awslabs/operatorpkg\tv0.0.0-20241205163410-0fff9f28d115\th1:9nhjY3dzCpEmhpQ0vMlhB7wqucAiftLjAIEQu8uT2J4=\n\tdep\tgithub.com/beorn7/perks\tv1.0.1\th1:VlbKKnNfV8bJzeqoa4cOKqO6bYr3WgKZxO8Z16+hsOM=\n\tdep\tgithub.com/blang/semver/v4\tv4.0.0\th1:1PFHFE6yCCTv8C1TeyNNarDzntLi7wMI5i/pzqYIsAM=\n\tdep\tgithub.com/cenkalti/backoff/v5\tv5.0.3\th1:ZN+IMa753KfX5hd8vVaMixjnqRZ3y8CuJKRKj1xcsSM=\n\tdep\tgithub.com/cespare/xxhash/v2\tv2.3.0\th1:UL815xU9SqsFlibzuggzjXhog7bL6oX9BbNZnL2UFvs=\n\tdep\tgithub.com/davecgh/go-spew\tv1.1.2-0.20180830191138-d8f796af33cc\th1:U9qPSI2PIWSS1VwoXQT9A3Wy9MM3WgvqSxFWenqJduM=\n\tdep\tgithub.com/emicklei/go-restful/v3\tv3.13.0\th1:C4Bl2xDndpU6nJ4bc1jXd+uTmYPVUwkD6bFY/oTyCes=\n\tdep\tgithub.com/evanphx/json-patch/v5\tv5.9.11\th1:/8HVnzMq13/3x9TPvjG08wUGqBTmZBsCWzjTM0wiaDU=\n\tdep\tgithub.com/felixge/httpsnoop\tv1.0.4\th1:NFTV2Zj1bL4mc9sqWACXbQFVBBg2W3GPvqp8/ESS2Wg=\n\tdep\tgithub.com/fsnotify/fsnotify\tv1.9.0\th1:2Ml+OJNzbYCTzsxtv8vKSFD9PbJjmhYF14k/jKC7S9k=\n\tdep\tgithub.com/fxamacker/cbor/v2\tv2.9.0\th1:NpKPmjDBgUfBms6tr6JZkTHtfFGcMKsw3eGcmD/sapM=\n\tdep\tgithub.com/go-logr/logr\tv1.4.4\th1:tG4xh9yMsRCAiodLVTxyrkzSZ9+o0L1Kg/+cPVcbP/8=\n\tdep\tgithub.com/go-logr/stdr\tv1.2.2\th1:hSWxHoqTgW2S2qGc0LTAI563KZ5YKYRhT3MFKZMbjag=\n\tdep\tgithub.com/go-logr/zapr\tv1.3.0\th1:XGdV8XW8zdwFiwOA2Dryh1gj2KRQyOOoNmBy4EplIcQ=\n\tdep\tgithub.com/go-openapi/jsonpointer\tv1.0.0\th1:kR9tHqY0CtZaOPVFm622dPVNhrvYpwr4uCxgL3h1H8s=\n\tdep\tgithub.com/go-openapi/jsonreference\tv0.21.0\th1:Rs+Y7hSXT83Jacb7kFyjn4ijOuVGSvOdF2+tg1TRrwQ=\n\tdep\tgithub.com/go-openapi/swag\tv0.27.1\th1:VotvOLWW8q/EAxB0YdsBBGC8XYyeL1YwBj2ungAGPNg=\n\tdep\tgithub.com/go-openapi/swag/cmdutils\tv0.27.1\th1:I7sYqaWVl5mq0NEmNQkAmFDyNin9ufvMX/p2zwtQaOE=\n\tdep\tgithub.com/go-openapi/swag/conv\tv0.27.1\th1:8wi9ZG+olmY1wXphl93EWniPtbSPkXM/feH7FgjsvrU=\n\tdep\tgithub.com/go-openapi/swag/fileutils\tv0.27.1\th1:QQqBSoi5mW4XpU85nS0mLcA+zAE6vLzrb0QkmLKf9oM=\n\tdep\tgithub.com/go-openapi/swag/jsonutils\tv0.27.1\th1:SVgK3i4USzCU5mibOOS/l4ea2h9UQXy7J7RNLTjuXjU=\n\tdep\tgithub.com/go-openapi/swag/loading\tv0.27.1\th1:/DxUgDXKbBX4bcn7r9uEXfJyzN5XpiJmZplzQTjrRCY=\n\tdep\tgithub.com/go-openapi/swag/mangling\tv0.27.1\th1:yC9D0HyUE8gbP+BfmGx9+AA89ikwZTMjESK3OnnoaqA=\n\tdep\tgithub.com/go-openapi/swag/netutils\tv0.27.1\th1:mICMFoS82F5TZ4Zy3cqmcQk+BFeCp3Uyq3Np7GI0/qU=\n\tdep\tgithub.com/go-openapi/swag/pools\tv0.27.1\th1:9LeadcMyb2GJCbXX5hVQDbZ2Lq9TL4dCs/nx1j5DO0E=\n\tdep\tgithub.com/go-openapi/swag/stringutils\tv0.27.1\th1:ZXePZ0r2p1qSjo8tD3Un4vFj8+FqlCkczxDrJIhYUp8=\n\tdep\tgithub.com/go-openapi/swag/typeutils\tv0.27.1\th1:KSTdFlfnse4r6dP9IrEnwMldjE+zs71UeEB3//PtVXc=\n\tdep\tgithub.com/go-openapi/swag/yamlutils\tv0.27.1\th1:ftxv6xvXb1E3zohUc+okZ9nSqNb9StQX/FXnKZ98sQA=\n\tdep\tgithub.com/google/btree\tv1.1.3\th1:CVpQJjYgC4VbzxeGVHfvZrv1ctoYCAI8vbl07Fcxlyg=\n\tdep\tgithub.com/google/cel-go\tv0.29.0\th1:fEG+Ja3YRwNOqnQxTyJwoByAUAvTuxUGiro/jhrm4F4=\n\tdep\tgithub.com/google/gnostic-models\tv0.7.0\th1:qwTtogB15McXDaNqTZdzPJRHvaVJlAl+HVQnLmJEJxo=\n\tdep\tgithub.com/google/go-cmp\tv0.7.0\th1:wk8382ETsv4JYUZwIsn6YpYiWiBsYLSJiTsyBybVuN8=\n\tdep\tgithub.com/google/uuid\tv1.6.0\th1:NIvaJDMOsjHA8n1jAhLSgzrAzy1Hgr+hNrb57e+94F0=\n\tdep\tgithub.com/grpc-ecosystem/grpc-gateway/v2\tv2.29.0\th1:5VipnvEpbqr2gA2VbM+nYVbkIF28c5ZQfqCBQ5g2xfk=\n\tdep\tgithub.com/json-iterator/go\tv1.1.12\th1:PV8peI4a0ysnczrg+LtxykD8LfKY9ML6u2jnxaEnrnM=\n\tdep\tgithub.com/mitchellh/hashstructure/v2\tv2.0.2\th1:vGKWl0YJqUNxE8d+h8f6NJLcCJrgbhC4NcD46KavDd4=\n\tdep\tgithub.com/moby/sys/mountinfo\tv0.7.2\th1:1shs6aH5s4o5H2zQLn796ADW1wMrIwHsyJ2v9KouLrg=\n\tdep\tgithub.com/modern-go/concurrent\tv0.0.0-20180306012644-bacd9c7ef1dd\th1:TRLaZ9cD/w8PVh93nsPXa1VrQ6jlwL5oN8l14QlcNfg=\n\tdep\tgithub.com/modern-go/reflect2\tv1.0.3-0.20250322232337-35a7c28c31ee\th1:W5t00kpgFdJifH4BDsTlE89Zl93FEloxaWZfGcifgq8=\n\tdep\tgithub.com/munnerz/goautoneg\tv0.0.0-20191010083416-a7dc8b61c822\th1:C3w9PqII01/Oq1c1nUAm88MOHcQC9l5mIlSMApZMrHA=\n\tdep\tgithub.com/pmezard/go-difflib\tv1.0.1-0.20181226105442-5d4384ee4fb2\th1:Jamvg5psRIccs7FGNTlIRMkT8wgtp5eCXdBlqhYGL6U=\n\tdep\tgithub.com/prometheus/client_golang\tv1.23.2\th1:Je96obch5RDVy3FDMndoUsjAhG5Edi49h0RJWRi/o0o=\n\tdep\tgithub.com/prometheus/client_model\tv0.6.2\th1:oBsgwpGs7iVziMvrGhE53c/GrLUsZdHnqNwqPLxwZyk=\n\tdep\tgithub.com/prometheus/common\tv0.67.5\th1:pIgK94WWlQt1WLwAC5j2ynLaBRDiinoAb86HZHTUGI4=\n\tdep\tgithub.com/prometheus/procfs\tv0.20.1\th1:XwbrGOIplXW/AU3YhIhLODXMJYyC1isLFfYCsTEycfc=\n\tdep\tgithub.com/robfig/cron/v3\tv3.0.1\th1:WdRxkvbJztn8LMz/QEvLN5sBU+xKpSqwwUO1Pjr4qDs=\n\tdep\tgithub.com/samber/lo\tv1.53.0\th1:t975lj2py4kJPQ6haz1QMgtId2gtmfktACxIXArw3HM=\n\tdep\tgithub.com/spf13/cobra\tv1.10.1\th1:lJeBwCfmrnXthfAupyUTzJ/J4Nc1RsHC/mSRU2dll/s=\n\tdep\tgithub.com/spf13/pflag\tv1.0.10\th1:4EBh2KAYBwaONj6b2Ye1GiHfwjqyROoF4RwYO+vPwFk=\n\tdep\tgithub.com/x448/float16\tv0.8.4\th1:qLwI1I70+NjRFUR3zs1JPUCgaCXSh3SW62uAKT1mSBM=\n\tdep\tgo.opentelemetry.io/auto/sdk\tv1.2.1\th1:jXsnJ4Lmnqd11kwkBV2LgLoFMZKizbCi5fNZ/ipaZ64=\n\tdep\tgo.opentelemetry.io/contrib/instrumentation/google.golang.org/grpc/otelgrpc\tv0.61.0\th1:q4XOmH/0opmeuJtPsbFNivyl7bCt7yRBbeEm2sC/XtQ=\n\tdep\tgo.opentelemetry.io/contrib/instrumentation/net/http/otelhttp\tv0.64.0\th1:ssfIgGNANqpVFCndZvcuyKbl0g+UAVcbBcqGkG28H0Y=\n\tdep\tgo.opentelemetry.io/otel\tv1.45.0\th1:pdrWmLHofpubmArBv1LgFSv1Z0Ie/ppdZzu+kUN5EeU=\n\tdep\tgo.opentelemetry.io/otel/exporters/otlp/otlptrace\tv1.45.0\th1:QRefszxJmfPdjXUUm3j6iDzY03mTPXMjqErFqQ67vUg=\n\tdep\tgo.opentelemetry.io/otel/exporters/otlp/otlptrace/otlptracegrpc\tv1.39.0\th1:in9O8ESIOlwJAEGTkkf34DesGRAc/Pn8qJ7k3r/42LM=\n\tdep\tgo.opentelemetry.io/otel/metric\tv1.45.0\th1:7Eg1uH7CJ5cXv9is6tnBe1FI6rj1nwUdbFypRm3br/M=\n\tdep\tgo.opentelemetry.io/otel/sdk\tv1.45.0\th1:4VVSMgQ83dUgW2aoX5f6JgLvHwIvzcuLnF9lUdCSpCw=\n\tdep\tgo.opentelemetry.io/otel/trace\tv1.45.0\th1:l/mP6Uv7oNO7/TblbhpbgMidxhq1uO/rPsikOyVhxag=\n\tdep\tgo.opentelemetry.io/proto/otlp\tv1.11.0\th1:5rrYs0Ykyj50sdU/JU0x8etU+LubXWb+gED6TbEdMIk=\n\tdep\tgo.uber.org/multierr\tv1.11.0\th1:blXXJkSxSSfBVBlC76pxqeO+LN3aDfLQo+309xJstO0=\n\tdep\tgo.uber.org/zap\tv1.27.1\th1:08RqriUEv8+ArZRYSTXy1LeBScaMpVSTBhCeaZYfMYc=\n\tdep\tgo.yaml.in/yaml/v2\tv2.4.3\th1:6gvOSjQoTB3vt1l+CU+tSyi/HOjfOjRLJ4YwYZGwRO0=\n\tdep\tgo.yaml.in/yaml/v3\tv3.0.4\th1:tfq32ie2Jv2UxXFdLJdh3jXuOzWiL1fo0bu/FbuKpbc=\n\tdep\tgolang.org/x/exp\tv0.0.0-20260410095643-746e56fc9e2f\th1:W3F4c+6OLc6H2lb//N1q4WpJkhzJCK5J6kUi1NTVXfM=\n\tdep\tgolang.org/x/net\tv0.58.0\th1:ynWG7rqYi4ccpTEuPZ2QGWHktVEM9DMCj9yzDE0Q7To=\n\tdep\tgolang.org/x/oauth2\tv0.36.0\th1:peZ/1z27fi9hUOFCAZaHyrpWG5lwe0RJEEEeH0ThlIs=\n\tdep\tgolang.org/x/sync\tv0.22.0\th1:SZjpbeLmrCk4xhRSZFNZW5gFUeCeFgjekvI/+gfScek=\n\tdep\tgolang.org/x/sys\tv0.47.0\th1:o7XGOvZQCADBQQ4Y7VNq2dRWQR7JmOUW8Kxx4ZsNgWs=\n\tdep\tgolang.org/x/term\tv0.45.0\th1:NwWyBmoJCbfTHpxrWoZ9C6/VxOf7ic219I8xZZFdrf0=\n\tdep\tgolang.org/x/text\tv0.41.0\th1:vz/seA0lnX87Othu2f/0L24RcgrXD9/YFTSuGjj3rH8=\n\tdep\tgolang.org/x/time\tv0.12.0\th1:ScB/8o8olJvc+CQPWrK3fPZNfh7qgwCrY0zJmoEQLSE=\n\tdep\tgomodules.xyz/jsonpatch/v2\tv2.5.0\th1:JELs8RLM12qJGXU4u/TO3V25KW8GreMKl9pdkk14RM0=\n\tdep\tgoogle.golang.org/genproto/googleapis/api\tv0.0.0-20260720211330-0afa2a65878a\th1:97PfJ4tCxY5C7NzzgGqQEMZmXbISdvSArNNEOoUGKBg=\n\tdep\tgoogle.golang.org/genproto/googleapis/rpc\tv0.0.0-20260720211330-0afa2a65878a\th1:qI/YMH1ep2qQtqcp00gMQyoU7mjvbhg88GJKCvfoLj0=\n\tdep\tgoogle.golang.org/grpc\tv1.83.2\th1:EManeRomTObA0BU7I8vXgg/78uE5MJ9M8B39EX2WscU=\n\tdep\tgoogle.golang.org/protobuf\tv1.36.11\th1:fV6ZwhNocDyBLK0dj+fg8ektcVegBBuEolpbTQyBNVE=\n\tdep\tgopkg.in/evanphx/json-patch.v4\tv4.13.0\th1:czT3CmqEaQ1aanPc5SdlgQrrEIb8w/wwCvWWnfEbYzo=\n\tdep\tgopkg.in/inf.v0\tv0.9.1\th1:73M5CoZyi3ZLMOyDlQh031Cx6N9NDJ2Vvfl76EDAgDc=\n\tdep\tk8s.io/api\tv0.36.2\n\t=>\tk8s.io/api\tv0.35.4\th1:P7nFYKl5vo9AGUp1Z+Pmd3p2tA7bX2wbFWCvDeRv988=\n\t\n\tdep\tk8s.io/apiextensions-apiserver\tv0.35.4\th1:HeP+Upp7ItdvnyGmub0yoix+2z5+ev4M5cE5TCgtOUU=\n\tdep\tk8s.io/apimachinery\tv0.36.2\n\t=>\tk8s.io/apimachinery\tv0.35.4\th1:xtdom9RG7e+yDp71uoXoJDWEE2eOiHgeO4GdBzwWpds=\n\t\n\tdep\tk8s.io/apiserver\tv0.35.4\th1:vtuFqNFmF9bPRdHDL2lpK6qCTPWDreZJL4LRPwVM6ho=\n\tdep\tk8s.io/autoscaler/vertical-pod-autoscaler\tv1.5.1\th1:LlVtM3IKqIVHz1ZXC3ahe/mAtDWb7Eob0tyTzqFULqg=\n\tdep\tk8s.io/cli-runtime\tv0.35.4\th1:8QRCXSDvopflFNM65Vkkdv42BljPdRSiqf6HFyI1iik=\n\tdep\tk8s.io/client-go\tv0.35.4\th1:DN6fyaGuzK64UvnKO5fOA6ymSjvfGAnCAHAR0C66kD8=\n\tdep\tk8s.io/cluster-bootstrap\tv0.35.4\th1:XAOSQ+4dvUPdksaVHp/C9rq0XlFmF3UHkx4KGgNgaU4=\n\tdep\tk8s.io/component-base\tv0.35.4\th1:6n1tNJ87johN0Hif0Fs8K2GMthsaUwMqCebUDLYyv7U=\n\tdep\tk8s.io/component-helpers\tv0.35.4\th1:WJM/+fAeeJTAqxPDxgH0aB0q7t8DP+AbV5WkRkOoxYA=\n\tdep\tk8s.io/controller-manager\tv0.35.4\th1:hkd4rVb39Xmb/zCElz4fDc/xUgVHXZcrZpa+Wy09qVc=\n\tdep\tk8s.io/cri-api\tv0.35.4\th1:9/3Wj18YldMLADyiPoZGrdFHZ7miA8LVO2cjjWENPlk=\n\tdep\tk8s.io/cri-client\tv0.35.4\th1:9tJjRUpnmifbLthjlaoNZtXyjpmiypreBFXrqizQN1Q=\n\tdep\tk8s.io/csi-translation-lib\tv0.35.4\th1:r9p+eDGywrUxoWoC6dPdCOZpGe9XEivCNKksrgVW/ZE=\n\tdep\tk8s.io/dynamic-resource-allocation\tv0.35.4\th1:uUFnNPZ+uo/99jWZ+3xhr10BtZZM00n0WcPgBxk8KvM=\n\tdep\tk8s.io/endpointslice\tv0.35.4\th1:UnhPGZw3rVVYegcBDvtCthcza5jx7L6FdyRSxFjsel4=\n\tdep\tk8s.io/externaljwt\tv0.35.4\th1:kNXwktgQV8WQ2qqBMwhIKOJ9yGIs06aboYX3h2k45ig=\n\tdep\tk8s.io/klog/v2\tv2.140.0\th1:Tf+J3AH7xnUzZyVVXhTgGhEKnFqye14aadWv7bzXdzc=\n\tdep\tk8s.io/kube-aggregator\tv0.35.4\th1:6eR50WHwqSYJQTR6QxEG5fRW2vBA6Yoqzp72hw76koE=\n\tdep\tk8s.io/kube-controller-manager\tv0.35.4\th1:6ueSSNn0mRdqGtshMwIs1mqENLDeoxhUV/nDzKPylCo=\n\tdep\tk8s.io/kube-openapi\tv0.0.0-20260317180543-43fb72c5454a\th1:xCeOEAOoGYl2jnJoHkC3hkbPJgdATINPMAxaynU2Ovg=\n\tdep\tk8s.io/kube-proxy\tv0.35.4\th1:cUEpTlPSyD/pWpfP9+Gmjm17LngkYCtIVO625f1bt8c=\n\tdep\tk8s.io/kube-scheduler\tv0.35.4\th1:sM+xoIfF/meMxD26NxfojQsfgWUReJdPxZALaLOUxAU=\n\tdep\tk8s.io/kubectl\tv0.35.4\th1:IHitney6OUeH29rBQnt6Cas6az8HpFeSAohormITNMc=\n\tdep\tk8s.io/kubernetes\tv1.35.4\th1:o/8dBC/pHVpYoGV4OAIytAlNPZbdYVTXJHoYvXC4qzM=\n\tdep\tk8s.io/metrics\tv0.35.4\th1:KFo3xFe5rzLDarHLNjZB0J1g1c5fvl6A5Kk/8KzIwOA=\n\tdep\tk8s.io/mount-utils\tv0.35.4\th1:CRlXPCzdoFZ0sR+W42nX9NH67aV+YxMhp5yyu4feEY8=\n\tdep\tk8s.io/pod-security-admission\tv0.35.4\th1:2IK2zlpjCPCgtJwtGGIxP9rIj4mwUp5nQ2EKPn940E4=\n\tdep\tk8s.io/sample-apiserver\tv0.35.4\th1:opq5VGHTZRd+yaF3sMZgEeLZ6SrXvVXlZjOzHXQnYzg=\n\tdep\tk8s.io/utils\tv0.0.0-20260319190234-28399d86e0b5\th1:kBawHLSnx/mYHmRnNUf9d4CpjREbeZuxoSGOX/J+aYM=\n\tdep\tsigs.k8s.io/controller-runtime\tv0.23.3\th1:VjB/vhoPoA9l1kEKZHBMnQF33tdCLQKJtydy4iqwZ80=\n\tdep\tsigs.k8s.io/json\tv0.0.0-20250730193827-2d320260d730\th1:IpInykpT6ceI+QxKBbEflcR5EXP7sU1kvOlxwZh5txg=\n\tdep\tsigs.k8s.io/karpenter\tv1.2.0\th1:y1zyFGzDLiT5OHpG8Jvj4JKKe/iXmJDYeejs8k8OznM=\n\tdep\tsigs.k8s.io/randfill\tv1.0.0\th1:JfjMILfT8A6RbawdsK2JXGBR5AQVfd+9TbzrlneTyrU=\n\tdep\tsigs.k8s.io/structured-merge-diff/v6\tv6.3.2\th1:kwVWMx5yS1CrnFWA/2QHyRVJ8jM6dBA80uLmm0wJkk8=\n\tdep\tsigs.k8s.io/yaml\tv1.6.0\th1:G8fkbMSAFqgEFgh4b1wmtzDnioxFCUgTZhlbj5P9QYs=\n\tbuild\t-buildmode=exe\n\tbuild\t-compiler=gc\n\tbuild\t-trimpath=true\n\tbuild\tCGO_ENABLED=0\n\tbuild\tGOARCH=amd64\n\tbuild\tGOOS=linux\n\tbuild\tGOAMD64=v1\n",
   "go_parallelism": 2,
   "go_version": "go1.26.8",
   "live_operations": false,
-  "manifest_sha256": "b081cd82fab6ed018c6f0fea7addd6c105bca2115e47ecd9f191b50fed8e7bee",
+  "manifest_sha256": "f61fb3d01dd6fd4bacd54a1de129d1a60980198452922245983238c9a4635c8e",
   "original_dirty_prototype_unchanged": true,
   "package_import_commit": "1060fd1",
-  "patch_sha256": "9f6511d36d2cc1f910ab940ccb1186ac5936dec2e061e447740113965e9b220b",
-  "private_log_sha256": "512ac1d3823ef6e928848100f4792794981690ba56d94e0c88d45f7d4c0b2094",
-  "private_receipt_sha256": "8555ae9c532e3e32de0bd5d1b8e06f3b7a4c71e8ce07293783d8ee0361b0d88f",
+  "patch_sha256": "f79250086dfab6e2600c07941b42d151c67307388f6803b38b489846764a879b",
+  "private_log_sha256": "a622f2d255c519d63d2a1f3b7c6c390c1351a531dc4138919fed9dc70076d995",
+  "private_receipt_sha256": "ed1be27a7ec469dae4d5c8e38d67baa3f0d7d5d693a9c517b7327d7ac6ee2e52",
   "production_qualified": false,
   "published": false,
   "rebuild_identical": true,
-  "recipe_sha256": "faf8d5da34295065912578272cafefa9905bd19a80695ebf72d82591bf54f122",
-  "recipe_tests_command": "python -B -m pytest -q -p no:cacheprovider platform-staging/scheduler/native-kai-binder/test_recipe.py",
-  "recipe_tests_passed": 14,
+  "recipe_sha256": "cb51c1533244be8ae12a5bcf7a891136860648c06c1299030ea72c6f7f1b0d83",
+  "recipe_tests_command": "python -m pytest -q test_recipe.py test_oci.py test_operator_handover.py",
+  "recipe_tests_passed": 46,
   "security_scope": "Unchanged reviewed terminal guard; CPU packaging only. No current-group live or production qualification.",
   "source_checkout_preserved_clean": true,
+  "source_files": [
+    {
+      "original_sha256": null,
+      "patched_bytes": 103,
+      "patched_sha256": "c1e478400fedc9c9323f7db14ced789acf76b47d3f8f86ecf64e32fab485010f",
+      "path": ".changes/unreleased/fixed-20261020-141235.yaml"
+    },
+    {
+      "original_sha256": "244134aba5633f2fd2aeebcf27a89e9b480b65ae4b0965098454dcf62ed6b891",
+      "patched_bytes": 8114,
+      "patched_sha256": "da754fa6ee7436e5cd12840f6c608abcefce6e04603b119afedd3b10b3da1263",
+      "path": "cmd/binder/app/app.go"
+    },
+    {
+      "original_sha256": null,
+      "patched_bytes": 1003,
+      "patched_sha256": "ba6ce8061b26a8fa91ce39c8a9a759948ea7f2d7dbf1fa7a4ecea512d8d49365",
+      "path": "cmd/binder/app/native_options_test.go"
+    },
+    {
+      "original_sha256": "743b4b36cb98913e480c12acab960f96efd8fcd105fb4102a2c52742125167b8",
+      "patched_bytes": 5960,
+      "patched_sha256": "574845593a36a743721006c0454adb6f13d7687f799b7c7357d654c6709b96a6",
+      "path": "cmd/binder/app/options.go"
+    },
+    {
+      "original_sha256": "f7828478d782299e1636182d593ccced4e79f0dd03bc06b5d1e7d6b50e884a4b",
+      "patched_bytes": 6365,
+      "patched_sha256": "cde894d36c0b655142e1ecb9134b70d640791ddb025d81624351f18d16cd452b",
+      "path": "pkg/binder/binding/binder.go"
+    },
+    {
+      "original_sha256": null,
+      "patched_bytes": 5526,
+      "patched_sha256": "cc5469a6b6bdef7a3daf508a925f77d1ed3769791b87021b777004531f10f829",
+      "path": "pkg/binder/binding/native_binding_http_test.go"
+    },
+    {
+      "original_sha256": null,
+      "patched_bytes": 23143,
+      "patched_sha256": "e61b58fdd333465e803d5b8a0cd8ec32002898f056842ea7f926ebc4f86e68a2",
+      "path": "pkg/binder/binding/native_terminal.go"
+    },
+    {
+      "original_sha256": null,
+      "patched_bytes": 39058,
+      "patched_sha256": "ebdb4e308ac1b7d0630160ace512c85f6260032bce94d8d2497e2a957fd13ff2",
+      "path": "pkg/binder/binding/native_terminal_test.go"
+    },
+    {
+      "original_sha256": null,
+      "patched_bytes": 12133,
+      "patched_sha256": "1067703cd824eb798ea3ca7e143a07bfb16350e91d3c3f4651e968b9fecae490",
+      "path": "pkg/binder/binding/native_transport.go"
+    },
+    {
+      "original_sha256": null,
+      "patched_bytes": 15274,
+      "patched_sha256": "44863bd6c02db2e093e948a6d6f9e76a84bdefc18f46c64bca569bb085ef00d8",
+      "path": "pkg/binder/binding/native_transport_test.go"
+    },
+    {
+      "original_sha256": null,
+      "patched_bytes": 3107,
+      "patched_sha256": "b46fa21e46499e3324e5cb1586f3324ebd08f57e6da1777e136ae9b64bb7117a",
+      "path": "pkg/binder/binding/resourcereservation/native_custody_test.go"
+    },
+    {
+      "original_sha256": "b66b864330fc271a309db0dc3ac59ae81505356db372c2aa7d64eabf55d5a4e7",
+      "patched_bytes": 23782,
+      "patched_sha256": "76a8645493ef508edf7cac01a89cecc16c2c52a9ad7a23b61768f9fc9844be9a",
+      "path": "pkg/binder/binding/resourcereservation/resource_reservation.go"
+    },
+    {
+      "original_sha256": "5cd40ad9aee6ee762322a385a7e3f4502fce1698d9168ba89e2a3aa7d20099d6",
+      "patched_bytes": 13698,
+      "patched_sha256": "b67f97611042abd5967bb878a7df334097a6e1e07be845a7bd52f1ef52dbaf99",
+      "path": "pkg/binder/controllers/bindrequest_controller.go"
+    },
+    {
+      "original_sha256": null,
+      "patched_bytes": 9684,
+      "patched_sha256": "efd580168032f48545182293dfa070f366adfaea5c73efe603fb8a16383a0284",
+      "path": "pkg/binder/controllers/native_custody_test.go"
+    },
+    {
+      "original_sha256": "337b84c939a36060990fb9b70c1e5223133444a5bc56da55575ab827a787f60f",
+      "patched_bytes": 3037,
+      "patched_sha256": "457f5e03c907c3b8d79330430b240ed20f7f3dcc81fbd0ca5e8532c2afd9b50e",
+      "path": "pkg/binder/plugins/hamicore/hami_core.go"
+    },
+    {
+      "original_sha256": "30c9e5f5eb9a27270da4f2712d1fbe7aef7815c5e886221d34b0daaca3690669",
+      "patched_bytes": 1446,
+      "patched_sha256": "b215580e20a681470350439c23105653c6f10607943489d30c45b144b79ba38c",
+      "path": "pkg/binder/plugins/hamicore/hami_core_test.go"
+    },
+    {
+      "original_sha256": "5169dfaa7ff120b22ec81ee21b7cb459ea922a59401d1b3494ef0622663e2853",
+      "patched_bytes": 379,
+      "patched_sha256": "bc2449c85ad03a01ae89c85d1f543c46c1d7b1df4c497f6a36aff4c40ad2c936",
+      "path": "pkg/binder/plugins/state/state.go"
+    }
+  ],
   "static_elf": {
     "PT_INTERP": false,
     "format": "ELF64-LSB-AMD64",
@@ -41,5 +141,6 @@
   },
   "toolchain_sha256": "d0f743b33e8d8945e6b1f432edd15785c70507121d6e2a723b21285eddf8b57b",
   "upstream_commit": "bdf434e5e9201cccf4e05fad04d814363653f692",
-  "verification_date": "2026-10-17"
+  "verification_date": "2026-10-20T12:16:28.704883+00:00",
+  "wire_handoff_fix": "real controller-runtime HTTP JSON request and response-copy regression; live GPU qualification pending"
 }

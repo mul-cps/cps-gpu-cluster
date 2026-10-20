@@ -1,6 +1,6 @@
-/home/bjoern/.local/state/cps-full-project-20261013/kai-terminal-binder-plan-20261014/replay-never-enrolled-final/binder: go1.26.8
+/home/bjoern/.local/state/cps-full-project-20261013/binder-json-canonical-build-20261020/binder: go1.26.8
 	path	github.com/kai-scheduler/KAI-scheduler/cmd/binder
-	mod	github.com/kai-scheduler/KAI-scheduler	v0.0.0-20260928154206-bdf434e5e920+dirty
+	mod	github.com/kai-scheduler/KAI-scheduler	(devel)
 	dep	cel.dev/expr	v0.25.2	h1:K6j46C81hXtZQfuX60cVWQFBJahKSE2gfRbNuvr5bFs=
 	dep	github.com/antlr4-go/antlr/v4	v4.13.1	h1:SqQKkuVZ+zWkMMNkjy5FZe5mr5WURWnlpmOuzYWrPrQ=
 	dep	github.com/awslabs/operatorpkg	v0.0.0-20241205163410-0fff9f28d115	h1:9nhjY3dzCpEmhpQ0vMlhB7wqucAiftLjAIEQu8uT2J4=
@@ -124,15 +124,8 @@
 	dep	sigs.k8s.io/yaml	v1.6.0	h1:G8fkbMSAFqgEFgh4b1wmtzDnioxFCUgTZhlbj5P9QYs=
 	build	-buildmode=exe
 	build	-compiler=gc
-	build	CGO_ENABLED=1
-	build	CGO_CFLAGS=
-	build	CGO_CPPFLAGS=
-	build	CGO_CXXFLAGS=
-	build	CGO_LDFLAGS=
+	build	-trimpath=true
+	build	CGO_ENABLED=0
 	build	GOARCH=amd64
 	build	GOOS=linux
 	build	GOAMD64=v1
-	build	vcs=git
-	build	vcs.revision=bdf434e5e9201cccf4e05fad04d814363653f692
-	build	vcs.time=2026-09-28T15:42:06Z
-	build	vcs.modified=true

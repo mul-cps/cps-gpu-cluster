@@ -1,3 +1,12 @@
+diff --git a/.changes/unreleased/fixed-20261020-141235.yaml b/.changes/unreleased/fixed-20261020-141235.yaml
+new file mode 100644
+index 0000000..284893d
+--- /dev/null
++++ b/.changes/unreleased/fixed-20261020-141235.yaml
+@@ -0,0 +1,3 @@
++kind: Fixed
++body: |-
++  Encode native Binding requests as JSON while preserving fenced request identity
 diff --git a/cmd/binder/app/app.go b/cmd/binder/app/app.go
 index a95db6c..c6e4488 100644
 --- a/cmd/binder/app/app.go
@@ -156,12 +165,167 @@ index fbc73c8..530a499 100644
  	logger := log.FromContext(ctx)
  
  	logger.Info("Rolling back for failed bind attempt...",
+diff --git a/pkg/binder/binding/native_binding_http_test.go b/pkg/binder/binding/native_binding_http_test.go
+new file mode 100644
+index 0000000..d283496
+--- /dev/null
++++ b/pkg/binder/binding/native_binding_http_test.go
+@@ -0,0 +1,149 @@
++// SPDX-License-Identifier: Apache-2.0
++package binding
++
++import (
++	"context"
++	"encoding/json"
++	"errors"
++	"io"
++	"net/http"
++	"net/http/httptest"
++	"reflect"
++	"strings"
++	"testing"
++
++	"github.com/kai-scheduler/KAI-scheduler/pkg/binder/plugins"
++	v1 "k8s.io/api/core/v1"
++	"k8s.io/apimachinery/pkg/api/meta"
++	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
++	"k8s.io/apimachinery/pkg/apis/meta/v1/unstructured"
++	"k8s.io/apimachinery/pkg/runtime"
++	"k8s.io/apimachinery/pkg/runtime/schema"
++	"k8s.io/client-go/rest"
++	"sigs.k8s.io/controller-runtime/pkg/client"
++)
++
++type nativeHTTPTestCoordinator struct {
++	*nativeTestCoordinator
++	accepted *unstructured.Unstructured
++}
++
++func (c *nativeHTTPTestCoordinator) Prepare(ctx context.Context, s NativeTerminalSnapshot) (NativeAllocationFence, error) {
++	f, err := c.nativeTestCoordinator.Prepare(ctx, s)
++	return &nativeHTTPTestFence{NativeAllocationFence: f, owner: c}, err
++}
++
++type nativeHTTPTestFence struct {
++	NativeAllocationFence
++	owner *nativeHTTPTestCoordinator
++}
++
++func (f *nativeHTTPTestFence) BindingAccepted(ctx context.Context, binding *unstructured.Unstructured) error {
++	f.owner.accepted = binding.DeepCopy()
++	return f.NativeAllocationFence.BindingAccepted(ctx, binding)
++}
++
++func TestNativeBindingRealHTTPTransport(t *testing.T) {
++	for _, outcome := range []string{"success", "forbidden", "lost-response"} {
++		t.Run(outcome, func(t *testing.T) {
++			pod, node, br := nativeTestInputs()
++			for k, v := range nativeTestState().BindingPodAnnotations {
++				pod.Annotations[k] = v
++			}
++			ack := nativeTestACK(pod)
++			coord := &nativeHTTPTestCoordinator{nativeTestCoordinator: &nativeTestCoordinator{ack: ack}}
++			expected := map[string]interface{}{
++				"apiVersion": "v1", "kind": "Binding",
++				"metadata": map[string]interface{}{"namespace": pod.Namespace, "name": pod.Name, "uid": string(pod.UID), "resourceVersion": pod.ResourceVersion},
++				"target":   map[string]interface{}{"kind": "Node", "name": node.Name, "uid": string(node.UID)},
++			}
++			calls := 0
++			var received map[string]interface{}
++			server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
++				calls++
++				coord.calls = append(coord.calls, "binding")
++				if r.Method != "POST" || r.URL.Path != "/api/v1/namespaces/cps/pods/notebook/binding" {
++					t.Errorf("unexpected request %s %s", r.Method, r.URL.Path)
++					w.WriteHeader(404)
++					return
++				}
++				if !strings.HasPrefix(r.Header.Get("Content-Type"), "application/json") {
++					t.Errorf("Binding must use JSON, got %q", r.Header.Get("Content-Type"))
++				}
++				raw, err := io.ReadAll(r.Body)
++				if err != nil {
++					t.Error(err)
++					return
++				}
++				if err = json.Unmarshal(raw, &received); err != nil {
++					t.Error(err)
++					return
++				}
++				if !reflect.DeepEqual(received, expected) {
++					t.Errorf("Binding wire contract changed: %s", raw)
++				}
++				if outcome == "lost-response" {
++					conn, _, err := w.(http.Hijacker).Hijack()
++					if err != nil {
++						t.Error(err)
++						return
++					}
++					_ = conn.Close()
++					return
++				}
++				w.Header().Set("Content-Type", "application/json")
++				if outcome == "forbidden" {
++					w.WriteHeader(http.StatusForbidden)
++					_ = json.NewEncoder(w).Encode(&metav1.Status{TypeMeta: metav1.TypeMeta{APIVersion: "v1", Kind: "Status"}, Status: "Failure", Reason: metav1.StatusReasonForbidden, Code: 403})
++					return
++				}
++				w.WriteHeader(http.StatusCreated)
++				_ = json.NewEncoder(w).Encode(&metav1.Status{TypeMeta: metav1.TypeMeta{APIVersion: "v1", Kind: "Status"}, Status: "Success", Code: 201})
++			}))
++			defer server.Close()
++			scheme := runtime.NewScheme()
++			if err := v1.AddToScheme(scheme); err != nil {
++				t.Fatal(err)
++			}
++			mapper := meta.NewDefaultRESTMapper([]schema.GroupVersion{v1.SchemeGroupVersion})
++			mapper.Add(v1.SchemeGroupVersion.WithKind("Pod"), meta.RESTScopeNamespace)
++			kube, err := client.New(&rest.Config{Host: server.URL}, client.Options{Scheme: scheme, Mapper: mapper})
++			if err != nil {
++				t.Fatal(err)
++			}
++			reader := nativeTestClient(t, pod, node, br, func(*v1.Binding) error { t.Fatal("fake Binding must not execute"); return nil }, ack)
++			original := pod.DeepCopy()
++			reservation := &nativeTestReservation{}
++			binder := NewBinder(kube, reservation, plugins.New())
++			binder.SetNativeTerminal(reader, "authority", coord)
++			err = binder.bindNativeTerminal(context.Background(), pod, node, br, nativeTestState())
++			if calls != 1 {
++				t.Fatalf("Binding must be attempted exactly once, requests=%d error=%v", calls, err)
++			}
++			if !reflect.DeepEqual(pod, original) {
++				t.Fatal("authenticated original typed Pod changed")
++			}
++			if outcome == "success" {
++				if err != nil {
++					t.Fatal(err)
++				}
++				if coord.accepted == nil || !reflect.DeepEqual(coord.accepted.Object, expected) {
++					t.Fatal("Binding acceptance must use the original approved request, not API Status response")
++				}
++				if !reflect.DeepEqual(coord.calls, []string{"prepare", "validate", "validate-binding", "binding", "bound", "close"}) {
++					t.Fatalf("terminal order changed: %v", coord.calls)
++				}
++			} else {
++				if !errors.Is(err, ErrNativeCustodyHeld) {
++					t.Fatalf("API failure must hold custody: %v", err)
++				}
++				if coord.accepted != nil || !reflect.DeepEqual(coord.calls, []string{"prepare", "validate", "validate-binding", "binding", "hold", "close"}) {
++					t.Fatalf("ambiguous/failed Binding must not be accepted or retried: %v", coord.calls)
++				}
++				if reservation.removed != 0 {
++					t.Fatal("failed Binding released reservation")
++				}
++			}
++		})
++	}
++}
 diff --git a/pkg/binder/binding/native_terminal.go b/pkg/binder/binding/native_terminal.go
 new file mode 100644
-index 0000000..3ae53e0
+index 0000000..023f490
 --- /dev/null
 +++ b/pkg/binder/binding/native_terminal.go
-@@ -0,0 +1,473 @@
+@@ -0,0 +1,482 @@
 +// SPDX-License-Identifier: Apache-2.0
 +
 +package binding
@@ -375,7 +539,16 @@ index 0000000..3ae53e0
 +	if err = ctx.Err(); err != nil {
 +		return err
 +	}
-+	if err = b.kubeClient.SubResource("binding").Create(ctx, snapshot.Pod, binding); err != nil {
++	// A typed Pod parent selects the protobuf serializer, which cannot encode
++	// the reviewed unstructured Binding body. Select JSON via the same actual
++	// Pod resource identity, and keep the approved request separate from the
++	// API's Status response decoded into the subresource argument.
++	bindingPod := &unstructured.Unstructured{Object: map[string]interface{}{
++		"apiVersion": "v1", "kind": "Pod",
++		"metadata": map[string]interface{}{"namespace": snapshot.Pod.Namespace, "name": snapshot.Pod.Name,
++			"uid": string(snapshot.Pod.UID), "resourceVersion": snapshot.Pod.ResourceVersion},
++	}}
++	if err = b.kubeClient.SubResource("binding").Create(ctx, bindingPod, binding.DeepCopy()); err != nil {
 +		return err
 +	}
 +	// An ambiguous Bound publication still holds custody; never rollback maps
