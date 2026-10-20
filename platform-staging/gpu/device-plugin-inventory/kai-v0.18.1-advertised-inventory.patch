@@ -1,0 +1,126 @@
+diff --git a/pkg/scheduler/api/node_info/node_info.go b/pkg/scheduler/api/node_info/node_info.go
+index 8fad1ab..808c937 100644
+--- a/pkg/scheduler/api/node_info/node_info.go
++++ b/pkg/scheduler/api/node_info/node_info.go
+@@ -680,6 +680,10 @@ func (ni *NodeInfo) GetNumberOfGPUsInNode() int64 {
+ 		})
+ 		return int64(ni.AllocatableVector.Get(resource_info.GPUIndex))
+ 	}
++	// Plain device-plugin inventory can be narrower than GFD; MIG and DRA retain their existing accounting.
++	if advertised, found := ni.Node.Status.Allocatable[resource_info.GPUResourceName]; found && !ni.HasDRAGPUs && !ni.IsMIGEnabled() {
++		return min(int64(numberOfGPUs), advertised.Value())
++	}
+ 	return int64(numberOfGPUs)
+ }
+ 
+diff --git a/pkg/scheduler/api/node_info/advertised_gpu_count_test.go b/pkg/scheduler/api/node_info/advertised_gpu_count_test.go
+new file mode 100644
+index 0000000..bc2ef1a
+--- /dev/null
++++ b/pkg/scheduler/api/node_info/advertised_gpu_count_test.go
+@@ -0,0 +1,105 @@
++// Copyright 2026 NVIDIA CORPORATION
++// SPDX-License-Identifier: Apache-2.0
++
++package node_info
++
++import (
++	"testing"
++
++	"github.com/stretchr/testify/assert"
++	"go.uber.org/mock/gomock"
++	v1 "k8s.io/api/core/v1"
++	"k8s.io/apimachinery/pkg/api/resource"
++
++	commonconstants "github.com/kai-scheduler/KAI-scheduler/pkg/common/constants"
++	"github.com/kai-scheduler/KAI-scheduler/pkg/scheduler/api/common_info"
++	"github.com/kai-scheduler/KAI-scheduler/pkg/scheduler/api/pod_affinity"
++	"github.com/kai-scheduler/KAI-scheduler/pkg/scheduler/api/resource_info"
++)
++
++func TestAdvertisedGPUCountFractionalAccounting(t *testing.T) {
++	for _, releasing := range []bool{false, true} {
++		name := "running"
++		if releasing {
++			name = "releasing"
++		}
++		t.Run(name, func(t *testing.T) {
++			node := common_info.BuildNode("node1", common_info.BuildResourceListWithGPUAndPods("8000m", "16G", "1", "110"))
++			node.Labels[GpuCountLabel] = "2"
++			node.Labels[GpuMemoryLabel] = "40960"
++			// Capacity may still include an unhealthy or no-longer-advertised device.
++			node.Status.Capacity = common_info.BuildResourceListWithGPUAndPods("8000m", "16G", "2", "110")
++			affinity := pod_affinity.NewMockNodePodAffinityInfo(gomock.NewController(t))
++			affinity.EXPECT().AddPod(gomock.Any()).Times(1)
++			affinity.EXPECT().RemovePod(gomock.Any()).Times(1)
++			ni := NewNodeInfo(node, affinity, testVectorMapFromNode(node))
++			fraction := createPod("team-a", "half-gpu", podCreationOptions{GPUs: 0.5, gpuGroup: "group1", releasing: releasing})
++
++			assert.NoError(t, ni.AddTask(fraction))
++			assert.Equal(t, int64(1), ni.GetNumberOfGPUsInNode())
++			assert.Equal(t, 0.0, ni.IdleVector.Get(resource_info.GPUIndex), "the half-used device cannot also be a free whole GPU")
++			idle, memory := ni.GetSumOfIdleGPUs()
++			assert.Equal(t, 0.5, idle)
++			assert.Equal(t, int64(20480), memory)
++			assert.False(t, ni.IsTaskAllocatable(createPod("team-a", "whole-gpu", podCreationOptions{GPUs: 1})))
++			assert.Equal(t, !releasing, ni.IsTaskAllocatable(createPod("team-a", "other-half", podCreationOptions{GPUs: 0.5, gpuGroup: "group1"})), "fully releasing groups remain unavailable for immediate allocation")
++			assert.False(t, ni.IsTaskAllocatable(createPod("team-a", "too-large", podCreationOptions{GPUs: 0.75, gpuGroup: "group1"})))
++
++			assert.NoError(t, ni.RemoveTask(fraction))
++			idle, memory = ni.GetSumOfIdleGPUs()
++			assert.Equal(t, 1.0, idle, "removing the last fraction restores exactly the advertised device")
++			assert.Equal(t, int64(40960), memory)
++			assert.Equal(t, 0.0, ni.ReleasingVector.Get(resource_info.GPUIndex))
++		})
++	}
++}
++
++func TestAdvertisedGPUCountZeroRejectsFraction(t *testing.T) {
++	node := common_info.BuildNode("node1", common_info.BuildResourceListWithGPUAndPods("8000m", "16G", "0", "110"))
++	node.Labels[GpuCountLabel] = "2"
++	node.Labels[GpuMemoryLabel] = "40960"
++	ni := NewNodeInfo(node, nil, testVectorMapFromNode(node))
++	assert.Equal(t, int64(0), ni.GetNumberOfGPUsInNode())
++	assert.False(t, ni.IsTaskAllocatable(createPod("team-a", "half-gpu", podCreationOptions{GPUs: 0.5})))
++}
++
++func TestAdvertisedGPUCountPreservesOtherInventoryModes(t *testing.T) {
++	for _, tt := range []struct {
++		name        string
++		label       string
++		allocatable v1.ResourceList
++		dra         float64
++		want        int64
++		migStrategy string
++	}{
++		{"plain NVIDIA", "2", common_info.BuildResourceListWithGPU("8000m", "16G", "2"), 0, 2, ""},
++		{"physical label is lower", "1", common_info.BuildResourceListWithGPU("8000m", "16G", "2"), 0, 1, ""},
++		{"missing label", "", common_info.BuildResourceListWithGPU("8000m", "16G", "1"), 0, 1, ""},
++		{"invalid label", "invalid", common_info.BuildResourceListWithGPU("8000m", "16G", "1"), 0, 1, ""},
++		{"MIG only", "2", v1.ResourceList{"nvidia.com/mig-1g.5gb": resource.MustParse("8")}, 0, 2, ""},
++		{"MIG single standard resource", "2", common_info.BuildResourceListWithGPU("8000m", "16G", "1"), 0, 2, "single"},
++		{"MIG mixed zero standard resource", "2", v1.ResourceList{resource_info.GPUResourceName: resource.MustParse("0"), "nvidia.com/mig-1g.5gb": resource.MustParse("8")}, 0, 2, "mixed"},
++		{"foreign GPU", "", v1.ResourceList{"amd.com/gpu": resource.MustParse("2")}, 0, 2, ""},
++		{"DRA with label", "2", common_info.BuildResourceList("8000m", "16G"), 2, 2, ""},
++		{"DRA without label", "", common_info.BuildResourceList("8000m", "16G"), 2, 2, ""},
++		{"DRA with zero standard resource", "2", common_info.BuildResourceListWithGPU("8000m", "16G", "0"), 2, 2, ""},
++		{"DRA with standard resource", "2", common_info.BuildResourceListWithGPU("8000m", "16G", "1"), 2, 2, ""},
++	} {
++		t.Run(tt.name, func(t *testing.T) {
++			node := common_info.BuildNode("node1", tt.allocatable)
++			if tt.label != "" {
++				node.Labels[GpuCountLabel] = tt.label
++			}
++			if tt.migStrategy != "" {
++				node.Labels[migEnabledLabelKey] = "true"
++				node.Labels[commonconstants.MigStrategyLabel] = tt.migStrategy
++			}
++			ni := NewNodeInfo(node, nil, testVectorMapFromNode(node))
++			if tt.dra > 0 {
++				ni.AddDRAGPUs(tt.dra)
++				ni.HasDRAGPUs = true
++			}
++			assert.Equal(t, tt.want, ni.GetNumberOfGPUsInNode())
++		})
++	}
++}

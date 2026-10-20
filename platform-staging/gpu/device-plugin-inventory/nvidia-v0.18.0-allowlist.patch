@@ -1,0 +1,525 @@
+diff --git a/api/config/v1/flags.go b/api/config/v1/flags.go
+index 4576028..fd00706 100644
+--- a/api/config/v1/flags.go
++++ b/api/config/v1/flags.go
+@@ -19,6 +19,7 @@ package v1
+ import (
+ 	"encoding/json"
+ 	"fmt"
++	"strings"
+ 
+ 	cli "github.com/urfave/cli/v2"
+ )
+@@ -71,6 +72,8 @@ type CommandLineFlags struct {
+ 
+ // PluginCommandLineFlags holds the list of command line flags specific to the device plugin.
+ type PluginCommandLineFlags struct {
++	// AllowedGPUUUIDs optionally restricts plain NVML inventory. Configuration file only.
++	AllowedGPUUUIDs     *[]string               `json:"allowedGPUUUIDs,omitempty" yaml:"allowedGPUUUIDs,omitempty"`
+ 	PassDeviceSpecs     *bool                   `json:"passDeviceSpecs"     yaml:"passDeviceSpecs"`
+ 	DeviceListStrategy  *deviceListStrategyFlag `json:"deviceListStrategy"  yaml:"deviceListStrategy"`
+ 	DeviceIDStrategy    *string                 `json:"deviceIDStrategy"    yaml:"deviceIDStrategy"`
+@@ -175,3 +178,33 @@ func (f *Flags) UpdateFromCLIFlags(c *cli.Context, flags []cli.Flag) {
+ 		}
+ 	}
+ }
++
++// UnmarshalJSON distinguishes an omitted allowlist from an explicitly invalid null.
++// YAML configuration is decoded through JSON by the shared config parser.
++func (f *PluginCommandLineFlags) UnmarshalJSON(data []byte) error {
++	type plain PluginCommandLineFlags
++	var fields map[string]json.RawMessage
++	if err := json.Unmarshal(data, &fields); err != nil {
++		return err
++	}
++	for key := range fields {
++		if key != "allowedGPUUUIDs" && strings.EqualFold(key, "allowedGPUUUIDs") {
++			return fmt.Errorf("allowlist key must be spelled allowedGPUUUIDs")
++		}
++	}
++	if raw, present := fields["allowedGPUUUIDs"]; present {
++		var ids []interface{}
++		if err := json.Unmarshal(raw, &ids); err != nil {
++			return fmt.Errorf("allowedGPUUUIDs must be a list of strings: %w", err)
++		}
++		if ids == nil {
++			return fmt.Errorf("allowedGPUUUIDs must not be null")
++		}
++		for _, id := range ids {
++			if _, ok := id.(string); !ok {
++				return fmt.Errorf("allowedGPUUUIDs must contain only strings")
++			}
++		}
++	}
++	return json.Unmarshal(data, (*plain)(f))
++}
+diff --git a/internal/plugin/factory.go b/internal/plugin/factory.go
+index 89b2b7b..1eb1be5 100644
+--- a/internal/plugin/factory.go
++++ b/internal/plugin/factory.go
+@@ -86,6 +86,9 @@ func New(ctx context.Context, infolib info.Interface, nvmllib nvml.Interface, de
+ // Each resource manager maps to a specific named extended resource and may
+ // include full GPUs or MIG devices.
+ func (o *options) getResourceManagers() ([]rm.ResourceManager, error) {
++	if err := rm.ValidateAllowedGPUUUIDs(o.infolib, o.config); err != nil {
++		return nil, err
++	}
+ 	strategy := o.resolveStrategy(*o.config.Flags.DeviceDiscoveryStrategy)
+ 	switch strategy {
+ 	case "nvml":
+@@ -96,7 +99,7 @@ func (o *options) getResourceManagers() ([]rm.ResourceManager, error) {
+ 			klog.Errorf("You can check the prerequisites at: https://github.com/NVIDIA/k8s-device-plugin#prerequisites")
+ 			klog.Errorf("You can learn how to set the runtime at: https://github.com/NVIDIA/k8s-device-plugin#quick-start")
+ 			klog.Errorf("If this is not a GPU node, you should set up a toleration or nodeSelector to only deploy this plugin on GPU nodes")
+-			if o.failOnInitError {
++			if o.failOnInitError || (o.config.Flags.Plugin != nil && o.config.Flags.Plugin.AllowedGPUUUIDs != nil) {
+ 				return nil, fmt.Errorf("nvml init failed: %v", ret)
+ 			}
+ 			klog.Warningf("nvml init failed: %v", ret)
+diff --git a/internal/rm/device_map.go b/internal/rm/device_map.go
+index 347bf73..86d4b14 100644
+--- a/internal/rm/device_map.go
++++ b/internal/rm/device_map.go
+@@ -18,6 +18,7 @@ package rm
+ 
+ import (
+ 	"fmt"
++	"regexp"
+ 
+ 	"github.com/NVIDIA/go-nvlib/pkg/nvlib/device"
+ 	"github.com/NVIDIA/go-nvlib/pkg/nvlib/info"
+@@ -29,6 +30,7 @@ import (
+ 
+ type deviceMapBuilder struct {
+ 	device.Interface
++	allowedGPUUUIDs     *[]string
+ 	migStrategy         *string
+ 	resources           *spec.Resources
+ 	replicatedResources *spec.ReplicatedResources
+@@ -41,6 +43,9 @@ type DeviceMap map[spec.ResourceName]Devices
+ 
+ // NewDeviceMap creates a device map for the specified NVML library and config.
+ func NewDeviceMap(infolib info.Interface, devicelib device.Interface, config *spec.Config) (DeviceMap, error) {
++	if err := ValidateAllowedGPUUUIDs(infolib, config); err != nil {
++		return nil, err
++	}
+ 	b := deviceMapBuilder{
+ 		Interface:           devicelib,
+ 		migStrategy:         config.Flags.MigStrategy,
+@@ -49,6 +54,9 @@ func NewDeviceMap(infolib info.Interface, devicelib device.Interface, config *sp
+ 		newGPUDevice:        newNvmlGPUDevice,
+ 	}
+ 
++	if config.Flags.Plugin != nil {
++		b.allowedGPUUUIDs = config.Flags.Plugin.AllowedGPUUUIDs
++	}
+ 	if infolib.ResolvePlatform() == info.PlatformWSL {
+ 		b.newGPUDevice = newWslGPUDevice
+ 	}
+@@ -107,8 +115,36 @@ func (b *deviceMapBuilder) buildDeviceMapFromConfigResources() (DeviceMap, error
+ // buildGPUDeviceMap builds a map of resource names to GPU devices
+ func (b *deviceMapBuilder) buildGPUDeviceMap() (DeviceMap, error) {
+ 	devices := make(DeviceMap)
++	pending := make(map[string]bool)
++	if b.allowedGPUUUIDs != nil {
++		for _, id := range *b.allowedGPUUUIDs {
++			pending[id] = true
++		}
++	}
++	seen := make(map[string]bool)
+ 
+ 	err := b.VisitDevices(func(i int, gpu device.Device) error {
++		if b.allowedGPUUUIDs != nil {
++			id, ret := gpu.GetUUID()
++			if ret != nvml.SUCCESS {
++				return fmt.Errorf("error reading physical GPU UUID: %v", ret)
++			}
++			mig, err := gpu.IsMigEnabled()
++			if err != nil {
++				return err
++			}
++			if mig {
++				return fmt.Errorf("allowedGPUUUIDs does not support MIG-enabled devices")
++			}
++			if seen[id] {
++				return fmt.Errorf("duplicate physical GPU UUID %q", id)
++			}
++			seen[id] = true
++			if !pending[id] {
++				return nil
++			}
++			delete(pending, id)
++		}
+ 		name, ret := gpu.GetName()
+ 		if ret != nvml.SUCCESS {
+ 			return fmt.Errorf("error getting product name for GPU: %v", ret)
+@@ -128,7 +164,13 @@ func (b *deviceMapBuilder) buildGPUDeviceMap() (DeviceMap, error) {
+ 		}
+ 		return fmt.Errorf("GPU name '%v' does not match any resource patterns", name)
+ 	})
+-	return devices, err
++	if err != nil {
++		return nil, err
++	}
++	if len(pending) != 0 {
++		return nil, fmt.Errorf("allowedGPUUUIDs contains devices absent from physical NVML inventory: %v", pending)
++	}
++	return devices, nil
+ }
+ 
+ // buildMigDeviceMap builds a map of resource names to MIG devices
+@@ -334,3 +376,33 @@ func updateDeviceMapWithReplicas(replicatedResources *spec.ReplicatedResources,
+ 
+ 	return devices, nil
+ }
++
++// ValidateAllowedGPUUUIDs rejects unsupported allowlist configurations before discovery.
++// An unset selector retains the upstream discovery and allocation behavior.
++func ValidateAllowedGPUUUIDs(infolib info.Interface, config *spec.Config) error {
++	if config.Flags.Plugin == nil || config.Flags.Plugin.AllowedGPUUUIDs == nil {
++		return nil
++	}
++	ids := *config.Flags.Plugin.AllowedGPUUUIDs
++	if len(ids) == 0 {
++		return fmt.Errorf("allowedGPUUUIDs must not be empty when configured")
++	}
++	canonical := regexp.MustCompile(`^GPU-[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$`)
++	seen := make(map[string]bool)
++	for _, id := range ids {
++		if !canonical.MatchString(id) || seen[id] {
++			return fmt.Errorf("allowedGPUUUIDs requires unique canonical full physical GPU UUIDs: %q", id)
++		}
++		seen[id] = true
++	}
++	if config.Flags.MigStrategy == nil || *config.Flags.MigStrategy != spec.MigStrategyNone {
++		return fmt.Errorf("allowedGPUUUIDs requires migStrategy none")
++	}
++	if len(config.Sharing.TimeSlicing.Resources) != 0 || config.Sharing.MPS != nil {
++		return fmt.Errorf("allowedGPUUUIDs forbids replication and MPS configuration")
++	}
++	if config.Flags.DeviceDiscoveryStrategy == nil || (*config.Flags.DeviceDiscoveryStrategy != "auto" && *config.Flags.DeviceDiscoveryStrategy != "nvml") || infolib.ResolvePlatform() != info.PlatformNVML {
++		return fmt.Errorf("allowedGPUUUIDs requires native NVML discovery")
++	}
++	return nil
++}
+diff --git a/api/config/v1/allowed_gpu_uuids_test.go b/api/config/v1/allowed_gpu_uuids_test.go
+new file mode 100644
+index 0000000..b9226e6
+--- /dev/null
++++ b/api/config/v1/allowed_gpu_uuids_test.go
+@@ -0,0 +1,45 @@
++package v1
++
++import (
++	"github.com/stretchr/testify/require"
++	"sigs.k8s.io/yaml"
++	"strings"
++	"testing"
++)
++
++func TestAllowedGPUUUIDsRoundTrip(t *testing.T) {
++	for _, value := range []string{"[]", "[GPU-16128952-b438-556a-00bb-93039ee24e56]"} {
++		var config Config
++		require.NoError(t, yaml.Unmarshal([]byte("version: v1\nflags:\n  plugin:\n    allowedGPUUUIDs: "+value+"\n"), &config))
++		data, err := yaml.Marshal(config.Flags)
++		require.NoError(t, err)
++		require.Contains(t, string(data), "allowedGPUUUIDs:")
++		var restored Flags
++		require.NoError(t, yaml.Unmarshal(data, &restored))
++		require.Equal(t, config.Flags, restored)
++	}
++	var config Config
++	data, err := yaml.Marshal(config.Flags)
++	require.NoError(t, err)
++	require.NotContains(t, string(data), "allowedGPUUUIDs")
++}
++
++func TestAllowedGPUUUIDsRejectConfiguredNullAndWrongTypes(t *testing.T) {
++	for _, value := range []string{"null", "", "0", "GPU-16128952-b438-556a-00bb-93039ee24e56", "{}", "[null]", "[1]"} {
++		t.Run(value, func(t *testing.T) {
++			_, err := parseConfigFrom(strings.NewReader("version: v1\nflags:\n  plugin:\n    allowedGPUUUIDs: " + value + "\n"))
++			require.Error(t, err)
++		})
++	}
++	_, err := parseConfigFrom(strings.NewReader("version: v1\nflags:\n  plugin: {}\n"))
++	require.NoError(t, err)
++}
++
++func TestAllowedGPUUUIDsRejectCaseFoldedSelectorAliases(t *testing.T) {
++	for _, key := range []string{"AllowedGPUUUIDs", "allowedgpuuuids", "ALLOWEDGPUUUIDS"} {
++		for _, prefix := range []string{"", "    allowedGPUUUIDs: [GPU-16128952-b438-556a-00bb-93039ee24e56]\n"} {
++			_, err := parseConfigFrom(strings.NewReader("version: v1\nflags:\n  plugin:\n" + prefix + "    " + key + ": null\n"))
++			require.Error(t, err)
++		}
++	}
++}
+diff --git a/internal/plugin/allowed_gpu_uuids_test.go b/internal/plugin/allowed_gpu_uuids_test.go
+new file mode 100644
+index 0000000..6bff30a
+--- /dev/null
++++ b/internal/plugin/allowed_gpu_uuids_test.go
+@@ -0,0 +1,173 @@
++package plugin
++
++import (
++	"context"
++	"encoding/json"
++	"github.com/NVIDIA/go-nvlib/pkg/nvlib/device"
++	"github.com/NVIDIA/go-nvlib/pkg/nvlib/info"
++	"github.com/NVIDIA/go-nvml/pkg/nvml"
++	spec "github.com/NVIDIA/k8s-device-plugin/api/config/v1"
++	"github.com/NVIDIA/k8s-device-plugin/internal/cdi"
++	"github.com/NVIDIA/k8s-device-plugin/internal/rm"
++	"github.com/stretchr/testify/require"
++	pluginapi "k8s.io/kubelet/pkg/apis/deviceplugin/v1beta1"
++	"testing"
++)
++
++const qualifiedUUID = "GPU-16128952-b438-556a-00bb-93039ee24e56"
++const excludedUUID = "GPU-1e6145d5-8ee2-43e2-a0d5-6d345909e8a6"
++
++type allowInfo struct {
++	info.Interface
++	platform info.Platform
++}
++
++func (i allowInfo) ResolvePlatform() info.Platform { return i.platform }
++
++type allowNVML struct{ nvml.Interface }
++
++func (allowNVML) Init() nvml.Return     { return nvml.SUCCESS }
++func (allowNVML) Shutdown() nvml.Return { return nvml.SUCCESS }
++
++type allowDevice struct {
++	device.Device
++	id  string
++	mig bool
++}
++
++func (d allowDevice) GetUUID() (string, nvml.Return)          { return d.id, nvml.SUCCESS }
++func (d allowDevice) GetName() (string, nvml.Return)          { return "TestGPU", nvml.SUCCESS }
++func (d allowDevice) IsMigEnabled() (bool, error)             { return d.mig, nil }
++func (d allowDevice) GetMinorNumber() (int, nvml.Return)      { return 1, nvml.SUCCESS }
++func (d allowDevice) GetPciInfo() (nvml.PciInfo, nvml.Return) { return nvml.PciInfo{}, nvml.SUCCESS }
++func (d allowDevice) GetMemoryInfo() (nvml.Memory, nvml.Return) {
++	return nvml.Memory{Total: 40960}, nvml.SUCCESS
++}
++func (d allowDevice) GetCudaComputeCapability() (int, int, nvml.Return) { return 8, 0, nvml.SUCCESS }
++
++type allowDevices struct {
++	device.Interface
++	ids []string
++	mig bool
++}
++
++func (d allowDevices) VisitDevices(f func(int, device.Device) error) error {
++	for i, id := range d.ids {
++		if err := f(i, allowDevice{id: id, mig: d.mig}); err != nil {
++			return err
++		}
++	}
++	return nil
++}
++func allowConfig(t *testing.T, selector string) *spec.Config {
++	t.Helper()
++	var config spec.Config
++	require.NoError(t, json.Unmarshal([]byte(`{"flags":{"migStrategy":"none","deviceDiscoveryStrategy":"nvml","plugin":{"deviceIDStrategy":"uuid",`+selector+`}},"resources":{"gpus":[{"pattern":"*","name":"nvidia.com/gpu"}]}}`), &config))
++	return &config
++}
++func TestAllowedGPUUUIDsInventory(t *testing.T) {
++	for _, ids := range [][]string{{excludedUUID, qualifiedUUID}, {qualifiedUUID, excludedUUID}} {
++		config := allowConfig(t, `"allowedGPUUUIDs":["`+qualifiedUUID+`"]`)
++		managers, err := rm.NewNVMLResourceManagers(allowInfo{platform: info.PlatformNVML}, allowNVML{}, allowDevices{ids: ids}, config)
++		require.NoError(t, err)
++		require.Len(t, managers, 1)
++		manager := managers[0]
++		require.Equal(t, spec.ResourceName("nvidia.com/gpu"), manager.Resource())
++		require.Len(t, manager.Devices(), 1)
++		require.True(t, manager.Devices().Contains(qualifiedUUID))
++		plugin := nvidiaDevicePlugin{rm: manager, config: config, deviceListStrategies: spec.DeviceListStrategies{"envvar": true}, stop: make(chan interface{}), health: make(chan *rm.Device)}
++		stream := &allowStream{responses: make(chan *pluginapi.ListAndWatchResponse, 3)}
++		done := make(chan error, 1)
++		go func() { done <- plugin.ListAndWatch(&pluginapi.Empty{}, stream) }()
++		response := <-stream.responses
++		require.Len(t, response.Devices, 1)
++		require.Equal(t, qualifiedUUID, response.Devices[0].ID)
++		plugin.health <- &rm.Device{Device: pluginapi.Device{ID: excludedUUID}}
++		response = <-stream.responses
++		require.Len(t, response.Devices, 1)
++		require.Equal(t, qualifiedUUID, response.Devices[0].ID)
++		close(plugin.stop)
++		require.NoError(t, <-done)
++		_, err = plugin.Allocate(context.Background(), &pluginapi.AllocateRequest{ContainerRequests: []*pluginapi.ContainerAllocateRequest{{DevicesIDs: []string{excludedUUID}}}})
++		require.ErrorContains(t, err, "unknown device")
++		allocated, err := plugin.Allocate(context.Background(), &pluginapi.AllocateRequest{ContainerRequests: []*pluginapi.ContainerAllocateRequest{{DevicesIDs: []string{qualifiedUUID}}}})
++		require.NoError(t, err)
++		require.Equal(t, qualifiedUUID, allocated.ContainerResponses[0].Envs["NVIDIA_VISIBLE_DEVICES"])
++		plugin.deviceListStrategies = spec.DeviceListStrategies{"cdi-cri": true}
++		plugin.cdiHandler = &cdi.InterfaceMock{QualifiedNameFunc: func(class, id string) string { return "nvidia.com/" + class + "=" + id }}
++		allocated, err = plugin.Allocate(context.Background(), &pluginapi.AllocateRequest{ContainerRequests: []*pluginapi.ContainerAllocateRequest{{DevicesIDs: []string{qualifiedUUID}}}})
++		require.NoError(t, err)
++		require.Equal(t, []*pluginapi.CDIDevice{{Name: "nvidia.com/gpu=" + qualifiedUUID}}, allocated.ContainerResponses[0].CDIDevices)
++	}
++}
++
++type allowStream struct {
++	pluginapi.DevicePlugin_ListAndWatchServer
++	responses chan *pluginapi.ListAndWatchResponse
++}
++
++func (s *allowStream) Send(r *pluginapi.ListAndWatchResponse) error { s.responses <- r; return nil }
++func TestAllowedGPUUUIDsFailClosed(t *testing.T) {
++	for _, selector := range []string{`"allowedGPUUUIDs":[]`, `"allowedGPUUUIDs":["0"]`, `"allowedGPUUUIDs":["GPU-16128952-b438-556a-00bb-93039ee24e56","GPU-16128952-b438-556a-00bb-93039ee24e56"]`, `"allowedGPUUUIDs":["GPU-00000000-0000-0000-0000-000000000000"]`} {
++		t.Run(selector, func(t *testing.T) {
++			_, err := rm.NewNVMLResourceManagers(allowInfo{platform: info.PlatformNVML}, allowNVML{}, allowDevices{ids: []string{qualifiedUUID, excludedUUID}}, allowConfig(t, selector))
++			require.Error(t, err)
++		})
++	}
++}
++func TestAllowedGPUUUIDsUnsetPreservesInventory(t *testing.T) {
++	managers, err := rm.NewNVMLResourceManagers(allowInfo{platform: info.PlatformNVML}, allowNVML{}, allowDevices{ids: []string{qualifiedUUID, excludedUUID}}, allowConfig(t, `"passDeviceSpecs":false`))
++	require.NoError(t, err)
++	require.Len(t, managers[0].Devices(), 2)
++}
++func TestAllowedGPUUUIDsUnsupportedModes(t *testing.T) {
++	for _, mode := range []string{"mig", "physical-mig", "timeslicing", "mps", "wsl", "tegra", "discovery"} {
++		t.Run(mode, func(t *testing.T) {
++			config := allowConfig(t, `"allowedGPUUUIDs":["`+qualifiedUUID+`"]`)
++			platform := info.PlatformNVML
++			devices := allowDevices{ids: []string{qualifiedUUID}}
++			switch mode {
++			case "mig":
++				config.Flags.MigStrategy = ptr("mixed")
++			case "physical-mig":
++				devices.mig = true
++			case "timeslicing":
++				config.Sharing.TimeSlicing.Resources = []spec.ReplicatedResource{{Name: "nvidia.com/gpu", Replicas: 2}}
++			case "mps":
++				config.Sharing.MPS = &spec.ReplicatedResources{}
++			case "wsl":
++				platform = info.PlatformWSL
++			case "tegra":
++				platform = info.PlatformTegra
++			case "discovery":
++				config.Flags.DeviceDiscoveryStrategy = ptr("tegra")
++			}
++			_, err := rm.NewNVMLResourceManagers(allowInfo{platform: platform}, allowNVML{}, devices, config)
++			require.Error(t, err)
++		})
++	}
++}
++
++func (d allowDevice) GetMigDevices() ([]device.MigDevice, error) { return nil, nil }
++func (d allowDevices) VisitMigDevices(f func(int, device.Device, int, device.MigDevice) error) error {
++	return nil
++}
++
++type allowFailedNVML struct{ nvml.Interface }
++
++func (allowFailedNVML) Init() nvml.Return { return nvml.ERROR_UNKNOWN }
++func TestAllowedGPUUUIDsInitFailureNeverFallsBack(t *testing.T) {
++	config := allowConfig(t, `"allowedGPUUUIDs":["`+qualifiedUUID+`"]`)
++	o := options{infolib: allowInfo{platform: info.PlatformNVML}, nvmllib: allowFailedNVML{}, config: config, failOnInitError: false}
++	managers, err := o.getResourceManagers()
++	require.ErrorContains(t, err, "nvml init failed")
++	require.Nil(t, managers)
++}
++func TestAllowedGPUUUIDsMissingMemberNeverPublishesPartialInventory(t *testing.T) {
++	config := allowConfig(t, `"allowedGPUUUIDs":["`+qualifiedUUID+`","`+excludedUUID+`"]`)
++	for _, ids := range [][]string{nil, {qualifiedUUID}, {excludedUUID}} {
++		managers, err := rm.NewNVMLResourceManagers(allowInfo{platform: info.PlatformNVML}, allowNVML{}, allowDevices{ids: ids}, config)
++		require.ErrorContains(t, err, "absent")
++		require.Nil(t, managers)
++	}
++}
+diff --git a/cmd/config-manager/allowed_gpu_uuids_test.go b/cmd/config-manager/allowed_gpu_uuids_test.go
+new file mode 100644
+index 0000000..b651e52
+--- /dev/null
++++ b/cmd/config-manager/allowed_gpu_uuids_test.go
+@@ -0,0 +1,36 @@
++package main
++
++import (
++	spec "github.com/NVIDIA/k8s-device-plugin/api/config/v1"
++	"github.com/stretchr/testify/require"
++	"os"
++	"path/filepath"
++	"sigs.k8s.io/yaml"
++	"testing"
++)
++
++func TestAllowedGPUUUIDsConfigManagerPreservesSelection(t *testing.T) {
++	for _, selection := range []string{"[]", "[GPU-16128952-b438-556a-00bb-93039ee24e56]"} {
++		dir := t.TempDir()
++		input := []byte("version: v1\nflags:\n  plugin:\n    allowedGPUUUIDs: " + selection + "\n")
++		require.NoError(t, os.WriteFile(filepath.Join(dir, "qualified"), input, 0600))
++		destination := filepath.Join(dir, "active")
++		changed, err := updateSymlink("qualified", &Flags{ConfigFileSrcdir: dir, ConfigFileDst: destination})
++		require.NoError(t, err)
++		require.True(t, changed)
++		data, err := os.ReadFile(destination)
++		require.NoError(t, err)
++		require.Equal(t, input, data)
++		var parsed spec.Config
++		require.NoError(t, yaml.Unmarshal(data, &parsed))
++		require.NotNil(t, parsed.Flags.Plugin.AllowedGPUUUIDs)
++		if selection == "[]" {
++			require.Empty(t, *parsed.Flags.Plugin.AllowedGPUUUIDs)
++		} else {
++			require.Equal(t, []string{"GPU-16128952-b438-556a-00bb-93039ee24e56"}, *parsed.Flags.Plugin.AllowedGPUUUIDs)
++		}
++		flags, err := yaml.Marshal(parsed.Flags)
++		require.NoError(t, err)
++		require.Contains(t, string(flags), "allowedGPUUUIDs:")
++	}
++}
+diff --git a/docs/qualified-plain-gpu-inventory.md b/docs/qualified-plain-gpu-inventory.md
+new file mode 100644
+index 0000000..20bd216
+--- /dev/null
++++ b/docs/qualified-plain-gpu-inventory.md
+@@ -0,0 +1,43 @@
++# Optional plain GPU inventory allowlist (local v0.18.0 patch)
++
++The operator may set an optional **configuration-file-only** field:
++
++```yaml
++version: v1
++flags:
++  migStrategy: none
++  deviceDiscoveryStrategy: nvml
++  plugin:
++    allowedGPUUUIDs:
++      - GPU-16128952-b438-556a-00bb-93039ee24e56
++```
++
++An absent field preserves upstream behavior. Explicit null, a bare key, wrong types,
++a configured empty list, duplicate,
++noncanonical full physical GPU UUID, or UUID absent from the enumerated inventory
++fails startup. The selector accepts only lowercase canonical `GPU-xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx`
++identities; indices, products, prefixes, and MIG identities are rejected.
++
++With a selector, only native NVML discovery (`nvml`, or `auto` resolving to native
++NVML), MIG strategy `none`, no MIG-enabled physical devices, no time-slicing
++resource definitions, and no MPS definition are supported. Errors never fall back
++to unrestricted inventory, including when `failOnInitError` is false. Filtering
++happens before resource managers or kubelet registration. Each allowed physical
++device keeps its original ID, index, health handling, and CDI/environment response
++semantics under the stock `nvidia.com/gpu` resource. No replicas or additional
++sharing owner are introduced.
++
++There is no selector CLI flag, environment variable, or tenant Pod annotation.
++The operator controls the per-node config and must use the same patched image for
++the device plugin and config-manager; the upstream config-manager forwards the
++selected file by symlink without rewriting it. The typed pointer preserves explicit
++empty lists through configuration serialization.
++
++Advertising one of two physical devices changes kubelet capacity and allocatable
++GPU count from two to one. Physical topology/GFD counts may still correctly say
++two. This requires an explicit inventory/authority transition and compatible KAI
++accounting before deployment; existing exact-two qualification evidence cannot
++be reused. This is placement inventory filtering, not device isolation or proof
++of qualification. Expanding the list requires separately qualified devices and
++matching authority/accounting. A singleton pilot does not complete the all-eight
++GPU production acceptance gate.

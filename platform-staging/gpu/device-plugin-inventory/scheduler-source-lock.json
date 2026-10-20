@@ -1,0 +1,22 @@
+{
+  "status": "source-qualified-not-deployed",
+  "upstream": {
+    "repository": "https://github.com/kai-scheduler/KAI-scheduler",
+    "release": "v0.18.1",
+    "commit": "bdf434e5e9201cccf4e05fad04d814363653f692"
+  },
+  "patch": {
+    "path": "kai-v0.18.1-advertised-inventory.patch",
+    "sha256": "aa48b0e8ee3a694058f6d32076a74493d925b7f636430f53043b0313b8798e9b"
+  },
+  "qualification": {
+    "packages_passed": 81,
+    "test_pass_events": 1643,
+    "failures": 0,
+    "full_log_sha256": "e1fb1b03273f2d0abbd0c810bbe87bae94f7e03013321710d4d6bafcbf06804a",
+    "independent_source_review": "clear",
+    "live_tested": false
+  },
+  "changed_component": "scheduler only; Binder dependency closure excludes this package",
+  "production_ready": false
+}

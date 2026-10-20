@@ -1,0 +1,27 @@
+{
+  "status": "source-qualified-not-deployed",
+  "upstream": {
+    "repository": "https://github.com/NVIDIA/k8s-device-plugin",
+    "tag": "v0.18.0",
+    "commit": "3c9ffca9491f0d2d362a7064138dfcd71bb57592"
+  },
+  "patch": {
+    "path": "nvidia-v0.18.0-allowlist.patch",
+    "sha256": "527808084182a3af7b60cf69d445a0f94e8f6249dab05428266344549903fc60"
+  },
+  "qualification": {
+    "cpu_test_pass_events": 239,
+    "tested_packages": 9,
+    "independent_source_review": "clear",
+    "gpu_tested": false,
+    "live_inventory_transition_tested": false
+  },
+  "activation_dependencies": [
+    "KAI advertised-inventory accounting patch and complete CPU suite",
+    "reproducible plugin and scheduler images",
+    "separate reviewed capacity transition with current-state rollback",
+    "normal group spawn to selected qualified physical GPU",
+    "5/20 GiB peer CUDA isolation test"
+  ],
+  "production_ready": false
+}

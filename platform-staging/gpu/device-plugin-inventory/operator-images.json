@@ -1,0 +1,45 @@
+{
+  "status": "qualification-only-not-deployed",
+  "source_repository": "https://github.com/mul-cps/cps-compute",
+  "source_commit": "15c33da03c53c8b3e0f097d1ba205de3b19d8db8",
+  "images": {
+    "gateway": {
+      "reference": "ghcr.io/mul-cps/cps-compute@sha256:ddae28e00bf093c1b7e2967b6d9f68448e9a167b179395f69f26740205d11274",
+      "manifest_and_config_verified": true,
+      "live_deployed": false
+    },
+    "node": {
+      "reference": "ghcr.io/mul-cps/cps-native-node@sha256:c907b5faee4cc0088dc85310e6a12b4fe24dc2f4cb7877bf037453b13be4db63",
+      "manifest_and_config_verified": true,
+      "live_deployed": false
+    },
+    "hub": {
+      "reference": "ghcr.io/mul-cps/cps-compute@sha256:f25ab022bbb465be8968398662ee6dfe3041918a2b221ebad2e0307020e07aeb",
+      "manifest_and_config_verified": true,
+      "live_deployed": false
+    }
+  },
+  "tests": {
+    "gateway": {
+      "suite_count": 33,
+      "passed": 814,
+      "seconds": 142.8,
+      "log_sha256": "eef70b01b4ef002573d93fc0b070f03f2d2c8a645553148aadb87a073886547c"
+    },
+    "node": {
+      "suite_count": 7,
+      "passed": 102,
+      "seconds": 20.27,
+      "test_only_dependency_fixtures": true,
+      "log_sha256": "5f87b06fd58e2d0686684d174f41f895f5995b6609350f1b59c1933be4786bba"
+    },
+    "hub": {
+      "suite_count": 33,
+      "summary": "814 passed, 164 warnings in 141.34s (0:02:21)",
+      "installed_hub_used": true,
+      "log_sha256": "e109567c1241b8f8f92b4ef97cd8ffb8b4fe570ce6af525fb403750030fa8755"
+    }
+  },
+  "cuda_qualified": false,
+  "production_ready": false
+}

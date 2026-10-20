@@ -1,0 +1,20 @@
+{
+  "status": "qualification-only-not-deployed",
+  "images": {
+    "device_plugin": {
+      "reference": "ghcr.io/mul-cps/cps-native-device-plugin@sha256:2258429b6bc7afb0d98f7fd61b32159ba40d49c3f3c571d6625b268e345449c1",
+      "manifest_digest_verified": true,
+      "raw_config_identical_to_tested_image": true,
+      "live_deployed": false,
+      "gpu_qualified": false
+    },
+    "scheduler": {
+      "reference": "ghcr.io/mul-cps/cps-native-kai-scheduler@sha256:e4fd2b21aef35243d37ed537e754aeca96340b7f4e5906564c97eb36c9e4abf4",
+      "manifest_digest_verified": true,
+      "raw_config_identical_to_tested_image": true,
+      "live_deployed": false,
+      "gpu_qualified": false
+    }
+  },
+  "production_ready": false
+}
