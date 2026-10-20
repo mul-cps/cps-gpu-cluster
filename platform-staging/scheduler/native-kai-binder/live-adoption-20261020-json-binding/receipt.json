@@ -1,0 +1,40 @@
+{
+  "source_commit": "af33243686fe9a67e6f7cb03b8a1c3bed650d21e",
+  "image": "ghcr.io/mul-cps/cps-native-kai-binder@sha256:3bcde5baa106e451427046da1fd38bd2d1a5f326791e060a0c07e660482a2421",
+  "patch_sha256": "f79250086dfab6e2600c07941b42d151c67307388f6803b38b489846764a879b",
+  "binary_sha256": "2bbaa3083511b2ec8ee5263e664f7a5b5a034d006b8cd3d6b20fcb9e4f5afb4b",
+  "published_manifest_verified": true,
+  "published_raw_config_matches_tested": true,
+  "live_binder_ready": true,
+  "bridge_enabled_after_cleanup": false,
+  "kubernetes_binding_handoff_tests": [
+    "success",
+    "forbidden",
+    "lost-response"
+  ],
+  "affected_go_packages_passed": 5,
+  "repeated_binary_build_identical": true,
+  "packaging_tests_passed": 46,
+  "last_normal_start": {
+    "http_status": 409,
+    "cuda_executed": false,
+    "prepare_succeeded_at": "2026-10-20T12:22:48.546Z",
+    "current_succeeded_at": "2026-10-20T12:22:55.829Z",
+    "final_binding_validation_status": 409,
+    "final_binding_validation_failure": "capabilities ConfigMap GET404",
+    "configured_fence_seconds": 60
+  },
+  "cleanup": {
+    "ledger_allocations": 159,
+    "all_released": true,
+    "all_prior_158_unchanged": true,
+    "sql_reservation_count": 0,
+    "sql_binding_count": 0,
+    "workspaces_stopped": 9,
+    "token_revoked": true,
+    "personal_notebook_containers_unchanged": true
+  },
+  "private_run_summary_sha256": "60ad5f93ff75b575b6b2f6819b432f579d43a2e4f0ceb8d543b8d32ee9d33e26",
+  "hardware_qualified": false,
+  "production_ready": false
+}
