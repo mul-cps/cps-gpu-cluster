@@ -585,3 +585,56 @@ def test_management_and_stock_pin_updates_are_mutually_exclusive(monkeypatch):
     values,_=stock_cdi_fixture(monkeypatch)
     values['management_cdi_update']={'previous_sha256':'a'*64,'sha256':'c'*64}
     with pytest.raises(ValueError):prepare(values)
+
+CPU_UPDATE={'previous_requests_cpu':'100m','requests_cpu':'500m','previous_limits_cpu':'500m','limits_cpu':'2'}
+
+def cpu_resource_fixture():
+    from cps_compute.native_group_process import _template
+    values=mounted_fixture(api_defaults=True)
+    _,old=image._context(values['snapshot'])
+    values['gateway_image']=old.document['component_declarations']['gateway']['image']
+    main=next(c for c in values['snapshot']['deployments']['node']['spec']['template']['spec']['containers'] if c['name']=='node-agent')
+    main['resources']={'requests':{'cpu':'100m','memory':'256Mi'},'limits':{'cpu':'500m','memory':'1Gi'}}
+    values['previous_release']['held_node_template_sha256']=canonical_sha256(_template(values['snapshot']['deployments']['node']))
+    values['expected_release_sha256']=canonical_sha256(values['previous_release'])
+    values['expected_snapshot_sha256']=canonical_sha256(values['snapshot'])
+    values['node_cpu_update']=copy.deepcopy(CPU_UPDATE)
+    return values
+
+def test_explicit_node_cpu_only_successor_preserves_config_document_and_other_resources():
+    values=cpu_resource_fixture();_,old=image._context(values['snapshot'])
+    prepared=prepare(values)
+    assert json.loads(prepared['creates']['node-config']['data']['config.json'])==old.document
+    assert prepared['creates']['node-config']['metadata']['name']!=old.reference.to_dict()['name']
+    node=actual(prepared['creates']['node-config']);bound=load('head_gateway_rotation').bind_node(values['snapshot'],prepared,node)
+    before=values['snapshot']['deployments']['node']['spec'];expected=copy.deepcopy(before)
+    main=next(c for c in expected['template']['spec']['containers'] if c['name']=='node-agent')
+    main['resources']['requests']['cpu']='500m';main['resources']['limits']['cpu']='2'
+    next(v for v in expected['template']['spec']['volumes'] if v['name']=='packaged-bootstrap-input')['configMap']['name']=bound['creates']['node.bootstrap']['metadata']['name']
+    assert bound['runtime_specs']['node']==expected
+    creates={k:actual(v)for k,v in bound['creates'].items()}
+    result=load('head_gateway_rotation').bind(values['snapshot'],bound,creates)
+    marker=result['node_cpu_rotation']
+    assert marker=={'version':1,**CPU_UPDATE,'previous_template_sha256':result['previous_node_template_sha256'],
+                   'template_sha256':result['observer_release']['held_node_template_sha256']}
+
+@pytest.mark.parametrize('fault',['extra-field','wrong-request','old-limit','image-combination','memory-drift'])
+def test_cpu_resource_rotation_rejects_unreviewed_inputs(fault):
+    values=cpu_resource_fixture()
+    if fault=='extra-field':values['node_cpu_update']['memory']='2Gi'
+    elif fault=='wrong-request':values['node_cpu_update']['requests_cpu']='1'
+    elif fault=='old-limit':values['snapshot']['deployments']['node']['spec']['template']['spec']['containers'][0]['resources']['limits']['cpu']='1'
+    elif fault=='image-combination':values['node_image']='ghcr.io/mul-cps/cps-native-node@sha256:'+'8'*64
+    else:values['node_cpu_update']['limits_memory']='2Gi'
+    with pytest.raises(ValueError):prepare(values)
+
+@pytest.mark.parametrize('fault',['memory','environment','other-container'])
+def test_node_cpu_bound_plan_rejects_unrelated_pod_deltas(fault):
+    values=cpu_resource_fixture();prepared=prepare(values)
+    node=actual(prepared['creates']['node-config']);bound=load('head_gateway_rotation').bind_node(values['snapshot'],prepared,node)
+    pod=bound['runtime_specs']['node']['template']['spec']
+    if fault=='memory':pod['containers'][0]['resources']['limits']['memory']='2Gi'
+    elif fault=='environment':pod['containers'][0].setdefault('env',[]).append({'name':'UNREVIEWED','value':'1'})
+    else:pod['initContainers'][0]['resources']={'requests':{'cpu':'900m'}}
+    creates={k:actual(v)for k,v in bound['creates'].items()}
+    with pytest.raises(ValueError):load('head_gateway_rotation').bind(values['snapshot'],bound,creates)

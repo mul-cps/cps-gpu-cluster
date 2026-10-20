@@ -15,6 +15,8 @@ from types import SimpleNamespace
 import image_adoption as image
 
 
+_NODE_CPU_UPDATE={'previous_requests_cpu':'100m','requests_cpu':'500m','previous_limits_cpu':'500m','limits_cpu':'2'}
+
 _CDI_UPDATES=(('stock_cdi_update','k8s.device-plugin.nvidia.com-gpu.json'),
               ('management_cdi_update','management.nvidia.com-gpu.yaml'))
 
@@ -151,7 +153,16 @@ def _context(inputs):
             and update['previous_sha256'] != update['sha256']
             and document['cdi_pins']['other_cdi_files'].get(filename) == update['previous_sha256'],
             'Exact reviewed CDI provider preimage and successor digest required')
-    image.require(gateway_image != declarations['gateway']['image'] or node_image is not None or bool(updates),
+    cpu_update=inputs.get('node_cpu_update')
+    if cpu_update is not None:
+        image.require(cpu_update==_NODE_CPU_UPDATE and type(cpu_update) is dict,
+                      'Exact reviewed Node CPU request/limit transition required')
+        image.require(gateway_image==declarations['gateway']['image'] and node_image is None and not updates,
+                      'CPU resource rotation cannot combine image or CDI changes')
+        main=image._one(snapshot['deployments']['node']['spec']['template']['spec']['containers'],declarations['node']['container'])
+        image.require(main['resources']['requests']['cpu']=='100m' and main['resources']['limits']['cpu']=='500m',
+                      'Actual Node CPU resource preimage differs')
+    image.require(gateway_image != declarations['gateway']['image'] or node_image is not None or bool(updates) or cpu_update is not None,
                   'Distinct qualified immutable Gateway, Node or CDI provider successor required')
     runtime_secret = image.secret_volume(snapshot, 'gateway', 'config')
     _guard(runtime_secret, 'Secret')
@@ -281,10 +292,11 @@ def _context(inputs):
 
 
 def prepare(snapshot, previous_release, operator_baselines, gateway_image, endpoint_proposal, actual_endpoint_seed,
-            *, expected_snapshot_sha256, expected_release_sha256, expected_operator_baselines_sha256, expected_revision, expected_endpoint_proposal_sha256=None, node_image=None, stock_cdi_update=None, management_cdi_update=None):
+            *, expected_snapshot_sha256, expected_release_sha256, expected_operator_baselines_sha256, expected_revision, expected_endpoint_proposal_sha256=None, node_image=None, stock_cdi_update=None, management_cdi_update=None, node_cpu_update=None):
     """First phase: create an immutable Node4 image or CDI provider successor candidate."""
     inputs = deepcopy(locals())
     if node_image is None: inputs.pop('node_image')
+    if node_cpu_update is None: inputs.pop('node_cpu_update')
     for key,_ in _CDI_UPDATES:
         if inputs[key] is None: inputs.pop(key)
     if expected_endpoint_proposal_sha256 is None:
@@ -296,8 +308,13 @@ def prepare(snapshot, previous_release, operator_baselines, gateway_image, endpo
         for key,filename in _CDI_UPDATES:
             if key in inputs: document['cdi_pins']['other_cdi_files'][filename] = inputs[key]['sha256']
         old = image._get(snapshot, 'ConfigMap', configuration.reference.to_dict()['namespace'], configuration.reference.to_dict()['name'])
+        candidate=image._candidate(old, 'cps-native-head-config', {'config.json': image.canonical(document)})
+        if node_cpu_update is not None:
+            # Same policy/configuration document, independently named actual immutable lineage.
+            suffix=image.sha({'previous_ref':configuration.reference.to_dict(),'node_cpu_update':node_cpu_update}).split(':')[1][:16]
+            candidate['metadata']['name']='cps-native-head-config-cpu-'+suffix
         return {'version': 1, 'kind': 'head-gateway-rotation', 'inputs': inputs,
-            'creates': {'node-config': image._candidate(old, 'cps-native-head-config', {'config.json': image.canonical(document)})},
+            'creates': {'node-config': candidate},
             'live_applied': False, 'hardware_qualified': False, 'journal_rotation_required': True}
     except (KeyError, TypeError, AttributeError, StopIteration):
         raise ValueError('Incomplete pinned Gateway successor inputs') from None
@@ -335,6 +352,10 @@ def bind_node(snapshot, prepared, actual_node_config):
         specs = {c: deepcopy(d['spec']) for c, d in snapshot['deployments'].items()}
         node_pod = specs['node']['template']['spec']
         image._one(node_pod['volumes'], 'packaged-bootstrap-input')['configMap']['name'] = bootstrap_candidate['metadata']['name']
+        if prepared['inputs'].get('node_cpu_update') is not None:
+            main=image._one(node_pod['containers'],old.document['component_declarations']['node']['container'])
+            main['resources']['requests']['cpu']='500m'
+            main['resources']['limits']['cpu']='2'
         if node_image is not None:
             image._one(node_pod['containers'], old.document['component_declarations']['node']['container'])['image'] = node_image
             image._node_initializer_image(node_pod, old.document['component_declarations']['node']['image'], node_image)
@@ -473,6 +494,10 @@ def bind(snapshot, plan, actual_creates, *, actual_permissions=None):
             'previous_node_template': old_template, 'previous_node_template_sha256': image.sha(old_template),
             'runtime_specs': deepcopy(plan['runtime_specs']), 'prospective': True, 'live_applied': False,
             'hardware_qualified': False, 'process_readiness_verified': False,
-            'actual_only_render_required': True, 'journal_rotation_required': True}
+            'actual_only_render_required': True, 'journal_rotation_required': True,
+            **({'node_cpu_rotation':{'version':1,**deepcopy(plan['prepared']['inputs']['node_cpu_update']),
+                'previous_template_sha256':image.sha(old_template),
+                'template_sha256':release['held_node_template_sha256']}}
+               if 'node_cpu_update' in plan['prepared']['inputs'] else {})}
     except (KeyError, TypeError, AttributeError, StopIteration):
         raise ValueError('Incomplete actual Gateway successor dependent readbacks') from None
