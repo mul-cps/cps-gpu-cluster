@@ -1,0 +1,196 @@
+{
+  "all_eight_gpu_qualified": false,
+  "authority": {
+    "admitted_gate_image": "ghcr.io/mul-cps/cps-native-node@sha256:85235133377e5746085a62b271c023034807721974f3e79b5c342f046c51dee9",
+    "admitted_runtime_image": "ghcr.io/mul-cps/cps-jupyter-notebook@sha256:531027c8e330d4ce818598e998a29d502433e9064f06a32dfc208a06ef2d0ba4",
+    "boot_id": "209f8bc9-a478-48e4-925a-6e07ffa56f7a",
+    "driver_generation": "b10498fc-9153-4394-875a-ea7cfb498625",
+    "driver_version": "615.71.09",
+    "gpu_uuid": "GPU-16128952-b438-556a-00bb-93039ee24e56",
+    "independent_nvml_physical_total_mib": 40960,
+    "mig_current_enabled": false,
+    "mig_pending_enabled": false,
+    "node": "k3s-wk-gpu2",
+    "operator_code_configmap": {
+      "data_sha256": "sha256:1678bedacf60217257f4e6e847939308ba88c110edf4aeafcd81922cd760054e",
+      "name": "cps-trusted-pair-code-1678bedacf602172",
+      "uid": "da5b76f3-9460-430d-b581-47b4f7c5e1a4"
+    },
+    "policy_hash": "sha256:d48f6553ed036c2e7adcc97417623fe0308be93ad13b20f246047ada118511b0",
+    "sdk_source_commit": "e78015ac6da94f962bbfd6fd736fd04ff41936c0"
+  },
+  "cap_readback": {
+    "caps_mib": [
+      5120,
+      20480
+    ],
+    "held_at_precleanup_mib": [
+      {
+        "cap_mib": 5120,
+        "hard_bytes": 5368709120,
+        "soft_bytes": 5368709120,
+        "used_bytes": 0
+      },
+      {
+        "cap_mib": 20480,
+        "hard_bytes": 21474836480,
+        "soft_bytes": 21474836480,
+        "used_bytes": 0
+      }
+    ],
+    "legacy_probe_field_semantics": "physical_reported_total_bytes in raw Torch probe is the CUDA-visible capped total, not the physical A100 total",
+    "physical_selected_uuid_only": true,
+    "soft_equals_hard": true
+  },
+  "cleanup": {
+    "all_test_jobs_and_cm_absent": true,
+    "fixture_pods_absent": true,
+    "gpu2_uncordoned": true,
+    "ledger159_byte_unchanged": true,
+    "no_gate_receipts": true,
+    "original_specs_restored": true,
+    "protected_notebook_unchanged": true,
+    "sql": {
+      "reservation": 0,
+      "reservation_binding": 0
+    },
+    "states": [
+      "retired-inert-cap",
+      "retired-inert-cap"
+    ],
+    "temporary_rbac_8_absent": true,
+    "workspaces": {
+      "cit": {
+        "all_stopped": true,
+        "count": 1
+      },
+      "cps": {
+        "all_stopped": true,
+        "count": 8
+      }
+    }
+  },
+  "cross_parent_ipc": {
+    "20-to-5": {
+      "cross_parent_isolation_qualified": false,
+      "cuda_name": "CUDA_ERROR_NOT_PERMITTED",
+      "cuda_result": 800,
+      "exporter_kernel_continuity": true,
+      "exporter_recovery": true,
+      "importer_kernels_survived": true,
+      "production_qualified": false,
+      "same_parent_positive_control": true,
+      "state": "api-denial-observed-awaiting-kernel-witness"
+    },
+    "5-to-20": {
+      "cross_parent_isolation_qualified": false,
+      "cuda_name": "CUDA_ERROR_NOT_PERMITTED",
+      "cuda_result": 800,
+      "exporter_kernel_continuity": true,
+      "exporter_recovery": true,
+      "importer_kernels_survived": true,
+      "production_qualified": false,
+      "same_parent_positive_control": true,
+      "state": "api-denial-observed-awaiting-kernel-witness"
+    }
+  },
+  "hardware_fully_qualified": false,
+  "kind": "bounded-trusted-native-pair-measurement",
+  "mps": {
+    "aggregate_sequence_passed": true,
+    "aggregate_target_at_oom_mib": 4352,
+    "allocation_step_mib": 256,
+    "cap_mib": 5120,
+    "caps_unchanged": true,
+    "cleanup_errors": [],
+    "client_exit_codes": [
+      0,
+      0
+    ],
+    "cuda_result": 2,
+    "daemon_cleanup_confirmed": true,
+    "driver_generation_verified_by_probe": false,
+    "native_cap_verified_by_probe": false,
+    "native_samples": 50,
+    "private_mps_processes_remaining": 0,
+    "recovery_clients": 2,
+    "root_observation_required": true,
+    "two_clients_aggregate_held_mib": 4096
+  },
+  "normal_hub_start_qualified": false,
+  "observed_at": "2026-10-20T13:07:01.026746+00:00",
+  "oom_and_peer": {
+    "five-oom-with-twenty-peer-stdin": {
+      "cuda_visible_capped_total_bytes": 5368709120,
+      "held_before_oom_mib": 4608,
+      "peer_brackets_oom_and_recovery": true,
+      "peer_gap_limit_seconds": 5,
+      "peer_max_gap_seconds": 0.50217687,
+      "peer_ticks": 53,
+      "typed_oom": true
+    },
+    "twenty-oom-with-five-peer-stdin": {
+      "cuda_visible_capped_total_bytes": 21474836480,
+      "held_before_oom_mib": 19968,
+      "peer_brackets_oom_and_recovery": true,
+      "peer_gap_limit_seconds": 5,
+      "peer_max_gap_seconds": 0.501842668,
+      "peer_ticks": 53,
+      "typed_oom": true
+    }
+  },
+  "policy_enablement_changed": false,
+  "production_qualified": false,
+  "provenance": {
+    "private_bundle": "trusted-pair-run-20261020-r2",
+    "raw_artifacts_sha256": {
+      "before-cleanup-readbacks.private.json": "e2e35fc0a92ab8131d1bc6425b3978ccaffcbe536b32407223bbdd3eac9bafdf",
+      "cross-ipc-results.private.json": "00a1f6611af0813cb9105f85e61546bed948aa95a77e070528016d30e77c0a1b",
+      "five-oom-with-twenty-peer-stdin-oom.private.log": "33c8acd1cd91123fbe0bb52974d2cfb0d917c5a2c96b26b15095eb0b54f2eec7",
+      "five-oom-with-twenty-peer-stdin-peer.private.log": "266a141414b189b221ff9cdf5e29b6dbe07b856067b2daaf70fb8183958c321b",
+      "mps-current-sampled.actual.private.json": "6b11d1db237fbe1c0d5da0d6cefbeb1dd0c3a14a2882ee87c3e615ef4094d821",
+      "mps-current-sampled.result.private.json": "0930fa48ab04bee8478acdd62846006fc27512c0bbba4b2364c3e993c8223257",
+      "mps-native-samples-sampled.private.jsonl": "aaee8e8c2b63bec51a301d98db02a282303a6298d32548fdc28efb582dd29f51",
+      "paired-oom-results.private.json": "d45b4fc8826bfd98082fe8c8e5ccc45d5c953648a28f25a7a560f72afaf03873",
+      "restored-clusterwide.private.json": "598a78567975c2920091f031ec4a6fd2f065453ae1191fff0220aa6f78ec7387",
+      "retirement-journals.private.json": "0731aa23567c2badfeacf6f951fc0d947e58519ae2fcc5194007b0200f7b8469",
+      "run-summary.verified.private.json": "71da8afed5cba4ce3d885afd9a988a32372720574584f56d327cfe8d327eb09f",
+      "same-imports-results.private.json": "09163ea2b79009c70b83839d23402427c56979cb85920859d17a69f2f20cdfde",
+      "sealed-journal-and-receipts.private.log": "2fa116cc26d149505983cc84139a4a4f9d9b87db3b0752520aae9402be5c68bd",
+      "twenty-oom-with-five-peer-stdin-oom.private.log": "65233afb3652a6b95bd78cb227d6bc12966ed672ca4a4ab5e1d83b8c0db2f844",
+      "twenty-oom-with-five-peer-stdin-peer.private.log": "6dc639495cc3466e42e6ba5e6192bfbeec2380593763a90dd5c6ace8d56d7dbc"
+    },
+    "raw_credentials_or_full_cluster_objects_published": false
+  },
+  "remaining": [
+    "kernel witness correlation",
+    "cross-parentVMM",
+    "managed-memory current-run",
+    "restart new lifetime",
+    "normalHubGPU start/CUDA",
+    "crossHubpooling/packing/scheduling",
+    "fullreleasegates"
+  ],
+  "same_parent_imports": {
+    "ipc": {
+      "cross_parent_isolation_qualified": false,
+      "peer_continuity": true,
+      "production_qualified": false,
+      "same_parent_measurement": true
+    },
+    "vmm": {
+      "cross_parent_isolation_qualified": false,
+      "peer_continuity": true,
+      "production_qualified": false,
+      "same_parent_measurement": true
+    },
+    "vmm-direct": {
+      "cross_parent_isolation_qualified": false,
+      "peer_continuity": true,
+      "production_qualified": false,
+      "same_parent_measurement": true
+    }
+  },
+  "schema_version": 1,
+  "scope": "one qualified A100; current trusted operator Job lifetimes at5/20GiB; kernel/controller measurements only"
+}

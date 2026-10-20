@@ -5,9 +5,14 @@ configuration renders are necessary checks, not acceptance evidence for hardware
 real authentication, shared kernels or data recovery.
 
 The latest bounded hardware result is the
-[2026-10-12 two-workspace lifecycle](#2026-10-12-limited-group-lifecycle-and-personal-argo-source-checkpoint).
-Earlier dated failures and pending statements below remain historical evidence;
-the latest receipt supersedes them only for its exact scopes and measured pins.
+[2026-10-20 trusted no-MIG 5/20 GiB pair](../../qualification-artifacts/native-trusted-pair-20261020/README.md).
+Both fixed caps rejected allocation growth while the other workspace continued;
+same-parent import controls and bounded private MPS also passed. Cross-parent IPC
+returned permission denial in both directions, but correlated kernel witnesses,
+cross-parent VMM, current managed-memory and restart checks remain open. This
+operator-Job run does not prove normal Hub startup, cross-Hub pooling or all-eight-GPU
+production qualification. Earlier dated results below retain their original scope;
+no historical proof or policy was relabeled or enabled by this run.
 
 Run configuration checks with `scripts/compute-platform/verify-config.sh`.
 It verifies pinned chart checksums, catalog/generated artifacts, disabled staging,

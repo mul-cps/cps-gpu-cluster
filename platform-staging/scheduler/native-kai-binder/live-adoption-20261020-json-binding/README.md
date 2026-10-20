@@ -9,3 +9,9 @@ The next normal workspace attempt completed preparation and current validation, 
 Normal Stop completed. All 159 allocations are released, all prior 158 remain unchanged, nine workspace records are stopped, SQL reservations/bindings are empty and the temporary token is revoked. The personal notebook's current containers and restart counts were unchanged.
 
 This is a deployed pilot, not production qualification. Dynamic 5/20 GiB isolation, import/restart/MPS, cross-Hub pooling and broader scheduling/startup gates remain open. The JSON wire tests do not prove the full live allocation path.
+
+Later the same day, [trusted operator Jobs measured current no-MIG 5/20 GiB caps,
+peer OOM/recovery, same-parent imports and bounded private MPS](../../../../qualification-artifacts/native-trusted-pair-20261020/README.md).
+That separate hardware checkpoint does not close the normal Hub transaction issue
+recorded here. Current cross-parent kernel witnesses, VMM/managed-memory/restart,
+pooling and wider production gates remain open; policy enablement is unchanged.

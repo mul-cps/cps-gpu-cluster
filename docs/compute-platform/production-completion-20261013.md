@@ -7,10 +7,22 @@ measured acceptance. Evidence for one stage does not establish the next stage.
 See the [operational acceptance record](qualification/operational-acceptance-20261013.md)
 for the bounded live results of 2026-10-13 and their retained evidence.
 
-## Current boundary — 16 October 2026
+## 20 October 2026 — trusted GPU pair checkpoint
+
+The [sanitized trusted no-MIG 5/20 GiB result](../../qualification-artifacts/native-trusted-pair-20261020/README.md)
+records actual cap readbacks, OOM with peer progress in both directions,
+same-parent import controls and private MPS aggregate OOM/recovery. The controlled
+Jobs and temporary permissions were removed; original Gateway/Node specifications,
+GPU2 schedulability, all 159 released ledger rows and the protected notebook were
+preserved. This advances kernel/controller evidence only. Kernel-witness correlation,
+cross-parent VMM, current managed-memory, new-lifetime restart, normal Hub GPU
+Start/CUDA, pooling/packing/scheduling and complete release gates remain unfinished.
+No policy enablement or production qualification follows from this checkpoint.
+
+## Historical boundary — 16 October 2026
 
 The [current-state audit and adoption record](current-state-20261016.md) is the
-authoritative current summary. Gateway9e695 and both Hube906 processes are
+dated summary for that checkpoint. Gateway9e695 and both Hube906 processes are
 deployed; Source51f remains unchanged. Normal `shared-gpu-lab` Start is restored,
 with a Ready 5 GiB cap, three member reservations, and 45 successful readiness
 checks over 80 seconds. The backup schedule now matches Gateway9e695 and a fresh
