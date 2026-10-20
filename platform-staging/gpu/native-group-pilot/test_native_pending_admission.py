@@ -158,9 +158,19 @@ class PendingAdmissionTests(unittest.TestCase):
                 with self.assertRaises(ValueError):
                     render.render(self.config, allow_pending_current_groups=value)
 
-    def test_default_authority_policy_bytes_match_original(self):
-        parts = [p for p in render.render()['items'] if p['kind'].startswith('Validating')
-                 or p['kind'] in ('Role', 'RoleBinding', 'ClusterRole', 'ClusterRoleBinding')]
+    def test_default_authority_bytes_change_only_workload_map_reads(self):
+        parts = copy.deepcopy([p for p in render.render()['items'] if p['kind'].startswith('Validating')
+                 or p['kind'] in ('Role', 'RoleBinding', 'ClusterRole', 'ClusterRoleBinding')])
+        roles = [p for p in parts if p['kind'] == 'Role'
+                 and p['metadata']['name'] == 'cps-native-node-agent-pods']
+        self.assertEqual({p['metadata']['namespace'] for p in roles}, {'jupyterhub', 'cit-jhub'})
+        self.assertEqual(len(roles), 2)
+        added = {'apiGroups': [''], 'resources': ['configmaps'], 'verbs': ['get']}
+        for role in roles:
+            self.assertEqual(role['rules'].count(added), 1)
+            role['rules'].remove(added)
+        # Every prior Role, binding and admission byte stays pinned; only the
+        # two explicitly reviewed workload ConfigMap read rules are removed.
         self.assertEqual(hashlib.sha256(canonical(parts).encode()).hexdigest(),
                          '6ac08b32608544a371e7628b475649d86c1c97df1e5efcc1358cb66203330292')
 

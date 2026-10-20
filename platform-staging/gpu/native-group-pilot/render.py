@@ -150,7 +150,10 @@ def render(config=None, *, image=DEFAULT_IMAGE, enable=False, allow_pending_curr
              roleRef={'apiGroup': 'rbac.authorization.k8s.io', 'kind': 'ClusterRole', 'name': ACCOUNT + '-node'})]
     for hub_namespace in ('jupyterhub', 'cit-jhub'):
         objects.extend([item('Role', ACCOUNT + '-pods', hub_namespace,
-            rules=[{'apiGroups': [''], 'resources': ['pods'], 'verbs': ['get', 'delete']}]),
+            rules=[{'apiGroups': [''], 'resources': ['pods'], 'verbs': ['get', 'delete']},
+                   # Attempt-specific KAI map names cannot be prefix-scoped in
+                   # RBAC. Node still authenticates exact immutable map lineage.
+                   {'apiGroups': [''], 'resources': ['configmaps'], 'verbs': ['get']}]),
             item('RoleBinding', ACCOUNT + '-pods', hub_namespace, subjects=subject,
                  roleRef={'apiGroup': 'rbac.authorization.k8s.io', 'kind': 'Role', 'name': ACCOUNT + '-pods'})])
     # RBAC cannot restrict create by resourceName. This admission policy closes

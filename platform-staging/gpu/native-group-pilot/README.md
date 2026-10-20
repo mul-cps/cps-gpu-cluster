@@ -70,8 +70,17 @@ finite cap in the typed proof. Old gateways reject this extra evidence and keep
 the allocation held. A newly loaded driver's map cannot prove an older journal's
 epoch; module teardown recovery requires separate operator evidence.
 
-RBAC grants only exact Pod GET/DELETE in `jupyterhub` and `cit-jhub`, GET of the
-single GPU2 node, and ConfigMap GET/LIST/CREATE in the authority namespace.
+RBAC grants Pod GET/DELETE and a separate ConfigMap GET-only rule in the two
+fixed workload namespaces `jupyterhub` and `cit-jhub`, GET of the single GPU2
+node, and ConfigMap GET/LIST/CREATE in the authority namespace. Workload
+ConfigMaps are intentionally readable throughout those two namespaces: stock
+KAI map names change with every Pod attempt, and RBAC cannot match name prefixes.
+There is no workload ConfigMap LIST/WATCH, mutation or Secret permission. Node
+still requires the exact immutable map UID, resource version, owner, raw data
+hash and protected allocation/enrollment lineage before acknowledging or sealing
+an allocation. This read permission does not grant GPU execution authority.
+The committed `proposal.json` is the original disabled historical artifact;
+render current desired RBAC through `render.py` rather than replay that capture.
 Because RBAC cannot restrict CREATE by resource name, a fail-closed admission
 policy limits this node credential to immutable cleanup ConfigMaps with one
 `receipt.json`, one matching binding label and no garbage-collection owner.

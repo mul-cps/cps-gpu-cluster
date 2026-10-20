@@ -41,7 +41,10 @@ class RenderTest(unittest.TestCase):
         result = self.render.render()
         pod_roles = [v for v in result['items'] if v['kind'] == 'Role' and v['metadata']['namespace'] in ('jupyterhub', 'cit-jhub')]
         self.assertEqual(len(pod_roles), 2)
-        self.assertTrue(all(v['rules'] == [{'apiGroups': [''], 'resources': ['pods'], 'verbs': ['get', 'delete']}] for v in pod_roles))
+        self.assertTrue(all(v['rules'] == [
+            {'apiGroups': [''], 'resources': ['pods'], 'verbs': ['get', 'delete']},
+            {'apiGroups': [''], 'resources': ['configmaps'], 'verbs': ['get']},
+        ] for v in pod_roles))
         cluster = next(v for v in result['items'] if v['kind'] == 'ClusterRole')
         self.assertEqual(cluster['rules'], [{'apiGroups': [''], 'resources': ['nodes'], 'resourceNames': ['k3s-wk-gpu2'], 'verbs': ['get']}])
         authority = next(v for v in result['items'] if v['kind'] == 'Role' and v['metadata']['name'] == 'cps-native-node-agent-authority')
@@ -52,6 +55,45 @@ class RenderTest(unittest.TestCase):
         self.assertIn('object.immutable', expressions)
         self.assertIn('receipt.json', expressions)
         self.assertIn('system:serviceaccount:cps-native-authority:cps-native-node-agent', policy['spec']['matchConditions'][0]['expression'])
+
+    def test_node_reads_attempt_maps_only_in_declared_hub_namespaces(self):
+        for pending in (False, True):
+            docs = self.render.render(allow_pending_current_groups=pending)['items']
+            roles = {(v['metadata']['namespace'], v['metadata']['name']): v
+                     for v in docs if v['kind'] == 'Role'}
+            subject = {'kind': 'ServiceAccount', 'name': 'cps-native-node-agent',
+                       'namespace': 'cps-native-authority'}
+
+            def allows(namespace, resource, verb, name):
+                for binding in docs:
+                    if (binding['kind'] != 'RoleBinding'
+                            or binding['metadata']['namespace'] != namespace
+                            or subject not in binding['subjects']):
+                        continue
+                    role = roles[namespace, binding['roleRef']['name']]
+                    for rule in role['rules']:
+                        if (rule['apiGroups'] == [''] and resource in rule['resources']
+                                and verb in rule['verbs']
+                                and ('resourceNames' not in rule or name in rule['resourceNames'])):
+                            return True
+                return False
+
+            for namespace in ('jupyterhub', 'cit-jhub'):
+                # Different attempts produce different stock KAI names. Read
+                # access covers both; UID/owner/hash proof remains Node-owned.
+                for prefix in ('1' * 32, '2' * 32):
+                    for suffix in ('-shared-gpu-0', '-shared-gpu-0-evar'):
+                        name = 'cps-native-' + prefix + suffix
+                        self.assertTrue(allows(namespace, 'configmaps', 'get', name))
+                        for verb in ('list', 'watch', 'create', 'update', 'patch',
+                                     'delete', 'deletecollection'):
+                            self.assertFalse(allows(namespace, 'configmaps', verb, name))
+                        for verb in ('get', 'list', 'watch', 'create', 'update', 'patch', 'delete'):
+                            self.assertFalse(allows(namespace, 'secrets', verb, name))
+                self.assertTrue(allows(namespace, 'pods', 'get', 'original-pod'))
+                self.assertTrue(allows(namespace, 'pods', 'delete', 'original-pod'))
+            for namespace in ('unrelated-hub', 'cps-compute', 'kube-system'):
+                self.assertFalse(allows(namespace, 'configmaps', 'get', 'foreign-map'))
 
     def test_gateway_has_scoped_ledger_cas_and_admission_closed_enrollment(self):
         result = self.render.render()
