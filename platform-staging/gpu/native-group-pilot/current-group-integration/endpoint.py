@@ -195,7 +195,33 @@ finally:
                       'Node remains cordoned: automatic scheduler placement is not qualified.']}
 
 
-def snapshot_inputs(snapshot, node_reference):
+def _validate_ledger_projection(ledger, configuration, policy, *, held_cleanup=None, expected_held_cleanup_sha256=None):
+    """Validate projection custody only; this never authorizes activation or release."""
+    from cps_compute.native_groups import canonical_sha256
+    if held_cleanup is None:
+        require(expected_held_cleanup_sha256 is None, 'Held cleanup pin requires explicit mode')
+        state=json.loads(ledger['data']['state.json'])
+        require(all(x['state']=='released' for x in state['allocations'].values()),
+                'Empty active ledger required for activation proposal')
+        return
+    require(canonical_sha256(held_cleanup)==expected_held_cleanup_sha256,
+            'Independent complete held cleanup packet pin required')
+    import importlib.util
+    from pathlib import Path
+    path=Path(__file__).resolve().parent.parent/'current-group-kai'/'held_cleanup_maintenance.py'
+    spec=importlib.util.spec_from_file_location('endpoint_held_cleanup',path)
+    helper=importlib.util.module_from_spec(spec);spec.loader.exec_module(helper)
+    held=helper.validate(ledger,held_cleanup)
+    pool=configuration.deployment.node_pool
+    epoch={k:pool[k] for k in ('node_uid','boot_id','driver_generation','gpu_uuid')}
+    require(held['epoch']==epoch and held['policy_hash']==policy.hash
+            and held['node']==pool['node']
+            and held['namespace']==configuration.document['component_declarations']['hub:cps']['namespace']
+            and held['authority_namespace']==configuration.deployment.authority_namespace,
+            'Held cleanup differs from current deployment policy, node or driver authority')
+
+
+def snapshot_inputs(snapshot, node_reference, *, held_cleanup=None, expected_held_cleanup_sha256=None):
     """Consume a private captured API bundle in memory; never return tokens.
 
     Caller supplies the protected NodeConfig six-key reference, not a name
@@ -212,8 +238,9 @@ def snapshot_inputs(snapshot, node_reference):
     policy=Policy(json.loads(objects['configmap/cps-compute/compute-policy']['data']['policy.json']))
     context=GroupPendingContext.load(CapturedAPI(),ImmutableConfigMapRef.from_dict(node_reference),policy)
     runtime=json.loads(base64.b64decode(objects['secret/cps-compute/cps-compute-runtime']['data']['runtime.json']))
-    ledger=json.loads(objects['configmap/'+context.deployment.authority_namespace+'/cps-native-gpu-allocations']['data']['state.json'])
-    require(all(x['state']=='released' for x in ledger['allocations'].values()), 'Empty active ledger required for activation proposal')
+    ledger=objects['configmap/'+context.deployment.authority_namespace+'/cps-native-gpu-allocations']
+    _validate_ledger_projection(ledger,context._configuration,policy,held_cleanup=held_cleanup,
+                                expected_held_cleanup_sha256=expected_held_cleanup_sha256)
     settings={}
     for source,ns in (('cps','jupyterhub'),('cit','cit-jhub')):
         candidates=[json.loads(x['data']['settings.json']) for k,x in objects.items()
