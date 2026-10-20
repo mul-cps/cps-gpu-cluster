@@ -1,0 +1,47 @@
+{
+  "recorded_at": "2026-10-20T05:34:36.050914+00:00",
+  "stage": "qualified-inventory-normal-start-attempt",
+  "inventory_verification": {
+    "verified": true,
+    "mutations": 0,
+    "pilot_capacity": 1,
+    "explicit_sidecar_restart": 1,
+    "cuda_isolation_qualified": false
+  },
+  "normal_start_executed_once": true,
+  "normal_start_succeeded": false,
+  "primary_observed_failure": "Hub native registration observation deadline exceeded",
+  "secondary_observed_failure": "Release audit database locked while execution fence occupied",
+  "cuda_executed": false,
+  "gpu_isolation_qualified": false,
+  "production_ready": false,
+  "cleanup": {
+    "sql": {
+      "reservation": 0,
+      "reservation_binding": 0
+    },
+    "cps": {
+      "count": 8,
+      "all_stopped": true
+    },
+    "cit": {
+      "count": 1,
+      "all_stopped": true
+    },
+    "ledger_count": 153,
+    "all_prior_allocations_unchanged": true,
+    "new_allocation_count": 1,
+    "all_released": true,
+    "binder_restored_ready": true,
+    "pilot_pod_and_bindrequest_absent": true,
+    "protected_running": true,
+    "token_revoked": true
+  },
+  "evidence_sha256": {
+    "inventory-held-verification": "cc4cff6877fbab73ac724dd543347555127dc87484a09be6829c0a18299c3534",
+    "normal-start-and-cleanup": "2cb534e6aa067303c05cb1479b67590523c5357e3a0eae5fe020873bd1fd4f21",
+    "cleanup": "def78a1742e6fcff471a5af76510edfb1df9ade6c60778fcafe07fe6c031c874"
+  },
+  "historical_default_inventory_smoke": "runtime-smoke.json",
+  "next_gate": "Correct registration critical path, then normal Start and actual CUDA before 5/20 GiB peer isolation"
+}

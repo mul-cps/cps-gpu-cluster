@@ -1,5 +1,5 @@
 {
-  "status": "qualification-only-not-deployed",
+  "status": "qualification-runtime-incomplete",
   "images": {
     "device_plugin": {
       "reference": "ghcr.io/mul-cps/cps-native-device-plugin@sha256:2258429b6bc7afb0d98f7fd61b32159ba40d49c3f3c571d6625b268e345449c1",
@@ -7,8 +7,9 @@
       "raw_config_identical_to_tested_image": true,
       "live_deployed": true,
       "gpu_qualified": false,
-      "allowlist_active": false,
-      "runtime_smoke_verified": true
+      "allowlist_active": true,
+      "runtime_smoke_verified": true,
+      "allowlist_scope": "k3s-wk-gpu2 qualified UUID only"
     },
     "scheduler": {
       "reference": "ghcr.io/mul-cps/cps-native-kai-scheduler@sha256:e4fd2b21aef35243d37ed537e754aeca96340b7f4e5906564c97eb36c9e4abf4",
