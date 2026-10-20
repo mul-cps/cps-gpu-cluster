@@ -25,6 +25,7 @@ def test_actual_qualified_configuration_and_epoch_interoperability(request,monke
     result=endpoint.render(c.group_context,**args)
     settings,rules=validate_configuration(result['coordinator'],h.native)
     assert settings.authority_namespace==h.group.authority_namespace
+    assert settings.fence_seconds==60, "Allow the measured Node enrollment publication window within the existing hard limit"
     assert {r.source:r.central_actor for r in rules if r.role=='hub'}=={'cps':'cps','cit':'cit'}
     assert result['coordinator']['nodeConfigurationRef']==c.group_context.node_configuration_ref
     assert result['gateway']['private_files']['policy.json']==h.policy.catalog

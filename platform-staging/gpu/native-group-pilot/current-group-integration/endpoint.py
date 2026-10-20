@@ -56,7 +56,7 @@ def render(context, *, gateway_account, binder_account, hub_accounts, hub_settin
     require(set(hub_accounts)==set(hub_settings)=={'cps','cit'}, 'Both source Hubs required')
     ReservationTemplate(reservation_template)
     settings={'authority_namespace':namespace,'binder_actor':binder,'coordinator_actor':gateway,
-              'queue':queue,'fence_seconds':30,'gpu_memory_mib':dep.node_pool['total_memory_mib']}
+              'queue':queue,'fence_seconds':60,'gpu_memory_mib':dep.node_pool['total_memory_mib']}
     rules=[{'actor':binder,'uid':binder_account['metadata']['uid'],'role':'binder'}]
     hubs={}; objects=[]
     for source in ('cps','cit'):
