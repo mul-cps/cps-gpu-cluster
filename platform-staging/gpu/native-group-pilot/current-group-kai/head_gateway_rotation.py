@@ -282,9 +282,24 @@ def _context(inputs):
                     pinned['index'], head_names[pinned['namespace']], component=False)
     ledger = image._get(snapshot, 'ConfigMap', configuration.deployment.authority_namespace, 'cps-native-gpu-allocations')
     state = image._parse(ledger['data']['state.json'])
-    image.require(state.get('version') == 1 and isinstance(state.get('allocations'), dict)
-        and all(v.get('state') == 'released' for v in state['allocations'].values()),
-        'Released-only ledger capture required; actual SQL/writer fences remain Root gates')
+    if inputs.get('held_cleanup') is None:
+        image.require('expected_held_cleanup_sha256' not in inputs, 'Held-cleanup pin requires explicit mode')
+        image.require(state.get('version') == 1 and isinstance(state.get('allocations'), dict)
+            and all(v.get('state') == 'released' for v in state['allocations'].values()),
+            'Released-only ledger capture required; actual SQL/writer fences remain Root gates')
+    else:
+        image.require(image.sha(inputs['held_cleanup']) == inputs.get('expected_held_cleanup_sha256'),
+            'Independent complete held-cleanup packet pin required')
+        image.require(node_image is not None and node_image != declarations['node']['image']
+            and gateway_image != declarations['gateway']['image']
+            and not updates and cpu_update is None,
+            'Held cleanup permits only a paired compatible Node/Gateway image successor')
+        held = _module(Path(__file__).with_name('held_cleanup_maintenance.py')).validate(ledger, inputs['held_cleanup'])
+        image.require(held['epoch'] == epoch and held['policy_hash'] == policy.hash
+            and held['node'] == configuration.deployment.node_pool['node']
+            and held['namespace'] == declarations['hub:cps']['namespace']
+            and held['authority_namespace'] == configuration.deployment.authority_namespace,
+            'Held cleanup must match current deployment policy, node and driver authority')
     from cps_compute.immutable_configmap import ImmutableConfigMapRef
     terminal = ImmutableConfigMapRef.from_dict(document['terminal_index_ref'])
     terminal.validate(image._get(snapshot, 'ConfigMap', terminal.to_dict()['namespace'], terminal.to_dict()['name']))
@@ -292,11 +307,13 @@ def _context(inputs):
 
 
 def prepare(snapshot, previous_release, operator_baselines, gateway_image, endpoint_proposal, actual_endpoint_seed,
-            *, expected_snapshot_sha256, expected_release_sha256, expected_operator_baselines_sha256, expected_revision, expected_endpoint_proposal_sha256=None, node_image=None, stock_cdi_update=None, management_cdi_update=None, node_cpu_update=None):
+            *, expected_snapshot_sha256, expected_release_sha256, expected_operator_baselines_sha256, expected_revision, expected_endpoint_proposal_sha256=None, node_image=None, stock_cdi_update=None, management_cdi_update=None, node_cpu_update=None, held_cleanup=None, expected_held_cleanup_sha256=None):
     """First phase: create an immutable Node4 image or CDI provider successor candidate."""
     inputs = deepcopy(locals())
     if node_image is None: inputs.pop('node_image')
     if node_cpu_update is None: inputs.pop('node_cpu_update')
+    if held_cleanup is None: inputs.pop('held_cleanup')
+    if expected_held_cleanup_sha256 is None: inputs.pop('expected_held_cleanup_sha256')
     for key,_ in _CDI_UPDATES:
         if inputs[key] is None: inputs.pop(key)
     if expected_endpoint_proposal_sha256 is None:
