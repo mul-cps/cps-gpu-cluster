@@ -28,3 +28,23 @@ def render(config, *, configuration, image, config_secret, journal_pvc, job_name
     return {'apiVersion':'batch/v1','kind':'Job','metadata':{'namespace':namespace,'name':job_name},
         'spec':{'backoffLimit':0,'activeDeadlineSeconds':active_deadline_seconds,
             'parallelism':1,'completions':1,'template':template}}
+
+
+def read_permissions(configuration, namespace='cps-compute', name='cps-native-head-checkpoint-reader'):
+    """Return separate temporary read grants; never create/apply them in render.
+
+    The observer's read-only reconciliation plan requires namespace Pod lists and
+    GETs for its seven declaration-derived Role targets, just as rotation does.
+    Operators must separately review/create/read back/UID-clean up these objects.
+    """
+    if not isinstance(name,str)or not re.fullmatch(r'[a-z0-9](?:[-a-z0-9]{0,61}[a-z0-9])?',name):
+        raise ValueError('Explicit canonical checkpoint read-permission name required')
+    spec=importlib.util.spec_from_file_location('checkpoint_rotation_reads',Path(__file__).with_name('rotation_read_permissions.py'))
+    permissions=importlib.util.module_from_spec(spec);spec.loader.exec_module(permissions)
+    docs=permissions.render(configuration=configuration,namespace=namespace)
+    if len(docs)!=8 or len({d['metadata']['namespace']for d in docs})!=4:
+        raise ValueError('Exact four-namespace checkpoint read window required')
+    for doc in docs:
+        doc['metadata']['name']=name
+        if doc['kind']=='RoleBinding':doc['roleRef']['name']=name
+    return docs

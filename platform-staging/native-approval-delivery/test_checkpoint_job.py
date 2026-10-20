@@ -86,3 +86,43 @@ def test_legacy_adoption_cannot_accept_checkpoint_reference():
  values=inputs()
  with pytest.raises(TypeError):load('adoption_job').render(values['config'],**daemon_args(values),job_name='legacy',
   legacy_state_sha256='sha256:'+'b'*64,legacy_seed_sha256='sha256:'+'c'*64,checkpoint_reference=reference())
+
+
+def test_explicit_checkpoint_reads_are_only_four_namespace_pod_lists_and_seven_named_role_gets():
+ from cps_compute.native_observer_permissions import role_targets
+ values=inputs();configuration=values['configuration'];before=copy.deepcopy(configuration.document)
+ job_before=load('checkpoint_job').render(values['config'],**daemon_args(values),checkpoint_reference=reference(),job_name='reviewed-checkpoint')
+ docs=load('checkpoint_job').read_permissions(configuration)
+ targets=role_targets(configuration.document);namespaces={ns for ns,_ in targets}
+ assert len(docs)==8 and len(namespaces)==4
+ for ns in namespaces:
+  metadata={'namespace':ns,'name':'cps-native-head-checkpoint-reader'}
+  assert next(d for d in docs if d['kind']=='Role'and d['metadata']['namespace']==ns)=={
+   'apiVersion':'rbac.authorization.k8s.io/v1','kind':'Role','metadata':metadata,'rules':[
+    {'apiGroups':['rbac.authorization.k8s.io'],'resources':['roles'],'verbs':['get'],
+     'resourceNames':sorted(name for namespace,name in targets if namespace==ns)},
+    {'apiGroups':[''],'resources':['pods'],'verbs':['list']}]}
+  assert next(d for d in docs if d['kind']=='RoleBinding'and d['metadata']['namespace']==ns)=={
+   'apiVersion':'rbac.authorization.k8s.io/v1','kind':'RoleBinding','metadata':metadata,
+   'subjects':[{'kind':'ServiceAccount','namespace':'cps-compute','name':'cps-native-head-delivery'}],
+   'roleRef':{'apiGroup':'rbac.authorization.k8s.io','kind':'Role','name':metadata['name']}}
+ assert configuration.document==before
+ # Rendering remains independent; no read permissions are embedded or applied.
+ job_after=load('checkpoint_job').render(values['config'],**daemon_args(values),checkpoint_reference=json.loads(job_before['spec']['template']['spec']['containers'][0]['args'][-2]),job_name='reviewed-checkpoint')
+ assert job_after==job_before
+ renamed=load('checkpoint_job').read_permissions(configuration,namespace='operator-system',name='reviewed-read-window')
+ assert len(renamed)==8
+ assert all(d['metadata']['name']=='reviewed-read-window'for d in renamed)
+ assert all(d['subjects']==[{'kind':'ServiceAccount','namespace':'operator-system','name':'cps-native-head-delivery'}]
+  and d['roleRef']['name']=='reviewed-read-window'for d in renamed if d['kind']=='RoleBinding')
+
+
+@pytest.mark.parametrize('field,value',[(field,value)for field in ('namespace','name')for value in ('Bad_Name','*','',False,'a'*64)])
+def test_checkpoint_read_permissions_reject_noncanonical_actor_and_object_names(field,value):
+ values=inputs()
+ with pytest.raises(ValueError):load('checkpoint_job').read_permissions(values['configuration'],**{field:value})
+
+
+@pytest.mark.parametrize('configuration',[None,{},object()])
+def test_checkpoint_read_permissions_require_actual_immutable_configuration(configuration):
+ with pytest.raises(ValueError):load('checkpoint_job').read_permissions(configuration)
