@@ -56,3 +56,14 @@ Remaining gates: actual four/eight-GPU collective communication, checkpoint
 restore across attempts, real gateway authorization, concurrent scheduling and
 retry cleanup under those GPU workloads. This CPU test does not qualify GPU
 profiles or enable distributed production access.
+
+## Checked-in successor fixture
+
+The bounded CPU controller matrix is now available as
+[cpu-controller/qualify.py](cpu-controller/qualify.py), with
+[execution prerequisites and limits](cpu-controller/README.md). It is inert by
+default and requires an explicitly enabled, hash-pinned disposable fixture
+packet. Its interval task performs cleanup independently of observation and
+records measured fixture cleanup timing. Source/offline tests do not refresh
+this historical live receipt or qualify production OAuth, scheduling latency,
+checkpoint recovery or distributed GPU execution.
