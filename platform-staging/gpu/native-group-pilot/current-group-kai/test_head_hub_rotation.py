@@ -247,7 +247,9 @@ def operator_fixture():
     namespace=image._context(snapshot)[1].deployment.authority_namespace
     for label,name,main in [('observer','cps-native-observer-operator','observer'),
                             ('writer','cps-native-head-delivery','delivery')]:
-        old='ghcr.io/mul-cps/cps-compute@sha256:'+('4' if label=='observer' else '5')*64
+        namespace='cps-native-system' if label=='observer' else 'cps-compute'
+        repository='cps-native-observer' if label=='observer' else 'cps-compute'
+        old='ghcr.io/mul-cps/'+repository+'@sha256:'+('4' if label=='observer' else '5')*64
         pod={'serviceAccountName':name,'containers':[{'name':main,'image':old,
             'command':['preserved-command'],'args':['--checkpoint-reference-json','preserved-checkpoint'],
             'env':[{'name':'PRESERVED','value':'exact'}],
@@ -258,7 +260,7 @@ def operator_fixture():
             'uid':str(uuid.uuid4()),'resourceVersion':'71'},'spec':{'replicas':0,'strategy':{'type':'Recreate'},
             'selector':{'matchLabels':{'app':name}},'template':{'metadata':{'labels':{'app':name}},'spec':pod}}}
         snapshot['objects'][image._key('Deployment',namespace,name)]=dep
-    v['operator_images']={'observer':'ghcr.io/mul-cps/cps-compute@sha256:'+'a'*64,
+    v['operator_images']={'observer':'ghcr.io/mul-cps/cps-native-observer@sha256:'+'a'*64,
                           'writer':'ghcr.io/mul-cps/cps-compute@sha256:'+'b'*64}
     v['expected_snapshot_sha256']=canonical_sha256(snapshot)
     return v
@@ -296,7 +298,7 @@ def test_gateway_node_stage_after_hub_pair_refresh_changes_only_selected_fixed_i
     assert {'observer.deployment','writer.deployment'}<=set(result['patches'])
     for label,name,main in [('observer','cps-native-observer-operator','observer'),
                             ('writer','cps-native-head-delivery','delivery')]:
-        old_dep=image._get(snapshot,'Deployment',old.deployment.authority_namespace,name)
+        old_dep=image._get(snapshot,'Deployment','cps-native-system' if label=='observer' else 'cps-compute',name)
         expected=copy.deepcopy(old_dep['spec']);pod=expected['template']['spec']
         next(c for c in pod['containers']if c['name']==main)['image']=v['operator_images'][label]
         if label=='writer':next(c for c in pod['initContainers']if c['name']=='private-inputs')['image']=v['operator_images'][label]
@@ -319,7 +321,7 @@ def test_selected_component_or_operator_refresh_denies_unsupported_or_unpinned_i
     elif fault=='mutable-image':v['operator_images']['observer']='ghcr.io/mul-cps/cps-compute:latest'
     elif fault=='unknown-operator':v['operator_images']['foreign']=v['hub_image']
     else:
-        namespace=image._context(v['snapshot'])[1].deployment.authority_namespace
+        namespace='cps-compute'
         key=image._key('Deployment',namespace,'cps-native-head-delivery')
         if fault=='missing-operator':v['snapshot']['objects'].pop(key)
         elif fault=='operator-identity':v['snapshot']['objects'][key]['metadata']['name']='foreign'
@@ -338,3 +340,18 @@ def test_paired_hub_stage_accepts_image_only_operator_refresh():
     assert {'hub:cps.publisher','hub:cit.publisher'}<=set(created)
     assert 'gateway.publisher' not in created and 'gateway.capture-seed' not in created
     assert image._parse(node['data']['config.json'])['component_declarations']['hub:cit']['image']==v['hub_image']
+
+
+@pytest.mark.parametrize('label',['observer','writer'])
+@pytest.mark.parametrize('old_image',[False,True])
+def test_operator_repository_is_exact_for_existing_and_successor_images(label,old_image):
+    v=operator_fixture();other='cps-compute' if label=='observer' else 'cps-native-observer'
+    wrong='ghcr.io/mul-cps/'+other+'@sha256:'+'d'*64
+    if old_image:
+        namespace,name=('cps-native-system','cps-native-observer-operator') if label=='observer' else ('cps-compute','cps-native-head-delivery')
+        pod=image._get(v['snapshot'],'Deployment',namespace,name)['spec']['template']['spec']
+        pod['containers'][0]['image']=wrong
+        if label=='writer':pod['initContainers'][0]['image']=wrong
+        v['expected_snapshot_sha256']=canonical_sha256(v['snapshot'])
+    else:v['operator_images'][label]=wrong
+    with pytest.raises(ValueError,match='Qualified immutable'):module().prepare(**v)

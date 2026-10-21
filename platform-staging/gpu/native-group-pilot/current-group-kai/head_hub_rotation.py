@@ -12,11 +12,11 @@ from head_gateway_rotation import (_guard,_actual,_core,_reference,_mounted_head
 
 HUBS=('hub:cps','hub:cit')
 
-OPERATORS={'observer':('cps-native-observer-operator','observer'),
-           'writer':('cps-native-head-delivery','delivery')}
+OPERATORS={'observer':('cps-native-system','cps-native-observer-operator','observer','cps-native-observer'),
+           'writer':('cps-compute','cps-native-head-delivery','delivery','cps-compute')}
 
-def _qualified(value,node=False):
-    repository='cps-native-node' if node else 'cps-compute'
+def _qualified(value,node=False,repository=None):
+    repository=repository or ('cps-native-node' if node else 'cps-compute')
     image.require(isinstance(value,str) and re.fullmatch(
         'ghcr.io/mul-cps/'+repository+r'@sha256:[a-f0-9]{64}',value)
         and not value.endswith('0'*64),'Qualified immutable component image required')
@@ -44,19 +44,20 @@ def _selected(inputs,declarations):
         'CPU alias update requires paired Hub rotation')
     return {c:targets[c] for c in targets if c in changed}
 
-def _operator_specs(inputs,namespace):
+def _operator_specs(inputs):
     selected=inputs.get('operator_images')
     if selected is None:return {}
     image.require(type(selected)is dict and bool(selected) and set(selected)<=set(OPERATORS),
         'Closed operator image selection required')
     result={}
     for label,target in selected.items():
-        _qualified(target);name,main=OPERATORS[label]
+        namespace,name,main,repository=OPERATORS[label]
+        _qualified(target,repository=repository)
         dep=image._get(inputs['snapshot'],'Deployment',namespace,name);meta=_guard(dep,'Deployment')
         image.require(meta['namespace']==namespace and meta['name']==name,'Fixed operator controller identity required')
         spec=deepcopy(dep['spec']);pod=spec['template']['spec']
         image.require(pod['serviceAccountName']==name,'Fixed operator ServiceAccount required')
-        container=image._one(pod['containers'],main);old=container['image'];_qualified(old)
+        container=image._one(pod['containers'],main);old=container['image'];_qualified(old,repository=repository)
         container['image']=target
         if label=='writer':
             helper=image._one(pod['initContainers'],'private-inputs')
@@ -98,7 +99,7 @@ def _context(inputs):
         'Independently pinned current Source revision differs')
     declarations = document['component_declarations']
     _selected(inputs,declarations)
-    _operator_specs(inputs,configuration.deployment.authority_namespace)
+    _operator_specs(inputs)
     runtime_secret = image.secret_volume(snapshot, 'gateway', 'config')
     _guard(runtime_secret, 'Secret')
     image.require(runtime_secret.get('type') == 'Opaque' and (runtime_secret.get('immutable') is None
@@ -338,9 +339,9 @@ def bind(snapshot, plan, actual_creates, *, actual_permissions=None):
         for component, original in snapshot['deployments'].items():
             value = deepcopy(original); value['spec'] = deepcopy(plan['runtime_specs'][component]); controllers.append(value)
             if value['spec'] != original['spec']: patches[component + '.deployment'] = image._patch(original, '/spec', value['spec'])
-        operator_specs=_operator_specs(inputs,old.deployment.authority_namespace)
+        operator_specs=_operator_specs(inputs)
         for label,spec in operator_specs.items():
-            original=image._get(snapshot,'Deployment',old.deployment.authority_namespace,OPERATORS[label][0])
+            original=image._get(snapshot,'Deployment',*OPERATORS[label][:2])
             if spec!=original['spec']:patches[label+'.deployment']=image._patch(original,'/spec',spec)
         maps = {image._key('ConfigMap', o['metadata']['namespace'], o['metadata']['name']): deepcopy(o)
                 for o in snapshot['objects'].values() if o['kind'] == 'ConfigMap'}

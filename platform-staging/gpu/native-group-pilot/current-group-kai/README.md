@@ -112,7 +112,9 @@ Each stage requires its own actual immutable readbacks and ordinary journal
 rotation. Maintenance fencing and process readiness remain operator gates.
 
 Optional `operator_images={"observer": "<digest image>", "writer": "<digest image>"}`
-can select either or both fixed operator Deployments captured in the pinned
+selects `cps-native-system/cps-native-observer-operator` with repository
+`ghcr.io/mul-cps/cps-native-observer`, and/or `cps-compute/cps-native-head-delivery`
+with repository `ghcr.io/mul-cps/cps-compute`, captured in the pinned
 snapshot objects. It changes only the fixed main image and Writer private-input
 initializer image, using UID/resourceVersion/full-spec CAS; all settings,
 checkpoint references, journal PVCs, replicas and private mounts remain exact.
