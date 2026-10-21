@@ -17,8 +17,12 @@ must match the reviewed version before execution.
 
 The local SDK drives real Kubernetes adapters only with explicit `--execute`.
 By default the script prints `enabled:false,api_calls:false`, imports no SDK or
-Kubernetes modules, and makes no requests. This work has been tested offline;
-there is no live qualification receipt.
+Kubernetes modules, and makes no requests. The live CPU matrix passed on 2026-10-21; see
+[evidence/20261021-cpu-controller.json](evidence/20261021-cpu-controller.json).
+Success, one-failure recovery, exhausted retries, ownership denials, UID-owned
+KAI gangs, idempotent tombstone replay and timer cleanup passed. The disposable
+namespace was independently confirmed absent. This does not qualify production
+OAuth, production cleanup latency or distributed GPU execution.
 
 ## Preconditions
 

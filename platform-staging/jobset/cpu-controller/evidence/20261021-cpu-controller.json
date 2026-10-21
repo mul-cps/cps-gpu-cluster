@@ -1,0 +1,164 @@
+{
+  "cases": [
+    {
+      "case": "success",
+      "cross_owner_operations_denied": true,
+      "elapsed_seconds": 20.49434688995825,
+      "idempotent_tombstone_replay": true,
+      "injected_failures": [],
+      "jobset_uid": "edef4fac-bbe9-4cf9-a6ff-2360230d5426",
+      "observed_terminal_to_clean_seconds": 1.4739282410009764,
+      "periodic_sweeps": [
+        {
+          "end": 471491.553821315,
+          "start": 471491.547425697
+        },
+        {
+          "end": 471496.561154094,
+          "start": 471496.554822597
+        },
+        {
+          "end": 471501.568237834,
+          "start": 471501.562233924
+        },
+        {
+          "end": 471506.680673771,
+          "start": 471506.569109552
+        }
+      ],
+      "restarts": 0,
+      "terminal_state": "Completed",
+      "tombstone_retained": true,
+      "uid_owned_children_remaining": 0,
+      "uid_owned_kai_gang_observed": true
+    },
+    {
+      "case": "recover",
+      "cross_owner_operations_denied": true,
+      "elapsed_seconds": 30.44226218701806,
+      "idempotent_tombstone_replay": true,
+      "injected_failures": [
+        {
+          "attempt": 0,
+          "job_uid": "d6e49996-fb22-4724-94ec-2db9579509e3"
+        }
+      ],
+      "jobset_uid": "9ca46d98-77ca-45ef-a1aa-b8be8c0da8d2",
+      "observed_terminal_to_clean_seconds": 1.7226581160211936,
+      "periodic_sweeps": [
+        {
+          "end": 471512.164275151,
+          "start": 471512.120534444
+        },
+        {
+          "end": 471517.284671543,
+          "start": 471517.164815134
+        },
+        {
+          "end": 471522.323046107,
+          "start": 471522.285989382
+        },
+        {
+          "end": 471527.362752681,
+          "start": 471527.324492468
+        },
+        {
+          "end": 471532.401727515,
+          "start": 471532.363640188
+        },
+        {
+          "end": 471537.584099745,
+          "start": 471537.403464593
+        }
+      ],
+      "restarts": 1,
+      "terminal_state": "Completed",
+      "tombstone_retained": true,
+      "uid_owned_children_remaining": 0,
+      "uid_owned_kai_gang_observed": true
+    },
+    {
+      "case": "exhaust",
+      "cross_owner_operations_denied": true,
+      "elapsed_seconds": 46.02185200701933,
+      "idempotent_tombstone_replay": true,
+      "injected_failures": [
+        {
+          "attempt": 0,
+          "job_uid": "a94505fb-e3f4-4ca4-aa1a-3335532a9c78"
+        },
+        {
+          "attempt": 1,
+          "job_uid": "c4fc5029-b4f7-4746-9a7e-90ee13f983ef"
+        },
+        {
+          "attempt": 2,
+          "job_uid": "40899036-4cfd-41fa-9d28-e339c5380902"
+        }
+      ],
+      "jobset_uid": "3e78010e-9e91-4a0f-878e-2886894db9d7",
+      "observed_terminal_to_clean_seconds": 3.3723876230069436,
+      "periodic_sweeps": [
+        {
+          "end": 471542.746211709,
+          "start": 471542.67157915
+        },
+        {
+          "end": 471547.806861404,
+          "start": 471547.747199286
+        },
+        {
+          "end": 471552.986743322,
+          "start": 471552.807982742
+        },
+        {
+          "end": 471558.105118207,
+          "start": 471557.987902963
+        },
+        {
+          "end": 471563.246421483,
+          "start": 471563.106138054
+        },
+        {
+          "end": 471568.318433582,
+          "start": 471568.248118065
+        },
+        {
+          "end": 471573.380666849,
+          "start": 471573.319462897
+        },
+        {
+          "end": 471578.45203242,
+          "start": 471578.381844153
+        },
+        {
+          "end": 471583.717667646,
+          "start": 471583.452301754
+        }
+      ],
+      "restarts": 2,
+      "terminal_state": "Failed",
+      "tombstone_retained": true,
+      "uid_owned_children_remaining": 0,
+      "uid_owned_kai_gang_observed": true
+    }
+  ],
+  "controller": {
+    "image": "registry.k8s.io/jobset/jobset:v0.12.0@sha256:e75536f1135b7bb2f19f8c3b620782fbdd9091d73398e3a272f9a5fed322980d",
+    "resourceVersion": "363810983",
+    "uid": "023206a3-9264-48ca-b420-f92671861efe"
+  },
+  "gpu_qualified": false,
+  "harness_commit": "6ed5382",
+  "image": "docker.io/library/python@sha256:cf50a4f6ac4f026458b08d5222023d700ac806410dff5e9ca8728fa44f2b850f",
+  "namespace_absence_independently_confirmed": true,
+  "namespace_deleted": true,
+  "policy_sha256": "1d19089538e92d8478cd97508bf8099467e00f9c1e856a92d3f25cc084b0ad79",
+  "production_cleanup_latency_qualified": false,
+  "production_hub_authentication_qualified": false,
+  "production_oauth_qualified": false,
+  "recorded_at": "2026-10-21T17:51:57.150497+00:00",
+  "sdk_jobsets_source_sha256": "bc9d06276669cba9fbd4468a6c3c87ee7cfd49ebce617b44ac6f2c146372736e",
+  "state": "synthetic-cpu-controller-passed",
+  "synthetic_retry_matrix_qualified": true
+}
