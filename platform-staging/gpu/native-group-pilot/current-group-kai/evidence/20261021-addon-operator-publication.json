@@ -1,0 +1,35 @@
+{
+  "passed": true,
+  "image": "ghcr.io/mul-cps/cps-compute@sha256:015d9ab7a9f411ed47742c085aff24dd5b12d0e22b0f243d9c0fd6473b802a33",
+  "base": "ghcr.io/mul-cps/cps-compute@sha256:4d3eb57ab9247b22fb1c4d9712d73c192d3c7424fe2bb70b3eac063531af2542",
+  "base_layers_preserved": 44,
+  "runtime_config_preserved": true,
+  "source": "6d4b2919d51ee82324b8b9ef9643abaec3c1138a",
+  "wheel_sha256": "b9300d7a7fa151107e23d82a560614cca029942ed718d385e2fea4ad1e1bd98e",
+  "deployed": false,
+  "kind": "addon-policy-handover-operator-publication",
+  "operator_only": true,
+  "source_tests": {
+    "regression": 146,
+    "independent_focused": 11
+  },
+  "consumer_configuration": {
+    "offline_prepared": true,
+    "full_spec_invariants_passed": true,
+    "production_applied": false
+  },
+  "node_bootstrap": {
+    "offline_prepared": true,
+    "only_template_delta": "packaged-bootstrap-input ConfigMap name",
+    "target_held": true
+  },
+  "hardware_tests_repeated": false,
+  "original_cuda_evidence_unchanged": true,
+  "production_ready": false,
+  "next": [
+    "Qualify temporary authenticated policy capture transport",
+    "Bind complete operator and quiescence packet",
+    "Execute controlled policy continuation and real Node rollout",
+    "Verify new shared notebook image and session warnings"
+  ]
+}
