@@ -1,0 +1,37 @@
+{
+  "activated": false,
+  "database_modified": false,
+  "image_plan_sha256": "sha256:8935e949aa96ab1df65fee773f90d2b1f48ab697c68d9747b719a9666a65c7fb",
+  "old_policy_hash": "sha256:1d519ff85206a2874b267e1cf89844262b993d14230b126c6c9fba44b0bbdd5b",
+  "original_hardware_proof_unchanged": true,
+  "passed": true,
+  "policy_edge_kinds": [
+    "max-age",
+    "addon-image"
+  ],
+  "preservation_attestation_sha256": "sha256:5011aab72bc89393c270f5615475fed348982b2c310b10a530b26fc6b8ef9425",
+  "profiles": [
+    "interactive-shared-10",
+    "interactive-shared-5"
+  ],
+  "registry_plan": {
+    "api_calls": false,
+    "from_generation": 8,
+    "from_revision": "sha256:a0d0cebe806e5bf8a65bc0328ca1e8c142d43c4fd88df3838c8e9773f8f8516f",
+    "only_image_policy_and_generation_change": true,
+    "passed": true,
+    "plan_sha256": "sha256:cff30212fd75b271b5a5dfcc1ed09cd775e5234cfdd663cf5d845b615f1d8d4b",
+    "retained_revision_rows": 9,
+    "retained_workspaces": 5,
+    "sql_writes": false,
+    "to_generation": 9,
+    "to_revision": "sha256:3d3060a4a7b663f226480053df783b7f5e95e2b4b4ada78d003092a95550f37c"
+  },
+  "scope_limits": [
+    "Inactive ConfigMaps and pure plans only.",
+    "No database append, journal continuation, consumer policy change or new hardware qualification."
+  ],
+  "source_compute_revision": "d8c8d3f00665a5cbfd6b29df3013c47ae3372f2c",
+  "stage": "shared-image-handover-inactive-authority-and-registry-plan",
+  "target_policy_hash": "sha256:332d14fb9e510b9810feffb8d40b408743f9679ebd13ca1ba0e1077d666e9281"
+}
