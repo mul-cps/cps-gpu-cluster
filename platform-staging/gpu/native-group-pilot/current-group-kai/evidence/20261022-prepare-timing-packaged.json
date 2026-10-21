@@ -1,0 +1,53 @@
+{
+  "deployed": false,
+  "production_qualified": false,
+  "publication": {
+    "base_image": "ghcr.io/mul-cps/cps-compute@sha256:4f8dab91e2521160f7a2642c9f6d2af4f3f9005955f52e99ae3ad3d49d4df828",
+    "base_layers_preserved": 59,
+    "candidate_layers": 61,
+    "config_sha256": "sha256:5326715e9c29f718d006ae5855d9718182f670af98c01631022e2585e6ad25f0",
+    "deployed": false,
+    "image": "ghcr.io/mul-cps/cps-compute@sha256:b8ccb4620a1b0eb123694ad815bb7c18e2499696f54565112e03b2943a99ec48",
+    "passed": true,
+    "runtime_config_preserved": true,
+    "runtime_user": "10001",
+    "source_revision": "624e22a25b5b9bf35bd61eac67127f0724d5243c",
+    "wheel_sha256": "d4d95284cc5b4235128592a9e6fd6ce2962aac2c4600a61a9cafc7cce9ad2e81"
+  },
+  "purpose": "Locate shared workspace prepare cumulative deadline consumption",
+  "root_cause_proven": false,
+  "runtime_change": {
+    "authorization_changed": false,
+    "fixed_labels_only": true,
+    "modules": [
+      "cps_compute/native_scheduler_coordinator.py",
+      "cps_compute/native_scheduler_coordinator_server.py"
+    ],
+    "nested_elapsed_totals_are_additive": false,
+    "request_timeout_seconds": 60,
+    "sql_fences_changed": false,
+    "timeout_changed": false
+  },
+  "source_branch": "fix/native-prepare-timing-20261022",
+  "source_revision": "624e22a25b5b9bf35bd61eac67127f0724d5243c",
+  "tests": {
+    "coverage": [
+      "actual GroupCoordinator prepare produces immutable ACK",
+      "concurrent HTTP request timing isolation",
+      "original cancellation identity and allocation-proof stage preserved",
+      "timeout conversion retains elapsed diagnostics",
+      "request body, header and exception marker absent from logs"
+    ],
+    "files": [
+      "test_native_prepare_timing.py",
+      "test_native_scheduler_coordinator_diagnostics.py",
+      "test_native_prepare_reference_diagnostics.py",
+      "test_native_prepare_readiness_boundary_diagnosis.py",
+      "test_native_scheduler_current_groups.py",
+      "test_native_scheduler_coordinator_server.py"
+    ],
+    "independent_root_run_seconds": 26.79,
+    "passed": 140
+  },
+  "version": 1
+}
