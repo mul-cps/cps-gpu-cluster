@@ -67,10 +67,12 @@ retain them read-only and separately review the SDK `--adopt-legacy`,
 Never replace or reset a journal to recover a partial publication.
 
 The four namespace Roles allow ConfigMap GET/CREATE, PATCH only the four pinned
-pointer names, exact named Deployment/ServiceAccount GET, Pod/ReplicaSet GET
-without LIST, and GET/PATCH/escalate only the four actual observer-own Role
+pointer names, exact named Deployment/ServiceAccount GET, Pod GET/LIST and
+ReplicaSet GET, and GET/PATCH/escalate only the four actual observer-own Role
 names. There is no Deployment PATCH, Node access, Secret access, or wildcard
-resource grant. The seven component Roles remain the observer's responsibility.
+resource grant. A separate GET-only rule names the seven component approval
+Roles so the writer can validate observer completion. Their mutation remains
+the observer's responsibility; the writer is not bound to the observer's Role.
 
 Three fail-closed admission policies bound pointer UPDATE, immutable approval
 CREATE, and the four observer-own pregrant Role UPDATE targets. Protected

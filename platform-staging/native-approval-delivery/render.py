@@ -189,7 +189,7 @@ def render(config, *, configuration, image, config_secret, journal_pvc, namespac
         reference=ImmutableConfigMapRef.from_dict(checkpoint_reference).to_dict()
         require(reference['key']=='checkpoint.json','Exact protected checkpoint payload key required')
         checkpoint_argument=canonical(reference)
-    from cps_compute.native_observer_permissions import ObserverRelease, names, valid_uid
+    from cps_compute.native_observer_permissions import ObserverRelease, names, valid_uid, role_targets
     optional={'node_cpu_rotation'} if isinstance(config,dict) and 'node_cpu_rotation' in config else set()
     if optional:
         from cps_compute.native_approval_delivery import configuration as validate_delivery_configuration
@@ -246,6 +246,7 @@ def render(config, *, configuration, image, config_secret, journal_pvc, namespac
         return {'apiVersion': version, 'kind': kind, 'metadata': {'namespace': ns, 'name': name}, **fields}
     subject = {'kind': 'ServiceAccount', 'namespace': namespace, 'name': NAME}
     result = [obj('ServiceAccount', NAME, namespace)]
+    approval_roles = role_targets(configuration.document)
     for component, declaration in declarations.items():
         ns = declaration['namespace']; pointer = release['heads'][component]['anchor']['pointer']
         result += [obj('Role', NAME, ns, rules=[
@@ -253,10 +254,12 @@ def render(config, *, configuration, image, config_secret, journal_pvc, namespac
             {'apiGroups': [''], 'resources': ['configmaps'], 'verbs': ['patch'], 'resourceNames': [pointer['name']]},
             {'apiGroups': ['apps'], 'resources': ['deployments'], 'verbs': ['get'], 'resourceNames': [declaration['name']]},
             {'apiGroups': [''], 'resources': ['serviceaccounts'], 'verbs': ['get'], 'resourceNames': [declaration['service_account']]},
-            {'apiGroups': [''], 'resources': ['pods'], 'verbs': ['get']},
+            {'apiGroups': [''], 'resources': ['pods'], 'verbs': ['get', 'list']},
             {'apiGroups': ['apps'], 'resources': ['replicasets'], 'verbs': ['get']},
             {'apiGroups': ['rbac.authorization.k8s.io'], 'resources': ['roles'], 'verbs': ['get', 'patch', 'escalate'],
-                'resourceNames': ['cps-native-observer-operator']}]),
+                'resourceNames': ['cps-native-observer-operator']},
+            {'apiGroups': ['rbac.authorization.k8s.io'], 'resources': ['roles'], 'verbs': ['get'],
+                'resourceNames': sorted(name for target_ns, name in approval_roles if target_ns == ns)}]),
             obj('RoleBinding', NAME, ns, subjects=[deepcopy(subject)], roleRef={
                 'apiGroup': 'rbac.authorization.k8s.io', 'kind': 'Role', 'name': NAME})]
     result += _policies(config, namespace)

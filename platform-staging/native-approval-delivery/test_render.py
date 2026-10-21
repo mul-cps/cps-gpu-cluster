@@ -18,10 +18,10 @@ def module():
     return value
 
 
-def fixture():
+def fixture(f=None):
     from test_native_observer_head_permissions import fixture as heads
     from cps_compute.native_node.config import NodeConfiguration, ImmutableConfigMapRef
-    f = heads()
+    if f is None: f = heads()
     configuration = NodeConfiguration.load(f.core,
         ImmutableConfigMapRef.from_dict(f.release.document['node_configuration']), f.f.policy)
     rows = []
@@ -73,15 +73,72 @@ def test_routine_permissions_have_no_deployment_or_node_or_secret_writes():
             assert '*' not in json.dumps(row) and 'secrets' not in row['resources'] and 'nodes' not in row['resources']
             if row['resources'] == ['configmaps'] and row['verbs'] == ['patch']:
                 assert row['resourceNames'] == [pointer['name']]
-            if row['resources'] == ['roles']:
+            if row['resources'] == ['roles'] and row['verbs'] != ['get']:
                 assert row['resourceNames'] == ['cps-native-observer-operator']
             if row['resources'] == ['deployments']:
                 assert row['verbs'] == ['get']
                 assert row['resourceNames'] == [next(d['name'] for d in declarations.values() if d['namespace'] == ns)]
             if row['resources'] == ['serviceaccounts']:
                 assert row['verbs'] == ['get'] and row['resourceNames']
-            assert 'list' not in row['verbs']
+            if 'list' in row['verbs']:
+                assert row == {'apiGroups': [''], 'resources': ['pods'], 'verbs': ['get', 'list']}
     assert not any(o['kind'] == 'Secret' for o in docs)
+
+
+def test_writer_can_plan_real_observer_completion_with_only_its_rendered_rbac():
+    from cps_compute.native_observer_permissions import ObserverPermissionController
+    from test_native_observer_head_permissions import fixture as heads
+    f = heads()
+    config, configuration = fixture(f)
+    docs = rendered(config, configuration)
+    roles = {(d['metadata']['namespace'], d['metadata']['name']): d for d in docs if d['kind'] == 'Role'}
+    actor = {'kind': 'ServiceAccount', 'namespace': 'cps-compute', 'name': 'cps-native-head-delivery'}
+    bound = [roles[(d['metadata']['namespace'], d['roleRef']['name'])] for d in docs
+        if d['kind'] == 'RoleBinding' and actor in d['subjects']]
+
+    methods = {
+        'read_namespaced_config_map': ('', 'configmaps', 'get'),
+        'read_namespaced_pod': ('', 'pods', 'get'),
+        'list_namespaced_pod': ('', 'pods', 'list'),
+        'read_namespaced_service_account': ('', 'serviceaccounts', 'get'),
+        'read_namespaced_deployment': ('apps', 'deployments', 'get'),
+        'read_namespaced_replica_set': ('apps', 'replicasets', 'get'),
+        'read_namespaced_role': ('rbac.authorization.k8s.io', 'roles', 'get'),
+    }
+
+    class AuthorizedAPI:
+        def __init__(self, delegate): self.delegate = delegate
+        def __getattr__(self, method):
+            target = getattr(self.delegate, method)
+            if method not in methods: return target
+            group, resource, verb = methods[method]
+            def call(*args, **kwargs):
+                name, namespace = (None, args[0]) if verb == 'list' else args[:2]
+                assert any(role['metadata']['namespace'] == namespace and any(
+                    group in row['apiGroups'] and resource in row['resources'] and verb in row['verbs']
+                    and ('resourceNames' not in row or name in row['resourceNames'])
+                    for row in role['rules']) for role in bound), (verb, resource, namespace, name)
+                return target(*args, **kwargs)
+            return call
+
+    controller = ObserverPermissionController(AuthorizedAPI(f.core), AuthorizedAPI(f.f.apps),
+        AuthorizedAPI(f.f.rbac), f.release, f.f.policy)
+    assert len(controller._plan()) == 7
+    assert f.f.calls == []
+
+
+def test_observer_completion_does_not_give_writer_mutation_rights_on_approval_roles():
+    from cps_compute.native_observer_permissions import role_targets
+    config, configuration = fixture()
+    targets = role_targets(configuration.document)
+    for role in [d for d in rendered(config, configuration) if d['kind'] == 'Role']:
+        namespace = role['metadata']['namespace']
+        reads = [r for r in role['rules'] if r['resources'] == ['roles'] and r['verbs'] == ['get']]
+        assert reads == [{'apiGroups': ['rbac.authorization.k8s.io'], 'resources': ['roles'], 'verbs': ['get'],
+            'resourceNames': sorted(name for ns, name in targets if ns == namespace)}]
+        writes = [r for r in role['rules'] if r['resources'] == ['roles'] and set(r['verbs']) & {'patch', 'escalate'}]
+        assert writes == [{'apiGroups': ['rbac.authorization.k8s.io'], 'resources': ['roles'],
+            'verbs': ['get', 'patch', 'escalate'], 'resourceNames': ['cps-native-observer-operator']}]
 
 
 @pytest.mark.parametrize('fault', ['extra', 'foreign-ref', 'v1-observer', 'missing-role', 'duplicate-role',
