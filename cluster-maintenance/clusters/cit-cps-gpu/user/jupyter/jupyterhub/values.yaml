@@ -1273,29 +1273,11 @@ hub:
               'display_name': 'Standard Small (CPU)',
               'description': '2 vCPU (shared) • 2 GiB',
               'default': True,
-              # TEMPORARY: pinned to a digest instead of the mutable
-              # `latest-standard-cpu` tag (2026-08-04). Spegel (the
-              # cluster's P2P image mirror) has been repeatedly observed
-              # serving a stale, broken digest for this tag
-              # (sha256:ba03b01b..., which crashes with `KeyError:
-              # 'jupyterhub-singleuser'`) even after the registry moved
-              # on and even after clearing every node's local Spegel
-              # data dir + containerd image cache and restarting the
-              # spegel daemonset -- confirmed the staleness is NOT
-              # node-local (all 7 nodes' caches verified empty) so it's
-              # coming from somewhere in Spegel's distributed
-              # peer-advertisement layer that a local cache purge
-              # doesn't reach. A digest pull is content-addressable and
-              # cryptographically verified, so Spegel cannot substitute
-              # wrong content for it even if it still has stale state.
-              # sha256:ff0c30d92f8b0483623acb719a909daba8dc93ab3f1910706e65b3f15237ae35
-              # confirmed correct (Python 3.13, jupyterhub 5.4.5,
-              # jupyterhub-singleuser extension loads cleanly) as of the
-              # main-branch CI run that finished 2026-08-04 06:18:58Z.
-              # REVERT to the tag once the Spegel staleness is properly
-              # root-caused and fixed -- a pinned digest will NOT pick up
-              # future image updates.
-              'image': 'ghcr.io/mul-cps/cps-jupyter-notebook@sha256:ff0c30d92f8b0483623acb719a909daba8dc93ab3f1910706e65b3f15237ae35',
+              # Published addon-only timer overlay on the qualified CPU9444
+              # runtime. Core SDK modules and dependency versions are unchanged.
+              # The immutable digest avoids the previously observed stale-tag
+              # image mirror behavior. See docs/compute-platform/cpu-runtime-timer-20261021.md.
+              'image': 'ghcr.io/mul-cps/cps-jupyter-notebook@sha256:16ed0a2c9c3d8e6d3942b515fc3a32ec750b3c506323326c050370566b595497',
               'cpu_limit': 2.0, 'cpu_guarantee': 0.5,
               'mem_limit': '2G', 'mem_guarantee': '1G',
               'runtime_class': None,
@@ -2558,7 +2540,7 @@ prePuller:
   extraImages:
     datascience:
       name: ghcr.io/mul-cps/cps-jupyter-notebook
-      tag: "latest-standard-cpu"
+      tag: "latest-standard-cpu@sha256:16ed0a2c9c3d8e6d3942b515fc3a32ec750b3c506323326c050370566b595497"
     rapidsai:
       name: nvcr.io/nvidia/rapidsai/base
       tag: "24.08-cuda12.2-py3.10"
