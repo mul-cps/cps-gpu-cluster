@@ -1,6 +1,9 @@
 # Runtime GPU isolation qualification
 
-Status: failed runtime override gate; GPU policy remains disabled.
+Status: **historical HAMi/MPS override failure**, superseded for the current
+attested native-cap path by the [passed GPU memory-isolation checklist](../../../docs/compute-platform/qualification.md).
+The failure below remains valid for its older software-accounting configuration;
+it is not a current native-cap failure or a reason to rerun every passed test.
 
 On 2026-10-06, a trusted operator probe on idle `k3s-wk-gpu2` demonstrated:
 

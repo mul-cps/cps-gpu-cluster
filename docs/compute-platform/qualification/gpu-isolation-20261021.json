@@ -1,0 +1,41 @@
+{
+  "date": "2026-10-21",
+  "gpu_memory_isolation_checklist": "passed",
+  "full_platform_production_qualified": false,
+  "scope": "Attested native no-MIG GPU2 enforcement; retained 5/20 GiB hardware results plus current automatic 5 GiB lifecycle and over-cap/recovery regression",
+  "current_gateway_source": "aa1fdd8d57414e7ec49855340c99078378a84685",
+  "current_gateway_image": "ghcr.io/mul-cps/cps-compute@sha256:a342b9e35f3e0128db55a38ad68242932ba0813c705a8ab4a156b374fc2574b0",
+  "current_node_source": "c3203ea4b83c80ae8d40fa010e17c4761a78f7e3",
+  "gpu_uuid": "GPU-16128952-b438-556a-00bb-93039ee24e56",
+  "boot_id": "209f8bc9-a478-48e4-925a-6e07ffa56f7a",
+  "driver_generation": "b10498fc-9153-4394-875a-ea7cfb498625",
+  "retained_public_evidence": "../../../platform-staging/gpu/native-group-pilot/prospective-pair/current531-final-isolation-20261016.json",
+  "private_evidence": [
+    {
+      "path": "/home/bjoern/.local/state/cps-full-project-20261013/gpu-accepted-pod-status60-pilot-20261021/run-summary.verified.private.json",
+      "sha256": "2329256409f98abc16924670f88fb44563fb86ad15b547a45988ff523e20ab37",
+      "start_ready_cuda_stop_passed": true
+    },
+    {
+      "path": "/home/bjoern/.local/state/cps-full-project-20261013/gpu-normal-5g-oom61-20261021/run-summary.verified.private.json",
+      "sha256": "cedb5547993e7d712e44a25b4345934e975b9c0acd097368e128d9fb77bb1e7a",
+      "overcap_mib": 5184,
+      "cap_mib": 5120,
+      "typed_oom_and_recovery_passed": true
+    }
+  ],
+  "retained_hardware_cases": [
+    "5/20 GiB OOM, independent peer survival and recovery",
+    "Restart and reacquisition",
+    "Managed-memory denial",
+    "MPS aggregate OOM and recovery",
+    "IPC/VMM negative and same-parent positive controls"
+  ],
+  "remaining_separate_gates": [
+    "cross-Hub allowance concurrency",
+    "scheduling, packing, reclaim and startup load",
+    "browser collaboration and permissions",
+    "end-to-end application and recovery acceptance",
+    "release and promotion"
+  ]
+}

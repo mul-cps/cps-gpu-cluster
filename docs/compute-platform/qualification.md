@@ -4,8 +4,16 @@
 configuration renders are necessary checks, not acceptance evidence for hardware,
 real authentication, shared kernels or data recovery.
 
-The latest bounded hardware result is the
-[2026-10-12 two-workspace lifecycle](#2026-10-12-limited-group-lifecycle-and-personal-argo-source-checkpoint).
+- [x] **GPU memory isolation passed** for the attested native no-MIG GPU2 path.
+  [Current evidence reconciliation](qualification/gpu-isolation-20261021.json)
+  retains the October 16 5/20 GiB peer, restart, MPS and import results and adds
+  October 21 normal automatic Start/Ready/CUDA/Stop and over-cap/recovery passes.
+  These results supersede the older HAMi/cache failure for this native path.
+  Cross-Hub pooling, scheduling/load, application acceptance and release gates
+  remain separate; this does not enable unrestricted GPU access.
+
+The latest current-image lifecycle and OOM regression results are dated
+**2026-10-21**, linked above.
 Earlier dated failures and pending statements below remain historical evidence;
 the latest receipt supersedes them only for its exact scopes and measured pins.
 
@@ -38,7 +46,7 @@ failure. This qualifies local execution; it does not establish live S3 transfer.
 | Collaboration | Two browser visitors retain their own identity while sharing RTC state; removed members lose existing access |
 | Pooling | Cross-Hub simultaneous starts conflict atomically; rollback; shutdown-confirmed release; CPU/batch independent |
 | Notebook jobs | Immutable saved notebook/files; typed tagged parameters; fresh kernel; authorized successful and failed executed notebook retrieval |
-| Isolation | Intentional OOM respects the measured cap and its peer continues |
+| Isolation — passed for attested native GPU2 | Intentional OOM, peer survival, recovery, restart, MPS and import evidence; see current evidence reconciliation above |
 | Scheduling | Idle batch fill, teaching reclaim, protected sessions, bounded checkpoint retry and no distributed orphans |
 | Startup | Representative pre-pulled CPS/CIT bursts: p95 ≤180s and maximum ≤300s |
 | Defragmentation | KAI with/without fallback: free GPU availability ≥95% baseline; wait/start ≤110%; protected sessions unaffected |
@@ -75,7 +83,7 @@ migration/rollback procedures and qualification artifacts. Build all notebook
 variants from the same clean tagged source and promote the same tested bytes.
 Never fabricate image digests or publish a production tag to unblock staging.
 
-Release blocks still include measured GPU isolation/packing and Hub GPU lifecycle,
+Release blocks still include broader GPU packing/load and cross-Hub lifecycle acceptance,
 JobSet launcher qualification, complete legacy grant migration, real browser/RTC
 and Shares/NFS provisioning, expired-session/idle lifetime enforcement, actual
 artifact retention and matching-version restore exercises. The referenced
