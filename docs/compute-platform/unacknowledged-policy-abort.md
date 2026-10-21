@@ -159,3 +159,11 @@ drift, late quiescence failure and interruption after each durable phase. A
 completed handover, any acknowledged target, schema migration, or active native
 workload needs its own recovery design. This one unacknowledged abort does not
 prove those cases safe.
+
+## Staged exact-revision retry tooling
+
+The [2026-10-21 tooling receipt](../../platform-staging/gpu/native-group-pilot/current-group-kai/evidence/20261021-aborted-source-reuse-tooling.json) records the separately reviewed SQL kernel and operator-only image. The [application API documentation](https://github.com/mul-cps/cps-compute/blob/859a814139ea89939b18f66a90b38a0a4d3ce3d8/docs/native-addon-policy-transition.md) describes its exact-row reuse and audit contract. This staged qualification did not reselect Source revision 9.
+
+The operational [physical observer](../../platform-staging/native-approval-delivery/aborted_reuse_guard.py) checks the sealed abort capsule, reviewed paused successor specs, permissions, heads, ACKs, allocation ledger and authenticated Node epoch. It rejects active publisher ServiceAccount Pods and nonterminal publisher Jobs, including pending Jobs without Pods. Pod/Job LISTs must be complete; continuation or remaining items cannot establish absence.
+
+Root must independently seal and pin the exact successor plan/capsule, provide fresh Source quiescence, and bind this real observer into both SQL boundaries. The observer must not recurse into Source APIs or databases while the two writer locks are held. A synthetic test, descriptor hash, or read-only rejection of the currently open system does not authorize the live operation. Use a separately reviewed operator identity and exact permissions; never use this operator image for normal consumers.

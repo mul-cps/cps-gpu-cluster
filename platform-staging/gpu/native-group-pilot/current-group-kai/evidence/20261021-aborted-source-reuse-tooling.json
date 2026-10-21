@@ -1,0 +1,75 @@
+{
+  "database_writes": false,
+  "independent_source_review": "CLEAR",
+  "limits": [
+    "No retained Source revision has been reselected; active revision8 and all10 original rows remain unchanged",
+    "Source descriptor and SQL tests do not supply physical authorization",
+    "Final sealed paused-successor capsule, dedicated operator permissions, trusted Source quiescence and live dual-phase callback qualification remain pending",
+    "Operator image must not be selected as a normal consumer",
+    "Addon notebook image542 handover remains pending; existing CUDA isolation evidence is unchanged"
+  ],
+  "live_deployment_changes": false,
+  "live_reuse_authorized": false,
+  "operator_publication": {
+    "base_image": "ghcr.io/mul-cps/cps-compute@sha256:61f7eeba56fe3217ae822e979c204ede63c5d4faee6820d994d11e1ee0826f4a",
+    "base_layers_preserved": 46,
+    "candidate_layers": 48,
+    "config_sha256": "sha256:24af079be92f9c1a4754d9d215d45b9faf1f114bf1a84686c788dee84004722d",
+    "deployed": false,
+    "image": "ghcr.io/mul-cps/cps-compute@sha256:5dfad1bddf4391d1b2cfdfa52a167210c171508895e4bd19fb2e34defa8a92b6",
+    "modules": 80,
+    "normal_consumer_use_authorized": false,
+    "operator_only": true,
+    "passed": true,
+    "runtime_config_preserved": true,
+    "runtime_user": "10001",
+    "source_revision": "3f0ec04cbc01f7b205ab24ca405c5a9946983117",
+    "wheel_sha256": "8e67a37d49e1a0ab86a5f5062a5d581900cbcb2bd568581dfe485a2a03f30cd8"
+  },
+  "operator_revision": "3f0ec04cbc01f7b205ab24ca405c5a9946983117",
+  "physical_guard_files": {
+    "aborted_reuse_guard.py": "f8ba8d5f468866fabc9609c2d381608475c754b509d2cf66a2dd63e80fc4beb7",
+    "test_aborted_reuse_guard.py": "f118290daba2b6fb7d86fe95e8d53fd800981214fc451c7cbab8faba0270d10b"
+  },
+  "physical_preflight": {
+    "api_mutations": false,
+    "candidate_only": true,
+    "current_physical_epoch_authenticated": true,
+    "live_reuse_authorized": false,
+    "open_running_state_rejected": true,
+    "original_immutable_capsule_authenticated": true,
+    "physical_plan_sha256": "sha256:86db15e4c634e04873756ae4a0bb39170a16adae8ea3153043cf2d3a07d9aecd",
+    "protected_roles": 11,
+    "root_read_only_preflight": true
+  },
+  "production_ready": false,
+  "recorded_at": "2026-10-21T20:01:43.779571+00:00",
+  "source_receipts_sha256": {
+    "kernel": "803c073094c14751e5286851aefc0de4e756725f3cbd49b67b8cc0e52b37f2da",
+    "operator": "12b4d0fe686f79dca6f44207d3b1a203145b138a16f925d3c50489dce85b1788"
+  },
+  "sql_kernel_revision": "859a814139ea89939b18f66a90b38a0a4d3ce3d8",
+  "sql_preflight": {
+    "audit_rows": 4277,
+    "exact_original_rows_unchanged": true,
+    "original_abort_audit_authenticated": true,
+    "read_only": true,
+    "restored_head_unchanged": true,
+    "retained_revision_rows": 10,
+    "reuse_not_yet_applied": true,
+    "snapshot_raw_sha256": "1c6da13f650186c7b9a46d0f6b386446516d599ec5e8286ac29ebd428094c588"
+  },
+  "stage": "aborted-source-reuse-tooling-published-not-applied",
+  "tests": {
+    "operator_integration": 311,
+    "partial_list_regressions": {
+      "genuine_red_failures": 2,
+      "green": true
+    },
+    "physical_guard_unittests": 7,
+    "physical_guard_validation_mutations": 34,
+    "root_independent_new_kernel": 55,
+    "sql_kernel_and_ordinary_migrations": 130
+  },
+  "version": 1
+}
