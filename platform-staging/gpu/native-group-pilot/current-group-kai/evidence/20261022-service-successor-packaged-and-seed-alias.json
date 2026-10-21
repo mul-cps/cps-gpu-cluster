@@ -1,0 +1,91 @@
+{
+  "invariants": {
+    "gpu_driver_changed": false,
+    "mig_enabled": false,
+    "policy_changed": false,
+    "source_changed": false,
+    "workload_image_changed": false
+  },
+  "maintenance": {
+    "all_prior_journal_file_hashes_unchanged": true,
+    "authenticated_journal_files": 354,
+    "binder_enabled": false,
+    "change": "canonical immutable coordinator seed alias",
+    "four_fresh_acknowledgments_ready": true,
+    "gateway_ready": true,
+    "identical_seed_data": true,
+    "journal_active_rotations": 22,
+    "journal_rotations": 70,
+    "normal_writer_ready": true,
+    "old_seed_preserved": true,
+    "only_deployment_spec_change": "kai-seed volume ConfigMap name",
+    "protected_notebook_restarts": 0,
+    "protected_notebook_uid": "03e00875-f3c7-4dca-8848-c57b257932a5",
+    "software_images_unchanged": true
+  },
+  "observed_at": "2026-10-21T22:44:32.374723+00:00",
+  "production_qualified": false,
+  "publications": [
+    {
+      "base_image": "ghcr.io/mul-cps/cps-compute@sha256:4f8dab91e2521160f7a2642c9f6d2af4f3f9005955f52e99ae3ad3d49d4df828",
+      "base_layers_preserved": 59,
+      "candidate_layers": 61,
+      "config_sha256": "sha256:923b77c41bfa3900c10c58df649f3b8447c7e1283f5a0c799139cef9e0a30b03",
+      "deployed": false,
+      "image": "ghcr.io/mul-cps/cps-compute@sha256:92874b4d8dada5edd391dddb025888ebbc02161d28a35369b054a489e7a4b543",
+      "passed": true,
+      "runtime_config_preserved": true,
+      "runtime_user": "10001",
+      "source_revision": "e613ed78e51c8b0b9c105b5b608bbb2b257c2a17",
+      "wheel_sha256": "f6ad9b951c0c9324ed09663f781354c6568e4f16c7131b895058b3e5b4aecfe1"
+    },
+    {
+      "base_image": "ghcr.io/mul-cps/cps-native-node@sha256:59b3152b4aa38aa9a6154b7241c020930883adbc2468b08fd488cd721274bab4",
+      "base_layers_preserved": 47,
+      "candidate_layers": 49,
+      "config_sha256": "sha256:395d559e8287c4212b38a08fae5adb809de823ef552eb537676a442b6f67aea7",
+      "deployed": false,
+      "image": "ghcr.io/mul-cps/cps-native-node@sha256:a2348b7b2211b6b22e3d6e7f7025cc0efbbc320b539a7f6acec23d8b470ad88c",
+      "passed": true,
+      "runtime_config_preserved": true,
+      "runtime_user": "0",
+      "source_revision": "e613ed78e51c8b0b9c105b5b608bbb2b257c2a17",
+      "wheel_sha256": "f6ad9b951c0c9324ed09663f781354c6568e4f16c7131b895058b3e5b4aecfe1"
+    },
+    {
+      "base_image": "ghcr.io/mul-cps/cps-compute@sha256:61f7eeba56fe3217ae822e979c204ede63c5d4faee6820d994d11e1ee0826f4a",
+      "base_layers_preserved": 46,
+      "candidate_layers": 48,
+      "config_sha256": "sha256:81e605f7d06c13a35133689081e0027d929910e870f9a073e5b664e421dcbcc2",
+      "deployed": false,
+      "image": "ghcr.io/mul-cps/cps-compute@sha256:79ef2c1aae602fa92adb485b140722d02e9b828ad8bcdff090d541fba4e6d395",
+      "passed": true,
+      "runtime_config_preserved": true,
+      "runtime_user": "10001",
+      "source_revision": "e613ed78e51c8b0b9c105b5b608bbb2b257c2a17",
+      "wheel_sha256": "f6ad9b951c0c9324ed09663f781354c6568e4f16c7131b895058b3e5b4aecfe1"
+    },
+    {
+      "base_image": "ghcr.io/mul-cps/cps-native-observer@sha256:d51babaecb1da0b336f209bd8d3bd6c6705acc6666ceed524fe9d9cb32b6fe7b",
+      "base_layers_preserved": 20,
+      "candidate_layers": 22,
+      "config_sha256": "sha256:44c5d89d9180e35db73a7ba4fe045f62ca1269a24afd37c46ae606dbb2868e97",
+      "deployed": false,
+      "image": "ghcr.io/mul-cps/cps-native-observer@sha256:683a5a2ec959c195be4a3333cc211ce286e0c3f31c4e8671d802a2dc4d5e52c4",
+      "passed": true,
+      "runtime_config_preserved": true,
+      "runtime_user": "10001:10001",
+      "source_revision": "e613ed78e51c8b0b9c105b5b608bbb2b257c2a17",
+      "wheel_sha256": "f6ad9b951c0c9324ed09663f781354c6568e4f16c7131b895058b3e5b4aecfe1"
+    }
+  ],
+  "qualification": {
+    "allocation_proof_timeout_root_cause_proven": false,
+    "current_shared_start_passed": false,
+    "next_gate": "actual same-policy service-image rotation followed by shared-workspace start"
+  },
+  "service_upgrade_deployed": false,
+  "source_branch": "fix/service-image-successor-20261022",
+  "source_revision": "e613ed78e51c8b0b9c105b5b608bbb2b257c2a17",
+  "version": 1
+}
