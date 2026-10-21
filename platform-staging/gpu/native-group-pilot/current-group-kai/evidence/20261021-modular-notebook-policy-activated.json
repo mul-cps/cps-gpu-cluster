@@ -1,0 +1,71 @@
+{
+  "broader_production_qualified": false,
+  "focused_tests": {
+    "includes": "final Writer gate, maintenance phase contracts, early recovery proof and SQL kernel",
+    "passed": 57
+  },
+  "gitops_main_merged": false,
+  "gpu_isolation_evidence_preserved": true,
+  "http_login": {
+    "jhub.dshl.unileoben.ac.at": 302,
+    "jupyterhub.dshl.unileoben.ac.at": 200
+  },
+  "journal": {
+    "active_rotations": 22,
+    "authenticated_json_files": 354,
+    "five_rotation_archives_added": true,
+    "four_actual_heads_and_fresh_acknowledgments_verified": true,
+    "old_archive_bytes_preserved": true,
+    "pending_transition": false,
+    "total_rotations": 70
+  },
+  "mig_enabled": false,
+  "new_cuda_qualification_claimed": false,
+  "normal_consumers": {
+    "gateway": "Ready",
+    "hub:cit": "Ready",
+    "hub:cps": "Ready",
+    "node": "Ready",
+    "observer": "Ready",
+    "writer": "Ready"
+  },
+  "passed": true,
+  "policy_hash": "sha256:332d14fb9e510b9810feffb8d40b408743f9679ebd13ca1ba0e1077d666e9281",
+  "private_evidence_sha256": {
+    "journal-target.sdk-validated.actual.json": "sha256:727435e8971884e51ae749f8098a86ea002a1fec242d9a816c37e5fee19f4685",
+    "live/activation.completed.private.json": "sha256:b49a4963f67065e538220826776653aeb75dfdeef1e63e38b2f093ded0efa131",
+    "live/completed70.verified.private.json": "sha256:be6c7f91044d8800e3ceb06237ae92104e1fb3266aaa6f3a89ead1eb329cb959",
+    "source-readback/result.verified.private.json": "sha256:a4005064ef9a8ce2f1b4a8a4463989655896aeb10af90e39b150d1a5fe82a9f9"
+  },
+  "profiles": [
+    "interactive-shared-5",
+    "interactive-shared-10"
+  ],
+  "protected_personal_notebook_unchanged": true,
+  "recorded_at": "2026-10-21T21:32:51.441845+00:00",
+  "remaining": [
+    "Fresh shared-workspace spawn and countdown/red-warning acceptance",
+    "Codify the complete cold-start RBAC closure in release tooling and GitOps",
+    "Cross-Hub pooling, offhost restore and broader scheduling gates",
+    "Release and GitOps promotion"
+  ],
+  "runtime_corrections": [
+    "Job restartPolicy must be Never",
+    "CEL compares typed rule fields rather than literal maps",
+    "Use real in-cluster delivery identity: Rancher ignored --as",
+    "Cold-start Hub and Node require exact authenticated immutable proof/envelope read closure",
+    "Five reviewed context GET names added to two exact component Roles before Observer reconciliation"
+  ],
+  "schema_version": 1,
+  "scope": "modular shared-notebook image policy activation, not complete production qualification",
+  "services_restored_exactly": 5,
+  "shared_notebook_image": "ghcr.io/mul-cps/cps-jupyter-notebook@sha256:5427088986bc06ad0713875d1aa2f31439f0bd1fbe6099d4669570fcf3e85be4",
+  "source_generation": 9,
+  "source_revision": "sha256:3d3060a4a7b663f226480053df783b7f5e95e2b4b4ada78d003092a95550f37c",
+  "source_sql": {
+    "audit_rows_after": 4278,
+    "independent_readback_passed": true,
+    "one_distinct_reuse_event_added": true,
+    "revision_records_preserved": 10
+  }
+}
