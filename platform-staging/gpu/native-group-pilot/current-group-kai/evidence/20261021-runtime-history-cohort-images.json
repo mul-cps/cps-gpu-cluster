@@ -1,0 +1,158 @@
+{
+  "base_revision": "d8c8d3f00665a5cbfd6b29df3013c47ae3372f2c",
+  "changed_runtime_modules": [
+    "src/cps_compute/native_approval_head.py"
+  ],
+  "consumer_images": {
+    "gateway": {
+      "base_image": "ghcr.io/mul-cps/cps-compute@sha256:f475a7c3651f52e12832e11c6b3c764b5d55456591ed55c7206cfd99daa3ea83",
+      "base_layers_preserved": 57,
+      "candidate_layers": 59,
+      "config_sha256": "sha256:39c100a91888ddaeba20b942a02c36c0528371d8efc2fb002043c87b767ed937",
+      "deployed": false,
+      "image": "ghcr.io/mul-cps/cps-compute@sha256:4f8dab91e2521160f7a2642c9f6d2af4f3f9005955f52e99ae3ad3d49d4df828",
+      "passed": true,
+      "runtime_config_preserved": true,
+      "runtime_user": "10001",
+      "source_revision": "2f13b5c2acd45bd0d65f1a741c18ab1a0d6a9976",
+      "wheel_sha256": "ec038ea4aba1b30228164bb67ac98a1474887f92dd68734be8690edbc93e7577"
+    },
+    "hub": {
+      "base_image": "ghcr.io/mul-cps/cps-compute@sha256:846133baf5929b4bd3bf2341b77a54565217463bf52daf5a8e1fd4a5d9fdd54f",
+      "base_layers_preserved": 121,
+      "candidate_layers": 123,
+      "config_sha256": "sha256:05cd1f201835af607fcc34dd35ae4160598392bb49412b1ce02248c0ac2ae825",
+      "deployed": false,
+      "image": "ghcr.io/mul-cps/cps-compute@sha256:d84fa2c12da0a454680d18ff96b88ee8a8be450beafc39c6bb52beb68b65f591",
+      "passed": true,
+      "runtime_config_preserved": true,
+      "runtime_user": "1000",
+      "source_revision": "2f13b5c2acd45bd0d65f1a741c18ab1a0d6a9976",
+      "wheel_sha256": "ec038ea4aba1b30228164bb67ac98a1474887f92dd68734be8690edbc93e7577"
+    },
+    "node": {
+      "base_image": "ghcr.io/mul-cps/cps-native-node@sha256:5a76616c0b4f547d6d951870acd3d35f5761f0ab71cae2d724b8ff766372833c",
+      "base_layers_preserved": 45,
+      "candidate_layers": 47,
+      "config_sha256": "sha256:0d514ae1a2d1d3d7608bfd3182c332a80ea7f38b8876cf21ce270e08c89128bf",
+      "deployed": false,
+      "image": "ghcr.io/mul-cps/cps-native-node@sha256:59b3152b4aa38aa9a6154b7241c020930883adbc2468b08fd488cd721274bab4",
+      "passed": true,
+      "runtime_config_preserved": true,
+      "runtime_user": "0",
+      "source_revision": "2f13b5c2acd45bd0d65f1a741c18ab1a0d6a9976",
+      "wheel_sha256": "ec038ea4aba1b30228164bb67ac98a1474887f92dd68734be8690edbc93e7577"
+    },
+    "observer": {
+      "base_image": "ghcr.io/mul-cps/cps-native-observer@sha256:9938843f584539199948c48793d9fcdda2b46b3858880d9d7cc644b5b5cdb3ca",
+      "base_layers_preserved": 18,
+      "candidate_layers": 20,
+      "config_sha256": "sha256:95f9de5f6623f27b8527f458eff9d0ba8f4a3ce71dc376a37e44f794688a8c3e",
+      "deployed": false,
+      "image": "ghcr.io/mul-cps/cps-native-observer@sha256:d51babaecb1da0b336f209bd8d3bd6c6705acc6666ceed524fe9d9cb32b6fe7b",
+      "passed": true,
+      "runtime_config_preserved": true,
+      "runtime_user": "10001:10001",
+      "source_revision": "2f13b5c2acd45bd0d65f1a741c18ab1a0d6a9976",
+      "wheel_sha256": "ec038ea4aba1b30228164bb67ac98a1474887f92dd68734be8690edbc93e7577"
+    },
+    "writer": {
+      "base_image": "ghcr.io/mul-cps/cps-compute@sha256:4d3eb57ab9247b22fb1c4d9712d73c192d3c7424fe2bb70b3eac063531af2542",
+      "base_layers_preserved": 44,
+      "candidate_layers": 46,
+      "config_sha256": "sha256:fd7536fd6a2a76b6f7ac785b9fb709cfbe346b5460941e8a6b52e95d4936ba03",
+      "deployed": false,
+      "image": "ghcr.io/mul-cps/cps-compute@sha256:61f7eeba56fe3217ae822e979c204ede63c5d4faee6820d994d11e1ee0826f4a",
+      "passed": true,
+      "runtime_config_preserved": true,
+      "runtime_user": "10001",
+      "source_revision": "2f13b5c2acd45bd0d65f1a741c18ab1a0d6a9976",
+      "wheel_sha256": "ec038ea4aba1b30228164bb67ac98a1474887f92dd68734be8690edbc93e7577"
+    }
+  },
+  "core_dependencies_changed": false,
+  "deployed": false,
+  "gpu_driver_changes": false,
+  "hardware_tests_repeated": false,
+  "hub_package_changed": false,
+  "installed_checks": {
+    "gateway": {
+      "hub_modules_unchanged": 0,
+      "other_distributions_unchanged": 43,
+      "passed": true,
+      "runtime_uid": 0,
+      "sdk_modules_exact": 78,
+      "source_revision": "2f13b5c2acd45bd0d65f1a741c18ab1a0d6a9976",
+      "wheel_sha256": "ec038ea4aba1b30228164bb67ac98a1474887f92dd68734be8690edbc93e7577"
+    },
+    "hub": {
+      "hub_modules_unchanged": 20,
+      "other_distributions_unchanged": 136,
+      "passed": true,
+      "runtime_uid": 0,
+      "sdk_modules_exact": 78,
+      "source_revision": "2f13b5c2acd45bd0d65f1a741c18ab1a0d6a9976",
+      "wheel_sha256": "ec038ea4aba1b30228164bb67ac98a1474887f92dd68734be8690edbc93e7577"
+    },
+    "node": {
+      "hub_modules_unchanged": 0,
+      "other_distributions_unchanged": 29,
+      "passed": true,
+      "runtime_uid": 0,
+      "sdk_modules_exact": 78,
+      "source_revision": "2f13b5c2acd45bd0d65f1a741c18ab1a0d6a9976",
+      "wheel_sha256": "ec038ea4aba1b30228164bb67ac98a1474887f92dd68734be8690edbc93e7577"
+    },
+    "observer": {
+      "hub_modules_unchanged": 0,
+      "other_distributions_unchanged": 43,
+      "passed": true,
+      "runtime_uid": 0,
+      "sdk_modules_exact": 78,
+      "source_revision": "2f13b5c2acd45bd0d65f1a741c18ab1a0d6a9976",
+      "wheel_sha256": "ec038ea4aba1b30228164bb67ac98a1474887f92dd68734be8690edbc93e7577"
+    },
+    "writer": {
+      "hub_modules_unchanged": 0,
+      "other_distributions_unchanged": 43,
+      "passed": true,
+      "runtime_uid": 0,
+      "sdk_modules_exact": 78,
+      "source_revision": "2f13b5c2acd45bd0d65f1a741c18ab1a0d6a9976",
+      "wheel_sha256": "ec038ea4aba1b30228164bb67ac98a1474887f92dd68734be8690edbc93e7577"
+    }
+  },
+  "mig_changes": false,
+  "next": [
+    "Same-policy normal-consumer deployment using current source8/policy1d519ff85206a2874b267e1cf89844262b993d14230b126c6c9fba44b0bbdd5b",
+    "Validate all actual consumer owner chains and ACKs before retrying addon policy transition"
+  ],
+  "purpose": "Normal consumer historical-cohort validator fix after unacknowledged addon handover abort",
+  "qualification_limits": [
+    "Source and image qualification only; actual normal-consumer rollout and ACK validation remain open",
+    "Existing CUDA qualification is unchanged; these builds do not constitute new hardware tests",
+    "Aborted Source revision9 remains retained; addon handover needs separately reviewed reuse protocol"
+  ],
+  "recorded_at": "2026-10-21T19:22:16.245624+00:00",
+  "runtime_module_count": 78,
+  "source_revision": "2f13b5c2acd45bd0d65f1a741c18ab1a0d6a9976",
+  "stage": "published-not-deployed",
+  "tests": {
+    "focused": {
+      "log_sha256": "ceffcc85af817e87d18b2b7ca6a3537edbb05169989779225fc77c7f2585fe77",
+      "modules": 21,
+      "passed": 253,
+      "seconds": 25.65
+    },
+    "regression_red_cases": [
+      "old positional prefix rejects valid cohorts",
+      "Python bool/int registry equality admits different authenticated hashes"
+    ],
+    "root_independent_cohort": {
+      "passed": 7,
+      "seconds": 3.2
+    }
+  },
+  "version": 1,
+  "wheel_sha256": "ec038ea4aba1b30228164bb67ac98a1474887f92dd68734be8690edbc93e7577"
+}
