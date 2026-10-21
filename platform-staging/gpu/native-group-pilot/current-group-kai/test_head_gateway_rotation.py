@@ -702,3 +702,64 @@ def test_generic_policy_context_currently_rejects_unproven_gateway_service_image
     assert configuration.document==original
     assert configuration.deployment.qualification_authority.policy_transition_reference==authority.policy_transition_reference
     assert consumer.snapshot().approval.reference==approval.reference
+
+
+def generic_candidate_fixture(request,monkeypatch,module,*,previous_service=False):
+    """Use real typed policy ancestry at the pure candidate-generation seam.
+
+    Full mounted-context/bind behavior is covered by the captured fixtures above;
+    these tests independently cold-load the candidate with the actual SDK.
+    """
+    import test_native_node_config
+    from test_native_addon_policy_heads import fixture as policy_fixture
+    from test_native_service_image_successor import successor
+    original_fixture=test_native_node_config.node_fixture
+    def qualified_services():
+        policy,node,core,maps=original_fixture();body=image._parse(node['data']['config.json'])
+        for component,declaration in body['component_declarations'].items():
+            repository='cps-native-node' if component=='node' else 'cps-compute'
+            declaration['image']='ghcr.io/mul-cps/'+repository+'@sha256:'+'c'*64
+        node['data']['config.json']=image.canonical(body)
+        return policy,node,core,maps
+    # Pin public service image shapes before any typed Nodes or private custody.
+    monkeypatch.setattr(test_native_node_config,'node_fixture',qualified_services)
+    consumer,policy,maps,configuration,authority,approval=policy_fixture(request,monkeypatch)
+    if previous_service:
+        previous=successor(consumer.core,maps,configuration,policy)
+        configuration=NodeConfiguration.load(consumer.core,ref(previous),policy)
+    snapshot={'version':1,'objects':{image._key('ConfigMap',v['metadata']['namespace'],name):copy.deepcopy(v)
+        for name,v in maps.items()}}
+    monkeypatch.setattr(module,'_context',lambda inputs:(policy,configuration,None,None,None))
+    values={'snapshot':snapshot,'previous_release':{},'operator_baselines':[],
+        'expected_snapshot_sha256':canonical_sha256(snapshot),'expected_release_sha256':canonical_sha256({}),
+        'expected_operator_baselines_sha256':canonical_sha256([]),'expected_revision':approval.reference['revision']}
+    return values,consumer,policy,maps,configuration,authority
+
+
+@pytest.mark.parametrize('components',[('gateway',),('node',),('gateway','node')])
+@pytest.mark.parametrize('previous_service',[False,True])
+def test_generic_policy_gateway_candidate_binds_immediate_actual_service_predecessor(request,monkeypatch,components,previous_service):
+    module=load('head_gateway_rotation')
+    values,consumer,policy,maps,configuration,authority=generic_candidate_fixture(
+        request,monkeypatch,module,previous_service=previous_service)
+    original=configuration.document
+    values.update(gateway_image=original['component_declarations']['gateway']['image'],endpoint_proposal={},actual_endpoint_seed={})
+    expected=copy.deepcopy(original)
+    for component in components:
+        target='ghcr.io/mul-cps/'+('cps-native-node' if component=='node' else 'cps-compute')+'@sha256:'+'8'*64
+        values[component+'_image']=target;expected['component_declarations'][component]['image']=target
+    expected['service_image_predecessor_ref']=configuration.reference.to_dict()
+    prepared=module.prepare(**values);candidate=prepared['creates']['node-config']
+    assert image._parse(candidate['data']['config.json'])==expected
+    node=actual(candidate);module._actual(candidate,node);maps[node['metadata']['name']]=node
+    loaded=NodeConfiguration.load(consumer.core,ref(node),policy)
+    assert loaded.service_predecessor.reference==configuration.reference
+    assert loaded.previous_configuration.reference==configuration.previous_configuration.reference
+    assert loaded.deployment_document==configuration.deployment_document
+    assert loaded.deployment.qualification_authority.policy_transition_reference==authority.policy_transition_reference
+    assert configuration.document==original
+    for fault in ('data','uid'):
+        invalid=copy.deepcopy(node)
+        if fault=='data':invalid['data']['config.json']='{}'
+        else:invalid['metadata']['uid']='unknown'
+        with pytest.raises(ValueError):module.bind_node(values['snapshot'],prepared,invalid)

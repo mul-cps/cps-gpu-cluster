@@ -3,7 +3,7 @@ import copy,json
 from pathlib import Path
 import pytest
 from cps_compute.native_groups import canonical_sha256
-from test_head_gateway_rotation import fixture as gateway_fixture,load,actual,image
+from test_head_gateway_rotation import fixture as gateway_fixture,load,actual,image,generic_candidate_fixture
 
 HERE=Path(__file__).parent
 
@@ -27,6 +27,32 @@ def fixture():
 def module():
     assert (HERE/'head_hub_rotation.py').exists(),'Dedicated current v4 Hub-pair rotation composer required'
     return load('head_hub_rotation')
+
+
+@pytest.mark.parametrize('previous_service',[False,True])
+def test_generic_policy_hub_pair_candidate_binds_immediate_actual_service_predecessor(request,monkeypatch,previous_service):
+    from cps_compute.native_node.config import NodeConfiguration
+    from test_native_node_config import ref
+    m=module();values,consumer,policy,maps,configuration,authority=generic_candidate_fixture(
+        request,monkeypatch,m,previous_service=previous_service)
+    values['hub_image']='ghcr.io/mul-cps/cps-compute@sha256:'+'8'*64
+    original=configuration.document;expected=copy.deepcopy(original)
+    for component in ('hub:cps','hub:cit'):expected['component_declarations'][component]['image']=values['hub_image']
+    expected['service_image_predecessor_ref']=configuration.reference.to_dict()
+    prepared=m.prepare(**values);candidate=prepared['creates']['node-config']
+    assert image._parse(candidate['data']['config.json'])==expected
+    node=actual(candidate);m._actual(candidate,node);maps[node['metadata']['name']]=node
+    loaded=NodeConfiguration.load(consumer.core,ref(node),policy)
+    assert loaded.service_predecessor.reference==configuration.reference
+    assert loaded.previous_configuration.reference==configuration.previous_configuration.reference
+    assert loaded.deployment_document==configuration.deployment_document
+    assert loaded.deployment.qualification_authority.policy_transition_reference==authority.policy_transition_reference
+    assert configuration.document==original
+    for fault in ('data','uid'):
+        invalid=copy.deepcopy(node)
+        if fault=='data':invalid['data']['config.json']='{}'
+        else:invalid['metadata']['uid']='unknown'
+        with pytest.raises(ValueError):m.bind_node(values['snapshot'],prepared,invalid)
 
 def phases(values):
     m=module();p=m.prepare(**values);node=actual(p['creates']['node-config'])

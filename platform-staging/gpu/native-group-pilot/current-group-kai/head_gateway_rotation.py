@@ -320,7 +320,11 @@ def prepare(snapshot, previous_release, operator_baselines, gateway_image, endpo
         inputs.pop('expected_endpoint_proposal_sha256')
     try:
         policy, configuration, _, _, _ = _context(inputs)
-        document = configuration.document; document['component_declarations']['gateway']['image'] = gateway_image
+        document = configuration.document
+        if 'policy_transition' in document and (gateway_image != document['component_declarations']['gateway']['image']
+                or node_image is not None and node_image != document['component_declarations']['node']['image']):
+            document['service_image_predecessor_ref'] = configuration.reference.to_dict()
+        document['component_declarations']['gateway']['image'] = gateway_image
         if node_image is not None: document['component_declarations']['node']['image'] = node_image
         for key,filename in _CDI_UPDATES:
             if key in inputs: document['cdi_pins']['other_cdi_files'][filename] = inputs[key]['sha256']

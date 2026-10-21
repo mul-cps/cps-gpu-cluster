@@ -220,6 +220,8 @@ def prepare(snapshot,previous_release,operator_baselines,hub_image,*,expected_sn
     try:
         _,configuration,*_=_context(inputs)
         document=configuration.document
+        if 'policy_transition' in document:
+            document['service_image_predecessor_ref']=configuration.reference.to_dict()
         for component,value in _selected(inputs,document['component_declarations']).items():
             document['component_declarations'][component]['image']=value
         old=image._get(snapshot,'ConfigMap',configuration.reference.to_dict()['namespace'],configuration.reference.to_dict()['name'])
