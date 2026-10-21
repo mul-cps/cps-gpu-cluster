@@ -1,0 +1,64 @@
+{
+  "compositor_revision": "b5bf5a2747eacaf95d1e20676e7aa8bfc1f46fdf",
+  "images": {
+    "gateway": "ghcr.io/mul-cps/cps-compute@sha256:92874b4d8dada5edd391dddb025888ebbc02161d28a35369b054a489e7a4b543",
+    "node": "ghcr.io/mul-cps/cps-native-node@sha256:a2348b7b2211b6b22e3d6e7f7025cc0efbbc320b539a7f6acec23d8b470ad88c",
+    "observer": "ghcr.io/mul-cps/cps-native-observer@sha256:683a5a2ec959c195be4a3333cc211ce286e0c3f31c4e8671d802a2dc4d5e52c4",
+    "writer": "ghcr.io/mul-cps/cps-compute@sha256:79ef2c1aae602fa92adb485b140722d02e9b828ad8bcdff090d541fba4e6d395"
+  },
+  "invariants": {
+    "gpu_driver_changed": false,
+    "hub_images_changed": false,
+    "mig_enabled": false,
+    "policy_hash": "sha256:332d14fb9e510b9810feffb8d40b408743f9679ebd13ca1ba0e1077d666e9281",
+    "source_generation": 9,
+    "workload_image_changed": false
+  },
+  "journal": {
+    "active_rotations_after": 23,
+    "checkpoint_and_anchor_unchanged": true,
+    "four_fresh_acknowledgments_ready": true,
+    "gpu_epoch_unchanged": true,
+    "head_documents_unchanged": true,
+    "immutable_archives_after": 355,
+    "immutable_archives_before": 350,
+    "json_files_after": 359,
+    "json_files_before": 354,
+    "new_archives": 5,
+    "normal_writer_ready": true,
+    "retained_nonstate_files_unchanged": 353,
+    "rotation_after": 71,
+    "rotation_before": 70,
+    "sdk_shared_lock_validation_passed": true,
+    "source_revision_unchanged": true
+  },
+  "observed_at": "2026-10-21T23:02:48.459509+00:00",
+  "production_qualified": false,
+  "protected_notebook": {
+    "restarts": 0,
+    "running": true,
+    "uid": "03e00875-f3c7-4dca-8848-c57b257932a5"
+  },
+  "qualification": {
+    "allocation_proof_timeout_root_cause_proven": false,
+    "current_shared_workspace_start_passed": false,
+    "next_gate": "normal shared workspace Start using unchanged approved notebook image; inspect new prepare timings on failure"
+  },
+  "restoration": {
+    "binder_enabled": false,
+    "both_public_hub_health_http": 200,
+    "four_service_selectors_restored": true,
+    "new_temporary_rbac_objects_created": 0,
+    "preexisting_rotation_rbac_preserved": true,
+    "succeeded_rotation_job_uid_deleted": true
+  },
+  "service_upgrade_deployed": true,
+  "software_verification": {
+    "gateway_hub_compositor_union_passed": 205,
+    "independent_mounted_fragment_tests_passed": 19,
+    "root_operation_contracts_passed": 15,
+    "root_staging_guards_passed": 8
+  },
+  "source_revision": "e613ed78e51c8b0b9c105b5b608bbb2b257c2a17",
+  "version": 1
+}
