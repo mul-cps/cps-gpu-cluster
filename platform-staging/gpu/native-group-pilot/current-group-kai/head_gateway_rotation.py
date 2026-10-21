@@ -245,7 +245,25 @@ def _context(inputs):
             absent_pod[field] = [v for v in absent_pod.get(field, []) if v.get('name') not in names]
         expected = {k: absent['metadata'][k] for k in ('namespace', 'name', 'uid', 'resourceVersion')}
         rebuilt = rollout.compose_gateway(absent, proposal, seed, expected=expected, container=main_name)
-        image._one(rebuilt['spec']['template']['spec']['initContainers'], 'native-kai-private-inputs').update(api_defaults)
+        rebuilt_pod = rebuilt['spec']['template']['spec']
+        image._one(rebuilt_pod['initContainers'], 'native-kai-private-inputs').update(api_defaults)
+        rebuilt_main = image._one(rebuilt_pod['containers'], main_name)
+        actual_main = image._one(pod['containers'], main_name)
+        # Later independent projections may follow the original fragments. Keep
+        # only these validated fragments at their exact captured list positions.
+        for source, target, field, emitted in (
+                (actual_main, rebuilt_main, 'env', fragment['env']),
+                (actual_main, rebuilt_main, 'volumeMounts', fragment['volumeMounts']),
+                (pod, rebuilt_pod, 'volumes', fragment['volumes']),
+                (pod, rebuilt_pod, 'initContainers', [fragment['initContainer']])):
+            selected = {row['name'] for row in emitted}
+            positions = [(index, row['name']) for index, row in enumerate(source[field]) if row['name'] in selected]
+            image.require(len(positions) == len(selected) and {name for _, name in positions} == selected,
+                          'Exactly one captured occurrence of every Coordinator fragment required')
+            trusted = {row['name']: row for row in target[field] if row['name'] in selected}
+            restored = [row for row in target[field] if row['name'] not in selected]
+            for index, name in positions: restored.insert(index, trusted[name])
+            target[field] = restored
         image.require(rebuilt['spec'] == snapshot['deployments']['gateway']['spec'],
                       'Installed Coordinator fragments differ from reviewed append-only proposal')
     else:

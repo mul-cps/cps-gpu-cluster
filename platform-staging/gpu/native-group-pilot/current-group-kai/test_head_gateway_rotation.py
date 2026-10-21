@@ -140,6 +140,50 @@ def mounted_fixture(*, api_defaults=False):
     return values
 
 
+def later_fragment_fixture(*,api_defaults=False):
+    values=mounted_fixture(api_defaults=api_defaults);snapshot=values['snapshot']
+    deployment=snapshot['deployments']['gateway'];pod=deployment['spec']['template']['spec']
+    main=next(c for c in pod['containers']if c['name']=='gateway')
+    main['env'].append({'name':'CPS_LATER_CONTEXT','value':'/later/context.json'})
+    pod['volumes'].append({'name':'later-context','configMap':{'name':'reviewed-later-context'}})
+    main['volumeMounts'].append({'name':'later-context','mountPath':'/later/context.json','subPath':'context.json','readOnly':True})
+    pod['initContainers'].append({'name':'later-inputs','image':main['image'],
+        'command':['python','-c','validate_later_inputs()']})
+    meta=deployment['metadata'];snapshot['objects'][image._key('Deployment',meta['namespace'],meta['name'])]=copy.deepcopy(deployment)
+    values['expected_snapshot_sha256']=canonical_sha256(snapshot)
+    return values
+
+
+@pytest.mark.parametrize('api_defaults',[False,True])
+def test_mounted_coordinator_preserves_later_named_entries_at_exact_positions(api_defaults):
+    values=later_fragment_fixture(api_defaults=api_defaults);before=copy.deepcopy(values)
+    module,prepared,node,bound,created=phases(values)
+    result=ready_bind(values,module,bound,created)
+    original=values['snapshot']['deployments']['gateway']['spec']['template']['spec']
+    successor=result['runtime_specs']['gateway']['template']['spec']
+    old_main=next(c for c in original['containers']if c['name']=='gateway')
+    new_main=next(c for c in successor['containers']if c['name']=='gateway')
+    assert new_main['env']==old_main['env'] and new_main['volumeMounts']==old_main['volumeMounts']
+    for field in ('volumes','initContainers'):
+        assert [v['name']for v in successor[field]]==[v['name']for v in original[field]]
+        assert successor[field][-1]==original[field][-1]
+    assert values==before
+
+
+@pytest.mark.parametrize('fault',['env','mount','volume','initializer','duplicate-volume'])
+def test_later_entries_do_not_permit_changed_coordinator_fragments(fault):
+    values=later_fragment_fixture();snapshot=values['snapshot'];deployment=snapshot['deployments']['gateway']
+    pod=deployment['spec']['template']['spec'];main=next(c for c in pod['containers']if c['name']=='gateway')
+    if fault=='env':next(e for e in main['env']if e['name']=='CPS_NATIVE_KAI_COORDINATOR_CONFIG')['value']='/foreign/config.json'
+    elif fault=='mount':next(m for m in main['volumeMounts']if m['name']=='cps-kai-api')['readOnly']=False
+    elif fault=='volume':next(v for v in pod['volumes']if v['name']=='cps-kai-api')['projected']['defaultMode']=0o600
+    elif fault=='duplicate-volume':pod['volumes'].append(copy.deepcopy(next(v for v in pod['volumes']if v['name']=='cps-kai-api')))
+    else:next(c for c in pod['initContainers']if c['name']=='native-kai-private-inputs')['securityContext']['allowPrivilegeEscalation']=True
+    meta=deployment['metadata'];snapshot['objects'][image._key('Deployment',meta['namespace'],meta['name'])]=copy.deepcopy(deployment)
+    values['expected_snapshot_sha256']=canonical_sha256(snapshot)
+    with pytest.raises(ValueError):prepare(values)
+
+
 @pytest.mark.parametrize('api_defaults',[False,True])
 def test_mounted_coordinator_rotation_preserves_reviewed_repair_and_full_spec(api_defaults):
     values=mounted_fixture(api_defaults=api_defaults);before=copy.deepcopy(values)
