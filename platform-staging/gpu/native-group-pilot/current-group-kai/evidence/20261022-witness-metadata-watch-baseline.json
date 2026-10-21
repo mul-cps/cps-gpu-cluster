@@ -1,0 +1,38 @@
+{
+  "schema_version": 1,
+  "status": "diagnostic_live_baseline_passed",
+  "production_ready": false,
+  "startup_timeout_resolved": false,
+  "source_sha256": "0cc9ccea9d9ba0d72380605de2c2d58f0ba9250abdcf726aa853206ebc82b6dc",
+  "offline_tests": {
+    "passed": 24
+  },
+  "live_baseline": {
+    "seconds": 10,
+    "records": 7,
+    "elapsed_seconds": 10.059342,
+    "complete": true,
+    "threads_drained": true,
+    "api_mutations": false,
+    "errors": 0,
+    "initial_cursors": [
+      {
+        "target": "cps-native-approval-ack-node",
+        "object_resource_version": "379025144",
+        "collection_resource_version": "379025407"
+      },
+      {
+        "target": "cps-native-gpu-allocations",
+        "object_resource_version": "379008576",
+        "collection_resource_version": "379025407"
+      }
+    ]
+  },
+  "cause": "Unchanged ledger object resourceVersion predates retained watch history. Initialize from MostRecent exact-name LIST collection resourceVersion; preserve object version separately. HTTP 410 after initialization remains terminal.",
+  "next_gate": "Observe ledger and Node witness publication during one normal controlled shared-workspace Start; distinguish producer delay from Gateway verification.",
+  "protected_notebook": {
+    "uid": "03e00875-f3c7-4dca-8848-c57b257932a5",
+    "phase": "Running",
+    "restarts": 0
+  }
+}
