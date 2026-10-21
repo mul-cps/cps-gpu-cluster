@@ -1,0 +1,43 @@
+{
+  "schema_version": 1,
+  "status": "startup_timeout_reproduced_with_continuous_witness_trace",
+  "production_ready": false,
+  "cuda_executed": false,
+  "previous_cuda_isolation_results_invalidated": false,
+  "workspace": "cps/shared-gpu-lab",
+  "profile": "interactive-shared-5",
+  "test_pod_uid": "da46cf6d-77b4-4c87-8070-877ebc463392",
+  "trace": {
+    "complete": true,
+    "threads_drained": true,
+    "records": 100,
+    "errors": 0,
+    "sha256": "d99d620b2a12f83e5d5ab004148e0a1c046f2518d2a35edd0d5daa56df337628"
+  },
+  "timing": {
+    "enrolled_observed_at": "2026-10-21T23:34:02.753810+00:00",
+    "matching_node_witness_observed_at": "2026-10-21T23:34:29.095606+00:00",
+    "enrolled_to_witness_seconds": 26.34179,
+    "prepare_elapsed_seconds": 60.634559,
+    "prepare_timeout_seconds": 60,
+    "enrollment_stage_seconds": 41.640747,
+    "witness_available_before_timeout_seconds": 11.14689,
+    "witness_withdrawn_before_timeout": false
+  },
+  "interpretation": [
+    "Producer publication lag is observed, not proof of equivalent CPU processing time.",
+    "Final matching Node witness existed before timeout; absence of that witness alone does not explain the failure.",
+    "Pre-Pod validation also contributes substantial start latency; response timestamps do not establish individual request durations."
+  ],
+  "cleanup": {
+    "normal_stop_http": 200,
+    "workspace_state": "stopped",
+    "pod_absent": true,
+    "native_ledger_released": 185,
+    "native_ledger_unreleased": 0,
+    "binder_full_original_spec_restored": true,
+    "temporary_admin_token_revoked": true,
+    "protected_notebook_same_uid_running_zero_restarts": true
+  },
+  "next_gate": "Measure Node snapshot/publication and post-witness consumer verification independently, then make a targeted fix without weakening authorization or raising the deadline blindly."
+}
