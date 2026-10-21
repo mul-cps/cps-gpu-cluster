@@ -49,8 +49,8 @@ def _context(inputs):
         'Distinct qualified immutable shared Hub successor image required')
     runtime_secret = image.secret_volume(snapshot, 'gateway', 'config')
     _guard(runtime_secret, 'Secret')
-    image.require(runtime_secret.get('type') == 'Opaque' and runtime_secret.get('immutable') is not True,
-                  'Existing mutable Opaque Gateway runtime Secret required')
+    image.require(runtime_secret.get('type') == 'Opaque' and (runtime_secret.get('immutable') is None
+        or type(runtime_secret.get('immutable')) is bool), 'Existing Opaque Gateway runtime Secret required')
     runtime = image._decode(runtime_secret['data']['runtime.json']); approvals = runtime['nativeGroupApprovals']
     epoch = {k: configuration.deployment.node_pool[k] for k in ('node_uid', 'boot_id', 'driver_generation', 'gpu_uuid')}
     image.require(runtime['policy_hash'] == policy.hash and set(approvals) == {
@@ -211,9 +211,15 @@ def bind_node(snapshot,prepared,actual_node_config):
             runtime['nativeGroupApprovals']['processes'][component]['image']=prepared['inputs']['hub_image']
         secret=image.secret_volume(snapshot,'gateway','config');runtime_data=deepcopy(secret['data'])
         runtime_data['runtime.json']=image._encoded(runtime)
+        runtime_patch=None
+        if secret.get('immutable') is True:
+            creates['gateway.runtime-secret']=image._candidate(secret,'cps-native-head-hub-runtime',runtime_data)
+            image._one(specs['gateway']['template']['spec']['volumes'],'config')['secret']['secretName']=creates['gateway.runtime-secret']['metadata']['name']
+        else:
+            runtime_patch=image._patch(secret,'/data',runtime_data)
         return {'version':1,'prepared':deepcopy(prepared),'actual_node_config':deepcopy(actual_node_config),
             'node_config_ref':reference.to_dict(),'creates':creates,'runtime_specs':specs,
-            'gateway_runtime_patch':image._patch(secret,'/data',runtime_data),
+            'gateway_runtime_patch':runtime_patch,
             'live_applied':False,'hardware_qualified':False}
     except (KeyError,TypeError,AttributeError,StopIteration):
         raise ValueError('Incomplete Hub-pair actual configuration binding')from None
@@ -230,7 +236,7 @@ def bind(snapshot, plan, actual_creates, *, actual_permissions=None):
         expected = bind_node(snapshot, plan['prepared'], plan['actual_node_config'])
         image.require(plan == expected, 'Exact bound Node/config/dependent plan required')
         image.require(isinstance(actual_creates, dict) and set(actual_creates) == set(plan['creates']),
-                      'Exactly four actual dependent CREATE readbacks required')
+                      'Exact actual dependent CREATE readbacks required')
         for label, candidate in plan['creates'].items():
             _actual(candidate, actual_creates[label], immutable=label != 'node.bootstrap')
         inputs = plan['prepared']['inputs']; previous = inputs['previous_release']
@@ -244,7 +250,8 @@ def bind(snapshot, plan, actual_creates, *, actual_permissions=None):
         new_node = deepcopy(snapshot['deployments']['node']); new_node['spec'] = deepcopy(plan['runtime_specs']['node'])
         release['held_node_template_sha256'] = image.sha(_template(new_node))
         rows = {(r['namespace'], r['name']): r['index'] for r in release['head_get_rows']}
-        patches = {'gateway.runtime-secret': deepcopy(plan['gateway_runtime_patch'])}; roles = []
+        patches = ({'gateway.runtime-secret': deepcopy(plan['gateway_runtime_patch'])}
+                   if plan['gateway_runtime_patch'] is not None else {}); roles = []
         for offset, pinned in enumerate(previous['roles']):
             key = pinned['namespace'], pinned['name']; actual = image._get(snapshot, 'Role', *key)
             trusted, desired = _grow(pinned, actual, rows[key], additions.get(key, set()))
@@ -259,6 +266,7 @@ def bind(snapshot, plan, actual_creates, *, actual_permissions=None):
         maps = {image._key('ConfigMap', o['metadata']['namespace'], o['metadata']['name']): deepcopy(o)
                 for o in snapshot['objects'].values() if o['kind'] == 'ConfigMap'}
         for value in [plan['actual_node_config'], *actual_creates.values()]:
+            if value['kind'] != 'ConfigMap': continue
             maps[image._key('ConfigMap', value['metadata']['namespace'], value['metadata']['name'])] = deepcopy(value)
         from cps_compute.native_observer_permissions import ObserverRelease
         ObserverRelease.from_dict(release)

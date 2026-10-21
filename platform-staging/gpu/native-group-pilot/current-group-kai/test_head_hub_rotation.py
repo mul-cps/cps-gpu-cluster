@@ -134,6 +134,50 @@ def test_hub_pair_updates_only_reviewed_images_and_immutable_projections():
     assert newseed['data']==expectedseed
     assert created['node.bootstrap']['data']['release']=='false'
 
+
+def test_immutable_runtime_creates_bound_successor_and_preserves_every_other_secret_byte():
+    v=fixture();snapshot=v['snapshot'];secret=image.secret_volume(snapshot,'gateway','config')
+    secret['immutable']=True
+    secret['data']['unrelated-credential']=image._encoded('synthetic-credential-only')
+    meta=secret['metadata'];snapshot['objects'][image._key('Secret',meta['namespace'],meta['name'])]=secret
+    v['expected_snapshot_sha256']=canonical_sha256(snapshot);before=copy.deepcopy(v)
+    m,p,node,b,created=phases(v)
+    assert set(created)=={'node.bootstrap','coordinator.seed','hub:cps.publisher','hub:cit.publisher','gateway.runtime-secret'}
+    successor=created['gateway.runtime-secret']
+    assert successor['kind']=='Secret' and successor['immutable'] is True and successor['type']==secret['type']
+    assert successor['metadata']['name']!=secret['metadata']['name']
+    expected=copy.deepcopy(secret['data']);runtime=image._decode(expected['runtime.json'])
+    for component in ('hub:cps','hub:cit'):runtime['nativeGroupApprovals']['processes'][component]['image']=v['hub_image']
+    expected['runtime.json']=image._encoded(runtime)
+    assert successor['data']==expected and successor['data']['unrelated-credential']==secret['data']['unrelated-credential']
+    assert b['gateway_runtime_patch'] is None
+    volume=next(o for o in b['runtime_specs']['gateway']['template']['spec']['volumes'] if o['name']=='config')
+    assert volume['secret']['secretName']==successor['metadata']['name']
+    pending=m.bind(snapshot,b,created);assert pending['permissions_pending'] and not pending['patches']
+    permissions={k:actual(o)for k,o in pending['creates'].items()}
+    final=m.bind(snapshot,b,created,actual_permissions=permissions)
+    assert 'gateway.runtime-secret' not in final['patches'] and v==before
+    assert final['runtime_specs']['gateway']==b['runtime_specs']['gateway']
+    assert all(value['kind']=='ConfigMap' for value in final['prospective_capture']['configmaps'])
+    assert final['observer_release']['heads']==v['previous_release']['heads']
+    assert final['operator_baselines']==v['operator_baselines']
+
+
+@pytest.mark.parametrize('fault',['missing','data','mutable','uid','namespace','name','type','owner'])
+def test_immutable_runtime_successor_requires_exact_actual_readback(fault):
+    v=fixture();secret=image.secret_volume(v['snapshot'],'gateway','config');secret['immutable']=True
+    v['expected_snapshot_sha256']=canonical_sha256(v['snapshot'])
+    m,p,node,b,created=phases(v);successor=created['gateway.runtime-secret']
+    if fault=='missing':created.pop('gateway.runtime-secret')
+    elif fault=='data':successor['data']['unrelated-credential']='changed'
+    elif fault=='mutable':successor['immutable']=False
+    elif fault=='uid':successor['metadata']['uid']='unknown'
+    elif fault=='namespace':successor['metadata']['namespace']='foreign'
+    elif fault=='name':successor['metadata']['name']='foreign'
+    elif fault=='type':successor['type']='foreign'
+    else:successor['metadata']['ownerReferences']=[{'kind':'Pod','name':'foreign','uid':'00000000-0000-4000-8000-000000000001'}]
+    with pytest.raises(ValueError):m.bind(v['snapshot'],b,created)
+
 @pytest.mark.parametrize('fault',['hub-helper','hub-main','account-uid','coordinator-ref','coordinator-env',
     'publisher-image','head-pointer','bootstrap-held','active-ledger','coordinator-path',
     'main-private-writable','init-seed-writable','init-private-subpath','initializer-image','initializer-missing'])
