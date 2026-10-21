@@ -62,6 +62,36 @@ def _reference(cm):
         'key': 'config.json', 'data_sha256': image.sha(cm['data'])})
 
 
+def _backup_provenance_patch(inputs):
+    """Keep application provenance current without changing the backup utility."""
+    keys=('actual_gateway_backup','expected_gateway_backup_sha256')
+    if not any(key in inputs for key in keys):return None
+    from cps_compute.native_observer_permissions import valid_uid
+    actual=inputs.get(keys[0]);pin=inputs.get(keys[1])
+    image.require(isinstance(actual,dict) and isinstance(pin,str) and image.sha(actual)==pin,
+                  'Actual Gateway backup and independent complete capture pin required')
+    meta=actual.get('metadata',{})
+    namespace=inputs['snapshot']['deployments']['gateway']['metadata']['namespace']
+    image.require(actual.get('apiVersion')=='batch/v1' and actual.get('kind')=='CronJob'
+        and (meta.get('namespace'),meta.get('name'))==(namespace,'compute-state-backup')
+        and valid_uid(meta.get('uid')) and isinstance(meta.get('resourceVersion'),str)
+        and re.fullmatch(r'[1-9][0-9]*',meta['resourceVersion'])
+        and not meta.get('ownerReferences') and not meta.get('deletionTimestamp'),
+        'Exact actual ownerless Gateway backup CronJob UID/RV required')
+    desired=deepcopy(actual['spec'])
+    container=image._one(desired['jobTemplate']['spec']['template']['spec']['containers'],'backup')
+    entry=image._one(container['env'],'BACKUP_IMAGE')
+    image.require(set(entry)=={'name','value'} and isinstance(entry['value'],str) and entry['value'],
+                  'One literal backup application image required')
+    entry['value']=inputs['gateway_image']
+    if desired==actual['spec']:return None
+    return {'target':{'kind':'CronJob','namespace':namespace,'name':meta['name']},'patch':[
+        {'op':'test','path':'/metadata/uid','value':meta['uid']},
+        {'op':'test','path':'/metadata/resourceVersion','value':meta['resourceVersion']},
+        {'op':'test','path':'/spec','value':deepcopy(actual['spec'])},
+        {'op':'replace','path':'/spec','value':desired}]}
+
+
 def _mounted_head(snapshot, component, declaration, binding):
     """Prove the existing local projections, without rewriting a head binding."""
     from cps_compute.immutable_configmap import ImmutableConfigMapRef
@@ -123,6 +153,7 @@ def _context(inputs):
         and image.sha(previous) == inputs['expected_release_sha256']
         and image.sha(operators) == inputs['expected_operator_baselines_sha256'],
         'Independent snapshot, release and operator baseline pins required')
+    _backup_provenance_patch(inputs)
     policy, configuration = image._context(snapshot); document = configuration.document
     release = ObserverRelease.from_dict(previous)
     image.require(document['version'] == 4 and previous['version'] == 2
@@ -281,9 +312,12 @@ def _context(inputs):
 
 
 def prepare(snapshot, previous_release, operator_baselines, gateway_image, endpoint_proposal, actual_endpoint_seed,
-            *, expected_snapshot_sha256, expected_release_sha256, expected_operator_baselines_sha256, expected_revision, expected_endpoint_proposal_sha256=None, node_image=None, stock_cdi_update=None, management_cdi_update=None):
+            *, expected_snapshot_sha256, expected_release_sha256, expected_operator_baselines_sha256, expected_revision, expected_endpoint_proposal_sha256=None, node_image=None, stock_cdi_update=None, management_cdi_update=None,
+            actual_gateway_backup=None, expected_gateway_backup_sha256=None):
     """First phase: create an immutable Node4 image or CDI provider successor candidate."""
     inputs = deepcopy(locals())
+    if actual_gateway_backup is None and expected_gateway_backup_sha256 is None:
+        inputs.pop('actual_gateway_backup');inputs.pop('expected_gateway_backup_sha256')
     if node_image is None: inputs.pop('node_image')
     for key,_ in _CDI_UPDATES:
         if inputs[key] is None: inputs.pop(key)
@@ -444,6 +478,8 @@ def bind(snapshot, plan, actual_creates, *, actual_permissions=None):
         release['held_node_template_sha256'] = image.sha(_template(new_node))
         rows = {(r['namespace'], r['name']): r['index'] for r in release['head_get_rows']}
         patches = {'gateway.runtime-secret': deepcopy(plan['gateway_runtime_patch'])}; roles = []
+        backup=_backup_provenance_patch(inputs)
+        if backup is not None:patches['gateway.backup-cronjob']=backup
         for offset, pinned in enumerate(previous['roles']):
             key = pinned['namespace'], pinned['name']; actual = image._get(snapshot, 'Role', *key)
             trusted, desired = _grow(pinned, actual, rows[key], additions.get(key, set()))

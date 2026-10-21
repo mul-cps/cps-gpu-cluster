@@ -30,3 +30,33 @@ This demonstrates corrected backup execution and archive integrity. The next
 automatic schedule after the correction, connected application recovery,
 coordinated Hub/console/gateway/NFS capture and encrypted off-host durability
 remain separate qualification gates.
+
+## Guarded Gateway handovers, 2026-10-21
+
+The chart already uses the shared `gateway.image` release value for the
+Deployment and backup `BACKUP_IMAGE`. Later direct Gateway rotations omitted
+the CronJob update, so a successfully executed backup could still record an
+older application version. `application_image` identifies the application
+whose databases were backed up; it must not be inferred from the backup utility
+container image.
+
+The pure `current-group-kai/head_gateway_rotation.py::prepare` now accepts
+`actual_gateway_backup` and `expected_gateway_backup_sha256` together. Root must
+capture the actual `batch/v1` `compute-state-backup` CronJob and independently pin
+the complete captured object. The bound proposal includes
+`patches['gateway.backup-cronjob']`, a UID/resourceVersion/full-spec CAS that
+changes only the single literal `BACKUP_IMAGE` to the reviewed Gateway image.
+The utility image, policy hash, schedules, storage, security and other fields
+remain exact. Apply this patch only after the target Gateway image has actually
+become ready, and verify its readback before creating a backup Job.
+Existing stagers that accept exactly five labels must explicitly admit this
+optional sixth label with its pinned preimage; do not silently drop it or apply
+it before readiness. The historical staged R61 renderer remains unchanged.
+
+Omitting both optional inputs preserves previous prepared artifacts and patch
+sets exactly; that compatibility path does not verify current backup provenance.
+Supplying one without the other, an altered pin, a different resource identity,
+or ambiguous/nonliteral provenance is rejected. The composer performs no API
+calls and does not replace actual backup/restore qualification or alter existing
+archives. Staged historical renderers and live objects are unchanged by this
+source addition.

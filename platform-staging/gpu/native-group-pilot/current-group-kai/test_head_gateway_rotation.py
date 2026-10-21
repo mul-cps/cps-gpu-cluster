@@ -114,6 +114,81 @@ def prepare(values):
     return load('head_gateway_rotation').prepare(**values)
 
 
+def backup_fixture():
+    values=fixture();namespace=values['snapshot']['deployments']['gateway']['metadata']['namespace']
+    backup={'apiVersion':'batch/v1','kind':'CronJob','metadata':{'namespace':namespace,'name':'compute-state-backup',
+        'uid':str(uuid.uuid4()),'resourceVersion':'77'},'spec':{'schedule':'17 2 * * *','concurrencyPolicy':'Forbid',
+        'jobTemplate':{'spec':{'backoffLimit':1,'template':{'spec':{'restartPolicy':'Never',
+            'automountServiceAccountToken':False,'containers':[{'name':'backup',
+                'image':'registry.example/old-backup-utility@sha256:'+'8'*64,
+                'command':['python','/scripts/backup-state.py'],
+                'env':[{'name':'BACKUP_IMAGE','value':'registry.example/old-application@sha256:'+'7'*64},
+                       {'name':'BACKUP_POLICY_HASH','value':'sha256:'+'6'*64}]}]}}}}}}
+    values.update(actual_gateway_backup=backup,expected_gateway_backup_sha256=canonical_sha256(backup))
+    return values,backup
+
+
+def test_optional_backup_provenance_follows_gateway_not_backup_utility_and_preserves_full_spec():
+    values,backup=backup_fixture();original=copy.deepcopy(values)
+    module,prepared,node,bound,created=phases(values)
+    assert module.bind(values['snapshot'],bound,created)['patches']=={}
+    result=ready_bind(values,module,bound,created)
+    record=result['patches']['gateway.backup-cronjob'];patch=record['patch']
+    assert record['target']=={'kind':'CronJob','namespace':backup['metadata']['namespace'],'name':'compute-state-backup'}
+    assert patch[:3]==[{'op':'test','path':'/metadata/uid','value':backup['metadata']['uid']},
+        {'op':'test','path':'/metadata/resourceVersion','value':backup['metadata']['resourceVersion']},
+        {'op':'test','path':'/spec','value':backup['spec']}]
+    expected=copy.deepcopy(backup['spec'])
+    expected['jobTemplate']['spec']['template']['spec']['containers'][0]['env'][0]['value']=values['gateway_image']
+    assert patch[3]=={'op':'replace','path':'/spec','value':expected}
+    assert values==original
+
+
+@pytest.mark.parametrize('fault',['pin-missing','object-missing','pin','uid','rv','kind','api','name','namespace',
+    'owner','deleting','duplicate-env','valueFrom'])
+def test_backup_provenance_requires_exact_pinned_actual_object_and_literal_env(fault):
+    values,backup=backup_fixture()
+    if fault=='pin-missing':del values['expected_gateway_backup_sha256']
+    elif fault=='object-missing':del values['actual_gateway_backup']
+    elif fault=='pin':values['expected_gateway_backup_sha256']='sha256:'+'e'*64
+    else:
+        meta=backup['metadata'];env=backup['spec']['jobTemplate']['spec']['template']['spec']['containers'][0]['env']
+        if fault=='uid':meta['uid']='00000000-0000-0000-0000-000000000000'
+        elif fault=='rv':meta['resourceVersion']='0'
+        elif fault=='kind':backup['kind']='Job'
+        elif fault=='api':backup['apiVersion']='v1'
+        elif fault=='name':meta['name']='another-backup'
+        elif fault=='namespace':meta['namespace']='other-namespace'
+        elif fault=='owner':meta['ownerReferences']=[{'uid':str(uuid.uuid4())}]
+        elif fault=='deleting':meta['deletionTimestamp']='now'
+        elif fault=='duplicate-env':env.append(copy.deepcopy(env[0]))
+        elif fault=='valueFrom':env[0]={'name':'BACKUP_IMAGE','valueFrom':{'fieldRef':{'fieldPath':'metadata.name'}}}
+        values['expected_gateway_backup_sha256']=canonical_sha256(backup)
+    with pytest.raises(ValueError):prepare(values)
+
+
+def test_absent_optional_backup_preserves_prepared_artifact_and_existing_patch_set_exactly():
+    values=fixture();module=load('head_gateway_rotation');prepared=prepare(values)
+    assert 'actual_gateway_backup' not in prepared['inputs'] and 'expected_gateway_backup_sha256' not in prepared['inputs']
+    assert module.prepare(**values,actual_gateway_backup=None,expected_gateway_backup_sha256=None)==prepared
+    module,prepared,node,bound,created=phases(values)
+    result=ready_bind(values,module,bound,created)
+    namespace=image._context(values['snapshot'])[1].document['component_declarations']['node']['namespace']
+    assert set(result['patches'])=={'gateway.runtime-secret','gateway.deployment','node.deployment',
+        'component-role:'+namespace+'/cps-native-approval-node',
+        'component-role:'+namespace+'/cps-native-approval-gateway'}
+
+
+def test_current_backup_application_image_is_noop_even_with_an_older_utility():
+    values,backup=backup_fixture()
+    backup['spec']['jobTemplate']['spec']['template']['spec']['containers'][0]['env'][0]['value']=values['gateway_image']
+    values['expected_gateway_backup_sha256']=canonical_sha256(backup)
+    original=copy.deepcopy(backup)
+    module,prepared,node,bound,created=phases(values)
+    assert 'gateway.backup-cronjob' not in ready_bind(values,module,bound,created)['patches']
+    assert backup==original
+
+
 def mounted_fixture(*, api_defaults=False):
     values=fixture();snapshot=values['snapshot'];deployment=snapshot['deployments']['gateway']
     path=HERE.parent/'current-group-integration'/'gateway_rollout.py'
