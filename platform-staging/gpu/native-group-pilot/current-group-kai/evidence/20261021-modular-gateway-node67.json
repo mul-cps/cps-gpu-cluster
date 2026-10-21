@@ -1,0 +1,73 @@
+{
+  "both_hub_pods_unchanged_in_stage67": true,
+  "components": {
+    "gateway": {
+      "generation": 319,
+      "images": {
+        "approval-capture": "ghcr.io/mul-cps/cps-compute@sha256:f475a7c3651f52e12832e11c6b3c764b5d55456591ed55c7206cfd99daa3ea83",
+        "gateway": "ghcr.io/mul-cps/cps-compute@sha256:f475a7c3651f52e12832e11c6b3c764b5d55456591ed55c7206cfd99daa3ea83"
+      },
+      "uid": "f5f9b266-433d-4825-83de-d51e31c71648"
+    },
+    "hub:cit": {
+      "generation": 242,
+      "images": {
+        "hub": "ghcr.io/mul-cps/cps-compute@sha256:846133baf5929b4bd3bf2341b77a54565217463bf52daf5a8e1fd4a5d9fdd54f"
+      },
+      "uid": "dd90f866-47d3-4b9f-ba41-b4ebf8cb2b1e"
+    },
+    "hub:cps": {
+      "generation": 299,
+      "images": {
+        "hub": "ghcr.io/mul-cps/cps-compute@sha256:846133baf5929b4bd3bf2341b77a54565217463bf52daf5a8e1fd4a5d9fdd54f"
+      },
+      "uid": "02fb8421-d323-4636-b006-2490cd6f5b63"
+    },
+    "node": {
+      "generation": 311,
+      "images": {
+        "node-agent": "ghcr.io/mul-cps/cps-native-node@sha256:5a76616c0b4f547d6d951870acd3d35f5761f0ab71cae2d724b8ff766372833c"
+      },
+      "uid": "03e6bf5e-39ab-4c4a-b73f-1d6cf0ee8076"
+    },
+    "observer": {
+      "generation": 184,
+      "images": {
+        "observer": "ghcr.io/mul-cps/cps-native-observer@sha256:9938843f584539199948c48793d9fcdda2b46b3858880d9d7cc644b5b5cdb3ca"
+      },
+      "uid": "2a8b8724-68c3-4772-b45f-1ed9ef1910c9"
+    },
+    "writer": {
+      "generation": 151,
+      "images": {
+        "delivery": "ghcr.io/mul-cps/cps-compute@sha256:4d3eb57ab9247b22fb1c4d9712d73c192d3c7424fe2bb70b3eac063531af2542"
+      },
+      "uid": "8dfbe31d-1475-4cd5-aa3f-34b791c1950b"
+    }
+  },
+  "journal": {
+    "active_rotations": 19,
+    "all_330_previous_archive_hashes_preserved": true,
+    "archives": 335,
+    "checkpoint_epoch_heads_legacy_completed_anchor_unchanged": true,
+    "passed": true,
+    "total_rotations": 67
+  },
+  "lifetime_activated": false,
+  "passed": true,
+  "protected_notebook_unchanged": true,
+  "recorded_at": "2026-10-21T18:10:28.516736+00:00",
+  "resumed_journal_identical": true,
+  "scope_limits": [
+    "Ordinary same-policy image rotation only.",
+    "Shared notebook image policy handover, lifetime activation and overall production qualification remain separate.",
+    "No GPU device/driver changes or repeated CUDA qualification."
+  ],
+  "services_restored": 4,
+  "shared_notebook_policy_handover": false,
+  "source_revisions": {
+    "cluster_helper": "8a96d3a436decf230bd31dc9d0220a5a2442d600",
+    "compute": "d8c8d3f00665a5cbfd6b29df3013c47ae3372f2c"
+  },
+  "stage": "gateway-node-modular-images67"
+}
