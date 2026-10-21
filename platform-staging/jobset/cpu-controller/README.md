@@ -49,7 +49,9 @@ reviewed policy template, use:
 - An enabled batch profile with CPU `250m`, memory `128Mi`, GPU mode `none`,
   one digest-pinned approved Python image and a walltime ceiling at least as large as
   timeoutSeconds. The image needs Python; it runs only the fixed checked-in code
-  printing a marker and sleeping ten seconds. Packet fields cannot supply code.
+  refusing exposed GPU device paths, printing a marker and sleeping ten seconds.
+  It checks `/dev/nvidia*`, `/dev/kfd` and `/dev/dri/renderD*` by glob only,
+  without opening or querying devices. Packet fields cannot supply code.
 - Fixture-only `distributedQualification` with qualified true, policyVersion
   equal to that fixture's version and evidence exactly
   `["synthetic-cpu-controller-fixture-only"]`. Remove any stale policyHash and

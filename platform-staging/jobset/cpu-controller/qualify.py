@@ -12,7 +12,12 @@ SCENARIOS = (('success', 0, 'Completed', 0), ('recover', 1, 'Completed', 1), ('e
 ATTEMPT = 'jobset.sigs.k8s.io/restart-attempt'
 PREFIX = 'cps-jobset-qa-'
 OWNER = 'compute.cps.unileoben.ac.at/cpu-controller-fixture'
-CODE = 'import time; print("cps-jobset-cpu-fixture", flush=True); time.sleep(10)'
+CODE = ('import glob,time\n'
+        'if any(glob.glob(pattern) for pattern in '
+        '("/dev/nvidia*","/dev/kfd","/dev/dri/renderD*")):\n'
+        '    raise RuntimeError("GPU device exposed to CPU fixture")\n'
+        'print("cps-jobset-cpu-fixture", flush=True)\n'
+        'time.sleep(10)')
 
 
 def require(ok, message):
@@ -180,7 +185,8 @@ class Cluster:
         self.observed_pods = pods.items
         for pod in pods.items:
             spec = pod.spec
-            require(not spec.volumes and not spec.init_containers and not spec.node_selector
+            require(not spec.volumes and not spec.init_containers and not spec.ephemeral_containers
+                    and not spec.runtime_class_name and not spec.node_selector
                     and not spec.host_ipc and not spec.host_pid and not spec.host_network
                     and len(spec.containers) == 1 and spec.automount_service_account_token is False,
                     'Observed worker gained mounts, host access or extra containers')

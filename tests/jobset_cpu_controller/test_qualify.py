@@ -75,6 +75,20 @@ class Preflight(unittest.TestCase):
             idempotency_key=namespace)
         m.validate_manifest(manifest, p)
 
+    def test_fixed_worker_refuses_device_exposure_without_opening_devices(self):
+        import subprocess, sys
+        # Replace only sleep so this exact checked-in code can run offline.
+        code = m.CODE.replace('time.sleep(10)', 'time.sleep(0)')
+        for devices in [[], ['/dev/nvidia0'], ['/dev/kfd'], ['/dev/dri/renderD128']]:
+            setup = 'import glob; glob.glob=lambda pattern: ' + repr(devices) + '; '
+            result = subprocess.run([sys.executable, '-I', '-O', '-c', setup + code], capture_output=True, text=True)
+            self.assertEqual(result.returncode == 0, not devices)
+            self.assertEqual('cps-jobset-cpu-fixture' in result.stdout, not devices)
+        self.assertIn('glob.glob(pattern)', m.CODE)
+        for pattern in ('/dev/nvidia*', '/dev/kfd', '/dev/dri/renderD*'):
+            self.assertIn(pattern, m.CODE)
+        self.assertNotIn('open(', m.CODE)
+
     def test_manifest_forbids_devices_mounts_and_node_placement(self):
         p = {'namespace': 'cps-jobset-qa-' + 'a' * 16, 'image': 'fixture@sha256:' + 'a' * 64}
         container = {'image': p['image'], 'command': ['python'], 'args': ['-c', m.CODE],
@@ -188,6 +202,32 @@ class Observation(unittest.IsolatedAsyncioTestCase):
         cluster = m.Cluster(Custom(), Core(), Jobs(), None, 'fixture')
         with self.assertRaisesRegex(ValueError, 'UID replaced'): await cluster.inspect('name', 'wrong')
         with self.assertRaisesRegex(ValueError, 'Foreign Job'): await cluster.inspect('name', 'owned-parent')
+
+    async def test_observed_ephemeral_container_and_runtime_class_are_rejected(self):
+        class Custom:
+            def get_namespaced_custom_object(self, *a, **kw):
+                return {'metadata': {'uid': 'parent', 'annotations': {}}}
+            def list_namespaced_custom_object(self, *a, **kw): return {'items': []}
+        class Jobs:
+            def list_namespaced_job(self, *a, **kw):
+                return NS(metadata=NS(_continue=None), items=[NS(metadata=NS(uid='job', owner_references=[NS(uid='parent')]))])
+        class Core:
+            spec = None
+            def list_namespaced_pod(self, *a, **kw):
+                return NS(metadata=NS(_continue=None), items=[NS(spec=self.spec,
+                    metadata=NS(owner_references=[NS(uid='job')]))])
+        worker = NS(image='pinned', volume_mounts=None, volume_devices=None, env=None, env_from=None,
+                    resources=NS(requests={'cpu': '250m', 'memory': '128Mi'}, limits={'cpu': '250m', 'memory': '128Mi'}))
+        fields = dict(volumes=None, init_containers=None, ephemeral_containers=None, runtime_class_name=None,
+                      node_selector=None, host_ipc=False, host_pid=False, host_network=False,
+                      containers=[worker], automount_service_account_token=False)
+        core = Core(); core.spec = NS(**fields)
+        cluster = m.Cluster(Custom(), core, Jobs(), None, 'fixture', image='pinned')
+        await cluster.inspect('own', 'parent')
+        for field, value in [('ephemeral_containers', [NS(name='debug')]), ('runtime_class_name', 'nvidia')]:
+            core.spec = NS(**{**fields, field: value})
+            with self.subTest(field=field), self.assertRaises(ValueError):
+                await cluster.inspect('own', 'parent')
 
     async def test_namespace_deletion_has_uid_precondition_and_refuses_replacement(self):
         from kubernetes.client.exceptions import ApiException
