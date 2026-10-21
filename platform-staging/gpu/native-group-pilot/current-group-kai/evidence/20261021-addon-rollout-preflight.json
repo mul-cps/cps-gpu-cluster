@@ -1,0 +1,16 @@
+{
+  "passed": true,
+  "exact_deployment_specs": 6,
+  "service_preimages": 5,
+  "historical_sql_rows_unchanged": 9,
+  "journal_archives_unchanged": 335,
+  "all_group_workspaces_stopped": true,
+  "reservations_empty": true,
+  "protected_notebook_unchanged": true,
+  "production_mutations": false,
+  "operator_job_server_dry_run_passed": true,
+  "operator_job_started": false,
+  "bootstrap_hold_gate_mutability_corrected_before_use": true,
+  "named_authority_get_access_staged": true,
+  "maintenance_started": false
+}
