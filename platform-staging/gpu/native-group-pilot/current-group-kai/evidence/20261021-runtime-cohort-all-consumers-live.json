@@ -1,0 +1,62 @@
+{
+  "adapter_tests": 7,
+  "all_five_published_image_families_selected": true,
+  "both_hub_pod_uids_unchanged": true,
+  "cuda_tests_repeated": false,
+  "four_actual_consumer_owners_and_fresh_acks": true,
+  "http": {
+    "cit": {
+      "status": 302,
+      "url": "https://jhub.dshl.unileoben.ac.at/hub/login"
+    },
+    "cps": {
+      "status": 200,
+      "url": "https://jupyterhub.dshl.unileoben.ac.at/hub/login"
+    }
+  },
+  "images": {
+    "gateway": "ghcr.io/mul-cps/cps-compute@sha256:4f8dab91e2521160f7a2642c9f6d2af4f3f9005955f52e99ae3ad3d49d4df828",
+    "hub:cit": "ghcr.io/mul-cps/cps-compute@sha256:d84fa2c12da0a454680d18ff96b88ee8a8be450beafc39c6bb52beb68b65f591",
+    "hub:cps": "ghcr.io/mul-cps/cps-compute@sha256:d84fa2c12da0a454680d18ff96b88ee8a8be450beafc39c6bb52beb68b65f591",
+    "node": "ghcr.io/mul-cps/cps-native-node@sha256:59b3152b4aa38aa9a6154b7241c020930883adbc2468b08fd488cd721274bab4",
+    "observer": "ghcr.io/mul-cps/cps-native-observer@sha256:d51babaecb1da0b336f209bd8d3bd6c6705acc6666ceed524fe9d9cb32b6fe7b",
+    "writer": "ghcr.io/mul-cps/cps-compute@sha256:61f7eeba56fe3217ae822e979c204ede63c5d4faee6820d994d11e1ee0826f4a"
+  },
+  "journal": {
+    "active_rotations": 21,
+    "archives": 345,
+    "old_archives_preserved": true,
+    "original_anchor_checkpoint_unchanged": true,
+    "sdk_shared_lock_validated": true,
+    "total_rotations": 69
+  },
+  "mig_or_driver_changes": false,
+  "next": [
+    "Explicit reviewed retained-aborted-Source9 reuse protocol",
+    "Addon notebook image handover and countdown/warning activation qualification",
+    "Remaining original platform acceptance and release gates"
+  ],
+  "normal_owned_writer_tick_ready": true,
+  "observations": [
+    "Node bootstrap completed successfully after projected ConfigMap propagation; rollout observation timeout did not restart the Pod",
+    "First normal writer log observation was empty before first tick; subsequent actual owned normal writer tick was Ready"
+  ],
+  "physical_epoch_unchanged": true,
+  "policy_hash": "sha256:1d519ff85206a2874b267e1cf89844262b993d14230b126c6c9fba44b0bbdd5b",
+  "production_ready": false,
+  "protected_notebook": {
+    "restarts": 0,
+    "uid": "03e00875-f3c7-4dca-8848-c57b257932a5",
+    "unchanged": true
+  },
+  "recorded_at": "2026-10-21T19:38:22.565405+00:00",
+  "rotation_job_succeeded_and_cleaned": true,
+  "sdk_source_revision": "2f13b5c2acd45bd0d65f1a741c18ab1a0d6a9976",
+  "server_dry_run_specs": 6,
+  "services_restored_full_specs": 4,
+  "six_full_specs_ready": true,
+  "source_and_policy_unchanged": true,
+  "source_revision": "sha256:a0d0cebe806e5bf8a65bc0328ca1e8c142d43c4fd88df3838c8e9773f8f8516f",
+  "stage": "all-normal-consumer-cohort-fix-images-live",
+  "version": 1
+}
