@@ -224,6 +224,19 @@ class Observation(unittest.IsolatedAsyncioTestCase):
         core = Core(); core.spec = NS(**fields)
         cluster = m.Cluster(Custom(), core, Jobs(), None, 'fixture', image='pinned')
         await cluster.inspect('own', 'parent')
+        from kubernetes.client import V1EnvVar, V1EnvVarSource, V1ObjectFieldSelector
+        indexed = V1EnvVar(name='JOB_COMPLETION_INDEX', value_from=V1EnvVarSource(
+            field_ref=V1ObjectFieldSelector(api_version='v1',
+                field_path="metadata.labels['batch.kubernetes.io/job-completion-index']")))
+        worker.env = [indexed]
+        await cluster.inspect('own', 'parent')
+        for environment in ([V1EnvVar(name='JOB_COMPLETION_INDEX', value='0')],
+                            [V1EnvVar(name='NVIDIA_VISIBLE_DEVICES', value='all')],
+                            [indexed, indexed], [indexed, V1EnvVar(name='EXTRA', value='1')]):
+            worker.env = environment
+            with self.subTest(environment=environment), self.assertRaises(ValueError):
+                await cluster.inspect('own', 'parent')
+        worker.env = None
         for field, value in [('ephemeral_containers', [NS(name='debug')]), ('runtime_class_name', 'nvidia')]:
             core.spec = NS(**{**fields, field: value})
             with self.subTest(field=field), self.assertRaises(ValueError):

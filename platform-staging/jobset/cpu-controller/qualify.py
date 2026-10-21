@@ -191,8 +191,13 @@ class Cluster:
                     and len(spec.containers) == 1 and spec.automount_service_account_token is False,
                     'Observed worker gained mounts, host access or extra containers')
             worker = spec.containers[0]
+            # Indexed Jobs inject this exact downward-API field, not user input.
+            from kubernetes.client import V1EnvVar, V1EnvVarSource, V1ObjectFieldSelector
+            indexed_environment = [V1EnvVar(name='JOB_COMPLETION_INDEX', value_from=V1EnvVarSource(
+                field_ref=V1ObjectFieldSelector(api_version='v1',
+                    field_path="metadata.labels['batch.kubernetes.io/job-completion-index']")))]
             require(worker.image == self.image and not worker.volume_mounts and not worker.volume_devices
-                    and not worker.env and not worker.env_from and worker.resources.requests == {'cpu': '250m', 'memory': '128Mi'}
+                    and worker.env in (None, [], indexed_environment) and not worker.env_from and worker.resources.requests == {'cpu': '250m', 'memory': '128Mi'}
                     and worker.resources.limits == {'cpu': '250m', 'memory': '128Mi'}, 'Observed worker resource/image/environment drift')
             require(any(r.uid in child_uids for r in (pod.metadata.owner_references or [])), 'Foreign Pod in fixture namespace')
         for group in groups.get('items', []):
