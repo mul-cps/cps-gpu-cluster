@@ -1,0 +1,111 @@
+{
+  "cleanup": {
+    "binder_restored_disabled": true,
+    "native_allocations_released": 184,
+    "native_allocations_unreleased": 0,
+    "normal_stop_http": 200,
+    "notebook_pod_absent": true,
+    "post_cleanup_four_fresh_acknowledgments_ready": true,
+    "protected_notebook_restarts": 0,
+    "sql_reservation_rows": {
+      "reservation": 0,
+      "reservation_binding": 0
+    },
+    "temporary_token_file_removed": true,
+    "temporary_token_revoked": true,
+    "workspace_state": "stopped"
+  },
+  "native_source_generation": 9,
+  "next_gate": "Optimize measured preparation context/enrollment overhead while retaining fresh validation and the existing deadline; rerun one normal Start.",
+  "normal_start": {
+    "http_status": 409,
+    "kernel_execution_observed": false,
+    "pod_uid": "9a0ea40e-1775-46f7-a8f7-9b74ffefb943",
+    "request_at": "2026-10-21T23:04:29.080783+00:00",
+    "startup_slo_passed": false,
+    "successful": false
+  },
+  "observed_at": "2026-10-21T23:14:26.598049+00:00",
+  "prepare": {
+    "failed_stage": "allocation-proof",
+    "interpretation": "Enrollment stage consumed most of the deadline; allocation proof began at 56.18 seconds. This does not demonstrate a CUDA isolation failure.",
+    "nested_step_totals_are_additive": false,
+    "timeout_seconds": 60,
+    "timing": {
+      "elapsed_seconds": 60.881983,
+      "steps": {
+        "allocation-freeze": {
+          "calls": 3,
+          "elapsed_seconds": 2.292136,
+          "last_start_seconds": 21.017871
+        },
+        "allocation-proof": {
+          "calls": 1,
+          "elapsed_seconds": 4.209268,
+          "last_start_seconds": 56.180881
+        },
+        "compiler-context": {
+          "calls": 1,
+          "elapsed_seconds": 0.219268,
+          "last_start_seconds": 56.180901
+        },
+        "context": {
+          "calls": 24,
+          "elapsed_seconds": 15.556488,
+          "last_start_seconds": 57.587492
+        },
+        "enrollment-publication": {
+          "calls": 1,
+          "elapsed_seconds": 35.145969,
+          "last_start_seconds": 21.03487
+        },
+        "epoch": {
+          "calls": 1,
+          "elapsed_seconds": 1.140099,
+          "last_start_seconds": 56.42223
+        },
+        "execution-fence": {
+          "calls": 1,
+          "elapsed_seconds": 0.002653,
+          "last_start_seconds": 12.062195
+        },
+        "final-claim": {
+          "calls": 1,
+          "elapsed_seconds": 2.802839,
+          "last_start_seconds": 57.587298
+        },
+        "maps": {
+          "calls": 1,
+          "elapsed_seconds": 0.02493,
+          "last_start_seconds": 57.562361
+        },
+        "preflight": {
+          "calls": 2,
+          "elapsed_seconds": 0.009933,
+          "last_start_seconds": 0.849931
+        },
+        "registered-custody": {
+          "calls": 1,
+          "elapsed_seconds": 0.002206,
+          "last_start_seconds": 0.859876
+        },
+        "registered-readiness": {
+          "calls": 1,
+          "elapsed_seconds": 11.200051,
+          "last_start_seconds": 0.862096
+        },
+        "snapshot-proof": {
+          "calls": 9,
+          "elapsed_seconds": 6.668055,
+          "last_start_seconds": 18.209701
+        }
+      }
+    }
+  },
+  "production_qualified": false,
+  "profile": "interactive-shared-5",
+  "service_rotation": 71,
+  "source_revision": "e613ed78e51c8b0b9c105b5b608bbb2b257c2a17",
+  "version": 1,
+  "workspace": "shared-gpu-lab"
+}
