@@ -1317,7 +1317,7 @@ hub:
           'gpu-pytorch-single': {
               'display_name': 'GPU Large (PyTorch 1×)',
               'description': '1× A100 (40GB VRAM) • 16 vCPU • 64 GiB',
-              'image': 'ghcr.io/mul-cps/cps-jupyter-notebook:latest-pytorch-code',
+              'image': 'ghcr.io/mul-cps/cps-jupyter-notebook@sha256:3910644e2e541f9cde6bed75a01f1bbdcc293a2d57a3f8862cbc99c7eeca30f3',
               'cpu_limit': 16.0, 'cpu_guarantee': 8.0,
               'mem_limit': '64G', 'mem_guarantee': '32G',
               'gpu': 1,
@@ -1345,7 +1345,7 @@ hub:
           'gpu-pytorch-dual': {
               'display_name': 'GPU X-Large (PyTorch 2×)',
               'description': '2× A100 (40GB VRAM) • 32 vCPU • 128 GiB',
-              'image': 'ghcr.io/mul-cps/cps-jupyter-notebook:latest-pytorch-code',
+              'image': 'ghcr.io/mul-cps/cps-jupyter-notebook@sha256:3910644e2e541f9cde6bed75a01f1bbdcc293a2d57a3f8862cbc99c7eeca30f3',
               'cpu_limit': 32.0, 'cpu_guarantee': 16.0,
               'mem_limit': '128G', 'mem_guarantee': '64G',
               'gpu': 2,
@@ -1380,7 +1380,7 @@ hub:
           'gpu-3gb': {
               'display_name': 'GPU Tiny (3GB, shared)',
               'description': '3GB VRAM via MPS sharing • 4 vCPU • 16 GiB',
-              'image': 'ghcr.io/mul-cps/cps-jupyter-notebook:latest-pytorch-code',
+              'image': 'ghcr.io/mul-cps/cps-jupyter-notebook@sha256:3910644e2e541f9cde6bed75a01f1bbdcc293a2d57a3f8862cbc99c7eeca30f3',
               'cpu_limit': 4.0, 'cpu_guarantee': 2.0,
               'mem_limit': '16G', 'mem_guarantee': '8G',
               'gpu': 1,
@@ -1393,7 +1393,7 @@ hub:
           'gpu-5gb': {
               'display_name': 'GPU Small (5GB, shared)',
               'description': '5GB VRAM via MPS sharing • 6 vCPU • 24 GiB',
-              'image': 'ghcr.io/mul-cps/cps-jupyter-notebook:latest-pytorch-code',
+              'image': 'ghcr.io/mul-cps/cps-jupyter-notebook@sha256:3910644e2e541f9cde6bed75a01f1bbdcc293a2d57a3f8862cbc99c7eeca30f3',
               'cpu_limit': 6.0, 'cpu_guarantee': 3.0,
               'mem_limit': '24G', 'mem_guarantee': '12G',
               'gpu': 1,
@@ -1406,7 +1406,7 @@ hub:
           'gpu-8gb': {
               'display_name': 'GPU Small-Medium (8GB, shared)',
               'description': '8GB VRAM via MPS sharing • 8 vCPU • 32 GiB',
-              'image': 'ghcr.io/mul-cps/cps-jupyter-notebook:latest-pytorch-code',
+              'image': 'ghcr.io/mul-cps/cps-jupyter-notebook@sha256:3910644e2e541f9cde6bed75a01f1bbdcc293a2d57a3f8862cbc99c7eeca30f3',
               'cpu_limit': 8.0, 'cpu_guarantee': 4.0,
               'mem_limit': '32G', 'mem_guarantee': '16G',
               'gpu': 1,
@@ -1419,7 +1419,7 @@ hub:
           'gpu-10gb': {
               'display_name': 'GPU Medium (10GB, shared)',
               'description': '10GB VRAM via MPS sharing • 10 vCPU • 40 GiB',
-              'image': 'ghcr.io/mul-cps/cps-jupyter-notebook:latest-pytorch-code',
+              'image': 'ghcr.io/mul-cps/cps-jupyter-notebook@sha256:3910644e2e541f9cde6bed75a01f1bbdcc293a2d57a3f8862cbc99c7eeca30f3',
               'cpu_limit': 10.0, 'cpu_guarantee': 5.0,
               'mem_limit': '40G', 'mem_guarantee': '20G',
               'gpu': 1,
@@ -1432,7 +1432,7 @@ hub:
           'gpu-12gb': {
               'display_name': 'GPU Medium-Large (12GB, shared)',
               'description': '12GB VRAM via MPS sharing • 12 vCPU • 48 GiB',
-              'image': 'ghcr.io/mul-cps/cps-jupyter-notebook:latest-pytorch-code',
+              'image': 'ghcr.io/mul-cps/cps-jupyter-notebook@sha256:3910644e2e541f9cde6bed75a01f1bbdcc293a2d57a3f8862cbc99c7eeca30f3',
               'cpu_limit': 12.0, 'cpu_guarantee': 6.0,
               'mem_limit': '48G', 'mem_guarantee': '24G',
               'gpu': 1,
@@ -1445,7 +1445,7 @@ hub:
           'gpu-20gb': {
               'display_name': 'GPU Large (20GB, shared)',
               'description': '20GB VRAM via MPS sharing • 16 vCPU • 64 GiB',
-              'image': 'ghcr.io/mul-cps/cps-jupyter-notebook:latest-pytorch-code',
+              'image': 'ghcr.io/mul-cps/cps-jupyter-notebook@sha256:3910644e2e541f9cde6bed75a01f1bbdcc293a2d57a3f8862cbc99c7eeca30f3',
               'cpu_limit': 16.0, 'cpu_guarantee': 8.0,
               'mem_limit': '64G', 'mem_guarantee': '32G',
               'gpu': 1,
@@ -1463,7 +1463,7 @@ hub:
           'gpu-student': {
               'display_name': 'GPU Student (Shared)',
               'description': '5GB VRAM via MPS sharing, course queue • 6 vCPU • 24 GiB',
-              'image': 'ghcr.io/mul-cps/cps-jupyter-notebook:latest-pytorch-code',
+              'image': 'ghcr.io/mul-cps/cps-jupyter-notebook@sha256:3910644e2e541f9cde6bed75a01f1bbdcc293a2d57a3f8862cbc99c7eeca30f3',
               'cpu_limit': 6.0, 'cpu_guarantee': 3.0,
               'mem_limit': '24G', 'mem_guarantee': '12G',
               'gpu': 1,
@@ -1541,7 +1541,7 @@ hub:
           'gpu-slurm': {
               'display_name': 'GPU via Slurm (Slinky)',
               'description': 'Scheduled by Slurm • 8 vCPU • 32 GiB',
-              'image': 'ghcr.io/mul-cps/cps-jupyter-notebook:latest-pytorch-code',
+              'image': 'ghcr.io/mul-cps/cps-jupyter-notebook@sha256:3910644e2e541f9cde6bed75a01f1bbdcc293a2d57a3f8862cbc99c7eeca30f3',
               'cpu_limit': 8.0, 'cpu_guarantee': 4.0,
               'mem_limit': '32G', 'mem_guarantee': '16G',
               'gpu': 0, # Slurm handles GPU allocation
@@ -2546,7 +2546,7 @@ prePuller:
       tag: "24.08-cuda12.2-py3.10"
     cps-pytorch:
       name: ghcr.io/mul-cps/cps-jupyter-notebook
-      tag: "latest-pytorch-code"
+      tag: "latest-pytorch-code@sha256:3910644e2e541f9cde6bed75a01f1bbdcc293a2d57a3f8862cbc99c7eeca30f3"
     cps-tf:
       name: ghcr.io/mul-cps/cps-jupyter-notebook
       tag: "latest-tf-code"
