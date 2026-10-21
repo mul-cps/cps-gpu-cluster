@@ -1,0 +1,91 @@
+{
+  "api_server_dry_run": {
+    "all_accepted": true,
+    "dry_run_only": true,
+    "production_specs_changed": false,
+    "results": [
+      {
+        "accepted": true,
+        "component": "gateway",
+        "exit_code": 0
+      },
+      {
+        "accepted": true,
+        "component": "hub:cps",
+        "exit_code": 0
+      },
+      {
+        "accepted": true,
+        "component": "hub:cit",
+        "exit_code": 0
+      },
+      {
+        "accepted": true,
+        "component": "node",
+        "exit_code": 0
+      },
+      {
+        "accepted": true,
+        "component": "writer",
+        "exit_code": 0
+      },
+      {
+        "accepted": true,
+        "component": "observer",
+        "exit_code": 0
+      }
+    ]
+  },
+  "authority": {
+    "inactive_authority_staged": true,
+    "original_hardware_proof_unchanged": true,
+    "passed": true,
+    "policy_hash": "sha256:332d14fb9e510b9810feffb8d40b408743f9679ebd13ca1ba0e1077d666e9281",
+    "production_policy_changed": false
+  },
+  "baseline_rotation": 69,
+  "composition": {
+    "activation_performed": false,
+    "api_calls": false,
+    "baseline_rotation": 69,
+    "checks": [
+      "gateway-fixed-images-resources-security-and-credentials-preserved",
+      "hub:cps-fixed-images-resources-security-and-credentials-preserved",
+      "hub:cit-fixed-images-resources-security-and-credentials-preserved",
+      "node-only-bootstrap-reference-changed",
+      "held-node-bootstrap-policy-and-reference-exact",
+      "writer-previous-state-and-target-template-exact",
+      "temporary-operator-only-capture-image",
+      "normal-capture-restore-spec-exact",
+      "single-attempt-job-no-automatic-retry"
+    ],
+    "operator_image": "ghcr.io/mul-cps/cps-compute@sha256:5dfad1bddf4391d1b2cfdfa52a167210c171508895e4bd19fb2e34defa8a92b6",
+    "passed": true,
+    "remaining": [
+      "Final paused physical capsule and Source transaction executor",
+      "Pregrant/admission exact transition",
+      "Complete recovery and post-switch verification"
+    ],
+    "target_policy_hash": "sha256:332d14fb9e510b9810feffb8d40b408743f9679ebd13ca1ba0e1077d666e9281",
+    "target_rotation": 70
+  },
+  "inactive_consumer_input_count": 13,
+  "inactive_controller_input_count": 2,
+  "independent_review_report_sha256": "5b45beaf2ce98b43674b3b4d6a11f8b7b105e9c3445aad3e7e9d0171ecd35999",
+  "limitations": [
+    "Only inactive configuration objects created; no running Deployment, Service, Role, Source or journal changes.",
+    "Source transaction executor, final paused physical proof, exact Role admission bridge and complete recovery execution remain prerequisites.",
+    "No new image activation or production readiness claimed."
+  ],
+  "planned_rotation": 70,
+  "post_staging_live_check": {
+    "active_rotations": 21,
+    "authenticated_json_files": 349,
+    "four_actual_acknowledgments_ready": true,
+    "protected_notebook_phase": "Running",
+    "protected_notebook_restarts": 0,
+    "protected_notebook_uid": "03e00875-f3c7-4dca-8848-c57b257932a5",
+    "rotations": 69
+  },
+  "status": "fresh-packet-staged-not-activated"
+}
