@@ -1,0 +1,15 @@
+{
+  "kind": "addon-policy-handover-inactive-inputs",
+  "operator_image": "ghcr.io/mul-cps/cps-compute@sha256:792095b04746aba0a2a5e8c56b37ac361beb2d136b09a1c037781a0b1c7c8d3e",
+  "sdk_source": "fa56c977fb66cb82590a7be2b6f9a1405ec19384",
+  "wheel_sha256": "9a7a69287e56f8f6481b720f60a502196842e14e957db69076de7edb6db894b5",
+  "transport_tests": 87,
+  "quiescence_tests": 13,
+  "consumer_resources_created_and_readback_verified": 13,
+  "controller_inputs_created_and_readback_verified": 2,
+  "credential_bytes_preserved": true,
+  "consumer_deployment_documents_validated": 7,
+  "live_deployments_changed": false,
+  "policy_source_sql_journal_changed": false,
+  "production_ready": false
+}
