@@ -67,6 +67,48 @@ def test_default_inert_without_sdk_or_api():
     assert result.returncode==0 and '"execute": false' in result.stdout
 
 
+def test_large_authenticated_terminal_metadata_uses_bounded_exact_get_rules():
+    """Metadata capture is not private terminal acceptance; exercise the real loader."""
+    import json
+    from cps_compute.native_groups import _canonical
+    from cps_compute.native_observer_permissions import names
+    from test_native_node_config import ref
+    document=payload(head_fixture())
+    maps=document['capture']['configmaps'];node_ref=document['release']['node_configuration']
+    node=next(cm for cm in maps if all(cm['metadata'][k]==node_ref[k] for k in ('namespace','name')))
+    body=json.loads(node['data']['config.json']);index_ref=body['terminal_index_ref']
+    index=next(cm for cm in maps if all(cm['metadata'][k]==index_ref[k] for k in ('namespace','name')))
+    namespace=index_ref['namespace'];entries={}
+    def cm(name,key,data):
+        value={'apiVersion':'v1','kind':'ConfigMap','immutable':True,
+            'metadata':{'namespace':namespace,'name':name,'uid':str(uuid.uuid4()),'resourceVersion':'901'},
+            'data':{key:_canonical(data).decode()}}
+        maps.append(value);return value
+    for number in range(129):
+        proof=cm('terminal-metadata-'+str(number),'enrollment.json',{'version':1,'fixture':number})
+        entries[str(uuid.uuid4())]={'enrollment_ref':ref(proof).to_dict()}
+    page=cm('terminal-metadata-page','page.json',{'version':1,'entries':entries})
+    data=json.loads(index['data']['index.json'])
+    data.update(pages=[ref(page).to_dict()],total_records=len(entries),entries_sha256=sha(entries))
+    index['data']['index.json']=_canonical(data).decode()
+    body['terminal_index_ref']=ref(index).to_dict();node['data']['config.json']=_canonical(body).decode()
+    document['release']['node_configuration']=ref(node).to_dict()
+    for value in maps:
+        if 'config-ref.json' in value.get('data',{}) and json.loads(value['data']['config-ref.json'])==node_ref:
+            value['data']['config-ref.json']=_canonical(ref(node).to_dict()).decode()
+    result=module().compile_proof_reads(document,reviewed_sha256=sha(document))
+    subject=result['consumers']['node']['subject']
+    expected={p['name'] for p in result['consumers']['node']['proofs'] if p['namespace']==namespace}
+    roles={v['metadata']['name']:v for v in result['manifests'] if v['kind']=='Role' and v['metadata']['namespace']==namespace}
+    bindings=[v for v in result['manifests'] if v['kind']=='RoleBinding' and v['metadata']['namespace']==namespace
+        and v['subjects']==[{'kind':'ServiceAccount','namespace':subject['namespace'],'name':subject['name']}]]
+    rows=[row for binding in bindings for row in roles[binding['roleRef']['name']]['rules']]
+    assert len(expected)>128 and len(rows)>=2
+    assert [name for row in rows for name in names(row['resourceNames'])]==sorted(expected)
+    assert all(row['apiGroups']==[''] and row['resources']==['configmaps'] and row['verbs']==['get'] for row in rows)
+    assert result['limits']['private_custody_verified'] is False
+
+
 def test_actual_cold_loaders_get_only_authenticated_immutable_dependencies():
     f=head_fixture();document=payload(f)
     result=module().compile_proof_reads(document,reviewed_sha256=sha(document))

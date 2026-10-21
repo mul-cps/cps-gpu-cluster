@@ -159,7 +159,7 @@ def compile_proof_reads(payload, *, reviewed_sha256):
     Supplemental Roles must be read back and consumer UID pins rechecked before
     restart. No future head selection or prospective envelope is manufactured.
     """
-    from cps_compute.native_observer_permissions import ObserverRelease, role_targets, names
+    from cps_compute.native_observer_permissions import ObserverRelease, role_targets, names, _MAX_NAMES
     from cps_compute.native_node.config import NodeConfiguration
     from cps_compute.immutable_configmap import ImmutableConfigMapRef
     from cps_compute.native_approval_head import HeadSnapshot
@@ -209,12 +209,14 @@ def compile_proof_reads(payload, *, reviewed_sha256):
         proofs = [core.proofs[key] for key in sorted(core.proofs)]
         consumers[component] = {'subject':subject,'proofs':proofs,'head_reference':observed[component].reference}
         for namespace in sorted({p['namespace'] for p in proofs}):
-            selected = names(sorted(p['name'] for p in proofs if p['namespace'] == namespace))
+            selected = sorted(p['name'] for p in proofs if p['namespace'] == namespace)
             identity = digest({'subject':subject,'namespace':namespace,'proofs':[p for p in proofs if p['namespace']==namespace]})[7:23]
             name = 'cps-native-proof-'+component.replace(':','-')+'-'+identity
             metadata = {'namespace':namespace,'name':name}
             manifests += [{'apiVersion':'rbac.authorization.k8s.io/v1','kind':'Role','metadata':metadata,
-                'rules':[{'apiGroups':[''],'resources':['configmaps'],'verbs':['get'],'resourceNames':selected}]},
+                'rules':[{'apiGroups':[''],'resources':['configmaps'],'verbs':['get'],
+                    'resourceNames':names(selected[start:start+_MAX_NAMES])}
+                    for start in range(0,len(selected),_MAX_NAMES)]},
                 {'apiVersion':'rbac.authorization.k8s.io/v1','kind':'RoleBinding','metadata':dict(metadata),
                 'subjects':[{'kind':'ServiceAccount','namespace':subject['namespace'],'name':subject['name']}],
                 'roleRef':{'apiGroup':'rbac.authorization.k8s.io','kind':'Role','name':name}}]

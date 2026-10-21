@@ -1,0 +1,25 @@
+{
+  "capture_exact_named_reads": true,
+  "captured_configmaps": 274,
+  "compiled_output_sha256": "sha256:eb00a95b363467852eed6f49510ea01c0b4317a987f9a10b2c6125b263b5ceda",
+  "compiler_network_calls": false,
+  "consumer_proof_counts": {
+    "gateway": 51,
+    "hub:cit": 51,
+    "hub:cps": 51,
+    "node": 227
+  },
+  "input": "SDK-authenticated immutable proof closure from current handover70 capture",
+  "manifest_count": 32,
+  "maximum_names_per_get_rule": 128,
+  "policy_hash": "sha256:332d14fb9e510b9810feffb8d40b408743f9679ebd13ca1ba0e1077d666e9281",
+  "private_custody_verified": false,
+  "process_context_intents": 0,
+  "production_qualified": false,
+  "rbac_applied": false,
+  "reviewed_input_sha256": "sha256:5c336353fc80167ad658a17d9a0e363dea22e0d0fa2c894ed7433f7a57c123ec",
+  "source_revision": "sha256:3d3060a4a7b663f226480053df783b7f5e95e2b4b4ada78d003092a95550f37c",
+  "tests_passed": 23,
+  "tests_seconds": 11.67,
+  "version": 1
+}
