@@ -98,3 +98,26 @@ states pass the existing pure observer renderer. Outputs explicitly retain
 `actual_only_render_required=true`. Root must obtain and validate actual fresh
 post-apply captures with the existing renderer before activating this release.
 This helper performs no apply, observer activation, process or GPU operation.
+
+The pure `head_hub_rotation.prepare` helper also accepts optional closed
+`component_images` and `operator_images` maps. Existing calls retain the paired
+Hub successor behavior. For a complete same-policy SDK refresh, prepare and
+complete the paired Hub journal rotation first; then take a fresh pinned snapshot
+and prepare the Gateway/Node rotation with `hub_image` equal to the unchanged
+current shared Hub image and `component_images={"gateway": "<digest image>",
+"node": "<digest image>"}`. Only actual image change sets already supported by
+SDK delivery are accepted: Gateway, Node, Gateway plus Node, or both Hubs.
+A simultaneous four-component change is rejected before any CREATE intent.
+Each stage requires its own actual immutable readbacks and ordinary journal
+rotation. Maintenance fencing and process readiness remain operator gates.
+
+Optional `operator_images={"observer": "<digest image>", "writer": "<digest image>"}`
+can select either or both fixed operator Deployments captured in the pinned
+snapshot objects. It changes only the fixed main image and Writer private-input
+initializer image, using UID/resourceVersion/full-spec CAS; all settings,
+checkpoint references, journal PVCs, replicas and private mounts remain exact.
+These patches share the supplemental permission readback gate. They are image
+refresh intents: use the existing observer/delivery renderers for the separately
+reviewed release/configuration binding, and coordinate Writer/Observer maintenance
+before applying them. Synthetic tests establish intent preservation and rejection
+behavior; they do not establish rollout or hardware qualification.

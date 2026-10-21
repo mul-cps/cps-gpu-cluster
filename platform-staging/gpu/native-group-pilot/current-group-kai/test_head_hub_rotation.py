@@ -239,3 +239,102 @@ def test_peer_settings_secrets_capture_and_source_fields_are_preserved():
         {'op':'test','path':'/metadata/uid','value':image.secret_volume(v['snapshot'],'gateway','config')['metadata']['uid']},
         {'op':'test','path':'/metadata/resourceVersion','value':image.secret_volume(v['snapshot'],'gateway','config')['metadata']['resourceVersion']},
         {'op':'test','path':'/data','value':image.secret_volume(v['snapshot'],'gateway','config')['data']}]
+
+
+def operator_fixture():
+    import uuid
+    v=fixture();snapshot=v['snapshot']
+    namespace=image._context(snapshot)[1].deployment.authority_namespace
+    for label,name,main in [('observer','cps-native-observer-operator','observer'),
+                            ('writer','cps-native-head-delivery','delivery')]:
+        old='ghcr.io/mul-cps/cps-compute@sha256:'+('4' if label=='observer' else '5')*64
+        pod={'serviceAccountName':name,'containers':[{'name':main,'image':old,
+            'command':['preserved-command'],'args':['--checkpoint-reference-json','preserved-checkpoint'],
+            'env':[{'name':'PRESERVED','value':'exact'}],
+            'volumeMounts':[{'name':'journal','mountPath':'/journal'}]}],
+            'volumes':[{'name':'journal','persistentVolumeClaim':{'claimName':'preserved-journal'}}]}
+        if label=='writer':pod['initContainers']=[{'name':'private-inputs','image':old,'command':['preserved-copy']}]
+        dep={'apiVersion':'apps/v1','kind':'Deployment','metadata':{'namespace':namespace,'name':name,
+            'uid':str(uuid.uuid4()),'resourceVersion':'71'},'spec':{'replicas':0,'strategy':{'type':'Recreate'},
+            'selector':{'matchLabels':{'app':name}},'template':{'metadata':{'labels':{'app':name}},'spec':pod}}}
+        snapshot['objects'][image._key('Deployment',namespace,name)]=dep
+    v['operator_images']={'observer':'ghcr.io/mul-cps/cps-compute@sha256:'+'a'*64,
+                          'writer':'ghcr.io/mul-cps/cps-compute@sha256:'+'b'*64}
+    v['expected_snapshot_sha256']=canonical_sha256(snapshot)
+    return v
+
+
+def test_gateway_node_stage_after_hub_pair_refresh_changes_only_selected_fixed_images():
+    v=operator_fixture();snapshot=v['snapshot'];_,old=image._context(snapshot)
+    v['hub_image']=old.document['component_declarations']['hub:cps']['image']
+    v['component_images']={'gateway':'ghcr.io/mul-cps/cps-compute@sha256:'+'9'*64,
+                           'node':'ghcr.io/mul-cps/cps-native-node@sha256:'+'6'*64}
+    before=copy.deepcopy(v);m,p,node,b,created=phases(v)
+    doc=image._parse(node['data']['config.json']);expected=old.document
+    for component,value in v['component_images'].items():expected['component_declarations'][component]['image']=value
+    assert doc==expected and v==before
+    assert 'hub:cps.publisher' not in created and 'hub:cit.publisher' not in created
+    assert {'gateway.publisher','gateway.capture-seed'}<=set(created)
+    runtime=image._decode(b['gateway_runtime_patch']['patch'][-1]['value']['runtime.json'])
+    for component,value in v['component_images'].items():
+        assert runtime['nativeGroupApprovals']['processes'][component]['image']==value
+    node_pod=b['runtime_specs']['node']['template']['spec']
+    bootstrap=next(c for c in node_pod['initContainers']if c['name']=='packaged-bootstrap')
+    assert bootstrap['image']==v['component_images']['node']
+    assert next(e['value']for e in bootstrap['env']if e['name']=='NODE_IMAGE')==v['component_images']['node']
+    gateway=b['runtime_specs']['gateway']['template']['spec']
+    assert all(next(c for c in gateway[section]if c['name']==name)['image']==v['component_images']['gateway']
+               for section,name in [('containers','approval-capture'),('initContainers','capture-private-inputs'),
+                                    ('initContainers','native-kai-private-inputs')])
+    settings=image._decode(created['gateway.capture-seed']['data']['config.json'])
+    assert settings['node_process']['image']==v['component_images']['node']
+    coordinator=image._parse(created['coordinator.seed']['data']['coordinator.json'])
+    assert coordinator['epoch']['nodeProcess']['image']==v['component_images']['node']
+    pending=m.bind(snapshot,b,created);assert pending['permissions_pending'] and pending['patches']=={}
+    permissions={k:actual(o)for k,o in pending['creates'].items()}
+    result=m.bind(snapshot,b,created,actual_permissions=permissions)
+    assert {'observer.deployment','writer.deployment'}<=set(result['patches'])
+    for label,name,main in [('observer','cps-native-observer-operator','observer'),
+                            ('writer','cps-native-head-delivery','delivery')]:
+        old_dep=image._get(snapshot,'Deployment',old.deployment.authority_namespace,name)
+        expected=copy.deepcopy(old_dep['spec']);pod=expected['template']['spec']
+        next(c for c in pod['containers']if c['name']==main)['image']=v['operator_images'][label]
+        if label=='writer':next(c for c in pod['initContainers']if c['name']=='private-inputs')['image']=v['operator_images'][label]
+        assert result['operator_specs'][label]==expected
+        patch=result['patches'][label+'.deployment']['patch']
+        assert patch[:3]==[{'op':'test','path':'/metadata/uid','value':old_dep['metadata']['uid']},
+            {'op':'test','path':'/metadata/resourceVersion','value':old_dep['metadata']['resourceVersion']},
+            {'op':'test','path':'/spec','value':old_dep['spec']}]
+    assert result['observer_release']['heads']==v['previous_release']['heads']
+    assert result['operator_baselines']==v['operator_baselines'] and v==before
+
+
+@pytest.mark.parametrize('fault',['all-components','single-hub','unknown-component','mutable-image','unknown-operator','missing-operator','writer-helper','operator-identity','operator-account'])
+def test_selected_component_or_operator_refresh_denies_unsupported_or_unpinned_inputs(fault):
+    v=operator_fixture()
+    if fault=='all-components':v['component_images']={'gateway':'ghcr.io/mul-cps/cps-compute@sha256:'+'9'*64,
+        'node':'ghcr.io/mul-cps/cps-native-node@sha256:'+'6'*64}
+    elif fault=='single-hub':v['component_images']={'hub:cps':'ghcr.io/mul-cps/cps-compute@sha256:'+'9'*64}
+    elif fault=='unknown-component':v['component_images']={'foreign':v['hub_image']}
+    elif fault=='mutable-image':v['operator_images']['observer']='ghcr.io/mul-cps/cps-compute:latest'
+    elif fault=='unknown-operator':v['operator_images']['foreign']=v['hub_image']
+    else:
+        namespace=image._context(v['snapshot'])[1].deployment.authority_namespace
+        key=image._key('Deployment',namespace,'cps-native-head-delivery')
+        if fault=='missing-operator':v['snapshot']['objects'].pop(key)
+        elif fault=='operator-identity':v['snapshot']['objects'][key]['metadata']['name']='foreign'
+        elif fault=='operator-account':v['snapshot']['objects'][key]['spec']['template']['spec']['serviceAccountName']='foreign'
+        else:v['snapshot']['objects'][key]['spec']['template']['spec']['initContainers'][0]['image']='foreign@sha256:'+'c'*64
+        v['expected_snapshot_sha256']=canonical_sha256(v['snapshot'])
+    before=copy.deepcopy(v)
+    with pytest.raises(ValueError):module().prepare(**v)
+    assert v==before
+
+
+def test_paired_hub_stage_accepts_image_only_operator_refresh():
+    v=operator_fixture();m,p,node,b,created=phases(v)
+    result=m.bind(v['snapshot'],b,created)
+    assert result['patches']=={} and set(result['operator_specs'])=={'observer','writer'}
+    assert {'hub:cps.publisher','hub:cit.publisher'}<=set(created)
+    assert 'gateway.publisher' not in created and 'gateway.capture-seed' not in created
+    assert image._parse(node['data']['config.json'])['component_declarations']['hub:cit']['image']==v['hub_image']

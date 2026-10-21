@@ -12,6 +12,59 @@ from head_gateway_rotation import (_guard,_actual,_core,_reference,_mounted_head
 
 HUBS=('hub:cps','hub:cit')
 
+OPERATORS={'observer':('cps-native-observer-operator','observer'),
+           'writer':('cps-native-head-delivery','delivery')}
+
+def _qualified(value,node=False):
+    repository='cps-native-node' if node else 'cps-compute'
+    image.require(isinstance(value,str) and re.fullmatch(
+        'ghcr.io/mul-cps/'+repository+r'@sha256:[a-f0-9]{64}',value)
+        and not value.endswith('0'*64),'Qualified immutable component image required')
+
+def _selected(inputs,declarations):
+    hub=inputs['hub_image'];_qualified(hub)
+    targets={c:declarations[c]['image'] for c in image.COMPONENTS}
+    targets.update({c:hub for c in HUBS})
+    supplied=inputs.get('component_images')
+    if supplied is None:
+        image.require(all(hub!=declarations[c]['image'] for c in HUBS),
+            'Distinct qualified immutable shared Hub successor image required')
+    else:
+        image.require(type(supplied)is dict and bool(supplied)
+            and set(supplied)<=set(image.COMPONENTS),'Closed selected component images required')
+        hubs=set(supplied)&set(HUBS)
+        image.require(not hubs or hubs==set(HUBS) and all(supplied[c]==hub for c in HUBS),
+            'Paired Hubs must match shared Hub image')
+        targets.update(supplied)
+    for c,value in targets.items():_qualified(value,c=='node')
+    changed={c for c in targets if targets[c]!=declarations[c]['image']}
+    image.require(changed in ({'gateway'},{'node'},{'gateway','node'},set(HUBS)),
+        'Unsupported actual component image rotation set')
+    image.require(inputs.get('personal_cpu_profile_aliases') is None or changed==set(HUBS),
+        'CPU alias update requires paired Hub rotation')
+    return {c:targets[c] for c in targets if c in changed}
+
+def _operator_specs(inputs,namespace):
+    selected=inputs.get('operator_images')
+    if selected is None:return {}
+    image.require(type(selected)is dict and bool(selected) and set(selected)<=set(OPERATORS),
+        'Closed operator image selection required')
+    result={}
+    for label,target in selected.items():
+        _qualified(target);name,main=OPERATORS[label]
+        dep=image._get(inputs['snapshot'],'Deployment',namespace,name);meta=_guard(dep,'Deployment')
+        image.require(meta['namespace']==namespace and meta['name']==name,'Fixed operator controller identity required')
+        spec=deepcopy(dep['spec']);pod=spec['template']['spec']
+        image.require(pod['serviceAccountName']==name,'Fixed operator ServiceAccount required')
+        container=image._one(pod['containers'],main);old=container['image'];_qualified(old)
+        container['image']=target
+        if label=='writer':
+            helper=image._one(pod['initContainers'],'private-inputs')
+            image.require(helper['image']==old,'Writer private-input image drift')
+            helper['image']=target
+        result[label]=spec
+    return result
+
 def _context(inputs):
     from cps_compute.native_observer_permissions import ObserverRelease, observe_head_permissions, role_targets
     from cps_compute.native_group_process import _template
@@ -43,10 +96,9 @@ def _context(inputs):
         and re.fullmatch(r'sha256:[a-f0-9]{64}', inputs['expected_revision'])
         and all(h.reference['revision'] == inputs['expected_revision'] for h in heads.values()),
         'Independently pinned current Source revision differs')
-    hub_image = inputs['hub_image']; declarations = document['component_declarations']
-    image.require(isinstance(hub_image, str) and re.fullmatch(r'ghcr.io/mul-cps/cps-compute@sha256:[a-f0-9]{64}', hub_image)
-        and not hub_image.endswith('0' * 64) and all(hub_image != declarations[c]['image'] for c in ('hub:cps','hub:cit')),
-        'Distinct qualified immutable shared Hub successor image required')
+    declarations = document['component_declarations']
+    _selected(inputs,declarations)
+    _operator_specs(inputs,configuration.deployment.authority_namespace)
     runtime_secret = image.secret_volume(snapshot, 'gateway', 'config')
     _guard(runtime_secret, 'Secret')
     image.require(runtime_secret.get('type') == 'Opaque' and (runtime_secret.get('immutable') is None
@@ -159,13 +211,16 @@ def _context(inputs):
 
 
 def prepare(snapshot,previous_release,operator_baselines,hub_image,*,expected_snapshot_sha256,
-            expected_release_sha256,expected_operator_baselines_sha256,expected_revision,personal_cpu_profile_aliases=None):
+            expected_release_sha256,expected_operator_baselines_sha256,expected_revision,personal_cpu_profile_aliases=None,
+            component_images=None,operator_images=None):
     inputs=deepcopy(locals())
-    if personal_cpu_profile_aliases is None:inputs.pop('personal_cpu_profile_aliases')
+    for key in ('personal_cpu_profile_aliases','component_images','operator_images'):
+        if inputs[key] is None:inputs.pop(key)
     try:
         _,configuration,*_=_context(inputs)
         document=configuration.document
-        for component in HUBS:document['component_declarations'][component]['image']=hub_image
+        for component,value in _selected(inputs,document['component_declarations']).items():
+            document['component_declarations'][component]['image']=value
         old=image._get(snapshot,'ConfigMap',configuration.reference.to_dict()['namespace'],configuration.reference.to_dict()['name'])
         return {'version':1,'kind':'head-hub-pair-rotation','inputs':inputs,
             'creates':{'node-config':image._candidate(old,'cps-native-head-config',{'config.json':image.canonical(document)})},
@@ -190,25 +245,45 @@ def bind_node(snapshot,prepared,actual_node_config):
         bootstrap=image.volume(snapshot,'node','packaged-bootstrap-input')
         data=deepcopy(bootstrap['data']);data.update({'config-ref.json':image.canonical(reference.to_dict()),'release':'false'})
         creates={'node.bootstrap':image._candidate(bootstrap,'cps-native-head-bootstrap',data,immutable=False)}
+        selected=_selected(prepared['inputs'],old.document['component_declarations'])
         coordinator['nodeConfigurationRef']=reference.to_dict()
+        if 'node' in selected:coordinator['epoch']['nodeProcess']['image']=selected['node']
         data=deepcopy(seed['data']);data['coordinator.json']=image.canonical(coordinator)
         creates['coordinator.seed']=image._candidate(seed,'cps-native-kai-config',data)
         specs={c:deepcopy(d['spec'])for c,d in snapshot['deployments'].items()}
         image._one(specs['node']['template']['spec']['volumes'],'packaged-bootstrap-input')['configMap']['name']=creates['node.bootstrap']['metadata']['name']
         image._one(specs['gateway']['template']['spec']['volumes'],'kai-seed')['configMap']['name']=creates['coordinator.seed']['metadata']['name']
-        for component in HUBS:
-            publisher,body=publishers[component];body['process']['image']=prepared['inputs']['hub_image']
+        for component in selected:
+            if component=='node':continue
+            publisher,body=publishers[component];body['process']['image']=selected[component]
             creates[component+'.publisher']=image._candidate(publisher,'cps-native-approval-publisher',{'publisher.json':image.canonical(body)})
             pod=specs[component]['template']['spec'];decl=old.document['component_declarations'][component]
-            main=image._one(pod['containers'],decl['container']);main['image']=prepared['inputs']['hub_image']
-            aliases=prepared['inputs'].get('personal_cpu_profile_aliases')
+            main=image._one(pod['containers'],decl['container']);main['image']=selected[component]
+            aliases=prepared['inputs'].get('personal_cpu_profile_aliases') if component in HUBS else None
             if aliases is not None:
                 env=main.setdefault('env',[])
                 literal={'name':'CPS_PERSONAL_CPU_PROFILE_ALIASES','value':image.canonical(aliases)}
                 if not any(row['name']==literal['name'] for row in env):env.append(literal)
-            image._one(pod['initContainers'],'cps-native-kai-hub-inputs')['image']=prepared['inputs']['hub_image']
+            if component in HUBS:
+                image._one(pod['initContainers'],'cps-native-kai-hub-inputs')['image']=selected[component]
+            else:
+                for section,name in (('containers','approval-capture'),('initContainers','capture-private-inputs'),
+                                     ('initContainers','native-kai-private-inputs')):
+                    helper=image._one(pod[section],name)
+                    image.require(helper['image']==decl['image'],'Gateway helper image drift')
+                    helper['image']=selected[component]
             image._one(pod['volumes'],'cps-native-approval-publisher')['configMap']['name']=creates[component+'.publisher']['metadata']['name']
-            runtime['nativeGroupApprovals']['processes'][component]['image']=prepared['inputs']['hub_image']
+            runtime['nativeGroupApprovals']['processes'][component]['image']=selected[component]
+        if 'node' in selected:
+            pod=specs['node']['template']['spec'];decl=old.document['component_declarations']['node']
+            image._one(pod['containers'],decl['container'])['image']=selected['node']
+            image._node_initializer_image(pod,decl['image'],selected['node'])
+            runtime['nativeGroupApprovals']['processes']['node']['image']=selected['node']
+            capture=image.secret_volume(snapshot,'gateway','capture-seed')
+            data=deepcopy(capture['data']);settings=image._decode(data['config.json'])
+            settings['node_process']['image']=selected['node'];data['config.json']=image._encoded(settings)
+            creates['gateway.capture-seed']=image._candidate(capture,'cps-native-capture-config',data)
+            image._one(specs['gateway']['template']['spec']['volumes'],'capture-seed')['secret']['secretName']=creates['gateway.capture-seed']['metadata']['name']
         secret=image.secret_volume(snapshot,'gateway','config');runtime_data=deepcopy(secret['data'])
         runtime_data['runtime.json']=image._encoded(runtime)
         runtime_patch=None
@@ -263,6 +338,10 @@ def bind(snapshot, plan, actual_creates, *, actual_permissions=None):
         for component, original in snapshot['deployments'].items():
             value = deepcopy(original); value['spec'] = deepcopy(plan['runtime_specs'][component]); controllers.append(value)
             if value['spec'] != original['spec']: patches[component + '.deployment'] = image._patch(original, '/spec', value['spec'])
+        operator_specs=_operator_specs(inputs,old.deployment.authority_namespace)
+        for label,spec in operator_specs.items():
+            original=image._get(snapshot,'Deployment',old.deployment.authority_namespace,OPERATORS[label][0])
+            if spec!=original['spec']:patches[label+'.deployment']=image._patch(original,'/spec',spec)
         maps = {image._key('ConfigMap', o['metadata']['namespace'], o['metadata']['name']): deepcopy(o)
                 for o in snapshot['objects'].values() if o['kind'] == 'ConfigMap'}
         for value in [plan['actual_node_config'], *actual_creates.values()]:
@@ -272,7 +351,8 @@ def bind(snapshot, plan, actual_creates, *, actual_permissions=None):
         ObserverRelease.from_dict(release)
         permissions, verified_permissions, observer_account = _permissions(snapshot, plan, actual_creates, actual_permissions)
         pending = actual_permissions is None
-        return {'version': 1, 'observer_release': release, 'prospective_capture': {'version': 1,
+        return {**({'operator_specs':operator_specs} if 'operator_images' in inputs else {}),
+            'version': 1, 'observer_release': release, 'prospective_capture': {'version': 1,
             'configmaps': list(maps.values()), 'deployments': controllers, 'roles': roles},
             'creates': permissions, 'permissions_pending': pending,
             'actual_permissions': verified_permissions, 'observer_service_account': observer_account,
