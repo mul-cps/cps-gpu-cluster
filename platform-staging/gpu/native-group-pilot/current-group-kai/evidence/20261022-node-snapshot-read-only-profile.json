@@ -1,0 +1,205 @@
+{
+  "schema_version": 1,
+  "status": "actual_read_only_snapshot_profile_passed",
+  "production_ready": false,
+  "runtime_changed": false,
+  "node_image": "ghcr.io/mul-cps/cps-native-node@sha256:a2348b7b2211b6b22e3d6e7f7025cc0efbbc320b539a7f6acec23d8b470ad88c",
+  "profile_source_sha256": "e9530f6b7fed188374201cf8462775cf30d804c939eba88cad5ee1e3b3526f41",
+  "fixture_tests_passed": 1,
+  "independent_review": "CLEAR",
+  "probe_scope": "Separate interpreter; exact deployed NodeCustodyConsumer.snapshot; only GET/LIST; API/filesystem mutations blocked during snapshot; no service/begin/reconcile/driver/CRI/ACK operations. Idle released-custody observation, not full ACK production.",
+  "elapsed_seconds": 8.511946,
+  "api": {
+    "list_namespaced_config_map": {
+      "calls": 3,
+      "elapsed_seconds": 0.272211
+    },
+    "read_namespaced_config_map": {
+      "calls": 413,
+      "elapsed_seconds": 1.647141
+    },
+    "read_namespaced_pod": {
+      "calls": 235,
+      "elapsed_seconds": 0.622155
+    }
+  },
+  "functions": [
+    {
+      "calls": 1,
+      "cumulative_seconds": 8.511289,
+      "function": "cps_compute/native_node/custody.py:285:snapshot",
+      "primitive_calls": 1,
+      "self_seconds": 0.003381
+    },
+    {
+      "calls": 1,
+      "cumulative_seconds": 8.507205,
+      "function": "cps_compute/native_node/custody.py:292:_snapshot_once",
+      "primitive_calls": 1,
+      "self_seconds": 0.011545
+    },
+    {
+      "calls": 651,
+      "cumulative_seconds": 2.525056,
+      "function": "cps_compute/native_node/bootstrap.py:125:call_api",
+      "primitive_calls": 651,
+      "self_seconds": 0.002179
+    },
+    {
+      "calls": 1,
+      "cumulative_seconds": 2.081164,
+      "function": "cps_compute/native_node/history.py:172:verify",
+      "primitive_calls": 1,
+      "self_seconds": 0.001903
+    },
+    {
+      "calls": 81,
+      "cumulative_seconds": 1.868685,
+      "function": "cps_compute/native_node/custody.py:105:records",
+      "primitive_calls": 81,
+      "self_seconds": 0.070215
+    },
+    {
+      "calls": 2,
+      "cumulative_seconds": 1.810688,
+      "function": "cps_compute/native_node/history.py:192:verify_terminal_entries",
+      "primitive_calls": 2,
+      "self_seconds": 0.021191
+    },
+    {
+      "calls": 11189,
+      "cumulative_seconds": 1.42861,
+      "function": "cps_compute/native_node/backend.py:63:private_read",
+      "primitive_calls": 11189,
+      "self_seconds": 0.103212
+    },
+    {
+      "calls": 90,
+      "cumulative_seconds": 1.38654,
+      "function": "cps_compute/native_node/custody.py:475:_prior_approval",
+      "primitive_calls": 90,
+      "self_seconds": 0.004812
+    },
+    {
+      "calls": 52,
+      "cumulative_seconds": 1.24957,
+      "function": "cps_compute/native_node/abort.py:15:absent_custody",
+      "primitive_calls": 52,
+      "self_seconds": 0.014145
+    },
+    {
+      "calls": 1,
+      "cumulative_seconds": 1.13169,
+      "function": "cps_compute/native_node/custody.py:38:list_enrollments",
+      "primitive_calls": 1,
+      "self_seconds": 0.005849
+    },
+    {
+      "calls": 725,
+      "cumulative_seconds": 1.064355,
+      "function": "cps_compute/native_node/migration.py:33:resolve_legacy_map",
+      "primitive_calls": 725,
+      "self_seconds": 0.010094
+    },
+    {
+      "calls": 1072,
+      "cumulative_seconds": 1.058593,
+      "function": "cps_compute/native_node/history.py:32:read_namespaced_config_map",
+      "primitive_calls": 1072,
+      "self_seconds": 0.007995
+    },
+    {
+      "calls": 26,
+      "cumulative_seconds": 0.805676,
+      "function": "cps_compute/native_node/abort.py:40:barrier",
+      "primitive_calls": 26,
+      "self_seconds": 0.001563
+    },
+    {
+      "calls": 272,
+      "cumulative_seconds": 0.780228,
+      "function": "cps_compute/native_node/migration.py:107:verify_list_item",
+      "primitive_calls": 272,
+      "self_seconds": 0.004324
+    },
+    {
+      "calls": 26,
+      "cumulative_seconds": 0.769107,
+      "function": "cps_compute/native_node/abort.py:72:proof",
+      "primitive_calls": 26,
+      "self_seconds": 0.001127
+    },
+    {
+      "calls": 326,
+      "cumulative_seconds": 0.703079,
+      "function": "cps_compute/policy.py:22:__init__",
+      "primitive_calls": 326,
+      "self_seconds": 0.00414
+    },
+    {
+      "calls": 180,
+      "cumulative_seconds": 0.640383,
+      "function": "cps_compute/native_group_revision.py:203:deployment",
+      "primitive_calls": 180,
+      "self_seconds": 0.004361
+    },
+    {
+      "calls": 26,
+      "cumulative_seconds": 0.638049,
+      "function": "cps_compute/native_node/abort.py:98:audit_body",
+      "primitive_calls": 26,
+      "self_seconds": 0.000331
+    },
+    {
+      "calls": 2,
+      "cumulative_seconds": 0.535518,
+      "function": "cps_compute/native_node/migration.py:119:verify_inventory",
+      "primitive_calls": 2,
+      "self_seconds": 0.006189
+    },
+    {
+      "calls": 189,
+      "cumulative_seconds": 0.507693,
+      "function": "cps_compute/native_node/history.py:69:absent_original",
+      "primitive_calls": 189,
+      "self_seconds": 0.002235
+    },
+    {
+      "calls": 25,
+      "cumulative_seconds": 0.468254,
+      "function": "cps_compute/native_node/history.py:326:verify_previous_policy_completion",
+      "primitive_calls": 25,
+      "self_seconds": 0.00046
+    },
+    {
+      "calls": 12798,
+      "cumulative_seconds": 0.445378,
+      "function": "cps_compute/native_groups.py:36:_canonical",
+      "primitive_calls": 12798,
+      "self_seconds": 0.014641
+    },
+    {
+      "calls": 3,
+      "cumulative_seconds": 0.423216,
+      "function": "cps_compute/native_node/history.py:93:load",
+      "primitive_calls": 3,
+      "self_seconds": 0.000573
+    },
+    {
+      "calls": 546,
+      "cumulative_seconds": 0.393513,
+      "function": "cps_compute/native_gpu_controller.py:633:read",
+      "primitive_calls": 546,
+      "self_seconds": 0.00585
+    },
+    {
+      "calls": 93,
+      "cumulative_seconds": 0.372205,
+      "function": "cps_compute/native_group_revision.py:175:from_configmap",
+      "primitive_calls": 93,
+      "self_seconds": 0.00397
+    }
+  ],
+  "interpretation": "Repeated private enrollment inventory scans are a measured optimization target. Timings overlap and must not be summed. This baseline alone does not prove the cause of remaining post-witness consumer delay or resolve startup timeout.",
+  "next_gate": "Review and test bounded intra-snapshot inventory reuse with fresh final checks; compare actual candidate against this baseline before any image build."
+}
