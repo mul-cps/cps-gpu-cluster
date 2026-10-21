@@ -23,7 +23,24 @@ The isolated authenticated Jupyter Server API probe passed, with stable server
 start and no polling-induced activity updates. Browser display acceptance is
 still separate.
 
-## Deployment handover
+## Verified deployment
+
+CPS standard CPU now uses this image. An ordinary student completed normal
+Start and authenticated timer API checks in 76.74 seconds. Normal Stop,
+Pod absence, temporary grant expiry, unchanged preexisting grants and token
+revocation were verified. The original control-plane specs/routes, four genuine
+acknowledgments and journal60/12/300/checkpoint48 were preserved.
+
+The existing PyTorch session received the same prebuilt wheel in its user
+extension environment. Its Python backend was byte-identical; the actual Lab
+page serves the new timer bundle with the same Pod/container and no additional
+restarts. Browser display remains user-observed. Other PyTorch image consumers
+still require their persistent image overlay.
+
+[Acceptance receipt](qualification/runtime-timer-20261021.json) separates these
+checks from the remaining CIT deployment and other profile image work.
+
+## Deployment handover procedure
 
 `registered_cpu.configured_image` in the released Hub package captures the
 operator-owned `PROFILE_CONFIGS['cpu-default']` image before installing the

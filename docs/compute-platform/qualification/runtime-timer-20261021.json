@@ -1,0 +1,40 @@
+{
+  "schemaVersion": 1,
+  "scope": "runtime timer application acceptance",
+  "cpsStandardCpu": {
+    "image": "ghcr.io/mul-cps/cps-jupyter-notebook@sha256:16ed0a2c9c3d8e6d3942b515fc3a32ec750b3c506323326c050370566b595497",
+    "deployed": true,
+    "ordinaryStudentStartStatusStopPassed": true,
+    "startupSeconds": 76.74,
+    "normalStopPodAbsent": true,
+    "temporaryGrantExpired": true,
+    "preexistingGrantsUnchanged": true,
+    "temporaryCredentialsRevoked": true
+  },
+  "existingPytorchSession": {
+    "installedAsPrebuiltWheel": true,
+    "actualLabPageAndExactAssetVerified": true,
+    "pythonBackendUnchanged": true,
+    "podAndContainerUnchanged": true,
+    "additionalRestarts": false,
+    "visualBrowserVerified": false
+  },
+  "protectedControlPlane": {
+    "allFourGenuineAcknowledgments": true,
+    "originalDeploymentSpecsAndRoutesRestored": true,
+    "journalUnchanged": "60/12/300/checkpoint48",
+    "gpuSettingsChanged": false
+  },
+  "citCpu": {
+    "image": "ghcr.io/mul-cps/cit-jupyter-notebook@sha256:09380c3d17913064bd0c590c27a71d80a8995da5a0ed73e82cbd7cec8fae6218",
+    "publishedAndInstalledApiVerified": true,
+    "deployed": false
+  },
+  "otherProfileImagesUpdated": false,
+  "fullPlatformProductionQualified": false,
+  "privateEvidenceSha256": {
+    "cpu": "0fb55a51fb1a244c656615fd2a565fb7505f14569379b990ed66dcc4fd43c671",
+    "existingSession": "620ab4e6e090e6c71a5d8d4a98f0a980634160380a64b5360e91ed2b22d884c1",
+    "maintenance": "b47ca251114c9a452ff041286567710bc77346cf66e5908cc43052183bb9bd4c"
+  }
+}
