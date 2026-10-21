@@ -1,0 +1,75 @@
+{
+  "version": 1,
+  "observed_at": "2026-10-21T19:14:55.856450+00:00",
+  "status": "attempt_aborted_original_service_restored",
+  "shared_notebook_image_handover_deployed": false,
+  "attempt_operator_image": "ghcr.io/mul-cps/cps-compute@sha256:792095b04746aba0a2a5e8c56b37ac361beb2d136b09a1c037781a0b1c7c8d3e",
+  "failure": {
+    "kind": "historical_component_cohort_validation",
+    "message": "Every retained approval must preserve its actual complete historical prefix and generation",
+    "actual_shape": "Distinct component identities with identical registry/history within a generation; one same-generation alias",
+    "fix_commit": "761152ce0d1f53eb1bf9d64e6d0a57c6ff50667c",
+    "fix_tests_passed": 82,
+    "fix_deployed": false
+  },
+  "recovery": {
+    "recovered": true,
+    "old_policy_active": true,
+    "sql_revision9_retained_forensically": true,
+    "exact_state67_restored": true,
+    "preserved_old_archives": 335,
+    "aborted_archives_preserved": 5,
+    "all_six_original_controller_specs_ready": true,
+    "normal_writer_ready": true,
+    "all_five_original_service_specs_restored": true,
+    "protected_notebook_unchanged": true,
+    "production_ready": false,
+    "original_source_revision": "sha256:a0d0cebe806e5bf8a65bc0328ca1e8c142d43c4fd88df3838c8e9773f8f8516f",
+    "aborted_source_revision": "sha256:3d3060a4a7b663f226480053df783b7f5e95e2b4b4ada78d003092a95550f37c",
+    "retained_sql_revision_rows": 10,
+    "all_target_acknowledgments_absent_before_abort": true,
+    "all_target_publishers_stopped_before_abort": true,
+    "original_gpu_node_observer_and_hardware_unchanged": true,
+    "original_admission_contract_restored": true,
+    "admission_type_warnings": 0,
+    "temporary_permissions_and_helper_pods_deleted": 13,
+    "terminal_jobs_archived_and_deleted": 5,
+    "normal_writer_tick_ready_after_permission_cleanup": true,
+    "cps_login_http_status": 200,
+    "cit_login_http_status": 302
+  },
+  "recovery_checks": {
+    "observation_contract": 9,
+    "real_two_database_transaction": 9,
+    "exact_byte_journal_recovery": 13,
+    "maintenance_phase_contract": 10,
+    "independent_readonly_sdk_journal_and_four_ack_gate": true
+  },
+  "abort_capsule": {
+    "namespace": "cps-compute",
+    "name": "cps-addon68-abort-3d128c4af7ecea1b",
+    "uid": "0b32a85d-d367-4c7d-a068-2a36cc9720d5",
+    "resourceVersion": "378774860"
+  },
+  "root_operator_source_sha256": {
+    "abort_guard.py": "3598381337549a0442edc4a4456f2d7823e0dc54c234032ce14692a36534939b",
+    "abort_journal.py": "78e4a94f23e879e6f5379552ebaf7e033a7522383e93c436d75092a807ad9979",
+    "abort_sql_body.py": "a4870632aeaac752dfc3a36e3667311591766739b0e05408bb1aa3e28f42fb89",
+    "maintenance68.py": "e04750ec9a1c5292862b8bf930140adda920fe67dda7ea6fe62a951cc18f3908"
+  },
+  "constraints": {
+    "anchor_reset": false,
+    "hardware_or_driver_change": false,
+    "mig_used": false,
+    "cuda_tests_repeated": false,
+    "protected_notebook_uid": "03e00875-f3c7-4dca-8848-c57b257932a5",
+    "protected_notebook_restarts": 0
+  },
+  "next": [
+    "Deploy minimal cohort-compatible SDK to all five normal consumer image families under current policy",
+    "Qualify explicit retained-aborted-revision reuse or new generation protocol; ordinary retry is not supported",
+    "Retry addon image handover and validate session warnings",
+    "Complete remaining original production acceptance gates"
+  ],
+  "production_ready": false
+}
