@@ -1,0 +1,51 @@
+{
+  "limitations": [
+    "Prospective plan only; final paused preimages must be captured and reviewed before application.",
+    "No Source reselection, SQL write, service fence, image activation or notebook restart performed.",
+    "Full policy handover and rollback packet remains to be completed."
+  ],
+  "physical_guard": {
+    "api_mutations": false,
+    "candidate_only": true,
+    "current_physical_epoch_authenticated": true,
+    "live_reuse_authorized": false,
+    "open_running_state_rejected": true,
+    "original_immutable_capsule_authenticated": true,
+    "physical_plan_sha256": "sha256:24001e89f28cf3d113156b7ff49d63d47808d040976d3069e9fd236429775d7a",
+    "protected_roles": 11,
+    "root_read_only_preflight": true
+  },
+  "scope": "Exact retained aborted Source revision, not complete image activation or production qualification",
+  "sql": {
+    "audit_rows": 4277,
+    "exact_original_rows_unchanged": true,
+    "original_abort_audit_authenticated": true,
+    "read_only": true,
+    "restored_head_unchanged": true,
+    "retained_revision_rows": 10,
+    "reuse_not_yet_applied": true,
+    "snapshot_raw_sha256": "1c6da13f650186c7b9a46d0f6b386446516d599ec5e8286ac29ebd428094c588"
+  },
+  "status": "read-only-preflight-passed-activation-pending",
+  "typed_transition": {
+    "api_mutations": false,
+    "complete_audit_rows": 4277,
+    "complete_history_rows": 10,
+    "exact_retained_target_authenticated": true,
+    "live_reuse_authorized": false,
+    "plan_sha256": "sha256:dd07da777248c742b190060cee2f34735306fde1572bd777d70c2dd8b80d44f8",
+    "sql_writes": false,
+    "typed_live_configurations_authenticated": true
+  },
+  "verification": {
+    "physical_guard_tests": {
+      "passed": 7,
+      "subtests_passed": 43
+    },
+    "registry_reuse_and_migration_tests": {
+      "passed": 70,
+      "seconds": 3.16
+    },
+    "sdk_revision": "3f0ec04cbc01f7b205ab24ca405c5a9946983117"
+  }
+}
