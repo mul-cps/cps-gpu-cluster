@@ -1,0 +1,73 @@
+{
+  "gpu_isolation_results_invalidated": false,
+  "hub_lifetime": {
+    "enabled_on": [
+      "cps",
+      "cit"
+    ],
+    "legacy_profiles_adopted": false,
+    "protected_existing_session_unmodified": true
+  },
+  "observed_at": "2026-10-21T22:02:18.771235+00:00",
+  "production_qualified": false,
+  "readonly_timings": {
+    "context": {
+      "configmap_get_count": 44,
+      "elapsed_seconds": 0.273846,
+      "lease_or_prepare_called": false,
+      "max_get_seconds": 0.009951,
+      "operation": "readonly-context-load",
+      "passed": true,
+      "summed_get_seconds": 0.150439
+    },
+    "other": [
+      {
+        "elapsed_seconds": 0.390126,
+        "mutating_coordinator_method_called": false,
+        "operation": "epoch",
+        "passed": true
+      },
+      {
+        "elapsed_seconds": 0.929391,
+        "mutating_coordinator_method_called": false,
+        "operation": "workspace-authorization",
+        "passed": true
+      }
+    ]
+  },
+  "shared_gpu_start": {
+    "binder_baseline_restored": true,
+    "bindrequests": 0,
+    "failure": "prepare cumulative request deadline expired during allocation-proof",
+    "hub_server_and_notebook_pod_absent": true,
+    "lease_compile_created_succeeded": true,
+    "normal_stop_http": 200,
+    "passed": false,
+    "reservation_binding_count": 0,
+    "reservation_count": 0,
+    "test_token_revoked_and_local_token_file_removed": true,
+    "unreleased_native_allocations": 0
+  },
+  "version": 1,
+  "wall_clock_expiry_fixture": {
+    "actual_hub_user_spawn_stop": true,
+    "automatic_periodic_poll": true,
+    "fixture_durations_seconds": {
+      "hard": 4,
+      "idle": 2
+    },
+    "image": "ghcr.io/mul-cps/cps-compute@sha256:d84fa2c12da0a454680d18ff96b88ee8a8be450beafc39c6bb52beb68b65f591",
+    "mock_clock": false,
+    "observed_process_stop_seconds": {
+      "hard": 4.006,
+      "idle": 2.006
+    },
+    "passed": true,
+    "proves_kubernetes_gpu_expiry": false,
+    "seams": [
+      "in-process fixed grant response",
+      "in-process proxy",
+      "local CPU child identity"
+    ]
+  }
+}
