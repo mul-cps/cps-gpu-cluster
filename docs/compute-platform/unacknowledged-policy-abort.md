@@ -167,3 +167,47 @@ The [2026-10-21 tooling receipt](../../platform-staging/gpu/native-group-pilot/c
 The operational [physical observer](../../platform-staging/native-approval-delivery/aborted_reuse_guard.py) checks the sealed abort capsule, reviewed paused successor specs, permissions, heads, ACKs, allocation ledger and authenticated Node epoch. It rejects active publisher ServiceAccount Pods and nonterminal publisher Jobs, including pending Jobs without Pods. Pod/Job LISTs must be complete; continuation or remaining items cannot establish absence.
 
 Root must independently seal and pin the exact successor plan/capsule, provide fresh Source quiescence, and bind this real observer into both SQL boundaries. The observer must not recurse into Source APIs or databases while the two writer locks are held. A synthetic test, descriptor hash, or read-only rejection of the currently open system does not authorize the live operation. Use a separately reviewed operator identity and exact permissions; never use this operator image for normal consumers.
+
+### Pinned operator executor
+
+The [Source reuse executor](../../platform-staging/native-approval-delivery/source_reuse_operator.py)
+wires the existing SQL kernel to the physical observer. Its default invocation is
+inert. Execution requires independently supplied raw-input and reviewed-SQL-plan
+hashes, an exact immutable `operator.json` capsule reference, and the original
+abort capsule UID/data hash. The original capsule is referenced and freshly
+hydrated rather than embedded again: the complete physical record exceeds the
+Kubernetes 1 MiB ConfigMap limit.
+
+Mount the executor beside `aborted_reuse_guard.py` in the reviewed operator-only
+image. Copy its input into a UID-owned directory with mode `0700` and file mode
+`0600`; a non-root process must create a child directory inside an EmptyDir,
+rather than chmod its root-owned mount point. Use a dedicated read-only Kubernetes
+ServiceAccount outside all publisher identities, the existing image-pull Secret
+reference, and the actual database PVC on its current node. The executor fixes
+its database paths to `/data/control.sqlite` and `/data/reservations.sqlite`.
+
+The integration suite intentionally uses the matching SDK source-test fixtures.
+With `SDK_DIR` pointing to the reviewed `cps-compute` checkout, run from this repo:
+
+```bash
+PYTHONPATH="$SDK_DIR/src:$SDK_DIR/tests:$SDK_DIR/packages/hub/src" \
+  python -m pytest -q \
+  platform-staging/native-approval-delivery/test_source_reuse_operator.py \
+  platform-staging/native-approval-delivery/test_aborted_reuse_guard.py
+```
+
+Before the first policy continuation, the authority-namespace pregrant Role must
+contain the **current journal's complete rules plus the five approved context
+names**. Apply that exact UID/rules transition after the Source transaction's
+final guard and COMMIT, while the normal writer remains paused. Preserve all
+existing dynamic names; replacing the rules with the settings baseline loses
+required history. Delivery checks actual Roles before its ordinary pregrant
+patch step. Keep the delivery-only actor and metadata admission guards intact,
+and authorize only the reviewed exact old/new Role pair. The separate target
+Observer later reconciles component Roles against the actual held target Node.
+
+The recorded live open-state refusal test authenticated typed inputs and reached
+the kernel's locked quiescence check without committing. Its unchanged database
+snapshot proves refusal, not permission to execute the positive handover. Final
+paused preimages, recovery, actual target acknowledgments and normal writer
+verification remain required before restoring ingress.

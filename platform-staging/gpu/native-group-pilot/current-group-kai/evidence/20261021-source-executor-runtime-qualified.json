@@ -1,0 +1,64 @@
+{
+  "actual_future_named_reader_checks": 10,
+  "executor_source_sha256": "457e0c021182d5de7f90f7aa1b1a8a26be612483c9f55908f3ba2786448b4a33",
+  "limitations": [
+    "No positive Source reselection or image activation.",
+    "Final paused preimages, exact Role/admission transition and full recovery sequence are required.",
+    "No new GPU isolation or production readiness claim."
+  ],
+  "live_executor_open_state_refusal": {
+    "activation_performed": false,
+    "expected_open_state_refusal": true,
+    "image": "ghcr.io/mul-cps/cps-compute@sha256:5dfad1bddf4391d1b2cfdfa52a167210c171508895e4bd19fb2e34defa8a92b6",
+    "job_terminal_succeeded": true,
+    "job_uid": "6f8c0c1f-900f-4086-9707-66249b207312",
+    "pod_uid": "eb941331-5006-4ebb-a644-570fd3f1b10f",
+    "post_test_sql": {
+      "audit_rows": 4277,
+      "exact_original_rows_unchanged": true,
+      "original_abort_audit_authenticated": true,
+      "read_only": true,
+      "restored_head_unchanged": true,
+      "retained_revision_rows": 10,
+      "reuse_not_yet_applied": true,
+      "snapshot_raw_sha256": "1c6da13f650186c7b9a46d0f6b386446516d599ec5e8286ac29ebd428094c588"
+    },
+    "refusal_reason": "Actual Source Service fence differs",
+    "setup_correction": "Create UID10001-owned0700 child directory inside group-writable EmptyDir; input0600.",
+    "source_sha256": "457e0c021182d5de7f90f7aa1b1a8a26be612483c9f55908f3ba2786448b4a33",
+    "transaction_did_not_commit": true
+  },
+  "live_read_only_probe": {
+    "api_mutations": false,
+    "audit_rows": 4277,
+    "container_image_id": "ghcr.io/mul-cps/cps-compute@sha256:5dfad1bddf4391d1b2cfdfa52a167210c171508895e4bd19fb2e34defa8a92b6",
+    "current_node_epoch_authenticated": true,
+    "job_terminal_succeeded": true,
+    "job_uid": "6c53b504-1e21-4858-ab26-48952c072160",
+    "open_state_correctly_rejected": true,
+    "operator_image": "ghcr.io/mul-cps/cps-compute@sha256:5dfad1bddf4391d1b2cfdfa52a167210c171508895e4bd19fb2e34defa8a92b6",
+    "pod_uid": "531fd8f4-cb65-47f8-b143-540c73893147",
+    "pvc_read_only": true,
+    "read_only_api_roles_verified": 5,
+    "read_only_probe_passed": true,
+    "reservations_empty": true,
+    "run_as_gid": 10001,
+    "run_as_uid": 10001,
+    "setup_corrections": [
+      "Added existing image-pull Secret reference.",
+      "Added named GETs for ACK/head/ledger ConfigMaps; no write privileges."
+    ],
+    "single_named_node_get": true,
+    "sql_revision_rows": 10,
+    "sql_writes": false
+  },
+  "offline_verification": {
+    "executor_and_guard_tests_passed": 32,
+    "guard_subtests_passed": 43,
+    "role_ordering_tests_passed": 5,
+    "seconds": 21.89,
+    "warning": "Existing Starlette/AnyIO deprecation warning."
+  },
+  "sealed_refusal_capsule_bytes": 510025,
+  "status": "executor-qualified-positive-handover-pending"
+}
