@@ -638,3 +638,67 @@ def test_node_cpu_bound_plan_rejects_unrelated_pod_deltas(fault):
     else:pod['initContainers'][0]['resources']={'requests':{'cpu':'900m'}}
     creates={k:actual(v)for k,v in bound['creates'].items()}
     with pytest.raises(ValueError):load('head_gateway_rotation').bind(values['snapshot'],bound,creates)
+
+
+def immutable_runtime_fixture():
+    values=mounted_fixture();snapshot=values['snapshot']
+    secret=image.secret_volume(snapshot,'gateway','config');secret['immutable']=True
+    secret['data']['unrelated-credential']=image._encoded('synthetic-credential-only')
+    values['expected_snapshot_sha256']=canonical_sha256(snapshot)
+    return values,secret
+
+
+def test_gateway_immutable_runtime_clones_exact_data_and_switches_only_volume_reference():
+    values,secret=immutable_runtime_fixture();before=copy.deepcopy(values)
+    module,prepared,node,bound,created=phases(values)
+    assert set(created)=={'node.bootstrap','gateway.publisher','coordinator.seed','gateway.runtime-secret'}
+    successor=created['gateway.runtime-secret']
+    assert successor['kind']=='Secret' and successor['type']==secret['type'] and successor['immutable'] is True
+    assert successor['metadata']['name']!=secret['metadata']['name']
+    expected=copy.deepcopy(secret['data']);runtime=image._decode(expected['runtime.json'])
+    runtime['nativeGroupApprovals']['processes']['gateway']['image']=values['gateway_image']
+    expected['runtime.json']=image._encoded(runtime)
+    assert successor['data']==expected
+    assert successor['data']['unrelated-credential']==secret['data']['unrelated-credential']
+    assert bound['gateway_runtime_patch'] is None
+    volume=next(v for v in bound['runtime_specs']['gateway']['template']['spec']['volumes'] if v['name']=='config')
+    assert volume['secret']['secretName']==successor['metadata']['name']
+    complete=ready_bind(values,module,bound,created)
+    assert 'gateway.runtime-secret' not in complete['patches']
+    assert complete['observer_release']['heads']==values['previous_release']['heads']
+    assert complete['operator_baselines']==values['operator_baselines']
+    assert all(o['kind']=='ConfigMap' for o in complete['prospective_capture']['configmaps'])
+    assert values==before
+
+
+@pytest.mark.parametrize('fault',['missing','data','mutable','uid','namespace','name','type','owner','extra'])
+def test_gateway_immutable_runtime_requires_exact_actual_successor_readback(fault):
+    values,_=immutable_runtime_fixture();module,prepared,node,bound,created=phases(values)
+    successor=created['gateway.runtime-secret']
+    if fault=='missing':created.pop('gateway.runtime-secret')
+    elif fault=='data':successor['data']['unrelated-credential']='different'
+    elif fault=='mutable':successor['immutable']=False
+    elif fault=='uid':successor['metadata']['uid']='invalid'
+    elif fault=='namespace':successor['metadata']['namespace']='foreign'
+    elif fault=='name':successor['metadata']['name']='foreign'
+    elif fault=='type':successor['type']='foreign'
+    elif fault=='extra':created['unrelated-secret']=copy.deepcopy(successor)
+    else:successor['metadata']['ownerReferences']=[{'kind':'Pod','name':'foreign','uid':str(uuid.uuid4())}]
+    with pytest.raises(ValueError):module.bind(values['snapshot'],bound,created)
+
+
+def test_generic_policy_context_currently_rejects_unproven_gateway_service_image_successor(request,monkeypatch):
+    """Document the separate cold-Node integration gap; this is no fallback."""
+    from test_native_addon_policy_heads import fixture as policy_fixture
+    from cps_compute.native_groups import _canonical
+    consumer,policy,maps,configuration,authority,approval=policy_fixture(request,monkeypatch)
+    original=copy.deepcopy(configuration.document)
+    body=copy.deepcopy(original);body['component_declarations']['gateway']['image']='ghcr.io/mul-cps/cps-compute@sha256:'+'8'*64
+    oldref=configuration.reference.to_dict();candidate=copy.deepcopy(maps[oldref['name']])
+    candidate['metadata'].update(name='unpublished-service-image-successor',uid=str(uuid.uuid4()),resourceVersion='901')
+    candidate['data']['config.json']=_canonical(body).decode();maps[candidate['metadata']['name']]=candidate
+    with pytest.raises(ValueError,match='Policy image edge must preserve every other actual Node configuration field'):
+        NodeConfiguration.load(consumer.core,ref(candidate),policy)
+    assert configuration.document==original
+    assert configuration.deployment.qualification_authority.policy_transition_reference==authority.policy_transition_reference
+    assert consumer.snapshot().approval.reference==approval.reference
