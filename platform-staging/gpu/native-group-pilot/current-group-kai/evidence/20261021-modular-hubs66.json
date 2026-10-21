@@ -1,0 +1,78 @@
+{
+  "components": {
+    "gateway": {
+      "generation": 317,
+      "images": {
+        "approval-capture": "ghcr.io/mul-cps/cps-compute@sha256:1bee52dc2db6c57b3a7902fd0cdd0cf41fd08ec83f5d9a27c73d548172781a43",
+        "gateway": "ghcr.io/mul-cps/cps-compute@sha256:1bee52dc2db6c57b3a7902fd0cdd0cf41fd08ec83f5d9a27c73d548172781a43"
+      },
+      "uid": "f5f9b266-433d-4825-83de-d51e31c71648"
+    },
+    "hub:cit": {
+      "generation": 242,
+      "images": {
+        "hub": "ghcr.io/mul-cps/cps-compute@sha256:846133baf5929b4bd3bf2341b77a54565217463bf52daf5a8e1fd4a5d9fdd54f"
+      },
+      "uid": "dd90f866-47d3-4b9f-ba41-b4ebf8cb2b1e"
+    },
+    "hub:cps": {
+      "generation": 299,
+      "images": {
+        "hub": "ghcr.io/mul-cps/cps-compute@sha256:846133baf5929b4bd3bf2341b77a54565217463bf52daf5a8e1fd4a5d9fdd54f"
+      },
+      "uid": "02fb8421-d323-4636-b006-2490cd6f5b63"
+    },
+    "node": {
+      "generation": 309,
+      "images": {
+        "node-agent": "ghcr.io/mul-cps/cps-native-node@sha256:77af539bc22503c4be332d40fde903bd7a1a047f787911fbdb18c8883cb733eb"
+      },
+      "uid": "03e6bf5e-39ab-4c4a-b73f-1d6cf0ee8076"
+    },
+    "observer": {
+      "generation": 183,
+      "images": {
+        "observer": "ghcr.io/mul-cps/cps-native-observer@sha256:9938843f584539199948c48793d9fcdda2b46b3858880d9d7cc644b5b5cdb3ca"
+      },
+      "uid": "2a8b8724-68c3-4772-b45f-1ed9ef1910c9"
+    },
+    "writer": {
+      "generation": 148,
+      "images": {
+        "delivery": "ghcr.io/mul-cps/cps-compute@sha256:4d3eb57ab9247b22fb1c4d9712d73c192d3c7424fe2bb70b3eac063531af2542"
+      },
+      "uid": "8dfbe31d-1475-4cd5-aa3f-34b791c1950b"
+    }
+  },
+  "gateway_node_image_upgrade": false,
+  "journal": {
+    "active_rotations": 18,
+    "all_325_previous_archive_hashes_preserved": true,
+    "archives": 330,
+    "checkpoint_epoch_heads_legacy_completed_anchor_unchanged": true,
+    "passed": true,
+    "total_rotations": 66
+  },
+  "lifetime_activated": false,
+  "passed": true,
+  "protected_notebook_unchanged": true,
+  "recorded_at": "2026-10-21T18:02:00.893431+00:00",
+  "resumed_journal_identical": true,
+  "scope_limits": [
+    "Stage66 changes the paired Hub and Observer/Writer images only. Gateway/Node software images remain unchanged.",
+    "Shared notebook image policy handover and lifetime activation are not included.",
+    "No new CUDA isolation qualification or GPU device/driver changes."
+  ],
+  "services_restored": 4,
+  "shared_notebook_policy_handover": false,
+  "source_revisions": {
+    "cluster_helper": "85660553d94366c886f042db691e2d1af8fbe646",
+    "compute": "d8c8d3f00665a5cbfd6b29df3013c47ae3372f2c"
+  },
+  "stage": "paired-hub-and-operator-images66",
+  "startup_observations": {
+    "cause": "Gateway-dependent dynamic policy fetch received connection refused during concurrent startup; recovered on next start.",
+    "cit_hub_initial_restarts": 1,
+    "followup": "Start Gateway and wait Ready before starting Hubs in future controlled maintenance."
+  }
+}
