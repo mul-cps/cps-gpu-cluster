@@ -1,0 +1,211 @@
+{
+  "schema_version": 1,
+  "status": "extended_json_profile_and_rejected_decode_cache",
+  "production_ready": false,
+  "runtime_changed": false,
+  "probe_source_sha256": "2622e9f3e27e299b304e63078f339e003a13319fc31a12a02b232abbbdccc09f",
+  "elapsed_seconds": 9.507263,
+  "api": {
+    "list_namespaced_config_map": {
+      "calls": 3,
+      "elapsed_seconds": 0.282377
+    },
+    "read_namespaced_config_map": {
+      "calls": 413,
+      "elapsed_seconds": 2.227967
+    },
+    "read_namespaced_pod": {
+      "calls": 235,
+      "elapsed_seconds": 0.763419
+    }
+  },
+  "functions": [
+    {
+      "calls": 1,
+      "cumulative_seconds": 9.506769,
+      "function": "cps_compute/native_node/custody.py:285:snapshot",
+      "primitive_calls": 1,
+      "self_seconds": 0.002231
+    },
+    {
+      "calls": 1,
+      "cumulative_seconds": 9.503778,
+      "function": "cps_compute/native_node/custody.py:292:_snapshot_once",
+      "primitive_calls": 1,
+      "self_seconds": 0.014246
+    },
+    {
+      "calls": 651,
+      "cumulative_seconds": 3.254148,
+      "function": "cps_compute/native_node/bootstrap.py:125:call_api",
+      "primitive_calls": 651,
+      "self_seconds": 0.002868
+    },
+    {
+      "calls": 1,
+      "cumulative_seconds": 2.218845,
+      "function": "cps_compute/native_node/history.py:172:verify",
+      "primitive_calls": 1,
+      "self_seconds": 0.00214
+    },
+    {
+      "calls": 81,
+      "cumulative_seconds": 1.968027,
+      "function": "cps_compute/native_node/custody.py:105:records",
+      "primitive_calls": 81,
+      "self_seconds": 0.075094
+    },
+    {
+      "calls": 2,
+      "cumulative_seconds": 1.935115,
+      "function": "cps_compute/native_node/history.py:192:verify_terminal_entries",
+      "primitive_calls": 2,
+      "self_seconds": 0.021649
+    },
+    {
+      "calls": 90,
+      "cumulative_seconds": 1.590573,
+      "function": "cps_compute/native_node/custody.py:475:_prior_approval",
+      "primitive_calls": 90,
+      "self_seconds": 0.005588
+    },
+    {
+      "calls": 11189,
+      "cumulative_seconds": 1.51051,
+      "function": "cps_compute/native_node/backend.py:63:private_read",
+      "primitive_calls": 11189,
+      "self_seconds": 0.110645
+    },
+    {
+      "calls": 27786,
+      "cumulative_seconds": 1.499634,
+      "function": "json/__init__.py:299:loads",
+      "primitive_calls": 27786,
+      "self_seconds": 0.079858
+    },
+    {
+      "calls": 52,
+      "cumulative_seconds": 1.323563,
+      "function": "cps_compute/native_node/abort.py:15:absent_custody",
+      "primitive_calls": 52,
+      "self_seconds": 0.018759
+    },
+    {
+      "calls": 27786,
+      "cumulative_seconds": 1.272723,
+      "function": "json/decoder.py:333:decode",
+      "primitive_calls": 27786,
+      "self_seconds": 0.058475
+    },
+    {
+      "calls": 1,
+      "cumulative_seconds": 1.215083,
+      "function": "cps_compute/native_node/custody.py:38:list_enrollments",
+      "primitive_calls": 1,
+      "self_seconds": 0.006518
+    },
+    {
+      "calls": 725,
+      "cumulative_seconds": 1.185263,
+      "function": "cps_compute/native_node/migration.py:33:resolve_legacy_map",
+      "primitive_calls": 725,
+      "self_seconds": 0.010696
+    },
+    {
+      "calls": 1072,
+      "cumulative_seconds": 1.182934,
+      "function": "cps_compute/native_node/history.py:32:read_namespaced_config_map",
+      "primitive_calls": 1072,
+      "self_seconds": 0.009292
+    },
+    {
+      "calls": 27786,
+      "cumulative_seconds": 1.15908,
+      "function": "json/decoder.py:344:raw_decode",
+      "primitive_calls": 27786,
+      "self_seconds": 0.878009
+    },
+    {
+      "calls": 362608,
+      "cumulative_seconds": 1.100799,
+      "function": "copy.py:118:deepcopy",
+      "primitive_calls": 2559,
+      "self_seconds": 0.442959
+    },
+    {
+      "calls": 42220,
+      "cumulative_seconds": 1.079966,
+      "function": "copy.py:217:_deepcopy_dict",
+      "primitive_calls": 2805,
+      "self_seconds": 0.152969
+    },
+    {
+      "calls": 26,
+      "cumulative_seconds": 0.939096,
+      "function": "cps_compute/native_node/abort.py:40:barrier",
+      "primitive_calls": 26,
+      "self_seconds": 0.002126
+    },
+    {
+      "calls": 26,
+      "cumulative_seconds": 0.893514,
+      "function": "cps_compute/native_node/abort.py:72:proof",
+      "primitive_calls": 26,
+      "self_seconds": 0.001503
+    },
+    {
+      "calls": 272,
+      "cumulative_seconds": 0.852346,
+      "function": "cps_compute/native_node/migration.py:107:verify_list_item",
+      "primitive_calls": 272,
+      "self_seconds": 0.004905
+    },
+    {
+      "calls": 326,
+      "cumulative_seconds": 0.723413,
+      "function": "cps_compute/policy.py:22:__init__",
+      "primitive_calls": 326,
+      "self_seconds": 0.004916
+    },
+    {
+      "calls": 26,
+      "cumulative_seconds": 0.675793,
+      "function": "cps_compute/native_node/abort.py:98:audit_body",
+      "primitive_calls": 26,
+      "self_seconds": 0.000404
+    },
+    {
+      "calls": 180,
+      "cumulative_seconds": 0.656881,
+      "function": "cps_compute/native_group_revision.py:203:deployment",
+      "primitive_calls": 180,
+      "self_seconds": 0.004542
+    },
+    {
+      "calls": 25,
+      "cumulative_seconds": 0.649748,
+      "function": "cps_compute/native_node/history.py:326:verify_previous_policy_completion",
+      "primitive_calls": 25,
+      "self_seconds": 0.000698
+    },
+    {
+      "calls": 189,
+      "cumulative_seconds": 0.609483,
+      "function": "cps_compute/native_node/history.py:69:absent_original",
+      "primitive_calls": 189,
+      "self_seconds": 0.002326
+    }
+  ],
+  "candidate_decode_cache": {
+    "implemented": false,
+    "benchmark": "Real public Node service fixture; 22 protected files, 34135 bytes, 11176 read-equivalent decodes, five alternated runs",
+    "original_median_seconds": 0.078237,
+    "memo_with_deepcopy_median_seconds": 0.114384,
+    "decision": "Rejected: slower; fresh file observations would remain required."
+  },
+  "inventory_reuse": {
+    "implemented": false,
+    "decision": "Not approved: snapshot API has no universal sole-writer/lock contract, and reuse could omit original observations."
+  },
+  "next_gate": "Profile actual all-four approval Reader.observe separately, without runtime/SQL constructors."
+}
