@@ -121,3 +121,36 @@ shared GPUs. Own completed validation Pods were archived and removed.
 Evidence: `platform-staging/gpu/r615-driver/evidence/20261022-driver-recovery.json`.
 This proves basic driver/registration recovery, not native-group or full
 production qualification.
+
+
+## Custody recovery coverage after the reboot
+
+A read-only recovery investigation verified the original protected backup for all
+82 lifetimes in the current terminal index: all 323 index-required private files
+match their pinned hashes. This is historical coverage, not current-boot authority.
+For later lifetimes, 32 enrollment-abort audit hashes and one prepared-offline
+journal were matched. Original journals for 29 subsequently retired lifetimes
+remain unavailable in the searched captures. The bounded search included the six
+large runtime captures previously excluded by the size limit; none supplied the
+missing journal hashes. Cache and image inventories were excluded deliberately.
+
+The recorded TrueNAS recovery directory was checked over SSH. It contains two
+encrypted Hub bundles; no Node custody backup was established there. A bounded
+host search under `/var/backups`, `/var/lib/cps-native-gpu` and `/root` likewise
+found no Node custody backup. These searches do not establish universal absence.
+
+A fresh Kubernetes ledger read still reports 197 allocations, all released.
+The Node Deployment nevertheless has zero available replicas and its protected
+host directory remains absent. Released ledger state does not authenticate lost
+private journals or authorize a new boot. Existing cleared-offline recovery
+requires an original private record and the original epoch; it cannot recover
+these missing journals across a reboot. Re-enrollment must not erase that history.
+
+Next recovery work requires a distinct, explicitly reviewed loss declaration
+and terminal-history protocol, preserving all original public references and
+missing journal hashes without inventing CapRecords or seal identifiers. It
+must close only the exact released historical cohort, prove physical quiescence,
+exclude concurrent claims, and separately qualify a fresh current-boot epoch.
+The declaration itself must never authorize GPU access. Durable, verified custody
+storage and off-host backup must precede reactivation. This protocol is not yet
+implemented or deployed; existing admission checks remain unchanged.
