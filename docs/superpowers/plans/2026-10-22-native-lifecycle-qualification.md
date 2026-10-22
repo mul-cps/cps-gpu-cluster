@@ -128,3 +128,15 @@ The deployment composition must resolve this before either Hub is restarted.
 The retained-storage reuse planner has passed 19 focused tests and independent
 source review. It is proposal-only. Actual registration, guarded canonical DB
 transaction, audit, grants, and runtime preservation remain to be performed.
+
+## Hub-only package compatibility route
+
+The installed SDK production-configuration constructor control passes on both
+actual Hubs with Kubernetes writes forbidden. All 78 installed SDK modules in
+base image0aeb match commit2f13 exactly. Its policy and native Pod compiler are
+byte-identical to SDK768, so the temporary plain pilot does not require an SDK
+upgrade. Build only the updated Hub adapter wheel over image0aeb, preserve the
+SDK and every other distribution, then verify existing configuration cold-load
+and the owner-scoped overlay together. The SDK768 Node/Gateway remain separate.
+This preserves original historical qualification handling without broadening
+proof acceptance; it does not assert that the old hardware epoch is current.

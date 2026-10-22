@@ -1,0 +1,38 @@
+{
+  "base_image": "ghcr.io/mul-cps/cps-compute@sha256:0aebf18b68f7ebf4eb4213b4525deac3702f18548286a7879792cc398f4ff48d",
+  "installed_sdk_source": "2f13b5c2acd45bd0d65f1a741c18ab1a0d6a9976",
+  "live_hubs_changed": false,
+  "modules_exact": 78,
+  "original_sdk_constructor_control": {
+    "cit-jhub": {
+      "state": "installed-sdk-production-coldload-passed",
+      "writes_forbidden": true
+    },
+    "jupyterhub": {
+      "state": "installed-sdk-production-coldload-passed",
+      "writes_forbidden": true
+    }
+  },
+  "pilot_compiler_modules_byte_identical_to_sdk768": {
+    "src/cps_compute/native_gpu_runtime.py": "035fa64027c09965fcb7557f4346b449b637aa39de804a94565deffe067b0e74",
+    "src/cps_compute/policy.py": "3f47a11dee56cdf4b1768663b5f94d5cca7abbeb831ec4d5b5bc1431e2a5a955"
+  },
+  "production_qualified": false,
+  "schema_version": 1,
+  "sdk768_constructor_rejection": {
+    "cit-jhub": {
+      "detail": "Complete reviewed v3 qualification proof required",
+      "exception": "ValueError",
+      "state": "production-qualification-coldload-rejected",
+      "writes_forbidden": true
+    },
+    "jupyterhub": {
+      "detail": "Complete reviewed v3 qualification proof required",
+      "exception": "ValueError",
+      "state": "production-qualification-coldload-rejected",
+      "writes_forbidden": true
+    }
+  },
+  "sdk_upgrade_required_for_pilot_compiler": false,
+  "state": "hub-only-overlay-compatibility-preflight"
+}
