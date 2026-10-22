@@ -1,0 +1,16 @@
+{
+  "version": 1,
+  "source_revision": "88cbf365559c454ad9fba5403bcd7ab8575f4742",
+  "wheel_sha256": "1462f479c70cd42a39c328a136226dcb7d0e497e7d595ff76ac6361242e42f38",
+  "images": {
+    "gateway": "ghcr.io/mul-cps/cps-compute@sha256:1895f5b08f707a65f66b3512babf5c630e043877208513d1f5c5d8e6f2f1ec28",
+    "capture": "ghcr.io/mul-cps/cps-compute@sha256:017a7833abb24b3b06feaab3269e8b135b85c32f7f6a27e62817b13c023d9032"
+  },
+  "registry_digests_independently_verified": true,
+  "sdk_modules_exact": 78,
+  "other_distributions_unchanged_per_image": 43,
+  "dependency_check_passed": true,
+  "nonroot_readonly_networkless_interface_smokes_passed": true,
+  "runtime_uid": 10001,
+  "deployed": false
+}

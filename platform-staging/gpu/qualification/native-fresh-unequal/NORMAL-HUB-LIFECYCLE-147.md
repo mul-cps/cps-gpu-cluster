@@ -937,3 +937,11 @@ on both this change and the untouched baseline; they are not reported as passing
 The source is published; replacement images and coordinated Gateway/Hub adoption
 are still pending. This rehearsal does not activate workspace approvals.
 Evidence: `results/authority-scoped-registry-rehearsal-20261023.json`.
+
+The reviewed wheel and both immutable Gateway/capture images are now built and
+published. Each image was checked against its own live-container package baseline:
+78 SDK modules match the wheel and all 43 other distributions retain identical
+owned files/metadata. Dependency checks and nonroot, read-only, networkless import
+smokes passed. Published registry digests were independently checked. Deployment
+remains pending coordinated consumer configuration and readiness validation.
+Image evidence: `results/authority-scoped-registry-images-20261023.json`.
