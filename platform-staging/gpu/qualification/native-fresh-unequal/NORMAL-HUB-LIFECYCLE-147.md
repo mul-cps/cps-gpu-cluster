@@ -75,3 +75,38 @@ Private evidence is held under the operator lifecycle preflight directory:
 `post-stop-member-reservations.actual.private.json`, and
 `fresh-storage-bindings-verified.actual.private.json`.
 Credentials and raw Secret captures are deliberately excluded from Git.
+
+## Follow-up: runtime tools and delayed release
+
+The generated launcher now resolves and preflights the host tools before loading
+SDK code or opening native GPU authority (cluster commit `63e7eeb`). Its generated
+SHA-256 is `9a87e66de29627a97fb6d780a0d6090a959b1ee3843346d4b34bf96b9ed384b3`.
+The materialized launcher passed read-only host checks and a further normal CIT
+Start/CUDA/Stop cycle without operator PATH or versioned-CRI arguments. The
+qualification suite passed 251 tests plus 118 subtests.
+
+This fourth Pod was `a1c17154-9ea2-44e2-a07a-d582059ceca8`. Expanded error logging
+did not reproduce the earlier cleanup OS error; that finding remains unresolved.
+It did establish a separate automatic-release failure: the Hub finalizer abandoned
+its attempt after 30 seconds, before the controller's later cleanup confirmation.
+The ledger stayed `releasing` until an explicit retry of the normal release API.
+After that proof-backed retry all four test allocations were released and test
+Pods were absent. No release was forced without cleanup evidence.
+
+Compute commit `4ffe956` fixes the deadline failure by retaining one deduplicated
+finalizer task across bounded polling windows and keeping its original generation
+fences. Request/stop-future errors remain held. 102 focused compatibility and
+lifecycle tests passed, including late confirmation, new-generation protection,
+failed stop futures and request timeouts; independent source review was clear.
+This Hub fix is not yet deployed or live-qualified.
+
+The fresh CIT group currently has an empty Hub roster and no native Share. It is
+a fixture still awaiting the normal console assignment/sharing flow, not evidence
+that student collaboration permissions have passed. This needs qualification
+before promoting the new workspace path.
+
+Additional private evidence: `node-runtime-tools-readonly.actual.private.json`,
+`cit-tool-fixed-launcher-cuda.actual.private.json`,
+`node-stop-race-controller.private.log`,
+`cit-current-native-shares.actual.private.json`, and
+`tool-fixed-post-stop-ledger-all-released.actual.private.json`.
