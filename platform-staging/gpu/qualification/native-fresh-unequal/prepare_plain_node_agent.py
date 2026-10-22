@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Prepare an explicit two5 legacy lifecycle agent; no deployment or authority creation.
+"""Prepare a bounded legacy or measured five/twenty lifecycle agent; no deployment or authority creation.
 
 The generated runner uses installed, exact SDK768 modules. It retains the old
 enrollment/Pod/device/cleanup/publication validators, adds native completed
@@ -271,6 +271,55 @@ def original_uid_absence(actual, intent, agent):
     return metadata['uid']
 
 
+def validate_lifecycle_scope(config, c):
+    """Additional bounded scope, after the original closed config validator."""
+    require(config['enabled'] and config['authority_namespace'] not in
+            ('cps-native-system', 'cps-native-runtime', c.NS)
+            and len(config['workspaces']) == 2, 'Separate two-workspace lifecycle scope required')
+    pool = config['pool']
+    identity = {'node': c.NODE, 'node_uid': c.NODE_UID, 'gpu_uuid': c.GPU, 'max_workspaces': 2}
+    if config['version'] == 1:
+        require('terminal_history' not in config and pool == identity
+                and all(v == {'profile': 'interactive-native-pilot-5'}
+                    for v in config['workspaces'].values()), 'Exact legacy two5 scope required')
+        return
+    require(config['version'] == 2 and config['mode'] == 'operator-qualification'
+            and all(pool.get(k) == v for k, v in identity.items())
+            and pool['boot_id'] == c.BOOT and pool['driver_generation'] == c.GENERATION
+            and pool['memory_budget_mib'] == 25600,
+            'Exact measured operator pool and current epoch required')
+    expected = {('interactive-native-qualification-5', 5120),
+                ('interactive-native-qualification-20', 20480)}
+    require({(v['profile'], v['cap_mib']) for v in config['workspaces'].values()} == expected,
+            'Exact measured five/twenty pair required')
+
+
+def enrollment_configuration(agent, config, envelope):
+    """Recover old validation scope from explicit pins, never from names alone.
+
+    The original agent separately verifies completion, ledger and private journal
+    pins before accepting history. This helper preserves that same old scope in
+    the fresh physical-inventory checks and published-cleanup readback.
+    """
+    body = envelope['enrollment']
+    entry = config.get('terminal_history', {}).get(body['intent']['pod_uid'])
+    if entry is None:
+        return config
+    require('cap_mib' not in entry and 'configuration_authority' not in entry
+            and entry['profile'] == body['profile'] == 'interactive-native-pilot-5'
+            and body['intent']['cap_mib'] == 5120
+            and entry['binding_id'] == body['binding_id']
+            and entry['policy_hash'] == body['policy_hash'] != config['policy_hash']
+            and entry['enrollment_uid'] == envelope['configmap_uid']
+            and entry['enrollment_sha256'] == agent.canonical_sha256(body),
+            'Exact original legacy five-GiB terminal enrollment pins required')
+    return {'version': 1, 'enabled': config['enabled'],
+            'authority_namespace': config['authority_namespace'],
+            'policy_hash': entry['policy_hash'],
+            'pool': {k: config['pool'][k] for k in ('node', 'node_uid', 'gpu_uuid', 'max_workspaces')},
+            'workspaces': {body['source'] + ':' + body['workspace']: {'profile': entry['profile']}}}
+
+
 class InventoryGuard:
     """Fresh proofs on each operation. No inventory/authority cache or bypass bit."""
     def __init__(self, agent, config, args, settings):
@@ -305,7 +354,7 @@ class InventoryGuard:
             return self.c.current_terminal(raw, record)
         def published():
             actual = self.kube.configmap(self.config['authority_namespace'], envelope['configmap_name'])
-            require(a.validate_enrollment(actual, self.config, self.models) == envelope,
+            require(a.validate_enrollment(actual, enrollment_configuration(a, self.config, envelope), self.models) == envelope,
                     'Original immutable terminal enrollment changed')
             name = 'cps-native-cleanup-' + envelope['enrollment']['binding_id'][:40]
             cm = self.kube.configmap(self.config['authority_namespace'], name)
@@ -344,10 +393,21 @@ class InventoryGuard:
         journal.directory = source.state / 'journal'
         records = journal.records()
         expected = {i.pod_uid: i for i in enrolled}
-        require(len(expected) == len(enrolled) and all(i.cap_mib == 5120 for i in enrolled)
+        for intent in enrolled:
+            envelope = self.back.private_read(source.state / 'enrollments' / (intent.pod_uid + '.json'), source.uid)
+            require(type(envelope) is dict and envelope.get('enrollment', {}).get('intent') == intent.to_dict(),
+                    'Original cap enrollment mirror required')
+            authority = enrollment_configuration(self.agent, self.config, envelope)
+            body = envelope['enrollment']
+            scope = authority['workspaces'].get(body['source'] + ':' + body['workspace'])
+            require(scope is not None and scope['profile'] == body['profile']
+                    and intent.policy_hash == authority['policy_hash']
+                    and intent.cap_mib == (scope['cap_mib'] if authority['version'] == 2 else 5120),
+                    'Exact original or measured configured enrollment cap required')
+        require(len(expected) == len(enrolled)
                 and all(expected.get(r.intent.pod_uid) == r.intent and r.recovery is None
                         and r.prepared_offline is None for r in records),
-                'Complete original current journals and exact two5 enrollments required')
+                'Complete original current journals and exact configured enrollments required')
         by_uid = {r.intent.pod_uid: r for r in records}
         raw = self.raw_backend(source, enrolled, state)
         caps = {}; unprogrammed = set(); terminal = {}
@@ -427,11 +487,7 @@ def run_agent(agent, args, settings):
     config = agent.read_config(args.config)
     agent.validate_config(config)
     c = agent._retirement
-    require(config['version'] == 1 and config['enabled'] and 'terminal_history' not in config
-            and config['authority_namespace'] not in ('cps-native-system', 'cps-native-runtime', c.NS)
-            and config['pool'] == {'node': c.NODE, 'node_uid': c.NODE_UID, 'gpu_uuid': c.GPU, 'max_workspaces': 2}
-            and len(config['workspaces']) == 2 and all(v == {'profile': 'interactive-native-pilot-5'}
-                for v in config['workspaces'].values()), 'Only separate explicit plain two5 lifecycle scope required')
+    validate_lifecycle_scope(config, c)
     require(str(args.state_root).startswith(c.ROOT + '/cohorts/')
             and str(args.state_root) == c.cohort_state(str(args.state_root)[len(c.ROOT + '/cohorts/'):-len('/state')]),
             'Explicit separate canonical QA cohort state required')
@@ -563,7 +619,7 @@ def build_sources():
     current = Path(__file__).read_text()
     tree = ast.parse(current)
     names = {'require', 'sha', 'document', 'installed_sources', 'installed_modules', 'partition_inventory',
-             '_exec', 'adapt', 'clone_backend', 'original_uid_absence', 'InventoryGuard', 'run_agent', 'runtime_tools', 'runtime_main'}
+             '_exec', 'adapt', 'clone_backend', 'original_uid_absence', 'validate_lifecycle_scope', 'enrollment_configuration', 'InventoryGuard', 'run_agent', 'runtime_tools', 'runtime_main'}
     definitions = [node for node in tree.body if isinstance(node, (ast.FunctionDef, ast.ClassDef)) and node.name in names]
     prefix = '''#!/usr/bin/env python3
 import argparse, ast, hashlib, importlib.metadata, json, os, sys, types

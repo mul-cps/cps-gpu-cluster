@@ -412,3 +412,59 @@ def test_execute_checks_tools_before_sdk_or_gpu_setup(tmp_path, monkeypatch):
             '--retirement', str(retirement), '--retirement-sha256', m.sha(retirement.read_bytes())]
     with pytest.raises(ValueError, match='runtime tool'):
         m.runtime_main(b'', b'', b'', argv)
+
+
+def test_measured_lifecycle_scope_accepts_exact_five_twenty_operator_pair():
+    from types import SimpleNamespace
+    m=module()
+    c=SimpleNamespace(NODE='k3s-wk-gpu2',NODE_UID='3336cdd5-d245-436e-b57c-2f66c6dcaa41',
+        GPU='GPU-16128952-b438-556a-00bb-93039ee24e56',NS='prior',
+        BOOT='a464df41-e391-4443-b8e8-ad7ecd052318',GENERATION='4ebffc96-e25e-4583-a3b8-0d853fd90efd')
+    config={'version':2,'enabled':True,'mode':'operator-qualification','authority_namespace':'measured',
+        'pool':{'node':c.NODE,'node_uid':c.NODE_UID,'gpu_uuid':c.GPU,'max_workspaces':2,
+        'boot_id':c.BOOT,'driver_generation':c.GENERATION,'memory_budget_mib':25600},
+        'workspaces':{'cps:a':{'profile':'interactive-native-qualification-20','cap_mib':20480},
+                      'cit:b':{'profile':'interactive-native-qualification-5','cap_mib':5120}}}
+    m.validate_lifecycle_scope(config,c)
+    import copy
+    for mutate in (lambda v:v.update(mode='qualified-group'),
+        lambda v:v['pool'].update(memory_budget_mib=25601),
+        lambda v:v['pool'].update(boot_id='other'),
+        lambda v:v['workspaces']['cps:a'].update(cap_mib=5120),
+        lambda v:v['workspaces']['cps:a'].update(profile='interactive-shared-20')):
+        changed=copy.deepcopy(config);mutate(changed)
+        with pytest.raises(ValueError):m.validate_lifecycle_scope(changed,c)
+
+
+def test_original_history_policy_is_used_only_for_pinned_legacy_enrollment():
+    import copy, hashlib, json
+    from types import SimpleNamespace
+    m=module()
+    digest=lambda v:'sha256:'+hashlib.sha256(json.dumps(v,sort_keys=True,separators=(',',':')).encode()).hexdigest()
+    a=SimpleNamespace(canonical_sha256=digest)
+    body={'binding_id':'a'*60,'source':'cps','workspace':'old','policy_hash':'sha256:'+'1'*64,
+          'profile':'interactive-native-pilot-5','intent':{'pod_uid':'original','cap_mib':5120}}
+    envelope={'configmap_uid':'original-cm','enrollment':body}
+    pin={'binding_id':body['binding_id'],'policy_hash':body['policy_hash'],'profile':body['profile'],
+         'enrollment_uid':'original-cm','enrollment_sha256':digest(body)}
+    config={'enabled':True,'authority_namespace':'pilot','version':2,'mode':'operator-qualification',
+        'policy_hash':'sha256:'+'2'*64,'pool':{'node':'gpu2','node_uid':'node','gpu_uuid':'gpu','max_workspaces':2},
+        'workspaces':{},'terminal_history':{'original':pin}}
+    old=m.enrollment_configuration(a,config,envelope)
+    assert old['version']==1 and old['policy_hash']==body['policy_hash']
+    assert old['workspaces']=={'cps:old':{'profile':'interactive-native-pilot-5'}}
+    for key,value in [('configmap_uid','replacement')]:
+        changed=copy.deepcopy(envelope);changed[key]=value
+        with pytest.raises(ValueError):m.enrollment_configuration(a,config,changed)
+    changed=copy.deepcopy(envelope);changed['enrollment']['intent']['cap_mib']=20480
+    with pytest.raises(ValueError):m.enrollment_configuration(a,config,changed)
+    changed=copy.deepcopy(config);changed['terminal_history']['original']['enrollment_sha256']='sha256:'+'3'*64
+    with pytest.raises(ValueError):m.enrollment_configuration(a,changed,envelope)
+    assert m.enrollment_configuration(a,config,{'enrollment':{'intent':{'pod_uid':'new'}}}) is config
+
+
+def test_materialized_runner_contains_measured_scope_and_history_validators():
+    import ast
+    tree=ast.parse(module().build_sources()['plain_node_agent.py'])
+    names={n.name for n in tree.body if isinstance(n,ast.FunctionDef)}
+    assert {'validate_lifecycle_scope','enrollment_configuration'} <= names

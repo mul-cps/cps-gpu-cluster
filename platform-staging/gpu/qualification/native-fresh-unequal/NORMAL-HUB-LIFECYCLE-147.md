@@ -393,3 +393,24 @@ Private evidence is under `student-independence/`: `receipt.actual.private.json`
 `all-eleven-allocations-released.actual.private.json`,
 the four `*-token-revoked.actual.private.json` receipts, and
 `node-controller.private.log`.
+
+### Measured five/twenty wrapper preparation (not hardware qualification)
+
+The node wrapper now accepts a separate operator-only V2 configuration with
+exact 5/20 GiB profiles, a 25 GiB aggregate budget, two slots and the pinned
+147 boot/driver epoch. The underlying closed configuration and measured-pool
+validators still run first. Legacy two-5-GiB configuration remains separate.
+
+Current inventory checks require each intent's cap and policy to match its
+original protected enrollment and configured workspace. Legacy terminal entries
+under a new policy require explicit original enrollment UID, payload hash,
+binding and policy pins. Fresh cleanup publication reads them using their
+original policy scope; the underlying terminal-history verifier still checks
+published completion, released ledger and protected journal proofs. No history,
+journal or receipt is deleted or synthesized by this change.
+
+Verification: 206 tests passed in the native-fresh-unequal qualification directory,
+including generated-runner packaging and rejection of altered history pins,
+profile/cap mismatches, wrong mode, epoch or budget. This is source preparation:
+the isolated gateway and node deployment have not yet been migrated to V2, and
+no automatic 5/20 GiB hardware pass is claimed.
