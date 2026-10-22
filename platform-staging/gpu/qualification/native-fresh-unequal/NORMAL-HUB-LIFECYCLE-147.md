@@ -414,3 +414,30 @@ including generated-runner packaging and rejection of altered history pins,
 profile/cap mismatches, wrong mode, epoch or budget. This is source preparation:
 the isolated gateway and node deployment have not yet been migrated to V2, and
 no automatic 5/20 GiB hardware pass is claimed.
+
+### Measured configuration and candidate gateway image
+
+A read-only live capture found all eleven lifecycle allocations released, all
+corresponding protected journals `retired-inert-cap`, and the selected GPU with
+40960 MiB total / 40471 MiB free on driver 615.71.09. A private, non-applied V2
+proposal was validated with the SDK operator qualification factory and original
+node configuration validator. It contains eleven explicit history pins and a
+5/20 GiB pair under policy
+`sha256:abb8ce7430087ca7a73e812a4d21a1a3777650b14540e226949d5c3081e18897`.
+The proposed roster/course/grants and node configuration are not yet applied.
+Fresh authenticated node-side history and physical partition checks remain
+required; local structural validation is not that proof.
+
+Gateway SDK revision `4ba8c8daa78f8c978c8ec747b1efea3574e294ac` was built into
+`ghcr.io/mul-cps/cps-compute@sha256:2701165c10ed941016ad110bf02195de41ef000cd58efc111cb569ac611889d9`.
+Wheel SHA256: `c71281d30adf51906627094987049a6240df98ceaae1da0f220aebf556c606c5`.
+Build verification found all 79 SDK modules exact, only
+`native_qualification.py` changed, and all 43 other distributions unchanged.
+Dependency checks and unprivileged runtime admission smoke passed.
+The digest was verified against the registry and deployed only to
+`cps-compute/native-lifecycle147-gateway` with resourceVersion/image preconditions.
+Rollout completed; the running module hash was
+`26b9008db5e2902a9d03b678b1f553a2f81fa4b58b7ec79c8413474cca81378f`
+and UID 10001. The runtime configuration remains the legacy five-GiB pilot.
+Neither production gateway nor production GPU access was changed. No automatic
+five/twenty hardware qualification is claimed by this image rollout.
