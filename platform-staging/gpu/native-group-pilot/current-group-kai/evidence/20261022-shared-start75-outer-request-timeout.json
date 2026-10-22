@@ -1,0 +1,29 @@
+{
+  "cleanup": {
+    "allocations_all_released": true,
+    "allocations_total": 188,
+    "binder_available": true,
+    "binder_original_spec_restored": true,
+    "token_revoked_and_reuse_403": true,
+    "workspace_stopped_and_hub_pod_absent": true
+  },
+  "cuda_isolation_results_invalidated": false,
+  "execution_fence_age_at_failure_seconds_approx": 24.4,
+  "failure": "Outer Group prepare request budget exhausted while SQL execution fence remained valid",
+  "fix_independent_review": "clear",
+  "fix_test_count": 207,
+  "next_fix_sdk_revision": "06d5c2332c2617f091cd04a0ad2f7276c06c43f0",
+  "prepare_elapsed_seconds": 77.71921,
+  "process": {
+    "automaticallyReplayed": false,
+    "elapsedSeconds": 305.56002494698623,
+    "returnCode": 1,
+    "startedAt": "2026-10-22T02:01:08.719879+00:00",
+    "transportTimeoutAmbiguous": false
+  },
+  "qualification": "normal-shared-start75",
+  "result": "failed",
+  "schema_version": 1,
+  "startup_performance_gate": "open",
+  "usable_gpu_session": false
+}

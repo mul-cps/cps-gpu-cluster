@@ -1,0 +1,24 @@
+{
+  "base_image": "ghcr.io/mul-cps/cps-compute@sha256:f3070721772a7334b5213fc978b226d9228840c8ecaa8f39ddfb65010f121daf",
+  "base_layers_preserved": 67,
+  "candidate_layers": 69,
+  "changed_runtime_modules": [
+    "cps_compute/native_scheduler_coordinator.py"
+  ],
+  "config_sha256": "sha256:8e6e9c09763f5d9a8350ba31f5640081b2a4315286a1cfc4e0185196cc945bb7",
+  "deployed": false,
+  "image": "ghcr.io/mul-cps/cps-compute@sha256:06b0968f1c36905ce562c5e657ca5d7911c0f02d1e1b1de34b4c6955767e69db",
+  "independent_review": "clear",
+  "other_operation_budgets_seconds": 60,
+  "passed": true,
+  "qualification": "prepare85-gateway-publication",
+  "request_budget_seconds": 85,
+  "runtime_config_preserved": true,
+  "runtime_user": "10001",
+  "schema_version": 1,
+  "source_revision": "06d5c2332c2617f091cd04a0ad2f7276c06c43f0",
+  "sql_execution_fence_seconds": 60,
+  "startup_performance_gate": "open",
+  "tests_passed": 207,
+  "wheel_sha256": "a056f8aedbc2501b734f60ef9e28e98535b43d687c82aa31d0c753f0a4e75efd"
+}
