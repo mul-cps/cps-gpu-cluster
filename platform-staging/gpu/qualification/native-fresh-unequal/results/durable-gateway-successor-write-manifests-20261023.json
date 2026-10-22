@@ -1,0 +1,222 @@
+{
+  "apiVersion": "v1",
+  "kind": "List",
+  "items": [
+    {
+      "apiVersion": "admissionregistration.k8s.io/v1",
+      "kind": "ValidatingAdmissionPolicy",
+      "metadata": {
+        "name": "cps-runtime-gateway-authority-create-only"
+      },
+      "spec": {
+        "failurePolicy": "Fail",
+        "matchConditions": [
+          {
+            "expression": "request.namespace == \"cps-native-runtime\" && request.userInfo.username == \"system:serviceaccount:cps-compute:cps-compute-controller\"",
+            "name": "gateway-authority-create"
+          }
+        ],
+        "matchConstraints": {
+          "matchPolicy": "Equivalent",
+          "namespaceSelector": {},
+          "objectSelector": {},
+          "resourceRules": [
+            {
+              "apiGroups": [
+                ""
+              ],
+              "apiVersions": [
+                "v1"
+              ],
+              "operations": [
+                "CREATE"
+              ],
+              "resources": [
+                "configmaps"
+              ],
+              "scope": "Namespaced"
+            }
+          ]
+        },
+        "validations": [
+          {
+            "expression": "(object.metadata.name == 'cps-native-gpu-allocations' && (!has(object.immutable) || object.immutable == false) && has(object.data) && size(object.data) == 1 && 'state.json' in object.data && object.data['state.json'] == '{\"allocations\":{},\"version\":1}') || (object.metadata.name.matches('^cps-native-enrollment-[a-f0-9]{40}$') && has(object.immutable) && object.immutable == true && has(object.data) && size(object.data) == 1 && has(object.metadata.labels) && size(object.metadata.labels) == 1 && 'cps.compute/native-binding' in object.metadata.labels && object.metadata.labels['cps.compute/native-binding'].matches('^[a-f0-9]{60}$') && ('cps-native-enrollment-' + object.metadata.labels['cps.compute/native-binding']).startsWith(object.metadata.name) && ('enrollment.json' in object.data || ('abort-barrier.json' in object.data && size(object.data['abort-barrier.json']) <= 65536 && object.data['abort-barrier.json'].matches(\"^\\\\{\\\"claim\\\":\\\\{[^\\\\r\\\\n]*\\\\},\\\"claim_sha256\\\":\\\"sha256:[a-f0-9]{64}\\\",\\\"kind\\\":\\\"enrollment-abort-barrier\\\",\\\"version\\\":2\\\\}$\") && object.data['abort-barrier.json'].contains('\"binding_id\":\"' + object.metadata.labels['cps.compute/native-binding'] + '\",')))) || (((object.metadata.name.matches(\"^cps-pending-registry-[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}$\") && has(object.immutable) && object.immutable == true && has(object.data) && size(object.data) == 1 && \"registry.json\" in object.data && size(object.data[\"registry.json\"]) <= 65536 && object.data[\"registry.json\"].matches(\"^\\\\{\\\"approval_ref\\\":\\\\{\\\"data_sha256\\\":\\\"sha256:[a-f0-9]{64}\\\",\\\"name\\\":\\\"[a-z0-9](?:[a-z0-9.-]{0,251}[a-z0-9])?\\\",\\\"namespace\\\":\\\"[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?\\\",\\\"policy_hash\\\":\\\"sha256:[a-f0-9]{64}\\\",\\\"revision\\\":\\\"sha256:[a-f0-9]{64}\\\",\\\"uid\\\":\\\"[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}\\\"\\\\},\\\"attempt\\\":\\\"[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}\\\",\\\"binding_id\\\":\\\"[a-f0-9]{60}\\\",\\\"bound_spec_sha256\\\":\\\"[a-f0-9]{64}\\\",\\\"capabilities_configmap\\\":\\\"cps-native-[a-f0-9]{32}-shared-gpu-0\\\",\\\"container_index\\\":0,\\\"container_name\\\":\\\"notebook\\\",\\\"env_configmap\\\":\\\"cps-native-[a-f0-9]{32}-shared-gpu-0-evar\\\",\\\"epoch\\\":\\\\{\\\"boot_id\\\":\\\"[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}\\\",\\\"driver_generation\\\":\\\"[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}\\\",\\\"gpu_uuid\\\":\\\"GPU-[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}\\\",\\\"node_uid\\\":\\\"[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}\\\"\\\\},\\\"gpu_uuid\\\":\\\"GPU-[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}\\\",\\\"kai_commit\\\":\\\"bdf434e5e9201cccf4e05fad04d814363653f692\\\",\\\"kind\\\":\\\"protected\\\\-pending\\\\-registry\\\",\\\"name\\\":\\\"[a-z0-9](?:[a-z0-9.-]{0,251}[a-z0-9])?\\\",\\\"namespace\\\":\\\"[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?\\\",\\\"node\\\":\\\"[a-z0-9](?:[a-z0-9.-]{0,251}[a-z0-9])?\\\",\\\"node_configuration_ref\\\":\\\\{\\\"data_sha256\\\":\\\"sha256:[a-f0-9]{64}\\\",\\\"key\\\":\\\"config\\\\.json\\\",\\\"name\\\":\\\"[a-z0-9](?:[a-z0-9.-]{0,251}[a-z0-9])?\\\",\\\"namespace\\\":\\\"[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?\\\",\\\"resourceVersion\\\":\\\"[1-9][0-9]*\\\",\\\"uid\\\":\\\"[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}\\\"\\\\},\\\"node_uid\\\":\\\"[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}\\\",\\\"pending_spec_sha256\\\":\\\"[a-f0-9]{64}\\\",\\\"pod_uid\\\":\\\"\" + object.metadata.name.substring(21) + \"\\\",\\\"policy_hash\\\":\\\"sha256:[a-f0-9]{64}\\\",\\\"profile\\\":\\\"[a-z0-9](?:[a-z0-9.-]{0,251}[a-z0-9])?\\\",\\\"protocol\\\":\\\"cps\\\\-native\\\\-pending\\\\-allocation/v2\\\"\\\\}$\")) || (object.metadata.name.matches(\"^cps-pending-allocation-[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}$\") && has(object.immutable) && object.immutable == true && has(object.data) && size(object.data) == 1 && \"allocation.json\" in object.data && size(object.data[\"allocation.json\"]) <= 65536 && object.data[\"allocation.json\"].matches(\"^\\\\{\\\"approval_ref\\\":\\\\{\\\"data_sha256\\\":\\\"sha256:[a-f0-9]{64}\\\",\\\"name\\\":\\\"[a-z0-9](?:[a-z0-9.-]{0,251}[a-z0-9])?\\\",\\\"namespace\\\":\\\"[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?\\\",\\\"policy_hash\\\":\\\"sha256:[a-f0-9]{64}\\\",\\\"revision\\\":\\\"sha256:[a-f0-9]{64}\\\",\\\"uid\\\":\\\"[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}\\\"\\\\},\\\"attempt\\\":\\\"[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}\\\",\\\"bind_request\\\":\\\\{\\\"generation\\\":[1-9][0-9]*,\\\"name\\\":\\\"[a-z0-9](?:[a-z0-9.-]{0,251}[a-z0-9])?\\\",\\\"namespace\\\":\\\"[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?\\\",\\\"resourceVersion\\\":\\\"[1-9][0-9]*\\\",\\\"spec_sha256\\\":\\\"[a-f0-9]{64}\\\",\\\"uid\\\":\\\"[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}\\\"\\\\},\\\"capacity\\\":\\\\[(?:\\\\{\\\"cap_mib\\\":(?:5120|10240),\\\"pod_uid\\\":\\\"\" + object.metadata.name.substring(23) + \"\\\"\\\\}|\\\\{\\\"cap_mib\\\":5120,\\\"pod_uid\\\":\\\"\" + object.metadata.name.substring(23) + \"\\\"\\\\},\\\\{\\\"cap_mib\\\":(?:5120|10240),\\\"pod_uid\\\":\\\"[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}\\\"\\\\}|\\\\{\\\"cap_mib\\\":10240,\\\"pod_uid\\\":\\\"\" + object.metadata.name.substring(23) + \"\\\"\\\\},\\\\{\\\"cap_mib\\\":5120,\\\"pod_uid\\\":\\\"[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}\\\"\\\\}|\\\\{\\\"cap_mib\\\":(?:5120|10240),\\\"pod_uid\\\":\\\"[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}\\\"\\\\},\\\\{\\\"cap_mib\\\":5120,\\\"pod_uid\\\":\\\"\" + object.metadata.name.substring(23) + \"\\\"\\\\}|\\\\{\\\"cap_mib\\\":5120,\\\"pod_uid\\\":\\\"[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}\\\"\\\\},\\\\{\\\"cap_mib\\\":10240,\\\"pod_uid\\\":\\\"\" + object.metadata.name.substring(23) + \"\\\"\\\\})\\\\],\\\"enrollment\\\":\\\\{\\\"document_sha256\\\":\\\"[a-f0-9]{64}\\\",\\\"name\\\":\\\"cps-native-enrollment-[a-f0-9]{40}\\\",\\\"namespace\\\":\\\"[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?\\\",\\\"resourceVersion\\\":\\\"[1-9][0-9]*\\\",\\\"uid\\\":\\\"[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}\\\"\\\\},\\\"epoch\\\":\\\\{\\\"boot_id\\\":\\\"[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}\\\",\\\"driver_generation\\\":\\\"[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}\\\",\\\"gpu_uuid\\\":\\\"GPU-[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}\\\",\\\"node_uid\\\":\\\"[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}\\\"\\\\},\\\"intent\\\":\\\\{\\\"cap_mib\\\":(?:5120|10240),\\\"gpu_uuid\\\":\\\"GPU-[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}\\\",\\\"name\\\":\\\"[a-z0-9](?:[a-z0-9.-]{0,251}[a-z0-9])?\\\",\\\"namespace\\\":\\\"[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?\\\",\\\"node\\\":\\\"[a-z0-9](?:[a-z0-9.-]{0,251}[a-z0-9])?\\\",\\\"node_uid\\\":\\\"[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}\\\",\\\"pod_uid\\\":\\\"\" + object.metadata.name.substring(23) + \"\\\",\\\"policy_hash\\\":\\\"sha256:[a-f0-9]{64}\\\",\\\"spec_sha256\\\":\\\"[a-f0-9]{64}\\\"\\\\},\\\"kai_commit\\\":\\\"bdf434e5e9201cccf4e05fad04d814363653f692\\\",\\\"maps\\\":\\\\[\\\\{\\\"data_sha256\\\":\\\"[a-f0-9]{64}\\\",\\\"name\\\":\\\"cps-native-[a-f0-9]{32}-shared-gpu-0\\\",\\\"namespace\\\":\\\"[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?\\\",\\\"owner\\\":\\\\{\\\"apiVersion\\\":\\\"v1\\\",\\\"kind\\\":\\\"Pod\\\",\\\"name\\\":\\\"[a-z0-9](?:[a-z0-9.-]{0,251}[a-z0-9])?\\\",\\\"uid\\\":\\\"\" + object.metadata.name.substring(23) + \"\\\"\\\\},\\\"resourceVersion\\\":\\\"[1-9][0-9]*\\\",\\\"uid\\\":\\\"[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}\\\"\\\\},\\\\{\\\"data_sha256\\\":\\\"[a-f0-9]{64}\\\",\\\"name\\\":\\\"cps-native-[a-f0-9]{32}-shared-gpu-0-evar\\\",\\\"namespace\\\":\\\"[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?\\\",\\\"owner\\\":\\\\{\\\"apiVersion\\\":\\\"v1\\\",\\\"kind\\\":\\\"Pod\\\",\\\"name\\\":\\\"[a-z0-9](?:[a-z0-9.-]{0,251}[a-z0-9])?\\\",\\\"uid\\\":\\\"\" + object.metadata.name.substring(23) + \"\\\"\\\\},\\\"resourceVersion\\\":\\\"[1-9][0-9]*\\\",\\\"uid\\\":\\\"[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}\\\"\\\\}\\\\],\\\"max_workspaces\\\":2,\\\"memory_budget_mib\\\":15360,\\\"node\\\":\\\\{\\\"name\\\":\\\"[a-z0-9](?:[a-z0-9.-]{0,251}[a-z0-9])?\\\",\\\"resourceVersion\\\":\\\"[1-9][0-9]*\\\",\\\"uid\\\":\\\"[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}\\\"\\\\},\\\"node_configuration_ref\\\":\\\\{\\\"data_sha256\\\":\\\"sha256:[a-f0-9]{64}\\\",\\\"key\\\":\\\"config\\\\.json\\\",\\\"name\\\":\\\"[a-z0-9](?:[a-z0-9.-]{0,251}[a-z0-9])?\\\",\\\"namespace\\\":\\\"[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?\\\",\\\"resourceVersion\\\":\\\"[1-9][0-9]*\\\",\\\"uid\\\":\\\"[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}\\\"\\\\},\\\"pending_spec_sha256\\\":\\\"[a-f0-9]{64}\\\",\\\"pod\\\":\\\\{\\\"metadata_sha256\\\":\\\"[a-f0-9]{64}\\\",\\\"name\\\":\\\"[a-z0-9](?:[a-z0-9.-]{0,251}[a-z0-9])?\\\",\\\"namespace\\\":\\\"[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?\\\",\\\"resourceVersion\\\":\\\"[1-9][0-9]*\\\",\\\"uid\\\":\\\"\" + object.metadata.name.substring(23) + \"\\\"\\\\},\\\"profile\\\":\\\"[a-z0-9](?:[a-z0-9.-]{0,251}[a-z0-9])?\\\",\\\"protocol\\\":\\\"cps\\\\-native\\\\-pending\\\\-allocation/v2\\\",\\\"registry\\\":\\\\{\\\"document_sha256\\\":\\\"[a-f0-9]{64}\\\",\\\"name\\\":\\\"cps-pending-registry-\" + object.metadata.name.substring(23) + \"\\\",\\\"namespace\\\":\\\"[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?\\\",\\\"resourceVersion\\\":\\\"[1-9][0-9]*\\\",\\\"uid\\\":\\\"[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}\\\"\\\\},\\\"state\\\":\\\"allocation\\\\-enrolled\\\\-before\\\\-bind\\\"\\\\}$\")) || (object.metadata.name.matches(\"^cps-pending-compiler-[a-f0-9]{40}$\") && has(object.immutable) && object.immutable == true && has(object.data) && size(object.data) == 1 && \"seed.json\" in object.data && size(object.data[\"seed.json\"]) <= 1048576 && (object.data[\"seed.json\"].matches(\"^\\\\{\\\"actor\\\":\\\"cps\\\",\\\"admitted\\\":\\\\{[^\\\\r\\\\n]+\\\\},\\\"attempt\\\":\\\"[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}\\\",\\\"binding_id\\\":\\\"\" + object.metadata.name.substring(21) + \"[a-f0-9]{20}\\\",\\\"source\\\":\\\"cps\\\",\\\"source_pod\\\":\\\\{[^\\\\r\\\\n]+\\\\}\\\\}$\") || object.data[\"seed.json\"].matches(\"^\\\\{\\\"actor\\\":\\\"cit\\\",\\\"admitted\\\":\\\\{[^\\\\r\\\\n]+\\\\},\\\"attempt\\\":\\\"[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}\\\",\\\"binding_id\\\":\\\"\" + object.metadata.name.substring(21) + \"[a-f0-9]{20}\\\",\\\"source\\\":\\\"cit\\\",\\\"source_pod\\\":\\\\{[^\\\\r\\\\n]+\\\\}\\\\}$\")))) && !has(object.binaryData) && (!has(object.metadata.labels) || size(object.metadata.labels) == 0) && (!has(object.metadata.annotations) || size(object.metadata.annotations) == 0) && (!has(object.metadata.ownerReferences) || size(object.metadata.ownerReferences) == 0) && (!has(object.metadata.finalizers) || size(object.metadata.finalizers) == 0) && (!has(object.metadata.generateName) || size(object.metadata.generateName) == 0) && !has(object.metadata.deletionTimestamp) && !has(object.metadata.deletionGracePeriodSeconds))",
+            "message": "The gateway may create only an empty native ledger or one immutable enrollment/terminal v2 abort-barrier slot. Explicit current-group mode also permits immutable v2 pending records and bounded compiler seeds."
+          },
+          {
+            "expression": "!has(object.binaryData)",
+            "message": "Authority records must use text data."
+          },
+          {
+            "expression": "!has(object.metadata.ownerReferences) || size(object.metadata.ownerReferences) == 0",
+            "message": "Native authority records cannot have garbage-collection owners."
+          }
+        ]
+      }
+    },
+    {
+      "apiVersion": "admissionregistration.k8s.io/v1",
+      "kind": "ValidatingAdmissionPolicyBinding",
+      "metadata": {
+        "name": "cps-runtime-gateway-authority-create-only"
+      },
+      "spec": {
+        "policyName": "cps-runtime-gateway-authority-create-only",
+        "validationActions": [
+          "Deny"
+        ]
+      }
+    },
+    {
+      "apiVersion": "rbac.authorization.k8s.io/v1",
+      "kind": "Role",
+      "metadata": {
+        "name": "cps-runtime-gateway-authority",
+        "namespace": "cps-native-runtime"
+      },
+      "rules": [
+        {
+          "apiGroups": [
+            ""
+          ],
+          "resources": [
+            "configmaps"
+          ],
+          "verbs": [
+            "create"
+          ]
+        },
+        {
+          "apiGroups": [
+            ""
+          ],
+          "resources": [
+            "configmaps"
+          ],
+          "verbs": [
+            "patch"
+          ],
+          "resourceNames": [
+            "cps-native-gpu-allocations"
+          ]
+        }
+      ]
+    },
+    {
+      "apiVersion": "rbac.authorization.k8s.io/v1",
+      "kind": "RoleBinding",
+      "metadata": {
+        "name": "cps-runtime-gateway-authority",
+        "namespace": "cps-native-runtime"
+      },
+      "subjects": [
+        {
+          "kind": "ServiceAccount",
+          "namespace": "cps-compute",
+          "name": "cps-compute-controller"
+        }
+      ],
+      "roleRef": {
+        "apiGroup": "rbac.authorization.k8s.io",
+        "kind": "Role",
+        "name": "cps-runtime-gateway-authority"
+      }
+    },
+    {
+      "apiVersion": "rbac.authorization.k8s.io/v1",
+      "kind": "Role",
+      "metadata": {
+        "name": "cps-runtime-gateway-own-ack",
+        "namespace": "cps-compute"
+      },
+      "rules": [
+        {
+          "apiGroups": [
+            ""
+          ],
+          "resources": [
+            "configmaps"
+          ],
+          "verbs": [
+            "patch"
+          ],
+          "resourceNames": [
+            "cps-runtime-ack-gateway"
+          ]
+        }
+      ]
+    },
+    {
+      "apiVersion": "rbac.authorization.k8s.io/v1",
+      "kind": "RoleBinding",
+      "metadata": {
+        "name": "cps-runtime-gateway-own-ack",
+        "namespace": "cps-compute"
+      },
+      "subjects": [
+        {
+          "kind": "ServiceAccount",
+          "namespace": "cps-compute",
+          "name": "cps-compute-controller"
+        }
+      ],
+      "roleRef": {
+        "apiGroup": "rbac.authorization.k8s.io",
+        "kind": "Role",
+        "name": "cps-runtime-gateway-own-ack"
+      }
+    },
+    {
+      "apiVersion": "admissionregistration.k8s.io/v1",
+      "kind": "ValidatingAdmissionPolicy",
+      "metadata": {
+        "name": "cps-native-gateway-pending-current-groups"
+      },
+      "spec": {
+        "failurePolicy": "Fail",
+        "matchConditions": [
+          {
+            "expression": "object.metadata.name.startsWith('cps-pending-registry-') || object.metadata.name.startsWith('cps-pending-allocation-') || object.metadata.name.startsWith('cps-pending-compiler-')",
+            "name": "pending-name"
+          }
+        ],
+        "matchConstraints": {
+          "matchPolicy": "Equivalent",
+          "namespaceSelector": {},
+          "objectSelector": {},
+          "resourceRules": [
+            {
+              "apiGroups": [
+                ""
+              ],
+              "apiVersions": [
+                "v1"
+              ],
+              "operations": [
+                "CREATE"
+              ],
+              "resources": [
+                "configmaps"
+              ],
+              "scope": "Namespaced"
+            }
+          ]
+        },
+        "validations": [
+          {
+            "expression": "request.userInfo.username == \"system:serviceaccount:cps-compute:cps-compute-controller\"",
+            "message": "Only the native Gateway may publish current-group pending records."
+          },
+          {
+            "expression": "request.namespace in [\"cps-native-system\", \"cps-native-runtime\"] && object.metadata.namespace == request.namespace",
+            "message": "Pending records stay in the configured authority namespace."
+          },
+          {
+            "expression": "((object.metadata.name.matches(\"^cps-pending-registry-[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}$\") && has(object.immutable) && object.immutable == true && has(object.data) && size(object.data) == 1 && \"registry.json\" in object.data && size(object.data[\"registry.json\"]) <= 65536 && object.data[\"registry.json\"].matches(\"^\\\\{\\\"approval_ref\\\":\\\\{\\\"data_sha256\\\":\\\"sha256:[a-f0-9]{64}\\\",\\\"name\\\":\\\"[a-z0-9](?:[a-z0-9.-]{0,251}[a-z0-9])?\\\",\\\"namespace\\\":\\\"[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?\\\",\\\"policy_hash\\\":\\\"sha256:[a-f0-9]{64}\\\",\\\"revision\\\":\\\"sha256:[a-f0-9]{64}\\\",\\\"uid\\\":\\\"[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}\\\"\\\\},\\\"attempt\\\":\\\"[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}\\\",\\\"binding_id\\\":\\\"[a-f0-9]{60}\\\",\\\"bound_spec_sha256\\\":\\\"[a-f0-9]{64}\\\",\\\"capabilities_configmap\\\":\\\"cps-native-[a-f0-9]{32}-shared-gpu-0\\\",\\\"container_index\\\":0,\\\"container_name\\\":\\\"notebook\\\",\\\"env_configmap\\\":\\\"cps-native-[a-f0-9]{32}-shared-gpu-0-evar\\\",\\\"epoch\\\":\\\\{\\\"boot_id\\\":\\\"[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}\\\",\\\"driver_generation\\\":\\\"[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}\\\",\\\"gpu_uuid\\\":\\\"GPU-[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}\\\",\\\"node_uid\\\":\\\"[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}\\\"\\\\},\\\"gpu_uuid\\\":\\\"GPU-[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}\\\",\\\"kai_commit\\\":\\\"bdf434e5e9201cccf4e05fad04d814363653f692\\\",\\\"kind\\\":\\\"protected\\\\-pending\\\\-registry\\\",\\\"name\\\":\\\"[a-z0-9](?:[a-z0-9.-]{0,251}[a-z0-9])?\\\",\\\"namespace\\\":\\\"[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?\\\",\\\"node\\\":\\\"[a-z0-9](?:[a-z0-9.-]{0,251}[a-z0-9])?\\\",\\\"node_configuration_ref\\\":\\\\{\\\"data_sha256\\\":\\\"sha256:[a-f0-9]{64}\\\",\\\"key\\\":\\\"config\\\\.json\\\",\\\"name\\\":\\\"[a-z0-9](?:[a-z0-9.-]{0,251}[a-z0-9])?\\\",\\\"namespace\\\":\\\"[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?\\\",\\\"resourceVersion\\\":\\\"[1-9][0-9]*\\\",\\\"uid\\\":\\\"[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}\\\"\\\\},\\\"node_uid\\\":\\\"[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}\\\",\\\"pending_spec_sha256\\\":\\\"[a-f0-9]{64}\\\",\\\"pod_uid\\\":\\\"\" + object.metadata.name.substring(21) + \"\\\",\\\"policy_hash\\\":\\\"sha256:[a-f0-9]{64}\\\",\\\"profile\\\":\\\"[a-z0-9](?:[a-z0-9.-]{0,251}[a-z0-9])?\\\",\\\"protocol\\\":\\\"cps\\\\-native\\\\-pending\\\\-allocation/v2\\\"\\\\}$\")) || (object.metadata.name.matches(\"^cps-pending-allocation-[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}$\") && has(object.immutable) && object.immutable == true && has(object.data) && size(object.data) == 1 && \"allocation.json\" in object.data && size(object.data[\"allocation.json\"]) <= 65536 && object.data[\"allocation.json\"].matches(\"^\\\\{\\\"approval_ref\\\":\\\\{\\\"data_sha256\\\":\\\"sha256:[a-f0-9]{64}\\\",\\\"name\\\":\\\"[a-z0-9](?:[a-z0-9.-]{0,251}[a-z0-9])?\\\",\\\"namespace\\\":\\\"[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?\\\",\\\"policy_hash\\\":\\\"sha256:[a-f0-9]{64}\\\",\\\"revision\\\":\\\"sha256:[a-f0-9]{64}\\\",\\\"uid\\\":\\\"[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}\\\"\\\\},\\\"attempt\\\":\\\"[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}\\\",\\\"bind_request\\\":\\\\{\\\"generation\\\":[1-9][0-9]*,\\\"name\\\":\\\"[a-z0-9](?:[a-z0-9.-]{0,251}[a-z0-9])?\\\",\\\"namespace\\\":\\\"[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?\\\",\\\"resourceVersion\\\":\\\"[1-9][0-9]*\\\",\\\"spec_sha256\\\":\\\"[a-f0-9]{64}\\\",\\\"uid\\\":\\\"[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}\\\"\\\\},\\\"capacity\\\":\\\\[(?:\\\\{\\\"cap_mib\\\":(?:5120|10240),\\\"pod_uid\\\":\\\"\" + object.metadata.name.substring(23) + \"\\\"\\\\}|\\\\{\\\"cap_mib\\\":5120,\\\"pod_uid\\\":\\\"\" + object.metadata.name.substring(23) + \"\\\"\\\\},\\\\{\\\"cap_mib\\\":(?:5120|10240),\\\"pod_uid\\\":\\\"[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}\\\"\\\\}|\\\\{\\\"cap_mib\\\":10240,\\\"pod_uid\\\":\\\"\" + object.metadata.name.substring(23) + \"\\\"\\\\},\\\\{\\\"cap_mib\\\":5120,\\\"pod_uid\\\":\\\"[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}\\\"\\\\}|\\\\{\\\"cap_mib\\\":(?:5120|10240),\\\"pod_uid\\\":\\\"[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}\\\"\\\\},\\\\{\\\"cap_mib\\\":5120,\\\"pod_uid\\\":\\\"\" + object.metadata.name.substring(23) + \"\\\"\\\\}|\\\\{\\\"cap_mib\\\":5120,\\\"pod_uid\\\":\\\"[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}\\\"\\\\},\\\\{\\\"cap_mib\\\":10240,\\\"pod_uid\\\":\\\"\" + object.metadata.name.substring(23) + \"\\\"\\\\})\\\\],\\\"enrollment\\\":\\\\{\\\"document_sha256\\\":\\\"[a-f0-9]{64}\\\",\\\"name\\\":\\\"cps-native-enrollment-[a-f0-9]{40}\\\",\\\"namespace\\\":\\\"[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?\\\",\\\"resourceVersion\\\":\\\"[1-9][0-9]*\\\",\\\"uid\\\":\\\"[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}\\\"\\\\},\\\"epoch\\\":\\\\{\\\"boot_id\\\":\\\"[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}\\\",\\\"driver_generation\\\":\\\"[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}\\\",\\\"gpu_uuid\\\":\\\"GPU-[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}\\\",\\\"node_uid\\\":\\\"[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}\\\"\\\\},\\\"intent\\\":\\\\{\\\"cap_mib\\\":(?:5120|10240),\\\"gpu_uuid\\\":\\\"GPU-[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}\\\",\\\"name\\\":\\\"[a-z0-9](?:[a-z0-9.-]{0,251}[a-z0-9])?\\\",\\\"namespace\\\":\\\"[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?\\\",\\\"node\\\":\\\"[a-z0-9](?:[a-z0-9.-]{0,251}[a-z0-9])?\\\",\\\"node_uid\\\":\\\"[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}\\\",\\\"pod_uid\\\":\\\"\" + object.metadata.name.substring(23) + \"\\\",\\\"policy_hash\\\":\\\"sha256:[a-f0-9]{64}\\\",\\\"spec_sha256\\\":\\\"[a-f0-9]{64}\\\"\\\\},\\\"kai_commit\\\":\\\"bdf434e5e9201cccf4e05fad04d814363653f692\\\",\\\"maps\\\":\\\\[\\\\{\\\"data_sha256\\\":\\\"[a-f0-9]{64}\\\",\\\"name\\\":\\\"cps-native-[a-f0-9]{32}-shared-gpu-0\\\",\\\"namespace\\\":\\\"[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?\\\",\\\"owner\\\":\\\\{\\\"apiVersion\\\":\\\"v1\\\",\\\"kind\\\":\\\"Pod\\\",\\\"name\\\":\\\"[a-z0-9](?:[a-z0-9.-]{0,251}[a-z0-9])?\\\",\\\"uid\\\":\\\"\" + object.metadata.name.substring(23) + \"\\\"\\\\},\\\"resourceVersion\\\":\\\"[1-9][0-9]*\\\",\\\"uid\\\":\\\"[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}\\\"\\\\},\\\\{\\\"data_sha256\\\":\\\"[a-f0-9]{64}\\\",\\\"name\\\":\\\"cps-native-[a-f0-9]{32}-shared-gpu-0-evar\\\",\\\"namespace\\\":\\\"[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?\\\",\\\"owner\\\":\\\\{\\\"apiVersion\\\":\\\"v1\\\",\\\"kind\\\":\\\"Pod\\\",\\\"name\\\":\\\"[a-z0-9](?:[a-z0-9.-]{0,251}[a-z0-9])?\\\",\\\"uid\\\":\\\"\" + object.metadata.name.substring(23) + \"\\\"\\\\},\\\"resourceVersion\\\":\\\"[1-9][0-9]*\\\",\\\"uid\\\":\\\"[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}\\\"\\\\}\\\\],\\\"max_workspaces\\\":2,\\\"memory_budget_mib\\\":15360,\\\"node\\\":\\\\{\\\"name\\\":\\\"[a-z0-9](?:[a-z0-9.-]{0,251}[a-z0-9])?\\\",\\\"resourceVersion\\\":\\\"[1-9][0-9]*\\\",\\\"uid\\\":\\\"[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}\\\"\\\\},\\\"node_configuration_ref\\\":\\\\{\\\"data_sha256\\\":\\\"sha256:[a-f0-9]{64}\\\",\\\"key\\\":\\\"config\\\\.json\\\",\\\"name\\\":\\\"[a-z0-9](?:[a-z0-9.-]{0,251}[a-z0-9])?\\\",\\\"namespace\\\":\\\"[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?\\\",\\\"resourceVersion\\\":\\\"[1-9][0-9]*\\\",\\\"uid\\\":\\\"[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}\\\"\\\\},\\\"pending_spec_sha256\\\":\\\"[a-f0-9]{64}\\\",\\\"pod\\\":\\\\{\\\"metadata_sha256\\\":\\\"[a-f0-9]{64}\\\",\\\"name\\\":\\\"[a-z0-9](?:[a-z0-9.-]{0,251}[a-z0-9])?\\\",\\\"namespace\\\":\\\"[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?\\\",\\\"resourceVersion\\\":\\\"[1-9][0-9]*\\\",\\\"uid\\\":\\\"\" + object.metadata.name.substring(23) + \"\\\"\\\\},\\\"profile\\\":\\\"[a-z0-9](?:[a-z0-9.-]{0,251}[a-z0-9])?\\\",\\\"protocol\\\":\\\"cps\\\\-native\\\\-pending\\\\-allocation/v2\\\",\\\"registry\\\":\\\\{\\\"document_sha256\\\":\\\"[a-f0-9]{64}\\\",\\\"name\\\":\\\"cps-pending-registry-\" + object.metadata.name.substring(23) + \"\\\",\\\"namespace\\\":\\\"[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?\\\",\\\"resourceVersion\\\":\\\"[1-9][0-9]*\\\",\\\"uid\\\":\\\"[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}\\\"\\\\},\\\"state\\\":\\\"allocation\\\\-enrolled\\\\-before\\\\-bind\\\"\\\\}$\")) || (object.metadata.name.matches(\"^cps-pending-compiler-[a-f0-9]{40}$\") && has(object.immutable) && object.immutable == true && has(object.data) && size(object.data) == 1 && \"seed.json\" in object.data && size(object.data[\"seed.json\"]) <= 1048576 && (object.data[\"seed.json\"].matches(\"^\\\\{\\\"actor\\\":\\\"cps\\\",\\\"admitted\\\":\\\\{[^\\\\r\\\\n]+\\\\},\\\"attempt\\\":\\\"[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}\\\",\\\"binding_id\\\":\\\"\" + object.metadata.name.substring(21) + \"[a-f0-9]{20}\\\",\\\"source\\\":\\\"cps\\\",\\\"source_pod\\\":\\\\{[^\\\\r\\\\n]+\\\\}\\\\}$\") || object.data[\"seed.json\"].matches(\"^\\\\{\\\"actor\\\":\\\"cit\\\",\\\"admitted\\\":\\\\{[^\\\\r\\\\n]+\\\\},\\\"attempt\\\":\\\"[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}\\\",\\\"binding_id\\\":\\\"\" + object.metadata.name.substring(21) + \"[a-f0-9]{20}\\\",\\\"source\\\":\\\"cit\\\",\\\"source_pod\\\":\\\\{[^\\\\r\\\\n]+\\\\}\\\\}$\")))) && !has(object.binaryData) && (!has(object.metadata.labels) || size(object.metadata.labels) == 0) && (!has(object.metadata.annotations) || size(object.metadata.annotations) == 0) && (!has(object.metadata.ownerReferences) || size(object.metadata.ownerReferences) == 0) && (!has(object.metadata.finalizers) || size(object.metadata.finalizers) == 0) && (!has(object.metadata.generateName) || size(object.metadata.generateName) == 0) && !has(object.metadata.deletionTimestamp) && !has(object.metadata.deletionGracePeriodSeconds)",
+            "message": "One exact immutable ownerless canonical v2 pending record is required."
+          }
+        ]
+      }
+    }
+  ]
+}

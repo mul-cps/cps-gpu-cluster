@@ -1,0 +1,186 @@
+{
+  "version": 1,
+  "cases": [
+    {
+      "attributes": {
+        "namespace": "cps-compute",
+        "verb": "get",
+        "resource": "configmaps",
+        "group": "",
+        "name": "cps-runtime-ack-gateway"
+      },
+      "allowed": true
+    },
+    {
+      "attributes": {
+        "namespace": "cps-compute",
+        "verb": "get",
+        "resource": "deployments",
+        "group": "apps",
+        "name": "compute-gateway"
+      },
+      "allowed": true
+    },
+    {
+      "attributes": {
+        "namespace": "cps-compute",
+        "verb": "get",
+        "resource": "serviceaccounts",
+        "group": "",
+        "name": "cps-compute-controller"
+      },
+      "allowed": true
+    },
+    {
+      "attributes": {
+        "namespace": "cit-jhub",
+        "verb": "get",
+        "resource": "configmaps",
+        "group": "",
+        "name": "cps-runtime-ack-hub-cit"
+      },
+      "allowed": true
+    },
+    {
+      "attributes": {
+        "namespace": "cit-jhub",
+        "verb": "get",
+        "resource": "deployments",
+        "group": "apps",
+        "name": "hub"
+      },
+      "allowed": true
+    },
+    {
+      "attributes": {
+        "namespace": "cit-jhub",
+        "verb": "get",
+        "resource": "serviceaccounts",
+        "group": "",
+        "name": "hub"
+      },
+      "allowed": true
+    },
+    {
+      "attributes": {
+        "namespace": "jupyterhub",
+        "verb": "get",
+        "resource": "configmaps",
+        "group": "",
+        "name": "cps-runtime-ack-hub-cps"
+      },
+      "allowed": true
+    },
+    {
+      "attributes": {
+        "namespace": "jupyterhub",
+        "verb": "get",
+        "resource": "deployments",
+        "group": "apps",
+        "name": "hub"
+      },
+      "allowed": true
+    },
+    {
+      "attributes": {
+        "namespace": "jupyterhub",
+        "verb": "get",
+        "resource": "serviceaccounts",
+        "group": "",
+        "name": "hub"
+      },
+      "allowed": true
+    },
+    {
+      "attributes": {
+        "namespace": "cps-native-runtime",
+        "verb": "get",
+        "resource": "configmaps",
+        "group": "",
+        "name": "cps-runtime-ack-node"
+      },
+      "allowed": true
+    },
+    {
+      "attributes": {
+        "namespace": "cps-native-runtime",
+        "verb": "get",
+        "resource": "deployments",
+        "group": "apps",
+        "name": "cps-native-node-agent"
+      },
+      "allowed": true
+    },
+    {
+      "attributes": {
+        "namespace": "cps-native-runtime",
+        "verb": "get",
+        "resource": "serviceaccounts",
+        "group": "",
+        "name": "cps-native-node-agent"
+      },
+      "allowed": true
+    },
+    {
+      "attributes": {
+        "namespace": "cps-native-runtime",
+        "verb": "create",
+        "resource": "configmaps",
+        "group": ""
+      },
+      "allowed": false
+    },
+    {
+      "attributes": {
+        "namespace": "cps-native-runtime",
+        "verb": "patch",
+        "resource": "configmaps",
+        "group": "",
+        "name": "cps-native-gpu-allocations"
+      },
+      "allowed": false
+    },
+    {
+      "attributes": {
+        "namespace": "cps-native-runtime",
+        "verb": "patch",
+        "resource": "configmaps",
+        "group": "",
+        "name": "cps-runtime-ack-node"
+      },
+      "allowed": false
+    },
+    {
+      "attributes": {
+        "namespace": "cps-native-runtime",
+        "verb": "get",
+        "resource": "secrets",
+        "group": "",
+        "name": "arbitrary"
+      },
+      "allowed": false
+    },
+    {
+      "attributes": {
+        "namespace": "cps-native-runtime",
+        "verb": "create",
+        "resource": "pods",
+        "group": ""
+      },
+      "allowed": false
+    },
+    {
+      "attributes": {
+        "namespace": "cps-native-runtime",
+        "verb": "delete",
+        "resource": "pods",
+        "group": "",
+        "name": "arbitrary"
+      },
+      "allowed": false
+    }
+  ],
+  "all_expected_results_passed": true,
+  "write_permissions_added": false,
+  "runtime_candidate_activated": false
+}

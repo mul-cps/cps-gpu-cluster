@@ -978,3 +978,31 @@ explicit registry scoping. SDK validation passed, and all unrelated runtime
 settings are unchanged. It is not deployed: capture/publisher/KAI configuration,
 consumer permissions and Hub adoption still need coordinated updates.
 Evidence: `results/durable-successor-scoped-node-readiness-20261023.json`.
+
+### Gateway durable-authority configuration adopted
+
+The coordinated Gateway/capture/publisher/KAI configuration is deployed with
+explicit authority-scoped registry selection and current driver epoch. All
+unrelated runtime settings and the capture credential were preserved. New KAI
+custody uses a separate private directory; old custody was retained. Initial
+current-head approvals and the coordinator startup PVC allowlist are empty.
+
+Read-only roles passed 18 explicit-identity SubjectAccessReviews before write
+grants. Successor CREATE admission retains the reviewed old wire constraints;
+the existing global pending-record policy extends only its namespace check to
+include the successor. The original writer identity, canonical schemas, fixed
+caps and metadata restrictions remain unchanged. Gateway writes are limited by
+RBAC to ConfigMap CREATE, its authority ledger PATCH and its own ACK PATCH.
+Nine direct-SA server dry-runs passed, including rejection of arbitrary, mutable,
+extra-key, owned and malformed records; no fixture was persisted. Wrong-namespace
+CREATE was rejected by RBAC. A temporary Secret-bound token and loopback SSH
+forward were removed afterward. These are wire tests, not SDK/hardware proofs.
+
+Both containers reached readiness with zero restarts. A genuine Gateway ACK
+passed SDK current head/process/driver-epoch checks. Authenticated capture and
+node-epoch endpoints returned HTTP 200. The old registry table rows and digests
+match the original read-only database backup exactly. No workspace was approved.
+Hub adoption, delivery/observer updates and ordinary group lifecycle remain open.
+Evidence: `results/durable-gateway-successor-read-rbac-20261023.json`,
+`results/durable-gateway-successor-guarded-writes-20261023.json`, their public
+RBAC/admission manifests and `results/durable-successor-gateway-adoption-20261023.json`.

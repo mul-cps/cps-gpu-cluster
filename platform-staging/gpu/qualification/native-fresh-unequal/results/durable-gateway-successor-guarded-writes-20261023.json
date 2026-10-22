@@ -1,0 +1,51 @@
+{
+  "version": 1,
+  "cases": [
+    {
+      "case": "arbitrary config denied",
+      "allowed": false
+    },
+    {
+      "case": "enrollment wire accepted; not SDK proof",
+      "allowed": true
+    },
+    {
+      "case": "mutable enrollment denied",
+      "allowed": false
+    },
+    {
+      "case": "extra key denied",
+      "allowed": false
+    },
+    {
+      "case": "owner reference denied",
+      "allowed": false
+    },
+    {
+      "case": "pending compiler wire accepted; not SDK proof",
+      "allowed": true
+    },
+    {
+      "case": "mutable pending denied",
+      "allowed": false
+    },
+    {
+      "case": "pending wrong namespace denied",
+      "allowed": false
+    },
+    {
+      "case": "unstructured pending denied",
+      "allowed": false
+    }
+  ],
+  "all_expected_results_passed": true,
+  "fixtures_persisted": false,
+  "scope": "wire admission only; SDK authorization/qualification still required",
+  "authentication": {
+    "transport": "direct Kubernetes API via temporary loopback-only SSH forwarding; TLS CA and server name verified",
+    "actual_username": "system:serviceaccount:cps-compute:cps-compute-controller",
+    "rancher_impersonation_used": false,
+    "token_ttl_seconds": 600,
+    "token_bound_to_temporary_secret": true
+  }
+}

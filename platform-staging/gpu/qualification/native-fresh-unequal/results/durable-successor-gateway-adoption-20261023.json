@@ -1,0 +1,28 @@
+{
+  "version": 1,
+  "kind": "durable-successor-gateway-config-adopted",
+  "pod_uid": "a3d03309-2113-4e83-bd56-0400dd70470f",
+  "ready_containers": 2,
+  "container_restarts": 0,
+  "genuine_gateway_head_process_epoch_ack_validated": true,
+  "capture_http_status": 200,
+  "epoch_http_status": 200,
+  "capture_scope": "cps-native-runtime",
+  "capture_transport": "loopback TLS pinned to mounted leaf; hostname check omitted only for loopback diagnostic",
+  "legacy_registry_rows_and_digests_unchanged": {
+    "native_group_approval_revision": {
+      "rows": 10,
+      "digest": "ae145cfd086b3a6a866fc66a70596a98c1f66c4d2d499f8d15fe2f0ebf54e680"
+    },
+    "native_group_approval_head": {
+      "rows": 1,
+      "digest": "ea12b40353720be054719ff6d529701eff820cad47a3edd08c48f1fe036bb2b8"
+    }
+  },
+  "new_registry_approved_workspaces": 0,
+  "read_sar_cases_passed": 18,
+  "direct_sa_admission_cases_passed": 9,
+  "hubs_adopted": false,
+  "ordinary_gpu_access_enabled": false,
+  "production_ready": false
+}
