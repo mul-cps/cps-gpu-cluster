@@ -1,0 +1,79 @@
+{
+  "schema": 1,
+  "date": "2026-10-22",
+  "scope": "controlled 5 GiB cap enforcement and peer OOM continuity only",
+  "production_qualified": false,
+  "cohort_uid": "6ba3353d-bf13-4cad-9c35-3119dd279a67",
+  "node": "k3s-wk-gpu2",
+  "boot_id": "a464df41-e391-4443-b8e8-ad7ecd052318",
+  "driver_generation": "4ebffc96-e25e-4583-a3b8-0d853fd90efd",
+  "kernel": "6.8.0-147-generic",
+  "driver_version": "615.71.09",
+  "gpu_uuid": "GPU-16128952-b438-556a-00bb-93039ee24e56",
+  "mig": "Disabled",
+  "policy_hash": "sha256:d48f6553ed036c2e7adcc97417623fe0308be93ad13b20f246047ada118511b0",
+  "targets_manifest_sha256": "67b677fef425de22d5abd4f3e857a5a29155e458fc38c598c884cef83adc94a3",
+  "results": {
+    "a-to-b": {
+      "assessment": {
+        "direction": "a-to-b",
+        "held_before_oom_mib": 4608,
+        "measurement_passed": true,
+        "peer_ticks_inside_oom_hold": 16,
+        "physical_samples": 4,
+        "production_qualified": false,
+        "recovery_byte": 37,
+        "transport": "kubectl",
+        "typed_oom": {
+          "cuda_error_code": null,
+          "kind": "torch.OutOfMemoryError"
+        },
+        "unchanged_seals_and_processes": true
+      },
+      "minimum_physical_free_bytes": 36491493376,
+      "artifact_sha256": {
+        "before.json": "d05450b26c96fa44e67400cf80c1c2145507b53a3af4a6935a6d0ed6b9e27dde",
+        "after.json": "43a7eb1484cd9ee5c9e688402b9f97ac3c12f0afa2707f5e5fb14f962e6a29ae",
+        "peer.jsonl": "b0a59db4c5d6d211488ab83b1e6af33502fcb6f66839efd87c5325370c290f7f",
+        "oom.jsonl": "c6413a3572c4756aa20ddfe7ef92e509aed54695638fcd76eb3c18b77bc4dcbc",
+        "physical-samples.json": "4400fa13aea3bf4fc2caeed3190a21e163164529e2a6587f2a465e6a20cc8d88",
+        "assessment.json": "4376dd1c6ddf8e0136dfbed1990466aae305ada0daeeae214e49d03ff7d45ad0"
+      }
+    },
+    "b-to-a": {
+      "assessment": {
+        "direction": "b-to-a",
+        "held_before_oom_mib": 4608,
+        "measurement_passed": true,
+        "peer_ticks_inside_oom_hold": 16,
+        "physical_samples": 4,
+        "production_qualified": false,
+        "recovery_byte": 37,
+        "transport": "kubectl",
+        "typed_oom": {
+          "cuda_error_code": null,
+          "kind": "torch.OutOfMemoryError"
+        },
+        "unchanged_seals_and_processes": true
+      },
+      "minimum_physical_free_bytes": 36491493376,
+      "artifact_sha256": {
+        "before.json": "3b12e50a428a4e81aa878bad6e3d10c29b2d396c7efe6a7c7e06090d797a9e52",
+        "after.json": "46b1fcb734f493b4f86db7418f7b9bb0491567f90d71467cf017e442dee9c650",
+        "peer.jsonl": "947ce4b3ea2ce84eddbf96f36e10618f1909a8ae81cdeeeac4c45e1fd5c9cdb4",
+        "oom.jsonl": "55b9efca67e049845abdfcb61eaa3961f74b5603e0f9420f17c61dab0dc4bda9",
+        "physical-samples.json": "442dea474824045332b7f30d5bbbb24ca8eb8f342446b9c0a7f6e278e208bd37",
+        "assessment.json": "a87c7889478a6b2524d44d913178e03e152ffaa8fadc58354d5f9f0e468b8b15"
+      }
+    }
+  },
+  "remaining": [
+    "aggregate accounting",
+    "memory-import isolation",
+    "restart-cleanup",
+    "MPS",
+    "10/20 GiB behavior and packing",
+    "normal automatic deployment and cross-Hub pooling",
+    "broader scheduling, startup, recovery and release gates"
+  ]
+}
