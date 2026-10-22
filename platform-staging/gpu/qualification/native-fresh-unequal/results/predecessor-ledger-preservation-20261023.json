@@ -1,0 +1,20 @@
+{
+  "version": 1,
+  "observed_at": "2026-10-22T22:36:53.133778+00:00",
+  "kind": "predecessor-ledger-preservation",
+  "capture_reference": {
+    "namespace": "cps-native-runtime",
+    "name": "cps-predecessor-ledger-04520da78adf531e",
+    "uid": "ffc1c459-4bbe-4253-be62-62ba435ba7db",
+    "resourceVersion": "380279341",
+    "key": "capture.json",
+    "data_sha256": "sha256:04520da78adf531edb3a6560138c479f3b4fb5394da61ec54aa86530a06605bb"
+  },
+  "old_ledger_uid": "33ab24b0-8e9a-4bee-b308-12a19c076924",
+  "old_ledger_resourceVersion": "379454321",
+  "released_records": 197,
+  "old_ledger_unchanged": true,
+  "old_writer_replicas": 0,
+  "new_ledger_created": false,
+  "activation_authorized": false
+}
