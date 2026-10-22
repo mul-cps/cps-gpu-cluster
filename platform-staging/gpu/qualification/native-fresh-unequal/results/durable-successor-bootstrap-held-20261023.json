@@ -1,0 +1,21 @@
+{
+  "version": 1,
+  "kind": "durable-successor-bootstrap-bound-held",
+  "deployment_uid": "104610ee-b72c-4649-84fe-717ac5aa9d9c",
+  "bootstrap_uid": "b416bf81-83b5-4a12-9277-f47a0b817495",
+  "node_configuration_reference": {
+    "namespace": "cps-native-runtime",
+    "name": "cps-runtime-node-config-7438f0696323d4e6",
+    "uid": "4d1cb79b-a17a-481b-9bab-de51b1f2874f",
+    "resourceVersion": "380285816",
+    "key": "config.json",
+    "data_sha256": "sha256:7bb6ede30d169fc4551e7145fabfdc8844c37da3b84aab2748634905ddb52b32"
+  },
+  "release": false,
+  "runtime_binary_hashes_checked": 3,
+  "actual_approval_and_anchor_volumes_bound": true,
+  "replicas": 0,
+  "pods_created": false,
+  "activation_performed": false,
+  "remaining": "RBAC, narrow trusted host-access admission, private authority bootstrap, observer/configuration adoption, genuine acknowledgments and ordinary workspace lifecycle"
+}

@@ -1,0 +1,28 @@
+{
+  "version": 1,
+  "kind": "durable-successor-node-configuration-staged",
+  "node_configuration_reference": {
+    "namespace": "cps-native-runtime",
+    "name": "cps-runtime-node-config-7438f0696323d4e6",
+    "uid": "4d1cb79b-a17a-481b-9bab-de51b1f2874f",
+    "resourceVersion": "380285816",
+    "key": "config.json",
+    "data_sha256": "sha256:7bb6ede30d169fc4551e7145fabfdc8844c37da3b84aab2748634905ddb52b32"
+  },
+  "sdk_node_configuration_loaded": true,
+  "four_head_snapshots_validated": true,
+  "initial_registry_generation": 0,
+  "initial_approved_workspaces": 0,
+  "acknowledgments": "empty; none forged",
+  "component_images": {
+    "node": "ghcr.io/mul-cps/cps-native-node@sha256:9d998baa2ad3ee81b3b443c5001aabc81f20c497bd11663bdc3f580ce047bbeb",
+    "gateway": "ghcr.io/mul-cps/cps-compute@sha256:0e11ec258e3e04eeb37512679b5059a189849b555fea2f882c70730cdad1fc0f",
+    "hub:cps": "ghcr.io/mul-cps/cps-compute@sha256:837cbdb0400a3c23157c54fabc820d9fdc0b2345f4785bd241196896a84d2208",
+    "hub:cit": "ghcr.io/mul-cps/cps-compute@sha256:837cbdb0400a3c23157c54fabc820d9fdc0b2345f4785bd241196896a84d2208"
+  },
+  "cdi_pins_match_tested_current_runtime": true,
+  "consumers_changed": false,
+  "rbac_grants_added": false,
+  "writer_started": false,
+  "activation_performed": false
+}

@@ -1,0 +1,21 @@
+{
+  "version": 1,
+  "kind": "durable-node-controller-staged-stopped",
+  "namespace": "cps-native-runtime",
+  "deployment_uid": "104610ee-b72c-4649-84fe-717ac5aa9d9c",
+  "service_account_uid": "aee07e9b-3109-4d5d-b564-09c26321aaee",
+  "image": "ghcr.io/mul-cps/cps-native-node@sha256:9d998baa2ad3ee81b3b443c5001aabc81f20c497bd11663bdc3f580ce047bbeb",
+  "replicas": 0,
+  "durable_state_root": "/var/lib/cps-native-gpu/domains/100876ac-14e6-4292-bf52-7d129f7f08f0/custody",
+  "template_sha256": "sha256:141503e0ed4915a1e1b8a855c8b54081b39b8157591839d9bf586e160383fd91",
+  "bootstrap_released": false,
+  "pending_configmap_names": [
+    "cps-runtime-bootstrap-held",
+    "cps-runtime-approval-pending",
+    "cps-runtime-head-anchor-pending"
+  ],
+  "pods_created": false,
+  "rbac_grants_added": false,
+  "old_node_deployment_unchanged": true,
+  "activation_performed": false
+}

@@ -791,3 +791,36 @@ least-privilege permissions, genuine readiness and ordinary Start/Stop checks.
 
 Evidence: `results/durable-successor-deployment-staged-20261023.json` and
 `results/durable-successor-ledger-staged-20261023.json`.
+
+### Packaged successor controller and dynamic configuration staged
+
+Created the successor ServiceAccount and a zero-replica Recreate Deployment,
+using the previously validated Node image `9d998baa...` and the durable authority
+state directory. The original production controller was untouched. All four
+component declarations use actual current Deployment and ServiceAccount UIDs and
+image digests. Four new dynamic initial approval heads, immutable anchors and
+empty acknowledgment targets were created without changing consumers or granting
+RBAC. Their generation-zero registry approves no workspaces.
+
+The SDK loaded the actual immutable version4 NodeConfiguration and all four
+HeadSnapshots successfully. Its CDI/runtime pins were taken from the passed
+5/10 GiB lifecycle run and independently checked against every current CDI
+provider and four runtime files. This corrects stale original pins that named
+`management.nvidia.com-native-pilot-r615.json`; the tested current provider is
+`cps-native-selected-147.json`. No host files were changed.
+
+The actual bootstrap input now binds the reviewed configuration and policy with
+`release=false`. Approval and anchor volumes bind actual staged objects. Three
+host runtime binary hashes embedded in the packaged initializer were independently
+verified. Replicas remain zero and no successor Pods exist.
+
+The namespace still enforces restricted Pod Security. Its warnings correctly
+identify the trusted node controller's required host privileges; no namespace
+exception has been enabled. Least-privilege RBAC, narrow trusted host-access
+admission, private authority bootstrap, observer/consumer adoption and genuine
+readiness remain prerequisites to activation. Empty acknowledgments are not
+qualification or readiness evidence.
+
+Evidence: `results/durable-node-controller-staged-20261023.json`,
+`results/durable-successor-node-config-staged-20261023.json` and
+`results/durable-successor-bootstrap-held-20261023.json`.
