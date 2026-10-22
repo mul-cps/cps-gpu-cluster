@@ -1,0 +1,29 @@
+{
+  "affected_tests_passed": 704,
+  "all_four_service_specs_restored": true,
+  "changed_runtime_modules": [
+    "cps_compute/native_scheduler_coordinator.py"
+  ],
+  "deployed": true,
+  "gateway_container_images": {
+    "approval-capture": "ghcr.io/mul-cps/cps-compute@sha256:b00fe7eca636d5c680faa0beac6b209c3bbde0454b55c9d6fd56e2ece23d8864",
+    "gateway": "ghcr.io/mul-cps/cps-compute@sha256:b00fe7eca636d5c680faa0beac6b209c3bbde0454b55c9d6fd56e2ece23d8864"
+  },
+  "journal": {
+    "active_rotations": 33,
+    "authenticated_files": 409,
+    "four_actual_acks_ready": true,
+    "total_rotations": 81,
+    "transition": null
+  },
+  "policy_hash": "sha256:332d14fb9e510b9810feffb8d40b408743f9679ebd13ca1ba0e1077d666e9281",
+  "production_ready": false,
+  "qualified_startup": false,
+  "rotation": 81,
+  "runtime_module_sha256": "1d00a951db622799ad8b06fcf62c559f8901d5a778220adf3bab75c599d6bd5c",
+  "source_generation": 9,
+  "source_review": "CLEAR",
+  "source_revision": "850d3d7650f6ddd2c02466d74f92a16bb37f4e6f",
+  "succeeded_job_uid_cleaned": true,
+  "version": 1
+}

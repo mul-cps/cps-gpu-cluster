@@ -1,0 +1,55 @@
+{
+  "attempt": 82,
+  "cleanup": {
+    "all_allocations_released": 194,
+    "binder_exact_spec_restored": true,
+    "cleanup_verified": true,
+    "hub_server_absent": true,
+    "pod_absent": true,
+    "protected_notebook_unchanged": true,
+    "sql_counts": {
+      "reservation": 0,
+      "reservation_binding": 0
+    },
+    "temporary_token_revoked": true,
+    "token_file_removed": true,
+    "token_reuse_http": 403
+  },
+  "failure": {
+    "cuda_kernel_ran": false,
+    "execution_fence_elapsed_at_timeout_seconds_approx": 20.519086,
+    "execution_fence_seconds": 60,
+    "fence_opened_at": "2026-10-22T05:16:52.527475Z",
+    "kind": "TimeoutError",
+    "prepare_elapsed_seconds": 85.588312,
+    "prepare_timeout_at": "2026-10-22T05:17:13.046561Z",
+    "rpc_budget_seconds": 85,
+    "stage": "allocation-proof"
+  },
+  "log_sha256": {
+    "binder": "28cacf724b3617319d3bfdd20982326d575533678a073d7e45eb7864e2bd5632",
+    "gateway": "01f22417c95029d918fd2279816e04dec5155edbe3146fde6bcd06a75293b0c7",
+    "hub": "0d9ed8a1236214e6df95f2ee223f7c8965bcf0624e21fd5465cb3f1a9ea040cc",
+    "node": "799d2a8c4cd1337dc943cc13032c4e3564a311e6063babe11c808e6ff5e60332"
+  },
+  "next_action": "Align the outer Group Prepare RPC and Binder client deadlines with non-executing enrollment plus the independent 60-second execution fence; retain freshness and grant-expiry checks. Qualify startup timing separately.",
+  "normal_start": {
+    "elapsedSeconds": 305.2782238959917,
+    "endedAt": "2026-10-22T05:18:24.026122+00:00",
+    "returnCode": 1,
+    "startedAt": "2026-10-22T05:13:18.747898+00:00"
+  },
+  "normal_stop_http": 200,
+  "observed_pod_uid": "2d30d1bf-cd83-405a-ae93-cf8673730547",
+  "prior_node_handoff_failure_cleared": true,
+  "production_ready": false,
+  "startup_passed": false,
+  "timings": {
+    "allocation_proof_started_seconds": 81.681763,
+    "context_calls": 30,
+    "context_nested_seconds": 27.948941,
+    "enrollment_publication_nested_seconds": 59.75215,
+    "registered_readiness_seconds": 12.388759
+  },
+  "version": 1
+}
