@@ -1,0 +1,61 @@
+{
+  "controller_permissions_installed": false,
+  "direct_service_account_access": {
+    "api_ca_verified": true,
+    "checks": [
+      {
+        "allowed": false,
+        "namespace": "cps-native-lifecycle147",
+        "resource": "configmaps",
+        "verb": "create"
+      },
+      {
+        "allowed": false,
+        "namespace": "jupyterhub",
+        "resource": "pods",
+        "verb": "create"
+      },
+      {
+        "allowed": false,
+        "namespace": "cps-compute",
+        "resource": "secrets",
+        "verb": "get"
+      }
+    ],
+    "username": "system:serviceaccount:cps-compute:native-lifecycle147-gateway"
+  },
+  "gateway_proposal_sha256": "a6925efdaa46cc8985c95952d87096bfe30dbb090714d356265a81b96d010185",
+  "gpu_lifecycle_test_started": false,
+  "https_from_hubs": {
+    "cit-jhub": {
+      "responses": {
+        "/openapi.json": 200,
+        "/v1/me": 401
+      },
+      "tls_hostname_verified": true
+    },
+    "jupyterhub": {
+      "responses": {
+        "/openapi.json": 200,
+        "/v1/me": 401
+      },
+      "tls_hostname_verified": true
+    }
+  },
+  "image": "ghcr.io/mul-cps/cps-compute@sha256:0e215c9c5767b4162ae0e57ff3f1614ad16be144c57b19a187f7c6cbe6bdb8cd",
+  "image_id": "ghcr.io/mul-cps/cps-compute@sha256:0e215c9c5767b4162ae0e57ff3f1614ad16be144c57b19a187f7c6cbe6bdb8cd",
+  "native_inventory_reverification_pending": true,
+  "native_journal_count_read_back": 12,
+  "node": "k3s-wk-gpu1",
+  "pod_uid": "2499d0e4-d148-40f3-a3fb-9077fc1b2e73",
+  "production_qualified": false,
+  "remaining": [
+    "Node authority/receipt projection and physical inventory preflight",
+    "Temporary workspace registration and grants",
+    "Actual Hub lifecycle and member removal/reinstatement",
+    "Production Source activation and KAI lifecycle qualification"
+  ],
+  "scope": "isolated-gateway-startup-only",
+  "source_sha256": "c5851e3610a7364d90dc1552f80e32e5251858a2eab5df9404ee9e3857f065ff",
+  "version": 1
+}

@@ -62,3 +62,21 @@ Register temporary neutral workspaces with the derived policy hash and grant
 that exact pilot alias to the reviewed members. Unchanged production workspace
 rows must fail authorization against the derived catalog. Preserve existing data
 and prove storage bindings rather than inventing storage evidence.
+
+## Verified implementation and live startup
+
+- Root verified 187 tests and 118 subtests across the qualification helpers and
+  historical Node-agent suite. Both independent source reviews cleared the
+  installed-SDK adapter, including terminal cleanup and Pod-name reuse checks.
+- The isolated released Gateway started on GPU1 with the canonical PVC. Both
+  Hubs verified its private TLS endpoint: OpenAPI returned 200 and unauthenticated
+  `/v1/me` returned 401. No workspace grants or GPU-control roles are installed.
+- Direct service-account SelfSubjectReview plus access reviews over the
+  CA-verified Kubernetes API denied ConfigMap creation, Pod creation and Secret
+  reads. Rancher-proxied `kubectl --as` reported the administrator's permissions
+  and is not accepted as this service account's authorization evidence.
+- Fresh SSH reads matched all twelve original terminal journals. Current CDI
+  selected-device and device-plugin documents match the hardware-tested capture;
+  the complete CDI search/configuration inputs are separately pinned.
+- Live Node authority/receipt mounts, physical inventory preflight, workspace
+  registration/grants and the actual Hub lifecycle remain pending.
