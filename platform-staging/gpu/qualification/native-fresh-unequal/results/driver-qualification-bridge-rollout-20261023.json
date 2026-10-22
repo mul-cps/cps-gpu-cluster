@@ -1,0 +1,97 @@
+{
+  "changed_sdk_modules": [
+    "native_groups.py",
+    "native_qualification_authority.py"
+  ],
+  "gateway_existing_ten_module_fixes_preserved": true,
+  "gateway_regression_tests_passed": 272,
+  "images": {
+    "gateway": "ghcr.io/mul-cps/cps-compute@sha256:0e11ec258e3e04eeb37512679b5059a189849b555fea2f882c70730cdad1fc0f",
+    "hub": "ghcr.io/mul-cps/cps-compute@sha256:837cbdb0400a3c23157c54fabc820d9fdc0b2345f4785bd241196896a84d2208"
+  },
+  "offline_actual_current_and_historical_authorities_passed": true,
+  "other_distributions_unchanged": {
+    "gateway": 43,
+    "hub": 136
+  },
+  "permissions_changed": false,
+  "post_rollout_current_authority_validation": {
+    "gateway": {
+      "image": "ghcr.io/mul-cps/cps-compute@sha256:0e11ec258e3e04eeb37512679b5059a189849b555fea2f882c70730cdad1fc0f",
+      "ready_replicas": 1,
+      "returncode": 0,
+      "validation": {
+        "consumer_reference_switched": false,
+        "profiles": [
+          "interactive-shared-10",
+          "interactive-shared-5"
+        ],
+        "root_supplied_actual_current_authority_validated": true,
+        "runtime_uid": 10001
+      }
+    },
+    "hub-cit": {
+      "image": "ghcr.io/mul-cps/cps-compute@sha256:837cbdb0400a3c23157c54fabc820d9fdc0b2345f4785bd241196896a84d2208",
+      "ready_replicas": 1,
+      "returncode": 0,
+      "validation": {
+        "consumer_reference_switched": false,
+        "profiles": [
+          "interactive-shared-10",
+          "interactive-shared-5"
+        ],
+        "root_supplied_actual_current_authority_validated": true,
+        "runtime_uid": 1000
+      }
+    },
+    "hub-cps": {
+      "image": "ghcr.io/mul-cps/cps-compute@sha256:837cbdb0400a3c23157c54fabc820d9fdc0b2345f4785bd241196896a84d2208",
+      "ready_replicas": 1,
+      "returncode": 0,
+      "validation": {
+        "consumer_reference_switched": false,
+        "profiles": [
+          "interactive-shared-10",
+          "interactive-shared-5"
+        ],
+        "root_supplied_actual_current_authority_validated": true,
+        "runtime_uid": 1000
+      }
+    }
+  },
+  "production_ready": false,
+  "qualification_consumer_references_changed": false,
+  "ready_deployments": [
+    "cps-compute/compute-gateway",
+    "jupyterhub/hub",
+    "cit-jhub/hub"
+  ],
+  "remaining": [
+    "coordinated current-epoch Node/gateway/Hub/publisher/observer references and genuine acknowledgments",
+    "normal qualified-group lifecycle verification",
+    "original remaining production gates"
+  ],
+  "rollout_issue": {
+    "initial_effect": "Gateway unavailable; both Hubs retried startup with connection refused",
+    "initial_gateway_pod_node": "k3s-wk-gpu4",
+    "placement_scope": "Temporary colocation while both gateways share canonical RWO state; reassess when isolated gateway is retired",
+    "reason": "RWO compute-state is also held by isolated gateway on GPU1",
+    "resolution": "Gateway nodeSelector placed on existing attachment node k3s-wk-gpu1; gateway and both Hubs recovered",
+    "volume_force_detach": false
+  },
+  "scope": "Qualification metadata compatibility rollout; current epoch consumer activation not performed",
+  "sdk_bases": {
+    "gateway": "53b7174ab48e18f1a0f3bdf7ee0db9cac1c54684",
+    "hub": "2f13b5c2acd45bd0d65f1a741c18ab1a0d6a9976"
+  },
+  "sdk_modules_exact": 78,
+  "sdk_sources": {
+    "gateway": "dbf52dbf8d750dbcaf151578c377261205979ec9",
+    "hub": "221906b73dd19646f51c150c23fee6108e73621e"
+  },
+  "version": 1,
+  "wheel_sha256": {
+    "gateway": "f637517c6ef51533c3ee682d1161266ea8af66f0992b85d657a51ddc21f1dfea",
+    "hub": "984afc46fc1feb5062abcb013bc86ec65e0488267b9f08f06c581bb765e0c883"
+  }
+}

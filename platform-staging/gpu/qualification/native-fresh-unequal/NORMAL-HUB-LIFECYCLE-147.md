@@ -664,3 +664,42 @@ pass is claimed. The bridge is pushed but not packaged/deployed yet. Coordinated
 Node/gateway/Hub/publisher/observer adoption, genuine readiness acknowledgments
 and normal qualified-group lifecycle tests remain pending. See
 `results/current-epoch-qualification-renewal-20261023.json`.
+
+### Qualification metadata bridge deployed on preserved component baselines
+
+The Hub SDK wheel from `221906b` built successfully on the actual SDK2f13 Hub
+baseline. The first Gateway build refused to overwrite ten newer installed SDK
+modules: live Gateway is Source53b7174, not SDK2f13. The bridge was cherry-picked
+onto that exact baseline as `dbf52dbf8d750dbcaf151578c377261205979ec9`;
+272 qualification/policy/node-config regressions passed. Its wheel changes the
+same two metadata modules while preserving those ten fixes. The failed initial
+build remains retained; it made no deployment change.
+
+Both published images passed exact 78-module wheel/RECORD checks and dependency
+checks. All 136 non-target Hub distributions, including the Hub extension, and
+43 non-target Gateway distributions were unchanged. With networking disabled,
+both images validated the actual historical qualification/policy-transition
+chain and new actual current-epoch record under their normal UIDs 1000/10001.
+Registry digests were verified before UID/resourceVersion/image-guarded rollout:
+
+- Hubs: `ghcr.io/mul-cps/cps-compute@sha256:837cbdb0400a3c23157c54fabc820d9fdc0b2345f4785bd241196896a84d2208`
+- Gateway: `ghcr.io/mul-cps/cps-compute@sha256:0e11ec258e3e04eeb37512679b5059a189849b555fea2f882c70730cdad1fc0f`
+
+Initial Gateway rescheduling to GPU4 hit Multi-Attach because isolated Gateway
+still holds the shared canonical `compute-state` RWO PVC on GPU1. Gateway
+unavailability caused both Hubs to retry startup with connection refused.
+Production Gateway was then explicitly colocated on GPU1 using a guarded
+nodeSelector patch. No force detach, volume address/export change or notebook
+Pod patch was used. Gateway rollout completed and both Hubs recovered to Ready.
+Keep this placement while both gateways share RWO state; reassess it when the
+isolated gateway is retired rather than silently keeping a permanent GPU1
+availability constraint. Future image rollout preflight must check shared RWO
+attachment topology before rescheduling the control-plane services.
+
+All three running packages now validate the actual current qualification record;
+their unchanged historical configuration also loaded successfully on startup.
+This removes the verified metadata compatibility blocker. Qualification/policy
+references, grants, credentials, permissions and paused Node/Observer replicas
+were not advanced. Genuine coordinated current-epoch acknowledgments and normal
+qualified-group lifecycle remain pending; GPU access is still readiness-held.
+See `results/driver-qualification-bridge-rollout-20261023.json`.
