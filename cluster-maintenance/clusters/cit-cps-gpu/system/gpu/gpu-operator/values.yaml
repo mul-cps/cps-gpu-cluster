@@ -8,9 +8,11 @@ driver:
   # usePrecompiled: true
   repository: nvcr.io/nvidia
   image: driver
-  # Qualified recovery for Ubuntu kernel 6.8.0-147 (pci_resize_resource API).
-  # GPU2 retains its separately managed R615 canary driver.
-  version: "580.178.04"
+  # Exact official R615 release already qualified on GPU2.
+  # Manual pinned DaemonSets own R615 nodes; no automatic driver rollout.
+  version: "615.71.09"
+  upgradePolicy:
+    autoUpgrade: false
   # Manager configuration for driver installation
   manager:
     env:

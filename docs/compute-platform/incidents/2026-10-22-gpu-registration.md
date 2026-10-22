@@ -33,6 +33,14 @@ not expose the pilot node to ordinary exclusive-GPU workloads.
 
 ## Recovery
 
+The user subsequently directed standardizing all workers on the same official
+**615.71.09** already working on GPU2. The remaining R580 sequence was stopped
+before GPU3; GPU4 had recovered on R580 and GPU1 was still installing it.
+The current R615 migration uses the unchanged pinned GPU2 driver/firmware
+specification, activates one new node at a time and leaves GPU2 untouched.
+See `platform-staging/gpu/r615-driver/README.md`.
+
+
 User approved the official 580.178.04 driver for workers 1/3/4 on 22 October.
 This stays within R580 and includes the upstream kernel API adaptation.
 The registry image resolves to
@@ -66,9 +74,8 @@ sandbox recreation instead of relying on hand-created marker files.
 
 As of 22 October, NVIDIA lists 615.71.10 (19 October) and R580 patch 580.196.07
 (21 October). Latest .run availability does not imply GPU Operator container
-availability or validation of KAI/HAMi/MPS/native isolation. Keep the approved
-580.178.04 recovery and qualified GPU2 615.71.09 during this incident; qualify
-newer images separately.
+availability or validation of KAI/HAMi/MPS/native isolation. Use the user-selected exact 615.71.09 release across the workers,
+with per-node validation; qualify newer images separately.
 
 References:
 - https://github.com/NVIDIA/open-gpu-kernel-modules/blob/580.178.04/kernel-open/nvidia/nv-pci.c#L217-L221
