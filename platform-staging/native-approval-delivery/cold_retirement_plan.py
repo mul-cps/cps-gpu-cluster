@@ -91,12 +91,26 @@ def candidate_policy(controller_keys,role_keys,binding_keys):
        'message':'Retired native role definitions remain archival.'},
       {'expression':"!(request.resource.resource == 'namespaces' && variables.name == 'cps-native-system')",
        'message':'Retired namespace labels/identity cannot be removed or namespace deleted.'},
-      {'expression':"!(request.resource.resource in ['validatingadmissionpolicies','validatingadmissionpolicybindings'] && variables.name == '"+POLICY+"')",
-       'message':'Retirement admission fence cannot be changed or removed.'}]
-    resources=['configmaps','pods','pods/ephemeralcontainers','deployments','deployments/scale','daemonsets','statefulsets','statefulsets/scale','replicasets','replicasets/scale','jobs','cronjobs','serviceaccounts','serviceaccounts/token','roles','rolebindings','clusterroles','clusterrolebindings','namespaces','validatingadmissionpolicies','validatingadmissionpolicybindings']
+]
+    resources=['configmaps','pods','pods/ephemeralcontainers','deployments','deployments/scale','daemonsets','statefulsets','statefulsets/scale','replicasets','replicasets/scale','jobs','cronjobs','serviceaccounts','serviceaccounts/token','roles','rolebindings','clusterroles','clusterrolebindings','namespaces']
     policy={'apiVersion':'admissionregistration.k8s.io/v1','kind':'ValidatingAdmissionPolicy','metadata':{'name':POLICY},
       'spec':{'failurePolicy':'Fail','matchConstraints':{'resourceRules':[{'apiGroups':['*'],'apiVersions':['*'],'operations':['CREATE','UPDATE','DELETE'],'resources':resources,'scope':'*'}]},'variables':variables,'validations':validations}}
     binding={'apiVersion':'admissionregistration.k8s.io/v1','kind':'ValidatingAdmissionPolicyBinding','metadata':{'name':POLICY},'spec':{'policyName':POLICY,'validationActions':['Deny']}}
+    return [policy,binding]
+
+
+def retired_writer_policy():
+    """Admission candidate only: denies mutations, not reads or host/RPC actions."""
+    name='cps-retired-native-writers'
+    users=sorted('system:serviceaccount:'+s.replace('/',':') for s in DEDICATED)
+    policy={'apiVersion':'admissionregistration.k8s.io/v1','kind':'ValidatingAdmissionPolicy',
+      'metadata':{'name':name},'spec':{'failurePolicy':'Fail',
+      'matchConstraints':{'resourceRules':[{'apiGroups':['*'],'apiVersions':['*'],
+      'operations':['CREATE','UPDATE','DELETE','CONNECT'],'resources':['*/*'],'scope':'*'}]},
+      'validations':[{'expression':'!(request.userInfo.username in '+json.dumps(users,separators=(',',':'))+')',
+      'message':'Retired dedicated native identities cannot mutate or connect.'}]}}
+    binding={'apiVersion':'admissionregistration.k8s.io/v1','kind':'ValidatingAdmissionPolicyBinding',
+      'metadata':{'name':name},'spec':{'policyName':name,'validationActions':['Deny']}}
     return [policy,binding]
 
 
@@ -159,7 +173,7 @@ def render(capture,*,reviewed_sha256):
     return {'version':1,'status':'draft-incomplete','executable':False,'reviewed_capture_sha256':reviewed_sha256,'scope':deepcopy(scope),
       'old_namespace':target(old),'successor_namespace':target(new),'controller_intents':controller_intents,'service_account_intents':sa_intents,'rbac_intents':rbac,
       'namespace_patch':{'object':target(old),'operations':operations},'admission_candidates':candidate_policy(controller_keys,sorted(role_keys),sorted(binding_keys)),
-      'preserved_controllers':preserved,'fleet_source_capture_sha256':digest(capture['fleet_metadata']),'credential_metadata_capture_sha256':digest(capture['secret_metadata']),
-      'coverage':{'native_mutating_bindings':len(rbac),'no_hardware_fence_claim':True,'redacted_capture_not_api_preimage':True},
-      'ordering':['archive-exact-old-authority-and-approved-loss-boundary','materialize-full-spec-CAS-and-stop-dedicated-controllers','revoke-native-binding-subjects-and-dedicated-SA-automount','verify-old-process-token-and-GitOps-incapability','apply-restricted-namespace-and-inactive-policy-only','server-typecheck-and-negative-matrix-before-self-protecting-binding-promotion','qualify-explicit-SAR-and-admission-denials','separate-reviewed-new-domain-activation'],
-      'unmet_gates':['authenticated-Root-retirement-approval','fresh-full-spec-materialization-and-UID-RV-recheck','complete-GPU2-privileged-process-and-host-alias-exclusion','old-native-credential-audience-and-existing-token-incapability','broad-group-and-aggregated-capability-closure-with-complete-retired-credential-denial','GitOps-native-resource-source-retirement-and-no-resurrection-observation','admission-CEL-server-typechecking-and-negative-request-qualification','explicit-SubjectAccessReview-user-groups-resourceAttributes-not-impersonation','CPU-batch-API-NFS-entitlement-home-and-personal-workload-invariance','separately-qualified-guarded-driver-new-epoch-and-four-fresh-ACKs']}
+      'retired_writer_admission_candidates':retired_writer_policy(),'preserved_controllers':preserved,'fleet_source_capture_sha256':digest(capture['fleet_metadata']),'credential_metadata_capture_sha256':digest(capture['secret_metadata']),
+      'coverage':{'native_mutating_bindings':len(rbac),'no_hardware_fence_claim':True,'admission_policy_apis_excluded':True,'redacted_capture_not_api_preimage':True},
+      'ordering':['archive-exact-old-authority-and-approved-loss-boundary','materialize-full-spec-CAS-and-stop-dedicated-controllers','revoke-native-binding-subjects-and-dedicated-SA-automount','verify-old-process-token-and-GitOps-incapability','apply-restricted-namespace-and-inactive-policy-only','server-typecheck-negative-matrix-and-external-policy-protection-before-binding-promotion','qualify-explicit-SAR-and-admission-denials','separate-reviewed-new-domain-activation'],
+      'unmet_gates':['authenticated-Root-retirement-approval','admission-policy-and-binding-RBAC-admin-privilege-denial-explicit-SAR','fresh-full-spec-materialization-and-UID-RV-recheck','complete-GPU2-privileged-process-and-host-alias-exclusion','old-native-credential-audience-and-existing-token-incapability','read-secret-exfiltration-cached-RPC-host-process-and-existing-credential-proof','broad-group-and-aggregated-capability-closure-with-complete-retired-credential-denial','GitOps-native-resource-source-retirement-and-no-resurrection-observation','admission-CEL-server-typechecking-and-negative-request-qualification','explicit-SubjectAccessReview-user-groups-resourceAttributes-not-impersonation','CPU-batch-API-NFS-entitlement-home-and-personal-workload-invariance','separately-qualified-guarded-driver-new-epoch-and-four-fresh-ACKs']}

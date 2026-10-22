@@ -1,0 +1,54 @@
+{
+  "scope": "retired writer candidate; not activated",
+  "renderer_sha256": "90030be845e9ad46cbbc79f1e313a85ce07f839d5d188921b57d6ffd43385b1a",
+  "actual_identity_qualification": {
+    "service_account_identity": "system:serviceaccount:cps-native-system:cps-native-observer-operator",
+    "transport": "TLS verified Kubernetes API via localhost SSH forwarding; not Rancher impersonation",
+    "baseline_dryrun_patch_http": 200,
+    "fenced_dryrun_patch_http": 422,
+    "reads_preserved_http": 200,
+    "root_dryrun_patch_allowed": true,
+    "status": {
+      "observedGeneration": 1,
+      "typeChecking": {}
+    },
+    "policy_is_dryrun_only": true,
+    "temporary_objects_removed": true,
+    "qualification_limitations": [
+      "One real retired SA and PATCH request exercised",
+      "CREATE DELETE CONNECT matrix remains open",
+      "VAP and binding APIs require RBAC protection",
+      "No credential revocation or process stop performed"
+    ]
+  },
+  "explicit_admission_api_sar": {
+    "cases": 50,
+    "allowed": 0,
+    "evaluation_errors": 0,
+    "resources": [
+      "validatingadmissionpolicies",
+      "validatingadmissionpolicybindings"
+    ],
+    "verbs": [
+      "create",
+      "update",
+      "patch",
+      "delete",
+      "deletecollection"
+    ],
+    "principals": 5
+  },
+  "effective_rbac_inventory": {
+    "principals": 5,
+    "secret_read_grants": 0,
+    "limitation": "Current rules and standard SA groups only; no future/admin/host/cached credential claim"
+  },
+  "fleet_literal_inventory": {
+    "bundles": 47,
+    "resources_decoded": 1702,
+    "matches": 0,
+    "errors": 0,
+    "limitation": "Zero literal controller-name references, not a proof against arbitrary templating or future changes"
+  },
+  "official_api_exclusions": "https://kubernetes.io/docs/reference/kubernetes-api/admissionregistration/validating-admission-policy-v1/"
+}

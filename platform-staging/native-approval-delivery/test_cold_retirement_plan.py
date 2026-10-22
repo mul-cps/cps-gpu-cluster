@@ -89,3 +89,31 @@ def test_direct_grants_resolve_rolebinding_namespace_without_global_group_freeze
  assert "has(s.namespace) && s.namespace != '' ? s.namespace : request.namespace" in expr
  assert "s.kind == 'Group'" not in expr
  assert 'broad-group-and-aggregated-capability-closure-with-complete-retired-credential-denial' in p['unmet_gates']
+
+
+def test_retired_writer_policy_matches_exact_five_users_all_mutations_only():
+ p=render(fixture());policies=p['retired_writer_admission_candidates']
+ assert len(policies)==2
+ policy,binding=policies
+ assert policy['kind']=='ValidatingAdmissionPolicy'
+ assert policy['spec']['failurePolicy']=='Fail'
+ rule=policy['spec']['matchConstraints']['resourceRules'][0]
+ assert rule=={'apiGroups':['*'],'apiVersions':['*'],'operations':['CREATE','UPDATE','DELETE','CONNECT'],'resources':['*/*'],'scope':'*'}
+ expression=policy['spec']['validations'][0]['expression']
+ assert expression=="!(request.userInfo.username in "+json.dumps(sorted('system:serviceaccount:'+s.replace('/',':') for s in m.DEDICATED),separators=(',',':'))+")"
+ assert len(m.DEDICATED)==5
+ for shared in ('cps-compute-controller','jupyterhub:hub','cit-jhub:hub','kai-scheduler:binder','system:authenticated'):
+  assert shared not in expression
+ assert binding['spec']=={'policyName':policy['metadata']['name'],'validationActions':['Deny']}
+ assert 'read-secret-exfiltration-cached-RPC-host-process-and-existing-credential-proof' in p['unmet_gates']
+
+
+def test_admission_policy_apis_are_explicit_external_coverage_exception():
+ p=render(fixture())
+ policy=p['admission_candidates'][0]
+ rule=policy['spec']['matchConstraints']['resourceRules'][0]
+ assert 'validatingadmissionpolicies' not in rule['resources']
+ assert 'validatingadmissionpolicybindings' not in rule['resources']
+ assert not any('Retirement admission fence cannot' in x['message'] for x in policy['spec']['validations'])
+ assert 'admission-policy-and-binding-RBAC-admin-privilege-denial-explicit-SAR' in p['unmet_gates']
+ assert p['coverage']['admission_policy_apis_excluded'] is True
