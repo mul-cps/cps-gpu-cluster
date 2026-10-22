@@ -111,7 +111,7 @@ def installed_modules(root=None):
 def partition_inventory(value, caps, retired, unprogrammed):
     """Exact per-inode active caps; original retired rows are never normalized."""
     require(type(caps) is dict and len(caps) <= 2
-            and all(type(inode) is int and inode > 0 and cap in (5120 * 1048576, 20480 * 1048576)
+            and all(type(inode) is int and inode > 0 and cap in (5120 * 1048576, 10240 * 1048576, 20480 * 1048576)
                     and type(cap) is int for inode, cap in caps.items())
             and sum(caps.values()) <= 25600 * 1048576
             and type(retired) is dict and not caps.keys() & retired.keys()
@@ -289,10 +289,10 @@ def validate_lifecycle_scope(config, c):
             and pool['boot_id'] == c.BOOT and pool['driver_generation'] == c.GENERATION
             and pool['memory_budget_mib'] == 25600,
             'Exact measured operator pool and current epoch required')
-    expected = {('interactive-native-qualification-5', 5120),
-                ('interactive-native-qualification-20', 20480)}
-    require({(v['profile'], v['cap_mib']) for v in config['workspaces'].values()} == expected,
-            'Exact measured five/twenty pair required')
+    pair = {(v['profile'], v['cap_mib']) for v in config['workspaces'].values()}
+    require(any(pair == {('interactive-native-qualification-5', 5120),
+                        ('interactive-native-qualification-' + str(size), size * 1024)}
+                for size in (10, 20)), 'Exact measured five/ten or five/twenty pair required')
 
 
 def enrollment_configuration(agent, config, envelope):
@@ -306,19 +306,30 @@ def enrollment_configuration(agent, config, envelope):
     entry = config.get('terminal_history', {}).get(body['intent']['pod_uid'])
     if entry is None:
         return config
-    require('cap_mib' not in entry and 'configuration_authority' not in entry
-            and entry['profile'] == body['profile'] == 'interactive-native-pilot-5'
-            and body['intent']['cap_mib'] == 5120
+    require('configuration_authority' not in entry
+            and entry['profile'] == body['profile']
             and entry['binding_id'] == body['binding_id']
             and entry['policy_hash'] == body['policy_hash'] != config['policy_hash']
             and entry['enrollment_uid'] == envelope['configmap_uid']
             and entry['enrollment_sha256'] == agent.canonical_sha256(body),
-            'Exact original legacy five-GiB terminal enrollment pins required')
-    return {'version': 1, 'enabled': config['enabled'],
-            'authority_namespace': config['authority_namespace'],
-            'policy_hash': entry['policy_hash'],
-            'pool': {k: config['pool'][k] for k in ('node', 'node_uid', 'gpu_uuid', 'max_workspaces')},
-            'workspaces': {body['source'] + ':' + body['workspace']: {'profile': entry['profile']}}}
+            'Exact original terminal enrollment pins required')
+    old = {'version': 1, 'enabled': config['enabled'],
+           'authority_namespace': config['authority_namespace'],
+           'policy_hash': entry['policy_hash'],
+           'pool': {k: config['pool'][k] for k in ('node', 'node_uid', 'gpu_uuid', 'max_workspaces')},
+           'workspaces': {body['source'] + ':' + body['workspace']: {'profile': entry['profile']}}}
+    if 'cap_mib' in entry:
+        cap = entry['cap_mib']
+        require(type(cap) is int and cap in (5120, 10240, 20480)
+                and body['intent']['cap_mib'] == cap
+                and entry['profile'] == 'interactive-native-qualification-' + str(cap // 1024),
+                'Exact original measured terminal cap/profile required')
+        old.update(version=2, mode='operator-qualification', pool=deepcopy(config['pool']))
+        next(iter(old['workspaces'].values()))['cap_mib'] = cap
+    else:
+        require(entry['profile'] == 'interactive-native-pilot-5' and body['intent']['cap_mib'] == 5120,
+                'Exact original legacy five-GiB terminal cap required')
+    return old
 
 
 def inventory_intents(active, records, history):

@@ -414,7 +414,8 @@ def test_execute_checks_tools_before_sdk_or_gpu_setup(tmp_path, monkeypatch):
         m.runtime_main(b'', b'', b'', argv)
 
 
-def test_measured_lifecycle_scope_accepts_exact_five_twenty_operator_pair():
+@pytest.mark.parametrize("larger", [10,20])
+def test_measured_lifecycle_scope_accepts_exact_operator_pair(larger):
     from types import SimpleNamespace
     m=module()
     c=SimpleNamespace(NODE='k3s-wk-gpu2',NODE_UID='3336cdd5-d245-436e-b57c-2f66c6dcaa41',
@@ -423,7 +424,7 @@ def test_measured_lifecycle_scope_accepts_exact_five_twenty_operator_pair():
     config={'version':2,'enabled':True,'mode':'operator-qualification','authority_namespace':'measured',
         'pool':{'node':c.NODE,'node_uid':c.NODE_UID,'gpu_uuid':c.GPU,'max_workspaces':2,
         'boot_id':c.BOOT,'driver_generation':c.GENERATION,'memory_budget_mib':25600},
-        'workspaces':{'cps:a':{'profile':'interactive-native-qualification-20','cap_mib':20480},
+        'workspaces':{'cps:a':{'profile':'interactive-native-qualification-'+str(larger),'cap_mib':larger*1024},
                       'cit:b':{'profile':'interactive-native-qualification-5','cap_mib':5120}}}
     m.validate_lifecycle_scope(config,c)
     import copy
@@ -486,3 +487,25 @@ def test_physical_partition_accepts_five_twenty_and_rejects_over_budget():
     m.partition_inventory(value,{11:5120*unit,22:20480*unit},{},set())
     with pytest.raises(ValueError):m.partition_inventory(value,{11:20480*unit,22:20480*unit},{},set())
     with pytest.raises(ValueError):m.partition_inventory(value,{11:5120*unit,22:10240*unit},{},set())
+
+
+@pytest.mark.parametrize('cap', [5120,20480])
+def test_measured_terminal_history_keeps_original_cap_and_policy(cap):
+    import hashlib,json,copy
+    from types import SimpleNamespace
+    m=module();digest=lambda v:'sha256:'+hashlib.sha256(json.dumps(v,sort_keys=True,separators=(',',':')).encode()).hexdigest()
+    profile='interactive-native-qualification-'+str(cap//1024)
+    body={'binding_id':'a'*60,'source':'cps','workspace':'old','policy_hash':'sha256:'+'1'*64,
+          'profile':profile,'intent':{'pod_uid':'old','cap_mib':cap}}
+    entry={'binding_id':body['binding_id'],'policy_hash':body['policy_hash'],'profile':profile,
+           'enrollment_uid':'original','enrollment_sha256':digest(body),'cap_mib':cap}
+    envelope={'configmap_uid':'original','enrollment':body}
+    pool={'node':'gpu2','node_uid':'node','gpu_uuid':'gpu','max_workspaces':2,'memory_budget_mib':25600}
+    config={'version':2,'enabled':True,'authority_namespace':'pilot','policy_hash':'sha256:'+'2'*64,
+            'pool':pool,'terminal_history':{'old':entry}}
+    old=m.enrollment_configuration(SimpleNamespace(canonical_sha256=digest),config,envelope)
+    assert old['version']==2 and old['mode']=='operator-qualification' and old['pool']==pool
+    assert old['workspaces']=={'cps:old':{'profile':profile,'cap_mib':cap}}
+    for key,value in [('cap_mib',10240 if cap==5120 else 5120),('enrollment_uid','replacement')]:
+        bad=copy.deepcopy(config);bad['terminal_history']['old'][key]=value
+        with pytest.raises(ValueError):m.enrollment_configuration(SimpleNamespace(canonical_sha256=digest),bad,envelope)
