@@ -97,3 +97,34 @@ server dry-run succeeded and unrelated ConfigMap writes were rejected by the
 specific policies. These checks did not persist a ledger or completion proof.
 Actual neutral workspace registration/grants, Hub overlay and Start/Stop/member
 lifecycle execution remain pending.
+
+## Existing Hub composition boundary
+
+Fresh live Secret inspection confirms lifetime enforcement is enabled on both
+Hubs. CIT's additional existing-secret has no values.yaml override. A second
+ordinary native installer is not a supported overlay: lifetime installation
+rejects an already installed controller, and chained post-stop/environment
+hooks can reach the previous authority for a temporary owner.
+
+Implement an explicit owner-scoped overlay: non-test owners delegate unchanged;
+the two temporary owners exclusively use their selected adapter. Register their
+lifetime provider with the existing API and polling loop, preserving expiry.
+Do not reset installation markers or disable lifetime enforcement. Qualify this
+composition before changing either live Hub Deployment.
+
+Both selected existing workspace PVCs are currently Bound and each PV claimRef
+UID matches the actual PVC UID. This proves Kubernetes binding only; storage
+reuse still requires an exact guarded canonical-record binding and the runtime
+file-preservation check. No storage records have been changed by this inspection.
+
+A read-only cold-load of SDK768 in a fresh subprocess in each actual Hub, with
+original mounts/environment and Kubernetes non-GET calls forbidden, rejected
+both existing production configurations with `Complete reviewed v3 qualification
+proof required`. Therefore a direct replacement by the SDK768 Hub image is not
+a valid deployment step. Preserve the distinction between historical evidence
+and current qualification; do not relax proof validation to make startup pass.
+The deployment composition must resolve this before either Hub is restarted.
+
+The retained-storage reuse planner has passed 19 focused tests and independent
+source review. It is proposal-only. Actual registration, guarded canonical DB
+transaction, audit, grants, and runtime preservation remain to be performed.
