@@ -7,7 +7,7 @@ import re
 ORIGIN = 'https://compute-gateway.cps-compute.svc.cluster.local:8000'
 AUDIENCE = 'cps-native-kai'
 SEED = ('lease', 'compile', 'created')
-BINDER = ('prepare', 'current', 'binding', 'accepted', 'close', 'hold', 'cleanup-maps', 'reservation-delete')
+BINDER = ('prepare', 'current', 'binding', 'current-binding', 'accepted', 'close', 'hold', 'cleanup-maps', 'reservation-delete')
 PRIVATE = '/kai-private'
 
 

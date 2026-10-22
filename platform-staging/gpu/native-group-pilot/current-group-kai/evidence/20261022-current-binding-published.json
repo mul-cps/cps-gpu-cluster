@@ -1,0 +1,20 @@
+{
+  "base_image": "ghcr.io/mul-cps/cps-compute@sha256:f7b5ecb4e07c3ee1b17d68a0b78342cee31afbf8eac114af6bae5311e2086fcf",
+  "base_layers_preserved": 77,
+  "binder_image": "ghcr.io/mul-cps/cps-native-kai-binder@sha256:2400691ce4b688383bf0419931baf2397e94f6cb56849a58c2d7c59de0fe3766",
+  "candidate_layers": 79,
+  "compatibility": "Compatible Gateway and exact POST SAR path before Binder enable; old clients unchanged; no error fallback",
+  "config_sha256": "sha256:fe147b2eb421907da1c80ff55d919bdfe114c3dbc641693a9b98792f8d64318e",
+  "deployed": false,
+  "execution_fence_seconds": 60,
+  "image": "ghcr.io/mul-cps/cps-compute@sha256:5f1dd4f55710f1cdf97d24a1165b265681c61c67578680b8f5ef8bd67a34fc3c",
+  "kind": "combined-current-binding-publication",
+  "new_operation": "current-binding",
+  "passed": true,
+  "production_qualified": false,
+  "regression_tests_passed": 723,
+  "runtime_config_preserved": true,
+  "runtime_user": "10001",
+  "source_revision": "53b7174ab48e18f1a0f3bdf7ee0db9cac1c54684",
+  "wheel_sha256": "90d48a35a58d57d6f6b1253d526bf4c744189f3c6627072681fc43406738ba02"
+}

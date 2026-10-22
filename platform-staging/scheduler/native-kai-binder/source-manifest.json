@@ -41,26 +41,26 @@
     },
     {
       "original_sha256": null,
-      "patched_bytes": 23143,
-      "patched_sha256": "e61b58fdd333465e803d5b8a0cd8ec32002898f056842ea7f926ebc4f86e68a2",
+      "patched_bytes": 23446,
+      "patched_sha256": "c28d2595f5677349b0c5a4b25ba082ceb4035a901ce9474c93a289503d588199",
       "path": "pkg/binder/binding/native_terminal.go"
     },
     {
       "original_sha256": null,
-      "patched_bytes": 39058,
-      "patched_sha256": "ebdb4e308ac1b7d0630160ace512c85f6260032bce94d8d2497e2a957fd13ff2",
+      "patched_bytes": 42088,
+      "patched_sha256": "f8649fbf6db0fbe5c67779ba715470fa348b1560d3cf129881bbedfaceb06fe9",
       "path": "pkg/binder/binding/native_terminal_test.go"
     },
     {
       "original_sha256": null,
-      "patched_bytes": 12235,
-      "patched_sha256": "3035d5d1d089d9a4939c53c7a28c76d4f1d6acd190d566751225d120773b7a58",
+      "patched_bytes": 12832,
+      "patched_sha256": "4cae77f35dadfb1c5d7f7430ed0106dec2c143e37b75474ab94783e00f99f396",
       "path": "pkg/binder/binding/native_transport.go"
     },
     {
       "original_sha256": null,
-      "patched_bytes": 19327,
-      "patched_sha256": "b43efc130ab268f54aa094a8ad62dec45879f2f7e361becd77c982beed1260c7",
+      "patched_bytes": 21798,
+      "patched_sha256": "0a7048e18d328e2690fa476c93be4d35d74756f10ad17a2f96b73a16c8358bc1",
       "path": "pkg/binder/binding/native_transport_test.go"
     },
     {
@@ -109,7 +109,7 @@
   "go_mod_sha256": "b5f815389a3bb0c88029095a83a9cabdfd7e55f9a3da7638e76c7dcebc39478e",
   "go_sum_sha256": "30fc1facb3f4ede3658046e5e948f4bceea53354aa44c054737c54190c3ad583",
   "go_version": "go1.26.8",
-  "patch_sha256": "e16990bc421b16ec686387ca005c7ee6407d11b17ec38aa29e56e00e110276cd",
+  "patch_sha256": "1e32e4d0cf7fef8dad197d397e0945c094a9738d017870ec121fcd129b41d0ac",
   "sdk_commit": "0451fd9cc9bcb5ba55b2d35c5aca84fc52f5fad3",
   "sdk_profile_correction_commit": "74ccb2d9cdb1e91ea9750d335e1389c0d2d3a916",
   "toolchain_archive": {

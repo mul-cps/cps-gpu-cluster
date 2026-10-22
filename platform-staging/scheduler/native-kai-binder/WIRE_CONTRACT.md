@@ -2,7 +2,7 @@
 
 This is the transport envelope for the Go bridge and Root-owned protected Python coordinator. It does not change the SDK allocation ACK, registry or v1 enrollment schemas pinned to0451fd9. Every method is an internal authenticated HTTPS POST to the explicitly configured coordinator origin, with no redirects. There is no human-token, unauthenticated, browser-selected authority, insecure TLS or cross-origin fallback.
 
-The implemented disabled Python coordinator is pinned separately in `source-manifest.json` to source74ccb2d. Its actual signed Hub seed chain, version1 qualification10-only scope, runtime installation and closed configuration are documented in `mul-cps/cps-compute` at `docs/contracts/native-kai-coordinator.md`. It retains the exact eight binder operations here; lease/compile/created are separate owning-Hub operations. There are no new native cap, ACK, enrollment, or Kubernetes metadata fields.
+The implemented disabled Python coordinator is pinned separately in `source-manifest.json` to source74ccb2d. Its actual signed Hub seed chain, version1 qualification10-only scope, runtime installation and closed configuration are documented in `mul-cps/cps-compute` at `docs/contracts/native-kai-coordinator.md`. It retains the original binder operations and the additive combined validation operation here; lease/compile/created are separate owning-Hub operations. There are no new native cap, ACK, enrollment, or Kubernetes metadata fields.
 
 Configuration is disabled by default and must supply the exact coordinator base URL, authority namespace, a private projected signed internal ServiceAccount token file and trusted CA file. Root's server must verify the actual signed token and exact configured TokenReview audience, current ServiceAccount UID and current SubjectAccessReview authorization, never trust claims supplied in an envelope or a Pod annotation. No production identity, URL, token or CA is selected by this artifact. Token loading occurs only with explicit enablement. Go requests do not send raw error messages or central expected documents supplied by a caller.
 
@@ -15,6 +15,7 @@ The fixed suffix is `/api/native-kai/v1/<operation>` appended to a configured HT
 | `prepare` | `pod`, `node`, `bind_request`, `binding_state` | `fence_id`, `ack` |
 | `current` | `fence_id`, `pod`, `node`, `bind_request`, `binding_state`, `ack` | none |
 | `binding` | `fence_id`, `binding` | none |
+| `current-binding` | `fence_id`, `pod`, `node`, `bind_request`, `binding_state`, `ack`, `binding` | none |
 | `accepted` | `fence_id`, `binding` | none |
 | `close` | `fence_id` | none |
 | `hold` | `pod_uid`, `reason_code:"custody-required"` | none |
@@ -38,3 +39,14 @@ Binder/Hub service authentication uses actual TokenReview audience/current Servi
 `reservation-delete` must validate the actual reservation UID/RV and every live/pending/enrolling/enrolled/releasing allocation. Before returning `may_delete:true`, the coordinator must retain a durable deletion barrier for that exact reservation UID so a new native enrollment cannot race between the response and the API DELETE. New preparations remain denied until actual reservation absence or explicit safe reconciliation of the failed deletion. A false result retains the reservation. API deletion uses current UID/RV preconditions, and no caller can turn Pod absence alone into native-zero/capacity release. This persistent barrier is required because the boolean response alone cannot hold a server mutex across the subsequent binder DELETE.
 
 The server authenticates every method anew. It binds each fence to authenticated original binder identity, PodUID, current attempt, selected node/epoch and prepared generation. A different actor, Pod, attempt, request generation, authority namespace, node, maps, enrollment, ACK or driver epoch is denied. Fence IDs alone are not bearer authority. Normal UI/user Source endpoints never expose this interface. Root owns the Python implementation and any installation; Go transport/startup tests remain offline.
+
+The additive `current-binding` operation carries the complete fresh Current
+snapshot and actual ACK alongside the exact Binding. The Gateway performs the
+existing complete Current proof once, then the unchanged Binding validation and
+custody CAS. The Binder still reads the actual ACK and fresh Pod/Node/BindRequest
+before this call and performs Kubernetes Binding only on success. Legacy fence
+implementations retain the two-call interface. Install the matching Gateway and
+exact new POST SAR path before enabling this Binder; errors never trigger a
+fallback or automatic replay. Execution fence limits remain unchanged. The
+canonical application contract is `mul-cps/cps-compute`
+`docs/contracts/native-kai-coordinator.md`.

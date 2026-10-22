@@ -384,3 +384,11 @@ def test_coordinator_workspace_runtime_permissions_cover_seal_and_abort_only(req
     assert not any(r['metadata'].get('namespace')=='kai-resource-reservation' and r['kind']=='Role'
                    and any('create' in rule.get('verbs',[]) or 'delete' in rule.get('verbs',[]) for rule in r.get('rules',[]))
                    for r in result['rbac'])
+
+
+def test_binder_permissions_cover_exact_registered_terminal_operations(request,monkeypatch,tmp_path):
+    from cps_compute.native_scheduler_coordinator_server import OPERATIONS
+    c,*_=harness(request,monkeypatch,tmp_path)
+    result=endpoint.render(c.group_context,**inputs(c))
+    role=next(v for v in result['rbac'] if v['kind']=='ClusterRole' and v['metadata']['name']=='cps-native-kai-terminal')
+    assert role['rules']==[{'nonResourceURLs':['/api/native-kai/v1/'+op for op in OPERATIONS],'verbs':['post']}]

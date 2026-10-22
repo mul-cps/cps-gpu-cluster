@@ -1,0 +1,12 @@
+{
+  "published": true,
+  "image": "ghcr.io/mul-cps/cps-native-kai-binder@sha256:2400691ce4b688383bf0419931baf2397e94f6cb56849a58c2d7c59de0fe3766",
+  "selected_image": "ghcr.io/mul-cps/cps-native-kai-binder@sha256:2400691ce4b688383bf0419931baf2397e94f6cb56849a58c2d7c59de0fe3766",
+  "labels": {
+    "org.mul-cps.binary-sha256": "10a59127cedaf6115d59dcd65f2e95e4191f474c24b0278f418f45ce43eb14a8",
+    "org.mul-cps.kai.patch-sha256": "1e32e4d0cf7fef8dad197d397e0945c094a9738d017870ec121fcd129b41d0ac",
+    "org.mul-cps.kai.upstream-revision": "bdf434e5e9201cccf4e05fad04d814363653f692"
+  },
+  "deployed": false,
+  "production_qualified": false
+}

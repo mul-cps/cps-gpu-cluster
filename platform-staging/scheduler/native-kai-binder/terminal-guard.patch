@@ -322,10 +322,10 @@ index 0000000..d283496
 +}
 diff --git a/pkg/binder/binding/native_terminal.go b/pkg/binder/binding/native_terminal.go
 new file mode 100644
-index 0000000..023f490
+index 0000000..079c2eb
 --- /dev/null
 +++ b/pkg/binder/binding/native_terminal.go
-@@ -0,0 +1,482 @@
+@@ -0,0 +1,492 @@
 +// SPDX-License-Identifier: Apache-2.0
 +
 +package binding
@@ -517,12 +517,6 @@ index 0000000..023f490
 +	if err != nil {
 +		return err
 +	}
-+	// The bridge re-reads registry/maps/enrollment/epoch/central authority under
-+	// the retained fence and uses validate_current_pending_allocation and the
-+	// full immutable ACK validator. Selected-field comparisons are insufficient.
-+	if err = fence.ValidateCurrent(ctx, snapshot, currentACK.DeepCopy()); err != nil {
-+		return err
-+	}
 +	if err = ctx.Err(); err != nil {
 +		return err
 +	}
@@ -533,7 +527,23 @@ index 0000000..023f490
 +		"metadata": map[string]interface{}{"namespace": pod.Namespace, "name": pod.Name, "uid": string(pod.UID), "resourceVersion": snapshot.Pod.ResourceVersion},
 +		"target":   map[string]interface{}{"kind": "Node", "name": node.Name, "uid": string(node.UID)},
 +	}}
-+	if err = fence.ValidateBinding(ctx, binding.DeepCopy()); err != nil {
++	// A combined bridge sends the entire fresh snapshot and actual ACK with
++	// the Binding; the server runs the same full current proof once before
++	// its custody CAS. Other bridges retain their original two-step contract.
++	if combined, ok := fence.(interface {
++		ValidateCurrentAndBinding(context.Context, NativeTerminalSnapshot, *v1.ConfigMap, *unstructured.Unstructured) error
++	}); ok {
++		err = combined.ValidateCurrentAndBinding(ctx, snapshot, currentACK.DeepCopy(), binding.DeepCopy())
++	} else {
++		err = fence.ValidateCurrent(ctx, snapshot, currentACK.DeepCopy())
++		if err == nil {
++			err = ctx.Err()
++		}
++		if err == nil {
++			err = fence.ValidateBinding(ctx, binding.DeepCopy())
++		}
++	}
++	if err != nil {
 +		return err
 +	}
 +	if err = ctx.Err(); err != nil {
@@ -810,10 +820,10 @@ index 0000000..023f490
 +}
 diff --git a/pkg/binder/binding/native_terminal_test.go b/pkg/binder/binding/native_terminal_test.go
 new file mode 100644
-index 0000000..a88bf59
+index 0000000..aa6b28d
 --- /dev/null
 +++ b/pkg/binder/binding/native_terminal_test.go
-@@ -0,0 +1,847 @@
+@@ -0,0 +1,913 @@
 +package binding
 +
 +import (
@@ -1661,12 +1671,78 @@ index 0000000..a88bf59
 +		t.Fatalf("legacy route changed: cap%d error%v", cap, err)
 +	}
 +}
++
++// The optional combined bridge must consume the fresh snapshot and actual ACK
++// before the one Kubernetes Binding, and never fall back after a denial.
++type nativeAtomicTestCoordinator struct {
++	*nativeTestCoordinator
++	atomic func(context.Context, NativeTerminalSnapshot, *v1.ConfigMap, *unstructured.Unstructured) error
++}
++type nativeAtomicTestFence struct {
++	NativeAllocationFence
++	owner *nativeAtomicTestCoordinator
++}
++
++func (c *nativeAtomicTestCoordinator) Prepare(ctx context.Context, s NativeTerminalSnapshot) (NativeAllocationFence, error) {
++	f, err := c.nativeTestCoordinator.Prepare(ctx, s)
++	return &nativeAtomicTestFence{NativeAllocationFence: f, owner: c}, err
++}
++func (f *nativeAtomicTestFence) ValidateCurrentAndBinding(ctx context.Context, s NativeTerminalSnapshot, a *v1.ConfigMap, b *unstructured.Unstructured) error {
++	f.owner.calls = append(f.owner.calls, "atomic-current-binding")
++	return f.owner.atomic(ctx, s, a, b)
++}
++func TestNativeAtomicCurrentBindingRetainsFreshInputsAndFailureCustody(t *testing.T) {
++	for _, outcome := range []string{"success", "denied", "cancelled"} {
++		t.Run(outcome, func(t *testing.T) {
++			pod, node, br := nativeTestInputs()
++			for k, v := range nativeTestState().BindingPodAnnotations {
++				pod.Annotations[k] = v
++			}
++			ack := nativeTestACK(pod)
++			coord := &nativeAtomicTestCoordinator{nativeTestCoordinator: &nativeTestCoordinator{ack: ack}}
++			ctx, cancel := context.WithCancel(context.Background())
++			defer cancel()
++			coord.atomic = func(_ context.Context, s NativeTerminalSnapshot, a *v1.ConfigMap, b *unstructured.Unstructured) error {
++				if !reflect.DeepEqual(a, ack) || s.Pod.UID != pod.UID || s.Node.UID != node.UID || s.BindRequest.UID != br.UID || !reflect.DeepEqual(s.BindingState, nativeTestState()) {
++					t.Fatal("combined validation lost actual readback")
++				}
++				if b.Object["metadata"].(map[string]interface{})["resourceVersion"] != s.Pod.ResourceVersion {
++					t.Fatal("Binding not pinned to fresh Pod")
++				}
++				if outcome == "denied" {
++					return errors.New("authority changed")
++				}
++				if outcome == "cancelled" {
++					cancel()
++				}
++				return nil
++			}
++			bindings := 0
++			kube := nativeTestClient(t, pod, node, br, func(*v1.Binding) error { bindings++; coord.calls = append(coord.calls, "binding"); return nil }, ack)
++			binder := NewBinder(kube, &nativeTestReservation{}, plugins.New())
++			binder.SetNativeTerminal(kube, "authority", coord)
++			err := binder.bindNativeTerminal(ctx, pod, node, br, nativeTestState())
++			expected := []string{"prepare", "atomic-current-binding", "binding", "bound", "close"}
++			if outcome != "success" {
++				expected = []string{"prepare", "atomic-current-binding", "hold", "close"}
++				if err == nil || bindings != 0 {
++					t.Fatal("failed combined proof reached Binding")
++				}
++			} else if err != nil || bindings != 1 {
++				t.Fatalf("normal Binding failed: %v", err)
++			}
++			if !reflect.DeepEqual(coord.calls, expected) {
++				t.Fatalf("wrong combined order %v; expected %v", coord.calls, expected)
++			}
++		})
++	}
++}
 diff --git a/pkg/binder/binding/native_transport.go b/pkg/binder/binding/native_transport.go
 new file mode 100644
-index 0000000..426a98a
+index 0000000..31c8cf9
 --- /dev/null
 +++ b/pkg/binder/binding/native_transport.go
-@@ -0,0 +1,313 @@
+@@ -0,0 +1,324 @@
 +// SPDX-License-Identifier: Apache-2.0
 +package binding
 +
@@ -1963,6 +2039,17 @@ index 0000000..426a98a
 +	_, err := fence.bridge.call(ctx, "current", fields)
 +	return err
 +}
++
++// ValidateCurrentAndBinding retains the exact fresh Current payload while
++// combining its server validation with the subsequent Binding custody CAS.
++func (fence *nativeHTTPFence) ValidateCurrentAndBinding(ctx context.Context, snapshot NativeTerminalSnapshot, ack *v1.ConfigMap, binding *unstructured.Unstructured) error {
++	fields := nativeSnapshotFields(snapshot)
++	fields["fence_id"] = fence.id
++	fields["ack"] = nativeObjectRef(ack.Name, ack.Namespace, ack.UID, ack.ResourceVersion)
++	fields["binding"] = binding.Object
++	_, err := fence.bridge.call(ctx, "current-binding", fields)
++	return err
++}
 +func (fence *nativeHTTPFence) ValidateBinding(ctx context.Context, binding *unstructured.Unstructured) error {
 +	_, err := fence.bridge.call(ctx, "binding", map[string]interface{}{"fence_id": fence.id, "binding": binding.Object})
 +	return err
@@ -1982,10 +2069,10 @@ index 0000000..426a98a
 +}
 diff --git a/pkg/binder/binding/native_transport_test.go b/pkg/binder/binding/native_transport_test.go
 new file mode 100644
-index 0000000..417b0af
+index 0000000..d66850a
 --- /dev/null
 +++ b/pkg/binder/binding/native_transport_test.go
-@@ -0,0 +1,493 @@
+@@ -0,0 +1,540 @@
 +package binding
 +
 +import (
@@ -2259,7 +2346,7 @@ index 0000000..417b0af
 +	return &http.Response{StatusCode: http.StatusOK, Header: http.Header{"Content-Type": []string{"application/json"}}, Body: io.NopCloser(bytes.NewReader(raw))}, nil
 +}
 +func TestNativeHTTPPrepareWaitBudgetDoesNotChangeOtherOperations(t *testing.T) {
-+	for _, operation := range []string{"prepare", "accepted", "current", "binding", "hold", "close", "reservation-delete"} {
++	for _, operation := range []string{"prepare", "accepted", "current", "current-binding", "binding", "hold", "close", "reservation-delete"} {
 +		t.Run(operation, func(t *testing.T) {
 +			bridge, _ := nativeTransportFixture(t, func(http.ResponseWriter, *http.Request) { t.Fatal("unexpected external call") })
 +			transport := &nativeDeadlineTransport{t: t, operation: operation}
@@ -2474,9 +2561,56 @@ index 0000000..417b0af
 +	if !errors.Is(err, ErrNativeCustodyHeld) {
 +		t.Fatalf("accepted failure did not hold custody: %v", err)
 +	}
-+	expected := []string{"prepare", "current", "binding", "accepted", "hold", "close"}
++	expected := []string{"prepare", "current-binding", "accepted", "hold", "close"}
 +	if !reflect.DeepEqual(operations, expected) || binds != 1 || reservation.removed != 0 {
 +		t.Fatalf("accepted failure retried/released or reordered: %v binds=%d removed=%d", operations, binds, reservation.removed)
++	}
++}
++
++func TestNativeHTTPAtomicBindingCarriesFullFreshCurrentProof(t *testing.T) {
++	calls := 0
++	pod, node, br := nativeTestInputs()
++	snapshot := NativeTerminalSnapshot{pod, node, br, nativeTestState()}
++	ack := nativeTestACK(pod)
++	binding := &unstructured.Unstructured{Object: map[string]interface{}{"apiVersion": "v1", "kind": "Binding", "metadata": map[string]interface{}{"name": pod.Name, "namespace": pod.Namespace, "uid": string(pod.UID), "resourceVersion": pod.ResourceVersion}, "target": map[string]interface{}{"kind": "Node", "name": node.Name, "uid": string(node.UID)}}}
++	bridge, _ := nativeTransportFixture(t, func(w http.ResponseWriter, r *http.Request) {
++		calls++
++		if r.URL.Path != "/api/native-kai/v1/current-binding" || r.Method != "POST" || r.Header.Get("Authorization") != "Bearer unit.header.signature" {
++			t.Errorf("wrong combined transport %s", r.URL.Path)
++		}
++		var body map[string]interface{}
++		if err := json.NewDecoder(r.Body).Decode(&body); err != nil {
++			t.Fatal(err)
++		}
++		expected := nativeSnapshotFields(snapshot)
++		expected["fence_id"] = "11111111-2222-4333-8444-555555555559"
++		expected["ack"] = nativeObjectRef(ack.Name, ack.Namespace, ack.UID, ack.ResourceVersion)
++		expected["binding"] = binding.Object
++		expected["protocol"] = nativeWireProtocol
++		expected["operation"] = "current-binding"
++		expected["request_id"] = body["request_id"]
++		// Round-trip both maps so typed generations/nested values compare as JSON.
++		raw, _ := json.Marshal(expected)
++		var normalized map[string]interface{}
++		_ = json.Unmarshal(raw, &normalized)
++		if !reflect.DeepEqual(body, normalized) {
++			t.Errorf("combined request dropped or changed current proof")
++		}
++		w.Header().Set("Content-Type", "application/json")
++		_ = json.NewEncoder(w).Encode(map[string]interface{}{"protocol": body["protocol"], "operation": body["operation"], "request_id": body["request_id"]})
++	})
++	fence := &nativeHTTPFence{bridge: bridge, id: "11111111-2222-4333-8444-555555555559", ack: ack}
++	combined, ok := interface{}(fence).(interface {
++		ValidateCurrentAndBinding(context.Context, NativeTerminalSnapshot, *v1.ConfigMap, *unstructured.Unstructured) error
++	})
++	if !ok {
++		t.Fatal("HTTP bridge does not implement combined current+binding proof")
++	}
++	if err := combined.ValidateCurrentAndBinding(context.Background(), snapshot, ack, binding); err != nil {
++		t.Fatal(err)
++	}
++	if calls != 1 {
++		t.Fatalf("combined proof must be one correlated RPC, got %d", calls)
 +	}
 +}
 diff --git a/pkg/binder/binding/resourcereservation/native_custody_test.go b/pkg/binder/binding/resourcereservation/native_custody_test.go

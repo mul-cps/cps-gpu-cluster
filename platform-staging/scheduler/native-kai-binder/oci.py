@@ -13,8 +13,8 @@ import recipe
 
 ROOT=Path(__file__).resolve().parent
 BASE='ghcr.io/kai-scheduler/kai-scheduler/binder@sha256:1d10b1b212faddab22cdaea5da2f9d17e1d4154d68d7d0f4bfc44dc6a343624b'
-BINARY_SHA='396bded2a86a3b2f205e9dd2397ae71d9a4f0be3c1b6206aca1fe107c752624d'
-IMAGE='localhost/cps-native-kai-binder:prepare130-bdf434e-e16990bc'
+BINARY_SHA='10a59127cedaf6115d59dcd65f2e95e4191f474c24b0278f418f45ce43eb14a8'
+IMAGE='localhost/cps-native-kai-binder:atomic-current-binding-bdf434e-1e32e4d0'
 STOCK_CONFIG={'User':'65532:65532','Env':['PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin','TARGETARCH=amd64','SERVICE_NAME=binder'], 'Entrypoint':['/workspace/app'],'WorkingDir':'/workspace'}
 LABELS={'org.mul-cps.kai.upstream-revision':recipe.COMMIT,
         'org.mul-cps.kai.patch-sha256':recipe.PATCH_SHA256,'org.mul-cps.binary-sha256':BINARY_SHA}
