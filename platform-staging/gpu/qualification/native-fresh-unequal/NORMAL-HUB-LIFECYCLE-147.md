@@ -846,3 +846,35 @@ for service operation remain deliberately absent until their admission rules are
 in place. Evidence and applied manifests are in
 `results/durable-successor-read-rbac-20261023.json` and
 `results/durable-successor-read-rbac-manifests-20261023.json`.
+
+### Narrow trusted controller Pod admission and real held-image preflight
+
+Installed a fail-closed ValidatingAdmissionPolicy scoped only to
+`cps-native-runtime`, bound to the actual current ReplicaSet UID and approved node
+Pod template. The dedicated namespace's PSA enforcement is now privileged, with
+restricted audit/warnings retained; the custom policy is installed before that
+change and constrains images, commands, environment, security fields, host paths,
+credentials projection, physical node and ancestry. No general host-access
+exception was added to either Hub namespace.
+
+18 server dry-runs passed: the intended Pod was accepted and 17 modified Pods
+were denied by the policy. In addition to image/command/owner/mount cases, these
+include health-probe command injection, init privilege escalation and extra GPU
+resources. The exec-probe case first demonstrated a real gap in the initial policy
+and was denied after hardening. CEL type-checking reports no warnings. CEL resource
+field checks use dynamic access because this server's static type view omits
+quantity-map members; altered CPU/memory/GPU cases validate those checks live.
+
+The controller now uses an explicit standard-path projected API token/CA/namespace
+volume with automatic mounting disabled. Its pulling credential was copied
+namespace-locally without disclosure. One actual Pod reached the running packaged
+initializer with no restarts and `release=false`; the node main did not start.
+The actual Node image loaded the complete successor configuration using exact
+Root-supplied current API objects, without live API calls or private authority
+initialization. The held Pod was then normally stopped and replicas are zero.
+
+This proves admission and held-image integration, not native writer readiness.
+Guarded mutation permissions, private authority bootstrap, consumer/observer
+adoption, genuine acknowledgments and ordinary group lifecycle remain pending.
+Evidence: `results/durable-node-pod-admission-20261023.json`, its manifests, and
+`results/durable-node-held-image-preflight-20261023.json`.

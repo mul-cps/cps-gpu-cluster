@@ -1,0 +1,110 @@
+{
+  "version": 1,
+  "kind": "durable-node-exact-pod-admission",
+  "policy": "cps-runtime-trusted-node-pod",
+  "replicaset_uid": "bf0ea1b1-2d90-4cbd-8e8c-27e5aa8f2c3f",
+  "replicaset_name": "cps-native-node-agent-54f79cf6cd",
+  "checks": 697,
+  "server_dry_run_cases": [
+    {
+      "case": "approved",
+      "expected_allowed": true,
+      "actual_allowed": true
+    },
+    {
+      "case": "wrong-image",
+      "expected_allowed": false,
+      "actual_allowed": false
+    },
+    {
+      "case": "wrong-command",
+      "expected_allowed": false,
+      "actual_allowed": false
+    },
+    {
+      "case": "extra-container",
+      "expected_allowed": false,
+      "actual_allowed": false
+    },
+    {
+      "case": "wrong-service-account",
+      "expected_allowed": false,
+      "actual_allowed": false
+    },
+    {
+      "case": "wrong-node",
+      "expected_allowed": false,
+      "actual_allowed": false
+    },
+    {
+      "case": "wrong-owner",
+      "expected_allowed": false,
+      "actual_allowed": false
+    },
+    {
+      "case": "extra-host-mount",
+      "expected_allowed": false,
+      "actual_allowed": false
+    },
+    {
+      "case": "changed-state-path",
+      "expected_allowed": false,
+      "actual_allowed": false
+    },
+    {
+      "case": "extra-env",
+      "expected_allowed": false,
+      "actual_allowed": false
+    },
+    {
+      "case": "changed-init",
+      "expected_allowed": false,
+      "actual_allowed": false
+    },
+    {
+      "case": "host-network",
+      "expected_allowed": false,
+      "actual_allowed": false
+    },
+    {
+      "case": "automount-token",
+      "expected_allowed": false,
+      "actual_allowed": false
+    },
+    {
+      "case": "changed-cpu-limit",
+      "expected_allowed": false,
+      "actual_allowed": false
+    },
+    {
+      "case": "changed-memory-request",
+      "expected_allowed": false,
+      "actual_allowed": false
+    },
+    {
+      "case": "exec-probe-injection",
+      "expected_allowed": false,
+      "actual_allowed": false
+    },
+    {
+      "case": "init-privilege-injection",
+      "expected_allowed": false,
+      "actual_allowed": false
+    },
+    {
+      "case": "extra-gpu-resource",
+      "expected_allowed": false,
+      "actual_allowed": false
+    }
+  ],
+  "policy_type_warnings": [],
+  "pods_created": false,
+  "replicas": 0,
+  "namespace_psa_enforce": "privileged",
+  "namespace_scope": "cps-native-runtime",
+  "bootstrap_released": false,
+  "activation_performed": false,
+  "regression": "Added exec probe was admitted before hardening and denied afterward; all requests server dry-run only",
+  "server_dry_run_only": true,
+  "separate_held_image_preflight": "A real bootstrap-held Pod was created and stopped separately; see durable-node-held-image-preflight-20261023.json. The node main never started."
+}

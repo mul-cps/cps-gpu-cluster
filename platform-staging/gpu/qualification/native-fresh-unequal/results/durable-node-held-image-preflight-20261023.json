@@ -1,0 +1,20 @@
+{
+  "actual_node_image_config_load_passed": true,
+  "configuration_reference": {
+    "data_sha256": "sha256:7bb6ede30d169fc4551e7145fabfdc8844c37da3b84aab2748634905ddb52b32",
+    "key": "config.json",
+    "name": "cps-runtime-node-config-7438f0696323d4e6",
+    "namespace": "cps-native-runtime",
+    "resourceVersion": "380285816",
+    "uid": "4d1cb79b-a17a-481b-9bab-de51b1f2874f"
+  },
+  "bootstrap_release": false,
+  "no_live_api_calls": true,
+  "private_bootstrap_files": 0,
+  "pod_uid": "a492e00d-093b-4691-a855-b398eb957953",
+  "init_image_id": "ghcr.io/mul-cps/cps-native-node@sha256:9d998baa2ad3ee81b3b443c5001aabc81f20c497bd11663bdc3f580ce047bbeb",
+  "init_restart_count": 0,
+  "node_main_started": false,
+  "writer_started": false,
+  "held_pod_stopped_after_validation": true
+}
