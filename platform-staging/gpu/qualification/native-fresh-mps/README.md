@@ -51,8 +51,8 @@ cannot be proved. Never reset a native cap on a transport timeout.
 ## Controlled result (2026-10-22)
 
 The fresh cohort inheriting notebook542's `tini -g -- start.sh` entrypoint
-passed the bounded MPS test: 4096 MiB held, the next 4352 MiB allocation
-attempt rejected, and 282 independent peer ticks. Root process attribution
+passed the bounded MPS test: 4096 MiB held, growth to 4352 MiB
+rejected, and 282 independent peer ticks. Root process attribution
 confirmed all four original MPS processes absent after cleanup; charges
 returned to baseline and original notebook processes, caps and seals stayed
 unchanged. The original controller then retired both stopped Pod caps with
