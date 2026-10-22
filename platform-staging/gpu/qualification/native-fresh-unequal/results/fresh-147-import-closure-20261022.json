@@ -1,0 +1,68 @@
+{
+  "cleanup": {
+    "actual_pods_absent": true,
+    "pre_stop_inventory_entries": 12,
+    "pre_stop_used_bytes": 0,
+    "records_retired_inert_cap": 2
+  },
+  "creator_exit": {
+    "backing_drop_bytes": 67108864,
+    "both_caps": true,
+    "final_charge_zero": true,
+    "minimum_hold_seconds": 20,
+    "participants_absent": true
+  },
+  "cross_parent_vmm": {
+    "both_directions": true,
+    "client_kind": 4,
+    "endpoint_cleanup_verified": true,
+    "kernel_status": 27,
+    "kernel_witness_correlated": true,
+    "peer_survival": true,
+    "reason": 6,
+    "same_parent_positive": true
+  },
+  "evidence_sha256": {
+    "cleanup-after-absence.private.json": "sha256:6009a9e1949bd8f7faaf7402fe45c70abf997acdaf6494030584ccd2ba77b77d",
+    "ipc-b-to-a/receipt.json": "sha256:047eff4cd1abeb7fe802a4d20ad7f9ef5f895f866439f48c6bf0166e46e8c42d",
+    "managed-a/receipt.json": "sha256:ba7810345c60620e1e81628f968b85bda826b32c4c3952282b2f467d7faaf1b1",
+    "managed-b/receipt.json": "sha256:ba7810345c60620e1e81628f968b85bda826b32c4c3952282b2f467d7faaf1b1",
+    "managed-effective-api-review.private.json": "sha256:c8f7a02c4b9b11354e892be9fce9712061df383719d6ec1e9d3551ce1b05c142",
+    "owner-exit-a/receipt.json": "sha256:b1e407f3b3edc09870c10bed4b866c2dc6922d0bdae1fc153503aa8e475d3e67",
+    "owner-exit-b/receipt.json": "sha256:fc8334e0fdf96f623b0338d645f4d2440c06256776cfafa3c2748f7a94f146a9",
+    "vmm-a-to-b-02/receipt.json": "sha256:caf171f408fde4a6395c75ddba7d8ff587a8bc1cefe4e4539b4bf77b6d76870c",
+    "vmm-b-to-a/receipt.json": "sha256:6df6ec2ea566d78f2be3989138fc6f2f38f0d13ad374aa2fc705df2fe1acd31e"
+  },
+  "harness_cpu_tests": 100,
+  "inconclusive_trial": {
+    "case": "first VMM A-to-B",
+    "cause": "Missing Root bridge-sessions staging directory",
+    "result": "Retained as inconclusive; subsequent fresh observation found no clients and all twelve entries zero-used; a fresh trial passed"
+  },
+  "managed_denial": {
+    "both_caps": true,
+    "cuda_result": 801,
+    "proprietary_errno_conversion_claimed": false
+  },
+  "measurement_scope_passed": true,
+  "policy_hash": "sha256:332d14fb9e510b9810feffb8d40b408743f9679ebd13ca1ba0e1077d666e9281",
+  "production_qualified": false,
+  "profile_caps_mib": [
+    5120,
+    10240
+  ],
+  "remaining": [
+    "Fresh authority and coherent runtime activation",
+    "Normal Hub Start/CUDA/Stop and cross-Hub reservations",
+    "Broader production acceptance gates"
+  ],
+  "reverse_ipc": {
+    "cuda_result": 800,
+    "exporter_recovery": true,
+    "importer_survival": true,
+    "kernel_witness_correlated": true,
+    "same_parent_positive": true
+  },
+  "scope": "Controlled current-boot non-MIG shared-GPU memory-import closure for 5/10 GiB only",
+  "version": 1
+}
