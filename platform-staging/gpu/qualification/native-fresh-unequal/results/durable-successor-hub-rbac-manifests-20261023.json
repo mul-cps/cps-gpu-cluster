@@ -1,0 +1,316 @@
+{
+  "apiVersion": "v1",
+  "kind": "List",
+  "items": [
+    {
+      "apiVersion": "rbac.authorization.k8s.io/v1",
+      "kind": "Role",
+      "metadata": {
+        "name": "cps-runtime-hub-cps",
+        "namespace": "cps-native-runtime"
+      },
+      "rules": [
+        {
+          "apiGroups": [
+            ""
+          ],
+          "resources": [
+            "configmaps"
+          ],
+          "verbs": [
+            "get"
+          ],
+          "resourceNames": [
+            "cps-native147-qualification-6a129169a6afef2d"
+          ]
+        }
+      ]
+    },
+    {
+      "apiVersion": "rbac.authorization.k8s.io/v1",
+      "kind": "RoleBinding",
+      "metadata": {
+        "name": "cps-runtime-hub-cps",
+        "namespace": "cps-native-runtime"
+      },
+      "subjects": [
+        {
+          "kind": "ServiceAccount",
+          "namespace": "jupyterhub",
+          "name": "hub"
+        }
+      ],
+      "roleRef": {
+        "apiGroup": "rbac.authorization.k8s.io",
+        "kind": "Role",
+        "name": "cps-runtime-hub-cps"
+      }
+    },
+    {
+      "apiVersion": "rbac.authorization.k8s.io/v1",
+      "kind": "Role",
+      "metadata": {
+        "name": "cps-runtime-hub-cps",
+        "namespace": "jupyterhub"
+      },
+      "rules": [
+        {
+          "apiGroups": [
+            ""
+          ],
+          "resources": [
+            "configmaps"
+          ],
+          "verbs": [
+            "get"
+          ],
+          "resourceNames": [
+            "cps-runtime-ack-hub-cps",
+            "cps-runtime-anchor-hub-cps-463480721f0c35a9",
+            "cps-runtime-head-hub-cps",
+            "cps-runtime-initial-approval-cbf7d39ba84ad7f8"
+          ]
+        },
+        {
+          "apiGroups": [
+            ""
+          ],
+          "resources": [
+            "configmaps"
+          ],
+          "verbs": [
+            "patch"
+          ],
+          "resourceNames": [
+            "cps-runtime-ack-hub-cps"
+          ]
+        },
+        {
+          "apiGroups": [
+            ""
+          ],
+          "resources": [
+            "pods"
+          ],
+          "verbs": [
+            "get"
+          ]
+        },
+        {
+          "apiGroups": [
+            "apps"
+          ],
+          "resources": [
+            "replicasets"
+          ],
+          "verbs": [
+            "get"
+          ]
+        },
+        {
+          "apiGroups": [
+            "apps"
+          ],
+          "resources": [
+            "deployments"
+          ],
+          "verbs": [
+            "get"
+          ],
+          "resourceNames": [
+            "hub"
+          ]
+        },
+        {
+          "apiGroups": [
+            ""
+          ],
+          "resources": [
+            "serviceaccounts"
+          ],
+          "verbs": [
+            "get"
+          ],
+          "resourceNames": [
+            "hub"
+          ]
+        }
+      ]
+    },
+    {
+      "apiVersion": "rbac.authorization.k8s.io/v1",
+      "kind": "RoleBinding",
+      "metadata": {
+        "name": "cps-runtime-hub-cps",
+        "namespace": "jupyterhub"
+      },
+      "subjects": [
+        {
+          "kind": "ServiceAccount",
+          "namespace": "jupyterhub",
+          "name": "hub"
+        }
+      ],
+      "roleRef": {
+        "apiGroup": "rbac.authorization.k8s.io",
+        "kind": "Role",
+        "name": "cps-runtime-hub-cps"
+      }
+    },
+    {
+      "apiVersion": "rbac.authorization.k8s.io/v1",
+      "kind": "Role",
+      "metadata": {
+        "name": "cps-runtime-hub-cit",
+        "namespace": "cps-native-runtime"
+      },
+      "rules": [
+        {
+          "apiGroups": [
+            ""
+          ],
+          "resources": [
+            "configmaps"
+          ],
+          "verbs": [
+            "get"
+          ],
+          "resourceNames": [
+            "cps-native147-qualification-6a129169a6afef2d"
+          ]
+        }
+      ]
+    },
+    {
+      "apiVersion": "rbac.authorization.k8s.io/v1",
+      "kind": "RoleBinding",
+      "metadata": {
+        "name": "cps-runtime-hub-cit",
+        "namespace": "cps-native-runtime"
+      },
+      "subjects": [
+        {
+          "kind": "ServiceAccount",
+          "namespace": "cit-jhub",
+          "name": "hub"
+        }
+      ],
+      "roleRef": {
+        "apiGroup": "rbac.authorization.k8s.io",
+        "kind": "Role",
+        "name": "cps-runtime-hub-cit"
+      }
+    },
+    {
+      "apiVersion": "rbac.authorization.k8s.io/v1",
+      "kind": "Role",
+      "metadata": {
+        "name": "cps-runtime-hub-cit",
+        "namespace": "cit-jhub"
+      },
+      "rules": [
+        {
+          "apiGroups": [
+            ""
+          ],
+          "resources": [
+            "configmaps"
+          ],
+          "verbs": [
+            "get"
+          ],
+          "resourceNames": [
+            "cps-runtime-ack-hub-cit",
+            "cps-runtime-anchor-hub-cit-e6a1ddb089fb7670",
+            "cps-runtime-head-hub-cit",
+            "cps-runtime-initial-approval-cbf7d39ba84ad7f8"
+          ]
+        },
+        {
+          "apiGroups": [
+            ""
+          ],
+          "resources": [
+            "configmaps"
+          ],
+          "verbs": [
+            "patch"
+          ],
+          "resourceNames": [
+            "cps-runtime-ack-hub-cit"
+          ]
+        },
+        {
+          "apiGroups": [
+            ""
+          ],
+          "resources": [
+            "pods"
+          ],
+          "verbs": [
+            "get"
+          ]
+        },
+        {
+          "apiGroups": [
+            "apps"
+          ],
+          "resources": [
+            "replicasets"
+          ],
+          "verbs": [
+            "get"
+          ]
+        },
+        {
+          "apiGroups": [
+            "apps"
+          ],
+          "resources": [
+            "deployments"
+          ],
+          "verbs": [
+            "get"
+          ],
+          "resourceNames": [
+            "hub"
+          ]
+        },
+        {
+          "apiGroups": [
+            ""
+          ],
+          "resources": [
+            "serviceaccounts"
+          ],
+          "verbs": [
+            "get"
+          ],
+          "resourceNames": [
+            "hub"
+          ]
+        }
+      ]
+    },
+    {
+      "apiVersion": "rbac.authorization.k8s.io/v1",
+      "kind": "RoleBinding",
+      "metadata": {
+        "name": "cps-runtime-hub-cit",
+        "namespace": "cit-jhub"
+      },
+      "subjects": [
+        {
+          "kind": "ServiceAccount",
+          "namespace": "cit-jhub",
+          "name": "hub"
+        }
+      ],
+      "roleRef": {
+        "apiGroup": "rbac.authorization.k8s.io",
+        "kind": "Role",
+        "name": "cps-runtime-hub-cit"
+      }
+    }
+  ]
+}

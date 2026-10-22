@@ -1006,3 +1006,27 @@ Hub adoption, delivery/observer updates and ordinary group lifecycle remain open
 Evidence: `results/durable-gateway-successor-read-rbac-20261023.json`,
 `results/durable-gateway-successor-guarded-writes-20261023.json`, their public
 RBAC/admission manifests and `results/durable-successor-gateway-adoption-20261023.json`.
+
+### Both Hubs adopted; four-component readiness passed
+
+CPS and CIT now consume the successor qualification, dynamic heads and own
+publisher/ACK targets. Hub images, canonical identity mapping, CA, policy and
+credentials were preserved. The initial projection contains no approved groups.
+Sixteen explicit-identity SAR cases passed: qualification/head reads and own ACK
+PATCH allowed; successor ledger/foreign ACK mutation, ConfigMap/Pod creation and
+Secret reads denied. No new authority write permission was granted to Hubs.
+
+The first CPS initializer rejected the changed KAI settings because its pinned
+payload hash had not been updated. The failure was before Hub startup. Corrected
+the pin to the exact immutable new payload without weakening the check; the
+preparation script now updates this pin together with settings. CIT received the
+correct pin before rollout. Both current Pods are Ready with zero restarts.
+
+Actual CPS and CIT acknowledgments passed SDK head/process/epoch validation. The
+Gateway runtime readiness reader, using its real service-account permissions,
+authenticated Node, Gateway and both Hubs against one common registry revision.
+This verifies the empty-head handover, not approved workspace execution. Approval
+delivery and observers still require successor configuration before reapproval
+and ordinary shared-GPU Start/Stop.
+Evidence: `results/durable-successor-hub-rbac-20261023.json`, its manifests and
+`results/durable-successor-hub-adoption-20261023.json`.

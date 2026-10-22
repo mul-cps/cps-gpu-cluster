@@ -1,0 +1,178 @@
+{
+  "version": 1,
+  "cases": [
+    {
+      "source": "cps",
+      "attributes": {
+        "namespace": "cps-native-runtime",
+        "verb": "get",
+        "resource": "configmaps",
+        "group": "",
+        "name": "cps-native147-qualification-6a129169a6afef2d"
+      },
+      "allowed": true
+    },
+    {
+      "source": "cps",
+      "attributes": {
+        "namespace": "jupyterhub",
+        "verb": "get",
+        "resource": "configmaps",
+        "group": "",
+        "name": "cps-runtime-head-hub-cps"
+      },
+      "allowed": true
+    },
+    {
+      "source": "cps",
+      "attributes": {
+        "namespace": "jupyterhub",
+        "verb": "patch",
+        "resource": "configmaps",
+        "group": "",
+        "name": "cps-runtime-ack-hub-cps"
+      },
+      "allowed": true
+    },
+    {
+      "source": "cps",
+      "attributes": {
+        "namespace": "cps-native-runtime",
+        "verb": "create",
+        "resource": "configmaps",
+        "group": ""
+      },
+      "allowed": false
+    },
+    {
+      "source": "cps",
+      "attributes": {
+        "namespace": "cps-native-runtime",
+        "verb": "patch",
+        "resource": "configmaps",
+        "group": "",
+        "name": "cps-native-gpu-allocations"
+      },
+      "allowed": false
+    },
+    {
+      "source": "cps",
+      "attributes": {
+        "namespace": "cps-native-runtime",
+        "verb": "patch",
+        "resource": "configmaps",
+        "group": "",
+        "name": "cps-runtime-ack-node"
+      },
+      "allowed": false
+    },
+    {
+      "source": "cps",
+      "attributes": {
+        "namespace": "cps-native-runtime",
+        "verb": "get",
+        "resource": "secrets",
+        "group": "",
+        "name": "arbitrary"
+      },
+      "allowed": false
+    },
+    {
+      "source": "cps",
+      "attributes": {
+        "namespace": "cps-native-runtime",
+        "verb": "create",
+        "resource": "pods",
+        "group": ""
+      },
+      "allowed": false
+    },
+    {
+      "source": "cit",
+      "attributes": {
+        "namespace": "cps-native-runtime",
+        "verb": "get",
+        "resource": "configmaps",
+        "group": "",
+        "name": "cps-native147-qualification-6a129169a6afef2d"
+      },
+      "allowed": true
+    },
+    {
+      "source": "cit",
+      "attributes": {
+        "namespace": "cit-jhub",
+        "verb": "get",
+        "resource": "configmaps",
+        "group": "",
+        "name": "cps-runtime-head-hub-cit"
+      },
+      "allowed": true
+    },
+    {
+      "source": "cit",
+      "attributes": {
+        "namespace": "cit-jhub",
+        "verb": "patch",
+        "resource": "configmaps",
+        "group": "",
+        "name": "cps-runtime-ack-hub-cit"
+      },
+      "allowed": true
+    },
+    {
+      "source": "cit",
+      "attributes": {
+        "namespace": "cps-native-runtime",
+        "verb": "create",
+        "resource": "configmaps",
+        "group": ""
+      },
+      "allowed": false
+    },
+    {
+      "source": "cit",
+      "attributes": {
+        "namespace": "cps-native-runtime",
+        "verb": "patch",
+        "resource": "configmaps",
+        "group": "",
+        "name": "cps-native-gpu-allocations"
+      },
+      "allowed": false
+    },
+    {
+      "source": "cit",
+      "attributes": {
+        "namespace": "cps-native-runtime",
+        "verb": "patch",
+        "resource": "configmaps",
+        "group": "",
+        "name": "cps-runtime-ack-node"
+      },
+      "allowed": false
+    },
+    {
+      "source": "cit",
+      "attributes": {
+        "namespace": "cps-native-runtime",
+        "verb": "get",
+        "resource": "secrets",
+        "group": "",
+        "name": "arbitrary"
+      },
+      "allowed": false
+    },
+    {
+      "source": "cit",
+      "attributes": {
+        "namespace": "cps-native-runtime",
+        "verb": "create",
+        "resource": "pods",
+        "group": ""
+      },
+      "allowed": false
+    }
+  ],
+  "all_expected_results_passed": true
+}

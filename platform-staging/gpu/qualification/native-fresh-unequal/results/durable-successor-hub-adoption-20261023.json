@@ -1,0 +1,35 @@
+{
+  "version": 1,
+  "samples": [
+    {
+      "source": "cps",
+      "pod_uid": "f08ef58e-e80a-46b3-9150-b936280d9228",
+      "observed_at": "2026-10-22T23:27:58.850333+00:00",
+      "head_generation": 0,
+      "ack_resourceVersion": "380321953",
+      "restarts": 0,
+      "genuine_ack_sdk_validated": true
+    },
+    {
+      "source": "cit",
+      "pod_uid": "4d3c1c14-12dd-4d82-b644-9a0a550a6c58",
+      "observed_at": "2026-10-22T23:27:43.064305+00:00",
+      "head_generation": 0,
+      "ack_resourceVersion": "380321536",
+      "restarts": 0,
+      "genuine_ack_sdk_validated": true
+    }
+  ],
+  "approved_workspaces": 0,
+  "ordinary_gpu_access_enabled": false,
+  "production_ready": false,
+  "initializer_payload_pin_updated_without_weakening_check": true,
+  "four_component_runtime_readiness_verified": true,
+  "readiness_reader_actual_gateway_service_account": true,
+  "all_components_same_revision": true,
+  "initial_cps_initializer_pin_mismatch_caught": true,
+  "cps_initializer_corrected_exact_new_payload_hash": true,
+  "cit_initializer_updated_before_rollout": true,
+  "hub_images_unchanged": true,
+  "identity_ca_policy_credentials_preserved": true
+}
