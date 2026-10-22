@@ -1,0 +1,44 @@
+{
+  "authority_checks_changed": false,
+  "base_image": "ghcr.io/mul-cps/cps-native-node@sha256:ca1e903df21a6ed06fc7044e11b22935c8786fc372ef179507f1f9034d73a8a9",
+  "base_layers_preserved": 53,
+  "candidate_layers": 55,
+  "changed_runtime_modules": [
+    "cps_compute/native_node/service.py"
+  ],
+  "config_sha256": "sha256:bb286479f373da5da56e6f35bc046c4f218d309e6926bce833ceb492fa530c8d",
+  "deployed": false,
+  "diagnostic_fields": [
+    "phase",
+    "event",
+    "at_utc",
+    "elapsed_seconds",
+    "process_cpu_seconds",
+    "outcome"
+  ],
+  "driver_changed": false,
+  "execution_fence_changed": false,
+  "image": "ghcr.io/mul-cps/cps-native-node@sha256:729a0b6d0527861982d2d39c951a107ab247cb489a3ad3dc3888d4776eb9a1cf",
+  "kind": "node-daemon-phase-timing-publication",
+  "node_regression_subtests_passed": 49,
+  "node_regression_tests_passed": 632,
+  "passed": true,
+  "phase_labels": [
+    "renewal-first",
+    "renewal-readback",
+    "begin",
+    "after-abort",
+    "pre-ack",
+    "publisher-pre",
+    "publisher-post",
+    "seal-before",
+    "seal-after"
+  ],
+  "production_qualified": false,
+  "qualification_scope": "Diagnostic candidate only; deploy under canonical successor protocol, then correlate actual publication phase timings with read-only metadata watcher.",
+  "root_focused_tests_passed": 54,
+  "runtime_config_preserved": true,
+  "runtime_user": "0",
+  "source_revision": "70de7e7505b473132d95ac83c555d0329e547172",
+  "wheel_sha256": "77fdc1117237e70701f3762bc206b025144487275c939eab56c39fbaf7154d74"
+}
