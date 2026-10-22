@@ -233,3 +233,72 @@ Private evidence: `cit-console-local-records-prepare.actual.private.jsonl`,
 `console147-final-all-released.actual.private.json`,
 `node-console-sharing-after-storage-fix.private.log`, and
 `storage-read-before-create/registry-verification.private.json`.
+
+## Cross-Hub member conflict and rollback: live service qualification passed
+
+The normal CPS console service now has its fresh lifecycle147 group, audited local
+memberships and owned course binding. Its roster contains the existing QA person
+and the reviewed CPS alias of the CIT test person; no username/email matching was
+used. The two CPS canonical members are ordered so the uncontested member is
+processed before the shared member. Both Source service methods use their actual
+local database and Hub credentials against the same isolated TLS gateway and
+shared canonical reservation database. Browser/OAuth interaction is not covered.
+
+The two normal Start calls were issued 1.153 milliseconds apart. CIT acquired the
+shared member and reached Running. CPS received a durable `reservation_conflict`
+audit record, returned its local workspace to stopped and created no notebook Pod.
+Read-only SQLite inspection proved that only the CIT member/binding existed:
+CPS's earlier uncontested member was rolled back, and CPS's failure cleanup did
+not release the CIT member. The persisted conflict contains the exact two-member
+CPS payload and attempt, rather than an unrelated authorization failure.
+CIT winner Pod UID: `6ec77c18-b292-4130-8aa7-9e6f2ac05075`.
+
+After normal CIT Stop and confirmed release, normal CPS Start reached Running
+with both members reserved. A subsequent normal CIT Start was denied with its
+own durable reservation-conflict audit record. The CPS binding and both member
+reservations remained intact; CIT had no binding or notebook Pod. A CUDA operation
+in the surviving CPS notebook passed after the denial and still reported
+5368709120 bytes. Its pre-existing workspace marker checksum was unchanged.
+CPS winner Pod UID: `25845393-1c06-4b0d-be55-2002a19bb973`.
+
+An additional bounded CPS grant for the shared person was written through the
+owning policy API, expiring at the original pilot deadline. With grants from both
+consoles, the single-person policy preview still reported 5 GiB pooled allowance,
+not 10 GiB. This grant also prepares separately entitled CPU/batch profiles for
+future independence tests; those actual launches have not yet been qualified.
+
+Normal CPS Stop completed. All nine accumulated native allocation records are
+released. Both test notebook Pods, both workspace reservation bindings and the
+test members' reservation rows are absent. The final read-only native inventory
+preflight passed. The finite diagnostic controller was deliberately interrupted
+only after cleanup with PID/start-time verification (exit 130); no loop remains.
+Its additional exception-cause logging did not reproduce the transient cleanup
+error on this required CPS stop, so that separate diagnostic finding stays open.
+
+The final protected-user check found its Pod absent. Hub logs attribute this to
+an authenticated `muslim` request: successful
+`204 DELETE /hub/api/users/muslim/server (muslim@193.170.30.58)` at
+2026-10-22T20:31:29 UTC. Kubernetes records the matching notebook stop event on
+GPU1 for the original protected UID. No recreation was attempted. This supersedes
+the earlier statement that this Pod was still Running; it does not indicate a
+test-controller cleanup of that Pod.
+
+This closes the bounded normal-service cross-Hub conflict, rollback and recovery
+scenarios. It does not activate production GPU gates or qualify personal CPU and
+batch independence, stale callback races beyond existing coverage, browser/RTC,
+assignments, broader scheduling/packing, recovery or the other original gates.
+
+Private evidence: `cps-console147-prepare-race.actual.private.jsonl`,
+`cross-hub147-race-cps.actual.private.jsonl`,
+`cross-hub147-race-cit.actual.private.jsonl`,
+`cross-hub147-race-atomic-rollback.actual.private.json`,
+`cross-hub147-reverse-cps-start.actual.private.jsonl`,
+`cross-hub147-reverse-cit-denied.actual.private.jsonl`,
+`cross-hub147-reverse-conflict.actual.private.json`,
+`cross-hub147-cps-cuda-after-conflict.actual.private.json`,
+`cross-hub147-duplicate-grants.actual.private.json`,
+`cross-hub147-close-cit.actual.private.jsonl`,
+`cross-hub147-close-cps.actual.private.jsonl`,
+`cross-hub147-final-all-released.actual.private.json`,
+`cross-hub147-protected-user-own-stop.actual.private.log`, and
+`cross-hub147-receipt.actual.private.json`.
