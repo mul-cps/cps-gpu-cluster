@@ -140,3 +140,34 @@ SDK and every other distribution, then verify existing configuration cold-load
 and the owner-scoped overlay together. The SDK768 Node/Gateway remain separate.
 This preserves original historical qualification handling without broadening
 proof acceptance; it does not assert that the old hardware epoch is current.
+
+## Packaged owner overlay and real account provisioning
+
+Hub-only sourcecf2589d is pushed; immutable image6dd145ada067 was published and
+its registry manifest/config digest verified independently. Root repeated 81
+focused lifetime tests against SDK2f13. Actual current-Hub subprocesses loaded
+both the original dynamic-owner production adapter and new exact-owner overlay
+with lifetime enabled and Kubernetes writes forbidden. Both passed. The image
+contains 20 exact committed Hub modules; all 136 other distributions, inherited
+runtime config, SDK labels and base-layer prefix are preserved. No live Hub
+Deployment has changed.
+
+Ordinary account provisioning derives source-ws-hash principals and requires
+server rtc; the original arbitrary-name/shared proposal was corrected before
+creation. Existing unregistered course-group custody correctly returned409.
+Use fresh pilot groups instead of inventing legacy custody. Both fresh neutral
+accounts/groups were then created successfully through their actual Source
+services (HTTP200), with identity/group/role receipts checked. Their storage is
+not provisioned and no GPU server has started.
+
+Next use normal authenticated fresh-group storage provisioning, not manual
+set_storage or copied active evidence. The isolated Gateway currently disables
+storage. A bounded opt-in must preserve actual provider refs and add exact PV/PVC
+admission plus required read inventory permissions. Merely omitting archive Job
+RBAC is insufficient: NAS archive runs first. Require an explicit provision-only
+SDK configuration that denies archive before metadata/NAS changes. NAS server,
+exports and existing data configuration remain unchanged.
+
+The inert Node test Pod reached its declared deadline without running its
+controller. Recreate only that owned terminal test Pod when the actual lifecycle
+run is ready; retain all host custody, retirement evidence and state.

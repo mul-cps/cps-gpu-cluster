@@ -1,0 +1,60 @@
+{
+  "accounts": [
+    {
+      "fresh_group": "lifecycle147-cit-fresh-b",
+      "gpu_started": false,
+      "group_receipt_present": true,
+      "http_status": 200,
+      "identity_receipt_present": true,
+      "owner": "cit-ws-32173cc91a73f68401201f276b19de1a",
+      "role_receipt_present": true,
+      "scope": "cit:lifecycle147-cit-b",
+      "storage_provisioned": false
+    },
+    {
+      "fresh_group": "lifecycle147-cps-fresh-a",
+      "gpu_started": false,
+      "group_receipt_present": true,
+      "http_status": 200,
+      "identity_receipt_present": true,
+      "owner": "cps-ws-e2491e23a00a5f46404f8f4636f9ed7b",
+      "role_receipt_present": true,
+      "scope": "cps:lifecycle147-cps-a",
+      "storage_provisioned": false
+    }
+  ],
+  "actual_stacked_coldloads": {
+    "cit-jhub": {
+      "lifetime_enabled": true,
+      "state": "stacked-production-and-overlay-coldload-passed",
+      "temporary_owners": [
+        "cit-ws-32173cc91a73f68401201f276b19de1a"
+      ],
+      "writes_forbidden": true
+    },
+    "jupyterhub": {
+      "lifetime_enabled": true,
+      "state": "stacked-production-and-overlay-coldload-passed",
+      "temporary_owners": [
+        "cps-ws-e2491e23a00a5f46404f8f4636f9ed7b"
+      ],
+      "writes_forbidden": true
+    }
+  },
+  "hub_deployments_changed": false,
+  "hub_modules_exact": 20,
+  "image": "ghcr.io/mul-cps/cps-compute@sha256:6dd145ada0670c2217f5ef89bba35bf88252a74a0dbc1e09c76a79a269e45c5d",
+  "independent_focused_tests": {
+    "passed": 81,
+    "sdk": "2f13",
+    "seconds": 2.09
+  },
+  "other_distributions_unchanged": 136,
+  "production_qualified": false,
+  "registry_manifest_hash_verified": true,
+  "schema_version": 1,
+  "sdk_source_preserved": "2f13b5c2acd45bd0d65f1a741c18ab1a0d6a9976",
+  "source_revision": "cf2589d940649668529ffe10622b4700479c2e77",
+  "state": "hub-owner-overlay-packaged-and-coldloaded",
+  "wheel_sha256": "2246cdd77f5723c89aa3212fe71ab2809cbdfcc2b105eff26021df5eb0593d33"
+}
