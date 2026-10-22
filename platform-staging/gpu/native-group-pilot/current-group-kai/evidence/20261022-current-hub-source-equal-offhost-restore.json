@@ -1,0 +1,69 @@
+{
+  "observedAt": "2026-10-22T01:33:28.443567+00:00",
+  "scope": "Current CPS/CIT Hub logical backup and matching-image source-equal restore, including encrypted off-host retrieval",
+  "sourceFix": "ced6dd3980847ff5e75394d8424a60fd52af1e51",
+  "integratedFix": "6c1abc1",
+  "backupToolSha256": "212dcb8c02a3716cc5a1d765befb98195e40c1ef20a884904a1e6dd28ee14641",
+  "restoreToolSha256": "917c82b1a7a867c1e7fc521fc94aaaa58c56f07467bb8331706f8d9c1364f3dc",
+  "fingerprintQueryRevision": "e442f43577c44be9fab60d5aa9a29e98f491eec5",
+  "capture": {
+    "sourceFingerprintsStable": {
+      "cps": true,
+      "cit": true
+    },
+    "bundle": "20261022T013138Z-e83dd82f24ab45d390c1205641d0491c",
+    "productionWritesPaused": false
+  },
+  "hubs": {
+    "jupyterhub": {
+      "schema": "4621fec11365",
+      "users": 22,
+      "databaseVersion": "15.17 (Debian 15.17-1.pgdg13+1)",
+      "image": "docker.io/library/postgres@sha256:866264fb97643e747f9d0981cd060114f83b49450e5bac4988324bb3c6af2fd7",
+      "logicalRestorePassed": true
+    },
+    "cit-jhub": {
+      "schema": "4621fec11365",
+      "users": 18,
+      "databaseVersion": "18.4",
+      "image": "docker.io/bitnami/postgresql@sha256:256bf40a7343862b9a66d1d27cd34599e80dad99284fc5450b24cb02e26ff34e",
+      "logicalRestorePassed": true
+    }
+  },
+  "observedBootstrapGrantors": {
+    "cps": "jhub",
+    "cit": "postgres"
+  },
+  "fullSourceFingerprintEquality": {
+    "local": true,
+    "afterEncryptedOffHostRetrieval": true,
+    "coverage": [
+      "tables",
+      "sequences",
+      "structural schema",
+      "roles",
+      "role memberships including grantors",
+      "ACLs"
+    ]
+  },
+  "encryptedOffHost": {
+    "encryptedRetrievedDecrypted": true,
+    "allFilesByteEqual": true,
+    "cipherSha256": "8ea4fc471fd49a00f9435ba21672f474d2cd843bc26e218cbfd5400f0fc82b1e",
+    "remoteDirectoryMode": "0700",
+    "independentDisasterKeyCustodyVerified": false
+  },
+  "tests": {
+    "fullComputePlatformPassed": 125,
+    "independentRootHubUnionPassed": 30
+  },
+  "temporaryRestoreContainersRemoved": true,
+  "productionQualified": false,
+  "supersedesFailure": "20261022-source-restore-membership-mismatch.json",
+  "remaining": [
+    "Connected matching Hub/console OAuth and normal spawning recovery",
+    "Coordinated Hub/console/gateway/NFS/artifact recovery",
+    "Independent disaster key custody",
+    "Backup retention and routine off-host scheduling"
+  ]
+}
