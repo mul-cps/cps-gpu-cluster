@@ -194,9 +194,18 @@ This was an offline capture check, not an atomic maintenance-fenced observation.
 The original guarded core and UVM source were reconstructed from verified
 retained inputs and both compiled for kernel 6.8.0-147 in an isolated CPU-only
 build. No device access, network access during compilation, install or module
-load occurred. ABI verification remains open: standard Fedora and Ubuntu kmod
-readers reject the variable-length `__versions` format used by the actual
-Ubuntu headers and both the stock and candidate modules. A strict reader for
-the captured kernel structure is required; this is not permission to omit CRC
-comparison or change the allowed dependency set. Eight focused recipe tests
-passed before this actual-format integration case was discovered.
+load occurred. ABI verification subsequently passed with a strict, tested
+reader pinned to the variable-length `__versions` structure in the actual
+Ubuntu headers. Standard Fedora and Ubuntu kmod readers could not parse that
+format for either stock or candidate modules. All 470 core imports and 340 UVM
+imports were checked against the actual kernel/new core CRC maps; full exports,
+stock import preservation and exact stock/candidate UVM import equality passed.
+The six extra core imports exactly match the previously qualified guarded
+build, including the full imported-name digest; none was waived as unknown.
+Thirty-five recipe tests and the actual offline ABI gate independently passed.
+
+The pinned recipe is committed at
+`e5426e867c14c170b71e4faa02baff5437783e0b`. Source, package/compiler inventory,
+complete symbol maps and build logs are retained with checksums. Public summary:
+`platform-staging/gpu/r615-driver/evidence/20261022-kernel147-offline-build.json`.
+This is an offline build/ABI result, not a load or hardware qualification.

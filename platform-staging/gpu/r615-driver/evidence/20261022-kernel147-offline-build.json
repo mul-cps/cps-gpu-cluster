@@ -1,0 +1,19 @@
+{
+  "version": 1,
+  "scope": "cpu-only-guarded-module-build-and-offline-abi",
+  "kernel": "6.8.0-147-generic",
+  "passed": true,
+  "loaded": false,
+  "hardware_qualified": false,
+  "recipe_commit": "e5426e867c14c170b71e4faa02baff5437783e0b",
+  "recipe_sha256": "d1d85de34b2bdfb852241edc811b30842aed6a6c7a932799588b8018bfcefbaf",
+  "candidate_core_sha256": "24b83a0ed1c676fccee3eb3d558d32b407a32f5ebd3e4a979bf468ac405e852c",
+  "candidate_uvm_sha256": "0ff0de040dc840fb3f08ce6d289de032b7952774827064dbabe050c01a70a39b",
+  "core_imports": 470,
+  "uvm_imports": 340,
+  "full_symbol_maps_sha256": "df966df9a16aea726258224f4a53da1bbea844eded270289811ae350509184ca",
+  "compiler_kernel_receipt_sha256": "c14dd76131bece1418e7ab64f524772150e585c9a4b7062f7dd80923c540a82f",
+  "package_inventory_sha256": "3629b0476a231381db96597a1b2a190989c43ac8320222dc5d0edde2d8a69925",
+  "source_proof_sha256": "d64a983b6dfb8b666cfd66cac8708f8e109e24dd77496c6ab35f638d9bd7531a",
+  "build_log_sha256": "99fae0f5b21424c3ca88027804f6e67329adfc00045855341a30b520e1cab2ef"
+}
