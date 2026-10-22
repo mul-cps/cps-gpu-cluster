@@ -945,3 +945,18 @@ owned files/metadata. Dependency checks and nonroot, read-only, networkless impo
 smokes passed. Published registry digests were independently checked. Deployment
 remains pending coordinated consumer configuration and readiness validation.
 Image evidence: `results/authority-scoped-registry-images-20261023.json`.
+
+### Scoped-registry images deployed with existing configuration
+
+Gateway and approval capture now run the published scoped-registry images. The
+rollout completed with both containers ready, zero restarts and runtime UID
+10001. All 78 installed SDK module digests match the reviewed wheel. Comparing
+Deployment specs proves only the two container images changed; all mounts,
+credentials, runtime settings and authority references were retained. All three
+GPU ledgers had no active allocations before rollout.
+
+An immutable service-image successor Node configuration was staged and loaded
+through the SDK, linking its exact predecessor and changing only Gateway's image
+declaration. It is not activated. Gateway/Hub authority adoption, genuine
+four-component readiness and ordinary group lifecycle remain pending.
+Evidence: `results/authority-scoped-registry-image-rollout-20261023.json`.

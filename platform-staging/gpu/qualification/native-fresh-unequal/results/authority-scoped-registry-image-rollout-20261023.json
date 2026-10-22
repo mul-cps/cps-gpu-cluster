@@ -1,0 +1,17 @@
+{
+  "version": 1,
+  "source_revision": "88cbf365559c454ad9fba5403bcd7ab8575f4742",
+  "deployment_uid": "f5f9b266-433d-4825-83de-d51e31c71648",
+  "pod_uid": "e3a97310-982a-4979-9c5d-9af1e3f4373f",
+  "ready_containers": 2,
+  "restarts": 0,
+  "only_container_images_changed": true,
+  "installed_sdk_modules_match_reviewed_wheel": 78,
+  "runtime_uid": 10001,
+  "existing_configuration_preserved": true,
+  "authority_adopted": false,
+  "workspace_gpu_access_enabled": false,
+  "successor_node_configuration_staged": "cps-runtime-node-config-bb3adac74ec58c5b",
+  "successor_node_configuration_sdk_validated": true,
+  "successor_node_configuration_activated": false
+}
