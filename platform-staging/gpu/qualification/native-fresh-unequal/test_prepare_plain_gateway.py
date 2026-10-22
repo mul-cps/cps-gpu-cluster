@@ -100,3 +100,31 @@ def test_actual_standard_argo_token_uses_new_sa_mount_not_old_projection():
  assert 'argo-ca' in {x['name'] for x in out['volumes']}
  assert r['runtime']['argo_token_file']=='/var/run/secrets/kubernetes.io/serviceaccount/token'
  assert 'ARGO'not in {x['name'] for x in main['env']}
+
+def storage_fixture():
+ a=inherited_fixture();c=a['deployment']['spec']['template']['spec']['containers'][0]
+ a['runtime']['storage']={'enabled':True,'storageVersion':2,'ssh':{'host':'193.170.30.58','user':'cps-workspace-control','port':8022,'identity_file':'/storage-bridge/id_ed25519','known_hosts_file':'/storage-bridge/known_hosts'},'readonlyMounts':[]}
+ a['deployment']['spec']['template']['spec']['volumes'].append({'name':'storage-bridge','secret':{'secretName':'actual-storage-provider','defaultMode':288}})
+ c['volumeMounts'].append({'name':'storage-bridge','mountPath':'/storage-bridge','readOnly':True})
+ a['fresh_provisioning']=[{'source':'cps','workspace':'a','group_id':'fresh-a'},{'source':'cit','workspace':'b','group_id':'fresh-b'}]
+ a['pilot']['runtime']['nativeGpuPilot']['native_pilot_workspaces']['cit:b']={'profile':'interactive-native-pilot-5'}
+ a['pilot']['reviewed_approvals']={'cps:a':{'group_id':'fresh-a'},'cit:b':{'group_id':'fresh-b'}}
+ return a
+
+def test_explicit_two_target_provision_only_optin_retains_actual_bridge():
+ a=storage_fixture();old=copy.deepcopy(a);r=mod().prepare(**a);assert a==old
+ assert r['runtime']['storage']=={**a['runtime']['storage'],'allowedOperations':['provision']}
+ pod=r['deployment']['spec']['template']['spec'];v=next(x for x in pod['volumes'] if x['name']=='storage-bridge')
+ assert v['secret']=={'secretName':'actual-storage-provider','defaultMode':288}
+ assert next(x for x in pod['containers'][0]['volumeMounts'] if x['name']=='storage-bridge')['readOnly']is True
+ assert len(r['fresh_storage']['targets'])==2 and r['deploy_ready']is False
+ assert any('SDK' in x for x in r['pending'])
+
+@pytest.mark.parametrize('fault',['scope','group','bridge','provider'])
+def test_storage_optin_cannot_expand_scope_or_provider(fault):
+ a=storage_fixture()
+ if fault=='scope':a['fresh_provisioning'][0]['workspace']='foreign'
+ if fault=='group':a['fresh_provisioning'][0]['group_id']='foreign'
+ if fault=='bridge':a['deployment']['spec']['template']['spec']['containers'][0]['volumeMounts'][-1]['readOnly']=False
+ if fault=='provider':a['runtime']['storage']['ssh']['host']='foreign'
+ with pytest.raises(ValueError):mod().prepare(**a)

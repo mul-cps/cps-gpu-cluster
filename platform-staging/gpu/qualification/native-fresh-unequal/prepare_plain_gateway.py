@@ -19,7 +19,7 @@ def named(rows):
     out={x['name']:x for x in rows};require(len(out)==len(rows),'Duplicate named actual rows');return out
 
 def prepare(*,deployment,runtime,pilot,tls_secret_ref,ca_configmap_ref,policy_configmap_ref,
-            runtime_secret_ref,new_name,selected_state_node,credential_secret_metadata=None):
+            runtime_secret_ref,new_name,selected_state_node,credential_secret_metadata=None,fresh_provisioning=None):
     require(type(deployment) is dict and deployment.get('apiVersion')=='apps/v1'
             and deployment.get('kind')=='Deployment','Full actual Gateway Deployment required')
     meta=deployment.get('metadata',{})
@@ -91,7 +91,26 @@ def prepare(*,deployment,runtime,pilot,tls_secret_ref,ca_configmap_ref,policy_co
             'Actual protected upstream credential environment references required')
     main['env']=[copy.deepcopy(env[k]) for k in sorted(required)]+[{'name':'CPS_COMPUTE_CONFIG','value':'/pilot-runtime/runtime.json'},{'name':'PYTHONDONTWRITEBYTECODE','value':'1'}]
     main.pop('envFrom',None)
+    fresh_storage=None
+    provider=None
+    if fresh_provisioning is not None:
+        import importlib.util
+        from pathlib import Path
+        source=Path(__file__).with_name('plain_lifecycle_storage_rbac.py')
+        spec=importlib.util.spec_from_file_location('_reviewed_fresh_storage',source)
+        helper=importlib.util.module_from_spec(spec);spec.loader.exec_module(helper)
+        provider=copy.deepcopy(runtime.get('storage'))
+        require(type(provider) is dict and provider.get('enabled') is True,'Actual enabled original storage provider required')
+        provider['allowedOperations']=['provision']
+        fresh_storage=helper.build(provider=provider,targets=fresh_provisioning)
+        scopes=pilot['runtime']['nativeGpuPilot']['native_pilot_workspaces']
+        require({t['source']+':'+t['workspace'] for t in fresh_storage['targets']}==set(scopes),
+                'Fresh storage targets must equal exact pilot workspace scopes')
+        approvals=pilot.get('reviewed_approvals',{})
+        require(all(approvals.get(t['source']+':'+t['workspace'],{}).get('group_id')==t['group_id']
+                    for t in fresh_storage['targets']),'Fresh group must match reviewed pilot approval')
     paths=[runtime[k] for k in ('argo_ca_file','argo_token_file') if runtime.get(k)]
+    if provider is not None:paths += [provider['ssh'][k] for k in ('identity_file','known_hosts_file')]
     kept=[copy.deepcopy(data[0])]
     for path in paths:
         matches=[m for m in mounts if type(m.get('mountPath')) is str and (path==m['mountPath'] or path.startswith(m['mountPath'].rstrip('/')+'/'))]
@@ -127,6 +146,7 @@ def prepare(*,deployment,runtime,pilot,tls_secret_ref,ca_configmap_ref,policy_co
                     'template':{'metadata':{'labels':labels},'spec':pod}}}
     cfg=copy.deepcopy(runtime);cfg.update(copy.deepcopy(pilot['runtime']));cfg['policy_hash']=policy_hash;cfg['policy_file']='/pilot-policy/policy.json'
     for key in ('nativeGpuGroups','nativeGpuQualification','nativeGroupApprovals','jobsets','argoUi','argoUI','storage'):cfg[key]={'enabled':False}
+    if provider is not None:cfg['storage']=provider
     cfg.pop('artifacts',None);cfg['shutdownObserver']={'kubernetes':True}
     return {'version':1,'proposal_only':True,'deploy_ready':False,'production_qualified':False,
             'preimages':{'deployment_sha256':digest(deployment),'runtime_sha256':digest(runtime),'uid':meta['uid'],'resourceVersion':meta['resourceVersion']},
@@ -134,5 +154,6 @@ def prepare(*,deployment,runtime,pilot,tls_secret_ref,ca_configmap_ref,policy_co
             'service_account':{'apiVersion':'v1','kind':'ServiceAccount','metadata':{'namespace':'cps-compute','name':new_name}},
             'hub_endpoint':{'origin':'https://'+new_name+'.cps-compute.svc.cluster.local','ca_configmap_ref':copy.deepcopy(ca_configmap_ref)},
             'credential_secret_preimages':copy.deepcopy(credential_secret_metadata or []),
+            'fresh_storage':fresh_storage,
             'rbac':{'pending':True,'required':'Dedicated SA exact-node GET, target-Pod GET, pilot-namespace ledger GET/PATCH and shape-restricted CM CREATE; explicit SAR and admission qualification required.'},
-            'pending':['Actual PVC attachment/current-node preflight','Actual new TLS SAN/CA and Secret content verification','Full runtime factory and health-probe qualification','Temporary canonical registrations, alias grants and active storage verification','Legacy Node768 and complete prior inventory compatibility']}
+            'pending':(['SDK provision-only allowedOperations enforcement and actual denied archive before metadata/NAS changes'] if fresh_storage is not None else [])+['Actual PVC attachment/current-node preflight','Actual new TLS SAN/CA and Secret content verification','Full runtime factory and health-probe qualification','Temporary canonical registrations, alias grants and active storage verification','Legacy Node768 and complete prior inventory compatibility']}
