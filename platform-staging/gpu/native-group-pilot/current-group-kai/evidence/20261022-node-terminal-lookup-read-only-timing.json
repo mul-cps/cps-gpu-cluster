@@ -1,0 +1,89 @@
+{
+  "base_image": "ghcr.io/mul-cps/cps-native-node@sha256:e1ebf7c0ce992acc843133c90c4b88a13ff7f58796569a42b7ecde490b0c1b48",
+  "base_source_revision": "56de05cb5f914f4fd28462201376324c042a8c21",
+  "changed_runtime_module": "cps_compute/native_node/custody.py",
+  "deployed": false,
+  "limits": [
+    "Four quiet-state snapshots establish bounded performance evidence, not normal-start success.",
+    "Live policy, services, devices, reservations and notebook were unchanged.",
+    "No CUDA isolation test was repeated or invalidated.",
+    "Execution fence and all fresh live authority checks remain unchanged."
+  ],
+  "mean_elapsed_reduction_fraction": 0.2124514377611194,
+  "mean_elapsed_seconds": {
+    "A": 5.60794001352042,
+    "B": 4.416525094769895
+  },
+  "module_sha256": "4b6387e75744352d9b615e57aa015ecb2af1159f90ff607003e6e7c7bb78689b",
+  "observations": [
+    {
+      "api_gets": 686,
+      "elapsed_seconds": 5.468690469861031,
+      "private_reads": 13804,
+      "process_cpu_seconds": 4.135022399,
+      "raw_receipt_sha256": "6875616c681286c994e944e879a8b25c0588cf8dd41b7f9f2e8fa01daeaac8db",
+      "sequence": 0,
+      "variant": "A"
+    },
+    {
+      "api_gets": 599,
+      "elapsed_seconds": 4.50727666541934,
+      "private_reads": 9681,
+      "process_cpu_seconds": 3.520896829,
+      "raw_receipt_sha256": "d94cf5b8cf275fc5136ad2da324210dd15ba0440ee8bf483878354937388db56",
+      "sequence": 1,
+      "variant": "B"
+    },
+    {
+      "api_gets": 599,
+      "elapsed_seconds": 4.32577352412045,
+      "private_reads": 9681,
+      "process_cpu_seconds": 3.5418050039999995,
+      "raw_receipt_sha256": "15f17512bf46997dfd536078071c79e19c09d2b02f0d5b0b755635f000597383",
+      "sequence": 2,
+      "variant": "B"
+    },
+    {
+      "api_gets": 686,
+      "elapsed_seconds": 5.747189557179809,
+      "private_reads": 13804,
+      "process_cpu_seconds": 4.1894956,
+      "raw_receipt_sha256": "573b1a9bc5958c8daf01ad8a1241befa6e86ef389da8d4f67a835bb43c0ba180",
+      "sequence": 3,
+      "variant": "A"
+    }
+  ],
+  "production_ready": false,
+  "published_candidate": {
+    "base_image": "ghcr.io/mul-cps/cps-native-node@sha256:e1ebf7c0ce992acc843133c90c4b88a13ff7f58796569a42b7ecde490b0c1b48",
+    "base_layers_preserved": 51,
+    "candidate_layers": 53,
+    "config_sha256": "sha256:1b2b1afc4050946ffe40cf552278743bed2c3a3819f9f9adc7d19912b50b9bf6",
+    "deployed": false,
+    "image": "ghcr.io/mul-cps/cps-native-node@sha256:ca1e903df21a6ed06fc7044e11b22935c8786fc372ef179507f1f9034d73a8a9",
+    "passed": true,
+    "runtime_config_preserved": true,
+    "runtime_user": "0",
+    "source_revision": "cc86cbdf087802951e75c7528758c7cac937d0b9",
+    "wheel_sha256": "17830c7845ba1eceb15e61cecff7e2fc6fc2b2d327f8883b7e5382a09faa285a"
+  },
+  "scope": "read-only-current-node-comparison",
+  "source_revision": "cc86cbdf087802951e75c7528758c7cac937d0b9",
+  "startup_qualified": false,
+  "variants": {
+    "A": "unmodified installed Node source",
+    "B": "candidate custody module in an isolated stdin-only diagnostic process"
+  },
+  "verification": {
+    "api_writes": 0,
+    "cri_calls": 0,
+    "driver_calls": 0,
+    "filesystem_writes": 0,
+    "passed_subtests": 49,
+    "passed_tests": 630,
+    "source_review": "CLEAR",
+    "warning": "Starlette dependency deprecated AnyIO BlockingPortal alias",
+    "warnings": 1
+  },
+  "version": 1
+}
