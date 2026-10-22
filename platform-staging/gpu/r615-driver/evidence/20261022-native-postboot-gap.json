@@ -1,0 +1,27 @@
+{
+  "version": 1,
+  "observed_at": "2026-10-22T12:54:18.819648+00:00",
+  "scope": "postboot-native-enforcement-gap",
+  "node": "k3s-wk-gpu2",
+  "boot_id": "a464df41-e391-4443-b8e8-ad7ecd052318",
+  "kernel": "6.8.0-147-generic",
+  "driver_version": "615.71.09",
+  "loaded_srcversions": {
+    "nvidia": "21362C9DF5C1F6DCBE23F50",
+    "nvidia_uvm": "2CA5427BFF504A8F70EEAE8"
+  },
+  "required_qualified_srcversions": {
+    "nvidia": "2F87172C8F45C13DCB1A7BA",
+    "nvidia_uvm": "9353E234906B1910373B07A"
+  },
+  "import_guard_parameter_present": false,
+  "native_custody_directory_present": false,
+  "native_node_available_replicas": 0,
+  "shared_enforcement_restored": false,
+  "required_next": [
+    "Reproduce guarded-module build for the current kernel and verify its exact dependencies before any load.",
+    "Resolve missing historical custody using an explicitly reviewed recovery boundary.",
+    "Provision durable custody and qualify the actual new boot before enabling native sharing."
+  ],
+  "changes_applied_by_observation": false
+}

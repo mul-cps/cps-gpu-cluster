@@ -154,3 +154,17 @@ exclude concurrent claims, and separately qualify a fresh current-boot epoch.
 The declaration itself must never authorize GPU access. Durable, verified custody
 storage and off-host backup must precede reactivation. This protocol is not yet
 implemented or deployed; existing admission checks remain unchanged.
+
+
+## Current loaded native guard gap
+
+A later read-only check on GPU2 confirms that the reboot restored the stock
+615.71.09 module build. Its `NVreg_CpsNativeImportGuard` parameter is absent;
+loaded core/UVM source versions differ from the exact previously qualified
+CPS guarded builds. The official driver can pass ordinary CUDA tests while
+lacking those guards. Restoring custody alone therefore cannot restore shared
+GPU enforcement. A guarded build for kernel 6.8.0-147, dependency validation,
+reviewed load and relevant hardware qualification remain required. No module
+was unloaded or replaced during this observation.
+
+See `platform-staging/gpu/r615-driver/evidence/20261022-native-postboot-gap.json`.
