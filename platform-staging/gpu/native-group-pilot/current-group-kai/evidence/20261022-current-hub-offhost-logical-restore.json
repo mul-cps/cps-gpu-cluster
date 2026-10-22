@@ -1,0 +1,49 @@
+{
+  "observedAt": "2026-10-22T01:18:42.401834+00:00",
+  "scope": "Current CPS and CIT Hub PostgreSQL backup, encrypted off-host round trip, matching-image isolated logical restore",
+  "capture": "20261022T011059Z-195ef44f74d149199b0691ab42300ef0",
+  "sequentialCapture": true,
+  "hubs": {
+    "jupyterhub": {
+      "schema": "4621fec11365",
+      "users": 22,
+      "databaseVersion": "15.17 (Debian 15.17-1.pgdg13+1)",
+      "image": "docker.io/library/postgres@sha256:866264fb97643e747f9d0981cd060114f83b49450e5bac4988324bb3c6af2fd7",
+      "logicalRestorePassed": true
+    },
+    "cit-jhub": {
+      "schema": "4621fec11365",
+      "users": 18,
+      "databaseVersion": "18.4",
+      "image": "docker.io/bitnami/postgresql@sha256:256bf40a7343862b9a66d1d27cd34599e80dad99284fc5450b24cb02e26ff34e",
+      "logicalRestorePassed": true
+    }
+  },
+  "localBundleLogicalRestorePassed": true,
+  "retrievedBundleLogicalRestorePassed": true,
+  "encryptedOffHostCopy": {
+    "destination": "Existing TrueNAS persistent backup dataset; private directory",
+    "cipherSha256": "b8576c1bd394ce1f4a02f208529c9d082c265d6715d227e1119c665f36ce24e6",
+    "retrievedAndDecrypted": true,
+    "allBundleFilesByteEqual": true,
+    "remoteDirectoryMode": "0700",
+    "remoteCipherMode": "0600",
+    "key": "Existing operator SSH identity; no key material in receipt",
+    "independentDisasterKeyCustodyVerified": false
+  },
+  "isolation": {
+    "containerNetwork": "none",
+    "productionSecretsApplied": false,
+    "hostMounts": false,
+    "publishedPorts": false,
+    "matchingDatabaseImages": true,
+    "temporaryContainersRemoved": true
+  },
+  "productionQualified": false,
+  "remaining": [
+    "Contemporaneous source row and role/ACL fingerprints",
+    "Matching application initialization and connected OAuth/spawn recovery",
+    "Coordinated Hub, console, gateway, NFS and artifact recovery",
+    "Independent disaster key custody and retention schedule"
+  ]
+}
