@@ -302,3 +302,94 @@ Private evidence: `cps-console147-prepare-race.actual.private.jsonl`,
 `cross-hub147-final-all-released.actual.private.json`,
 `cross-hub147-protected-user-own-stop.actual.private.log`, and
 `cross-hub147-receipt.actual.private.json`.
+
+## Student CPU/batch independence and HTTP access revocation
+
+A CPS non-admin qualification user's real Hub API token authenticated as canonical
+person `386feebb-df1a-4f3c-9ef9-6d9c026d5aea`. Short-lived test tokens inherited
+existing roles only; no roles, authentication state or refresh policy were altered.
+A bounded local project and project grant were created through validated/audited
+application/provider and owning policy APIs. All four temporary tokens were revoked
+and their private plaintext files removed after testing.
+
+Ordinary batch used the unchanged production gateway image
+`sha256:5f1dd4f55710f1cdf97d24a1165b265681c61c67578680b8f5ef8bd67a34fc3c`
+and policy hash
+`sha256:332d14fb9e510b9810feffb8d40b408743f9679ebd13ca1ba0e1077d666e9281`.
+The isolated native gateway remains excluded from Argo ingress by network policy:
+its workload-list request fails, whereas production access with its configured
+CA works. No network policy, credential, deployment image or production GPU gate
+was weakened to route batch through the isolated gateway.
+
+While the same person was reserved in the running CPS shared 5 GiB GPU workspace,
+the student requested a personal `cpu-default` server through their own Hub API.
+The observed Pod requested 2 CPUs, 8 GiB and no GPU. The first cold-image trial
+exceeded the fixed 180-second test budget and was normally stopped; it is retained
+as a failed trial. Events show attachment in about 14 seconds, followed by a
+158.373-second pull of the 10,475,847,925-byte notebook image
+`sha256:a2159bf12d79069ab7eae9075a95dfeaf95e2c7980103701eea595745967bba1`.
+The unchanged retry used the same profile and 180-second budget, reached Ready in
+39.294 seconds, and was normally stopped. Both trials scheduled on GPU3. The warm
+image check took 118 milliseconds. This is one warm startup observation, not a
+burst/p95 qualification; cold-image coverage and pre-pulling still need work.
+
+Independently, the student's production `/v1/workflows` request ran an approved
+2-CPU/8-GiB `batch-cpu` workflow while the GPU member reservation stayed held.
+Workflow `cps-ca43da85c75ecae68021912975100988094cbb40a4c5d438`, UID
+`6531d382-161b-4c93-917b-bd7acc2432de`, reached Succeeded in 29 seconds and its
+personal log endpoint returned the unique marker. Repeated submissions returned
+the same UID and the personal list contained one copy. The warm CPU test later
+inspected that same completed workflow; it did not execute another batch run.
+Read-only reservation checks and the GPU workspace's audit interval show no
+release during the successful CPU case. The completed workflow is retained under
+normal lifecycle policy, with no active orphan batch job.
+
+Actual shared-server HTTP authorization was checked with two existing non-admin
+CPS users, using tokens issued before the membership change. Both authenticated
+as themselves and received 200 from the shared server's protected Contents API;
+a request without credentials received 403. The normal console service then
+removed `cpsgpumembera`, stopping the workspace and waiting for native cleanup
+before completing removal. The normal service restarted with the remaining QA
+member and revalidated its fixed profile. With the same still-authenticated
+tokens, the removed user received 403 and the survivor received 200. This proves
+server access revocation beyond a database-only scope inspection. It does not
+prove browser OAuth cookies, RTC synchronization or the addon UI's full flow.
+The same-origin addon service redirected the token-only probe to login, so that
+probe is not counted as a browser authentication pass.
+
+The synthetic CIT user's token did not provide a corresponding positive case:
+its Hub row has no default user role or prior auth state, and CIT requires a
+fresh login. The fixture must go through genuine directory authentication before
+it can represent an authenticated CIT student. No role or auth-state bypass was
+introduced to make the test pass.
+
+After normal final Stop, all eleven accumulated native allocations are released;
+all test notebook Pods are absent. The node loop completed its 180 iterations
+but exited 1 because iteration 96 recorded one wrapped journal-lock cleanup
+error for Pod `d06b0883-ff62-4c6b-8689-af69b422dfaf`; subsequent cleanup recovered.
+This is not a clean controller qualification. Its underlying cause remains open.
+The final read-only inventory/physical-retirement preflight passed. No controller
+loop remains running and no driver, kernel, MIG or NFS address was changed.
+
+The CPS fixture now contains only canonical QA member
+`0949db38-7f66-4524-a3f4-cd38a3e6db69`; the CIT fixture retains
+`386feebb-df1a-4f3c-9ef9-6d9c026d5aea`. Do not reuse the earlier two-member CPS
+start guard without reconciling this deliberate membership removal.
+Next priority is automatic unequal 5/20 GiB qualification with exception-cause
+logging, not another repetition of the passed two5 lifecycle.
+
+Private evidence is under `student-independence/`: `receipt.actual.private.json`,
+`student-independence.actual.private.jsonl` (failed cold trial),
+`student-independence-warm.actual.private.jsonl`,
+`parallel-student-batch.actual.private.jsonl`,
+`cpu-cold-and-warm-pod-events.actual.private.json`,
+`gpu-reservation-after-batch.actual.private.json`,
+`gpu-reservation-warm-interval-audit.actual.private.json`,
+`visitor-http-before-removal.actual.private.json`,
+`visitor-http-after-removal.actual.private.json`,
+`remove-shared-member.actual.private.jsonl`,
+`survivor-normal-start.actual.private.jsonl`,
+`final-gpu-close.actual.private.jsonl`,
+`all-eleven-allocations-released.actual.private.json`,
+the four `*-token-revoked.actual.private.json` receipts, and
+`node-controller.private.log`.
