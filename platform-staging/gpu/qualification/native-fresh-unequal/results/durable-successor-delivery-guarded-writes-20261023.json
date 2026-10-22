@@ -1,0 +1,72 @@
+{
+  "version": 1,
+  "cases": [
+    {
+      "case": "approval wire accepted; not SDK proof",
+      "allowed": true
+    },
+    {
+      "case": "mutable approval denied",
+      "allowed": false
+    },
+    {
+      "case": "arbitrary publication denied",
+      "allowed": false
+    },
+    {
+      "case": "extra approval key denied",
+      "allowed": false
+    },
+    {
+      "case": "approval metadata denied",
+      "allowed": false
+    },
+    {
+      "case": "bounded operator GET expansion accepted",
+      "allowed": true
+    },
+    {
+      "case": "unnamed operator GET denied",
+      "allowed": false
+    },
+    {
+      "case": "extra Role mutation target denied",
+      "allowed": false
+    },
+    {
+      "case": "Secret read privilege denied",
+      "allowed": false
+    },
+    {
+      "case": "unchanged pinned head accepted",
+      "allowed": true
+    },
+    {
+      "case": "extra head data denied",
+      "allowed": false
+    },
+    {
+      "case": "missing head key denied",
+      "allowed": false
+    },
+    {
+      "case": "head metadata injection denied",
+      "allowed": false
+    },
+    {
+      "case": "node ACK patch denied by RBAC",
+      "allowed": false
+    }
+  ],
+  "all_expected_results_passed": true,
+  "fixtures_persisted": false,
+  "writer_started": false,
+  "scope": "wire admission and RBAC only; SDK validates approval contents and head lineage",
+  "authentication": {
+    "transport": "direct Kubernetes API via temporary loopback-only SSH forwarding; TLS CA and server name verified",
+    "actual_username": "system:serviceaccount:cps-compute:cps-runtime-head-delivery",
+    "rancher_impersonation_used": false,
+    "token_ttl_seconds": 600,
+    "token_bound_to_temporary_secret": true
+  }
+}

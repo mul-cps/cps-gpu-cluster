@@ -1,0 +1,959 @@
+{
+  "apiVersion": "v1",
+  "kind": "List",
+  "items": [
+    {
+      "apiVersion": "v1",
+      "kind": "ServiceAccount",
+      "metadata": {
+        "namespace": "cps-compute",
+        "name": "cps-runtime-head-delivery"
+      }
+    },
+    {
+      "apiVersion": "admissionregistration.k8s.io/v1",
+      "kind": "ValidatingAdmissionPolicy",
+      "metadata": {
+        "name": "cps-runtime-delivery-pregrant-update"
+      },
+      "spec": {
+        "failurePolicy": "Fail",
+        "matchConstraints": {
+          "resourceRules": [
+            {
+              "apiGroups": [
+                "rbac.authorization.k8s.io"
+              ],
+              "apiVersions": [
+                "v1"
+              ],
+              "operations": [
+                "UPDATE"
+              ],
+              "resources": [
+                "roles"
+              ],
+              "scope": "Namespaced"
+            }
+          ]
+        },
+        "matchConditions": [
+          {
+            "name": "delivery-principal",
+            "expression": "request.userInfo.username == \"system:serviceaccount:cps-compute:cps-runtime-head-delivery\""
+          }
+        ],
+        "validations": [
+          {
+            "expression": "(request.namespace == \"cps-compute\" && object.metadata.name == \"cps-runtime-observer-operator\" && oldObject.metadata.uid == \"4f10f7d3-5956-47f7-b51b-f62bafa7c07e\" && object.metadata.uid == oldObject.metadata.uid && size(object.rules) == 6 && object.rules[0].apiGroups == [\"rbac.authorization.k8s.io\"] && object.rules[0].resources == [\"roles\"] && object.rules[0].verbs == [\"get\",\"patch\",\"escalate\"] && (!has(object.rules[0].nonResourceURLs) || size(object.rules[0].nonResourceURLs)==0) && object.rules[0].resourceNames == [\"cps-native-approval-gateway\"] && object.rules[1].apiGroups == [\"apps\"] && object.rules[1].resources == [\"deployments\"] && object.rules[1].verbs == [\"get\"] && (!has(object.rules[1].nonResourceURLs) || size(object.rules[1].nonResourceURLs)==0) && object.rules[1].resourceNames == [\"compute-gateway\"] && object.rules[2].apiGroups == [\"\"] && object.rules[2].resources == [\"serviceaccounts\"] && object.rules[2].verbs == [\"get\"] && (!has(object.rules[2].nonResourceURLs) || size(object.rules[2].nonResourceURLs)==0) && object.rules[2].resourceNames == [\"cps-compute-controller\"] && object.rules[3].apiGroups == [\"\"] && object.rules[3].resources == [\"pods\"] && object.rules[3].verbs == [\"get\",\"list\"] && (!has(object.rules[3].nonResourceURLs) || size(object.rules[3].nonResourceURLs)==0) && (!has(object.rules[3].resourceNames) || size(object.rules[3].resourceNames)==0) && object.rules[4].apiGroups == [\"apps\"] && object.rules[4].resources == [\"replicasets\"] && object.rules[4].verbs == [\"get\"] && (!has(object.rules[4].nonResourceURLs) || size(object.rules[4].nonResourceURLs)==0) && (!has(object.rules[4].resourceNames) || size(object.rules[4].resourceNames)==0) && object.rules[5].apiGroups == [\"\"] && object.rules[5].resources == [\"configmaps\"] && object.rules[5].verbs == [\"get\"] && (!has(object.rules[5].nonResourceURLs) || size(object.rules[5].nonResourceURLs)==0) && has(object.rules[5].resourceNames) && size(object.rules[5].resourceNames) >= 1 && size(object.rules[5].resourceNames) <= 128 && [\"cps-runtime-ack-gateway\",\"cps-runtime-anchor-gateway-7f8d4c449f924b7a\",\"cps-runtime-head-gateway\",\"cps-runtime-initial-approval-cbf7d39ba84ad7f8\"].all(n,n in object.rules[5].resourceNames) && object.rules[5].resourceNames.all(n,n.matches(\"^[a-z0-9][a-z0-9.-]{0,252}$\"))) || (request.namespace == \"cit-jhub\" && object.metadata.name == \"cps-runtime-observer-operator\" && oldObject.metadata.uid == \"6c1903e4-4141-4701-9522-015bfd84be4c\" && object.metadata.uid == oldObject.metadata.uid && size(object.rules) == 6 && object.rules[0].apiGroups == [\"rbac.authorization.k8s.io\"] && object.rules[0].resources == [\"roles\"] && object.rules[0].verbs == [\"get\",\"patch\",\"escalate\"] && (!has(object.rules[0].nonResourceURLs) || size(object.rules[0].nonResourceURLs)==0) && object.rules[0].resourceNames == [\"cps-native-approval-gateway\",\"cps-native-approval-hub-cit\"] && object.rules[1].apiGroups == [\"apps\"] && object.rules[1].resources == [\"deployments\"] && object.rules[1].verbs == [\"get\"] && (!has(object.rules[1].nonResourceURLs) || size(object.rules[1].nonResourceURLs)==0) && object.rules[1].resourceNames == [\"hub\"] && object.rules[2].apiGroups == [\"\"] && object.rules[2].resources == [\"serviceaccounts\"] && object.rules[2].verbs == [\"get\"] && (!has(object.rules[2].nonResourceURLs) || size(object.rules[2].nonResourceURLs)==0) && object.rules[2].resourceNames == [\"hub\"] && object.rules[3].apiGroups == [\"\"] && object.rules[3].resources == [\"pods\"] && object.rules[3].verbs == [\"get\",\"list\"] && (!has(object.rules[3].nonResourceURLs) || size(object.rules[3].nonResourceURLs)==0) && (!has(object.rules[3].resourceNames) || size(object.rules[3].resourceNames)==0) && object.rules[4].apiGroups == [\"apps\"] && object.rules[4].resources == [\"replicasets\"] && object.rules[4].verbs == [\"get\"] && (!has(object.rules[4].nonResourceURLs) || size(object.rules[4].nonResourceURLs)==0) && (!has(object.rules[4].resourceNames) || size(object.rules[4].resourceNames)==0) && object.rules[5].apiGroups == [\"\"] && object.rules[5].resources == [\"configmaps\"] && object.rules[5].verbs == [\"get\"] && (!has(object.rules[5].nonResourceURLs) || size(object.rules[5].nonResourceURLs)==0) && has(object.rules[5].resourceNames) && size(object.rules[5].resourceNames) >= 1 && size(object.rules[5].resourceNames) <= 128 && [\"cps-runtime-ack-hub-cit\",\"cps-runtime-anchor-hub-cit-e6a1ddb089fb7670\",\"cps-runtime-head-hub-cit\",\"cps-runtime-initial-approval-cbf7d39ba84ad7f8\"].all(n,n in object.rules[5].resourceNames) && object.rules[5].resourceNames.all(n,n.matches(\"^[a-z0-9][a-z0-9.-]{0,252}$\"))) || (request.namespace == \"jupyterhub\" && object.metadata.name == \"cps-runtime-observer-operator\" && oldObject.metadata.uid == \"f8f8ee5c-9ec6-4d66-8e2a-b7a2da2c2ecf\" && object.metadata.uid == oldObject.metadata.uid && size(object.rules) == 6 && object.rules[0].apiGroups == [\"rbac.authorization.k8s.io\"] && object.rules[0].resources == [\"roles\"] && object.rules[0].verbs == [\"get\",\"patch\",\"escalate\"] && (!has(object.rules[0].nonResourceURLs) || size(object.rules[0].nonResourceURLs)==0) && object.rules[0].resourceNames == [\"cps-native-approval-gateway\",\"cps-native-approval-hub-cps\"] && object.rules[1].apiGroups == [\"apps\"] && object.rules[1].resources == [\"deployments\"] && object.rules[1].verbs == [\"get\"] && (!has(object.rules[1].nonResourceURLs) || size(object.rules[1].nonResourceURLs)==0) && object.rules[1].resourceNames == [\"hub\"] && object.rules[2].apiGroups == [\"\"] && object.rules[2].resources == [\"serviceaccounts\"] && object.rules[2].verbs == [\"get\"] && (!has(object.rules[2].nonResourceURLs) || size(object.rules[2].nonResourceURLs)==0) && object.rules[2].resourceNames == [\"hub\"] && object.rules[3].apiGroups == [\"\"] && object.rules[3].resources == [\"pods\"] && object.rules[3].verbs == [\"get\",\"list\"] && (!has(object.rules[3].nonResourceURLs) || size(object.rules[3].nonResourceURLs)==0) && (!has(object.rules[3].resourceNames) || size(object.rules[3].resourceNames)==0) && object.rules[4].apiGroups == [\"apps\"] && object.rules[4].resources == [\"replicasets\"] && object.rules[4].verbs == [\"get\"] && (!has(object.rules[4].nonResourceURLs) || size(object.rules[4].nonResourceURLs)==0) && (!has(object.rules[4].resourceNames) || size(object.rules[4].resourceNames)==0) && object.rules[5].apiGroups == [\"\"] && object.rules[5].resources == [\"configmaps\"] && object.rules[5].verbs == [\"get\"] && (!has(object.rules[5].nonResourceURLs) || size(object.rules[5].nonResourceURLs)==0) && has(object.rules[5].resourceNames) && size(object.rules[5].resourceNames) >= 1 && size(object.rules[5].resourceNames) <= 128 && [\"cps-runtime-ack-hub-cps\",\"cps-runtime-anchor-hub-cps-463480721f0c35a9\",\"cps-runtime-head-hub-cps\",\"cps-runtime-initial-approval-cbf7d39ba84ad7f8\"].all(n,n in object.rules[5].resourceNames) && object.rules[5].resourceNames.all(n,n.matches(\"^[a-z0-9][a-z0-9.-]{0,252}$\"))) || (request.namespace == \"cps-native-runtime\" && object.metadata.name == \"cps-runtime-observer-operator\" && oldObject.metadata.uid == \"8f0b4f37-9bee-4fc7-9e3f-785f6bc18e97\" && object.metadata.uid == oldObject.metadata.uid && size(object.rules) == 6 && object.rules[0].apiGroups == [\"rbac.authorization.k8s.io\"] && object.rules[0].resources == [\"roles\"] && object.rules[0].verbs == [\"get\",\"patch\",\"escalate\"] && (!has(object.rules[0].nonResourceURLs) || size(object.rules[0].nonResourceURLs)==0) && object.rules[0].resourceNames == [\"cps-native-approval-gateway\",\"cps-native-approval-node\"] && object.rules[1].apiGroups == [\"apps\"] && object.rules[1].resources == [\"deployments\"] && object.rules[1].verbs == [\"get\"] && (!has(object.rules[1].nonResourceURLs) || size(object.rules[1].nonResourceURLs)==0) && object.rules[1].resourceNames == [\"cps-native-node-agent\"] && object.rules[2].apiGroups == [\"\"] && object.rules[2].resources == [\"serviceaccounts\"] && object.rules[2].verbs == [\"get\"] && (!has(object.rules[2].nonResourceURLs) || size(object.rules[2].nonResourceURLs)==0) && object.rules[2].resourceNames == [\"cps-native-node-agent\"] && object.rules[3].apiGroups == [\"\"] && object.rules[3].resources == [\"pods\"] && object.rules[3].verbs == [\"get\",\"list\"] && (!has(object.rules[3].nonResourceURLs) || size(object.rules[3].nonResourceURLs)==0) && (!has(object.rules[3].resourceNames) || size(object.rules[3].resourceNames)==0) && object.rules[4].apiGroups == [\"apps\"] && object.rules[4].resources == [\"replicasets\"] && object.rules[4].verbs == [\"get\"] && (!has(object.rules[4].nonResourceURLs) || size(object.rules[4].nonResourceURLs)==0) && (!has(object.rules[4].resourceNames) || size(object.rules[4].resourceNames)==0) && object.rules[5].apiGroups == [\"\"] && object.rules[5].resources == [\"configmaps\"] && object.rules[5].verbs == [\"get\"] && (!has(object.rules[5].nonResourceURLs) || size(object.rules[5].nonResourceURLs)==0) && has(object.rules[5].resourceNames) && size(object.rules[5].resourceNames) >= 1 && size(object.rules[5].resourceNames) <= 128 && [\"cps-native-gpu-allocations\",\"cps-native147-qualification-6a129169a6afef2d\",\"cps-predecessor-ledger-04520da78adf531e\",\"cps-runtime-ack-node\",\"cps-runtime-anchor-node-06ad00d5b50947e1\",\"cps-runtime-bootstrap-held\",\"cps-runtime-deployment-31a3b77cbb519d73\",\"cps-runtime-head-node\",\"cps-runtime-initial-approval-cbf7d39ba84ad7f8\",\"cps-runtime-node-config-7438f0696323d4e6\",\"cps-runtime-node-config-bb3adac74ec58c5b\",\"cps-runtime-terminal-index-815719b2e259a18d\",\"kube-root-ca.crt\"].all(n,n in object.rules[5].resourceNames) && object.rules[5].resourceNames.all(n,n.matches(\"^[a-z0-9][a-z0-9.-]{0,252}$\")))",
+            "message": "Only four pinned operator reader Roles and bounded ConfigMap GET expansions are permitted."
+          },
+          {
+            "expression": "object.metadata.name == oldObject.metadata.name && object.metadata.namespace == oldObject.metadata.namespace && has(object.metadata.labels)==has(oldObject.metadata.labels) && (!has(oldObject.metadata.labels)||object.metadata.labels==oldObject.metadata.labels) && has(object.metadata.annotations)==has(oldObject.metadata.annotations) && (!has(oldObject.metadata.annotations)||object.metadata.annotations==oldObject.metadata.annotations) && has(object.metadata.ownerReferences)==has(oldObject.metadata.ownerReferences) && (!has(oldObject.metadata.ownerReferences)||object.metadata.ownerReferences==oldObject.metadata.ownerReferences) && has(object.metadata.finalizers)==has(oldObject.metadata.finalizers) && (!has(oldObject.metadata.finalizers)||object.metadata.finalizers==oldObject.metadata.finalizers)",
+            "message": "Role identity and metadata must stay unchanged."
+          }
+        ]
+      }
+    },
+    {
+      "apiVersion": "admissionregistration.k8s.io/v1",
+      "kind": "ValidatingAdmissionPolicyBinding",
+      "metadata": {
+        "name": "cps-runtime-delivery-pregrant-update"
+      },
+      "spec": {
+        "policyName": "cps-runtime-delivery-pregrant-update",
+        "validationActions": [
+          "Deny"
+        ]
+      }
+    },
+    {
+      "apiVersion": "admissionregistration.k8s.io/v1",
+      "kind": "ValidatingAdmissionPolicyBinding",
+      "metadata": {
+        "name": "cps-runtime-delivery-approval-create"
+      },
+      "spec": {
+        "policyName": "cps-runtime-delivery-approval-create",
+        "validationActions": [
+          "Deny"
+        ]
+      }
+    },
+    {
+      "apiVersion": "admissionregistration.k8s.io/v1",
+      "kind": "ValidatingAdmissionPolicy",
+      "metadata": {
+        "name": "cps-runtime-delivery-head-update"
+      },
+      "spec": {
+        "failurePolicy": "Fail",
+        "matchConstraints": {
+          "resourceRules": [
+            {
+              "apiGroups": [
+                ""
+              ],
+              "apiVersions": [
+                "v1"
+              ],
+              "operations": [
+                "UPDATE"
+              ],
+              "resources": [
+                "configmaps"
+              ],
+              "scope": "Namespaced"
+            }
+          ]
+        },
+        "matchConditions": [
+          {
+            "name": "delivery-principal",
+            "expression": "request.userInfo.username == \"system:serviceaccount:cps-compute:cps-runtime-head-delivery\""
+          }
+        ],
+        "validations": [
+          {
+            "expression": "(request.namespace == \"cps-native-runtime\" && object.metadata.namespace==request.namespace && object.metadata.name==\"cps-runtime-head-node\" && oldObject.metadata.uid==\"bfdd2fcc-a882-4994-b6fa-2d95b9cdbc07\" && object.metadata.uid==oldObject.metadata.uid) || (request.namespace == \"cps-compute\" && object.metadata.namespace==request.namespace && object.metadata.name==\"cps-runtime-head-gateway\" && oldObject.metadata.uid==\"0711d5fc-e76f-4e4f-adde-cf996af997c3\" && object.metadata.uid==oldObject.metadata.uid) || (request.namespace == \"jupyterhub\" && object.metadata.namespace==request.namespace && object.metadata.name==\"cps-runtime-head-hub-cps\" && oldObject.metadata.uid==\"89dc195a-38c8-413d-bef7-fbe0d7e1c11d\" && object.metadata.uid==oldObject.metadata.uid) || (request.namespace == \"cit-jhub\" && object.metadata.namespace==request.namespace && object.metadata.name==\"cps-runtime-head-hub-cit\" && oldObject.metadata.uid==\"3c2801b1-1e13-43c7-91b4-655ebf415e11\" && object.metadata.uid==oldObject.metadata.uid)",
+            "message": "Only four exact fixed-UID head pointers may update."
+          },
+          {
+            "expression": "object.metadata.name == oldObject.metadata.name && object.metadata.namespace == oldObject.metadata.namespace && has(object.metadata.labels)==has(oldObject.metadata.labels) && (!has(oldObject.metadata.labels)||object.metadata.labels==oldObject.metadata.labels) && has(object.metadata.annotations)==has(oldObject.metadata.annotations) && (!has(oldObject.metadata.annotations)||object.metadata.annotations==oldObject.metadata.annotations) && has(object.metadata.ownerReferences)==has(oldObject.metadata.ownerReferences) && (!has(oldObject.metadata.ownerReferences)||object.metadata.ownerReferences==oldObject.metadata.ownerReferences) && has(object.metadata.finalizers)==has(oldObject.metadata.finalizers) && (!has(oldObject.metadata.finalizers)||object.metadata.finalizers==oldObject.metadata.finalizers) && (!has(object.immutable)||!object.immutable) && !has(object.binaryData) && has(object.data) && size(object.data)==1 && \"head.json\" in object.data && size(object.data[\"head.json\"])<=65536",
+            "message": "Head pointer identity/metadata and closed bounded text data required."
+          }
+        ]
+      }
+    },
+    {
+      "apiVersion": "admissionregistration.k8s.io/v1",
+      "kind": "ValidatingAdmissionPolicyBinding",
+      "metadata": {
+        "name": "cps-runtime-delivery-head-update"
+      },
+      "spec": {
+        "policyName": "cps-runtime-delivery-head-update",
+        "validationActions": [
+          "Deny"
+        ]
+      }
+    },
+    {
+      "apiVersion": "rbac.authorization.k8s.io/v1",
+      "kind": "Role",
+      "metadata": {
+        "namespace": "cps-compute",
+        "name": "cps-runtime-head-delivery"
+      },
+      "rules": [
+        {
+          "apiGroups": [
+            ""
+          ],
+          "resources": [
+            "configmaps"
+          ],
+          "verbs": [
+            "get",
+            "create"
+          ]
+        },
+        {
+          "apiGroups": [
+            ""
+          ],
+          "resources": [
+            "configmaps"
+          ],
+          "verbs": [
+            "patch"
+          ],
+          "resourceNames": [
+            "cps-runtime-head-gateway"
+          ]
+        },
+        {
+          "apiGroups": [
+            "rbac.authorization.k8s.io"
+          ],
+          "resources": [
+            "roles"
+          ],
+          "verbs": [
+            "get",
+            "patch",
+            "escalate"
+          ],
+          "resourceNames": [
+            "cps-runtime-observer-operator"
+          ]
+        },
+        {
+          "apiGroups": [
+            ""
+          ],
+          "resources": [
+            "pods"
+          ],
+          "verbs": [
+            "get",
+            "list"
+          ]
+        },
+        {
+          "apiGroups": [
+            "apps"
+          ],
+          "resources": [
+            "replicasets"
+          ],
+          "verbs": [
+            "get"
+          ]
+        },
+        {
+          "apiGroups": [
+            "apps"
+          ],
+          "resources": [
+            "deployments"
+          ],
+          "verbs": [
+            "get"
+          ],
+          "resourceNames": [
+            "compute-gateway"
+          ]
+        },
+        {
+          "apiGroups": [
+            ""
+          ],
+          "resources": [
+            "serviceaccounts"
+          ],
+          "verbs": [
+            "get"
+          ],
+          "resourceNames": [
+            "cps-compute-controller"
+          ]
+        }
+      ]
+    },
+    {
+      "apiVersion": "rbac.authorization.k8s.io/v1",
+      "kind": "RoleBinding",
+      "metadata": {
+        "namespace": "cps-compute",
+        "name": "cps-runtime-head-delivery"
+      },
+      "subjects": [
+        {
+          "kind": "ServiceAccount",
+          "namespace": "cps-compute",
+          "name": "cps-runtime-head-delivery"
+        }
+      ],
+      "roleRef": {
+        "apiGroup": "rbac.authorization.k8s.io",
+        "kind": "Role",
+        "name": "cps-runtime-head-delivery"
+      }
+    },
+    {
+      "apiVersion": "rbac.authorization.k8s.io/v1",
+      "kind": "Role",
+      "metadata": {
+        "namespace": "cit-jhub",
+        "name": "cps-runtime-head-delivery"
+      },
+      "rules": [
+        {
+          "apiGroups": [
+            ""
+          ],
+          "resources": [
+            "configmaps"
+          ],
+          "verbs": [
+            "get",
+            "create"
+          ]
+        },
+        {
+          "apiGroups": [
+            ""
+          ],
+          "resources": [
+            "configmaps"
+          ],
+          "verbs": [
+            "patch"
+          ],
+          "resourceNames": [
+            "cps-runtime-head-hub-cit"
+          ]
+        },
+        {
+          "apiGroups": [
+            "rbac.authorization.k8s.io"
+          ],
+          "resources": [
+            "roles"
+          ],
+          "verbs": [
+            "get",
+            "patch",
+            "escalate"
+          ],
+          "resourceNames": [
+            "cps-runtime-observer-operator"
+          ]
+        },
+        {
+          "apiGroups": [
+            ""
+          ],
+          "resources": [
+            "pods"
+          ],
+          "verbs": [
+            "get",
+            "list"
+          ]
+        },
+        {
+          "apiGroups": [
+            "apps"
+          ],
+          "resources": [
+            "replicasets"
+          ],
+          "verbs": [
+            "get"
+          ]
+        },
+        {
+          "apiGroups": [
+            "apps"
+          ],
+          "resources": [
+            "deployments"
+          ],
+          "verbs": [
+            "get"
+          ],
+          "resourceNames": [
+            "hub"
+          ]
+        },
+        {
+          "apiGroups": [
+            ""
+          ],
+          "resources": [
+            "serviceaccounts"
+          ],
+          "verbs": [
+            "get"
+          ],
+          "resourceNames": [
+            "hub"
+          ]
+        }
+      ]
+    },
+    {
+      "apiVersion": "rbac.authorization.k8s.io/v1",
+      "kind": "RoleBinding",
+      "metadata": {
+        "namespace": "cit-jhub",
+        "name": "cps-runtime-head-delivery"
+      },
+      "subjects": [
+        {
+          "kind": "ServiceAccount",
+          "namespace": "cps-compute",
+          "name": "cps-runtime-head-delivery"
+        }
+      ],
+      "roleRef": {
+        "apiGroup": "rbac.authorization.k8s.io",
+        "kind": "Role",
+        "name": "cps-runtime-head-delivery"
+      }
+    },
+    {
+      "apiVersion": "rbac.authorization.k8s.io/v1",
+      "kind": "Role",
+      "metadata": {
+        "namespace": "jupyterhub",
+        "name": "cps-runtime-head-delivery"
+      },
+      "rules": [
+        {
+          "apiGroups": [
+            ""
+          ],
+          "resources": [
+            "configmaps"
+          ],
+          "verbs": [
+            "get",
+            "create"
+          ]
+        },
+        {
+          "apiGroups": [
+            ""
+          ],
+          "resources": [
+            "configmaps"
+          ],
+          "verbs": [
+            "patch"
+          ],
+          "resourceNames": [
+            "cps-runtime-head-hub-cps"
+          ]
+        },
+        {
+          "apiGroups": [
+            "rbac.authorization.k8s.io"
+          ],
+          "resources": [
+            "roles"
+          ],
+          "verbs": [
+            "get",
+            "patch",
+            "escalate"
+          ],
+          "resourceNames": [
+            "cps-runtime-observer-operator"
+          ]
+        },
+        {
+          "apiGroups": [
+            ""
+          ],
+          "resources": [
+            "pods"
+          ],
+          "verbs": [
+            "get",
+            "list"
+          ]
+        },
+        {
+          "apiGroups": [
+            "apps"
+          ],
+          "resources": [
+            "replicasets"
+          ],
+          "verbs": [
+            "get"
+          ]
+        },
+        {
+          "apiGroups": [
+            "apps"
+          ],
+          "resources": [
+            "deployments"
+          ],
+          "verbs": [
+            "get"
+          ],
+          "resourceNames": [
+            "hub"
+          ]
+        },
+        {
+          "apiGroups": [
+            ""
+          ],
+          "resources": [
+            "serviceaccounts"
+          ],
+          "verbs": [
+            "get"
+          ],
+          "resourceNames": [
+            "hub"
+          ]
+        }
+      ]
+    },
+    {
+      "apiVersion": "rbac.authorization.k8s.io/v1",
+      "kind": "RoleBinding",
+      "metadata": {
+        "namespace": "jupyterhub",
+        "name": "cps-runtime-head-delivery"
+      },
+      "subjects": [
+        {
+          "kind": "ServiceAccount",
+          "namespace": "cps-compute",
+          "name": "cps-runtime-head-delivery"
+        }
+      ],
+      "roleRef": {
+        "apiGroup": "rbac.authorization.k8s.io",
+        "kind": "Role",
+        "name": "cps-runtime-head-delivery"
+      }
+    },
+    {
+      "apiVersion": "rbac.authorization.k8s.io/v1",
+      "kind": "Role",
+      "metadata": {
+        "namespace": "cps-native-runtime",
+        "name": "cps-runtime-head-delivery"
+      },
+      "rules": [
+        {
+          "apiGroups": [
+            ""
+          ],
+          "resources": [
+            "configmaps"
+          ],
+          "verbs": [
+            "get",
+            "create"
+          ]
+        },
+        {
+          "apiGroups": [
+            ""
+          ],
+          "resources": [
+            "configmaps"
+          ],
+          "verbs": [
+            "patch"
+          ],
+          "resourceNames": [
+            "cps-runtime-head-node"
+          ]
+        },
+        {
+          "apiGroups": [
+            "rbac.authorization.k8s.io"
+          ],
+          "resources": [
+            "roles"
+          ],
+          "verbs": [
+            "get",
+            "patch",
+            "escalate"
+          ],
+          "resourceNames": [
+            "cps-runtime-observer-operator"
+          ]
+        },
+        {
+          "apiGroups": [
+            ""
+          ],
+          "resources": [
+            "pods"
+          ],
+          "verbs": [
+            "get",
+            "list"
+          ]
+        },
+        {
+          "apiGroups": [
+            "apps"
+          ],
+          "resources": [
+            "replicasets"
+          ],
+          "verbs": [
+            "get"
+          ]
+        },
+        {
+          "apiGroups": [
+            "apps"
+          ],
+          "resources": [
+            "deployments"
+          ],
+          "verbs": [
+            "get"
+          ],
+          "resourceNames": [
+            "cps-native-node-agent"
+          ]
+        },
+        {
+          "apiGroups": [
+            ""
+          ],
+          "resources": [
+            "serviceaccounts"
+          ],
+          "verbs": [
+            "get"
+          ],
+          "resourceNames": [
+            "cps-native-node-agent"
+          ]
+        }
+      ]
+    },
+    {
+      "apiVersion": "rbac.authorization.k8s.io/v1",
+      "kind": "RoleBinding",
+      "metadata": {
+        "namespace": "cps-native-runtime",
+        "name": "cps-runtime-head-delivery"
+      },
+      "subjects": [
+        {
+          "kind": "ServiceAccount",
+          "namespace": "cps-compute",
+          "name": "cps-runtime-head-delivery"
+        }
+      ],
+      "roleRef": {
+        "apiGroup": "rbac.authorization.k8s.io",
+        "kind": "Role",
+        "name": "cps-runtime-head-delivery"
+      }
+    },
+    {
+      "apiVersion": "apps/v1",
+      "kind": "Deployment",
+      "metadata": {
+        "namespace": "cps-compute",
+        "name": "cps-runtime-head-delivery"
+      },
+      "spec": {
+        "progressDeadlineSeconds": 600,
+        "replicas": 1,
+        "revisionHistoryLimit": 10,
+        "selector": {
+          "matchLabels": {
+            "app": "cps-runtime-head-delivery"
+          }
+        },
+        "strategy": {
+          "type": "Recreate"
+        },
+        "template": {
+          "metadata": {
+            "labels": {
+              "app": "cps-runtime-head-delivery"
+            }
+          },
+          "spec": {
+            "containers": [
+              {
+                "args": [
+                  "--config",
+                  "/inputs/delivery/delivery.json",
+                  "--state-dir",
+                  "/journal/delivery",
+                  "--execute"
+                ],
+                "command": [
+                  "python",
+                  "-I",
+                  "-B",
+                  "-m",
+                  "cps_compute.native_approval_delivery"
+                ],
+                "image": "ghcr.io/mul-cps/cps-compute@sha256:1895f5b08f707a65f66b3512babf5c630e043877208513d1f5c5d8e6f2f1ec28",
+                "imagePullPolicy": "IfNotPresent",
+                "name": "delivery",
+                "resources": {
+                  "limits": {
+                    "cpu": "500m",
+                    "memory": "512Mi"
+                  },
+                  "requests": {
+                    "cpu": "50m",
+                    "memory": "128Mi"
+                  }
+                },
+                "securityContext": {
+                  "allowPrivilegeEscalation": false,
+                  "capabilities": {
+                    "drop": [
+                      "ALL"
+                    ]
+                  },
+                  "readOnlyRootFilesystem": true,
+                  "runAsGroup": 1000,
+                  "runAsNonRoot": true,
+                  "runAsUser": 1000
+                },
+                "terminationMessagePath": "/dev/termination-log",
+                "terminationMessagePolicy": "File",
+                "volumeMounts": [
+                  {
+                    "mountPath": "/inputs",
+                    "name": "inputs",
+                    "readOnly": true
+                  },
+                  {
+                    "mountPath": "/journal/delivery",
+                    "name": "journal",
+                    "subPath": "runtime-head-delivery"
+                  },
+                  {
+                    "mountPath": "/tmp",
+                    "name": "tmp"
+                  }
+                ]
+              }
+            ],
+            "dnsPolicy": "ClusterFirst",
+            "imagePullSecrets": [
+              {
+                "name": "cps-compute-image-pull"
+              }
+            ],
+            "initContainers": [
+              {
+                "command": [
+                  "python",
+                  "-I",
+                  "-B",
+                  "-c",
+                  "from pathlib import Path; import os; p=Path('/inputs/delivery'); p.mkdir(mode=0o700); [(p.joinpath(n).write_bytes(Path('/seed').joinpath(n).read_bytes()),os.chmod(p/n,0o600)) for n in ['delivery.json', 'policy.json', 'gateway-ca.pem', 'export.token']]\n\nimport fcntl\nimport stat\nimport re\n\ndef require_private(value):\n    if not value:\n        raise ValueError('Owned recognized delivery journal required')\n\nparent = os.open('/journal', os.O_RDONLY | os.O_DIRECTORY | os.O_NOFOLLOW)\ndirectory = None\nfiles = {}\ntry:\n    try:\n        os.mkdir('runtime-head-delivery', mode=0o700, dir_fd=parent)\n    except FileExistsError:\n        pass\n    directory = os.open('runtime-head-delivery', os.O_RDONLY | os.O_DIRECTORY | os.O_NOFOLLOW, dir_fd=parent)\n    info = os.fstat(directory)\n    require_private(info.st_uid == os.getuid() and stat.S_IMODE(info.st_mode) in (0o700, 0o770, 0o2700, 0o2770))\n    names = os.listdir(directory)\n    fixed = {'state.json', 'lock', 'anchor.json', 'legacy-state.json', 'legacy-seed.json',\n        'state.json.new', 'anchor.json.new', 'legacy-state.json.new', 'legacy-seed.json.new'}\n    require_private(all(name in fixed or re.fullmatch(\n        'rotation-[0-9a-f]{16}-(state|anchor|previous-config|config|node-template)[.]json([.]new)?', name)\n        for name in names))\n    for name in names:\n        observed = os.stat(name, dir_fd=directory, follow_symlinks=False)\n        require_private(stat.S_ISREG(observed.st_mode) and observed.st_uid == os.getuid()\n            and observed.st_nlink == 1 and stat.S_IMODE(observed.st_mode) in (0o600, 0o660))\n        handle = os.open(name, os.O_RDWR | os.O_NOFOLLOW, dir_fd=directory)\n        files[name] = handle\n        current = os.fstat(handle)\n        require_private((current.st_dev, current.st_ino) == (observed.st_dev, observed.st_ino)\n            and stat.S_ISREG(current.st_mode) and current.st_uid == os.getuid() and current.st_nlink == 1\n            and stat.S_IMODE(current.st_mode) in (0o600, 0o660))\n    if 'lock' in files:\n        fcntl.flock(files['lock'], fcntl.LOCK_EX | fcntl.LOCK_NB)\n    require_private(set(os.listdir(directory)) == set(names))\n    current = os.stat('runtime-head-delivery', dir_fd=parent, follow_symlinks=False)\n    require_private((current.st_dev, current.st_ino) == (info.st_dev, info.st_ino))\n    for name, handle in files.items():\n        current = os.stat(name, dir_fd=directory, follow_symlinks=False)\n        opened = os.fstat(handle)\n        require_private((current.st_dev, current.st_ino) == (opened.st_dev, opened.st_ino)\n            and stat.S_ISREG(current.st_mode) and current.st_nlink == 1)\n    # Validate every inode before repairing any mode. Never read, rewrite,\n    # unlink or traverse journal contents or change the PVC mount root.\n    for handle in files.values():\n        os.fchmod(handle, 0o600)\n        os.fsync(handle)\n    os.fchmod(directory, 0o700)\n    os.fsync(directory)\n    os.fsync(parent)\nfinally:\n    for handle in files.values():\n        os.close(handle)\n    if directory is not None:\n        os.close(directory)\n    os.close(parent)\n"
+                ],
+                "image": "ghcr.io/mul-cps/cps-compute@sha256:1895f5b08f707a65f66b3512babf5c630e043877208513d1f5c5d8e6f2f1ec28",
+                "imagePullPolicy": "IfNotPresent",
+                "name": "private-inputs",
+                "resources": {},
+                "securityContext": {
+                  "allowPrivilegeEscalation": false,
+                  "capabilities": {
+                    "drop": [
+                      "ALL"
+                    ]
+                  },
+                  "readOnlyRootFilesystem": true,
+                  "runAsGroup": 1000,
+                  "runAsNonRoot": true,
+                  "runAsUser": 1000
+                },
+                "terminationMessagePath": "/dev/termination-log",
+                "terminationMessagePolicy": "File",
+                "volumeMounts": [
+                  {
+                    "mountPath": "/seed",
+                    "name": "seed",
+                    "readOnly": true
+                  },
+                  {
+                    "mountPath": "/inputs",
+                    "name": "inputs"
+                  },
+                  {
+                    "mountPath": "/journal",
+                    "name": "journal"
+                  }
+                ]
+              }
+            ],
+            "restartPolicy": "Always",
+            "schedulerName": "default-scheduler",
+            "securityContext": {
+              "fsGroup": 1000,
+              "fsGroupChangePolicy": "OnRootMismatch",
+              "seccompProfile": {
+                "type": "RuntimeDefault"
+              }
+            },
+            "serviceAccount": "cps-native-head-delivery",
+            "serviceAccountName": "cps-runtime-head-delivery",
+            "terminationGracePeriodSeconds": 30,
+            "volumes": [
+              {
+                "name": "seed",
+                "secret": {
+                  "defaultMode": 292,
+                  "secretName": "cps-runtime-head-delivery-1a0734f004adcec3"
+                }
+              },
+              {
+                "emptyDir": {},
+                "name": "inputs"
+              },
+              {
+                "name": "journal",
+                "persistentVolumeClaim": {
+                  "claimName": "cps-gwd-journal-9e695015-c2cc6779"
+                }
+              },
+              {
+                "emptyDir": {},
+                "name": "tmp"
+              }
+            ],
+            "nodeSelector": {
+              "kubernetes.io/hostname": "k3s-wk-gpu1"
+            }
+          }
+        }
+      }
+    },
+    {
+      "apiVersion": "networking.k8s.io/v1",
+      "kind": "NetworkPolicy",
+      "metadata": {
+        "namespace": "cps-compute",
+        "name": "cps-runtime-head-capture-private"
+      },
+      "spec": {
+        "ingress": [
+          {
+            "from": [
+              {
+                "podSelector": {
+                  "matchLabels": {
+                    "app": "cps-runtime-head-delivery"
+                  }
+                }
+              }
+            ],
+            "ports": [
+              {
+                "port": 8001,
+                "protocol": "TCP"
+              }
+            ]
+          }
+        ],
+        "podSelector": {
+          "matchLabels": {
+            "app": "compute-gateway"
+          }
+        },
+        "policyTypes": [
+          "Ingress"
+        ]
+      }
+    },
+    {
+      "apiVersion": "admissionregistration.k8s.io/v1",
+      "kind": "ValidatingAdmissionPolicy",
+      "spec": {
+        "failurePolicy": "Fail",
+        "matchConditions": [
+          {
+            "expression": "request.userInfo.username == \"system:serviceaccount:cps-compute:cps-runtime-head-delivery\"",
+            "name": "delivery-principal"
+          }
+        ],
+        "matchConstraints": {
+          "matchPolicy": "Equivalent",
+          "namespaceSelector": {},
+          "objectSelector": {},
+          "resourceRules": [
+            {
+              "apiGroups": [
+                ""
+              ],
+              "apiVersions": [
+                "v1"
+              ],
+              "operations": [
+                "CREATE"
+              ],
+              "resources": [
+                "configmaps"
+              ],
+              "scope": "Namespaced"
+            }
+          ]
+        },
+        "validations": [
+          {
+            "expression": "request.namespace in [\"cit-jhub\",\"cps-compute\",\"cps-native-runtime\",\"jupyterhub\"] && object.metadata.namespace==request.namespace && object.metadata.name.matches(\"^cps-native-approvals-[a-f0-9]{16}$\") && has(object.immutable) && object.immutable && has(object.data) && size(object.data)==1 && \"approval.json\" in object.data && size(object.data[\"approval.json\"])<=1048576 && !has(object.binaryData) && (!has(object.metadata.labels)||size(object.metadata.labels)==0) && (!has(object.metadata.annotations)||size(object.metadata.annotations)==0) && (!has(object.metadata.ownerReferences)||size(object.metadata.ownerReferences)==0) && (!has(object.metadata.finalizers)||size(object.metadata.finalizers)==0) && object.data[\"approval.json\"].startsWith(\"{\\\"history\\\":[\") && object.data[\"approval.json\"].endsWith(\",\\\"version\\\":2}\")",
+            "message": "Only bounded immutable ownerless approval publications are permitted."
+          }
+        ]
+      },
+      "metadata": {
+        "name": "cps-runtime-delivery-approval-create"
+      }
+    },
+    {
+      "apiVersion": "admissionregistration.k8s.io/v1",
+      "kind": "ValidatingAdmissionPolicy",
+      "spec": {
+        "failurePolicy": "Fail",
+        "matchConditions": [
+          {
+            "expression": "(request.userInfo.username == \"system:serviceaccount:cps-compute:cps-native-head-delivery\") || (request.namespace in [\"cit-jhub\",\"cps-compute\",\"cps-native-system\",\"jupyterhub\"] && object.metadata.name.matches(\"^cps-native-approvals-[0-9a-f]{16}$\"))",
+            "name": "bounded-writer-or-protected-target"
+          },
+          {
+            "expression": "request.userInfo.username != \"system:serviceaccount:cps-compute:cps-runtime-head-delivery\"",
+            "name": "successor-has-dedicated-guard"
+          }
+        ],
+        "matchConstraints": {
+          "matchPolicy": "Equivalent",
+          "namespaceSelector": {},
+          "objectSelector": {},
+          "resourceRules": [
+            {
+              "apiGroups": [
+                ""
+              ],
+              "apiVersions": [
+                "v1"
+              ],
+              "operations": [
+                "CREATE"
+              ],
+              "resources": [
+                "configmaps"
+              ],
+              "scope": "*"
+            }
+          ]
+        },
+        "validations": [
+          {
+            "expression": "request.userInfo.username == \"system:serviceaccount:cps-compute:cps-native-head-delivery\"",
+            "message": "Only the reviewed dynamic delivery write is permitted"
+          },
+          {
+            "expression": "request.namespace in [\"cit-jhub\",\"cps-compute\",\"cps-native-system\",\"jupyterhub\"] && object.metadata.namespace == request.namespace",
+            "message": "Only the reviewed dynamic delivery write is permitted"
+          },
+          {
+            "expression": "object.metadata.name.matches(\"^cps-native-approvals-[0-9a-f]{16}$\") && has(object.immutable) && object.immutable == true",
+            "message": "Only the reviewed dynamic delivery write is permitted"
+          },
+          {
+            "expression": "has(object.data) && size(object.data) == 1 && \"approval.json\" in object.data && size(object.data[\"approval.json\"]) <= 1048576 && object.data[\"approval.json\"].startsWith(\"{\\\"history\\\":[\") && object.data[\"approval.json\"].endsWith(\",\\\"version\\\":2}\")",
+            "message": "Only the reviewed dynamic delivery write is permitted"
+          },
+          {
+            "expression": "(!has(object.binaryData) || size(object.binaryData) == 0) && (!has(object.metadata.ownerReferences) || size(object.metadata.ownerReferences) == 0) && (!has(object.metadata.labels) || size(object.metadata.labels) == 0) && (!has(object.metadata.annotations) || size(object.metadata.annotations) == 0) && (!has(object.metadata.finalizers) || size(object.metadata.finalizers) == 0) && (!has(object.metadata.generateName) || object.metadata.generateName == \"\") && !has(object.metadata.deletionTimestamp)",
+            "message": "Only the reviewed dynamic delivery write is permitted"
+          }
+        ]
+      },
+      "metadata": {
+        "name": "cps-native-head-delivery-approval-create"
+      }
+    }
+  ]
+}

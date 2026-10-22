@@ -1076,3 +1076,38 @@ GPU Start/Stop remain pending.
 Evidence: `results/durable-successor-observer-service-manifests-20261023.json`,
 `results/durable-successor-observer-guarded-writes-20261023.json` and
 `results/durable-successor-observer-deployed-20261023.json`.
+
+### Automatic delivery and first Source approval propagated
+
+Successor delivery runs with a separate service account and private journal
+subdirectory on the retained journal PVC. Its image is the reviewed scoped SDK
+image. Configuration passed the SDK closed validator. Three fail-closed guards
+limit approval CREATEs, four fixed-UID pointer updates and four operator-reader
+pregrant updates. Fourteen direct-SA server dry-runs passed; fixtures were not
+persisted and temporary bound credentials/forwarding were removed.
+
+The first actual approval revealed a second predecessor-only global CREATE guard.
+The successor's immutable bounded canonical-v2 document shape guard was installed
+first, then only its principal was excluded from that predecessor guard. All
+other callers retain the predecessor protection. Retesting all fourteen cases
+passed. Publication resumed the existing pending journal, without resetting it.
+
+An attempt to use old CPS pilot A was denied: its policy is obsolete and its
+storage lifecycle is still provisioning. The attempted normal re-registration
+was also rejected; no migration fence was cleared. Pilot B has the same stale
+policy/provisioning condition. These remain recovery work. The actual shared
+Mikasa/Armin lab has current policy and active storage and was approved through
+the Source-authenticated normal API for interactive-shared-5.
+
+Delivery created four immutable envelopes, pregranted readers, advanced heads
+Node-last and reached ready. Its private journal contains one completed
+publication, generation one on all heads and no pending transition. Actual
+Gateway service-account readiness authenticated all four current receipts against
+the new Source revision. Both Hub Pod identities stayed unchanged with zero
+restarts. No GPU workload was started: GPU2 is still cordoned with zero GPUs
+advertised while device-plugin operands are paused. Restore that qualified
+scheduling path before ordinary Start/Stop validation; no MIG or driver changes
+were made.
+Evidence: `results/durable-successor-delivery-manifests-20261023.json`,
+`results/durable-successor-delivery-guarded-writes-20261023.json` and
+`results/durable-successor-delivery-approved-workspace-20261023.json`.

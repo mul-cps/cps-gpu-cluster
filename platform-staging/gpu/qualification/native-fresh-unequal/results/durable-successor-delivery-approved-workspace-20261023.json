@@ -1,0 +1,53 @@
+{
+  "version": 1,
+  "kind": "durable-successor-delivery-and-first-approval",
+  "writer_pod_uid": "a1345fe9-7a49-4604-9b0a-1665348ab74c",
+  "ready": true,
+  "restarts": 0,
+  "journal": {
+    "uid": 1000,
+    "state_version": 2,
+    "transition_pending": false,
+    "completed_publications": 1,
+    "journal_directory_mode": "0o700",
+    "journal_state_mode": "0o600",
+    "head_generations": {
+      "gateway": 1,
+      "hub:cit": 1,
+      "hub:cps": 1,
+      "node": 1
+    }
+  },
+  "direct_sa_admission_cases_passed": 14,
+  "source_owned_approval": "cps:shared-gpu-lab",
+  "profile": "interactive-shared-5",
+  "registry_revision": "sha256:d5481dcd5ebd6fef39d91f4283cdd5afc4ddd7de7311a2790757717b0a8bcceb",
+  "four_current_component_receipts_verified_by_actual_gateway_principal": true,
+  "hub_samples": [
+    {
+      "source": "cps",
+      "pod_uid": "f08ef58e-e80a-46b3-9150-b936280d9228",
+      "observed_at": "2026-10-22T23:45:18.664593+00:00",
+      "head_generation": 1,
+      "ack_resourceVersion": "380336507",
+      "restarts": 0,
+      "genuine_ack_sdk_validated": true
+    },
+    {
+      "source": "cit",
+      "pod_uid": "4d3c1c14-12dd-4d82-b644-9a0a550a6c58",
+      "observed_at": "2026-10-22T23:45:23.542292+00:00",
+      "head_generation": 1,
+      "ack_resourceVersion": "380336573",
+      "restarts": 0,
+      "genuine_ack_sdk_validated": true
+    }
+  ],
+  "component_restarts_required_for_approval": false,
+  "predecessor_writers_stopped": true,
+  "old_pilot_policy_and_provisioning_fences_left_intact": true,
+  "gpu2_cordoned": true,
+  "gpu2_allocatable_gpus": 0,
+  "gpu_workload_started": false,
+  "production_ready": false
+}
