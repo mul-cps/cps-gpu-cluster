@@ -1,0 +1,49 @@
+{
+  "version": 1,
+  "kind": "successor-physical-accounting",
+  "observed_at": "2026-10-22T22:40:01.712187+00:00",
+  "raw_private_capture_sha256": "sha256:3842b567ab2ca5cfebf8e2a5fd31fcd9525b39c37b9ca3bd3ffe2d896c5d781f",
+  "rounds": [
+    {
+      "observed_start_ns": 1792708800949643757,
+      "observed_end_ns": 1792708801011249478,
+      "inventory_rows": 28,
+      "matched_original_journals": 28,
+      "terminal_states": {
+        "retired-inert-cap": 27,
+        "cleanup-offline-unlimited": 1
+      },
+      "all_recorded_pods_absent": true,
+      "all_current_rows_offline_zero_charge": true,
+      "unexpected_cap_rows": 0,
+      "controller_or_mps_candidates": 0,
+      "device_holder_pids": [
+        786776
+      ],
+      "process_exit_races": 1,
+      "permission_errors": 0
+    },
+    {
+      "observed_start_ns": 1792708801011258474,
+      "observed_end_ns": 1792708801072653512,
+      "inventory_rows": 28,
+      "matched_original_journals": 28,
+      "terminal_states": {
+        "retired-inert-cap": 27,
+        "cleanup-offline-unlimited": 1
+      },
+      "all_recorded_pods_absent": true,
+      "all_current_rows_offline_zero_charge": true,
+      "unexpected_cap_rows": 0,
+      "controller_or_mps_candidates": 0,
+      "device_holder_pids": [
+        786776
+      ],
+      "process_exit_races": 1,
+      "permission_errors": 0
+    }
+  ],
+  "sdk_original_journal_and_inventory_validation_passed": true,
+  "limitation": "Two read-only snapshots; activation must repeat physical and writer exclusion checks immediately before handover. Device-holder executable was separately observed as root-owned /usr/bin/nvidia-persistenced. No driver/reset/cap writes performed.",
+  "activation_performed": false
+}

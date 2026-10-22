@@ -745,3 +745,25 @@ The current qualification's exact immutable reference passed SDK validation.
 
 Evidence: `results/predecessor-ledger-preservation-20261023.json` and
 `results/durable-successor-preparation-20261023.json`.
+
+### Current physical retirement accounting passed
+
+Two fresh read-only host snapshots accounted for all 28 current selected-GPU cap
+entries using original durable journals: 27 finite `retired-inert-cap` records and
+one `cleanup-offline-unlimited` record. The SDK parsed each original CapRecord and
+validated its current physical inventory proof. All entries were offline and zero
+charge, all recorded Pod UIDs were absent from the current API list, and there were
+no unmatched cap entries. This closes the earlier instantaneous-NVML-only evidence
+gap for these snapshots.
+
+The device holder scan found one PID with nine NVIDIA device descriptors; separate
+executable observation identified root-owned `/usr/bin/nvidia-persistenced`. No
+node-service or MPS-server candidate was found. One process-exit race occurred in
+each scan, with no permission errors; this is not a continuous writer-exclusion
+claim. The physical and exclusion checks must be repeated immediately before
+activation. No cap write, device reset, driver change or historical reconstruction
+was performed.
+
+Evidence: `results/successor-physical-accounting-20261023.json`. Full original
+journals and the collector remain private; public evidence contains counts and
+the capture digest only. The old 197-row ledger is still preserved separately.
