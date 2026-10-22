@@ -1,0 +1,42 @@
+{
+  "bound_observation_fix_exercised": false,
+  "cleanup": {
+    "all_allocations_released": 191,
+    "binder_exact_spec_restored": true,
+    "cleanup_verified": true,
+    "hub_server_absent": true,
+    "pod_absent": true,
+    "protected_notebook_unchanged": true,
+    "sql_counts": {
+      "reservation": 0,
+      "reservation_binding": 0
+    },
+    "temporary_token_revoked": true,
+    "token_file_removed": true,
+    "token_reuse_http": 403
+  },
+  "cuda_kernel_executed": false,
+  "first_prepare_409_cause": "unclassified",
+  "next_gate": "Reduce measured preparation latency without weakening fresh authority checks or widening execution fences.",
+  "node_image": "ghcr.io/mul-cps/cps-native-node@sha256:e1ebf7c0ce992acc843133c90c4b88a13ff7f58796569a42b7ecde490b0c1b48",
+  "prepod_seconds": 70.291786,
+  "production_ready": false,
+  "second_prepare": {
+    "budget_seconds": 85,
+    "context_calls": 30,
+    "context_elapsed_seconds": 26.92,
+    "elapsed_seconds": 85.186376,
+    "enrollment_publication_elapsed_seconds": 65.848935,
+    "execution_fence_opened_seconds_into_request": 65.055,
+    "final_proof_started_seconds_into_request": 82.280061,
+    "result": "outer-request-timeout",
+    "timings_are_nested_do_not_sum": true
+  },
+  "start": {
+    "elapsedSeconds": 304.8346966780373,
+    "endedAt": "2026-10-22T03:46:56.354930+00:00",
+    "returnCode": 1,
+    "startedAt": "2026-10-22T03:41:51.520229+00:00"
+  },
+  "status": "failed-before-binding"
+}

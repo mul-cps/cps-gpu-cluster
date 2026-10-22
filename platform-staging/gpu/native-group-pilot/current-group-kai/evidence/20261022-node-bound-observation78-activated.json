@@ -1,0 +1,22 @@
+{
+  "hub_health_http": {
+    "cit": 200,
+    "cps": 200
+  },
+  "journal": {
+    "active": 30,
+    "all_four_actual_acks_ready": true,
+    "authenticated_files": 394,
+    "previous_total": 77,
+    "total": 78
+  },
+  "live_abort_module_sha256": "fe71dfecd6cdd66e4012b3a0ab2ee62052b07e567a7b6d0af225b0f7fba3961c",
+  "new_archives": 5,
+  "node_image": "ghcr.io/mul-cps/cps-native-node@sha256:e1ebf7c0ce992acc843133c90c4b88a13ff7f58796569a42b7ecde490b0c1b48",
+  "production_ready": false,
+  "protected_notebook_unchanged": true,
+  "retained_nonstate_files": 388,
+  "sdk_revision": "56de05cb5f914f4fd28462201376324c042a8c21",
+  "services_restored": true,
+  "status": "deployed-and-restored"
+}
