@@ -1,0 +1,31 @@
+{
+  "version": 1,
+  "kind": "fresh-successor-ledger-staged",
+  "authority_namespace": "cps-native-runtime",
+  "new_ledger_uid": "89c1c55e-31e8-4af8-a3c0-306a86142f48",
+  "new_ledger_records": 0,
+  "terminal_index_reference": {
+    "namespace": "cps-native-runtime",
+    "name": "cps-runtime-terminal-index-815719b2e259a18d",
+    "uid": "498108ce-05fb-47bc-a7c4-3149b9752fae",
+    "resourceVersion": "380283320",
+    "key": "index.json",
+    "data_sha256": "sha256:b9a2a435fce20ac339cda3f6c0ef60171ad784f3c9b65b5990ff9d9d0e5994d4"
+  },
+  "sdk_ledger_and_terminal_index_validated": true,
+  "predecessor_capture_reference": {
+    "namespace": "cps-native-runtime",
+    "name": "cps-predecessor-ledger-04520da78adf531e",
+    "uid": "ffc1c459-4bbe-4253-be62-62ba435ba7db",
+    "resourceVersion": "380279341",
+    "key": "capture.json",
+    "data_sha256": "sha256:081674b081f7973ec30df710a104ff07a1d1362a52fbb3e870b205997e7bd5fd"
+  },
+  "old_ledger_unchanged": true,
+  "old_released_records": 197,
+  "historical_records_imported": false,
+  "private_receipts_reconstructed": false,
+  "writer_started": false,
+  "consumers_changed": false,
+  "activation_performed": false
+}

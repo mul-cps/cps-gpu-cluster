@@ -1,0 +1,39 @@
+{
+  "version": 1,
+  "kind": "durable-successor-qualified-deployment-staged",
+  "qualification_reference": {
+    "namespace": "cps-native-runtime",
+    "name": "cps-native147-qualification-6a129169a6afef2d",
+    "uid": "d96d3ec6-72a0-4611-91a0-496ecfc0d0c5",
+    "resourceVersion": "380282754",
+    "key": "qualification.json",
+    "data_sha256": "sha256:613e8f9554ee222b362002fab6c107be819455e9cccd5c62a9433083cea710f6"
+  },
+  "deployment_reference": {
+    "namespace": "cps-native-runtime",
+    "name": "cps-runtime-deployment-31a3b77cbb519d73",
+    "uid": "18f3ae6c-232b-40d5-8115-38be14595c04",
+    "resourceVersion": "380282755",
+    "key": "deployment.json",
+    "data_sha256": "sha256:a43d6f1f06db46d8a8aaa54ecfc2c7150154e8ed9676d9a442554e01a177924e"
+  },
+  "original_qualification_reference": {
+    "data_sha256": "sha256:613e8f9554ee222b362002fab6c107be819455e9cccd5c62a9433083cea710f6",
+    "key": "qualification.json",
+    "name": "cps-native147-qualification-6a129169a6afef2d",
+    "namespace": "cps-native-system",
+    "resourceVersion": "380259107",
+    "uid": "4de5b8de-e18d-4275-9421-7629efb165aa"
+  },
+  "proof_unchanged": true,
+  "sdk_authority_and_deployment_validated": true,
+  "profiles": [
+    "interactive-shared-10",
+    "interactive-shared-5"
+  ],
+  "authority_namespace": "cps-native-runtime",
+  "consumers_changed": false,
+  "new_ledger_created": false,
+  "writer_started": false,
+  "production_ready": false
+}

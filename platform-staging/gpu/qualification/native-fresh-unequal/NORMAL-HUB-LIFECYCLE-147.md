@@ -767,3 +767,27 @@ was performed.
 Evidence: `results/successor-physical-accounting-20261023.json`. Full original
 journals and the collector remain private; public evidence contains counts and
 the capture digest only. The old 197-row ledger is still preserved separately.
+
+### Durable successor authority objects staged and SDK-validated
+
+The existing `cps-native-runtime` namespace now contains an exact copy of the
+current measured qualification proof, an authority-local deployment document, a
+fresh empty allocation ledger and its immutable empty terminal index. Actual API
+identities passed the SDK qualification, deployment, ledger and terminal-index
+readers. The copied hardware proof is unchanged; this does not broaden its two-slot
+5/10 GiB qualification or add 20 GiB ordinary access.
+
+The new empty ledger is a distinct authority with UID
+`89c1c55e-31e8-4af8-a3c0-306a86142f48`. It does not replace or import the historical
+ledger: all 197 released predecessor records remain byte-for-byte unchanged at
+the original UID/resourceVersion and have the separately pinned immutable capture.
+Lost private receipts have not been reconstructed or represented as accepted
+terminal history. Root-created staging objects alone do not authorize activation.
+
+No consumers were switched and no writer started. Remaining work includes binding
+predecessor preservation and current physical accounting into the reviewed
+successor handover, packaged node/controller configuration with durable state,
+least-privilege permissions, genuine readiness and ordinary Start/Stop checks.
+
+Evidence: `results/durable-successor-deployment-staged-20261023.json` and
+`results/durable-successor-ledger-staged-20261023.json`.
