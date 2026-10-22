@@ -225,3 +225,47 @@ def test_new_configmap_volumes_pin_api_default_mode_for_exact_spec_adoption():
         volumes=patch[-1]['value']['template']['spec']['volumes']
         selected=[v for v in volumes if v['name'] in {'cps-native-head-anchor','cps-native-head-binding'}]
         assert selected and all(v['configMap'].get('defaultMode')==0o644 for v in selected)
+
+
+def test_distinct_domain_heads_bind_through_real_sdk_without_reusing_old_pointers():
+    f=fixture();domain_uid=str(uuid.uuid4());before=copy.deepcopy(f.configuration.document)
+    legacy=f.module.pointer_candidates(f.configuration,f.approvals,f.f.policy)
+    candidates=f.module.pointer_candidates(f.configuration,f.approvals,f.f.policy,domain_uid=domain_uid)
+    for component,candidate in candidates.items():
+        assert candidate['metadata']['name']!=legacy[component]['metadata']['name']
+        assert candidate['metadata']['namespace']==legacy[component]['metadata']['namespace']
+        assert candidate['data']==legacy[component]['data']
+    pointers={c:actual(v) for c,v in candidates.items()}
+    anchors={c:actual(v) for c,v in f.module.anchor_candidates(
+        f.configuration,f.approvals,f.f.policy,pointers,domain_uid=domain_uid).items()}
+    bound=f.module.bind(f.configuration,f.approvals,f.f.policy,pointers,anchors,domain_uid=domain_uid)
+    config=actual(bound['node_configuration']);qualification=before['qualification_ref']
+    typed=NodeConfiguration.from_configmap(config,ref(config),f.f.policy,
+        deployment=f.configuration.deployment,qualification_cm=f.f.core.read_namespaced_config_map(
+            qualification['name'],qualification['namespace']))
+    assert typed.document['approval_head']==bound['heads']['node']
+    for component,head in bound['heads'].items():
+        assert head['anchor']['pointer']['uid']==pointers[component]['metadata']['uid']
+        assert head['anchor']['pointer']['name']==candidates[component]['metadata']['name']
+    bindings={c:actual(v) for c,v in f.module.runtime_candidates(
+        f.configuration,f.approvals,f.f.policy,pointers,anchors,domain_uid=domain_uid).items()}
+    controllers={c:f.f.apps.read_namespaced_deployment(d['name'],d['namespace'])
+        for c,d in f.configuration.document['component_declarations'].items()}
+    for controller in controllers.values():controller['metadata']['resourceVersion']='21'
+    patches=f.module.bind_runtime(f.configuration,f.approvals,f.f.policy,pointers,anchors,
+        bindings,controllers,domain_uid=domain_uid)
+    assert set(patches)==set(bound['heads'])
+    settings=f.module.readiness_settings(f.configuration,f.approvals,f.f.policy,pointers,anchors,
+        readiness_fixture(f),domain_uid=domain_uid)
+    assert settings['heads']==bound['heads']
+    assert f.configuration.document==before
+    for token in (None,str(uuid.uuid4())):
+        with pytest.raises(ValueError,match='readback'):
+            f.module.bind(f.configuration,f.approvals,f.f.policy,pointers,anchors,domain_uid=token)
+
+
+@pytest.mark.parametrize('domain_uid',['not-a-uid','../old',True,'00000000-0000-0000-0000-000000000000'])
+def test_domain_naming_refuses_invalid_uid_tokens(domain_uid):
+    f=fixture()
+    with pytest.raises(ValueError,match='domain UID'):
+        f.module.pointer_candidates(f.configuration,f.approvals,f.f.policy,domain_uid=domain_uid)

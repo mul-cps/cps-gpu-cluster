@@ -55,16 +55,20 @@ def _readback(candidate,actual,*,immutable):
     return deepcopy(actual)
 
 
-def pointer_candidates(configuration,approvals,policy):
+def pointer_candidates(configuration,approvals,policy,*,domain_uid=None):
+    """A domain UID only separates names; Root must authenticate its boundary."""
+    require(domain_uid is None or (type(domain_uid) is str and _uid(domain_uid)
+        and domain_uid.replace('-','')!='0'*32),'Canonical nonzero domain UID naming token required')
+    suffix='' if domain_uid is None else '-'+domain_uid.replace('-','')
     current=_authorities(configuration,approvals,policy)
     return {component:_candidate(approval.reference['namespace'],
-        'cps-native-current-approval-'+component.replace(':','-'),'head.json',
+        'cps-native-current-approval-'+component.replace(':','-')+suffix,'head.json',
         {'version':1,'generation':approval.document['registry']['generation'],'reference':approval.reference},
         immutable=False) for component,approval in current.items()}
 
 
-def anchor_candidates(configuration,approvals,policy,pointers):
-    candidates=pointer_candidates(configuration,approvals,policy)
+def anchor_candidates(configuration,approvals,policy,pointers,*,domain_uid=None):
+    candidates=pointer_candidates(configuration,approvals,policy,domain_uid=domain_uid)
     require(isinstance(pointers,dict) and set(pointers)==COMPONENTS,'Four actual pointer readbacks required')
     current=_authorities(configuration,approvals,policy);result={}
     for component,candidate in candidates.items():
@@ -76,8 +80,8 @@ def anchor_candidates(configuration,approvals,policy,pointers):
     return result
 
 
-def bind(configuration,approvals,policy,pointers,anchors):
-    candidates=anchor_candidates(configuration,approvals,policy,pointers)
+def bind(configuration,approvals,policy,pointers,anchors,*,domain_uid=None):
+    candidates=anchor_candidates(configuration,approvals,policy,pointers,domain_uid=domain_uid)
     require(isinstance(anchors,dict) and set(anchors)==COMPONENTS,'Four actual anchor readbacks required')
     heads={}
     for component,candidate in candidates.items():
@@ -93,9 +97,9 @@ def bind(configuration,approvals,policy,pointers,anchors):
         name,'config.json',body,immutable=True)}
 
 
-def runtime_candidates(configuration,approvals,policy,pointers,anchors):
+def runtime_candidates(configuration,approvals,policy,pointers,anchors,*,domain_uid=None):
     """Stage immutable binding files; each is distinct from the anchor payload."""
-    heads=bind(configuration,approvals,policy,pointers,anchors)['heads']
+    heads=bind(configuration,approvals,policy,pointers,anchors,domain_uid=domain_uid)['heads']
     result={}
     for component,head in heads.items():
         if component=='node':continue
@@ -104,15 +108,15 @@ def runtime_candidates(configuration,approvals,policy,pointers,anchors):
     return result
 
 
-def bind_runtime(configuration,approvals,policy,pointers,anchors,bindings,controllers):
+def bind_runtime(configuration,approvals,policy,pointers,anchors,bindings,controllers,*,domain_uid=None):
     """CAS intents for the one-time held rollout; never used for head advances.
 
     Call only after image adoption. Existing image/SA/commands/resources stay
     unchanged. Node bootstrap, observer release and Gateway readiness adoption
     must be composed separately before these intents can be released.
     """
-    heads=bind(configuration,approvals,policy,pointers,anchors)['heads']
-    candidates=runtime_candidates(configuration,approvals,policy,pointers,anchors)
+    heads=bind(configuration,approvals,policy,pointers,anchors,domain_uid=domain_uid)['heads']
+    candidates=runtime_candidates(configuration,approvals,policy,pointers,anchors,domain_uid=domain_uid)
     require(isinstance(bindings,dict) and set(bindings)==set(candidates),'Three actual binding readbacks required')
     for component,candidate in candidates.items():_readback(candidate,bindings[component],immutable=True)
     require(isinstance(controllers,dict) and set(controllers)==COMPONENTS,'Four actual Deployment readbacks required')
@@ -157,7 +161,7 @@ def bind_runtime(configuration,approvals,policy,pointers,anchors,bindings,contro
     return result
 
 
-def readiness_settings(configuration,approvals,policy,pointers,anchors,settings):
+def readiness_settings(configuration,approvals,policy,pointers,anchors,settings,*,domain_uid=None):
     """Pure one-time Gateway v1-to-v2 readback migration, without new authority.
 
     Qualify the exact old cohort before adding the actual bound heads. This
@@ -165,7 +169,7 @@ def readiness_settings(configuration,approvals,policy,pointers,anchors,settings)
     Node, capture, observer and mount rollout before applying.
     """
     from cps_compute.runtime import native_group_approval_configuration
-    heads=bind(configuration,approvals,policy,pointers,anchors)['heads']
+    heads=bind(configuration,approvals,policy,pointers,anchors,domain_uid=domain_uid)['heads']
     original=native_group_approval_configuration({'nativeGroupApprovals':settings})
     require(original is not None and original.get('version') is None,
         'Enabled legacy readiness settings required for one-time migration')

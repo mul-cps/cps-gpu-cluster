@@ -1,0 +1,45 @@
+{
+  "scope": "Recovery preparation, not activated GPU authority",
+  "head_bootstrap_tests": {
+    "focused": 22,
+    "current_group_kai": 387,
+    "subtests": 25,
+    "ci_unit_tests": 251,
+    "policy_compile_check": true
+  },
+  "offhost_backup": {
+    "created_at": "2026-10-22T14:17:20.673609+00:00",
+    "encrypted_offhost_copy_retrieved_decrypted": true,
+    "all_archived_files_byte_equal": true,
+    "files": 40,
+    "known_original_byte_records": 401,
+    "unrecovered_journals": 29,
+    "ciphertext_bytes": 5854195,
+    "ciphertext_sha256": "d65cbbc8fb442bbf4fe9e915f42148f03f40a129339e33ac7905c2f61d9d3ecd",
+    "private_key_copied": false,
+    "independent_disaster_key_custody_verified": false,
+    "live_custody_restore_performed": false
+  },
+  "offhost_permissions": {
+    "file": "0600",
+    "directory": "0700",
+    "inherited_permissions_corrected": true
+  },
+  "successor_state_directory": {
+    "version": 1,
+    "namespace": "cps-native-runtime",
+    "namespace_uid": "100876ac-14e6-4292-bf52-7d129f7f08f0",
+    "state_root": "/var/lib/cps-native-gpu/domains/100876ac-14e6-4292-bf52-7d129f7f08f0/custody",
+    "state": "inactive-staging",
+    "authority_initialized": false,
+    "ledger_created": false,
+    "historical_root_modified": false,
+    "owner_uid": 0,
+    "mode": "0700",
+    "empty": true
+  },
+  "retirement_boundary_authenticated_by_naming_token": false,
+  "source_registry_live_transition_performed": false,
+  "driver_module_loaded": false,
+  "hardware_qualification_performed": false
+}
