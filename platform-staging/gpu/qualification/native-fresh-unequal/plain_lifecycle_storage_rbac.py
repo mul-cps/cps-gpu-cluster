@@ -47,3 +47,32 @@ def build(*,provider,targets):
   spec={'failurePolicy':'Fail','matchConstraints':{'resourceRules':[{'apiGroups':[''],'apiVersions':['v1'],'operations':['CREATE'],'resources':[resource],'scope':'Cluster' if label=='pv' else 'Namespaced'}]},'matchConditions':[{'name':'dedicated-pilot-storage-subject','expression':'request.userInfo.username == '+q(ACTOR)}],'validations':[{'expression':' || '.join(alternatives),'message':'Only the exact two reviewed fresh retained workspace objects are permitted.'},{'expression':'!has(object.metadata.ownerReferences) || size(object.metadata.ownerReferences) == 0','message':'Retained workspace storage cannot inherit owner garbage collection.'}]}
   name=PREFIX+label;objects += [item('ValidatingAdmissionPolicy',name,spec=spec),item('ValidatingAdmissionPolicyBinding',name,spec={'policyName':name,'validationActions':['Deny']})]
  return {'version':1,'proposal_only':True,'apply_allowed':False,'targets':rows,'objects':objects,'archive_authorized':False,'pending':['Server CEL schema/typechecking and exact positive/negative qualification before admission binding promotion','SDK enforcement of allowedOperations and exact allowedTargets before metadata/NAS; config alone is not enforcement','Root authenticate actual provider refs, fresh target absence, Secret mounts and direct SubjectAccessReview']}
+
+PARENT_NAME='cps-compute-private-workspace-pv'
+PARENT_PREDICATE="request.userInfo.username == 'system:serviceaccount:cps-compute:cps-compute-controller'"
+def _parent_ref(parent):
+ require(type(parent)is dict and parent.get('apiVersion')=='admissionregistration.k8s.io/v1' and parent.get('kind')=='ValidatingAdmissionPolicy','Actual parent admission policy required')
+ meta=parent.get('metadata',{})
+ require(type(meta)is dict and meta.get('name')==PARENT_NAME and all(type(meta.get(k))is str and meta[k] for k in ('uid','resourceVersion')) and type(parent.get('spec'))is dict,'Exact parent identity and spec required')
+ return {k:meta[k] for k in ('name','uid','resourceVersion')}
+def _parent_patch(ref,before,after):
+ return [{'op':'test','path':'/metadata/uid','value':ref['uid']},{'op':'test','path':'/metadata/resourceVersion','value':ref['resourceVersion']},{'op':'test','path':'/spec','value':copy.deepcopy(before)},{'op':'replace','path':'/spec','value':copy.deepcopy(after)}]
+def parent_exception(parent,*,expected_ref,provider,targets):
+ """Proposal only. Retire immediately after the two PV creates; no apply path.
+
+ Root must authenticate the captured parent and qualify both admission layers.
+ All original server/path/Retain and UPDATE checks remain byte-for-byte intact.
+ """
+ ref=_parent_ref(parent);require(ref==expected_ref,'Parent UID/resourceVersion preimage mismatch')
+ rows=validate(provider,targets);before=copy.deepcopy(parent['spec']);after=copy.deepcopy(before)
+ validations=after.get('validations')
+ require(type(validations)is list and all(type(v)is dict and type(v.get('expression'))is str for v in validations),'Actual parent validation expressions required')
+ require(sum(v['expression'].count(PARENT_PREDICATE) for v in validations)==1,'Exactly one parent actor predicate required')
+ replacement='('+PARENT_PREDICATE+" || (request.operation == 'CREATE' && request.userInfo.username == "+json.dumps(ACTOR)+' && object.metadata.name in '+json.dumps(sorted(t['name'] for t in rows))+'))'
+ for v in validations:v['expression']=v['expression'].replace(PARENT_PREDICATE,replacement)
+ return {'version':1,'apply_allowed':False,'expected_ref':ref,'before_spec':before,'after_spec':after,'replacement':replacement,'patch':_parent_patch(ref,before,after),'rollback_requires':'Fresh actual parent readback; call parent_exception_rollback after both PV creates; UID and exact modified spec must still match.'}
+def parent_exception_rollback(actual,plan):
+ """CAS rollback with fresh actual RV, never a guessed post-patch RV."""
+ ref=_parent_ref(actual)
+ require(ref['uid']==plan['expected_ref']['uid'] and actual['spec']==plan['after_spec'],'Parent changed after exception; rollback denied')
+ return _parent_patch(ref,actual['spec'],plan['before_spec'])

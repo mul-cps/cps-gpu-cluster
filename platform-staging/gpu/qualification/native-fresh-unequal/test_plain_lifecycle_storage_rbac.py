@@ -64,3 +64,30 @@ def test_quantity_subtrees_use_dynamic_type_only_without_dropping_guards():
  assert pvce.count('(!has(dyn(object.spec.resources).limits) || size(dyn(object.spec.resources).limits) == 0)')==2
  assert 'object.spec.nfs.server' in pve and 'object.spec.volumeName' in pvce
  assert pv['spec']['failurePolicy']==pvc['spec']['failurePolicy']=='Fail'
+
+def parent():
+ return {'apiVersion':'admissionregistration.k8s.io/v1','kind':'ValidatingAdmissionPolicy','metadata':{'name':'cps-compute-private-workspace-pv','uid':'2f1fa127-7c14-450e-9a69-b420a6fc207c','resourceVersion':'360103757'},'spec':{'failurePolicy':'Fail','matchConstraints':{'resourceRules':[{'operations':['CREATE','UPDATE'],'resources':['persistentvolumes']}]},'validations':[{'expression':"path_guard && server_guard && Retain_guard && (request.userInfo.username == 'system:serviceaccount:cps-compute:cps-compute-controller' || (request.operation == 'UPDATE' && old_guard))",'message':'unchanged'}]}}
+def test_parent_exception_exact_substitution_and_fresh_readback_rollback():
+ m=mod();p=parent();old=copy.deepcopy(p);ref=copy.deepcopy(p['metadata'])
+ plan=m.parent_exception(p,expected_ref=ref,provider=provider(),targets=targets())
+ assert p==old and plan['apply_allowed']is False
+ after=plan['patch'][-1]['value'];before=p['spec'];expr=after['validations'][0]['expression']
+ assert expr.replace(plan['replacement'],m.PARENT_PREDICATE)==before['validations'][0]['expression']
+ assert "request.operation == 'CREATE'"in plan['replacement'] and m.ACTOR in plan['replacement']
+ assert all(t['name']in plan['replacement'] for t in m.validate(provider(),targets()))
+ assert plan['patch'][:3]==[{'op':'test','path':'/metadata/uid','value':ref['uid']},{'op':'test','path':'/metadata/resourceVersion','value':ref['resourceVersion']},{'op':'test','path':'/spec','value':before}]
+ actual=copy.deepcopy(p);actual['spec']=after;actual['metadata']['resourceVersion']='360103999'
+ rollback=m.parent_exception_rollback(actual,plan)
+ assert rollback[1]['value']=='360103999' and rollback[-1]['value']==before
+ actual['spec']['failurePolicy']='Ignore'
+ with pytest.raises(ValueError):m.parent_exception_rollback(actual,plan)
+
+@pytest.mark.parametrize('fault',['uid','rv','name','duplicate','missing'])
+def test_parent_exception_rejects_wrong_preimage(fault):
+ m=mod();p=parent();ref=copy.deepcopy(p['metadata'])
+ if fault=='uid':p['metadata']['uid']='foreign'
+ if fault=='rv':p['metadata']['resourceVersion']='changed'
+ if fault=='name':p['metadata']['name']='other'
+ if fault=='duplicate':p['spec']['validations'][0]['expression']+=' || '+m.PARENT_PREDICATE
+ if fault=='missing':p['spec']['validations'][0]['expression']='true'
+ with pytest.raises(ValueError):m.parent_exception(p,expected_ref=ref,provider=provider(),targets=targets())
