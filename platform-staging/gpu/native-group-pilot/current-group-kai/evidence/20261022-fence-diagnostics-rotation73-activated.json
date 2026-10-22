@@ -1,0 +1,88 @@
+{
+  "compositor_revision": "b5bf5a2747eacaf95d1e20676e7aa8bfc1f46fdf",
+  "diagnostics": {
+    "authority_or_deadlines_changed": false,
+    "duration_fields": [
+      "elapsed_lower_bound_seconds",
+      "remaining_upper_bound_seconds"
+    ],
+    "fence_boundary_logs_visible_at_warning": true,
+    "mounted_module_hashes_match_qualified_wheel": true,
+    "request_identifiers_or_credentials_logged": false,
+    "successful_prepare_stage_summary_visible_at_warning": true
+  },
+  "group_prepare_request_seconds": 75,
+  "images": {
+    "gateway": "ghcr.io/mul-cps/cps-compute@sha256:40f7788b139ea248c8dad63bb5523e6c9cf6db6b733c091f0e5ecc1d215e2c40",
+    "node": "ghcr.io/mul-cps/cps-native-node@sha256:a2348b7b2211b6b22e3d6e7f7025cc0efbbc320b539a7f6acec23d8b470ad88c",
+    "observer": "ghcr.io/mul-cps/cps-native-observer@sha256:683a5a2ec959c195be4a3333cc211ce286e0c3f31c4e8671d802a2dc4d5e52c4",
+    "writer": "ghcr.io/mul-cps/cps-compute@sha256:79ef2c1aae602fa92adb485b140722d02e9b828ad8bcdff090d541fba4e6d395"
+  },
+  "independent_execution_fence_max_seconds": 60,
+  "invariants": {
+    "gpu_driver_changed": false,
+    "hub_images_changed": false,
+    "mig_enabled": false,
+    "policy_hash": "sha256:332d14fb9e510b9810feffb8d40b408743f9679ebd13ca1ba0e1077d666e9281",
+    "source_generation": 9,
+    "workload_image_changed": false
+  },
+  "journal": {
+    "active_rotations_after": 25,
+    "checkpoint_and_anchor_unchanged": true,
+    "four_fresh_acknowledgments_ready": true,
+    "gpu_epoch_unchanged": true,
+    "head_documents_unchanged": true,
+    "immutable_archives_after": 365,
+    "immutable_archives_before": 360,
+    "json_files_after": 369,
+    "json_files_before": 364,
+    "new_archives": 5,
+    "normal_writer_ready": true,
+    "retained_nonstate_files_unchanged": 363,
+    "rotation_after": 73,
+    "rotation_before": 72,
+    "sdk_shared_lock_validation_passed": true,
+    "source_revision_unchanged": true
+  },
+  "management_transport": {
+    "existing_ssh_local_tls_transport_used": true
+  },
+  "observed_at": "2026-10-22T00:54:49.368096+00:00",
+  "production_qualified": false,
+  "protected_notebook": {
+    "restarts": 0,
+    "running": true,
+    "uid": "03e00875-f3c7-4dca-8848-c57b257932a5"
+  },
+  "qualification": {
+    "allocation_proof_timeout_root_cause_proven": false,
+    "current_shared_workspace_start_passed": false,
+    "next_gate": "normal shared workspace Start74; measure sanitized prepare stage timings and retained fence lower-age/upper-remaining bounds; no expiry cause or startup success claimed"
+  },
+  "rejected_optimization": {
+    "candidate": "one pure deployment projection per group-allocation validator",
+    "candidate_median_ms": 0.689153,
+    "fixture": "real typed synthetic context; offline benchmark",
+    "original_median_ms": 3.073958,
+    "production_change_applied": false,
+    "reason": "millisecond saving is insufficient to address observed fence exhaustion",
+    "saved_ms_per_call": 2.384805
+  },
+  "restoration": {
+    "binder_enabled": false,
+    "both_public_hub_health_http": 200,
+    "four_service_selectors_restored": true,
+    "new_temporary_rbac_objects_created": 0,
+    "preexisting_rotation_rbac_preserved": true,
+    "succeeded_rotation_job_uid_deleted": true
+  },
+  "service_upgrade_deployed": true,
+  "software_verification": {
+    "fence_diagnostic_focused_union_passed": 163,
+    "independent_new_regressions_passed": 4,
+    "root_operation_contracts_passed": 15
+  },
+  "source_revision": "80dba2b22ffd464b6f3939c595af14499e7565fc",
+  "version": 1
+}
