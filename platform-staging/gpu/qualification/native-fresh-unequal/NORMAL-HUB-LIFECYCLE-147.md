@@ -917,3 +917,23 @@ production readiness or active user GPU access.
 
 Evidence: `results/durable-node-guarded-writes-20261023.json`, its manifests and
 `results/durable-successor-genuine-node-readiness-20261023.json`.
+
+### Authority-scoped registry implementation and actual database-copy rehearsal
+
+SDK commit `88cbf365559c454ad9fba5403bcd7ab8575f4742` adds an explicit,
+validated authority namespace to the approval registry, runtime and read-only
+capture/export paths. Defaults retain legacy behavior. The new authority starts
+with no approvals; normal audited Source operations must approve workspaces.
+Grants, workspaces, audit and global reservations retain their existing storage.
+
+A fresh read-only online backup of the actual Gateway control database was tested
+on a private copy. All six existing tables and 6,002 rows retained identical
+schema/row digests. Exactly two new tables were created, and the initial revision
+matched all four staged heads. Scoped read-only export passed. No live database
+was changed. Independent review found no blocking issues; 220 focused tests pass.
+Fifteen legacy transport-migration tests fail while constructing their old fixture
+on both this change and the untouched baseline; they are not reported as passing.
+
+The source is published; replacement images and coordinated Gateway/Hub adoption
+are still pending. This rehearsal does not activate workspace approvals.
+Evidence: `results/authority-scoped-registry-rehearsal-20261023.json`.

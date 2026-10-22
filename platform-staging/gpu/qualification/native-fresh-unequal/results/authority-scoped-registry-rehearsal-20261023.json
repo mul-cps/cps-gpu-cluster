@@ -1,0 +1,19 @@
+{
+  "version": 1,
+  "kind": "authority-scoped-registry-actual-database-copy-rehearsal",
+  "source_backup_sha256": "sha256:34527205f3832d6ea8bab1c3c60f57a091f72be476c963a79fa51bc783bddfd6",
+  "preserved_existing_tables": 6,
+  "preserved_existing_rows": 6002,
+  "every_original_table_schema_and_row_digest_unchanged": true,
+  "new_tables": 2,
+  "new_initial_registry_revision": "sha256:cbf7d39ba84ad7f882d62fb8ff73fe76a878ebae83c0b87b6cf54b586e67f439",
+  "matches_all_staged_initial_head_revisions": true,
+  "approved_workspaces": 0,
+  "scoped_readonly_export_passed": true,
+  "live_control_database_modified": false,
+  "deployed": false,
+  "source_revision": "88cbf365559c454ad9fba5403bcd7ab8575f4742",
+  "focused_tests_passed": 220,
+  "review_blocking_findings": 0,
+  "legacy_transport_fixture_failures_on_unchanged_baseline": 15
+}
