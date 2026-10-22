@@ -1,0 +1,39 @@
+{
+  "binding_http": 200,
+  "cleanup": {
+    "allocations_all_released": true,
+    "allocations_total": 189,
+    "binder_original_spec_restored": true,
+    "hub_server_and_pod_absent": true,
+    "protected_notebook_same_uid_running_zero_restarts": true,
+    "reservation_binding_rows": 0,
+    "reservation_rows": 0,
+    "temporary_token_revoked_reuse_403_and_file_deleted": true,
+    "workspace_stopped": true
+  },
+  "cuda_isolation_results_invalidated": false,
+  "current_http": 200,
+  "earlier_prepare_denial_cause": "not_yet_established",
+  "earlier_prepare_http": 409,
+  "failure": "End-to-end startup exceeded Hub timeout; cleanup raced final binding",
+  "normal_start_gate": "open",
+  "pod_created_at": "2026-10-22T02:31:07Z",
+  "prepare": {
+    "elapsed_seconds": 81.3614,
+    "http": 200,
+    "proof_return_fence_remaining_upper_bound_seconds": 38.417102
+  },
+  "process": {
+    "automaticallyReplayed": false,
+    "elapsedSeconds": 310.1757393539883,
+    "returnCode": 1,
+    "startedAt": "2026-10-22T02:28:48.046091+00:00",
+    "transportTimeoutAmbiguous": false
+  },
+  "qualification": "normal-shared-start76",
+  "result": "failed",
+  "schema_version": 1,
+  "sdk_revision": "06d5c2332c2617f091cd04a0ad2f7276c06c43f0",
+  "startup_performance_gate": "open",
+  "usable_gpu_session": false
+}
