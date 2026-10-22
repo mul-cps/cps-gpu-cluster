@@ -1,0 +1,52 @@
+{
+  "schema_version": 1,
+  "status": "group_prepare_budget_built_published_not_deployed",
+  "production_ready": false,
+  "source_revision": "864d349f6948d615389e711c3a21fdf5750739a6",
+  "source_branch": "fix/group-prepare-budget-20261022",
+  "image": "ghcr.io/mul-cps/cps-compute@sha256:6b2938df3aabd00a0a8896034f7357bdd777e58668d2ac662b211ea86fd460d1",
+  "wheel_sha256": "fa0e52b46641e1e6a114abd5c7e42b403f2ac7b9025b9aabcb623077fddf7499",
+  "request_budget": {
+    "exact_group_prepare_seconds": 75,
+    "other_and_operator_seconds": 60,
+    "execution_fence_max_seconds": 60,
+    "same_absolute_server_and_readiness_deadline": true
+  },
+  "binder": {
+    "actual_image": "ghcr.io/mul-cps/cps-native-kai-binder@sha256:9000d577f74871f29c990d7d94e315dedf8922823db19fadab4f92abda759994",
+    "prepare_http_seconds": 90,
+    "source_transport_sha256": "525489381a0590ee2a73640b6f15e4e6eab8815e1609df9c8b2880820cc680e4",
+    "parent_cancellation_preserved": true
+  },
+  "tests": {
+    "appropriate_union_passed": 205,
+    "root_independent_budget_cases_passed": 8,
+    "review": "CLEAR",
+    "cases": [
+      "64/69-second request succeeds with 54-second fence",
+      "60-second fence expiry still holds custody and denies ACK",
+      "75-second outer deadline cancels without replay",
+      "grant expiry during added slack denies",
+      "absolute deadline includes context load",
+      "concurrent request deadlines isolated",
+      "operator and other request budgets unchanged"
+    ]
+  },
+  "packaging": {
+    "core_modules": 78,
+    "changed_runtime_modules": [
+      "src/cps_compute/native_scheduler_coordinator.py",
+      "src/cps_compute/native_scheduler_coordinator_server.py"
+    ],
+    "base_image": "ghcr.io/mul-cps/cps-compute@sha256:92874b4d8dada5edd391dddb025888ebbc02161d28a35369b054a489e7a4b543",
+    "base_layers_preserved": 61,
+    "candidate_layers": 63,
+    "runtime_config_preserved": true,
+    "runtime_user": "10001",
+    "node_observer_writer_images_changed": false,
+    "optional_node_optimization_included": false
+  },
+  "deployed": false,
+  "normal_shared_start_passed": false,
+  "next_gate": "Canonical same-policy Gateway image successor rollout with genuine four-component readiness and journal preservation, then one normal shared-GPU Start/Stop."
+}
