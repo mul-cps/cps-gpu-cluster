@@ -1,0 +1,72 @@
+{
+  "activation": {
+    "gateway76": {
+      "active_rotations": 28,
+      "authenticated_files": 384,
+      "four_actual_acks_ready": true,
+      "four_service_original_specs_restored": true,
+      "new_archives": 5,
+      "retained_nonstate_files": 378,
+      "rotations": 76,
+      "succeeded_rotation_job_deleted": true
+    },
+    "hubs77": {
+      "active_rotations": 29,
+      "authenticated_files": 389,
+      "four_actual_acks_ready": true,
+      "four_service_original_specs_restored": true,
+      "new_archives": 5,
+      "retained_nonstate_files": 383,
+      "rotations": 77,
+      "succeeded_rotation_job_deleted": true
+    }
+  },
+  "both_hub_adapters_installed_sha256": "ea6cc819c567029b75ff9c20b33f1929d167843e9100b9b42faf0f76641fb31e",
+  "both_hub_health_http": 200,
+  "gateway": {
+    "base_image": "ghcr.io/mul-cps/cps-compute@sha256:06b0968f1c36905ce562c5e657ca5d7911c0f02d1e1b1de34b4c6955767e69db",
+    "base_layers_preserved": 69,
+    "candidate_layers": 71,
+    "config_sha256": "sha256:d5416f1acd305e5a468ee3cc560db8d67c2a172161c06812c9c5584348859e4e",
+    "deployed": true,
+    "image": "ghcr.io/mul-cps/cps-compute@sha256:67723574aa5d832c0179fb2352489c4524f78bd8fb39e3101e06096ec7b804fe",
+    "passed": true,
+    "runtime_config_preserved": true,
+    "runtime_user": "10001",
+    "source_revision": "858491b3195271ad7487e3c3308d9529bceb442f",
+    "wheel_sha256": "6e04d2be861f35147403a3871fe5ed68bbc3f81e2d9896b23d69df9e9be8b615"
+  },
+  "hub": {
+    "base_image": "ghcr.io/mul-cps/cps-compute@sha256:d84fa2c12da0a454680d18ff96b88ee8a8be450beafc39c6bb52beb68b65f591",
+    "base_layers_preserved": 123,
+    "candidate_layers": 125,
+    "config_sha256": "sha256:156c7e8781db2f7cc125b65f07a352e0f3e5119b8d92bead2a37eed6ee501344",
+    "deployed": true,
+    "image": "ghcr.io/mul-cps/cps-compute@sha256:0aebf18b68f7ebf4eb4213b4525deac3702f18548286a7879792cc398f4ff48d",
+    "package_ownership": {
+      "changed_hub_modules": [
+        "cps_compute_hub/native_hub_config.py"
+      ],
+      "distribution": "cps-compute-hub",
+      "hub_modules_exact": 20,
+      "non_target_owned_files_and_metadata_unchanged": true,
+      "sdk_modules_preserved": 78,
+      "sdk_provenance_labels_preserved": true
+    },
+    "passed": true,
+    "runtime_config_preserved": true,
+    "runtime_user": "1000",
+    "source_revision": "858491b3195271ad7487e3c3308d9529bceb442f",
+    "wheel_sha256": "22f7a6a0e40e2232065db910e30fb8cb09298dcd9e71e5634f664ef78e29d516"
+  },
+  "independent_new_tests_passed": 7,
+  "normal_gpu_start": "pending_Start78",
+  "production_ready": false,
+  "protected_notebook_same_uid_running_zero_restarts": true,
+  "qualification": "source-head-only-gateway-and-paired-hub-rollout",
+  "schema_version": 1,
+  "sdk_source_revision": "858491b3195271ad7487e3c3308d9529bceb442f",
+  "source_review": "clear",
+  "source_tests_passed": 127,
+  "startup_performance_gate": "open"
+}
