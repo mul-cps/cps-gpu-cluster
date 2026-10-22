@@ -1,0 +1,46 @@
+{
+  "accepted": {
+    "at": "2026-10-22T03:10:29.366Z",
+    "http": 409
+  },
+  "binding": {
+    "at": "2026-10-22T03:10:03.225Z",
+    "fence_remaining_upper_bound_seconds": 25.648877,
+    "http": 200
+  },
+  "cleanup": {
+    "allocations_all_released": true,
+    "allocations_total": 190,
+    "binder_original_spec_restored": true,
+    "hub_server_and_pod_absent": true,
+    "protected_notebook_same_uid_running_zero_restarts": true,
+    "reservation_binding_rows": 0,
+    "reservation_rows": 0,
+    "temporary_token_revoked_reuse_403_and_file_deleted": true,
+    "workspace_stopped": true
+  },
+  "cuda_isolation_results_invalidated": false,
+  "fix_status": "in_progress",
+  "gateway_image": "sha256:67723574aa5d832c0179fb2352489c4524f78bd8fb39e3101e06096ec7b804fe",
+  "hub_image": "sha256:0aebf18b68f7ebf4eb4213b4525deac3702f18548286a7879792cc398f4ff48d",
+  "normal_start_gate": "open",
+  "observed_failure": "Node unbound-to-bound mixed observation escaped as generic failure and incurred 10s backoff; final acceptance crossed execution fence expiry",
+  "pre_pod_seconds_approx": 68.957,
+  "prepare": {
+    "elapsed_seconds": 82.266205,
+    "http": 200
+  },
+  "previous_start76_pre_pod_seconds_approx": 134.76,
+  "process": {
+    "automaticallyReplayed": false,
+    "elapsedSeconds": 319.5220555959968,
+    "returnCode": 1,
+    "startedAt": "2026-10-22T03:06:36.170156+00:00",
+    "transportTimeoutAmbiguous": false
+  },
+  "qualification": "normal-shared-start78",
+  "result": "failed",
+  "schema_version": 1,
+  "startup_performance_gate": "open",
+  "usable_gpu_session": false
+}
