@@ -100,8 +100,8 @@ lifecycle tests passed, including late confirmation, new-generation protection,
 failed stop futures and request timeouts; independent source review was clear.
 The Hub fix is now deployed and live-qualified as recorded below.
 
-The fresh CIT group currently has an empty Hub roster and no native Share. It is
-a fixture still awaiting the normal console assignment/sharing flow, not evidence
+At that stage the fresh CIT group had an empty Hub roster and no native Share. It was
+a fixture awaiting the normal console assignment/sharing flow, not evidence
 that student collaboration permissions have passed. This needs qualification
 before promoting the new workspace path.
 
@@ -151,3 +151,85 @@ Private evidence: `delayed-cleanup-held-past-window.actual.private.json`,
 `delayed-cleanup-member-auto-release.actual.private.json`,
 `delayed-cleanup-hub-persisted-state-readonly.actual.private.json`, and
 `node-finalizer-delayed-cleanup-resume.private.log`.
+
+## Console service roster, Shares and removal qualification
+
+On 2026-10-22 the installed CIT console application service was invoked with its
+actual provider/database, owning Hub credential and verified administrator actor,
+using the isolated lifecycle147 gateway with its verified TLS CA. The running
+browser console's production endpoint was not changed. This qualifies the normal
+application service methods, not browser OAuth, RTC or assignment UI interaction.
+
+The fresh local group and two expiring memberships were created through validated,
+audited provider operations; `WorkspaceService.create` accepted the matching
+central canonical identities. The stopped qualification course ceiling was set
+to 5 GiB and its exact fresh owner/server binding appended; the old workspace and
+expired memberships were retained. The first normal service Start exposed a real
+repeat-provision defect: Kubernetes admission rejects CREATE on the existing PV
+before the API can return AlreadyExists. An actual service-account server-side
+dry run confirmed the parent-PV policy rejection.
+
+Compute commit `ad260820cc0355de4168b2417afca96cbe5baf25` reads and validates existing
+PV/PVC bindings before creating missing ones. Only a 404 permits creation; a
+concurrent create conflict is read back and validated. Foreign bindings and
+forbidden reads remain rejected. Six focused regression scenarios pass; the
+storage regression set passed 184 tests. Existing creation-only test doubles were
+changed to return the Kubernetes missing-object response on reads.
+
+The isolated gateway now runs
+`ghcr.io/mul-cps/cps-compute@sha256:9a9a99bdc2963b6dfbb99176ee68f309133fc4ec1eb4f033d0cbaa6a95ff8edf`.
+Wheel SHA-256:
+`aa72417b0a15d76c74b801a1976506fa403e12c07c36cd831302d86e954cc0f3`.
+Image verification confirmed exactly one SDK module changed (`storage.py`),
+other distribution files/metadata were unchanged, and runtime UID remained 10001.
+Registry manifest/config digests were independently verified. Only the isolated
+Deployment image field changed under UID/resource-version/full-spec comparisons.
+
+Normal service Start then completed with both students in the actual Hub group.
+The native group Share granted only the exact server's `access:servers` scope.
+Read-only PostgreSQL transactions using JupyterHub's installed scope resolver
+confirmed both non-admin users had access without server lifecycle or sharing
+administration. Pod UID: `bb026eab-d1b8-468b-9420-934b0f394433`.
+
+Normal `remove_member` stopped the workspace and retained the reconciliation
+barrier while native cleanup was pending. The node controller emitted one transient
+wrapped cleanup OS error, then confirmed cleanup on a later iteration; this is a
+reproduction of the separate diagnostic finding, not evidence that it is fixed.
+The Hub automatically released the reservation. Retrying the same normal removal
+operation completed the membership/group update and cleared the barrier.
+The removed student's effective server access disappeared; the survivor retained
+only the exact shared-server access. No direct group/Share mutation was used to
+substitute for the service flow.
+
+The survivor's normal service restart revalidated the one-member allowance,
+returned Running with Pod UID `16902be7-7cf0-42a2-ba88-f23ee4aaf51b`, and exposed
+5368709120 CUDA bytes. The preserved workspace file still matched SHA-256
+`771626f9e2fc708860f25296af05e3f3aa69756351099ff6a6216d5fd6ebae2e`.
+Normal service Stop completed. All seven lifecycle allocations are released,
+test notebook Pods are absent, and the protected running user Pod UID is unchanged.
+The finite controller was deliberately interrupted only after cleanup (exit 130);
+the final read-only inventory preflight passed. No controller loop remains running.
+
+Repository-wide pytest collection was blocked by missing `oauthenticator` in the
+local test environment. A broader SDK test run was interrupted after 345 seconds:
+748 tests passed and `test_upstream_71_patience_messages_are_preserved` failed
+because the installed KubeSpawner module lacks the expected `time` attribute.
+That same failure was reproduced on the unchanged `d00390b` base. These runs do
+not constitute a green full-suite gate.
+
+Still open: actual browser/OAuth/RTC visitor flows; assignment/group allocation;
+cross-Hub canonical-person conflicts and rollback; automatic console completion
+or clear retry UX for pending cleanup; review of duplicated group roster fields;
+the separate transient cleanup diagnostic; and all remaining original production
+gates. This result does not activate the production GPU approval gates.
+
+Private evidence: `cit-console-local-records-prepare.actual.private.jsonl`,
+`cit-console147-normal-start-after-storage-fix.actual.private.jsonl`,
+`cit-console147-remove-member.actual.private.jsonl`,
+`cit-console147-resume-removal.actual.private.jsonl`,
+`cit-console147-effective-access-after-removal.actual.private.jsonl`,
+`cit-console147-survivor-restart.actual.private.jsonl`,
+`cit-console147-normal-close.actual.private.jsonl`,
+`console147-final-all-released.actual.private.json`,
+`node-console-sharing-after-storage-fix.private.log`, and
+`storage-read-before-create/registry-verification.private.json`.
