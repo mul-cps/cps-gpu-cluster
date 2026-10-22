@@ -1,0 +1,54 @@
+{
+  "scope": "retirement admission candidate only; not execution or hardware qualification",
+  "renderer_sha256": "83ce840476ccbcbd6fc7fb11ec08bfcdb8ab62818647dda076c2e4fa26200e7e",
+  "observed_generation": 3,
+  "expression_warnings": [],
+  "isolation": "temporary policy matched only dryRun=true and the exact requesting operator identity",
+  "cases": [
+    {
+      "case": "direct-user",
+      "passed": true
+    },
+    {
+      "case": "sa-explicit",
+      "passed": true
+    },
+    {
+      "case": "sa-omitted",
+      "passed": true
+    },
+    {
+      "case": "sa-empty",
+      "passed": true
+    },
+    {
+      "case": "unrelated-readonly-group",
+      "passed": true
+    },
+    {
+      "case": "unrelated-user",
+      "passed": true
+    },
+    {
+      "case": "retired-scale",
+      "passed": true
+    },
+    {
+      "case": "archive-namespace-update",
+      "passed": true
+    },
+    {
+      "case": "archive-namespace-delete",
+      "passed": true
+    }
+  ],
+  "temporary_policy_and_binding_removed": true,
+  "not_qualified": [
+    "TokenRequest subresource",
+    "complete cross-kind and CONNECT matrix",
+    "retired credential capability closure",
+    "GitOps no-resurrection",
+    "physical GPU exclusivity",
+    "new guarded epoch and hardware gates"
+  ]
+}
