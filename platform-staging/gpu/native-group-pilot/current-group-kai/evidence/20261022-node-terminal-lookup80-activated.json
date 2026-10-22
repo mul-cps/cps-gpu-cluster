@@ -1,0 +1,27 @@
+{
+  "all_four_service_specs_restored": true,
+  "changed_runtime_modules": [
+    "cps_compute/native_node/custody.py"
+  ],
+  "deployed": true,
+  "hub_health_http": {
+    "cit": 200,
+    "cps": 200
+  },
+  "journal": {
+    "active_rotations": 32,
+    "authenticated_files": 404,
+    "four_actual_acks_ready": true,
+    "total_rotations": 80,
+    "transition": null
+  },
+  "node_image": "ghcr.io/mul-cps/cps-native-node@sha256:ca1e903df21a6ed06fc7044e11b22935c8786fc372ef179507f1f9034d73a8a9",
+  "policy_hash": "sha256:332d14fb9e510b9810feffb8d40b408743f9679ebd13ca1ba0e1077d666e9281",
+  "production_ready": false,
+  "qualified_startup": false,
+  "rotation": 80,
+  "source_generation": 9,
+  "source_revision": "cc86cbdf087802951e75c7528758c7cac937d0b9",
+  "succeeded_job_uid_cleaned": true,
+  "version": 1
+}

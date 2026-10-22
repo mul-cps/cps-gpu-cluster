@@ -1,0 +1,50 @@
+{
+  "attempt": 81,
+  "cleanup": {
+    "all_allocations_released": 193,
+    "binder_exact_spec_restored": true,
+    "cleanup_verified": true,
+    "failure_phase": "pre-execution-pre-enrollment",
+    "pod_absent": true,
+    "prior_192_claim_hashes_unchanged": true,
+    "protected_notebook_unchanged": true,
+    "sole_new_claim_intent_is_null": true,
+    "sql_counts": {
+      "reservation": 0,
+      "reservation_binding": 0
+    },
+    "startup_qualified": false
+  },
+  "failure": {
+    "actual_resource_version": "379360875",
+    "cuda_kernel_ran": false,
+    "execution_fence_opened": false,
+    "expected_resource_version": "379360434",
+    "first_prepare_refresh_hint": "registered-snapshot-refresh",
+    "kind": "CurrentReferenceMismatch",
+    "phase": "pre-execution-pre-enrollment",
+    "resource": "Node",
+    "same_uid": true,
+    "second_prepare_elapsed_seconds": 13.928437,
+    "stage": "_stage_before_fence Node read"
+  },
+  "log_sha256": {
+    "binder": "0f65c028e47d0e5a386f6ddb3fa2c0a895d93893a9bd62465d7489aaeac478f9",
+    "gateway": "31fb06e3da336a5d60d1ea5048ea293f58f783597a26c560de7ff8d84cae1e95",
+    "hub": "3dfdbf6737dff6a17a43bb0ae2397c2c6bce52a1fb43f7e6ce3a7ebd8c474149",
+    "node": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "next_action": "Carry exact successful registered-readiness Node observation into stage, then use existing fresh semantic comparison; do not widen the projection whitelist or execution fence.",
+  "normal_start": {
+    "elapsedSeconds": 318.2785571079585,
+    "endedAt": "2026-10-22T04:52:31.707416+00:00",
+    "returnCode": 1,
+    "startedAt": "2026-10-22T04:47:13.428855+00:00"
+  },
+  "normal_stop_http": 200,
+  "observed_pod_uid": "10cf4f73-3d11-4c38-ac21-8ee61e6deae7",
+  "production_ready": false,
+  "startup_passed": false,
+  "temporary_token_revoked": true,
+  "version": 1
+}
