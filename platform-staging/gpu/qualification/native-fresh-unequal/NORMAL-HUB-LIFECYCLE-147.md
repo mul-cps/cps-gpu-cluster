@@ -464,3 +464,48 @@ remain disabled for ordinary access. The production gateway is unchanged.
 Hub settings/policy and controlled QA course/roster/grants have not yet migrated;
 normal Source Start, CUDA measurements and terminal cleanup of the measured pair
 remain pending. This is not a hardware pass or production approval.
+
+### First measured starts: reproduced blockers and corrections
+
+Both Hub owner overlays and controlled console fixtures were migrated through the
+installed applications. CPS uses four reviewed QA canonical members and a 20 GiB
+ceiling; CIT uses one reviewed QA member and a 5 GiB ceiling. Grants and local
+memberships expire after two hours. Profile changes used the normal audited
+`WorkspaceService.change_profile` path with stopped-writer and reservation checks.
+
+The first starts failed before notebook Pod creation: CPS's exact approval list
+had noncanonical member ordering; CIT's Hub reverse lookup used dictionary value
+equality, selecting the equal but unauthorized legacy five-GiB alias. CPS roster
+ordering was corrected without changing member identities. Hub revision
+`6dc240b547fc5239c3518c40ca04f6323c697218` changes lookup to catalog object identity;
+the reproducer failed before the fix and 88 focused tests passed afterward.
+The Hub-only wheel `f44b202a270156455614769e91d87ccd3fbb6fc252de86998d901c8bac800588`
+was packaged as
+`ghcr.io/mul-cps/cps-compute@sha256:f8495d31d663a1662b5153ca60c18040a4192651f35da08244e46fd9b607399b`.
+All 20 Hub modules matched, only `hub.py` changed, all 136 other distributions
+and the preserved SDK were unchanged. Registry digest and both Hub rollouts
+verified; the alias regression also passed inside the running CIT Hub.
+
+A subsequent start created both Pods but exposed two remaining legacy wrapper
+assumptions: active reconciliation excludes pinned historical intents, and the
+physical partition checker still required two five-GiB caps and a ten-GiB budget.
+Revision `c10818b` restores explicitly pinned finite historical intents to physical
+accounting and validates exact five/twenty caps under a maximum 25 GiB aggregate
+budget. It preserves all original retirement rows and per-inode cap checks.
+Regressions failed before these changes; all 208 qualification directory tests
+then passed. Generated source
+`ed6aa0e16a6d57c796a774694503ba490e43f5889c535c94b8abdc3c2ea8432b`
+passed fresh node-side read-only history/CDI/physical-inventory checks with both
+new enrolled Pods present. The failed diagnostic controller was stopped using
+its exact PID/start-time identity, its exit 130 verified, and the corrected
+bounded diagnostic controller started without replacing the node helper Pod.
+
+CIT Pod `cfe205e5-96fe-4f7c-83d9-74743fec724f` completed normal Start and passed CUDA:
+a 6 GiB allocation was rejected under its 5 GiB cap, and the same process
+continued using its original 512 MiB tensor. CPS Pod
+`d20d0668-c605-4d8f-a2a3-1d4b86b905d1` had an original sealed journal with
+21474836480-byte soft/hard readback, but the console deadline elapsed during the
+wrapper corrections and normal rollback stopped it. The attempted CPS CUDA exec
+therefore returned Pod NotFound and is NOT a pass. Normal console Close completed
+with inactive pooled reservation. A fresh normal CPS Start was requested only
+after that cleanup; its result and the twenty-GiB CUDA test remain to be recorded.
