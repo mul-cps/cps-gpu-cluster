@@ -11,6 +11,7 @@ qualification or an ordinary NodeConfiguration bootstrap.
 import argparse
 import ast
 from copy import deepcopy
+from contextvars import ContextVar
 from dataclasses import asdict
 import hashlib
 import importlib.metadata
@@ -491,6 +492,8 @@ class InventoryGuard:
 
     def backend_type(self):
         guard = self
+        active = ContextVar('native_inventory_action_backend', default=None)
+        mutations = frozenset({'read_limit', 'set_limit', 'seal_gate', 'revoke_gate'})
         class GuardedBackend(self.back.QualificationNodeBackend):
             def __init__(self, *a, **kw):
                 super().__init__(*a, **kw)
@@ -505,8 +508,18 @@ class InventoryGuard:
                      'check_cleanup', 'cleanup_completion', 'retired_inert_cap', 'prepared_offline_unlimited',
                      'read_gate', 'seal_gate', 'revoke_gate'):
             def action(instance, *args, _name=name, **kwargs):
-                guard.check(instance)
-                return getattr(super(GuardedBackend, instance), _name)(*args, **kwargs)
+                # Share only this synchronous action's nested read checks. Every
+                # top-level operation and every mutation still observes fresh
+                # complete inventory; no cross-operation authority cache exists.
+                if active.get() is not instance or _name in mutations:
+                    guard.check(instance)
+                # read_limit may bootstrap native state; mutations must also
+                # preserve fresh checks in their nested observation sequence.
+                token = active.set(None if _name in mutations else instance)
+                try:
+                    return getattr(super(GuardedBackend, instance), _name)(*args, **kwargs)
+                finally:
+                    active.reset(token)
             setattr(GuardedBackend, name, action)
         return GuardedBackend
 
@@ -652,6 +665,7 @@ def build_sources():
     prefix = '''#!/usr/bin/env python3
 import argparse, ast, hashlib, importlib.metadata, json, os, sys, types
 from copy import deepcopy
+from contextvars import ContextVar
 from dataclasses import asdict
 from pathlib import Path
 '''

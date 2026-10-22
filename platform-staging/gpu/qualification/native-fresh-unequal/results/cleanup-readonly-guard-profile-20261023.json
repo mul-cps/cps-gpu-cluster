@@ -1,0 +1,41 @@
+{
+  "allocations_released": 16,
+  "candidate_cpu_tests_passed": 296,
+  "candidate_deployed": false,
+  "candidate_generated_source_sha256": "630cd401e44ea5cc42fcf9d1131d0491a2646dcd5d1fc61c8f037360c69cbd51",
+  "candidate_subtests_passed": 211,
+  "live_cleanup_speedup_verified": false,
+  "measurement": {
+    "authenticated_api_calls": {
+      "count": 338,
+      "cpu_seconds": 0.6474625110000012,
+      "wall_seconds": 1.4109253480055486
+    },
+    "complete_guard": {
+      "count": 1,
+      "cpu_seconds": 1.2779604070000001,
+      "wall_seconds": 2.041842345999612
+    },
+    "current_terminal": {
+      "count": 16,
+      "cpu_seconds": 0.6016719510000001,
+      "wall_seconds": 1.0241176309864386
+    },
+    "prior_retirement_inputs": {
+      "count": 2,
+      "cpu_seconds": 0.6636265719999999,
+      "wall_seconds": 1.0012136419900344
+    },
+    "protected_private_read": {
+      "count": 282,
+      "cpu_seconds": 0.02578149499999932,
+      "wall_seconds": 0.02569493994815275
+    }
+  },
+  "native_set_forbidden": true,
+  "pod_delete_forbidden": true,
+  "production_qualified": false,
+  "profiled_generated_source_sha256": "cd64be430bd7b072af4e2de8a9087abf5b197a7154aed727c88a62f3aa157271",
+  "scope": "Read-only diagnostic inventory cost; not end-to-end cleanup benchmark",
+  "version": 1
+}

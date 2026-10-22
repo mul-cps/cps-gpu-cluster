@@ -601,3 +601,27 @@ history/CDI/inventory checks passed. This closes automatic five/ten/twenty sizin
 integration across the two measured runs; ordinary qualified-group promotion,
 cleanup latency and broader production acceptance remain open. The checked
 artifact index is `results/automatic-five-ten-147-20261023.json`.
+
+### Read-only cleanup cost and nested-read guard candidate
+
+With all sixteen allocations released, a native-SET/Pod-DELETE-forbidden
+preflight instrumented the unchanged live helper. One complete inventory guard
+made 338 authenticated API calls and took 2.042 seconds (1.278 process CPU
+seconds); 282 protected file reads took 0.026 seconds. Timings are nested,
+inclusive observations and must not be added together. This identifies guard
+cost, not a complete explanation or resolution of the console cleanup timeout.
+See `results/cleanup-readonly-guard-profile-20261023.json`.
+
+The wrapper previously repeated the full guard for nested read-only backend
+calls inside an already guarded read action. A candidate scopes only those
+nested reads to the current synchronous backend action using ContextVar.
+Every top-level operation still performs a fresh complete check. `read_limit`
+is explicitly treated as mutating because it can bootstrap native state;
+`set_limit`, `seal_gate`, `revoke_gate` and their nested observation sequences
+retain fresh checks. Cleanup publication's separate fresh guard is unchanged.
+The candidate uses no cross-operation inventory/authority cache. Regressions
+cover late foreign inventory before mutations, bootstrap classification,
+exception reset and concurrent threads. 296 tests and 211 subtests passed,
+including original full-inventory, cleanup and emergency-stop cases. This
+candidate is not yet deployed and no live cleanup speedup is claimed. Ordinary
+qualified-group activation remains the next primary integration step.

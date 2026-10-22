@@ -509,3 +509,101 @@ def test_measured_terminal_history_keeps_original_cap_and_policy(cap):
     for key,value in [('cap_mib',10240 if cap==5120 else 5120),('enrollment_uid','replacement')]:
         bad=copy.deepcopy(config);bad['terminal_history']['old'][key]=value
         with pytest.raises(ValueError):m.enrollment_configuration(SimpleNamespace(canonical_sha256=digest),bad,envelope)
+
+
+def test_nested_reads_share_only_the_current_operation_inventory_check():
+    from types import SimpleNamespace
+    m=module();checks=[]
+    class Base:
+        def observe(self):return self.read_limit_readonly()+self.read_gate()
+        def read_limit_readonly(self):return 2
+        def read_gate(self):return 3
+    guard=object.__new__(m.InventoryGuard)
+    guard.back=SimpleNamespace(QualificationNodeBackend=Base)
+    guard.check=lambda instance:checks.append(instance)
+    backend=guard.backend_type()()
+    assert backend.observe()==5
+    assert checks==[backend]
+    assert backend.read_limit_readonly()==2
+    assert checks==[backend,backend]  # No cross-operation cache.
+
+
+@pytest.mark.parametrize('mutation',['read_limit','set_limit','seal_gate','revoke_gate'])
+def test_nested_mutation_always_rechecks_changed_inventory(mutation):
+    from types import SimpleNamespace
+    m=module();changed=False;writes=[];checks=[]
+    class Base:
+        def observe(self):
+            nonlocal changed
+            self.read_limit_readonly();changed=True
+            return getattr(self,mutation)()
+        def read_limit_readonly(self):return 1
+        def read_limit(self):writes.append('bootstrap')
+        def set_limit(self):writes.append('set')
+        def seal_gate(self):writes.append('seal')
+        def revoke_gate(self):writes.append('revoke')
+    guard=object.__new__(m.InventoryGuard);guard.back=SimpleNamespace(QualificationNodeBackend=Base)
+    def check(instance):
+        checks.append(instance)
+        if changed:raise ValueError('Foreign inventory appeared')
+    guard.check=check;backend=guard.backend_type()()
+    with pytest.raises(ValueError,match='Foreign inventory'):backend.observe()
+    assert not writes and checks==[backend,backend]
+
+
+def test_nested_operation_context_resets_after_exception():
+    from types import SimpleNamespace
+    m=module();checks=[]
+    class Base:
+        def observe(self):raise RuntimeError('read failed')
+        def read_gate(self):return 1
+    guard=object.__new__(m.InventoryGuard);guard.back=SimpleNamespace(QualificationNodeBackend=Base)
+    guard.check=lambda instance:checks.append(instance)
+    backend=guard.backend_type()()
+    with pytest.raises(RuntimeError):backend.observe()
+    assert backend.read_gate()==1 and checks==[backend,backend]
+
+
+def test_overlapping_threads_cannot_inherit_another_operations_read_check():
+    from concurrent.futures import ThreadPoolExecutor
+    from threading import Event
+    from types import SimpleNamespace
+    m=module();entered=Event();release=Event();checks=[]
+    class Base:
+        def observe(self):
+            entered.set()
+            assert release.wait(3)
+            return self.read_limit_readonly()
+        def read_limit_readonly(self):return 1
+    guard=object.__new__(m.InventoryGuard);guard.back=SimpleNamespace(QualificationNodeBackend=Base)
+    guard.check=lambda instance:checks.append(instance)
+    backend=guard.backend_type()()
+    with ThreadPoolExecutor(max_workers=2) as pool:
+        first=pool.submit(backend.observe)
+        assert entered.wait(3)
+        try:
+            assert pool.submit(backend.read_limit_readonly).result(timeout=3)==1
+            assert checks==[backend,backend]
+        finally:release.set()
+        assert first.result(timeout=3)==1
+    assert checks==[backend,backend]
+
+
+def test_mutating_operation_keeps_its_nested_observations_fresh():
+    from types import SimpleNamespace
+    m=module();checks=[];changed=False;writes=[]
+    class Base:
+        def set_limit(self):
+            nonlocal changed
+            self.read_gate();changed=True
+            self.observe()
+            writes.append('unsafe')
+        def read_gate(self):return None
+        def observe(self):return None
+    guard=object.__new__(m.InventoryGuard);guard.back=SimpleNamespace(QualificationNodeBackend=Base)
+    def check(instance):
+        checks.append(instance)
+        if changed:raise ValueError('Late foreign inventory')
+    guard.check=check;backend=guard.backend_type()()
+    with pytest.raises(ValueError,match='Late foreign'):backend.set_limit()
+    assert checks==[backend,backend,backend] and not writes
