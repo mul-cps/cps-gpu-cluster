@@ -1,0 +1,79 @@
+{
+  "all_original_mps_processes_absent": true,
+  "boot_id": "a464df41-e391-4443-b8e8-ad7ecd052318",
+  "cap_mib": 5120,
+  "charges_recovered": true,
+  "cohort_uid": "bb8edac3-5899-49d6-9765-123351de5531",
+  "date": "2026-10-22",
+  "driver": "615.71.09",
+  "driver_generation": "4ebffc96-e25e-4583-a3b8-0d853fd90efd",
+  "evidence": [
+    {
+      "bytes": 722,
+      "file": "receipt.json",
+      "sha256": "a5d8e23e143edef6456354bc7c53f6d4b2cc86f74558161b07ef97110efc47a9"
+    },
+    {
+      "bytes": 80828,
+      "file": "host-cleaned.json",
+      "sha256": "406a0c51e5a2be4954f4bc2f7aefec8905bd9dc41f33f45d794653f30c46c944"
+    },
+    {
+      "bytes": 40256,
+      "file": "before.json",
+      "sha256": "403d24e25d39dab3c9829835475bc660aa7f7304f7055ffbe0cd3fc07397a850"
+    },
+    {
+      "bytes": 40256,
+      "file": "after.json",
+      "sha256": "5d53078f92afc9048948b6feb451df0ad6e39f9a4a027938668616d3a65bf8ce"
+    },
+    {
+      "bytes": 10573,
+      "file": "mps.jsonl",
+      "sha256": "f0414ffefe584b796415e4e9a255d57a8cff5100023c6c63f472f3f6d076c573"
+    },
+    {
+      "bytes": 114751,
+      "file": "peer.jsonl",
+      "sha256": "e11b569bdb482a61d488fb21f7a640f205c23d4a4399050ce3b61f7bdbe32d6a"
+    }
+  ],
+  "fixture_entrypoint": [
+    "tini",
+    "-g",
+    "--",
+    "start.sh"
+  ],
+  "kernel": "6.8.0-147-generic",
+  "limitations": [
+    "One 5 GiB MPS parent with an independent opposite-Pod ordinary peer measured.",
+    "Unequal profile caps, normal automatic Hub provisioning and full production acceptance remain separate gates."
+  ],
+  "measurement": {
+    "attempted_mib": 4352,
+    "held_mib": 4096,
+    "measurement_passed": true,
+    "peer_ticks": 282
+  },
+  "notebook_image_sha256": "5427088986bc06ad0713875d1aa2f31439f0bd1fbe6099d4669570fcf3e85be4",
+  "original_mps_process_count": 4,
+  "prior_attempt": {
+    "cohort_uid": "6ba3353d-bf13-4cad-9c35-3119dd279a67",
+    "reason": "QA fixture replaced reaping entrypoint with Python PID1; original MPS control daemon remained as zombie. Memory measurement passed, cleanup did not.",
+    "state": "inconclusive"
+  },
+  "production_qualified": false,
+  "runner_sha256": "87e81c18737f72d0d7884ee676cff3e85680387e75374c2f6d232d77ec413ca7",
+  "scope": "bounded-fresh-QA-domain-measurement",
+  "source_sha256": {
+    "engine_sha256": "a2dd364c6650336cbe2902f792bac625cbcbf074bb7971d38bcd9bd8027029df",
+    "manifest_sha256": "a014aee72e6b34775b4dcca2e432b1f21d9b6820756084a76f852dd2fd1fd452",
+    "mapper_argv_sha256": "4b72e2536f87a6c28f599a39e9416c8dcd19b00411b9fc20a4643006438a06b9",
+    "mapper_sha256": "35b968c0d3291dc9d6b020c86a9ea0223662cb30a1211217f7e547374713273b",
+    "probe_sha256": "a235f486239056bedf2afd6e48536c5024da5efa62340a6e7d3545dd0a1b4a8e"
+  },
+  "state": "bounded-mps-peer-and-cleanup-measurements-passed",
+  "unchanged_seals_and_processes": true,
+  "version": 1
+}
