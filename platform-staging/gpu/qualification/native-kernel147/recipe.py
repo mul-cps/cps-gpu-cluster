@@ -7,6 +7,7 @@ import json
 import re
 from pathlib import Path, PurePosixPath
 import subprocess
+import struct
 import tarfile
 
 KERNEL='6.8.0-147-generic'
@@ -109,6 +110,55 @@ def symbols(flag,path,*,allow_empty=False):
 
 
 
+
+MODULE_HEADER_SHA='e8acd150edaff13d08be34527e9c844743120e64fa9b14447b5a50d0fea0b006'
+
+
+def parse_modversions(raw):
+    """Exact captured Ubuntu packed u32-next/u32-crc/NUL-name layout."""
+    require(type(raw) is bytes and 9 <= len(raw) <= 4*1024*1024,'Bounded modversion section required')
+    result={};offset=0
+    while offset < len(raw):
+        require(offset%4==0 and len(raw)-offset>=9,'Aligned complete modversion entry required')
+        step,crc=struct.unpack_from('<II',raw,offset)
+        if step==0:
+            require(raw[offset:]==b'\0'*9 and result,'Exact final modversion sentinel required')
+            return result
+        require(step>=12 and step%4==0 and offset+step<=len(raw),'Bounded aligned next modversion required')
+        field=raw[offset+8:offset+step];nul=field.find(b'\0')
+        require(0<nul<=512 and len(field)-nul<=4 and not any(field[nul:]),'NUL-terminated padded modversion name required')
+        try:name=field[:nul].decode('ascii')
+        except UnicodeDecodeError:raise ValueError('ASCII modversion name required') from None
+        require(re.fullmatch(r'[A-Za-z_][A-Za-z0-9_]*',name) and name not in result,'Distinct exact modversion symbol required')
+        result[name]=crc;require(len(result)<=65536,'Modversion count exceeds bound')
+        offset+=step
+    raise ValueError('Final modversion sentinel missing')
+
+
+def modversion_imports(path):
+    require(path.stat().st_size<=256*1024*1024,'Bounded module ELF required')
+    raw=path.read_bytes()
+    require(len(raw)>=64 and raw[:7]==b'\x7fELF\x02\x01\x01','ELF64 little-endian version1 required')
+    header=struct.unpack_from('<16sHHIQQQIHHHHHH',raw)
+    require(header[1:4]==(1,62,1) and header[8]==64 and header[9:11]==(0,0)
+            and header[5]==0 and header[11]==64 and 0<header[12]<=4096
+            and 0<header[13]<header[12] and header[6]>=64
+            and header[6]+header[12]*64<=len(raw),'Bounded x86_64 relocatable ELF section table required')
+    sections=[struct.unpack_from('<IIQQQQIIQQ',raw,header[6]+index*64) for index in range(header[12])]
+    strings=sections[header[13]]
+    require(strings[1]==3 and 0<strings[5]<=1048576 and strings[4]+strings[5]<=len(raw),'Bounded ELF section names required')
+    names=raw[strings[4]:strings[4]+strings[5]];matches=[]
+    for section in sections:
+        require(section[0]<len(names),'ELF section name offset invalid')
+        end=names.find(b'\0',section[0]);require(end>=section[0],'ELF section name missing terminator')
+        if names[section[0]:end]==b'__versions':matches.append(section)
+    require(len(matches)==1,'Exactly one modversion section required')
+    section=matches[0]
+    require(section[1]==1 and section[4]%4==0 and section[4]>=64 and section[4]+section[5]<=len(raw)
+            and section[8]>=4 and section[8]&(section[8]-1)==0,'Bounded aligned modversion data required')
+    return parse_modversions(raw[section[4]:section[4]+section[5]])
+
+
 def validate_release(raw):
     defines={}
     for line in raw.splitlines():
@@ -120,9 +170,27 @@ def validate_release(raw):
             'Actual target headers required')
 
 
+
+QUALIFIED_CORE_SHA='4fdcafcdf7f57b9de81f56e8e17db06a91e27680c6a711f3888fd0b76da46421'
+# SHA256 of compact JSON sorted imported names from that exact qualified ELF.
+QUALIFIED_IMPORT_NAMES_SHA='3e7b2ea9afeee77f8d4667586ab82a3b7b339945269bb26b6c522ad0574f9467'
+QUALIFIED_EXTRA_IMPORTS=frozenset({'___ratelimit','__put_task_struct','cgrp_dfl_root',
+                                 'init_user_ns','ns_capable','param_ops_uint'})
+
+
+def validate_import_baseline(stock,candidate):
+    require(all(candidate.get(k)==v for k,v in stock.items()),'Stock core import removed/changed')
+    require(set(candidate)-set(stock)==QUALIFIED_EXTRA_IMPORTS,'Exact qualified six core imports required')
+    names=json.dumps(sorted(candidate),separators=(',',':')).encode()
+    require(len(candidate)==470 and hashlib.sha256(names).hexdigest()==QUALIFIED_IMPORT_NAMES_SHA,
+            'Exact qualified complete core import names required')
+
+
 def verify(headers,stock_core,stock_uvm,core,uvm):
     release=(headers/'include/generated/utsrelease.h').read_text()
     validate_release(release)
+    common=headers.parent/'linux-headers-6.8.0-147/include/linux/module.h'
+    require(sha(common)==MODULE_HEADER_SHA,'Captured Ubuntu packed modversion header required')
     kernel={}
     for line in (headers/'Module.symvers').read_text().splitlines():
         fields=line.split();require(len(fields)>=4 and fields[1] not in kernel,'Malformed kernel symvers')
@@ -135,15 +203,18 @@ def verify(headers,stock_core,stock_uvm,core,uvm):
     exports=[symbols('--show-exports',p,allow_empty=index in (1,3)) for index,p in enumerate(paths)]
     require_same(exports[0],exports[2],'Stock NVIDIA core exports')
     require_same(exports[1],exports[3],'Stock NVIDIA UVM exports')
-    core_imports=symbols('--show-modversions',core);uvm_imports=symbols('--show-modversions',uvm)
+    core_imports=modversion_imports(core);uvm_imports=modversion_imports(uvm)
     verify_symbols(kernel,{},core_imports);verify_symbols(kernel,exports[2],uvm_imports)
-    # UVM guard adds no symbol dependency; core inventory legitimately adds cgrp_dfl_root.
-    require_same(symbols('--show-modversions',stock_uvm),uvm_imports,'Stock UVM imports')
-    stock_imports=symbols('--show-modversions',stock_core)
-    require(all(core_imports.get(k)==v for k,v in stock_imports.items()),'Stock core import removed/changed')
-    require(set(core_imports)-set(stock_imports)<={'cgrp_dfl_root'},'Unexpected extra core import')
+    # UVM guard adds no symbol dependency; compare the complete qualified core baseline.
+    stock_uvm_imports=modversion_imports(stock_uvm)
+    stock_imports=modversion_imports(stock_core)
+    verify_symbols(kernel,{},stock_imports);verify_symbols(kernel,exports[0],stock_uvm_imports)
+    require_same(stock_uvm_imports,uvm_imports,'Stock UVM imports')
+    validate_import_baseline(stock_imports,core_imports)
     return {'kind':'offline-abi-only','target_kernel':KERNEL,'sha256':[sha(p) for p in paths],
             'module_info':metadata,'core_imports':len(core_imports),'uvm_imports':len(uvm_imports),
+            'modversion_layout_header_sha256':MODULE_HEADER_SHA,
+            'qualified_core_sha256':QUALIFIED_CORE_SHA,'qualified_import_names_sha256':QUALIFIED_IMPORT_NAMES_SHA,
             'loaded':False,'qualified':False}
 
 

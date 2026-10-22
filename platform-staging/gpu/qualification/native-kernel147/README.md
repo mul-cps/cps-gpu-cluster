@@ -83,14 +83,39 @@ and exact header/compiler/source input receipts only.
 ## Mandatory offline ELF gate before any separately reviewed load
 
 `recipe.py verify-build --headers <captured-generic-headers> --stock-core ...
---stock-uvm ... --core <candidate> --uvm <candidate>` uses only modinfo and
-modprobe's **query-only** --show-exports/--show-modversions. It requires identical
+--stock-uvm ... --core <candidate> --uvm <candidate>` uses only read-only modinfo,
+modprobe's **query-only** --show-exports, readelf sections, and a strict bounded
+ELF64 little-endian import parser pinned to captured Ubuntu module.h SHA256
+`e8acd150edaff13d08be34527e9c844743120e64fa9b14447b5a50d0fea0b006`.
+That actual header defines packed `{u32 next;u32 crc;char name[];}` entries;
+Fedora and Ubuntu kmod do not decode this Ubuntu layout. There is no alternate
+layout fallback. Every entry requires aligned bounded length, ASCII symbol name,
+NUL/zero padding, no duplicates and the exact final sentinel. It requires identical
 stock/candidate147 vermagic/version, unchanged full NVIDIA core and UVM exports
 (UVM may have an empty export map only when readelf confirms no export section),
 all candidate imports resolved with exact CRC against actual147 kernel symvers
 or the new core exports, unchanged stock UVM import set/CRCs, preserved stockcore
-imports, and only the documented cgrp_dfl_root extra core dependency. Any extra
-ABI difference is a STOP for independent inspection, never an allowlist expansion
+imports, and EXACTLY six previously qualified extra core dependencies:
+`___ratelimit`, `__put_task_struct`, `cgrp_dfl_root`, `init_user_ns`, `ns_capable`,
+`param_ops_uint`. The complete470 imported names must hash to
+`3e7b2ea9afeee77f8d4667586ab82a3b7b339945269bb26b6c522ad0574f9467`
+(SHA256 of compact JSON sorted names from the exact4fd qualified ELF above).
+All stock AND candidate imports independently resolve against actual147 kernel
+CRCs or the respective stock/new core exports. Any extra ABI difference is a STOP for independent inspection, never an allowlist expansion
 in the build job. Retain actual stock raw hashes and complete compared symbol maps
 alongside result. Successful offline ABI comparison is NOT permission to load,
 restore old epochs, reconstruct missing journals, or publish readiness.
+
+
+The former cgrp_dfl_root-only expectation described incremental194→4fd, not
+stock→qualified. Authentic ed30 stock134 __versions SHA256
+`545013da5394d092e968003d93861c828c42ab81c3ed63cda3a48ae72be1c779`
+(in final-retained-core/baseline-receipt.json) has464 imports. Qualified4fd adds
+exactly the six above, removes/changes no existing134 import CRC, and has exactly
+the same470 imported names as the147 candidate. Root reviewed this correction.
+Source attribution in the hash-pinned final source: os-interface.c68/78
+(param_ops_uint),99 (bounded __ratelimit denial logging),2997 (retained task
+reference release),3014 (default cgroup root inventory); nv-procfs.c113
+(ns_capable/init_user_ns readonly root credential gate). Kernel147's ratelimit
+macro resolves to ___ratelimit; put_task_struct resolves to __put_task_struct.
+This baseline correction changes no imported CRC, export, UVM, kernel or load gate.
