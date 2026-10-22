@@ -44,3 +44,21 @@ missing journals. Existing retired qualification entries remain pinned.
   full prior-inventory validation require a bounded adapter; loader-only swap rejected.
 - Canonical baseline captured read-only: 9 workspaces, 31 grants, 0 reservations.
 - Hardware lifecycle run and production activation remain pending.
+
+## Temporary Gateway placement
+
+The runtime rejects simultaneous pilot and production-group modes. Use a separate
+Gateway process; do not disable or rewrite the production Source. The actual
+`compute-state` PVC is ReadWriteOnce in `cps-compute`, attached on `k3s-wk-gpu1`.
+The temporary Gateway must use that namespace/node and the same `/data` mount:
+`control.sqlite` and `reservations.sqlite` are fixed runtime filenames, not
+arbitrary caller-selected DB names. Its authority ledger remains in a separate
+qualification namespace with a dedicated service account and scoped grants.
+
+The existing server certificate covers only the production Service DNS. Give the
+temporary internal Service its own matching certificate and pin its CA only in
+operator Hub settings. Omit production publisher/coordinator/bootstrap settings.
+Register temporary neutral workspaces with the derived policy hash and grant
+that exact pilot alias to the reviewed members. Unchanged production workspace
+rows must fail authorization against the derived catalog. Preserve existing data
+and prove storage bindings rather than inventing storage evidence.

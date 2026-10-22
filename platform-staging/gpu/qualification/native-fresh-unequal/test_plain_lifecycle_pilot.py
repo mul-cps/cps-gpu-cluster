@@ -12,7 +12,7 @@ def inputs():
  for v in approvals.values():
   v['profiles']=['interactive-shared-5'];v['ceiling']['gpuMemoryGiB']=5
  hubs={s:{'policyPath':'/reviewed/policy.json','gatewayUrl':'https://gateway.example','gatewayCAFile':'/reviewed/ca.crt','serviceTokenEnv':'NATIVE_TOKEN','canonicalMappingPath':'/reviewed/people.json'} for s in ('cps','cit')}
- return dict(policy=p,approvals=approvals,pool={k:c['node_pool'][k] for k in ('node','node_uid','gpu_uuid','max_workspaces')},authority_namespace='cps-native-lifecycle-147',gate_image=c['gateImage'],workload_image=c['workloadImage'],hub_transports=hubs,database_paths={'store':'/data/hub.db','reservations':'/data/reservations.db'})
+ return dict(policy=p,approvals=approvals,pool={k:c['node_pool'][k] for k in ('node','node_uid','gpu_uuid','max_workspaces')},authority_namespace='cps-native-lifecycle-147',gate_image=c['gateImage'],workload_image=c['workloadImage'],hub_transports=hubs,database_paths={'store':'/data/control.sqlite','reservations':'/data/reservations.sqlite'})
 
 def contract_positive():
  from cps_compute.policy import Policy,PolicyError
@@ -28,6 +28,9 @@ def contract_positive():
   _validate(h);assert h['source']==s and h['profiles']==[name]
  assert r['database_paths']==a['database_paths'] and r['production_qualified'] is False
  assert r['source_registry_update'] is None
+ from cps_compute.runtime import native_gpu_pilot_configuration
+ assert r['runtime']['state_directory']=='/data'
+ assert native_gpu_pilot_configuration(r['runtime'])==r['runtime']['nativeGpuPilot']
  # qa path is qualification/unequal; legacy sibling is gpu/native-group-pilot.
  legacy=P.parents[2]/'native-group-pilot'/'node_agent.py'
  spec=importlib.util.spec_from_file_location('legacy_pilot_validator',legacy)
@@ -47,6 +50,7 @@ def contract_negative(fault):
  if fault=='image':a['workload_image']='image:latest'
  if fault=='namespace':a['authority_namespace']='jupyterhub'
  if fault=='production-namespace':a['authority_namespace']='cps-native-runtime'
+ if fault=='wrong-basename':a['database_paths']['store']='/data/hub.db'
  if fault=='db':a['database_paths']['store']='/tmp/fake.db'
  if fault=='extra':rows[0]['fake']=True
  if fault=='enabled-alias':
@@ -56,7 +60,7 @@ def contract_negative(fault):
 SDK=Path('/home/bjoern/git/cps-compute-worktrees/native-cleanup-offline-unlimited-20261023')
 PYTHON=Path('/home/bjoern/git/cps-compute/.venv/bin/python')
 
-@pytest.mark.parametrize('case',['positive','one','duplicate-owner','overlap-member','pool','image','namespace','db','extra','enabled-alias','production-namespace'])
+@pytest.mark.parametrize('case',['positive','one','duplicate-owner','overlap-member','pool','image','namespace','db','extra','enabled-alias','production-namespace','wrong-basename'])
 def test_isolated_sdk_contract(case):
  # Parent imports neither SDK nor its fixtures, preserving pinned harness imports.
  env=dict(os.environ)

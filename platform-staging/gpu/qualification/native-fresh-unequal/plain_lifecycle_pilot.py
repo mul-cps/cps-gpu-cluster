@@ -38,11 +38,9 @@ def build(*,policy,approvals,pool,authority_namespace,gate_image,workload_image,
     for image in (gate_image,workload_image):
         require(type(image) is str and re.fullmatch(r'[^\s@]+@sha256:[a-f0-9]{64}',image)
                 and not image.endswith('0'*64),'Exact reviewed immutable images required')
-    require(type(database_paths) is dict and set(database_paths)=={'store','reservations'}
-            and len(set(database_paths.values()))==2
-            and all(type(v) is str and v.startswith('/data/') and '..' not in PurePosixPath(v).parts
-                    and str(PurePosixPath(v))==v for v in database_paths.values()),
-            'Explicit existing canonical /data database paths required')
+    require(type(database_paths) is dict and database_paths=={
+                'store':'/data/control.sqlite','reservations':'/data/reservations.sqlite'},
+            'Exact canonical runtime /data database paths required; actual PVC custody is external')
     require(type(hub_transports) is dict and set(hub_transports)=={k.split(':')[0] for k in approvals},
             'Exact owning Hub transport projections required')
     rows=copy.deepcopy(approvals)
@@ -87,6 +85,9 @@ def build(*,policy,approvals,pool,authority_namespace,gate_image,workload_image,
     return {'version':1,'proposal_only':True,'production_qualified':False,'lifecycle_runnable':False,'source_registry_update':None,
             'base_policy_hash':policy.hash,'policy':raw,'profile':PROFILE,'reviewed_approvals':rows,
             'authority':{'native_pilot_workspaces':copy.deepcopy(scopes),'node_pool':copy.deepcopy(pool)},
+            'runtime':{'state_directory':'/data','nativeGpuPilot':{'enabled':True,
+                'native_pilot_workspaces':copy.deepcopy(scopes),'node_pool':copy.deepcopy(pool),
+                'authorityNamespace':authority_namespace}},
             'node':{'version':1,'enabled':True,'authority_namespace':authority_namespace,
                     'policy_hash':derived.hash,'pool':copy.deepcopy(pool),'workspaces':copy.deepcopy(scopes)},
             'hubs':hubs,'database_paths':copy.deepcopy(database_paths)}
