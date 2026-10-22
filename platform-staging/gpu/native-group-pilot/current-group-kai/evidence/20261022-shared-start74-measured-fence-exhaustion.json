@@ -1,0 +1,231 @@
+{
+  "binding_evidence": {
+    "binding_endpoint_http_200_means_validation_only": true,
+    "independent_api_server_binding_receipt_captured": false,
+    "reaching_accepted_implies_preceding_kubernetes_binding_client_success_in_qualified_binder": true,
+    "running_or_cuda_execution_proven": false
+  },
+  "cleanup": {
+    "all_released": true,
+    "allocations": 187,
+    "binder_full_original_spec_restored": true,
+    "protected_notebook_unchanged": true,
+    "sql": {
+      "reservation": 0,
+      "reservation_binding": 0
+    }
+  },
+  "coordinator_results": {
+    "accepted_denial": {
+      "actual_sha256": "14482d5dbea4cac5e2a5738a1a29faa165ba00572f2d5872e02a137f7a8d9bff",
+      "actual_state": "held",
+      "differing_keys": [
+        "state"
+      ],
+      "expected_sha256": "442850e436c9c1f71b2a162198ebf85e7a7ddf9a55665b839a14742ea3d7693a",
+      "expected_state": "binding",
+      "fence_closed": true,
+      "session_state": "held"
+    },
+    "accepted_http": 409,
+    "binding_validation_http": 200,
+    "current_http": 200,
+    "prepare_http": 200
+  },
+  "fence_budget_boundaries": [
+    {
+      "closed": false,
+      "elapsed_lower_bound_seconds": 3.8e-05,
+      "observed_at": "2026-10-22T00:59:02.402028680Z",
+      "remaining_upper_bound_seconds": 59.999962,
+      "stage": "fence-open",
+      "state": "preparing"
+    },
+    {
+      "closed": false,
+      "elapsed_lower_bound_seconds": 41.55015,
+      "observed_at": "2026-10-22T00:59:43.953026176Z",
+      "remaining_upper_bound_seconds": 18.44985,
+      "stage": "prepare-proof-return",
+      "state": "prepared"
+    },
+    {
+      "closed": false,
+      "elapsed_lower_bound_seconds": 42.238809,
+      "observed_at": "2026-10-22T00:59:44.640808947Z",
+      "remaining_upper_bound_seconds": 17.761191,
+      "stage": "prepare-return",
+      "state": "prepared"
+    },
+    {
+      "closed": false,
+      "elapsed_lower_bound_seconds": 43.451688,
+      "observed_at": "2026-10-22T00:59:45.854818471Z",
+      "remaining_upper_bound_seconds": 16.548312,
+      "stage": "current-entry",
+      "state": "prepared"
+    },
+    {
+      "closed": false,
+      "elapsed_lower_bound_seconds": 48.57074,
+      "observed_at": "2026-10-22T00:59:50.972732547Z",
+      "remaining_upper_bound_seconds": 11.42926,
+      "stage": "current-return",
+      "state": "prepared"
+    },
+    {
+      "closed": false,
+      "elapsed_lower_bound_seconds": 48.891126,
+      "observed_at": "2026-10-22T00:59:51.293156949Z",
+      "remaining_upper_bound_seconds": 11.108874,
+      "stage": "binding-entry",
+      "state": "prepared"
+    },
+    {
+      "closed": false,
+      "elapsed_lower_bound_seconds": 48.899109,
+      "observed_at": "2026-10-22T00:59:51.300885431Z",
+      "remaining_upper_bound_seconds": 11.100891,
+      "stage": "current-entry",
+      "state": "prepared"
+    },
+    {
+      "closed": false,
+      "elapsed_lower_bound_seconds": 51.071912,
+      "observed_at": "2026-10-22T00:59:53.473888857Z",
+      "remaining_upper_bound_seconds": 8.928088,
+      "stage": "current-return",
+      "state": "prepared"
+    },
+    {
+      "closed": false,
+      "elapsed_lower_bound_seconds": 51.104184,
+      "observed_at": "2026-10-22T00:59:53.506047829Z",
+      "remaining_upper_bound_seconds": 8.895816,
+      "stage": "binding-return",
+      "state": "binding"
+    }
+  ],
+  "final_normal_stop_http": 200,
+  "full_binder_log_saved_before_restore": true,
+  "gateway_image": "ghcr.io/mul-cps/cps-compute@sha256:40f7788b139ea248c8dad63bb5523e6c9cf6db6b733c091f0e5ecc1d215e2c40",
+  "gateway_revision": "80dba2b22ffd464b6f3939c595af14499e7565fc",
+  "metadata_watch": {
+    "complete": true,
+    "records": 97,
+    "seconds": 420,
+    "threads_drained": true
+  },
+  "next_gate": "implement non-executing enrollment/witness staging outside execution fence with publication/cleanup serialization and fresh final proofs; qualify latency and race matrix",
+  "normal_start_http": 409,
+  "observed_at": "2026-10-22T01:05:44.639517+00:00",
+  "production_qualified": false,
+  "running_reached": false,
+  "separate_custody_race_fix": {
+    "deployed": false,
+    "focused_union_passed": 188,
+    "independently_rerun_new_regressions_passed": 15,
+    "peer_review": "clear",
+    "revision": "cc3187eb58f230e65b76e174a19cdc8666a23419",
+    "scope": "prevent delayed final prepared write overwriting Hold; immutable ACK artifact can already exist, but no successful authorization is returned"
+  },
+  "source_generation": 9,
+  "successful_prepare_timing": {
+    "elapsed_seconds": 45.448046,
+    "steps": {
+      "allocation-ack": {
+        "calls": 1,
+        "elapsed_seconds": 0.046306,
+        "last_start_seconds": 44.678658
+      },
+      "allocation-freeze": {
+        "calls": 3,
+        "elapsed_seconds": 0.805038,
+        "last_start_seconds": 6.922262
+      },
+      "allocation-proof": {
+        "calls": 1,
+        "elapsed_seconds": 5.485409,
+        "last_start_seconds": 39.158332
+      },
+      "capacity-census": {
+        "calls": 1,
+        "elapsed_seconds": 1.08379,
+        "last_start_seconds": 43.556387
+      },
+      "compiler-context": {
+        "calls": 1,
+        "elapsed_seconds": 0.096991,
+        "last_start_seconds": 39.158344
+      },
+      "context": {
+        "calls": 20,
+        "elapsed_seconds": 11.509536,
+        "last_start_seconds": 44.76116
+      },
+      "enrollment-publication": {
+        "calls": 1,
+        "elapsed_seconds": 32.224687,
+        "last_start_seconds": 6.933618
+      },
+      "epoch": {
+        "calls": 1,
+        "elapsed_seconds": 1.204753,
+        "last_start_seconds": 39.283232
+      },
+      "execution-fence": {
+        "calls": 1,
+        "elapsed_seconds": 0.001694,
+        "last_start_seconds": 3.206922
+      },
+      "final-claim": {
+        "calls": 1,
+        "elapsed_seconds": 3.038009,
+        "last_start_seconds": 40.517954
+      },
+      "maps": {
+        "calls": 1,
+        "elapsed_seconds": 0.02994,
+        "last_start_seconds": 40.488008
+      },
+      "preflight": {
+        "calls": 2,
+        "elapsed_seconds": 0.134199,
+        "last_start_seconds": 0.752415
+      },
+      "prepared-custody": {
+        "calls": 1,
+        "elapsed_seconds": 0.012859,
+        "last_start_seconds": 44.745904
+      },
+      "registered-custody": {
+        "calls": 1,
+        "elapsed_seconds": 0.010995,
+        "last_start_seconds": 0.886629
+      },
+      "registered-readiness": {
+        "calls": 1,
+        "elapsed_seconds": 2.30924,
+        "last_start_seconds": 0.897641
+      },
+      "snapshot-proof": {
+        "calls": 9,
+        "elapsed_seconds": 2.916578,
+        "last_start_seconds": 5.811831
+      }
+    }
+  },
+  "timing_steps_overlap_do_not_sum": true,
+  "token_revoked": true,
+  "version": 1,
+  "witness_timing": {
+    "ack_withdrawal_observed_at": "2026-10-22T00:59:53.555404+00:00",
+    "enrolled_observed_at": "2026-10-22T00:59:09.638796+00:00",
+    "enrollment_ledger_resource_version_and_hash_match": true,
+    "enrollment_to_first_witness_seconds": 23.147495,
+    "first_matching_witness_observed_at": "2026-10-22T00:59:32.786291+00:00",
+    "second_matching_witness_observed_at": "2026-10-22T00:59:48.951628+00:00",
+    "stored_ack_timestamp_is_not_publication_time": true,
+    "witness_to_prepare_response_seconds": 11.855264
+  }
+}
