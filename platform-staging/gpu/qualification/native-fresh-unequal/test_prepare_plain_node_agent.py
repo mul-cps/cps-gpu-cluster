@@ -349,3 +349,66 @@ finally:f.doCleanups();old.doCleanups()
     result = subprocess.run([sys.executable, '-B', '-c', program,
         str(HERE / 'prepare_plain_node_agent.py'), str(SDK), completion], env=env, capture_output=True, text=True)
     assert result.returncode == 0, result.stderr
+
+
+def host_tools(tmp_path):
+    host = tmp_path / 'host'
+    version = 'a' * 64
+    binary = host / 'var/lib/rancher/k3s/data' / version / 'bin/crictl'
+    binary.parent.mkdir(parents=True)
+    binary.write_text('#!/bin/sh\nexit 0\n')
+    binary.chmod(0o755)
+    current = host / 'var/lib/rancher/k3s/data/current'
+    current.symlink_to('/var/lib/rancher/k3s/data/' + version)
+    smi = host / 'run/nvidia/driver/usr/bin/nvidia-smi'
+    smi.parent.mkdir(parents=True)
+    smi.write_text('#!/bin/sh\nexit 0\n')
+    smi.chmod(0o755)
+    return host, current / 'bin/crictl', binary, smi
+
+
+def test_runtime_tools_resolve_absolute_host_current_without_executing(tmp_path):
+    host, requested, actual, smi = host_tools(tmp_path)
+    assert not requested.exists()  # Absolute host link is broken inside the mount.
+    result = module().runtime_tools(requested, host)
+    assert result == {'crictl': str(actual), 'nvidia_smi_directory': str(smi.parent)}
+    assert module().runtime_tools(actual, host) == result
+
+
+@pytest.mark.parametrize('fault', ['missing-cri', 'missing-smi', 'nonexecutable-cri',
+                                  'nonexecutable-smi', 'foreign-current', 'relative-root'])
+def test_runtime_tools_fail_before_gpu_setup(tmp_path, fault):
+    host, requested, actual, smi = host_tools(tmp_path)
+    if fault == 'missing-cri': actual.unlink()
+    if fault == 'missing-smi': smi.unlink()
+    if fault == 'nonexecutable-cri': actual.chmod(0o644)
+    if fault == 'nonexecutable-smi': smi.chmod(0o644)
+    if fault == 'foreign-current':
+        current = requested.parent.parent
+        current.unlink(); current.symlink_to('/usr/bin')
+    if fault == 'relative-root': host = Path('host')
+    with pytest.raises(ValueError, match='runtime tool|host root'):
+        module().runtime_tools(requested, host)
+
+
+def test_generated_runtime_contains_tool_resolution(tmp_path):
+    host, requested, actual, smi = host_tools(tmp_path)
+    namespace = {'__name__': 'generated_tool_check'}
+    exec(compile(module().build_sources()['plain_node_agent.py'], 'generated_agent', 'exec'), namespace)
+    assert namespace['runtime_tools'](requested, host)['crictl'] == str(actual)
+
+
+def test_execute_checks_tools_before_sdk_or_gpu_setup(tmp_path, monkeypatch):
+    m = module()
+    settings = tmp_path / 'settings.json'; settings.write_text('{"host_root": "/missing-host"}')
+    retirement = tmp_path / 'retirement.json'; retirement.write_text('{}')
+    monkeypatch.setattr(m.os, 'geteuid', lambda: 0)
+    def forbidden(*args, **kwargs):
+        raise AssertionError('SDK loading must not occur before tool preflight')
+    monkeypatch.setattr(m, 'adapt', forbidden)
+    argv = ['--execute', '--config', str(tmp_path / 'config.json'), '--state-root', str(tmp_path),
+            '--service-account', str(tmp_path), '--crictl', '/missing-host/crictl',
+            '--runtime-settings', str(settings), '--runtime-settings-sha256', m.sha(settings.read_bytes()),
+            '--retirement', str(retirement), '--retirement-sha256', m.sha(retirement.read_bytes())]
+    with pytest.raises(ValueError, match='runtime tool'):
+        m.runtime_main(b'', b'', b'', argv)

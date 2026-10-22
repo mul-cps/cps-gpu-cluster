@@ -482,6 +482,30 @@ def run_agent(agent, args, settings):
     return agent.main(argv)
 
 
+def runtime_tools(crictl, host_root):
+    """Resolve host tool projections before SDK loading or native GPU access."""
+    host = Path(host_root)
+    require(host.is_absolute() and '..' not in host.parts, 'Absolute canonical host root required')
+    selected = Path(crictl)
+    try:
+        data = host / 'var/lib/rancher/k3s/data'
+        if not selected.is_file() and selected == data / 'current/bin/crictl':
+            target = (data / 'current').readlink()
+            require(target.is_absolute() and target.parent == Path('/var/lib/rancher/k3s/data')
+                    and len(target.name) == 64 and all(c in '0123456789abcdef' for c in target.name),
+                    'Current k3s runtime tool link must select an immutable version')
+            selected = host / target.relative_to('/') / 'bin/crictl'
+        smi = host / 'run/nvidia/driver/usr/bin/nvidia-smi'
+        for tool in (selected, smi):
+            require(tool.is_file() and os.access(tool, os.X_OK)
+                    and tool.resolve(strict=True).is_relative_to(host.resolve(strict=True)),
+                    'Executable runtime tool inside the host projection required: ' + str(tool))
+    except OSError as error:
+        raise ValueError('Required host runtime tool unavailable') from error
+    # Keep the crictl basename: k3s is a multicall executable.
+    return {'crictl': str(selected), 'nvidia_smi_directory': str(smi.parent)}
+
+
 def runtime_main(legacy_raw, retirement_raw, wait_raw, argv=None):
     p = argparse.ArgumentParser(description='Explicit operator-only plain two5 lifecycle qualification')
     p.add_argument('--execute', action='store_true')
@@ -503,7 +527,12 @@ def runtime_main(legacy_raw, retirement_raw, wait_raw, argv=None):
     prior_raw = args.retirement.read_bytes()
     require(len(prior_raw) <= 1048576 and sha(prior_raw) == args.retirement_sha256,
             'Reviewed complete prior-retirement descriptor bytes changed')
-    return run_agent(adapt(legacy_raw, retirement_raw, wait_raw), args, document(settings_raw))
+    settings = document(settings_raw)
+    tools = runtime_tools(args.crictl, settings['host_root'])
+    args.crictl = Path(tools['crictl'])
+    os.environ['PATH'] = tools['nvidia_smi_directory'] + os.pathsep + os.environ.get('PATH', '')
+    print(json.dumps({'state': 'runtime-tools-resolved', **tools}), flush=True)
+    return run_agent(adapt(legacy_raw, retirement_raw, wait_raw), args, settings)
 
 
 def _inputs():
@@ -534,7 +563,7 @@ def build_sources():
     current = Path(__file__).read_text()
     tree = ast.parse(current)
     names = {'require', 'sha', 'document', 'installed_sources', 'installed_modules', 'partition_inventory',
-             '_exec', 'adapt', 'clone_backend', 'original_uid_absence', 'InventoryGuard', 'run_agent', 'runtime_main'}
+             '_exec', 'adapt', 'clone_backend', 'original_uid_absence', 'InventoryGuard', 'run_agent', 'runtime_tools', 'runtime_main'}
     definitions = [node for node in tree.body if isinstance(node, (ast.FunctionDef, ast.ClassDef)) and node.name in names]
     prefix = '''#!/usr/bin/env python3
 import argparse, ast, hashlib, importlib.metadata, json, os, sys, types
