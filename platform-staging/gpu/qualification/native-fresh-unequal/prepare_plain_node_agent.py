@@ -111,11 +111,12 @@ def installed_modules(root=None):
 def partition_inventory(value, caps, retired, unprogrammed):
     """Exact per-inode active caps; original retired rows are never normalized."""
     require(type(caps) is dict and len(caps) <= 2
-            and all(type(inode) is int and inode > 0 and cap == 5120 * 1048576
+            and all(type(inode) is int and inode > 0 and cap in (5120 * 1048576, 20480 * 1048576)
                     and type(cap) is int for inode, cap in caps.items())
+            and sum(caps.values()) <= 25600 * 1048576
             and type(retired) is dict and not caps.keys() & retired.keys()
             and type(unprogrammed) is set and unprogrammed <= caps.keys(),
-            'Exact two5 parent map and disjoint original retirements required')
+            'Bounded exact parent map and disjoint original retirements required')
     require(type(value) is dict and set(value) == {'version', 'backend', 'gpu_uuid', 'gpu_id', 'entries'}
             and type(value['version']) is int and value['version'] == 1
             and value['backend'] == 'misc-fallback' and value['gpu_uuid'] == GPU
@@ -148,8 +149,8 @@ def partition_inventory(value, caps, retired, unprogrammed):
             require(row['soft'] == row['hard'] == cap and row['used'] <= cap,
                     'Exact actual per-Pod cap/charge required')
             live_hard += row['hard']; live_used += row['used']
-    require(retired.keys() <= seen and live_hard <= 10240 * 1048576
-            and live_used <= 10240 * 1048576, 'Complete original retirement set and fixed10GiB budget required')
+    require(retired.keys() <= seen and live_hard <= sum(caps.values())
+            and live_used <= sum(caps.values()), 'Complete original retirement set and exact configured budget required')
 
 
 def _exec(name, raw):
@@ -320,6 +321,21 @@ def enrollment_configuration(agent, config, envelope):
             'workspaces': {body['source'] + ':' + body['workspace']: {'profile': entry['profile']}}}
 
 
+def inventory_intents(active, records, history):
+    """History is excluded from active reconciliation, never physical accounting."""
+    result = list(active)
+    present = {intent.pod_uid for intent in result}
+    by_uid = {record.intent.pod_uid: record for record in records}
+    for uid in history:
+        record = by_uid.get(uid)
+        require(record is not None and record.state == 'retired-inert-cap',
+                'Original finite terminal journal required for historical inventory')
+        if uid not in present:
+            result.append(record.intent)
+            present.add(uid)
+    return result
+
+
 class InventoryGuard:
     """Fresh proofs on each operation. No inventory/authority cache or bypass bit."""
     def __init__(self, agent, config, args, settings):
@@ -392,6 +408,7 @@ class InventoryGuard:
         journal = m.PrivateJournal.__new__(m.PrivateJournal)
         journal.directory = source.state / 'journal'
         records = journal.records()
+        enrolled = inventory_intents(enrolled, records, self.config.get('terminal_history', {}))
         expected = {i.pod_uid: i for i in enrolled}
         for intent in enrolled:
             envelope = self.back.private_read(source.state / 'enrollments' / (intent.pod_uid + '.json'), source.uid)
@@ -619,7 +636,7 @@ def build_sources():
     current = Path(__file__).read_text()
     tree = ast.parse(current)
     names = {'require', 'sha', 'document', 'installed_sources', 'installed_modules', 'partition_inventory',
-             '_exec', 'adapt', 'clone_backend', 'original_uid_absence', 'validate_lifecycle_scope', 'enrollment_configuration', 'InventoryGuard', 'run_agent', 'runtime_tools', 'runtime_main'}
+             '_exec', 'adapt', 'clone_backend', 'original_uid_absence', 'validate_lifecycle_scope', 'enrollment_configuration', 'inventory_intents', 'InventoryGuard', 'run_agent', 'runtime_tools', 'runtime_main'}
     definitions = [node for node in tree.body if isinstance(node, (ast.FunctionDef, ast.ClassDef)) and node.name in names]
     prefix = '''#!/usr/bin/env python3
 import argparse, ast, hashlib, importlib.metadata, json, os, sys, types

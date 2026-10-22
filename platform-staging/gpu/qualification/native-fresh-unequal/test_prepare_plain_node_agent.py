@@ -468,3 +468,21 @@ def test_materialized_runner_contains_measured_scope_and_history_validators():
     tree=ast.parse(module().build_sources()['plain_node_agent.py'])
     names={n.name for n in tree.body if isinstance(n,ast.FunctionDef)}
     assert {'validate_lifecycle_scope','enrollment_configuration'} <= names
+
+
+def test_inventory_includes_pinned_history_filtered_out_of_active_backend():
+    from types import SimpleNamespace
+    m=module();old=SimpleNamespace(pod_uid='old');current=SimpleNamespace(pod_uid='new')
+    records=[SimpleNamespace(intent=old,state='retired-inert-cap')]
+    assert m.inventory_intents([current],records,{'old':{}})==[current,old]
+    with pytest.raises(ValueError):m.inventory_intents([current],[],{'old':{}})
+    with pytest.raises(ValueError):m.inventory_intents([current],[SimpleNamespace(intent=old,state='sealed')],{'old':{}})
+
+
+def test_physical_partition_accepts_five_twenty_and_rejects_over_budget():
+    m=module();unit=1048576
+    def row(inode,size):return dict(cgroup_id=inode,kernfs_id=inode,inode=inode,offline=False,pinned=True,default_hierarchy=True,soft=size*unit,hard=size*unit,used=0)
+    value={'version':1,'backend':'misc-fallback','gpu_uuid':m.GPU,'gpu_id':0,'entries':[row(11,5120),row(22,20480)]}
+    m.partition_inventory(value,{11:5120*unit,22:20480*unit},{},set())
+    with pytest.raises(ValueError):m.partition_inventory(value,{11:20480*unit,22:20480*unit},{},set())
+    with pytest.raises(ValueError):m.partition_inventory(value,{11:5120*unit,22:10240*unit},{},set())
