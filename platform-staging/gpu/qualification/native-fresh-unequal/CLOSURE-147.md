@@ -1,5 +1,36 @@
 # Targeted current332 5/10 closure
 
+## Current evidence reconciliation (2026-10-22)
+
+The preparation-era gap list below is historical. Actual retained receipts have
+now been rechecked against raw probe output and preflights, not only receipt
+labels. The checked artifact index is
+[results/current-image-component-reconciliation-20261022.json](results/current-image-component-reconciliation-20261022.json).
+It verifies 29 raw artifact hashes, exact notebook image 542, current 147 boot and
+driver generation, five/ten caps, managed before/recovery vector controls,
+creator-exit retention/64 MiB release/final absence, and correlated kernel import
+witness captures. The earlier published import summary's nine artifact hashes
+also match the retained bytes.
+
+| Component | Verified scope | Boundary |
+|---|---|---|
+| Managed API denial | Both five/ten parents; result 801; ordinary before/recovery; cleanup | Effective exposed API behavior; no proprietary errno conversion claim |
+| Creator exit | Both parents; at least 20 seconds retained backing; exactly 64 MiB drop; final zero and participant absence | Bounded original import probe |
+| Cross-parent VMM-FD | Both directions; same-parent positive; actual capture hashes; reason 6/status 27; peer survival and endpoint cleanup | Original five/ten parent pair |
+| Reverse IPC | Valid-handle positive; correlated denial and recovery | Complements the earlier forward-direction measurement |
+| MPS | Five-GiB MPS parent with ten-GiB ordinary peer; held 4096 MiB, attempted 4352 MiB; 282 peer ticks; cleanup | Earlier bc5 gate image; not a general cross-parent MPS service qualification |
+| Automatic provisioning | Normal console five/twenty Start; 18 GiB usable on twenty; 21 GiB rejected; 200 peer checks; all allocations released | Operator-only mode; see normal lifecycle report for corrected failures and cleanup retries |
+
+These component passes do not constitute ordinary qualified-group activation or
+full production readiness. The normal lifecycle path uses installed gate 81aac;
+its actual gate coverage and the older MPS gate remain distinct evidence. The
+original inconclusive VMM trial remains retained. Remaining GPU work is automatic
+ten-GiB integration and coherent qualification/policy/runtime promotion, plus
+broader packing/scheduling and production acceptance. Do not report the already
+measured five/ten import and bounded MPS cases as wholly untested.
+
+## Historical preparation notes
+
 Frozen implementation scope: only `prepare_packaged_cleanup.py`, its focused test, and this document. Existing producers, probes, binaries, runtime modules and receipts remain unchanged. Preparation authenticates the original packaged producer and committed768 cleanup source; adapts its generated controller's exact bundle pins and typed original-retirement observer, recomputes the dependent observer pin, and emits a new bundle. Existing finite retirement remains strict. New offline-unlimited completion is accepted only with the complete original protected journal and fresh matching typed complete-inventory proof bracketed by exact original Pod/cgroup/gate absence and mount/epoch checks. This revalidates an already completed immutable terminal, analogous to finite retirement; it does not invoke initial cleanup or require unrelated active peers to have no GPU clients. Initial SDK cleanup still requires its full global absence proof unchanged. Every setter is disabled on prior-retirement observer backends. A new cohort's normal controller still sets its own qualified cap through the original transaction.
 
 Current retained cap/OOM and aggregate measurements cover both directions at5/10. MPS covers the unchanged5GiB parent with10GiB ordinary peer, original thresholds and strict process cleanup. Installed81aac gate coverage is separately bound to actual5/10 init imageIDs, exit0, seals, finite readbacks and successful original cleanup.

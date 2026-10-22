@@ -543,3 +543,25 @@ confirming all allocations released; do not change live GPU/user limits to
 shorten verification. Current-image ten-GiB/restart/import/MPS coverage and
 ordinary qualified-group activation remain separate unfinished work. Production
 access and qualification flags remain unchanged.
+
+### Subsequent evidence reconciliation and diagnostic CPU allocation
+
+The retained five/ten MPS/import measurements were audited against actual raw
+probes, preflight imageIDs/boot/generation/caps, kernel witness capture hashes and
+cleanup measurements. See `CLOSURE-147.md` and
+`results/current-image-component-reconciliation-20261022.json` for the 29-file
+hash index and exact coverage boundaries. These cases are measured component
+passes, not wholly untested gaps; they are not silently relabeled as an
+ordinary qualified-group production release or general cross-parent MPS proof.
+
+After all fourteen allocations were again verified released and absence of any
+stdin controller process was checked, only the inert diagnostic helper was
+replaced with UID-preconditioned deletion. Its new immutable code ConfigMap is
+`native-lifecycle147-measured-4713545c88394119`, still generated source
+`ed6aa0e16a6d57c796a774694503ba490e43f5889c535c94b8abdc3c2ea8432b`.
+New helper Pod UID: `cb2bc9c9-27a9-4344-933e-9f8fde5fe9e1`. CPU request/limit
+are now 1/2 cores instead of 100m/500m; memory, authority, mounts and bounded inert
+main remain unchanged. The node has 48 allocatable cores. No user workload,
+GPU limit, driver or kernel was changed. The helper became Ready and its new
+node-side read-only history/CDI/full-inventory preflight passed with native SET
+and Pod DELETE forbidden. No controller loop or workload was launched.

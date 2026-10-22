@@ -1,0 +1,90 @@
+{
+  "boot_id": "a464df41-e391-4443-b8e8-ad7ecd052318",
+  "components": {
+    "creator_exit": {
+      "backing_drop_bytes": 67108864,
+      "both_caps": true,
+      "final_charge_zero": true,
+      "participants_absent": true,
+      "passed_bounded_measurement": true,
+      "retained_seconds_at_least": 20
+    },
+    "cross_parent_imports": {
+      "correlated_actual_capture_hashes": true,
+      "kernel_reason": 6,
+      "kernel_status": 27,
+      "passed_bounded_measurement": true,
+      "reverse_ipc": true,
+      "same_parent_controls": true,
+      "vmm_both_directions": true
+    },
+    "managed_effective_api": {
+      "caps_mib": [
+        5120,
+        10240
+      ],
+      "ordinary_controls_and_recovery": true,
+      "passed_bounded_measurement": true,
+      "proprietary_errno_mapping_claimed": false,
+      "result": 801
+    },
+    "mps": {
+      "attempted_mib": 4352,
+      "gate_image_boundary": "This run used earlier bc5 gate; installed 81aac gate is covered separately by import and normal lifecycle runs",
+      "general_cross_parent_mps_service_qualified": false,
+      "held_mib": 4096,
+      "mps_parent_cap_mib": 5120,
+      "ordinary_peer_cap_mib": 10240,
+      "passed_bounded_measurement": true,
+      "peer_ticks": 282
+    }
+  },
+  "driver_generation": "4ebffc96-e25e-4583-a3b8-0d853fd90efd",
+  "evidence_sha256": {
+    "import-closure-3b217fe8/ipc-b-to-a/before.json": "sha256:8a64e3919d4b890ec47a53f327f985042d3fdbd7112117d1cd35de131b3c9fa8",
+    "import-closure-3b217fe8/ipc-b-to-a/kernel-witness-capture.json": "sha256:d66a3c748316167cb2d0e79cad268358eb33716a9f0e9b929b6bd1218de33d97",
+    "import-closure-3b217fe8/ipc-b-to-a/kernel-witness-correlation.json": "sha256:353a8919ffe6eb0ad405cabd0964c71449d55a1e33071162a6bf91996f5c7f9f",
+    "import-closure-3b217fe8/ipc-b-to-a/receipt.json": "sha256:047eff4cd1abeb7fe802a4d20ad7f9ef5f895f866439f48c6bf0166e46e8c42d",
+    "import-closure-3b217fe8/managed-a/after.json": "sha256:246d4adf6c5e2f7c3e8fe7059283cd2d6da133998565579e73553504e38a661d",
+    "import-closure-3b217fe8/managed-a/before.json": "sha256:6480bc42b9bdff2b1edb4eda2e9af2768c920cd731d616ae42dd0bde6f40afa3",
+    "import-closure-3b217fe8/managed-a/probe-result.json": "sha256:d0ee19b6b2d236ae2996097721c0ce7c31ba1cff7879c90daf94813250366844",
+    "import-closure-3b217fe8/managed-a/receipt.json": "sha256:ba7810345c60620e1e81628f968b85bda826b32c4c3952282b2f467d7faaf1b1",
+    "import-closure-3b217fe8/managed-b/after.json": "sha256:a7cebb77e7d906ee42bc9ace30aa53e6915ba5b7b674cf83540a7fca10164e70",
+    "import-closure-3b217fe8/managed-b/before.json": "sha256:01405445cd63f996c50d113a7a65afc96a7e81c3b92dac8818b03f480366a99f",
+    "import-closure-3b217fe8/managed-b/probe-result.json": "sha256:ef6fef0d13f7c622172bfbdc2685a6f11eb8cc808f80b9a1c4d61d871801e982",
+    "import-closure-3b217fe8/managed-b/receipt.json": "sha256:ba7810345c60620e1e81628f968b85bda826b32c4c3952282b2f467d7faaf1b1",
+    "import-closure-3b217fe8/owner-exit-a/after.json": "sha256:d5068e65326ec718983d45b3740bfc37b5e698cdeab4358eb4c3d3a21a2eadf0",
+    "import-closure-3b217fe8/owner-exit-a/before.json": "sha256:0e316ab777a2c05dd1adf1945863ab93f6536caa25a0f09eec818f97cedb8e85",
+    "import-closure-3b217fe8/owner-exit-a/receipt.json": "sha256:b1e407f3b3edc09870c10bed4b866c2dc6922d0bdae1fc153503aa8e475d3e67",
+    "import-closure-3b217fe8/owner-exit-b/after.json": "sha256:6a6b02f0b35410e24644a59c72f67716760fba3443584034e1c7f12b379945fe",
+    "import-closure-3b217fe8/owner-exit-b/before.json": "sha256:a1684c7dd5ceb54cd688f51d8d58de11d4f06ebbc68b58557ab2a83a63948e96",
+    "import-closure-3b217fe8/owner-exit-b/receipt.json": "sha256:fc8334e0fdf96f623b0338d645f4d2440c06256776cfafa3c2748f7a94f146a9",
+    "import-closure-3b217fe8/vmm-a-to-b-02/before.json": "sha256:2a422df7ad3f3be729fd7d7cc05e44d2ae7e58aa1bab8ca1a8e5d9baa0d3ce9d",
+    "import-closure-3b217fe8/vmm-a-to-b-02/kernel-witness-capture.json": "sha256:025761df2a454eb86e30c36a1d860ab2153e58443c913e125f80a5e8aefdd6e4",
+    "import-closure-3b217fe8/vmm-a-to-b-02/kernel-witness-correlation.json": "sha256:dee6a603a6bc623598fa1687c1224a3d0da4fad9e1045a532e7238f03b5bf841",
+    "import-closure-3b217fe8/vmm-a-to-b-02/receipt.json": "sha256:caf171f408fde4a6395c75ddba7d8ff587a8bc1cefe4e4539b4bf77b6d76870c",
+    "import-closure-3b217fe8/vmm-b-to-a/before.json": "sha256:817720555248152dd889c2d8d31e14e9a17ffc2a1d57f2e777106099b4af3ee9",
+    "import-closure-3b217fe8/vmm-b-to-a/kernel-witness-capture.json": "sha256:4d44dc9088d58b0ff16e5df37df90473d066dfe7ed3d4bc15768997a465e20c4",
+    "import-closure-3b217fe8/vmm-b-to-a/kernel-witness-correlation.json": "sha256:6bfd8f67169267efcd0e6b045aec99d8efdfa645c699097016d020e8ff7772b0",
+    "import-closure-3b217fe8/vmm-b-to-a/receipt.json": "sha256:6df6ec2ea566d78f2be3989138fc6f2f38f0d13ad374aa2fc705df2fe1acd31e",
+    "unequal-a9fc091b/mps-a/after.json": "sha256:c773b9453ee97286005e033db9df708e7f19c017869476ed7bac2b2d5a69e811",
+    "unequal-a9fc091b/mps-a/before.json": "sha256:5352f1f8ef1c6970987fd3fc40c98af57b4da290efc38a0289081e0d9cfd16cf",
+    "unequal-a9fc091b/mps-a/receipt.json": "sha256:6362d3710f06c391fcd138b9d24810171731b1a480e6adcc21747e189c691132"
+  },
+  "preserved_limitations": [
+    "MPS and imports are bounded five/ten component measurements, not general twenty-GiB or cross-parent-MPS claims",
+    "Proprietary libcuda errno conversion is not claimed",
+    "Source policy differs from the later operator-only five/twenty lifecycle policy",
+    "Original inconclusive first VMM attempt remains retained"
+  ],
+  "production_qualified": false,
+  "remaining": [
+    "automatic ten-GiB profile with final Hub/gateway configuration",
+    "ordinary qualified-group policy/runtime promotion",
+    "broader packing scheduling startup recovery and release acceptance"
+  ],
+  "scope": "Reconciliation of actual retained current-image component measurements; not a new hardware run",
+  "source_policy_hash": "sha256:332d14fb9e510b9810feffb8d40b408743f9679ebd13ca1ba0e1077d666e9281",
+  "version": 1,
+  "workload_image": "ghcr.io/mul-cps/cps-jupyter-notebook@sha256:5427088986bc06ad0713875d1aa2f31439f0bd1fbe6099d4669570fcf3e85be4"
+}
