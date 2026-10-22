@@ -149,3 +149,8 @@ def test_hub_ingress_only_exact_temporary_gateway_namespace_label_and_port():
  assert r['deployment']['spec']['selector']['matchLabels']=={'app.kubernetes.io/name':a['new_name']}
  assert 'compute-gateway'not in str(policies)
  assert a['deployment']['spec']['selector']['matchLabels']=={'app':'old'}
+
+def test_fresh_storage_relay_ingress_only_exact_gateway_and_rpc_port():
+ r=mod().prepare(**storage_fixture())
+ p=next(p for p in r['network_policies'] if p['metadata']['namespace']=='cps-artifacts-relay')
+ assert p['spec']=={'podSelector':{'matchLabels':{'app':'artifacts-relay'}},'policyTypes':['Ingress'],'ingress':[{'from':[{'namespaceSelector':{'matchLabels':{'kubernetes.io/metadata.name':'cps-compute'}},'podSelector':{'matchLabels':{'app.kubernetes.io/name':storage_fixture()['new_name']}}}],'ports':[{'protocol':'TCP','port':8022}]}]}

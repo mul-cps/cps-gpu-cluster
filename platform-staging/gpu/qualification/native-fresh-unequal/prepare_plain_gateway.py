@@ -9,7 +9,8 @@ import hashlib
 import json
 import re
 
-IMAGE='ghcr.io/mul-cps/cps-compute@sha256:0e215c9c5767b4162ae0e57ff3f1614ad16be144c57b19a187f7c6cbe6bdb8cd'
+BASE_IMAGE='ghcr.io/mul-cps/cps-compute@sha256:0e215c9c5767b4162ae0e57ff3f1614ad16be144c57b19a187f7c6cbe6bdb8cd'
+IMAGE='ghcr.io/mul-cps/cps-compute@sha256:7d856e32f0e5fa082d4190bccde69d838bac621dcc7baa75e6b80379e1eca0a5'
 PREVIOUS_IMAGE='ghcr.io/mul-cps/cps-compute@sha256:5f1dd4f55710f1cdf97d24a1165b265681c61c67578680b8f5ef8bd67a34fc3c'
 def require(ok,message):
     if not ok:raise ValueError(message)
@@ -43,7 +44,7 @@ def prepare(*,deployment,runtime,pilot,tls_secret_ref,ca_configmap_ref,policy_co
     policy_hash=pilot.get('policy',{}).get('policyHash')
     require(type(policy_hash) is str and re.fullmatch(r'sha256:[a-f0-9]{64}',policy_hash),'Derived pilot policy hash required')
     pod=copy.deepcopy(deployment['spec']['template']['spec']);containers=named(pod['containers'])
-    require('gateway'in containers and containers['gateway'].get('image') in (PREVIOUS_IMAGE,IMAGE),'Exact released768 Gateway image required')
+    require('gateway'in containers and containers['gateway'].get('image') in (PREVIOUS_IMAGE,BASE_IMAGE,IMAGE),'Exact reviewed Gateway image required')
     main=copy.deepcopy(containers['gateway']);main['image']=IMAGE;volumes=named(pod.get('volumes',[]));mounts=main.get('volumeMounts',[])
     require(type(mounts) is list,'Actual mounts required')
     data=[m for m in mounts if m.get('mountPath')=='/data']
@@ -156,6 +157,13 @@ def prepare(*,deployment,runtime,pilot,tls_secret_ref,ca_configmap_ref,policy_co
                 'podSelector':{'matchLabels':copy.deepcopy(labels)}}],
                 'ports':[{'protocol':'TCP','port':8081}]}]}}
         for ns in ('jupyterhub','cit-jhub')]
+    if provider is not None:
+        network_policies.append({'apiVersion':'networking.k8s.io/v1','kind':'NetworkPolicy',
+            'metadata':{'namespace':'cps-artifacts-relay','name':new_name+'-workspace-rpc'},
+            'spec':{'podSelector':{'matchLabels':{'app':'artifacts-relay'}},'policyTypes':['Ingress'],
+                'ingress':[{'from':[{'namespaceSelector':{'matchLabels':{'kubernetes.io/metadata.name':'cps-compute'}},
+                    'podSelector':{'matchLabels':copy.deepcopy(labels)}}],
+                    'ports':[{'protocol':'TCP','port':8022}]}]}})
     return {'version':1,'proposal_only':True,'deploy_ready':False,'production_qualified':False,
             'preimages':{'deployment_sha256':digest(deployment),'runtime_sha256':digest(runtime),'uid':meta['uid'],'resourceVersion':meta['resourceVersion']},
             'deployment':result,'runtime':cfg,'service':{'apiVersion':'v1','kind':'Service','metadata':{'namespace':'cps-compute','name':new_name},'spec':{'type':'ClusterIP','selector':labels,'ports':[{'name':'https','port':443,'targetPort':ports[0]['name']}]}},
