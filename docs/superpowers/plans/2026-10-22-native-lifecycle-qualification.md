@@ -39,5 +39,8 @@ missing journals. Existing retired qualification entries remain pinned.
 ## Progress
 
 - Live preflight: protected Pod UID unchanged and Running; GPU2 still cordoned.
-- Loader adaptation and pure configuration builder delegated as disjoint files.
+- Pure configuration builder implemented; 11 isolated SDK contract tests pass.
+- Runtime review found legacy CDI pins, new cleanup terminal compatibility and
+  full prior-inventory validation require a bounded adapter; loader-only swap rejected.
+- Canonical baseline captured read-only: 9 workspaces, 31 grants, 0 reservations.
 - Hardware lifecycle run and production activation remain pending.
