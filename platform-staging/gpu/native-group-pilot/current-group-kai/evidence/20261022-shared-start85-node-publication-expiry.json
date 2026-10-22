@@ -1,0 +1,56 @@
+{
+  "accepted_denied_at": "2026-10-22T06:17:33.437206Z",
+  "accepted_succeeded": false,
+  "binding_completed_at": "2026-10-22T06:16:58.529507Z",
+  "binding_fence_elapsed_seconds": 25.42886,
+  "binding_fence_remaining_seconds": 34.57114,
+  "binding_succeeded": true,
+  "cleanup": {
+    "all_allocations_released": 197,
+    "binder_exact_spec_restored": true,
+    "cleanup_verified": true,
+    "hub_server_absent": true,
+    "pod_absent": true,
+    "protected_notebook_unchanged": true,
+    "sql_counts": {
+      "reservation": 0,
+      "reservation_binding": 0
+    },
+    "temporary_token_revoked": true,
+    "token_file_removed": true,
+    "token_reuse_http": 403
+  },
+  "cuda_kernel_executed": false,
+  "current_binding_http": 200,
+  "execution_fence_deadline": "2026-10-22T06:17:33.097Z",
+  "kind": "normal-shared-start85-combined-validation",
+  "log_sha256": {
+    "binder": "sha256:b12ee112885bf59a73a8f56cecaef18fec91f446a4a257c4a573da5161acf2d3",
+    "gateway": "sha256:da74862d68d0c97c11eb6a5cd5786478d1876848db9b111e54a4049b94af0c1e",
+    "hub": "sha256:3d3bbe7698145561ac5479729c82e18c656be2a83764815c4bced592be62ec54",
+    "node": "sha256:5c6c7517a4abc60a760abfdcd70c5408470c36d66202f641372424d4191713fa"
+  },
+  "next_gate": "Measure actual Node daemon snapshot/publication phases; idle read-only snapshot CPU profile is not bound-path timing.",
+  "node_ack_emptied_at": "2026-10-22T06:17:04.355462+00:00",
+  "passed": false,
+  "pod_uid": "55529c7e-6b9d-4f6f-a71b-a31143c8bbf6",
+  "prepare_elapsed_seconds": 79.853866,
+  "prepare_succeeded": true,
+  "process": {
+    "elapsedSeconds": 320.7277478839969,
+    "endedAt": "2026-10-22T06:18:25.223474+00:00",
+    "returnCode": 1,
+    "startedAt": "2026-10-22T06:13:04.495718+00:00"
+  },
+  "production_qualified": false,
+  "profile": "interactive-shared-5",
+  "replacement_bound_node_ack_observed_before_expiry": false,
+  "standalone_current_rpc_removed": true,
+  "watch": {
+    "complete": true,
+    "errors": 0,
+    "records": 105,
+    "sha256": "sha256:99f1a7759dcde2dd99e7ff33958f06ced7b671e6d9520ff9ca504f71b4fdfe81",
+    "threads_drained": true
+  }
+}

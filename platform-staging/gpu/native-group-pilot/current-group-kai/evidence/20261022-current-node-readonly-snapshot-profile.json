@@ -1,0 +1,841 @@
+{
+  "baseline": {
+    "cri_calls": 0,
+    "driver_calls": 0,
+    "filesystem_writes_forbidden": true,
+    "observations": [
+      {
+        "calls": {
+          "decode": {
+            "count": 370,
+            "sum_seconds": 0.23837079666554928,
+            "union_seconds": 0.23837079666554928
+          },
+          "projection": {
+            "count": 1597,
+            "sum_seconds": 0.04504572041332722,
+            "union_seconds": 0.04504572041332722
+          },
+          "transport": {
+            "count": 616,
+            "sum_seconds": 1.2479255441576242,
+            "union_seconds": 1.2479255441576242
+          }
+        },
+        "decoded_objects": {
+          "immutable_configmap": 361,
+          "mutable_configmap": 6,
+          "other": 3
+        },
+        "elapsed_seconds": 4.651381900534034,
+        "outside_instrumented_union_seconds": 2.3543760776519775,
+        "private_reads": {
+          "count": 10236,
+          "sum_seconds": 0.7656637616455555
+        },
+        "process_cpu_seconds": 3.762190298,
+        "resources": [
+          {
+            "calls": 370,
+            "category": "configmaps",
+            "status": 200
+          },
+          {
+            "calls": 246,
+            "category": "pods",
+            "status": 404
+          }
+        ],
+        "stage": "node-snapshot",
+        "success": true
+      }
+    ],
+    "version": 1
+  },
+  "kind": "read-only-current-node-snapshot-profile",
+  "node_image": "ghcr.io/mul-cps/cps-native-node@sha256:ca1e903df21a6ed06fc7044e11b22935c8786fc372ef179507f1f9034d73a8a9",
+  "passed": true,
+  "production_qualified": false,
+  "profile": {
+    "cri_calls": 0,
+    "driver_calls": 0,
+    "filesystem_writes_forbidden": true,
+    "observations": [
+      {
+        "calls": {
+          "decode": {
+            "count": 370,
+            "sum_seconds": 0.6712788008153439,
+            "union_seconds": 0.6712788008153439
+          },
+          "projection": {
+            "count": 1597,
+            "sum_seconds": 0.1300296913832426,
+            "union_seconds": 0.1300296913832426
+          },
+          "transport": {
+            "count": 616,
+            "sum_seconds": 1.9365162327885628,
+            "union_seconds": 1.9365162327885628
+          }
+        },
+        "decoded_objects": {
+          "immutable_configmap": 361,
+          "mutable_configmap": 6,
+          "other": 3
+        },
+        "elapsed_seconds": 8.546312294900417,
+        "outside_instrumented_union_seconds": 4.371211612597108,
+        "private_reads": {
+          "count": 10236,
+          "sum_seconds": 1.4372759573161602
+        },
+        "process_cpu_seconds": 7.281046815,
+        "profile": {
+          "cumulative": [
+            {
+              "calls": 1,
+              "cumulative_seconds": 8.539944605,
+              "function": "_snapshot_once",
+              "line": 292,
+              "module": "cps_compute.native_node.custody",
+              "primitive_calls": 1,
+              "total_seconds": 0.0066039620000000005
+            },
+            {
+              "calls": 616,
+              "cumulative_seconds": 2.6868593830000003,
+              "function": "call_api",
+              "line": 125,
+              "module": "cps_compute.native_node.bootstrap",
+              "primitive_calls": 616,
+              "total_seconds": 0.002213974
+            },
+            {
+              "calls": 1,
+              "cumulative_seconds": 2.098749728,
+              "function": "verify",
+              "line": 172,
+              "module": "cps_compute.native_node.history",
+              "primitive_calls": 1,
+              "total_seconds": 0.00172488
+            },
+            {
+              "calls": 64,
+              "cumulative_seconds": 1.8519404750000001,
+              "function": "absent_custody",
+              "line": 15,
+              "module": "cps_compute.native_node.abort",
+              "primitive_calls": 64,
+              "total_seconds": 0.027490521
+            },
+            {
+              "calls": 67,
+              "cumulative_seconds": 1.838374162,
+              "function": "records",
+              "line": 105,
+              "module": "cps_compute.native_node.custody",
+              "primitive_calls": 67,
+              "total_seconds": 0.054831929
+            },
+            {
+              "calls": 2,
+              "cumulative_seconds": 1.824133223,
+              "function": "verify_terminal_entries",
+              "line": 192,
+              "module": "cps_compute.native_node.history",
+              "primitive_calls": 2,
+              "total_seconds": 0.018817588
+            },
+            {
+              "calls": 10236,
+              "cumulative_seconds": 1.397226667,
+              "function": "private_read",
+              "line": 63,
+              "module": "cps_compute.native_node.backend",
+              "primitive_calls": 10236,
+              "total_seconds": 0.09931694
+            },
+            {
+              "calls": 32,
+              "cumulative_seconds": 1.2032887600000002,
+              "function": "barrier",
+              "line": 40,
+              "module": "cps_compute.native_node.abort",
+              "primitive_calls": 32,
+              "total_seconds": 0.002088831
+            },
+            {
+              "calls": 1,
+              "cumulative_seconds": 1.161174654,
+              "function": "list_enrollments",
+              "line": 38,
+              "module": "cps_compute.native_node.custody",
+              "primitive_calls": 1,
+              "total_seconds": 0.006103857000000001
+            },
+            {
+              "calls": 32,
+              "cumulative_seconds": 1.142825417,
+              "function": "proof",
+              "line": 72,
+              "module": "cps_compute.native_node.abort",
+              "primitive_calls": 32,
+              "total_seconds": 0.001787226
+            },
+            {
+              "calls": 1162,
+              "cumulative_seconds": 1.0869278690000002,
+              "function": "read_namespaced_config_map",
+              "line": 32,
+              "module": "cps_compute.native_node.history",
+              "primitive_calls": 1162,
+              "total_seconds": 0.007925466
+            },
+            {
+              "calls": 725,
+              "cumulative_seconds": 1.0642612340000002,
+              "function": "resolve_legacy_map",
+              "line": 33,
+              "module": "cps_compute.native_node.migration",
+              "primitive_calls": 725,
+              "total_seconds": 0.010313783
+            },
+            {
+              "calls": 32,
+              "cumulative_seconds": 0.94105417,
+              "function": "audit_body",
+              "line": 98,
+              "module": "cps_compute.native_node.abort",
+              "primitive_calls": 32,
+              "total_seconds": 0.00044277400000000005
+            },
+            {
+              "calls": 294,
+              "cumulative_seconds": 0.775427478,
+              "function": "verify_list_item",
+              "line": 107,
+              "module": "cps_compute.native_node.migration",
+              "primitive_calls": 294,
+              "total_seconds": 0.004157162
+            },
+            {
+              "calls": 95,
+              "cumulative_seconds": 0.72428906,
+              "function": "_prior_approval",
+              "line": 477,
+              "module": "cps_compute.native_node.custody",
+              "primitive_calls": 95,
+              "total_seconds": 0.0037956310000000003
+            },
+            {
+              "calls": 25,
+              "cumulative_seconds": 0.7088765810000001,
+              "function": "verify_previous_policy_completion",
+              "line": 326,
+              "module": "cps_compute.native_node.history",
+              "primitive_calls": 25,
+              "total_seconds": 0.00039919
+            },
+            {
+              "calls": 194,
+              "cumulative_seconds": 0.586102891,
+              "function": "absent_original",
+              "line": 69,
+              "module": "cps_compute.native_node.history",
+              "primitive_calls": 194,
+              "total_seconds": 0.002061952
+            },
+            {
+              "calls": 2,
+              "cumulative_seconds": 0.5522761660000001,
+              "function": "verify_inventory",
+              "line": 119,
+              "module": "cps_compute.native_node.migration",
+              "primitive_calls": 2,
+              "total_seconds": 0.006531012
+            },
+            {
+              "calls": 248,
+              "cumulative_seconds": 0.531542442,
+              "function": "__init__",
+              "line": 22,
+              "module": "cps_compute.policy",
+              "primitive_calls": 248,
+              "total_seconds": 0.003318666
+            },
+            {
+              "calls": 30,
+              "cumulative_seconds": 0.5089930490000001,
+              "function": "verify_current_completion",
+              "line": 285,
+              "module": "cps_compute.native_node.history",
+              "primitive_calls": 30,
+              "total_seconds": 0.002131799
+            },
+            {
+              "calls": 16,
+              "cumulative_seconds": 0.468714126,
+              "function": "load",
+              "line": 219,
+              "module": "cps_compute.native_node.config",
+              "primitive_calls": 1,
+              "total_seconds": 0.00116395
+            },
+            {
+              "calls": 13324,
+              "cumulative_seconds": 0.464488542,
+              "function": "_canonical",
+              "line": 36,
+              "module": "cps_compute.native_groups",
+              "primitive_calls": 13324,
+              "total_seconds": 0.015511936
+            },
+            {
+              "calls": 3,
+              "cumulative_seconds": 0.420174249,
+              "function": "load",
+              "line": 93,
+              "module": "cps_compute.native_node.history",
+              "primitive_calls": 3,
+              "total_seconds": 0.000553147
+            },
+            {
+              "calls": 577,
+              "cumulative_seconds": 0.410298315,
+              "function": "read",
+              "line": 633,
+              "module": "cps_compute.native_gpu_controller",
+              "primitive_calls": 577,
+              "total_seconds": 0.006049683
+            },
+            {
+              "calls": 378,
+              "cumulative_seconds": 0.397628819,
+              "function": "resolve_immutable_configmap",
+              "line": 51,
+              "module": "cps_compute.immutable_configmap",
+              "primitive_calls": 378,
+              "total_seconds": 0.002697096
+            },
+            {
+              "calls": 93,
+              "cumulative_seconds": 0.366060663,
+              "function": "from_configmap",
+              "line": 175,
+              "module": "cps_compute.native_group_revision",
+              "primitive_calls": 93,
+              "total_seconds": 0.003681605
+            },
+            {
+              "calls": 551,
+              "cumulative_seconds": 0.36455101100000004,
+              "function": "resolve_legacy_payload",
+              "line": 51,
+              "module": "cps_compute.native_node.migration",
+              "primitive_calls": 551,
+              "total_seconds": 0.001992593
+            },
+            {
+              "calls": 11937,
+              "cumulative_seconds": 0.327134969,
+              "function": "private_directory",
+              "line": 55,
+              "module": "cps_compute.native_node.backend",
+              "primitive_calls": 11937,
+              "total_seconds": 0.045085671
+            },
+            {
+              "calls": 187,
+              "cumulative_seconds": 0.32667447800000005,
+              "function": "terminal_abort_bindings",
+              "line": 167,
+              "module": "cps_compute.native_node.history",
+              "primitive_calls": 187,
+              "total_seconds": 0.000894633
+            },
+            {
+              "calls": 90,
+              "cumulative_seconds": 0.31940349300000004,
+              "function": "deployment",
+              "line": 203,
+              "module": "cps_compute.native_group_revision",
+              "primitive_calls": 90,
+              "total_seconds": 0.002416482
+            },
+            {
+              "calls": 543,
+              "cumulative_seconds": 0.315229315,
+              "function": "from_dict",
+              "line": 438,
+              "module": "cps_compute.native_gpu_controller",
+              "primitive_calls": 538,
+              "total_seconds": 0.005239726
+            },
+            {
+              "calls": 189,
+              "cumulative_seconds": 0.30138947400000005,
+              "function": "entries",
+              "line": 156,
+              "module": "cps_compute.native_node.history",
+              "primitive_calls": 189,
+              "total_seconds": 0.00018575000000000002
+            },
+            {
+              "calls": 3668,
+              "cumulative_seconds": 0.29429325100000003,
+              "function": "_decode",
+              "line": 58,
+              "module": "cps_compute.native_gpu_controller",
+              "primitive_calls": 3668,
+              "total_seconds": 0.021246845
+            },
+            {
+              "calls": 124,
+              "cumulative_seconds": 0.291504562,
+              "function": "previous_policy",
+              "line": 217,
+              "module": "cps_compute.native_qualification_authority",
+              "primitive_calls": 124,
+              "total_seconds": 0.002311591
+            },
+            {
+              "calls": 3,
+              "cumulative_seconds": 0.26697702500000003,
+              "function": "records",
+              "line": 681,
+              "module": "cps_compute.native_gpu_controller",
+              "primitive_calls": 3,
+              "total_seconds": 0.000126107
+            },
+            {
+              "calls": 324,
+              "cumulative_seconds": 0.259823841,
+              "function": "<genexpr>",
+              "line": 682,
+              "module": "cps_compute.native_gpu_controller",
+              "primitive_calls": 324,
+              "total_seconds": 0.0008322300000000001
+            },
+            {
+              "calls": 195,
+              "cumulative_seconds": 0.25453223,
+              "function": "from_config",
+              "line": 97,
+              "module": "cps_compute.native_groups",
+              "primitive_calls": 195,
+              "total_seconds": 0.009250188000000001
+            },
+            {
+              "calls": 26,
+              "cumulative_seconds": 0.25303824,
+              "function": "historical_context",
+              "line": 284,
+              "module": "cps_compute.native_node.config",
+              "primitive_calls": 26,
+              "total_seconds": 0.001334984
+            },
+            {
+              "calls": 164,
+              "cumulative_seconds": 0.243614285,
+              "function": "verify_provenance",
+              "line": 81,
+              "module": "cps_compute.native_node.migration",
+              "primitive_calls": 164,
+              "total_seconds": 0.002216783
+            },
+            {
+              "calls": 1524,
+              "cumulative_seconds": 0.240216118,
+              "function": "_api_document",
+              "line": 346,
+              "module": "cps_compute.native_group_revision",
+              "primitive_calls": 1524,
+              "total_seconds": 0.0024123340000000004
+            }
+          ],
+          "total": [
+            {
+              "calls": 36999,
+              "cumulative_seconds": 0.158854342,
+              "function": "unique_json",
+              "line": 47,
+              "module": "cps_compute.native_node.backend",
+              "primitive_calls": 36999,
+              "total_seconds": 0.125562366
+            },
+            {
+              "calls": 10236,
+              "cumulative_seconds": 1.397226667,
+              "function": "private_read",
+              "line": 63,
+              "module": "cps_compute.native_node.backend",
+              "primitive_calls": 10236,
+              "total_seconds": 0.09931694
+            },
+            {
+              "calls": 67,
+              "cumulative_seconds": 1.838374162,
+              "function": "records",
+              "line": 105,
+              "module": "cps_compute.native_node.custody",
+              "primitive_calls": 67,
+              "total_seconds": 0.054831929
+            },
+            {
+              "calls": 513625,
+              "cumulative_seconds": 0.051617157000000004,
+              "function": "require",
+              "line": 35,
+              "module": "cps_compute.native_node.backend",
+              "primitive_calls": 513625,
+              "total_seconds": 0.051617157000000004
+            },
+            {
+              "calls": 19819,
+              "cumulative_seconds": 0.060483587000000005,
+              "function": "unique",
+              "line": 48,
+              "module": "cps_compute.native_group_revision",
+              "primitive_calls": 19819,
+              "total_seconds": 0.047217888
+            },
+            {
+              "calls": 11937,
+              "cumulative_seconds": 0.327134969,
+              "function": "private_directory",
+              "line": 55,
+              "module": "cps_compute.native_node.backend",
+              "primitive_calls": 11937,
+              "total_seconds": 0.045085671
+            },
+            {
+              "calls": 13520,
+              "cumulative_seconds": 0.217948149,
+              "function": "_uid",
+              "line": 32,
+              "module": "cps_compute.native_group_revision",
+              "primitive_calls": 13520,
+              "total_seconds": 0.039566325
+            },
+            {
+              "calls": 16695,
+              "cumulative_seconds": 0.13516053,
+              "function": "_uuid",
+              "line": 47,
+              "module": "cps_compute.native_gpu_controller",
+              "primitive_calls": 16695,
+              "total_seconds": 0.027739555000000003
+            },
+            {
+              "calls": 64,
+              "cumulative_seconds": 1.8519404750000001,
+              "function": "absent_custody",
+              "line": 15,
+              "module": "cps_compute.native_node.abort",
+              "primitive_calls": 64,
+              "total_seconds": 0.027490521
+            },
+            {
+              "calls": 10272,
+              "cumulative_seconds": 0.035017846000000005,
+              "function": "pairs",
+              "line": 18,
+              "module": "cps_compute.native_node.migration",
+              "primitive_calls": 10272,
+              "total_seconds": 0.027437510000000002
+            },
+            {
+              "calls": 10610,
+              "cumulative_seconds": 0.21392870600000002,
+              "function": "_uid",
+              "line": 26,
+              "module": "cps_compute.native_node.custody",
+              "primitive_calls": 10610,
+              "total_seconds": 0.025243561
+            },
+            {
+              "calls": 187,
+              "cumulative_seconds": 0.027535901,
+              "function": "<genexpr>",
+              "line": 169,
+              "module": "cps_compute.native_node.history",
+              "primitive_calls": 187,
+              "total_seconds": 0.024589435000000003
+            },
+            {
+              "calls": 2166,
+              "cumulative_seconds": 0.17762016700000002,
+              "function": "from_dict",
+              "line": 21,
+              "module": "cps_compute.immutable_configmap",
+              "primitive_calls": 2166,
+              "total_seconds": 0.022511973
+            },
+            {
+              "calls": 3668,
+              "cumulative_seconds": 0.29429325100000003,
+              "function": "_decode",
+              "line": 58,
+              "module": "cps_compute.native_gpu_controller",
+              "primitive_calls": 3668,
+              "total_seconds": 0.021246845
+            },
+            {
+              "calls": 195,
+              "cumulative_seconds": 0.041746851,
+              "function": "validate_approvals",
+              "line": 47,
+              "module": "cps_compute.native_groups",
+              "primitive_calls": 195,
+              "total_seconds": 0.018863625000000002
+            },
+            {
+              "calls": 2,
+              "cumulative_seconds": 1.824133223,
+              "function": "verify_terminal_entries",
+              "line": 192,
+              "module": "cps_compute.native_node.history",
+              "primitive_calls": 2,
+              "total_seconds": 0.018817588
+            },
+            {
+              "calls": 1220,
+              "cumulative_seconds": 0.180839896,
+              "function": "__post_init__",
+              "line": 127,
+              "module": "cps_compute.native_gpu_controller",
+              "primitive_calls": 1220,
+              "total_seconds": 0.017998655000000002
+            },
+            {
+              "calls": 2166,
+              "cumulative_seconds": 0.11482752600000001,
+              "function": "reference",
+              "line": 51,
+              "module": "cps_compute.native_scheduler_node_epoch",
+              "primitive_calls": 2166,
+              "total_seconds": 0.016004168000000003
+            },
+            {
+              "calls": 13324,
+              "cumulative_seconds": 0.464488542,
+              "function": "_canonical",
+              "line": 36,
+              "module": "cps_compute.native_groups",
+              "primitive_calls": 13324,
+              "total_seconds": 0.015511936
+            },
+            {
+              "calls": 153187,
+              "cumulative_seconds": 0.014944161000000001,
+              "function": "_require",
+              "line": 28,
+              "module": "cps_compute.native_group_revision",
+              "primitive_calls": 153187,
+              "total_seconds": 0.014944161000000001
+            },
+            {
+              "calls": 2700,
+              "cumulative_seconds": 0.141956367,
+              "function": "validate_reference",
+              "line": 37,
+              "module": "cps_compute.native_group_revision",
+              "primitive_calls": 2700,
+              "total_seconds": 0.012677361000000002
+            },
+            {
+              "calls": 4190,
+              "cumulative_seconds": 0.014846049000000002,
+              "function": "_unique_json",
+              "line": 565,
+              "module": "cps_compute.native_gpu_controller",
+              "primitive_calls": 4190,
+              "total_seconds": 0.011745057000000001
+            },
+            {
+              "calls": 725,
+              "cumulative_seconds": 1.0642612340000002,
+              "function": "resolve_legacy_map",
+              "line": 33,
+              "module": "cps_compute.native_node.migration",
+              "primitive_calls": 725,
+              "total_seconds": 0.010313783
+            },
+            {
+              "calls": 1221,
+              "cumulative_seconds": 0.0538589,
+              "function": "__post_init__",
+              "line": 76,
+              "module": "cps_compute.native_gpu_controller",
+              "primitive_calls": 1221,
+              "total_seconds": 0.009261505
+            },
+            {
+              "calls": 195,
+              "cumulative_seconds": 0.25453223,
+              "function": "from_config",
+              "line": 97,
+              "module": "cps_compute.native_groups",
+              "primitive_calls": 195,
+              "total_seconds": 0.009250188000000001
+            },
+            {
+              "calls": 79147,
+              "cumulative_seconds": 0.008842466,
+              "function": "_require",
+              "line": 42,
+              "module": "cps_compute.native_gpu_controller",
+              "primitive_calls": 79147,
+              "total_seconds": 0.008842466
+            },
+            {
+              "calls": 1162,
+              "cumulative_seconds": 1.0869278690000002,
+              "function": "read_namespaced_config_map",
+              "line": 32,
+              "module": "cps_compute.native_node.history",
+              "primitive_calls": 1162,
+              "total_seconds": 0.007925466
+            },
+            {
+              "calls": 1292,
+              "cumulative_seconds": 0.097596103,
+              "function": "read_private_bytes",
+              "line": 57,
+              "module": "cps_compute.native_node.history",
+              "primitive_calls": 1292,
+              "total_seconds": 0.007862952000000001
+            },
+            {
+              "calls": 340,
+              "cumulative_seconds": 0.058644669,
+              "function": "envelope",
+              "line": 140,
+              "module": "cps_compute.native_node.custody",
+              "primitive_calls": 340,
+              "total_seconds": 0.006961210000000001
+            },
+            {
+              "calls": 2630,
+              "cumulative_seconds": 0.09744392800000001,
+              "function": "__post_init__",
+              "line": 104,
+              "module": "cps_compute.native_gpu_controller",
+              "primitive_calls": 2630,
+              "total_seconds": 0.0069592510000000005
+            },
+            {
+              "calls": 10800,
+              "cumulative_seconds": 0.014857317,
+              "function": "<genexpr>",
+              "line": 41,
+              "module": "cps_compute.native_group_revision",
+              "primitive_calls": 10800,
+              "total_seconds": 0.006744436
+            },
+            {
+              "calls": 1,
+              "cumulative_seconds": 8.539944605,
+              "function": "_snapshot_once",
+              "line": 292,
+              "module": "cps_compute.native_node.custody",
+              "primitive_calls": 1,
+              "total_seconds": 0.0066039620000000005
+            },
+            {
+              "calls": 422,
+              "cumulative_seconds": 0.146488019,
+              "function": "validate_policy",
+              "line": 232,
+              "module": "cps_compute.native_groups",
+              "primitive_calls": 422,
+              "total_seconds": 0.00660071
+            },
+            {
+              "calls": 2,
+              "cumulative_seconds": 0.5522761660000001,
+              "function": "verify_inventory",
+              "line": 119,
+              "module": "cps_compute.native_node.migration",
+              "primitive_calls": 2,
+              "total_seconds": 0.006531012
+            },
+            {
+              "calls": 1,
+              "cumulative_seconds": 1.161174654,
+              "function": "list_enrollments",
+              "line": 38,
+              "module": "cps_compute.native_node.custody",
+              "primitive_calls": 1,
+              "total_seconds": 0.006103857000000001
+            },
+            {
+              "calls": 577,
+              "cumulative_seconds": 0.410298315,
+              "function": "read",
+              "line": 633,
+              "module": "cps_compute.native_gpu_controller",
+              "primitive_calls": 577,
+              "total_seconds": 0.006049683
+            },
+            {
+              "calls": 485,
+              "cumulative_seconds": 0.132812083,
+              "function": "validate",
+              "line": 38,
+              "module": "cps_compute.immutable_configmap",
+              "primitive_calls": 485,
+              "total_seconds": 0.005417548
+            },
+            {
+              "calls": 543,
+              "cumulative_seconds": 0.315229315,
+              "function": "from_dict",
+              "line": 438,
+              "module": "cps_compute.native_gpu_controller",
+              "primitive_calls": 538,
+              "total_seconds": 0.005239726
+            },
+            {
+              "calls": 3,
+              "cumulative_seconds": 0.211431675,
+              "function": "reviewed_archive",
+              "line": 179,
+              "module": "cps_compute.native_node.migration",
+              "primitive_calls": 3,
+              "total_seconds": 0.0050233840000000005
+            },
+            {
+              "calls": 2166,
+              "cumulative_seconds": 0.024089014000000002,
+              "function": "uid",
+              "line": 31,
+              "module": "cps_compute.native_scheduler_node_epoch",
+              "primitive_calls": 2166,
+              "total_seconds": 0.005016036000000001
+            }
+          ]
+        },
+        "resources": [
+          {
+            "calls": 370,
+            "category": "configmaps",
+            "status": 200
+          },
+          {
+            "calls": 246,
+            "category": "pods",
+            "status": 404
+          }
+        ],
+        "stage": "node-snapshot",
+        "success": true
+      }
+    ],
+    "version": 1
+  },
+  "recorder_sha256": "b6f9b9dc81fef64b97e7b0de4c58245c91d7f8a56033f9502b7b12cba19c1f0f",
+  "scope": "Stopped/released-history snapshot only; not active-bound daemon publication timing",
+  "script_sha256": "22946245b6ef7e6099a6797ecbcb9c109f380291cb9a633880e5dee83039e009"
+}

@@ -1,0 +1,39 @@
+{
+  "all_four_services_restored": true,
+  "binder": {
+    "coordinator_enabled": false,
+    "deployment_uid": "dc2e1960-6d4f-4038-89e8-5fe66e84651d",
+    "exact_new_post_permission": true,
+    "image": "ghcr.io/mul-cps/cps-native-kai-binder@sha256:2400691ce4b688383bf0419931baf2397e94f6cb56849a58c2d7c59de0fe3766",
+    "other_spec_preserved": true,
+    "passed": true
+  },
+  "deployed": true,
+  "execution_fence_seconds": 60,
+  "gateway_image": "ghcr.io/mul-cps/cps-compute@sha256:5f1dd4f55710f1cdf97d24a1165b265681c61c67578680b8f5ef8bd67a34fc3c",
+  "helper_subtests_passed": 4,
+  "helper_tests_passed": 26,
+  "journal": {
+    "active": 35,
+    "files": 419,
+    "four_actual_acks_ready": true,
+    "total": 83
+  },
+  "kind": "combined-current-binding-controlled-rollout",
+  "node_config_data_sha256": "sha256:0759300b10c0221b6ccaf6265103877c94107d35c0a6f057d04dc23267635bf2",
+  "node_config_reference": {
+    "name": "cps-native-head-config-0759300b10c0221b",
+    "namespace": "cps-native-system",
+    "resourceVersion": "379440725",
+    "uid": "ba427fb5-4b54-47d2-bd6e-c2dd1140b933"
+  },
+  "observer_release_paused_until_reconciliation_empty": true,
+  "passed": true,
+  "policy_hash": "sha256:332d14fb9e510b9810feffb8d40b408743f9679ebd13ca1ba0e1077d666e9281",
+  "production_qualified": false,
+  "protected_notebook_unchanged": true,
+  "restore_initially_paused_on_blocked_writer_tick": true,
+  "restore_resumed_after_ready_tick": true,
+  "sdk_runtime_revision": "53b7174ab48e18f1a0f3bdf7ee0db9cac1c54684",
+  "source_generation_unchanged": 9
+}
