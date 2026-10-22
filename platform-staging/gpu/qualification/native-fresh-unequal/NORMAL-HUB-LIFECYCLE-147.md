@@ -565,3 +565,39 @@ main remain unchanged. The node has 48 allocatable cores. No user workload,
 GPU limit, driver or kernel was changed. The helper became Ready and its new
 node-side read-only history/CDI/full-inventory preflight passed with native SET
 and Pod DELETE forbidden. No controller loop or workload was launched.
+
+### Automatic ten-GiB integration completed
+
+Revision `6e2d2b435232c9453e6fc254829f54fbd0c617d3` adds a bounded five/ten
+operator pair and exact measured terminal-history support while preserving the
+previous five/twenty case. Regressions failed before implementation; 236 tests
+and 82 subtests passed. All fourteen original released enrollments, including
+their prior twenty-GiB caps, were captured with original enrollment/completion/
+ledger/journal pins. A new immutable helper configuration with generated source
+`cd64be430bd7b072af4e2de8a9087abf5b197a7154aed727c88a62f3aa157271`
+passed read-only original-history, CDI and full-inventory preflight. Only then
+were isolated gateway and exact neutral-owner Hub overlays migrated to policy
+`sha256:5c900f6503991d1c9514b028be71939f29bb30c0423f6b5de59214ac47675d92`.
+Both Hub rollouts succeeded. The stopped controlled CPS fixture was changed to
+two reviewed members and ten GiB through audited local provider operations and
+normal `change_profile`; CIT retained one member and five GiB. Ordinary profiles
+remain disabled.
+
+Normal Starts succeeded for CPS Pod `a4e98e0f-172e-456c-8f91-792c1f971286` and CIT
+Pod `3564bf8f-8558-4bf8-9d11-7e757a461c13`. Request-to-Pod-ready observations were
+90.696 and 55.689 seconds respectively, not a burst/p95 qualification. Both
+workspace marker hashes matched their earlier five/twenty lifecycle records.
+CPS allocated/touched eight GiB, freed that probe, rejected eleven GiB under its
+ten-GiB cap, and recovered in the same process. CIT completed 200 concurrent
+checked GPU updates. Actual imageIDs and init exits were captured separately.
+
+CIT normal Close completed; CPS exceeded the console cleanup wait and a normal
+Stop retry completed after trusted cleanup. All sixteen allocations were then
+verified released and both console workspaces stopped with inactive pooled
+reservations. No manual release was used. The diagnostic log contained no
+blocked-error observations. After release verification, only the identified
+controller was interrupted (observed exit 130), and final read-only complete
+history/CDI/inventory checks passed. This closes automatic five/ten/twenty sizing
+integration across the two measured runs; ordinary qualified-group promotion,
+cleanup latency and broader production acceptance remain open. The checked
+artifact index is `results/automatic-five-ten-147-20261023.json`.

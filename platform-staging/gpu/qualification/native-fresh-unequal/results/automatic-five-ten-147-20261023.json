@@ -1,0 +1,59 @@
+{
+  "burst_or_p95_qualification_claimed": false,
+  "cleanup": {
+    "all_allocations_released": 16,
+    "blocked_errors_observed": 0,
+    "both_workspaces_stopped": true,
+    "controller_exit": 130,
+    "controller_interrupted_after_release": true,
+    "cps_required_stop_retry": true,
+    "final_readonly_preflight_passed": true,
+    "manual_release_used": false
+  },
+  "cuda_ten_gib": {
+    "allocated_bytes": 536870912,
+    "cuda_available": true,
+    "device_count": 1,
+    "elapsed_seconds": 0.36652660369873047,
+    "large_successful_allocation_gib": 8,
+    "nominal_cap_gib": 10,
+    "over_cap_rejected": true,
+    "over_cap_request_gib": 11,
+    "same_process_recovered": true
+  },
+  "evidence_sha256": {
+    "actual-pod-provenance.private.json": "sha256:68b7f2ffefbef809273153221a6032ab5c205507b845a9c643213117bbb33c10",
+    "all-sixteen-released.actual.private.json": "sha256:829f888a99c7298144fdd9e3ff07c4638929127466057e8cea0b416cfd053e84",
+    "cit-normal-start-retry.actual.private.jsonl": "sha256:430fdb4286aaec7183a708b527f9a266e5da9ed976f6594a484d55b4e31e64f5",
+    "cit-pair-normal-close.actual.private.jsonl": "sha256:ce7311005e8012e9d858555bfe25d80c4288e6a232354356b753ca41a5e07c8c",
+    "cit-peer.actual.private.jsonl": "sha256:e8b57eee1ab72958038102dcff6b24e2aad5386be7372562c7afe02ee487525b",
+    "cps-cuda.actual.private.json": "sha256:14fbcb636596e0e62d96ec71fd819e2821df6c0e103c6a5ccced8dccbbf5fe47",
+    "cps-final-close.actual.private.jsonl": "sha256:f58c53c00da1b22d4f907a38e30ea8741020ebc3745aff71b98e3157032d192f",
+    "cps-normal-start-retry.actual.private.jsonl": "sha256:5c4c198a03c523ad0ac5976385094041c63fcd7619839db89558de03f7fb609d"
+  },
+  "five_gib_peer_checks": 200,
+  "normal_starts_passed": true,
+  "pod_uids": {
+    "cit": "3564bf8f-8558-4bf8-9d11-7e757a461c13",
+    "cps": "a4e98e0f-172e-456c-8f91-792c1f971286"
+  },
+  "policy_hash": "sha256:5c900f6503991d1c9514b028be71939f29bb30c0423f6b5de59214ac47675d92",
+  "preserved_storage_sha256": {
+    "cit": "771626f9e2fc708860f25296af05e3f3aa69756351099ff6a6216d5fd6ebae2e",
+    "cps": "b7575138ba2839c0557ed90138fa0b9ff88f5ccc728e75595df44e223690782c"
+  },
+  "production_qualified": false,
+  "remaining": [
+    "qualified-group policy/runtime promotion",
+    "diagnostic cleanup latency",
+    "broader production acceptance"
+  ],
+  "request_to_pod_ready_seconds": {
+    "cit": 55.689,
+    "cps": 90.696
+  },
+  "scope": "Automatic operator-only five/ten GiB lifecycle and CUDA integration",
+  "source_revision": "6e2d2b435232c9453e6fc254829f54fbd0c617d3",
+  "version": 1,
+  "workload_image": "ghcr.io/mul-cps/cps-jupyter-notebook@sha256:5427088986bc06ad0713875d1aa2f31439f0bd1fbe6099d4669570fcf3e85be4"
+}
