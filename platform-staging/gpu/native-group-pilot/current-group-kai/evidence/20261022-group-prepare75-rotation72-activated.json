@@ -1,0 +1,70 @@
+{
+  "compositor_revision": "b5bf5a2747eacaf95d1e20676e7aa8bfc1f46fdf",
+  "group_prepare_request_seconds": 75,
+  "images": {
+    "gateway": "ghcr.io/mul-cps/cps-compute@sha256:6b2938df3aabd00a0a8896034f7357bdd777e58668d2ac662b211ea86fd460d1",
+    "node": "ghcr.io/mul-cps/cps-native-node@sha256:a2348b7b2211b6b22e3d6e7f7025cc0efbbc320b539a7f6acec23d8b470ad88c",
+    "observer": "ghcr.io/mul-cps/cps-native-observer@sha256:683a5a2ec959c195be4a3333cc211ce286e0c3f31c4e8671d802a2dc4d5e52c4",
+    "writer": "ghcr.io/mul-cps/cps-compute@sha256:79ef2c1aae602fa92adb485b140722d02e9b828ad8bcdff090d541fba4e6d395"
+  },
+  "independent_execution_fence_max_seconds": 60,
+  "invariants": {
+    "gpu_driver_changed": false,
+    "hub_images_changed": false,
+    "mig_enabled": false,
+    "policy_hash": "sha256:332d14fb9e510b9810feffb8d40b408743f9679ebd13ca1ba0e1077d666e9281",
+    "source_generation": 9,
+    "workload_image_changed": false
+  },
+  "journal": {
+    "active_rotations_after": 24,
+    "checkpoint_and_anchor_unchanged": true,
+    "four_fresh_acknowledgments_ready": true,
+    "gpu_epoch_unchanged": true,
+    "head_documents_unchanged": true,
+    "immutable_archives_after": 360,
+    "immutable_archives_before": 355,
+    "json_files_after": 364,
+    "json_files_before": 359,
+    "new_archives": 5,
+    "normal_writer_ready": true,
+    "retained_nonstate_files_unchanged": 358,
+    "rotation_after": 72,
+    "rotation_before": 71,
+    "sdk_shared_lock_validation_passed": true,
+    "source_revision_unchanged": true
+  },
+  "management_transport": {
+    "direct_ssh_local_tls_transport_used": true,
+    "existing_ssh_control_plane_local_api_ready": true,
+    "rancher_cluster_health_reported_api_unreachable": true,
+    "rancher_proxy_api_timeout_observed": true
+  },
+  "observed_at": "2026-10-22T00:25:54.005793+00:00",
+  "production_qualified": false,
+  "protected_notebook": {
+    "restarts": 0,
+    "running": true,
+    "uid": "03e00875-f3c7-4dca-8848-c57b257932a5"
+  },
+  "qualification": {
+    "allocation_proof_timeout_root_cause_proven": false,
+    "current_shared_workspace_start_passed": false,
+    "next_gate": "normal shared workspace Start with approved unchanged notebook image; verify 75s Group prepare budget and independent 60s ExecutionFence"
+  },
+  "restoration": {
+    "binder_enabled": false,
+    "both_public_hub_health_http": 200,
+    "four_service_selectors_restored": true,
+    "new_temporary_rbac_objects_created": 0,
+    "preexisting_rotation_rbac_preserved": true,
+    "succeeded_rotation_job_uid_deleted": true
+  },
+  "service_upgrade_deployed": true,
+  "software_verification": {
+    "group_prepare_union_passed": 205,
+    "rollout_guard_tests_passed": 15
+  },
+  "source_revision": "864d349f6948d615389e711c3a21fdf5750739a6",
+  "version": 1
+}
