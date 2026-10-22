@@ -1,0 +1,122 @@
+{
+  "stage": "partial old-native-authority quiescence, not successor activation",
+  "checked_at": "2026-10-22T13:57:19.392647+00:00",
+  "controllers": [
+    {
+      "namespace": "cps-compute",
+      "name": "cps-native-head-delivery",
+      "uid": "8dfbe31d-1475-4cd5-aa3f-34b791c1950b",
+      "before_replicas": 1,
+      "after_replicas": 0,
+      "before_resource_version": "379549827",
+      "after_resource_version": "379842970"
+    },
+    {
+      "namespace": "cps-compute",
+      "name": "cps-native-approval-delivery",
+      "uid": "7e6ffd5e-c598-435f-875b-f9bccb03b4bf",
+      "before_replicas": 0,
+      "after_replicas": 0,
+      "before_resource_version": "372920431",
+      "after_resource_version": "372920431"
+    },
+    {
+      "namespace": "cps-native-system",
+      "name": "cps-native-observer-operator",
+      "uid": "2a8b8724-68c3-4772-b45f-1ed9ef1910c9",
+      "before_replicas": 1,
+      "after_replicas": 0,
+      "before_resource_version": "379834920",
+      "after_resource_version": "379842986"
+    },
+    {
+      "namespace": "cps-native-system",
+      "name": "cps-native-node-agent",
+      "uid": "03e6bf5e-39ab-4c4a-b73f-1d6cf0ee8076",
+      "before_replicas": 1,
+      "after_replicas": 0,
+      "before_resource_version": "379538985",
+      "after_resource_version": "379842998"
+    }
+  ],
+  "active_dedicated_pods_after": 0,
+  "dedicated_bindings_revoked": 17,
+  "shared_native_bindings_preserved": 12,
+  "post_revocation_sar": {
+    "cases": 80,
+    "allowed": 0,
+    "evaluation_errors": 0,
+    "scope": "Five retired principals; four namespaces; Pod create, named ConfigMap patch, named role patch, named SA token create only"
+  },
+  "old_namespace_pod_security": {
+    "enforce": "restricted",
+    "version": "v1.34",
+    "authority_state": "quiesced-recovery",
+    "privileged_hostpath_dryrun_denied": true
+  },
+  "preservation": {
+    "unchanged_deployment_specs": 13,
+    "muslim_pod_uid": "e24e7855-0001-40b2-b6b5-175190141ccb",
+    "muslim_phase": "Running",
+    "cps_hub_health_http": 200,
+    "cit_hub_health_http": 200,
+    "gateway_tls_verified_openapi_http": 200,
+    "new_cpu_or_batch_submission_tested": false
+  },
+  "old_ledger_sha256": "f2dec959b5c1062fa086a7801009e8cd67e0359824cab0baf0ad64f3faba22c5",
+  "old_ledger_unchanged": true,
+  "private_configmap_archives": [
+    {
+      "namespace": "cps-native-system",
+      "items": 821,
+      "collection_rv": "",
+      "sha256": "bcc985f581737b4321b10327a762238a11e8f73b39feff689525956760d3ec5f",
+      "bytes": 16937343
+    },
+    {
+      "namespace": "cps-compute",
+      "items": 231,
+      "collection_rv": "",
+      "sha256": "366be0f6ba0dc01e9055d5bf5671797cf4a0f2a8b72f233907c8bb75baa64925",
+      "bytes": 5558247
+    },
+    {
+      "namespace": "jupyterhub",
+      "items": 104,
+      "collection_rv": "",
+      "sha256": "b14e9777ac7a2ba8be0f87da2d7e0f4f780eb5699f5ea2dc7d767dc3fffb3d68",
+      "bytes": 870816
+    },
+    {
+      "namespace": "cit-jhub",
+      "items": 95,
+      "collection_rv": "",
+      "sha256": "a8aad4b8b1ee93f1ea504a918289c09c1809d11e59bd1888c2b8240c16080296",
+      "bytes": 683495
+    }
+  ],
+  "native_writer_vap_activated": false,
+  "archival_vap_activated": false,
+  "new_authority_activated": false,
+  "remaining": [
+    "Freeze remaining old shared writer authority without breaking CPU/batch services",
+    "Complete credential and global privileged-runtime exclusion",
+    "Off-host archive and durable successor custody",
+    "Guarded kernel147 module activation and fresh hardware qualification",
+    "New-domain Source/heads and all four fresh ACKs",
+    "Normal GPU Start/CUDA/Stop and remaining production gates"
+  ],
+  "limitations": [
+    "No continuous resurrection watch",
+    "No blanket credential-incapability proof",
+    "29 missing historical retirement journals remain unproven",
+    "Namespace PSA is not global GPU exclusion"
+  ],
+  "private_operator_audit": {
+    "records": 22,
+    "actor_recorded": true,
+    "previous_new_values_recorded": true,
+    "outcomes_readback_verified": true,
+    "time_accuracy": "bounded operator preimage/receipt windows; no server audit timestamp claim"
+  }
+}

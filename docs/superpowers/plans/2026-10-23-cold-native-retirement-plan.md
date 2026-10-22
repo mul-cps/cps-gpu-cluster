@@ -125,3 +125,27 @@ template expansion, future grants or no resurrection. Those gates remain open.
 See `platform-staging/native-approval-delivery/cold-retirement-writer-evidence-20261022.json`
 for the bounded receipt. Kubernetes API exclusion reference:
 https://kubernetes.io/docs/reference/kubernetes-api/admissionregistration/validating-admission-policy-v1/
+
+## Root live partial quiescence, 2026-10-22
+
+The four dedicated Deployments were set to zero replicas using fresh full-spec,
+UID and resourceVersion JSON Patch tests; three formerly active dedicated Pods
+terminated. All 17 dedicated-only mutating native RoleBindings had their exact
+reviewed subjects emptied with UID/RV/roleRef/subjects CAS. No conflicts were
+rebased. The 12 shared Gateway/Hub/Binder native bindings were preserved for the
+separate successor handover. Referenced roles were not edited.
+
+80 explicit identity/group authorization checks denied the tested writes after
+revocation. The now-empty old native namespace enforces Restricted Pod Security
+v1.34; a privileged/hostPath Pod dry-run was rejected. The namespace is labeled
+quiesced-recovery, not declared fully retired. The old 197-entry released ledger
+retains its exact original bytes. Fresh private ConfigMap archives cover all
+four application/authority namespaces; they are local captures, not an off-host
+backup or a recovered private custody history.
+
+13 unrelated Deployment UIDs/specifications and Muslim's running Pod UID were
+unchanged. Both Hub health endpoints returned 200; gateway TLS/OpenAPI returned
+200. This preservation evidence does not replace a new CPU/batch submission.
+Neither retirement VAP is active, and no new authority, driver load or hardware
+qualification was performed. The complete retirement and activation gates stay
+open. See `cold-retirement-live-quiescence-20261022.json` beside the renderer.
