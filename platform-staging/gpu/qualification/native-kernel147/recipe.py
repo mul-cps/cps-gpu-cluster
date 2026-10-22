@@ -4,6 +4,7 @@ import argparse
 import ast
 import hashlib
 import json
+import re
 from pathlib import Path, PurePosixPath
 import subprocess
 import tarfile
@@ -93,20 +94,35 @@ def symbols(flag,path,*,allow_empty=False):
     try:output=query('modprobe',flag,str(path))
     except subprocess.CalledProcessError:
         if not (allow_empty and flag=='--show-exports'):raise
-        # kmod reports ENODATA for a valid UVM ELF with no export section.
+        output=''
+    if not output.strip():
+        require(allow_empty and flag=='--show-exports','Empty module symbol table')
+        # kmod versions report ENODATA or empty success for exportless UVM.
         sections=query('readelf','--wide','--sections',str(path))
         require('__ksymtab' not in sections,'Unparsed module exports present')
         return {}
     for line in output.splitlines():
         fields=line.split();require(len(fields)==2 and fields[1] not in result,'Malformed/duplicate module symbols')
         result[fields[1]]=int(fields[0],16)
-    require(bool(result) or (allow_empty and flag=='--show-exports'),'Empty module symbol table')
+    require(bool(result),'Empty module symbol table')
     return result
+
+
+
+def validate_release(raw):
+    defines={}
+    for line in raw.splitlines():
+        if not line.strip():continue
+        match=re.fullmatch(r'[ \t]*#[ \t]*define[ \t]+(UTS_RELEASE|UTS_UBUNTU_RELEASE_ABI)[ \t]+(.+?)[ \t]*',line)
+        require(match is not None and match[1] not in defines,'Actual target headers required')
+        defines[match[1]]=match[2]
+    require(defines=={'UTS_RELEASE':'"'+KERNEL+'"','UTS_UBUNTU_RELEASE_ABI':'147'},
+            'Actual target headers required')
 
 
 def verify(headers,stock_core,stock_uvm,core,uvm):
     release=(headers/'include/generated/utsrelease.h').read_text()
-    require(release.strip()=='#define UTS_RELEASE "'+KERNEL+'"','Actual target headers required')
+    validate_release(release)
     kernel={}
     for line in (headers/'Module.symvers').read_text().splitlines():
         fields=line.split();require(len(fields)>=4 and fields[1] not in kernel,'Malformed kernel symvers')

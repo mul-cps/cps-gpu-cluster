@@ -65,3 +65,21 @@ def test_uvm_empty_exports_require_actual_absent_export_section(monkeypatch,tmp_
         return '__ksymtab'
     monkeypatch.setattr(recipe,'query',hidden_exports)
     with pytest.raises(ValueError):recipe.symbols('--show-exports',tmp_path/'uvm',allow_empty=True)
+
+
+def test_actual_ubuntu147_header_and_ambiguous_denials():
+    recipe=load()
+    actual='#define UTS_RELEASE "6.8.0-147-generic"\n#define UTS_UBUNTU_RELEASE_ABI 147\n'
+    recipe.validate_release(actual)
+    for bad in (actual.replace('147-generic','134-generic'),actual+actual,
+                actual.replace('ABI 147','ABI 134'),actual+'#define UTS_RELEASE "foreign"\n',
+                actual.replace('"6.8.0-147-generic"','"6.8.0-147-generic" "foreign"')):
+        with pytest.raises(ValueError):recipe.validate_release(bad)
+
+
+def test_success_empty_exports_also_require_no_elf_exports(monkeypatch,tmp_path):
+    recipe=load()
+    def query(*args):return '' if args[0]=='modprobe' else '__ksymtab'
+    monkeypatch.setattr(recipe,'query',query)
+    with pytest.raises(ValueError,match='Unparsed module exports'):
+        recipe.symbols('--show-exports',tmp_path/'uvm',allow_empty=True)
