@@ -16,7 +16,7 @@ def item(kind,name,namespace=None,**kw):
 def validate(provider,targets):
  require(type(provider)is dict and set(provider)<={'enabled','ssh','storageVersion','readonlyMounts','verificationImage','allowedOperations','allowedTargets'} and provider.get('enabled')is True and provider.get('allowedOperations')==['provision'],'Actual enabled provider references required')
  version=provider.get('storageVersion',1);require(type(version)is int and version in ROOTS,'Actual supported storageVersion required')
- ssh=provider.get('ssh');require(type(ssh)is dict and set(ssh)<={'host','user','port','identity_file','known_hosts_file'} and ssh.get('host')in(SERVER,'truenas.local') and ssh.get('port',8022)==8022 and type(ssh.get('user'))is str and re.fullmatch(r'[a-z_][a-z0-9_-]*',ssh['user']),'Existing fixed NAS SSH provider required')
+ ssh=provider.get('ssh');require(type(ssh)is dict and set(ssh)<={'host','user','port','identity_file','known_hosts_file'} and ssh.get('host')in(SERVER,'truenas.local','artifacts.cps-artifacts-relay.svc.cluster.local') and ssh.get('port',8022)==8022 and type(ssh.get('user'))is str and re.fullmatch(r'[a-z_][a-z0-9_-]*',ssh['user']),'Existing fixed NAS SSH provider required')
  for k in ('identity_file','known_hosts_file'):
   require(type(ssh.get(k))is str and ssh[k].startswith('/storage-bridge/') and '..'not in ssh[k].split('/'),'Actual read-only storage bridge file references required')
  require(type(provider.get('allowedTargets'))is list and provider['allowedTargets']==targets,'Exact two NAS provisioning targets must be guarded before metadata/NAS')

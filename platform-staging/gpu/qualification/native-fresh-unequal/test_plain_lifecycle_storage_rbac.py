@@ -45,3 +45,11 @@ def test_kubernetes_permissions_cannot_be_claimed_without_nas_target_guard():
  with pytest.raises(ValueError):mod().build(provider=p,targets=targets())
  p=provider();p['allowedTargets']=[]
  with pytest.raises(ValueError):mod().build(provider=p,targets=targets())
+
+def test_actual_existing_relay_provider_accepts_without_changing_nfs_server():
+ p=provider();p['ssh'].update(host='artifacts.cps-artifacts-relay.svc.cluster.local',user='truenas_admin',identity_file='/storage-bridge/identity')
+ r=mod().build(provider=p,targets=targets())
+ pv=next(x for x in r['objects'] if x['kind']=='ValidatingAdmissionPolicy' and x['metadata']['name'].endswith('-pv'))
+ assert '193.170.30.58' in str(pv) and 'artifacts.cps-artifacts-relay.svc.cluster.local'not in str(pv)
+ p['ssh']['host']='foreign.example'
+ with pytest.raises(ValueError):mod().build(provider=p,targets=targets())
