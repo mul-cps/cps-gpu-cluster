@@ -703,3 +703,22 @@ references, grants, credentials, permissions and paused Node/Observer replicas
 were not advanced. Genuine coordinated current-epoch acknowledgments and normal
 qualified-group lifecycle remain pending; GPU access is still readiness-held.
 See `results/driver-qualification-bridge-rollout-20261023.json`.
+
+## Current-epoch adoption: production custody recovery prerequisite
+
+A fresh read-only preflight confirms that the paused production node service still
+uses `/run/cps-native-gpu`. Its required enrollment, intent, journal and completion
+directories are absent on the current boot. The original ledger remains unchanged
+in identity and contains 197 released records; the mounted immutable terminal index
+inventories 82 records. The SDK verifies original private bytes in addition to API
+records, so neither a qualification-reference swap nor a released ledger alone
+proves safe service resumption. No historical receipts were reconstructed.
+
+This is separate from the passed current-boot CUDA tests and the deployed reader
+compatibility bridge. The previously staged `cps-native-runtime` authority and
+durable `/var/lib/cps-native-gpu/domains/.../custody` path must be evaluated as the
+explicit successor rather than creating another staging path. Activation needs
+reviewed predecessor preservation and current physical retirement accounting,
+followed by genuine component acknowledgments. The old ledger must stay intact.
+
+Evidence: `results/production-custody-renewal-preflight-20261023.json`.

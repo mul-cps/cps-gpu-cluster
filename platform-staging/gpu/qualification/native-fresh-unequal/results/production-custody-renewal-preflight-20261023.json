@@ -1,0 +1,50 @@
+{
+  "version": 1,
+  "observed_at": "2026-10-22T22:35:02.682458+00:00",
+  "kind": "production-node-custody-renewal-preflight",
+  "node_deployment": {
+    "uid": "03e6bf5e-39ab-4c4a-b73f-1d6cf0ee8076",
+    "resourceVersion": "379842998",
+    "replicas": 0
+  },
+  "ledger": {
+    "uid": "33ab24b0-8e9a-4bee-b308-12a19c076924",
+    "resourceVersion": "379454321",
+    "records": 197,
+    "states": {
+      "released": 197
+    }
+  },
+  "terminal_index": {
+    "reference": {
+      "data_sha256": "sha256:c6f44c30478996c672549376f04c20c0a0751e67730695e9f183862ff7a7e10f",
+      "key": "index.json",
+      "name": "cps-packaged-terminal-index-c6f44c30478996c6",
+      "namespace": "cps-native-system",
+      "resourceVersion": "372054265",
+      "uid": "750a8143-5c1b-4bc2-8ad3-5606bff2147a"
+    },
+    "records": 82,
+    "ledger_identity_matches": true
+  },
+  "host_private_state_presence": {
+    "root_exists": true,
+    "directories": {
+      "enrollments": false,
+      "intents": false,
+      "journal": false,
+      "published-cleanup": false,
+      "pre-gate-aborts": false
+    }
+  },
+  "conclusion": "Existing production service cannot be resumed by changing qualification reference alone: required private custody directories are absent and the terminal index does not inventory the full released ledger. No historical receipts were reconstructed.",
+  "required_next_action": "Find and verify an original custody backup, or implement and review an explicit fresh-authority succession that preserves the old ledger and accounts for current physical retirement; persist new custody outside /run.",
+  "live_mutations": false,
+  "existing_successor_staging": {
+    "namespace": "cps-native-runtime",
+    "namespace_uid": "100876ac-14e6-4292-bf52-7d129f7f08f0",
+    "state_root": "/var/lib/cps-native-gpu/domains/100876ac-14e6-4292-bf52-7d129f7f08f0/custody",
+    "prior_checkpoint": "inactive-staging; authority not initialized; ledger not created",
+    "note": "Existing staging discovered and reused as the next investigation target. Do not create a duplicate succession path."
+  }
+}
