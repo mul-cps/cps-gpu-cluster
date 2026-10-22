@@ -441,3 +441,26 @@ Rollout completed; the running module hash was
 and UID 10001. The runtime configuration remains the legacy five-GiB pilot.
 Neither production gateway nor production GPU access was changed. No automatic
 five/twenty hardware qualification is claimed by this image rollout.
+
+### Measured-mode live preflight and isolated runtime activation
+
+The expired, terminal owned node helper was replaced with a UID-preconditioned
+DELETE and a bounded inert helper using immutable ConfigMap
+`native-lifecycle147-measured-90d12bde934d782f`. Generated agent SHA256:
+`2e52d1c63b8b3f35b2322936a68abf456992239fe0626691cd69662213d1f2a1`.
+No controller loop was launched. A real node-side preflight used the original
+authenticated enrollment reader, protected journal/mirror, completion and ledger
+validators, followed by the complete physical-inventory guard. All eleven
+historical enrollments and twelve prior physical retirement rows passed. All
+nine installed SDK source pins and current CDI verified. Native SET and Pod
+DELETE were explicitly forbidden in this preflight.
+
+The isolated gateway was then switched from `nativeGpuPilot` to the separate
+`nativeGpuQualification` mode using new immutable policy/runtime objects and
+resourceVersion/old-reference tests. Rollout succeeded. Running policy hash
+`sha256:abb8ce7430087ca7a73e812a4d21a1a3777650b14540e226949d5c3081e18897`
+and caps 5120/20480 MiB were verified from the running container. Both profiles
+remain disabled for ordinary access. The production gateway is unchanged.
+Hub settings/policy and controlled QA course/roster/grants have not yet migrated;
+normal Source Start, CUDA measurements and terminal cleanup of the measured pair
+remain pending. This is not a hardware pass or production approval.
