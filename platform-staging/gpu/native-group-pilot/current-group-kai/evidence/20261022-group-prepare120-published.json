@@ -1,0 +1,18 @@
+{
+  "base_image": "ghcr.io/mul-cps/cps-compute@sha256:b00fe7eca636d5c680faa0beac6b209c3bbde0454b55c9d6fd56e2ece23d8864",
+  "base_layers_preserved": 75,
+  "binder_prepare_seconds": 130,
+  "candidate_layers": 77,
+  "config_sha256": "sha256:bce10dfe380a89a0e941d9e26d79f32890af197076e9ac59c905348c438708c1",
+  "deployed": false,
+  "execution_fence_seconds": 60,
+  "focused_regression_tests_passed": 705,
+  "group_prepare_seconds": 120,
+  "image": "ghcr.io/mul-cps/cps-compute@sha256:f7b5ecb4e07c3ee1b17d68a0b78342cee31afbf8eac114af6bae5311e2086fcf",
+  "passed": true,
+  "production_qualified": false,
+  "runtime_config_preserved": true,
+  "runtime_user": "10001",
+  "source_revision": "70c4f47e036fc34c1c6794128c83a88cee854271",
+  "wheel_sha256": "1e236dfc28d6c056eb226fdf6b9b539947a2571bfc4fa169ae971c5ead92168d"
+}
