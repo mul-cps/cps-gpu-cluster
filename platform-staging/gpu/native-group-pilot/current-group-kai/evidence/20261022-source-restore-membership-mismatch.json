@@ -1,0 +1,22 @@
+{
+  "observedAt": "2026-10-22T01:22:19.780505+00:00",
+  "scope": "Stronger contemporaneous source-to-restore fingerprint comparison",
+  "recoveryQueryRevision": "e442f43577c44be9fab60d5aa9a29e98f491eec5",
+  "sourceFingerprintsUnchangedBeforeAfterSequentialCapture": {
+    "cps": true,
+    "cit": true
+  },
+  "sourceWritesPrevented": false,
+  "cpsComparison": {
+    "acls": true,
+    "roles": true,
+    "schema": true,
+    "tables": true,
+    "role_members": false
+  },
+  "allCpsTableSequenceFingerprintsEqual": true,
+  "citComparisonExecuted": false,
+  "comparisonPassed": false,
+  "productionQualified": false,
+  "nextAction": "Investigate source-versus-fixture built-in role membership grantors; preserve exact fingerprint checks. Original role-only CPS export contains no GRANT statements; fixture is initialized with a synthetic bootstrap superuser. This is a hypothesis pending focused reproduction."
+}
