@@ -960,3 +960,21 @@ through the SDK, linking its exact predecessor and changing only Gateway's image
 declaration. It is not activated. Gateway/Hub authority adoption, genuine
 four-component readiness and ordinary group lifecycle remain pending.
 Evidence: `results/authority-scoped-registry-image-rollout-20261023.json`.
+
+### Linked Gateway image declaration adopted by durable Node
+
+With zero ledger allocations, the Node was stopped normally, its bootstrap input
+was changed to the exact immutable service-image successor, and the same Pod
+template was started again. Pod-local bootstrap files were recreated; durable
+host custody journals were retained. No driver, kernel, device or storage export
+was changed. The new process reached readiness with zero restarts. Two renewed
+receipts passed SDK head, process, epoch, custody and pending-generation witness
+authentication against the new configuration. Ledger, enrollments and pending
+work remain empty.
+
+A private Gateway runtime candidate now resolves the successor qualification,
+current four component declarations, heads/ACK references and driver epoch with
+explicit registry scoping. SDK validation passed, and all unrelated runtime
+settings are unchanged. It is not deployed: capture/publisher/KAI configuration,
+consumer permissions and Hub adoption still need coordinated updates.
+Evidence: `results/durable-successor-scoped-node-readiness-20261023.json`.
