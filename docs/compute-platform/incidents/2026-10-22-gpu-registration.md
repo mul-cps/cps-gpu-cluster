@@ -168,3 +168,35 @@ reviewed load and relevant hardware qualification remain required. No module
 was unloaded or replaced during this observation.
 
 See `platform-staging/gpu/r615-driver/evidence/20261022-native-postboot-gap.json`.
+
+
+## Recovery implementation progress
+
+Offline consistency and backup tools are committed in `cps-compute` feature
+branches, not deployed:
+
+- `b4fb0ea54e741d4b64baa7cbbb1d46cfe5e7922a`: closed disaster-loss proposal
+  codec; 72 focused tests independently passed, 169 adjacent tests passed.
+  It performs no authentication, physical proof verification or activation.
+- `691823d913f64e20ea98639a55baa86977e61fed`: lossless complete-tree artifact,
+  verification and exclusive inert staging restore; 25 focused tests
+  independently passed, 163 tests plus 49 subtests passed in the adjacent gate.
+  It does not recreate missing journals or activate old authority.
+
+Actual draft input validation classified all 197 released claims: 82 indexed
+original histories, 32 later aborts, one prepared-offline journal, 29 lost
+retirement journals and 53 claims without public enrollment. The last category
+remains unproven, rather than being inferred never-programmed. There were no
+duplicate claim or Pod identities. Captured references for all four component
+heads resolve through 259 objects without missing objects or pin errors.
+This was an offline capture check, not an atomic maintenance-fenced observation.
+
+The original guarded core and UVM source were reconstructed from verified
+retained inputs and both compiled for kernel 6.8.0-147 in an isolated CPU-only
+build. No device access, network access during compilation, install or module
+load occurred. ABI verification remains open: standard Fedora and Ubuntu kmod
+readers reject the variable-length `__versions` format used by the actual
+Ubuntu headers and both the stock and candidate modules. A strict reader for
+the captured kernel structure is required; this is not permission to omit CRC
+comparison or change the allowed dependency set. Eight focused recipe tests
+passed before this actual-format integration case was discovered.
