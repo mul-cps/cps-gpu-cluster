@@ -1,0 +1,63 @@
+{
+  "binding_denial": {
+    "before_binding_validation": true,
+    "exception": "ValueError",
+    "fence_expiry_proven": false,
+    "leading_hypothesis": "independent fence expired after successful current; exact remaining-budget diagnostics required",
+    "meaning": "Execution fence closed or held",
+    "source_guard": "native_scheduler_coordinator.py:679"
+  },
+  "cleanup": {
+    "all_released": true,
+    "allocations": 186,
+    "binder_full_original_spec_restored": true,
+    "protected_notebook_unchanged": true,
+    "sql": {
+      "reservation": 0,
+      "reservation_binding": 0
+    }
+  },
+  "coordinator_http": {
+    "binding_409_at": "2026-10-22T00:32:37.157772202Z",
+    "current_200_at": "2026-10-22T00:32:36.170023611Z",
+    "first_prepare_409_at": "2026-10-22T00:31:29.364539517Z",
+    "prepare_200_at": "2026-10-22T00:32:28.597242488Z"
+  },
+  "gateway_image": "ghcr.io/mul-cps/cps-compute@sha256:6b2938df3aabd00a0a8896034f7357bdd777e58668d2ac662b211ea86fd460d1",
+  "gateway_revision": "864d349f6948d615389e711c3a21fdf5750739a6",
+  "metadata_watch": {
+    "complete": true,
+    "records": 96,
+    "seconds": 420,
+    "threads_drained": true
+  },
+  "next_gate": "measure retained fence budget and reduce time inside fence without removing fresh proofs or increasing its 60s maximum",
+  "normal_console_start": {
+    "canonical_members": 3,
+    "http": 409,
+    "pod_created_at": "2026-10-22T00:30:24Z",
+    "pod_uid": "6d9ce752-e99b-402a-b451-cdf302af1101",
+    "post_at": "2026-10-22T00:27:58.085314+00:00",
+    "profile": "interactive-shared-5",
+    "running_reached": false,
+    "workspace": "shared-gpu-lab"
+  },
+  "normal_stop_http": 200,
+  "observed_at": "2026-10-22T00:36:32.602698+00:00",
+  "production_qualified": false,
+  "source_generation": 9,
+  "token_revoked": true,
+  "version": 1,
+  "witness_timing": {
+    "current_response_to_binding_denial_seconds": 0.987749,
+    "enrolled_observed_at": "2026-10-22T00:31:53.064102+00:00",
+    "enrollment_to_first_witness_seconds": 23.448175,
+    "first_matching_witness_observed_at": "2026-10-22T00:32:16.512277+00:00",
+    "first_subsequent_ack_withdrawal_observed_at": "2026-10-22T00:32:47.571298+00:00",
+    "matching_witness_to_prepare_response_seconds": 12.084965,
+    "prepare_response_to_current_response_seconds": 7.572781,
+    "request_start_or_fence_deadline_measured": false,
+    "second_matching_witness_observed_at": "2026-10-22T00:32:32.719376+00:00",
+    "witness_matches_exact_enrollment_ledger_hash_and_resource_version": true
+  }
+}
