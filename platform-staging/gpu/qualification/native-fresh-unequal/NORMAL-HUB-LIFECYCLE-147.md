@@ -824,3 +824,25 @@ qualification or readiness evidence.
 Evidence: `results/durable-node-controller-staged-20261023.json`,
 `results/durable-successor-node-config-staged-20261023.json` and
 `results/durable-successor-bootstrap-held-20261023.json`.
+
+### Successor read-only RBAC applied and authorization checked
+
+Applied four namespaced read Roles/bindings and one single-node ClusterRole/binding
+for the new stopped node principal. Current component Deployment and ServiceAccount
+reads are name-scoped; cross-namespace ConfigMap reads include only the staged
+heads, anchors, approval documents and acknowledgment targets. Authority-local
+ConfigMap listing supports complete custody inventory. Node GET is limited to
+`k3s-wk-gpu2`. No historical object-name lists were copied.
+
+43 live SubjectAccessReviews used the exact service-account username and standard
+service-account/authenticated groups. All 14 intended reads were allowed and all
+29 negative cases denied, including Pod create/delete, ConfigMap create/ACK patch,
+Secrets, Roles, another node, node patch, foreign-namespace listing, Pod exec and
+ServiceAccount token creation. Exec/token checks used explicit SAR subresource
+fields. These are authorization results, not admission or runtime qualification.
+
+No Pod was created, bootstrap remains held, and all mutation permissions required
+for service operation remain deliberately absent until their admission rules are
+in place. Evidence and applied manifests are in
+`results/durable-successor-read-rbac-20261023.json` and
+`results/durable-successor-read-rbac-manifests-20261023.json`.

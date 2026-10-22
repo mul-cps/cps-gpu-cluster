@@ -1,0 +1,477 @@
+{
+  "version": 1,
+  "kind": "durable-successor-read-rbac-verified",
+  "principal": "system:serviceaccount:cps-native-runtime:cps-native-node-agent",
+  "objects_applied": 10,
+  "sar_cases": [
+    {
+      "attributes": {
+        "namespace": "cps-native-runtime",
+        "verb": "get",
+        "resource": "deployments",
+        "group": "apps",
+        "name": "cps-native-node-agent"
+      },
+      "expected_allowed": true,
+      "actual_allowed": true
+    },
+    {
+      "attributes": {
+        "namespace": "cps-native-runtime",
+        "verb": "get",
+        "resource": "serviceaccounts",
+        "group": "",
+        "name": "cps-native-node-agent"
+      },
+      "expected_allowed": true,
+      "actual_allowed": true
+    },
+    {
+      "attributes": {
+        "namespace": "cps-native-runtime",
+        "verb": "get",
+        "resource": "configmaps",
+        "group": "",
+        "name": "cps-runtime-anchor-node-06ad00d5b50947e1"
+      },
+      "expected_allowed": true,
+      "actual_allowed": true
+    },
+    {
+      "attributes": {
+        "namespace": "cps-native-runtime",
+        "verb": "create",
+        "resource": "pods",
+        "group": ""
+      },
+      "expected_allowed": false,
+      "actual_allowed": false
+    },
+    {
+      "attributes": {
+        "namespace": "cps-native-runtime",
+        "verb": "delete",
+        "resource": "pods",
+        "group": "",
+        "name": "arbitrary"
+      },
+      "expected_allowed": false,
+      "actual_allowed": false
+    },
+    {
+      "attributes": {
+        "namespace": "cps-native-runtime",
+        "verb": "create",
+        "resource": "configmaps",
+        "group": ""
+      },
+      "expected_allowed": false,
+      "actual_allowed": false
+    },
+    {
+      "attributes": {
+        "namespace": "cps-native-runtime",
+        "verb": "patch",
+        "resource": "configmaps",
+        "group": "",
+        "name": "cps-runtime-ack-node"
+      },
+      "expected_allowed": false,
+      "actual_allowed": false
+    },
+    {
+      "attributes": {
+        "namespace": "cps-native-runtime",
+        "verb": "get",
+        "resource": "secrets",
+        "group": "",
+        "name": "arbitrary"
+      },
+      "expected_allowed": false,
+      "actual_allowed": false
+    },
+    {
+      "attributes": {
+        "namespace": "cps-native-runtime",
+        "verb": "patch",
+        "resource": "roles",
+        "group": "rbac.authorization.k8s.io",
+        "name": "cps-runtime-node-read"
+      },
+      "expected_allowed": false,
+      "actual_allowed": false
+    },
+    {
+      "attributes": {
+        "namespace": "cps-compute",
+        "verb": "get",
+        "resource": "deployments",
+        "group": "apps",
+        "name": "compute-gateway"
+      },
+      "expected_allowed": true,
+      "actual_allowed": true
+    },
+    {
+      "attributes": {
+        "namespace": "cps-compute",
+        "verb": "get",
+        "resource": "serviceaccounts",
+        "group": "",
+        "name": "cps-compute-controller"
+      },
+      "expected_allowed": true,
+      "actual_allowed": true
+    },
+    {
+      "attributes": {
+        "namespace": "cps-compute",
+        "verb": "get",
+        "resource": "configmaps",
+        "group": "",
+        "name": "cps-runtime-anchor-gateway-7f8d4c449f924b7a"
+      },
+      "expected_allowed": true,
+      "actual_allowed": true
+    },
+    {
+      "attributes": {
+        "namespace": "cps-compute",
+        "verb": "create",
+        "resource": "pods",
+        "group": ""
+      },
+      "expected_allowed": false,
+      "actual_allowed": false
+    },
+    {
+      "attributes": {
+        "namespace": "cps-compute",
+        "verb": "delete",
+        "resource": "pods",
+        "group": "",
+        "name": "arbitrary"
+      },
+      "expected_allowed": false,
+      "actual_allowed": false
+    },
+    {
+      "attributes": {
+        "namespace": "cps-compute",
+        "verb": "create",
+        "resource": "configmaps",
+        "group": ""
+      },
+      "expected_allowed": false,
+      "actual_allowed": false
+    },
+    {
+      "attributes": {
+        "namespace": "cps-compute",
+        "verb": "patch",
+        "resource": "configmaps",
+        "group": "",
+        "name": "cps-runtime-ack-gateway"
+      },
+      "expected_allowed": false,
+      "actual_allowed": false
+    },
+    {
+      "attributes": {
+        "namespace": "cps-compute",
+        "verb": "get",
+        "resource": "secrets",
+        "group": "",
+        "name": "arbitrary"
+      },
+      "expected_allowed": false,
+      "actual_allowed": false
+    },
+    {
+      "attributes": {
+        "namespace": "cps-compute",
+        "verb": "patch",
+        "resource": "roles",
+        "group": "rbac.authorization.k8s.io",
+        "name": "cps-runtime-node-read"
+      },
+      "expected_allowed": false,
+      "actual_allowed": false
+    },
+    {
+      "attributes": {
+        "namespace": "jupyterhub",
+        "verb": "get",
+        "resource": "deployments",
+        "group": "apps",
+        "name": "hub"
+      },
+      "expected_allowed": true,
+      "actual_allowed": true
+    },
+    {
+      "attributes": {
+        "namespace": "jupyterhub",
+        "verb": "get",
+        "resource": "serviceaccounts",
+        "group": "",
+        "name": "hub"
+      },
+      "expected_allowed": true,
+      "actual_allowed": true
+    },
+    {
+      "attributes": {
+        "namespace": "jupyterhub",
+        "verb": "get",
+        "resource": "configmaps",
+        "group": "",
+        "name": "cps-runtime-anchor-hub-cps-463480721f0c35a9"
+      },
+      "expected_allowed": true,
+      "actual_allowed": true
+    },
+    {
+      "attributes": {
+        "namespace": "jupyterhub",
+        "verb": "create",
+        "resource": "pods",
+        "group": ""
+      },
+      "expected_allowed": false,
+      "actual_allowed": false
+    },
+    {
+      "attributes": {
+        "namespace": "jupyterhub",
+        "verb": "delete",
+        "resource": "pods",
+        "group": "",
+        "name": "arbitrary"
+      },
+      "expected_allowed": false,
+      "actual_allowed": false
+    },
+    {
+      "attributes": {
+        "namespace": "jupyterhub",
+        "verb": "create",
+        "resource": "configmaps",
+        "group": ""
+      },
+      "expected_allowed": false,
+      "actual_allowed": false
+    },
+    {
+      "attributes": {
+        "namespace": "jupyterhub",
+        "verb": "patch",
+        "resource": "configmaps",
+        "group": "",
+        "name": "cps-runtime-ack-hub-cps"
+      },
+      "expected_allowed": false,
+      "actual_allowed": false
+    },
+    {
+      "attributes": {
+        "namespace": "jupyterhub",
+        "verb": "get",
+        "resource": "secrets",
+        "group": "",
+        "name": "arbitrary"
+      },
+      "expected_allowed": false,
+      "actual_allowed": false
+    },
+    {
+      "attributes": {
+        "namespace": "jupyterhub",
+        "verb": "patch",
+        "resource": "roles",
+        "group": "rbac.authorization.k8s.io",
+        "name": "cps-runtime-node-read"
+      },
+      "expected_allowed": false,
+      "actual_allowed": false
+    },
+    {
+      "attributes": {
+        "namespace": "cit-jhub",
+        "verb": "get",
+        "resource": "deployments",
+        "group": "apps",
+        "name": "hub"
+      },
+      "expected_allowed": true,
+      "actual_allowed": true
+    },
+    {
+      "attributes": {
+        "namespace": "cit-jhub",
+        "verb": "get",
+        "resource": "serviceaccounts",
+        "group": "",
+        "name": "hub"
+      },
+      "expected_allowed": true,
+      "actual_allowed": true
+    },
+    {
+      "attributes": {
+        "namespace": "cit-jhub",
+        "verb": "get",
+        "resource": "configmaps",
+        "group": "",
+        "name": "cps-runtime-anchor-hub-cit-e6a1ddb089fb7670"
+      },
+      "expected_allowed": true,
+      "actual_allowed": true
+    },
+    {
+      "attributes": {
+        "namespace": "cit-jhub",
+        "verb": "create",
+        "resource": "pods",
+        "group": ""
+      },
+      "expected_allowed": false,
+      "actual_allowed": false
+    },
+    {
+      "attributes": {
+        "namespace": "cit-jhub",
+        "verb": "delete",
+        "resource": "pods",
+        "group": "",
+        "name": "arbitrary"
+      },
+      "expected_allowed": false,
+      "actual_allowed": false
+    },
+    {
+      "attributes": {
+        "namespace": "cit-jhub",
+        "verb": "create",
+        "resource": "configmaps",
+        "group": ""
+      },
+      "expected_allowed": false,
+      "actual_allowed": false
+    },
+    {
+      "attributes": {
+        "namespace": "cit-jhub",
+        "verb": "patch",
+        "resource": "configmaps",
+        "group": "",
+        "name": "cps-runtime-ack-hub-cit"
+      },
+      "expected_allowed": false,
+      "actual_allowed": false
+    },
+    {
+      "attributes": {
+        "namespace": "cit-jhub",
+        "verb": "get",
+        "resource": "secrets",
+        "group": "",
+        "name": "arbitrary"
+      },
+      "expected_allowed": false,
+      "actual_allowed": false
+    },
+    {
+      "attributes": {
+        "namespace": "cit-jhub",
+        "verb": "patch",
+        "resource": "roles",
+        "group": "rbac.authorization.k8s.io",
+        "name": "cps-runtime-node-read"
+      },
+      "expected_allowed": false,
+      "actual_allowed": false
+    },
+    {
+      "attributes": {
+        "namespace": "",
+        "verb": "get",
+        "resource": "nodes",
+        "group": "",
+        "name": "k3s-wk-gpu2"
+      },
+      "expected_allowed": true,
+      "actual_allowed": true
+    },
+    {
+      "attributes": {
+        "namespace": "",
+        "verb": "get",
+        "resource": "nodes",
+        "group": "",
+        "name": "k3s-wk-gpu1"
+      },
+      "expected_allowed": false,
+      "actual_allowed": false
+    },
+    {
+      "attributes": {
+        "namespace": "",
+        "verb": "patch",
+        "resource": "nodes",
+        "group": "",
+        "name": "k3s-wk-gpu2"
+      },
+      "expected_allowed": false,
+      "actual_allowed": false
+    },
+    {
+      "attributes": {
+        "namespace": "cps-native-runtime",
+        "verb": "list",
+        "resource": "configmaps",
+        "group": ""
+      },
+      "expected_allowed": true,
+      "actual_allowed": true
+    },
+    {
+      "attributes": {
+        "namespace": "kube-system",
+        "verb": "list",
+        "resource": "configmaps",
+        "group": ""
+      },
+      "expected_allowed": false,
+      "actual_allowed": false
+    },
+    {
+      "attributes": {
+        "namespace": "cps-native-runtime",
+        "verb": "create",
+        "resource": "pods",
+        "group": "",
+        "name": "arbitrary",
+        "subresource": "exec"
+      },
+      "expected_allowed": false,
+      "actual_allowed": false
+    },
+    {
+      "attributes": {
+        "namespace": "cps-native-runtime",
+        "verb": "create",
+        "resource": "serviceaccounts",
+        "group": "",
+        "name": "cps-native-node-agent",
+        "subresource": "token"
+      },
+      "expected_allowed": false,
+      "actual_allowed": false
+    }
+  ],
+  "all_expected_results_passed": true,
+  "writer_started": false,
+  "bootstrap_released": false,
+  "scope": "Read-only prerequisite; mutation/admission permissions remain unimplemented and ungranted"
+}
