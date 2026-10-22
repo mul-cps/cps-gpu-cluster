@@ -98,7 +98,7 @@ finalizer task across bounded polling windows and keeping its original generatio
 fences. Request/stop-future errors remain held. 102 focused compatibility and
 lifecycle tests passed, including late confirmation, new-generation protection,
 failed stop futures and request timeouts; independent source review was clear.
-This Hub fix is not yet deployed or live-qualified.
+The Hub fix is now deployed and live-qualified as recorded below.
 
 The fresh CIT group currently has an empty Hub roster and no native Share. It is
 a fixture still awaiting the normal console assignment/sharing flow, not evidence
@@ -110,3 +110,44 @@ Additional private evidence: `node-runtime-tools-readonly.actual.private.json`,
 `node-stop-race-controller.private.log`,
 `cit-current-native-shares.actual.private.json`, and
 `tool-fixed-post-stop-ledger-all-released.actual.private.json`.
+
+
+## Delayed cleanup retry: live qualification passed
+
+Both Hubs now run the source-verified Hub-only image
+`ghcr.io/mul-cps/cps-compute@sha256:b3cd140fb9cb57f5746152389dfc46e9de97220ae364b1b39aa9d7d6af5470d3`.
+Its Hub wheel SHA-256 is
+`7dee65777e6d7095a5346536eda35d75cc460fcdf5f1d36683639b820c795694`
+(source `4ffe956`). Image checks preserved all 136 other distributions, SDK
+module bytes, runtime configuration and base layers. An in-image Python 3.12.14
+probe verified delayed retry and transport-timeout handling. Both actual Hub
+processes expose the exact reviewed module bytes.
+
+The normal CIT service started a further 5 GiB workspace, observed it Ready in
+the Hub API and successfully executed CUDA. For this stop, the owned test node
+poller was deliberately stopped between iterations after sealing the allocation.
+The Pod was then stopped through the normal Hub API. For over 102 seconds without
+cleanup confirmation, the allocation stayed `releasing` and its member
+reservation remained active; three Hub retry-window messages were observed.
+
+After restarting the bounded node controller, cleanup was confirmed and the Hub
+released the allocation automatically. No operator release API call was made.
+Gateway access logs identify the successful release request as originating from
+the actual CIT Hub Pod. The member reservation became inactive. A PostgreSQL
+transaction explicitly set read-only verified that the stopped Hub row persisted
+null attempt, workspace, profile and native state.
+
+The resumed node controller completed all 30 iterations with exit code zero.
+All five test allocation records are now released and test Pods are absent.
+The earlier transient cleanup OS error was not reproduced in this delayed test;
+this result closes the 30-second finalizer abandonment defect, not its separate
+diagnostic finding. Collaboration roster/Shares, cross-Hub conflict and the
+remaining original production gates remain open.
+
+Private evidence: `delayed-cleanup-held-past-window.actual.private.json`,
+`delayed-cleanup-member-hold.actual.private.json`,
+`delayed-cleanup-automatic-native-release.actual.private.json`,
+`delayed-cleanup-hub-origin-release-proof.actual.private.json`,
+`delayed-cleanup-member-auto-release.actual.private.json`,
+`delayed-cleanup-hub-persisted-state-readonly.actual.private.json`, and
+`node-finalizer-delayed-cleanup-resume.private.log`.
