@@ -29,7 +29,24 @@ def private_directory(path):
     return path
 
 
-def validate_bundle(path):
+def bootstrap_role(data):
+    def closed_object(pairs):
+        result = dict(pairs)
+        if len(result) != len(pairs): raise ValueError('Duplicate bootstrap metadata key')
+        return result
+    if len(data) > 4096: raise ValueError('Bounded bootstrap metadata required')
+    value = json.loads(data, object_pairs_hook=closed_object)
+    if (type(value) is not dict or set(value) != {'version', 'builtin_membership_grantors'}
+            or type(value['version']) is not int or value['version'] != 1):
+        raise ValueError('Closed version 1 bootstrap metadata required')
+    roles = value['builtin_membership_grantors']
+    if (type(roles) is not list or len(roles) != 1 or type(roles[0]) is not str
+            or not re.fullmatch(r'[a-z_][a-z0-9_]{0,62}', roles[0]) or roles[0].startswith('pg_')):
+        raise ValueError('One unambiguous safe builtin membership grantor required')
+    return roles[0]
+
+
+def validate_bundle(path, *, require_bootstrap=False):
     root = private_directory(path)
     manifest_path = root / 'manifest.json'
     if manifest_path.is_symlink() or manifest_path.stat().st_mode & 0o077:
@@ -67,19 +84,33 @@ def validate_bundle(path):
         repository = image.split('@')[0]
         if repository not in ('docker.io/library/postgres', 'docker.io/bitnami/postgresql'):
             raise ValueError('Unsupported PostgreSQL image initialization')
-        plan[ns] = {'image': image, 'bitnami': repository.endswith('/bitnami/postgresql')}
+        metadata_name = ns + '-bootstrap.json'
+        initial_role = bootstrap_role((root / metadata_name).read_bytes()) if metadata_name in files else None
+        if initial_role is None and require_bootstrap:
+            raise ValueError('Fresh source bootstrap metadata required for fingerprints')
+        bitnami = repository.endswith('/bitnami/postgresql')
+        if bitnami and initial_role not in (None, 'postgres'):
+            raise ValueError('Unsupported Bitnami initial bootstrap role')
+        plan[ns] = {'image': image, 'bitnami': bitnami, 'initial_role': initial_role}
     return plan
 
 
-def role_sql(data, bootstrap):
+def role_sql(data, bootstrap, initial_role=None):
     if bootstrap.encode() in data: raise ValueError('Bootstrap role collides with source roles')
+    if initial_role is not None:
+        statements = {('CREATE ROLE ' + initial_role + ';').encode(),
+                      ('CREATE ROLE "' + initial_role + '";').encode()}
+        lines = data.splitlines(keepends=True)
+        matches = [line for line in lines if line.rstrip(b'\r\n') in statements]
+        if len(matches) != 1: raise ValueError('Exactly one observed initial role CREATE required')
+        return b''.join(line for line in lines if line.rstrip(b'\r\n') not in statements)
     if data.count(b'CREATE ROLE postgres;') > 1: raise ValueError('Ambiguous postgres role creation')
     # Images may precreate postgres. Preserve every source ALTER and membership.
     return data.replace(b'CREATE ROLE postgres;', b"DO $$ BEGIN IF NOT EXISTS (SELECT 1 FROM pg_roles WHERE rolname='postgres') THEN CREATE ROLE postgres; END IF; END $$;")
 
 
 def restore(bundle, output, *, fingerprint_probe=None):
-    plan = validate_bundle(bundle)  # Validate everything before any container.
+    plan = validate_bundle(bundle, require_bootstrap=fingerprint_probe is not None)  # Validate everything before any container.
     root = private_directory(bundle)
     output = Path(output)
     if output.exists(): raise ValueError('Use a new private evidence destination')
@@ -90,7 +121,8 @@ def restore(bundle, output, *, fingerprint_probe=None):
     snapshots = {}
     # Freeze reverified inputs before running any restore; never mutate backups.
     for ns in NAMESPACES:
-        for suffix in ('.pgdump', '-roles.sql'):
+        for suffix in ('.pgdump', '-roles.sql', '-bootstrap.json'):
+            if suffix == '-bootstrap.json' and plan[ns]['initial_role'] is None: continue
             name = ns + suffix; data = (root / name).read_bytes()
             if hashlib.sha256(data).hexdigest() != manifest['files'][name]['sha256']:
                 raise ValueError('Backup changed after validation')
@@ -99,10 +131,14 @@ def restore(bundle, output, *, fingerprint_probe=None):
     for ns, settings in plan.items():
         name = 'cps-hub-restore-' + secrets.token_hex(8)
         user = 'restore_' + secrets.token_hex(8); password = secrets.token_urlsafe(32)
-        roles = role_sql(snapshots[ns + '-roles.sql'], user)
-        env = {'POSTGRES_USER': user, 'POSTGRES_PASSWORD': password, 'POSTGRES_DB': 'restore_bootstrap'}
+        initial_role = settings['initial_role']
+        roles = role_sql(snapshots[ns + '-roles.sql'], user, initial_role)
+        initial_user = initial_role or user
+        # initdb's initial role is also the grantor of built-in memberships.
+        # Use its observed identity; legacy bundles remain logical-only.
+        env = {'POSTGRES_USER': initial_user, 'POSTGRES_PASSWORD': password, 'POSTGRES_DB': 'restore_bootstrap'}
         if settings['bitnami']:
-            env.update(POSTGRESQL_USERNAME=user, POSTGRESQL_PASSWORD=password,
+            env.update(POSTGRESQL_USERNAME=initial_user, POSTGRESQL_PASSWORD=password,
                        POSTGRESQL_DATABASE='restore_bootstrap', POSTGRESQL_POSTGRES_PASSWORD=password)
         envfile = output / (ns + '-bootstrap.env')
         with envfile.open('x') as stream:
@@ -114,22 +150,26 @@ def restore(bundle, output, *, fingerprint_probe=None):
                 with p.open('ab') as stream: os.chmod(p, 0o600); stream.write(result.stderr)
                 raise RuntimeError('Isolated restore failed; private diagnostic retained')
             return result.stdout
-        def sql(tool, *args, data=None, read_only=False):
+        def sql(tool, *args, data=None, read_only=False, as_user=None):
             options = ['--env', 'PGOPTIONS=-c default_transaction_read_only=on'] if read_only else []
             return command(['exec', '-i', *options, name, 'sh', '-ec', 'export PGPASSWORD="$POSTGRES_PASSWORD"; exec "$@"',
-                            'sh', tool, '-h', '127.0.0.1', '-U', user, *args], data)
+                            'sh', tool, '-h', '127.0.0.1', '-U', user if as_user is None else as_user, *args], data)
         try:
             command(['run', '-d', '--pull=never', '--name', name, '--network', 'none',
                      '--memory', '1g', '--cpus', '1', '--env-file', str(envfile), settings['image']])
             # Authenticate against the final bootstrap database, not Bitnami's temporary init server.
             for attempt in range(60):
-                try: sql('psql', '-X', '-d', 'restore_bootstrap', '-Atc', 'SELECT 1'); break
+                try: sql('psql', '-X', '-d', 'restore_bootstrap', '-Atc', 'SELECT 1', as_user=initial_user); break
                 except RuntimeError:
                     if attempt == 59: raise
                     time.sleep(1)
-            if settings['bitnami']:
-                command(['exec', name, 'sh', '-ec', 'export PGPASSWORD="$POSTGRES_PASSWORD"; exec psql -X -h 127.0.0.1 -U postgres -d postgres -v ON_ERROR_STOP=1 -c "$1"',
-                         'sh', 'ALTER ROLE ' + user + ' WITH SUPERUSER'])
+            # The independent login survives source ALTER ROLE password replay.
+            if initial_role is not None:
+                sql('psql', '-X', '-d', 'restore_bootstrap', '-v', 'ON_ERROR_STOP=1', as_user=initial_user,
+                    data=("CREATE ROLE " + user + " WITH LOGIN SUPERUSER PASSWORD '" + password + "';\n").encode())
+            elif settings['bitnami']:
+                sql('psql', '-X', '-d', 'restore_bootstrap', '-v', 'ON_ERROR_STOP=1', as_user='postgres',
+                    data=('ALTER ROLE ' + user + ' WITH SUPERUSER;\n').encode())
             sql('psql', '-X', '-d', 'restore_bootstrap', '-v', 'ON_ERROR_STOP=1', data=roles)
             sql('pg_restore', '-d', 'restore_bootstrap', '--create', '--exit-on-error', data=snapshots[ns + '.pgdump'])
             databases = sql('psql', '-X', '-d', 'restore_bootstrap', '-Atc', "SELECT datname FROM pg_database WHERE NOT datistemplate AND datname NOT IN ('postgres','restore_bootstrap')").decode().splitlines()
@@ -158,7 +198,7 @@ def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('bundle'); parser.add_argument('--execute', action='store_true')
     parser.add_argument('--output', help='New private evidence directory, required with --execute')
-    parser.add_argument('--fingerprint-output', help='Optional new private logical fingerprint directory; requires admin recovery a0d1bd1')
+    parser.add_argument('--fingerprint-output', help='Optional new private logical fingerprint directory; requires admin recovery e442f43577c44be9fab60d5aa9a29e98f491eec5')
     parser.add_argument('--cps-source-fingerprint', help='Optional contemporaneous CPS source fingerprint; requires the CIT pair')
     parser.add_argument('--cit-source-fingerprint', help='Optional contemporaneous CIT source fingerprint; requires the CPS pair')
     args = parser.parse_args()
@@ -173,11 +213,11 @@ def main():
             if not args.output: parser.error('--execute requires --output')
             probe = None
             if args.fingerprint_output:
-                validate_bundle(args.bundle)
+                validate_bundle(args.bundle, require_bootstrap=True)
                 try:
                     from e2x_course_hub.cps.recovery import LogicalRestoreProbe
                 except ImportError:
-                    parser.error('--fingerprint-output requires e2x_course_hub.cps.recovery from reviewed admin commit a0d1bd1 on PYTHONPATH')
+                    parser.error('--fingerprint-output requires e2x_course_hub.cps.recovery from reviewed admin commit e442f43577c44be9fab60d5aa9a29e98f491eec5 on PYTHONPATH')
                 expected = {'cps':args.cps_source_fingerprint, 'cit':args.cit_source_fingerprint} if args.cps_source_fingerprint else None
                 probe = LogicalRestoreProbe(args.fingerprint_output, expected)
             report = restore(args.bundle, args.output, fingerprint_probe=probe)

@@ -10,6 +10,8 @@ import datetime
 import hashlib
 import json
 import os
+import re
+import shlex
 from pathlib import Path
 import shutil
 import subprocess
@@ -43,6 +45,23 @@ def sync_directory(path):
         os.fsync(fd)
     finally:
         os.close(fd)
+
+
+def bootstrap_role(data):
+    def closed_object(pairs):
+        result = dict(pairs)
+        if len(result) != len(pairs): raise ValueError('Duplicate bootstrap metadata key')
+        return result
+    if len(data) > 4096: raise ValueError('Bounded bootstrap metadata required')
+    value = json.loads(data, object_pairs_hook=closed_object)
+    if (type(value) is not dict or set(value) != {'version', 'builtin_membership_grantors'}
+            or type(value['version']) is not int or value['version'] != 1):
+        raise ValueError('Closed version 1 bootstrap metadata required')
+    roles = value['builtin_membership_grantors']
+    if (type(roles) is not list or len(roles) != 1 or type(roles[0]) is not str
+            or not re.fullmatch(r'[a-z_][a-z0-9_]{0,62}', roles[0]) or roles[0].startswith('pg_')):
+        raise ValueError('One unambiguous safe builtin membership grantor required')
+    return roles[0]
 
 
 def backup(destination):
@@ -81,6 +100,20 @@ def backup(destination):
             capture(['exec', '-n', namespace, workload, '--', 'sh', '-ec',
                      admin + 'exec pg_dumpall --roles-only --username="$user"'],
                     staging / f'{namespace}-roles.sql')
+            # Initdb's original role remains the grantor of built-in memberships.
+            # Capture the observed catalog identity, never infer it from login env.
+            query = ("SELECT json_build_object('version',1,'builtin_membership_grantors',"
+                     "coalesce(json_agg(DISTINCT grantor.rolname ORDER BY grantor.rolname),'[]'::json)) "
+                     "FROM pg_auth_members m JOIN pg_roles role ON role.oid=m.roleid "
+                     "JOIN pg_roles member ON member.oid=m.member "
+                     "JOIN pg_roles grantor ON grantor.oid=m.grantor "
+                     "WHERE left(role.rolname,3)='pg_' AND left(member.rolname,3)='pg_'")
+            metadata = staging / f'{namespace}-bootstrap.json'
+            capture(['exec', '-n', namespace, workload, '--', 'sh', '-ec',
+                     admin + "export PGOPTIONS='-c default_transaction_read_only=on'; "
+                     'exec psql -X -qAt -v ON_ERROR_STOP=1 --username="$user" '
+                     f'--dbname="${db_var}" -c ' + shlex.quote(query)], metadata)
+            bootstrap_role(metadata.read_bytes())
             with dump.open('rb') as source:
                 if source.read(5) != b'PGDMP':
                     raise ValueError('Expected a PostgreSQL custom-format dump; no bundle published')
