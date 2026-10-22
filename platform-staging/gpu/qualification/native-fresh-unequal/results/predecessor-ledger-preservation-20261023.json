@@ -8,7 +8,7 @@
     "uid": "ffc1c459-4bbe-4253-be62-62ba435ba7db",
     "resourceVersion": "380279341",
     "key": "capture.json",
-    "data_sha256": "sha256:04520da78adf531edb3a6560138c479f3b4fb5394da61ec54aa86530a06605bb"
+    "data_sha256": "sha256:081674b081f7973ec30df710a104ff07a1d1362a52fbb3e870b205997e7bd5fd"
   },
   "old_ledger_uid": "33ab24b0-8e9a-4bee-b308-12a19c076924",
   "old_ledger_resourceVersion": "379454321",
@@ -16,5 +16,6 @@
   "old_ledger_unchanged": true,
   "old_writer_replicas": 0,
   "new_ledger_created": false,
-  "activation_authorized": false
+  "activation_authorized": false,
+  "payload_sha256": "sha256:04520da78adf531edb3a6560138c479f3b4fb5394da61ec54aa86530a06605bb"
 }

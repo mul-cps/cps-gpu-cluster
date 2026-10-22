@@ -1,0 +1,49 @@
+{
+  "version": 1,
+  "kind": "durable-successor-preparation",
+  "observed_at": "2026-10-22T22:37:52.324643+00:00",
+  "recovery_codec": {
+    "source": "b4fb0ea",
+    "tests": 72,
+    "passed": 72,
+    "scope": "offline proposal consistency; no activation authorization"
+  },
+  "current_epoch": {
+    "node": "k3s-wk-gpu2",
+    "kernel": "6.8.0-147-generic",
+    "boot_id": "a464df41-e391-4443-b8e8-ad7ecd052318",
+    "driver_generation": "4ebffc96-e25e-4583-a3b8-0d853fd90efd",
+    "driver_version": "615.71.09"
+  },
+  "qualification_reference": {
+    "data_sha256": "sha256:613e8f9554ee222b362002fab6c107be819455e9cccd5c62a9433083cea710f6",
+    "key": "qualification.json",
+    "name": "cps-native147-qualification-6a129169a6afef2d",
+    "namespace": "cps-native-system",
+    "resourceVersion": "380259107",
+    "uid": "4de5b8de-e18d-4275-9421-7629efb165aa"
+  },
+  "qualification_reference_sdk_validated": true,
+  "instantaneous_nvml": {
+    "both_gpus_used_memory_mib": 0,
+    "compute_applications": 0,
+    "limitation": "Point-in-time observation, not a continuous quiescence attestation or cap-table audit."
+  },
+  "predecessor_preservation": {
+    "namespace": "cps-native-runtime",
+    "name": "cps-predecessor-ledger-04520da78adf531e",
+    "uid": "ffc1c459-4bbe-4253-be62-62ba435ba7db",
+    "resourceVersion": "380279341",
+    "key": "capture.json",
+    "data_sha256": "sha256:081674b081f7973ec30df710a104ff07a1d1362a52fbb3e870b205997e7bd5fd"
+  },
+  "predecessor_capture_reference_sdk_validated": true,
+  "remaining": [
+    "bind explicit predecessor-loss handling to durable successor",
+    "fresh complete cap-table and device-holder accounting",
+    "review and validate successor configuration and four-component authority",
+    "activate genuine writer and readiness acknowledgments",
+    "ordinary CPS/CIT group Start/Stop verification"
+  ],
+  "ordinary_gpu_access_activated": false
+}

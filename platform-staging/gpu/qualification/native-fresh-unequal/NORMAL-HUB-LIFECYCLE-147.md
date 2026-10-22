@@ -722,3 +722,26 @@ reviewed predecessor preservation and current physical retirement accounting,
 followed by genuine component acknowledgments. The old ledger must stay intact.
 
 Evidence: `results/production-custody-renewal-preflight-20261023.json`.
+
+### Durable successor: predecessor preserved, offline codec checked
+
+The existing offline disaster-loss proposal codec (`b4fb0ea`) passed all 72
+focused tests in the project virtual environment. It checks proposal consistency
+and explicitly provides no activation authorization. The initial base-Python run
+failed because Kubernetes dependencies were absent; no implementation change or
+weakened assertion was needed.
+
+The staged runtime namespace now holds an immutable capture of the original
+197-record released ledger. The original UID, resourceVersion and exact data
+remained unchanged across capture. This is a predecessor preimage, not substituted
+private custody or a terminal acceptance. No new ledger or writer was created.
+The capture reference was verified with the SDK immutable ConfigMap parser; its
+data hash covers the complete data map, separately from the raw payload hash.
+
+Fresh read-only host queries confirm the same qualified kernel/boot/generation;
+both GPUs reported zero used memory and no compute applications. These are
+instantaneous NVML observations, not a full cap-table/device-holder attestation.
+The current qualification's exact immutable reference passed SDK validation.
+
+Evidence: `results/predecessor-ledger-preservation-20261023.json` and
+`results/durable-successor-preparation-20261023.json`.
