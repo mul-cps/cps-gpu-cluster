@@ -102,6 +102,7 @@ def prepare(*,deployment,runtime,pilot,tls_secret_ref,ca_configmap_ref,policy_co
         provider=copy.deepcopy(runtime.get('storage'))
         require(type(provider) is dict and provider.get('enabled') is True,'Actual enabled original storage provider required')
         provider['allowedOperations']=['provision']
+        provider['allowedTargets']=copy.deepcopy(fresh_provisioning)
         fresh_storage=helper.build(provider=provider,targets=fresh_provisioning)
         scopes=pilot['runtime']['nativeGpuPilot']['native_pilot_workspaces']
         require({t['source']+':'+t['workspace'] for t in fresh_storage['targets']}==set(scopes),
@@ -156,4 +157,4 @@ def prepare(*,deployment,runtime,pilot,tls_secret_ref,ca_configmap_ref,policy_co
             'credential_secret_preimages':copy.deepcopy(credential_secret_metadata or []),
             'fresh_storage':fresh_storage,
             'rbac':{'pending':True,'required':'Dedicated SA exact-node GET, target-Pod GET, pilot-namespace ledger GET/PATCH and shape-restricted CM CREATE; explicit SAR and admission qualification required.'},
-            'pending':(['SDK provision-only allowedOperations enforcement and actual denied archive before metadata/NAS changes'] if fresh_storage is not None else [])+['Actual PVC attachment/current-node preflight','Actual new TLS SAN/CA and Secret content verification','Full runtime factory and health-probe qualification','Temporary canonical registrations, alias grants and active storage verification','Legacy Node768 and complete prior inventory compatibility']}
+            'pending':(['SDK allowedOperations and exact allowedTargets enforcement before metadata/NAS changes'] if fresh_storage is not None else [])+['Actual PVC attachment/current-node preflight','Actual new TLS SAN/CA and Secret content verification','Full runtime factory and health-probe qualification','Temporary canonical registrations, alias grants and active storage verification','Legacy Node768 and complete prior inventory compatibility']}

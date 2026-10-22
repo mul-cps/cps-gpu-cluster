@@ -113,7 +113,7 @@ def storage_fixture():
 
 def test_explicit_two_target_provision_only_optin_retains_actual_bridge():
  a=storage_fixture();old=copy.deepcopy(a);r=mod().prepare(**a);assert a==old
- assert r['runtime']['storage']=={**a['runtime']['storage'],'allowedOperations':['provision']}
+ assert r['runtime']['storage']=={**a['runtime']['storage'],'allowedOperations':['provision'],'allowedTargets':a['fresh_provisioning']}
  pod=r['deployment']['spec']['template']['spec'];v=next(x for x in pod['volumes'] if x['name']=='storage-bridge')
  assert v['secret']=={'secretName':'actual-storage-provider','defaultMode':288}
  assert next(x for x in pod['containers'][0]['volumeMounts'] if x['name']=='storage-bridge')['readOnly']is True
@@ -128,3 +128,9 @@ def test_storage_optin_cannot_expand_scope_or_provider(fault):
  if fault=='bridge':a['deployment']['spec']['template']['spec']['containers'][0]['volumeMounts'][-1]['readOnly']=False
  if fault=='provider':a['runtime']['storage']['ssh']['host']='foreign'
  with pytest.raises(ValueError):mod().prepare(**a)
+
+def test_optin_pins_exact_nas_targets_before_kubernetes_admission():
+ a=storage_fixture();r=mod().prepare(**a)
+ assert r['runtime']['storage']['allowedTargets']==a['fresh_provisioning']
+ assert r['runtime']['storage']['allowedTargets']is not a['fresh_provisioning']
+ assert any('allowedTargets' in x for x in r['pending'])

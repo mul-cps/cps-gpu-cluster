@@ -14,11 +14,12 @@ def item(kind,name,namespace=None,**kw):
  return d
 
 def validate(provider,targets):
- require(type(provider)is dict and set(provider)<={'enabled','ssh','storageVersion','readonlyMounts','verificationImage','allowedOperations'} and provider.get('enabled')is True and provider.get('allowedOperations')==['provision'],'Actual enabled provider references required')
+ require(type(provider)is dict and set(provider)<={'enabled','ssh','storageVersion','readonlyMounts','verificationImage','allowedOperations','allowedTargets'} and provider.get('enabled')is True and provider.get('allowedOperations')==['provision'],'Actual enabled provider references required')
  version=provider.get('storageVersion',1);require(type(version)is int and version in ROOTS,'Actual supported storageVersion required')
  ssh=provider.get('ssh');require(type(ssh)is dict and set(ssh)<={'host','user','port','identity_file','known_hosts_file'} and ssh.get('host')in(SERVER,'truenas.local') and ssh.get('port',8022)==8022 and type(ssh.get('user'))is str and re.fullmatch(r'[a-z_][a-z0-9_-]*',ssh['user']),'Existing fixed NAS SSH provider required')
  for k in ('identity_file','known_hosts_file'):
   require(type(ssh.get(k))is str and ssh[k].startswith('/storage-bridge/') and '..'not in ssh[k].split('/'),'Actual read-only storage bridge file references required')
+ require(type(provider.get('allowedTargets'))is list and provider['allowedTargets']==targets,'Exact two NAS provisioning targets must be guarded before metadata/NAS')
  require(type(targets)is list and len(targets)==2,'Exactly two explicit fresh targets required')
  out=[]
  for t in targets:
@@ -45,4 +46,4 @@ def build(*,provider,targets):
    alternatives.append('('+' && '.join(clauses)+')')
   spec={'failurePolicy':'Fail','matchConstraints':{'resourceRules':[{'apiGroups':[''],'apiVersions':['v1'],'operations':['CREATE'],'resources':[resource],'scope':'Cluster' if label=='pv' else 'Namespaced'}]},'matchConditions':[{'name':'dedicated-pilot-storage-subject','expression':'request.userInfo.username == '+q(ACTOR)}],'validations':[{'expression':' || '.join(alternatives),'message':'Only the exact two reviewed fresh retained workspace objects are permitted.'},{'expression':'!has(object.metadata.ownerReferences) || size(object.metadata.ownerReferences) == 0','message':'Retained workspace storage cannot inherit owner garbage collection.'}]}
   name=PREFIX+label;objects += [item('ValidatingAdmissionPolicy',name,spec=spec),item('ValidatingAdmissionPolicyBinding',name,spec={'policyName':name,'validationActions':['Deny']})]
- return {'version':1,'proposal_only':True,'apply_allowed':False,'targets':rows,'objects':objects,'archive_authorized':False,'pending':['Server CEL schema/typechecking and exact positive/negative qualification before admission binding promotion','SDK enforcement of storage.allowedOperations=[provision] must deny archive before metadata or NAS changes; config alone is not enforcement','Root authenticate actual provider refs, fresh target absence, Secret mounts and direct SubjectAccessReview']}
+ return {'version':1,'proposal_only':True,'apply_allowed':False,'targets':rows,'objects':objects,'archive_authorized':False,'pending':['Server CEL schema/typechecking and exact positive/negative qualification before admission binding promotion','SDK enforcement of allowedOperations and exact allowedTargets before metadata/NAS; config alone is not enforcement','Root authenticate actual provider refs, fresh target absence, Secret mounts and direct SubjectAccessReview']}

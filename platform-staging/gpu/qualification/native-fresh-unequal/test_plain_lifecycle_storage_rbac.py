@@ -6,7 +6,7 @@ def mod():
  s=importlib.util.spec_from_file_location('sr',P);m=importlib.util.module_from_spec(s);s.loader.exec_module(m);return m
 
 def targets():return [{'source':'cps','workspace':'fresh-a','group_id':'lifecycle147-fresh-a'},{'source':'cit','workspace':'fresh-b','group_id':'lifecycle147-fresh-b'}]
-def provider():return {'enabled':True,'allowedOperations':['provision'],'storageVersion':2,'ssh':{'host':'193.170.30.58','user':'cps-workspace-control','port':8022,'identity_file':'/storage-bridge/id_ed25519','known_hosts_file':'/storage-bridge/known_hosts'},'readonlyMounts':[]}
+def provider():return {'enabled':True,'allowedOperations':['provision'],'allowedTargets':targets(),'storageVersion':2,'ssh':{'host':'193.170.30.58','user':'cps-workspace-control','port':8022,'identity_file':'/storage-bridge/id_ed25519','known_hosts_file':'/storage-bridge/known_hosts'},'readonlyMounts':[]}
 def test_two_fresh_exact_storage_objects_and_shape_bound_admission():
  t=targets();old=copy.deepcopy(t);r=mod().build(provider=provider(),targets=t);assert t==old
  assert len(r['targets'])==2 and r['apply_allowed']is False
@@ -38,3 +38,10 @@ def test_unbounded_inputs_denied(fault):
  if fault=='port':p['ssh']['port']=22
  if fault=='enabled':p['enabled']=False
  with pytest.raises(ValueError):mod().build(provider=p,targets=t)
+
+
+def test_kubernetes_permissions_cannot_be_claimed_without_nas_target_guard():
+ p=provider();p.pop('allowedTargets')
+ with pytest.raises(ValueError):mod().build(provider=p,targets=targets())
+ p=provider();p['allowedTargets']=[]
+ with pytest.raises(ValueError):mod().build(provider=p,targets=targets())
