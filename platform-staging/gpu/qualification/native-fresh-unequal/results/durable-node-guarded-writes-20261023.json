@@ -1,0 +1,146 @@
+{
+  "version": 1,
+  "kind": "successor-node-guarded-writes",
+  "principal": "system:serviceaccount:cps-native-runtime:cps-native-node-agent",
+  "policies": [
+    "cps-runtime-node-completion-only",
+    "cps-runtime-node-own-ack-only"
+  ],
+  "type_warnings": [],
+  "empty_ack_targets_fixed": [
+    {
+      "component": "node",
+      "namespace": "cps-native-runtime",
+      "name": "cps-runtime-ack-node",
+      "uid": "72aad8df-6233-4b2e-b714-e8a74c946989",
+      "uid_preserved": true
+    },
+    {
+      "component": "gateway",
+      "namespace": "cps-compute",
+      "name": "cps-runtime-ack-gateway",
+      "uid": "e9a50256-322e-4c81-9ac1-99462eed856c",
+      "uid_preserved": true
+    },
+    {
+      "component": "hub:cps",
+      "namespace": "jupyterhub",
+      "name": "cps-runtime-ack-hub-cps",
+      "uid": "2941a5a3-322c-4fd2-b643-f2064559158c",
+      "uid_preserved": true
+    },
+    {
+      "component": "hub:cit",
+      "namespace": "cit-jhub",
+      "name": "cps-runtime-ack-hub-cit",
+      "uid": "71829a21-6722-4e70-94b2-825bf978713e",
+      "uid_preserved": true
+    }
+  ],
+  "server_dry_run_cases": [
+    {
+      "case": "cleanup-wire",
+      "expected_allowed": true,
+      "actual_allowed": true,
+      "scope": "wire fixture; not accepted hardware proof; server dry-run only"
+    },
+    {
+      "case": "mutable",
+      "expected_allowed": false,
+      "actual_allowed": false,
+      "scope": "wire fixture; not accepted hardware proof; server dry-run only"
+    },
+    {
+      "case": "enrollment",
+      "expected_allowed": false,
+      "actual_allowed": false,
+      "scope": "wire fixture; not accepted hardware proof; server dry-run only"
+    },
+    {
+      "case": "ledger",
+      "expected_allowed": false,
+      "actual_allowed": false,
+      "scope": "wire fixture; not accepted hardware proof; server dry-run only"
+    },
+    {
+      "case": "arbitrary-name",
+      "expected_allowed": false,
+      "actual_allowed": false,
+      "scope": "wire fixture; not accepted hardware proof; server dry-run only"
+    },
+    {
+      "case": "extra-data",
+      "expected_allowed": false,
+      "actual_allowed": false,
+      "scope": "wire fixture; not accepted hardware proof; server dry-run only"
+    },
+    {
+      "case": "wrong-key",
+      "expected_allowed": false,
+      "actual_allowed": false,
+      "scope": "wire fixture; not accepted hardware proof; server dry-run only"
+    },
+    {
+      "case": "wrong-binding",
+      "expected_allowed": false,
+      "actual_allowed": false,
+      "scope": "wire fixture; not accepted hardware proof; server dry-run only"
+    },
+    {
+      "case": "owner-reference",
+      "expected_allowed": false,
+      "actual_allowed": false,
+      "scope": "wire fixture; not accepted hardware proof; server dry-run only"
+    },
+    {
+      "case": "clear-own-ack",
+      "expected_allowed": true,
+      "actual_allowed": true,
+      "scope": "server dry-run only"
+    },
+    {
+      "case": "wrong-data-key",
+      "expected_allowed": false,
+      "actual_allowed": false,
+      "scope": "server dry-run only"
+    },
+    {
+      "case": "wrong-component",
+      "expected_allowed": false,
+      "actual_allowed": false,
+      "scope": "server dry-run only"
+    },
+    {
+      "case": "extra-annotation",
+      "expected_allowed": false,
+      "actual_allowed": false,
+      "scope": "server dry-run only"
+    },
+    {
+      "case": "patch-denied-cps-native-runtime-cps-native-gpu-allocations",
+      "actual_allowed": false,
+      "expected_allowed": false,
+      "layer": "RBAC"
+    },
+    {
+      "case": "patch-denied-cps-compute-cps-runtime-ack-gateway",
+      "actual_allowed": false,
+      "expected_allowed": false,
+      "layer": "RBAC"
+    }
+  ],
+  "fixtures_persisted": false,
+  "node_main_started": false,
+  "bootstrap_released": false,
+  "acknowledgments_remain_empty": true,
+  "boundary": "Admission constrains wire/provider surface; SDK custody and physical validators remain authoritative for acceptance.",
+  "authentication": {
+    "transport": "direct Kubernetes API via temporary loopback-only SSH forwarding; TLS CA and server name verified",
+    "actual_username": "system:serviceaccount:cps-native-runtime:cps-native-node-agent",
+    "rancher_impersonation_used": false,
+    "token_ttl_seconds": 600,
+    "token_bound_to_temporary_secret": true,
+    "temporary_token_bindings_removed_verified": true
+  },
+  "empty_ack_targets_publisher_preimage_validated": true
+}

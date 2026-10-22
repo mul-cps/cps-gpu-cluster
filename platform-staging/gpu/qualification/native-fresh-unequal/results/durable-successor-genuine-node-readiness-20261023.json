@@ -1,0 +1,38 @@
+{
+  "version": 1,
+  "kind": "durable-successor-genuine-node-readiness",
+  "samples": [
+    {
+      "ack_observed_at": "2026-10-22T22:59:53.640524+00:00",
+      "ack_resourceVersion": "380298257",
+      "pod_uid": "5696b3bc-f8c4-4db9-a555-83fe56c507c3",
+      "pod_name": "cps-native-node-agent-54f79cf6cd-f65sf",
+      "head_generation": 0,
+      "node_config_uid": "4d1cb79b-a17a-481b-9bab-de51b1f2874f",
+      "custody_and_pending_witness_authenticated": true,
+      "ledger_records": 0,
+      "enrollments": 0,
+      "pending": 0,
+      "container_restarts": 0
+    },
+    {
+      "ack_observed_at": "2026-10-22T22:59:58.806189+00:00",
+      "ack_resourceVersion": "380298330",
+      "pod_uid": "5696b3bc-f8c4-4db9-a555-83fe56c507c3",
+      "pod_name": "cps-native-node-agent-54f79cf6cd-f65sf",
+      "head_generation": 0,
+      "node_config_uid": "4d1cb79b-a17a-481b-9bab-de51b1f2874f",
+      "custody_and_pending_witness_authenticated": true,
+      "ledger_records": 0,
+      "enrollments": 0,
+      "pending": 0,
+      "container_restarts": 0
+    }
+  ],
+  "sdk_head_process_epoch_and_witness_validation_passed": true,
+  "renewal_observed": true,
+  "approved_workspaces": 0,
+  "other_components_adopted": false,
+  "ordinary_group_gpu_access_activated": false,
+  "production_ready": false
+}

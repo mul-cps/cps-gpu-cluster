@@ -878,3 +878,42 @@ Guarded mutation permissions, private authority bootstrap, consumer/observer
 adoption, genuine acknowledgments and ordinary group lifecycle remain pending.
 Evidence: `results/durable-node-pod-admission-20261023.json`, its manifests, and
 `results/durable-node-held-image-preflight-20261023.json`.
+
+### Guarded writes and genuine successor Node readiness passed
+
+Added successor-specific fail-closed admission for immutable completion CREATEs
+and exact own-ACK updates before granting ConfigMap CREATE and own-target PATCH.
+No ledger PATCH, enrollment publication, foreign ACK PATCH, Pod creation/deletion
+or Secret privileges were granted to the node principal. These are provider/wire
+constraints; SDK custody and physical verification remain required for acceptance.
+
+15 direct service-account server dry-runs passed. Cleanup wire and clearing the
+own ACK were accepted; enrollment/ledger/arbitrary creation, altered completion
+forms, foreign component data, metadata injection and ledger/foreign ACK patches
+were denied. Fixtures were never persisted. All four initial empty acknowledgment
+ConfigMaps were corrected from absent data to `ack.json: {}` without changing
+UIDs; the real publisher's preimage validator accepted each.
+
+An authentication issue was caught by the negative tests: Rancher's proxy ignored
+`kubectl --as` and retained the administrator identity. Those initial attempts
+were rejected as evidence. Final tests used a verified actual node-service-account
+identity against Kubernetes via temporary loopback-only SSH forwarding, with TLS
+CA/server-name checks and a ten-minute token bound to a temporary Secret. The
+binding and private kubeconfig were deleted and forwarding terminated afterward.
+The earlier 43 SubjectAccessReviews are unaffected: their identities were explicit
+in request bodies, not delegated through impersonation.
+
+Released the bootstrap after verifying the new ledger, enrollment set and initial
+approval set were empty and the old writer remained stopped. The packaged service
+is now running on the durable state root. Two separately refreshed readiness
+receipts passed SDK head/process/driver-epoch validation and authenticated both
+custody and pending-generation annotations. Renewal was observed with zero
+restarts. The current ledger has zero records; no workspace is yet approved.
+The original 197-record ledger retains its exact UID/resourceVersion.
+
+Gateway/Hub configuration and observer adoption, genuine four-component readiness
+and ordinary group Start/Stop remain pending. Node readiness is not a claim of
+production readiness or active user GPU access.
+
+Evidence: `results/durable-node-guarded-writes-20261023.json`, its manifests and
+`results/durable-successor-genuine-node-readiness-20261023.json`.

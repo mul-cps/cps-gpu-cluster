@@ -1,0 +1,228 @@
+{
+  "apiVersion": "v1",
+  "kind": "List",
+  "items": [
+    {
+      "apiVersion": "admissionregistration.k8s.io/v1",
+      "kind": "ValidatingAdmissionPolicy",
+      "metadata": {
+        "name": "cps-runtime-node-completion-only"
+      },
+      "spec": {
+        "failurePolicy": "Fail",
+        "matchConditions": [
+          {
+            "name": "exact-successor-node-credential",
+            "expression": "request.userInfo.username == \"system:serviceaccount:cps-native-runtime:cps-native-node-agent\""
+          }
+        ],
+        "matchConstraints": {
+          "matchPolicy": "Equivalent",
+          "namespaceSelector": {},
+          "objectSelector": {},
+          "resourceRules": [
+            {
+              "apiGroups": [
+                ""
+              ],
+              "apiVersions": [
+                "v1"
+              ],
+              "operations": [
+                "CREATE"
+              ],
+              "resources": [
+                "configmaps"
+              ],
+              "scope": "Namespaced"
+            }
+          ]
+        },
+        "validations": [
+          {
+            "expression": "request.namespace == \"cps-native-runtime\"",
+            "message": "Cleanup publication stays in the authority namespace."
+          },
+          {
+            "expression": "(object.metadata.name.matches('^cps-native-cleanup-[a-f0-9]{40}$') || object.metadata.name.matches('^cps-native-abort-[a-f0-9]{40}$')) && has(object.immutable) && object.immutable == true",
+            "message": "The node agent may create only immutable native cleanup or terminal abort ConfigMaps."
+          },
+          {
+            "expression": "has(object.data) && size(object.data) == 1 && !has(object.binaryData) && ((object.metadata.name.matches('^cps-native-cleanup-[a-f0-9]{40}$') && 'receipt.json' in object.data) || (object.metadata.name.matches('^cps-native-abort-[a-f0-9]{40}$') && 'abort.json' in object.data && size(object.data['abort.json']) <= 65536 && object.data['abort.json'].startsWith('{\"attempt\":') && object.data['abort.json'].contains('\"cleanup_confirmed\":true,') && has(object.metadata.labels) && 'cps.compute/native-binding' in object.metadata.labels && object.data['abort.json'].contains('\"binding_id\":\"' + object.metadata.labels['cps.compute/native-binding'] + '\",') && (object.data['abort.json'].endsWith(',\"outcome\":\"enrollment-never-published\",\"slot_kind\":\"abort-barrier\",\"version\":2}') || object.data['abort.json'].endsWith(',\"outcome\":\"enrollment-never-programmed\",\"slot_kind\":\"enrollment\",\"version\":2}'))))",
+            "message": "Exactly one name-bound cleanup receipt or terminal v2 abort proof is required."
+          },
+          {
+            "expression": "has(object.metadata.labels) && size(object.metadata.labels) == 1 && 'cps.compute/native-binding' in object.metadata.labels && object.metadata.labels['cps.compute/native-binding'].matches('^[a-f0-9]{60}$') && (('cps-native-cleanup-' + object.metadata.labels['cps.compute/native-binding']).startsWith(object.metadata.name) || ('cps-native-abort-' + object.metadata.labels['cps.compute/native-binding']).startsWith(object.metadata.name))",
+            "message": "Cleanup names and labels carry one exact binding identity."
+          },
+          {
+            "expression": "!has(object.metadata.ownerReferences) || size(object.metadata.ownerReferences) == 0",
+            "message": "Cleanup tombstones must not be garbage-collected through Pod ownership."
+          }
+        ]
+      }
+    },
+    {
+      "apiVersion": "admissionregistration.k8s.io/v1",
+      "kind": "ValidatingAdmissionPolicyBinding",
+      "metadata": {
+        "name": "cps-runtime-node-completion-only"
+      },
+      "spec": {
+        "policyName": "cps-runtime-node-completion-only",
+        "validationActions": [
+          "Deny"
+        ]
+      }
+    },
+    {
+      "apiVersion": "admissionregistration.k8s.io/v1",
+      "kind": "ValidatingAdmissionPolicy",
+      "metadata": {
+        "name": "cps-runtime-node-own-ack-only"
+      },
+      "spec": {
+        "failurePolicy": "Fail",
+        "matchConstraints": {
+          "resourceRules": [
+            {
+              "apiGroups": [
+                ""
+              ],
+              "apiVersions": [
+                "v1"
+              ],
+              "operations": [
+                "UPDATE"
+              ],
+              "resources": [
+                "configmaps"
+              ],
+              "scope": "Namespaced"
+            }
+          ]
+        },
+        "matchConditions": [
+          {
+            "name": "exact-successor-node-credential",
+            "expression": "request.userInfo.username == \"system:serviceaccount:cps-native-runtime:cps-native-node-agent\""
+          }
+        ],
+        "validations": [
+          {
+            "expression": "request.namespace == \"cps-native-runtime\"",
+            "message": "The successor node may update only its exact named readiness acknowledgment, with bounded own-node wire data"
+          },
+          {
+            "expression": "object.metadata.name == \"cps-runtime-ack-node\"",
+            "message": "The successor node may update only its exact named readiness acknowledgment, with bounded own-node wire data"
+          },
+          {
+            "expression": "object.metadata.uid == \"72aad8df-6233-4b2e-b714-e8a74c946989\"",
+            "message": "The successor node may update only its exact named readiness acknowledgment, with bounded own-node wire data"
+          },
+          {
+            "expression": "object.metadata.uid == oldObject.metadata.uid",
+            "message": "The successor node may update only its exact named readiness acknowledgment, with bounded own-node wire data"
+          },
+          {
+            "expression": "!has(object.immutable) || !object.immutable",
+            "message": "The successor node may update only its exact named readiness acknowledgment, with bounded own-node wire data"
+          },
+          {
+            "expression": "!has(object.binaryData)",
+            "message": "The successor node may update only its exact named readiness acknowledgment, with bounded own-node wire data"
+          },
+          {
+            "expression": "!has(object.metadata.ownerReferences) || size(object.metadata.ownerReferences) == 0",
+            "message": "The successor node may update only its exact named readiness acknowledgment, with bounded own-node wire data"
+          },
+          {
+            "expression": "!has(object.metadata.finalizers) || size(object.metadata.finalizers) == 0",
+            "message": "The successor node may update only its exact named readiness acknowledgment, with bounded own-node wire data"
+          },
+          {
+            "expression": "has(object.data) && size(object.data) == 1 && 'ack.json' in object.data && size(object.data['ack.json']) <= 65536",
+            "message": "The successor node may update only its exact named readiness acknowledgment, with bounded own-node wire data"
+          },
+          {
+            "expression": "object.data['ack.json'] == '{}' || (object.data['ack.json'].startsWith('{\"component\":\"node\",') && object.data['ack.json'].endsWith(',\"version\":2}'))",
+            "message": "The successor node may update only its exact named readiness acknowledgment, with bounded own-node wire data"
+          },
+          {
+            "expression": "!has(object.metadata.annotations) || (size(object.metadata.annotations) <= 2 && object.metadata.annotations.all(k, k in ['cps.compute/node-custody-generation','cps.compute/node-pending-generation'] && size(object.metadata.annotations[k]) <= 131072))",
+            "message": "The successor node may update only its exact named readiness acknowledgment, with bounded own-node wire data"
+          }
+        ]
+      }
+    },
+    {
+      "apiVersion": "admissionregistration.k8s.io/v1",
+      "kind": "ValidatingAdmissionPolicyBinding",
+      "metadata": {
+        "name": "cps-runtime-node-own-ack-only"
+      },
+      "spec": {
+        "policyName": "cps-runtime-node-own-ack-only",
+        "validationActions": [
+          "Deny"
+        ]
+      }
+    },
+    {
+      "apiVersion": "rbac.authorization.k8s.io/v1",
+      "kind": "Role",
+      "metadata": {
+        "name": "cps-runtime-node-write",
+        "namespace": "cps-native-runtime"
+      },
+      "rules": [
+        {
+          "apiGroups": [
+            ""
+          ],
+          "resources": [
+            "configmaps"
+          ],
+          "verbs": [
+            "create"
+          ]
+        },
+        {
+          "apiGroups": [
+            ""
+          ],
+          "resources": [
+            "configmaps"
+          ],
+          "verbs": [
+            "patch"
+          ],
+          "resourceNames": [
+            "cps-runtime-ack-node"
+          ]
+        }
+      ]
+    },
+    {
+      "apiVersion": "rbac.authorization.k8s.io/v1",
+      "kind": "RoleBinding",
+      "metadata": {
+        "name": "cps-runtime-node-write",
+        "namespace": "cps-native-runtime"
+      },
+      "roleRef": {
+        "apiGroup": "rbac.authorization.k8s.io",
+        "kind": "Role",
+        "name": "cps-runtime-node-write"
+      },
+      "subjects": [
+        {
+          "kind": "ServiceAccount",
+          "name": "cps-native-node-agent",
+          "namespace": "cps-native-runtime"
+        }
+      ]
+    }
+  ]
+}
