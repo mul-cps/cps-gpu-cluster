@@ -1,0 +1,91 @@
+{
+  "boundaries": [
+    "MPS measurement uses earlier bc5 gate; installed 81aac gate tested independently in current-epoch import and normal lifecycle runs",
+    "Normal lifecycle aliases have distinct policy hashes; fixed CPU/memory/image/nominal-cap behavior is validated separately, not claimed as production integration",
+    "No general cross-parent MPS service or all-pool qualification claimed",
+    "CPS normal cleanup required retry; no manual release"
+  ],
+  "bridge_deployed": false,
+  "bridge_source_validated_actual_current_authority": true,
+  "bridge_source_validated_actual_historical_policy_transition_chain": true,
+  "bridge_tests_passed": 4,
+  "evidence_sha256": {
+    "component-measurements.private.json": "sha256:f1e0560188f102b2570a3c6aa22153669f42b02e2462b6748ce9dccc1c1cc32e",
+    "current-capacity.actual.private.json": "sha256:e4a095e2fa91c8b6098821ca2dce11e076f597386820b59f62388b259e95589d",
+    "gateway-installed-validation.actual.private.json": "sha256:c131f72f55faa69a423faf535ad570fbfdc6558d270f6fe4e5ee9a390bfa44d5",
+    "hub-cit-installed-validation.actual.private.json": "sha256:c131f72f55faa69a423faf535ad570fbfdc6558d270f6fe4e5ee9a390bfa44d5",
+    "hub-cps-installed-validation.actual.private.json": "sha256:c131f72f55faa69a423faf535ad570fbfdc6558d270f6fe4e5ee9a390bfa44d5",
+    "node-installed-validation.actual.private.json": "sha256:03915ab32a08f2e92ec291462ed517259af6c596526390aa9dcde80bbf2e86cd",
+    "production-baseline.private.json": "sha256:0dbec4f4f55854c8889fb833171d961bb22d3b6476f493e6f7da698b27cb46ea",
+    "qualification-configmap.actual.private.json": "sha256:913a6841d93ac88eef15d59544010b45e6bb8eec3d37256106b29877f1c6689d"
+  },
+  "full_suite_collection_blocker": "packages/hub/tests/test_login_guard.py: missing oauthenticator",
+  "gate_image": "ghcr.io/mul-cps/cps-native-node@sha256:81aac20157965ed5503b0d208b0326fef1ba10d71089d9e635128cea48dafe82",
+  "gates": {
+    "aggregate": {
+      "evidence_sha256": "sha256:7d6df624f9ce0eabf1d990d04455fd625465e643c63e1c6197725830dd6f1eb4",
+      "passed": true
+    },
+    "cap-assignment": {
+      "evidence_sha256": "sha256:f0e7a432ed893903c7270261543a53ca8e96865583502a948a6a7a19d5e1a626",
+      "passed": true
+    },
+    "memory-import": {
+      "evidence_sha256": "sha256:1b61f67caa882e60250f2d0a4591c45417eed2620c7d6a3fd99128788407ce4a",
+      "passed": true
+    },
+    "mps": {
+      "evidence_sha256": "sha256:c0b0f7e0e49cc70a2713e0bac7b22ab9100f1b7ac5594744e8ea9b228e655631",
+      "passed": true
+    },
+    "oom-peer": {
+      "evidence_sha256": "sha256:de0bd513599966e9dc547de086b9ccdbc2fb3de25caaaa18f3fcdcaaf4c12864",
+      "passed": true
+    },
+    "restart-cleanup": {
+      "evidence_sha256": "sha256:8002eefa7d8716dcd7593ec87a856b253b85245aba6363a5730b1d0ba50260d9",
+      "passed": true
+    }
+  },
+  "installed_compatibility_before_bridge": {
+    "gateway": false,
+    "hub:cit": false,
+    "hub:cps": false,
+    "node": true
+  },
+  "policy_hash": "sha256:332d14fb9e510b9810feffb8d40b408743f9679ebd13ca1ba0e1077d666e9281",
+  "pool": {
+    "boot_id": "a464df41-e391-4443-b8e8-ad7ecd052318",
+    "driver_generation": "4ebffc96-e25e-4583-a3b8-0d853fd90efd",
+    "free_memory_mib": 40471,
+    "gpu_uuid": "GPU-16128952-b438-556a-00bb-93039ee24e56",
+    "headroom_mib": 1024,
+    "max_workspaces": 2,
+    "memory_budget_mib": 15360,
+    "node": "k3s-wk-gpu2",
+    "node_uid": "3336cdd5-d245-436e-b57c-2f66c6dcaa41",
+    "total_memory_mib": 40960
+  },
+  "production_ready": false,
+  "qualification_reference": {
+    "data_sha256": "sha256:613e8f9554ee222b362002fab6c107be819455e9cccd5c62a9433083cea710f6",
+    "key": "qualification.json",
+    "name": "cps-native147-qualification-6a129169a6afef2d",
+    "namespace": "cps-native-system",
+    "resourceVersion": "380259107",
+    "uid": "4de5b8de-e18d-4275-9421-7629efb165aa"
+  },
+  "regression_tests_passed": 271,
+  "remaining": [
+    "package bridge with exact non-target distribution preservation",
+    "coordinated current-epoch Node/gateway/Hub/publisher/observer declarations and genuine readiness acknowledgments",
+    "normal qualified-group Start/CUDA/Stop validation",
+    "remaining original production acceptance gates"
+  ],
+  "runtime_consumers_changed": false,
+  "scope": "Bounded current-epoch five/ten hardware qualification artifact and software compatibility bridge; not production activation",
+  "sdk_bridge_base": "2f13b5c2acd45bd0d65f1a741c18ab1a0d6a9976",
+  "sdk_bridge_revision": "221906b",
+  "version": 1,
+  "workload_image": "ghcr.io/mul-cps/cps-jupyter-notebook@sha256:5427088986bc06ad0713875d1aa2f31439f0bd1fbe6099d4669570fcf3e85be4"
+}

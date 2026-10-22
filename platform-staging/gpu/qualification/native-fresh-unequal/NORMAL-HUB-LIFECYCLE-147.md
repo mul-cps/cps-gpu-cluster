@@ -625,3 +625,42 @@ exception reset and concurrent threads. 296 tests and 211 subtests passed,
 including original full-inventory, cleanup and emergency-stop cases. This
 candidate is not yet deployed and no live cleanup speedup is claimed. Ordinary
 qualified-group activation remains the next primary integration step.
+
+### Current-epoch bounded qualification and actual SDK compatibility blocker
+
+Live inspection found production `nativeGpuGroups.enabled=true`, qualified
+five/ten profiles and notebook image 542 already declared under policy 332.
+Effective access remains readiness-held: the installed qualification pins boot
+`209f8bc9-a478-48e4-925a-6e07ffa56f7a` and generation
+`b10498fc-9153-4394-875a-ea7cfb498625`, not the current attested epoch. The production
+node and observer deployments are paused at zero replicas. The old production
+ledger has 197 released records; the separate lifecycle ledger has 16 released.
+No live claim was discarded or rewritten.
+
+Checked actual cap-assignment, both-direction OOM/aggregate, import, bounded MPS,
+and normal restart/cleanup artifacts were composed into a current-epoch bounded
+five/ten qualification record, retaining explicit component scope differences
+and no production-readiness claim. Current free memory was measured again; the
+pool stays two slots with 15360 MiB budget and 1024 MiB extra headroom. Immutable
+ConfigMap `cps-native147-qualification-6a129169a6afef2d` was created in
+`cps-native-system`, actual UID `4de5b8de-e18d-4275-9421-7629efb165aa`,
+resourceVersion `380259107`, data SHA256
+`613e8f9554ee222b362002fab6c107be819455e9cccd5c62a9433083cea710f6`.
+The actual API-bound qualification and deployment factories accepted it. No
+runtime consumer reference was changed; object creation did not activate access.
+
+Testing the same actual object inside installed packages exposed a concrete
+software mismatch: the node SDK accepted it, while gateway and both Hubs rejected
+its current core/UVM/health fingerprints. Their metadata modules match SDK2f13
+exactly. Bridge revision `221906b` changes only those two SDK metadata modules
+on the 2f13 baseline. It recognizes the current measured build; historical v3
+readback is limited to the exact old immutable qualification reference/data hash.
+Unknown/mixed builds and self-reissued historical proofs remain denied; legacy
+v1/v2 checks are unchanged. Actual new qualification validation and the actual
+old qualification's complete policy-transition chain both passed with the bridge.
+271 regressions passed, plus the final four bridge tests. Full-suite collection
+still fails for missing `oauthenticator` in `test_login_guard.py`; no full-suite
+pass is claimed. The bridge is pushed but not packaged/deployed yet. Coordinated
+Node/gateway/Hub/publisher/observer adoption, genuine readiness acknowledgments
+and normal qualified-group lifecycle tests remain pending. See
+`results/current-epoch-qualification-renewal-20261023.json`.
