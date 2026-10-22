@@ -1,0 +1,137 @@
+{
+  "accepted_denied_at": "2026-10-22T05:51:44.379137Z",
+  "accepted_succeeded": false,
+  "binding_completed_at": "2026-10-22T05:51:24.918496Z",
+  "binding_fence_remaining_seconds": 18.034529,
+  "binding_succeeded": true,
+  "causal_limit": "No bound witness was observed before expiry; metadata alone does not apportion Node snapshot/validation/publication costs. Separate heartbeat retry fixture is not proof it caused this live failure.",
+  "cleanup": {
+    "all_allocations_released": 196,
+    "binder_exact_spec_restored": true,
+    "cleanup_verified": true,
+    "hub_server_absent": true,
+    "pod_absent": true,
+    "protected_notebook_unchanged": true,
+    "sql_counts": {
+      "reservation": 0,
+      "reservation_binding": 0
+    },
+    "temporary_token_revoked": true,
+    "token_file_removed": true,
+    "token_reuse_http": 403
+  },
+  "code_and_policy_unchanged_from_start83": true,
+  "cuda_kernel_executed": false,
+  "execution_fence_deadline": "2026-10-22T05:51:42.953Z",
+  "kind": "normal-shared-start84-metadata-watch",
+  "log_sha256": {
+    "binder": "sha256:9159771ebae0fbeb76ea04b3725bb0e84daee1c76d1054dad674a041038ef428",
+    "gateway": "sha256:c85cf76263ef483566e8409525c957314e9353c8e9572ca7e2f44c6f025587e0",
+    "hub": "sha256:f8b547af6e5e4557dfdc36594c2a3b2c0d53c20f38633bed4af785c0ed44fa35",
+    "node": "sha256:a9d85521012ed24335bb572d4a73146932e12de8eca6b49a2584d0a592f523c0"
+  },
+  "node_ack_emptied_at": "2026-10-22T05:51:31.071602+00:00",
+  "passed": false,
+  "pod_uid": "b3bd7b3d-4e58-41f6-b3d1-e00ee13599f9",
+  "prepare_elapsed_seconds": 77.034268,
+  "prepare_succeeded": true,
+  "process": {
+    "elapsedSeconds": 304.5166582899983,
+    "endedAt": "2026-10-22T05:52:18.992706+00:00",
+    "returnCode": 1,
+    "startedAt": "2026-10-22T05:47:14.476047+00:00"
+  },
+  "production_qualified": false,
+  "replacement_bound_node_ack_seen_before_fence_expiry": false,
+  "watch": {
+    "complete": true,
+    "errors": 0,
+    "node_pending_changes": [
+      {
+        "empty": false,
+        "observed_at": "2026-10-22T05:47:13.523906+00:00",
+        "pending": [],
+        "producer_observed_at": "2026-10-22T05:47:10.925996+00:00"
+      },
+      {
+        "empty": true,
+        "observed_at": "2026-10-22T05:48:21.148114+00:00",
+        "pending": [],
+        "producer_observed_at": null
+      },
+      {
+        "empty": false,
+        "observed_at": "2026-10-22T05:48:34.125386+00:00",
+        "pending": [],
+        "producer_observed_at": "2026-10-22T05:48:29.874524+00:00"
+      },
+      {
+        "empty": true,
+        "observed_at": "2026-10-22T05:48:49.026854+00:00",
+        "pending": [],
+        "producer_observed_at": null
+      },
+      {
+        "empty": false,
+        "observed_at": "2026-10-22T05:49:05.405900+00:00",
+        "pending": [
+          {
+            "document_sha256": "sha256:efed809245b060267d9b3408373a2a3280fcf4d7eb2299900374912abbbf85cf",
+            "pod_uid": "b3bd7b3d-4e58-41f6-b3d1-e00ee13599f9"
+          }
+        ],
+        "producer_observed_at": "2026-10-22T05:48:59.721039+00:00"
+      },
+      {
+        "empty": true,
+        "observed_at": "2026-10-22T05:49:20.868250+00:00",
+        "pending": [],
+        "producer_observed_at": null
+      },
+      {
+        "empty": false,
+        "observed_at": "2026-10-22T05:49:37.065967+00:00",
+        "pending": [
+          {
+            "document_sha256": "sha256:b68a428ec02cd779220b789b17dd9f433e10dffd0a1d58ccbaee4a4035329896",
+            "pod_uid": "b3bd7b3d-4e58-41f6-b3d1-e00ee13599f9"
+          }
+        ],
+        "producer_observed_at": "2026-10-22T05:49:31.733704+00:00"
+      },
+      {
+        "empty": true,
+        "observed_at": "2026-10-22T05:50:23.610343+00:00",
+        "pending": [],
+        "producer_observed_at": null
+      },
+      {
+        "empty": false,
+        "observed_at": "2026-10-22T05:50:39.237082+00:00",
+        "pending": [
+          {
+            "document_sha256": "sha256:b68a428ec02cd779220b789b17dd9f433e10dffd0a1d58ccbaee4a4035329896",
+            "pod_uid": "b3bd7b3d-4e58-41f6-b3d1-e00ee13599f9"
+          }
+        ],
+        "producer_observed_at": "2026-10-22T05:50:34.142470+00:00"
+      },
+      {
+        "empty": true,
+        "observed_at": "2026-10-22T05:51:31.071602+00:00",
+        "pending": [],
+        "producer_observed_at": null
+      },
+      {
+        "empty": false,
+        "observed_at": "2026-10-22T05:53:05.234089+00:00",
+        "pending": [],
+        "producer_observed_at": "2026-10-22T05:53:00.840456+00:00"
+      }
+    ],
+    "read_only": true,
+    "records": 97,
+    "sha256": "sha256:ecae4719040976c656d1e4085b49b8d41a95a35a3bc63e2f0ca9c9f774de19ec",
+    "threads_drained": true
+  }
+}
