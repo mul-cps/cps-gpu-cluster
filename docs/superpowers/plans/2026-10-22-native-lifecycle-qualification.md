@@ -80,3 +80,20 @@ and prove storage bindings rather than inventing storage evidence.
   the complete CDI search/configuration inputs are separately pinned.
 - Live Node authority/receipt mounts, physical inventory preflight, workspace
   registration/grants and the actual Hub lifecycle remain pending.
+
+## Node preflight and scoped permissions verified
+
+The separate durable cohort is projected read-only at the compiler's fixed host
+receipt/authority aliases. The existing authority directory inode is preserved;
+no custody keys or old journals were recreated. The inert Node Pod uses the
+released SDK image, a dedicated SA, and only the actual NVML library, avoiding
+host glibc injection. Its read-only probe verified all nine module pins, current
+CDI resolution and all twelve physical retirement rows, with native SET and Pod
+deletion explicitly forbidden. The actual controller loop has not started.
+
+The two admission policies compiled without warnings. Direct, CA-verified checks
+confirmed both actor identities and all 32 expected RBAC outcomes; empty-ledger
+server dry-run succeeded and unrelated ConfigMap writes were rejected by the
+specific policies. These checks did not persist a ledger or completion proof.
+Actual neutral workspace registration/grants, Hub overlay and Start/Stop/member
+lifecycle execution remain pending.
