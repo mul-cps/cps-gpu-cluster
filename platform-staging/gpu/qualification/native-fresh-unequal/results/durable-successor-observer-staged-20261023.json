@@ -1,0 +1,28 @@
+{
+  "version": 1,
+  "kind": "successor-observer-release-staged",
+  "exact_role_baselines": 7,
+  "sdk_release_validated": true,
+  "sdk_live_process_head_bootstrap_plan_passed": true,
+  "observer_deployed": false,
+  "automatic_delivery_deployed": false,
+  "workspace_approved": false,
+  "own_ack_patch_targets_bound_to_successor": [
+    {
+      "namespace": "cps-compute",
+      "role": "cps-native-approval-gateway",
+      "target": "cps-runtime-ack-gateway"
+    },
+    {
+      "namespace": "jupyterhub",
+      "role": "cps-native-approval-hub-cps",
+      "target": "cps-runtime-ack-hub-cps"
+    },
+    {
+      "namespace": "cit-jhub",
+      "role": "cps-native-approval-hub-cit",
+      "target": "cps-runtime-ack-hub-cit"
+    }
+  ],
+  "new_authority_roles_and_bindings_present": 4
+}

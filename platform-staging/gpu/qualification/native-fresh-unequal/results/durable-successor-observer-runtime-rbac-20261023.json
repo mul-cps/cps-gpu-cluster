@@ -1,0 +1,226 @@
+{
+  "apiVersion": "v1",
+  "kind": "List",
+  "items": [
+    {
+      "apiVersion": "rbac.authorization.k8s.io/v1",
+      "kind": "Role",
+      "metadata": {
+        "namespace": "cps-native-runtime",
+        "name": "cps-native-approval-node"
+      },
+      "rules": [
+        {
+          "apiGroups": [
+            ""
+          ],
+          "resourceNames": [
+            "cps-runtime-ack-node",
+            "cps-runtime-anchor-node-06ad00d5b50947e1",
+            "cps-runtime-head-node",
+            "cps-runtime-initial-approval-cbf7d39ba84ad7f8"
+          ],
+          "resources": [
+            "configmaps"
+          ],
+          "verbs": [
+            "get"
+          ]
+        },
+        {
+          "apiGroups": [
+            ""
+          ],
+          "resourceNames": [
+            "cps-native-node-agent-54f79cf6cd-z5wnd"
+          ],
+          "resources": [
+            "pods"
+          ],
+          "verbs": [
+            "get"
+          ]
+        },
+        {
+          "apiGroups": [
+            "apps"
+          ],
+          "resourceNames": [
+            "cps-native-node-agent-54f79cf6cd"
+          ],
+          "resources": [
+            "replicasets"
+          ],
+          "verbs": [
+            "get"
+          ]
+        },
+        {
+          "apiGroups": [
+            "apps"
+          ],
+          "resourceNames": [
+            "cps-native-node-agent"
+          ],
+          "resources": [
+            "deployments"
+          ],
+          "verbs": [
+            "get"
+          ]
+        },
+        {
+          "apiGroups": [
+            ""
+          ],
+          "resourceNames": [
+            "cps-native-node-agent"
+          ],
+          "resources": [
+            "serviceaccounts"
+          ],
+          "verbs": [
+            "get"
+          ]
+        },
+        {
+          "apiGroups": [
+            ""
+          ],
+          "resourceNames": [
+            "cps-runtime-ack-node"
+          ],
+          "resources": [
+            "configmaps"
+          ],
+          "verbs": [
+            "patch"
+          ]
+        }
+      ]
+    },
+    {
+      "apiVersion": "rbac.authorization.k8s.io/v1",
+      "kind": "Role",
+      "metadata": {
+        "namespace": "cps-native-runtime",
+        "name": "cps-native-approval-gateway"
+      },
+      "rules": [
+        {
+          "apiGroups": [
+            ""
+          ],
+          "resourceNames": [
+            "cps-runtime-ack-node",
+            "cps-runtime-anchor-node-06ad00d5b50947e1",
+            "cps-runtime-head-node",
+            "cps-runtime-initial-approval-cbf7d39ba84ad7f8"
+          ],
+          "resources": [
+            "configmaps"
+          ],
+          "verbs": [
+            "get"
+          ]
+        },
+        {
+          "apiGroups": [
+            ""
+          ],
+          "resourceNames": [
+            "cps-native-node-agent-54f79cf6cd-z5wnd"
+          ],
+          "resources": [
+            "pods"
+          ],
+          "verbs": [
+            "get"
+          ]
+        },
+        {
+          "apiGroups": [
+            "apps"
+          ],
+          "resourceNames": [
+            "cps-native-node-agent-54f79cf6cd"
+          ],
+          "resources": [
+            "replicasets"
+          ],
+          "verbs": [
+            "get"
+          ]
+        },
+        {
+          "apiGroups": [
+            "apps"
+          ],
+          "resourceNames": [
+            "cps-native-node-agent"
+          ],
+          "resources": [
+            "deployments"
+          ],
+          "verbs": [
+            "get"
+          ]
+        },
+        {
+          "apiGroups": [
+            ""
+          ],
+          "resourceNames": [
+            "cps-native-node-agent"
+          ],
+          "resources": [
+            "serviceaccounts"
+          ],
+          "verbs": [
+            "get"
+          ]
+        }
+      ]
+    },
+    {
+      "apiVersion": "rbac.authorization.k8s.io/v1",
+      "kind": "RoleBinding",
+      "metadata": {
+        "namespace": "cps-native-runtime",
+        "name": "cps-native-approval-node"
+      },
+      "subjects": [
+        {
+          "kind": "ServiceAccount",
+          "name": "cps-native-node-agent",
+          "namespace": "cps-native-runtime"
+        }
+      ],
+      "roleRef": {
+        "apiGroup": "rbac.authorization.k8s.io",
+        "kind": "Role",
+        "name": "cps-native-approval-node"
+      }
+    },
+    {
+      "apiVersion": "rbac.authorization.k8s.io/v1",
+      "kind": "RoleBinding",
+      "metadata": {
+        "namespace": "cps-native-runtime",
+        "name": "cps-native-approval-gateway"
+      },
+      "subjects": [
+        {
+          "kind": "ServiceAccount",
+          "name": "cps-compute-controller",
+          "namespace": "cps-compute"
+        }
+      ],
+      "roleRef": {
+        "apiGroup": "rbac.authorization.k8s.io",
+        "kind": "Role",
+        "name": "cps-native-approval-gateway"
+      }
+    }
+  ]
+}

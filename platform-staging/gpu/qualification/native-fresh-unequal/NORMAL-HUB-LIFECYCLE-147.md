@@ -1030,3 +1030,23 @@ delivery and observers still require successor configuration before reapproval
 and ordinary shared-GPU Start/Stop.
 Evidence: `results/durable-successor-hub-rbac-20261023.json`, its manifests and
 `results/durable-successor-hub-adoption-20261023.json`.
+
+### Successor observer release and seven Role baselines staged
+
+Preserved the stopped predecessor delivery deployment/seed privately. Prepared a
+new ObserverRelease2 pinned to the active linked NodeConfig4 and all four current
+heads. The three existing own-component Roles now PATCH only their new own ACK
+targets; Role UIDs and other rules were retained. Two missing fixed reader Roles
+and their bindings were created in the successor namespace. No new Secret, Pod
+or broad mutation privilege was introduced.
+
+The SDK validated all seven exact Role baselines and explicit head GET row zero
+(the owning Hub Roles also retain a second qualification GET row). Its live
+read-only observer plan authenticated current Pods/ReplicaSets/images, head
+registries, ServiceAccounts and actual released Node bootstrap. The Root API
+adapter uses raw bounded PodList responses, retaining their real wire kind.
+This is an operator-side plan, not a service-account execution or active daemon.
+Observer deployment, four pregrant readers, guarded automatic delivery and an
+actual approval/Start/Stop remain pending.
+Evidence: `results/durable-successor-observer-staged-20261023.json` and
+`results/durable-successor-observer-runtime-rbac-20261023.json`.
