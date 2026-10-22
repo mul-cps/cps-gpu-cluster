@@ -1,0 +1,99 @@
+{
+  "diagnostic_source_sha256": "b6f9b9dc81fef64b97e7b0de4c58245c91d7f8a56033f9502b7b12cba19c1f0f",
+  "interpretation": "Connection pooling already exists. Repeated context loads issue 60 fresh reads each; idle measurements do not alone explain enrollment witness latency or justify dropping authority checks.",
+  "invariants": {
+    "get_only": true,
+    "no_authority_response_cache": true,
+    "no_coordinator_or_sql_constructed": true,
+    "no_workload_started": true
+  },
+  "observations": [
+    {
+      "calls": {
+        "decode": {
+          "count": 60,
+          "sum_seconds": 0.027116479352116585,
+          "union_seconds": 0.027116479352116585
+        },
+        "projection": {
+          "count": 180,
+          "sum_seconds": 0.004191383719444275,
+          "union_seconds": 0.004191383719444275
+        },
+        "transport": {
+          "count": 60,
+          "sum_seconds": 0.1595987156033516,
+          "union_seconds": 0.1595987156033516
+        }
+      },
+      "decoded_objects": {
+        "immutable_configmap": 58,
+        "mutable_configmap": 2,
+        "other": 0
+      },
+      "elapsed_seconds": 0.38868345879018307,
+      "outside_instrumented_union_seconds": 0.19777688011527061,
+      "stage": "context",
+      "success": true
+    },
+    {
+      "calls": {
+        "decode": {
+          "count": 60,
+          "sum_seconds": 0.03195710480213165,
+          "union_seconds": 0.03195710480213165
+        },
+        "projection": {
+          "count": 180,
+          "sum_seconds": 0.004809122532606125,
+          "union_seconds": 0.004809122532606125
+        },
+        "transport": {
+          "count": 60,
+          "sum_seconds": 0.3300027474761009,
+          "union_seconds": 0.3300027474761009
+        }
+      },
+      "decoded_objects": {
+        "immutable_configmap": 58,
+        "mutable_configmap": 2,
+        "other": 0
+      },
+      "elapsed_seconds": 0.5614340659230947,
+      "outside_instrumented_union_seconds": 0.19466509111225605,
+      "stage": "context",
+      "success": true
+    },
+    {
+      "calls": {
+        "decode": {
+          "count": 60,
+          "sum_seconds": 0.03126616217195988,
+          "union_seconds": 0.03126616217195988
+        },
+        "projection": {
+          "count": 180,
+          "sum_seconds": 0.0052310992032289505,
+          "union_seconds": 0.0052310992032289505
+        },
+        "transport": {
+          "count": 60,
+          "sum_seconds": 0.17659632302820683,
+          "union_seconds": 0.17659632302820683
+        }
+      },
+      "decoded_objects": {
+        "immutable_configmap": 58,
+        "mutable_configmap": 2,
+        "other": 0
+      },
+      "elapsed_seconds": 0.42002159357070923,
+      "outside_instrumented_union_seconds": 0.20692800916731358,
+      "stage": "context",
+      "success": true
+    }
+  ],
+  "production_ready": false,
+  "scope": "Three fresh context loads in the deployed Gateway while no shared workspace was running; not an end-to-end prepare benchmark.",
+  "status": "read-only-measurement"
+}
