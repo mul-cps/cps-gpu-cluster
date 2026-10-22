@@ -183,3 +183,105 @@ def readiness_settings(configuration,approvals,policy,pointers,anchors,settings,
         'Existing readiness authority differs from the reviewed Node cohort')
     result=deepcopy(original);result.update(version=2,heads=heads)
     return native_group_approval_configuration({'nativeGroupApprovals':result})
+
+
+def domain_runtime_review_sha256(*,configuration,approvals,policy,pointers,anchors,bindings,
+        controllers,adoption,previous_heads,previous_objects,domain_uid,retirement):
+    """Review pin, not authorization: includes exact upstream adoption and readbacks."""
+    require(type(configuration) is NodeConfiguration,'Actual typed target configuration required')
+    return canonical_sha256({'configuration':configuration.document,
+        'configuration_reference':configuration.reference.to_dict(),'policy_hash':policy.hash,
+        'approvals':approvals,'pointers':pointers,'anchors':anchors,'bindings':bindings,
+        'controllers':controllers,'adoption':adoption,'previous_heads':previous_heads,
+        'previous_objects':previous_objects,'domain_uid':domain_uid,'retirement':retirement})
+
+
+def bind_domain_runtime(*,configuration,approvals,policy,pointers,anchors,bindings,
+        controllers,adoption,previous_heads,previous_objects,domain_uid,retirement,reviewed_sha256):
+    """Compose reviewed cold-domain heads into existing qualified adoption CAS.
+
+    No API calls or retirement authorization. The operator must separately qualify
+    the target deployment, adoption intents and external physical/credential fence.
+    Old authority is checked as captured bytes, never reinterpreted as new proof.
+    Node rollout is separate. Ordinary bind_runtime remains a one-time bootstrap.
+    """
+    require(type(domain_uid) is str and _uid(domain_uid) and domain_uid.replace('-','')!='0'*32,
+        'Explicit canonical nonzero domain UID required')
+    require(type(retirement) is dict and set(retirement)=={'version','retirement_id','evidence_sha256'}
+        and type(retirement['version']) is int and retirement['version']==1
+        and type(retirement['retirement_id']) is str and 0<len(retirement['retirement_id'])<=256
+        and type(retirement['evidence_sha256']) is str
+        and re.fullmatch(r'sha256:[0-9a-f]{64}',retirement['evidence_sha256'])
+        and retirement['evidence_sha256']!='sha256:'+'0'*64,'Reviewed retirement descriptor required')
+    inputs=dict(configuration=configuration,approvals=approvals,policy=policy,pointers=pointers,
+        anchors=anchors,bindings=bindings,controllers=controllers,adoption=adoption,
+        previous_heads=previous_heads,previous_objects=previous_objects,domain_uid=domain_uid,retirement=retirement)
+    require(reviewed_sha256==domain_runtime_review_sha256(**inputs),'Exact reviewed composition inputs required')
+    heads=bind(configuration,approvals,policy,pointers,anchors,domain_uid=domain_uid)['heads']
+    authority=configuration.deployment.qualification_authority
+    require(not authority.policy_transitions and authority.lifetime_transition is None,
+        'Fresh root qualification required for cold domain')
+    candidates=runtime_candidates(configuration,approvals,policy,pointers,anchors,domain_uid=domain_uid)
+    keys=COMPONENTS-{'node'}
+    require(all(type(value) is dict and set(value)==keys for value in
+        (bindings,controllers,adoption,previous_objects)),'Exactly three runtime component inputs required')
+    require(type(previous_heads) is dict and set(previous_heads)==COMPONENTS,'Four captured previous heads required')
+    old={k:validate_binding(v) for k,v in previous_heads.items()}
+    require(old['node']['anchor']['pointer']['namespace']!=heads['node']['anchor']['pointer']['namespace'],
+        'Cold domain requires distinct Node authority namespace')
+    result={}
+    for component in sorted(keys):
+        _readback(candidates[component],bindings[component],immutable=True)
+        previous=old[component];objects=previous_objects[component]
+        require(type(objects) is dict and set(objects)=={'anchor','binding'},'Actual old head objects required')
+        _readback(_candidate(previous['projection']['namespace'],previous['projection']['name'],
+            'anchor.json',previous['anchor'],immutable=True),objects['anchor'],immutable=True)
+        oldref=ImmutableConfigMapRef.from_dict(previous['projection'])
+        require(oldref.validate(objects['anchor'])==previous['anchor'],'Old anchor body changed')
+        oldbinding=objects['binding'];meta=oldbinding.get('metadata',{})
+        oldcandidate=_candidate(previous['projection']['namespace'],meta.get('name'),
+            'head-binding.json',previous,immutable=True)
+        _readback(oldcandidate,oldbinding,immutable=True)
+        require(heads[component]['anchor']['pointer']!=previous['anchor']['pointer']
+            and heads[component]['projection']['name']!=previous['projection']['name']
+            and bindings[component]['metadata']['name']!=meta['name'],'New head identities must be disjoint')
+        original=controllers[component];m=original.get('metadata',{})
+        declaration=configuration.document['component_declarations'][component]
+        require(original.get('apiVersion')=='apps/v1' and original.get('kind')=='Deployment'
+            and all(m.get(k)==declaration[k] for k in ('namespace','name','uid'))
+            and _uid(m.get('uid')) and type(m.get('resourceVersion')) is str
+            and re.fullmatch(r'[1-9][0-9]*',m['resourceVersion']) and not m.get('deletionTimestamp'),
+            'Actual declared Deployment UID/resourceVersion required')
+        prefix=[{'op':'test','path':'/metadata/uid','value':m['uid']},
+            {'op':'test','path':'/metadata/resourceVersion','value':m['resourceVersion']},
+            {'op':'test','path':'/spec','value':deepcopy(original['spec'])}]
+        patch=adoption[component]
+        require(type(patch) is list and len(patch)==4 and patch[:3]==prefix
+            and type(patch[3]) is dict and set(patch[3])=={'op','path','value'}
+            and patch[3]['op']=='replace' and patch[3]['path']=='/spec'
+            and type(patch[3]['value']) is dict,'Exact original full-spec adoption CAS required')
+        desired=deepcopy(patch[3]['value'])
+        for spec in (original['spec'],desired):
+            pod=spec['template']['spec']
+            require(pod.get('serviceAccountName')==declaration['service_account'],'Declared service account changed')
+            matches=[c for c in pod['containers'] if c.get('name')==declaration['container']]
+            require(len(matches)==1,'Exact selected container required')
+            container=matches[0]
+            if spec is desired:require(container.get('image')==declaration['image'],'Qualified desired image required')
+            for name,path,key,cmname in (
+                ('cps-native-head-anchor','/var/run/cps-native-approvals/head-anchor.json','anchor.json',previous['projection']['name']),
+                ('cps-native-head-binding','/etc/cps-native-head-binding.json','head-binding.json',meta['name'])):
+                volumes=[v for v in pod.get('volumes',[]) if v.get('name')==name]
+                require(volumes==[{'name':name,'configMap':{'name':cmname,'defaultMode':0o644,
+                    'items':[{'key':key,'path':key}]}}],'Exact captured head volume required')
+                mounts=[v for v in container.get('volumeMounts',[]) if v.get('name')==name or v.get('mountPath')==path]
+                require(mounts==[{'name':name,'mountPath':path,'subPath':key,'readOnly':True}],
+                    'Exact captured head mount required')
+            require([e for e in container.get('env',[]) if e.get('name')=='CPS_NATIVE_GROUP_APPROVAL_HEAD']==[
+                {'name':'CPS_NATIVE_GROUP_APPROVAL_HEAD','value':'/etc/cps-native-head-binding.json'}],
+                'Exact captured head environment required')
+        for volume in desired['template']['spec']['volumes']:
+            if volume['name']=='cps-native-head-anchor':volume['configMap']['name']=heads[component]['projection']['name']
+            elif volume['name']=='cps-native-head-binding':volume['configMap']['name']=bindings[component]['metadata']['name']
+        result[component]=deepcopy(prefix)+[{'op':'replace','path':'/spec','value':desired}]
+    return result
