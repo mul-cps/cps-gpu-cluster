@@ -1,0 +1,30 @@
+{
+  "binder_coordinator_enabled": false,
+  "both_gateway_containers_reviewed_module_verified": true,
+  "four_service_original_specs_restored": true,
+  "gateway_image": "ghcr.io/mul-cps/cps-compute@sha256:06b0968f1c36905ce562c5e657ca5d7911c0f02d1e1b1de34b4c6955767e69db",
+  "hub_health": {
+    "cit": 200,
+    "cps": 200
+  },
+  "journal": {
+    "active_rotations": 27,
+    "authenticated_files": 379,
+    "four_actual_acks_ready": true,
+    "new_archives": 5,
+    "retained_nonstate_files": 373,
+    "rotations": 75
+  },
+  "normal_shared_gpu_start": "not_yet_tested",
+  "production_ready": false,
+  "protected_notebook": {
+    "restarts": 0,
+    "running": true,
+    "same_uid": true
+  },
+  "qualification": "prepare85-rotation75-activation",
+  "result": "passed",
+  "schema_version": 1,
+  "sdk_revision": "06d5c2332c2617f091cd04a0ad2f7276c06c43f0",
+  "succeeded_rotation_job_deleted": true
+}
