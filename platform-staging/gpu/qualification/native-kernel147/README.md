@@ -85,7 +85,8 @@ and exact header/compiler/source input receipts only.
 `recipe.py verify-build --headers <captured-generic-headers> --stock-core ...
 --stock-uvm ... --core <candidate> --uvm <candidate>` uses only modinfo and
 modprobe's **query-only** --show-exports/--show-modversions. It requires identical
-stock/candidate147 vermagic/version, unchanged full NVIDIA core and UVM exports,
+stock/candidate147 vermagic/version, unchanged full NVIDIA core and UVM exports
+(UVM may have an empty export map only when readelf confirms no export section),
 all candidate imports resolved with exact CRC against actual147 kernel symvers
 or the new core exports, unchanged stock UVM import set/CRCs, preserved stockcore
 imports, and only the documented cgrp_dfl_root extra core dependency. Any extra

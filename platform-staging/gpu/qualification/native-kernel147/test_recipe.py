@@ -48,3 +48,20 @@ def test_changed_source_input_never_creates_output(tmp_path):
     with pytest.raises(ValueError,match='Pinned source input'):
         recipe.prepare(bad,bad,bad,bad,output)
     assert not output.exists()
+
+
+def test_uvm_empty_exports_require_actual_absent_export_section(monkeypatch,tmp_path):
+    import subprocess
+    recipe=load()
+    def no_exports(*args):
+        if args[0]=='modprobe':raise subprocess.CalledProcessError(1,args)
+        assert args[:3]==('readelf','--wide','--sections')
+        return 'There are 12 section headers: .text .modinfo __versions'
+    monkeypatch.setattr(recipe,'query',no_exports)
+    assert recipe.symbols('--show-exports',tmp_path/'uvm',allow_empty=True)=={}
+    with pytest.raises(subprocess.CalledProcessError):recipe.symbols('--show-exports',tmp_path/'core')
+    def hidden_exports(*args):
+        if args[0]=='modprobe':raise subprocess.CalledProcessError(1,args)
+        return '__ksymtab'
+    monkeypatch.setattr(recipe,'query',hidden_exports)
+    with pytest.raises(ValueError):recipe.symbols('--show-exports',tmp_path/'uvm',allow_empty=True)

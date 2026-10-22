@@ -88,12 +88,19 @@ def prepare(archive,patch,guard,source_after,output):
 def query(*args):return subprocess.check_output(args,text=True).strip()
 
 
-def symbols(flag,path):
+def symbols(flag,path,*,allow_empty=False):
     result={}
-    for line in query('modprobe',flag,str(path)).splitlines():
+    try:output=query('modprobe',flag,str(path))
+    except subprocess.CalledProcessError:
+        if not (allow_empty and flag=='--show-exports'):raise
+        # kmod reports ENODATA for a valid UVM ELF with no export section.
+        sections=query('readelf','--wide','--sections',str(path))
+        require('__ksymtab' not in sections,'Unparsed module exports present')
+        return {}
+    for line in output.splitlines():
         fields=line.split();require(len(fields)==2 and fields[1] not in result,'Malformed/duplicate module symbols')
         result[fields[1]]=int(fields[0],16)
-    require(bool(result),'Empty module symbol table')
+    require(bool(result) or (allow_empty and flag=='--show-exports'),'Empty module symbol table')
     return result
 
 
@@ -109,7 +116,7 @@ def verify(headers,stock_core,stock_uvm,core,uvm):
     require(all(m['version']==VERSION and m['vermagic'].startswith(KERNEL+' ') and m['srcversion'] for m in metadata),
             'Stock/candidate driver version/kernel mismatch')
     require(len({m['vermagic'] for m in metadata})==1,'Stock/candidate vermagic differs')
-    exports=[symbols('--show-exports',p) for p in paths]
+    exports=[symbols('--show-exports',p,allow_empty=index in (1,3)) for index,p in enumerate(paths)]
     require_same(exports[0],exports[2],'Stock NVIDIA core exports')
     require_same(exports[1],exports[3],'Stock NVIDIA UVM exports')
     core_imports=symbols('--show-modversions',core);uvm_imports=symbols('--show-modversions',uvm)
