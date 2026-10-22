@@ -1,0 +1,43 @@
+{
+  "accepted_409_at": "2026-10-22T04:14:20.467Z",
+  "ack_samples": 54,
+  "binding_200_at": "2026-10-22T04:13:50.547Z",
+  "bound_witness_published_before_deadline": false,
+  "cleanup": {
+    "all_allocations_released": 192,
+    "binder_exact_spec_restored": true,
+    "cleanup_verified": true,
+    "hub_server_absent": true,
+    "pod_absent": true,
+    "protected_notebook_unchanged": true,
+    "sql_counts": {
+      "reservation": 0,
+      "reservation_binding": 0
+    },
+    "temporary_token_revoked": true,
+    "token_file_removed": true,
+    "token_reuse_http": 403
+  },
+  "cuda_kernel_executed": false,
+  "estimated_fence_deadline": "2026-10-22T04:14:19.90547Z",
+  "execution_fence_opened_at": "2026-10-22T04:13:19.90547Z",
+  "execution_fence_seconds": 60,
+  "first_prepare_409": {
+    "at": "2026-10-22T04:12:27.875Z",
+    "stage": "registered-snapshot-refresh"
+  },
+  "next_gate": "Measure the Node bound-reconciliation critical path; retain existing authority and execution-fence checks.",
+  "node_failure_at": "2026-10-22T04:14:20.123849Z",
+  "node_failure_scope": "Rejects a deleting Pod after the fence deadline; does not establish a predeadline authority failure.",
+  "pod_uid": "0599e397-f8d7-4c0f-9a8b-a701eebc7908",
+  "prepare_200_at": "2026-10-22T04:13:41.048Z",
+  "prepod_seconds": 74.561239,
+  "production_ready": false,
+  "start": {
+    "elapsedSeconds": 319.69687380699906,
+    "endedAt": "2026-10-22T04:15:17.037889+00:00",
+    "returnCode": 1,
+    "startedAt": "2026-10-22T04:09:57.341010+00:00"
+  },
+  "status": "failed-before-notebook-execution"
+}

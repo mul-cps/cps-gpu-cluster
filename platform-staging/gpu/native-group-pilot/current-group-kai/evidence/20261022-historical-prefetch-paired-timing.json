@@ -1,0 +1,188 @@
+{
+  "candidate_revision": "2edd4438d4bca14fbfb3f6b3b0056ae79a141806",
+  "conclusion": "Measured benefit is too small to qualify this as a Prepare timeout fix; kept separate from the diagnostics deployment.",
+  "median_seconds": {
+    "baseline": 0.3372243959456682,
+    "candidate": 0.32859349250793457
+  },
+  "median_seconds_saved": 0.00863090343773365,
+  "observations": [
+    {
+      "calls": {
+        "decode": {
+          "count": 60,
+          "sum_seconds": 0.025684447959065437,
+          "union_seconds": 0.025684447959065437
+        },
+        "projection": {
+          "count": 180,
+          "sum_seconds": 0.004229579120874405,
+          "union_seconds": 0.004229579120874405
+        },
+        "transport": {
+          "count": 60,
+          "sum_seconds": 0.16481282375752926,
+          "union_seconds": 0.14573982544243336
+        }
+      },
+      "decoded_objects": {
+        "immutable_configmap": 58,
+        "mutable_configmap": 2,
+        "other": 0
+      },
+      "elapsed_seconds": 0.3580329678952694,
+      "outside_instrumented_union_seconds": 0.18469343520700932,
+      "stage": "context",
+      "success": true,
+      "variant": "baseline"
+    },
+    {
+      "calls": {
+        "decode": {
+          "count": 60,
+          "sum_seconds": 0.02783401869237423,
+          "union_seconds": 0.02783401869237423
+        },
+        "projection": {
+          "count": 180,
+          "sum_seconds": 0.00442885048687458,
+          "union_seconds": 0.00442885048687458
+        },
+        "transport": {
+          "count": 60,
+          "sum_seconds": 0.1704006940126419,
+          "union_seconds": 0.13284719362854958
+        }
+      },
+      "decoded_objects": {
+        "immutable_configmap": 58,
+        "mutable_configmap": 2,
+        "other": 0
+      },
+      "elapsed_seconds": 0.34070969372987747,
+      "outside_instrumented_union_seconds": 0.18241347931325436,
+      "stage": "context",
+      "success": true,
+      "variant": "candidate"
+    },
+    {
+      "calls": {
+        "decode": {
+          "count": 60,
+          "sum_seconds": 0.025790249928832054,
+          "union_seconds": 0.025790249928832054
+        },
+        "projection": {
+          "count": 180,
+          "sum_seconds": 0.0041261836886405945,
+          "union_seconds": 0.0041261836886405945
+        },
+        "transport": {
+          "count": 60,
+          "sum_seconds": 0.16215119510889053,
+          "union_seconds": 0.12667237035930157
+        }
+      },
+      "decoded_objects": {
+        "immutable_configmap": 58,
+        "mutable_configmap": 2,
+        "other": 0
+      },
+      "elapsed_seconds": 0.32859349250793457,
+      "outside_instrumented_union_seconds": 0.17874911800026894,
+      "stage": "context",
+      "success": true,
+      "variant": "candidate"
+    },
+    {
+      "calls": {
+        "decode": {
+          "count": 60,
+          "sum_seconds": 0.02433512546122074,
+          "union_seconds": 0.02433512546122074
+        },
+        "projection": {
+          "count": 180,
+          "sum_seconds": 0.003977702930569649,
+          "union_seconds": 0.003977702930569649
+        },
+        "transport": {
+          "count": 60,
+          "sum_seconds": 0.14199544116854668,
+          "union_seconds": 0.13341726176440716
+        }
+      },
+      "decoded_objects": {
+        "immutable_configmap": 58,
+        "mutable_configmap": 2,
+        "other": 0
+      },
+      "elapsed_seconds": 0.3372243959456682,
+      "outside_instrumented_union_seconds": 0.177696967497468,
+      "stage": "context",
+      "success": true,
+      "variant": "baseline"
+    },
+    {
+      "calls": {
+        "decode": {
+          "count": 60,
+          "sum_seconds": 0.025296136736869812,
+          "union_seconds": 0.025296136736869812
+        },
+        "projection": {
+          "count": 180,
+          "sum_seconds": 0.004220400005578995,
+          "union_seconds": 0.004220400005578995
+        },
+        "transport": {
+          "count": 60,
+          "sum_seconds": 0.11909927241504192,
+          "union_seconds": 0.10937096737325191
+        }
+      },
+      "decoded_objects": {
+        "immutable_configmap": 58,
+        "mutable_configmap": 2,
+        "other": 0
+      },
+      "elapsed_seconds": 0.31462072394788265,
+      "outside_instrumented_union_seconds": 0.17796330899000168,
+      "stage": "context",
+      "success": true,
+      "variant": "baseline"
+    },
+    {
+      "calls": {
+        "decode": {
+          "count": 60,
+          "sum_seconds": 0.02523050829768181,
+          "union_seconds": 0.02523050829768181
+        },
+        "projection": {
+          "count": 180,
+          "sum_seconds": 0.004158049821853638,
+          "union_seconds": 0.004158049821853638
+        },
+        "transport": {
+          "count": 60,
+          "sum_seconds": 0.14234120771288872,
+          "union_seconds": 0.11154924146831036
+        }
+      },
+      "decoded_objects": {
+        "immutable_configmap": 58,
+        "mutable_configmap": 2,
+        "other": 0
+      },
+      "elapsed_seconds": 0.3111567683517933,
+      "outside_instrumented_union_seconds": 0.1767858900129795,
+      "stage": "context",
+      "success": true,
+      "variant": "candidate"
+    }
+  ],
+  "production_ready": false,
+  "scope": "Same-process paired read-only context-load comparison; no workload or production-app mutation.",
+  "status": "experimental-not-deployed"
+}

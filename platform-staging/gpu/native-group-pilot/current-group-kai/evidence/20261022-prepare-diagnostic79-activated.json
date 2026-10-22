@@ -1,0 +1,22 @@
+{
+  "change": "Fixed-enum UTC diagnostics for three existing Prepare409 paths; no authorization or response changes.",
+  "gateway_image": "ghcr.io/mul-cps/cps-compute@sha256:6af240b80aed68360fad7e72427d33f953531ca4a765934a28e85922a7c8098a",
+  "hub_health_http": {
+    "cit": 200,
+    "cps": 200
+  },
+  "journal": {
+    "active": 31,
+    "all_four_actual_acks_ready": true,
+    "authenticated_files": 399,
+    "new_archives": 5,
+    "retained_nonstate_files": 393,
+    "total": 79
+  },
+  "node_and_hub_images_unchanged": true,
+  "production_ready": false,
+  "protected_notebook_unchanged": true,
+  "sdk_revision": "ecaa7709ec53555adfdee6686dd7675eca16b690",
+  "services_restored": true,
+  "status": "deployed-and-restored"
+}
