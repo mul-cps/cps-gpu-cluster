@@ -509,3 +509,37 @@ wrapper corrections and normal rollback stopped it. The attempted CPS CUDA exec
 therefore returned Pod NotFound and is NOT a pass. Normal console Close completed
 with inactive pooled reservation. A fresh normal CPS Start was requested only
 after that cleanup; its result and the twenty-GiB CUDA test remain to be recorded.
+
+### Automatic measured pair CUDA result and confirmed cleanup
+
+Fresh CPS Pod `2f2a98a8-dfc5-415b-bd1d-39c3b6c8d344` completed normal console
+Start under the corrected implementation while CIT's five-GiB workspace remained
+running. In CPS, CUDA successfully allocated and touched 18 GiB, then released
+that probe before requesting 21 GiB. The 21 GiB allocation was rejected and the
+same process continued operating on its original 512 MiB tensor. Device count
+was one. Concurrently CIT held a tensor and completed 200 checked GPU updates.
+This establishes automatic unequal five/twenty provisioning and this bounded
+CUDA over-cap/recovery/peer case on image 542 with the pinned 147 epoch; it is
+not a pass for all production gates or all allocation/import/MPS paths.
+
+Both workspaces were stopped through normal console Close. CIT completed;
+CPS exceeded the console cleanup wait and required normal Stop retries. During
+Pod disappearance, one conservative identity-stability check reported
+`Replacement identity changed across original terminal proof`; it retained
+protection and the next stable observation completed cleanup. All fourteen
+allocations were subsequently verified released, both console workspaces stopped
+with inactive pooled reservations, and both notebook Pods absent. No manual
+reservation release or journal/receipt deletion was used. Only after that ledger
+verification was the identified diagnostic controller interrupted (observed exit
+130). Its earlier recovered blocked observation remains in the log; this is not
+claimed as a clean finite 300-iteration controller pass. Final read-only original
+history/CDI/physical-inventory preflight passed with native SET and Pod DELETE
+forbidden.
+
+The diagnostic helper was CPU throttled: `cpu.max=50000 100000`, 4302 throttled
+periods of 5217 and 69034526 throttled microseconds at capture, with `kubectl top`
+showing 501m CPU. Subsequent diagnostic runs should request adequate CPU after
+confirming all allocations released; do not change live GPU/user limits to
+shorten verification. Current-image ten-GiB/restart/import/MPS coverage and
+ordinary qualified-group activation remain separate unfinished work. Production
+access and qualification flags remain unchanged.
