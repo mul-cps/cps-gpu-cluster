@@ -18,9 +18,10 @@ import subprocess
 import sys
 import uuid
 
-HEALTH_SHA256 = '52fdbdae3d5e2f66fd4653d94ef5a62f734e185fabec30450f4a1b70cfee7d67'
-CORE_SHA256 = '4fdcafcdf7f57b9de81f56e8e17db06a91e27680c6a711f3888fd0b76da46421'
-UVM_SHA256 = 'b2ae67722e9e21a70c319aeed2184f5b2d1f23b8e32dea00816cfd5cd2c3ee61'
+HEALTH_SHA256 = 'fc9dd634b8a31c15939cf6ddf3b18e84b9fa5a60d21424831a410a5ba4322fe8'
+CORE_SHA256 = '24b83a0ed1c676fccee3eb3d558d32b407a32f5ebd3e4a979bf468ac405e852c'
+UVM_SHA256 = '0ff0de040dc840fb3f08ce6d289de032b7952774827064dbabe050c01a70a39b'
+TARGET_KERNEL = '6.8.0-147-generic'
 MANIFEST = 'driver-load-manifest.json'
 GENERATION = 'driver-generation'
 CORE_PARAMETERS = ['NVreg_CpsNativeImportGuard=1', 'NVreg_GpuInitOnProbe=1']
@@ -182,6 +183,8 @@ def invalidate_authority(authority, *, trusted_uid=0):
 def perform_load(args):
     require(os.geteuid() == 0 and args.quiesced_gpu2 and socket.gethostname() == 'k3s-wk-gpu2',
             'Explicit root manually quiesced GPU2 execution required')
+    if not args.invalidate:
+        require(os.uname().release == TARGET_KERNEL, 'Exact qualified target kernel required')
     authority_fd = protected_directory(args.authority, private=True)
     lock = None; inputs = []
     try:

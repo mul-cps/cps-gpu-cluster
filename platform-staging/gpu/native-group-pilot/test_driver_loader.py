@@ -10,6 +10,16 @@ from unittest.mock import patch
 HERE = Path(__file__).resolve().parent
 
 
+def kernel147_health_fixture():
+    historical = json.loads((HERE / 'source-snapshot.json').read_text())['sources']['native_gpu_health.py'].encode()
+    candidate = historical.replace(
+        b'4fdcafcdf7f57b9de81f56e8e17db06a91e27680c6a711f3888fd0b76da46421',
+        b'24b83a0ed1c676fccee3eb3d558d32b407a32f5ebd3e4a979bf468ac405e852c').replace(
+        b'b2ae67722e9e21a70c319aeed2184f5b2d1f23b8e32dea00816cfd5cd2c3ee61',
+        b'0ff0de040dc840fb3f08ce6d289de032b7952774827064dbabe050c01a70a39b')
+    return historical, candidate
+
+
 class LoaderTest(unittest.TestCase):
     def setUp(self):
         if not (HERE / 'driver_loader.py').exists(): self.fail('Exact driver loader implementation is missing')
@@ -71,8 +81,8 @@ class LoaderTest(unittest.TestCase):
             self.loader.require_modules_absent(path, proc_modules='other_module 1 0 - Live 0x0\n')
 
     def test_closed_manifest_matches_shared_health_schema(self):
-        snapshot = json.loads((HERE / 'source-snapshot.json').read_text())['sources']['native_gpu_health.py']
-        health = self.loader.load_source(snapshot.encode())
+        _, candidate = kernel147_health_fixture()
+        health = self.loader.load_source(candidate)
         identities = {name: {'sysfs_device': 1, 'sysfs_inode': 100 + i} for i, name in enumerate(health.MODULE_BUILDS)}
         manifest = self.loader.build_manifest(health, identities, boot_id='11111111-1111-4111-8111-111111111111',
             generation='22222222-2222-4222-8222-222222222222', kernel_release='test-kernel')
@@ -81,15 +91,39 @@ class LoaderTest(unittest.TestCase):
         manifest['modules']['nvidia']['elf_sha256'] = '0' * 64
         with self.assertRaises(ValueError): health.validate_load_manifest(manifest, boot_id=manifest['boot_id'], driver_generation=manifest['driver_generation'], kernel_release='test-kernel')
 
-    def test_optional_stack_core_elf_is_pinned_across_loader_and_shared_health(self):
-        raw = json.loads((HERE / 'source-snapshot.json').read_text())['sources']['native_gpu_health.py'].encode()
-        health = self.loader.load_source(raw)
-        expected = '4fdcafcdf7f57b9de81f56e8e17db06a91e27680c6a711f3888fd0b76da46421'
-        self.assertEqual(self.loader.CORE_SHA256, expected)
-        self.assertEqual(health.MODULE_BUILDS['nvidia']['elf_sha256'], expected)
-        self.assertEqual(self.loader.HEALTH_SHA256, hashlib.sha256(raw).hexdigest())
-        self.assertEqual(health.MODULE_BUILDS['nvidia']['srcversion'], '2F87172C8F45C13DCB1A7BA')
-        self.assertEqual(self.loader.UVM_SHA256, health.MODULE_BUILDS['nvidia_uvm']['elf_sha256'])
+    def test_147_health_source_is_accepted_and_historical_134_source_denied(self):
+        historical, candidate = kernel147_health_fixture()
+        with tempfile.TemporaryDirectory(dir=Path.home()) as temporary:
+            path = Path(temporary) / 'health.py'; path.write_bytes(candidate); path.chmod(0o400)
+            fd, _ = self.loader.protected_input(path, self.loader.HEALTH_SHA256, trusted_uid=os.getuid(), elf=False)
+            try: health = self.loader.load_source(os.read(fd, 65536))
+            finally: os.close(fd)
+            for name, digest in (('nvidia', self.loader.CORE_SHA256), ('nvidia_uvm', self.loader.UVM_SHA256)):
+                self.assertEqual(health.MODULE_BUILDS[name]['elf_sha256'], digest)
+            path.chmod(0o600); path.write_bytes(historical); path.chmod(0o400)
+            with self.assertRaises(ValueError):
+                self.loader.protected_input(path, self.loader.HEALTH_SHA256, trusted_uid=os.getuid(), elf=False)
+
+    def test_wrong_kernel_denied_before_any_authority_or_module_access(self):
+        from types import SimpleNamespace
+        with patch.object(self.loader.os, 'geteuid', return_value=0), \
+             patch.object(self.loader.socket, 'gethostname', return_value='k3s-wk-gpu2'), \
+             patch.object(self.loader.os, 'uname', return_value=SimpleNamespace(release='6.8.0-134-generic')), \
+             patch.object(self.loader, 'protected_directory', side_effect=AssertionError('Accessed authority before kernel rejection')):
+            with self.assertRaisesRegex(ValueError, 'kernel'):
+                self.loader.main(["--execute", "--quiesced-gpu2", "--authority", "/unused"])
+
+    def test_147_load_and_wrong_kernel_invalidation_reach_protected_preflight(self):
+        from types import SimpleNamespace
+        class ProtectedPreflight(Exception): pass
+        for release, invalidate in [('6.8.0-147-generic', False), ('6.8.0-134-generic', True)]:
+            with self.subTest(release=release, invalidate=invalidate), \
+                 patch.object(self.loader.os, 'geteuid', return_value=0), \
+                 patch.object(self.loader.socket, 'gethostname', return_value='k3s-wk-gpu2'), \
+                 patch.object(self.loader.os, 'uname', return_value=SimpleNamespace(release=release)), \
+                 patch.object(self.loader, 'protected_directory', side_effect=ProtectedPreflight):
+                with self.assertRaises(ProtectedPreflight):
+                    self.loader.main(['--execute', '--quiesced-gpu2', '--authority', '/unused'] + (['--invalidate'] if invalidate else []))
 
     def test_authority_publication_modes_no_overwrite_and_invalidation(self):
         with tempfile.TemporaryDirectory(dir=Path.home()) as temporary:
