@@ -53,3 +53,14 @@ def test_actual_existing_relay_provider_accepts_without_changing_nfs_server():
  assert '193.170.30.58' in str(pv) and 'artifacts.cps-artifacts-relay.svc.cluster.local'not in str(pv)
  p['ssh']['host']='foreign.example'
  with pytest.raises(ValueError):mod().build(provider=p,targets=targets())
+
+def test_quantity_subtrees_use_dynamic_type_only_without_dropping_guards():
+ rows=mod().build(provider=provider(),targets=targets())['objects']
+ pv=next(x for x in rows if x['kind']=='ValidatingAdmissionPolicy' and x['metadata']['name'].endswith('-pv'))
+ pvc=next(x for x in rows if x['kind']=='ValidatingAdmissionPolicy' and x['metadata']['name'].endswith('-pvc'))
+ pve=pv['spec']['validations'][0]['expression'];pvce=pvc['spec']['validations'][0]['expression']
+ assert pve.count("dyn(object.spec).capacity['storage'] == '1Ti'")==2
+ assert pvce.count("dyn(object.spec.resources).requests['storage'] == '1Ti'")==2
+ assert pvce.count('(!has(dyn(object.spec.resources).limits) || size(dyn(object.spec.resources).limits) == 0)')==2
+ assert 'object.spec.nfs.server' in pve and 'object.spec.volumeName' in pvce
+ assert pv['spec']['failurePolicy']==pvc['spec']['failurePolicy']=='Fail'
