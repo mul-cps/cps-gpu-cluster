@@ -20,8 +20,12 @@ NEW_DIRECTORY --approve-qa-hostpaths` produces two proposed Pods and an immutabl
 source ConfigMap. It invokes the actual pinned compiler. The gate uses cached
 `bc5b128f…` only as an isolated Python interpreter: `-I -S` and an explicit
 immutable source package exclude installed SDK and notebook/CWD imports.
-The notebook image is exact `5427088986bc…`; it initially executes an idle CPU
-command, with no CUDA allocation.
+The notebook image is exact `5427088986bc…`. Its independently verified OCI
+entrypoint is `tini -g -- start.sh`; the renderer leaves `command` absent and
+supplies the same isolated Python idle process as `args`, preserving PID1
+reaping without CUDA allocation or extending the original1800-second lifetime.
+This changes newly rendered cohorts only; old admitted specs and evidence remain
+unchanged.
 
 The closed request has `version:1`, `namespace`, `namespace_uid`, `gate_image`,
 `policy_hash`, and optionally `cohort_uid` (canonical nonzero UUID). New cohorts
@@ -66,14 +70,21 @@ separate explicit operator review.
 If physical inventory retains a previous cohort's finite retired entries,
 Root supplies `--retirement FILE --retirement-sha256 RAW`. Its closed JSON is
 `{version:1,state_root:ORIGINAL_QA_STATE,records:[ORIGINAL_CAP_RECORDS]}`.
-The complete protected original journal must equal those reviewed records;
+For multiple original state roots use the closed version2 shape
+`{version:2,states:[{state_root:ORIGINAL_QA_STATE,records:[ORIGINAL_CAP_RECORDS]}]}`.
+The independent raw SHA covers the complete descriptor, including every state
+and record. At most8 distinct canonical original QA states and16 total records
+are allowed. Original and current directory identities, Pod UIDs and native
+parent inodes must not alias; arbitrary paths, extra fields and symlinks fail
+closed. Each complete protected original journal must equal its reviewed records;
 every record must already be retired-inert-cap in this exact epoch. Fresh SDK
 retirement proofs must establish old Pod-name and cgroup absence, no receipt,
 exact offline pinned zero-charge entry, original identity and original cap.
 The complete physical inventory permits only current cohort parents and those
 specifically proven entries. Unknown entries remain fatal. The previous state
 is not changed and the historical full-inventory hash is not relabeled as a
-new observation. The fresh proofs repeat after admission.
+new observation. All original-state proofs repeat after admission and again in every fresh
+observer invocation. No successful proof or inventory observation is cached.
 
 ## Observe and run the first5GiB probe
 

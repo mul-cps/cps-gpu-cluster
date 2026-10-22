@@ -92,7 +92,7 @@ def _contracts(request, *, approve_qa_hostpaths=False):
             gpu_uuid=GPU, profile='native-gpu-5g-pilot', policy_hash=request['policy_hash'])
         base = {'apiVersion': 'v1', 'kind': 'Pod', 'metadata': {'namespace': NAMESPACE, 'name': name},
                 'spec': {'restartPolicy': 'Never', 'containers': [{'name': 'notebook', 'image': WORKLOAD_IMAGE,
-                    'command': ['python', '-I', '-u', '-c', 'import time; print("qa-idle-no-gpu",flush=True); time.sleep(1800)'],
+                    'args': ['python', '-I', '-u', '-c', 'import time; print("qa-idle-no-gpu",flush=True); time.sleep(1800)'],
                     'resources': {'requests': {'cpu': '100m', 'memory': '256Mi'},
                                   'limits': {'cpu': '2', 'memory': '4Gi'}}}]}}
         original = runtime.compile_native_gpu_pod(base, PROFILE, binding=binding, settings=settings,

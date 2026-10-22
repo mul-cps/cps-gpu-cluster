@@ -49,7 +49,7 @@ def test_real_compiler_qa_pods_have_exact_root_gate_nonroot_main_and_separate_st
     cm = result['source_configmap']
     assert cm['immutable'] is True
     assert set(cm['data']) == {'__init__.py', 'native_gpu_runtime.py', 'native_gpu_health.py'}
-    assert 'CUDA' not in json.dumps(result['pods']['a']['spec']['containers'][0]['command'])
+    assert 'CUDA' not in json.dumps(result['pods']['a']['spec']['containers'][0]['args'])
 
 
 def test_explicit_hostpath_review_required():
@@ -83,3 +83,17 @@ def test_gate_executes_only_bundled_sdk_despite_installed_or_cwd_shadow(tmp_path
     actual = subprocess.run(command, cwd=cwd, capture_output=True, text=True, timeout=5)
     assert actual.returncode == 0, actual.stderr
     assert 'wait-for-cap' in actual.stdout and 'OLD SDK IMPORTED' not in actual.stderr
+
+
+def test_notebook_preserves_verified_image_entrypoint_for_pid1_reaping():
+    r = renderer(); value = request()
+    value['cohort_uid'] = '7ba3353d-bf13-4cad-9c35-3119dd279a67'
+    result = r.render(value, approve_qa_hostpaths=True)
+    for pod in result['pods'].values():
+        main, = pod['spec']['containers']
+        assert 'command' not in main  # image542: tini -g -- start.sh
+        assert main['args'] == ['python', '-I', '-u', '-c',
+            'import time; print("qa-idle-no-gpu",flush=True); time.sleep(1800)']
+        assert pod['metadata']['annotations'][r.runtime.SPEC_ANNOTATION] == r.runtime.native_spec_sha256(pod)
+        bound = r.finalize(value, pod, pod, approve_qa_hostpaths=True)
+        assert bound['intent'] is None and bound['pod'] == pod

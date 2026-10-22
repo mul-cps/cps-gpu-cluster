@@ -152,25 +152,54 @@ def retirement_inputs(args,models,back,make_backend,current_state):
     require(pin is not None and len(raw)<=1024*1024 and hashlib.sha256(raw).hexdigest()==pin,
             'Reviewed complete retirement descriptor bytes required')
     value=document(raw)
-    require(type(value) is dict and set(value)=={'version','state_root','records'}
-            and type(value['version']) is int and value['version']==1
-            and type(value['records']) is list and 0<len(value['records'])<=16,
+    require(type(value) is dict and type(value.get('version')) is int,
             'Closed bounded original retirement descriptor required')
-    old=value['state_root']
-    require(type(old) is str and old!=current_state,'Distinct original protected QA state required')
-    if old!=STATE:
-        prefix=ROOT+'/cohorts/'
-        require(old.startswith(prefix) and old.endswith('/state')
-                and cohort_state(old[len(prefix):-len('/state')])==old,'Exact original QA state path required')
-    for directory in (old,old+'/authority',old+'/bootstrap',old+'/receipts',old+'/journal'):
-        back.private_directory(directory)
-    records=[models.CapRecord.from_dict(item) for item in value['records']]
-    require(all(r.intent.namespace==NS and r.intent.node==NODE and r.intent.node_uid==NODE_UID
-                and r.intent.gpu_uuid==GPU and r.intent.cap_mib==5120
-                and r.identity.boot_id==BOOT and r.identity.driver_generation==GENERATION for r in records),
-            'Exact actual current-epoch QA retirements required')
-    journal=models.PrivateJournal.__new__(models.PrivateJournal);journal.directory=Path(old)/'journal'
-    return verify_retirements(make_backend([r.intent for r in records],old),journal,records)
+    if value['version']==1:
+        require(set(value)=={'version','state_root','records'},'Closed original retirement descriptor required')
+        states=[{key:value[key] for key in ('state_root','records')}]
+    else:
+        require(value['version']==2 and set(value)=={'version','states'}
+                and type(value['states']) is list and 0<len(value['states'])<=8,
+                'Closed bounded multiple-original-state descriptor required')
+        states=value['states']
+    prepared=[];paths=set();directories=set();uids=set();inodes=set();total=0
+    current=os.stat(current_state,follow_symlinks=False)
+    directories.add((current.st_dev,current.st_ino))
+    for item in states:
+        require(type(item) is dict and set(item)=={'state_root','records'}
+                and type(item['records']) is list and 0<len(item['records'])<=16,
+                'Closed bounded original retirement state required')
+        total+=len(item['records'])
+        require(total<=16,'At most sixteen complete original retirement records required')
+        old=item['state_root']
+        require(type(old) is str and old!=current_state and old not in paths,
+                'Distinct original protected QA states required')
+        if old!=STATE:
+            prefix=ROOT+'/cohorts/'
+            require(old.startswith(prefix) and old.endswith('/state')
+                    and cohort_state(old[len(prefix):-len('/state')])==old,'Exact original QA state path required')
+        for directory in (old,old+'/authority',old+'/bootstrap',old+'/receipts',old+'/journal'):
+            back.private_directory(directory)
+        actual=os.stat(old,follow_symlinks=False);identity=(actual.st_dev,actual.st_ino)
+        require(identity not in directories,'Original state directory aliases denied')
+        paths.add(old);directories.add(identity)
+        records=[models.CapRecord.from_dict(record) for record in item['records']]
+        for record in records:
+            require(record.intent.namespace==NS and record.intent.node==NODE and record.intent.node_uid==NODE_UID
+                    and record.intent.gpu_uuid==GPU and record.intent.cap_mib==5120
+                    and record.identity.boot_id==BOOT and record.identity.driver_generation==GENERATION,
+                    'Exact actual current-epoch QA retirements required')
+            require(record.intent.pod_uid not in uids and record.identity.cgroup_inode not in inodes,
+                    'Duplicate original Pod UID or native parent denied')
+            uids.add(record.intent.pod_uid);inodes.add(record.identity.cgroup_inode)
+        prepared.append((old,records))
+    rows={}
+    for old,records in prepared:
+        journal=models.PrivateJournal.__new__(models.PrivateJournal);journal.directory=Path(old)/'journal'
+        fresh=verify_retirements(make_backend([r.intent for r in records],old),journal,records)
+        require(not rows.keys()&fresh.keys(),'Duplicate retired native parent denied')
+        rows.update(fresh)
+    return rows
 
 def cleanup_records(controller, journal, intents):
     records = journal.records()

@@ -11,7 +11,7 @@ import sys
 import time
 import types
 
-CONTROLLER_SHA256='b4e93ae91fb61572e6be4637cebbd9a3ed31ded0a5e2e21e79971ea363f4df80'
+CONTROLLER_SHA256='2a5a9c2dee74fdcc870690033eab05b8ae15ea42c82ed2197dd123957349517f'
 IMAGE='ghcr.io/mul-cps/cps-jupyter-notebook@sha256:5427088986bc06ad0713875d1aa2f31439f0bd1fbe6099d4669570fcf3e85be4'
 
 def require(value,message):
