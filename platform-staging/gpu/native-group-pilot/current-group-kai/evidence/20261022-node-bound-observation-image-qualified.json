@@ -1,0 +1,28 @@
+{
+  "base_image": "ghcr.io/mul-cps/cps-native-node@sha256:a2348b7b2211b6b22e3d6e7f7025cc0efbbc320b539a7f6acec23d8b470ad88c",
+  "base_layers_preserved": 49,
+  "behavior": "Retry the whole bounded fresh snapshot when a validated pending Pod becomes bound between observer reads; authority validation and deadlines remain unchanged.",
+  "changed_runtime_modules": [
+    "src/cps_compute/native_node/abort.py"
+  ],
+  "image": "ghcr.io/mul-cps/cps-native-node@sha256:e1ebf7c0ce992acc843133c90c4b88a13ff7f58796569a42b7ecde490b0c1b48",
+  "production_ready": false,
+  "regression": {
+    "duration_seconds": 47.17,
+    "log_sha256": "bf81e76ae6a6970b598d18e3295b38af00be0019a06916e3a0e9741965af2a4d",
+    "passed": 609,
+    "subtests_passed": 49
+  },
+  "remaining": [
+    "controlled authority rotation",
+    "normal shared-GPU start and actual kernel execution",
+    "full production acceptance matrix"
+  ],
+  "reviewed_upstream_fix": "758d7ea6401a6f60ddaf519b00b910727d16789a",
+  "runtime_config_preserved": true,
+  "runtime_module_count": 78,
+  "runtime_user": "0",
+  "source_revision": "56de05cb5f914f4fd28462201376324c042a8c21",
+  "status": "image-qualified-not-deployed",
+  "wheel_sha256": "43150d263f57719b67ab7a5a21ae0c1f767a1264a8f9f606436e7719e6d5150b"
+}
