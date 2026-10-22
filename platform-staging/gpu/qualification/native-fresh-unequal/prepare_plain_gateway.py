@@ -149,6 +149,13 @@ def prepare(*,deployment,runtime,pilot,tls_secret_ref,ca_configmap_ref,policy_co
     for key in ('nativeGpuGroups','nativeGpuQualification','nativeGroupApprovals','jobsets','argoUi','argoUI','storage'):cfg[key]={'enabled':False}
     if provider is not None:cfg['storage']=provider
     cfg.pop('artifacts',None);cfg['shutdownObserver']={'kubernetes':True}
+    network_policies=[{'apiVersion':'networking.k8s.io/v1','kind':'NetworkPolicy',
+        'metadata':{'namespace':ns,'name':new_name+'-hub-api'},
+        'spec':{'podSelector':{'matchLabels':{'app':'jupyterhub','component':'hub'}},'policyTypes':['Ingress'],
+            'ingress':[{'from':[{'namespaceSelector':{'matchLabels':{'kubernetes.io/metadata.name':'cps-compute'}},
+                'podSelector':{'matchLabels':copy.deepcopy(labels)}}],
+                'ports':[{'protocol':'TCP','port':8081}]}]}}
+        for ns in ('jupyterhub','cit-jhub')]
     return {'version':1,'proposal_only':True,'deploy_ready':False,'production_qualified':False,
             'preimages':{'deployment_sha256':digest(deployment),'runtime_sha256':digest(runtime),'uid':meta['uid'],'resourceVersion':meta['resourceVersion']},
             'deployment':result,'runtime':cfg,'service':{'apiVersion':'v1','kind':'Service','metadata':{'namespace':'cps-compute','name':new_name},'spec':{'type':'ClusterIP','selector':labels,'ports':[{'name':'https','port':443,'targetPort':ports[0]['name']}]}},
@@ -156,5 +163,6 @@ def prepare(*,deployment,runtime,pilot,tls_secret_ref,ca_configmap_ref,policy_co
             'hub_endpoint':{'origin':'https://'+new_name+'.cps-compute.svc.cluster.local','ca_configmap_ref':copy.deepcopy(ca_configmap_ref)},
             'credential_secret_preimages':copy.deepcopy(credential_secret_metadata or []),
             'fresh_storage':fresh_storage,
+            'network_policies':network_policies,
             'rbac':{'pending':True,'required':'Dedicated SA exact-node GET, target-Pod GET, pilot-namespace ledger GET/PATCH and shape-restricted CM CREATE; explicit SAR and admission qualification required.'},
             'pending':(['SDK allowedOperations and exact allowedTargets enforcement before metadata/NAS changes'] if fresh_storage is not None else [])+['Actual PVC attachment/current-node preflight','Actual new TLS SAN/CA and Secret content verification','Full runtime factory and health-probe qualification','Temporary canonical registrations, alias grants and active storage verification','Legacy Node768 and complete prior inventory compatibility']}

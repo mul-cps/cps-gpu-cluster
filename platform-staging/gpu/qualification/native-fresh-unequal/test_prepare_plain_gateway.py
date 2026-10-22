@@ -134,3 +134,18 @@ def test_optin_pins_exact_nas_targets_before_kubernetes_admission():
  assert r['runtime']['storage']['allowedTargets']==a['fresh_provisioning']
  assert r['runtime']['storage']['allowedTargets']is not a['fresh_provisioning']
  assert any('allowedTargets' in x for x in r['pending'])
+
+def test_hub_ingress_only_exact_temporary_gateway_namespace_label_and_port():
+ a=fixture();r=mod().prepare(**a)
+ policies=r['network_policies'];assert len(policies)==2
+ assert {p['metadata']['namespace'] for p in policies}=={'jupyterhub','cit-jhub'}
+ for p in policies:
+  assert p['apiVersion']=='networking.k8s.io/v1' and p['kind']=='NetworkPolicy'
+  assert p['metadata']['name']==a['new_name']+'-hub-api'
+  assert p['spec']=={'podSelector':{'matchLabels':{'app':'jupyterhub','component':'hub'}},'policyTypes':['Ingress'],
+    'ingress':[{'from':[{'namespaceSelector':{'matchLabels':{'kubernetes.io/metadata.name':'cps-compute'}},
+                       'podSelector':{'matchLabels':{'app.kubernetes.io/name':a['new_name']}}}],
+                'ports':[{'protocol':'TCP','port':8081}]}]}
+ assert r['deployment']['spec']['selector']['matchLabels']=={'app.kubernetes.io/name':a['new_name']}
+ assert 'compute-gateway'not in str(policies)
+ assert a['deployment']['spec']['selector']['matchLabels']=={'app':'old'}
