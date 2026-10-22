@@ -1,0 +1,20 @@
+{
+  "version": 1,
+  "kind": "durable-successor-observer-deployed",
+  "pod_uid": "03ae501b-5b91-4528-bc43-39ab511033ca",
+  "ready": true,
+  "restarts": 0,
+  "runtime_uid": 10001,
+  "direct_sa_admission_cases_passed": 10,
+  "guard_regression": "empty resourceNames admitted in dry-run before OR-parenthesis correction; rejected afterward; no fixture persisted",
+  "policy_typechecking_warnings": [],
+  "actual_service_account_run_once": {
+    "state": "reconciled",
+    "patched": 0
+  },
+  "component_role_uids_preserved": 7,
+  "roles_differing_from_initial_baselines": 5,
+  "automatic_delivery_started": false,
+  "workspace_approved": false,
+  "production_ready": false
+}

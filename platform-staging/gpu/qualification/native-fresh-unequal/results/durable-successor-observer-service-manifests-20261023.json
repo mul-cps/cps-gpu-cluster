@@ -1,0 +1,669 @@
+{
+  "apiVersion": "v1",
+  "kind": "List",
+  "items": [
+    {
+      "apiVersion": "v1",
+      "kind": "ServiceAccount",
+      "metadata": {
+        "namespace": "cps-compute",
+        "name": "cps-runtime-observer"
+      },
+      "automountServiceAccountToken": true
+    },
+    {
+      "apiVersion": "admissionregistration.k8s.io/v1",
+      "kind": "ValidatingAdmissionPolicy",
+      "metadata": {
+        "name": "cps-runtime-observer-role-update"
+      },
+      "spec": {
+        "failurePolicy": "Fail",
+        "matchConstraints": {
+          "resourceRules": [
+            {
+              "apiGroups": [
+                "rbac.authorization.k8s.io"
+              ],
+              "apiVersions": [
+                "v1"
+              ],
+              "operations": [
+                "UPDATE"
+              ],
+              "resources": [
+                "roles"
+              ],
+              "scope": "Namespaced"
+            }
+          ]
+        },
+        "matchConditions": [
+          {
+            "name": "observer-principal",
+            "expression": "request.userInfo.username == \"system:serviceaccount:cps-compute:cps-runtime-observer\""
+          }
+        ],
+        "validations": [
+          {
+            "expression": "(request.namespace == \"cps-compute\" && object.metadata.name == \"cps-native-approval-gateway\" && oldObject.metadata.uid == \"53d402a4-f9db-4c44-8b2f-d9695511313f\" && object.metadata.uid == oldObject.metadata.uid && size(object.rules) == 5 && object.rules[0].apiGroups == [\"\"] && object.rules[0].resources == [\"configmaps\"] && object.rules[0].verbs == [\"get\"] && (!has(object.rules[0].nonResourceURLs) || size(object.rules[0].nonResourceURLs)==0) && has(object.rules[0].resourceNames) && size(object.rules[0].resourceNames) >= 1 && size(object.rules[0].resourceNames) <= 128 && [\"cps-native-approval-ack-gateway\",\"cps-native-approval-publisher-0dde8ab2a41d579c\",\"cps-native-approval-publisher-49f2949766c6aef4\",\"cps-native-approval-publisher-5a911990bb8d4b91\",\"cps-native-approval-publisher-632bf3ab619f4260\",\"cps-native-approval-publisher-87b7793a698b3905\",\"cps-native-approval-publisher-cecf7b14d3f3e3a7\",\"cps-native-approval-publisher-f87cc37755ee79f0\",\"cps-native-approvals-1aaa1faf8212d43e\",\"cps-native-approvals-469422eef284dc8d\",\"cps-native-approvals-587ac69c86a30f11\",\"cps-native-approvals-6f7ce5de9a97d104\",\"cps-native-approvals-7afef9ac52d9887d\",\"cps-native-approvals-a82c95c813e61314\",\"cps-native-approvals-adc8c38626c29ff8\",\"cps-native-approvals-b5691b1a63020645\",\"cps-native-approvals-dba376cc119eaba2\",\"cps-native-approvals-v2-16a5c538c774d433\",\"cps-native-current-approval-gateway\",\"cps-native-head-anchor-5d335769c610da1a\"].all(n,n in object.rules[0].resourceNames) && object.rules[0].resourceNames.all(n,n.matches(\"^[a-z0-9][a-z0-9.-]{0,252}$\")) && object.rules[1].apiGroups == [\"apps\"] && object.rules[1].resources == [\"deployments\"] && object.rules[1].verbs == [\"get\"] && (!has(object.rules[1].nonResourceURLs) || size(object.rules[1].nonResourceURLs)==0) && object.rules[1].resourceNames == [\"compute-gateway\"] && object.rules[2].apiGroups == [\"\"] && object.rules[2].resources == [\"configmaps\"] && object.rules[2].verbs == [\"patch\"] && (!has(object.rules[2].nonResourceURLs) || size(object.rules[2].nonResourceURLs)==0) && object.rules[2].resourceNames == [\"cps-runtime-ack-gateway\"] && object.rules[3].apiGroups == [\"\"] && object.rules[3].resources == [\"pods\"] && object.rules[3].verbs == [\"get\"] && (!has(object.rules[3].nonResourceURLs) || size(object.rules[3].nonResourceURLs)==0) && has(object.rules[3].resourceNames) && size(object.rules[3].resourceNames) >= 1 && size(object.rules[3].resourceNames) <= 128 && [\"compute-gateway-5d5656b5d-mscc6\",\"compute-gateway-6777b47967-d82hf\",\"compute-gateway-69594b9c76-7jz6r\",\"compute-gateway-7695cc756-kqqj2\",\"compute-gateway-7bd5585b5b-9lnh9\",\"compute-gateway-7bd5585b5b-s87fm\",\"compute-gateway-86b9fd5986-qjdmh\",\"compute-gateway-c6658d747-bm6sp\",\"compute-gateway-cf7756d76-xhnf2\"].all(n,n in object.rules[3].resourceNames) && object.rules[3].resourceNames.all(n,n.matches(\"^[a-z0-9][a-z0-9.-]{0,252}$\")) && object.rules[4].apiGroups == [\"apps\"] && object.rules[4].resources == [\"replicasets\"] && object.rules[4].verbs == [\"get\"] && (!has(object.rules[4].nonResourceURLs) || size(object.rules[4].nonResourceURLs)==0) && has(object.rules[4].resourceNames) && size(object.rules[4].resourceNames) >= 1 && size(object.rules[4].resourceNames) <= 128 && [\"compute-gateway-5d5656b5d\",\"compute-gateway-69594b9c76\",\"compute-gateway-7695cc756\",\"compute-gateway-7bd5585b5b\",\"compute-gateway-86b9fd5986\",\"compute-gateway-c6658d747\",\"compute-gateway-cf7756d76\"].all(n,n in object.rules[4].resourceNames) && object.rules[4].resourceNames.all(n,n.matches(\"^[a-z0-9][a-z0-9.-]{0,252}$\"))) || (request.namespace == \"jupyterhub\" && object.metadata.name == \"cps-native-approval-hub-cps\" && oldObject.metadata.uid == \"10ee0f70-e541-4b87-9463-e86eb162d31e\" && object.metadata.uid == oldObject.metadata.uid && size(object.rules) == 6 && object.rules[0].apiGroups == [\"\"] && object.rules[0].resources == [\"configmaps\"] && object.rules[0].verbs == [\"get\"] && (!has(object.rules[0].nonResourceURLs) || size(object.rules[0].nonResourceURLs)==0) && has(object.rules[0].resourceNames) && size(object.rules[0].resourceNames) >= 1 && size(object.rules[0].resourceNames) <= 128 && [\"cps-native-approval-ack-cps-hub\",\"cps-native-approval-publisher-1bf8a08677590e6a\",\"cps-native-approval-publisher-332a6a66b602b4cc\",\"cps-native-approval-publisher-41fe61083b86e5f3\",\"cps-native-approval-publisher-a0d6dc447168b170\",\"cps-native-approval-publisher-a9ba89a074eaf255\",\"cps-native-approval-publisher-ac5f3a9fad18797d\",\"cps-native-approval-publisher-b1d61c9eaf44fba7\",\"cps-native-approval-publisher-ff3070692cbc6174\",\"cps-native-approvals-158270b57439ba84\",\"cps-native-approvals-469422eef284dc8d\",\"cps-native-approvals-587ac69c86a30f11\",\"cps-native-approvals-6f7ce5de9a97d104\",\"cps-native-approvals-722bfe49425bc977\",\"cps-native-approvals-77abea98c5e23210\",\"cps-native-approvals-7afef9ac52d9887d\",\"cps-native-approvals-a82c95c813e61314\",\"cps-native-approvals-adc8c38626c29ff8\",\"cps-native-approvals-v2-16a5c538c774d433\",\"cps-native-current-approval-hub-cps\",\"cps-native-head-anchor-1a47e3d05e25221a\"].all(n,n in object.rules[0].resourceNames) && object.rules[0].resourceNames.all(n,n.matches(\"^[a-z0-9][a-z0-9.-]{0,252}$\")) && object.rules[1].apiGroups == [\"apps\"] && object.rules[1].resources == [\"deployments\"] && object.rules[1].verbs == [\"get\"] && (!has(object.rules[1].nonResourceURLs) || size(object.rules[1].nonResourceURLs)==0) && object.rules[1].resourceNames == [\"hub\"] && object.rules[2].apiGroups == [\"\"] && object.rules[2].resources == [\"configmaps\"] && object.rules[2].verbs == [\"patch\"] && (!has(object.rules[2].nonResourceURLs) || size(object.rules[2].nonResourceURLs)==0) && object.rules[2].resourceNames == [\"cps-runtime-ack-hub-cps\"] && object.rules[3].apiGroups == [\"\"] && object.rules[3].resources == [\"pods\"] && object.rules[3].verbs == [\"get\"] && (!has(object.rules[3].nonResourceURLs) || size(object.rules[3].nonResourceURLs)==0) && has(object.rules[3].resourceNames) && size(object.rules[3].resourceNames) >= 1 && size(object.rules[3].resourceNames) <= 128 && [\"hub-5449d5bd7-mbvxh\",\"hub-5449d5bd7-rbfsv\",\"hub-58d8b5bbc4-gr6dc\",\"hub-5b845677cd-xzmk6\",\"hub-6f6767f848-85x6x\",\"hub-7b77874fb6-29r5c\",\"hub-85df5fcfb4-7tvkd\",\"hub-bfcc8577f-t7ntq\"].all(n,n in object.rules[3].resourceNames) && object.rules[3].resourceNames.all(n,n.matches(\"^[a-z0-9][a-z0-9.-]{0,252}$\")) && object.rules[4].apiGroups == [\"apps\"] && object.rules[4].resources == [\"replicasets\"] && object.rules[4].verbs == [\"get\"] && (!has(object.rules[4].nonResourceURLs) || size(object.rules[4].nonResourceURLs)==0) && has(object.rules[4].resourceNames) && size(object.rules[4].resourceNames) >= 1 && size(object.rules[4].resourceNames) <= 128 && [\"hub-5449d5bd7\",\"hub-58d8b5bbc4\",\"hub-5b845677cd\",\"hub-6f6767f848\",\"hub-7b77874fb6\",\"hub-85df5fcfb4\",\"hub-bfcc8577f\"].all(n,n in object.rules[4].resourceNames) && object.rules[4].resourceNames.all(n,n.matches(\"^[a-z0-9][a-z0-9.-]{0,252}$\")) && object.rules[5].apiGroups == [\"\"] && object.rules[5].resources == [\"configmaps\"] && object.rules[5].verbs == [\"get\"] && (!has(object.rules[5].nonResourceURLs) || size(object.rules[5].nonResourceURLs)==0) && object.rules[5].resourceNames == [\"cps-native-approval-publisher-b1bd001a373d764b\",\"cps-native-approval-reference-9cabd9e795729d9b\",\"cps-native-approvals-v2-16a5c538c774d433\",\"cps-native-hub-v3-3544f598391f0def\",\"cps-native-qualified-reference-128bd4677ff5e083\"]) || (request.namespace == \"jupyterhub\" && object.metadata.name == \"cps-native-approval-gateway\" && oldObject.metadata.uid == \"daa8fb9e-5d4b-4d40-bc74-90c568283e53\" && object.metadata.uid == oldObject.metadata.uid && size(object.rules) == 4 && object.rules[0].apiGroups == [\"\"] && object.rules[0].resources == [\"configmaps\"] && object.rules[0].verbs == [\"get\"] && (!has(object.rules[0].nonResourceURLs) || size(object.rules[0].nonResourceURLs)==0) && has(object.rules[0].resourceNames) && size(object.rules[0].resourceNames) >= 1 && size(object.rules[0].resourceNames) <= 128 && [\"cps-native-approval-ack-cps-hub\",\"cps-native-approvals-158270b57439ba84\",\"cps-native-approvals-469422eef284dc8d\",\"cps-native-approvals-587ac69c86a30f11\",\"cps-native-approvals-6f7ce5de9a97d104\",\"cps-native-approvals-722bfe49425bc977\",\"cps-native-approvals-77abea98c5e23210\",\"cps-native-approvals-7afef9ac52d9887d\",\"cps-native-approvals-a82c95c813e61314\",\"cps-native-approvals-adc8c38626c29ff8\",\"cps-native-approvals-v2-16a5c538c774d433\",\"cps-native-current-approval-hub-cps\",\"cps-native-head-anchor-1a47e3d05e25221a\"].all(n,n in object.rules[0].resourceNames) && object.rules[0].resourceNames.all(n,n.matches(\"^[a-z0-9][a-z0-9.-]{0,252}$\")) && object.rules[1].apiGroups == [\"apps\"] && object.rules[1].resources == [\"deployments\"] && object.rules[1].verbs == [\"get\"] && (!has(object.rules[1].nonResourceURLs) || size(object.rules[1].nonResourceURLs)==0) && object.rules[1].resourceNames == [\"hub\"] && object.rules[2].apiGroups == [\"\"] && object.rules[2].resources == [\"pods\"] && object.rules[2].verbs == [\"get\"] && (!has(object.rules[2].nonResourceURLs) || size(object.rules[2].nonResourceURLs)==0) && has(object.rules[2].resourceNames) && size(object.rules[2].resourceNames) >= 1 && size(object.rules[2].resourceNames) <= 128 && [\"hub-5449d5bd7-mbvxh\",\"hub-5449d5bd7-rbfsv\",\"hub-58d8b5bbc4-gr6dc\",\"hub-5b845677cd-xzmk6\",\"hub-6f6767f848-85x6x\",\"hub-7b77874fb6-29r5c\",\"hub-85df5fcfb4-7tvkd\",\"hub-bfcc8577f-t7ntq\"].all(n,n in object.rules[2].resourceNames) && object.rules[2].resourceNames.all(n,n.matches(\"^[a-z0-9][a-z0-9.-]{0,252}$\")) && object.rules[3].apiGroups == [\"apps\"] && object.rules[3].resources == [\"replicasets\"] && object.rules[3].verbs == [\"get\"] && (!has(object.rules[3].nonResourceURLs) || size(object.rules[3].nonResourceURLs)==0) && has(object.rules[3].resourceNames) && size(object.rules[3].resourceNames) >= 1 && size(object.rules[3].resourceNames) <= 128 && [\"hub-5449d5bd7\",\"hub-58d8b5bbc4\",\"hub-5b845677cd\",\"hub-6f6767f848\",\"hub-7b77874fb6\",\"hub-85df5fcfb4\",\"hub-bfcc8577f\"].all(n,n in object.rules[3].resourceNames) && object.rules[3].resourceNames.all(n,n.matches(\"^[a-z0-9][a-z0-9.-]{0,252}$\"))) || (request.namespace == \"cit-jhub\" && object.metadata.name == \"cps-native-approval-hub-cit\" && oldObject.metadata.uid == \"7999e6fa-8e53-4a1a-aab3-8c4e060c3f3d\" && object.metadata.uid == oldObject.metadata.uid && size(object.rules) == 6 && object.rules[0].apiGroups == [\"\"] && object.rules[0].resources == [\"configmaps\"] && object.rules[0].verbs == [\"get\"] && (!has(object.rules[0].nonResourceURLs) || size(object.rules[0].nonResourceURLs)==0) && has(object.rules[0].resourceNames) && size(object.rules[0].resourceNames) >= 1 && size(object.rules[0].resourceNames) <= 128 && [\"cps-native-approval-ack-cit-hub\",\"cps-native-approval-publisher-0b47c0ac8a87ff90\",\"cps-native-approval-publisher-1ad087a34db020a5\",\"cps-native-approval-publisher-2582508de9684729\",\"cps-native-approval-publisher-31f627008d8398ce\",\"cps-native-approval-publisher-4b5f7b5a0ca3f046\",\"cps-native-approval-publisher-530cb2e2411bfea0\",\"cps-native-approval-publisher-5971c8f8346b6267\",\"cps-native-approval-publisher-d0ea4f1c9beae23e\",\"cps-native-approvals-469422eef284dc8d\",\"cps-native-approvals-587ac69c86a30f11\",\"cps-native-approvals-68526fd11d94362e\",\"cps-native-approvals-6f7ce5de9a97d104\",\"cps-native-approvals-7afef9ac52d9887d\",\"cps-native-approvals-a82c95c813e61314\",\"cps-native-approvals-adc8c38626c29ff8\",\"cps-native-approvals-b1e8c92b1f4814f1\",\"cps-native-approvals-d253cfad6371720a\",\"cps-native-approvals-v2-16a5c538c774d433\",\"cps-native-current-approval-hub-cit\",\"cps-native-head-anchor-c317457911aa257d\"].all(n,n in object.rules[0].resourceNames) && object.rules[0].resourceNames.all(n,n.matches(\"^[a-z0-9][a-z0-9.-]{0,252}$\")) && object.rules[1].apiGroups == [\"apps\"] && object.rules[1].resources == [\"deployments\"] && object.rules[1].verbs == [\"get\"] && (!has(object.rules[1].nonResourceURLs) || size(object.rules[1].nonResourceURLs)==0) && object.rules[1].resourceNames == [\"hub\"] && object.rules[2].apiGroups == [\"\"] && object.rules[2].resources == [\"configmaps\"] && object.rules[2].verbs == [\"patch\"] && (!has(object.rules[2].nonResourceURLs) || size(object.rules[2].nonResourceURLs)==0) && object.rules[2].resourceNames == [\"cps-runtime-ack-hub-cit\"] && object.rules[3].apiGroups == [\"\"] && object.rules[3].resources == [\"pods\"] && object.rules[3].verbs == [\"get\"] && (!has(object.rules[3].nonResourceURLs) || size(object.rules[3].nonResourceURLs)==0) && has(object.rules[3].resourceNames) && size(object.rules[3].resourceNames) >= 1 && size(object.rules[3].resourceNames) <= 128 && [\"hub-57f8d89f5f-f64b4\",\"hub-57f8d89f5f-qdcpq\",\"hub-5c8bbcccd5-g6cs8\",\"hub-69779d474c-k6hlj\",\"hub-859cd57cd-6jx4c\",\"hub-8c48c856c-s6v2v\",\"hub-ffbdbd5b9-nc4sg\"].all(n,n in object.rules[3].resourceNames) && object.rules[3].resourceNames.all(n,n.matches(\"^[a-z0-9][a-z0-9.-]{0,252}$\")) && object.rules[4].apiGroups == [\"apps\"] && object.rules[4].resources == [\"replicasets\"] && object.rules[4].verbs == [\"get\"] && (!has(object.rules[4].nonResourceURLs) || size(object.rules[4].nonResourceURLs)==0) && has(object.rules[4].resourceNames) && size(object.rules[4].resourceNames) >= 1 && size(object.rules[4].resourceNames) <= 128 && [\"hub-57f8d89f5f\",\"hub-5c8bbcccd5\",\"hub-69779d474c\",\"hub-859cd57cd\",\"hub-8c48c856c\",\"hub-ffbdbd5b9\"].all(n,n in object.rules[4].resourceNames) && object.rules[4].resourceNames.all(n,n.matches(\"^[a-z0-9][a-z0-9.-]{0,252}$\")) && object.rules[5].apiGroups == [\"\"] && object.rules[5].resources == [\"configmaps\"] && object.rules[5].verbs == [\"get\"] && (!has(object.rules[5].nonResourceURLs) || size(object.rules[5].nonResourceURLs)==0) && object.rules[5].resourceNames == [\"cps-native-approval-publisher-7b737ee500bcede8\",\"cps-native-approval-reference-59d8d8115965f70c\",\"cps-native-approvals-v2-16a5c538c774d433\",\"cps-native-hub-v3-7298ddd35587bd83\",\"cps-native-qualified-reference-128bd4677ff5e083\"]) || (request.namespace == \"cit-jhub\" && object.metadata.name == \"cps-native-approval-gateway\" && oldObject.metadata.uid == \"ac9e0d73-3aee-4d9a-ada1-3d098dc8057b\" && object.metadata.uid == oldObject.metadata.uid && size(object.rules) == 4 && object.rules[0].apiGroups == [\"\"] && object.rules[0].resources == [\"configmaps\"] && object.rules[0].verbs == [\"get\"] && (!has(object.rules[0].nonResourceURLs) || size(object.rules[0].nonResourceURLs)==0) && has(object.rules[0].resourceNames) && size(object.rules[0].resourceNames) >= 1 && size(object.rules[0].resourceNames) <= 128 && [\"cps-native-approval-ack-cit-hub\",\"cps-native-approvals-469422eef284dc8d\",\"cps-native-approvals-587ac69c86a30f11\",\"cps-native-approvals-68526fd11d94362e\",\"cps-native-approvals-6f7ce5de9a97d104\",\"cps-native-approvals-7afef9ac52d9887d\",\"cps-native-approvals-a82c95c813e61314\",\"cps-native-approvals-adc8c38626c29ff8\",\"cps-native-approvals-b1e8c92b1f4814f1\",\"cps-native-approvals-d253cfad6371720a\",\"cps-native-approvals-v2-16a5c538c774d433\",\"cps-native-current-approval-hub-cit\",\"cps-native-head-anchor-c317457911aa257d\"].all(n,n in object.rules[0].resourceNames) && object.rules[0].resourceNames.all(n,n.matches(\"^[a-z0-9][a-z0-9.-]{0,252}$\")) && object.rules[1].apiGroups == [\"apps\"] && object.rules[1].resources == [\"deployments\"] && object.rules[1].verbs == [\"get\"] && (!has(object.rules[1].nonResourceURLs) || size(object.rules[1].nonResourceURLs)==0) && object.rules[1].resourceNames == [\"hub\"] && object.rules[2].apiGroups == [\"\"] && object.rules[2].resources == [\"pods\"] && object.rules[2].verbs == [\"get\"] && (!has(object.rules[2].nonResourceURLs) || size(object.rules[2].nonResourceURLs)==0) && has(object.rules[2].resourceNames) && size(object.rules[2].resourceNames) >= 1 && size(object.rules[2].resourceNames) <= 128 && [\"hub-57f8d89f5f-f64b4\",\"hub-57f8d89f5f-qdcpq\",\"hub-5c8bbcccd5-g6cs8\",\"hub-69779d474c-k6hlj\",\"hub-859cd57cd-6jx4c\",\"hub-8c48c856c-s6v2v\",\"hub-ffbdbd5b9-nc4sg\"].all(n,n in object.rules[2].resourceNames) && object.rules[2].resourceNames.all(n,n.matches(\"^[a-z0-9][a-z0-9.-]{0,252}$\")) && object.rules[3].apiGroups == [\"apps\"] && object.rules[3].resources == [\"replicasets\"] && object.rules[3].verbs == [\"get\"] && (!has(object.rules[3].nonResourceURLs) || size(object.rules[3].nonResourceURLs)==0) && has(object.rules[3].resourceNames) && size(object.rules[3].resourceNames) >= 1 && size(object.rules[3].resourceNames) <= 128 && [\"hub-57f8d89f5f\",\"hub-5c8bbcccd5\",\"hub-69779d474c\",\"hub-859cd57cd\",\"hub-8c48c856c\",\"hub-ffbdbd5b9\"].all(n,n in object.rules[3].resourceNames) && object.rules[3].resourceNames.all(n,n.matches(\"^[a-z0-9][a-z0-9.-]{0,252}$\"))) || (request.namespace == \"cps-native-runtime\" && object.metadata.name == \"cps-native-approval-node\" && oldObject.metadata.uid == \"5a058e0f-b5fd-40bd-858a-885aaa14d6d5\" && object.metadata.uid == oldObject.metadata.uid && size(object.rules) == 6 && object.rules[0].apiGroups == [\"\"] && object.rules[0].resources == [\"configmaps\"] && object.rules[0].verbs == [\"get\"] && (!has(object.rules[0].nonResourceURLs) || size(object.rules[0].nonResourceURLs)==0) && has(object.rules[0].resourceNames) && size(object.rules[0].resourceNames) >= 1 && size(object.rules[0].resourceNames) <= 128 && [\"cps-runtime-ack-node\",\"cps-runtime-anchor-node-06ad00d5b50947e1\",\"cps-runtime-head-node\",\"cps-runtime-initial-approval-cbf7d39ba84ad7f8\"].all(n,n in object.rules[0].resourceNames) && object.rules[0].resourceNames.all(n,n.matches(\"^[a-z0-9][a-z0-9.-]{0,252}$\")) && object.rules[1].apiGroups == [\"\"] && object.rules[1].resources == [\"pods\"] && object.rules[1].verbs == [\"get\"] && (!has(object.rules[1].nonResourceURLs) || size(object.rules[1].nonResourceURLs)==0) && has(object.rules[1].resourceNames) && size(object.rules[1].resourceNames) >= 1 && size(object.rules[1].resourceNames) <= 128 && [\"cps-native-node-agent-54f79cf6cd-z5wnd\"].all(n,n in object.rules[1].resourceNames) && object.rules[1].resourceNames.all(n,n.matches(\"^[a-z0-9][a-z0-9.-]{0,252}$\")) && object.rules[2].apiGroups == [\"apps\"] && object.rules[2].resources == [\"replicasets\"] && object.rules[2].verbs == [\"get\"] && (!has(object.rules[2].nonResourceURLs) || size(object.rules[2].nonResourceURLs)==0) && has(object.rules[2].resourceNames) && size(object.rules[2].resourceNames) >= 1 && size(object.rules[2].resourceNames) <= 128 && [\"cps-native-node-agent-54f79cf6cd\"].all(n,n in object.rules[2].resourceNames) && object.rules[2].resourceNames.all(n,n.matches(\"^[a-z0-9][a-z0-9.-]{0,252}$\")) && object.rules[3].apiGroups == [\"apps\"] && object.rules[3].resources == [\"deployments\"] && object.rules[3].verbs == [\"get\"] && (!has(object.rules[3].nonResourceURLs) || size(object.rules[3].nonResourceURLs)==0) && object.rules[3].resourceNames == [\"cps-native-node-agent\"] && object.rules[4].apiGroups == [\"\"] && object.rules[4].resources == [\"serviceaccounts\"] && object.rules[4].verbs == [\"get\"] && (!has(object.rules[4].nonResourceURLs) || size(object.rules[4].nonResourceURLs)==0) && object.rules[4].resourceNames == [\"cps-native-node-agent\"] && object.rules[5].apiGroups == [\"\"] && object.rules[5].resources == [\"configmaps\"] && object.rules[5].verbs == [\"patch\"] && (!has(object.rules[5].nonResourceURLs) || size(object.rules[5].nonResourceURLs)==0) && object.rules[5].resourceNames == [\"cps-runtime-ack-node\"]) || (request.namespace == \"cps-native-runtime\" && object.metadata.name == \"cps-native-approval-gateway\" && oldObject.metadata.uid == \"0be9e55b-c3e3-4fe7-b28a-8c067a4300d0\" && object.metadata.uid == oldObject.metadata.uid && size(object.rules) == 5 && object.rules[0].apiGroups == [\"\"] && object.rules[0].resources == [\"configmaps\"] && object.rules[0].verbs == [\"get\"] && (!has(object.rules[0].nonResourceURLs) || size(object.rules[0].nonResourceURLs)==0) && has(object.rules[0].resourceNames) && size(object.rules[0].resourceNames) >= 1 && size(object.rules[0].resourceNames) <= 128 && [\"cps-runtime-ack-node\",\"cps-runtime-anchor-node-06ad00d5b50947e1\",\"cps-runtime-head-node\",\"cps-runtime-initial-approval-cbf7d39ba84ad7f8\"].all(n,n in object.rules[0].resourceNames) && object.rules[0].resourceNames.all(n,n.matches(\"^[a-z0-9][a-z0-9.-]{0,252}$\")) && object.rules[1].apiGroups == [\"\"] && object.rules[1].resources == [\"pods\"] && object.rules[1].verbs == [\"get\"] && (!has(object.rules[1].nonResourceURLs) || size(object.rules[1].nonResourceURLs)==0) && has(object.rules[1].resourceNames) && size(object.rules[1].resourceNames) >= 1 && size(object.rules[1].resourceNames) <= 128 && [\"cps-native-node-agent-54f79cf6cd-z5wnd\"].all(n,n in object.rules[1].resourceNames) && object.rules[1].resourceNames.all(n,n.matches(\"^[a-z0-9][a-z0-9.-]{0,252}$\")) && object.rules[2].apiGroups == [\"apps\"] && object.rules[2].resources == [\"replicasets\"] && object.rules[2].verbs == [\"get\"] && (!has(object.rules[2].nonResourceURLs) || size(object.rules[2].nonResourceURLs)==0) && has(object.rules[2].resourceNames) && size(object.rules[2].resourceNames) >= 1 && size(object.rules[2].resourceNames) <= 128 && [\"cps-native-node-agent-54f79cf6cd\"].all(n,n in object.rules[2].resourceNames) && object.rules[2].resourceNames.all(n,n.matches(\"^[a-z0-9][a-z0-9.-]{0,252}$\")) && object.rules[3].apiGroups == [\"apps\"] && object.rules[3].resources == [\"deployments\"] && object.rules[3].verbs == [\"get\"] && (!has(object.rules[3].nonResourceURLs) || size(object.rules[3].nonResourceURLs)==0) && object.rules[3].resourceNames == [\"cps-native-node-agent\"] && object.rules[4].apiGroups == [\"\"] && object.rules[4].resources == [\"serviceaccounts\"] && object.rules[4].verbs == [\"get\"] && (!has(object.rules[4].nonResourceURLs) || size(object.rules[4].nonResourceURLs)==0) && object.rules[4].resourceNames == [\"cps-native-node-agent\"])",
+            "message": "Only seven pinned reader Roles and bounded named GET expansions are permitted."
+          },
+          {
+            "expression": "object.metadata.name == oldObject.metadata.name && object.metadata.namespace == oldObject.metadata.namespace && has(object.metadata.labels)==has(oldObject.metadata.labels) && (!has(oldObject.metadata.labels)||object.metadata.labels==oldObject.metadata.labels) && has(object.metadata.annotations)==has(oldObject.metadata.annotations) && (!has(oldObject.metadata.annotations)||object.metadata.annotations==oldObject.metadata.annotations) && has(object.metadata.ownerReferences)==has(oldObject.metadata.ownerReferences) && (!has(oldObject.metadata.ownerReferences)||object.metadata.ownerReferences==oldObject.metadata.ownerReferences) && has(object.metadata.finalizers)==has(oldObject.metadata.finalizers) && (!has(oldObject.metadata.finalizers)||object.metadata.finalizers==oldObject.metadata.finalizers)",
+            "message": "Role identity and metadata must stay unchanged."
+          }
+        ]
+      }
+    },
+    {
+      "apiVersion": "admissionregistration.k8s.io/v1",
+      "kind": "ValidatingAdmissionPolicyBinding",
+      "metadata": {
+        "name": "cps-runtime-observer-role-update"
+      },
+      "spec": {
+        "policyName": "cps-runtime-observer-role-update",
+        "validationActions": [
+          "Deny"
+        ]
+      }
+    },
+    {
+      "apiVersion": "rbac.authorization.k8s.io/v1",
+      "kind": "Role",
+      "metadata": {
+        "name": "cps-runtime-observer-operator",
+        "namespace": "cps-compute"
+      },
+      "rules": [
+        {
+          "apiGroups": [
+            "rbac.authorization.k8s.io"
+          ],
+          "resources": [
+            "roles"
+          ],
+          "verbs": [
+            "get",
+            "patch",
+            "escalate"
+          ],
+          "resourceNames": [
+            "cps-native-approval-gateway"
+          ]
+        },
+        {
+          "apiGroups": [
+            "apps"
+          ],
+          "resources": [
+            "deployments"
+          ],
+          "verbs": [
+            "get"
+          ],
+          "resourceNames": [
+            "compute-gateway"
+          ]
+        },
+        {
+          "apiGroups": [
+            ""
+          ],
+          "resources": [
+            "serviceaccounts"
+          ],
+          "verbs": [
+            "get"
+          ],
+          "resourceNames": [
+            "cps-compute-controller"
+          ]
+        },
+        {
+          "apiGroups": [
+            ""
+          ],
+          "resources": [
+            "pods"
+          ],
+          "verbs": [
+            "get",
+            "list"
+          ]
+        },
+        {
+          "apiGroups": [
+            "apps"
+          ],
+          "resources": [
+            "replicasets"
+          ],
+          "verbs": [
+            "get"
+          ]
+        },
+        {
+          "apiGroups": [
+            ""
+          ],
+          "resources": [
+            "configmaps"
+          ],
+          "verbs": [
+            "get"
+          ],
+          "resourceNames": [
+            "cps-runtime-ack-gateway",
+            "cps-runtime-anchor-gateway-7f8d4c449f924b7a",
+            "cps-runtime-head-gateway",
+            "cps-runtime-initial-approval-cbf7d39ba84ad7f8"
+          ]
+        }
+      ]
+    },
+    {
+      "apiVersion": "rbac.authorization.k8s.io/v1",
+      "kind": "RoleBinding",
+      "metadata": {
+        "name": "cps-runtime-observer-operator",
+        "namespace": "cps-compute"
+      },
+      "subjects": [
+        {
+          "kind": "ServiceAccount",
+          "namespace": "cps-compute",
+          "name": "cps-runtime-observer"
+        }
+      ],
+      "roleRef": {
+        "apiGroup": "rbac.authorization.k8s.io",
+        "kind": "Role",
+        "name": "cps-runtime-observer-operator"
+      }
+    },
+    {
+      "apiVersion": "rbac.authorization.k8s.io/v1",
+      "kind": "Role",
+      "metadata": {
+        "name": "cps-runtime-observer-operator",
+        "namespace": "cit-jhub"
+      },
+      "rules": [
+        {
+          "apiGroups": [
+            "rbac.authorization.k8s.io"
+          ],
+          "resources": [
+            "roles"
+          ],
+          "verbs": [
+            "get",
+            "patch",
+            "escalate"
+          ],
+          "resourceNames": [
+            "cps-native-approval-gateway",
+            "cps-native-approval-hub-cit"
+          ]
+        },
+        {
+          "apiGroups": [
+            "apps"
+          ],
+          "resources": [
+            "deployments"
+          ],
+          "verbs": [
+            "get"
+          ],
+          "resourceNames": [
+            "hub"
+          ]
+        },
+        {
+          "apiGroups": [
+            ""
+          ],
+          "resources": [
+            "serviceaccounts"
+          ],
+          "verbs": [
+            "get"
+          ],
+          "resourceNames": [
+            "hub"
+          ]
+        },
+        {
+          "apiGroups": [
+            ""
+          ],
+          "resources": [
+            "pods"
+          ],
+          "verbs": [
+            "get",
+            "list"
+          ]
+        },
+        {
+          "apiGroups": [
+            "apps"
+          ],
+          "resources": [
+            "replicasets"
+          ],
+          "verbs": [
+            "get"
+          ]
+        },
+        {
+          "apiGroups": [
+            ""
+          ],
+          "resources": [
+            "configmaps"
+          ],
+          "verbs": [
+            "get"
+          ],
+          "resourceNames": [
+            "cps-runtime-ack-hub-cit",
+            "cps-runtime-anchor-hub-cit-e6a1ddb089fb7670",
+            "cps-runtime-head-hub-cit",
+            "cps-runtime-initial-approval-cbf7d39ba84ad7f8"
+          ]
+        }
+      ]
+    },
+    {
+      "apiVersion": "rbac.authorization.k8s.io/v1",
+      "kind": "RoleBinding",
+      "metadata": {
+        "name": "cps-runtime-observer-operator",
+        "namespace": "cit-jhub"
+      },
+      "subjects": [
+        {
+          "kind": "ServiceAccount",
+          "namespace": "cps-compute",
+          "name": "cps-runtime-observer"
+        }
+      ],
+      "roleRef": {
+        "apiGroup": "rbac.authorization.k8s.io",
+        "kind": "Role",
+        "name": "cps-runtime-observer-operator"
+      }
+    },
+    {
+      "apiVersion": "rbac.authorization.k8s.io/v1",
+      "kind": "Role",
+      "metadata": {
+        "name": "cps-runtime-observer-operator",
+        "namespace": "jupyterhub"
+      },
+      "rules": [
+        {
+          "apiGroups": [
+            "rbac.authorization.k8s.io"
+          ],
+          "resources": [
+            "roles"
+          ],
+          "verbs": [
+            "get",
+            "patch",
+            "escalate"
+          ],
+          "resourceNames": [
+            "cps-native-approval-gateway",
+            "cps-native-approval-hub-cps"
+          ]
+        },
+        {
+          "apiGroups": [
+            "apps"
+          ],
+          "resources": [
+            "deployments"
+          ],
+          "verbs": [
+            "get"
+          ],
+          "resourceNames": [
+            "hub"
+          ]
+        },
+        {
+          "apiGroups": [
+            ""
+          ],
+          "resources": [
+            "serviceaccounts"
+          ],
+          "verbs": [
+            "get"
+          ],
+          "resourceNames": [
+            "hub"
+          ]
+        },
+        {
+          "apiGroups": [
+            ""
+          ],
+          "resources": [
+            "pods"
+          ],
+          "verbs": [
+            "get",
+            "list"
+          ]
+        },
+        {
+          "apiGroups": [
+            "apps"
+          ],
+          "resources": [
+            "replicasets"
+          ],
+          "verbs": [
+            "get"
+          ]
+        },
+        {
+          "apiGroups": [
+            ""
+          ],
+          "resources": [
+            "configmaps"
+          ],
+          "verbs": [
+            "get"
+          ],
+          "resourceNames": [
+            "cps-runtime-ack-hub-cps",
+            "cps-runtime-anchor-hub-cps-463480721f0c35a9",
+            "cps-runtime-head-hub-cps",
+            "cps-runtime-initial-approval-cbf7d39ba84ad7f8"
+          ]
+        }
+      ]
+    },
+    {
+      "apiVersion": "rbac.authorization.k8s.io/v1",
+      "kind": "RoleBinding",
+      "metadata": {
+        "name": "cps-runtime-observer-operator",
+        "namespace": "jupyterhub"
+      },
+      "subjects": [
+        {
+          "kind": "ServiceAccount",
+          "namespace": "cps-compute",
+          "name": "cps-runtime-observer"
+        }
+      ],
+      "roleRef": {
+        "apiGroup": "rbac.authorization.k8s.io",
+        "kind": "Role",
+        "name": "cps-runtime-observer-operator"
+      }
+    },
+    {
+      "apiVersion": "rbac.authorization.k8s.io/v1",
+      "kind": "Role",
+      "metadata": {
+        "name": "cps-runtime-observer-operator",
+        "namespace": "cps-native-runtime"
+      },
+      "rules": [
+        {
+          "apiGroups": [
+            "rbac.authorization.k8s.io"
+          ],
+          "resources": [
+            "roles"
+          ],
+          "verbs": [
+            "get",
+            "patch",
+            "escalate"
+          ],
+          "resourceNames": [
+            "cps-native-approval-gateway",
+            "cps-native-approval-node"
+          ]
+        },
+        {
+          "apiGroups": [
+            "apps"
+          ],
+          "resources": [
+            "deployments"
+          ],
+          "verbs": [
+            "get"
+          ],
+          "resourceNames": [
+            "cps-native-node-agent"
+          ]
+        },
+        {
+          "apiGroups": [
+            ""
+          ],
+          "resources": [
+            "serviceaccounts"
+          ],
+          "verbs": [
+            "get"
+          ],
+          "resourceNames": [
+            "cps-native-node-agent"
+          ]
+        },
+        {
+          "apiGroups": [
+            ""
+          ],
+          "resources": [
+            "pods"
+          ],
+          "verbs": [
+            "get",
+            "list"
+          ]
+        },
+        {
+          "apiGroups": [
+            "apps"
+          ],
+          "resources": [
+            "replicasets"
+          ],
+          "verbs": [
+            "get"
+          ]
+        },
+        {
+          "apiGroups": [
+            ""
+          ],
+          "resources": [
+            "configmaps"
+          ],
+          "verbs": [
+            "get"
+          ],
+          "resourceNames": [
+            "cps-native-gpu-allocations",
+            "cps-native147-qualification-6a129169a6afef2d",
+            "cps-predecessor-ledger-04520da78adf531e",
+            "cps-runtime-ack-node",
+            "cps-runtime-anchor-node-06ad00d5b50947e1",
+            "cps-runtime-bootstrap-held",
+            "cps-runtime-deployment-31a3b77cbb519d73",
+            "cps-runtime-head-node",
+            "cps-runtime-initial-approval-cbf7d39ba84ad7f8",
+            "cps-runtime-node-config-7438f0696323d4e6",
+            "cps-runtime-node-config-bb3adac74ec58c5b",
+            "cps-runtime-terminal-index-815719b2e259a18d",
+            "kube-root-ca.crt"
+          ]
+        }
+      ]
+    },
+    {
+      "apiVersion": "rbac.authorization.k8s.io/v1",
+      "kind": "RoleBinding",
+      "metadata": {
+        "name": "cps-runtime-observer-operator",
+        "namespace": "cps-native-runtime"
+      },
+      "subjects": [
+        {
+          "kind": "ServiceAccount",
+          "namespace": "cps-compute",
+          "name": "cps-runtime-observer"
+        }
+      ],
+      "roleRef": {
+        "apiGroup": "rbac.authorization.k8s.io",
+        "kind": "Role",
+        "name": "cps-runtime-observer-operator"
+      }
+    },
+    {
+      "apiVersion": "v1",
+      "kind": "ConfigMap",
+      "metadata": {
+        "namespace": "cps-compute",
+        "name": "cps-runtime-observer-inputs-b84b1782cd2b7e32"
+      },
+      "immutable": true,
+      "data": {
+        "release.json": "{\"head_get_rows\":[{\"index\":0,\"name\":\"cps-native-approval-gateway\",\"namespace\":\"cps-compute\"},{\"index\":0,\"name\":\"cps-native-approval-hub-cps\",\"namespace\":\"jupyterhub\"},{\"index\":0,\"name\":\"cps-native-approval-gateway\",\"namespace\":\"jupyterhub\"},{\"index\":0,\"name\":\"cps-native-approval-hub-cit\",\"namespace\":\"cit-jhub\"},{\"index\":0,\"name\":\"cps-native-approval-gateway\",\"namespace\":\"cit-jhub\"},{\"index\":0,\"name\":\"cps-native-approval-node\",\"namespace\":\"cps-native-runtime\"},{\"index\":0,\"name\":\"cps-native-approval-gateway\",\"namespace\":\"cps-native-runtime\"}],\"heads\":{\"gateway\":{\"anchor\":{\"initial\":{\"data_sha256\":\"sha256:445810fd8e8d1020f05f642e8c9b65128c7c5e01f7228b7edc4b2611d48a0d8e\",\"name\":\"cps-runtime-initial-approval-cbf7d39ba84ad7f8\",\"namespace\":\"cps-compute\",\"policy_hash\":\"sha256:332d14fb9e510b9810feffb8d40b408743f9679ebd13ca1ba0e1077d666e9281\",\"revision\":\"sha256:cbf7d39ba84ad7f882d62fb8ff73fe76a878ebae83c0b87b6cf54b586e67f439\",\"uid\":\"08ffca42-0b86-48d4-afa7-ee9d0fa5902f\"},\"pointer\":{\"key\":\"head.json\",\"name\":\"cps-runtime-head-gateway\",\"namespace\":\"cps-compute\",\"uid\":\"0711d5fc-e76f-4e4f-adde-cf996af997c3\"},\"version\":1},\"projection\":{\"data_sha256\":\"sha256:2468908639eb730a05b0874698cc9fb185f1088068855d571a708a1fbec71bd4\",\"key\":\"anchor.json\",\"name\":\"cps-runtime-anchor-gateway-7f8d4c449f924b7a\",\"namespace\":\"cps-compute\",\"resourceVersion\":\"380285774\",\"uid\":\"61a58ebe-d475-477a-b63c-5fe354759a9e\"},\"version\":2},\"hub:cit\":{\"anchor\":{\"initial\":{\"data_sha256\":\"sha256:445810fd8e8d1020f05f642e8c9b65128c7c5e01f7228b7edc4b2611d48a0d8e\",\"name\":\"cps-runtime-initial-approval-cbf7d39ba84ad7f8\",\"namespace\":\"cit-jhub\",\"policy_hash\":\"sha256:332d14fb9e510b9810feffb8d40b408743f9679ebd13ca1ba0e1077d666e9281\",\"revision\":\"sha256:cbf7d39ba84ad7f882d62fb8ff73fe76a878ebae83c0b87b6cf54b586e67f439\",\"uid\":\"dcddfcf0-4b61-46a2-9fab-6a7b172e25f8\"},\"pointer\":{\"key\":\"head.json\",\"name\":\"cps-runtime-head-hub-cit\",\"namespace\":\"cit-jhub\",\"uid\":\"3c2801b1-1e13-43c7-91b4-655ebf415e11\"},\"version\":1},\"projection\":{\"data_sha256\":\"sha256:650a8bc5ba24d4179ee8bf1b77e301888cb25be5e9486a0e1cdf52f9bfc38bab\",\"key\":\"anchor.json\",\"name\":\"cps-runtime-anchor-hub-cit-e6a1ddb089fb7670\",\"namespace\":\"cit-jhub\",\"resourceVersion\":\"380285807\",\"uid\":\"89280e24-2ad6-46f5-aece-a9fd6c3a9cfb\"},\"version\":2},\"hub:cps\":{\"anchor\":{\"initial\":{\"data_sha256\":\"sha256:445810fd8e8d1020f05f642e8c9b65128c7c5e01f7228b7edc4b2611d48a0d8e\",\"name\":\"cps-runtime-initial-approval-cbf7d39ba84ad7f8\",\"namespace\":\"jupyterhub\",\"policy_hash\":\"sha256:332d14fb9e510b9810feffb8d40b408743f9679ebd13ca1ba0e1077d666e9281\",\"revision\":\"sha256:cbf7d39ba84ad7f882d62fb8ff73fe76a878ebae83c0b87b6cf54b586e67f439\",\"uid\":\"6c44f0b0-845f-43a8-80c4-1921a848c105\"},\"pointer\":{\"key\":\"head.json\",\"name\":\"cps-runtime-head-hub-cps\",\"namespace\":\"jupyterhub\",\"uid\":\"89dc195a-38c8-413d-bef7-fbe0d7e1c11d\"},\"version\":1},\"projection\":{\"data_sha256\":\"sha256:72b44e01e3b2b6463c65ff66c3c711f80e4e0fac8b503f8a4aca0ea4244396c4\",\"key\":\"anchor.json\",\"name\":\"cps-runtime-anchor-hub-cps-463480721f0c35a9\",\"namespace\":\"jupyterhub\",\"resourceVersion\":\"380285794\",\"uid\":\"dfd20b9f-b20b-41c9-ad3a-b97e2fa753de\"},\"version\":2},\"node\":{\"anchor\":{\"initial\":{\"data_sha256\":\"sha256:445810fd8e8d1020f05f642e8c9b65128c7c5e01f7228b7edc4b2611d48a0d8e\",\"name\":\"cps-runtime-initial-approval-cbf7d39ba84ad7f8\",\"namespace\":\"cps-native-runtime\",\"policy_hash\":\"sha256:332d14fb9e510b9810feffb8d40b408743f9679ebd13ca1ba0e1077d666e9281\",\"revision\":\"sha256:cbf7d39ba84ad7f882d62fb8ff73fe76a878ebae83c0b87b6cf54b586e67f439\",\"uid\":\"1552cce9-1ba8-4f4d-8591-365ae3e78443\"},\"pointer\":{\"key\":\"head.json\",\"name\":\"cps-runtime-head-node\",\"namespace\":\"cps-native-runtime\",\"uid\":\"bfdd2fcc-a882-4994-b6fa-2d95b9cdbc07\"},\"version\":1},\"projection\":{\"data_sha256\":\"sha256:0b445e9ad82824515ae94ff3828bd33773e6c6288f2fc7bdf69660e7d1be3d8e\",\"key\":\"anchor.json\",\"name\":\"cps-runtime-anchor-node-06ad00d5b50947e1\",\"namespace\":\"cps-native-runtime\",\"resourceVersion\":\"380285750\",\"uid\":\"63f24cec-6434-4391-9ad4-c0de2447914a\"},\"version\":2}},\"held_node_template_sha256\":null,\"node_configuration\":{\"data_sha256\":\"sha256:fdef80a7209e33e96dbf96e265caf2858591cecb7dc225534b8e4072b25a5e8a\",\"key\":\"config.json\",\"name\":\"cps-runtime-node-config-bb3adac74ec58c5b\",\"namespace\":\"cps-native-runtime\",\"resourceVersion\":\"380311409\",\"uid\":\"1160cf1b-4ada-4735-9f33-be07104563d6\"},\"roles\":[{\"name\":\"cps-native-approval-gateway\",\"namespace\":\"cps-compute\",\"rules\":[{\"apiGroups\":[\"\"],\"resourceNames\":[\"cps-native-approval-ack-gateway\",\"cps-native-approval-publisher-0dde8ab2a41d579c\",\"cps-native-approval-publisher-49f2949766c6aef4\",\"cps-native-approval-publisher-5a911990bb8d4b91\",\"cps-native-approval-publisher-632bf3ab619f4260\",\"cps-native-approval-publisher-87b7793a698b3905\",\"cps-native-approval-publisher-cecf7b14d3f3e3a7\",\"cps-native-approval-publisher-f87cc37755ee79f0\",\"cps-native-approvals-1aaa1faf8212d43e\",\"cps-native-approvals-469422eef284dc8d\",\"cps-native-approvals-587ac69c86a30f11\",\"cps-native-approvals-6f7ce5de9a97d104\",\"cps-native-approvals-7afef9ac52d9887d\",\"cps-native-approvals-a82c95c813e61314\",\"cps-native-approvals-adc8c38626c29ff8\",\"cps-native-approvals-b5691b1a63020645\",\"cps-native-approvals-dba376cc119eaba2\",\"cps-native-approvals-v2-16a5c538c774d433\",\"cps-native-current-approval-gateway\",\"cps-native-head-anchor-5d335769c610da1a\"],\"resources\":[\"configmaps\"],\"verbs\":[\"get\"]},{\"apiGroups\":[\"apps\"],\"resourceNames\":[\"compute-gateway\"],\"resources\":[\"deployments\"],\"verbs\":[\"get\"]},{\"apiGroups\":[\"\"],\"resourceNames\":[\"cps-runtime-ack-gateway\"],\"resources\":[\"configmaps\"],\"verbs\":[\"patch\"]},{\"apiGroups\":[\"\"],\"resourceNames\":[\"compute-gateway-5d5656b5d-mscc6\",\"compute-gateway-6777b47967-d82hf\",\"compute-gateway-69594b9c76-7jz6r\",\"compute-gateway-7695cc756-kqqj2\",\"compute-gateway-7bd5585b5b-9lnh9\",\"compute-gateway-7bd5585b5b-s87fm\",\"compute-gateway-86b9fd5986-qjdmh\",\"compute-gateway-c6658d747-bm6sp\",\"compute-gateway-cf7756d76-xhnf2\"],\"resources\":[\"pods\"],\"verbs\":[\"get\"]},{\"apiGroups\":[\"apps\"],\"resourceNames\":[\"compute-gateway-5d5656b5d\",\"compute-gateway-69594b9c76\",\"compute-gateway-7695cc756\",\"compute-gateway-7bd5585b5b\",\"compute-gateway-86b9fd5986\",\"compute-gateway-c6658d747\",\"compute-gateway-cf7756d76\"],\"resources\":[\"replicasets\"],\"verbs\":[\"get\"]}],\"uid\":\"53d402a4-f9db-4c44-8b2f-d9695511313f\"},{\"name\":\"cps-native-approval-hub-cps\",\"namespace\":\"jupyterhub\",\"rules\":[{\"apiGroups\":[\"\"],\"resourceNames\":[\"cps-native-approval-ack-cps-hub\",\"cps-native-approval-publisher-1bf8a08677590e6a\",\"cps-native-approval-publisher-332a6a66b602b4cc\",\"cps-native-approval-publisher-41fe61083b86e5f3\",\"cps-native-approval-publisher-a0d6dc447168b170\",\"cps-native-approval-publisher-a9ba89a074eaf255\",\"cps-native-approval-publisher-ac5f3a9fad18797d\",\"cps-native-approval-publisher-b1d61c9eaf44fba7\",\"cps-native-approval-publisher-ff3070692cbc6174\",\"cps-native-approvals-158270b57439ba84\",\"cps-native-approvals-469422eef284dc8d\",\"cps-native-approvals-587ac69c86a30f11\",\"cps-native-approvals-6f7ce5de9a97d104\",\"cps-native-approvals-722bfe49425bc977\",\"cps-native-approvals-77abea98c5e23210\",\"cps-native-approvals-7afef9ac52d9887d\",\"cps-native-approvals-a82c95c813e61314\",\"cps-native-approvals-adc8c38626c29ff8\",\"cps-native-approvals-v2-16a5c538c774d433\",\"cps-native-current-approval-hub-cps\",\"cps-native-head-anchor-1a47e3d05e25221a\"],\"resources\":[\"configmaps\"],\"verbs\":[\"get\"]},{\"apiGroups\":[\"apps\"],\"resourceNames\":[\"hub\"],\"resources\":[\"deployments\"],\"verbs\":[\"get\"]},{\"apiGroups\":[\"\"],\"resourceNames\":[\"cps-runtime-ack-hub-cps\"],\"resources\":[\"configmaps\"],\"verbs\":[\"patch\"]},{\"apiGroups\":[\"\"],\"resourceNames\":[\"hub-5449d5bd7-mbvxh\",\"hub-5449d5bd7-rbfsv\",\"hub-58d8b5bbc4-gr6dc\",\"hub-5b845677cd-xzmk6\",\"hub-6f6767f848-85x6x\",\"hub-7b77874fb6-29r5c\",\"hub-85df5fcfb4-7tvkd\",\"hub-bfcc8577f-t7ntq\"],\"resources\":[\"pods\"],\"verbs\":[\"get\"]},{\"apiGroups\":[\"apps\"],\"resourceNames\":[\"hub-5449d5bd7\",\"hub-58d8b5bbc4\",\"hub-5b845677cd\",\"hub-6f6767f848\",\"hub-7b77874fb6\",\"hub-85df5fcfb4\",\"hub-bfcc8577f\"],\"resources\":[\"replicasets\"],\"verbs\":[\"get\"]},{\"apiGroups\":[\"\"],\"resourceNames\":[\"cps-native-approval-publisher-b1bd001a373d764b\",\"cps-native-approval-reference-9cabd9e795729d9b\",\"cps-native-approvals-v2-16a5c538c774d433\",\"cps-native-hub-v3-3544f598391f0def\",\"cps-native-qualified-reference-128bd4677ff5e083\"],\"resources\":[\"configmaps\"],\"verbs\":[\"get\"]}],\"uid\":\"10ee0f70-e541-4b87-9463-e86eb162d31e\"},{\"name\":\"cps-native-approval-gateway\",\"namespace\":\"jupyterhub\",\"rules\":[{\"apiGroups\":[\"\"],\"resourceNames\":[\"cps-native-approval-ack-cps-hub\",\"cps-native-approvals-158270b57439ba84\",\"cps-native-approvals-469422eef284dc8d\",\"cps-native-approvals-587ac69c86a30f11\",\"cps-native-approvals-6f7ce5de9a97d104\",\"cps-native-approvals-722bfe49425bc977\",\"cps-native-approvals-77abea98c5e23210\",\"cps-native-approvals-7afef9ac52d9887d\",\"cps-native-approvals-a82c95c813e61314\",\"cps-native-approvals-adc8c38626c29ff8\",\"cps-native-approvals-v2-16a5c538c774d433\",\"cps-native-current-approval-hub-cps\",\"cps-native-head-anchor-1a47e3d05e25221a\"],\"resources\":[\"configmaps\"],\"verbs\":[\"get\"]},{\"apiGroups\":[\"apps\"],\"resourceNames\":[\"hub\"],\"resources\":[\"deployments\"],\"verbs\":[\"get\"]},{\"apiGroups\":[\"\"],\"resourceNames\":[\"hub-5449d5bd7-mbvxh\",\"hub-5449d5bd7-rbfsv\",\"hub-58d8b5bbc4-gr6dc\",\"hub-5b845677cd-xzmk6\",\"hub-6f6767f848-85x6x\",\"hub-7b77874fb6-29r5c\",\"hub-85df5fcfb4-7tvkd\",\"hub-bfcc8577f-t7ntq\"],\"resources\":[\"pods\"],\"verbs\":[\"get\"]},{\"apiGroups\":[\"apps\"],\"resourceNames\":[\"hub-5449d5bd7\",\"hub-58d8b5bbc4\",\"hub-5b845677cd\",\"hub-6f6767f848\",\"hub-7b77874fb6\",\"hub-85df5fcfb4\",\"hub-bfcc8577f\"],\"resources\":[\"replicasets\"],\"verbs\":[\"get\"]}],\"uid\":\"daa8fb9e-5d4b-4d40-bc74-90c568283e53\"},{\"name\":\"cps-native-approval-hub-cit\",\"namespace\":\"cit-jhub\",\"rules\":[{\"apiGroups\":[\"\"],\"resourceNames\":[\"cps-native-approval-ack-cit-hub\",\"cps-native-approval-publisher-0b47c0ac8a87ff90\",\"cps-native-approval-publisher-1ad087a34db020a5\",\"cps-native-approval-publisher-2582508de9684729\",\"cps-native-approval-publisher-31f627008d8398ce\",\"cps-native-approval-publisher-4b5f7b5a0ca3f046\",\"cps-native-approval-publisher-530cb2e2411bfea0\",\"cps-native-approval-publisher-5971c8f8346b6267\",\"cps-native-approval-publisher-d0ea4f1c9beae23e\",\"cps-native-approvals-469422eef284dc8d\",\"cps-native-approvals-587ac69c86a30f11\",\"cps-native-approvals-68526fd11d94362e\",\"cps-native-approvals-6f7ce5de9a97d104\",\"cps-native-approvals-7afef9ac52d9887d\",\"cps-native-approvals-a82c95c813e61314\",\"cps-native-approvals-adc8c38626c29ff8\",\"cps-native-approvals-b1e8c92b1f4814f1\",\"cps-native-approvals-d253cfad6371720a\",\"cps-native-approvals-v2-16a5c538c774d433\",\"cps-native-current-approval-hub-cit\",\"cps-native-head-anchor-c317457911aa257d\"],\"resources\":[\"configmaps\"],\"verbs\":[\"get\"]},{\"apiGroups\":[\"apps\"],\"resourceNames\":[\"hub\"],\"resources\":[\"deployments\"],\"verbs\":[\"get\"]},{\"apiGroups\":[\"\"],\"resourceNames\":[\"cps-runtime-ack-hub-cit\"],\"resources\":[\"configmaps\"],\"verbs\":[\"patch\"]},{\"apiGroups\":[\"\"],\"resourceNames\":[\"hub-57f8d89f5f-f64b4\",\"hub-57f8d89f5f-qdcpq\",\"hub-5c8bbcccd5-g6cs8\",\"hub-69779d474c-k6hlj\",\"hub-859cd57cd-6jx4c\",\"hub-8c48c856c-s6v2v\",\"hub-ffbdbd5b9-nc4sg\"],\"resources\":[\"pods\"],\"verbs\":[\"get\"]},{\"apiGroups\":[\"apps\"],\"resourceNames\":[\"hub-57f8d89f5f\",\"hub-5c8bbcccd5\",\"hub-69779d474c\",\"hub-859cd57cd\",\"hub-8c48c856c\",\"hub-ffbdbd5b9\"],\"resources\":[\"replicasets\"],\"verbs\":[\"get\"]},{\"apiGroups\":[\"\"],\"resourceNames\":[\"cps-native-approval-publisher-7b737ee500bcede8\",\"cps-native-approval-reference-59d8d8115965f70c\",\"cps-native-approvals-v2-16a5c538c774d433\",\"cps-native-hub-v3-7298ddd35587bd83\",\"cps-native-qualified-reference-128bd4677ff5e083\"],\"resources\":[\"configmaps\"],\"verbs\":[\"get\"]}],\"uid\":\"7999e6fa-8e53-4a1a-aab3-8c4e060c3f3d\"},{\"name\":\"cps-native-approval-gateway\",\"namespace\":\"cit-jhub\",\"rules\":[{\"apiGroups\":[\"\"],\"resourceNames\":[\"cps-native-approval-ack-cit-hub\",\"cps-native-approvals-469422eef284dc8d\",\"cps-native-approvals-587ac69c86a30f11\",\"cps-native-approvals-68526fd11d94362e\",\"cps-native-approvals-6f7ce5de9a97d104\",\"cps-native-approvals-7afef9ac52d9887d\",\"cps-native-approvals-a82c95c813e61314\",\"cps-native-approvals-adc8c38626c29ff8\",\"cps-native-approvals-b1e8c92b1f4814f1\",\"cps-native-approvals-d253cfad6371720a\",\"cps-native-approvals-v2-16a5c538c774d433\",\"cps-native-current-approval-hub-cit\",\"cps-native-head-anchor-c317457911aa257d\"],\"resources\":[\"configmaps\"],\"verbs\":[\"get\"]},{\"apiGroups\":[\"apps\"],\"resourceNames\":[\"hub\"],\"resources\":[\"deployments\"],\"verbs\":[\"get\"]},{\"apiGroups\":[\"\"],\"resourceNames\":[\"hub-57f8d89f5f-f64b4\",\"hub-57f8d89f5f-qdcpq\",\"hub-5c8bbcccd5-g6cs8\",\"hub-69779d474c-k6hlj\",\"hub-859cd57cd-6jx4c\",\"hub-8c48c856c-s6v2v\",\"hub-ffbdbd5b9-nc4sg\"],\"resources\":[\"pods\"],\"verbs\":[\"get\"]},{\"apiGroups\":[\"apps\"],\"resourceNames\":[\"hub-57f8d89f5f\",\"hub-5c8bbcccd5\",\"hub-69779d474c\",\"hub-859cd57cd\",\"hub-8c48c856c\",\"hub-ffbdbd5b9\"],\"resources\":[\"replicasets\"],\"verbs\":[\"get\"]}],\"uid\":\"ac9e0d73-3aee-4d9a-ada1-3d098dc8057b\"},{\"name\":\"cps-native-approval-node\",\"namespace\":\"cps-native-runtime\",\"rules\":[{\"apiGroups\":[\"\"],\"resourceNames\":[\"cps-runtime-ack-node\",\"cps-runtime-anchor-node-06ad00d5b50947e1\",\"cps-runtime-head-node\",\"cps-runtime-initial-approval-cbf7d39ba84ad7f8\"],\"resources\":[\"configmaps\"],\"verbs\":[\"get\"]},{\"apiGroups\":[\"\"],\"resourceNames\":[\"cps-native-node-agent-54f79cf6cd-z5wnd\"],\"resources\":[\"pods\"],\"verbs\":[\"get\"]},{\"apiGroups\":[\"apps\"],\"resourceNames\":[\"cps-native-node-agent-54f79cf6cd\"],\"resources\":[\"replicasets\"],\"verbs\":[\"get\"]},{\"apiGroups\":[\"apps\"],\"resourceNames\":[\"cps-native-node-agent\"],\"resources\":[\"deployments\"],\"verbs\":[\"get\"]},{\"apiGroups\":[\"\"],\"resourceNames\":[\"cps-native-node-agent\"],\"resources\":[\"serviceaccounts\"],\"verbs\":[\"get\"]},{\"apiGroups\":[\"\"],\"resourceNames\":[\"cps-runtime-ack-node\"],\"resources\":[\"configmaps\"],\"verbs\":[\"patch\"]}],\"uid\":\"5a058e0f-b5fd-40bd-858a-885aaa14d6d5\"},{\"name\":\"cps-native-approval-gateway\",\"namespace\":\"cps-native-runtime\",\"rules\":[{\"apiGroups\":[\"\"],\"resourceNames\":[\"cps-runtime-ack-node\",\"cps-runtime-anchor-node-06ad00d5b50947e1\",\"cps-runtime-head-node\",\"cps-runtime-initial-approval-cbf7d39ba84ad7f8\"],\"resources\":[\"configmaps\"],\"verbs\":[\"get\"]},{\"apiGroups\":[\"\"],\"resourceNames\":[\"cps-native-node-agent-54f79cf6cd-z5wnd\"],\"resources\":[\"pods\"],\"verbs\":[\"get\"]},{\"apiGroups\":[\"apps\"],\"resourceNames\":[\"cps-native-node-agent-54f79cf6cd\"],\"resources\":[\"replicasets\"],\"verbs\":[\"get\"]},{\"apiGroups\":[\"apps\"],\"resourceNames\":[\"cps-native-node-agent\"],\"resources\":[\"deployments\"],\"verbs\":[\"get\"]},{\"apiGroups\":[\"\"],\"resourceNames\":[\"cps-native-node-agent\"],\"resources\":[\"serviceaccounts\"],\"verbs\":[\"get\"]}],\"uid\":\"0be9e55b-c3e3-4fe7-b28a-8c067a4300d0\"}],\"version\":2}",
+        "policy.json": "{\"approvedImages\":[\"ghcr.io/mul-cps/cps-jupyter-notebook:qualification-native-group-980408a@sha256:9167861058c1364c58d1c2fca0d6f536c3ffb53a33800dcdb9a1560f14ca4dc0\",\"ghcr.io/mul-cps/cps-jupyter-notebook@sha256:1fab06639346f69e96cda6c8f551d761cc51c47de85cdc0ec42ef31bf2ef2c7f\"],\"artifacts\":{\"backend\":\"s3\",\"preserveActiveInputs\":true,\"preserveExplicitlyRetainedOutputs\":true,\"runRetentionDays\":90,\"selectedDeployment\":\"seaweedfs-on-truenas\",\"temporaryRetentionDays\":14},\"compatibility\":{\"productionTarget\":{\"chart\":\"4.4.2\",\"jupyterhub\":\"5.5.2\",\"kubespawner\":\"7.x\"},\"qualified\":[],\"releases\":[{\"admin\":\"cps-v0.1.0\",\"cluster\":\"v1.1.0\",\"compute\":\"0.1.0\",\"notebooks\":\"0.1.0\",\"stage\":\"pilot\"},{\"admin\":\"cps-v1.0.0-rc.1\",\"cluster\":\"v2.0.0-rc.1\",\"compute\":\"1.0.0-rc.1\",\"notebooks\":\"1.0.0-rc.1\",\"stage\":\"candidate\"},{\"admin\":\"cps-v1.0.0\",\"cluster\":\"v2.0.0\",\"compute\":\"1.0.0\",\"notebooks\":\"1.0.0\",\"stage\":\"production\"}],\"stagingTarget\":{\"jupyterhub\":\"6.0.1\",\"promote\":false}},\"courseProviders\":{\"local\":{\"enabled\":true},\"moodle\":{\"authSecretRef\":null,\"baseUrl\":null,\"enabled\":false,\"readOnly\":true,\"syncInterval\":\"10m\"}},\"entitlements\":{\"admin-debug\":{\"administrativeExceptionRequired\":true,\"interactiveAllowances\":1,\"priorities\":[\"research\"],\"profiles\":[\"interactive-debug-exclusive-1\"]},\"batch\":{\"interactiveAllowances\":0,\"priorities\":[\"batch\"],\"profiles\":[\"batch-cpu\",\"batch-shared-5\",\"batch-shared-10\",\"batch-shared-20\",\"batch-exclusive-1\",\"batch-exclusive-2\",\"batch-exclusive-4\",\"batch-exclusive-8\"]},\"research\":{\"interactiveAllowances\":1,\"priorities\":[\"research\",\"project\"],\"profiles\":[\"interactive-cpu\",\"interactive-shared-5\",\"interactive-shared-10\",\"interactive-shared-20\"]},\"student\":{\"interactiveAllowances\":0,\"priorities\":[\"homework\"],\"profiles\":[\"interactive-cpu\"]},\"teaching-gpu\":{\"interactiveAllowances\":1,\"priorities\":[\"lecture\",\"ta\",\"homework\"],\"profiles\":[\"interactive-cpu\",\"interactive-shared-5\",\"interactive-shared-10\",\"interactive-shared-20\"]}},\"gpuQualification\":{\"evidence\":null,\"measuredUsableMemoryGiB\":null,\"nominalDeviceMemoryGiB\":40,\"poolPhysicalGPUs\":8,\"qualified\":false,\"runtimeOverheadGiB\":null,\"safePacking\":null,\"targets\":{\"hamiCore\":\"qualification-required\",\"kai\":\"0.18.1\",\"mps\":true}},\"labels\":{\"hub\":\"compute.cps.unileoben.ac.at/hub\",\"owner\":\"compute.cps.unileoben.ac.at/owner\",\"person\":\"compute.cps.unileoben.ac.at/person\",\"policyHash\":\"compute.cps.unileoben.ac.at/policy-hash\",\"policyVersion\":\"compute.cps.unileoben.ac.at/policy-version\",\"project\":\"compute.cps.unileoben.ac.at/project\",\"workspace\":\"compute.cps.unileoben.ac.at/workspace\"},\"notebook\":{\"executor\":\"papermill\",\"immutableSnapshot\":true,\"parameterCellTag\":\"parameters\",\"snapshotLimitBytes\":52428800,\"stripOutputs\":true},\"policyHash\":\"sha256:332d14fb9e510b9810feffb8d40b408743f9679ebd13ca1ba0e1077d666e9281\",\"priorities\":{\"batch\":10,\"ci\":5,\"exam\":90,\"homework\":40,\"lecture\":80,\"project\":50,\"research\":60,\"ta\":70},\"profiles\":{\"batch-cpu\":{\"cpu\":\"2\",\"enabled\":true,\"gpu\":{\"mode\":\"none\"},\"idleSeconds\":null,\"images\":[\"ghcr.io/mul-cps/cps-jupyter-notebook@sha256:1fab06639346f69e96cda6c8f551d761cc51c47de85cdc0ec42ef31bf2ef2c7f\"],\"kind\":\"batch\",\"maxAgeSeconds\":259200,\"memory\":\"8Gi\",\"queue\":\"batch\"},\"batch-exclusive-1\":{\"cpu\":\"8\",\"enabled\":false,\"gpu\":{\"count\":1,\"mode\":\"exclusive\"},\"idleSeconds\":null,\"images\":[],\"kind\":\"batch\",\"launcher\":\"container\",\"maxAgeSeconds\":86400,\"memory\":\"32Gi\",\"qualificationRequired\":\"gpu-isolation-packing\",\"queue\":\"batch\"},\"batch-exclusive-2\":{\"cpu\":\"16\",\"enabled\":false,\"gpu\":{\"count\":2,\"mode\":\"exclusive\"},\"idleSeconds\":null,\"images\":[],\"kind\":\"batch\",\"launcher\":\"container\",\"maxAgeSeconds\":86400,\"memory\":\"64Gi\",\"qualificationRequired\":\"gpu-isolation-packing\",\"queue\":\"batch\"},\"batch-exclusive-4\":{\"cpu\":\"32\",\"enabled\":false,\"gpu\":{\"count\":4,\"mode\":\"exclusive\"},\"idleSeconds\":null,\"images\":[],\"kind\":\"batch\",\"launcher\":\"jobset\",\"maxAgeSeconds\":86400,\"memory\":\"128Gi\",\"qualificationRequired\":\"jobset-distributed\",\"queue\":\"batch\"},\"batch-exclusive-8\":{\"cpu\":\"64\",\"enabled\":false,\"gpu\":{\"count\":8,\"mode\":\"exclusive\"},\"idleSeconds\":null,\"images\":[],\"kind\":\"batch\",\"launcher\":\"jobset\",\"maxAgeSeconds\":86400,\"memory\":\"256Gi\",\"qualificationRequired\":\"jobset-distributed\",\"queue\":\"batch\"},\"batch-shared-10\":{\"cpu\":\"4\",\"enabled\":false,\"gpu\":{\"fraction\":\"0.25\",\"mode\":\"shared\",\"nominalMemoryGiB\":10},\"idleSeconds\":null,\"images\":[],\"kind\":\"batch\",\"maxAgeSeconds\":86400,\"memory\":\"16Gi\",\"qualificationRequired\":\"gpu-isolation-packing\",\"queue\":\"batch\"},\"batch-shared-20\":{\"cpu\":\"4\",\"enabled\":false,\"gpu\":{\"fraction\":\"0.5\",\"mode\":\"shared\",\"nominalMemoryGiB\":20},\"idleSeconds\":null,\"images\":[],\"kind\":\"batch\",\"maxAgeSeconds\":86400,\"memory\":\"16Gi\",\"qualificationRequired\":\"gpu-isolation-packing\",\"queue\":\"batch\"},\"batch-shared-5\":{\"cpu\":\"4\",\"enabled\":false,\"gpu\":{\"fraction\":\"0.125\",\"mode\":\"shared\",\"nominalMemoryGiB\":5},\"idleSeconds\":null,\"images\":[],\"kind\":\"batch\",\"maxAgeSeconds\":86400,\"memory\":\"16Gi\",\"qualificationRequired\":\"gpu-isolation-packing\",\"queue\":\"batch\"},\"interactive-cpu\":{\"cpu\":\"2\",\"enabled\":true,\"gpu\":{\"mode\":\"none\"},\"idleSeconds\":3600,\"images\":[],\"kind\":\"interactive\",\"maxAgeSeconds\":28800,\"memory\":\"8Gi\",\"queue\":\"interactive\"},\"interactive-debug-exclusive-1\":{\"administrativeExceptionRequired\":true,\"cpu\":\"8\",\"enabled\":false,\"gpu\":{\"count\":1,\"mode\":\"exclusive\"},\"idleSeconds\":900,\"images\":[],\"kind\":\"interactive\",\"maxAgeSeconds\":3600,\"memory\":\"32Gi\",\"qualificationRequired\":\"gpu-isolation-packing\",\"queue\":\"interactive\"},\"interactive-shared-10\":{\"cpu\":\"4\",\"enabled\":true,\"gpu\":{\"mode\":\"shared\",\"nominalMemoryGiB\":10,\"qualification\":{\"evidence\":[\"native-groups-v2\"],\"mechanism\":\"r615-native-cgroup-managed-deny\",\"policyVersion\":\"0.1.2\",\"status\":\"qualified-group\"}},\"idleSeconds\":1800,\"images\":[\"ghcr.io/mul-cps/cps-jupyter-notebook@sha256:5427088986bc06ad0713875d1aa2f31439f0bd1fbe6099d4669570fcf3e85be4\"],\"kind\":\"interactive\",\"maxAgeSeconds\":14400,\"memory\":\"16Gi\",\"queue\":\"interactive\"},\"interactive-shared-20\":{\"cpu\":\"4\",\"enabled\":false,\"gpu\":{\"fraction\":\"0.5\",\"mode\":\"shared\",\"nominalMemoryGiB\":20},\"idleSeconds\":1800,\"images\":[],\"kind\":\"interactive\",\"maxAgeSeconds\":14400,\"memory\":\"16Gi\",\"qualificationRequired\":\"gpu-isolation-packing\",\"queue\":\"interactive\"},\"interactive-shared-5\":{\"cpu\":\"4\",\"enabled\":true,\"gpu\":{\"mode\":\"shared\",\"nominalMemoryGiB\":5,\"qualification\":{\"evidence\":[\"native-groups-v2\"],\"mechanism\":\"r615-native-cgroup-managed-deny\",\"policyVersion\":\"0.1.2\",\"status\":\"qualified-group\"}},\"idleSeconds\":1800,\"images\":[\"ghcr.io/mul-cps/cps-jupyter-notebook@sha256:5427088986bc06ad0713875d1aa2f31439f0bd1fbe6099d4669570fcf3e85be4\"],\"kind\":\"interactive\",\"maxAgeSeconds\":14400,\"memory\":\"16Gi\",\"queue\":\"interactive\"}},\"queueUnits\":{\"cpu\":\"cores\",\"gpu\":\"physical GPU fractions\",\"memory\":\"MiB\"},\"queues\":{\"batch\":{\"cpu\":{\"deserved\":0,\"limit\":256},\"gpu\":{\"deserved\":0,\"limit\":8},\"memory\":{\"deserved\":0,\"limit\":1048576}},\"interactive\":{\"cpu\":{\"deserved\":0,\"limit\":256},\"gpu\":{\"deserved\":8,\"limit\":8},\"memory\":{\"deserved\":0,\"limit\":1048576}}},\"reservationPolicy\":{\"batchIndependent\":true,\"leaseExpiryReleasesCapacity\":false,\"release\":\"confirmed-shutdown\",\"scope\":\"canonical-person-across-cps-cit\",\"sharedWorkspace\":\"one-interactive-allowance-per-member\"},\"schemaVersion\":1,\"status\":\"pilot-unqualified\",\"trusted\":{\"namespace\":\"cps-workflows\",\"priorityClassName\":\"cps-batch\",\"queue\":\"cps-batch\",\"schedulerName\":\"kai-scheduler\",\"serviceAccountName\":\"cps-workflow\"},\"version\":\"0.1.2\",\"workloadScheduling\":{\"batch\":{\"priorityClassName\":\"cps-batch\",\"queue\":\"cps-batch\"},\"interactive\":{\"priorityClassName\":\"cps-homework\",\"queue\":\"cps-interactive\"}}}"
+      }
+    },
+    {
+      "apiVersion": "apps/v1",
+      "kind": "Deployment",
+      "metadata": {
+        "namespace": "cps-compute",
+        "name": "cps-runtime-observer"
+      },
+      "spec": {
+        "replicas": 1,
+        "strategy": {
+          "type": "Recreate"
+        },
+        "selector": {
+          "matchLabels": {
+            "app": "cps-runtime-observer"
+          }
+        },
+        "template": {
+          "metadata": {
+            "labels": {
+              "app": "cps-runtime-observer"
+            }
+          },
+          "spec": {
+            "serviceAccountName": "cps-runtime-observer",
+            "imagePullSecrets": [
+              {
+                "name": "cps-compute-image-pull"
+              }
+            ],
+            "securityContext": {
+              "runAsNonRoot": true,
+              "runAsUser": 10001,
+              "runAsGroup": 10001,
+              "seccompProfile": {
+                "type": "RuntimeDefault"
+              }
+            },
+            "containers": [
+              {
+                "name": "observer",
+                "image": "ghcr.io/mul-cps/cps-compute@sha256:1895f5b08f707a65f66b3512babf5c630e043877208513d1f5c5d8e6f2f1ec28",
+                "imagePullPolicy": "IfNotPresent",
+                "command": [
+                  "python",
+                  "-I",
+                  "-B",
+                  "-m",
+                  "cps_compute.native_observer_permissions"
+                ],
+                "args": [
+                  "--execute",
+                  "--release",
+                  "/etc/cps-observer/release.json",
+                  "--policy",
+                  "/etc/cps-observer/policy.json",
+                  "--interval-seconds",
+                  "5",
+                  "--failure-limit",
+                  "100"
+                ],
+                "resources": {
+                  "requests": {
+                    "cpu": "50m",
+                    "memory": "128Mi"
+                  },
+                  "limits": {
+                    "cpu": "500m",
+                    "memory": "512Mi"
+                  }
+                },
+                "securityContext": {
+                  "allowPrivilegeEscalation": false,
+                  "capabilities": {
+                    "drop": [
+                      "ALL"
+                    ]
+                  },
+                  "readOnlyRootFilesystem": true,
+                  "runAsNonRoot": true,
+                  "runAsUser": 10001,
+                  "runAsGroup": 10001,
+                  "seccompProfile": {
+                    "type": "RuntimeDefault"
+                  }
+                },
+                "volumeMounts": [
+                  {
+                    "name": "inputs",
+                    "mountPath": "/etc/cps-observer/release.json",
+                    "subPath": "release.json",
+                    "readOnly": true
+                  },
+                  {
+                    "name": "inputs",
+                    "mountPath": "/etc/cps-observer/policy.json",
+                    "subPath": "policy.json",
+                    "readOnly": true
+                  }
+                ]
+              }
+            ],
+            "volumes": [
+              {
+                "name": "inputs",
+                "configMap": {
+                  "name": "cps-runtime-observer-inputs-b84b1782cd2b7e32",
+                  "defaultMode": 292
+                }
+              }
+            ]
+          }
+        }
+      }
+    }
+  ]
+}

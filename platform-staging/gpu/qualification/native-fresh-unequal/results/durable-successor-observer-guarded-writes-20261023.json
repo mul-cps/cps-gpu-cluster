@@ -1,0 +1,55 @@
+{
+  "version": 1,
+  "cases": [
+    {
+      "case": "unchanged exact Role accepted",
+      "allowed": true
+    },
+    {
+      "case": "bounded head GET expansion accepted",
+      "allowed": true
+    },
+    {
+      "case": "bounded Pod GET expansion accepted",
+      "allowed": true
+    },
+    {
+      "case": "Secret privilege denied",
+      "allowed": false
+    },
+    {
+      "case": "additional verb denied",
+      "allowed": false
+    },
+    {
+      "case": "unnamed GET denied",
+      "allowed": false
+    },
+    {
+      "case": "additional rule denied",
+      "allowed": false
+    },
+    {
+      "case": "metadata injection denied",
+      "allowed": false
+    },
+    {
+      "case": "foreign ACK patch denied",
+      "allowed": false
+    },
+    {
+      "case": "baseline removal denied",
+      "allowed": false
+    }
+  ],
+  "all_expected_results_passed": true,
+  "fixtures_persisted": false,
+  "observer_started": false,
+  "authentication": {
+    "transport": "direct Kubernetes API via temporary loopback-only SSH forwarding; TLS CA and server name verified",
+    "actual_username": "system:serviceaccount:cps-compute:cps-runtime-observer",
+    "rancher_impersonation_used": false,
+    "token_ttl_seconds": 600,
+    "token_bound_to_temporary_secret": true
+  }
+}

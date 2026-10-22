@@ -1050,3 +1050,29 @@ Observer deployment, four pregrant readers, guarded automatic delivery and an
 actual approval/Start/Stop remain pending.
 Evidence: `results/durable-successor-observer-staged-20261023.json` and
 `results/durable-successor-observer-runtime-rbac-20261023.json`.
+
+### Successor observer deployed with tested Role guard
+
+A new restricted observer runs in cps-compute using the reviewed Gateway SDK
+image, UID 10001, read-only root filesystem and no host access. Four named
+operator reader Roles retain exact target Role GET/PATCH/escalate scopes. A
+fail-closed admission policy permits only the seven pinned Role UIDs, unchanged
+verbs/resources/static rows/metadata and bounded baseline-preserving named GET
+expansions. No RoleBinding mutation or Secret access was granted.
+
+Direct-SA tests caught an unparenthesized OR in the new guard: empty resourceNames
+were admitted by a server dry-run. No fixture was persisted and replicas stayed
+zero. Parenthesized the optional-field expression; all ten direct-SA tests then
+passed (unchanged/bounded GET changes allowed; Secret/additional verb/unnamed
+GET/extra rule/metadata/foreign ACK/baseline removal denied). The first test
+attempt used PUT and was denied by RBAC; final tests use the actual PATCH wire.
+Temporary bound credentials and loopback forwarding were cleaned up.
+
+After activation the observer is Ready with zero restarts. An actual in-Pod
+service-account reconciliation returned reconciled, patched=0 after the
+background controller updated current head/Pod/ReplicaSet readers. All seven
+component Role UIDs were retained. Automatic delivery, reapproval and ordinary
+GPU Start/Stop remain pending.
+Evidence: `results/durable-successor-observer-service-manifests-20261023.json`,
+`results/durable-successor-observer-guarded-writes-20261023.json` and
+`results/durable-successor-observer-deployed-20261023.json`.
