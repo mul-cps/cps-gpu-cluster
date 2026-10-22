@@ -1,0 +1,117 @@
+{
+  "boot_id": "a464df41-e391-4443-b8e8-ad7ecd052318",
+  "cap_mib": 5120,
+  "cases": [
+    {
+      "case": "vmm-direct",
+      "cross_parent_isolation_qualified": false,
+      "evidence": [
+        {
+          "bytes": 885,
+          "file": "receipt.json",
+          "scenario": "vmm-direct-a",
+          "sha256": "314e6c9cdd9305c20bc46a2109608fa9fd1f7800869f23a82cfdc43790aff7f9"
+        },
+        {
+          "bytes": 13444,
+          "file": "native-events.json",
+          "scenario": "vmm-direct-a",
+          "sha256": "e7bdc39951afbee66568301c59a51f3fb6b1268826d8eb97d6ff0b8398459550"
+        }
+      ],
+      "ordinary_peer_continuity": true,
+      "same_parent_measurement": true,
+      "side": "a",
+      "source_sha256": {
+        "binary_sha256": "0e19d4ec396dd64cabe364607fee151c001821cdcb2da5e5b181d7f902a76f69",
+        "engine_sha256": "dc6103ae49c8b91dab546f62fa67515a1fecd3caa3964cb220bda7d1c5aa9e58",
+        "fresh_preflight_sha256": "07137f623f1a0c383597c90fbf485f4ea95597a553b433ffc388dcedcbd70d58",
+        "helper_sha256": "d8cdbf06d93a0f46e0fc122f5f547ff121d0728b7d99b55f1ca8345c574e4f6c",
+        "peer_source_sha256": "ea49812f2f68371a27f63e709534f08aa1b23028395c4b76b2efc07b88d86834",
+        "streamed_source_sha256": "4a3a6271766a548b35d64f796a65e989f95107c06dcd304ef829eda5105df765"
+      },
+      "stage_cleanup_confirmed": true,
+      "unchanged_native_authorities": true
+    },
+    {
+      "case": "ipc",
+      "cross_parent_isolation_qualified": false,
+      "evidence": [
+        {
+          "bytes": 878,
+          "file": "receipt.json",
+          "scenario": "same-parent-ipc-a",
+          "sha256": "b67478bfe8a5bce549581c0380cdb9a5fa5bf37f09d2350c9cff25ca66aee7bc"
+        },
+        {
+          "bytes": 15630,
+          "file": "native-events.json",
+          "scenario": "same-parent-ipc-a",
+          "sha256": "4fc147c7b97fc619c612c8a992f87b095c0c8eb4e0f50464902c89e532291959"
+        }
+      ],
+      "ordinary_peer_continuity": true,
+      "same_parent_measurement": true,
+      "side": "a",
+      "source_sha256": {
+        "binary_sha256": "0e19d4ec396dd64cabe364607fee151c001821cdcb2da5e5b181d7f902a76f69",
+        "engine_sha256": "dc6103ae49c8b91dab546f62fa67515a1fecd3caa3964cb220bda7d1c5aa9e58",
+        "fresh_preflight_sha256": "07137f623f1a0c383597c90fbf485f4ea95597a553b433ffc388dcedcbd70d58",
+        "helper_sha256": "d8cdbf06d93a0f46e0fc122f5f547ff121d0728b7d99b55f1ca8345c574e4f6c",
+        "peer_source_sha256": "ea49812f2f68371a27f63e709534f08aa1b23028395c4b76b2efc07b88d86834",
+        "streamed_source_sha256": "042d1cfef8ec4cdf7259df0bf732903e88cfcd49101842eced7feb93235bc202"
+      },
+      "stage_cleanup_confirmed": true,
+      "unchanged_native_authorities": true
+    },
+    {
+      "case": "vmm",
+      "cross_parent_isolation_qualified": false,
+      "evidence": [
+        {
+          "bytes": 878,
+          "file": "receipt.json",
+          "scenario": "same-parent-vmm-a",
+          "sha256": "48cf7608429b94b125427a37fef01d446eb8da6c2affc31024d177b5b7e9631e"
+        },
+        {
+          "bytes": 21263,
+          "file": "native-events.json",
+          "scenario": "same-parent-vmm-a",
+          "sha256": "28d133343c350456defd169eafc6103475e48ff639fb9657a549b0047bb6df15"
+        }
+      ],
+      "ordinary_peer_continuity": true,
+      "same_parent_measurement": true,
+      "side": "a",
+      "source_sha256": {
+        "binary_sha256": "0e19d4ec396dd64cabe364607fee151c001821cdcb2da5e5b181d7f902a76f69",
+        "engine_sha256": "dc6103ae49c8b91dab546f62fa67515a1fecd3caa3964cb220bda7d1c5aa9e58",
+        "fresh_preflight_sha256": "07137f623f1a0c383597c90fbf485f4ea95597a553b433ffc388dcedcbd70d58",
+        "helper_sha256": "d8cdbf06d93a0f46e0fc122f5f547ff121d0728b7d99b55f1ca8345c574e4f6c",
+        "peer_source_sha256": "ea49812f2f68371a27f63e709534f08aa1b23028395c4b76b2efc07b88d86834",
+        "streamed_source_sha256": "25ba7c09bf67aedfb7fdc063b427f701cdae6e6923abfb72f0144b33901e73cd"
+      },
+      "stage_cleanup_confirmed": true,
+      "unchanged_native_authorities": true
+    }
+  ],
+  "cohort_uid": "6ba3353d-bf13-4cad-9c35-3119dd279a67",
+  "date": "2026-10-22",
+  "driver": "615.71.09",
+  "driver_generation": "4ebffc96-e25e-4583-a3b8-0d853fd90efd",
+  "full_production_qualified": false,
+  "gpu_uuid": "GPU-16128952-b438-556a-00bb-93039ee24e56",
+  "kernel": "6.8.0-147-generic",
+  "limitations": [
+    "Same-parent positive controls do not qualify cross-parent isolation.",
+    "No normal shared Hub startup, multi-user scheduling or production activation claim."
+  ],
+  "manifest_sha256": "67b677fef425de22d5abd4f3e857a5a29155e458fc38c598c884cef83adc94a3",
+  "namespace": "cps-native-qa147-20261022",
+  "notebook_image_sha256": "5427088986bc06ad0713875d1aa2f31439f0bd1fbe6099d4669570fcf3e85be4",
+  "production_qualified": false,
+  "scope": "bounded-fresh-QA-domain-measurement",
+  "state": "three-bounded-same-parent-import-measurements-passed",
+  "version": 1
+}

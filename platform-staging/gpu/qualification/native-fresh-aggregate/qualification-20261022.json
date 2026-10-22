@@ -1,0 +1,46 @@
+{
+  "boot_id": "a464df41-e391-4443-b8e8-ad7ecd052318",
+  "cap_mib": 5120,
+  "cohort_uid": "6ba3353d-bf13-4cad-9c35-3119dd279a67",
+  "date": "2026-10-22",
+  "driver": "615.71.09",
+  "driver_generation": "4ebffc96-e25e-4583-a3b8-0d853fd90efd",
+  "evidence": [
+    {
+      "bytes": 556,
+      "file": "assessment.json",
+      "scenario": "aggregate-a-to-b",
+      "sha256": "85f309878ff9f7ab8efecb7428289c5ecddbf074fd1ee5b819d17e0408d49eaa"
+    }
+  ],
+  "full_production_qualified": false,
+  "gpu_uuid": "GPU-16128952-b438-556a-00bb-93039ee24e56",
+  "kernel": "6.8.0-147-generic",
+  "limitations": [
+    "Only a-to-b direction measured.",
+    "Assessment records same-parent multiprocess accounting and independent other-Pod peer continuity; not production scheduling acceptance."
+  ],
+  "manifest_sha256": "67b677fef425de22d5abd4f3e857a5a29155e458fc38c598c884cef83adc94a3",
+  "measurement": {
+    "direction": "a-to-b",
+    "held_before_oom_mib": 1792,
+    "holder_tensor_mib": 2048,
+    "ordinary_peer_ticks_inside_oom_hold": 16,
+    "peer_ticks_inside_oom_hold": 16,
+    "physical_samples": 4,
+    "recovery_byte": 37,
+    "same_parent_aggregate": true,
+    "typed_oom": {
+      "cuda_error_code": null,
+      "kind": "torch.OutOfMemoryError"
+    },
+    "unchanged_seals_and_processes": true
+  },
+  "namespace": "cps-native-qa147-20261022",
+  "notebook_image_sha256": "5427088986bc06ad0713875d1aa2f31439f0bd1fbe6099d4669570fcf3e85be4",
+  "production_qualified": false,
+  "reviewed_runner_source_sha256": "cf88f990aebc61267d8617dcd87faba319c468123f1dc9d75cc386d36cea391b",
+  "scope": "bounded-fresh-QA-domain-measurement",
+  "state": "bounded-same-parent-aggregate-with-independent-peer-passed",
+  "version": 1
+}

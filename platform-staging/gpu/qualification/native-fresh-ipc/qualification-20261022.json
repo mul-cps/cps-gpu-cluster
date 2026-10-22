@@ -1,0 +1,61 @@
+{
+  "boot_id": "a464df41-e391-4443-b8e8-ad7ecd052318",
+  "cap_mib": 5120,
+  "cohort_uid": "6ba3353d-bf13-4cad-9c35-3119dd279a67",
+  "cross_parent_isolation_qualified": false,
+  "date": "2026-10-22",
+  "driver": "615.71.09",
+  "driver_generation": "4ebffc96-e25e-4583-a3b8-0d853fd90efd",
+  "evidence": [
+    {
+      "bytes": 1952,
+      "file": "receipt.json",
+      "scenario": "cross-ipc-a-to-b",
+      "sha256": "0e54bd5b7859ef360e20fbf10fdfeb7e925dd2ecf760c0af23aa23118671e5c3"
+    }
+  ],
+  "full_production_qualified": false,
+  "gpu_uuid": "GPU-16128952-b438-556a-00bb-93039ee24e56",
+  "kernel": "6.8.0-147-generic",
+  "kernel_witness": {
+    "begin_sequence": 2095,
+    "capture_sha256": "sha256:1746b2ffb508fd978105f462ded52a799079542adb955c512d4c150322e04b2d",
+    "client_kind": 4,
+    "clock_offset_rule_used": false,
+    "end_sequence": 2097,
+    "kernel_reason": 6,
+    "kernel_sequence": 2096,
+    "kernel_status": 27
+  },
+  "limitations": [
+    "Only a-to-b CUDA IPC case measured; correlated kernel denial is this bounded case, not universal cross-parent isolation qualification.",
+    "No VMM cross-parent, MPS cleanup, normal shared Hub startup or full production qualification inferred."
+  ],
+  "manifest_sha256": "67b677fef425de22d5abd4f3e857a5a29155e458fc38c598c884cef83adc94a3",
+  "measurement": {
+    "cuda_name": "CUDA_ERROR_NOT_PERMITTED",
+    "cuda_result": 800,
+    "direction": "a-to-b",
+    "exporter_kernel_continuity": true,
+    "exporter_recovery": true,
+    "importer_kernels_survived": true,
+    "kernel_witness_correlated": true,
+    "same_parent_positive_control": true,
+    "unchanged_native_authorities": true
+  },
+  "namespace": "cps-native-qa147-20261022",
+  "notebook_image_sha256": "5427088986bc06ad0713875d1aa2f31439f0bd1fbe6099d4669570fcf3e85be4",
+  "production_qualified": false,
+  "scope": "bounded-fresh-QA-domain-measurement",
+  "source_sha256": {
+    "ipc_endpoint.py": "20b36695ae6b5a9a6d3807ff4646c2928d0ba72017aa2fec4c20cb1fdcd4712b",
+    "ipc_engine.py": "a4478f7d2bfeb0e85e826f26ac1c30800800e0910db0df10e4d5cc67c2423ce3",
+    "ipc_host_pid.py": "d3f43d1d5fb02a4f83aac8a1360bffb673e7f3d77f58669cf1f789a569499f95",
+    "kernel_witness_collector.py": "78d0db27fe46ee28ee7cb6d01d2eb6f123596038e0f94c183dd7d0fd9621b1bf",
+    "kernel_witness_transport.py": "ce703a63de29c8d6e9447c2c92bd08bbbddd77d757b2789c21b9b3fc86167850",
+    "kernel_witness_validator.py": "030f5faec77d1db819944f85ec09bb0117480c6f3b2ce85915830c793f9cb795"
+  },
+  "state": "bounded-cross-parent-kernel-denial-measured",
+  "transports_sha256": "76b58f53b75dcce3726f41464a5e3c9a803ae2a1f1d2e197ea20152df149edbc",
+  "version": 1
+}
