@@ -1823,7 +1823,7 @@ index 0000000..426a98a
 +		// Accepted may wait for readiness under the existing server fence.
 +		// A client copy preserves other operations and earlier cancellation.
 +		bounded := *client
-+		bounded.Timeout = 90 * time.Second
++		bounded.Timeout = 130 * time.Second
 +		if operation == "accepted" {
 +			bounded.Timeout = 60 * time.Second
 +		}
@@ -2242,7 +2242,7 @@ index 0000000..417b0af
 +	deadline, ok := request.Context().Deadline()
 +	expected := 15 * time.Second
 +	if transport.operation == "prepare" {
-+		expected = 90 * time.Second
++		expected = 130 * time.Second
 +	} else if transport.operation == "accepted" {
 +		expected = 60 * time.Second
 +	}
