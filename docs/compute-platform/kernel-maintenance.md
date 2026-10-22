@@ -2,6 +2,9 @@
 
 Status: proposed / not installed on hosts. Current GPU Operator rebuilds are
 post-boot; a successful recovery is not a preboot compatibility gate.
+GPU4 currently uses `GRUB_DEFAULT=0` with a hidden zero-timeout menu, so
+installing a newer kernel changes what the next external reboot selects.
+Both 6.8.0-134 and 6.8.0-147 are present at the incident inspection.
 
 The operator driver container builds for `uname -r`, the running kernel. It
 is not an Ubuntu DKMS hook for inactive kernels. Do not add host-managed DKMS

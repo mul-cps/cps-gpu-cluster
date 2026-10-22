@@ -1,6 +1,7 @@
 # GPU registration outage, 22 October 2026
 
-Status: recovery in progress. Times below are UTC.
+Status: driver registration recovered; shared-agent reboot recovery remains open.
+Times below are UTC.
 
 ## Proven cause
 
@@ -12,7 +13,9 @@ operator or automation cannot be identified from guest logs.
 On GPU4, unattended upgrades installed kernel 6.8.0-147.147 on 15 October at
 06:16. The worker continued running 6.8.0-134 until the 22 October shutdown;
 it booted 6.8.0-147 at approximately 07:47. Thus the compatibility defect was
-latent until the next boot.
+latent until the next boot. GPU4 has `GRUB_DEFAULT=0`, a hidden boot menu
+and zero menu timeout: the next boot automatically selected the newest
+installed kernel. Both 6.8.0-134 and 6.8.0-147 images are still present.
 
 The installed official NVIDIA 580.95.05 driver failed to compile its open
 kernel module against the new kernel headers: `nv-pci.c:232: too few arguments
@@ -56,6 +59,10 @@ validator image and original validation steps. It performs no CUDA workload,
 MIG reconfiguration, driver install or reset. It restores validation on Pod
 sandbox recreation instead of relying on hand-created marker files.
 
+The proposed prevention mechanism is documented in
+[`kernel-maintenance.md`](../kernel-maintenance.md). It has not been installed
+on hosts; current recovery does not imply a preboot gate is active.
+
 ## Prevention and remaining investigation
 
 - Pin the driver explicitly in Git; the previous values inherited an old
@@ -82,3 +89,35 @@ References:
 - https://developer.nvidia.com/datacenter-driver-archive
 - https://docs.nvidia.com/datacenter/cloud-native/gpu-operator/25.10/platform-support.html
 - https://docs.nvidia.com/datacenter/tesla/tesla-release-notes-615-71-10/index.html
+
+## Shared-agent reboot recovery is separate
+
+After GPU2 registration recovered, the native Node agent remained unavailable.
+Its kubelet event is `hostPath type check failed: /run/cps-native-gpu is not a
+directory`. The directory was absent on the rebooted host. The agent intentionally
+requires an existing protected directory rather than silently adopting empty
+custody state. Runtime binaries mounted under `/opt/cps-native-runtime` in the
+container actually come from existing k3s/NVIDIA host paths; absence of a host
+`/opt/cps-native-runtime` directory is not evidence of a provisioning defect.
+
+Do not recreate empty custody or reuse old boot/load attestations. Locate and
+verify complete original protected records before a reviewed new-boot recovery.
+The published SDK requires authenticated historical private records and an exact
+current boot epoch. Driver health alone does not satisfy these requirements.
+A complete checksummed durable custody backup and tested recovery remain
+production gates. No native-agent recovery bypass was applied in this incident.
+
+## Verified final driver state
+
+All four workers now run the same official 615.71.09 image digest. All eight
+physical GPUs report that driver and MIG disabled. All workers are uncordoned
+and all four device-plugin Pods are Ready. Separate vector-addition kernel runs
+passed on both GPUs of workers 1/3/4 and the approved GPU of worker2 (seven
+CUDA tests). Worker2 retains its approved UUID filter and original driver owner;
+its second device remains excluded from advertised inventory intentionally.
+Thus advertised capacity is 2+1+2+2, not an accidental claim of eight qualified
+shared GPUs. Own completed validation Pods were archived and removed.
+
+Evidence: `platform-staging/gpu/r615-driver/evidence/20261022-driver-recovery.json`.
+This proves basic driver/registration recovery, not native-group or full
+production qualification.
