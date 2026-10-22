@@ -1,0 +1,43 @@
+{
+  "accepted_error": "PendingCustodyMismatch: session held after independent fence expiry",
+  "accepted_succeeded": false,
+  "binding_fence_elapsed_seconds": 32.088162,
+  "binding_fence_remaining_seconds": 27.911838,
+  "binding_succeeded": true,
+  "cleanup": {
+    "all_allocations_released": 195,
+    "binder_exact_spec_restored": true,
+    "cleanup_verified": true,
+    "hub_server_absent": true,
+    "pod_absent": true,
+    "protected_notebook_unchanged": true,
+    "sql_counts": {
+      "reservation": 0,
+      "reservation_binding": 0
+    },
+    "temporary_token_revoked": true,
+    "token_file_removed": true,
+    "token_reuse_http": 403
+  },
+  "cuda_kernel_executed": false,
+  "kind": "normal-shared-gpu-start-83",
+  "log_sha256": {
+    "binder": "sha256:3eba40e8a4d56e1a61cf14370932c88ad2dbd362e0a81584ee8927fd4d3b17a8",
+    "gateway": "sha256:cbb65d0ce1935039e3d0b8160ebf1ac816deadfe7498f8df3b776b3d2b131ccd",
+    "hub": "sha256:9cb33a9aef7077b4b80c3c8701651aff1b1fe3afffebd222a32047e471ddd984",
+    "node": "sha256:73034f3256591a77dd01da934a5be05de3f0e1af1d7a1e7b4c01dec3af881d8b"
+  },
+  "passed": false,
+  "pod_uid": "68933d8d-109d-400d-a813-c4aa307b3152",
+  "prepare_elapsed_seconds": 81.35671,
+  "prepare_succeeded": true,
+  "prior_prepare_rpc_timeout_not_reproduced": true,
+  "process": {
+    "elapsedSeconds": 326.0338397930027,
+    "endedAt": "2026-10-22T05:43:48.524342+00:00",
+    "returnCode": 1,
+    "startedAt": "2026-10-22T05:38:22.490499+00:00"
+  },
+  "production_qualified": false,
+  "profile": "interactive-shared-5"
+}

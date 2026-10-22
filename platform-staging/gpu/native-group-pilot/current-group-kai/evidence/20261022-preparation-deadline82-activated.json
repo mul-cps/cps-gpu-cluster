@@ -1,0 +1,41 @@
+{
+  "all_four_services_restored": true,
+  "binder": {
+    "coordinator_enabled": false,
+    "deployment_uid": "dc2e1960-6d4f-4038-89e8-5fe66e84651d",
+    "image": "ghcr.io/mul-cps/cps-native-kai-binder@sha256:fc3c4948ee5d6cc6198ff7f2a2237b6775a321b4ffe1003bc5d3f9a533f915cc",
+    "image_id": "ghcr.io/mul-cps/cps-native-kai-binder@sha256:fc3c4948ee5d6cc6198ff7f2a2237b6775a321b4ffe1003bc5d3f9a533f915cc",
+    "other_spec_preserved": true,
+    "passed": true,
+    "pod_uid": "33243a58-d856-4800-a660-c11b116f0554"
+  },
+  "binder_prepare_seconds": 130,
+  "deployed": true,
+  "execution_fence_seconds": 60,
+  "gateway_image": "ghcr.io/mul-cps/cps-compute@sha256:f7b5ecb4e07c3ee1b17d68a0b78342cee31afbf8eac114af6bae5311e2086fcf",
+  "group_prepare_seconds": 120,
+  "helper_subtests": 4,
+  "helper_tests": 26,
+  "journal": {
+    "active": 34,
+    "files": 414,
+    "four_actual_acks_ready": true,
+    "rotations": 82
+  },
+  "kind": "controlled-preparation-deadline-component-rollout",
+  "node_config_data_sha256": "sha256:e258f7d5062ddfa1eafdfa07b05950656e6bce4c5f9cd24652d49ccef9862a62",
+  "node_config_reference": {
+    "name": "cps-native-head-config-e258f7d5062ddfa1",
+    "namespace": "cps-native-system",
+    "resourceVersion": "379405486",
+    "uid": "4ce29279-c4a6-431d-bc9d-605b504a4a92"
+  },
+  "passed": true,
+  "policy_hash": "sha256:332d14fb9e510b9810feffb8d40b408743f9679ebd13ca1ba0e1077d666e9281",
+  "production_qualified": false,
+  "protected_notebook_unchanged": true,
+  "restore_initially_paused_on_blocked_writer_tick": true,
+  "restore_resumed_after_ready_tick": true,
+  "source_generation_unchanged": 9,
+  "source_revision": "70c4f47e036fc34c1c6794128c83a88cee854271"
+}
