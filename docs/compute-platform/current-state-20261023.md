@@ -1577,3 +1577,45 @@ rollout and hardware evidence for every admitted device, followed by full-pool
 packing, reclaim and startup-burst qualification. Existing single-device
 isolation passes remain valid within their measured scope. No driver, kernel,
 MIG, device allowlist or production placement setting was changed by this audit.
+
+### Fresh-policy handover software qualified; candidate images published
+
+Application source `453c4f5f2ff2bb2d585fdfb645008e4be8af8b9a` implements the
+reviewed fresh-qualification bridge, retained bounded Node history, append-only
+Source migration, exact committed retry and durable four-process publication.
+Independent review resolved repeated historical traversal, bootstrap image-pin
+and operator-proof read-permission findings. The full Python suite passes
+**5,320 tests and 68 subtests**, with six skips and 623 warnings (660.21 seconds).
+This is software evidence, not new GPU evidence.
+
+The SDK wheel checksum is
+`cd0c1866a3cc4229fd0bd829d1d5310a6a8c9e518aeb2cdcd0ea3852220b5d9a`.
+All 81 packaged Python modules match source and all 83 RECORD hashes verify.
+It owns no Hub or Lab extension payloads. Published candidates are:
+
+- Node: `ghcr.io/mul-cps/cps-native-node@sha256:c2f125440cfa0b339a776bcf82e0060b1a569622373ab9edee91a71d611727f8`.
+- Gateway: `ghcr.io/mul-cps/cps-compute@sha256:bcf7bcf1e75d2a981bbbdbbbc63cb1ed7eec700a3397a2e7b4b422f4d64d371b`.
+
+Both registry manifests match the tested OCI archives byte-for-byte. Both actual
+images pass `pip check`. The Node image loads a synthetic fresh-policy history
+graph with no network/host mounts. The unmodified Gateway image passes a synthetic
+Source append/retry/grant-preservation transaction; nine API tests pass against
+its installed wheel and pinned FastAPI 0.142.2/Starlette 1.3.1. Added QA tooling
+preserves all 44 production dependency versions. These CPU fixtures do not
+establish hardware isolation or live migration readiness.
+
+Read-only Hub inventory confirms CPS/CIT installed SDK and Hub payloads match
+each other. All 20 installed Hub adapter Python files match the candidate source;
+the compatible Hub artifact still needs building and qualification with the new
+SDK. All cluster nodes remain Ready, and research Pod `jupyter-gottam` retains its
+original UID. No production image, policy, journal, reservation, driver or kernel
+was changed by this implementation/build work.
+
+Next are compatible consumer artifacts, actual target-notebook hardware evidence
+and a fenced handover with matching backups, current acknowledgments, startup
+measurements and normal cleanup. The eight-GPU implementation gap above remains
+open. Do not enable the new notebook image using old qualification receipts.
+
+[Canonical operator guide](https://github.com/mul-cps/cps-compute/blob/453c4f5f2ff2bb2d585fdfb645008e4be8af8b9a/docs/native-qualified-policy-transition.md)
+and [software candidate evidence](https://github.com/mul-cps/cps-compute/blob/a68686d5ddbaf317d72d4a9c5abe6046caf61703/releases/native-qualified-policy-20261024/software-qualification.json)
+record the exact application scope and remaining gates.
