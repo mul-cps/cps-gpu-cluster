@@ -1,0 +1,110 @@
+diff --git a/cmd/binder/app/app.go b/cmd/binder/app/app.go
+index c6e4488..1d2b942 100644
+--- a/cmd/binder/app/app.go
++++ b/cmd/binder/app/app.go
+@@ -161,6 +161,9 @@ func (app *App) Run(ctx context.Context) error {
+ 		reader := app.manager.GetAPIReader()
+ 		reservation.SetNativeCustody(reader, bridge)
+ 		binder.SetNativeTerminal(reader, app.Options.NativeCoordinator.AuthorityNamespace, bridge)
++		if err := app.manager.Add(&nativeReservationReconciler{sync: app.rrs.Sync, interval: 5 * time.Second}); err != nil {
++			return fmt.Errorf("native reservation reconciliation startup: %w", err)
++		}
+ 	}
+ 	go func() {
+ 		if !app.manager.GetCache().WaitForCacheSync(ctx) {
+diff --git a/cmd/binder/app/native_reservation_sync.go b/cmd/binder/app/native_reservation_sync.go
+new file mode 100644
+index 0000000..cf1de40
+--- /dev/null
++++ b/cmd/binder/app/native_reservation_sync.go
+@@ -0,0 +1,34 @@
++package app
++
++import (
++	"context"
++	"time"
++)
++
++// Native cleanup can finish after the last Pod event. Revisit reservations until
++// the existing custody API authorizes their exact UID/RV deletion. A hold never
++// becomes permission through age or Pod absence.
++type nativeReservationReconciler struct {
++	sync     func(context.Context) error
++	interval time.Duration
++}
++
++func (*nativeReservationReconciler) NeedLeaderElection() bool { return true }
++
++func (r *nativeReservationReconciler) Start(ctx context.Context) error {
++	ticker := time.NewTicker(r.interval)
++	defer ticker.Stop()
++	for {
++		select {
++		case <-ctx.Done():
++			return nil
++		case <-ticker.C:
++			if ctx.Err() != nil {
++				return nil
++			}
++			if err := r.sync(ctx); err != nil && ctx.Err() == nil {
++				setupLog.Error(err, "native reservation reconciliation held; retrying")
++			}
++		}
++	}
++}
+diff --git a/cmd/binder/app/native_reservation_sync_test.go b/cmd/binder/app/native_reservation_sync_test.go
+new file mode 100644
+index 0000000..eea94ba
+--- /dev/null
++++ b/cmd/binder/app/native_reservation_sync_test.go
+@@ -0,0 +1,50 @@
++package app
++
++import (
++	"context"
++	"errors"
++	"sync/atomic"
++	"testing"
++	"time"
++)
++
++func TestNativeReservationReconciliationRetriesAndStops(t *testing.T) {
++	ctx, cancel := context.WithCancel(context.Background())
++	defer cancel()
++	var calls atomic.Int32
++	released := make(chan struct{})
++	runner := &nativeReservationReconciler{interval: time.Millisecond, sync: func(context.Context) error {
++		n := calls.Add(1)
++		if n == 1 {
++			return errors.New("cleanup proof temporarily unavailable")
++		}
++		if n == 3 {
++			close(released)
++		}
++		return nil
++	}}
++	if !runner.NeedLeaderElection() {
++		t.Fatal("cleanup must run only on the elected binder")
++	}
++	done := make(chan error, 1)
++	go func() { done <- runner.Start(ctx) }()
++	select {
++	case <-released:
++	case <-time.After(2 * time.Second):
++		t.Fatal("cleanup was never retried after hold/error")
++	}
++	cancel()
++	select {
++	case err := <-done:
++		if err != nil {
++			t.Fatal(err)
++		}
++	case <-time.After(time.Second):
++		t.Fatal("reconciler did not stop")
++	}
++	count := calls.Load()
++	time.Sleep(5 * time.Millisecond)
++	if calls.Load() != count {
++		t.Fatal("cleanup continued after cancellation")
++	}
++}

@@ -1,0 +1,23 @@
+{
+  "version": 1,
+  "upstream_revision": "bdf434e5e9201cccf4e05fad04d814363653f692",
+  "overlay_revision": "adfa562d2857a3682527f8d311511ebf5ed9a8f1",
+  "go_version": "go1.26.8 linux/amd64",
+  "packages_tested": [
+    "cmd/binder/app",
+    "pkg/binder/binding",
+    "pkg/binder/binding/resourcereservation",
+    "pkg/binder/controllers",
+    "pkg/binder/plugins/hamicore"
+  ],
+  "all_five_packages_passed": true,
+  "reproducible_binary": true,
+  "binary_sha256": "b22b80ba8492bf1f245ff0e8d52755f1f7cbadaf93088abde8dcbd49f2e5705d",
+  "full_patch_sha256": "b83c39150809b0dda3ec8e16124670f1488af3fc9d2593fd55424b86bf922172",
+  "dependency_files_changed": false,
+  "native_only": true,
+  "leader_only": true,
+  "interval_seconds": 5,
+  "custody_and_uid_rv_guards_preserved": true,
+  "live_qualification_passed": false
+}
