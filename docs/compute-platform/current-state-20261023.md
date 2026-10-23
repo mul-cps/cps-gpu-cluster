@@ -1509,3 +1509,46 @@ remain above the p95 target. This running pair is not a simultaneous burst,
 full-pool/20-GiB qualification or injected same-person reservation conflict.
 
 [Exact caller boundary, starts, same-device pair, peer survival and cleanup](../../platform-staging/startup-performance/qualification/cross-hub-native5-20261023/result.json).
+
+### NBI startup candidate qualified and published; live handover remains open
+
+Notebook source branch `fix/nbi-lazy-claude-20261023` contains the reviewed
+runtime patch at `9ea3accc594f4a3d1b29798997fb8879dc433c80`. The distribution is
+`notebook-intelligence==4.6.0+cps.2`; only the eager constructor connection is
+removed. First-use connection, real failure reporting and reconnect remain
+functional. The first `cps.1` candidate correctly failed `pip check`: its new
+FastMCP bound was too restrictive for the approved image's installed 3.2.4.
+The revised bound permits the tested 2.14.7/3.2.4 APIs while excluding 4.x.
+No production dependency downgrade occurred.
+
+The pinned wheel rebuilds byte-identically with SHA256
+`bef15b74370cfd7ddc55fc9034d105e6c21e4b6bfc4e39d7b7a6edc638a0b71e`.
+RECORD integrity, unchanged other Python/frontend payloads and upstream-pin
+rejection pass. Three controlled-SDK tests pass in clean environments and the
+actual approved notebook base; image `pip check` passes. The repository suite
+passes 52 tests and 22 subtests. Independent review reproduces the artifact hash.
+
+Candidate `ghcr.io/mul-cps/cps-jupyter-notebook@sha256:3eabf4238cdc1b48b5e945d62a5bf8bd22761891cbba91ba2aa2c0e54c776b56`
+is published. Registry manifest bytes match the tested OCI export exactly.
+All 86 approved base layers/diffIDs and runtime settings are retained. A read-only
+base-image mount verifies all 79 original NBI payloads against upstream. The two
+additional layers contain 116 non-directory entries, confined to NBI and temporary
+build paths; no other dependency files change. The temporary builder is stopped,
+its SSH forward and image mount removed, and the redundant OCI tar removed after
+registry verification. GPU2 preloads the image in 2.88 seconds. The research Pod
+remains Running with its original UID. These are package/build checks, not new GPU
+execution or live Hub startup results.
+
+**Handover boundary:** the current typed image edge permits only changes to
+`cps-compute-jupyterlab`; it correctly excludes NBI dependency changes. A standalone
+fresh hardware root also cannot silently retain the current anchor/history.
+Review confirms that a new typed migration is needed to authenticate this class
+of dependency update while preserving the existing Node context and its 16-link
+service history. The candidate remains staged; no guard, policy, database or
+journal reset is used to promote it. The full production gates above remain open.
+
+[Canonical package instructions](https://github.com/mul-cps/cps-jupyter-notebook/blob/7921ee7df170f00daf454ab947c5071534915ad7/release/nbi-startup.md)
+and [candidate image receipt](https://github.com/mul-cps/cps-jupyter-notebook/blob/7921ee7df170f00daf454ab947c5071534915ad7/release/nbi-startup-image-qualification.json)
+retain the exact source, artifact and qualification boundaries. The cluster
+configuration verification command also passes; this does not qualify scheduling
+or a production release.

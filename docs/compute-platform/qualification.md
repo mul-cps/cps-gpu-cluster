@@ -4,8 +4,10 @@
 configuration renders are necessary checks, not acceptance evidence for hardware,
 real authentication, shared kernels or data recovery.
 
-The latest bounded hardware result is the
-[2026-10-12 two-workspace lifecycle](#2026-10-12-limited-group-lifecycle-and-personal-argo-source-checkpoint).
+The latest bounded results are in the
+[2026-10-23 current-state ledger](current-state-20261023.md), including the
+same-device CPS/CIT running pair and peer-safe shutdown. The October 12 lifecycle
+below is historical, not the latest hardware result.
 Earlier dated failures and pending statements below remain historical evidence;
 the latest receipt supersedes them only for its exact scopes and measured pins.
 
@@ -75,11 +77,13 @@ migration/rollback procedures and qualification artifacts. Build all notebook
 variants from the same clean tagged source and promote the same tested bytes.
 Never fabricate image digests or publish a production tag to unblock staging.
 
-Release blocks still include measured GPU isolation/packing and Hub GPU lifecycle,
-JobSet launcher qualification, complete legacy grant migration, real browser/RTC
-and Shares/NFS provisioning, expired-session/idle lifetime enforcement, actual
-artifact retention and matching-version restore exercises. The referenced
-application docs track the exact implementation boundary.
+Release gates must be assessed against the latest ledger: controlled GPU
+isolation, shared lifecycles, RTC/revocation and artifact-retention checks have
+passed within their recorded scopes. Broader GPU packing/scheduling, startup
+bursts, JobSet, hard-maximum expiry, complete identity/grant migration, final
+variant integration and matching-version full restore still require their own
+evidence. Earlier dated pending statements below do not invalidate later passes.
+The referenced application docs track the exact implementation boundary.
 
 ## 2026-10-05 live staging evidence
 
