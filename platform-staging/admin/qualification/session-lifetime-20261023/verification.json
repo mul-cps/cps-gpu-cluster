@@ -1,0 +1,44 @@
+{
+  "status": "live_idle_expiry_in_progress",
+  "baseline": {
+    "workspace_state": "running",
+    "reservation": {
+      "workspace": "shared-gpu-lab",
+      "active": true,
+      "attempt": "fcaf403b-6a84-4b25-bf0d-a07e6254a7bd"
+    },
+    "lifetime": {
+      "available": true,
+      "server": {
+        "user": "cps-ws-27c474f74f9d41c53eac0be01fcca8a3",
+        "name": "rtc"
+      },
+      "started_at": "2026-10-23T01:41:33.391531Z",
+      "maximum_deadline_at": "2026-10-23T05:41:33.391531Z",
+      "effective_deadline_at": "2026-10-23T02:12:53.359000Z",
+      "limiting_reason": "idle",
+      "idle_timeout_seconds": 1800,
+      "observed_at": "2026-10-23T01:42:57.405741Z",
+      "idle_deadline_at": "2026-10-23T02:12:53.359000Z"
+    }
+  },
+  "test_pod_uid": "b5573dba-69bc-4cdf-b0a9-78c6b066b0e0",
+  "start_seconds": 87.45234963999974,
+  "software_tests": {
+    "hub_lifetime_passed": 112,
+    "jupyterlab_addon_passed": 96
+  },
+  "deployed_addon": {
+    "distribution": "cps-compute-jupyterlab",
+    "version": "0.1.0",
+    "static_js_files": 3,
+    "warning_message_present": true,
+    "idle_warning_present": true,
+    "red_warning_style_present": true,
+    "countdown_present": true
+  },
+  "limits_changed": false,
+  "actual_idle_expiry_proven": false,
+  "actual_maximum_expiry_proven": false,
+  "browser_visual_warning_verified": false
+}
