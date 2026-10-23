@@ -1,0 +1,64 @@
+{
+  "source_revision": "212307b04407d7ea811854bf059eb66843fc59d7",
+  "source_branch": "release/modular-packages-20261023",
+  "application_version": "0.1.0",
+  "frontend_tests_passed": 97,
+  "frontend_build_target": "JupyterLab 4.5.7",
+  "two_consecutive_locked_build_asset_hashes_identical": true,
+  "wheel_namespace_dependency_and_ownership_verifier": true,
+  "all_sdist_rebuilt_wheel_payloads_identical": true,
+  "installed_checks": {
+    "lean_sdk_no_optional_runtimes": true,
+    "node_import_without_runtime_io": true,
+    "hub_registered_spawner": true,
+    "hub_version": "5.5.2",
+    "kubespawner_version": "7.1.0",
+    "lab_versions": [
+      "4.5.7",
+      "4.6.4"
+    ],
+    "lab_assets_owned_only_by_addon": true,
+    "lab_uninstall_reinstall_preserves_sdk": true,
+    "lab_464_uninstall_removes_assets_hooks_and_autoenable": true
+  },
+  "wheels": [
+    {
+      "file": "cps_compute-0.1.0-py3-none-any.whl",
+      "sha256": "1f8c2234ca2aaa58b536095cf67d238e94fd552c855289c55a12aa8922c5914b",
+      "sdist_payload_identical": true,
+      "files": 83
+    },
+    {
+      "file": "cps_compute_hub-0.1.0-py3-none-any.whl",
+      "sha256": "a3c429a2652d70bf05421c2e352285f91059f050036203a0356c14400e34bfd8",
+      "sdist_payload_identical": true,
+      "files": 24
+    },
+    {
+      "file": "cps_compute_jupyterlab-0.1.0-py3-none-any.whl",
+      "sha256": "978121437993661dcb4583184346222fa48c07a4d8d45cd558b073e7b6aefbb7",
+      "sdist_payload_identical": true,
+      "files": 11
+    }
+  ],
+  "sdists": [
+    {
+      "file": "cps_compute-0.1.0.tar.gz",
+      "sha256": "71ddbf3543f8624d8e2d607407a0420a44cef1d21d46aa073a78b6767df6d5bf"
+    },
+    {
+      "file": "cps_compute_hub-0.1.0.tar.gz",
+      "sha256": "1d864783b769a82a117e2f38ed216006c02f5dcec09c03aebcb407a776f64317"
+    },
+    {
+      "file": "cps_compute_jupyterlab-0.1.0.tar.gz",
+      "sha256": "c01967c5949f8e38c9871a0439b9b9a6deac9d3c8d009af2ae8fcf6dc3832791"
+    }
+  ],
+  "published_as_release": false,
+  "notebook_image_built": false,
+  "software_preservation_attestation_created": false,
+  "deployed": false,
+  "live_browser_e2e_verified": false,
+  "hub_sdk_variants_converged": false
+}

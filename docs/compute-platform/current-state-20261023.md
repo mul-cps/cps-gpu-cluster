@@ -1337,3 +1337,35 @@ change merely to evade the service bound. A general compaction feature would
 need retained typed policy/service provenance and durable recovery semantics.
 
 [Rejected-draft boundary and retained guard regression](../../platform-staging/startup-performance/qualification/service-compaction-rejected-20261023/result.json).
+
+### Current modular release artifacts qualified offline
+
+Release branch **212307b** rebuilds the prebuilt Compute loader against
+minimum-supported **JupyterLab 4.5.7** metadata and the locked frontend toolchain.
+Two consecutive builds produce identical asset hashes. All **97 frontend tests
+pass**, including typed Hera serialization, current policy/resource validation,
+notebook control-cell execution rules, dynamic snippet/workload models, visitor
+identity request behavior and lifetime warnings. Initial local test runs lacked
+the Python SDK/Hera/Hub source paths; the final run uses the qualification
+interpreter and explicit application source paths. No tests were weakened.
+
+SDK, Hub and Lab wheels and sdists build. Package verification passes for both
+direct wheels and wheels rebuilt from all three sdists; **all uncompressed wheel
+payloads match exactly**. Namespace/dependency/install destinations remain
+separate, with server autoenable and registered Hub spawner verified. Fresh
+noneditable installations pass pip check and installed-runtime probes: lean SDK
+without optional runtimes, import-safe Node modules, Hub5.5.2/KubeSpawner7.1.0,
+and Lab **4.5.7 and 4.6.4**. Only the addon owns its six prebuilt assets; uninstall
+and reinstall preserve SDK. The 4.6.4 lifecycle also verifies removal of Python
+hooks and server autoenable configuration. Final oldest-supported assets were
+reinstalled and reverified in both Lab versions.
+
+This closes current artifact/installed-package checks, **not live release
+qualification**. Wheels remain local candidates; no release/tag, container,
+software-preservation attestation, policy handover or deployment was performed.
+It does not resolve the existing Hub SDK source-variant convergence or prove
+live browser behavior. The runtime remains the earlier qualified single pooled
+CUDA start at 278 seconds. A genuine notebook-image update still requires its
+complete inventories/OCI preservation proof and normal gated policy transition.
+
+[Source pin, wheel/sdist hashes and exact qualification scope](../../platform-staging/startup-performance/qualification/modular-packages-20261023/qualification.json).
