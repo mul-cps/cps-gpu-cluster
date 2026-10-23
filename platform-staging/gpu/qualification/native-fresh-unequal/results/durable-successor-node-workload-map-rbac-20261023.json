@@ -1,0 +1,155 @@
+{
+  "version": 1,
+  "manifests": {
+    "apiVersion": "v1",
+    "kind": "List",
+    "items": [
+      {
+        "apiVersion": "rbac.authorization.k8s.io/v1",
+        "kind": "Role",
+        "metadata": {
+          "namespace": "jupyterhub",
+          "name": "cps-runtime-node-workload-maps"
+        },
+        "rules": [
+          {
+            "apiGroups": [
+              ""
+            ],
+            "resources": [
+              "configmaps"
+            ],
+            "verbs": [
+              "get"
+            ]
+          }
+        ]
+      },
+      {
+        "apiVersion": "rbac.authorization.k8s.io/v1",
+        "kind": "RoleBinding",
+        "metadata": {
+          "namespace": "jupyterhub",
+          "name": "cps-runtime-node-workload-maps"
+        },
+        "subjects": [
+          {
+            "kind": "ServiceAccount",
+            "namespace": "cps-native-runtime",
+            "name": "cps-native-node-agent"
+          }
+        ],
+        "roleRef": {
+          "apiGroup": "rbac.authorization.k8s.io",
+          "kind": "Role",
+          "name": "cps-runtime-node-workload-maps"
+        }
+      },
+      {
+        "apiVersion": "rbac.authorization.k8s.io/v1",
+        "kind": "Role",
+        "metadata": {
+          "namespace": "cit-jhub",
+          "name": "cps-runtime-node-workload-maps"
+        },
+        "rules": [
+          {
+            "apiGroups": [
+              ""
+            ],
+            "resources": [
+              "configmaps"
+            ],
+            "verbs": [
+              "get"
+            ]
+          }
+        ]
+      },
+      {
+        "apiVersion": "rbac.authorization.k8s.io/v1",
+        "kind": "RoleBinding",
+        "metadata": {
+          "namespace": "cit-jhub",
+          "name": "cps-runtime-node-workload-maps"
+        },
+        "subjects": [
+          {
+            "kind": "ServiceAccount",
+            "namespace": "cps-native-runtime",
+            "name": "cps-native-node-agent"
+          }
+        ],
+        "roleRef": {
+          "apiGroup": "rbac.authorization.k8s.io",
+          "kind": "Role",
+          "name": "cps-runtime-node-workload-maps"
+        }
+      }
+    ]
+  },
+  "sar_cases": [
+    {
+      "namespace": "jupyterhub",
+      "verb": "get",
+      "resource": "configmaps",
+      "allowed": true
+    },
+    {
+      "namespace": "jupyterhub",
+      "verb": "get",
+      "resource": "secrets",
+      "allowed": false
+    },
+    {
+      "namespace": "jupyterhub",
+      "verb": "create",
+      "resource": "configmaps",
+      "allowed": false
+    },
+    {
+      "namespace": "jupyterhub",
+      "verb": "patch",
+      "resource": "configmaps",
+      "allowed": false
+    },
+    {
+      "namespace": "jupyterhub",
+      "verb": "delete",
+      "resource": "configmaps",
+      "allowed": false
+    },
+    {
+      "namespace": "cit-jhub",
+      "verb": "get",
+      "resource": "configmaps",
+      "allowed": true
+    },
+    {
+      "namespace": "cit-jhub",
+      "verb": "get",
+      "resource": "secrets",
+      "allowed": false
+    },
+    {
+      "namespace": "cit-jhub",
+      "verb": "create",
+      "resource": "configmaps",
+      "allowed": false
+    },
+    {
+      "namespace": "cit-jhub",
+      "verb": "patch",
+      "resource": "configmaps",
+      "allowed": false
+    },
+    {
+      "namespace": "cit-jhub",
+      "verb": "delete",
+      "resource": "configmaps",
+      "allowed": false
+    }
+  ],
+  "all_expected_results_passed": true,
+  "scope": "Trusted Node GET-only ConfigMaps in the two Hub namespaces; no Secret access or mutation"
+}

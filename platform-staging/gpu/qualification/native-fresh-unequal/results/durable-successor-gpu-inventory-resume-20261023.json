@@ -1,0 +1,16 @@
+{
+  "version": 1,
+  "kind": "qualified-gpu2-device-plugin-resume",
+  "node_uid": "3336cdd5-d245-436e-b57c-2f66c6dcaa41",
+  "qualified_uuid": "GPU-16128952-b438-556a-00bb-93039ee24e56",
+  "advertised_gpus": 1,
+  "existing_cdi_digests_unchanged": true,
+  "plugin_config_mig_strategy": "none",
+  "driver_version": "615.71.09",
+  "kernel": "6.8.0-147-generic",
+  "boot_id": "a464df41-e391-4443-b8e8-ad7ecd052318",
+  "driver_kernel_mig_unchanged": true,
+  "only_device_plugin_operand_enabled": true,
+  "uncordoned": true,
+  "gpu_workload_started": false
+}

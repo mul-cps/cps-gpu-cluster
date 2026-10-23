@@ -1,0 +1,39 @@
+{
+  "version": 1,
+  "kind": "successor-normal-shared-lab-lifecycle-attempts",
+  "binder_native_pending_enabled": true,
+  "binder_authority_namespace": "cps-native-runtime",
+  "lab_memberships_renewed": 3,
+  "existing_lab_grants_renewed": 6,
+  "renewal_expires_utc": "2026-10-29T23:51:39.080516+00:00",
+  "identity_authorities_changed": false,
+  "attempts": [
+    {
+      "pod_uid": "fe86d842-d277-4af3-adab-86819dd897b0",
+      "outcome": "timed-out before notebook readiness; missing Node map GET permission corrected; normal verified cleanup completed"
+    },
+    {
+      "pod_uid": "c4260607-1ff6-43c4-8de9-3901689becf5",
+      "outcome": "reservation Pod could not allocate; console returned running despite observed Pod absence; not accepted as successful Start",
+      "reported_start_seconds": 257.5782621210019
+    }
+  ],
+  "final_workspace_state": "stopped",
+  "released_allocation_records": 2,
+  "remaining_lab_member_reservations": 0,
+  "retained_kai_reservation_pods": [
+    {
+      "name": "gpu-reservation-45667efef389d914",
+      "uid": "5beecd7e-71fc-40c1-bb33-7ddebf5836e2",
+      "observed_phase": "Running"
+    },
+    {
+      "name": "gpu-reservation-2e589b8a7832a3ab",
+      "uid": "8a7a15b5-9b68-4d95-8358-30171c5ede50",
+      "observed_phase": "Failed"
+    }
+  ],
+  "cuda_notebook_execution_verified": false,
+  "next": "Trace KAI reservation deletion custody and console start readiness; reconcile retained reservations before another Start",
+  "production_ready": false
+}

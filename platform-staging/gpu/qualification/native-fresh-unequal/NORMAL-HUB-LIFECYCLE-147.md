@@ -1111,3 +1111,42 @@ were made.
 Evidence: `results/durable-successor-delivery-manifests-20261023.json`,
 `results/durable-successor-delivery-guarded-writes-20261023.json` and
 `results/durable-successor-delivery-approved-workspace-20261023.json`.
+
+### Qualified GPU inventory resumed; normal lab attempts expose cleanup/readiness work
+
+Verified current boot/kernel/615.71.09 driver and both physical GPUs idle. Enabled
+only GPU2's device plugin while cordoned. Its reviewed plain configuration allows
+only the qualified physical UUID, MIG none. The plugin became Ready, advertised
+one GPU, and all existing CDI digests stayed unchanged. Then uncordoned under the
+existing authorization. Driver/kernel/MIG and other paused operands were unchanged.
+
+The three lab memberships and six existing CPU/native5 grants had expired. Renewed
+only their expiry for seven days through normal provider/Source API operations,
+with Bjoern's Hub-admin status verified. Existing reviewed identity aliases were
+already correct and were not changed. The console's inactive-membership message
+misleadingly referred to canonical mapping; this needs a clearer error.
+
+First normal Start reserved three members and KAI selected GPU2. Binder native
+pending support was still disabled and targeted the old namespace: enabled it and
+set the successor namespace without changing other plugins/image. Prepare and
+current-binding passed. The gate then exposed missing Node ConfigMap GET access
+to its workload maps. Added GET-only in the two Hub namespaces and passed ten SAR
+cases (map reads allowed, Secret access/mutations denied). The first Start timed
+out; normal close completed after verified pre-gate cleanup and released members.
+
+A fresh retry exposed a retained KAI GPU reservation Pod from the first attempt.
+The new reservation could not allocate and failed; a UID/RV deletion conflict was
+logged. The console later returned running although Pod absence had already been
+observed. That response is not counted as notebook/CUDA success. Requested normal
+Hub shutdown and reconciled through normal console close: final state stopped,
+both allocation records released and zero lab member reservations. Retained KAI
+reservation Pods still need custody/deletion review. No forced reservation release
+or unreviewed Pod deletion was performed.
+
+Next investigate that reservation cleanup and Start readiness before another
+spawn. Existing passed CUDA isolation evidence is unchanged; current automatic
+notebook execution remains unverified.
+Evidence: `results/durable-successor-gpu-inventory-resume-20261023.json`,
+`results/durable-successor-binder-configuration-20261023.json`,
+`results/durable-successor-node-workload-map-rbac-20261023.json` and
+`results/durable-successor-shared-lab-attempts-20261023.json`.
