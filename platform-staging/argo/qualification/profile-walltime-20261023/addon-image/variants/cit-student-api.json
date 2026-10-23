@@ -1,0 +1,44 @@
+{
+  "armin": {
+    "hub_token_review": {
+      "status": 200,
+      "response_keys": [
+        "message",
+        "name_matches"
+      ]
+    },
+    "me": {
+      "status": 401,
+      "response_keys": [
+        "detail"
+      ]
+    },
+    "profiles": {
+      "status": 401,
+      "response_keys": [
+        "detail"
+      ]
+    }
+  },
+  "mikasa": {
+    "hub_token_review": {
+      "status": 200,
+      "response_keys": [
+        "message",
+        "name_matches"
+      ]
+    },
+    "me": {
+      "status": 401,
+      "response_keys": [
+        "detail"
+      ]
+    },
+    "profiles": {
+      "status": 401,
+      "response_keys": [
+        "detail"
+      ]
+    }
+  }
+}

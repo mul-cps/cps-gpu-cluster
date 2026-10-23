@@ -1,0 +1,16 @@
+[
+  {
+    "username": "armin",
+    "status": 200,
+    "authenticated_name": "armin",
+    "admin": false,
+    "path": "https://jhub.dshl.unileoben.ac.at/hub/home"
+  },
+  {
+    "username": "mikasa",
+    "status": 200,
+    "authenticated_name": "mikasa",
+    "admin": false,
+    "path": "https://jhub.dshl.unileoben.ac.at/hub/home"
+  }
+]

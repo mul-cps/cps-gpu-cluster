@@ -26,6 +26,22 @@ retains the exact scope and operator fixes (163 delivery regression tests).
 This updates the shared-GPU image, not every CPU/other notebook variant. Browser
 visual acceptance and CIT student workflow acceptance remain open.
 
+## Remaining variants and CIT student acceptance
+
+The CPS CPU runtime candidate finished building locally (`0c1addcb…50003e`);
+publication and deployment remain pending. The CIT CPU base image download is
+complete. Both controlled students, Armin and Mikasa, completed fresh ordinary
+CIT directory login at `jhub.dshl.unileoben.ac.at`; Hub identity reads returned
+200 with `admin=false`. Fresh temporary API tokens also pass Hub review (200),
+but Compute `/v1/me` and `/v1/profiles` still return 401. This establishes a
+remaining Compute authentication/mapping boundary after refreshing stale OAuth;
+it does not qualify CIT student Compute access. Both temporary tokens were revoked.
+The initial browser harness used an incorrect hostname and was corrected from
+live ingress readback; no DNS, identity mapping or permission settings were changed.
+
+[Variant and student acceptance evidence](../../platform-staging/argo/qualification/profile-walltime-20261023/addon-image/variants/progress.json)
+contains the bounded progress, with separate login and API read receipts.
+
 ## Newly verified live results
 
 - CPS and CIT use the matching Hub image `435c0806…e5cb466`. The Hub wheel is
