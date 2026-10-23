@@ -27,3 +27,17 @@ anchors. Notebook image publication, software-preservation proof and approved
 image/policy transition must then deploy the addon. Current live isolation and
 lifecycle evidence remains tied to its original artifacts; this source/software
 result does not prove new live image qualification or a 72-hour execution run.
+
+## Protected handover preparation
+
+Seven immutable successor inputs are staged from the actual live Deployments and
+bootstrap/config references: Node configuration/bootstrap, observer, delivery,
+KAI coordinator, Gateway runtime and its own publisher. The predecessor bootstrap
+is retained. A private read-only journal snapshot confirms version 3 and the
+unchanged original anchor; credentials and archived private configuration are not
+committed. All 13 native claims were released and no reservation Pod remained at
+preflight. No Deployment, Role or admission policy was changed during staging.
+The live Gateway remains Ready on its predecessor image. Before activation, hold
+the delivery writer, recapture its complete journal, recheck physical quiescence,
+pregrant only exact immutable reads, update the exact ReplicaSet admission binding,
+and execute the reviewed service-image rotation without resetting any journal.

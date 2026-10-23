@@ -1,0 +1,48 @@
+{
+  "stage": "immutable_inputs_prepared_not_activated",
+  "plan": {
+    "version": 1,
+    "image": "ghcr.io/mul-cps/cps-compute@sha256:ac9ee1b0fe77266e089be0c64c564cf009c55684808dd5fee5d2c135080c23f4",
+    "predecessor_image": "ghcr.io/mul-cps/cps-compute@sha256:3c8030cc7dbf6c12a6d29374c4df16b490536c3e723bcc8a67e913c7a2287624",
+    "predecessor_node_reference": {
+      "data_sha256": "sha256:da19eb47618cffcc60b0f8720f2fa44ced624a45a15ac73d9654b504a4bdcfd6",
+      "key": "config.json",
+      "name": "cps-runtime-node-config-da19eb47618cffcc",
+      "namespace": "cps-native-runtime",
+      "resourceVersion": "380388716",
+      "uid": "7d70abde-26a7-49f0-a75a-2be3d4aa5b48"
+    },
+    "node_reference": {
+      "namespace": "cps-native-runtime",
+      "name": "cps-runtime-node-config-75f9d06f2e3d2052",
+      "uid": "0fdda340-fabe-4fd1-9e06-b99587376abb",
+      "resourceVersion": "380491815",
+      "key": "config.json",
+      "data_sha256": "sha256:75f9d06f2e3d20520c6739d6c4f1366fb307ea91e3f958f912f16cb8c5e7a209"
+    },
+    "bootstrap": "cps-runtime-bootstrap-7014f689d5b60d7c",
+    "predecessor_bootstrap": "cps-runtime-bootstrap-654185c3ec553bbf",
+    "predecessor_bootstrap_retained": true,
+    "observer_seed": "cps-runtime-observer-inputs-142f2b2405c93e2c",
+    "delivery_seed": "cps-runtime-head-delivery-9f6d77c4b4fa2be7",
+    "kai_seed": "cps-runtime-kai-config-5b70b649ec0631e3",
+    "runtime_seed": "cps-runtime-gateway-config-1d6659d46c9446d7",
+    "publisher_seed": "cps-runtime-publisher-gateway-0eb7baae3cd3097e",
+    "node_template_sha256": "sha256:075298b1ac2073afe3caaa9e3e4784c9abdc70b33429482e018d707de6198896",
+    "activated": false
+  },
+  "journal": {
+    "anchor_sha256": "sha256:35c838bc8d7f52e4258bfd41d22b259e9b8635f497b0f339c3c2cdbfb42cc0fd",
+    "journal_version": 3,
+    "journal_file_count": 14,
+    "journal_snapshot_captured": true,
+    "snapshot_kind": "read-only pre-activation; recapture after holding writer before execution",
+    "activated": false
+  },
+  "native_preflight": {
+    "claims_released": 13,
+    "active_reservation_pods": 0
+  },
+  "live_gateway_image": "ghcr.io/mul-cps/cps-compute@sha256:3c8030cc7dbf6c12a6d29374c4df16b490536c3e723bcc8a67e913c7a2287624",
+  "live_gateway_ready": true
+}
