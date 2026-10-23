@@ -1,0 +1,73 @@
+{
+  "sweep": {
+    "examined": 89,
+    "eligible": 0,
+    "deleted": 0,
+    "skipped": 82,
+    "errors": 7,
+    "objects": [],
+    "apply": false,
+    "truncated": false,
+    "reconciled": 0,
+    "version": 1,
+    "image": "ghcr.io/mul-cps/cps-compute:qualification-25e2190@sha256:7a9caff2fe4874adad523dd2be3fc6dcb00930b7dc4d3ddbc2f3141de20d15ea",
+    "policy_hash": "sha256:d48f6553ed036c2e7adcc97417623fe0308be93ad13b20f246047ada118511b0"
+  },
+  "diagnostics": [
+    {
+      "diagnostic": true,
+      "exception_type": "HTTPError",
+      "storage_error_code": null,
+      "http_status": 404,
+      "key_hash": "9215906e2f6edf322f8137cec4c395e11ac8a7f5a0e8875dd23e28a00cdad96b"
+    },
+    {
+      "diagnostic": true,
+      "exception_type": "HTTPError",
+      "storage_error_code": null,
+      "http_status": 404,
+      "key_hash": "a3df318b6017fcf461d3a76f906842004f079a99cdbd35aefd138fade0d04495"
+    },
+    {
+      "diagnostic": true,
+      "exception_type": "HTTPError",
+      "storage_error_code": null,
+      "http_status": 404,
+      "key_hash": "1cc058e47ad94fcbd3f3ea146b3ee69b5932db2a6f31ecd2ab12802899abfa51"
+    },
+    {
+      "diagnostic": true,
+      "exception_type": "HTTPError",
+      "storage_error_code": null,
+      "http_status": 404,
+      "key_hash": "c5197356466a8895668a1ddfe4774c863dc527fe9f3efc0cec607d7372bce2c1"
+    },
+    {
+      "diagnostic": true,
+      "exception_type": "HTTPError",
+      "storage_error_code": null,
+      "http_status": 404,
+      "key_hash": "9b9581bb89727015599053f85016ea8940ab7ec5e2c3204430f0e6cfb0a5265f"
+    },
+    {
+      "diagnostic": true,
+      "exception_type": "HTTPError",
+      "storage_error_code": null,
+      "http_status": 404,
+      "key_hash": "fa25375638b36bca4f5d09e456c48a6c8f475f8e1a010cccf1df915f37ac156c"
+    },
+    {
+      "diagnostic": true,
+      "exception_type": "HTTPError",
+      "storage_error_code": null,
+      "http_status": 404,
+      "key_hash": "97fff144d5741bea1f3ab5c73af6b66e60d8c4c23603e1270234eb4c7a5f6960"
+    }
+  ],
+  "focused_tests": {
+    "passed": 20,
+    "subtests_passed": 4
+  },
+  "production_schedule_unchanged": true,
+  "ordinary_workflow_ttl_seconds": 8035200
+}

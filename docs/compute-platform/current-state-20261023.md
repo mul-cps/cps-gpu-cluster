@@ -328,3 +328,17 @@ added. Both owned test servers were then stopped normally.
 
 [Student opening receipts](../../platform-staging/admin/qualification/student-workspace-opening-20261023/README.md)
 qualify this opening flow; broader scheduling, recovery and release gates remain.
+
+## Retention activation gap revalidated
+
+The scheduled retention CronJob remains suspended and uses older image/policy
+provenance. A fresh unchanged-template read-only sweep examined 89 objects,
+skipped 82 and returned seven errors, with zero mutations. Exception tracing in
+a second owned Job identified seven Argo HTTP 404 proof failures. Missing live
+workflow proof correctly preserves the objects; their removal history and
+reviewed orphan disposition remain open. Current ordinary workflow TTL is 93
+days, longer than the 90-day output retention window. Focused retention tests
+pass (20 tests plus four subtests). Automatic deletion is not qualified.
+
+[Read-only diagnostics](../../platform-staging/artifacts/qualification/retention-readonly-20261023/README.md)
+retain the exact bounded observation. Temporary diagnostic Jobs were removed.
