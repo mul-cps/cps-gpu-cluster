@@ -1,0 +1,40 @@
+{
+  "source_revision": "063d85e242cf3ec4d7db0585c9987b243e704e2f",
+  "wheel_sha256": "0841f050d58bd2e70ef0f4b40627577a4ef575c4a8cb5478d6f01c818c5e55ab",
+  "images": [
+    {
+      "component": "gateway",
+      "image": "ghcr.io/mul-cps/cps-compute@sha256:068dd936270bf8fbe88cc0fb2ea4b911c191bca2da33df22fc147ead3288d3b1"
+    },
+    {
+      "component": "node",
+      "image": "ghcr.io/mul-cps/cps-native-node@sha256:0c7bda942d5e5711e6bba5fc6fc35e32725cd6831c4a4bf8a1efb1f5b6c2e8a3"
+    }
+  ],
+  "registry_digest_verified": true,
+  "deployed": false,
+  "focused_tests_passed": 96,
+  "full_suite": "running",
+  "preflight": {
+    "gateway": {
+      "actual_manifest_and_kernel_validated": true,
+      "health_source_matches_deployed": true,
+      "current_policy_graph_loads": true,
+      "installed_service_and_grant_check_sources_match": true,
+      "no_gpu_calls": true
+    },
+    "node": {
+      "actual_manifest_and_kernel_validated": true,
+      "health_source_matches_deployed": true,
+      "current_policy_graph_loads": true,
+      "installed_service_and_grant_check_sources_match": true,
+      "no_gpu_calls": true
+    }
+  },
+  "installed_source_modules_checked": [
+    "native_node/service.py",
+    "native_gpu_control.py",
+    "native_scheduler_coordinator.py",
+    "native_approval_head.py"
+  ]
+}
