@@ -1,0 +1,15 @@
+{
+  "passed": true,
+  "hub": "cit",
+  "student": "armin",
+  "normal_gui_submit": true,
+  "profile": "batch-cpu",
+  "workflow": "cps-f4d8c2de34b5f4e195f7af654c0e6bfb89e6548f42fabfd5",
+  "uid": "de34181d-88cc-4e42-b435-abcf22e8517f",
+  "phase": "Succeeded",
+  "parameters_and_selected_file_verified": true,
+  "executed_artifact_verified": true,
+  "saved_notebook_outputs_preserved": true,
+  "workload_visible": true,
+  "test_notebook": "qa-gui-6d29b3d83d.ipynb"
+}

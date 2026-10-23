@@ -1,0 +1,12 @@
+{
+  "passed": true,
+  "installed_sdk": true,
+  "hub": "cit",
+  "student": "armin",
+  "canonical_person_verified": true,
+  "workflow": "cps-248de86c36f94e598727612345f510306926310d4ddd3525",
+  "uid": "74a170eb-b5ec-487b-b1b5-26c86d8473a5",
+  "parameters_and_supporting_file_verified": true,
+  "executed_artifact_verified": true,
+  "live_kernel_environment_captured": false
+}

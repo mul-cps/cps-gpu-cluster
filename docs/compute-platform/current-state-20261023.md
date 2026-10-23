@@ -93,6 +93,29 @@ qualification and release integration remain open.
 and [CPS browser evidence](../../platform-staging/argo/qualification/profile-walltime-20261023/addon-image/variants/cps-addon-browser.json)
 retain the bounded checks and observed console warnings.
 
+## CIT notebook GUI and installed SDK submission
+
+CIT Armin submitted through the actual addon Submit form, including a saved
+parameterized notebook and a selected helper file. The job succeeded; executed
+output, preservation of original saved outputs and visibility in My Workloads
+passed. A privacy notification initially intercepted the browser test's click;
+normal notification dismissal cleared it. Four owned test notebooks were removed
+through the student's Contents API after acceptance.
+
+The installed SDK initially failed because the chart's notebook egress policy
+excludes private cluster ranges. The new staged/live `notebook-sdk-network` overlay
+adds only notebook-to-Gateway TCP 8000 egress in both Hub namespaces. Rendered specs
+match live readback. The unchanged installed CIT SDK then authenticated as Armin,
+submitted parameters and a selected helper file, and retrieved the executed result.
+Unauthenticated API access remains 401; private capture port 8001 remains unreachable.
+CPS SDK execution, CIT collaboration, source identity audit and release integration
+remain open. This does not qualify distributed or GPU batch execution.
+
+[GUI receipt](../../platform-staging/argo/qualification/profile-walltime-20261023/addon-image/variants/cit-gui-submit.json),
+[installed SDK receipt](../../platform-staging/argo/qualification/profile-walltime-20261023/addon-image/variants/cit-installed-sdk.json)
+and [network overlay](../../platform-staging/notebook-sdk-network/README.md) retain
+this acceptance and the root-level connectivity correction.
+
 ## Newly verified live results
 
 - CPS and CIT use the matching Hub image `435c0806…e5cb466`. The Hub wheel is

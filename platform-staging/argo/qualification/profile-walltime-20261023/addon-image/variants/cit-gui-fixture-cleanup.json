@@ -1,0 +1,9 @@
+{
+  "normal_student_contents_api": true,
+  "controlled_notebooks_removed": [
+    "qa-gui-046cf7a85b.ipynb",
+    "qa-gui-6d29b3d83d.ipynb",
+    "qa-gui-629d858868.ipynb",
+    "qa-gui-cd80365321.ipynb"
+  ]
+}

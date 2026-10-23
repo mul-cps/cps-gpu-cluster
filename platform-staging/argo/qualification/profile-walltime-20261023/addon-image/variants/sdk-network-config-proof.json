@@ -1,0 +1,10 @@
+{
+  "rendered_policies": 2,
+  "live_specs_match_git": true,
+  "only_destination_namespace": "cps-compute",
+  "only_destination_pod_label": {
+    "app": "compute-gateway"
+  },
+  "only_allowed_port": 8000,
+  "capture_port_added": false
+}
