@@ -1,0 +1,9 @@
+{
+  "candidate": "ghcr.io/mul-cps/cit-jupyter-notebook@sha256:ebf5d8795c3ae4e739bd125460a2ab141d0502c2459e33504aaa6ffa2ba71099",
+  "accepted": false,
+  "deployed": false,
+  "gate": "SoftwarePreservation.from_receipt",
+  "reason": "Runtime config User changed from jovyan to 1000",
+  "correction": "Preserve base USER jovyan in both addon and runtime stages",
+  "corrected_build_running": true
+}
