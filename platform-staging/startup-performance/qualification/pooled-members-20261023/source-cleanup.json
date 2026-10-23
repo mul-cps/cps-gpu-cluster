@@ -1,0 +1,13 @@
+{
+  "passed": true,
+  "workspace": "qa-packing-cps-20261023",
+  "stopped": true,
+  "cpu_profile_restored": true,
+  "membership_restored": true,
+  "original_ceiling_restored": true,
+  "original_notice_restored": true,
+  "temporary_approval_removed": true,
+  "existing_grants_unchanged": true,
+  "approval_revision": "sha256:13cdae0c05a9673861353f8ab61512f5b1c9e6179987c7b25c528d34283aa3e9",
+  "four_component_ready": true
+}

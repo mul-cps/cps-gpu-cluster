@@ -1,0 +1,6 @@
+{
+  "distinct_member_reservations": 2,
+  "expected_canonical_members_match": true,
+  "one_workspace_binding": true,
+  "read_only_query": true
+}

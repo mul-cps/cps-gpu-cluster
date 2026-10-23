@@ -1,0 +1,6 @@
+{
+  "cuda_operation_passed": true,
+  "allocation_bytes": 67108864,
+  "device": "NVIDIA A100-PCIE-40GB",
+  "visible_device_count": 1
+}

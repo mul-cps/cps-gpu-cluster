@@ -555,3 +555,20 @@ not live 5+5→10 workspace acceptance or startup performance. Those tests and
 the broader production plan remain open.
 
 [Deployment and full-suite evidence](../../platform-staging/startup-performance/qualification/pooling-candidate-20261023/README.md).
+
+### Live 5+5→10 GiB shared-workspace acceptance passed
+
+Two reviewed canonical members, each with only their existing 5 GiB grant,
+started a 10 GiB QA workspace through the ordinary Source path. Exactly two
+global member reservations and one binding were verified; a notebook CUDA smoke
+passed on the A100. Cleanup restored the stopped CPU fixture, original membership,
+ceiling and notice, removed the temporary approval, and read back unchanged grants.
+Global reservations/bindings are zero, all native allocations are released, and
+the original research Pod remains Running with its original UID.
+
+Startup remains slow: 184.86 seconds, including 53.30 before Pod creation and
+83.00 from creation to actual assignment. This closes the functional pooled-budget
+acceptance gap; startup optimization, broader GPU/scheduling qualification and
+production release gates remain open.
+
+[Live pooled-member evidence](../../platform-staging/startup-performance/qualification/pooled-members-20261023/README.md).

@@ -1,0 +1,9 @@
+{
+  "member_reservations": 0,
+  "workspace_bindings": 0,
+  "read_only_query": true,
+  "manual_release": false,
+  "native_allocations_released": 26,
+  "qa_pod_absent": true,
+  "original_research_pod_running_same_uid": true
+}

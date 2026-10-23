@@ -1,0 +1,94 @@
+{
+  "source_revision": "8bdacc4395300e445e4bb9170e664f6c98dba4c9",
+  "source": "cps",
+  "selected_profile": "interactive-shared-10",
+  "member_count": 2,
+  "member_grant_gib": 5,
+  "new_grants_added": false,
+  "ready_seconds": 184.8642171320098,
+  "before_pod_seconds": 53.29771900177002,
+  "creation_to_scheduled_seconds": 83.0,
+  "scheduled_to_notebook_seconds": 21.0,
+  "notebook_to_source_ready_seconds": 27.566498041152954,
+  "spans": [
+    {
+      "phase": "span",
+      "name": "policy.validate",
+      "start_seconds": 0.0017623769963392988,
+      "seconds": 3.2788888390059583,
+      "failed": false
+    },
+    {
+      "phase": "span",
+      "name": "account.ensure",
+      "start_seconds": 3.2807511419960065,
+      "seconds": 0.2622850909974659,
+      "failed": false
+    },
+    {
+      "phase": "span",
+      "name": "hub.assert_stopped",
+      "start_seconds": 3.5430919679929502,
+      "seconds": 0.014097147999564186,
+      "failed": false
+    },
+    {
+      "phase": "span",
+      "name": "policy.register",
+      "start_seconds": 3.5652287429984426,
+      "seconds": 0.8178145290003158,
+      "failed": false
+    },
+    {
+      "phase": "span",
+      "name": "storage.provision",
+      "start_seconds": 4.383112260999042,
+      "seconds": 6.3637869599915575,
+      "failed": false
+    },
+    {
+      "phase": "span",
+      "name": "policy.validate",
+      "start_seconds": 10.746954624992213,
+      "seconds": 2.888966332000564,
+      "failed": false
+    },
+    {
+      "phase": "span",
+      "name": "hub.sync_group",
+      "start_seconds": 13.63627225298842,
+      "seconds": 0.08275556800072081,
+      "failed": false
+    },
+    {
+      "phase": "span",
+      "name": "hub.spawn_and_ready",
+      "start_seconds": 13.719113571991329,
+      "seconds": 170.98527006000222,
+      "failed": false
+    },
+    {
+      "phase": "span",
+      "name": "hub.replace_shares",
+      "start_seconds": 184.70445797000139,
+      "seconds": 0.12648552999598905,
+      "failed": false
+    },
+    {
+      "phase": "span",
+      "name": "policy.reservation_state",
+      "start_seconds": 184.83109186599904,
+      "seconds": 0.011068740001064725,
+      "failed": false
+    },
+    {
+      "phase": "span",
+      "name": "policy.reservation_state",
+      "start_seconds": 184.85267183399992,
+      "seconds": 0.011487409996334463,
+      "failed": false
+    }
+  ],
+  "startup_improvement_proven": false,
+  "burst_qualification": false
+}
