@@ -1,0 +1,39 @@
+{
+  "source_revision": "2fa6315cb620ed71baeac2bc4910f997d2c5b3d0",
+  "wheel_sha256": "38a8eef1017c99de0513f68c229a75b8bdedba23245ec64032cfd8faeb9709b0",
+  "images": [
+    {
+      "component": "gateway",
+      "image": "ghcr.io/mul-cps/cps-compute@sha256:181a00de43e2fbe5a41a616e9e26f64965ecd3cc15d8794a3d5b40af61dbb24d"
+    },
+    {
+      "component": "node",
+      "image": "ghcr.io/mul-cps/cps-native-node@sha256:6a1c6da6e8ebea9400a6f9f94e74d1506fb3a3c4a2dc1f3a49bc4c8b12fa8c85"
+    }
+  ],
+  "registry_digest_verified": true,
+  "deployed": true,
+  "full_suite": {
+    "passed": 5194,
+    "skipped": 6,
+    "subtests_passed": 68,
+    "seconds": 582.35
+  },
+  "rotation": {
+    "original_anchor_preserved": true,
+    "prior_rotations_preserved": true,
+    "rotation_count": 10,
+    "transition_pending": false,
+    "config_hash": "sha256:4332db32efae67996e2453512b1174df06a3777c6daab667d2f44d43df48ded5",
+    "images": {
+      "gateway": "ghcr.io/mul-cps/cps-compute@sha256:181a00de43e2fbe5a41a616e9e26f64965ecd3cc15d8794a3d5b40af61dbb24d",
+      "node": "ghcr.io/mul-cps/cps-native-node@sha256:6a1c6da6e8ebea9400a6f9f94e74d1506fb3a3c4a2dc1f3a49bc4c8b12fa8c85"
+    }
+  },
+  "maintenance_cleanup": {
+    "normal_writer_ready": true,
+    "helper_pods_deleted": 2,
+    "uid_preconditions_used": true
+  },
+  "live_qualification": "pending"
+}

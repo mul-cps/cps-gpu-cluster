@@ -803,3 +803,23 @@ Wrong UID, stale witness annotations and noncanonical empty data deny without
 waiting or writing enrollment. The existing expired-grant, custody-change and
 deadline cases remain passing. All **104 focused tests pass**. The full suite
 is now running against this committed source; rotation 9 remains active.
+
+### Combined pre-CAS readiness fix deployed after 5194-test pass
+
+Source `2fa6315cb620ed71baeac2bc4910f997d2c5b3d0` passed the full suite:
+**5194 passed, 6 skipped, 68 subtests passed** in 582.35 seconds. This includes
+the bounded full-authority retry and exact empty-capture handling; malformed
+receipts and changed permissions/custody still deny.
+
+Supported delivery rotation **10** activated the verified image pair, preserving
+the original anchor and all nine earlier rotations. Admission positive/negative
+checks passed. The normal writer is Ready and both maintenance Pods were deleted
+with UID preconditions. No driver, kernel, storage or resource-policy changes
+were made. The original research Pod remains Running with its original UID.
+
+The normal HTTP + same-UID Ready Pod + CUDA test is being prepared. Its CPU
+samples now also cover the Gateway capture sidecar, whose CPU limit is 500m;
+prior no-throttle samples covered Gateway and Node only. No live startup gain
+or production readiness is claimed before terminal hardware results.
+
+[Deployment receipt](../../platform-staging/startup-performance/qualification/pre-cas-empty-capture-20261023/deployed.json).
