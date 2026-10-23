@@ -1397,9 +1397,17 @@ readiness-cache access, preserved denial behavior and safe worker completion
 after disconnect. Member reservation acquisition remains synchronous and this
 does not prove a faster complete startup.
 
-Candidate **6ae6e7f…631890** is published and passes no-GPU installed-source, actual
+Gateway **6ae6e7f…631890** is deployed after no-GPU installed-source, actual
 driver-manifest and current policy-graph checks. It also contains the earlier
-failed-heartbeat retry change. The full suite is running; no broad passing claim
-is made. **No runtime deployment performed.** Existing live image pins remain.
+failed-heartbeat retry change. The full suite passes: **5,238 tests and 68 subtests;
+six skipped** (623 dependency/deprecation warnings, 640.88 seconds).
+
+The gated handover preserves the original anchor and every prior journal
+rotation; rotation count is 20 with no pending transition. Gateway, observer and
+normal writer are Ready. Admission accepts the approved Node-agent Pod and
+rejects wrong bootstrap, wrong owner and extra host mount. Both maintenance
+helpers were deleted with UID preconditions. Live policy/heartbeat module hashes
+match the candidate. Policy, driver and storage are unchanged; the research Pod
+retains its original UID. Controlled full-start measurement remains pending.
 
 [Candidate source, digest and exact verification boundary](../../platform-staging/startup-performance/qualification/policy-event-loop-20261023/result.json).
