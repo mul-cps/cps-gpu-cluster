@@ -785,3 +785,21 @@ the compute source branch, but is not deployed yet; rotation 9 remains active.
 The normal HTTP + same-UID Ready Pod + CUDA harness will be reused after release
 qualification, followed by normal Stop, fixture restoration and reservation
 verification. Production readiness remains unproven.
+
+### Empty pre-CAS capture race caught before the next rollout
+
+An adjacent deterministic real-Node test found a second pre-CAS case before
+publishing `cc80800`: the ACK is empty when captured, then recovers before the
+full claim returns. Comparing that empty capture as a heartbeat incorrectly
+denies enrollment. The superseded full-suite process was deliberately
+interrupted for this reproduced code flaw; it is not a completed pass. Its
+locally built images were neither published nor activated, and no cluster
+configuration objects were staged from them.
+
+Source `2fa6315` validates the exact target and closed receipt first. Only a
+canonical empty receipt with no custody/pending witness annotations enters the
+existing bounded retry. The next iteration rereads scope and full authority.
+Wrong UID, stale witness annotations and noncanonical empty data deny without
+waiting or writing enrollment. The existing expired-grant, custody-change and
+deadline cases remain passing. All **104 focused tests pass**. The full suite
+is now running against this committed source; rotation 9 remains active.
