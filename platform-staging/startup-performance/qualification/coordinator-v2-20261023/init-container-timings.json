@@ -1,0 +1,43 @@
+{
+  "runs": [
+    {
+      "source": "cps",
+      "pod_uid": "e87c1c98-542d-4705-9aa5-9917d943cebf",
+      "stages": [
+        {
+          "name": "cps-native-cap-gate",
+          "duration_seconds": 9.0,
+          "started_at": "2026-10-23T10:21:43Z",
+          "finished_at": "2026-10-23T10:21:52Z"
+        },
+        {
+          "name": "cps-native-device-identity",
+          "duration_seconds": 2.0,
+          "started_at": "2026-10-23T10:21:54Z",
+          "finished_at": "2026-10-23T10:21:56Z"
+        }
+      ]
+    },
+    {
+      "source": "cit",
+      "pod_uid": "25f237bc-768a-4e04-9174-a1234936ad0d",
+      "stages": [
+        {
+          "name": "cps-native-cap-gate",
+          "duration_seconds": 6.0,
+          "started_at": "2026-10-23T10:25:12Z",
+          "finished_at": "2026-10-23T10:25:18Z"
+        },
+        {
+          "name": "cps-native-device-identity",
+          "duration_seconds": 2.0,
+          "started_at": "2026-10-23T10:25:20Z",
+          "finished_at": "2026-10-23T10:25:22Z"
+        }
+      ]
+    }
+  ],
+  "source": "Saved Kubernetes Pod init container terminated timestamps",
+  "is_new_hardware_run": false,
+  "startup_speed_improvement_proven": false
+}

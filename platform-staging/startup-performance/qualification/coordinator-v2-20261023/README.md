@@ -32,3 +32,12 @@ The corrected fixture uses the real bounded RawKubernetesAPI over MockTransport;
 skipped 3, and stopped at five failures in final-enrollment/fence-diagnostic cases.
 Unexecuted tests remain. Those failures and startup performance keep broader
 production qualification open. See the machine-readable receipts in this directory.
+
+The saved Pod statuses further separate init work: the cap gate ran for 9 seconds
+on CPS and 6 on CIT; device identity verification ran for 2 seconds on each.
+These are durations from the existing run, not another hardware test. See
+[init-container timings](init-container-timings.json). Both gates depend on the
+new Pod and its current allocation, so preloading cannot replace their checks.
+Image preloading is already effective. Storage preparation before Start and
+shorter reconciliation waits remain candidates, with fresh ownership, ACL,
+grant and reservation verification required at launch. No startup gain is claimed.
