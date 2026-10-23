@@ -18,3 +18,11 @@ Registry digests were read back and matched publication output. These artifacts
 are candidates only: no deployment or measured startup benefit is claimed.
 
 See `candidate.json` for source, wheel checksum and image digests.
+
+## Subsequent deployment verification
+
+The full suite completed with 5184 passed, 6 skipped and 68 subtests passed.
+Supported delivery rotation 8 activated the pair, preserved all prior history
+and restored the normal writer. Both maintenance Pods were deleted with UID
+preconditions. See `deployed.json`; this supersedes the pending statements above.
+Live startup performance remains to be measured.

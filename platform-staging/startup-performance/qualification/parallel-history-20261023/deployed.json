@@ -1,0 +1,56 @@
+{
+  "source_revision": "0d0b046e6c3eec59f9a7950856178b299912360a",
+  "wheel_sha256": "18743664f11f17e78f7dfd792705d371ea5facc1f7dbb2a6776385c728719616",
+  "images": [
+    {
+      "component": "gateway",
+      "image": "ghcr.io/mul-cps/cps-compute@sha256:a6891efa59d104fb3a00f7e2e7d4561ea367d5698b284462f94fe6857abf186a"
+    },
+    {
+      "component": "node",
+      "image": "ghcr.io/mul-cps/cps-native-node@sha256:512c5525732594441a8e3c007738c96eb8c43edf28a3aac63dc284ad9cecd98a"
+    }
+  ],
+  "registry_digest_verified": true,
+  "deployed": true,
+  "focused_tests_passed": 33,
+  "full_suite": {
+    "passed": 5184,
+    "skipped": 6,
+    "subtests_passed": 68,
+    "seconds": 570.79
+  },
+  "preflight": {
+    "gateway": {
+      "actual_manifest_and_kernel_validated": true,
+      "health_source_matches_deployed": true,
+      "current_policy_graph_loads": true,
+      "installed_service_and_grant_check_sources_match": true,
+      "no_gpu_calls": true
+    },
+    "node": {
+      "actual_manifest_and_kernel_validated": true,
+      "health_source_matches_deployed": true,
+      "current_policy_graph_loads": true,
+      "installed_service_and_grant_check_sources_match": true,
+      "no_gpu_calls": true
+    }
+  },
+  "startup_improvement_demonstrated": false,
+  "rotation": {
+    "original_anchor_preserved": true,
+    "prior_rotations_preserved": true,
+    "rotation_count": 8,
+    "transition_pending": false,
+    "config_hash": "sha256:5060b560993d07dce1bbcb20f0575930c4526e169dbe4bd9d417e5fd5838055f",
+    "images": {
+      "gateway": "ghcr.io/mul-cps/cps-compute@sha256:a6891efa59d104fb3a00f7e2e7d4561ea367d5698b284462f94fe6857abf186a",
+      "node": "ghcr.io/mul-cps/cps-native-node@sha256:512c5525732594441a8e3c007738c96eb8c43edf28a3aac63dc284ad9cecd98a"
+    }
+  },
+  "cleanup": {
+    "normal_writer_ready": true,
+    "helper_pods_deleted": 2,
+    "uid_preconditions_used": true
+  }
+}

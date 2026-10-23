@@ -651,3 +651,20 @@ fresh permission, object-identity, deletion and capacity checks.
 [Deployed receipt](../../platform-staging/startup-performance/qualification/authorization-local-guard-20261023/deployed-verification.json).
 Full-pool packing, broader scheduling/burst qualification and the remaining
 release gates are still open; production readiness is not established.
+
+### Fresh retained-history reads parallelized and deployed
+
+Source `0d0b046e6c3eec59f9a7950856178b299912360a` completed the full suite:
+**5184 passed, 6 skipped, 68 subtests passed** in 570.79 seconds. Retained
+approval ConfigMaps are read with four bounded workers, freshly on every scan,
+then validated in original cohort order inside the existing pointer bracket.
+No cross-request authorization cache is introduced.
+
+The image pair passed actual manifest/kernel/policy preflight and is active
+through supported delivery rotation **8**, preserving the original anchor and
+all seven previous rotations. Admission positive/negative checks passed; the
+normal writer is Ready and both maintenance Pods are deleted with UID checks.
+A controlled pooled-member startup comparison is running. No startup gain or
+full production qualification is claimed before its terminal results.
+
+[Deployment receipt](../../platform-staging/startup-performance/qualification/parallel-history-20261023/deployed.json).
