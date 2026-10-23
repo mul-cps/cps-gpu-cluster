@@ -1,0 +1,12 @@
+{
+  "attestation_bytes": 172194,
+  "attestation_sha256": "sha256:f83c8e8929e6e872d78198dd895d514ca868224cd69319c30d05e248e24631a2",
+  "base_files": 58744,
+  "base_image": "ghcr.io/mul-cps/cit-jupyter-notebook@sha256:68f89bf804eff5644a85df2a68937ce54723c7ae6ce19744cf0bceb0b674ff3a",
+  "candidate_files": 58744,
+  "full_receipt_bytes": 40052253,
+  "full_receipt_sha256": "sha256:6328ee383ae0ad04ecdf81ff1025fb6b34fa65d44e48712fa46441086d9f9da5",
+  "hardware_execution_qualified": false,
+  "passed": true,
+  "target_image": "ghcr.io/mul-cps/cit-jupyter-notebook@sha256:4d94560166d1faba3e8f88b9138dea5fef62efffd03b2b271eb514930baa7289"
+}

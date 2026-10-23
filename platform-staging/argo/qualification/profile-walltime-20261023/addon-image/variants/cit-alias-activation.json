@@ -1,0 +1,14 @@
+{
+  "previous_secret": "cps-walltime23-7e9f4bc918f8c838",
+  "target_secret": "cps-cit-student23-05bbc9debdc57809",
+  "aliases": {
+    "mikasa": "15164372-7ae5-4cfd-8b5d-fd402aa891bd",
+    "armin": "85de720c-94b0-4bc7-807e-c04512133494"
+  },
+  "only_runtime_aliases_changed": true,
+  "image_policy_authority_unchanged": true,
+  "ready_verified": true,
+  "delivery_ready_verified": true,
+  "same_existing_canonical_people_verified": true,
+  "temporary_api_tokens_revoked": 2
+}

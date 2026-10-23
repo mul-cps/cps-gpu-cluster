@@ -32,18 +32,18 @@ The CPS CPU runtime candidate is published as `efc3b485…b6eb72f`. Its full
 software-preservation verifier passes with 72 original base layers retained,
 43 SDK modules unchanged and 315 other dependency versions unchanged. Deployment
 and live qualification remain pending. CIT CPU addon checks pass with 48 SDK
-modules and 321 other dependency versions unchanged; runtime assembly is ongoing. Both controlled students, Armin and Mikasa, completed fresh ordinary
+modules and 321 other dependency versions unchanged; corrected runtime image `4d945601…baa7289` is published and its full preservation
+verifier passes, retaining all 52 original base layers and the original `jovyan` user. Both controlled students, Armin and Mikasa, completed fresh ordinary
 CIT directory login at `jhub.dshl.unileoben.ac.at`; Hub identity reads returned
-200 with `admin=false`. Fresh temporary API tokens also pass Hub review (200),
-but Compute `/v1/me` and `/v1/profiles` still return 401. This establishes a
-remaining Compute authentication/mapping boundary after refreshing stale OAuth;
-it does not qualify CIT student Compute access. Both temporary tokens were revoked.
-Source inspection and live config readback identify the missing CIT canonical-person
-aliases for both controlled students. Explicit alias requests are prepared using
-their audited CIT Authentik UUIDs and fresh normal login evidence; they are not
-applied yet. The immutable Gateway config requires the reviewed configuration
-handover, and Source identity records must be audited separately. Email verification
-is not fabricated or required for these explicit reviewed test-account aliases.
+200 with `admin=false`. After the explicit reviewed aliases were added to a new immutable Gateway runtime
+secret, fresh temporary student tokens pass both Compute `/v1/me` and `/v1/profiles`
+(200). Their canonical identities match the existing CPS people; no new person or
+allowance was created. Both tokens were revoked. Only the two runtime aliases changed;
+images, policy and native authority remain unchanged. The Gateway is Ready, and the
+normal writer returned to Ready at the unchanged scoped Source revision after the
+observer automatically granted the new Pod's exact named-read permissions. Source
+identity auditing and broader CIT batch/collaboration acceptance remain open. Email
+verification was not fabricated or required for these explicit test-account aliases.
 The initial browser harness used an incorrect hostname and was corrected from
 live ingress readback; no DNS, identity mapping or permission settings were changed.
 

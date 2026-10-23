@@ -8,15 +8,19 @@
       ]
     },
     "me": {
-      "status": 401,
+      "status": 200,
       "response_keys": [
-        "detail"
+        "grants",
+        "identity",
+        "policy_hash",
+        "principal_kind"
       ]
     },
     "profiles": {
-      "status": 401,
+      "status": 200,
       "response_keys": [
-        "detail"
+        "batch-cpu",
+        "interactive-cpu"
       ]
     }
   },
@@ -29,15 +33,19 @@
       ]
     },
     "me": {
-      "status": 401,
+      "status": 200,
       "response_keys": [
-        "detail"
+        "grants",
+        "identity",
+        "policy_hash",
+        "principal_kind"
       ]
     },
     "profiles": {
-      "status": 401,
+      "status": 200,
       "response_keys": [
-        "detail"
+        "batch-cpu",
+        "interactive-cpu"
       ]
     }
   }
