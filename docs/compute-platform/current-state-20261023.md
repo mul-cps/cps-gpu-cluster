@@ -857,3 +857,31 @@ Independent counts are zero reservations/bindings and all 29 native allocations
 released. The original research Pod remains Running with its original UID.
 
 [Lease-entry live results and cleanup](../../platform-staging/startup-performance/qualification/pre-cas-empty-capture-20261023/lease-entry-live-result.json).
+
+### Initial lease read race reproduced; bounded retry and diagnostics staged
+
+Source `c71cf8b` reproduces an acknowledgment drop after the lease scope check
+but inside the first workspace authorization callback. It fails at the same
+`_workspace` wrapper seen live. This proves a concrete entry-point race, not
+the exact original reason suppressed in the two live denials.
+
+The coordinator now supplies a separate initial-observation wait: the complete
+workspace/neutral-owner/approval-reference bracket repeats only on the existing
+readiness classification and before member reservations or allocation writes.
+The requested immutable revision is checked again. Direct authority callers
+retain their original single-observation behavior; final-CAS waiting remains
+separate. An expired initial wait preserves the existing authorization-error
+contract for direct lease callers. No request/fence budget was increased.
+
+New tests recover from absence, reject grant expiry and changed heads without
+reservation writes, avoid retrying unrelated denials, and expire the actual
+HTTP server deadline with zero allocations/reservations and no acquiring flag.
+Operator logs now retain at most 16 code frames over a bounded exception chain,
+including a suppressed inner wrapper, while still excluding messages, locals,
+request bodies and tokens. HTTP errors remain generic. Lease readiness and
+acquisition timing use fixed labels; existing Prepare instrumentation is intact.
+
+All **125 focused tests pass**, including existing callback budgets and the
+unready-lease error contract. The full suite is running. This source is
+committed and published but not yet deployed; rotation 10 remains active and
+live functional/production qualification is still open.
