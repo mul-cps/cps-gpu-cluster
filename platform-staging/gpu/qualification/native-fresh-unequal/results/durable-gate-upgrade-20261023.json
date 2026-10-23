@@ -1,0 +1,29 @@
+{
+  "version": 1,
+  "kind": "durable-gate-upgrade-attempt",
+  "sdk_revision": "e7c15bfc4805d525dce7582274c21cb3d1bb3ae3",
+  "image": "ghcr.io/mul-cps/cps-compute@sha256:4b2d685552fe9e45a99c334c25a92c826af85a35490605ae83fdb183d9e30e11",
+  "software_tests": {
+    "passed": 123,
+    "skipped": 3
+  },
+  "package_verification": {
+    "sdk_modules": 78,
+    "other_distributions_preserved": 43
+  },
+  "workspace_cleanup": {
+    "state": "stopped",
+    "member_reservations_active": false,
+    "native_allocation_records": 3,
+    "native_records_released": 3
+  },
+  "rollout_findings": [
+    "Active approvals require an explicit workspace PVC at coordinator restart; an empty initial-registry seed is no longer sufficient.",
+    "Node admission permits the reviewed ReplicaSet template; rollout restart annotations create an unapproved template.",
+    "The delivery journal correctly rejects a changed configuration hash without explicit rotation. Existing rotation requires retained bootstrap inputs and a pinned held Node template; this live release uses a null held template pin."
+  ],
+  "rollout_restored_to_predecessor": true,
+  "live_workspace_retest_started": false,
+  "production_ready": false,
+  "next_gate": "Implement and test explicit active-service configuration rotation with retained predecessor bootstrap identity; do not reset delivery journal or relax admission."
+}
