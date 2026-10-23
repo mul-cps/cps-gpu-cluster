@@ -24,9 +24,19 @@
   "actual_observer_release_validated": true,
   "production_ready": false,
   "remaining": [
-    "Finish broader software suite",
     "Reconcile exact Node admission for new bootstrap/ReplicaSet",
     "Rotate delivery journal with original byte pins and retained bootstrap inputs",
     "Verify genuine readiness and ordinary shared-GPU lifecycle"
-  ]
+  ],
+  "broader_software_suite": {
+    "passed": 108,
+    "duration_seconds": 123.18,
+    "coverage": [
+      "configuration rotation",
+      "Node image rotation",
+      "Hub pair rotation",
+      "Node CPU rotation",
+      "checkpoint history"
+    ]
+  }
 }
