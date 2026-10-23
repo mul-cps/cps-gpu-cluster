@@ -10,7 +10,7 @@ statements for that specific lifecycle, not every production acceptance gate.
 - CPS and CIT use the matching Hub image `435c0806…e5cb466`. The Hub wheel is
   based on the deployed source plus the durable receipt-root configuration change;
   unrelated lifetime and UI modules were preserved. Its 33 configuration tests pass.
-- Gateway `3c8030cc…2287624` and Node `9d998baa…047bbeb` use the durable
+- Gateway `ac9ee1b0…80c23f4` and Node `9d998baa…047bbeb` use the durable
   `cps-native-runtime` authority. Both control-service image rotations preserved
   the original delivery journal anchor and publication history. Predecessor
   bootstrap inputs remain available; the journal was not reset.
@@ -72,8 +72,9 @@ must distinguish that evidence from the current live checks above.
    Equivalent CIT, fresh GUI/SDK and distributed launcher acceptance remain open.
    A separate [profile-walltime candidate](../../platform-staging/argo/qualification/profile-walltime-20261023/verification.json)
    removes the API/Submit/snippet one-hour override in favor of catalog limits
-   (196 API tests, 97 addon tests). It is packaged/published but not deployed;
-   the live notebook path still has its old cap pending protected image handovers.
+   (196 API tests, 97 addon tests). The protected Gateway handover is complete and a live 7200-second request passed
+   deadline admission and short execution. The addon image/policy rollout is still
+   pending, so the current GUI continues to offer its old one-hour ceiling.
 4. Finish broader GPU scheduling/packing, teaching reclaim, checkpoint/distributed
    cleanup, representative CPS/CIT startup bursts and the Descheduler comparison.
    These two warm single-workspace starts do not establish burst p95, eight-GPU

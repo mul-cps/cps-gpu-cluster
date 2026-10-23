@@ -20,11 +20,12 @@ client archive identifier fix) and submissions.py versus the live Gateway;
 candidate changes the common profile limit used by Submit and snippets. No SDK
 or Hub ownership of Lab assets is introduced.
 
-The candidate is published but NOT deployed. The live API/UI still impose the
-old one-hour notebook ceiling. Gateway activation must use the authenticated
-active-Node service-image handover and preserve existing authority journals and
-anchors. Notebook image publication, software-preservation proof and approved
-image/policy transition must then deploy the addon. Current live isolation and
+The Gateway is deployed and live API admission is verified. A normal student
+request for 7200 seconds produced activeDeadlineSeconds=7200, completed successfully
+and retained its executed notebook. Requests beyond 259200 seconds were rejected.
+This is not an actual two-hour execution/expiry test. The GUI still imposes its
+old one-hour ceiling until notebook image publication, software-preservation proof
+and the approved addon image/policy transition are complete. Current live isolation and
 lifecycle evidence remains tied to its original artifacts; this source/software
 result does not prove new live image qualification or a 72-hour execution run.
 
@@ -41,3 +42,21 @@ The live Gateway remains Ready on its predecessor image. Before activation, hold
 the delivery writer, recapture its complete journal, recheck physical quiescence,
 pregrant only exact immutable reads, update the exact ReplicaSet admission binding,
 and execute the reviewed service-image rotation without resetting any journal.
+
+## Activated handover
+
+The Gateway, observer, Node and normal delivery polling are Ready. Exact successor
+reads were added without broad verbs. The current immutable approvals CM's existing
+dynamic read was preserved after verifying its current-head reference. Admission
+accepted the exact successor template and rejected wrong bootstrap/owner/host mount.
+The first explicit rotation stopped before journal writes because epoch capture
+requires a live Node acknowledgment. Resuming Node under the validated successor
+template restored epoch 200; the unchanged journal-state hash permitted retry.
+The completed rotation preserved the original anchor and complete prior rotation
+prefix, appended one supported v1 entry, and left no pending transition. Journal
+version remains 3 with rotation versions [2,1,1]. No journal was reset.
+
+Normal shared-GPU Start then took 82.86 seconds and executed a 64 MiB CUDA allocation.
+Normal Stop took 16.12 seconds; KAI cleanup was automatic with the same binder Pod
+and zero restarts. This verifies the service handover's current lifecycle, not a
+new whole-pool isolation qualification. No MIG, kernel, driver or NFS change occurred.

@@ -1,0 +1,24 @@
+{
+  "events": [
+    {
+      "phase": "submitted",
+      "name": "cps-581a5587e1ed245e0659bc8de9b85f2bf74cbfcf6fef0032",
+      "uid": "8f38c1e1-8f77-4507-b27d-afd239551f21",
+      "requested_walltime": 7200,
+      "profile_maximum": 259200,
+      "excessive_walltime_status": 422
+    },
+    {
+      "phase": "verified",
+      "name": "cps-581a5587e1ed245e0659bc8de9b85f2bf74cbfcf6fef0032",
+      "uid": "8f38c1e1-8f77-4507-b27d-afd239551f21",
+      "workflow_phase": "Succeeded",
+      "activeDeadlineSeconds": 7200,
+      "executed_artifact_verified": true
+    }
+  ],
+  "credential_cleanup": {
+    "revoked": 1
+  },
+  "scope": "API deadline admission and short controlled execution, not a two-hour wall-clock expiry test"
+}

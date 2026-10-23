@@ -10,7 +10,7 @@
   "unchanged_distributions": 43,
   "addon_tests_passed": 97,
   "addon_source_revision": "e499c97a5616c67262c76323c68c3433508d93b2",
-  "deployment_status": "candidate_not_deployed",
+  "deployment_status": "gateway_deployed_and_live_api_verified_addon_image_rollout_pending",
   "candidate_image": "ghcr.io/mul-cps/cps-compute@sha256:ac9ee1b0fe77266e089be0c64c564cf009c55684808dd5fee5d2c135080c23f4",
   "extension_package_boundary_verifier": "passed",
   "wheels": {

@@ -1,0 +1,135 @@
+{
+  "version": 3,
+  "transition_pending": false,
+  "rotation_versions": [
+    2,
+    1,
+    1
+  ],
+  "prior_rotation_prefix_sha256": "cc5b289e7c64f20b300345566964e06a921dea5e4c46423f3e74a0412b0eaeab",
+  "previous_config_hash": "sha256:2ea455bae08179120ec36da2d516d601b2cf9258d2adab460c6eee47ed9a9844",
+  "config_hash": "sha256:41038f03b7fceffc2e21ca1a33b1e571f07f93ac7e4e7c365061f724ac0dbd71",
+  "anchor_sha256": "sha256:35c838bc8d7f52e4258bfd41d22b259e9b8635f497b0f339c3c2cdbfb42cc0fd",
+  "prior_rotations_preserved": true,
+  "deployments": [
+    {
+      "namespace": "cps-compute",
+      "name": "compute-gateway",
+      "image": "ghcr.io/mul-cps/cps-compute@sha256:ac9ee1b0fe77266e089be0c64c564cf009c55684808dd5fee5d2c135080c23f4",
+      "ready": true
+    },
+    {
+      "namespace": "cps-compute",
+      "name": "cps-runtime-observer",
+      "image": "ghcr.io/mul-cps/cps-compute@sha256:1895f5b08f707a65f66b3512babf5c630e043877208513d1f5c5d8e6f2f1ec28",
+      "ready": true
+    },
+    {
+      "namespace": "cps-compute",
+      "name": "cps-runtime-head-delivery",
+      "image": "ghcr.io/mul-cps/cps-compute@sha256:ac9ee1b0fe77266e089be0c64c564cf009c55684808dd5fee5d2c135080c23f4",
+      "ready": true
+    },
+    {
+      "namespace": "cps-native-runtime",
+      "name": "cps-native-node-agent",
+      "image": "ghcr.io/mul-cps/cps-native-node@sha256:9d998baa2ad3ee81b3b443c5001aabc81f20c497bd11663bdc3f580ce047bbeb",
+      "ready": true
+    }
+  ],
+  "admission": {
+    "replicaset_name": "cps-native-node-agent-8bbfd4f7c",
+    "replicaset_uid": "076eb819-be24-4939-9a64-87d5cdaea692",
+    "policy_changes": [
+      "ReplicaSet name",
+      "ReplicaSet UID",
+      "bootstrap ConfigMap name"
+    ],
+    "cases": [
+      {
+        "case": "approved",
+        "allowed": true
+      },
+      {
+        "case": "wrong-bootstrap",
+        "allowed": false
+      },
+      {
+        "case": "wrong-owner",
+        "allowed": false
+      },
+      {
+        "case": "extra-host-mount",
+        "allowed": false
+      }
+    ]
+  },
+  "plan": {
+    "version": 1,
+    "image": "ghcr.io/mul-cps/cps-compute@sha256:ac9ee1b0fe77266e089be0c64c564cf009c55684808dd5fee5d2c135080c23f4",
+    "predecessor_image": "ghcr.io/mul-cps/cps-compute@sha256:3c8030cc7dbf6c12a6d29374c4df16b490536c3e723bcc8a67e913c7a2287624",
+    "predecessor_node_reference": {
+      "data_sha256": "sha256:da19eb47618cffcc60b0f8720f2fa44ced624a45a15ac73d9654b504a4bdcfd6",
+      "key": "config.json",
+      "name": "cps-runtime-node-config-da19eb47618cffcc",
+      "namespace": "cps-native-runtime",
+      "resourceVersion": "380388716",
+      "uid": "7d70abde-26a7-49f0-a75a-2be3d4aa5b48"
+    },
+    "node_reference": {
+      "namespace": "cps-native-runtime",
+      "name": "cps-runtime-node-config-75f9d06f2e3d2052",
+      "uid": "0fdda340-fabe-4fd1-9e06-b99587376abb",
+      "resourceVersion": "380491815",
+      "key": "config.json",
+      "data_sha256": "sha256:75f9d06f2e3d20520c6739d6c4f1366fb307ea91e3f958f912f16cb8c5e7a209"
+    },
+    "bootstrap": "cps-runtime-bootstrap-7014f689d5b60d7c",
+    "predecessor_bootstrap": "cps-runtime-bootstrap-654185c3ec553bbf",
+    "predecessor_bootstrap_retained": true,
+    "observer_seed": "cps-runtime-observer-inputs-142f2b2405c93e2c",
+    "delivery_seed": "cps-runtime-head-delivery-6fc8c259cca79375",
+    "kai_seed": "cps-runtime-kai-config-5b70b649ec0631e3",
+    "runtime_seed": "cps-runtime-gateway-config-1d6659d46c9446d7",
+    "publisher_seed": "cps-runtime-publisher-gateway-0eb7baae3cd3097e",
+    "node_template_sha256": "sha256:075298b1ac2073afe3caaa9e3e4784c9abdc70b33429482e018d707de6198896",
+    "activated": true
+  },
+  "operator_attempts": [
+    {
+      "attempt": 1,
+      "result": "capture epoch returned 503 while Node was held",
+      "journal_state_unchanged": true
+    },
+    {
+      "attempt": 2,
+      "result": "Node resumed under approved successor template; epoch 200; rotation ready",
+      "journal_reset": false
+    }
+  ],
+  "delivery_polling_restored": true,
+  "gpu_restart": {
+    "seconds": 82.86280619200261,
+    "state": "running",
+    "cuda_available": true,
+    "allocation_bytes": 67108864,
+    "device_count": 1
+  },
+  "gpu_normal_stop": {
+    "state": "stopped",
+    "reservation_active": false,
+    "seconds": 16.12270407800679,
+    "automatic_cleanup": {
+      "binder_uid": "cd5c13d2-a593-431f-8379-870f5aa8738d",
+      "binder_created_at": "2026-10-23T01:04:43Z",
+      "binder_uid_unchanged": true,
+      "binder_restarts": 0,
+      "reservation_name": "gpu-reservation-c7dc198d3019876e",
+      "reservation_uid": "0961c430-50b2-469c-a244-351eced81311",
+      "automatic_deletion": true,
+      "manual_deletion": false,
+      "after_close_seconds": 5.653774211998098,
+      "total_stop_and_cleanup_seconds": 23.05247622402385
+    }
+  }
+}
