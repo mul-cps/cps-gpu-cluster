@@ -1,0 +1,36 @@
+{
+  "image": "ghcr.io/mul-cps/e2x-course-hub@sha256:661c71604e95b4913ab3cdb5154ce1e7908662809fa6fcbed9e64badfb5afe0d",
+  "source_repository": "mul-cps/e2x-course-hub",
+  "source_revision": "2e0b76fe6711dd334186542af2bf07e75df3033c",
+  "base_image": "ghcr.io/mul-cps/e2x-course-hub@sha256:c176e348978fcce7bae53a4e38721279e2b25a96b53bf25e13a6f4b4722b9281",
+  "tests": {
+    "passed": 39,
+    "subtests_passed": 38
+  },
+  "deployment": {
+    "cps-admin": "ready",
+    "cit-admin": "ready"
+  },
+  "live_start": {
+    "state": "running",
+    "seconds": 99.6627203159951,
+    "pod_uid": "f968c333-7f86-4944-833b-bdd091e4b852",
+    "pod_ready": true,
+    "cap_gate_exit": 0,
+    "device_identity_exit": 0
+  },
+  "live_cancellation": {
+    "case": "pending-start-cancel",
+    "state": "stopped",
+    "reservation_active": false,
+    "start_exception": "_WorkspaceStartCancelled",
+    "elapsed_seconds": 8.728495605995704
+  },
+  "normal_stop": {
+    "seconds": 7.012094158999389,
+    "state": "stopped",
+    "reservation_active": false,
+    "automatic_kai_deletion_seconds_after_close": 2.32663029700052,
+    "binder_restarted": false
+  }
+}

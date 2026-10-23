@@ -1,0 +1,9 @@
+{
+  "source_revision": "2e0b76fe6711dd334186542af2bf07e75df3033c",
+  "changed_modules": [
+    "e2x_course_hub/cps/workspaces.py"
+  ],
+  "unchanged_modules": 50,
+  "frontend_identical": true,
+  "wheel_sha256": "4f552e4f5d66a15f300e895b8826e909e184c454710fca4934695efae5eeabcd"
+}

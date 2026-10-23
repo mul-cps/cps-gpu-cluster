@@ -41,10 +41,12 @@ and [required scenarios](qualification.md) remain binding. Older passing evidenc
 is retained; it is not reclassified as wholly untested. The final release matrix
 must distinguish that evidence from the current live checks above.
 
-1. Resolve the observed start/cancellation status race: after an out-of-band Hub
-   stop during a failed start, the console reported running despite Pod absence.
-   Confirm lifetime/idle enforcement and expiry warnings against current trusted
-   session telemetry; startup success alone does not prove deadline enforcement.
+1. The console startup confirmation fix is deployed to CPS/CIT. Normal GPU start
+   (99.66 s), normal shutdown and pending-start cancellation passed live; focused
+   tests cover lost reservations at final readiness publication. See the
+   [package and live verification](../../platform-staging/admin/qualification/start-confirmation-20261023/verification.json).
+   Confirm actual lifetime/idle expiry and advance warnings next; startup success
+   and valid deadline telemetry alone do not prove deadline enforcement.
 2. Complete ordinary-user CPS/CIT access and the remaining collaboration gates:
    current SDK/Compute/RTC variants, membership removal closing existing access,
    and stopped-writer read-only archives. Prior visitor/RTC and local-provider
