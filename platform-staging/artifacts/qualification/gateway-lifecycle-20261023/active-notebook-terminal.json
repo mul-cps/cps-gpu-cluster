@@ -1,0 +1,12 @@
+{
+  "passed": true,
+  "name": "cps-95b48187e86b5c3d7a9eeb1d91a7fa272e0500ed7750ece6",
+  "uid": "fc6bf86e-1ed2-4efd-9474-d36f5a469c04",
+  "phase": "Succeeded",
+  "parameters_and_selected_import_verified": true,
+  "executed_artifact_verified": true,
+  "stale_outputs_stripped": true,
+  "foreign_owner_denied": 403,
+  "idempotent_retry_same_uid": true,
+  "temporary_student_tokens_revoked": 2
+}

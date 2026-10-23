@@ -342,3 +342,23 @@ pass (20 tests plus four subtests). Automatic deletion is not qualified.
 
 [Read-only diagnostics](../../platform-staging/artifacts/qualification/retention-readonly-20261023/README.md)
 retain the exact bounded observation. Temporary diagnostic Jobs were removed.
+
+## Real Gateway retention mutation and active-input protection
+
+The unchanged retention controller now passes conditional expiry against two
+actual Gateway-created disposable QA artifacts. Real-clock reconciliation
+preserved both; a per-call 91-day test clock expired both. The original Job's
+output was observed but its TTL removed it before export; a separate read-only
+Job confirmed durable deleting claims and both exact S3 keys absent. No deletion
+was repeated, and only those two owned QA artifacts were removed.
+
+A fresh real notebook remained Running before and after an aged-clock apply
+sweep: its snapshot ETag/tags were unchanged, with zero reconciliation,
+eligibility, deletion or errors. The notebook subsequently succeeded; selected
+imports, typed parameters, executed output, foreign-owner denial and idempotency
+passed, and both temporary student API tokens were revoked. Owned test Jobs
+are removed. Production retention remains suspended pending exact deployment
+alignment, scheduled mutation qualification and reviewed orphan disposition.
+
+[Gateway lifecycle receipts and probes](../../platform-staging/artifacts/qualification/gateway-lifecycle-20261023/README.md)
+close these specific lifecycle gates, not overall production readiness.

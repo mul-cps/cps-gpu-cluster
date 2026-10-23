@@ -1,0 +1,11 @@
+{
+  "passed": true,
+  "workflow": "cps-17b066f83a1f881e0f881284bbe2864be5d59f527c511158",
+  "uid": "99c163bf-f6ec-45e9-a263-d895729b61c0",
+  "durable_deletion_claims_verified": true,
+  "objects_confirmed_absent": [
+    "notebook-inputs/17b066f83a1f881e0f881284bbe2864be5d59f527c511158/snapshot.tar",
+    "run-artifacts/17b066f83a1f881e0f881284bbe2864be5d59f527c511158/executed.ipynb"
+  ],
+  "read_only_readback": true
+}

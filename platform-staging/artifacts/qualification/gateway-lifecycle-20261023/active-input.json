@@ -1,0 +1,19 @@
+{
+  "passed": true,
+  "workflow": "cps-95b48187e86b5c3d7a9eeb1d91a7fa272e0500ed7750ece6",
+  "uid": "fc6bf86e-1ed2-4efd-9474-d36f5a469c04",
+  "real_gateway_workflow_running_before_and_after": true,
+  "per_call_91_day_clock": {
+    "examined": 1,
+    "eligible": 0,
+    "deleted": 0,
+    "skipped": 1,
+    "errors": 0,
+    "objects": [],
+    "apply": true,
+    "truncated": false,
+    "reconciled": 0
+  },
+  "snapshot_etag_and_tags_unchanged": true,
+  "production_schedule_unchanged": true
+}
