@@ -1,0 +1,122 @@
+{
+  "matrix_passed": true,
+  "results": [
+    {
+      "kind": "success",
+      "name": "cps-8e88759f91c72e56cdab8b30e52883490c73207ece2e489a",
+      "uid": "394c8c13-923b-4b05-a2d9-6498c378fa60",
+      "phase": "Succeeded",
+      "idempotent": true,
+      "changed_request_rejected": true,
+      "foreign_denials": {
+        "inspect": 403,
+        "/logs": 403,
+        "/artifacts?download=snapshot": 403,
+        "/artifacts?download=executed-notebook": 403,
+        "/terminate": 403
+      },
+      "foreign_listing_hidden": true,
+      "logs_available": true,
+      "snapshot_outputs_stripped": true,
+      "selected_import_preserved": true,
+      "typed_parameters_preserved": true,
+      "executed_notebook_retained": true,
+      "all_pods_terminal": true,
+      "pod_uids": [
+        "867f5a9d-a82a-42b4-ae4b-f34757496aa2"
+      ]
+    },
+    {
+      "kind": "failure",
+      "name": "cps-60d81fc8dc14f225ec7a1f97246fa9721c6ab5c5de72e913",
+      "uid": "97871ef9-4e95-42e3-9bbf-de9ed579fe32",
+      "phase": "Failed",
+      "idempotent": true,
+      "changed_request_rejected": true,
+      "foreign_denials": {
+        "inspect": 403,
+        "/logs": 403,
+        "/artifacts?download=snapshot": 403,
+        "/artifacts?download=executed-notebook": 403,
+        "/terminate": 403
+      },
+      "foreign_listing_hidden": true,
+      "logs_available": true,
+      "snapshot_outputs_stripped": true,
+      "selected_import_preserved": true,
+      "typed_parameters_preserved": true,
+      "executed_notebook_retained": true,
+      "all_pods_terminal": true,
+      "pod_uids": [
+        "0208800d-eb58-42c2-9eda-17af0d0541fd"
+      ]
+    }
+  ],
+  "crafted_request_matrix": {
+    "crafted_matrix_passed": true,
+    "results": [
+      {
+        "case": "serviceAccountName",
+        "status": 422,
+        "workflow_absent": true
+      },
+      {
+        "case": "schedulerName",
+        "status": 422,
+        "workflow_absent": true
+      },
+      {
+        "case": "podPriorityClassName",
+        "status": 422,
+        "workflow_absent": true
+      },
+      {
+        "case": "podMetadata",
+        "status": 422,
+        "workflow_absent": true
+      },
+      {
+        "case": "podSpecPatch",
+        "status": 422,
+        "workflow_absent": true
+      },
+      {
+        "case": "namespace",
+        "status": 422,
+        "workflow_absent": true
+      },
+      {
+        "case": "unapproved-image",
+        "status": 422,
+        "workflow_absent": true
+      },
+      {
+        "case": "resource-mismatch",
+        "status": 422,
+        "workflow_absent": true
+      },
+      {
+        "case": "mount-override",
+        "status": 422,
+        "workflow_absent": true
+      }
+    ]
+  },
+  "temporary_token_cleanup": {
+    "revoked": 2
+  },
+  "software_tests_passed": 178,
+  "source": "cps",
+  "caller": "armin",
+  "foreign_caller": "mikasa",
+  "api_principal_kind": "person",
+  "sdk_client": "direct authenticated /v1 HTTP in console container, not a fresh notebook-kernel SDK/UI test",
+  "gateway_image": "ghcr.io/mul-cps/cps-compute@sha256:3c8030cc7dbf6c12a6d29374c4df16b490536c3e723bcc8a67e913c7a2287624",
+  "batch_image": "ghcr.io/mul-cps/cps-jupyter-notebook@sha256:1fab06639346f69e96cda6c8f551d761cc51c47de85cdc0ec42ef31bf2ef2c7f",
+  "independent_interactive_reservation": {
+    "active": true,
+    "workspace_state": "running",
+    "idle_deadline_at": "2026-10-23T02:12:53.359000Z",
+    "observed_at": "2026-10-23T02:07:58.103317Z"
+  }
+}

@@ -58,10 +58,12 @@ must distinguish that evidence from the current live checks above.
    [connected-member evidence](../../platform-staging/admin/qualification/member-revocation-20261023/verification.json).
    Equivalent CIT/GPU removal remains separate. Prior visitor/RTC
    and local-provider acceptance remains in the historical ledger.
-3. Complete the current notebook/batch authorization matrix: immutable snapshots,
-   typed parameters, selected imports, success/failure artifacts, ownership and
-   crafted request rejection. Retain independent CPU/batch permissions while a
-   shared interactive allowance is held; qualify distributed launchers before enabling them.
+3. The current CPS person-authenticated notebook/batch API matrix passes: typed
+   parameters/imports, stripped immutable inputs, success/failure executed
+   notebooks, logs/artifact bytes, idempotency, foreign-owner denial and nine
+   crafted override rejections. CPU batch remained usable while the shared GPU
+   reservation was active. See [live matrix](../../platform-staging/argo/qualification/notebook-owner-matrix-20261023/verification.json).
+   Equivalent CIT, fresh GUI/SDK and distributed launcher acceptance remain open.
 4. Finish broader GPU scheduling/packing, teaching reclaim, checkpoint/distributed
    cleanup, representative CPS/CIT startup bursts and the Descheduler comparison.
    These two warm single-workspace starts do not establish burst p95, eight-GPU
