@@ -1,0 +1,35 @@
+{
+  "rotation": 15,
+  "hub_source_revision": "bc9b44106d516880a7a83ce548fa8efaf38445b2",
+  "hub_image": "ghcr.io/mul-cps/cps-compute@sha256:da84bfe42d1389fcb8af96b8c410837a886e677b2970484c973bb25f91ccd844",
+  "both_hubs_ready": true,
+  "normal_http_start": {
+    "status": 409,
+    "seconds": 312.5816763890034,
+    "member_reservation": 200,
+    "lease": 200,
+    "compile": 200,
+    "created": 200,
+    "lease_seconds": 22.430241,
+    "pod_created": true,
+    "pod_uid": "adef9b6c-e475-47c4-8645-e48f5535a3ff",
+    "node_binding_observed": false,
+    "ready": false,
+    "cuda_passed": false
+  },
+  "first_prepare": {
+    "deadline_seconds": 120,
+    "elapsed_seconds": 120.79723,
+    "stage": "registered-readiness",
+    "stage_seconds": 120.364133,
+    "context_calls": 32,
+    "context_seconds": 22.760287,
+    "exact_inner_readiness_denial": "not yet established"
+  },
+  "source_start_deadline_seconds": 300,
+  "cleanup_passed": true,
+  "native_allocations_released": 31,
+  "temporary_credential_revoked": true,
+  "research_pod_unchanged": true,
+  "production_qualified": false
+}

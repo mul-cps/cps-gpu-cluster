@@ -1011,3 +1011,39 @@ credential revoked/removed; research Pod remains Running at original UID.
 Live Pod/CUDA and startup performance qualification remain open.
 
 [Deployment, successful lease timing, timeout and cleanup receipts](../../platform-staging/startup-performance/qualification/reservation-server-retry-live-20261023/).
+
+### V2 lease client fix deployed; actual Pod created; registered readiness still blocks binding
+
+Hub image `sha256:da84bfe42d1389fcb8af96b8c410837a886e677b2970484c973bb25f91ccd844`
+from `bc9b441` is live on both Hubs. All 78 deployed SDK modules and 19 Hub
+modules are preserved; only `native_pending_hub.py` changes. **342 focused tests
+pass**. The initial exact-change plan now includes both Hub publisher-image
+inputs. Rotation **15** preserves the anchor and fourteen prior rotations, no
+pending transition; normal writer Ready and both maintenance helpers removed.
+Both Hubs restarted once on gateway connection refusal during simultaneous
+rollout, then became Ready. Future paired activation should await gateway
+readiness before patching Hub deployments. This sequencing issue remains open.
+
+The actual console run passed member reservation, lease, compile and created
+(**all HTTP 200**). Lease completed in **22.430 seconds**. One pinned Pod UID
+was created at **113.007 seconds**, but no actual node binding or Ready state
+was observed. KAI emitted a Scheduled event; that event alone does not prove
+binding, because observed Pod `spec.nodeName` stayed empty.
+
+The first coordinator Prepare expired at **120.797 seconds**, entirely in
+registered readiness (**120.364 seconds**; 32 context calls cost 22.760 seconds).
+Its exact inner readiness denial is not established. Subsequent short denials
+are not evidence of the original reason. The unchanged Source 300-second
+start deadline stopped the Pod; HTTP returned **409 after 312.582 seconds**.
+The Pod disappeared without replacement; no CUDA check ran. Do not claim
+functional GPU startup or startup-latency qualification from the earlier 200s.
+
+Normal cleanup restored the stopped CPU fixture, membership, ceiling and
+notice; temporary approval removed, existing grants unchanged. All four
+current acknowledgments recovered. All **31 native allocations are released**;
+QA credential revoked/removed and research Pod preserved at original UID.
+Next investigation: read-only exact readiness diagnostics while the next
+controlled Pod is Pending, rather than a blind same-image retry or a longer
+startup deadline.
+
+[Deployment, HTTP/Pod progress, readiness timing and cleanup receipts](../../platform-staging/startup-performance/qualification/hub-lease-budget-live-20261023/).

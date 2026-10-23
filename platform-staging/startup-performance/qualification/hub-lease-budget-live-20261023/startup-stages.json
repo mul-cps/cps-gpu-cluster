@@ -1,0 +1,7 @@
+{
+  "observed_seconds": 313.5930466479622,
+  "first_pod_seconds": 113.00747373898048,
+  "first_node_assigned_seconds": null,
+  "pod_disappeared": true,
+  "observations": 90
+}

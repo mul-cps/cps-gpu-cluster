@@ -1,0 +1,16 @@
+{
+  "source_revision": "bc9b44106d516880a7a83ce548fa8efaf38445b2",
+  "hub_wheel_sha256": "48ad44da1cefced2a6e13c3eb419aeb59306af867a86b61282051263bf650ea1",
+  "images": [
+    {
+      "component": "hub:cps",
+      "image": "ghcr.io/mul-cps/cps-compute@sha256:da84bfe42d1389fcb8af96b8c410837a886e677b2970484c973bb25f91ccd844"
+    },
+    {
+      "component": "hub:cit",
+      "image": "ghcr.io/mul-cps/cps-compute@sha256:da84bfe42d1389fcb8af96b8c410837a886e677b2970484c973bb25f91ccd844"
+    }
+  ],
+  "sdk_and_dependencies_retained": true,
+  "deployed": false
+}
