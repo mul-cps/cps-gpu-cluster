@@ -1,0 +1,27 @@
+{
+  "hub": "cit",
+  "student": "armin",
+  "tests": {
+    "batch_success": {
+      "name": "cps-222a6d9897e3a73185317adbd6fdea525ad0090d2d7ec307",
+      "uid": "d95f97ad-d14b-4cf6-8f39-3a3aea8f0777",
+      "phase": "Succeeded",
+      "parameters_and_selected_import_verified": true,
+      "executed_artifact_verified": true,
+      "stale_outputs_stripped": true,
+      "foreign_owner_denied": 403,
+      "idempotent_retry_same_uid": true
+    },
+    "batch_failure": {
+      "name": "cps-67f97d713d2021b29b2254c405dc36a9f177266d42a204c2",
+      "uid": "2c9bd502-b385-4755-a33a-7b1e1292c149",
+      "phase": "Failed",
+      "parameters_and_selected_import_verified": true,
+      "executed_artifact_verified": true,
+      "stale_outputs_stripped": true,
+      "foreign_owner_denied": 403,
+      "idempotent_retry_same_uid": true
+    }
+  },
+  "temporary_tokens_revoked": 2
+}

@@ -1,0 +1,76 @@
+{
+  "hub": "cps",
+  "username": "mikasa",
+  "account_identity_verified": true,
+  "tabs": {
+    "My Workloads": {
+      "loaded": true,
+      "text_length": 803
+    },
+    "Snippets": {
+      "loaded": true,
+      "text_length": 4103
+    }
+  },
+  "passed": true,
+  "responses": [
+    {
+      "status": 302,
+      "path": "https://jupyterhub.dshl.unileoben.ac.at/services/cps-compute-ui/api/compute/xsrf"
+    },
+    {
+      "status": 302,
+      "path": "https://jupyterhub.dshl.unileoben.ac.at/services/cps-compute-ui/api/compute/xsrf"
+    },
+    {
+      "status": 200,
+      "path": "https://jupyterhub.dshl.unileoben.ac.at/services/cps-compute-ui/api/compute/xsrf"
+    },
+    {
+      "status": 200,
+      "path": "https://jupyterhub.dshl.unileoben.ac.at/services/cps-compute-ui/api/compute/v1/me"
+    },
+    {
+      "status": 200,
+      "path": "https://jupyterhub.dshl.unileoben.ac.at/services/cps-compute-ui/api/compute/xsrf"
+    },
+    {
+      "status": 503,
+      "path": "https://jupyterhub.dshl.unileoben.ac.at/services/cps-compute-ui/api/compute/v1/jobsets"
+    },
+    {
+      "status": 200,
+      "path": "https://jupyterhub.dshl.unileoben.ac.at/services/cps-compute-ui/api/compute/v1/workflows"
+    },
+    {
+      "status": 200,
+      "path": "https://jupyterhub.dshl.unileoben.ac.at/services/cps-compute-ui/api/compute/xsrf"
+    },
+    {
+      "status": 200,
+      "path": "https://jupyterhub.dshl.unileoben.ac.at/services/cps-compute-ui/api/compute/v1/profiles"
+    },
+    {
+      "status": 200,
+      "path": "https://jupyterhub.dshl.unileoben.ac.at/services/cps-compute-ui/api/compute/v1/me"
+    }
+  ],
+  "failed_requests": [
+    {
+      "path": "https://jupyterhub.dshl.unileoben.ac.at/hub/api/oauth2/authorize",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "path": "https://jupyterhub.dshl.unileoben.ac.at/hub/api/oauth2/authorize",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "path": "https://jupyterhub.dshl.unileoben.ac.at/user/mikasa/lab/api/workspaces/default",
+      "failure": "net::ERR_ABORTED"
+    }
+  ],
+  "console_errors": [
+    "Error: Shared module @jupyterlab/celltags doesn't exist in shared scope default\n    at i (https://jupyterhub.dshl.unileoben.ac.at/user/mikasa/lab/extensions/@jlab-enhanced/cell-toolbar/static/remoteEntry.dd696ead62aa5a50ad65.js:1:4635)\n    at https://jupyterhub.dshl.unileoben.ac.at/user/mikasa/lab/e",
+    "Failed to load resource: the server responded with a status of 503 ()"
+  ]
+}

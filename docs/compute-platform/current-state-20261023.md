@@ -30,8 +30,7 @@ visual acceptance and CIT student workflow acceptance remain open.
 
 The CPS CPU runtime candidate is published as `efc3b485…b6eb72f`. Its full
 software-preservation verifier passes with 72 original base layers retained,
-43 SDK modules unchanged and 315 other dependency versions unchanged. Deployment
-and live qualification remain pending. CIT CPU addon checks pass with 48 SDK
+43 SDK modules unchanged and 315 other dependency versions unchanged. Both default CPU configurations are now deployed; live acceptance is recorded below. CIT CPU addon checks pass with 48 SDK
 modules and 321 other dependency versions unchanged; corrected runtime image `4d945601…baa7289` is published and its full preservation
 verifier passes, retaining all 52 original base layers and the original `jovyan` user. Both controlled students, Armin and Mikasa, completed fresh ordinary
 CIT directory login at `jhub.dshl.unileoben.ac.at`; Hub identity reads returned
@@ -71,6 +70,28 @@ and full release integration remain open.
 [CPU image activation](../../platform-staging/argo/qualification/profile-walltime-20261023/addon-image/variants/cpu-image-activation.json)
 and [CIT browser receipt](../../platform-staging/argo/qualification/profile-walltime-20261023/addon-image/variants/cit-addon-browser.json)
 record this bounded acceptance. The staged operations are not yet a merged GitOps release.
+
+## CPS browser and CIT batch acceptance
+
+Mikasa launched CPS `cpu-default` normally on image `efc3b485…b6eb72f` and reached
+JupyterLab in 33.498 seconds. After dismissing the unrelated Notebook Intelligence
+welcome tour, normal Compute OAuth, canonical Account identity, My Workloads and
+dynamic snippet recipes passed. The browser still reports a separate enhanced
+cell-toolbar shared-module dependency warning; notebook packaging follow-up remains
+open. No snippets were executed by this browser check.
+
+CIT student Armin submitted both a successful and intentionally failing notebook
+through the authenticated Gateway. Both terminal phases matched expectations; typed
+parameters, explicitly selected Python imports, stripped stale outputs, executed
+notebook artifacts on success/failure, same-UID idempotent retries and Mikasa's
+foreign-owner 403 denial all passed. Both temporary student API tokens were revoked.
+This verifies Gateway batch execution, not yet notebook-GUI Submit or SDK execution
+from the live CIT notebook. CIT collaboration, source identity audit, distributed
+qualification and release integration remain open.
+
+[CIT batch evidence](../../platform-staging/argo/qualification/profile-walltime-20261023/addon-image/variants/cit-batch-acceptance.json)
+and [CPS browser evidence](../../platform-staging/argo/qualification/profile-walltime-20261023/addon-image/variants/cps-addon-browser.json)
+retain the bounded checks and observed console warnings.
 
 ## Newly verified live results
 
