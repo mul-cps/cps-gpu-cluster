@@ -1,0 +1,39 @@
+{
+  "source_revision": "063d85e242cf3ec4d7db0585c9987b243e704e2f",
+  "wheel_sha256": "0841f050d58bd2e70ef0f4b40627577a4ef575c4a8cb5478d6f01c818c5e55ab",
+  "images": [
+    {
+      "component": "gateway",
+      "image": "ghcr.io/mul-cps/cps-compute@sha256:068dd936270bf8fbe88cc0fb2ea4b911c191bca2da33df22fc147ead3288d3b1"
+    },
+    {
+      "component": "node",
+      "image": "ghcr.io/mul-cps/cps-native-node@sha256:0c7bda942d5e5711e6bba5fc6fc35e32725cd6831c4a4bf8a1efb1f5b6c2e8a3"
+    }
+  ],
+  "registry_digest_verified": true,
+  "deployed": true,
+  "full_suite": {
+    "passed": 5186,
+    "skipped": 6,
+    "subtests_passed": 68,
+    "seconds": 564.71
+  },
+  "rotation": {
+    "original_anchor_preserved": true,
+    "prior_rotations_preserved": true,
+    "rotation_count": 9,
+    "transition_pending": false,
+    "config_hash": "sha256:e75825d7ad96402baa63800756d9c212b0ca9b6cb97e9b98fa0d0b7dab941026",
+    "images": {
+      "gateway": "ghcr.io/mul-cps/cps-compute@sha256:068dd936270bf8fbe88cc0fb2ea4b911c191bca2da33df22fc147ead3288d3b1",
+      "node": "ghcr.io/mul-cps/cps-native-node@sha256:0c7bda942d5e5711e6bba5fc6fc35e32725cd6831c4a4bf8a1efb1f5b6c2e8a3"
+    }
+  },
+  "maintenance_cleanup": {
+    "normal_writer_ready": true,
+    "helper_pods_deleted": 2,
+    "uid_preconditions_used": true
+  },
+  "live_qualification": "pending"
+}

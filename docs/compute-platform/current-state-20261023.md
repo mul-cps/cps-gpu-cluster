@@ -712,3 +712,21 @@ yet reproduced false-ready behavior through the normal console HTTP path and
 must not claim that broader root cause as established. The enrollment failure
 and missing Pod still invalidate the live timing sample. The next controlled
 run must verify actual Pod readiness and CUDA before accepting Source success.
+
+### Enrollment renewal fix deployed after full-suite pass
+
+Source `063d85e242cf3ec4d7db0585c9987b243e704e2f` passed the complete suite:
+**5186 passed, 6 skipped, 68 subtests passed** in 564.71 seconds. Both images
+passed checksum checks for the changed installed coordinator as well as actual
+manifest/kernel/policy preflight. Supported journal rotation **9** is complete,
+preserving the original anchor and all eight previous rotations. Admission
+positive/negative cases passed. The normal writer is Ready; both maintenance
+Pods were deleted using UID preconditions.
+
+The next live attempt uses an actual authenticated console HTTP request in the
+application process. GET authentication and a harmless Stop for the stopped QA
+fixture passed; POST uses the normal page-issued CSRF cookie/header. A successful
+start must additionally retain the same Pod UID, reach Kubernetes Ready and pass
+an actual CUDA allocation/write/synchronize. Live qualification is still pending.
+
+[Deployment receipt](../../platform-staging/startup-performance/qualification/enrollment-renewal-20261023/deployed.json).
