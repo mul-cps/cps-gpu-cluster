@@ -690,3 +690,25 @@ Source readiness failure. Full-suite success is not sufficient for these live
 behaviors. Production readiness and startup improvement remain unconfirmed.
 
 [Failed live qualification and cleanup](../../platform-staging/startup-performance/qualification/parallel-history-20261023/live-functional-failure.json).
+
+### Enrollment renewal race reproduced and corrected in source
+
+A deterministic real-Node-publication regression reproduces the live denial at
+`require_withdrawal`: final-generation publication advances during the first
+claim, then a healthy same-generation heartbeat arrives during its slow all-peer
+authentication. The old branch incorrectly requires that renewal to be empty.
+
+Source `063d85e` authenticates either an exact withdrawal or a same-scope renewal
+and repeats the outer fenced proof; it does not complete enrollment from that
+intermediate observation. A future-dated receipt with recomputed witness hashes
+remains denied. All 48 final-enrollment tests and 48 adjacent amplification,
+fence-budget, readiness-boundary and terminal-witness tests pass. The full suite
+is running. This correction is not yet deployed.
+
+Refinement of the Source readiness diagnosis: the reported success coincided
+with our explicit cleanup Stop from a **second diagnostic process**. Such a
+process bypasses the single application process's lifecycle locks. We have not
+yet reproduced false-ready behavior through the normal console HTTP path and
+must not claim that broader root cause as established. The enrollment failure
+and missing Pod still invalidate the live timing sample. The next controlled
+run must verify actual Pod readiness and CUDA before accepting Source success.

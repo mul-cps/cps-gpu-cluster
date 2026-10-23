@@ -34,5 +34,6 @@
   },
   "research_pod_uid": "fe5fb5e7-8696-4ac3-a5a8-1883817d00bb",
   "research_pod_phase": "Running",
-  "causality_of_parallel_reads": "not established"
+  "causality_of_parallel_reads": "not established",
+  "source_success_context": "Success coincided with an explicit cleanup Stop from a second diagnostic process. This bypasses the one-process console lifecycle lock; normal UI false-ready behavior is not yet reproduced."
 }
