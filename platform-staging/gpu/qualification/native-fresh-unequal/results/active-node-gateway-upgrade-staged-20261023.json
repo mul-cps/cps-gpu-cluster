@@ -1,0 +1,32 @@
+{
+  "version": 1,
+  "image": "ghcr.io/mul-cps/cps-compute@sha256:3c8030cc7dbf6c12a6d29374c4df16b490536c3e723bcc8a67e913c7a2287624",
+  "node_reference": {
+    "namespace": "cps-native-runtime",
+    "name": "cps-runtime-node-config-e9b9bdb9de5d9ff2",
+    "uid": "faa36909-6fc0-4483-b2bb-f22beddf249c",
+    "resourceVersion": "380376184",
+    "key": "config.json",
+    "data_sha256": "sha256:e9b9bdb9de5d9ff2a931cfa2bbce86859c17d1b76e15e36f468641c74a7bee8f"
+  },
+  "bootstrap": "cps-runtime-bootstrap-c203d21d77e62228",
+  "predecessor_bootstrap_uid": "b416bf81-83b5-4a12-9277-f47a0b817495",
+  "predecessor_bootstrap_retained": true,
+  "node_template_sha256": "sha256:319b7274402eab5d84e1aaaeb9359abcba3cffadc478370e2af323245c470237",
+  "observer_seed": "cps-runtime-observer-inputs-d7c0e21509837a03",
+  "delivery_seed": "cps-runtime-head-delivery-95b7012477e5cd48",
+  "kai_seed": "cps-runtime-kai-config-f86ba795d5aeddeb",
+  "activated": false,
+  "kind": "active-node-gateway-upgrade-staged",
+  "source_revision": "cadbbe8f8f4857c5253b2aaa69fc1abbb05ba8bd",
+  "software_config_rotation_tests_passed": 41,
+  "actual_node_successor_validated": true,
+  "actual_observer_release_validated": true,
+  "production_ready": false,
+  "remaining": [
+    "Finish broader software suite",
+    "Reconcile exact Node admission for new bootstrap/ReplicaSet",
+    "Rotate delivery journal with original byte pins and retained bootstrap inputs",
+    "Verify genuine readiness and ordinary shared-GPU lifecycle"
+  ]
+}
