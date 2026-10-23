@@ -1263,3 +1263,25 @@ reviewed service-configuration checkpoint is needed before another image rollout
 because the retained predecessor chain is at its existing bound.
 
 [Actual start, CUDA, timing, heartbeat samples and full cleanup](../../platform-staging/startup-performance/qualification/exact-retirement-start-attempt6-20261023/).
+
+### Measured read path and correction to service ancestry count
+
+Read-only profiling against the live gateway found **0.60-0.62 seconds** for
+HeadSource.load with 44 retained history entries, **0.0032-0.0039 seconds** for
+the SQLite registry snapshot, and **0.227-0.230 seconds** for typed current
+NodeConfiguration.load. No runtime factory, writes, GPU calls or qualification
+bypasses were used. These are idle reads; they do not prove startup-load cost,
+but do not support attributing the 50-second registered-readiness wait to slow
+immutable reads alone. Node logs show readiness withdrawals while custody was
+changing during binding; the full cause/timing needs handoff profiling.
+
+**Correction:** walking the actual typed current Node configuration reports
+**15 service-image predecessor links**, under the existing bound16. The prior
+count16 was an incorrect inference from rotation count. **One additional service
+image link remains available**. The existing delivery-journal checkpoint seals
+a separate 48-rotation lineage and does not compact this Node service chain.
+Do not treat that command as a solution to service ancestry or weaken the bound.
+A reviewed service-chain migration is still needed before the following rollout.
+No deployment or workload changes were made for this profile.
+
+[Read-only samples and authoritative ancestry count](../../platform-staging/startup-performance/qualification/heartbeat-read-profile-20261023/profile.json).

@@ -1,0 +1,55 @@
+{
+  "read_only": true,
+  "no_gpu_calls": true,
+  "source_load_and_registry_samples": [
+    {
+      "sample": 0,
+      "read_only_source_load_seconds": 0.6011673329921905,
+      "history_entries": 44
+    },
+    {
+      "sample": 0,
+      "read_only_registry_snapshot_seconds": 0.003168811002979055
+    },
+    {
+      "sample": 1,
+      "read_only_source_load_seconds": 0.6232894159911666,
+      "history_entries": 44
+    },
+    {
+      "sample": 1,
+      "read_only_registry_snapshot_seconds": 0.0038877829938428476
+    },
+    {
+      "sample": 2,
+      "read_only_source_load_seconds": 0.6102106739999726,
+      "history_entries": 44
+    },
+    {
+      "sample": 2,
+      "read_only_registry_snapshot_seconds": 0.003163150991895236
+    }
+  ],
+  "configuration_samples": [
+    {
+      "sample": 0,
+      "read_only_configuration_load_seconds": 0.22771346800436731,
+      "service_links": 15
+    },
+    {
+      "sample": 1,
+      "read_only_configuration_load_seconds": 0.22952426499978174,
+      "service_links": 15
+    },
+    {
+      "sample": 2,
+      "read_only_configuration_load_seconds": 0.22717368000303395,
+      "service_links": 15
+    }
+  ],
+  "service_link_bound": 16,
+  "live_service_links": 15,
+  "remaining_service_links": 1,
+  "journal_checkpoint_is_different_from_service_chain_checkpoint": true,
+  "scope": "Idle reads on current deployment; not startup-load or burst qualification"
+}
