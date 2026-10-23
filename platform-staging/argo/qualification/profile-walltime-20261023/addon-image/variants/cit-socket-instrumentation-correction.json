@@ -1,0 +1,18 @@
+{
+  "initial_assertion_passed": false,
+  "initial_measurement_included_obsolete_document_protocol_handles": true,
+  "prior_diagnostics": {
+    "armin": {
+      "reported_closed": 7,
+      "reported_not_closed": 6
+    },
+    "mikasa": {
+      "reported_closed": 7,
+      "reported_not_closed": 6
+    }
+  },
+  "corrected_capture_resets_at_document_navigation": true,
+  "requires_open_socket_and_received_frames": true,
+  "closure_deadline_seconds_unchanged": 15,
+  "corrected_actual_session_closure_passed": true
+}

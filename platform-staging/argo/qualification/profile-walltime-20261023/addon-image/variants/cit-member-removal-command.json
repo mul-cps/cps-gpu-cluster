@@ -1,0 +1,13 @@
+{
+  "passed": true,
+  "workspace": "student-collab-20261023",
+  "removed_member": "mikasa",
+  "state": "stopped",
+  "members": [
+    "85de720c-94b0-4bc7-807e-c04512133494"
+  ],
+  "reservation_inactive": true,
+  "notice": "Membership changed; kernel interrupted. Files retained. Profile must be revalidated before restart.",
+  "seconds": 5.519249832999776,
+  "files_not_deleted": true
+}

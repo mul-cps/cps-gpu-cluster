@@ -147,6 +147,34 @@ weakening policy.
 and [shared-kernel identity receipt](../../platform-staging/argo/qualification/profile-walltime-20261023/addon-image/variants/cit-shared-kernel-identity.json)
 record the bounded acceptance. Full production qualification remains incomplete.
 
+## Refreshed CIT shared CPU and active member revocation
+
+The registered CIT shared-CPU image now selects the verified `efc3b485…b6eb72f`
+image through a new immutable mounted values Secret. Only that CPU image reference
+changed; native policy, GPU images and authority remain unchanged. Actual shared
+Pod readback selected the new image, and SDK identity remained the workspace principal.
+
+With Armin and Mikasa editing the neutral workspace in separate browser sessions,
+normal Source member removal stopped the writer, updated access/membership, left
+no active reservation and returned a kernel-interruption/files-retained notice.
+The final live browser run tracked eight open, frame-receiving collaboration sockets
+per visitor from the current document; every one closed after removal within the
+unchanged 15-second observation bound. An earlier assertion retained obsolete
+protocol handles across navigation; its diagnostic counts and corrected capture
+criteria are retained rather than reported as a passing run.
+
+Restart revalidated the remaining membership: Armin accessed the server (200),
+Mikasa was denied (403) with her prior browser credentials, and both students' latest
+saved edits survived. This is the CPU collaboration/revocation gate; GPU member
+removal and broader packing/reclaim qualification remain separate open gates.
+The fixture is stopped after acceptance, with Mikasa removed only from this owned
+CIT QA course; existing CPS shared-GPU lab membership is unchanged.
+
+[Live session closure](../../platform-staging/argo/qualification/profile-walltime-20261023/addon-image/variants/cit-member-removal-live-browser.json),
+[restart denial and file preservation](../../platform-staging/argo/qualification/profile-walltime-20261023/addon-image/variants/cit-after-member-removal.json)
+and [capture correction](../../platform-staging/argo/qualification/profile-walltime-20261023/addon-image/variants/cit-socket-instrumentation-correction.json)
+retain this acceptance. Full production qualification remains incomplete.
+
 ## Newly verified live results
 
 - CPS and CIT use the matching Hub image `435c0806…e5cb466`. The Hub wheel is

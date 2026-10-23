@@ -1,0 +1,17 @@
+{
+  "run_id": "1328cd1e36e1453a9b5d1d60241041f4",
+  "workspace": "student-collab-20261023",
+  "test_notebook": "qa-rtc-061f4b3bad.ipynb",
+  "two_way_edits_verified": true,
+  "live_collaboration_sockets": {
+    "armin": 8,
+    "mikasa": 8
+  },
+  "only_open_frame_receiving_sockets_counted": true,
+  "capture_reset_at_document_navigation": true,
+  "passed": true,
+  "removed_member": "mikasa",
+  "all_prior_collaboration_sockets_closed": true,
+  "both_existing_sessions_closed": true,
+  "cells_executed": false
+}
