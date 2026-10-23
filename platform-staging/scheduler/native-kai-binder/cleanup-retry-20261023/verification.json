@@ -19,5 +19,8 @@
   "leader_only": true,
   "interval_seconds": 5,
   "custody_and_uid_rv_guards_preserved": true,
-  "live_qualification_passed": false
+  "live_qualification_passed": false,
+  "candidate_rejected": true,
+  "rejection": "Live repeat start was held; working-tree baseline contained operator-mode changes beyond the recorded deployed patch. Restored prior image and closed the attempt normally. Do not deploy this candidate.",
+  "superseded_by": "../cleanup-exact-retry-20261023/"
 }

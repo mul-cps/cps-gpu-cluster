@@ -1,0 +1,3202 @@
+diff --git a/cmd/binder/app/app.go b/cmd/binder/app/app.go
+index a95db6c..1d2b942 100644
+--- a/cmd/binder/app/app.go
++++ b/cmd/binder/app/app.go
+@@ -146,6 +146,25 @@ func (app *App) RegisterPlugins(plugins *plugins.BinderPlugins) {
+ 
+ func (app *App) Run(ctx context.Context) error {
+ 	var err error
++	binder := binding.NewBinder(app.Client, app.rrs, app.plugins)
++	bridge, err := binding.NewNativeHTTP(app.Options.NativeCoordinator)
++	if err != nil {
++		return err
++	}
++	if bridge != nil {
++		reservation, ok := app.rrs.(interface {
++			SetNativeCustody(client.Reader, resourcereservation.NativeReservationCustody)
++		})
++		if !ok {
++			return fmt.Errorf("native reservation custody startup bridge unavailable")
++		}
++		reader := app.manager.GetAPIReader()
++		reservation.SetNativeCustody(reader, bridge)
++		binder.SetNativeTerminal(reader, app.Options.NativeCoordinator.AuthorityNamespace, bridge)
++		if err := app.manager.Add(&nativeReservationReconciler{sync: app.rrs.Sync, interval: 5 * time.Second}); err != nil {
++			return fmt.Errorf("native reservation reconciliation startup: %w", err)
++		}
++	}
+ 	go func() {
+ 		if !app.manager.GetCache().WaitForCacheSync(ctx) {
+ 			return
+@@ -167,8 +186,6 @@ func (app *App) Run(ctx context.Context) error {
+ 		return err
+ 	}
+ 
+-	binder := binding.NewBinder(app.Client, app.rrs, app.plugins)
+-
+ 	app.InformerFactory.Start(ctx.Done())
+ 	app.InformerFactory.WaitForCacheSync(ctx.Done())
+ 
+diff --git a/cmd/binder/app/native_options_test.go b/cmd/binder/app/native_options_test.go
+new file mode 100644
+index 0000000..1799495
+--- /dev/null
++++ b/cmd/binder/app/native_options_test.go
+@@ -0,0 +1,20 @@
++package app
++
++import (
++	"github.com/spf13/pflag"
++	"testing"
++)
++
++func TestNativeCoordinatorOptionsAreExplicitAndDisabledByDefault(t *testing.T) {
++	flags := pflag.NewFlagSet("native-offline", pflag.ContinueOnError)
++	options := InitOptions(flags)
++	if options.NativeCoordinator.Enabled || options.NativeCoordinator.URL != "" || options.NativeCoordinator.TokenFile != "" || options.NativeCoordinator.CAFile != "" || options.NativeCoordinator.AuthorityNamespace != "" {
++		t.Fatal("native coordinator was implicitly configured")
++	}
++	if err := flags.Parse([]string{"--native-pending-coordinator-enabled", "--native-coordinator-url=https://coordinator.example.invalid", "--native-coordinator-authority-namespace=authority", "--native-coordinator-token-file=/not-read", "--native-coordinator-ca-file=/not-read"}); err != nil {
++		t.Fatal(err)
++	}
++	if !options.NativeCoordinator.Enabled || options.NativeCoordinator.URL != "https://coordinator.example.invalid" {
++		t.Fatal("explicit native options not retained")
++	}
++}
+diff --git a/cmd/binder/app/native_reservation_sync.go b/cmd/binder/app/native_reservation_sync.go
+new file mode 100644
+index 0000000..cf1de40
+--- /dev/null
++++ b/cmd/binder/app/native_reservation_sync.go
+@@ -0,0 +1,34 @@
++package app
++
++import (
++	"context"
++	"time"
++)
++
++// Native cleanup can finish after the last Pod event. Revisit reservations until
++// the existing custody API authorizes their exact UID/RV deletion. A hold never
++// becomes permission through age or Pod absence.
++type nativeReservationReconciler struct {
++	sync     func(context.Context) error
++	interval time.Duration
++}
++
++func (*nativeReservationReconciler) NeedLeaderElection() bool { return true }
++
++func (r *nativeReservationReconciler) Start(ctx context.Context) error {
++	ticker := time.NewTicker(r.interval)
++	defer ticker.Stop()
++	for {
++		select {
++		case <-ctx.Done():
++			return nil
++		case <-ticker.C:
++			if ctx.Err() != nil {
++				return nil
++			}
++			if err := r.sync(ctx); err != nil && ctx.Err() == nil {
++				setupLog.Error(err, "native reservation reconciliation held; retrying")
++			}
++		}
++	}
++}
+diff --git a/cmd/binder/app/native_reservation_sync_test.go b/cmd/binder/app/native_reservation_sync_test.go
+new file mode 100644
+index 0000000..eea94ba
+--- /dev/null
++++ b/cmd/binder/app/native_reservation_sync_test.go
+@@ -0,0 +1,50 @@
++package app
++
++import (
++	"context"
++	"errors"
++	"sync/atomic"
++	"testing"
++	"time"
++)
++
++func TestNativeReservationReconciliationRetriesAndStops(t *testing.T) {
++	ctx, cancel := context.WithCancel(context.Background())
++	defer cancel()
++	var calls atomic.Int32
++	released := make(chan struct{})
++	runner := &nativeReservationReconciler{interval: time.Millisecond, sync: func(context.Context) error {
++		n := calls.Add(1)
++		if n == 1 {
++			return errors.New("cleanup proof temporarily unavailable")
++		}
++		if n == 3 {
++			close(released)
++		}
++		return nil
++	}}
++	if !runner.NeedLeaderElection() {
++		t.Fatal("cleanup must run only on the elected binder")
++	}
++	done := make(chan error, 1)
++	go func() { done <- runner.Start(ctx) }()
++	select {
++	case <-released:
++	case <-time.After(2 * time.Second):
++		t.Fatal("cleanup was never retried after hold/error")
++	}
++	cancel()
++	select {
++	case err := <-done:
++		if err != nil {
++			t.Fatal(err)
++		}
++	case <-time.After(time.Second):
++		t.Fatal("reconciler did not stop")
++	}
++	count := calls.Load()
++	time.Sleep(5 * time.Millisecond)
++	if calls.Load() != count {
++		t.Fatal("cleanup continued after cancellation")
++	}
++}
+diff --git a/cmd/binder/app/options.go b/cmd/binder/app/options.go
+index c5702d0..0f806da 100644
+--- a/cmd/binder/app/options.go
++++ b/cmd/binder/app/options.go
+@@ -9,12 +9,14 @@ import (
+ 
+ 	"github.com/spf13/pflag"
+ 
++	"github.com/kai-scheduler/KAI-scheduler/pkg/binder/binding"
+ 	binderplugins "github.com/kai-scheduler/KAI-scheduler/pkg/binder/plugins"
+ 	"github.com/kai-scheduler/KAI-scheduler/pkg/common/constants"
+ 	"github.com/kai-scheduler/KAI-scheduler/pkg/common/flags"
+ )
+ 
+ type Options struct {
++	NativeCoordinator                           binding.NativeHTTPConfig
+ 	SchedulerName                               string
+ 	ResourceReservationNamespace                string
+ 	ResourceReservationServiceAccount           string
+@@ -45,6 +47,11 @@ func InitOptions(fs *pflag.FlagSet) *Options {
+ 	if fs == nil {
+ 		fs = pflag.CommandLine
+ 	}
++	fs.BoolVar(&options.NativeCoordinator.Enabled, "native-pending-coordinator-enabled", false, "Enable reviewed signed internal native coordinator bridge (unqualified; defaults disabled)")
++	fs.StringVar(&options.NativeCoordinator.URL, "native-coordinator-url", "", "Exact HTTPS coordinator origin")
++	fs.StringVar(&options.NativeCoordinator.AuthorityNamespace, "native-coordinator-authority-namespace", "", "Protected native authority namespace")
++	fs.StringVar(&options.NativeCoordinator.TokenFile, "native-coordinator-token-file", "", "Read-only projected signed internal ServiceAccount token file")
++	fs.StringVar(&options.NativeCoordinator.CAFile, "native-coordinator-ca-file", "", "Pinned trusted coordinator CA file")
+ 
+ 	fs.StringVar(&options.SchedulerName,
+ 		"scheduler-name", constants.DefaultSchedulerName,
+diff --git a/pkg/binder/binding/binder.go b/pkg/binder/binding/binder.go
+index fbc73c8..530a499 100644
+--- a/pkg/binder/binding/binder.go
++++ b/pkg/binder/binding/binder.go
+@@ -29,6 +29,9 @@ type Binder struct {
+ 	kubeClient                 client.Client
+ 	resourceReservationService resourcereservation.Interface
+ 	plugins                    *plugins.BinderPlugins
++	nativeReader               client.Reader
++	nativeAuthorityNamespace   string
++	nativeCoordinator          NativeTerminalCoordinator
+ }
+ 
+ func NewBinder(kubeClient client.Client, rrs resourcereservation.Interface, plugins *plugins.BinderPlugins) *Binder {
+@@ -40,6 +43,16 @@ func NewBinder(kubeClient client.Client, rrs resourcereservation.Interface, plug
+ }
+ 
+ func (b *Binder) Bind(ctx context.Context, pod *v1.Pod, node *v1.Node, bindRequest *v1alpha2.BindRequest) error {
++	var nativeMemoryLimitMiB int64
++	if nativeMarked(pod) {
++		if err := b.nativeConfigured(pod); err != nil {
++			return err
++		}
++		// Hub records the exact CREATE UID before any stock plugin can write maps.
++		if err := b.nativeRegistryProof(ctx, pod, &nativeMemoryLimitMiB); err != nil {
++			return errors.Join(ErrNativeCustodyHeld, err)
++		}
++	}
+ 	logger := log.FromContext(ctx)
+ 	err := b.resourceReservationService.SyncForNode(ctx, bindRequest.Spec.SelectedNode)
+ 	if err != nil {
+@@ -57,7 +70,8 @@ func (b *Binder) Bind(ctx context.Context, pod *v1.Pod, node *v1.Node, bindReque
+ 		BindingPodAnnotations: map[string]string{
+ 			constants.ReceivedResourceType: bindRequest.Spec.ReceivedResourceType,
+ 		},
+-		ReservedGPUIds: reservedGPUIds,
++		ReservedGPUIds:       reservedGPUIds,
++		NativeMemoryLimitMiB: nativeMemoryLimitMiB,
+ 	}
+ 	if len(bindRequest.Spec.PredictedNUMAZones) > 0 {
+ 		placement, err := json.Marshal(bindRequest.Spec.PredictedNUMAZones)
+@@ -76,6 +90,13 @@ func (b *Binder) Bind(ctx context.Context, pod *v1.Pod, node *v1.Node, bindReque
+ 	if err != nil {
+ 		return fmt.Errorf("failed to patch pod <%s/%s> with bind annotations: %w", pod.Namespace, pod.Name, err)
+ 	}
++	if nativeMarked(pod) {
++		if err := b.bindNativeTerminal(ctx, pod, node, bindRequest, bindingState); err != nil {
++			return err
++		}
++		b.plugins.PostBind(ctx, pod, node, bindRequest, bindingState)
++		return nil
++	}
+ 
+ 	logger.Info("Binding pod", "namespace", pod.Namespace, "name", pod.Name, "hostname", node.Name)
+ 	binding := &v1.Binding{
+@@ -94,6 +115,9 @@ func (b *Binder) Bind(ctx context.Context, pod *v1.Pod, node *v1.Node, bindReque
+ }
+ 
+ func (b *Binder) Rollback(ctx context.Context, pod *v1.Pod, node *v1.Node, bindRequest *v1alpha2.BindRequest) error {
++	if nativeMarked(pod) {
++		return b.cancelNative(ctx, pod, bindRequest)
++	}
+ 	logger := log.FromContext(ctx)
+ 
+ 	logger.Info("Rolling back for failed bind attempt...",
+diff --git a/pkg/binder/binding/native_binding_http_test.go b/pkg/binder/binding/native_binding_http_test.go
+new file mode 100644
+index 0000000..d283496
+--- /dev/null
++++ b/pkg/binder/binding/native_binding_http_test.go
+@@ -0,0 +1,149 @@
++// SPDX-License-Identifier: Apache-2.0
++package binding
++
++import (
++	"context"
++	"encoding/json"
++	"errors"
++	"io"
++	"net/http"
++	"net/http/httptest"
++	"reflect"
++	"strings"
++	"testing"
++
++	"github.com/kai-scheduler/KAI-scheduler/pkg/binder/plugins"
++	v1 "k8s.io/api/core/v1"
++	"k8s.io/apimachinery/pkg/api/meta"
++	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
++	"k8s.io/apimachinery/pkg/apis/meta/v1/unstructured"
++	"k8s.io/apimachinery/pkg/runtime"
++	"k8s.io/apimachinery/pkg/runtime/schema"
++	"k8s.io/client-go/rest"
++	"sigs.k8s.io/controller-runtime/pkg/client"
++)
++
++type nativeHTTPTestCoordinator struct {
++	*nativeTestCoordinator
++	accepted *unstructured.Unstructured
++}
++
++func (c *nativeHTTPTestCoordinator) Prepare(ctx context.Context, s NativeTerminalSnapshot) (NativeAllocationFence, error) {
++	f, err := c.nativeTestCoordinator.Prepare(ctx, s)
++	return &nativeHTTPTestFence{NativeAllocationFence: f, owner: c}, err
++}
++
++type nativeHTTPTestFence struct {
++	NativeAllocationFence
++	owner *nativeHTTPTestCoordinator
++}
++
++func (f *nativeHTTPTestFence) BindingAccepted(ctx context.Context, binding *unstructured.Unstructured) error {
++	f.owner.accepted = binding.DeepCopy()
++	return f.NativeAllocationFence.BindingAccepted(ctx, binding)
++}
++
++func TestNativeBindingRealHTTPTransport(t *testing.T) {
++	for _, outcome := range []string{"success", "forbidden", "lost-response"} {
++		t.Run(outcome, func(t *testing.T) {
++			pod, node, br := nativeTestInputs()
++			for k, v := range nativeTestState().BindingPodAnnotations {
++				pod.Annotations[k] = v
++			}
++			ack := nativeTestACK(pod)
++			coord := &nativeHTTPTestCoordinator{nativeTestCoordinator: &nativeTestCoordinator{ack: ack}}
++			expected := map[string]interface{}{
++				"apiVersion": "v1", "kind": "Binding",
++				"metadata": map[string]interface{}{"namespace": pod.Namespace, "name": pod.Name, "uid": string(pod.UID), "resourceVersion": pod.ResourceVersion},
++				"target":   map[string]interface{}{"kind": "Node", "name": node.Name, "uid": string(node.UID)},
++			}
++			calls := 0
++			var received map[string]interface{}
++			server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
++				calls++
++				coord.calls = append(coord.calls, "binding")
++				if r.Method != "POST" || r.URL.Path != "/api/v1/namespaces/cps/pods/notebook/binding" {
++					t.Errorf("unexpected request %s %s", r.Method, r.URL.Path)
++					w.WriteHeader(404)
++					return
++				}
++				if !strings.HasPrefix(r.Header.Get("Content-Type"), "application/json") {
++					t.Errorf("Binding must use JSON, got %q", r.Header.Get("Content-Type"))
++				}
++				raw, err := io.ReadAll(r.Body)
++				if err != nil {
++					t.Error(err)
++					return
++				}
++				if err = json.Unmarshal(raw, &received); err != nil {
++					t.Error(err)
++					return
++				}
++				if !reflect.DeepEqual(received, expected) {
++					t.Errorf("Binding wire contract changed: %s", raw)
++				}
++				if outcome == "lost-response" {
++					conn, _, err := w.(http.Hijacker).Hijack()
++					if err != nil {
++						t.Error(err)
++						return
++					}
++					_ = conn.Close()
++					return
++				}
++				w.Header().Set("Content-Type", "application/json")
++				if outcome == "forbidden" {
++					w.WriteHeader(http.StatusForbidden)
++					_ = json.NewEncoder(w).Encode(&metav1.Status{TypeMeta: metav1.TypeMeta{APIVersion: "v1", Kind: "Status"}, Status: "Failure", Reason: metav1.StatusReasonForbidden, Code: 403})
++					return
++				}
++				w.WriteHeader(http.StatusCreated)
++				_ = json.NewEncoder(w).Encode(&metav1.Status{TypeMeta: metav1.TypeMeta{APIVersion: "v1", Kind: "Status"}, Status: "Success", Code: 201})
++			}))
++			defer server.Close()
++			scheme := runtime.NewScheme()
++			if err := v1.AddToScheme(scheme); err != nil {
++				t.Fatal(err)
++			}
++			mapper := meta.NewDefaultRESTMapper([]schema.GroupVersion{v1.SchemeGroupVersion})
++			mapper.Add(v1.SchemeGroupVersion.WithKind("Pod"), meta.RESTScopeNamespace)
++			kube, err := client.New(&rest.Config{Host: server.URL}, client.Options{Scheme: scheme, Mapper: mapper})
++			if err != nil {
++				t.Fatal(err)
++			}
++			reader := nativeTestClient(t, pod, node, br, func(*v1.Binding) error { t.Fatal("fake Binding must not execute"); return nil }, ack)
++			original := pod.DeepCopy()
++			reservation := &nativeTestReservation{}
++			binder := NewBinder(kube, reservation, plugins.New())
++			binder.SetNativeTerminal(reader, "authority", coord)
++			err = binder.bindNativeTerminal(context.Background(), pod, node, br, nativeTestState())
++			if calls != 1 {
++				t.Fatalf("Binding must be attempted exactly once, requests=%d error=%v", calls, err)
++			}
++			if !reflect.DeepEqual(pod, original) {
++				t.Fatal("authenticated original typed Pod changed")
++			}
++			if outcome == "success" {
++				if err != nil {
++					t.Fatal(err)
++				}
++				if coord.accepted == nil || !reflect.DeepEqual(coord.accepted.Object, expected) {
++					t.Fatal("Binding acceptance must use the original approved request, not API Status response")
++				}
++				if !reflect.DeepEqual(coord.calls, []string{"prepare", "validate", "validate-binding", "binding", "bound", "close"}) {
++					t.Fatalf("terminal order changed: %v", coord.calls)
++				}
++			} else {
++				if !errors.Is(err, ErrNativeCustodyHeld) {
++					t.Fatalf("API failure must hold custody: %v", err)
++				}
++				if coord.accepted != nil || !reflect.DeepEqual(coord.calls, []string{"prepare", "validate", "validate-binding", "binding", "hold", "close"}) {
++					t.Fatalf("ambiguous/failed Binding must not be accepted or retried: %v", coord.calls)
++				}
++				if reservation.removed != 0 {
++					t.Fatal("failed Binding released reservation")
++				}
++			}
++		})
++	}
++}
+diff --git a/pkg/binder/binding/native_terminal.go b/pkg/binder/binding/native_terminal.go
+new file mode 100644
+index 0000000..079c2eb
+--- /dev/null
++++ b/pkg/binder/binding/native_terminal.go
+@@ -0,0 +1,492 @@
++// SPDX-License-Identifier: Apache-2.0
++
++package binding
++
++import (
++	"bytes"
++	"context"
++	"crypto/sha256"
++	"encoding/hex"
++	"encoding/json"
++	"errors"
++	"fmt"
++	"io"
++	"reflect"
++	"regexp"
++	"time"
++
++	v1 "k8s.io/api/core/v1"
++	apierrors "k8s.io/apimachinery/pkg/api/errors"
++	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
++	"k8s.io/apimachinery/pkg/apis/meta/v1/unstructured"
++	"k8s.io/apimachinery/pkg/types"
++	"sigs.k8s.io/controller-runtime/pkg/client"
++
++	"github.com/kai-scheduler/KAI-scheduler/pkg/apis/scheduling/v1alpha2"
++	"github.com/kai-scheduler/KAI-scheduler/pkg/binder/plugins/state"
++)
++
++const NativePendingAnnotation = "cps.compute/native-pending"
++const NativePendingProtocol = "kai-v0.18.1-gpu2-cm/v1"
++const nativeApprovedNode = "k3s-wk-gpu2"
++const nativeApprovedNodeUID = "3336cdd5-d245-436e-b57c-2f66c6dcaa41"
++const nativeApprovedGPU = "GPU-16128952-b438-556a-00bb-93039ee24e56"
++
++// This signals durable custody, not successful Binding or cleanup. Controller
++// retries must not run the upstream unconditional rollback or change the ACK's
++// BindRequest generation by writing Failed status.
++var ErrNativeCustodyHeld = errors.New("native allocation custody held; reconciliation required")
++
++// Only an authenticated, correlated pre-fence Prepare response permits a fresh snapshot.
++var ErrNativePrepareSnapshotRefresh = errors.New("registered native Prepare snapshot refresh required")
++
++// NativeTerminalSnapshot contains actual upstream types, never a new wire ACK
++// schema. The coordinator must perform the full strict SDK comparisons, central
++// authorization and capacity accounting, freeze maps, publish/read back v1
++// enrollment and ACK, and retain its writer fence through Binding.
++type NativeTerminalSnapshot struct {
++	Pod          *v1.Pod
++	Node         *v1.Node
++	BindRequest  *v1alpha2.BindRequest
++	BindingState *state.BindingState
++}
++
++type NativeAllocationFence interface {
++	ACK() *v1.ConfigMap
++	ValidateCurrent(context.Context, NativeTerminalSnapshot, *v1.ConfigMap) error
++	ValidateBinding(context.Context, *unstructured.Unstructured) error
++	BindingAccepted(context.Context, *unstructured.Unstructured) error
++	Close()
++}
++
++// CleanupMaps may return exact actual immutable map snapshots only after the
++// coordinator independently proves old PodUID absence and native-zero cleanup.
++// It must retain capacity and reservation custody on any ambiguity. No transport
++// implementation or authentication is supplied by this staging patch.
++type NativeTerminalCoordinator interface {
++	Prepare(context.Context, NativeTerminalSnapshot) (NativeAllocationFence, error)
++	Hold(context.Context, types.UID, error) error
++	CleanupMaps(context.Context, types.UID) ([]v1.ConfigMap, error)
++}
++
++// Configure only during startup. A nil/absent bridge remains fail closed for
++// every marked Pod; unmarked upstream behavior is unchanged. reader must be the
++// manager APIReader (the upstream client is cache backed).
++func (b *Binder) SetNativeTerminal(reader client.Reader, authorityNamespace string, coordinator NativeTerminalCoordinator) {
++	b.nativeReader, b.nativeAuthorityNamespace, b.nativeCoordinator = reader, authorityNamespace, coordinator
++}
++
++func nativeMarked(pod *v1.Pod) bool {
++	_, present := pod.Annotations[NativePendingAnnotation]
++	return present
++}
++
++func (b *Binder) nativeConfigured(pod *v1.Pod) error {
++	if pod.Annotations[NativePendingAnnotation] != NativePendingProtocol || b.nativeReader == nil || b.nativeCoordinator == nil || b.nativeAuthorityNamespace == "" {
++		return ErrNativeCustodyHeld
++	}
++	guarded, ok := b.resourceReservationService.(interface{ NativeCustodyEnabled() bool })
++	if !ok || !guarded.NativeCustodyEnabled() {
++		return fmt.Errorf("reservation custody guard is not configured: %w", ErrNativeCustodyHeld)
++	}
++	return nil
++}
++
++func (b *Binder) nativeSnapshot(ctx context.Context, pod *v1.Pod, node *v1.Node, br *v1alpha2.BindRequest, bindingState *state.BindingState) (NativeTerminalSnapshot, error) {
++	currentPod, currentNode, currentBR := &v1.Pod{}, &v1.Node{}, &v1alpha2.BindRequest{}
++	for _, object := range []client.Object{currentPod, currentNode, currentBR} {
++		var key client.ObjectKey
++		switch object.(type) {
++		case *v1.Pod:
++			key = client.ObjectKeyFromObject(pod)
++		case *v1.Node:
++			key = client.ObjectKeyFromObject(node)
++		default:
++			key = client.ObjectKeyFromObject(br)
++		}
++		if err := b.nativeReader.Get(ctx, key, object); err != nil {
++			return NativeTerminalSnapshot{}, err
++		}
++	}
++	if currentPod.UID != pod.UID || currentPod.UID == "" || currentPod.ResourceVersion == "" || currentPod.DeletionTimestamp != nil || currentPod.Spec.NodeName != "" || !reflect.DeepEqual(currentPod.Spec, pod.Spec) || currentPod.Annotations[NativePendingAnnotation] != NativePendingProtocol {
++		return NativeTerminalSnapshot{}, fmt.Errorf("current Pod UID/spec/lifecycle differs")
++	}
++	if currentNode.Name != nativeApprovedNode || string(currentNode.UID) != nativeApprovedNodeUID || currentNode.UID != node.UID || currentNode.DeletionTimestamp != nil || currentNode.ResourceVersion == "" {
++		return NativeTerminalSnapshot{}, fmt.Errorf("current selected Node identity differs")
++	}
++	if currentBR.UID != br.UID || currentBR.ResourceVersion != br.ResourceVersion || currentBR.Generation != br.Generation || currentBR.DeletionTimestamp != nil || !reflect.DeepEqual(currentBR.Spec, br.Spec) {
++		return NativeTerminalSnapshot{}, fmt.Errorf("current BindRequest generation differs")
++	}
++	for key, value := range bindingState.BindingPodAnnotations {
++		if currentPod.Annotations[key] != value {
++			return NativeTerminalSnapshot{}, fmt.Errorf("final binding annotation is not persisted")
++		}
++	}
++	copyState := &state.BindingState{BindingPodAnnotations: map[string]string{}, ReservedGPUIds: append([]string(nil), bindingState.ReservedGPUIds...)}
++	for key, value := range bindingState.BindingPodAnnotations {
++		copyState.BindingPodAnnotations[key] = value
++	}
++	return NativeTerminalSnapshot{currentPod, currentNode, currentBR, copyState}, nil
++}
++
++func (b *Binder) nativeHold(pod *v1.Pod, cause error) error {
++	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
++	defer cancel()
++	if b.nativeCoordinator != nil {
++		cause = errors.Join(cause, b.nativeCoordinator.Hold(ctx, pod.UID, cause))
++	}
++	return errors.Join(ErrNativeCustodyHeld, cause)
++}
++
++func (b *Binder) bindNativeTerminal(ctx context.Context, pod *v1.Pod, node *v1.Node, br *v1alpha2.BindRequest, bindingState *state.BindingState) (err error) {
++	failureHandled := false
++	defer func() {
++		if err != nil && !failureHandled {
++			err = b.nativeHold(pod, err)
++		}
++	}()
++	if err = b.nativeConfigured(pod); err != nil {
++		return err
++	}
++	if len(bindingState.ReservedGPUIds) != 1 || bindingState.ReservedGPUIds[0] != nativeApprovedGPU {
++		return fmt.Errorf("exact approved physical GPU UUID required")
++	}
++	snapshot, err := b.nativeSnapshot(ctx, pod, node, br, bindingState)
++	if err != nil {
++		return err
++	}
++	fence, err := b.nativeCoordinator.Prepare(ctx, snapshot)
++	if fence != nil {
++		defer func() {
++			if err != nil {
++				err = b.nativeHold(pod, err)
++			}
++			failureHandled = true
++			fence.Close()
++		}()
++	}
++	if err != nil {
++		if fence == nil && errors.Is(err, ErrNativeCustodyHeld) && errors.Is(err, ErrNativePrepareSnapshotRefresh) {
++			failureHandled = true
++		}
++		return err
++	}
++	if fence == nil {
++		return fmt.Errorf("terminal coordinator did not retain a fence")
++	}
++	expectedACK := fence.ACK()
++	if expectedACK == nil || expectedACK.Name != "cps-pending-allocation-"+string(pod.UID) || expectedACK.Namespace != b.nativeAuthorityNamespace || expectedACK.UID == "" || expectedACK.ResourceVersion == "" {
++		return fmt.Errorf("actual immutable ACK reference required")
++	}
++	currentACK := &v1.ConfigMap{}
++	if err = b.nativeReader.Get(ctx, client.ObjectKeyFromObject(expectedACK), currentACK); err != nil {
++		return err
++	}
++	if currentACK.UID != expectedACK.UID || currentACK.ResourceVersion != expectedACK.ResourceVersion || currentACK.Immutable == nil || !*currentACK.Immutable || currentACK.DeletionTimestamp != nil || len(currentACK.OwnerReferences) != 0 || len(currentACK.BinaryData) != 0 || len(currentACK.Data) != 1 || currentACK.Data["allocation.json"] == "" {
++		return fmt.Errorf("immutable ACK identity/data shape changed")
++	}
++	snapshot, err = b.nativeSnapshot(ctx, pod, node, br, bindingState)
++	if err != nil {
++		return err
++	}
++	if err = ctx.Err(); err != nil {
++		return err
++	}
++	// Preserve the SDK's exact closed wire object. Typed ObjectMeta serialization
++	// can add creationTimestamp:null, which is outside that reviewed contract.
++	binding := &unstructured.Unstructured{Object: map[string]interface{}{
++		"apiVersion": "v1", "kind": "Binding",
++		"metadata": map[string]interface{}{"namespace": pod.Namespace, "name": pod.Name, "uid": string(pod.UID), "resourceVersion": snapshot.Pod.ResourceVersion},
++		"target":   map[string]interface{}{"kind": "Node", "name": node.Name, "uid": string(node.UID)},
++	}}
++	// A combined bridge sends the entire fresh snapshot and actual ACK with
++	// the Binding; the server runs the same full current proof once before
++	// its custody CAS. Other bridges retain their original two-step contract.
++	if combined, ok := fence.(interface {
++		ValidateCurrentAndBinding(context.Context, NativeTerminalSnapshot, *v1.ConfigMap, *unstructured.Unstructured) error
++	}); ok {
++		err = combined.ValidateCurrentAndBinding(ctx, snapshot, currentACK.DeepCopy(), binding.DeepCopy())
++	} else {
++		err = fence.ValidateCurrent(ctx, snapshot, currentACK.DeepCopy())
++		if err == nil {
++			err = ctx.Err()
++		}
++		if err == nil {
++			err = fence.ValidateBinding(ctx, binding.DeepCopy())
++		}
++	}
++	if err != nil {
++		return err
++	}
++	if err = ctx.Err(); err != nil {
++		return err
++	}
++	// A typed Pod parent selects the protobuf serializer, which cannot encode
++	// the reviewed unstructured Binding body. Select JSON via the same actual
++	// Pod resource identity, and keep the approved request separate from the
++	// API's Status response decoded into the subresource argument.
++	bindingPod := &unstructured.Unstructured{Object: map[string]interface{}{
++		"apiVersion": "v1", "kind": "Pod",
++		"metadata": map[string]interface{}{"namespace": snapshot.Pod.Namespace, "name": snapshot.Pod.Name,
++			"uid": string(snapshot.Pod.UID), "resourceVersion": snapshot.Pod.ResourceVersion},
++	}}
++	if err = b.kubeClient.SubResource("binding").Create(ctx, bindingPod, binding.DeepCopy()); err != nil {
++		return err
++	}
++	// An ambiguous Bound publication still holds custody; never rollback maps
++	// after a lost/successful Binding response. Strict future-B/native cap checks
++	// belong to the existing post-Bind node path, not this pre-Bind ACK.
++	if err = fence.BindingAccepted(ctx, binding.DeepCopy()); err != nil {
++		return err
++	}
++	return nil
++}
++
++// Cancel only the exact current PodUID/RV. Even a successful DELETE response
++// retains maps/reservations until a later absence and native-zero proof.
++func (b *Binder) cancelNative(ctx context.Context, pod *v1.Pod, br *v1alpha2.BindRequest) error {
++	if err := b.nativeConfigured(pod); err != nil {
++		return err
++	}
++	cleanupCtx, cancel := context.WithTimeout(context.WithoutCancel(ctx), 5*time.Second)
++	defer cancel()
++	current := &v1.Pod{}
++	err := b.nativeReader.Get(cleanupCtx, client.ObjectKeyFromObject(pod), current)
++	if err == nil && current.UID == pod.UID {
++		if holdErr := b.nativeCoordinator.Hold(cleanupCtx, pod.UID, ErrNativeCustodyHeld); holdErr != nil {
++			return errors.Join(ErrNativeCustodyHeld, holdErr)
++		}
++		uid, rv := current.UID, current.ResourceVersion
++		err = b.kubeClient.Delete(cleanupCtx, current, &client.DeleteOptions{Preconditions: &metav1.Preconditions{UID: &uid, ResourceVersion: &rv}})
++		return errors.Join(ErrNativeCustodyHeld, err)
++	}
++	if err != nil && !apierrors.IsNotFound(err) {
++		return b.nativeHold(pod, err)
++	}
++	// A replacement UID proves only the old Pod is absent; it is never deleted,
++	// patched or used as the old Pod's native-zero evidence.
++	maps, err := b.nativeCoordinator.CleanupMaps(cleanupCtx, pod.UID)
++	if err != nil {
++		return b.nativeHold(pod, err)
++	}
++	prefix := pod.Annotations["runai/shared-gpu-configmap"]
++	if !regexp.MustCompile(`^cps-native-[a-f0-9]{32}-shared-gpu$`).MatchString(prefix) {
++		return b.nativeHold(pod, fmt.Errorf("exact compiled native prefix required for cleanup"))
++	}
++	// An authenticated empty array is the coordinator's terminal never-enrolled
++	// proof: exact Pod/maps absence, immutable seed+attempt, no enrollment/ACK,
++	// and existing intent-null normal release. Independently re-read both names;
++	// empty evidence must never authorize deletion of a present map.
++	if len(maps) == 0 {
++		for _, suffix := range []string{"-0", "-0-evar"} {
++			actual := &v1.ConfigMap{}
++			err = b.nativeReader.Get(cleanupCtx, client.ObjectKey{Namespace: pod.Namespace, Name: prefix + suffix}, actual)
++			if !apierrors.IsNotFound(err) {
++				return b.nativeHold(pod, errors.New("server-authorized map absence not observed"))
++			}
++		}
++		return b.resourceReservationService.SyncForNode(cleanupCtx, br.Spec.SelectedNode)
++	}
++	if len(maps) != 2 {
++		return b.nativeHold(pod, fmt.Errorf("exact two compiled native maps required for cleanup"))
++	}
++	expectedNames := map[string]bool{prefix + "-0": true, prefix + "-0-evar": true}
++	for _, expected := range maps {
++		if !expectedNames[expected.Name] || expected.Namespace != pod.Namespace {
++			return b.nativeHold(pod, fmt.Errorf("foreign or duplicate native cleanup map"))
++		}
++		delete(expectedNames, expected.Name)
++		currentMap := &v1.ConfigMap{}
++		if err = b.nativeReader.Get(cleanupCtx, client.ObjectKeyFromObject(&expected), currentMap); apierrors.IsNotFound(err) {
++			continue
++		}
++		if err != nil {
++			return b.nativeHold(pod, err)
++		}
++		if expected.UID == "" || expected.ResourceVersion == "" || currentMap.UID != expected.UID || currentMap.ResourceVersion != expected.ResourceVersion || currentMap.Namespace != pod.Namespace || len(currentMap.OwnerReferences) != 1 || currentMap.OwnerReferences[0].UID != pod.UID || currentMap.OwnerReferences[0].Kind != "Pod" || currentMap.OwnerReferences[0].Name != pod.Name {
++			return b.nativeHold(pod, fmt.Errorf("cleanup map is replaced or not owned by exact old PodUID"))
++		}
++		uid, rv := currentMap.UID, currentMap.ResourceVersion
++		if err = b.kubeClient.Delete(cleanupCtx, currentMap, &client.DeleteOptions{Preconditions: &metav1.Preconditions{UID: &uid, ResourceVersion: &rv}}); err != nil {
++			return b.nativeHold(pod, err)
++		}
++	}
++	return b.resourceReservationService.SyncForNode(cleanupCtx, br.Spec.SelectedNode)
++}
++
++// This is a read-only publication prerequisite, not allocation/Binding authority.
++// Prepare still validates all current policy, registry, maps, enrollment and ACK.
++func (b *Binder) nativeProtectedDocument(ctx context.Context, name, key string) (map[string]interface{}, error) {
++	cm := &v1.ConfigMap{}
++	if err := b.nativeReader.Get(ctx, client.ObjectKey{Namespace: b.nativeAuthorityNamespace, Name: name}, cm); err != nil {
++		return nil, err
++	}
++	if cm.Namespace != b.nativeAuthorityNamespace || cm.Name != name || cm.UID == "" || cm.ResourceVersion == "" || cm.DeletionTimestamp != nil || cm.Immutable == nil || !*cm.Immutable || len(cm.OwnerReferences) != 0 || len(cm.BinaryData) != 0 || len(cm.Data) != 1 {
++		return nil, fmt.Errorf("original immutable %s identity required", key)
++	}
++	raw, ok := cm.Data[key]
++	if !ok || len(raw) == 0 || len(raw) > 1048576 {
++		return nil, fmt.Errorf("bounded closed %s required", key)
++	}
++	decoder := json.NewDecoder(bytes.NewBufferString(raw))
++	decoder.UseNumber()
++	value, err := nativeJSONValue(decoder)
++	if err != nil {
++		return nil, err
++	}
++	if _, err = decoder.Token(); err != io.EOF {
++		return nil, fmt.Errorf("trailing protected JSON")
++	}
++	document, ok := value.(map[string]interface{})
++	if !ok {
++		return nil, fmt.Errorf("protected JSON object required")
++	}
++	return document, nil
++}
++func nativeRegistryHash(value interface{}) (string, error) {
++	var buffer bytes.Buffer
++	encoder := json.NewEncoder(&buffer)
++	encoder.SetEscapeHTML(false)
++	if err := encoder.Encode(value); err != nil {
++		return "", err
++	}
++	// Go escapes the two JavaScript line separators; Python ensure_ascii=False
++	// leaves them UTF8. Skip escaped backslashes so literal \u2028 stays literal.
++	raw := bytes.TrimSuffix(buffer.Bytes(), []byte("\n"))
++	canonical := make([]byte, 0, len(raw))
++	for i := 0; i < len(raw); {
++		if raw[i] == '\\' && i+1 < len(raw) {
++			if bytes.HasPrefix(raw[i:], []byte(`\u2028`)) {
++				canonical = append(canonical, []byte(" ")...)
++				i += 6
++				continue
++			}
++			if bytes.HasPrefix(raw[i:], []byte(`\u2029`)) {
++				canonical = append(canonical, []byte(" ")...)
++				i += 6
++				continue
++			}
++			canonical = append(canonical, raw[i], raw[i+1])
++			i += 2
++			continue
++		}
++		canonical = append(canonical, raw[i])
++		i++
++	}
++	sum := sha256.Sum256(canonical)
++	return hex.EncodeToString(sum[:]), nil
++}
++func (b *Binder) nativeRegistryReady(ctx context.Context, pod *v1.Pod) error {
++	return b.nativeRegistryProof(ctx, pod, nil)
++}
++
++func (b *Binder) nativeRegistryProof(ctx context.Context, pod *v1.Pod, exactCap *int64) error {
++	// Read directly through APIReader, never the informer cache. An absent registry
++	// returns the existing custody sentinel before Sync/reservation/PreBind writes.
++	current := &v1.Pod{}
++	if err := b.nativeReader.Get(ctx, client.ObjectKeyFromObject(pod), current); err != nil {
++		return err
++	}
++	if current.UID == "" || current.UID != pod.UID || current.DeletionTimestamp != nil || current.Spec.NodeName != "" || !reflect.DeepEqual(current.Spec, pod.Spec) || current.Status.Phase != "" && current.Status.Phase != v1.PodPending || len(current.Status.ContainerStatuses) != 0 || len(current.Status.InitContainerStatuses) != 0 {
++		return fmt.Errorf("original unexecuted pending Pod required")
++	}
++	if current.ResourceVersion == "" || current.Annotations[NativePendingAnnotation] != NativePendingProtocol || pod.Annotations[NativePendingAnnotation] != current.Annotations[NativePendingAnnotation] || pod.Annotations["runai/shared-gpu-configmap"] != current.Annotations["runai/shared-gpu-configmap"] || pod.Annotations["cps.compute/native-spec-sha256"] != current.Annotations["cps.compute/native-spec-sha256"] {
++		return fmt.Errorf("current pending compiler metadata differs")
++	}
++	registry, err := b.nativeProtectedDocument(ctx, "cps-pending-registry-"+string(pod.UID), "registry.json")
++	if err != nil {
++		return err
++	}
++	protocol := registry["protocol"]
++	if protocol != "cps-native-pending-allocation/v1" && protocol != "cps-native-pending-allocation/v2" {
++		return fmt.Errorf("protected registry protocol differs")
++	}
++	keys := []string{"protocol", "kind", "pod_uid", "namespace", "name", "attempt", "profile", "policy_hash", "pending_spec_sha256", "bound_spec_sha256", "node", "node_uid", "gpu_uuid", "container_name", "container_index", "capabilities_configmap", "env_configmap", "kai_commit"}
++	if protocol == "cps-native-pending-allocation/v2" {
++		keys = append(keys, "binding_id", "approval_ref", "node_configuration_ref", "epoch")
++	}
++	if len(registry) != len(keys) {
++		return fmt.Errorf("closed protected registry required")
++	}
++	for _, key := range keys {
++		if _, ok := registry[key]; !ok {
++			return fmt.Errorf("missing protected registry field")
++		}
++	}
++	attempt, ok := registry["attempt"].(string)
++	if !ok || !regexp.MustCompile(`^[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}$`).MatchString(attempt) || attempt == "00000000-0000-0000-0000-000000000000" {
++		return fmt.Errorf("canonical registry attempt required")
++	}
++	prefix := pod.Annotations["runai/shared-gpu-configmap"]
++	if !regexp.MustCompile(`^cps-native-[a-f0-9]{32}-shared-gpu$`).MatchString(prefix) || registry["kind"] != "protected-pending-registry" || registry["pod_uid"] != string(pod.UID) || registry["namespace"] != pod.Namespace || registry["name"] != pod.Name || registry["node"] != nativeApprovedNode || registry["node_uid"] != nativeApprovedNodeUID || registry["gpu_uuid"] != nativeApprovedGPU || registry["container_name"] != "notebook" || registry["container_index"] != json.Number("0") || registry["capabilities_configmap"] != prefix+"-0" || registry["env_configmap"] != prefix+"-0-evar" || registry["kai_commit"] != "bdf434e5e9201cccf4e05fad04d814363653f692" {
++		return fmt.Errorf("protected registry original Pod/scope/maps differ")
++	}
++	for _, key := range []string{"pending_spec_sha256", "bound_spec_sha256"} {
++		v, ok := registry[key].(string)
++		if !ok || !regexp.MustCompile(`^[a-f0-9]{64}$`).MatchString(v) {
++			return fmt.Errorf("registry spec hash required")
++		}
++	}
++	if protocol == "cps-native-pending-allocation/v1" {
++		return nil
++	}
++	binding, ok := registry["binding_id"].(string)
++	if !ok || !regexp.MustCompile(`^[a-f0-9]{60}$`).MatchString(binding) {
++		return fmt.Errorf("registry binding required")
++	}
++	seed, err := b.nativeProtectedDocument(ctx, "cps-pending-compiler-"+binding[:40], "seed.json")
++	if err != nil {
++		return err
++	}
++	source := map[string]string{"jupyterhub": "cps", "cit-jhub": "cit"}[pod.Namespace]
++	actor, actorOK := seed["actor"].(string)
++	if len(seed) != 6 {
++		return fmt.Errorf("closed compiler seed required")
++	}
++	for _, key := range []string{"binding_id", "attempt", "source", "actor", "source_pod", "admitted"} {
++		if _, ok := seed[key]; !ok {
++			return fmt.Errorf("missing compiler seed field")
++		}
++	}
++	if source == "" || seed["source"] != source || !actorOK || actor == "" || seed["binding_id"] != binding || seed["attempt"] != registry["attempt"] {
++		return fmt.Errorf("original compiler source/binding/attempt required")
++	}
++	admitted := &v1.Pod{}
++	original := &v1.Pod{}
++	if nativeDecodeObject(seed["admitted"], admitted) != nil || nativeDecodeObject(seed["source_pod"], original) != nil || admitted.Namespace != pod.Namespace || admitted.Name != pod.Name || original.Namespace != pod.Namespace || original.Name != pod.Name || !reflect.DeepEqual(admitted.Spec, current.Spec) {
++		return fmt.Errorf("original frozen admitted Pod differs")
++	}
++	rawAdmitted, ok := seed["admitted"].(map[string]interface{})
++	if !ok {
++		return fmt.Errorf("original admitted document required")
++	}
++	spec, ok := rawAdmitted["spec"].(map[string]interface{})
++	if !ok {
++		return fmt.Errorf("original admitted spec required")
++	}
++	pending, err := nativeRegistryHash(spec)
++	if err != nil || pending != registry["pending_spec_sha256"] {
++		return fmt.Errorf("frozen pending spec hash differs")
++	}
++	boundSpec := map[string]interface{}{}
++	for k, v := range spec {
++		boundSpec[k] = v
++	}
++	boundSpec["nodeName"] = nativeApprovedNode
++	bound, err := nativeRegistryHash(boundSpec)
++	if err != nil || bound != registry["bound_spec_sha256"] || pod.Annotations["cps.compute/native-spec-sha256"] != bound {
++		return fmt.Errorf("frozen bound spec hash differs")
++	}
++	if exactCap != nil {
++		caps := map[string]int64{"interactive-shared-5": 5120, "interactive-shared-10": 10240, "interactive-shared-20": 20480}
++		profile, ok := registry["profile"].(string)
++		cap := caps[profile]
++		expected := fmt.Sprintf("%dGi", cap/1024)
++		key := "nvidia.com/container.notebook.gpu-memory.request"
++		if !ok || cap == 0 || admitted.Annotations[key] != expected || admitted.Annotations["gpu-memory"] != fmt.Sprint(cap) || admitted.Annotations["gpu-fraction-container-name"] != "notebook" || len(original.Spec.Containers) != 1 || original.Spec.Containers[0].Name != "notebook" || len(admitted.Spec.Containers) != 1 || admitted.Spec.Containers[0].Name != "notebook" {
++			return fmt.Errorf("authenticated original native profile memory required")
++		}
++		*exactCap = cap
++	}
++	return nil
++}
+diff --git a/pkg/binder/binding/native_terminal_test.go b/pkg/binder/binding/native_terminal_test.go
+new file mode 100644
+index 0000000..aa6b28d
+--- /dev/null
++++ b/pkg/binder/binding/native_terminal_test.go
+@@ -0,0 +1,913 @@
++package binding
++
++import (
++	"context"
++	"encoding/json"
++	"errors"
++	"fmt"
++	"net/http"
++	"reflect"
++	"strings"
++	"testing"
++
++	v1 "k8s.io/api/core/v1"
++	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
++	"k8s.io/apimachinery/pkg/apis/meta/v1/unstructured"
++	"k8s.io/apimachinery/pkg/runtime"
++	"k8s.io/apimachinery/pkg/types"
++	"sigs.k8s.io/controller-runtime/pkg/client"
++	"sigs.k8s.io/controller-runtime/pkg/client/fake"
++	"sigs.k8s.io/controller-runtime/pkg/client/interceptor"
++
++	"github.com/kai-scheduler/KAI-scheduler/pkg/apis/scheduling/v1alpha2"
++	"github.com/kai-scheduler/KAI-scheduler/pkg/binder/plugins"
++	"github.com/kai-scheduler/KAI-scheduler/pkg/binder/plugins/gpusharing"
++	"github.com/kai-scheduler/KAI-scheduler/pkg/binder/plugins/hamicore"
++	"github.com/kai-scheduler/KAI-scheduler/pkg/binder/plugins/state"
++)
++
++type nativeBindingSubClient struct {
++	client.SubResourceClient
++	bind func(*v1.Binding) error
++}
++
++func (c *nativeBindingSubClient) Create(ctx context.Context, obj client.Object, sub client.Object, opts ...client.SubResourceCreateOption) error {
++	if binding, ok := sub.(*v1.Binding); ok {
++		return c.bind(binding)
++	}
++	raw := sub.(*unstructured.Unstructured)
++	metadata := raw.Object["metadata"].(map[string]interface{})
++	if len(metadata) != 4 {
++		return errors.New("Binding wire metadata is not closed")
++	}
++	binding := &v1.Binding{}
++	if err := runtime.DefaultUnstructuredConverter.FromUnstructured(raw.Object, binding); err != nil {
++		return err
++	}
++	return c.bind(binding)
++}
++
++type nativeTestReservation struct{ removed int }
++
++func (*nativeTestReservation) NativeCustodyEnabled() bool { return true }
++
++func (*nativeTestReservation) Sync(context.Context) error                    { return nil }
++func (*nativeTestReservation) SyncForNode(context.Context, string) error     { return nil }
++func (*nativeTestReservation) SyncForGpuGroup(context.Context, string) error { return nil }
++func (*nativeTestReservation) ReserveGpuDevice(context.Context, *v1.Pod, string, v1alpha2.FractionalGpuGroup) (string, error) {
++	return "GPU-16128952-b438-556a-00bb-93039ee24e56", nil
++}
++func (r *nativeTestReservation) RemovePodGpuGroupsConnection(context.Context, *v1.Pod) error {
++	r.removed++
++	return nil
++}
++
++func nativeTestClient(t *testing.T, pod *v1.Pod, node *v1.Node, br *v1alpha2.BindRequest, bind func(*v1.Binding) error, objects ...client.Object) client.WithWatch {
++	t.Helper()
++	scheme := runtime.NewScheme()
++	if err := v1.AddToScheme(scheme); err != nil {
++		t.Fatal(err)
++	}
++	if err := v1alpha2.AddToScheme(scheme); err != nil {
++		t.Fatal(err)
++	}
++	// Existing terminal tests use the legacy protected registry. No fixture is
++	// allocation authority; those tests still use their explicit fake coordinator.
++	hasRegistry := false
++	for _, obj := range objects {
++		if obj.GetNamespace() == "authority" && obj.GetName() == "cps-pending-registry-"+string(pod.UID) {
++			hasRegistry = true
++		}
++	}
++	if !hasRegistry {
++		registry, _ := nativeRegistryFixtures(pod)
++		var value map[string]interface{}
++		_ = json.Unmarshal([]byte(registry.Data["registry.json"]), &value)
++		value["protocol"] = "cps-native-pending-allocation/v1"
++		for _, key := range []string{"binding_id", "approval_ref", "node_configuration_ref", "epoch"} {
++			delete(value, key)
++		}
++		raw, _ := json.Marshal(value)
++		registry.Data["registry.json"] = string(raw)
++		objects = append(objects, registry)
++	}
++	objects = append(objects, pod, node, br)
++	return fake.NewClientBuilder().WithScheme(scheme).WithObjects(objects...).WithInterceptorFuncs(interceptor.Funcs{
++		SubResource: func(c client.WithWatch, sub string) client.SubResourceClient {
++			if sub != "binding" {
++				t.Fatalf("unexpected subresource %s", sub)
++			}
++			return &nativeBindingSubClient{bind: bind}
++		},
++	}).Build()
++}
++
++func nativeTestInputs() (*v1.Pod, *v1.Node, *v1alpha2.BindRequest) {
++	pod := &v1.Pod{ObjectMeta: metav1.ObjectMeta{Name: "notebook", Namespace: "cps", UID: "11111111-2222-4333-8444-555555555555", ResourceVersion: "1", Annotations: map[string]string{"cps.compute/native-pending": "kai-v0.18.1-gpu2-cm/v1", "gpu-fraction-container-name": "notebook", "nvidia.com/container.notebook.gpu-memory.request": "5120Mi", "runai/shared-gpu-configmap": "cps-native-aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa-shared-gpu"}}, Spec: v1.PodSpec{Containers: []v1.Container{{Name: "notebook", Image: "fixed"}}}}
++	node := &v1.Node{ObjectMeta: metav1.ObjectMeta{Name: "k3s-wk-gpu2", UID: "3336cdd5-d245-436e-b57c-2f66c6dcaa41", ResourceVersion: "1"}}
++	br := &v1alpha2.BindRequest{ObjectMeta: metav1.ObjectMeta{Name: "request", Namespace: "cps", UID: "11111111-2222-4333-8444-555555555556", ResourceVersion: "1", Generation: 1}, Spec: v1alpha2.BindRequestSpec{PodName: pod.Name, SelectedNode: node.Name, ReceivedResourceType: "cpu"}}
++	return pod, node, br
++}
++
++// These fakes qualify ordering and API preconditions only. They are not an
++// authenticated coordinator, SDK authority validator or native cap receipt.
++type nativeTestCoordinator struct {
++	ack        *v1.ConfigMap
++	calls      []string
++	prepare    func(NativeTerminalSnapshot)
++	validate   func(NativeTerminalSnapshot) error
++	cleanupErr error
++	maps       []v1.ConfigMap
++}
++
++func (c *nativeTestCoordinator) Prepare(ctx context.Context, s NativeTerminalSnapshot) (NativeAllocationFence, error) {
++	c.calls = append(c.calls, "prepare")
++	if c.prepare != nil {
++		c.prepare(s)
++	}
++	return &nativeTestFence{c}, nil
++}
++func (c *nativeTestCoordinator) Hold(ctx context.Context, uid types.UID, err error) error {
++	if ctx.Err() != nil {
++		return errors.New("hold used a cancelled context")
++	}
++	c.calls = append(c.calls, "hold")
++	return nil
++}
++func (c *nativeTestCoordinator) CleanupMaps(ctx context.Context, uid types.UID) ([]v1.ConfigMap, error) {
++	c.calls = append(c.calls, "cleanup")
++	return c.maps, c.cleanupErr
++}
++
++type nativeTestFence struct{ c *nativeTestCoordinator }
++
++func (f *nativeTestFence) ACK() *v1.ConfigMap { return f.c.ack.DeepCopy() }
++func (f *nativeTestFence) ValidateCurrent(ctx context.Context, s NativeTerminalSnapshot, ack *v1.ConfigMap) error {
++	f.c.calls = append(f.c.calls, "validate")
++	if f.c.validate != nil {
++		return f.c.validate(s)
++	}
++	return nil
++}
++func (f *nativeTestFence) ValidateBinding(ctx context.Context, binding *unstructured.Unstructured) error {
++	f.c.calls = append(f.c.calls, "validate-binding")
++	return nil
++}
++func (f *nativeTestFence) BindingAccepted(ctx context.Context, binding *unstructured.Unstructured) error {
++	f.c.calls = append(f.c.calls, "bound")
++	return nil
++}
++func (f *nativeTestFence) Close() { f.c.calls = append(f.c.calls, "close") }
++func nativeTestACK(pod *v1.Pod) *v1.ConfigMap {
++	yes := true
++	return &v1.ConfigMap{ObjectMeta: metav1.ObjectMeta{Name: "cps-pending-allocation-" + string(pod.UID), Namespace: "authority", UID: "11111111-2222-4333-8444-555555555557", ResourceVersion: "9"}, Immutable: &yes, Data: map[string]string{"allocation.json": "{}"}}
++}
++func nativeTestState() *state.BindingState {
++	return &state.BindingState{BindingPodAnnotations: map[string]string{"received-resource-type": "Fraction"}, ReservedGPUIds: []string{nativeApprovedGPU}}
++}
++
++func TestNativeTerminalACKFollowsPersistedAnnotationsAndPrecedesBinding(t *testing.T) {
++	pod, node, br := nativeTestInputs()
++	br.Spec.ReceivedResourceType = "Fraction"
++	br.Spec.SelectedFractionalGpuGroups = []v1alpha2.FractionalGpuGroup{{ID: "group", ComputeSharingMode: v1alpha2.GPUComputeSharingModeTimeSlicing}}
++	ack := nativeTestACK(pod)
++	coord := &nativeTestCoordinator{ack: ack}
++	var actualBinding *v1.Binding
++	kube := nativeTestClient(t, pod, node, br, func(binding *v1.Binding) error {
++		coord.calls = append(coord.calls, "binding")
++		actualBinding = binding.DeepCopy()
++		return nil
++	}, ack)
++	coord.prepare = func(s NativeTerminalSnapshot) {
++		if s.Pod.Annotations["received-resource-type"] != "Fraction" {
++			t.Fatal("ACK prepared before final annotations persisted")
++		}
++		if s.Pod.ResourceVersion == "1" {
++			t.Fatal("ACK used original Pod RV before persisted patch")
++		}
++	}
++	coord.validate = func(s NativeTerminalSnapshot) error {
++		if s.Pod.ResourceVersion == "1" {
++			t.Fatal("current readback used stale RV")
++		}
++		return nil
++	}
++	binder := NewBinder(kube, &nativeTestReservation{}, plugins.New())
++	binder.SetNativeTerminal(kube, "authority", coord)
++	if err := binder.Bind(context.Background(), pod, node, br); err != nil {
++		t.Fatal(err)
++	}
++	if !reflect.DeepEqual(coord.calls, []string{"prepare", "validate", "validate-binding", "binding", "bound", "close"}) {
++		t.Fatalf("wrong terminal order %v", coord.calls)
++	}
++	if actualBinding.UID != pod.UID || actualBinding.ResourceVersion == "" || actualBinding.ResourceVersion == "1" || actualBinding.Target.UID != node.UID {
++		t.Fatalf("Binding lacks actual UID/current RV/nodeUID: %+v", actualBinding)
++	}
++}
++
++func TestNativeTerminalRejectsChangedReadbackBeforeBinding(t *testing.T) {
++	for _, change := range []string{"pod-uid", "pod-spec", "request-generation", "node-uid", "ack-version", "mutable-ack"} {
++		t.Run(change, func(t *testing.T) {
++			pod, node, br := nativeTestInputs()
++			pod.Annotations["received-resource-type"] = "Fraction"
++			ack := nativeTestACK(pod)
++			binds := 0
++			kube := nativeTestClient(t, pod, node, br, func(*v1.Binding) error { binds++; return nil }, ack)
++			coord := &nativeTestCoordinator{ack: ack}
++			coord.prepare = func(NativeTerminalSnapshot) {
++				var obj client.Object
++				switch change {
++				case "pod-uid", "pod-spec":
++					current := &v1.Pod{}
++					if err := kube.Get(context.Background(), client.ObjectKeyFromObject(pod), current); err != nil {
++						t.Fatal(err)
++					}
++					if change == "pod-uid" {
++						current.UID = "11111111-2222-4333-8444-555555555559"
++					} else {
++						current.Spec.Containers[0].Image = "foreign"
++					}
++					obj = current
++				case "request-generation":
++					current := br.DeepCopy()
++					current.Generation++
++					obj = current
++				case "node-uid":
++					current := node.DeepCopy()
++					current.UID = "foreign-node"
++					obj = current
++				default:
++					current := ack.DeepCopy()
++					if change == "mutable-ack" {
++						no := false
++						current.Immutable = &no
++					} else {
++						current.Data["allocation.json"] = "changed"
++					}
++					obj = current
++				}
++				if err := kube.Update(context.Background(), obj); err != nil {
++					t.Fatal(err)
++				}
++			}
++			binder := NewBinder(kube, &nativeTestReservation{}, plugins.New())
++			binder.SetNativeTerminal(kube, "authority", coord)
++			if err := binder.bindNativeTerminal(context.Background(), pod, node, br, nativeTestState()); !errors.Is(err, ErrNativeCustodyHeld) {
++				t.Fatalf("changed %s accepted: %v", change, err)
++			}
++			if binds != 0 {
++				t.Fatal("Binding attempted after generation change")
++			}
++			if !reflect.DeepEqual(coord.calls[len(coord.calls)-2:], []string{"hold", "close"}) {
++				t.Fatalf("fence released before durable hold: %v", coord.calls)
++			}
++		})
++	}
++}
++
++func TestNativeTerminalCancellationAndLostBindingResponseHoldBeforeClose(t *testing.T) {
++	for _, mode := range []string{"cancel-before-bind", "lost-bind-response", "sdk-denial"} {
++		t.Run(mode, func(t *testing.T) {
++			pod, node, br := nativeTestInputs()
++			pod.Annotations["received-resource-type"] = "Fraction"
++			ack := nativeTestACK(pod)
++			coord := &nativeTestCoordinator{ack: ack}
++			binds := 0
++			kube := nativeTestClient(t, pod, node, br, func(*v1.Binding) error { binds++; return errors.New("lost response") }, ack)
++			ctx, cancel := context.WithCancel(context.Background())
++			defer cancel()
++			coord.validate = func(NativeTerminalSnapshot) error {
++				if mode == "cancel-before-bind" {
++					cancel()
++				}
++				if mode == "sdk-denial" {
++					return errors.New("full SDK authority comparison denied")
++				}
++				return nil
++			}
++			binder := NewBinder(kube, &nativeTestReservation{}, plugins.New())
++			binder.SetNativeTerminal(kube, "authority", coord)
++			if err := binder.bindNativeTerminal(ctx, pod, node, br, nativeTestState()); !errors.Is(err, ErrNativeCustodyHeld) {
++				t.Fatal(err)
++			}
++			if mode != "lost-bind-response" && binds != 0 {
++				t.Fatal("denied/cancelled attempt bound")
++			}
++			if !reflect.DeepEqual(coord.calls[len(coord.calls)-2:], []string{"hold", "close"}) {
++				t.Fatalf("hold lost/reordered on cancellation: %v", coord.calls)
++			}
++		})
++	}
++}
++
++func TestNativeTerminalCancellationUsesExactPodUIDAndCurrentRV(t *testing.T) {
++	pod, node, br := nativeTestInputs()
++	coord := &nativeTestCoordinator{}
++	kube := nativeTestClient(t, pod, node, br, func(*v1.Binding) error { t.Fatal("unexpected Binding"); return nil })
++	var preconditions *metav1.Preconditions
++	wrapped := interceptor.NewClient(kube, interceptor.Funcs{Delete: func(ctx context.Context, c client.WithWatch, obj client.Object, opts ...client.DeleteOption) error {
++		options := &client.DeleteOptions{}
++		for _, opt := range opts {
++			opt.ApplyToDelete(options)
++		}
++		preconditions = options.Preconditions
++		return c.Delete(ctx, obj, opts...)
++	}})
++	binder := NewBinder(wrapped, &nativeTestReservation{}, plugins.New())
++	binder.SetNativeTerminal(kube, "authority", coord)
++	ctx, cancel := context.WithCancel(context.Background())
++	cancel()
++	if err := binder.Rollback(ctx, pod, node, br); !errors.Is(err, ErrNativeCustodyHeld) {
++		t.Fatal(err)
++	}
++	if preconditions == nil || preconditions.UID == nil || *preconditions.UID != pod.UID || preconditions.ResourceVersion == nil || *preconditions.ResourceVersion != "1" {
++		t.Fatalf("unguarded cancellation %+v", preconditions)
++	}
++	if !reflect.DeepEqual(coord.calls, []string{"hold"}) {
++		t.Fatalf("cleanup ran before absence/native-zero proof: %v", coord.calls)
++	}
++}
++
++func TestNativeTerminalCleanupRequiresNativeZeroAndExactMapUIDs(t *testing.T) {
++	for _, mode := range []string{"native-not-zero", "replaced-map", "exact-cleanup"} {
++		t.Run(mode, func(t *testing.T) {
++			old, node, br := nativeTestInputs()
++			replacement := old.DeepCopy()
++			replacement.UID = "11111111-2222-4333-8444-555555555559"
++			prefix := old.Annotations["runai/shared-gpu-configmap"]
++			yes := true
++			maps := []v1.ConfigMap{}
++			for index, suffix := range []string{"-0", "-0-evar"} {
++				maps = append(maps, v1.ConfigMap{ObjectMeta: metav1.ObjectMeta{Name: prefix + suffix, Namespace: old.Namespace, UID: types.UID(fmt.Sprintf("11111111-2222-4333-8444-55555555556%d", index)), ResourceVersion: "7", OwnerReferences: []metav1.OwnerReference{{APIVersion: "v1", Kind: "Pod", Name: old.Name, UID: old.UID}}}, Immutable: &yes})
++			}
++			actualMaps := []client.Object{maps[0].DeepCopy(), maps[1].DeepCopy()}
++			if mode == "replaced-map" {
++				actualMaps[0].SetUID("replacement-map-uid")
++			}
++			coord := &nativeTestCoordinator{maps: maps}
++			if mode == "native-not-zero" {
++				coord.cleanupErr = errors.New("native zero not confirmed")
++			}
++			kube := nativeTestClient(t, replacement, node, br, func(*v1.Binding) error { return nil }, actualMaps...)
++			deletes := 0
++			wrapped := interceptor.NewClient(kube, interceptor.Funcs{Delete: func(ctx context.Context, c client.WithWatch, obj client.Object, opts ...client.DeleteOption) error {
++				if _, ok := obj.(*v1.Pod); ok {
++					t.Fatal("replacement Pod was deleted")
++				}
++				options := &client.DeleteOptions{}
++				for _, opt := range opts {
++					opt.ApplyToDelete(options)
++				}
++				if options.Preconditions == nil || options.Preconditions.UID == nil || *options.Preconditions.UID != obj.GetUID() || options.Preconditions.ResourceVersion == nil || *options.Preconditions.ResourceVersion != obj.GetResourceVersion() {
++					t.Fatal("map deletion lacks current exact UID/RV")
++				}
++				deletes++
++				return c.Delete(ctx, obj, opts...)
++			}})
++			rrs := &nativeTestReservation{}
++			binder := NewBinder(wrapped, rrs, plugins.New())
++			binder.SetNativeTerminal(kube, "authority", coord)
++			err := binder.Rollback(context.Background(), old, node, br)
++			if mode == "exact-cleanup" {
++				if err != nil || deletes != 2 {
++					t.Fatalf("exact cleanup failed %v deletes=%d", err, deletes)
++				}
++			} else {
++				if !errors.Is(err, ErrNativeCustodyHeld) || deletes != 0 {
++					t.Fatalf("ambiguous cleanup proceeded %v deletes=%d", err, deletes)
++				}
++			}
++			if rrs.removed != 0 {
++				t.Fatal("old name-based Pod labels patched")
++			}
++		})
++	}
++}
++
++func TestNativeTerminalRejectsWithoutCoordinator(t *testing.T) {
++	pod, node, br := nativeTestInputs()
++	binds := 0
++	kube := nativeTestClient(t, pod, node, br, func(*v1.Binding) error { binds++; return nil })
++	binder := NewBinder(kube, &nativeTestReservation{}, plugins.New())
++	if err := binder.Bind(context.Background(), pod, node, br); err == nil {
++		t.Fatal("opt-in Pod bound without terminal coordinator/ACK")
++	}
++	if binds != 0 {
++		t.Fatalf("Binding attempted %d times without ACK", binds)
++	}
++}
++
++func TestNativeNeverEnrolledCleanupRequiresAuthenticatedAbsenceAndFreshAPIAbsence(t *testing.T) {
++	for _, mode := range []string{"all-absent", "map-still-present", "coordinator-denied"} {
++		t.Run(mode, func(t *testing.T) {
++			old, node, br := nativeTestInputs()
++			coord := &nativeTestCoordinator{maps: []v1.ConfigMap{}}
++			if mode == "coordinator-denied" {
++				coord.cleanupErr = errors.New("never-enrolled absence not confirmed")
++			}
++			objects := []client.Object{}
++			if mode == "map-still-present" {
++				objects = append(objects, &v1.ConfigMap{ObjectMeta: metav1.ObjectMeta{Name: old.Annotations["runai/shared-gpu-configmap"] + "-0", Namespace: old.Namespace, UID: "existing-map", ResourceVersion: "1"}})
++			}
++			kube := nativeTestClient(t, old, node, br, func(*v1.Binding) error { t.Fatal("cleanup bound a Pod"); return nil }, objects...)
++			if err := kube.Delete(context.Background(), old); err != nil {
++				t.Fatal(err)
++			}
++			deletes := 0
++			wrapped := interceptor.NewClient(kube, interceptor.Funcs{Delete: func(context.Context, client.WithWatch, client.Object, ...client.DeleteOption) error {
++				deletes++
++				return errors.New("unexpected delete after authorized absence")
++			}})
++			binder := NewBinder(wrapped, &nativeTestReservation{}, plugins.New())
++			binder.SetNativeTerminal(kube, "authority", coord)
++			err := binder.Rollback(context.Background(), old, node, br)
++			if mode == "all-absent" {
++				if err != nil {
++					t.Fatalf("server-authorized never-enrolled cleanup failed: %v", err)
++				}
++			} else if !errors.Is(err, ErrNativeCustodyHeld) {
++				t.Fatalf("unknown cleanup proceeded: %v", err)
++			}
++			if deletes != 0 {
++				t.Fatal("absence response caused an object deletion")
++			}
++		})
++	}
++}
++
++// The real stock GPUSharing plugin must not write its two maps while Hub's
++// after-CREATE registry publication is still pending.
++type nativeCountingReservation struct {
++	nativeTestReservation
++	syncs int
++}
++
++func (r *nativeCountingReservation) SyncForNode(context.Context, string) error { r.syncs++; return nil }
++func TestNativeRegistryAbsentPrecedesReservationAndStockMapWrites(t *testing.T) {
++	pod, node, br := nativeTestInputs()
++	pod.Annotations["gpu-fraction-container-name"] = "notebook"
++	pod.Annotations["nvidia.com/container.notebook.gpu-memory.request"] = "5120Mi"
++	br.Spec.ReceivedResourceType = "Fraction"
++	br.Spec.ReceivedGPU = &v1alpha2.ReceivedGPU{Portion: "0.1"}
++	br.Spec.SelectedNode = node.Name
++	br.Spec.SelectedFractionalGpuGroups = []v1alpha2.FractionalGpuGroup{{ID: "group", ComputeSharingMode: v1alpha2.GPUComputeSharingModeTimeSlicing}}
++	kube := nativeTestClient(t, pod, node, br, func(*v1.Binding) error { t.Fatal("registry absent must never Bind"); return nil })
++	if err := kube.Delete(context.Background(), &v1.ConfigMap{ObjectMeta: metav1.ObjectMeta{Namespace: "authority", Name: "cps-pending-registry-" + string(pod.UID)}}); err != nil {
++		t.Fatal(err)
++	}
++	reservation := &nativeCountingReservation{}
++	ps := plugins.New()
++	ps.RegisterPlugin(gpusharing.New(kube, true, false))
++	binder := NewBinder(kube, reservation, ps)
++	binder.SetNativeTerminal(kube, "authority", &nativeTestCoordinator{})
++	err := binder.Bind(context.Background(), pod, node, br)
++	cms := &v1.ConfigMapList{}
++	if e := kube.List(context.Background(), cms, client.InNamespace(pod.Namespace)); e != nil {
++		t.Fatal(e)
++	}
++	if reservation.syncs != 0 || len(cms.Items) != 0 {
++		t.Fatalf("side effects before protected registry: sync=%d maps=%d error=%v", reservation.syncs, len(cms.Items), err)
++	}
++	if !errors.Is(err, ErrNativeCustodyHeld) {
++		t.Fatalf("absent registry must use bounded custody requeue, got %v", err)
++	}
++}
++
++func nativeRegistryFixtures(pod *v1.Pod) (*v1.ConfigMap, *v1.ConfigMap) {
++	yes := true
++	spec, _ := json.Marshal(pod.Spec)
++	var rawSpec map[string]interface{}
++	_ = json.Unmarshal(spec, &rawSpec)
++	pending, _ := nativeRegistryHash(rawSpec)
++	rawSpec["nodeName"] = nativeApprovedNode
++	bound, _ := nativeRegistryHash(rawSpec)
++	pod.Annotations["cps.compute/native-spec-sha256"] = bound
++	admitted := pod.DeepCopy()
++	admitted.Annotations["nvidia.com/container.notebook.gpu-memory.request"] = "5Gi"
++	admitted.Annotations["gpu-memory"] = "5120"
++	source := pod.DeepCopy()
++	delete(source.Annotations, "gpu-memory")
++	delete(source.Annotations, "gpu-fraction-container-name")
++	delete(source.Annotations, "nvidia.com/container.notebook.gpu-memory.request")
++	binding := strings.Repeat("a", 60)
++	attempt := "11111111-2222-4333-8444-555555555559"
++	prefix := pod.Annotations["runai/shared-gpu-configmap"]
++	reg := map[string]interface{}{"protocol": "cps-native-pending-allocation/v2", "kind": "protected-pending-registry", "pod_uid": string(pod.UID), "namespace": pod.Namespace, "name": pod.Name, "attempt": attempt, "profile": "interactive-shared-5", "policy_hash": "sha256:" + strings.Repeat("a", 64), "pending_spec_sha256": pending, "bound_spec_sha256": bound, "node": nativeApprovedNode, "node_uid": nativeApprovedNodeUID, "gpu_uuid": nativeApprovedGPU, "container_name": "notebook", "container_index": 0, "capabilities_configmap": prefix + "-0", "env_configmap": prefix + "-0-evar", "kai_commit": "bdf434e5e9201cccf4e05fad04d814363653f692", "binding_id": binding, "approval_ref": map[string]interface{}{}, "node_configuration_ref": map[string]interface{}{}, "epoch": map[string]interface{}{}}
++	seed := map[string]interface{}{"binding_id": binding, "attempt": attempt, "source": "cps", "actor": "hub-cps", "source_pod": source, "admitted": admitted}
++	makeCM := func(name, key string, value interface{}) *v1.ConfigMap {
++		raw, _ := json.Marshal(value)
++		return &v1.ConfigMap{ObjectMeta: metav1.ObjectMeta{Namespace: "authority", Name: name, UID: "11111111-2222-4333-8444-555555555558", ResourceVersion: "8"}, Immutable: &yes, Data: map[string]string{key: string(raw)}}
++	}
++	return makeCM("cps-pending-registry-"+string(pod.UID), "registry.json", reg), makeCM("cps-pending-compiler-"+binding[:40], "seed.json", seed)
++}
++func TestNativeRegistryRejectsMissingAttemptWithExtraSeedKey(t *testing.T) {
++	pod, node, br := nativeTestInputs()
++	pod.Namespace = "jupyterhub"
++	br.Namespace = pod.Namespace
++	registry, seed := nativeRegistryFixtures(pod)
++	for _, pair := range []struct {
++		cm  *v1.ConfigMap
++		key string
++	}{{registry, "registry.json"}, {seed, "seed.json"}} {
++		var value map[string]interface{}
++		_ = json.Unmarshal([]byte(pair.cm.Data[pair.key]), &value)
++		delete(value, "attempt")
++		if pair.cm == seed {
++			value["extra"] = true
++		}
++		raw, _ := json.Marshal(value)
++		pair.cm.Data[pair.key] = string(raw)
++	}
++	kube := nativeTestClient(t, pod, node, br, func(*v1.Binding) error { return nil }, registry, seed)
++	binder := NewBinder(kube, &nativeTestReservation{}, plugins.New())
++	binder.SetNativeTerminal(kube, "authority", &nativeTestCoordinator{})
++	if err := binder.nativeRegistryReady(context.Background(), pod); err == nil {
++		t.Fatal("missing attempt plus unknown seed field accepted")
++	}
++}
++
++func TestNativeRegistryHashSDKParityUnicode(t *testing.T) {
++	got, err := nativeRegistryHash(map[string]interface{}{"arg": "a\u2028b\u2029"})
++	if err != nil || got != "2fea91ddf447a23d8a4f50c75ddc322aa433540cc4db4a06596fc2e1a5bcb009" {
++		t.Fatalf("SDK hash parity: %s %v", got, err)
++	}
++}
++
++func TestNativeRegistryHashSDKParityLiteral(t *testing.T) {
++	got, err := nativeRegistryHash(map[string]interface{}{"arg": "a\\u2028b\\u2029"})
++	if err != nil || got != "787bee83bf6807abe2ac47c7bc0e9e7f62863876da133a8b02c8604b6d840166" {
++		t.Fatalf("SDK hash parity: %s %v", got, err)
++	}
++}
++
++func TestNativeRegistryPublicationAllowsStockMapsThenTerminalPrepare(t *testing.T) {
++	pod, node, br := nativeTestInputs()
++	pod.Namespace = "jupyterhub"
++	br.Namespace = pod.Namespace
++	pod.Annotations["gpu-fraction-container-name"] = "notebook"
++	pod.Annotations["nvidia.com/container.notebook.gpu-memory.request"] = "5120Mi"
++	br.Spec.ReceivedResourceType = "Fraction"
++	br.Spec.ReceivedGPU = &v1alpha2.ReceivedGPU{Portion: "0.1"}
++	br.Spec.SelectedNode = node.Name
++	br.Spec.SelectedFractionalGpuGroups = []v1alpha2.FractionalGpuGroup{{ID: "group", ComputeSharingMode: v1alpha2.GPUComputeSharingModeTimeSlicing}}
++	registry, seed := nativeRegistryFixtures(pod)
++	ack := nativeTestACK(pod)
++	binds := 0
++	kube := nativeTestClient(t, pod, node, br, func(*v1.Binding) error { binds++; return nil }, registry, seed, ack)
++	reservation := &nativeCountingReservation{}
++	coord := &nativeTestCoordinator{ack: ack}
++	coord.prepare = func(NativeTerminalSnapshot) {
++		cms := &v1.ConfigMapList{}
++		if err := kube.List(context.Background(), cms, client.InNamespace(pod.Namespace)); err != nil || len(cms.Items) != 2 {
++			t.Fatalf("Prepare must follow real stock two-map creation: %v/%d", err, len(cms.Items))
++		}
++	}
++	ps := plugins.New()
++	ps.RegisterPlugin(gpusharing.New(kube, true, false))
++	binder := NewBinder(kube, reservation, ps)
++	binder.SetNativeTerminal(kube, "authority", coord)
++	if err := binder.Bind(context.Background(), pod, node, br); err != nil {
++		t.Fatal(err)
++	}
++	if reservation.syncs != 1 || binds != 1 {
++		t.Fatalf("expected one normal reservation/Bind, got %d/%d", reservation.syncs, binds)
++	}
++}
++func TestNativeRegistryProofDriftNeverMutatesReservationOrMaps(t *testing.T) {
++	for _, fault := range []string{"pod-uid", "pod-name", "namespace", "registry-immutable", "registry-owner", "unknown-key", "attempt", "binding", "source", "seed-attempt", "seed-extra", "admission", "pending-hash", "bound-hash", "current-marker", "current-prefix"} {
++		t.Run(fault, func(t *testing.T) {
++			pod, node, br := nativeTestInputs()
++			pod.Namespace = "jupyterhub"
++			br.Namespace = pod.Namespace
++			registry, seed := nativeRegistryFixtures(pod)
++			var r, s map[string]interface{}
++			_ = json.Unmarshal([]byte(registry.Data["registry.json"]), &r)
++			_ = json.Unmarshal([]byte(seed.Data["seed.json"]), &s)
++			switch fault {
++			case "pod-uid":
++				r["pod_uid"] = "11111111-2222-4333-8444-555555555599"
++			case "pod-name":
++				r["name"] = "foreign"
++			case "namespace":
++				r["namespace"] = "cit-jhub"
++			case "registry-immutable":
++				v := false
++				registry.Immutable = &v
++			case "registry-owner":
++				registry.OwnerReferences = []metav1.OwnerReference{{Kind: "Pod", Name: pod.Name, UID: pod.UID}}
++			case "unknown-key":
++				r["unknown"] = true
++			case "attempt":
++				delete(r, "attempt")
++			case "binding":
++				s["binding_id"] = strings.Repeat("b", 60)
++			case "source":
++				s["source"] = "cit"
++			case "seed-attempt":
++				s["attempt"] = "11111111-2222-4333-8444-555555555599"
++			case "seed-extra":
++				s["extra"] = true
++			case "admission":
++				s["admitted"].(map[string]interface{})["spec"].(map[string]interface{})["containers"].([]interface{})[0].(map[string]interface{})["image"] = "foreign"
++			case "pending-hash":
++				r["pending_spec_sha256"] = strings.Repeat("b", 64)
++			case "bound-hash":
++				r["bound_spec_sha256"] = strings.Repeat("b", 64)
++			}
++			raw, _ := json.Marshal(r)
++			registry.Data["registry.json"] = string(raw)
++			raw, _ = json.Marshal(s)
++			seed.Data["seed.json"] = string(raw)
++			kube := nativeTestClient(t, pod, node, br, func(*v1.Binding) error { t.Fatal("invalid registry bound Pod"); return nil }, registry, seed)
++			if fault == "current-marker" || fault == "current-prefix" {
++				current := pod.DeepCopy()
++				if fault == "current-marker" {
++					current.Annotations[NativePendingAnnotation] = "foreign"
++				} else {
++					current.Annotations["runai/shared-gpu-configmap"] = "foreign"
++				}
++				if err := kube.Update(context.Background(), current); err != nil {
++					t.Fatal(err)
++				}
++			}
++			reservation := &nativeCountingReservation{}
++			ps := plugins.New()
++			ps.RegisterPlugin(gpusharing.New(kube, true, false))
++			binder := NewBinder(kube, reservation, ps)
++			binder.SetNativeTerminal(kube, "authority", &nativeTestCoordinator{})
++			if err := binder.Bind(context.Background(), pod, node, br); !errors.Is(err, ErrNativeCustodyHeld) {
++				t.Fatalf("proof drift requires custody hold: %v", err)
++			}
++			cms := &v1.ConfigMapList{}
++			if err := kube.List(context.Background(), cms, client.InNamespace(pod.Namespace)); err != nil || reservation.syncs != 0 || len(cms.Items) != 0 {
++				t.Fatalf("proof drift produced side effects: %v/%d/%d", err, reservation.syncs, len(cms.Items))
++			}
++		})
++	}
++}
++
++func TestNativeStockBindRefreshDoesNotHoldOrBindAndNeverReplays(t *testing.T) {
++	for _, typed := range []bool{true, false} {
++		t.Run(fmt.Sprint(typed), func(t *testing.T) {
++			pod, node, br := nativeTestInputs()
++			pod.Namespace = "jupyterhub"
++			br.Namespace = pod.Namespace
++			pod.Annotations["gpu-fraction-container-name"] = "notebook"
++			pod.Annotations["nvidia.com/container.notebook.gpu-memory.request"] = "5120Mi"
++			br.Spec.ReceivedResourceType = "Fraction"
++			br.Spec.ReceivedGPU = &v1alpha2.ReceivedGPU{Portion: "0.1"}
++			br.Spec.SelectedNode = node.Name
++			br.Spec.SelectedFractionalGpuGroups = []v1alpha2.FractionalGpuGroup{{ID: "group", ComputeSharingMode: v1alpha2.GPUComputeSharingModeTimeSlicing}}
++			registry, seed := nativeRegistryFixtures(pod)
++			binds := 0
++			kube := nativeTestClient(t, pod, node, br, func(*v1.Binding) error { binds++; return nil }, registry, seed)
++			prepares, holds := 0, 0
++			bridge, _ := nativeTransportFixture(t, func(w http.ResponseWriter, r *http.Request) {
++				var request map[string]interface{}
++				_ = json.NewDecoder(r.Body).Decode(&request)
++				w.Header().Set("Content-Type", "application/json")
++				if request["operation"] == "hold" {
++					holds++
++					_ = json.NewEncoder(w).Encode(map[string]interface{}{"protocol": nativeWireProtocol, "operation": "hold", "request_id": request["request_id"]})
++					return
++				}
++				prepares++
++				cms := &v1.ConfigMapList{}
++				if err := kube.List(context.Background(), cms, client.InNamespace(pod.Namespace)); err != nil || len(cms.Items) != 2 {
++					t.Errorf("real stock maps missing: %v %d", err, len(cms.Items))
++				}
++				w.WriteHeader(http.StatusConflict)
++				if typed {
++					_ = json.NewEncoder(w).Encode(map[string]interface{}{"protocol": nativeWireProtocol, "operation": "prepare", "request_id": request["request_id"], "retry": map[string]interface{}{"version": 1, "code": "registered-snapshot-refresh", "pod_uid": string(pod.UID)}})
++				} else {
++					_, _ = w.Write([]byte(`{"error":"generic conflict"}`))
++				}
++			})
++			reservation := &nativeCountingReservation{}
++			ps := plugins.New()
++			ps.RegisterPlugin(gpusharing.New(kube, true, false))
++			binder := NewBinder(kube, reservation, ps)
++			binder.SetNativeTerminal(kube, "authority", bridge)
++			err := binder.Bind(context.Background(), pod, node, br)
++			wantHolds := 1
++			if typed {
++				wantHolds = 0
++			}
++			if !errors.Is(err, ErrNativeCustodyHeld) || errors.Is(err, ErrNativePrepareSnapshotRefresh) != typed || prepares != 1 || holds != wantHolds || binds != 0 || reservation.syncs != 1 {
++				t.Fatalf("incorrect refresh/hold boundary: %v prepare=%d hold=%d binds=%d sync=%d", err, prepares, holds, binds, reservation.syncs)
++			}
++		})
++	}
++}
++
++func TestNativeRefreshMarkerAfterFenceStillHolds(t *testing.T) {
++	pod, node, br := nativeTestInputs()
++	pod.Annotations["received-resource-type"] = "Fraction"
++	ack := nativeTestACK(pod)
++	binds := 0
++	kube := nativeTestClient(t, pod, node, br, func(*v1.Binding) error { binds++; return nil }, ack)
++	coord := &nativeTestCoordinator{ack: ack, validate: func(NativeTerminalSnapshot) error {
++		return errors.Join(ErrNativeCustodyHeld, ErrNativePrepareSnapshotRefresh)
++	}}
++	binder := NewBinder(kube, &nativeTestReservation{}, plugins.New())
++	binder.SetNativeTerminal(kube, "authority", coord)
++	err := binder.bindNativeTerminal(context.Background(), pod, node, br, nativeTestState())
++	if !errors.Is(err, ErrNativeCustodyHeld) || binds != 0 || !reflect.DeepEqual(coord.calls, []string{"prepare", "validate", "hold", "close"}) {
++		t.Fatalf("post-fence refresh bypassed custody: %v %v binds%d", err, coord.calls, binds)
++	}
++}
++
++func TestNativeExactCapProducerBeforePrepare(t *testing.T) {
++	for _, item := range []struct {
++		gib     int
++		portion string
++	}{{5, "0.13"}, {10, "0.25"}, {20, "0.50"}} {
++		t.Run(fmt.Sprint(item.gib), func(t *testing.T) {
++			pod, node, br := nativeTestInputs()
++			pod.Namespace = "jupyterhub"
++			br.Namespace = pod.Namespace
++			pod.Annotations["gpu-fraction-container-name"] = "notebook"
++			pod.Annotations["nvidia.com/container.notebook.gpu-memory.request"] = fmt.Sprintf("%dGi", item.gib)
++			pod.Annotations["gpu-memory"] = fmt.Sprint(item.gib * 1024)
++			node.Labels = map[string]string{"nvidia.com/gpu.memory": "40960"}
++			br.Spec.ReceivedResourceType = "Fraction"
++			br.Spec.ReceivedGPU = &v1alpha2.ReceivedGPU{Count: 1, Portion: item.portion}
++			br.Spec.SelectedFractionalGpuGroups = []v1alpha2.FractionalGpuGroup{{ID: "group", ComputeSharingMode: v1alpha2.GPUComputeSharingModeTimeSlicing}}
++			for _, key := range []string{"NVIDIA_VISIBLE_DEVICES", "RUNAI_NUM_OF_GPUS", "GPU_PORTION", "CUDA_DEVICE_MEMORY_LIMIT"} {
++				optional := key == "CUDA_DEVICE_MEMORY_LIMIT"
++				pod.Spec.Containers[0].Env = append(pod.Spec.Containers[0].Env, v1.EnvVar{Name: key, ValueFrom: &v1.EnvVarSource{ConfigMapKeyRef: &v1.ConfigMapKeySelector{LocalObjectReference: v1.LocalObjectReference{Name: pod.Annotations["runai/shared-gpu-configmap"] + "-0"}, Key: key, Optional: &optional}}})
++			}
++			registry, seed := nativeRegistryFixtures(pod)
++			var reg, document map[string]interface{}
++			_ = json.Unmarshal([]byte(registry.Data["registry.json"]), &reg)
++			reg["profile"] = fmt.Sprintf("interactive-shared-%d", item.gib)
++			raw, _ := json.Marshal(reg)
++			registry.Data["registry.json"] = string(raw)
++			_ = json.Unmarshal([]byte(seed.Data["seed.json"]), &document)
++			admitted := document["admitted"].(map[string]interface{})
++			annotations := admitted["metadata"].(map[string]interface{})["annotations"].(map[string]interface{})
++			annotations["gpu-memory"] = fmt.Sprint(item.gib * 1024)
++			annotations["nvidia.com/container.notebook.gpu-memory.request"] = fmt.Sprintf("%dGi", item.gib)
++			raw, _ = json.Marshal(document)
++			seed.Data["seed.json"] = string(raw)
++			ack := nativeTestACK(pod)
++			kube := nativeTestClient(t, pod, node, br, func(*v1.Binding) error { return nil }, registry, seed, ack)
++			coord := &nativeTestCoordinator{ack: ack}
++			coord.prepare = func(NativeTerminalSnapshot) {
++				cm := &v1.ConfigMap{}
++				if err := kube.Get(context.Background(), client.ObjectKey{Namespace: pod.Namespace, Name: pod.Annotations["runai/shared-gpu-configmap"] + "-0"}, cm); err != nil {
++					t.Fatal(err)
++				}
++				if !reflect.DeepEqual(cm.Data, map[string]string{"CUDA_DEVICE_MEMORY_LIMIT": fmt.Sprintf("%dm", item.gib*1024), "GPU_PORTION": item.portion, "RUNAI_NUM_OF_GPUS": item.portion, "NVIDIA_VISIBLE_DEVICES": "k8s.device-plugin.nvidia.com/gpu=" + nativeApprovedGPU}) {
++					t.Fatalf("exact native cap lost to rounded scheduler portion: %v", cm.Data)
++				}
++			}
++			ps := plugins.New()
++			ps.RegisterPlugin(gpusharing.New(kube, true, false))
++			ps.RegisterPlugin(hamicore.New(kube))
++			binder := NewBinder(kube, &nativeTestReservation{}, ps)
++			binder.SetNativeTerminal(kube, "authority", coord)
++			if err := binder.Bind(context.Background(), pod, node, br); err != nil {
++				t.Fatal(err)
++			}
++		})
++	}
++}
++
++func TestNativeMemoryProducerRejectsUntrustedCompilerCapBeforeWrites(t *testing.T) {
++	for _, fault := range []string{"unknown-profile", "profile-mismatch", "memory", "container-memory", "container-name", "source-name", "seed-attempt", "live-only"} {
++		t.Run(fault, func(t *testing.T) {
++			pod, node, br := nativeTestInputs()
++			pod.Namespace = "jupyterhub"
++			br.Namespace = pod.Namespace
++			registry, seed := nativeRegistryFixtures(pod)
++			var reg, document map[string]interface{}
++			_ = json.Unmarshal([]byte(registry.Data["registry.json"]), &reg)
++			_ = json.Unmarshal([]byte(seed.Data["seed.json"]), &document)
++			admitted := document["admitted"].(map[string]interface{})
++			annotations := admitted["metadata"].(map[string]interface{})["annotations"].(map[string]interface{})
++			switch fault {
++			case "unknown-profile":
++				reg["profile"] = "arbitrary"
++			case "profile-mismatch":
++				reg["profile"] = "interactive-shared-10"
++			case "memory":
++				annotations["gpu-memory"] = "5324"
++			case "container-memory":
++				annotations["nvidia.com/container.notebook.gpu-memory.request"] = "5324Mi"
++			case "container-name":
++				annotations["gpu-fraction-container-name"] = "other"
++			case "source-name":
++				document["source_pod"].(map[string]interface{})["metadata"].(map[string]interface{})["name"] = "other"
++			case "seed-attempt":
++				document["attempt"] = "11111111-2222-4333-8444-555555555500"
++			case "live-only":
++				delete(annotations, "gpu-memory")
++				pod.Annotations["gpu-memory"] = "5120"
++			}
++			raw, _ := json.Marshal(reg)
++			registry.Data["registry.json"] = string(raw)
++			raw, _ = json.Marshal(document)
++			seed.Data["seed.json"] = string(raw)
++			kube := nativeTestClient(t, pod, node, br, func(*v1.Binding) error { t.Fatal("unexpected Bind"); return nil }, registry, seed)
++			reservation := &nativeCountingReservation{}
++			binder := NewBinder(kube, reservation, plugins.New())
++			binder.SetNativeTerminal(kube, "authority", &nativeTestCoordinator{})
++			err := binder.Bind(context.Background(), pod, node, br)
++			cms := &v1.ConfigMapList{}
++			_ = kube.List(context.Background(), cms, client.InNamespace(pod.Namespace))
++			if !errors.Is(err, ErrNativeCustodyHeld) || reservation.syncs != 0 || len(cms.Items) != 0 {
++				t.Fatalf("untrusted cap reached side effects: %v sync%d maps%d", err, reservation.syncs, len(cms.Items))
++			}
++		})
++	}
++}
++
++func TestLegacyNativeRegistryKeepsStockMemoryScalar(t *testing.T) {
++	pod, node, br := nativeTestInputs()
++	kube := nativeTestClient(t, pod, node, br, func(*v1.Binding) error { return nil })
++	registry := &v1.ConfigMap{}
++	if err := kube.Get(context.Background(), client.ObjectKey{Namespace: "authority", Name: "cps-pending-registry-" + string(pod.UID)}, registry); err != nil {
++		t.Fatal(err)
++	}
++	var document map[string]interface{}
++	_ = json.Unmarshal([]byte(registry.Data["registry.json"]), &document)
++	document["profile"] = "interactive-native-qualification-10"
++	raw, _ := json.Marshal(document)
++	registry.Data["registry.json"] = string(raw)
++	if err := kube.Update(context.Background(), registry); err != nil {
++		t.Fatal(err)
++	}
++	binder := NewBinder(kube, &nativeTestReservation{}, plugins.New())
++	binder.SetNativeTerminal(kube, "authority", &nativeTestCoordinator{})
++	var cap int64
++	if err := binder.nativeRegistryProof(context.Background(), pod, &cap); err != nil || cap != 0 {
++		t.Fatalf("legacy route changed: cap%d error%v", cap, err)
++	}
++}
++
++// The optional combined bridge must consume the fresh snapshot and actual ACK
++// before the one Kubernetes Binding, and never fall back after a denial.
++type nativeAtomicTestCoordinator struct {
++	*nativeTestCoordinator
++	atomic func(context.Context, NativeTerminalSnapshot, *v1.ConfigMap, *unstructured.Unstructured) error
++}
++type nativeAtomicTestFence struct {
++	NativeAllocationFence
++	owner *nativeAtomicTestCoordinator
++}
++
++func (c *nativeAtomicTestCoordinator) Prepare(ctx context.Context, s NativeTerminalSnapshot) (NativeAllocationFence, error) {
++	f, err := c.nativeTestCoordinator.Prepare(ctx, s)
++	return &nativeAtomicTestFence{NativeAllocationFence: f, owner: c}, err
++}
++func (f *nativeAtomicTestFence) ValidateCurrentAndBinding(ctx context.Context, s NativeTerminalSnapshot, a *v1.ConfigMap, b *unstructured.Unstructured) error {
++	f.owner.calls = append(f.owner.calls, "atomic-current-binding")
++	return f.owner.atomic(ctx, s, a, b)
++}
++func TestNativeAtomicCurrentBindingRetainsFreshInputsAndFailureCustody(t *testing.T) {
++	for _, outcome := range []string{"success", "denied", "cancelled"} {
++		t.Run(outcome, func(t *testing.T) {
++			pod, node, br := nativeTestInputs()
++			for k, v := range nativeTestState().BindingPodAnnotations {
++				pod.Annotations[k] = v
++			}
++			ack := nativeTestACK(pod)
++			coord := &nativeAtomicTestCoordinator{nativeTestCoordinator: &nativeTestCoordinator{ack: ack}}
++			ctx, cancel := context.WithCancel(context.Background())
++			defer cancel()
++			coord.atomic = func(_ context.Context, s NativeTerminalSnapshot, a *v1.ConfigMap, b *unstructured.Unstructured) error {
++				if !reflect.DeepEqual(a, ack) || s.Pod.UID != pod.UID || s.Node.UID != node.UID || s.BindRequest.UID != br.UID || !reflect.DeepEqual(s.BindingState, nativeTestState()) {
++					t.Fatal("combined validation lost actual readback")
++				}
++				if b.Object["metadata"].(map[string]interface{})["resourceVersion"] != s.Pod.ResourceVersion {
++					t.Fatal("Binding not pinned to fresh Pod")
++				}
++				if outcome == "denied" {
++					return errors.New("authority changed")
++				}
++				if outcome == "cancelled" {
++					cancel()
++				}
++				return nil
++			}
++			bindings := 0
++			kube := nativeTestClient(t, pod, node, br, func(*v1.Binding) error { bindings++; coord.calls = append(coord.calls, "binding"); return nil }, ack)
++			binder := NewBinder(kube, &nativeTestReservation{}, plugins.New())
++			binder.SetNativeTerminal(kube, "authority", coord)
++			err := binder.bindNativeTerminal(ctx, pod, node, br, nativeTestState())
++			expected := []string{"prepare", "atomic-current-binding", "binding", "bound", "close"}
++			if outcome != "success" {
++				expected = []string{"prepare", "atomic-current-binding", "hold", "close"}
++				if err == nil || bindings != 0 {
++					t.Fatal("failed combined proof reached Binding")
++				}
++			} else if err != nil || bindings != 1 {
++				t.Fatalf("normal Binding failed: %v", err)
++			}
++			if !reflect.DeepEqual(coord.calls, expected) {
++				t.Fatalf("wrong combined order %v; expected %v", coord.calls, expected)
++			}
++		})
++	}
++}
+diff --git a/pkg/binder/binding/native_transport.go b/pkg/binder/binding/native_transport.go
+new file mode 100644
+index 0000000..31c8cf9
+--- /dev/null
++++ b/pkg/binder/binding/native_transport.go
+@@ -0,0 +1,324 @@
++// SPDX-License-Identifier: Apache-2.0
++package binding
++
++import (
++	"bytes"
++	"context"
++	"crypto/tls"
++	"crypto/x509"
++	"encoding/json"
++	"errors"
++	"fmt"
++	"io"
++	"mime"
++	"net/http"
++	"net/url"
++	"os"
++	"regexp"
++	"strings"
++	"sync"
++	"time"
++
++	"github.com/google/uuid"
++	v1 "k8s.io/api/core/v1"
++	"k8s.io/apimachinery/pkg/apis/meta/v1/unstructured"
++	"k8s.io/apimachinery/pkg/types"
++	"sigs.k8s.io/controller-runtime/pkg/log"
++)
++
++const nativeWireProtocol = "cps-native-kai-terminal/v1"
++const nativeHTTPMaxBytes = 1024 * 1024
++
++type NativeHTTPConfig struct {
++	Enabled                                    bool
++	URL, AuthorityNamespace, TokenFile, CAFile string
++}
++type NativeHTTP struct {
++	origin, tokenFile string
++	client            *http.Client
++}
++
++func NewNativeHTTP(config NativeHTTPConfig) (*NativeHTTP, error) {
++	if !config.Enabled {
++		return nil, nil
++	}
++	origin, err := url.Parse(config.URL)
++	if err != nil || origin.Scheme != "https" || origin.Host == "" || origin.User != nil || strings.Trim(origin.Path, "/") != "" || origin.RawQuery != "" || origin.Fragment != "" || config.TokenFile == "" || config.CAFile == "" || !regexp.MustCompile(`^[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?$`).MatchString(config.AuthorityNamespace) {
++		return nil, errors.New("explicit HTTPS coordinator origin and private identity configuration required")
++	}
++	ca, err := nativeReadFile(config.CAFile, nativeHTTPMaxBytes)
++	if err != nil {
++		return nil, errors.New("trusted coordinator CA unavailable")
++	}
++	pool := x509.NewCertPool()
++	if !pool.AppendCertsFromPEM(ca) {
++		return nil, errors.New("trusted coordinator CA invalid")
++	}
++	transport := &http.Transport{TLSClientConfig: &tls.Config{RootCAs: pool, MinVersion: tls.VersionTLS12}, MaxConnsPerHost: 4}
++	return &NativeHTTP{origin: "https://" + origin.Host, tokenFile: config.TokenFile, client: &http.Client{Transport: transport, Timeout: 15 * time.Second, CheckRedirect: func(*http.Request, []*http.Request) error { return http.ErrUseLastResponse }}}, nil
++}
++
++func nativeReadFile(path string, maximum int64) ([]byte, error) {
++	file, err := os.Open(path)
++	if err != nil {
++		return nil, err
++	}
++	defer file.Close()
++	info, err := file.Stat()
++	if err != nil || !info.Mode().IsRegular() || info.Mode().Perm()&0o022 != 0 {
++		return nil, errors.New("read-only regular internal identity file required")
++	}
++	value, err := io.ReadAll(io.LimitReader(file, maximum+1))
++	if err != nil || int64(len(value)) > maximum {
++		return nil, errors.New("internal identity file size exceeded")
++	}
++	return value, nil
++}
++
++func nativeJSONValue(decoder *json.Decoder) (interface{}, error) {
++	token, err := decoder.Token()
++	if err != nil {
++		return nil, err
++	}
++	if delimiter, ok := token.(json.Delim); ok {
++		switch delimiter {
++		case '{':
++			object := map[string]interface{}{}
++			for decoder.More() {
++				keyToken, err := decoder.Token()
++				if err != nil {
++					return nil, err
++				}
++				key, ok := keyToken.(string)
++				if !ok {
++					return nil, errors.New("JSON object key required")
++				}
++				if _, duplicate := object[key]; duplicate {
++					return nil, errors.New("duplicate JSON field")
++				}
++				value, err := nativeJSONValue(decoder)
++				if err != nil {
++					return nil, err
++				}
++				object[key] = value
++			}
++			_, err = decoder.Token()
++			return object, err
++		case '[':
++			array := []interface{}{}
++			for decoder.More() {
++				value, err := nativeJSONValue(decoder)
++				if err != nil {
++					return nil, err
++				}
++				array = append(array, value)
++			}
++			_, err = decoder.Token()
++			return array, err
++		default:
++			return nil, errors.New("unexpected JSON delimiter")
++		}
++	}
++	return token, nil
++}
++
++func (bridge *NativeHTTP) call(ctx context.Context, operation string, fields map[string]interface{}, responseFields ...string) (map[string]interface{}, error) {
++	id := uuid.NewString()
++	body := map[string]interface{}{"protocol": nativeWireProtocol, "operation": operation, "request_id": id}
++	for key, value := range fields {
++		if _, reserved := body[key]; reserved {
++			return nil, errors.New("reserved transport field")
++		}
++		body[key] = value
++	}
++	encoded, err := json.Marshal(body)
++	if err != nil || len(encoded) > nativeHTTPMaxBytes {
++		return nil, errors.New("closed coordinator request unavailable")
++	}
++	tokenBytes, err := nativeReadFile(bridge.tokenFile, 64*1024)
++	if err != nil {
++		return nil, errors.New("signed internal service token unavailable")
++	}
++	token := strings.TrimSpace(string(tokenBytes))
++	if !regexp.MustCompile(`^[A-Za-z0-9_-]+\.[A-Za-z0-9_-]+\.[A-Za-z0-9_-]+$`).MatchString(token) {
++		return nil, errors.New("signed projected internal service token required")
++	}
++	request, err := http.NewRequestWithContext(ctx, http.MethodPost, bridge.origin+"/api/native-kai/v1/"+operation, bytes.NewReader(encoded))
++	if err != nil {
++		return nil, errors.New("coordinator request invalid")
++	}
++	request.Header.Set("Authorization", "Bearer "+token)
++	request.Header.Set("Content-Type", "application/json")
++	client := bridge.client
++	if operation == "prepare" || operation == "accepted" {
++		// Accepted may wait for readiness under the existing server fence.
++		// A client copy preserves other operations and earlier cancellation.
++		bounded := *client
++		bounded.Timeout = 130 * time.Second
++		if operation == "accepted" {
++			bounded.Timeout = 60 * time.Second
++		}
++		client = &bounded
++	}
++	response, err := client.Do(request)
++	if err != nil {
++		return nil, fmt.Errorf("coordinator %s transport failed", operation)
++	}
++	defer response.Body.Close()
++	refresh := operation == "prepare" && response.StatusCode == http.StatusConflict
++	if response.StatusCode != http.StatusOK && !refresh {
++		return nil, fmt.Errorf("coordinator %s HTTP %d", operation, response.StatusCode)
++	}
++	media, _, err := mime.ParseMediaType(response.Header.Get("Content-Type"))
++	if err != nil || media != "application/json" {
++		return nil, errors.New("coordinator JSON response required")
++	}
++	raw, err := io.ReadAll(io.LimitReader(response.Body, nativeHTTPMaxBytes+1))
++	if err != nil || len(raw) > nativeHTTPMaxBytes {
++		return nil, errors.New("coordinator response size exceeded")
++	}
++	decoder := json.NewDecoder(bytes.NewReader(raw))
++	decoder.UseNumber()
++	value, err := nativeJSONValue(decoder)
++	if err != nil {
++		return nil, errors.New("coordinator response JSON invalid")
++	}
++	if _, err = decoder.Token(); err != io.EOF {
++		return nil, errors.New("trailing coordinator JSON")
++	}
++	object, ok := value.(map[string]interface{})
++	if refresh {
++		retry, retryOK := object["retry"].(map[string]interface{})
++		pod, podOK := fields["pod"].(map[string]interface{})
++		podUID, podUIDOK := pod["uid"].(string)
++		retryUID, retryUIDOK := retry["pod_uid"].(string)
++		parsedUID, uidErr := uuid.Parse(podUID)
++		if !ok || len(object) != 4 || object["protocol"] != nativeWireProtocol || object["operation"] != operation || object["request_id"] != id || !retryOK || len(retry) != 3 || retry["version"] != json.Number("1") || retry["code"] != "registered-snapshot-refresh" || !podOK || !podUIDOK || !retryUIDOK || uidErr != nil || parsedUID.String() != podUID || retryUID != podUID {
++			return nil, errors.New("coordinator refresh envelope differs")
++		}
++		return nil, errors.Join(ErrNativeCustodyHeld, ErrNativePrepareSnapshotRefresh)
++	}
++	if !ok || len(object) != 3+len(responseFields) || object["protocol"] != nativeWireProtocol || object["operation"] != operation || object["request_id"] != id {
++		return nil, errors.New("coordinator response envelope differs")
++	}
++	allowed := map[string]bool{"protocol": true, "operation": true, "request_id": true}
++	for _, field := range responseFields {
++		allowed[field] = true
++	}
++	for field := range object {
++		if !allowed[field] {
++			return nil, errors.New("unknown coordinator response field")
++		}
++	}
++	return object, nil
++}
++
++func nativeObjectRef(name, namespace string, uid types.UID, version string) map[string]interface{} {
++	ref := map[string]interface{}{"name": name, "uid": string(uid), "resourceVersion": version}
++	if namespace != "" {
++		ref["namespace"] = namespace
++	}
++	return ref
++}
++func nativeSnapshotFields(snapshot NativeTerminalSnapshot) map[string]interface{} {
++	request := nativeObjectRef(snapshot.BindRequest.Name, snapshot.BindRequest.Namespace, snapshot.BindRequest.UID, snapshot.BindRequest.ResourceVersion)
++	request["generation"] = snapshot.BindRequest.Generation
++	return map[string]interface{}{"pod": nativeObjectRef(snapshot.Pod.Name, snapshot.Pod.Namespace, snapshot.Pod.UID, snapshot.Pod.ResourceVersion), "node": nativeObjectRef(snapshot.Node.Name, "", snapshot.Node.UID, snapshot.Node.ResourceVersion), "bind_request": request, "binding_state": map[string]interface{}{"binding_pod_annotations": snapshot.BindingState.BindingPodAnnotations, "reserved_gpu_ids": snapshot.BindingState.ReservedGPUIds}}
++}
++func nativeDecodeObject(value interface{}, output interface{}) error {
++	encoded, err := json.Marshal(value)
++	if err != nil {
++		return err
++	}
++	return json.Unmarshal(encoded, output)
++}
++
++func (bridge *NativeHTTP) Prepare(ctx context.Context, snapshot NativeTerminalSnapshot) (NativeAllocationFence, error) {
++	response, err := bridge.call(ctx, "prepare", nativeSnapshotFields(snapshot), "fence_id", "ack")
++	if err != nil {
++		return nil, err
++	}
++	fenceID, ok := response["fence_id"].(string)
++	parsed, parseErr := uuid.Parse(fenceID)
++	if !ok || parseErr != nil || parsed.String() != fenceID {
++		return nil, errors.New("canonical server execution fence required")
++	}
++	ack := &v1.ConfigMap{}
++	if err = nativeDecodeObject(response["ack"], ack); err != nil {
++		return nil, errors.New("actual ACK API object required")
++	}
++	return &nativeHTTPFence{bridge: bridge, id: fenceID, ack: ack}, nil
++}
++func (bridge *NativeHTTP) Hold(ctx context.Context, uid types.UID, _ error) error {
++	_, err := bridge.call(ctx, "hold", map[string]interface{}{"pod_uid": string(uid), "reason_code": "custody-required"})
++	return err
++}
++func (bridge *NativeHTTP) CleanupMaps(ctx context.Context, uid types.UID) ([]v1.ConfigMap, error) {
++	response, err := bridge.call(ctx, "cleanup-maps", map[string]interface{}{"pod_uid": string(uid)}, "maps")
++	if err != nil {
++		return nil, err
++	}
++	if _, ok := response["maps"].([]interface{}); !ok {
++		return nil, errors.New("cleanup evidence must be an actual JSON array")
++	}
++	maps := []v1.ConfigMap{}
++	if err = nativeDecodeObject(response["maps"], &maps); err != nil {
++		return nil, errors.New("actual cleanup map snapshots required")
++	}
++	return maps, nil
++}
++func (bridge *NativeHTTP) MayDeleteReservation(ctx context.Context, pod *v1.Pod) (bool, error) {
++	response, err := bridge.call(ctx, "reservation-delete", map[string]interface{}{"reservation": nativeObjectRef(pod.Name, pod.Namespace, pod.UID, pod.ResourceVersion)}, "may_delete")
++	if err != nil {
++		return false, err
++	}
++	allowed, ok := response["may_delete"].(bool)
++	if !ok {
++		return false, errors.New("typed reservation deletion decision required")
++	}
++	return allowed, nil
++}
++
++type nativeHTTPFence struct {
++	bridge *NativeHTTP
++	id     string
++	ack    *v1.ConfigMap
++	once   sync.Once
++}
++
++func (fence *nativeHTTPFence) ACK() *v1.ConfigMap { return fence.ack.DeepCopy() }
++func (fence *nativeHTTPFence) ValidateCurrent(ctx context.Context, snapshot NativeTerminalSnapshot, ack *v1.ConfigMap) error {
++	fields := nativeSnapshotFields(snapshot)
++	fields["fence_id"] = fence.id
++	fields["ack"] = nativeObjectRef(ack.Name, ack.Namespace, ack.UID, ack.ResourceVersion)
++	_, err := fence.bridge.call(ctx, "current", fields)
++	return err
++}
++
++// ValidateCurrentAndBinding retains the exact fresh Current payload while
++// combining its server validation with the subsequent Binding custody CAS.
++func (fence *nativeHTTPFence) ValidateCurrentAndBinding(ctx context.Context, snapshot NativeTerminalSnapshot, ack *v1.ConfigMap, binding *unstructured.Unstructured) error {
++	fields := nativeSnapshotFields(snapshot)
++	fields["fence_id"] = fence.id
++	fields["ack"] = nativeObjectRef(ack.Name, ack.Namespace, ack.UID, ack.ResourceVersion)
++	fields["binding"] = binding.Object
++	_, err := fence.bridge.call(ctx, "current-binding", fields)
++	return err
++}
++func (fence *nativeHTTPFence) ValidateBinding(ctx context.Context, binding *unstructured.Unstructured) error {
++	_, err := fence.bridge.call(ctx, "binding", map[string]interface{}{"fence_id": fence.id, "binding": binding.Object})
++	return err
++}
++func (fence *nativeHTTPFence) BindingAccepted(ctx context.Context, binding *unstructured.Unstructured) error {
++	_, err := fence.bridge.call(ctx, "accepted", map[string]interface{}{"fence_id": fence.id, "binding": binding.Object})
++	return err
++}
++func (fence *nativeHTTPFence) Close() {
++	fence.once.Do(func() {
++		ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
++		defer cancel()
++		if _, err := fence.bridge.call(ctx, "close", map[string]interface{}{"fence_id": fence.id}); err != nil {
++			log.FromContext(ctx).Error(err, "Native execution fence close unresolved; server custody must remain held")
++		}
++	})
++}
+diff --git a/pkg/binder/binding/native_transport_test.go b/pkg/binder/binding/native_transport_test.go
+new file mode 100644
+index 0000000..d66850a
+--- /dev/null
++++ b/pkg/binder/binding/native_transport_test.go
+@@ -0,0 +1,540 @@
++package binding
++
++import (
++	"bytes"
++	"context"
++	"encoding/json"
++	"encoding/pem"
++	"errors"
++	"io"
++	v1 "k8s.io/api/core/v1"
++	"k8s.io/apimachinery/pkg/apis/meta/v1/unstructured"
++	"net/http"
++	"net/http/httptest"
++	"os"
++	"path/filepath"
++	"reflect"
++	"strings"
++	"testing"
++	"time"
++
++	"github.com/kai-scheduler/KAI-scheduler/pkg/binder/plugins"
++)
++
++func TestNativeHTTPDisabledDoesNotReadCredentials(t *testing.T) {
++	bridge, err := NewNativeHTTP(NativeHTTPConfig{Enabled: false, URL: "invalid", TokenFile: "/not-read", CAFile: "/not-read"})
++	if err != nil || bridge != nil {
++		t.Fatalf("disabled bridge activated: %v", err)
++	}
++}
++
++func nativeTransportFixture(t *testing.T, handler http.HandlerFunc) (*NativeHTTP, string) {
++	t.Helper()
++	server := httptest.NewTLSServer(handler)
++	t.Cleanup(server.Close)
++	directory := t.TempDir()
++	token := filepath.Join(directory, "projected-token")
++	ca := filepath.Join(directory, "ca.crt")
++	if err := os.WriteFile(token, []byte("unit.header.signature"), 0o600); err != nil {
++		t.Fatal(err)
++	}
++	if err := os.WriteFile(ca, pem.EncodeToMemory(&pem.Block{Type: "CERTIFICATE", Bytes: server.Certificate().Raw}), 0o600); err != nil {
++		t.Fatal(err)
++	}
++	bridge, err := NewNativeHTTP(NativeHTTPConfig{Enabled: true, URL: server.URL, AuthorityNamespace: "authority", TokenFile: token, CAFile: ca})
++	if err != nil {
++		t.Fatal(err)
++	}
++	return bridge, token
++}
++
++func TestNativeHTTPClosedWireFlowAndTokenRotation(t *testing.T) {
++	pod, node, br := nativeTestInputs()
++	pod.Annotations["received-resource-type"] = "Fraction"
++	ack := nativeTestACK(pod)
++	operations := []string{}
++	bridge, token := nativeTransportFixture(t, func(w http.ResponseWriter, r *http.Request) {
++		if r.Method != "POST" || !strings.HasPrefix(r.URL.Path, "/api/native-kai/v1/") {
++			t.Errorf("unexpected route %s %s", r.Method, r.URL.Path)
++		}
++		var body map[string]interface{}
++		if err := json.NewDecoder(r.Body).Decode(&body); err != nil {
++			t.Error(err)
++		}
++		op := strings.TrimPrefix(r.URL.Path, "/api/native-kai/v1/")
++		operations = append(operations, op)
++		if body["protocol"] != "cps-native-kai-terminal/v1" || body["operation"] != op || body["request_id"] == "" {
++			t.Error("closed envelope missing identity")
++		}
++		expectedToken := "unit.header.signature"
++		if len(operations) > 1 {
++			expectedToken = "rotated.header.signature"
++		}
++		if r.Header.Get("Authorization") != "Bearer "+expectedToken {
++			t.Error("projected token not freshly loaded")
++		}
++		response := map[string]interface{}{"protocol": body["protocol"], "operation": op, "request_id": body["request_id"]}
++		if op == "prepare" {
++			response["fence_id"] = "aaaaaaaa-bbbb-4ccc-8ddd-eeeeeeeeeeee"
++			response["ack"] = ack
++		}
++		w.Header().Set("Content-Type", "application/json")
++		json.NewEncoder(w).Encode(response)
++	})
++	snapshot := NativeTerminalSnapshot{Pod: pod, Node: node, BindRequest: br, BindingState: nativeTestState()}
++	fence, err := bridge.Prepare(context.Background(), snapshot)
++	if err != nil {
++		t.Fatal(err)
++	}
++	if err := os.WriteFile(token, []byte("rotated.header.signature"), 0o600); err != nil {
++		t.Fatal(err)
++	}
++	if err := fence.ValidateCurrent(context.Background(), snapshot, ack); err != nil {
++		t.Fatal(err)
++	}
++	fence.Close()
++	if len(operations) != 3 || operations[0] != "prepare" || operations[1] != "current" || operations[2] != "close" {
++		t.Fatalf("wrong operations %v", operations)
++	}
++}
++
++func TestNativeHTTPRejectsRedirectAndMalformedClosedResponses(t *testing.T) {
++	for _, mode := range []string{"redirect", "wrong-id", "extra-field", "duplicate-field", "oversize"} {
++		t.Run(mode, func(t *testing.T) {
++			calls := 0
++			bridge, _ := nativeTransportFixture(t, func(w http.ResponseWriter, r *http.Request) {
++				calls++
++				var body map[string]interface{}
++				json.NewDecoder(r.Body).Decode(&body)
++				if mode == "redirect" {
++					http.Redirect(w, r, "https://foreign.example.invalid/token-target", http.StatusTemporaryRedirect)
++					return
++				}
++				response := map[string]interface{}{"protocol": body["protocol"], "operation": body["operation"], "request_id": body["request_id"]}
++				if mode == "wrong-id" {
++					response["request_id"] = "foreign"
++				}
++				if mode == "extra-field" {
++					response["grant"] = true
++				}
++				w.Header().Set("Content-Type", "application/json")
++				if mode == "duplicate-field" {
++					w.Write([]byte(`{"protocol":"cps-native-kai-terminal/v1","protocol":"other","operation":"hold","request_id":"unused"}`))
++					return
++				}
++				if mode == "oversize" {
++					w.Write([]byte(strings.Repeat("x", 1024*1024+1)))
++					return
++				}
++				json.NewEncoder(w).Encode(response)
++			})
++			if err := bridge.Hold(context.Background(), "11111111-2222-4333-8444-555555555555", nil); err == nil {
++				t.Fatal("malformed/redirected response accepted")
++			}
++			if calls != 1 {
++				t.Fatalf("unexpected automatic retry/redirect %d", calls)
++			}
++		})
++	}
++}
++
++func TestNativeHTTPRejectsForeignOrInsecureConfiguration(t *testing.T) {
++	for _, url := range []string{"http://coordinator.invalid", "https://user:secret@coordinator.invalid", "https://coordinator.invalid/api", "https://coordinator.invalid?other=1", "https://coordinator.invalid#fragment"} {
++		if _, err := NewNativeHTTP(NativeHTTPConfig{Enabled: true, URL: url, AuthorityNamespace: "authority", TokenFile: "/not-read", CAFile: "/not-read"}); err == nil {
++			t.Fatal("unsafe coordinator configuration accepted")
++		}
++	}
++}
++
++func TestNativeHTTPAllWireMethodsAndTypedReservationDecision(t *testing.T) {
++	pod, node, br := nativeTestInputs()
++	ack := nativeTestACK(pod)
++	calls := []string{}
++	bridge, _ := nativeTransportFixture(t, func(w http.ResponseWriter, r *http.Request) {
++		var body map[string]interface{}
++		if err := json.NewDecoder(r.Body).Decode(&body); err != nil {
++			t.Error(err)
++		}
++		op := strings.TrimPrefix(r.URL.Path, "/api/native-kai/v1/")
++		calls = append(calls, op)
++		response := map[string]interface{}{"protocol": body["protocol"], "operation": body["operation"], "request_id": body["request_id"]}
++		if op == "prepare" {
++			response["fence_id"] = "aaaaaaaa-bbbb-4ccc-8ddd-eeeeeeeeeeee"
++			response["ack"] = ack
++		}
++		if op == "cleanup-maps" {
++			response["maps"] = []v1.ConfigMap{*ack}
++		}
++		if op == "reservation-delete" {
++			response["may_delete"] = false
++		}
++		if op == "binding" || op == "accepted" {
++			binding := body["binding"].(map[string]interface{})
++			if len(binding["metadata"].(map[string]interface{})) != 4 || len(binding["target"].(map[string]interface{})) != 3 {
++				t.Error("actual Binding wire expanded")
++			}
++		}
++		w.Header().Set("Content-Type", "application/json")
++		json.NewEncoder(w).Encode(response)
++	})
++	fence, err := bridge.Prepare(context.Background(), NativeTerminalSnapshot{Pod: pod, Node: node, BindRequest: br, BindingState: nativeTestState()})
++	if err != nil {
++		t.Fatal(err)
++	}
++	binding := &unstructured.Unstructured{Object: map[string]interface{}{"apiVersion": "v1", "kind": "Binding", "metadata": map[string]interface{}{"namespace": pod.Namespace, "name": pod.Name, "uid": string(pod.UID), "resourceVersion": pod.ResourceVersion}, "target": map[string]interface{}{"kind": "Node", "name": node.Name, "uid": string(node.UID)}}}
++	if err = fence.ValidateBinding(context.Background(), binding); err != nil {
++		t.Fatal(err)
++	}
++	if err = fence.BindingAccepted(context.Background(), binding); err != nil {
++		t.Fatal(err)
++	}
++	if err = bridge.Hold(context.Background(), pod.UID, nil); err != nil {
++		t.Fatal(err)
++	}
++	if _, err = bridge.CleanupMaps(context.Background(), pod.UID); err != nil {
++		t.Fatal(err)
++	}
++	if allowed, err := bridge.MayDeleteReservation(context.Background(), pod); err != nil || allowed {
++		t.Fatal("typed false custody decision not retained")
++	}
++	fence.Close()
++	fence.Close()
++	if !reflect.DeepEqual(calls, []string{"prepare", "binding", "accepted", "hold", "cleanup-maps", "reservation-delete", "close"}) {
++		t.Fatalf("wire methods differ %v", calls)
++	}
++}
++
++func TestNativeHTTPOpaqueUserTokenNeverReachesCoordinator(t *testing.T) {
++	calls := 0
++	bridge, token := nativeTransportFixture(t, func(w http.ResponseWriter, r *http.Request) { calls++; t.Error("unsigned user token sent") })
++	if err := os.WriteFile(token, []byte("opaque-human-api-token"), 0o600); err != nil {
++		t.Fatal(err)
++	}
++	if err := bridge.Hold(context.Background(), "11111111-2222-4333-8444-555555555555", nil); err == nil || calls != 0 {
++		t.Fatal("unsigned token crossed internal transport")
++	}
++}
++
++func TestNativeHTTPCleanupAbsenceIsAnArrayNotNull(t *testing.T) {
++	for _, mode := range []string{"empty-array", "null", "object"} {
++		t.Run(mode, func(t *testing.T) {
++			bridge, _ := nativeTransportFixture(t, func(w http.ResponseWriter, r *http.Request) {
++				var body map[string]interface{}
++				json.NewDecoder(r.Body).Decode(&body)
++				var maps interface{} = []interface{}{}
++				if mode == "null" {
++					maps = nil
++				}
++				if mode == "object" {
++					maps = map[string]interface{}{}
++				}
++				w.Header().Set("Content-Type", "application/json")
++				json.NewEncoder(w).Encode(map[string]interface{}{"protocol": body["protocol"], "operation": body["operation"], "request_id": body["request_id"], "maps": maps})
++			})
++			maps, err := bridge.CleanupMaps(context.Background(), "11111111-2222-4333-8444-555555555555")
++			if mode == "empty-array" {
++				if err != nil || len(maps) != 0 {
++					t.Fatalf("authorized absence failed %v", err)
++				}
++			} else if err == nil {
++				t.Fatalf("non-array cleanup evidence accepted: %s", mode)
++			}
++		})
++	}
++}
++
++type nativeDeadlineTransport struct {
++	t         *testing.T
++	operation string
++	calls     int
++}
++
++func (transport *nativeDeadlineTransport) RoundTrip(request *http.Request) (*http.Response, error) {
++	transport.calls++
++	deadline, ok := request.Context().Deadline()
++	expected := 15 * time.Second
++	if transport.operation == "prepare" {
++		expected = 130 * time.Second
++	} else if transport.operation == "accepted" {
++		expected = 60 * time.Second
++	}
++	remaining := time.Until(deadline)
++	if !ok || remaining > expected || remaining < expected-time.Second {
++		transport.t.Errorf("%s request deadline %v; need bounded %v", transport.operation, remaining, expected)
++	}
++	var body map[string]interface{}
++	if err := json.NewDecoder(request.Body).Decode(&body); err != nil {
++		transport.t.Fatal(err)
++	}
++	response := map[string]interface{}{"protocol": body["protocol"], "operation": body["operation"], "request_id": body["request_id"]}
++	raw, _ := json.Marshal(response)
++	return &http.Response{StatusCode: http.StatusOK, Header: http.Header{"Content-Type": []string{"application/json"}}, Body: io.NopCloser(bytes.NewReader(raw))}, nil
++}
++func TestNativeHTTPPrepareWaitBudgetDoesNotChangeOtherOperations(t *testing.T) {
++	for _, operation := range []string{"prepare", "accepted", "current", "current-binding", "binding", "hold", "close", "reservation-delete"} {
++		t.Run(operation, func(t *testing.T) {
++			bridge, _ := nativeTransportFixture(t, func(http.ResponseWriter, *http.Request) { t.Fatal("unexpected external call") })
++			transport := &nativeDeadlineTransport{t: t, operation: operation}
++			bridge.client.Transport = transport
++			if _, err := bridge.call(context.Background(), operation, nil); err != nil {
++				t.Fatal(err)
++			}
++			if transport.calls != 1 {
++				t.Fatalf("state-changing request replayed %d times", transport.calls)
++			}
++			if bridge.client.Timeout != 15*time.Second {
++				t.Fatal("shared client timeout mutated")
++			}
++		})
++	}
++}
++func TestNativeHTTPPrepareHonorsEarlierCancellationWithoutRetry(t *testing.T) {
++	entered := make(chan struct{})
++	bridge, _ := nativeTransportFixture(t, func(w http.ResponseWriter, r *http.Request) {
++		io.Copy(io.Discard, r.Body)
++		close(entered)
++		<-r.Context().Done()
++	})
++	ctx, cancel := context.WithCancel(context.Background())
++	defer cancel()
++	done := make(chan error, 1)
++	go func() { _, err := bridge.call(ctx, "prepare", nil); done <- err }()
++	select {
++	case <-entered:
++	case <-time.After(time.Second):
++		t.Fatal("request not received")
++	}
++	cancel()
++	select {
++	case err := <-done:
++		if err == nil {
++			t.Fatal("cancelled Prepare succeeded")
++		}
++	case <-time.After(time.Second):
++		t.Fatal("Prepare ignored caller cancellation")
++	}
++}
++
++func TestNativeHTTPPrepareRegisteredSnapshotRefreshIsCorrelatedAndNotReplayed(t *testing.T) {
++	pod, node, br := nativeTestInputs()
++	calls := 0
++	bridge, _ := nativeTransportFixture(t, func(w http.ResponseWriter, r *http.Request) {
++		calls++
++		var request map[string]interface{}
++		_ = json.NewDecoder(r.Body).Decode(&request)
++		w.Header().Set("Content-Type", "application/json")
++		w.WriteHeader(http.StatusConflict)
++		_ = json.NewEncoder(w).Encode(map[string]interface{}{"protocol": nativeWireProtocol, "operation": "prepare", "request_id": request["request_id"], "retry": map[string]interface{}{"version": 1, "code": "registered-snapshot-refresh", "pod_uid": string(pod.UID)}})
++	})
++	fence, err := bridge.Prepare(context.Background(), NativeTerminalSnapshot{Pod: pod, Node: node, BindRequest: br, BindingState: nativeTestState()})
++	if fence != nil || !errors.Is(err, ErrNativeCustodyHeld) || !errors.Is(err, ErrNativePrepareSnapshotRefresh) || calls != 1 {
++		t.Fatalf("typed pre-fence refresh must retain one request without fence: %v %v %d", fence, err, calls)
++	}
++}
++
++func TestNativeHTTPRefreshRejectsAmbiguousResponses(t *testing.T) {
++	for _, fault := range []string{"extra", "retry-extra", "version-string", "version-bool", "wrong-pod", "null-pod", "wrong-request", "wrong-operation", "duplicate", "nonfinite", "success-status", "wrong-route"} {
++		t.Run(fault, func(t *testing.T) {
++			pod, node, br := nativeTestInputs()
++			calls := 0
++			bridge, _ := nativeTransportFixture(t, func(w http.ResponseWriter, r *http.Request) {
++				calls++
++				var request map[string]interface{}
++				_ = json.NewDecoder(r.Body).Decode(&request)
++				retry := map[string]interface{}{"version": 1, "code": "registered-snapshot-refresh", "pod_uid": string(pod.UID)}
++				body := map[string]interface{}{"protocol": nativeWireProtocol, "operation": request["operation"], "request_id": request["request_id"], "retry": retry}
++				switch fault {
++				case "extra":
++					body["fence_id"] = "unexpected"
++				case "retry-extra":
++					retry["ack"] = nil
++				case "version-string":
++					retry["version"] = "1"
++				case "version-bool":
++					retry["version"] = true
++				case "wrong-pod":
++					retry["pod_uid"] = "different"
++				case "null-pod":
++					retry["pod_uid"] = nil
++				case "wrong-request":
++					body["request_id"] = "different"
++				case "wrong-operation":
++					body["operation"] = "hold"
++				}
++				w.Header().Set("Content-Type", "application/json")
++				status := http.StatusConflict
++				if fault == "success-status" {
++					status = http.StatusOK
++				}
++				w.WriteHeader(status)
++				raw, _ := json.Marshal(body)
++				if fault == "duplicate" {
++					raw = append(raw[:len(raw)-1], []byte(`,"retry":{}}`)...)
++				}
++				if fault == "nonfinite" {
++					raw = []byte(`{"retry":NaN}`)
++				}
++				_, _ = w.Write(raw)
++			})
++			var err error
++			if fault == "wrong-route" {
++				_, err = bridge.call(context.Background(), "hold", nativeSnapshotFields(NativeTerminalSnapshot{Pod: pod, Node: node, BindRequest: br, BindingState: nativeTestState()}))
++			} else {
++				_, err = bridge.Prepare(context.Background(), NativeTerminalSnapshot{Pod: pod, Node: node, BindRequest: br, BindingState: nativeTestState()})
++			}
++			if err == nil || errors.Is(err, ErrNativePrepareSnapshotRefresh) || errors.Is(err, ErrNativeCustodyHeld) || calls != 1 {
++				t.Fatalf("ambiguous response granted refresh/replayed: %v %d", err, calls)
++			}
++		})
++	}
++}
++
++func TestNativeHTTPAcceptedWaitsPastDefaultWithoutRetry(t *testing.T) {
++	calls := 0
++	bridge, _ := nativeTransportFixture(t, func(w http.ResponseWriter, r *http.Request) {
++		calls++
++		if r.Method != "POST" || r.URL.Path != "/api/native-kai/v1/accepted" || r.Header.Get("Authorization") != "Bearer unit.header.signature" {
++			t.Error("accepted route/auth changed")
++		}
++		var body map[string]interface{}
++		if err := json.NewDecoder(r.Body).Decode(&body); err != nil {
++			t.Error(err)
++			return
++		}
++		if body["fence_id"] != "fence" || !reflect.DeepEqual(body["binding"], map[string]interface{}{"kind": "Binding"}) {
++			t.Error("accepted payload changed")
++		}
++		time.Sleep(16 * time.Second)
++		w.Header().Set("Content-Type", "application/json")
++		_ = json.NewEncoder(w).Encode(map[string]interface{}{"protocol": body["protocol"], "operation": body["operation"], "request_id": body["request_id"]})
++	})
++	fence := &nativeHTTPFence{bridge: bridge, id: "fence"}
++	start := time.Now()
++	err := fence.BindingAccepted(context.Background(), &unstructured.Unstructured{Object: map[string]interface{}{"kind": "Binding"}})
++	if err != nil {
++		t.Fatal(err)
++	}
++	if elapsed := time.Since(start); elapsed <= 15*time.Second || elapsed >= 60*time.Second {
++		t.Fatalf("unexpected acceptance wait %v", elapsed)
++	}
++	if calls != 1 {
++		t.Fatalf("accepted retried or Hold/Close issued: %d calls", calls)
++	}
++	if bridge.client.Timeout != 15*time.Second {
++		t.Fatal("shared timeout mutated")
++	}
++}
++
++func TestNativeHTTPAcceptedHonorsEarlierCancellationWithoutRetry(t *testing.T) {
++	entered := make(chan struct{})
++	bridge, _ := nativeTransportFixture(t, func(w http.ResponseWriter, r *http.Request) {
++		_, _ = io.Copy(io.Discard, r.Body)
++		close(entered)
++		<-r.Context().Done()
++	})
++	ctx, cancel := context.WithCancel(context.Background())
++	defer cancel()
++	done := make(chan error, 1)
++	go func() { _, err := bridge.call(ctx, "accepted", nil); done <- err }()
++	select {
++	case <-entered:
++	case <-time.After(time.Second):
++		t.Fatal("request not received")
++	}
++	cancel()
++	select {
++	case err := <-done:
++		if err == nil {
++			t.Fatal("cancelled acceptance succeeded")
++		}
++	case <-time.After(time.Second):
++		t.Fatal("acceptance ignored cancellation")
++	}
++}
++
++func TestNativeHTTPAcceptedFailureHoldsBeforeClose(t *testing.T) {
++	pod, node, br := nativeTestInputs()
++	pod.Annotations["received-resource-type"] = "Fraction"
++	ack := nativeTestACK(pod)
++	operations := []string{}
++	bridge, _ := nativeTransportFixture(t, func(w http.ResponseWriter, r *http.Request) {
++		var body map[string]interface{}
++		if err := json.NewDecoder(r.Body).Decode(&body); err != nil {
++			t.Error(err)
++			return
++		}
++		op := body["operation"].(string)
++		operations = append(operations, op)
++		if op == "accepted" {
++			w.WriteHeader(http.StatusServiceUnavailable)
++			return
++		}
++		response := map[string]interface{}{"protocol": body["protocol"], "operation": op, "request_id": body["request_id"]}
++		if op == "prepare" {
++			response["fence_id"] = "aaaaaaaa-bbbb-4ccc-8ddd-eeeeeeeeeeee"
++			response["ack"] = ack
++		}
++		w.Header().Set("Content-Type", "application/json")
++		_ = json.NewEncoder(w).Encode(response)
++	})
++	binds := 0
++	kube := nativeTestClient(t, pod, node, br, func(*v1.Binding) error { binds++; return nil }, ack)
++	reservation := &nativeTestReservation{}
++	binder := NewBinder(kube, reservation, plugins.New())
++	binder.SetNativeTerminal(kube, "authority", bridge)
++	err := binder.bindNativeTerminal(context.Background(), pod, node, br, nativeTestState())
++	if !errors.Is(err, ErrNativeCustodyHeld) {
++		t.Fatalf("accepted failure did not hold custody: %v", err)
++	}
++	expected := []string{"prepare", "current-binding", "accepted", "hold", "close"}
++	if !reflect.DeepEqual(operations, expected) || binds != 1 || reservation.removed != 0 {
++		t.Fatalf("accepted failure retried/released or reordered: %v binds=%d removed=%d", operations, binds, reservation.removed)
++	}
++}
++
++func TestNativeHTTPAtomicBindingCarriesFullFreshCurrentProof(t *testing.T) {
++	calls := 0
++	pod, node, br := nativeTestInputs()
++	snapshot := NativeTerminalSnapshot{pod, node, br, nativeTestState()}
++	ack := nativeTestACK(pod)
++	binding := &unstructured.Unstructured{Object: map[string]interface{}{"apiVersion": "v1", "kind": "Binding", "metadata": map[string]interface{}{"name": pod.Name, "namespace": pod.Namespace, "uid": string(pod.UID), "resourceVersion": pod.ResourceVersion}, "target": map[string]interface{}{"kind": "Node", "name": node.Name, "uid": string(node.UID)}}}
++	bridge, _ := nativeTransportFixture(t, func(w http.ResponseWriter, r *http.Request) {
++		calls++
++		if r.URL.Path != "/api/native-kai/v1/current-binding" || r.Method != "POST" || r.Header.Get("Authorization") != "Bearer unit.header.signature" {
++			t.Errorf("wrong combined transport %s", r.URL.Path)
++		}
++		var body map[string]interface{}
++		if err := json.NewDecoder(r.Body).Decode(&body); err != nil {
++			t.Fatal(err)
++		}
++		expected := nativeSnapshotFields(snapshot)
++		expected["fence_id"] = "11111111-2222-4333-8444-555555555559"
++		expected["ack"] = nativeObjectRef(ack.Name, ack.Namespace, ack.UID, ack.ResourceVersion)
++		expected["binding"] = binding.Object
++		expected["protocol"] = nativeWireProtocol
++		expected["operation"] = "current-binding"
++		expected["request_id"] = body["request_id"]
++		// Round-trip both maps so typed generations/nested values compare as JSON.
++		raw, _ := json.Marshal(expected)
++		var normalized map[string]interface{}
++		_ = json.Unmarshal(raw, &normalized)
++		if !reflect.DeepEqual(body, normalized) {
++			t.Errorf("combined request dropped or changed current proof")
++		}
++		w.Header().Set("Content-Type", "application/json")
++		_ = json.NewEncoder(w).Encode(map[string]interface{}{"protocol": body["protocol"], "operation": body["operation"], "request_id": body["request_id"]})
++	})
++	fence := &nativeHTTPFence{bridge: bridge, id: "11111111-2222-4333-8444-555555555559", ack: ack}
++	combined, ok := interface{}(fence).(interface {
++		ValidateCurrentAndBinding(context.Context, NativeTerminalSnapshot, *v1.ConfigMap, *unstructured.Unstructured) error
++	})
++	if !ok {
++		t.Fatal("HTTP bridge does not implement combined current+binding proof")
++	}
++	if err := combined.ValidateCurrentAndBinding(context.Background(), snapshot, ack, binding); err != nil {
++		t.Fatal(err)
++	}
++	if calls != 1 {
++		t.Fatalf("combined proof must be one correlated RPC, got %d", calls)
++	}
++}
+diff --git a/pkg/binder/binding/resourcereservation/native_custody_test.go b/pkg/binder/binding/resourcereservation/native_custody_test.go
+new file mode 100644
+index 0000000..463d597
+--- /dev/null
++++ b/pkg/binder/binding/resourcereservation/native_custody_test.go
+@@ -0,0 +1,83 @@
++package resourcereservation
++
++import (
++	"context"
++	"errors"
++	"testing"
++
++	v1 "k8s.io/api/core/v1"
++	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
++	"sigs.k8s.io/controller-runtime/pkg/client"
++	"sigs.k8s.io/controller-runtime/pkg/client/fake"
++	"sigs.k8s.io/controller-runtime/pkg/client/interceptor"
++)
++
++type nativeTestCustody struct {
++	allowed bool
++	err     error
++	calls   int
++}
++
++func (g *nativeTestCustody) MayDeleteReservation(context.Context, *v1.Pod) (bool, error) {
++	g.calls++
++	return g.allowed, g.err
++}
++
++func TestNativeReservationCustodyHoldsAndExactDeletion(t *testing.T) {
++	for _, mode := range []string{"pod-exists-hold", "native-zero-unknown", "exact-release", "replaced-reservation"} {
++		t.Run(mode, func(t *testing.T) {
++			pod := &v1.Pod{ObjectMeta: metav1.ObjectMeta{Name: "reservation", Namespace: "kai", UID: "11111111-2222-4333-8444-555555555555", ResourceVersion: "7"}, Status: v1.PodStatus{Phase: v1.PodFailed}}
++			actual := pod.DeepCopy()
++			if mode == "replaced-reservation" {
++				actual.UID = "11111111-2222-4333-8444-555555555559"
++			}
++			deletes := 0
++			kube := fake.NewClientBuilder().WithObjects(actual).WithInterceptorFuncs(interceptor.Funcs{Delete: func(ctx context.Context, c client.WithWatch, obj client.Object, opts ...client.DeleteOption) error {
++				options := &client.DeleteOptions{}
++				for _, opt := range opts {
++					opt.ApplyToDelete(options)
++				}
++				if options.Preconditions == nil || options.Preconditions.UID == nil || *options.Preconditions.UID != pod.UID || options.Preconditions.ResourceVersion == nil || *options.Preconditions.ResourceVersion != pod.ResourceVersion {
++					t.Fatal("reservation deletion missing UID/RV preconditions")
++				}
++				deletes++
++				return c.Delete(ctx, obj, opts...)
++			}}).Build()
++			guard := &nativeTestCustody{allowed: mode == "exact-release" || mode == "replaced-reservation"}
++			if mode == "native-zero-unknown" {
++				guard.err = errors.New("native zero unresolved")
++			}
++			rsc := &service{kubeClient: kube}
++			rsc.SetNativeCustody(kube, guard)
++			if !rsc.NativeCustodyEnabled() {
++				t.Fatal("guard not configured")
++			}
++			err := rsc.deleteReservationPod(context.Background(), pod)
++			expectedCalls := 1
++			if mode == "replaced-reservation" {
++				expectedCalls = 0
++			}
++			if guard.calls != expectedCalls {
++				t.Fatalf("custody queried %d times", guard.calls)
++			}
++			if mode == "exact-release" {
++				if err != nil || deletes != 1 {
++					t.Fatalf("exact release failed %v deletes=%d", err, deletes)
++				}
++			} else {
++				if mode == "pod-exists-hold" && (err != nil || deletes != 0) {
++					t.Fatalf("hold deleted reservation %v deletes=%d", err, deletes)
++				}
++				if mode == "native-zero-unknown" && (err == nil || deletes != 0) {
++					t.Fatalf("unknown zero released reservation %v deletes=%d", err, deletes)
++				}
++				if mode == "replaced-reservation" && err == nil {
++					t.Fatal("replaced reservation deletion succeeded")
++				}
++				if getErr := kube.Get(context.Background(), client.ObjectKeyFromObject(actual), &v1.Pod{}); getErr != nil {
++					t.Fatalf("reservation lost despite hold/replace %v", getErr)
++				}
++			}
++		})
++	}
++}
+diff --git a/pkg/binder/binding/resourcereservation/resource_reservation.go b/pkg/binder/binding/resourcereservation/resource_reservation.go
+index c8d47eb..f69e642 100644
+--- a/pkg/binder/binding/resourcereservation/resource_reservation.go
++++ b/pkg/binder/binding/resourcereservation/resource_reservation.go
+@@ -50,6 +50,8 @@ const (
+ )
+ 
+ type service struct {
++	nativeCustody                       NativeReservationCustody
++	nativeReader                        client.Reader
+ 	fakeGPuNodes                        bool
+ 	kubeClient                          client.WithWatch
+ 	reservationPodImage                 string
+@@ -66,6 +68,21 @@ type service struct {
+ 	fipsOnly                            bool
+ }
+ 
++// The protected coordinator must hold every pending/bound/releasing native
++// allocation until exact PodUID absence and native-zero proof. A nil bridge
++// cannot be activated by Binder.SetNativeTerminal. This does not grant GPUs.
++type NativeReservationCustody interface {
++	MayDeleteReservation(context.Context, *v1.Pod) (bool, error)
++}
++
++func (rsc *service) SetNativeCustody(reader client.Reader, guard NativeReservationCustody) {
++	rsc.nativeReader = reader
++	rsc.nativeCustody = guard
++}
++func (rsc *service) NativeCustodyEnabled() bool {
++	return rsc.nativeReader != nil && rsc.nativeCustody != nil
++}
++
+ func NewService(
+ 	fakeGPuNodes bool,
+ 	kubeClient client.WithWatch,
+@@ -462,12 +479,38 @@ func (rsc *service) deleteNonReservedPods(ctx context.Context, gpuGroup string,
+ }
+ 
+ func (rsc *service) deleteReservationPod(ctx context.Context, pod *v1.Pod) error {
++	deleteOptions := []client.DeleteOption{client.GracePeriodSeconds(0)}
++	if rsc.nativeCustody != nil {
++		if rsc.nativeReader == nil {
++			return fmt.Errorf("uncached native custody API reader required")
++		}
++		current := &v1.Pod{}
++		if err := rsc.nativeReader.Get(ctx, client.ObjectKeyFromObject(pod), current); err != nil {
++			if apierrors.IsNotFound(err) {
++				return nil
++			}
++			return err
++		}
++		if pod.UID == "" || pod.ResourceVersion == "" || current.UID != pod.UID || current.ResourceVersion != pod.ResourceVersion {
++			return fmt.Errorf("current reservation Pod UID/RV changed")
++		}
++		pod = current
++		allowed, err := rsc.nativeCustody.MayDeleteReservation(ctx, pod.DeepCopy())
++		if err != nil {
++			return err
++		}
++		if !allowed {
++			return nil
++		}
++		if pod.UID == "" || pod.ResourceVersion == "" {
++			return fmt.Errorf("exact reservation Pod UID/RV required")
++		}
++		uid, rv := pod.UID, pod.ResourceVersion
++		deleteOptions = append(deleteOptions, &client.DeleteOptions{Preconditions: &metav1.Preconditions{UID: &uid, ResourceVersion: &rv}})
++	}
+ 	logger := log.FromContext(ctx)
+ 	logger.Info("Deleting reservation pod", "name", pod.Name)
+-	err := rsc.kubeClient.Delete(ctx,
+-		pod,
+-		client.GracePeriodSeconds(0),
+-	)
++	err := rsc.kubeClient.Delete(ctx, pod, deleteOptions...)
+ 	if err != nil {
+ 		if !apierrors.IsNotFound(err) {
+ 			return fmt.Errorf("failed to delete reservation pod: %w", err)
+diff --git a/pkg/binder/controllers/bindrequest_controller.go b/pkg/binder/controllers/bindrequest_controller.go
+index 72a6959..65c848f 100644
+--- a/pkg/binder/controllers/bindrequest_controller.go
++++ b/pkg/binder/controllers/bindrequest_controller.go
+@@ -118,12 +118,19 @@ func (r *BindRequestReconciler) Reconcile(ctx context.Context, req ctrl.Request)
+ 		}
+ 
+ 		result, err = r.UpdateStatus(ctx, bindRequest, result, err)
+-		if pod != nil {
++		if pod != nil && !errors.Is(err, binding.ErrNativeCustodyHeld) {
+ 			r.updatePodCondition(ctx, bindRequest, pod)
+ 		}
+ 
+ 		if finalError != nil {
+ 			err = finalError
++		} else if errors.Is(err, binding.ErrNativeCustodyHeld) {
++			// Preserve custody through status/Pod-condition suppression above.
++			// Only the outer controller boundary converts it to a timed retry;
++			// controller-runtime ignores RequeueAfter alongside a non-nil error.
++			logger.Info("Native allocation custody held; retrying", "reason", nativeCustodyReason(err))
++			result.RequeueAfter = time.Second
++			err = nil
+ 		}
+ 	}()
+ 
+@@ -137,6 +144,9 @@ func (r *BindRequestReconciler) Reconcile(ctx context.Context, req ctrl.Request)
+ 		return result, err
+ 	}
+ 	if pod.Spec.NodeName != "" {
++		if _, marked := pod.Annotations[binding.NativePendingAnnotation]; marked {
++			return result, binding.ErrNativeCustodyHeld
++		}
+ 		logger.Info("Pod is already bound to node", "name", pod.Name, "namespace", pod.Namespace,
+ 			"node", pod.Spec.NodeName)
+ 		return result, nil
+@@ -161,11 +171,18 @@ func (r *BindRequestReconciler) Reconcile(ctx context.Context, req ctrl.Request)
+ 			"namespace", pod.Namespace)
+ 		err = r.Client.Delete(ctx, bindRequest)
+ 	}
++	if errors.Is(err, binding.ErrNativeCustodyHeld) {
++		result.RequeueAfter = time.Second
++		return result, err
++	}
+ 	if err != nil {
+ 		logger.Error(err, "Failed to bind pod to node", "pod", pod.Name, "namespace", pod.Namespace,
+ 			"node", node.Name)
+ 
+ 		if rollbackErr := r.binder.Rollback(ctx, pod, node, bindRequest); rollbackErr != nil {
++			if errors.Is(rollbackErr, binding.ErrNativeCustodyHeld) {
++				err = errors.Join(err, rollbackErr)
++			}
+ 			logger.Error(rollbackErr, "Failed to rollback after bind failure", "pod", pod.Name,
+ 				"namespace", pod.Namespace)
+ 		}
+@@ -227,6 +244,9 @@ func (r *BindRequestReconciler) deleteHandler(ctx context.Context, event event.T
+ func (r *BindRequestReconciler) UpdateStatus(
+ 	ctx context.Context, bindRequest *schedulingv1alpha2.BindRequest, result ctrl.Result, err error,
+ ) (ctrl.Result, error) {
++	if errors.Is(err, binding.ErrNativeCustodyHeld) {
++		return result, err
++	}
+ 	logger := log.FromContext(ctx)
+ 	originalBindRequest := &schedulingv1alpha2.BindRequest{}
+ 	bindRequest.DeepCopyInto(originalBindRequest)
+@@ -310,3 +330,43 @@ func (r *BindRequestReconciler) updatePodCondition(
+ 		}
+ 	}
+ }
++
++// Never log arbitrary joined causes: API/client errors can contain private data.
++// Only fixed locally generated diagnostics are exposed; bounded traversal also
++// handles wrapped/joined errors without serializing their outer messages.
++func nativeCustodyReason(err error) string {
++	reasons := map[string]string{
++		"current Pod UID/spec/lifecycle differs":           "pod-current",
++		"current selected Node identity differs":           "node-current",
++		"current BindRequest generation differs":           "bind-request-current",
++		"final binding annotation is not persisted":        "binding-annotations",
++		"exact approved physical GPU UUID required":        "reserved-gpu",
++		"coordinator prepare transport failed":             "prepare-transport",
++		"coordinator hold transport failed":                "hold-transport",
++		"coordinator reservation-delete transport failed":  "reservation-delete-transport",
++		"signed internal service token unavailable":        "service-token-unavailable",
++		"signed projected internal service token required": "service-token-invalid",
++	}
++	pending := []error{err}
++	for checked := 0; len(pending) > 0 && checked < 16; checked++ {
++		current := pending[len(pending)-1]
++		pending = pending[:len(pending)-1]
++		if current == nil {
++			continue
++		}
++		switch wrapped := current.(type) {
++		case interface{ Unwrap() []error }:
++			children := wrapped.Unwrap()
++			for i := len(children) - 1; i >= 0 && len(pending) < 16; i-- {
++				pending = append(pending, children[i])
++			}
++		case interface{ Unwrap() error }:
++			pending = append(pending, wrapped.Unwrap())
++		default:
++			if reason, ok := reasons[current.Error()]; ok {
++				return reason
++			}
++		}
++	}
++	return "unclassified"
++}
+diff --git a/pkg/binder/controllers/native_custody_test.go b/pkg/binder/controllers/native_custody_test.go
+new file mode 100644
+index 0000000..5310976
+--- /dev/null
++++ b/pkg/binder/controllers/native_custody_test.go
+@@ -0,0 +1,159 @@
++package controllers
++
++import (
++	"context"
++	"errors"
++	"fmt"
++	"github.com/go-logr/logr/funcr"
++	mock_binder "github.com/kai-scheduler/KAI-scheduler/pkg/binder/binding/mock"
++	"go.uber.org/mock/gomock"
++	v1 "k8s.io/api/core/v1"
++	"sigs.k8s.io/controller-runtime/pkg/log"
++	"strings"
++	"testing"
++	"time"
++
++	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
++	"k8s.io/apimachinery/pkg/runtime"
++	"k8s.io/client-go/tools/record"
++	ctrl "sigs.k8s.io/controller-runtime"
++	"sigs.k8s.io/controller-runtime/pkg/client"
++	"sigs.k8s.io/controller-runtime/pkg/client/fake"
++
++	"github.com/kai-scheduler/KAI-scheduler/pkg/apis/scheduling/v1alpha2"
++	"github.com/kai-scheduler/KAI-scheduler/pkg/binder/binding"
++)
++
++func TestNativeCustodyDoesNotRewritePreparedBindRequestGeneration(t *testing.T) {
++	scheme := runtime.NewScheme()
++	if err := v1alpha2.AddToScheme(scheme); err != nil {
++		t.Fatal(err)
++	}
++	request := &v1alpha2.BindRequest{ObjectMeta: metav1.ObjectMeta{Name: "request", Namespace: "cps", UID: "11111111-2222-4333-8444-555555555555", ResourceVersion: "8", Generation: 2}, Status: v1alpha2.BindRequestStatus{Phase: v1alpha2.BindRequestPhasePending}}
++	kube := fake.NewClientBuilder().WithScheme(scheme).WithStatusSubresource(request).WithObjects(request).Build()
++	r := &BindRequestReconciler{Client: kube}
++	if _, err := r.UpdateStatus(context.Background(), request, ctrl.Result{}, binding.ErrNativeCustodyHeld); !errors.Is(err, binding.ErrNativeCustodyHeld) {
++		t.Fatal(err)
++	}
++	current := &v1alpha2.BindRequest{}
++	if err := kube.Get(context.Background(), client.ObjectKeyFromObject(request), current); err != nil {
++		t.Fatal(err)
++	}
++	if current.ResourceVersion != "8" || current.Generation != 2 || current.Status.Phase != v1alpha2.BindRequestPhasePending {
++		t.Fatalf("hold changed prepared generation %+v", current)
++	}
++}
++
++func TestNativeCustodyBoundRetryDoesNotClaimSuccessOrChangePodRV(t *testing.T) {
++	scheme := runtime.NewScheme()
++	if err := v1alpha2.AddToScheme(scheme); err != nil {
++		t.Fatal(err)
++	}
++	if err := v1.AddToScheme(scheme); err != nil {
++		t.Fatal(err)
++	}
++	pod := &v1.Pod{ObjectMeta: metav1.ObjectMeta{Name: "workspace", Namespace: "cps", UID: "11111111-2222-4333-8444-555555555555", ResourceVersion: "7", Annotations: map[string]string{binding.NativePendingAnnotation: binding.NativePendingProtocol}}, Spec: v1.PodSpec{NodeName: "k3s-wk-gpu2"}}
++	request := &v1alpha2.BindRequest{ObjectMeta: metav1.ObjectMeta{Name: "request", Namespace: "cps", UID: "11111111-2222-4333-8444-555555555556", ResourceVersion: "8", Generation: 2}, Spec: v1alpha2.BindRequestSpec{PodName: pod.Name, SelectedNode: pod.Spec.NodeName}, Status: v1alpha2.BindRequestStatus{Phase: v1alpha2.BindRequestPhasePending}}
++	kube := fake.NewClientBuilder().WithScheme(scheme).WithStatusSubresource(pod, request).WithObjects(pod, request).Build()
++	logger := record.NewFakeRecorder(2)
++	r := &BindRequestReconciler{Client: kube, eventRecorder: logger}
++	result, err := r.Reconcile(context.Background(), ctrl.Request{NamespacedName: client.ObjectKeyFromObject(request)})
++	if err != nil || result.RequeueAfter != time.Second {
++		t.Fatalf("custody retry must return nil error and exact one-second delay: %+v / %v", result, err)
++	}
++	current := &v1.Pod{}
++	if err := kube.Get(context.Background(), client.ObjectKeyFromObject(pod), current); err != nil {
++		t.Fatal(err)
++	}
++	currentRequest := &v1alpha2.BindRequest{}
++	if err := kube.Get(context.Background(), client.ObjectKeyFromObject(request), currentRequest); err != nil {
++		t.Fatal(err)
++	}
++	if current.ResourceVersion != "7" || currentRequest.ResourceVersion != "8" || currentRequest.Status.Phase != v1alpha2.BindRequestPhasePending || len(logger.Events) != 0 {
++		t.Fatal("hold rewrote actual prepared generation/status")
++	}
++}
++
++func TestNativeCustodyOuterBoundaryPreservesPendingAndOrdinaryErrors(t *testing.T) {
++	for _, mode := range []string{"joined-custody", "ordinary-error", "snapshot-refresh"} {
++		held := mode != "ordinary-error"
++		t.Run(mode, func(t *testing.T) {
++			scheme := runtime.NewScheme()
++			_ = v1.AddToScheme(scheme)
++			_ = v1alpha2.AddToScheme(scheme)
++			node := &v1.Node{ObjectMeta: metav1.ObjectMeta{Name: "k3s-wk-gpu2"}}
++			pod := &v1.Pod{ObjectMeta: metav1.ObjectMeta{Name: "workspace", Namespace: "cps", UID: "11111111-2222-4333-8444-555555555555", ResourceVersion: "7", Annotations: map[string]string{binding.NativePendingAnnotation: binding.NativePendingProtocol}}}
++			limit := int32(3)
++			request := &v1alpha2.BindRequest{ObjectMeta: metav1.ObjectMeta{Name: "request", Namespace: "cps", UID: "11111111-2222-4333-8444-555555555556", ResourceVersion: "8", Generation: 2}, Spec: v1alpha2.BindRequestSpec{PodName: pod.Name, SelectedNode: node.Name, BackoffLimit: &limit}, Status: v1alpha2.BindRequestStatus{Phase: v1alpha2.BindRequestPhasePending}}
++			kube := fake.NewClientBuilder().WithScheme(scheme).WithStatusSubresource(pod, request).WithObjects(pod, request, node).Build()
++			logger := record.NewFakeRecorder(2)
++			mock := mock_binder.NewMockInterface(gomock.NewController(t))
++			cause := errors.New("bounded test failure")
++			failure := cause
++			if held {
++				failure = errors.Join(binding.ErrNativeCustodyHeld, cause)
++				if mode == "snapshot-refresh" {
++					failure = errors.Join(failure, binding.ErrNativePrepareSnapshotRefresh)
++				}
++			}
++			mock.EXPECT().Bind(gomock.Any(), gomock.Any(), gomock.Any(), gomock.Any()).Return(failure)
++			if !held {
++				mock.EXPECT().Rollback(gomock.Any(), gomock.Any(), gomock.Any(), gomock.Any()).Return(nil)
++			}
++			r := &BindRequestReconciler{Client: kube, eventRecorder: logger, binder: mock}
++			result, err := r.Reconcile(context.Background(), ctrl.Request{NamespacedName: client.ObjectKeyFromObject(request)})
++			currentPod := &v1.Pod{}
++			_ = kube.Get(context.Background(), client.ObjectKeyFromObject(pod), currentPod)
++			currentRequest := &v1alpha2.BindRequest{}
++			_ = kube.Get(context.Background(), client.ObjectKeyFromObject(request), currentRequest)
++			if held {
++				if err != nil || result.RequeueAfter != time.Second || currentPod.ResourceVersion != "7" || len(currentPod.Status.Conditions) != 0 || currentRequest.ResourceVersion != "8" || currentRequest.Generation != 2 || currentRequest.Status.Phase != v1alpha2.BindRequestPhasePending || currentRequest.Status.FailedAttempts != 0 || len(logger.Events) != 0 {
++					t.Fatalf("custody was reported as error/success or mutated pending objects: %+v %v %+v %+v", result, err, currentPod.Status, currentRequest.Status)
++				}
++			} else if !errors.Is(err, cause) || result.RequeueAfter != time.Second || currentRequest.Status.Phase != v1alpha2.BindRequestPhaseFailed || currentRequest.Status.FailedAttempts != 1 {
++				t.Fatalf("ordinary error/backoff swallowed: %+v %v %+v", result, err, currentRequest.Status)
++			}
++		})
++	}
++}
++
++// Real Reconcile must report a fixed diagnostic code without logging nested
++// error text, while retaining its existing one-second Pending custody retry.
++func TestNativeCustodyRetryLogsSanitizedReason(t *testing.T) {
++	for _, tc := range []struct{ name, message, reason string }{
++		{"snapshot", "current BindRequest generation differs", "bind-request-current"},
++		{"transport", "coordinator prepare transport failed", "prepare-transport"},
++		{"nested-secret", "Authorization: Bearer PRIVATE_TOKEN /private/credential", "unclassified"},
++	} {
++		t.Run(tc.name, func(t *testing.T) {
++			scheme := runtime.NewScheme()
++			_ = v1.AddToScheme(scheme)
++			_ = v1alpha2.AddToScheme(scheme)
++			node := &v1.Node{ObjectMeta: metav1.ObjectMeta{Name: "k3s-wk-gpu2"}}
++			pod := &v1.Pod{ObjectMeta: metav1.ObjectMeta{Name: "workspace", Namespace: "cps", UID: "11111111-2222-4333-8444-555555555555", ResourceVersion: "7", Annotations: map[string]string{binding.NativePendingAnnotation: binding.NativePendingProtocol}}}
++			request := &v1alpha2.BindRequest{ObjectMeta: metav1.ObjectMeta{Name: "request", Namespace: "cps", UID: "11111111-2222-4333-8444-555555555556", ResourceVersion: "8", Generation: 2}, Spec: v1alpha2.BindRequestSpec{PodName: pod.Name, SelectedNode: node.Name}, Status: v1alpha2.BindRequestStatus{Phase: v1alpha2.BindRequestPhasePending}}
++			kube := fake.NewClientBuilder().WithScheme(scheme).WithStatusSubresource(pod, request).WithObjects(pod, request, node).Build()
++			mock := mock_binder.NewMockInterface(gomock.NewController(t))
++			cause := fmt.Errorf("PRIVATE_TOKEN wrapper: %w", errors.Join(errors.New(tc.message), errors.New("secret=PRIVATE_TOKEN")))
++			mock.EXPECT().Bind(gomock.Any(), gomock.Any(), gomock.Any(), gomock.Any()).Return(errors.Join(binding.ErrNativeCustodyHeld, cause))
++			var output strings.Builder
++			ctx := log.IntoContext(context.Background(), funcr.New(func(_, args string) { output.WriteString(args) }, funcr.Options{}))
++			r := &BindRequestReconciler{Client: kube, eventRecorder: record.NewFakeRecorder(2), binder: mock}
++			result, err := r.Reconcile(ctx, ctrl.Request{NamespacedName: client.ObjectKeyFromObject(request)})
++			current := &v1alpha2.BindRequest{}
++			_ = kube.Get(ctx, client.ObjectKeyFromObject(request), current)
++			if err != nil || result.RequeueAfter != time.Second || current.ResourceVersion != "8" || current.Generation != 2 || current.Status.Phase != v1alpha2.BindRequestPhasePending {
++				t.Fatalf("retry changed: %+v %v %+v", result, err, current)
++			}
++			got := output.String()
++			if !strings.Contains(got, "Native allocation custody held; retrying") || !strings.Contains(got, tc.reason) {
++				t.Fatalf("missing sanitized held reason %q in %s", tc.reason, got)
++			}
++			for _, secret := range []string{"PRIVATE_TOKEN", "Authorization", "/private/credential", "secret="} {
++				if strings.Contains(got, secret) {
++					t.Fatalf("nested private error leaked: %s", got)
++				}
++			}
++		})
++	}
++}
+diff --git a/pkg/binder/plugins/hamicore/hami_core.go b/pkg/binder/plugins/hamicore/hami_core.go
+index 7567ca5..41aa78e 100644
+--- a/pkg/binder/plugins/hamicore/hami_core.go
++++ b/pkg/binder/plugins/hamicore/hami_core.go
+@@ -31,13 +31,20 @@ func (p *Plugin) Name() string {
+ }
+ 
+ func (p *Plugin) PreBind(
+-	ctx context.Context, pod *v1.Pod, node *v1.Node, bindRequest *v1alpha2.BindRequest, _ *state.BindingState,
++	ctx context.Context, pod *v1.Pod, node *v1.Node, bindRequest *v1alpha2.BindRequest, bindingState *state.BindingState,
+ ) error {
+ 	if !common.IsSharedGPUAllocation(bindRequest) {
+ 		return nil
+ 	}
+ 
+ 	cudaDeviceMemoryLimit, err := calculateCudaDeviceMemoryLimit(node, bindRequest)
++	if bindingState != nil && bindingState.NativeMemoryLimitMiB != 0 {
++		cap := bindingState.NativeMemoryLimitMiB
++		if cap != 5120 && cap != 10240 && cap != 20480 {
++			return fmt.Errorf("invalid authenticated native memory limit")
++		}
++		cudaDeviceMemoryLimit = fmt.Sprintf("%dm", cap)
++	}
+ 	if err != nil {
+ 		return fmt.Errorf("failed to calculate CUDA_DEVICE_MEMORY_LIMIT for pod <%s/%s>: %w",
+ 			pod.Namespace, pod.Name, err)
+diff --git a/pkg/binder/plugins/hamicore/hami_core_test.go b/pkg/binder/plugins/hamicore/hami_core_test.go
+index 12ba043..fcfa522 100644
+--- a/pkg/binder/plugins/hamicore/hami_core_test.go
++++ b/pkg/binder/plugins/hamicore/hami_core_test.go
+@@ -35,3 +35,13 @@ func TestPreBindFailsClosedWhenMemoryLimitCannotBeCalculated(t *testing.T) {
+ 			constants.NvidiaGpuMemory)
+ 	}
+ }
++
++func TestOrdinaryRoundedSchedulerPortionKeepsStockMemoryCalculation(t *testing.T) {
++	node := &v1.Node{}
++	node.Labels = map[string]string{constants.NvidiaGpuMemory: "40960"}
++	request := &v1alpha2.BindRequest{Spec: v1alpha2.BindRequestSpec{ReceivedGPU: &v1alpha2.ReceivedGPU{Portion: "0.13"}}}
++	got, err := calculateCudaDeviceMemoryLimit(node, request)
++	if err != nil || got != "5324m" {
++		t.Fatalf("ordinary HAMI behavior changed: %q %v", got, err)
++	}
++}
+diff --git a/pkg/binder/plugins/state/state.go b/pkg/binder/plugins/state/state.go
+index 9ae5d01..1bb7cab 100644
+--- a/pkg/binder/plugins/state/state.go
++++ b/pkg/binder/plugins/state/state.go
+@@ -4,6 +4,8 @@
+ package state
+ 
+ type BindingState struct {
++	// Set only after the native immutable compiler and registry proof. Zero keeps stock behavior.
++	NativeMemoryLimitMiB  int64
+ 	BindingPodAnnotations map[string]string // Annotations that will be added to the pod after binding.
+ 	ReservedGPUIds        []string
+ }

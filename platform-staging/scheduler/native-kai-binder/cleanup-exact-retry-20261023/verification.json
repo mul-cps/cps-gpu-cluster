@@ -1,0 +1,13 @@
+{
+  "version": 1,
+  "upstream_revision": "bdf434e5e9201cccf4e05fad04d814363653f692",
+  "deployed_base_image": "ghcr.io/mul-cps/cps-native-kai-binder@sha256:2400691ce4b688383bf0419931baf2397e94f6cb56849a58c2d7c59de0fe3766",
+  "deployed_base_patch_sha256": "1e32e4d0cf7fef8dad197d397e0945c094a9738d017870ec121fcd129b41d0ac",
+  "exact_deployed_patch_verified": true,
+  "only_additional_change": "cleanup-retry.patch",
+  "packages_passed": 5,
+  "go_version": "go1.26.8 linux/amd64",
+  "binary_sha256": "0c3442800b717ffe389d50b5bf453bfb0b126f206cfdc3bc22d25903b24c8dc9",
+  "full_patch_sha256": "75e3bbd979bdba60f49bd42177eb0b35b7b967fa48c8574297543dcf2eba3e3c",
+  "live_qualification_passed": false
+}
