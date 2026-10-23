@@ -42,5 +42,6 @@
     "admission_positive_and_three_negative_cases_passed": true,
     "research_pod_original_uid_running": true,
     "policy_driver_storage_unchanged": true
-  }
+  },
+  "controlled_start_result": "../policy-event-loop-start-attempt8-20261023/result.json"
 }

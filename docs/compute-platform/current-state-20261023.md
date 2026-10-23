@@ -1411,3 +1411,33 @@ match the candidate. Policy, driver and storage are unchanged; the research Pod
 retains its original UID. Controlled full-start measurement remains pending.
 
 [Candidate source, digest and exact verification boundary](../../platform-staging/startup-performance/qualification/policy-event-loop-20261023/result.json).
+
+### Controlled pooled start after event-loop fix: 209 seconds
+
+Normal Source HTTP start returns **200 in 209.22 seconds**, versus 278.02 seconds
+in attempt 6 (about 25% faster). The same Pod UID remains present without
+replacement or observation errors, reaches Ready, and passes a 64-MiB CUDA
+allocation/fill/sum/synchronize check on one A100. First observed Pod is at
+81.47 seconds, node assignment at 167.00, Running/Ready at 181.61; the final
+Source response follows later.
+
+Coordinator Prepare succeeds in **61.10 seconds**, versus 96.00 previously.
+Registered-readiness time is **7.20 seconds**, versus 50.35 previously; enrollment
+publication remains **39.43 seconds**. Nested stage durations are not additive.
+This supports the readiness-path improvement; it does not isolate every cause
+or establish repeatable burst performance. The 209-second result remains above
+the p95 target; one successful start cannot establish a p95.
+
+Normal Source stop returns 200 in 17.13 seconds. The actual Pod is gone and all
+**33** native allocations are released. Fixture CPU profile, membership, ceiling
+and notice are restored; its temporary approval is removed, four components
+are Ready and existing grants unchanged. The temporary scoped token is revoked.
+The research Pod remains Running with its original UID. No SQL release or
+lease-expiry inference was used.
+
+This is a single 10-GiB pooled start from two existing 5-GiB member grants on the
+selected A100. Full-pool, 20-GiB, cross-Hub concurrent starts, burst latency and
+broader production qualification remain separate gates. Next timing targets
+are pre-Pod work and enrollment publication.
+
+[Sanitized exact start, CUDA, nested timing and cleanup proof](../../platform-staging/startup-performance/qualification/policy-event-loop-start-attempt8-20261023/result.json).

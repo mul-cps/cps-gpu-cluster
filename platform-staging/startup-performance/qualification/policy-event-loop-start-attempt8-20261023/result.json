@@ -1,0 +1,163 @@
+{
+  "source_revision": "0e33b68d769715be5b72ccf59c9b481f4122ce0f",
+  "gateway_image": "ghcr.io/mul-cps/cps-compute@sha256:6ae6e7f497a81c44f8c93578b8fb63c2228fe8bc45fde1f5bb7d8ae072631890",
+  "scope": "Single normal Source HTTP start, pooled 10 GiB from two existing 5 GiB grants, one selected A100. Not burst p95, 20 GiB, full pool, cross-Hub concurrency or broad production qualification.",
+  "start": {
+    "operation": "start",
+    "http_status": 200,
+    "seconds": 209.22113245300716
+  },
+  "stop": {
+    "operation": "stop",
+    "http_status": 200,
+    "seconds": 17.126292483008
+  },
+  "monitor_seconds": 210.79109685099684,
+  "same_pod_uid": "093a5586-5f7e-43f6-8cc4-dbfa79a46ad2",
+  "pod_disappeared": false,
+  "pod_replaced": false,
+  "observation_errors": [],
+  "pod_ready_at_http_completion": true,
+  "first_observed_seconds": {
+    "pod": 81.4673818500014,
+    "node_assigned": 167.00278683006763,
+    "running": 181.610931970994,
+    "ready": 181.610931970994
+  },
+  "cuda": {
+    "cuda_operation_passed": true,
+    "allocation_bytes": 67108864,
+    "device": "NVIDIA A100-PCIE-40GB",
+    "visible_device_count": 1
+  },
+  "coordinator_timing_nested_not_additive": {
+    "lease": {
+      "elapsed_seconds": 15.323792,
+      "steps": {
+        "context": {
+          "calls": 3,
+          "elapsed_seconds": 1.729392,
+          "last_start_seconds": 14.740401
+        },
+        "lease-acquisition": {
+          "calls": 1,
+          "elapsed_seconds": 12.768308,
+          "last_start_seconds": 1.97194
+        },
+        "lease-readiness": {
+          "calls": 1,
+          "elapsed_seconds": 1.358057,
+          "last_start_seconds": 0.613849
+        }
+      }
+    },
+    "prepare": {
+      "elapsed_seconds": 61.098295,
+      "steps": {
+        "allocation-ack": {
+          "calls": 1,
+          "elapsed_seconds": 0.018461,
+          "last_start_seconds": 60.461973
+        },
+        "allocation-freeze": {
+          "calls": 3,
+          "elapsed_seconds": 1.400608,
+          "last_start_seconds": 50.270474
+        },
+        "allocation-proof": {
+          "calls": 1,
+          "elapsed_seconds": 3.401926,
+          "last_start_seconds": 57.028511
+        },
+        "capacity-census": {
+          "calls": 1,
+          "elapsed_seconds": 0.188745,
+          "last_start_seconds": 60.240275
+        },
+        "compiler-context": {
+          "calls": 1,
+          "elapsed_seconds": 0.044547,
+          "last_start_seconds": 57.028519
+        },
+        "context": {
+          "calls": 28,
+          "elapsed_seconds": 17.776967,
+          "last_start_seconds": 60.511754
+        },
+        "enrollment-publication": {
+          "calls": 2,
+          "elapsed_seconds": 39.425291,
+          "last_start_seconds": 50.279274
+        },
+        "epoch": {
+          "calls": 1,
+          "elapsed_seconds": 0.798495,
+          "last_start_seconds": 57.086229
+        },
+        "execution-fence": {
+          "calls": 1,
+          "elapsed_seconds": 0.005169,
+          "last_start_seconds": 40.48354
+        },
+        "final-claim": {
+          "calls": 1,
+          "elapsed_seconds": 2.339576,
+          "last_start_seconds": 57.900251
+        },
+        "maps": {
+          "calls": 1,
+          "elapsed_seconds": 0.015476,
+          "last_start_seconds": 57.884762
+        },
+        "preflight": {
+          "calls": 2,
+          "elapsed_seconds": 0.006069,
+          "last_start_seconds": 0.60116
+        },
+        "prepared-custody": {
+          "calls": 1,
+          "elapsed_seconds": 0.011158,
+          "last_start_seconds": 60.49902
+        },
+        "registered-custody": {
+          "calls": 1,
+          "elapsed_seconds": 0.001149,
+          "last_start_seconds": 0.607236
+        },
+        "registered-readiness": {
+          "calls": 1,
+          "elapsed_seconds": 7.198937,
+          "last_start_seconds": 0.608403
+        },
+        "snapshot-proof": {
+          "calls": 9,
+          "elapsed_seconds": 8.386966,
+          "last_start_seconds": 48.699563
+        }
+      }
+    }
+  },
+  "stop_proof": {
+    "all_allocations_released": true,
+    "allocation_count": 33,
+    "actual_test_pod_absent": true,
+    "research_pod_original_uid_running": true
+  },
+  "temporary_token_revoked": {
+    "qa_token_revoked": true,
+    "exact_user_note_scopes_checked": true
+  },
+  "fixture_cleanup": {
+    "passed": true,
+    "workspace": "qa-packing-cps-20261023",
+    "stopped": true,
+    "cpu_profile_restored": true,
+    "membership_restored": true,
+    "original_ceiling_restored": true,
+    "original_notice_restored": true,
+    "temporary_approval_removed": true,
+    "existing_grants_unchanged": true,
+    "approval_revision": "sha256:9ee2ef13aabc7fcbf5fcb695a02e008916a91b61dd478757f61731acbb464f3e",
+    "four_component_ready": true
+  }
+}
