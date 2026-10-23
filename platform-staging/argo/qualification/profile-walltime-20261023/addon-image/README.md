@@ -9,3 +9,5 @@ The complete before/after inventories contain 114,880 files each. SoftwarePreser
 The initial proof incorrectly compared pip-generated RECORD with wheel RECORD; this was corrected while retaining installed RECORD integrity checks. Initial publication converted base blobs to uncompressed form and was rejected. The corrected publication references the original registry base blobs after verifying identical diffIDs; the unchanged verifier passes. Rejected artifacts remain retained.
 
 This is software preservation evidence, not new GPU hardware qualification. Policy handover, deployment and live addon acceptance remain pending.
+
+The explicit operator apply path was exercised while Source services were unfenced. It rejected the operation under the actual installed runtime; scoped and legacy registry heads/history were read back unchanged. The temporary named-read identity and bindings were removed. This is a refusal test, not successful activation.

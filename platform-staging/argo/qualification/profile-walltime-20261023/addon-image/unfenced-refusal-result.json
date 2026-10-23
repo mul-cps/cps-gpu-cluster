@@ -1,0 +1,6 @@
+{
+  "passed": true,
+  "unfenced_operator_apply_denied": true,
+  "legacy_and_scoped_registry_unchanged": true,
+  "temporary_identity_removed": true
+}
