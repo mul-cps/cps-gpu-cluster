@@ -1,0 +1,35 @@
+{
+  "source_revision": "2fa6315cb620ed71baeac2bc4910f997d2c5b3d0",
+  "wheel_sha256": "38a8eef1017c99de0513f68c229a75b8bdedba23245ec64032cfd8faeb9709b0",
+  "images": [
+    {
+      "component": "gateway",
+      "image": "ghcr.io/mul-cps/cps-compute@sha256:181a00de43e2fbe5a41a616e9e26f64965ecd3cc15d8794a3d5b40af61dbb24d"
+    },
+    {
+      "component": "node",
+      "image": "ghcr.io/mul-cps/cps-native-node@sha256:6a1c6da6e8ebea9400a6f9f94e74d1506fb3a3c4a2dc1f3a49bc4c8b12fa8c85"
+    }
+  ],
+  "registry_digest_verified": true,
+  "deployed": false,
+  "focused_tests_passed": 104,
+  "full_suite": "running",
+  "preflight": {
+    "gateway": {
+      "actual_manifest_and_kernel_validated": true,
+      "health_source_matches_deployed": true,
+      "current_policy_graph_loads": true,
+      "installed_service_and_grant_check_sources_match": true,
+      "no_gpu_calls": true
+    },
+    "node": {
+      "actual_manifest_and_kernel_validated": true,
+      "health_source_matches_deployed": true,
+      "current_policy_graph_loads": true,
+      "installed_service_and_grant_check_sources_match": true,
+      "no_gpu_calls": true
+    }
+  },
+  "live_qualification": "not run for candidate"
+}
