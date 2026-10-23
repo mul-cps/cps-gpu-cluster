@@ -514,3 +514,25 @@ failures; remaining cases have not run. The earlier stalled fixture was correcte
 without relaxing the production bounded-client guard. These gates remain open.
 
 [Corrected deployment, timing, CUDA and cleanup receipts](../../platform-staging/startup-performance/qualification/coordinator-v2-20261023/README.md).
+
+### Subsequent software verification and pooled-budget correction
+
+The complete repository suite at `cps-compute` commit `756e6dd` finished with
+5165 passed, 6 skipped and 68 subtests passed. Its single failure was the real
+JupyterHub identity-hook test importing absent `jupyter_server` in the test
+environment. Installing the Lab addon's declared dependencies made that test pass.
+This was a test-environment failure, not evidence of a deployed hook defect.
+
+A separate acceptance test reproduced a pooling defect: members granted only
+the qualified 5 GiB profile could not select an approved 10 GiB workspace even
+when their combined allowance was sufficient. Commit `8bdacc4` sums the largest
+qualified profile budget for each distinct canonical member, independently of
+the selected workspace profile. Exact workspace approval, current grants,
+interactive allowance and course ceiling checks remain in place. Seven new
+regressions cover successful 5+5→10 pooling and rejection of insufficient budget,
+lower ceilings, expiry, zero allowance, duplicate members and duplicate grants.
+
+The relevant group, packing, preview and Lab-hook suites pass: 84 tests and
+19 subtests. A new complete suite is running against `8bdacc4`; its outcome is
+not yet known. The commit is pushed on the existing feature branch, not deployed.
+The production-readiness goal and startup-performance work remain open.
