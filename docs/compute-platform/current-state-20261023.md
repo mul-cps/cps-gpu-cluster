@@ -1306,3 +1306,34 @@ Hub image changes cannot both be appended without a reviewed ancestry migration.
 The current live success remains the single 278-second pooled CUDA start.
 
 [Tested source and exact verification boundaries](../../platform-staging/startup-performance/qualification/heartbeat-fast-retry-source-20261023/result.json).
+
+### Writer-only service-compaction draft rejected; production guard retained
+
+A source-only draft attempted to archive a service segment while removing only
+its current `service_image_predecessor_ref`. Although 322 related tests, 17 draft
+scenarios and 58 independent-review tests passed (overlapping sets), offline
+parsing against the **actual current live graph** in the deployed Gateway image
+rejected the compact configuration: **Policy image edge must preserve every
+other actual Node configuration field**. The real configuration retains an addon
+policy edge; its images cannot lose the typed service provenance.
+
+Independent review confirmed that mismatch and found another draft-only flaw:
+quiescence proof lost after journal commit could leave ordinary tick Ready
+without durable incomplete-handover state. **No draft image or configuration was
+deployed.** The draft and review are retained privately; its production changes
+and synthetic-only tests were withdrawn from the implementation worktree. No
+guard, bound, journal, anchor, runtime image or workload was changed.
+
+Compute **d33ac3e** retains only a regression proving that unlinking a real policy
+image edge is rejected without modifying authentic ancestry. **63 relevant tests
+pass.** Heartbeat retry source remains 45be9b5/fd7a65d, not deployed. One image
+slot remains, as directly measured earlier.
+
+The existing `continue_policy_configuration`/reviewed addon-image transition
+path already preserves the actual old service context while starting a new
+segment. Evaluate it as part of the real required notebook/addon release, with
+software-preservation evidence and all normal gates. Do not manufacture a policy
+change merely to evade the service bound. A general compaction feature would
+need retained typed policy/service provenance and durable recovery semantics.
+
+[Rejected-draft boundary and retained guard regression](../../platform-staging/startup-performance/qualification/service-compaction-rejected-20261023/result.json).

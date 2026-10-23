@@ -1,0 +1,20 @@
+{
+  "deployed": false,
+  "draft_withdrawn": true,
+  "implementation_branch_restored_before_committing_regression": true,
+  "actual_live_graph_parser_error": "Policy image edge must preserve every other actual Node configuration field",
+  "independent_review_important_findings": [
+    "Removing the service link loses retained policy-image transition provenance",
+    "Draft postcommit quiescence failure left an ordinary tick ready without durable incomplete-handover state"
+  ],
+  "synthetic_passes_did_not_prove_actual_scope": {
+    "broader_tests": 322,
+    "expanded_draft_tests": 17,
+    "independent_review_tests": 58
+  },
+  "retained_guard_regression_commit": "d33ac3e",
+  "retained_guard_tests_passed": 63,
+  "native_link_limit_changed": false,
+  "live_configuration_changed": false,
+  "supported_existing_alternative": "A genuine reviewed addon-image policy release retains actual prior Node/service context and starts a new service segment; no artificial image update or skipped qualification"
+}
