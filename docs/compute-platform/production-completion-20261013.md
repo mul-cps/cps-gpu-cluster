@@ -7,15 +7,14 @@ measured acceptance. Evidence for one stage does not establish the next stage.
 See the [operational acceptance record](qualification/operational-acceptance-20261013.md)
 for the bounded live results of 2026-10-13 and their retained evidence.
 
-## Current boundary — 16 October 2026
+## Current boundary — 23 October 2026
 
-The [current-state audit and adoption record](current-state-20261016.md) is the
-authoritative current summary. Gateway9e695 and both Hube906 processes are
-deployed; Source51f remains unchanged. Normal `shared-gpu-lab` Start is restored,
-with a Ready 5 GiB cap, three member reservations, and 45 successful readiness
-checks over 80 seconds. The backup schedule now matches Gateway9e695 and a fresh
-matching backup passed integrity checks. Full production qualification remains
-open, including GPU916 SDK/addon compatibility and current notebook531 tests.
+The [23 October state and completion order](current-state-20261023.md) is the
+current summary. The durable 5 GiB shared-workspace lifecycle, CUDA cap/recovery,
+persistence and automatic KAI reservation cleanup now pass. Full-pool, remaining
+application/authorization, recovery and release qualification remain open.
+The [16 October audit](current-state-20261016.md) and ledger below retain dated
+historical evidence; their image names and pending statements are not current pins.
 
 ## Historical rollout summary — through 15 October 2026
 

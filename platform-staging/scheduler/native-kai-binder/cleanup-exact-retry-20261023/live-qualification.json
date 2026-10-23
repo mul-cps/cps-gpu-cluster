@@ -1,0 +1,57 @@
+{
+  "version": 1,
+  "kind": "native-reservation-periodic-cleanup-live",
+  "image": "ghcr.io/mul-cps/cps-native-kai-binder@sha256:218f788ef1dda3c065ae49b03ac2f11a9d7ddbf23c29d915db294beb961800a1",
+  "workspace": "cps:shared-gpu-lab",
+  "profile": "interactive-shared-5",
+  "cycles": [
+    {
+      "start_seconds": 84.4946944780022,
+      "close_seconds": 15.107333530002506,
+      "cleanup": {
+        "binder_uid_unchanged": true,
+        "binder_restarts": 0,
+        "reservation_name": "gpu-reservation-027506a6bdcc633e",
+        "reservation_uid": "6c3be06a-fb44-4e73-a641-cc4005a50930",
+        "automatic_deletion": true,
+        "manual_deletion": false,
+        "after_close_seconds": 2.3648414090275764,
+        "total_stop_and_cleanup_seconds": 18.701826149015687
+      },
+      "cuda_64mib": true,
+      "over_cap_6gib_rejected": true,
+      "recovery_1mib": true,
+      "persistence_readback": true
+    },
+    {
+      "start_seconds": 86.0326809850012,
+      "close_seconds": 6.957297886998276,
+      "cleanup": {
+        "binder_uid": "cd5c13d2-a593-431f-8379-870f5aa8738d",
+        "binder_created_at": "2026-10-23T01:04:43Z",
+        "binder_uid_unchanged": true,
+        "binder_restarts": 0,
+        "reservation_name": "gpu-reservation-a7fd999c9027d24b",
+        "reservation_uid": "0a26e667-c512-4064-851f-f616c2e7693d",
+        "automatic_deletion": true,
+        "manual_deletion": false,
+        "after_close_seconds": 3.4148241790244356,
+        "total_stop_and_cleanup_seconds": 11.576170925050974
+      },
+      "cuda_1mib": true,
+      "persistence_readback": true
+    }
+  ],
+  "final_state": {
+    "workspace": "stopped",
+    "member_reservations_active": false,
+    "native_claims": 9,
+    "all_native_claims_released": true,
+    "kai_reservation_pods": 0,
+    "online_kernel_caps": 0,
+    "own_qa_file_removed": true
+  },
+  "manual_deletion_during_qualified_cycles": false,
+  "driver_kernel_mig_changes": false,
+  "production_ready": false
+}

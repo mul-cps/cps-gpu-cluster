@@ -9,5 +9,7 @@
   "go_version": "go1.26.8 linux/amd64",
   "binary_sha256": "0c3442800b717ffe389d50b5bf453bfb0b126f206cfdc3bc22d25903b24c8dc9",
   "full_patch_sha256": "75e3bbd979bdba60f49bd42177eb0b35b7b967fa48c8574297543dcf2eba3e3c",
-  "live_qualification_passed": false
+  "live_qualification_passed": true,
+  "image": "ghcr.io/mul-cps/cps-native-kai-binder@sha256:218f788ef1dda3c065ae49b03ac2f11a9d7ddbf23c29d915db294beb961800a1",
+  "qualification_scope": "Two sequential normal shared-gpu-lab 5 GiB starts and normal stops, same binder Pod, automatic reservation deletion; not full-pool production qualification"
 }

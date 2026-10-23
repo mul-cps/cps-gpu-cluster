@@ -4,6 +4,9 @@ The implementation uses one shared compute policy and gateway, two JupyterHub
 frontends, and **separate CPS and CIT admin applications/databases/OAuth clients**.
 Local course management is active in the application. Moodle is planned and disabled.
 
+See the [23 October current state and completion order](current-state-20261023.md)
+for the latest live acceptance boundary and remaining production gates.
+
 | Repository | Canonical responsibility | Implementation branch |
 | --- | --- | --- |
 | [cps-gpu-cluster](https://github.com/mul-cps/cps-gpu-cluster) | Policy catalog/compiler, GitOps, admission, monitoring, deployment and recovery | `feat/compute-platform-v1` |
