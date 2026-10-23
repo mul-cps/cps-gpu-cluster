@@ -617,3 +617,37 @@ The complete suite is running again. The live deployment is unchanged; neither
 the pending polling change nor these grant-observation fixes are deployed yet.
 
 [Local permission guard evidence](../../platform-staging/startup-performance/qualification/authorization-local-guard-20261023/README.md).
+
+### Local guard deployed; adaptive polling did not improve the measured start
+
+Source `bca0123756964d1cf0b4fd62b84f04b39bc5846e` completed the full suite:
+**5183 passed, 6 skipped, 68 subtests passed** in 567.36 seconds. The Gateway
+and Node image pair is active through supported delivery rotation 7. The normal
+writer is Ready; maintenance helpers were removed. This supersedes the pending
+suite and unchanged-deployment statements immediately above.
+
+The ordinary two-member CPS 5+5 GiB pooled workspace reached Ready in
+**219.99 seconds**, compared with the prior **184.86 seconds**. Pod creation to
+assignment increased from 83 to 122 seconds. Successful Prepare increased from
+37.11 to 46.68 seconds, including 28.81 seconds in enrollment publication and
+12.67 seconds across 23 context loads. These spans overlap and must not be added.
+Neither Gateway nor Node CPU counters reported quota throttling. This sample
+does not demonstrate an adaptive-polling benefit or establish its causal impact.
+
+A 64 MiB CUDA allocation/write/synchronize passed. Normal Source cleanup stopped
+the workspace, restored CPU selection, membership and course ceiling, removed
+the temporary approval and preserved existing grants. Independent Kubernetes
+readback confirms the test Pod is absent and the original research Pod remains
+Running with UID `fe5fb5e7-8696-4ac3-a5a8-1883817d00bb`.
+
+Read-only in-container profiling of three context loads took 1.347 seconds:
+retained transition-history validation accounted for 0.606 seconds and recursive
+Node configuration loading for 0.581 seconds (nested costs, not additive).
+There were 138 ConfigMap reads across these three loads. This is a diagnostic
+sample, not a startup improvement or a replacement for live authorization.
+Next work targets repeated historical validation/read cost while preserving
+fresh permission, object-identity, deletion and capacity checks.
+
+[Deployed receipt](../../platform-staging/startup-performance/qualification/authorization-local-guard-20261023/deployed-verification.json).
+Full-pool packing, broader scheduling/burst qualification and the remaining
+release gates are still open; production readiness is not established.

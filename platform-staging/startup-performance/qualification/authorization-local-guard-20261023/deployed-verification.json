@@ -1,0 +1,19 @@
+{
+  "source": "bca0123756964d1cf0b4fd62b84f04b39bc5846e",
+  "tests": {
+    "passed": 5183,
+    "skipped": 6,
+    "subtests_passed": 68,
+    "duration_seconds": 567.36
+  },
+  "gateway_image": "ghcr.io/mul-cps/cps-compute@sha256:a814aaf50ce85e8975374c2888d44184b8bbcf912f2ce9ed99a7a5a773722f6c",
+  "node_image": "ghcr.io/mul-cps/cps-native-node@sha256:0a82435cbcecafc88f82e0ae072d23079d19d077e322990d2a7742423f4f3dba",
+  "delivery_rotation": 7,
+  "startup_seconds": 219.990685764,
+  "baseline_seconds": 184.864217132,
+  "startup_improvement_demonstrated": false,
+  "cuda_allocation_bytes_passed": 67108864,
+  "cleanup_confirmed": true,
+  "research_pod_uid_preserved": "fe5fb5e7-8696-4ac3-a5a8-1883817d00bb",
+  "qualification_scope": "CPS two-member 5+5 GiB pooling into fixed 10 GiB workspace; not full production qualification"
+}
