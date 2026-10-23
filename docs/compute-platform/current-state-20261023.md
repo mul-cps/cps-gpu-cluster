@@ -602,3 +602,18 @@ The complete suite is running again; no complete pass is claimed yet.
 The candidate was not activated. All eight inactive configuration objects were
 removed using UID preconditions; deployed service specifications are unchanged.
 The next release candidate includes both this correction and adaptive polling.
+
+### Final local grant guard retains the callback budget
+
+The `e837d76` full run passed 5180 tests but failed the existing one-Source-
+callback-per-claim regression. Source `bca0123` removes the repeated full policy
+callback and compares local workspace/storage/effective-member-grant observations
+before and after the external proof. The original callback and four-component
+observation thresholds remain unchanged.
+
+All 32 acquisition/callback tests pass, including grant deletion at two external
+boundaries, expiry without database mutation and unrelated-grant noninterference.
+The complete suite is running again. The live deployment is unchanged; neither
+the pending polling change nor these grant-observation fixes are deployed yet.
+
+[Local permission guard evidence](../../platform-staging/startup-performance/qualification/authorization-local-guard-20261023/README.md).

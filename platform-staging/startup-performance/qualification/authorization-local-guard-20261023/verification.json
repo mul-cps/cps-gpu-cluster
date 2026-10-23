@@ -1,0 +1,15 @@
+{
+  "source_revision": "bca0123756964d1cf0b4fd62b84f04b39bc5846e",
+  "focused_acquisition_and_callback_tests_passed": 32,
+  "revocation_boundaries": [
+    "approval-reference",
+    "final-ledger",
+    "grant-expiry"
+  ],
+  "unrelated_person_grant_change_allowed": true,
+  "original_source_callbacks_per_claim": 1,
+  "original_four_component_observations_per_claim": 1,
+  "original_thresholds_preserved": true,
+  "complete_suite_pending": true,
+  "deployed": false
+}
