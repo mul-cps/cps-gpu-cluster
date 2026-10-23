@@ -1,0 +1,48 @@
+{
+  "state_version": 3,
+  "rotations": 1,
+  "rotation_descriptor_version": 2,
+  "anchor_sha256": "35c838bc8d7f52e4258bfd41d22b259e9b8635f497b0f339c3c2cdbfb42cc0fd",
+  "pending_transition": false,
+  "completed_publications": 1,
+  "anchor_preserved": true,
+  "version": 1,
+  "kind": "active-node-gateway-rotation-executed",
+  "source_revision": "cadbbe8f8f4857c5253b2aaa69fc1abbb05ba8bd",
+  "production_ready": false,
+  "admission": {
+    "replicaset_name": "cps-native-node-agent-7544f9b76f",
+    "replicaset_uid": "cb9516fc-32a4-4bef-b60e-ee9e76ee8d47",
+    "policy_changes": [
+      "ReplicaSet name",
+      "ReplicaSet UID",
+      "bootstrap ConfigMap name"
+    ],
+    "cases": [
+      {
+        "case": "approved",
+        "allowed": true
+      },
+      {
+        "case": "wrong-bootstrap",
+        "allowed": false
+      },
+      {
+        "case": "wrong-owner",
+        "allowed": false
+      },
+      {
+        "case": "extra-host-mount",
+        "allowed": false
+      }
+    ]
+  },
+  "delivery_observer_role_read_sar_cases": 16,
+  "live_start_result": {
+    "elapsed_seconds": 21.316239398998732,
+    "pod_created": false,
+    "cause": "Hub local compiler still uses the predecessor receipt root; rejected coordinator durable hostPath contract before CREATE",
+    "hardware_failure": false
+  },
+  "next_gate": "Release Hub extension and SDK together with the same explicit authorityStateRoot, then run ordinary startup/CUDA/shutdown"
+}
