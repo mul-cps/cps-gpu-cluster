@@ -588,3 +588,17 @@ Node image is published and passes actual driver/kernel/policy preflight.
 No deployment or startup gain is claimed yet.
 
 [Candidate and baseline trace](../../platform-staging/startup-performance/qualification/adaptive-poll-candidate-20261023/README.md).
+
+### Full-suite grant-observation failure corrected in source
+
+The polling candidate's full suite finished with 5178 passed and one failure
+in final acquisition grant withdrawal. Deterministic tests reproduce grant
+revocation after local authorization but during external approval or final
+ledger observation. Source `e837d76` adds a final local Source/member permission
+check after those external observations, retaining custody and reservations
+on denial. All 111 focused acquisition/authorization/pooling tests pass.
+The complete suite is running again; no complete pass is claimed yet.
+
+The candidate was not activated. All eight inactive configuration objects were
+removed using UID preconditions; deployed service specifications are unchanged.
+The next release candidate includes both this correction and adaptive polling.

@@ -24,3 +24,16 @@ kernel, driver-health source and current policy graph preflight pass.
 The image is not deployed. Startup improvement and API/CPU cost remain unproven
 until a controlled comparison. Snapshot identities are still checked afresh;
 this change does not cache authorization.
+
+The full suite subsequently finished with 5178 passed and one failure in
+post-CAS grant withdrawal. A deterministic test reproduced the ordering gap:
+permissions could be revoked during external approval/ledger observations after
+the preceding local grant read. Source `e837d76` ends the final acquisition
+observation with another current local Source/permission check. Two regression
+boundaries and the focused acquisition/authorization/pooling suites pass
+(111 tests). A new full suite is running against that source.
+
+This polling-only candidate was never deployed. Its eight inactive configuration
+objects were deleted with UID preconditions after verifying all deployed
+specifications remained unchanged. The next candidate must include the grant
+check correction as well as the polling change.

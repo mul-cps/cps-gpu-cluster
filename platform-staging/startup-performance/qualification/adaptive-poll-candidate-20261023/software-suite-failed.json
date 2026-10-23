@@ -1,0 +1,10 @@
+{
+  "source_revision": "7486ea8e572cd7755aec47fefa11d91808b7813a",
+  "passed": 5178,
+  "failed": 1,
+  "skipped": 6,
+  "subtests_passed": 68,
+  "seconds": 561.98,
+  "failure": "test_final_acquire_wait_cannot_accept_changed_authority[grant]",
+  "deployed": false
+}
