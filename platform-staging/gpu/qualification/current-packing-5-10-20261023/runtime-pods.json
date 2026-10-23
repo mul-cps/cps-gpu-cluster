@@ -1,0 +1,20 @@
+[
+  {
+    "source": "cps",
+    "namespace": "jupyterhub",
+    "pod": "jupyter-cps-ws-c9adc7b302641bdd7b45f02d6a3353fe--rtc",
+    "uid": "2228338d-04cb-4a83-a541-7b70fac93f69",
+    "node": "k3s-wk-gpu2",
+    "image": "ghcr.io/mul-cps/cps-jupyter-notebook@sha256:fb9872bf71bfee402807c4f0e9adc92c49740ec30fa4a6a4261fa2ae18d32a45",
+    "container_image_id": "ghcr.io/mul-cps/cps-jupyter-notebook@sha256:fb9872bf71bfee402807c4f0e9adc92c49740ec30fa4a6a4261fa2ae18d32a45"
+  },
+  {
+    "source": "cit",
+    "namespace": "cit-jhub",
+    "pod": "jupyter-cit-ws-2b0aeeab4b36c33c9b89a613e2cc0ba2--rtc",
+    "uid": "7755c4c3-f244-4e65-b127-a990a2b305f2",
+    "node": "k3s-wk-gpu2",
+    "image": "ghcr.io/mul-cps/cps-jupyter-notebook@sha256:fb9872bf71bfee402807c4f0e9adc92c49740ec30fa4a6a4261fa2ae18d32a45",
+    "container_image_id": "ghcr.io/mul-cps/cps-jupyter-notebook@sha256:fb9872bf71bfee402807c4f0e9adc92c49740ec30fa4a6a4261fa2ae18d32a45"
+  }
+]

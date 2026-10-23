@@ -1,0 +1,32 @@
+{
+  "sources": [
+    {
+      "passed": true,
+      "workspace": "qa-packing-cps-20261023",
+      "state": "stopped",
+      "profile": "interactive-cpu",
+      "original_ceiling_restored": true,
+      "temporary_grant_expired": true,
+      "temporary_approval_removed": true,
+      "native_cleanup_pending_retries": 0,
+      "revision": "sha256:b7082c511c415ba26ac503917629f505839825dc9d91591e3ca5d76296ea088f",
+      "four_component_ready": true
+    },
+    {
+      "passed": true,
+      "workspace": "student-collab-20261023",
+      "state": "stopped",
+      "profile": "interactive-cpu",
+      "original_ceiling_restored": true,
+      "temporary_grant_expired": true,
+      "temporary_approval_removed": true,
+      "native_cleanup_pending_retries": 0,
+      "revision": "sha256:7782d21630566463b02154842b7cc984d1d3d7e5cd3c9661fa4cb2df05e00b91",
+      "four_component_ready": true
+    }
+  ],
+  "final_member_reservations": 0,
+  "final_reservation_bindings": 0,
+  "kai_reservation_pods": 0,
+  "research_workloads_not_stopped_by_this_test": true
+}

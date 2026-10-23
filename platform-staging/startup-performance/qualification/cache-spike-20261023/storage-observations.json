@@ -1,0 +1,19 @@
+{
+  "source_existing_workspace_provision": {
+    "existing_workspace_provision_seconds": 14.398924839013489,
+    "workspace": "qa-packing-cps-20261023"
+  },
+  "nas_read_only_status": {
+    "read_only_status_probe": true,
+    "seconds": [
+      0.9838051380065735,
+      0.768630899998243,
+      0.7801082219957607
+    ],
+    "storage_version": 2
+  },
+  "status_missing_verified_acl_fields": true,
+  "candidate_live_probe_passed": false,
+  "candidate_deployed": false,
+  "candidate_source_kept_only_as_private_throwaway": true
+}

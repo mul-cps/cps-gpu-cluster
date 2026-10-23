@@ -403,3 +403,26 @@ same zero-error result. This supersedes the earlier suspension notes above.
 [Preservation review and scheduled-run receipt](../../platform-staging/artifacts/qualification/retention-orphan-review-20261023/README.md)
 close retention activation and actual scheduled execution. Off-host recovery,
 broader GPU scheduling/bursts and release integration remain incomplete.
+
+## Fresh 5+10 GiB packing and startup-performance objective
+
+The current released automatic-cap deployment passed a live CPS5/CIT10 pair on
+one A100: over-cap ordinary PyTorch rejection and recovery passed in both
+directions while each peer completed 990 GPU progress iterations. Normal cleanup
+restored the CPU fixtures, expired temporary grants and revoked approvals; all
+reservations/bindings/KAI reservation Pods are gone and four-component readiness
+returned. This is bounded current two-peer evidence, not eight-GPU qualification
+or a complete rerun of IPC/import/MPS tests.
+
+Concurrent start exposed a real pre-execution admission problem: a nonblocking
+execution-fence conflict and withdrawn Node acknowledgment caused both starts
+to fail safely. Sequential starts passed in 128/144 seconds. The user explicitly
+requires substantially faster startup; these times are a baseline, not accepted
+as the final experience. Images were already cached. Measured body caching saves
+milliseconds; readiness/enrollment, pre-Pod work and notebook readiness dominate.
+A shallow NAS-status fast-path prototype lacked required proof and was discarded
+rather than deployed. Live permission/reservation checks remain mandatory.
+
+[Packing and startup baseline](../../platform-staging/gpu/qualification/current-packing-5-10-20261023/README.md)
+and [caching investigation](../../platform-staging/startup-performance/qualification/cache-spike-20261023/README.md)
+record this progress and the new performance priority.

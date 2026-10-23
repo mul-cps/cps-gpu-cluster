@@ -1,0 +1,23 @@
+{
+  "passed": false,
+  "cuda_executed": false,
+  "start_invocations": [
+    {
+      "source": "cps",
+      "returncode": 1,
+      "invoked_at": 1792743789.2485988,
+      "output": null
+    },
+    {
+      "source": "cit",
+      "returncode": 1,
+      "invoked_at": 1792743789.2489321,
+      "output": null
+    }
+  ],
+  "cit_denial": "ExecutionFenceOccupied at writer_section/WriterLock.take",
+  "cps_denial": "ValueError at approval reader node_reference: four current component acknowledgments required",
+  "confirmed_cleanup": true,
+  "manual_reservation_release": false,
+  "remaining_work": "Bound concurrent lease admission and readiness coordination without weakening custody or replaying mutations"
+}

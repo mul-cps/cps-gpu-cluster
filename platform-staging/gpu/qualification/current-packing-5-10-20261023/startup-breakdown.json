@@ -1,0 +1,201 @@
+{
+  "runs": [
+    {
+      "source": "cps",
+      "profile": "interactive-shared-5",
+      "source_ready_seconds": 128.0632480869972,
+      "before_pod_creation_seconds": 41.422189474105835,
+      "pod_creation_to_scheduled_seconds": 48.0,
+      "scheduled_to_notebook_start_seconds": 12.0,
+      "notebook_start_to_source_ready_seconds": 26.641058683395386,
+      "pod_uid": "2228338d-04cb-4a83-a541-7b70fac93f69",
+      "node": "k3s-wk-gpu2"
+    },
+    {
+      "source": "cit",
+      "profile": "interactive-shared-10",
+      "source_ready_seconds": 143.55769741500262,
+      "before_pod_creation_seconds": 45.34380769729614,
+      "pod_creation_to_scheduled_seconds": 56.0,
+      "scheduled_to_notebook_start_seconds": 14.0,
+      "notebook_start_to_source_ready_seconds": 28.213889598846436,
+      "pod_uid": "7755c4c3-f244-4e65-b127-a990a2b305f2",
+      "node": "k3s-wk-gpu2"
+    }
+  ],
+  "coordinator_prepare_timings_in_order": [
+    {
+      "elapsed_seconds": 33.145093,
+      "steps": {
+        "allocation-ack": {
+          "calls": 1,
+          "elapsed_seconds": 0.041254,
+          "last_start_seconds": 32.740982
+        },
+        "allocation-freeze": {
+          "calls": 3,
+          "elapsed_seconds": 1.042876,
+          "last_start_seconds": 23.895195
+        },
+        "allocation-proof": {
+          "calls": 1,
+          "elapsed_seconds": 2.691862,
+          "last_start_seconds": 30.0185
+        },
+        "capacity-census": {
+          "calls": 1,
+          "elapsed_seconds": 0.587584,
+          "last_start_seconds": 32.119738
+        },
+        "compiler-context": {
+          "calls": 1,
+          "elapsed_seconds": 0.078111,
+          "last_start_seconds": 30.01851
+        },
+        "context": {
+          "calls": 23,
+          "elapsed_seconds": 8.044428,
+          "last_start_seconds": 32.825452
+        },
+        "enrollment-publication": {
+          "calls": 2,
+          "elapsed_seconds": 20.029305,
+          "last_start_seconds": 23.906478
+        },
+        "epoch": {
+          "calls": 1,
+          "elapsed_seconds": 0.370976,
+          "last_start_seconds": 30.362003
+        },
+        "execution-fence": {
+          "calls": 1,
+          "elapsed_seconds": 0.006315,
+          "last_start_seconds": 17.587315
+        },
+        "final-claim": {
+          "calls": 1,
+          "elapsed_seconds": 1.361483,
+          "last_start_seconds": 30.757939
+        },
+        "maps": {
+          "calls": 1,
+          "elapsed_seconds": 0.024931,
+          "last_start_seconds": 30.733
+        },
+        "preflight": {
+          "calls": 2,
+          "elapsed_seconds": 0.008675,
+          "last_start_seconds": 0.466502
+        },
+        "prepared-custody": {
+          "calls": 1,
+          "elapsed_seconds": 0.021022,
+          "last_start_seconds": 32.801565
+        },
+        "registered-custody": {
+          "calls": 1,
+          "elapsed_seconds": 0.003306,
+          "last_start_seconds": 0.475185
+        },
+        "registered-readiness": {
+          "calls": 1,
+          "elapsed_seconds": 3.191389,
+          "last_start_seconds": 0.478506
+        },
+        "snapshot-proof": {
+          "calls": 9,
+          "elapsed_seconds": 5.265957,
+          "last_start_seconds": 22.430199
+        }
+      }
+    },
+    {
+      "elapsed_seconds": 44.017179,
+      "steps": {
+        "allocation-ack": {
+          "calls": 1,
+          "elapsed_seconds": 0.047791,
+          "last_start_seconds": 43.609608
+        },
+        "allocation-freeze": {
+          "calls": 3,
+          "elapsed_seconds": 0.373971,
+          "last_start_seconds": 37.907756
+        },
+        "allocation-proof": {
+          "calls": 1,
+          "elapsed_seconds": 2.631877,
+          "last_start_seconds": 40.946555
+        },
+        "capacity-census": {
+          "calls": 1,
+          "elapsed_seconds": 0.543872,
+          "last_start_seconds": 43.031579
+        },
+        "compiler-context": {
+          "calls": 1,
+          "elapsed_seconds": 0.061964,
+          "last_start_seconds": 40.946561
+        },
+        "context": {
+          "calls": 30,
+          "elapsed_seconds": 9.70924,
+          "last_start_seconds": 43.697937
+        },
+        "enrollment-publication": {
+          "calls": 2,
+          "elapsed_seconds": 26.204024,
+          "last_start_seconds": 37.916393
+        },
+        "epoch": {
+          "calls": 1,
+          "elapsed_seconds": 0.360512,
+          "last_start_seconds": 41.045618
+        },
+        "execution-fence": {
+          "calls": 1,
+          "elapsed_seconds": 0.002253,
+          "last_start_seconds": 34.635848
+        },
+        "final-claim": {
+          "calls": 1,
+          "elapsed_seconds": 1.518472,
+          "last_start_seconds": 41.512708
+        },
+        "maps": {
+          "calls": 1,
+          "elapsed_seconds": 0.106551,
+          "last_start_seconds": 41.406149
+        },
+        "preflight": {
+          "calls": 2,
+          "elapsed_seconds": 0.00586,
+          "last_start_seconds": 0.612425
+        },
+        "prepared-custody": {
+          "calls": 1,
+          "elapsed_seconds": 0.0135,
+          "last_start_seconds": 43.677146
+        },
+        "registered-custody": {
+          "calls": 1,
+          "elapsed_seconds": 0.002212,
+          "last_start_seconds": 0.61829
+        },
+        "registered-readiness": {
+          "calls": 1,
+          "elapsed_seconds": 10.841346,
+          "last_start_seconds": 0.620516
+        },
+        "snapshot-proof": {
+          "calls": 9,
+          "elapsed_seconds": 2.90063,
+          "last_start_seconds": 37.274126
+        }
+      }
+    }
+  ],
+  "image_retrieval_observation": "CPS notebook image retrieval 0.104 seconds; layers already present",
+  "not_burst_qualification": true,
+  "performance_goal": "Significantly reduce warm startup; 128/143 seconds is not accepted as the desired final experience"
+}

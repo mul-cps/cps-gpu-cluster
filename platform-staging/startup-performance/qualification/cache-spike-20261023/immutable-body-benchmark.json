@@ -1,0 +1,18 @@
+{
+  "read_only_spike": true,
+  "not_deployed": true,
+  "configmap": "cps-native-addon-preservation-1e5a230d7bf4fd70",
+  "immutable": true,
+  "full_data_bytes": 215849,
+  "partial_metadata_bytes": 528,
+  "iterations_per_variant": 20,
+  "median_ms": {
+    "full": 4.217162495478988,
+    "cached_body_live_metadata": 2.460440002323594
+  },
+  "total_ms": {
+    "full": 85.31713299453259,
+    "cached_body_live_metadata": 51.04292300529778
+  },
+  "live_uid_and_version_verified_every_cached_read": true
+}

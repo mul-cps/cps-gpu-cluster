@@ -1,0 +1,32 @@
+[
+  {
+    "passed": true,
+    "source": "cps",
+    "workspace": "qa-packing-cps-20261023",
+    "profile": "interactive-shared-5",
+    "requested_at_unix": 1792744063.5778105,
+    "seconds": 128.0632480869972,
+    "pod": "jupyter-cps-ws-c9adc7b302641bdd7b45f02d6a3353fe--rtc",
+    "namespace": "jupyterhub",
+    "reservation": {
+      "workspace": "qa-packing-cps-20261023",
+      "active": true,
+      "attempt": "3dc33331-eadc-4702-be02-30d7a338051d"
+    }
+  },
+  {
+    "passed": true,
+    "source": "cit",
+    "workspace": "student-collab-20261023",
+    "profile": "interactive-shared-10",
+    "requested_at_unix": 1792744213.6561923,
+    "seconds": 143.55769741500262,
+    "pod": "jupyter-cit-ws-2b0aeeab4b36c33c9b89a613e2cc0ba2--rtc",
+    "namespace": "cit-jhub",
+    "reservation": {
+      "workspace": "student-collab-20261023",
+      "active": true,
+      "attempt": "ff62ed94-0e4d-4026-b04d-0a2fb8207905"
+    }
+  }
+]
