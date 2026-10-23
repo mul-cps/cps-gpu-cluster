@@ -1552,3 +1552,28 @@ and [candidate image receipt](https://github.com/mul-cps/cps-jupyter-notebook/bl
 retain the exact source, artifact and qualification boundaries. The cluster
 configuration verification command also passes; this does not qualify scheduling
 or a production release.
+
+### Full-pool scope correction (2026-10-24)
+
+Dynamic native group sharing is not yet an eight-GPU implementation. The pending
+Pod compiler authenticates one fixed approved Node/GPU tuple
+(`cps-compute/src/cps_compute/native_gpu_pending.py`, `_approved_binding`), and
+runtime construction supplies one deployment/pool to `NativeGpuGroupAuthority`.
+The trusted binder likewise pins the approved tuple. Full-pool work therefore
+requires qualified multi-pool selection and placement, not just additional
+packing tests or removal of an allowlist.
+
+The read-only worker inventory on 2026-10-24 found eight physical A100-PCIE-40GB
+cards across four workers, with seven advertised to Kubernetes (2/1/2/2).
+GPU2 deliberately advertises only its qualified UUID. All four workers report
+615.71.09, but only GPU2 has the native import-guard parameter and load manifest;
+the matching version string on the other workers does not establish matching
+native ABI support. The second GPU2 card and the other workers must not be
+implicitly admitted by widening inventory configuration.
+
+Required work remains: qualified per-device authorities and selection, retained
+per-device custody/epochs, shared global reservations, compatible guarded worker
+rollout and hardware evidence for every admitted device, followed by full-pool
+packing, reclaim and startup-burst qualification. Existing single-device
+isolation passes remain valid within their measured scope. No driver, kernel,
+MIG, device allowlist or production placement setting was changed by this audit.
