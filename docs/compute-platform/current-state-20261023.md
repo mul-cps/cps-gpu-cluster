@@ -1228,3 +1228,38 @@ bound of 16**: a reviewed checkpoint is required before another image transition
 The next controlled Source start remains in progress; no startup/CUDA pass claimed.
 
 [Hub image, module verification, rotation and cleanup](../../platform-staging/startup-performance/qualification/heartbeat-source-head-hubs-live-20261023/).
+
+### Controlled pooled workspace start and CUDA succeeded; normal stop verified
+
+After the heartbeat rollout, one normal Source HTTP start of the controlled
+10 GiB workspace (two members, existing 5 GiB grants each) returned **200 in
+278.02 seconds**. One Pod UID throughout; Ready at HTTP completion, no replacement
+or disappearance and no observation errors. A **64 MiB CUDA allocation, fill,
+sum and synchronization passed** on one visible NVIDIA A100-PCIE-40GB.
+The old persisted claim was retired by exact binding release (**200**), and
+lease/compile/created all returned 200. This is live evidence of exact-lease
+cleanup recovery and functional pooled startup on the current deployment.
+
+First Pod observed at **73.25 seconds**, real node assignment at **229.92 seconds**,
+Ready at **252.94 seconds**; Source response 278.02 seconds. Prepare succeeded
+in **96.00 seconds**, including **50.35 seconds registered-readiness** and
+**34.41 seconds enrollment-publication** (nested steps are not additive totals).
+The first Prepare requested a read-only snapshot refresh. Pending diagnostics
+captured transient missing `document` acknowledgment payloads and later repeated
+successful current-claim validation. Heartbeat samples during approval propagation
+also exceeded TTL60. **Do not claim all freshness/startup latency issues solved.**
+
+Normal Source HTTP stop completed; the actual Pod is gone. All **32 native
+allocations released**. Full fixture cleanup passed: CPU/stopped, original
+membership/ceiling/notice, unchanged grants, approval removed and four-current
+readiness. QA token revoked. Both Hubs zero restarts; research notebook Running
+at original UID.
+
+This instrumented single run meets the maximum 300-second bound, but it does not
+prove burst p95<=180 seconds, current over-cap peer isolation, cross-Hub pooling,
+20 GiB/eight-GPU packing, scheduling/reclaim or overall production readiness.
+Next focus: reduce the measured registered-readiness/publication delays; a
+reviewed service-configuration checkpoint is needed before another image rollout
+because the retained predecessor chain is at its existing bound.
+
+[Actual start, CUDA, timing, heartbeat samples and full cleanup](../../platform-staging/startup-performance/qualification/exact-retirement-start-attempt6-20261023/).

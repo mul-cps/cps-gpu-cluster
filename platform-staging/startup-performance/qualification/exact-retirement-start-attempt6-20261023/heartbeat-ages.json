@@ -1,0 +1,130 @@
+{
+  "note": "Samples overlap approval propagation; not a steady-state availability benchmark",
+  "samples": [
+    {
+      "sample": 0,
+      "ages": [
+        {
+          "component": "gateway",
+          "age_seconds": 70.703294,
+          "ttl_seconds": 60
+        },
+        {
+          "component": "hub:cit",
+          "age_seconds": 67.610876,
+          "ttl_seconds": 60
+        },
+        {
+          "component": "hub:cps",
+          "age_seconds": 67.616817,
+          "ttl_seconds": 60
+        },
+        {
+          "component": "node",
+          "age_seconds": 4.767787,
+          "ttl_seconds": 60
+        }
+      ]
+    },
+    {
+      "sample": 1,
+      "ages": [
+        {
+          "component": "gateway",
+          "age_seconds": 85.713835,
+          "ttl_seconds": 60
+        },
+        {
+          "component": "hub:cit",
+          "age_seconds": 3.338342,
+          "ttl_seconds": 60
+        },
+        {
+          "component": "hub:cps",
+          "age_seconds": 3.420295,
+          "ttl_seconds": 60
+        },
+        {
+          "component": "node",
+          "age_seconds": 2.038743,
+          "ttl_seconds": 60
+        }
+      ]
+    },
+    {
+      "sample": 2,
+      "ages": [
+        {
+          "component": "gateway",
+          "age_seconds": 12.49782,
+          "ttl_seconds": 60
+        },
+        {
+          "component": "hub:cit",
+          "age_seconds": 18.348669,
+          "ttl_seconds": 60
+        },
+        {
+          "component": "hub:cps",
+          "age_seconds": 18.430746,
+          "ttl_seconds": 60
+        },
+        {
+          "component": "node",
+          "age_seconds": 2.751937,
+          "ttl_seconds": 60
+        }
+      ]
+    },
+    {
+      "sample": 3,
+      "ages": [
+        {
+          "component": "gateway",
+          "age_seconds": 4.921236,
+          "ttl_seconds": 60
+        },
+        {
+          "component": "hub:cit",
+          "age_seconds": 12.502599,
+          "ttl_seconds": 60
+        },
+        {
+          "component": "hub:cps",
+          "age_seconds": 12.504406,
+          "ttl_seconds": 60
+        },
+        {
+          "component": "node",
+          "age_seconds": 3.46186,
+          "ttl_seconds": 60
+        }
+      ]
+    },
+    {
+      "sample": 4,
+      "ages": [
+        {
+          "component": "gateway",
+          "age_seconds": 19.930303,
+          "ttl_seconds": 60
+        },
+        {
+          "component": "hub:cit",
+          "age_seconds": 8.147017,
+          "ttl_seconds": 60
+        },
+        {
+          "component": "hub:cps",
+          "age_seconds": 8.246281,
+          "ttl_seconds": 60
+        },
+        {
+          "component": "node",
+          "age_seconds": 4.247549,
+          "ttl_seconds": 60
+        }
+      ]
+    }
+  ]
+}

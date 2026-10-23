@@ -1,0 +1,41 @@
+{
+  "source_http_exit": 0,
+  "seconds": 280.1433265070664,
+  "requested_at_unix": 1792776682.663476,
+  "pod_uid": "e6f3a979-e2d0-4f6b-a1bf-385ecfc63d62",
+  "pod_disappeared": false,
+  "pod_replaced": false,
+  "observation_errors": [],
+  "pod_ready_at_http_completion": true,
+  "cuda_passed": true,
+  "http_status": 200,
+  "http_seconds": 278.02291151600366,
+  "first_pod_seconds": 73.24863019306213,
+  "first_node_seconds": 229.9195974210743,
+  "first_ready_seconds": 252.93517354805954,
+  "exact_persisted_lease_release_http_status": 200,
+  "lease_compile_created_http_statuses": [
+    200,
+    200,
+    200
+  ],
+  "fixture_cleanup": {
+    "passed": true,
+    "workspace": "qa-packing-cps-20261023",
+    "stopped": true,
+    "cpu_profile_restored": true,
+    "membership_restored": true,
+    "original_ceiling_restored": true,
+    "original_notice_restored": true,
+    "temporary_approval_removed": true,
+    "existing_grants_unchanged": true,
+    "approval_revision": "sha256:1377b63dfe8facd70515cd4b82ed58597925909f5f3dc81515e027fd1f0f64fc",
+    "four_component_ready": true
+  },
+  "qa_token_revoked": true,
+  "native_allocations": 32,
+  "all_native_allocations_released": true,
+  "research_original_uid_running": true,
+  "production_qualified": false,
+  "qualification_scope": "One controlled pooled 10 GiB Source HTTP start and CUDA smoke, followed by observed normal stop; instrumented run, not burst benchmark"
+}

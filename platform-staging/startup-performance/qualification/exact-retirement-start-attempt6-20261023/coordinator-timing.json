@@ -1,0 +1,107 @@
+{
+  "lease": {
+    "elapsed_seconds": 13.758421,
+    "steps": {
+      "context": {
+        "calls": 3,
+        "elapsed_seconds": 1.611598,
+        "last_start_seconds": 13.222337
+      },
+      "lease-acquisition": {
+        "calls": 1,
+        "elapsed_seconds": 11.40754,
+        "last_start_seconds": 1.814647
+      },
+      "lease-readiness": {
+        "calls": 1,
+        "elapsed_seconds": 1.250228,
+        "last_start_seconds": 0.56437
+      }
+    }
+  },
+  "prepare": {
+    "elapsed_seconds": 95.996515,
+    "steps": {
+      "allocation-ack": {
+        "calls": 1,
+        "elapsed_seconds": 0.019589,
+        "last_start_seconds": 95.407321
+      },
+      "allocation-freeze": {
+        "calls": 3,
+        "elapsed_seconds": 1.300115,
+        "last_start_seconds": 86.046606
+      },
+      "allocation-proof": {
+        "calls": 1,
+        "elapsed_seconds": 3.111352,
+        "last_start_seconds": 92.265354
+      },
+      "capacity-census": {
+        "calls": 1,
+        "elapsed_seconds": 0.181796,
+        "last_start_seconds": 95.193584
+      },
+      "compiler-context": {
+        "calls": 1,
+        "elapsed_seconds": 0.045091,
+        "last_start_seconds": 92.265364
+      },
+      "context": {
+        "calls": 44,
+        "elapsed_seconds": 29.543428,
+        "last_start_seconds": 95.459022
+      },
+      "enrollment-publication": {
+        "calls": 2,
+        "elapsed_seconds": 34.40782,
+        "last_start_seconds": 86.056833
+      },
+      "epoch": {
+        "calls": 1,
+        "elapsed_seconds": 0.701954,
+        "last_start_seconds": 92.324274
+      },
+      "execution-fence": {
+        "calls": 1,
+        "elapsed_seconds": 0.002243,
+        "last_start_seconds": 79.375397
+      },
+      "final-claim": {
+        "calls": 1,
+        "elapsed_seconds": 2.153898,
+        "last_start_seconds": 93.039352
+      },
+      "maps": {
+        "calls": 1,
+        "elapsed_seconds": 0.013091,
+        "last_start_seconds": 93.026253
+      },
+      "preflight": {
+        "calls": 2,
+        "elapsed_seconds": 0.250305,
+        "last_start_seconds": 0.573418
+      },
+      "prepared-custody": {
+        "calls": 1,
+        "elapsed_seconds": 0.012086,
+        "last_start_seconds": 95.445783
+      },
+      "registered-custody": {
+        "calls": 1,
+        "elapsed_seconds": 0.000955,
+        "last_start_seconds": 0.823742
+      },
+      "registered-readiness": {
+        "calls": 1,
+        "elapsed_seconds": 50.351228,
+        "last_start_seconds": 0.824711
+      },
+      "snapshot-proof": {
+        "calls": 9,
+        "elapsed_seconds": 5.37586,
+        "last_start_seconds": 84.444657
+      }
+    }
+  }
+}
