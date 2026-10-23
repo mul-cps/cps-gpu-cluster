@@ -1,0 +1,12 @@
+{
+  "native_allocation_records": 14,
+  "all_allocations_released": true,
+  "selected_gpu_cap_entries": 37,
+  "selected_gpu_offline_cap_entries": 37,
+  "online_kernel_caps": 0,
+  "kai_reservation_pods": 0,
+  "binder_reconfigured": false,
+  "active_deployments_changed": false,
+  "sql_changed": false,
+  "journal_changed": false
+}

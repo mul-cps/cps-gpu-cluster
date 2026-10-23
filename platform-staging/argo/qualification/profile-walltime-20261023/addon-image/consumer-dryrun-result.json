@@ -1,0 +1,10 @@
+{
+  "passed": [
+    "gateway",
+    "hub:cps",
+    "hub:cit",
+    "writer",
+    "observer"
+  ],
+  "active_changes": false
+}
