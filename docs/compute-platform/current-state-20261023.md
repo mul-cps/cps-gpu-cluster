@@ -447,8 +447,10 @@ explains an avoidable delay on that path, not the entire warm-start baseline.
 Focused suites passed (107 authority/pending, 59 publication/custody/readiness,
 93 current-group/enrollment, and 132 node-service/custody/ACK/pending tests).
 The full suite was deliberately interrupted while correcting the unsafe lease
-queue; its partial result is not full-suite qualification. Wheel build passed;
-image build and supported handover are in progress. No live speed improvement
+queue; its partial result is not full-suite qualification. Wheel and both container builds passed. Gateway and Node candidate images
+were pushed and their remote manifest digests independently verified; installed
+Gateway dependency checks and the inert Node CLI passed. Supported deployment
+handover remains pending. No live speed improvement
 or production-readiness claim follows from these source tests.
 
 [Staged source verification](../../platform-staging/startup-performance/qualification/cache-spike-20261023/coordinator-fixes.json).

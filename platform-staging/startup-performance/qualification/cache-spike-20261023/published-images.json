@@ -1,0 +1,21 @@
+{
+  "source_revision": "d0150bdaee8f8888f070b84b4dda98b6ec5aca46",
+  "wheel_sha256": "86e0b8bf9d73d54390de5add6cb83a9dbf3bca83f2d6357be7574f4076b53eed",
+  "images": [
+    {
+      "component": "node",
+      "image": "ghcr.io/mul-cps/cps-native-node@sha256:ed51169687e13228b6e37c0e47fc9cd2684efe866b0a3949dc232450c4c54c99",
+      "remote_manifest_sha256_verified": true
+    },
+    {
+      "component": "gateway",
+      "image": "ghcr.io/mul-cps/cps-compute@sha256:696b140d9caa8b52e684b482b02a853626405239e0f3faf889f5ce72ff3b01fe",
+      "remote_manifest_sha256_verified": true
+    }
+  ],
+  "node_inert_cli_no_api_no_gpu": true,
+  "gateway_pip_check_passed": true,
+  "installed_candidate_imports_passed": true,
+  "deployed": false,
+  "live_speedup_measured": false
+}
