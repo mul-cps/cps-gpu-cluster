@@ -1,0 +1,27 @@
+{
+  "qualified": false,
+  "configuration_trial": {
+    "runtime_and_source_publisher_ttl_seconds": 15,
+    "delivery_ttl_unchanged": true,
+    "images_unchanged": true
+  },
+  "idle_readiness": {
+    "samples": 8,
+    "all_ready": true
+  },
+  "start_attempt": {
+    "profile_validation_http_status": 422,
+    "start_requested": false,
+    "pod_created": false,
+    "cause_confirmed": false,
+    "subsequent_read_only_policy_replay_passed": true
+  },
+  "rollback": {
+    "original_gateway_and_both_hub_deployment_specs_verified": true,
+    "all_three_ready": true,
+    "fixture_cleanup_passed": true,
+    "temporary_approval_removed": true,
+    "existing_grants_unchanged": true,
+    "research_pod_original_uid_running": true
+  }
+}

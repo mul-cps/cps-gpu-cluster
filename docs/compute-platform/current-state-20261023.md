@@ -1369,3 +1369,20 @@ CUDA start at 278 seconds. A genuine notebook-image update still requires its
 complete inventories/OCI preservation proof and normal gated policy transition.
 
 [Source pin, wheel/sdist hashes and exact qualification scope](../../platform-staging/startup-performance/qualification/modular-packages-20261023/qualification.json).
+
+### TTL-15 trial rejected; original runtime restored
+
+A config-only trial lowered Gateway and both Source publisher approval TTLs to
+15 seconds (5-second normal cadence), without changing images, Node/delivery
+configuration, or the journal. Eight idle read-only samples were Ready, but the
+fixture's final profile validation returned HTTP 422 before any start request
+or Pod creation. A subsequent read-only policy replay passed; the original
+rejection cause is not established. Idle readiness does not qualify the trial.
+
+The original Gateway and both Hub Deployment specs are restored exactly and
+all three are Ready. Normal cleanup confirms the fixture is stopped, CPU profile,
+membership, ceiling and notice restored, temporary approval removed, four
+components Ready and existing grants unchanged. The research Pod remains Running
+with its original UID. No database/journal reset or reservation deletion was used.
+
+[Trial and verified rollback boundary](../../platform-staging/startup-performance/qualification/heartbeat-ttl15-trial-20261023/result.json).
