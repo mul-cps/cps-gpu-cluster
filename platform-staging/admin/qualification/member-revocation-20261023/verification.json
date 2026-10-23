@@ -1,0 +1,82 @@
+{
+  "fixture": "qa-member-revocation-20261023",
+  "profile": "interactive-cpu",
+  "source": "cps",
+  "test_users": [
+    "armin",
+    "mikasa"
+  ],
+  "initial_start": [
+    {
+      "fixture": "qa-member-revocation-20261023",
+      "state": "running",
+      "elapsed_seconds": 23.143590890998894
+    }
+  ],
+  "visitor_access": [
+    {
+      "phase": "before",
+      "access": {
+        "armin": 200,
+        "mikasa": 200
+      }
+    },
+    {
+      "phase": "removed",
+      "connection_closed": true,
+      "server_absent": true,
+      "seconds": 5.121644248996745
+    },
+    {
+      "phase": "restarted",
+      "access": {
+        "armin": 403,
+        "mikasa": 200
+      }
+    }
+  ],
+  "archive_with_data": [
+    {
+      "file": "qa-member-revocation-20261023.txt",
+      "sha256": "6c93c426c1fc02380a306eb1451a073ab6312a8fe7e8e0790b7578f2bdf33b19",
+      "student_write_and_read_verified": true
+    },
+    {
+      "state": "closed",
+      "archived": true,
+      "evidence": {
+        "state": "archived",
+        "read_only_verified": true,
+        "evidence": {
+          "nas": {
+            "dataset": "persistent1/cps_compute_workspaces/cps/dfa9e6275d1bb2c52534bbecdd75909c867d345ce687671e94400da57c365e89",
+            "readonly": true,
+            "mechanism": "zfs-readonly"
+          },
+          "mount": {
+            "job": "jupyterhub/cps-archive-verify-12968cff31b2421e",
+            "read_only_verified": true
+          }
+        }
+      },
+      "seconds": 11.633635514997877
+    }
+  ],
+  "independent_data_and_readonly_verification": {
+    "preserved_sha256": "6c93c426c1fc02380a306eb1451a073ab6312a8fe7e8e0790b7578f2bdf33b19",
+    "server_read_only": true
+  },
+  "verification_job": {
+    "name": "cps-archive-data-20261023",
+    "uid": "5f1cba89-5a45-4831-a1b8-4d3d88f6569d",
+    "completed": true
+  },
+  "temporary_token_cleanup": {
+    "revoked": 2
+  },
+  "original_project_membership_changed": false,
+  "cpu_test_while_shared_gpu_reserved": true,
+  "transport": "normal Hub proxy inside cluster, original Host and Origin; ordinary student token authentication",
+  "public_https_client_test": "not qualified; console client lacks issuer trust",
+  "gpu_member_removal": "not exercised in this CPU fixture"
+}

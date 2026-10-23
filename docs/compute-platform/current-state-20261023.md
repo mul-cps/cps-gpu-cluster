@@ -52,7 +52,11 @@ must distinguish that evidence from the current live checks above.
    and populated archive/recovery scenarios. A dedicated CPU fixture now passes
    normal closure, server-enforced read-only archive and blocked restart;
    [archive acceptance](../../platform-staging/admin/qualification/archive-identifiers-20261023/verification.json)
-   retains the scope. Connected-visitor revocation is still open. Prior visitor/RTC
+   retains the scope. CPS CPU connected-visitor revocation now passes: an existing Armin WebSocket
+   closed, then restart returned Armin 403 and Mikasa 200. Populated test-file
+   archive retention and EROFS passed independently. See
+   [connected-member evidence](../../platform-staging/admin/qualification/member-revocation-20261023/verification.json).
+   Equivalent CIT/GPU removal remains separate. Prior visitor/RTC
    and local-provider acceptance remains in the historical ledger.
 3. Complete the current notebook/batch authorization matrix: immutable snapshots,
    typed parameters, selected imports, success/failure artifacts, ownership and
