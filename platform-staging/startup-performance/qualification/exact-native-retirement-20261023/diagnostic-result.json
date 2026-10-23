@@ -1,0 +1,42 @@
+{
+  "first_instrumented_request": {
+    "http_status": 422,
+    "pod_created": false,
+    "pending_diagnostic_triggered": false,
+    "failed_endpoint": "/internal/v1/workspace-policy",
+    "inner_denial": "not proven"
+  },
+  "second_instrumented_request": {
+    "http_status": 503,
+    "pod_created": false,
+    "pending_diagnostic_triggered": false,
+    "hub_rejection": "Observed native shutdown required before restart or profile change"
+  },
+  "read_only_policy_replay_after_second_rejection": {
+    "current_live_view_allowed": true,
+    "same_current_projection_allowed": true
+  },
+  "persisted_hub_attempt": {
+    "same_persisted_hub_attempt_matches": 2,
+    "states": {
+      "released": 2
+    },
+    "actors": [
+      "cps"
+    ],
+    "all_same_binding_scope": true
+  },
+  "cleanup": {
+    "both_fixtures_restored": true,
+    "both_credentials_revoked": true,
+    "native_allocations_released": 31,
+    "research_pod_unchanged": true
+  },
+  "source_revision": "c7ac644be511e5ca399de2569a46f245dd365e5d",
+  "focused_tests_passed": 426,
+  "baseline_regression": "Retired attempt accepted again after legal ceiling change on bc9b441; fixed on new source",
+  "full_suite": "running",
+  "source_deployed": false,
+  "registered_readiness_cause": "still unproven",
+  "production_qualified": false
+}

@@ -1047,3 +1047,39 @@ controlled Pod is Pending, rather than a blind same-image retry or a longer
 startup deadline.
 
 [Deployment, HTTP/Pod progress, readiness timing and cleanup receipts](../../platform-staging/startup-performance/qualification/hub-lease-budget-live-20261023/).
+
+### Restart recovery defect reproduced; exact persisted-lease cleanup staged
+
+Two instrumented requests did not reach Pending Pod diagnostics. First returned
+**422** at the final workspace-policy check after provisioning; its exact inner
+denial remains unproven. The second returned **503** before Pod creation. Hub
+traceback identifies the retained native-shutdown guard. A later read-only replay
+passed both live-view and same-current-projection policy checks; that does not
+establish the earlier 422 cause.
+
+Read-only Hub database and native ledger inspection proves that the persisted
+Hub start attempt matches **two released records**, with identical binding
+scope and actor. Name/attempt lookup therefore returns **409 ambiguity** and
+Hub reconciliation retains its old native state. Neither record is active;
+all 31 allocations remain released. Do not clear the state by hand or relax
+ambiguous lookup's authorization rule.
+
+Source `c7ac644` adds an explicit exact-claim cleanup callback. The Hub already
+persists the authenticated immutable lease ID; cleanup validates its complete
+lease shape, binding and attempt, then calls the existing exact-ID authenticated
+release endpoint once. Existing API proof/ownership checks remain authoritative.
+A denied release preserves local state; only normal observed reconciliation
+clears it. Both pending adapter generations retain the new callback.
+
+The same source prevents retiring a start attempt and recreating it under a
+new workspace identity/approval-derived binding hash. It checks before member
+reservation and again before CAS. A fresh attempt remains allowed. A clean
+`bc9b441` regression reproduces resurrection after a legal course-ceiling increase;
+the fix rejects it without reservation or ledger changes. **426 expanded tests
+pass**; full suite is running. Changes are pushed but not deployed.
+
+Both diagnostic fixtures are restored, both temporary credentials revoked,
+research Pod preserved. The original registered-readiness timeout remains open:
+its live diagnostic has not yet run because restart recovery blocked the request.
+
+[Diagnostic, duplicate-history and qualification boundaries](../../platform-staging/startup-performance/qualification/exact-native-retirement-20261023/diagnostic-result.json).
