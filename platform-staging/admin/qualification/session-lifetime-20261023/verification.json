@@ -1,5 +1,5 @@
 {
-  "status": "live_idle_expiry_in_progress",
+  "status": "live_idle_expiry_passed_console_state_followup_open",
   "baseline": {
     "workspace_state": "running",
     "reservation": {
@@ -38,7 +38,38 @@
     "countdown_present": true
   },
   "limits_changed": false,
-  "actual_idle_expiry_proven": false,
+  "actual_idle_expiry_proven": true,
   "actual_maximum_expiry_proven": false,
-  "browser_visual_warning_verified": false
+  "browser_visual_warning_verified": false,
+  "manual_stop_issued": false,
+  "hub_proxy_removal_at": "2026-10-23T02:12:55.574Z",
+  "hub_pod_delete_at": "2026-10-23T02:12:55.586Z",
+  "delete_seconds_after_idle_deadline": 2.227,
+  "pod_absence_readback": {
+    "at": "2026-10-23T02:13:18.232343+00:00",
+    "pod_present": false,
+    "pod_uid": null,
+    "phase": null,
+    "readback_returncode": 0,
+    "readback": {
+      "workspace_state": "running",
+      "reservation": {
+        "workspace": "shared-gpu-lab",
+        "active": false,
+        "attempt": null
+      },
+      "lifetime": {
+        "available": false,
+        "server": {
+          "user": "cps-ws-27c474f74f9d41c53eac0be01fcca8a3",
+          "name": "rtc"
+        },
+        "reason": "unmanaged"
+      }
+    }
+  },
+  "kai_reservation_pods_remaining": 0,
+  "online_kernel_cap_entries": 0,
+  "console_persisted_state_stale": true,
+  "console_state_followup": "Stored Source record remains running after automatic Hub stop; fix dynamic presentation/reconciliation without inferring release from TTL."
 }

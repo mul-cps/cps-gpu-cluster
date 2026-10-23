@@ -11,5 +11,14 @@ cps-compute-jupyterlab owns the static extension, containing the countdown and r
 maximum/idle warning messages. Warning tests exercise 15/5-minute thresholds,
 dismissal, stale authority and deadline extension. This is not visual browser QA.
 
-Live idle expiry is still pending. Do not infer it from correct deadline telemetry
-or software tests. Hard maximum wall-clock expiry is also not yet demonstrated.
+The live idle expiry passed. Without a manual Stop, the Hub removed the proxy
+route at 02:12:55.574Z and requested exact Pod deletion at 02:12:55.586Z,
+2.227 seconds after the recorded idle deadline. The watcher observed absence
+at 02:13:18Z and the member reservation was already inactive. KAI reservations
+and online kernel caps were zero on final readback. Hard maximum wall-clock
+expiry is not yet demonstrated.
+
+The Source console record still says running after this automatic Hub stop. This
+is a confirmed status/reconciliation followup, not an unreleased GPU allowance.
+Keep this stale record available for reproduction; do not claim full UI expiry
+acceptance from the successful Hub/native lifecycle alone.

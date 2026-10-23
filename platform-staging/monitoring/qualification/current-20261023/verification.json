@@ -1,0 +1,455 @@
+{
+  "manifests": [
+    {
+      "name": "cps-compute-observability",
+      "matches_git": true
+    },
+    {
+      "name": "cps-compute-overview-dashboard",
+      "matches_git": true
+    },
+    {
+      "name": "cps-gpu-packing-dashboard",
+      "matches_git": true
+    },
+    {
+      "name": "cps-kai-fairness-dashboard",
+      "matches_git": true
+    },
+    {
+      "name": "cps-teaching-readiness-dashboard",
+      "matches_git": true
+    }
+  ],
+  "recording_rules": [
+    {
+      "name": "cps:gpu_unused_vram_mib",
+      "health": "ok",
+      "lastError": ""
+    },
+    {
+      "name": "cps:gpu_inventory_devices_by_node",
+      "health": "ok",
+      "lastError": ""
+    },
+    {
+      "name": "cps:gpu_bound_active_devices_by_node",
+      "health": "ok",
+      "lastError": ""
+    },
+    {
+      "name": "cps:gpu_kubernetes_unallocated_devices",
+      "health": "ok",
+      "lastError": ""
+    }
+  ],
+  "selected_targets": [
+    {
+      "pool": "podMonitor/cattle-monitoring-system/cps-argo-controller/0",
+      "job": "cattle-monitoring-system/cps-argo-controller",
+      "health": "up",
+      "lastError": ""
+    },
+    {
+      "pool": "serviceMonitor/cattle-monitoring-system/cit-hub-compute-metrics/0",
+      "job": "hub",
+      "health": "up",
+      "lastError": ""
+    },
+    {
+      "pool": "serviceMonitor/cattle-monitoring-system/cps-gpu-isolator/0",
+      "job": "kai-resource-isolator-monitor",
+      "health": "up",
+      "lastError": ""
+    },
+    {
+      "pool": "serviceMonitor/cattle-monitoring-system/cps-gpu-isolator/0",
+      "job": "kai-resource-isolator-monitor",
+      "health": "up",
+      "lastError": ""
+    },
+    {
+      "pool": "serviceMonitor/cattle-monitoring-system/cps-gpu-isolator/0",
+      "job": "kai-resource-isolator-monitor",
+      "health": "up",
+      "lastError": ""
+    },
+    {
+      "pool": "serviceMonitor/cattle-monitoring-system/cps-hub-compute-metrics/0",
+      "job": "hub",
+      "health": "up",
+      "lastError": ""
+    },
+    {
+      "pool": "serviceMonitor/cattle-monitoring-system/kai-compute-metrics/0",
+      "job": "admission",
+      "health": "up",
+      "lastError": ""
+    },
+    {
+      "pool": "serviceMonitor/cattle-monitoring-system/kai-compute-metrics/0",
+      "job": "kai-scheduler-default",
+      "health": "up",
+      "lastError": ""
+    },
+    {
+      "pool": "serviceMonitor/cattle-monitoring-system/kai-compute-metrics/0",
+      "job": "binder",
+      "health": "up",
+      "lastError": ""
+    },
+    {
+      "pool": "serviceMonitor/cattle-monitoring-system/kai-queue-metrics/0",
+      "job": "queue-controller",
+      "health": "up",
+      "lastError": ""
+    },
+    {
+      "pool": "serviceMonitor/cps-compute/compute-metrics-cit/0",
+      "job": "compute-gateway",
+      "health": "up",
+      "lastError": ""
+    },
+    {
+      "pool": "serviceMonitor/cps-compute/compute-metrics-cps/0",
+      "job": "compute-gateway",
+      "health": "up",
+      "lastError": ""
+    },
+    {
+      "pool": "serviceMonitor/gpu-operator/nvidia-dcgm-exporter/0",
+      "job": "nvidia-dcgm-exporter",
+      "health": "up",
+      "lastError": ""
+    },
+    {
+      "pool": "serviceMonitor/gpu-operator/nvidia-dcgm-exporter/0",
+      "job": "nvidia-dcgm-exporter",
+      "health": "up",
+      "lastError": ""
+    },
+    {
+      "pool": "serviceMonitor/gpu-operator/nvidia-dcgm-exporter/0",
+      "job": "nvidia-dcgm-exporter",
+      "health": "up",
+      "lastError": ""
+    },
+    {
+      "pool": "serviceMonitor/jupyterhub/jupyterhub-hub-metrics/0",
+      "job": "hub",
+      "health": "up",
+      "lastError": ""
+    },
+    {
+      "pool": "serviceMonitor/kai-resource-isolator/kai-resource-isolator-monitor/0",
+      "job": "kai-resource-isolator-monitor",
+      "health": "up",
+      "lastError": ""
+    },
+    {
+      "pool": "serviceMonitor/kai-resource-isolator/kai-resource-isolator-monitor/0",
+      "job": "kai-resource-isolator-monitor",
+      "health": "up",
+      "lastError": ""
+    },
+    {
+      "pool": "serviceMonitor/kai-resource-isolator/kai-resource-isolator-monitor/0",
+      "job": "kai-resource-isolator-monitor",
+      "health": "up",
+      "lastError": ""
+    }
+  ],
+  "promtool_rule_count": 8,
+  "query_validation": {
+    "unique_queries": 24,
+    "queries": [
+      {
+        "dashboard": "cps-compute-overview-dashboard",
+        "panel": "Running servers by Hub",
+        "expression": "(jupyterhub_running_servers{namespace=~\"jupyterhub|cit-jhub\"} and (time() - timestamp(jupyterhub_running_servers{namespace=~\"jupyterhub|cit-jhub\"}) <= 120))",
+        "series_count": 2
+      },
+      {
+        "dashboard": "cps-compute-overview-dashboard",
+        "panel": "Physical GPU devices observed",
+        "expression": "count(count by (UUID) ((DCGM_FI_DEV_FB_FREE and (time() - timestamp(DCGM_FI_DEV_FB_FREE) <= 120))))",
+        "series_count": 1
+      },
+      {
+        "dashboard": "cps-compute-overview-dashboard",
+        "panel": "Kubernetes unallocated whole-GPU estimate",
+        "expression": "(cps:gpu_kubernetes_unallocated_devices and (time() - timestamp(cps:gpu_kubernetes_unallocated_devices) <= 120))",
+        "series_count": 0
+      },
+      {
+        "dashboard": "cps-compute-overview-dashboard",
+        "panel": "Placement-eligible physical free GPUs (controller required)",
+        "expression": "(cps_compute_physical_free_gpus and (time() - timestamp(cps_compute_physical_free_gpus) <= 120))",
+        "series_count": 0
+      },
+      {
+        "dashboard": "cps-compute-overview-dashboard",
+        "panel": "Hub spawn p95 seconds",
+        "expression": "(histogram_quantile(0.95, sum by (le, namespace) ((rate(jupyterhub_server_spawn_duration_seconds_bucket[10m]) and (time() - timestamp(jupyterhub_server_spawn_duration_seconds_bucket) <= 120)))) >= 0)",
+        "series_count": 0
+      },
+      {
+        "dashboard": "cps-compute-overview-dashboard",
+        "panel": "Hub scrape availability",
+        "expression": "(up{namespace=~\"jupyterhub|cit-jhub\",service=\"hub\"} and (time() - timestamp(up{namespace=~\"jupyterhub|cit-jhub\",service=\"hub\"}) <= 120))",
+        "series_count": 2
+      },
+      {
+        "dashboard": "cps-compute-overview-dashboard",
+        "panel": "Telemetry availability: DCGM_FI_DEV_FB_FREE",
+        "expression": "(time() - max(timestamp(DCGM_FI_DEV_FB_FREE)) > bool 120) or absent(DCGM_FI_DEV_FB_FREE)",
+        "series_count": 1
+      },
+      {
+        "dashboard": "cps-compute-overview-dashboard",
+        "panel": "Telemetry availability: up{namespace=\"jupyterhub\",service=\"hub\"}",
+        "expression": "clamp_max((1 - min(up{namespace=\"jupyterhub\",service=\"hub\"})) + (time() - max(timestamp(up{namespace=\"jupyterhub\",service=\"hub\"})) > bool 120), 1) or absent(up{namespace=\"jupyterhub\",service=\"hub\"})",
+        "series_count": 1
+      },
+      {
+        "dashboard": "cps-compute-overview-dashboard",
+        "panel": "Telemetry availability: up{namespace=\"cit-jhub\",service=\"hub\"}",
+        "expression": "clamp_max((1 - min(up{namespace=\"cit-jhub\",service=\"hub\"})) + (time() - max(timestamp(up{namespace=\"cit-jhub\",service=\"hub\"})) > bool 120), 1) or absent(up{namespace=\"cit-jhub\",service=\"hub\"})",
+        "series_count": 1
+      },
+      {
+        "dashboard": "cps-compute-overview-dashboard",
+        "panel": "Telemetry availability: up{namespace=\"kai-scheduler\",service=\"kai-scheduler-default\"}",
+        "expression": "clamp_max((1 - min(up{namespace=\"kai-scheduler\",service=\"kai-scheduler-default\"})) + (time() - max(timestamp(up{namespace=\"kai-scheduler\",service=\"kai-scheduler-default\"})) > bool 120), 1) or absent(up{namespace=\"kai-scheduler\",service=\"kai-scheduler-default\"})",
+        "series_count": 1
+      },
+      {
+        "dashboard": "cps-compute-overview-dashboard",
+        "panel": "Telemetry availability: cps_compute_physical_free_gpus",
+        "expression": "(time() - max(timestamp(cps_compute_physical_free_gpus)) > bool 120) or absent(cps_compute_physical_free_gpus)",
+        "series_count": 1
+      },
+      {
+        "dashboard": "cps-compute-overview-dashboard",
+        "panel": "Telemetry availability: cps:gpu_kubernetes_unallocated_devices",
+        "expression": "(time() - max(timestamp(cps:gpu_kubernetes_unallocated_devices)) > bool 120) or absent(cps:gpu_kubernetes_unallocated_devices)",
+        "series_count": 1
+      },
+      {
+        "dashboard": "cps-gpu-packing-dashboard",
+        "panel": "Unused VRAM per physical device (not free GPUs)",
+        "expression": "(DCGM_FI_DEV_FB_FREE and (time() - timestamp(DCGM_FI_DEV_FB_FREE) <= 120))",
+        "series_count": 6
+      },
+      {
+        "dashboard": "cps-gpu-packing-dashboard",
+        "panel": "Used VRAM per physical device",
+        "expression": "(DCGM_FI_DEV_FB_USED and (time() - timestamp(DCGM_FI_DEV_FB_USED) <= 120))",
+        "series_count": 6
+      },
+      {
+        "dashboard": "cps-gpu-packing-dashboard",
+        "panel": "Runtime GPU utilization",
+        "expression": "(DCGM_FI_DEV_GPU_UTIL and (time() - timestamp(DCGM_FI_DEV_GPU_UTIL) <= 120))",
+        "series_count": 6
+      },
+      {
+        "dashboard": "cps-gpu-packing-dashboard",
+        "panel": "Kubernetes unallocated whole-GPU estimate",
+        "expression": "(cps:gpu_kubernetes_unallocated_devices and (time() - timestamp(cps:gpu_kubernetes_unallocated_devices) <= 120))",
+        "series_count": 0
+      },
+      {
+        "dashboard": "cps-gpu-packing-dashboard",
+        "panel": "Placement-eligible free devices (controller required)",
+        "expression": "(cps_compute_physical_free_gpus and (time() - timestamp(cps_compute_physical_free_gpus) <= 120))",
+        "series_count": 0
+      },
+      {
+        "dashboard": "cps-gpu-packing-dashboard",
+        "panel": "Enforced memory cap (isolator required)",
+        "expression": "(cps_compute_gpu_memory_limit_bytes and (time() - timestamp(cps_compute_gpu_memory_limit_bytes) <= 120))",
+        "series_count": 0
+      },
+      {
+        "dashboard": "cps-gpu-packing-dashboard",
+        "panel": "Telemetry availability: DCGM_FI_DEV_FB_FREE",
+        "expression": "(time() - max(timestamp(DCGM_FI_DEV_FB_FREE)) > bool 120) or absent(DCGM_FI_DEV_FB_FREE)",
+        "series_count": 1
+      },
+      {
+        "dashboard": "cps-gpu-packing-dashboard",
+        "panel": "Telemetry availability: up{namespace=\"jupyterhub\",service=\"hub\"}",
+        "expression": "clamp_max((1 - min(up{namespace=\"jupyterhub\",service=\"hub\"})) + (time() - max(timestamp(up{namespace=\"jupyterhub\",service=\"hub\"})) > bool 120), 1) or absent(up{namespace=\"jupyterhub\",service=\"hub\"})",
+        "series_count": 1
+      },
+      {
+        "dashboard": "cps-gpu-packing-dashboard",
+        "panel": "Telemetry availability: up{namespace=\"cit-jhub\",service=\"hub\"}",
+        "expression": "clamp_max((1 - min(up{namespace=\"cit-jhub\",service=\"hub\"})) + (time() - max(timestamp(up{namespace=\"cit-jhub\",service=\"hub\"})) > bool 120), 1) or absent(up{namespace=\"cit-jhub\",service=\"hub\"})",
+        "series_count": 1
+      },
+      {
+        "dashboard": "cps-gpu-packing-dashboard",
+        "panel": "Telemetry availability: up{namespace=\"kai-scheduler\",service=\"kai-scheduler-default\"}",
+        "expression": "clamp_max((1 - min(up{namespace=\"kai-scheduler\",service=\"kai-scheduler-default\"})) + (time() - max(timestamp(up{namespace=\"kai-scheduler\",service=\"kai-scheduler-default\"})) > bool 120), 1) or absent(up{namespace=\"kai-scheduler\",service=\"kai-scheduler-default\"})",
+        "series_count": 1
+      },
+      {
+        "dashboard": "cps-gpu-packing-dashboard",
+        "panel": "Telemetry availability: cps_compute_physical_free_gpus",
+        "expression": "(time() - max(timestamp(cps_compute_physical_free_gpus)) > bool 120) or absent(cps_compute_physical_free_gpus)",
+        "series_count": 1
+      },
+      {
+        "dashboard": "cps-gpu-packing-dashboard",
+        "panel": "Telemetry availability: cps:gpu_kubernetes_unallocated_devices",
+        "expression": "(time() - max(timestamp(cps:gpu_kubernetes_unallocated_devices)) > bool 120) or absent(cps:gpu_kubernetes_unallocated_devices)",
+        "series_count": 1
+      },
+      {
+        "dashboard": "cps-kai-fairness-dashboard",
+        "panel": "Queue GPU fair share",
+        "expression": "(kai_queue_fair_share_gpu and (time() - timestamp(kai_queue_fair_share_gpu) <= 120))",
+        "series_count": 9
+      },
+      {
+        "dashboard": "cps-kai-fairness-dashboard",
+        "panel": "Queue GPU usage (upstream UsageDB units)",
+        "expression": "(kai_queue_gpu_usage and (time() - timestamp(kai_queue_gpu_usage) <= 120))",
+        "series_count": 9
+      },
+      {
+        "dashboard": "cps-kai-fairness-dashboard",
+        "panel": "Preemption attempts (not evicted pods)",
+        "expression": "(increase(kai_total_preemption_attempts[10m]) and (time() - timestamp(kai_total_preemption_attempts) <= 120))",
+        "series_count": 1
+      },
+      {
+        "dashboard": "cps-kai-fairness-dashboard",
+        "panel": "KAI scheduling + binding latency (not full startup)",
+        "expression": "(kai_e2e_scheduling_latency_milliseconds and (time() - timestamp(kai_e2e_scheduling_latency_milliseconds) <= 120))",
+        "series_count": 1
+      },
+      {
+        "dashboard": "cps-kai-fairness-dashboard",
+        "panel": "KAI scheduler availability",
+        "expression": "(up{namespace=\"kai-scheduler\"} and (time() - timestamp(up{namespace=\"kai-scheduler\"}) <= 120))",
+        "series_count": 4
+      },
+      {
+        "dashboard": "cps-kai-fairness-dashboard",
+        "panel": "Telemetry availability: DCGM_FI_DEV_FB_FREE",
+        "expression": "(time() - max(timestamp(DCGM_FI_DEV_FB_FREE)) > bool 120) or absent(DCGM_FI_DEV_FB_FREE)",
+        "series_count": 1
+      },
+      {
+        "dashboard": "cps-kai-fairness-dashboard",
+        "panel": "Telemetry availability: up{namespace=\"jupyterhub\",service=\"hub\"}",
+        "expression": "clamp_max((1 - min(up{namespace=\"jupyterhub\",service=\"hub\"})) + (time() - max(timestamp(up{namespace=\"jupyterhub\",service=\"hub\"})) > bool 120), 1) or absent(up{namespace=\"jupyterhub\",service=\"hub\"})",
+        "series_count": 1
+      },
+      {
+        "dashboard": "cps-kai-fairness-dashboard",
+        "panel": "Telemetry availability: up{namespace=\"cit-jhub\",service=\"hub\"}",
+        "expression": "clamp_max((1 - min(up{namespace=\"cit-jhub\",service=\"hub\"})) + (time() - max(timestamp(up{namespace=\"cit-jhub\",service=\"hub\"})) > bool 120), 1) or absent(up{namespace=\"cit-jhub\",service=\"hub\"})",
+        "series_count": 1
+      },
+      {
+        "dashboard": "cps-kai-fairness-dashboard",
+        "panel": "Telemetry availability: up{namespace=\"kai-scheduler\",service=\"kai-scheduler-default\"}",
+        "expression": "clamp_max((1 - min(up{namespace=\"kai-scheduler\",service=\"kai-scheduler-default\"})) + (time() - max(timestamp(up{namespace=\"kai-scheduler\",service=\"kai-scheduler-default\"})) > bool 120), 1) or absent(up{namespace=\"kai-scheduler\",service=\"kai-scheduler-default\"})",
+        "series_count": 1
+      },
+      {
+        "dashboard": "cps-kai-fairness-dashboard",
+        "panel": "Telemetry availability: cps_compute_physical_free_gpus",
+        "expression": "(time() - max(timestamp(cps_compute_physical_free_gpus)) > bool 120) or absent(cps_compute_physical_free_gpus)",
+        "series_count": 1
+      },
+      {
+        "dashboard": "cps-kai-fairness-dashboard",
+        "panel": "Telemetry availability: cps:gpu_kubernetes_unallocated_devices",
+        "expression": "(time() - max(timestamp(cps:gpu_kubernetes_unallocated_devices)) > bool 120) or absent(cps:gpu_kubernetes_unallocated_devices)",
+        "series_count": 1
+      },
+      {
+        "dashboard": "cps-teaching-readiness-dashboard",
+        "panel": "Spawn p95, target 180s",
+        "expression": "(histogram_quantile(0.95, sum by (le, namespace) ((rate(jupyterhub_server_spawn_duration_seconds_bucket[10m]) and (time() - timestamp(jupyterhub_server_spawn_duration_seconds_bucket) <= 120)))) >= 0)",
+        "series_count": 0
+      },
+      {
+        "dashboard": "cps-teaching-readiness-dashboard",
+        "panel": "Protected sessions (policy controller required)",
+        "expression": "(cps_compute_protected_sessions and (time() - timestamp(cps_compute_protected_sessions) <= 120))",
+        "series_count": 0
+      },
+      {
+        "dashboard": "cps-teaching-readiness-dashboard",
+        "panel": "Reservation acquisition conflicts",
+        "expression": "(increase(cps_compute_reservation_conflicts_total[10m]) and (time() - timestamp(cps_compute_reservation_conflicts_total) <= 120))",
+        "series_count": 2
+      },
+      {
+        "dashboard": "cps-teaching-readiness-dashboard",
+        "panel": "Kubernetes unallocated whole-GPU estimate",
+        "expression": "(cps:gpu_kubernetes_unallocated_devices and (time() - timestamp(cps:gpu_kubernetes_unallocated_devices) <= 120))",
+        "series_count": 0
+      },
+      {
+        "dashboard": "cps-teaching-readiness-dashboard",
+        "panel": "Placement-eligible physical free GPUs (controller required)",
+        "expression": "(cps_compute_physical_free_gpus and (time() - timestamp(cps_compute_physical_free_gpus) <= 120))",
+        "series_count": 0
+      },
+      {
+        "dashboard": "cps-teaching-readiness-dashboard",
+        "panel": "Current protection class (controller required)",
+        "expression": "(cps_compute_teaching_priority and (time() - timestamp(cps_compute_teaching_priority) <= 120))",
+        "series_count": 0
+      },
+      {
+        "dashboard": "cps-teaching-readiness-dashboard",
+        "panel": "Telemetry availability: DCGM_FI_DEV_FB_FREE",
+        "expression": "(time() - max(timestamp(DCGM_FI_DEV_FB_FREE)) > bool 120) or absent(DCGM_FI_DEV_FB_FREE)",
+        "series_count": 1
+      },
+      {
+        "dashboard": "cps-teaching-readiness-dashboard",
+        "panel": "Telemetry availability: up{namespace=\"jupyterhub\",service=\"hub\"}",
+        "expression": "clamp_max((1 - min(up{namespace=\"jupyterhub\",service=\"hub\"})) + (time() - max(timestamp(up{namespace=\"jupyterhub\",service=\"hub\"})) > bool 120), 1) or absent(up{namespace=\"jupyterhub\",service=\"hub\"})",
+        "series_count": 1
+      },
+      {
+        "dashboard": "cps-teaching-readiness-dashboard",
+        "panel": "Telemetry availability: up{namespace=\"cit-jhub\",service=\"hub\"}",
+        "expression": "clamp_max((1 - min(up{namespace=\"cit-jhub\",service=\"hub\"})) + (time() - max(timestamp(up{namespace=\"cit-jhub\",service=\"hub\"})) > bool 120), 1) or absent(up{namespace=\"cit-jhub\",service=\"hub\"})",
+        "series_count": 1
+      },
+      {
+        "dashboard": "cps-teaching-readiness-dashboard",
+        "panel": "Telemetry availability: up{namespace=\"kai-scheduler\",service=\"kai-scheduler-default\"}",
+        "expression": "clamp_max((1 - min(up{namespace=\"kai-scheduler\",service=\"kai-scheduler-default\"})) + (time() - max(timestamp(up{namespace=\"kai-scheduler\",service=\"kai-scheduler-default\"})) > bool 120), 1) or absent(up{namespace=\"kai-scheduler\",service=\"kai-scheduler-default\"})",
+        "series_count": 1
+      },
+      {
+        "dashboard": "cps-teaching-readiness-dashboard",
+        "panel": "Telemetry availability: cps_compute_physical_free_gpus",
+        "expression": "(time() - max(timestamp(cps_compute_physical_free_gpus)) > bool 120) or absent(cps_compute_physical_free_gpus)",
+        "series_count": 1
+      },
+      {
+        "dashboard": "cps-teaching-readiness-dashboard",
+        "panel": "Telemetry availability: cps:gpu_kubernetes_unallocated_devices",
+        "expression": "(time() - max(timestamp(cps:gpu_kubernetes_unallocated_devices)) > bool 120) or absent(cps:gpu_kubernetes_unallocated_devices)",
+        "series_count": 1
+      }
+    ]
+  },
+  "observed_kubernetes_gpu_capacity": 7,
+  "expected_full_inventory": 8,
+  "unallocated_estimate": "unavailable because full-inventory prerequisite is unmet",
+  "placement_eligible_physical_free_gpu_metric": "unavailable",
+  "grafana_visual_render_verified": false
+}

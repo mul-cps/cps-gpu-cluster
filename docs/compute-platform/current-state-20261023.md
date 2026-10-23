@@ -45,8 +45,11 @@ must distinguish that evidence from the current live checks above.
    (99.66 s), normal shutdown and pending-start cancellation passed live; focused
    tests cover lost reservations at final readiness publication. See the
    [package and live verification](../../platform-staging/admin/qualification/start-confirmation-20261023/verification.json).
-   Confirm actual lifetime/idle expiry and advance warnings next; startup success
-   and valid deadline telemetry alone do not prove deadline enforcement.
+   Actual 30-minute idle expiry now passes: proxy removal and Pod deletion occurred
+   2.23 seconds after the deadline; reservations and kernel caps cleared without
+   manual Stop. See [expiry evidence](../../platform-staging/admin/qualification/session-lifetime-20261023/verification.json).
+   Fix the confirmed stale Source running state after automatic shutdown next.
+   Hard-maximum wall-clock expiry and visual warning acceptance remain separate.
 2. Complete ordinary-user CPS/CIT access and the remaining collaboration gates:
    current SDK/Compute/RTC variants, membership removal closing existing access,
    and populated archive/recovery scenarios. A dedicated CPU fixture now passes
@@ -69,7 +72,11 @@ must distinguish that evidence from the current live checks above.
    These two warm single-workspace starts do not establish burst p95, eight-GPU
    capacity, ordinary 20 GiB access or a whole-pool MPS qualification. Existing
    controlled unequal-cap/import/MPS/peer-survival results retain their bounded scope.
-5. Verify monitoring completeness and stale-data presentation, matching-version
+5. Nineteen selected monitoring targets are up; the four dashboards and rules
+   now match Git, with 24 valid queries and healthy recording-rule evaluation.
+   [Current monitoring evidence](../../platform-staging/monitoring/qualification/current-20261023/verification.json)
+   preserves missing native/placement telemetry and the seven-versus-eight GPU
+   inventory boundary. Finish monitoring completeness/visual access, matching-version
    backups and actual restores, NFS archives, and artifact ownership/retention on
    the final application matrix. NFS addresses remain unchanged and the accepted
    NetBird relay path remains the S3 transport choice.
