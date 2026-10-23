@@ -25,5 +25,12 @@
   "rollout_restored_to_predecessor": true,
   "live_workspace_retest_started": false,
   "production_ready": false,
-  "next_gate": "Implement and test explicit active-service configuration rotation with retained predecessor bootstrap identity; do not reset delivery journal or relax admission."
+  "next_gate": "Implement and test explicit active-service configuration rotation with retained predecessor bootstrap identity; do not reset delivery journal or relax admission.",
+  "rollback_delivery_check": {
+    "phase": "ready",
+    "ready": true,
+    "revision": "sha256:d5481dcd5ebd6fef39d91f4283cdd5afc4ddd7de7311a2790757717b0a8bcceb"
+  },
+  "rollback_gateway_seed": "cps-runtime-kai-config-d76dea6ae8e87e2e",
+  "rollback_observer_named_reads_restored": true
 }
