@@ -1619,3 +1619,35 @@ open. Do not enable the new notebook image using old qualification receipts.
 [Canonical operator guide](https://github.com/mul-cps/cps-compute/blob/453c4f5f2ff2bb2d585fdfb645008e4be8af8b9a/docs/native-qualified-policy-transition.md)
 and [software candidate evidence](https://github.com/mul-cps/cps-compute/blob/a68686d5ddbaf317d72d4a9c5abe6046caf61703/releases/native-qualified-policy-20261024/software-qualification.json)
 record the exact application scope and remaining gates.
+
+
+### 2026-10-24: NBI preservation evidence and compatible Hub candidate
+
+The corrected, reviewed read-only collector completed both immutable notebook
+inventories: 261,444 base entries and 261,446 candidate entries. There are 107
+changed filesystem entries; only `claude.py` and `_version.py` change source
+content, and hardlink topology is unchanged. All 28 compiled Python files in
+each image match compilation of their inventoried source. Installed wheel
+payloads and distribution RECORD hashes verify for both images. Exact material
+hashes and explicit exclusions are published in the notebook repository's
+`release/nbi-filesystem-comparison-evidence.json` at commit
+`b0d9a0d04ab2d2e26011b856442dc025bf0dc1bb`.
+
+This supports implementing a separately typed, narrowly scoped NBI software
+preservation edge, retaining the original measured hardware evidence. It does
+not assert that this candidate passed new hardware gates. The existing Lab
+preservation allowlists must remain unchanged. Raw added-layer/whiteout handling,
+sealed NBI admission, authenticated policy handover and live startup/restart
+verification remain open; the notebook candidate is not deployed.
+
+The compatible Hub candidate now builds successfully using overlay storage.
+Its dependency check and actual Hub adapter import pass. All 137 installed
+package versions match the deployed baseline; all 81 SDK Python files and 20
+Hub adapter Python files match their exact wheels. This is candidate software
+verification, not a live Hub rollout or production qualification.
+
+A current read confirms all seven nodes Ready and research Pod `jupyter-gottam`
+Running with UID `fe5fb5e7-8696-4ac3-a5a8-1883817d00bb`. No production workload,
+policy, driver, kernel, NFS path or reservation was changed in these checks.
+The full eight-GPU implementation and broader production acceptance gates remain
+open as recorded above.
