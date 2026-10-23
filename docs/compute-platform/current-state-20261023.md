@@ -1285,3 +1285,24 @@ A reviewed service-chain migration is still needed before the following rollout.
 No deployment or workload changes were made for this profile.
 
 [Read-only samples and authoritative ancestry count](../../platform-staging/startup-performance/qualification/heartbeat-read-profile-20261023/profile.json).
+
+### Short failure retries implemented and tested; not deployed
+
+The installed heartbeat loops wait their full normal **20 seconds after a failed
+proof**. New regression tests reproduce that delay in both Gateway asyncio and
+Hub Tornado scheduling. Compute **45be9b5** now retries failed proofs after
+**one second**, while successful publication retains the normal 20-second
+cadence. Hub callback scheduling adjusts its next interval after each outcome.
+Every attempt still executes the complete proof; failed attempts publish nothing.
+No cached authorization, extended TTL or concurrent proof attempt is introduced.
+The loaded Tornado scheduling implementation reads callback_time for each cycle.
+
+**95 focused tests and 99 additional head/readiness tests pass**. The same patch
+on the exact captured Hub SDK branch (**fd7a65d**) passes its **three endpoint/
+cadence regressions**, preserving the unrelated deployed SDK baseline. Both
+source branches are pushed. **No new image is deployed**, and no startup-speedup
+claim is made. Only one service-image ancestry slot remains, so Gateway and paired
+Hub image changes cannot both be appended without a reviewed ancestry migration.
+The current live success remains the single 278-second pooled CUDA start.
+
+[Tested source and exact verification boundaries](../../platform-staging/startup-performance/qualification/heartbeat-fast-retry-source-20261023/result.json).

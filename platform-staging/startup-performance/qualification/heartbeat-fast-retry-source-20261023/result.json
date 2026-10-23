@@ -1,0 +1,14 @@
+{
+  "gateway_source": "45be9b5ff22df7de39112569ece351c6ecaa06f5",
+  "hub_source": "fd7a65d",
+  "regression_before_change": "Gateway and Hub both waited 20 seconds after failure",
+  "failed_proof_retry_seconds": 1,
+  "successful_heartbeat_interval_seconds": 20,
+  "acknowledgment_ttl_seconds": 60,
+  "authorization_or_freshness_relaxed": false,
+  "focused_tests_passed": 95,
+  "additional_head_readiness_tests_passed": 99,
+  "exact_hub_variant_tests_passed": 3,
+  "deployed": false,
+  "startup_speedup_verified": false
+}
