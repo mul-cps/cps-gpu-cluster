@@ -1,0 +1,154 @@
+{
+  "caller_path": "Operator invokes the same WorkspaceService lifecycle from the existing console. This does not qualify browser/admin-UI OAuth or the failed normal-HTTP start attempt.",
+  "gateway_source_revision": "0e33b68d769715be5b72ccf59c9b481f4122ce0f",
+  "gateway_image": "ghcr.io/mul-cps/cps-compute@sha256:6ae6e7f497a81c44f8c93578b8fb63c2228fe8bc45fde1f5bb7d8ae072631890",
+  "node_image": "ghcr.io/mul-cps/cps-native-node@sha256:b5dd3105f7fc664a84f94c148b41e544c9a0b311c029feb9f79f4cb104e5e20d",
+  "hub_image_both": "ghcr.io/mul-cps/cps-compute@sha256:445c5fa48735ac077a25282256fba445a9d2af4720b994e66ca525fb519b6aae",
+  "notebook_image": "ghcr.io/mul-cps/cps-jupyter-notebook@sha256:fb9872bf71bfee402807c4f0e9adc92c49740ec30fa4a6a4261fa2ae18d32a45",
+  "profile_each": "interactive-shared-5",
+  "starts": {
+    "cit": {
+      "service_start_seconds": 283.318729858991,
+      "monitor_seconds": 286.34755767998286,
+      "pod_uid": "6827ae97-b6e5-424f-82df-a51acc2c23bc",
+      "pod_replaced": false,
+      "pod_disappeared": false,
+      "observation_errors": [],
+      "ready_at_completion": true,
+      "cuda_passed": true,
+      "first_observed_seconds": {
+        "pod": 77.40565484203398,
+        "node": 244.4993858949747,
+        "ready": 261.24306988797616
+      },
+      "cuda": {
+        "cuda_operation_passed": true,
+        "allocation_bytes": 67108864,
+        "device": "NVIDIA A100-PCIE-40GB",
+        "visible_device_count": 1
+      }
+    },
+    "cps": {
+      "service_start_seconds": 241.62962559898733,
+      "monitor_seconds": 244.67633136408404,
+      "pod_uid": "3d2009ba-ccd1-4cbb-a379-a9d105cca22e",
+      "pod_replaced": false,
+      "pod_disappeared": false,
+      "observation_errors": [],
+      "ready_at_completion": true,
+      "cuda_passed": true,
+      "first_observed_seconds": {
+        "pod": 85.79147268610541,
+        "node": 194.49024402711075,
+        "ready": 217.5198198230937
+      },
+      "cuda": {
+        "cuda_operation_passed": true,
+        "allocation_bytes": 67108864,
+        "device": "NVIDIA A100-PCIE-40GB",
+        "visible_device_count": 1
+      }
+    }
+  },
+  "pair": {
+    "two_hubs_running_and_ready": true,
+    "original_pod_uids_preserved": true,
+    "two_native_allocations": true,
+    "same_physical_gpu_uuid": "GPU-16128952-b438-556a-00bb-93039ee24e56",
+    "cap_mib_each": 5120,
+    "separate_canonical_people_reserved_once_each": true,
+    "no_new_grants_or_memberships": true
+  },
+  "peer_progress_during_second_start": {
+    "bounded_peer_probe_completed": true,
+    "iterations": 5981
+  },
+  "peer_progress_during_cps_stop": {
+    "bounded_peer_probe_completed": true,
+    "iterations": 898
+  },
+  "after_first_shutdown": {
+    "cps_pod_absent": true,
+    "only_cit_allocation_retained": true,
+    "original_cit_pod_uid_running": true,
+    "cit_cuda_passes_after_cps_shutdown": true
+  },
+  "normal_service_stop": {
+    "cps": {
+      "source": "cps",
+      "normal_service_stop_passed": true,
+      "seconds": 13.03827049798565,
+      "state": "stopped"
+    },
+    "cit": {
+      "source": "cit",
+      "normal_service_stop_passed": true,
+      "seconds": 23.59619955800008,
+      "state": "stopped"
+    }
+  },
+  "cleanup": {
+    "cps": {
+      "passed": true,
+      "source": "cps",
+      "stopped": true,
+      "cpu_profile_restored": true,
+      "original_ceiling_restored": true,
+      "original_notice_restored": true,
+      "memberships_unchanged": true,
+      "existing_cps_grants_unchanged": true,
+      "temporary_approval_removed": true,
+      "four_components_ready": true
+    },
+    "cit": {
+      "passed": true,
+      "source": "cit",
+      "stopped": true,
+      "cpu_profile_restored": true,
+      "original_ceiling_restored": true,
+      "original_notice_restored": true,
+      "memberships_unchanged": true,
+      "existing_cit_grants_unchanged": true,
+      "temporary_approval_removed": true,
+      "four_components_ready": true
+    }
+  },
+  "resources": {
+    "all_native_allocations_released": true,
+    "allocation_count": 35,
+    "both_test_pods_absent": true,
+    "global_grant_rows_bytewise_fingerprint_unchanged": true,
+    "member_reservations_zero": true,
+    "reservation_bindings_zero": true,
+    "research_pod_original_uid_running": true
+  },
+  "temporary_admin_token_revoked": {
+    "qa_token_revoked": true,
+    "exact_user_note_scopes_checked": true
+  },
+  "no_new_grants_or_memberships": true,
+  "admin_ui_authentication": {
+    "qualified": false,
+    "normal_http_start_reached": false,
+    "app_seed_status": 302,
+    "hub_api_user_status": 403,
+    "reason": "Upstream OIDC session expired; Hub logs identify access-token expiry 2026-10-15T06:40:55Z",
+    "reauthentication_requested": true,
+    "fresh_login_verified": false,
+    "no_authentication_bypass": true
+  },
+  "startup_findings": {
+    "notebook_intelligence_version": "4.6.0",
+    "notebook_extension_loaded_seconds": 268.957,
+    "notebook_intelligence_loaded_seconds": 283.968,
+    "observed_gap_seconds": 15.011,
+    "third_party_initialization_not_yet_patched": true
+  },
+  "limits": [
+    "Not simultaneous startup burst or p95 qualification",
+    "Not full eight-GPU pool or20GiB qualification",
+    "Not same-person cross-Hub conflict-injection test",
+    "Not browser/ordinary-student UI access qualification",
+    "Does not requalify every isolation scenario; existing separate isolation evidence remains required"
+  ]
+}

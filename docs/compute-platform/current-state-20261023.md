@@ -1466,3 +1466,43 @@ that the 27-second post-Pod interval is itself a bug.
 
 [Benchmark and withdrawal](../../platform-staging/startup-performance/qualification/context-load-profile-20261023/result.json),
 [response milestones and readiness boundary](../../platform-staging/startup-performance/qualification/context-load-profile-20261023/attempt8-http-milestones.json).
+
+### Current cross-Hub native5 running pair and peer-safe shutdown verified
+
+The newer CIT student fixture uses the already reviewed Armin identity and its
+existing **global CPS-owned 5-GiB grant**. No grant or membership is added. CIT
+starts through the operator service lifecycle in **283.32 seconds** and passes
+CUDA on its original Pod. While it remains Running, the CPS Mikasa fixture is
+approved and started at 5 GiB in **241.63 seconds**; its original Pod also passes
+CUDA. The CIT bounded probe completes **5,981 GPU progress iterations** through
+the second start. Both Running/Ready Pods are observed together with **two
+5120-MiB native allocations on the same physical selected A100**, and separate
+canonical people reserved once each. No MIG or driver/image changes.
+
+Normal CPS stop takes **13.04 seconds**. Its actual Pod disappears and its
+allocation retires while CIT keeps its original UID/allocation and passes CUDA
+again. A further bounded CIT probe completes **898 iterations** through the CPS
+stop. CIT then stops normally in **23.60 seconds**. Both fixtures return to their
+CPU profiles, original ceilings/notices and original memberships; temporary GPU
+approvals are removed and all four components are Ready. Both Pods are absent,
+all **35** native allocations are released, reservation/member-binding tables
+are empty and the global grant-row fingerprint is unchanged. Research Pod UID
+is preserved.
+
+**Authentication boundary:** the normal CIT HTTP attempt did not reach Start.
+Hub rejected akadmin identification because the upstream OIDC token expired
+October 15; console responded with an OAuth redirect. The temporary scoped API
+token was revoked and re-login requested. No auth check was bypassed. These
+service-lifecycle results do **not** qualify browser/admin-UI OAuth or ordinary
+student access. The legacy CIT pilot fixture was skipped because its teaching
+memberships expired and its central registration uses an older policy; its
+reviewed identity links are valid and it was not modified.
+
+Notebook logs identify another concrete startup cost: installed
+`notebook_intelligence` **4.6.0** loads about **15.01 seconds** after the preceding
+Notebook extension. Its initialization is synchronous; the exact blocking call
+and a package-level correction remain to be established. Both measured starts
+remain above the p95 target. This running pair is not a simultaneous burst,
+full-pool/20-GiB qualification or injected same-person reservation conflict.
+
+[Exact caller boundary, starts, same-device pair, peer survival and cleanup](../../platform-staging/startup-performance/qualification/cross-hub-native5-20261023/result.json).
