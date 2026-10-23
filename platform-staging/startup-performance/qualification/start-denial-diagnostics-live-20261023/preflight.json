@@ -1,0 +1,13 @@
+{
+  "source_revision": "3330700c281867ab31bb9c9c6bbe709b0455604b",
+  "results": {
+    "gateway": {
+      "actual_manifest_and_kernel_validated": true,
+      "health_source_matches_deployed": true,
+      "current_policy_graph_loads": true,
+      "installed_service_and_grant_check_sources_match": true,
+      "no_gpu_calls": true
+    }
+  },
+  "deployed": false
+}

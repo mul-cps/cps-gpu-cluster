@@ -1157,3 +1157,23 @@ grants, temporary approval removed and four-component readiness. QA token revoke
 No claim of live retirement recovery, startup or production readiness.
 
 [Attempt and cleanup evidence](../../platform-staging/startup-performance/qualification/exact-retirement-start-attempt4-20261023/live-result.json).
+
+### Workspace start diagnostics deployed; rotation 18 complete
+
+Compute `3330700` diagnostics are live in gateway
+`sha256:80ebfe5745e6f1613577da2c38590c4221e2bf11c8e35c64842816f6ca3c4e6f`.
+The hash-pinned wheel was installed without dependency updates on the prior
+gateway image; pip check, source hashes, current policy/driver-manifest/kernel
+preflight pass. The node and Hub images remain unchanged. **115 focused tests
+passed** before image build. No resource, policy, driver or storage changes.
+
+Exact-change plan and admission positive/negative checks passed. Read-only
+four-current readiness first withheld rotation, then passed. Rotation **18**
+preserves the anchor and all history with no pending transition. Normal writer
+Ready; both maintenance helpers removed with UID preconditions.
+
+The service predecessor chain is now 15 entries under the existing bound of 16;
+plan a reviewed checkpoint before exhausting it rather than weakening the bound.
+Controlled startup/CUDA qualification remains open.
+
+[Image, preflight, rotation and cleanup receipts](../../platform-staging/startup-performance/qualification/start-denial-diagnostics-live-20261023/).

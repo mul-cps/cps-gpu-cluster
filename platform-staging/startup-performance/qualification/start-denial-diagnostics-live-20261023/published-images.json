@@ -1,0 +1,10 @@
+{
+  "source_revision": "3330700c281867ab31bb9c9c6bbe709b0455604b",
+  "wheel_sha256": "bd3d2c360b22c55704363b9a771af3165b6f9c83c9eb3a105194afff3bb1541a",
+  "images": [
+    {
+      "component": "gateway",
+      "image": "ghcr.io/mul-cps/cps-compute@sha256:80ebfe5745e6f1613577da2c38590c4221e2bf11c8e35c64842816f6ca3c4e6f"
+    }
+  ]
+}
