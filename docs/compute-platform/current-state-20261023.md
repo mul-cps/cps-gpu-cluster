@@ -1500,8 +1500,11 @@ reviewed identity links are valid and it was not modified.
 
 Notebook logs identify another concrete startup cost: installed
 `notebook_intelligence` **4.6.0** loads about **15.01 seconds** after the preceding
-Notebook extension. Its initialization is synchronous; the exact blocking call
-and a package-level correction remain to be established. Both measured starts
+Notebook extension. Its initialization eagerly constructs a Claude client, whose constructor calls
+`connect()` and waits on `_connect_resolved` for the configured **15 seconds**.
+The running notebook logs the matching handshake-timeout warning. A package-level
+fix should defer this agent startup while preserving connection-failure reporting;
+it has not been implemented. Both measured starts
 remain above the p95 target. This running pair is not a simultaneous burst,
 full-pool/20-GiB qualification or injected same-person reservation conflict.
 

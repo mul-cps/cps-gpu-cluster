@@ -142,7 +142,20 @@
     "notebook_extension_loaded_seconds": 268.957,
     "notebook_intelligence_loaded_seconds": 283.968,
     "observed_gap_seconds": 15.011,
-    "third_party_initialization_not_yet_patched": true
+    "third_party_initialization_not_yet_patched": true,
+    "blocking_path": [
+      "NotebookIntelligence.initialize_handlers",
+      "NotebookIntelligence.initialize_ai_service",
+      "AIServiceManager.initialize",
+      "ClaudeCodeChatParticipant.__init__",
+      "ClaudeCodeClient.__init__",
+      "ClaudeCodeClient.connect"
+    ],
+    "blocking_operation": "threading.Event.wait(timeout=CLAUDE_AGENT_CONNECT_TIMEOUT)",
+    "timeout_seconds": 15.0,
+    "matching_runtime_warning": "Claude agent did not reach a terminal connect state within15.0s",
+    "fix_not_implemented": true,
+    "preserve_on_demand_connection_failure_reporting": true
   },
   "limits": [
     "Not simultaneous startup burst or p95 qualification",
