@@ -1,0 +1,20 @@
+[
+  {
+    "passed": true,
+    "actual_hub_identity": true,
+    "policy_hash": "sha256:2054ee32b1f2dd8d4590a41bd1dcdae6a16cec47811815452f10b2ac74e1a1fb",
+    "edge_kinds": [
+      "addon-image"
+    ],
+    "namespace": "jupyterhub"
+  },
+  {
+    "passed": true,
+    "actual_hub_identity": true,
+    "policy_hash": "sha256:2054ee32b1f2dd8d4590a41bd1dcdae6a16cec47811815452f10b2ac74e1a1fb",
+    "edge_kinds": [
+      "addon-image"
+    ],
+    "namespace": "cit-jhub"
+  }
+]

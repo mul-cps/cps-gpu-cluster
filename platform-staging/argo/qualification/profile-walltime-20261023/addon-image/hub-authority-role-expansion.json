@@ -1,0 +1,30 @@
+[
+  {
+    "namespace": "cps-native-runtime",
+    "role": "cps-runtime-hub-cps",
+    "uid": "c896095c-0f3b-4b5f-9c74-05628db22c13",
+    "added_named_configmaps": [
+      "cps-native-addon-deployment-48904ffb63a4b0f8",
+      "cps-native-addon-node-c3e1292eadd8e6f9",
+      "cps-native-addon-preservation-1e5a230d7bf4fd70",
+      "cps-native-addon-transition-185c9c923492a21e",
+      "cps-runtime-deployment-31a3b77cbb519d73"
+    ],
+    "verbs_added": [],
+    "secret_access_added": false
+  },
+  {
+    "namespace": "cps-native-runtime",
+    "role": "cps-runtime-hub-cit",
+    "uid": "837a36f8-7df1-429c-bb85-38aa9e8a5137",
+    "added_named_configmaps": [
+      "cps-native-addon-deployment-48904ffb63a4b0f8",
+      "cps-native-addon-node-c3e1292eadd8e6f9",
+      "cps-native-addon-preservation-1e5a230d7bf4fd70",
+      "cps-native-addon-transition-185c9c923492a21e",
+      "cps-runtime-deployment-31a3b77cbb519d73"
+    ],
+    "verbs_added": [],
+    "secret_access_added": false
+  }
+]
