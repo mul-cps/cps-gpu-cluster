@@ -1,0 +1,24 @@
+[
+  {
+    "namespace": "jupyterhub",
+    "previous_image": "ghcr.io/mul-cps/cps-jupyter-notebook@sha256:a2159bf12d79069ab7eae9075a95dfeaf95e2c7980103701eea595745967bba1",
+    "image": "ghcr.io/mul-cps/cps-jupyter-notebook@sha256:efc3b485006f9d4e1e1b1eeacdd75c92bf00bfe02141f5d91ff28eaadb6eb72f",
+    "previous_secret": "native-lifecycle147-hub-2ca9dccf4f4b81f4-values",
+    "secret": "cps-cpu-addon23-c4be86659d8e99a8",
+    "exact_replacements": 1,
+    "other_values_preserved": true,
+    "running_notebook_pods_not_changed": true,
+    "ready_verified": true
+  },
+  {
+    "namespace": "cit-jhub",
+    "previous_image": "ghcr.io/mul-cps/cit-jupyter-notebook@sha256:68f89bf804eff5644a85df2a68937ce54723c7ae6ce19744cf0bceb0b674ff3a",
+    "image": "ghcr.io/mul-cps/cit-jupyter-notebook@sha256:4d94560166d1faba3e8f88b9138dea5fef62efffd03b2b271eb514930baa7289",
+    "previous_secret": "native-lifecycle147-hub-7b45a67fa2718eca-values",
+    "secret": "cps-cpu-addon23-a5d1738f582d34aa",
+    "exact_replacements": 3,
+    "other_values_preserved": true,
+    "running_notebook_pods_not_changed": true,
+    "ready_verified": true
+  }
+]

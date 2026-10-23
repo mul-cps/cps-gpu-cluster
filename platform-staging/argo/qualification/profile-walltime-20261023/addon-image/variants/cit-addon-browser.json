@@ -1,0 +1,50 @@
+{
+  "hub": "cit",
+  "username": "armin",
+  "account_identity_verified": true,
+  "tabs": {
+    "My Workloads": {
+      "loaded": true,
+      "text_length": 972
+    },
+    "Snippets": {
+      "loaded": true,
+      "text_length": 4079
+    }
+  },
+  "passed": true,
+  "responses": [
+    {
+      "status": 200,
+      "path": "https://jhub.dshl.unileoben.ac.at/services/cit-compute-ui/api/compute/xsrf"
+    },
+    {
+      "status": 200,
+      "path": "https://jhub.dshl.unileoben.ac.at/services/cit-compute-ui/api/compute/v1/me"
+    },
+    {
+      "status": 200,
+      "path": "https://jhub.dshl.unileoben.ac.at/services/cit-compute-ui/api/compute/xsrf"
+    },
+    {
+      "status": 503,
+      "path": "https://jhub.dshl.unileoben.ac.at/services/cit-compute-ui/api/compute/v1/jobsets"
+    },
+    {
+      "status": 200,
+      "path": "https://jhub.dshl.unileoben.ac.at/services/cit-compute-ui/api/compute/v1/workflows"
+    },
+    {
+      "status": 200,
+      "path": "https://jhub.dshl.unileoben.ac.at/services/cit-compute-ui/api/compute/xsrf"
+    },
+    {
+      "status": 200,
+      "path": "https://jhub.dshl.unileoben.ac.at/services/cit-compute-ui/api/compute/v1/profiles"
+    },
+    {
+      "status": 200,
+      "path": "https://jhub.dshl.unileoben.ac.at/services/cit-compute-ui/api/compute/v1/me"
+    }
+  ]
+}

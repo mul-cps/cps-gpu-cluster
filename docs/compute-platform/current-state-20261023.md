@@ -50,6 +50,28 @@ live ingress readback; no DNS, identity mapping or permission settings were chan
 [Variant and student acceptance evidence](../../platform-staging/argo/qualification/profile-walltime-20261023/addon-image/variants/progress.json)
 contains the bounded progress, with separate login and API read receipts.
 
+## CPU image deployment and CIT browser acceptance
+
+Both Hubs now mount new immutable values Secrets containing the verified CPU
+image digests. Other values were retained byte-for-byte. The initial attempt
+changed dormant Helm Secrets; these were restored after Pod readback revealed
+that the live Hubs mount versioned immutable Secrets. Both control Pods are Ready,
+and the normal runtime writer returned to Ready at the unchanged scoped revision.
+The existing research notebook Pod UIDs remained unchanged throughout.
+
+Armin launched CIT `cpu-small` normally on image `4d945601…baa7289` and reached
+JupyterLab in 28.877 seconds. The addon and server extension are installed. The
+isolated browser verified his canonical Account identity, My Workloads without
+stale-data errors, and dynamic snippet recipe generation after selecting his
+permitted profile/project and a notebook path. No snippet was executed. Disabled
+JobSet listing returns 503 but does not prevent ordinary workflow listing. CPS
+personal CPU live launch, CIT submission/collaboration, snippet insertion/copy
+and full release integration remain open.
+
+[CPU image activation](../../platform-staging/argo/qualification/profile-walltime-20261023/addon-image/variants/cpu-image-activation.json)
+and [CIT browser receipt](../../platform-staging/argo/qualification/profile-walltime-20261023/addon-image/variants/cit-addon-browser.json)
+record this bounded acceptance. The staged operations are not yet a merged GitOps release.
+
 ## Newly verified live results
 
 - CPS and CIT use the matching Hub image `435c0806…e5cb466`. The Hub wheel is
