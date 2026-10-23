@@ -1,0 +1,53 @@
+{
+  "source_http_exit": 1,
+  "seconds": 309.54212874907535,
+  "requested_at_unix": 1792762486.1245327,
+  "pod_uid": "61ac0c51-1271-4bf3-a005-f3420fedb596",
+  "pod_disappeared": true,
+  "pod_replaced": false,
+  "observation_errors": [],
+  "pod_ready_at_http_completion": false,
+  "cuda_passed": false,
+  "functional_qualification_passed": false,
+  "http_start_status": 409,
+  "http_start_seconds": 307.1213525009953,
+  "http_stop_status": 200,
+  "normal_console_http_path_used": true,
+  "source_false_success_observed": false,
+  "coordinator_failure": {
+    "stage": "enrollment-publication",
+    "boundary": "fresh all-four claim before reserved-to-enrolling CAS",
+    "exception": "ValueError",
+    "last_authority_function": "runtime.Reader.node_reference",
+    "prepare_seconds": 38.503026,
+    "registered_readiness_seconds": 27.727937,
+    "enrollment_publication_seconds": 10.480875
+  },
+  "cleanup": {
+    "passed": true,
+    "workspace": "qa-packing-cps-20261023",
+    "stopped": true,
+    "cpu_profile_restored": true,
+    "membership_restored": true,
+    "original_ceiling_restored": true,
+    "original_notice_restored": true,
+    "temporary_approval_removed": true,
+    "existing_grants_unchanged": true,
+    "approval_revision": "sha256:dc0ed95372382564d5b1ebed7eeb813dce9862fa8c97c855c0bb1b5a33897779",
+    "four_component_ready": true
+  },
+  "global_reservations": 0,
+  "global_bindings": 0,
+  "native_allocation_states": {
+    "released": 29
+  },
+  "qa_token_cleanup": {
+    "qa_token_revoked": true,
+    "exact_user_note_scopes_checked": true
+  },
+  "cold_hub_configuration": {
+    "hub_cold_configuration_loaded": true,
+    "application_not_started": true
+  },
+  "research_pod_uid_preserved": "fe5fb5e7-8696-4ac3-a5a8-1883817d00bb"
+}

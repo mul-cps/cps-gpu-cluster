@@ -20,3 +20,10 @@ this candidate yet. See `candidate.json` for artifact identities.
 The next live run must verify actual Pod readiness and CUDA. The prior Source
 success coincided with cleanup from a second diagnostic process and must not
 be treated as proof of a normal UI readiness failure or startup success.
+
+## Subsequent deployment and HTTP qualification
+
+The full suite passed (5186 tests plus 68 subtests); rotation 9 deployed the
+images. The actual HTTP start then returned 409 at a pre-CAS all-four ACK gate,
+with no Ready Pod or CUDA proof. HTTP Stop and complete restoration passed.
+See `deployed.json` and `http-live-result.json`.

@@ -730,3 +730,35 @@ start must additionally retain the same Pod UID, reach Kubernetes Ready and pass
 an actual CUDA allocation/write/synchronize. Live qualification is still pending.
 
 [Deployment receipt](../../platform-staging/startup-performance/qualification/enrollment-renewal-20261023/deployed.json).
+
+### Normal HTTP start denies correctly; pre-CAS readiness retry remains open
+
+The controlled pooled-member test used the actual authenticated console HTTP
+endpoint, with its ordinary CSRF cookie/header and in-process lifecycle locks.
+Start returned **409 after 307.12 seconds**; the Pod never reached Ready and no
+CUDA test was run. Stop returned **200**. No false-success response occurred.
+This narrows the previous success-during-cleanup observation to the diagnostic
+cross-process Stop race; it does not prove every lifecycle race qualified.
+
+The coordinator first requested a registered snapshot refresh, then denied
+Prepare after 38.50 seconds at the fresh full all-four claim immediately before
+the reserved-to-enrolling CAS (`runtime.Reader.node_reference`). Registered
+readiness had taken 27.73 seconds. The earlier malformed-withdrawal branch did
+not recur, but this attempt failed before it could qualify final publication.
+The next change must model and handle transient acknowledgment unavailability
+at this pre-CAS read-only boundary, preserving the original head, grants,
+identity/epoch, custody checks and deadline. No production readiness is claimed.
+
+Normal HTTP Stop and subsequent fixture restoration completed. CPU profile,
+membership, ceiling and notice were restored; temporary approval removed and
+existing grants unchanged. Independent global reservation/binding counts are
+zero; all native allocations are released. The original research Pod remains
+Running with its original UID. The short-lived, narrowly scoped QA user token
+was revoked and its private credential files removed.
+
+An isolated Hub configuration load temporarily encountered a ConfigMap RBAC
+denial while approval delivery was changing. After settled cleanup it **passes**;
+the running Hub was never restarted. Do not report this transient result as an
+unresolved settled-state cold-start failure.
+
+[HTTP live result and cleanup](../../platform-staging/startup-performance/qualification/enrollment-renewal-20261023/http-live-result.json).
