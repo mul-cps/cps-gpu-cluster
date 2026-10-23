@@ -1,0 +1,31 @@
+{
+  "source_http_exit": 1,
+  "seconds": 44.0051132729277,
+  "requested_at_unix": 1792774433.4552279,
+  "pod_uid": null,
+  "pod_disappeared": false,
+  "pod_replaced": false,
+  "observation_errors": [],
+  "pod_ready_at_http_completion": false,
+  "cuda_passed": false,
+  "http_status": 409,
+  "failed_stage": "central workspace storage provisioning before Hub request",
+  "original_storage_denial_reason": "unproven",
+  "normal_provisioning_resume_succeeded": true,
+  "qa_token_revoked": true,
+  "fixture_cleanup": {
+    "passed": true,
+    "workspace": "qa-packing-cps-20261023",
+    "stopped": true,
+    "cpu_profile_restored": true,
+    "membership_restored": true,
+    "original_ceiling_restored": true,
+    "original_notice_restored": true,
+    "temporary_approval_removed": true,
+    "existing_grants_unchanged": true,
+    "approval_revision": "sha256:dfdd4802c6109651687d958b5adb6e07b81bec66d2e285d4ac24f8def273039f",
+    "four_component_ready": true
+  },
+  "hub_exact_cleanup_exercised": false,
+  "research_pod_original_uid_running": true
+}

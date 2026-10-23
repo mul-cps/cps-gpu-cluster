@@ -1118,3 +1118,22 @@ start, capturing the original registered-readiness denial while Pending. Researc
 Pod remains Running at original UID.
 
 [Published images, test boundaries, both journal rotations and cleanup](../../platform-staging/startup-performance/qualification/exact-native-retirement-live-20261023/).
+
+### Controlled start after retirement rollout: provisioning denied, fixture restored
+
+The single normal Source HTTP start returned **409 in 42.94 seconds**, before
+Hub spawn or Pod creation. The gateway logged `/workspaces/provision` 409.
+Storage lifecycle remained `provisioning`, correctly preventing changed
+registration during incomplete storage work. TCP/SSH-banner connectivity to the
+configured NAS bridge succeeded in 0.006 seconds; this does not explain the
+original provisioning denial. A normal authenticated provisioning resume returned
+`active`; no database or filesystem state was manually cleared.
+
+Normal Source cleanup then passed: stopped, CPU profile, original membership,
+ceiling and notice restored, temporary approval removed, existing grants unchanged,
+all-four component readiness confirmed. QA token revoked. Research Pod remains
+Running at its original UID. **No CUDA/startup pass or live exact-lease cleanup
+recovery is claimed.** Capture the suppressed provisioning exception on the next
+controlled run if it recurs; the earlier Pending readiness blocker remains open.
+
+[Controlled start and restoration evidence](../../platform-staging/startup-performance/qualification/exact-retirement-start-attempt3-20261023/live-result.json).
