@@ -1,0 +1,81 @@
+{
+  "source_revision": "ea97d603be591d622773100a0daf49eb6b249cc3",
+  "changed_modules": [
+    "cps_compute/storage.py"
+  ],
+  "unchanged_modules": 48,
+  "wheel_sha256": "5b40a9c93c16cff140ba361637df343d48d7ff72556b7615fe39f87a012bee36",
+  "tests_passed": 111,
+  "unchanged_distributions": 105,
+  "installed_changed_modules": [
+    "cps_compute/storage.py"
+  ],
+  "admin_app_and_frontend_unchanged": true,
+  "image": "ghcr.io/mul-cps/e2x-course-hub@sha256:7350b1f5e9e4c09f347aa43ff4cadfa7d5ef1d90c7e02a755970699b5794acc9",
+  "deployment": {
+    "cps-admin": "ready",
+    "cit-admin": "ready"
+  },
+  "live_archive": {
+    "fixture": "qa-collaboration-20261023",
+    "state": "closed",
+    "archived": true,
+    "archive_pending": false,
+    "archive_evidence": {
+      "state": "archived",
+      "read_only_verified": true,
+      "evidence": {
+        "nas": {
+          "dataset": "persistent1/cps_compute_workspaces/cps/f920dae5c58c9777bc391eb95aab48264788e4f67764f105ec34fdae36d03162",
+          "readonly": true,
+          "mechanism": "zfs-readonly"
+        },
+        "mount": {
+          "job": "jupyterhub/cps-archive-verify-2faf09eb6ef04159",
+          "read_only_verified": true
+        }
+      }
+    },
+    "seconds": 8.433859229000518
+  },
+  "restart_guard": {
+    "fixture": "qa-collaboration-20261023",
+    "restart_blocked": true,
+    "state": "stopped",
+    "archived": true,
+    "server_absent": true
+  },
+  "verifier": {
+    "name": "cps-archive-verify-2faf09eb6ef04159",
+    "uid": "803d6152-38d7-4789-be63-bc9bb1b63a69",
+    "status": {
+      "completionTime": "2026-10-23T01:54:42Z",
+      "conditions": [
+        {
+          "lastProbeTime": "2026-10-23T01:54:42Z",
+          "lastTransitionTime": "2026-10-23T01:54:42Z",
+          "message": "Reached expected number of succeeded pods",
+          "reason": "CompletionsReached",
+          "status": "True",
+          "type": "SuccessCriteriaMet"
+        },
+        {
+          "lastProbeTime": "2026-10-23T01:54:42Z",
+          "lastTransitionTime": "2026-10-23T01:54:42Z",
+          "message": "Reached expected number of succeeded pods",
+          "reason": "CompletionsReached",
+          "status": "True",
+          "type": "Complete"
+        }
+      ],
+      "ready": 0,
+      "startTime": "2026-10-23T01:54:38Z",
+      "succeeded": 1,
+      "terminating": 0,
+      "uncountedTerminatedPods": {}
+    },
+    "output": {
+      "read_only_verified": true
+    }
+  }
+}

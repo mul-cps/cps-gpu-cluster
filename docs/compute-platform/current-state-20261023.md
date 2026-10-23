@@ -49,8 +49,11 @@ must distinguish that evidence from the current live checks above.
    and valid deadline telemetry alone do not prove deadline enforcement.
 2. Complete ordinary-user CPS/CIT access and the remaining collaboration gates:
    current SDK/Compute/RTC variants, membership removal closing existing access,
-   and stopped-writer read-only archives. Prior visitor/RTC and local-provider
-   acceptance remains in the historical ledger.
+   and populated archive/recovery scenarios. A dedicated CPU fixture now passes
+   normal closure, server-enforced read-only archive and blocked restart;
+   [archive acceptance](../../platform-staging/admin/qualification/archive-identifiers-20261023/verification.json)
+   retains the scope. Connected-visitor revocation is still open. Prior visitor/RTC
+   and local-provider acceptance remains in the historical ledger.
 3. Complete the current notebook/batch authorization matrix: immutable snapshots,
    typed parameters, selected imports, success/failure artifacts, ownership and
    crafted request rejection. Retain independent CPU/batch permissions while a
