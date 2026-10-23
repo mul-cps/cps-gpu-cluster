@@ -478,8 +478,11 @@ the existing backup mount policy. Source Helm render tests pass (23 tests and
 Corrected compute source `4f39a686254f692dcce9d5a7d03a34f4271dad85` integrates
 the three deployed Node commits. Its Node files differ from deployed source
 only by the intended two fast-retry files; its health verifier SHA256 exactly
-matches the deployed fc9dd634…4322fe8. 343 focused tests passed. Corrected
-images are building; another supported handover and live timing remain open.
+matches the deployed fc9dd634…4322fe8. 343 focused tests passed. Corrected Gateway `fc77489e…4f6392` and Node `88fa54cb…eacd81` images are
+published with independently verified remote manifests. Both installed candidates
+passed validation against the actual protected load manifest/kernel, matched the
+deployed health-source hash and loaded the actual immutable policy graph without
+GPU calls. Another supported handover and live timing remain open.
 The first published images must not be promoted.
 
 [Rejected attempt and verified restoration](../../platform-staging/startup-performance/qualification/cache-spike-20261023/rejected-rollout-and-restoration.json).

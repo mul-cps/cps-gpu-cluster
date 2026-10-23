@@ -1,0 +1,20 @@
+{
+  "passed": true,
+  "source_revision": "4f39a686254f692dcce9d5a7d03a34f4271dad85",
+  "results": [
+    {
+      "repository": "cps-native-node",
+      "actual_manifest_and_kernel_validated": true,
+      "health_source_matches_deployed": true,
+      "actual_policy_graph_loads": true,
+      "no_gpu_calls": true
+    },
+    {
+      "repository": "cps-compute",
+      "actual_manifest_and_kernel_validated": true,
+      "health_source_matches_deployed": true,
+      "actual_policy_graph_loads": true,
+      "no_gpu_calls": true
+    }
+  ]
+}

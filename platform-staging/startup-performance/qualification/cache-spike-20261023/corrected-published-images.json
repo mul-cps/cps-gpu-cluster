@@ -1,0 +1,17 @@
+{
+  "source_revision": "4f39a686254f692dcce9d5a7d03a34f4271dad85",
+  "images": [
+    {
+      "component": "node",
+      "image": "ghcr.io/mul-cps/cps-native-node@sha256:88fa54cbcff05312208b177feb68ad9d584a3be3bf19fc9a9f2d2c7a9beacd81",
+      "remote_manifest_verified": true
+    },
+    {
+      "component": "gateway",
+      "image": "ghcr.io/mul-cps/cps-compute@sha256:fc77489e5de96ba8c55a2082534cad6badd455323fda6843be9126a7d74f6392",
+      "remote_manifest_verified": true
+    }
+  ],
+  "actual_manifest_and_policy_preflight_passed": true,
+  "deployed": false
+}
