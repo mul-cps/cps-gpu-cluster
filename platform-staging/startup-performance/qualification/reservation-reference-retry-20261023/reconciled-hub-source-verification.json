@@ -1,0 +1,9 @@
+{
+  "actual_deployed_baseline": "4b3679fcda985b69abaf4cc70630dd2ca4849632",
+  "unchanged_installed_modules": 19,
+  "changed_modules": [
+    "hub.py"
+  ],
+  "intended_change": "Native reservation response timeout only",
+  "candidate_deployed": false
+}

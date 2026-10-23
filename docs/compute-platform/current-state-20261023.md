@@ -917,3 +917,37 @@ revoked and removed. Research Pod `jupyter-gottam` remains Running with original
 UID `fe5fb5e7-8696-4ac3-a5a8-1883817d00bb`. Production qualification remains open.
 
 [Public test, image and live result receipts](../../platform-staging/startup-performance/qualification/initial-lease-readiness-20261023/).
+
+### Reservation-stage readiness denial located; retry suite passes; Hub packaging corrected
+
+Rotation 12 deployed code-location diagnostics (`cbf0841`). The real console
+start returned 503 after **30.583 seconds**, without a Pod. Its denial is at
+`runtime.py:Reader.node_reference`: no valid complete four-component current
+observation, or a revision mismatch, while freezing the first member-reservation
+reference. This establishes the failing gate, not which receipt was absent or
+stale. It occurs before coordinator lease. Test workspace and credential cleanup
+passed; original grants and research Pod were preserved.
+
+Source `725a3a6` adds a 60-second read-only reference wait against a frozen
+workspace record and approval revision. Only the exact existing readiness
+classification retries. Grants are revalidated before writes; changed Source
+records/heads, unrelated errors and timeout deny without reservations.
+**42 focused tests** and the full **5,207 passed, six skipped, 68 passed subtests**
+run pass. That server fix is not deployed yet.
+
+The first Hub timeout candidate omitted deployed owner-overlay/lifetime code
+and failed startup on the `owner_scoped_overlay` keyword. Both Hubs and all
+previous service inputs were restored before any journal rotation. Journal
+bytes are unchanged, rotation remains 12, all four components Ready, both
+maintenance helpers deleted, research Pod still Running with original UID.
+The incompatible Hub image is rejected and must not be promoted.
+
+Actual deployed Hub module hashes match `4b3679f` across all 20 Python files.
+Source `57425ac` reconciles that package into the integration branch and adds
+only the native reservation read timeout (120 seconds; connect/write/pool remain
+30; one POST, no mutation replay). Nineteen baseline modules match byte-for-byte
+and the twentieth differs only by this timeout. **470 Hub/package tests pass**,
+including retained owner-overlay and lifetime behavior. New reconciled image
+build and live qualification remain pending.
+
+[Failure, full-suite, package comparison and restoration receipts](../../platform-staging/startup-performance/qualification/reservation-reference-retry-20261023/).

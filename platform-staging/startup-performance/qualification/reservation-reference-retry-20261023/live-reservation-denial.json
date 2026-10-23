@@ -1,0 +1,20 @@
+{
+  "deployed_source_revision": "cbf0841dfa4cbe89c082d294a470fea996da87cf",
+  "rotation_count": 12,
+  "normal_console_start": {
+    "http_status": 503,
+    "seconds": 30.58252228901256,
+    "pod_created": false,
+    "cuda_passed": false,
+    "denial_code_location": "internal.py:acquire:640 > native_groups.py:approval_reference:348 > native_group_approvals.py:node_reference:184 > runtime.py:node_reference:340",
+    "denial_condition": "Current four-process acknowledgment observation absent or revision mismatch at node reference freeze; exact missing/stale component not proven"
+  },
+  "fixture_restoration_passed": true,
+  "temporary_credential_revoked": true,
+  "research_pod_unchanged": true,
+  "source_fix_short_revision": "725a3a6",
+  "focused_tests_passed": 42,
+  "full_suite": "running",
+  "fix_deployed": false,
+  "qualified": false
+}

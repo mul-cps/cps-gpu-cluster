@@ -1,0 +1,16 @@
+{
+  "attempted_hub_image": "ghcr.io/mul-cps/cps-compute@sha256:efc2936dbd90a9d70709c6dca2a0cf249b8f1348185b82f08226625e15eadf71",
+  "candidate_rejected": true,
+  "failure": "Deployed config requires owner_scoped_overlay keyword absent in candidate Hub package",
+  "restored": true,
+  "journal_bytes_unchanged": true,
+  "journal_rotation": 12,
+  "four_current_components_ready": true,
+  "maintenance_helpers_deleted": 2,
+  "research_pod_uid": "fe5fb5e7-8696-4ac3-a5a8-1883817d00bb",
+  "research_pod_running": true,
+  "reconciled_source_short_revision": "57425ac",
+  "actual_module_baseline": "4b3679fcda985b69abaf4cc70630dd2ca4849632",
+  "reconciled_hub_tests_passed": 470,
+  "reconciled_source_deployed": false
+}
