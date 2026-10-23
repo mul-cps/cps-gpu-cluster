@@ -1,0 +1,59 @@
+{
+  "passed": true,
+  "profiles": [
+    5,
+    10
+  ],
+  "results": [
+    {
+      "attacker": "cps",
+      "peer": "cit",
+      "over_cap": {
+        "cap_gib": 5,
+        "mode": "oom",
+        "device": "NVIDIA A100-PCIE-40GB",
+        "gpu_uuid": "16128952-b438-556a-00bb-93039ee24e56",
+        "started_at_unix": 1792751195.2133114,
+        "over_cap_rejected": true,
+        "recovery_passed": true,
+        "finished_at_unix": 1792751195.2173579,
+        "passed": true
+      },
+      "peer_progress": {
+        "cap_gib": 10,
+        "mode": "peer",
+        "device": "NVIDIA A100-PCIE-40GB",
+        "gpu_uuid": "16128952-b438-556a-00bb-93039ee24e56",
+        "started_at_unix": 1792751193.2236202,
+        "gpu_progress_iterations": 991,
+        "finished_at_unix": 1792751218.2404451,
+        "passed": true
+      }
+    },
+    {
+      "attacker": "cit",
+      "peer": "cps",
+      "over_cap": {
+        "cap_gib": 10,
+        "mode": "oom",
+        "device": "NVIDIA A100-PCIE-40GB",
+        "gpu_uuid": "16128952-b438-556a-00bb-93039ee24e56",
+        "started_at_unix": 1792751222.6501236,
+        "over_cap_rejected": true,
+        "recovery_passed": true,
+        "finished_at_unix": 1792751222.654031,
+        "passed": true
+      },
+      "peer_progress": {
+        "cap_gib": 5,
+        "mode": "peer",
+        "device": "NVIDIA A100-PCIE-40GB",
+        "gpu_uuid": "16128952-b438-556a-00bb-93039ee24e56",
+        "started_at_unix": 1792751220.6717024,
+        "gpu_progress_iterations": 990,
+        "finished_at_unix": 1792751245.674237,
+        "passed": true
+      }
+    }
+  ]
+}

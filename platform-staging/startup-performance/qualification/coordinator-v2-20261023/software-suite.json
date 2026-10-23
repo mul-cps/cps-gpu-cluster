@@ -1,0 +1,16 @@
+{
+  "full_suite_attempt": "stopped after five failures",
+  "passed": 3427,
+  "failed": 5,
+  "skipped": 3,
+  "subtests_passed": 49,
+  "unexecuted_tests_remain": true,
+  "reported_failures": [
+    "tests/test_native_final_enrollment_witness.py::test_prepare_waits_for_node_to_consume_final_enrolled_generation[continuous-heartbeat]",
+    "tests/test_native_final_enrollment_witness.py::test_prepare_waits_for_node_to_consume_final_enrolled_generation[publication-timeout]",
+    "tests/test_native_prepare_readiness_boundary_diagnosis.py::test_ack_withdrawal_between_callback_and_final_claim_check[post-fence]",
+    "tests/test_native_prepare_reference_diagnostics.py::test_postfence_reference_denial_logs_only_safe_closed_references[pod-resourceVersion]",
+    "tests/test_native_prepare_reference_diagnostics.py::test_postfence_reference_denial_logs_only_safe_closed_references[pod-uid]"
+  ],
+  "no_full_software_qualification_claim": true
+}

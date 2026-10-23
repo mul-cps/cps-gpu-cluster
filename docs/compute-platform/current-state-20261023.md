@@ -486,3 +486,31 @@ GPU calls. Another supported handover and live timing remain open.
 The first published images must not be promoted.
 
 [Rejected attempt and verified restoration](../../platform-staging/startup-performance/qualification/cache-spike-20261023/rejected-rollout-and-restoration.json).
+
+
+## Corrected startup pilot active; speed and software gates still open
+
+The corrected Gateway `fc77489e…4f6392` and Node `88fa54cb…eacd81` are deployed
+through the supported existing-journal handover. The original anchor and four
+prior rotations are preserved (five now); normal delivery is running with four
+components Ready. Capture's expected Node image was updated without changing
+credentials or authority scope. No driver/kernel/GPU-mode or research-server
+change was made. The current CPS5/CIT10 cap/recovery and peer-survival run passed
+again, with 991/990 progress iterations.
+
+**Startup speed remains unsatisfactory.** CPS took 193.09 seconds, CIT 146.82;
+a traced CPS restart took 154.21. The trace assigns 15.23 seconds to storage,
+0.13 to account setup, and 132.16 to Hub spawn/readiness. Image caching was already
+warm, and three complete context reads took 1.022 seconds. There is no measured
+speedup or burst qualification. Preserve final authorization, live permission,
+reservation and device checks while reducing that critical path.
+
+QA cleanup is complete: CPU profiles and original ceilings restored, temporary
+grants read back expired, temporary approvals removed, member/binding/KAI
+reservations zero. Final approval revision is 394d4256…f66de31 with the original
+mainlab approval retained. The full software-suite attempt passed 3427 tests
+and 49 subtests, skipped 3, and stopped after five final-enrollment/fence-diagnostic
+failures; remaining cases have not run. The earlier stalled fixture was corrected
+without relaxing the production bounded-client guard. These gates remain open.
+
+[Corrected deployment, timing, CUDA and cleanup receipts](../../platform-staging/startup-performance/qualification/coordinator-v2-20261023/README.md).

@@ -1,0 +1,112 @@
+{
+  "runs": [
+    {
+      "source": "cps",
+      "profile": "interactive-shared-5",
+      "functional_start_passed": true,
+      "ready_seconds": 193.0870918770088,
+      "baseline_ready_seconds": 128.0632480869972,
+      "before_pod_seconds": 61.87332320213318,
+      "creation_to_scheduled_seconds": 88.0,
+      "scheduled_to_notebook_seconds": 15.0,
+      "notebook_to_source_ready_seconds": 28.21376872062683,
+      "pod_uid": "e87c1c98-542d-4705-9aa5-9917d943cebf"
+    },
+    {
+      "source": "cit",
+      "profile": "interactive-shared-10",
+      "functional_start_passed": true,
+      "ready_seconds": 146.81888634400093,
+      "baseline_ready_seconds": 143.55769741500262,
+      "before_pod_seconds": 55.569600105285645,
+      "creation_to_scheduled_seconds": 51.0,
+      "scheduled_to_notebook_seconds": 12.0,
+      "notebook_to_source_ready_seconds": 28.24928617477417,
+      "pod_uid": "25f237bc-768a-4e04-9174-a1234936ad0d"
+    }
+  ],
+  "traced_cps_restart_seconds": 154.21053877100348,
+  "traced_spans": [
+    {
+      "phase": "span",
+      "name": "policy.validate",
+      "start_seconds": 0.00176861000363715,
+      "seconds": 2.4207075590093154,
+      "failed": false
+    },
+    {
+      "phase": "span",
+      "name": "account.ensure",
+      "start_seconds": 2.4225405790057266,
+      "seconds": 0.13045368800521828,
+      "failed": false
+    },
+    {
+      "phase": "span",
+      "name": "hub.assert_stopped",
+      "start_seconds": 2.5530677030037623,
+      "seconds": 0.014991632997407578,
+      "failed": false
+    },
+    {
+      "phase": "span",
+      "name": "policy.register",
+      "start_seconds": 2.575755787009257,
+      "seconds": 0.7437012379959924,
+      "failed": false
+    },
+    {
+      "phase": "span",
+      "name": "storage.provision",
+      "start_seconds": 3.319514953007456,
+      "seconds": 15.229671790992143,
+      "failed": false
+    },
+    {
+      "phase": "span",
+      "name": "policy.validate",
+      "start_seconds": 18.54925689501397,
+      "seconds": 3.246914391987957,
+      "failed": false
+    },
+    {
+      "phase": "span",
+      "name": "hub.sync_group",
+      "start_seconds": 21.79656865801371,
+      "seconds": 0.07060801598709077,
+      "failed": false
+    },
+    {
+      "phase": "span",
+      "name": "hub.spawn_and_ready",
+      "start_seconds": 21.867279105004855,
+      "seconds": 132.156926887008,
+      "failed": false
+    },
+    {
+      "phase": "span",
+      "name": "hub.replace_shares",
+      "start_seconds": 154.02431037700444,
+      "seconds": 0.12987911600794178,
+      "failed": false
+    },
+    {
+      "phase": "span",
+      "name": "policy.reservation_state",
+      "start_seconds": 154.15430387601373,
+      "seconds": 0.026320501987356693,
+      "failed": false
+    },
+    {
+      "phase": "span",
+      "name": "policy.reservation_state",
+      "start_seconds": 154.19126610900275,
+      "seconds": 0.019224329997086897,
+      "failed": false
+    }
+  ],
+  "startup_speed_improvement_proven": false,
+  "not_burst_qualification": true,
+  "images_already_cached": true,
+  "context_reload_three_iterations_seconds": 1.0220016470120754
+}

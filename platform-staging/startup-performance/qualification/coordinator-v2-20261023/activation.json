@@ -1,0 +1,34 @@
+{
+  "original_anchor_preserved": true,
+  "prior_rotations_preserved": true,
+  "rotation_count": 5,
+  "transition_pending": false,
+  "config_hash": "sha256:a8bc2039aef8c0357de99f7ed7a14435396223ec9f1834c92bf6d082cf01b9fe",
+  "images": {
+    "gateway": "ghcr.io/mul-cps/cps-compute@sha256:fc77489e5de96ba8c55a2082534cad6badd455323fda6843be9126a7d74f6392",
+    "node": "ghcr.io/mul-cps/cps-native-node@sha256:88fa54cbcff05312208b177feb68ad9d584a3be3bf19fc9a9f2d2c7a9beacd81"
+  },
+  "source_revision": "4f39a686254f692dcce9d5a7d03a34f4271dad85",
+  "test_fixture_revision": "4009c782ba3f51adb1d17079bd73e8b46aaf9448",
+  "normal_writer_resumed": true,
+  "four_component_ready_after_qa": {
+    "four_current_components_ready": true,
+    "read_only": true,
+    "revisions": {
+      "gateway": "sha256:394d4256ae5d9ebd97f90ef378fb4d33f2835393e606bbdf826f6a9bcf66de31",
+      "hub:cps": "sha256:394d4256ae5d9ebd97f90ef378fb4d33f2835393e606bbdf826f6a9bcf66de31",
+      "hub:cit": "sha256:394d4256ae5d9ebd97f90ef378fb4d33f2835393e606bbdf826f6a9bcf66de31",
+      "node": "sha256:394d4256ae5d9ebd97f90ef378fb4d33f2835393e606bbdf826f6a9bcf66de31"
+    }
+  },
+  "new_node_configuration": {
+    "data_sha256": "sha256:e18f04c17be82d9e70398b9954ab261339e192f1a6583ae462e2299352badccf",
+    "key": "config.json",
+    "name": "cps-startup23-node-e18f04c17be82d9e",
+    "namespace": "cps-native-runtime",
+    "resourceVersion": "380859657",
+    "uid": "e42718d7-b980-4c1a-beda-38117735a9b7"
+  },
+  "capture_node_process_pin_updated": true,
+  "driver_changes": false
+}
