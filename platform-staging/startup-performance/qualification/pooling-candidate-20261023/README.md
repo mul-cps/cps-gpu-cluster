@@ -10,8 +10,19 @@ The installed package also validates the current protected driver manifest and
 kernel, matches the deployed driver-health source and loads the current policy
 configuration graph. The registry digest and source/wheel labels were verified.
 
-The complete repository suite is still running. This candidate is published,
-not deployed or released for production. The read-only rollout capture found
-five preserved journal rotations, no pending transition, and unchanged policy.
-No controller, driver, kernel, GPU mode, storage path or research notebook was
-changed. See the three machine-readable receipts in this directory.
+The complete repository suite passed: 5173 tests and 68 subtests, with 6 skipped
+and 593 warnings. The gateway candidate is now deployed; this is not a production
+release. All four service templates and current component acknowledgments were
+verified. The normal writer is Ready. Its sixth rotation preserves the original
+anchor and all five predecessors, with no pending transition. Both maintenance
+Pods were deleted with UID preconditions.
+
+Admission dry-runs caught a handover-helper assumption that an image uniquely
+identifies the successor Node ReplicaSet. The unchanged Node image also matched
+the predecessor. Selection now includes the exact new bootstrap reference; the
+approved Pod passes, while wrong bootstrap, wrong owner and extra host mount
+requests fail. No incorrect Node Pod was launched.
+
+The Node image, policy, driver, kernel, GPU mode and storage paths were preserved.
+Live pooled-workspace acceptance and startup improvement remain unproven. See
+the machine-readable activation, software, admission, rotation and cleanup receipts.

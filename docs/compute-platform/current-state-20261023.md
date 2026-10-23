@@ -536,3 +536,22 @@ The relevant group, packing, preview and Lab-hook suites pass: 84 tests and
 19 subtests. A new complete suite is running against `8bdacc4`; its outcome is
 not yet known. The commit is pushed on the existing feature branch, not deployed.
 The production-readiness goal and startup-performance work remain open.
+
+### Pooled-budget candidate deployed after complete software pass
+
+The complete repository suite at `8bdacc4` passed 5173 tests and 68 subtests
+(6 skipped; 593 warnings). Gateway image `09015137…96e07` is active; Node image
+`88fa54cb…eacd81` is unchanged. Current specifications and all four process
+acknowledgments were verified at revision `394d4256…6de31`. The normal writer is
+Ready. Rotation six preserves the original anchor and all five predecessors,
+with no transition pending. Both maintenance Pods were removed using UID pins.
+
+The admission dry-run caught an operator-helper ReplicaSet selection assumption
+for unchanged Node images; exact bootstrap matching corrected it before any
+incorrect Node Pod launch. Positive and all three negative admission cases pass.
+
+This completes the software and deployment steps for the pooled-budget fix,
+not live 5+5→10 workspace acceptance or startup performance. Those tests and
+the broader production plan remain open.
+
+[Deployment and full-suite evidence](../../platform-staging/startup-performance/qualification/pooling-candidate-20261023/README.md).

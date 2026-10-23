@@ -1,0 +1,28 @@
+{
+  "source_revision": "8bdacc4395300e445e4bb9170e664f6c98dba4c9",
+  "deployed": true,
+  "deployments": {
+    "node": {
+      "ready": true,
+      "image": "ghcr.io/mul-cps/cps-native-node@sha256:88fa54cbcff05312208b177feb68ad9d584a3be3bf19fc9a9f2d2c7a9beacd81"
+    },
+    "gateway": {
+      "ready": true,
+      "image": "ghcr.io/mul-cps/cps-compute@sha256:090151370dc385b41ac01ded23888deeb19417e330cc38d8aebd2edc8f896e07"
+    },
+    "observer": {
+      "ready": true,
+      "image": "ghcr.io/mul-cps/cps-compute@sha256:1895f5b08f707a65f66b3512babf5c630e043877208513d1f5c5d8e6f2f1ec28"
+    },
+    "writer": {
+      "ready": true,
+      "image": "ghcr.io/mul-cps/cps-compute@sha256:090151370dc385b41ac01ded23888deeb19417e330cc38d8aebd2edc8f896e07"
+    }
+  },
+  "four_current_components_ready": true,
+  "approval_revision": "sha256:394d4256ae5d9ebd97f90ef378fb4d33f2835393e606bbdf826f6a9bcf66de31",
+  "node_image_unchanged": true,
+  "policy_hash": "sha256:2054ee32b1f2dd8d4590a41bd1dcdae6a16cec47811815452f10b2ac74e1a1fb",
+  "live_pooled_workspace_test_pending": true,
+  "startup_improvement_proven": false
+}
