@@ -1,0 +1,88 @@
+{
+  "elapsed_seconds": 37.114391,
+  "steps": {
+    "allocation-ack": {
+      "calls": 1,
+      "elapsed_seconds": 0.046512,
+      "last_start_seconds": 36.564083
+    },
+    "allocation-freeze": {
+      "calls": 3,
+      "elapsed_seconds": 1.193559,
+      "last_start_seconds": 28.686225
+    },
+    "allocation-proof": {
+      "calls": 1,
+      "elapsed_seconds": 3.501915,
+      "last_start_seconds": 33.029952
+    },
+    "capacity-census": {
+      "calls": 1,
+      "elapsed_seconds": 0.673415,
+      "last_start_seconds": 35.854707
+    },
+    "compiler-context": {
+      "calls": 1,
+      "elapsed_seconds": 0.06498,
+      "last_start_seconds": 33.029961
+    },
+    "context": {
+      "calls": 23,
+      "elapsed_seconds": 9.973197,
+      "last_start_seconds": 36.646959
+    },
+    "enrollment-publication": {
+      "calls": 2,
+      "elapsed_seconds": 22.512506,
+      "last_start_seconds": 28.714083
+    },
+    "epoch": {
+      "calls": 1,
+      "elapsed_seconds": 1.200581,
+      "last_start_seconds": 33.124657
+    },
+    "execution-fence": {
+      "calls": 1,
+      "elapsed_seconds": 0.00092,
+      "last_start_seconds": 24.790463
+    },
+    "final-claim": {
+      "calls": 1,
+      "elapsed_seconds": 1.42257,
+      "last_start_seconds": 34.431695
+    },
+    "maps": {
+      "calls": 1,
+      "elapsed_seconds": 0.106391,
+      "last_start_seconds": 34.325286
+    },
+    "preflight": {
+      "calls": 2,
+      "elapsed_seconds": 0.324921,
+      "last_start_seconds": 0.43789
+    },
+    "prepared-custody": {
+      "calls": 1,
+      "elapsed_seconds": 0.014535,
+      "last_start_seconds": 36.629595
+    },
+    "registered-custody": {
+      "calls": 1,
+      "elapsed_seconds": 0.100052,
+      "last_start_seconds": 0.762826
+    },
+    "registered-readiness": {
+      "calls": 1,
+      "elapsed_seconds": 5.730779,
+      "last_start_seconds": 0.862896
+    },
+    "snapshot-proof": {
+      "calls": 9,
+      "elapsed_seconds": 2.725888,
+      "last_start_seconds": 27.330942
+    }
+  },
+  "observed_at": "2026-10-23T11:33:32.818735190Z",
+  "from_run": "pooled-members-20261023",
+  "nested_timings_not_additive": true
+}

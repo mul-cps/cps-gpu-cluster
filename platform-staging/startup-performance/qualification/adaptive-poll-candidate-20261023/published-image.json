@@ -1,0 +1,7 @@
+{
+  "source_revision": "7486ea8e572cd7755aec47fefa11d91808b7813a",
+  "image": "ghcr.io/mul-cps/cps-native-node@sha256:2463cf5cab838843d21d4693bd4f7797ba2328907d0e75ac551f551498379417",
+  "wheel_sha256": "db78cfc3d62a1ec5a609794194bb477f7d958288a7ca33ccb1f69ce4111c6128",
+  "registry_digest_verified": true,
+  "deployed": false
+}

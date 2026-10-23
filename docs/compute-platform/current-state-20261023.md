@@ -572,3 +572,19 @@ acceptance gap; startup optimization, broader GPU/scheduling qualification and
 production release gates remain open.
 
 [Live pooled-member evidence](../../platform-staging/startup-performance/qualification/pooled-members-20261023/README.md).
+
+### Pending-work polling optimization staged, not deployed
+
+Coordinator timing from the live pooled-member run identifies 22.51 seconds of
+enrollment publication inside the successful 37.11-second Prepare. An earlier
+registered-snapshot refresh also required a retry. Shared workspaces already
+disable unused per-user PVC creation.
+
+Candidate source `7486ea8` keeps the full fresh-proof protocol while polling
+pending registration/placement/gates after at most one second, retaining the
+normal five-second cadence for sealed/idle work and the existing failure backoff.
+All 109 focused Node tests pass; the full suite is running. A checksum-pinned
+Node image is published and passes actual driver/kernel/policy preflight.
+No deployment or startup gain is claimed yet.
+
+[Candidate and baseline trace](../../platform-staging/startup-performance/qualification/adaptive-poll-candidate-20261023/README.md).
