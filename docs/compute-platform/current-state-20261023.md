@@ -762,3 +762,26 @@ the running Hub was never restarted. Do not report this transient result as an
 unresolved settled-state cold-start failure.
 
 [HTTP live result and cleanup](../../platform-staging/startup-performance/qualification/enrollment-renewal-20261023/http-live-result.json).
+
+### Pre-CAS acknowledgment withdrawal reproduced and corrected in source
+
+Source `cc80800` repeats the complete read-only scope/Node-ACK/full-claim/Node-ACK
+bracket when the existing readiness classifier reports transient unavailability
+immediately before the reserved-to-enrolling CAS. The original request deadline
+bounds the wait. No enrollment mutation is replayed or skipped, and an existing
+staged Session does not gain this retry path.
+
+The real Node publisher regression first failed at the exact live call chain
+through `_claim_current` and `node_reference`. Recovery now succeeds. Additional
+cases expire the member grant or hold custody during the wait and prove denial
+without an enrollment write. The actual server deadline-expiry case retains
+custody, closes fences and performs no GPU writes. All **100 focused tests**
+pass across final publication, pre/post-fence readiness, read amplification,
+fence timing and terminal witness coverage. Existing negative expectations and
+normal callback budgets remain unchanged.
+
+The complete suite is running. This correction is committed and published in
+the compute source branch, but is not deployed yet; rotation 9 remains active.
+The normal HTTP + same-UID Ready Pod + CUDA harness will be reused after release
+qualification, followed by normal Stop, fixture restoration and reservation
+verification. Production readiness remains unproven.
