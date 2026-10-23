@@ -1,0 +1,33 @@
+{
+  "source_http_exit": 1,
+  "seconds": 43.889309099991806,
+  "requested_at_unix": 1792775692.7357733,
+  "pod_uid": null,
+  "pod_disappeared": false,
+  "pod_replaced": false,
+  "observation_errors": [],
+  "pod_ready_at_http_completion": false,
+  "cuda_passed": false,
+  "failed_stage": "workspace-policy after registration and provisioning",
+  "read_only_replay_live_allowed": false,
+  "read_only_replay_projection_allowed": true,
+  "reader_exception": "Stale or future component acknowledgment",
+  "component_not_identified": true,
+  "fixture_cleanup": {
+    "passed": true,
+    "workspace": "qa-packing-cps-20261023",
+    "stopped": true,
+    "cpu_profile_restored": true,
+    "membership_restored": true,
+    "original_ceiling_restored": true,
+    "original_notice_restored": true,
+    "temporary_approval_removed": true,
+    "existing_grants_unchanged": true,
+    "approval_revision": "sha256:54f8b9c7a8740bde0d5c168ef956fd48b3795bfd2862b046a0330286a11e8ee3",
+    "four_component_ready": true
+  },
+  "qa_token_revoked": true,
+  "heartbeat_source_fix": "450ecde",
+  "heartbeat_fix_deployed": false,
+  "focused_tests_passed": 95
+}

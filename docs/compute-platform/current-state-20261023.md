@@ -1177,3 +1177,28 @@ plan a reviewed checkpoint before exhausting it rather than weakening the bound.
 Controlled startup/CUDA qualification remains open.
 
 [Image, preflight, rotation and cleanup receipts](../../platform-staging/startup-performance/qualification/start-denial-diagnostics-live-20261023/).
+
+### Runtime readiness failure captured; Hub heartbeat Source fix tested
+
+The next single normal Source start failed before Pod creation at
+`/workspace-policy` (422). Read-only replay immediately afterward captured
+`validate_head_ack -> _validate_ack_process`: **Stale or future component
+acknowledgment**. Dynamic live policy then rejected GPU qualification while
+the same-current immutable projection passed. The rejected component was not
+identified in that capture. Later samples showed gateway/CPS/CIT receipt ages
+roughly 47/52/50 seconds against TTL60; node age below one second. Those later
+samples alone do not identify the original failure.
+
+Code inspection found Hub heartbeat Source checks calling the full runtime
+readiness endpoint, creating a circular dependency on the receipts they renew.
+Compute **450ecde** switches only that Source read to the existing authenticated
+`/native-group-approvals/head` endpoint. A regression fails on the prior endpoint;
+**95 focused tests pass** after the change. Receipt freshness/TTL and runtime
+readiness requirements remain unchanged. **Source fix not deployed yet**; its
+live effect and whether it accounts for all stale receipts remain unverified.
+
+Cleanup passed (stopped/CPU, original membership/ceiling/notice, unchanged grants,
+approval removed and four-current readiness). QA token revoked; research Pod
+Running at original UID. No startup/CUDA pass claimed.
+
+[Attempt, readiness failure and cleanup receipt](../../platform-staging/startup-performance/qualification/exact-retirement-start-attempt5-20261023/live-result.json).
