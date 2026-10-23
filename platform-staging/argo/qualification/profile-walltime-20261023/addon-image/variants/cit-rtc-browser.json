@@ -1,0 +1,15 @@
+{
+  "passed": true,
+  "workspace": "student-collab-20261023",
+  "neutral_owner": "cit-ws-2b0aeeab4b36c33c9b89a613e2cc0ba2",
+  "profile": "interactive-cpu",
+  "students": {
+    "armin": "armin",
+    "mikasa": "mikasa"
+  },
+  "both_normal_server_oauth_access": true,
+  "armin_edit_seen_by_mikasa": true,
+  "mikasa_edit_seen_by_armin": true,
+  "cells_executed": false,
+  "test_notebook": "qa-rtc-0ecd45161a.ipynb"
+}

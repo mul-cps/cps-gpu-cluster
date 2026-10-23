@@ -1,0 +1,12 @@
+{
+  "passed": true,
+  "installed_sdk": true,
+  "hub": "cps",
+  "student": "mikasa",
+  "canonical_person_verified": true,
+  "workflow": "cps-ae9c8a9af53c8952ab8bb854fee118db11983e5c9cdf389a",
+  "uid": "411c688a-8e28-46ca-b475-fcb7ca0c692c",
+  "parameters_and_supporting_file_verified": true,
+  "executed_artifact_verified": true,
+  "live_kernel_environment_captured": false
+}

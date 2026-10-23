@@ -116,6 +116,37 @@ remain open. This does not qualify distributed or GPU batch execution.
 and [network overlay](../../platform-staging/notebook-sdk-network/README.md) retain
 this acceptance and the root-level connectivity correction.
 
+## CPS SDK and CIT two-student collaboration
+
+The installed CPS SDK authenticated as Mikasa, submitted a parameterized notebook
+with a selected helper file and retrieved the successful executed result. Her
+personal test server then stopped normally; research notebook Pods were preserved.
+
+CIT Source now contains audited explicit aliases for Armin and Mikasa, using their
+existing canonical IDs and reviewed directory provenance. Root management used the
+normal provider identity-review service after checking both exact owning Hub
+accounts and non-admin status, with actor `operator:kubernetes:u-vhm9n`; this was
+not a browser-admin login or fabricated email verification.
+
+A separate CPU-only course/group/workspace `student-collab-20261023` was provisioned
+through normal provider/lifecycle services. Existing GPU qualification records
+were not modified. Two real student browser sessions opened the neutral named
+server through ordinary OAuth and observed each other's edits without executing
+cells. Hub identity reads remained Armin and Mikasa, both non-admin. SDK identity
+inside the shared server was the workspace principal, not either visitor.
+
+This RTC run uses the existing registered shared-CPU image `9444a023…1df7f`, not
+the newly updated personal CPU image. Shared-CPU image refresh, active-member
+revocation/restart and broader release integration remain open. The fixture
+initially had invalid creation ordering and an explicit zero GPU ceiling; backend
+validation rejected both, and the stopped owned fixture was corrected without
+weakening policy.
+
+[CPS SDK receipt](../../platform-staging/argo/qualification/profile-walltime-20261023/addon-image/variants/cps-installed-sdk.json),
+[CIT RTC receipt](../../platform-staging/argo/qualification/profile-walltime-20261023/addon-image/variants/cit-rtc-browser.json)
+and [shared-kernel identity receipt](../../platform-staging/argo/qualification/profile-walltime-20261023/addon-image/variants/cit-shared-kernel-identity.json)
+record the bounded acceptance. Full production qualification remains incomplete.
+
 ## Newly verified live results
 
 - CPS and CIT use the matching Hub image `435c0806…e5cb466`. The Hub wheel is
