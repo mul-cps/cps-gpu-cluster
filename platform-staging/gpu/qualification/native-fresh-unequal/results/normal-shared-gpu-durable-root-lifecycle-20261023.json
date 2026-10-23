@@ -1,0 +1,150 @@
+{
+  "state_version": 3,
+  "rotation_versions": [
+    2,
+    1
+  ],
+  "anchor_sha256": "35c838bc8d7f52e4258bfd41d22b259e9b8635f497b0f339c3c2cdbfb42cc0fd",
+  "pending_transition": false,
+  "completed_publications": 1,
+  "original_anchor_preserved": true,
+  "version": 1,
+  "kind": "paired-hub-durable-root-rotation",
+  "image": "ghcr.io/mul-cps/cps-compute@sha256:435c080630b71dc9af7656052f96d3e038380d5a87e484b398f7c0a27e5cb466",
+  "reservation_cleanup": [
+    {
+      "pod": "gpu-reservation-a34683b9b55df34b",
+      "uid": "d6e5a364-79dd-4f4c-9100-0cdc390b86ea",
+      "resourceVersion": "380359703",
+      "binder_authorization": true,
+      "normal_delete_with_uid_rv_preconditions": true
+    },
+    {
+      "pod": "gpu-reservation-1ab6b89ba8b44481",
+      "uid": "0a42b122-b8a0-49ed-9d77-5a6f2845f9ea",
+      "resourceVersion": "380391926",
+      "binder_authorization": true,
+      "normal_delete_with_uid_rv_preconditions": true
+    }
+  ],
+  "production_ready": false,
+  "normal_shared_workspace": {
+    "pod_uid": "e0a9d0ff-64f9-4245-b78e-58511c65c48b",
+    "node": "k3s-wk-gpu2",
+    "image": "ghcr.io/mul-cps/cps-jupyter-notebook@sha256:5427088986bc06ad0713875d1aa2f31439f0bd1fbe6099d4669570fcf3e85be4",
+    "phase": "Running",
+    "conditions": [
+      {
+        "lastProbeTime": null,
+        "lastTransitionTime": "2026-10-23T00:51:02Z",
+        "message": "Pod bound successfully to node k3s-wk-gpu2",
+        "reason": "Bound",
+        "status": "True",
+        "type": "PodBound"
+      },
+      {
+        "lastProbeTime": null,
+        "lastTransitionTime": "2026-10-23T00:50:54Z",
+        "observedGeneration": 1,
+        "status": "True",
+        "type": "PodReadyToStartContainers"
+      },
+      {
+        "lastProbeTime": null,
+        "lastTransitionTime": "2026-10-23T00:51:04Z",
+        "observedGeneration": 1,
+        "status": "True",
+        "type": "Initialized"
+      },
+      {
+        "lastProbeTime": null,
+        "lastTransitionTime": "2026-10-23T00:51:06Z",
+        "observedGeneration": 1,
+        "status": "True",
+        "type": "Ready"
+      },
+      {
+        "lastProbeTime": null,
+        "lastTransitionTime": "2026-10-23T00:51:06Z",
+        "observedGeneration": 1,
+        "status": "True",
+        "type": "ContainersReady"
+      },
+      {
+        "lastProbeTime": null,
+        "lastTransitionTime": "2026-10-23T00:50:53Z",
+        "observedGeneration": 1,
+        "status": "True",
+        "type": "PodScheduled"
+      }
+    ],
+    "initializers": [
+      {
+        "name": "cps-native-cap-gate",
+        "exit_code": 0,
+        "started_at": "2026-10-23T00:50:54Z",
+        "finished_at": "2026-10-23T00:51:00Z"
+      },
+      {
+        "name": "cps-native-device-identity",
+        "exit_code": 0,
+        "started_at": "2026-10-23T00:51:02Z",
+        "finished_at": "2026-10-23T00:51:03Z"
+      }
+    ],
+    "receipt_mounts": [
+      {
+        "hostPath": {
+          "path": "/var/lib/cps-native-gpu/domains/100876ac-14e6-4292-bf52-7d129f7f08f0/custody/receipts",
+          "type": "Directory"
+        },
+        "name": "cps-native-receipts"
+      },
+      {
+        "hostPath": {
+          "path": "/var/lib/cps-native-gpu/domains/100876ac-14e6-4292-bf52-7d129f7f08f0/custody/authority",
+          "type": "Directory"
+        },
+        "name": "cps-native-authority"
+      },
+      {
+        "hostPath": {
+          "path": "/sys/module",
+          "type": "Directory"
+        },
+        "name": "cps-native-driver-metadata"
+      }
+    ],
+    "normal_console_start_seconds": 90.09612494499743,
+    "cuda_test": {
+      "cuda_available": true,
+      "visible_gpus": 1,
+      "torch": "2.11.0+cu129",
+      "device": "NVIDIA A100-PCIE-40GB",
+      "allocation_64mib": true,
+      "allocation_6gib_rejected": true,
+      "recovery_1mib": true,
+      "elapsed_seconds": 0.2498517650019494
+    },
+    "shutdown_verified": true,
+    "normal_close_seconds": 15.04183309400105,
+    "member_reservations_active_after_close": false,
+    "pod_absent_after_close": true,
+    "native_ledger_records_after_close": 6,
+    "native_ledger_all_released": true,
+    "kernel_online_cap_entries_after_close": 0,
+    "persistence_probe": {
+      "path": "/workspace/.cps-lifecycle-e0a9d0ff.json",
+      "sha256": "a7edf4141df3b1aa8468da58db54d0113ff61536f7a2a66f3f01cf6c765908bd",
+      "uid": 1000,
+      "gid": 100,
+      "restart_readback_pending": true
+    }
+  },
+  "open_issues": [
+    "KAI GPU reservation Pod remains after confirmed normal shutdown; automatic cleanup must be fixed and repeat-start tested.",
+    "Earlier failed start reported running after Pod absence; console status correctness needs regression coverage.",
+    "Full pool, broader scheduling/startup bursts, recovery and release gates remain open."
+  ],
+  "journal_initializer_compatibility": "Whitelist now recognizes exact successor-node-template archives while retaining ownership/inode/mode checks"
+}
