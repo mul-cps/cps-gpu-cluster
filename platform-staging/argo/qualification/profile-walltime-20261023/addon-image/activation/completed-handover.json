@@ -1,0 +1,15 @@
+{
+  "journal_version": 3,
+  "rotations": 4,
+  "rotation_versions": [
+    2,
+    1,
+    1,
+    1
+  ],
+  "pending_transition": false,
+  "prior_three_rotations_preserved": true,
+  "anchor_sha256": "sha256:35c838bc8d7f52e4258bfd41d22b259e9b8635f497b0f339c3c2cdbfb42cc0fd",
+  "policy_hash": "sha256:2054ee32b1f2dd8d4590a41bd1dcdae6a16cec47811815452f10b2ac74e1a1fb",
+  "revision": "sha256:15cc8b70668fe86d17bce68812bfd40e01491499c37914f34245c8fe3d53110b"
+}

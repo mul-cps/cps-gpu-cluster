@@ -1,0 +1,9 @@
+{
+  "passed": true,
+  "actual_installed_runtime_dependencies": true,
+  "temporary_named_read_identity": true,
+  "sql_writes": true,
+  "authority_scope": "cps-native-runtime",
+  "plan_sha256": "sha256:9b0f469373bc4c4782e115da9b79605cee874ce0a81d91fe663c48614a38b872",
+  "operator_module_sha256": "sha256:22612b577bb1f2c4b75b29e4fada4a5bb834d8f2781a5e914b2ac618ce662a03"
+}

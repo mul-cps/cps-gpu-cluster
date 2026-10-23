@@ -1,0 +1,18 @@
+[
+  {
+    "component": "hub:cps",
+    "namespace": "jupyterhub",
+    "role": "cps-native-approval-hub-cps",
+    "added_exact_head": "cps-native-approvals-c0269fb7587f51ef",
+    "immutable_current_head_authenticated": true,
+    "get_only": true
+  },
+  {
+    "component": "hub:cit",
+    "namespace": "cit-jhub",
+    "role": "cps-native-approval-hub-cit",
+    "added_exact_head": "cps-native-approvals-0b8314f17229667f",
+    "immutable_current_head_authenticated": true,
+    "get_only": true
+  }
+]

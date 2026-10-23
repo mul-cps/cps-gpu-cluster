@@ -3,7 +3,6 @@
   "original_hardware_proof_unchanged": true,
   "target_policy_hash": "sha256:2054ee32b1f2dd8d4590a41bd1dcdae6a16cec47811815452f10b2ac74e1a1fb",
   "registry_plan": {
-    "api_calls": false,
     "from_generation": 1,
     "from_revision": "sha256:d5481dcd5ebd6fef39d91f4283cdd5afc4ddd7de7311a2790757717b0a8bcceb",
     "only_image_policy_and_generation_change": true,
@@ -13,7 +12,9 @@
     "retained_workspaces": 1,
     "sql_writes": false,
     "to_generation": 2,
-    "to_revision": "sha256:15cc8b70668fe86d17bce68812bfd40e01491499c37914f34245c8fe3d53110b"
+    "to_revision": "sha256:15cc8b70668fe86d17bce68812bfd40e01491499c37914f34245c8fe3d53110b",
+    "api_writes": false,
+    "authority_configmap_reads": 11
   },
   "authority_scope": "cps-native-runtime",
   "registry_operator_source_revision": "9fac4965a8a5a9df4412c5d24709906ae85db08c",

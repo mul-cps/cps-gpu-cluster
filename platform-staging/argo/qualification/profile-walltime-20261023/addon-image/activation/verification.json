@@ -1,0 +1,17 @@
+{
+  "status": "deployed-and-live-tested-for-shared-gpu-image",
+  "source_revisions": {
+    "addon": "e499c97a5616c67262c76323c68c3433508d93b2",
+    "operator_code": "81070e48633d89317d1ea6374cacf8fa5823f5ec"
+  },
+  "delivery_regression_tests_passed": 163,
+  "shared_gpu_image": "ghcr.io/mul-cps/cps-jupyter-notebook@sha256:fb9872bf71bfee402807c4f0e9adc92c49740ec30fa4a6a4261fa2ae18d32a45",
+  "all_control_services_ready": true,
+  "actual_CPS_start_cuda_payload_and_stop_passed": true,
+  "CIT_control_handover_verified": true,
+  "CIT_student_workflow_verified": false,
+  "browser_visual_verified": false,
+  "other_notebook_variants_updated": false,
+  "hardware_qualification_receipt_rewritten": false,
+  "production_qualified": false
+}

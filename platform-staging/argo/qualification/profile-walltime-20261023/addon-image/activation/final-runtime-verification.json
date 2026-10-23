@@ -1,0 +1,22 @@
+{
+  "all_eight_control_services_ready": true,
+  "six_runtime_specs_match_reviewed_targets": [
+    "gateway",
+    "hub:cps",
+    "hub:cit",
+    "node",
+    "writer",
+    "observer"
+  ],
+  "source_console_specs_and_service_selectors_restored": true,
+  "existing_user_pods_preserved": 2,
+  "all_native_claims_released": 15,
+  "kai_reservation_pods": 0,
+  "online_kernel_caps": 0,
+  "temporary_operator_jobs": 0,
+  "temporary_private_capture_removed": true,
+  "temporary_reader_credentials_removed": true,
+  "shared_gpu_notebook_image": "ghcr.io/mul-cps/cps-jupyter-notebook@sha256:fb9872bf71bfee402807c4f0e9adc92c49740ec30fa4a6a4261fa2ae18d32a45",
+  "policy_hash": "sha256:2054ee32b1f2dd8d4590a41bd1dcdae6a16cec47811815452f10b2ac74e1a1fb",
+  "production_qualified": false
+}

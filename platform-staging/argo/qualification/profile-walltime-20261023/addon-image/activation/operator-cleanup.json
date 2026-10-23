@@ -1,0 +1,6 @@
+{
+  "operator_jobs_removed": 10,
+  "temporary_read_identity_and_bindings_removed": true,
+  "temporary_reader_secret_removed": true,
+  "historical_authority_objects_retained": true
+}

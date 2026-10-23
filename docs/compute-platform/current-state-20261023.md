@@ -5,6 +5,27 @@ ordinary `cps:shared-gpu-lab` 5 GiB lifecycle now passes on the durable authorit
 including automatic KAI reservation cleanup. This supersedes earlier pending
 statements for that specific lifecycle, not every production acceptance gate.
 
+## Latest shared-GPU addon activation
+
+The shared-GPU notebook image `fb9872bf…d32a45` is now deployed through the
+reviewed image-only policy edge `2054ee32…e1a1fb`. Its preservation verifier
+retains the original hardware proof, 83 base layers, SDK and dependencies.
+All eight control services are Ready; the original delivery anchor and first
+three rotations remain intact, with a completed fourth rotation. Normal capture,
+writer, consoles and service selectors are restored.
+
+A normal CPS shared 5 GiB start completed in 120.885 seconds. Ten installed addon
+payload files matched the wheel, 30 SDK modules were unchanged, and a 64 MiB CUDA
+allocation passed. Normal close took 16.971 seconds; automatic KAI reservation
+cleanup followed in 4.611 seconds without a Binder restart. All 15 native claims
+are released and no kernel cap is online. The two existing user notebook Pods
+were preserved; temporary operator Jobs and reader credentials were removed.
+
+[Activation evidence](../../platform-staging/argo/qualification/profile-walltime-20261023/addon-image/activation/verification.json)
+retains the exact scope and operator fixes (163 delivery regression tests).
+This updates the shared-GPU image, not every CPU/other notebook variant. Browser
+visual acceptance and CIT student workflow acceptance remain open.
+
 ## Newly verified live results
 
 - CPS and CIT use the matching Hub image `435c0806…e5cb466`. The Hub wheel is
@@ -73,8 +94,9 @@ must distinguish that evidence from the current live checks above.
    A separate [profile-walltime candidate](../../platform-staging/argo/qualification/profile-walltime-20261023/verification.json)
    removes the API/Submit/snippet one-hour override in favor of catalog limits
    (196 API tests, 97 addon tests). The protected Gateway handover is complete and a live 7200-second request passed
-   deadline admission and short execution. The addon image/policy rollout is still
-   pending, so the current GUI continues to offer its old one-hour ceiling.
+   deadline admission and short execution. The shared-GPU addon image/policy rollout
+   now passes the live checks above. CPU/other notebook variants still need the
+   corresponding addon update; do not infer that every deployed GUI has changed.
 4. Finish broader GPU scheduling/packing, teaching reclaim, checkpoint/distributed
    cleanup, representative CPS/CIT startup bursts and the Descheduler comparison.
    These two warm single-workspace starts do not establish burst p95, eight-GPU

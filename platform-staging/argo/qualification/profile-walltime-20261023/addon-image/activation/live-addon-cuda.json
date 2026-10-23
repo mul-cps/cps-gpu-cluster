@@ -1,0 +1,9 @@
+{
+  "passed": true,
+  "addon_wheel_payload_files": 10,
+  "sdk_modules_unchanged": 30,
+  "cuda_allocation_bytes": 67108864,
+  "torch_version": "2.11.0+cu129",
+  "wheel_sha256": "9cbe6526150bd94f852855400cf286b8b810979f6cc5ead84ad1e394e05234f2",
+  "source_revision": "e499c97a5616c67262c76323c68c3433508d93b2"
+}

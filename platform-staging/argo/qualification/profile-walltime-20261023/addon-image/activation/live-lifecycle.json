@@ -1,0 +1,33 @@
+{
+  "start": {
+    "phase": "start-complete",
+    "elapsed_seconds": 120.88488922700344,
+    "state": "running"
+  },
+  "close": {
+    "state": "stopped",
+    "reservation": {
+      "workspace": "shared-gpu-lab",
+      "active": false,
+      "attempt": null
+    },
+    "close_seconds": 16.970534419000614
+  },
+  "cleanup": {
+    "binder_uid": "cd5c13d2-a593-431f-8379-870f5aa8738d",
+    "binder_created_at": "2026-10-23T01:04:43Z",
+    "binder_uid_unchanged": true,
+    "binder_restarts": 0,
+    "reservation_name": "gpu-reservation-bf695777c6f4cedd",
+    "reservation_uid": "f858ded6-49e7-44b5-8058-e1abda8c729e",
+    "automatic_deletion": true,
+    "manual_deletion": false,
+    "after_close_seconds": 4.611282402998768,
+    "total_stop_and_cleanup_seconds": 22.785820752033032
+  },
+  "kernel_caps_final": {
+    "selected_gpu_offline_entries": 38,
+    "online_entries": 0
+  },
+  "measured_scope": "one CPS shared 5 GiB workspace; addon-only image change; not a burst or whole-pool qualification"
+}

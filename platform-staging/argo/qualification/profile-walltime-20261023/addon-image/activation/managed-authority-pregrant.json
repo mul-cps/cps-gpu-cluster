@@ -1,0 +1,24 @@
+[
+  {
+    "namespace": "cps-native-runtime",
+    "role": "cps-native-approval-node",
+    "added_declared_get_names": [
+      "cps-native-addon-deployment-48904ffb63a4b0f8",
+      "cps-native-addon-node-c3e1292eadd8e6f9",
+      "cps-native-addon-preservation-1e5a230d7bf4fd70",
+      "cps-native-addon-transition-185c9c923492a21e",
+      "cps-walltime23-bootstrap-8c87e5ca15f7ab6a"
+    ]
+  },
+  {
+    "namespace": "cps-native-runtime",
+    "role": "cps-native-approval-gateway",
+    "added_declared_get_names": [
+      "cps-native-addon-deployment-48904ffb63a4b0f8",
+      "cps-native-addon-node-c3e1292eadd8e6f9",
+      "cps-native-addon-preservation-1e5a230d7bf4fd70",
+      "cps-native-addon-transition-185c9c923492a21e",
+      "cps-walltime23-bootstrap-8c87e5ca15f7ab6a"
+    ]
+  }
+]

@@ -1,0 +1,27 @@
+{
+  "replicaset_name": "cps-native-node-agent-7677497dd",
+  "replicaset_uid": "580e4aad-1f4b-435c-b1dd-a3a6c066cb4b",
+  "policy_changes": [
+    "ReplicaSet name",
+    "ReplicaSet UID",
+    "bootstrap ConfigMap name"
+  ],
+  "cases": [
+    {
+      "case": "approved",
+      "allowed": true
+    },
+    {
+      "case": "wrong-bootstrap",
+      "allowed": false
+    },
+    {
+      "case": "wrong-owner",
+      "allowed": false
+    },
+    {
+      "case": "extra-host-mount",
+      "allowed": false
+    }
+  ]
+}
