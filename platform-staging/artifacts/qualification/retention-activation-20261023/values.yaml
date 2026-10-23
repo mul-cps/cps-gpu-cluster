@@ -1,0 +1,13 @@
+artifactRetention:
+  enabled: true
+  suspend: true
+  apply: true
+  conditionalDeleteQualified: true
+  lifecycleQualified: true
+  reconcileMetadata: true
+  qualificationEvidence: platform-staging/artifacts/qualification/gateway-lifecycle-20261023/README.md;
+    platform-staging/artifacts/qualification/retention-activation-20261023/README.md
+  image: ghcr.io/mul-cps/cps-compute@sha256:ac9ee1b0fe77266e089be0c64c564cf009c55684808dd5fee5d2c135080c23f4
+  maxDeletes: 10
+  maxExamined: 1000
+  deadlineSeconds: 900

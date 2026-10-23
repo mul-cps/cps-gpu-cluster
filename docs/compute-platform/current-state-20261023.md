@@ -362,3 +362,21 @@ alignment, scheduled mutation qualification and reviewed orphan disposition.
 
 [Gateway lifecycle receipts and probes](../../platform-staging/artifacts/qualification/gateway-lifecycle-20261023/README.md)
 close these specific lifecycle gates, not overall production readiness.
+
+## Retention controller alignment and unmanaged-object fix
+
+The current released image passed failed-notebook artifact expiry and retained
+output preservation. The aligned real-clock full-template run reconciled 45
+objects and expired one eligible snapshot, but exposed 42 errors. Read-only
+classification separated 14 unmanaged key shapes from 28 missing-workflow 404s.
+Regression tests reproduced the unmanaged-key bug. Published fix `f0a8773` skips
+such objects before reconciliation; all 21 tests and eight subtests pass.
+
+The corrected immutable controller is deployed. Its full-template run reconciled
+44 objects, preserved/skipped the unmanaged keys, deleted none, and retained the
+28 missing-proof errors. The aligned schedule is still suspended pending reviewed
+legacy/orphan handling. This is prepared and tested mutation configuration, not
+an active daily cleanup schedule.
+
+[Activation receipts](../../platform-staging/artifacts/qualification/retention-activation-20261023/README.md)
+record exact run results, image/policy and controller identity.

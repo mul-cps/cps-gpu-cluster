@@ -1,0 +1,18 @@
+{
+  "read_only": true,
+  "diagnostic_write_methods_suppressed": true,
+  "errors": [
+    {
+      "type": "HTTPError",
+      "http_status": 404,
+      "reason": null,
+      "count": 28
+    },
+    {
+      "type": "ValueError",
+      "http_status": null,
+      "reason": "Fixed notebook artifact key required",
+      "count": 14
+    }
+  ]
+}

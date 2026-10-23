@@ -1,0 +1,34 @@
+{
+  "passed": true,
+  "workflow": "cps-00151a154b3e8d5e93a7350c24a7e26337df80e38607e6e0",
+  "uid": "77ed87fe-cda5-451c-aca0-2e68ba705426",
+  "actual_gateway_objects": true,
+  "real_clock": {
+    "examined": 2,
+    "eligible": 0,
+    "deleted": 0,
+    "skipped": 2,
+    "errors": 0,
+    "objects": [],
+    "apply": false,
+    "truncated": false,
+    "reconciled": 0
+  },
+  "per_call_91_day_clock": {
+    "examined": 2,
+    "eligible": 1,
+    "deleted": 0,
+    "skipped": 1,
+    "errors": 0,
+    "objects": [],
+    "apply": false,
+    "truncated": false,
+    "reconciled": 0
+  },
+  "retained_output_preserved": true,
+  "unretained_snapshot_aged_eligible": true,
+  "object_etags_and_tags_unchanged": true,
+  "S3_write_methods_available": false,
+  "kubernetes_patch_method_available": false,
+  "production_cron_unchanged": true
+}

@@ -1,0 +1,14 @@
+{
+  "examined": 86,
+  "eligible": 0,
+  "deleted": 0,
+  "skipped": 58,
+  "errors": 28,
+  "objects": [],
+  "apply": true,
+  "truncated": false,
+  "reconciled": 44,
+  "version": 1,
+  "image": "ghcr.io/mul-cps/cps-compute@sha256:ac9ee1b0fe77266e089be0c64c564cf009c55684808dd5fee5d2c135080c23f4",
+  "policy_hash": "sha256:2054ee32b1f2dd8d4590a41bd1dcdae6a16cec47811815452f10b2ac74e1a1fb"
+}

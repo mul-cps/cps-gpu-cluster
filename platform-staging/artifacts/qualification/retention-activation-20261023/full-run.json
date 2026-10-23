@@ -1,0 +1,20 @@
+{
+  "examined": 87,
+  "eligible": 1,
+  "deleted": 1,
+  "skipped": 44,
+  "errors": 42,
+  "objects": [
+    {
+      "key": "notebook-inputs/5915ba4d0e6626089fa8a15995af16288ab1f620a77b44f3/snapshot.tar",
+      "workflow_uid": "8818c01f-7a62-4ecb-a209-61e0694e4cfc",
+      "time": "2026-10-23T08:00:03.452674+00:00"
+    }
+  ],
+  "apply": true,
+  "truncated": false,
+  "reconciled": 45,
+  "version": 1,
+  "image": "ghcr.io/mul-cps/cps-compute@sha256:ac9ee1b0fe77266e089be0c64c564cf009c55684808dd5fee5d2c135080c23f4",
+  "policy_hash": "sha256:2054ee32b1f2dd8d4590a41bd1dcdae6a16cec47811815452f10b2ac74e1a1fb"
+}

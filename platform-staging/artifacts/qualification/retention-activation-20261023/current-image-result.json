@@ -1,0 +1,42 @@
+{
+  "passed": true,
+  "workflow": "cps-f72168a8ca180134612a89175cb33abc05ec4e85843f98b1",
+  "uid": "e46eba99-9857-4ede-baf2-3560a82db261",
+  "actual_gateway_objects": true,
+  "real_clock": {
+    "examined": 2,
+    "eligible": 0,
+    "deleted": 0,
+    "skipped": 2,
+    "errors": 0,
+    "objects": [],
+    "apply": false,
+    "truncated": false,
+    "reconciled": 2
+  },
+  "per_call_91_day_clock": {
+    "examined": 2,
+    "eligible": 2,
+    "deleted": 2,
+    "skipped": 0,
+    "errors": 0,
+    "objects": [
+      {
+        "key": "notebook-inputs/f72168a8ca180134612a89175cb33abc05ec4e85843f98b1/snapshot.tar",
+        "workflow_uid": "e46eba99-9857-4ede-baf2-3560a82db261",
+        "time": "2027-01-22T07:58:22.584082+00:00"
+      },
+      {
+        "key": "run-artifacts/f72168a8ca180134612a89175cb33abc05ec4e85843f98b1/executed.ipynb",
+        "workflow_uid": "e46eba99-9857-4ede-baf2-3560a82db261",
+        "time": "2027-01-22T07:58:22.584082+00:00"
+      }
+    ],
+    "apply": true,
+    "truncated": false,
+    "reconciled": 2
+  },
+  "conditional_deletion_confirmed": true,
+  "scope": "two explicitly owned QA notebook objects only",
+  "production_schedule_unchanged": true
+}
