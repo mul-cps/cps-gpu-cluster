@@ -1,0 +1,9 @@
+{
+  "workspace": "shared-gpu-lab",
+  "profile": "interactive-shared-5",
+  "registered_approval_member_count": 3,
+  "requested_member_count": 2,
+  "status": 422,
+  "detail": "Prospective workspace exceeds effective policy",
+  "policy_weakened": false
+}

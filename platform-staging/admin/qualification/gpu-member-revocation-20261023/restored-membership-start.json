@@ -1,0 +1,12 @@
+{
+  "workspace": "shared-gpu-lab",
+  "state": "running",
+  "seconds": 124.33346969699778,
+  "profile": "interactive-shared-5",
+  "pod": "jupyter-cps-ws-27c474f74f9d41c53eac0be01fcca8a3--rtc",
+  "reservation": {
+    "workspace": "shared-gpu-lab",
+    "active": true,
+    "attempt": "430648de-4a8d-4b3d-9534-a05f467e7f4b"
+  }
+}

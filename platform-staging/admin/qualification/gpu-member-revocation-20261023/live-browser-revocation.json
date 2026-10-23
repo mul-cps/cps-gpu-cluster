@@ -1,0 +1,17 @@
+{
+  "run_id": "d3ec287b12cd4d2897019bb5d87aec68",
+  "workspace": "shared-gpu-lab",
+  "test_notebook": "qa-rtc-fc0d505432.ipynb",
+  "two_way_edits_verified": true,
+  "live_collaboration_sockets": {
+    "armin": 2,
+    "mikasa": 2
+  },
+  "only_open_frame_receiving_sockets_counted": true,
+  "capture_reset_at_document_navigation": true,
+  "passed": true,
+  "removed_member": "mikasa",
+  "all_prior_collaboration_sockets_closed": true,
+  "both_existing_sessions_closed": true,
+  "cells_executed": false
+}

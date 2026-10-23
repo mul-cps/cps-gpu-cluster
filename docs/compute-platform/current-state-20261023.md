@@ -175,6 +175,31 @@ CIT QA course; existing CPS shared-GPU lab membership is unchanged.
 and [capture correction](../../platform-staging/argo/qualification/profile-walltime-20261023/addon-image/variants/cit-socket-instrumentation-correction.json)
 retain this acceptance. Full production qualification remains incomplete.
 
+## Shared-GPU live member revocation and restoration
+
+The deployed CPS shared 5 GiB lab now passes connected-member removal: two real
+student sessions exchanged edits, then both live collaboration connections per
+visitor closed when normal removal stopped the workspace. Native cleanup first
+returned guarded 409 with reservations retained; the same operation resumed after
+cleanup, without manual release. A reduced-membership preview under the old approval
+was rejected. Normal scoped reapproval delivered the new membership to all four
+components; GPU restart, CUDA, Armin access, Mikasa 403 and saved edits passed.
+
+Original membership/approval was then restored and republished. A final normal GPU
+start confirmed both students' access and preserved edits. Final state is stopped,
+original three members/profile restored in Source and Hub, reservation inactive,
+zero KAI reservation Pods and four-component approval Ready. The scoped revision is
+now `4248ec94…547c80` (generation 4). The original journal anchor and four configuration
+rotations are unchanged. Policy and application images were not changed.
+
+Warm individual starts took 103.643, 129.344 and 124.333 seconds. This closes the
+bounded GPU connected-member revocation/revalidation gate, not full-pool packing,
+cross-Hub reservation races, teaching reclaim, distributed jobs or burst readiness.
+
+[GPU revocation verification](../../platform-staging/admin/qualification/gpu-member-revocation-20261023/verification.json)
+and its [run details](../../platform-staging/admin/qualification/gpu-member-revocation-20261023/README.md)
+retain the positive/negative cases and final restoration evidence.
+
 ## Newly verified live results
 
 - CPS and CIT use the matching Hub image `435c0806…e5cb466`. The Hub wheel is

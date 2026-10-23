@@ -1,0 +1,1 @@
+{"passed": true, "cuda_allocation_mib": 64, "torch": "2.11.0+cu129", "device_count": 1, "device": "NVIDIA A100-PCIE-40GB"}

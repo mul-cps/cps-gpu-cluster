@@ -1,0 +1,15 @@
+{
+  "passed": true,
+  "workspace": "shared-gpu-lab",
+  "restart_revalidated_membership": true,
+  "students": {
+    "armin": {
+      "access": 200,
+      "prior_two_student_edits_preserved": true
+    },
+    "mikasa": {
+      "access": 403,
+      "prior_browser_credentials_reused": true
+    }
+  }
+}

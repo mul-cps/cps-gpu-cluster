@@ -1,0 +1,9 @@
+{
+  "passed": true,
+  "workspace": "shared-gpu-lab",
+  "updated_revision": "sha256:44d5f96274b9c204c293ebfde50bec45902aafe7ab9cf1f50cc7747562329f5b",
+  "member_count": 2,
+  "profile": "interactive-shared-5",
+  "four_component_approval_ready": true,
+  "state": "stopped"
+}

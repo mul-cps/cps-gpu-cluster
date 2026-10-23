@@ -1,0 +1,19 @@
+{
+  "passed": true,
+  "workspace": "shared-gpu-lab",
+  "state": "stopped",
+  "profile": "interactive-shared-5",
+  "member_count": 3,
+  "hub_group_users": [
+    "armin",
+    "bjoern",
+    "mikasa"
+  ],
+  "reservation_inactive": true,
+  "approval_revision": "sha256:4248ec948dce72c686df0febc198d8d60ab832a220a8ced7b43c546483547c80",
+  "four_component_approval_ready": true,
+  "manual_reservation_release": false,
+  "kai_reservation_pods": 0,
+  "files_preserved": true,
+  "stop_readiness_converged_after_transient_ack_delay": true
+}

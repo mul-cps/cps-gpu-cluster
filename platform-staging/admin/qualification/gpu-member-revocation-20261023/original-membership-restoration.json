@@ -1,0 +1,16 @@
+{
+  "passed": true,
+  "workspace": "shared-gpu-lab",
+  "state": "stopped",
+  "members": [
+    "15164372-7ae5-4cfd-8b5d-fd402aa891bd",
+    "85de720c-94b0-4bc7-807e-c04512133494",
+    "d98fbadd-d9a0-4981-8d20-1ab58bb75745"
+  ],
+  "profile": "interactive-shared-5",
+  "approval_restored_exactly": true,
+  "revision": "sha256:4248ec948dce72c686df0febc198d8d60ab832a220a8ced7b43c546483547c80",
+  "four_component_approval_ready": true,
+  "reservation_inactive": true,
+  "files_preserved": true
+}

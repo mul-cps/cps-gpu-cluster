@@ -1,0 +1,16 @@
+{
+  "passed": true,
+  "workspace": "shared-gpu-lab",
+  "removed_member": "mikasa",
+  "state": "stopped",
+  "members": [
+    "85de720c-94b0-4bc7-807e-c04512133494",
+    "d98fbadd-d9a0-4981-8d20-1ab58bb75745"
+  ],
+  "reservation_inactive": true,
+  "notice": "Membership changed; kernel interrupted. Files retained. Profile must be revalidated before restart.",
+  "seconds": 0.5180251359997783,
+  "files_not_deleted": true,
+  "initial_native_cleanup_pending_409": true,
+  "manual_reservation_release": false
+}

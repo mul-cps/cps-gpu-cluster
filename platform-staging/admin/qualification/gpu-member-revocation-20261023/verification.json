@@ -1,0 +1,16 @@
+{
+  "passed": true,
+  "scope": "CPS shared-gpu-lab 5 GiB member revocation and reapproval",
+  "live_browser_connections_closed": true,
+  "native_cleanup_pending_409_preserved_reservations": true,
+  "reduced_membership_reapproved_through_policy_api": true,
+  "removed_student_denied_after_gpu_restart": true,
+  "saved_shared_edits_survived": true,
+  "original_membership_and_approval_restored": true,
+  "original_student_access_restored": true,
+  "final_workspace_stopped": true,
+  "final_kai_reservation_pods": 0,
+  "manual_reservation_release": false,
+  "driver_kernel_mig_or_storage_changes": false,
+  "full_pool_qualification": false
+}

@@ -1,0 +1,17 @@
+{
+  "passed": true,
+  "workspace": "shared-gpu-lab",
+  "original_student_access_restored": true,
+  "students": {
+    "armin": {
+      "access": 200,
+      "saved_shared_edits_preserved": true,
+      "ordinary_student_identity_verified": true
+    },
+    "mikasa": {
+      "access": 200,
+      "saved_shared_edits_preserved": true,
+      "ordinary_student_identity_verified": true
+    }
+  }
+}
