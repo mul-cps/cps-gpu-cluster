@@ -1,0 +1,20 @@
+{
+  "source_revision": "c7ac644be511e5ca399de2569a46f245dd365e5d",
+  "wheel_sha256": "742866dc14df2ba7fcee172a23f645672703232f647ed0c9f9afd98203b5567d",
+  "hub_wheel_sha256": "a3c429a2652d70bf05421c2e352285f91059f050036203a0356c14400e34bfd8",
+  "images": [
+    {
+      "component": "gateway",
+      "image": "ghcr.io/mul-cps/cps-compute@sha256:fa43f725fef0b023890831a3845c101a26fc5c752251e12833b3305249e4a142"
+    },
+    {
+      "component": "node",
+      "image": "ghcr.io/mul-cps/cps-native-node@sha256:b5dd3105f7fc664a84f94c148b41e544c9a0b311c029feb9f79f4cb104e5e20d"
+    },
+    {
+      "component": "hub",
+      "image": "ghcr.io/mul-cps/cps-compute@sha256:c9756cfb7593c1997b5bc8be098b3bba5265f6fff4dbbdca3927cae630e365a0"
+    }
+  ],
+  "deployed": false
+}

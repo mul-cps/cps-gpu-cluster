@@ -1,0 +1,20 @@
+{
+  "source_revision": "c7ac644be511e5ca399de2569a46f245dd365e5d",
+  "results": {
+    "gateway": {
+      "actual_manifest_and_kernel_validated": true,
+      "health_source_matches_deployed": true,
+      "current_policy_graph_loads": true,
+      "installed_service_and_grant_check_sources_match": true,
+      "no_gpu_calls": true
+    },
+    "node": {
+      "actual_manifest_and_kernel_validated": true,
+      "health_source_matches_deployed": true,
+      "current_policy_graph_loads": true,
+      "installed_service_and_grant_check_sources_match": true,
+      "no_gpu_calls": true
+    }
+  },
+  "deployed": false
+}

@@ -1083,3 +1083,38 @@ research Pod preserved. The original registered-readiness timeout remains open:
 its live diagnostic has not yet run because restart recovery blocked the request.
 
 [Diagnostic, duplicate-history and qualification boundaries](../../platform-staging/startup-performance/qualification/exact-native-retirement-20261023/diagnostic-result.json).
+
+### Exact retirement/reuse guard deployed; rotations 16 and 17 complete
+
+Implementation `c7ac644` is deployed: both Hubs use
+`sha256:c9756cfb7593c1997b5bc8be098b3bba5265f6fff4dbbdca3927cae630e365a0`,
+gateway `sha256:fa43f725fef0b023890831a3845c101a26fc5c752251e12833b3305249e4a142`,
+node `sha256:b5dd3105f7fc664a84f94c148b41e544c9a0b311c029feb9f79f4cb104e5e20d`.
+The Hub-only package preserves all 78 SDK modules/dependency versions and
+17 unaffected Hub modules; its three changed modules match committed source.
+Gateway/node preflight validates current driver manifest/kernel/health source,
+policy graph and changed installed modules without GPU calls.
+
+The full run finished **5,222 passed, two failed, six skipped and 68 passed
+subtests**. Both failures were old expectations that a stopped cleanup finalizer
+ends after its first poll window. The retained deployed implementation already
+retries bounded windows without releasing uncertain capacity. Test-only
+`141b801` restores matching `4b3679f` tests, including delayed proof recovery,
+new-generation fencing and request-timeout handling. All **448 affected tests
+pass** afterward. No implementation changed after the full run.
+
+Paired Hub rotation **16**, then server rotation **17**, preserve the original
+anchor and all prior rotations, with no pending transition. Four-current
+acknowledgment probes passed. Normal writer Ready; all four maintenance helpers
+removed using UID preconditions. Waiting for successor Gateway readiness before
+Hub patching produced **zero restarts** on both Hubs. Image/publisher inputs were
+aligned in the initial exact-change plan. No driver, resource or storage change.
+
+All **31 native allocations remain released**. The stopped Hub row still retained
+its durable claim when read immediately after startup; it has not yet been
+exercised through a normal restart using the new exact cleanup callback. Do not
+claim live recovery or GPU startup success yet. Next: the instrumented controlled
+start, capturing the original registered-readiness denial while Pending. Research
+Pod remains Running at original UID.
+
+[Published images, test boundaries, both journal rotations and cleanup](../../platform-staging/startup-performance/qualification/exact-native-retirement-live-20261023/).

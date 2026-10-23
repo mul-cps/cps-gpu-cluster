@@ -1,0 +1,19 @@
+{
+  "sdk_modules_unchanged": 78,
+  "hub_modules_unchanged": 17,
+  "hub_changed_modules": [
+    "native_hub.py",
+    "native_hub_config.py",
+    "native_pending_hub.py"
+  ],
+  "candidate_hub_matches_committed_source": true,
+  "owner_overlay_supported": true,
+  "versions_unchanged": {
+    "jupyterhub": "5.5.2",
+    "jupyterhub-kubespawner": "7.1.0",
+    "cps-compute": "0.1.0",
+    "cps-compute-hub": "0.1.0"
+  },
+  "no_network_or_gpu_calls": true,
+  "deployed": false
+}

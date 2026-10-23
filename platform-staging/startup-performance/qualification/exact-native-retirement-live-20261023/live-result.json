@@ -1,0 +1,44 @@
+{
+  "implementation_revision": "c7ac644be511e5ca399de2569a46f245dd365e5d",
+  "test_reconciliation_revision": "141b80138a3be0a63b94f029ab5d619c8663acf0",
+  "full_run": {
+    "passed": 5222,
+    "failed": 2,
+    "skipped": 6,
+    "subtests_passed": 68,
+    "seconds": 636.01,
+    "failures": "Two obsolete stop-finalizer expectations; matching deployed-baseline tests restored without implementation change"
+  },
+  "affected_tests_after_test_reconciliation": {
+    "passed": 448,
+    "seconds": 16.51
+  },
+  "hub_rotation": 16,
+  "server_rotation": 17,
+  "all_service_images": [
+    {
+      "component": "gateway",
+      "image": "ghcr.io/mul-cps/cps-compute@sha256:fa43f725fef0b023890831a3845c101a26fc5c752251e12833b3305249e4a142"
+    },
+    {
+      "component": "node",
+      "image": "ghcr.io/mul-cps/cps-native-node@sha256:b5dd3105f7fc664a84f94c148b41e544c9a0b311c029feb9f79f4cb104e5e20d"
+    },
+    {
+      "component": "hub",
+      "image": "ghcr.io/mul-cps/cps-compute@sha256:c9756cfb7593c1997b5bc8be098b3bba5265f6fff4dbbdca3927cae630e365a0"
+    }
+  ],
+  "both_hubs_ready": true,
+  "hub_startup_restarts": 0,
+  "four_current_acknowledgments_verified": true,
+  "normal_writer_ready": true,
+  "maintenance_helpers_deleted": 4,
+  "native_allocations": {
+    "released": 31
+  },
+  "research_pod_unchanged": true,
+  "local_state_recovery_on_normal_restart": "not yet tested live",
+  "pending_readiness_failure_cause": "not yet proven",
+  "production_qualified": false
+}
