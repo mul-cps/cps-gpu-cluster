@@ -980,3 +980,34 @@ Next: its service-image transition, then real console GPU startup/CUDA validatio
 No production or startup-latency qualification is claimed by Hub readiness.
 
 [Image preservation, publication, journal and live receipts](../../platform-staging/startup-performance/qualification/reconciled-hub-budget-20261023/).
+
+### Server reference retry deployed; real lease succeeds; v2 caller timeout located
+
+Gateway image `sha256:a0fe1dc2bf7fdabdc2ac38993ed7d9cdf37c567253f85dbe3d109d52b355aae0`
+and node image `sha256:1dac979f7d428b3d4bb6b1748d6c70f2799aca292fcc5a7e24c0e01c4dd1e6da`
+are deployed. All **80 installed SDK modules** in each candidate match the tested
+source. Journal rotation **14** preserves its original anchor and thirteen prior
+rotations, no pending transition. Four-current acknowledgments passed, normal
+writer Ready and both maintenance helpers removed. Corrected Hub packages and
+publisher inputs from rotation 13 remain unchanged.
+
+The real console start passed member reservation (**HTTP 200**) and the coordinator
+lease (**success in 49.283 seconds**; acquisition 45.272, initial readiness 3.053).
+It still returned **503 after 116.124 seconds**, before any Pod was created. Hub
+traceback proves that the v2 lease client's outer timeout was **30 seconds**; its
+compile/created operations already use 90. The lease completed on the server
+after the client had timed out. This is no longer a reservation-reference denial.
+
+Source `bc9b441` uses the existing group readiness budget for all three v2
+operations; v1 remains 30 seconds. **342 tests pass**, including exact outer and
+transport budgets and expiration without replaying the POST. Server/fence
+deadlines and Hub maximum spawn lifetime are unchanged. The new Hub fix has
+been pushed but is not deployed.
+
+Normal cleanup restored the stopped CPU fixture, membership/ceiling/notice,
+removed temporary approval, retained original grants, and verified all four
+current acknowledgments. All **30 native allocations are released**. Temporary
+credential revoked/removed; research Pod remains Running at original UID.
+Live Pod/CUDA and startup performance qualification remain open.
+
+[Deployment, successful lease timing, timeout and cleanup receipts](../../platform-staging/startup-performance/qualification/reservation-server-retry-live-20261023/).

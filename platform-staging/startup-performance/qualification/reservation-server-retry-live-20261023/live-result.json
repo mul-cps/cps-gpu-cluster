@@ -1,0 +1,39 @@
+{
+  "gateway_retry_deployed": true,
+  "rotation": 14,
+  "images": [
+    {
+      "component": "gateway",
+      "image": "ghcr.io/mul-cps/cps-compute@sha256:a0fe1dc2bf7fdabdc2ac38993ed7d9cdf37c567253f85dbe3d109d52b355aae0"
+    },
+    {
+      "component": "node",
+      "image": "ghcr.io/mul-cps/cps-native-node@sha256:1dac979f7d428b3d4bb6b1748d6c70f2799aca292fcc5a7e24c0e01c4dd1e6da"
+    }
+  ],
+  "member_reservation_http_status": 200,
+  "coordinator_lease": {
+    "succeeded": true,
+    "elapsed_seconds": 49.283278,
+    "lease_acquisition_seconds": 45.271537,
+    "lease_readiness_seconds": 3.052762
+  },
+  "console_start": {
+    "http_status": 503,
+    "seconds": 116.12431979799294,
+    "pod_created": false,
+    "cuda_passed": false,
+    "cause": "GroupPendingHubAuthority lease call used 30 seconds while server lease succeeded in 49.3 seconds"
+  },
+  "cleanup": {
+    "passed": true,
+    "native_allocations_released": 30,
+    "fixture_restored": true,
+    "token_revoked": true,
+    "research_pod_unchanged": true
+  },
+  "next_source": "bc9b44106d516880a7a83ce548fa8efaf38445b2",
+  "next_focused_tests_passed": 342,
+  "next_source_deployed": false,
+  "production_qualified": false
+}

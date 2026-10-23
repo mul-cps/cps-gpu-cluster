@@ -1,0 +1,10 @@
+{
+  "gateway": {
+    "all_installed_sdk_modules_match_source": true,
+    "modules": 80
+  },
+  "node": {
+    "all_installed_sdk_modules_match_source": true,
+    "modules": 80
+  }
+}
