@@ -1441,3 +1441,28 @@ broader production qualification remain separate gates. Next timing targets
 are pre-Pod work and enrollment publication.
 
 [Sanitized exact start, CUDA, nested timing and cleanup proof](../../platform-staging/startup-performance/qualification/policy-event-loop-start-attempt8-20261023/result.json).
+
+### Context prefetch experiment rejected after measurement
+
+A fresh read-only benchmark on the actual Gateway compares three alternating
+loads of baseline and expanded immutable-ancestry prefetch. Both issue **102 GETs**
+per complete current-context load. Baseline is **0.566–0.581 seconds**, candidate
+**0.537–0.553 seconds**: about 5%, less than one second estimated over 28 calls.
+The candidate preserves validation/fresh repeated reads and passes focused
+checks, but that benefit does not justify the additional traversal/prefetch
+complexity. Its draft was withdrawn; **no deployment or policy change**. The
+full candidate suite was intentionally interrupted after withdrawal (1,173
+passed so far, three skipped, 19 subtests); this is not a full-suite passing claim.
+The deployed 0e33b68 full-suite and controlled-start evidence above still apply.
+
+Timestamped existing logs show Hub accepted the spawn at **19.69 seconds**,
+while the Pod appeared at **81.47 seconds**. Lease response completes at 71.68
+and compile at 80.79. The Pod has **no readiness probe**; its Running/Ready at
+181.61 is not proof that Jupyter HTTP was ready then. Native accepted/close
+complete at 182.15/182.17; Hub/Source readiness completes around 209 seconds.
+Shares take under one second at the end. The next useful trace is notebook
+startup plus the Hub's pre-Pod path, rather than a speculative cache or a claim
+that the 27-second post-Pod interval is itself a bug.
+
+[Benchmark and withdrawal](../../platform-staging/startup-performance/qualification/context-load-profile-20261023/result.json),
+[response milestones and readiness boundary](../../platform-staging/startup-performance/qualification/context-load-profile-20261023/attempt8-http-milestones.json).

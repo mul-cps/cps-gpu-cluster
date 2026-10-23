@@ -1,0 +1,73 @@
+{
+  "read_only": true,
+  "no_gpu_calls": true,
+  "benchmark_only_not_deployed": true,
+  "samples": [
+    {
+      "iteration": 0,
+      "implementation": "baseline",
+      "seconds": 0.5814856409997446,
+      "reads": 102,
+      "passed": true
+    },
+    {
+      "iteration": 0,
+      "implementation": "candidate",
+      "seconds": 0.5506896930019138,
+      "reads": 102,
+      "passed": true
+    },
+    {
+      "iteration": 1,
+      "implementation": "baseline",
+      "seconds": 0.566135121989646,
+      "reads": 102,
+      "passed": true
+    },
+    {
+      "iteration": 1,
+      "implementation": "candidate",
+      "seconds": 0.537057690002257,
+      "reads": 102,
+      "passed": true
+    },
+    {
+      "iteration": 2,
+      "implementation": "baseline",
+      "seconds": 0.5811157330026617,
+      "reads": 102,
+      "passed": true
+    },
+    {
+      "iteration": 2,
+      "implementation": "candidate",
+      "seconds": 0.5527952310076216,
+      "reads": 102,
+      "passed": true
+    }
+  ],
+  "candidate_rejected": true,
+  "deployed": false,
+  "reason": "About5percent improvement per contextload, less than1second estimated across28calls; insufficient benefit for extra traversal/prefetch complexity",
+  "baseline_source": "0e33b68d769715be5b72ccf59c9b481f4122ce0f",
+  "withdrawn_patch_sha256": "9b657b2cae6412aef0fe74c6adb7f84855a115aea52336ed222be73bf2031372",
+  "focused_checks": {
+    "related_passed": 55,
+    "new_passed": 3,
+    "independent_review": "No Important issues; paired fixture reads unchanged"
+  },
+  "full_suite": {
+    "intentionally_interrupted_after_candidate_withdrawal": true,
+    "passed_before_interruption": 1173,
+    "skipped": 3,
+    "subtests_passed": 19,
+    "complete": false
+  },
+  "offline_configuration_profile": {
+    "samples": 3,
+    "immutable_reads": 147,
+    "elapsed_seconds": 0.31475944502744824,
+    "no_network": true,
+    "no_gpu_calls": true
+  }
+}

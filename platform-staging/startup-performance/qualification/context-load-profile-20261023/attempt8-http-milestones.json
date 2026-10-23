@@ -1,0 +1,109 @@
+{
+  "scope": "Timestamped response-completion milestones from the already completed attempt8. No new start or configuration change.",
+  "hub_spawn_accepted_seconds": 19.687,
+  "first_pod_observed_seconds": 81.4673818500014,
+  "first_running_and_ready_observed_seconds": 181.610931970994,
+  "source_http_start_seconds": 209.22113245300716,
+  "container_readiness_probe": null,
+  "container_startup_probe": null,
+  "container_liveness_probe": null,
+  "interpretation": "Without a readiness probe, PodReady does not prove the Jupyter HTTP server is ready. The later Hub readiness interval requires notebook startup logs before attribution.",
+  "gateway_response_completion_milestones": [
+    {
+      "seconds": 5.766,
+      "method": "POST",
+      "path": "/internal/v1/workspace-policy/preview",
+      "status": 200
+    },
+    {
+      "seconds": 8.15,
+      "method": "PUT",
+      "path": "/internal/v1/workspaces",
+      "status": 200
+    },
+    {
+      "seconds": 15.069,
+      "method": "POST",
+      "path": "/internal/v1/workspaces/<id>",
+      "status": 200
+    },
+    {
+      "seconds": 15.079,
+      "method": "GET",
+      "path": "/internal/v1/workspaces/<id>",
+      "status": 200
+    },
+    {
+      "seconds": 18.759,
+      "method": "POST",
+      "path": "/internal/v1/workspace-policy",
+      "status": 200
+    },
+    {
+      "seconds": 43.226,
+      "method": "POST",
+      "path": "/internal/v1/reservations/acquire",
+      "status": 200
+    },
+    {
+      "seconds": 50.754,
+      "method": "POST",
+      "path": "/internal/v1/workspace-policy",
+      "status": 200
+    },
+    {
+      "seconds": 55.498,
+      "method": "POST",
+      "path": "/internal/v1/workspace-policy",
+      "status": 200
+    },
+    {
+      "seconds": 71.682,
+      "method": "POST",
+      "path": "/internal/native-kai/v2/lease",
+      "status": 200
+    },
+    {
+      "seconds": 80.794,
+      "method": "POST",
+      "path": "/internal/native-kai/v2/compile",
+      "status": 200
+    },
+    {
+      "seconds": 100.09,
+      "method": "POST",
+      "path": "/internal/native-kai/v2/created",
+      "status": 200
+    },
+    {
+      "seconds": 161.884,
+      "method": "POST",
+      "path": "/api/native-kai/v1/prepare",
+      "status": 200
+    },
+    {
+      "seconds": 166.43,
+      "method": "POST",
+      "path": "/api/native-kai/v1/current-binding",
+      "status": 200
+    },
+    {
+      "seconds": 182.148,
+      "method": "POST",
+      "path": "/api/native-kai/v1/accepted",
+      "status": 200
+    },
+    {
+      "seconds": 182.169,
+      "method": "POST",
+      "path": "/api/native-kai/v1/close",
+      "status": 200
+    },
+    {
+      "seconds": 209.489,
+      "method": "GET",
+      "path": "/internal/v1/reservations/qa-packing-cps-20261023",
+      "status": 200
+    }
+  ]
+}
