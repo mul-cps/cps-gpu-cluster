@@ -1137,3 +1137,23 @@ recovery is claimed.** Capture the suppressed provisioning exception on the next
 controlled run if it recurs; the earlier Pending readiness blocker remains open.
 
 [Controlled start and restoration evidence](../../platform-staging/startup-performance/qualification/exact-retirement-start-attempt3-20261023/live-result.json).
+
+### Next controlled start: registration denial; safe diagnostics tested
+
+Following all-four approval readiness, one normal HTTP start returned **422 in
+13.41 seconds** at central workspace registration, before provisioning or Hub
+spawn. No Pod or CUDA run. Read-only policy replay afterward allowed both the
+live deployment view (2.74 seconds) and same-current projection (0.0027 seconds);
+this does not identify the original suppressed exception.
+
+Compute `3330700` adds bounded exception-type/code-location logs for registration
+and provisioning denials without exception text, request bodies, locals or tokens.
+Regression tests first failed for absent logs; **115 focused tests pass** after
+the change, including credential exclusion. Source is pushed and remote verified;
+**not deployed**. Next runtime diagnosis requires this logging image.
+
+Normal cleanup passed: stopped/CPU, original membership/ceiling/notice, unchanged
+grants, temporary approval removed and four-component readiness. QA token revoked.
+No claim of live retirement recovery, startup or production readiness.
+
+[Attempt and cleanup evidence](../../platform-staging/startup-performance/qualification/exact-retirement-start-attempt4-20261023/live-result.json).

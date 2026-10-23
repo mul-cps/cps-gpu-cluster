@@ -1,0 +1,32 @@
+{
+  "source_http_exit": 1,
+  "seconds": 14.723023039055988,
+  "requested_at_unix": 1792774937.2710636,
+  "pod_uid": null,
+  "pod_disappeared": false,
+  "pod_replaced": false,
+  "observation_errors": [],
+  "pod_ready_at_http_completion": false,
+  "cuda_passed": false,
+  "http_status": 422,
+  "failed_stage": "workspace registration before provisioning or Hub spawn",
+  "original_exception": "suppressed; unproven",
+  "policy_replay_after_denial": "both live and same-projection allowed",
+  "fixture_cleanup": {
+    "passed": true,
+    "workspace": "qa-packing-cps-20261023",
+    "stopped": true,
+    "cpu_profile_restored": true,
+    "membership_restored": true,
+    "original_ceiling_restored": true,
+    "original_notice_restored": true,
+    "temporary_approval_removed": true,
+    "existing_grants_unchanged": true,
+    "approval_revision": "sha256:8de5ca0889df0b42b8b62a5bc175ed3602cdcc32083eb66e38a7070401f98108",
+    "four_component_ready": true
+  },
+  "qa_token_revoked": true,
+  "diagnostic_source_revision": "3330700c281867ab31bb9c9c6bbe709b0455604b",
+  "diagnostic_deployed": false,
+  "focused_tests_passed": 115
+}
