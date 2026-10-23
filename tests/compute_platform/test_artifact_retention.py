@@ -53,6 +53,27 @@ class Proof(m.ArgoProof):
 
 class Retention(unittest.TestCase):
     def setUp(self):self.now=datetime.now(timezone.utc);self.s3=S3(self.now);self.proof=Proof(self.now)
+    def test_unmanaged_keys_are_preserved_before_reconciliation_or_proof(self):
+        for key in ('notebook-inputs/legacy/readme.txt',
+                    'notebook-inputs/'+ID+'/different.tar',
+                    'notebook-inputs/'+ID+'/nested/snapshot.tar',
+                    'run-artifacts/not-a-notebook/executed.ipynb'):
+            with self.subTest(key=key):
+                self.s3.key=key
+                def forbidden(**kwargs):
+                    raise AssertionError('Unmanaged objects must not be read or mutated')
+                self.s3.head_object=forbidden
+                self.s3.get_object_tagging=forbidden
+                self.proof.get=lambda name:forbidden()
+                report=m.sweep(self.s3,'bucket',self.proof,apply=True,
+                    conditional_delete_qualified=True,lifecycle_qualified=True,
+                    reconcile_metadata=True,now=self.now)
+                self.assertEqual(report['examined'],1)
+                self.assertEqual(report['skipped'],1)
+                self.assertEqual(report['errors'],0)
+                self.assertEqual(report['deleted'],0)
+                self.assertEqual(report['reconciled'],0)
+
     def test_dryrun_and_conditional_delete_only_after_qualified_rechecked_proof(self):
         report=m.sweep(self.s3,'bucket',self.proof,now=self.now)
         self.assertEqual(report['eligible'],1);self.assertFalse(self.s3.deleted)

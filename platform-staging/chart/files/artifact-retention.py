@@ -70,9 +70,11 @@ def provenance(s3,bucket,key,workflow):
     return True
 
 def category(key):
-    for prefix,(tag,days) in POLICY.items():
-        if key.startswith(prefix) and len(key.split('/'))>=3 and re.fullmatch(r'[A-Za-z0-9_-]{1,128}',key.split('/')[1]):return tag,days
-    return None
+    # A managed prefix alone does not make legacy or arbitrary files notebook
+    # artifacts. Preserve unknown shapes without attempting reconciliation.
+    try:artifact = artifact_name(key)
+    except ValueError:return None
+    return ARTIFACTS[artifact][2:]
 
 def eligible(key,modified,tags,now):
     selected=category(key)
@@ -191,7 +193,7 @@ def sweep(s3,bucket,proof,*,apply=False,max_deletes=10,max_examined=1000,prefix=
                 if report['examined']>=max_examined:
                     report['truncated']=True;return report
                 key=obj['Key'];report['examined']+=1
-                if not key.startswith(scan_prefix):report['skipped']+=1;continue
+                if not key.startswith(scan_prefix) or category(key) is None:report['skipped']+=1;continue
                 try:
                     if reconcile_metadata:
                         initial=s3.head_object(Bucket=bucket,Key=key)
