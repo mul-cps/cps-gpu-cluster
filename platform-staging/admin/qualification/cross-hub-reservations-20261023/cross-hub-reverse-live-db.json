@@ -1,0 +1,39 @@
+{
+  "passed": true,
+  "reservations": [
+    {
+      "person": "15164372-7ae5-4cfd-8b5d-fd402aa891bd",
+      "workspace": "cps:shared-gpu-lab"
+    },
+    {
+      "person": "85de720c-94b0-4bc7-807e-c04512133494",
+      "workspace": "cps:shared-gpu-lab"
+    },
+    {
+      "person": "d98fbadd-d9a0-4981-8d20-1ab58bb75745",
+      "workspace": "cps:shared-gpu-lab"
+    }
+  ],
+  "bindings": [
+    {
+      "workspace": "cps:shared-gpu-lab",
+      "attempt": "e758ae66-e072-49cd-98c5-6202ddc291c5"
+    }
+  ],
+  "conflicts": [
+    {
+      "rowid": 6377,
+      "target": "cps:shared-gpu-lab",
+      "outcome": "reservation_conflict",
+      "time": "2026-10-23T07:26:04.288907+00:00"
+    },
+    {
+      "rowid": 6417,
+      "target": "cit:student-collab-20261023",
+      "outcome": "reservation_conflict",
+      "time": "2026-10-23T07:34:17.074311+00:00"
+    }
+  ],
+  "losing_cit_member_holds": 0,
+  "armin_reservation_count": 1
+}

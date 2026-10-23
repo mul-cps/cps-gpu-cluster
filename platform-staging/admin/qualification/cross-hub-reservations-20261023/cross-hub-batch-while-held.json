@@ -1,0 +1,42 @@
+{
+  "passed": true,
+  "source": "cit",
+  "canonical_person": "85de720c-94b0-4bc7-807e-c04512133494",
+  "interactive_hold": "cps:shared-gpu-lab",
+  "tests": [
+    {
+      "test": "batch_success",
+      "name": "cps-17b066f83a1f881e0f881284bbe2864be5d59f527c511158",
+      "uid": "99c163bf-f6ec-45e9-a263-d895729b61c0",
+      "phase": "Succeeded",
+      "parameters_and_selected_import_verified": true,
+      "executed_artifact_verified": true,
+      "stale_outputs_stripped": true,
+      "foreign_owner_denied": 403,
+      "idempotent_retry_same_uid": true,
+      "created_at": "2026-10-23T07:32:21Z",
+      "finished_at": "2026-10-23T07:32:41Z"
+    },
+    {
+      "test": "batch_failure",
+      "name": "cps-f72168a8ca180134612a89175cb33abc05ec4e85843f98b1",
+      "uid": "e46eba99-9857-4ede-baf2-3560a82db261",
+      "phase": "Failed",
+      "parameters_and_selected_import_verified": true,
+      "executed_artifact_verified": true,
+      "stale_outputs_stripped": true,
+      "foreign_owner_denied": 403,
+      "idempotent_retry_same_uid": true,
+      "created_at": "2026-10-23T07:32:45Z",
+      "finished_at": "2026-10-23T07:32:55Z"
+    }
+  ],
+  "temporary_tokens_revoked": 2,
+  "hold_timing": {
+    "workspace": "cps:shared-gpu-lab",
+    "attempt": "e758ae66-e072-49cd-98c5-6202ddc291c5",
+    "member_count": 3,
+    "acquired_at": "2026-10-23T07:31:09.365476+00:00",
+    "still_held_at": "2026-10-23T07:36:27.145740+00:00"
+  }
+}

@@ -1,0 +1,34 @@
+[
+  {
+    "source": "cps",
+    "workspace": "shared-gpu-lab",
+    "requested_at_unix": 1792739509.752128,
+    "elapsed_seconds": 42.49196243286133,
+    "error": {
+      "type": "HTTPStatusError",
+      "status": null
+    },
+    "state": "stopped",
+    "reservation": {
+      "workspace": "shared-gpu-lab",
+      "active": false,
+      "attempt": null
+    }
+  },
+  {
+    "source": "cit",
+    "workspace": "student-collab-20261023",
+    "requested_at_unix": 1792739509.7515128,
+    "elapsed_seconds": 42.61810612678528,
+    "error": {
+      "type": "HTTPStatusError",
+      "status": null
+    },
+    "state": "stopped",
+    "reservation": {
+      "workspace": "student-collab-20261023",
+      "active": false,
+      "attempt": null
+    }
+  }
+]

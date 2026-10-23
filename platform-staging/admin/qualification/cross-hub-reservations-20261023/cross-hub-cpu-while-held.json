@@ -1,0 +1,21 @@
+{
+  "passed": true,
+  "browser": {
+    "user": "armin",
+    "hub": "cit",
+    "normal_spawn_ui": true,
+    "jupyterlab_ready": true,
+    "elapsed_seconds": 26.646
+  },
+  "hold_timing": {
+    "workspace": "cps:shared-gpu-lab",
+    "attempt": "e758ae66-e072-49cd-98c5-6202ddc291c5",
+    "member_count": 3,
+    "acquired_at": "2026-10-23T07:31:09.365476+00:00",
+    "still_held_at": "2026-10-23T07:36:27.145740+00:00"
+  },
+  "cpu_start_event": {
+    "pod_uid": "7f962b1f-1237-42e9-8fe8-3b936ba52225",
+    "started_at": "2026-10-23T07:34:32Z"
+  }
+}

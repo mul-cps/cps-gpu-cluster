@@ -1,0 +1,6 @@
+{
+  "passed": true,
+  "source": "cps",
+  "cuda_allocation_mib": 64,
+  "device_count": 1
+}

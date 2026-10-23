@@ -293,3 +293,26 @@ Local course management stays active. Moodle remains visibly planned, disabled
 and inert. Direct university OAuth awaits ICT registration as explicitly deferred;
 email verification remains optional. These decisions are not silently expanded
 into additional production requirements or identity linkage by username.
+
+## Cross-Hub GPU reservations and independent CPU/batch access
+
+Simultaneous normal CPS/CIT starts, requested 1.67 ms apart, admitted CIT and
+rejected CPS with a recorded reservation conflict and no partial member holds.
+After normal cleanup, the reverse direction admitted CPS and rejected CIT.
+Both GPU winners passed CUDA allocation. While CPS held Armin's allowance,
+Armin launched a CIT CPU notebook in 26.646 seconds and completed successful
+and intentionally failing notebook batch runs, with timestamp evidence inside
+the same GPU hold. No manual reservation release was used.
+
+The temporary CIT GPU approval was removed and its original CPU-only ceiling
+and profile restored, stopped with files preserved. The scoped Source revision
+is now `d6165151…e8bed9`; all four approval components acknowledged it. Control
+services are Ready and the KAI reservation namespace has no remaining Pods.
+
+The initial race encountered a pre-reservation storage-provisioning 409 on both
+sides. Concurrent provisioning and the later race passed; the initial transient
+has no established root cause and remains an availability observation.
+
+[Cross-Hub receipts](../../platform-staging/admin/qualification/cross-hub-reservations-20261023/README.md)
+close the bounded global-member reservation gate, not full-pool scheduling,
+burst performance, recovery exercises or production release integration.

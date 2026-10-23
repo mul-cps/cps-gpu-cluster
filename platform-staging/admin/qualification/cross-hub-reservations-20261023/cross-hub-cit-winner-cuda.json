@@ -1,0 +1,7 @@
+{
+  "passed": true,
+  "source": "cit",
+  "cuda_allocation_mib": 64,
+  "device_count": 1,
+  "device": "NVIDIA A100-PCIE-40GB"
+}

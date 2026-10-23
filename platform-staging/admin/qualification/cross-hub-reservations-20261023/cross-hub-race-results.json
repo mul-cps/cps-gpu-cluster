@@ -1,0 +1,31 @@
+[
+  {
+    "source": "cps",
+    "workspace": "shared-gpu-lab",
+    "requested_at_unix": 1792740310.5279348,
+    "elapsed_seconds": 58.263598918914795,
+    "error": {
+      "type": "RuntimeError",
+      "status": null
+    },
+    "state": "stopped",
+    "reservation": {
+      "workspace": "shared-gpu-lab",
+      "active": false,
+      "attempt": null
+    }
+  },
+  {
+    "source": "cit",
+    "workspace": "student-collab-20261023",
+    "requested_at_unix": 1792740310.5296042,
+    "elapsed_seconds": 168.37853741645813,
+    "error": null,
+    "state": "running",
+    "reservation": {
+      "workspace": "student-collab-20261023",
+      "active": true,
+      "attempt": "7a4228e1-5627-4eb1-836f-d3532e66f45d"
+    }
+  }
+]

@@ -1,0 +1,12 @@
+{
+  "passed": true,
+  "workspace": "student-collab-20261023",
+  "source": "cit",
+  "profile": "interactive-cpu",
+  "state": "stopped",
+  "original_cpu_ceiling_restored": true,
+  "temporary_gpu_approval_removed": true,
+  "revision": "sha256:d6165151c5c45a1099058c09967eb749ef9a481ff5ae9c76bab98330b3e8bed9",
+  "four_component_approval_ready": true,
+  "files_preserved": true
+}
