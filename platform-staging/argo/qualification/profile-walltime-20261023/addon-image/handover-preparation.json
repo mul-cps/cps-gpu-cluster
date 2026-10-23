@@ -1,0 +1,28 @@
+{
+  "authority_staged_and_validated": true,
+  "original_hardware_proof_unchanged": true,
+  "target_policy_hash": "sha256:2054ee32b1f2dd8d4590a41bd1dcdae6a16cec47811815452f10b2ac74e1a1fb",
+  "registry_plan": {
+    "api_calls": false,
+    "from_generation": 1,
+    "from_revision": "sha256:d5481dcd5ebd6fef39d91f4283cdd5afc4ddd7de7311a2790757717b0a8bcceb",
+    "only_image_policy_and_generation_change": true,
+    "passed": true,
+    "plan_sha256": "sha256:9b0f469373bc4c4782e115da9b79605cee874ce0a81d91fe663c48614a38b872",
+    "retained_revision_rows": 2,
+    "retained_workspaces": 1,
+    "sql_writes": false,
+    "to_generation": 2,
+    "to_revision": "sha256:15cc8b70668fe86d17bce68812bfd40e01491499c37914f34245c8fe3d53110b"
+  },
+  "authority_scope": "cps-native-runtime",
+  "registry_operator_source_revision": "9fac4965a8a5a9df4412c5d24709906ae85db08c",
+  "registry_tests_passed": 61,
+  "inactive_consumer_inputs_staged": 12,
+  "service_images_and_resources_unchanged": true,
+  "source_credentials_unchanged": true,
+  "active_deployments_changed": false,
+  "sql_changed": false,
+  "journal_changed": false,
+  "activation_pending": true
+}
