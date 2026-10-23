@@ -178,12 +178,23 @@ def reconcile(s3,bucket,proof,key,head,now):
     s3.put_object_tagging(Bucket=bucket,Key=key,Tagging={'TagSet':[{'Key':k,'Value':v} for k,v in tags.items()]})
     return True
 
-def sweep(s3,bucket,proof,*,apply=False,max_deletes=10,max_examined=1000,prefix=None,now=None,conditional_delete_qualified=False,lifecycle_qualified=False,reconcile_metadata=False):
+def preservation_inventory(value):
+    if value is None:return {}
+    if not isinstance(value,dict) or len(value)>1000:raise ValueError('Bounded exact preservation inventory required')
+    for key,row in value.items():
+        if not isinstance(key,str):raise ValueError('Exact artifact key required')
+        artifact_name(key)
+        if not isinstance(row,dict) or set(row)!={'etag','reason','review'}:raise ValueError('Preservation ETag, reason and review required')
+        if any(not isinstance(row[k],str) or not row[k].strip() or len(row[k])>512 for k in row):raise ValueError('Bounded nonempty preservation fields required')
+    return value
+
+def sweep(s3,bucket,proof,*,apply=False,max_deletes=10,max_examined=1000,prefix=None,now=None,conditional_delete_qualified=False,lifecycle_qualified=False,reconcile_metadata=False,preserved_objects=None):
     if not isinstance(max_examined,int) or isinstance(max_examined,bool) or not 1<=max_examined<=10000:raise ValueError('Bounded examination limit required')
     if not isinstance(max_deletes,int) or isinstance(max_deletes,bool) or not 1<=max_deletes<=1000:raise ValueError('Bounded deletion limit required')
     if apply and not lifecycle_qualified:raise ValueError('Full lifecycle qualification required')
     if apply and not conditional_delete_qualified:raise ValueError('Conditional deletion capability qualification required')
-    now=now or datetime.now(timezone.utc);report={'examined':0,'eligible':0,'deleted':0,'skipped':0,'errors':0,'objects':[],'apply':apply,'truncated':False,'reconciled':0}
+    preserved_objects=preservation_inventory(preserved_objects)
+    now=now or datetime.now(timezone.utc);report={'examined':0,'eligible':0,'deleted':0,'skipped':0,'errors':0,'objects':[],'apply':apply,'truncated':False,'reconciled':0,'preserved':0}
     prefixes=[prefix] if prefix else list(POLICY)
     if any(not any(p.startswith(allowed) for allowed in POLICY) for p in prefixes):raise ValueError('Unmanaged retention prefix')
     paginator=s3.get_paginator('list_objects_v2')
@@ -195,6 +206,11 @@ def sweep(s3,bucket,proof,*,apply=False,max_deletes=10,max_examined=1000,prefix=
                 key=obj['Key'];report['examined']+=1
                 if not key.startswith(scan_prefix) or category(key) is None:report['skipped']+=1;continue
                 try:
+                    saved=preserved_objects.get(key)
+                    if saved and s3.head_object(Bucket=bucket,Key=key).get('ETag')==saved['etag']:
+                        # This is an explicit deletion exclusion, never proof of
+                        # ownership or authority to delete an orphan.
+                        report['preserved']+=1;continue
                     if reconcile_metadata:
                         initial=s3.head_object(Bucket=bucket,Key=key)
                         if reconcile(s3,bucket,proof,key,initial,now):report['reconciled']+=1
@@ -255,7 +271,7 @@ def main():
         probe=proof.get(settings['probeWorkflow'])
         if probe.get('metadata',{}).get('namespace')!=settings['namespace'] or probe.get('metadata',{}).get('name')!=settings['probeWorkflow']:raise ValueError('Argo JWT probe mismatch')
         print(json.dumps({'argo_jwt_probe':True,'namespace':settings['namespace']}))
-    report=sweep(s3,settings['bucket'],proof,apply=args.apply,max_deletes=args.max_deletes,max_examined=args.max_examined,prefix=args.prefix,conditional_delete_qualified=settings.get('conditionalDeleteQualified') is True,lifecycle_qualified=settings.get('lifecycleQualified') is True,reconcile_metadata=args.reconcile_metadata)
+    report=sweep(s3,settings['bucket'],proof,apply=args.apply,max_deletes=args.max_deletes,max_examined=args.max_examined,prefix=args.prefix,conditional_delete_qualified=settings.get('conditionalDeleteQualified') is True,lifecycle_qualified=settings.get('lifecycleQualified') is True,reconcile_metadata=args.reconcile_metadata,preserved_objects=settings.get('preservedObjects'))
     report.update(version=1,image=settings['image'],policy_hash=settings['policyHash'])
     print(json.dumps(report,indent=2))
     # Preserving unknown objects is safe, but the scheduled job must expose

@@ -44,7 +44,7 @@ data:
   artifact-retention.py: |
 {{ .Files.Get "files/artifact-retention.py" | indent 4 }}
   config.json: |
-    {{ dict "version" 1 "image" $image "policyHash" $policy "endpoint" $r.endpoint "bucket" $r.bucket "accessKeyFile" "/s3/accessKey" "secretKeyFile" "/s3/secretKey" "ca" "/s3-ca/ca.crt" "argoUrl" $r.argoUrl "namespace" "cps-workflows" "argoTokenFile" "/argo-token/token" "argoCa" "/argo-ca/ca.crt" "conditionalDeleteQualified" $r.conditionalDeleteQualified "probeWorkflow" $r.probeWorkflow "kubeUrl" $r.kubeUrl "kubeCa" "/kube-ca/ca.crt" "lifecycleQualified" $r.lifecycleQualified "reconcileMetadata" $r.reconcileMetadata "qualificationEvidence" $r.qualificationEvidence | toJson }}
+    {{ dict "version" 1 "image" $image "policyHash" $policy "endpoint" $r.endpoint "bucket" $r.bucket "accessKeyFile" "/s3/accessKey" "secretKeyFile" "/s3/secretKey" "ca" "/s3-ca/ca.crt" "argoUrl" $r.argoUrl "namespace" "cps-workflows" "argoTokenFile" "/argo-token/token" "argoCa" "/argo-ca/ca.crt" "conditionalDeleteQualified" $r.conditionalDeleteQualified "probeWorkflow" $r.probeWorkflow "kubeUrl" $r.kubeUrl "kubeCa" "/kube-ca/ca.crt" "lifecycleQualified" $r.lifecycleQualified "reconcileMetadata" $r.reconcileMetadata "qualificationEvidence" $r.qualificationEvidence "preservedObjects" $r.preservedObjects | toJson }}
 ---
 apiVersion: batch/v1
 kind: CronJob

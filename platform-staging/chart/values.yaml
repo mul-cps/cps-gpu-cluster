@@ -110,6 +110,8 @@ artifactRetention:
   reconcileMetadata: false
   kubeUrl: https://kubernetes.default.svc
   qualificationEvidence: ""
+  # Exact key/ETag exclusions preserve legacy objects; they never authorize deletion.
+  preservedObjects: {}
   image: ""
   schedule: "41 3 * * *"
   maxDeletes: 10

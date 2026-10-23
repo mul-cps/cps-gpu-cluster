@@ -11,3 +11,144 @@ artifactRetention:
   maxDeletes: 10
   maxExamined: 1000
   deadlineSeconds: 900
+  preservedObjects:
+    notebook-inputs/04a1b8ce-b35a-4862-9bda-1ba4f27ee226/snapshot.tar:
+      etag: '"0759d0f2464686d04943bead0b5ad8e5"'
+      reason: 'controlled-retention-fixture: preserve in place; missing workflow is
+        not deletion proof'
+      review: platform-staging/artifacts/qualification/retention-orphan-review-20261023/review.json
+    notebook-inputs/05cd6098208463b876f92fcec80ba2c28ca61cf26adce5dc/snapshot.tar:
+      etag: '"8c574c09b7b533755e7f8bfa4df13f6f"'
+      reason: 'removed-qualification-namespace: preserve in place; missing workflow
+        is not deletion proof'
+      review: platform-staging/artifacts/qualification/retention-orphan-review-20261023/review.json
+    notebook-inputs/0727ccf73f8515584c6017794f07c5511d75b459e4e089f0/snapshot.tar:
+      etag: '"ff929aab312cf6fc26c6745b8b735fa8"'
+      reason: 'removed-qualification-namespace: preserve in place; missing workflow
+        is not deletion proof'
+      review: platform-staging/artifacts/qualification/retention-orphan-review-20261023/review.json
+    notebook-inputs/16e9bec7-68b1-4631-a377-1e8b0180e270/snapshot.tar:
+      etag: '"d3ffba62ad5e18106e4f5efe871eb51d"'
+      reason: 'controlled-retention-fixture: preserve in place; missing workflow is
+        not deletion proof'
+      review: platform-staging/artifacts/qualification/retention-orphan-review-20261023/review.json
+    notebook-inputs/1f01d96dda01de8bc0d7053e0d89f48a061efae80044262a/snapshot.tar:
+      etag: '"d0ca3c2bedb3b746d13b499ad36b51c4"'
+      reason: 'unattributed-legacy-object: preserve in place; missing workflow is
+        not deletion proof'
+      review: platform-staging/artifacts/qualification/retention-orphan-review-20261023/review.json
+    notebook-inputs/34d25da09a0513f3886e375960ae5526da55f75f60bd217d/snapshot.tar:
+      etag: '"007ed87652dc6e3cf70b36c6550d1ef1"'
+      reason: 'removed-qualification-namespace: preserve in place; missing workflow
+        is not deletion proof'
+      review: platform-staging/artifacts/qualification/retention-orphan-review-20261023/review.json
+    notebook-inputs/36538001ae3c45f1ac01de71103ea81eb0c763009df94288/snapshot.tar:
+      etag: '"c900bf702fe5d93c8bdf6102f3f56367"'
+      reason: 'unattributed-legacy-object: preserve in place; missing workflow is
+        not deletion proof'
+      review: platform-staging/artifacts/qualification/retention-orphan-review-20261023/review.json
+    notebook-inputs/434f03633080ca737a8fdc3145dddf44f4b13a9bf8814909/snapshot.tar:
+      etag: '"cea4bd0e492888195e917a24c40d509f"'
+      reason: 'removed-qualification-namespace: preserve in place; missing workflow
+        is not deletion proof'
+      review: platform-staging/artifacts/qualification/retention-orphan-review-20261023/review.json
+    notebook-inputs/4c3bedab-8c2b-4ec9-b229-2e0012a1229a/snapshot.tar:
+      etag: '"735e65c9af2d8598d4237179cde156ff"'
+      reason: 'controlled-retention-fixture: preserve in place; missing workflow is
+        not deletion proof'
+      review: platform-staging/artifacts/qualification/retention-orphan-review-20261023/review.json
+    notebook-inputs/4dd5c0af509444c49e8703ed5c9ec6d6382dad1cfef540c7/snapshot.tar:
+      etag: '"4695981f7bf9344b60535eab96cb101d"'
+      reason: 'unattributed-legacy-object: preserve in place; missing workflow is
+        not deletion proof'
+      review: platform-staging/artifacts/qualification/retention-orphan-review-20261023/review.json
+    notebook-inputs/52c624d75a1fcb0adf925425e43de21a86e76001e4864c1d/snapshot.tar:
+      etag: '"f797a9a058d4d407346148caf5314bbc"'
+      reason: 'removed-qualification-namespace: preserve in place; missing workflow
+        is not deletion proof'
+      review: platform-staging/artifacts/qualification/retention-orphan-review-20261023/review.json
+    notebook-inputs/6b90a741c4805eb0c04d5361fb91a64a44e4df1ae90fc15c/snapshot.tar:
+      etag: '"39122f85d481f1b2ca24da8bd287b61c"'
+      reason: 'unattributed-legacy-object: preserve in place; missing workflow is
+        not deletion proof'
+      review: platform-staging/artifacts/qualification/retention-orphan-review-20261023/review.json
+    notebook-inputs/6e200ff681e8a22e02351b7630c20f176faac6d6758a4e45/snapshot.tar:
+      etag: '"5629a9929898c3dea9e93cc2ede5bad4"'
+      reason: 'unattributed-legacy-object: preserve in place; missing workflow is
+        not deletion proof'
+      review: platform-staging/artifacts/qualification/retention-orphan-review-20261023/review.json
+    notebook-inputs/87d29c2c4a830f98c4ac576324895e4fb1b2eb7de5445e4e/snapshot.tar:
+      etag: '"5f00c3160bbf7a8ad3c6e329644ab0fb"'
+      reason: 'unattributed-legacy-object: preserve in place; missing workflow is
+        not deletion proof'
+      review: platform-staging/artifacts/qualification/retention-orphan-review-20261023/review.json
+    notebook-inputs/98fb1551-5a50-4bb2-a008-10738d41c280/snapshot.tar:
+      etag: '"d27fd3d60d2b9772717e387001dbc83d"'
+      reason: 'controlled-retention-fixture: preserve in place; missing workflow is
+        not deletion proof'
+      review: platform-staging/artifacts/qualification/retention-orphan-review-20261023/review.json
+    notebook-inputs/9d207ea070184831de6b1ee9cc016470ae0584c882dfd836/snapshot.tar:
+      etag: '"9ac4ce9667436d4598df247ead030de2"'
+      reason: 'unattributed-legacy-object: preserve in place; missing workflow is
+        not deletion proof'
+      review: platform-staging/artifacts/qualification/retention-orphan-review-20261023/review.json
+    notebook-inputs/bd164bb4a020cdbe4c00a3b0549edaa066a8657573203bcf/snapshot.tar:
+      etag: '"a9174272a847f2e0fc8d3c1522ec70a7"'
+      reason: 'unattributed-legacy-object: preserve in place; missing workflow is
+        not deletion proof'
+      review: platform-staging/artifacts/qualification/retention-orphan-review-20261023/review.json
+    notebook-inputs/de4ce70bfb54b27d79d882db582ad52ee2a0fb03c157271e/snapshot.tar:
+      etag: '"f000fd3586ac6298a053a60f6582bdc1"'
+      reason: 'unattributed-legacy-object: preserve in place; missing workflow is
+        not deletion proof'
+      review: platform-staging/artifacts/qualification/retention-orphan-review-20261023/review.json
+    notebook-inputs/ec27653499ff49b28e8c6257a47f17ce614feb6187bf4f1a/snapshot.tar:
+      etag: '"d8f6634dfcdaecbc991c38c1c25a821a"'
+      reason: 'unattributed-legacy-object: preserve in place; missing workflow is
+        not deletion proof'
+      review: platform-staging/artifacts/qualification/retention-orphan-review-20261023/review.json
+    run-artifacts/05cd6098208463b876f92fcec80ba2c28ca61cf26adce5dc/executed.ipynb:
+      etag: '"ab1d6cf2c413430fb15717563a026919"'
+      reason: 'removed-qualification-namespace: preserve in place; missing workflow
+        is not deletion proof'
+      review: platform-staging/artifacts/qualification/retention-orphan-review-20261023/review.json
+    run-artifacts/0727ccf73f8515584c6017794f07c5511d75b459e4e089f0/executed.ipynb:
+      etag: '"f0d7e4bcdac53b4b29089916f77219e6"'
+      reason: 'removed-qualification-namespace: preserve in place; missing workflow
+        is not deletion proof'
+      review: platform-staging/artifacts/qualification/retention-orphan-review-20261023/review.json
+    run-artifacts/434f03633080ca737a8fdc3145dddf44f4b13a9bf8814909/executed.ipynb:
+      etag: '"f0c4a967fc86d93f015ab79dc25217a4"'
+      reason: 'removed-qualification-namespace: preserve in place; missing workflow
+        is not deletion proof'
+      review: platform-staging/artifacts/qualification/retention-orphan-review-20261023/review.json
+    run-artifacts/4b9f19c8-9231-436b-ae42-69cd3dad9f21/executed.ipynb:
+      etag: '"bd23c4cb8a634807943b54ab4d9aa1db"'
+      reason: 'controlled-retention-fixture: preserve in place; missing workflow is
+        not deletion proof'
+      review: platform-staging/artifacts/qualification/retention-orphan-review-20261023/review.json
+    run-artifacts/52c624d75a1fcb0adf925425e43de21a86e76001e4864c1d/executed.ipynb:
+      etag: '"c7a326f1ab7799b84ed70b3ef875149b"'
+      reason: 'removed-qualification-namespace: preserve in place; missing workflow
+        is not deletion proof'
+      review: platform-staging/artifacts/qualification/retention-orphan-review-20261023/review.json
+    run-artifacts/6e200ff681e8a22e02351b7630c20f176faac6d6758a4e45/executed.ipynb:
+      etag: '"ef1bd1648ad7bb480d88a3a0a83d2582"'
+      reason: 'unattributed-legacy-object: preserve in place; missing workflow is
+        not deletion proof'
+      review: platform-staging/artifacts/qualification/retention-orphan-review-20261023/review.json
+    run-artifacts/87d29c2c4a830f98c4ac576324895e4fb1b2eb7de5445e4e/executed.ipynb:
+      etag: '"4d455804975a5b7a4da1cfad97f96fe5"'
+      reason: 'unattributed-legacy-object: preserve in place; missing workflow is
+        not deletion proof'
+      review: platform-staging/artifacts/qualification/retention-orphan-review-20261023/review.json
+    run-artifacts/d297d1c7-64d1-4128-a091-bb8c6d41940f/executed.ipynb:
+      etag: '"b5a0f0e40824d8a81b6d8dbee80bf801"'
+      reason: 'controlled-retention-fixture: preserve in place; missing workflow is
+        not deletion proof'
+      review: platform-staging/artifacts/qualification/retention-orphan-review-20261023/review.json
+    run-artifacts/e603cc51-fcf1-4bf7-bf67-df430d4dfea9/executed.ipynb:
+      etag: '"6f9851e119180a3577bb6a20d6aeef75"'
+      reason: 'controlled-retention-fixture: preserve in place; missing workflow is
+        not deletion proof'
+      review: platform-staging/artifacts/qualification/retention-orphan-review-20261023/review.json

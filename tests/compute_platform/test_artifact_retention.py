@@ -74,6 +74,36 @@ class Retention(unittest.TestCase):
                 self.assertEqual(report['deleted'],0)
                 self.assertEqual(report['reconciled'],0)
 
+    def test_reviewed_preservation_only_skips_the_exact_unchanged_object(self):
+        row={'etag':self.s3.head['ETag'],'reason':'Legacy orphan preserved without deletion authority',
+             'review':'qualification/legacy-review.json'}
+        def missing(name):
+            raise urllib.error.HTTPError('https://argo',404,'Not found',{},None)
+        self.proof.get=missing
+        report=m.sweep(self.s3,'bucket',self.proof,reconcile_metadata=True,
+            preserved_objects={self.s3.key:row},now=self.now)
+        self.assertEqual(report['preserved'],1)
+        self.assertEqual(report['errors'],0)
+        self.assertEqual(report['reconciled'],0)
+        self.assertFalse(self.s3.deleted)
+        row['etag']='"changed"'
+        report=m.sweep(self.s3,'bucket',self.proof,reconcile_metadata=True,
+            preserved_objects={self.s3.key:row},now=self.now)
+        self.assertEqual(report['preserved'],0)
+        self.assertEqual(report['errors'],1)
+        report=m.sweep(self.s3,'bucket',self.proof,reconcile_metadata=True,now=self.now)
+        self.assertEqual(report['errors'],1)
+
+    def test_preservation_requires_exact_artifact_key_etag_and_review(self):
+        valid={'etag':'"etag"','reason':'Preserve unproven legacy data','review':'review.json'}
+        for value in ([], {'notebook-inputs/':valid},
+                      {self.s3.key:{**valid,'etag':''}},
+                      {self.s3.key:{**valid,'review':''}},
+                      {self.s3.key:{**valid,'reason':''}},
+                      {self.s3.key:{**valid,'wildcard':True}}):
+            with self.subTest(value=value),self.assertRaises(ValueError):
+                m.sweep(self.s3,'bucket',self.proof,preserved_objects=value,now=self.now)
+
     def test_dryrun_and_conditional_delete_only_after_qualified_rechecked_proof(self):
         report=m.sweep(self.s3,'bucket',self.proof,now=self.now)
         self.assertEqual(report['eligible'],1);self.assertFalse(self.s3.deleted)
@@ -226,6 +256,15 @@ class RetentionChart(unittest.TestCase):
         with tempfile.NamedTemporaryFile('w',suffix='.yaml') as file:
             yaml.safe_dump(values,file);file.flush()
             return subprocess.run(['helm','template','compute',str(ROOT/'platform-staging/chart'),'-f',file.name],capture_output=True,text=True)
+    def test_exact_preservation_inventory_is_carried_to_runtime_config(self):
+        saved={'notebook-inputs/'+ID+'/snapshot.tar':{'etag':'"etag"',
+            'reason':'Preserve reviewed legacy data','review':'review.json'}}
+        result=self.render({'preservedObjects':saved})
+        self.assertEqual(result.returncode,0,result.stderr)
+        documents=[d for d in yaml.safe_load_all(result.stdout) if d]
+        cm=next(d for d in documents if d['kind']=='ConfigMap' and d['metadata']['name']=='cps-artifact-retention')
+        self.assertEqual(json.loads(cm['data']['config.json'])['preservedObjects'],saved)
+
     def test_dedicated_get_patch_only_rbac_and_suspended_dryrun_projected_token(self):
         result=self.render();self.assertEqual(result.returncode,0,result.stderr)
         documents=[d for d in yaml.safe_load_all(result.stdout) if d]
