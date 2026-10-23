@@ -1,0 +1,24 @@
+{
+  "source_repository": "mul-cps/cps-compute",
+  "branch": "perf/startup-coordinator-20261023",
+  "revision": "d0150bdaee8f8888f070b84b4dda98b6ec5aca46",
+  "deployed": false,
+  "live_speedup_measured": false,
+  "changes": [
+    "Bounded existing-custody publication lock waits; new acquire remains nonblocking",
+    "Validated snapshot changes withdraw readiness and retry after 0.1 seconds, retaining finite retry budget; all other faults retain exponential backoff"
+  ],
+  "tests": {
+    "authority_and_pending": 107,
+    "publication_custody_readiness": 59,
+    "current_groups_and_enrollment": 93,
+    "node_service_custody_ack_pending": 132
+  },
+  "full_suite": "Interrupted intentionally to remove unsafe new-lease queue after 749 passed; not a complete suite pass",
+  "concurrent_start_fix_complete": false,
+  "remaining": [
+    "Closed pre-dispatch Hub retry for busy new-lease admission",
+    "Image verification and supported authority/journal handover",
+    "Fresh live startup timings and concurrency qualification"
+  ]
+}

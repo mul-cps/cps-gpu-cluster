@@ -426,3 +426,29 @@ rather than deployed. Live permission/reservation checks remain mandatory.
 [Packing and startup baseline](../../platform-staging/gpu/qualification/current-packing-5-10-20261023/README.md)
 and [caching investigation](../../platform-staging/startup-performance/qualification/cache-spike-20261023/README.md)
 record this progress and the new performance priority.
+
+
+## Startup control-plane fixes staged, not deployed
+
+Compute source `d0150bdaee8f8888f070b84b4dda98b6ec5aca46` adds bounded
+publication-lock waits for existing custody while keeping new acquisition
+nonblocking. A proposed server-side new-lease queue was removed: its worker
+could outlive a cancelled caller before durable custody existed. Concurrent
+new starts still need a closed, pre-dispatch retry protocol; this is not yet
+an end-to-end concurrency fix.
+
+Node logs also show validated ledger changes at the final acknowledgment
+boundary taking the ordinary 10-second failure backoff. The source now uses
+an explicit typed snapshot-change exception and a 0.1-second retry. Readiness
+is still withdrawn, a full iteration runs again, the retry budget remains
+finite, and API/driver/invalid-proof errors retain the existing backoff. This
+explains an avoidable delay on that path, not the entire warm-start baseline.
+
+Focused suites passed (107 authority/pending, 59 publication/custody/readiness,
+93 current-group/enrollment, and 132 node-service/custody/ACK/pending tests).
+The full suite was deliberately interrupted while correcting the unsafe lease
+queue; its partial result is not full-suite qualification. Wheel build passed;
+image build and supported handover are in progress. No live speed improvement
+or production-readiness claim follows from these source tests.
+
+[Staged source verification](../../platform-staging/startup-performance/qualification/cache-spike-20261023/coordinator-fixes.json).
