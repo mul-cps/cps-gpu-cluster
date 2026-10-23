@@ -1,0 +1,27 @@
+{
+  "passed": true,
+  "user": "armin",
+  "source": "cit",
+  "workspace": "student-collab-20261023",
+  "panel_text": "CPS / CIT Compute\nAccount & Access\nCurrent Session\nShared Workspaces\nMy Workloads\nSubmit\nSnippets\nDocumentation\nShared Workspaces\nRefresh\n\nUpdated 9:49:15 AM. Refreshes every 20 seconds while this view is visible.\n\nstudent-collab-20261023\nKernel principal\nworkspace:cit:student-collab-20261023\nProfiles\ninteractive-cpu\nStatus\nrunning\nHub\ncit\nCPU ceiling\n4\nRAM ceiling\n16Gi\nCourse\nstudent-collab-20261023\nTerm\nws26-qa\nGroup\nstudent-collab-team\nPolicy hash\nsha256:2054ee32b1f2dd8d4590a41bd1dcdae6a16cec47811815452f10b2ac74e1a1fb\nOpen workspace\n\nMembership grants workspace access; the shared kernel keeps the workspace identity. Personal Account & Access views remain visitor-specific.",
+  "open_links": 1,
+  "normal_open_action_passed": true,
+  "responses": [
+    {
+      "status": 200,
+      "path": "https://jhub.dshl.unileoben.ac.at/services/cit-compute-ui/api/compute/xsrf"
+    },
+    {
+      "status": 200,
+      "path": "https://jhub.dshl.unileoben.ac.at/services/cit-compute-ui/api/compute/v1/me"
+    },
+    {
+      "status": 200,
+      "path": "https://jhub.dshl.unileoben.ac.at/services/cit-compute-ui/api/compute/xsrf"
+    },
+    {
+      "status": 200,
+      "path": "https://jhub.dshl.unileoben.ac.at/services/cit-compute-ui/api/compute/v1/workspaces"
+    }
+  ]
+}

@@ -316,3 +316,15 @@ has no established root cause and remains an availability observation.
 [Cross-Hub receipts](../../platform-staging/admin/qualification/cross-hub-reservations-20261023/README.md)
 close the bounded global-member reservation gate, not full-pool scheduling,
 burst performance, recovery exercises or production release integration.
+
+## Ordinary student workspace opening
+
+Armin's deployed CIT Compute addon correctly showed the stopped CPU workspace
+without an opening link. After a normal maintainer start (19.843 seconds), its
+Open workspace action traversed normal Hub OAuth consent and reached the neutral
+named server's JupyterLab. Hub identity remained Armin, non-admin. Lifecycle
+administration remains maintainer-controlled; no student start permission was
+added. Both owned test servers were then stopped normally.
+
+[Student opening receipts](../../platform-staging/admin/qualification/student-workspace-opening-20261023/README.md)
+qualify this opening flow; broader scheduling, recovery and release gates remain.

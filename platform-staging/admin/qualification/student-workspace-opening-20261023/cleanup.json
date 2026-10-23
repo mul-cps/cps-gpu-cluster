@@ -1,0 +1,8 @@
+{
+  "passed": true,
+  "source": "cit",
+  "state": "stopped",
+  "reservation_inactive": true,
+  "cleanup_pending_retries": 0,
+  "manual_release": false
+}
