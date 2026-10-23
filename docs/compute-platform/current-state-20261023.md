@@ -668,3 +668,25 @@ A controlled pooled-member startup comparison is running. No startup gain or
 full production qualification is claimed before its terminal results.
 
 [Deployment receipt](../../platform-staging/startup-performance/qualification/parallel-history-20261023/deployed.json).
+
+### Live history-read qualification failed; Source success was not Pod readiness
+
+The controlled run must **not** be counted as a successful startup comparison.
+The coordinator denied enrollment after 34.19 seconds at the empty Node custody
+withdrawal check. The test Pod was independently observed absent before the
+Source service subsequently reported a successful start at 208.11 seconds.
+No CUDA proof was possible. The cause of the false-ready Source result and the
+causal role, if any, of parallel history reads remain unproven.
+
+Normal Source cleanup completed after a transient SQLite writer-lock failure.
+CPU profile, membership, course ceiling and notice were restored, temporary
+approval removed, existing grants preserved and all four components Ready.
+Independent read-only database checks found zero global reservations and zero
+bindings; all 28 native allocations are released. The original research Pod
+remains Running with its original UID. No manual reservation release was used.
+
+Next acceptance work is reproducing the Node withdrawal/renewal race and the
+Source readiness failure. Full-suite success is not sufficient for these live
+behaviors. Production readiness and startup improvement remain unconfirmed.
+
+[Failed live qualification and cleanup](../../platform-staging/startup-performance/qualification/parallel-history-20261023/live-functional-failure.json).

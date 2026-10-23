@@ -1,0 +1,38 @@
+{
+  "functional_qualification_passed": false,
+  "startup_improvement_demonstrated": false,
+  "source_reported_success_seconds": 208.10909318199265,
+  "source_success_not_accepted_as_readiness_proof": true,
+  "pod_observed_absent_before_source_success": true,
+  "cuda_not_executed": true,
+  "coordinator_failure": {
+    "exception": "ValueError",
+    "stage": "enrollment-publication",
+    "function": "require_withdrawal",
+    "condition": "after.data must equal empty acknowledgment envelope",
+    "prepare_elapsed_seconds": 34.189938,
+    "context_calls": 19,
+    "context_seconds": 7.562869
+  },
+  "cleanup": {
+    "passed": true,
+    "workspace": "qa-packing-cps-20261023",
+    "stopped": true,
+    "cpu_profile_restored": true,
+    "membership_restored": true,
+    "original_ceiling_restored": true,
+    "original_notice_restored": true,
+    "temporary_approval_removed": true,
+    "existing_grants_unchanged": true,
+    "approval_revision": "sha256:858f980f8f537c9c6b0bc8649f0d9ebdbb606b7de0816cb28e0882225a63a6f8",
+    "four_component_ready": true
+  },
+  "independent_global_reservations": 0,
+  "independent_global_bindings": 0,
+  "native_allocation_states": {
+    "released": 28
+  },
+  "research_pod_uid": "fe5fb5e7-8696-4ac3-a5a8-1883817d00bb",
+  "research_pod_phase": "Running",
+  "causality_of_parallel_reads": "not established"
+}

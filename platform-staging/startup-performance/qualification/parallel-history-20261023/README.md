@@ -26,3 +26,10 @@ Supported delivery rotation 8 activated the pair, preserved all prior history
 and restored the normal writer. Both maintenance Pods were deleted with UID
 preconditions. See `deployed.json`; this supersedes the pending statements above.
 Live startup performance remains to be measured.
+
+## Live qualification result
+
+Failed: Source reported success after 208.11 seconds despite prior Pod absence.
+Enrollment was denied at the Node withdrawal check. No CUDA or startup gain is
+claimed. Normal cleanup and independent zero-reservation checks passed; see
+`live-functional-failure.json`.
