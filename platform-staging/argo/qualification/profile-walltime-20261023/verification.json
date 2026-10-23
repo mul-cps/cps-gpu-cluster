@@ -1,0 +1,21 @@
+{
+  "source_revision": "e222f47ebe8d7f22abfe06d5f4195b7a25c89028",
+  "changed_modules": [
+    "cps_compute/storage.py",
+    "cps_compute/submissions.py"
+  ],
+  "unchanged_modules": 76,
+  "wheel_sha256": "566afb51191f4f2483033eabb229b7d2c6bd959d3ec8bc9da6c9d2a54ba705e0",
+  "tests_passed": 196,
+  "unchanged_distributions": 43,
+  "addon_tests_passed": 97,
+  "addon_source_revision": "e499c97a5616c67262c76323c68c3433508d93b2",
+  "deployment_status": "candidate_not_deployed",
+  "candidate_image": "ghcr.io/mul-cps/cps-compute@sha256:ac9ee1b0fe77266e089be0c64c564cf009c55684808dd5fee5d2c135080c23f4",
+  "extension_package_boundary_verifier": "passed",
+  "wheels": {
+    "cps_compute_hub-0.1.0-py3-none-any.whl": "180e233ddc2f3511b7a31360444b918a219658f17872e6e654b93c871bb71220",
+    "cps_compute_jupyterlab-0.1.0-py3-none-any.whl": "9cbe6526150bd94f852855400cf286b8b810979f6cc5ead84ad1e394e05234f2",
+    "cps_compute-0.1.0-py3-none-any.whl": "566afb51191f4f2483033eabb229b7d2c6bd959d3ec8bc9da6c9d2a54ba705e0"
+  }
+}

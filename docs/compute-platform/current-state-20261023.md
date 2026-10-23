@@ -70,6 +70,10 @@ must distinguish that evidence from the current live checks above.
    crafted override rejections. CPU batch remained usable while the shared GPU
    reservation was active. See [live matrix](../../platform-staging/argo/qualification/notebook-owner-matrix-20261023/verification.json).
    Equivalent CIT, fresh GUI/SDK and distributed launcher acceptance remain open.
+   A separate [profile-walltime candidate](../../platform-staging/argo/qualification/profile-walltime-20261023/verification.json)
+   removes the API/Submit/snippet one-hour override in favor of catalog limits
+   (196 API tests, 97 addon tests). It is packaged/published but not deployed;
+   the live notebook path still has its old cap pending protected image handovers.
 4. Finish broader GPU scheduling/packing, teaching reclaim, checkpoint/distributed
    cleanup, representative CPS/CIT startup bursts and the Descheduler comparison.
    These two warm single-workspace starts do not establish burst p95, eight-GPU
