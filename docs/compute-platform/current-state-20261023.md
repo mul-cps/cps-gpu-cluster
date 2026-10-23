@@ -28,9 +28,11 @@ visual acceptance and CIT student workflow acceptance remain open.
 
 ## Remaining variants and CIT student acceptance
 
-The CPS CPU runtime candidate finished building locally (`0c1addcb…50003e`);
-publication and deployment remain pending. The CIT CPU base image download is
-complete. Both controlled students, Armin and Mikasa, completed fresh ordinary
+The CPS CPU runtime candidate is published as `efc3b485…b6eb72f`. Its full
+software-preservation verifier passes with 72 original base layers retained,
+43 SDK modules unchanged and 315 other dependency versions unchanged. Deployment
+and live qualification remain pending. CIT CPU addon checks pass with 48 SDK
+modules and 321 other dependency versions unchanged; runtime assembly is ongoing. Both controlled students, Armin and Mikasa, completed fresh ordinary
 CIT directory login at `jhub.dshl.unileoben.ac.at`; Hub identity reads returned
 200 with `admin=false`. Fresh temporary API tokens also pass Hub review (200),
 but Compute `/v1/me` and `/v1/profiles` still return 401. This establishes a

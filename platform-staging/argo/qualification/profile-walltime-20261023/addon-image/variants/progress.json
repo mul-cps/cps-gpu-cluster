@@ -1,8 +1,11 @@
 {
   "cps_cpu_runtime_image_id": "0c1addcbfdd70ed62188a1f05ea7026b3a8e1f76b277a3c6f91b52d1f950003e",
-  "published": false,
+  "published": true,
   "deployed": false,
   "cit_cpu_base_download_complete": true,
   "temporary_api_tokens_revoked": 2,
-  "cit_compute_acceptance_complete": false
+  "cit_compute_acceptance_complete": false,
+  "published_cps_cpu_image": "ghcr.io/mul-cps/cps-jupyter-notebook@sha256:efc3b485006f9d4e1e1b1eeacdd75c92bf00bfe02141f5d91ff28eaadb6eb72f",
+  "cps_cpu_preservation_passed": true,
+  "cit_cpu_build_checks_passed": true
 }
