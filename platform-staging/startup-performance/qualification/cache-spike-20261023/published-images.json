@@ -17,5 +17,9 @@
   "gateway_pip_check_passed": true,
   "installed_candidate_imports_passed": true,
   "deployed": false,
-  "live_speedup_measured": false
+  "live_speedup_measured": false,
+  "qualification_status": "rejected-and-rolled-back",
+  "reason": "Candidate source omitted deployed kernel147 health pins and cleanup commits",
+  "deployment_attempted": true,
+  "currently_deployed": false
 }

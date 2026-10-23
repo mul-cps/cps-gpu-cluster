@@ -272,6 +272,7 @@ class RetentionChart(unittest.TestCase):
         argo=yaml.safe_load((ROOT/'platform-staging/argo/values.yaml').read_text())
         self.assertGreaterEqual(argo['controller']['workflowDefaults']['spec']['ttlStrategy']['secondsAfterCompletion'],93*86400)
         self.assertTrue(cron['spec']['suspend']);pod=cron['spec']['jobTemplate']['spec']['template']['spec']
+        self.assertEqual(pod['securityContext'].get('fsGroupChangePolicy'),'OnRootMismatch')
         self.assertFalse(pod['automountServiceAccountToken']);self.assertEqual(pod['serviceAccountName'],'cps-artifact-retention')
         self.assertNotEqual(pod['serviceAccountName'],'cps-compute-controller');self.assertNotIn('--apply',pod['containers'][0]['args'])
         role=next(d for d in documents if d['kind']=='Role' and d['metadata']['name']=='cps-artifact-retention-proof')

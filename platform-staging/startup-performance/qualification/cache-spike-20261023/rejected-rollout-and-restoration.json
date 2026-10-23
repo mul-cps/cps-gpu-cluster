@@ -1,0 +1,19 @@
+{
+  "candidate_revision": "d0150bdaee8f8888f070b84b4dda98b6ec5aca46",
+  "outcome": "rejected-rollback-verified",
+  "node_health_failure": "Exact native loaded build required",
+  "driver_kernel_or_gpu_changes": false,
+  "journal_rotation_executed": false,
+  "journal_state_and_anchor_bytes_unchanged": true,
+  "four_components_ready_after_restore": true,
+  "approval_revision": "sha256:b7082c511c415ba26ac503917629f505839825dc9d91591e3ca5d76296ea088f",
+  "gottam_uid_preserved": "fe5fb5e7-8696-4ac3-a5a8-1883817d00bb",
+  "helpers_removed": true,
+  "unused_inputs_removed": 7,
+  "gateway_private_modes_restored": 22,
+  "gateway_and_retention_fsGroupChangePolicy": "OnRootMismatch",
+  "corrected_candidate_revision": "4f39a686254f692dcce9d5a7d03a34f4271dad85",
+  "corrected_candidate_focused_tests_passed": 343,
+  "corrected_health_source_sha256_matches_deployed": "fc9dd634b8a31c15939cf6ddf3b18e84b9fa5a60d21424831a410a5ba4322fe8",
+  "live_speedup_measured": false
+}

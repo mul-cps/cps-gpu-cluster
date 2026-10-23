@@ -83,6 +83,7 @@ spec:
         runAsNonRoot: true
         runAsUser: 10001
         fsGroup: 10001
+        fsGroupChangePolicy: OnRootMismatch
         seccompProfile: {type: RuntimeDefault}
       containers:
         - name: gateway

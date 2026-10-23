@@ -18,7 +18,10 @@ class GatewayBackupPermissions(unittest.TestCase):
             yaml.safe_dump(values, source); source.flush()
             result = subprocess.run(['helm','template','test',str(ROOT/'platform-staging/chart'),'-f',source.name],capture_output=True,text=True)
         self.assertEqual(result.returncode,0,result.stderr)
-        cron = next(d for d in yaml.safe_load_all(result.stdout) if d and d['kind']=='CronJob'and d['metadata']['name']=='compute-state-backup')
+        documents = [d for d in yaml.safe_load_all(result.stdout) if d]
+        gateway = next(d for d in documents if d['kind']=='Deployment' and d['metadata']['name']=='compute-gateway')
+        self.assertEqual(gateway['spec']['template']['spec']['securityContext'].get('fsGroupChangePolicy'),'OnRootMismatch')
+        cron = next(d for d in documents if d and d['kind']=='CronJob'and d['metadata']['name']=='compute-state-backup')
         pod = cron['spec']['jobTemplate']['spec']['template']['spec']
         self.assertEqual(pod['securityContext'].get('fsGroupChangePolicy'),'OnRootMismatch')
         self.assertEqual(pod['securityContext']['fsGroup'],10001)

@@ -454,3 +454,32 @@ handover remains pending. No live speed improvement
 or production-readiness claim follows from these source tests.
 
 [Staged source verification](../../platform-staging/startup-performance/qualification/cache-spike-20261023/coordinator-fixes.json).
+
+
+## Startup candidate rejected; previous deployment restored
+
+The first startup candidate (`d0150bd`, Gateway `696b140d…3b01fe`, Node
+`ed511696…c54c99`) was attempted and rejected. Its Node source omitted the
+kernel-147 health pins and cleanup commits already present in deployed Node
+`9d998baa…047bbeb`; exact-load validation correctly withdrew readiness.
+Previous service images/configuration and Node admission were restored. A
+read-only probe confirmed all four current components Ready at approval
+`b7082c51…ea088f`. Journal state and anchor bytes remained unchanged: no journal
+rotation ran, and no driver/kernel/GPU change occurred. Research Pod gottam
+retained its UID and remained Running. Helpers and seven unmounted candidate
+inputs were removed with UID preconditions.
+
+The maintenance helper also exposed recursive fsGroup mode changes on the
+shared Gateway PVC. Owned private modes were restored without changing file
+contents/inodes; the Gateway and retention now use OnRootMismatch, matching
+the existing backup mount policy. Source Helm render tests pass (23 tests and
+14 subtests). Neither retention schedule nor application was changed.
+
+Corrected compute source `4f39a686254f692dcce9d5a7d03a34f4271dad85` integrates
+the three deployed Node commits. Its Node files differ from deployed source
+only by the intended two fast-retry files; its health verifier SHA256 exactly
+matches the deployed fc9dd634…4322fe8. 343 focused tests passed. Corrected
+images are building; another supported handover and live timing remain open.
+The first published images must not be promoted.
+
+[Rejected attempt and verified restoration](../../platform-staging/startup-performance/qualification/cache-spike-20261023/rejected-rollout-and-restoration.json).
