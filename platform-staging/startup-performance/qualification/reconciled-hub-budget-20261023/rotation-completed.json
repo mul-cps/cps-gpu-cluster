@@ -1,0 +1,13 @@
+{
+  "original_anchor_preserved": true,
+  "prior_rotations_preserved": true,
+  "rotation_count": 13,
+  "transition_pending": false,
+  "config_hash": "sha256:6a3276a6f5903d972e41fd785afc2851e27b9cfacc882c563701fc03a7a83cf5",
+  "images": {
+    "gateway": "ghcr.io/mul-cps/cps-compute@sha256:e90d36061a9d60c8183499a2d20171d1bf8e6bb490882bf36d10ae7ef2f3f18d",
+    "node": "ghcr.io/mul-cps/cps-native-node@sha256:e4a1c5d92b4d1c3031dc511a215de216ee7a7a8c4cd4c521be3320e6fac1cde0",
+    "hub:cps": "ghcr.io/mul-cps/cps-compute@sha256:f2dcf6a47ea542a84defa589db48e96cf33e6f626958bc3d264a88bcf14919e1",
+    "hub:cit": "ghcr.io/mul-cps/cps-compute@sha256:f2dcf6a47ea542a84defa589db48e96cf33e6f626958bc3d264a88bcf14919e1"
+  }
+}

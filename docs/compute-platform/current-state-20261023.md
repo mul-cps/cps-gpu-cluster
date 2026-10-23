@@ -951,3 +951,32 @@ including retained owner-overlay and lifetime behavior. New reconciled image
 build and live qualification remain pending.
 
 [Failure, full-suite, package comparison and restoration receipts](../../platform-staging/startup-performance/qualification/reservation-reference-retry-20261023/).
+
+### Corrected Hub timeout package deployed to CPS and CIT; rotation 13 complete
+
+Hub image `sha256:f2dcf6a47ea542a84defa589db48e96cf33e6f626958bc3d264a88bcf14919e1`
+contains the hash-pinned Hub wheel from `57425ac`. It preserves every one of the
+actual deployed SDK's **78 module hashes**, all dependency versions, and 19 of
+20 Hub module hashes. Only `hub.py` differs, by the native reservation response
+timeout. Owner-overlay support is retained. Package tests: **470 passed**.
+Both Hubs are now Ready on this corrected image; the incompatible candidate
+from the preceding section remains rejected.
+
+The paired rollout initially retained old publisher bootstrap process-image
+pins. The all-four observation correctly denied the mismatch. Two new immutable
+Hub publisher inputs change only `process.image`; UID/RV/spec-fenced deployment
+patches select those inputs. Both Hubs restarted Ready and all four acknowledgments
+matched the running images. Future paired image rollouts must align these
+publisher inputs in their initial exact-change plan.
+
+Journal rotation **13** preserves the original anchor and twelve prior rotations
+with no pending transition. Normal writer Ready; both maintenance helpers
+deleted using UID preconditions. Research Pod `jupyter-gottam` remains Running
+with original UID `fe5fb5e7-8696-4ac3-a5a8-1883817d00bb`.
+
+Gateway/node remain on rotation-12 diagnostic images (`cbf0841`). The server
+reference retry (`725a3a6`, full suite **5,207 passed**) is still not deployed.
+Next: its service-image transition, then real console GPU startup/CUDA validation.
+No production or startup-latency qualification is claimed by Hub readiness.
+
+[Image preservation, publication, journal and live receipts](../../platform-staging/startup-performance/qualification/reconciled-hub-budget-20261023/).

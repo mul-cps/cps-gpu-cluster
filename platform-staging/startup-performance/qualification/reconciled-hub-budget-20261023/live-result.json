@@ -1,0 +1,17 @@
+{
+  "both_hubs_ready": true,
+  "hub_image": "ghcr.io/mul-cps/cps-compute@sha256:f2dcf6a47ea542a84defa589db48e96cf33e6f626958bc3d264a88bcf14919e1",
+  "source_revision": "57425ac8041a0a6eb10f274fa150e0705ff7570d",
+  "rotation_count": 13,
+  "gateway_retry_deployed": false,
+  "gateway_node_unchanged_from_rotation12": true,
+  "publisher_image_inputs_aligned": true,
+  "sdk_module_hashes_preserved": 78,
+  "hub_module_hashes_preserved": 19,
+  "hub_module_changed": "hub.py native reservation timeout only",
+  "four_current_acknowledgments_verified": true,
+  "helpers_deleted": 2,
+  "research_pod_uid": "fe5fb5e7-8696-4ac3-a5a8-1883817d00bb",
+  "research_pod_running": true,
+  "production_qualified": false
+}
