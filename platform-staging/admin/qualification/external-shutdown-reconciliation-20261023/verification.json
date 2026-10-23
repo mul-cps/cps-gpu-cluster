@@ -1,0 +1,89 @@
+{
+  "source_revision": "b1753e42499b21a06940902ce04fca5536669ed8",
+  "wheel_sha256": "f180ab05b678bbec439ef49df2937068b8242da8879bc9c5fa547298f13bbf84",
+  "changed_modules": [
+    "e2x_course_hub/course_service/app.py",
+    "e2x_course_hub/cps/workspaces.py"
+  ],
+  "tests_passed": 79,
+  "subtests_passed": 72,
+  "unchanged_distributions": 105,
+  "installed_changed_modules": [
+    "e2x_course_hub/course_service/app.py",
+    "e2x_course_hub/cps/workspaces.py"
+  ],
+  "frontend_unchanged": true,
+  "image": "ghcr.io/mul-cps/e2x-course-hub@sha256:d475f8ff0d9c3075e3c995020c95ff16217eed5851b667a371a7510b7645daa2",
+  "deployment": {
+    "cps-admin": "ready",
+    "cit-admin": "ready"
+  },
+  "before": {
+    "state": "running",
+    "reservation_active": false
+  },
+  "after": {
+    "state": "stopped",
+    "reservation_active": false,
+    "notice": "Hub session ended; shutdown and reservation cleanup confirmed. Files retained."
+  },
+  "automatic_audit": {
+    "actor": "system:hub-lifecycle",
+    "console": "cps",
+    "target": "shared-gpu-lab",
+    "time": "2026-10-23T02:24:16.587963+00:00",
+    "outcome": "success",
+    "previous_state": "running",
+    "current_state": "stopped"
+  },
+  "manual_stop_for_reconciliation": false,
+  "direct_record_edit": false,
+  "restart_acceptance": {
+    "state": "running",
+    "seconds": 89.01395291399967,
+    "pod_uid": "5bfe8bb2-7b92-42f0-bb8a-cc902ad81386",
+    "pod_ready": true
+  },
+  "active_session_preserved": {
+    "samples": [
+      {
+        "state": "running",
+        "reservation_active": true,
+        "server_ready": true
+      },
+      {
+        "state": "running",
+        "reservation_active": true,
+        "server_ready": true
+      },
+      {
+        "state": "running",
+        "reservation_active": true,
+        "server_ready": true
+      },
+      {
+        "state": "running",
+        "reservation_active": true,
+        "server_ready": true
+      }
+    ],
+    "elapsed_seconds": 20.114274046965875
+  },
+  "normal_teardown": {
+    "state": "stopped",
+    "reservation_active": false,
+    "close_seconds": 13.721258491001208,
+    "kai_cleanup": {
+      "binder_uid": "cd5c13d2-a593-431f-8379-870f5aa8738d",
+      "binder_created_at": "2026-10-23T01:04:43Z",
+      "binder_uid_unchanged": true,
+      "binder_restarts": 0,
+      "reservation_name": "gpu-reservation-835ed0ee703335d4",
+      "reservation_uid": "593805eb-0b1d-44dc-8796-5f834612e9ff",
+      "automatic_deletion": true,
+      "manual_deletion": false,
+      "after_close_seconds": 0.1856380180688575,
+      "total_stop_and_cleanup_seconds": 15.322355741984211
+    }
+  }
+}

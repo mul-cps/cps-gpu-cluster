@@ -48,7 +48,10 @@ must distinguish that evidence from the current live checks above.
    Actual 30-minute idle expiry now passes: proxy removal and Pod deletion occurred
    2.23 seconds after the deadline; reservations and kernel caps cleared without
    manual Stop. See [expiry evidence](../../platform-staging/admin/qualification/session-lifetime-20261023/verification.json).
-   Fix the confirmed stale Source running state after automatic shutdown next.
+   The stale Source running state after automatic shutdown is fixed: its scheduled
+   observer converged the exact record with a system audit, and normal GPU restart
+   passed in 89.01 seconds. [Reconciliation evidence](../../platform-staging/admin/qualification/external-shutdown-reconciliation-20261023/verification.json)
+   includes preserved active-session checks and normal cleanup.
    Hard-maximum wall-clock expiry and visual warning acceptance remain separate.
 2. Complete ordinary-user CPS/CIT access and the remaining collaboration gates:
    current SDK/Compute/RTC variants, membership removal closing existing access,

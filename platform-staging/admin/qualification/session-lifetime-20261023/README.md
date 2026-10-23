@@ -18,7 +18,8 @@ at 02:13:18Z and the member reservation was already inactive. KAI reservations
 and online kernel caps were zero on final readback. Hard maximum wall-clock
 expiry is not yet demonstrated.
 
-The Source console record still says running after this automatic Hub stop. This
-is a confirmed status/reconciliation followup, not an unreleased GPU allowance.
-Keep this stale record available for reproduction; do not claim full UI expiry
-acceptance from the successful Hub/native lifecycle alone.
+The Source record initially remained running after the automatic Hub stop. This
+was reproduced and fixed by the packaged b1753e4 background lifecycle observer.
+The exact stale record converged automatically with a system audit, and normal
+Start then succeeded. See the adjacent external-shutdown-reconciliation evidence.
+Hard-maximum wall-clock expiry and visual browser warning acceptance remain open.

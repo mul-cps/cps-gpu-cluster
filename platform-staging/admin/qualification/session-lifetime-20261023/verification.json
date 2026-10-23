@@ -1,5 +1,5 @@
 {
-  "status": "live_idle_expiry_passed_console_state_followup_open",
+  "status": "live_idle_expiry_and_console_reconciliation_passed",
   "baseline": {
     "workspace_state": "running",
     "reservation": {
@@ -70,6 +70,7 @@
   },
   "kai_reservation_pods_remaining": 0,
   "online_kernel_cap_entries": 0,
-  "console_persisted_state_stale": true,
-  "console_state_followup": "Stored Source record remains running after automatic Hub stop; fix dynamic presentation/reconciliation without inferring release from TTL."
+  "console_persisted_state_stale": false,
+  "console_state_followup": "Resolved by b1753e4 background lifecycle observer; exact stale record converged without a manual Stop or record edit, then normal Start succeeded.",
+  "observed_stale_state_before_fix": true
 }
