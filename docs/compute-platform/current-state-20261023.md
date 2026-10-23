@@ -1202,3 +1202,29 @@ approval removed and four-current readiness). QA token revoked; research Pod
 Running at original UID. No startup/CUDA pass claimed.
 
 [Attempt, readiness failure and cleanup receipt](../../platform-staging/startup-performance/qualification/exact-retirement-start-attempt5-20261023/live-result.json).
+
+### Both Hub heartbeats now use Source head; rotation 19 complete
+
+Both Hubs now use
+`sha256:445c5fa48735ac077a25282256fba445a9d2af4720b994e66ca525fb519b6aae`.
+An initial candidate built from the gateway SDK branch was rejected for 18-module
+drift. No rejected candidate was deployed. The retained release variant
+**2ed0bb8** captures the exact 78 deployed SDK modules from the prior pinned Hub
+image, with a hash manifest. Only `native_group_publisher.py` changes. Image
+preflight confirms the other **77 SDK modules**, all **20 Hub modules**, dependency
+versions and owner-overlay support unchanged. A hash-pinned wheel is installed
+without dependency updates and passes pip check. Gateway/node images unchanged.
+
+The endpoint callback regression passes on the exact Hub variant. Broader gateway
+branch fixtures fail before publisher invocation on this SDK generation and are
+not variant qualification. SDK baseline convergence remains release work; the
+variant branch must not be merged into gateway runtime.
+
+Exact-change plan and admission checks pass; all-four readiness passed before
+rotation **19**. Original anchor/history preserved, transition absent, normal
+writer Ready, two helpers removed with UID preconditions. No policy, resources,
+driver or storage change. **The service predecessor chain is now at the existing
+bound of 16**: a reviewed checkpoint is required before another image transition.
+The next controlled Source start remains in progress; no startup/CUDA pass claimed.
+
+[Hub image, module verification, rotation and cleanup](../../platform-staging/startup-performance/qualification/heartbeat-source-head-hubs-live-20261023/).

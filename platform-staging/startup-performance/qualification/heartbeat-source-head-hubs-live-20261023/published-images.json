@@ -1,0 +1,14 @@
+{
+  "source_revision": "2ed0bb81f703d9bac64428d156153264416a5dc5",
+  "wheel_sha256": "4a142f2773daab51a6ed3cdbf1fca13f29857882f5fc03df6c4d41aedd124193",
+  "images": [
+    {
+      "component": "hub:cps",
+      "image": "ghcr.io/mul-cps/cps-compute@sha256:445c5fa48735ac077a25282256fba445a9d2af4720b994e66ca525fb519b6aae"
+    },
+    {
+      "component": "hub:cit",
+      "image": "ghcr.io/mul-cps/cps-compute@sha256:445c5fa48735ac077a25282256fba445a9d2af4720b994e66ca525fb519b6aae"
+    }
+  ]
+}
