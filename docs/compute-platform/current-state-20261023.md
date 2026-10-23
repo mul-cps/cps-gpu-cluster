@@ -1386,3 +1386,20 @@ components Ready and existing grants unchanged. The research Pod remains Running
 with its original UID. No database/journal reset or reservation deletion was used.
 
 [Trial and verified rollback boundary](../../platform-staging/startup-performance/qualification/heartbeat-ttl15-trial-20261023/result.json).
+
+### Workspace policy event-loop starvation reproduced and fixed in candidate
+
+Compute **0e33b68** moves both read-only workspace-policy proofs to the existing
+shielded worker helper. Four regression cases fail before the change because
+validation blocks heartbeat progress, then pass afterward; eight focused tests
+pass. Independent review confirms per-call database connections, serialized
+readiness-cache access, preserved denial behavior and safe worker completion
+after disconnect. Member reservation acquisition remains synchronous and this
+does not prove a faster complete startup.
+
+Candidate **6ae6e7f…631890** is published and passes no-GPU installed-source, actual
+driver-manifest and current policy-graph checks. It also contains the earlier
+failed-heartbeat retry change. The full suite is running; no broad passing claim
+is made. **No runtime deployment performed.** Existing live image pins remain.
+
+[Candidate source, digest and exact verification boundary](../../platform-staging/startup-performance/qualification/policy-event-loop-20261023/result.json).

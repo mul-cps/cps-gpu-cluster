@@ -1,0 +1,25 @@
+{
+  "source_revision": "0e33b68d769715be5b72ccf59c9b481f4122ce0f",
+  "candidate_image": "ghcr.io/mul-cps/cps-compute@sha256:6ae6e7f497a81c44f8c93578b8fb63c2228fe8bc45fde1f5bb7d8ae072631890",
+  "wheel_sha256": "902663f26552f642e302254ed6f5d20077b4877aa708184d12272ea07d54eae4",
+  "deployed": false,
+  "tests": {
+    "regression_before_fix": {
+      "failed": 4,
+      "reason": "synchronous policy validation starves heartbeat"
+    },
+    "focused_after_fix": {
+      "passed": 8
+    },
+    "full_suite": "running; result not yet established",
+    "independent_review": "approved scoped fix; four cancellation scenarios and registered-group integration passed"
+  },
+  "candidate_preflight": {
+    "actual_manifest_and_kernel_validated": true,
+    "health_source_matches_deployed": true,
+    "current_policy_graph_loads": true,
+    "installed_service_and_grant_check_sources_match": true,
+    "gpu_calls": false
+  },
+  "scope": "Read-only registered and preview workspace policy HTTP endpoints only. Member reservation acquisition remains synchronous. Full startup latency not yet remeasured."
+}
