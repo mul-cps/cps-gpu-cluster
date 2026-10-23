@@ -1,0 +1,6 @@
+{
+  "server_hook_python_unchanged": true,
+  "files_checked": 1,
+  "base_image": "sha256:5427088986bc06ad0713875d1aa2f31439f0bd1fbe6099d4669570fcf3e85be4",
+  "wheel_sha256": "9cbe6526150bd94f852855400cf286b8b810979f6cc5ead84ad1e394e05234f2"
+}

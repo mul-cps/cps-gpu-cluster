@@ -1,0 +1,8 @@
+{
+  "cause": "Wheel RECORD was incorrectly compared with pip-generated installed RECORD",
+  "excluded_generated_files": [
+    "cps_compute_jupyterlab-0.1.0.dist-info/RECORD"
+  ],
+  "remaining_exact_wheel_files": 10,
+  "installed_sdk_and_addon_record_hash_size_checks_retained": true
+}

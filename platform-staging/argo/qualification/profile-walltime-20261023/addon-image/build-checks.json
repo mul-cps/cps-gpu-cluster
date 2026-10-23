@@ -1,0 +1,26 @@
+{
+  "stage": "image_published_preservation_verified_policy_handover_pending",
+  "checks": [
+    {
+      "core_modules_unchanged": 30,
+      "gid": 0,
+      "installed_wheel_files_verified": 10,
+      "other_distributions_unchanged": 423,
+      "passed": true,
+      "source_revision": "e499c97a5616c67262c76323c68c3433508d93b2",
+      "uid": 0,
+      "wheel_sha256": "9cbe6526150bd94f852855400cf286b8b810979f6cc5ead84ad1e394e05234f2"
+    },
+    {
+      "passed": true,
+      "authenticated_status": 200,
+      "unauthenticated_status_denied": true,
+      "start_timestamp_stable": true,
+      "status_polling_does_not_update_last_activity": true,
+      "runtime_source": "Jupyter Server api/status.started",
+      "browser_verified": false
+    }
+  ],
+  "deployed": false,
+  "production_qualified": false
+}
