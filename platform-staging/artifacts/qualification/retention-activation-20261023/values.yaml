@@ -1,6 +1,6 @@
 artifactRetention:
   enabled: true
-  suspend: true
+  suspend: false
   apply: true
   conditionalDeleteQualified: true
   lifecycleQualified: true

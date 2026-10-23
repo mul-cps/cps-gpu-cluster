@@ -1,0 +1,6 @@
+{
+  "configmap": "cps-retention-qualified23-c0211ebd3938",
+  "script_sha256": "4204c073ebb97c7ca48cba93c770326dd702966ba969904341be7e9fbba1dedd",
+  "preserved_objects": 28,
+  "prepared_suspended": true
+}

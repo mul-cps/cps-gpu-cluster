@@ -34,3 +34,12 @@ reported only the 28 remaining missing-workflow proof errors. These objects are
 preserved; the schedule remains suspended pending reviewed legacy/orphan handling.
 The qualified mutation configuration is prepared and exercised, not automatically
 scheduled. No missing-proof error was ignored or converted into deletion authority.
+
+## Subsequent completion
+
+The reviewed exact-key/ETag preservation inventory subsequently resolved legacy
+proof noise without deleting or relabelling any unproven object. The schedule is
+now active and a Kubernetes controller-scheduled catch-up run passed with zero
+errors. See [the preservation and activation receipts](../retention-orphan-review-20261023/README.md).
+The current values overlay reflects this active state; earlier suspension notes
+in this record describe intermediate validation stages.

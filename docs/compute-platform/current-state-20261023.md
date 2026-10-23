@@ -5,6 +5,10 @@ ordinary `cps:shared-gpu-lab` 5 GiB lifecycle now passes on the durable authorit
 including automatic KAI reservation cleanup. This supersedes earlier pending
 statements for that specific lifecycle, not every production acceptance gate.
 
+The sections below are chronological acceptance history. Later completed gates
+supersede earlier pending statements for the same scope. Daily artifact retention
+is now active and scheduler-verified; see the final retention activation section.
+
 ## Latest shared-GPU addon activation
 
 The shared-GPU notebook image `fb9872bf…d32a45` is now deployed through the
@@ -380,3 +384,22 @@ an active daily cleanup schedule.
 
 [Activation receipts](../../platform-staging/artifacts/qualification/retention-activation-20261023/README.md)
 record exact run results, image/policy and controller identity.
+
+## Daily artifact retention active and scheduler-verified
+
+The 28 missing-workflow objects now have an explicit operator preservation review:
+seven exact controlled-fixture matches, nine removed qualification-namespace
+objects and twelve unattributed legacy objects. They remain in place, with exact
+ETag exclusions and reviewed reasons in Git. No ownership or deletion authority
+was inferred. Changed ETags and new unknown keys still require normal proof and
+fail visibly. All 24 tests and 14 subtests pass, including chart propagation.
+
+The full-template run completed with zero errors, 44 reconciled objects and 28
+preserved objects. A read-only re-inventory confirmed unchanged legacy ETags,
+metadata and tags. Daily retention is now unsuspended. A genuine Kubernetes
+controller-scheduled catch-up run for 03:41 UTC completed successfully with the
+same zero-error result. This supersedes the earlier suspension notes above.
+
+[Preservation review and scheduled-run receipt](../../platform-staging/artifacts/qualification/retention-orphan-review-20261023/README.md)
+close retention activation and actual scheduled execution. Off-host recovery,
+broader GPU scheduling/bursts and release integration remain incomplete.

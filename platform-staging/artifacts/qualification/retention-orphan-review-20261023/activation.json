@@ -1,0 +1,27 @@
+{
+  "passed": true,
+  "cronjob": "cps-artifact-retention",
+  "uid": "cbb1c416-4c05-43f2-bf74-ec8cc6ac30ce",
+  "suspended": false,
+  "schedule": "41 3 * * *",
+  "image": "ghcr.io/mul-cps/cps-compute@sha256:ac9ee1b0fe77266e089be0c64c564cf009c55684808dd5fee5d2c135080c23f4",
+  "activated_at": "2026-10-23T08:13:31.875976+00:00",
+  "manual_full_template_run": {
+    "examined": 86,
+    "eligible": 0,
+    "deleted": 0,
+    "skipped": 58,
+    "errors": 0,
+    "objects": [],
+    "apply": true,
+    "truncated": false,
+    "reconciled": 44,
+    "preserved": 28,
+    "version": 1,
+    "image": "ghcr.io/mul-cps/cps-compute@sha256:ac9ee1b0fe77266e089be0c64c564cf009c55684808dd5fee5d2c135080c23f4",
+    "policy_hash": "sha256:2054ee32b1f2dd8d4590a41bd1dcdae6a16cec47811815452f10b2ac74e1a1fb"
+  },
+  "legacy_objects": 28,
+  "legacy_etags_metadata_and_tags_unchanged": true,
+  "remaining_gate": "next scheduled run; off-host recovery and overall production qualification remain separate"
+}
