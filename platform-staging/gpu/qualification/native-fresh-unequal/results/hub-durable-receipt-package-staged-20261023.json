@@ -1,0 +1,47 @@
+{
+  "authority_state_root": "/var/lib/cps-native-gpu/domains/100876ac-14e6-4292-bf52-7d129f7f08f0/custody",
+  "hubs": {
+    "jupyterhub": {
+      "cps-native-hub-config": {
+        "old": "cps-runtime-hub-config-b1c47f0eee37cf15",
+        "new": "cps-runtime-hub-config-7a710a39e0635016",
+        "settings_sha256": "486e25d002ab382f1b7473e6cd8833559fbb96caff951bb1e30ec7814c3cc4eb"
+      },
+      "cps-native-kai-hub-seed": {
+        "old": "cps-runtime-kai-hub-config-aa9b3a560b88623d",
+        "new": "cps-runtime-kai-hub-config-522f8da9475af8df",
+        "settings_sha256": "1775726daa0b9a3ecf2f6926bf598ac709007aa7d271da4b6c5e03c9d5770678"
+      }
+    },
+    "cit-jhub": {
+      "cps-native-hub-config": {
+        "old": "cps-runtime-hub-config-07c20e25c8f54369",
+        "new": "cps-runtime-hub-config-9db78728bc4be54a",
+        "settings_sha256": "c8034a60f3affb78f26859d0d78379a6cebadc806305993f7e8980222eebe748"
+      },
+      "cps-native-kai-hub-seed": {
+        "old": "cps-runtime-kai-hub-config-2b190247631a638e",
+        "new": "cps-runtime-kai-hub-config-f1fd43270a8cac8d",
+        "settings_sha256": "c9964e6d0396041021b7ee6907e7a6b635b2a473e91d7839b38c832e00d9ff94"
+      }
+    }
+  },
+  "activated": false,
+  "version": 1,
+  "kind": "hub-durable-receipt-package-staged",
+  "image": "ghcr.io/mul-cps/cps-compute@sha256:435c080630b71dc9af7656052f96d3e038380d5a87e484b398f7c0a27e5cb466",
+  "sdk_source": "68f6d6b8c818c265ca6566e3ed94d7e5659bb8df",
+  "hub_source": "4b3679fcda985b69abaf4cc70630dd2ca4849632",
+  "hub_base_source": "6dc240b547fc5239c3518c40ca04f6323c697218",
+  "hub_changed_modules": [
+    "cps_compute_hub/native_hub_config.py"
+  ],
+  "hub_tests_passed": 33,
+  "package_verification": {
+    "sdk_modules": 78,
+    "hub_modules": 20,
+    "other_distributions_preserved": 136
+  },
+  "production_ready": false,
+  "next_gate": "Paired Hub image/config/publisher upgrade with exact successor authority and delivery-journal rotation; then ordinary GPU start/CUDA/shutdown"
+}
