@@ -1,0 +1,30 @@
+{
+  "status": "prepared_not_applied",
+  "canonical_people_additions": {
+    "mikasa": "15164372-7ae5-4cfd-8b5d-fd402aa891bd",
+    "armin": "85de720c-94b0-4bc7-807e-c04512133494"
+  },
+  "reviewed_source_identity_requests": [
+    {
+      "hub": "cit",
+      "username": "mikasa",
+      "person_id": "15164372-7ae5-4cfd-8b5d-fd402aa891bd",
+      "authority": "reviewed_account_alias",
+      "administrator_reviewed": true,
+      "review_reason": "Dedicated user-authorized ordinary student test identity; CIT Authentik https://auth.dshl.unileoben.ac.at user pk=34 uuid=0d3dd095-ceca-4465-9de7-3e8e06f552b1 hashed_user_id=b86a4056d4c98a006918e42b3297b064985dd677304c566273fb9f9213fa419b. Created in audited event e3c04195-c493-4c27-b193-7a3939e5e356 for shared GPU workflow acceptance. Explicit account provenance; reserved test email is unverified metadata and is not linkage authority. Fresh normal CIT Hub login and Hub API review passed on 2026-10-23; the same existing CIT Authentik connector was used. This explicit alias preserves the established canonical person and does not create a second allowance.",
+      "verified": false
+    },
+    {
+      "hub": "cit",
+      "username": "armin",
+      "person_id": "85de720c-94b0-4bc7-807e-c04512133494",
+      "authority": "reviewed_account_alias",
+      "administrator_reviewed": true,
+      "review_reason": "Dedicated user-authorized ordinary student test identity; CIT Authentik https://auth.dshl.unileoben.ac.at user pk=35 uuid=84f7ead5-f28f-4bee-8d9d-8a4f37d9e61a hashed_user_id=89f8583af458fd7712e2c4693f61252f149a8ccc26b8a40322fa75f0132be91d. Created in audited event e3c04195-c493-4c27-b193-7a3939e5e356 for shared GPU workflow acceptance. Explicit account provenance; reserved test email is unverified metadata and is not linkage authority. Fresh normal CIT Hub login and Hub API review passed on 2026-10-23; the same existing CIT Authentik connector was used. This explicit alias preserves the established canonical person and does not create a second allowance.",
+      "verified": false
+    }
+  ],
+  "email_verification_required": false,
+  "runtime_secret_immutable": true,
+  "deployment_requires_reviewed_configuration_handover": true
+}

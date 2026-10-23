@@ -36,6 +36,12 @@ CIT directory login at `jhub.dshl.unileoben.ac.at`; Hub identity reads returned
 but Compute `/v1/me` and `/v1/profiles` still return 401. This establishes a
 remaining Compute authentication/mapping boundary after refreshing stale OAuth;
 it does not qualify CIT student Compute access. Both temporary tokens were revoked.
+Source inspection and live config readback identify the missing CIT canonical-person
+aliases for both controlled students. Explicit alias requests are prepared using
+their audited CIT Authentik UUIDs and fresh normal login evidence; they are not
+applied yet. The immutable Gateway config requires the reviewed configuration
+handover, and Source identity records must be audited separately. Email verification
+is not fabricated or required for these explicit reviewed test-account aliases.
 The initial browser harness used an incorrect hostname and was corrected from
 live ingress readback; no DNS, identity mapping or permission settings were changed.
 
