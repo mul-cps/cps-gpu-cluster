@@ -1,0 +1,7 @@
+{
+  "image": "ghcr.io/mul-cps/cps-compute@sha256:090151370dc385b41ac01ded23888deeb19417e330cc38d8aebd2edc8f896e07",
+  "source_revision": "8bdacc4395300e445e4bb9170e664f6c98dba4c9",
+  "wheel_sha256": "84a871b3b3d55e04a6b375246382a80039b2bfb148d216dc8ca262c4167fa030",
+  "registry_digest_verified": true,
+  "deployed": false
+}

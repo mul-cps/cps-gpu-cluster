@@ -1,0 +1,9 @@
+{
+  "actual_manifest_and_kernel_validated": true,
+  "health_source_matches_deployed": true,
+  "current_policy_graph_loads": true,
+  "pooling_fix_installed": true,
+  "no_gpu_calls": true,
+  "source_revision": "8bdacc4395300e445e4bb9170e664f6c98dba4c9",
+  "deployed": false
+}

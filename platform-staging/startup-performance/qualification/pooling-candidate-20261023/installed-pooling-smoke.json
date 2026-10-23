@@ -1,0 +1,6 @@
+{
+  "installed_pooling_cases_passed": 7,
+  "synthetic_cpu_contract_only": true,
+  "no_gpu_calls": true,
+  "deployed": false
+}
