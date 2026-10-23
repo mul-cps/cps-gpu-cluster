@@ -1,0 +1,62 @@
+{
+  "functional_qualification_passed": false,
+  "startup_improvement_demonstrated": false,
+  "attempts": [
+    {
+      "http_status": 503,
+      "seconds": 48.57163279700035,
+      "pod_created": false
+    },
+    {
+      "http_status": 503,
+      "seconds": 53.9921848160011,
+      "pod_created": false
+    }
+  ],
+  "failure_boundary": "NativeGpuGroupAuthority._workspace wrapped NativeAuthorityError during lease; original reason not established",
+  "same_images_and_approval_for_both_attempts": true,
+  "hub_stored_profile": "interactive-shared-10",
+  "idle_diagnostics": {
+    "ack_reader_ready_samples": 3,
+    "workspace_authorization_replay_allowed_samples": 3,
+    "static_registration_and_permissions_profile_10_allowed": true,
+    "static_profile_5_denied_as_expected": true,
+    "not_runtime_factory_or_mutating_diagnostics": true,
+    "not_proof_of_original_denial_cause": true
+  },
+  "first_attempt_cpu_sample": {
+    "wall_seconds": 70.93424,
+    "gateway_cpu_seconds": 63.049505,
+    "gateway_throttled_seconds": 0,
+    "capture_cpu_seconds": 4.968352,
+    "capture_throttled_seconds": 2.681646,
+    "capture_cpu_limit": "500m",
+    "node_cpu_seconds": 13.415137,
+    "node_throttled_seconds": 0,
+    "not_an_attribution_of_failure": true
+  },
+  "cleanup": {
+    "passed": true,
+    "workspace": "qa-packing-cps-20261023",
+    "stopped": true,
+    "cpu_profile_restored": true,
+    "membership_restored": true,
+    "original_ceiling_restored": true,
+    "original_notice_restored": true,
+    "temporary_approval_removed": true,
+    "existing_grants_unchanged": true,
+    "approval_revision": "sha256:bbfbcf24bbcb70226b4b04839d0fed3d57c639e3b36ffbe88d13ee69c22c80a4",
+    "four_component_ready": true
+  },
+  "global_reservations": 0,
+  "global_bindings": 0,
+  "native_allocation_states": {
+    "released": 29
+  },
+  "qa_token_cleanup": {
+    "qa_token_revoked": true,
+    "exact_user_note_scopes_checked": true
+  },
+  "research_pod_uid_preserved": "fe5fb5e7-8696-4ac3-a5a8-1883817d00bb",
+  "research_pod_phase": "Running"
+}

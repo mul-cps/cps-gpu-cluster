@@ -24,3 +24,11 @@ The next controlled run uses normal console HTTP authentication and CSRF,
 requires a same-UID Ready Pod and actual CUDA proof, and uses normal Stop and
 fixture restoration. The narrowly scoped QA credential has a short expiry
 and an exact-ID/user/note/scope revocation helper; no credential is in Git.
+
+## Subsequent deployment and live outcome
+
+The full suite passed (5194 tests and 68 subtests); rotation 10 deployed the
+images. Two HTTP attempts failed at initial workspace authorization before Pod
+creation. Idle read-only checks pass, so the original wrapped reason remains
+unproven. No hardware or startup gain is claimed. Full cleanup passed. See
+`deployed.json` and `lease-entry-live-result.json`.

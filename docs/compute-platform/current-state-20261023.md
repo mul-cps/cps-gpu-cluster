@@ -823,3 +823,37 @@ prior no-throttle samples covered Gateway and Node only. No live startup gain
 or production readiness is claimed before terminal hardware results.
 
 [Deployment receipt](../../platform-staging/startup-performance/qualification/pre-cas-empty-capture-20261023/deployed.json).
+
+### Rotation 10 live attempts fail at lease entry before Pod creation
+
+Two normal authenticated HTTP attempts with the same image pair and approval
+returned **503**, after **48.57** and **53.99 seconds**. Neither created a Pod;
+therefore no CUDA or startup-success proof exists. Both reached lease denial
+at the `NativeGpuGroupAuthority._workspace` wrapper, before acquisition writes.
+The wrapped original denial reason is not established by the current trace.
+Do not conflate this with the corrected pre-CAS or final-publication branches,
+which these attempts never reached.
+
+The Hub's stored profile is 10 GiB. Static registration/permission checks allow
+10 GiB and correctly deny an unapproved 5 GiB selection. Three read-only idle
+ACK-reader samples and three deployed-workspace-method replays pass. These
+use actual current inputs and no runtime factory/writers, but do not prove
+which mutable check failed during the actual requests. The next task is a
+lease-entry reproduction plus bounded diagnostic context if needed, rather
+than another unchanged hardware attempt or an inferred root cause.
+
+CPU sampling now includes capture: over the first 70.93-second sample Gateway
+used 63.05 CPU seconds with no throttling, capture used 4.97 CPU seconds with
+2.68 seconds throttled at its 500m limit, and Node used 13.42 CPU seconds with
+no throttling. These are sample totals, not failure attribution. No resource
+limits were changed on this evidence alone.
+
+After the first failure HTTP Stop returned 200. Both starts were terminal
+before final fixture cleanup. The short-lived test credential expired during
+diagnosis; final restoration used the existing normal Source lifecycle methods
+and the exact test token was revoked. CPU selection, membership, ceiling and
+notice are restored; temporary approval removed and original grants unchanged.
+Independent counts are zero reservations/bindings and all 29 native allocations
+released. The original research Pod remains Running with its original UID.
+
+[Lease-entry live results and cleanup](../../platform-staging/startup-performance/qualification/pre-cas-empty-capture-20261023/lease-entry-live-result.json).
