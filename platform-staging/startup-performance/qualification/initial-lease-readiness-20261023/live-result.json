@@ -1,0 +1,15 @@
+{
+  "implementation_revision": "c71cf8bdf6535cb6c11c698f449527b81d285d08",
+  "journal_rotation": 11,
+  "normal_console_start": {
+    "status": 503,
+    "seconds": 28.055777531000786,
+    "pod_created": false,
+    "cuda_passed": false,
+    "observed_failure": "Hub pre_spawn_hook received HTTP 400 from /internal/v1/reservations/acquire before coordinator lease",
+    "underlying_denial_reason": "unproven"
+  },
+  "fixture_restoration_passed": true,
+  "credentials_revoked": true,
+  "qualified": false
+}

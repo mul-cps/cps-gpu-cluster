@@ -1,0 +1,23 @@
+{
+  "implementation_revision": "c71cf8bdf6535cb6c11c698f449527b81d285d08",
+  "test_correction_revision": "de37965c68a093078efb86c1a58d03104cae481f",
+  "full_suite": {
+    "passed": 5199,
+    "failed": 1,
+    "skipped": 6,
+    "subtests_passed": 68,
+    "seconds": 636.53,
+    "failure": "test_concurrent_lease_scope_waits_have_distinct_request_budgets expected two phases before new initial claim phase"
+  },
+  "corrected_test_assertions": "Exactly three readiness phases, all same frozen deadline within each request, distinct deadlines across concurrent requests",
+  "affected_suite": {
+    "passed": 23,
+    "seconds": 3.47
+  },
+  "focused_suite": {
+    "passed": 125,
+    "seconds": 90.34
+  },
+  "production_code_changed_after_full_suite": false,
+  "deployment_qualified": false
+}

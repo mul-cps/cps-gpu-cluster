@@ -885,3 +885,35 @@ All **125 focused tests pass**, including existing callback budgets and the
 unready-lease error contract. The full suite is running. This source is
 committed and published but not yet deployed; rotation 10 remains active and
 live functional/production qualification is still open.
+
+### Rotation 11 deployed; HTTP start fails before coordinator lease
+
+The initial-lease implementation `c71cf8b` is now deployed. Its full run
+finished with **5,199 passed, one failed, six skipped and 68 passed subtests**.
+The failure was an old exact count of two readiness phases. Test-only
+`de37965` now requires exactly three phases, one identical frozen deadline
+within each request, and distinct concurrent request deadlines. All **23**
+affected tests pass; no implementation changed after that full run.
+
+Both image builds passed offline manifest/kernel/health-source/policy/module
+preflight and registry digest verification. Rotation 11 preserves the original
+anchor and ten prior rotations, has no pending transition, and the four current
+components were Ready. Admission positive/negative checks passed; both
+maintenance helpers were deleted with UID preconditions; normal writer Ready.
+
+The actual console HTTP start returned **503 after 28.056 seconds**. No Pod
+was created and no CUDA proof ran. Hub traceback identifies HTTP 400 from
+`/internal/v1/reservations/acquire`, before coordinator lease. The underlying
+denial remains unknown: do not attribute this run to the initial-lease race.
+Source `cbf0841` adds bounded code-location-only diagnostics to this endpoint;
+**31 tests pass**, with a red-first regression verifying generic errors, no
+secret message logging and no reservation on denial. That diagnostic source
+is not deployed yet.
+
+Normal cleanup restored stopped CPU selection, membership, original ceiling
+and notice, removed the temporary approval, and left original grants unchanged.
+All four current acknowledgments recovered. The short-lived QA credential was
+revoked and removed. Research Pod `jupyter-gottam` remains Running with original
+UID `fe5fb5e7-8696-4ac3-a5a8-1883817d00bb`. Production qualification remains open.
+
+[Public test, image and live result receipts](../../platform-staging/startup-performance/qualification/initial-lease-readiness-20261023/).
