@@ -1,0 +1,97 @@
+diff --git a/pkg/binder/binding/resourcereservation/resource_reservation.go b/pkg/binder/binding/resourcereservation/resource_reservation.go
+index c8d47eb..9204927 100644
+--- a/pkg/binder/binding/resourcereservation/resource_reservation.go
++++ b/pkg/binder/binding/resourcereservation/resource_reservation.go
+@@ -467,6 +467,7 @@ func (rsc *service) deleteReservationPod(ctx context.Context, pod *v1.Pod) error
+ 	err := rsc.kubeClient.Delete(ctx,
+ 		pod,
+ 		client.GracePeriodSeconds(0),
++		client.Preconditions{UID: &pod.UID, ResourceVersion: &pod.ResourceVersion},
+ 	)
+ 	if err != nil {
+ 		if !apierrors.IsNotFound(err) {
+diff --git a/pkg/binder/binding/resourcereservation/resource_reservation_identity_test.go b/pkg/binder/binding/resourcereservation/resource_reservation_identity_test.go
+new file mode 100644
+index 0000000..acadb78
+--- /dev/null
++++ b/pkg/binder/binding/resourcereservation/resource_reservation_identity_test.go
+@@ -0,0 +1,79 @@
++// SPDX-License-Identifier: Apache-2.0
++
++package resourcereservation
++
++import (
++	"context"
++	"fmt"
++	"testing"
++
++	v1 "k8s.io/api/core/v1"
++	apierrors "k8s.io/apimachinery/pkg/api/errors"
++	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
++	"k8s.io/apimachinery/pkg/runtime/schema"
++	"k8s.io/apimachinery/pkg/types"
++	"sigs.k8s.io/controller-runtime/pkg/client"
++	"sigs.k8s.io/controller-runtime/pkg/client/fake"
++	"sigs.k8s.io/controller-runtime/pkg/client/interceptor"
++)
++
++func TestDeleteReservationPodUsesObservedIdentity(t *testing.T) {
++	for _, scenario := range []string{"matching", "recreated", "changed-version", "missing-uid", "missing-version", "already-gone"} {
++		t.Run(scenario, func(t *testing.T) {
++			ctx := context.Background()
++			current := &v1.Pod{ObjectMeta: metav1.ObjectMeta{
++				Namespace: "reservations", Name: "group-a",
++				UID: types.UID("22222222-2222-4222-8222-222222222222"), ResourceVersion: "23",
++			}}
++			observed := current.DeepCopy()
++			switch scenario {
++			case "recreated":
++				observed.UID = types.UID("11111111-1111-4111-8111-111111111111")
++			case "changed-version":
++				observed.ResourceVersion = "22"
++			case "missing-uid":
++				observed.UID = ""
++			case "missing-version":
++				observed.ResourceVersion = ""
++			}
++			builder := fake.NewClientBuilder().WithScheme(testScheme)
++			if scenario != "already-gone" {
++				builder.WithObjects(current)
++			}
++			// The fake client checks resourceVersion but omits the API server's
++			// UID precondition check. Model that external API contract too.
++			kube := builder.WithInterceptorFuncs(interceptor.Funcs{Delete: func(ctx context.Context, raw client.WithWatch, obj client.Object, opts ...client.DeleteOption) error {
++				options := (&client.DeleteOptions{}).ApplyOptions(opts)
++				if options.Preconditions != nil && options.Preconditions.UID != nil {
++					live := &v1.Pod{}
++					if err := raw.Get(ctx, client.ObjectKeyFromObject(obj), live); err != nil {
++						return err
++					}
++					if *options.Preconditions.UID != live.UID {
++						return apierrors.NewConflict(schema.GroupResource{Resource: "pods"}, obj.GetName(), fmt.Errorf("UID precondition differs"))
++					}
++				}
++				return raw.Delete(ctx, obj, opts...)
++			}}).Build()
++			svc := &service{kubeClient: kube}
++			err := svc.deleteReservationPod(ctx, observed)
++			retained := &v1.Pod{}
++			getErr := kube.Get(ctx, client.ObjectKeyFromObject(current), retained)
++			if scenario == "matching" || scenario == "already-gone" {
++				if err != nil {
++					t.Fatalf("exact/gone deletion failed: %v", err)
++				}
++				if !apierrors.IsNotFound(getErr) {
++					t.Fatalf("reservation remains: %v", getErr)
++				}
++			} else {
++				if !apierrors.IsConflict(err) {
++					t.Fatalf("stale identity did not conflict: %v", err)
++				}
++				if getErr != nil || retained.UID != current.UID || retained.ResourceVersion != current.ResourceVersion {
++					t.Fatalf("replacement/current reservation was changed: %v", getErr)
++				}
++			}
++		})
++	}
++}

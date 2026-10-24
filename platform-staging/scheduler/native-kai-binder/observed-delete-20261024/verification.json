@@ -1,0 +1,29 @@
+{
+  "composed_with_current_native_binder_overlay": false,
+  "deployed": false,
+  "envtest_kubernetes_version": "1.35.0",
+  "go_version": "1.26.8",
+  "hardware_qualification": false,
+  "local_source_revision": "2e1f20a20c2d7dfdd8ca698df1f4b1cdc54c0d13",
+  "native_zero_retirement_qualified": false,
+  "patch_sha256": "0edd89f16f822d0faa9c1897a210ba602c1a62dfbbb3e551dabb8d8ecb1e5e7c",
+  "pending": [
+    "Compose with current qualified native binder overlay and advertised-inventory/scheduler changes",
+    "Atomic native enrollment fence and confirmed-zero retirement permit before DELETE",
+    "Qualified immutable image build, deployment and controlled live acceptance"
+  ],
+  "production_ready": false,
+  "schema": "cps-kai-observed-reservation-delete-software/v1",
+  "upstream_revision": "bdf434e5e9201cccf4e05fad04d814363653f692",
+  "verification": {
+    "identity_subcases": 6,
+    "independent_identity_review_passed": true,
+    "initial_missing_envtest_failure_retained": true,
+    "log_sha256": "8679681743d66246d9f7622103fea7872780db457c690f3fca48be3852063058",
+    "packages_total": 304,
+    "packages_with_tests_passed": 190,
+    "packages_without_tests": 114,
+    "reservation_package_existing_specs": 65,
+    "upstream_non_e2e_go_boundary_exit_code": 0
+  }
+}
