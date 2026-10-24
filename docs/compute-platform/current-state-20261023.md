@@ -23,9 +23,11 @@ helpers are absent, the owned cordon is restored, and the scoped credential is
 revoked with both local copies removed. These cleanup checks were rerun live.
 
 Native full-pool placement is still an implementation gap. The versioned
-catalog/selection design remains a draft with four unresolved implementation
-contracts. Full-pool, startup, application, recovery and release gates remain
-open; narrow CUDA execution does not replace broader isolation qualification.
+catalog/selection design is now builder-reviewed. Its first read-only catalog
+component is source-published and passed 5,500 tests plus 68 subtests (six skips);
+it is not deployed or connected to an application factory. Full-pool, startup,
+application, recovery and release gates remain open; narrow CUDA execution does
+not replace broader isolation qualification.
 
 The sections below are chronological acceptance history. Later completed gates
 supersede earlier pending statements for the same scope. Daily artifact retention
@@ -2440,3 +2442,29 @@ commit/recovery, ownership/addressing and authenticated schema/migration
 contracts before implementation. Two synthetic authorities are only a first
 source slice; all eight devices and required profiles remain acceptance targets.
 [Reviewed multi-device draft](https://github.com/mul-cps/cps-compute/blob/9be814b/docs/superpowers/specs/2026-10-24-qualified-multi-device-pool-design.md).
+
+
+## Qualified multi-device catalog source foundation — 24 October
+
+Compute source `2acc90f14b1346ccc41f9aa206801eb7bfd82245` adds an inert catalog
+reader using independently pinned immutable qualification references. It checks
+unique physical devices and per-device authority namespaces, same-Node epoch
+consistency, current policy and measured profiles, uniform runtime images and
+complete advertised-device coverage. Different Nodes may have different valid
+epochs. A Node with any unqualified advertised neighbor is unavailable for new
+native-v2 placement; this preserves normal KAI reservation-Pod allocation.
+
+A review reproduced a shared-ledger namespace collision using two independently
+valid roots. The denial regression failed before the correction and passes
+after it. Review reports no remaining Important/Critical findings in this
+read-only scope. The initial regression run was deliberately interrupted for
+that finding and is not counted as passed. The corrected source passed 5,500
+tests, 68 subtests, six skips and 623 warnings in 660.54 seconds. All 135 focused
+catalog, authority, group and packing tests passed independently.
+
+[Published software receipt](https://github.com/mul-cps/cps-compute/blob/44d245f59932c86aa55697f2f32bbddaf69db2db/releases/qualified-pool-catalog-20261024/software-qualification.json)
+records file and full-log hashes. No runtime factory imports the reader; no live
+resource or device was changed. Inventory provenance, activated catalog history,
+immutable v2 Pod/gate compilation, shared attempt/outbox storage and actual KAI
+selection integration remain required before v2 can enable any workload. Two
+synthetic authorities are unit-test inputs, not two newly qualified GPUs.
