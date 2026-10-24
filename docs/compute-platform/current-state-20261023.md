@@ -2068,3 +2068,34 @@ investigation lead, not yet a verified fix or proof that it alone explains the
 whole delay. Next work must reproduce the transition across complete custody
 scans and examine this phase end to end. The software ACK-renewal regression
 remains fixed, but journal27 is not live startup-qualified. No timeout is widened.
+
+### 2026-10-24: Node Binding-transition race reproduced and corrected in software
+
+A complete-custody CPU reproducer reaches the same unbound-Pending failure as
+the deployed Node when Binding advances between the typed pending scan and a
+historical-name check. Deployed pending/abort/custody module hashes match the
+tested baseline exactly. The valid transition failed before correction. The
+new path first validates typed approval, exact canonical enrolled claim and
+intent, registered/unbound observation, actual Pending Pod identity/full bound
+specification and gated execution history. It then discards the mixed proof and
+raises the existing reobservation signal; the whole scan repeats under its
+unchanged three-attempt bound. No authority is granted and general failure
+backoff/timeouts are unchanged.
+
+All 149 focused tests pass, including ten race cases, real Node service renewal
+and reconciliation through the race, authenticated bound ACK publication, and
+retry exhaustion withdrawing a previously valid ACK without GPU/journal work.
+Independent reviews found no Important/Critical issue. A clean full suite is
+running. The source correction is committed as `595108cb…2986b`.
+
+The local candidate uses the pinned Node Dockerfile and a built wheel with the
+`node` extra. Python 3.12, installed-package verification, source payload hashes,
+all 30 unchanged dependency versions and inert no-network/read-only/no-capability
+startup checks pass. Compared with the deployed Node package, 80 Python payloads
+are exact; only this Node correction and the already-qualified coordinator
+correction differ. No new image is published/deployed yet. A Node-only
+same-policy successor and guarded handover are required; changing Gateway alone
+cannot deliver this Node fix. Live startup/fence margin and the complete original
+production gates remain unqualified.
+
+[Node candidate receipt](https://github.com/mul-cps/cps-compute/blob/96867b3/releases/node-binding-transition-20261024/software-qualification.json).
