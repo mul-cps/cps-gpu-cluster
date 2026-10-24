@@ -1975,3 +1975,21 @@ The [canonical software qualification receipt](https://github.com/mul-cps/cps-co
 records the exact wheel/module hashes. Its Node successor and nine input objects
 are staged but inert, with bootstrap release false. Journal25 remains active;
 journal26 handover and live Start/CUDA/Stop/restart are pending.
+
+### 2026-10-24: ACK renewal image deployed; journal26 handover complete
+
+The published `c0682784` image is deployed. Journal26 authenticates with the
+original anchor, exact prior 25 rotations and 128 retained files; all 54 Source
+rows remain unchanged. All nine targets are Ready. Both console Services reopened
+last, the original lock holder exited normally, the owned GPU2 cordon was
+restored, and temporary helpers/network policy were removed. Existing user Pod
+identities remain preserved; Node image, driver and kernel are unchanged.
+
+The restoration helper incorrectly expected the live fence during QA readiness
+after its verified normal exit. A bounded resume checked captured deployment
+identities/specs, restored scheduling state, successful fence exit and QA
+readiness before executing the original final reopening and cleanup steps.
+No journal retry or rollback occurred.
+
+Normal-console Start/CUDA/Stop/restart and measured startup latency on this
+image remain pending. This deployment is not a production-readiness claim.
