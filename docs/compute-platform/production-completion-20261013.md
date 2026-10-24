@@ -1011,3 +1011,12 @@ Managed deletion now covers unreferenced local courses, terms and groups. Before
 Fresh checks: compute native-pool suite **437 passed** (one dependency deprecation warning); complete admin suite **97 passed, 38 subtests passed**. Cross-repository coverage includes normal and lost replies before/after completion, reopening the Source database and retaining the unrelated global reservation.
 
 This does not enable active-head finalization or activate the producers. Lifecycle-sensitive deletion and other uncovered writers remain denied. Operator application/finalization, runtime wiring, eight-device scheduling/packing, startup performance, recovery and release gates remain open. No live workloads, Fleet reconciliation, drivers, kernels or storage configuration were changed by this increment.
+
+
+### 2026-10-24: complete software rerun and claims publication races
+
+Published compute commit `ebcfeefcd5752272ffa4f4095838324c61d5fb75`; local and remote SHA match. Added rejection coverage for concurrent update conflict and uncertain replies with unapplied writes, replaced objects, divergent data or unchanged resource versions. These exercise actual Node custody and publisher code with controlled API transport; no blind write retry is accepted.
+
+Fresh complete compute run: **5,961 passed, 6 skipped, 623 warnings, 68 subtests passed**, exit 0 in 723.04 seconds. Native-pool suite: **442 passed**. Lab TypeScript compilation and **97 addon tests** passed. The addon required the documented compile/dependency setup and complete SDK/Hub Python test path; no application fix was needed. A partial local dependency install hit ENOSPC, was stopped and removed; successful verification used isolated temporary storage.
+
+Live read-only check: all seven nodes Ready and uncordoned; GPU resources remain 2/1/2/2 across GPU1–4. Gottam and Muslim notebooks remain Running. This is seven advertised GPUs and does not satisfy the eight-device qualification gate. No live configuration or workload mutation occurred. Runtime producer wiring, complete managed writers/operator activation, atomic retirement, hardware scheduling/startup/recovery and release gates remain open.
