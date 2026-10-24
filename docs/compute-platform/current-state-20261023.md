@@ -1,25 +1,30 @@
 # Current platform state — 23 October 2026
 
 The full platform remains **limited-pilot**, not production qualified. As of
-24 October, journal31, Gateway `bff495fb…96a1524` and both Hubs on
-`46ffa869…b2f2545` are active. The Hub fresh-head-readback update passed normal
-console shared 5 GiB Start/CUDA/Stop/restart/CUDA/Stop. First Start completed in
-179.92s (Ready169.50s) and restart in181.91s, versus208.80s and219.65s before
-this Hub change. The original end-to-end clock is unchanged; console bootstrap
-was0.061s on first Start. Representative CPS/CIT bursts remain unqualified, and
-startup still needs substantial improvement.
+24 October, journal32 is active. Node `e5edc073…39f8eb7` enables fixed-field
+custody timing diagnostics through an image environment default. Gateway
+`bff495fb…96a1524`, both Hub images `46ffa869…b2f2545`, notebook images, drivers,
+kernels and storage are unchanged. The Node command/arguments are unchanged and
+the canonical image-only rotation normalizer passes exactly.
 
-The runtime source passed5,435 full-suite tests and68subtests (six skips).
-Independent review approved source and actual handover manifests. All nine exact
-targets are Ready, all four current components acknowledged the handover, the
-original anchor and prior30 journal rotations are preserved, and all54 Source
-records were retained unchanged through handover. Both test Pods kept stable
-identities and passed a trusted64MiB CUDA operation. Final Stop released both
-ledgers; both GPU2 devices have zero allocated memory and no compute clients.
-The scoped test credential is revoked, both local copies removed, the test Pod
-is absent and the owned cordon is restored. Existing user Pods are preserved.
-Gateway, Node, notebook images, drivers, kernels and storage are unchanged.
-Full-pool, application, recovery and release gates remain open.
+The corrected runtime source passed5,446 full-suite tests and68subtests (six
+skips). Both normal-console shared5GiB cycles kept stable Pod identities and
+passed a trusted64MiB CUDA operation. First Start returned in213.06s
+(Ready202.60s); restart returned in181.77s (Ready171.31s). These compare with
+179.92s/181.91s before diagnostic activation; no speedup is claimed. The first
+run had one fail-closed Node pending-enrollment validation failure and backoff;
+restart had none. Its exact publication-race hypothesis still needs a focused
+reproduction. Startup optimization and representative CPS/CIT bursts remain open.
+
+All nine exact targets are Ready and all four current components agree. The
+original anchor, prior31 journal rotations and retained history are preserved;
+all54 Source records and the Source snapshot are unchanged after qualification.
+Final Stops released both ledgers, with both GPU2 devices empty and no compute
+clients. The test workspace/helpers are absent, the owned cordon is restored,
+and the scoped credential is revoked with both local copies removed. Existing
+user Pods are preserved. Native full-pool placement is still an implementation
+gap; the versioned catalog/selection design is a reviewed draft with four open
+contracts. Full-pool, application, recovery and release gates remain open.
 
 The sections below are chronological acceptance history. Later completed gates
 supersede earlier pending statements for the same scope. Daily artifact retention
@@ -2393,3 +2398,44 @@ startup targets. No expiry, reservation, authority check or total-time clock was
 relaxed.
 
 [Deployed Hub qualification and cleanup](https://github.com/mul-cps/cps-compute/blob/79fbf2c/releases/hub-head-readback-20261024/software-qualification.json).
+
+
+### 2026-10-24: Node diagnostics deployed through journal32
+
+The first prepared diagnostic argument was rejected by review before maintenance:
+image-only rotation does not authorize an argument change. The replacement image
+uses the explicit `CPS_NODE_SNAPSHOT_TIMINGS=1` default while retaining the exact
+Node template arguments. The ten superseded inactive objects were removed by
+exact UID/payload checks; no deployment used that preparation. The corrected
+image preserves29non-SDK distributions/2,047payload files, matches85SDK payloads
+to its wheel and changes image runtime configuration only by that environment
+default plus provenance labels. Full qualification passed5,446tests/68subtests.
+
+The reviewed handover authenticated journal32 against its original anchor and
+all31preceding rotations, retained158original files, and preserved all54Source
+records. Four admission cases passed. Normal restoration reopened Source
+Services last, removed helpers/fence policy, restored the owned cordon and kept
+all existing user Pod identities. Final post-test checks verify all nine exact
+targets Ready, four current acknowledgments, original Source rows/snapshot,
+released ledgers and two empty GPU2 devices. The temporary credential is revoked
+and both local copies are removed.
+
+The first Start/CUDA/Stop took213.06s/19.32s; restart/CUDA/Stop took181.77s/14.40s.
+The first run recorded64Node snapshots totaling133.78s of Node snapshot work:
+configuration28.64s, head25.80s, prior approvals24.82s and pending checks19.36s.
+These are repeated-operation aggregates, not disjoint end-to-end startup stages.
+One fail-closed pending-enrollment validation triggered iteration backoff. The
+immutable enrollment creation timestamp falls inside that snapshot's interval;
+the generic validator checks both intent and enrollment equality, so the
+publication race must be reproduced rather than assumed fixed. Restart had no
+outer iteration failure and Prepare took68.53s versus79.97s in the first run.
+
+[Deployed diagnostics and cleanup evidence](https://github.com/mul-cps/cps-compute/blob/c4101d5/releases/node-snapshot-timing-20261024/software-qualification.json).
+
+The broader audit still finds single-device native authority/compiler/binder
+bindings. A catalog/selection design preserves KAI placement and shared global
+member exclusion, but needs explicit unplaced/selected wire, durable attempt
+commit/recovery, ownership/addressing and authenticated schema/migration
+contracts before implementation. Two synthetic authorities are only a first
+source slice; all eight devices and required profiles remain acceptance targets.
+[Reviewed multi-device draft](https://github.com/mul-cps/cps-compute/blob/9be814b/docs/superpowers/specs/2026-10-24-qualified-multi-device-pool-design.md).
