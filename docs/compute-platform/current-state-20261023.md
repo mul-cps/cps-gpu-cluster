@@ -1,21 +1,23 @@
 # Current platform state — 23 October 2026
 
 The full platform remains **limited-pilot**, not production qualified. As of
-24 October, journal29 is active and the deployed Gateway renewal correction has
-passed one normal-console shared 5 GiB Start/CUDA/Stop/restart/CUDA/Stop cycle.
-The first Start returned in 258.67 seconds and restart in 249.05 seconds. Both
-Pods retained their identity and executed a trusted 64 MiB CUDA operation.
-These runs exceed the 180-second p95 startup target; representative CPS/CIT
-burst reliability is still unqualified.
+24 October, journal30 and Gateway `bff495fb…96a1524` are active. The fresh-readback
+optimization passed normal-console shared 5 GiB Start/CUDA/Stop/restart/CUDA/Stop.
+First Start returned in 208.80s (Ready194.15s), and restart in219.65s
+(Ready207.11s), compared with258.67s and249.05s before this change. Both Pods kept
+stable identities and passed a trusted64MiB CUDA operation. Startup still exceeds
+the180-second target; representative CPS/CIT bursts remain unqualified.
 
-Gateway `08c81d39…722f42a` and Node `72a932f4…9e2816` are active. The Gateway
-source passed 5,396 tests and 68 subtests (six skips). All nine exact expected
-targets are Ready, the original journal anchor and prior 28 rotations are
-preserved, all 54 Source rows are unchanged, normal services are restored and
-existing user Pods are preserved. Final Stop released both ledgers; both GPU2
-devices have zero memory use and no compute clients. The temporary credential
-is revoked. Earlier scoped cap/isolation evidence remains valid within its
-recorded boundary. Full-pool, application, recovery and release gates remain open.
+The runtime source passed5,410 full-suite tests and68subtests (six skips), with
+four additional post-collection boundary cases verified separately. Independent
+review approved source and actual handover manifests. All nine exact targets are
+Ready, all four current components agree, the original anchor and prior29 journal
+rotations are preserved, and all54 Source records remain unchanged. Final Stop
+released both ledgers; both GPU2 devices have zero allocated memory and no compute
+clients. The scoped test token is revoked and both local credential copies are
+removed. Existing user Pods are preserved. Node72, Hub/notebook images, drivers,
+kernels and storage are unchanged. Full-pool, application, recovery and release
+gates remain open.
 
 The sections below are chronological acceptance history. Later completed gates
 supersede earlier pending statements for the same scope. Daily artifact retention
@@ -2301,3 +2303,32 @@ maintenance has started. The full project remains limited-pilot, with startup,
 CPS/CIT bursts and the original production gates still open.
 
 [Candidate qualification receipt](https://github.com/mul-cps/cps-compute/blob/6b1be66/releases/fresh-context-readback-20261024/software-qualification.json).
+
+
+### 2026-10-24: readback image deployed; Start and restart CUDA pass
+
+The published image was activated through the reviewed journal29-to30 handover.
+Backups verified252 Node files, four Source databases and149 journal files.
+Post-rotation validation authenticated generation30, exact prior29 history and
+original anchor, plus148 retained original files. All54 Source rows stayed exact.
+All nine deployments are Ready; Source Services reopened last, the fence exited
+normally, owned worker scheduling was restored and temporary helpers were removed.
+
+The first normal-console Start returned200 in208.80s: first Pod93.85s, assignment
+175.33s, Ready194.15s. Restart returned200 in219.65s: Pod92.12s, assignment188.30s,
+Ready207.11s. Both new Pods retained their UID without disappearance, replacement
+or observation errors and passed allocation/fill/synchronize/sum on64MiB of one
+visible A100. Stops returned200 in24.72s and13.20s. Final checks confirm both
+ledgers released, two GPU2 devices at zero allocated memory/no compute clients,
+all nine exact targets Ready, four current component acknowledgments, unchanged
+Source54 and existing user Pods, and revoked/removed temporary credentials.
+
+The first successful Prepare took70.00s versus101.82s before the change. Its31
+context loads totaled9.99s versus33.61s previously. The remaining pre-Pod path is
+still substantial: Hub OAuth client creation/accepted spawn occurs at22s, the
+modify-Pod hook at54–55s and after-Pod-created hook at90–92s. The next trace must
+separate the client authentication bootstrap and Source Start request, then the
+Hub pre-spawn and modify hooks; no target, timeout or authority check is relaxed.
+This single cycle is not burst, full-pool or production qualification.
+
+[Deployed Start/restart and cleanup evidence](https://github.com/mul-cps/cps-compute/blob/b87e7ff/releases/fresh-context-readback-20261024/software-qualification.json).
