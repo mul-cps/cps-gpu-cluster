@@ -2201,3 +2201,26 @@ actual-manifest review and guarded handover await the full suite. No maintenance
 has started.
 
 [Source and package candidate receipt](https://github.com/mul-cps/cps-compute/blob/79c9565/releases/registered-renewal-20261024/software-qualification.json).
+
+
+### 2026-10-24: Gateway renewal fix deployed; first normal-console CUDA passes
+
+The full suite passed 5,396 tests (6 skipped, 68 subtests). Gateway image
+`sha256:08c81d394ca0273588ce63331e253ecdc2c22a1b9be5fc62a495830d0722f42a`
+is deployed after reviewed actual manifests and verified backups. Journal29 is
+authenticated; the original anchor, prior 28 generations and 143 retained files
+are exact. All 54 Source rows remain unchanged. All nine deployments are Ready,
+Source Services were reopened last, the fence exited normally, the owned cordon
+was restored and temporary helpers were removed. Existing user Pods are preserved.
+Node, Hub and notebook images, drivers, kernels and storage settings are unchanged.
+
+The first normal-console shared 5 GiB workspace Start returned 200 after 258.67s.
+The first observed Pod appeared at 96.12s, assignment at 227.41s and Ready at
+244.08s. Its UID stayed stable, with no disappearance or observation errors.
+A trusted 64 MiB allocation/fill/synchronize/sum passed on one visible A100.
+Normal Stop returned 200 in 26.59s; both ledgers are released, both GPU2 devices
+have zero memory use and no compute clients, and existing users are unchanged.
+Restart qualification is running. This single start does not qualify reliability,
+the p95 startup target, broader pooling or the full platform for production.
+
+[Authenticated deployment receipt](https://github.com/mul-cps/cps-compute/blob/55b3eda/releases/registered-renewal-20261024/software-qualification.json).
