@@ -26,8 +26,8 @@ Native full-pool placement is still an implementation gap. The builder-reviewed
 catalog, logical Source, immutable unplaced Pod and atomic attempt/outbox
 foundations, startup gate/identity, KAI observation reader and durable Pod
 registration are now source-published at compute revision
-`07f9ce4374375d8b32c0b1e75d5dd59f1668a8f5`. Their combined revision passed
-**5,810 tests and 68 subtests**, with six skips. Registration pins the Pod UID
+`2769c4a9b6f4c8ebd1f4e3aa75063b45473d785b`. Their combined revision passed
+**5,844 tests and 68 subtests**, with six skips. Registration pins the Pod UID
 and pending-spec hash; selection cannot retarget a different Pod. Fenced schema
 upgrades preserve custody and selected history. The actual API-observation
 bridge and CREATE-outbox completion passed combined software verification.
@@ -60,8 +60,18 @@ Full Fleet reconciliation remains held: source Hub images/configuration differ
 from qualified live runtimes, dependencies report errors, and policy values
 change the Hub secret checksum. Chart4.4.2 cannot retarget its primary Secret via
 `existingSecret`; CIT already uses that secondary mount for credentials.
-Controlled immutable configuration rotation and parity qualification are needed
-before reconciling the releases. No credentials or custody were reconstructed.
+The in-memory preservation planner is now source-qualified against the exact
+chart helper and credential-file precedence. Its full suite passed 5,844 tests;
+the optional operator extra and wheel metadata are verified. It performs no API
+calls or rotation, and does not qualify the complete Hub Pod template. Controlled
+immutable configuration rotation and template parity are still needed before
+reconciling the releases. No credentials or custody were reconstructed.
+
+Authoritative mutation fencing is under cross-repository qualification. The
+reviewed candidate covers pending grant/provider writes, atomic lost-reply
+receipts, explicit migrations and RPC responsiveness. Other v2 writers remain
+denied, and operator finalization/runtime activation remain unavailable. This
+is not a completed activation protocol or production writer-coverage claim.
 
 The sections below are chronological acceptance history. Later completed gates
 supersede earlier pending statements for the same scope. Daily artifact retention
