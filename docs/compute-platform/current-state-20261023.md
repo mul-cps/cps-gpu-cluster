@@ -1769,3 +1769,35 @@ and four-component readiness, preserved Source/journal history, actor and
 permission checks must pass before final fence release and Service reopening.
 These are prepared maintenance safeguards, not evidence of live NBI activation
 or faster notebook startup. Production maintenance has not started.
+
+### 2026-10-24: NBI policy handover active; real start exposed filesystem regression
+
+The fenced handover completed. Policy 0.1.3
+`sha256:9d86546fd3b9cc52eb92f030932c64600d352884f949c7d06b8b86a0f1f42620`
+and Source generation 53/revision
+`sha256:992ae99b027bccef76a537ce91fd6f249f48df6f6263523652ae54fc8985b863`
+are active. All 53 previous Source document bytes remain intact, with one
+new policy record and one success audit. Journal rotation 23 completed with the
+original anchor and previous 22-rotation history retained. Both Hubs, consoles,
+Gateway, Node, observer and normal Writer were Ready after reopening; the three
+existing notebook Pod UIDs were preserved. Shared 5/10 GiB profiles now authorize
+notebook digest `3eabf4238cdc1b48b5e945d62a5bf8bd22761891cbba91ba2aa2c0e54c776b56`.
+This is activation evidence, not full-pool or notebook runtime qualification.
+
+A normal Start of `shared-gpu-lab` initially returned 422 before any Pod existed.
+The Gateway trace localized rejection to `private_file` in the native custody
+writer guard: private state directories had become 02770 and regular files 0660.
+The normal Gateway mounts this volume with fsGroup 10001 and
+`OnRootMismatch`; the publication helper uses a separate journal PVC, so its
+fsGroup 1000 is not evidence of a conflicting mount on compute-state. The exact
+actor that expanded compute-state permissions still needs attribution. The guard correctly
+refused group-accessible custody state. Owner-only 0700/0600 permissions were
+restored for both custody directories and the storage-lock directory; every
+device/inode identity was verified unchanged. No lock was unlinked, no database
+rewritten and no allocation was inferred released. Normal Stop then returned 200.
+
+The operator packaging must check private state permissions after every volume
+handoff and establish why the private modes changed before claiming a durable fix. A successful Start,
+CUDA smoke, Stop/restart and timing on the newly authorized image remain required.
+Private operational receipts are retained outside Git under
+`nbi-policy-handover-20261024/` and `nbi-workspace-validation-20261024/`.
