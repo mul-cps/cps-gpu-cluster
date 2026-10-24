@@ -1856,3 +1856,38 @@ Any attempted or ambiguous rotation prohibits automatic old-image/journal
 restoration. Actual GPU Start/CUDA/Stop/restart and the broader production gates
 remain open. Software evidence is canonical in cps-compute commit `8bbbd5d`;
 private execution material is retained in `accepted-parallel-rollout/`.
+
+### 2026-10-24: candidate active at rotation 24; first CUDA pass, restart still blocked
+
+The same-policy Gateway handover to digest
+`5f924667f14e4922090ead270bbf3521005d655570b79c063a1d6de958080bb1`
+is complete. Exact Node/RS/bootstrap admission checks passed all four positive/
+negative cases; Node and Hub images, driver and kernel stayed unchanged. The
+normal Writer, observer, Hubs and both consoles are Ready. Rotation 24 retains
+the original anchor, all 23 prior entries and 117 prior immutable journal files;
+all 54 Source rows and generation-53 head remained exact. The owned cordon was
+restored, Source Services reopened last, and temporary fence/operator/NetworkPolicy
+resources were deleted after normal termination and UID checks.
+
+A real normal-API `shared-gpu-lab` 5 GiB Start now passed on notebook digest
+`3eabf4238cdc1b48b5e945d62a5bf8bd22761891cbba91ba2aa2c0e54c776b56`,
+with one visible GPU and a synchronized 64 MiB CUDA allocation/result check.
+The Pod was neither replaced nor lost. It took 263.65 seconds end to end:
+first Pod observation 96.40 seconds, node assignment 236.47 seconds and first
+Ready 253.20 seconds. Stop returned 200 in 23.42 seconds and the Pod disappeared.
+
+The restart did NOT pass: two registered-snapshot-refresh responses caused long
+Prepare replays, then the spawn timeout deleted the pending Pod. It failed after
+315.89 seconds without a CUDA probe. This is a demonstrated startup/restart
+reliability blocker, not evidence of a new CUDA isolation failure. Final Stop
+returned 200; both native ledgers are released, GPU2 has zero memory use/no
+compute clients, all three existing notebook Pod UIDs are unchanged and the
+short-lived test token is revoked.
+
+The next surgical change is to carry genuine fresh Node resourceVersion/body
+progress through registered read-only Prepare when its full semantic projection
+is unchanged, rather than replaying the whole operation. UID, specs, labels,
+capacity, allocatable, driver/epoch and current Source/claims must remain checked;
+Pod/BindRequest and semantic changes must retain their rejection path. Startup
+p95 <=180 seconds and maximum <=300 seconds, reliable restart and the remaining
+full-platform gates are unqualified.
