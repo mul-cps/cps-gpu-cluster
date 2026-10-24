@@ -1750,3 +1750,22 @@ next. Full-pool implementation and the remaining production acceptance scenarios
 are still open. Separately, CIT logged a missing `oauth_user.groups` auth-state
 claim during activity refresh; group ownership and effective entitlement behavior
 need checking before production qualification.
+
+### 2026-10-24: notebook handover exclusions checked
+
+The NBI candidate remains staged; the active notebook image and policy are
+unchanged. Read-only backups verified all four Source database payloads, 113
+journal files (22 retained rotations), and 201 Node-state files against their
+recorded sizes and SHA-256 hashes. Both Hubs, both consoles, Gateway, Writer,
+Observer and Node remain Ready; the protected research Pod retains its UID.
+
+Handover review identified the separate, running lifecycle147 QA Gateway as
+another launch path. Both prospective execution guards now bind its exact UID,
+paused specification and absence of selected Pods, bringing each guard to nine
+Deployments. Regression cases reject a resumed QA Gateway, replacement UID or
+remaining QA Pod; the combined operator-guard suite passes 39 tests. Revised
+read-only permissions passed Kubernetes server validation. The normal Writer
+and four-component readiness, preserved Source/journal history, actor and
+permission checks must pass before final fence release and Service reopening.
+These are prepared maintenance safeguards, not evidence of live NBI activation
+or faster notebook startup. Production maintenance has not started.
