@@ -1686,3 +1686,37 @@ current acknowledgments and controlled activation are still required.
 No production policy/image, reservation, driver, kernel or research Pod was
 changed. Full-pool implementation and the remaining production acceptance gates
 remain open.
+
+
+### 2026-10-24: verified SDK reader and Gateway/Node deployment
+
+The final corrected software run completed with **5,332 passed, 6 skipped and
+68 subtests passed** (664.79 seconds). Runtime source is
+`f895b6820ef89eecfeea0c53a59b32282051562f`; subsequent test and receipt commits
+do not change packaged runtime code. The independent package/image checks and
+conditional-test coverage are recorded in the application release receipt
+`releases/nbi-preservation-20261024/software-qualification.json`.
+
+The exact tested artifacts were published and the Writer, Observer and Gateway
+now run `ghcr.io/mul-cps/cps-compute@sha256:9d292feffdef9accad2d020009f4f674e1e4770a8f524703f028b201db5ec0f5`.
+The Node main/bootstrap pair and its declared image now use
+`ghcr.io/mul-cps/cps-native-node@sha256:fed4253e1f7179c912607631691a60800adb9c65405404261e939f5fa1140451`.
+The Gateway/Node successor retains the entire service prefix at link17. Approved
+Pod admission succeeds; altered bootstrap, owner and extra host mount probes are
+rejected. All four current component acknowledgments pass the authenticated
+readiness check after activation.
+
+The Writer journal retains its original anchor and all 20 prior rotations;
+rotation21 completed with no pending transition. Before this operation, all four
+Source SQLite databases and the Node private state were backed up with payload
+hash verification; both trusted PostgreSQL Hub backup Jobs completed successfully.
+The temporary two-lock fence and rotation helpers were removed and the owned
+worker cordon was removed. The protected research Pod remains Running with its
+original UID. No driver, kernel or storage-path change was made.
+
+The paired-Hub successor at link18 is created but **not active**. Its nine inactive
+inputs include both new Hub publisher image pins and the compatible capture
+reader. Review caught and corrected stale Hub image pins before activation. The
+Hub candidate, notebook NBI image, NBI policy handover and actual notebook startup
+and restart timing remain pending. These service deployments do not qualify the
+full eight-GPU pool or close the remaining production acceptance gates.
