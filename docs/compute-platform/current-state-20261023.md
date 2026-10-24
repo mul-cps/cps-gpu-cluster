@@ -1818,3 +1818,41 @@ Normal Stop subsequently returned 200. The test token was revoked, and 15
 temporary handover Pods/reader RBAC/Secrets were deleted with exact UID
 preconditions. Final acceptance performance remains the next runtime blocker;
 no fence timeout was extended and no authorization check was bypassed.
+
+### 2026-10-24: accepted-read candidate published; handover staged
+
+SDK commit `be2097292ccca44ab7f39d1a4d262fa1e9fca72a` overlaps only the
+independent Pod/Node/BindRequest GETs in final Accepted observation. Both read
+barriers, final fresh authority/claim checks, custody checks and the original
+execution deadline remain. Focused tests passed 62 cases; independent review
+passed 20 witness cases with no Important findings. The complete run passed
+5,326 cases and failed nine subprocess import cases because its interpreter
+lacked an installed SDK. Installing the exact tested wheel without dependency
+changes made all nine pass (six skips and 68 passing subtests retained). This
+is combined evidence, not a claimed single clean full run.
+
+Published Gateway candidate:
+`ghcr.io/mul-cps/cps-compute@sha256:5f924667f14e4922090ead270bbf3521005d655570b79c063a1d6de958080bb1`.
+The registry manifest matches the tested OCI. Only the coordinator SDK payload
+changed; 82 other payloads match the prior wheel. Installed Python 3.12 image
+checks prove overlapping reads, ordered results and drained siblings on failure
+and cancellation. Live acceptance-budget improvement remains unproven.
+
+The actual staged immutable successor validates through NodeConfiguration.load
+and retains its exact predecessor and original measured proof, changing only
+the Gateway authority image. Nine passive consumer inputs are staged with the
+new bootstrap unreleased. Both Hub runtime-reader Roles retain their full
+existing rules and add only GETs for the two new ConfigMaps; all four live
+subject access reviews pass. No running service template has switched. Fresh
+checks found nine Ready baseline Deployments, the three original user Pod UIDs,
+both native ledgers released and both GPU2 devices at zero memory use with no
+compute clients. A read-only SQL snapshot retains all 54 Source rows and the
+active generation-53 head.
+
+The pending activation must preserve continuous launch exclusion and actual
+native lock custody, validate successor admission before bootstrap release,
+confirm all four genuine ACKs and rotate the existing journal to entry 24.
+Any attempted or ambiguous rotation prohibits automatic old-image/journal
+restoration. Actual GPU Start/CUDA/Stop/restart and the broader production gates
+remain open. Software evidence is canonical in cps-compute commit `8bbbd5d`;
+private execution material is retained in `accepted-parallel-rollout/`.
