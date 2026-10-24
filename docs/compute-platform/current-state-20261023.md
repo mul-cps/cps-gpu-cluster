@@ -1993,3 +1993,22 @@ No journal retry or rollback occurred.
 
 Normal-console Start/CUDA/Stop/restart and measured startup latency on this
 image remain pending. This deployment is not a production-readiness claim.
+
+### 2026-10-24: journal26 normal Start reaches Prepare, then Accepted fence expires
+
+Normal-console Start did not reach Ready or CUDA. Prepare succeeded in 80.54
+seconds with zero registered-snapshot refreshes. The original 60-second execution
+fence had 34.14 seconds left at Prepare return and 28.48 seconds at Binding
+return; Accepted observed binding custody become held after that fence closed.
+The test Pod disappeared without replacement. The observed Start ended after
+290.63 seconds during normal Stop cleanup; Stop returned 200 in 11.49 seconds.
+Both native ledgers are released, GPU2 has zero memory/client use, existing user
+Pod identities are preserved, and the short-lived test token is revoked.
+
+A real NodeService bound-heartbeat regression reproduced Accepted replaying
+its observation after a healthy ACK renewal. A source correction reuses the
+existing complete heartbeat/witness authenticator only when both observations
+consume the exact expected bound generation. All fresh authority, read barriers,
+final custody/fence checks and timeouts remain unchanged. The focused run passes
+73 tests, including metadata/process/witness rejection cases. Full regression
+and independent review are running; this correction is not deployed.
