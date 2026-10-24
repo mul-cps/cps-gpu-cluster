@@ -45,7 +45,7 @@ kubectl -n cps-workflows get networkpolicies -o yaml
 kubectl diff -f /tmp/cps-workload-standard-rpc-nfs-egress.yaml
 ```
 
-After explicit review/approval, apply that exact extracted object:
+After operator review of the object and current additive policy set, apply that exact extracted object within the authorized change scope:
 
 ```sh
 kubectl apply -f /tmp/cps-workload-standard-rpc-nfs-egress.yaml
@@ -64,8 +64,8 @@ if rolling back permanently.
 
 ## Controlled connectivity qualification proposal
 
-Requires separate approval for test Pod creation/exec and any temporary
-NetworkPolicy. Use a pinned, approved non-GPU image, restricted security context,
+Operator review must cover the test Pod creation/exec and any temporary
+NetworkPolicy within the authorized change scope. Use a pinned, approved non-GPU image, restricted security context,
 no service-account token, no volumes, bounded CPU/memory, and a short deadline.
 Record the pre/post policy set. Probe TCP connect only to the two audited NAS
 addresses on 111/2049 (no mount, RPC request, directory read, or data access).
