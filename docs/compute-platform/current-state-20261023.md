@@ -1651,3 +1651,38 @@ Running with UID `fe5fb5e7-8696-4ac3-a5a8-1883817d00bb`. No production workload,
 policy, driver, kernel, NFS path or reservation was changed in these checks.
 The full eight-GPU implementation and broader production acceptance gates remain
 open as recorded above.
+
+
+### 2026-10-24: sealed NBI preservation and service-upgrade prerequisite
+
+Application source `dadf786a472b745a77f5434c84691a4bf1ffa7a9` implements a
+separate release-pinned NBI preservation type. Unknown/modified/rehashed material
+is refused; existing Lab validation remains separate. Eleven NBI tests pass,
+including caller-mutation and cold immutable-authority binding checks. Independent
+review has no remaining Critical or Important findings. Installed-wheel and all
+three actual consumer-image CPU probes load the exact root and retain the original
+synthetic hardware proof/reference; the Gateway image also preserves grants and
+two prior revisions through a controlled Source append. These are software tests,
+not new hardware measurements or deployment evidence.
+
+The broad source run recorded 5,322 passes and nine subprocess-import failures
+because its child interpreter lacked the checkout path. All nine reran successfully
+with explicit absolute PYTHONPATH. Those results must not be described as a single
+clean full-suite run.
+
+A live preflight authenticated the entire current 16-link service prefix (17
+immutable objects), exhausting the old service budget. The active immutable
+Observer release has a non-null held-template hash matching the actual Node;
+both Hubs' mounted native settings are ordinary enabled version2. Reviewed source
+`f895b6820ef89eecfeea0c53a59b32282051562f` raises only the service budget to18,
+retaining the complete prefix and the existing Gateway/Node then paired-Hub
+rotations. The separate policy depth remains16. Link18 loads with bounded reads,
+retained proof and previous-policy context; link19 fails before excess traversal.
+Ninety-eight focused service/NBI/delivery tests pass. A clean full run with the
+corrected test environment is in progress; compatible consumer images are being
+rebuilt. Compatible Writer/Observer/operator readers, matching backups, actual
+current acknowledgments and controlled activation are still required.
+
+No production policy/image, reservation, driver, kernel or research Pod was
+changed. Full-pool implementation and the remaining production acceptance gates
+remain open.
