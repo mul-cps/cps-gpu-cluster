@@ -1,3 +1,12 @@
+diff --git a/.changes/unreleased/fixed-20261024-214201.yaml b/.changes/unreleased/fixed-20261024-214201.yaml
+new file mode 100644
+index 0000000..5654b3e
+--- /dev/null
++++ b/.changes/unreleased/fixed-20261024-214201.yaml
+@@ -0,0 +1,3 @@
++kind: Fixed
++body: |-
++  Reservation cleanup honors observed Pod UID and resource version
 diff --git a/pkg/binder/binding/resourcereservation/resource_reservation.go b/pkg/binder/binding/resourcereservation/resource_reservation.go
 index c8d47eb..9204927 100644
 --- a/pkg/binder/binding/resourcereservation/resource_reservation.go
@@ -12,10 +21,11 @@ index c8d47eb..9204927 100644
  		if !apierrors.IsNotFound(err) {
 diff --git a/pkg/binder/binding/resourcereservation/resource_reservation_identity_test.go b/pkg/binder/binding/resourcereservation/resource_reservation_identity_test.go
 new file mode 100644
-index 0000000..acadb78
+index 0000000..413595f
 --- /dev/null
 +++ b/pkg/binder/binding/resourcereservation/resource_reservation_identity_test.go
-@@ -0,0 +1,79 @@
+@@ -0,0 +1,80 @@
++// Copyright 2025 NVIDIA CORPORATION
 +// SPDX-License-Identifier: Apache-2.0
 +
 +package resourcereservation
