@@ -1090,3 +1090,42 @@ Remaining storage work includes the persistent Source lifecycle journal,
 original-lock recovery and completion preimage validation. Other managed writers,
 operator/runtime activation, retirement, hardware/startup/restore and release
 gates remain open. This software increment does not establish production readiness.
+
+### 2026-10-25: Source storage journal/controller integration
+
+Compute `1243036065196640e2a19b1825e381a577d837ce` integrates managed provisioning
+and archiving with one retained global transition and a Source prepared/armed/
+completed journal. Source schema 2 requires explicit fenced operator migration;
+older receipts, records and audits are preserved, unresolved legacy operations
+are not adopted, and damaged new custody is not reconstructed as an old schema.
+
+The original private group flock descriptor spans asynchronous controller work.
+SQL/head work and registry reads run off the API event loop. Source preparation
+retains the original complete group, generation and lock identity before the
+global effect is retained/read back and the journal is armed. Fresh policy,
+ownership, shutdown and actual controller writer checks remain required.
+Completion rechecks the head, original lock and full Source preimage, committing
+metadata, lifecycle, audit, result receipt and completed journal atomically.
+Lost replies/reopened stores retain the generation; completed retries skip NAS
+and Kubernetes actions. Managed responses are 202, not head activation.
+
+Focused storage/journal suite: **124 passed**. Final complete four-worker suite:
+**6,060 passed, 6 skipped, 626 warnings, 68 subtests**, exit 0 in 219.14 seconds.
+Admin compatibility suite: **102 passed, 55 subtests**, exit 0. Source/test hashes
+remained unchanged through the final run. Independent review found blocking
+preflight SQLite reads; a real exclusive-lock test reproduced a 1.032-second API
+heartbeat stall. Offloaded reads and batched archive lookup fixed it; review
+confirmed the correction and the full suite was rerun afterward.
+
+The built SDK wheel contains exact new module bytes and no Lab extension files;
+it was verified privately, not released. Application documentation and receipt:
+`docs/managed-storage-lifecycle.md` and
+`releases/managed-storage-journal-20261025/software-qualification.json` in compute.
+
+This is real HTTP/head/SQLite/controller software coverage with controlled NAS/
+Kubernetes adapters, including failure injection and client cancellation. It is
+not live NAS interruption, replacement-Pod actor handover, restore, hardware or
+production deployment evidence. No live data, sessions, reservations, deployment
+configuration, drivers or kernels changed. V2 runtime enablement and active-head
+finalization remain unavailable. Approval lifecycle/Hub mutations, operator/runtime
+wiring, retirement and all broader hardware/startup/recovery/release gates remain.
