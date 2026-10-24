@@ -24,6 +24,9 @@ The evaluator handles omitted and empty `to`/`ports` as unrestricted. Mutation
 checks demonstrate that additive broad grants reopen both excluded ports.
 The test pins the chart archive SHA256, not only its version label.
 
-CI coverage gap: the only existing workflow is docs.yml; it does not invoke
-Python tests. This focused check currently requires an explicit invocation with
-JUPYTERHUB_CHART, Helm and PyYAML; it is not an automatic CI gate.
+CI gate: `.github/workflows/notebook-egress.yml` runs on GitHub-hosted
+ubuntu-24.04 for relevant PR/push paths with contents:read only. It installs
+PyYAML6.0.3 and checksum-pinned Helm3.19.0, downloads and verifies the exact
+chart, then runs the focused tests. No cluster credentials, secrets, self-hosted
+runners or deployment operations are used. Workflow shell steps were run
+locally; GitHub Actions execution remains unverified until publication.
