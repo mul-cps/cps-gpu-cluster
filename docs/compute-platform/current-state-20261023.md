@@ -1,8 +1,8 @@
 # Current platform state — 23 October 2026
 
 The full platform remains **limited-pilot**, not production qualified. As of
-24 October, journal27 is active, but normal 5 GiB shared-GPU Start is not reliable:
-the latest run exhausted the Accepted execution fence without Ready/CUDA. Cleanup
+24 October, journal28 is active, but normal 5 GiB shared-GPU Start is not reliable:
+the latest run exhausted Prepare before Binding, without Ready/CUDA. Cleanup
 passed and existing user Pods were preserved. Earlier scoped CUDA/cap/isolation
 and lifecycle results remain historical evidence, not current startup qualification.
 
@@ -11,7 +11,7 @@ the reviewed Node-only same-policy journal28 handover. Its live module hash matc
 the source qualified by 5,384 tests and 68 subtests (six skips). All nine targets
 returned Ready, original journal history and 54 Source rows are preserved, and
 normal services are restored. Current normal Start/CUDA/Stop/restart and measured
-startup latency remain pending; the new live Start is running. The original
+startup latency remain pending; the latest live Start failed. The original
 full-pool, application, recovery and release gates also remain open.
 
 The sections below are chronological acceptance history. Later completed gates
@@ -2149,3 +2149,26 @@ Pod identities are preserved. The normal-console live GPU test is running;
 no current Start/restart or latency success is claimed yet.
 
 [Completed handover receipt](https://github.com/mul-cps/cps-compute/blob/3187aaf/releases/node-binding-transition-20261024/software-qualification.json).
+
+### 2026-10-24: journal28 live test fails before Binding; cleanup verified
+
+The corrected Node package is active, but this run never reached its Binding
+transition. Prepare exhausted its 120-second request deadline during enrollment
+publication after 120.70 seconds. Registered-readiness took 59.24 seconds, forty
+context loads took 39.37 seconds, and enrollment publication took 51.66 seconds;
+these nested timings overlap. The execution fence opened at Prepare+103.50s,
+leaving only 17.2 seconds on the enclosing request budget. No timeout is widened.
+
+Timestamped logs distinguish consequences from cause: Prepare failed at
+10:45:38.808Z; the first Node absent-enrolled-Pod error followed removal at
+10:45:42.274Z. Those errors do not establish a regression in the Node Binding
+fix. The observed Start ended after 304.63 seconds; the Pod disappeared without
+replacement or CUDA. Normal Stop returned 200 in 1.58 seconds. Both ledgers are
+released, GPU2 has zero memory/client use, all nine exact expected targets are
+Ready, existing user Pods are preserved and the short-lived test token is revoked.
+
+Next work traces same-generation Node heartbeat renewal across the complete
+registered-readiness path. The existing terminal-only comparison may still replay
+initial read-only proofs; this remains a hypothesis pending a real-producer
+reproducer. Reliable current Start/restart, startup performance and all original
+production gates remain open.
