@@ -1020,3 +1020,14 @@ Published compute commit `ebcfeefcd5752272ffa4f4095838324c61d5fb75`; local and r
 Fresh complete compute run: **5,961 passed, 6 skipped, 623 warnings, 68 subtests passed**, exit 0 in 723.04 seconds. Native-pool suite: **442 passed**. Lab TypeScript compilation and **97 addon tests** passed. The addon required the documented compile/dependency setup and complete SDK/Hub Python test path; no application fix was needed. A partial local dependency install hit ENOSPC, was stopped and removed; successful verification used isolated temporary storage.
 
 Live read-only check: all seven nodes Ready and uncordoned; GPU resources remain 2/1/2/2 across GPU1–4. Gottam and Muslim notebooks remain Running. This is seven advertised GPUs and does not satisfy the eight-device qualification gate. No live configuration or workload mutation occurred. Runtime producer wiring, complete managed writers/operator activation, atomic retirement, hardware scheduling/startup/recovery and release gates remain open.
+
+
+### 2026-10-25: managed imports and assignment recovery
+
+Published compute `45f2438ee75397d9838341cb46db1df4abecc088` and admin fork `addc4bdcd4b29d9f5b704e78dc4fc2d5a2feb9c4`; remote SHAs were verified against isolated publication checkouts. Managed imports now prepare one authenticated fence for a bounded normalized batch. Source rows, per-record success audits and retry receipt commit atomically after authority and full record/account-link preimage checks. Invalid references, duplicates, concurrent edits, missing authority and injected mid-commit failure reject or roll back. Lost replies resume the same batch after reopening, preserving reservations and mutation audit counts.
+
+The assignment endpoint resumes the retained exact batch rather than regenerating groups, rechecks current authorization, rejects changed settings and returns HTTP 202 with `state: pending` in managed mode. This does not announce effective permissions or start workspaces before activation.
+
+Complete compute suite: **5,964 passed, 6 skipped, 623 warnings, 68 subtests passed**, exit 0 in 677.59 seconds. Admin suite: **99 passed, 44 subtests passed**. Native-pool suite: **445 passed**, including a repeat from the isolated publication checkouts. Candidate source hashes remained unchanged through the full run. See paired `releases/managed-source-import-20261025/software-qualification.json` receipts and the admin import guide.
+
+Publication used temporary isolated checkouts because `/home` returned ENOSPC for Git index/ref updates. Original dirty worktrees and the unrelated `.ignore` were preserved; they were not reset or declared clean. Original index backup is retained privately. Source changes are published; this is not a runtime deployment. Identity migration, legacy Hub mutations, lifecycle-sensitive deletion, operator application/finalization, runtime producer wiring and the broader hardware/startup/recovery/release gates remain open.
