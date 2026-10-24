@@ -26,16 +26,21 @@ Native full-pool placement is still an implementation gap. The builder-reviewed
 catalog, logical Source, immutable unplaced Pod and atomic attempt/outbox
 foundations, startup gate/identity, KAI observation reader and durable Pod
 registration are now source-published at compute revision
-`3a5bf9f1c6d491efcbff947171e04b17d70699e4`. Their combined revision passed
-**5,772 tests and 68 subtests**, with six skips. Registration pins the Pod UID
+`07f9ce4374375d8b32c0b1e75d5dd59f1668a8f5`. Their combined revision passed
+**5,810 tests and 68 subtests**, with six skips. Registration pins the Pod UID
 and pending-spec hash; selection cannot retarget a different Pod. Fenced schema
 upgrades preserve custody and selected history. The actual API-observation
 bridge and CREATE-outbox completion passed combined software verification.
 Completed CREATE work leaves the pending view while its original history remains.
-Selection-publication effects are still being implemented.
+Selection publication now performs immutable GET/CREATE, pins the actual API
+identity and records exact readback. Competing publishers, lost replies and
+reopen recovery passed. Its effect receipt is not Binding/startup authority;
+SQL/Kubernetes freshness and unobserved-CREATE identity races remain explicit
+activation blockers.
 No new runtime factory, live schema migration, device change or v2 deployment
-was performed. Durable effect completion/release, KAI native budget enforcement
-and reservation retirement protection remain implementation gaps.
+was performed. Confirmed native-zero release, authoritative mutation fencing,
+KAI native budget enforcement and reservation retirement protection remain
+implementation gaps.
 Full-pool, startup, application, recovery and release gates remain open; neither
 these CPU tests nor narrow CUDA execution prove complete production readiness.
 
@@ -45,6 +50,18 @@ while all 16 other tested exchanges remained available. All 231 baseline Ready
 Pod UIDs remained Ready and all test resources were removed. This does not
 qualify IPv6, nonstandard RPC or NAS export safety. See the
 [qualification receipt](../../platform-staging/argo/workflow-egress-qualification-20261024.md).
+
+Notebook NFS/RPC egress exclusions are active but absent from the deployed Helm
+release records. Canonical fixes and hosted CPU-only CI pass in draft
+[CPS PR60](https://github.com/mul-cps/cps-gpu-cluster/pull/60) and
+[CIT PR19](https://github.com/bjoernellens1/cit-teaching-platform/pull/19).
+Rendered policies equal live policies, so no object-only update is needed.
+Full Fleet reconciliation remains held: source Hub images/configuration differ
+from qualified live runtimes, dependencies report errors, and policy values
+change the Hub secret checksum. Chart4.4.2 cannot retarget its primary Secret via
+`existingSecret`; CIT already uses that secondary mount for credentials.
+Controlled immutable configuration rotation and parity qualification are needed
+before reconciling the releases. No credentials or custody were reconstructed.
 
 The sections below are chronological acceptance history. Later completed gates
 supersede earlier pending statements for the same scope. Daily artifact retention
