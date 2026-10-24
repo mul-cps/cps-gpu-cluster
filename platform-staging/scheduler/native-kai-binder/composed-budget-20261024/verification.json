@@ -18,7 +18,7 @@
   "deployed": false,
   "hardware_qualified": false,
   "overlap_resolution": "Retain existing native uncached readback and custody decisions; apply exact observed UID/resourceVersion preconditions to every actual reservation deletion.",
-  "patch_sha256": "a4d565bbbd244d1a72a2965f3f5cf0724d7afd0784d6410ff2ae8e38161bfa89",
+  "patch_sha256": "e23d4c3a3fb93deb1dc551a98ae7300806f3a5164b45033fcc74c42bda22ee54",
   "production_ready": false,
   "remaining": [
     "Trusted Root budget, Gateway request and Node claims producers",
@@ -28,7 +28,7 @@
     "All-eight-device packing, isolation, startup and scheduling acceptance"
   ],
   "schema": "cps-kai-native-composition-software/v1",
-  "source_revision": "6a9162d95ed298316d6bf09bc2fb8cd0db42a0c2",
+  "source_revision": "ac49f376647c9e73e7aefa5f1be888b1b8faeceb",
   "source_sha256": {
     ".changes/unreleased/added-20261024-213901.yaml": "a26362ae2b92635640156842c4f230805fd9fd73e3a98ada1228bb5649c735df",
     ".changes/unreleased/fixed-20261024-214201.yaml": "f4061d97e7c45f489acda9c32ddbf2ef36302617f25f359ba24c348a3588ec37",
@@ -60,6 +60,7 @@
     "pkg/scheduler/plugins/nativequalifiedbudget/accounting.go": "cc3230e8806c1c973d45fc164965ec95ef730675861506deee3c3bb4fd382898",
     "pkg/scheduler/plugins/nativequalifiedbudget/contract.go": "1c20179721336d26aa2c5694503b2ac170d61fa97300a07968394a90ee8f8453",
     "pkg/scheduler/plugins/nativequalifiedbudget/contract_test.go": "e7986dda122efeee4812bc563bd7966a73bae2df77638080394528e60867362f",
+    "pkg/scheduler/plugins/nativequalifiedbudget/gateway_wire_test.go": "48239dd6df23b790b2c149f4d33a5f2cfbd2d9184acc774209a4b55861a45dbf",
     "pkg/scheduler/plugins/nativequalifiedbudget/nativequalifiedbudget.go": "2b7ab9d81eef7b180813c98e82152cbf2bdcd610cd96841b540efa9f4dd58e99",
     "pkg/scheduler/plugins/nativequalifiedbudget/nativequalifiedbudget_test.go": "241b0dc557e7e54e1799c193a1a6ee26e9fb6629d92d98a97c54382163888e88",
     "pkg/scheduler/plugins/nativequalifiedbudget/provider.go": "c46f29af925ea0402c873a90434eb33733db0d08460f6d37387dca2bde7277b5",
@@ -67,6 +68,7 @@
     "pkg/scheduler/plugins/nativequalifiedbudget/testdata/budget.json": "da789047bb0a6ae4f8128b57070a8bed016a8effe8c14966f45acfeb7b3c2524",
     "pkg/scheduler/plugins/nativequalifiedbudget/testdata/claims.json": "6b4158fd23048d51bcff554c1e10dbb012fb9b5c2ae115ddff937b6f3ccab9c9",
     "pkg/scheduler/plugins/nativequalifiedbudget/testdata/expected-hashes.json": "0685aa0a48f6389e4398048d6d8972797f6e5ba83feacf593e8a9f6b7632fa3f",
+    "pkg/scheduler/plugins/nativequalifiedbudget/testdata/gateway-python-request.json": "7902ade745bd57d3c09092ec645dc4758d299cfcb3fbbc4e8994415fd3de3d75",
     "pkg/scheduler/plugins/nativequalifiedbudget/testdata/inputs.schema.json": "7574a0bf56924b8cd0953739db9f4ce689aa7d464bbf78553853a2e72dac102b",
     "pkg/scheduler/plugins/nativequalifiedbudget/testdata/request.json": "d0eab600873f90276e696d9c6aaea23e86e10a3cfdfc1d2fc429a68ef112e315"
   },
@@ -91,20 +93,27 @@
     "envtest_kubernetes_version": "1.35.0",
     "existing_cluster_used": false,
     "focused_packages_passed": 9,
-    "forward_apply_exact_tree": "6d2338cb7e9db4c87a4e040f5b3ab0a1eda1c2f2",
+    "forward_apply_exact_tree": "c7a94d74c7a83d79d4a29bf6c5ed0ff885cbc3ac",
     "full_exit_code": 0,
     "full_non_e2e_packages": 305,
+    "full_suite_log": "wire-full-unit.log",
     "go_version": "1.26.8",
     "logs_sha256": {
       "focused-green.log": "774cbcbd3590cecb2ddbf72709e82cc42b45f84303ff7d3dca88f19921835767",
       "full-packages.json": "c0859abda84a6b2030e606a08eb3f1d5edcedff1a130dc08cad3d29f707bf56c",
       "full-unit.log": "8b287e851491e648167bd8e76e4db0115e97a16afce7b532ed38a67c0e37f50a",
       "identity-red.log": "e1bb06df915241e41a3c6ab5d433056b228f2aeb83d9bc9c76ff3fdd716268a5",
-      "race.log": "1b86518ab4b14362dde30302130f930cacfa607c500e0fd1d6dd96b5daf3cb1e"
+      "race.log": "1b86518ab4b14362dde30302130f930cacfa607c500e0fd1d6dd96b5daf3cb1e",
+      "wire-full-unit.log": "3c14c2ba35d94b9f4d095bb4e20d4172dbf26c185fd279a2d874441059536bf9",
+      "wire-race.log": "3c3ef5f3e1bb44316c78a92afdd992d83059856c40225b4aff77c06a92450d7b"
     },
     "packages_with_tests_passed": 193,
     "packages_without_tests": 112,
+    "python_gateway_code_revision": "521039480a1d69e344ad92c404578be2fb028581",
+    "python_gateway_producer_sha256": "9ecef5083f6a5a8598651753a383a7252cc4646590fa6930e2bb012c75899eaa",
+    "python_gateway_wire_regression_passed": true,
     "race_packages_passed": 3,
+    "race_suite_log": "wire-race.log",
     "red_stale_identity_cases": 4,
     "reverse_apply_passed": true
   }

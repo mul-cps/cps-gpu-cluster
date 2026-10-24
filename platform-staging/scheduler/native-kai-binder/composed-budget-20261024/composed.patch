@@ -4302,6 +4302,36 @@ index 0000000..e157470
 +	require.Equal(t, expected["catalog_ref_sha256"], budget.Catalog.canonicalHash())
 +	require.Equal(t, expected["profile_sha256"], canonicalHash(request.Profile))
 +}
+diff --git a/pkg/scheduler/plugins/nativequalifiedbudget/gateway_wire_test.go b/pkg/scheduler/plugins/nativequalifiedbudget/gateway_wire_test.go
+new file mode 100644
+index 0000000..769b0b7
+--- /dev/null
++++ b/pkg/scheduler/plugins/nativequalifiedbudget/gateway_wire_test.go
+@@ -0,0 +1,24 @@
++// Copyright 2026 NVIDIA CORPORATION
++// SPDX-License-Identifier: Apache-2.0
++package nativequalifiedbudget
++
++import (
++	"github.com/stretchr/testify/require"
++	"os"
++	"testing"
++)
++
++// The actual Python Gateway publisher emitted this synthetic fixture using its
++// real compiler/SQLite store and a modeled API. It proves wire compatibility,
++// not current authorization or hardware acceptance.
++func TestPythonGatewayPublisherRequestWireCompatibility(t *testing.T) {
++	raw, err := os.ReadFile("testdata/gateway-python-request.json")
++	require.NoError(t, err)
++	budget := &budgetDocument{PolicyHash: "sha256:da04b302985c11a6ee429e2308376655afff9482724989e8aa07f1ca210a66e5", Catalog: immutableRef{Namespace: "cps-pool-control", Name: "catalog", UID: "cccccccc-cccc-4ccc-8ccc-cccccccccccc", RV: "42", DataSHA: "sha256:46fba9635242fda182a3a4ae1089bb35ac5ce9069149ad6791fd99634a286fe0", Key: "catalog.json"}}
++	request, err := parseRequest(string(raw), budget)
++	require.NoError(t, err)
++	require.Equal(t, "interactive-shared-5", request.Profile)
++	require.EqualValues(t, 5120, request.CapMiB)
++	require.Equal(t, "jupyterhub", request.Pod.Namespace)
++	require.Equal(t, "eeeeeeee-eeee-4eee-8eee-eeeeeeeeeeee", request.Pod.UID)
++}
 diff --git a/pkg/scheduler/plugins/nativequalifiedbudget/nativequalifiedbudget.go b/pkg/scheduler/plugins/nativequalifiedbudget/nativequalifiedbudget.go
 new file mode 100644
 index 0000000..c2041a8
@@ -5262,6 +5292,13 @@ index 0000000..6569aba
 +++ b/pkg/scheduler/plugins/nativequalifiedbudget/testdata/expected-hashes.json
 @@ -0,0 +1 @@
 +{"catalog_ref_sha256":"sha256:4aa258e7420fb09bcd5ba2ff2bb13535e8f4b03d67a4bff8eb708890569d0035","profile_sha256":"sha256:c1287b521391319ee7fbdc74b3ca1cbb1f7840e968b09a0f356868997c3351cb","projection_ref_sha256":"sha256:a42255c077e16d9caa29fdac8953175b2475b192abdb2ae8a36c4b6c800fbf5f"}
+diff --git a/pkg/scheduler/plugins/nativequalifiedbudget/testdata/gateway-python-request.json b/pkg/scheduler/plugins/nativequalifiedbudget/testdata/gateway-python-request.json
+new file mode 100644
+index 0000000..ef830a6
+--- /dev/null
++++ b/pkg/scheduler/plugins/nativequalifiedbudget/testdata/gateway-python-request.json
+@@ -0,0 +1 @@
++{"attempt":"aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa","authorization_deadline":"2026-10-24T20:10:23Z","cap_mib":5120,"catalog_ref":{"data_sha256":"sha256:46fba9635242fda182a3a4ae1089bb35ac5ce9069149ad6791fd99634a286fe0","key":"catalog.json","name":"catalog","namespace":"cps-pool-control","resourceVersion":"42","uid":"cccccccc-cccc-4ccc-8ccc-cccccccccccc"},"head_revision":"sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa","pending_spec_sha256":"639eda7693d628fbf9712fa88af89c72fc94bf4f85378f057e2508d514b3d649","pod":{"name":"jupyter-group-5","namespace":"jupyterhub","uid":"eeeeeeee-eeee-4eee-8eee-eeeeeeeeeeee"},"policy_hash":"sha256:da04b302985c11a6ee429e2308376655afff9482724989e8aa07f1ca210a66e5","profile":"interactive-shared-5","protocol":"cps-native-pool-request/v1","source_ref":{"data_sha256":"sha256:f7ffd9db006f8a27b5801b869575d53ba417eb622a809dc08c9d30c2bb8f6574","key":"source.json","name":"logical-source","namespace":"cps-pool-control","resourceVersion":"42","uid":"dddddddd-dddd-4ddd-8ddd-dddddddddddd"},"version":1}
 diff --git a/pkg/scheduler/plugins/nativequalifiedbudget/testdata/inputs.schema.json b/pkg/scheduler/plugins/nativequalifiedbudget/testdata/inputs.schema.json
 new file mode 100644
 index 0000000..5b52c80

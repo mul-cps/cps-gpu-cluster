@@ -94,6 +94,21 @@ undeployed: trusted producers, fresh admission/Binding, atomic native retirement
 image qualification and all-eight-device hardware acceptance are still required.
 See [the combined source receipt](../../platform-staging/scheduler/native-kai-binder/composed-budget-20261024/README.md).
 
+The Gateway request producer now publishes the immutable scheduler input from
+an actual verified Pod GET, registered UID and retained compiler/catalog/custody
+context. Schema v4 adds durable request identity/readback history; fenced upgrades
+from v1/v2/v3 preserve existing rows. Twenty producer tests, 389 pool tests and
+three cross-repository admin RPC tests passed. The actual Python output also
+passes the Go consumer decoder; the combined Go suite remains 305 packages green.
+The private wheel includes the exact modules and imports with networking denied.
+
+The current producer full run recorded 5,895 passes and 13 filesystem write
+failures; all 13 failed cases passed unchanged on rerun. This is explicitly not a
+clean single full-suite claim. The source and transparent receipt are published
+on the compute qualification branch. Root budget/Node claims producers, active-head
+finalization, strict admission/Binding and hardware qualification remain open;
+no live schema migration, runtime activation or deployment was performed.
+
 The sections below are chronological acceptance history. Later completed gates
 supersede earlier pending statements for the same scope. Daily artifact retention
 is now active and scheduler-verified; see the final retention activation section.
