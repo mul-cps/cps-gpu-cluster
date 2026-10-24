@@ -2172,3 +2172,32 @@ registered-readiness path. The existing terminal-only comparison may still repla
 initial read-only proofs; this remains a hypothesis pending a real-producer
 reproducer. Reliable current Start/restart, startup performance and all original
 production gates remain open.
+
+### 2026-10-24: initial registered heartbeat boundary reproduced and covered
+
+A real NodeService renewal during the initial no-Session registered observation
+reproduced a complete-observation replay (red 1.91s). The same full heartbeat
+authenticator now applies whenever both authenticated selected rows equal the
+expected generation, regardless of phase; the regression passes in 1.82s. Strict
+workload references, full registered proof, fresh Source authority, final custody
+and all deadlines remain unchanged.
+
+The final 12-case phase matrix passes and independent review approves it. It
+authenticates validly rebound complete witnesses while preserving selected rows;
+rejects other pending/custody-row changes, process/head/epoch, target/envelope and
+custody drift before coordinator writes; and proves real Source revocation is
+encountered by the fresh claim. Genuine prior-to-expected advancement still
+requires multiple complete observations. The broader focused run passes 105
+tests; the frozen full suite is running. No live speedup is claimed yet.
+
+The local Gateway candidate installs a released wheel over immutable Gateway1042.
+Eighty-one SDK payloads remain exact; only the coordinator and the already-
+deployed Node correction differ. Python 3.12, installed coordinator hash and
+dependency checks pass. All 43 dependency distributions and 4,590 non-bytecode
+files are exact, and runtime configuration is unchanged apart from provenance
+labels. The Node image remains72. Eighty-four operator tests and offline
+Gateway-only journal28-to29 preparation review pass; final candidate publication,
+actual-manifest review and guarded handover await the full suite. No maintenance
+has started.
+
+[Source and package candidate receipt](https://github.com/mul-cps/cps-compute/blob/79c9565/releases/registered-renewal-20261024/software-qualification.json).
