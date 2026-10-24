@@ -1,30 +1,31 @@
-# Current platform state — 23 October 2026
+# Current platform state — 24 October 2026
 
-The full platform remains **limited-pilot**, not production qualified. As of
-24 October, journal32 is active. Node `e5edc073…39f8eb7` enables fixed-field
-custody timing diagnostics through an image environment default. Gateway
-`bff495fb…96a1524`, both Hub images `46ffa869…b2f2545`, notebook images, drivers,
-kernels and storage are unchanged. The Node command/arguments are unchanged and
-the canonical image-only rotation normalizer passes exactly.
+The full platform remains **limited-pilot**, not production qualified. Journal33
+is active. Node `27a7a076…cc1dad` deploys the bounded enrollment-publication
+observation correction from source `78c8f567…1a1f6e`. Gateway, Hub and notebook
+images, drivers, kernels, storage and Node command/arguments are unchanged.
 
-The corrected runtime source passed5,446 full-suite tests and68subtests (six
-skips). Both normal-console shared5GiB cycles kept stable Pod identities and
-passed a trusted64MiB CUDA operation. First Start returned in213.06s
-(Ready202.60s); restart returned in181.77s (Ready171.31s). These compare with
-179.92s/181.91s before diagnostic activation; no speedup is claimed. The first
-run had one fail-closed Node pending-enrollment validation failure and backoff;
-restart had none. Its exact publication-race hypothesis still needs a focused
-reproduction. Startup optimization and representative CPS/CIT bursts remain open.
+The corrected source passed **5,467 tests and 68 subtests**, with six skips
+(661.68 seconds). Twenty-one focused cases cover the publication gap and
+fail-closed execution, provenance and custody denials. A real production race
+was not captured; its origin remains inferred rather than proven.
 
-All nine exact targets are Ready and all four current components agree. The
-original anchor, prior31 journal rotations and retained history are preserved;
-all54 Source records and the Source snapshot are unchanged after qualification.
-Final Stops released both ledgers, with both GPU2 devices empty and no compute
-clients. The test workspace/helpers are absent, the owned cordon is restored,
-and the scoped credential is revoked with both local copies removed. Existing
-user Pods are preserved. Native full-pool placement is still an implementation
-gap; the versioned catalog/selection design is a reviewed draft with four open
-contracts. Full-pool, application, recovery and release gates remain open.
+Both normal-console shared 5 GiB cycles retained stable Pod identities and
+passed a trusted 64 MiB CUDA operation. Start returned in **202.28 seconds** and
+restart in **208.71 seconds**. These individual runs do not establish a speedup
+or representative CPS/CIT burst performance. Startup remains too slow.
+
+All nine deployments have their exact expected UID/spec and are Ready. Source
+Service specifications and existing user Pods are unchanged. Normal Stop
+returned 200; both allocation ledgers are released, both test-node GPUs have
+zero memory use and no compute clients. The test workspace and maintenance
+helpers are absent, the owned cordon is restored, and the scoped credential is
+revoked with both local copies removed. These cleanup checks were rerun live.
+
+Native full-pool placement is still an implementation gap. The versioned
+catalog/selection design remains a draft with four unresolved implementation
+contracts. Full-pool, startup, application, recovery and release gates remain
+open; narrow CUDA execution does not replace broader isolation qualification.
 
 The sections below are chronological acceptance history. Later completed gates
 supersede earlier pending statements for the same scope. Daily artifact retention
