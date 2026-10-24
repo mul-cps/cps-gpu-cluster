@@ -1891,3 +1891,33 @@ capacity, allocatable, driver/epoch and current Source/claims must remain checke
 Pod/BindRequest and semantic changes must retain their rejection path. Startup
 p95 <=180 seconds and maximum <=300 seconds, reliable restart and the remaining
 full-platform gates are unqualified.
+
+### 2026-10-24: Node heartbeat candidate qualified in software; live handover pending
+
+SDK source `fce2a828d13c4f3e9f08f7732b3855a35cd664d1` carries genuine
+request-local Node body/RV progress into private staging when identity and the
+full semantic projection are unchanged. The caller snapshot stays unchanged; an
+initially stale reference still requires refresh. Both the refresh and heartbeat
+paths retain the same read-only untouched-state proof, repeated stock-map and
+publication checks, fresh authority/ACK/custody checks and execution timeout.
+
+The final single full run passes **5,348 tests and 68 subtests**, with six skips
+and 623 warnings, in 675.68 seconds. Separately, 178 focused regressions, seven
+mid-proof drift cases and 63 operator-helper cases pass. Independent review has
+no remaining Important/Critical finding. The rebuilt Python 3.12 image passes
+import and dependency checks; only the coordinator module changes, with the
+other 82 SDK payloads preserved.
+
+Published immutable candidate:
+`ghcr.io/mul-cps/cps-compute@sha256:0ed58c6b39e15a25f4f2d10fa1c99b8f18db3f3bcb3060975ece8dd65cdcc069`.
+The registry manifest digest is verified. The canonical
+[application software qualification receipt](https://github.com/mul-cps/cps-compute/blob/7a91f7711e189d16fae75d5d0843f59f99759964/releases/node-heartbeat-20261024/software-qualification.json)
+records the exact wheel/module hashes and the unqualified live boundary.
+
+The image-only successor Node configuration is staged and typed-validated, but
+is inert: the Gateway still runs the rotation-24 image. Read-only preflight
+confirms nine Ready deployments, three unchanged user Pod UIDs, released native
+ledgers, no GPU2 compute clients and the same 54 Source revision rows/head. No
+maintenance exclusion or application rollout has started. Normal console Start,
+CUDA result, Stop/restart and the startup latency limits remain to be measured
+on the new image. The overall production plan remains unfinished.
