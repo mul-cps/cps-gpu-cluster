@@ -1,18 +1,21 @@
 # Current platform state — 23 October 2026
 
 The full platform remains **limited-pilot**, not production qualified. As of
-24 October, journal28 is active, but normal 5 GiB shared-GPU Start is not reliable:
-the latest run exhausted Prepare before Binding, without Ready/CUDA. Cleanup
-passed and existing user Pods were preserved. Earlier scoped CUDA/cap/isolation
-and lifecycle results remain historical evidence, not current startup qualification.
+24 October, journal29 is active and the deployed Gateway renewal correction has
+passed one normal-console shared 5 GiB Start/CUDA/Stop/restart/CUDA/Stop cycle.
+The first Start returned in 258.67 seconds and restart in 249.05 seconds. Both
+Pods retained their identity and executed a trusted 64 MiB CUDA operation.
+These runs exceed the 180-second p95 startup target; representative CPS/CIT
+burst reliability is still unqualified.
 
-The Node Binding-transition correction `72a932f4…9e2816` is now deployed through
-the reviewed Node-only same-policy journal28 handover. Its live module hash matches
-the source qualified by 5,384 tests and 68 subtests (six skips). All nine targets
-returned Ready, original journal history and 54 Source rows are preserved, and
-normal services are restored. Current normal Start/CUDA/Stop/restart and measured
-startup latency remain pending; the latest live Start failed. The original
-full-pool, application, recovery and release gates also remain open.
+Gateway `08c81d39…722f42a` and Node `72a932f4…9e2816` are active. The Gateway
+source passed 5,396 tests and 68 subtests (six skips). All nine exact expected
+targets are Ready, the original journal anchor and prior 28 rotations are
+preserved, all 54 Source rows are unchanged, normal services are restored and
+existing user Pods are preserved. Final Stop released both ledgers; both GPU2
+devices have zero memory use and no compute clients. The temporary credential
+is revoked. Earlier scoped cap/isolation evidence remains valid within its
+recorded boundary. Full-pool, application, recovery and release gates remain open.
 
 The sections below are chronological acceptance history. Later completed gates
 supersede earlier pending statements for the same scope. Daily artifact retention
@@ -2224,3 +2227,19 @@ Restart qualification is running. This single start does not qualify reliability
 the p95 startup target, broader pooling or the full platform for production.
 
 [Authenticated deployment receipt](https://github.com/mul-cps/cps-compute/blob/55b3eda/releases/registered-renewal-20261024/software-qualification.json).
+
+
+### 2026-10-24: restart CUDA passes; final cleanup verified
+
+A normal restart returned 200 after 249.05s: first Pod at 96.38s, assignment at
+221.88s and Ready at 238.59s. The new Pod UID stayed stable and the 64 MiB CUDA
+operation passed. Stop returned 200 in 20.15s. Both ledgers are released, GPU2 has
+zero memory use and no compute clients, all nine exact targets are Ready and
+existing user Pods are unchanged. The scoped temporary token was revoked and
+both local credential copies removed. No maintenance remains active.
+
+This completes one deployed Start/Stop/restart cycle, not production reliability
+or burst qualification. The startup target remains open: both successful starts
+are slower than 180 seconds. No deadlines or safety checks were relaxed.
+
+[Start/restart and cleanup receipt](https://github.com/mul-cps/cps-compute/blob/676ec82/releases/registered-renewal-20261024/software-qualification.json).
