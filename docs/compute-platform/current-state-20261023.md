@@ -26,8 +26,8 @@ Native full-pool placement is still an implementation gap. The builder-reviewed
 catalog, logical Source, immutable unplaced Pod and atomic attempt/outbox
 foundations, startup gate/identity, KAI observation reader and durable Pod
 registration are now source-published at compute revision
-`2769c4a9b6f4c8ebd1f4e3aa75063b45473d785b`. Their combined revision passed
-**5,844 tests and 68 subtests**, with six skips. Registration pins the Pod UID
+`3bbf76034918936dc2da27e548d0cca7db654064`. Their combined revision passed
+**5,889 tests and 68 subtests**, with six skips. Registration pins the Pod UID
 and pending-spec hash; selection cannot retarget a different Pod. Fenced schema
 upgrades preserve custody and selected history. The actual API-observation
 bridge and CREATE-outbox completion passed combined software verification.
@@ -38,9 +38,9 @@ reopen recovery passed. Its effect receipt is not Binding/startup authority;
 SQL/Kubernetes freshness and unobserved-CREATE identity races remain explicit
 activation blockers.
 No new runtime factory, live schema migration, device change or v2 deployment
-was performed. Confirmed native-zero release, authoritative mutation fencing,
-KAI native budget enforcement and reservation retirement protection remain
-implementation gaps.
+was performed. Confirmed native-zero release, complete authoritative mutation
+coverage, deployed KAI native budget enforcement and atomic reservation retirement
+protection remain implementation gaps.
 Full-pool, startup, application, recovery and release gates remain open; neither
 these CPU tests nor narrow CUDA execution prove complete production readiness.
 
@@ -67,11 +67,22 @@ calls or rotation, and does not qualify the complete Hub Pod template. Controlle
 immutable configuration rotation and template parity are still needed before
 reconciling the releases. No credentials or custody were reconstructed.
 
-Authoritative mutation fencing is under cross-repository qualification. The
-reviewed candidate covers pending grant/provider writes, atomic lost-reply
-receipts, explicit migrations and RPC responsiveness. Other v2 writers remain
-denied, and operator finalization/runtime activation remain unavailable. This
-is not a completed activation protocol or production writer-coverage claim.
+Preparatory authoritative mutation fencing is now source-published with paired
+qualification receipts: compute `3bbf76034918936dc2da27e548d0cca7db654064`
+and admin `d55851902baaf4ea2eb8edf856d392809bb776b1`. The combined compute
+suite passed 5,889 tests and 68 subtests (six skips); admin passed 93 tests and
+35 subtests. All 16 recorded source hashes, seven integration dependencies and
+both test-log hashes match the integrated source. This covers pending grant and
+provider writes, atomic lost-reply receipts, explicit migrations and responsive
+RPC handling. Other v2 writers remain denied; operator finalization and runtime
+activation remain unavailable. This is not complete production writer coverage.
+
+The observed reservation deletion patch now includes required upstream metadata
+and the final 304-package CPU qualification receipt (190 tested, 114 without
+tests). It applies only to the observed Pod UID/resourceVersion; it does not
+provide atomic native-zero retirement. It remains undeployed and must be composed
+with the qualified native binder and scheduler inventory/budget changes. See
+[the patch boundary](../../platform-staging/scheduler/native-kai-binder/observed-delete-20261024/README.md).
 
 The sections below are chronological acceptance history. Later completed gates
 supersede earlier pending statements for the same scope. Daily artifact retention
