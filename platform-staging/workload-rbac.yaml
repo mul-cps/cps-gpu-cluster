@@ -81,3 +81,24 @@ spec:
   # No inbound network access between untrusted jobs by default.
   # Distributed launchers need scoped project/gang exceptions after qualification.
   ingress: []
+---
+# User Pod traffic only: kubelet/CSI NFS volume mounts originate outside this policy.
+# NetworkPolicies are additive: no other selected Egress rule may allow 111/2049.
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: cps-workload-standard-rpc-nfs-egress
+  namespace: cps-workflows
+spec:
+  podSelector: {}
+  policyTypes: [Egress]
+  egress:
+    # Omitted destination peers cover IPv4, IPv6, cluster and external destinations.
+    # Preserve DNS, HTTPS/API, gateway/S3 and distributed TCP/UDP traffic.
+    - ports:
+        - {protocol: TCP, port: 1, endPort: 110}
+        - {protocol: TCP, port: 112, endPort: 2048}
+        - {protocol: TCP, port: 2050, endPort: 65535}
+        - {protocol: UDP, port: 1, endPort: 110}
+        - {protocol: UDP, port: 112, endPort: 2048}
+        - {protocol: UDP, port: 2050, endPort: 65535}
