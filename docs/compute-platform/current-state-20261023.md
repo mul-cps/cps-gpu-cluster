@@ -1787,17 +1787,34 @@ This is activation evidence, not full-pool or notebook runtime qualification.
 A normal Start of `shared-gpu-lab` initially returned 422 before any Pod existed.
 The Gateway trace localized rejection to `private_file` in the native custody
 writer guard: private state directories had become 02770 and regular files 0660.
-The normal Gateway mounts this volume with fsGroup 10001 and
-`OnRootMismatch`; the publication helper uses a separate journal PVC, so its
-fsGroup 1000 is not evidence of a conflicting mount on compute-state. The exact
-actor that expanded compute-state permissions still needs attribution. The guard correctly
+The main Gateway completed its private-mode initialization at 05:11:22Z.
+The legacy QA Gateway subsequently mounted the same compute-state PVC at
+05:16:35Z with fsGroup 10001 and no fsGroupChangePolicy, whose default is recursive
+Always. The publication helper mounts a separate journal PVC and is not the
+conflicting mount. The guard correctly
 refused group-accessible custody state. Owner-only 0700/0600 permissions were
 restored for both custody directories and the storage-lock directory; every
 device/inode identity was verified unchanged. No lock was unlinked, no database
 rewritten and no allocation was inferred released. Normal Stop then returned 200.
 
-The operator packaging must check private state permissions after every volume
-handoff and establish why the private modes changed before claiming a durable fix. A successful Start,
+The legacy QA Deployment was updated using UID/resourceVersion/spec-preconditioned
+JSON Patch to use `OnRootMismatch`, with a successful server dry-run and rollout.
+All three private directories remained 0700 and their regular files 0600 after
+the new QA Pod mounted the volume. The operator packaging must preserve this
+policy and check private state permissions after every volume handoff. A successful Start,
 CUDA smoke, Stop/restart and timing on the newly authorized image remain required.
 Private operational receipts are retained outside Git under
 `nbi-policy-handover-20261024/` and `nbi-workspace-validation-20261024/`.
+
+The next actual Start created Pod UID `396514af-225a-429f-93bf-c935588c9633`
+on GPU2 with the new notebook image. It did not pass qualification: Prepare took
+82.74 seconds, and final Accepted observation encountered a closed 60-second
+execution fence (custody changed from binding to held). The Pod's cap-gate init
+completed successfully in 19 seconds, device-identity init in one second; the
+notebook ran for five seconds before controlled cleanup terminated it. The
+source request failed after 307.58 seconds; no CUDA probe ran. This does not
+requalify startup or disprove the previously passed CUDA isolation tests.
+Normal Stop subsequently returned 200. The test token was revoked, and 15
+temporary handover Pods/reader RBAC/Secrets were deleted with exact UID
+preconditions. Final acceptance performance remains the next runtime blocker;
+no fence timeout was extended and no authorization check was bypassed.
