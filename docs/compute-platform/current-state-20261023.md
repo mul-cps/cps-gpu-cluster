@@ -1921,3 +1921,34 @@ ledgers, no GPU2 compute clients and the same 54 Source revision rows/head. No
 maintenance exclusion or application rollout has started. Normal console Start,
 CUDA result, Stop/restart and the startup latency limits remain to be measured
 on the new image. The overall production plan remains unfinished.
+
+### 2026-10-24: journal25 active; ACK renewal liveness reproduced and isolated
+
+The image-only handover to Gateway digest `0ed58c6b39e15a25f4f2d10fa1c99b8f18db3f3bcb3060975ece8dd65cdcc069`
+is complete. Journal25 authenticates every archived predecessor, retains the
+exact original anchor and all 24 prior entries, and preserves 123 prior files.
+The 54 Source rows/head, Node/Hub images, driver/kernel and existing notebook
+Pod UIDs remain unchanged. All nine deployments are Ready, the owned cordon is
+restored, Source Services reopened last and temporary helpers/NetworkPolicy are
+removed. Before activation, private backups verified 219 Node files, four
+databases and 124 journal files.
+
+The normal-console Start did **not** pass: it timed out after 313.18 seconds
+without CUDA execution; its Pod was deleted at spawn timeout and was not
+replaced. No registered-snapshot-refresh response occurred. The first Prepare
+spent 120.05 seconds in registered-readiness, including 40 context loads taking
+40.47 seconds, then later requests were rejected from held custody. Stop
+returned 200 in 2.09 seconds; both ledgers are released, GPU2 memory/client use is
+zero, existing user Pods are preserved and the short-lived token is revoked.
+
+A real-producer software regression reproduced healthy Node ACK renewal
+forcing the late exact-envelope comparison to repeat the full registered
+proof. The existing enrollment comparison already authenticates both complete
+witnesses while permitting only monotonic timestamp/RV bookkeeping. Its reuse
+now passes the real renewal case without proof replay and 39 targeted checks;
+broader regression/review and deployment of that correction remain pending.
+No readiness/execution timeout is being widened. This is a startup liveness
+defect; it does not invalidate the prior scoped CUDA isolation evidence.
+
+Reliable Start/restart, startup latency and the remaining full-platform gates
+remain open. See the [application handover and live qualification receipt](https://github.com/mul-cps/cps-compute/blob/803dbc5/releases/node-heartbeat-20261024/software-qualification.json).
