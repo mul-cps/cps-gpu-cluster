@@ -2270,3 +2270,34 @@ context may grant access after a head/identity/epoch change. A performance claim
 still requires the same normal-console Start/CUDA/Stop/restart measurement.
 
 [Sanitized profiles and rejected-experiment measurements](../../platform-staging/qualification/startup-journal29-20261024/critical-path.json).
+
+### 2026-10-24: fresh-readback context reuse implemented and measured
+
+Source `f059750faed36473e5293cc1fc89bebb78c29058` adds an isolated readback helper
+and integrates it into the coordinator. It reuses deterministic validation only
+after freshly reading every previous immutable input, including duplicate GETs,
+and comparing exact canonical bytes inside two fresh mutable-head reads. Actual
+changed bytes enter the existing cold validator through single-use replay. Head
+advancement takes the cold path; an in-bracket flip denies. Current Source grants,
+Node acknowledgments, custody, reservations and execution deadlines stay outside
+the optimization. Reads use four workers and drain on failure/cancellation.
+
+Three paired read-only tests in separate processes against the actual live graph
+measured baseline context loads at 0.85–0.91s and warm candidate loads at
+0.18–0.21s. Both versions performed 132 fresh GETs across the same 95 targets.
+This is a context-load measurement, not an end-to-end startup result.
+
+Independent review found no Important/Critical issue. The broader Source,
+pending-generation and final-enrollment set passed 154 tests in 66.76s. The final
+18-case boundary suite passed in 1.94s, including malformed/changed observations,
+last-duplicate invalidation, 512/513 observation limit, concurrent head advance,
+and failure/cancellation drainage. The full suite is running.
+
+The local candidate image passes Python 3.12 imports, installed-payload hash
+checks and `pip check`. Eighty-two SDK payloads, 43 dependency distributions and
+4,590 non-bytecode dependency files remain exact. Runtime configuration is exact
+apart from provenance labels. The image is not published or deployed; no new
+maintenance has started. The full project remains limited-pilot, with startup,
+CPS/CIT bursts and the original production gates still open.
+
+[Candidate qualification receipt](https://github.com/mul-cps/cps-compute/blob/6b1be66/releases/fresh-context-readback-20261024/software-qualification.json).
