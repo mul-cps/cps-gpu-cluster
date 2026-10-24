@@ -1,23 +1,25 @@
 # Current platform state — 23 October 2026
 
 The full platform remains **limited-pilot**, not production qualified. As of
-24 October, journal30 and Gateway `bff495fb…96a1524` are active. The fresh-readback
-optimization passed normal-console shared 5 GiB Start/CUDA/Stop/restart/CUDA/Stop.
-First Start returned in 208.80s (Ready194.15s), and restart in219.65s
-(Ready207.11s), compared with258.67s and249.05s before this change. Both Pods kept
-stable identities and passed a trusted64MiB CUDA operation. Startup still exceeds
-the180-second target; representative CPS/CIT bursts remain unqualified.
+24 October, journal31, Gateway `bff495fb…96a1524` and both Hubs on
+`46ffa869…b2f2545` are active. The Hub fresh-head-readback update passed normal
+console shared 5 GiB Start/CUDA/Stop/restart/CUDA/Stop. First Start completed in
+179.92s (Ready169.50s) and restart in181.91s, versus208.80s and219.65s before
+this Hub change. The original end-to-end clock is unchanged; console bootstrap
+was0.061s on first Start. Representative CPS/CIT bursts remain unqualified, and
+startup still needs substantial improvement.
 
-The runtime source passed5,410 full-suite tests and68subtests (six skips), with
-four additional post-collection boundary cases verified separately. Independent
-review approved source and actual handover manifests. All nine exact targets are
-Ready, all four current components agree, the original anchor and prior29 journal
-rotations are preserved, and all54 Source records remain unchanged. Final Stop
-released both ledgers; both GPU2 devices have zero allocated memory and no compute
-clients. The scoped test token is revoked and both local credential copies are
-removed. Existing user Pods are preserved. Node72, Hub/notebook images, drivers,
-kernels and storage are unchanged. Full-pool, application, recovery and release
-gates remain open.
+The runtime source passed5,435 full-suite tests and68subtests (six skips).
+Independent review approved source and actual handover manifests. All nine exact
+targets are Ready, all four current components acknowledged the handover, the
+original anchor and prior30 journal rotations are preserved, and all54 Source
+records were retained unchanged through handover. Both test Pods kept stable
+identities and passed a trusted64MiB CUDA operation. Final Stop released both
+ledgers; both GPU2 devices have zero allocated memory and no compute clients.
+The scoped test credential is revoked, both local copies removed, the test Pod
+is absent and the owned cordon is restored. Existing user Pods are preserved.
+Gateway, Node, notebook images, drivers, kernels and storage are unchanged.
+Full-pool, application, recovery and release gates remain open.
 
 The sections below are chronological acceptance history. Later completed gates
 supersede earlier pending statements for the same scope. Daily artifact retention
@@ -2367,3 +2369,27 @@ timings separately while preserving the original total-time clock and all CUDA,
 identity, Stop and cleanup gates. No end-to-end speedup is claimed yet.
 
 [Published Hub candidate receipt](https://github.com/mul-cps/cps-compute/blob/1e58510/releases/hub-head-readback-20261024/software-qualification.json).
+
+
+### 2026-10-24: Hub head-readback update deployed and exercised
+
+The reviewed image-only update is active on both Hubs. Journal31 passed
+original-anchor, prior30-prefix, authenticated archive and original lock-inode
+checks. Normal restoration reopened Source Services last; temporary helpers and
+network policy were removed. All nine captured deployment identities/specs are
+Ready after qualification, and the three existing user Pod identities are intact.
+
+The first normal-console Start completed in179.92s: first Pod71.23s, node
+assignment150.68s and Ready169.50s. Console bootstrap took0.061s and the Start
+POST178.31s. Restart completed in181.91s. Both passed a64MiB CUDA allocation,
+fill, synchronization and sum on exactly one visible A100. Stops returned200 in
+19.00s and19.42s. Final physical checks confirmed both ledgers released and both
+GPU2 devices empty, with no compute clients. The exact scoped credential was
+revoked and both local copies removed; the test workspace is absent.
+
+This is two successful normal-console runs, not representative burst or whole
+platform production qualification. Pre-Pod and assignment delays remain the main
+startup targets. No expiry, reservation, authority check or total-time clock was
+relaxed.
+
+[Deployed Hub qualification and cleanup](https://github.com/mul-cps/cps-compute/blob/79fbf2c/releases/hub-head-readback-20261024/software-qualification.json).
