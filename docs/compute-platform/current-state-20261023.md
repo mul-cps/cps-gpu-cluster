@@ -80,9 +80,19 @@ activation remain unavailable. This is not complete production writer coverage.
 The observed reservation deletion patch now includes required upstream metadata
 and the final 304-package CPU qualification receipt (190 tested, 114 without
 tests). It applies only to the observed Pod UID/resourceVersion; it does not
-provide atomic native-zero retirement. It remains undeployed and must be composed
-with the qualified native binder and scheduler inventory/budget changes. See
+provide atomic native-zero retirement. See
 [the patch boundary](../../platform-staging/scheduler/native-kai-binder/observed-delete-20261024/README.md).
+
+The combined native binder, advertised-inventory accounting, opt-in native budget
+filter and deletion protection are now software-qualified together. All 305
+non-E2E packages passed (193 tested, 112 without tests); three race-tested packages
+passed. Static Linux/amd64 binder and scheduler rebuilds are byte-identical.
+Forward patch replay from pinned upstream exactly reproduces the tested source
+tree. The deletion overlap preserves native custody checks and protects every
+actual deletion with UID/resourceVersion preconditions. The source remains
+undeployed: trusted producers, fresh admission/Binding, atomic native retirement,
+image qualification and all-eight-device hardware acceptance are still required.
+See [the combined source receipt](../../platform-staging/scheduler/native-kai-binder/composed-budget-20261024/README.md).
 
 The sections below are chronological acceptance history. Later completed gates
 supersede earlier pending statements for the same scope. Daily artifact retention
