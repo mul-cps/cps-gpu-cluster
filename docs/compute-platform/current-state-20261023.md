@@ -2034,3 +2034,18 @@ Journal26 and normal services remain active. Final handover review, journal27
 activation and live Start/CUDA/Stop/restart remain pending.
 
 [Software and staged-artifact receipt](https://github.com/mul-cps/cps-compute/blob/b919672/releases/accepted-ack-renewal-20261024/software-qualification.json).
+
+### 2026-10-24: Accepted ACK renewal image deployed through journal27
+
+The reviewed image-only handover is complete on `1042a980…d5434c`. Journal27
+authenticates with the original anchor, exact prior 26 rotations and 133 retained
+files. All 54 Source rows remain unchanged. Backups verified 227 Node files, four
+databases and 134 journal files before activation. Four Node admission cases and
+all four current component acknowledgments passed. All nine targets are Ready;
+Source Services reopened last, the original fence exited normally, the owned
+cordon was restored and temporary helpers/network policy were removed. Existing
+user Pod identities are preserved. Node image, driver, kernel and storage mounts
+are unchanged. The corrected post-release readiness helper completed normally.
+
+The normal-console live GPU Start/CUDA/Stop/restart test has started. Its result
+and startup timing remain pending; this is not production qualification.
