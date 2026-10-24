@@ -1952,3 +1952,26 @@ defect; it does not invalidate the prior scoped CUDA isolation evidence.
 
 Reliable Start/restart, startup latency and the remaining full-platform gates
 remain open. See the [application handover and live qualification receipt](https://github.com/mul-cps/cps-compute/blob/803dbc5/releases/node-heartbeat-20261024/software-qualification.json).
+
+### 2026-10-24: authenticated ACK renewal correction fully tested and published
+
+Source `8a5a52967fb6b11fb08b6e8be9060aa34716ff6f` reuses the existing
+enrollment heartbeat comparison during registered proof. Only authenticated
+monotonic timestamp/RV bookkeeping may advance: both complete custody/pending
+witnesses, exact target/envelope, configuration and process/head/epoch stay
+checked. Full registered proof, fresh authority/custody and original timeouts
+remain intact. A real producer renewal first failed by replaying proof, then
+passed once after this correction.
+
+The final single full run passes **5,370 tests and 68 subtests**, with six skips
+and 623 warnings, in 681.59 seconds. The focused run passes 299 tests; independent
+review passes 22 cases with no remaining Important/Critical finding. Python 3.12
+image import and dependency checks pass, the source-revision image label matches,
+and the other 82 SDK payloads remain exact.
+
+Published immutable candidate:
+`ghcr.io/mul-cps/cps-compute@sha256:c068278477b0be9459c3f7b575c2fd342b37cc73ae42eaf438aaed407f6d6a48`.
+The [canonical software qualification receipt](https://github.com/mul-cps/cps-compute/blob/7ccc9ee/releases/ack-renewal-20261024/software-qualification.json)
+records the exact wheel/module hashes. Its Node successor and nine input objects
+are staged but inert, with bootstrap release false. Journal25 remains active;
+journal26 handover and live Start/CUDA/Stop/restart are pending.
