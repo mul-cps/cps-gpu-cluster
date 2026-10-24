@@ -1000,3 +1000,14 @@ eligible under a per-call 91-day test clock. No objects were deleted. The owned
 Job and Pods are absent; production cleanup stays suspended until its remaining
 active-input, conditional-deletion and full lifecycle gates pass. See the
 [Gateway retention receipt](../../platform-staging/artifacts/gateway-retain-and-readonly-actual-20261015.json).
+
+
+### 2026-10-24: managed Source deletion fencing
+
+Published source commits: `cps-compute` `cb6e05668b5b3493e649eed34af376452d23cc8c` and admin fork `d72d3ffd544dc73e3796e8f7a8712ae847c0b26f`. Local and remote branch SHAs were verified equal.
+
+Managed deletion now covers unreferenced local courses, terms and groups. Before mutation, the Source prepares the authenticated fence; inside its SQL transaction it rechecks the exact preimage, references and retained authority identity/path. Mutation, audit and retry receipt commit together. Retry authorization uses the retained original record; unauthorized retries remain forbidden. Missing authority is never reconstructed. A lost completion response can still return an initial error; an exact retry completes the same transition without duplicating deletion.
+
+Fresh checks: compute native-pool suite **437 passed** (one dependency deprecation warning); complete admin suite **97 passed, 38 subtests passed**. Cross-repository coverage includes normal and lost replies before/after completion, reopening the Source database and retaining the unrelated global reservation.
+
+This does not enable active-head finalization or activate the producers. Lifecycle-sensitive deletion and other uncovered writers remain denied. Operator application/finalization, runtime wiring, eight-device scheduling/packing, startup performance, recovery and release gates remain open. No live workloads, Fleet reconciliation, drivers, kernels or storage configuration were changed by this increment.
