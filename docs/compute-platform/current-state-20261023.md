@@ -24,9 +24,13 @@ revoked with both local copies removed. These cleanup checks were rerun live.
 
 Native full-pool placement is still an implementation gap. The builder-reviewed
 catalog, logical Source, immutable unplaced Pod and atomic attempt/outbox
-foundations, startup gate/identity and KAI observation reader are now
-source-published at compute revision `aab5d245ae614bf539c60d0b1336de679264246c`.
-Their combined revision passed **5,712 tests and 68 subtests**, with six skips.
+foundations, startup gate/identity, KAI observation reader and durable Pod
+registration are now source-published at compute revision
+`50639f5e20f089b17b85fe7164432a4ef431bf05`. Their combined revision passed
+**5,736 tests and 68 subtests**, with six skips. Registration pins the Pod UID
+and pending-spec hash; selection cannot retarget a different Pod. Fenced schema
+upgrades preserve custody and selected history. The actual API-observation
+bridge and CREATE-outbox completion are still undergoing combined verification.
 No new runtime factory, live schema migration, device change or v2 deployment
 was performed. Durable effect completion/release, KAI native budget enforcement
 and reservation retirement protection remain implementation gaps.
