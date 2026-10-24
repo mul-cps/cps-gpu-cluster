@@ -19,7 +19,7 @@ def request(command):
     data = json.loads(base64.b64decode(words[1], validate=True))
     if set(data) != {'version', 'action', 'source', 'group_id', 'actor', 'workspaces'}:
         raise ValueError('Unexpected RPC fields')
-    if type(data['version']) is not int or data['version'] not in ROOTS or data['source'] not in ('cps', 'cit') or data['action'] not in ('provision', 'archive', 'status'):
+    if type(data['version']) is not int or data['version'] not in ROOTS or data['source'] not in ('cps', 'cit') or data['action'] not in ('provision', 'provision-existing', 'archive', 'status'):
         raise ValueError('Unsupported RPC')
     if not isinstance(data['group_id'], str) or not data['group_id'].strip() or len(data['group_id']) > 256:
         raise ValueError('Invalid group')
@@ -95,10 +95,10 @@ def execute(data, dataset, call=middleware):
         call('pool.dataset.update', dataset, {'readonly': 'ON'})
         row = lookup(dataset, call)
     readonly = row.get('readonly', {}).get('value') == 'ON'
-    if data['action'] == 'provision' and readonly:
+    if data['action'] in ('provision', 'provision-existing') and readonly:
         raise ValueError('Archived workspace cannot become writable')
     permissions = {}
-    if data['action'] == 'provision':
+    if data['action'] in ('provision', 'provision-existing'):
         path = '/mnt/' + dataset
         permissions = verify_private_permissions(row, path, call)
         shares = call('sharing.nfs.query', [['path', '=', path]])

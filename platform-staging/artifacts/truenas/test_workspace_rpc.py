@@ -36,6 +36,25 @@ class WorkspaceRPCTests(unittest.TestCase):
             rpc.execute(data, path, call)
         self.assertEqual(calls, ['pool.dataset.query'])
 
+    def test_existing_provision_never_recreates_missing_dataset(self):
+        data, path = rpc.request(self.payload(action='provision-existing'))
+        calls = []
+        def call(method, *args):
+            calls.append(method)
+            if method == 'pool.dataset.query': return []
+            raise AssertionError(method)
+        with self.assertRaisesRegex(ValueError, 'absent'):
+            rpc.execute(data, path, call)
+        self.assertEqual(calls, ['pool.dataset.query'])
+
+    def test_existing_provision_still_verifies_permissions_and_export(self):
+        data, path, call, calls = self.qualified_fixture()
+        data['action'] = 'provision-existing'
+        result = rpc.execute(data, path, call)
+        self.assertTrue(result['evidence']['permissions_verified'])
+        self.assertIn('sharing.nfs.create', calls)
+        self.assertNotIn('pool.dataset.create', calls)
+
     def test_archive_requires_verified_property(self):
         data, path = rpc.request(self.payload(action='archive'))
         def call(method, *args):
