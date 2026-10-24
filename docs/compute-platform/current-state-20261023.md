@@ -2049,3 +2049,22 @@ are unchanged. The corrected post-release readiness helper completed normally.
 
 The normal-console live GPU Start/CUDA/Stop/restart test has started. Its result
 and startup timing remain pending; this is not production qualification.
+
+### 2026-10-24: journal27 live Start still exhausts the Accepted fence
+
+Normal-console Start did not reach Ready/CUDA. Prepare succeeded in 111.10
+seconds; its return left 33.59 seconds on the original execution fence, and
+Binding left 28.21 seconds. Accepted again observed binding custody become held
+after that fence expired. The Pod disappeared without replacement; observed
+Start ended after 309.49 seconds during normal Stop cleanup. Stop returned 200
+in 9.27 seconds. Both ledgers are released, GPU2 has zero memory/client use,
+existing user Pods are preserved and the short-lived token is revoked.
+
+The Node trace adds evidence: readiness was withdrawn when terminal replacement
+verification used an earlier unbound pending observation against a now-bound Pod,
+followed by a custody-ledger change. The general Node failure path backs off,
+whereas a recognized concurrent custody change reconciles promptly. This is an
+investigation lead, not yet a verified fix or proof that it alone explains the
+whole delay. Next work must reproduce the transition across complete custody
+scans and examine this phase end to end. The software ACK-renewal regression
+remains fixed, but journal27 is not live startup-qualified. No timeout is widened.
