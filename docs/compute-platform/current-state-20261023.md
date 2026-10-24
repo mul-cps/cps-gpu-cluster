@@ -22,12 +22,14 @@ zero memory use and no compute clients. The test workspace and maintenance
 helpers are absent, the owned cordon is restored, and the scoped credential is
 revoked with both local copies removed. These cleanup checks were rerun live.
 
-Native full-pool placement is still an implementation gap. The versioned
-catalog/selection design is now builder-reviewed. Its first read-only catalog
-component is source-published and passed 5,500 tests plus 68 subtests (six skips);
-it is not deployed or connected to an application factory. Full-pool, startup,
-application, recovery and release gates remain open; narrow CUDA execution does
-not replace broader isolation qualification.
+Native full-pool placement is still an implementation gap. The builder-reviewed
+catalog, logical Source, immutable unplaced Pod and atomic attempt/outbox
+foundations are now source-published. Their combined revision passed **5,582
+tests and 68 subtests**, with six skips. No new runtime factory, live schema
+migration, device change or v2 deployment was performed. Gate/identity and KAI
+observation sources are undergoing separate final software qualification.
+Full-pool, startup, application, recovery and release gates remain open; neither
+these CPU tests nor narrow CUDA execution prove complete production readiness.
 
 The sections below are chronological acceptance history. Later completed gates
 supersede earlier pending statements for the same scope. Daily artifact retention
@@ -2468,3 +2470,30 @@ resource or device was changed. Inventory provenance, activated catalog history,
 immutable v2 Pod/gate compilation, shared attempt/outbox storage and actual KAI
 selection integration remain required before v2 can enable any workload. Two
 synthetic authorities are unit-test inputs, not two newly qualified GPUs.
+
+
+## Combined multi-pool foundations — 24 October
+
+Compute receipt revision `f2084b365af1aa8e9a1a185a79aba87bd04feea3` records the
+combined Source/Pod/attempt-storage source, with **5,582 tests and68subtests
+passed, six skips, 623 warnings in669.30seconds**. The independent workload
+extraction passed5,518 tests and storage passed5,500 tests before integration.
+
+The unplaced Pod fixes profile resources, images, logical Source and storage,
+KAI queue/priority and required capability/selection map references before
+CREATE. Its actual selected projection changes only nodeName. No GPU UUID,
+Node UID or device-specific private path is embedded before selection. The
+storage primitive atomically retains canonical members, attempts and outbox
+intents, checks finite authorization windows and permits one selection digest.
+Legacy acquisition/release cannot adopt v2-owned custody. Real SQLite contention,
+process-death, rollback, lost-reply and actual legacy-authority regressions are
+included. These are source-level components, not permission to start hardware.
+
+[Combined software receipt](https://github.com/mul-cps/cps-compute/blob/f2084b365af1aa8e9a1a185a79aba87bd04feea3/releases/native-pool-v2-foundations-20261024/software-qualification.json)
+records exact source/log hashes and remaining integration. Durable created-Pod
+registration, effect acknowledgments, confirmed teardown and retained multi-attempt
+history still need completion. Active heads, authoritative-writer invalidation,
+Source/Hub/Node ACKs, the Node publisher and actual KAI Binder path remain required.
+Gate/identity/KAI observation work is separately staged and not included in this
+receipt. All-eight-device hardware, burst/scheduling, application, recovery and
+release gates remain open. The deployed platform remains the earlier R33 pilot.
