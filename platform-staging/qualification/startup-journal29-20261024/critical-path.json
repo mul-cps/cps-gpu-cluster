@@ -1,0 +1,156 @@
+{
+  "cold_context": {
+    "approval_history_records": 53,
+    "distinct_registry_revisions": 53,
+    "distinct_targets": 95,
+    "gets": 132,
+    "instrumentation": "cProfile; wall time includes profiling overhead",
+    "instrumented_seconds": 1.439500139,
+    "repeated_gets": 37,
+    "retained_node_configurations": 31
+  },
+  "date": "2026-10-24",
+  "deployed_gateway_image": "ghcr.io/mul-cps/cps-compute@sha256:08c81d394ca0273588ce63331e253ecdc2c22a1b9be5fc62a495830d0722f42a",
+  "deployed_runtime_source": "86a7e7c8b116accb050f930f6043a9b2b5a1795e",
+  "experiments": [
+    {
+      "experiment": "Node ancestor prefetch",
+      "median_seconds": {
+        "baseline": 0.8569825949962251,
+        "candidate": 0.8593753190070856
+      },
+      "outcome": "Rejected: no consistent measurable live improvement; prototype removed, not published or deployed",
+      "read_only": true,
+      "rows": [
+        {
+          "gets": 132,
+          "iteration": 0,
+          "mode": "baseline",
+          "seconds": 0.8569825949962251,
+          "targets": 95
+        },
+        {
+          "gets": 132,
+          "iteration": 0,
+          "mode": "candidate",
+          "seconds": 0.8619032359856647,
+          "targets": 95
+        },
+        {
+          "gets": 132,
+          "iteration": 1,
+          "mode": "baseline",
+          "seconds": 0.9142641309881583,
+          "targets": 95
+        },
+        {
+          "gets": 132,
+          "iteration": 1,
+          "mode": "candidate",
+          "seconds": 0.8498171780083794,
+          "targets": 95
+        },
+        {
+          "gets": 132,
+          "iteration": 2,
+          "mode": "baseline",
+          "seconds": 0.8389227389998268,
+          "targets": 95
+        },
+        {
+          "gets": 132,
+          "iteration": 2,
+          "mode": "candidate",
+          "seconds": 0.8593753190070856,
+          "targets": 95
+        }
+      ],
+      "separate_process_only": true,
+      "tests": {
+        "context_passed": 21,
+        "focused_passed": 65,
+        "red": "barrier showed predecessor reads serialize"
+      }
+    },
+    {
+      "experiment": "Pure registry alias validation memo",
+      "median_seconds": {
+        "baseline": 0.8284379770047963,
+        "candidate": 0.8222328470146749
+      },
+      "outcome": "Rejected: no consistent measurable live improvement; prototype removed, not published or deployed",
+      "read_only": true,
+      "rows": [
+        {
+          "gets": 132,
+          "iteration": 0,
+          "mode": "baseline",
+          "seconds": 0.8083963399985805,
+          "targets": 95
+        },
+        {
+          "gets": 132,
+          "iteration": 0,
+          "mode": "candidate",
+          "seconds": 0.8220044000190683,
+          "targets": 95
+        },
+        {
+          "gets": 132,
+          "iteration": 1,
+          "mode": "baseline",
+          "seconds": 0.8890282270149328,
+          "targets": 95
+        },
+        {
+          "gets": 132,
+          "iteration": 1,
+          "mode": "candidate",
+          "seconds": 0.8222328470146749,
+          "targets": 95
+        },
+        {
+          "gets": 132,
+          "iteration": 2,
+          "mode": "baseline",
+          "seconds": 0.8284379770047963,
+          "targets": 95
+        },
+        {
+          "gets": 132,
+          "iteration": 2,
+          "mode": "candidate",
+          "seconds": 0.8418687270022929,
+          "targets": 95
+        }
+      ],
+      "separate_process_only": true,
+      "tests": {
+        "bad_wrapper_cases": 6,
+        "focused_passed": 35,
+        "red": "27 projection validations for 9 unique registries in controlled fixture"
+      }
+    }
+  ],
+  "live_application_changed": false,
+  "pending": "Implement and qualify a fast fresh readback path that reuses only deterministic validation of identical immutable inputs; preserve fresh head brackets, all current Source/grant checks, custody and deadlines",
+  "production_ready": false,
+  "schema": "cps-startup-critical-path-profile/v1",
+  "scope": "Read-only separate processes; no live application monkeypatch, runtime initialization, driver, kernel, workload or policy mutation",
+  "successful_prepare": [
+    {
+      "context_calls": 34,
+      "context_total_seconds": 33.610378,
+      "enrollment_publication_seconds": 52.563906,
+      "registered_readiness_seconds": 30.883556,
+      "seconds": 101.824173
+    },
+    {
+      "context_calls": 33,
+      "context_total_seconds": 33.810796,
+      "enrollment_publication_seconds": 54.90174,
+      "registered_readiness_seconds": 28.949007,
+      "seconds": 99.048266
+    }
+  ]
+}

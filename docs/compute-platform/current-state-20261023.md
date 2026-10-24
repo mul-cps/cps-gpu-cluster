@@ -2243,3 +2243,30 @@ or burst qualification. The startup target remains open: both successful starts
 are slower than 180 seconds. No deadlines or safety checks were relaxed.
 
 [Start/restart and cleanup receipt](https://github.com/mul-cps/cps-compute/blob/676ec82/releases/registered-renewal-20261024/software-qualification.json).
+
+### 2026-10-24: cold proof reconstruction cost measured; two experiments rejected
+
+Both successful Prepare traces spend 99–102 seconds overall, with 33–34 complete
+context loads totaling about 34 seconds. These are nested timings: registered
+readiness takes 29–31 seconds and enrollment publication 53–55 seconds, so the
+figures must not be added. An isolated, read-only profile of the installed
+Gateway found 132 actual ConfigMap GETs across 95 targets per context load,
+31 retained Node configurations and 53 distinct historical registry revisions.
+
+Two separately tested prototypes were compared against the installed code in
+three paired read-only runs each. Prefetching retained Node references with four
+workers and memoizing pure validation for same-registry aliases showed no
+consistent live improvement. The aliases optimization passed its controlled
+fixture but current production history has 53 distinct registry revisions.
+Neither prototype is retained, published or deployed. The current successful
+Start/restart deployment and its safety checks are unchanged.
+
+The next optimization should reuse deterministic validation of identical
+immutable inputs while freshly checking their actual readbacks and retaining
+both mutable-head reads. Current Source/grant checks, Node acknowledgments,
+custody, reservations and deadlines must remain fresh and unchanged. Changed,
+missing or malformed objects must force full validation or denial; no cached
+context may grant access after a head/identity/epoch change. A performance claim
+still requires the same normal-console Start/CUDA/Stop/restart measurement.
+
+[Sanitized profiles and rejected-experiment measurements](../../platform-staging/qualification/startup-journal29-20261024/critical-path.json).
