@@ -2332,3 +2332,38 @@ Hub pre-spawn and modify hooks; no target, timeout or authority check is relaxed
 This single cycle is not burst, full-pool or production qualification.
 
 [Deployed Start/restart and cleanup evidence](https://github.com/mul-cps/cps-compute/blob/b87e7ff/releases/fresh-context-readback-20261024/software-qualification.json).
+
+
+### 2026-10-24: Hub head refresh candidate qualified and published
+
+A read-only profile using the Hub's actual mounted qualification, Kubernetes
+identity and Source HTTP credential found each steady-state head refresh takes
+about 0.84s and performs 118 ConfigMap GETs plus two Source GETs. The Source HTTP
+checks account for about 15ms; repeated historical validation dominates.
+
+Source `d857399887e14147ce4fbb2b50e9998c1df3a780` extends the existing fresh-readback
+engine to HeadSnapshot validation. Both Source callbacks, consumption, monotonic
+previous-document validation and final head comparison remain active. Dict and
+raw Kubernetes model clients are supported. Changes to actual inputs, policy or
+qualification identity, component or previous document force cold validation or
+denial. The shared coordinator readback path retains its existing guarantees.
+
+Three paired isolated-process tests in the live Hub measured baseline refreshes
+at 0.82–0.91s and candidate refreshes at 0.20–0.23s, with the same 118 ConfigMap
+GETs and both Source GETs. The full suite passed 5,435 tests and 68 subtests (six
+skips), final boundary/publisher checks passed 61 tests, and broader checks passed
+193. Independent code review found no Important/Critical finding.
+
+The published Hub image preserves 136 non-SDK distributions and 23,193 files,
+including the entire separate Hub extension. Python 3.12 imports, installed
+payload hashes, `pip check` and exact runtime configuration preservation pass.
+The intended handover changes both Hub images only; Gateway, Node, workload
+images, drivers, kernels, storage and policy remain unchanged. Nine inactive
+inputs are staged with bootstrap false and five narrow Role patches pass server
+dry-run. No maintenance has started; actual handover review is pending.
+
+The next normal-console test also records authentication-bootstrap and Start-POST
+timings separately while preserving the original total-time clock and all CUDA,
+identity, Stop and cleanup gates. No end-to-end speedup is claimed yet.
+
+[Published Hub candidate receipt](https://github.com/mul-cps/cps-compute/blob/1e58510/releases/hub-head-readback-20261024/software-qualification.json).
