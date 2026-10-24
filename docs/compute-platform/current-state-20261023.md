@@ -109,6 +109,17 @@ on the compute qualification branch. Root budget/Node claims producers, active-h
 finalization, strict admission/Binding and hardware qualification remain open;
 no live schema migration, runtime activation or deployment was performed.
 
+The Root budget producer is now implemented and source-qualified: it preserves
+each device's independent measured memory/count/profile limits, verifies pinned
+catalog/inventory API objects and separate mutable Node-claims identities, and
+requires a retained reference to reuse an existing Root publication. Nineteen new
+Root tests and 408 pool tests passed. Actual Root output passes the Go consumer;
+all 305 Go packages and both Python-to-Go wire race regressions pass. The private
+wheel includes the module and imports without network access. This is not runtime
+activation: trusted Node claims, operator custody wiring, fresh admission/Binding,
+native-zero retirement and hardware/release gates remain open. The clean single
+full Python run remains outstanding as recorded above.
+
 The sections below are chronological acceptance history. Later completed gates
 supersede earlier pending statements for the same scope. Daily artifact retention
 is now active and scheduler-verified; see the final retention activation section.

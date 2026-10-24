@@ -18,17 +18,17 @@
   "deployed": false,
   "hardware_qualified": false,
   "overlap_resolution": "Retain existing native uncached readback and custody decisions; apply exact observed UID/resourceVersion preconditions to every actual reservation deletion.",
-  "patch_sha256": "e23d4c3a3fb93deb1dc551a98ae7300806f3a5164b45033fcc74c42bda22ee54",
+  "patch_sha256": "8bc752bf6cb52fd4a126bcf5a8f1c804883e85639f733b4279ba8faafb1af538",
   "production_ready": false,
   "remaining": [
-    "Trusted Root budget, Gateway request and Node claims producers",
+    "Wire qualified Root budget/Gateway request producers; implement trusted actual Node claims producer",
     "Fresh Source/head/ACK/epoch admission and strict Binding integration",
     "Atomic native enrollment/retirement fence with confirmed-zero proof",
     "Immutable image qualification and controlled rollout",
     "All-eight-device packing, isolation, startup and scheduling acceptance"
   ],
   "schema": "cps-kai-native-composition-software/v1",
-  "source_revision": "ac49f376647c9e73e7aefa5f1be888b1b8faeceb",
+  "source_revision": "c709bca72b64b39d534d1b69bf66f42132a3eddd",
   "source_sha256": {
     ".changes/unreleased/added-20261024-213901.yaml": "a26362ae2b92635640156842c4f230805fd9fd73e3a98ada1228bb5649c735df",
     ".changes/unreleased/fixed-20261024-214201.yaml": "f4061d97e7c45f489acda9c32ddbf2ef36302617f25f359ba24c348a3588ec37",
@@ -60,7 +60,7 @@
     "pkg/scheduler/plugins/nativequalifiedbudget/accounting.go": "cc3230e8806c1c973d45fc164965ec95ef730675861506deee3c3bb4fd382898",
     "pkg/scheduler/plugins/nativequalifiedbudget/contract.go": "1c20179721336d26aa2c5694503b2ac170d61fa97300a07968394a90ee8f8453",
     "pkg/scheduler/plugins/nativequalifiedbudget/contract_test.go": "e7986dda122efeee4812bc563bd7966a73bae2df77638080394528e60867362f",
-    "pkg/scheduler/plugins/nativequalifiedbudget/gateway_wire_test.go": "48239dd6df23b790b2c149f4d33a5f2cfbd2d9184acc774209a4b55861a45dbf",
+    "pkg/scheduler/plugins/nativequalifiedbudget/gateway_wire_test.go": "e5f689b5c336b46bd4b44a35548455d1aee065ce9732749618c44c31fb44546e",
     "pkg/scheduler/plugins/nativequalifiedbudget/nativequalifiedbudget.go": "2b7ab9d81eef7b180813c98e82152cbf2bdcd610cd96841b540efa9f4dd58e99",
     "pkg/scheduler/plugins/nativequalifiedbudget/nativequalifiedbudget_test.go": "241b0dc557e7e54e1799c193a1a6ee26e9fb6629d92d98a97c54382163888e88",
     "pkg/scheduler/plugins/nativequalifiedbudget/provider.go": "c46f29af925ea0402c873a90434eb33733db0d08460f6d37387dca2bde7277b5",
@@ -70,7 +70,8 @@
     "pkg/scheduler/plugins/nativequalifiedbudget/testdata/expected-hashes.json": "0685aa0a48f6389e4398048d6d8972797f6e5ba83feacf593e8a9f6b7632fa3f",
     "pkg/scheduler/plugins/nativequalifiedbudget/testdata/gateway-python-request.json": "7902ade745bd57d3c09092ec645dc4758d299cfcb3fbbc4e8994415fd3de3d75",
     "pkg/scheduler/plugins/nativequalifiedbudget/testdata/inputs.schema.json": "7574a0bf56924b8cd0953739db9f4ce689aa7d464bbf78553853a2e72dac102b",
-    "pkg/scheduler/plugins/nativequalifiedbudget/testdata/request.json": "d0eab600873f90276e696d9c6aaea23e86e10a3cfdfc1d2fc429a68ef112e315"
+    "pkg/scheduler/plugins/nativequalifiedbudget/testdata/request.json": "d0eab600873f90276e696d9c6aaea23e86e10a3cfdfc1d2fc429a68ef112e315",
+    "pkg/scheduler/plugins/nativequalifiedbudget/testdata/root-python-budget.json": "a53e28593035b88f075d2123497c7dc421be605d8d45b99e9e3ab0f15e1ff1f3"
   },
   "upstream_revision": "bdf434e5e9201cccf4e05fad04d814363653f692",
   "verification": {
@@ -93,7 +94,7 @@
     "envtest_kubernetes_version": "1.35.0",
     "existing_cluster_used": false,
     "focused_packages_passed": 9,
-    "forward_apply_exact_tree": "c7a94d74c7a83d79d4a29bf6c5ed0ff885cbc3ac",
+    "forward_apply_exact_tree": "b1df2a12d48eb454e1e3e4d0fb5d0202f0c23066",
     "full_exit_code": 0,
     "full_non_e2e_packages": 305,
     "full_suite_log": "wire-full-unit.log",
@@ -112,9 +113,13 @@
     "python_gateway_code_revision": "521039480a1d69e344ad92c404578be2fb028581",
     "python_gateway_producer_sha256": "9ecef5083f6a5a8598651753a383a7252cc4646590fa6930e2bb012c75899eaa",
     "python_gateway_wire_regression_passed": true,
+    "python_root_budget_code_revision": "f9442d22250ece11e13024e574470dddcf4cb1da",
+    "python_root_budget_wire_regression_passed": true,
     "race_packages_passed": 3,
     "race_suite_log": "wire-race.log",
     "red_stale_identity_cases": 4,
-    "reverse_apply_passed": true
+    "reverse_apply_passed": true,
+    "root_wire_full_go_log_sha256": "729860c5d861b94fc10f59a640079665012dd70061b5afa622a921f1f5599175",
+    "root_wire_race_log_sha256": "43b9e73b7defc9902fc56f5949b60a043a9da01083e99eb9d504ff2c6f537aa4"
   }
 }

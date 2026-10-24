@@ -4304,10 +4304,10 @@ index 0000000..e157470
 +}
 diff --git a/pkg/scheduler/plugins/nativequalifiedbudget/gateway_wire_test.go b/pkg/scheduler/plugins/nativequalifiedbudget/gateway_wire_test.go
 new file mode 100644
-index 0000000..769b0b7
+index 0000000..8d5c356
 --- /dev/null
 +++ b/pkg/scheduler/plugins/nativequalifiedbudget/gateway_wire_test.go
-@@ -0,0 +1,24 @@
+@@ -0,0 +1,39 @@
 +// Copyright 2026 NVIDIA CORPORATION
 +// SPDX-License-Identifier: Apache-2.0
 +package nativequalifiedbudget
@@ -4331,6 +4331,21 @@ index 0000000..769b0b7
 +	require.EqualValues(t, 5120, request.CapMiB)
 +	require.Equal(t, "jupyterhub", request.Pod.Namespace)
 +	require.Equal(t, "eeeeeeee-eeee-4eee-8eee-eeeeeeeeeeee", request.Pod.UID)
++}
++
++// The actual Python Root publisher emitted this synthetic two-device budget.
++func TestPythonRootPublisherBudgetWireCompatibility(t *testing.T) {
++	raw, err := os.ReadFile("testdata/root-python-budget.json")
++	require.NoError(t, err)
++	budget, err := parseBudget(string(raw), options{claimsNS: "node-claims"})
++	require.NoError(t, err)
++	require.Len(t, budget.Nodes, 1)
++	require.Len(t, budget.Nodes[0].Devices, 2)
++	for _, device := range budget.Nodes[0].Devices {
++		require.EqualValues(t, 30720, device.BudgetMiB)
++		require.EqualValues(t, 6, device.MaxWorkspaces)
++		require.EqualValues(t, 20480, device.Profiles["interactive-shared-20"])
++	}
 +}
 diff --git a/pkg/scheduler/plugins/nativequalifiedbudget/nativequalifiedbudget.go b/pkg/scheduler/plugins/nativequalifiedbudget/nativequalifiedbudget.go
 new file mode 100644
@@ -5704,3 +5719,10 @@ index 0000000..30bfee0
 +++ b/pkg/scheduler/plugins/nativequalifiedbudget/testdata/request.json
 @@ -0,0 +1 @@
 +{"attempt":"00000020-1111-4111-8111-000000000020","authorization_deadline":"2026-10-24T12:01:00Z","cap_mib":5120,"catalog_ref":{"data_sha256":"sha256:0000000000000000000000000000000000000000000000000000000000000090","key":"catalog.json","name":"catalog","namespace":"root-control","resourceVersion":"10","uid":"00000090-1111-4111-8111-000000000090"},"head_revision":"sha256:8888888888888888888888888888888888888888888888888888888888888888","pending_spec_sha256":"1111111111111111111111111111111111111111111111111111111111111111","pod":{"name":"notebook","namespace":"jupyterhub","uid":"00000001-1111-4111-8111-000000000001"},"policy_hash":"sha256:9999999999999999999999999999999999999999999999999999999999999999","profile":"interactive-shared-5","protocol":"cps-native-pool-request/v1","source_ref":{"data_sha256":"sha256:0000000000000000000000000000000000000000000000000000000000000091","key":"source.json","name":"logical-source","namespace":"gateway-control","resourceVersion":"10","uid":"00000091-1111-4111-8111-000000000091"},"version":1}
+diff --git a/pkg/scheduler/plugins/nativequalifiedbudget/testdata/root-python-budget.json b/pkg/scheduler/plugins/nativequalifiedbudget/testdata/root-python-budget.json
+new file mode 100644
+index 0000000..678ca23
+--- /dev/null
++++ b/pkg/scheduler/plugins/nativequalifiedbudget/testdata/root-python-budget.json
+@@ -0,0 +1 @@
++{"catalog_ref":{"data_sha256":"sha256:46fba9635242fda182a3a4ae1089bb35ac5ce9069149ad6791fd99634a286fe0","key":"catalog.json","name":"catalog","namespace":"cps-pool-control","resourceVersion":"42","uid":"cccccccc-cccc-4ccc-8ccc-cccccccccccc"},"nodes":[{"boot_id":"209f8bc9-a478-48e4-925a-6e07ffa56f7a","claims_ref":{"name":"gpu-state","namespace":"node-claims","uid":"dddddddd-dddd-4ddd-8ddd-dddddddddddd"},"devices":[{"budget_mib":30720,"gpu_uuid":"GPU-22222222-2222-4222-8222-222222222222","max_workspaces":6,"profiles":{"interactive-shared-10":10240,"interactive-shared-20":20480,"interactive-shared-5":5120},"qualification_ref":{"data_sha256":"sha256:97847a7629fbeb30937acfee4a40927f8e1744c53c4fa14f223a03172c31e01c","key":"qualification.json","name":"reviewed-proof","namespace":"cps-compute","resourceVersion":"42","uid":"33333333-3333-4333-8333-333333333333"},"runtime_id":"0","total_memory_mib":40960},{"budget_mib":30720,"gpu_uuid":"GPU-aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa","max_workspaces":6,"profiles":{"interactive-shared-10":10240,"interactive-shared-20":20480,"interactive-shared-5":5120},"qualification_ref":{"data_sha256":"sha256:43c96978a2a1f8a47b00732a8f96654d8f9d2e2b29e4a880572222bc6207eb6a","key":"qualification.json","name":"proof-b","namespace":"cps-pool-control","resourceVersion":"42","uid":"bbbbbbbb-bbbb-4bbb-8bbb-bbbbbbbbbbbb"},"runtime_id":"1","total_memory_mib":40960}],"driver_generation":"b10498fc-9153-4394-875a-ea7cfb498625","node":"another-node","node_uid":"11111111-1111-4111-8111-111111111111"}],"policy_hash":"sha256:da04b302985c11a6ee429e2308376655afff9482724989e8aa07f1ca210a66e5","protocol":"cps-native-pool-budget/v1","version":1}
