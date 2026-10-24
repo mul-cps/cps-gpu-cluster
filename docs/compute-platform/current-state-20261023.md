@@ -6,11 +6,13 @@ the latest run exhausted the Accepted execution fence without Ready/CUDA. Cleanu
 passed and existing user Pods were preserved. Earlier scoped CUDA/cap/isolation
 and lifecycle results remain historical evidence, not current startup qualification.
 
-The Node Binding-transition correction is published as `72a932f4…9e2816` after
-5,384 tests and 68 subtests passed (six skips). Its Node-only same-policy successor
-and nine inputs are staged inactive. Final manifest review, journal28 handover,
-normal Start/CUDA/Stop/restart and measured startup latency remain pending. The
-original full-pool, application, recovery and release gates also remain open.
+The Node Binding-transition correction `72a932f4…9e2816` is now deployed through
+the reviewed Node-only same-policy journal28 handover. Its live module hash matches
+the source qualified by 5,384 tests and 68 subtests (six skips). All nine targets
+returned Ready, original journal history and 54 Source rows are preserved, and
+normal services are restored. Current normal Start/CUDA/Stop/restart and measured
+startup latency remain pending; the new live Start is running. The original
+full-pool, application, recovery and release gates also remain open.
 
 The sections below are chronological acceptance history. Later completed gates
 supersede earlier pending statements for the same scope. Daily artifact retention
@@ -2128,3 +2130,22 @@ UID/image/template and fresh spec rather than requiring unchanged image identity
 84 operator tests pass and review found no remaining Important/Critical delta.
 Final actual-manifest review and live handover remain pending. No maintenance
 has started. [Canonical software/artifact receipt](https://github.com/mul-cps/cps-compute/blob/b442103/releases/node-binding-transition-20261024/software-qualification.json).
+
+### 2026-10-24: Node-only journal28 handover completed
+
+Final actual-manifest review approved the bounded handover. All four admission
+cases passed; the completion gate checked the exact reviewed Node target and
+correctly recorded `same_node_image=false`. The live pending-module hash is
+`885f6758dfb44fcd70d57f9668db71141ee73f7fe91584bbb9e7db204d6e4c68`, matching qualified
+source. Gateway image, driver, kernel and storage settings are unchanged.
+
+Before activation, backups verified 234 Node-state files, four databases and 139
+journal files. Journal28 authenticates with the original anchor, all 27 exact
+prior rotations and 138 retained files. All 54 Source rows remain unchanged.
+Normal writer and services are restored; all nine targets are Ready. Source
+Services reopened last, the original fence exited normally, owned cordon state
+was restored and temporary helpers/network policy were removed. Existing user
+Pod identities are preserved. The normal-console live GPU test is running;
+no current Start/restart or latency success is claimed yet.
+
+[Completed handover receipt](https://github.com/mul-cps/cps-compute/blob/3187aaf/releases/node-binding-transition-20261024/software-qualification.json).
