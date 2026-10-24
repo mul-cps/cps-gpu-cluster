@@ -2012,3 +2012,25 @@ consume the exact expected bound generation. All fresh authority, read barriers,
 final custody/fence checks and timeouts remain unchanged. The focused run passes
 73 tests, including metadata/process/witness rejection cases. Full regression
 and independent review are running; this correction is not deployed.
+
+### 2026-10-24: Accepted ACK renewal correction fully qualified in software
+
+The corrected same-generation Accepted heartbeat path passes a clean full run:
+5,374 tests and 68 subtests, six skips and 623 warnings, in 685.11 seconds.
+The prior two-poll RV-only expectation was explicitly corrected and independently
+reviewed; the full terminal security file passes 20 cases. The original real
+producer regression was observed failing before the fix and passing afterward.
+No execution/readiness timeout or fresh-authority/custody requirement changed.
+
+Published image:
+`ghcr.io/mul-cps/cps-compute@sha256:1042a980545792ebd4041e51372e445c840602cc9fc55fbbd113435d45d5434c`.
+Registry digest, Python 3.12 import, module hash and dependency checks pass. Only
+the coordinator SDK payload changed; 82 others remain exact. The successor Node
+configuration and nine inputs are staged inert with bootstrap release false.
+Five narrow named-read Role plans pass server dry-run without being applied.
+The restoration helper now explicitly verifies ownership after normal fence exit;
+its 76 tests pass and its default readiness path still requires the live fence.
+Journal26 and normal services remain active. Final handover review, journal27
+activation and live Start/CUDA/Stop/restart remain pending.
+
+[Software and staged-artifact receipt](https://github.com/mul-cps/cps-compute/blob/b919672/releases/accepted-ack-renewal-20261024/software-qualification.json).
