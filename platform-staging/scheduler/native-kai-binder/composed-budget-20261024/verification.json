@@ -1,0 +1,111 @@
+{
+  "budget_plugin_revision": "26dc69fb7e5de2f1ae2134a4d4c6daa4b7df2280",
+  "components": {
+    "advertised_inventory": {
+      "path": "platform-staging/gpu/device-plugin-inventory/kai-v0.18.1-advertised-inventory.patch",
+      "sha256": "aa48b0e8ee3a694058f6d32076a74493d925b7f636430f53043b0313b8798e9b"
+    },
+    "native_binder": {
+      "path": "platform-staging/scheduler/native-kai-binder/cleanup-exact-retry-20261023/full-native-binder.patch",
+      "sha256": "75e3bbd979bdba60f49bd42177eb0b35b7b967fa48c8574297543dcf2eba3e3c"
+    },
+    "observed_delete": {
+      "path": "platform-staging/scheduler/native-kai-binder/observed-delete-20261024/observed-delete.patch",
+      "sha256": "97332503cf693853de24b471dc8690c7b2a1bf80a096c4429f86a49eb1598d30"
+    }
+  },
+  "container_image_published": false,
+  "deployed": false,
+  "hardware_qualified": false,
+  "overlap_resolution": "Retain existing native uncached readback and custody decisions; apply exact observed UID/resourceVersion preconditions to every actual reservation deletion.",
+  "patch_sha256": "a4d565bbbd244d1a72a2965f3f5cf0724d7afd0784d6410ff2ae8e38161bfa89",
+  "production_ready": false,
+  "remaining": [
+    "Trusted Root budget, Gateway request and Node claims producers",
+    "Fresh Source/head/ACK/epoch admission and strict Binding integration",
+    "Atomic native enrollment/retirement fence with confirmed-zero proof",
+    "Immutable image qualification and controlled rollout",
+    "All-eight-device packing, isolation, startup and scheduling acceptance"
+  ],
+  "schema": "cps-kai-native-composition-software/v1",
+  "source_revision": "6a9162d95ed298316d6bf09bc2fb8cd0db42a0c2",
+  "source_sha256": {
+    ".changes/unreleased/added-20261024-213901.yaml": "a26362ae2b92635640156842c4f230805fd9fd73e3a98ada1228bb5649c735df",
+    ".changes/unreleased/fixed-20261024-214201.yaml": "f4061d97e7c45f489acda9c32ddbf2ef36302617f25f359ba24c348a3588ec37",
+    "cmd/binder/app/app.go": "06c510e73d4f68cea4b831c404624f9b9d4252d9142c20ceb63c77d3a0dabf4a",
+    "cmd/binder/app/native_options_test.go": "ba6ce8061b26a8fa91ce39c8a9a759948ea7f2d7dbf1fa7a4ecea512d8d49365",
+    "cmd/binder/app/native_reservation_sync.go": "4c17d4d0c4cb4510e2a3dc2dc228e3330cb980cb15d3641db3e68252fe98d286",
+    "cmd/binder/app/native_reservation_sync_test.go": "76317e52462a8827381c12706ab04b978de195ac05b80ed3e5725f6262627e2a",
+    "cmd/binder/app/options.go": "574845593a36a743721006c0454adb6f13d7687f799b7c7357d654c6709b96a6",
+    "docs/developer/designs/native-qualified-budget-plan.md": "3ea22b9a74b728a482e4b52b3d35bbe50e632c2639716e9b9b245c53a65a980c",
+    "docs/developer/designs/native-qualified-budget.md": "0ac73e2db36e7e052c72ba076aab768597e185dd19cddb63dbcb5d0883ea3866",
+    "pkg/binder/binding/binder.go": "cde894d36c0b655142e1ecb9134b70d640791ddb025d81624351f18d16cd452b",
+    "pkg/binder/binding/native_binding_http_test.go": "cc5469a6b6bdef7a3daf508a925f77d1ed3769791b87021b777004531f10f829",
+    "pkg/binder/binding/native_terminal.go": "c28d2595f5677349b0c5a4b25ba082ceb4035a901ce9474c93a289503d588199",
+    "pkg/binder/binding/native_terminal_test.go": "f8649fbf6db0fbe5c67779ba715470fa348b1560d3cf129881bbedfaceb06fe9",
+    "pkg/binder/binding/native_transport.go": "4cae77f35dadfb1c5d7f7430ed0106dec2c143e37b75474ab94783e00f99f396",
+    "pkg/binder/binding/native_transport_test.go": "0a7048e18d328e2690fa476c93be4d35d74756f10ad17a2f96b73a16c8358bc1",
+    "pkg/binder/binding/resourcereservation/native_custody_test.go": "b46fa21e46499e3324e5cb1586f3324ebd08f57e6da1777e136ae9b64bb7117a",
+    "pkg/binder/binding/resourcereservation/resource_reservation.go": "14b89de3bf0051239549a88d034a789e1407c30c0c64af0b81130e7f43a9b4f6",
+    "pkg/binder/binding/resourcereservation/resource_reservation_identity_test.go": "06b3b8b7b9d039fd4c5893f4e7d7e469381807d75ba9562dfbc8b0acb997c006",
+    "pkg/binder/controllers/bindrequest_controller.go": "b67f97611042abd5967bb878a7df334097a6e1e07be845a7bd52f1ef52dbaf99",
+    "pkg/binder/controllers/native_custody_test.go": "efd580168032f48545182293dfa070f366adfaea5c73efe603fb8a16383a0284",
+    "pkg/binder/plugins/hamicore/hami_core.go": "457f5e03c907c3b8d79330430b240ed20f7f3dcc81fbd0ca5e8532c2afd9b50e",
+    "pkg/binder/plugins/hamicore/hami_core_test.go": "b215580e20a681470350439c23105653c6f10607943489d30c45b144b79ba38c",
+    "pkg/binder/plugins/state/state.go": "bc2449c85ad03a01ae89c85d1f543c46c1d7b1df4c497f6a36aff4c40ad2c936",
+    "pkg/scheduler/api/node_info/advertised_gpu_count_test.go": "3a0619573dbdf066bc0254659f87f52c143f8015072d0d8169bb1ba237bc4c51",
+    "pkg/scheduler/api/node_info/node_info.go": "46e422d65fa6c251f6e4993820b50aa4ac0e4afcb94e5707be546a0ffc8c8d5d",
+    "pkg/scheduler/plugins/factory.go": "754b19b82a4e787911d6f939c7c90522e506a82465310c7f5ed0cef51d5fa3a6",
+    "pkg/scheduler/plugins/factory_native_budget_test.go": "3d23baceebe7d3d2a44cfe4a3cc786c882af398b334c8d805dce948cd4d19327",
+    "pkg/scheduler/plugins/nativequalifiedbudget/accounting.go": "cc3230e8806c1c973d45fc164965ec95ef730675861506deee3c3bb4fd382898",
+    "pkg/scheduler/plugins/nativequalifiedbudget/contract.go": "1c20179721336d26aa2c5694503b2ac170d61fa97300a07968394a90ee8f8453",
+    "pkg/scheduler/plugins/nativequalifiedbudget/contract_test.go": "e7986dda122efeee4812bc563bd7966a73bae2df77638080394528e60867362f",
+    "pkg/scheduler/plugins/nativequalifiedbudget/nativequalifiedbudget.go": "2b7ab9d81eef7b180813c98e82152cbf2bdcd610cd96841b540efa9f4dd58e99",
+    "pkg/scheduler/plugins/nativequalifiedbudget/nativequalifiedbudget_test.go": "241b0dc557e7e54e1799c193a1a6ee26e9fb6629d92d98a97c54382163888e88",
+    "pkg/scheduler/plugins/nativequalifiedbudget/provider.go": "c46f29af925ea0402c873a90434eb33733db0d08460f6d37387dca2bde7277b5",
+    "pkg/scheduler/plugins/nativequalifiedbudget/testdata/budget-reference.json": "579c995b7a659d1a24f70f0a01a630b39c51eca6a9590e7dba5dcf31d1518beb",
+    "pkg/scheduler/plugins/nativequalifiedbudget/testdata/budget.json": "da789047bb0a6ae4f8128b57070a8bed016a8effe8c14966f45acfeb7b3c2524",
+    "pkg/scheduler/plugins/nativequalifiedbudget/testdata/claims.json": "6b4158fd23048d51bcff554c1e10dbb012fb9b5c2ae115ddff937b6f3ccab9c9",
+    "pkg/scheduler/plugins/nativequalifiedbudget/testdata/expected-hashes.json": "0685aa0a48f6389e4398048d6d8972797f6e5ba83feacf593e8a9f6b7632fa3f",
+    "pkg/scheduler/plugins/nativequalifiedbudget/testdata/inputs.schema.json": "7574a0bf56924b8cd0953739db9f4ce689aa7d464bbf78553853a2e72dac102b",
+    "pkg/scheduler/plugins/nativequalifiedbudget/testdata/request.json": "d0eab600873f90276e696d9c6aaea23e86e10a3cfdfc1d2fc429a68ef112e315"
+  },
+  "upstream_revision": "bdf434e5e9201cccf4e05fad04d814363653f692",
+  "verification": {
+    "builds": [
+      {
+        "bytes": 98284178,
+        "component": "binder",
+        "elf_no_interpreter": true,
+        "rebuild_identical": true,
+        "sha256": "d9337bc2f57325694da8c0a9306ef91f64966c4d899c5dc702340d48a9ef8b19"
+      },
+      {
+        "bytes": 124094370,
+        "component": "scheduler",
+        "elf_no_interpreter": true,
+        "rebuild_identical": true,
+        "sha256": "749d8431c21fc8ddca8dbca2bc0fd3868b137f2ed4e1f09f61f9c6f9d1b655f7"
+      }
+    ],
+    "envtest_kubernetes_version": "1.35.0",
+    "existing_cluster_used": false,
+    "focused_packages_passed": 9,
+    "forward_apply_exact_tree": "6d2338cb7e9db4c87a4e040f5b3ab0a1eda1c2f2",
+    "full_exit_code": 0,
+    "full_non_e2e_packages": 305,
+    "go_version": "1.26.8",
+    "logs_sha256": {
+      "focused-green.log": "774cbcbd3590cecb2ddbf72709e82cc42b45f84303ff7d3dca88f19921835767",
+      "full-packages.json": "c0859abda84a6b2030e606a08eb3f1d5edcedff1a130dc08cad3d29f707bf56c",
+      "full-unit.log": "8b287e851491e648167bd8e76e4db0115e97a16afce7b532ed38a67c0e37f50a",
+      "identity-red.log": "e1bb06df915241e41a3c6ab5d433056b228f2aeb83d9bc9c76ff3fdd716268a5",
+      "race.log": "1b86518ab4b14362dde30302130f930cacfa607c500e0fd1d6dd96b5daf3cb1e"
+    },
+    "packages_with_tests_passed": 193,
+    "packages_without_tests": 112,
+    "race_packages_passed": 3,
+    "red_stale_identity_cases": 4,
+    "reverse_apply_passed": true
+  }
+}
