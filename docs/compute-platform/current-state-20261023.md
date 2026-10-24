@@ -120,6 +120,28 @@ activation: trusted Node claims, operator custody wiring, fresh admission/Bindin
 native-zero retirement and hardware/release gates remain open. The clean single
 full Python run remains outstanding as recorded above.
 
+The Node claims producer is now source-qualified at compute
+`5ab94621fb9a6973cdac444fcc8a26375f507881`. It captures actual completed service
+custody without a new configuration traversal, verifies surviving finite caps,
+keeps unreleased capacity retiring, and rejects missing/orphan custody and
+unregistered physical reservations. Existing-only lock acquisition cannot recreate
+a missing lock. Claims update the Root-pinned UID with resourceVersion CAS and a
+capture-anchored bounded TTL; they never grant execution or release capacity.
+
+The combined compute revision passed a clean full run: **5,953 tests and 68
+subtests**, six skips, in 673.22 seconds. This supersedes the earlier filesystem-
+limited full-run status for the same software boundary. Focused verification
+passed 521 tests. Actual active and retiring producer outputs pass the Go parser;
+all 305 Go packages and all three Python-to-Go wire race regressions pass. The
+private wheel imports without networking and owns no JupyterLab assets.
+
+This is one-device service/model verification, not multi-device hardware proof.
+No producer loop or pool-v2 runtime was deployed. Multi-device runtime wiring,
+operator custody/bootstrap, complete writer coverage and active-head finalization,
+fresh admission/Binding, atomic retirement and the remaining hardware/startup/
+recovery/release gates remain open. Finalization still rejects activation until
+those application prerequisites are implemented.
+
 The sections below are chronological acceptance history. Later completed gates
 supersede earlier pending statements for the same scope. Daily artifact retention
 is now active and scheduler-verified; see the final retention activation section.

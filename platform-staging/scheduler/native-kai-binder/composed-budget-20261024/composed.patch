@@ -4304,10 +4304,10 @@ index 0000000..e157470
 +}
 diff --git a/pkg/scheduler/plugins/nativequalifiedbudget/gateway_wire_test.go b/pkg/scheduler/plugins/nativequalifiedbudget/gateway_wire_test.go
 new file mode 100644
-index 0000000..8d5c356
+index 0000000..ee9939b
 --- /dev/null
 +++ b/pkg/scheduler/plugins/nativequalifiedbudget/gateway_wire_test.go
-@@ -0,0 +1,39 @@
+@@ -0,0 +1,71 @@
 +// Copyright 2026 NVIDIA CORPORATION
 +// SPDX-License-Identifier: Apache-2.0
 +package nativequalifiedbudget
@@ -4346,6 +4346,38 @@ index 0000000..8d5c356
 +		require.EqualValues(t, 6, device.MaxWorkspaces)
 +		require.EqualValues(t, 20480, device.Profiles["interactive-shared-20"])
 +	}
++}
++
++// Real NodeService/controller custody produced this synthetic claims fixture;
++// only its host driver and Kubernetes transports were modeled.
++func TestPythonNodePublisherClaimsWireCompatibility(t *testing.T) {
++	budgetRaw, err := os.ReadFile("testdata/node-python-budget.json")
++	require.NoError(t, err)
++	refRaw, err := os.ReadFile("testdata/node-python-projection-reference.json")
++	require.NoError(t, err)
++	var ref immutableRef
++	require.NoError(t, decode(string(refRaw), &ref))
++	require.True(t, ref.valid())
++	require.Equal(t, ref.DataSHA, canonicalHash(map[string]string{"budget.json": string(budgetRaw)}))
++	budget, err := parseBudget(string(budgetRaw), options{claimsNS: "node-claims"})
++	require.NoError(t, err)
++	claimsRaw, err := os.ReadFile("testdata/node-python-claims.json")
++	require.NoError(t, err)
++	claims, err := parseClaims(string(claimsRaw), budget.Nodes[0], ref)
++	require.NoError(t, err)
++	require.Len(t, claims.Claims, 1)
++	require.EqualValues(t, 5120, claims.Claims[0].CapMiB)
++	require.Equal(t, "active", claims.Claims[0].State)
++	require.Equal(t, budget.Nodes[0].Devices[0].UUID, claims.Claims[0].UUID)
++	retiringRaw, err := os.ReadFile("testdata/node-python-retiring-claims.json")
++	require.NoError(t, err)
++	retiring, err := parseClaims(string(retiringRaw), budget.Nodes[0], ref)
++	require.NoError(t, err)
++	require.Len(t, retiring.Claims, 1)
++	require.Equal(t, "retiring", retiring.Claims[0].State)
++	require.EqualValues(t, 5120, retiring.Claims[0].CapMiB)
++	require.Equal(t, claims.Claims[0].Pod, retiring.Claims[0].Pod)
++
 +}
 diff --git a/pkg/scheduler/plugins/nativequalifiedbudget/nativequalifiedbudget.go b/pkg/scheduler/plugins/nativequalifiedbudget/nativequalifiedbudget.go
 new file mode 100644
@@ -5712,6 +5744,38 @@ index 0000000..5b52c80
 +    }
 +  }
 +}
+diff --git a/pkg/scheduler/plugins/nativequalifiedbudget/testdata/node-python-budget.json b/pkg/scheduler/plugins/nativequalifiedbudget/testdata/node-python-budget.json
+new file mode 100644
+index 0000000..5623505
+--- /dev/null
++++ b/pkg/scheduler/plugins/nativequalifiedbudget/testdata/node-python-budget.json
+@@ -0,0 +1 @@
++{"catalog_ref":{"data_sha256":"sha256:1fdcbf77f739284c6344bba3d9238034c5c14e15fb00289885786237bae71c21","key":"catalog.json","name":"catalog","namespace":"cps-pool-control","resourceVersion":"42","uid":"cccccccc-cccc-4ccc-8ccc-cccccccccccc"},"nodes":[{"boot_id":"209f8bc9-a478-48e4-925a-6e07ffa56f7a","claims_ref":{"name":"gpu-state","namespace":"node-claims","uid":"dddddddd-dddd-4ddd-8ddd-dddddddddddd"},"devices":[{"budget_mib":30720,"gpu_uuid":"GPU-22222222-2222-4222-8222-222222222222","max_workspaces":6,"profiles":{"interactive-shared-5":5120},"qualification_ref":{"data_sha256":"sha256:4aceb32dcd28ef2f31199f5ef6c397c16692431f6003101cf8d64ec81c170519","key":"deployment.json","name":"deployment","namespace":"cps-compute","resourceVersion":"31","uid":"44444444-4444-4444-8444-444444444444"},"runtime_id":"0","total_memory_mib":40960}],"driver_generation":"b10498fc-9153-4394-875a-ea7cfb498625","node":"another-node","node_uid":"11111111-1111-4111-8111-111111111111"}],"policy_hash":"sha256:da04b302985c11a6ee429e2308376655afff9482724989e8aa07f1ca210a66e5","protocol":"cps-native-pool-budget/v1","version":1}
+\ No newline at end of file
+diff --git a/pkg/scheduler/plugins/nativequalifiedbudget/testdata/node-python-claims.json b/pkg/scheduler/plugins/nativequalifiedbudget/testdata/node-python-claims.json
+new file mode 100644
+index 0000000..785fffa
+--- /dev/null
++++ b/pkg/scheduler/plugins/nativequalifiedbudget/testdata/node-python-claims.json
+@@ -0,0 +1 @@
++{"boot_id":"209f8bc9-a478-48e4-925a-6e07ffa56f7a","claims":[{"attempt":"aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa","cap_mib":5120,"gpu_uuid":"GPU-22222222-2222-4222-8222-222222222222","pod":{"name":"jupyter-group-5","namespace":"jupyterhub","uid":"d3a1659e-6345-43cc-9ca5-7b8ef1aa5378"},"state":"active"}],"driver_generation":"b10498fc-9153-4394-875a-ea7cfb498625","expires_at":"2026-10-24T21:00:21.293489+00:00","issued_at":"2026-10-24T20:59:51.293489+00:00","node":"another-node","node_uid":"11111111-1111-4111-8111-111111111111","projection_ref":{"data_sha256":"sha256:637a895fbcd1985e6ca4dcf74639e87412e59b8b242e58a8203321057abb0200","key":"budget.json","name":"budget","namespace":"cps-pool-control","resourceVersion":"42","uid":"eeeeeeee-eeee-4eee-8eee-eeeeeeeeeeee"},"protocol":"cps-native-pool-claims/v1","version":1}
+\ No newline at end of file
+diff --git a/pkg/scheduler/plugins/nativequalifiedbudget/testdata/node-python-projection-reference.json b/pkg/scheduler/plugins/nativequalifiedbudget/testdata/node-python-projection-reference.json
+new file mode 100644
+index 0000000..4adde27
+--- /dev/null
++++ b/pkg/scheduler/plugins/nativequalifiedbudget/testdata/node-python-projection-reference.json
+@@ -0,0 +1 @@
++{"data_sha256":"sha256:637a895fbcd1985e6ca4dcf74639e87412e59b8b242e58a8203321057abb0200","key":"budget.json","name":"budget","namespace":"cps-pool-control","resourceVersion":"42","uid":"eeeeeeee-eeee-4eee-8eee-eeeeeeeeeeee"}
+\ No newline at end of file
+diff --git a/pkg/scheduler/plugins/nativequalifiedbudget/testdata/node-python-retiring-claims.json b/pkg/scheduler/plugins/nativequalifiedbudget/testdata/node-python-retiring-claims.json
+new file mode 100644
+index 0000000..af2414b
+--- /dev/null
++++ b/pkg/scheduler/plugins/nativequalifiedbudget/testdata/node-python-retiring-claims.json
+@@ -0,0 +1 @@
++{"boot_id":"209f8bc9-a478-48e4-925a-6e07ffa56f7a","claims":[{"attempt":"aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa","cap_mib":5120,"gpu_uuid":"GPU-22222222-2222-4222-8222-222222222222","pod":{"name":"jupyter-group-5","namespace":"jupyterhub","uid":"d3a1659e-6345-43cc-9ca5-7b8ef1aa5378"},"state":"retiring"}],"driver_generation":"b10498fc-9153-4394-875a-ea7cfb498625","expires_at":"2026-10-24T21:00:21.346099+00:00","issued_at":"2026-10-24T20:59:51.346099+00:00","node":"another-node","node_uid":"11111111-1111-4111-8111-111111111111","projection_ref":{"data_sha256":"sha256:637a895fbcd1985e6ca4dcf74639e87412e59b8b242e58a8203321057abb0200","key":"budget.json","name":"budget","namespace":"cps-pool-control","resourceVersion":"42","uid":"eeeeeeee-eeee-4eee-8eee-eeeeeeeeeeee"},"protocol":"cps-native-pool-claims/v1","version":1}
+\ No newline at end of file
 diff --git a/pkg/scheduler/plugins/nativequalifiedbudget/testdata/request.json b/pkg/scheduler/plugins/nativequalifiedbudget/testdata/request.json
 new file mode 100644
 index 0000000..30bfee0
