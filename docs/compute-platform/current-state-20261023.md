@@ -26,11 +26,13 @@ Native full-pool placement is still an implementation gap. The builder-reviewed
 catalog, logical Source, immutable unplaced Pod and atomic attempt/outbox
 foundations, startup gate/identity, KAI observation reader and durable Pod
 registration are now source-published at compute revision
-`50639f5e20f089b17b85fe7164432a4ef431bf05`. Their combined revision passed
-**5,736 tests and 68 subtests**, with six skips. Registration pins the Pod UID
+`3a5bf9f1c6d491efcbff947171e04b17d70699e4`. Their combined revision passed
+**5,772 tests and 68 subtests**, with six skips. Registration pins the Pod UID
 and pending-spec hash; selection cannot retarget a different Pod. Fenced schema
 upgrades preserve custody and selected history. The actual API-observation
-bridge and CREATE-outbox completion are still undergoing combined verification.
+bridge and CREATE-outbox completion passed combined software verification.
+Completed CREATE work leaves the pending view while its original history remains.
+Selection-publication effects are still being implemented.
 No new runtime factory, live schema migration, device change or v2 deployment
 was performed. Durable effect completion/release, KAI native budget enforcement
 and reservation retirement protection remain implementation gaps.
