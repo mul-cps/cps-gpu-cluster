@@ -2307,6 +2307,35 @@ singleuser:
           - port: 2200
             protocol: TCP
     egress:
+      # Preserve notebook connectivity while excluding direct NFS/RPC ports.
+      # Host/CSI NFS mounts do not originate in the notebook network namespace.
+      - to:
+          - ipBlock:
+              cidr: 0.0.0.0/0
+              except:
+                - 169.254.169.254/32
+        ports:
+          - protocol: TCP
+            port: 1
+            endPort: 110
+          - protocol: TCP
+            port: 112
+            endPort: 2048
+          - protocol: TCP
+            port: 2050
+            endPort: 65535
+          - protocol: UDP
+            port: 1
+            endPort: 110
+          - protocol: UDP
+            port: 112
+            endPort: 2048
+          - protocol: UDP
+            port: 2050
+            endPort: 65535
+          - protocol: SCTP
+            port: 1
+            endPort: 65535
       - ports:
           - port: 443
             protocol: TCP
@@ -2319,8 +2348,8 @@ singleuser:
       dnsPortsCloudMetadataServer: true
       dnsPortsKubeSystemNamespace: true
       dnsPortsPrivateIPs: true
-      nonPrivateIPs: true
-      privateIPs: true
+      nonPrivateIPs: false
+      privateIPs: false
 
   extraFiles:
     jupyter-server-config:
