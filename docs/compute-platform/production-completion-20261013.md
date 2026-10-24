@@ -1055,3 +1055,38 @@ Managed HTTP registration returns 202/pending and uses the cancellation-draining
 Focused pool/registry/discovery set: **508 passed**. Complete four-worker suite: **5,993 passed, 6 skipped, 626 warnings, 68 subtests passed**, exit 0 in 220.98 seconds. Exact source/test hashes remained unchanged. See application `docs/managed-workspace-registration.md` and `releases/managed-workspace-writer-20261025/software-qualification.json`, pinned to admin `92571ae47165e5f035958e7af38b767ecb3cf95f`. External Hub ownership/shutdown are controlled observations in these software tests, not live Pod or hardware qualification.
 
 Remaining writer work: storage/approval lifecycle, Hub user/group mutations and lifecycle-sensitive deletion. Operator application/finalization, producer runtime wiring, atomic retirement, eight-device hardware/scheduling/startup, recovery and release gates remain open. V2 enablement is still unavailable. No live Pods, identities, files, reservations, drivers/kernels or deployment configuration were changed.
+
+### 2026-10-25: storage effect custody and retained group datasets
+
+Compute `acc4db2260bdca5a6d1e10335e392b7fa7c508a7` adds authority schema 2 with
+append-only storage intent custody, bound to the original transition digest and
+actor/instance. Explicit fenced migration preserves prior history and rejects
+missing/corrupt custody; reading an effect is not a filesystem actuation permit.
+Complete software suite: 6,003 passed, 6 skipped, 68 subtests. Source storage
+journal/controller integration and active-head finalization remain unavailable.
+
+Compute `06b83b0c89981b9409cd654d360251c28456d54c` and NAS RPC source
+`b677bb4ced186569e6aa0e1d61e8110fd3bd1d8b` add `provision-existing`: a retained
+binding cannot recreate a missing dataset. The NAS operation rejects absence
+before creation and retains permission/export verification. Deploy the new RPC
+before the controller; older RPCs reject the new operation safely.
+
+Compute `b66c75e50e4a59311b47449fc25a03564496d1ca` resolves the server-read
+registered group binding inside the existing group lock before provisioning.
+A new workspace inherits the group's version/path/namespace/PV/PVC instead of
+splitting the group when the configured default changes. Conflicting or archived
+peer bindings, invalid target census and forged client storage fields cannot
+select a new dataset. Existing metadata is preserved.
+
+Complete four-worker suite: **6,020 passed, 6 skipped, 626 warnings, 68 subtests**,
+exit 0 in 218.98 seconds. Focused storage suite: 84 passed. NAS RPC suite: 11
+passed. A controlled cross-repository check exercised the actual controller,
+SSH payload and NAS parser/executor for both versions; absent retained datasets
+produced no dataset or PV/PVC creation. This used controlled transport, not a
+live NAS. Source hashes and local/remote application commit were verified.
+
+No runtime configuration, files, Pods, reservations, drivers or kernels changed.
+Remaining storage work includes the persistent Source lifecycle journal,
+original-lock recovery and completion preimage validation. Other managed writers,
+operator/runtime activation, retirement, hardware/startup/restore and release
+gates remain open. This software increment does not establish production readiness.
