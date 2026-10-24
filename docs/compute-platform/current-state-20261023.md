@@ -1,9 +1,16 @@
 # Current platform state — 23 October 2026
 
-The full platform remains **limited-pilot**, not production qualified. The
-ordinary `cps:shared-gpu-lab` 5 GiB lifecycle now passes on the durable authority,
-including automatic KAI reservation cleanup. This supersedes earlier pending
-statements for that specific lifecycle, not every production acceptance gate.
+The full platform remains **limited-pilot**, not production qualified. As of
+24 October, journal27 is active, but normal 5 GiB shared-GPU Start is not reliable:
+the latest run exhausted the Accepted execution fence without Ready/CUDA. Cleanup
+passed and existing user Pods were preserved. Earlier scoped CUDA/cap/isolation
+and lifecycle results remain historical evidence, not current startup qualification.
+
+The Node Binding-transition correction is published as `72a932f4…9e2816` after
+5,384 tests and 68 subtests passed (six skips). Its Node-only same-policy successor
+and nine inputs are staged inactive. Final manifest review, journal28 handover,
+normal Start/CUDA/Stop/restart and measured startup latency remain pending. The
+original full-pool, application, recovery and release gates also remain open.
 
 The sections below are chronological acceptance history. Later completed gates
 supersede earlier pending statements for the same scope. Daily artifact retention
@@ -2099,3 +2106,25 @@ cannot deliver this Node fix. Live startup/fence margin and the complete origina
 production gates remain unqualified.
 
 [Node candidate receipt](https://github.com/mul-cps/cps-compute/blob/96867b3/releases/node-binding-transition-20261024/software-qualification.json).
+
+### 2026-10-24: Node correction fully tested, published and staged inactive
+
+The final clean run passed 5,384 tests and 68 subtests, with six skips and 623
+warnings, in 686.23 seconds. The pinned Node Dockerfile built the released wheel;
+all 82 installed SDK Python files match source, with 80 unchanged from Nodefed.
+All 30 dependency versions and 2,047 non-bytecode files in 29 dependency
+distributions are exact. Inert no-network/read-only/no-capability startup passes.
+Linux command/environment/user settings match; the sole non-label config delta
+is omission of deprecated Windows-only `ArgsEscaped`, documented in the
+[OCI image specification](https://github.com/opencontainers/image-spec/blob/main/config.md#properties).
+
+Published Node image:
+`ghcr.io/mul-cps/cps-native-node@sha256:72a932f4179853875c701b91e023b02af761b5f40bacecdd7a7446444d9e2816`.
+The registry manifest and image-config digest match the verified artifact. Its
+successor changes only the Node image declaration; policy and Gateway image are
+unchanged. Nine staged inputs retain bootstrap release false; five narrow Role
+plans pass server dry-run. The Node-only handover gate now checks exact reviewed
+UID/image/template and fresh spec rather than requiring unchanged image identity;
+84 operator tests pass and review found no remaining Important/Critical delta.
+Final actual-manifest review and live handover remain pending. No maintenance
+has started. [Canonical software/artifact receipt](https://github.com/mul-cps/cps-compute/blob/b442103/releases/node-binding-transition-20261024/software-qualification.json).
