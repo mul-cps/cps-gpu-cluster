@@ -24,12 +24,21 @@ revoked with both local copies removed. These cleanup checks were rerun live.
 
 Native full-pool placement is still an implementation gap. The builder-reviewed
 catalog, logical Source, immutable unplaced Pod and atomic attempt/outbox
-foundations are now source-published. Their combined revision passed **5,582
-tests and 68 subtests**, with six skips. No new runtime factory, live schema
-migration, device change or v2 deployment was performed. Gate/identity and KAI
-observation sources are undergoing separate final software qualification.
+foundations, startup gate/identity and KAI observation reader are now
+source-published at compute revision `aab5d245ae614bf539c60d0b1336de679264246c`.
+Their combined revision passed **5,712 tests and 68 subtests**, with six skips.
+No new runtime factory, live schema migration, device change or v2 deployment
+was performed. Durable effect completion/release, KAI native budget enforcement
+and reservation retirement protection remain implementation gaps.
 Full-pool, startup, application, recovery and release gates remain open; neither
 these CPU tests nor narrow CUDA execution prove complete production readiness.
+
+Workflow Pod standard RPC/NFS egress isolation is now active in
+`cps-workflows`. Controlled IPv4 probes verified TCP/UDP 111 and 2049 blocked
+while all 16 other tested exchanges remained available. All 231 baseline Ready
+Pod UIDs remained Ready and all test resources were removed. This does not
+qualify IPv6, nonstandard RPC or NAS export safety. See the
+[qualification receipt](../../platform-staging/argo/workflow-egress-qualification-20261024.md).
 
 The sections below are chronological acceptance history. Later completed gates
 supersede earlier pending statements for the same scope. Daily artifact retention
