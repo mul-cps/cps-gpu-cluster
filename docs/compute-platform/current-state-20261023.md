@@ -1720,3 +1720,33 @@ reader. Review caught and corrected stale Hub image pins before activation. The
 Hub candidate, notebook NBI image, NBI policy handover and actual notebook startup
 and restart timing remain pending. These service deployments do not qualify the
 full eight-GPU pool or close the remaining production acceptance gates.
+
+
+### 2026-10-24: paired Hub SDK upgrade active
+
+Both CPS and CIT Hubs now run the tested image
+`ghcr.io/mul-cps/cps-compute@sha256:83fdd8c1ef66b66de71fccf0657c40d722fa28310e0bcb819c538fad01873b21`.
+Live package checks confirm JupyterHub5.5.2 and KubeSpawner7.1.0 on each Hub.
+The capture sidecar now uses the same SDK image as the Gateway. The immutable
+service successor retains all18 links. Exact runtime and each Hub publisher
+image pins were corrected and independently reviewed before activation.
+
+The two-phase acquisition fence remained held until the old Gateway disappeared,
+released only for replacement initialization, and was reacquired before either
+Hub replacement. It remained held through current four-component readiness,
+clean-custody checks and configuration rotation. The CPU helper test verified
+both locks across held/released/held/exit phases without replacing lock inodes.
+Actual Pod deadline margins and live-heartbeat checks bounded each mutation.
+
+Rotation22 preserves the original anchor and all21 earlier entries, with no
+pending transition. All six Deployment specifications match the reviewed plan;
+each has one Ready replica. A post-rotation authenticated readiness check passes
+for Gateway, Node and both Hubs. The fence exited normally and the target worker
+is schedulable again. The protected research Pod remains Running with its original
+UID. Driver, kernel, compute policy and notebook image remain unchanged.
+
+The NBI notebook policy/image handover and measured startup/restart check are
+next. Full-pool implementation and the remaining production acceptance scenarios
+are still open. Separately, CIT logged a missing `oauth_user.groups` auth-state
+claim during activity refresh; group ownership and effective entitlement behavior
+need checking before production qualification.
