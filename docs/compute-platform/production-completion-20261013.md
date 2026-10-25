@@ -1129,3 +1129,45 @@ production deployment evidence. No live data, sessions, reservations, deployment
 configuration, drivers or kernels changed. V2 runtime enablement and active-head
 finalization remain unavailable. Approval lifecycle/Hub mutations, operator/runtime
 wiring, retirement and all broader hardware/startup/recovery/release gates remain.
+
+### 2026-10-25: managed structural group approval writer
+
+Compute `2ef85c28d7dce853b133caab2c228f08b3dd4dee` adds managed approve/revoke
+for an existing qualified immutable registry. Typed Source/reservation/head policy
+custody is required; managed startup never creates missing registry tables or
+initializes a missing head. The original qualification, membership, binding,
+ceiling, shutdown/native-cleanup and reservation-absence checks are retained.
+
+One `control.approval` input binds Source, workspace/profile, original revision,
+complete registered workspace and exact qualification/table identities. The head
+is fenced before registry changes. Immutable revision, head CAS, success audit and
+Source result receipt commit atomically after fresh observations and SQL/head
+preimage checks. Lost completion replies resume the exact receipt/current result
+without a new generation or success audit. Existing reservations stay held.
+
+Managed HTTP returns 202/pending/ready=false. Legacy ACK strings cannot activate
+managed Start/enrollment authority. Existing legacy objects recheck persisted
+management before/after readiness observations and before returning runtime
+permission, while readonly historical snapshots remain readable.
+
+Independent review found executor starvation in an initial sync-to-async bridge
+and a readiness migration race. Both were reproduced and fixed: preparation and
+finish now bracket fresh async observations with no held worker or transaction;
+legacy readiness performs a final persisted-mode check. Single-worker tests cover
+both async and synchronous cleanup. Reviewer independently ran 32 cases; three
+additional phase-context cases were included in final full qualification.
+
+Final complete suite: **6,095 passed, 6 skipped, 626 warnings, 68 subtests**, exit 0
+in 220.37 seconds. Admin compatibility: **102 passed, 55 subtests**, exit 0. The new
+approval suite contains 35 cases. Candidate source/test hashes stayed unchanged
+through the run; the private wheel contains exact module bytes and no Lab files.
+Local and remote application SHAs were verified. Canonical guide/receipt in compute:
+`docs/managed-group-approvals.md` and
+`releases/managed-group-approvals-20261025/software-qualification.json`.
+
+This does not supply new-registry bootstrap after Source migration, Hub user/group
+writer coverage, genuine operator/producer runtime activation, retirement, live
+handover/restore, all-device hardware/startup or release qualification. Initialize
+reviewed registry custody before Source migration; do not delete tables or toggle
+management as a repair. V2 activation/finalization remain unavailable. No live
+configuration, workloads, identities, files, drivers/kernels or capacity changed.
