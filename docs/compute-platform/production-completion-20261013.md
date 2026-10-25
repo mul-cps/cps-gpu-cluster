@@ -1171,3 +1171,41 @@ handover/restore, all-device hardware/startup or release qualification. Initiali
 reviewed registry custody before Source migration; do not delete tables or toggle
 management as a repair. V2 activation/finalization remain unavailable. No live
 configuration, workloads, identities, files, drivers/kernels or capacity changed.
+
+### 2026-10-25: coordinator custody for future Hub permission writes
+
+Compute `3bfac43dcf3a8e681856881d7042c6089591daa4` adds closed `admin.hub`
+intents and authenticated Hub-effect prepare/read RPCs. The existing effect table
+retains the exact canonical record/digest atomically on its original authenticated
+transition. Missing, changed or orphaned custody rejects recovery. Storage keeps
+its separate protocol validator and unchanged behavior through the shared helper.
+
+The record binds console, console-supplied audit actor, literal credential-free
+Hub API URL, supported abstract action, observed absence/group preimage and Source
+SQL digest. Shapes cover user(s)/group creation, membership add/remove and group
+deletion; role-bearing group changes, administrative overrides, arbitrary paths,
+server Start/Stop, sharing and Pod/resource configuration are not accepted. Actual
+origin authorization, course scope, shutdown and Hub state verification remain
+console/controller responsibilities, not proven by valid record syntax.
+
+A readback is not an external action permit. A Hub target requires retained
+custody plus mutation completion, and finalization remains unavailable. No Hub
+request is executed and managed legacy Hub writes remain denied. This is the
+coordinator prerequisite, not completion of Hub permission writer integration.
+
+Complete suite: **6,130 passed, 6 skipped, 626 warnings, 68 subtests**, exit 0 in
+218.34 seconds. Independent read-only review reran **85** Hub/storage effect and
+storage-recovery cases with no findings in that scope. There are 35 new Hub cases.
+Admin compatibility: **102 passed, 55 subtests**, exit 0. Source/test hashes stayed
+unchanged; the private wheel contains exact module bytes and no Lab files. Local
+and remote application commits match. Canonical compute guide/receipt:
+`docs/managed-hub-writes.md` and
+`releases/hub-effect-custody-20261025/software-qualification.json`.
+
+Next: explicit persistent console Hub journal, Source scope/authorization and
+shutdown resolution, exact destination/endpoint parsing, safe transport and
+observed readbacks, atomic result/audit receipt, and lifecycle/operator integration.
+Older authority readers reject the new effect kind; rolling compatibility and
+rollback/restore require qualification before first use. No live data, identities,
+configuration, workloads, credentials, driver/kernel state or capacity changed.
+All remaining runtime/activation/hardware/startup/restore/release gates stay open.
