@@ -10,7 +10,7 @@ def module():
  m=importlib.util.module_from_spec(s);s.loader.exec_module(m);return m
 
 def observations():
- return {'policy_hash':'sha256:'+'a'*64,'node':{'metadata':{'name':'k3s-wk-gpu2','uid':'3336cdd5-d245-436e-b57c-2f66c6dcaa41'},'status':{'nodeInfo':{'bootID':'aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa'}}},
+ return {'cdi':{'path':'/var/run/cdi/k8s.device-plugin.nvidia.com-gpu.json','sha256':'b940041ddae78f5570f05ede8347b4eb366892342a581cc01fac2edacf4cd087','raw':(HERE/'fixtures/second-device-cdi.json').read_text()},'policy_hash':'sha256:'+'a'*64,'node':{'metadata':{'name':'k3s-wk-gpu2','uid':'3336cdd5-d245-436e-b57c-2f66c6dcaa41'},'status':{'nodeInfo':{'bootID':'aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa'}}},
  'namespace':{'metadata':{'name':'cps-native-second-card-qa','uid':'bbbbbbbb-bbbb-4bbb-8bbb-bbbbbbbbbbbb'}},
  'guard':{'node_uid':'3336cdd5-d245-436e-b57c-2f66c6dcaa41','boot_id':'aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa','driver_generation':'cccccccc-cccc-4ccc-8ccc-cccccccccccc','driver_version':'615.71.09'},
  'device':{'node_uid':'3336cdd5-d245-436e-b57c-2f66c6dcaa41','boot_id':'aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa','gpu_uuid':'GPU-1e6145d5-8ee2-43e2-a0d5-6d345909e8a6'},
@@ -132,3 +132,90 @@ def test_compiled_finalized_pods_support_one_real_kubelet_restart(tmp_path):
    with pytest.raises(ValueError):f.checked_pod(altered,row)
   if label=='a':
    with pytest.raises(ValueError):initial.checked_pod(actual,row)
+
+
+def test_actual_observed_cdi_kind_mapping_and_compiled_environment(tmp_path):
+ import copy,json
+ m=module();value=observations();files=m.build_sources(value)['files']
+ r=m.load('cdi_renderer',files['render_fixture.py'],tmp_path/'render_fixture.py')
+ rendered=r.render(request(),approve_qa_hostpaths=True)
+ for label,pod in rendered['pods'].items():
+  expected='k8s.device-plugin.nvidia.com/gpu='+m.SECOND_GPU
+  gate,*identities=pod['spec']['initContainers']
+  assert next(e['value']for e in gate['env']if e['name']=='NVIDIA_VISIBLE_DEVICES')=='void'
+  for c in [*identities,*pod['spec']['containers']]:
+   assert next(e['value']for e in c['env']if e['name']=='NVIDIA_VISIBLE_DEVICES')==expected
+  actual=copy.deepcopy(pod);actual['metadata']['uid']=('1'if label=='a'else'2')*8+'-1111-4111-8111-111111111111'
+  finalized=r.finalize(request(),pod,pod,actual=actual,approve_qa_hostpaths=True)
+  assert finalized['intent']['gpu_uuid']==m.SECOND_GPU
+  assert finalized['spec_sha256']==r.runtime.native_spec_sha256(actual)
+  assert identities[0]['args']==[m.SECOND_GPU]
+ # A self-consistent caller hash never authorizes another runtime provider/mapping.
+ for drift in ('kind','minor','hash'):
+  wrong=copy.deepcopy(value);doc=json.loads(wrong['cdi']['raw'])
+  if drift=='kind':doc['kind']='management.nvidia.com/gpu'
+  elif drift=='minor':
+   next(d for d in doc['devices']if d['name']==m.SECOND_GPU)['containerEdits']['deviceNodes'][0]['hostPath']='/run/nvidia/driver/dev/nvidia0'
+  raw=json.dumps(doc);wrong['cdi'].update(raw=raw,sha256=m.sha(raw.encode()))
+  if drift=='hash':wrong['cdi'].update(raw=value['cdi']['raw'],sha256='0'*64)
+  with pytest.raises(ValueError,match='CDI'):m.build_sources(wrong)
+ # MPS sees the provider-applied runtime env, while checking raw UUID separately.
+ assert b"os.environ.get('NVIDIA_VISIBLE_DEVICES') == 'void'" in files['mps/mps_probe.py']
+
+def test_actual_retired_a5_b10_records_keep_original_cohort_cap_binding(tmp_path,monkeypatch):
+ """Actual nonsecret retired records, deterministic fake native IO only."""
+ import copy,json,types,sys
+ m=module();original=json.loads((HERE/'fixtures/retired-second-card-2526f16c.json').read_bytes())
+ v=observations();v['namespace']['metadata']={'name':'cps-native-second-card-20261027','uid':'036ea170-dc16-4100-96e6-9d896c2be30c'}
+ identity=original['records'][0]['identity'];v['node']['status']['nodeInfo']['bootID']=identity['boot_id']
+ v['guard'].update(boot_id=identity['boot_id'],driver_generation=identity['driver_generation']);v['device']['boot_id']=identity['boot_id']
+ files=m.build_sources(v)['files']
+ c=m.load('retirement_controller',files['controller.py'],tmp_path/'controller.py')
+ models=types.ModuleType('second_card_retirement_models');models.__file__=str(tmp_path/'models.py')
+ monkeypatch.setitem(sys.modules,models.__name__,models)
+ exec(compile(files['bundle/cps_compute/native_gpu_controller.py'],models.__file__,'exec'),models.__dict__)
+ original=json.loads((HERE/'fixtures/retired-second-card-2526f16c.json').read_bytes())
+ records=[models.CapRecord.from_dict(r)for r in original['records']]
+ current=c.cohort_state(observations()['cohort_uid'])
+ # No real file/native mutation; original source verifies complete record equality.
+ monkeypatch.setattr(models.PrivateJournal,'records',lambda self:records)
+ monkeypatch.setattr(c.os,'stat',lambda path,**kw:types.SimpleNamespace(st_dev=29,st_ino=1 if str(path)==current else 2))
+ back=types.SimpleNamespace(private_directory=lambda path:None)
+ class Backend:
+  def retired_inert_cap(self,identity,limit):return next(r.retirement for r in records if r.identity==identity)
+  def read_gate(self,identity):return None
+ def check(doc):
+  path=tmp_path/'retirement.json';raw=json.dumps(doc).encode();path.write_bytes(raw)
+  args=types.SimpleNamespace(retirement=path,retirement_sha256=m.sha(raw))
+  return c.retirement_inputs(args,models,back,lambda intents,state:Backend(),current)
+ assert set(check(original))=={1254502,1254660}
+ for drift in ('cohort','name','cap'):
+  bad=copy.deepcopy(original)
+  if drift=='cohort':bad['state_root']=bad['state_root'].replace('2526f16c-8cd4-4448-aa46-7a59565a1487','eeeeeeee-eeee-4eee-8eee-eeeeeeeeeeee')
+  elif drift=='name':bad['records'][1]['intent']['name']='native-second-card-a-2526f16c'
+  else:bad['records'][1]['intent']['cap_mib']=5120
+  with pytest.raises(ValueError):check(bad)
+
+def test_mps_runtime_guard_uses_exact_provider_applied_environment():
+ """Real emitted predicate after authenticated CDI global/device env edits."""
+ import ast,json,types
+ m=module();files=m.build_sources(observations())['files']
+ tree=ast.parse(files['mps/mps_probe.py'])
+ preflight=next(n for n in tree.body if isinstance(n,ast.FunctionDef)and n.name=='preflight')
+ guard=next(n for n in ast.walk(preflight)if isinstance(n,ast.Call)and isinstance(n.func,ast.Name)
+            and n.func.id=='require'and len(n.args)>1 and isinstance(n.args[1],ast.Constant)
+            and n.args[1].value=='Compiler-owned single device environment required')
+ predicate=compile(ast.Expression(guard.args[0]),'<actual emitted MPS env guard>','eval')
+ provider=json.loads(observations()['cdi']['raw'])
+ device=next(d for d in provider['devices']if d['name']==m.SECOND_GPU)
+ env={'CUDA_VISIBLE_DEVICES':'0','NVIDIA_VISIBLE_DEVICES':m.CDI_DEVICE}
+ for edits in (provider['containerEdits'],device['containerEdits']):
+  for entry in edits.get('env',[]):
+   key,value=entry.split('=',1);env[key]=value  # CDI AddMultipleProcessEnv replacement.
+ assert env['NVIDIA_VISIBLE_DEVICES']=='void'
+ assert eval(predicate,{'os':types.SimpleNamespace(environ=env)}) is True
+ for wrong in (m.SECOND_GPU,m.CDI_DEVICE,'all'):
+  altered={**env,'NVIDIA_VISIBLE_DEVICES':wrong}
+  assert eval(predicate,{'os':types.SimpleNamespace(environ=altered)}) is False
+ assignment=next(n for n in tree.body if isinstance(n,ast.Assign)and isinstance(n.targets[0],ast.Name)and n.targets[0].id=='GPU')
+ assert ast.literal_eval(assignment.value)==m.SECOND_GPU

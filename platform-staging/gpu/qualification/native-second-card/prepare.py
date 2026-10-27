@@ -13,6 +13,10 @@ import uuid
 
 HERE = Path(__file__).resolve().parent
 SECOND_GPU = 'GPU-1e6145d5-8ee2-43e2-a0d5-6d345909e8a6'
+CDI_KIND = 'k8s.device-plugin.nvidia.com/gpu'
+CDI_DEVICE = CDI_KIND + '=' + SECOND_GPU
+CDI_PATH = '/var/run/cdi/k8s.device-plugin.nvidia.com-gpu.json'
+CDI_SHA = 'b940041ddae78f5570f05ede8347b4eb366892342a581cc01fac2edacf4cd087'
 NODE_UID = '3336cdd5-d245-436e-b57c-2f66c6dcaa41'
 FIRST_GPU = 'GPU-16128952-b438-556a-00bb-93039ee24e56'
 OLD_NS = 'cps-native-qa147-20261022'
@@ -61,7 +65,7 @@ def identifier(v):
 
 
 def context(value):
-    require(type(value) is dict and set(value) == {'node','namespace','guard','device','cohort_uid','policy_hash'},
+    require(type(value) is dict and set(value) == {'node','namespace','guard','device','cohort_uid','policy_hash','cdi'},
             'Closed independent capture sections required')
     node, ns, guard, device = [value[k] for k in ('node','namespace','guard','device')]
     require(node['metadata']['name'] == 'k3s-wk-gpu2' and node['metadata']['uid'] == NODE_UID,
@@ -76,6 +80,19 @@ def context(value):
     name = ns['metadata']['name']; ns_uid = identifier(ns['metadata']['uid'])
     require(re.fullmatch(r'cps-native-second-card-[a-z0-9-]{1,35}', name or '')
             and ns_uid != OLD_NS_UID, 'Fresh dedicated second-card QA namespace required')
+    cdi=value['cdi']
+    require(type(cdi)is dict and set(cdi)=={'path','sha256','raw'}
+            and cdi['path']==CDI_PATH and cdi['sha256']==CDI_SHA
+            and type(cdi['raw'])is str and len(cdi['raw'])<=1048576 and sha(cdi['raw'].encode())==CDI_SHA,
+            'Exact independently observed CDI provider path/bytes/hash required')
+    provider=json.loads(cdi['raw'])
+    require(provider.get('containerEdits',{}).get('env',[]).count('NVIDIA_VISIBLE_DEVICES=void')==1,
+            'Exact authenticated CDI runtime environment edit required')
+    require(provider.get('kind')==CDI_KIND and type(provider.get('devices'))is list,'Exact installed CDI kind required')
+    selected=[d for d in provider['devices']if d.get('name')==SECOND_GPU]
+    require(len(selected)==1 and selected[0].get('containerEdits',{}).get('deviceNodes')==
+            [{'path':'/dev/nvidia1','hostPath':'/run/nvidia/driver/dev/nvidia1'}],
+            'Exact observed CDI second UUID/minor1 mapping required')
     cohort = identifier(value['cohort_uid'])
     require(cohort not in (OLD_COHORT,'3b217fe8-5750-4ead-954a-09286afd7d3f'), 'Historical cohort reuse denied')
     require(re.fullmatch(r'sha256:[a-f0-9]{64}',value['policy_hash']) and value['policy_hash']!='sha256:'+'0'*64,'Exact reviewed QA policy hash required')
@@ -111,8 +128,12 @@ def build_sources(observations):
     files['physical_samples.py']=physical.replace('total>0','total==40960').encode()
     renderer=files['render_fixture.py'].decode()
     require(renderer.count("'restartPolicy': 'Never'")==1,'Exact QA base Pod restart policy span required')
-    files['render_fixture.py']=renderer.replace("'restartPolicy': 'Never'","'restartPolicy': 'Always'").encode()
-    closure_pins={**PINS,**producer.PINS}
+    renderer=renderer.replace("'restartPolicy': 'Never'","'restartPolicy': 'Always'")
+    injection="        for container in [*pod['spec']['initContainers'], *pod['spec']['containers']]:\n            container['imagePullPolicy'] = 'Never'"
+    require(renderer.count(injection)==1,'Exact compiler-owned GPU environment adaptation span required')
+    renderer=renderer.replace(injection,injection+"\n            for entry in container.get('env',[]):\n                if entry.get('name')=='NVIDIA_VISIBLE_DEVICES' and entry.get('value')==GPU:\n                    entry['value']="+repr(CDI_DEVICE))
+    files['render_fixture.py']=renderer.encode()
+    closure_pins={**PINS,**producer.PINS,'observed-cdi-provider':CDI_SHA}
     # Reuse reviewed exact-fd host loader, not bare SONAME or container-only env.
     collector = COLLECTOR.read_bytes()
     require(sha(collector) == COLLECTOR_SHA, 'Exact reviewed host loader preimage required')
@@ -138,6 +159,23 @@ def build_sources(observations):
     old_sdk="SDK = Path('/home/bjoern/git/cps-compute-worktrees/native-health-147-build-pins-20261023/src')"
     require(c.count(old_sdk)==1,'Exact controller bundle source root required')
     c=c.replace(old_sdk,"SDK = Path(__file__).resolve().parent / 'bundle'")
+    retired_guard='record.intent.gpu_uuid==GPU and record.intent.cap_mib==5120'
+    require(c.count(retired_guard)==1,'Exact prior-cohort retirement cap guard required')
+    c=c.replace(retired_guard,'record.intent.gpu_uuid==GPU and record.intent.cap_mib==retired_expected_cap(record.intent.name,old)')
+    helper='''def retired_expected_cap(name,state):
+    prefix=ROOT+'/cohorts/'
+    require(type(state)is str and state.startswith(prefix) and state.endswith('/state'),
+            'Exact original namespace/cohort retirement state required')
+    cohort=state[len(prefix):-len('/state')]
+    require(str(uuid.UUID(cohort))==cohort and uuid.UUID(cohort).int>0
+            and cohort_state(cohort)==state, 'Canonical exact original retirement cohort required')
+    names={'native-second-card-a-'+cohort[:8]:5120,'native-second-card-b-'+cohort[:8]:10240}
+    require(name in names,'Exact original cohort A/B retirement name required')
+    return names[name]
+
+'''
+    require(c.count('def retirement_inputs(')==1,'Exact existing retirement parser seam required')
+    c=c.replace('def retirement_inputs(',helper+'def retirement_inputs(')
     files['controller.py']=c.encode()
     o=files['observe.py'].decode()
     o=replace_pin(o,sha(original['controller.py']),sha(files['controller.py']))
@@ -150,6 +188,10 @@ def build_sources(observations):
         generated=module.build_sources()
         closure_pins.update({('native-fresh-imports/' if label=='imports' else 'native-fresh-mps/')+n:p for n,p in module.PINS.items()})
         transformed={n:substitutions(r.decode(),ctx) for n,r in generated.items()}
+        if label=='mps':
+            guard="os.environ.get('NVIDIA_VISIBLE_DEVICES') == GPU"
+            require(transformed['mps_probe.py'].count(guard)==1,'Exact MPS environment assertion required')
+            transformed['mps_probe.py']=transformed['mps_probe.py'].replace(guard,"os.environ.get('NVIDIA_VISIBLE_DEVICES') == "+repr('void'))
         # Both original adapters intentionally bind protected policy. Keep binding
         # exact; caller may not pass a replacement policy or synthesize authority.
         for name in ('fresh_preflight.py','peer_probe.py','run_peer_oom.py'):

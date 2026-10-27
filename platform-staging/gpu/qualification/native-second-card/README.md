@@ -24,7 +24,8 @@ identity: `node` actual Node JSON; `namespace` actual newly dedicated namespace
 JSON (`cps-native-second-card-*`); `guard` with independently observed
 `node_uid`, `boot_id`, `driver_generation`, `driver_version`; `device` with
 independently observed `node_uid`, `boot_id`, `gpu_uuid`; `cohort_uid` a fresh
-canonical nonzero UUID; and `policy_hash` the reviewed QA intent's exact hash.
+canonical nonzero UUID; `cdi` containing `path`, exact `sha256`, and original
+`raw` provider-file text; and `policy_hash` the reviewed QA intent's exact hash.
 The preparer checks agreement, not observation authenticity. Raw bytes and
 hashes are retained. Root reviews their actual acquisition and excludes clients
 and writers on this second UUID before separately authorizing execution.
@@ -33,7 +34,19 @@ No offline hash or supplied flag proves device availability.
 The original renderer request additionally has `version:1`, `pair:"5-10"`,
 matching namespace/UID/cohort/policy, and exact digest `gate_image`. Workload
 image remains pinned `5427088986bc…`, with UID1000/GID100 and original reaper.
-No arbitrary hardware UUID option exists.
+No arbitrary hardware UUID option exists. The observed provider is closed to
+`/var/run/cdi/k8s.device-plugin.nvidia.com-gpu.json`, exact whole-file SHA
+`b940041ddae78f5570f05ede8347b4eb366892342a581cc01fac2edacf4cd087`.
+Its kind must be `k8s.device-plugin.nvidia.com/gpu`, with this raw second UUID
+mapping to `/dev/nvidia1` / host `/run/nvidia/driver/dev/nvidia1`. Root independently
+rechecks protected actual provider bytes before staging. New renderer changes
+only compiler-owned GPU-container NVIDIA_VISIBLE_DEVICES to the fully qualified
+`k8s.device-plugin.nvidia.com/gpu=GPU-1e6145d5-8ee2-43e2-a0d5-6d345909e8a6`
+before complete spec hash/contract. CPU gate remains `void`; raw UUID remains
+the actual CUDA/NVML proof argument. The pinned provider applies `NVIDIA_VISIBLE_DEVICES=void` inside the resulting
+container; MPS requires that exact runtime value and `CUDA_VISIBLE_DEVICES=0`,
+while its independent physical UUID proof remains raw. The qualified Pod input
+selector and resulting runtime environment are different stages. No production runtime/CDI file is changed.
 
 ```
 python -I -B prepare.py --prepare --observations CURRENT.json \
@@ -66,7 +79,10 @@ After source PASS, shortest separately authorized actual sequence:
    `--output` and `--approve-qa-hostpaths`. Create only those finalized QA
    objects, GET actual full Pods, then finalize again with `--actual-pod`.
    Only real admitted UID/spec readbacks create intents. No synthetic UID.
-4. On the actual host, run emitted `controller.py --execute
+4. On the actual host set the verified host
+   `LD_LIBRARY_PATH=/run/nvidia/driver/usr/lib/x86_64-linux-gnu` for the original
+   external nvidia-smi client census (Python NVML independently uses same-fd
+   loader), and run emitted `controller.py --execute
    --approve-qa-hostpaths --bundle BUNDLE --cohort-uid COHORT
    --intent-a ACTUAL_A --intent-a-sha256 RAW_A --intent-b ACTUAL_B
    --intent-b-sha256 RAW_B --crictl VERIFIED_CRI
@@ -155,3 +171,16 @@ All six real gate reports plus measured capacity, review and genuine immutable
 proof publication remain outstanding. No first-device proof is reused. This
 adapter does not advertise a device, add a plugin UUID or install a second Node
 agent. Those later authority/admission operations remain separately fenced.
+
+
+The original2526f16c cohort was actually retired after its raw-UUID CDI request
+failed before identity execution. Replacement controller invocations must carry
+its complete independently raw-pinned version1 retirement descriptor using
+original state/journals, **including both A5 and B10**. New adapter derives each
+prior cap from that descriptor's validated original namespace/cohort state root
+and exact old A/B name; it never trusts a generic5|10 value. Whole original
+journal/intent/retirement equality, fresh API Pod/parent absence, protected
+original state directory identity, epoch/inode/offline/pinned/zero-charge proofs
+and full native inventory remain mandatory. Named controller API rights must
+also permit GET of the two original Pod names for absence proof, distinct from
+GET/DELETE of its new names. No unknown native entry may be dropped or whitelisted.
