@@ -66,3 +66,25 @@ def test_offline_proposal_derives_canonical_resources_and_preserves_existing_ope
             assert mode.workspaces[scope][key]==row[key]
     assert mode.resource_contract('interactive-native-qualification-10')['requests']=={'cpu':'2','memory':'4G'}
     assert operator==before and result['review.json']['hardware_qualified'] is False
+
+
+def test_reviewed_manifest_original_bytes_are_retained(monkeypatch,tmp_path):
+    import json
+    data={'version':1,'context':{},'policy':{},'operator':{},'resources':{},
+          'pods':{'pressure':{},'peer':{}},'observer':{},'driver_version':'615.71.09','operator_ref':{},'node_ref':{}}
+    original=(json.dumps(data,indent=4)+'\n').encode()
+    manifest=tmp_path/'reviewed';manifest.write_bytes(original);manifest.chmod(0o600)
+    probe=tmp_path/'probe';probe.write_bytes(b'probe source')
+    host=tmp_path/'host';host.write_bytes(b'host source')
+    output=tmp_path/'result'
+    class InertCollector:
+        def __init__(self,*args):pass
+        def execute(self):pass
+    monkeypatch.setattr(runner,'Collector',InertCollector)
+    monkeypatch.setattr(sys,'argv',['run.py','--execute','--manifest',str(manifest),
+        '--manifest-sha256',runner.sha(original),'--runner-sha256',runner.sha(Path(runner.__file__).read_bytes()),
+        '--probe-source',str(probe),'--probe-sha256',runner.sha(probe.read_bytes()),
+        '--collector-source',str(host),'--collector-sha256',runner.sha(host.read_bytes()),'--output',str(output)])
+    runner.main()
+    assert (output/'manifest.raw.json').read_bytes()==original
+    assert runner.sha((output/'manifest.raw.json').read_bytes())==json.loads((output/'source-pins.json').read_bytes())['manifest_raw']

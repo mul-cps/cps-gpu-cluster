@@ -53,20 +53,41 @@ The runner creates only owned private `/tmp/cps-mujoco-*` source/event/ack files
 inside the owned operator Pods. Pressure is a real `xpra control :100 start-child`
 child through `vglrun -d egl`; actual host ancestry must prove this. It renders
 and retains a real classic MuJoCo NVIDIA EGL frame, touches2GiB GL buffers and
-1GiB CUDA tensors, and while both remain resident attempts one above-combined-
-cap CUDA allocation. Unexpected success is not touched and fails the run. Each
-live allocation event pauses for independent host native NVML readback. The
+1GiB CUDA tensors. Prewarm, CUDA-only and GL-added barriers independently
+measure parent and per-process charge deltas. Both NVML compute-v3 and graphics-v3
+queries are required; duplicate PIDs are deduplicated only when their all-app
+usage agrees, never summed. Unsupported/unavailable/ambiguous readings fail.
+Other parent GPU PIDs/charges and parent-minus-process residual must remain
+exact; touched increments must account for at least their bytes, with at most
+64MiB extra rounding/bookkeeping each. Existing desktop charge cannot fill a
+missing GL delta. See [NVIDIA device queries](https://docs.nvidia.com/deploy/nvml-api/latest/api/group__nvmlDeviceQueries.html).
+
+Separate independently sampled GL-before/GL-rejected and combined-CUDA rejection
+phases exercise one GL request whose size alone exceeds10GiB, and an above-
+combined-cap CUDA request while both touched allocations remain resident. Only
+typed GL_OUT_OF_MEMORY/CUDA OutOfMemory errors qualify their observations. GL
+allocation is separate from touch; unexpected success is freed and fails before
+touch. No charge change across rejected requests is accepted. Each live stage
+pauses for independent readback. The
 other explicitly owned test process records CUDA readback progress before,
 during and after pressure. Missing NVIDIA context, typed rejection, kernel
 history, lineage, current authority, measurements, process completion or charge
 recovery is failure/inconclusive; no synthetic success fields fill those gaps.
 
-Raw Pod/authority/host/event/frame bytes and digests are retained. Host kernel
-log comparison detects new NVIDIA/Xid/reset messages; it is a conservative
-observability check, not an independent hardware reset counter API. Review this
-coverage before accepting the strict zero-reset observation. `review-material`
-is non-authoritative. Parent independent review must bind raw bytes to actual
-v4 context and all applicable native gates before any immutable proof publication.
+Raw Pod/authority/host/event/frame bytes and digests are retained. The exact
+reviewed manifest bytes are retained as `manifest.raw.json` alongside canonical
+`manifest.json`; the recorded raw SHA reproduces the original bytes.
+
+Reset status is explicitly UNKNOWN. Read-only `/dev/kmsg` snapshots retain raw
+records, sequence numbers, monotonic timestamps, read-clock bounds and boot.
+Empty, inaccessible, truncated/gapped, overwritten-baseline or changed-boot
+history fails/inconclusive. Anchored contiguous printk coverage and continuing
+owned peer progress do not prove every hardware reset is logged. The producer
+therefore suppresses `peer-survival` and NEVER emits `device_reset_count:0`.
+`review-material` is incomplete/nonauthoritative and lists that missing probe.
+A reviewed actual reset-observation contract remains an immediate qualification
+prerequisite, alongside actual-envelope/target-policy promotion. No caller flag
+can declare reset completeness. See the [Linux kmsg ABI](https://www.kernel.org/doc/Documentation/ABI/testing/dev-kmsg).
 
 Each GPU child has60s alarm; peer has45s work. The local runner's transports and
 whole loop are bounded. Cleanup deletes only owned terminal directories. A lost

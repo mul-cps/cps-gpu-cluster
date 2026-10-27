@@ -156,7 +156,7 @@ class Collector:
         require(len(statuses)==1 and statuses[0]['imageID']==self.m['observer']['image_id'],'Pinned observer image changed')
         raw,baseline=self.host_baseline()
         require(baseline['boot_id']==self.m['context']['node_pool']['boot_id'],'Observer boot changed')
-        self.kernel_baseline=baseline['reset_baseline'];self.baseline=baseline
+        self.kernel_baseline=baseline['kernel_anchor'];self.baseline=baseline
         (self.output/'host-baseline.json').write_bytes(raw)
         # The actual immutable operator and Node references, never caller claims,
         # must be independently retained before child execution.
@@ -195,7 +195,7 @@ class Collector:
             'expected_driver':self.m['driver_version'],'reset_baseline':self.kernel_baseline}
         raw=self.command(['kubectl','--request-timeout=8s','-n',observer['namespace'],'exec','-i',observer['name'],
             '--','nsenter','-t','1','-m','-p','--','python3','-I','-c',self.host_program(),'--host-sample'],canonical(request))
-        value=json.loads(raw);self.kernel_baseline=value['reset_baseline']
+        value=json.loads(raw)
         if self.peer_identity is None:self.peer_identity=value['peer_process']
         require(value['peer_process']==self.peer_identity,'Owned peer process identity changed')
         (self.output/('host-'+str(event['monotonic_ns'])+'.json')).write_bytes(raw)
@@ -236,11 +236,14 @@ class Collector:
             for role in ('pressure','peer'):
                 raw,_=self.pod(role);(self.output/(role+'-after.json')).write_bytes(raw)
             raw,final=self.host_baseline();(self.output/'host-final.json').write_bytes(raw)
-            require(final['boot_id']==self.baseline['boot_id'] and final['reset_baseline']==self.kernel_baseline,'Post-run boot/reset log changed')
+            from cps_compute.personal_qualification_collect import kernel_window
+            coverage=kernel_window(self.kernel_baseline,{k:v for k,v in final.items() if k!='cgroups'})
+            (self.output/'reset-coverage.json').write_bytes(canonical(coverage))
             for role,prior in self.baseline['cgroups'].items():
                 latest=final['cgroups'][role]
                 require(all(latest[k]==prior[k] for k in ('path','inode','device','soft_bytes','hard_bytes','driver_version'))
-                        and latest['used_bytes']<=prior['used_bytes'],'Owned allocation charge did not recover to initial baseline')
+                        and latest['used_bytes']<=prior['used_bytes'] and latest['gpu_processes']==prior['gpu_processes'],
+                        'Owned allocation charge/process inventory did not recover to initial baseline')
             (self.output/'samples.json').write_bytes(canonical(samples))
             receipts=derive_receipts(self.m['context'],state['pressure']['stdout'].encode(),samples,
                 peer_raw=state['peer']['stdout'].encode(),peer_exit_code=int(state['peer']['exit']),
@@ -250,7 +253,8 @@ class Collector:
             (self.output/'measurement.json').write_bytes(canonical(measurement))
             (self.output/'retained-index.json').write_bytes(canonical({p.name:'sha256:'+sha(p.read_bytes())
                 for p in self.output.iterdir() if p.is_file()}))
-            (self.output/'review-material.json').write_bytes(canonical({'authoritative':False,'probes':receipts}))
+            (self.output/'review-material.json').write_bytes(canonical({'authoritative':False,'complete':False,'reset_status':'unknown',
+                'missing_probes':['peer-survival'],'probes':receipts}))
         finally:
             # Only terminal, proven-owned directories. No remote signals, process
             # adoption, workspace Stop or automatic retry after uncertainty.
@@ -272,12 +276,14 @@ def main():
     if not args.execute:print('{"inert":true,"api_calls":false,"gpu_calls":false}');return
     require(all(vars(args).values()),'Reviewed source/manifest pins and fresh output required')
     require(sha(Path(__file__).read_bytes())==args.runner_sha256,'Runner source changed')
-    manifest=json.loads(private(args.manifest,args.manifest_sha256))
+    manifest_raw=private(args.manifest,args.manifest_sha256)
+    manifest=json.loads(manifest_raw)
     require(set(manifest)=={'version','context','policy','operator','resources','pods','observer','driver_version','operator_ref','node_ref'}
         and manifest['version']==1 and set(manifest['pods'])=={'pressure','peer'},'Closed reviewed manifest required')
     probe=Path(args.probe_source).read_bytes();host=Path(args.collector_source).read_bytes()
     require(sha(probe)==args.probe_sha256 and sha(host)==args.collector_sha256,'Probe/collector source changed')
     output=Path(args.output);output.mkdir(mode=0o700)
+    (output/'manifest.raw.json').write_bytes(manifest_raw)
     (output/'manifest.json').write_bytes(canonical(manifest))
     (output/'source-pins.json').write_bytes(canonical({'runner':args.runner_sha256,'probe':args.probe_sha256,
         'host_collector':args.collector_sha256,'manifest_raw':args.manifest_sha256}))
