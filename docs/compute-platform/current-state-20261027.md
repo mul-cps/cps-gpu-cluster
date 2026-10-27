@@ -8,24 +8,28 @@ versions and scopes. No new CUDA qualification or deployment was performed here.
 
 ## Verified software
 
-- Compute receipt and ordinary-group executor changes are published on
-  `codex/hub-permission-receipts-20261027` at `f53d634d05f98caa57422de5375c9c7139c61858`:
-  [draft PR 2](https://github.com/mul-cps/cps-compute/pull/2).
-  The full suite passed 6,244 tests with six skips and 68 subtests; all 114
-  focused permission tests passed. Six skips remain pending. The 626 existing
-  framework/test warnings were reviewed and originate outside these modules.
-- Admin Hub request-boundary fixes are published at
-  `6a299d3f46e5c7713a4d578734fca1a025dac725`:
-  [draft PR 2](https://github.com/mul-cps/e2x-course-hub/pull/2).
-  All 129 admin tests passed, including 20 real-SQLite journal tests. Requests
-  pin the intended Hub API, prohibit redirects and reject unsafe paths while preserving encoded spaces.
-- The receiving Service-token API and internal Source journal passed independent
-  review. The receiver remains disabled by default. Actual visitor authorization,
-  dispatcher and lifecycle integration, installation custody and authenticator
-  hooks remain open. An unwired receiver or journal does not enable managed writes.
+- The paired Source-authorized ordinary-group dispatcher is published at compute
+  `d74ba05ee2498497cbaf81115f6797cd3e6d3946` and admin
+  `22853170b6bd91cba3977c7b8a888c13b1e1a4f0`:
+  [compute draft PR 2](https://github.com/mul-cps/cps-compute/pull/2) and
+  [admin draft PR 2](https://github.com/mul-cps/e2x-course-hub/pull/2).
+  Remote branch SHAs were verified after publication. Independent review passed,
+  including the scoped fixes for native Shares and production-handler evidence.
+- Final focused coverage passed 26 paired integration cases and 21 subtests in
+  5.10 seconds, plus six focused admin cases in 0.284 seconds. The actual
+  Source/Hub/coordinator stores are exercised; regular and expired Shares reject
+  before preparation. One smoke uses the unmodified production cookie/XSRF
+  handler. This does not prove browser OAuth/SSO, ingress or live deployment.
+- The earlier Task2 full compute result (6,244 passed, six skipped) and Task3A
+  admin result (129 passed) remain historical checkpoints, not full-suite results
+  for the final paired commits. Final release-checkpoint suites remain required.
+- The final admin Python wheel passed isolated byte/import, optional-dependency
+  and disabled-mode checks. Frontend building was skipped for this probe; it is
+  not a released UI artifact. Receipt, journal and dispatcher remain disabled by
+  default. Shared-workspace lifecycle, installation custody/migrations,
+  authenticator hooks and operator activation remain open.
 - Original dirty checkouts remain preserved. No main branch was merged and no
-  new application image was deployed. A private Hub wheel build verified module
-  ownership, but is not a production release.
+  new application image or live database was changed.
 
 ## Read-only runtime observation
 
@@ -40,11 +44,26 @@ paused would be inaccurate. The qualification/reconciliation hold remains in
 force: no reconciliation or watched-branch publication was requested here.
 No GPU device allowlist, driver, NFS configuration or existing Pod was changed.
 
+## Test effort and hosted CI
+
+Focused receiver tests took about five seconds; the full compute repository run
+was 3m42s, not thousands of receiver-specific cases. The latest complete admin
+run took under one second. Implementation iterations now use focused tests and
+affected interface checks; a full compute run is reserved for a frozen release
+checkpoint or an identified cross-cutting regression. Existing safety assertions
+and production acceptance requirements remain unchanged.
+
+GitHub [check 122134979594](https://github.com/mul-cps/cps-compute/actions/runs/40488132906/job/122134979594)
+failed before any step started. Its annotation reports account payment failure or
+a spending limit requiring increase. Local results remain local evidence; hosted
+CI is an open release gate until the account issue is resolved and jobs run.
+
 ## Work still required for production
 
-1. Finish and review the authenticated receiver, Source authorization/journal,
-   one-time custody-preserving migration and asynchronous user hooks. Exercise
-   retries, revocation, lifecycle cleanup and restoration across both consoles.
+1. Finish shared-workspace lifecycle integration, one-time custody-preserving
+   migrations and asynchronous user hooks. The ordinary-group receiver, Source
+   authorization/journal and dispatcher are source-reviewed; runtime activation,
+   lifecycle cleanup and restoration across both consoles remain unqualified.
 2. Qualify the final deployed software/image/policy tuple, cross-Hub reservations,
    full-pool packing, teaching reclaim, distributed cleanup and startup bursts.
    Preserve passed no-MIG isolation evidence; only uncovered or changed scopes

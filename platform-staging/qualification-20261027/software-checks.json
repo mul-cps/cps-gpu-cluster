@@ -11,7 +11,8 @@
     "review": "Task 2 spec and quality pass; no actionable findings",
     "private_hub_wheel_sha256": "152a617b86ec3081f49fb1779c83264d99d2535962be5e42dfd73b9ffb19e0dc",
     "installed_smoke": "exact four permission module imports/bytes; no SDK or Lab extension ownership",
-    "full_log_sha256": "35da93ba6acac17a267ce5a159f805ce2f0b8d7104c3065638a7058f49382670"
+    "full_log_sha256": "35da93ba6acac17a267ce5a159f805ce2f0b8d7104c3065638a7058f49382670",
+    "evidence_stage": "historical Task2 full-suite checkpoint, not final paired full-suite result"
   },
   "admin": {
     "repository": "mul-cps/e2x-course-hub",
@@ -19,7 +20,34 @@
     "passed": 129,
     "full_log_sha256": "438143c4a799db533a211b1b7c1f780118f2fd7c11a80cd12610d1e2e1bc4456",
     "focused_journal_passed": 20,
-    "review": "Task3A spec and quality pass; no actionable findings"
+    "review": "Task3A spec and quality pass; no actionable findings",
+    "evidence_stage": "historical Task3A full-suite checkpoint, not final paired full-suite result"
   },
-  "scope": "local software only; no migration, deployment or new GPU qualification"
+  "scope": "local software only; no migration, deployment or new GPU qualification",
+  "hosted_ci": {
+    "repository": "mul-cps/cps-compute",
+    "check_id": 122134979594,
+    "url": "https://github.com/mul-cps/cps-compute/actions/runs/40488132906/job/122134979594",
+    "conclusion": "failure",
+    "steps_started": 0,
+    "annotation": "The job was not started because recent account payments have failed or your spending limit needs to be increased.",
+    "scope": "external release gate; not a test failure"
+  },
+  "source_dispatcher": {
+    "compute_commit": "d74ba05ee2498497cbaf81115f6797cd3e6d3946",
+    "compute_test_commit": "612ce66769cf8143e6ad39858992a26dbc43bf7e",
+    "admin_commit": "22853170b6bd91cba3977c7b8a888c13b1e1a4f0",
+    "integration_passed": 26,
+    "subtests_passed": 21,
+    "seconds": 5.1,
+    "focused_admin_passed": 6,
+    "focused_admin_seconds": 0.284,
+    "review": "Task3B scoped fix review: both findings addressed, no new actionable findings",
+    "coverage": "actual Source/Hub/coordinator stores; regular and expired Share rejection before prepare; unmodified production handler cookie/XSRF smoke",
+    "python_wheel_sha256": "2204b0d5bbd841793f5e0ae4df19e68cc6da7b644af888f589ce157f22a9a419",
+    "installed_probe": "three module bytes/imports; disabled inert; no SDK import; optional exact SDK dependency",
+    "packaging_limit": "Python only; frontend builder skipped; not release artifact",
+    "runtime_enabled": false,
+    "remaining": "Task3C shared lifecycle, Task4 custody migrations/hooks, Task5 activation/live acceptance/releases"
+  }
 }
