@@ -163,8 +163,8 @@ affected interface checks; a full compute run is reserved for a frozen release
 checkpoint or an identified cross-cutting regression. Existing safety assertions
 and production acceptance requirements remain unchanged.
 
-GitHub [check 122222776712](https://github.com/mul-cps/cps-compute/actions/runs/40513932030/job/122222776712)
-for published PostgreSQL source `f474485` was rechecked on 27 October and
+GitHub [check 122411921461](https://github.com/mul-cps/cps-compute/actions/runs/40567311598/job/122411921461)
+for published source `c6b1cc9` was rechecked on 27 October and
 failed before any step started. Its annotation reports account payment failure or
 a spending limit requiring increase. Local results remain local evidence; hosted
 CI is an open release gate until the account issue is resolved and jobs run.

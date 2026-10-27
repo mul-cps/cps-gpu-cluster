@@ -26,13 +26,14 @@
   "scope": "local software only; no migration, deployment or new GPU qualification",
   "hosted_ci": {
     "repository": "mul-cps/cps-compute",
-    "check_id": 122222776712,
-    "url": "https://github.com/mul-cps/cps-compute/actions/runs/40513932030/job/122222776712",
+    "check_id": 122411921461,
+    "url": "https://github.com/mul-cps/cps-compute/actions/runs/40567311598/job/122411921461",
     "conclusion": "failure",
     "steps_started": 0,
     "annotation": "The job was not started because recent account payments have failed or your spending limit needs to be increased.",
     "scope": "external release gate; not a test failure",
-    "observed_commit": "f474485736c2da5d3324bfa133cd020c3fedee29"
+    "observed_commit": "c6b1cc94955ce43616c05f54790ae9260fa25fd9",
+    "job": "postgresql15-release"
   },
   "source_dispatcher": {
     "compute_commit": "2d42bebaaddb3094979dcff0fdbc81d8ee92b38c",
