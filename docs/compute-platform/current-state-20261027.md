@@ -18,13 +18,11 @@ versions and scopes. No new CUDA qualification or deployment was performed here.
   `6a299d3f46e5c7713a4d578734fca1a025dac725`:
   [draft PR 2](https://github.com/mul-cps/e2x-course-hub/pull/2).
   All 129 admin tests passed, including 20 real-SQLite journal tests. Requests
-  pin the intended Hub API,
-  prohibit redirects and reject unsafe paths while preserving encoded spaces.
-- The receiving Service-token API passed independent review and remains disabled
-  by default. Source-console journaling is under implementation; installation
-  custody and authenticator hooks remain
-  outstanding. The internal Source journal now passes independent review; actual
-  authorization, dispatcher and lifecycle integration remain open. An executor or unwired receiver does not enable managed writes.
+  pin the intended Hub API, prohibit redirects and reject unsafe paths while preserving encoded spaces.
+- The receiving Service-token API and internal Source journal passed independent
+  review. The receiver remains disabled by default. Actual visitor authorization,
+  dispatcher and lifecycle integration, installation custody and authenticator
+  hooks remain open. An unwired receiver or journal does not enable managed writes.
 - Original dirty checkouts remain preserved. No main branch was merged and no
   new application image was deployed. A private Hub wheel build verified module
   ownership, but is not a production release.
