@@ -26,12 +26,13 @@
   "scope": "local software only; no migration, deployment or new GPU qualification",
   "hosted_ci": {
     "repository": "mul-cps/cps-compute",
-    "check_id": 122134979594,
-    "url": "https://github.com/mul-cps/cps-compute/actions/runs/40488132906/job/122134979594",
+    "check_id": 122222776712,
+    "url": "https://github.com/mul-cps/cps-compute/actions/runs/40513932030/job/122222776712",
     "conclusion": "failure",
     "steps_started": 0,
     "annotation": "The job was not started because recent account payments have failed or your spending limit needs to be increased.",
-    "scope": "external release gate; not a test failure"
+    "scope": "external release gate; not a test failure",
+    "observed_commit": "f474485736c2da5d3324bfa133cd020c3fedee29"
   },
   "source_dispatcher": {
     "compute_commit": "2d42bebaaddb3094979dcff0fdbc81d8ee92b38c",
@@ -114,7 +115,8 @@
   "directory_handover": {
     "scope": "existing approved legacy membership restored through normal Hub API; actual selector verified, not GPU execution",
     "permanent_import_enabled": false,
-    "remaining": "bounded authenticated directory bundle projection, coordinator-backed PostgreSQL receipt installation, explicit Source factories, actual async user hooks and personal spawn enforcement/revocation"
+    "remaining": "bounded authenticated directory bundle projection, coordinator-backed PostgreSQL receipt installation, explicit Source factories, actual async user hooks and personal spawn enforcement/revocation",
+    "personal_mujoco_regression": "Installed CIT wrapper filters all legacy GPU profiles and rejects them at spawn; raw legacy selector logs do not prove final visibility. Central MuJoCo profile/image and personal compatibility path missing; Task4C required, guard not removed."
   },
   "postgresql_permission_receipts": {
     "repository": "mul-cps/cps-compute",
@@ -148,5 +150,59 @@
     "runtime_enabled": false,
     "scope": "actual disposable-local PG15 primitive/HTTP qualification; no production migration/deployment or automatic directory import",
     "remaining": "genuine coordinator installation/Source reopening factories, retained external rollback history, async user creation and directory projection, required release PG15 CI lane; all platform production gates"
+  },
+  "managed_installation_user_creation": {
+    "compute_commit": "f5052fa2327f4067b55f7e2fd1569a5cdec013d7",
+    "admin_commit": "c5d78ffb57a13783c51464996eceeca94140814c",
+    "review": "Task4B and scoped R1 PASS; interrupted activation acceptance repaired",
+    "affected_run": {
+      "passed": 283,
+      "subtests_passed": 130,
+      "skipped": 0,
+      "seconds": 35.36
+    },
+    "repair_owning_run": {
+      "passed": 45,
+      "skipped": 0,
+      "seconds": 37.25
+    },
+    "coverage": "actual finalized installation/backup bytes; real PG and managed Source; authenticated new user/default roles/original hook; receipts/coordinator completion; successor activation and ordinary group operation; lost replies/older restore/fences",
+    "production_driver_positive_chain": {
+      "passed": 1,
+      "seconds": 7.55,
+      "python": "3.12",
+      "sqlalchemy": "2.0.52",
+      "driver": "psycopg2 2.9.12",
+      "scope": "one real positive chain with genuine installed admin/RBAC; not full production-driver matrix"
+    },
+    "wheel_sha256": {
+      "sdk": "a4e78d592135eade84bd317fe5d18432f0b80cce730e079bbc05014c305b216a",
+      "hub": "a947515debd1c6f3c811271b3ab33e1d72db2551183a34b16598a09a51099563",
+      "admin": "0b6e1578d7c3845ad01fa7e957dcc3df3f5992e7c132524d5ac10471cc1a317d"
+    },
+    "installed_probe": "nine exact module byte/import checks; SDK/Hub/Lab ownership separate; no-deps target uses existing test deps; admin frontend skipped",
+    "log_sha256": {
+      "task-4b-affected.log": "9cdd528dc2055ee218d739757a0a8b6893af1f4df31bdffc371554955c644735",
+      "task-4b-r1-owning.log": "f62effcade7082eb7f0526788570a887fe8f108a2e0706bfd0293d13a1c33732"
+    },
+    "runtime_enabled": false,
+    "scope": "local software installation/custody only; logical backup is not production restore qualification",
+    "remaining": "directory/bundle projection and personal MuJoCo policy path, changed Source/Control successor lanes, shared lifecycle, never-enrolled cancellation, remote factories, image/GPU/UI/storage/monitoring/restore/release gates"
+  },
+  "postgresql_release_ci": {
+    "commit": "49a045765861e52a84eea7da412506a7eb671101",
+    "admin_pin": "c5d78ffb57a13783c51464996eceeca94140814c",
+    "rbac_pin": "4683d1a09051f8aa0d38a2e6ab181b4979b246b2",
+    "required_modules": [
+      "test_permission_receipts_postgresql",
+      "test_permission_receiver_postgresql",
+      "test_managed_hub_installation",
+      "test_managed_user_creation"
+    ],
+    "gate_tests_passed": 15,
+    "review": "independent continuation PASS; wording nit corrected",
+    "production_positive_chain_passed": 1,
+    "production_positive_chain_seconds": 7.55,
+    "scope": "implemented hosted-only lane and one actual local installed-dependency positive chain; hosted full-four-module execution pending billing resolution"
   }
 }

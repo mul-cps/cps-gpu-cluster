@@ -90,11 +90,38 @@ versions and scopes. No new CUDA qualification or deployment was performed here.
   Genuine coordinator factories, external rollback-history reconciliation,
   asynchronous user hooks and automatic directory import remain open. The
   required PostgreSQL15 release CI lane is now implemented and reviewed at
-  compute `036be35794c577a540b477cf0c1b7849da6311e5`: a digest-pinned disposable
+  compute `49a045765861e52a84eea7da412506a7eb671101`: a digest-pinned disposable
   hosted database, production-compatible driver and explicit real Hub modules
-  with a zero-skip JUnit gate. Eleven gate checks and cleanup-failure simulation
-  passed; review corrected anonymous-volume cleanup. Hosted execution remains
+  with a zero-skip JUnit gate covering all four PostgreSQL modules, including
+  installation/user creation with genuinely installed pinned Source/RBAC. Fifteen
+  gate checks and cleanup-failure simulation passed; review corrected anonymous-
+  volume cleanup. Hosted execution remains
   pending. Default test skips cannot qualify release readiness.
+- Local installation and supported managed user creation are reviewed and
+  published at compute `f5052fa2327f4067b55f7e2fd1569a5cdec013d7` and admin
+  `c5d78ffb57a13783c51464996eceeca94140814c`. The actual PostgreSQL/Source/
+  coordinator chain executes installation, authenticated user creation, original
+  hook/default roles, retained receipts, successor activation and the next
+  ordinary group operation. The affected run passed 283 cases and 130 subtests,
+  with no skips. Review found an interrupted external activation-acceptance gap;
+  the regression reproduced it, then four focused repair cases and 45 owning
+  cases passed. Scoped rereview passed. A separate single positive chain passed
+  with Python3.12 and production SQLAlchemy2.0.52/psycopg2 2.9.12 using genuinely
+  installed admin/RBAC dependencies. This is not a full driver matrix.
+  Three wheels passed isolated exact-module-byte/import and package-ownership
+  checks; the admin frontend was skipped and release closure remains unproven.
+  Only journal/receipt/audit successors are supported in this increment; actual
+  changed Source entities/Control grants remain fenced pending Task4C/3C.
+  Local logical backup custody does not qualify production backup/restore.
+- A user-visible CIT regression is confirmed: the final installed adapter removes
+  all legacy GPU choices, including MuJoCo, and rejects legacy GPU spawning.
+  Intermediate legacy-selector logs do not prove final profile visibility.
+  Central policy lacks the MuJoCo profile/image and personal compatibility path;
+  Task4C must restore both final selection and policy-controlled spawning,
+  preserving existing homes and NVIDIA EGL/VirtualGL behavior. The native NVML
+  cgroup cap is the intended memory boundary; exact-image OpenGL qualification
+  remains required alongside preserved historical CUDA evidence. No guard was
+  removed, user selection changed or live MuJoCo workload started here.
 - Original dirty checkouts remain preserved. No main branch was merged and no
   new application image or live database was changed.
 
