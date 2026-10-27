@@ -1,0 +1,50 @@
+{
+  "recorded_at_utc": "2026-10-27T20:02:20.000423+00:00",
+  "source_revision": "fd96cc0cfc47215d28dbcc5835501b2d597817a8",
+  "qualification": "CPU packaging/import candidate only; not deployed or GPU-qualified",
+  "images": {
+    "node": {
+      "reference": "ghcr.io/mul-cps/cps-native-node@sha256:a574fd09ba8844b66fb731b9624fb38bbf413138fedec75f5098f43ec6cd40de",
+      "candidate_tag": "ghcr.io/mul-cps/cps-native-node:reviewed-fd96cc0c-20261027",
+      "config_digest": "sha256:19aae8b522be3ee2177427e2a57886f547889a153113b1538c3b4f08255f988d",
+      "registry_manifest_verified": true,
+      "visibility_verified": "private",
+      "user": "0",
+      "layers": 9,
+      "compressed_layer_bytes": 146726411
+    },
+    "hub": {
+      "reference": "ghcr.io/mul-cps/cps-compute@sha256:bd550fd5f82e1fd9e4d6a4623586ceb5143be6da67430917983f8dc600960762",
+      "candidate_tag": "ghcr.io/mul-cps/cps-compute:reviewed-fd96cc0c-20261027",
+      "config_digest": "sha256:6280626cf7828defa17f6f895c724b8747fc9cf87baaa08066a6cc83ff9c001a",
+      "registry_manifest_verified": true,
+      "visibility_verified": "private",
+      "user": "1000",
+      "layers": 152,
+      "compressed_layer_bytes": 1370254887
+    }
+  },
+  "wheels": {
+    "sdk_sha256": "f1d6557ed18e30b69bf365736df880283f07968050ce703d9f928cde87401e75",
+    "hub_sha256": "c77c84d2d476b1ecc5bf433d0222ed94dc68ca6b6ad0286081a6496b893e3b08"
+  },
+  "cpu_checks": {
+    "node_default": {
+      "state": "inert",
+      "api_calls": false,
+      "gpu_calls": false,
+      "production_qualified": false
+    },
+    "hub": {
+      "state": "image-import-records-entrypoint-pass",
+      "sdk_records_verified": 126,
+      "hub_records_verified": 35,
+      "jupyterhub": "5.5.2",
+      "kubespawner": "7.1.0",
+      "gpu_modules_imported": false
+    },
+    "network": "none",
+    "rootfs": "read-only",
+    "capabilities": "all dropped"
+  }
+}

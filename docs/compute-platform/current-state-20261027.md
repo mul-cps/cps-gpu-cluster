@@ -292,3 +292,29 @@ the controlled physical CUDA/EGL/Xpra/window run. No old neutral authority, UID
 or pool is relabeled to manufacture it. Actual publication/activation, desktop
 and observed user training, second-device/full-pool acceptance and the original
 production gates remain open. No main merge or Fleet reconciliation occurred.
+
+## Paired runtime candidates built and published privately
+
+Exact reviewed source `fd96cc0` produced SDK and Hub wheels with complete source,
+RECORD, import and nonoverlapping SDK/Hub/Lab ownership verification. The Node
+image uses the existing pinned Python 3.12 Node recipe; the Hub overlay inherits
+the actual immutable installed Hub base and replaces only the two hash-pinned
+distributions. Both builds and dependency checks passed.
+
+[Candidate image evidence](../../platform-staging/qualification-20261027/reviewed-runtime-images.json)
+records immutable private registry references and exact remote manifest/config
+readback. The Node default command ran inert with no API/GPU calls. Hub image
+checks verified 161 installed package records, new module imports and the actual
+CPSKubeSpawner entry point on Hub 5.5.2/KubeSpawner 7.1.0. Both runtime checks used
+no network, a read-only root filesystem, dropped capabilities and no GPU access.
+Repository visibility was verified private before and after publication. These
+are distinct candidate tags, not a qualified production release.
+
+No candidate image was deployed. Installed Source/Hub/Node state and existing
+research workloads are unchanged. Controlled operator setup requires two genuine
+independent canonical operator identities; CPS bjoern and CIT akadmin cannot be
+counted twice. The Source supports neutral workspace owners, but Hub service
+accounts are not automatically canonical person members. The second operator
+account is a requested missing input, not permission to fabricate an identity.
+A normal authenticated Source roster/client and custody-preserving installation
+are still needed before genuine operator workspaces and the physical run.

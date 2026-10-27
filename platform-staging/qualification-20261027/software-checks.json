@@ -303,5 +303,23 @@
     "exact_archive_paired_passed": 2,
     "scope": "actual runner main/execute/finally to full retained directory to promotion with synthetic IO; strict v4/fresh Node/history software path; no live authority publication",
     "deployed": false
+  },
+  "reviewed_runtime_images": {
+    "source_commit": "fd96cc0cfc47215d28dbcc5835501b2d597817a8",
+    "sdk_wheel_sha256": "f1d6557ed18e30b69bf365736df880283f07968050ce703d9f928cde87401e75",
+    "hub_wheel_sha256": "c77c84d2d476b1ecc5bf433d0222ed94dc68ca6b6ad0286081a6496b893e3b08",
+    "node_image": "ghcr.io/mul-cps/cps-native-node@sha256:a574fd09ba8844b66fb731b9624fb38bbf413138fedec75f5098f43ec6cd40de",
+    "hub_image": "ghcr.io/mul-cps/cps-compute@sha256:bd550fd5f82e1fd9e4d6a4623586ceb5143be6da67430917983f8dc600960762",
+    "registry_manifest_and_config_verified": true,
+    "package_visibility": "private",
+    "node_default": "inert; no API/GPU calls",
+    "hub_records_verified": 161,
+    "hub_versions": {
+      "jupyterhub": "5.5.2",
+      "kubespawner": "7.1.0"
+    },
+    "scope": "actual image build, CPU/no-network/read-only startup/import/record checks and private candidate publication only",
+    "deployed": false,
+    "hardware_qualified": false
   }
 }
