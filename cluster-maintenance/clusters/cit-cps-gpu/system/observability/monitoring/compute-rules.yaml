@@ -74,6 +74,17 @@ spec:
         severity: warning
       annotations:
         summary: GPU memory telemetry is unavailable or stale
+    # Coverage of advertised devices only; never an estimate of free GPUs.
+    # Missing/stale expected inventory is unknown and cannot establish coverage.
+    - alert: ComputeGPUCollectorCoverageIncomplete
+      expr: >-
+        (max by (node) ((kube_node_status_capacity{resource="nvidia_com_gpu",job="kube-state-metrics"} and (time() - timestamp(kube_node_status_capacity{resource="nvidia_com_gpu",job="kube-state-metrics"}) <= 120)) > 0) unless on(node) (max by (node) ((kube_node_status_capacity{resource="nvidia_com_gpu",job="kube-state-metrics"} and (time() - timestamp(kube_node_status_capacity{resource="nvidia_com_gpu",job="kube-state-metrics"}) <= 120)) > 0) <= on(node) count by (node) (label_replace(count by (Hostname, UUID) (DCGM_FI_DEV_FB_FREE{Hostname!="",UUID!=""} and (time() - timestamp(DCGM_FI_DEV_FB_FREE{Hostname!="",UUID!=""}) <= 120)), "node", "$1", "Hostname", "(.+)")))) and on() (min(up{job="kube-state-metrics",namespace="cattle-monitoring-system"} and (time() - timestamp(up{job="kube-state-metrics",namespace="cattle-monitoring-system"}) <= 120)) == 1)
+      for: 5m
+      labels:
+        severity: warning
+      annotations:
+        summary: GPU telemetry device coverage is below advertised node inventory
+        description: 'Node {{ $labels.node }} advertises {{ $value }} GPU devices but fresh distinct DCGM UUID coverage is lower or missing. This is telemetry coverage, not placement eligibility or physical free GPUs.'
     - alert: ComputeHubSpawnLatencyHigh
       expr: cps:hub_spawn_p95_seconds > 180
       for: 10m
