@@ -1,0 +1,265 @@
+#!/usr/bin/env python3
+"""Closed second GPU2 5/10 QA source preparation. Offline and default inert."""
+import argparse
+import ast
+import copy
+import hashlib
+import json
+import os
+from pathlib import Path
+import re
+import types
+import uuid
+
+HERE = Path(__file__).resolve().parent
+SECOND_GPU = 'GPU-1e6145d5-8ee2-43e2-a0d5-6d345909e8a6'
+NODE_UID = '3336cdd5-d245-436e-b57c-2f66c6dcaa41'
+FIRST_GPU = 'GPU-16128952-b438-556a-00bb-93039ee24e56'
+OLD_NS = 'cps-native-qa147-20261022'
+OLD_NS_UID = '1f7d941a-872d-4453-a1ba-fd489d8aff14'
+OLD_COHORT = 'a9fc091b-f388-4f21-8771-b6ae7b4734dc'
+OLD_BOOT = 'a464df41-e391-4443-b8e8-ad7ecd052318'
+OLD_GEN = '4ebffc96-e25e-4583-a3b8-0d853fd90efd'
+COLLECTOR = Path('/tmp/cps-mujoco-reviewed-sdk-installed-20261027/cps_compute/personal_qualification_collect.py')
+COLLECTOR_SHA = '190b6ada40b7162891d4a150779eae5cfe94b622cf3d796d90231f5064f36edf'
+PINS = {
+ 'native-fresh-unequal/prepare.py':'a35c0778bba76b0ca840216d585ef850cefb2313af7d1ca2ad6fb3c2688a019b',
+ 'native-fresh-unequal/prepare_imports.py':'0c7f619f6f1da98d6f82022a2e9b4096dff9c3500370aa93a518872c3b96aa72',
+ 'native-fresh-unequal/prepare_mps.py':'e42280e049cdfac2eca3625cf7de139b6dc81303719363abf68e385d40354f57',
+ 'native-fresh-unequal/fresh_import_closure.py':'544629a0b4aa781dcfb9ef7cf84c700085559c2c27484c12b2370a4d2b1afb18',
+ 'native-fresh-domain/physical_samples.py':'78f730f66c0c84198737715c06601eb4e5dabef68d88644d616b0123351ad35a',
+}
+
+
+def require(ok, message):
+    if not ok: raise ValueError(message)
+
+
+def sha(raw): return hashlib.sha256(raw).hexdigest()
+def source_path(name): return HERE.parent / name
+
+
+def checked_source(name, raw=None):
+    raw = source_path(name).read_bytes() if raw is None else raw
+    require(sha(raw) == PINS[name], 'Exact reviewed preimage changed: ' + name)
+    return raw
+
+
+def load(name, raw, path):
+    m = types.ModuleType(name); m.__file__ = str(path)
+    exec(compile(raw, str(path), 'exec'), m.__dict__)
+    return m
+
+
+def canonical(v): return json.dumps(v, sort_keys=True, separators=(',', ':'), allow_nan=False).encode()
+
+
+def identifier(v):
+    require(type(v) is str and str(uuid.UUID(v)) == v and uuid.UUID(v).int > 0,
+            'Canonical nonzero actual UUID observation required')
+    return v
+
+
+def context(value):
+    require(type(value) is dict and set(value) == {'node','namespace','guard','device','cohort_uid','policy_hash'},
+            'Closed independent capture sections required')
+    node, ns, guard, device = [value[k] for k in ('node','namespace','guard','device')]
+    require(node['metadata']['name'] == 'k3s-wk-gpu2' and node['metadata']['uid'] == NODE_UID,
+            'Only closed second-card GPU2 Node allowed')
+    boot = identifier(node['status']['nodeInfo']['bootID'])
+    require(guard['node_uid'] == device['node_uid'] == NODE_UID
+            and guard['boot_id'] == device['boot_id'] == boot
+            and device['gpu_uuid'] == SECOND_GPU and guard['driver_version'] == '615.71.09',
+            'Independent second-card device/guard/Node observations must agree')
+    require(not node['metadata'].get('deletionTimestamp') and not ns['metadata'].get('deletionTimestamp'),
+            'Deleting Node/namespace refused')
+    name = ns['metadata']['name']; ns_uid = identifier(ns['metadata']['uid'])
+    require(re.fullmatch(r'cps-native-second-card-[a-z0-9-]{1,35}', name or '')
+            and ns_uid != OLD_NS_UID, 'Fresh dedicated second-card QA namespace required')
+    cohort = identifier(value['cohort_uid'])
+    require(cohort not in (OLD_COHORT,'3b217fe8-5750-4ead-954a-09286afd7d3f'), 'Historical cohort reuse denied')
+    require(re.fullmatch(r'sha256:[a-f0-9]{64}',value['policy_hash']) and value['policy_hash']!='sha256:'+'0'*64,'Exact reviewed QA policy hash required')
+    return {'policy_hash':value['policy_hash'],'namespace':name,'namespace_uid':ns_uid,'cohort':cohort,'boot':boot,
+            'generation':identifier(guard['driver_generation'])}
+
+
+def substitutions(source, ctx):
+    # Only authenticated exact source bytes enter here. Hardware target is fixed,
+    # not accepted as a CLI or request UUID. Every old literal is closed below.
+    for old, new in ((FIRST_GPU,SECOND_GPU),(OLD_NS,ctx['namespace']),
+                     (OLD_NS_UID,ctx['namespace_uid']),(OLD_COHORT,ctx['cohort']),
+                     (OLD_BOOT,ctx['boot']),(OLD_GEN,ctx['generation']),
+                     ('native-qa147-','native-second-card-'),
+                     ('sha256:332d14fb9e510b9810feffb8d40b408743f9679ebd13ca1ba0e1077d666e9281',ctx['policy_hash'])):
+        source = source.replace(old,new)
+    return source
+
+
+def replace_pin(source, old, new):
+    require(old in source, 'Dependent reviewed source pin missing: ' + old)
+    return source.replace(old,new)
+
+
+def build_sources(observations):
+    ctx = context(observations)
+    checked = {n:checked_source(n) for n in PINS}  # Before executing ANY producer.
+    producer = load('second_unequal', checked['native-fresh-unequal/prepare.py'], source_path('native-fresh-unequal/prepare.py'))
+    original = producer.build_sources('5-10')
+    files = {n:substitutions(r.decode(),ctx).encode() for n,r in original.items()}
+    physical=substitutions(checked['native-fresh-domain/physical_samples.py'].decode(),ctx)
+    require(physical.count('total>0')==1,'Exact physical capacity span required')
+    files['physical_samples.py']=physical.replace('total>0','total==40960').encode()
+    closure_pins={**PINS,**producer.PINS}
+    # Reuse reviewed exact-fd host loader, not bare SONAME or container-only env.
+    collector = COLLECTOR.read_bytes()
+    require(sha(collector) == COLLECTOR_SHA, 'Exact reviewed host loader preimage required')
+    tree = ast.parse(collector)
+    fn = next(n for n in tree.body if isinstance(n,ast.FunctionDef) and n.name=='trusted_nvml')
+    assignment = next(n for n in tree.body if isinstance(n,ast.Assign)
+                      and any(isinstance(t,ast.Name) and t.id=='HOST_NVML_LIBRARY' for t in n.targets))
+    loader = ast.get_source_segment(collector.decode(),assignment)+'\n\n'+ast.get_source_segment(collector.decode(),fn)+'\n'
+    c = files['controller.py'].decode()
+    # Read exact original six-module SDK bundle with unchanged original checks.
+    controller = load('second_bundle_contract', original['controller.py'], source_path('native-fresh-domain/controller.py'))
+    bundle = {}
+    for name,pin in controller.PINS.items():
+        raw = (controller.SDK/'cps_compute'/name).read_bytes()
+        require(sha(raw)==pin,'Exact six-module SDK bundle preimage required')
+        bundle[name]=raw
+    nvml = bundle['native_node/nvml.py'].decode()
+    require(nvml.count("C.CDLL('libnvidia-ml.so.1')") == 1,'Exact original NVML loader seam changed')
+    nvml = nvml.replace('import ctypes as C','import ctypes as C\nimport os,stat,hashlib')
+    nvml = nvml.replace("C.CDLL('libnvidia-ml.so.1')",'trusted_nvml()')+'\n'+loader
+    old_nvml = controller.PINS['native_node/nvml.py']; bundle['native_node/nvml.py']=nvml.encode()
+    c=replace_pin(c,old_nvml,sha(bundle['native_node/nvml.py']))
+    old_sdk="SDK = Path('/home/bjoern/git/cps-compute-worktrees/native-health-147-build-pins-20261023/src')"
+    require(c.count(old_sdk)==1,'Exact controller bundle source root required')
+    c=c.replace(old_sdk,"SDK = Path(__file__).resolve().parent / 'bundle'")
+    files['controller.py']=c.encode()
+    o=files['observe.py'].decode()
+    o=replace_pin(o,sha(original['controller.py']),sha(files['controller.py']))
+    files['observe.py']=o.encode()
+    for n,r in bundle.items():files['bundle/cps_compute/'+n]=r
+    # Existing import/MPS adapters authenticate their complete engine closures.
+    family_files={}
+    for label,adapter in (('imports','prepare_imports.py'),('mps','prepare_mps.py')):
+        module=load('second_'+label,checked['native-fresh-unequal/'+adapter],source_path('native-fresh-unequal/'+adapter))
+        generated=module.build_sources()
+        closure_pins.update({('native-fresh-imports/' if label=='imports' else 'native-fresh-mps/')+n:p for n,p in module.PINS.items()})
+        transformed={n:substitutions(r.decode(),ctx) for n,r in generated.items()}
+        # Both original adapters intentionally bind protected policy. Keep binding
+        # exact; caller may not pass a replacement policy or synthesize authority.
+        for name in ('fresh_preflight.py','peer_probe.py','run_peer_oom.py'):
+            transformed[name]=files[name].decode()
+        # Topological repin: helper -> engine -> runner plus shared peer closure.
+        for dep in ('same_pod_imports.py','same_parent_engine.py','mps_probe.py','mapper.py','engine.py',
+                    'fresh_preflight.py','peer_probe.py','run_peer_oom.py'):
+            if dep not in generated:continue
+            old,new=sha(generated[dep]),sha(transformed[dep].encode())
+            if old != new:
+                for n,s in transformed.items():
+                    if n!=dep: transformed[n]=s.replace(old,new)
+        for n,s in transformed.items():family_files[label+'/'+n]=s.encode()
+    files.update(family_files)
+    # Full original managed/VMM closure requires admitted actual Pod UIDs; keep
+    # the exact-source adapter available for the post-finalize stage, never fake.
+    closure=substitutions(checked['native-fresh-unequal/fresh_import_closure.py'].decode(),ctx)
+    closure=closure.replace('3b217fe8-5750-4ead-954a-09286afd7d3f',ctx['cohort'])
+    closure=closure.replace('Source332','QA-policy-bound')
+    require(closure.count(' for name,s in text.items():')==1,'Exact import closure loop required')
+    closure=closure.replace(' for name,s in text.items():',' for name,s in text.items():\n  s=s.replace('+repr(FIRST_GPU)+','+repr(SECOND_GPU)+')')
+    closure=replace_pin(closure,'5ce86051f1a9bd435abc14a8633f273e03e1af086658de7fad8b8d5dcceb3cc0',sha(files['fresh_preflight.py']))
+    files['prepare_import_closure.py']=closure.encode()
+    historical=load('second_historical_inventory',checked['native-fresh-unequal/fresh_import_closure.py'],source_path('native-fresh-unequal/fresh_import_closure.py'))
+    for n,pin in historical.PINS.items():
+        require(sha((historical.OLD/n).read_bytes())==pin,'Complete historical gate source preimage required')
+        closure_pins['historical-group-probes/'+n]=pin
+    for n,pin in controller.PINS.items():closure_pins['sdk/cps_compute/'+n]=pin
+    restart=files['fresh_preflight.py'].decode()
+    require(restart.count("current['restartCount']==0")==1,'Exact initial restart guard span required')
+    restart=restart.replace("current['restartCount']==0","current['restartCount']==(1 if row['name']=="+repr('native-second-card-a-'+ctx['cohort'][:8])+" else 0)")
+    files['restart/fresh_preflight.py']=restart.encode()
+    for name in ('run_peer_oom.py','peer_probe.py'):
+        files['restart/'+name]=files[name]
+    for name,raw in files.items():
+        if name.endswith('.py'):compile(raw,name,'exec')
+    families={name:{'state':'unrun','receipts':[]} for name in
+              ('cap-assignment','oom-peer','aggregate','memory-import','restart-cleanup','mps','capacity')}
+    for name,paths in {'cap-assignment':['controller.py','observe.py'],'oom-peer':['run_peer_oom.py'],'aggregate':['run_aggregate.py'],'memory-import':['imports/run_imports.py','prepare_import_closure.py'],'restart-cleanup':['restart/run_peer_oom.py','controller.py'],'mps':['mps/run_mps.py'],'capacity':['physical_samples.py']}.items():families[name]['entrypoints']=paths
+    return {'files':files,'families':families,'context':ctx,
+            'source_sha256':{**closure_pins,'reviewed-host-loader':COLLECTOR_SHA},
+            'hardware_qualified':False,'production_qualified':False}
+
+
+
+def finalize_import_sources(observations, manifest_raw, manifest_sha, host_argv):
+    """Offline second phase: actual finalized manifest, no invented Pod identity."""
+    require(sha(manifest_raw)==manifest_sha and len(manifest_raw)<=65536,
+            'Exact bounded finalized manifest bytes required')
+    generated=build_sources(observations)
+    require(type(host_argv) is list and 3<=len(host_argv)<=128
+            and all(type(v) is str and 0<len(v)<=4096 and not any(c in v for c in '\x00\r\n') for v in host_argv)
+            and Path(host_argv[0]).name in ('ssh','kubectl')
+            and ('sudo' in host_argv or 'nsenter' in host_argv),
+            'Independently reviewed bounded Root host transport required')
+    raw=generated['files']['prepare_import_closure.py'].decode()
+    tree=ast.parse(raw)
+    node=next(n for n in tree.body if isinstance(n,ast.Assign)
+              and any(isinstance(t,ast.Name) and t.id=='HOST_ARGV' for t in n.targets))
+    old=ast.get_source_segment(raw,node)
+    require(raw.count(old)==1,'Exact host transport assignment required')
+    raw=raw.replace(old,'HOST_ARGV='+repr(host_argv))
+    module=load('second_import_closure_finalized',raw,HERE/'prepare_import_closure.py')
+    files=module.build(json.loads(manifest_raw),manifest_sha,
+                       generated['files']['fresh_preflight.py'],sha(generated['files']['fresh_preflight.py']))
+    files['manifest.json']=manifest_raw
+    files['source-preparation.py']=raw.encode()
+    return files
+
+
+def write_files(output, files):
+    output.mkdir(mode=0o700)
+    for name,data in files.items():
+        path=output/name;path.parent.mkdir(mode=0o700,parents=True,exist_ok=True)
+        fd=os.open(path,os.O_WRONLY|os.O_CREAT|os.O_EXCL|os.O_NOFOLLOW,0o600)
+        with os.fdopen(fd,'wb') as stream:stream.write(data)
+
+
+def main(argv=None):
+    p=argparse.ArgumentParser(description=__doc__)
+    p.add_argument('--prepare',action='store_true');p.add_argument('--finalize-imports',action='store_true');
+    p.add_argument('--manifest',type=Path);p.add_argument('--manifest-sha256');p.add_argument('--host-argv',type=Path);p.add_argument('--host-argv-sha256');p.add_argument('--observations',type=Path)
+    p.add_argument('--observations-sha256');p.add_argument('--inputs',type=Path);p.add_argument('--inputs-sha256')
+    p.add_argument('--output',type=Path);p.add_argument('--approve-qa-hostpaths',action='store_true')
+    args=p.parse_args(argv)
+    if not (args.prepare or args.finalize_imports):
+        print('{"inert":true,"api_calls":false,"gpu_calls":false}');return
+    if args.finalize_imports:
+        require(not args.prepare and all((args.observations,args.observations_sha256,args.manifest,args.manifest_sha256,args.host_argv,args.host_argv_sha256,args.output)), 'Exclusive finalized import phase with exact pinned inputs required')
+        observed=args.observations.read_bytes();host=args.host_argv.read_bytes()
+        require(len(observed)<=1048576 and len(host)<=65536 and sha(observed)==args.observations_sha256 and sha(host)==args.host_argv_sha256,'Exact observation/Root transport raw pins required')
+        files=finalize_import_sources(json.loads(observed),args.manifest.read_bytes(),args.manifest_sha256,json.loads(host))
+        files['preparation.json']=canonical({'state':'prepared-not-executed','generated_sha256':{n:sha(v) for n,v in files.items()},'hardware_qualified':False,'production_qualified':False})+b'\n'
+        write_files(args.output,files)
+        print('{"prepared":true,"api_calls":false,"gpu_calls":false}');return
+    require(all((args.observations,args.observations_sha256,args.inputs,args.inputs_sha256,args.output,args.approve_qa_hostpaths)),
+            'Pinned observations/request/new output/explicit hostpath approval required')
+    observed=args.observations.read_bytes();raw=args.inputs.read_bytes()
+    require(len(observed)<=1048576 and len(raw)<=65536 and sha(observed)==args.observations_sha256
+            and sha(raw)==args.inputs_sha256,'Exact bounded raw capture/request pins required')
+    result=build_sources(json.loads(observed));request=json.loads(raw)
+    require(request.get('pair')=='5-10' and request.get('cohort_uid')==result['context']['cohort'] and request.get('policy_hash')==result['context']['policy_hash'],
+            'Closed exact fresh 5/10 cohort request required')
+    renderer=load('second_renderer',result['files']['render_fixture.py'],args.output/'render_fixture.py')
+    review=renderer.render(request,approve_qa_hostpaths=True)
+    files=result.pop('files')
+    result.update(version=1,state='offline-prepared-not-executed',observations_sha256=sha(observed),
+                  request_sha256=sha(raw),generated_sha256={n:sha(r) for n,r in files.items()},
+                  policy_hash=request['policy_hash'],launch_authorized=False)
+    files.update({'preparation.json':canonical(result)+b'\n','observations.raw.json':observed,'inputs.json':raw,
+                  'review.json':canonical(review)+b'\n','gate-source.configmap.json':canonical(review['source_configmap'])+b'\n'})
+    files.update({k+'.proposed.json':canonical(v)+b'\n' for k,v in review['pods'].items()})
+    write_files(args.output,files)
+    print(json.dumps({'prepared':True,'api_calls':False,'gpu_calls':False,'launch_authorized':False}))
+
+if __name__=='__main__':main()
