@@ -204,5 +204,17 @@
     "production_positive_chain_passed": 1,
     "production_positive_chain_seconds": 7.55,
     "scope": "implemented hosted-only lane and one actual local installed-dependency positive chain; hosted full-four-module execution pending billing resolution"
+  },
+  "gpu_telemetry_coverage_alert": {
+    "commit": "c678352182013d36f75c98c6a4c0ae2e6ef3d077",
+    "review": "independent spec and quality PASS; no Critical/Important findings",
+    "promtool_version": "3.5.0",
+    "focused_scenarios": 11,
+    "focused_seconds": 0.401,
+    "owning_promql_dashboard_check_seconds": 2.024,
+    "semantics": "fresh per-node positive advertised KSM GPU capacity versus distinct fresh DCGM UUIDs; missing or insufficient coverage warns after 5m; extra physical UUIDs allowed; absent/stale expected inventory is unknown",
+    "deployed": false,
+    "runtime_observation": "GPU2 exporter explicitly excluded by node label; three other exporter targets report six UUIDs against seven advertised devices",
+    "remaining": "actual exporter coverage on GPU2 guarded runtime, deployed rule acceptance, resource isolation/Descheduler telemetry, physical free-GPU measurement and remaining monitoring gates"
   }
 }

@@ -125,6 +125,22 @@ versions and scopes. No new CUDA qualification or deployment was performed here.
 - Original dirty checkouts remain preserved. No main branch was merged and no
   new application image or live database was changed.
 
+## Monitoring coverage increment
+
+Reviewed per-node GPU telemetry coverage alert source is published at cluster
+`c678352182013d36f75c98c6a4c0ae2e6ef3d077`. Eleven actual promtool scenarios
+passed, as did the owning rule/dashboard check. It compares fresh advertised
+capacity with deduplicated fresh device telemetry, allows legitimate extra
+physical UUIDs and retains unknown inventory as unknown. It is not deployed here.
+
+Read-only Prometheus inspection found six reporting UUIDs versus seven advertised
+GPUs. GPU2 has no exporter Pod because its explicit exporter-deployment label is
+false; the other three targets are healthy. This is a telemetry exclusion, not a
+hardware-failure or free-capacity result. Matching numeric driver versions do not
+establish compatibility: GPU2's loaded core/UVM source versions and native guard
+settings differ from the working-node tuple. Exclusion intent and safe exporter
+compatibility still need validation. No label or runtime setting was changed.
+
 ## Read-only runtime observation
 
 The [timestamped Kubernetes snapshot](../../platform-staging/qualification-20261027/cluster-readonly.json)
