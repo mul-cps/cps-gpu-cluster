@@ -187,10 +187,11 @@ partial candidate after fixing missing personal post-stop routing. Missing clean
 proof retains the reservation; original verified Node cleanup releases it once.
 These are software fixtures, not image/native rendering or live deployment proof.
 
-Required Task4D must retain exact reservation and runtime Control audit successors
-before grant updates can activate with allocations live. Installed factory cleanup
-wiring, actual subject enrollment, exact-image NVML/EGL combined-budget and desktop
-qualification remain required. MuJoCo is not restored on the live Hub yet.
+Reviewed Task4D now retains exact supported local reservation and runtime Control
+audit successors, including actual directory grant renewal/withdrawal with a
+selected allocation live and historical cleanup afterward. Remote installed
+factory wiring, actual subject enrollment, exact-image NVML/EGL combined-budget
+and desktop qualification remain required. MuJoCo is not restored on the live Hub yet.
 
 ## Work still required for production
 
@@ -209,3 +210,29 @@ qualification remain required. MuJoCo is not restored on the live Hub yet.
 
 The acceptance requirements in [qualification](qualification.md) remain binding.
 No source-only result closes a live acceptance or release gate.
+
+## Reviewed runtime successors and partial MuJoCo producer update
+
+Compute runtime successor commit `752e709ffdd41a1376d36bf12cacaa2296aec959`
+passed independent scoped review after complete argument binding and reopened-store
+custody corrections. Its exact paired wheels passed three focused production-driver
+cases (24.27 seconds). The earlier 288-case affected run predates these fixes and
+is not represented as a final full rerun. Remote factories and maintenance writers
+remain outside this local supported-installation result.
+
+CI commit `f747d34c70e26896893982116c1765fcce4691ad` requires 52 cases across
+eight PostgreSQL modules and the selected personal cleanup case. Its JUnit gate
+passed 37 tests; two actual production-driver cases passed in 42.05 seconds.
+Independent review approved the continuation. Hosted CI remains unexecuted due
+to the recorded account billing block; local runs do not close that release gate.
+
+Compute `e5f4e520d963fcfb475760a7e78e1c7e94f928b4` and cluster
+`25a2ca7844967c1ada9c7a2f6018f1c2a05913b0` add the reviewed partial exact-image
+MuJoCo producer and controlled operator-envelope tooling. Exact archived checks
+passed 19 compute and six harness tests. Staged per-process CUDA/GL attribution,
+separate GL over-cap rejection and original manifest-byte retention are covered
+in software. Reset status explicitly remains unknown: the fifth peer-survival
+receipt is omitted, so this cannot qualify or enable the personal profile.
+Continuous reset observation, envelope-to-target-policy promotion and physical
+GPU/EGL/Xpra execution remain required. Both reviewed source branches were pushed
+and their remote SHAs verified; no main merge or live deployment occurred.

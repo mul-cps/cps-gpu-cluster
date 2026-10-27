@@ -238,6 +238,41 @@
     },
     "deployed": false,
     "complete": false,
-    "remaining": "Task4D exact live reservation and Control runtime audit successors, installed cleanup factory wiring, actual upstream subject enrollment, exact MuJoCo image NVML/EGL/desktop qualification; original production gates unchanged"
+    "remaining": "Remote installed cleanup/factory wiring, actual upstream subject enrollment, exact MuJoCo image NVML/EGL/desktop qualification; original production gates unchanged"
+  },
+  "runtime_successors_local": {
+    "commit": "752e709ffdd41a1376d36bf12cacaa2296aec959",
+    "review": "independent scoped PASS after argument-binding and reopened-custody fixes",
+    "exact_paired_wheel_cases": 3,
+    "seconds": 24.27,
+    "deployed": false,
+    "scope": "supported local installed path; genuine directory renewal/withdrawal with selected allocation and historical cleanup; remote factories/writers pending"
+  },
+  "postgresql_release_ci_continuation": {
+    "commit": "f747d34c70e26896893982116c1765fcce4691ad",
+    "required_collected_cases": 52,
+    "gate_tests_passed": 37,
+    "production_driver_cases_passed": 2,
+    "production_driver_seconds": 42.05,
+    "review": "independent PASS",
+    "hosted_executed": false,
+    "hosted_blocker": "recorded GitHub account billing/spending limit before job steps"
+  },
+  "mujoco_measurement_producer_partial": {
+    "compute_commit": "e5f4e520d963fcfb475760a7e78e1c7e94f928b4",
+    "cluster_commit": "25a2ca7844967c1ada9c7a2f6018f1c2a05913b0",
+    "compute_tests_passed": 19,
+    "harness_tests_passed": 6,
+    "review": "R1 independent PASS for partial draft source only",
+    "reset_status": "unknown",
+    "peer_survival_receipt_emitted": false,
+    "hardware_executed": false,
+    "deployed": false,
+    "remaining": [
+      "continuous independently observed reset window",
+      "operator-envelope to target-policy promotion",
+      "exact-image packaging and GPU/EGL/Xpra measurements",
+      "authenticated desktop and observed user training"
+    ]
   }
 }
