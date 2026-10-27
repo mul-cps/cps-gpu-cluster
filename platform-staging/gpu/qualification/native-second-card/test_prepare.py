@@ -187,8 +187,8 @@ def test_actual_observed_cdi_kind_mapping_and_compiled_environment(tmp_path):
   raw=json.dumps(doc);wrong['cdi'].update(raw=raw,sha256=m.sha(raw.encode()))
   if drift=='hash':wrong['cdi'].update(raw=value['cdi']['raw'],sha256='0'*64)
   with pytest.raises(ValueError,match='CDI'):m.build_sources(wrong)
- # MPS sees the provider-applied runtime env, while checking raw UUID separately.
- assert b"os.environ.get('NVIDIA_VISIBLE_DEVICES') == 'void'" in files['mps/mps_probe.py']
+ # MPS binds both the initial CDI edit and the distinct configured CRI exec env.
+ assert b'compiler_environment()' in files['mps/mps_probe.py']
 
 def test_actual_retired_a5_b10_records_keep_original_cohort_cap_binding(tmp_path,monkeypatch):
  """Actual nonsecret retired records, deterministic fake native IO only."""
@@ -224,16 +224,11 @@ def test_actual_retired_a5_b10_records_keep_original_cohort_cap_binding(tmp_path
   else:bad['records'][1]['intent']['cap_mib']=5120
   with pytest.raises(ValueError):check(bad)
 
-def test_mps_runtime_guard_uses_exact_provider_applied_environment():
- """Real emitted predicate after authenticated CDI global/device env edits."""
+def test_mps_initial_oci_environment_uses_exact_provider_edits():
+ """Authenticated CDI edits initial OCI env, not the CRI exec config."""
  import ast,json,types
  m=module();files=m.build_sources(observations())['files']
  tree=ast.parse(files['mps/mps_probe.py'])
- preflight=next(n for n in tree.body if isinstance(n,ast.FunctionDef)and n.name=='preflight')
- guard=next(n for n in ast.walk(preflight)if isinstance(n,ast.Call)and isinstance(n.func,ast.Name)
-            and n.func.id=='require'and len(n.args)>1 and isinstance(n.args[1],ast.Constant)
-            and n.args[1].value=='Compiler-owned single device environment required')
- predicate=compile(ast.Expression(guard.args[0]),'<actual emitted MPS env guard>','eval')
  provider=json.loads(observations()['cdi']['raw'])
  device=next(d for d in provider['devices']if d['name']==m.SECOND_GPU)
  env={'CUDA_VISIBLE_DEVICES':'0','NVIDIA_VISIBLE_DEVICES':m.CDI_DEVICE}
@@ -241,9 +236,39 @@ def test_mps_runtime_guard_uses_exact_provider_applied_environment():
   for entry in edits.get('env',[]):
    key,value=entry.split('=',1);env[key]=value  # CDI AddMultipleProcessEnv replacement.
  assert env['NVIDIA_VISIBLE_DEVICES']=='void'
- assert eval(predicate,{'os':types.SimpleNamespace(environ=env)}) is True
- for wrong in (m.SECOND_GPU,m.CDI_DEVICE,'all'):
-  altered={**env,'NVIDIA_VISIBLE_DEVICES':wrong}
-  assert eval(predicate,{'os':types.SimpleNamespace(environ=altered)}) is False
+ assert env['NVIDIA_VISIBLE_DEVICES']!=m.CDI_DEVICE
  assignment=next(n for n in tree.body if isinstance(n,ast.Assign)and isinstance(n.targets[0],ast.Name)and n.targets[0].id=='GPU')
  assert ast.literal_eval(assignment.value)==m.SECOND_GPU
+
+def test_mps_actual_initial_oci_and_cri_exec_environments():
+ """Actual observed two environments, fake /proc bytes only; never CUDA calls."""
+ import ast,io,types
+ m=module();raw=m.build_sources(observations())['files']['mps/mps_probe.py'];tree=ast.parse(raw)
+ preflight=next(n for n in tree.body if isinstance(n,ast.FunctionDef)and n.name=='preflight')
+ check=next(n for n in ast.walk(preflight)if isinstance(n,ast.Call)and isinstance(n.func,ast.Name)
+            and n.func.id=='require'and len(n.args)>1 and isinstance(n.args[1],ast.Constant)
+            and n.args[1].value=='Compiler-owned single device environment required')
+ expected='k8s.device-plugin.nvidia.com/gpu='+m.SECOND_GPU
+ initial={'raw':b'CUDA_VISIBLE_DEVICES=0\0NVIDIA_VISIBLE_DEVICES=void\0'}
+ class Proc:
+  def __init__(self,path):assert path=='/proc/1/environ'
+  def open(self,mode):
+   assert mode=='rb'
+   if initial.get('error'):raise PermissionError('fake unreadable PID1')
+   return io.BytesIO(initial['raw'])
+ env={'CUDA_VISIBLE_DEVICES':'0','NVIDIA_VISIBLE_DEVICES':expected}
+ scope={'os':types.SimpleNamespace(environ=env),'Path':Proc,'require':m.require}
+ helper=[n for n in tree.body if isinstance(n,ast.FunctionDef)and n.name=='compiler_environment']
+ if helper:exec(compile(ast.Module(body=helper,type_ignores=[]),'actual-emitted-env','exec'),scope)
+ statement=compile(ast.Expression(check),'actual-emitted-preflight-check','eval')
+ eval(statement,scope) # Actual CRI exec qualified + initial OCI void must pass.
+ for exec_value,initial_raw in [('void',initial['raw']),(expected.replace(m.SECOND_GPU,m.FIRST_GPU),initial['raw']),
+                              (expected,b'CUDA_VISIBLE_DEVICES=0\0NVIDIA_VISIBLE_DEVICES='+expected.encode()+b'\0'),
+                              (expected,b'CUDA_VISIBLE_DEVICES=0\0NVIDIA_VISIBLE_DEVICES=void\0NVIDIA_VISIBLE_DEVICES=void\0'),
+                              (expected,b'CUDA_VISIBLE_DEVICES=0\0CUDA_VISIBLE_DEVICES=0\0NVIDIA_VISIBLE_DEVICES=void\0'),
+                              (expected,b'x'*262145)]:
+  env['NVIDIA_VISIBLE_DEVICES']=exec_value;initial['raw']=initial_raw
+  with pytest.raises(ValueError):eval(statement,scope)
+
+ env['NVIDIA_VISIBLE_DEVICES']=expected;initial['error']=True
+ with pytest.raises(PermissionError):eval(statement,scope)

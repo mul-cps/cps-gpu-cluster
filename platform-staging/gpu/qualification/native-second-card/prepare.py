@@ -189,9 +189,26 @@ def build_sources(observations):
         closure_pins.update({('native-fresh-imports/' if label=='imports' else 'native-fresh-mps/')+n:p for n,p in module.PINS.items()})
         transformed={n:substitutions(r.decode(),ctx) for n,r in generated.items()}
         if label=='mps':
-            guard="os.environ.get('NVIDIA_VISIBLE_DEVICES') == GPU"
-            require(transformed['mps_probe.py'].count(guard)==1,'Exact MPS environment assertion required')
-            transformed['mps_probe.py']=transformed['mps_probe.py'].replace(guard,"os.environ.get('NVIDIA_VISIBLE_DEVICES') == "+repr('void'))
+            guard="os.environ.get('CUDA_VISIBLE_DEVICES') == '0' and os.environ.get('NVIDIA_VISIBLE_DEVICES') == GPU"
+            probe=transformed['mps_probe.py']
+            require(probe.count(guard)==1 and probe.count('def preflight(')==1,'Exact MPS environment assertion required')
+            helper="""def compiler_environment():
+    # CDI edits initial OCI env; CRI exec carries the configured selector.
+    # Read only these two initial-process facts, never emit its environment.
+    with Path('/proc/1/environ').open('rb') as stream:
+        raw = stream.read(262145)
+    if len(raw) > 262144:
+        return False
+    entries = raw.split(b'\\0')
+    return (os.environ.get('CUDA_VISIBLE_DEVICES') == '0'
+        and os.environ.get('NVIDIA_VISIBLE_DEVICES') == SELECTOR
+        and entries.count(b'CUDA_VISIBLE_DEVICES=0') == 1
+        and entries.count(b'NVIDIA_VISIBLE_DEVICES=void') == 1
+        and sum(e.startswith(b'CUDA_VISIBLE_DEVICES=') for e in entries) == 1
+        and sum(e.startswith(b'NVIDIA_VISIBLE_DEVICES=') for e in entries) == 1)
+
+""".replace('SELECTOR',repr(CDI_DEVICE))
+            transformed['mps_probe.py']=probe.replace(guard,'compiler_environment()').replace('def preflight(',helper+'def preflight(')
         # Both original adapters intentionally bind protected policy. Keep binding
         # exact; caller may not pass a replacement policy or synthesize authority.
         for name in ('fresh_preflight.py','peer_probe.py','run_peer_oom.py'):

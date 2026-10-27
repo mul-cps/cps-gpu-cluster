@@ -1,0 +1,243 @@
+{
+  "aggregate": {
+    "held_before_oom_mib": 6912,
+    "held_before_oom_scope": "B10 victim tensors; additional B10 same-parent holder2048MiB",
+    "holder_tensor_mib": 2048,
+    "measurement_passed": true,
+    "ordinary_peer_label": "A5",
+    "ordinary_peer_pod_uid": "21a75417-3a19-414e-8c06-92909da6a2fe",
+    "ordinary_peer_ticks_inside_oom_hold": 16,
+    "peer_ticks_inside_oom_hold": 16,
+    "physical_samples": 4,
+    "production_qualified": false,
+    "receipt_sha256": "027e713260c6ebc7e1c6e77093b37faf471a222aedeb969992ef1ccd04735296",
+    "recovery_byte": 37,
+    "same_parent_aggregate": true,
+    "same_parent_holder_label": "B10",
+    "same_parent_pod_uid": "fac42cb0-e624-430f-8e8b-c1594e7968bf",
+    "transport": "kubectl",
+    "typed_oom": {
+      "cuda_error_code": null,
+      "kind": "torch.OutOfMemoryError"
+    },
+    "unchanged_seals_and_processes": true,
+    "victim_label": "B10"
+  },
+  "caps_mib": [
+    5120,
+    10240
+  ],
+  "cleanup": {
+    "all8_retired_offline_pinned_used0": true,
+    "cleanup_receipt_sha256": "237bd4120df7dcf9ed36bc5206ed524a3aa46069e383f04e1e5ae572afb1a050",
+    "epoch_unchanged": true,
+    "final_host_capture_sha256": "fd8f036284d0a36f3e41f9c9bf95d734e7b8f2a69a70cf347eeea1be4fa62c32",
+    "first_custody_exact_unchanged": true,
+    "node": {
+      "name": "k3s-wk-gpu2",
+      "resourceVersion": "386249567",
+      "uid": "3336cdd5-d245-436e-b57c-2f66c6dcaa41",
+      "unschedulable": true
+    },
+    "node_observation_phase": "after cleanup, before Root independently restored scheduling",
+    "whole_cdi_exact_unchanged": true
+  },
+  "cohort_uid": "9442c844-5ca2-477f-956c-e3e752a09393",
+  "cross_root_transport": "host mount+pid+UTS namespaces; separately reviewed fixed Root argv; exact helpers unchanged R5",
+  "gpu_uuid": "GPU-1e6145d5-8ee2-43e2-a0d5-6d345909e8a6",
+  "hardware_qualified": false,
+  "imports": {
+    "creator-exit-a": {
+      "actual_final_charge_zero": true,
+      "backing_charge": {
+        "production_qualified": false,
+        "retained_backing_charge_measured": true,
+        "retained_minimum_used_bytes": 503450304,
+        "same_context_after_vmm_release_used_bytes": 436341440,
+        "vmm_backing_charge_drop_bytes": 67108864
+      },
+      "measurement": {
+        "creator_exited_before_hold": true,
+        "production_qualified": false,
+        "verified_kernel_ticks": 20,
+        "verified_retained_hold_seconds": 20.00892583996756
+      },
+      "original_participant_pids_absent": true,
+      "production_qualified": false,
+      "receipt_sha256": "4427279f9270fdf6da99d9c054197b1a4a6697a55006371bfbcdcc1afc0f33ae",
+      "state": "same-parent-vmm-creator-exit-retention-measured"
+    },
+    "creator-exit-b": {
+      "actual_final_charge_zero": true,
+      "backing_charge": {
+        "production_qualified": false,
+        "retained_backing_charge_measured": true,
+        "retained_minimum_used_bytes": 503450304,
+        "same_context_after_vmm_release_used_bytes": 436341440,
+        "vmm_backing_charge_drop_bytes": 67108864
+      },
+      "measurement": {
+        "creator_exited_before_hold": true,
+        "production_qualified": false,
+        "verified_kernel_ticks": 20,
+        "verified_retained_hold_seconds": 20.01011275599012
+      },
+      "original_participant_pids_absent": true,
+      "production_qualified": false,
+      "receipt_sha256": "44ad5d8ba3d6ac64fe45ccba7e9285d70ba9dfab56b64befd2913f5369621f5a",
+      "state": "same-parent-vmm-creator-exit-retention-measured"
+    },
+    "cross-parent-a-to-b": {
+      "kernel_witness_correlated": true,
+      "kernel_witness_correlation": {
+        "begin_sequence": 47039,
+        "capture_sha256": "sha256:3c004a5cffb6e43c9cec90c64f9fa2a2d0761b8b1c3c32c0b3d115af52736a71",
+        "client_kind": 4,
+        "clock_offset_rule_used": false,
+        "end_sequence": 47043,
+        "gpu_id": 1553,
+        "host_tgid": 722874,
+        "kernel_reason": 6,
+        "kernel_sequence": 47040,
+        "kernel_status": 27,
+        "kernel_witness_correlated": true,
+        "pid_start_ticks": 48211933,
+        "production_qualified": false,
+        "state": "bounded-kernel-vmm-witness-correlated",
+        "trial_id": "42218971-7484-4090-9dfc-32123ecf4921"
+      },
+      "peer_vector_continuity": true,
+      "production_qualified": false,
+      "receipt_sha256": "b2951b756cbc32dc76b5ee94c77ce0fac557094735e5f8d0899e9f93c5ad2989",
+      "remote_endpoint_cleanup": "verified",
+      "same_parent_positive_control": true,
+      "state": "bounded-cross-parent-vmm-kernel-denial-measured",
+      "unchanged_native_authorities": true
+    },
+    "cross-parent-b-to-a": {
+      "kernel_witness_correlated": true,
+      "kernel_witness_correlation": {
+        "begin_sequence": 47044,
+        "capture_sha256": "sha256:286a18043d69410f8f6ff62f34e0170c349be8a7ed9c270eccabac0b50d7b92c",
+        "client_kind": 4,
+        "clock_offset_rule_used": false,
+        "end_sequence": 47048,
+        "gpu_id": 1553,
+        "host_tgid": 723580,
+        "kernel_reason": 6,
+        "kernel_sequence": 47045,
+        "kernel_status": 27,
+        "kernel_witness_correlated": true,
+        "pid_start_ticks": 48212689,
+        "production_qualified": false,
+        "state": "bounded-kernel-vmm-witness-correlated",
+        "trial_id": "c1f3c85b-3bc7-4d92-aba5-8cc703f101f5"
+      },
+      "peer_vector_continuity": true,
+      "production_qualified": false,
+      "receipt_sha256": "f47024593305c7e3488ed03c649e86c212e047ed7c0aa41cd434a194ef3b9456",
+      "remote_endpoint_cleanup": "verified",
+      "same_parent_positive_control": true,
+      "state": "bounded-cross-parent-vmm-kernel-denial-measured",
+      "unchanged_native_authorities": true
+    },
+    "managed-a": {
+      "endpoint_namespace_pid": 233,
+      "endpoint_pod_uid": "21a75417-3a19-414e-8c06-92909da6a2fe",
+      "endpoint_raw_evidence_sha256": "c485d4a1f852b1b0660b97aa34b78f2499d3835f12bed5db4fcd6ecd64ae1cfd",
+      "endpoint_source_sha256": "f8d3f3fdad0285984300b77c39cb2bda060ed818d116c8293ee74b74ed9aeb01",
+      "endpoint_start_ticks": 48157727,
+      "measurement": {
+        "cuda_result": 801,
+        "production_qualified": false,
+        "typed_managed_denial": true
+      },
+      "production_qualified": false,
+      "receipt_sha256": "1c844cba746a9737732edc71f923aa94f35d97f5a74565de9a7fffe29cd99d32",
+      "state": "typed-managed-api-denial-controls-and-cleanup-observed",
+      "typed_result": {
+        "allocation_mib": 64,
+        "api": "cuMemAllocManaged",
+        "cuda_result": 801,
+        "error_name": "CUDA_ERROR_NOT_SUPPORTED",
+        "error_name_result": 0,
+        "flags": 1
+      }
+    },
+    "managed-b": {
+      "endpoint_namespace_pid": 416,
+      "endpoint_pod_uid": "fac42cb0-e624-430f-8e8b-c1594e7968bf",
+      "endpoint_raw_evidence_sha256": "73e65514f9e673dfbd1c82bb38809105c706c62aa260da2fae2a10ea11846bf2",
+      "endpoint_source_sha256": "f8d3f3fdad0285984300b77c39cb2bda060ed818d116c8293ee74b74ed9aeb01",
+      "endpoint_start_ticks": 48158205,
+      "measurement": {
+        "cuda_result": 801,
+        "production_qualified": false,
+        "typed_managed_denial": true
+      },
+      "production_qualified": false,
+      "receipt_sha256": "1c844cba746a9737732edc71f923aa94f35d97f5a74565de9a7fffe29cd99d32",
+      "state": "typed-managed-api-denial-controls-and-cleanup-observed",
+      "typed_result": {
+        "allocation_mib": 64,
+        "api": "cuMemAllocManaged",
+        "cuda_result": 801,
+        "error_name": "CUDA_ERROR_NOT_SUPPORTED",
+        "error_name_result": 0,
+        "flags": 1
+      }
+    },
+    "same-parent-ipc": {
+      "peer_continuity": true,
+      "production_qualified": false,
+      "receipt_sha256": "a4e55227e30b2a92332b4bde97cf35ee159c2da18320e6ede33f40a75c37d91a",
+      "state": "bounded-same-parent-imports-with-peer-observed",
+      "unchanged_native_authorities": true
+    },
+    "same-parent-vmm": {
+      "peer_continuity": true,
+      "production_qualified": false,
+      "receipt_sha256": "a8f146fc153c4d2c243495b2ac4b2e80fdee82aaad90fa06c5f4e691d0a2ff28",
+      "state": "bounded-same-parent-imports-with-peer-observed",
+      "unchanged_native_authorities": true
+    },
+    "same-parent-vmm-direct": {
+      "peer_continuity": true,
+      "production_qualified": false,
+      "receipt_sha256": "8f09460e4fa7fa163edd0d33b7df59ae7a6013f0857661e7882d213c7a770708",
+      "state": "bounded-same-parent-imports-with-peer-observed",
+      "unchanged_native_authorities": true
+    }
+  },
+  "incomplete": {
+    "mps": {
+      "reason": "CRI exec environment retains configured qualified selector; initial OCI process receives CDI void",
+      "receipt_sha256": "a0bbd21fd4935ca384b1595f4e483012c82863fd0b00e3b04b63b3447e0a0bcf",
+      "retry_performed": false,
+      "state": "inconclusive-before-MPS-allocation"
+    },
+    "restart": {
+      "state": "unrun",
+      "stop_performed": false
+    }
+  },
+  "initial_adapter_source": "9abc787833376571d8c883a89950dd9d733e5d4e",
+  "kind": "second-card-bounded-aggregate-import-actual",
+  "limitations": [
+    "Physical QA only; legacy cps/cit aliases identify same-namespace QA Pods, not cross-Hub or Source authority.",
+    "Not a production or full native-sharing qualification; MPS and restart gates remain open.",
+    "Prior failed attempts retained, never relabeled as passes.",
+    "All8retirement histories and namespace retained; Root separately restored temporary Node scheduling fence after verified cleanup."
+  ],
+  "manifest_sha256": "25cdfc2c7f39bb873eea4af44633607ed88203a947c9542ce2defe9c9415272a",
+  "minor": 1,
+  "namespace_uid": "036ea170-dc16-4100-96e6-9d896c2be30c",
+  "native_gpu_id": 1553,
+  "node": "k3s-wk-gpu2",
+  "node_uid": "3336cdd5-d245-436e-b57c-2f66c6dcaa41",
+  "observed_date": "2026-10-27",
+  "pci_bdf": "0000:06:11.0",
+  "production_qualified": false,
+  "reviewed_identity_adapter_source": "cadf9b50",
+  "version": 1
+}

@@ -135,10 +135,32 @@ requires the exact fresh cohort/caps, retains original raw manifest bytes, and
 binds the independently reviewed Root SSH/kubectl stdin vector in emitted
 source. Existing wrappers in `native-fresh-unequal/README_import_closure.md`
 then apply with **emitted** hashes, current generation and actual a/b UIDs.
-All helper/device/witness pins are regenerated after second-UUID adaptation.
-Root stages only new cohort VMM bridge/witness paths. Typed refusal, valid-FD
+The import finalizer additionally requires fresh `device.pci_bdf`
+`0000:06:11.0`, integer `minor_number: 1`, and complete `native_inventory`
+(version1, backend `misc-fallback`, this second UUID, integer `gpu_id:1553`,
+and actual entries). These agree with the same Node/boot/driver capture. Both
+native-ID guards and PCI paths are adapted before hashing; first-card paths
+and IDs remain refused. All helper/device/witness pins are regenerated.
+
+For the current kubectl transport, enter the host UTS namespace as well as mount
+and PID namespaces (`nsenter -t 1 -m -p -u`); entering only mount/PID retains the
+agent Pod hostname and correctly fails the bridge/collector host checks. Verify
+the actual hostname is `k3s-wk-gpu2` before execution. Stage the exact Root0700
+`vmm-bridge/bridge-sessions` and `vmm-kmsg-witness/sessions` directories under
+this cohort, along with the protected emitted helpers. The collector's bounded
+unique kernel markers correlate the positive controls and denial; never clear
+the kernel log. Root stages only these new cohort VMM bridge/witness paths. Typed refusal, valid-FD
 same-parent positive controls, exporter-exit backing accounting, kernel witness
 correlation, timeouts and owned participant cleanup remain mandatory.
+
+MPS runs through CRI exec. Its environment guard requires the exact qualified
+second-device selector in the exec process and independently verifies bounded,
+unique `CUDA_VISIBLE_DEVICES=0` and `NVIDIA_VISIBLE_DEVICES=void` entries in
+`/proc/1/environ`. CDI edits the initial OCI environment; CRI exec retains the
+compiled container selector. Neither environment may substitute for the other.
+Unreadable or oversized initial environment data and duplicate device keys fail
+closed. This guard correction does not itself qualify MPS; an actual bounded
+MPS run, peer progress and owned cleanup are still required.
 
 The new QA base Pods use `restartPolicy: Always` before actual compiler/finalize;
 original first-card tools are unchanged. Kubelet therefore restarts the owned

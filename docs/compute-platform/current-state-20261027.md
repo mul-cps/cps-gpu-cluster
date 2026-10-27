@@ -4,7 +4,47 @@ The full platform remains **limited-pilot**, not production qualified. This
 record separates published source, local software checks and observed runtime.
 The [previous ledger](current-state-20261023.md) retains the detailed historical
 CUDA and shared-workspace evidence; those results remain valid for their tested
-versions and scopes. No new CUDA qualification or deployment was performed here.
+versions and scopes. Later sections record the new second-card CUDA measurements
+and the live device-plugin advertisement correction; earlier source/test entries
+retain their original commit scope.
+
+## Latest completed boundary
+
+- Eight physical A10040GiB GPUs, all driver615.71.09; Kubernetes capacity and
+  allocatable are2/2/2/2. All workers use existing default `plain` device-plugin
+  configuration. GPU2's singleton qualification selector was removed without
+  driver/image/ConfigMap/status edits. The last completed cleanup restored its
+  temporary test scheduling fence.
+- Second GPU2 card: actual CUDA identity, native5/10GiB cap assignment, typed
+  over-cap rejection/recovery and continuous peer kernels pass in both directions.
+  Owned cleanup verifies all retained rows inert/zero-charge and preserves the
+  first root's custody. The next controlled cohort also passed aggregate
+  same-parent pressure and all nine memory/import cases, including creator-exit
+  retention and cross-parent VMM denial with positive controls and correlated
+  kernel evidence. Final cleanup verified all eight retained native rows offline,
+  pinned and zero-charge; both devices had no QA clients, and the original
+  first-device custody, CDI contents and driver epoch were unchanged. GPU2 was
+  uncordoned after cleanup. These A/B tests use one QA namespace and do not prove
+  cross-Hub accounting.
+- MPS stopped before allocation because CRI exec inherits the configured CDI
+  selector while the initial container process receives CDI's `void` environment
+  edit. The test expected the initial-process value in exec. The refusal is
+  retained as an inconclusive test setup result; no isolation pass or failure is
+  inferred. A narrow exec-aware guard correction is under test. Restart and
+  complete installed multi-root admission remain open gates.
+- Neutral stopped-workspace bootstrap is reviewed and published at compute
+  `87c5f6d121e2d87476a351aee416ec00bb9471d4` / Source
+  `f4c83fd03c2e31b25ff39a4367d4f04d2e0dfb25`. Exact installed wheels pass the
+  PostgreSQL preparation chain. Compute`16340ba623015cf0fa86528148251a4672990b58`
+  requires the nine-module PostgreSQL lane and critical cases in release CI.
+- Full shared membership/Shares/removal/restart lifecycle and remote selected
+  Node/Gateway runtime factories are in implementation, not qualified or deployed.
+  Original cross-Hub/scheduling/startup/UI/notebook/storage/restore/release
+  acceptance remains binding. Hosted run40584252193 cannot start due to account
+  billing/spending limits; no hosted pass is inferred from local checks.
+
+The following entries are retained checkpoints, not an assertion that their
+versions are the newest installed release.
 
 ## Verified software
 
