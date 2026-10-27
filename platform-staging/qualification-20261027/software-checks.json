@@ -94,5 +94,26 @@
     "scope": "disabled local software chain; no live migration, hardware qualification or deployment",
     "remaining": "Task5C original terminal cleanup/release, Task3C shared lifecycle, genuine authenticated remote transport/factories and all maintenance writer coverage, hardware/startup/restore/UI/release gates",
     "warnings": "existing Starlette/AnyIO deprecation retained, not suppressed"
+  },
+  "started_prepared_terminal_lifetime": {
+    "repository": "mul-cps/cps-compute",
+    "commit": "e1391d8939e5e95fbbdf0147978857a623c1de2a",
+    "review": "Task5C and scoped R1 pass; pre-phase1 missing-private-custody reconstruction fixed",
+    "affected_passed": 604,
+    "affected_seconds": 22.38,
+    "r1_owning_passed": 61,
+    "r1_owning_seconds": 36.45,
+    "coverage": "actual started/prepared journal cleanup, authenticated immutable receipt and independent original private/native observation, selected ledger release then atomic exact original member release, V1 peers and cleanup retained",
+    "sdk_wheel_sha256": "c09bae0d637650bcf5b811d466aa212861049e6fa84802bed682b50b9678db10",
+    "installed_probe": "exact terminal/lifetime/Node module bytes; declared node-extra imports only; distinct SDK/Hub/Lab ownership",
+    "runtime_enabled": false,
+    "scope": "disabled local software embedding; no live migration, deployment or new hardware qualification",
+    "remaining": "never-enrolled V2 cancellation; ambiguous intent-before-first-private-write holds capacity; remote transport/factories, shared lifecycle, installation/hooks and all production gates",
+    "warnings": "existing Starlette/AnyIO warning retained; no broad suite repeated for fix"
+  },
+  "directory_handover": {
+    "scope": "existing approved legacy membership restored through normal Hub API; actual selector verified, not GPU execution",
+    "permanent_import_enabled": false,
+    "remaining": "bounded authenticated directory bundle projection, PostgreSQL receipt support, explicit migration/factories, actual personal spawn enforcement and revocation"
   }
 }

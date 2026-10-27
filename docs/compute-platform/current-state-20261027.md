@@ -54,6 +54,28 @@ versions and scopes. No new CUDA qualification or deployment was performed here.
   This is disabled local software embedding. Authenticated remote transport and
   factories, terminal teardown/release and shared roster lifecycle remain open;
   no global/console SQLite databases may be mounted on Nodes as a shortcut.
+- Started and original-prepared-journal pooled termination is reviewed and
+  published at compute `e1391d8939e5e95fbbdf0147978857a623c1de2a`. Actual native
+  cleanup and authenticated immutable receipt plus independent private/native
+  observation precede selected-device release and atomic original-member release.
+  The affected integration run passed 604 cases in 22.38 seconds. Review found a
+  publication/SQL crash window; its regression reproduced the defect, then passed
+  after publication intent was durably ordered before private custody creation.
+  The scoped owning run passed 61 cases in 36.45 seconds, including the original
+  V1 cleanup path; scoped rereview passed without a broad rerun. The final wheel
+  passes isolated exact-byte/lean Node import and package-ownership checks.
+  Truly never-enrolled cancellation remains open. A lost intent-commit reply
+  before the first private write remains an explicit conservative accounting
+  hold, not automatic recovery. Remote transport/factories, actual shared roster
+  lifecycle and production qualification remain open.
+- Directory entitlement handover remains a live integration gap: disabling
+  authenticator-wide group replacement preserved local ownership but left no
+  automatic directory projection on the legacy selector path. An explicitly
+  authorized existing membership was restored through the ordinary Hub API and
+  its selector verified, without granting admin or claiming a GPU start. The
+  permanent import requires bounded group/grant ownership, authentication hooks,
+  real spawn enforcement and PostgreSQL-compatible receipt installation; the
+  currently reviewed receiver is SQLite-only and is absent from the live image.
 - Original dirty checkouts remain preserved. No main branch was merged and no
   new application image or live database was changed.
 
