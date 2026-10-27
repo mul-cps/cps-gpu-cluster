@@ -89,8 +89,12 @@ versions and scopes. No new CUDA qualification or deployment was performed here.
   This is the storage primitive, not complete installation/restore authority.
   Genuine coordinator factories, external rollback-history reconciliation,
   asynchronous user hooks and automatic directory import remain open. The
-  required release PostgreSQL15 CI lane remains pending; default test skips
-  without its disposable DB configuration cannot qualify release readiness.
+  required PostgreSQL15 release CI lane is now implemented and reviewed at
+  compute `036be35794c577a540b477cf0c1b7849da6311e5`: a digest-pinned disposable
+  hosted database, production-compatible driver and explicit real Hub modules
+  with a zero-skip JUnit gate. Eleven gate checks and cleanup-failure simulation
+  passed; review corrected anonymous-volume cleanup. Hosted execution remains
+  pending. Default test skips cannot qualify release readiness.
 - Original dirty checkouts remain preserved. No main branch was merged and no
   new application image or live database was changed.
 
@@ -116,7 +120,8 @@ affected interface checks; a full compute run is reserved for a frozen release
 checkpoint or an identified cross-cutting regression. Existing safety assertions
 and production acceptance requirements remain unchanged.
 
-GitHub [check 122134979594](https://github.com/mul-cps/cps-compute/actions/runs/40488132906/job/122134979594)
+GitHub [check 122222776712](https://github.com/mul-cps/cps-compute/actions/runs/40513932030/job/122222776712)
+for published PostgreSQL source `f474485` was rechecked on 27 October and
 failed before any step started. Its annotation reports account payment failure or
 a spending limit requiring increase. Local results remain local evidence; hosted
 CI is an open release gate until the account issue is resolved and jobs run.
