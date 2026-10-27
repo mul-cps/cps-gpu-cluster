@@ -34,12 +34,12 @@
     "scope": "external release gate; not a test failure"
   },
   "source_dispatcher": {
-    "compute_commit": "d74ba05ee2498497cbaf81115f6797cd3e6d3946",
+    "compute_commit": "2d42bebaaddb3094979dcff0fdbc81d8ee92b38c",
     "compute_test_commit": "612ce66769cf8143e6ad39858992a26dbc43bf7e",
     "admin_commit": "22853170b6bd91cba3977c7b8a888c13b1e1a4f0",
     "integration_passed": 26,
     "subtests_passed": 21,
-    "seconds": 5.1,
+    "seconds": 5.23,
     "focused_admin_passed": 6,
     "focused_admin_seconds": 0.284,
     "review": "Task3B scoped fix review: both findings addressed, no new actionable findings",
@@ -48,6 +48,24 @@
     "installed_probe": "three module bytes/imports; disabled inert; no SDK import; optional exact SDK dependency",
     "packaging_limit": "Python only; frontend builder skipped; not release artifact",
     "runtime_enabled": false,
-    "remaining": "Task3C shared lifecycle, Task4 custody migrations/hooks, Task5 activation/live acceptance/releases"
+    "remaining": "Task3C shared lifecycle, Task4 custody migrations/hooks, Task5 activation/live acceptance/releases",
+    "tested_at_commit": "2d42bebaaddb3094979dcff0fdbc81d8ee92b38c",
+    "interface_log_sha256": "4864248a396be371fb28908386f87d6474bf75c16402bcef0f4d67a3f64be263"
+  },
+  "operator_handoff": {
+    "repository": "mul-cps/cps-compute",
+    "commit": "2d42bebaaddb3094979dcff0fdbc81d8ee92b38c",
+    "review": "Task5A and scoped fix review pass; both custody/backup findings addressed",
+    "activation_cases": 29,
+    "focused_affected_passed": 94,
+    "focused_affected_seconds": 7.01,
+    "installed_sdk_chain_passed": 1,
+    "installed_sdk_chain_seconds": 1.54,
+    "sdk_wheel_sha256": "28da80cca2e55dfae4ddbd3f0abe75fbd475661b7088ada766ab8f2d0aa9174d",
+    "coverage": "actual local stores/guarded applications, explicit migration, backups, target CAS/readback, authenticated committed reads, real pair consumption/active ACK/finalize, next Source write, corruption/missing history refusal",
+    "warnings": "one existing Starlette/AnyIO deprecation, retained without suppression",
+    "runtime_enabled": false,
+    "scope": "disabled local software embedding; no remote installation, live migration, physical or release qualification",
+    "remaining": "shared lifecycle, genuine remote installation/runtime factories and writer coverage, authenticator hooks, GPU/startup/restore/UI/release gates"
   }
 }

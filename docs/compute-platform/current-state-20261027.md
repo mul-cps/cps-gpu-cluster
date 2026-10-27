@@ -9,14 +9,15 @@ versions and scopes. No new CUDA qualification or deployment was performed here.
 ## Verified software
 
 - The paired Source-authorized ordinary-group dispatcher is published at compute
-  `d74ba05ee2498497cbaf81115f6797cd3e6d3946` and admin
+  `2d42bebaaddb3094979dcff0fdbc81d8ee92b38c` and admin
   `22853170b6bd91cba3977c7b8a888c13b1e1a4f0`:
   [compute draft PR 2](https://github.com/mul-cps/cps-compute/pull/2) and
   [admin draft PR 2](https://github.com/mul-cps/e2x-course-hub/pull/2).
   Remote branch SHAs were verified after publication. Independent review passed,
   including the scoped fixes for native Shares and production-handler evidence.
 - Final focused coverage passed 26 paired integration cases and 21 subtests in
-  5.10 seconds, plus six focused admin cases in 0.284 seconds. The actual
+  5.23 seconds on the final operator commit, plus six focused admin cases in
+  0.284 seconds on the unchanged admin source. The actual
   Source/Hub/coordinator stores are exercised; regular and expired Shares reject
   before preparation. One smoke uses the unmodified production cookie/XSRF
   handler. This does not prove browser OAuth/SSO, ingress or live deployment.
@@ -27,7 +28,17 @@ versions and scopes. No new CUDA qualification or deployment was performed here.
   and disabled-mode checks. Frontend building was skipped for this probe; it is
   not a released UI artifact. Receipt, journal and dispatcher remain disabled by
   default. Shared-workspace lifecycle, installation custody/migrations,
-  authenticator hooks and operator activation remain open.
+  authenticator hooks and remote operator activation remain open.
+- The disabled local operator handoff is independently reviewed and published
+  in the same compute commit. It demonstrates durable target commit, immutable
+  readback, authenticated committed-target reads, genuine pair consumption and
+  active acknowledgments, finalization and a subsequent actual Source write.
+  Final focused affected checks passed 94 cases in 7.01 seconds, including 29
+  activation cases. The complete chain also passed from an isolated SDK wheel
+  install in 1.54 seconds. Review fixes bind local consumer data to original
+  retained custody and reject incomplete backup schemas/predecessor history.
+  Remote installation/runtime coverage is still missing; this software result
+  does not enable managed writes in production or finish shared lifecycle.
 - Original dirty checkouts remain preserved. No main branch was merged and no
   new application image or live database was changed.
 
