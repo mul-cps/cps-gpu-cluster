@@ -275,5 +275,33 @@
       "exact-image packaging and GPU/EGL/Xpra measurements",
       "authenticated desktop and observed user training"
     ]
+  },
+  "mujoco_bounded_window": {
+    "compute_commit": "55b59f95464de99f7385e2dbd5538a901fa2e345",
+    "review": "independent scoped PASS after supported-events and actual descendant-binding corrections",
+    "exact_archive_compute_passed": 33,
+    "exact_archive_runner_passed": 7,
+    "scope": "bounded observed reset/context-loss method; not universal hardware reset counter",
+    "actual_target_supported_mask": "0xff9f",
+    "event_registration_executed": false,
+    "hardware_qualified": false
+  },
+  "mujoco_host_loader": {
+    "compute_commit": "b13c2058eba5f20dda14fe975e5111861c8c2842",
+    "cluster_commit": "818263ce0c1f3f478c8169487a06738406ac404d",
+    "review": "independent PASS",
+    "exact_archive_compute_passed": 34,
+    "exact_archive_runner_passed": 8,
+    "actual_host_load_only": "mujoco-host-loader-actual.json",
+    "nvml_initialized": false
+  },
+  "mujoco_policy_promotion": {
+    "compute_commit": "fd96cc0cfc47215d28dbcc5835501b2d597817a8",
+    "cluster_commit": "93ac2cf10692ff961c587b9a094718bac31272f8",
+    "review": "independent scoped PASS after original indexed-window/portable-source and complete-runner-output corrections",
+    "exact_archive_compute_passed": 8,
+    "exact_archive_paired_passed": 2,
+    "scope": "actual runner main/execute/finally to full retained directory to promotion with synthetic IO; strict v4/fresh Node/history software path; no live authority publication",
+    "deployed": false
   }
 }

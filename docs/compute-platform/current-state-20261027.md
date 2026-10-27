@@ -243,3 +243,52 @@ receipt is omitted, so this cannot qualify or enable the personal profile.
 Continuous reset observation, envelope-to-target-policy promotion and physical
 GPU/EGL/Xpra execution remain required. Both reviewed source branches were pushed
 and their remote SHAs verified; no main merge or live deployment occurred.
+
+## Installed event support and eight-device restoration preparation
+
+A [read-only NVML query](../../platform-staging/qualification-20261027/gpu2-event-support-readonly.json)
+returned success and supported mask `0xff9f` for both GPU2 A100 UUIDs. The
+reviewed bounded observer selects relevant mask `0xc008` (critical Xid plus
+supported unavailable/recovery notifications). This confirms advertised API
+support on the loaded NVML library; no event registration, CUDA allocation,
+reset or continuous-window qualification occurred. Both cards also reported
+40 GiB, zero allocated memory and zero volatile uncorrected ECC errors during
+the parent read-only check. Those observations do not qualify isolation.
+
+The node-specific two-UUID plugin configuration proposal passed Kubernetes
+server dry-run; absence of its new ConfigMap key was verified afterward. It
+remains unapplied. Current native catalog/budget guards require qualification
+for every advertised UUID, and alternate CDI file hashes are retained. A lone
+allowlist change would conflict with native starts. The rollout choice is
+pending: keep native sharing intact while qualifying the second card, or hold
+new native starts on GPU2 while restoring ordinary two-device advertisement.
+No device capacity/status field is patched to manufacture a count. The retained
+physical inventory remains eight and advertised inventory seven.
+
+## Reviewed qualification handoff and concrete readiness progress
+
+Reviewed published source now includes reset correction `55b59f9`, protected host
+loader `b13c2058`/`818263ce`, and final promotion `fd96cc0`/`93ac2cf1`. Reset
+correction passed 33+7 owning archive checks; loader passed 34+8. Promotion's final
+correction passed 8+2, including actual runner main/execute/finally output fed
+unfiltered into promotion under synthetic native/API IO. Original indexed source
+and window bytes remain authoritative; terminal partial bytes must equal the
+completed stream and both owned cleanup statuses must be exact. These overlapping
+owning suites are not a sum of unique tests or hardware evidence. Independent
+scoped reviews passed after the recorded findings were corrected.
+
+The [actual corrected host loader](../../platform-staging/qualification-20261027/mujoco-host-loader-actual.json)
+now succeeds in the exact host mount/process namespaces using the protected
+hash-verified NVML inode. No NVML initialization, event registration or CUDA
+allocation occurred in that check. The [exact historical image](../../platform-staging/qualification-20261027/mujoco-image-preload.json)
+was pulled to GPU2's cache and its repo digest read back through CRI. Pull took
+107.25 seconds and left 75.43 GiB free; the image was not executed. This supersedes
+the earlier cache-absence observation, not the remaining image-runtime checks.
+
+Installed Node/Hub packages still lack candidate support; no genuine immutable
+two-operator candidate authority or normally started exact-image pair exists yet.
+Reviewed package/image installation and genuine Source enrollment must precede
+the controlled physical CUDA/EGL/Xpra/window run. No old neutral authority, UID
+or pool is relabeled to manufacture it. Actual publication/activation, desktop
+and observed user training, second-device/full-pool acceptance and the original
+production gates remain open. No main merge or Fleet reconciliation occurred.

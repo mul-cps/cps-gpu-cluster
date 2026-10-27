@@ -1,0 +1,28 @@
+{
+  "scope": "Recorded read-only NVML capability-query result; no event registration, CUDA allocation, reset or continuous-window qualification",
+  "query": "nvmlDeviceGetSupportedEventTypes",
+  "node": "k3s-wk-gpu2",
+  "pod_namespace": "cps-native-runtime",
+  "pod": "cps-native-node-agent-56c4b8668-ztc2j",
+  "gpus": [
+    {
+      "gpu_uuid": "GPU-16128952-b438-556a-00bb-93039ee24e56",
+      "return_code": 0,
+      "supported_mask": 65439,
+      "supported_mask_hex": "0xff9f"
+    },
+    {
+      "gpu_uuid": "GPU-1e6145d5-8ee2-43e2-a0d5-6d345909e8a6",
+      "return_code": 0,
+      "supported_mask": 65439,
+      "supported_mask_hex": "0xff9f"
+    }
+  ],
+  "loaded_nvml_sha256": {
+    "/opt/cps-native-runtime/libnvidia-ml.so.1": "283793c0c30dc32f87c0e9fc9b5326fe764bad156e61afa3e997684c47b29a95"
+  },
+  "reviewed_relevant_mask_hex": "0xc008",
+  "registration_tested": false,
+  "hardware_qualified": false,
+  "recorded_at_utc": "2026-10-27T19:36:40.306908+00:00"
+}

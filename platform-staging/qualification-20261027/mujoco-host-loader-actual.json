@@ -1,0 +1,13 @@
+{
+  "state": "verified-host-library-loaded",
+  "collector_sha256": "190b6ada40b7162891d4a150779eae5cfe94b622cf3d796d90231f5064f36edf",
+  "library": {
+    "path": "/run/nvidia/driver/usr/lib/x86_64-linux-gnu/libnvidia-ml.so.615.71.09",
+    "sha256": "283793c0c30dc32f87c0e9fc9b5326fe764bad156e61afa3e997684c47b29a95"
+  },
+  "boot_id": "a464df41-e391-4443-b8e8-ad7ecd052318",
+  "nvml_initialized": false,
+  "events_registered": false,
+  "cuda_allocated": false,
+  "scope": "actual reviewed loader in exact host mount/process namespaces; no GPU API calls"
+}
