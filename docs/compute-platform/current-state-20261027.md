@@ -318,3 +318,31 @@ accounts are not automatically canonical person members. The second operator
 account is a requested missing input, not permission to fabricate an identity.
 A normal authenticated Source roster/client and custody-preserving installation
 are still needed before genuine operator workspaces and the physical run.
+
+## Actual installation and Source bootstrap prerequisites
+
+The reviewed SDK's real `NodeConfiguration.load` accepted the mounted current
+authority and 43 distinct retained immutable configuration captures. Existing
+image-successor custody supports a Node-only edge followed by a paired-Hub edge;
+a combined Node-plus-Hubs edge remains refused. No new generic transition is
+needed. Actual retained runtime binary hashes match the packaged bootstrap, and
+the installed CPU-only native health validator passed. Persistent custody was
+read without rewriting it. Released-only ledger rows do not prove a drained
+runtime or provide permission to replace its history.
+
+The existing proposal helper currently refuses both actual Hub baselines: their
+private-input init helper is independently pinned to image `435c0806`, while the
+main Hub image is `46ffa869`. Its equality assumption is incompatible with those
+actual full Deployment specs. A narrow correction must bind the real separate
+helper and preserve its exact inverse before rendering an executable upgrade.
+No Deployment image was patched around that refusal.
+
+The current paired admin source `6572deb` also differs from the historical
+`42526e4` adapter branch. Its workspace creation persists only a stopped local
+record; start requires a pre-existing neutral owner and an injected qualified
+filesystem adapter. It lacks the older branch's genuine account-receipt adapter,
+stopped CPU preparation and registration/provision client operations. Those
+historical APIs must not be treated as current or installed capabilities.
+Integrating this normal account/storage prerequisite remains necessary; it does
+not by itself complete managed roster removal, Shares/access closure or the full
+Task3C lifecycle. No account, membership, workspace or storage was created here.
