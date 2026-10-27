@@ -32,6 +32,7 @@ def test_api_uid_replacement_is_not_adopted(tmp_path):
 def test_failed_owned_run_only_cleans_proven_terminal_directories(tmp_path):
     collector=runner.Collector({},b'',b'',tmp_path)
     collector.initialize=lambda:None
+    collector.check_peer=lambda pid:None
     calls=[]
     def rpc(role,body):
         calls.append((role,body['operation']))
@@ -76,15 +77,67 @@ def test_reviewed_manifest_original_bytes_are_retained(monkeypatch,tmp_path):
     manifest=tmp_path/'reviewed';manifest.write_bytes(original);manifest.chmod(0o600)
     probe=tmp_path/'probe';probe.write_bytes(b'probe source')
     host=tmp_path/'host';host.write_bytes(b'host source')
+    window=tmp_path/'window';window.write_bytes(b'window source')
     output=tmp_path/'result'
     class InertCollector:
-        def __init__(self,*args):pass
+        def __init__(self,*args,**kwargs):pass
         def execute(self):pass
     monkeypatch.setattr(runner,'Collector',InertCollector)
     monkeypatch.setattr(sys,'argv',['run.py','--execute','--manifest',str(manifest),
         '--manifest-sha256',runner.sha(original),'--runner-sha256',runner.sha(Path(runner.__file__).read_bytes()),
         '--probe-source',str(probe),'--probe-sha256',runner.sha(probe.read_bytes()),
-        '--collector-source',str(host),'--collector-sha256',runner.sha(host.read_bytes()),'--output',str(output)])
+        '--collector-source',str(host),'--collector-sha256',runner.sha(host.read_bytes()),
+        '--window-source',str(window),'--window-sha256',runner.sha(window.read_bytes()),'--output',str(output)])
     runner.main()
     assert (output/'manifest.raw.json').read_bytes()==original
     assert runner.sha((output/'manifest.raw.json').read_bytes())==json.loads((output/'source-pins.json').read_bytes())['manifest_raw']
+
+
+def test_synthetic_runner_lifecycle_derives_actual_window_parser_fifth_receipt(tmp_path,monkeypatch):
+    """Synthetic transport only, through the owning execute/derive/validator path."""
+    import copy,json
+    from test_personal_qualification_window import synthetic_window_fixture
+    from test_personal_qualification_probe import synthetic_measurements
+    bundle=synthetic_window_fixture();ctx,pressure,samples,_=synthetic_measurements()
+    order=[];finished=False
+    class Window:
+        rows=[bundle['raw_window']]
+        def finish(self):order.append('drain');return bundle['raw_window']
+        def abandon(self):order.append('close-owned-pipe')
+    c=runner.Collector({'context':ctx},b'probe',b'collector',tmp_path)
+    def initialize():
+        order.append('registered-ready-before-kernel');c.window=Window()
+        c.window_identity={k:v for k,v in bundle['identities'].items() if k not in ('peer','peer_checks')}
+        caps={role:{**row,'used_bytes':0,'gpu_processes':{},'driver_version':'615.synthetic'}
+            for role,row in c.window_identity['caps'].items()}
+        c.baseline={**bundle['kernel_records']['before'],'cgroups':caps}
+        c.kernel_baseline=c.baseline['kernel_anchor']
+    c.initialize=initialize
+    c.check_final_authority=lambda:order.append('fresh-node-authorities')
+    def rpc(role,body):
+        nonlocal finished
+        op=body['operation'];order.append(role+'-'+op)
+        if op=='setup':return {'root':'/tmp/cps-mujoco-'+role}
+        if op=='read':
+            if role=='pressure':return {'stdout':pressure.decode()+'\n','exit':'0'}
+            raw=bundle['raw_peer'].decode()+'\n'
+            return {'stdout':raw,**({'exit':'0'} if finished else {})}
+        if op=='finish-peer':finished=True;return {}
+        if op in ('ack','cleanup'):return {}
+        raise AssertionError(op)
+    c.rpc=rpc;c.pod=lambda role:(b'{}',{})
+    def check_peer(pid):
+        order.append('root-peer-check');c.peer_checks.append(copy.deepcopy(bundle['identities']['peer_checks'][len(c.peer_checks)]))
+    c.check_peer=check_peer
+    c.sample=lambda event,pid:copy.deepcopy(next(s for s in samples if s['event_sha256']=='sha256:'+runner.sha(runner.canonical(event))))
+    def baseline():
+        order.append('actual-cap-health-check')
+        return b'{}',{**bundle['kernel_records']['after'],'cgroups':copy.deepcopy(c.baseline['cgroups'])}
+    c.host_baseline=baseline
+    monkeypatch.setattr(runner.time,'sleep',lambda _:None)
+    c.execute()
+    result=json.loads((tmp_path/'review-material.json').read_bytes())
+    assert result['complete'] and len(result['probes'])==5 and result['authoritative'] is False
+    assert 'unobservable' in result['exclusions']
+    assert order.index('actual-cap-health-check')<order.index('peer-finish-peer')<order.index('drain')
+    assert order[-1]=='pressure-cleanup'
