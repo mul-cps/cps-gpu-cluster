@@ -272,3 +272,18 @@ def test_mps_actual_initial_oci_and_cri_exec_environments():
 
  env['NVIDIA_VISIBLE_DEVICES']=expected;initial['error']=True
  with pytest.raises(PermissionError):eval(statement,scope)
+
+def test_restart_root_observer_actual_checked_pod_keeps_a1_b0_only(tmp_path):
+ import types,copy
+ m=module();v=observations();files=m.build_sources(v)['files'];raw=files.get('restart/observe.py',files['observe.py']);observer=m.load('restart_root_observer',raw,tmp_path/'observe.py')
+ ordinary=m.load('ordinary_root_observer',files['observe.py'],tmp_path/'ordinary.py')
+ for label,count in(('a',1),('b',0)):
+  name='native-second-card-'+label+'-'+v['cohort_uid'][:8];uid=('1'if label=='a'else'2')*8+'-1111-4111-8111-111111111111';intent=types.SimpleNamespace(name=name,pod_uid=uid,namespace=v['namespace']['metadata']['name'],node='k3s-wk-gpu2')
+  pod={'metadata':{'uid':uid,'namespace':intent.namespace,'name':name},'spec':{'nodeName':intent.node,'containers':[{'name':'notebook','image':observer.IMAGE}]},'status':{'phase':'Running','containerStatuses':[{'name':'notebook','ready':True,'restartCount':count,'state':{'running':{}},'imageID':observer.IMAGE}]}}
+  observer.checked_pod(pod,intent)
+  if label=='a':
+   with pytest.raises(ValueError):ordinary.checked_pod(pod,intent)
+  for bad in((0,2)if label=='a'else(1,)):
+   wrong=copy.deepcopy(pod);wrong['status']['containerStatuses'][0]['restartCount']=bad
+   with pytest.raises(ValueError):observer.checked_pod(wrong,intent)
+ assert b'--source-sha256' in raw

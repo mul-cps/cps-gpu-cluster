@@ -249,6 +249,26 @@ def build_sources(observations):
     require(restart.count("current['restartCount']==0")==1,'Exact initial restart guard span required')
     restart=restart.replace("current['restartCount']==0","current['restartCount']==(1 if row['name']=="+repr('native-second-card-a-'+ctx['cohort'][:8])+" else 0)")
     files['restart/fresh_preflight.py']=restart.encode()
+    observed=files['observe.py'].decode()
+    require(observed.count("status['restartCount']==0")==1,'Exact Root notebook restart assertion required')
+    names=('native-second-card-a-'+ctx['cohort'][:8],'native-second-card-b-'+ctx['cohort'][:8])
+    observed=observed.replace("status['restartCount']==0","intent.name in "+repr(names)+" and status['restartCount']==(1 if intent.name=="+repr(names[0])+" else 0)")
+    arg="p.add_argument('--execute',action='store_true');p.add_argument('--controller',type=Path)"
+    require(observed.count(arg)==1 and observed.count('    c=controller(args.controller);')==1,'Exact Root observer admission seam required')
+    observed=observed.replace(arg,arg+";p.add_argument('--source-sha256')")
+    pincheck="""    fd=os.open(__file__,os.O_RDONLY|os.O_NOFOLLOW|os.O_NONBLOCK)
+    try:
+        before=os.fstat(fd);raw=os.read(fd,262145);after=os.fstat(fd)
+        require(stat.S_ISREG(before.st_mode) and before.st_uid==before.st_gid==0
+                and before.st_nlink==1 and stat.S_IMODE(before.st_mode)==0o400
+                and len(raw)<=262144 and hashlib.sha256(raw).hexdigest()==args.source_sha256
+                and all(getattr(before,k)==getattr(after,k) for k in
+                        ('st_dev','st_ino','st_size','st_mtime_ns','st_ctime_ns')),
+                'Exact protected restart observer source pin required')
+    finally:os.close(fd)
+"""
+    observed=observed.replace('    c=controller(args.controller);',pincheck+'    c=controller(args.controller);')
+    files['restart/observe.py']=observed.encode()
     for name in ('run_peer_oom.py','peer_probe.py'):
         files['restart/'+name]=files[name]
     for name,raw in files.items():
