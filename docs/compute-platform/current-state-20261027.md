@@ -413,3 +413,26 @@ requires all three neutral acceptance identities plus original critical cases
 and selected cleanup with zero skips. Fifty focused report-gate checks pass.
 Hosted run40584252193 failed before job steps; its actual annotation still
 reports account payments/spending limits. No hosted execution pass is claimed.
+
+
+## Second-card peer OOM/recovery measured
+
+The [trusted second-card measurements](../../platform-staging/qualification-20261027/second-card-peer-oom-20261027.json)
+pass both 5/10 GiB directions using the reviewed exact-image/source runner.
+The 5 GiB victim retained4608MiB and the 10 GiB victim retained9728MiB; each
+rejected cap+256MiB with typed PyTorch OOM, retained pressure for at least eight
+seconds, and completed the synchronized64MiB recovery kernel. Each peer
+completed16 synchronized kernel ticks inside the held OOM interval and continued
+across rejection/recovery. Four independent physical samples per direction
+confirmed more than6GiB of physical headroom. Original seals/processes stayed
+unchanged and both native charges returned to baseline. Root independently
+reassessed the retained actual traces with the unchanged pinned assessor.
+
+Owned exact-UID Pod deletion and the original controller verified cleanup. All
+six retained second-card rows are offline/pinned with finite equal soft/hard
+limits and zero charge. Complete first-root custody matched the pre-stage
+capture. GPU2's temporary scheduling fence was removed after cleanup; all four
+workers remain uncordoned and advertise two GPUs each. These results cover
+over-cap rejection, recovery and peer survival on this card/image. Aggregate
+pressure, memory imports, restart, MPS and installed multi-root admission remain
+open; no full production qualification is inferred.
