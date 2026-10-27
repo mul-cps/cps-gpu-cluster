@@ -239,11 +239,12 @@ class Collector:
     def host_program(self,*,window=False):
         import base64
         from cps_compute import native_gpu_health
+        from cps_compute.personal_qualification_collect import HOST_NVML_LIBRARY
         raw=Path(native_gpu_health.__file__).read_bytes()
         require(sha(raw)==self.m['context']['health_sha256'],'Exact native health verifier source changed')
         (self.output/'native-health-source.py').write_bytes(raw)
         program=('import base64; h={};exec(compile(base64.b64decode('+repr(base64.b64encode(raw).decode())+'),"<reviewed-health>","exec"),h);'
-            +'n={"__name__":'+repr('reviewed_collector' if window else '__main__')+',"_reviewed_health":h};exec(compile(base64.b64decode('
+            +'n={"__name__":'+repr('reviewed_collector' if window else '__main__')+',"_reviewed_health":h,"_nvml_library":'+repr(HOST_NVML_LIBRARY)+'};exec(compile(base64.b64decode('
             +repr(base64.b64encode(self.host).decode())+'),"<reviewed-collector>","exec"),n)')
         if window:
             require(type(self.window_source) is bytes,'Pinned reset-window source required')

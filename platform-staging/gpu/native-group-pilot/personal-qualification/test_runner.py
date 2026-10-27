@@ -141,3 +141,19 @@ def test_synthetic_runner_lifecycle_derives_actual_window_parser_fifth_receipt(t
     assert 'unobservable' in result['exclusions']
     assert order.index('actual-cap-health-check')<order.index('peer-finish-peer')<order.index('drain')
     assert order[-1]=='pressure-cleanup'
+
+
+def test_host_interpreter_receives_explicit_pinned_library_despite_invisible_inherited_loader_path(tmp_path):
+    """Faithful embedded host Python command, no native initialization/calls."""
+    import hashlib,json,os
+    from cps_compute import native_gpu_health
+    expected={'path':'/run/nvidia/driver/usr/lib/x86_64-linux-gnu/libnvidia-ml.so.615.71.09',
+        'sha256':'283793c0c30dc32f87c0e9fc9b5326fe764bad156e61afa3e997684c47b29a95'}
+    source=b'import json; assert globals().get("_nvml_library") == '+repr(expected).encode()+b'; print(json.dumps(_nvml_library))'
+    c=runner.Collector({'context':{'health_sha256':hashlib.sha256(Path(native_gpu_health.__file__).read_bytes()).hexdigest()}},
+        b'',source,tmp_path)
+    program=c.host_program()
+    result=subprocess.run([sys.executable,'-I','-B','-c',program],capture_output=True,text=True,
+        env={**os.environ,'LD_LIBRARY_PATH':'/invisible-container-only-mount'},check=False)
+    assert result.returncode==0,result.stderr
+    assert json.loads(result.stdout)==expected
