@@ -387,3 +387,29 @@ pre-change capture. The complete CDI file set, bytes, hashes, owner and mode
 matched; the plugin atomically replaced its provider file, changing its inode.
 Native shared admission retains its separate qualification requirements; eight
 advertised devices do not constitute eight qualified native sharing roots.
+
+
+## Reviewed neutral bootstrap packages and release gate
+
+Compute `87c5f6d121e2d87476a351aee416ec00bb9471d4` and Source
+`f4c83fd03c2e31b25ff39a4367d4f04d2e0dfb25` close the software-only neutral
+account and stopped central workspace/PVC preparation increment. Independent
+frozen-source review passed. The owning checks passed three actual PostgreSQL
+vertical cases, 163 affected compute/Hub checks and 33 Source tests with 85
+subtests. These overlapping lanes are not a combined unique-test count.
+
+Exact committed SDK/Hub/Source wheels passed RECORD, source and installed-byte
+checks for all 197 packaged Python files. One full stopped-preparation PostgreSQL
+case then passed against the installed wheels, verifying 112 loaded module
+origins against wheel bytes. Source frontend hooks were disabled: this proves
+the backend package boundary, not frontend or production image qualification.
+NAS/Kubernetes fixture I/O remains synthetic; no live account or PVC was created
+by this acceptance test. Normal managed Start remains closed pending the full
+shared lifecycle and installed runtime writer coverage.
+
+Compute `16340ba623015cf0fa86528148251a4672990b58` publishes the mandatory
+nine-module PostgreSQL release gate, pins the paired Source commit above, and
+requires all three neutral acceptance identities plus original critical cases
+and selected cleanup with zero skips. Fifty focused report-gate checks pass.
+Hosted run40584252193 failed before job steps; its actual annotation still
+reports account payments/spending limits. No hosted execution pass is claimed.
