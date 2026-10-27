@@ -145,7 +145,14 @@ compatibility still need validation. No label or runtime setting was changed.
 
 The [timestamped Kubernetes snapshot](../../platform-staging/qualification-20261027/cluster-readonly.json)
 records all seven nodes Ready and uncordoned. GPU resources advertised by workers
-are 2 + 1 + 2 + 2 = **seven**, so full eight-device acceptance remains open.
+are 2 + 1 + 2 + 2 = **seven advertised**, not seven physical cards. A fresh
+[GPU2 inspection](../../platform-staging/qualification-20261027/gpu-inventory-readonly.json)
+sees both physical A100s under driver 615.71.09. Its active device-plugin UUID
+allowlist contains only `GPU-16128952-b438-556a-00bb-93039ee24e56`, matching
+the current native qualification authority. The second UUID,
+`GPU-1e6145d5-8ee2-43e2-a0d5-6d345909e8a6`, is excluded from ordinary scheduling
+by configuration. The earlier full physical audit counted eight cards; current
+full eight-device admission/qualification remains open. No allowlist was widened.
 The existing `jupyter-gottam` and `jupyter-muslim` containers were Ready, Running,
 with zero restarts. This observation does not prove kernel state or data recovery.
 
