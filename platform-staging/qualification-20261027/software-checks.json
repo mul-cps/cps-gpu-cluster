@@ -10,13 +10,16 @@
     "focused_passed": 114,
     "review": "Task 2 spec and quality pass; no actionable findings",
     "private_hub_wheel_sha256": "152a617b86ec3081f49fb1779c83264d99d2535962be5e42dfd73b9ffb19e0dc",
-    "installed_smoke": "exact four permission module imports/bytes; no SDK or Lab extension ownership"
+    "installed_smoke": "exact four permission module imports/bytes; no SDK or Lab extension ownership",
+    "full_log_sha256": "35da93ba6acac17a267ce5a159f805ce2f0b8d7104c3065638a7058f49382670"
   },
   "admin": {
     "repository": "mul-cps/e2x-course-hub",
-    "commit": "dfd5c5500c8743bd9e5c023e5e54dcbdba8d2898",
-    "passed": 109,
-    "subtests_passed": 71
+    "commit": "6a299d3f46e5c7713a4d578734fca1a025dac725",
+    "passed": 129,
+    "full_log_sha256": "438143c4a799db533a211b1b7c1f780118f2fd7c11a80cd12610d1e2e1bc4456",
+    "focused_journal_passed": 20,
+    "review": "Task3A spec and quality pass; no actionable findings"
   },
   "scope": "local software only; no migration, deployment or new GPU qualification"
 }

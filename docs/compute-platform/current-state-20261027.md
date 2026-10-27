@@ -15,14 +15,16 @@ versions and scopes. No new CUDA qualification or deployment was performed here.
   focused permission tests passed. Six skips remain pending. The 626 existing
   framework/test warnings were reviewed and originate outside these modules.
 - Admin Hub request-boundary fixes are published at
-  `dfd5c5500c8743bd9e5c023e5e54dcbdba8d2898`:
+  `6a299d3f46e5c7713a4d578734fca1a025dac725`:
   [draft PR 2](https://github.com/mul-cps/e2x-course-hub/pull/2).
-  All 109 tests and 71 subtests passed. Requests pin the intended Hub API,
+  All 129 admin tests passed, including 20 real-SQLite journal tests. Requests
+  pin the intended Hub API,
   prohibit redirects and reject unsafe paths while preserving encoded spaces.
 - The receiving Service-token API passed independent review and remains disabled
   by default. Source-console journaling is under implementation; installation
   custody and authenticator hooks remain
-  outstanding. An executor or unwired receiver does not enable managed writes.
+  outstanding. The internal Source journal now passes independent review; actual
+  authorization, dispatcher and lifecycle integration remain open. An executor or unwired receiver does not enable managed writes.
 - Original dirty checkouts remain preserved. No main branch was merged and no
   new application image was deployed. A private Hub wheel build verified module
   ownership, but is not a production release.
