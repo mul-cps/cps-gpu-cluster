@@ -346,3 +346,20 @@ historical APIs must not be treated as current or installed capabilities.
 Integrating this normal account/storage prerequisite remains necessary; it does
 not by itself complete managed roster removal, Shares/access closure or the full
 Task3C lifecycle. No account, membership, workspace or storage was created here.
+
+A [fresh full-worker read-only inventory](../../platform-staging/qualification-20261027/eight-gpu-inventory-current.json)
+now records eight distinct physical A100 UUIDs: two 40 GiB cards on each worker,
+all reporting driver615.71.09. Node capacity and allocatable remain2/1/2/2.
+Only GPU2's advertisement differs from its physical inventory; the captured
+active plugin config still permits only its first UUID. This verifies inventory
+and the exact configuration mismatch, not device isolation or restoration.
+
+The narrow existing upgrade-helper correction has now passed independent scoped
+review and a fresh current-tree run: nine focused cases passed in2.78seconds.
+It accepts only the exact independently pinned actual435c helper containers,
+retains them unchanged through Node-only and paired-Hub rotations, and preserves
+the original coupled-helper path and full-spec CAS inverse. Altered image,
+command, seed, mount or security bytes are refused. Both exact captured helper
+commands also passed CPU-only candidate-image checks using actual nonsecret seed
+bytes, including unsafe-file refusals. No live installation or native authority
+transition follows automatically from these checks.

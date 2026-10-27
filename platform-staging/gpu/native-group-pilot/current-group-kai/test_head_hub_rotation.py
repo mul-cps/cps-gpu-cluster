@@ -381,3 +381,58 @@ def test_operator_repository_is_exact_for_existing_and_successor_images(label,ol
         v['expected_snapshot_sha256']=canonical_sha256(v['snapshot'])
     else:v['operator_images'][label]=wrong
     with pytest.raises(ValueError,match='Qualified immutable'):module().prepare(**v)
+
+
+
+def actual_separate_helper_fixture():
+    """Synthetic authority graph, exact nonsecret actual captured helper bytes."""
+    v=fixture();captured=json.loads((HERE/'fixtures/reviewed-hub-input-helpers-20261027.json').read_bytes())
+    for component,helper in captured['helpers'].items():
+        dep=v['snapshot']['deployments'][component]
+        dep['spec']['template']['spec']['initContainers']=[copy.deepcopy(helper)]
+        meta=dep['metadata'];v['snapshot']['objects'][image._key('Deployment',meta['namespace'],meta['name'])]=copy.deepcopy(dep)
+    v['expected_snapshot_sha256']=canonical_sha256(v['snapshot'])
+    return v
+
+
+@pytest.mark.parametrize('node_only',[False,True])
+def test_actual_separate_helper_survives_existing_serial_rotation_and_exact_full_spec_inverse(node_only):
+    v=actual_separate_helper_fixture()
+    if node_only:
+        declarations=image._context(v['snapshot'])[1].document['component_declarations']
+        v['hub_image']=declarations['hub:cps']['image']
+        v['component_images']={'node':'ghcr.io/mul-cps/cps-native-node@sha256:'+'a'*64}
+    before=copy.deepcopy(v);m,p,node,b,created=phases(v)
+    pending=m.bind(v['snapshot'],b,created)
+    permissions={k:actual(value) for k,value in pending['creates'].items()}
+    complete=m.bind(v['snapshot'],b,created,actual_permissions=permissions)
+    for component in ('hub:cps','hub:cit'):
+        original=v['snapshot']['deployments'][component]
+        helper=original['spec']['template']['spec']['initContainers'][0]
+        assert b['runtime_specs'][component]['template']['spec']['initContainers']==[helper]
+        current=copy.deepcopy(original);current['metadata']['resourceVersion']='999'
+        current['spec']=copy.deepcopy(complete['runtime_specs'][component])
+        # Existing full-CAS inverse primitive restores EVERY original field,
+        # including actual separate435 image/seed hash/mounts/security.
+        inverse=image._patch(current,'/spec',copy.deepcopy(original['spec']))
+        assert inverse['patch'][:3]==[
+            {'op':'test','path':'/metadata/uid','value':original['metadata']['uid']},
+            {'op':'test','path':'/metadata/resourceVersion','value':'999'},
+            {'op':'test','path':'/spec','value':current['spec']}]
+        assert inverse['patch'][3:]==[{'op':'replace','path':'/spec','value':original['spec']}]
+        assert inverse['patch'][-1]['value']['template']['spec']['initContainers']==[helper]
+    assert v==before
+
+
+@pytest.mark.parametrize('fault',['image','command','mount','security','seed'])
+def test_actual_separate_helper_requires_exact_independently_pinned_container(fault):
+    v=actual_separate_helper_fixture();dep=v['snapshot']['deployments']['hub:cps']
+    helper=dep['spec']['template']['spec']['initContainers'][0]
+    if fault=='image':helper['image']='ghcr.io/mul-cps/cps-compute@sha256:'+'a'*64
+    elif fault=='command':helper['command']=['python','-c','pass']
+    elif fault=='mount':helper['volumeMounts'][0]['readOnly']=False
+    elif fault=='security':helper['securityContext']['readOnlyRootFilesystem']=False
+    else:helper['command'][-1]=helper['command'][-1].replace('78318670','00000000')
+    meta=dep['metadata'];v['snapshot']['objects'][image._key('Deployment',meta['namespace'],meta['name'])]=copy.deepcopy(dep)
+    v['expected_snapshot_sha256']=canonical_sha256(v['snapshot'])
+    with pytest.raises(ValueError,match='helper'):module().prepare(**v)
