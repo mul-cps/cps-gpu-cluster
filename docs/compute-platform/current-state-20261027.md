@@ -74,8 +74,23 @@ versions and scopes. No new CUDA qualification or deployment was performed here.
   authorized existing membership was restored through the ordinary Hub API and
   its selector verified, without granting admin or claiming a GPU start. The
   permanent import requires bounded group/grant ownership, authentication hooks,
-  real spawn enforcement and PostgreSQL-compatible receipt installation; the
-  currently reviewed receiver is SQLite-only and is absent from the live image.
+  real spawn enforcement and coordinator-backed receipt installation. The new
+  reviewed receiver is still absent from the live image.
+- PostgreSQL15 receipt support is reviewed and published at compute
+  `f474485736c2da5d3324bfa133cd020c3fedee29`. It uses explicit migration/reopening,
+  retained external installation custody, exact original Engine binding,
+  authority-row serialization and independent atomic ORM/receipt transactions.
+  Actual PostgreSQL HTTP checks passed 18 cases; the affected run passed 142
+  with one Source dependency skip, then that module passed separately with 26
+  cases and 21 subtests. A narrow five-case probe passed with the installed
+  production driver versions (psycopg2 2.9.12 and SQLAlchemy 2.0.52). The isolated
+  Hub wheel imports exact reviewed bytes with the paired installed SDK and has
+  no SDK/Lab file overlap. Test container/data/credentials were removed.
+  This is the storage primitive, not complete installation/restore authority.
+  Genuine coordinator factories, external rollback-history reconciliation,
+  asynchronous user hooks and automatic directory import remain open. The
+  required release PostgreSQL15 CI lane remains pending; default test skips
+  without its disposable DB configuration cannot qualify release readiness.
 - Original dirty checkouts remain preserved. No main branch was merged and no
   new application image or live database was changed.
 

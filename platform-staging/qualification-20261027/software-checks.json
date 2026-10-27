@@ -114,6 +114,39 @@
   "directory_handover": {
     "scope": "existing approved legacy membership restored through normal Hub API; actual selector verified, not GPU execution",
     "permanent_import_enabled": false,
-    "remaining": "bounded authenticated directory bundle projection, PostgreSQL receipt support, explicit migration/factories, actual personal spawn enforcement and revocation"
+    "remaining": "bounded authenticated directory bundle projection, coordinator-backed PostgreSQL receipt installation, explicit Source factories, actual async user hooks and personal spawn enforcement/revocation"
+  },
+  "postgresql_permission_receipts": {
+    "repository": "mul-cps/cps-compute",
+    "commit": "f474485736c2da5d3324bfa133cd020c3fedee29",
+    "review": "Task4A independent spec and quality pass; no required changes",
+    "http_passed": 18,
+    "http_seconds": 4.88,
+    "affected": {
+      "passed": 142,
+      "skipped": 1,
+      "seconds": 8.21,
+      "skip": "Source dispatcher missing pinned RBAC import; separately resolved, not relabeled"
+    },
+    "source_followup": {
+      "passed": 26,
+      "subtests_passed": 21,
+      "seconds": 5.16
+    },
+    "live_driver_probe": {
+      "passed": 5,
+      "seconds": 2.15,
+      "sqlalchemy": "2.0.52",
+      "psycopg2": "2.9.12"
+    },
+    "actual_server": "PostgreSQL 15.19",
+    "test_image_manifest": "sha256:b9a6ab4a977ee1b4ef2aa7f49dcf962f827ed3bcbb2eea66288ab2134ff2e2b2",
+    "hub_wheel_sha256": "8aca1f4abb5151743f73e03642a19f051b4520cd0509ab08f4aef8a4024d2ce5",
+    "paired_installed_sdk_commit": "e1391d8939e5e95fbbdf0147978857a623c1de2a",
+    "installed_probe": "exact receipt/receiver bytes/imports with matching SDK; no SDK/Lab Hub-wheel ownership overlap; existing runtime supplies dependencies",
+    "test_resources_removed": true,
+    "runtime_enabled": false,
+    "scope": "actual disposable-local PG15 primitive/HTTP qualification; no production migration/deployment or automatic directory import",
+    "remaining": "genuine coordinator installation/Source reopening factories, retained external rollback history, async user creation and directory projection, required release PG15 CI lane; all platform production gates"
   }
 }
