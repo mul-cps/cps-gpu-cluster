@@ -13,7 +13,7 @@ def observations():
  return {'cdi':{'path':'/var/run/cdi/k8s.device-plugin.nvidia.com-gpu.json','sha256':'b940041ddae78f5570f05ede8347b4eb366892342a581cc01fac2edacf4cd087','raw':(HERE/'fixtures/second-device-cdi.json').read_text()},'policy_hash':'sha256:'+'a'*64,'node':{'metadata':{'name':'k3s-wk-gpu2','uid':'3336cdd5-d245-436e-b57c-2f66c6dcaa41'},'status':{'nodeInfo':{'bootID':'aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa'}}},
  'namespace':{'metadata':{'name':'cps-native-second-card-qa','uid':'bbbbbbbb-bbbb-4bbb-8bbb-bbbbbbbbbbbb'}},
  'guard':{'node_uid':'3336cdd5-d245-436e-b57c-2f66c6dcaa41','boot_id':'aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa','driver_generation':'cccccccc-cccc-4ccc-8ccc-cccccccccccc','driver_version':'615.71.09'},
- 'device':{'node_uid':'3336cdd5-d245-436e-b57c-2f66c6dcaa41','boot_id':'aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa','gpu_uuid':'GPU-1e6145d5-8ee2-43e2-a0d5-6d345909e8a6'},
+ 'device':{'node_uid':'3336cdd5-d245-436e-b57c-2f66c6dcaa41','boot_id':'aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa','gpu_uuid':'GPU-1e6145d5-8ee2-43e2-a0d5-6d345909e8a6','pci_bdf':'0000:06:11.0','minor_number':1,'native_inventory':{'version':1,'backend':'misc-fallback','gpu_uuid':'GPU-1e6145d5-8ee2-43e2-a0d5-6d345909e8a6','gpu_id':1553,'entries':[]}},
  'cohort_uid':'dddddddd-dddd-4ddd-8ddd-dddddddddddd'}
 
 def test_wrong_device_and_changed_preimage_refused(tmp_path):
@@ -61,6 +61,34 @@ def test_actual_compiler_finalize_and_postfinalize_family_sources(tmp_path):
  raw=json.dumps(manifest).encode()
  closed=m.finalize_import_sources(v,raw,m.sha(raw),['ssh','host','sudo','-n','python3','-I','-B','-'])
  assert closed['manifest.json']==raw
+ assert b"inventory['gpu_id']==1553" in closed['vmm-cross-parent/vmm_bridge.py']
+ assert b"a['gpu_id']==1553" in closed['vmm-cross-parent/kernel_witness_validator.py']
+ for name in ('vmm-owner-exit/host_owner_observer.py','vmm-cross-parent/vmm_bridge.py'):
+  assert b'driver/nvidia/gpus/0000:06:11.0/cps_native_caps' in closed[name]
+ for name,data in closed.items():
+  if name.endswith('.py') and name!='source-preparation.py':
+   assert b'0000:06:10.0' not in data and m.FIRST_GPU.encode() not in data
+   assert b"gpu_id']==1552" not in data
+ for field,wrongvalue in (('pci_bdf','0000:06:10.0'),('minor_number',0)):
+  changed=__import__('copy').deepcopy(v);changed['device'][field]=wrongvalue
+  with pytest.raises(ValueError,match='native GPU identity'):
+   m.finalize_import_sources(changed,raw,m.sha(raw),['ssh','host','sudo','-n','python3','-I','-B','-'])
+ import ast
+ for name,var in (('vmm_bridge.py','inventory'),('kernel_witness_validator.py','a')):
+  tree=ast.parse(closed['vmm-cross-parent/'+name])
+  guard=next(n for n in ast.walk(tree) if isinstance(n,ast.Compare) and isinstance(n.left,ast.Subscript)
+             and isinstance(n.left.value,ast.Name) and n.left.value.id==var
+             and isinstance(n.left.slice,ast.Constant) and n.left.slice.value=='gpu_id'
+             and any(isinstance(c,ast.Constant) and c.value==1553 for c in n.comparators))
+  expr=compile(ast.Expression(guard),name,'eval')
+  assert eval(expr,{var:{'gpu_id':1553}})
+  assert not eval(expr,{var:{'gpu_id':1552}})
+ # Runner authenticates these changed source bytes through separately pinned CLI
+ # arguments (not embedded constants); retain that original refusal boundary.
+ assert b"hashlib.sha256((parent/f).read_bytes()).hexdigest()==s" in closed['vmm-cross-parent/run_vmm_cross_parent.py']
+ wrong=__import__('copy').deepcopy(v);wrong['device']['native_inventory']['gpu_id']=1552
+ with pytest.raises(ValueError,match='native GPU identity'):
+  m.finalize_import_sources(wrong,raw,m.sha(raw),['ssh','host','sudo','-n','python3','-I','-B','-'])
  for name,data in closed.items():
   if name.endswith('.py'):
    compile(data,name,'exec')

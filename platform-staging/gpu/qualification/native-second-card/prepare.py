@@ -212,7 +212,15 @@ def build_sources(observations):
     closure=closure.replace('3b217fe8-5750-4ead-954a-09286afd7d3f',ctx['cohort'])
     closure=closure.replace('Source332','QA-policy-bound')
     require(closure.count(' for name,s in text.items():')==1,'Exact import closure loop required')
-    closure=closure.replace(' for name,s in text.items():',' for name,s in text.items():\n  s=s.replace('+repr(FIRST_GPU)+','+repr(SECOND_GPU)+')')
+    native_guards=(
+        ('vmm-cross-parent/vmm_bridge.py',"inventory['gpu_id']==1552","inventory['gpu_id']==1553"),
+        ('vmm-cross-parent/kernel_witness_validator.py',"a['gpu_id']==1552","a['gpu_id']==1553"),
+        ('vmm-owner-exit/host_owner_observer.py','driver/nvidia/gpus/0000:06:10.0/cps_native_caps','driver/nvidia/gpus/0000:06:11.0/cps_native_caps'),
+        ('vmm-cross-parent/vmm_bridge.py','driver/nvidia/gpus/0000:06:10.0/cps_native_caps','driver/nvidia/gpus/0000:06:11.0/cps_native_caps'))
+    guard_adapter=''
+    for name,old,new in native_guards:
+        guard_adapter+=' text['+repr(name)+']=replace(text['+repr(name)+'],'+repr(old)+','+repr(new)+')\n'
+    closure=closure.replace(' for name,s in text.items():',guard_adapter+' for name,s in text.items():\n  s=s.replace('+repr(FIRST_GPU)+','+repr(SECOND_GPU)+')')
     closure=replace_pin(closure,'5ce86051f1a9bd435abc14a8633f273e03e1af086658de7fad8b8d5dcceb3cc0',sha(files['fresh_preflight.py']))
     files['prepare_import_closure.py']=closure.encode()
     historical=load('second_historical_inventory',checked['native-fresh-unequal/fresh_import_closure.py'],source_path('native-fresh-unequal/fresh_import_closure.py'))
@@ -241,6 +249,17 @@ def finalize_import_sources(observations, manifest_raw, manifest_sha, host_argv)
     """Offline second phase: actual finalized manifest, no invented Pod identity."""
     require(sha(manifest_raw)==manifest_sha and len(manifest_raw)<=65536,
             'Exact bounded finalized manifest bytes required')
+    # The independently captured native inventory is tied to the same Node/boot
+    # by context(); execution still rechecks the exact current inventory/epoch.
+    inventory=observations['device'].get('native_inventory')
+    require(type(inventory)is dict and set(inventory)=={'version','backend','gpu_uuid','gpu_id','entries'}
+            and inventory['version']==1 and inventory['backend']=='misc-fallback'
+            and inventory['gpu_uuid']==SECOND_GPU and type(inventory['gpu_id'])is int
+            and inventory['gpu_id']==1553 and type(inventory['entries'])is list
+            and observations['device'].get('pci_bdf')=='0000:06:11.0'
+            and type(observations['device'].get('minor_number'))is int
+            and observations['device']['minor_number']==1,
+            'Exact captured second-card native GPU identity required')
     generated=build_sources(observations)
     require(type(host_argv) is list and 3<=len(host_argv)<=128
             and all(type(v) is str and 0<len(v)<=4096 and not any(c in v for c in '\x00\r\n') for v in host_argv)
