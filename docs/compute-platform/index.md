@@ -32,14 +32,17 @@ The eight GPUs are **A100 PCIe 40 GiB**, as verified from all four nodes' NVIDIA
 feature labels on 2026-10-05. Nominal 5/10/20 GiB profiles are not measured safe
 packing counts; usable memory and HAMi/MPS overhead still require measurement.
 
-User guidance identifies **email** as the account-linking authority. Use an
-explicit, reviewed mapping of verified normalized addresses to a stable canonical
-person UUID. `scripts/compute-platform/link-identity-emails.py` validates directory
-exports, rejects missing/unverified/unreviewed addresses and duplicate accounts
-within a Hub, and preserves explicitly supplied person IDs during email changes.
-It never changes existing usernames, PVCs or NFS paths. Mappings contain private
-identity data and must be stored outside Git. Matching usernames, display names,
-unverified self-declared email or login-time group replacement are not migration.
+Authentik is the authoritative directory for explicit, reviewed CPS/CIT account
+mappings to a stable canonical person UUID. Email verification is optional under
+the later operator decision; accounts without an email challenge use the reviewed
+directory-identity route described in [identity verification](identity-verification.md).
+An email match can identify candidates for review, but does not authorize
+linkage. The separate `scripts/compute-platform/link-identity-emails.py`
+tool retains its verified-address, review and collision checks; optional email
+verification does not relax that tool. Existing usernames, PVCs and NFS paths
+remain unchanged. Keep private mappings outside Git. Matching usernames, display
+names, unverified self-declared addresses or login-time group replacement are not
+migration. Direct university federation remains deferred until ICT registration.
 
 Cross-Hub grants resolve to the maximum effective allowance, rather than adding
 CPS and CIT grants. Shared GPU workspace reservations consume one allowance from
