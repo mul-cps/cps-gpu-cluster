@@ -109,6 +109,9 @@ def build_sources(observations):
     physical=substitutions(checked['native-fresh-domain/physical_samples.py'].decode(),ctx)
     require(physical.count('total>0')==1,'Exact physical capacity span required')
     files['physical_samples.py']=physical.replace('total>0','total==40960').encode()
+    renderer=files['render_fixture.py'].decode()
+    require(renderer.count("'restartPolicy': 'Never'")==1,'Exact QA base Pod restart policy span required')
+    files['render_fixture.py']=renderer.replace("'restartPolicy': 'Never'","'restartPolicy': 'Always'").encode()
     closure_pins={**PINS,**producer.PINS}
     # Reuse reviewed exact-fd host loader, not bare SONAME or container-only env.
     collector = COLLECTOR.read_bytes()

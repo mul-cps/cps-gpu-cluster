@@ -124,6 +124,13 @@ Root stages only new cohort VMM bridge/witness paths. Typed refusal, valid-FD
 same-parent positive controls, exporter-exit backing accounting, kernel witness
 correlation, timeouts and owned participant cleanup remain mandatory.
 
+The new QA base Pods use `restartPolicy: Always` before actual compiler/finalize;
+original first-card tools are unchanged. Kubelet therefore restarts the owned
+main container within the original Pod UID after a bounded Root CRI stop. Root
+must delete the QA Pods before their original1800-second idle lifetime ends;
+Always also restarts a normally exiting main, so the experiment is externally
+bounded and a second restart fails the observer.
+
 Restart is a bounded Root lifecycle action, not a fake Source wrapper: while B
 continuously progresses, independently bind A's original admitted Pod UID/spec,
 CRI container ID/PID/start, parent inode/seal and cap; terminate/restart only A's

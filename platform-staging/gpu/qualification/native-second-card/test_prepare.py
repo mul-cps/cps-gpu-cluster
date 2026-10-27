@@ -106,3 +106,29 @@ def test_generated_mps_runner_authenticates_every_emitted_dependency():
                        ('PEER_RUNNER_SHA','run_peer_oom.py'),('PEER_SHA','peer_probe.py')):
   if values[constant]!=m.sha(files['mps/'+name]):mismatches[constant]=(values[constant],m.sha(files['mps/'+name]))
  assert mismatches=={}
+
+def test_compiled_finalized_pods_support_one_real_kubelet_restart(tmp_path):
+ import copy
+ m=module();files=m.build_sources(observations())['files']
+ r=m.load('restart_renderer',files['render_fixture.py'],tmp_path/'render_fixture.py')
+ f=m.load('restart_preflight',files['restart/fresh_preflight.py'],tmp_path/'fresh_preflight.py')
+ initial=m.load('initial_preflight',files['fresh_preflight.py'],tmp_path/'initial.py')
+ rendered=r.render(request(),approve_qa_hostpaths=True)
+ for label,expected in (('a',1),('b',0)):
+  pod=rendered['pods'][label]
+  assert pod['spec']['restartPolicy']=='Always'
+  actual=copy.deepcopy(pod);actual['metadata']['uid']=('1' if label=='a' else '2')*8+'-1111-4111-8111-111111111111'
+  finalized=r.finalize(request(),pod,pod,actual=actual,approve_qa_hostpaths=True)
+  assert finalized['pod']['spec']['restartPolicy']=='Always'
+  assert finalized['spec_sha256']==r.runtime.native_spec_sha256(actual)
+  row={'namespace':actual['metadata']['namespace'],'name':actual['metadata']['name'],
+       'uid':actual['metadata']['uid'],'cap_mib':5120 if label=='a' else 10240,'spec_sha256':finalized['spec_sha256']}
+  actual['status']={'phase':'Running','containerStatuses':[{'name':'notebook','ready':True,
+       'restartCount':expected,'state':{'running':{'startedAt':'2026-10-27T00:00:00Z'}},
+       'imageID':initial.NOTEBOOK_IMAGE}]}
+  f.checked_pod(actual,row)
+  for wrong in ((0,2) if label=='a' else (1,2)):
+   altered=copy.deepcopy(actual);altered['status']['containerStatuses'][0]['restartCount']=wrong
+   with pytest.raises(ValueError):f.checked_pod(altered,row)
+  if label=='a':
+   with pytest.raises(ValueError):initial.checked_pod(actual,row)
