@@ -39,6 +39,21 @@ versions and scopes. No new CUDA qualification or deployment was performed here.
   retained custody and reject incomplete backup schemas/predecessor history.
   Remote installation/runtime coverage is still missing; this software result
   does not enable managed writes in production or finish shared lifecycle.
+- The selected-device V2 enrollment and Node startup lifetime is independently
+  reviewed and published at compute `1d5bc274777bc9a67014d194f080d360994889bd`.
+  The controlled chain executes actual Hub admission/registration, immutable
+  selected-device publication, original ledger CAS/enrollment, Binding, Node
+  controller/private seal and the unchanged startup receipt verifier. A review
+  found a census race that could omit a concurrent charge; the fix binds the
+  census to its exact validated ledger. Its regression reproduced the failure,
+  then passed; the two owning lifecycle/claim files passed 64 cases in 19.14s.
+  The one earlier affected run recorded 577 passes and two old migration-fixture
+  failures; the repaired registration file passed all 24 cases in 1.22s. No broad
+  suite was repeated. An isolated SDK wheel passed exact-byte and lean Node-extra
+  import checks without admin/Hub/FastAPI imports or SDK/Hub/Lab ownership overlap.
+  This is disabled local software embedding. Authenticated remote transport and
+  factories, terminal teardown/release and shared roster lifecycle remain open;
+  no global/console SQLite databases may be mounted on Nodes as a shortcut.
 - Original dirty checkouts remain preserved. No main branch was merged and no
   new application image or live database was changed.
 

@@ -67,5 +67,32 @@
     "runtime_enabled": false,
     "scope": "disabled local software embedding; no remote installation, live migration, physical or release qualification",
     "remaining": "shared lifecycle, genuine remote installation/runtime factories and writer coverage, authenticator hooks, GPU/startup/restore/UI/release gates"
+  },
+  "selected_device_lifetime": {
+    "repository": "mul-cps/cps-compute",
+    "commit": "1d5bc274777bc9a67014d194f080d360994889bd",
+    "code_commit": "3aff59bdc8071dad356e2f108e0fe18639dca66e",
+    "review": "Task5B and scoped R1 pass; exact-ledger census race addressed; no new actionable regressions",
+    "affected_run": {
+      "passed": 577,
+      "failed": 2,
+      "seconds": 17.84,
+      "failures": "old registration migration fixture assumptions; production code unchanged for fixture repair"
+    },
+    "registration_repair": {
+      "passed": 24,
+      "seconds": 1.22
+    },
+    "fix_owning_tests": {
+      "passed": 64,
+      "seconds": 19.14,
+      "scope": "lifecycle and claims only; deterministic race RED/GREEN retained"
+    },
+    "sdk_wheel_sha256": "a0d75cdb2b63ad167dc11cfc71aa501434e2a926543435cd87c3d087047bed0a",
+    "installed_probe": "exact new module bytes/imports; isolated declared node-extra dependencies; no admin/Hub/FastAPI imports or SDK/Hub/Lab ownership overlap",
+    "runtime_enabled": false,
+    "scope": "disabled local software chain; no live migration, hardware qualification or deployment",
+    "remaining": "Task5C original terminal cleanup/release, Task3C shared lifecycle, genuine authenticated remote transport/factories and all maintenance writer coverage, hardware/startup/restore/UI/release gates",
+    "warnings": "existing Starlette/AnyIO deprecation retained, not suppressed"
   }
 }
