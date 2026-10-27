@@ -1,0 +1,153 @@
+{
+  "caps_mib": [
+    5120,
+    10240
+  ],
+  "cleanup": {
+    "all10_retired_offline_pinned_used0": true,
+    "both_gpu_clients_zero": true,
+    "cleanup_receipt_sha256": "162ced5271f5afb03109572c8c11ae7849e749c74a5689e379516dd9e9b1654b",
+    "first_custody_and_CDI_epoch_unchanged": true,
+    "host_capture_sha256": "5e9e421a7941ab0aa1f83945be87b2e345b8fa37e3029d83ef1ea4f98f3b969e",
+    "node": {
+      "name": "k3s-wk-gpu2",
+      "resourceVersion": "386269511",
+      "uid": "3336cdd5-d245-436e-b57c-2f66c6dcaa41",
+      "unschedulable": true
+    },
+    "node_observation_phase": "after cleanup, before Root independently restored scheduling",
+    "retirement_all10_sha256": "35c117812365b84f1428fee522410596de1eb54c0e0e78ed236af6c24d5a4e4a",
+    "whole10_original_journals_verified": true,
+    "whole_journal_readbacks_sha256": "09b0c76e80185a4248586d27100b617581f2084dcd9cafd4fd4c5fab1c28d62c"
+  },
+  "cohort_uid": "81b2a90a-7a09-49a1-8d05-c067bdb8095e",
+  "failed_attempts": [
+    {
+      "correction": "Exact reviewed null-to-bound two-file CAS; original failed bytes retained.",
+      "reason": "Pre-API finalized null intent selected instead of actual API-bound intent; original controller refused before cap assignment.",
+      "receipt_sha256": "eae8d0a783a3d0813326d71d43ec36175daeb9431eb21dddf5f76b8b956c2007",
+      "stage": "pre-cap input verification"
+    },
+    {
+      "correction": "Reviewed same-byte owner/regular/nlink/hash-checked chmod0600; unique successful output retained.",
+      "log_sha256": "a23d39810d07546e6551e8f304074af3fc502a4d3c3f769c32056b62486b93f0",
+      "reason": "Local manifest mode0644 refused before GPU execution.",
+      "stage": "local MPS manifest validation"
+    },
+    {
+      "correction": "Separate reviewed pinned read-only restart observer; no additional stop and no fabricated continuous peer stream.",
+      "log_sha256": "415957b871c77c7a4fc4d91ff735ce48f774a15860e79bf52b44b5016860a42e",
+      "reason": "Ordinary Root observer required restart0 despite outer restart preflight A1/B0; no post-restart OOM launched in this attempt.",
+      "root_stderr_sha256": "58f2458eb326bfd3ebd12c7fe7975845247ba3c99c3bf83220b61bbd62b1a308",
+      "stage": "first post-restart read-only observation"
+    }
+  ],
+  "gpu_uuid": "GPU-1e6145d5-8ee2-43e2-a0d5-6d345909e8a6",
+  "hardware_qualified": false,
+  "kind": "second-card-bounded-mps-and-split-restart-actual",
+  "limitations": [
+    "Physical direct QA only; no Hub/student/Source authority qualification.",
+    "MPS and separate post-restart OOM/recovery passed; one uninterrupted120-second restart/peer/recovery gate remains unverified.",
+    "Original failed and partial traces retained, never relabeled as successful full trials.",
+    "Cleanup Node observation precedes Root independently restoring its temporary scheduling fence; all4workers then advertise2 GPUs and are schedulable."
+  ],
+  "mps": {
+    "all10_native_used_zero_after": true,
+    "independent_four_original_processes_absent_sha256": "a504e9a4b80c8d357f8b230dbcf06823a81320dea4aa2d5663c4e9923c8fa57a",
+    "raw_mps_events_sha256": "27acd5607fd0052ebc104cb39489a6610d39bc00b2e955bea49498eb5b347b86",
+    "raw_peer_events_sha256": "7f3cefc394fe9bbbf184504b02d41c8753add1f675659125d1bc72be6f2ba80a",
+    "receipt": {
+      "engine_sha256": "8fc3d30d65ce5e86ca558bb84ab2952243a9143bf0e8e3692eebaa22a9c58380",
+      "manifest_sha256": "20e735885ab865fde20b685cedffe60e22b38d2502adf54a9c560f85258a8226",
+      "mapper_argv_sha256": "311b1f3ec0e01781f315a7f8ce68a06ba189393d6d79c16c862f756e19eb03b8",
+      "mapper_sha256": "76c90c7b8b4859c7f00a5d331ae44b4aab93440c60acf398627d1abe9f5d86bf",
+      "measurement": {
+        "attempted_mib": 4352,
+        "held_mib": 4096,
+        "measurement_passed": true,
+        "peer_ticks": 282,
+        "pending": [
+          "Root review of hardware receipts"
+        ],
+        "production_qualified": false
+      },
+      "probe_sha256": "720b431b8d3e70a810318e0797174e7d226838ee13bc5a70a24a61400fd54d8d",
+      "production_qualified": false,
+      "side": "a",
+      "state": "bounded-mps-peer-and-cleanup-measurements-passed"
+    },
+    "receipt_sha256": "e72be0ca39017add7429ecb52400aa9ecbfa95a8fabe2e0cd3d98454ee2bd23e",
+    "root_live_mapping_sha256": "ee5f26efb27260d3606bde6f033ff67d4f8f2aedde9ad0dd7bccb66d13e2dcb0"
+  },
+  "native_gpu_id": 1553,
+  "node": "k3s-wk-gpu2",
+  "node_uid": "3336cdd5-d245-436e-b57c-2f66c6dcaa41",
+  "observed_date": "2026-10-27",
+  "production_qualified": false,
+  "restart_stop_window": {
+    "actual_restart_counts": {
+      "a": 1,
+      "b": 0
+    },
+    "configured_peer_duration_seconds": 120,
+    "full_continuous_120_second_trial_completed": false,
+    "new_main": {
+      "cgroup_relative": "/kubepods.slice/kubepods-burstable.slice/kubepods-burstable-pod03a7de35_ea10_485d_995d_2e921c64e25c.slice/cri-containerd-a61700a1473bdb38e38bb3a5447f279117335bfcea64441ddf558bf27ad1f165.scope",
+      "container_id": "a61700a1473bdb38e38bb3a5447f279117335bfcea64441ddf558bf27ad1f165",
+      "host_pid": 794138,
+      "pid_start_ticks": 48344162
+    },
+    "observed_last_tick_elapsed_seconds": 5.727243776957039,
+    "observed_peer_ticks": 9,
+    "peer_stream_sha256": "345b204d0b11fb575cf05f0aac0b9d570f158eff3f51b9e039e56a38347fb5e0",
+    "same_pod_uid": "03a7de35-ea10-485d-995d-2e921c64e25c",
+    "stop": {
+      "old_pid_lifetime_absent": true,
+      "stop_begin_monotonic_ns": 483440850217339,
+      "stop_end_monotonic_ns": 483441072403298,
+      "stopped_exact_original_cid": "fb33074c4218153b0c416bb9316082cea6fdd0a3f8b0c648081a2cfd76cf7661"
+    },
+    "stop_bracketed_by_observed_peer_ticks": true,
+    "stop_receipt_sha256": "40ac31537ec390a54368199332ee3e8735c757b64a7748181931d050e51245e2",
+    "unchanged_parent_identity_seals_and_epoch": true
+  },
+  "separate_post_restart_recovery_window": {
+    "additional_CRI_stops": 0,
+    "assessment": {
+      "direction": "b-to-a",
+      "held_before_oom_mib": 4608,
+      "measurement_passed": true,
+      "peer_ticks_inside_oom_hold": 16,
+      "physical_samples": 4,
+      "production_qualified": false,
+      "recovery_byte": 37,
+      "transport": "kubectl",
+      "typed_oom": {
+        "cuda_error_code": null,
+        "kind": "torch.OutOfMemoryError"
+      },
+      "unchanged_seals_and_processes": true
+    },
+    "assessment_sha256": "a87c7889478a6b2524d44d913178e03e152ffaa8fadc58354d5f9f0e468b8b15",
+    "manifest_sha256": "c6fbe2bae5cc86202933612ac3c389cf9db4d295d57e3f171844cd54c8e16108",
+    "oom_events_sha256": "549464d6129f5ff5738b20e32bbbfad662ba62820c336abe60ecc6bab55fd42d",
+    "peer_duration_seconds": 60,
+    "peer_events_sha256": "e9de2ce2443aeaf102b4935e8ed42a409559e24dd784bf95a1e23c0698973726",
+    "read_only_preflight_sha256": "558d639434badfaa9a751e288dda6ba89ade9a13c08fd8056a4b5d47ef503fa3"
+  },
+  "source_commits": {
+    "exec_aware_probe": "8168970f6bfc7c2dd349432358a380239bb1b20e",
+    "restart_readonly_observer": "01431ab3e46dc9bb4cf088b12a5d20a56265dac9"
+  },
+  "source_pins": {
+    "mps_engine": "8fc3d30d65ce5e86ca558bb84ab2952243a9143bf0e8e3692eebaa22a9c58380",
+    "mps_mapper": "76c90c7b8b4859c7f00a5d331ae44b4aab93440c60acf398627d1abe9f5d86bf",
+    "mps_probe": "720b431b8d3e70a810318e0797174e7d226838ee13bc5a70a24a61400fd54d8d",
+    "mps_runner": "9bbd4f5b7e76472d3f3ca39762b66eb4ee89e85911dbae450eb93148ebc7cc17",
+    "peer_oom_runner": "7fe1d8e1cdb2a251c37bfa9766300c8fed51e58d6cca6e4f2b9278d337cd4d93",
+    "peer_probe": "4e526355f18832da728b6fcdb9f525513c6451fc06b3ea56a57eb9795519a0b0",
+    "restart_observer": "24828f176ecc2770b89729078ed8c21018b5a5cfe54f97ec4f50f59896b39665",
+    "restart_preflight": "984e66a3e8f675e1716df7d9407aba014011be52decb323401b1a46491f35e8e"
+  },
+  "version": 1
+}

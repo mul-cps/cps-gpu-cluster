@@ -26,12 +26,27 @@ retain their original commit scope.
   first-device custody, CDI contents and driver epoch were unchanged. GPU2 was
   uncordoned after cleanup. These A/B tests use one QA namespace and do not prove
   cross-Hub accounting.
-- MPS stopped before allocation because CRI exec inherits the configured CDI
-  selector while the initial container process receives CDI's `void` environment
-  edit. The test expected the initial-process value in exec. The refusal is
-  retained as an inconclusive test setup result; no isolation pass or failure is
-  inferred. A narrow exec-aware guard correction is under test. Restart and
-  complete installed multi-root admission remain open gates.
+- After the reviewed exec-aware environment correction, actual second-card MPS
+  passed: two clients held 4096 MiB together, the 4352 MiB attempt returned typed
+  CUDA OOM, both recovered, and the peer completed 282 progress ticks. The pinned
+  original assessor was independently rerun against retained traces. Fresh host
+  observations verified both GPUs free of QA clients, all ten retained native
+  rows zero-charge, all four mapped MPS process lifetimes absent, and unchanged
+  first-device custody/CDI/epoch. Earlier preallocation test setup refusals remain
+  recorded. A single exact owned-container stop produced the same Pod UID with
+  A1/B0 restart counts and a new A container/process, while original parent cap
+  identity, seal, journal, gate and epoch remained unchanged. Nine peer ticks
+  bracketed that stop. After correcting the nested restart observer, a separate
+  post-restart window passed A5 over-cap rejection/recovery with sixteen peer
+  ticks inside the eight-second hold and four physical-memory samples. The two
+  windows are retained separately; they do not establish a continuous 120-second
+  peer interval across both stages. Final cleanup verified all ten original
+  journals and native rows retired/offline/pinned/zero-charge, no QA clients and
+  unchanged first-device custody/CDI/epoch. GPU2 scheduling was restored with an
+  exact UID/resource-version CAS; all workers advertise two GPUs and are
+  schedulable. Complete installed multi-root admission remains open. These are
+  physical QA results for the tested 5/10 GiB pair, not full production or
+  cross-Hub qualification.
 - Neutral stopped-workspace bootstrap is reviewed and published at compute
   `87c5f6d121e2d87476a351aee416ec00bb9471d4` / Source
   `f4c83fd03c2e31b25ff39a4367d4f04d2e0dfb25`. Exact installed wheels pass the
