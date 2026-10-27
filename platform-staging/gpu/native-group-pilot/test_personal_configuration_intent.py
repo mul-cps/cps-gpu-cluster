@@ -8,6 +8,11 @@ from test_personal_qualification_promotion import promoted_node_fixture
 
 def test_personal_intent_retains_full_cas_and_inverse(monkeypatch):
     import personal_configuration_intent as module
+    from pathlib import Path
+    from test_personal_qualification_promotion import __file__ as fixture_module
+    fixture=Path(fixture_module).parent/'fixtures/personal_qualification_runner_source.py'
+    assert fixture.read_bytes()==(Path(__file__).parent/'personal-qualification/run.py').read_bytes(), \
+        'Update the explicitly pinned compute runner fixture after reviewed runner changes'
     f=promoted_node_fixture(monkeypatch)
     source=f.source
     policy={'apiVersion':'v1','kind':'ConfigMap','metadata':{'name':'policy','namespace':'control',
