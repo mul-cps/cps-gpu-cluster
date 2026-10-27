@@ -252,8 +252,26 @@ def compile_catalog(catalog, *, native_group_evidence=None, native_group_artifac
     for name, profile in catalog['profiles'].items():
         if profile['kind'] not in ['interactive','batch'] or profile['queue'] != profile['kind']:
             raise ValueError(f'{name}: invalid queue/kind')
-        if not re.fullmatch(r'[1-9]\d*(?:m)?', profile['cpu']) or not re.fullmatch(r'[1-9]\d*(?:Mi|Gi)', profile['memory']):
+        if not re.fullmatch(r'[1-9]\d*(?:m)?', profile['cpu']) or not re.fullmatch(r'[1-9]\d*(?:M|G|Mi|Gi)', profile['memory']):
             raise ValueError(f'{name}: invalid resource quantity')
+        if 'requests' in profile:
+            from decimal import Decimal
+            def quantity(value):
+                match=re.fullmatch(r'([1-9]\d*)(m|M|G|Mi|Gi)?',value) if isinstance(value,str) else None
+                if not match:raise ValueError(f'{name}: invalid request quantity')
+                scale={None:1,'m':Decimal('0.001'),'M':10**6,'G':10**9,'Mi':2**20,'Gi':2**30}[match[2]]
+                return Decimal(match[1])*scale
+            requests=profile['requests']
+            if (not isinstance(requests,dict) or set(requests)!={'cpu','memory'}
+                    or any(not 0<quantity(requests[k])<=quantity(profile[k]) for k in requests)):
+                raise ValueError(f'{name}: requests must be positive and fit fixed limits')
+        if 'personal' in profile:
+            personal=profile['personal']
+            if (not isinstance(personal,dict) or set(personal)!={'alias','capability'}
+                    or personal['capability']!='personal-native-nvidia-egl-v1'
+                    or not isinstance(personal['alias'],str) or not re.fullmatch(r'[a-z0-9][a-z0-9-]{0,127}',personal['alias'])
+                    or profile['kind']!='interactive' or profile['gpu']['mode']!='shared'):
+                raise ValueError(f'{name}: closed personal capability metadata required')
         if not set(profile['images']).issubset(catalog['approvedImages']):
             raise ValueError(f'{name}: profile image is not approved')
         gpu = profile['gpu']

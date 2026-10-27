@@ -39,6 +39,9 @@ class PolicyTests(unittest.TestCase):
                 elif row.get('administrativeExceptionRequired'):
                     self.assertEqual(row['maxAgeSeconds'], 3600)
                     self.assertEqual(row['idleSeconds'], 900)
+                elif row.get('personal',{}).get('capability')=='personal-native-nvidia-egl-v1':
+                    self.assertEqual(row['maxAgeSeconds'],8*3600)
+                    self.assertEqual(row['idleSeconds'],1800)
                 else:
                     self.assertEqual(row['maxAgeSeconds'], 4 * 3600)
                     self.assertEqual(row['idleSeconds'], 1800)
