@@ -169,6 +169,29 @@ failed before any step started. Its annotation reports account payment failure o
 a spending limit requiring increase. Local results remain local evidence; hosted
 CI is an open release gate until the account issue is resolved and jobs run.
 
+## Personal MuJoCo and directory policy — reviewed partial source
+
+CIT's installed final profile filter removes legacy GPU profiles for administrators
+as well as ordinary users. The replacement preserves personal account/home identity
+and compiles fixed resources from the shared catalog. The disabled MuJoCo variant
+is 10 GiB, 8 hours, with no approved image yet. Directory linkage uses explicit
+issuer/client/connector/subject bindings; it does not infer identity from email.
+
+Reviewed source: compute `2c2eab5a153e6e61b0d21a8b8a95b14e64adcc3e`,
+admin `6572debab1e9b2bf15ba66a176a75a9ad5a91e73`, catalog
+`7cb8bae2bb0db3df51f4c43bccaeb3cbba95feb2`. The initial affected run passed
+283 cases and four subtests; a later per-profile correction passed four focused
+cases. The final confirmed-stop correction passed 28 cases from rebuilt paired
+wheels and one explicit absent-Pod regression. Independent review approved the
+partial candidate after fixing missing personal post-stop routing. Missing cleanup
+proof retains the reservation; original verified Node cleanup releases it once.
+These are software fixtures, not image/native rendering or live deployment proof.
+
+Required Task4D must retain exact reservation and runtime Control audit successors
+before grant updates can activate with allocations live. Installed factory cleanup
+wiring, actual subject enrollment, exact-image NVML/EGL combined-budget and desktop
+qualification remain required. MuJoCo is not restored on the live Hub yet.
+
 ## Work still required for production
 
 1. Finish shared-workspace lifecycle integration, one-time custody-preserving

@@ -216,5 +216,28 @@
     "deployed": false,
     "runtime_observation": "GPU2 exporter explicitly excluded by node label; three other exporter targets report six UUIDs against seven advertised devices",
     "remaining": "actual exporter coverage on GPU2 guarded runtime, deployed rule acceptance, resource isolation/Descheduler telemetry, physical free-GPU measurement and remaining monitoring gates"
+  },
+  "directory_personal_policy_partial": {
+    "compute_commit": "2c2eab5a153e6e61b0d21a8b8a95b14e64adcc3e",
+    "admin_commit": "6572debab1e9b2bf15ba66a176a75a9ad5a91e73",
+    "catalog_commit": "7cb8bae2bb0db3df51f4c43bccaeb3cbba95feb2",
+    "review": "independent source/spec PASS after I1 personal confirmed-stop routing correction",
+    "affected_before_last_version_correction": {
+      "passed": 283,
+      "subtests": 4,
+      "seconds": 81.37
+    },
+    "version_correction_passed": 4,
+    "final_paired_wheel_affected": {
+      "passed": 28,
+      "seconds": 39.71
+    },
+    "absent_pod_not_cleanup": {
+      "passed": 1,
+      "seconds": 4.28
+    },
+    "deployed": false,
+    "complete": false,
+    "remaining": "Task4D exact live reservation and Control runtime audit successors, installed cleanup factory wiring, actual upstream subject enrollment, exact MuJoCo image NVML/EGL/desktop qualification; original production gates unchanged"
   }
 }
