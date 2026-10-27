@@ -9,17 +9,19 @@ versions and scopes. No new CUDA qualification or deployment was performed here.
 ## Verified software
 
 - Compute receipt and ordinary-group executor changes are published on
-  `codex/hub-permission-receipts-20261027` at `ff1c92cf6da9b370347bbf22dfb53c6b31a68377`:
+  `codex/hub-permission-receipts-20261027` at `f53d634d05f98caa57422de5375c9c7139c61858`:
   [draft PR 2](https://github.com/mul-cps/cps-compute/pull/2).
-  The full suite passed 6,197 tests with six skips and 68 subtests; the subsequent
-  test-only rollback strengthening passed all 67 focused tests. Skips are pending.
+  The full suite passed 6,244 tests with six skips and 68 subtests; all 114
+  focused permission tests passed. Six skips remain pending. The 626 existing
+  framework/test warnings were reviewed and originate outside these modules.
 - Admin Hub request-boundary fixes are published at
   `dfd5c5500c8743bd9e5c023e5e54dcbdba8d2898`:
   [draft PR 2](https://github.com/mul-cps/e2x-course-hub/pull/2).
   All 109 tests and 71 subtests passed. Requests pin the intended Hub API,
   prohibit redirects and reject unsafe paths while preserving encoded spaces.
-- The receiving Service-token API is under implementation and full-suite test.
-  Source-console journaling, installation custody and authenticator hooks remain
+- The receiving Service-token API passed independent review and remains disabled
+  by default. Source-console journaling is under implementation; installation
+  custody and authenticator hooks remain
   outstanding. An executor or unwired receiver does not enable managed writes.
 - Original dirty checkouts remain preserved. No main branch was merged and no
   new application image was deployed. A private Hub wheel build verified module

@@ -1,0 +1,22 @@
+{
+  "compute": {
+    "repository": "mul-cps/cps-compute",
+    "commit": "f53d634d05f98caa57422de5375c9c7139c61858",
+    "passed": 6244,
+    "skipped": 6,
+    "subtests_passed": 68,
+    "warnings": 626,
+    "seconds": 222.22,
+    "focused_passed": 114,
+    "review": "Task 2 spec and quality pass; no actionable findings",
+    "private_hub_wheel_sha256": "152a617b86ec3081f49fb1779c83264d99d2535962be5e42dfd73b9ffb19e0dc",
+    "installed_smoke": "exact four permission module imports/bytes; no SDK or Lab extension ownership"
+  },
+  "admin": {
+    "repository": "mul-cps/e2x-course-hub",
+    "commit": "dfd5c5500c8743bd9e5c023e5e54dcbdba8d2898",
+    "passed": 109,
+    "subtests_passed": 71
+  },
+  "scope": "local software only; no migration, deployment or new GPU qualification"
+}
