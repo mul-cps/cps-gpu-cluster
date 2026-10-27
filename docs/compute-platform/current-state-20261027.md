@@ -144,8 +144,8 @@ compatibility still need validation. No label or runtime setting was changed.
 ## Read-only runtime observation
 
 The [timestamped Kubernetes snapshot](../../platform-staging/qualification-20261027/cluster-readonly.json)
-records all seven nodes Ready and uncordoned. GPU resources advertised by workers
-are 2 + 1 + 2 + 2 = **seven advertised**, not seven physical cards. A fresh
+records all seven nodes Ready and uncordoned. This earlier snapshot advertised
+2 + 1 + 2 + 2 = seven GPUs; the restoration recorded below supersedes that count. A fresh
 [GPU2 inspection](../../platform-staging/qualification-20261027/gpu-inventory-readonly.json)
 sees both physical A100s under driver 615.71.09. Its active device-plugin UUID
 allowlist contains only `GPU-16128952-b438-556a-00bb-93039ee24e56`, matching
@@ -257,13 +257,12 @@ the parent read-only check. Those observations do not qualify isolation.
 
 The node-specific two-UUID plugin configuration proposal passed Kubernetes
 server dry-run; absence of its new ConfigMap key was verified afterward. It
-remains unapplied. Current native catalog/budget guards require qualification
+was not applied; the later restoration uses the existing `plain` configuration instead. Native catalog/budget guards require qualification
 for every advertised UUID, and alternate CDI file hashes are retained. A lone
-allowlist change would conflict with native starts. The rollout choice is
-pending: keep native sharing intact while qualifying the second card, or hold
-new native starts on GPU2 while restoring ordinary two-device advertisement.
-No device capacity/status field is patched to manufacture a count. The retained
-physical inventory remains eight and advertised inventory seven.
+allowlist change would conflict with native starts. Physical advertisement and native sharing qualification are now tracked separately;
+the later restoration below supersedes the pending advertisement decision.
+No device capacity/status field is patched to manufacture a count. That earlier retained
+snapshot counted eight physical and seven advertised GPUs.
 
 ## Reviewed qualification handoff and concrete readiness progress
 
@@ -349,9 +348,8 @@ Task3C lifecycle. No account, membership, workspace or storage was created here.
 
 A [fresh full-worker read-only inventory](../../platform-staging/qualification-20261027/eight-gpu-inventory-current.json)
 now records eight distinct physical A100 UUIDs: two 40 GiB cards on each worker,
-all reporting driver615.71.09. Node capacity and allocatable remain2/1/2/2.
-Only GPU2's advertisement differs from its physical inventory; the captured
-active plugin config still permits only its first UUID. This verifies inventory
+all reporting driver615.71.09. At that capture, capacity and allocatable were2/1/2/2.
+GPU2's captured active plugin config permitted only its first UUID. This verifies inventory
 and the exact configuration mismatch, not device isolation or restoration.
 
 The narrow existing upgrade-helper correction has now passed independent scoped
@@ -363,3 +361,29 @@ command, seed, mount or security bytes are refused. Both exact captured helper
 commands also passed CPU-only candidate-image checks using actual nonsecret seed
 bytes, including unsafe-file refusals. No live installation or native authority
 transition follows automatically from these checks.
+
+
+## Eight-GPU advertisement restored (21:06 UTC)
+
+The [live post-change verification](../../platform-staging/qualification-20261027/eight-gpu-advertisement-restored.json)
+records **capacity and allocatable 2/2/2/2: eight GPUs**. All four workers now
+select the same existing `plain` device-plugin configuration, already the
+Helm/Fleet default. The only live mutation was a UID/resource-version/old-label
+conditional update of GPU2's `nvidia.com/device-plugin.config` label from its
+singleton qualification configuration to `plain`. No ConfigMap, driver, image,
+capacity/status field or running user Pod was changed. Config-manager logged
+the successful reload, and Kubernetes reported the actual two-device inventory.
+
+Before restoration, two dedicated QA Pods assigned native 5/10 GiB caps on
+GPU2's second UUID, passed actual CUDA device-identity checks and reached
+Running/Ready. Both were deleted with exact UID preconditions, and the original
+controller verified cleanup: all four retained second-card cap records were
+offline/pinned with zero charge and no application clients. This verifies
+device access and cleanup, not pressure/isolation/MPS/restart qualification.
+
+After the plugin reload, both devices' complete native inventories, the first
+root's entire retained custody, driver generation and boot identity matched the
+pre-change capture. The complete CDI file set, bytes, hashes, owner and mode
+matched; the plugin atomically replaced its provider file, changing its inode.
+Native shared admission retains its separate qualification requirements; eight
+advertised devices do not constitute eight qualified native sharing roots.
