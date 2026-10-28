@@ -61,3 +61,12 @@ The independent global culler remains a separate constraint: CPS has a 48-hour i
 Remaining review work includes exact-reference production pre-pull alignment, warm/cold/queue-separated startup measurements and measured caching benefits, the role-specific deployed UI/API matrix, and eventual reduction of legacy embedded configuration through the released adapter. Do not silently combine this remediation with a Hub/chart migration or a broad watched-Fleet reconciliation.
 
 The combined cluster change passed 71 compute-policy tests with 167 subtests and 13 executable proxy configuration tests. These scopes exercise request rejection before side effects, default and final native profile resolution, directory caching, role visibility and ServiceAccount rendering. Those source tests alone do not establish deployment or latency; the subsequent bounded live CPS rollout and single CPU timing sample are recorded separately above.
+
+## Current-group readiness repair
+
+The authenticated existing current-group API now reports `ready: true` for the
+5/10 GiB profiles. CIT's stale publisher identity and both stale gateway Hub
+image declarations were corrected with guarded reference-only rollouts. All
+four component acknowledgments are fresh and agree; the four protected user
+notebook UIDs/restart counts remain unchanged. This closes the process-image
+readiness mismatch, not fleet qualification. See the [repair receipt](../../qualification-artifacts/group-readiness-repair-20261028/README.md).
