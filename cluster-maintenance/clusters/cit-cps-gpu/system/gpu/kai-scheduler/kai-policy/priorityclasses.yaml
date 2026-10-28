@@ -44,3 +44,15 @@ metadata:
 value: 1
 globalDefault: false
 description: "Lowest priority of all -- GPU-requesting CI jobs. Preemptible by everything."
+---
+# Scoped MuJoCo recovery: never preempt a running teaching/research workload.
+apiVersion: scheduling.k8s.io/v1
+kind: PriorityClass
+metadata:
+  name: cps-rino-research
+  labels:
+    app.kubernetes.io/part-of: cps-rino-restoration
+value: 60
+globalDefault: false
+preemptionPolicy: Never
+description: "Scoped non-preempting research priority for reviewed CIT MuJoCo restoration."

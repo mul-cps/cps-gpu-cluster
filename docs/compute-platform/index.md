@@ -5,7 +5,9 @@ frontends, and **separate CPS and CIT admin applications/databases/OAuth clients
 Local course management is active in the application. Moodle is planned and disabled.
 
 See the [23 October current state and completion order](current-state-20261023.md)
-for the latest live acceptance boundary and remaining production gates.
+for the broader live acceptance boundary and remaining production gates.
+The [28 October CIT MuJoCo restoration](../../qualification-artifacts/rino-mujoco-restoration-20261028/README.md)
+records the later personal desktop recovery and its exact limits.
 
 | Repository | Canonical responsibility | Implementation branch |
 | --- | --- | --- |

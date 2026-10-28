@@ -1,0 +1,18 @@
+{
+  "verified_at": "2026-10-28T06:59:28.059448+00:00",
+  "user": "m12113877",
+  "pod_uid": "4e5aba5b-87f7-4755-b1c9-e90b127dab71",
+  "ready": true,
+  "node": "k3s-wk-gpu1",
+  "pvc_uid": "244b8b1c-6f30-4138-8902-111cd9b59284",
+  "protected_pod_uids_unchanged": true,
+  "source_commit": "f7b1dc3f4ee34ab71cfa274db2f5e12226a04174",
+  "hub_image": "sha256:5d6803af796bcac8b9487eafb87c3928d7279c958530a0b5ec1ae4640858f31b",
+  "cuda": true,
+  "assigned_gpus": 1,
+  "nvidia_egl_mujoco_render_pass": true,
+  "desktop_http_status": 200,
+  "temporary_verification_token_revoked": true,
+  "runtime_hours": 24,
+  "profile": "mujoco-desktop-exclusive"
+}
