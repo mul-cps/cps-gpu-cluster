@@ -22,6 +22,25 @@ def load_module(name, path):
     return module
 
 
+def sdk_parser_environment():
+    env = os.environ.copy()
+    sdk_source = env.get(SDK_SOURCE_ENV)
+    if sdk_source:
+        sdk_path = Path(sdk_source).expanduser()
+        if not sdk_path.is_dir():
+            pytest.fail(f'{SDK_SOURCE_ENV} is not an available directory: {sdk_path}')
+        env['PYTHONPATH'] = str(sdk_path) + (os.pathsep + env['PYTHONPATH'] if env.get('PYTHONPATH') else '')
+    probe = subprocess.run([sys.executable, '-c',
+        'from cps_compute.native_gpu_runtime import read_selected_native_cap; assert callable(read_selected_native_cap)'],
+        text=True, capture_output=True, env=env)
+    if probe.returncode:
+        message = 'selected-cap parser unavailable from requested source or installed cps_compute SDK'
+        if sdk_source:
+            pytest.fail(message + ': ' + probe.stderr.strip()[-1000:])
+        pytest.skip(message)
+    return env
+
+
 def fixture_inputs():
     descriptor = {
         'version': 1, 'kind': 'controlled-qa-selected-gate/v1',
@@ -121,18 +140,7 @@ def test_selected_projection_is_accepted_by_sdk_parser(tmp_path):
 
     # Exercise the SDK parser against a local projected-file analogue. An explicit
     # source checkout takes precedence; otherwise use this interpreter's install.
-    env = os.environ.copy()
-    sdk_source = env.get(SDK_SOURCE_ENV)
-    if sdk_source:
-        sdk_path = Path(sdk_source).expanduser()
-        if not sdk_path.is_dir():
-            pytest.skip(f'{SDK_SOURCE_ENV} is not an available directory: {sdk_path}')
-        env['PYTHONPATH'] = str(sdk_path) + (os.pathsep + env['PYTHONPATH'] if env.get('PYTHONPATH') else '')
-    probe = subprocess.run([sys.executable, '-c',
-        'from cps_compute.native_gpu_runtime import read_selected_native_cap; assert callable(read_selected_native_cap)'],
-        text=True, capture_output=True, env=env)
-    if probe.returncode:
-        pytest.skip('selected-cap parser unavailable from requested source or installed cps_compute SDK')
+    env = sdk_parser_environment()
 
     # Exercise the exact selected runtime parser against a local projected-file analogue.
     projection = tmp_path / 'projected' / 'selected.json'
@@ -153,6 +161,16 @@ print(json.dumps(read_selected_native_cap(path,expected,pod_uid=pod_uid,spec_sha
         env=env).stdout)
     assert parsed['gpu_uuid'] == physical['gpu_uuid']
     assert parsed['cap_mib'] == 10240
+
+
+def test_explicit_invalid_sdk_source_fails_instead_of_skipping(tmp_path, monkeypatch):
+    monkeypatch.setenv(SDK_SOURCE_ENV, str(tmp_path / 'missing'))
+    with pytest.raises(pytest.fail.Exception, match='not an available directory'):
+        sdk_parser_environment()
+
+    monkeypatch.setenv(SDK_SOURCE_ENV, str(tmp_path))
+    with pytest.raises(pytest.fail.Exception, match='parser unavailable from requested source'):
+        sdk_parser_environment()
 
 
 @pytest.mark.parametrize('mutation', ['uid', 'spec', 'name', 'namespace', 'qualification_ref', 'device_epoch', 'gpu', 'token', 'epoch_boot', 'epoch_driver', 'epoch_gpu'])
