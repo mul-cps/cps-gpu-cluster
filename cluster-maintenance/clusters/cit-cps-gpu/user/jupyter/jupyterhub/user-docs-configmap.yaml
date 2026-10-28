@@ -28,8 +28,8 @@ data:
     
     👉 **/home/jovyan/shared**
     
-    - This is **Cluster Storage (Longhorn)**, shared across all users.
-    - Use this for collaborative projects and shared datasets.
+    - Shared mounts are optional and require the appropriate permission.
+    - Quick Start uses your persistent home; choose approved shared storage explicitly in the advanced options.
 
   01_CLUSTER_GUIDE.md: |
     # CPS GPU Cluster Guide
@@ -72,7 +72,9 @@ data:
 
     -   **CPU (Default)**: For coding, lightweight testing, and data analysis.
     -   **GPU (PyTorch/TensorFlow)**: For deep learning tasks. Choose 1x or 2x GPU based on your needs.
-    -   **MIG Slices**: For smaller workloads that don't need a full A100 (e.g., inference, small model training).
+    -   **Shared GPU**: Select an available fixed sharing profile when your account is entitled to it. This platform does not use MIG.
+
+    Available profiles depend on your permissions. Resources and queues come from the selected profile; freeform GPU, image and NFS overrides are not supported.
 
     ### Workflow Recommendation
     To get the best performance and avoid data loss:
@@ -86,19 +88,13 @@ data:
     ## 🔐 SSH Access
     You can access your running notebook server via SSH.
 
-    ### 1. Setup
-    1.  Go to **[https://jupyterhub.dshl.unileoben.ac.at/hub/ssh](https://jupyterhub.dshl.unileoben.ac.at/hub/ssh)** (or `/hub/ssh`).
-    2.  Add your **SSH Public Key** (e.g., contents of `~/.ssh/id_rsa.pub`).
+    SSH/SFTP requires a running server with SSH support and a reachable gateway.
+    There is no web key-registration page at `/hub/ssh`.
 
-    ### 2. Connect
-    Once your server is running, you can SSH into it:
-
-    ```bash
-    ssh <username>@jupyterhub.dshl.unileoben.ac.at
-    ```
-    *(Replace `<username>` with your JupyterHub username)*
-
-    **Note**: SSH access connects you directly to your running container. If your server is stopped, SSH will not work.
+    Follow the [SSH gateway setup guide](https://github.com/mul-cps/cps-gpu-cluster/blob/main/docs/jupyterhub/jupyterhub-ssh-access.md)
+    for endpoint, token and public-key setup. Public keys belong in the running
+    server's persistent `~/.ssh/authorized_keys`; do not upload private keys.
+    Ask the administrators if your profile or network has no SSH route.
 
     ## 🆘 Support
     If you have questions or need help, please contact the cluster administrators.
