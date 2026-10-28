@@ -264,8 +264,24 @@ dedicated prepare operation. Root independently passed all binder package
 checks (cached exact-source results); the pinned patch and scope are in the
 [binder receipt](../../qualification-artifacts/gpu-placement-binder-candidate-20261028/README.md).
 
-Remaining before activation: retry/failure qualification, placement-aware Hub
-startup and stop/cleanup continuity, Gateway resolver startup assembly, installed
-package/image handover, and controlled connected GPU/current-group/cross-Hub
-acceptance. Wider production gates remain listed above. No production rollout,
-driver change, MIG change or user Pod restart occurred in this software work.
+The subsequent integration at compute source `edcc5df2ebff99e6d817a24e2e74eaa2b8e33f8b`
+connects explicit v4 Hub activation, authenticated Ready-Pod status after the
+execution fence closes, and terminal cleanup through original placement custody.
+Both enrolled and never-enrolled selected claims retain their immutable compiler
+and registry chain; the latter requires actual enrollment absence. A registered
+inert waiting Pod now appears in the complete census with zero GPU charge,
+without becoming a physical allocation. Root verification passed 306 focused
+placement/selected/auth/server cases in 29.07 seconds, plus 28 cleanup/routes
+regression cases in 7.75 seconds. These remain software checks.
+
+Exact-source SDK and Hub wheels passed RECORD and package ownership checks;
+neither package takes ownership of the other's files or JupyterLab assets.
+Build preflight found stale SDK 0.1.0 inputs in Dockerfiles and the Hub dependency
+while the source SDK is 0.1.1. Correcting those build inputs is required before a
+coherent image set. Staged wheels have not been published as replacement releases.
+
+Remaining before activation: coherent Gateway/Node/Hub/gate image handover,
+actual protected two-device proof/catalog installation and opt-in settings,
+then controlled connected GPU/current-group/cross-Hub acceptance. Wider
+production gates remain listed above. No production rollout, driver change,
+MIG change or user Pod restart occurred in this software work.
