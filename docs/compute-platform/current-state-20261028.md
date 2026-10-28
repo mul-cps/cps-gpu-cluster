@@ -214,3 +214,28 @@ handover and connected current-group/cross-Hub lifecycle tests. Existing CUDA
 hardware results remain valid for their exact tuple. Existing research Pods,
 Rino's restored MuJoCo session, drivers, device modes and production policy have
 not been changed by this implementation work.
+
+### Selected placement integration follow-up
+
+The compute integration branch now includes an allocation ACK builder from
+actual-shaped pre-bind API readbacks, selected Node observation before and
+after Binding, and an atomic durable custody transition from the original
+placement identifier to the selected binding identifier. The original compiler
+seed remains unchanged. New placement acquisition and finalization also use
+the existing execution writer guard; contention tests reject both operations
+while an execution fence is active.
+
+The Node's bound branch validates the selected allocation codec and independently
+rechecks the current Pod, protected registry, enrollment, selected projection and
+both frozen KAI maps. The combined focused observation/record/custody checks
+passed 82 cases; the writer/custody regression scope passed 44 cases. These are
+software checks, not a deployed GPU launch. A protected-seed reconstruction
+helper is also committed, with an explicit separately pinned compiler reference.
+
+The connected coordinator contract test now reaches the real remaining seam:
+`GroupCoordinator.placement_prepare` does not yet exist. It must authenticate
+the actual binder selection, finalize the device claim, retain original custody,
+publish enrollment and selection under the existing guards, and issue the ACK
+before Binding. That connected flow, lifecycle recovery, package/image handover
+and current-group/cross-Hub live acceptance remain unfinished. No production
+configuration or running user workload changed in this follow-up.
