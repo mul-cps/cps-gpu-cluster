@@ -411,3 +411,12 @@ gate, matching all historical top-level assignments; the driver-health module
 is byte-identical. This [comparison](../../qualification-artifacts/selected-placement-software-20261028/gate-cap-source-comparison.json)
 supports reusing earlier isolation measurements. It does not prove the Python
 runtime environment or a cap assignment in the changed gate.
+
+The controlled 5/10 GiB QA pair is now prepared from fresh node, namespace,
+driver and CDI observations. Both proposed Pods passed a real Kubernetes
+server-side dry-run, and the transformed B specification was finalized with
+the original reviewed binding and a recomputed full spec hash. The B identity
+init preserves the QA environment's existing CDI device selector. No Pod UID or
+cap intent was invented. Seventeen focused renderer/composer tests passed.
+The [admission receipt](../../qualification-artifacts/selected-placement-software-20261028/qa-selected-gate-server-dryrun.json)
+records the scope: this is not a live GPU or cap-assignment test.
