@@ -45,7 +45,7 @@ All of the below now live directly in `values.yaml`'s `extraConfig`:
   - CPU-only and GPU profiles
   - PyTorch, TensorFlow support
   - Resource limits and node selection
-  - Custom image/GPU override for admins
+  - Custom image override for admins; GPU allocation is selected from fixed profiles
 - GPU sharing for these profiles is now driven by NVIDIA MPS + KAI
   Scheduler's `gpu-memory` annotation, not MIG slices (see
   `system/gpu/gpu-operator/README.md` for the MIG-to-MPS migration
@@ -64,7 +64,7 @@ All of the below now live directly in `values.yaml`'s `extraConfig`:
 - **Features**:
   - Layered, responsive design
   - GPU access validation via API
-  - Custom image/GPU override controls
+  - Custom image override control
   - Real-time group membership checking
 
 ## GPU Profiles Available
@@ -97,8 +97,9 @@ context). Every GPU profile except `gpu-slurm` is scheduled via
 - **Dask Cluster**, **CPU Desktop**: power-user only
 
 ### Access Control
-- **GPU Access**: Requires `cpsHPCAccess` or `jupyter_admin` group membership (students see only `gpu-student` plus CPU profiles)
-- **Admin Features**: Custom image/GPU override for admin users
+- **GPU Access**: Requires `cpsHPCAccess` or `jupyter_admin` group membership (students see only `gpu-student` plus CPU profiles); GPU counts and memory tiers come from fixed profiles
+- **Network Storage**: Users may select only the provisioned PVC-backed shares listed in the spawn options; arbitrary NFS server/export/mount paths are not accepted
+- **Admin Features**: Custom image override for admin users
 
 ### Known follow-up
 - The GPU Operator's device-plugin config (`system/gpu/gpu-operator/values.yaml`) still needs to be switched from its current `mig-mixed` config to an MPS-sharing config before the VRAM-tier profiles above achieve real GPU memory sharing — until then, the `gpu-memory` annotation/`CUDA_MPS_PINNED_DEVICE_MEM_LIMIT` env var are set correctly but inert.
