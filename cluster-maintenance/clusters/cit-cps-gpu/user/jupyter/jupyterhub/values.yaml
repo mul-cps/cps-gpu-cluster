@@ -1559,6 +1559,13 @@ hub:
 
           profiles = []
           for slug, cfg in PROFILE_CONFIGS.items():
+              # The Dask profile shares one Kubernetes service account across
+              # users. Namespace-wide Dask RBAC would let each user manage
+              # every other user's Dask resources, so keep it unavailable
+              # until per-user Kubernetes identities and isolation exist.
+              if slug == 'dask-cluster':
+                  continue
+
               # 'gpu-student' is a special case: not gated by power-user status,
               # only by STUDENT_GROUPS membership (mirrors the 'power_user_only'
               # gating pattern used for STANDARD_NFS_MOUNTS).
@@ -1590,18 +1597,16 @@ hub:
 
       c.KubeSpawner.profile_list = get_profile_list
 
-      def notebook_service_account(profile_slug, power_user):
+      def notebook_service_account(profile_slug):
           if profile_slug == 'dask-cluster':
-              if not power_user:
-                  raise ValueError('Dask requires power-user access')
-              return 'dask-sa'
+              raise ValueError('Dask profile is disabled until per-user Kubernetes authorization is implemented')
           return 'default'
 
       # ---------- Apply profile & per-profile knobs ----------
       async def apply_profile_settings(spawner):
           reject_custom_resources(spawner.user_options or {})
           profile_slug = spawner.user_options.get('profile', 'cpu-default')
-          spawner.service_account = notebook_service_account(profile_slug, is_power_user(spawner.user))
+          spawner.service_account = notebook_service_account(profile_slug)
           spawner.automount_service_account_token = profile_slug == 'dask-cluster'
           mount_nfs = bool(spawner.user_options.get('mount_nfs', False))
           mount_shared_longhorn = bool(spawner.user_options.get('mount_shared_longhorn', False))

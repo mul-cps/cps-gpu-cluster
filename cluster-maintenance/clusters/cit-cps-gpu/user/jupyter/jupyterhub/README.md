@@ -94,7 +94,16 @@ context). Every GPU profile except `gpu-slurm` is scheduled via
 
 ### CPU-only profiles
 - **CPU (Default)**: 2 vCPU, 2GB RAM - scipy-notebook
-- **Dask Cluster**, **CPU Desktop**: power-user only
+- **CPU Desktop**: power-user only
+
+The **Dask Cluster** profile is temporarily disabled and hidden from the spawn
+form. Its current Kubernetes integration uses one service account shared by
+all Dask users, which would allow one user to manage another user's Dask
+resources if namespace-wide Dask permissions were granted. Direct spawn
+requests for this profile also fail closed. Re-enable it only after the Dask
+workload identity and Kubernetes permissions are isolated per user and that
+isolation has been tested. The inert `dask-sa` account remains in place for
+already running servers; it has no Dask permissions.
 
 ### Access Control
 - **GPU Access**: Requires `cpsHPCAccess` or `jupyter_admin` group membership (students see only `gpu-student` plus CPU profiles); GPU counts and memory tiers come from fixed profiles

@@ -118,15 +118,19 @@ def test_legacy_disabled_custom_nfs_defaults_do_not_block_restart():
 def test_service_account_is_limited_to_authorized_dask_profile():
     import pytest
     _, module = load_policy()
-    functions = {n.name: n for n in module.body if isinstance(n, ast.FunctionDef)}
+    functions = {
+        n.name: n for n in module.body
+        if isinstance(n, (ast.FunctionDef, ast.AsyncFunctionDef))
+    }
     ns = {}
     exec(compile(ast.Module(body=[functions["notebook_service_account"]], type_ignores=[]), str(VALUES_PATH), "exec"), ns)
     select = ns["notebook_service_account"]
-    assert select("cpu-default", False) == "default"
-    assert select("gpu-3gb", True) == "default"
-    assert select("dask-cluster", True) == "dask-sa"
-    with pytest.raises(ValueError):
-        select("dask-cluster", False)
+    assert select("cpu-default") == "default"
+    assert select("gpu-3gb") == "default"
+    with pytest.raises(ValueError, match="disabled until per-user Kubernetes authorization"):
+        select("dask-cluster")
+    with pytest.raises(ValueError, match="disabled until per-user Kubernetes authorization"):
+        select("dask-cluster")
     values = yaml.safe_load(VALUES_PATH.read_text())
     assert values["singleuser"]["serviceAccountName"] == "default"
 
@@ -142,37 +146,81 @@ def test_non_dask_spawns_do_not_mount_kubernetes_credentials():
     apply.body = apply.body[:4]
     ns = {"is_power_user": lambda user: user.is_power_user}
     exec(compile(ast.Module(body=[functions["reject_custom_resources"], functions["notebook_service_account"], apply], type_ignores=[]), str(VALUES_PATH), "exec"), ns)
-    for profile, power, account, mount in [("cpu-default", False, "default", False), ("gpu-3gb", True, "default", False), ("dask-cluster", True, "dask-sa", True)]:
+    for profile, power, account, mount in [("cpu-default", False, "default", False), ("gpu-3gb", True, "default", False)]:
         spawner = SimpleNamespace(user_options={"profile": profile}, user=SimpleNamespace(is_power_user=power))
         asyncio.run(ns["apply_profile_settings"](spawner))
         assert (spawner.service_account, spawner.automount_service_account_token) == (account, mount)
 
 
-def test_dask_rbac_uses_a_separate_namespace_bundle():
-    root = yaml.safe_load((JUPYTERHUB_DIR / "kustomization.yaml").read_text())
-    assert "dask-rbac.yaml" not in root["resources"]
-    assert "dask-serviceaccount.yaml" in root["resources"]
+def test_dask_profile_is_hidden_and_spawn_fails_closed_for_power_users():
+    import asyncio
+    import pytest
+    from types import SimpleNamespace
 
-    fleet = yaml.safe_load((DASK_RBAC_DIR / "fleet.yaml").read_text())
-    assert fleet["defaultNamespace"] == "dask-compute"
-    assert any(
-        dependency.get("selector", {}).get("matchLabels", {}).get("name") == "jupyterhub"
-        for dependency in fleet.get("dependsOn", [])
+    _, module = load_policy()
+    functions = {
+        n.name: n for n in module.body
+        if isinstance(n, (ast.FunctionDef, ast.AsyncFunctionDef))
+    }
+    profile_config = next(
+        n for n in module.body
+        if isinstance(n, ast.Assign)
+        and any(isinstance(t, ast.Name) and t.id == "PROFILE_CONFIGS" for t in n.targets)
     )
+    ns = {
+        "is_power_user": lambda user: user.is_power_user,
+        "is_student": lambda user: user.is_student,
+    }
+    exec(compile(ast.Module(body=[profile_config, functions["get_profile_list"]], type_ignores=[]), str(VALUES_PATH), "exec"), ns)
+    for is_power_user, is_student in ((False, False), (False, True), (True, False)):
+        visible = ns["get_profile_list"](
+            SimpleNamespace(
+                user=SimpleNamespace(is_power_user=is_power_user, is_student=is_student)
+            )
+        )
+        visible_slugs = {profile["slug"] for profile in visible}
+        assert "cpu-default" in visible_slugs
+        assert "dask-cluster" not in visible_slugs
 
-    kustomization = yaml.safe_load((DASK_RBAC_DIR / "kustomization.yaml").read_text())
-    assert kustomization["namespace"] == "dask-compute"
-    documents = list(yaml.safe_load_all((DASK_RBAC_DIR / "dask-rbac.yaml").read_text()))
-    resources = {(doc["kind"], doc["metadata"]["namespace"]) for doc in documents}
-    assert resources == {("Role", "dask-compute"), ("RoleBinding", "dask-compute")}
-    binding = next(doc for doc in documents if doc["kind"] == "RoleBinding")
-    assert binding["subjects"] == [
-        {"kind": "ServiceAccount", "name": "dask-sa", "namespace": "jupyterhub"}
+    spawn_functions = [
+        functions["reject_custom_resources"],
+        functions["notebook_service_account"],
+        functions["apply_profile_settings"],
     ]
-    role = next(doc for doc in documents if doc["kind"] == "Role")
-    assert not any(
-        rule.get("apiGroups") == [""]
-        and set(rule.get("verbs", [])) & {"create", "patch", "update", "delete"}
-        for rule in role["rules"]
+    apply = functions["apply_profile_settings"]
+    apply.body = apply.body[:4]
+    exec(compile(ast.Module(body=spawn_functions, type_ignores=[]), str(VALUES_PATH), "exec"), ns)
+    spawner = SimpleNamespace(
+        user_options={"profile": "dask-cluster"},
+        user=SimpleNamespace(is_power_user=True, is_student=False),
     )
-    assert not any("secrets" in rule.get("resources", []) for rule in role["rules"])
+    with pytest.raises(ValueError, match="disabled until per-user Kubernetes authorization"):
+        asyncio.run(ns["apply_profile_settings"](spawner))
+    assert not hasattr(spawner, "service_account")
+
+
+def test_dask_namespace_rbac_is_not_granted_to_a_shared_service_account():
+    root = yaml.safe_load((JUPYTERHUB_DIR / "kustomization.yaml").read_text())
+    assert "dask-serviceaccount.yaml" in root["resources"]
+    service_account = yaml.safe_load((JUPYTERHUB_DIR / "dask-serviceaccount.yaml").read_text())
+    assert (service_account["kind"], service_account["metadata"]["name"], service_account["metadata"]["namespace"]) == (
+        "ServiceAccount", "dask-sa", "jupyterhub"
+    )
+    assert not DASK_RBAC_DIR.exists()
+
+    jupyter_manifests = VALUES_PATH.parent.parent
+    for path in jupyter_manifests.rglob("*.yaml"):
+        text = path.read_text()
+        if "{{" in text:  # Skip Helm templates, which are not standalone YAML.
+            continue
+        for document in yaml.safe_load_all(text):
+            if document and document.get("kind") in {"RoleBinding", "ClusterRoleBinding"}:
+                assert not any(
+                    subject.get("kind") == "ServiceAccount"
+                    and subject.get("name") == "dask-sa"
+                    for subject in document.get("subjects", [])
+                ), f"{path} grants Kubernetes permissions to the shared Dask account"
+
+    documentation = (JUPYTERHUB_DIR / "README.md").read_text()
+    assert "Dask Cluster** profile is temporarily disabled" in documentation
+    assert "isolated per user" in documentation
