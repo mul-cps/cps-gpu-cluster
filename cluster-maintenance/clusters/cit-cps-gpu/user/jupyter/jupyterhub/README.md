@@ -136,7 +136,7 @@ context). Every GPU profile except `gpu-slurm` is scheduled via
 - The spawn page now opens on a quick-start welcome face. Pressing `Start Server` launches the default profile immediately.
 - An `Options` button flips the card to an advanced configuration face with the full profile and storage controls.
 - The advanced face shows the standard NFS mounts as individual checkboxes with the cluster-default mount options prefilled for visibility.
-- Power users can also enter a custom NFS server, export path, and notebook mount path on the advanced face.
+- Additional NFS exports require a platform-approved storage option.
 - If NFS is degraded, users can uncheck network mounts entirely or deselect just the affected NFS entries and still launch the session.
 - If the network-mount toggle stays enabled and NFS is unavailable, Kubernetes can still leave the pod in `ContainerCreating` or `Pending` until the mount is satisfied.
 
