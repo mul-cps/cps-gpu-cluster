@@ -176,3 +176,41 @@ Typed candidate/selection and pending-claim software stages are being tested;
 the coordinator, binder, CPU bootstrap gate and selected Node integration are
 not deployed. Existing valid hardware measurements remain reusable for their
 verified tuple; this IPC result does not qualify the entire eight-GPU fleet.
+
+## Second-card evidence review and placement implementation
+
+The second physical GPU on GPU2 now has reviewed evidence for all six bounded
+5/10 GiB gate scopes on the current 615.71.09 boot/driver generation. The primary
+agent independently verified all six receipt hashes and 65 original source-file
+hashes. The actual v3 proof codec accepts the evidence candidate; no synthetic
+ConfigMap identity is an installed authority object. See the
+[second-card review](../../qualification-artifacts/gpu2-second-card-six-gates-20261028/README.md).
+Managed-memory public API denial and ordinary recovery passed the defined gate;
+an extra source-patch/errno attribution requirement is not being imposed.
+This does not qualify the other six GPUs or the whole installed platform.
+
+Compute branch `codex/v3-placement-integration-20261028` now implements current
+Hub member reservation before GPU selection, immutable admitted compiler seeds,
+actual-Pod-bound inert registries, a CPU-only deferred cap gate and mandatory
+GPU identity init, typed logical-approval/physical-qualification separation,
+and closed Node selection-map checks. A real software fixture exercises the
+current authority/coordinator lease, compile, CREATE, seed readback and registry
+path with idempotent retries and override rejection. The Node independently
+accepts only protected compiler-backed unselected waiting custody; that phase
+has no GPU intent and cannot activate a cap. Separate pending and full future
+bound Pod hashes preserve the existing Node seal invariant.
+
+The matching KAI binder source is based on the exact deployed patch revision.
+Its new protocol proves the raw Python compiler seed and typed actual Pod spec
+before reservation, checks actual KAI-selected UUID/Node/boot against qualified
+candidates, and preserves the legacy path. Root review caught and fixed compiler
+metadata drift and pending-versus-bound hash assumptions. These are isolated
+source changes, not installed images or live connected acceptance.
+
+Still open for this placement path: the complete fenced selection/enrollment/
+allocation-ACK producer, selected/bound observation assembly, selected physical
+Node epoch/CDI use, per-device snapshot accounting, installed package/image
+handover and connected current-group/cross-Hub lifecycle tests. Existing CUDA
+hardware results remain valid for their exact tuple. Existing research Pods,
+Rino's restored MuJoCo session, drivers, device modes and production policy have
+not been changed by this implementation work.
