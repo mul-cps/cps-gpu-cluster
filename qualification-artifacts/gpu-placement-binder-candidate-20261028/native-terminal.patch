@@ -1,0 +1,590 @@
+diff --git a/pkg/binder/binding/native_terminal.go b/pkg/binder/binding/native_terminal.go
+index 079c2eb..6cf87f9 100644
+--- a/pkg/binder/binding/native_terminal.go
++++ b/pkg/binder/binding/native_terminal.go
+@@ -28,6 +28,7 @@ import (
+ 
+ const NativePendingAnnotation = "cps.compute/native-pending"
+ const NativePendingProtocol = "kai-v0.18.1-gpu2-cm/v1"
++const nativePlacementPendingProtocol = "kai-v0.18.1-gpu2-inert-placement/v1"
+ const nativeApprovedNode = "k3s-wk-gpu2"
+ const nativeApprovedNodeUID = "3336cdd5-d245-436e-b57c-2f66c6dcaa41"
+ const nativeApprovedGPU = "GPU-16128952-b438-556a-00bb-93039ee24e56"
+@@ -82,7 +83,7 @@ func nativeMarked(pod *v1.Pod) bool {
+ }
+ 
+ func (b *Binder) nativeConfigured(pod *v1.Pod) error {
+-	if pod.Annotations[NativePendingAnnotation] != NativePendingProtocol || b.nativeReader == nil || b.nativeCoordinator == nil || b.nativeAuthorityNamespace == "" {
++	if (pod.Annotations[NativePendingAnnotation] != NativePendingProtocol && pod.Annotations[NativePendingAnnotation] != nativePlacementPendingProtocol) || b.nativeReader == nil || b.nativeCoordinator == nil || b.nativeAuthorityNamespace == "" {
+ 		return ErrNativeCustodyHeld
+ 	}
+ 	guarded, ok := b.resourceReservationService.(interface{ NativeCustodyEnabled() bool })
+@@ -108,10 +109,17 @@ func (b *Binder) nativeSnapshot(ctx context.Context, pod *v1.Pod, node *v1.Node,
+ 			return NativeTerminalSnapshot{}, err
+ 		}
+ 	}
+-	if currentPod.UID != pod.UID || currentPod.UID == "" || currentPod.ResourceVersion == "" || currentPod.DeletionTimestamp != nil || currentPod.Spec.NodeName != "" || !reflect.DeepEqual(currentPod.Spec, pod.Spec) || currentPod.Annotations[NativePendingAnnotation] != NativePendingProtocol {
++	if currentPod.UID != pod.UID || currentPod.UID == "" || currentPod.ResourceVersion == "" || currentPod.DeletionTimestamp != nil || currentPod.Spec.NodeName != "" || !reflect.DeepEqual(currentPod.Spec, pod.Spec) || currentPod.Annotations[NativePendingAnnotation] != pod.Annotations[NativePendingAnnotation] {
+ 		return NativeTerminalSnapshot{}, fmt.Errorf("current Pod UID/spec/lifecycle differs")
+ 	}
+-	if currentNode.Name != nativeApprovedNode || string(currentNode.UID) != nativeApprovedNodeUID || currentNode.UID != node.UID || currentNode.DeletionTimestamp != nil || currentNode.ResourceVersion == "" {
++	if currentNode.UID != node.UID || currentNode.UID == "" || currentNode.Name != node.Name || currentNode.DeletionTimestamp != nil || currentNode.ResourceVersion == "" {
++		return NativeTerminalSnapshot{}, fmt.Errorf("current selected Node identity differs")
++	}
++	if pod.Annotations[NativePendingAnnotation] == nativePlacementPendingProtocol {
++		if err := b.nativePlacementSelected(ctx, currentPod, currentNode, bindingState); err != nil {
++			return NativeTerminalSnapshot{}, err
++		}
++	} else if currentNode.Name != nativeApprovedNode || string(currentNode.UID) != nativeApprovedNodeUID {
+ 		return NativeTerminalSnapshot{}, fmt.Errorf("current selected Node identity differs")
+ 	}
+ 	if currentBR.UID != br.UID || currentBR.ResourceVersion != br.ResourceVersion || currentBR.Generation != br.Generation || currentBR.DeletionTimestamp != nil || !reflect.DeepEqual(currentBR.Spec, br.Spec) {
+@@ -148,7 +156,7 @@ func (b *Binder) bindNativeTerminal(ctx context.Context, pod *v1.Pod, node *v1.N
+ 	if err = b.nativeConfigured(pod); err != nil {
+ 		return err
+ 	}
+-	if len(bindingState.ReservedGPUIds) != 1 || bindingState.ReservedGPUIds[0] != nativeApprovedGPU {
++	if pod.Annotations[NativePendingAnnotation] != nativePlacementPendingProtocol && (len(bindingState.ReservedGPUIds) != 1 || bindingState.ReservedGPUIds[0] != nativeApprovedGPU) {
+ 		return fmt.Errorf("exact approved physical GPU UUID required")
+ 	}
+ 	snapshot, err := b.nativeSnapshot(ctx, pod, node, br, bindingState)
+@@ -381,6 +389,10 @@ func (b *Binder) nativeRegistryReady(ctx context.Context, pod *v1.Pod) error {
+ }
+ 
+ func (b *Binder) nativeRegistryProof(ctx context.Context, pod *v1.Pod, exactCap *int64) error {
++	if pod.Annotations[NativePendingAnnotation] == nativePlacementPendingProtocol {
++		_, err := b.nativePlacementProof(ctx, pod, exactCap)
++		return err
++	}
+ 	// Read directly through APIReader, never the informer cache. An absent registry
+ 	// returns the existing custody sentinel before Sync/reservation/PreBind writes.
+ 	current := &v1.Pod{}
+@@ -490,3 +502,251 @@ func (b *Binder) nativeRegistryProof(ctx context.Context, pod *v1.Pod, exactCap
+ 	}
+ 	return nil
+ }
++
++// Placement proves an inert compiler product before stock reservation/map writes.
++// It is not allocation authority: the coordinator still authenticates the actual
++// selected device, current qualification/epoch, capacity and full final Binding.
++func nativePlacementKeys(value map[string]interface{}, keys ...string) bool {
++	if len(value) != len(keys) {
++		return false
++	}
++	for _, key := range keys {
++		if _, ok := value[key]; !ok {
++			return false
++		}
++	}
++	return true
++}
++func nativePlacementString(value interface{}, pattern string) bool {
++	text, ok := value.(string)
++	return ok && regexp.MustCompile(pattern).MatchString(text)
++}
++
++const nativePlacementUUID = `^[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}$`
++const nativePlacementSHA = `^sha256:[a-f0-9]{64}$`
++
++func nativePlacementRef(value interface{}, key string) (map[string]interface{}, bool) {
++	ref, ok := value.(map[string]interface{})
++	if !ok || !nativePlacementKeys(ref, "namespace", "name", "uid", "resourceVersion", "data_sha256", "key") || ref["key"] != key {
++		return nil, false
++	}
++	for _, field := range []string{"namespace", "name"} {
++		if !nativePlacementString(ref[field], `^[A-Za-z0-9][A-Za-z0-9._-]{0,252}$`) {
++			return nil, false
++		}
++	}
++	if !nativePlacementString(ref["resourceVersion"], `^[1-9][0-9]*$`) || !nativePlacementString(ref["uid"], nativePlacementUUID) || ref["uid"] == "00000000-0000-0000-0000-000000000000" || !nativePlacementString(ref["data_sha256"], nativePlacementSHA) {
++		return nil, false
++	}
++	return ref, true
++}
++
++// Match native_gpu_pending._check_pending_metadata: compiler keys are frozen;
++// only these existing named KAI controller additions may appear afterwards.
++func nativePlacementMetadata(metadata map[string]interface{}, pod *v1.Pod) error {
++	for _, item := range []struct {
++		key       string
++		actual    map[string]string
++		additions map[string]bool
++	}{
++		{"labels", pod.Labels, map[string]bool{"runai-gpu-group": true, "kai.scheduler/subgroup-name": true}},
++		{"annotations", pod.Annotations, map[string]bool{"pod-group-name": true, "received-resource-type": true, "kai.scheduler/numa-placement-predicted": true}},
++	} {
++		compiled, ok := metadata[item.key].(map[string]interface{})
++		if !ok {
++			return fmt.Errorf("string compiler metadata required")
++		}
++		for key, value := range compiled {
++			text, ok := value.(string)
++			actual, present := item.actual[key]
++			if !ok || !present || actual != text {
++				return fmt.Errorf("original compiler metadata changed")
++			}
++		}
++		for key := range item.actual {
++			if _, compiledKey := compiled[key]; !compiledKey && !item.additions[key] {
++				return fmt.Errorf("unexpected controller metadata added")
++			}
++		}
++	}
++	return nil
++}
++
++func (b *Binder) nativePlacementSeed(ctx context.Context, ref map[string]interface{}) (map[string]interface{}, error) {
++	cm := &v1.ConfigMap{}
++	if ref["namespace"] != b.nativeAuthorityNamespace {
++		return nil, fmt.Errorf("compiler seed authority namespace differs")
++	}
++	if err := b.nativeReader.Get(ctx, client.ObjectKey{Namespace: b.nativeAuthorityNamespace, Name: ref["name"].(string)}, cm); err != nil {
++		return nil, err
++	}
++	if cm.Namespace != ref["namespace"] || cm.Name != ref["name"] || string(cm.UID) != ref["uid"] || cm.ResourceVersion != ref["resourceVersion"] || cm.DeletionTimestamp != nil || cm.Immutable == nil || !*cm.Immutable || len(cm.OwnerReferences) != 0 || len(cm.BinaryData) != 0 || len(cm.Data) != 1 {
++		return nil, fmt.Errorf("original immutable compiler seed changed")
++	}
++	digest, err := nativeRegistryHash(cm.Data)
++	if err != nil || "sha256:"+digest != ref["data_sha256"] {
++		return nil, fmt.Errorf("compiler seed data hash differs")
++	}
++	raw, ok := cm.Data["seed.json"]
++	if !ok || len(raw) == 0 || len(raw) > 1048576 {
++		return nil, fmt.Errorf("bounded compiler seed required")
++	}
++	decoder := json.NewDecoder(bytes.NewBufferString(raw))
++	decoder.UseNumber()
++	value, err := nativeJSONValue(decoder)
++	if err != nil {
++		return nil, err
++	}
++	if _, err = decoder.Token(); err != io.EOF {
++		return nil, fmt.Errorf("trailing compiler seed JSON")
++	}
++	seed, ok := value.(map[string]interface{})
++	if !ok {
++		return nil, fmt.Errorf("compiler seed object required")
++	}
++	return seed, nil
++}
++
++func (b *Binder) nativePlacementProof(ctx context.Context, pod *v1.Pod, exactCap *int64) ([]map[string]interface{}, error) {
++	current := &v1.Pod{}
++	if err := b.nativeReader.Get(ctx, client.ObjectKeyFromObject(pod), current); err != nil {
++		return nil, err
++	}
++	if current.UID == "" || current.UID != pod.UID || current.ResourceVersion == "" || current.DeletionTimestamp != nil || current.Spec.NodeName != "" || !reflect.DeepEqual(current.Spec, pod.Spec) || current.Status.Phase != "" && current.Status.Phase != v1.PodPending || len(current.Status.ContainerStatuses) != 0 || len(current.Status.InitContainerStatuses) != 0 {
++		return nil, fmt.Errorf("original unexecuted inert Pod required")
++	}
++	for _, key := range []string{NativePendingAnnotation, "runai/shared-gpu-configmap", "cps.compute/native-spec-sha256"} {
++		if current.Annotations[key] != pod.Annotations[key] {
++			return nil, fmt.Errorf("current inert compiler metadata differs")
++		}
++	}
++	if current.Annotations[NativePendingAnnotation] != nativePlacementPendingProtocol {
++		return nil, fmt.Errorf("inert compiler marker differs")
++	}
++	registry, err := b.nativeProtectedDocument(ctx, "cps-pending-registry-"+string(pod.UID), "registry.json")
++	if err != nil {
++		return nil, err
++	}
++	if !nativePlacementKeys(registry, "protocol", "kind", "pod_uid", "namespace", "name", "source", "actor", "workspace", "attempt", "placement_id", "profile", "policy_hash", "cap_mib", "approval_ref", "placement_candidates", "pending_spec_sha256", "spec_sha256", "capabilities_configmap", "env_configmap", "selection_configmap", "kai_commit", "compiler_seed_ref") || registry["protocol"] != "cps-native-kai-placement/v1" || registry["kind"] != "inert-placement-registry" {
++		return nil, fmt.Errorf("closed inert placement registry required")
++	}
++	source := map[string]string{"jupyterhub": "cps", "cit-jhub": "cit"}[pod.Namespace]
++	prefix := current.Annotations["runai/shared-gpu-configmap"]
++	if source == "" || registry["source"] != source || registry["pod_uid"] != string(pod.UID) || registry["namespace"] != pod.Namespace || registry["name"] != pod.Name || !nativePlacementString(registry["actor"], `^.{1,512}$`) || !nativePlacementString(registry["workspace"], `^.{1,512}$`) || !nativePlacementString(registry["attempt"], nativePlacementUUID) || registry["attempt"] == "00000000-0000-0000-0000-000000000000" || !nativePlacementString(registry["placement_id"], `^placement-[a-f0-9]{60}$`) || !nativePlacementString(registry["policy_hash"], nativePlacementSHA) || !regexp.MustCompile(`^cps-native-[a-f0-9]{32}-shared-gpu$`).MatchString(prefix) || registry["capabilities_configmap"] != prefix+"-0" || registry["env_configmap"] != prefix+"-0-evar" || registry["selection_configmap"] != prefix[:len(prefix)-len("-shared-gpu")]+"-selection" || registry["kai_commit"] != "bdf434e5e9201cccf4e05fad04d814363653f692" {
++		return nil, fmt.Errorf("inert compiler scope/maps differ")
++	}
++	approval, ok := registry["approval_ref"].(map[string]interface{})
++	if !ok || !nativePlacementKeys(approval, "namespace", "name", "uid", "data_sha256", "revision", "policy_hash") || approval["policy_hash"] != registry["policy_hash"] || !nativePlacementString(approval["namespace"], `^[a-z0-9.-]+$`) || !nativePlacementString(approval["name"], `^[a-z0-9.-]+$`) || !nativePlacementString(approval["uid"], nativePlacementUUID) || !nativePlacementString(approval["data_sha256"], nativePlacementSHA) || !nativePlacementString(approval["revision"], nativePlacementSHA) {
++		return nil, fmt.Errorf("typed placement approval reference required")
++	}
++	ref, ok := nativePlacementRef(registry["compiler_seed_ref"], "seed.json")
++	if !ok || ref["name"] != "cps-pending-compiler-"+registry["placement_id"].(string)[len("placement-"):len("placement-")+40] {
++		return nil, fmt.Errorf("exact compiler seed reference required")
++	}
++	seed, err := b.nativePlacementSeed(ctx, ref)
++	if err != nil {
++		return nil, err
++	}
++	if !nativePlacementKeys(seed, "protocol", "kind", "placement_id", "source", "actor", "workspace", "attempt", "admitted") || seed["protocol"] != registry["protocol"] || seed["kind"] != "compiler-seed" {
++		return nil, fmt.Errorf("closed inert compiler seed required")
++	}
++	for _, key := range []string{"placement_id", "source", "actor", "workspace", "attempt"} {
++		if seed[key] != registry[key] {
++			return nil, fmt.Errorf("compiler seed identity differs")
++		}
++	}
++	admitted, ok := seed["admitted"].(map[string]interface{})
++	if !ok || !nativePlacementKeys(admitted, "apiVersion", "kind", "metadata", "spec") || admitted["apiVersion"] != "v1" || admitted["kind"] != "Pod" {
++		return nil, fmt.Errorf("raw admitted compiler Pod required")
++	}
++	metadata, ok := admitted["metadata"].(map[string]interface{})
++	if !ok || !nativePlacementKeys(metadata, "namespace", "name", "annotations", "labels") || metadata["namespace"] != pod.Namespace || metadata["name"] != pod.Name {
++		return nil, fmt.Errorf("raw compiler Pod identity differs")
++	}
++	if err := nativePlacementMetadata(metadata, current); err != nil {
++		return nil, err
++	}
++	candidates, ok := registry["placement_candidates"].(map[string]interface{})
++	if !ok || !nativePlacementKeys(candidates, "version", "devices") || candidates["version"] != json.Number("1") {
++		return nil, fmt.Errorf("closed placement candidates required")
++	}
++	devices, ok := candidates["devices"].([]interface{})
++	if !ok || len(devices) == 0 || len(devices) > 8 {
++		return nil, fmt.Errorf("bounded qualified candidate set required")
++	}
++	seen := map[string]bool{}
++	result := []map[string]interface{}{}
++	for _, value := range devices {
++		device, ok := value.(map[string]interface{})
++		if !ok || !nativePlacementKeys(device, "node", "node_uid", "boot_id", "driver_generation", "gpu_uuid", "qualification_ref") || !nativePlacementString(device["node"], `^[a-z0-9][a-z0-9.-]{0,252}$`) || !nativePlacementString(device["gpu_uuid"], `^GPU-[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}$`) || device["gpu_uuid"] == "GPU-00000000-0000-0000-0000-000000000000" {
++			return nil, fmt.Errorf("closed qualified placement device required")
++		}
++		for _, key := range []string{"node_uid", "boot_id", "driver_generation"} {
++			if !nativePlacementString(device[key], nativePlacementUUID) || device[key] == "00000000-0000-0000-0000-000000000000" {
++				return nil, fmt.Errorf("exact placement device epoch required")
++			}
++		}
++		if _, ok = nativePlacementRef(device["qualification_ref"], "config.json"); !ok {
++			return nil, fmt.Errorf("typed device qualification reference required")
++		}
++		if len(result) > 0 {
++			for _, key := range []string{"node", "node_uid", "boot_id", "driver_generation"} {
++				if device[key] != result[0][key] {
++					return nil, fmt.Errorf("one common candidate Node identity and epoch required")
++				}
++			}
++		}
++		gpu := device["gpu_uuid"].(string)
++		if seen[gpu] {
++			return nil, fmt.Errorf("duplicate placement GPU")
++		}
++		seen[gpu] = true
++		result = append(result, device)
++	}
++	spec, ok := admitted["spec"].(map[string]interface{})
++	if !ok {
++		return nil, fmt.Errorf("raw compiler spec required")
++	}
++	digest, err := nativeRegistryHash(spec)
++	if err != nil || registry["pending_spec_sha256"] != digest {
++		return nil, fmt.Errorf("raw compiler spec hash differs")
++	}
++	boundSpec := map[string]interface{}{}
++	for key, value := range spec {
++		boundSpec[key] = value
++	}
++	boundSpec["nodeName"] = result[0]["node"]
++	boundDigest, err := nativeRegistryHash(boundSpec)
++	if err != nil || registry["spec_sha256"] != boundDigest || current.Annotations["cps.compute/native-spec-sha256"] != boundDigest {
++		return nil, fmt.Errorf("full future-bound compiler spec hash differs")
++	}
++	typed := &v1.Pod{}
++	if nativeDecodeObject(admitted, typed) != nil || !reflect.DeepEqual(typed.Spec, current.Spec) {
++		return nil, fmt.Errorf("actual admitted typed spec differs")
++	}
++	profile, _ := registry["profile"].(string)
++	cap := map[string]int64{"interactive-shared-5": 5120, "interactive-shared-10": 10240}[profile]
++	if cap == 0 || registry["cap_mib"] != json.Number(fmt.Sprint(cap)) || current.Annotations["gpu-memory"] != fmt.Sprint(cap) || current.Annotations["nvidia.com/container.notebook.gpu-memory.request"] != fmt.Sprintf("%dGi", cap/1024) || current.Annotations["gpu-fraction-container-name"] != "notebook" || len(current.Spec.Containers) != 1 || current.Spec.Containers[0].Name != "notebook" {
++		return nil, fmt.Errorf("exact inert profile memory required")
++	}
++	if exactCap != nil {
++		*exactCap = cap
++	}
++	return result, nil
++}
++
++func (b *Binder) nativePlacementSelected(ctx context.Context, pod *v1.Pod, node *v1.Node, bindingState *state.BindingState) error {
++	devices, err := b.nativePlacementProof(ctx, pod, nil)
++	if err != nil {
++		return err
++	}
++	if len(bindingState.ReservedGPUIds) != 1 {
++		return fmt.Errorf("one actual reserved placement GPU required")
++	}
++	for _, device := range devices {
++		if device["node"] == node.Name && device["node_uid"] == string(node.UID) && device["boot_id"] == node.Status.NodeInfo.BootID && device["gpu_uuid"] == bindingState.ReservedGPUIds[0] {
++			return nil
++		}
++	}
++	return fmt.Errorf("actual reserved GPU/Node/boot is outside compiler candidate set")
++}
+diff --git a/pkg/binder/binding/native_terminal_test.go b/pkg/binder/binding/native_terminal_test.go
+index aa6b28d..6998510 100644
+--- a/pkg/binder/binding/native_terminal_test.go
++++ b/pkg/binder/binding/native_terminal_test.go
+@@ -75,7 +75,7 @@ func nativeTestClient(t *testing.T, pod *v1.Pod, node *v1.Node, br *v1alpha2.Bin
+ 	// allocation authority; those tests still use their explicit fake coordinator.
+ 	hasRegistry := false
+ 	for _, obj := range objects {
+-		if obj.GetNamespace() == "authority" && obj.GetName() == "cps-pending-registry-"+string(pod.UID) {
++		if obj.GetName() == "cps-pending-registry-"+string(pod.UID) {
+ 			hasRegistry = true
+ 		}
+ 	}
+@@ -911,3 +911,263 @@ func TestNativeAtomicCurrentBindingRetainsFreshInputsAndFailureCustody(t *testin
+ 		})
+ 	}
+ }
++
++// The inert placement protocol must not broaden the legacy fixed-device lane.
++func TestLegacyNativeTerminalStillRejectsSecondPhysicalGPU(t *testing.T) {
++	pod, node, br := nativeTestInputs()
++	kube := nativeTestClient(t, pod, node, br, func(*v1.Binding) error {
++		t.Fatal("legacy second-device request must never Bind")
++		return nil
++	})
++	coord := &nativeTestCoordinator{}
++	binder := NewBinder(kube, &nativeTestReservation{}, plugins.New())
++	binder.SetNativeTerminal(kube, "authority", coord)
++	bindingState := nativeTestState()
++	bindingState.ReservedGPUIds = []string{"GPU-1e6145d5-8ee2-43e2-a0d5-6d345909e8a6"}
++	if err := binder.bindNativeTerminal(context.Background(), pod, node, br, bindingState); !errors.Is(err, ErrNativeCustodyHeld) {
++		t.Fatalf("legacy UUID restriction must retain custody, got %v", err)
++	}
++	if !reflect.DeepEqual(coord.calls, []string{"hold"}) {
++		t.Fatalf("legacy second-device request reached coordinator Prepare: %v", coord.calls)
++	}
++}
++
++func TestInertPlacementMarkerCannotUseLegacyRegistryBeforeReservation(t *testing.T) {
++	for _, protocol := range []string{"cps-native-pending-allocation/v1", "cps-native-pending-allocation/v2"} {
++		t.Run(protocol, func(t *testing.T) {
++			pod, node, br := nativeTestInputs()
++			pod.Namespace = "jupyterhub"
++			br.Namespace = pod.Namespace
++			pod.Annotations[NativePendingAnnotation] = "kai-v0.18.1-gpu2-inert-placement/v1"
++			registry, seed := nativeRegistryFixtures(pod)
++			if protocol == "cps-native-pending-allocation/v1" {
++				var document map[string]interface{}
++				_ = json.Unmarshal([]byte(registry.Data["registry.json"]), &document)
++				document["protocol"] = protocol
++				for _, key := range []string{"binding_id", "approval_ref", "node_configuration_ref", "epoch"} {
++					delete(document, key)
++				}
++				raw, _ := json.Marshal(document)
++				registry.Data["registry.json"] = string(raw)
++			}
++			kube := nativeTestClient(t, pod, node, br, func(*v1.Binding) error {
++				t.Fatal("inert marker with legacy registry must never Bind")
++				return nil
++			}, registry, seed)
++			reservation := &nativeCountingReservation{}
++			ps := plugins.New()
++			ps.RegisterPlugin(gpusharing.New(kube, true, false))
++			binder := NewBinder(kube, reservation, ps)
++			coord := &nativeTestCoordinator{}
++			binder.SetNativeTerminal(kube, "authority", coord)
++			if err := binder.Bind(context.Background(), pod, node, br); !errors.Is(err, ErrNativeCustodyHeld) {
++				t.Fatalf("cross-protocol registry must hold before reservation, got %v", err)
++			}
++			maps := &v1.ConfigMapList{}
++			if err := kube.List(context.Background(), maps, client.InNamespace(pod.Namespace)); err != nil {
++				t.Fatal(err)
++			}
++			if reservation.syncs != 0 || len(maps.Items) != 0 || len(coord.calls) != 0 {
++				t.Fatalf("cross-protocol registry caused side effects: sync=%d maps=%d coordinator=%v", reservation.syncs, len(maps.Items), coord.calls)
++			}
++		})
++	}
++}
++
++func TestInertPlacementMarkerUsesExistingConfiguredCustody(t *testing.T) {
++	pod, node, br := nativeTestInputs()
++	pod.Annotations[NativePendingAnnotation] = "kai-v0.18.1-gpu2-inert-placement/v1"
++	kube := nativeTestClient(t, pod, node, br, func(*v1.Binding) error { return nil })
++	binder := NewBinder(kube, &nativeTestReservation{}, plugins.New())
++	binder.SetNativeTerminal(kube, "authority", &nativeTestCoordinator{})
++	if err := binder.nativeConfigured(pod); err != nil {
++		t.Fatalf("reviewed inert marker must use the configured custody boundary: %v", err)
++	}
++	binder.nativeCoordinator = nil
++	if !errors.Is(binder.nativeConfigured(pod), ErrNativeCustodyHeld) {
++		t.Fatal("inert marker bypassed absent coordinator custody")
++	}
++}
++
++// Exact actual Python compiler fixture; source SHA256 686d0772301ad0cb1af6701d37034b5567a2ad5d86ca650273f8e810df0c44c5.
++// Synthetic software input, not hardware qualification or coordinator authority.
++const nativePlacementPythonFixture = `{"pending_compiler_seed_configmap":{"apiVersion":"v1","data":{"seed.json":"{\"actor\":\"system:serviceaccount:cit-jhub:hub\",\"admitted\":{\"apiVersion\":\"v1\",\"kind\":\"Pod\",\"metadata\":{\"annotations\":{\"cps.compute/native-pending\":\"kai-v0.18.1-gpu2-inert-placement/v1\",\"cps.compute/native-spec-sha256\":\"5d5fb4ba4e0fdc049db7c88406d4345f1c1b03e339bf659a7a24dc531273e54e\",\"gpu-fraction-container-name\":\"notebook\",\"gpu-memory\":\"10240\",\"kai-resource-isolator.io/inject\":\"false\",\"nvidia.com/container.notebook.gpu-memory.request\":\"10Gi\",\"runai/shared-gpu-configmap\":\"cps-native-85d82973e06119dbafb1f0088c995dad-shared-gpu\"},\"labels\":{\"kai.scheduler/queue\":\"native-test\",\"owner\":\"person-preserved\"},\"name\":\"jupyter-group-10\",\"namespace\":\"cit-jhub\"},\"spec\":{\"automountServiceAccountToken\":false,\"containers\":[{\"command\":[\"python\",\"-m\",\"ipykernel\"],\"env\":[{\"name\":\"JUPYTERHUB_USER\",\"value\":\"workspace-principal\"},{\"name\":\"TMPDIR\",\"value\":\"/tmp\"},{\"name\":\"JUPYTER_RUNTIME_DIR\",\"value\":\"/tmp/cps-native/jupyter-runtime\"},{\"name\":\"JUPYTER_CONFIG_DIR\",\"value\":\"/tmp/cps-native/jupyter-config\"},{\"name\":\"JUPYTER_DATA_DIR\",\"value\":\"/tmp/cps-native/jupyter-data\"},{\"name\":\"XDG_CACHE_HOME\",\"value\":\"/tmp/cps-native/cache\"},{\"name\":\"XDG_DATA_HOME\",\"value\":\"/tmp/cps-native/data\"},{\"name\":\"XDG_CONFIG_HOME\",\"value\":\"/tmp/cps-native/config\"},{\"name\":\"NVIDIA_VISIBLE_DEVICES\",\"valueFrom\":{\"configMapKeyRef\":{\"key\":\"NVIDIA_VISIBLE_DEVICES\",\"name\":\"cps-native-85d82973e06119dbafb1f0088c995dad-shared-gpu-0\"}}},{\"name\":\"CUDA_VISIBLE_DEVICES\",\"value\":\"0\"}],\"envFrom\":[{\"configMapRef\":{\"name\":\"cps-native-85d82973e06119dbafb1f0088c995dad-shared-gpu-0-evar\",\"optional\":false}}],\"image\":\"ghcr.io/mul-cps/cps-jupyter-notebook:qualification-native-group-980408a@sha256:9167861058c1364c58d1c2fca0d6f536c3ffb53a33800dcdb9a1560f14ca4dc0\",\"name\":\"notebook\",\"resources\":{\"limits\":{\"cpu\":\"4\",\"memory\":\"16Gi\"},\"requests\":{\"cpu\":\"4\",\"memory\":\"16Gi\"}},\"securityContext\":{\"allowPrivilegeEscalation\":false,\"capabilities\":{\"drop\":[\"ALL\"]},\"readOnlyRootFilesystem\":true,\"runAsGroup\":100,\"runAsNonRoot\":true,\"runAsUser\":1000,\"seccompProfile\":{\"type\":\"RuntimeDefault\"}},\"volumeMounts\":[{\"mountPath\":\"/workspace\",\"name\":\"cps-workspace\"},{\"mountPath\":\"/tmp\",\"name\":\"cps-native-workload-tmp\"}],\"workingDir\":\"/workspace\"}],\"enableServiceLinks\":false,\"initContainers\":[{\"args\":[\"wait-for-selected-cap\",\"--placement-id\",\"placement-f580d54f2ba0b25123b15b8d2f28b8ab576d85f8b128c2ed04e6d76ddb90\",\"--source\",\"cit\",\"--workspace\",\"group-10\",\"--attempt\",\"22222222-2222-4222-8222-222222222222\",\"--namespace\",\"cit-jhub\",\"--name\",\"jupyter-group-10\",\"--node\",\"k3s-wk-gpu2\",\"--node-uid\",\"3336cdd5-d245-436e-b57c-2f66c6dcaa41\",\"--cap-mib\",\"10240\",\"--policy-hash\",\"sha256:4215ee4774f784b59b5f65104879d88c7ba42ce27e8074767dcf8697da837a8d\"],\"command\":[\"python\",\"-m\",\"cps_compute.native_gpu_runtime\"],\"env\":[{\"name\":\"NVIDIA_VISIBLE_DEVICES\",\"value\":\"void\"},{\"name\":\"CUDA_VISIBLE_DEVICES\",\"value\":\"\"},{\"name\":\"PYTHONDONTWRITEBYTECODE\",\"value\":\"1\"},{\"name\":\"PYTHONNOUSERSITE\",\"value\":\"1\"},{\"name\":\"CPS_NATIVE_POD_UID\",\"valueFrom\":{\"fieldRef\":{\"fieldPath\":\"metadata.uid\"}}},{\"name\":\"CPS_NATIVE_SPEC_SHA256\",\"valueFrom\":{\"fieldRef\":{\"fieldPath\":\"metadata.annotations['cps.compute/native-spec-sha256']\"}}}],\"image\":\"registry.invalid/gate@sha256:cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc\",\"imagePullPolicy\":\"IfNotPresent\",\"name\":\"cps-native-cap-gate\",\"resources\":{\"limits\":{\"cpu\":\"100m\",\"memory\":\"128Mi\"},\"requests\":{\"cpu\":\"10m\",\"memory\":\"32Mi\"}},\"securityContext\":{\"allowPrivilegeEscalation\":false,\"capabilities\":{\"drop\":[\"ALL\"]},\"readOnlyRootFilesystem\":true,\"runAsGroup\":0,\"runAsNonRoot\":false,\"runAsUser\":0,\"seccompProfile\":{\"type\":\"RuntimeDefault\"}},\"volumeMounts\":[{\"mountPath\":\"/run/cps-native-gpu/receipts\",\"name\":\"cps-native-receipts\",\"readOnly\":true},{\"mountPath\":\"/run/cps-native-gpu/authority\",\"name\":\"cps-native-authority\",\"readOnly\":true},{\"mountPath\":\"/run/cps-native-gpu/driver\",\"name\":\"cps-native-driver-metadata\",\"readOnly\":true},{\"mountPath\":\"/run/cps-native-placement\",\"name\":\"cps-native-selection\",\"readOnly\":true}]},{\"args\":[\"$(CPS_NATIVE_GPU_UUID)\"],\"command\":[\"python\",\"-I\",\"-S\",\"-c\",\"import ctypes, json, os, signal, stat, sys, uuid\\nsignal.alarm(30)\\nif os.geteuid() != 1000 or os.getegid() != 100:\\n    raise ValueError(\\\"Native device identity requires UID1000/GID100\\\")\\nexpected = sys.argv[1]\\nif not expected.startswith(\\\"GPU-\\\") or str(uuid.UUID(expected[4:])) != expected[4:]:\\n    raise ValueError(\\\"Canonical bound GPU UUID required\\\")\\npath = \\\"/usr/lib/x86_64-linux-gnu/libcuda.so.1\\\"\\ninfo = os.stat(path)\\nif not stat.S_ISREG(info.st_mode) or info.st_uid != 0 or info.st_mode & 0o022:\\n    raise ValueError(\\\"Readonly root-owned native CUDA library required\\\")\\nlib = ctypes.CDLL(path)\\nclass CuUuid(ctypes.Structure):\\n    _fields_ = [(\\\"bytes\\\", ctypes.c_ubyte * 16)]\\nfor name, args in ((\\\"cuInit\\\", [ctypes.c_uint]),\\n                   (\\\"cuDeviceGetCount\\\", [ctypes.POINTER(ctypes.c_int)]),\\n                   (\\\"cuDeviceGet\\\", [ctypes.POINTER(ctypes.c_int), ctypes.c_int]),\\n                   (\\\"cuDeviceGetUuid_v2\\\", [ctypes.POINTER(CuUuid), ctypes.c_int])):\\n    fn = getattr(lib, name)\\n    fn.argtypes, fn.restype = args, ctypes.c_int\\n\\ndef checked(name, *args):\\n    result = getattr(lib, name)(*args)\\n    if result != 0:\\n        raise RuntimeError(\\\"Native CUDA identity failed: \\\" + name + \\\":\\\" + str(result))\\nchecked(\\\"cuInit\\\", 0)\\ncount = ctypes.c_int()\\nchecked(\\\"cuDeviceGetCount\\\", ctypes.byref(count))\\nif count.value != 1:\\n    raise ValueError(\\\"Exactly one physical native GPU must be visible\\\")\\ndevice = ctypes.c_int()\\nchecked(\\\"cuDeviceGet\\\", ctypes.byref(device), 0)\\nactual = CuUuid()\\nchecked(\\\"cuDeviceGetUuid_v2\\\", ctypes.byref(actual), device.value)\\nvisible = \\\"GPU-\\\" + str(uuid.UUID(bytes=bytes(actual.bytes)))\\nif visible != expected:\\n    raise ValueError(\\\"Native workload visible GPU differs from bound cap GPU\\\")\\nprint(json.dumps({\\\"state\\\":\\\"native-device-identity-verified\\\", \\\"gpu_uuid\\\":visible}), flush=True)\\n\"],\"env\":[{\"name\":\"CPS_NATIVE_GPU_UUID\",\"valueFrom\":{\"configMapKeyRef\":{\"key\":\"gpu_uuid\",\"name\":\"cps-native-85d82973e06119dbafb1f0088c995dad-selection\"}}},{\"name\":\"NVIDIA_VISIBLE_DEVICES\",\"valueFrom\":{\"configMapKeyRef\":{\"key\":\"gpu_uuid\",\"name\":\"cps-native-85d82973e06119dbafb1f0088c995dad-selection\"}}},{\"name\":\"CUDA_VISIBLE_DEVICES\",\"value\":\"0\"}],\"image\":\"ghcr.io/mul-cps/cps-jupyter-notebook:qualification-native-group-980408a@sha256:9167861058c1364c58d1c2fca0d6f536c3ffb53a33800dcdb9a1560f14ca4dc0\",\"imagePullPolicy\":\"IfNotPresent\",\"name\":\"cps-native-device-identity\",\"resources\":{\"limits\":{\"cpu\":\"100m\",\"memory\":\"128Mi\"},\"requests\":{\"cpu\":\"10m\",\"memory\":\"32Mi\"}},\"securityContext\":{\"allowPrivilegeEscalation\":false,\"capabilities\":{\"drop\":[\"ALL\"]},\"readOnlyRootFilesystem\":true,\"runAsGroup\":100,\"runAsNonRoot\":true,\"runAsUser\":1000,\"seccompProfile\":{\"type\":\"RuntimeDefault\"}},\"volumeMounts\":[{\"mountPath\":\"/tmp\",\"name\":\"cps-native-workload-tmp\"}]}],\"nodeSelector\":{\"kubernetes.io/hostname\":\"k3s-wk-gpu2\"},\"priority\":0,\"priorityClassName\":\"cps-homework\",\"restartPolicy\":\"Never\",\"runtimeClassName\":\"nvidia\",\"schedulerName\":\"kai-scheduler\",\"securityContext\":{\"fsGroup\":100,\"runAsGroup\":100,\"runAsNonRoot\":true,\"runAsUser\":1000,\"seccompProfile\":{\"type\":\"RuntimeDefault\"}},\"shareProcessNamespace\":false,\"volumes\":[{\"name\":\"cps-workspace\",\"persistentVolumeClaim\":{\"claimName\":\"group-10-pvc\"}},{\"emptyDir\":{\"sizeLimit\":\"1Gi\"},\"name\":\"cps-native-workload-tmp\"},{\"hostPath\":{\"path\":\"/run/cps-native-gpu/receipts\",\"type\":\"Directory\"},\"name\":\"cps-native-receipts\"},{\"hostPath\":{\"path\":\"/run/cps-native-gpu/authority\",\"type\":\"Directory\"},\"name\":\"cps-native-authority\"},{\"hostPath\":{\"path\":\"/sys/module\",\"type\":\"Directory\"},\"name\":\"cps-native-driver-metadata\"},{\"configMap\":{\"defaultMode\":420,\"name\":\"cps-native-85d82973e06119dbafb1f0088c995dad-shared-gpu-0\"},\"name\":\"cps-native-85d82973e06119dbafb1f0088c995dad-shared-gpu-0-vol\"},{\"configMap\":{\"defaultMode\":420,\"name\":\"cps-native-85d82973e06119dbafb1f0088c995dad-selection\",\"optional\":true},\"name\":\"cps-native-selection\"}]}},\"attempt\":\"22222222-2222-4222-8222-222222222222\",\"kind\":\"compiler-seed\",\"placement_id\":\"placement-f580d54f2ba0b25123b15b8d2f28b8ab576d85f8b128c2ed04e6d76ddb90\",\"protocol\":\"cps-native-kai-placement/v1\",\"source\":\"cit\",\"workspace\":\"group-10\"}"},"immutable":true,"kind":"ConfigMap","metadata":{"name":"cps-pending-compiler-f580d54f2ba0b25123b15b8d2f28b8ab576d85f8","namespace":"cps-compute","resourceVersion":"100","uid":"22222222-2222-4222-8222-222222222223"}},"pending_registry_configmap":{"apiVersion":"v1","data":{"registry.json":"{\"actor\":\"system:serviceaccount:cit-jhub:hub\",\"approval_ref\":{\"data_sha256\":\"sha256:afec371c49ca62df7f5a0df662168ebdc0bedff1bd9d11d6bacf0bc4deda30b9\",\"name\":\"actual-node-approval\",\"namespace\":\"cps-compute\",\"policy_hash\":\"sha256:4215ee4774f784b59b5f65104879d88c7ba42ce27e8074767dcf8697da837a8d\",\"revision\":\"sha256:4a5202547cca25d53f64beddefd7cb34f036ef252bdf1a8cac31371f58c71272\",\"uid\":\"44444444-4444-4444-8444-444444444444\"},\"attempt\":\"22222222-2222-4222-8222-222222222222\",\"cap_mib\":10240,\"capabilities_configmap\":\"cps-native-85d82973e06119dbafb1f0088c995dad-shared-gpu-0\",\"compiler_seed_ref\":{\"data_sha256\":\"sha256:f5255397016bfa4039e2048eb8e76bcd1d38b0c0ea1035cc08ddaa2fc77a670d\",\"key\":\"seed.json\",\"name\":\"cps-pending-compiler-f580d54f2ba0b25123b15b8d2f28b8ab576d85f8\",\"namespace\":\"cps-compute\",\"resourceVersion\":\"100\",\"uid\":\"22222222-2222-4222-8222-222222222223\"},\"env_configmap\":\"cps-native-85d82973e06119dbafb1f0088c995dad-shared-gpu-0-evar\",\"kai_commit\":\"bdf434e5e9201cccf4e05fad04d814363653f692\",\"kind\":\"inert-placement-registry\",\"name\":\"jupyter-group-10\",\"namespace\":\"cit-jhub\",\"pending_spec_sha256\":\"1b848e15cf3a510ee943d4c65e20317d511d54aed9ee44bd9c65bcd4bc6f7c1d\",\"placement_candidates\":{\"devices\":[{\"boot_id\":\"209f8bc9-a478-48e4-925a-6e07ffa56f7a\",\"driver_generation\":\"b10498fc-9153-4394-875a-ea7cfb498625\",\"gpu_uuid\":\"GPU-16128952-b438-556a-00bb-93039ee24e56\",\"node\":\"k3s-wk-gpu2\",\"node_uid\":\"3336cdd5-d245-436e-b57c-2f66c6dcaa41\",\"qualification_ref\":{\"data_sha256\":\"sha256:c2b0e4e2ebfa8e30d5288beda9d5b816b3a4c76f033b77238b64446dbe7a1b21\",\"key\":\"config.json\",\"name\":\"current-kai-config\",\"namespace\":\"cps-compute\",\"resourceVersion\":\"31\",\"uid\":\"49f60fb2-2d4e-4ce0-983a-cbf2b670be83\"}},{\"boot_id\":\"209f8bc9-a478-48e4-925a-6e07ffa56f7a\",\"driver_generation\":\"b10498fc-9153-4394-875a-ea7cfb498625\",\"gpu_uuid\":\"GPU-1e6145d5-8ee2-43e2-a0d5-6d345909e8a6\",\"node\":\"k3s-wk-gpu2\",\"node_uid\":\"3336cdd5-d245-436e-b57c-2f66c6dcaa41\",\"qualification_ref\":{\"data_sha256\":\"sha256:2bf17ede9b793aa64bdeb5d4b3a51b0b9918af23de6315cc1c2766bea45d8548\",\"key\":\"config.json\",\"name\":\"synthetic-node-9\",\"namespace\":\"cps-compute\",\"resourceVersion\":\"1\",\"uid\":\"d0000000-0000-4000-8000-000000000009\"}}],\"version\":1},\"placement_id\":\"placement-f580d54f2ba0b25123b15b8d2f28b8ab576d85f8b128c2ed04e6d76ddb90\",\"pod_uid\":\"11111111-1111-4111-8111-111111111111\",\"policy_hash\":\"sha256:4215ee4774f784b59b5f65104879d88c7ba42ce27e8074767dcf8697da837a8d\",\"profile\":\"interactive-shared-10\",\"protocol\":\"cps-native-kai-placement/v1\",\"selection_configmap\":\"cps-native-85d82973e06119dbafb1f0088c995dad-selection\",\"source\":\"cit\",\"spec_sha256\":\"5d5fb4ba4e0fdc049db7c88406d4345f1c1b03e339bf659a7a24dc531273e54e\",\"workspace\":\"group-10\"}"},"immutable":true,"kind":"ConfigMap","metadata":{"name":"cps-pending-registry-11111111-1111-4111-8111-111111111111","namespace":"cps-compute"}},"pod":{"apiVersion":"v1","kind":"Pod","metadata":{"annotations":{"cps.compute/native-pending":"kai-v0.18.1-gpu2-inert-placement/v1","cps.compute/native-spec-sha256":"5d5fb4ba4e0fdc049db7c88406d4345f1c1b03e339bf659a7a24dc531273e54e","gpu-fraction-container-name":"notebook","gpu-memory":"10240","kai-resource-isolator.io/inject":"false","nvidia.com/container.notebook.gpu-memory.request":"10Gi","runai/shared-gpu-configmap":"cps-native-85d82973e06119dbafb1f0088c995dad-shared-gpu"},"labels":{"kai.scheduler/queue":"native-test","owner":"person-preserved"},"name":"jupyter-group-10","namespace":"cit-jhub","resourceVersion":"101","uid":"11111111-1111-4111-8111-111111111111"},"spec":{"automountServiceAccountToken":false,"containers":[{"command":["python","-m","ipykernel"],"env":[{"name":"JUPYTERHUB_USER","value":"workspace-principal"},{"name":"TMPDIR","value":"/tmp"},{"name":"JUPYTER_RUNTIME_DIR","value":"/tmp/cps-native/jupyter-runtime"},{"name":"JUPYTER_CONFIG_DIR","value":"/tmp/cps-native/jupyter-config"},{"name":"JUPYTER_DATA_DIR","value":"/tmp/cps-native/jupyter-data"},{"name":"XDG_CACHE_HOME","value":"/tmp/cps-native/cache"},{"name":"XDG_DATA_HOME","value":"/tmp/cps-native/data"},{"name":"XDG_CONFIG_HOME","value":"/tmp/cps-native/config"},{"name":"NVIDIA_VISIBLE_DEVICES","valueFrom":{"configMapKeyRef":{"key":"NVIDIA_VISIBLE_DEVICES","name":"cps-native-85d82973e06119dbafb1f0088c995dad-shared-gpu-0"}}},{"name":"CUDA_VISIBLE_DEVICES","value":"0"}],"envFrom":[{"configMapRef":{"name":"cps-native-85d82973e06119dbafb1f0088c995dad-shared-gpu-0-evar","optional":false}}],"image":"ghcr.io/mul-cps/cps-jupyter-notebook:qualification-native-group-980408a@sha256:9167861058c1364c58d1c2fca0d6f536c3ffb53a33800dcdb9a1560f14ca4dc0","name":"notebook","resources":{"limits":{"cpu":"4","memory":"16Gi"},"requests":{"cpu":"4","memory":"16Gi"}},"securityContext":{"allowPrivilegeEscalation":false,"capabilities":{"drop":["ALL"]},"readOnlyRootFilesystem":true,"runAsGroup":100,"runAsNonRoot":true,"runAsUser":1000,"seccompProfile":{"type":"RuntimeDefault"}},"volumeMounts":[{"mountPath":"/workspace","name":"cps-workspace"},{"mountPath":"/tmp","name":"cps-native-workload-tmp"}],"workingDir":"/workspace"}],"enableServiceLinks":false,"initContainers":[{"args":["wait-for-selected-cap","--placement-id","placement-f580d54f2ba0b25123b15b8d2f28b8ab576d85f8b128c2ed04e6d76ddb90","--source","cit","--workspace","group-10","--attempt","22222222-2222-4222-8222-222222222222","--namespace","cit-jhub","--name","jupyter-group-10","--node","k3s-wk-gpu2","--node-uid","3336cdd5-d245-436e-b57c-2f66c6dcaa41","--cap-mib","10240","--policy-hash","sha256:4215ee4774f784b59b5f65104879d88c7ba42ce27e8074767dcf8697da837a8d"],"command":["python","-m","cps_compute.native_gpu_runtime"],"env":[{"name":"NVIDIA_VISIBLE_DEVICES","value":"void"},{"name":"CUDA_VISIBLE_DEVICES","value":""},{"name":"PYTHONDONTWRITEBYTECODE","value":"1"},{"name":"PYTHONNOUSERSITE","value":"1"},{"name":"CPS_NATIVE_POD_UID","valueFrom":{"fieldRef":{"fieldPath":"metadata.uid"}}},{"name":"CPS_NATIVE_SPEC_SHA256","valueFrom":{"fieldRef":{"fieldPath":"metadata.annotations['cps.compute/native-spec-sha256']"}}}],"image":"registry.invalid/gate@sha256:cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc","imagePullPolicy":"IfNotPresent","name":"cps-native-cap-gate","resources":{"limits":{"cpu":"100m","memory":"128Mi"},"requests":{"cpu":"10m","memory":"32Mi"}},"securityContext":{"allowPrivilegeEscalation":false,"capabilities":{"drop":["ALL"]},"readOnlyRootFilesystem":true,"runAsGroup":0,"runAsNonRoot":false,"runAsUser":0,"seccompProfile":{"type":"RuntimeDefault"}},"volumeMounts":[{"mountPath":"/run/cps-native-gpu/receipts","name":"cps-native-receipts","readOnly":true},{"mountPath":"/run/cps-native-gpu/authority","name":"cps-native-authority","readOnly":true},{"mountPath":"/run/cps-native-gpu/driver","name":"cps-native-driver-metadata","readOnly":true},{"mountPath":"/run/cps-native-placement","name":"cps-native-selection","readOnly":true}]},{"args":["$(CPS_NATIVE_GPU_UUID)"],"command":["python","-I","-S","-c","import ctypes, json, os, signal, stat, sys, uuid\nsignal.alarm(30)\nif os.geteuid() != 1000 or os.getegid() != 100:\n    raise ValueError(\"Native device identity requires UID1000/GID100\")\nexpected = sys.argv[1]\nif not expected.startswith(\"GPU-\") or str(uuid.UUID(expected[4:])) != expected[4:]:\n    raise ValueError(\"Canonical bound GPU UUID required\")\npath = \"/usr/lib/x86_64-linux-gnu/libcuda.so.1\"\ninfo = os.stat(path)\nif not stat.S_ISREG(info.st_mode) or info.st_uid != 0 or info.st_mode & 0o022:\n    raise ValueError(\"Readonly root-owned native CUDA library required\")\nlib = ctypes.CDLL(path)\nclass CuUuid(ctypes.Structure):\n    _fields_ = [(\"bytes\", ctypes.c_ubyte * 16)]\nfor name, args in ((\"cuInit\", [ctypes.c_uint]),\n                   (\"cuDeviceGetCount\", [ctypes.POINTER(ctypes.c_int)]),\n                   (\"cuDeviceGet\", [ctypes.POINTER(ctypes.c_int), ctypes.c_int]),\n                   (\"cuDeviceGetUuid_v2\", [ctypes.POINTER(CuUuid), ctypes.c_int])):\n    fn = getattr(lib, name)\n    fn.argtypes, fn.restype = args, ctypes.c_int\n\ndef checked(name, *args):\n    result = getattr(lib, name)(*args)\n    if result != 0:\n        raise RuntimeError(\"Native CUDA identity failed: \" + name + \":\" + str(result))\nchecked(\"cuInit\", 0)\ncount = ctypes.c_int()\nchecked(\"cuDeviceGetCount\", ctypes.byref(count))\nif count.value != 1:\n    raise ValueError(\"Exactly one physical native GPU must be visible\")\ndevice = ctypes.c_int()\nchecked(\"cuDeviceGet\", ctypes.byref(device), 0)\nactual = CuUuid()\nchecked(\"cuDeviceGetUuid_v2\", ctypes.byref(actual), device.value)\nvisible = \"GPU-\" + str(uuid.UUID(bytes=bytes(actual.bytes)))\nif visible != expected:\n    raise ValueError(\"Native workload visible GPU differs from bound cap GPU\")\nprint(json.dumps({\"state\":\"native-device-identity-verified\", \"gpu_uuid\":visible}), flush=True)\n"],"env":[{"name":"CPS_NATIVE_GPU_UUID","valueFrom":{"configMapKeyRef":{"key":"gpu_uuid","name":"cps-native-85d82973e06119dbafb1f0088c995dad-selection"}}},{"name":"NVIDIA_VISIBLE_DEVICES","valueFrom":{"configMapKeyRef":{"key":"gpu_uuid","name":"cps-native-85d82973e06119dbafb1f0088c995dad-selection"}}},{"name":"CUDA_VISIBLE_DEVICES","value":"0"}],"image":"ghcr.io/mul-cps/cps-jupyter-notebook:qualification-native-group-980408a@sha256:9167861058c1364c58d1c2fca0d6f536c3ffb53a33800dcdb9a1560f14ca4dc0","imagePullPolicy":"IfNotPresent","name":"cps-native-device-identity","resources":{"limits":{"cpu":"100m","memory":"128Mi"},"requests":{"cpu":"10m","memory":"32Mi"}},"securityContext":{"allowPrivilegeEscalation":false,"capabilities":{"drop":["ALL"]},"readOnlyRootFilesystem":true,"runAsGroup":100,"runAsNonRoot":true,"runAsUser":1000,"seccompProfile":{"type":"RuntimeDefault"}},"volumeMounts":[{"mountPath":"/tmp","name":"cps-native-workload-tmp"}]}],"nodeSelector":{"kubernetes.io/hostname":"k3s-wk-gpu2"},"priority":0,"priorityClassName":"cps-homework","restartPolicy":"Never","runtimeClassName":"nvidia","schedulerName":"kai-scheduler","securityContext":{"fsGroup":100,"runAsGroup":100,"runAsNonRoot":true,"runAsUser":1000,"seccompProfile":{"type":"RuntimeDefault"}},"shareProcessNamespace":false,"volumes":[{"name":"cps-workspace","persistentVolumeClaim":{"claimName":"group-10-pvc"}},{"emptyDir":{"sizeLimit":"1Gi"},"name":"cps-native-workload-tmp"},{"hostPath":{"path":"/run/cps-native-gpu/receipts","type":"Directory"},"name":"cps-native-receipts"},{"hostPath":{"path":"/run/cps-native-gpu/authority","type":"Directory"},"name":"cps-native-authority"},{"hostPath":{"path":"/sys/module","type":"Directory"},"name":"cps-native-driver-metadata"},{"configMap":{"defaultMode":420,"name":"cps-native-85d82973e06119dbafb1f0088c995dad-shared-gpu-0"},"name":"cps-native-85d82973e06119dbafb1f0088c995dad-shared-gpu-0-vol"},{"configMap":{"defaultMode":420,"name":"cps-native-85d82973e06119dbafb1f0088c995dad-selection","optional":true},"name":"cps-native-selection"}]}},"raw_spec_canonical_json":"{\"automountServiceAccountToken\":false,\"containers\":[{\"command\":[\"python\",\"-m\",\"ipykernel\"],\"env\":[{\"name\":\"JUPYTERHUB_USER\",\"value\":\"workspace-principal\"},{\"name\":\"TMPDIR\",\"value\":\"/tmp\"},{\"name\":\"JUPYTER_RUNTIME_DIR\",\"value\":\"/tmp/cps-native/jupyter-runtime\"},{\"name\":\"JUPYTER_CONFIG_DIR\",\"value\":\"/tmp/cps-native/jupyter-config\"},{\"name\":\"JUPYTER_DATA_DIR\",\"value\":\"/tmp/cps-native/jupyter-data\"},{\"name\":\"XDG_CACHE_HOME\",\"value\":\"/tmp/cps-native/cache\"},{\"name\":\"XDG_DATA_HOME\",\"value\":\"/tmp/cps-native/data\"},{\"name\":\"XDG_CONFIG_HOME\",\"value\":\"/tmp/cps-native/config\"},{\"name\":\"NVIDIA_VISIBLE_DEVICES\",\"valueFrom\":{\"configMapKeyRef\":{\"key\":\"NVIDIA_VISIBLE_DEVICES\",\"name\":\"cps-native-85d82973e06119dbafb1f0088c995dad-shared-gpu-0\"}}},{\"name\":\"CUDA_VISIBLE_DEVICES\",\"value\":\"0\"}],\"envFrom\":[{\"configMapRef\":{\"name\":\"cps-native-85d82973e06119dbafb1f0088c995dad-shared-gpu-0-evar\",\"optional\":false}}],\"image\":\"ghcr.io/mul-cps/cps-jupyter-notebook:qualification-native-group-980408a@sha256:9167861058c1364c58d1c2fca0d6f536c3ffb53a33800dcdb9a1560f14ca4dc0\",\"name\":\"notebook\",\"resources\":{\"limits\":{\"cpu\":\"4\",\"memory\":\"16Gi\"},\"requests\":{\"cpu\":\"4\",\"memory\":\"16Gi\"}},\"securityContext\":{\"allowPrivilegeEscalation\":false,\"capabilities\":{\"drop\":[\"ALL\"]},\"readOnlyRootFilesystem\":true,\"runAsGroup\":100,\"runAsNonRoot\":true,\"runAsUser\":1000,\"seccompProfile\":{\"type\":\"RuntimeDefault\"}},\"volumeMounts\":[{\"mountPath\":\"/workspace\",\"name\":\"cps-workspace\"},{\"mountPath\":\"/tmp\",\"name\":\"cps-native-workload-tmp\"}],\"workingDir\":\"/workspace\"}],\"enableServiceLinks\":false,\"initContainers\":[{\"args\":[\"wait-for-selected-cap\",\"--placement-id\",\"placement-f580d54f2ba0b25123b15b8d2f28b8ab576d85f8b128c2ed04e6d76ddb90\",\"--source\",\"cit\",\"--workspace\",\"group-10\",\"--attempt\",\"22222222-2222-4222-8222-222222222222\",\"--namespace\",\"cit-jhub\",\"--name\",\"jupyter-group-10\",\"--node\",\"k3s-wk-gpu2\",\"--node-uid\",\"3336cdd5-d245-436e-b57c-2f66c6dcaa41\",\"--cap-mib\",\"10240\",\"--policy-hash\",\"sha256:4215ee4774f784b59b5f65104879d88c7ba42ce27e8074767dcf8697da837a8d\"],\"command\":[\"python\",\"-m\",\"cps_compute.native_gpu_runtime\"],\"env\":[{\"name\":\"NVIDIA_VISIBLE_DEVICES\",\"value\":\"void\"},{\"name\":\"CUDA_VISIBLE_DEVICES\",\"value\":\"\"},{\"name\":\"PYTHONDONTWRITEBYTECODE\",\"value\":\"1\"},{\"name\":\"PYTHONNOUSERSITE\",\"value\":\"1\"},{\"name\":\"CPS_NATIVE_POD_UID\",\"valueFrom\":{\"fieldRef\":{\"fieldPath\":\"metadata.uid\"}}},{\"name\":\"CPS_NATIVE_SPEC_SHA256\",\"valueFrom\":{\"fieldRef\":{\"fieldPath\":\"metadata.annotations['cps.compute/native-spec-sha256']\"}}}],\"image\":\"registry.invalid/gate@sha256:cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc\",\"imagePullPolicy\":\"IfNotPresent\",\"name\":\"cps-native-cap-gate\",\"resources\":{\"limits\":{\"cpu\":\"100m\",\"memory\":\"128Mi\"},\"requests\":{\"cpu\":\"10m\",\"memory\":\"32Mi\"}},\"securityContext\":{\"allowPrivilegeEscalation\":false,\"capabilities\":{\"drop\":[\"ALL\"]},\"readOnlyRootFilesystem\":true,\"runAsGroup\":0,\"runAsNonRoot\":false,\"runAsUser\":0,\"seccompProfile\":{\"type\":\"RuntimeDefault\"}},\"volumeMounts\":[{\"mountPath\":\"/run/cps-native-gpu/receipts\",\"name\":\"cps-native-receipts\",\"readOnly\":true},{\"mountPath\":\"/run/cps-native-gpu/authority\",\"name\":\"cps-native-authority\",\"readOnly\":true},{\"mountPath\":\"/run/cps-native-gpu/driver\",\"name\":\"cps-native-driver-metadata\",\"readOnly\":true},{\"mountPath\":\"/run/cps-native-placement\",\"name\":\"cps-native-selection\",\"readOnly\":true}]},{\"args\":[\"$(CPS_NATIVE_GPU_UUID)\"],\"command\":[\"python\",\"-I\",\"-S\",\"-c\",\"import ctypes, json, os, signal, stat, sys, uuid\\nsignal.alarm(30)\\nif os.geteuid() != 1000 or os.getegid() != 100:\\n    raise ValueError(\\\"Native device identity requires UID1000/GID100\\\")\\nexpected = sys.argv[1]\\nif not expected.startswith(\\\"GPU-\\\") or str(uuid.UUID(expected[4:])) != expected[4:]:\\n    raise ValueError(\\\"Canonical bound GPU UUID required\\\")\\npath = \\\"/usr/lib/x86_64-linux-gnu/libcuda.so.1\\\"\\ninfo = os.stat(path)\\nif not stat.S_ISREG(info.st_mode) or info.st_uid != 0 or info.st_mode & 0o022:\\n    raise ValueError(\\\"Readonly root-owned native CUDA library required\\\")\\nlib = ctypes.CDLL(path)\\nclass CuUuid(ctypes.Structure):\\n    _fields_ = [(\\\"bytes\\\", ctypes.c_ubyte * 16)]\\nfor name, args in ((\\\"cuInit\\\", [ctypes.c_uint]),\\n                   (\\\"cuDeviceGetCount\\\", [ctypes.POINTER(ctypes.c_int)]),\\n                   (\\\"cuDeviceGet\\\", [ctypes.POINTER(ctypes.c_int), ctypes.c_int]),\\n                   (\\\"cuDeviceGetUuid_v2\\\", [ctypes.POINTER(CuUuid), ctypes.c_int])):\\n    fn = getattr(lib, name)\\n    fn.argtypes, fn.restype = args, ctypes.c_int\\n\\ndef checked(name, *args):\\n    result = getattr(lib, name)(*args)\\n    if result != 0:\\n        raise RuntimeError(\\\"Native CUDA identity failed: \\\" + name + \\\":\\\" + str(result))\\nchecked(\\\"cuInit\\\", 0)\\ncount = ctypes.c_int()\\nchecked(\\\"cuDeviceGetCount\\\", ctypes.byref(count))\\nif count.value != 1:\\n    raise ValueError(\\\"Exactly one physical native GPU must be visible\\\")\\ndevice = ctypes.c_int()\\nchecked(\\\"cuDeviceGet\\\", ctypes.byref(device), 0)\\nactual = CuUuid()\\nchecked(\\\"cuDeviceGetUuid_v2\\\", ctypes.byref(actual), device.value)\\nvisible = \\\"GPU-\\\" + str(uuid.UUID(bytes=bytes(actual.bytes)))\\nif visible != expected:\\n    raise ValueError(\\\"Native workload visible GPU differs from bound cap GPU\\\")\\nprint(json.dumps({\\\"state\\\":\\\"native-device-identity-verified\\\", \\\"gpu_uuid\\\":visible}), flush=True)\\n\"],\"env\":[{\"name\":\"CPS_NATIVE_GPU_UUID\",\"valueFrom\":{\"configMapKeyRef\":{\"key\":\"gpu_uuid\",\"name\":\"cps-native-85d82973e06119dbafb1f0088c995dad-selection\"}}},{\"name\":\"NVIDIA_VISIBLE_DEVICES\",\"valueFrom\":{\"configMapKeyRef\":{\"key\":\"gpu_uuid\",\"name\":\"cps-native-85d82973e06119dbafb1f0088c995dad-selection\"}}},{\"name\":\"CUDA_VISIBLE_DEVICES\",\"value\":\"0\"}],\"image\":\"ghcr.io/mul-cps/cps-jupyter-notebook:qualification-native-group-980408a@sha256:9167861058c1364c58d1c2fca0d6f536c3ffb53a33800dcdb9a1560f14ca4dc0\",\"imagePullPolicy\":\"IfNotPresent\",\"name\":\"cps-native-device-identity\",\"resources\":{\"limits\":{\"cpu\":\"100m\",\"memory\":\"128Mi\"},\"requests\":{\"cpu\":\"10m\",\"memory\":\"32Mi\"}},\"securityContext\":{\"allowPrivilegeEscalation\":false,\"capabilities\":{\"drop\":[\"ALL\"]},\"readOnlyRootFilesystem\":true,\"runAsGroup\":100,\"runAsNonRoot\":true,\"runAsUser\":1000,\"seccompProfile\":{\"type\":\"RuntimeDefault\"}},\"volumeMounts\":[{\"mountPath\":\"/tmp\",\"name\":\"cps-native-workload-tmp\"}]}],\"nodeSelector\":{\"kubernetes.io/hostname\":\"k3s-wk-gpu2\"},\"priority\":0,\"priorityClassName\":\"cps-homework\",\"restartPolicy\":\"Never\",\"runtimeClassName\":\"nvidia\",\"schedulerName\":\"kai-scheduler\",\"securityContext\":{\"fsGroup\":100,\"runAsGroup\":100,\"runAsNonRoot\":true,\"runAsUser\":1000,\"seccompProfile\":{\"type\":\"RuntimeDefault\"}},\"shareProcessNamespace\":false,\"volumes\":[{\"name\":\"cps-workspace\",\"persistentVolumeClaim\":{\"claimName\":\"group-10-pvc\"}},{\"emptyDir\":{\"sizeLimit\":\"1Gi\"},\"name\":\"cps-native-workload-tmp\"},{\"hostPath\":{\"path\":\"/run/cps-native-gpu/receipts\",\"type\":\"Directory\"},\"name\":\"cps-native-receipts\"},{\"hostPath\":{\"path\":\"/run/cps-native-gpu/authority\",\"type\":\"Directory\"},\"name\":\"cps-native-authority\"},{\"hostPath\":{\"path\":\"/sys/module\",\"type\":\"Directory\"},\"name\":\"cps-native-driver-metadata\"},{\"configMap\":{\"defaultMode\":420,\"name\":\"cps-native-85d82973e06119dbafb1f0088c995dad-shared-gpu-0\"},\"name\":\"cps-native-85d82973e06119dbafb1f0088c995dad-shared-gpu-0-vol\"},{\"configMap\":{\"defaultMode\":420,\"name\":\"cps-native-85d82973e06119dbafb1f0088c995dad-selection\",\"optional\":true},\"name\":\"cps-native-selection\"}]}","raw_spec_sha256":"1b848e15cf3a510ee943d4c65e20317d511d54aed9ee44bd9c65bcd4bc6f7c1d"}`
++
++func nativePlacementFixture(t *testing.T) (*v1.Pod, *v1.Node, *v1alpha2.BindRequest, *v1.ConfigMap, *v1.ConfigMap) {
++	t.Helper()
++	var fixture map[string]json.RawMessage
++	if err := json.Unmarshal([]byte(nativePlacementPythonFixture), &fixture); err != nil {
++		t.Fatal(err)
++	}
++	pod, registry, seed := &v1.Pod{}, &v1.ConfigMap{}, &v1.ConfigMap{}
++	for name, target := range map[string]interface{}{"pod": pod, "pending_registry_configmap": registry, "pending_compiler_seed_configmap": seed} {
++		if err := json.Unmarshal(fixture[name], target); err != nil {
++			t.Fatal(err)
++		}
++	}
++	// The compiler emits a create proposal; the fake API supplies its original UID/RV.
++	registry.UID = "33333333-3333-4333-8333-333333333333"
++	registry.ResourceVersion = "101"
++	_, node, br := nativeTestInputs()
++	br.Namespace = pod.Namespace
++	br.Spec.PodName = pod.Name
++	br.Spec.SelectedNode = node.Name
++	br.Spec.ReceivedResourceType = "Fraction"
++	br.Spec.ReceivedGPU = &v1alpha2.ReceivedGPU{Count: 1, Portion: "0.25"}
++	br.Spec.SelectedFractionalGpuGroups = []v1alpha2.FractionalGpuGroup{{ID: "group", ComputeSharingMode: v1alpha2.GPUComputeSharingModeTimeSlicing}}
++	node.Status.NodeInfo.BootID = "209f8bc9-a478-48e4-925a-6e07ffa56f7a"
++	node.Labels = map[string]string{"nvidia.com/gpu.memory": "40960"}
++	return pod, node, br, registry, seed
++}
++
++type nativePlacementReservation struct {
++	nativeCountingReservation
++	gpu string
++}
++
++func (r *nativePlacementReservation) ReserveGpuDevice(context.Context, *v1.Pod, string, v1alpha2.FractionalGpuGroup) (string, error) {
++	return r.gpu, nil
++}
++
++func TestInertPlacementPythonFixtureAndActualReservedSecondGPU(t *testing.T) {
++	pod, node, br, registry, seed := nativePlacementFixture(t)
++	// Exact existing Python controller-addition allowlists, not compiler fields.
++	pod.Labels["runai-gpu-group"] = "group"
++	pod.Labels["kai.scheduler/subgroup-name"] = "subgroup"
++	pod.Annotations["pod-group-name"] = "pod-group"
++	pod.Annotations["kai.scheduler/numa-placement-predicted"] = "[]"
++	ack := nativeTestACK(pod)
++	ack.Namespace = "cps-compute"
++	binds := 0
++	kube := nativeTestClient(t, pod, node, br, func(*v1.Binding) error { binds++; return nil }, registry, seed, ack)
++	reservation := &nativePlacementReservation{gpu: "GPU-1e6145d5-8ee2-43e2-a0d5-6d345909e8a6"}
++	coord := &nativeTestCoordinator{ack: ack}
++	coord.prepare = func(snapshot NativeTerminalSnapshot) {
++		if !reflect.DeepEqual(snapshot.BindingState.ReservedGPUIds, []string{reservation.gpu}) || snapshot.Node.UID != node.UID || snapshot.Node.Status.NodeInfo.BootID != node.Status.NodeInfo.BootID {
++			t.Fatal("actual reserved placement state lost")
++		}
++		cm := &v1.ConfigMap{}
++		if err := kube.Get(context.Background(), client.ObjectKey{Namespace: pod.Namespace, Name: pod.Annotations["runai/shared-gpu-configmap"] + "-0"}, cm); err != nil {
++			t.Fatal(err)
++		}
++		if cm.Data["CUDA_DEVICE_MEMORY_LIMIT"] != "10240m" || cm.Data["NVIDIA_VISIBLE_DEVICES"] != "k8s.device-plugin.nvidia.com/gpu="+reservation.gpu {
++			t.Fatalf("actual map/cap differs: %v", cm.Data)
++		}
++	}
++	ps := plugins.New()
++	ps.RegisterPlugin(gpusharing.New(kube, true, false))
++	ps.RegisterPlugin(hamicore.New(kube))
++	binder := NewBinder(kube, reservation, ps)
++	binder.SetNativeTerminal(kube, "cps-compute", coord)
++	if err := binder.Bind(context.Background(), pod, node, br); err != nil {
++		t.Fatal(err)
++	}
++	if binds != 1 || reservation.syncs != 1 || !reflect.DeepEqual(coord.calls, []string{"prepare", "validate", "validate-binding", "bound", "close"}) {
++		t.Fatalf("unexpected exact terminal flow: binds=%d sync=%d calls=%v", binds, reservation.syncs, coord.calls)
++	}
++}
++
++func TestInertPlacementRefusesBeforeWritesAndHoldsForeignSelection(t *testing.T) {
++	for _, fault := range []string{"extra-registry-field", "seed-data-drift", "seed-uid-drift", "duplicate-candidate", "bad-cap", "zero-ref-version", "nondecimal-ref-version", "zero-gpu", "mixed-candidate-node", "mixed-candidate-epoch", "unbound-hash-as-bound", "foreign-reserved-gpu", "wrong-selected-boot"} {
++		t.Run(fault, func(t *testing.T) {
++			pod, node, br, registry, seed := nativePlacementFixture(t)
++			var doc map[string]interface{}
++			_ = json.Unmarshal([]byte(registry.Data["registry.json"]), &doc)
++			reservation := &nativePlacementReservation{gpu: "GPU-1e6145d5-8ee2-43e2-a0d5-6d345909e8a6"}
++			switch fault {
++			case "extra-registry-field":
++				doc["authority"] = true
++			case "seed-data-drift":
++				seed.Data["seed.json"] += " "
++			case "seed-uid-drift":
++				seed.UID = "33333333-3333-4333-8333-333333333333"
++			case "duplicate-candidate":
++				c := doc["placement_candidates"].(map[string]interface{})
++				d := c["devices"].([]interface{})
++				d[1] = d[0]
++			case "bad-cap":
++				doc["cap_mib"] = 5120
++			case "zero-ref-version", "nondecimal-ref-version":
++				ref := doc["placement_candidates"].(map[string]interface{})["devices"].([]interface{})[0].(map[string]interface{})["qualification_ref"].(map[string]interface{})
++				ref["resourceVersion"] = "0"
++				if fault == "nondecimal-ref-version" {
++					ref["resourceVersion"] = "abc"
++				}
++			case "zero-gpu":
++				doc["placement_candidates"].(map[string]interface{})["devices"].([]interface{})[0].(map[string]interface{})["gpu_uuid"] = "GPU-00000000-0000-0000-0000-000000000000"
++			case "mixed-candidate-node", "mixed-candidate-epoch":
++				device := doc["placement_candidates"].(map[string]interface{})["devices"].([]interface{})[1].(map[string]interface{})
++				if fault == "mixed-candidate-node" {
++					device["node"] = "k3s-wk-gpu3"
++				} else {
++					device["driver_generation"] = "33333333-3333-4333-8333-333333333333"
++				}
++			case "unbound-hash-as-bound":
++				doc["spec_sha256"] = doc["pending_spec_sha256"]
++			case "foreign-reserved-gpu":
++				reservation.gpu = "GPU-33333333-3333-4333-8333-333333333333"
++			case "wrong-selected-boot":
++				node.Status.NodeInfo.BootID = "33333333-3333-4333-8333-333333333333"
++			}
++			raw, _ := json.Marshal(doc)
++			registry.Data["registry.json"] = string(raw)
++			kube := nativeTestClient(t, pod, node, br, func(*v1.Binding) error { t.Fatal("rejected placement reached Binding"); return nil }, registry, seed)
++			coord := &nativeTestCoordinator{}
++			ps := plugins.New()
++			ps.RegisterPlugin(gpusharing.New(kube, true, false))
++			binder := NewBinder(kube, reservation, ps)
++			binder.SetNativeTerminal(kube, "cps-compute", coord)
++			err := binder.Bind(context.Background(), pod, node, br)
++			if !errors.Is(err, ErrNativeCustodyHeld) {
++				t.Fatalf("placement rejection did not hold: %v", err)
++			}
++			postReservation := fault == "foreign-reserved-gpu" || fault == "wrong-selected-boot"
++			if postReservation {
++				if reservation.syncs != 1 || !reflect.DeepEqual(coord.calls, []string{"hold"}) {
++					t.Fatalf("selected-device refusal did not retain custody: %d %v", reservation.syncs, coord.calls)
++				}
++			} else {
++				maps := &v1.ConfigMapList{}
++				if err := kube.List(context.Background(), maps, client.InNamespace(pod.Namespace)); err != nil {
++					t.Fatal(err)
++				}
++				if reservation.syncs != 0 || len(maps.Items) != 0 || len(coord.calls) != 0 {
++					t.Fatalf("unverified registry caused writes: %d %d %v", reservation.syncs, len(maps.Items), coord.calls)
++				}
++			}
++		})
++	}
++}
++
++func TestInertPlacementCompilerMetadataDriftRejectsBeforeReservation(t *testing.T) {
++	for _, fault := range []string{"queue-label", "unknown-label", "compiler-annotation", "unknown-annotation"} {
++		t.Run(fault, func(t *testing.T) {
++			pod, node, br, registry, seed := nativePlacementFixture(t)
++			switch fault {
++			case "queue-label":
++				pod.Labels["kai.scheduler/queue"] = "foreign-priority-queue"
++			case "unknown-label":
++				pod.Labels["unreviewed-priority"] = "high"
++			case "compiler-annotation":
++				pod.Annotations["kai-resource-isolator.io/inject"] = "true"
++			case "unknown-annotation":
++				pod.Annotations["unreviewed-admission"] = "true"
++			}
++			kube := nativeTestClient(t, pod, node, br, func(*v1.Binding) error { t.Fatal("metadata drift reached Binding"); return nil }, registry, seed)
++			reservation := &nativePlacementReservation{gpu: "GPU-1e6145d5-8ee2-43e2-a0d5-6d345909e8a6"}
++			coord := &nativeTestCoordinator{}
++			ps := plugins.New()
++			ps.RegisterPlugin(gpusharing.New(kube, true, false))
++			binder := NewBinder(kube, reservation, ps)
++			binder.SetNativeTerminal(kube, "cps-compute", coord)
++			err := binder.Bind(context.Background(), pod, node, br)
++			maps := &v1.ConfigMapList{}
++			if e := kube.List(context.Background(), maps, client.InNamespace(pod.Namespace)); e != nil {
++				t.Fatal(e)
++			}
++			if !errors.Is(err, ErrNativeCustodyHeld) || reservation.syncs != 0 || len(maps.Items) != 0 || len(coord.calls) != 0 {
++				t.Fatalf("compiler metadata drift caused effects: err=%v sync=%d maps=%d calls=%v", err, reservation.syncs, len(maps.Items), coord.calls)
++			}
++		})
++	}
++}

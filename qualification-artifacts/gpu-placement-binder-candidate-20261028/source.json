@@ -1,0 +1,15 @@
+{
+  "base_commit": "994cddc17986d2e1d399ddb6b85da52023f890fa",
+  "candidate_commit": "7a399c917985b2b8548661312f422ebed09e6d03",
+  "installed": false,
+  "patch_sha256": "2e5e9afd084be72edc6d9161b73cf7263c19675707ad6e45a9fe150c2db1e338",
+  "production_qualified": false,
+  "python_fixture_sha256": "686d0772301ad0cb1af6701d37034b5567a2ad5d86ca650273f8e810df0c44c5",
+  "root_verification": {
+    "command": "go test ./pkg/binder/binding -count=1",
+    "exit_code": 0,
+    "go_version": "1.26.8",
+    "package_seconds": 16.282
+  },
+  "scope": "Exact deployed binder source plus closed inert-placement proof; legacy path preserved"
+}
