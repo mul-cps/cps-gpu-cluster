@@ -95,7 +95,7 @@ def test_custom_resource_requests_are_rejected_before_spawn_side_effects():
     assert apply.body[0].value.func.id == "reject_custom_resources"
     ns = {}
     exec(compile(ast.Module(body=[validator, functions["form_bool"], functions["options_from_form"], apply], type_ignores=[]), str(VALUES_PATH), "exec"), ns)
-    for request in ({"custom_gpus": 2}, {"custom_nfs_server": "unapproved"}, {"custom_nfs_enabled": True}):
+    for request in ({"custom_gpus": 2}, {"custom_nfs_server": "unapproved"}, {"custom_nfs_enabled": True}, {"custom_nfs_enabled": False, "custom_nfs_server": "unapproved"}):
         with pytest.raises(ValueError):
             ns["reject_custom_resources"](request)
         with pytest.raises(ValueError):
@@ -103,3 +103,11 @@ def test_custom_resource_requests_are_rejected_before_spawn_side_effects():
     with pytest.raises(ValueError):
         ns["options_from_form"]({"custom_gpus": ["2"]})
     ns["reject_custom_resources"]({"custom_gpus": "0"})
+
+
+def test_legacy_disabled_custom_nfs_defaults_do_not_block_restart():
+    _, module = load_policy()
+    validator = next(n for n in module.body if isinstance(n, ast.FunctionDef) and n.name == "reject_custom_resources")
+    ns = {}
+    exec(compile(ast.Module(body=[validator], type_ignores=[]), str(VALUES_PATH), "exec"), ns)
+    ns["reject_custom_resources"]({"custom_nfs_enabled": False, "custom_nfs_server": "193.170.30.58", "custom_nfs_mount_path": "/home/jovyan/custom_nfs", "custom_gpus": 0})

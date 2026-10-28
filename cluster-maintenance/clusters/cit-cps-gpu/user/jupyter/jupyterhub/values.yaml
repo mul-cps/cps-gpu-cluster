@@ -1189,10 +1189,18 @@ hub:
           gpu = options.get('custom_gpus', 0)
           if str(gpu or '0').strip() not in ('0', ''):
               raise ValueError('Custom GPU counts are not supported; select an approved profile')
-          for key in ('custom_nfs_server', 'custom_nfs_path', 'custom_nfs_mount_path'):
-              if str(options.get(key, '') or '').strip():
-                  raise ValueError('Custom NFS mounts are not supported; select an approved storage option')
-          if options.get('custom_nfs_enabled'):
+          legacy_disabled_defaults = (
+              options.get('custom_nfs_enabled') is False
+              and str(options.get('custom_nfs_server', '') or '').strip() in ('', '193.170.30.58')
+              and not str(options.get('custom_nfs_path', '') or '').strip()
+              and str(options.get('custom_nfs_mount_path', '') or '').strip() in ('', '/home/jovyan/custom_nfs')
+          )
+          if not legacy_disabled_defaults and (
+              options.get('custom_nfs_enabled') or any(
+                  str(options.get(key, '') or '').strip()
+                  for key in ('custom_nfs_server', 'custom_nfs_path', 'custom_nfs_mount_path')
+              )
+          ):
               raise ValueError('Custom NFS mounts are not supported; select an approved storage option')
 
       def options_from_form(formdata):
