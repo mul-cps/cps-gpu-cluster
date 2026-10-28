@@ -1,0 +1,49 @@
+{
+  "dcgmExporterDaemonSet": {
+    "available": 4,
+    "current": 4,
+    "desired": 4,
+    "ready": 4
+  },
+  "dcgmExporterServiceEndpoints": {
+    "notReadyAddressCount": 0,
+    "readyAddressCount": 4
+  },
+  "observedAtUtc": "2026-10-28T07:48:43.812209+00:00",
+  "prometheus": {
+    "coverageAlertRule": [
+      {
+        "alerts": [],
+        "health": "ok",
+        "lastEvaluation": "2026-10-28T07:48:34.766883116Z",
+        "state": "inactive"
+      }
+    ],
+    "coverageCondition": {},
+    "freshDistinctDcgmUuidCountByHostname": {
+      "k3s-wk-gpu1": 2,
+      "k3s-wk-gpu2": 2,
+      "k3s-wk-gpu3": 2,
+      "k3s-wk-gpu4": 2
+    },
+    "inventoryDevicesByNode": {
+      "k3s-wk-gpu1": 2,
+      "k3s-wk-gpu2": 2,
+      "k3s-wk-gpu3": 2,
+      "k3s-wk-gpu4": 2
+    },
+    "inventorySampleAgeSecondsByNode": {
+      "k3s-wk-gpu1": 18.21,
+      "k3s-wk-gpu2": 18.21,
+      "k3s-wk-gpu3": 18.21,
+      "k3s-wk-gpu4": 18.21
+    },
+    "latestDcgmSampleAgeSecondsByHostname": {
+      "k3s-wk-gpu1": 1.55,
+      "k3s-wk-gpu2": 2.59,
+      "k3s-wk-gpu3": 7.84,
+      "k3s-wk-gpu4": 4.39
+    }
+  },
+  "scope": "sanitized aggregates; no UUIDs, pod IPs, credentials, or raw Secret data"
+}
