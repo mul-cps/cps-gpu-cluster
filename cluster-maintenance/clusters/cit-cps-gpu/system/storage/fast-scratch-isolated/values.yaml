@@ -1,0 +1,55 @@
+# This is intentionally separate from K3s's packaged local-path provisioner.
+# It provisions only explicitly selected new claims; no existing StorageClass
+# or PVC is modified by this release.
+nameOverride: fast-scratch-isolated-provisioner
+fullnameOverride: fast-scratch-isolated-provisioner
+namespaceOverride: fast-scratch-system
+
+image:
+  repository: rancher/local-path-provisioner
+  tag: v0.0.36@sha256:1eba82e9c386038b4af6d69cca7519fac738c28c42735ed48ce70c882ad0d80f
+  pullPolicy: IfNotPresent
+
+helperImage:
+  repository: rancher/mirrored-library-busybox
+  tag: 1.37.0@sha256:101b4afd76732482eff9b95cae5f94bcf295e521fbec4e01b69c5421f3f3f3e5
+
+nodePathMap:
+  - node: DEFAULT_PATH_FOR_NON_LISTED_NODES
+    paths: []
+  - node: k3s-wk-gpu1
+    paths:
+      - /mnt/nvme/scratch
+  - node: k3s-wk-gpu2
+    paths:
+      - /mnt/nvme/scratch
+  - node: k3s-wk-gpu3
+    paths:
+      - /mnt/nvme/scratch
+  - node: k3s-wk-gpu4
+    paths:
+      - /mnt/nvme/scratch
+
+storageClass:
+  create: true
+  name: fast-scratch-isolated
+  provisionerName: storage.cps.local/fast-scratch-isolated
+  defaultClass: false
+  defaultVolumeType: local
+  reclaimPolicy: Delete
+  volumeBindingMode: WaitForFirstConsumer
+  allowedTopologies:
+    - matchLabelExpressions:
+        - key: kubernetes.io/hostname
+          values:
+            - k3s-wk-gpu1
+            - k3s-wk-gpu2
+            - k3s-wk-gpu3
+            - k3s-wk-gpu4
+
+configmap:
+  name: fast-scratch-isolated-config
+
+serviceAccount:
+  create: true
+  name: fast-scratch-isolated-provisioner
