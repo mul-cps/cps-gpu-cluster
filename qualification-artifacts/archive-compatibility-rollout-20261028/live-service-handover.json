@@ -1,0 +1,16 @@
+{
+  "result": "PASS_LIVE_SERVICE_IMAGE_SUCCESSOR",
+  "node_pod_uid": "46642194-a232-4e5a-9793-e4a63926af2f",
+  "node_pod": "cps-native-node-agent-54d855745c-m754t",
+  "node_image_unchanged": true,
+  "deployment_spec_delta": [
+    "packaged-bootstrap-input.configMap.name"
+  ],
+  "gateway_image": "sha256:d9053551c63f6844b043cea3cdb7df67a2a8f2091d93b9c6f560818df07ed711",
+  "bootstrap": "cps-native-head-bootstrap-8fbe19cb217f0746",
+  "release_preserved": "true",
+  "exact_successor_admission_dry_run": "accepted",
+  "unreviewed_image_admission_dry_run": "denied",
+  "policy_hash_unchanged": true,
+  "qualified_device_unchanged": true
+}

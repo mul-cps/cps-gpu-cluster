@@ -146,3 +146,12 @@ Source pending flags are clear. Temporary grants, probe and operator token were
 cleaned up while retaining archives/audit history. This closes that bounded
 assignment archive acceptance, not active GPU membership revocation, full RTC
 browser acceptance, cross-Hub accounting or coordinated restore.
+
+The archive Gateway image handover now also includes the Node observer's typed
+immediate service-image successor. The exact-template admission rule was
+paired with the new ReplicaSet/bootstrap after initially rejecting creation;
+positive/negative server-side admission checks pass, the actual Node agent is
+Ready, custody snapshots succeed and authenticated group readiness remains
+true. Node image, policy history, qualified UUID and persistent state are
+preserved. Reliable device placement remains the independent unresolved GPU
+gate described above.

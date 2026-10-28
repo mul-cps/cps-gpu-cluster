@@ -145,3 +145,30 @@ the one-hour operator token was revoked through Hub REST (204) and its private
 file removed. Course, audit history and read-only research-data fixtures remain
 retained. Existing Aditya, Gottam, Muslim and Rino Pod UIDs/restart counts were
 unchanged during the rollout and tests.
+
+## Node-side process-image handover
+
+The Node observer's immutable configuration also declared the preceding
+Gateway image. A typed same-policy successor was created with exactly two
+document changes: Gateway image and the exact immediate
+`service_image_predecessor_ref`. Loading the actual API readback preserved
+the qualified UUID, authority and both historical policy transitions. The
+bootstrap retains the existing policy bytes and `release: true`; the Node
+image, host state, resources and all other Deployment fields are unchanged.
+
+The first replacement Pod was refused because the trusted-node admission
+rule still pinned the old ReplicaSet and bootstrap. The strict rule was
+updated with UID/resourceVersion/expression tests to the actual reviewed
+ReplicaSet name/UID and new bootstrap reference; no privilege or general
+exception was added. Server-side dry run accepts that exact template and
+rejects an otherwise identical template with an unreviewed image. The actual
+Node agent subsequently became Ready with zero restarts, custody snapshots
+report success, and authenticated group readiness is true at the unchanged
+policy/revision. See `live-service-handover.json`.
+
+Future Node rollouts must include exact-template admission in the preflight
+and guarded handover. Once a successor has been adopted, rollback must compose
+a new immediate history-preserving Node configuration successor paired with
+the selected service image and matching strict admission, rather than pointing
+the observer backward to a predecessor or fabricating history. No qualification
+record, device allowance, driver, kernel or MIG configuration changed here.
