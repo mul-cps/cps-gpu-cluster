@@ -45,7 +45,7 @@ All of the below now live directly in `values.yaml`'s `extraConfig`:
   - CPU-only and GPU profiles
   - PyTorch, TensorFlow support
   - Resource limits and node selection
-  - Custom image/GPU override for admins
+  - Custom image override for admins; GPU allocation is selected from fixed profiles
 - GPU sharing for these profiles is now driven by NVIDIA MPS + KAI
   Scheduler's `gpu-memory` annotation, not MIG slices (see
   `system/gpu/gpu-operator/README.md` for the MIG-to-MPS migration
@@ -64,7 +64,7 @@ All of the below now live directly in `values.yaml`'s `extraConfig`:
 - **Features**:
   - Layered, responsive design
   - GPU access validation via API
-  - Custom image/GPU override controls
+  - Custom image override control
   - Real-time group membership checking
 
 ## GPU Profiles Available
@@ -94,11 +94,21 @@ context). Every GPU profile except `gpu-slurm` is scheduled via
 
 ### CPU-only profiles
 - **CPU (Default)**: 2 vCPU, 2GB RAM - scipy-notebook
-- **Dask Cluster**, **CPU Desktop**: power-user only
+- **CPU Desktop**: power-user only
+
+The **Dask Cluster** profile is temporarily disabled and hidden from the spawn
+form. Its current Kubernetes integration uses one service account shared by
+all Dask users, which would allow one user to manage another user's Dask
+resources if namespace-wide Dask permissions were granted. Direct spawn
+requests for this profile also fail closed. Re-enable it only after the Dask
+workload identity and Kubernetes permissions are isolated per user and that
+isolation has been tested. The inert `dask-sa` account remains in place for
+already running servers; it has no Dask permissions.
 
 ### Access Control
-- **GPU Access**: Requires `cpsHPCAccess` or `jupyter_admin` group membership (students see only `gpu-student` plus CPU profiles)
-- **Admin Features**: Custom image/GPU override for admin users
+- **GPU Access**: Requires `cpsHPCAccess` or `jupyter_admin` group membership (students see only `gpu-student` plus CPU profiles); GPU counts and memory tiers come from fixed profiles
+- **Network Storage**: Users may select only the provisioned PVC-backed shares listed in the spawn options; arbitrary NFS server/export/mount paths are not accepted
+- **Admin Features**: Custom image override for admin users
 
 ### Known follow-up
 - The GPU Operator's device-plugin config (`system/gpu/gpu-operator/values.yaml`) still needs to be switched from its current `mig-mixed` config to an MPS-sharing config before the VRAM-tier profiles above achieve real GPU memory sharing — until then, the `gpu-memory` annotation/`CUDA_MPS_PINNED_DEVICE_MEM_LIMIT` env var are set correctly but inert.
@@ -135,7 +145,7 @@ context). Every GPU profile except `gpu-slurm` is scheduled via
 - The spawn page now opens on a quick-start welcome face. Pressing `Start Server` launches the default profile immediately.
 - An `Options` button flips the card to an advanced configuration face with the full profile and storage controls.
 - The advanced face shows the standard NFS mounts as individual checkboxes with the cluster-default mount options prefilled for visibility.
-- Power users can also enter a custom NFS server, export path, and notebook mount path on the advanced face.
+- Additional NFS exports require a platform-approved storage option.
 - If NFS is degraded, users can uncheck network mounts entirely or deselect just the affected NFS entries and still launch the session.
 - If the network-mount toggle stays enabled and NFS is unavailable, Kubernetes can still leave the pod in `ContainerCreating` or `Pending` until the mount is satisfied.
 
