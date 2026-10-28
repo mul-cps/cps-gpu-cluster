@@ -1,0 +1,52 @@
+{
+  "scope": "immutable candidate objects created and typed-validated; no Deployment activation",
+  "previous_node_ref": {
+    "data_sha256": "sha256:6e7caa85a6e0c88a6e07ce76a81a833553a1fee1b22ebbe7bd4bbea781f3b5e9",
+    "key": "config.json",
+    "name": "cps-native-head-config-6e7caa85a6e0c88a",
+    "namespace": "cps-native-runtime",
+    "resourceVersion": "386948421",
+    "uid": "24476247-10dd-4ab9-8a47-7b8110535f2c"
+  },
+  "successor_node_ref": {
+    "data_sha256": "sha256:99e20a8fe2c789b1914d85ce60f2322786d397735c5a3c7997a883c1155c1302",
+    "key": "config.json",
+    "name": "cps-selected-node-config-99e20a8fe2c789b1",
+    "namespace": "cps-native-runtime",
+    "resourceVersion": "387135146",
+    "uid": "a7fe62c2-3292-4736-83b5-fcbd06a0974f"
+  },
+  "successor_bootstrap": {
+    "namespace": "cps-native-runtime",
+    "name": "cps-selected-node-bootstrap-8e87c6fb3026a94a",
+    "uid": "c50474b9-7664-4699-a5a4-2c06cf85bcc1",
+    "resourceVersion": "387136249"
+  },
+  "gateway_inputs": {
+    "publisher": {
+      "namespace": "cps-compute",
+      "name": "cps-selected-publisher-dca8222730087f2b",
+      "uid": "cc7e1e38-9007-4f53-8abc-336f92ca597a",
+      "resourceVersion": "387138928",
+      "data_sha256": "sha256:dca8222730087f2b6b90c2e4d3b7c1a6fe28bc824719f45616619e6f55908c47"
+    },
+    "kai": {
+      "namespace": "cps-compute",
+      "name": "cps-selected-kai-30297de47a41540c",
+      "uid": "d4af5438-26bd-4fa6-83a4-b7848dfda7b6",
+      "resourceVersion": "387138929",
+      "data_sha256": "sha256:30297de47a41540c26da029332a1959c49baaee8be1d156bc4d73e9bbd5f709e"
+    }
+  },
+  "installed_image_cpu_gate": {
+    "image": "ghcr.io/mul-cps/cps-compute@sha256:09c535b59fa9188e1942b0285632a6f3a1b1ced48211028cf8b1f2036157a6d5",
+    "command": "python -m pytest -q /test/tests/test_native_gpu_runtime.py -k selected",
+    "passed": 16,
+    "deselected": 104,
+    "seconds": 0.19,
+    "network": "none",
+    "source_sdk_mounted": false,
+    "gpu_access": false
+  },
+  "physical_device_coverage_changed": false
+}

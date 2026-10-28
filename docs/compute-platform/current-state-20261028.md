@@ -310,3 +310,29 @@ GHCR packages using unique selected-source tags. Independent registry inspection
 matched all three pushed manifest digests; the software receipt records those
 exact references. This publishes build artifacts only: no live configuration,
 protected proof, approval, user Pod or production policy changed.
+
+### Protected service handover staging
+
+The exact KAI binder candidate `99508c2` is now built and published to the
+existing binder package. Independent registry inspection matched digest
+`sha256:35f0506a49a6f2c6dd8c658697e6db3ccbe671da1bc8d42d3ff902a2c33f536b`.
+It remains undeployed. The built Gateway image passed 16 selected CPU-gate cases
+with networking disabled and no checkout SDK mounted; this checks the installed
+CLI's validation/wait/exec behavior, without GPU execution.
+
+The active Node bootstrap resolves `cps-native-head-config-6e7caa85a6e0c88a`;
+the dormant delivery configuration and historical reg33 declaration are not
+its current authority. Root loaded this actual Node chain against policy 0.1.2
+through `NodeConfiguration.load`, created a same-policy service-image successor
+with the actual predecessor reference, and reloaded the successor successfully
+from Kubernetes. Its immutable bootstrap, Gateway publisher and KAI config
+inputs are created but not active. Exact created-object identities are in the
+[handover receipt](../../qualification-artifacts/selected-placement-software-20261028/staged-service-handover.json).
+No approval, anchor, hardware receipt, driver or active user Pod changed.
+
+A fresh gate qualification can use the existing reviewed transition planner:
+bumping policy 0.1.2 to 0.1.3 legitimately updates the two shared profiles'
+embedded qualification policy versions. No planner/factory relaxation is needed.
+The new physical B requires an independent measured root; it must not be
+represented as A's physical identity successor. Workload image preservation
+from the measured image to the current image must also remain explicit.
