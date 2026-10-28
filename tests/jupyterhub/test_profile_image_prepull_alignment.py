@@ -10,7 +10,7 @@ import yaml
 ROOT = Path(__file__).resolve().parents[2]
 VALUES = ROOT / 'cluster-maintenance/clusters/cit-cps-gpu/user/jupyter/jupyterhub/values.yaml'
 CHART = Path(os.environ.get('JUPYTERHUB_CHART', Path.home() / '.cache/helm/jupyterhub-4.4.2.tgz'))
-UNSUPPORTED_PROFILES = {'dask-cluster', 'gpu-slurm'}
+UNSUPPORTED_PROFILES = {'gpu-slurm'}
 
 
 def profile_configs():
@@ -53,4 +53,4 @@ def test_all_supported_fixed_profile_images_are_pulled_by_both_image_puller_daem
     for daemonset, image_refs in rendered.items():
         for slug, image in supported_images.items():
             assert image in image_refs, f'{daemonset} does not pre-pull {slug}: {image}'
-        assert configs['dask-cluster']['image'] not in image_refs
+        assert configs['dask-cluster']['image'] in image_refs

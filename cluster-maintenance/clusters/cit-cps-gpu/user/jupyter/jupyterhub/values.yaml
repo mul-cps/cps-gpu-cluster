@@ -2525,6 +2525,9 @@ prePuller:
     cps-cpu-default:
       name: ghcr.io/mul-cps/cps-jupyter-notebook@sha256
       tag: "ff0c30d92f8b0483623acb719a909daba8dc93ab3f1910706e65b3f15237ae35"
+    rapidsai:
+      name: nvcr.io/nvidia/rapidsai/base
+      tag: "24.08-cuda12.2-py3.10"
     cps-pytorch:
       name: ghcr.io/mul-cps/cps-jupyter-notebook
       tag: "latest-pytorch-code"
