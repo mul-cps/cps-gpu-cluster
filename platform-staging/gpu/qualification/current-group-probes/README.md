@@ -60,3 +60,17 @@ The integration test uses the native-second-card unit-test fixture and its
 synthetic API-object render/finalize contract. It makes no API or hardware
 calls and does not assert real admission, device availability, measurement, or
 qualification.
+
+## Recovered evidence inventory
+
+`review_actual_gpu2.py` reads retained second-card artifacts offline and reports
+bounded measured assertions, their input hashes, and explicit gaps. It does not
+promote hardware or production qualification. Its `measured_pass` entries are
+an evidence inventory for operator review, not a substitute for inspecting raw
+traces or establishing complete gate coverage. Missing cross-parent IPC must
+not be inferred from same-parent IPC or cross-parent VMM results. The original
+restart runner's failed postflight is retained in the report; independent
+pre/post snapshots provide a separate, narrower restart comparison.
+
+Run `python3 review_actual_gpu2.py --help` for explicit private input paths and
+`python3 -m pytest -q test_review_actual_gpu2.py` for the focused reviewer tests.
