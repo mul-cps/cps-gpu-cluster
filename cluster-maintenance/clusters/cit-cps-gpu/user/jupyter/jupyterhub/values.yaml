@@ -297,7 +297,7 @@ hub:
                   'nofail',
               ],
               'kind': 'pvc',
-              'default_checked': True,
+              'default_checked': False,
               'power_user_only': False,
           },
           {
@@ -320,7 +320,7 @@ hub:
                   'noatime',
               ],
               'kind': 'pvc',
-              'default_checked': True,
+              'default_checked': False,
               'power_user_only': True,
           },
           {
@@ -349,13 +349,11 @@ hub:
                   'nofail',
               ],
               'kind': 'pvc',
-              'default_checked': True,
+              'default_checked': False,
               'power_user_only': True,
           },
       ]
 
-      CUSTOM_NFS_DEFAULT_SERVER = '193.170.30.58'
-      CUSTOM_NFS_DEFAULT_MOUNT_PATH = '/home/jovyan/custom_nfs'
       CPS_LOGO_SRC = 'https://cloud.cps.unileoben.ac.at/index.php/s/3TnF46QfwZCR8XY/download'
 
       def form_bool(formdata, key, default=False):
@@ -378,11 +376,6 @@ hub:
               spawner.volume_mounts.append(mount_spec)
           elif isinstance(spawner.volume_mounts, dict):
               spawner.volume_mounts[mount_spec['name']] = mount_spec
-
-      def sanitize_nfs_volume_name(raw_name):
-          import re
-          cleaned = re.sub(r'[^a-z0-9-]+', '-', raw_name.lower()).strip('-')
-          return cleaned[:48] or 'custom-nfs'
 
       # ---------- LDAP Lookup ----------
       def get_ldap_info(username, log=None):
@@ -541,64 +534,6 @@ hub:
                   <span>Mount the shared Longhorn workspace</span>
                 </label>
                 <div class="hint">Mounts the recovered shared workspace at <code>/home/jovyan/shared</code>. It has a verified external backup.</div>
-              </section>
-              """
-
-          custom_nfs_html = ""
-          if power_user:
-              custom_nfs_html = f"""
-              <section class="layer">
-                <div class="section-title">Custom NFS Mount</div>
-                <label class="toggle-row">
-                  <input type="checkbox" name="custom_nfs_enabled" value="1" style="width:auto; margin:0;">
-                  <span>Enable custom NFS mount</span>
-                </label>
-                <div class="hint">Use this for a user-specific export that is not part of the standard mount set.</div>
-                <div class="mount-grid">
-                  <div>
-                    <div class="field-label">NFS server</div>
-                    <input class="input" type="text" name="custom_nfs_server" value="{CUSTOM_NFS_DEFAULT_SERVER}" placeholder="192.0.2.10 or storage.example.org" />
-                    <div class="hint">Host or IP of the NFS server.</div>
-                  </div>
-                  <div>
-                    <div class="field-label">Export path</div>
-                    <input class="input" type="text" name="custom_nfs_path" placeholder="/exports/project-data" />
-                    <div class="hint">Absolute path exported by the server.</div>
-                  </div>
-                  <div>
-                    <div class="field-label">Mount path inside the notebook</div>
-                    <input class="input" type="text" name="custom_nfs_mount_path" value="{CUSTOM_NFS_DEFAULT_MOUNT_PATH}" placeholder="/home/jovyan/custom_nfs" />
-                    <div class="hint">Where the custom export should appear in the container.</div>
-                  </div>
-                  <div>
-                    <div class="field-label">Behavior</div>
-                    <div class="hint">Custom NFS mounts join the same spawn flow as the standard mounts and are skipped only if left disabled.</div>
-                  </div>
-                </div>
-              </section>
-              """
-
-          custom_image_html = ""
-          if power_user:
-              custom_image_html = """
-              <section class="layer">
-                <div class="section-title">Power User Overrides</div>
-                <div class="row" style="align-items:flex-start; gap:16px; flex-wrap: wrap;">
-                  <div style="flex:1; min-width: 260px;">
-                    <div class="field-label">Custom image</div>
-                    <input class="input" type="text" id="custom-image" name="custom_image" placeholder="registry/repo:tag (admins only)" />
-                    <div class="hint">Overrides the profile image when your role allows it.</div>
-                  </div>
-                  <div class="select-inline">
-                    <div class="field-label">GPUs</div>
-                    <select class="select" id="custom-gpus" name="custom_gpus">
-                      <option value="0" selected>0 × GPU</option>
-                      <option value="1">1 × GPU</option>
-                      <option value="2">2 × GPU</option>
-                    </select>
-                    <div class="hint">Requires GPU access.</div>
-                  </div>
-                </div>
               </section>
               """
 
@@ -1125,7 +1060,7 @@ hub:
                       <div class="options-heading">
                         <div>
                           <h2 class="title">Advanced Spawn Options</h2>
-                          <p class="subtle">Choose a different profile, adjust storage behavior, or enable power-user overrides before starting the server.</p>
+                          <p class="subtle">Choose a fixed profile and optional storage mounts before starting the server.</p>
                         </div>
                         <div class="chip default-chip">Default profile: {default_cfg['display_name']}</div>
                       </div>
@@ -1135,10 +1070,10 @@ hub:
                       <section class="layer">
                         <div class="section-title">Network Storage</div>
                         <label class="toggle-row">
-                          <input type="checkbox" id="mount-nfs" name="mount_nfs" value="1" checked style="width:auto; margin:0;">
+                          <input type="checkbox" id="mount-nfs" name="mount_nfs" value="1" style="width:auto; margin:0;">
                           <span>Enable network mounts</span>
                         </label>
-                        <div class="hint">Leave this on for the standard storage layout, or clear it to start on Longhorn-backed storage only.</div>
+                        <div class="hint">Check this to add the standard PVC-backed network mounts; they are off by default.</div>
                         <div class="hint">Power users can separately opt into the shared Longhorn workspace.</div>
                         <div class="mount-list">
                           {mount_items_markup}
@@ -1146,8 +1081,6 @@ hub:
                       </section>
 
                       {shared_workspace_html}
-                      {custom_nfs_html}
-                      {custom_image_html}
                       {debug_html}
                     </div>
                   </div>
@@ -1187,8 +1120,8 @@ hub:
               if (!mountArea) {{
                 return;
               }}
-              mountArea.querySelectorAll('input[name$="_nfs"], input[name^="custom_nfs_"], select, textarea').forEach(function(field) {{
-                if (field === master || field.name === 'profile' || field.name === 'custom_image' || field.name === 'custom_gpus') {{
+              mountArea.querySelectorAll('input[name$="_nfs"]').forEach(function(field) {{
+                if (field === master || field.name === 'profile') {{
                   return;
                 }}
                 field.disabled = !enabled;
@@ -1253,17 +1186,6 @@ hub:
           opts['mount_persistent1_shared_nfs'] = form_bool(formdata, 'mount_persistent1_shared_nfs', False)
           opts['mount_scratch_nfs'] = form_bool(formdata, 'mount_scratch_nfs', False)
           opts['mount_scratch_recovery_nfs'] = form_bool(formdata, 'mount_scratch_recovery_nfs', False)
-          opts['custom_nfs_enabled'] = form_bool(formdata, 'custom_nfs_enabled', False)
-          opts['custom_nfs_server'] = formdata.get('custom_nfs_server', [''])[0].strip()
-          opts['custom_nfs_path'] = formdata.get('custom_nfs_path', [''])[0].strip()
-          opts['custom_nfs_mount_path'] = formdata.get('custom_nfs_mount_path', [''])[0].strip()
-          custom_image = formdata.get('custom_image', [''])[0].strip()
-          if custom_image:
-              opts['custom_image'] = custom_image
-          try:
-              opts['custom_gpus'] = int(formdata.get('custom_gpus', ['0'])[0])
-          except Exception:
-              opts['custom_gpus'] = 0
           return opts
       c.Spawner.options_from_form = options_from_form
       c.Spawner.http_timeout = 300
@@ -1592,8 +1514,8 @@ hub:
       # scheduling.userScheduler.enabled: false below -- both changes are
       # required together (a per-spawner default here does not stop a
       # second, independently-active scheduler from also competing for
-      # placement of the same pods). gpu-slurm profile still overrides
-      # this via cfg['scheduler_name'] in apply_profile_settings.
+      # placement of the same pods). Unsupported Slurm profiles are filtered
+      # from the server-resolved profile list until their route is provisioned.
       c.KubeSpawner.scheduler_name = 'kai-scheduler'
       
       def get_profile_list(spawner):
@@ -1603,11 +1525,18 @@ hub:
 
           profiles = []
           for slug, cfg in PROFILE_CONFIGS.items():
+              # These profile entries have no live execution route: Dask's
+              # configured namespace is absent, and the Slurm bridge scheduler
+              # is not installed. Keep them out of user choices until their
+              # backing service and identity boundary are qualified.
+              if slug in {'dask-cluster', 'gpu-slurm'}:
+                  continue
+
               # 'gpu-student' is a special case: not gated by power-user status,
               # only by STUDENT_GROUPS membership (mirrors the 'power_user_only'
               # gating pattern used for STANDARD_NFS_MOUNTS).
               if cfg.get('student_profile'):
-                  if not (student_user or power_user):
+                  if not student_user:
                       continue
                   profiles.append({
                       'display_name': cfg['display_name'],
@@ -1621,9 +1550,6 @@ hub:
               if not power_user:
                   if cfg.get('gpu', 0) > 0:
                       continue
-                  if slug in {'dask-cluster', 'gpu-slurm'}:
-                      continue
-
               profiles.append({
                   'display_name': cfg['display_name'],
                   'slug': slug,
@@ -1636,19 +1562,14 @@ hub:
 
       # ---------- Apply profile & per-profile knobs ----------
       async def apply_profile_settings(spawner):
-          profile_slug = spawner.user_options.get('profile', 'cpu-default')
+          from cps_compute_hub.legacy_profile_request import validate_legacy_spawner_request
+          profile_slug = await validate_legacy_spawner_request(spawner)
           mount_nfs = bool(spawner.user_options.get('mount_nfs', False))
           mount_shared_longhorn = bool(spawner.user_options.get('mount_shared_longhorn', False))
           mount_personal_nfs = bool(spawner.user_options.get('mount_personal_nfs', False))
           mount_persistent1_shared = bool(spawner.user_options.get('mount_persistent1_shared_nfs', False))
           mount_scratch_nfs = bool(spawner.user_options.get('mount_scratch_nfs', False))
           mount_scratch_recovery_nfs = bool(spawner.user_options.get('mount_scratch_recovery_nfs', False))
-          custom_nfs_enabled = bool(spawner.user_options.get('custom_nfs_enabled', False))
-          custom_nfs_server = spawner.user_options.get('custom_nfs_server', '').strip()
-          custom_nfs_path = spawner.user_options.get('custom_nfs_path', '').strip()
-          custom_nfs_mount_path = spawner.user_options.get('custom_nfs_mount_path', '').strip()
-          custom_image = spawner.user_options.get('custom_image', '').strip()
-          custom_gpus = int(spawner.user_options.get('custom_gpus', 0) or 0)
           cfg = PROFILE_CONFIGS.get(profile_slug, PROFILE_CONFIGS['cpu-default'])
           requested_network_mounts = []
           requested_storage_mounts = []
@@ -1657,8 +1578,7 @@ hub:
               f"mount_shared_longhorn={mount_shared_longhorn}, "
               f"mount_personal_nfs={mount_personal_nfs}, mount_persistent1_shared={mount_persistent1_shared}, "
               f"mount_scratch_nfs={mount_scratch_nfs}, mount_scratch_recovery_nfs={mount_scratch_recovery_nfs}, "
-              f"custom_nfs_enabled={custom_nfs_enabled}, "
-              f"custom_image={'set' if custom_image else 'none'}, custom_gpus={custom_gpus}"
+              "freeform_overrides=disabled"
           )
 
           # LDAP Lookup for UID/GID
@@ -1681,7 +1601,6 @@ hub:
               mount_persistent1_shared = False
               mount_scratch_nfs = False
               mount_scratch_recovery_nfs = False
-              custom_nfs_enabled = False
 
           if mount_nfs and mount_personal_nfs and ldap_info:
               user_nfs_vol = {'name': 'cps-persistent1-users', 'persistentVolumeClaim': {'claimName': 'cps-persistent1-users-pvc'}}
@@ -1713,35 +1632,12 @@ hub:
           elif mount_nfs and (mount_persistent1_shared or mount_scratch_nfs or mount_scratch_recovery_nfs):
               spawner.log.warning(f"Shared network mounts were requested for {spawner.user.name}, but the user is not a power user; skipping")
 
-          if mount_nfs and custom_nfs_enabled:
-              if custom_nfs_server and custom_nfs_path and custom_nfs_mount_path:
-                  if custom_nfs_path.startswith('/') and custom_nfs_mount_path.startswith('/'):
-                      custom_volume_name = sanitize_nfs_volume_name(
-                          f"custom-{spawner.user.name}-{custom_nfs_mount_path}"
-                      )
-                      custom_nfs_vol = {
-                          'name': custom_volume_name,
-                          'nfs': {
-                              'server': custom_nfs_server,
-                              'path': custom_nfs_path,
-                          },
-                      }
-                      custom_nfs_mount = {'name': custom_volume_name, 'mountPath': custom_nfs_mount_path}
-                      append_volume_mount(spawner, custom_nfs_vol, custom_nfs_mount)
-                      requested_network_mounts.append(f"custom:{custom_nfs_server}{custom_nfs_path}")
-                  else:
-                      spawner.log.warning(
-                          f"Custom NFS mount for {spawner.user.name} was rejected because path or mount path is not absolute"
-                      )
-              else:
-                  spawner.log.warning(f"Custom NFS mount requested for {spawner.user.name} but server/path/mount path were incomplete")
-
           # Set Notebook Dir to User's Folder on NFS
           # spawner.notebook_dir = f"/home/jovyan/cps_persistent1_users/{spawner.user.name}"
           # spawner.default_url = "/lab/tree/cps_persistent1_users/" + spawner.user.name
 
           # Base image
-          spawner.image = cfg['image'] if not custom_image else spawner.image
+          spawner.image = cfg['image']
           # Resources
           spawner.cpu_limit = cfg['cpu_limit']; spawner.cpu_guarantee = cfg['cpu_guarantee']
           spawner.mem_limit = cfg['mem_limit']; spawner.mem_guarantee = cfg['mem_guarantee']
@@ -2188,8 +2084,7 @@ hub:
                       spawner.volume_mounts[mps_pipe_mount['name']] = mps_pipe_mount
                       spawner.volume_mounts[mps_log_mount['name']] = mps_log_mount
 
-              # Route all GPU profiles (except gpu-slurm, which has gpu=0 and is
-              # handled separately below via 'scheduler_name'/'extra_labels') through
+              # Route all configured GPU profiles through
               # KAI Scheduler. Student sessions use the existing 'courses' queue with
               # kai-course-high priority; staff/general interactive sessions use the
               # 'phd-interactive' queue with kai-phd-interactive priority.
@@ -2201,40 +2096,6 @@ hub:
               else:
                   spawner.extra_labels.update({'kai.scheduler/queue': 'phd-interactive'})
                   spawner.extra_pod_config['priorityClassName'] = 'kai-phd-interactive'
-
-          # Custom image (admins only)
-          if custom_image:
-              is_admin = spawner.user.admin or any(getattr(g,"name",g) == 'jupyter_admin' for g in spawner.user.groups)
-              if is_admin:
-                  import re
-                  if re.fullmatch(r"[A-Za-z0-9._:/\\-]+", custom_image):
-                      spawner.image = custom_image
-                  else:
-                      spawner.log.warning(f"Invalid custom image '{custom_image}', ignoring")
-              else:
-                  spawner.log.warning(f"Non-admin custom image ignored for {spawner.user.name}")
-
-          # Custom GPU override
-          if custom_gpus > 0:
-              if not is_power_user(spawner.user):
-                  raise Exception("🚫 GPU Access Denied\n\nGPU resources require 'app_jupyterhub_poweruser' or admin.")
-              # Choose resource key: respect the selected profile's key if set; else full GPU
-              rkey = cfg.get('resource_key', 'nvidia.com/gpu')
-              spawner.extra_resource_limits = {rkey: str(custom_gpus)}
-              spawner.extra_resource_guarantees = {rkey: str(custom_gpus)}
-              if not getattr(spawner, "environment", None):
-                  spawner.environment = {}
-              spawner.environment.update({'NVIDIA_VISIBLE_DEVICES':'all','NVIDIA_DRIVER_CAPABILITIES':'compute,utility'})
-              spawner.node_selector = dict(getattr(spawner,'node_selector',{}) or {}, **{'accelerator':'nvidia'})
-              # Same fragmentation risk as the built-in multi-GPU profiles above
-              # applies to a power-user's custom_gpus override -- extend the
-              # timeout whenever more than one whole GPU is requested this way.
-              # See 2026-07-07 updates above: raised to 250s to cover real
-              # ablator-* batch jobs' 150s terminationGracePeriodSeconds and
-              # concurrent multi-GPU contention with margin, while still
-              # resolving far faster than the original 1200s.
-              if custom_gpus > 1:
-                  spawner.start_timeout = 250
 
           # Record profile on the server (used by per-profile culler)
           spawner.environment = spawner.environment or {}
@@ -2304,7 +2165,9 @@ singleuser:
     tag: "2025-11-06"
     pullPolicy: Always
 
-  serviceAccountName: dask-sa
+  serviceAccountName: jupyter-notebook
+  extraPodConfig:
+    automountServiceAccountToken: false
 
   networkPolicy:
     enabled: true

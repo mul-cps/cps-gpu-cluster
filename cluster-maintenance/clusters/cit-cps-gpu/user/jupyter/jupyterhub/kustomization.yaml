@@ -14,6 +14,7 @@ resources:
   - user-docs-configmap.yaml
 
   - dask-rbac.yaml
+  - notebook-sa.yaml
 
   # SOPS-encrypted secrets (decrypted in-cluster by the shared
   # sops-secrets-operator) — see docs/sops-secrets-migration.md
