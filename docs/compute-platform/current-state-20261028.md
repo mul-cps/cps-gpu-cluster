@@ -125,3 +125,11 @@ The four protected research/student Pod generations remained unchanged.
 That single launch took approximately 169 seconds; Gateway prepare spent
 72.943 seconds, principally registered readiness and enrollment publication.
 These are measured optimization targets, not p95/burst qualification.
+
+The post-upgrade repeat GPU start exposed a pre-existing placement-scope gap:
+KAI's node-level pool selected GPU2's other physical A100, outside the one-device
+qualification contract. The guard correctly held the attempt before prepare.
+The fresh controlled Pod and KAI reservation were removed through normal Hub
+shutdown, and global accounting is inactive. This is not a confirmed archive
+regression, but reliable repeated GPU spawning remains unproved until physical
+device selection or the hardware qualification scope is corrected.

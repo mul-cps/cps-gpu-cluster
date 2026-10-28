@@ -52,3 +52,63 @@ than replaying a stale resourceVersion. Never re-provision an archived group
 or overwrite history to perform rollback. Archive preserves files read-only.
 No watched Fleet main branch was merged. Runtime-preserving GitOps promotion
 remains open.
+
+## Reproducible offline fixture
+
+# Offline assignment archive acceptance fixture
+
+Run the credential-free plan (default mode):
+
+```sh
+python qualification-artifacts/archive-compatibility-rollout-20261028/qualify_assignment_archive.py
+```
+
+Run the in-process Source and gateway fixture with the private, previously
+qualified wheel directory:
+
+```sh
+python qualification-artifacts/archive-compatibility-rollout-20261028/qualify_assignment_archive.py \
+  --in-process --wheel-dir /path/to/private-artifact-wheels
+```
+
+The wheel directory must contain `e2x_course_hub-0.1.2-py3-none-any.whl` with
+SHA-256 `a582d48a333d2aaf1eeb8edf5d9fa5041799b8a992baa954a1336c6b389093a5` and
+`cps_compute-0.1.1-py3-none-any.whl` with SHA-256
+`ac7ccb12aed2832a79e93df7968a236ce77fc050ef54c2848d026dd5f14befff`. The
+script checks both full-file digests before extracting either wheel. No wheels
+or credentials belong in this artifact directory.
+
+The fixture posts the course, term, synthetic reviewed identity mappings,
+memberships, manual assignment, and two CPU workspace requests through the
+pinned Source Tornado handlers. It then exercises the pinned Source archive
+adapter against the pinned gateway FastAPI archive endpoint using a temporary
+SQLite control store. The first attempt deliberately fails the second group;
+the retry verifies the first group's archived state again and completes the
+second group.
+
+This is offline software-contract evidence only. The Hub identity lookup and
+neutral accounts, compute policy and reservation calls, Hub stop/share calls,
+and storage controller's read-only evidence are fixture doubles. Gateway
+registrations and active storage records are seeded into the temporary control
+store. The fixture does not start Hub servers, call a live Hub or gateway,
+touch a live Source database, exercise Kubernetes or NAS snapshot operations,
+or prove a physical read-only mount. It has no live execution mode and accepts
+no credentials.
+
+## Post-upgrade spawn check: placement gap retained
+
+The controlled repeat start reached Pod creation, but did not reach CUDA: KAI
+selected a fresh reservation on the other GPU2 A100, UUID
+`GPU-1e6145d5-8ee2-43e2-a0d5-6d345909e8a6`, while the qualification contract
+allows only `GPU-16128952-b438-556a-00bb-93039ee24e56`. The native guard held
+with `reserved-gpu` before prepare. This was a newly created reservation, not
+an orphan from the preceding successful run. Node-level eligibility currently
+does not constrain KAI's physical-device choice. The earlier successful run
+therefore does not establish reliable repeated group spawning.
+
+The exact new Pod UID `3e9dad5c-2aa3-4ab8-83a8-562f04bddf6b` was checked before
+Hub REST shutdown (204). A fresh read confirmed that Pod and its KAI reservation
+Pod were absent, and the global reservation was inactive. No UUID check,
+qualification record or real user workload was changed. The placement/eligible
+device mismatch must be resolved through trusted qualification or supported
+physical-device selection; readiness alone does not close this acceptance gate.
