@@ -28,4 +28,3 @@ def test_default_notebook_uses_minimal_tokenless_service_account():
     assert all(not any(subject.get('kind') == 'ServiceAccount'
                        and subject.get('name') == 'jupyter-notebook'
                        for subject in binding.get('subjects', [])) for binding in bindings)
-
