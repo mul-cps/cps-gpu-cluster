@@ -1,5 +1,5 @@
 diff --git a/pkg/binder/binding/native_terminal.go b/pkg/binder/binding/native_terminal.go
-index 079c2eb..6cf87f9 100644
+index 079c2eb..913f514 100644
 --- a/pkg/binder/binding/native_terminal.go
 +++ b/pkg/binder/binding/native_terminal.go
 @@ -28,6 +28,7 @@ import (
@@ -10,7 +10,32 @@ index 079c2eb..6cf87f9 100644
  const nativeApprovedNode = "k3s-wk-gpu2"
  const nativeApprovedNodeUID = "3336cdd5-d245-436e-b57c-2f66c6dcaa41"
  const nativeApprovedGPU = "GPU-16128952-b438-556a-00bb-93039ee24e56"
-@@ -82,7 +83,7 @@ func nativeMarked(pod *v1.Pod) bool {
+@@ -49,6 +50,10 @@ type NativeTerminalSnapshot struct {
+ 	Node         *v1.Node
+ 	BindRequest  *v1alpha2.BindRequest
+ 	BindingState *state.BindingState
++	// Placement identity is populated only from the validated protected
++	// placement registry; caller Pod annotations never supply these values.
++	placementID      string
++	placementAttempt string
+ }
+ 
+ type NativeAllocationFence interface {
+@@ -69,6 +74,13 @@ type NativeTerminalCoordinator interface {
+ 	CleanupMaps(context.Context, types.UID) ([]v1.ConfigMap, error)
+ }
+ 
++// NativePlacementTerminalCoordinator is an optional typed extension. A
++// placement-marked Pod must use this separate operation; legacy coordinators
++// and legacy Prepare wire behavior remain unchanged.
++type NativePlacementTerminalCoordinator interface {
++	PreparePlacement(context.Context, NativeTerminalSnapshot, string, string) (NativeAllocationFence, error)
++}
++
+ // Configure only during startup. A nil/absent bridge remains fail closed for
+ // every marked Pod; unmarked upstream behavior is unchanged. reader must be the
+ // manager APIReader (the upstream client is cache backed).
+@@ -82,13 +94,18 @@ func nativeMarked(pod *v1.Pod) bool {
  }
  
  func (b *Binder) nativeConfigured(pod *v1.Pod) error {
@@ -19,7 +44,18 @@ index 079c2eb..6cf87f9 100644
  		return ErrNativeCustodyHeld
  	}
  	guarded, ok := b.resourceReservationService.(interface{ NativeCustodyEnabled() bool })
-@@ -108,10 +109,17 @@ func (b *Binder) nativeSnapshot(ctx context.Context, pod *v1.Pod, node *v1.Node,
+ 	if !ok || !guarded.NativeCustodyEnabled() {
+ 		return fmt.Errorf("reservation custody guard is not configured: %w", ErrNativeCustodyHeld)
+ 	}
++	if pod.Annotations[NativePendingAnnotation] == nativePlacementPendingProtocol {
++		if _, ok := b.nativeCoordinator.(NativePlacementTerminalCoordinator); !ok {
++			return fmt.Errorf("selected placement coordinator operation is unavailable: %w", ErrNativeCustodyHeld)
++		}
++	}
+ 	return nil
+ }
+ 
+@@ -108,10 +125,20 @@ func (b *Binder) nativeSnapshot(ctx context.Context, pod *v1.Pod, node *v1.Node,
  			return NativeTerminalSnapshot{}, err
  		}
  	}
@@ -31,15 +67,28 @@ index 079c2eb..6cf87f9 100644
 +	if currentNode.UID != node.UID || currentNode.UID == "" || currentNode.Name != node.Name || currentNode.DeletionTimestamp != nil || currentNode.ResourceVersion == "" {
 +		return NativeTerminalSnapshot{}, fmt.Errorf("current selected Node identity differs")
 +	}
++	placementID, placementAttempt := "", ""
 +	if pod.Annotations[NativePendingAnnotation] == nativePlacementPendingProtocol {
-+		if err := b.nativePlacementSelected(ctx, currentPod, currentNode, bindingState); err != nil {
++		identity, err := b.nativePlacementSelected(ctx, currentPod, currentNode, bindingState)
++		if err != nil {
 +			return NativeTerminalSnapshot{}, err
 +		}
++		placementID, placementAttempt = identity.id, identity.attempt
 +	} else if currentNode.Name != nativeApprovedNode || string(currentNode.UID) != nativeApprovedNodeUID {
  		return NativeTerminalSnapshot{}, fmt.Errorf("current selected Node identity differs")
  	}
  	if currentBR.UID != br.UID || currentBR.ResourceVersion != br.ResourceVersion || currentBR.Generation != br.Generation || currentBR.DeletionTimestamp != nil || !reflect.DeepEqual(currentBR.Spec, br.Spec) {
-@@ -148,7 +156,7 @@ func (b *Binder) bindNativeTerminal(ctx context.Context, pod *v1.Pod, node *v1.N
+@@ -126,7 +153,8 @@ func (b *Binder) nativeSnapshot(ctx context.Context, pod *v1.Pod, node *v1.Node,
+ 	for key, value := range bindingState.BindingPodAnnotations {
+ 		copyState.BindingPodAnnotations[key] = value
+ 	}
+-	return NativeTerminalSnapshot{currentPod, currentNode, currentBR, copyState}, nil
++	return NativeTerminalSnapshot{Pod: currentPod, Node: currentNode, BindRequest: currentBR,
++		BindingState: copyState, placementID: placementID, placementAttempt: placementAttempt}, nil
+ }
+ 
+ func (b *Binder) nativeHold(pod *v1.Pod, cause error) error {
+@@ -148,14 +176,20 @@ func (b *Binder) bindNativeTerminal(ctx context.Context, pod *v1.Pod, node *v1.N
  	if err = b.nativeConfigured(pod); err != nil {
  		return err
  	}
@@ -48,18 +97,32 @@ index 079c2eb..6cf87f9 100644
  		return fmt.Errorf("exact approved physical GPU UUID required")
  	}
  	snapshot, err := b.nativeSnapshot(ctx, pod, node, br, bindingState)
-@@ -381,6 +389,10 @@ func (b *Binder) nativeRegistryReady(ctx context.Context, pod *v1.Pod) error {
+ 	if err != nil {
+ 		return err
+ 	}
+-	fence, err := b.nativeCoordinator.Prepare(ctx, snapshot)
++	var fence NativeAllocationFence
++	if pod.Annotations[NativePendingAnnotation] == nativePlacementPendingProtocol {
++		coordinator := b.nativeCoordinator.(NativePlacementTerminalCoordinator)
++		fence, err = coordinator.PreparePlacement(ctx, snapshot, snapshot.placementID, snapshot.placementAttempt)
++	} else {
++		fence, err = b.nativeCoordinator.Prepare(ctx, snapshot)
++	}
+ 	if fence != nil {
+ 		defer func() {
+ 			if err != nil {
+@@ -381,6 +415,10 @@ func (b *Binder) nativeRegistryReady(ctx context.Context, pod *v1.Pod) error {
  }
  
  func (b *Binder) nativeRegistryProof(ctx context.Context, pod *v1.Pod, exactCap *int64) error {
 +	if pod.Annotations[NativePendingAnnotation] == nativePlacementPendingProtocol {
-+		_, err := b.nativePlacementProof(ctx, pod, exactCap)
++		_, err := b.nativePlacementProof(ctx, pod, exactCap, nil)
 +		return err
 +	}
  	// Read directly through APIReader, never the informer cache. An absent registry
  	// returns the existing custody sentinel before Sync/reservation/PreBind writes.
  	current := &v1.Pod{}
-@@ -490,3 +502,251 @@ func (b *Binder) nativeRegistryProof(ctx context.Context, pod *v1.Pod, exactCap
+@@ -490,3 +528,260 @@ func (b *Binder) nativeRegistryProof(ctx context.Context, pod *v1.Pod, exactCap
  	}
  	return nil
  }
@@ -168,7 +231,11 @@ index 079c2eb..6cf87f9 100644
 +	return seed, nil
 +}
 +
-+func (b *Binder) nativePlacementProof(ctx context.Context, pod *v1.Pod, exactCap *int64) ([]map[string]interface{}, error) {
++type nativePlacementIdentity struct {
++	id, attempt string
++}
++
++func (b *Binder) nativePlacementProof(ctx context.Context, pod *v1.Pod, exactCap *int64, identity *nativePlacementIdentity) ([]map[string]interface{}, error) {
 +	current := &v1.Pod{}
 +	if err := b.nativeReader.Get(ctx, client.ObjectKeyFromObject(pod), current); err != nil {
 +		return nil, err
@@ -293,26 +360,31 @@ index 079c2eb..6cf87f9 100644
 +	if exactCap != nil {
 +		*exactCap = cap
 +	}
++	if identity != nil {
++		identity.id = registry["placement_id"].(string)
++		identity.attempt = registry["attempt"].(string)
++	}
 +	return result, nil
 +}
 +
-+func (b *Binder) nativePlacementSelected(ctx context.Context, pod *v1.Pod, node *v1.Node, bindingState *state.BindingState) error {
-+	devices, err := b.nativePlacementProof(ctx, pod, nil)
++func (b *Binder) nativePlacementSelected(ctx context.Context, pod *v1.Pod, node *v1.Node, bindingState *state.BindingState) (nativePlacementIdentity, error) {
++	identity := nativePlacementIdentity{}
++	devices, err := b.nativePlacementProof(ctx, pod, nil, &identity)
 +	if err != nil {
-+		return err
++		return nativePlacementIdentity{}, err
 +	}
 +	if len(bindingState.ReservedGPUIds) != 1 {
-+		return fmt.Errorf("one actual reserved placement GPU required")
++		return nativePlacementIdentity{}, fmt.Errorf("one actual reserved placement GPU required")
 +	}
 +	for _, device := range devices {
 +		if device["node"] == node.Name && device["node_uid"] == string(node.UID) && device["boot_id"] == node.Status.NodeInfo.BootID && device["gpu_uuid"] == bindingState.ReservedGPUIds[0] {
-+			return nil
++			return identity, nil
 +		}
 +	}
-+	return fmt.Errorf("actual reserved GPU/Node/boot is outside compiler candidate set")
++	return nativePlacementIdentity{}, fmt.Errorf("actual reserved GPU/Node/boot is outside compiler candidate set")
 +}
 diff --git a/pkg/binder/binding/native_terminal_test.go b/pkg/binder/binding/native_terminal_test.go
-index aa6b28d..6998510 100644
+index aa6b28d..8905b06 100644
 --- a/pkg/binder/binding/native_terminal_test.go
 +++ b/pkg/binder/binding/native_terminal_test.go
 @@ -75,7 +75,7 @@ func nativeTestClient(t *testing.T, pod *v1.Pod, node *v1.Node, br *v1alpha2.Bin
@@ -324,7 +396,27 @@ index aa6b28d..6998510 100644
  			hasRegistry = true
  		}
  	}
-@@ -911,3 +911,263 @@ func TestNativeAtomicCurrentBindingRetainsFreshInputsAndFailureCustody(t *testin
+@@ -120,6 +120,19 @@ type nativeTestCoordinator struct {
+ 	maps       []v1.ConfigMap
+ }
+ 
++type nativePlacementTestCoordinator struct{ *nativeTestCoordinator }
++
++func (c *nativePlacementTestCoordinator) PreparePlacement(ctx context.Context, s NativeTerminalSnapshot, placementID, attempt string) (NativeAllocationFence, error) {
++	c.calls = append(c.calls, "prepare-placement")
++	if s.placementID != placementID || s.placementAttempt != attempt {
++		return nil, fmt.Errorf("placement identity differs from validated snapshot")
++	}
++	if c.prepare != nil {
++		c.prepare(s)
++	}
++	return &nativeTestFence{c.nativeTestCoordinator}, nil
++}
++
+ func (c *nativeTestCoordinator) Prepare(ctx context.Context, s NativeTerminalSnapshot) (NativeAllocationFence, error) {
+ 	c.calls = append(c.calls, "prepare")
+ 	if c.prepare != nil {
+@@ -911,3 +924,289 @@ func TestNativeAtomicCurrentBindingRetainsFreshInputsAndFailureCustody(t *testin
  		})
  	}
  }
@@ -396,7 +488,7 @@ index aa6b28d..6998510 100644
 +	pod.Annotations[NativePendingAnnotation] = "kai-v0.18.1-gpu2-inert-placement/v1"
 +	kube := nativeTestClient(t, pod, node, br, func(*v1.Binding) error { return nil })
 +	binder := NewBinder(kube, &nativeTestReservation{}, plugins.New())
-+	binder.SetNativeTerminal(kube, "authority", &nativeTestCoordinator{})
++	binder.SetNativeTerminal(kube, "authority", &nativePlacementTestCoordinator{&nativeTestCoordinator{}})
 +	if err := binder.nativeConfigured(pod); err != nil {
 +		t.Fatalf("reviewed inert marker must use the configured custody boundary: %v", err)
 +	}
@@ -458,10 +550,13 @@ index aa6b28d..6998510 100644
 +	binds := 0
 +	kube := nativeTestClient(t, pod, node, br, func(*v1.Binding) error { binds++; return nil }, registry, seed, ack)
 +	reservation := &nativePlacementReservation{gpu: "GPU-1e6145d5-8ee2-43e2-a0d5-6d345909e8a6"}
-+	coord := &nativeTestCoordinator{ack: ack}
++	coord := &nativePlacementTestCoordinator{&nativeTestCoordinator{ack: ack}}
 +	coord.prepare = func(snapshot NativeTerminalSnapshot) {
 +		if !reflect.DeepEqual(snapshot.BindingState.ReservedGPUIds, []string{reservation.gpu}) || snapshot.Node.UID != node.UID || snapshot.Node.Status.NodeInfo.BootID != node.Status.NodeInfo.BootID {
 +			t.Fatal("actual reserved placement state lost")
++		}
++		if snapshot.placementID != "placement-f580d54f2ba0b25123b15b8d2f28b8ab576d85f8b128c2ed04e6d76ddb90" || snapshot.placementAttempt != "22222222-2222-4222-8222-222222222222" {
++			t.Fatalf("protected registry placement identity lost: %q %q", snapshot.placementID, snapshot.placementAttempt)
 +		}
 +		cm := &v1.ConfigMap{}
 +		if err := kube.Get(context.Background(), client.ObjectKey{Namespace: pod.Namespace, Name: pod.Annotations["runai/shared-gpu-configmap"] + "-0"}, cm); err != nil {
@@ -479,13 +574,13 @@ index aa6b28d..6998510 100644
 +	if err := binder.Bind(context.Background(), pod, node, br); err != nil {
 +		t.Fatal(err)
 +	}
-+	if binds != 1 || reservation.syncs != 1 || !reflect.DeepEqual(coord.calls, []string{"prepare", "validate", "validate-binding", "bound", "close"}) {
++	if binds != 1 || reservation.syncs != 1 || !reflect.DeepEqual(coord.calls, []string{"prepare-placement", "validate", "validate-binding", "bound", "close"}) {
 +		t.Fatalf("unexpected exact terminal flow: binds=%d sync=%d calls=%v", binds, reservation.syncs, coord.calls)
 +	}
 +}
 +
 +func TestInertPlacementRefusesBeforeWritesAndHoldsForeignSelection(t *testing.T) {
-+	for _, fault := range []string{"extra-registry-field", "seed-data-drift", "seed-uid-drift", "duplicate-candidate", "bad-cap", "zero-ref-version", "nondecimal-ref-version", "zero-gpu", "mixed-candidate-node", "mixed-candidate-epoch", "unbound-hash-as-bound", "foreign-reserved-gpu", "wrong-selected-boot"} {
++	for _, fault := range []string{"extra-registry-field", "seed-data-drift", "seed-uid-drift", "placement-id-seed-drift", "attempt-seed-drift", "duplicate-candidate", "bad-cap", "zero-ref-version", "nondecimal-ref-version", "zero-gpu", "mixed-candidate-node", "mixed-candidate-epoch", "unbound-hash-as-bound", "foreign-reserved-gpu", "wrong-selected-boot"} {
 +		t.Run(fault, func(t *testing.T) {
 +			pod, node, br, registry, seed := nativePlacementFixture(t)
 +			var doc map[string]interface{}
@@ -498,6 +593,10 @@ index aa6b28d..6998510 100644
 +				seed.Data["seed.json"] += " "
 +			case "seed-uid-drift":
 +				seed.UID = "33333333-3333-4333-8333-333333333333"
++			case "placement-id-seed-drift":
++				doc["placement_id"] = "placement-aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
++			case "attempt-seed-drift":
++				doc["attempt"] = "33333333-3333-4333-8333-333333333333"
 +			case "duplicate-candidate":
 +				c := doc["placement_candidates"].(map[string]interface{})
 +				d := c["devices"].([]interface{})
@@ -529,7 +628,7 @@ index aa6b28d..6998510 100644
 +			raw, _ := json.Marshal(doc)
 +			registry.Data["registry.json"] = string(raw)
 +			kube := nativeTestClient(t, pod, node, br, func(*v1.Binding) error { t.Fatal("rejected placement reached Binding"); return nil }, registry, seed)
-+			coord := &nativeTestCoordinator{}
++			coord := &nativePlacementTestCoordinator{&nativeTestCoordinator{}}
 +			ps := plugins.New()
 +			ps.RegisterPlugin(gpusharing.New(kube, true, false))
 +			binder := NewBinder(kube, reservation, ps)
@@ -556,6 +655,25 @@ index aa6b28d..6998510 100644
 +	}
 +}
 +
++func TestInertPlacementRequiresTypedCoordinatorOperation(t *testing.T) {
++	pod, node, br, registry, seed := nativePlacementFixture(t)
++	kube := nativeTestClient(t, pod, node, br, func(*v1.Binding) error { t.Fatal("unsupported coordinator reached Binding"); return nil }, registry, seed)
++	reservation := &nativePlacementReservation{gpu: "GPU-1e6145d5-8ee2-43e2-a0d5-6d345909e8a6"}
++	coord := &nativeTestCoordinator{}
++	ps := plugins.New()
++	ps.RegisterPlugin(gpusharing.New(kube, true, false))
++	binder := NewBinder(kube, reservation, ps)
++	binder.SetNativeTerminal(kube, "cps-compute", coord)
++	err := binder.Bind(context.Background(), pod, node, br)
++	maps := &v1.ConfigMapList{}
++	if listErr := kube.List(context.Background(), maps, client.InNamespace(pod.Namespace)); listErr != nil {
++		t.Fatal(listErr)
++	}
++	if !errors.Is(err, ErrNativeCustodyHeld) || reservation.syncs != 0 || len(maps.Items) != 0 || len(coord.calls) != 0 {
++		t.Fatalf("legacy-only coordinator was not rejected before writes: err=%v sync=%d maps=%d calls=%v", err, reservation.syncs, len(maps.Items), coord.calls)
++	}
++}
++
 +func TestInertPlacementCompilerMetadataDriftRejectsBeforeReservation(t *testing.T) {
 +	for _, fault := range []string{"queue-label", "unknown-label", "compiler-annotation", "unknown-annotation"} {
 +		t.Run(fault, func(t *testing.T) {
@@ -572,7 +690,7 @@ index aa6b28d..6998510 100644
 +			}
 +			kube := nativeTestClient(t, pod, node, br, func(*v1.Binding) error { t.Fatal("metadata drift reached Binding"); return nil }, registry, seed)
 +			reservation := &nativePlacementReservation{gpu: "GPU-1e6145d5-8ee2-43e2-a0d5-6d345909e8a6"}
-+			coord := &nativeTestCoordinator{}
++			coord := &nativePlacementTestCoordinator{&nativeTestCoordinator{}}
 +			ps := plugins.New()
 +			ps.RegisterPlugin(gpusharing.New(kube, true, false))
 +			binder := NewBinder(kube, reservation, ps)
@@ -588,3 +706,138 @@ index aa6b28d..6998510 100644
 +		})
 +	}
 +}
+diff --git a/pkg/binder/binding/native_transport.go b/pkg/binder/binding/native_transport.go
+index 31c8cf9..d809dd9 100644
+--- a/pkg/binder/binding/native_transport.go
++++ b/pkg/binder/binding/native_transport.go
+@@ -150,7 +150,7 @@ func (bridge *NativeHTTP) call(ctx context.Context, operation string, fields map
+ 	request.Header.Set("Authorization", "Bearer "+token)
+ 	request.Header.Set("Content-Type", "application/json")
+ 	client := bridge.client
+-	if operation == "prepare" || operation == "accepted" {
++	if operation == "prepare" || operation == "placement-prepare" || operation == "accepted" {
+ 		// Accepted may wait for readiness under the existing server fence.
+ 		// A client copy preserves other operations and earlier cancellation.
+ 		bounded := *client
+@@ -165,7 +165,7 @@ func (bridge *NativeHTTP) call(ctx context.Context, operation string, fields map
+ 		return nil, fmt.Errorf("coordinator %s transport failed", operation)
+ 	}
+ 	defer response.Body.Close()
+-	refresh := operation == "prepare" && response.StatusCode == http.StatusConflict
++	refresh := (operation == "prepare" || operation == "placement-prepare") && response.StatusCode == http.StatusConflict
+ 	if response.StatusCode != http.StatusOK && !refresh {
+ 		return nil, fmt.Errorf("coordinator %s HTTP %d", operation, response.StatusCode)
+ 	}
+@@ -234,7 +234,21 @@ func nativeDecodeObject(value interface{}, output interface{}) error {
+ }
+ 
+ func (bridge *NativeHTTP) Prepare(ctx context.Context, snapshot NativeTerminalSnapshot) (NativeAllocationFence, error) {
+-	response, err := bridge.call(ctx, "prepare", nativeSnapshotFields(snapshot), "fence_id", "ack")
++	return bridge.prepareOperation(ctx, "prepare", nativeSnapshotFields(snapshot))
++}
++
++func (bridge *NativeHTTP) PreparePlacement(ctx context.Context, snapshot NativeTerminalSnapshot, placementID, attempt string) (NativeAllocationFence, error) {
++	if !nativePlacementString(placementID, `^placement-[a-f0-9]{60}$`) || !nativePlacementString(attempt, nativePlacementUUID) || attempt == "00000000-0000-0000-0000-000000000000" || snapshot.placementID != placementID || snapshot.placementAttempt != attempt {
++		return nil, errors.New("validated protected placement identity required")
++	}
++	fields := nativeSnapshotFields(snapshot)
++	fields["placement_id"] = placementID
++	fields["attempt"] = attempt
++	return bridge.prepareOperation(ctx, "placement-prepare", fields)
++}
++
++func (bridge *NativeHTTP) prepareOperation(ctx context.Context, operation string, fields map[string]interface{}) (NativeAllocationFence, error) {
++	response, err := bridge.call(ctx, operation, fields, "fence_id", "ack")
+ 	if err != nil {
+ 		return nil, err
+ 	}
+diff --git a/pkg/binder/binding/native_transport_test.go b/pkg/binder/binding/native_transport_test.go
+index d66850a..5d838f8 100644
+--- a/pkg/binder/binding/native_transport_test.go
++++ b/pkg/binder/binding/native_transport_test.go
+@@ -98,6 +98,76 @@ func TestNativeHTTPClosedWireFlowAndTokenRotation(t *testing.T) {
+ 	}
+ }
+ 
++func TestNativeHTTPPlacementPrepareUsesDedicatedOperationAndRegistryIdentity(t *testing.T) {
++	pod, node, br := nativeTestInputs()
++	ack := nativeTestACK(pod)
++	placementID := "placement-aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
++	attempt := "11111111-2222-4333-8444-555555555559"
++	actualGPU := "GPU-1e6145d5-8ee2-43e2-a0d5-6d345909e8a6"
++	bridge, _ := nativeTransportFixture(t, func(w http.ResponseWriter, r *http.Request) {
++		var request map[string]interface{}
++		if err := json.NewDecoder(r.Body).Decode(&request); err != nil {
++			t.Fatal(err)
++		}
++		if request["operation"] == "close" {
++			w.Header().Set("Content-Type", "application/json")
++			_ = json.NewEncoder(w).Encode(map[string]interface{}{"protocol": nativeWireProtocol, "operation": "close", "request_id": request["request_id"]})
++			return
++		}
++		if r.URL.Path != "/api/native-kai/v1/placement-prepare" {
++			t.Errorf("placement prepare used wrong route %q", r.URL.Path)
++		}
++		if request["protocol"] != nativeWireProtocol || request["operation"] != "placement-prepare" || request["placement_id"] != placementID || request["attempt"] != attempt {
++			t.Errorf("trusted placement identity missing from request: %#v", request)
++		}
++		state := request["binding_state"].(map[string]interface{})
++		reserved := state["reserved_gpu_ids"].([]interface{})
++		if len(reserved) != 1 || reserved[0] != actualGPU {
++			t.Errorf("actual reservation was replaced: %#v", state)
++		}
++		w.Header().Set("Content-Type", "application/json")
++		response := map[string]interface{}{"protocol": nativeWireProtocol, "operation": request["operation"], "request_id": request["request_id"]}
++		if request["operation"] == "placement-prepare" {
++			response["fence_id"] = "aaaaaaaa-bbbb-4ccc-8ddd-eeeeeeeeeeee"
++			response["ack"] = ack
++		}
++		_ = json.NewEncoder(w).Encode(response)
++	})
++	bindingState := nativeTestState()
++	bindingState.ReservedGPUIds = []string{actualGPU}
++	snapshot := NativeTerminalSnapshot{Pod: pod, Node: node, BindRequest: br, BindingState: bindingState,
++		placementID: placementID, placementAttempt: attempt}
++	fence, err := bridge.PreparePlacement(context.Background(), snapshot, placementID, attempt)
++	if err != nil {
++		t.Fatal(err)
++	}
++	fence.Close()
++}
++
++func TestNativeHTTPPlacementPrepareRejectsIdentityDriftBeforeSending(t *testing.T) {
++	calls := 0
++	bridge, _ := nativeTransportFixture(t, func(w http.ResponseWriter, r *http.Request) {
++		calls++
++		http.Error(w, "unexpected request", http.StatusInternalServerError)
++	})
++	pod, node, br := nativeTestInputs()
++	snapshot := NativeTerminalSnapshot{Pod: pod, Node: node, BindRequest: br,
++		BindingState: nativeTestState(), placementID: "placement-aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
++		placementAttempt: "11111111-2222-4333-8444-555555555559"}
++	if _, err := bridge.PreparePlacement(context.Background(), snapshot,
++		"placement-"+strings.Repeat("b", 60),
++		snapshot.placementAttempt); err == nil {
++		t.Fatal("mismatched placement ID was sent")
++	}
++	if _, err := bridge.PreparePlacement(context.Background(), snapshot, snapshot.placementID,
++		"22222222-2222-4333-8444-555555555559"); err == nil {
++		t.Fatal("mismatched attempt was sent")
++	}
++	if calls != 0 {
++		t.Fatalf("drifted placement identity reached coordinator %d times", calls)
++	}
++}
++
+ func TestNativeHTTPRejectsRedirectAndMalformedClosedResponses(t *testing.T) {
+ 	for _, mode := range []string{"redirect", "wrong-id", "extra-field", "duplicate-field", "oversize"} {
+ 		t.Run(mode, func(t *testing.T) {
+@@ -495,7 +565,7 @@ func TestNativeHTTPAcceptedFailureHoldsBeforeClose(t *testing.T) {
+ func TestNativeHTTPAtomicBindingCarriesFullFreshCurrentProof(t *testing.T) {
+ 	calls := 0
+ 	pod, node, br := nativeTestInputs()
+-	snapshot := NativeTerminalSnapshot{pod, node, br, nativeTestState()}
++	snapshot := NativeTerminalSnapshot{Pod: pod, Node: node, BindRequest: br, BindingState: nativeTestState()}
+ 	ack := nativeTestACK(pod)
+ 	binding := &unstructured.Unstructured{Object: map[string]interface{}{"apiVersion": "v1", "kind": "Binding", "metadata": map[string]interface{}{"name": pod.Name, "namespace": pod.Namespace, "uid": string(pod.UID), "resourceVersion": pod.ResourceVersion}, "target": map[string]interface{}{"kind": "Node", "name": node.Name, "uid": string(node.UID)}}}
+ 	bridge, _ := nativeTransportFixture(t, func(w http.ResponseWriter, r *http.Request) {
