@@ -427,6 +427,11 @@ hub:
               else: print(f"LDAP Error for {username}: {e}")
               return None
 
+      # UID/GID only: never cache groups or compute authorization. Requires
+      # the matching released cps-compute-hub wheel before this config is promoted.
+      from cps_compute_hub.directory_identity import DirectoryIdentityCache
+      directory_identities = DirectoryIdentityCache(get_ldap_info, ttl=300, max_entries=256)
+
       # ---------- Dynamic UI Generation ----------
       def get_options_form(spawner):
           power_user = is_power_user(spawner.user)
@@ -1657,7 +1662,7 @@ hub:
           )
 
           # LDAP Lookup for UID/GID
-          ldap_info = get_ldap_info(spawner.user.name, spawner.log)
+          ldap_info = await directory_identities.resolve(spawner.user.name, spawner.log)
           
           # Default to jovyan (fail-safe)
           spawner.uid = 1000
