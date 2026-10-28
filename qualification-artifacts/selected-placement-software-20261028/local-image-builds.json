@@ -1,5 +1,5 @@
 {
-  "scope": "local candidate image build and inert import/dependency checks only; not published or deployed",
+  "scope": "candidate builds and inert import/dependency checks; published unique candidate tags and independently verified registry digests; not deployed or production qualified",
   "sdk_source": "38099afa882ef0684db4c880a3497d03965ae470",
   "hub_source": "f8762de0680bf590205abf55179fe6ac864c8bf8",
   "sdk_wheel_sha256": "fa20754fd5f55641d6d0776f8c688c47b012cd14b4928703f3cf63db617df9bb",
@@ -13,7 +13,10 @@
         "pip check",
         "selected prepare/status/cleanup/resolver imports",
         "wait-for-selected-cap --help"
-      ]
+      ],
+      "registry_tag": "ghcr.io/mul-cps/cps-compute:selected-gateway-38099af-20261028",
+      "registry_digest": "sha256:09c535b59fa9188e1942b0285632a6f3a1b1ced48211028cf8b1f2036157a6d5",
+      "registry_readback_verified": true
     },
     "node": {
       "local_tag": "localhost/cps-native-node:selected-38099af",
@@ -22,7 +25,10 @@
       "checks": [
         "30 installed distributions verified during build",
         "inert startup: no API calls; no GPU calls"
-      ]
+      ],
+      "registry_tag": "ghcr.io/mul-cps/cps-native-node:selected-38099af-20261028",
+      "registry_digest": "sha256:64ae31c4e87092bf4c6f43ea408a70f1476ba7c5baa20bfe05df49eee6e4890e",
+      "registry_readback_verified": true
     },
     "hub": {
       "local_tag": "localhost/cps-compute-hub:selected-f8762de",
@@ -35,7 +41,10 @@
         "Hub placement and selected prepare imports",
         "installed version inventory differs from base only for SDK and Hub: 0.1.0 to 0.1.1",
         "Hub5.5.2/KubeSpawner7.1.0/kubernetes-asyncio36.1.0 retained"
-      ]
+      ],
+      "registry_tag": "ghcr.io/mul-cps/cps-compute:selected-hub-f8762de-20261028",
+      "registry_digest": "sha256:0842ddbe93f988fc66b8a0dd0947f35cc06991520c56ed5098cfeaa358660136",
+      "registry_readback_verified": true
     }
   }
 }

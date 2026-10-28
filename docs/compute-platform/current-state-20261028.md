@@ -282,7 +282,7 @@ corrects those inputs and aligns the Hub component to 0.1.1; 24 packaging/image
 checks passed. Local Gateway and Node images built successfully with the exact
 SDK wheel checksum. Gateway dependency checks, selected-path imports and the
 selected-cap gate CLI passed; Node startup reported inert without API/GPU calls.
-These local images and staged wheels have not been published as replacement releases.
+These images are uniquely tagged published candidates, not replacement releases or deployed runtimes; the staged wheels have not been published as releases.
 
 Remaining before activation: coherent Gateway/Node/Hub/gate image handover,
 actual protected two-device proof/catalog installation and opt-in settings,
@@ -304,3 +304,9 @@ identity only. Its image/policy tuple differs from the installed first-card
 deployment. Activation requires a genuine coordinated tuple/proof handover,
 not copying a UUID or substituting synthetic references. These local image
 builds do not change or extend the existing hardware qualification.
+
+Gateway, Node and Hub candidates were subsequently published to their existing
+GHCR packages using unique selected-source tags. Independent registry inspection
+matched all three pushed manifest digests; the software receipt records those
+exact references. This publishes build artifacts only: no live configuration,
+protected proof, approval, user Pod or production policy changed.
