@@ -23,7 +23,11 @@ with token automount disabled. Live function ASTs were first checked against
 reviewed baseline `230b9b29`. Actual live profile images and all other Hub
 configuration overlays were preserved. The proxy update replaced only the
 allow-all predicate, preserving the remainder of the actual mounted notebook
-configuration. Already running notebook processes do not reload that predicate.
+configuration. The separate `singleuser` Secret actually mounted into notebook
+Pods was also patched with UID/resourceVersion/prior-value tests, replacing
+only its allow-all predicate. Executing that exact candidate configuration
+passed the loopback allow and remote/metadata deny checks. Already running
+notebook processes do not reload that predicate.
 
 The Hub image, values Secret reference and approval-publisher declaration were
 updated together with Deployment UID/resourceVersion and prior-value tests.
