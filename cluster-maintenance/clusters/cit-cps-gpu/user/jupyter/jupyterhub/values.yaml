@@ -2519,12 +2519,12 @@ prePuller:
   continuous:
     enabled: true
   extraImages:
-    datascience:
-      name: ghcr.io/mul-cps/cps-jupyter-notebook
-      tag: "latest-standard-cpu"
-    rapidsai:
-      name: nvcr.io/nvidia/rapidsai/base
-      tag: "24.08-cuda12.2-py3.10"
+    # The pre-puller chart template appends `:` between name and tag. Keep
+    # that rendered reference exactly equal to the fixed CPU profile's digest
+    # instead of pulling the stale mutable tag.
+    cps-cpu-default:
+      name: ghcr.io/mul-cps/cps-jupyter-notebook@sha256
+      tag: "ff0c30d92f8b0483623acb719a909daba8dc93ab3f1910706e65b3f15237ae35"
     cps-pytorch:
       name: ghcr.io/mul-cps/cps-jupyter-notebook
       tag: "latest-pytorch-code"
