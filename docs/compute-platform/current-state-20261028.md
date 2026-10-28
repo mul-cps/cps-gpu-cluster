@@ -70,3 +70,35 @@ image declarations were corrected with guarded reference-only rollouts. All
 four component acknowledgments are fresh and agree; the four protected user
 notebook UIDs/restart counts remain unchanged. This closes the process-image
 readiness mismatch, not fleet qualification. See the [repair receipt](../../qualification-artifacts/group-readiness-repair-20261028/README.md).
+
+## Cross-Hub preflight and assignment archive follow-up
+
+Fresh authenticated read-only preflight still reports the current approval
+revision ready for both Source readers, but the current registry contains only
+CPS `shared-gpu-lab`; CIT has no approved group workspace. Both historical
+`native-group-a` records return HTTP 409 `Workspace policy hash mismatch`,
+and neither has an active reservation. Controller readiness is not approval
+for every workspace. No historical hash, grant or removed approval was
+overwritten. A fresh supported CIT registration/provision/approval flow is
+required before the current cross-Hub admission exercise can run.
+
+Compute commit `d909336` extends the existing race exercise to identical full
+canonical member sets; 13 focused tests pass. It still submits and terminates
+a separately entitled CPU batch workflow, and does not start a notebook or
+GPU workload. No current live race is claimed from those tests.
+
+Compute commit `de3a85e` fixes the filesystem adapter actually configured by
+both deployed consoles: archive calls partition trusted workspace records by
+group, verify every response, and return no aggregate success after a later
+group failure. A retried archive re-verifies an already archived group through
+the backend; provisioning from archived state stays fenced. Storage and
+recovery tests pass 127 cases. This source change is pushed, not deployed.
+The preceding admin-only bridge belongs to the newer application lane and
+was not the missing RPC in the currently deployed console.
+
+The live admin's three inspected backend files match source `a070050` exactly;
+its installed SDK storage module differs from current compute HEAD, although
+the HTTP adapter class matches. Deployment therefore requires a bounded
+compatible package/backport; replacing whole current modules or promoting
+the complete newer runtime without qualification would change unrelated
+behavior. The deployed image and running user Pods remain unchanged here.
