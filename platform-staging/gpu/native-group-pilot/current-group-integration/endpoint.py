@@ -36,11 +36,34 @@ def projected(name, audience):
         {'configMap':{'name':'kube-root-ca.crt','items':[{'key':'ca.crt','path':'ca.crt'}]}}]}}
 
 
+def _qualified_mps_v2_images(deployment, requested_image):
+    """Bind explicit opt-in to the existing typed group MPS evidence."""
+    require(isinstance(requested_image, str), 'Explicit exact MPS-qualified image required')
+    image = deployment.workload_image
+    require(isinstance(image, str) and re.fullmatch(r'.+@sha256:[0-9a-f]{64}', image),
+            'Approved group workload image must be pinned by digest')
+    document = json.loads(deployment.document)
+    evidence = document.get('evidence', {})
+    gates = evidence.get('gates', {})
+    mps = gates.get('mps', {})
+    evidence_sha = mps.get('evidence_sha256', '')
+    require(evidence.get('workload_image') == image and mps.get('passed') is True
+            and isinstance(evidence_sha, str)
+            and re.fullmatch(r'sha256:(?!0{64}$)[0-9a-f]{64}', evidence_sha),
+            'Existing reviewed group MPS gate evidence must qualify this exact workload image')
+    require(requested_image == image,
+            'MPS opt-in image must exactly match the reviewed group workload image')
+    return [image]
+
+
 def render(context, *, gateway_account, binder_account, hub_accounts, hub_settings,
-           readiness, reservation_template, api_audience, binder_pod_labels, gateway_pod_security_context, gateway_data_volume_name, queue='cps-interactive'):
+           readiness, reservation_template, api_audience, binder_pod_labels, gateway_pod_security_context, gateway_data_volume_name, queue='cps-interactive', qualified_mps_v2_image=None):
     """Inputs are actual typed context and public captured objects, never tokens.
 
     This is an additive configuration proposal; no RBAC/deployment is applied.
+    MPS v2 remains disabled unless the caller supplies the exact approved
+    workload image and the existing typed group deployment carries matching
+    reviewed MPS gate evidence.
     Existing Gateway authority/observer roles remain independently required.
     """
     from cps_compute.native_scheduler_group_contract import GroupPendingContext
@@ -92,6 +115,11 @@ def render(context, *, gateway_account, binder_account, hub_accounts, hub_settin
                  'nodeAcknowledgment':deepcopy(readiness['acknowledgments']['node']),
                  'nodeProcess':deepcopy(observed),'ttlSeconds':readiness['ttlSeconds']},
         'reservationTemplate':deepcopy(reservation_template)}
+    # Older deployed coordinators use a closed runtime schema. Keep the
+    # ordinary proposal byte-for-byte compatible; publish the extension only
+    # when an explicit, evidence-bound opt-in was requested.
+    if qualified_mps_v2_image is not None:
+        config['runtime']['qualifiedMpsV2Images'] = _qualified_mps_v2_images(dep,qualified_mps_v2_image)
     name='cps-native-kai-terminal'
     objects.extend([obj('ClusterRole',name,rules=[{'nonResourceURLs':['/api/native-kai/v1/'+x for x in BINDER],'verbs':['post']}]),
         obj('ClusterRoleBinding',name,roleRef={'apiGroup':'rbac.authorization.k8s.io','kind':'ClusterRole','name':name},

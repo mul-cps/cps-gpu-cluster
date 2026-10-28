@@ -383,3 +383,38 @@ def test_coordinator_workspace_runtime_permissions_cover_seal_and_abort_only(req
     assert not any(r['metadata'].get('namespace')=='kai-resource-reservation' and r['kind']=='Role'
                    and any('create' in rule.get('verbs',[]) or 'delete' in rule.get('verbs',[]) for rule in r.get('rules',[]))
                    for r in result['rbac'])
+
+
+def test_coordinator_mps_v2_publisher_requires_explicit_exact_qualified_image(request,monkeypatch,tmp_path):
+    from types import SimpleNamespace
+    c,*_=harness(request,monkeypatch,tmp_path)
+    dep=c.group_context.deployment
+    args=inputs(c)
+
+    # Existing reviewed MPS qualification evidence is not an implicit opt-in.
+    disabled=endpoint.render(c.group_context,**args)
+    assert 'qualifiedMpsV2Images' not in disabled['coordinator']['runtime']
+    assert set(disabled['coordinator']['runtime'])=={
+        'writablePvcClaims','writableMountPaths','readonlyNfsMounts'}
+
+    document=json.loads(dep.document)
+    proof=document['evidence']
+    mps=proof['gates']['mps']
+    assert proof['workload_image']==dep.workload_image
+    assert mps['passed'] is True and mps['evidence_sha256']!='sha256:'+'0'*64
+    enabled=endpoint.render(c.group_context,**args,qualified_mps_v2_image=dep.workload_image)
+    assert enabled['coordinator']['runtime']['qualifiedMpsV2Images']==[dep.workload_image]
+
+    for proof_change in ('failed-gate','foreign-image','missing-evidence'):
+        unqualified=copy.deepcopy(document)
+        if proof_change=='failed-gate':unqualified['evidence']['gates']['mps']['passed']=False
+        elif proof_change=='foreign-image':unqualified['evidence']['workload_image']='ghcr.io/foreign/image@sha256:'+'c'*64
+        else:unqualified.pop('evidence')
+        with pytest.raises(ValueError):
+            endpoint._qualified_mps_v2_images(SimpleNamespace(workload_image=dep.workload_image,
+                document=json.dumps(unqualified)),dep.workload_image)
+
+    for image in ('ghcr.io/mul-cps/not-approved@sha256:'+'b'*64,
+                  'ghcr.io/mul-cps/not-approved:latest'):
+        with pytest.raises(ValueError):
+            endpoint.render(c.group_context,**args,qualified_mps_v2_image=image)
