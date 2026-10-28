@@ -28,5 +28,17 @@
     "No production promotion",
     "Managed runtime live activation pending",
     "Full assignment/archive and standalone admin Stop incomplete"
-  ]
+  ],
+  "hub_image": {
+    "digest": "sha256:968e695e048fd6c7a15db731ee0ead1aafe980bfce1b5e0ad47627094e91bbba",
+    "id": "6e5413665620c68a8f9d39bbdbb864e7279edefdd7b15733f57ff04207bed3a2",
+    "source_revision": "bf532fce21b3ae462314b3d430812c6bfbdf1ae4",
+    "base": "sha256:83fdd8c1ef66b66de71fccf0657c40d722fa28310e0bcb819c538fad01873b21",
+    "sdk_wheel_sha256": "b1434655577a0ff6605ec53dd43d8c9cbdf6e1bbd8ae485caa0442cf11f0256c",
+    "hub_wheel_sha256": "b5d5314c3a32bfd7acf29f33c8abbd8aa88db269dbff90ea8c89f7cf4e4b31e6",
+    "wheelhouse_requirements": 81,
+    "record_inventory": "passed; no unrecorded SDK or Hub files",
+    "published": false,
+    "deployed": false
+  }
 }
