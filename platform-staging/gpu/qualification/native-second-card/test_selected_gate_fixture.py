@@ -69,7 +69,8 @@ def fixture_inputs():
     review = {
         'request': {'cohort_uid': descriptor['cohort_uid'], 'namespace': descriptor['namespace'],
                     'policy_hash': descriptor['policy_hash']},
-        'epoch': {'node_uid': descriptor['node_uid']},
+        'epoch': {'node_uid': descriptor['node_uid'], 'boot_id': physical['boot_id'],
+                  'driver_generation': physical['driver_generation'], 'gpu_uuid': physical['gpu_uuid']},
         'selected_gate_delta': {
             'scope': 'controlled-qa-only', 'production_authority': False,
             'placement_token': placement_id,
@@ -128,7 +129,7 @@ print(json.dumps(read_selected_native_cap(path,expected,pod_uid=pod_uid,spec_sha
     assert parsed['cap_mib'] == 10240
 
 
-@pytest.mark.parametrize('mutation', ['uid', 'spec', 'name', 'namespace', 'qualification_ref', 'device_epoch', 'gpu', 'token'])
+@pytest.mark.parametrize('mutation', ['uid', 'spec', 'name', 'namespace', 'qualification_ref', 'device_epoch', 'gpu', 'token', 'epoch_boot', 'epoch_driver', 'epoch_gpu'])
 def test_rejects_unbound_or_fabricated_actual_evidence(mutation):
     review, descriptor, actual_pod, qualification_ref, physical = fixture_inputs()
     review = copy.deepcopy(review)
@@ -152,6 +153,12 @@ def test_rejects_unbound_or_fabricated_actual_evidence(mutation):
         physical['gpu_uuid'] = 'GPU-2e6145d5-8ee2-43e2-a0d5-6d345909e8a6'
     elif mutation == 'token':
         review['selected_gate_delta']['placement_token'] = 'placement-' + 'b' * 60
+    elif mutation == 'epoch_boot':
+        review['epoch']['boot_id'] = '55555555-5555-4555-8555-555555555555'
+    elif mutation == 'epoch_driver':
+        review['epoch']['driver_generation'] = '55555555-5555-4555-8555-555555555555'
+    elif mutation == 'epoch_gpu':
+        review['epoch']['gpu_uuid'] = 'GPU-2e6145d5-8ee2-43e2-a0d5-6d345909e8a6'
     builder = load_module('selected_gate_fixture_negative', BUILDER)
 
     with pytest.raises(ValueError):

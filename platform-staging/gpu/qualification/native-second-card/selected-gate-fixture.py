@@ -127,7 +127,9 @@ def build_selected_fixture(review, descriptor, actual_pod, qualification_ref, ph
             and requested.get('cohort_uid') == descriptor['cohort_uid']
             and requested.get('namespace') == descriptor['namespace']
             and requested.get('policy_hash') == descriptor['policy_hash']
-            and type(epoch) is dict and epoch.get('node_uid') == descriptor['node_uid'],
+            and type(epoch) is dict
+            and all(epoch.get(key) == physical[key]
+                    for key in ('node_uid', 'boot_id', 'driver_generation', 'gpu_uuid')),
             'Descriptor differs from the original reviewed QA request')
     b = review['pods']['b']
     bmeta = b.get('metadata', {})
