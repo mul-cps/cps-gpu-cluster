@@ -22,6 +22,13 @@ reuses HTTPS CA/projected-token transport and Kubernetes TokenReview/SAR.
 It is not yet wired into `create_runtime`; this does not close the production
 coordinator assembly or live selected-peer exchange gate.
 
+The private Source observation route and matching coordinator HTTPS client are
+now implemented, committed and tested across a real TLS connection. Clean,
+installed wheels pass 36 compute tests and 15 admin tests plus 20 subtests,
+without implementation source paths. They remain unconnected to the production
+activation factory; bounded observations are not complete-history or backup
+proof. See the [transport receipt](../../qualification-artifacts/source-runtime-transport-20261028/README.md).
+
 ## Immediate remaining implementation and activation
 
 1. Complete the final admin image and preserve source/wheel/image provenance; matched local Node/Hub checks are recorded above.
