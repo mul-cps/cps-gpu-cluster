@@ -397,3 +397,10 @@ The [probe receipt](../../qualification-artifacts/selected-placement-software-20
 explicitly excludes hardware cap assignment. Fresh read-only host observations
 matched the retained boot/driver generation; both GPU2 A100s reported 40,960 MiB
 total and 0 MiB used. The connected cap-assignment delta remains open.
+
+A short CPU-only pod pre-pulled the exact selected-gate image onto GPU2 and
+verified its installed runtime import without GPU devices, API token or native
+authority mounts. It exited successfully and was removed with UID/resourceVersion
+preconditions. The [receipt](../../qualification-artifacts/selected-placement-software-20261028/selected-gate-node-prepull.json)
+records the target image and Pod identity. The native runtime namespace's
+controller admission policy was left intact. This did not assign a GPU cap.
