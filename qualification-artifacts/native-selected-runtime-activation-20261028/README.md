@@ -19,8 +19,8 @@ The source activates `SelectedNodeRuntime.from_protected(service, path)` only
 when `args.selected_runtime` is set; otherwise it executes the ordinary
 `service.run_once()` / `service.run_forever()` path. See candidate source
 commit `5d67c132186ca01ac4853f259d60930b368c46f8`,
-`compute/src/cps_compute/native_node/bootstrap.py` around the selected-runtime
-branch and `compute/src/cps_compute/native_node/pool_factory.py`,
+`src/cps_compute/native_node/bootstrap.py` around the selected-runtime
+branch and `src/cps_compute/native_node/pool_factory.py`,
 `SelectedNodeRuntime.from_protected` and `SelectedNodeRuntime.__init__`.
 
 The constructor is the authoritative config parser. It requires the exact
@@ -28,9 +28,33 @@ closed document shape and checks the installed pool binding, boot epoch,
 protected coordinator token path, maintenance roots, and existing local
 history. It does not create or repair those paths. Do not generate a new
 history to satisfy the constructor. The Hub-side managed installation also
-requires an existing installed history owned by the original coordinator;
-see `compute/src/cps_compute/native_hub_installation.py`,
+requires an installed history owned by the original coordinator;
+see `src/cps_compute/native_hub_installation.py`,
 `ManagedHubInstallation.__init__` and `.install` in the same commit.
+
+An absent Node-local history path has two different meanings. If this selected
+local store has never been installed, the source supports an explicit first
+install through `LocalNodePairHistory.install(directory, database_id,
+installation_id, peer)` in
+`src/cps_compute/native_node/pool_consumer.py`. It requires a new absent
+absolute path and the actual peer/database/installation binding, then writes
+the initial protected identity and full-image history. This is an operator
+installation action, not constructor repair or implicit bootstrap behavior.
+If a path or prior installation record existed and the files are now absent,
+corrupt, or mismatched, treat that as lost/incompatible retained history and
+stop for recovery from its original custody; do not run the first-install
+method over it.
+
+The tested managed-factory order is also explicit. The test first installs
+Node-local history from each actual peer binding, prepares and activates the
+remote pair, then calls `ManagedHubInstallation.install` against the original
+Hub owner, Source provider and PostgreSQL engine. It verifies history adoption
+and only then calls `server.stage_managed(owner)` followed by
+`server.activate_managed(owner)` before creating the personal grant producer.
+See `tests/test_native_selected_node_handoff.py::activate_remote_pair` and
+`tests/test_native_selected_node_managed_factory.py::test_selected_node_server_stays_closed_until_managed_history_is_installed`.
+This controlled sequence does not supply the corresponding live per-node
+installation inputs.
 
 ## Activation proposal for review
 
@@ -61,8 +85,10 @@ rendering a deployment delta, the owner must identify, for the chosen Node:
 
 - the original installed `pool_id`, `database_id`, and `installation_id`,
   matching `installed_binding(service, pool_id)`;
-- the existing protected `local_history` directory and proof that its retained
-  history reopens against that exact peer binding;
+- whether this is a never-installed new selected-local store or an existing
+  retained history; for a new store, the reviewed explicit first-install
+  authorization and absent absolute directory; for an existing store, proof
+  that the retained history reopens against that exact peer binding;
 - the trusted coordinator origin, CA file and projected token file paths;
 - the authority-node references used for the selected pool;
 - the original maintenance public root, state roots and boot ID matching the
@@ -71,10 +97,14 @@ rendering a deployment delta, the owner must identify, for the chosen Node:
   histories and references, before a rollout is considered.
 
 The actual live Deployment mounts show that a config mount is absent, but do
-not establish whether an unmounted host history exists or whether it is
-compatible. Treat both as unknown and deployment-blocking until verified from
-the original retained records. Never initialize, copy, rotate, or replace a
-history, token, CA, or authority reference as part of this preflight.
+not establish whether an unmounted host history exists, whether this feature
+has never been installed, or whether any prior history is compatible. Treat
+those states as unknown and deployment-blocking until the installation owner
+classifies them from retained records. Do not implicitly create history or
+overwrite lost/mismatched history. A reviewed first install is valid only for
+a genuinely never-installed store, via the explicit source installer and
+actual bindings described above. Never copy, rotate, or replace a history,
+token, CA, or authority reference as part of this preflight.
 
 ## Evidence and limits
 
