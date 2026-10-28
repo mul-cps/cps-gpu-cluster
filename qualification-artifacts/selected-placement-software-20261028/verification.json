@@ -1,0 +1,22 @@
+{
+  "source": "edcc5df2ebff99e6d817a24e2e74eaa2b8e33f8b",
+  "scope": "software only; API Binding result simulated by fixture; no Kubernetes Binding/GPU execution",
+  "checks": [
+    {
+      "command": "python -m pytest -q tests/test_native*placement*.py tests/test_native_selected*.py tests/test_native_scheduler_coordinator_auth.py tests/test_native_scheduler_coordinator_server.py",
+      "passed": 306,
+      "seconds": 29.07
+    },
+    {
+      "command": "python -m pytest -q tests/test_native_selected_cleanup.py tests/test_native_cleanup_pending.py tests/test_native_exact_lease_cleanup.py tests/test_native_scheduler_placement_routes.py",
+      "passed": 28,
+      "seconds": 7.75
+    }
+  ],
+  "deployment_changed": false,
+  "remaining": [
+    "coherent images including selected gate CLI",
+    "protected live two-device proof/catalog and opt-in configuration",
+    "controlled connected GPU and cross-Hub lifecycle acceptance"
+  ]
+}

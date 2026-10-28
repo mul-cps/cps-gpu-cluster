@@ -1,0 +1,40 @@
+{
+  "source_sha": "edcc5df2ebff99e6d817a24e2e74eaa2b8e33f8b",
+  "source_archive": "/tmp/cps-transport-edcc5df2",
+  "wheel_directory": "/tmp/cps-transport-candidate-wheels-edcc5df2",
+  "wheels": [
+    {
+      "path": "/tmp/cps-transport-candidate-wheels-edcc5df2/cps_compute-0.1.1-py3-none-any.whl",
+      "distribution": "cps-compute",
+      "version": "0.1.1",
+      "archive_members": 102,
+      "sha256": "fa20754fd5f55641d6d0776f8c688c47b012cd14b4928703f3cf63db617df9bb",
+      "record": "valid",
+      "ownership": "SDK namespace only; no Hub or Lab assets"
+    },
+    {
+      "path": "/tmp/cps-transport-candidate-wheels-edcc5df2/cps_compute_hub-0.1.0-py3-none-any.whl",
+      "distribution": "cps-compute-hub",
+      "version": "0.1.0",
+      "archive_members": 25,
+      "sha256": "074cf7629e1ad4d3be26f3b9b2db2a9bb92b94a4bf31e3a374b6f6c3d1927649",
+      "record": "valid",
+      "ownership": "Hub namespace only; no SDK or Lab files"
+    }
+  ],
+  "isolated_import": {
+    "venv": "/tmp/cps-transport-wheel-import-system-edcc5df2",
+    "install": "pip install --no-deps --ignore-installed --no-index <both candidate wheels>",
+    "probe": "python -I from /tmp",
+    "host_dependencies": "--system-site-packages; dependency resolution was not tested",
+    "modules_imported_from_private_venv": 5,
+    "symbols": {
+      "cps_compute.native_scheduler_placement_prepare": ["prepare_selected_placement"],
+      "cps_compute.native_scheduler_placement_observation": ["validate_selected_placement"],
+      "cps_compute.native_scheduler_placement_cleanup": ["selected_cleanup_inputs"],
+      "cps_compute.native_scheduler_placement_resolver": ["create_candidate_resolver"],
+      "cps_compute_hub.native_placement_hub": ["PlacementLease", "PlacementHubAuthority", "PlacementPendingHubAdapter"]
+    }
+  },
+  "co_release_constraint": "Hub 0.1.0 pins cps-compute==0.1.0 while the SDK candidate is 0.1.1; this is historical candidate evidence, not a compatible co-release set."
+}
