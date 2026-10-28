@@ -239,3 +239,33 @@ publish enrollment and selection under the existing guards, and issue the ACK
 before Binding. That connected flow, lifecycle recovery, package/image handover
 and current-group/cross-Hub live acceptance remain unfinished. No production
 configuration or running user workload changed in this follow-up.
+
+### Connected selected lifecycle software case
+
+The previously missing `placement_prepare` method is now implemented. The
+connected fixture performs the actual authority pending-to-selected CAS,
+durable custody handoff, strict Node pending-generation observation, immutable
+selected projection and full enrollment publication before opening the existing
+execution fence. It builds the ACK from fresh API/ledger readbacks and continues
+through current validation, exact Binding authorization, API-visible bound Pod
+readback, accepted custody and close. The fixture simulates the API's Binding
+result; no GPU workload or Kubernetes Binding was executed by this software test.
+
+Root verification passed 277 focused placement/selected/auth/server checks in
+16.86 seconds, including the connected lifecycle. A separate bounded scope
+passed 35 cases in 5.94 seconds. The Node enrollment decoder now accepts only
+the complete selected protocol provenance and exact qualified candidate/epoch;
+the old schema cannot silently discard those fields. The explicit v4 Hub
+transport, gated Gateway routes and fresh trusted candidate resolver are also
+committed. Existing startup configuration leaves these new routes disabled.
+
+KAI source `99508c2` carries registry/seed-proven placement identity through a
+dedicated prepare operation. Root independently passed all binder package
+checks (cached exact-source results); the pinned patch and scope are in the
+[binder receipt](../../qualification-artifacts/gpu-placement-binder-candidate-20261028/README.md).
+
+Remaining before activation: retry/failure qualification, placement-aware Hub
+startup and stop/cleanup continuity, Gateway resolver startup assembly, installed
+package/image handover, and controlled connected GPU/current-group/cross-Hub
+acceptance. Wider production gates remain listed above. No production rollout,
+driver change, MIG change or user Pod restart occurred in this software work.
