@@ -3,6 +3,11 @@ kind: ConfigMap
 metadata:
   name: local-path-config
   namespace: kube-system
+  annotations:
+    # Handover stage 1: once Fleet has recorded this annotation, a later Helm
+    # upgrade can omit the K3s-owned ConfigMap without deleting it. Keep this
+    # annotation in the source until a separate, gated stage-2 change.
+    helm.sh/resource-policy: keep
 data:
   config.json: |-
     {
