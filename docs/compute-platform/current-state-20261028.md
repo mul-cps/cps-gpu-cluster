@@ -15,6 +15,13 @@ Admin source `53d9dcd50b230102af8ab863ac7aec329dbe6da3` adds lifecycle behavior 
 
 The local Node candidate digest is `sha256:6932965a09f01a34fd87faf4447533aead183990927ed24d929f05ba41ee4661`, built from the exact compute source archive. Its pinned install, package ownership/import checks and network-disabled dependency checks passed. It has not been pushed or deployed. Local build evidence does not qualify a host rollout or physical isolation. The matching Hub candidate is also built at digest `sha256:968e695e048fd6c7a15db731ee0ead1aafe980bfce1b5e0ad47627094e91bbba`; its pinned dependency, installed-file inventory and import checks pass. Neither image is published or deployed. See the [package receipt](../../qualification-artifacts/runtime-packaging-20261028/README.md).
 
+The protected selected-Node peer configuration adapter is now committed in compute source
+`9e6ccf3` and passes 11 focused tests in a dependency-complete environment,
+including construction against an actually started NodeService fixture. It
+reuses HTTPS CA/projected-token transport and Kubernetes TokenReview/SAR.
+It is not yet wired into `create_runtime`; this does not close the production
+coordinator assembly or live selected-peer exchange gate.
+
 ## Immediate remaining implementation and activation
 
 1. Complete the final admin image and preserve source/wheel/image provenance; matched local Node/Hub checks are recorded above.
