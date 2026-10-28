@@ -360,3 +360,31 @@ activation. A fresh read confirmed the test Pod and BindRequest absent, the
 workspace reservation inactive with no attempt, and no GPU reservation Pods
 remaining. Aditya, Gottam, Muslim and Rino retained their original Pod UIDs,
 Running state and zero restarts. No protected notebook was restarted.
+
+### Independent second-device measured proof publication
+
+The immutable historical B proof is now an actual API object,
+`cps-second-device-qualification-b65a5ca0fb59d8d4`, rather than a synthetic
+wrapper. The installed Gateway's real qualification factory accepted its exact
+UID/resourceVersion/data hash against the mounted policy. All six referenced
+gate-summary hashes and the capacity-summary hash match the retained files.
+The [receipt](../../qualification-artifacts/selected-placement-software-20261028/second-device-actual-proof.json)
+records the measured tuple and exact reference. This does not activate B or
+qualify a changed gate image. Preserve the unchanged kernel measurements; the
+remaining gate delta is selected-bootstrap exec and cap assignment, with explicit
+workload image preservation and the coherent two-device configuration.
+
+The published Hub candidate was tested by executing its installed interpreter
+without networking: SDK and Hub are both 0.1.1, and the placement module imports.
+An inherited base-image label is not evidence that this module is absent. Four
+focused Hub activation tests passed. The current live Hub remains on its v2
+settings and the Gateway candidate resolver remains off.
+
+The current installed SDK subsequently loaded the actual selected Node
+configuration and authenticated both preserved workload-image edges,
+`542708… → fb9872… → 3eab…`. The local activation preflight independently resolves
+the pinned immutable transition/preservation objects by UID, resourceVersion and
+data hash. Workload-image continuity is therefore resolved; it is not a reason
+to repeat unchanged kernel gates. The remaining measurement is the changed
+selected wrapper's same-process sealed-cap handoff and actual B cap assignment.
+The live Node UID and boot ID still match B's retained measured epoch.
