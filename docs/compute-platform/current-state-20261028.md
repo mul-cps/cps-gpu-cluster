@@ -155,3 +155,24 @@ Ready, custody snapshots succeed and authenticated group readiness remains
 true. Node image, policy history, qualified UUID and persistent state are
 preserved. Reliable device placement remains the independent unresolved GPU
 gate described above.
+
+## Second-card IPC gap closed; v3 late placement underway
+
+A fresh controlled 5/10 GiB pair on GPU2's second A100 passed cross-parent CUDA
+IPC denial in both directions, including same-parent positive controls, exact
+kernel witness attribution, exporter continuity/recovery and importer survival.
+Root independently bound the receipts to the before/after Pod UID, GPU UUID,
+boot, driver-generation and cap observations. Cleanup retired both original
+records: all twelve retained rows are offline/pinned/used-zero, both GPU2 cards
+have no compute clients, and the QA namespace is empty. Protected user Pod UIDs
+and restart counts are unchanged. See the [actual IPC receipt](../../qualification-artifacts/gpu2-cross-parent-ipc-20261028/README.md).
+
+The implementation route is now an extension of the deployed v3 coordinator:
+global member custody first, inert placement-pending claim, then authenticated
+KAI device selection and one immutable per-device cap/claim CAS. The optional
+managed PoolHeads replacement is not imposed as a prerequisite. The current
+four affected Gateway module byte hashes match the `ad451f5` backport source.
+Typed candidate/selection and pending-claim software stages are being tested;
+the coordinator, binder, CPU bootstrap gate and selected Node integration are
+not deployed. Existing valid hardware measurements remain reusable for their
+verified tuple; this IPC result does not qualify the entire eight-GPU fleet.
