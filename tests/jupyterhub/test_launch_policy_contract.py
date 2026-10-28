@@ -111,3 +111,36 @@ def test_legacy_disabled_custom_nfs_defaults_do_not_block_restart():
     ns = {}
     exec(compile(ast.Module(body=[validator], type_ignores=[]), str(VALUES_PATH), "exec"), ns)
     ns["reject_custom_resources"]({"custom_nfs_enabled": False, "custom_nfs_server": "193.170.30.58", "custom_nfs_mount_path": "/home/jovyan/custom_nfs", "custom_gpus": 0})
+
+
+def test_service_account_is_limited_to_authorized_dask_profile():
+    import pytest
+    _, module = load_policy()
+    functions = {n.name: n for n in module.body if isinstance(n, ast.FunctionDef)}
+    ns = {}
+    exec(compile(ast.Module(body=[functions["notebook_service_account"]], type_ignores=[]), str(VALUES_PATH), "exec"), ns)
+    select = ns["notebook_service_account"]
+    assert select("cpu-default", False) == "default"
+    assert select("gpu-3gb", True) == "default"
+    assert select("dask-cluster", True) == "dask-sa"
+    with pytest.raises(ValueError):
+        select("dask-cluster", False)
+    values = yaml.safe_load(VALUES_PATH.read_text())
+    assert values["singleuser"]["serviceAccountName"] == "default"
+
+
+def test_non_dask_spawns_do_not_mount_kubernetes_credentials():
+    import asyncio
+    from types import SimpleNamespace
+
+    _, module = load_policy()
+    functions = {n.name: n for n in module.body if isinstance(n, (ast.FunctionDef, ast.AsyncFunctionDef))}
+    apply = functions["apply_profile_settings"]
+    # Execute the actual beginning of the spawn hook, before external services.
+    apply.body = apply.body[:4]
+    ns = {"is_power_user": lambda user: user.is_power_user}
+    exec(compile(ast.Module(body=[functions["reject_custom_resources"], functions["notebook_service_account"], apply], type_ignores=[]), str(VALUES_PATH), "exec"), ns)
+    for profile, power, account, mount in [("cpu-default", False, "default", False), ("gpu-3gb", True, "default", False), ("dask-cluster", True, "dask-sa", True)]:
+        spawner = SimpleNamespace(user_options={"profile": profile}, user=SimpleNamespace(is_power_user=power))
+        asyncio.run(ns["apply_profile_settings"](spawner))
+        assert (spawner.service_account, spawner.automount_service_account_token) == (account, mount)

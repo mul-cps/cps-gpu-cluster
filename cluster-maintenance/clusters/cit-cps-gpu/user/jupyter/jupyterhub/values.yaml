@@ -1590,10 +1590,19 @@ hub:
 
       c.KubeSpawner.profile_list = get_profile_list
 
+      def notebook_service_account(profile_slug, power_user):
+          if profile_slug == 'dask-cluster':
+              if not power_user:
+                  raise ValueError('Dask requires power-user access')
+              return 'dask-sa'
+          return 'default'
+
       # ---------- Apply profile & per-profile knobs ----------
       async def apply_profile_settings(spawner):
           reject_custom_resources(spawner.user_options or {})
           profile_slug = spawner.user_options.get('profile', 'cpu-default')
+          spawner.service_account = notebook_service_account(profile_slug, is_power_user(spawner.user))
+          spawner.automount_service_account_token = profile_slug == 'dask-cluster'
           mount_nfs = bool(spawner.user_options.get('mount_nfs', False))
           mount_shared_longhorn = bool(spawner.user_options.get('mount_shared_longhorn', False))
           mount_personal_nfs = bool(spawner.user_options.get('mount_personal_nfs', False))
@@ -2206,7 +2215,7 @@ singleuser:
     tag: "2025-11-06"
     pullPolicy: Always
 
-  serviceAccountName: dask-sa
+  serviceAccountName: default
 
   networkPolicy:
     enabled: true
