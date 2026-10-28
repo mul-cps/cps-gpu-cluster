@@ -55,3 +55,26 @@ cleanup, measured startup bursts, matching restore, and a reviewed release.
 Do not repeat already valid hardware tests without a changed tuple or an
 identified coverage gap. Hub 6 and deferred university federation/Moodle are
 not prerequisites for fixing or qualifying those paths.
+
+## Controlled current-group lifecycle check
+
+The existing CPS `shared-gpu-lab` workspace was started through the deployed
+Hub API at the fixed `interactive-shared-5` profile. Hub readiness and a real
+CUDA allocation passed: one A100 was visible, the reported memory ceiling was
+5,368,709,120 bytes, and the GPU tensor sum returned 65,536. This exercises the
+current deployed group path; it does not extend the retained isolation scope
+to other devices or profiles.
+
+This single launch took about 169 seconds: approximately 52 seconds before Pod
+creation, 100 seconds from creation to scheduling, and 17 seconds to readiness.
+The Gateway prepare diagnostic reported 72.943 seconds, including 26.760 seconds
+in registered readiness and 31.798 seconds in enrollment publication. These
+measurements overlap the scheduling interval and must not be added to it. They
+identify coordinator waits as a concrete optimization target; this is not a
+p95 or burst measurement.
+
+The controlled Pod UID `4586fa27-c0d0-4615-a881-46e490b3bb75` was checked before
+stopping through Hub REST (HTTP 204). A fresh Kubernetes read found the Pod
+absent and the reservation API returned `active: false`, `attempt: null`. The
+original Aditya, Gottam, Muslim and Rino Pod UIDs remained unchanged, all with
+zero restarts. No candidate archive image was deployed during this check.
