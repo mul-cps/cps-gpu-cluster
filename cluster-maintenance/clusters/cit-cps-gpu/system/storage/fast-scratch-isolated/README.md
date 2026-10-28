@@ -22,9 +22,31 @@ required if the legacy `fast-scratch` class or its existing claims are ever to
 be retired.
 
 This bundle is intentionally independent of `storage-classes` so it can stage
-while that bundle is blocked on the K3s-owned `local-path-config`. The current
-`storage-classes` Helm release manifest still contains that ConfigMap; removing
-it from the old release source could prune the live object. This change leaves
-that release source untouched and does not claim to clear its dependency. A
-separate, reviewed Helm ownership transition is required before removing the
-ConfigMap from that release.
+while that bundle is blocked on the K3s-owned `local-path-config`. The checked-in
+ConfigMap now carries Helm's `resource-policy: keep` as handover stage 1. This
+stage changes only metadata: its data remains identical to the current Helm
+release manifest. It does not remove the ConfigMap or clear the dependency.
+Fleet currently reports the ConfigMap as outside this BundleDeployment's
+object-set inventory, but that is a monitor status, not a dependency on this
+bundle's deployment: `storage-classes` declares no `dependsOn`, and Fleet checks
+only declared dependencies before running its Helm upgrade. Stage 1 follows the
+non-force Helm patch path; it has not been applied to the live cluster as part
+of this change. Fleet `Ready` may remain false because the K3s object-set owner
+marker is still different.
+
+Stage 2 must be a separate reviewed source change, and only after the deployed
+`storage-classes` release manifest and the live ConfigMap both show
+`helm.sh/resource-policy: keep`. Confirm the live object is still owned by the
+K3s `local-storage` Addon, the ConfigMap data is unchanged from the stage-1
+snapshot, the provisioner is healthy, and existing PV/PVC bindings are intact.
+If the live keep annotation is absent, do not remove the manifest: Fleet's
+embedded Helm 3 checks the live annotation before deleting an omitted resource.
+After stage 2, verify the release no longer contains the ConfigMap while the
+K3s-owned object, provisioner, and all existing claims remain intact.
+
+The JupyterHub bundle depends on `storage-classes`. A non-Ready dependency can
+block a future JupyterHub deployment, but Fleet checks dependencies before
+calling Helm and does not uninstall or roll back an already deployed release
+when dependency readiness changes. This handover does not change the Hub chart
+or request a Hub rollout; existing Hub workloads remain on their deployed
+release.
