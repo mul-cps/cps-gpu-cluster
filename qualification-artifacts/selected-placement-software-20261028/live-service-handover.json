@@ -1,0 +1,44 @@
+{
+  "observed_at": "2026-10-28T15:43:22.513057+00:00",
+  "services": {
+    "cps-compute/compute-gateway": {
+      "uid": "f5f9b266-433d-4825-83de-d51e31c71648",
+      "generation": 432,
+      "ready_replicas": 1,
+      "images": {
+        "gateway": "ghcr.io/mul-cps/cps-compute@sha256:09c535b59fa9188e1942b0285632a6f3a1b1ced48211028cf8b1f2036157a6d5",
+        "approval-capture": "ghcr.io/mul-cps/cps-compute@sha256:09c535b59fa9188e1942b0285632a6f3a1b1ced48211028cf8b1f2036157a6d5"
+      }
+    },
+    "cps-native-runtime/cps-native-node-agent": {
+      "uid": "104610ee-b72c-4649-84fe-717ac5aa9d9c",
+      "generation": 95,
+      "ready_replicas": 1,
+      "images": {
+        "node-agent": "ghcr.io/mul-cps/cps-native-node@sha256:64ae31c4e87092bf4c6f43ea408a70f1476ba7c5baa20bfe05df49eee6e4890e"
+      }
+    },
+    "kai-scheduler/binder": {
+      "uid": "dc2e1960-6d4f-4038-89e8-5fe66e84651d",
+      "generation": 422,
+      "ready_replicas": 1,
+      "images": {
+        "binder": "ghcr.io/mul-cps/cps-native-kai-binder@sha256:35f0506a49a6f2c6dd8c658697e6db3ccbe671da1bc8d42d3ff902a2c33f536b"
+      }
+    }
+  },
+  "scope": "service image handover; selected two-device activation remains disabled",
+  "regression": {
+    "pod_uid": "2a2a6171-9d6b-4fa4-ae00-ad9ff994ea93",
+    "result": "held before binding",
+    "binder_reason": "reserved-gpu",
+    "source_condition": "legacy path requires exactly one reserved GPU matching nativeApprovedGPU",
+    "cleanup": {
+      "pod_absent": true,
+      "reservation_active": false,
+      "reservation_attempt": null
+    }
+  },
+  "protected_notebooks": "four original UIDs Running, zero restarts",
+  "production_qualified": false
+}

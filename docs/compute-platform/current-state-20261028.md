@@ -336,3 +336,27 @@ embedded qualification policy versions. No planner/factory relaxation is needed.
 The new physical B requires an independent measured root; it must not be
 represented as A's physical identity successor. Workload image preservation
 from the measured image to the current image must also remain explicit.
+
+### Live service handover and bounded regression follow-up
+
+This observation supersedes the staging-only service statements above. Gateway,
+Node and KAI binder now each report one ready replica on the published candidate
+images recorded in the [live receipt](../../qualification-artifacts/selected-placement-software-20261028/live-service-handover.json).
+Hub and selected-gate activation remain pending; the two-device catalog remains
+uninstalled. Existing policy, gate image and physical qualification scope were
+not expanded.
+
+The initial Node rollout waited because the bootstrap release sentinel had been
+changed from the literal `true`. The bounded rollback restored the services; the
+corrected retry preserved that sentinel and reached readiness. This was an
+operator staging error, not a driver or GPU isolation failure.
+
+The subsequent current-group launch did not pass: binder held it before binding
+with `reserved-gpu`. Source maps that diagnostic to the legacy terminal check
+requiring exactly one reserved GPU equal to `nativeApprovedGPU`; the new
+placement-pending protocol bypasses that legacy single-device check only through
+its separate validated path. This is not evidence of successful two-device
+activation. A fresh read confirmed the test Pod and BindRequest absent, the
+workspace reservation inactive with no attempt, and no GPU reservation Pods
+remaining. Aditya, Gottam, Muslim and Rino retained their original Pod UIDs,
+Running state and zero restarts. No protected notebook was restarted.
