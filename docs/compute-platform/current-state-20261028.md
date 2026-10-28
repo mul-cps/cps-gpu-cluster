@@ -404,3 +404,10 @@ authority mounts. It exited successfully and was removed with UID/resourceVersio
 preconditions. The [receipt](../../qualification-artifacts/selected-placement-software-20261028/selected-gate-node-prepull.json)
 records the target image and Pod identity. The native runtime namespace's
 controller admission policy was left intact. This did not assign a GPU cap.
+
+A static comparison with the actual historical B QA gate ConfigMap found the
+unchanged cap-validation and sealed-wait functions in the installed selected
+gate, matching all historical top-level assignments; the driver-health module
+is byte-identical. This [comparison](../../qualification-artifacts/selected-placement-software-20261028/gate-cap-source-comparison.json)
+supports reusing earlier isolation measurements. It does not prove the Python
+runtime environment or a cap assignment in the changed gate.
