@@ -54,3 +54,15 @@ def test_all_supported_fixed_profile_images_are_pulled_by_both_image_puller_daem
         for slug, image in supported_images.items():
             assert image in image_refs, f'{daemonset} does not pre-pull {slug}: {image}'
         assert configs['dask-cluster']['image'] not in image_refs
+
+
+def test_fixed_launch_helpers_are_deployed_with_the_verified_compatibility_image():
+    output = subprocess.run(
+        ['helm', 'template', 'jupyterhub', str(CHART), '--namespace', 'jupyterhub', '-f', str(VALUES)],
+        capture_output=True, text=True, check=True,
+    ).stdout
+    hub = next(r for r in yaml.safe_load_all(output)
+               if r and r.get('kind') == 'Deployment' and r['metadata']['name'] == 'hub')
+    image = next(c['image'] for c in hub['spec']['template']['spec']['containers'] if c['name'] == 'hub')
+    assert image.startswith('ghcr.io/mul-cps/cps-compute:')
+    assert image.endswith('@sha256:f00f8c5b63bdce6348153aab6e11c1fd5cbf638ed1b50ef27bdda346ad202b75')

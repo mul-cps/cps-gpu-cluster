@@ -40,6 +40,12 @@ ingress:
       hosts: [jupyterhub.dshl.unileoben.ac.at]
 
 hub:
+  # The fixed-profile validator and directory cache are released Hub modules.
+  # Chart 4.4.2 concatenates name:tag; Kubernetes supports tag@digest refs.
+  image:
+    name: ghcr.io/mul-cps/cps-compute
+    tag: "cps-hub-fixed-launch-16fa767-20261028@sha256:f00f8c5b63bdce6348153aab6e11c1fd5cbf638ed1b50ef27bdda346ad202b75"
+    pullPolicy: IfNotPresent
   extraEnv:
     - name: OAUTH_CLIENT_SECRET
       # client-secret sourced from jupyterhub-oauth-secret, now SOPS-managed — see oauth-sopssecret.yaml
