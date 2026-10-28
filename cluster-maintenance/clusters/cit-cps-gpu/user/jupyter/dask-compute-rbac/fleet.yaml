@@ -1,0 +1,11 @@
+name: dask-compute-rbac
+defaultNamespace: dask-compute
+
+labels:
+  app: dask-compute
+  name: dask-compute-rbac
+
+dependsOn:
+- selector:
+    matchLabels:
+      name: jupyterhub

@@ -8,6 +8,8 @@ VALUES_PATH = (
     Path(__file__).parents[2]
     / "cluster-maintenance/clusters/cit-cps-gpu/user/jupyter/jupyterhub/values.yaml"
 )
+JUPYTERHUB_DIR = VALUES_PATH.parent
+DASK_RBAC_DIR = JUPYTERHUB_DIR.parent / "dask-compute-rbac"
 
 
 def load_policy():
@@ -144,3 +146,33 @@ def test_non_dask_spawns_do_not_mount_kubernetes_credentials():
         spawner = SimpleNamespace(user_options={"profile": profile}, user=SimpleNamespace(is_power_user=power))
         asyncio.run(ns["apply_profile_settings"](spawner))
         assert (spawner.service_account, spawner.automount_service_account_token) == (account, mount)
+
+
+def test_dask_rbac_uses_a_separate_namespace_bundle():
+    root = yaml.safe_load((JUPYTERHUB_DIR / "kustomization.yaml").read_text())
+    assert "dask-rbac.yaml" not in root["resources"]
+    assert "dask-serviceaccount.yaml" in root["resources"]
+
+    fleet = yaml.safe_load((DASK_RBAC_DIR / "fleet.yaml").read_text())
+    assert fleet["defaultNamespace"] == "dask-compute"
+    assert any(
+        dependency.get("selector", {}).get("matchLabels", {}).get("name") == "jupyterhub"
+        for dependency in fleet.get("dependsOn", [])
+    )
+
+    kustomization = yaml.safe_load((DASK_RBAC_DIR / "kustomization.yaml").read_text())
+    assert kustomization["namespace"] == "dask-compute"
+    documents = list(yaml.safe_load_all((DASK_RBAC_DIR / "dask-rbac.yaml").read_text()))
+    resources = {(doc["kind"], doc["metadata"]["namespace"]) for doc in documents}
+    assert resources == {("Role", "dask-compute"), ("RoleBinding", "dask-compute")}
+    binding = next(doc for doc in documents if doc["kind"] == "RoleBinding")
+    assert binding["subjects"] == [
+        {"kind": "ServiceAccount", "name": "dask-sa", "namespace": "jupyterhub"}
+    ]
+    role = next(doc for doc in documents if doc["kind"] == "Role")
+    assert not any(
+        rule.get("apiGroups") == [""]
+        and set(rule.get("verbs", [])) & {"create", "patch", "update", "delete"}
+        for rule in role["rules"]
+    )
+    assert not any("secrets" in rule.get("resources", []) for rule in role["rules"])
