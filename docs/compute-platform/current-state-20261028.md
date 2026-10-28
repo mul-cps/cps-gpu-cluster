@@ -102,3 +102,26 @@ the HTTP adapter class matches. Deployment therefore requires a bounded
 compatible package/backport; replacing whole current modules or promoting
 the complete newer runtime without qualification would change unrelated
 behavior. The deployed image and running user Pods remain unchanged here.
+
+## Archive compatibility deployment
+
+The bounded archive fixes are now deployed: Gateway source `ad451f5`, SDK
+0.1.1, image `sha256:d9053551c63f6844b043cea3cdb7df67a2a8f2091d93b9c6f560818df07ed711`;
+both consoles use admin source `a1c554a`, version 0.1.2, image
+`sha256:b6856fa9c0ac1ddd42541c5bb629ee31ff8a5fd7420cd152548d6fdc8edde7b7`.
+Each console selects the modular course-service filesystem provider while
+retaining its installed SDK 0.1.0 and all six existing UI assets. No schema
+migration or Lab-package ownership change was introduced. Both provider
+imports/configurations and authenticated current-group readiness passed after
+the paired guarded rollouts; policy and approval revision remain unchanged.
+Four focused provider tests pass, including pending-state and sanitized-503
+behavior. Actual controlled NAS archive closure/retry remains open. See the
+[deployment receipt](../../qualification-artifacts/archive-compatibility-rollout-20261028/README.md).
+
+Before that rollout, the existing CPS 5 GiB group workspace reached Ready,
+completed a CUDA calculation with the measured 5 GiB ceiling, and stopped
+through Hub REST; its Pod disappeared and its reservation became inactive.
+The four protected research/student Pod generations remained unchanged.
+That single launch took approximately 169 seconds; Gateway prepare spent
+72.943 seconds, principally registered readiness and enrollment publication.
+These are measured optimization targets, not p95/burst qualification.
