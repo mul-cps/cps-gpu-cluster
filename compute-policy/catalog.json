@@ -204,6 +204,31 @@
       "maxAgeSeconds": 3600,
       "idleSeconds": 900,
       "images": []
+    },
+    "personal-mujoco-10": {
+      "displayName": "MuJoCo NVIDIA EGL desktop (10 GiB, 8 hours)",
+      "kind": "interactive",
+      "enabled": false,
+      "cpu": "8",
+      "memory": "24G",
+      "requests": {
+        "cpu": "2",
+        "memory": "4G"
+      },
+      "personal": {
+        "capability": "personal-native-nvidia-egl-v1",
+        "alias": "gpu-mujoco-xpra"
+      },
+      "gpu": {
+        "mode": "shared",
+        "nominalMemoryGiB": 10,
+        "fraction": "0.25"
+      },
+      "queue": "interactive",
+      "qualificationRequired": "personal-native-nvidia-egl",
+      "maxAgeSeconds": 28800,
+      "idleSeconds": 1800,
+      "images": []
     }
   },
   "approvedImages": [],

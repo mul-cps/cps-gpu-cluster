@@ -12,6 +12,23 @@ from head_gateway_rotation import (_guard,_actual,_core,_reference,_mounted_head
 
 HUBS=('hub:cps','hub:cit')
 
+# Actual separately pinned stdlib-only materializer from retained2026-10-27
+# Deployment captures. Hash the ENTIRE container: image, inline seed checksum,
+# command, mounts, security and defaulted fields. No arbitrary helper override.
+SEPARATE_HUB_INPUT_IMAGE='ghcr.io/mul-cps/cps-compute@sha256:435c080630b71dc9af7656052f96d3e038380d5a87e484b398f7c0a27e5cb466'
+SEPARATE_HUB_INPUT_PINS={
+    'hub:cps':'sha256:b29a2a6309f1bc8ff735c3272a98efe278b73ebf3f39f16b311138a7b24768ac',
+    'hub:cit':'sha256:87fd98e298734a42ca43b9e01511ee8275b52010020427dc1a730bed555a36ca'}
+
+
+def _separate_hub_input(component,helper,main_image):
+    if helper['image']==main_image:return False  # Original coupled path.
+    image.require(helper['image']==SEPARATE_HUB_INPUT_IMAGE
+        and image.sha(helper)==SEPARATE_HUB_INPUT_PINS[component],
+        'Independently pinned separate Hub input helper differs')
+    return True
+
+
 OPERATORS={'observer':('cps-native-system','cps-native-observer-operator','observer','cps-native-observer'),
            'writer':('cps-compute','cps-native-head-delivery','delivery','cps-compute')}
 
@@ -163,8 +180,7 @@ def _context(inputs):
     for component in ('hub:cps','hub:cit'):
         hpod=snapshot['deployments'][component]['spec']['template']['spec']
         helper=image._one(hpod.get('initContainers',[]),'cps-native-kai-hub-inputs')
-        image.require(helper['image']==declarations[component]['image'],
-            'Current Hub private-input helper must match original Hub image')
+        _separate_hub_input(component,helper,declarations[component]['image'])
         if aliases is not None:
             main=image._one(hpod['containers'],declarations[component]['container'])
             env=main.get('env',[]);names=[row['name'] for row in env]
@@ -268,7 +284,11 @@ def bind_node(snapshot,prepared,actual_node_config):
                 literal={'name':'CPS_PERSONAL_CPU_PROFILE_ALIASES','value':image.canonical(aliases)}
                 if not any(row['name']==literal['name'] for row in env):env.append(literal)
             if component in HUBS:
-                image._one(pod['initContainers'],'cps-native-kai-hub-inputs')['image']=selected[component]
+                helper=image._one(pod['initContainers'],'cps-native-kai-hub-inputs')
+                if not _separate_hub_input(component,helper,decl['image']):
+                    helper['image']=selected[component]
+                # Separate materializer has no SDK dependency; retain its exact
+                # original image/command/seed/mounts for forward AND inverse.
             else:
                 for section,name in (('containers','approval-capture'),('initContainers','capture-private-inputs'),
                                      ('initContainers','native-kai-private-inputs')):

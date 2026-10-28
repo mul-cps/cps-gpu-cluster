@@ -111,6 +111,43 @@
               "interactive",
               "batch"
             ]
+          },
+          "requests": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "cpu",
+              "memory"
+            ],
+            "properties": {
+              "cpu": {
+                "type": "string"
+              },
+              "memory": {
+                "type": "string"
+              }
+            }
+          },
+          "personal": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "alias",
+              "capability"
+            ],
+            "properties": {
+              "alias": {
+                "type": "string",
+                "minLength": 1
+              },
+              "capability": {
+                "const": "personal-native-nvidia-egl-v1"
+              }
+            }
+          },
+          "displayName": {
+            "type": "string",
+            "minLength": 1
           }
         }
       }

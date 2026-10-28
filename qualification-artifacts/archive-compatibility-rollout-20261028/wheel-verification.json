@@ -1,0 +1,22 @@
+{
+  "cps_compute-0.1.1-py3-none-any.whl": {
+    "sha256": "ac7ccb12aed2832a79e93df7968a236ce77fc050ef54c2848d026dd5f14befff",
+    "verified_record_files": 86,
+    "changed_modules": [
+      "__init__.py",
+      "internal.py",
+      "storage.py"
+    ],
+    "added_modules": []
+  },
+  "e2x_course_hub-0.1.2-py3-none-any.whl": {
+    "sha256": "a582d48a333d2aaf1eeb8edf5d9fa5041799b8a992baa954a1336c6b389093a5",
+    "verified_record_files": 62,
+    "changed_modules": [
+      "__about__.py"
+    ],
+    "added_modules": [
+      "cps/filesystem.py"
+    ]
+  }
+}

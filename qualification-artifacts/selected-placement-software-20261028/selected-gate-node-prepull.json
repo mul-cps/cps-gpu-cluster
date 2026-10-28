@@ -1,0 +1,20 @@
+{
+  "pod": {
+    "namespace": "cps-compute",
+    "name": "cps-selected-gate-prepull-20261028",
+    "uid": "3be89513-922e-4a20-bb61-2110c1b4923b",
+    "node": "k3s-wk-gpu2",
+    "created_at": "2026-10-28T16:00:52+00:00",
+    "finished_at": "2026-10-28T16:00:54+00:00"
+  },
+  "image": "ghcr.io/mul-cps/cps-compute@sha256:09c535b59fa9188e1942b0285632a6f3a1b1ced48211028cf8b1f2036157a6d5",
+  "image_id": "ghcr.io/mul-cps/cps-compute@sha256:09c535b59fa9188e1942b0285632a6f3a1b1ced48211028cf8b1f2036157a6d5",
+  "exit_code": 0,
+  "log": "installed-selected-gate-cpu-import 0.1.1",
+  "gpu_requested": false,
+  "gpu_visible": false,
+  "api_token_mounted": false,
+  "native_authority_mounted": false,
+  "cleanup": "exact UID/resourceVersion preconditions",
+  "scope": "exact-image cache warmup and CPU import on target node; not cap assignment or GPU qualification"
+}

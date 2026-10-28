@@ -7,14 +7,13 @@ measured acceptance. Evidence for one stage does not establish the next stage.
 See the [operational acceptance record](qualification/operational-acceptance-20261013.md)
 for the bounded live results of 2026-10-13 and their retained evidence.
 
-## Current boundary — 23 October 2026
+## Current boundary — 27 October 2026
 
-The [23 October state and completion order](current-state-20261023.md) is the
-current summary. The durable 5 GiB shared-workspace lifecycle, CUDA cap/recovery,
-persistence and automatic KAI reservation cleanup now pass. Full-pool, remaining
-application/authorization, recovery and release qualification remain open.
-The [16 October audit](current-state-20261016.md) and ledger below retain dated
-historical evidence; their image names and pending statements are not current pins.
+The [27 October state and completion order](current-state-20261027.md) is the
+current summary. Published software tests, observed runtime and production gates
+are reported separately. The previous CUDA and shared-workspace evidence remains
+linked there; full-pool, authorization, recovery and release qualification remain
+open. Earlier dated ledgers retain historical evidence and are not current pins.
 
 ## Historical rollout summary — through 15 October 2026
 

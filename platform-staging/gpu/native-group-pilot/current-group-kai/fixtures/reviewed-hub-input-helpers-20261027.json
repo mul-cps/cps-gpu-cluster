@@ -1,0 +1,94 @@
+{
+  "captured_from_actual_deployments": {
+    "hub:cit": {
+      "name": "hub",
+      "namespace": "cit-jhub",
+      "resourceVersion": "382340847",
+      "uid": "dd90f866-47d3-4b9f-ba41-b4ebf8cb2b1e"
+    },
+    "hub:cps": {
+      "name": "hub",
+      "namespace": "jupyterhub",
+      "resourceVersion": "382340936",
+      "uid": "02fb8421-d323-4636-b006-2490cd6f5b63"
+    }
+  },
+  "helpers": {
+    "hub:cit": {
+      "command": [
+        "python",
+        "-I",
+        "-S",
+        "-c",
+        "from pathlib import Path; import os, stat, hashlib; os.umask(0o077); raw=Path('/kai-hub-seed/settings.json').read_bytes(); assert hashlib.sha256(raw).hexdigest()=='a0de07a04f4d4f826adadffd7efbf09084cea26e0985af6261f53f66c4c4b7b2', 'Immutable settings bytes differ'; p=Path('/kai-hub-private/config'); p.mkdir(mode=0o700,exist_ok=True); dfd=os.open(p,os.O_RDONLY|os.O_DIRECTORY|os.O_NOFOLLOW); s=os.fstat(dfd); assert stat.S_ISDIR(s.st_mode) and s.st_uid==os.geteuid() and stat.S_IMODE(s.st_mode) in (0o700,0o2700); os.fchmod(dfd,0o700); fd=os.open('settings.json',os.O_WRONLY|os.O_CREAT|os.O_NOFOLLOW,0o600,dir_fd=dfd); s=os.fstat(fd); assert stat.S_ISREG(s.st_mode) and s.st_uid==os.geteuid() and s.st_nlink==1 and stat.S_IMODE(s.st_mode)==0o600; os.ftruncate(fd,0); stream=os.fdopen(fd,'wb'); stream.write(raw); stream.flush(); os.fsync(stream.fileno()); stream.close(); os.fsync(dfd); os.close(dfd)"
+      ],
+      "image": "ghcr.io/mul-cps/cps-compute@sha256:435c080630b71dc9af7656052f96d3e038380d5a87e484b398f7c0a27e5cb466",
+      "imagePullPolicy": "IfNotPresent",
+      "name": "cps-native-kai-hub-inputs",
+      "resources": {},
+      "securityContext": {
+        "allowPrivilegeEscalation": false,
+        "capabilities": {
+          "drop": [
+            "ALL"
+          ]
+        },
+        "readOnlyRootFilesystem": true,
+        "runAsGroup": 1000,
+        "runAsNonRoot": true,
+        "runAsUser": 1000
+      },
+      "terminationMessagePath": "/dev/termination-log",
+      "terminationMessagePolicy": "File",
+      "volumeMounts": [
+        {
+          "mountPath": "/kai-hub-seed",
+          "name": "cps-native-kai-hub-seed",
+          "readOnly": true
+        },
+        {
+          "mountPath": "/kai-hub-private",
+          "name": "cps-native-kai-hub-private"
+        }
+      ]
+    },
+    "hub:cps": {
+      "command": [
+        "python",
+        "-I",
+        "-S",
+        "-c",
+        "from pathlib import Path; import os, stat, hashlib; os.umask(0o077); raw=Path('/kai-hub-seed/settings.json').read_bytes(); assert hashlib.sha256(raw).hexdigest()=='783186708551217d436aca9a4934136be2e5dfe2dc5bd8929a5fe095f30f1c87', 'Immutable settings bytes differ'; p=Path('/kai-hub-private/config'); p.mkdir(mode=0o700,exist_ok=True); dfd=os.open(p,os.O_RDONLY|os.O_DIRECTORY|os.O_NOFOLLOW); s=os.fstat(dfd); assert stat.S_ISDIR(s.st_mode) and s.st_uid==os.geteuid() and stat.S_IMODE(s.st_mode) in (0o700,0o2700); os.fchmod(dfd,0o700); fd=os.open('settings.json',os.O_WRONLY|os.O_CREAT|os.O_NOFOLLOW,0o600,dir_fd=dfd); s=os.fstat(fd); assert stat.S_ISREG(s.st_mode) and s.st_uid==os.geteuid() and s.st_nlink==1 and stat.S_IMODE(s.st_mode)==0o600; os.ftruncate(fd,0); stream=os.fdopen(fd,'wb'); stream.write(raw); stream.flush(); os.fsync(stream.fileno()); stream.close(); os.fsync(dfd); os.close(dfd)"
+      ],
+      "image": "ghcr.io/mul-cps/cps-compute@sha256:435c080630b71dc9af7656052f96d3e038380d5a87e484b398f7c0a27e5cb466",
+      "imagePullPolicy": "IfNotPresent",
+      "name": "cps-native-kai-hub-inputs",
+      "resources": {},
+      "securityContext": {
+        "allowPrivilegeEscalation": false,
+        "capabilities": {
+          "drop": [
+            "ALL"
+          ]
+        },
+        "readOnlyRootFilesystem": true,
+        "runAsGroup": 1000,
+        "runAsNonRoot": true,
+        "runAsUser": 1000
+      },
+      "terminationMessagePath": "/dev/termination-log",
+      "terminationMessagePolicy": "File",
+      "volumeMounts": [
+        {
+          "mountPath": "/kai-hub-seed",
+          "name": "cps-native-kai-hub-seed",
+          "readOnly": true
+        },
+        {
+          "mountPath": "/kai-hub-private",
+          "name": "cps-native-kai-hub-private"
+        }
+      ]
+    }
+  }
+}

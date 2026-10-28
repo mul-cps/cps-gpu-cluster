@@ -1,0 +1,41 @@
+{
+  "boot_id": "a464df41-e391-4443-b8e8-ad7ecd052318",
+  "caps_mib": [
+    5120,
+    10240
+  ],
+  "cleanup": {
+    "all12_offline_pinned_used0": true,
+    "both_gpu_compute_clients_zero": true,
+    "qa_pods_absent": true
+  },
+  "cohort_uid": "e034ffbd-3d1c-4ed2-acc1-0ddbd3e81677",
+  "driver": "615.71.09",
+  "driver_generation": "4ebffc96-e25e-4583-a3b8-0d853fd90efd",
+  "gpu_uuid": "GPU-1e6145d5-8ee2-43e2-a0d5-6d345909e8a6",
+  "manifest_sha256": "59e5758cd1ace6220898b14c238cd4e731002dcc4bf00f3dee166f34f2ee54ea",
+  "measurements": [
+    {
+      "capture_sha256": "sha256:4a807cd36e514012efd205953fb0ad559ef59bd85ca914a5c48b28d08688c0f0",
+      "direction": "a-to-b",
+      "observation_sha256": {
+        "after.json": "672a19da16513076147da9f92d6757cc556f3ae1ff87a8d74b5ed13782e72b36",
+        "before.json": "fb6078e01db05608609ad11edd7e34121af26f6c0275e67dc6acd99a66c837f5"
+      },
+      "receipt_sha256": "3eeec030cf198645c21e2ae2bee6fba425fc32c599d4165b9156d7811e2ef7da",
+      "trial_id": "b03281d6-19cb-40d0-b29e-49d1a0c5d36b"
+    },
+    {
+      "capture_sha256": "sha256:c9b3c94bfffc6e904e19524561a885da4bef9a7373202ab0d2de246f5cd45047",
+      "direction": "b-to-a",
+      "observation_sha256": {
+        "after.json": "082bff5579e37365d9972760b1030b91515e7deadfa44dc9d5f06c029e17c580",
+        "before.json": "1c5d45226f4ca234dc2e6f7ae05741bf63cf890abc6d07fb4f6b18bdc92e00b8"
+      },
+      "receipt_sha256": "84af77040e01fad612a768cee693297ee43e1ac5db138592502166c92463c1af",
+      "trial_id": "28950bfa-4207-41ff-ac09-1a5bdb6a2f77"
+    }
+  ],
+  "production_qualified": false,
+  "state": "bounded-ipc-measurements-and-cleanup-passed"
+}

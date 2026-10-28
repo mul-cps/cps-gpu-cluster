@@ -1,0 +1,35 @@
+{
+  "source_worktree": "/home/bjoern/git/cps-transport-worktrees/kai-v3-late-placement-20261028",
+  "source_commit": "99508c26257b4fd61f6171f4f18d018cbd33f779",
+  "source_subject": "Route selected placement through dedicated KAI prepare",
+  "compatibility_base_commit": "994cddc17986d2e1d399ddb6b85da52023f890fa",
+  "compatibility_base_is_ancestor": true,
+  "source_worktree_clean_after_build": true,
+  "go_builder_image": "localhost/builder:1.26.8-bookworm",
+  "go_build": "containerized go build -buildvcs=false -ldflags -X version.buildDate=2026-10-28T15:00:00Z -X version.gitCommit=99508c26257b4fd61f6171f4f18d018cbd33f779 -X version.gitVersion=99508c2 -X version.gitTreeState=clean; GOOS=linux GOARCH=amd64 CGO_ENABLED=0; cmd/binder/main.go",
+  "runtime_dockerfile": "upstream Dockerfile, target prod, scratch-based runtime",
+  "runtime_dockerfile_sha256": "db7a3bba76967a561e731f5a8464c123b1c62da06a141836888711cb00d613cf",
+  "image_tag": "kai-scheduler/binder:99508c2-selected-placement",
+  "image_id": "sha256:00f93bceb748630f5c2893a3cf2db2ad5d9cf94839a8b1a17e6567b7ff3ce9f3",
+  "image_platform": "linux/amd64",
+  "image_entrypoint": [
+    "/workspace/app"
+  ],
+  "image_user": "65532:65532",
+  "binary_path": "/tmp/kai-binder-candidate-99508c2/bin/binder-amd64",
+  "binary_sha256": "c5ab5469d6e9991f5b01790cb7319b62fd2b3edba1e22ff47c57f519e22b507a",
+  "validation": [
+    "source commit exact and clean",
+    "994cddc ancestor verified in git history",
+    "binary is statically linked linux/amd64 ELF",
+    "local image inspect verified image id, platform, entrypoint, and runtime uid",
+    "binder tests not rerun per task instruction",
+    "offline binder --help executed successfully"
+  ],
+  "publication": {
+    "candidate_tag": "ghcr.io/mul-cps/cps-native-kai-binder:selected-99508c2-20261028",
+    "registry_digest": "sha256:35f0506a49a6f2c6dd8c658697e6db3ccbe671da1bc8d42d3ff902a2c33f536b",
+    "independent_registry_inspection": true,
+    "deployed": false
+  }
+}

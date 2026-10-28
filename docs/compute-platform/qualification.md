@@ -5,8 +5,8 @@ configuration renders are necessary checks, not acceptance evidence for hardware
 real authentication, shared kernels or data recovery.
 
 The latest bounded results are in the
-[2026-10-23 current-state ledger](current-state-20261023.md), including the
-same-device CPS/CIT running pair and peer-safe shutdown. The October 12 lifecycle
+[2026-10-27 current-state ledger](current-state-20261027.md), which links the
+historical same-device CPS/CIT pair and peer-safe shutdown evidence. The October 12 lifecycle
 below is historical, not the latest hardware result.
 Earlier dated failures and pending statements below remain historical evidence;
 the latest receipt supersedes them only for its exact scopes and measured pins.

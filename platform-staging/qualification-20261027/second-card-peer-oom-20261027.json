@@ -1,0 +1,62 @@
+{
+  "observed_at": "2026-10-27T21:16:17.065994+00:00",
+  "source_commit": "9abc787833376571d8c883a89950dd9d733e5d4e",
+  "gpu_uuid": "GPU-1e6145d5-8ee2-43e2-a0d5-6d345909e8a6",
+  "node": "k3s-wk-gpu2",
+  "cohort_uid": "a565adb6-6dcc-4699-8064-89227400ad79",
+  "manifest_sha256": "c532376942d901d81229df4fb9e53d6af658cb9153fbedcadff14e3d84d082bb",
+  "native_caps_mib": [
+    5120,
+    10240
+  ],
+  "runner_sha256": "7fe1d8e1cdb2a251c37bfa9766300c8fed51e58d6cca6e4f2b9278d337cd4d93",
+  "root_independent_retained_trace_reassessment_passed": true,
+  "directions": [
+    {
+      "direction": "b-to-a",
+      "held_before_oom_mib": 4608,
+      "measurement_passed": true,
+      "peer_ticks_inside_oom_hold": 16,
+      "physical_samples": 4,
+      "production_qualified": false,
+      "recovery_byte": 37,
+      "transport": "kubectl",
+      "typed_oom": {
+        "cuda_error_code": null,
+        "kind": "torch.OutOfMemoryError"
+      },
+      "unchanged_seals_and_processes": true,
+      "min_physical_free_bytes": 36491493376
+    },
+    {
+      "direction": "a-to-b",
+      "held_before_oom_mib": 9728,
+      "measurement_passed": true,
+      "peer_ticks_inside_oom_hold": 16,
+      "physical_samples": 4,
+      "production_qualified": false,
+      "recovery_byte": 37,
+      "transport": "kubectl",
+      "typed_oom": {
+        "cuda_error_code": null,
+        "kind": "torch.OutOfMemoryError"
+      },
+      "unchanged_seals_and_processes": true,
+      "min_physical_free_bytes": 31122784256
+    }
+  ],
+  "pressure_peer_recovery_passed": true,
+  "remaining_gate_families": [
+    "aggregate pressure",
+    "memory imports",
+    "restart",
+    "MPS",
+    "full-pool installed admission"
+  ],
+  "production_qualified": false,
+  "owned_cleanup_verified": true,
+  "retained_second_card_zero_charge_rows": 6,
+  "first_root_custody_unchanged": true,
+  "temporary_node_scheduling_fence_removed": true,
+  "advertised_gpus_after_cleanup": 8
+}

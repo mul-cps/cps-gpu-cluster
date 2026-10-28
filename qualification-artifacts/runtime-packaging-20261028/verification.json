@@ -1,0 +1,44 @@
+{
+  "status": "local-candidate-not-deployed",
+  "compute_revision": "bf532fce21b3ae462314b3d430812c6bfbdf1ae4",
+  "admin_revision": "53d9dcd50b230102af8ab863ac7aec329dbe6da3",
+  "node_image": {
+    "id": "236629e930cf8d6ccfe729140c97b925a3d11b7ea009b25f0c43bfaa0ca3330a",
+    "digest": "sha256:6932965a09f01a34fd87faf4447533aead183990927ed24d929f05ba41ee4661",
+    "labels": {
+      "org.opencontainers.image.revision": "bf532fce21b3ae462314b3d430812c6bfbdf1ae4",
+      "org.opencontainers.image.source": "https://github.com/mul-cps/cps-compute",
+      "org.opencontainers.image.version": "0.1.0",
+      "science.ai-lab.cps.node-wheel-sha256": "b1434655577a0ff6605ec53dd43d8c9cbdf6e1bbd8ae485caa0442cf11f0256c"
+    },
+    "network_disabled_pip_check": "passed",
+    "published": false,
+    "deployed": false
+  },
+  "admin_wheel": {
+    "filename": "e2x_course_hub-0.1.1-py3-none-any.whl",
+    "sha256": "bc300dc291bf0b9edf3429ae9417a093d57f7a1c657dd5b99a1b5f3ff3acc923",
+    "ui_tests_passed": 20,
+    "operation_state": "page-memory-only"
+  },
+  "hub_package_tests_passed": 15,
+  "qualification_limits": [
+    "No current candidate hardware run",
+    "No final connected recovery",
+    "No production promotion",
+    "Managed runtime live activation pending",
+    "Full assignment/archive and standalone admin Stop incomplete"
+  ],
+  "hub_image": {
+    "digest": "sha256:968e695e048fd6c7a15db731ee0ead1aafe980bfce1b5e0ad47627094e91bbba",
+    "id": "6e5413665620c68a8f9d39bbdbb864e7279edefdd7b15733f57ff04207bed3a2",
+    "source_revision": "bf532fce21b3ae462314b3d430812c6bfbdf1ae4",
+    "base": "sha256:83fdd8c1ef66b66de71fccf0657c40d722fa28310e0bcb819c538fad01873b21",
+    "sdk_wheel_sha256": "b1434655577a0ff6605ec53dd43d8c9cbdf6e1bbd8ae485caa0442cf11f0256c",
+    "hub_wheel_sha256": "b5d5314c3a32bfd7acf29f33c8abbd8aa88db269dbff90ea8c89f7cf4e4b31e6",
+    "wheelhouse_requirements": 81,
+    "record_inventory": "passed; no unrecorded SDK or Hub files",
+    "published": false,
+    "deployed": false
+  }
+}

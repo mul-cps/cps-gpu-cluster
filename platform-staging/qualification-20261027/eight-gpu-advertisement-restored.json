@@ -1,0 +1,52 @@
+{
+  "verified_at": "2026-10-27T21:06:58.485379+00:00",
+  "advertised_gpus": 8,
+  "nodes": [
+    {
+      "node": "k3s-wk-gpu1",
+      "capacity": 2,
+      "allocatable": 2,
+      "plugin_config": "plain"
+    },
+    {
+      "node": "k3s-wk-gpu2",
+      "capacity": 2,
+      "allocatable": 2,
+      "plugin_config": "plain"
+    },
+    {
+      "node": "k3s-wk-gpu3",
+      "capacity": 2,
+      "allocatable": 2,
+      "plugin_config": "plain"
+    },
+    {
+      "node": "k3s-wk-gpu4",
+      "capacity": 2,
+      "allocatable": 2,
+      "plugin_config": "plain"
+    }
+  ],
+  "host_preservation": {
+    "first": {
+      "custody_unchanged": true,
+      "cdi_file_set_bytes_mode_owner_unchanged": true,
+      "native_inventory_unchanged": true,
+      "epoch_unchanged": true,
+      "cdi_inode_changed": [
+        "/var/run/cdi/k8s.device-plugin.nvidia.com-gpu.json"
+      ]
+    },
+    "second": {
+      "custody_unchanged": true,
+      "cdi_file_set_bytes_mode_owner_unchanged": true,
+      "native_inventory_unchanged": true,
+      "epoch_unchanged": true,
+      "cdi_inode_changed": [
+        "/var/run/cdi/k8s.device-plugin.nvidia.com-gpu.json"
+      ]
+    }
+  },
+  "mutation": "GPU2 device-plugin.config selector changed from singleton qualification config to existing plain; no ConfigMap/driver/image/cap mutation",
+  "native_second_full_sharing_qualified": false
+}

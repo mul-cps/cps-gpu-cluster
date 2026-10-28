@@ -1,0 +1,99 @@
+{
+  "observed_at": "2026-10-28T15:51:40.796413+00:00",
+  "qualification_ref": {
+    "namespace": "cps-native-runtime",
+    "name": "cps-second-device-qualification-b65a5ca0fb59d8d4",
+    "uid": "6cf5e783-a5c6-4b9d-a672-cc8fe9c4a0e6",
+    "resourceVersion": "387170546",
+    "key": "qualification.json",
+    "data_sha256": "sha256:50d2dd3dabdd991e30d7031b1143a3f4a72549b607109df06df9d499e2e5eab9"
+  },
+  "proof": {
+    "capacity_evidence_sha256": "sha256:b7d741e6f770999c9b66ca93c365cee9ef97b6dc35d6bffd93e889c70fdfc69b",
+    "core_sha256": "24b83a0ed1c676fccee3eb3d558d32b407a32f5ebd3e4a979bf468ac405e852c",
+    "gate_image": "ghcr.io/mul-cps/cps-compute@sha256:bc5b128f582641eae8395e1121d1fb248eddc39a56c9e863b7c564badd94b167",
+    "gates": {
+      "aggregate": {
+        "evidence_sha256": "sha256:5b012b17a6c019c6b8b43b933717c11bb175c15349c7f5f08ac608e9429a011c",
+        "passed": true
+      },
+      "cap-assignment": {
+        "evidence_sha256": "sha256:122beae525407058216f6906ecca0a023e4736a8c3a321fde25ed8763bb0666a",
+        "passed": true
+      },
+      "memory-import": {
+        "evidence_sha256": "sha256:a1461a50107bc41b6680194f4eaa498a9c11e98d80184d95ef1dd795047428e6",
+        "passed": true
+      },
+      "mps": {
+        "evidence_sha256": "sha256:6d6a7415cdbc2c3779b674a337378b5fdbf5b72b2fb57450514015a630312304",
+        "passed": true
+      },
+      "oom-peer": {
+        "evidence_sha256": "sha256:a08a77b580b424640df70e620876e82f110256233ad1db7dd7cebc854b83f6ed",
+        "passed": true
+      },
+      "restart-cleanup": {
+        "evidence_sha256": "sha256:8d22789e1df4db3484f51480f1f7082132d2c5d02db4c5a5c4e516f49cb23cb2",
+        "passed": true
+      }
+    },
+    "health_sha256": "fc9dd634b8a31c15939cf6ddf3b18e84b9fa5a60d21424831a410a5ba4322fe8",
+    "node_pool": {
+      "boot_id": "a464df41-e391-4443-b8e8-ad7ecd052318",
+      "driver_generation": "4ebffc96-e25e-4583-a3b8-0d853fd90efd",
+      "free_memory_mib": 40470,
+      "gpu_uuid": "GPU-1e6145d5-8ee2-43e2-a0d5-6d345909e8a6",
+      "headroom_mib": 1024,
+      "max_workspaces": 2,
+      "memory_budget_mib": 15360,
+      "node": "k3s-wk-gpu2",
+      "node_uid": "3336cdd5-d245-436e-b57c-2f66c6dcaa41",
+      "total_memory_mib": 40960
+    },
+    "policy_evidence_version": 3,
+    "policy_hash": "sha256:9d86546fd3b9cc52eb92f030932c64600d352884f949c7d06b8b86a0f1f42620",
+    "policy_version": "0.1.2",
+    "profile_caps": {
+      "interactive-shared-10": 10240,
+      "interactive-shared-5": 5120
+    },
+    "uvm_sha256": "0ff0de040dc840fb3f08ce6d289de032b7952774827064dbabe050c01a70a39b",
+    "version": 3,
+    "workload_image": "ghcr.io/mul-cps/cps-jupyter-notebook@sha256:5427088986bc06ad0713875d1aa2f31439f0bd1fbe6099d4669570fcf3e85be4"
+  },
+  "validation": {
+    "validator": "NativeQualificationAuthority.from_configmap",
+    "execution": "installed Gateway image 09c535b59fa9188e1942b0285632a6f3a1b1ced48211028cf8b1f2036157a6d5 with real Kubernetes read and mounted policy",
+    "result": "PASS",
+    "referenced_gate_and_capacity_receipt_hashes": "all verified against retained local measurement summaries"
+  },
+  "activated": false,
+  "remaining_delta": [
+    "Selected bootstrap same-PID sealed-cap execution and actual cap assignment for updated gate",
+    "Independent B configuration and coherent two-device catalog plus Hub opt-in"
+  ],
+  "operator_staging_correction": "Canonical JSON required; unreferenced first newline-terminated staging object removed with exact UID/RV preconditions",
+  "hub_image_check": {
+    "image": "ghcr.io/mul-cps/cps-compute@sha256:0842ddbe93f988fc66b8a0dd0947f35cc06991520c56ed5098cfeaa358660136",
+    "network": "none",
+    "sdk_version": "0.1.1",
+    "hub_version": "0.1.1",
+    "placement_module_import": "PASS",
+    "note": "Inherited base image labels do not describe final installed package versions"
+  },
+  "focused_hub_tests": {
+    "command": "PYTHONPATH=src:packages/hub/src python -m pytest -q tests/test_native_placement_hub_activation.py",
+    "source": "f8762de0680bf590205abf55179fe6ac864c8bf8",
+    "passed": 4,
+    "seconds": 1.49
+  },
+  "production_qualified": false,
+  "workload_image_continuity": {
+    "sdk_load": "PASS using installed Gateway NodeConfiguration.load and mounted policy",
+    "base": "sha256:5427088986bc06ad0713875d1aa2f31439f0bd1fbe6099d4669570fcf3e85be4",
+    "intermediate": "sha256:fb9872bf71bfee402807c4f0e9adc92c49740ec30fa4a6a4261fa2ae18d32a45",
+    "target": "sha256:3eabf4238cdc1b48b5e945d62a5bf8bd22761891cbba91ba2aa2c0e54c776b56",
+    "scope": "existing reviewed software preservation; B physical proof remains independent"
+  }
+}

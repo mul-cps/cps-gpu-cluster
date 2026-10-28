@@ -1,0 +1,31 @@
+{
+  "scope": "trusted QA proposal and actual server-side admission dry-run; no workload created",
+  "cohort_uid": "35562485-2942-407a-b8c3-c73f99335494",
+  "node_uid": "3336cdd5-d245-436e-b57c-2f66c6dcaa41",
+  "namespace_uid": "036ea170-dc16-4100-96e6-9d896c2be30c",
+  "B_changes_gate_only": "plus CDI-preserving GPU identity projection",
+  "A_original_unchanged": true,
+  "production_authority": false,
+  "launch_authorized": false,
+  "pods": {
+    "a": {
+      "name": "native-second-card-a-35562485",
+      "proposed_sha256": "d1e1625d9cb9f2f3186cd40530a4177b811a06617e0088bc1713543752b9dfd8",
+      "admitted_spec_sha256": "c361680829de605f2a01497df8ba2e97e6b803d471f038e432741a8b31246467",
+      "actual_uid": null,
+      "intent_emitted": false
+    },
+    "b": {
+      "name": "native-second-card-b-35562485",
+      "proposed_sha256": "04b1ee754366907debb5c05896e99a260bbfd773e8de4aa0e3fe817d237958d9",
+      "admitted_spec_sha256": "5cfb049affd07f513dde8d90e844a39287e499dca93d8c7d40359cfe1a071eba",
+      "actual_uid": null,
+      "intent_emitted": false
+    }
+  },
+  "focused_tests": {
+    "passed": 17,
+    "command": "python -m pytest -q platform-staging/gpu/qualification/native-second-card/test_prepare.py platform-staging/gpu/qualification/native-second-card/test_selected_gate_delta.py"
+  },
+  "gpu_cap_assignment": false
+}

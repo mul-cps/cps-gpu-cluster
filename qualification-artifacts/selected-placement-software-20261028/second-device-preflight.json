@@ -1,0 +1,130 @@
+{
+  "blockers": [
+    "Current selected-wrapper CPU-gate execution and actual cap-assignment evidence are required for the target gate image."
+  ],
+  "deployable_configuration": null,
+  "gpu_jobs_performed": false,
+  "live_mutation_performed": false,
+  "measurement_reuse": {
+    "capacity_evidence_sha256": "sha256:b7d741e6f770999c9b66ca93c365cee9ef97b6dc35d6bffd93e889c70fdfc69b",
+    "capacity_reuse_condition": "Only while node UID, GPU UUID, boot ID, driver generation, memory and measured headroom remain identical at the trusted authority's pinned observation.",
+    "existing_gate_receipts": {
+      "aggregate": {
+        "evidence_sha256": "sha256:5b012b17a6c019c6b8b43b933717c11bb175c15349c7f5f08ac608e9429a011c",
+        "passed": true
+      },
+      "cap-assignment": {
+        "evidence_sha256": "sha256:122beae525407058216f6906ecca0a023e4736a8c3a321fde25ed8763bb0666a",
+        "passed": true
+      },
+      "memory-import": {
+        "evidence_sha256": "sha256:a1461a50107bc41b6680194f4eaa498a9c11e98d80184d95ef1dd795047428e6",
+        "passed": true
+      },
+      "mps": {
+        "evidence_sha256": "sha256:6d6a7415cdbc2c3779b674a337378b5fdbf5b72b2fb57450514015a630312304",
+        "passed": true
+      },
+      "oom-peer": {
+        "evidence_sha256": "sha256:a08a77b580b424640df70e620876e82f110256233ad1db7dd7cebc854b83f6ed",
+        "passed": true
+      },
+      "restart-cleanup": {
+        "evidence_sha256": "sha256:8d22789e1df4db3484f51480f1f7082132d2c5d02db4c5a5c4e516f49cb23cb2",
+        "passed": true
+      }
+    },
+    "gate_receipt_reuse": "Preserve unchanged B kernel receipts; do not rerun the six-gate suite solely because the wrapper image changed. The target cap-assignment receipt is new; workload continuity is verified through the selected NodeConfiguration's typed transition chain.",
+    "proof_gate_image": "ghcr.io/mul-cps/cps-compute@sha256:bc5b128f582641eae8395e1121d1fb248eddc39a56c9e863b7c564badd94b167",
+    "proof_workload_image": "ghcr.io/mul-cps/cps-jupyter-notebook@sha256:5427088986bc06ad0713875d1aa2f31439f0bd1fbe6099d4669570fcf3e85be4",
+    "required_repeat_measurements": [
+      "selected-wrapper exec to original sealed-cap gate with same PID start identity",
+      "actual cap assignment receipt with exact B device and soft/hard readback"
+    ],
+    "reviewed_nbi_preservation": {
+      "assessment": "B-to-target continuity is established by typed add-on 5427->fb9872 followed by typed NBI fb9872->3eab preservation.",
+      "base_image": "ghcr.io/mul-cps/cps-jupyter-notebook@sha256:fb9872bf71bfee402807c4f0e9adc92c49740ec30fa4a6a4261fa2ae18d32a45",
+      "directly_links_B_proof_workload": false,
+      "target_image": "ghcr.io/mul-cps/cps-jupyter-notebook@sha256:3eabf4238cdc1b48b5e945d62a5bf8bd22761891cbba91ba2aa2c0e54c776b56"
+    },
+    "verified_typed_workload_chain": [
+      {
+        "after": "ghcr.io/mul-cps/cps-jupyter-notebook@sha256:fb9872bf71bfee402807c4f0e9adc92c49740ec30fa4a6a4261fa2ae18d32a45",
+        "before": "ghcr.io/mul-cps/cps-jupyter-notebook@sha256:5427088986bc06ad0713875d1aa2f31439f0bd1fbe6099d4669570fcf3e85be4",
+        "preservation": "cps-native-addon-preservation-1e5a230d7bf4fd70",
+        "preservation_kind": "native_addon_software_attestation",
+        "transition": "cps-native-addon-transition-185c9c923492a21e"
+      },
+      {
+        "after": "ghcr.io/mul-cps/cps-jupyter-notebook@sha256:3eabf4238cdc1b48b5e945d62a5bf8bd22761891cbba91ba2aa2c0e54c776b56",
+        "before": "ghcr.io/mul-cps/cps-jupyter-notebook@sha256:fb9872bf71bfee402807c4f0e9adc92c49740ec30fa4a6a4261fa2ae18d32a45",
+        "preservation": "cps-nbi24-preservation-9255d8495c3e5c2d",
+        "preservation_kind": "native_nbi_exact_image_preservation",
+        "transition": "cps-nbi24-transition-88914bd9f63c8a3a"
+      }
+    ]
+  },
+  "schema": "cps-second-device-activation-preflight/v1",
+  "second_device_measured_identity": {
+    "boot_id": "a464df41-e391-4443-b8e8-ad7ecd052318",
+    "driver_generation": "4ebffc96-e25e-4583-a3b8-0d853fd90efd",
+    "gpu_uuid": "GPU-1e6145d5-8ee2-43e2-a0d5-6d345909e8a6",
+    "node": "k3s-wk-gpu2",
+    "node_uid": "3336cdd5-d245-436e-b57c-2f66c6dcaa41",
+    "total_memory_mib": 40960
+  },
+  "source": {
+    "historical_B_configmap_matches_candidate_bytes": true,
+    "historical_B_qualification_ref": {
+      "data_sha256": "sha256:50d2dd3dabdd991e30d7031b1143a3f4a72549b607109df06df9d499e2e5eab9",
+      "key": "qualification.json",
+      "name": "cps-second-device-qualification-b65a5ca0fb59d8d4",
+      "namespace": "cps-native-runtime",
+      "resourceVersion": "387170546",
+      "uid": "6cf5e783-a5c6-4b9d-a672-cc8fe9c4a0e6"
+    },
+    "proof_path": "/home/bjoern/git/cps-transport-worktrees/current-device-qualification-20261028/second-card-proof-candidate/qualification.json",
+    "proof_sha256": "c36585948708200d68ebab5b7e7cbf1454da269403a403356dbba76cbc0d1a60",
+    "selected_node_configuration": {
+      "name": "cps-selected-node-config-99e20a8fe2c789b1",
+      "policy_hash": "sha256:9d86546fd3b9cc52eb92f030932c64600d352884f949c7d06b8b86a0f1f42620",
+      "predecessor_gpu_uuid": "GPU-16128952-b438-556a-00bb-93039ee24e56",
+      "predecessor_qualification_immutable": true,
+      "qualification_ref": {
+        "data_sha256": "sha256:9036b02291d39b86401528d0d1fa570fb7dc8da1a5b33d6b5621928195e16cc5",
+        "key": "deployment.json",
+        "name": "cps-nbi24-deployment-9036b02291d39b86",
+        "namespace": "cps-native-runtime",
+        "resourceVersion": "381648470",
+        "uid": "4b8f8a03-6368-4b9a-992d-ca74ce454419"
+      },
+      "resourceVersion": "387135146",
+      "uid": "a7fe62c2-3292-4736-83b5-fcbd06a0974f"
+    },
+    "transition_path": "/tmp/cps-second-device-gate-transition-dryrun.json"
+  },
+  "status": "blocked-pending-current-runtime-measurements",
+  "target": {
+    "gate_image": "ghcr.io/mul-cps/cps-compute@sha256:09c535b59fa9188e1942b0285632a6f3a1b1ced48211028cf8b1f2036157a6d5",
+    "node_component_image": "ghcr.io/mul-cps/cps-native-node@sha256:64ae31c4e87092bf4c6f43ea408a70f1476ba7c5baa20bfe05df49eee6e4890e",
+    "policy_hash": "sha256:e568bdc5386009d418c0ff81ad60a4f470eae411747339af70ec824dd8a8f182",
+    "policy_version": "0.1.3",
+    "profiles": [
+      "interactive-shared-10",
+      "interactive-shared-5"
+    ],
+    "workload_image": "ghcr.io/mul-cps/cps-jupyter-notebook@sha256:3eabf4238cdc1b48b5e945d62a5bf8bd22761891cbba91ba2aa2c0e54c776b56"
+  },
+  "trusted_qa_path": {
+    "factory": "NativeQualificationAuthority.from_qualified_transition_configmap",
+    "module": "src/cps_compute/native_qualification_authority.py",
+    "required_inputs": [
+      "sealed fresh-qualification PolicyTransition",
+      "actual full predecessor NodeConfiguration",
+      "actual predecessor node/deployment ConfigMaps",
+      "immutable target qualification ConfigMap with actual UID/resourceVersion/data hash",
+      "current policy and protected immutable references"
+    ],
+    "untrusted_shortcut_rejected": "The candidate's synthetic-validation.json/ConfigMap identity is schema validation only and cannot be used as an API-bound authority reference."
+  }
+}

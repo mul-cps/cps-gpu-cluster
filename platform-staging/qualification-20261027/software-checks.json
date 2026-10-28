@@ -1,0 +1,325 @@
+{
+  "compute": {
+    "repository": "mul-cps/cps-compute",
+    "commit": "f53d634d05f98caa57422de5375c9c7139c61858",
+    "passed": 6244,
+    "skipped": 6,
+    "subtests_passed": 68,
+    "warnings": 626,
+    "seconds": 222.22,
+    "focused_passed": 114,
+    "review": "Task 2 spec and quality pass; no actionable findings",
+    "private_hub_wheel_sha256": "152a617b86ec3081f49fb1779c83264d99d2535962be5e42dfd73b9ffb19e0dc",
+    "installed_smoke": "exact four permission module imports/bytes; no SDK or Lab extension ownership",
+    "full_log_sha256": "35da93ba6acac17a267ce5a159f805ce2f0b8d7104c3065638a7058f49382670",
+    "evidence_stage": "historical Task2 full-suite checkpoint, not final paired full-suite result"
+  },
+  "admin": {
+    "repository": "mul-cps/e2x-course-hub",
+    "commit": "6a299d3f46e5c7713a4d578734fca1a025dac725",
+    "passed": 129,
+    "full_log_sha256": "438143c4a799db533a211b1b7c1f780118f2fd7c11a80cd12610d1e2e1bc4456",
+    "focused_journal_passed": 20,
+    "review": "Task3A spec and quality pass; no actionable findings",
+    "evidence_stage": "historical Task3A full-suite checkpoint, not final paired full-suite result"
+  },
+  "scope": "local software only; no migration, deployment or new GPU qualification",
+  "hosted_ci": {
+    "repository": "mul-cps/cps-compute",
+    "check_id": 122411921461,
+    "url": "https://github.com/mul-cps/cps-compute/actions/runs/40567311598/job/122411921461",
+    "conclusion": "failure",
+    "steps_started": 0,
+    "annotation": "The job was not started because recent account payments have failed or your spending limit needs to be increased.",
+    "scope": "external release gate; not a test failure",
+    "observed_commit": "c6b1cc94955ce43616c05f54790ae9260fa25fd9",
+    "job": "postgresql15-release"
+  },
+  "source_dispatcher": {
+    "compute_commit": "2d42bebaaddb3094979dcff0fdbc81d8ee92b38c",
+    "compute_test_commit": "612ce66769cf8143e6ad39858992a26dbc43bf7e",
+    "admin_commit": "22853170b6bd91cba3977c7b8a888c13b1e1a4f0",
+    "integration_passed": 26,
+    "subtests_passed": 21,
+    "seconds": 5.23,
+    "focused_admin_passed": 6,
+    "focused_admin_seconds": 0.284,
+    "review": "Task3B scoped fix review: both findings addressed, no new actionable findings",
+    "coverage": "actual Source/Hub/coordinator stores; regular and expired Share rejection before prepare; unmodified production handler cookie/XSRF smoke",
+    "python_wheel_sha256": "2204b0d5bbd841793f5e0ae4df19e68cc6da7b644af888f589ce157f22a9a419",
+    "installed_probe": "three module bytes/imports; disabled inert; no SDK import; optional exact SDK dependency",
+    "packaging_limit": "Python only; frontend builder skipped; not release artifact",
+    "runtime_enabled": false,
+    "remaining": "Task3C shared lifecycle, Task4 custody migrations/hooks, Task5 activation/live acceptance/releases",
+    "tested_at_commit": "2d42bebaaddb3094979dcff0fdbc81d8ee92b38c",
+    "interface_log_sha256": "4864248a396be371fb28908386f87d6474bf75c16402bcef0f4d67a3f64be263"
+  },
+  "operator_handoff": {
+    "repository": "mul-cps/cps-compute",
+    "commit": "2d42bebaaddb3094979dcff0fdbc81d8ee92b38c",
+    "review": "Task5A and scoped fix review pass; both custody/backup findings addressed",
+    "activation_cases": 29,
+    "focused_affected_passed": 94,
+    "focused_affected_seconds": 7.01,
+    "installed_sdk_chain_passed": 1,
+    "installed_sdk_chain_seconds": 1.54,
+    "sdk_wheel_sha256": "28da80cca2e55dfae4ddbd3f0abe75fbd475661b7088ada766ab8f2d0aa9174d",
+    "coverage": "actual local stores/guarded applications, explicit migration, backups, target CAS/readback, authenticated committed reads, real pair consumption/active ACK/finalize, next Source write, corruption/missing history refusal",
+    "warnings": "one existing Starlette/AnyIO deprecation, retained without suppression",
+    "runtime_enabled": false,
+    "scope": "disabled local software embedding; no remote installation, live migration, physical or release qualification",
+    "remaining": "shared lifecycle, genuine remote installation/runtime factories and writer coverage, authenticator hooks, GPU/startup/restore/UI/release gates"
+  },
+  "selected_device_lifetime": {
+    "repository": "mul-cps/cps-compute",
+    "commit": "1d5bc274777bc9a67014d194f080d360994889bd",
+    "code_commit": "3aff59bdc8071dad356e2f108e0fe18639dca66e",
+    "review": "Task5B and scoped R1 pass; exact-ledger census race addressed; no new actionable regressions",
+    "affected_run": {
+      "passed": 577,
+      "failed": 2,
+      "seconds": 17.84,
+      "failures": "old registration migration fixture assumptions; production code unchanged for fixture repair"
+    },
+    "registration_repair": {
+      "passed": 24,
+      "seconds": 1.22
+    },
+    "fix_owning_tests": {
+      "passed": 64,
+      "seconds": 19.14,
+      "scope": "lifecycle and claims only; deterministic race RED/GREEN retained"
+    },
+    "sdk_wheel_sha256": "a0d75cdb2b63ad167dc11cfc71aa501434e2a926543435cd87c3d087047bed0a",
+    "installed_probe": "exact new module bytes/imports; isolated declared node-extra dependencies; no admin/Hub/FastAPI imports or SDK/Hub/Lab ownership overlap",
+    "runtime_enabled": false,
+    "scope": "disabled local software chain; no live migration, hardware qualification or deployment",
+    "remaining": "Task5C original terminal cleanup/release, Task3C shared lifecycle, genuine authenticated remote transport/factories and all maintenance writer coverage, hardware/startup/restore/UI/release gates",
+    "warnings": "existing Starlette/AnyIO deprecation retained, not suppressed"
+  },
+  "started_prepared_terminal_lifetime": {
+    "repository": "mul-cps/cps-compute",
+    "commit": "e1391d8939e5e95fbbdf0147978857a623c1de2a",
+    "review": "Task5C and scoped R1 pass; pre-phase1 missing-private-custody reconstruction fixed",
+    "affected_passed": 604,
+    "affected_seconds": 22.38,
+    "r1_owning_passed": 61,
+    "r1_owning_seconds": 36.45,
+    "coverage": "actual started/prepared journal cleanup, authenticated immutable receipt and independent original private/native observation, selected ledger release then atomic exact original member release, V1 peers and cleanup retained",
+    "sdk_wheel_sha256": "c09bae0d637650bcf5b811d466aa212861049e6fa84802bed682b50b9678db10",
+    "installed_probe": "exact terminal/lifetime/Node module bytes; declared node-extra imports only; distinct SDK/Hub/Lab ownership",
+    "runtime_enabled": false,
+    "scope": "disabled local software embedding; no live migration, deployment or new hardware qualification",
+    "remaining": "never-enrolled V2 cancellation; ambiguous intent-before-first-private-write holds capacity; remote transport/factories, shared lifecycle, installation/hooks and all production gates",
+    "warnings": "existing Starlette/AnyIO warning retained; no broad suite repeated for fix"
+  },
+  "directory_handover": {
+    "scope": "existing approved legacy membership restored through normal Hub API; actual selector verified, not GPU execution",
+    "permanent_import_enabled": false,
+    "remaining": "bounded authenticated directory bundle projection, coordinator-backed PostgreSQL receipt installation, explicit Source factories, actual async user hooks and personal spawn enforcement/revocation",
+    "personal_mujoco_regression": "Installed CIT wrapper filters all legacy GPU profiles and rejects them at spawn; raw legacy selector logs do not prove final visibility. Central MuJoCo profile/image and personal compatibility path missing; Task4C required, guard not removed."
+  },
+  "postgresql_permission_receipts": {
+    "repository": "mul-cps/cps-compute",
+    "commit": "f474485736c2da5d3324bfa133cd020c3fedee29",
+    "review": "Task4A independent spec and quality pass; no required changes",
+    "http_passed": 18,
+    "http_seconds": 4.88,
+    "affected": {
+      "passed": 142,
+      "skipped": 1,
+      "seconds": 8.21,
+      "skip": "Source dispatcher missing pinned RBAC import; separately resolved, not relabeled"
+    },
+    "source_followup": {
+      "passed": 26,
+      "subtests_passed": 21,
+      "seconds": 5.16
+    },
+    "live_driver_probe": {
+      "passed": 5,
+      "seconds": 2.15,
+      "sqlalchemy": "2.0.52",
+      "psycopg2": "2.9.12"
+    },
+    "actual_server": "PostgreSQL 15.19",
+    "test_image_manifest": "sha256:b9a6ab4a977ee1b4ef2aa7f49dcf962f827ed3bcbb2eea66288ab2134ff2e2b2",
+    "hub_wheel_sha256": "8aca1f4abb5151743f73e03642a19f051b4520cd0509ab08f4aef8a4024d2ce5",
+    "paired_installed_sdk_commit": "e1391d8939e5e95fbbdf0147978857a623c1de2a",
+    "installed_probe": "exact receipt/receiver bytes/imports with matching SDK; no SDK/Lab Hub-wheel ownership overlap; existing runtime supplies dependencies",
+    "test_resources_removed": true,
+    "runtime_enabled": false,
+    "scope": "actual disposable-local PG15 primitive/HTTP qualification; no production migration/deployment or automatic directory import",
+    "remaining": "genuine coordinator installation/Source reopening factories, retained external rollback history, async user creation and directory projection, required release PG15 CI lane; all platform production gates"
+  },
+  "managed_installation_user_creation": {
+    "compute_commit": "f5052fa2327f4067b55f7e2fd1569a5cdec013d7",
+    "admin_commit": "c5d78ffb57a13783c51464996eceeca94140814c",
+    "review": "Task4B and scoped R1 PASS; interrupted activation acceptance repaired",
+    "affected_run": {
+      "passed": 283,
+      "subtests_passed": 130,
+      "skipped": 0,
+      "seconds": 35.36
+    },
+    "repair_owning_run": {
+      "passed": 45,
+      "skipped": 0,
+      "seconds": 37.25
+    },
+    "coverage": "actual finalized installation/backup bytes; real PG and managed Source; authenticated new user/default roles/original hook; receipts/coordinator completion; successor activation and ordinary group operation; lost replies/older restore/fences",
+    "production_driver_positive_chain": {
+      "passed": 1,
+      "seconds": 7.55,
+      "python": "3.12",
+      "sqlalchemy": "2.0.52",
+      "driver": "psycopg2 2.9.12",
+      "scope": "one real positive chain with genuine installed admin/RBAC; not full production-driver matrix"
+    },
+    "wheel_sha256": {
+      "sdk": "a4e78d592135eade84bd317fe5d18432f0b80cce730e079bbc05014c305b216a",
+      "hub": "a947515debd1c6f3c811271b3ab33e1d72db2551183a34b16598a09a51099563",
+      "admin": "0b6e1578d7c3845ad01fa7e957dcc3df3f5992e7c132524d5ac10471cc1a317d"
+    },
+    "installed_probe": "nine exact module byte/import checks; SDK/Hub/Lab ownership separate; no-deps target uses existing test deps; admin frontend skipped",
+    "log_sha256": {
+      "task-4b-affected.log": "9cdd528dc2055ee218d739757a0a8b6893af1f4df31bdffc371554955c644735",
+      "task-4b-r1-owning.log": "f62effcade7082eb7f0526788570a887fe8f108a2e0706bfd0293d13a1c33732"
+    },
+    "runtime_enabled": false,
+    "scope": "local software installation/custody only; logical backup is not production restore qualification",
+    "remaining": "directory/bundle projection and personal MuJoCo policy path, changed Source/Control successor lanes, shared lifecycle, never-enrolled cancellation, remote factories, image/GPU/UI/storage/monitoring/restore/release gates"
+  },
+  "postgresql_release_ci": {
+    "commit": "49a045765861e52a84eea7da412506a7eb671101",
+    "admin_pin": "c5d78ffb57a13783c51464996eceeca94140814c",
+    "rbac_pin": "4683d1a09051f8aa0d38a2e6ab181b4979b246b2",
+    "required_modules": [
+      "test_permission_receipts_postgresql",
+      "test_permission_receiver_postgresql",
+      "test_managed_hub_installation",
+      "test_managed_user_creation"
+    ],
+    "gate_tests_passed": 15,
+    "review": "independent continuation PASS; wording nit corrected",
+    "production_positive_chain_passed": 1,
+    "production_positive_chain_seconds": 7.55,
+    "scope": "implemented hosted-only lane and one actual local installed-dependency positive chain; hosted full-four-module execution pending billing resolution"
+  },
+  "gpu_telemetry_coverage_alert": {
+    "commit": "c678352182013d36f75c98c6a4c0ae2e6ef3d077",
+    "review": "independent spec and quality PASS; no Critical/Important findings",
+    "promtool_version": "3.5.0",
+    "focused_scenarios": 11,
+    "focused_seconds": 0.401,
+    "owning_promql_dashboard_check_seconds": 2.024,
+    "semantics": "fresh per-node positive advertised KSM GPU capacity versus distinct fresh DCGM UUIDs; missing or insufficient coverage warns after 5m; extra physical UUIDs allowed; absent/stale expected inventory is unknown",
+    "deployed": false,
+    "runtime_observation": "GPU2 exporter explicitly excluded by node label; three other exporter targets report six UUIDs against seven advertised devices",
+    "remaining": "actual exporter coverage on GPU2 guarded runtime, deployed rule acceptance, resource isolation/Descheduler telemetry, physical free-GPU measurement and remaining monitoring gates"
+  },
+  "directory_personal_policy_partial": {
+    "compute_commit": "2c2eab5a153e6e61b0d21a8b8a95b14e64adcc3e",
+    "admin_commit": "6572debab1e9b2bf15ba66a176a75a9ad5a91e73",
+    "catalog_commit": "7cb8bae2bb0db3df51f4c43bccaeb3cbba95feb2",
+    "review": "independent source/spec PASS after I1 personal confirmed-stop routing correction",
+    "affected_before_last_version_correction": {
+      "passed": 283,
+      "subtests": 4,
+      "seconds": 81.37
+    },
+    "version_correction_passed": 4,
+    "final_paired_wheel_affected": {
+      "passed": 28,
+      "seconds": 39.71
+    },
+    "absent_pod_not_cleanup": {
+      "passed": 1,
+      "seconds": 4.28
+    },
+    "deployed": false,
+    "complete": false,
+    "remaining": "Remote installed cleanup/factory wiring, actual upstream subject enrollment, exact MuJoCo image NVML/EGL/desktop qualification; original production gates unchanged"
+  },
+  "runtime_successors_local": {
+    "commit": "752e709ffdd41a1376d36bf12cacaa2296aec959",
+    "review": "independent scoped PASS after argument-binding and reopened-custody fixes",
+    "exact_paired_wheel_cases": 3,
+    "seconds": 24.27,
+    "deployed": false,
+    "scope": "supported local installed path; genuine directory renewal/withdrawal with selected allocation and historical cleanup; remote factories/writers pending"
+  },
+  "postgresql_release_ci_continuation": {
+    "commit": "f747d34c70e26896893982116c1765fcce4691ad",
+    "required_collected_cases": 52,
+    "gate_tests_passed": 37,
+    "production_driver_cases_passed": 2,
+    "production_driver_seconds": 42.05,
+    "review": "independent PASS",
+    "hosted_executed": false,
+    "hosted_blocker": "recorded GitHub account billing/spending limit before job steps"
+  },
+  "mujoco_measurement_producer_partial": {
+    "compute_commit": "e5f4e520d963fcfb475760a7e78e1c7e94f928b4",
+    "cluster_commit": "25a2ca7844967c1ada9c7a2f6018f1c2a05913b0",
+    "compute_tests_passed": 19,
+    "harness_tests_passed": 6,
+    "review": "R1 independent PASS for partial draft source only",
+    "reset_status": "unknown",
+    "peer_survival_receipt_emitted": false,
+    "hardware_executed": false,
+    "deployed": false,
+    "remaining": [
+      "continuous independently observed reset window",
+      "operator-envelope to target-policy promotion",
+      "exact-image packaging and GPU/EGL/Xpra measurements",
+      "authenticated desktop and observed user training"
+    ]
+  },
+  "mujoco_bounded_window": {
+    "compute_commit": "55b59f95464de99f7385e2dbd5538a901fa2e345",
+    "review": "independent scoped PASS after supported-events and actual descendant-binding corrections",
+    "exact_archive_compute_passed": 33,
+    "exact_archive_runner_passed": 7,
+    "scope": "bounded observed reset/context-loss method; not universal hardware reset counter",
+    "actual_target_supported_mask": "0xff9f",
+    "event_registration_executed": false,
+    "hardware_qualified": false
+  },
+  "mujoco_host_loader": {
+    "compute_commit": "b13c2058eba5f20dda14fe975e5111861c8c2842",
+    "cluster_commit": "818263ce0c1f3f478c8169487a06738406ac404d",
+    "review": "independent PASS",
+    "exact_archive_compute_passed": 34,
+    "exact_archive_runner_passed": 8,
+    "actual_host_load_only": "mujoco-host-loader-actual.json",
+    "nvml_initialized": false
+  },
+  "mujoco_policy_promotion": {
+    "compute_commit": "fd96cc0cfc47215d28dbcc5835501b2d597817a8",
+    "cluster_commit": "93ac2cf10692ff961c587b9a094718bac31272f8",
+    "review": "independent scoped PASS after original indexed-window/portable-source and complete-runner-output corrections",
+    "exact_archive_compute_passed": 8,
+    "exact_archive_paired_passed": 2,
+    "scope": "actual runner main/execute/finally to full retained directory to promotion with synthetic IO; strict v4/fresh Node/history software path; no live authority publication",
+    "deployed": false
+  },
+  "reviewed_runtime_images": {
+    "source_commit": "fd96cc0cfc47215d28dbcc5835501b2d597817a8",
+    "sdk_wheel_sha256": "f1d6557ed18e30b69bf365736df880283f07968050ce703d9f928cde87401e75",
+    "hub_wheel_sha256": "c77c84d2d476b1ecc5bf433d0222ed94dc68ca6b6ad0286081a6496b893e3b08",
+    "node_image": "ghcr.io/mul-cps/cps-native-node@sha256:a574fd09ba8844b66fb731b9624fb38bbf413138fedec75f5098f43ec6cd40de",
+    "hub_image": "ghcr.io/mul-cps/cps-compute@sha256:bd550fd5f82e1fd9e4d6a4623586ceb5143be6da67430917983f8dc600960762",
+    "registry_manifest_and_config_verified": true,
+    "package_visibility": "private",
+    "node_default": "inert; no API/GPU calls",
+    "hub_records_verified": 161,
+    "hub_versions": {
+      "jupyterhub": "5.5.2",
+      "kubespawner": "7.1.0"
+    },
+    "scope": "actual image build, CPU/no-network/read-only startup/import/record checks and private candidate publication only",
+    "deployed": false,
+    "hardware_qualified": false
+  }
+}

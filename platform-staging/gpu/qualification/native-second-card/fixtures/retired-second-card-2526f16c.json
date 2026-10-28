@@ -1,0 +1,154 @@
+{
+  "version": 1,
+  "state_root": "/var/lib/cps-native-gpu/qualification/036ea170-dc16-4100-96e6-9d896c2be30c/cohorts/2526f16c-8cd4-4448-aa46-7a59565a1487/state",
+  "records": [
+    {
+      "schema": 1,
+      "protocol": "cps-native-gpu/v1",
+      "state": "retired-inert-cap",
+      "seal_id": "8ff396f3-a4e3-40dc-b658-4f1e99ff4a07",
+      "intent": {
+        "namespace": "cps-native-second-card-20261027",
+        "name": "native-second-card-a-2526f16c",
+        "pod_uid": "008b9d59-8939-4819-8d25-b279e8421493",
+        "node": "k3s-wk-gpu2",
+        "node_uid": "3336cdd5-d245-436e-b57c-2f66c6dcaa41",
+        "spec_sha256": "9af99665851ec35e2675a205ce3344f9621ea76b21fcb63100cd97f89ef484c7",
+        "gpu_uuid": "GPU-1e6145d5-8ee2-43e2-a0d5-6d345909e8a6",
+        "cap_mib": 5120,
+        "policy_hash": "sha256:9d86546fd3b9cc52eb92f030932c64600d352884f949c7d06b8b86a0f1f42620"
+      },
+      "identity": {
+        "pod_uid": "008b9d59-8939-4819-8d25-b279e8421493",
+        "spec_sha256": "9af99665851ec35e2675a205ce3344f9621ea76b21fcb63100cd97f89ef484c7",
+        "node_uid": "3336cdd5-d245-436e-b57c-2f66c6dcaa41",
+        "gpu_uuid": "GPU-1e6145d5-8ee2-43e2-a0d5-6d345909e8a6",
+        "container_id": "f6299315de8c10cc73c2a279dd0b1528d8c7e807bb1597f246eb5533ee26f41e",
+        "host_pid": 567919,
+        "pid_start_ticks": 47873230,
+        "boot_id": "a464df41-e391-4443-b8e8-ad7ecd052318",
+        "cgroup_relative": "/kubepods.slice/kubepods-burstable.slice/kubepods-burstable-pod008b9d59_8939_4819_8d25_b279e8421493.slice",
+        "cgroup_path": "/sys/fs/cgroup/kubepods.slice/kubepods-burstable.slice/kubepods-burstable-pod008b9d59_8939_4819_8d25_b279e8421493.slice",
+        "cgroup_device": 29,
+        "cgroup_inode": 1254502,
+        "driver_generation": "4ebffc96-e25e-4583-a3b8-0d853fd90efd"
+      },
+      "readback": {
+        "soft": 5368709120,
+        "hard": 5368709120
+      },
+      "retirement": {
+        "protocol": "cps-native-retired-inert-cap/v1",
+        "state": "retired-inert-cap",
+        "identity": {
+          "pod_uid": "008b9d59-8939-4819-8d25-b279e8421493",
+          "spec_sha256": "9af99665851ec35e2675a205ce3344f9621ea76b21fcb63100cd97f89ef484c7",
+          "node_uid": "3336cdd5-d245-436e-b57c-2f66c6dcaa41",
+          "gpu_uuid": "GPU-1e6145d5-8ee2-43e2-a0d5-6d345909e8a6",
+          "container_id": "f6299315de8c10cc73c2a279dd0b1528d8c7e807bb1597f246eb5533ee26f41e",
+          "host_pid": 567919,
+          "pid_start_ticks": 47873230,
+          "boot_id": "a464df41-e391-4443-b8e8-ad7ecd052318",
+          "cgroup_relative": "/kubepods.slice/kubepods-burstable.slice/kubepods-burstable-pod008b9d59_8939_4819_8d25_b279e8421493.slice",
+          "cgroup_path": "/sys/fs/cgroup/kubepods.slice/kubepods-burstable.slice/kubepods-burstable-pod008b9d59_8939_4819_8d25_b279e8421493.slice",
+          "cgroup_device": 29,
+          "cgroup_inode": 1254502,
+          "driver_generation": "4ebffc96-e25e-4583-a3b8-0d853fd90efd"
+        },
+        "epoch": {
+          "node_uid": "3336cdd5-d245-436e-b57c-2f66c6dcaa41",
+          "boot_id": "a464df41-e391-4443-b8e8-ad7ecd052318",
+          "driver_generation": "4ebffc96-e25e-4583-a3b8-0d853fd90efd",
+          "gpu_uuid": "GPU-1e6145d5-8ee2-43e2-a0d5-6d345909e8a6"
+        },
+        "gpu_id": 1553,
+        "inventory_sha256": "sha256:bfbe87f0856042cc8be4cc1264e90c01800462201b6c01e392375468040a0513",
+        "entry": {
+          "cgroup_id": 1254502,
+          "kernfs_id": 1254502,
+          "inode": 1254502,
+          "offline": true,
+          "pinned": true,
+          "default_hierarchy": true,
+          "soft": 5368709120,
+          "hard": 5368709120,
+          "used": 0
+        }
+      }
+    },
+    {
+      "schema": 1,
+      "protocol": "cps-native-gpu/v1",
+      "state": "retired-inert-cap",
+      "seal_id": "ea94992d-62d8-40ea-996f-dbf1b19df28e",
+      "intent": {
+        "namespace": "cps-native-second-card-20261027",
+        "name": "native-second-card-b-2526f16c",
+        "pod_uid": "0f714358-9bd4-4420-911e-47645d756810",
+        "node": "k3s-wk-gpu2",
+        "node_uid": "3336cdd5-d245-436e-b57c-2f66c6dcaa41",
+        "spec_sha256": "f5911820d9ad7ccbf8e0b66fd6125a9e236c8d44f035c3a7ba93251cb60f6ed0",
+        "gpu_uuid": "GPU-1e6145d5-8ee2-43e2-a0d5-6d345909e8a6",
+        "cap_mib": 10240,
+        "policy_hash": "sha256:9d86546fd3b9cc52eb92f030932c64600d352884f949c7d06b8b86a0f1f42620"
+      },
+      "identity": {
+        "pod_uid": "0f714358-9bd4-4420-911e-47645d756810",
+        "spec_sha256": "f5911820d9ad7ccbf8e0b66fd6125a9e236c8d44f035c3a7ba93251cb60f6ed0",
+        "node_uid": "3336cdd5-d245-436e-b57c-2f66c6dcaa41",
+        "gpu_uuid": "GPU-1e6145d5-8ee2-43e2-a0d5-6d345909e8a6",
+        "container_id": "5498f057ab43abcc57023e67b10c5cb3c62ed6da16d1648da34c2104cfd30f2d",
+        "host_pid": 568081,
+        "pid_start_ticks": 47873280,
+        "boot_id": "a464df41-e391-4443-b8e8-ad7ecd052318",
+        "cgroup_relative": "/kubepods.slice/kubepods-burstable.slice/kubepods-burstable-pod0f714358_9bd4_4420_911e_47645d756810.slice",
+        "cgroup_path": "/sys/fs/cgroup/kubepods.slice/kubepods-burstable.slice/kubepods-burstable-pod0f714358_9bd4_4420_911e_47645d756810.slice",
+        "cgroup_device": 29,
+        "cgroup_inode": 1254660,
+        "driver_generation": "4ebffc96-e25e-4583-a3b8-0d853fd90efd"
+      },
+      "readback": {
+        "soft": 10737418240,
+        "hard": 10737418240
+      },
+      "retirement": {
+        "protocol": "cps-native-retired-inert-cap/v1",
+        "state": "retired-inert-cap",
+        "identity": {
+          "pod_uid": "0f714358-9bd4-4420-911e-47645d756810",
+          "spec_sha256": "f5911820d9ad7ccbf8e0b66fd6125a9e236c8d44f035c3a7ba93251cb60f6ed0",
+          "node_uid": "3336cdd5-d245-436e-b57c-2f66c6dcaa41",
+          "gpu_uuid": "GPU-1e6145d5-8ee2-43e2-a0d5-6d345909e8a6",
+          "container_id": "5498f057ab43abcc57023e67b10c5cb3c62ed6da16d1648da34c2104cfd30f2d",
+          "host_pid": 568081,
+          "pid_start_ticks": 47873280,
+          "boot_id": "a464df41-e391-4443-b8e8-ad7ecd052318",
+          "cgroup_relative": "/kubepods.slice/kubepods-burstable.slice/kubepods-burstable-pod0f714358_9bd4_4420_911e_47645d756810.slice",
+          "cgroup_path": "/sys/fs/cgroup/kubepods.slice/kubepods-burstable.slice/kubepods-burstable-pod0f714358_9bd4_4420_911e_47645d756810.slice",
+          "cgroup_device": 29,
+          "cgroup_inode": 1254660,
+          "driver_generation": "4ebffc96-e25e-4583-a3b8-0d853fd90efd"
+        },
+        "epoch": {
+          "node_uid": "3336cdd5-d245-436e-b57c-2f66c6dcaa41",
+          "boot_id": "a464df41-e391-4443-b8e8-ad7ecd052318",
+          "driver_generation": "4ebffc96-e25e-4583-a3b8-0d853fd90efd",
+          "gpu_uuid": "GPU-1e6145d5-8ee2-43e2-a0d5-6d345909e8a6"
+        },
+        "gpu_id": 1553,
+        "inventory_sha256": "sha256:bfbe87f0856042cc8be4cc1264e90c01800462201b6c01e392375468040a0513",
+        "entry": {
+          "cgroup_id": 1254660,
+          "kernfs_id": 1254660,
+          "inode": 1254660,
+          "offline": true,
+          "pinned": true,
+          "default_hierarchy": true,
+          "soft": 10737418240,
+          "hard": 10737418240,
+          "used": 0
+        }
+      }
+    }
+  ]
+}

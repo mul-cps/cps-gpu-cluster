@@ -1,0 +1,15 @@
+{
+  "recorded_at_utc": "2026-10-27T19:49:17.207832+00:00",
+  "node": "k3s-wk-gpu2",
+  "image": "harbor.dshl.unileoben.ac.at/cps-users/cps-jupyter-notebook@sha256:1ed46addaed50f1874edec98001a122bd9da219d89e6cfecf1945c7338261c21",
+  "image_id": "sha256:fa75bb849bcb31d5ebcf026ce92f22f774b957984cacd4dbfc3f3bbef685de30",
+  "repoDigests": [
+    "harbor.dshl.unileoben.ac.at/cps-users/cps-jupyter-notebook@sha256:1ed46addaed50f1874edec98001a122bd9da219d89e6cfecf1945c7338261c21"
+  ],
+  "size_bytes": "5529887946",
+  "pull_elapsed_seconds": 107.25,
+  "available_gib_after_pull": 75.43,
+  "scope": "exact digest pulled into cache and CRI read back; image never executed and no Pod created",
+  "workload_started": false,
+  "driver_changed": false
+}

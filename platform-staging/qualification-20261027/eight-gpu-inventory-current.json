@@ -1,0 +1,105 @@
+{
+  "observed_utc": "2026-10-27T20:15:47.164658+00:00",
+  "read_only": true,
+  "qualification_claim": false,
+  "nodes": [
+    {
+      "node": "k3s-wk-gpu1",
+      "node_uid": "b13bebdd-60c2-4bbd-8fce-a39312ec264d",
+      "physical": [
+        {
+          "uuid": "GPU-8df28256-50a3-db30-3706-b69d52f4874f",
+          "model": "NVIDIA A100-PCIE-40GB",
+          "memory": "40960 MiB",
+          "driver": "615.71.09"
+        },
+        {
+          "uuid": "GPU-b1222487-3937-5349-7329-5cbebd15a5db",
+          "model": "NVIDIA A100-PCIE-40GB",
+          "memory": "40960 MiB",
+          "driver": "615.71.09"
+        }
+      ],
+      "capacity": 2,
+      "allocatable": 2,
+      "plugin_config": null
+    },
+    {
+      "node": "k3s-wk-gpu2",
+      "node_uid": "3336cdd5-d245-436e-b57c-2f66c6dcaa41",
+      "physical": [
+        {
+          "uuid": "GPU-16128952-b438-556a-00bb-93039ee24e56",
+          "model": "NVIDIA A100-PCIE-40GB",
+          "memory": "40960 MiB",
+          "driver": "615.71.09"
+        },
+        {
+          "uuid": "GPU-1e6145d5-8ee2-43e2-a0d5-6d345909e8a6",
+          "model": "NVIDIA A100-PCIE-40GB",
+          "memory": "40960 MiB",
+          "driver": "615.71.09"
+        }
+      ],
+      "capacity": 1,
+      "allocatable": 1,
+      "plugin_config": "cps-qualified-ba224025-913d-4666-b428-39ea8ab4aaeb"
+    },
+    {
+      "node": "k3s-wk-gpu3",
+      "node_uid": "7b3b5113-158d-4e0d-bd63-898a508fe806",
+      "physical": [
+        {
+          "uuid": "GPU-0a9f2da8-59f5-1cb0-9ead-d9fce56b69e5",
+          "model": "NVIDIA A100-PCIE-40GB",
+          "memory": "40960 MiB",
+          "driver": "615.71.09"
+        },
+        {
+          "uuid": "GPU-e7a56fad-ce29-f7d7-380a-3b5ae62a0b2a",
+          "model": "NVIDIA A100-PCIE-40GB",
+          "memory": "40960 MiB",
+          "driver": "615.71.09"
+        }
+      ],
+      "capacity": 2,
+      "allocatable": 2,
+      "plugin_config": null
+    },
+    {
+      "node": "k3s-wk-gpu4",
+      "node_uid": "f0e6c6ee-3984-423f-9cfb-734c558c35cb",
+      "physical": [
+        {
+          "uuid": "GPU-4768a9e7-e285-16d7-371d-95ad77f46ff4",
+          "model": "NVIDIA A100-PCIE-40GB",
+          "memory": "40960 MiB",
+          "driver": "615.71.09"
+        },
+        {
+          "uuid": "GPU-72940107-8c9d-bfcb-0630-f4e9e720b793",
+          "model": "NVIDIA A100-PCIE-40GB",
+          "memory": "40960 MiB",
+          "driver": "615.71.09"
+        }
+      ],
+      "capacity": 2,
+      "allocatable": 2,
+      "plugin_config": null
+    }
+  ],
+  "gpu2_active_plugin_config": {
+    "flags": {
+      "deviceDiscoveryStrategy": "nvml",
+      "migStrategy": "none",
+      "plugin": {
+        "allowedGPUUUIDs": [
+          "GPU-16128952-b438-556a-00bb-93039ee24e56"
+        ]
+      }
+    },
+    "version": "v1"
+  },
+  "physical_count": 8,
+  "advertised_count": 7
+}

@@ -1,0 +1,5 @@
+{
+  "image": "ghcr.io/mul-cps/cps-compute@sha256:d9053551c63f6844b043cea3cdb7df67a2a8f2091d93b9c6f560818df07ed711",
+  "revision": "ad451f574d7629dcc0e97ae1e73f490e8e3ddfb5",
+  "wheel_sha256": "ac7ccb12aed2832a79e93df7968a236ce77fc050ef54c2848d026dd5f14befff"
+}

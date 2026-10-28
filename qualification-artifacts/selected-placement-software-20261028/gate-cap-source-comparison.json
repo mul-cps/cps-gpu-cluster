@@ -1,0 +1,20 @@
+{
+  "historical_qa_source_configmap": {
+    "name": "cps-native-qa-gate-1cfaae815e3bcf84",
+    "uid": "81c76fb6-ccd8-40f6-87eb-7f85b35290da"
+  },
+  "measured_runtime_sha256": "035fa64027c09965fcb7557f4346b449b637aa39de804a94565deffe067b0e74",
+  "candidate_runtime_sha256": "05036ac147964189ffba02f90b614232143b5585ae521ef48a3c213625ab9c9e",
+  "driver_health_sha256": "fc9dd634b8a31c15939cf6ddf3b18e84b9fa5a60d21424831a410a5ba4322fe8",
+  "unchanged_function_ast": [
+    "_validate_intent",
+    "_read_root_file",
+    "validate_native_driver_health",
+    "validate_native_cap_receipt",
+    "wait_for_native_cap"
+  ],
+  "all_historical_top_level_assignments_match": true,
+  "driver_health_bytes_identical": true,
+  "scope": "Static source comparison; Python runtime/environment and actual cap assignment are not proven by this check",
+  "hardware_cap_assignment": false
+}

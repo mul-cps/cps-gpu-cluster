@@ -1,0 +1,104 @@
+{
+  "captured_at": "2026-10-27T10:15:28.477092+00:00",
+  "scope": "read-only Kubernetes API; no runtime qualification",
+  "nodes": [
+    {
+      "name": "k3s-cp1",
+      "ready": "True",
+      "unschedulable": false,
+      "gpu_allocatable": "0"
+    },
+    {
+      "name": "k3s-cp2",
+      "ready": "True",
+      "unschedulable": false,
+      "gpu_allocatable": "0"
+    },
+    {
+      "name": "k3s-cp3",
+      "ready": "True",
+      "unschedulable": false,
+      "gpu_allocatable": "0"
+    },
+    {
+      "name": "k3s-wk-gpu1",
+      "ready": "True",
+      "unschedulable": false,
+      "gpu_allocatable": "2"
+    },
+    {
+      "name": "k3s-wk-gpu2",
+      "ready": "True",
+      "unschedulable": false,
+      "gpu_allocatable": "1"
+    },
+    {
+      "name": "k3s-wk-gpu3",
+      "ready": "True",
+      "unschedulable": false,
+      "gpu_allocatable": "2"
+    },
+    {
+      "name": "k3s-wk-gpu4",
+      "ready": "True",
+      "unschedulable": false,
+      "gpu_allocatable": "2"
+    }
+  ],
+  "protected_notebooks": [
+    {
+      "name": "jupyter-gottam",
+      "uid": "fe5fb5e7-8696-4ac3-a5a8-1883817d00bb",
+      "node": "k3s-wk-gpu3",
+      "phase": "Running",
+      "containers": [
+        {
+          "name": "notebook",
+          "ready": true,
+          "restarts": 0,
+          "image_id": "ghcr.io/mul-cps/cps-jupyter-notebook@sha256:3910644e2e541f9cde6bed75a01f1bbdcc293a2d57a3f8862cbc99c7eeca30f3"
+        }
+      ]
+    },
+    {
+      "name": "jupyter-muslim",
+      "uid": "46152926-2c21-45bc-8ccd-77b8290c421f",
+      "node": "k3s-wk-gpu1",
+      "phase": "Running",
+      "containers": [
+        {
+          "name": "notebook",
+          "ready": true,
+          "restarts": 0,
+          "image_id": "ghcr.io/mul-cps/cps-jupyter-notebook@sha256:3910644e2e541f9cde6bed75a01f1bbdcc293a2d57a3f8862cbc99c7eeca30f3"
+        }
+      ]
+    }
+  ],
+  "fleet_git_repos": [
+    {
+      "namespace": "fleet-local",
+      "name": "cit-teaching-platform",
+      "branch": "main",
+      "paused": false
+    },
+    {
+      "namespace": "fleet-local",
+      "name": "cluster-maintenance",
+      "branch": "main",
+      "paused": false
+    },
+    {
+      "namespace": "fleet-local",
+      "name": "eligsir-webxr-test",
+      "branch": "deploy/eligsir-webxr-test",
+      "paused": false
+    },
+    {
+      "namespace": "fleet-local",
+      "name": "incluster-image-builder",
+      "branch": "main",
+      "paused": false
+    }
+  ]
+}

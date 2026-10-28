@@ -1,0 +1,42 @@
+{
+  "observed_at": "2026-10-28T15:58:13.248077+00:00",
+  "image": "ghcr.io/mul-cps/cps-compute@sha256:09c535b59fa9188e1942b0285632a6f3a1b1ced48211028cf8b1f2036157a6d5",
+  "probe_sha256": "0a2bc951f23bbc77402eb4c74d14a85a0dce4e6a61fd31eefefdb2442c667654",
+  "execution": {
+    "network": "none",
+    "root_filesystem": "read-only",
+    "temporary_run": "8MiB tmpfs",
+    "gpu_devices": false,
+    "native_authority": false,
+    "execv_mocked": false
+  },
+  "result": {
+    "result": "PASS",
+    "scope": "CPU-only actual installed os.execv; synthetic fixture, no authority or GPU devices",
+    "same_pid": 2,
+    "same_pid_start_ticks": 11346746,
+    "selected_wrapper_to_original_gate": true,
+    "hardware_cap_assignment": false
+  },
+  "scope": "CPU-only installed executable behavior; synthetic selected record is a fixture and confers no Kubernetes authority",
+  "current_hardware_observation": {
+    "node": "k3s-wk-gpu2",
+    "node_uid": "3336cdd5-d245-436e-b57c-2f66c6dcaa41",
+    "boot_id": "a464df41-e391-4443-b8e8-ad7ecd052318",
+    "driver_generation": "4ebffc96-e25e-4583-a3b8-0d853fd90efd",
+    "driver_version": "615.71.09",
+    "gpu_memory_mib": {
+      "GPU-16128952-b438-556a-00bb-93039ee24e56": {
+        "total": 40960,
+        "used": 0
+      },
+      "GPU-1e6145d5-8ee2-43e2-a0d5-6d345909e8a6": {
+        "total": 40960,
+        "used": 0
+      }
+    },
+    "point_in_time_only": true
+  },
+  "hardware_qualification_extended": false,
+  "production_qualified": false
+}

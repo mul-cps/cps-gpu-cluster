@@ -1,0 +1,22 @@
+{
+  "scope": "Exact deployed exporter image on GPU2; telemetry only",
+  "families": {
+    "DCGM_FI_DEV_FB_FREE": {
+      "samples": 2,
+      "distinct_gpus": 2
+    },
+    "DCGM_FI_DEV_FB_USED": {
+      "samples": 2,
+      "distinct_gpus": 2
+    },
+    "DCGM_FI_DEV_GPU_UTIL": {
+      "samples": 2,
+      "distinct_gpus": 2
+    },
+    "DCGM_FI_DEV_GPU_TEMP": {
+      "samples": 2,
+      "distinct_gpus": 2
+    }
+  },
+  "exporter_ready": true
+}
