@@ -388,3 +388,12 @@ data hash. Workload-image continuity is therefore resolved; it is not a reason
 to repeat unchanged kernel gates. The remaining measurement is the changed
 selected wrapper's same-process sealed-cap handoff and actual B cap assignment.
 The live Node UID and boot ID still match B's retained measured epoch.
+
+The actual installed gate executable passed a non-mocked CPU handoff probe in
+a network-disabled container with read-only root filesystem and no GPU devices
+or native authority mount. After a synthetic fixture selection appeared, the
+wrapper executed `wait-for-cap` with unchanged PID and process start ticks.
+The [probe receipt](../../qualification-artifacts/selected-placement-software-20261028/selected-gate-real-exec.json)
+explicitly excludes hardware cap assignment. Fresh read-only host observations
+matched the retained boot/driver generation; both GPU2 A100s reported 40,960 MiB
+total and 0 MiB used. The connected cap-assignment delta remains open.
