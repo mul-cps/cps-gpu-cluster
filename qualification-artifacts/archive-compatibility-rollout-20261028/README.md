@@ -112,3 +112,35 @@ Pod were absent, and the global reservation was inactive. No UUID check,
 qualification record or real user workload was changed. The placement/eligible
 device mismatch must be resolved through trusted qualification or supported
 physical-device selection; readiness alone does not close this acceptance gate.
+
+## Live CIT two-group acceptance
+
+A fresh controlled course and manual assignment were created through the
+running authenticated CIT console API, using the two existing reviewed test
+identities without remapping them. Temporary grants permitted only the CPU
+profile. Both neutral workspaces started through the actual account adapter,
+Hub, gateway and NAS path; their Pods became Ready. A distinct marker file was
+written in each workspace before closure.
+
+`POST /api/assignments/archive-qa-20261028-assignment/close` returned HTTP 200,
+`state: closed`, `archived: true`, `archive_pending: false`. Both groups returned
+NAS `readonly: true`, mechanism `zfs-readonly`, and successful mounted read-only
+verification. Repeating the same close operation also returned HTTP 200 with
+fresh mount verification evidence for both groups. No live failure was injected.
+The deliberate partial-failure/retry case remains the separate in-process
+fixture described above.
+
+An independent unprivileged, tokenless Pod mounted the two retained PVCs and
+verified the exact marker hashes in `live-marker-verification.json`; both write
+attempts failed with errno 30 (`EROFS`). The probe completed and was deleted.
+Fresh Source readback showed both workspaces stopped and archived with pending
+flags clear. Hub readback found no active servers and empty native Share lists
+for both neutral accounts. This proves the controlled assignment closure and
+retained read-only data path, not arbitrary membership revocation during an
+active GPU kernel or browser RTC visitor behavior.
+
+The two temporary grants were withdrawn (empty profiles, allowance zero);
+the one-hour operator token was revoked through Hub REST (204) and its private
+file removed. Course, audit history and read-only research-data fixtures remain
+retained. Existing Aditya, Gottam, Muslim and Rino Pod UIDs/restart counts were
+unchanged during the rollout and tests.

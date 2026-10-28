@@ -133,3 +133,16 @@ The fresh controlled Pod and KAI reservation were removed through normal Hub
 shutdown, and global accounting is inactive. This is not a confirmed archive
 regression, but reliable repeated GPU spawning remains unproved until physical
 device selection or the hardware qualification scope is corrected.
+
+### Live assignment closure acceptance
+
+The newly deployed archive path passed a controlled CIT assignment with two
+CPU groups through the actual authenticated console API, neutral-account
+provisioning, Hub and NAS. Both workspaces reached Ready, retained marker files,
+then stopped before verified read-only ZFS/mounted archive. Repeated closure
+re-verified both groups. An independent tokenless probe confirmed both marker
+hashes and `EROFS` for writes. Both Hub server lists and Share lists are empty;
+Source pending flags are clear. Temporary grants, probe and operator token were
+cleaned up while retaining archives/audit history. This closes that bounded
+assignment archive acceptance, not active GPU membership revocation, full RTC
+browser acceptance, cross-Hub accounting or coordinated restore.
