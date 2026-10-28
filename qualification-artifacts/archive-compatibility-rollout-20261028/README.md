@@ -1,8 +1,8 @@
 # Archive compatibility rollout — 28 October 2026
 
 Gateway and both admin consoles now run the bounded archive compatibility
-packages. This is a narrow deployed remediation, not complete assignment
-closure, cross-Hub or production acceptance.
+packages. This is a narrow deployed remediation with the bounded live assignment
+closure acceptance below; cross-Hub and production acceptance remain open.
 
 ## Exact artifacts and ownership
 
@@ -34,7 +34,8 @@ Four focused provider tests pass, including two-group partitioning, rejection
 of incomplete targets, pending state on a later group failure, and sanitized
 503 handling at the assignment-close route. Gateway storage/recovery tests
 were run before publication. These tests do not prove actual NAS archive
-closure or permission revocation; controlled live acceptance remains open.
+closure or permission revocation; the controlled live archive check below
+provides that separate bounded evidence.
 
 ## Rollback and retained data
 
