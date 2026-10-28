@@ -2254,9 +2254,19 @@ singleuser:
             "jupyter_remote_desktop_proxy": True,
         }
 
-        # Optional: always allow proxied hosts (you already do something similar)
+        # The generic proxy URL is user-controlled. Only loopback destinations
+        # are needed for notebook-local apps and the Xpra desktop; never resolve
+        # arbitrary hostnames here, since that would admit internal services.
+        def _allow_loopback_proxy_host(app, host):
+            del app  # Jupyter Server Proxy passes the app as the first argument.
+            return isinstance(host, str) and host.lower() in {
+                "localhost",
+                "127.0.0.1",
+                "::1",
+            }
+
         c.ServerProxy = getattr(c, "ServerProxy", {})
-        c.ServerProxy["host_allowlist"] = lambda app, host: True
+        c.ServerProxy["host_allowlist"] = _allow_loopback_proxy_host
 
         # Xpra desktop (gpu-desktop-xpra profile). This entry only actually
         # spawns `xpra` when the launcher tile is clicked, so it's harmless
