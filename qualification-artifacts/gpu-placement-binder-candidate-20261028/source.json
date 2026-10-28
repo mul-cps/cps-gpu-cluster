@@ -1,6 +1,30 @@
 {
   "base_commit": "994cddc17986d2e1d399ddb6b85da52023f890fa",
   "candidate_commit": "7a399c917985b2b8548661312f422ebed09e6d03",
+  "compute_checkpoint": {
+    "branch": "codex/v3-placement-integration-20261028",
+    "source_commit": "625ea92e5a65f3c30f7b6ea884ef6549a9369748",
+    "staged_wheel": {
+      "exact_source_modules_checked": 7,
+      "filename": "cps_compute-0.1.1-py3-none-any.whl",
+      "labextension_assets_owned": 0,
+      "published": false,
+      "sha256": "31e1e4483c5bee12f6b410d1587ca1df0a192cffc9d49e73d459a0e0ca6d9dc2"
+    },
+    "verification": [
+      {
+        "passed": 469,
+        "scope": "coordinator/compiler/placement/runtime/Node selection/group/service/inert/abort",
+        "seconds": 16.89,
+        "skipped": 3
+      },
+      {
+        "passed": 28,
+        "scope": "post-accounting custody and selected/inert Node regressions",
+        "seconds": 2.22
+      }
+    ]
+  },
   "installed": false,
   "patch_sha256": "2e5e9afd084be72edc6d9161b73cf7263c19675707ad6e45a9fe150c2db1e338",
   "production_qualified": false,
