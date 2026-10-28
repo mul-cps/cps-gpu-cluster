@@ -1,0 +1,203 @@
+{
+  "cohort_uid": "ac12dbf6-e251-4515-85d5-efc3009a8a33",
+  "controller": {
+    "cleanup_records": {
+      "a": {
+        "inode": 1470854,
+        "pod_uid": "f3796331-a7c4-4404-93ba-383f4f40efd6",
+        "retired_cgroup_id": 1470854,
+        "state": "retired-inert-cap"
+      },
+      "b": {
+        "inode": 1471012,
+        "pod_uid": "68ea690f-8d21-4260-b1c0-a981e0f3d5ef",
+        "retired_cgroup_id": 1471012,
+        "state": "retired-inert-cap"
+      }
+    },
+    "cleanup_returncode": 0,
+    "cleanup_state": "cleanup-verified",
+    "hardware_qualified": false,
+    "production_qualified": false,
+    "sealed_returncode": 0,
+    "sealed_state": "sealed"
+  },
+  "execution_recovery": {
+    "failure_detail": "Final absence exec payload exceeded the API request URL limit (HTTP 414, per operator diagnosis).",
+    "initial_cap_cleanup_error": "Node-agent operation failed; stderr retained only in the private execution result",
+    "initial_cap_cleanup_state": "cleanup-incomplete-node-left-fenced",
+    "initial_coordinator_state": "cleanup-incomplete-node-left-fenced",
+    "node_restore_in_recovery_reclamation": true,
+    "recovery_method": "The same pinned read-only absence runner was rerun with its payload on stdin (per operator record)."
+  },
+  "node_epoch": {
+    "boot_id": "a464df41-e391-4443-b8e8-ad7ecd052318",
+    "driver_generation": "4ebffc96-e25e-4583-a3b8-0d853fd90efd",
+    "gpu_uuid": "GPU-1e6145d5-8ee2-43e2-a0d5-6d345909e8a6",
+    "name": "k3s-wk-gpu2",
+    "post_cleanup_readback": {
+      "qa_fence_annotation": null,
+      "qa_pods_and_selection_configmap_absent": true,
+      "readback_sha256": "dad12247634f01480fac0b1d72cc6a8779382081fc7342e291344bad6c9bf6f0",
+      "resource_version": "387229895",
+      "uid": "3336cdd5-d245-436e-b57c-2f66c6dcaa41",
+      "unschedulable": null
+    },
+    "uid": "3336cdd5-d245-436e-b57c-2f66c6dcaa41"
+  },
+  "observed_at_utc": "2026-10-28T16:58:46+00:00",
+  "pods": {
+    "a": {
+      "cap_mib": 5120,
+      "controller_cleanup_state": "retired-inert-cap",
+      "hard_bytes": 5368709120,
+      "images": [
+        {
+          "image": "ghcr.io/mul-cps/cps-compute@sha256:bc5b128f582641eae8395e1121d1fb248eddc39a56c9e863b7c564badd94b167",
+          "name": "cps-native-cap-gate"
+        },
+        {
+          "image": "ghcr.io/mul-cps/cps-jupyter-notebook@sha256:5427088986bc06ad0713875d1aa2f31439f0bd1fbe6099d4669570fcf3e85be4",
+          "name": "cps-native-device-identity"
+        },
+        {
+          "image": "ghcr.io/mul-cps/cps-jupyter-notebook@sha256:5427088986bc06ad0713875d1aa2f31439f0bd1fbe6099d4669570fcf3e85be4",
+          "name": "notebook"
+        }
+      ],
+      "intent_sha256": "4e87b3b171b6332372a5e514ddca7a39eed641a7c40df6312735636aff8a8c78",
+      "name": "native-second-card-a-ac12dbf6",
+      "namespace": "cps-native-second-card-20261027",
+      "resource_version": "387229360",
+      "retired_entry": {
+        "hard": 5368709120,
+        "offline": true,
+        "pinned": true,
+        "soft": 5368709120,
+        "used": 0
+      },
+      "soft_bytes": 5368709120,
+      "spec_sha256": "5e7d0c4ac6e6848858b68d032a1ff526c0e22e975d9c9dbc0f9980b23f19ae4d",
+      "uid": "f3796331-a7c4-4404-93ba-383f4f40efd6"
+    },
+    "b": {
+      "cap_mib": 10240,
+      "controller_cleanup_state": "retired-inert-cap",
+      "hard_bytes": 10737418240,
+      "images": [
+        {
+          "image": "ghcr.io/mul-cps/cps-compute@sha256:09c535b59fa9188e1942b0285632a6f3a1b1ced48211028cf8b1f2036157a6d5",
+          "name": "cps-native-cap-gate"
+        },
+        {
+          "image": "ghcr.io/mul-cps/cps-jupyter-notebook@sha256:5427088986bc06ad0713875d1aa2f31439f0bd1fbe6099d4669570fcf3e85be4",
+          "name": "cps-native-device-identity"
+        },
+        {
+          "image": "ghcr.io/mul-cps/cps-jupyter-notebook@sha256:5427088986bc06ad0713875d1aa2f31439f0bd1fbe6099d4669570fcf3e85be4",
+          "name": "notebook"
+        }
+      ],
+      "intent_sha256": "7b2ff5a1271ed0b4da9d1537457e1271647be5d7141931e15f91a36ed34f293b",
+      "name": "native-second-card-b-ac12dbf6",
+      "namespace": "cps-native-second-card-20261027",
+      "resource_version": "387229369",
+      "retired_entry": {
+        "hard": 10737418240,
+        "offline": true,
+        "pinned": true,
+        "soft": 10737418240,
+        "used": 0
+      },
+      "soft_bytes": 10737418240,
+      "spec_sha256": "b3b6c24e4952d82ce6c8458263416ae024486abb84c2c421d41037a7a1d0b410",
+      "uid": "68ea690f-8d21-4260-b1c0-a981e0f3d5ef"
+    }
+  },
+  "receipt_sha256": {
+    "a_finalized_template": "0710490f72b0c3b30e5e0545f8e21a3e85b664826f2da5e2e6c4ee3c28698be4",
+    "actual_selection_configmap": "e0d4968e989431b2421ff03776de6cca9bfe63b0e55438679a1fed49c2577ae8",
+    "b_finalized_template": "4f771d9d4a84a21cdafd098f7297134782a3fbf2a0bbf697015407ee6fdb24d3",
+    "bound_a_intent": "4e87b3b171b6332372a5e514ddca7a39eed641a7c40df6312735636aff8a8c78",
+    "bound_b_intent": "7b2ff5a1271ed0b4da9d1537457e1271647be5d7141931e15f91a36ed34f293b",
+    "bundle_review": "7a5e2fd4f147a09315477a33242306b2b3601b0ef44bd3d53a4bd16131c1345b",
+    "cap_cleanup_report": "8405eab2447a62cbf4fe3c90335457ad863c150abaf8b446a208ada22a130936",
+    "coordinator_result": "c336f48ac4eaa544c2c07e7c9e8584d0adce05288be740d19d96aa5d4436eb96",
+    "recovery_reclamation": "a8118981be6990f80fd50e99127f5d132c1d28977da78706a9356919f88fd16a",
+    "separate_recovered_absence": "1a5d3136c33a3065dfd71354cb5a6f78121b7757f9eee19da1937f7784051fc5",
+    "stage_receipt": "03d65b02a5df75434bd02e548dcc4d65b1e445d8a5b2f8d5398d8b30cd5781c8"
+  },
+  "recovery_reclamation": {
+    "basis": "exact controller cleanup-verified retirement records, post-controller-absence.json, restored node",
+    "credentials_removed": true,
+    "deleted_kinds": [
+      "clusterrolebinding",
+      "rolebinding",
+      "clusterrole",
+      "role",
+      "serviceaccount"
+    ],
+    "read_only_node_and_resource_checks": "pass",
+    "source_receipt": "recovery-reclamation.json"
+  },
+  "schema": "cps-native-second-card-controlled-qa-evidence/v1",
+  "scope": "controlled-qa-only",
+  "selected_gate": {
+    "configmap": {
+      "bound_b_pod_uid": "68ea690f-8d21-4260-b1c0-a981e0f3d5ef",
+      "data_sha256": "sha256:94c1cfaa79c26829801f4cc409d3665346c3b8ad3b4b6b046719084b7c602c75",
+      "immutable": true,
+      "name": "cps-native-c248b6539a55780e9a242f6a4644714e-selection",
+      "resource_version": "387229375",
+      "uid": "94fe35bb-29f9-4c39-b1d3-a36847a81362"
+    },
+    "image": "ghcr.io/mul-cps/cps-compute@sha256:09c535b59fa9188e1942b0285632a6f3a1b1ced48211028cf8b1f2036157a6d5",
+    "qualification_reference": {
+      "data_sha256": "sha256:50d2dd3dabdd991e30d7031b1143a3f4a72549b607109df06df9d499e2e5eab9",
+      "key": "qualification.json",
+      "name": "cps-second-device-qualification-b65a5ca0fb59d8d4",
+      "namespace": "cps-native-runtime",
+      "resource_version": "387170546",
+      "uid": "6cf5e783-a5c6-4b9d-a672-cc8fe9c4a0e6"
+    }
+  },
+  "separate_recovered_absence": {
+    "cgroups_absent": true,
+    "cri_absent": true,
+    "pids_absent": true,
+    "pods_absent": true,
+    "source_receipt": "post-controller-absence.json"
+  },
+  "source_pins": {
+    "bundle/cps_compute/native_gpu_controller.py": "61ce9fa1d04d4ca2b1af02ceee6985eba8a6c2f291b139599b15c9e75a667ae7",
+    "bundle/cps_compute/native_gpu_health.py": "fc9dd634b8a31c15939cf6ddf3b18e84b9fa5a60d21424831a410a5ba4322fe8",
+    "bundle/cps_compute/native_node/backend.py": "f544fc3266e710119651010e3fcc35696b3b096ebe7de0a7dc5da65f31ae250e",
+    "bundle/cps_compute/native_node/identity.py": "9864e8df1406cce46bdc847e2d85619e7ca1d9723811e731ea93844f0c838dfd",
+    "bundle/cps_compute/native_node/nvml.py": "6c727571e6c52c67e4fd3919fcc282665feebb5d7cfbb0cbd7e47fb8c939766d",
+    "bundle/cps_compute/native_node/transport.py": "51c301067def92dbced90f5e1e7cba0e694850df88ed6d64189fbcc8a54743ba",
+    "controller.py": "4e56b8a44d62734540dac5c56043ee741303e665c17de49587a0e11c692dc8c7",
+    "render_fixture.py": "72a4816e82aebc87c73729ddaac0277e9b19b84613beae9ee0645903dabfc3f9"
+  },
+  "source_receipt_paths": {
+    "a_finalized_template": "/home/bjoern/.cache/cps-selected-cap-delta-20261028/fresh-prepare/cohorts/ac12dbf6-e251-4515-85d5-efc3009a8a33/a.selected.finalized.json",
+    "actual_selection_configmap": "/home/bjoern/.cache/cps-selected-cap-delta-20261028/fresh-prepare/cohorts/ac12dbf6-e251-4515-85d5-efc3009a8a33/run-actual/stage/selection-configmap.actual.json",
+    "b_finalized_template": "/home/bjoern/.cache/cps-selected-cap-delta-20261028/fresh-prepare/cohorts/ac12dbf6-e251-4515-85d5-efc3009a8a33/b.selected.finalized.json",
+    "bound_a_intent": "/home/bjoern/.cache/cps-selected-cap-delta-20261028/fresh-prepare/cohorts/ac12dbf6-e251-4515-85d5-efc3009a8a33/run-actual/stage/bound-a.intent.json",
+    "bound_b_intent": "/home/bjoern/.cache/cps-selected-cap-delta-20261028/fresh-prepare/cohorts/ac12dbf6-e251-4515-85d5-efc3009a8a33/run-actual/stage/bound-b.intent.json",
+    "bundle_review": "/home/bjoern/.cache/cps-selected-cap-delta-20261028/fresh-prepare/cohorts/ac12dbf6-e251-4515-85d5-efc3009a8a33/execution/bundle-review.json",
+    "cap_cleanup_report": "/home/bjoern/.cache/cps-selected-cap-delta-20261028/fresh-prepare/cohorts/ac12dbf6-e251-4515-85d5-efc3009a8a33/run-actual/cap-cleanup-report.json",
+    "coordinator_result": "/home/bjoern/.cache/cps-selected-cap-delta-20261028/fresh-prepare/cohorts/ac12dbf6-e251-4515-85d5-efc3009a8a33/run-actual/coordinator-result.json",
+    "recovery_reclamation": "/home/bjoern/.cache/cps-selected-cap-delta-20261028/fresh-prepare/cohorts/ac12dbf6-e251-4515-85d5-efc3009a8a33/run-actual/recovery-reclamation.json",
+    "separate_recovered_absence": "/home/bjoern/.cache/cps-selected-cap-delta-20261028/fresh-prepare/cohorts/ac12dbf6-e251-4515-85d5-efc3009a8a33/run-actual/post-controller-absence.json",
+    "stage_receipt": "/home/bjoern/.cache/cps-selected-cap-delta-20261028/fresh-prepare/cohorts/ac12dbf6-e251-4515-85d5-efc3009a8a33/run-actual/stage-receipt.json"
+  },
+  "verdict": {
+    "controller_cleanup": "pass",
+    "hardware_qualified": false,
+    "production_authority": false,
+    "production_qualified": false,
+    "qualification_boundary": "Observed exact B physical-device cap assignment and cleanup only; no broader GPU hardware, performance, or production qualification.",
+    "recovered_absence": "pass",
+    "selected_cap_assignment": "pass"
+  }
+}
