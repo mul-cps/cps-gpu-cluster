@@ -1,7 +1,8 @@
-# Note: Storage classes are already configured and managed outside of Fleet.
-# The local-path provisioner's node-path allowlist is Fleet-managed here,
-# because fast-scratch cannot bind a volume unless /mnt/nvme/scratch is
-# explicitly authorized for each GPU worker.
+# K3s owns its packaged `local-path` StorageClass and provisioner configuration.
+# The legacy `fast-scratch` class is provisioned by bootstrap and remains
+# unchanged. New NVMe scratch consumers can opt in to the separate
+# `fast-scratch-isolated` bundle, which has its own provisioner identity and
+# ConfigMap so it does not alter K3s's packaged resources.
 #
 # nfs-client does NOT exist (confirmed live 2026-07-06) -- it was removed at
 # some point without a documented replacement path. Released PVs from it
@@ -9,6 +10,7 @@
 # longhorn/longhorn-fast/longhorn-overcommit/longhorn-static for general
 # persistent storage, or fast-scratch for local-path NVMe scratch.
 #
-# fast-scratch - created via kubectl apply
+# fast-scratch - created via bootstrap; existing claims are not migrated
+# fast-scratch-isolated - separate Fleet-managed provisioner and class
 # longhorn/longhorn-fast/longhorn-overcommit/longhorn-static - via the
 # longhorn bundle in system/storage/longhorn/
