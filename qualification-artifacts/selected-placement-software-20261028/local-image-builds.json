@@ -1,0 +1,41 @@
+{
+  "scope": "local candidate image build and inert import/dependency checks only; not published or deployed",
+  "sdk_source": "38099afa882ef0684db4c880a3497d03965ae470",
+  "hub_source": "f8762de0680bf590205abf55179fe6ac864c8bf8",
+  "sdk_wheel_sha256": "fa20754fd5f55641d6d0776f8c688c47b012cd14b4928703f3cf63db617df9bb",
+  "hub_wheel_sha256": "45a05377863ccb3f1e530219a4ea3469b9226f25754757855309268a6f6c7afc",
+  "images": {
+    "gateway": {
+      "local_tag": "localhost/cps-compute:selected-38099af",
+      "local_image_id": "cfa31452d91de5d27876ce87f5269de30d030a5706bfa037b311f41b5356d010",
+      "user": "10001",
+      "checks": [
+        "pip check",
+        "selected prepare/status/cleanup/resolver imports",
+        "wait-for-selected-cap --help"
+      ]
+    },
+    "node": {
+      "local_tag": "localhost/cps-native-node:selected-38099af",
+      "local_image_id": "3a1616c74e8d709e9daab6e86f8926c46c63c03c50c572c4dd70dcdd06773727",
+      "user": "0",
+      "checks": [
+        "30 installed distributions verified during build",
+        "inert startup: no API calls; no GPU calls"
+      ]
+    },
+    "hub": {
+      "local_tag": "localhost/cps-compute-hub:selected-f8762de",
+      "local_image_id": "aca0024de3ac05139c9e5f7e94a809adf1e5594d891cfb44b41cc5752b78a677",
+      "user": "1000",
+      "base_digest": "sha256:7e42022012c83d08e1ff43bb7aeb8ae9d835645366c50d2007fd4f00166ccefd",
+      "hash_pinned_wheels": 77,
+      "checks": [
+        "pip check",
+        "Hub placement and selected prepare imports",
+        "installed version inventory differs from base only for SDK and Hub: 0.1.0 to 0.1.1",
+        "Hub5.5.2/KubeSpawner7.1.0/kubernetes-asyncio36.1.0 retained"
+      ]
+    }
+  }
+}

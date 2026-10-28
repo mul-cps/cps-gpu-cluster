@@ -277,11 +277,30 @@ regression cases in 7.75 seconds. These remain software checks.
 Exact-source SDK and Hub wheels passed RECORD and package ownership checks;
 neither package takes ownership of the other's files or JupyterLab assets.
 Build preflight found stale SDK 0.1.0 inputs in Dockerfiles and the Hub dependency
-while the source SDK is 0.1.1. Correcting those build inputs is required before a
-coherent image set. Staged wheels have not been published as replacement releases.
+while the source SDK is 0.1.1. Source `f8762de0680bf590205abf55179fe6ac864c8bf8`
+corrects those inputs and aligns the Hub component to 0.1.1; 24 packaging/image
+checks passed. Local Gateway and Node images built successfully with the exact
+SDK wheel checksum. Gateway dependency checks, selected-path imports and the
+selected-cap gate CLI passed; Node startup reported inert without API/GPU calls.
+These local images and staged wheels have not been published as replacement releases.
 
 Remaining before activation: coherent Gateway/Node/Hub/gate image handover,
 actual protected two-device proof/catalog installation and opt-in settings,
 then controlled connected GPU/current-group/cross-Hub acceptance. Wider
 production gates remain listed above. No production rollout, driver change,
 MIG change or user Pod restart occurred in this software work.
+
+The local Hub image also built from a 77-wheel hash-pinned closure. Its installed
+distribution inventory differs from the reviewed base only for SDK and Hub
+0.1.0 → 0.1.1; Hub 5.5.2, KubeSpawner 7.1.0 and kubernetes-asyncio 36.1.0
+remain unchanged. Local IDs and exact source/wheel hashes are retained in the
+[software receipt](../../qualification-artifacts/selected-placement-software-20261028/local-image-builds.json).
+
+Read-only activation inventory confirms no second-card proof/configuration or
+`candidates.json` catalog is installed, and the resolver environment setting is
+absent. The retained second-card proof document has valid bounded hardware
+measurements but its ConfigMap wrapper was schema-validated with synthetic
+identity only. Its image/policy tuple differs from the installed first-card
+deployment. Activation requires a genuine coordinated tuple/proof handover,
+not copying a UUID or substituting synthetic references. These local image
+builds do not change or extend the existing hardware qualification.
