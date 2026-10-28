@@ -89,10 +89,10 @@ class FastScratchIsolatedRenderTests(unittest.TestCase):
 
     def test_legacy_fast_scratch_and_existing_release_source_remain_intact(self):
         storage_classes = ROOT / "cluster-maintenance/clusters/cit-cps-gpu/system/storage/storageclasses"
-        self.assertTrue((storage_classes / "local-path-config.yaml").exists())
+        self.assertFalse((storage_classes / "local-path-config.yaml").exists())
         fleet = yaml.safe_load((storage_classes / "fleet.yaml").read_text())
         self.assertIs(fleet["helm"]["force"], False)
-        self.assertIs(fleet["helm"]["takeOwnership"], True)
+        self.assertIs(fleet["helm"]["takeOwnership"], False)
 
         bootstrap = (ROOT / "bootstrap-cluster/ansible/playbooks/03-storage.yml").read_text()
         self.assertIn("name: {{ scratch_storage_class_name }}", bootstrap)

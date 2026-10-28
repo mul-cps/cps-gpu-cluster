@@ -23,7 +23,7 @@ be retired.
 
 This bundle is intentionally independent of `storage-classes` so it can stage
 while that bundle is blocked on the K3s-owned `local-path-config`. The checked-in
-ConfigMap now carries Helm's `resource-policy: keep` as handover stage 1. This
+ConfigMap carried Helm's `resource-policy: keep` in handover stage 1. That
 stage changes only metadata: its data remains identical to the current Helm
 release manifest. It does not remove the ConfigMap or clear the dependency.
 Fleet currently reports the ConfigMap as outside this BundleDeployment's
@@ -34,7 +34,7 @@ non-force Helm patch path; it has not been applied to the live cluster as part
 of this change. Fleet `Ready` may remain false because the K3s object-set owner
 marker is still different.
 
-Stage 2 must be a separate reviewed source change, and only after the deployed
+This branch is stage 2 and must only be deployed after the deployed
 `storage-classes` release manifest and the live ConfigMap both show
 `helm.sh/resource-policy: keep`. Confirm the live object is still owned by the
 K3s `local-storage` Addon, the ConfigMap data is unchanged from the stage-1
