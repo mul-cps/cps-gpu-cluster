@@ -3,6 +3,7 @@ import copy
 import hashlib
 import importlib.util
 import json
+import os
 import subprocess
 import sys
 from pathlib import Path
@@ -11,7 +12,7 @@ import pytest
 
 HERE = Path(__file__).parent
 BUILDER = HERE / 'selected-gate-fixture.py'
-SDK = Path('/home/bjoern/git/cps-transport-worktrees/packaging-011-20261028/src')
+SDK_SOURCE_ENV = 'CPS_COMPUTE_SDK_SOURCE'
 
 
 def load_module(name, path):
@@ -86,7 +87,7 @@ def fixture_inputs():
     return review, descriptor, actual_pod, qualification_ref, physical
 
 
-def test_builds_closed_selection_configmap_accepted_by_installed_sdk_parser(tmp_path):
+def test_builds_closed_selection_configmap(tmp_path):
     review, descriptor, actual_pod, qualification_ref, physical = fixture_inputs()
     before = copy.deepcopy((review, descriptor, actual_pod, qualification_ref, physical))
     builder = load_module('selected_gate_fixture', BUILDER)
@@ -108,7 +109,32 @@ def test_builds_closed_selection_configmap_accepted_by_installed_sdk_parser(tmp_
     assert document['gpu_uuid'] == physical['gpu_uuid']
     assert document['selected_placement']['qualification_ref'] == qualification_ref
 
-    # Exercise the exact installed SDK parser against a local projected-file analogue.
+    assert proposed['scope'] == 'controlled-qa-only'
+
+
+def test_selected_projection_is_accepted_by_sdk_parser(tmp_path):
+    review, descriptor, actual_pod, qualification_ref, physical = fixture_inputs()
+    builder = load_module('selected_gate_fixture_sdk', BUILDER)
+    proposed = builder.build_selected_fixture(review, descriptor, actual_pod, qualification_ref, physical)
+    configmap = proposed['configmap']
+    document = json.loads(configmap['data']['selected.json'])
+
+    # Exercise the SDK parser against a local projected-file analogue. An explicit
+    # source checkout takes precedence; otherwise use this interpreter's install.
+    env = os.environ.copy()
+    sdk_source = env.get(SDK_SOURCE_ENV)
+    if sdk_source:
+        sdk_path = Path(sdk_source).expanduser()
+        if not sdk_path.is_dir():
+            pytest.skip(f'{SDK_SOURCE_ENV} is not an available directory: {sdk_path}')
+        env['PYTHONPATH'] = str(sdk_path) + (os.pathsep + env['PYTHONPATH'] if env.get('PYTHONPATH') else '')
+    probe = subprocess.run([sys.executable, '-c',
+        'from cps_compute.native_gpu_runtime import read_selected_native_cap; assert callable(read_selected_native_cap)'],
+        text=True, capture_output=True, env=env)
+    if probe.returncode:
+        pytest.skip('selected-cap parser unavailable from requested source or installed cps_compute SDK')
+
+    # Exercise the exact selected runtime parser against a local projected-file analogue.
     projection = tmp_path / 'projected' / 'selected.json'
     projection.parent.mkdir()
     projection.write_text(configmap['data']['selected.json'])
@@ -124,7 +150,7 @@ print(json.dumps(read_selected_native_cap(path,expected,pod_uid=pod_uid,spec_sha
     parsed = json.loads(subprocess.run(
         [sys.executable, '-c', parser, str(projection), actual_pod['metadata']['uid'], document['spec_sha256']],
         input=json.dumps(expected), text=True, capture_output=True, check=True,
-        env={**__import__('os').environ, 'PYTHONPATH': str(SDK)}).stdout)
+        env=env).stdout)
     assert parsed['gpu_uuid'] == physical['gpu_uuid']
     assert parsed['cap_mib'] == 10240
 
