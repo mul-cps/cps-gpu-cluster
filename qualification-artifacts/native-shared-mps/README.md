@@ -101,13 +101,31 @@ missing over-cap rejection or recovery, and a survivor that made no progress.
 Its output always says `productionQualified: false`: one successful aggregate
 test is only a focused qualification result, not the whole production gate.
 
+### Qualification Pod cleanup
+
+After the reviewed test completes, remove its exact Pod with the guarded
+entrypoint. First capture the Pod UID from the intended namespace, then pass
+that value to the helper:
+
+```sh
+POD_UID=$(kubectl get pod <pod-name> --namespace <namespace> -o jsonpath='{.metadata.uid}')
+python3 cleanup_test_pod.py \
+  --namespace <namespace> --pod <pod-name> --expected-uid "$POD_UID"
+```
+
+The helper reads the live Pod and refuses if its UID differs, then deletes it
+with a Kubernetes UID precondition to close the replacement race. Cleanup is
+limited to that Pod API object. Keep native controller state, retirement
+journals, receipts, and evidence directories intact; do not remove a cohort
+`state/` directory as part of workload cleanup. The protected journals are
+needed to validate later cap-inventory changes, even after a test workload has
+been retired.
+
 Offline tests:
 
 ```sh
-python3 -m unittest \
-  qualification-artifacts.native-shared-mps.test_same_pod_probe \
-  qualification-artifacts.native-shared-mps.test_verify_same_pod \
-  qualification-artifacts.native-shared-mps.test_collect_host_attribution -v
+python3 -m unittest discover \
+  -s qualification-artifacts/native-shared-mps -p 'test_*.py' -v
 ```
 
 The earlier `dyn071552c` observer used this same evidence chain through the GPU
