@@ -4,6 +4,7 @@ helm:
   releaseName: open-webui
   repo: https://helm.openwebui.com/
   chart: open-webui
+  version: 16.6.0
   createNamespace: true
   valuesFiles:
     - values.yaml
