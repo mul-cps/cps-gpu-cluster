@@ -1,0 +1,13 @@
+name: fast-scratch-isolated
+defaultNamespace: fast-scratch-system
+
+labels:
+  app: fast-scratch-isolated
+  name: fast-scratch-isolated
+
+helm:
+  chart: ./chart
+  releaseName: fast-scratch-isolated
+  createNamespace: true
+valuesFiles:
+    - values.yaml
