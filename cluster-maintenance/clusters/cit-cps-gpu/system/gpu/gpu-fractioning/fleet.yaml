@@ -1,0 +1,10 @@
+name: gpu-fractioning
+defaultNamespace: gpu-fractioning
+labels:
+  name: gpu-fractioning
+kustomize:
+  dir: .
+dependsOn:
+- selector:
+    matchLabels:
+      name: gpu-fractioning-crds

@@ -1,0 +1,6 @@
+name: gpu-fractioning-crds
+defaultNamespace: gpu-fractioning
+labels:
+  name: gpu-fractioning-crds
+kustomize:
+  dir: .

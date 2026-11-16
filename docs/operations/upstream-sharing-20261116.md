@@ -175,3 +175,28 @@ report 620.70.06 and 40960 MiB through NVML. `/proc/driver/nvidia/params` confir
 `RmMemacctMode=1`; the driver DaemonSet is 1/1 Ready. GPU2 remains cordoned
 with zero advertised GPUs while the toolkit/plugin transition is prepared. Fractioning, KAI cutover and real workspace acceptance
 are still pending; no next worker is nominated.
+
+## GPU2 toolkit, CUDA and NRI checks
+
+Fleet source `00855fd7` selects toolkit 1.20.1 and stock device plugin/GFD 0.20.1,
+retaining OnDelete. Only GPU2 Pods were enabled/recreated. Both cards advertised
+normally and each separately passed CUDA vector-add in a nonroot Pod using two
+stock device-plugin allocations. The fixture exited and was removed; logs are
+retained in the execution artifacts. The initial toolkit CDI race resolved
+when toolkit setup completed; no retry bypass or security change was needed.
+
+GPU2 now uses a K3s `config-v3.toml.tmpl` extending the base template with the
+standard NRI/default-validator fragment. After restarting only its K3s agent,
+the generated config, NRI socket and containerd plugin status were verified.
+A container requiring absent plugin `gpu-fractioning` was rejected by
+`00-default-validator` before creation. An ordinary nonroot CPU container using
+the NVIDIA runtime started successfully and received SIGTERM, logged its
+shutdown handler and exited on normal Pod deletion. No force deletion or
+AppArmor relaxation was needed. The negative fixture was also removed.
+
+The released Fractioning chart is rendered as separate CRD/namespace and operand
+Fleet bundles. Its default configuration's Helm hook annotations are removed so
+Fleet manages the already-scoped CR directly. The two-part GPU2 selector,
+fail-open=false, retroactive enforcement and K3s sockets validate against the
+released schema. The separate runtime nomination label remains absent until
+installation checks complete; no peer is selected.
