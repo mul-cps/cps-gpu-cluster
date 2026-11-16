@@ -1,0 +1,17 @@
+{"env": {"NVIDIA_VISIBLE_DEVICES": "void", "NVIDIA_GPU_MEMORY_REQUEST": "20480", "NVIDIA_GPU_MEMORY_LIMIT": "20480", "CUDA_MPS_PIPE_DIRECTORY": "/run/nvidia-mps"}}
+{"pid": 1, "cgroup": "0::/\n"}
+{"role": "peer", "mode": "managed", "gate": "start", "waiting": true}
+{"step": "init", "result": 0}
+{"step": "device", "result": 0}
+{"step": "context", "result": 0}
+{"role": "peer", "mode": "managed", "step": "allocation", "result": 0, "mib": 19968}
+{"step": "prefetch", "result": 0}
+{"step": "prefetch-sync", "result": 0}
+{"step": "fill", "result": 0}
+{"step": "sync", "result": 0}
+{"role": "peer", "mode": "managed", "step": "holding-filled-vram", "mib": 19968}
+{"role": "peer", "mode": "managed", "step": "progress", "result": 0, "operation_seconds": 0.00013190599929657765}
+{"role": "peer", "mode": "managed", "step": "progress", "result": 0, "operation_seconds": 0.0001221169986820314}
+{"step": "free", "result": 0}
+{"step": "destroy", "result": 0}
+{"role": "peer", "mode": "managed", "step": "process-finished"}

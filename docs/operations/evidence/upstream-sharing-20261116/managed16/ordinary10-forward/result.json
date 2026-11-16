@@ -1,0 +1,5 @@
+{
+  "protected_peer_progress": true,
+  "borrower_survival_required": false,
+  "idle_borrowing_allowed": true
+}

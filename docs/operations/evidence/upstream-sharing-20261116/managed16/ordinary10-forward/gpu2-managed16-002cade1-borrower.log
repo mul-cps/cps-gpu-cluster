@@ -1,0 +1,18 @@
+{"env": {"NVIDIA_VISIBLE_DEVICES": "void", "NVIDIA_GPU_MEMORY_REQUEST": "5120", "NVIDIA_GPU_MEMORY_LIMIT": "5120", "CUDA_MPS_PIPE_DIRECTORY": "/run/nvidia-mps"}}
+{"pid": 1, "cgroup": "0::/\n"}
+{"role": "borrower", "mode": "managed", "gate": "start", "waiting": true}
+{"step": "init", "result": 0}
+{"step": "device", "result": 0}
+{"step": "context", "result": 0}
+{"role": "borrower", "mode": "managed", "step": "allocation", "result": 0, "mib": 36864}
+{"step": "prefetch", "result": 0}
+{"step": "prefetch-sync", "result": 0}
+{"step": "fill", "result": 0}
+{"step": "sync", "result": 0}
+{"role": "borrower", "mode": "managed", "step": "holding-filled-vram", "mib": 36864}
+{"role": "borrower", "mode": "managed", "step": "progress", "result": 0, "operation_seconds": 0.0003887450002366677}
+{"role": "borrower", "mode": "managed", "step": "progress", "result": 0, "operation_seconds": 0.00044442999933380634}
+{"role": "borrower", "mode": "managed", "step": "progress", "result": 0, "operation_seconds": 0.00044800599789596163}
+{"step": "free", "result": 0}
+{"step": "destroy", "result": 0}
+{"role": "borrower", "mode": "managed", "step": "process-finished"}

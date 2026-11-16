@@ -1,0 +1,5 @@
+{
+  "protected_peer_progress": false,
+  "error": "protected peer has no continued CUDA progress",
+  "error_type": "RuntimeError"
+}

@@ -1,0 +1,5 @@
+/sys/fs/cgroup/kubepods.slice/kubepods-burstable.slice/kubepods-burstable-pod9ea9c8cb_2d9e_4a9f_9b9f_890eccde8479.slice/cgroup.procs
+/sys/fs/cgroup/kubepods.slice/kubepods-burstable.slice/kubepods-burstable-pod9ea9c8cb_2d9e_4a9f_9b9f_890eccde8479.slice/cri-containerd-e637f495e5dc3ea87b1a3da1bfd142d15011a44ecdf2e84c1f41ef3e9cdd5185.scope/cgroup.procs
+385875
+/sys/fs/cgroup/kubepods.slice/kubepods-burstable.slice/kubepods-burstable-pod9ea9c8cb_2d9e_4a9f_9b9f_890eccde8479.slice/cri-containerd-e8fbb964b7c90ae111b38746cbbce990de2a5dfd50a27cef7c81b3a6846c1595.scope/cgroup.procs
+385919

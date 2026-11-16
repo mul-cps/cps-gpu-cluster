@@ -1,0 +1,37 @@
+{
+  "status": "BLOCKED",
+  "scope": "GPU2 controlled acceptance; peers unchanged",
+  "driver": "620.70.06",
+  "backend": "misc",
+  "fractioning": "0.1.9",
+  "host_memory_per_container": "16Gi",
+  "policy": "Idle borrowing allowed; protected shares and progress under contention required",
+  "failure": {
+    "case": "managed20-reverse-readback",
+    "gpu_uuid": "GPU-1e6145d5-8ee2-43e2-a0d5-6d345909e8a6",
+    "protected_peer": {
+      "request_mib": 20480,
+      "limit_mib": 20480,
+      "managed_allocation_mib": 19968,
+      "arrival": "first",
+      "result": "CPU-cgroup OOMKilled; no continued progress"
+    },
+    "borrower": {
+      "request_mib": 5120,
+      "limit_mib": 5120,
+      "managed_allocation_mib": 36864,
+      "arrival": "second",
+      "result": "continues progress"
+    },
+    "leaf_limits_readback": "Both limits verified through nvidia-smi on exact main-container CRI leaf cgroup before allocation",
+    "reproduced": true
+  },
+  "response": "Qualified label removed, maintenance taint restored, GPU2 cordoned; no GPU3 nomination",
+  "completed_cases": [
+    "ordinary20-forward",
+    "ordinary20-reverse",
+    "ordinary10-forward",
+    "managed20-forward"
+  ],
+  "limitations": "Passing arrival order is not a guarantee; failure remains blocking. No driver patch yet."
+}
