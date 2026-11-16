@@ -1,0 +1,10 @@
+{
+  "observed_at": "2026-11-16T20:43:59.101648+00:00",
+  "bundle_ready": "True",
+  "desired_ready": 1,
+  "ready": 1,
+  "deployment_ready": true,
+  "modifiedStatus": [],
+  "desired_applied_match": true,
+  "repo_owner": "cluster-maintenance"
+}

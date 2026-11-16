@@ -1,0 +1,6 @@
+{
+  "podMonitorNamespaceSelector": {},
+  "podMonitorSelector": {},
+  "serviceMonitorNamespaceSelector": {},
+  "serviceMonitorSelector": {}
+}

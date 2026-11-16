@@ -1,0 +1,48 @@
+{
+  "apiVersion": "gpu-fractioning.kai.scheduler/v1alpha1",
+  "kind": "GpuFractioningConfig",
+  "metadata": {
+    "annotations": {
+      "objectset.rio.cattle.io/id": "default-gpu-fractioning-cattle-fleet-local-system"
+    },
+    "creationTimestamp": "2026-11-16T20:21:42Z",
+    "generation": 1,
+    "labels": {
+      "app.kubernetes.io/instance": "gpu-fractioning",
+      "app.kubernetes.io/managed-by": "Helm",
+      "app.kubernetes.io/name": "gpu-fractioning",
+      "app.kubernetes.io/version": "v0.1.9",
+      "helm.sh/chart": "gpu-fractioning-v0.1.9"
+    },
+    "name": "default",
+    "resourceVersion": "406844918",
+    "uid": "5af80b29-3380-452c-8d8b-44f0a9326c18"
+  },
+  "spec": {
+    "fractioningAgent": {
+      "criSocketPath": "/run/k3s/containerd/containerd.sock",
+      "failOpen": false,
+      "nriSocketPath": "/var/run/nri/nri.sock",
+      "retroactiveEnforcement": true
+    },
+    "metricsAgent": {
+      "enabled": true
+    },
+    "nodeSelector": {
+      "cps.unileoben.ac.at/fractioning-runtime": "upstream"
+    },
+    "runtimeClassName": "nvidia",
+    "tolerations": [
+      {
+        "effect": "NoSchedule",
+        "key": "nvidia.com/gpu",
+        "operator": "Exists"
+      },
+      {
+        "effect": "NoSchedule",
+        "key": "cps.unileoben.ac.at/maintenance",
+        "operator": "Exists"
+      }
+    ]
+  }
+}

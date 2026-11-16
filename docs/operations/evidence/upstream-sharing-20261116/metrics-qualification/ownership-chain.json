@@ -1,0 +1,101 @@
+[
+  {
+    "kind": "Pod",
+    "metadata": {
+      "name": "gpu-fractioning-fractiond-sdf6w",
+      "namespace": "gpu-fractioning",
+      "uid": "c9cf5712-6c7a-4d74-a6e0-09e47c05d265",
+      "labels": {
+        "app.kubernetes.io/component": "fractiond",
+        "app.kubernetes.io/managed-by": "gpu-fractioning",
+        "controller-revision-hash": "df9dd79bb",
+        "pod-template-generation": "1"
+      },
+      "annotations": {
+        "prometheus.io/path": "/metrics",
+        "prometheus.io/port": "2112",
+        "prometheus.io/scrape": "true"
+      },
+      "ownerReferences": [
+        {
+          "apiVersion": "apps/v1",
+          "blockOwnerDeletion": true,
+          "controller": true,
+          "kind": "DaemonSet",
+          "name": "gpu-fractioning-fractiond",
+          "uid": "681c20fa-6e9c-4500-9bfa-4c797567df03"
+        }
+      ]
+    }
+  },
+  {
+    "kind": "DaemonSet",
+    "metadata": {
+      "name": "gpu-fractioning-fractiond",
+      "namespace": "gpu-fractioning",
+      "uid": "681c20fa-6e9c-4500-9bfa-4c797567df03",
+      "labels": {
+        "app.kubernetes.io/component": "fractiond",
+        "app.kubernetes.io/managed-by": "gpu-fractioning"
+      },
+      "annotations": {
+        "deprecated.daemonset.template.generation": "1"
+      },
+      "ownerReferences": [
+        {
+          "apiVersion": "gpu-fractioning.kai.scheduler/v1alpha1",
+          "blockOwnerDeletion": true,
+          "controller": true,
+          "kind": "GpuFractioningConfig",
+          "name": "default",
+          "uid": "5af80b29-3380-452c-8d8b-44f0a9326c18"
+        }
+      ]
+    }
+  },
+  {
+    "kind": "GpuFractioningConfig",
+    "metadata": {
+      "name": "default",
+      "namespace": null,
+      "uid": "5af80b29-3380-452c-8d8b-44f0a9326c18",
+      "labels": {
+        "app.kubernetes.io/instance": "gpu-fractioning",
+        "app.kubernetes.io/managed-by": "Helm",
+        "app.kubernetes.io/name": "gpu-fractioning",
+        "app.kubernetes.io/version": "v0.1.9",
+        "helm.sh/chart": "gpu-fractioning-v0.1.9",
+        "objectset.rio.cattle.io/hash": "824e40c55840760c8892b78818286b634903401a"
+      },
+      "annotations": {
+        "meta.helm.sh/release-name": "gpu-fractioning",
+        "meta.helm.sh/release-namespace": "gpu-fractioning",
+        "objectset.rio.cattle.io/id": "default-gpu-fractioning-cattle-fleet-local-system"
+      },
+      "ownerReferences": null
+    }
+  },
+  {
+    "kind": "Deployment",
+    "metadata": {
+      "name": "gpu-fractioning",
+      "namespace": "gpu-fractioning",
+      "uid": "5bdd163d-ef5f-4712-aa75-6ec15cfa6cac",
+      "labels": {
+        "app.kubernetes.io/instance": "gpu-fractioning",
+        "app.kubernetes.io/managed-by": "Helm",
+        "app.kubernetes.io/name": "gpu-fractioning",
+        "app.kubernetes.io/version": "v0.1.9",
+        "helm.sh/chart": "gpu-fractioning-v0.1.9",
+        "objectset.rio.cattle.io/hash": "824e40c55840760c8892b78818286b634903401a"
+      },
+      "annotations": {
+        "deployment.kubernetes.io/revision": "2",
+        "meta.helm.sh/release-name": "gpu-fractioning",
+        "meta.helm.sh/release-namespace": "gpu-fractioning",
+        "objectset.rio.cattle.io/id": "default-gpu-fractioning-cattle-fleet-local-system"
+      },
+      "ownerReferences": null
+    }
+  }
+]

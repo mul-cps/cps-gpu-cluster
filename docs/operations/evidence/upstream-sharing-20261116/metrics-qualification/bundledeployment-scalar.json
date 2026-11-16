@@ -1,0 +1,43 @@
+{
+  "name": "gpu-fractioning",
+  "namespace": "cluster-fleet-local-local-1a3d67d0a899",
+  "labels": {
+    "fleet.cattle.io/bundle-name": "gpu-fractioning",
+    "fleet.cattle.io/bundle-namespace": "fleet-local",
+    "fleet.cattle.io/cluster": "local",
+    "fleet.cattle.io/cluster-namespace": "fleet-local",
+    "fleet.cattle.io/commit": "f2553d2b89a50556821162c9a3250a666b558044",
+    "fleet.cattle.io/content-name": "s-9d74126ac4c78dd6be574973b855363e1706efc42f7eb899d1ae7406436ad",
+    "fleet.cattle.io/created-by-user-id": "user-l7kss",
+    "fleet.cattle.io/managed": "true",
+    "fleet.cattle.io/repo-name": "cluster-maintenance",
+    "name": "gpu-fractioning"
+  },
+  "ownerReferences": null,
+  "conditions": [
+    {
+      "type": "Deployed",
+      "status": "True",
+      "reason": null
+    },
+    {
+      "type": "Installed",
+      "status": "True",
+      "reason": null
+    },
+    {
+      "type": "Ready",
+      "status": "True",
+      "reason": null
+    },
+    {
+      "type": "Monitored",
+      "status": "True",
+      "reason": null
+    }
+  ],
+  "modified": [],
+  "ready": true,
+  "appliedDeploymentID": "s-9d74126ac4c78dd6be574973b855363e1706efc42f7eb899d1ae7406436ad:d88799055eb304ea040d73eba8607f377f935b0a3f09e7090778eed50b3e7e04",
+  "deploymentID": "s-9d74126ac4c78dd6be574973b855363e1706efc42f7eb899d1ae7406436ad:d88799055eb304ea040d73eba8607f377f935b0a3f09e7090778eed50b3e7e04"
+}

@@ -1,9 +1,9 @@
 {
-  "as_of": "2026-11-16T20:41:12.707834+00:00",
+  "as_of": "2026-11-16T20:46:34.096111+00:00",
   "worker": "k3s-wk-gpu2",
   "worker_acceptance": false,
-  "phase": "stock KAI placement accepted; controlled real Source-registry workspace lifecycle acceptance running",
-  "gpu_eligibility": "GPU2 only: temporarily eligible for controlled acceptance, not yet accepted",
+  "phase": "normal notebook Ready; actual SDK gateway TLS CA integration failure under diagnosis",
+  "gpu_eligibility": "fenced: qualification label absent, cordoned, maintenance NoSchedule; normal cleanup allowed",
   "driver": {
     "version": "620.70.06",
     "image": "sha256:c3b71557aa17df43faad5a2661d81f1025ba355ac3adf784096de12cd2ef3e73",
@@ -28,11 +28,13 @@
     "Post-coldboot AppArmor enforcement, signal/ptrace and mount-denial controls",
     "First hung NRI request and disconnected request rejected, CPU works; runtime restart continuity and CUDA quota recovery",
     "Longhorn nonroot read/write/fsync and normal fixture removal",
-    "Stock KAI actual scheduler assignment: both physical/profile orders, 12 payloads plus guards/seed, both six-way progress checkpoints and confirmed cleanup"
+    "Stock KAI actual scheduler assignment: both physical/profile orders, 12 payloads plus guards/seed, both six-way progress checkpoints and confirmed cleanup",
+    "Stock Fractioning monitors: both healthy targets; real memory metrics for both cards and all profiles, UID/GPU/CID/leaf attribution retained; finite scrape coverage limitations documented"
   ],
   "remaining": [
+    "Real notebook SDK gateway certificate chain trust: CERTIFICATE_VERIFY_FAILED, no insecure fallback",
     "Real Source-registry CPS/CIT 5/10/20-to-CPU workflow",
-    "Active per-Pod upstream metrics qualification (NVML initialized; stock monitors installed)",
+    "Final installed NRI outer6ce post-install coldboot and bounded startup fault/CPU/CUDA recovery checks",
     "Remaining consolidated-plan distributed, startup/defrag, teaching, RTC and matching restore gates",
     "GPU3 then GPU1 then GPU4 complete serial cycles"
   ],

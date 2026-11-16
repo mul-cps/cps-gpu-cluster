@@ -1,0 +1,29 @@
+{
+  "iterations": 90,
+  "errors": 0,
+  "pod_uids_observed": [
+    "1efce514-e1bd-4f3f-937b-55d73f8a636b",
+    "2b00abfc-56bc-43e4-bfd6-f12d2b3d502f",
+    "3ae27936-a961-4379-8473-56263200214d",
+    "486e5034-3fdc-4a9c-9e96-ab72f7f07a3b",
+    "64882506-dae2-4c52-afeb-11a850c5c853",
+    "651e1a5d-726d-4fad-98b6-9167807c92b1",
+    "6dbf47df-0387-4f08-bab9-88a60c925f62",
+    "711a9bfd-5535-4ae2-8177-3aac91b355da",
+    "7c9f916a-d052-44cc-8605-f07817a1f7ac",
+    "b3c28f2e-7a65-4c9a-89d7-14c8cc1ed200",
+    "bb9976ed-891a-417b-94ce-eddc57f0fd58",
+    "c73a3e67-219d-484e-b51d-52fba5266f08",
+    "d098803a-128e-45c5-8459-eb292e7293ef",
+    "d9f4f980-92c0-4992-90c2-749b0a9dbf74",
+    "f32cfc63-e929-4bad-9317-f6f6157bc13e"
+  ],
+  "metric_names": [
+    "gpu_fractioning_gpu_memory_used_bytes",
+    "gpu_fractioning_gpu_sm_utilization_percent",
+    "gpu_fractioning_gpu_sm_utilization_percent_normalized"
+  ],
+  "started_at": 1794861316.2322886,
+  "ended_at": 1794861796.232969,
+  "read_only": true
+}

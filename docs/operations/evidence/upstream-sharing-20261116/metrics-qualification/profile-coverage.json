@@ -1,0 +1,85 @@
+{
+  "physical_gpu_profile_groups": [
+    {
+      "gpu_uuid": "GPU-1e6145d5-8ee2-43e2-a0d5-6d345909e8a6",
+      "profile_gib": 5,
+      "raw_memory_peak_bytes": 4731174912.0,
+      "prometheus_memory_peak_bytes": 4731174912.0,
+      "raw_sm_peak_percent": 1.0,
+      "prometheus_sm_peak_percent": 1.0,
+      "pod_uids": [
+        "2b00abfc-56bc-43e4-bfd6-f12d2b3d502f",
+        "651e1a5d-726d-4fad-98b6-9167807c92b1"
+      ]
+    },
+    {
+      "gpu_uuid": "GPU-1e6145d5-8ee2-43e2-a0d5-6d345909e8a6",
+      "profile_gib": 10,
+      "raw_memory_peak_bytes": 10099884032.0,
+      "prometheus_memory_peak_bytes": 10099884032.0,
+      "raw_sm_peak_percent": 1.0,
+      "prometheus_sm_peak_percent": 0,
+      "pod_uids": [
+        "b3c28f2e-7a65-4c9a-89d7-14c8cc1ed200",
+        "3ae27936-a961-4379-8473-56263200214d"
+      ]
+    },
+    {
+      "gpu_uuid": "GPU-1e6145d5-8ee2-43e2-a0d5-6d345909e8a6",
+      "profile_gib": 20,
+      "raw_memory_peak_bytes": 20837302272.0,
+      "prometheus_memory_peak_bytes": 20837302272.0,
+      "raw_sm_peak_percent": 1.0,
+      "prometheus_sm_peak_percent": 1.0,
+      "pod_uids": [
+        "1efce514-e1bd-4f3f-937b-55d73f8a636b",
+        "7c9f916a-d052-44cc-8605-f07817a1f7ac"
+      ]
+    },
+    {
+      "gpu_uuid": "GPU-16128952-b438-556a-00bb-93039ee24e56",
+      "profile_gib": 5,
+      "raw_memory_peak_bytes": 4731174912.0,
+      "prometheus_memory_peak_bytes": 4731174912.0,
+      "raw_sm_peak_percent": 1.0,
+      "prometheus_sm_peak_percent": 0,
+      "pod_uids": [
+        "6dbf47df-0387-4f08-bab9-88a60c925f62",
+        "bb9976ed-891a-417b-94ce-eddc57f0fd58"
+      ]
+    },
+    {
+      "gpu_uuid": "GPU-16128952-b438-556a-00bb-93039ee24e56",
+      "profile_gib": 10,
+      "raw_memory_peak_bytes": 10099884032.0,
+      "prometheus_memory_peak_bytes": 10099884032.0,
+      "raw_sm_peak_percent": 1.0,
+      "prometheus_sm_peak_percent": 1.0,
+      "pod_uids": [
+        "64882506-dae2-4c52-afeb-11a850c5c853",
+        "d098803a-128e-45c5-8459-eb292e7293ef"
+      ]
+    },
+    {
+      "gpu_uuid": "GPU-16128952-b438-556a-00bb-93039ee24e56",
+      "profile_gib": 20,
+      "raw_memory_peak_bytes": 20837302272.0,
+      "prometheus_memory_peak_bytes": 20837302272.0,
+      "raw_sm_peak_percent": 1.0,
+      "prometheus_sm_peak_percent": 1.0,
+      "pod_uids": [
+        "f32cfc63-e929-4bad-9317-f6f6157bc13e",
+        "d9f4f980-92c0-4992-90c2-749b0a9dbf74"
+      ]
+    }
+  ],
+  "raw_nonzero_memory_groups": 6,
+  "prometheus_nonzero_memory_groups": 6,
+  "raw_nonzero_sm_groups": 6,
+  "prometheus_nonzero_sm_groups": 4,
+  "total_groups": 6,
+  "notes": [
+    "Two arrival orders provide 12 distinct payload Pod UIDs across six physical GPU/profile groups.",
+    "A 30-second scrape can miss short nonzero intervals; zero during allocation holds is not evidence of absent series."
+  ]
+}

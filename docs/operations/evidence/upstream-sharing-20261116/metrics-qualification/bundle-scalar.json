@@ -1,0 +1,33 @@
+{
+  "observed_at": "2026-11-16T20:33:48.739005+00:00",
+  "metadata": {
+    "name": "gpu-fractioning",
+    "namespace": "fleet-local",
+    "uid": "88b07938-1b84-453a-81a8-7e080449df6c",
+    "generation": 6,
+    "labels": {
+      "fleet.cattle.io/commit": "f2553d2b89a50556821162c9a3250a666b558044",
+      "fleet.cattle.io/created-by-user-id": "user-l7kss",
+      "fleet.cattle.io/repo-name": "cluster-maintenance",
+      "name": "gpu-fractioning"
+    },
+    "annotations": null,
+    "ownerReferences": null
+  },
+  "conditions": [
+    {
+      "type": "Ready",
+      "status": "True",
+      "reason": null,
+      "lastUpdateTime": "2026-11-16T20:27:55Z"
+    }
+  ],
+  "summary": {
+    "desiredReady": 1,
+    "ready": 1,
+    "modified": null,
+    "notReady": null,
+    "errApplied": null,
+    "pending": null
+  }
+}

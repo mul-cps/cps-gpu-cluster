@@ -1,0 +1,4 @@
+{"time":"2026-11-16T20:22:42.709842117Z","level":"INFO","msg":"starting gpu-fractioning-metrics","version":"v0.1.9","commit":"fb75540","date":"2026-11-11T07:34:48Z"}
+{"time":"2026-11-16T20:22:42.71008522Z","level":"INFO","msg":"container->pod mapping handoff directory","mapDir":"/var/run/gpu-fractioning/map"}
+{"time":"2026-11-16T20:22:42.722137786Z","level":"INFO","msg":"NVML initialized; GPU process metrics enabled"}
+{"time":"2026-11-16T20:22:42.722398913Z","level":"INFO","msg":"starting GPU metrics exporter","address":":2112"}
