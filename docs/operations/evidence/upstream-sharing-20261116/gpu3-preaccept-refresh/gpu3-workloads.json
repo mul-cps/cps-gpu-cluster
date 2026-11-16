@@ -1,0 +1,604 @@
+{
+  "observed_at": "2026-11-16T21:58:44.800528+00:00",
+  "activePods": 62,
+  "daemonSetPods": 25,
+  "gpuConsumers": [],
+  "nonDaemonSet": [
+    {
+      "namespace": "arc-systems",
+      "name": "cit-cps-gpu-5d57db67-listener",
+      "uid": "5a217d1b-6eb9-4b38-ae5e-c023aee4f7c4",
+      "owner": [
+        {
+          "kind": "AutoscalingListener",
+          "name": "cit-cps-gpu-5d57db67-listener"
+        }
+      ],
+      "ready": true,
+      "pvc": [],
+      "pdb": []
+    },
+    {
+      "namespace": "beszel",
+      "name": "beszel-hub-85897b7675-jcj7k",
+      "uid": "45608a34-53b8-46ec-8612-db5fa6acd0ed",
+      "owner": [
+        {
+          "kind": "ReplicaSet",
+          "name": "beszel-hub-85897b7675"
+        }
+      ],
+      "ready": true,
+      "pvc": [
+        "beszel-data"
+      ],
+      "pdb": []
+    },
+    {
+      "namespace": "cattle-monitoring-system",
+      "name": "prometheus-rancher-monitoring-prometheus-0",
+      "uid": "25350d00-3dd1-490f-8d8a-d3bf578dac9f",
+      "owner": [
+        {
+          "kind": "StatefulSet",
+          "name": "prometheus-rancher-monitoring-prometheus"
+        }
+      ],
+      "ready": true,
+      "pvc": [
+        "prometheus-rancher-monitoring-prometheus-db-prometheus-rancher-monitoring-prometheus-0"
+      ],
+      "pdb": []
+    },
+    {
+      "namespace": "cattle-monitoring-system",
+      "name": "rancher-monitoring-grafana-6ff45ff66b-gqs4d",
+      "uid": "a16a766d-830f-40ce-a445-37f8ddf9b136",
+      "owner": [
+        {
+          "kind": "ReplicaSet",
+          "name": "rancher-monitoring-grafana-6ff45ff66b"
+        }
+      ],
+      "ready": true,
+      "pvc": [
+        "rancher-monitoring-grafana"
+      ],
+      "pdb": []
+    },
+    {
+      "namespace": "cattle-monitoring-system",
+      "name": "rancher-monitoring-kube-state-metrics-5cc64fcff7-85d78",
+      "uid": "577a0ee5-c23f-42f1-97a2-4c590da849d5",
+      "owner": [
+        {
+          "kind": "ReplicaSet",
+          "name": "rancher-monitoring-kube-state-metrics-5cc64fcff7"
+        }
+      ],
+      "ready": true,
+      "pvc": [],
+      "pdb": []
+    },
+    {
+      "namespace": "cattle-monitoring-system",
+      "name": "rancher-monitoring-operator-d78b98855-b4gjx",
+      "uid": "a67b6302-5cbb-423a-a5a6-f1ea04c7dad1",
+      "owner": [
+        {
+          "kind": "ReplicaSet",
+          "name": "rancher-monitoring-operator-d78b98855"
+        }
+      ],
+      "ready": true,
+      "pvc": [],
+      "pdb": []
+    },
+    {
+      "namespace": "cattle-system",
+      "name": "rancher-b6cd998d9-xcqhj",
+      "uid": "3250cde1-7dcd-406a-8879-01b0c2a36386",
+      "owner": [
+        {
+          "kind": "ReplicaSet",
+          "name": "rancher-b6cd998d9"
+        }
+      ],
+      "ready": true,
+      "pvc": [],
+      "pdb": []
+    },
+    {
+      "namespace": "cattle-turtles-system",
+      "name": "rancher-turtles-controller-manager-86bc6bbdb5-rjfnk",
+      "uid": "cdd7c5c4-885d-4dab-8275-b58cf37fd2ab",
+      "owner": [
+        {
+          "kind": "ReplicaSet",
+          "name": "rancher-turtles-controller-manager-86bc6bbdb5"
+        }
+      ],
+      "ready": true,
+      "pvc": [],
+      "pdb": []
+    },
+    {
+      "namespace": "cert-manager",
+      "name": "cert-manager-webhook-78f7b4d9d7-czptl",
+      "uid": "8e052886-a074-425e-be70-294f382559e8",
+      "owner": [
+        {
+          "kind": "ReplicaSet",
+          "name": "cert-manager-webhook-78f7b4d9d7"
+        }
+      ],
+      "ready": true,
+      "pvc": [],
+      "pdb": []
+    },
+    {
+      "namespace": "cit-auth",
+      "name": "authentik-postgresql-0",
+      "uid": "3f1936ea-aeb9-4d76-972e-1c43f760a9c1",
+      "owner": [
+        {
+          "kind": "StatefulSet",
+          "name": "authentik-postgresql"
+        }
+      ],
+      "ready": true,
+      "pvc": [
+        "data-authentik-postgresql-0"
+      ],
+      "pdb": [
+        {
+          "name": "authentik-postgresql",
+          "minAvailable": null,
+          "maxUnavailable": 1,
+          "expected": 1,
+          "healthy": 1,
+          "allowed": 1
+        }
+      ]
+    },
+    {
+      "namespace": "cit-auth",
+      "name": "authentik-worker-66bb756b4c-wcp99",
+      "uid": "3139426e-db19-4149-97e9-dbd623fb558e",
+      "owner": [
+        {
+          "kind": "ReplicaSet",
+          "name": "authentik-worker-66bb756b4c"
+        }
+      ],
+      "ready": true,
+      "pvc": [],
+      "pdb": [
+        {
+          "name": "authentik-worker",
+          "minAvailable": 1,
+          "maxUnavailable": null,
+          "expected": 2,
+          "healthy": 2,
+          "allowed": 1
+        }
+      ]
+    },
+    {
+      "namespace": "cps-artifacts-relay",
+      "name": "artifacts-relay-75f467ffc7-7pt6v",
+      "uid": "8d65fc72-d3e9-4cf5-bffb-871ad9ddbf81",
+      "owner": [
+        {
+          "kind": "ReplicaSet",
+          "name": "artifacts-relay-75f467ffc7"
+        }
+      ],
+      "ready": true,
+      "pvc": [
+        "netbird-state"
+      ],
+      "pdb": []
+    },
+    {
+      "namespace": "cps-compute",
+      "name": "cit-admin-76bcf79bd-rgnz6",
+      "uid": "542587da-4e3d-4f1b-b96a-e796a43a67d1",
+      "owner": [
+        {
+          "kind": "ReplicaSet",
+          "name": "cit-admin-76bcf79bd"
+        }
+      ],
+      "ready": true,
+      "pvc": [
+        "cit-admin-data"
+      ],
+      "pdb": []
+    },
+    {
+      "namespace": "cps-compute",
+      "name": "cps-admin-85c88c6f8f-q6jj8",
+      "uid": "8fa9865e-33ce-4209-90fc-f211b9832c5d",
+      "owner": [
+        {
+          "kind": "ReplicaSet",
+          "name": "cps-admin-85c88c6f8f"
+        }
+      ],
+      "ready": true,
+      "pvc": [
+        "cps-admin-data"
+      ],
+      "pdb": []
+    },
+    {
+      "namespace": "gpu-fractioning",
+      "name": "gpu-fractioning-769db7746b-2zsr7",
+      "uid": "37822d4b-d1a8-477f-a3db-54a1b72ad94f",
+      "owner": [
+        {
+          "kind": "ReplicaSet",
+          "name": "gpu-fractioning-769db7746b"
+        }
+      ],
+      "ready": true,
+      "pvc": [],
+      "pdb": []
+    },
+    {
+      "namespace": "gpu-operator",
+      "name": "gpu-operator-84747d5f47-qczzp",
+      "uid": "9588282d-bce7-4e68-a74a-11c25000d3d4",
+      "owner": [
+        {
+          "kind": "ReplicaSet",
+          "name": "gpu-operator-84747d5f47"
+        }
+      ],
+      "ready": true,
+      "pvc": [],
+      "pdb": []
+    },
+    {
+      "namespace": "gpu-operator",
+      "name": "gpu-operator-node-feature-discovery-master-5776875bf9-96j65",
+      "uid": "586cbac6-4908-4b6a-90ac-9b638649802e",
+      "owner": [
+        {
+          "kind": "ReplicaSet",
+          "name": "gpu-operator-node-feature-discovery-master-5776875bf9"
+        }
+      ],
+      "ready": true,
+      "pvc": [],
+      "pdb": []
+    },
+    {
+      "namespace": "harbor",
+      "name": "harbor-database-0",
+      "uid": "0cb572c4-194a-404f-893d-5be5f9c28a00",
+      "owner": [
+        {
+          "kind": "StatefulSet",
+          "name": "harbor-database"
+        }
+      ],
+      "ready": true,
+      "pvc": [
+        "database-data-harbor-database-0"
+      ],
+      "pdb": []
+    },
+    {
+      "namespace": "harbor",
+      "name": "harbor-redis-0",
+      "uid": "24d40aa4-cd81-4253-88a8-720199db43a9",
+      "owner": [
+        {
+          "kind": "StatefulSet",
+          "name": "harbor-redis"
+        }
+      ],
+      "ready": true,
+      "pvc": [
+        "data-harbor-redis-0"
+      ],
+      "pdb": []
+    },
+    {
+      "namespace": "harbor",
+      "name": "harbor-trivy-0",
+      "uid": "514813d0-54d2-4f01-8603-cc654cdd8148",
+      "owner": [
+        {
+          "kind": "StatefulSet",
+          "name": "harbor-trivy"
+        }
+      ],
+      "ready": true,
+      "pvc": [
+        "data-harbor-trivy-0"
+      ],
+      "pdb": []
+    },
+    {
+      "namespace": "image-builds",
+      "name": "image-builder-api-7dc4fdff6b-js4lv",
+      "uid": "71ef4dd9-b3df-4265-b3ca-bcb57a589097",
+      "owner": [
+        {
+          "kind": "ReplicaSet",
+          "name": "image-builder-api-7dc4fdff6b"
+        }
+      ],
+      "ready": true,
+      "pvc": [],
+      "pdb": []
+    },
+    {
+      "namespace": "jupyterhub",
+      "name": "postgresql-6f46c896b4-86jkg",
+      "uid": "d8bf9b8f-7866-4a58-9475-d95cfed2c187",
+      "owner": [
+        {
+          "kind": "ReplicaSet",
+          "name": "postgresql-6f46c896b4"
+        }
+      ],
+      "ready": true,
+      "pvc": [
+        "postgresql-data-longhorn"
+      ],
+      "pdb": []
+    },
+    {
+      "namespace": "knative-serving",
+      "name": "activator-7c67cf64d4-x92f9",
+      "uid": "fd9979aa-195f-4b29-9365-602ebf8c119f",
+      "owner": [
+        {
+          "kind": "ReplicaSet",
+          "name": "activator-7c67cf64d4"
+        }
+      ],
+      "ready": true,
+      "pvc": [],
+      "pdb": [
+        {
+          "name": "activator-pdb",
+          "minAvailable": "80%",
+          "maxUnavailable": null,
+          "expected": 1,
+          "healthy": 1,
+          "allowed": 0
+        }
+      ]
+    },
+    {
+      "namespace": "knative-serving",
+      "name": "autoscaler-5564c5c759-88n8m",
+      "uid": "9f27e21f-03aa-4877-9513-69a81dd6d0f0",
+      "owner": [
+        {
+          "kind": "ReplicaSet",
+          "name": "autoscaler-5564c5c759"
+        }
+      ],
+      "ready": true,
+      "pvc": [],
+      "pdb": []
+    },
+    {
+      "namespace": "knative-serving",
+      "name": "net-kourier-controller-56fbdbc79f-qhdtc",
+      "uid": "ac77949d-8b9f-40fe-8531-e6fb70f98a99",
+      "owner": [
+        {
+          "kind": "ReplicaSet",
+          "name": "net-kourier-controller-56fbdbc79f"
+        }
+      ],
+      "ready": true,
+      "pvc": [],
+      "pdb": []
+    },
+    {
+      "namespace": "loki",
+      "name": "loki-0",
+      "uid": "f8bc0929-ce4c-420f-b7f8-b2f40190e945",
+      "owner": [
+        {
+          "kind": "StatefulSet",
+          "name": "loki"
+        }
+      ],
+      "ready": true,
+      "pvc": [
+        "storage-loki-0"
+      ],
+      "pdb": []
+    },
+    {
+      "namespace": "loki",
+      "name": "loki-chunks-cache-0",
+      "uid": "2911c060-970f-4edd-a23e-3a9d7c0401ad",
+      "owner": [
+        {
+          "kind": "StatefulSet",
+          "name": "loki-chunks-cache"
+        }
+      ],
+      "ready": true,
+      "pvc": [],
+      "pdb": []
+    },
+    {
+      "namespace": "loki",
+      "name": "loki-gateway-55475fd767-685c2",
+      "uid": "8d99a9bc-1381-43eb-a5a7-ae9055179b23",
+      "owner": [
+        {
+          "kind": "ReplicaSet",
+          "name": "loki-gateway-55475fd767"
+        }
+      ],
+      "ready": true,
+      "pvc": [],
+      "pdb": []
+    },
+    {
+      "namespace": "longhorn-system",
+      "name": "csi-attacher-74cd57d888-kd4xp",
+      "uid": "cb3daa76-d905-4161-91e1-e277b307b8ff",
+      "owner": [
+        {
+          "kind": "ReplicaSet",
+          "name": "csi-attacher-74cd57d888"
+        }
+      ],
+      "ready": true,
+      "pvc": [],
+      "pdb": [
+        {
+          "name": "csi-attacher",
+          "minAvailable": 1,
+          "maxUnavailable": null,
+          "expected": 3,
+          "healthy": 3,
+          "allowed": 2
+        }
+      ]
+    },
+    {
+      "namespace": "longhorn-system",
+      "name": "csi-provisioner-668f595df8-h9dpw",
+      "uid": "52397ef5-76a6-4090-956e-beeb7d2addf4",
+      "owner": [
+        {
+          "kind": "ReplicaSet",
+          "name": "csi-provisioner-668f595df8"
+        }
+      ],
+      "ready": true,
+      "pvc": [],
+      "pdb": [
+        {
+          "name": "csi-provisioner",
+          "minAvailable": 1,
+          "maxUnavailable": null,
+          "expected": 3,
+          "healthy": 3,
+          "allowed": 2
+        }
+      ]
+    },
+    {
+      "namespace": "longhorn-system",
+      "name": "csi-resizer-749f8b9cd7-jzpqd",
+      "uid": "53d0fbae-58c3-4e3d-9dd6-6739dc1afe68",
+      "owner": [
+        {
+          "kind": "ReplicaSet",
+          "name": "csi-resizer-749f8b9cd7"
+        }
+      ],
+      "ready": true,
+      "pvc": [],
+      "pdb": []
+    },
+    {
+      "namespace": "longhorn-system",
+      "name": "csi-snapshotter-58dd468645-dnbvn",
+      "uid": "d0f8336b-d28d-458d-96d9-cade09ad5aa2",
+      "owner": [
+        {
+          "kind": "ReplicaSet",
+          "name": "csi-snapshotter-58dd468645"
+        }
+      ],
+      "ready": true,
+      "pvc": [],
+      "pdb": []
+    },
+    {
+      "namespace": "longhorn-system",
+      "name": "instance-manager-07936386348324497cd14054d0e3f480",
+      "uid": "2a8b0133-0fed-4dc9-a9db-7e135507da9b",
+      "owner": [
+        {
+          "kind": "InstanceManager",
+          "name": "instance-manager-07936386348324497cd14054d0e3f480"
+        }
+      ],
+      "ready": true,
+      "pvc": [],
+      "pdb": [
+        {
+          "name": "instance-manager-07936386348324497cd14054d0e3f480",
+          "minAvailable": 1,
+          "maxUnavailable": null,
+          "expected": 1,
+          "healthy": 1,
+          "allowed": 0
+        }
+      ]
+    },
+    {
+      "namespace": "longhorn-system",
+      "name": "longhorn-driver-deployer-58b6fb5988-47b74",
+      "uid": "bb3ad352-1895-42a7-bb7f-ebd3062d67fc",
+      "owner": [
+        {
+          "kind": "ReplicaSet",
+          "name": "longhorn-driver-deployer-58b6fb5988"
+        }
+      ],
+      "ready": true,
+      "pvc": [],
+      "pdb": []
+    },
+    {
+      "namespace": "longhorn-system",
+      "name": "longhorn-ui-77c99dc8d7-gvd97",
+      "uid": "f105ccd4-846e-4dd0-8ab4-e852bdd9c211",
+      "owner": [
+        {
+          "kind": "ReplicaSet",
+          "name": "longhorn-ui-77c99dc8d7"
+        }
+      ],
+      "ready": true,
+      "pvc": [],
+      "pdb": []
+    },
+    {
+      "namespace": "sops-system",
+      "name": "sops-secrets-operator-7b87946fc5-bm9z5",
+      "uid": "61c98674-5697-4b86-8e63-40f5b4b28700",
+      "owner": [
+        {
+          "kind": "ReplicaSet",
+          "name": "sops-secrets-operator-7b87946fc5"
+        }
+      ],
+      "ready": true,
+      "pvc": [],
+      "pdb": []
+    },
+    {
+      "namespace": "vcluster-ckf",
+      "name": "coredns-744d9bd8bf-jfv5n-x-kube-system-x-vcluster-ckf",
+      "uid": "4c1ad82f-da03-45e2-a39d-875b24878386",
+      "owner": [
+        {
+          "kind": "Service",
+          "name": "vcluster-ckf"
+        }
+      ],
+      "ready": true,
+      "pvc": [],
+      "pdb": []
+    }
+  ]
+}

@@ -1,0 +1,68 @@
+[
+  {
+    "volume": "pvc-a54296d7-4a5b-4050-a0a6-fbf1aae6594d",
+    "uid": "5384fabd-c834-48ae-b3a5-c7506d541887",
+    "size": "10737418240",
+    "desired": 3,
+    "state": "detached",
+    "robustness": "unknown",
+    "actualSize": 1027387392,
+    "lastBackupAt": "2026-11-16T09:26:26Z",
+    "lastPodRefAt": "2026-11-16T10:52:21Z",
+    "namespace": "cps-compute",
+    "pvc": "cps-admin-backup",
+    "replicas": [
+      {
+        "name": "pvc-a54296d7-4a5b-4050-a0a6-fbf1aae6594d-r-38d22df5",
+        "node": "k3s-wk-gpu3",
+        "state": "stopped",
+        "healthyAt": "2026-10-05T21:27:57Z",
+        "lastHealthyAt": "2026-11-16T21:11:39Z",
+        "failedAt": "",
+        "active": true
+      },
+      {
+        "name": "pvc-a54296d7-4a5b-4050-a0a6-fbf1aae6594d-r-8cce6169",
+        "node": "k3s-wk-gpu4",
+        "state": "stopped",
+        "healthyAt": "2026-11-16T10:44:36Z",
+        "lastHealthyAt": "2026-11-16T21:11:39Z",
+        "failedAt": "",
+        "active": true
+      }
+    ]
+  },
+  {
+    "volume": "pvc-e3ebd8c5-6b5a-4ddc-86b8-0bc30509a7ac",
+    "uid": "e5cc7ff3-5222-4345-b66d-cfafc9dec6e1",
+    "size": "10737418240",
+    "desired": 3,
+    "state": "detached",
+    "robustness": "unknown",
+    "actualSize": 239747072,
+    "lastBackupAt": "2026-10-16T21:03:48Z",
+    "lastPodRefAt": "2026-10-16T13:09:22Z",
+    "namespace": "cit-jhub",
+    "pvc": "claim-mikasa",
+    "replicas": [
+      {
+        "name": "pvc-e3ebd8c5-6b5a-4ddc-86b8-0bc30509a7ac-r-0d35e95c",
+        "node": "k3s-wk-gpu3",
+        "state": "stopped",
+        "healthyAt": "2026-10-15T13:07:11Z",
+        "lastHealthyAt": "2026-11-16T21:13:46Z",
+        "failedAt": "",
+        "active": true
+      },
+      {
+        "name": "pvc-e3ebd8c5-6b5a-4ddc-86b8-0bc30509a7ac-r-cd50bb32",
+        "node": "k3s-wk-gpu1",
+        "state": "stopped",
+        "healthyAt": "2026-10-15T13:07:11Z",
+        "lastHealthyAt": "2026-11-16T21:13:46Z",
+        "failedAt": "",
+        "active": true
+      }
+    ]
+  }
+]

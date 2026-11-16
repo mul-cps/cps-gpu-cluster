@@ -1,0 +1,33 @@
+{
+  "node": "k3s-wk-gpu2",
+  "nodeAllowScheduling": false,
+  "evictionRequested": false,
+  "disks": [
+    {
+      "name": "default-disk-1478d14c7e24e5f4",
+      "path": "/var/lib/longhorn/",
+      "allowScheduling": true,
+      "reservedBytes": 155680104038,
+      "maximumBytes": 518933680128,
+      "availableBytes": 92274688000,
+      "scheduledBytes": 0,
+      "conditions": {
+        "Ready": "True",
+        "Schedulable": "True"
+      }
+    },
+    {
+      "name": "nvme-scratch",
+      "path": "/mnt/nvme/scratch",
+      "allowScheduling": true,
+      "reservedBytes": 107374182400,
+      "maximumBytes": 1055735832576,
+      "availableBytes": 1017538150400,
+      "scheduledBytes": 536870912000,
+      "conditions": {
+        "Ready": "True",
+        "Schedulable": "True"
+      }
+    }
+  ]
+}

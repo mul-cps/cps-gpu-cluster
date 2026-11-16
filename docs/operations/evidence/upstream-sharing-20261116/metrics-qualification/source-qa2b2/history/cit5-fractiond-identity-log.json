@@ -1,0 +1,9 @@
+{
+  "source_pod": "gpu-fractioning/gpu-fractioning-fractiond-p57lq",
+  "container": "fractiond",
+  "since_time": "2026-11-16T22:05:00Z",
+  "tail_bound": 1200,
+  "matched_container_id": "095de7db2b2a67a8b44a3c7b9b49fffa92d2565cc6dd2d6e77a1b1b18287e903",
+  "matched_pod_uid": "5c168368-66a3-4c50-b26f-0a05d1b9c7f1",
+  "lines": []
+}

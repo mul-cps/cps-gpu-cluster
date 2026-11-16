@@ -1,0 +1,4 @@
+name: gpu4-ubuntu-os-rollout
+defaultNamespace: cattle-system
+labels:
+  name: gpu4-ubuntu-os-rollout

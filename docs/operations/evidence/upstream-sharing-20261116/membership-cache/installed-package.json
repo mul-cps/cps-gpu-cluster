@@ -1,0 +1,45 @@
+{
+  "jupyterhub_version": "5.5.2",
+  "jupyter_server_version": "2.17.0",
+  "package_root": "/opt/conda/lib/python3.13/site-packages/jupyterhub",
+  "hubauth_default_cache_max_age": 300,
+  "huboauth_default_cache_max_age": 300,
+  "files": {
+    "services/auth.py": {
+      "sha256": "31910f361093a63c366c3c6e5af1d93cf4fb407b4192732366096d99527bbf22",
+      "retained_path": "installed-source/services/auth.py"
+    },
+    "singleuser/extension.py": {
+      "sha256": "511d5ebdf72c90f1683bf3b12b0c26c67c1bbf980b7d358cff1de341aa585796",
+      "retained_path": "installed-source/singleuser/extension.py"
+    },
+    "singleuser/mixins.py": {
+      "sha256": "4ef5e2b6ce65929aeb207ee4370ff5b50c3751b1a71f7185b3b2509b10729b38",
+      "retained_path": "installed-source/singleuser/mixins.py"
+    },
+    "singleuser/app.py": {
+      "sha256": "24925a68ac62adb4463a5bc1816073f74b644926b8ebd4ed958682810f0da464",
+      "retained_path": "installed-source/singleuser/app.py"
+    },
+    "apihandlers/users.py": {
+      "sha256": "c63ddf38ef6a97921aaaf94310ee37d02dd884eacc0e88aad370e77b920293cc",
+      "retained_path": "installed-source/apihandlers/users.py"
+    },
+    "apihandlers/groups.py": {
+      "sha256": "05ca336a0f253282d57fe7850cd2b912687c5d76b5a0fc38d5f330a967bd6d50",
+      "retained_path": "installed-source/apihandlers/groups.py"
+    },
+    "apihandlers/shares.py": {
+      "sha256": "b107f5cb4e2fd5aade265893663e50cbe28fd975f0db748a283c4169fca48d08",
+      "retained_path": "installed-source/apihandlers/shares.py"
+    },
+    "scopes.py": {
+      "sha256": "3afc9eaf51a223f8f3806af9dfc61182c8871ee446b80114dfb296049c3b2be1",
+      "retained_path": "installed-source/scopes.py"
+    },
+    "user.py": {
+      "sha256": "be44ab499411d62eedfcd2469c61aa26a59017c4573681c2b4cdea6bc5c76416",
+      "retained_path": "installed-source/user.py"
+    }
+  }
+}

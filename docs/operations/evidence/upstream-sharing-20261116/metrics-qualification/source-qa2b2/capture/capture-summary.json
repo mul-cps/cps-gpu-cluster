@@ -1,0 +1,15 @@
+{
+  "iterations": 156,
+  "read_errors": 0,
+  "read_only": true,
+  "bounded_seconds": 900,
+  "completed_at": "2026-11-16T21:58:47.928545+00:00",
+  "pod_uids_seen": [
+    "2ae294e8-e8f9-47b0-abbc-4eaf6d37f0c3"
+  ],
+  "owners": [
+    "cps-ws-2114b8e3a15e8913cb98083bd5673e45",
+    "cit-ws-4f8bebfab68c2dc3f8cea6df357d874c"
+  ],
+  "exporter_uid": "9e2e3161-2b79-43d9-89cd-f959e107abc1"
+}

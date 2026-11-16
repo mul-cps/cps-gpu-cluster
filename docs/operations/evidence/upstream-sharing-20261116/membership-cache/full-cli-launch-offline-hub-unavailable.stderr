@@ -1,0 +1,84 @@
+[W 2026-11-16 22:06:55.000 ServerApp] A `_jupyter_server_extension_points` function was not found in nbclassic. Instead, a `_jupyter_server_extension_paths` function was found and will be used for now. This function name will be deprecated in future releases of Jupyter Server.
+[92m22:06:55 - LiteLLM:WARNING[0m: get_model_cost_map.py:271 - LiteLLM: Failed to fetch remote model cost map from https://raw.githubusercontent.com/BerriAI/litellm/main/model_prices_and_context_window.json: [Errno -3] Temporary failure in name resolution. Falling back to local backup.
+2026-11-16 22:06:55,448 - LiteLLM - get_model_cost_map.py - WARNING - LiteLLM: Failed to fetch remote model cost map from https://raw.githubusercontent.com/BerriAI/litellm/main/model_prices_and_context_window.json: [Errno -3] Temporary failure in name resolution. Falling back to local backup.
+[I 2026-11-16 22:06:56.702 ServerApp] Extension package notebook_intelligence took 1.7007s to import
+[I 2026-11-16 22:06:56.703 ServerApp] cps_compute_jupyterlab | extension was successfully linked.
+[I 2026-11-16 22:06:56.703 ServerApp] jupyter_archive | extension was successfully linked.
+[I 2026-11-16 22:06:56.703 ServerApp] jupyter_lsp | extension was successfully linked.
+[I 2026-11-16 22:06:56.703 ServerApp] jupyter_resource_usage | extension was successfully linked.
+[I 2026-11-16 22:06:56.705 ServerApp] jupyter_server_fileid | extension was successfully linked.
+[I 2026-11-16 22:06:56.707 ServerApp] jupyter_server_mathjax | extension was successfully linked.
+[I 2026-11-16 22:06:56.707 ServerApp] jupyter_server_proxy | extension was successfully linked.
+[I 2026-11-16 22:06:56.708 ServerApp] jupyter_server_terminals | extension was successfully linked.
+[I 2026-11-16 22:06:56.709 ServerApp] jupyter_server_ydoc | extension was successfully linked.
+[I 2026-11-16 22:06:56.710 JupyterHubSingleUser] Starting jupyterhub single-user server extension version 5.5.2
+[I 2026-11-16 22:06:56.710 JupyterHubSingleUser] Using default url from server extension lab: /lab
+[I 2026-11-16 22:06:56.711 ServerApp] jupyterhub | extension was successfully linked.
+[W 2026-11-16 22:06:56.711 LabApp] 'extra_template_paths' was found in both NotebookApp and ServerApp. This is likely a recent change. This config will only be set in NotebookApp. Please check if you should also config these traits in ServerApp for your purpose.
+[I 2026-11-16 22:06:56.712 ServerApp] jupyterlab | extension was successfully linked.
+[I 2026-11-16 22:06:56.713 ServerApp] jupyterlab_git | extension was successfully linked.
+[I 2026-11-16 22:06:56.713 ServerApp] jupyterlab_link_share | extension was successfully linked.
+[I 2026-11-16 22:06:56.713 ServerApp] jupyterlab_nvdashboard | extension was successfully linked.
+[W 2026-11-16 22:06:56.713 NotebookApp] 'extra_template_paths' was found in both NotebookApp and ServerApp. This is likely a recent change. This config will only be set in NotebookApp. Please check if you should also config these traits in ServerApp for your purpose.
+[I 2026-11-16 22:06:56.714 ServerApp] nbclassic | extension was successfully linked.
+[I 2026-11-16 22:06:56.714 ServerApp] nbdime | extension was successfully linked.
+[I 2026-11-16 22:06:56.714 ServerApp] nbgitpuller | extension was successfully linked.
+[W 2026-11-16 22:06:56.715 JupyterNotebookApp] 'extra_template_paths' was found in both NotebookApp and ServerApp. This is likely a recent change. This config will only be set in NotebookApp. Please check if you should also config these traits in ServerApp for your purpose.
+[I 2026-11-16 22:06:56.716 ServerApp] notebook | extension was successfully linked.
+[I 2026-11-16 22:06:56.717 ServerApp] notebook_intelligence | extension was successfully linked.
+[I 2026-11-16 22:06:56.717 ServerApp] Writing Jupyter server cookie secret to /tmp/jupyter-runtime/jupyter_cookie_secret
+/opt/conda/lib/python3.13/site-packages/IPython/paths.py:60: UserWarning: IPython dir '/home/jovyan/.ipython' is not a writable location, using a temp directory.
+  warn("IPython dir '{}' is not a writable location,"
+[I 2026-11-16 22:06:56.733 ServerApp] notebook_shim | extension was successfully linked.
+[I 2026-11-16 22:06:57.052 ServerApp] nb_conda_kernels | enabled, 1 kernels found.
+[I 2026-11-16 22:06:57.062 ServerApp] notebook_shim | extension was successfully loaded.
+[I 2026-11-16 22:06:57.062 ServerApp] cps_compute_jupyterlab | extension was successfully loaded.
+[I 2026-11-16 22:06:57.062 ServerApp] jupyter_archive | extension was successfully loaded.
+[I 2026-11-16 22:06:57.063 ServerApp] jupyter_lsp | extension was successfully loaded.
+[I 2026-11-16 22:06:57.063 ServerApp] jupyter_resource_usage | extension was successfully loaded.
+[I 2026-11-16 22:06:57.063 FileIdExtension] Configured File ID manager: ArbitraryFileIdManager
+[I 2026-11-16 22:06:57.063 FileIdExtension] ArbitraryFileIdManager : Configured root dir: /workspace
+[I 2026-11-16 22:06:57.063 FileIdExtension] ArbitraryFileIdManager : Configured database path: /tmp/jupyter-data/file_id_manager.db
+[I 2026-11-16 22:06:57.064 FileIdExtension] ArbitraryFileIdManager : Successfully connected to database file.
+[I 2026-11-16 22:06:57.064 FileIdExtension] ArbitraryFileIdManager : Creating File ID tables and indices with journal_mode = DELETE
+[I 2026-11-16 22:06:57.064 FileIdExtension] Attached event listeners.
+[I 2026-11-16 22:06:57.064 ServerApp] jupyter_server_fileid | extension was successfully loaded.
+[I 2026-11-16 22:06:57.064 ServerApp] jupyter_server_mathjax | extension was successfully loaded.
+2026-11-16 22:06:57,077 - glances - __init__.py - INFO - Initializing Jupyter glances Proxy
+Saving key "/home/jovyan/.ssh/jupyter_sshd_hostkey" failed: Permission denied
+/opt/conda/lib/python3.13/site-packages/jupyter_server_proxy/config.py:357: UserWarning: entry_point sshd was unable to be loaded: Command '['ssh-keygen', '-f', '/home/jovyan/.ssh/jupyter_sshd_hostkey', '-q', '-N', '']' returned non-zero exit status 1.
+  warn(f"entry_point {name} was unable to be loaded: {str(e)}")
+[I 2026-11-16 22:06:57.081 ServerApp] jupyter_server_proxy | extension was successfully loaded.
+[I 2026-11-16 22:06:57.082 ServerApp] jupyter_server_terminals | extension was successfully loaded.
+[I 2026-11-16 22:06:57.083 ServerApp] jupyter_server_ydoc | extension was successfully loaded.
+[E 2026-11-16 22:06:57.086 JupyterHubSingleUser] Failed to connect to my Hub at http://127.0.0.1:8081/hub/api (attempt 1/5). Is it running?
+    Traceback (most recent call last):
+      File "/opt/conda/lib/python3.13/site-packages/jupyterhub/singleuser/extension.py", line 353, in check_hub_version
+        resp = await client.fetch(self.hub_auth.api_url)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ConnectionRefusedError: [Errno 111] Connection refused
+[I 2026-11-16 22:06:57.327 ServerApp] Skipped non-installed server(s): basedpyright, bash-language-server, dockerfile-language-server-nodejs, javascript-typescript-langserver, jedi-language-server, julia-language-server, pyrefly, pyright, python-language-server, r-languageserver, sql-language-server, texlab, typescript-language-server, unified-language-server, vscode-css-languageserver-bin, vscode-html-languageserver-bin, vscode-json-languageserver-bin, yaml-language-server
+[E 2026-11-16 22:06:59.089 JupyterHubSingleUser] Failed to connect to my Hub at http://127.0.0.1:8081/hub/api (attempt 2/5). Is it running?
+    Traceback (most recent call last):
+      File "/opt/conda/lib/python3.13/site-packages/jupyterhub/singleuser/extension.py", line 353, in check_hub_version
+        resp = await client.fetch(self.hub_auth.api_url)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ConnectionRefusedError: [Errno 111] Connection refused
+[E 2026-11-16 22:07:03.092 JupyterHubSingleUser] Failed to connect to my Hub at http://127.0.0.1:8081/hub/api (attempt 3/5). Is it running?
+    Traceback (most recent call last):
+      File "/opt/conda/lib/python3.13/site-packages/jupyterhub/singleuser/extension.py", line 353, in check_hub_version
+        resp = await client.fetch(self.hub_auth.api_url)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ConnectionRefusedError: [Errno 111] Connection refused
+[E 2026-11-16 22:07:11.097 JupyterHubSingleUser] Failed to connect to my Hub at http://127.0.0.1:8081/hub/api (attempt 4/5). Is it running?
+    Traceback (most recent call last):
+      File "/opt/conda/lib/python3.13/site-packages/jupyterhub/singleuser/extension.py", line 353, in check_hub_version
+        resp = await client.fetch(self.hub_auth.api_url)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ConnectionRefusedError: [Errno 111] Connection refused
+[E 2026-11-16 22:07:27.100 JupyterHubSingleUser] Failed to connect to my Hub at http://127.0.0.1:8081/hub/api (attempt 5/5). Is it running?
+    Traceback (most recent call last):
+      File "/opt/conda/lib/python3.13/site-packages/jupyterhub/singleuser/extension.py", line 353, in check_hub_version
+        resp = await client.fetch(self.hub_auth.api_url)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ConnectionRefusedError: [Errno 111] Connection refused

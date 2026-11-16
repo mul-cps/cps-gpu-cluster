@@ -1,0 +1,71 @@
+{
+  "pod_uid": "5f8a0685-1cd0-4ac0-8e71-ca134755503b",
+  "namespace": "jupyterhub",
+  "profile": "interactive-shared-10",
+  "observation": {
+    "time": 1794869039.7321234,
+    "node": "k3s-wk-gpu2",
+    "boot_id": "8874dcda-ced2-4aa4-b5cb-71a0871abdd5",
+    "gpu": "GPU-16128952-b438-556a-00bb-93039ee24e56, 620.70.06, 10151, 40960",
+    "compute_processes": "GPU-16128952-b438-556a-00bb-93039ee24e56, 152916, 10144",
+    "uvm": {
+      "srcversion": "10301D70B8ED1758BC717E9",
+      "parameters/uvm_reject_managed_memory": "Y",
+      "parameters/uvm_disable_hmm": "Y"
+    },
+    "uvm_source_sha256": "5648dbfe43957eb257d9efb715906de0fb6caa43458752544221d90db6efdb18",
+    "container_id": "0d36b1465fc0df761f91b9225eaa77d5629e23f39c7b1149e9d91f45edda27fa",
+    "init_pid": 152303,
+    "cgroup": "0::/kubepods.slice/kubepods-pod5f8a0685_1cd0_4ac0_8e71_ca134755503b.slice/cri-containerd-0d36b1465fc0df761f91b9225eaa77d5629e23f39c7b1149e9d91f45edda27fa.scope\n",
+    "cgroup_inode": 36024,
+    "accounting": {
+      "misc.current": "",
+      "misc.max": "",
+      "memory.current": "495075328\n",
+      "memory.max": "17179869184\n",
+      "cgroup.events": "populated 1\nfrozen 0\n"
+    },
+    "processes": [
+      {
+        "pid": 152303,
+        "stat": "152303 (tini) S 152230 152303 152303 0 -1 4194560 2245 6951 0 0 2 2 1 5 20 0 1 0 489765 2772992 302 18446744073709551615 97516718694400 97516718702405 140731296266832 0 0 0 0 3145728 0 1 0 0 17 11 0 0 0 0 0 97516718713616 97516718716043 97517608509440 140731296271275 140731296271317 140731296271317 140731296280554 0\n",
+        "nspid": [
+          "NSpid:\t152303\t1"
+        ]
+      },
+      {
+        "pid": 152375,
+        "stat": "152375 (jupyterhub-sing) S 152303 152375 152303 0 -1 4194560 145054 73256 0 0 532 68 210 46 20 0 6 0 489783 951816192 101635 18446744073709551615 111416278056960 111416280782173 140726644404736 0 0 0 0 16781312 16898 0 0 0 17 26 0 0 0 0 0 111416282338272 111416283195152 111417312366592 140726644411043 140726644411102 140726644411102 140726644424659 0\n",
+        "nspid": [
+          "NSpid:\t152375\t51"
+        ]
+      },
+      {
+        "pid": 152904,
+        "stat": "152904 (python) S 152230 152904 152904 0 -1 4194560 6614 11390 0 0 13 2 0 2 20 0 2 0 491888 119214080 8501 18446744073709551615 104663365337088 104663368062301 140726818500288 0 0 0 0 16781312 2 0 0 0 17 4 0 0 0 0 0 104663369618400 104663370475280 104664066875392 140726818507662 140726818507705 140726818507705 140726818516962 0\n",
+        "nspid": [
+          "NSpid:\t152904\t162"
+        ]
+      },
+      {
+        "pid": 152916,
+        "stat": "152916 (python) R 152375 152916 152916 0 -1 4194560 19752 70 0 0 4262 28 0 0 20 0 16 0 491945 16428539904 67978 18446744073709551615 98487377817600 98487380542813 140729051327744 0 0 0 0 16781312 2 0 0 0 17 3 0 0 0 0 0 98487382098912 98487382955792 98488224927744 140729051335226 140729051335362 140729051335362 140729051348962 0\n",
+        "nspid": [
+          "NSpid:\t152916\t173"
+        ]
+      }
+    ],
+    "runtime": {
+      "outer_sha256": "6ce276301723a902da671058730611591c59b5f016b816f57f2d97b05c88fe2c",
+      "containerd_pid": 27158,
+      "containerd_exe": "/var/lib/rancher/k3s/data/2277a2c458beda093f8367b944c2fbb2e5f53a00f17776759721fb781b3874fa/bin/k3s",
+      "inner_sha256": "0ca3be05fd3fcdd9682e68bbff5821ea15027773404a7e47517b822bcb57387a",
+      "kernel": "7.0.0-43-generic",
+      "k3s_version": "k3s version v1.34.9+k3s1 (5f72184f)\ngo version go1.25.11",
+      "mem_available_bytes": 397827485696
+    },
+    "memory_limits": "GPU 0: NVIDIA A100-PCIE-40GB (UUID: GPU-16128952-b438-556a-00bb-93039ee24e56)\n  namespace:      /sys/fs/cgroup/kubepods.slice/kubepods-pod5f8a0685_1cd0_4ac0_8e71_ca134755503b.slice/cri-containerd-0d36b1465fc0df761f91b9225eaa77d5629e23f39c7b1149e9d91f45edda27fa.scope\n  soft limit:     10240 MiB\n  hard limit:     10240 MiB\n  current used:   10143 MiB",
+    "oci_devices": [],
+    "oci_gpu_annotations": {}
+  }
+}

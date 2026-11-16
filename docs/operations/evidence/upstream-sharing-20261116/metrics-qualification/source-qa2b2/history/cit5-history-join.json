@@ -1,0 +1,186 @@
+{
+  "status": "PASS: real CIT5 memory and SM attribution",
+  "observed_at": "2026-11-16T22:22:57.325115+00:00",
+  "sources": [
+    {
+      "path": "/home/bjoern/artifacts/cps-upstream-sharing-20261116/registry-qa-cit-5-final-pod-evidence.json",
+      "sha256": "5de165f5bb412ed96f966448c2c664dcb5060c6d8ffa93870bc59ce7ca40a0a9"
+    },
+    {
+      "path": "/home/bjoern/artifacts/cps-upstream-sharing-20261116/registry-qa-cit-5-final-jupyter-evidence.json",
+      "sha256": "51ef3cf5b131d1463ca7e3d0fe8e863f6f15485d9922e15ac16aa5b8d441a2c8"
+    }
+  ],
+  "pod": {
+    "profile": "interactive-shared-5",
+    "namespace": "cit-jhub",
+    "pod": "jupyter-cit-ws-4f8bebfab68c2dc3f8cea6df357d874c--rtc",
+    "pod_uid": "5c168368-66a3-4c50-b26f-0a05d1b9c7f1",
+    "node": "k3s-wk-gpu2",
+    "node_uid": "3336cdd5-d245-436e-b57c-2f66c6dcaa41",
+    "boot_id": "8874dcda-ced2-4aa4-b5cb-71a0871abdd5",
+    "runtime_class": "nvidia",
+    "containers": [
+      {
+        "name": "notebook",
+        "image_id": "ghcr.io/mul-cps/cps-jupyter-notebook@sha256:4a03fe381c6f32f8e056ac05aad27abc64defa2f63128c53511a24d37fb5c194",
+        "container_id": "containerd://095de7db2b2a67a8b44a3c7b9b49fffa92d2565cc6dd2d6e77a1b1b18287e903",
+        "restarts": 0
+      }
+    ],
+    "assignment_annotations": {
+      "nvidia.com/container.notebook.gpu-memory.limit": "5120Mi",
+      "nvidia.com/container.notebook.gpu-memory.request": "5120Mi",
+      "nvidia.com/container.notebook.gpus.devices": "k8s.device-plugin.nvidia.com/gpu=GPU-16128952-b438-556a-00bb-93039ee24e56",
+      "required-plugins.noderesource.dev/container.notebook": "[\"gpu-fractioning\"]"
+    },
+    "ready_at": "2026-11-16T22:06:30Z",
+    "start_to_pod_ready_seconds": 8.78290843963623
+  },
+  "workload": {
+    "profile": "interactive-shared-5",
+    "cuda_device_count": 1,
+    "gpu_uuid": "GPU-16128952-b438-556a-00bb-93039ee24e56",
+    "promised_fill_bytes": 4831838208,
+    "progress_steps": 803762,
+    "progress_window_bytes": 67108864,
+    "progress_seconds": 45.000170196,
+    "above_hard_cap_cuda_result": 2,
+    "framework": {
+      "name": "torch",
+      "version": "2.11.0+cu129",
+      "tensor_elements": 262144,
+      "cuda_sum_matches_cpu_reference": true
+    },
+    "events": [
+      {
+        "event": "raw_running",
+        "unix": 1794867190.1417394,
+        "utc": "2026-11-16T22:13:10.141744+00:00",
+        "profile": "interactive-shared-5",
+        "gpu_uuid": "GPU-16128952-b438-556a-00bb-93039ee24e56",
+        "allocated_bytes": 4831838208,
+        "pid": 197
+      },
+      {
+        "event": "raw_freed_context_destroyed",
+        "unix": 1794867235.2428622,
+        "utc": "2026-11-16T22:13:55.242873+00:00",
+        "profile": "interactive-shared-5"
+      }
+    ]
+  },
+  "metric_series": [
+    {
+      "name": "gpu_fractioning_gpu_memory_used_bytes",
+      "labels": {
+        "__name__": "gpu_fractioning_gpu_memory_used_bytes",
+        "container": "metricsd",
+        "endpoint": "metrics",
+        "exported_namespace": "cit-jhub",
+        "exported_pod": "jupyter-cit-ws-4f8bebfab68c2dc3f8cea6df357d874c--rtc",
+        "gpu": "0",
+        "gpu_uuid": "GPU-16128952-b438-556a-00bb-93039ee24e56",
+        "instance": "10.42.7.231:2112",
+        "job": "gpu-fractioning/gpu-fractioning-metricsd",
+        "namespace": "gpu-fractioning",
+        "pod": "gpu-fractioning-fractiond-p57lq",
+        "pod_uuid": "5c168368-66a3-4c50-b26f-0a05d1b9c7f1"
+      },
+      "distinct_stored_scrapes": 2,
+      "positive_during_raw_interval": [
+        {
+          "unix": 1794867224.871,
+          "utc": "2026-11-16T22:13:44.871000+00:00",
+          "value": 5268045824.0
+        }
+      ],
+      "zero_after_context_free": [
+        {
+          "unix": 1794867254.871,
+          "utc": "2026-11-16T22:14:14.871000+00:00",
+          "value": 0.0
+        }
+      ]
+    },
+    {
+      "name": "gpu_fractioning_gpu_sm_utilization_percent",
+      "labels": {
+        "__name__": "gpu_fractioning_gpu_sm_utilization_percent",
+        "container": "metricsd",
+        "endpoint": "metrics",
+        "exported_namespace": "cit-jhub",
+        "exported_pod": "jupyter-cit-ws-4f8bebfab68c2dc3f8cea6df357d874c--rtc",
+        "gpu": "0",
+        "gpu_uuid": "GPU-16128952-b438-556a-00bb-93039ee24e56",
+        "instance": "10.42.7.231:2112",
+        "job": "gpu-fractioning/gpu-fractioning-metricsd",
+        "namespace": "gpu-fractioning",
+        "pod": "gpu-fractioning-fractiond-p57lq",
+        "pod_uuid": "5c168368-66a3-4c50-b26f-0a05d1b9c7f1"
+      },
+      "distinct_stored_scrapes": 2,
+      "positive_during_raw_interval": [
+        {
+          "unix": 1794867224.871,
+          "utc": "2026-11-16T22:13:44.871000+00:00",
+          "value": 83.0
+        }
+      ],
+      "zero_after_context_free": [
+        {
+          "unix": 1794867254.871,
+          "utc": "2026-11-16T22:14:14.871000+00:00",
+          "value": 0.0
+        }
+      ]
+    },
+    {
+      "name": "gpu_fractioning_gpu_sm_utilization_percent_normalized",
+      "labels": {
+        "__name__": "gpu_fractioning_gpu_sm_utilization_percent_normalized",
+        "container": "metricsd",
+        "endpoint": "metrics",
+        "exported_namespace": "cit-jhub",
+        "exported_pod": "jupyter-cit-ws-4f8bebfab68c2dc3f8cea6df357d874c--rtc",
+        "gpu": "0",
+        "gpu_uuid": "GPU-16128952-b438-556a-00bb-93039ee24e56",
+        "instance": "10.42.7.231:2112",
+        "job": "gpu-fractioning/gpu-fractioning-metricsd",
+        "namespace": "gpu-fractioning",
+        "pod": "gpu-fractioning-fractiond-p57lq",
+        "pod_uuid": "5c168368-66a3-4c50-b26f-0a05d1b9c7f1"
+      },
+      "distinct_stored_scrapes": 2,
+      "positive_during_raw_interval": [
+        {
+          "unix": 1794867224.871,
+          "utc": "2026-11-16T22:13:44.871000+00:00",
+          "value": 100.0
+        }
+      ],
+      "zero_after_context_free": [
+        {
+          "unix": 1794867254.871,
+          "utc": "2026-11-16T22:14:14.871000+00:00",
+          "value": 0.0
+        }
+      ]
+    }
+  ],
+  "positive_sampled_pods": 1,
+  "independent_positive_scrapes_per_metric": 1,
+  "independent_zero_after_free_scrapes_per_metric": 1,
+  "prometheus_container_label_is_exporter": true,
+  "container_id_join_via_exact_pod_uid_artifact": true,
+  "current_same_name_pod_uids": [],
+  "qualified_pod_uid_absent_now": true,
+  "final_targets_up": true,
+  "leaf_limit_witness": "Workspace agent confirms no exact kernel leaf/limit file was retained before normal Pod stop; bounded fractiond log search found no exact CID/PodUID matches. Not retrospectively inferred.",
+  "limitations": [
+    "One positive stored scrape is not a workload time series or complete CPU/GPU teaching observability.",
+    "CID is joined through retained Pod evidence; it is not a Prometheus metric label.",
+    "Historical CPS5 missed samples remain a separate gap; this CIT5 success does not rewrite that capture."
+  ],
+  "hard_cap_behavior_witness": "Workload typed CUDA OOM 2 above5GiB; distinct from an exact kernel leaf-file read."
+}

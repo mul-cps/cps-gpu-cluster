@@ -1,0 +1,63 @@
+{
+  "source_artifacts": [
+    {
+      "path": "/home/bjoern/artifacts/cps-upstream-sharing-20261116/registry-qa-cps-5-final-pod-evidence.json",
+      "sha256": "32b2cf0fde5f3b76c09ade9dd7a23f433843a11ce60d14b2cbfdcd62c53f0f78",
+      "mtime_utc_upper_bound_only": "2026-11-16T21:50:45.763811+00:00"
+    },
+    {
+      "path": "/home/bjoern/artifacts/cps-upstream-sharing-20261116/registry-qa-cps-5-final-jupyter-evidence.json",
+      "sha256": "0e544b528cb8364b5c74f9fc5490a89f2be1cbcf16263b5589cc4388712995da",
+      "mtime_utc_upper_bound_only": "2026-11-16T21:50:54.676222+00:00"
+    }
+  ],
+  "pod": {
+    "profile": "interactive-shared-5",
+    "namespace": "jupyterhub",
+    "pod": "jupyter-cps-ws-2114b8e3a15e8913cb98083bd5673e45--rtc",
+    "pod_uid": "2ae294e8-e8f9-47b0-abbc-4eaf6d37f0c3",
+    "node": "k3s-wk-gpu2",
+    "node_uid": "3336cdd5-d245-436e-b57c-2f66c6dcaa41",
+    "boot_id": "8874dcda-ced2-4aa4-b5cb-71a0871abdd5",
+    "runtime_class": "nvidia",
+    "containers": [
+      {
+        "name": "notebook",
+        "image_id": "ghcr.io/mul-cps/cps-jupyter-notebook@sha256:4a03fe381c6f32f8e056ac05aad27abc64defa2f63128c53511a24d37fb5c194",
+        "container_id": "containerd://2e8254e22dfce6c56afb561732c0bc0ce9ee382f347011973706e18dddbe2056",
+        "restarts": 0
+      }
+    ],
+    "assignment_annotations": {
+      "nvidia.com/container.notebook.gpu-memory.limit": "5120Mi",
+      "nvidia.com/container.notebook.gpu-memory.request": "5120Mi",
+      "nvidia.com/container.notebook.gpus.devices": "k8s.device-plugin.nvidia.com/gpu=GPU-1e6145d5-8ee2-43e2-a0d5-6d345909e8a6",
+      "required-plugins.noderesource.dev/container.notebook": "[\"gpu-fractioning\"]"
+    },
+    "ready_at": "2026-11-16T21:43:32Z",
+    "start_to_pod_ready_seconds": 13.664912223815918
+  },
+  "workload": {
+    "jupyter_kernel_execution": true,
+    "elapsed_seconds": 8.590943786000025,
+    "result": {
+      "profile": "interactive-shared-5",
+      "cuda_device_count": 1,
+      "gpu_uuid": "GPU-1e6145d5-8ee2-43e2-a0d5-6d345909e8a6",
+      "promised_fill_bytes": 4831838208,
+      "progress_steps": 89314,
+      "progress_window_bytes": 67108864,
+      "progress_seconds": 5.000200204000066,
+      "above_hard_cap_cuda_result": 2,
+      "framework": {
+        "name": "torch",
+        "version": "2.11.0+cu129",
+        "tensor_elements": 262144,
+        "cuda_sum_matches_cpu_reference": true
+      }
+    }
+  },
+  "gpu_wall_clock_interval": "not recorded; artifact mtime is only an upper bound",
+  "lease_leaf_witness": "not supplied in these artifacts",
+  "telemetry_join": "exact PodUID, notebook container ID, GPU assignment annotations; no usage sample yet"
+}

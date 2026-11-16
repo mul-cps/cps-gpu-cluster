@@ -1,0 +1,113 @@
+{
+  "first_observation": "2026-11-16T21:43:47.928300+00:00",
+  "last_observation": "2026-11-16T21:58:42.955423+00:00",
+  "observations": 156,
+  "read_errors": 0,
+  "pods": [
+    {
+      "namespace": "jupyterhub",
+      "name": "jupyter-cps-ws-2114b8e3a15e8913cb98083bd5673e45--rtc",
+      "uid": "2ae294e8-e8f9-47b0-abbc-4eaf6d37f0c3",
+      "first_observed": "2026-11-16T21:43:47.928300+00:00",
+      "last_observed": "2026-11-16T21:57:22.267139+00:00",
+      "observations": 142,
+      "node": "k3s-wk-gpu2",
+      "scheduler": "kai-scheduler",
+      "annotations": {
+        "gpu-compute.mode": "time-slicing",
+        "gpu-fraction-container-name": "notebook",
+        "nvidia.com/container.notebook.gpu-memory.limit": "5120Mi",
+        "nvidia.com/container.notebook.gpu-memory.request": "5120Mi",
+        "nvidia.com/container.notebook.gpus.devices": "k8s.device-plugin.nvidia.com/gpu=GPU-1e6145d5-8ee2-43e2-a0d5-6d345909e8a6",
+        "received-resource-type": "Fraction",
+        "required-plugins.noderesource.dev/container.notebook": "[\"gpu-fractioning\"]"
+      },
+      "labels": {
+        "app": "jupyterhub",
+        "app.kubernetes.io/component": "singleuser-server",
+        "app.kubernetes.io/instance": "jupyterhub",
+        "app.kubernetes.io/managed-by": "kubespawner",
+        "app.kubernetes.io/name": "jupyterhub",
+        "chart": "jupyterhub-4.4.2",
+        "component": "singleuser-server",
+        "compute.cps.unileoben.ac.at/owner": "f430b3832578881d978ec5eafa4570c1ec2118969d120ccdb26dcb211b3ebb4",
+        "compute.cps.unileoben.ac.at/workspace": "54f347e8bc599a268a666ae87eb8c449021abc7541607fef8d65d56ae95a7cd",
+        "helm.sh/chart": "jupyterhub-4.4.2",
+        "hub.jupyter.org/network-access-hub": "true",
+        "hub.jupyter.org/servername": "rtc",
+        "hub.jupyter.org/username": "cps-ws-2114b8e3a15e8913cb98083bd5673e45",
+        "kai.scheduler/queue": "cps-interactive",
+        "release": "jupyterhub",
+        "runai-gpu-group": "ffa5f1d9-accc-4730-a846-c9720ae833e7"
+      },
+      "images": [
+        {
+          "name": "notebook",
+          "image": "ghcr.io/mul-cps/cps-jupyter-notebook@sha256:4a03fe381c6f32f8e056ac05aad27abc64defa2f63128c53511a24d37fb5c194",
+          "resources": {
+            "limits": {
+              "cpu": "4",
+              "memory": "17179869184"
+            },
+            "requests": {
+              "cpu": "4",
+              "memory": "17179869184"
+            }
+          }
+        }
+      ],
+      "container_identities": {
+        "containerd://2e8254e22dfce6c56afb561732c0bc0ce9ee382f347011973706e18dddbe2056": {
+          "name": "notebook",
+          "imageID": "ghcr.io/mul-cps/cps-jupyter-notebook@sha256:4a03fe381c6f32f8e056ac05aad27abc64defa2f63128c53511a24d37fb5c194",
+          "restartCount": 0,
+          "state": {
+            "running": {
+              "startedAt": "2026-11-16T21:43:31Z"
+            }
+          }
+        }
+      },
+      "raw": [],
+      "prometheus": [],
+      "coverage": {
+        "raw_memory": {
+          "series": 0,
+          "nonzero_series": 0
+        },
+        "raw_sm": {
+          "series": 0,
+          "nonzero_series": 0
+        },
+        "prometheus_memory": {
+          "series": 0,
+          "nonzero_series": 0
+        },
+        "prometheus_sm": {
+          "series": 0,
+          "nonzero_series": 0
+        }
+      }
+    }
+  ],
+  "last_observed_pod_uids": [],
+  "last_raw_pod_series_lines": [],
+  "last_targets": [
+    {
+      "scrapeUrl": "http://10.42.7.231:2112/metrics",
+      "health": "up",
+      "lastError": ""
+    },
+    {
+      "scrapeUrl": "http://10.42.3.203:8080/metrics",
+      "health": "up",
+      "lastError": ""
+    }
+  ],
+  "limitations": [
+    "Pod assignment and readiness do not establish actual GPU usage.",
+    "Short activity can fall between Prometheus scrapes; absent nonzero SM is not a failed kernel.",
+    "Prometheus instant-query samples may outlive Pod deletion until staleness processing.",
+    "Lease/kernel-leaf witness joins require separately retained workspace-agent evidence."
+  ]
+}

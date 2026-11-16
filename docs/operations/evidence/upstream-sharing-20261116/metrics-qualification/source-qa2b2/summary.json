@@ -1,0 +1,35 @@
+{
+  "status": "completed with runtime usage coverage gap",
+  "observations": 156,
+  "read_errors": 0,
+  "target_both_up_observations": 156,
+  "exporter_uid_unchanged": true,
+  "exporter_restart_counts_unchanged_at_one": true,
+  "notebook_pods_observed": 1,
+  "cps_pods_observed": 1,
+  "cit_pods_observed": 0,
+  "gpu_assigned_profiles_observed": 1,
+  "raw_memory_usage_covered_pods": 0,
+  "prometheus_memory_usage_covered_pods": 0,
+  "raw_sm_usage_covered_pods": 0,
+  "prometheus_sm_usage_covered_pods": 0,
+  "all_raw_responses_empty": true,
+  "cps_last_observed": "2026-11-16T21:57:22.267139+00:00",
+  "cps_first_observed_absent_after_stop": "2026-11-16T21:57:28.029319+00:00",
+  "final_matching_pods": [],
+  "final_targets": [
+    {
+      "scrapeUrl": "http://10.42.7.231:2112/metrics",
+      "health": "up",
+      "lastError": ""
+    },
+    {
+      "scrapeUrl": "http://10.42.3.203:8080/metrics",
+      "health": "up",
+      "lastError": ""
+    }
+  ],
+  "source_qa5_functional_result": "PASS in separately hashed workspace artifacts; telemetry usage not observed",
+  "lease_kernel_leaf_join": "not available in supplied artifacts",
+  "sampling_cause": "possible finite sampling miss; no exact workload UTC interval retained, so not established"
+}

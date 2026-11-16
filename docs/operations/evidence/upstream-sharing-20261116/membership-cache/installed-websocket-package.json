@@ -1,0 +1,76 @@
+{
+  "versions": {
+    "jupyter_core": "5.9.1",
+    "cps-compute-jupyterlab": "0.1.0",
+    "jupyter_client": "8.10.0",
+    "jupyter-collaboration": "4.4.2",
+    "jupyter-collaboration-ui": "2.4.2",
+    "jupyter-docprovider": "2.4.2",
+    "jupyter_server_fileid": "0.9.3",
+    "jupyter-server-ydoc": "2.4.2",
+    "jupyter-ydoc": "3.5.0",
+    "jupyterhub": "5.5.2",
+    "pycrdt": "0.13.1",
+    "pycrdt-store": "0.1.4",
+    "pycrdt-websocket": "0.16.2",
+    "catppuccin-jupyterlab": "0.2.4",
+    "jupyter-archive": "3.4.0",
+    "jupyter_code_server": "1.1",
+    "jupyter-glances-proxy": "0.0.2",
+    "jupyter-resource-usage": "1.2.1",
+    "jupyter_server_proxy": "4.5.0",
+    "jupyter-sshd-proxy": "0.3.0",
+    "jupyterlab": "4.5.7",
+    "jupyterlab_favorites": "3.5.0",
+    "jupyterlab-filesystem-access": "0.7.0",
+    "jupyterlab_git": "0.53.0",
+    "jupyterlab-git-core": "0.53.0",
+    "jupyterlab_horizon_theme": "4.0.2",
+    "jupyterlab-image-editor": "0.1.0",
+    "jupyterlab-link-share": "0.3.0",
+    "jupyterlab-lsp": "5.3.0",
+    "jupyterlab_nvdashboard": "0.13.0",
+    "jupyterlab-spreadsheet-editor": "0.7.2",
+    "jupyterlab_topbar_text": "1.1.0",
+    "lckr_jupyterlab_variableinspector": "3.2.4",
+    "mypy_extensions": "1.1.0",
+    "jupyter_server_mathjax": "0.2.6",
+    "jupyterlab_widgets": "3.0.16",
+    "jupyter-events": "0.12.0",
+    "jupyter-lsp": "2.3.0",
+    "jupyter_server": "2.17.0",
+    "jupyter_server_terminals": "0.5.3",
+    "jupyterlab_pygments": "0.3.0",
+    "jupyterlab_server": "2.28.0"
+  },
+  "files": {
+    "jupyter_server/services/kernels/websocket.py": {
+      "sha256": "1a43b006275be03547356fddf004266d51eddd2f8b3442af525641351dc5c800",
+      "retained_path": "installed-source/jupyter_server/services/kernels/websocket.py"
+    },
+    "jupyter_server/services/kernels/connection/channels.py": {
+      "sha256": "8db2312e4afc8f815d3c00e7b889ef37f5ecbf9c44108ea58193cdb70f48b242",
+      "retained_path": "installed-source/jupyter_server/services/kernels/connection/channels.py"
+    },
+    "jupyter_server/base/handlers.py": {
+      "sha256": "c5efe5bd33eff52a69c312e50d39186ee7d3657820533487aa481993777e3d68",
+      "retained_path": "installed-source/jupyter_server/base/handlers.py"
+    },
+    "jupyter_server/auth/decorator.py": {
+      "sha256": "e1062108b1a5adf5acc3cb80de73f969972685872639816718eceb4f922ea256",
+      "retained_path": "installed-source/jupyter_server/auth/decorator.py"
+    },
+    "jupyter_server_ydoc/app.py": {
+      "sha256": "12db4de161bac5d28975a8b55aa3eacecb600ae61ed8ef6d0dd94c6fb2192c0b",
+      "retained_path": "installed-source/jupyter_server_ydoc/app.py"
+    },
+    "jupyter_server_ydoc/handlers.py": {
+      "sha256": "32b756375b2e168b04459b21eff3a9ba0bc21a7a2d503c00e98224c50696e81d",
+      "retained_path": "installed-source/jupyter_server_ydoc/handlers.py"
+    },
+    "jupyter_server_ydoc/websocketserver.py": {
+      "sha256": "0af45edb8904c791542861c4f809ec10c516418272c99dcfce3b520fb9e5691a",
+      "retained_path": "installed-source/jupyter_server_ydoc/websocketserver.py"
+    }
+  }
+}

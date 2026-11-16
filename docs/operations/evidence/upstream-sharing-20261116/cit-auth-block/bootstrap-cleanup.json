@@ -1,0 +1,55 @@
+{
+  "status": "blocked-real-CIT-operator-auth-bootstrap-cleaned",
+  "pod_uid": "735ad21b-718a-4622-94f6-1cbc655964f0",
+  "image": "ghcr.io/mul-cps/cps-compute@sha256:bf138c57e6a6243143b71ca6850487f5237ec25add5cee248d1ebabd221409a6",
+  "runtime_uid": 1000,
+  "official_cli": "jupyterhub token cpsadmin --config /usr/local/etc/jupyterhub/jupyterhub_config.py",
+  "existing_crypto_key_bridge_only": true,
+  "issuer_script_sha256": "0954af72ee8c71b10008b8fcbe451bd923c93ac8cf09750ebb7e9b247b4c4459",
+  "logical_authority_unchanged_after_cli": true,
+  "prior_cpsadmin_token_ids": [
+    "a38"
+  ],
+  "new_bootstrap_token_id": "a704",
+  "bootstrap_owning_user": "cpsadmin",
+  "bootstrap_scopes": [
+    "inherit"
+  ],
+  "bootstrap_expiry": null,
+  "bootstrap_hash_match_proved": true,
+  "bootstrap_live_api_status": 403,
+  "live_cause": "User cpsadmin has stale auth info. Login is required to refresh. Existing IdP refresh returned403.",
+  "child_tokens_created": false,
+  "app_users_created": [],
+  "source_token_handed_off": false,
+  "raw_credentials_private_only": true,
+  "cleanup_pending": false,
+  "cleanup_unit": "cit-operator-qa-cleanup-20261116.service",
+  "time": 1794870509.7937953,
+  "bootstrap_deleted": true,
+  "post_cpsadmin_token_ids": [
+    "a38"
+  ],
+  "cleanup_proof": {
+    "deleted_only": "a704",
+    "owner": "cpsadmin",
+    "note": "command-line generated",
+    "created": "2026-11-16T23:06:14.250710",
+    "exact_known_raw_match_before": true,
+    "created_within_recorded_run": true,
+    "excluded_preexisting_tokens": true,
+    "preexisting_token_ids": [
+      "a38"
+    ],
+    "post_token_ids": [
+      "a38"
+    ],
+    "all_eight_authority_tables_unchanged": true,
+    "token_lookup_absent": true,
+    "deletion_method": "installed Hub ORM db.delete(exact APIToken object); db.commit(), same as HTTPDELETE users.py612\u2013614",
+    "runtime_uid": 1000,
+    "deleted_token_http_auth_status": 403
+  },
+  "cleanup_supervisor_stopped": true,
+  "raw_credentials_unlinked": true
+}

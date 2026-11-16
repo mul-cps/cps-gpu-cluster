@@ -1,0 +1,31 @@
+{
+  "status": "PASS",
+  "offline_only": true,
+  "cases": [
+    {
+      "cache_max_age": 300,
+      "actual_cache_max_age": 300,
+      "hub_api_calls": 2,
+      "cached_after_authoritative_change": true,
+      "expired_response_has_removed_scope": true
+    },
+    {
+      "cache_max_age": 1,
+      "actual_cache_max_age": 1,
+      "hub_api_calls": 2,
+      "cached_after_authoritative_change": true,
+      "expired_response_has_removed_scope": true
+    },
+    {
+      "cache_max_age": 0,
+      "actual_cache_max_age": 0,
+      "hub_api_calls": 1,
+      "cached_after_authoritative_change": true,
+      "expired_response_has_removed_scope": false
+    }
+  ],
+  "invented_env_ignored": true,
+  "identity_provider_nested_huboauth_setting": 1,
+  "base_hubauth_setting_inherited": true,
+  "serverapp_cli_nested_identity_cache_age": 1
+}
