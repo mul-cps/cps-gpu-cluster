@@ -1,0 +1,19 @@
+# Trusted CPS/CIT launch adapter outputs for a container named main.
+# This is a contract example, not an admission policy or deployed adapter.
+# KAI owns nvidia.com/container.main.gpus.devices; tenants must not set it.
+profiles:
+  "5":
+    nvidia.com/container.main.gpu-memory.request: 5120Mi
+    nvidia.com/container.main.gpu-memory.limit: 5120Mi
+    nvidia.com/container.main.gpu-compute.mode: time-slicing
+    required-plugins.noderesource.dev/container.main: '["gpu-fractioning"]'
+  "10":
+    nvidia.com/container.main.gpu-memory.request: 10240Mi
+    nvidia.com/container.main.gpu-memory.limit: 10240Mi
+    nvidia.com/container.main.gpu-compute.mode: time-slicing
+    required-plugins.noderesource.dev/container.main: '["gpu-fractioning"]'
+  "20":
+    nvidia.com/container.main.gpu-memory.request: 20480Mi
+    nvidia.com/container.main.gpu-memory.limit: 20480Mi
+    nvidia.com/container.main.gpu-compute.mode: time-slicing
+    required-plugins.noderesource.dev/container.main: '["gpu-fractioning"]'

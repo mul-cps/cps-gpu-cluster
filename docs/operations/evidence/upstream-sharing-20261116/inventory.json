@@ -1,0 +1,1221 @@
+{
+  "observed_at": "2026-11-16T10:26:16.147332+00:00",
+  "nodes": [
+    {
+      "name": "k3s-cp1",
+      "uid": "fa674ef4-923b-46a6-be90-887f21afe7f5",
+      "info": {
+        "architecture": "amd64",
+        "bootID": "db237e6c-5f5c-401a-9f08-8bae2ce804f7",
+        "containerRuntimeVersion": "containerd://2.2.5-k3s2",
+        "kernelVersion": "6.8.0-149-generic",
+        "kubeProxyVersion": "",
+        "kubeletVersion": "v1.34.9+k3s1",
+        "machineID": "d33873bcc4a64924b58402b1c6be1e60",
+        "operatingSystem": "linux",
+        "osImage": "Ubuntu 24.04.4 LTS",
+        "systemUUID": "d33873bc-c4a6-4924-b584-02b1c6be1e60"
+      },
+      "allocatable": {
+        "cpu": "4",
+        "ephemeral-storage": "97743690881",
+        "hugepages-1Gi": "0",
+        "hugepages-2Mi": "0",
+        "memory": "16308300Ki",
+        "pods": "110"
+      },
+      "labels": {},
+      "unschedulable": false
+    },
+    {
+      "name": "k3s-cp2",
+      "uid": "b989d3ff-0372-4564-9d9a-88dcd7d63987",
+      "info": {
+        "architecture": "amd64",
+        "bootID": "d6fd3938-0340-4821-a87c-5b8fe77164bc",
+        "containerRuntimeVersion": "containerd://2.2.5-k3s2",
+        "kernelVersion": "6.8.0-149-generic",
+        "kubeProxyVersion": "",
+        "kubeletVersion": "v1.34.9+k3s1",
+        "machineID": "f8ce2b3f38334566996bfa0763d4cb3b",
+        "operatingSystem": "linux",
+        "osImage": "Ubuntu 24.04.4 LTS",
+        "systemUUID": "f8ce2b3f-3833-4566-996b-fa0763d4cb3b"
+      },
+      "allocatable": {
+        "cpu": "4",
+        "ephemeral-storage": "97743690881",
+        "hugepages-1Gi": "0",
+        "hugepages-2Mi": "0",
+        "memory": "16308300Ki",
+        "pods": "110"
+      },
+      "labels": {},
+      "unschedulable": false
+    },
+    {
+      "name": "k3s-cp3",
+      "uid": "6fa889a4-1d0d-4ce5-b62c-32d37e40a924",
+      "info": {
+        "architecture": "amd64",
+        "bootID": "ca372986-f7bc-41f9-969e-22d274d64aa5",
+        "containerRuntimeVersion": "containerd://2.2.5-k3s2",
+        "kernelVersion": "6.8.0-149-generic",
+        "kubeProxyVersion": "",
+        "kubeletVersion": "v1.34.9+k3s1",
+        "machineID": "d157af8d10124374a4b65641c8688b5a",
+        "operatingSystem": "linux",
+        "osImage": "Ubuntu 24.04.4 LTS",
+        "systemUUID": "d157af8d-1012-4374-a4b6-5641c8688b5a"
+      },
+      "allocatable": {
+        "cpu": "4",
+        "ephemeral-storage": "97743690881",
+        "hugepages-1Gi": "0",
+        "hugepages-2Mi": "0",
+        "memory": "16308300Ki",
+        "pods": "110"
+      },
+      "labels": {},
+      "unschedulable": false
+    },
+    {
+      "name": "k3s-wk-gpu1",
+      "uid": "b13bebdd-60c2-4bbd-8fce-a39312ec264d",
+      "info": {
+        "architecture": "amd64",
+        "bootID": "b7aef52b-199b-48d2-a0f5-f584174dbcb6",
+        "containerRuntimeVersion": "containerd://2.2.5-k3s2",
+        "kernelVersion": "6.8.0-149-generic",
+        "kubeProxyVersion": "",
+        "kubeletVersion": "v1.34.9+k3s1",
+        "machineID": "6dd83db65fb84f268e0397fd37e25204",
+        "operatingSystem": "linux",
+        "osImage": "Ubuntu 24.04.4 LTS",
+        "systemUUID": "6dd83db6-5fb8-4f26-8e03-97fd37e25204"
+      },
+      "allocatable": {
+        "cpu": "48",
+        "ephemeral-storage": "492986995735",
+        "hugepages-1Gi": "0",
+        "hugepages-2Mi": "0",
+        "memory": "395964892Ki",
+        "nvidia.com/gpu": "2",
+        "nvidia.com/mig-1g.10gb": "0",
+        "nvidia.com/mig-1g.5gb": "0",
+        "pods": "110"
+      },
+      "labels": {
+        "accelerator": "nvidia",
+        "cps.unileoben.ac.at/driver": "615.71.09"
+      },
+      "unschedulable": false
+    },
+    {
+      "name": "k3s-wk-gpu2",
+      "uid": "3336cdd5-d245-436e-b57c-2f66c6dcaa41",
+      "info": {
+        "architecture": "amd64",
+        "bootID": "5f068997-ed3f-4880-ba44-feb5c3e5ccec",
+        "containerRuntimeVersion": "containerd://2.2.5-k3s2",
+        "kernelVersion": "6.8.0-149-generic",
+        "kubeProxyVersion": "",
+        "kubeletVersion": "v1.34.9+k3s1",
+        "machineID": "a5d6c873f113403f88663680b11240a8",
+        "operatingSystem": "linux",
+        "osImage": "Ubuntu 24.04.3 LTS",
+        "systemUUID": "a5d6c873-f113-403f-8866-3680b11240a8"
+      },
+      "allocatable": {
+        "cpu": "48",
+        "ephemeral-storage": "492986995735",
+        "hugepages-1Gi": "0",
+        "hugepages-2Mi": "0",
+        "memory": "395964904Ki",
+        "nvidia.com/gpu": "0",
+        "nvidia.com/mig-1g.5gb": "0",
+        "pods": "110"
+      },
+      "labels": {
+        "accelerator": "r615-canary-maintenance"
+      },
+      "unschedulable": false
+    },
+    {
+      "name": "k3s-wk-gpu3",
+      "uid": "7b3b5113-158d-4e0d-bd63-898a508fe806",
+      "info": {
+        "architecture": "amd64",
+        "bootID": "27ca43ed-31d5-4944-b95f-a4eefd4a636f",
+        "containerRuntimeVersion": "containerd://2.2.5-k3s2",
+        "kernelVersion": "6.8.0-149-generic",
+        "kubeProxyVersion": "",
+        "kubeletVersion": "v1.34.9+k3s1",
+        "machineID": "32e4d95659cb4d8e9ac5b9c12724e1b4",
+        "operatingSystem": "linux",
+        "osImage": "Ubuntu 24.04.3 LTS",
+        "systemUUID": "32e4d956-59cb-4d8e-9ac5-b9c12724e1b4"
+      },
+      "allocatable": {
+        "cpu": "48",
+        "ephemeral-storage": "492986995735",
+        "hugepages-1Gi": "0",
+        "hugepages-2Mi": "0",
+        "memory": "395964900Ki",
+        "nvidia.com/gpu": "2",
+        "nvidia.com/mig-1g.5gb": "0",
+        "pods": "110"
+      },
+      "labels": {
+        "accelerator": "nvidia",
+        "cps.unileoben.ac.at/driver": "615.71.09"
+      },
+      "unschedulable": false
+    },
+    {
+      "name": "k3s-wk-gpu4",
+      "uid": "f0e6c6ee-3984-423f-9cfb-734c558c35cb",
+      "info": {
+        "architecture": "amd64",
+        "bootID": "21aa4a49-9e79-4194-8d26-830debb6ce2e",
+        "containerRuntimeVersion": "containerd://2.2.5-k3s2",
+        "kernelVersion": "6.8.0-149-generic",
+        "kubeProxyVersion": "",
+        "kubeletVersion": "v1.34.9+k3s1",
+        "machineID": "c3b943cb7e2f4405aa333247c7741bca",
+        "operatingSystem": "linux",
+        "osImage": "Ubuntu 24.04.3 LTS",
+        "systemUUID": "c3b943cb-7e2f-4405-aa33-3247c7741bca"
+      },
+      "allocatable": {
+        "cpu": "48",
+        "ephemeral-storage": "492986995735",
+        "hugepages-1Gi": "0",
+        "hugepages-2Mi": "0",
+        "memory": "395964904Ki",
+        "nvidia.com/gpu": "2",
+        "nvidia.com/mig-1g.5gb": "0",
+        "pods": "110"
+      },
+      "labels": {
+        "accelerator": "nvidia",
+        "cps.unileoben.ac.at/driver": "615.71.09"
+      },
+      "unschedulable": false
+    }
+  ],
+  "gpu2_pods": [
+    {
+      "namespace": "alloy",
+      "name": "alloy-cnt4q",
+      "uid": "00cdf7fb-5542-41b0-b88c-ef8b32e85ce7",
+      "phase": "Running",
+      "owners": [
+        {
+          "apiVersion": "apps/v1",
+          "blockOwnerDeletion": true,
+          "controller": true,
+          "kind": "DaemonSet",
+          "name": "alloy",
+          "uid": "4d80d4ea-b96e-40aa-92e0-4738056246c9"
+        }
+      ]
+    },
+    {
+      "namespace": "cattle-fleet-system",
+      "name": "gitjob-6f49568497-n99dd",
+      "uid": "c9096098-e4a7-4ba6-b709-f164134b0647",
+      "phase": "Running",
+      "owners": [
+        {
+          "apiVersion": "apps/v1",
+          "blockOwnerDeletion": true,
+          "controller": true,
+          "kind": "ReplicaSet",
+          "name": "gitjob-6f49568497",
+          "uid": "5973bfa9-80b6-40a6-a13a-e12886bc56d1"
+        }
+      ]
+    },
+    {
+      "namespace": "cattle-monitoring-system",
+      "name": "rancher-monitoring-kube-state-metrics-5cc64fcff7-cjn62",
+      "uid": "8e1f8618-178b-41a0-be5d-69cd2ab597c1",
+      "phase": "Running",
+      "owners": [
+        {
+          "apiVersion": "apps/v1",
+          "blockOwnerDeletion": true,
+          "controller": true,
+          "kind": "ReplicaSet",
+          "name": "rancher-monitoring-kube-state-metrics-5cc64fcff7",
+          "uid": "d1ff1497-da60-4b3a-a2d0-3152bb09db81"
+        }
+      ]
+    },
+    {
+      "namespace": "cattle-monitoring-system",
+      "name": "rancher-monitoring-operator-d78b98855-4ssqr",
+      "uid": "6f183d89-ca1b-4b4c-ad14-111797009684",
+      "phase": "Running",
+      "owners": [
+        {
+          "apiVersion": "apps/v1",
+          "blockOwnerDeletion": true,
+          "controller": true,
+          "kind": "ReplicaSet",
+          "name": "rancher-monitoring-operator-d78b98855",
+          "uid": "c3ba7f51-2ef7-4ce1-b34e-7ebc35f2ba40"
+        }
+      ]
+    },
+    {
+      "namespace": "cattle-monitoring-system",
+      "name": "rancher-monitoring-prometheus-adapter-54fc9cdd56-w4b7b",
+      "uid": "043ee17d-2e7c-4b0c-a5b5-9ee9f28d4340",
+      "phase": "Running",
+      "owners": [
+        {
+          "apiVersion": "apps/v1",
+          "blockOwnerDeletion": true,
+          "controller": true,
+          "kind": "ReplicaSet",
+          "name": "rancher-monitoring-prometheus-adapter-54fc9cdd56",
+          "uid": "9d7404d5-f61f-4004-b6dd-e6954501ba7c"
+        }
+      ]
+    },
+    {
+      "namespace": "cattle-monitoring-system",
+      "name": "rancher-monitoring-prometheus-node-exporter-ml952",
+      "uid": "95d08b5d-5749-48d2-a5a2-45821db4f2d5",
+      "phase": "Running",
+      "owners": [
+        {
+          "apiVersion": "apps/v1",
+          "blockOwnerDeletion": true,
+          "controller": true,
+          "kind": "DaemonSet",
+          "name": "rancher-monitoring-prometheus-node-exporter",
+          "uid": "a5080955-6bd3-41bc-9d7b-eac1a369d292"
+        }
+      ]
+    },
+    {
+      "namespace": "cattle-system",
+      "name": "rancher-b6cd998d9-8wcvr",
+      "uid": "6017f6d0-e1cd-4949-be70-8f0ebb911dbc",
+      "phase": "Running",
+      "owners": [
+        {
+          "apiVersion": "apps/v1",
+          "blockOwnerDeletion": true,
+          "controller": true,
+          "kind": "ReplicaSet",
+          "name": "rancher-b6cd998d9",
+          "uid": "7ad0d089-aa5a-46c3-9ec8-3c5baeab7ac4"
+        }
+      ]
+    },
+    {
+      "namespace": "cattle-turtles-system",
+      "name": "rancher-turtles-controller-manager-86bc6bbdb5-b2tkj",
+      "uid": "c74b2444-fc57-4dec-a6bb-8bb04d4adff6",
+      "phase": "Running",
+      "owners": [
+        {
+          "apiVersion": "apps/v1",
+          "blockOwnerDeletion": true,
+          "controller": true,
+          "kind": "ReplicaSet",
+          "name": "rancher-turtles-controller-manager-86bc6bbdb5",
+          "uid": "e6d3423a-51b8-4e3e-9c4c-088cec5a9b91"
+        }
+      ]
+    },
+    {
+      "namespace": "cert-manager",
+      "name": "cert-manager-cainjector-6bf9d5c79b-6rfh6",
+      "uid": "e156b8c1-c221-4ec4-84e5-158df61b7c2f",
+      "phase": "Running",
+      "owners": [
+        {
+          "apiVersion": "apps/v1",
+          "blockOwnerDeletion": true,
+          "controller": true,
+          "kind": "ReplicaSet",
+          "name": "cert-manager-cainjector-6bf9d5c79b",
+          "uid": "ed676d05-2b7a-4b7a-9bee-03a651927d12"
+        }
+      ]
+    },
+    {
+      "namespace": "cert-manager",
+      "name": "cert-manager-webhook-78f7b4d9d7-78jfb",
+      "uid": "ee27e0a6-b998-424d-81e6-f15d9af75fe3",
+      "phase": "Running",
+      "owners": [
+        {
+          "apiVersion": "apps/v1",
+          "blockOwnerDeletion": true,
+          "controller": true,
+          "kind": "ReplicaSet",
+          "name": "cert-manager-webhook-78f7b4d9d7",
+          "uid": "c6b89398-239a-4cc9-b617-77478a8261da"
+        }
+      ]
+    },
+    {
+      "namespace": "ci",
+      "name": "buildkit-pool-7567cb9459-szkct",
+      "uid": "c59ac550-99a1-4fcb-8a6c-5d348af90262",
+      "phase": "Running",
+      "owners": [
+        {
+          "apiVersion": "apps/v1",
+          "blockOwnerDeletion": true,
+          "controller": true,
+          "kind": "ReplicaSet",
+          "name": "buildkit-pool-7567cb9459",
+          "uid": "a12569f8-4126-4c2b-b951-75c720783d14"
+        }
+      ]
+    },
+    {
+      "namespace": "cit-auth",
+      "name": "authentik-server-84bd7c5556-gnljf",
+      "uid": "a1866ada-b3d6-411d-a719-3b5a41ab5089",
+      "phase": "Running",
+      "owners": [
+        {
+          "apiVersion": "apps/v1",
+          "blockOwnerDeletion": true,
+          "controller": true,
+          "kind": "ReplicaSet",
+          "name": "authentik-server-84bd7c5556",
+          "uid": "3957143d-d566-4de4-aacb-8e323fcfb1e3"
+        }
+      ]
+    },
+    {
+      "namespace": "cit-auth",
+      "name": "authentik-worker-66bb756b4c-dcvw6",
+      "uid": "b220b496-ddce-407f-b44b-e4ecc2780482",
+      "phase": "Running",
+      "owners": [
+        {
+          "apiVersion": "apps/v1",
+          "blockOwnerDeletion": true,
+          "controller": true,
+          "kind": "ReplicaSet",
+          "name": "authentik-worker-66bb756b4c",
+          "uid": "0fcb7662-0721-43f1-a856-ba0e6d5c7cde"
+        }
+      ]
+    },
+    {
+      "namespace": "cit-jhub",
+      "name": "continuous-image-puller-zs7x2",
+      "uid": "8c2a8383-07ad-44a6-8dd1-6c73d40780c0",
+      "phase": "Running",
+      "owners": [
+        {
+          "apiVersion": "apps/v1",
+          "blockOwnerDeletion": true,
+          "controller": true,
+          "kind": "DaemonSet",
+          "name": "continuous-image-puller",
+          "uid": "910b33c3-bc42-47dd-b2e9-bcf7de7c9a34"
+        }
+      ]
+    },
+    {
+      "namespace": "cit-jhub",
+      "name": "cps-archive-verify-0c25ba3885da4a8c-j7v79",
+      "uid": "2b860a00-2605-4782-aaa5-2b1a7b60ee9c",
+      "phase": "Succeeded",
+      "owners": [
+        {
+          "apiVersion": "batch/v1",
+          "blockOwnerDeletion": true,
+          "controller": true,
+          "kind": "Job",
+          "name": "cps-archive-verify-0c25ba3885da4a8c",
+          "uid": "2278630e-8621-4829-b9e1-0c063fcd7cba"
+        }
+      ]
+    },
+    {
+      "namespace": "cit-jhub",
+      "name": "cps-archive-verify-354e1f13a4a54b58-m8knm",
+      "uid": "81ebafd9-6df7-4bd5-bfaa-ac1d9e3fc82e",
+      "phase": "Succeeded",
+      "owners": [
+        {
+          "apiVersion": "batch/v1",
+          "blockOwnerDeletion": true,
+          "controller": true,
+          "kind": "Job",
+          "name": "cps-archive-verify-354e1f13a4a54b58",
+          "uid": "6102568f-6e32-47ab-8a8f-c6cb1c43d2de"
+        }
+      ]
+    },
+    {
+      "namespace": "cit-jhub",
+      "name": "cps-archive-verify-4a23488a983649a6-gj2ct",
+      "uid": "de6573fe-4cff-4250-a712-4fc853bd0550",
+      "phase": "Succeeded",
+      "owners": [
+        {
+          "apiVersion": "batch/v1",
+          "blockOwnerDeletion": true,
+          "controller": true,
+          "kind": "Job",
+          "name": "cps-archive-verify-4a23488a983649a6",
+          "uid": "1ea4d18e-6bee-4916-b496-4e8325cac811"
+        }
+      ]
+    },
+    {
+      "namespace": "cit-jhub",
+      "name": "cps-archive-verify-fba2ad5a484e42dd-kp429",
+      "uid": "dff725a0-b8de-43e4-9e78-f934936b1c6a",
+      "phase": "Succeeded",
+      "owners": [
+        {
+          "apiVersion": "batch/v1",
+          "blockOwnerDeletion": true,
+          "controller": true,
+          "kind": "Job",
+          "name": "cps-archive-verify-fba2ad5a484e42dd",
+          "uid": "c07e0912-70a4-4b8c-8e58-63a8f568fe73"
+        }
+      ]
+    },
+    {
+      "namespace": "cit-jhub",
+      "name": "hub-5f7fc99979-7pzn4",
+      "uid": "f9e8e6d5-862d-4d26-9f14-b4fc77bc464c",
+      "phase": "Running",
+      "owners": [
+        {
+          "apiVersion": "apps/v1",
+          "blockOwnerDeletion": true,
+          "controller": true,
+          "kind": "ReplicaSet",
+          "name": "hub-5f7fc99979",
+          "uid": "420c426e-bbc2-4689-a950-b7c684511029"
+        }
+      ]
+    },
+    {
+      "namespace": "cps-admission-runner-20261008",
+      "name": "admission-probe-binding-475cw",
+      "uid": "e1854e81-7621-448a-9df6-44075fe1ff09",
+      "phase": "Succeeded",
+      "owners": [
+        {
+          "apiVersion": "batch/v1",
+          "blockOwnerDeletion": true,
+          "controller": true,
+          "kind": "Job",
+          "name": "admission-probe-binding",
+          "uid": "4ba1497f-803b-4fe9-9908-a01d9f2b4261"
+        }
+      ]
+    },
+    {
+      "namespace": "cps-admission-runner-20261008",
+      "name": "admission-probe-defaulting-7hgzx",
+      "uid": "8069ea1b-60d5-4815-869d-01fb01b021fe",
+      "phase": "Succeeded",
+      "owners": [
+        {
+          "apiVersion": "batch/v1",
+          "blockOwnerDeletion": true,
+          "controller": true,
+          "kind": "Job",
+          "name": "admission-probe-defaulting",
+          "uid": "66e39762-851a-456f-92e5-f0233428b903"
+        }
+      ]
+    },
+    {
+      "namespace": "cps-admission-runner-20261008",
+      "name": "admission-probe-ttlzd",
+      "uid": "9edb70e6-d6f3-48bf-9cb2-ae0031478c00",
+      "phase": "Succeeded",
+      "owners": [
+        {
+          "apiVersion": "batch/v1",
+          "blockOwnerDeletion": true,
+          "controller": true,
+          "kind": "Job",
+          "name": "admission-probe",
+          "uid": "f4fce014-1a1b-4d72-a458-66f0e3e3bcdf"
+        }
+      ]
+    },
+    {
+      "namespace": "cps-argo",
+      "name": "argo-artifact-downloads-5b996556c8-6bzsp",
+      "uid": "cf65a248-e816-42fd-8b67-455993897e03",
+      "phase": "Running",
+      "owners": [
+        {
+          "apiVersion": "apps/v1",
+          "blockOwnerDeletion": true,
+          "controller": true,
+          "kind": "ReplicaSet",
+          "name": "argo-artifact-downloads-5b996556c8",
+          "uid": "7ec435f2-df40-4967-abee-7f543bc2836c"
+        }
+      ]
+    },
+    {
+      "namespace": "cps-compute",
+      "name": "cps-artifact-retention-29910461-c4xfv",
+      "uid": "f291475c-8b68-4218-a2a8-2218db87ec94",
+      "phase": "Succeeded",
+      "owners": [
+        {
+          "apiVersion": "batch/v1",
+          "blockOwnerDeletion": true,
+          "controller": true,
+          "kind": "Job",
+          "name": "cps-artifact-retention-29910461",
+          "uid": "b56b27ce-768c-457e-8203-bfc950470b4f"
+        }
+      ]
+    },
+    {
+      "namespace": "cps-native-lifecycle147",
+      "name": "native-lifecycle147-node",
+      "uid": "8a59f840-a060-48ad-81c6-41e751c58467",
+      "phase": "Failed",
+      "owners": []
+    },
+    {
+      "namespace": "cps-native-runtime",
+      "name": "cps-native-node-agent-5c6f46894c-vf527",
+      "uid": "5b6cfe1c-e1fa-445a-a558-01ee183466f2",
+      "phase": "Running",
+      "owners": [
+        {
+          "apiVersion": "apps/v1",
+          "blockOwnerDeletion": true,
+          "controller": true,
+          "kind": "ReplicaSet",
+          "name": "cps-native-node-agent-5c6f46894c",
+          "uid": "22690090-70cf-4fe3-b551-6b3150839164"
+        }
+      ]
+    },
+    {
+      "namespace": "cps-personal-argo-qualification-20261008",
+      "name": "bounded-personal-probe-dpflh",
+      "uid": "3fb23608-a3e2-4470-a3be-a3584699ecf3",
+      "phase": "Succeeded",
+      "owners": [
+        {
+          "apiVersion": "batch/v1",
+          "blockOwnerDeletion": true,
+          "controller": true,
+          "kind": "Job",
+          "name": "bounded-personal-probe",
+          "uid": "dfd8a1b7-84b2-4c9e-88e3-0fea7f1a8cee"
+        }
+      ]
+    },
+    {
+      "namespace": "gpu-operator",
+      "name": "cps-native-driver-control",
+      "uid": "8a3a0296-2a41-49e0-ba20-28f503ec5887",
+      "phase": "Failed",
+      "owners": []
+    },
+    {
+      "namespace": "gpu-operator",
+      "name": "gpu-operator-node-feature-discovery-gc-74dd579c7f-ndnqs",
+      "uid": "316e105f-674f-4b20-b902-4dd4a46a94ab",
+      "phase": "Running",
+      "owners": [
+        {
+          "apiVersion": "apps/v1",
+          "blockOwnerDeletion": true,
+          "controller": true,
+          "kind": "ReplicaSet",
+          "name": "gpu-operator-node-feature-discovery-gc-74dd579c7f",
+          "uid": "60e1e49d-2d01-44ce-b174-836ead21626d"
+        }
+      ]
+    },
+    {
+      "namespace": "gpu-operator",
+      "name": "gpu-operator-node-feature-discovery-master-948c8bb7c-wvntb",
+      "uid": "21733ba1-37e6-44ef-bc2c-8876cdaf091b",
+      "phase": "Running",
+      "owners": [
+        {
+          "apiVersion": "apps/v1",
+          "blockOwnerDeletion": true,
+          "controller": true,
+          "kind": "ReplicaSet",
+          "name": "gpu-operator-node-feature-discovery-master-948c8bb7c",
+          "uid": "dd30d140-d51c-46d4-a06f-90a506b72e3f"
+        }
+      ]
+    },
+    {
+      "namespace": "gpu-operator",
+      "name": "gpu-operator-node-feature-discovery-worker-hlwkr",
+      "uid": "25be5252-854b-4ea6-b2a8-8733105ec96a",
+      "phase": "Running",
+      "owners": [
+        {
+          "apiVersion": "apps/v1",
+          "blockOwnerDeletion": true,
+          "controller": true,
+          "kind": "DaemonSet",
+          "name": "gpu-operator-node-feature-discovery-worker",
+          "uid": "96210088-5f78-413f-9061-277986440943"
+        }
+      ]
+    },
+    {
+      "namespace": "gpu-operator",
+      "name": "gpu2-driver-toolkit-validator-p46wp",
+      "uid": "c18eba69-8ce9-42ad-b1d6-52a8b5941e2f",
+      "phase": "Running",
+      "owners": [
+        {
+          "apiVersion": "apps/v1",
+          "blockOwnerDeletion": true,
+          "controller": true,
+          "kind": "DaemonSet",
+          "name": "gpu2-driver-toolkit-validator",
+          "uid": "65b1d5e3-1154-4105-98fc-fc7e372af774"
+        }
+      ]
+    },
+    {
+      "namespace": "gpu-operator",
+      "name": "gpu2-r615-driver-canary-h5ksx",
+      "uid": "a1cfab47-3796-408c-99a6-d823412405e3",
+      "phase": "Running",
+      "owners": [
+        {
+          "apiVersion": "apps/v1",
+          "blockOwnerDeletion": true,
+          "controller": true,
+          "kind": "DaemonSet",
+          "name": "gpu2-r615-driver-canary",
+          "uid": "d07222b3-a25a-4336-9b43-f8955b10fff0"
+        }
+      ]
+    },
+    {
+      "namespace": "gpu-operator",
+      "name": "nvidia-dcgm-exporter-g5qj2",
+      "uid": "79eea50d-71be-4e8f-b988-922e3b7cdaa4",
+      "phase": "Pending",
+      "owners": [
+        {
+          "apiVersion": "apps/v1",
+          "blockOwnerDeletion": true,
+          "controller": true,
+          "kind": "DaemonSet",
+          "name": "nvidia-dcgm-exporter",
+          "uid": "4c3ea7ec-7452-4d84-acab-c80989296e12"
+        }
+      ]
+    },
+    {
+      "namespace": "gpu-operator",
+      "name": "nvidia-device-plugin-daemonset-67bp7",
+      "uid": "1eadf100-594e-4231-931f-9a49f11f7b8e",
+      "phase": "Pending",
+      "owners": [
+        {
+          "apiVersion": "apps/v1",
+          "blockOwnerDeletion": true,
+          "controller": true,
+          "kind": "DaemonSet",
+          "name": "nvidia-device-plugin-daemonset",
+          "uid": "4087fa99-455e-4bc3-b9f2-61ce8218f226"
+        }
+      ]
+    },
+    {
+      "namespace": "image-builds",
+      "name": "image-builder-api-67d7c7fc5d-n6fsh",
+      "uid": "2df1f606-ae15-4f22-b159-0eb98757b205",
+      "phase": "Running",
+      "owners": [
+        {
+          "apiVersion": "apps/v1",
+          "blockOwnerDeletion": true,
+          "controller": true,
+          "kind": "ReplicaSet",
+          "name": "image-builder-api-67d7c7fc5d",
+          "uid": "8f78251d-fdc6-499e-b263-2d454ed98e75"
+        }
+      ]
+    },
+    {
+      "namespace": "ingress-nginx",
+      "name": "ingress-nginx-controller-m6txm",
+      "uid": "0346590e-9d13-4c10-af17-d63757c9a285",
+      "phase": "Running",
+      "owners": [
+        {
+          "apiVersion": "apps/v1",
+          "blockOwnerDeletion": true,
+          "controller": true,
+          "kind": "DaemonSet",
+          "name": "ingress-nginx-controller",
+          "uid": "cb5c63aa-d4d5-4542-aeb8-ade327a3e2db"
+        }
+      ]
+    },
+    {
+      "namespace": "jupyterhub",
+      "name": "continuous-image-puller-g68hd",
+      "uid": "eb6e627b-e3be-4d6c-b306-d612035d734d",
+      "phase": "Running",
+      "owners": [
+        {
+          "apiVersion": "apps/v1",
+          "blockOwnerDeletion": true,
+          "controller": true,
+          "kind": "DaemonSet",
+          "name": "continuous-image-puller",
+          "uid": "a66b0f3d-d931-4f83-9b26-6df05fc40d11"
+        }
+      ]
+    },
+    {
+      "namespace": "jupyterhub",
+      "name": "cps-native-notebook-image-prepull",
+      "uid": "d1bafbb5-2925-4e2b-9c49-65949ad715a3",
+      "phase": "Succeeded",
+      "owners": []
+    },
+    {
+      "namespace": "kai-scheduler",
+      "name": "binder-5795f5d965-ht88d",
+      "uid": "ba9d7dbf-3a16-4ec1-abd4-19d11710556a",
+      "phase": "Running",
+      "owners": [
+        {
+          "apiVersion": "apps/v1",
+          "blockOwnerDeletion": true,
+          "controller": true,
+          "kind": "ReplicaSet",
+          "name": "binder-5795f5d965",
+          "uid": "967b3aef-b712-4f7f-b3c2-5e1d69f8d904"
+        }
+      ]
+    },
+    {
+      "namespace": "knative-serving",
+      "name": "autoscaler-5564c5c759-k5wrm",
+      "uid": "36cb1df9-4593-4471-8181-1efaa15c3bd0",
+      "phase": "Running",
+      "owners": [
+        {
+          "apiVersion": "apps/v1",
+          "blockOwnerDeletion": true,
+          "controller": true,
+          "kind": "ReplicaSet",
+          "name": "autoscaler-5564c5c759",
+          "uid": "4e62d8ae-238f-4572-bfe6-124df8908a72"
+        }
+      ]
+    },
+    {
+      "namespace": "knative-serving",
+      "name": "controller-7544bfc5db-s2x88",
+      "uid": "b4500d48-f8ad-446f-a19d-452eed65856d",
+      "phase": "Running",
+      "owners": [
+        {
+          "apiVersion": "apps/v1",
+          "blockOwnerDeletion": true,
+          "controller": true,
+          "kind": "ReplicaSet",
+          "name": "controller-7544bfc5db",
+          "uid": "f6d53bf2-58dc-46b2-b85c-a7ec2fc611f0"
+        }
+      ]
+    },
+    {
+      "namespace": "knative-serving",
+      "name": "net-kourier-controller-56fbdbc79f-vq92w",
+      "uid": "f1d21999-a5c1-4b1e-b3f3-0bfa8c82cb80",
+      "phase": "Running",
+      "owners": [
+        {
+          "apiVersion": "apps/v1",
+          "blockOwnerDeletion": true,
+          "controller": true,
+          "kind": "ReplicaSet",
+          "name": "net-kourier-controller-56fbdbc79f",
+          "uid": "2d7c9f2c-aa63-4baa-9b38-5082bff8e4fb"
+        }
+      ]
+    },
+    {
+      "namespace": "kube-system",
+      "name": "system-tuning-jx5r9",
+      "uid": "b68f8c8c-bc63-4c6e-a43f-f8200af01db0",
+      "phase": "Running",
+      "owners": [
+        {
+          "apiVersion": "apps/v1",
+          "blockOwnerDeletion": true,
+          "controller": true,
+          "kind": "DaemonSet",
+          "name": "system-tuning",
+          "uid": "a1da3fbf-7ca9-48ea-94cd-26f62df7feba"
+        }
+      ]
+    },
+    {
+      "namespace": "kured",
+      "name": "kured-vwx8s",
+      "uid": "a97ff766-239c-4ae6-ba03-d130128e95f7",
+      "phase": "Running",
+      "owners": [
+        {
+          "apiVersion": "apps/v1",
+          "blockOwnerDeletion": true,
+          "controller": true,
+          "kind": "DaemonSet",
+          "name": "kured",
+          "uid": "d6a88341-db3e-4ca4-aee3-03c3569ef6d4"
+        }
+      ]
+    },
+    {
+      "namespace": "loki",
+      "name": "loki-0",
+      "uid": "9f92d497-a21e-4f19-b1c5-9aedcc2fdd2b",
+      "phase": "Running",
+      "owners": [
+        {
+          "apiVersion": "apps/v1",
+          "blockOwnerDeletion": true,
+          "controller": true,
+          "kind": "StatefulSet",
+          "name": "loki",
+          "uid": "15d896b2-4c9f-4de1-a47a-d30176f085b8"
+        }
+      ]
+    },
+    {
+      "namespace": "loki",
+      "name": "loki-canary-cz7dq",
+      "uid": "19774368-c243-4b29-a3b8-e4f68bd8929e",
+      "phase": "Running",
+      "owners": [
+        {
+          "apiVersion": "apps/v1",
+          "blockOwnerDeletion": true,
+          "controller": true,
+          "kind": "DaemonSet",
+          "name": "loki-canary",
+          "uid": "badf6cdf-1e24-4d2d-88a5-d1c0aaedada7"
+        }
+      ]
+    },
+    {
+      "namespace": "loki",
+      "name": "loki-chunks-cache-0",
+      "uid": "5b5c596a-8453-481b-921e-52e4eee98054",
+      "phase": "Running",
+      "owners": [
+        {
+          "apiVersion": "apps/v1",
+          "blockOwnerDeletion": true,
+          "controller": true,
+          "kind": "StatefulSet",
+          "name": "loki-chunks-cache",
+          "uid": "8f83a982-ae43-4ee3-b21e-5b50b56258ca"
+        }
+      ]
+    },
+    {
+      "namespace": "loki",
+      "name": "loki-gateway-768c95fc77-fdzgc",
+      "uid": "828c666a-fff2-4112-a485-f2eaf5b67ea7",
+      "phase": "Running",
+      "owners": [
+        {
+          "apiVersion": "apps/v1",
+          "blockOwnerDeletion": true,
+          "controller": true,
+          "kind": "ReplicaSet",
+          "name": "loki-gateway-768c95fc77",
+          "uid": "b4005468-4a5b-45c6-8e16-4b4ae64bae5f"
+        }
+      ]
+    },
+    {
+      "namespace": "longhorn-system",
+      "name": "csi-attacher-74cd57d888-gp9sw",
+      "uid": "044dc42a-88bc-4dce-abcb-2bc43c8185df",
+      "phase": "Running",
+      "owners": [
+        {
+          "apiVersion": "apps/v1",
+          "blockOwnerDeletion": true,
+          "controller": true,
+          "kind": "ReplicaSet",
+          "name": "csi-attacher-74cd57d888",
+          "uid": "b0a92d8e-d0eb-4d60-af1b-efc2242b070b"
+        }
+      ]
+    },
+    {
+      "namespace": "longhorn-system",
+      "name": "csi-provisioner-668f595df8-4lwft",
+      "uid": "bc0ba934-5fcb-4520-8aa1-461d5b13cd72",
+      "phase": "Running",
+      "owners": [
+        {
+          "apiVersion": "apps/v1",
+          "blockOwnerDeletion": true,
+          "controller": true,
+          "kind": "ReplicaSet",
+          "name": "csi-provisioner-668f595df8",
+          "uid": "a414750b-790d-4412-8cc4-12f5eac46bed"
+        }
+      ]
+    },
+    {
+      "namespace": "longhorn-system",
+      "name": "csi-resizer-749f8b9cd7-kjnvm",
+      "uid": "d02b55e5-a929-4264-a619-ecb5ef519e8b",
+      "phase": "Running",
+      "owners": [
+        {
+          "apiVersion": "apps/v1",
+          "blockOwnerDeletion": true,
+          "controller": true,
+          "kind": "ReplicaSet",
+          "name": "csi-resizer-749f8b9cd7",
+          "uid": "ca89826d-cc11-458a-9b32-9e73df724be0"
+        }
+      ]
+    },
+    {
+      "namespace": "longhorn-system",
+      "name": "csi-snapshotter-58dd468645-j4thq",
+      "uid": "ca7d812b-7492-4616-a1ea-1d926f2c9e1d",
+      "phase": "Running",
+      "owners": [
+        {
+          "apiVersion": "apps/v1",
+          "blockOwnerDeletion": true,
+          "controller": true,
+          "kind": "ReplicaSet",
+          "name": "csi-snapshotter-58dd468645",
+          "uid": "ec98d39b-e416-4117-8dc7-b44a27b8891d"
+        }
+      ]
+    },
+    {
+      "namespace": "longhorn-system",
+      "name": "engine-image-ei-27581b25-vzn67",
+      "uid": "0974ce60-6cc7-4085-9eae-02f0657cce01",
+      "phase": "Running",
+      "owners": [
+        {
+          "apiVersion": "apps/v1",
+          "blockOwnerDeletion": true,
+          "controller": true,
+          "kind": "DaemonSet",
+          "name": "engine-image-ei-27581b25",
+          "uid": "2cbc84b2-02ea-4a9e-9304-a777f6a823a5"
+        }
+      ]
+    },
+    {
+      "namespace": "longhorn-system",
+      "name": "instance-manager-435fec096c724854458dc568b2a09632",
+      "uid": "637b0a9e-2f38-4981-ae3b-9d7f9686c79e",
+      "phase": "Running",
+      "owners": [
+        {
+          "apiVersion": "longhorn.io/v1beta2",
+          "blockOwnerDeletion": true,
+          "controller": true,
+          "kind": "InstanceManager",
+          "name": "instance-manager-435fec096c724854458dc568b2a09632",
+          "uid": "e63af43f-cb21-4e73-be79-04059bbecf66"
+        }
+      ]
+    },
+    {
+      "namespace": "longhorn-system",
+      "name": "longhorn-csi-plugin-px92r",
+      "uid": "3afe4f23-361d-448b-a249-0530b5860764",
+      "phase": "Running",
+      "owners": [
+        {
+          "apiVersion": "apps/v1",
+          "blockOwnerDeletion": true,
+          "controller": true,
+          "kind": "DaemonSet",
+          "name": "longhorn-csi-plugin",
+          "uid": "f4499a3a-d4c7-4e0f-899b-e74b948b0222"
+        }
+      ]
+    },
+    {
+      "namespace": "longhorn-system",
+      "name": "longhorn-driver-deployer-58b6fb5988-97m7p",
+      "uid": "3d063ba1-3c5f-4905-96d4-8f6e9c52ef93",
+      "phase": "Running",
+      "owners": [
+        {
+          "apiVersion": "apps/v1",
+          "blockOwnerDeletion": true,
+          "controller": true,
+          "kind": "ReplicaSet",
+          "name": "longhorn-driver-deployer-58b6fb5988",
+          "uid": "7601f908-cfde-435d-9cf8-6feadd89c85d"
+        }
+      ]
+    },
+    {
+      "namespace": "longhorn-system",
+      "name": "longhorn-manager-frn9c",
+      "uid": "3e9efcb8-b746-4840-a75e-3125461f9788",
+      "phase": "Running",
+      "owners": [
+        {
+          "apiVersion": "apps/v1",
+          "blockOwnerDeletion": true,
+          "controller": true,
+          "kind": "DaemonSet",
+          "name": "longhorn-manager",
+          "uid": "848a110d-5130-41b9-a0ed-38976f78a96e"
+        }
+      ]
+    },
+    {
+      "namespace": "longhorn-system",
+      "name": "longhorn-ui-5f96f4bbdb-rh29z",
+      "uid": "46d9606a-8438-4be4-9e0d-37ae9fc4d2fa",
+      "phase": "Running",
+      "owners": [
+        {
+          "apiVersion": "apps/v1",
+          "blockOwnerDeletion": true,
+          "controller": true,
+          "kind": "ReplicaSet",
+          "name": "longhorn-ui-5f96f4bbdb",
+          "uid": "96b52e1a-481c-45f4-9e27-ab54bc4b8cb4"
+        }
+      ]
+    },
+    {
+      "namespace": "metallb-system",
+      "name": "metallb-frr-k8s-cxnlc",
+      "uid": "72835f69-0aa9-41f9-bd0c-3f8d59eeccbf",
+      "phase": "Running",
+      "owners": [
+        {
+          "apiVersion": "apps/v1",
+          "blockOwnerDeletion": true,
+          "controller": true,
+          "kind": "DaemonSet",
+          "name": "metallb-frr-k8s",
+          "uid": "2722bcb7-5b03-457e-bd9b-00cd5f9d0e64"
+        }
+      ]
+    },
+    {
+      "namespace": "metallb-system",
+      "name": "metallb-speaker-qlrmd",
+      "uid": "60791d13-2720-404f-ae9f-1c6043eb48c4",
+      "phase": "Running",
+      "owners": [
+        {
+          "apiVersion": "apps/v1",
+          "blockOwnerDeletion": true,
+          "controller": true,
+          "kind": "DaemonSet",
+          "name": "metallb-speaker",
+          "uid": "5cbe1692-659b-49b5-978a-01bdeefa1916"
+        }
+      ]
+    },
+    {
+      "namespace": "spegel",
+      "name": "spegel-9vzlm",
+      "uid": "7880f1cb-0996-44b3-9c40-163407622128",
+      "phase": "Running",
+      "owners": [
+        {
+          "apiVersion": "apps/v1",
+          "blockOwnerDeletion": true,
+          "controller": true,
+          "kind": "DaemonSet",
+          "name": "spegel",
+          "uid": "51d13a07-b406-4c65-855b-bcbdc942f2d4"
+        }
+      ]
+    },
+    {
+      "namespace": "vcluster-ckf",
+      "name": "coredns-744d9bd8bf-dmrxr-x-kube-system-x-vcluster-ckf",
+      "uid": "fd3517f9-d767-4cda-baa0-35a0740d4bde",
+      "phase": "Running",
+      "owners": [
+        {
+          "apiVersion": "v1",
+          "controller": true,
+          "kind": "Service",
+          "name": "vcluster-ckf",
+          "uid": "df6d7d8a-8d46-4625-a4f1-6501c2fe6129"
+        }
+      ]
+    }
+  ],
+  "storage": {
+    "volumes": 98,
+    "robustness": {
+      "healthy": 17,
+      "unknown": 81
+    },
+    "backups": 1555,
+    "backup_states": {
+      "Completed": 1553,
+      "Error": 2
+    },
+    "latest_completed_snapshot": "2026-11-16T09:34:03Z"
+  },
+  "suc_plans": 0,
+  "blockers": [
+    "Production clone prohibited by user due to disk capacity; alternative rehearsal decision pending; no restore performed",
+    "Rancher 2.13.3 / Longhorn 1.9.2 target OS/kernel measured qualification open",
+    "GPU2 has live platform workloads; no drain or storage evacuation performed",
+    "GPU2 custom cap-writer allocations/custody not reconciled",
+    "No final upstream-runtime enforcement/workspace acceptance"
+  ],
+  "proxmox": {
+    "host": "cit-gpu-01.unileoben.ac.at",
+    "version": "pve-manager/9.2.26/41a0e2e09b9e6f9d",
+    "gpu2_vmid": 102,
+    "production_zfs_available_gib": 259,
+    "production_zfs_used_percent": 95.56,
+    "local_lvm_available_kib": 333226303,
+    "ssh_access": "verified with id_ed25519",
+    "clone_created": false,
+    "clone_prohibited_by_user": true
+  }
+}

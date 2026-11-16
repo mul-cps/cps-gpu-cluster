@@ -1,0 +1,4 @@
+name: gpu2-ubuntu-os-pilot
+defaultNamespace: cattle-system
+labels:
+  name: gpu2-ubuntu-os-pilot

@@ -1,0 +1,24 @@
+# Target operand configuration AFTER controller transitions and selected-node
+# ownership transfer. Keep OnDelete; deliberately recreate selected-node pods
+# only. R620's published, qualified driver image remains a separate prerequisite.
+daemonsets:
+  updateStrategy: OnDelete
+toolkit:
+  repository: nvcr.io/nvidia/k8s
+  image: container-toolkit
+  version: v1.20.1
+devicePlugin:
+  repository: nvcr.io/nvidia
+  image: k8s-device-plugin
+  version: v0.20.1
+  imagePullSecrets: []
+gfd:
+  repository: nvcr.io/nvidia
+  image: k8s-device-plugin
+  version: v0.20.1
+mig:
+  strategy: none
+cdi:
+  enabled: true
+  default: false
+  nriPluginEnabled: false

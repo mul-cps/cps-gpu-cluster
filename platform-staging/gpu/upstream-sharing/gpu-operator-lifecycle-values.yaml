@@ -1,0 +1,29 @@
+# Merge LAST over a complete capture of the installed operand configuration
+# during 25.10 -> 26.3 -> 26.7.1 controller transitions. This is NOT sufficient
+# by itself: compare rendered ClusterPolicy to live spec, preserving every
+# operand image/env/config and new optional operands disabled.
+daemonsets:
+  updateStrategy: OnDelete
+driver:
+  upgradePolicy:
+    autoUpgrade: false
+    drain:
+      enable: false
+      force: false
+      deleteEmptyDir: false
+    podDeletion:
+      force: false
+      deleteEmptyDir: false
+  manager:
+    env:
+      - name: ENABLE_GPU_POD_EVICTION
+        value: "false"
+      - name: ENABLE_AUTO_DRAIN
+        value: "false"
+mig:
+  strategy: none
+node-feature-discovery:
+  worker:
+    updateStrategy:
+      type: OnDelete
+      rollingUpdate: null

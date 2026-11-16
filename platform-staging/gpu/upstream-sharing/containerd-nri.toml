@@ -1,0 +1,12 @@
+# Merge into the selected worker's K3s config-v3.toml.tmpl, preserving its
+# existing template/runtime content. Do not edit generated config.toml.
+# Inspect the actual generated NRI config/socket after a selected-node restart.
+[plugins.'io.containerd.nri.v1.nri']
+  disable = false
+  socket_path = "/var/run/nri/nri.sock"
+[plugins.'io.containerd.nri.v1.nri'.default_validator]
+  enable = true
+  required_plugins = []
+# Per-container mandatory plugin, so CPU/storage containers remain independent:
+# required-plugins.noderesource.dev/container.main: '["gpu-fractioning"]'
+# Do not configure a tolerate_missing_plugins_annotation escape hatch.
