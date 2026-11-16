@@ -115,3 +115,13 @@ containing this policy and recipe. The immutable image labels identify that
 revision, the upstream tag/commit/patch, and all three artifact hashes. It is
 an artifact carrier, not a running service image. Publication does not authorize
 installation or change the pending qualification status.
+
+Published candidate:
+`ghcr.io/mul-cps/cps-k3s-nri-required-plugin@sha256:1e79df5dd8d75db5407a4b3b8c62d3cce1f099fe137dfc88339f4ffdb733b456`
+(tag `1.34.9-k3s1-nri-required-v1`). Its source revision is
+`39c5baeb1dc6bf2c9c617d8c9e5c7102d5d0a017`. A fresh registry download verified
+the manifest and layer digests, all labels, the approved outer SHA256, and the
+embedded provenance record; see `evidence/publication.json`. The scratch image
+contains `/k3s` and `/provenance.json`. The latter is the immutable pre-publication
+build record; the publication record separately records distribution status.
+No runtime installation has been performed by this artifact task.

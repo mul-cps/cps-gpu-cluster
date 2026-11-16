@@ -1,0 +1,33 @@
+{
+  "status": "published candidate; not installed; live qualification pending",
+  "verified_at": "2026-11-16T19:34:32.263347+00:00",
+  "image_tag": "ghcr.io/mul-cps/cps-k3s-nri-required-plugin:1.34.9-k3s1-nri-required-v1",
+  "image_digest": "sha256:1e79df5dd8d75db5407a4b3b8c62d3cce1f099fe137dfc88339f4ffdb733b456",
+  "immutable_reference": "ghcr.io/mul-cps/cps-k3s-nri-required-plugin@sha256:1e79df5dd8d75db5407a4b3b8c62d3cce1f099fe137dfc88339f4ffdb733b456",
+  "source_revision": "39c5baeb1dc6bf2c9c617d8c9e5c7102d5d0a017",
+  "remote_download_method": "skopeo copy docker://<immutable-reference> dir:<fresh-directory>",
+  "remote_manifest_digest_verified": true,
+  "all_remote_layer_digests_verified": true,
+  "remote_labels_match_local": true,
+  "remote_binary_sha256": "6ce276301723a902da671058730611591c59b5f016b816f57f2d97b05c88fe2c",
+  "remote_provenance_matches_reviewed": true,
+  "root_files": [
+    "k3s",
+    "provenance.json"
+  ],
+  "labels": {
+    "ac.at.unileoben.cps.archive-sha256": "2277a2c458beda093f8367b944c2fbb2e5f53a00f17776759721fb781b3874fa",
+    "ac.at.unileoben.cps.inner-sha256": "0ca3be05fd3fcdd9682e68bbff5821ea15027773404a7e47517b822bcb57387a",
+    "ac.at.unileoben.cps.k3s-upstream-commit": "5f72184f2d188f75171bbd21953b1c16268e425f",
+    "ac.at.unileoben.cps.k3s-upstream-tag": "v1.34.9+k3s1",
+    "ac.at.unileoben.cps.nri-upstream-patch": "9cb8bc1fee03ebd41d90319240c2493fb03411b9",
+    "ac.at.unileoben.cps.outer-sha256": "6ce276301723a902da671058730611591c59b5f016b816f57f2d97b05c88fe2c",
+    "ac.at.unileoben.cps.source-revision": "39c5baeb1dc6bf2c9c617d8c9e5c7102d5d0a017",
+    "io.buildah.version": "1.43.5",
+    "org.opencontainers.image.description": "Derived K3s outer binary; exact upstream NRI required-plugin backport; qualification pending",
+    "org.opencontainers.image.revision": "39c5baeb1dc6bf2c9c617d8c9e5c7102d5d0a017",
+    "org.opencontainers.image.source": "https://github.com/mul-cps/cps-gpu-cluster",
+    "org.opencontainers.image.title": "CPS K3s required-plugin artifact candidate",
+    "org.opencontainers.image.version": "v1.34.9+k3s1-nri-required-v1"
+  }
+}
