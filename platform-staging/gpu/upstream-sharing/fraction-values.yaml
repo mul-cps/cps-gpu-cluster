@@ -5,13 +5,13 @@ fractioningAgent:
   criSocketPath: /run/k3s/containerd/containerd.sock
 images:
   operator:
-    tag: 0.1.9
+    tag: v0.1.9
   fractiond:
-    tag: 0.1.9
+    tag: v0.1.9
   metricsd:
-    tag: 0.1.9
+    tag: v0.1.9
   mpsd:
-    tag: 0.1.9
+    tag: v0.1.9
 daemonTolerations:
 - key: nvidia.com/gpu
   operator: Exists

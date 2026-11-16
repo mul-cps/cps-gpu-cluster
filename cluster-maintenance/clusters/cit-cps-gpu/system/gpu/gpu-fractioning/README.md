@@ -29,3 +29,14 @@ upgrade hook is disabled because Fleet owns the released CRD directly.
 The selector, K3s sockets, fail-open=false, retroactive enforcement=true,
 maintenance toleration and time-slicing-only setting are CPS configuration;
 operator, fractiond, mpsd and metricsd remain upstream 0.1.9.
+
+Verified registry manifest digests for the published `v0.1.9` tags:
+
+- operator: `sha256:83e0aa29b0951c58b5565cbc50b2ae1900da25c78cdfcdf6eddea437748fe22c`
+- fractiond: `sha256:29c5fca25c1b35f22cf9f1e6c53acaa79d0b9f722ed6e8417caf438c06cd3739`
+- metricsd: `sha256:7a619c92651d0744bcd80745be264f3b6c213ad4f3a12fef19a339df422af2bf`
+- mpsd: `sha256:f161d6c653c668e49e384ae15794421777464248c5e533660ac26b006787b102`
+
+The unprefixed `0.1.9` image tags do not exist. The initial selected-node pilot
+exposed this pinning mistake before daemon startup; corrected manifests use the
+released chart appVersion `v0.1.9`. Rendering alone cannot verify image availability.

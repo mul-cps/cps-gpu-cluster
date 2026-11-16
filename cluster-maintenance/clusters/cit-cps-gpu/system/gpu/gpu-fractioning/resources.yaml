@@ -230,7 +230,7 @@ spec:
         runAsNonRoot: true
       containers:
       - name: manager
-        image: ghcr.io/kai-scheduler/gpu-fractioning/operator:0.1.9
+        image: ghcr.io/kai-scheduler/gpu-fractioning/operator:v0.1.9
         imagePullPolicy: IfNotPresent
         env:
         - name: POD_NAMESPACE
@@ -240,19 +240,19 @@ spec:
         - name: FRACTIOND_IMAGE_REPOSITORY
           value: ghcr.io/kai-scheduler/gpu-fractioning/fractiond
         - name: FRACTIOND_IMAGE_TAG
-          value: 0.1.9
+          value: v0.1.9
         - name: FRACTIOND_IMAGE_PULL_POLICY
           value: IfNotPresent
         - name: METRICSD_IMAGE_REPOSITORY
           value: ghcr.io/kai-scheduler/gpu-fractioning/metricsd
         - name: METRICSD_IMAGE_TAG
-          value: 0.1.9
+          value: v0.1.9
         - name: METRICSD_IMAGE_PULL_POLICY
           value: IfNotPresent
         - name: MPSD_IMAGE_REPOSITORY
           value: ghcr.io/kai-scheduler/gpu-fractioning/mpsd
         - name: MPSD_IMAGE_TAG
-          value: 0.1.9
+          value: v0.1.9
         - name: MPSD_IMAGE_PULL_POLICY
           value: IfNotPresent
         - name: MPSD_AUDIT_LOG
