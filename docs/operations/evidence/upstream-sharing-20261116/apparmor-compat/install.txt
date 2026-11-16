@@ -1,0 +1,1 @@
+{"installed": "/etc/apparmor.d/cri-containerd.apparmor.d", "profile_sha256": "30e2fc1210fc99c4e7060ea6bf7f931f6d6c03fbdc499f5f0584fb5c01c92875", "backup": "/var/lib/cps-apparmor-compat", "dropin": "/etc/systemd/system/k3s-agent.service.d/30-apparmor-compat.conf", "service_restarted": false}

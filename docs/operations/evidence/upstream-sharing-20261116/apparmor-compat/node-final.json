@@ -1,0 +1,17 @@
+{
+  "uid": "3336cdd5-d245-436e-b57c-2f66c6dcaa41",
+  "unschedulable": true,
+  "taints": [
+    {
+      "effect": "NoSchedule",
+      "key": "cps.unileoben.ac.at/maintenance",
+      "value": "upstream-pilot"
+    },
+    {
+      "effect": "NoSchedule",
+      "key": "node.kubernetes.io/unschedulable",
+      "timeAdded": "2026-11-16T17:54:56Z"
+    }
+  ],
+  "qualification_labels": {}
+}

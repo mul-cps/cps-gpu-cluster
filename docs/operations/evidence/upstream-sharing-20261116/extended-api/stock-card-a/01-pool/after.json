@@ -1,0 +1,9 @@
+{
+  "time": 1794852109.5881872,
+  "node": "k3s-wk-gpu2",
+  "boot_id": "043e6e01-0e3a-44ab-bca9-f6d42ababe60",
+  "gpu": "GPU-16128952-b438-556a-00bb-93039ee24e56, 620.70.06, 1, 40960",
+  "compute_processes": "",
+  "retired_cgroup": "/kubepods.slice/kubepods-burstable.slice/kubepods-burstable-pod21c1dfe7_6405_4ae5_86a1_cb0fc5ae66d5.slice/cri-containerd-8c9a38b9309247353ed2befc02dfa4047c214c1430187ecaff1759078ce88113.scope",
+  "retired_cgroup_exists": false
+}

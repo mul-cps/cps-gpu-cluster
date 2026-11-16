@@ -1,0 +1,28 @@
+{
+  "time": 1794852853.0918057,
+  "node": "k3s-wk-gpu2",
+  "boot_id": "043e6e01-0e3a-44ab-bca9-f6d42ababe60",
+  "gpu": "GPU-1e6145d5-8ee2-43e2-a0d5-6d345909e8a6, 620.70.06, 1, 40960",
+  "compute_processes": "",
+  "container_id": "68dae9126bbf6bacbf0fcc4c4c45f106eeca940026149644143f84c6b4cfe8a0",
+  "init_pid": 438660,
+  "cgroup": "0::/kubepods.slice/kubepods-burstable.slice/kubepods-burstable-pod51ec2def_c099_459a_a8b8_0fc2094a2e69.slice/cri-containerd-68dae9126bbf6bacbf0fcc4c4c45f106eeca940026149644143f84c6b4cfe8a0.scope\n",
+  "cgroup_inode": 48035,
+  "accounting": {
+    "misc.current": "",
+    "misc.max": "",
+    "memory.current": "10555392\n",
+    "memory.max": "4294967296\n",
+    "cgroup.events": "populated 1\nfrozen 0\n"
+  },
+  "processes": [
+    {
+      "pid": 438660,
+      "stat": "438660 (python3) S 438583 438660 438660 0 -1 4194560 4386 6098 0 0 6 4 0 4 20 0 1 0 1849284 20459520 3696 18446744073709551615 4325376 7352253 140732075810480 0 0 0 0 16781312 8194 1 0 0 17 12 0 0 0 0 0 10653128 12216448 140931072 140732075817483 140732075817566 140732075817566 140732075818983 0\n",
+      "nspid": [
+        "NSpid:\t438660\t1"
+      ]
+    }
+  ],
+  "pod_uid": "51ec2def-c099-459a-a8b8-0fc2094a2e69"
+}

@@ -1,0 +1,404 @@
+# Preserve the reviewed live custody/runtime configuration through Helm rendering.
+# Secret values remain in the referenced existing Kubernetes Secrets.
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: hub
+  namespace: jupyterhub
+spec:
+  strategy:
+    $patch: replace
+    type: Recreate
+  template:
+    $patch: replace
+    metadata:
+      annotations:
+        checksum/config-map: 4e0e6eba0d69f088add255d64025a254971eaa3f23f362e494005eb4c53c569f
+        checksum/secret: e374bc7dc3eda3dcf69883ad90a96dd32407e0cc253678a56a448cf53d65bd1a
+        compute.cps.unileoben.ac.at/policy-hash: sha256:d48f6553ed036c2e7adcc97417623fe0308be93ad13b20f246047ada118511b0
+        cps.compute/consumer-config-sha256: a56a88ec04ed29a2f47760e19db09baaa1d3bfcb5eb0937339e3eaa4e1abebf2
+        cps.compute/qualification-reconcile: '2026-10-09T13:57:04.999557+00:00'
+        cps.compute/qualification-recovery: '2026-10-16T23:18:30.578793+00:00'
+        cps.unileoben.ac.at/cpu-addon-values-sha256: ca45d2b26ad4b0d8208d70dd14bcfcacc9ce4df368e503c5d7c5ab481900b5d5
+        cps.unileoben.ac.at/current-custody-request-sha256: 83312908e3e4bf45b674e31dec9a52195dc074d505382657dedbd59039911594
+        cps.unileoben.ac.at/native-approval-stage: sdk-156c6f5b
+        cps.unileoben.ac.at/upstream-helper-settings: 1401b26ea0c97c30d255ae03990abf99d59c92ab8390bdd7ddaf8bd847b4f7f9
+        cps.unileoben.ac.at/upstream-policy-hash: sha256:b28bbd7770b90bdb9fe3831b4379dc1107d6416fbf6e193e2b4b7333220183e0
+        cps.unileoben.ac.at/upstream-runtime-bootstrap: 0d9c42a691fcdd5c26ddcc4f7b1f3ba63c351dd377043e802f3dc1baf2b7bd52
+        kubectl.kubernetes.io/restartedAt: '2026-10-12T15:03:41+02:00'
+      labels:
+        app: jupyterhub
+        app.kubernetes.io/component: hub
+        app.kubernetes.io/instance: jupyterhub
+        app.kubernetes.io/name: jupyterhub
+        component: hub
+        hub.jupyter.org/network-access-proxy-api: 'true'
+        hub.jupyter.org/network-access-proxy-http: 'true'
+        hub.jupyter.org/network-access-singleuser: 'true'
+        release: jupyterhub
+    spec:
+      affinity:
+        nodeAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+          - preference:
+              matchExpressions:
+              - key: hub.jupyter.org/node-purpose
+                operator: In
+                values:
+                - core
+            weight: 100
+      containers:
+      - args:
+        - jupyterhub
+        - --config
+        - /usr/local/etc/jupyterhub/jupyterhub_config.py
+        - --upgrade-db
+        env:
+        - name: PYTHONUNBUFFERED
+          value: '1'
+        - name: HELM_RELEASE_NAME
+          value: jupyterhub
+        - name: POD_NAMESPACE
+          valueFrom:
+            fieldRef:
+              apiVersion: v1
+              fieldPath: metadata.namespace
+        - name: CONFIGPROXY_AUTH_TOKEN
+          valueFrom:
+            secretKeyRef:
+              key: hub.config.ConfigurableHTTPProxy.auth_token
+              name: hub
+        - name: OAUTH_CLIENT_SECRET
+          valueFrom:
+            secretKeyRef:
+              key: client-secret
+              name: jupyterhub-oauth-secret
+        - name: POSTGRES_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              key: postgres-password
+              name: postgresql-secret
+        - name: LDAP_BIND_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              key: bind-password
+              name: jupyterhub-ldap-credentials
+        - name: SSH_GATEWAY_TOKEN
+          valueFrom:
+            secretKeyRef:
+              key: admin-api-token
+              name: jupyterhub-ssh-gateway-token
+        - name: CPS_CONSOLE_POLICY_TOKEN
+          valueFrom:
+            secretKeyRef:
+              key: CPS_CONSOLE_POLICY_TOKEN
+              name: cps-native-hub-control
+        - name: PERSONAL_ARGO_OAUTH_CLIENT_SECRET
+          valueFrom:
+            secretKeyRef:
+              key: oauth-client-secret
+              name: personal-argo-oauth
+        - name: CPS_NATIVE_GROUP_APPROVALS_PATH
+          value: /var/run/cps-native-approvals/approval.json
+        - name: CPS_NATIVE_GROUP_APPROVAL_REFERENCE
+          value: /var/run/cps-native-approvals/reference.json
+        - name: CPS_NATIVE_APPROVAL_POD_UID
+          valueFrom:
+            fieldRef:
+              apiVersion: v1
+              fieldPath: metadata.uid
+        - name: CPS_NATIVE_APPROVAL_POD_NAME
+          valueFrom:
+            fieldRef:
+              apiVersion: v1
+              fieldPath: metadata.name
+        - name: CPS_NATIVE_APPROVAL_POD_NAMESPACE
+          valueFrom:
+            fieldRef:
+              apiVersion: v1
+              fieldPath: metadata.namespace
+        - name: CPS_NATIVE_APPROVAL_COMPONENT
+          value: hub:cps
+        - name: CPS_NATIVE_APPROVAL_PUBLISHER_PATH
+          value: /var/run/cps-native-approvals/publisher.json
+        - name: CPS_NATIVE_GROUP_QUALIFICATION_REFERENCE
+          value: /etc/cps-native-proof/reference.json
+        - name: CPS_NATIVE_GROUP_APPROVAL_HEAD
+          value: /etc/cps-native-head-binding.json
+        - name: CPS_PERSONAL_CPU_PROFILE_ALIASES
+          value: '{"cpu-default":"interactive-cpu"}'
+        - name: CPS_LIFECYCLE147_CPS_TOKEN
+          valueFrom:
+            secretKeyRef:
+              key: CPS_LIFECYCLE147_CPS_TOKEN
+              name: native-lifecycle147-hub-2ca9dccf4f4b81f4-control
+        - name: CPS_NATIVE_GROUP_POLICY_TRANSITION_REFERENCE
+          value: /etc/cps-native-proof/policy-transition.json
+        image: ghcr.io/mul-cps/cps-compute@sha256:2a73a06ebd7c6c5ed8235332da9a43296c343becc98f9ff4d68284364031c3f9
+        imagePullPolicy: IfNotPresent
+        livenessProbe:
+          failureThreshold: 30
+          httpGet:
+            path: /hub/health
+            port: http
+            scheme: HTTP
+          initialDelaySeconds: 300
+          periodSeconds: 10
+          successThreshold: 1
+          timeoutSeconds: 3
+        name: hub
+        ports:
+        - containerPort: 8081
+          name: http
+          protocol: TCP
+        readinessProbe:
+          failureThreshold: 1000
+          httpGet:
+            path: /hub/health
+            port: http
+            scheme: HTTP
+          periodSeconds: 2
+          successThreshold: 1
+          timeoutSeconds: 1
+        resources: {}
+        securityContext:
+          allowPrivilegeEscalation: false
+          capabilities:
+            drop:
+            - ALL
+          runAsGroup: 1000
+          runAsUser: 1000
+        terminationMessagePath: /dev/termination-log
+        terminationMessagePolicy: File
+        volumeMounts:
+        - mountPath: /usr/local/etc/jupyterhub/jupyterhub_config.py
+          name: config
+          subPath: jupyterhub_config.py
+        - mountPath: /usr/local/etc/jupyterhub/z2jh.py
+          name: config
+          subPath: z2jh.py
+        - mountPath: /usr/local/etc/jupyterhub/config/
+          name: config
+        - mountPath: /usr/local/etc/jupyterhub/secret/
+          name: secret
+        - mountPath: /ca-bundle
+          name: ca-bundle
+        - mountPath: /harica
+          name: harica-ca
+        - mountPath: /srv/jupyterhub
+          name: pvc
+        - mountPath: /etc/cps-native-hub
+          name: cps-native-hub-config
+          readOnly: true
+        - mountPath: /var/run/cps-native-approvals/approval.json
+          name: cps-native-approval-document
+          readOnly: true
+          subPath: approval.json
+        - mountPath: /var/run/cps-native-approvals/reference.json
+          name: cps-native-approval-reference
+          readOnly: true
+          subPath: reference.json
+        - mountPath: /var/run/cps-native-approvals/publisher.json
+          name: cps-native-approval-publisher
+          readOnly: true
+          subPath: publisher.json
+        - mountPath: /etc/cps-native-proof/reference.json
+          name: cps-native-qualified-reference
+          readOnly: true
+          subPath: reference.json
+        - mountPath: /var/run/cps-native-approvals/head-anchor.json
+          name: cps-native-head-anchor
+          readOnly: true
+          subPath: anchor.json
+        - mountPath: /etc/cps-native-head-binding.json
+          name: cps-native-head-binding
+          readOnly: true
+          subPath: head-binding.json
+        - mountPath: /var/run/cps-kai-service
+          name: cps-kai-service
+          readOnly: true
+        - mountPath: /etc/cps-native-kai-hub
+          name: cps-native-kai-hub-private
+          readOnly: true
+        - mountPath: /etc/cps-lifecycle147
+          name: cps-lifecycle147
+          readOnly: true
+        - mountPath: /etc/cps-native-proof/policy-transition.json
+          name: cps-native-policy-transition-reference
+          readOnly: true
+          subPath: reference.json
+        - mountPath: /etc/cps-upstream-hub
+          name: upstream-policy
+          readOnly: true
+      dnsPolicy: ClusterFirst
+      imagePullSecrets:
+      - name: cps-native-image-pull
+      initContainers:
+      - command:
+        - python
+        - -I
+        - -S
+        - -c
+        - from pathlib import Path; import os, stat, hashlib; os.umask(0o077); raw=Path('/kai-hub-seed/settings.json').read_bytes();
+          assert hashlib.sha256(raw).hexdigest()=='783186708551217d436aca9a4934136be2e5dfe2dc5bd8929a5fe095f30f1c87',
+          'Immutable settings bytes differ'; p=Path('/kai-hub-private/config'); p.mkdir(mode=0o700,exist_ok=True);
+          dfd=os.open(p,os.O_RDONLY|os.O_DIRECTORY|os.O_NOFOLLOW); s=os.fstat(dfd);
+          assert stat.S_ISDIR(s.st_mode) and s.st_uid==os.geteuid() and stat.S_IMODE(s.st_mode)
+          in (0o700,0o2700); os.fchmod(dfd,0o700); fd=os.open('settings.json',os.O_WRONLY|os.O_CREAT|os.O_NOFOLLOW,0o600,dir_fd=dfd);
+          s=os.fstat(fd); assert stat.S_ISREG(s.st_mode) and s.st_uid==os.geteuid()
+          and s.st_nlink==1 and stat.S_IMODE(s.st_mode)==0o600; os.ftruncate(fd,0);
+          stream=os.fdopen(fd,'wb'); stream.write(raw); stream.flush(); os.fsync(stream.fileno());
+          stream.close(); os.fsync(dfd); os.close(dfd)
+        image: ghcr.io/mul-cps/cps-compute@sha256:435c080630b71dc9af7656052f96d3e038380d5a87e484b398f7c0a27e5cb466
+        imagePullPolicy: IfNotPresent
+        name: cps-native-kai-hub-inputs
+        resources: {}
+        securityContext:
+          allowPrivilegeEscalation: false
+          capabilities:
+            drop:
+            - ALL
+          readOnlyRootFilesystem: true
+          runAsGroup: 1000
+          runAsNonRoot: true
+          runAsUser: 1000
+        terminationMessagePath: /dev/termination-log
+        terminationMessagePolicy: File
+        volumeMounts:
+        - mountPath: /kai-hub-seed
+          name: cps-native-kai-hub-seed
+          readOnly: true
+        - mountPath: /kai-hub-private
+          name: cps-native-kai-hub-private
+      nodeName: k3s-wk-gpu1
+      priorityClassName: jupyterhub-default-priority
+      restartPolicy: Always
+      schedulerName: default-scheduler
+      securityContext:
+        fsGroup: 1000
+        runAsNonRoot: true
+        seccompProfile:
+          type: RuntimeDefault
+      serviceAccount: hub
+      serviceAccountName: hub
+      terminationGracePeriodSeconds: 30
+      tolerations:
+      - effect: NoSchedule
+        key: hub.jupyter.org/dedicated
+        operator: Equal
+        value: core
+      - effect: NoSchedule
+        key: hub.jupyter.org_dedicated
+        operator: Equal
+        value: core
+      - effect: NoExecute
+        key: node.kubernetes.io/not-ready
+        operator: Exists
+        tolerationSeconds: 300
+      - effect: NoExecute
+        key: node.kubernetes.io/unreachable
+        operator: Exists
+        tolerationSeconds: 300
+      volumes:
+      - configMap:
+          defaultMode: 420
+          name: hub
+        name: config
+      - name: secret
+        secret:
+          defaultMode: 420
+          secretName: cps-fixed-launch-16fa767-20261028
+      - emptyDir: {}
+        name: ca-bundle
+      - configMap:
+          defaultMode: 420
+          items:
+          - key: harica-root
+            path: harica-root.pem
+          - key: geant-intermediate
+            path: geant-intermediate.pem
+          name: harica-ca
+        name: harica-ca
+      - name: pvc
+        persistentVolumeClaim:
+          claimName: hub-db-dir
+      - configMap:
+          defaultMode: 420
+          name: cps-nbi24-ed3c9e7c5564e828
+        name: cps-native-hub-config
+      - configMap:
+          defaultMode: 292
+          items:
+          - key: approval.json
+            path: approval.json
+          name: cps-runtime-initial-approval-cbf7d39ba84ad7f8
+        name: cps-native-approval-document
+      - configMap:
+          defaultMode: 292
+          items:
+          - key: reference.json
+            path: reference.json
+          name: cps-runtime-approval-reference-7e130373da7b685a
+        name: cps-native-approval-reference
+      - configMap:
+          defaultMode: 292
+          items:
+          - key: publisher.json
+            path: publisher.json
+          name: cps-fixed-launch-publisher-16fa767-20261028
+        name: cps-native-approval-publisher
+      - configMap:
+          defaultMode: 292
+          name: cps-runtime-qualification-reference-4124810ead361061
+        name: cps-native-qualified-reference
+      - configMap:
+          defaultMode: 420
+          items:
+          - key: anchor.json
+            path: anchor.json
+          name: cps-runtime-anchor-hub-cps-463480721f0c35a9
+        name: cps-native-head-anchor
+      - configMap:
+          defaultMode: 420
+          items:
+          - key: head-binding.json
+            path: head-binding.json
+          name: cps-runtime-head-binding-ecc3cc4e0d1d9148
+        name: cps-native-head-binding
+      - name: cps-kai-service
+        projected:
+          defaultMode: 288
+          sources:
+          - serviceAccountToken:
+              audience: cps-native-kai
+              expirationSeconds: 3600
+              path: credentials/token
+          - configMap:
+              items:
+              - key: ca.crt
+                path: ca.crt
+              name: kube-root-ca.crt
+      - configMap:
+          defaultMode: 292
+          items:
+          - key: settings.json
+            path: settings.json
+          name: cps-nbi24-ed2e110b9e04846c
+        name: cps-native-kai-hub-seed
+      - emptyDir: {}
+        name: cps-native-kai-hub-private
+      - configMap:
+          defaultMode: 420
+          name: native-lifecycle147-measured-hub-114035ad2312563f
+        name: cps-lifecycle147
+      - configMap:
+          defaultMode: 292
+          items:
+          - key: reference.json
+            path: reference.json
+          name: cps-nbi24-4f890b17dd295c3d
+        name: cps-native-policy-transition-reference
+      - configMap:
+          defaultMode: 292
+          name: cps-upstream-policy-b28bbd7770b9
+        name: upstream-policy

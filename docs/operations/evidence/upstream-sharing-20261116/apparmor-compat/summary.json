@@ -1,0 +1,16 @@
+{
+  "result": "PASS GPU2 AppArmor narrow compatibility fix",
+  "apply_time": "2026-11-16T18:09:14.571756+00:00",
+  "checked": "2026-11-16T18:10:45.822172+00:00",
+  "baseline_byte_identical": true,
+  "baseline_raw_sha256": "8fd644921ce685e50f6dc8f57db6adb3fa0433d3fae7fa39cfdd673bd951dd82",
+  "red": "SIGUSR1/SIGKILL/ptrace errno13",
+  "green_existing_and_fresh_pods": true,
+  "mount_negative_with_unconfined_positive_control": true,
+  "signal_ptrace_denials_after_apply": 0,
+  "reboot_executed": false,
+  "persistence": "/etc/apparmor.d profile + apparmor.service Before k3s-agent via explicit Requires/After dropin",
+  "runtime_upgrade": false,
+  "restart": false,
+  "qualification_override": false
+}

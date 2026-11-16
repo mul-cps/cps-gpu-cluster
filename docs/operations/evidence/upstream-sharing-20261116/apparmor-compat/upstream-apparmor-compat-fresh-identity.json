@@ -1,0 +1,181 @@
+{
+  "apiVersion": "v1",
+  "kind": "Pod",
+  "metadata": {
+    "creationTimestamp": "2026-11-16T18:10:17Z",
+    "generation": 1,
+    "labels": {
+      "cps.unileoben.ac.at/fixture": "apparmor-compat"
+    },
+    "name": "upstream-apparmor-compat-fresh",
+    "namespace": "default",
+    "resourceVersion": "406740286",
+    "uid": "17edbcd3-8037-4ee5-824b-1321d9070a8d"
+  },
+  "spec": {
+    "activeDeadlineSeconds": 180,
+    "automountServiceAccountToken": false,
+    "containers": [
+      {
+        "command": [
+          "python3",
+          "-c",
+          "import time; time.sleep(850)"
+        ],
+        "image": "ghcr.io/mul-cps/cps-ubuntu-release-upgrade@sha256:5030556ecf8cd38fc9acc4676316bd0a3217d1ab10930b75b9dba7106e8f4004",
+        "imagePullPolicy": "IfNotPresent",
+        "name": "probe",
+        "resources": {
+          "limits": {
+            "cpu": "1",
+            "memory": "256Mi"
+          },
+          "requests": {
+            "cpu": "10m",
+            "memory": "64Mi"
+          }
+        },
+        "securityContext": {
+          "allowPrivilegeEscalation": false,
+          "capabilities": {
+            "drop": [
+              "ALL"
+            ]
+          }
+        },
+        "terminationMessagePath": "/dev/termination-log",
+        "terminationMessagePolicy": "File"
+      }
+    ],
+    "dnsPolicy": "ClusterFirst",
+    "enableServiceLinks": true,
+    "nodeName": "k3s-wk-gpu2",
+    "preemptionPolicy": "PreemptLowerPriority",
+    "priority": 0,
+    "restartPolicy": "Never",
+    "schedulerName": "default-scheduler",
+    "securityContext": {
+      "appArmorProfile": {
+        "type": "RuntimeDefault"
+      },
+      "runAsGroup": 1000,
+      "runAsNonRoot": true,
+      "runAsUser": 1000,
+      "seccompProfile": {
+        "type": "RuntimeDefault"
+      }
+    },
+    "serviceAccount": "default",
+    "serviceAccountName": "default",
+    "terminationGracePeriodSeconds": 5,
+    "tolerations": [
+      {
+        "operator": "Exists"
+      }
+    ]
+  },
+  "status": {
+    "conditions": [
+      {
+        "lastProbeTime": null,
+        "lastTransitionTime": "2026-11-16T18:10:17Z",
+        "observedGeneration": 1,
+        "status": "True",
+        "type": "PodReadyToStartContainers"
+      },
+      {
+        "lastProbeTime": null,
+        "lastTransitionTime": "2026-11-16T18:10:17Z",
+        "observedGeneration": 1,
+        "status": "True",
+        "type": "Initialized"
+      },
+      {
+        "lastProbeTime": null,
+        "lastTransitionTime": "2026-11-16T18:10:17Z",
+        "observedGeneration": 1,
+        "status": "True",
+        "type": "Ready"
+      },
+      {
+        "lastProbeTime": null,
+        "lastTransitionTime": "2026-11-16T18:10:17Z",
+        "observedGeneration": 1,
+        "status": "True",
+        "type": "ContainersReady"
+      },
+      {
+        "lastProbeTime": null,
+        "lastTransitionTime": "2026-11-16T18:10:17Z",
+        "observedGeneration": 1,
+        "status": "True",
+        "type": "PodScheduled"
+      }
+    ],
+    "containerStatuses": [
+      {
+        "allocatedResources": {
+          "cpu": "10m",
+          "memory": "64Mi"
+        },
+        "containerID": "containerd://4ee824730d84efc0920c767860540c962e778af79b68ccda5048ced3d86b67cf",
+        "image": "sha256:9c399a068d4a44f84f3feec8884de1f1b80ed8e3841987c41c97af0f03226893",
+        "imageID": "ghcr.io/mul-cps/cps-ubuntu-release-upgrade@sha256:5030556ecf8cd38fc9acc4676316bd0a3217d1ab10930b75b9dba7106e8f4004",
+        "lastState": {},
+        "name": "probe",
+        "ready": true,
+        "resources": {
+          "limits": {
+            "cpu": "1",
+            "memory": "256Mi"
+          },
+          "requests": {
+            "cpu": "10m",
+            "memory": "64Mi"
+          }
+        },
+        "restartCount": 0,
+        "started": true,
+        "state": {
+          "running": {
+            "startedAt": "2026-11-16T18:10:17Z"
+          }
+        },
+        "user": {
+          "linux": {
+            "gid": 1000,
+            "supplementalGroups": [
+              4,
+              20,
+              24,
+              25,
+              27,
+              29,
+              30,
+              44,
+              46,
+              1000
+            ],
+            "uid": 1000
+          }
+        }
+      }
+    ],
+    "hostIP": "10.21.0.43",
+    "hostIPs": [
+      {
+        "ip": "10.21.0.43"
+      }
+    ],
+    "observedGeneration": 1,
+    "phase": "Running",
+    "podIP": "10.42.7.71",
+    "podIPs": [
+      {
+        "ip": "10.42.7.71"
+      }
+    ],
+    "qosClass": "Burstable",
+    "startTime": "2026-11-16T18:10:17Z"
+  }
+}

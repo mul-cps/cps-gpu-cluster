@@ -1,0 +1,56 @@
+{
+  "upstream_commit": "447ef198eae9bae73186140a16705625479c19dc",
+  "files": [
+    {
+      "filename": "contrib/apparmor/template.go",
+      "patch": "@@ -69,6 +69,10 @@ profile {{.Name}} flags=(attach_disconnected,mediate_deleted) {\n   signal (receive) peer={{.DaemonProfile}},\n   # Container processes may send signals amongst themselves.\n   signal (send,receive) peer={{.Name}},\n+  # With kernel.apparmor_restrict_unprivileged_unconfined=1, an unprivileged\n+  # profile change is converted to stacking, producing \"{{.Name}}//&unconfined\".\n+  # Allow signals to peers with this stacked label as well.\n+  signal (send,receive) peer={{.Name}}//&unconfined,\n {{if .RootlessKit}}\n   # https://github.com/containerd/nerdctl/issues/2730\n   signal (receive) peer={{.RootlessKit}},\n@@ -96,6 +100,8 @@ profile {{.Name}} flags=(attach_disconnected,mediate_deleted) {\n   # allow processes within the container to trace each other,\n   # provided all other LSM and yama setting allow it.\n   ptrace (trace,tracedby,read,readby) peer={{.Name}},\n+  # Same stacked-label peer as the signal rule above.\n+  ptrace (trace,tracedby,read,readby) peer={{.Name}}//&unconfined,\n }\n `\n "
+    },
+    {
+      "filename": "contrib/apparmor/template_test.go",
+      "patch": "@@ -1,13 +1,42 @@\n //go:build linux\n \n+/*\n+   Copyright The containerd Authors.\n+\n+   Licensed under the Apache License, Version 2.0 (the \"License\");\n+   you may not use this file except in compliance with the License.\n+   You may obtain a copy of the License at\n+\n+       http://www.apache.org/licenses/LICENSE-2.0\n+\n+   Unless required by applicable law or agreed to in writing, software\n+   distributed under the License is distributed on an \"AS IS\" BASIS,\n+   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.\n+   See the License for the specific language governing permissions and\n+   limitations under the License.\n+*/\n+\n package apparmor\n \n import (\n+\t\"bytes\"\n \t\"testing\"\n \n \t\"github.com/stretchr/testify/assert\"\n )\n \n+func TestDefaultProfileAllowsUnconfinedStackedPeers(t *testing.T) {\n+\tvar buf bytes.Buffer\n+\terr := generate(&data{Name: \"cri-containerd.apparmor.d\"}, &buf)\n+\tassert.NoError(t, err)\n+\tprof := buf.String()\n+\tassert.Contains(t, prof, \"signal (send,receive) peer=cri-containerd.apparmor.d//&unconfined,\")\n+\tassert.Contains(t, prof, \"ptrace (trace,tracedby,read,readby) peer=cri-containerd.apparmor.d//&unconfined,\")\n+\tassert.Contains(t, prof, \"signal (send,receive) peer=cri-containerd.apparmor.d,\")\n+\tassert.Contains(t, prof, \"ptrace (trace,tracedby,read,readby) peer=cri-containerd.apparmor.d,\")\n+\tassert.NotContains(t, prof, \"//&*\")\n+}\n+\n func TestCleanProfileName(t *testing.T) {\n \tassert.Equal(t, cleanProfileName(\"\"), \"unconfined\")\n \tassert.Equal(t, cleanProfileName(\"unconfined\"), \"unconfined\")"
+    }
+  ],
+  "releases": [
+    {
+      "tag": "v2.4.2",
+      "published": "2026-10-13T22:35:06Z"
+    },
+    {
+      "tag": "v2.3.7",
+      "published": "2026-10-13T22:46:58Z"
+    },
+    {
+      "tag": "v2.2.10",
+      "published": "2026-10-13T22:45:01Z"
+    },
+    {
+      "tag": "v2.0.14",
+      "published": "2026-10-13T22:26:41Z"
+    },
+    {
+      "tag": "v2.4.1",
+      "published": "2026-09-24T23:40:25Z"
+    },
+    {
+      "tag": "v2.3.6",
+      "published": "2026-09-24T23:13:08Z"
+    },
+    {
+      "tag": "v2.2.9",
+      "published": "2026-09-24T23:16:34Z"
+    },
+    {
+      "tag": "v2.0.13",
+      "published": "2026-09-24T23:04:56Z"
+    },
+    {
+      "tag": "v1.7.36",
+      "published": "2026-09-24T23:43:50Z"
+    },
+    {
+      "tag": "v2.4.0",
+      "published": "2026-09-16T20:08:21Z"
+    }
+  ],
+  "latest_2_2_template_has_fix": false
+}

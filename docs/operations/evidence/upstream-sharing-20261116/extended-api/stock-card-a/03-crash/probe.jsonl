@@ -1,0 +1,35 @@
+{"step": "gate", "pid": 1, "time": 1794852124.6746051, "name": "start"}
+{"step": "cuInit", "pid": 59, "time": 1794852126.9851725, "result": 0, "expected": 0}
+{"step": "cuDeviceGetCount", "pid": 59, "time": 1794852126.9853148, "result": 0, "expected": 0}
+{"step": "cuDeviceGet", "pid": 59, "time": 1794852126.9853432, "result": 0, "expected": 0}
+{"step": "cuDeviceGetUuid_v2", "pid": 59, "time": 1794852126.9853868, "result": 0, "expected": 0}
+{"step": "identity", "pid": 59, "time": 1794852126.9855886, "gpu_uuid": "GPU-16128952-b438-556a-00bb-93039ee24e56", "cgroup": "0::/\n", "stat": "59 (python3) R 1 1 1 0 -1 4194560 2727 0 0 0 3 7 0 0 20 0 2 0 1776862 4618682368 10504 18446744073709551615 4325376 7352253 140722269599616 0 0 0 0 16781312 8194 0 0 0 17 12 0 0 0 0 0 10653128 12216448 692477952 140722269604303 140722269604429 140722269604429 140722269605863 0\n", "node": "k3s-wk-gpu2", "pod_uid": "49d876b4-bf0e-4600-bea8-e11b73f60478"}
+{"step": "cuCtxCreate_v2", "pid": 59, "time": 1794852127.1213987, "result": 0, "expected": 0}
+{"step": "cuMemAlloc_v2", "pid": 59, "time": 1794852127.1219254, "result": 0, "expected": 0}
+{"step": "cuMemsetD8_v2", "pid": 59, "time": 1794852127.1219776, "result": 0, "expected": 0}
+{"step": "cuCtxSynchronize", "pid": 59, "time": 1794852127.1252081, "result": 0, "expected": 0}
+{"step": "crash-holder-ready", "pid": 1, "time": 1794852129.1826954, "child_pid": 59, "generation": 0}
+Traceback (most recent call last):
+  File "/probe/probe.py", line 201, in crash
+    child.kill()
+  File "/usr/lib/python3.12/subprocess.py", line 2216, in kill
+    self.send_signal(signal.SIGKILL)
+  File "/usr/lib/python3.12/subprocess.py", line 2203, in send_signal
+    os.kill(self.pid, sig)
+PermissionError: [Errno 13] Permission denied
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/probe/probe.py", line 311, in <module>
+    main()
+  File "/probe/probe.py", line 285, in main
+    crash(args)
+  File "/probe/probe.py", line 208, in crash
+    if child.poll() is None: child.kill(); child.wait(timeout=10)
+                             ^^^^^^^^^^^^
+  File "/usr/lib/python3.12/subprocess.py", line 2216, in kill
+    self.send_signal(signal.SIGKILL)
+  File "/usr/lib/python3.12/subprocess.py", line 2203, in send_signal
+    os.kill(self.pid, sig)
+PermissionError: [Errno 13] Permission denied

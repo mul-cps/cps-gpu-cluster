@@ -1,0 +1,34 @@
+{
+  "status": "stopped-first-failure-cleanup-confirmed",
+  "node": "k3s-wk-gpu2",
+  "node_ip": "10.21.0.43",
+  "gpu_uuid": "GPU-16128952-b438-556a-00bb-93039ee24e56",
+  "image": "ghcr.io/mul-cps/cps-ubuntu-release-upgrade@sha256:5030556ecf8cd38fc9acc4676316bd0a3217d1ab10930b75b9dba7106e8f4004",
+  "cases": [
+    "vmm",
+    "pool",
+    "ipc",
+    "crash",
+    "race",
+    "recovery",
+    "recovery"
+  ],
+  "probe_sha256": "feb7464cb64f9c7aea0bc15a8e4c023ab40394ea3d5ebbc8b73c1d6b16145e0e",
+  "parent_idle_release": "root-explicit-stock-window-20261116",
+  "node_uid": "3336cdd5-d245-436e-b57c-2f66c6dcaa41",
+  "error": "Command '['ssh', '-i', '/home/bjoern/.ssh/id_ed25519', '-o', 'IdentitiesOnly=yes', '-o', 'BatchMode=yes', '-o', 'ConnectTimeout=8', 'ubuntu@10.21.0.43', 'sudo -n python3 - --node k3s-wk-gpu2 --gpu-uuid GPU-16128952-b438-556a-00bb-93039ee24e56 --container-id 12aa77fb7dc0960830d8102caec6cc893d66b1533d069281774d22dda25a52ff']' returned non-zero exit status 1.",
+  "passed_cases": [
+    "vmm",
+    "pool",
+    "ipc"
+  ],
+  "failed_case": "crash",
+  "failure": "PermissionError errno13 sending SIGKILL from nonroot parent to its own child; no security relaxation",
+  "not_run": [
+    "race",
+    "recovery",
+    "recovery",
+    "all-card-b"
+  ],
+  "cleanup_confirmed": true
+}

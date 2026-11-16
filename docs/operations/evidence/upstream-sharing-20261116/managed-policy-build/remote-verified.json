@@ -1,0 +1,16 @@
+{
+  "remote_manifest_digest": "sha256:c3b71557aa17df43faad5a2661d81f1025ba355ac3adf784096de12cd2ef3e73",
+  "labels": {
+    "org.opencontainers.image.source": "https://github.com/mul-cps/cps-gpu-cluster",
+    "org.opencontainers.image.revision": "01abf8131b8453c51bef4c5794a89ebe5a498700",
+    "org.opencontainers.image.base.digest": "sha256:0fcbf7340155f8d6868e30b1b0fbf09b601d093a9316621902d5ac09ad7874a1",
+    "cps.unileoben.ac.at/driver-policy-patch-sha256": "b1b423626bdd5ff726a95939a4b3b27ff08437e5f93c8732f2edaa5565031257",
+    "cps.unileoben.ac.at/driver-policy-source-sha256": "5648dbfe43957eb257d9efb715906de0fb6caa43458752544221d90db6efdb18"
+  },
+  "base_layers_preserved": 12,
+  "entrypoint": [
+    "nvidia-driver",
+    "init"
+  ],
+  "remote_config_digest": "sha256:42b51a1af1671adbf92ab6bff1cb2e7d2d287820044d5f91e06577c5b7fdc1e5"
+}

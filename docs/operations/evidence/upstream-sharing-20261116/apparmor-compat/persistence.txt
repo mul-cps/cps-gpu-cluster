@@ -1,0 +1,20 @@
+Id=apparmor.service
+Requires=-.mount system.slice
+After=systemd-sysctl.service system.slice local-fs.target systemd-journald-audit.socket -.mount systemd-journald.socket
+ActiveState=active
+SubState=exited
+ActiveEnterTimestamp=Mon 2026-11-16 13:06:10 UTC
+
+Id=k3s-agent.service
+Requires=sysinit.target system.slice apparmor.service
+After=apparmor.service systemd-journald.socket network-online.target system.slice sysinit.target basic.target
+ActiveState=active
+SubState=running
+ActiveEnterTimestamp=Mon 2026-11-16 13:08:31 UTC
+cri-containerd.apparmor.d (enforce)
+kernel.apparmor_restrict_unprivileged_unconfined = 1
+30e2fc1210fc99c4e7060ea6bf7f931f6d6c03fbdc499f5f0584fb5c01c92875  /etc/apparmor.d/cri-containerd.apparmor.d
+enabled
+[Unit]
+Requires=apparmor.service
+After=apparmor.service

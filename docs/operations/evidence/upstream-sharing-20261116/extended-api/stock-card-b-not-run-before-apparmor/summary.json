@@ -1,0 +1,8 @@
+{
+  "status": "not-run",
+  "reason": "Stopped at first card-A failure: nonroot parent-to-child SIGKILL denied errno13. Hardware window returned to root after exact fixture cleanup.",
+  "node": "k3s-wk-gpu2",
+  "gpu_uuid": "GPU-1e6145d5-8ee2-43e2-a0d5-6d345909e8a6",
+  "driver": "620.70.06",
+  "hardware_execution": false
+}

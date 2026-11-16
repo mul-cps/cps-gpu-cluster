@@ -1,4 +1,4 @@
-# Candidate only; selected worker ownership must be transferred explicitly.
+# Selected R620 workers only. GPU2 remains quarantined until policy qualification.
 apiVersion: nvidia.com/v1alpha1
 kind: NVIDIADriver
 metadata:
@@ -7,7 +7,7 @@ spec:
   driverType: gpu
   repository: ghcr.io/mul-cps
   image: cps-nvidia-driver
-  version: sha256:0fcbf7340155f8d6868e30b1b0fbf09b601d093a9316621902d5ac09ad7874a1
+  version: sha256:c3b71557aa17df43faad5a2661d81f1025ba355ac3adf784096de12cd2ef3e73
   kernelModuleType: auto
   usePrecompiled: false
   imagePullSecrets:

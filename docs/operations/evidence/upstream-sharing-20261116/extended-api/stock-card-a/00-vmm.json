@@ -1,0 +1,106 @@
+{
+  "apiVersion": "v1",
+  "kind": "Pod",
+  "metadata": {
+    "name": "extended-04ab20d4a3",
+    "namespace": "gpu-operator",
+    "labels": {
+      "cps.unileoben.ac.at/extended-probe": "extended-04ab20d4a3"
+    },
+    "annotations": {
+      "nvidia.com/container.main.gpu-memory.request": "5120Mi",
+      "nvidia.com/container.main.gpu-memory.limit": "5120Mi",
+      "nvidia.com/container.main.gpu-compute.mode": "time-slicing",
+      "gpu-compute.mode": "time-slicing",
+      "gpu-fraction-container-name": "main",
+      "nvidia.com/container.main.gpus.devices": "k8s.device-plugin.nvidia.com/gpu=GPU-16128952-b438-556a-00bb-93039ee24e56",
+      "required-plugins.noderesource.dev/container.main": "[\"gpu-fractioning\"]"
+    }
+  },
+  "spec": {
+    "nodeName": "k3s-wk-gpu2",
+    "runtimeClassName": "nvidia",
+    "restartPolicy": "Never",
+    "activeDeadlineSeconds": 240,
+    "terminationGracePeriodSeconds": 15,
+    "automountServiceAccountToken": false,
+    "imagePullSecrets": [
+      {
+        "name": "cps-native-image-pull"
+      }
+    ],
+    "securityContext": {
+      "runAsNonRoot": true,
+      "runAsUser": 1000,
+      "runAsGroup": 1000,
+      "seccompProfile": {
+        "type": "RuntimeDefault"
+      }
+    },
+    "volumes": [
+      {
+        "name": "probe",
+        "configMap": {
+          "name": "extended-04ab20d4a3"
+        }
+      }
+    ],
+    "containers": [
+      {
+        "name": "main",
+        "image": "ghcr.io/mul-cps/cps-ubuntu-release-upgrade@sha256:5030556ecf8cd38fc9acc4676316bd0a3217d1ab10930b75b9dba7106e8f4004",
+        "command": [
+          "python3",
+          "-u",
+          "/probe/probe.py",
+          "vmm",
+          "--gpu-uuid",
+          "GPU-16128952-b438-556a-00bb-93039ee24e56"
+        ],
+        "env": [
+          {
+            "name": "NVIDIA_DRIVER_CAPABILITIES",
+            "value": "compute,utility"
+          },
+          {
+            "name": "EXPECTED_NODE",
+            "value": "k3s-wk-gpu2"
+          },
+          {
+            "name": "POD_UID",
+            "valueFrom": {
+              "fieldRef": {
+                "fieldPath": "metadata.uid"
+              }
+            }
+          }
+        ],
+        "resources": {
+          "requests": {
+            "cpu": "200m",
+            "memory": "128Mi"
+          },
+          "limits": {
+            "cpu": "2",
+            "memory": "4Gi"
+          }
+        },
+        "securityContext": {
+          "allowPrivilegeEscalation": false,
+          "capabilities": {
+            "drop": [
+              "ALL"
+            ]
+          }
+        },
+        "volumeMounts": [
+          {
+            "name": "probe",
+            "mountPath": "/probe",
+            "readOnly": true
+          }
+        ]
+      }
+    ]
+  }
+}

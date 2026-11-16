@@ -1,0 +1,16 @@
+version
+profile
+cri-containerd.apparmor.d
+flags
+path_flags
+caps64
+policydb
+perms
+version
+aadfa
+notflex
+perms
+version
+permsv
+aadfa
+notflex

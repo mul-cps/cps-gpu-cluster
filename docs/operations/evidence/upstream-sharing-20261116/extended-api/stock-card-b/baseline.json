@@ -1,0 +1,7 @@
+{
+  "time": 1794852823.9089277,
+  "node": "k3s-wk-gpu2",
+  "boot_id": "043e6e01-0e3a-44ab-bca9-f6d42ababe60",
+  "gpu": "GPU-1e6145d5-8ee2-43e2-a0d5-6d345909e8a6, 620.70.06, 1, 40960",
+  "compute_processes": ""
+}

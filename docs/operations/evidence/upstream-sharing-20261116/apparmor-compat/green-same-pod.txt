@@ -1,0 +1,6 @@
+{"event": "identity", "pid": 14, "uid": 1000, "profile": "cri-containerd.apparmor.d//&unconfined (enforce)", "cgroup": "0::/"}
+{"event": "signal_send", "result": "pass", "child": 20}
+{"event": "signal_received", "pid": 20}
+{"event": "ptrace_attach_detach", "result": "pass"}
+{"event": "sigkill", "result": "pass"}
+{"event": "reaped", "status": 9, "result": "pass"}

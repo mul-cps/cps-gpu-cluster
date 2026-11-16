@@ -24,3 +24,13 @@ resources:
 
 # Ensure all resources are in the jupyterhub namespace
 namespace: jupyterhub
+
+# Preserve upstream runtime and retained native custody config during Helm updates.
+patches:
+  - path: reviewed-hub-template.patch.yaml
+    target:
+      group: apps
+      version: v1
+      kind: Deployment
+      name: hub
+      namespace: jupyterhub

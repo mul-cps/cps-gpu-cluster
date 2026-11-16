@@ -1,0 +1,11 @@
+{
+  "platform-staging/gpu/upstream-sharing/apparmor-compat/containerd-v2.2.5-k3s2-template.go": "6320c0ca9e85417f5b2167091398469fbfb9a4ce4c2c85c0d26ce784926176f4",
+  "platform-staging/gpu/upstream-sharing/apparmor-compat/containerd-v2.2.5-apparmor.go": "4cd89fff0fedbc8ff6fd88698984d5f665fbf0a5d12d4d6f3a780c60f8ba6af9",
+  "platform-staging/gpu/upstream-sharing/apparmor-compat/upstream.json": "69c2210afbbd9e2a7be2e0a1649aa0aa3ca4c0c0b54a87078dd6e31010b237ae",
+  "platform-staging/gpu/upstream-sharing/apparmor-compat/prepare.py": "b82d4956c8f95c2c99afbd354a1eccdae9a06b7383d897aeb23a30c44496830e",
+  "platform-staging/gpu/upstream-sharing/apparmor-compat/probe.py": "23ffe82b21aa91face3a3017b725393ba3e998d9d83a882d8306a050fcc072b4",
+  "platform-staging/gpu/upstream-sharing/apparmor-compat/baseline.profile": "21888f007c25c39922acc64267b277ae6f43255e7314fd2a52dcf675c8533994",
+  "platform-staging/gpu/upstream-sharing/apparmor-compat/cri-containerd.apparmor.d": "30e2fc1210fc99c4e7060ea6bf7f931f6d6c03fbdc499f5f0584fb5c01c92875",
+  "platform-staging/gpu/upstream-sharing/apparmor-compat/install_gpu2.py": "419cc3a40a575ee4a2d8936e236029d76d3977359ccc612531bbd7455237a7ef",
+  "platform-staging/gpu/upstream-sharing/apparmor-compat/README.md": "d9e6604f55ee40f905718e336d7922fd171a2426b79bc8ad7dc9e55da2760157"
+}

@@ -1,0 +1,6 @@
+{"event": "identity", "pid": 7, "uid": 1000, "profile": "cri-containerd.apparmor.d//&unconfined (enforce)", "cgroup": "0::/"}
+{"event": "signal_send", "result": "fail", "errno": 13, "child": 13}
+{"event": "ptrace_attach", "result": "fail", "errno": 13}
+{"event": "sigkill", "result": "fail", "errno": 13}
+{"event": "reaped", "status": 0, "result": "fail"}
+command terminated with exit code 1

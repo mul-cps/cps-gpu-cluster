@@ -1,0 +1,6 @@
+{
+  "tests/upstream-sharing/hardware/extended_probe.py": "1d9c5a5a15f44aa01deab76b67c2e3d3d890258cc245bffa5c458d1455db0cff",
+  "tests/upstream-sharing/hardware/extended_host_observer.py": "bf8b4019a9f6808b4af03ecb19a7c66df043f6afe79d92bd0af9b48faf2953c8",
+  "tests/upstream-sharing/hardware/extended_run.py": "03aa1e587aff591586d91b1139e1aad3dcf7a363db261dbda2a10fe1a1c9c1fb",
+  "tests/upstream-sharing/hardware/extended_README.md": "1cf21f3346c9f568955eb2f19a773e9ad15a951e8cb4e01c335f35b4a24fed41"
+}

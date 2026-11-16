@@ -1,0 +1,18 @@
+{
+  "status": "prepared-only",
+  "node": "k3s-wk-gpu2",
+  "node_ip": "10.21.0.43",
+  "gpu_uuid": "GPU-16128952-b438-556a-00bb-93039ee24e56",
+  "image": "ghcr.io/mul-cps/cps-ubuntu-release-upgrade@sha256:5030556ecf8cd38fc9acc4676316bd0a3217d1ab10930b75b9dba7106e8f4004",
+  "cases": [
+    "vmm",
+    "pool",
+    "ipc",
+    "crash",
+    "race",
+    "recovery",
+    "recovery"
+  ],
+  "probe_sha256": "feb7464cb64f9c7aea0bc15a8e4c023ab40394ea3d5ebbc8b73c1d6b16145e0e",
+  "parent_idle_release": null
+}

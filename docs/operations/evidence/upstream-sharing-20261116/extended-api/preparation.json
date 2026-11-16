@@ -1,0 +1,33 @@
+{
+  "status": "prepared-not-hardware-executed",
+  "checks": [
+    "three scripts parse",
+    "LP64 ctypes layouts 8/32/12/64 and offsets16/24",
+    "7 immutable-image manifests render with no external executable available",
+    "execute without parent release/SSH target rejected before external calls",
+    "rendered ConfigMap matches exact probe source"
+  ],
+  "hardware_execution": false,
+  "server_dry_run": false,
+  "hold_reason": "Parent reported protected managed peer eviction under contention; GPU2 re-fenced. No execution authorization.",
+  "sources": {
+    "tests/upstream-sharing/hardware/extended_README.md": "7e81e5df992900e8a898e14c785561867c5e73819cbfd6b3318668521b957160",
+    "tests/upstream-sharing/hardware/extended_host_observer.py": "36d32d393b40137a0886041317e277eac9169761493fd04fd56288819791934f",
+    "tests/upstream-sharing/hardware/extended_probe.py": "feb7464cb64f9c7aea0bc15a8e4c023ab40394ea3d5ebbc8b73c1d6b16145e0e",
+    "tests/upstream-sharing/hardware/extended_run.py": "8f50a5b3e4175c1d933ce85d47244b6216baab55d1a1bc8bfae4548e4068175c"
+  },
+  "case_scope": [
+    "VMM",
+    "async default pool retention/trim",
+    "intra-container IPC",
+    "3 SIGKILL process/recovery cycles",
+    "concurrent allocation barrier",
+    "same Pod name new UID/container/cgroup"
+  ],
+  "not_claimed": [
+    "cross-tenant IPC",
+    "custom/exported pools",
+    "forced numeric host PID reuse",
+    "full GPU2 acceptance"
+  ]
+}

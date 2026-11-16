@@ -6,3 +6,7 @@ metadata:
 data:
   nvidia.conf: |
     options nvidia NVreg_RegistryDwords="RmMemacctMode=1"
+  # Stock driver entrypoint accepts bare assignments for this module input.
+  nvidia-uvm.conf: |
+    uvm_reject_managed_memory=1
+    uvm_disable_hmm=1

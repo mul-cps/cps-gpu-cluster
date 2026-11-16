@@ -1,0 +1,31 @@
+Nov 16 18:09:15 k3s-wk-gpu2 kernel: audit: type=1400 audit(1794852555.302:34663): apparmor="DENIED" operation="open" class="file" profile="who" name="/etc/nsswitch.conf" pid=419941 comm="who" requested_mask="r" denied_mask="r" fsuid=0 ouid=0
+Nov 16 18:09:15 k3s-wk-gpu2 kernel: audit: type=1400 audit(1794852555.302:34664): apparmor="DENIED" operation="open" class="file" profile="who" name="/etc/passwd" pid=419941 comm="who" requested_mask="r" denied_mask="r" fsuid=0 ouid=0
+Nov 16 18:09:15 k3s-wk-gpu2 kernel: audit: type=1400 audit(1794852555.302:34665): apparmor="DENIED" operation="open" class="file" profile="who" name="/etc/nsswitch.conf" pid=419941 comm="who" requested_mask="r" denied_mask="r" fsuid=0 ouid=0
+Nov 16 18:09:15 k3s-wk-gpu2 kernel: audit: type=1400 audit(1794852555.302:34666): apparmor="DENIED" operation="open" class="file" profile="who" name="/etc/passwd" pid=419941 comm="who" requested_mask="r" denied_mask="r" fsuid=0 ouid=0
+Nov 16 18:09:15 k3s-wk-gpu2 kernel: audit: type=1400 audit(1794852555.653:34667): apparmor="STATUS" operation="profile_replace" profile="unconfined" name="cri-containerd.apparmor.d" pid=420101 comm="apparmor_parser"
+Nov 16 18:09:15 k3s-wk-gpu2 systemd-sysv-generator[420156]: SysV service '/etc/init.d/grub-common' lacks a native systemd unit file, automatically generating a unit file for compatibility.
+Nov 16 18:09:15 k3s-wk-gpu2 systemd-sysv-generator[420156]: Please update package to include a native systemd unit file.
+Nov 16 18:09:15 k3s-wk-gpu2 systemd-sysv-generator[420156]: ⚠️ This compatibility logic is deprecated, expect removal soon. ⚠️
+Nov 16 18:09:16 k3s-wk-gpu2 kernel: audit: type=1400 audit(1794852556.427:34668): apparmor="AUDIT" operation="change_onexec" class="file" info="change_profile unprivileged unconfined converted to stacking" profile="unconfined" name="cri-containerd.apparmor.d" pid=420197 comm="runc:[2:INIT]" target="cri-containerd.apparmor.d//&unconfined"
+Nov 16 18:09:16 k3s-wk-gpu2 kernel: audit: type=1400 audit(1794852556.447:34669): apparmor="AUDIT" operation="change_onexec" class="file" info="change_profile unprivileged unconfined converted to stacking" profile="unconfined" name="/usr/bin/python3" pid=420197 comm="runc:[2:INIT]" target="cri-containerd.apparmor.d//&unconfined"
+Nov 16 18:10:17 k3s-wk-gpu2 kernel: cni0: port 23(veth8b352c38) entered blocking state
+Nov 16 18:10:17 k3s-wk-gpu2 kernel: cni0: port 23(veth8b352c38) entered disabled state
+Nov 16 18:10:17 k3s-wk-gpu2 kernel: veth8b352c38: entered allmulticast mode
+Nov 16 18:10:17 k3s-wk-gpu2 kernel: veth8b352c38: entered promiscuous mode
+Nov 16 18:10:17 k3s-wk-gpu2 kernel: cni0: port 23(veth8b352c38) entered blocking state
+Nov 16 18:10:17 k3s-wk-gpu2 kernel: cni0: port 23(veth8b352c38) entered forwarding state
+Nov 16 18:10:17 k3s-wk-gpu2 kernel: audit: type=1400 audit(1794852617.728:34670): apparmor="AUDIT" operation="change_onexec" class="file" info="change_profile unprivileged unconfined converted to stacking" profile="unconfined" name="/usr/bin/python3" pid=422223 comm="runc:[2:INIT]" target="cri-containerd.apparmor.d//&unconfined"
+Nov 16 18:10:17 k3s-wk-gpu2 kernel: audit: type=1400 audit(1794852617.946:34671): apparmor="AUDIT" operation="change_onexec" class="file" info="change_profile unprivileged unconfined converted to stacking" profile="unconfined" name="cri-containerd.apparmor.d" pid=422300 comm="runc:[2:INIT]" target="cri-containerd.apparmor.d//&unconfined"
+Nov 16 18:10:17 k3s-wk-gpu2 kernel: audit: type=1400 audit(1794852617.968:34672): apparmor="AUDIT" operation="change_onexec" class="file" info="change_profile unprivileged unconfined converted to stacking" profile="unconfined" name="/usr/bin/python3" pid=422300 comm="runc:[2:INIT]" target="cri-containerd.apparmor.d//&unconfined"
+Nov 16 18:10:23 k3s-wk-gpu2 kernel: cni0: port 22(vetha9718282) entered disabled state
+Nov 16 18:10:23 k3s-wk-gpu2 kernel: vetha9718282 (unregistering): left allmulticast mode
+Nov 16 18:10:23 k3s-wk-gpu2 kernel: vetha9718282 (unregistering): left promiscuous mode
+Nov 16 18:10:23 k3s-wk-gpu2 kernel: cni0: port 22(vetha9718282) entered disabled state
+Nov 16 18:10:23 k3s-wk-gpu2 kernel: cni0: port 23(veth8b352c38) entered disabled state
+Nov 16 18:10:23 k3s-wk-gpu2 kernel: veth8b352c38 (unregistering): left allmulticast mode
+Nov 16 18:10:23 k3s-wk-gpu2 kernel: veth8b352c38 (unregistering): left promiscuous mode
+Nov 16 18:10:23 k3s-wk-gpu2 kernel: cni0: port 23(veth8b352c38) entered disabled state
+Nov 16 18:10:45 k3s-wk-gpu2 kernel: audit: type=1400 audit(1794852645.290:34673): apparmor="DENIED" operation="open" class="file" profile="who" name="/etc/nsswitch.conf" pid=423264 comm="who" requested_mask="r" denied_mask="r" fsuid=0 ouid=0
+Nov 16 18:10:45 k3s-wk-gpu2 kernel: audit: type=1400 audit(1794852645.290:34674): apparmor="DENIED" operation="open" class="file" profile="who" name="/etc/passwd" pid=423264 comm="who" requested_mask="r" denied_mask="r" fsuid=0 ouid=0
+Nov 16 18:10:45 k3s-wk-gpu2 kernel: audit: type=1400 audit(1794852645.290:34675): apparmor="DENIED" operation="open" class="file" profile="who" name="/etc/nsswitch.conf" pid=423264 comm="who" requested_mask="r" denied_mask="r" fsuid=0 ouid=0
+Nov 16 18:10:45 k3s-wk-gpu2 kernel: audit: type=1400 audit(1794852645.290:34676): apparmor="DENIED" operation="open" class="file" profile="who" name="/etc/passwd" pid=423264 comm="who" requested_mask="r" denied_mask="r" fsuid=0 ouid=0
