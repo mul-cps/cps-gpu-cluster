@@ -1,0 +1,776 @@
+{
+  "apiVersion": "v1",
+  "kind": "Pod",
+  "metadata": {
+    "annotations": {
+      "kubectl.kubernetes.io/default-container": "nvidia-driver-ctr"
+    },
+    "creationTimestamp": "2026-11-16T18:33:37Z",
+    "generateName": "nvidia-gpu-driver-ubuntu26.04-8665b5f4cf-",
+    "generation": 1,
+    "labels": {
+      "app": "nvidia-gpu-driver-ubuntu26.04-8665b5f4cf",
+      "app.kubernetes.io/component": "nvidia-driver",
+      "controller-revision-hash": "7c5f98d8f4",
+      "nvidia.com/node.os-version": "ubuntu26.04",
+      "nvidia.com/precompiled": "false",
+      "pod-template-generation": "2"
+    },
+    "name": "nvidia-gpu-driver-ubuntu26.04-8665b5f4cf-dq5wx",
+    "namespace": "gpu-operator",
+    "ownerReferences": [
+      {
+        "apiVersion": "apps/v1",
+        "blockOwnerDeletion": true,
+        "controller": true,
+        "kind": "DaemonSet",
+        "name": "nvidia-gpu-driver-ubuntu26.04-8665b5f4cf",
+        "uid": "0fcbb262-ac50-4e06-9361-d5f82b00e19b"
+      }
+    ],
+    "resourceVersion": "406877101",
+    "uid": "dfd0cc7a-1e57-476f-a90c-50b4f09b70c4"
+  },
+  "spec": {
+    "affinity": {
+      "nodeAffinity": {
+        "requiredDuringSchedulingIgnoredDuringExecution": {
+          "nodeSelectorTerms": [
+            {
+              "matchFields": [
+                {
+                  "key": "metadata.name",
+                  "operator": "In",
+                  "values": [
+                    "k3s-wk-gpu2"
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      },
+      "podAntiAffinity": {
+        "requiredDuringSchedulingIgnoredDuringExecution": [
+          {
+            "labelSelector": {
+              "matchExpressions": [
+                {
+                  "key": "app.kubernetes.io/component",
+                  "operator": "In",
+                  "values": [
+                    "nvidia-driver",
+                    "nvidia-vgpu-manager"
+                  ]
+                }
+              ]
+            },
+            "topologyKey": "kubernetes.io/hostname"
+          }
+        ]
+      }
+    },
+    "containers": [
+      {
+        "args": [
+          "init"
+        ],
+        "command": [
+          "nvidia-driver"
+        ],
+        "env": [
+          {
+            "name": "NVIDIA_VISIBLE_DEVICES",
+            "value": "void"
+          },
+          {
+            "name": "NODE_NAME",
+            "valueFrom": {
+              "fieldRef": {
+                "apiVersion": "v1",
+                "fieldPath": "spec.nodeName"
+              }
+            }
+          },
+          {
+            "name": "NODE_IP",
+            "valueFrom": {
+              "fieldRef": {
+                "apiVersion": "v1",
+                "fieldPath": "status.hostIP"
+              }
+            }
+          },
+          {
+            "name": "DRIVER_CONFIG_DIGEST",
+            "value": "3218342134"
+          },
+          {
+            "name": "KERNEL_MODULE_TYPE",
+            "value": "auto"
+          }
+        ],
+        "image": "ghcr.io/mul-cps/cps-nvidia-driver@sha256:c3b71557aa17df43faad5a2661d81f1025ba355ac3adf784096de12cd2ef3e73",
+        "imagePullPolicy": "IfNotPresent",
+        "lifecycle": {
+          "preStop": {
+            "exec": {
+              "command": [
+                "/bin/sh",
+                "-c",
+                "rm -f /run/nvidia/validations/.driver-ctr-ready /run/nvidia/validations/.driver-daemons-status"
+              ]
+            }
+          }
+        },
+        "name": "nvidia-driver-ctr",
+        "resources": {},
+        "securityContext": {
+          "privileged": true,
+          "seLinuxOptions": {
+            "level": "s0"
+          }
+        },
+        "startupProbe": {
+          "exec": {
+            "command": [
+              "sh",
+              "/usr/local/bin/startup-probe.sh"
+            ]
+          },
+          "failureThreshold": 120,
+          "initialDelaySeconds": 60,
+          "periodSeconds": 10,
+          "successThreshold": 1,
+          "timeoutSeconds": 60
+        },
+        "terminationMessagePath": "/dev/termination-log",
+        "terminationMessagePolicy": "File",
+        "volumeMounts": [
+          {
+            "mountPath": "/run/nvidia",
+            "mountPropagation": "Bidirectional",
+            "name": "run-nvidia"
+          },
+          {
+            "mountPath": "/run/nvidia-fabricmanager",
+            "name": "run-nvidia-fabricmanager"
+          },
+          {
+            "mountPath": "/run/nvidia-topologyd",
+            "name": "run-nvidia-topologyd"
+          },
+          {
+            "mountPath": "/var/log",
+            "name": "var-log"
+          },
+          {
+            "mountPath": "/dev/log",
+            "name": "dev-log"
+          },
+          {
+            "mountPath": "/host-etc/os-release",
+            "name": "host-os-release",
+            "readOnly": true
+          },
+          {
+            "mountPath": "/run/mellanox/drivers/usr/src",
+            "mountPropagation": "HostToContainer",
+            "name": "mlnx-ofed-usr-src"
+          },
+          {
+            "mountPath": "/run/mellanox/drivers",
+            "mountPropagation": "HostToContainer",
+            "name": "run-mellanox-drivers"
+          },
+          {
+            "mountPath": "/sys/module/firmware_class/parameters/path",
+            "name": "firmware-search-path"
+          },
+          {
+            "mountPath": "/sys/devices/system",
+            "name": "host-sys-devices-system"
+          },
+          {
+            "mountPath": "/lib/firmware",
+            "name": "nv-firmware"
+          },
+          {
+            "mountPath": "/usr/local/bin/startup-probe.sh",
+            "name": "driver-startup-probe-script",
+            "subPath": "startup-probe.sh"
+          },
+          {
+            "mountPath": "/drivers/nvidia-uvm.conf",
+            "name": "cps-r620-misc-config",
+            "readOnly": true,
+            "subPath": "nvidia-uvm.conf"
+          },
+          {
+            "mountPath": "/drivers/nvidia.conf",
+            "name": "cps-r620-misc-config",
+            "readOnly": true,
+            "subPath": "nvidia.conf"
+          },
+          {
+            "mountPath": "/var/run/secrets/kubernetes.io/serviceaccount",
+            "name": "kube-api-access-7zj9d",
+            "readOnly": true
+          }
+        ]
+      }
+    ],
+    "dnsPolicy": "ClusterFirst",
+    "enableServiceLinks": true,
+    "hostPID": true,
+    "imagePullSecrets": [
+      {
+        "name": "cps-native-image-pull"
+      }
+    ],
+    "initContainers": [
+      {
+        "args": [
+          "uninstall_driver"
+        ],
+        "command": [
+          "driver-manager"
+        ],
+        "env": [
+          {
+            "name": "NODE_NAME",
+            "valueFrom": {
+              "fieldRef": {
+                "apiVersion": "v1",
+                "fieldPath": "spec.nodeName"
+              }
+            }
+          },
+          {
+            "name": "NVIDIA_VISIBLE_DEVICES",
+            "value": "void"
+          },
+          {
+            "name": "ENABLE_GPU_POD_EVICTION",
+            "value": "true"
+          },
+          {
+            "name": "ENABLE_AUTO_DRAIN",
+            "value": "false"
+          },
+          {
+            "name": "DRAIN_USE_FORCE",
+            "value": "false"
+          },
+          {
+            "name": "DRAIN_POD_SELECTOR_LABEL"
+          },
+          {
+            "name": "DRAIN_TIMEOUT_SECONDS",
+            "value": "0s"
+          },
+          {
+            "name": "DRAIN_DELETE_EMPTYDIR_DATA",
+            "value": "false"
+          },
+          {
+            "name": "OPERATOR_NAMESPACE",
+            "valueFrom": {
+              "fieldRef": {
+                "apiVersion": "v1",
+                "fieldPath": "metadata.namespace"
+              }
+            }
+          },
+          {
+            "name": "DRIVER_CONFIG_DIGEST",
+            "value": "3218342134"
+          },
+          {
+            "name": "ENABLE_GPU_POD_EVICTION",
+            "value": "false"
+          },
+          {
+            "name": "ENABLE_AUTO_DRAIN",
+            "value": "false"
+          }
+        ],
+        "image": "nvcr.io/nvidia/cloud-native/k8s-driver-manager:v0.12.1",
+        "imagePullPolicy": "IfNotPresent",
+        "name": "k8s-driver-manager",
+        "resources": {},
+        "securityContext": {
+          "privileged": true
+        },
+        "terminationMessagePath": "/dev/termination-log",
+        "terminationMessagePolicy": "File",
+        "volumeMounts": [
+          {
+            "mountPath": "/run/nvidia",
+            "mountPropagation": "Bidirectional",
+            "name": "run-nvidia"
+          },
+          {
+            "mountPath": "/host",
+            "mountPropagation": "HostToContainer",
+            "name": "host-root",
+            "readOnly": true
+          },
+          {
+            "mountPath": "/sys",
+            "name": "host-sys"
+          },
+          {
+            "mountPath": "/run/mellanox/drivers",
+            "mountPropagation": "HostToContainer",
+            "name": "run-mellanox-drivers"
+          },
+          {
+            "mountPath": "/var/run/secrets/kubernetes.io/serviceaccount",
+            "name": "kube-api-access-7zj9d",
+            "readOnly": true
+          }
+        ]
+      }
+    ],
+    "nodeName": "k3s-wk-gpu2",
+    "nodeSelector": {
+      "cps.unileoben.ac.at/driver": "620.70.06",
+      "feature.node.kubernetes.io/system-os_release.ID": "ubuntu",
+      "feature.node.kubernetes.io/system-os_release.VERSION_ID": "26.04",
+      "nvidia.com/gpu-operator.driver.owner": "cps-r620-workers",
+      "nvidia.com/gpu.deploy.driver": "true",
+      "nvidia.com/gpu.present": "true"
+    },
+    "preemptionPolicy": "PreemptLowerPriority",
+    "priority": 2000001000,
+    "priorityClassName": "system-node-critical",
+    "restartPolicy": "Always",
+    "schedulerName": "default-scheduler",
+    "securityContext": {},
+    "serviceAccount": "nvidia-gpu-driver-cps-r620-workers-ubuntu26.04",
+    "serviceAccountName": "nvidia-gpu-driver-cps-r620-workers-ubuntu26.04",
+    "terminationGracePeriodSeconds": 30,
+    "tolerations": [
+      {
+        "effect": "NoSchedule",
+        "key": "nvidia.com/gpu",
+        "operator": "Exists"
+      },
+      {
+        "effect": "NoSchedule",
+        "key": "cps.unileoben.ac.at/maintenance",
+        "operator": "Exists"
+      },
+      {
+        "effect": "NoExecute",
+        "key": "node.kubernetes.io/not-ready",
+        "operator": "Exists"
+      },
+      {
+        "effect": "NoExecute",
+        "key": "node.kubernetes.io/unreachable",
+        "operator": "Exists"
+      },
+      {
+        "effect": "NoSchedule",
+        "key": "node.kubernetes.io/disk-pressure",
+        "operator": "Exists"
+      },
+      {
+        "effect": "NoSchedule",
+        "key": "node.kubernetes.io/memory-pressure",
+        "operator": "Exists"
+      },
+      {
+        "effect": "NoSchedule",
+        "key": "node.kubernetes.io/pid-pressure",
+        "operator": "Exists"
+      },
+      {
+        "effect": "NoSchedule",
+        "key": "node.kubernetes.io/unschedulable",
+        "operator": "Exists"
+      }
+    ],
+    "volumes": [
+      {
+        "hostPath": {
+          "path": "/run/nvidia",
+          "type": "DirectoryOrCreate"
+        },
+        "name": "run-nvidia"
+      },
+      {
+        "hostPath": {
+          "path": "/var/log",
+          "type": ""
+        },
+        "name": "var-log"
+      },
+      {
+        "hostPath": {
+          "path": "/dev/log",
+          "type": ""
+        },
+        "name": "dev-log"
+      },
+      {
+        "hostPath": {
+          "path": "/etc/os-release",
+          "type": ""
+        },
+        "name": "host-os-release"
+      },
+      {
+        "hostPath": {
+          "path": "/run/nvidia-fabricmanager",
+          "type": "DirectoryOrCreate"
+        },
+        "name": "run-nvidia-fabricmanager"
+      },
+      {
+        "hostPath": {
+          "path": "/run/nvidia-topologyd",
+          "type": "DirectoryOrCreate"
+        },
+        "name": "run-nvidia-topologyd"
+      },
+      {
+        "hostPath": {
+          "path": "/run/mellanox/drivers/usr/src",
+          "type": "DirectoryOrCreate"
+        },
+        "name": "mlnx-ofed-usr-src"
+      },
+      {
+        "hostPath": {
+          "path": "/run/mellanox/drivers",
+          "type": "DirectoryOrCreate"
+        },
+        "name": "run-mellanox-drivers"
+      },
+      {
+        "hostPath": {
+          "path": "/run/nvidia/validations",
+          "type": "DirectoryOrCreate"
+        },
+        "name": "run-nvidia-validations"
+      },
+      {
+        "hostPath": {
+          "path": "/",
+          "type": ""
+        },
+        "name": "host-root"
+      },
+      {
+        "hostPath": {
+          "path": "/sys",
+          "type": "Directory"
+        },
+        "name": "host-sys"
+      },
+      {
+        "hostPath": {
+          "path": "/sys/module/firmware_class/parameters/path",
+          "type": ""
+        },
+        "name": "firmware-search-path"
+      },
+      {
+        "hostPath": {
+          "path": "/sys/devices/system",
+          "type": "Directory"
+        },
+        "name": "host-sys-devices-system"
+      },
+      {
+        "hostPath": {
+          "path": "/run/nvidia/driver/lib/firmware",
+          "type": "DirectoryOrCreate"
+        },
+        "name": "nv-firmware"
+      },
+      {
+        "configMap": {
+          "defaultMode": 493,
+          "name": "nvidia-driver-startup-probe"
+        },
+        "name": "driver-startup-probe-script"
+      },
+      {
+        "configMap": {
+          "defaultMode": 420,
+          "items": [
+            {
+              "key": "nvidia-uvm.conf",
+              "path": "nvidia-uvm.conf"
+            },
+            {
+              "key": "nvidia.conf",
+              "path": "nvidia.conf"
+            }
+          ],
+          "name": "cps-r620-misc-config"
+        },
+        "name": "cps-r620-misc-config"
+      },
+      {
+        "name": "kube-api-access-7zj9d",
+        "projected": {
+          "defaultMode": 420,
+          "sources": [
+            {
+              "serviceAccountToken": {
+                "expirationSeconds": 3607,
+                "path": "token"
+              }
+            },
+            {
+              "configMap": {
+                "items": [
+                  {
+                    "key": "ca.crt",
+                    "path": "ca.crt"
+                  }
+                ],
+                "name": "kube-root-ca.crt"
+              }
+            },
+            {
+              "downwardAPI": {
+                "items": [
+                  {
+                    "fieldRef": {
+                      "apiVersion": "v1",
+                      "fieldPath": "metadata.namespace"
+                    },
+                    "path": "namespace"
+                  }
+                ]
+              }
+            }
+          ]
+        }
+      }
+    ]
+  },
+  "status": {
+    "conditions": [
+      {
+        "lastProbeTime": null,
+        "lastTransitionTime": "2026-11-16T20:58:46Z",
+        "observedGeneration": 1,
+        "status": "True",
+        "type": "PodReadyToStartContainers"
+      },
+      {
+        "lastProbeTime": null,
+        "lastTransitionTime": "2026-11-16T18:33:41Z",
+        "observedGeneration": 1,
+        "status": "True",
+        "type": "Initialized"
+      },
+      {
+        "lastProbeTime": null,
+        "lastTransitionTime": "2026-11-16T21:00:36Z",
+        "observedGeneration": 1,
+        "status": "True",
+        "type": "Ready"
+      },
+      {
+        "lastProbeTime": null,
+        "lastTransitionTime": "2026-11-16T21:00:36Z",
+        "observedGeneration": 1,
+        "status": "True",
+        "type": "ContainersReady"
+      },
+      {
+        "lastProbeTime": null,
+        "lastTransitionTime": "2026-11-16T18:33:37Z",
+        "observedGeneration": 1,
+        "status": "True",
+        "type": "PodScheduled"
+      }
+    ],
+    "containerStatuses": [
+      {
+        "containerID": "containerd://8d3aa762c659829dc7d824c539b71bfd9876921438f0408e58f8512c67c5379d",
+        "image": "sha256:42b51a1af1671adbf92ab6bff1cb2e7d2d287820044d5f91e06577c5b7fdc1e5",
+        "imageID": "ghcr.io/mul-cps/cps-nvidia-driver@sha256:c3b71557aa17df43faad5a2661d81f1025ba355ac3adf784096de12cd2ef3e73",
+        "lastState": {
+          "terminated": {
+            "containerID": "containerd://38d2e2b8d18045d783c36b2c95098268bf62a751b18b62edf9c78350e9df34e6",
+            "exitCode": 255,
+            "finishedAt": "2026-11-16T20:58:39Z",
+            "reason": "Unknown",
+            "startedAt": "2026-11-16T18:33:44Z"
+          }
+        },
+        "name": "nvidia-driver-ctr",
+        "ready": true,
+        "resources": {},
+        "restartCount": 1,
+        "started": true,
+        "state": {
+          "running": {
+            "startedAt": "2026-11-16T20:58:48Z"
+          }
+        },
+        "user": {
+          "linux": {
+            "gid": 0,
+            "supplementalGroups": [
+              0
+            ],
+            "uid": 0
+          }
+        },
+        "volumeMounts": [
+          {
+            "mountPath": "/run/nvidia",
+            "name": "run-nvidia"
+          },
+          {
+            "mountPath": "/run/nvidia-fabricmanager",
+            "name": "run-nvidia-fabricmanager"
+          },
+          {
+            "mountPath": "/run/nvidia-topologyd",
+            "name": "run-nvidia-topologyd"
+          },
+          {
+            "mountPath": "/var/log",
+            "name": "var-log"
+          },
+          {
+            "mountPath": "/dev/log",
+            "name": "dev-log"
+          },
+          {
+            "mountPath": "/host-etc/os-release",
+            "name": "host-os-release",
+            "readOnly": true,
+            "recursiveReadOnly": "Disabled"
+          },
+          {
+            "mountPath": "/run/mellanox/drivers/usr/src",
+            "name": "mlnx-ofed-usr-src"
+          },
+          {
+            "mountPath": "/run/mellanox/drivers",
+            "name": "run-mellanox-drivers"
+          },
+          {
+            "mountPath": "/sys/module/firmware_class/parameters/path",
+            "name": "firmware-search-path"
+          },
+          {
+            "mountPath": "/sys/devices/system",
+            "name": "host-sys-devices-system"
+          },
+          {
+            "mountPath": "/lib/firmware",
+            "name": "nv-firmware"
+          },
+          {
+            "mountPath": "/usr/local/bin/startup-probe.sh",
+            "name": "driver-startup-probe-script"
+          },
+          {
+            "mountPath": "/drivers/nvidia-uvm.conf",
+            "name": "cps-r620-misc-config",
+            "readOnly": true,
+            "recursiveReadOnly": "Disabled"
+          },
+          {
+            "mountPath": "/drivers/nvidia.conf",
+            "name": "cps-r620-misc-config",
+            "readOnly": true,
+            "recursiveReadOnly": "Disabled"
+          },
+          {
+            "mountPath": "/var/run/secrets/kubernetes.io/serviceaccount",
+            "name": "kube-api-access-7zj9d",
+            "readOnly": true,
+            "recursiveReadOnly": "Disabled"
+          }
+        ]
+      }
+    ],
+    "hostIP": "10.21.0.43",
+    "hostIPs": [
+      {
+        "ip": "10.21.0.43"
+      }
+    ],
+    "initContainerStatuses": [
+      {
+        "containerID": "containerd://982a070bb335a295f2696a2d2d5984cf7d6882d4ff0e65b7a5679a8ef0c28f0a",
+        "image": "nvcr.io/nvidia/cloud-native/k8s-driver-manager:v0.12.1",
+        "imageID": "nvcr.io/nvidia/cloud-native/k8s-driver-manager@sha256:37e6bf0cf02b5888288a173353b858da8823cc9f9fb9c6e8d6d1e2cf5bfb16c8",
+        "lastState": {},
+        "name": "k8s-driver-manager",
+        "ready": true,
+        "resources": {},
+        "restartCount": 1,
+        "started": false,
+        "state": {
+          "terminated": {
+            "containerID": "containerd://982a070bb335a295f2696a2d2d5984cf7d6882d4ff0e65b7a5679a8ef0c28f0a",
+            "exitCode": 0,
+            "finishedAt": "2026-11-16T20:58:47Z",
+            "reason": "Completed",
+            "startedAt": "2026-11-16T20:58:46Z"
+          }
+        },
+        "user": {
+          "linux": {
+            "gid": 0,
+            "supplementalGroups": [
+              0
+            ],
+            "uid": 0
+          }
+        },
+        "volumeMounts": [
+          {
+            "mountPath": "/run/nvidia",
+            "name": "run-nvidia"
+          },
+          {
+            "mountPath": "/host",
+            "name": "host-root",
+            "readOnly": true,
+            "recursiveReadOnly": "Disabled"
+          },
+          {
+            "mountPath": "/sys",
+            "name": "host-sys"
+          },
+          {
+            "mountPath": "/run/mellanox/drivers",
+            "name": "run-mellanox-drivers"
+          },
+          {
+            "mountPath": "/var/run/secrets/kubernetes.io/serviceaccount",
+            "name": "kube-api-access-7zj9d",
+            "readOnly": true,
+            "recursiveReadOnly": "Disabled"
+          }
+        ]
+      }
+    ],
+    "observedGeneration": 1,
+    "phase": "Running",
+    "podIP": "10.42.7.198",
+    "podIPs": [
+      {
+        "ip": "10.42.7.198"
+      }
+    ],
+    "qosClass": "BestEffort",
+    "startTime": "2026-11-16T18:33:37Z"
+  }
+}

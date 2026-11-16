@@ -1,8 +1,8 @@
 {
-  "as_of": "2026-11-16T21:16:53.744706+00:00",
+  "as_of": "2026-11-16T21:39:56.335735+00:00",
   "worker": "k3s-wk-gpu2",
   "worker_acceptance": false,
-  "phase": "upstream driver-ready startup gate deployed; real coldboot qualification underway; complete SDK catalog/runtime handoff under isolated test",
+  "phase": "coherent SDK/catalog/runtime deployed; real CPS/CIT Source workflows pending controlled reopening",
   "gpu_eligibility": "fenced: cordoned, maintenance NoSchedule, no qualification label",
   "driver": {
     "version": "620.70.06",
@@ -19,7 +19,7 @@
     "inner_sha256": "0ca3be05fd3fcdd9682e68bbff5821ea15027773404a7e47517b822bcb57387a",
     "upstream_backport": "9cb8bc1fee03ebd41d90319240c2493fb03411b9",
     "version_owner": "Rancher unchanged; one-time same-version outer artifact exception",
-    "verified_boot_id": "ebcc5553-3251-43f7-95f2-236e5e3e6b70"
+    "verified_boot_id": "8874dcda-ced2-4aa4-b5cb-71a0871abdd5"
   },
   "passed": [
     "Both-card repeated managed rejection and ordinary recovery; raw host-pointer migration rejected",
@@ -30,12 +30,11 @@
     "First hung NRI request and disconnected request rejected, CPU works; runtime restart continuity and CUDA quota recovery",
     "Longhorn nonroot read/write/fsync and normal fixture removal",
     "Stock KAI actual scheduler assignment: both physical/profile orders, 12 payloads plus guards/seed, both six-way progress checkpoints and confirmed cleanup",
-    "Pre-coldboot stock Fractioning monitor attribution passed; final boot revealed NVML startup race, current metrics acceptance pending configuration fix",
-    "Actual final outer6ce coldboot ebcc5553: first hung/disconnected mandatory-plugin requests fail closed, CPU works, both-card typed OOM/recovery, cleanup and artifact identity confirmed"
+    "Stock Fractioning attribution before boot plus final startup ordering:15 absent-marker samples, marker before metricsd, NVML initialization without manual restart,54 stable postrecovery observations and both targets UP",
+    "Actual final outer6ce coldboot ebcc5553: first hung/disconnected mandatory-plugin requests fail closed, CPU works, both-card typed OOM/recovery, cleanup and artifact identity confirmed",
+    "SDK one-file image4a03:15 strict TLS +3 interfaces; exact Gateway3a90 complete isolated runtime/catalog boot RED-to-GREEN,3 copied DB row sets unchanged; coherent live Gateway and both Hubs Ready on2b2"
   ],
   "remaining": [
-    "Actual coldboot qualification of stock metricsAgent hostPath File driver-ready startup gate (source b38e8eba)",
-    "Coherent catalog2b2 plus main runtime policy_hash2b2 configuration: isolated exact-image factory readiness before live retry; oldb28 Gateway restored/Ready",
     "Real Source-registry CPS/CIT 5/10/20-to-CPU workflow",
     "Remaining consolidated-plan distributed, startup/defrag, teaching, RTC and matching restore gates",
     "GPU3 then GPU1 then GPU4 complete serial cycles"
@@ -48,8 +47,7 @@
     "cps_gitops_pin": "7e7271426e12e2330220857029a26812d66b74ef",
     "cit_gitops_pin": "6c0135c2f6819d76e21a65de07b47bc66c992d74",
     "fleet_both_ready": true,
-    "pending_catalog": "sha256:2b2ad6ce656db38a0e9cc2a0d3365c48d6061a835d317236a322776c11dc3fcb",
-    "live_catalog": "sha256:b28bbd7770b90bdb9fe3831b4379dc1107d6416fbf6e193e2b4b7333220183e0",
+    "live_catalog": "sha256:2b2ad6ce656db38a0e9cc2a0d3365c48d6061a835d317236a322776c11dc3fcb",
     "sdk_repair_candidate": "ghcr.io/mul-cps/cps-jupyter-notebook@sha256:4a03fe381c6f32f8e056ac05aad27abc64defa2f63128c53511a24d37fb5c194"
   }
 }

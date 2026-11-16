@@ -1,0 +1,387 @@
+2026-11-16T21:21:42.735366999Z nvidia driver modules are not yet loaded, invoking runc directly
+2026-11-16T21:21:42.777126833Z time="2026-11-16T21:21:42Z" level=info msg="version: 6f3d599d-amd64, commit: 6f3d599"
+2026-11-16T21:21:42.777838648Z time="2026-11-16T21:21:42Z" level=info msg="Attempting to validate a pre-installed driver on the host"
+2026-11-16T21:21:42.789395047Z time="2026-11-16T21:21:42Z" level=info msg="Driver is not pre-installed on the host and is managed by GPU Operator. Checking driver container status."
+2026-11-16T21:21:42.789506918Z running command sh with args [-c stat /run/nvidia/validations/.driver-ctr-ready]
+2026-11-16T21:21:42.791503411Z stat: can't stat '/run/nvidia/validations/.driver-ctr-ready': No such file or directory
+2026-11-16T21:21:42.791913249Z command failed, retrying after 5 seconds
+2026-11-16T21:21:42.791913079Z time="2026-11-16T21:21:42Z" level=warning msg="error running command: exit status 1"
+2026-11-16T21:21:47.796080840Z running command sh with args [-c stat /run/nvidia/validations/.driver-ctr-ready]
+2026-11-16T21:21:47.797670050Z stat: can't stat '/run/nvidia/validations/.driver-ctr-ready': No such file or directory
+2026-11-16T21:21:47.797855106Z command failed, retrying after 5 seconds
+2026-11-16T21:21:47.797883470Z time="2026-11-16T21:21:47Z" level=warning msg="error running command: exit status 1"
+2026-11-16T21:21:52.802294937Z running command sh with args [-c stat /run/nvidia/validations/.driver-ctr-ready]
+2026-11-16T21:21:52.804349580Z stat: can't stat '/run/nvidia/validations/.driver-ctr-ready': No such file or directory
+2026-11-16T21:21:52.804551318Z time="2026-11-16T21:21:52Z" level=warning msg="error running command: exit status 1"
+2026-11-16T21:21:52.804564213Z command failed, retrying after 5 seconds
+2026-11-16T21:21:57.809249834Z running command sh with args [-c stat /run/nvidia/validations/.driver-ctr-ready]
+2026-11-16T21:21:57.810649959Z stat: can't stat '/run/nvidia/validations/.driver-ctr-ready': No such file or directory
+2026-11-16T21:21:57.811043607Z command failed, retrying after 5 seconds
+2026-11-16T21:21:57.811054798Z time="2026-11-16T21:21:57Z" level=warning msg="error running command: exit status 1"
+2026-11-16T21:22:02.815283122Z running command sh with args [-c stat /run/nvidia/validations/.driver-ctr-ready]
+2026-11-16T21:22:02.817437522Z stat: can't stat '/run/nvidia/validations/.driver-ctr-ready': No such file or directory
+2026-11-16T21:22:02.817639651Z time="2026-11-16T21:22:02Z" level=warning msg="error running command: exit status 1"
+2026-11-16T21:22:02.817652204Z command failed, retrying after 5 seconds
+2026-11-16T21:22:07.821930643Z running command sh with args [-c stat /run/nvidia/validations/.driver-ctr-ready]
+2026-11-16T21:22:07.823816528Z stat: can't stat '/run/nvidia/validations/.driver-ctr-ready': No such file or directory
+2026-11-16T21:22:07.823999591Z time="2026-11-16T21:22:07Z" level=warning msg="error running command: exit status 1"
+2026-11-16T21:22:07.824012396Z command failed, retrying after 5 seconds
+2026-11-16T21:22:12.824547394Z running command sh with args [-c stat /run/nvidia/validations/.driver-ctr-ready]
+2026-11-16T21:22:12.825993165Z stat: can't stat '/run/nvidia/validations/.driver-ctr-ready': No such file or directory
+2026-11-16T21:22:12.826162583Z time="2026-11-16T21:22:12Z" level=warning msg="error running command: exit status 1"
+2026-11-16T21:22:12.826164667Z command failed, retrying after 5 seconds
+2026-11-16T21:22:17.829787647Z running command sh with args [-c stat /run/nvidia/validations/.driver-ctr-ready]
+2026-11-16T21:22:17.831227147Z stat: can't stat '/run/nvidia/validations/.driver-ctr-ready': No such file or directory
+2026-11-16T21:22:17.831396341Z time="2026-11-16T21:22:17Z" level=warning msg="error running command: exit status 1"
+2026-11-16T21:22:17.831409305Z command failed, retrying after 5 seconds
+2026-11-16T21:22:22.834762170Z running command sh with args [-c stat /run/nvidia/validations/.driver-ctr-ready]
+2026-11-16T21:22:22.836361595Z stat: can't stat '/run/nvidia/validations/.driver-ctr-ready': No such file or directory
+2026-11-16T21:22:22.836518186Z time="2026-11-16T21:22:22Z" level=warning msg="error running command: exit status 1"
+2026-11-16T21:22:22.836521844Z command failed, retrying after 5 seconds
+2026-11-16T21:22:27.840717119Z running command sh with args [-c stat /run/nvidia/validations/.driver-ctr-ready]
+2026-11-16T21:22:27.842241471Z stat: can't stat '/run/nvidia/validations/.driver-ctr-ready': No such file or directory
+2026-11-16T21:22:27.842372346Z command failed, retrying after 5 seconds
+2026-11-16T21:22:27.842414834Z time="2026-11-16T21:22:27Z" level=warning msg="error running command: exit status 1"
+2026-11-16T21:22:32.845959730Z running command sh with args [-c stat /run/nvidia/validations/.driver-ctr-ready]
+2026-11-16T21:22:32.849596100Z stat: can't stat '/run/nvidia/validations/.driver-ctr-ready': No such file or directory
+2026-11-16T21:22:32.849819327Z time="2026-11-16T21:22:32Z" level=warning msg="error running command: exit status 1"
+2026-11-16T21:22:32.849863850Z command failed, retrying after 5 seconds
+2026-11-16T21:22:37.853740636Z running command sh with args [-c stat /run/nvidia/validations/.driver-ctr-ready]
+2026-11-16T21:22:37.855373318Z stat: can't stat '/run/nvidia/validations/.driver-ctr-ready': No such file or directory
+2026-11-16T21:22:37.855521245Z time="2026-11-16T21:22:37Z" level=warning msg="error running command: exit status 1"
+2026-11-16T21:22:37.855553815Z command failed, retrying after 5 seconds
+2026-11-16T21:22:42.856288029Z running command sh with args [-c stat /run/nvidia/validations/.driver-ctr-ready]
+2026-11-16T21:22:42.857986416Z stat: can't stat '/run/nvidia/validations/.driver-ctr-ready': No such file or directory
+2026-11-16T21:22:42.858145734Z time="2026-11-16T21:22:42Z" level=warning msg="error running command: exit status 1"
+2026-11-16T21:22:42.858152938Z command failed, retrying after 5 seconds
+2026-11-16T21:22:47.862357771Z running command sh with args [-c stat /run/nvidia/validations/.driver-ctr-ready]
+2026-11-16T21:22:47.863831771Z stat: can't stat '/run/nvidia/validations/.driver-ctr-ready': No such file or directory
+2026-11-16T21:22:47.863989276Z command failed, retrying after 5 seconds
+2026-11-16T21:22:47.863990759Z time="2026-11-16T21:22:47Z" level=warning msg="error running command: exit status 1"
+2026-11-16T21:22:52.868209017Z running command sh with args [-c stat /run/nvidia/validations/.driver-ctr-ready]
+2026-11-16T21:22:52.870195057Z stat: can't stat '/run/nvidia/validations/.driver-ctr-ready': No such file or directory
+2026-11-16T21:22:52.870347112Z time="2026-11-16T21:22:52Z" level=warning msg="error running command: exit status 1"
+2026-11-16T21:22:52.870386175Z command failed, retrying after 5 seconds
+2026-11-16T21:22:57.873738040Z running command sh with args [-c stat /run/nvidia/validations/.driver-ctr-ready]
+2026-11-16T21:22:57.875305006Z stat: can't stat '/run/nvidia/validations/.driver-ctr-ready': No such file or directory
+2026-11-16T21:22:57.875464133Z time="2026-11-16T21:22:57Z" level=warning msg="error running command: exit status 1"
+2026-11-16T21:22:57.875472098Z command failed, retrying after 5 seconds
+2026-11-16T21:23:02.879693762Z running command sh with args [-c stat /run/nvidia/validations/.driver-ctr-ready]
+2026-11-16T21:23:02.881516948Z stat: can't stat '/run/nvidia/validations/.driver-ctr-ready': No such file or directory
+2026-11-16T21:23:02.881667530Z time="2026-11-16T21:23:02Z" level=warning msg="error running command: exit status 1"
+2026-11-16T21:23:02.881678080Z command failed, retrying after 5 seconds
+2026-11-16T21:23:07.885844181Z running command sh with args [-c stat /run/nvidia/validations/.driver-ctr-ready]
+2026-11-16T21:23:07.888561354Z   File: /run/nvidia/validations/.driver-ctr-ready
+2026-11-16T21:23:07.888596510Z   Size: 73        	Blocks: 8          IO Block: 4096   regular file
+2026-11-16T21:23:07.888602351Z Device: 1bh/27d	Inode: 6212        Links: 1
+2026-11-16T21:23:07.888605787Z Access: (0644/-rw-r--r--)  Uid: (    0/ UNKNOWN)   Gid: (    0/ UNKNOWN)
+2026-11-16T21:23:07.888608853Z Access: 2026-11-16 21:23:07.721924072 +0000
+2026-11-16T21:23:07.888611828Z Modify: 2026-11-16 21:23:07.721924072 +0000
+2026-11-16T21:23:07.888614874Z Change: 2026-11-16 21:23:07.723924070 +0000
+2026-11-16T21:23:07.888714792Z time="2026-11-16T21:23:07Z" level=info msg="Attempting to validate a driver container installation"
+2026-11-16T21:23:07.920688931Z Mon Nov 16 21:23:07 2026       
+2026-11-16T21:23:07.920713457Z +-----------------------------------------------------------------------------------------+
+2026-11-16T21:23:07.920720249Z | NVIDIA-SMI 620.70.06              KMD Version: 620.70.06     CUDA UMD Version: N/A      |
+2026-11-16T21:23:07.920722424Z +-----------------------------------------+------------------------+----------------------+
+2026-11-16T21:23:07.920724487Z | GPU  Name                 Persistence-M | Bus-Id          Disp.A | Volatile Uncorr. ECC |
+2026-11-16T21:23:07.920726541Z | Fan  Temp   Perf          Pwr:Usage/Cap |           Memory-Usage | GPU-Util  Compute M. |
+2026-11-16T21:23:07.920728676Z |                                         |                        |               MIG M. |
+2026-11-16T21:23:07.920730849Z |=========================================+========================+======================|
+2026-11-16T21:23:07.939449424Z |   0  NVIDIA A100-PCIE-40GB          Off |   00000000:06:10.0 Off |                    0 |
+2026-11-16T21:23:07.939478018Z | N/A   35C    P0             57W /  250W |       0MiB /  40960MiB |      0%      Default |
+2026-11-16T21:23:07.939481203Z |                                         |                        |             Disabled |
+2026-11-16T21:23:07.939483457Z +-----------------------------------------+------------------------+----------------------+
+2026-11-16T21:23:07.939485982Z |   1  NVIDIA A100-PCIE-40GB          Off |   00000000:06:11.0 Off |                    0 |
+2026-11-16T21:23:07.939488117Z | N/A   35C    P0             48W /  250W |       0MiB /  40960MiB |      0%      Default |
+2026-11-16T21:23:07.939490160Z |                                         |                        |             Disabled |
+2026-11-16T21:23:07.939492054Z +-----------------------------------------+------------------------+----------------------+
+2026-11-16T21:23:07.939707397Z 
+2026-11-16T21:23:07.939755939Z +-----------------------------------------------------------------------------------------+
+2026-11-16T21:23:07.939760467Z | Processes:                                                                              |
+2026-11-16T21:23:07.939762801Z |  GPU   GI   CI              PID   Type   Process name                        GPU Memory |
+2026-11-16T21:23:07.939765095Z |        ID   ID                                                               Usage      |
+2026-11-16T21:23:07.939767510Z |=========================================================================================|
+2026-11-16T21:23:07.940435181Z |  No running processes found                                                             |
+2026-11-16T21:23:07.940455970Z +-----------------------------------------------------------------------------------------+
+2026-11-16T21:23:08.449567953Z time="2026-11-16T21:23:08Z" level=info msg="creating symlinks under /dev/char that correspond to NVIDIA character devices"
+2026-11-16T21:23:08.460308174Z time="2026-11-16T21:23:08Z" level=info msg="Skipping: /run/nvidia/driver/dev/nvidiactl already exists"
+2026-11-16T21:23:08.460344763Z time="2026-11-16T21:23:08Z" level=info msg="Skipping: /run/nvidia/driver/dev/nvidia-modeset already exists"
+2026-11-16T21:23:08.460348801Z time="2026-11-16T21:23:08Z" level=info msg="Skipping: /run/nvidia/driver/dev/nvidia-uvm already exists"
+2026-11-16T21:23:08.533258309Z time="2026-11-16T21:23:08Z" level=info msg="Creating link /host-dev-char/195:254 => /run/nvidia/driver/dev/nvidia-modeset"
+2026-11-16T21:23:08.533302382Z time="2026-11-16T21:23:08Z" level=info msg="Creating link /host-dev-char/195:255 => /run/nvidia/driver/dev/nvidiactl"
+2026-11-16T21:23:08.533305548Z time="2026-11-16T21:23:08Z" level=info msg="Creating link /host-dev-char/511:0 => /run/nvidia/driver/dev/nvidia-uvm"
+2026-11-16T21:23:08.533307622Z time="2026-11-16T21:23:08Z" level=info msg="Creating link /host-dev-char/511:1 => /run/nvidia/driver/dev/nvidia-uvm-tools"
+2026-11-16T21:23:08.533310918Z time="2026-11-16T21:23:08Z" level=info msg="Creating link /host-dev-char/236:1 => /run/nvidia/driver/dev/nvidia-caps/nvidia-cap1"
+2026-11-16T21:23:08.533312832Z time="2026-11-16T21:23:08Z" level=info msg="Creating link /host-dev-char/236:2 => /run/nvidia/driver/dev/nvidia-caps/nvidia-cap2"
+2026-11-16T21:23:08.533314725Z time="2026-11-16T21:23:08Z" level=info msg="Creating link /host-dev-char/195:0 => /run/nvidia/driver/dev/nvidia0"
+2026-11-16T21:23:08.533316649Z time="2026-11-16T21:23:08Z" level=info msg="Creating link /host-dev-char/236:3 => /run/nvidia/driver/dev/nvidia-caps/nvidia-cap3"
+2026-11-16T21:23:08.533342858Z time="2026-11-16T21:23:08Z" level=info msg="Creating link /host-dev-char/236:4 => /run/nvidia/driver/dev/nvidia-caps/nvidia-cap4"
+2026-11-16T21:23:08.533369298Z time="2026-11-16T21:23:08Z" level=info msg="Creating link /host-dev-char/236:5 => /run/nvidia/driver/dev/nvidia-caps/nvidia-cap5"
+2026-11-16T21:23:08.533372333Z time="2026-11-16T21:23:08Z" level=info msg="Creating link /host-dev-char/236:6 => /run/nvidia/driver/dev/nvidia-caps/nvidia-cap6"
+2026-11-16T21:23:08.533375409Z time="2026-11-16T21:23:08Z" level=info msg="Creating link /host-dev-char/236:7 => /run/nvidia/driver/dev/nvidia-caps/nvidia-cap7"
+2026-11-16T21:23:08.533378114Z time="2026-11-16T21:23:08Z" level=info msg="Creating link /host-dev-char/236:8 => /run/nvidia/driver/dev/nvidia-caps/nvidia-cap8"
+2026-11-16T21:23:08.533387111Z time="2026-11-16T21:23:08Z" level=info msg="Creating link /host-dev-char/236:9 => /run/nvidia/driver/dev/nvidia-caps/nvidia-cap9"
+2026-11-16T21:23:08.533389776Z time="2026-11-16T21:23:08Z" level=info msg="Creating link /host-dev-char/236:10 => /run/nvidia/driver/dev/nvidia-caps/nvidia-cap10"
+2026-11-16T21:23:08.533391830Z time="2026-11-16T21:23:08Z" level=info msg="Creating link /host-dev-char/236:11 => /run/nvidia/driver/dev/nvidia-caps/nvidia-cap11"
+2026-11-16T21:23:08.533396999Z time="2026-11-16T21:23:08Z" level=info msg="Creating link /host-dev-char/236:12 => /run/nvidia/driver/dev/nvidia-caps/nvidia-cap12"
+2026-11-16T21:23:08.533399194Z time="2026-11-16T21:23:08Z" level=info msg="Creating link /host-dev-char/236:13 => /run/nvidia/driver/dev/nvidia-caps/nvidia-cap13"
+2026-11-16T21:23:08.533437916Z time="2026-11-16T21:23:08Z" level=info msg="Creating link /host-dev-char/236:14 => /run/nvidia/driver/dev/nvidia-caps/nvidia-cap14"
+2026-11-16T21:23:08.533445911Z time="2026-11-16T21:23:08Z" level=info msg="Creating link /host-dev-char/236:15 => /run/nvidia/driver/dev/nvidia-caps/nvidia-cap15"
+2026-11-16T21:23:08.533451551Z time="2026-11-16T21:23:08Z" level=info msg="Creating link /host-dev-char/236:16 => /run/nvidia/driver/dev/nvidia-caps/nvidia-cap16"
+2026-11-16T21:23:08.533453936Z time="2026-11-16T21:23:08Z" level=info msg="Creating link /host-dev-char/236:17 => /run/nvidia/driver/dev/nvidia-caps/nvidia-cap17"
+2026-11-16T21:23:08.533483140Z time="2026-11-16T21:23:08Z" level=info msg="Creating link /host-dev-char/236:18 => /run/nvidia/driver/dev/nvidia-caps/nvidia-cap18"
+2026-11-16T21:23:08.533485275Z time="2026-11-16T21:23:08Z" level=info msg="Creating link /host-dev-char/236:19 => /run/nvidia/driver/dev/nvidia-caps/nvidia-cap19"
+2026-11-16T21:23:08.533489262Z time="2026-11-16T21:23:08Z" level=info msg="Creating link /host-dev-char/236:20 => /run/nvidia/driver/dev/nvidia-caps/nvidia-cap20"
+2026-11-16T21:23:08.533557100Z time="2026-11-16T21:23:08Z" level=info msg="Creating link /host-dev-char/236:21 => /run/nvidia/driver/dev/nvidia-caps/nvidia-cap21"
+2026-11-16T21:23:08.533563191Z time="2026-11-16T21:23:08Z" level=info msg="Creating link /host-dev-char/236:22 => /run/nvidia/driver/dev/nvidia-caps/nvidia-cap22"
+2026-11-16T21:23:08.533567629Z time="2026-11-16T21:23:08Z" level=info msg="Creating link /host-dev-char/236:23 => /run/nvidia/driver/dev/nvidia-caps/nvidia-cap23"
+2026-11-16T21:23:08.533569573Z time="2026-11-16T21:23:08Z" level=info msg="Creating link /host-dev-char/236:24 => /run/nvidia/driver/dev/nvidia-caps/nvidia-cap24"
+2026-11-16T21:23:08.533616060Z time="2026-11-16T21:23:08Z" level=info msg="Creating link /host-dev-char/236:25 => /run/nvidia/driver/dev/nvidia-caps/nvidia-cap25"
+2026-11-16T21:23:08.533618815Z time="2026-11-16T21:23:08Z" level=info msg="Creating link /host-dev-char/236:26 => /run/nvidia/driver/dev/nvidia-caps/nvidia-cap26"
+2026-11-16T21:23:08.533663629Z time="2026-11-16T21:23:08Z" level=info msg="Creating link /host-dev-char/236:27 => /run/nvidia/driver/dev/nvidia-caps/nvidia-cap27"
+2026-11-16T21:23:08.533666234Z time="2026-11-16T21:23:08Z" level=info msg="Creating link /host-dev-char/236:28 => /run/nvidia/driver/dev/nvidia-caps/nvidia-cap28"
+2026-11-16T21:23:08.533670432Z time="2026-11-16T21:23:08Z" level=info msg="Creating link /host-dev-char/236:29 => /run/nvidia/driver/dev/nvidia-caps/nvidia-cap29"
+2026-11-16T21:23:08.533709135Z time="2026-11-16T21:23:08Z" level=info msg="Creating link /host-dev-char/236:30 => /run/nvidia/driver/dev/nvidia-caps/nvidia-cap30"
+2026-11-16T21:23:08.533712841Z time="2026-11-16T21:23:08Z" level=info msg="Creating link /host-dev-char/236:31 => /run/nvidia/driver/dev/nvidia-caps/nvidia-cap31"
+2026-11-16T21:23:08.533749470Z time="2026-11-16T21:23:08Z" level=info msg="Creating link /host-dev-char/236:32 => /run/nvidia/driver/dev/nvidia-caps/nvidia-cap32"
+2026-11-16T21:23:08.533752325Z time="2026-11-16T21:23:08Z" level=info msg="Creating link /host-dev-char/236:33 => /run/nvidia/driver/dev/nvidia-caps/nvidia-cap33"
+2026-11-16T21:23:08.533788223Z time="2026-11-16T21:23:08Z" level=info msg="Creating link /host-dev-char/236:34 => /run/nvidia/driver/dev/nvidia-caps/nvidia-cap34"
+2026-11-16T21:23:08.533792871Z time="2026-11-16T21:23:08Z" level=info msg="Creating link /host-dev-char/236:35 => /run/nvidia/driver/dev/nvidia-caps/nvidia-cap35"
+2026-11-16T21:23:08.533826615Z time="2026-11-16T21:23:08Z" level=info msg="Creating link /host-dev-char/236:36 => /run/nvidia/driver/dev/nvidia-caps/nvidia-cap36"
+2026-11-16T21:23:08.533858946Z time="2026-11-16T21:23:08Z" level=info msg="Creating link /host-dev-char/236:37 => /run/nvidia/driver/dev/nvidia-caps/nvidia-cap37"
+2026-11-16T21:23:08.533861721Z time="2026-11-16T21:23:08Z" level=info msg="Creating link /host-dev-char/236:38 => /run/nvidia/driver/dev/nvidia-caps/nvidia-cap38"
+2026-11-16T21:23:08.533897618Z time="2026-11-16T21:23:08Z" level=info msg="Creating link /host-dev-char/236:39 => /run/nvidia/driver/dev/nvidia-caps/nvidia-cap39"
+2026-11-16T21:23:08.533901666Z time="2026-11-16T21:23:08Z" level=info msg="Creating link /host-dev-char/236:40 => /run/nvidia/driver/dev/nvidia-caps/nvidia-cap40"
+2026-11-16T21:23:08.533941741Z time="2026-11-16T21:23:08Z" level=info msg="Creating link /host-dev-char/236:41 => /run/nvidia/driver/dev/nvidia-caps/nvidia-cap41"
+2026-11-16T21:23:08.533952581Z time="2026-11-16T21:23:08Z" level=info msg="Creating link /host-dev-char/236:42 => /run/nvidia/driver/dev/nvidia-caps/nvidia-cap42"
+2026-11-16T21:23:08.533958362Z time="2026-11-16T21:23:08Z" level=info msg="Creating link /host-dev-char/236:43 => /run/nvidia/driver/dev/nvidia-caps/nvidia-cap43"
+2026-11-16T21:23:08.533960416Z time="2026-11-16T21:23:08Z" level=info msg="Creating link /host-dev-char/236:44 => /run/nvidia/driver/dev/nvidia-caps/nvidia-cap44"
+2026-11-16T21:23:08.533993598Z time="2026-11-16T21:23:08Z" level=info msg="Creating link /host-dev-char/236:45 => /run/nvidia/driver/dev/nvidia-caps/nvidia-cap45"
+2026-11-16T21:23:08.533995953Z time="2026-11-16T21:23:08Z" level=info msg="Creating link /host-dev-char/236:46 => /run/nvidia/driver/dev/nvidia-caps/nvidia-cap46"
+2026-11-16T21:23:08.534037650Z time="2026-11-16T21:23:08Z" level=info msg="Creating link /host-dev-char/236:47 => /run/nvidia/driver/dev/nvidia-caps/nvidia-cap47"
+2026-11-16T21:23:08.534040616Z time="2026-11-16T21:23:08Z" level=info msg="Creating link /host-dev-char/236:48 => /run/nvidia/driver/dev/nvidia-caps/nvidia-cap48"
+2026-11-16T21:23:08.534079058Z time="2026-11-16T21:23:08Z" level=info msg="Creating link /host-dev-char/236:49 => /run/nvidia/driver/dev/nvidia-caps/nvidia-cap49"
+2026-11-16T21:23:08.534081573Z time="2026-11-16T21:23:08Z" level=info msg="Creating link /host-dev-char/236:50 => /run/nvidia/driver/dev/nvidia-caps/nvidia-cap50"
+2026-11-16T21:23:08.534118492Z time="2026-11-16T21:23:08Z" level=info msg="Creating link /host-dev-char/236:51 => /run/nvidia/driver/dev/nvidia-caps/nvidia-cap51"
+2026-11-16T21:23:08.534120816Z time="2026-11-16T21:23:08Z" level=info msg="Creating link /host-dev-char/236:52 => /run/nvidia/driver/dev/nvidia-caps/nvidia-cap52"
+2026-11-16T21:23:08.534156683Z time="2026-11-16T21:23:08Z" level=info msg="Creating link /host-dev-char/236:53 => /run/nvidia/driver/dev/nvidia-caps/nvidia-cap53"
+2026-11-16T21:23:08.534158988Z time="2026-11-16T21:23:08Z" level=info msg="Creating link /host-dev-char/236:54 => /run/nvidia/driver/dev/nvidia-caps/nvidia-cap54"
+2026-11-16T21:23:08.534194654Z time="2026-11-16T21:23:08Z" level=info msg="Creating link /host-dev-char/236:55 => /run/nvidia/driver/dev/nvidia-caps/nvidia-cap55"
+2026-11-16T21:23:08.534196969Z time="2026-11-16T21:23:08Z" level=info msg="Creating link /host-dev-char/236:56 => /run/nvidia/driver/dev/nvidia-caps/nvidia-cap56"
+2026-11-16T21:23:08.534202278Z time="2026-11-16T21:23:08Z" level=info msg="Creating link /host-dev-char/236:57 => /run/nvidia/driver/dev/nvidia-caps/nvidia-cap57"
+2026-11-16T21:23:08.534204352Z time="2026-11-16T21:23:08Z" level=info msg="Creating link /host-dev-char/236:58 => /run/nvidia/driver/dev/nvidia-caps/nvidia-cap58"
+2026-11-16T21:23:08.534251731Z time="2026-11-16T21:23:08Z" level=info msg="Creating link /host-dev-char/236:59 => /run/nvidia/driver/dev/nvidia-caps/nvidia-cap59"
+2026-11-16T21:23:08.534254476Z time="2026-11-16T21:23:08Z" level=info msg="Creating link /host-dev-char/236:60 => /run/nvidia/driver/dev/nvidia-caps/nvidia-cap60"
+2026-11-16T21:23:08.534258373Z time="2026-11-16T21:23:08Z" level=info msg="Creating link /host-dev-char/236:61 => /run/nvidia/driver/dev/nvidia-caps/nvidia-cap61"
+2026-11-16T21:23:08.534260497Z time="2026-11-16T21:23:08Z" level=info msg="Creating link /host-dev-char/236:62 => /run/nvidia/driver/dev/nvidia-caps/nvidia-cap62"
+2026-11-16T21:23:08.534300542Z time="2026-11-16T21:23:08Z" level=info msg="Creating link /host-dev-char/236:63 => /run/nvidia/driver/dev/nvidia-caps/nvidia-cap63"
+2026-11-16T21:23:08.534303047Z time="2026-11-16T21:23:08Z" level=info msg="Creating link /host-dev-char/236:64 => /run/nvidia/driver/dev/nvidia-caps/nvidia-cap64"
+2026-11-16T21:23:08.534352069Z time="2026-11-16T21:23:08Z" level=info msg="Creating link /host-dev-char/236:65 => /run/nvidia/driver/dev/nvidia-caps/nvidia-cap65"
+2026-11-16T21:23:08.534375152Z time="2026-11-16T21:23:08Z" level=info msg="Creating link /host-dev-char/236:66 => /run/nvidia/driver/dev/nvidia-caps/nvidia-cap66"
+2026-11-16T21:23:08.534378118Z time="2026-11-16T21:23:08Z" level=info msg="Creating link /host-dev-char/236:67 => /run/nvidia/driver/dev/nvidia-caps/nvidia-cap67"
+2026-11-16T21:23:08.534396883Z time="2026-11-16T21:23:08Z" level=info msg="Creating link /host-dev-char/236:68 => /run/nvidia/driver/dev/nvidia-caps/nvidia-cap68"
+2026-11-16T21:23:08.534399228Z time="2026-11-16T21:23:08Z" level=info msg="Creating link /host-dev-char/236:69 => /run/nvidia/driver/dev/nvidia-caps/nvidia-cap69"
+2026-11-16T21:23:08.534404016Z time="2026-11-16T21:23:08Z" level=info msg="Creating link /host-dev-char/236:70 => /run/nvidia/driver/dev/nvidia-caps/nvidia-cap70"
+2026-11-16T21:23:08.534406201Z time="2026-11-16T21:23:08Z" level=info msg="Creating link /host-dev-char/236:71 => /run/nvidia/driver/dev/nvidia-caps/nvidia-cap71"
+2026-11-16T21:23:08.534413424Z time="2026-11-16T21:23:08Z" level=info msg="Creating link /host-dev-char/236:72 => /run/nvidia/driver/dev/nvidia-caps/nvidia-cap72"
+2026-11-16T21:23:08.534415648Z time="2026-11-16T21:23:08Z" level=info msg="Creating link /host-dev-char/236:73 => /run/nvidia/driver/dev/nvidia-caps/nvidia-cap73"
+2026-11-16T21:23:08.534473306Z time="2026-11-16T21:23:08Z" level=info msg="Creating link /host-dev-char/236:74 => /run/nvidia/driver/dev/nvidia-caps/nvidia-cap74"
+2026-11-16T21:23:08.534476493Z time="2026-11-16T21:23:08Z" level=info msg="Creating link /host-dev-char/236:75 => /run/nvidia/driver/dev/nvidia-caps/nvidia-cap75"
+2026-11-16T21:23:08.534478837Z time="2026-11-16T21:23:08Z" level=info msg="Creating link /host-dev-char/236:76 => /run/nvidia/driver/dev/nvidia-caps/nvidia-cap76"
+2026-11-16T21:23:08.534485149Z time="2026-11-16T21:23:08Z" level=info msg="Creating link /host-dev-char/236:77 => /run/nvidia/driver/dev/nvidia-caps/nvidia-cap77"
+2026-11-16T21:23:08.534487764Z time="2026-11-16T21:23:08Z" level=info msg="Creating link /host-dev-char/236:78 => /run/nvidia/driver/dev/nvidia-caps/nvidia-cap78"
+2026-11-16T21:23:08.534546273Z time="2026-11-16T21:23:08Z" level=info msg="Creating link /host-dev-char/236:79 => /run/nvidia/driver/dev/nvidia-caps/nvidia-cap79"
+2026-11-16T21:23:08.534567493Z time="2026-11-16T21:23:08Z" level=info msg="Creating link /host-dev-char/236:80 => /run/nvidia/driver/dev/nvidia-caps/nvidia-cap80"
+2026-11-16T21:23:08.534579505Z time="2026-11-16T21:23:08Z" level=info msg="Creating link /host-dev-char/236:81 => /run/nvidia/driver/dev/nvidia-caps/nvidia-cap81"
+2026-11-16T21:23:08.534625662Z time="2026-11-16T21:23:08Z" level=info msg="Creating link /host-dev-char/236:82 => /run/nvidia/driver/dev/nvidia-caps/nvidia-cap82"
+2026-11-16T21:23:08.534638637Z time="2026-11-16T21:23:08Z" level=info msg="Creating link /host-dev-char/236:83 => /run/nvidia/driver/dev/nvidia-caps/nvidia-cap83"
+2026-11-16T21:23:08.534655297Z time="2026-11-16T21:23:08Z" level=info msg="Creating link /host-dev-char/236:84 => /run/nvidia/driver/dev/nvidia-caps/nvidia-cap84"
+2026-11-16T21:23:08.534663473Z time="2026-11-16T21:23:08Z" level=info msg="Creating link /host-dev-char/236:85 => /run/nvidia/driver/dev/nvidia-caps/nvidia-cap85"
+2026-11-16T21:23:08.534684964Z time="2026-11-16T21:23:08Z" level=info msg="Creating link /host-dev-char/236:86 => /run/nvidia/driver/dev/nvidia-caps/nvidia-cap86"
+2026-11-16T21:23:08.534692828Z time="2026-11-16T21:23:08Z" level=info msg="Creating link /host-dev-char/236:87 => /run/nvidia/driver/dev/nvidia-caps/nvidia-cap87"
+2026-11-16T21:23:08.534777316Z time="2026-11-16T21:23:08Z" level=info msg="Creating link /host-dev-char/236:88 => /run/nvidia/driver/dev/nvidia-caps/nvidia-cap88"
+2026-11-16T21:23:08.534794599Z time="2026-11-16T21:23:08Z" level=info msg="Creating link /host-dev-char/236:89 => /run/nvidia/driver/dev/nvidia-caps/nvidia-cap89"
+2026-11-16T21:23:08.534798316Z time="2026-11-16T21:23:08Z" level=info msg="Creating link /host-dev-char/236:90 => /run/nvidia/driver/dev/nvidia-caps/nvidia-cap90"
+2026-11-16T21:23:08.534801482Z time="2026-11-16T21:23:08Z" level=info msg="Creating link /host-dev-char/236:91 => /run/nvidia/driver/dev/nvidia-caps/nvidia-cap91"
+2026-11-16T21:23:08.534804868Z time="2026-11-16T21:23:08Z" level=info msg="Creating link /host-dev-char/236:92 => /run/nvidia/driver/dev/nvidia-caps/nvidia-cap92"
+2026-11-16T21:23:08.534823994Z time="2026-11-16T21:23:08Z" level=info msg="Creating link /host-dev-char/236:93 => /run/nvidia/driver/dev/nvidia-caps/nvidia-cap93"
+2026-11-16T21:23:08.534834584Z time="2026-11-16T21:23:08Z" level=info msg="Creating link /host-dev-char/236:94 => /run/nvidia/driver/dev/nvidia-caps/nvidia-cap94"
+2026-11-16T21:23:08.534836628Z time="2026-11-16T21:23:08Z" level=info msg="Creating link /host-dev-char/236:95 => /run/nvidia/driver/dev/nvidia-caps/nvidia-cap95"
+2026-11-16T21:23:08.534838822Z time="2026-11-16T21:23:08Z" level=info msg="Creating link /host-dev-char/236:96 => /run/nvidia/driver/dev/nvidia-caps/nvidia-cap96"
+2026-11-16T21:23:08.534871733Z time="2026-11-16T21:23:08Z" level=info msg="Creating link /host-dev-char/236:97 => /run/nvidia/driver/dev/nvidia-caps/nvidia-cap97"
+2026-11-16T21:23:08.534878937Z time="2026-11-16T21:23:08Z" level=info msg="Creating link /host-dev-char/236:98 => /run/nvidia/driver/dev/nvidia-caps/nvidia-cap98"
+2026-11-16T21:23:08.534883796Z time="2026-11-16T21:23:08Z" level=info msg="Creating link /host-dev-char/236:99 => /run/nvidia/driver/dev/nvidia-caps/nvidia-cap99"
+2026-11-16T21:23:08.534886070Z time="2026-11-16T21:23:08Z" level=info msg="Creating link /host-dev-char/236:100 => /run/nvidia/driver/dev/nvidia-caps/nvidia-cap100"
+2026-11-16T21:23:08.534904515Z time="2026-11-16T21:23:08Z" level=info msg="Creating link /host-dev-char/236:101 => /run/nvidia/driver/dev/nvidia-caps/nvidia-cap101"
+2026-11-16T21:23:08.534927989Z time="2026-11-16T21:23:08Z" level=info msg="Creating link /host-dev-char/236:102 => /run/nvidia/driver/dev/nvidia-caps/nvidia-cap102"
+2026-11-16T21:23:08.534930664Z time="2026-11-16T21:23:08Z" level=info msg="Creating link /host-dev-char/236:103 => /run/nvidia/driver/dev/nvidia-caps/nvidia-cap103"
+2026-11-16T21:23:08.534968124Z time="2026-11-16T21:23:08Z" level=info msg="Creating link /host-dev-char/236:104 => /run/nvidia/driver/dev/nvidia-caps/nvidia-cap104"
+2026-11-16T21:23:08.534970950Z time="2026-11-16T21:23:08Z" level=info msg="Creating link /host-dev-char/236:105 => /run/nvidia/driver/dev/nvidia-caps/nvidia-cap105"
+2026-11-16T21:23:08.534973133Z time="2026-11-16T21:23:08Z" level=info msg="Creating link /host-dev-char/236:106 => /run/nvidia/driver/dev/nvidia-caps/nvidia-cap106"
+2026-11-16T21:23:08.534997349Z time="2026-11-16T21:23:08Z" level=info msg="Creating link /host-dev-char/236:107 => /run/nvidia/driver/dev/nvidia-caps/nvidia-cap107"
+2026-11-16T21:23:08.535000335Z time="2026-11-16T21:23:08Z" level=info msg="Creating link /host-dev-char/236:108 => /run/nvidia/driver/dev/nvidia-caps/nvidia-cap108"
+2026-11-16T21:23:08.535002539Z time="2026-11-16T21:23:08Z" level=info msg="Creating link /host-dev-char/236:109 => /run/nvidia/driver/dev/nvidia-caps/nvidia-cap109"
+2026-11-16T21:23:08.535053434Z time="2026-11-16T21:23:08Z" level=info msg="Creating link /host-dev-char/236:110 => /run/nvidia/driver/dev/nvidia-caps/nvidia-cap110"
+2026-11-16T21:23:08.535057873Z time="2026-11-16T21:23:08Z" level=info msg="Creating link /host-dev-char/236:111 => /run/nvidia/driver/dev/nvidia-caps/nvidia-cap111"
+2026-11-16T21:23:08.535095654Z time="2026-11-16T21:23:08Z" level=info msg="Creating link /host-dev-char/236:112 => /run/nvidia/driver/dev/nvidia-caps/nvidia-cap112"
+2026-11-16T21:23:08.535111553Z time="2026-11-16T21:23:08Z" level=info msg="Creating link /host-dev-char/236:113 => /run/nvidia/driver/dev/nvidia-caps/nvidia-cap113"
+2026-11-16T21:23:08.535114369Z time="2026-11-16T21:23:08Z" level=info msg="Creating link /host-dev-char/236:114 => /run/nvidia/driver/dev/nvidia-caps/nvidia-cap114"
+2026-11-16T21:23:08.535122363Z time="2026-11-16T21:23:08Z" level=info msg="Creating link /host-dev-char/236:115 => /run/nvidia/driver/dev/nvidia-caps/nvidia-cap115"
+2026-11-16T21:23:08.535125159Z time="2026-11-16T21:23:08Z" level=info msg="Creating link /host-dev-char/236:116 => /run/nvidia/driver/dev/nvidia-caps/nvidia-cap116"
+2026-11-16T21:23:08.535169201Z time="2026-11-16T21:23:08Z" level=info msg="Creating link /host-dev-char/236:117 => /run/nvidia/driver/dev/nvidia-caps/nvidia-cap117"
+2026-11-16T21:23:08.535178489Z time="2026-11-16T21:23:08Z" level=info msg="Creating link /host-dev-char/236:118 => /run/nvidia/driver/dev/nvidia-caps/nvidia-cap118"
+2026-11-16T21:23:08.535181043Z time="2026-11-16T21:23:08Z" level=info msg="Creating link /host-dev-char/236:119 => /run/nvidia/driver/dev/nvidia-caps/nvidia-cap119"
+2026-11-16T21:23:08.535187205Z time="2026-11-16T21:23:08Z" level=info msg="Creating link /host-dev-char/236:120 => /run/nvidia/driver/dev/nvidia-caps/nvidia-cap120"
+2026-11-16T21:23:08.535189319Z time="2026-11-16T21:23:08Z" level=info msg="Creating link /host-dev-char/236:121 => /run/nvidia/driver/dev/nvidia-caps/nvidia-cap121"
+2026-11-16T21:23:08.535224234Z time="2026-11-16T21:23:08Z" level=info msg="Creating link /host-dev-char/236:122 => /run/nvidia/driver/dev/nvidia-caps/nvidia-cap122"
+2026-11-16T21:23:08.535228823Z time="2026-11-16T21:23:08Z" level=info msg="Creating link /host-dev-char/236:123 => /run/nvidia/driver/dev/nvidia-caps/nvidia-cap123"
+2026-11-16T21:23:08.535235285Z time="2026-11-16T21:23:08Z" level=info msg="Creating link /host-dev-char/236:124 => /run/nvidia/driver/dev/nvidia-caps/nvidia-cap124"
+2026-11-16T21:23:08.535238291Z time="2026-11-16T21:23:08Z" level=info msg="Creating link /host-dev-char/236:125 => /run/nvidia/driver/dev/nvidia-caps/nvidia-cap125"
+2026-11-16T21:23:08.535279267Z time="2026-11-16T21:23:08Z" level=info msg="Creating link /host-dev-char/236:126 => /run/nvidia/driver/dev/nvidia-caps/nvidia-cap126"
+2026-11-16T21:23:08.535282584Z time="2026-11-16T21:23:08Z" level=info msg="Creating link /host-dev-char/236:127 => /run/nvidia/driver/dev/nvidia-caps/nvidia-cap127"
+2026-11-16T21:23:08.535327408Z time="2026-11-16T21:23:08Z" level=info msg="Creating link /host-dev-char/236:128 => /run/nvidia/driver/dev/nvidia-caps/nvidia-cap128"
+2026-11-16T21:23:08.535332117Z time="2026-11-16T21:23:08Z" level=info msg="Creating link /host-dev-char/236:129 => /run/nvidia/driver/dev/nvidia-caps/nvidia-cap129"
+2026-11-16T21:23:08.535335113Z time="2026-11-16T21:23:08Z" level=info msg="Creating link /host-dev-char/236:130 => /run/nvidia/driver/dev/nvidia-caps/nvidia-cap130"
+2026-11-16T21:23:08.535338719Z time="2026-11-16T21:23:08Z" level=info msg="Creating link /host-dev-char/236:131 => /run/nvidia/driver/dev/nvidia-caps/nvidia-cap131"
+2026-11-16T21:23:08.535352776Z time="2026-11-16T21:23:08Z" level=info msg="Creating link /host-dev-char/236:132 => /run/nvidia/driver/dev/nvidia-caps/nvidia-cap132"
+2026-11-16T21:23:08.535360570Z time="2026-11-16T21:23:08Z" level=info msg="Creating link /host-dev-char/236:133 => /run/nvidia/driver/dev/nvidia-caps/nvidia-cap133"
+2026-11-16T21:23:08.535365690Z time="2026-11-16T21:23:08Z" level=info msg="Creating link /host-dev-char/236:134 => /run/nvidia/driver/dev/nvidia-caps/nvidia-cap134"
+2026-11-16T21:23:08.535368174Z time="2026-11-16T21:23:08Z" level=info msg="Creating link /host-dev-char/236:135 => /run/nvidia/driver/dev/nvidia-caps/nvidia-cap135"
+2026-11-16T21:23:08.535391668Z time="2026-11-16T21:23:08Z" level=info msg="Creating link /host-dev-char/236:136 => /run/nvidia/driver/dev/nvidia-caps/nvidia-cap136"
+2026-11-16T21:23:08.535424119Z time="2026-11-16T21:23:08Z" level=info msg="Creating link /host-dev-char/236:137 => /run/nvidia/driver/dev/nvidia-caps/nvidia-cap137"
+2026-11-16T21:23:08.535435771Z time="2026-11-16T21:23:08Z" level=info msg="Creating link /host-dev-char/195:1 => /run/nvidia/driver/dev/nvidia1"
+2026-11-16T21:23:08.535442914Z time="2026-11-16T21:23:08Z" level=info msg="Creating link /host-dev-char/236:138 => /run/nvidia/driver/dev/nvidia-caps/nvidia-cap138"
+2026-11-16T21:23:08.535446310Z time="2026-11-16T21:23:08Z" level=info msg="Creating link /host-dev-char/236:139 => /run/nvidia/driver/dev/nvidia-caps/nvidia-cap139"
+2026-11-16T21:23:08.535484752Z time="2026-11-16T21:23:08Z" level=info msg="Creating link /host-dev-char/236:140 => /run/nvidia/driver/dev/nvidia-caps/nvidia-cap140"
+2026-11-16T21:23:08.535491675Z time="2026-11-16T21:23:08Z" level=info msg="Creating link /host-dev-char/236:141 => /run/nvidia/driver/dev/nvidia-caps/nvidia-cap141"
+2026-11-16T21:23:08.535508286Z time="2026-11-16T21:23:08Z" level=info msg="Creating link /host-dev-char/236:142 => /run/nvidia/driver/dev/nvidia-caps/nvidia-cap142"
+2026-11-16T21:23:08.535517223Z time="2026-11-16T21:23:08Z" level=info msg="Creating link /host-dev-char/236:143 => /run/nvidia/driver/dev/nvidia-caps/nvidia-cap143"
+2026-11-16T21:23:08.535527142Z time="2026-11-16T21:23:08Z" level=info msg="Creating link /host-dev-char/236:144 => /run/nvidia/driver/dev/nvidia-caps/nvidia-cap144"
+2026-11-16T21:23:08.535552028Z time="2026-11-16T21:23:08Z" level=info msg="Creating link /host-dev-char/236:145 => /run/nvidia/driver/dev/nvidia-caps/nvidia-cap145"
+2026-11-16T21:23:08.535611920Z time="2026-11-16T21:23:08Z" level=info msg="Creating link /host-dev-char/236:146 => /run/nvidia/driver/dev/nvidia-caps/nvidia-cap146"
+2026-11-16T21:23:08.535621468Z time="2026-11-16T21:23:08Z" level=info msg="Creating link /host-dev-char/236:147 => /run/nvidia/driver/dev/nvidia-caps/nvidia-cap147"
+2026-11-16T21:23:08.535628391Z time="2026-11-16T21:23:08Z" level=info msg="Creating link /host-dev-char/236:148 => /run/nvidia/driver/dev/nvidia-caps/nvidia-cap148"
+2026-11-16T21:23:08.535637148Z time="2026-11-16T21:23:08Z" level=info msg="Creating link /host-dev-char/236:149 => /run/nvidia/driver/dev/nvidia-caps/nvidia-cap149"
+2026-11-16T21:23:08.535640584Z time="2026-11-16T21:23:08Z" level=info msg="Creating link /host-dev-char/236:150 => /run/nvidia/driver/dev/nvidia-caps/nvidia-cap150"
+2026-11-16T21:23:08.535671021Z time="2026-11-16T21:23:08Z" level=info msg="Creating link /host-dev-char/236:151 => /run/nvidia/driver/dev/nvidia-caps/nvidia-cap151"
+2026-11-16T21:23:08.535674708Z time="2026-11-16T21:23:08Z" level=info msg="Creating link /host-dev-char/236:152 => /run/nvidia/driver/dev/nvidia-caps/nvidia-cap152"
+2026-11-16T21:23:08.535677674Z time="2026-11-16T21:23:08Z" level=info msg="Creating link /host-dev-char/236:153 => /run/nvidia/driver/dev/nvidia-caps/nvidia-cap153"
+2026-11-16T21:23:08.535728820Z time="2026-11-16T21:23:08Z" level=info msg="Creating link /host-dev-char/236:154 => /run/nvidia/driver/dev/nvidia-caps/nvidia-cap154"
+2026-11-16T21:23:08.535734090Z time="2026-11-16T21:23:08Z" level=info msg="Creating link /host-dev-char/236:155 => /run/nvidia/driver/dev/nvidia-caps/nvidia-cap155"
+2026-11-16T21:23:08.535741223Z time="2026-11-16T21:23:08Z" level=info msg="Creating link /host-dev-char/236:156 => /run/nvidia/driver/dev/nvidia-caps/nvidia-cap156"
+2026-11-16T21:23:08.535745060Z time="2026-11-16T21:23:08Z" level=info msg="Creating link /host-dev-char/236:157 => /run/nvidia/driver/dev/nvidia-caps/nvidia-cap157"
+2026-11-16T21:23:08.535821193Z time="2026-11-16T21:23:08Z" level=info msg="Creating link /host-dev-char/236:158 => /run/nvidia/driver/dev/nvidia-caps/nvidia-cap158"
+2026-11-16T21:23:08.535834608Z time="2026-11-16T21:23:08Z" level=info msg="Creating link /host-dev-char/236:159 => /run/nvidia/driver/dev/nvidia-caps/nvidia-cap159"
+2026-11-16T21:23:08.535838646Z time="2026-11-16T21:23:08Z" level=info msg="Creating link /host-dev-char/236:160 => /run/nvidia/driver/dev/nvidia-caps/nvidia-cap160"
+2026-11-16T21:23:08.535848053Z time="2026-11-16T21:23:08Z" level=info msg="Creating link /host-dev-char/236:161 => /run/nvidia/driver/dev/nvidia-caps/nvidia-cap161"
+2026-11-16T21:23:08.535855247Z time="2026-11-16T21:23:08Z" level=info msg="Creating link /host-dev-char/236:162 => /run/nvidia/driver/dev/nvidia-caps/nvidia-cap162"
+2026-11-16T21:23:08.535858443Z time="2026-11-16T21:23:08Z" level=info msg="Creating link /host-dev-char/236:163 => /run/nvidia/driver/dev/nvidia-caps/nvidia-cap163"
+2026-11-16T21:23:08.535932382Z time="2026-11-16T21:23:08Z" level=info msg="Creating link /host-dev-char/236:164 => /run/nvidia/driver/dev/nvidia-caps/nvidia-cap164"
+2026-11-16T21:23:08.535937200Z time="2026-11-16T21:23:08Z" level=info msg="Creating link /host-dev-char/236:165 => /run/nvidia/driver/dev/nvidia-caps/nvidia-cap165"
+2026-11-16T21:23:08.535939134Z time="2026-11-16T21:23:08Z" level=info msg="Creating link /host-dev-char/236:166 => /run/nvidia/driver/dev/nvidia-caps/nvidia-cap166"
+2026-11-16T21:23:08.535944124Z time="2026-11-16T21:23:08Z" level=info msg="Creating link /host-dev-char/236:167 => /run/nvidia/driver/dev/nvidia-caps/nvidia-cap167"
+2026-11-16T21:23:08.535946298Z time="2026-11-16T21:23:08Z" level=info msg="Creating link /host-dev-char/236:168 => /run/nvidia/driver/dev/nvidia-caps/nvidia-cap168"
+2026-11-16T21:23:08.535948682Z time="2026-11-16T21:23:08Z" level=info msg="Creating link /host-dev-char/236:169 => /run/nvidia/driver/dev/nvidia-caps/nvidia-cap169"
+2026-11-16T21:23:08.535993456Z time="2026-11-16T21:23:08Z" level=info msg="Creating link /host-dev-char/236:170 => /run/nvidia/driver/dev/nvidia-caps/nvidia-cap170"
+2026-11-16T21:23:08.535997163Z time="2026-11-16T21:23:08Z" level=info msg="Creating link /host-dev-char/236:171 => /run/nvidia/driver/dev/nvidia-caps/nvidia-cap171"
+2026-11-16T21:23:08.536003985Z time="2026-11-16T21:23:08Z" level=info msg="Creating link /host-dev-char/236:172 => /run/nvidia/driver/dev/nvidia-caps/nvidia-cap172"
+2026-11-16T21:23:08.536007613Z time="2026-11-16T21:23:08Z" level=info msg="Creating link /host-dev-char/236:173 => /run/nvidia/driver/dev/nvidia-caps/nvidia-cap173"
+2026-11-16T21:23:08.536067275Z time="2026-11-16T21:23:08Z" level=info msg="Creating link /host-dev-char/236:174 => /run/nvidia/driver/dev/nvidia-caps/nvidia-cap174"
+2026-11-16T21:23:08.536071883Z time="2026-11-16T21:23:08Z" level=info msg="Creating link /host-dev-char/236:175 => /run/nvidia/driver/dev/nvidia-caps/nvidia-cap175"
+2026-11-16T21:23:08.536077804Z time="2026-11-16T21:23:08Z" level=info msg="Creating link /host-dev-char/236:176 => /run/nvidia/driver/dev/nvidia-caps/nvidia-cap176"
+2026-11-16T21:23:08.536081160Z time="2026-11-16T21:23:08Z" level=info msg="Creating link /host-dev-char/236:177 => /run/nvidia/driver/dev/nvidia-caps/nvidia-cap177"
+2026-11-16T21:23:08.536134350Z time="2026-11-16T21:23:08Z" level=info msg="Creating link /host-dev-char/236:178 => /run/nvidia/driver/dev/nvidia-caps/nvidia-cap178"
+2026-11-16T21:23:08.536138989Z time="2026-11-16T21:23:08Z" level=info msg="Creating link /host-dev-char/236:179 => /run/nvidia/driver/dev/nvidia-caps/nvidia-cap179"
+2026-11-16T21:23:08.536142235Z time="2026-11-16T21:23:08Z" level=info msg="Creating link /host-dev-char/236:180 => /run/nvidia/driver/dev/nvidia-caps/nvidia-cap180"
+2026-11-16T21:23:08.536149318Z time="2026-11-16T21:23:08Z" level=info msg="Creating link /host-dev-char/236:181 => /run/nvidia/driver/dev/nvidia-caps/nvidia-cap181"
+2026-11-16T21:23:08.536153496Z time="2026-11-16T21:23:08Z" level=info msg="Creating link /host-dev-char/236:182 => /run/nvidia/driver/dev/nvidia-caps/nvidia-cap182"
+2026-11-16T21:23:08.536191207Z time="2026-11-16T21:23:08Z" level=info msg="Creating link /host-dev-char/236:183 => /run/nvidia/driver/dev/nvidia-caps/nvidia-cap183"
+2026-11-16T21:23:08.536204582Z time="2026-11-16T21:23:08Z" level=info msg="Creating link /host-dev-char/236:184 => /run/nvidia/driver/dev/nvidia-caps/nvidia-cap184"
+2026-11-16T21:23:08.536218398Z time="2026-11-16T21:23:08Z" level=info msg="Creating link /host-dev-char/236:185 => /run/nvidia/driver/dev/nvidia-caps/nvidia-cap185"
+2026-11-16T21:23:08.536228707Z time="2026-11-16T21:23:08Z" level=info msg="Creating link /host-dev-char/236:186 => /run/nvidia/driver/dev/nvidia-caps/nvidia-cap186"
+2026-11-16T21:23:08.536231633Z time="2026-11-16T21:23:08Z" level=info msg="Creating link /host-dev-char/236:187 => /run/nvidia/driver/dev/nvidia-caps/nvidia-cap187"
+2026-11-16T21:23:08.536238245Z time="2026-11-16T21:23:08Z" level=info msg="Creating link /host-dev-char/236:188 => /run/nvidia/driver/dev/nvidia-caps/nvidia-cap188"
+2026-11-16T21:23:08.536241190Z time="2026-11-16T21:23:08Z" level=info msg="Creating link /host-dev-char/236:189 => /run/nvidia/driver/dev/nvidia-caps/nvidia-cap189"
+2026-11-16T21:23:08.536279513Z time="2026-11-16T21:23:08Z" level=info msg="Creating link /host-dev-char/236:190 => /run/nvidia/driver/dev/nvidia-caps/nvidia-cap190"
+2026-11-16T21:23:08.536283500Z time="2026-11-16T21:23:08Z" level=info msg="Creating link /host-dev-char/236:191 => /run/nvidia/driver/dev/nvidia-caps/nvidia-cap191"
+2026-11-16T21:23:08.536339084Z time="2026-11-16T21:23:08Z" level=info msg="Creating link /host-dev-char/236:192 => /run/nvidia/driver/dev/nvidia-caps/nvidia-cap192"
+2026-11-16T21:23:08.536351517Z time="2026-11-16T21:23:08Z" level=info msg="Creating link /host-dev-char/236:193 => /run/nvidia/driver/dev/nvidia-caps/nvidia-cap193"
+2026-11-16T21:23:08.536355084Z time="2026-11-16T21:23:08Z" level=info msg="Creating link /host-dev-char/236:194 => /run/nvidia/driver/dev/nvidia-caps/nvidia-cap194"
+2026-11-16T21:23:08.536369110Z time="2026-11-16T21:23:08Z" level=info msg="Creating link /host-dev-char/236:195 => /run/nvidia/driver/dev/nvidia-caps/nvidia-cap195"
+2026-11-16T21:23:08.536374199Z time="2026-11-16T21:23:08Z" level=info msg="Creating link /host-dev-char/236:196 => /run/nvidia/driver/dev/nvidia-caps/nvidia-cap196"
+2026-11-16T21:23:08.536389388Z time="2026-11-16T21:23:08Z" level=info msg="Creating link /host-dev-char/236:197 => /run/nvidia/driver/dev/nvidia-caps/nvidia-cap197"
+2026-11-16T21:23:08.536391452Z time="2026-11-16T21:23:08Z" level=info msg="Creating link /host-dev-char/236:198 => /run/nvidia/driver/dev/nvidia-caps/nvidia-cap198"
+2026-11-16T21:23:08.536396080Z time="2026-11-16T21:23:08Z" level=info msg="Creating link /host-dev-char/236:199 => /run/nvidia/driver/dev/nvidia-caps/nvidia-cap199"
+2026-11-16T21:23:08.536443991Z time="2026-11-16T21:23:08Z" level=info msg="Creating link /host-dev-char/236:200 => /run/nvidia/driver/dev/nvidia-caps/nvidia-cap200"
+2026-11-16T21:23:08.536451865Z time="2026-11-16T21:23:08Z" level=info msg="Creating link /host-dev-char/236:201 => /run/nvidia/driver/dev/nvidia-caps/nvidia-cap201"
+2026-11-16T21:23:08.536463938Z time="2026-11-16T21:23:08Z" level=info msg="Creating link /host-dev-char/236:202 => /run/nvidia/driver/dev/nvidia-caps/nvidia-cap202"
+2026-11-16T21:23:08.536466343Z time="2026-11-16T21:23:08Z" level=info msg="Creating link /host-dev-char/236:203 => /run/nvidia/driver/dev/nvidia-caps/nvidia-cap203"
+2026-11-16T21:23:08.536508962Z time="2026-11-16T21:23:08Z" level=info msg="Creating link /host-dev-char/236:204 => /run/nvidia/driver/dev/nvidia-caps/nvidia-cap204"
+2026-11-16T21:23:08.536517378Z time="2026-11-16T21:23:08Z" level=info msg="Creating link /host-dev-char/236:205 => /run/nvidia/driver/dev/nvidia-caps/nvidia-cap205"
+2026-11-16T21:23:08.536560709Z time="2026-11-16T21:23:08Z" level=info msg="Creating link /host-dev-char/236:206 => /run/nvidia/driver/dev/nvidia-caps/nvidia-cap206"
+2026-11-16T21:23:08.536567813Z time="2026-11-16T21:23:08Z" level=info msg="Creating link /host-dev-char/236:207 => /run/nvidia/driver/dev/nvidia-caps/nvidia-cap207"
+2026-11-16T21:23:08.536570919Z time="2026-11-16T21:23:08Z" level=info msg="Creating link /host-dev-char/236:208 => /run/nvidia/driver/dev/nvidia-caps/nvidia-cap208"
+2026-11-16T21:23:08.536629989Z time="2026-11-16T21:23:08Z" level=info msg="Creating link /host-dev-char/236:209 => /run/nvidia/driver/dev/nvidia-caps/nvidia-cap209"
+2026-11-16T21:23:08.536637694Z time="2026-11-16T21:23:08Z" level=info msg="Creating link /host-dev-char/236:210 => /run/nvidia/driver/dev/nvidia-caps/nvidia-cap210"
+2026-11-16T21:23:08.536640459Z time="2026-11-16T21:23:08Z" level=info msg="Creating link /host-dev-char/236:211 => /run/nvidia/driver/dev/nvidia-caps/nvidia-cap211"
+2026-11-16T21:23:08.536651930Z time="2026-11-16T21:23:08Z" level=info msg="Creating link /host-dev-char/236:212 => /run/nvidia/driver/dev/nvidia-caps/nvidia-cap212"
+2026-11-16T21:23:08.536659624Z time="2026-11-16T21:23:08Z" level=info msg="Creating link /host-dev-char/236:213 => /run/nvidia/driver/dev/nvidia-caps/nvidia-cap213"
+2026-11-16T21:23:08.536676857Z time="2026-11-16T21:23:08Z" level=info msg="Creating link /host-dev-char/236:214 => /run/nvidia/driver/dev/nvidia-caps/nvidia-cap214"
+2026-11-16T21:23:08.536683979Z time="2026-11-16T21:23:08Z" level=info msg="Creating link /host-dev-char/236:215 => /run/nvidia/driver/dev/nvidia-caps/nvidia-cap215"
+2026-11-16T21:23:08.536727611Z time="2026-11-16T21:23:08Z" level=info msg="Creating link /host-dev-char/236:216 => /run/nvidia/driver/dev/nvidia-caps/nvidia-cap216"
+2026-11-16T21:23:08.536733282Z time="2026-11-16T21:23:08Z" level=info msg="Creating link /host-dev-char/236:217 => /run/nvidia/driver/dev/nvidia-caps/nvidia-cap217"
+2026-11-16T21:23:08.536735676Z time="2026-11-16T21:23:08Z" level=info msg="Creating link /host-dev-char/236:218 => /run/nvidia/driver/dev/nvidia-caps/nvidia-cap218"
+2026-11-16T21:23:08.536752668Z time="2026-11-16T21:23:08Z" level=info msg="Creating link /host-dev-char/236:219 => /run/nvidia/driver/dev/nvidia-caps/nvidia-cap219"
+2026-11-16T21:23:08.536758589Z time="2026-11-16T21:23:08Z" level=info msg="Creating link /host-dev-char/236:220 => /run/nvidia/driver/dev/nvidia-caps/nvidia-cap220"
+2026-11-16T21:23:08.536813603Z time="2026-11-16T21:23:08Z" level=info msg="Creating link /host-dev-char/236:221 => /run/nvidia/driver/dev/nvidia-caps/nvidia-cap221"
+2026-11-16T21:23:08.536816879Z time="2026-11-16T21:23:08Z" level=info msg="Creating link /host-dev-char/236:222 => /run/nvidia/driver/dev/nvidia-caps/nvidia-cap222"
+2026-11-16T21:23:08.536819855Z time="2026-11-16T21:23:08Z" level=info msg="Creating link /host-dev-char/236:223 => /run/nvidia/driver/dev/nvidia-caps/nvidia-cap223"
+2026-11-16T21:23:08.536850182Z time="2026-11-16T21:23:08Z" level=info msg="Creating link /host-dev-char/236:224 => /run/nvidia/driver/dev/nvidia-caps/nvidia-cap224"
+2026-11-16T21:23:08.536853648Z time="2026-11-16T21:23:08Z" level=info msg="Creating link /host-dev-char/236:225 => /run/nvidia/driver/dev/nvidia-caps/nvidia-cap225"
+2026-11-16T21:23:08.536858537Z time="2026-11-16T21:23:08Z" level=info msg="Creating link /host-dev-char/236:226 => /run/nvidia/driver/dev/nvidia-caps/nvidia-cap226"
+2026-11-16T21:23:08.536860821Z time="2026-11-16T21:23:08Z" level=info msg="Creating link /host-dev-char/236:227 => /run/nvidia/driver/dev/nvidia-caps/nvidia-cap227"
+2026-11-16T21:23:08.536911035Z time="2026-11-16T21:23:08Z" level=info msg="Creating link /host-dev-char/236:228 => /run/nvidia/driver/dev/nvidia-caps/nvidia-cap228"
+2026-11-16T21:23:08.536916125Z time="2026-11-16T21:23:08Z" level=info msg="Creating link /host-dev-char/236:229 => /run/nvidia/driver/dev/nvidia-caps/nvidia-cap229"
+2026-11-16T21:23:08.536935641Z time="2026-11-16T21:23:08Z" level=info msg="Creating link /host-dev-char/236:230 => /run/nvidia/driver/dev/nvidia-caps/nvidia-cap230"
+2026-11-16T21:23:08.536940110Z time="2026-11-16T21:23:08Z" level=info msg="Creating link /host-dev-char/236:231 => /run/nvidia/driver/dev/nvidia-caps/nvidia-cap231"
+2026-11-16T21:23:08.536952202Z time="2026-11-16T21:23:08Z" level=info msg="Creating link /host-dev-char/236:232 => /run/nvidia/driver/dev/nvidia-caps/nvidia-cap232"
+2026-11-16T21:23:08.536961070Z time="2026-11-16T21:23:08Z" level=info msg="Creating link /host-dev-char/236:233 => /run/nvidia/driver/dev/nvidia-caps/nvidia-cap233"
+2026-11-16T21:23:08.536992919Z time="2026-11-16T21:23:08Z" level=info msg="Creating link /host-dev-char/236:234 => /run/nvidia/driver/dev/nvidia-caps/nvidia-cap234"
+2026-11-16T21:23:08.537002096Z time="2026-11-16T21:23:08Z" level=info msg="Creating link /host-dev-char/236:235 => /run/nvidia/driver/dev/nvidia-caps/nvidia-cap235"
+2026-11-16T21:23:08.537005943Z time="2026-11-16T21:23:08Z" level=info msg="Creating link /host-dev-char/236:236 => /run/nvidia/driver/dev/nvidia-caps/nvidia-cap236"
+2026-11-16T21:23:08.537029457Z time="2026-11-16T21:23:08Z" level=info msg="Creating link /host-dev-char/236:237 => /run/nvidia/driver/dev/nvidia-caps/nvidia-cap237"
+2026-11-16T21:23:08.537031902Z time="2026-11-16T21:23:08Z" level=info msg="Creating link /host-dev-char/236:238 => /run/nvidia/driver/dev/nvidia-caps/nvidia-cap238"
+2026-11-16T21:23:08.537074301Z time="2026-11-16T21:23:08Z" level=info msg="Creating link /host-dev-char/236:239 => /run/nvidia/driver/dev/nvidia-caps/nvidia-cap239"
+2026-11-16T21:23:08.537077798Z time="2026-11-16T21:23:08Z" level=info msg="Creating link /host-dev-char/236:240 => /run/nvidia/driver/dev/nvidia-caps/nvidia-cap240"
+2026-11-16T21:23:08.537083188Z time="2026-11-16T21:23:08Z" level=info msg="Creating link /host-dev-char/236:241 => /run/nvidia/driver/dev/nvidia-caps/nvidia-cap241"
+2026-11-16T21:23:08.537085482Z time="2026-11-16T21:23:08Z" level=info msg="Creating link /host-dev-char/236:242 => /run/nvidia/driver/dev/nvidia-caps/nvidia-cap242"
+2026-11-16T21:23:08.537126910Z time="2026-11-16T21:23:08Z" level=info msg="Creating link /host-dev-char/236:243 => /run/nvidia/driver/dev/nvidia-caps/nvidia-cap243"
+2026-11-16T21:23:08.537133101Z time="2026-11-16T21:23:08Z" level=info msg="Creating link /host-dev-char/236:244 => /run/nvidia/driver/dev/nvidia-caps/nvidia-cap244"
+2026-11-16T21:23:08.537177415Z time="2026-11-16T21:23:08Z" level=info msg="Creating link /host-dev-char/236:245 => /run/nvidia/driver/dev/nvidia-caps/nvidia-cap245"
+2026-11-16T21:23:08.537181813Z time="2026-11-16T21:23:08Z" level=info msg="Creating link /host-dev-char/236:246 => /run/nvidia/driver/dev/nvidia-caps/nvidia-cap246"
+2026-11-16T21:23:08.537183947Z time="2026-11-16T21:23:08Z" level=info msg="Creating link /host-dev-char/236:247 => /run/nvidia/driver/dev/nvidia-caps/nvidia-cap247"
+2026-11-16T21:23:08.537185971Z time="2026-11-16T21:23:08Z" level=info msg="Creating link /host-dev-char/236:248 => /run/nvidia/driver/dev/nvidia-caps/nvidia-cap248"
+2026-11-16T21:23:08.537190960Z time="2026-11-16T21:23:08Z" level=info msg="Creating link /host-dev-char/236:249 => /run/nvidia/driver/dev/nvidia-caps/nvidia-cap249"
+2026-11-16T21:23:08.537193214Z time="2026-11-16T21:23:08Z" level=info msg="Creating link /host-dev-char/236:250 => /run/nvidia/driver/dev/nvidia-caps/nvidia-cap250"
+2026-11-16T21:23:08.537248749Z time="2026-11-16T21:23:08Z" level=info msg="Creating link /host-dev-char/236:251 => /run/nvidia/driver/dev/nvidia-caps/nvidia-cap251"
+2026-11-16T21:23:08.537256052Z time="2026-11-16T21:23:08Z" level=info msg="Creating link /host-dev-char/236:252 => /run/nvidia/driver/dev/nvidia-caps/nvidia-cap252"
+2026-11-16T21:23:08.537298281Z time="2026-11-16T21:23:08Z" level=info msg="Creating link /host-dev-char/236:253 => /run/nvidia/driver/dev/nvidia-caps/nvidia-cap253"
+2026-11-16T21:23:08.537301718Z time="2026-11-16T21:23:08Z" level=info msg="Creating link /host-dev-char/236:254 => /run/nvidia/driver/dev/nvidia-caps/nvidia-cap254"
+2026-11-16T21:23:08.537306758Z time="2026-11-16T21:23:08Z" level=info msg="Creating link /host-dev-char/236:255 => /run/nvidia/driver/dev/nvidia-caps/nvidia-cap255"
+2026-11-16T21:23:08.537309483Z time="2026-11-16T21:23:08Z" level=info msg="Creating link /host-dev-char/236:256 => /run/nvidia/driver/dev/nvidia-caps/nvidia-cap256"
+2026-11-16T21:23:08.537312248Z time="2026-11-16T21:23:08Z" level=info msg="Creating link /host-dev-char/236:257 => /run/nvidia/driver/dev/nvidia-caps/nvidia-cap257"
+2026-11-16T21:23:08.537319983Z time="2026-11-16T21:23:08Z" level=info msg="Creating link /host-dev-char/236:258 => /run/nvidia/driver/dev/nvidia-caps/nvidia-cap258"
+2026-11-16T21:23:08.537323108Z time="2026-11-16T21:23:08Z" level=info msg="Creating link /host-dev-char/236:259 => /run/nvidia/driver/dev/nvidia-caps/nvidia-cap259"
+2026-11-16T21:23:08.537377310Z time="2026-11-16T21:23:08Z" level=info msg="Creating link /host-dev-char/236:260 => /run/nvidia/driver/dev/nvidia-caps/nvidia-cap260"
+2026-11-16T21:23:08.537381137Z time="2026-11-16T21:23:08Z" level=info msg="Creating link /host-dev-char/236:261 => /run/nvidia/driver/dev/nvidia-caps/nvidia-cap261"
+2026-11-16T21:23:08.537383511Z time="2026-11-16T21:23:08Z" level=info msg="Creating link /host-dev-char/236:262 => /run/nvidia/driver/dev/nvidia-caps/nvidia-cap262"
+2026-11-16T21:23:08.537394472Z time="2026-11-16T21:23:08Z" level=info msg="Creating link /host-dev-char/236:263 => /run/nvidia/driver/dev/nvidia-caps/nvidia-cap263"
+2026-11-16T21:23:08.537399812Z time="2026-11-16T21:23:08Z" level=info msg="Creating link /host-dev-char/236:264 => /run/nvidia/driver/dev/nvidia-caps/nvidia-cap264"
+2026-11-16T21:23:08.537452460Z time="2026-11-16T21:23:08Z" level=info msg="Creating link /host-dev-char/236:265 => /run/nvidia/driver/dev/nvidia-caps/nvidia-cap265"
+2026-11-16T21:23:08.537456088Z time="2026-11-16T21:23:08Z" level=info msg="Creating link /host-dev-char/236:266 => /run/nvidia/driver/dev/nvidia-caps/nvidia-cap266"
+2026-11-16T21:23:08.537460937Z time="2026-11-16T21:23:08Z" level=info msg="Creating link /host-dev-char/236:267 => /run/nvidia/driver/dev/nvidia-caps/nvidia-cap267"
+2026-11-16T21:23:08.537462910Z time="2026-11-16T21:23:08Z" level=info msg="Creating link /host-dev-char/236:268 => /run/nvidia/driver/dev/nvidia-caps/nvidia-cap268"
+2026-11-16T21:23:08.537509808Z time="2026-11-16T21:23:08Z" level=info msg="Creating link /host-dev-char/236:269 => /run/nvidia/driver/dev/nvidia-caps/nvidia-cap269"
+2026-11-16T21:23:08.537514307Z time="2026-11-16T21:23:08Z" level=info msg="Creating link /host-dev-char/236:270 => /run/nvidia/driver/dev/nvidia-caps/nvidia-cap270"
+2026-11-16T21:23:08.537581533Z time="2026-11-16T21:23:08Z" level=info msg="Creating link /host-dev-char/236:271 => /run/nvidia/driver/dev/nvidia-caps/nvidia-cap271"
+2026-11-16T21:23:08.537591461Z time="2026-11-16T21:23:08Z" level=info msg="Creating link /host-dev-char/236:272 => /run/nvidia/driver/dev/nvidia-caps/nvidia-cap272"

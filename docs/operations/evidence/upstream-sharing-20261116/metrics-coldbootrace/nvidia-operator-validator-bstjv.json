@@ -1,0 +1,774 @@
+{
+  "apiVersion": "v1",
+  "kind": "Pod",
+  "metadata": {
+    "creationTimestamp": "2026-11-16T12:01:07Z",
+    "generateName": "nvidia-operator-validator-",
+    "generation": 1,
+    "labels": {
+      "app": "nvidia-operator-validator",
+      "app.kubernetes.io/managed-by": "gpu-operator",
+      "app.kubernetes.io/part-of": "gpu-operator",
+      "controller-revision-hash": "6ff94d58ff",
+      "helm.sh/chart": "gpu-operator-v25.10.0",
+      "pod-template-generation": "4"
+    },
+    "name": "nvidia-operator-validator-bstjv",
+    "namespace": "gpu-operator",
+    "ownerReferences": [
+      {
+        "apiVersion": "apps/v1",
+        "blockOwnerDeletion": true,
+        "controller": true,
+        "kind": "DaemonSet",
+        "name": "nvidia-operator-validator",
+        "uid": "e750740b-2c50-4291-87ee-889e9b40b12f"
+      }
+    ],
+    "resourceVersion": "406877142",
+    "uid": "02ef0331-b167-4aac-bec0-e7eecbfe2267"
+  },
+  "spec": {
+    "affinity": {
+      "nodeAffinity": {
+        "requiredDuringSchedulingIgnoredDuringExecution": {
+          "nodeSelectorTerms": [
+            {
+              "matchFields": [
+                {
+                  "key": "metadata.name",
+                  "operator": "In",
+                  "values": [
+                    "k3s-wk-gpu2"
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      }
+    },
+    "containers": [
+      {
+        "args": [
+          "echo all validations are successful; while true; do sleep 86400; done"
+        ],
+        "command": [
+          "sh",
+          "-c"
+        ],
+        "image": "nvcr.io/nvidia/gpu-operator:v25.10.0",
+        "imagePullPolicy": "IfNotPresent",
+        "lifecycle": {
+          "preStop": {
+            "exec": {
+              "command": [
+                "sh",
+                "-c",
+                "rm -f /run/nvidia/validations/*-ready"
+              ]
+            }
+          }
+        },
+        "name": "nvidia-operator-validator",
+        "resources": {},
+        "securityContext": {
+          "privileged": true,
+          "runAsUser": 0
+        },
+        "terminationMessagePath": "/dev/termination-log",
+        "terminationMessagePolicy": "File",
+        "volumeMounts": [
+          {
+            "mountPath": "/run/nvidia/validations",
+            "mountPropagation": "Bidirectional",
+            "name": "run-nvidia-validations"
+          },
+          {
+            "mountPath": "/var/run/secrets/kubernetes.io/serviceaccount",
+            "name": "kube-api-access-v2kkm",
+            "readOnly": true
+          }
+        ]
+      }
+    ],
+    "dnsPolicy": "ClusterFirst",
+    "enableServiceLinks": true,
+    "initContainers": [
+      {
+        "args": [
+          "nvidia-validator"
+        ],
+        "command": [
+          "sh",
+          "-c"
+        ],
+        "env": [
+          {
+            "name": "WITH_WAIT",
+            "value": "true"
+          },
+          {
+            "name": "COMPONENT",
+            "value": "driver"
+          },
+          {
+            "name": "OPERATOR_NAMESPACE",
+            "valueFrom": {
+              "fieldRef": {
+                "apiVersion": "v1",
+                "fieldPath": "metadata.namespace"
+              }
+            }
+          }
+        ],
+        "image": "nvcr.io/nvidia/gpu-operator:v25.10.0",
+        "imagePullPolicy": "IfNotPresent",
+        "name": "driver-validation",
+        "resources": {},
+        "securityContext": {
+          "privileged": true,
+          "runAsUser": 0,
+          "seLinuxOptions": {
+            "level": "s0"
+          }
+        },
+        "terminationMessagePath": "/dev/termination-log",
+        "terminationMessagePolicy": "File",
+        "volumeMounts": [
+          {
+            "mountPath": "/host",
+            "mountPropagation": "HostToContainer",
+            "name": "host-root",
+            "readOnly": true
+          },
+          {
+            "mountPath": "/run/nvidia/driver",
+            "mountPropagation": "HostToContainer",
+            "name": "driver-install-dir"
+          },
+          {
+            "mountPath": "/run/nvidia/validations",
+            "mountPropagation": "Bidirectional",
+            "name": "run-nvidia-validations"
+          },
+          {
+            "mountPath": "/host-dev-char",
+            "name": "host-dev-char"
+          },
+          {
+            "mountPath": "/var/run/secrets/kubernetes.io/serviceaccount",
+            "name": "kube-api-access-v2kkm",
+            "readOnly": true
+          }
+        ]
+      },
+      {
+        "args": [
+          "nvidia-validator"
+        ],
+        "command": [
+          "sh",
+          "-c"
+        ],
+        "env": [
+          {
+            "name": "NVIDIA_VISIBLE_DEVICES",
+            "value": "all"
+          },
+          {
+            "name": "WITH_WAIT",
+            "value": "false"
+          },
+          {
+            "name": "COMPONENT",
+            "value": "toolkit"
+          }
+        ],
+        "image": "nvcr.io/nvidia/gpu-operator:v25.10.0",
+        "imagePullPolicy": "IfNotPresent",
+        "name": "toolkit-validation",
+        "resources": {},
+        "securityContext": {
+          "privileged": true,
+          "runAsUser": 0
+        },
+        "terminationMessagePath": "/dev/termination-log",
+        "terminationMessagePolicy": "File",
+        "volumeMounts": [
+          {
+            "mountPath": "/run/nvidia/validations",
+            "mountPropagation": "Bidirectional",
+            "name": "run-nvidia-validations"
+          },
+          {
+            "mountPath": "/var/run/secrets/kubernetes.io/serviceaccount",
+            "name": "kube-api-access-v2kkm",
+            "readOnly": true
+          }
+        ]
+      },
+      {
+        "args": [
+          "nvidia-validator"
+        ],
+        "command": [
+          "sh",
+          "-c"
+        ],
+        "env": [
+          {
+            "name": "WITH_WAIT",
+            "value": "false"
+          },
+          {
+            "name": "COMPONENT",
+            "value": "cuda"
+          },
+          {
+            "name": "NODE_NAME",
+            "valueFrom": {
+              "fieldRef": {
+                "apiVersion": "v1",
+                "fieldPath": "spec.nodeName"
+              }
+            }
+          },
+          {
+            "name": "OPERATOR_NAMESPACE",
+            "valueFrom": {
+              "fieldRef": {
+                "apiVersion": "v1",
+                "fieldPath": "metadata.namespace"
+              }
+            }
+          },
+          {
+            "name": "VALIDATOR_IMAGE",
+            "value": "nvcr.io/nvidia/gpu-operator:v25.10.0"
+          },
+          {
+            "name": "VALIDATOR_IMAGE_PULL_POLICY",
+            "value": "IfNotPresent"
+          },
+          {
+            "name": "VALIDATOR_RUNTIME_CLASS",
+            "value": "nvidia"
+          }
+        ],
+        "image": "nvcr.io/nvidia/gpu-operator:v25.10.0",
+        "imagePullPolicy": "IfNotPresent",
+        "name": "cuda-validation",
+        "resources": {},
+        "securityContext": {
+          "privileged": true,
+          "runAsUser": 0
+        },
+        "terminationMessagePath": "/dev/termination-log",
+        "terminationMessagePolicy": "File",
+        "volumeMounts": [
+          {
+            "mountPath": "/run/nvidia/validations",
+            "mountPropagation": "Bidirectional",
+            "name": "run-nvidia-validations"
+          },
+          {
+            "mountPath": "/var/run/secrets/kubernetes.io/serviceaccount",
+            "name": "kube-api-access-v2kkm",
+            "readOnly": true
+          }
+        ]
+      },
+      {
+        "args": [
+          "nvidia-validator"
+        ],
+        "command": [
+          "sh",
+          "-c"
+        ],
+        "env": [
+          {
+            "name": "COMPONENT",
+            "value": "plugin"
+          },
+          {
+            "name": "WITH_WAIT",
+            "value": "false"
+          },
+          {
+            "name": "WITH_WORKLOAD",
+            "value": "false"
+          },
+          {
+            "name": "MIG_STRATEGY",
+            "value": "none"
+          },
+          {
+            "name": "NODE_NAME",
+            "valueFrom": {
+              "fieldRef": {
+                "apiVersion": "v1",
+                "fieldPath": "spec.nodeName"
+              }
+            }
+          },
+          {
+            "name": "OPERATOR_NAMESPACE",
+            "valueFrom": {
+              "fieldRef": {
+                "apiVersion": "v1",
+                "fieldPath": "metadata.namespace"
+              }
+            }
+          },
+          {
+            "name": "VALIDATOR_IMAGE",
+            "value": "nvcr.io/nvidia/gpu-operator:v25.10.0"
+          },
+          {
+            "name": "VALIDATOR_IMAGE_PULL_POLICY",
+            "value": "IfNotPresent"
+          },
+          {
+            "name": "VALIDATOR_RUNTIME_CLASS",
+            "value": "nvidia"
+          }
+        ],
+        "image": "nvcr.io/nvidia/gpu-operator:v25.10.0",
+        "imagePullPolicy": "IfNotPresent",
+        "name": "plugin-validation",
+        "resources": {},
+        "securityContext": {
+          "privileged": true,
+          "runAsUser": 0
+        },
+        "terminationMessagePath": "/dev/termination-log",
+        "terminationMessagePolicy": "File",
+        "volumeMounts": [
+          {
+            "mountPath": "/run/nvidia/validations",
+            "mountPropagation": "Bidirectional",
+            "name": "run-nvidia-validations"
+          },
+          {
+            "mountPath": "/var/run/secrets/kubernetes.io/serviceaccount",
+            "name": "kube-api-access-v2kkm",
+            "readOnly": true
+          }
+        ]
+      }
+    ],
+    "nodeName": "k3s-wk-gpu2",
+    "nodeSelector": {
+      "nvidia.com/gpu.deploy.operator-validator": "true"
+    },
+    "preemptionPolicy": "PreemptLowerPriority",
+    "priority": 2000001000,
+    "priorityClassName": "system-node-critical",
+    "restartPolicy": "Always",
+    "runtimeClassName": "nvidia",
+    "schedulerName": "default-scheduler",
+    "securityContext": {},
+    "serviceAccount": "nvidia-operator-validator",
+    "serviceAccountName": "nvidia-operator-validator",
+    "terminationGracePeriodSeconds": 30,
+    "tolerations": [
+      {
+        "effect": "NoSchedule",
+        "key": "nvidia.com/gpu",
+        "operator": "Exists"
+      },
+      {
+        "effect": "NoSchedule",
+        "key": "gpu-pool",
+        "operator": "Exists"
+      },
+      {
+        "effect": "NoSchedule",
+        "key": "cps.unileoben.ac.at/maintenance",
+        "operator": "Exists"
+      },
+      {
+        "effect": "NoExecute",
+        "key": "node.kubernetes.io/not-ready",
+        "operator": "Exists"
+      },
+      {
+        "effect": "NoExecute",
+        "key": "node.kubernetes.io/unreachable",
+        "operator": "Exists"
+      },
+      {
+        "effect": "NoSchedule",
+        "key": "node.kubernetes.io/disk-pressure",
+        "operator": "Exists"
+      },
+      {
+        "effect": "NoSchedule",
+        "key": "node.kubernetes.io/memory-pressure",
+        "operator": "Exists"
+      },
+      {
+        "effect": "NoSchedule",
+        "key": "node.kubernetes.io/pid-pressure",
+        "operator": "Exists"
+      },
+      {
+        "effect": "NoSchedule",
+        "key": "node.kubernetes.io/unschedulable",
+        "operator": "Exists"
+      }
+    ],
+    "volumes": [
+      {
+        "hostPath": {
+          "path": "/run/nvidia/validations",
+          "type": "DirectoryOrCreate"
+        },
+        "name": "run-nvidia-validations"
+      },
+      {
+        "hostPath": {
+          "path": "/run/nvidia/driver",
+          "type": ""
+        },
+        "name": "driver-install-dir"
+      },
+      {
+        "hostPath": {
+          "path": "/",
+          "type": ""
+        },
+        "name": "host-root"
+      },
+      {
+        "hostPath": {
+          "path": "/dev/char",
+          "type": ""
+        },
+        "name": "host-dev-char"
+      },
+      {
+        "name": "kube-api-access-v2kkm",
+        "projected": {
+          "defaultMode": 420,
+          "sources": [
+            {
+              "serviceAccountToken": {
+                "expirationSeconds": 3607,
+                "path": "token"
+              }
+            },
+            {
+              "configMap": {
+                "items": [
+                  {
+                    "key": "ca.crt",
+                    "path": "ca.crt"
+                  }
+                ],
+                "name": "kube-root-ca.crt"
+              }
+            },
+            {
+              "downwardAPI": {
+                "items": [
+                  {
+                    "fieldRef": {
+                      "apiVersion": "v1",
+                      "fieldPath": "metadata.namespace"
+                    },
+                    "path": "namespace"
+                  }
+                ]
+              }
+            }
+          ]
+        }
+      }
+    ]
+  },
+  "status": {
+    "conditions": [
+      {
+        "lastProbeTime": null,
+        "lastTransitionTime": "2026-11-16T20:58:46Z",
+        "observedGeneration": 1,
+        "status": "True",
+        "type": "PodReadyToStartContainers"
+      },
+      {
+        "lastProbeTime": null,
+        "lastTransitionTime": "2026-11-16T12:01:44Z",
+        "observedGeneration": 1,
+        "status": "True",
+        "type": "Initialized"
+      },
+      {
+        "lastProbeTime": null,
+        "lastTransitionTime": "2026-11-16T21:00:38Z",
+        "observedGeneration": 1,
+        "status": "True",
+        "type": "Ready"
+      },
+      {
+        "lastProbeTime": null,
+        "lastTransitionTime": "2026-11-16T21:00:38Z",
+        "observedGeneration": 1,
+        "status": "True",
+        "type": "ContainersReady"
+      },
+      {
+        "lastProbeTime": null,
+        "lastTransitionTime": "2026-11-16T12:01:07Z",
+        "observedGeneration": 1,
+        "status": "True",
+        "type": "PodScheduled"
+      }
+    ],
+    "containerStatuses": [
+      {
+        "containerID": "containerd://2080773e71b40ed811597ba8c19bab3c4fcfe79761f6af9daca547e1d4a79701",
+        "image": "nvcr.io/nvidia/gpu-operator:v25.10.0",
+        "imageID": "nvcr.io/nvidia/gpu-operator@sha256:d4841412c9b8d27c53b1588dcebffc5451e9ab0fd36b2c656c33a65356507cfd",
+        "lastState": {
+          "terminated": {
+            "containerID": "containerd://863ca24c0d579a53b3911a2d63e0e5537ffc689195a54aa38875a6f879624a64",
+            "exitCode": 255,
+            "finishedAt": "2026-11-16T20:58:39Z",
+            "reason": "Unknown",
+            "startedAt": "2026-11-16T18:35:40Z"
+          }
+        },
+        "name": "nvidia-operator-validator",
+        "ready": true,
+        "resources": {},
+        "restartCount": 3,
+        "started": true,
+        "state": {
+          "running": {
+            "startedAt": "2026-11-16T21:00:37Z"
+          }
+        },
+        "user": {
+          "linux": {
+            "gid": 0,
+            "supplementalGroups": [
+              0
+            ],
+            "uid": 0
+          }
+        },
+        "volumeMounts": [
+          {
+            "mountPath": "/run/nvidia/validations",
+            "name": "run-nvidia-validations"
+          },
+          {
+            "mountPath": "/var/run/secrets/kubernetes.io/serviceaccount",
+            "name": "kube-api-access-v2kkm",
+            "readOnly": true,
+            "recursiveReadOnly": "Disabled"
+          }
+        ]
+      }
+    ],
+    "hostIP": "10.21.0.43",
+    "hostIPs": [
+      {
+        "ip": "10.21.0.43"
+      }
+    ],
+    "initContainerStatuses": [
+      {
+        "containerID": "containerd://d615e1586f1d14c8a40fa09a3061c2a9e2a0d8c6ad41ca72c121c0600179ae5e",
+        "image": "nvcr.io/nvidia/gpu-operator:v25.10.0",
+        "imageID": "nvcr.io/nvidia/gpu-operator@sha256:d4841412c9b8d27c53b1588dcebffc5451e9ab0fd36b2c656c33a65356507cfd",
+        "lastState": {},
+        "name": "driver-validation",
+        "ready": true,
+        "resources": {},
+        "restartCount": 3,
+        "started": false,
+        "state": {
+          "terminated": {
+            "containerID": "containerd://d615e1586f1d14c8a40fa09a3061c2a9e2a0d8c6ad41ca72c121c0600179ae5e",
+            "exitCode": 0,
+            "finishedAt": "2026-11-16T21:00:07Z",
+            "reason": "Completed",
+            "startedAt": "2026-11-16T20:58:46Z"
+          }
+        },
+        "user": {
+          "linux": {
+            "gid": 0,
+            "supplementalGroups": [
+              0
+            ],
+            "uid": 0
+          }
+        },
+        "volumeMounts": [
+          {
+            "mountPath": "/host",
+            "name": "host-root",
+            "readOnly": true,
+            "recursiveReadOnly": "Disabled"
+          },
+          {
+            "mountPath": "/run/nvidia/driver",
+            "name": "driver-install-dir"
+          },
+          {
+            "mountPath": "/run/nvidia/validations",
+            "name": "run-nvidia-validations"
+          },
+          {
+            "mountPath": "/host-dev-char",
+            "name": "host-dev-char"
+          },
+          {
+            "mountPath": "/var/run/secrets/kubernetes.io/serviceaccount",
+            "name": "kube-api-access-v2kkm",
+            "readOnly": true,
+            "recursiveReadOnly": "Disabled"
+          }
+        ]
+      },
+      {
+        "containerID": "containerd://ee87c61854f3499fcad5a6a23a7d5e23e33391feeefba5197baf9075f2a67ad1",
+        "image": "nvcr.io/nvidia/gpu-operator:v25.10.0",
+        "imageID": "nvcr.io/nvidia/gpu-operator@sha256:d4841412c9b8d27c53b1588dcebffc5451e9ab0fd36b2c656c33a65356507cfd",
+        "lastState": {},
+        "name": "toolkit-validation",
+        "ready": true,
+        "resources": {},
+        "restartCount": 2,
+        "started": false,
+        "state": {
+          "terminated": {
+            "containerID": "containerd://ee87c61854f3499fcad5a6a23a7d5e23e33391feeefba5197baf9075f2a67ad1",
+            "exitCode": 0,
+            "finishedAt": "2026-11-16T21:00:24Z",
+            "reason": "Completed",
+            "startedAt": "2026-11-16T21:00:23Z"
+          }
+        },
+        "user": {
+          "linux": {
+            "gid": 0,
+            "supplementalGroups": [
+              0
+            ],
+            "uid": 0
+          }
+        },
+        "volumeMounts": [
+          {
+            "mountPath": "/run/nvidia/validations",
+            "name": "run-nvidia-validations"
+          },
+          {
+            "mountPath": "/var/run/secrets/kubernetes.io/serviceaccount",
+            "name": "kube-api-access-v2kkm",
+            "readOnly": true,
+            "recursiveReadOnly": "Disabled"
+          }
+        ]
+      },
+      {
+        "containerID": "containerd://a7f622889a89fdb38ae28d0b30f864e510b42a28bcadbfa991b650bc9dd34953",
+        "image": "nvcr.io/nvidia/gpu-operator:v25.10.0",
+        "imageID": "nvcr.io/nvidia/gpu-operator@sha256:d4841412c9b8d27c53b1588dcebffc5451e9ab0fd36b2c656c33a65356507cfd",
+        "lastState": {},
+        "name": "cuda-validation",
+        "ready": true,
+        "resources": {},
+        "restartCount": 0,
+        "started": false,
+        "state": {
+          "terminated": {
+            "containerID": "containerd://a7f622889a89fdb38ae28d0b30f864e510b42a28bcadbfa991b650bc9dd34953",
+            "exitCode": 0,
+            "finishedAt": "2026-11-16T21:00:35Z",
+            "reason": "Completed",
+            "startedAt": "2026-11-16T21:00:25Z"
+          }
+        },
+        "user": {
+          "linux": {
+            "gid": 0,
+            "supplementalGroups": [
+              0
+            ],
+            "uid": 0
+          }
+        },
+        "volumeMounts": [
+          {
+            "mountPath": "/run/nvidia/validations",
+            "name": "run-nvidia-validations"
+          },
+          {
+            "mountPath": "/var/run/secrets/kubernetes.io/serviceaccount",
+            "name": "kube-api-access-v2kkm",
+            "readOnly": true,
+            "recursiveReadOnly": "Disabled"
+          }
+        ]
+      },
+      {
+        "containerID": "containerd://22110d06c24f57d54dacee33fea880e6687b524b0dbe5bc4b4383f586506dd9c",
+        "image": "nvcr.io/nvidia/gpu-operator:v25.10.0",
+        "imageID": "nvcr.io/nvidia/gpu-operator@sha256:d4841412c9b8d27c53b1588dcebffc5451e9ab0fd36b2c656c33a65356507cfd",
+        "lastState": {},
+        "name": "plugin-validation",
+        "ready": true,
+        "resources": {},
+        "restartCount": 0,
+        "started": false,
+        "state": {
+          "terminated": {
+            "containerID": "containerd://22110d06c24f57d54dacee33fea880e6687b524b0dbe5bc4b4383f586506dd9c",
+            "exitCode": 0,
+            "finishedAt": "2026-11-16T21:00:36Z",
+            "reason": "Completed",
+            "startedAt": "2026-11-16T21:00:36Z"
+          }
+        },
+        "user": {
+          "linux": {
+            "gid": 0,
+            "supplementalGroups": [
+              0
+            ],
+            "uid": 0
+          }
+        },
+        "volumeMounts": [
+          {
+            "mountPath": "/run/nvidia/validations",
+            "name": "run-nvidia-validations"
+          },
+          {
+            "mountPath": "/var/run/secrets/kubernetes.io/serviceaccount",
+            "name": "kube-api-access-v2kkm",
+            "readOnly": true,
+            "recursiveReadOnly": "Disabled"
+          }
+        ]
+      }
+    ],
+    "observedGeneration": 1,
+    "phase": "Running",
+    "podIP": "10.42.7.203",
+    "podIPs": [
+      {
+        "ip": "10.42.7.203"
+      }
+    ],
+    "qosClass": "BestEffort",
+    "startTime": "2026-11-16T12:01:07Z"
+  }
+}

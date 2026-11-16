@@ -1,0 +1,871 @@
+{
+    "apiVersion": "v1",
+    "items": [
+        {
+            "apiVersion": "v1",
+            "kind": "Pod",
+            "metadata": {
+                "annotations": {
+                    "prometheus.io/path": "/metrics",
+                    "prometheus.io/port": "2112",
+                    "prometheus.io/scrape": "true"
+                },
+                "creationTimestamp": "2026-11-16T21:12:18Z",
+                "generateName": "gpu-fractioning-fractiond-",
+                "generation": 1,
+                "labels": {
+                    "app.kubernetes.io/component": "fractiond",
+                    "app.kubernetes.io/managed-by": "gpu-fractioning",
+                    "controller-revision-hash": "688764755c",
+                    "pod-template-generation": "2"
+                },
+                "name": "gpu-fractioning-fractiond-p57lq",
+                "namespace": "gpu-fractioning",
+                "ownerReferences": [
+                    {
+                        "apiVersion": "apps/v1",
+                        "blockOwnerDeletion": true,
+                        "controller": true,
+                        "kind": "DaemonSet",
+                        "name": "gpu-fractioning-fractiond",
+                        "uid": "681c20fa-6e9c-4500-9bfa-4c797567df03"
+                    }
+                ],
+                "resourceVersion": "406902087",
+                "uid": "9e2e3161-2b79-43d9-89cd-f959e107abc1"
+            },
+            "spec": {
+                "affinity": {
+                    "nodeAffinity": {
+                        "requiredDuringSchedulingIgnoredDuringExecution": {
+                            "nodeSelectorTerms": [
+                                {
+                                    "matchFields": [
+                                        {
+                                            "key": "metadata.name",
+                                            "operator": "In",
+                                            "values": [
+                                                "k3s-wk-gpu2"
+                                            ]
+                                        }
+                                    ]
+                                }
+                            ]
+                        }
+                    }
+                },
+                "automountServiceAccountToken": false,
+                "containers": [
+                    {
+                        "args": [
+                            "--support-sm-sharing=false",
+                            "--inject-cdi-device=false",
+                            "--socket-path",
+                            "/var/run/nri/nri.sock",
+                            "--retroactive-enforcement=true",
+                            "--cri-socket",
+                            "/run/k3s/containerd/containerd.sock"
+                        ],
+                        "image": "ghcr.io/kai-scheduler/gpu-fractioning/fractiond:v0.1.9",
+                        "imagePullPolicy": "IfNotPresent",
+                        "livenessProbe": {
+                            "failureThreshold": 3,
+                            "initialDelaySeconds": 10,
+                            "periodSeconds": 20,
+                            "successThreshold": 1,
+                            "tcpSocket": {
+                                "port": 8093
+                            },
+                            "timeoutSeconds": 1
+                        },
+                        "name": "fractiond",
+                        "ports": [
+                            {
+                                "containerPort": 8093,
+                                "name": "readiness",
+                                "protocol": "TCP"
+                            }
+                        ],
+                        "readinessProbe": {
+                            "failureThreshold": 3,
+                            "httpGet": {
+                                "path": "/readyz",
+                                "port": 8093,
+                                "scheme": "HTTP"
+                            },
+                            "initialDelaySeconds": 5,
+                            "periodSeconds": 10,
+                            "successThreshold": 1,
+                            "timeoutSeconds": 1
+                        },
+                        "resources": {
+                            "limits": {
+                                "memory": "256Mi"
+                            },
+                            "requests": {
+                                "cpu": "50m",
+                                "ephemeral-storage": "100Mi",
+                                "memory": "64Mi"
+                            }
+                        },
+                        "securityContext": {
+                            "privileged": true
+                        },
+                        "terminationMessagePath": "/dev/termination-log",
+                        "terminationMessagePolicy": "File",
+                        "volumeMounts": [
+                            {
+                                "mountPath": "/var/run/nri",
+                                "name": "nri-socket"
+                            },
+                            {
+                                "mountPath": "/run/nvidia-mps",
+                                "name": "mps-pipe"
+                            },
+                            {
+                                "mountPath": "/run/k3s/containerd",
+                                "name": "cri-socket"
+                            },
+                            {
+                                "mountPath": "/var/run/gpu-fractioning/map",
+                                "name": "map-dir"
+                            }
+                        ]
+                    },
+                    {
+                        "env": [
+                            {
+                                "name": "NVIDIA_VISIBLE_DEVICES",
+                                "value": "all"
+                            },
+                            {
+                                "name": "NVIDIA_DRIVER_CAPABILITIES",
+                                "value": "utility"
+                            }
+                        ],
+                        "image": "ghcr.io/kai-scheduler/gpu-fractioning/metricsd:v0.1.9",
+                        "imagePullPolicy": "IfNotPresent",
+                        "livenessProbe": {
+                            "failureThreshold": 3,
+                            "httpGet": {
+                                "path": "/healthz",
+                                "port": 2112,
+                                "scheme": "HTTP"
+                            },
+                            "initialDelaySeconds": 15,
+                            "periodSeconds": 20,
+                            "successThreshold": 1,
+                            "timeoutSeconds": 1
+                        },
+                        "name": "metricsd",
+                        "ports": [
+                            {
+                                "containerPort": 2112,
+                                "name": "metrics",
+                                "protocol": "TCP"
+                            }
+                        ],
+                        "readinessProbe": {
+                            "failureThreshold": 3,
+                            "httpGet": {
+                                "path": "/readyz",
+                                "port": 2112,
+                                "scheme": "HTTP"
+                            },
+                            "initialDelaySeconds": 5,
+                            "periodSeconds": 10,
+                            "successThreshold": 1,
+                            "timeoutSeconds": 1
+                        },
+                        "resources": {
+                            "limits": {
+                                "memory": "512Mi"
+                            },
+                            "requests": {
+                                "cpu": "50m",
+                                "ephemeral-storage": "100Mi",
+                                "memory": "128Mi"
+                            }
+                        },
+                        "securityContext": {
+                            "privileged": true
+                        },
+                        "terminationMessagePath": "/dev/termination-log",
+                        "terminationMessagePolicy": "File",
+                        "volumeMounts": [
+                            {
+                                "mountPath": "/var/run/gpu-fractioning/map",
+                                "name": "map-dir",
+                                "readOnly": true
+                            },
+                            {
+                                "mountPath": "/run/nvidia/validations/driver-ready",
+                                "name": "gpu-operator-driver-ready",
+                                "readOnly": true
+                            }
+                        ]
+                    }
+                ],
+                "dnsPolicy": "ClusterFirst",
+                "enableServiceLinks": true,
+                "hostPID": true,
+                "nodeName": "k3s-wk-gpu2",
+                "nodeSelector": {
+                    "cps.unileoben.ac.at/fractioning-runtime": "upstream",
+                    "nvidia.com/gpu.deploy.client": "true"
+                },
+                "preemptionPolicy": "PreemptLowerPriority",
+                "priority": 0,
+                "restartPolicy": "Always",
+                "runtimeClassName": "nvidia",
+                "schedulerName": "default-scheduler",
+                "securityContext": {},
+                "serviceAccount": "gpu-fractioning-daemon",
+                "serviceAccountName": "gpu-fractioning-daemon",
+                "terminationGracePeriodSeconds": 30,
+                "tolerations": [
+                    {
+                        "effect": "NoSchedule",
+                        "key": "nvidia.com/gpu",
+                        "operator": "Exists"
+                    },
+                    {
+                        "effect": "NoSchedule",
+                        "key": "cps.unileoben.ac.at/maintenance",
+                        "operator": "Exists"
+                    },
+                    {
+                        "effect": "NoExecute",
+                        "key": "node.kubernetes.io/not-ready",
+                        "operator": "Exists"
+                    },
+                    {
+                        "effect": "NoExecute",
+                        "key": "node.kubernetes.io/unreachable",
+                        "operator": "Exists"
+                    },
+                    {
+                        "effect": "NoSchedule",
+                        "key": "node.kubernetes.io/disk-pressure",
+                        "operator": "Exists"
+                    },
+                    {
+                        "effect": "NoSchedule",
+                        "key": "node.kubernetes.io/memory-pressure",
+                        "operator": "Exists"
+                    },
+                    {
+                        "effect": "NoSchedule",
+                        "key": "node.kubernetes.io/pid-pressure",
+                        "operator": "Exists"
+                    },
+                    {
+                        "effect": "NoSchedule",
+                        "key": "node.kubernetes.io/unschedulable",
+                        "operator": "Exists"
+                    }
+                ],
+                "volumes": [
+                    {
+                        "hostPath": {
+                            "path": "/var/run/nri",
+                            "type": ""
+                        },
+                        "name": "nri-socket"
+                    },
+                    {
+                        "hostPath": {
+                            "path": "/run/nvidia-mps",
+                            "type": ""
+                        },
+                        "name": "mps-pipe"
+                    },
+                    {
+                        "hostPath": {
+                            "path": "/run/k3s/containerd",
+                            "type": "DirectoryOrCreate"
+                        },
+                        "name": "cri-socket"
+                    },
+                    {
+                        "hostPath": {
+                            "path": "/var/run/gpu-fractioning/map",
+                            "type": "DirectoryOrCreate"
+                        },
+                        "name": "map-dir"
+                    },
+                    {
+                        "hostPath": {
+                            "path": "/run/nvidia/validations/driver-ready",
+                            "type": "File"
+                        },
+                        "name": "gpu-operator-driver-ready"
+                    }
+                ]
+            },
+            "status": {
+                "conditions": [
+                    {
+                        "lastProbeTime": null,
+                        "lastTransitionTime": "2026-11-16T21:23:30Z",
+                        "observedGeneration": 1,
+                        "status": "True",
+                        "type": "PodReadyToStartContainers"
+                    },
+                    {
+                        "lastProbeTime": null,
+                        "lastTransitionTime": "2026-11-16T21:12:18Z",
+                        "observedGeneration": 1,
+                        "status": "True",
+                        "type": "Initialized"
+                    },
+                    {
+                        "lastProbeTime": null,
+                        "lastTransitionTime": "2026-11-16T21:23:37Z",
+                        "observedGeneration": 1,
+                        "status": "True",
+                        "type": "Ready"
+                    },
+                    {
+                        "lastProbeTime": null,
+                        "lastTransitionTime": "2026-11-16T21:23:37Z",
+                        "observedGeneration": 1,
+                        "status": "True",
+                        "type": "ContainersReady"
+                    },
+                    {
+                        "lastProbeTime": null,
+                        "lastTransitionTime": "2026-11-16T21:12:18Z",
+                        "observedGeneration": 1,
+                        "status": "True",
+                        "type": "PodScheduled"
+                    }
+                ],
+                "containerStatuses": [
+                    {
+                        "allocatedResources": {
+                            "cpu": "50m",
+                            "ephemeral-storage": "100Mi",
+                            "memory": "64Mi"
+                        },
+                        "containerID": "containerd://17d58d729c563b4ff4793e7b44813e2e402e89dfbe4473b370584461946dc559",
+                        "image": "ghcr.io/kai-scheduler/gpu-fractioning/fractiond:v0.1.9",
+                        "imageID": "ghcr.io/kai-scheduler/gpu-fractioning/fractiond@sha256:29c5fca25c1b35f22cf9f1e6c53acaa79d0b9f722ed6e8417caf438c06cd3739",
+                        "lastState": {
+                            "terminated": {
+                                "containerID": "containerd://2a2cd555c9ea0b9ed9403287c1d3a963b622975051664ee36877902b985f9baf",
+                                "exitCode": 255,
+                                "finishedAt": "2026-11-16T21:21:35Z",
+                                "reason": "Unknown",
+                                "startedAt": "2026-11-16T21:12:19Z"
+                            }
+                        },
+                        "name": "fractiond",
+                        "ready": true,
+                        "resources": {
+                            "limits": {
+                                "memory": "256Mi"
+                            },
+                            "requests": {
+                                "cpu": "50m",
+                                "ephemeral-storage": "100Mi",
+                                "memory": "64Mi"
+                            }
+                        },
+                        "restartCount": 1,
+                        "started": true,
+                        "state": {
+                            "running": {
+                                "startedAt": "2026-11-16T21:23:30Z"
+                            }
+                        },
+                        "user": {
+                            "linux": {
+                                "gid": 0,
+                                "supplementalGroups": [
+                                    0
+                                ],
+                                "uid": 0
+                            }
+                        },
+                        "volumeMounts": [
+                            {
+                                "mountPath": "/var/run/nri",
+                                "name": "nri-socket"
+                            },
+                            {
+                                "mountPath": "/run/nvidia-mps",
+                                "name": "mps-pipe"
+                            },
+                            {
+                                "mountPath": "/run/k3s/containerd",
+                                "name": "cri-socket"
+                            },
+                            {
+                                "mountPath": "/var/run/gpu-fractioning/map",
+                                "name": "map-dir"
+                            }
+                        ]
+                    },
+                    {
+                        "allocatedResources": {
+                            "cpu": "50m",
+                            "ephemeral-storage": "100Mi",
+                            "memory": "128Mi"
+                        },
+                        "containerID": "containerd://9a15838a91cd0fdc973bc5cd641e19caa0a80f67e841cc988aa5986117673225",
+                        "image": "ghcr.io/kai-scheduler/gpu-fractioning/metricsd:v0.1.9",
+                        "imageID": "ghcr.io/kai-scheduler/gpu-fractioning/metricsd@sha256:7a619c92651d0744bcd80745be264f3b6c213ad4f3a12fef19a339df422af2bf",
+                        "lastState": {
+                            "terminated": {
+                                "containerID": "containerd://ff1f05033d3b97e2846f14a3ff64515f9495ddaa5bf6727cbcfe65505e5e19f9",
+                                "exitCode": 255,
+                                "finishedAt": "2026-11-16T21:21:35Z",
+                                "reason": "Unknown",
+                                "startedAt": "2026-11-16T21:12:19Z"
+                            }
+                        },
+                        "name": "metricsd",
+                        "ready": true,
+                        "resources": {
+                            "limits": {
+                                "memory": "512Mi"
+                            },
+                            "requests": {
+                                "cpu": "50m",
+                                "ephemeral-storage": "100Mi",
+                                "memory": "128Mi"
+                            }
+                        },
+                        "restartCount": 1,
+                        "started": true,
+                        "state": {
+                            "running": {
+                                "startedAt": "2026-11-16T21:23:30Z"
+                            }
+                        },
+                        "user": {
+                            "linux": {
+                                "gid": 0,
+                                "supplementalGroups": [
+                                    0
+                                ],
+                                "uid": 0
+                            }
+                        },
+                        "volumeMounts": [
+                            {
+                                "mountPath": "/var/run/gpu-fractioning/map",
+                                "name": "map-dir",
+                                "readOnly": true,
+                                "recursiveReadOnly": "Disabled"
+                            },
+                            {
+                                "mountPath": "/run/nvidia/validations/driver-ready",
+                                "name": "gpu-operator-driver-ready",
+                                "readOnly": true,
+                                "recursiveReadOnly": "Disabled"
+                            }
+                        ]
+                    }
+                ],
+                "hostIP": "10.21.0.43",
+                "hostIPs": [
+                    {
+                        "ip": "10.21.0.43"
+                    }
+                ],
+                "observedGeneration": 1,
+                "phase": "Running",
+                "podIP": "10.42.7.231",
+                "podIPs": [
+                    {
+                        "ip": "10.42.7.231"
+                    }
+                ],
+                "qosClass": "Burstable",
+                "startTime": "2026-11-16T21:12:18Z"
+            }
+        },
+        {
+            "apiVersion": "v1",
+            "kind": "Pod",
+            "metadata": {
+                "creationTimestamp": "2026-11-16T20:21:42Z",
+                "generateName": "gpu-fractioning-mpsd-",
+                "generation": 1,
+                "labels": {
+                    "app.kubernetes.io/component": "mpsd",
+                    "app.kubernetes.io/managed-by": "gpu-fractioning",
+                    "controller-revision-hash": "7dd94648ff",
+                    "pod-template-generation": "1"
+                },
+                "name": "gpu-fractioning-mpsd-2q2wm",
+                "namespace": "gpu-fractioning",
+                "ownerReferences": [
+                    {
+                        "apiVersion": "apps/v1",
+                        "blockOwnerDeletion": true,
+                        "controller": true,
+                        "kind": "DaemonSet",
+                        "name": "gpu-fractioning-mpsd",
+                        "uid": "af5f7054-c46a-4913-b900-deb73f9c8bc5"
+                    }
+                ],
+                "resourceVersion": "406902215",
+                "uid": "9a73fb96-8018-40a2-bbd6-642fa79ad322"
+            },
+            "spec": {
+                "affinity": {
+                    "nodeAffinity": {
+                        "requiredDuringSchedulingIgnoredDuringExecution": {
+                            "nodeSelectorTerms": [
+                                {
+                                    "matchFields": [
+                                        {
+                                            "key": "metadata.name",
+                                            "operator": "In",
+                                            "values": [
+                                                "k3s-wk-gpu2"
+                                            ]
+                                        }
+                                    ]
+                                }
+                            ]
+                        }
+                    }
+                },
+                "containers": [
+                    {
+                        "env": [
+                            {
+                                "name": "NODE_NAME",
+                                "valueFrom": {
+                                    "fieldRef": {
+                                        "apiVersion": "v1",
+                                        "fieldPath": "spec.nodeName"
+                                    }
+                                }
+                            },
+                            {
+                                "name": "NVIDIA_VISIBLE_DEVICES",
+                                "value": "all"
+                            },
+                            {
+                                "name": "NVIDIA_DRIVER_CAPABILITIES",
+                                "value": "compute,utility"
+                            },
+                            {
+                                "name": "MPS_MEMACCT_AUDIT_LOG",
+                                "value": "true"
+                            },
+                            {
+                                "name": "MPS_SUPPORT_SM_SHARING",
+                                "value": "false"
+                            }
+                        ],
+                        "image": "ghcr.io/kai-scheduler/gpu-fractioning/mpsd:v0.1.9",
+                        "imagePullPolicy": "IfNotPresent",
+                        "livenessProbe": {
+                            "exec": {
+                                "command": [
+                                    "test",
+                                    "-S",
+                                    "/run/nvidia-mps/control"
+                                ]
+                            },
+                            "failureThreshold": 6,
+                            "initialDelaySeconds": 60,
+                            "periodSeconds": 30,
+                            "successThreshold": 1,
+                            "timeoutSeconds": 1
+                        },
+                        "name": "mpsd",
+                        "readinessProbe": {
+                            "exec": {
+                                "command": [
+                                    "test",
+                                    "-S",
+                                    "/run/nvidia-mps/control"
+                                ]
+                            },
+                            "failureThreshold": 3,
+                            "initialDelaySeconds": 5,
+                            "periodSeconds": 10,
+                            "successThreshold": 1,
+                            "timeoutSeconds": 1
+                        },
+                        "resources": {
+                            "limits": {
+                                "memory": "1Gi"
+                            },
+                            "requests": {
+                                "cpu": "50m",
+                                "ephemeral-storage": "100Mi",
+                                "memory": "64Mi"
+                            }
+                        },
+                        "securityContext": {
+                            "privileged": true
+                        },
+                        "terminationMessagePath": "/dev/termination-log",
+                        "terminationMessagePolicy": "File",
+                        "volumeMounts": [
+                            {
+                                "mountPath": "/run/nvidia-mps",
+                                "name": "mps-pipe"
+                            },
+                            {
+                                "mountPath": "/var/log/nvidia-mps",
+                                "name": "mps-log"
+                            },
+                            {
+                                "mountPath": "/var/run/secrets/kubernetes.io/serviceaccount",
+                                "name": "kube-api-access-gl9q8",
+                                "readOnly": true
+                            }
+                        ]
+                    }
+                ],
+                "dnsPolicy": "ClusterFirst",
+                "enableServiceLinks": true,
+                "hostPID": true,
+                "nodeName": "k3s-wk-gpu2",
+                "nodeSelector": {
+                    "cps.unileoben.ac.at/fractioning-runtime": "upstream",
+                    "nvidia.com/gpu.deploy.client": "true"
+                },
+                "preemptionPolicy": "PreemptLowerPriority",
+                "priority": 0,
+                "restartPolicy": "Always",
+                "runtimeClassName": "nvidia",
+                "schedulerName": "default-scheduler",
+                "securityContext": {},
+                "serviceAccount": "gpu-fractioning-daemon",
+                "serviceAccountName": "gpu-fractioning-daemon",
+                "terminationGracePeriodSeconds": 75,
+                "tolerations": [
+                    {
+                        "effect": "NoSchedule",
+                        "key": "nvidia.com/gpu",
+                        "operator": "Exists"
+                    },
+                    {
+                        "effect": "NoSchedule",
+                        "key": "cps.unileoben.ac.at/maintenance",
+                        "operator": "Exists"
+                    },
+                    {
+                        "effect": "NoExecute",
+                        "key": "node.kubernetes.io/not-ready",
+                        "operator": "Exists"
+                    },
+                    {
+                        "effect": "NoExecute",
+                        "key": "node.kubernetes.io/unreachable",
+                        "operator": "Exists"
+                    },
+                    {
+                        "effect": "NoSchedule",
+                        "key": "node.kubernetes.io/disk-pressure",
+                        "operator": "Exists"
+                    },
+                    {
+                        "effect": "NoSchedule",
+                        "key": "node.kubernetes.io/memory-pressure",
+                        "operator": "Exists"
+                    },
+                    {
+                        "effect": "NoSchedule",
+                        "key": "node.kubernetes.io/pid-pressure",
+                        "operator": "Exists"
+                    },
+                    {
+                        "effect": "NoSchedule",
+                        "key": "node.kubernetes.io/unschedulable",
+                        "operator": "Exists"
+                    }
+                ],
+                "volumes": [
+                    {
+                        "hostPath": {
+                            "path": "/run/nvidia-mps",
+                            "type": "DirectoryOrCreate"
+                        },
+                        "name": "mps-pipe"
+                    },
+                    {
+                        "hostPath": {
+                            "path": "/var/log/nvidia-mps",
+                            "type": "DirectoryOrCreate"
+                        },
+                        "name": "mps-log"
+                    },
+                    {
+                        "name": "kube-api-access-gl9q8",
+                        "projected": {
+                            "defaultMode": 420,
+                            "sources": [
+                                {
+                                    "serviceAccountToken": {
+                                        "expirationSeconds": 3607,
+                                        "path": "token"
+                                    }
+                                },
+                                {
+                                    "configMap": {
+                                        "items": [
+                                            {
+                                                "key": "ca.crt",
+                                                "path": "ca.crt"
+                                            }
+                                        ],
+                                        "name": "kube-root-ca.crt"
+                                    }
+                                },
+                                {
+                                    "downwardAPI": {
+                                        "items": [
+                                            {
+                                                "fieldRef": {
+                                                    "apiVersion": "v1",
+                                                    "fieldPath": "metadata.namespace"
+                                                },
+                                                "path": "namespace"
+                                            }
+                                        ]
+                                    }
+                                }
+                            ]
+                        }
+                    }
+                ]
+            },
+            "status": {
+                "conditions": [
+                    {
+                        "lastProbeTime": null,
+                        "lastTransitionTime": "2026-11-16T21:21:43Z",
+                        "observedGeneration": 1,
+                        "status": "True",
+                        "type": "PodReadyToStartContainers"
+                    },
+                    {
+                        "lastProbeTime": null,
+                        "lastTransitionTime": "2026-11-16T20:21:42Z",
+                        "observedGeneration": 1,
+                        "status": "True",
+                        "type": "Initialized"
+                    },
+                    {
+                        "lastProbeTime": null,
+                        "lastTransitionTime": "2026-11-16T21:23:43Z",
+                        "observedGeneration": 1,
+                        "status": "True",
+                        "type": "Ready"
+                    },
+                    {
+                        "lastProbeTime": null,
+                        "lastTransitionTime": "2026-11-16T21:23:43Z",
+                        "observedGeneration": 1,
+                        "status": "True",
+                        "type": "ContainersReady"
+                    },
+                    {
+                        "lastProbeTime": null,
+                        "lastTransitionTime": "2026-11-16T20:21:42Z",
+                        "observedGeneration": 1,
+                        "status": "True",
+                        "type": "PodScheduled"
+                    }
+                ],
+                "containerStatuses": [
+                    {
+                        "allocatedResources": {
+                            "cpu": "50m",
+                            "ephemeral-storage": "100Mi",
+                            "memory": "64Mi"
+                        },
+                        "containerID": "containerd://b20488c7e4b6a0f451bd5082c853d71c2d2d32873708ecc2ddcbd1ef8a8e55fe",
+                        "image": "ghcr.io/kai-scheduler/gpu-fractioning/mpsd:v0.1.9",
+                        "imageID": "ghcr.io/kai-scheduler/gpu-fractioning/mpsd@sha256:f161d6c653c668e49e384ae15794421777464248c5e533660ac26b006787b102",
+                        "lastState": {
+                            "terminated": {
+                                "containerID": "containerd://f4d032016c5830e9b0987f48ad724027187a26d771404a1da31f9f055c110093",
+                                "exitCode": 128,
+                                "finishedAt": "2026-11-16T21:23:10Z",
+                                "message": "failed to create containerd task: failed to create shim task: OCI runtime create failed: could not apply required modification to OCI specification: error modifying OCI spec: failed to inject CDI devices: unresolvable CDI devices management.nvidia.com/gpu=all",
+                                "reason": "StartError",
+                                "startedAt": "1970-01-01T00:00:00Z"
+                            }
+                        },
+                        "name": "mpsd",
+                        "ready": true,
+                        "resources": {
+                            "limits": {
+                                "memory": "1Gi"
+                            },
+                            "requests": {
+                                "cpu": "50m",
+                                "ephemeral-storage": "100Mi",
+                                "memory": "64Mi"
+                            }
+                        },
+                        "restartCount": 9,
+                        "started": true,
+                        "state": {
+                            "running": {
+                                "startedAt": "2026-11-16T21:23:30Z"
+                            }
+                        },
+                        "user": {
+                            "linux": {
+                                "gid": 0,
+                                "supplementalGroups": [
+                                    0
+                                ],
+                                "uid": 0
+                            }
+                        },
+                        "volumeMounts": [
+                            {
+                                "mountPath": "/run/nvidia-mps",
+                                "name": "mps-pipe"
+                            },
+                            {
+                                "mountPath": "/var/log/nvidia-mps",
+                                "name": "mps-log"
+                            },
+                            {
+                                "mountPath": "/var/run/secrets/kubernetes.io/serviceaccount",
+                                "name": "kube-api-access-gl9q8",
+                                "readOnly": true,
+                                "recursiveReadOnly": "Disabled"
+                            }
+                        ]
+                    }
+                ],
+                "hostIP": "10.21.0.43",
+                "hostIPs": [
+                    {
+                        "ip": "10.21.0.43"
+                    }
+                ],
+                "observedGeneration": 1,
+                "phase": "Running",
+                "podIP": "10.42.7.218",
+                "podIPs": [
+                    {
+                        "ip": "10.42.7.218"
+                    }
+                ],
+                "qosClass": "Burstable",
+                "startTime": "2026-11-16T20:21:42Z"
+            }
+        }
+    ],
+    "kind": "List",
+    "metadata": {
+        "resourceVersion": ""
+    }
+}

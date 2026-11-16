@@ -1,0 +1,124 @@
+[
+  {
+    "name": "nvidia-container-toolkit-daemonset-wxbsw",
+    "uid": "e1301a0b-ae46-471f-8b36-90a58827621c",
+    "driver_validation": [
+      {
+        "containerID": "containerd://9e9741de9980bef8a8aa3db7562cf224d71782b0e94baa48a5127a10f47b9e0c",
+        "image": "nvcr.io/nvidia/gpu-operator:v25.10.0",
+        "imageID": "nvcr.io/nvidia/gpu-operator@sha256:d4841412c9b8d27c53b1588dcebffc5451e9ab0fd36b2c656c33a65356507cfd",
+        "lastState": {},
+        "name": "driver-validation",
+        "ready": true,
+        "resources": {},
+        "restartCount": 4,
+        "started": false,
+        "state": {
+          "terminated": {
+            "containerID": "containerd://9e9741de9980bef8a8aa3db7562cf224d71782b0e94baa48a5127a10f47b9e0c",
+            "exitCode": 0,
+            "finishedAt": "2026-11-16T21:23:13Z",
+            "reason": "Completed",
+            "startedAt": "2026-11-16T21:21:42Z"
+          }
+        },
+        "user": {
+          "linux": {
+            "gid": 0,
+            "supplementalGroups": [
+              0
+            ],
+            "uid": 0
+          }
+        },
+        "volumeMounts": [
+          {
+            "mountPath": "/run/nvidia/driver",
+            "name": "driver-install-dir"
+          },
+          {
+            "mountPath": "/run/nvidia/validations",
+            "name": "run-nvidia-validations"
+          },
+          {
+            "mountPath": "/host",
+            "name": "host-root",
+            "readOnly": true,
+            "recursiveReadOnly": "Disabled"
+          },
+          {
+            "mountPath": "/host-dev-char",
+            "name": "host-dev-char"
+          },
+          {
+            "mountPath": "/var/run/secrets/kubernetes.io/serviceaccount",
+            "name": "kube-api-access-92fsb",
+            "readOnly": true,
+            "recursiveReadOnly": "Disabled"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "name": "nvidia-operator-validator-bstjv",
+    "uid": "02ef0331-b167-4aac-bec0-e7eecbfe2267",
+    "driver_validation": [
+      {
+        "containerID": "containerd://2a5252039d5c4e9ceb7ae59d60d8e24fdaea5a420ca713fd269971c267f56190",
+        "image": "nvcr.io/nvidia/gpu-operator:v25.10.0",
+        "imageID": "nvcr.io/nvidia/gpu-operator@sha256:d4841412c9b8d27c53b1588dcebffc5451e9ab0fd36b2c656c33a65356507cfd",
+        "lastState": {},
+        "name": "driver-validation",
+        "ready": true,
+        "resources": {},
+        "restartCount": 4,
+        "started": false,
+        "state": {
+          "terminated": {
+            "containerID": "containerd://2a5252039d5c4e9ceb7ae59d60d8e24fdaea5a420ca713fd269971c267f56190",
+            "exitCode": 0,
+            "finishedAt": "2026-11-16T21:23:08Z",
+            "reason": "Completed",
+            "startedAt": "2026-11-16T21:21:42Z"
+          }
+        },
+        "user": {
+          "linux": {
+            "gid": 0,
+            "supplementalGroups": [
+              0
+            ],
+            "uid": 0
+          }
+        },
+        "volumeMounts": [
+          {
+            "mountPath": "/host",
+            "name": "host-root",
+            "readOnly": true,
+            "recursiveReadOnly": "Disabled"
+          },
+          {
+            "mountPath": "/run/nvidia/driver",
+            "name": "driver-install-dir"
+          },
+          {
+            "mountPath": "/run/nvidia/validations",
+            "name": "run-nvidia-validations"
+          },
+          {
+            "mountPath": "/host-dev-char",
+            "name": "host-dev-char"
+          },
+          {
+            "mountPath": "/var/run/secrets/kubernetes.io/serviceaccount",
+            "name": "kube-api-access-v2kkm",
+            "readOnly": true,
+            "recursiveReadOnly": "Disabled"
+          }
+        ]
+      }
+    ]
+  }
+]

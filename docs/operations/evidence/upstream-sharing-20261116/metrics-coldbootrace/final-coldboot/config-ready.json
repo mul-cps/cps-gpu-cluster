@@ -1,0 +1,107 @@
+{
+    "apiVersion": "gpu-fractioning.kai.scheduler/v1alpha1",
+    "kind": "GpuFractioningConfig",
+    "metadata": {
+        "annotations": {
+            "meta.helm.sh/release-name": "gpu-fractioning",
+            "meta.helm.sh/release-namespace": "gpu-fractioning",
+            "objectset.rio.cattle.io/id": "default-gpu-fractioning-cattle-fleet-local-system"
+        },
+        "creationTimestamp": "2026-11-16T20:21:42Z",
+        "finalizers": [
+            "gpu-fractioning.nvidia.com/cleanup-node-conditions"
+        ],
+        "generation": 2,
+        "labels": {
+            "app.kubernetes.io/instance": "gpu-fractioning",
+            "app.kubernetes.io/managed-by": "Helm",
+            "app.kubernetes.io/name": "gpu-fractioning",
+            "app.kubernetes.io/version": "v0.1.9",
+            "helm.sh/chart": "gpu-fractioning-v0.1.9",
+            "objectset.rio.cattle.io/hash": "824e40c55840760c8892b78818286b634903401a"
+        },
+        "name": "default",
+        "resourceVersion": "406902218",
+        "uid": "5af80b29-3380-452c-8d8b-44f0a9326c18"
+    },
+    "spec": {
+        "fractioningAgent": {
+            "criSocketPath": "/run/k3s/containerd/containerd.sock",
+            "failOpen": false,
+            "nriSocketPath": "/var/run/nri/nri.sock",
+            "retroactiveEnforcement": true
+        },
+        "metricsAgent": {
+            "enabled": true,
+            "volumeMounts": [
+                {
+                    "mountPath": "/run/nvidia/validations/driver-ready",
+                    "name": "gpu-operator-driver-ready",
+                    "readOnly": true
+                }
+            ],
+            "volumes": [
+                {
+                    "hostPath": {
+                        "path": "/run/nvidia/validations/driver-ready",
+                        "type": "File"
+                    },
+                    "name": "gpu-operator-driver-ready"
+                }
+            ]
+        },
+        "nodeSelector": {
+            "cps.unileoben.ac.at/fractioning-runtime": "upstream"
+        },
+        "runtimeClassName": "nvidia",
+        "tolerations": [
+            {
+                "effect": "NoSchedule",
+                "key": "nvidia.com/gpu",
+                "operator": "Exists"
+            },
+            {
+                "effect": "NoSchedule",
+                "key": "cps.unileoben.ac.at/maintenance",
+                "operator": "Exists"
+            }
+        ]
+    },
+    "status": {
+        "conditions": [
+            {
+                "lastTransitionTime": "2026-11-16T21:23:37Z",
+                "message": "1 of 1 pods ready",
+                "observedGeneration": 2,
+                "reason": "AllPodsReady",
+                "status": "True",
+                "type": "FractiondReady"
+            },
+            {
+                "lastTransitionTime": "2026-11-16T21:23:43Z",
+                "message": "1 of 1 pods ready",
+                "observedGeneration": 2,
+                "reason": "AllPodsReady",
+                "status": "True",
+                "type": "MpsdReady"
+            },
+            {
+                "lastTransitionTime": "2026-11-16T21:23:43Z",
+                "message": "all components are healthy",
+                "observedGeneration": 2,
+                "reason": "AllComponentsReady",
+                "status": "True",
+                "type": "Ready"
+            },
+            {
+                "lastTransitionTime": "2026-11-16T20:21:42Z",
+                "message": "",
+                "observedGeneration": 2,
+                "reason": "NoDriverUpgrade",
+                "status": "False",
+                "type": "DriverUpgradeInProgress"
+            }
+        ],
+        "observedGeneration": 2
+    }
+}

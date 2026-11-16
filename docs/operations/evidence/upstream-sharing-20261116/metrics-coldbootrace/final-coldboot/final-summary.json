@@ -1,0 +1,33 @@
+{
+  "capture": {
+    "iterations": 118,
+    "read_errors_including_expected_boot_outage": 103,
+    "boot_ids": [
+      "8874dcda-ced2-4aa4-b5cb-71a0871abdd5",
+      "ebcc5553-3251-43f7-95f2-236e5e3e6b70"
+    ],
+    "read_only": true,
+    "bounded_seconds": 900,
+    "completed_at": "2026-11-16T21:28:51.256231+00:00"
+  },
+  "post_recovery_clean_observations": 54,
+  "post_recovery_first_observation": "2026-11-16T21:23:40.480394+00:00",
+  "last_observation": "2026-11-16T21:28:47.214274+00:00",
+  "post_recovery_read_errors": 0,
+  "post_recovery_container_restart_counts_unchanged": true,
+  "final_target_health": [
+    {
+      "scrapeUrl": "http://10.42.7.231:2112/metrics",
+      "health": "up",
+      "lastError": ""
+    },
+    {
+      "scrapeUrl": "http://10.42.3.203:8080/metrics",
+      "health": "up",
+      "lastError": ""
+    }
+  ],
+  "observed_workspace_prometheus_pod_uuids": [],
+  "workspace_usage_qualification": "not exercised",
+  "production_mutations_by_observer": false
+}

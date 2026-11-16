@@ -1,0 +1,94 @@
+{
+  "pods": [
+    {
+      "name": "gpu-fractioning-fractiond-p57lq",
+      "uid": "9e2e3161-2b79-43d9-89cd-f959e107abc1",
+      "containers": [
+        {
+          "name": "fractiond",
+          "containerID": "containerd://2a2cd555c9ea0b9ed9403287c1d3a963b622975051664ee36877902b985f9baf",
+          "restartCount": 0,
+          "ready": true,
+          "state": {
+            "running": {
+              "startedAt": "2026-11-16T21:12:19Z"
+            }
+          }
+        },
+        {
+          "name": "metricsd",
+          "containerID": "containerd://ff1f05033d3b97e2846f14a3ff64515f9495ddaa5bf6727cbcfe65505e5e19f9",
+          "restartCount": 0,
+          "ready": true,
+          "state": {
+            "running": {
+              "startedAt": "2026-11-16T21:12:19Z"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "gpu-fractioning-mpsd-2q2wm",
+      "uid": "9a73fb96-8018-40a2-bbd6-642fa79ad322",
+      "containers": [
+        {
+          "name": "mpsd",
+          "containerID": "containerd://e1e877590a5641f92de6219141d0586d0f84fe866b79fdbf671e43c274e886d1",
+          "restartCount": 4,
+          "ready": true,
+          "state": {
+            "running": {
+              "startedAt": "2026-11-16T21:00:23Z"
+            }
+          }
+        }
+      ]
+    }
+  ],
+  "gf_conditions": [
+    {
+      "lastTransitionTime": "2026-11-16T21:12:31Z",
+      "message": "1 of 1 pods ready",
+      "observedGeneration": 2,
+      "reason": "AllPodsReady",
+      "status": "True",
+      "type": "FractiondReady"
+    },
+    {
+      "lastTransitionTime": "2026-11-16T21:00:32Z",
+      "message": "1 of 1 pods ready",
+      "observedGeneration": 2,
+      "reason": "AllPodsReady",
+      "status": "True",
+      "type": "MpsdReady"
+    },
+    {
+      "lastTransitionTime": "2026-11-16T21:12:31Z",
+      "message": "all components are healthy",
+      "observedGeneration": 2,
+      "reason": "AllComponentsReady",
+      "status": "True",
+      "type": "Ready"
+    },
+    {
+      "lastTransitionTime": "2026-11-16T20:21:42Z",
+      "message": "",
+      "observedGeneration": 2,
+      "reason": "NoDriverUpgrade",
+      "status": "False",
+      "type": "DriverUpgradeInProgress"
+    }
+  ],
+  "fleet_conditions": [
+    {
+      "lastUpdateTime": "2026-11-16T21:12:36Z",
+      "status": "True",
+      "type": "Ready"
+    }
+  ],
+  "fleet_summary": {
+    "desiredReady": 1,
+    "ready": 1
+  }
+}

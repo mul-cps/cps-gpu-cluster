@@ -1,0 +1,36 @@
+{
+  "observed_at": "2026-11-16T21:11:47.561255+00:00",
+  "pod_uid": "c9cf5712-6c7a-4d74-a6e0-09e47c05d265",
+  "containers": [
+    {
+      "name": "fractiond",
+      "containerID": "containerd://b9e7c160efa10f5a750e2a75dd8a8ff7d4ee4369e35013425c294dc932f4aa38",
+      "restartCount": 1,
+      "state": {
+        "running": {
+          "startedAt": "2026-11-16T20:58:46Z"
+        }
+      }
+    },
+    {
+      "name": "metricsd",
+      "containerID": "containerd://4980f061b3e8abf411f94180277679bbcf63b06c718f79e139dc88abd12c62ff",
+      "restartCount": 1,
+      "state": {
+        "running": {
+          "startedAt": "2026-11-16T20:58:46Z"
+        }
+      }
+    }
+  ],
+  "container_identities_unchanged": true,
+  "gpufractioningconfig_spec_unchanged": true,
+  "ready_before": {
+    "fractiond": false,
+    "metricsd": true
+  },
+  "ready_after": {
+    "fractiond": true,
+    "metricsd": true
+  }
+}

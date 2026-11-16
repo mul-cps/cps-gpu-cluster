@@ -1,0 +1,236 @@
+{
+    "apiVersion": "v1",
+    "items": [
+        {
+            "action": "Binding",
+            "apiVersion": "v1",
+            "eventTime": "2026-11-16T21:12:18.972609Z",
+            "firstTimestamp": null,
+            "involvedObject": {
+                "apiVersion": "v1",
+                "kind": "Pod",
+                "name": "gpu-fractioning-fractiond-p57lq",
+                "namespace": "gpu-fractioning",
+                "resourceVersion": "406891734",
+                "uid": "9e2e3161-2b79-43d9-89cd-f959e107abc1"
+            },
+            "kind": "Event",
+            "lastTimestamp": null,
+            "message": "Successfully assigned gpu-fractioning/gpu-fractioning-fractiond-p57lq to k3s-wk-gpu2",
+            "metadata": {
+                "creationTimestamp": "2026-11-16T21:12:18Z",
+                "name": "gpu-fractioning-fractiond-p57lq.18e8a2e10cc35cc0",
+                "namespace": "gpu-fractioning",
+                "resourceVersion": "406891739",
+                "uid": "36b280f5-d67f-4563-bc3c-6fef72185b6c"
+            },
+            "reason": "Scheduled",
+            "reportingComponent": "default-scheduler",
+            "reportingInstance": "default-scheduler-k3s-cp1",
+            "source": {},
+            "type": "Normal"
+        },
+        {
+            "apiVersion": "v1",
+            "count": 1,
+            "eventTime": null,
+            "firstTimestamp": "2026-11-16T21:12:19Z",
+            "involvedObject": {
+                "apiVersion": "v1",
+                "fieldPath": "spec.containers{fractiond}",
+                "kind": "Pod",
+                "name": "gpu-fractioning-fractiond-p57lq",
+                "namespace": "gpu-fractioning",
+                "resourceVersion": "406891736",
+                "uid": "9e2e3161-2b79-43d9-89cd-f959e107abc1"
+            },
+            "kind": "Event",
+            "lastTimestamp": "2026-11-16T21:12:19Z",
+            "message": "Container image \"ghcr.io/kai-scheduler/gpu-fractioning/fractiond:v0.1.9\" already present on machine",
+            "metadata": {
+                "creationTimestamp": "2026-11-16T21:12:19Z",
+                "name": "gpu-fractioning-fractiond-p57lq.18e8a2e129c98c1e",
+                "namespace": "gpu-fractioning",
+                "resourceVersion": "406891771",
+                "uid": "c2f96fdf-39c6-4bef-9b28-275bfa4c07da"
+            },
+            "reason": "Pulled",
+            "reportingComponent": "kubelet",
+            "reportingInstance": "k3s-wk-gpu2",
+            "source": {
+                "component": "kubelet",
+                "host": "k3s-wk-gpu2"
+            },
+            "type": "Normal"
+        },
+        {
+            "apiVersion": "v1",
+            "count": 1,
+            "eventTime": null,
+            "firstTimestamp": "2026-11-16T21:12:19Z",
+            "involvedObject": {
+                "apiVersion": "v1",
+                "fieldPath": "spec.containers{fractiond}",
+                "kind": "Pod",
+                "name": "gpu-fractioning-fractiond-p57lq",
+                "namespace": "gpu-fractioning",
+                "resourceVersion": "406891736",
+                "uid": "9e2e3161-2b79-43d9-89cd-f959e107abc1"
+            },
+            "kind": "Event",
+            "lastTimestamp": "2026-11-16T21:12:19Z",
+            "message": "Created container: fractiond",
+            "metadata": {
+                "creationTimestamp": "2026-11-16T21:12:19Z",
+                "name": "gpu-fractioning-fractiond-p57lq.18e8a2e12bf5dc01",
+                "namespace": "gpu-fractioning",
+                "resourceVersion": "406891773",
+                "uid": "9cbf3ae4-422f-4a3c-bc8c-3636836999f3"
+            },
+            "reason": "Created",
+            "reportingComponent": "kubelet",
+            "reportingInstance": "k3s-wk-gpu2",
+            "source": {
+                "component": "kubelet",
+                "host": "k3s-wk-gpu2"
+            },
+            "type": "Normal"
+        },
+        {
+            "apiVersion": "v1",
+            "count": 1,
+            "eventTime": null,
+            "firstTimestamp": "2026-11-16T21:12:19Z",
+            "involvedObject": {
+                "apiVersion": "v1",
+                "fieldPath": "spec.containers{fractiond}",
+                "kind": "Pod",
+                "name": "gpu-fractioning-fractiond-p57lq",
+                "namespace": "gpu-fractioning",
+                "resourceVersion": "406891736",
+                "uid": "9e2e3161-2b79-43d9-89cd-f959e107abc1"
+            },
+            "kind": "Event",
+            "lastTimestamp": "2026-11-16T21:12:19Z",
+            "message": "Started container fractiond",
+            "metadata": {
+                "creationTimestamp": "2026-11-16T21:12:19Z",
+                "name": "gpu-fractioning-fractiond-p57lq.18e8a2e1328d986a",
+                "namespace": "gpu-fractioning",
+                "resourceVersion": "406891774",
+                "uid": "429bfe8f-fffa-4299-825f-32f0898e740d"
+            },
+            "reason": "Started",
+            "reportingComponent": "kubelet",
+            "reportingInstance": "k3s-wk-gpu2",
+            "source": {
+                "component": "kubelet",
+                "host": "k3s-wk-gpu2"
+            },
+            "type": "Normal"
+        },
+        {
+            "apiVersion": "v1",
+            "count": 1,
+            "eventTime": null,
+            "firstTimestamp": "2026-11-16T21:12:19Z",
+            "involvedObject": {
+                "apiVersion": "v1",
+                "fieldPath": "spec.containers{metricsd}",
+                "kind": "Pod",
+                "name": "gpu-fractioning-fractiond-p57lq",
+                "namespace": "gpu-fractioning",
+                "resourceVersion": "406891736",
+                "uid": "9e2e3161-2b79-43d9-89cd-f959e107abc1"
+            },
+            "kind": "Event",
+            "lastTimestamp": "2026-11-16T21:12:19Z",
+            "message": "Container image \"ghcr.io/kai-scheduler/gpu-fractioning/metricsd:v0.1.9\" already present on machine",
+            "metadata": {
+                "creationTimestamp": "2026-11-16T21:12:19Z",
+                "name": "gpu-fractioning-fractiond-p57lq.18e8a2e13298c1aa",
+                "namespace": "gpu-fractioning",
+                "resourceVersion": "406891776",
+                "uid": "bc13e273-8a0d-41c0-a98f-de5b555cb070"
+            },
+            "reason": "Pulled",
+            "reportingComponent": "kubelet",
+            "reportingInstance": "k3s-wk-gpu2",
+            "source": {
+                "component": "kubelet",
+                "host": "k3s-wk-gpu2"
+            },
+            "type": "Normal"
+        },
+        {
+            "apiVersion": "v1",
+            "count": 1,
+            "eventTime": null,
+            "firstTimestamp": "2026-11-16T21:12:19Z",
+            "involvedObject": {
+                "apiVersion": "v1",
+                "fieldPath": "spec.containers{metricsd}",
+                "kind": "Pod",
+                "name": "gpu-fractioning-fractiond-p57lq",
+                "namespace": "gpu-fractioning",
+                "resourceVersion": "406891736",
+                "uid": "9e2e3161-2b79-43d9-89cd-f959e107abc1"
+            },
+            "kind": "Event",
+            "lastTimestamp": "2026-11-16T21:12:19Z",
+            "message": "Created container: metricsd",
+            "metadata": {
+                "creationTimestamp": "2026-11-16T21:12:19Z",
+                "name": "gpu-fractioning-fractiond-p57lq.18e8a2e1380029b8",
+                "namespace": "gpu-fractioning",
+                "resourceVersion": "406891780",
+                "uid": "600184c0-5f20-4fc0-afc7-a9b86519d20f"
+            },
+            "reason": "Created",
+            "reportingComponent": "kubelet",
+            "reportingInstance": "k3s-wk-gpu2",
+            "source": {
+                "component": "kubelet",
+                "host": "k3s-wk-gpu2"
+            },
+            "type": "Normal"
+        },
+        {
+            "apiVersion": "v1",
+            "count": 1,
+            "eventTime": null,
+            "firstTimestamp": "2026-11-16T21:12:19Z",
+            "involvedObject": {
+                "apiVersion": "v1",
+                "fieldPath": "spec.containers{metricsd}",
+                "kind": "Pod",
+                "name": "gpu-fractioning-fractiond-p57lq",
+                "namespace": "gpu-fractioning",
+                "resourceVersion": "406891736",
+                "uid": "9e2e3161-2b79-43d9-89cd-f959e107abc1"
+            },
+            "kind": "Event",
+            "lastTimestamp": "2026-11-16T21:12:19Z",
+            "message": "Started container metricsd",
+            "metadata": {
+                "creationTimestamp": "2026-11-16T21:12:19Z",
+                "name": "gpu-fractioning-fractiond-p57lq.18e8a2e1442267cb",
+                "namespace": "gpu-fractioning",
+                "resourceVersion": "406891781",
+                "uid": "8d77250c-038f-4513-953d-dfc2e04f834a"
+            },
+            "reason": "Started",
+            "reportingComponent": "kubelet",
+            "reportingInstance": "k3s-wk-gpu2",
+            "source": {
+                "component": "kubelet",
+                "host": "k3s-wk-gpu2"
+            },
+            "type": "Normal"
+        }
+    ],
+    "kind": "List",
+    "metadata": {
+        "resourceVersion": ""
+    }
+}

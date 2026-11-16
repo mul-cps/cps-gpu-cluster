@@ -1,0 +1,77 @@
+{
+  "status": "PASS",
+  "new_boot_id": "8874dcda-ced2-4aa4-b5cb-71a0871abdd5",
+  "previous_boot_id": "ebcc5553-3251-43f7-95f2-236e5e3e6b70",
+  "missing_marker_observations_before_start": 15,
+  "first_new_boot_observed": "2026-11-16T21:21:36.302285+00:00",
+  "marker": {
+    "mtime_ns": 1794864188536923440,
+    "inode": 6213,
+    "uid": 0,
+    "mode": "0o100600",
+    "size": 159
+  },
+  "marker_time_utc": "2026-11-16T21:23:08.536923+00:00",
+  "fractiond_pod_uid": "9e2e3161-2b79-43d9-89cd-f959e107abc1",
+  "containers": [
+    {
+      "name": "fractiond",
+      "containerID": "containerd://17d58d729c563b4ff4793e7b44813e2e402e89dfbe4473b370584461946dc559",
+      "restartCount": 1,
+      "state": {
+        "running": {
+          "startedAt": "2026-11-16T21:23:30Z"
+        }
+      },
+      "ready": true
+    },
+    {
+      "name": "metricsd",
+      "containerID": "containerd://9a15838a91cd0fdc973bc5cd641e19caa0a80f67e841cc988aa5986117673225",
+      "restartCount": 1,
+      "state": {
+        "running": {
+          "startedAt": "2026-11-16T21:23:30Z"
+        }
+      },
+      "ready": true
+    }
+  ],
+  "first_postboot_nvml_initialized": true,
+  "no_manual_metrics_restart": true,
+  "no_plain_runc_fallback_in_current_metrics_logs": true,
+  "gf_ready": true,
+  "fleet_ready": true,
+  "targets": [
+    {
+      "scrapeUrl": "http://10.42.7.231:2112/metrics",
+      "health": "up",
+      "lastError": ""
+    },
+    {
+      "scrapeUrl": "http://10.42.3.203:8080/metrics",
+      "health": "up",
+      "lastError": ""
+    }
+  ],
+  "real_workspace_usage_not_yet_qualified": true,
+  "observation_time": "2026-11-16T21:24:27.012368+00:00",
+  "all_observed_marker_versions": [
+    {
+      "first_seen": "2026-11-16T21:23:11.529201+00:00",
+      "mtime_ns": 1794864188536923440,
+      "inode": 6213,
+      "uid": 0,
+      "mode": "0o100600",
+      "size": 159
+    },
+    {
+      "first_seen": "2026-11-16T21:23:17.320829+00:00",
+      "mtime_ns": 1794864193456920254,
+      "inode": 6277,
+      "uid": 0,
+      "mode": "0o100600",
+      "size": 159
+    }
+  ]
+}

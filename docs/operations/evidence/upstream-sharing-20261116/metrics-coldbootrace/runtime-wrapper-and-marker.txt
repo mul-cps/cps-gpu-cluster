@@ -1,0 +1,14 @@
+#! /bin/sh
+cat /proc/modules | grep -e "^nvidia " >/dev/null 2>&1
+if [ "${?}" != "0" ]; then
+	echo "nvidia driver modules are not yet loaded, invoking runc directly" >&2
+	exec runc "$@"
+fi
+NVIDIA_CTK_CONFIG_FILE_PATH=/usr/local/nvidia/toolkit/.config/nvidia-container-runtime/config.toml \
+PATH=/usr/local/nvidia/toolkit:$PATH \
+	/usr/local/nvidia/toolkit/nvidia-container-runtime.real \
+		"$@"
+/run tmpfs tmpfs
+/run/nvidia/validations/driver-ready uid=0 mode=600 mtime=2026-11-16 21:00:07.446903087 +0000
+/run/nvidia/validations/toolkit-ready uid=0 mode=644 mtime=2026-11-16 21:00:24.648697717 +0000
+ebcc5553-3251-43f7-95f2-236e5e3e6b70

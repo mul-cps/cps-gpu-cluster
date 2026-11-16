@@ -1,0 +1,41 @@
+{
+  "apiVersion": "v1",
+  "items": [
+    {
+      "apiVersion": "v1",
+      "count": 2,
+      "eventTime": null,
+      "firstTimestamp": "2026-11-16T21:07:13Z",
+      "involvedObject": {
+        "apiVersion": "v1",
+        "kind": "Pod",
+        "name": "cps-metrics-gate-absent",
+        "namespace": "gpu-operator",
+        "resourceVersion": "406885386",
+        "uid": "2a85ee14-75a9-4953-819f-6075d2b5749e"
+      },
+      "kind": "Event",
+      "lastTimestamp": "2026-11-16T21:07:14Z",
+      "message": "MountVolume.SetUp failed for volume \"gpu-operator-driver-ready\" : hostPath type check failed: /run/nvidia/validations/cps-metrics-gate-missing-20261116 is not a file",
+      "metadata": {
+        "creationTimestamp": "2026-11-16T21:07:13Z",
+        "name": "cps-metrics-gate-absent.18e8a299f7e135d4",
+        "namespace": "gpu-operator",
+        "resourceVersion": "406885419",
+        "uid": "e51a3ab0-b8c7-463e-b409-4ee713766d5b"
+      },
+      "reason": "FailedMount",
+      "reportingComponent": "kubelet",
+      "reportingInstance": "k3s-wk-gpu2",
+      "source": {
+        "component": "kubelet",
+        "host": "k3s-wk-gpu2"
+      },
+      "type": "Warning"
+    }
+  ],
+  "kind": "List",
+  "metadata": {
+    "resourceVersion": ""
+  }
+}

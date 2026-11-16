@@ -1,0 +1,33 @@
+{
+  "method": "Deployment availableReplicas observations; final right-censored interval bounded by successful rollout completion and final verification. Not an HTTP outage measurement.",
+  "status": "PASS",
+  "resources": {
+    "cps-compute/compute-gateway": {
+      "unavailable_intervals": [
+        {
+          "seconds": 11.796,
+          "kind": "observed"
+        }
+      ],
+      "max_sampling_gap_seconds": 0.757
+    },
+    "jupyterhub/hub": {
+      "unavailable_intervals": [
+        {
+          "seconds": 12.157,
+          "kind": "upper_bound_by_terminal_rollout_success"
+        }
+      ],
+      "max_sampling_gap_seconds": 0.761
+    },
+    "cit-jhub/hub": {
+      "unavailable_intervals": [
+        {
+          "seconds": 11.119,
+          "kind": "observed"
+        }
+      ],
+      "max_sampling_gap_seconds": 0.763
+    }
+  }
+}

@@ -1,0 +1,17 @@
+--- a/cluster-maintenance/clusters/cit-cps-gpu/system/gpu/gpu-fractioning/resources.yaml
++++ b/cluster-maintenance/clusters/cit-cps-gpu/system/gpu/gpu-fractioning/resources.yaml
+@@ -332,3 +332,14 @@
+     nriSocketPath: /var/run/nri/nri.sock
+   metricsAgent:
+     enabled: true
++    # GPU Operator writes this only after validating the current driver installation.
++    # File (not FileOrCreate) blocks container creation until /run readiness exists.
++    volumes:
++    - name: gpu-operator-driver-ready
++      hostPath:
++        path: /run/nvidia/validations/driver-ready
++        type: File
++    volumeMounts:
++    - name: gpu-operator-driver-ready
++      mountPath: /run/nvidia/validations/driver-ready
++      readOnly: true

@@ -1,0 +1,11 @@
+{
+  "iterations": 118,
+  "read_errors_including_expected_boot_outage": 103,
+  "boot_ids": [
+    "8874dcda-ced2-4aa4-b5cb-71a0871abdd5",
+    "ebcc5553-3251-43f7-95f2-236e5e3e6b70"
+  ],
+  "read_only": true,
+  "bounded_seconds": 900,
+  "completed_at": "2026-11-16T21:28:51.256231+00:00"
+}

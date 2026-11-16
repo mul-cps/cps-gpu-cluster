@@ -1,0 +1,29 @@
+{
+  "observed_at": "2026-11-16T21:10:21.737430+00:00",
+  "production_configuration_applied": false,
+  "offline_source_patch_exact_semantic_match": true,
+  "server_dry_run_exact_spec_match": true,
+  "source_sha256_before": "e5e5c65cb16bc9172ba1a5862a80744fda007ad73f501e379c72b4daf61bd206",
+  "source_sha256_proposed": "43c498eaf72cf281574f9f5284f5f5b7730c7def0d0682a7c4c4b3de757370a8",
+  "upstream": [
+    {
+      "repository": "https://github.com/kai-scheduler/gpu-fractioning.git",
+      "tag": "v0.1.9",
+      "commit": "fb75540adca3392ab4b51d03e6c0da9b393fa842",
+      "files": {
+        "fractioning-manager/metricsd/internal/metrics/nvml_collector.go": "8c0e33d797836b21c9a0811b2e6045939bc16f09a55d93881f2ed9b99600b9ca",
+        "operator/internal/fractioningmanager/components/fractiond/fractiond.go": "8fea83479702f957362db178881d07b06ae4ab3d6b7bb3f4b6ecceb14d4abb4e",
+        "api/v1alpha1/gpufractioningconfig_types.go": "06c9a7551d7cd1e231235ef1c1a3d2444fc07e77a834a171df9342682a663c20"
+      }
+    },
+    {
+      "repository": "https://github.com/NVIDIA/gpu-operator.git",
+      "tag": "v25.10.0",
+      "commit": "6f3d599dfe65b7d4247a90ca2ab27b32a6d6ed98",
+      "files": {
+        "cmd/nvidia-validator/main.go": "55d1169b718bfcb23c4c764282a8fa90d141e939a4d58010fdce14face07f1c6",
+        "assets/state-operator-validation/0500_daemonset.yaml": "b38909393b98e9a917795ae403878ca3fe9f491b927f6e8598b4f76cf2982925"
+      }
+    }
+  ]
+}

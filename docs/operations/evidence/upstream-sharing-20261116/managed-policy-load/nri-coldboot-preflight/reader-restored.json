@@ -1,0 +1,15 @@
+{
+  "original_reader_uid": "ebd6f11b-031d-4d37-987e-83f18e40da70",
+  "first_coldboot_uid_preserved": true,
+  "second_coldboot_uid_preserved": false,
+  "second_coldboot_disposition": "Kubernetes normal NoExecute eviction during longer node outage; pinned replacement Pending until controlled CPU recovery",
+  "new_primary_reader_uid": "8021a76c-f73b-4db2-b7c1-e4c25db1b2e7",
+  "new_primary_ready": true,
+  "deployment_replicas": 1,
+  "original_template_unchanged": true,
+  "standby_uid_retiring": "df69780b-70c4-4a16-9163-d2590d2ecfcd",
+  "availability": "GPU4 standby Ready throughout GPU2 outage and primary recovery",
+  "gpu_fences": "Temporary CPU uncordon under maintenance taint and absent qualification label; cordon restored after Ready",
+  "no_user_job_evictions": true,
+  "storage": "No persistent volumes in reader Pod; /tmp is declared temporary emptyDir cache. User workspace files are separate persistent storage."
+}

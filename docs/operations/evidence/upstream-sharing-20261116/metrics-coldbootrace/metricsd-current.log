@@ -1,0 +1,5 @@
+2026-11-16T20:58:46.697271640Z nvidia driver modules are not yet loaded, invoking runc directly
+2026-11-16T20:58:46.726530574Z {"time":"2026-11-16T20:58:46.726335368Z","level":"INFO","msg":"starting gpu-fractioning-metrics","version":"v0.1.9","commit":"fb75540","date":"2026-11-11T07:34:48Z"}
+2026-11-16T20:58:46.726606597Z {"time":"2026-11-16T20:58:46.726545011Z","level":"INFO","msg":"container->pod mapping handoff directory","mapDir":"/var/run/gpu-fractioning/map"}
+2026-11-16T20:58:46.726940423Z {"time":"2026-11-16T20:58:46.726878767Z","level":"WARN","msg":"NVML unavailable; GPU process metrics will be zero (pod labels still reported)","error":"initialize NVML: ERROR_LIBRARY_NOT_FOUND"}
+2026-11-16T20:58:46.727125469Z {"time":"2026-11-16T20:58:46.727032865Z","level":"INFO","msg":"starting GPU metrics exporter","address":":2112"}

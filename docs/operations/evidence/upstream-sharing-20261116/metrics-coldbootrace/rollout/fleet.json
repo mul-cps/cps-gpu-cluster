@@ -1,0 +1,117 @@
+{
+    "apiVersion": "fleet.cattle.io/v1alpha1",
+    "kind": "Bundle",
+    "metadata": {
+        "creationTimestamp": "2026-11-16T12:06:19Z",
+        "finalizers": [
+            "fleet.cattle.io/bundle-finalizer"
+        ],
+        "generation": 8,
+        "labels": {
+            "fleet.cattle.io/commit": "b38e8ebafd39ab200f87bee624004ae9dc69b92a",
+            "fleet.cattle.io/created-by-user-id": "user-l7kss",
+            "fleet.cattle.io/repo-name": "cluster-maintenance",
+            "name": "gpu-fractioning"
+        },
+        "name": "gpu-fractioning",
+        "namespace": "fleet-local",
+        "resourceVersion": "406892105",
+        "uid": "88b07938-1b84-453a-81a8-7e080449df6c"
+    },
+    "spec": {
+        "defaultNamespace": "gpu-fractioning",
+        "dependsOn": [
+            {
+                "selector": {
+                    "matchLabels": {
+                        "name": "gpu-fractioning-crds"
+                    }
+                }
+            }
+        ],
+        "forceSyncGeneration": 1787557872,
+        "kustomize": {
+            "dir": "."
+        },
+        "resources": [
+            {
+                "content": "# Released GPU Fractioning 0.1.9 manifests\n\nThese resources are rendered from the upstream chart, not a runtime fork.\nThe CRD installs first; the operand bundle depends on it. Fleet creates the\nrelease namespace through defaultNamespace; the bundles do not own/delete it.\nThe default CR is restricted to GPU2 plus an explicit runtime nomination label.\nDo not remove either selector until that worker has completed acceptance.\n\nChart archive SHA256: `238c08d45f1087b07b2793e7ee9e9e6b2f23a12e0bdbd680e37e3ab1b5479e58`.\nUpstream source: https://github.com/kai-scheduler/gpu-fractioning/tree/v0.1.9\n\nReproduce the input from the repository root (CHART is the released archive):\n\n```sh\nhelm template gpu-fractioning \"$CHART\" -n gpu-fractioning --include-crds \\\n  -f platform-staging/gpu/upstream-sharing/fraction-values.yaml \\\n  --set crdUpgrader.enabled=false \u003e /tmp/fraction-raw.yaml\npython3 platform-staging/gpu/upstream-sharing/prepare.py fraction-postrender \\\n  \u003c /tmp/fraction-raw.yaml \u003e /tmp/fraction-scoped.yaml\n```\n\nSplit CustomResourceDefinition documents into the CRD bundle; put the other\ndocuments in this bundle. Do not render a Namespace resource: Fleet creates\nthe release namespace before Helm and does not give it Helm ownership.\nRemove only `helm.sh/hook*` annotations from the default CR. It is an ordinary\nGitOps-managed resource so the released post-install hook cannot create an\nunscoped default configuration outside the post-renderer. The chart's CRD\nupgrade hook is disabled because Fleet owns the released CRD directly.\nThe selector, K3s sockets, fail-open=false, retroactive enforcement=true,\nmaintenance toleration and time-slicing-only setting are CPS configuration;\noperator, fractiond, mpsd and metricsd remain upstream 0.1.9.\n\nVerified registry manifest digests for the published `v0.1.9` tags:\n\n- operator: `sha256:83e0aa29b0951c58b5565cbc50b2ae1900da25c78cdfcdf6eddea437748fe22c`\n- fractiond: `sha256:29c5fca25c1b35f22cf9f1e6c53acaa79d0b9f722ed6e8417caf438c06cd3739`\n- metricsd: `sha256:7a619c92651d0744bcd80745be264f3b6c213ad4f3a12fef19a339df422af2bf`\n- mpsd: `sha256:f161d6c653c668e49e384ae15794421777464248c5e533660ac26b006787b102`\n\nThe unprefixed `0.1.9` image tags do not exist. The initial selected-node pilot\nexposed this pinning mistake before daemon startup; corrected manifests use the\nreleased chart appVersion `v0.1.9`. Rendering alone cannot verify image availability.\n",
+                "name": "README.md"
+            },
+            {
+                "content": "apiVersion: kustomize.config.k8s.io/v1beta1\nkind: Kustomization\nresources:\n- resources.yaml\n- stock-monitors.yaml\n",
+                "name": "kustomization.yaml"
+            },
+            {
+                "content": "# Generated from the released gpu-fractioning 0.1.9 chart. See README.md.\napiVersion: v1\nkind: ServiceAccount\nmetadata:\n  name: gpu-fractioning\n  namespace: gpu-fractioning\n  labels:\n    helm.sh/chart: gpu-fractioning-v0.1.9\n    app.kubernetes.io/name: gpu-fractioning\n    app.kubernetes.io/instance: gpu-fractioning\n    app.kubernetes.io/managed-by: Helm\n    app.kubernetes.io/version: v0.1.9\n---\napiVersion: v1\nkind: ServiceAccount\nmetadata:\n  name: gpu-fractioning-daemon\n  namespace: gpu-fractioning\n  labels:\n    helm.sh/chart: gpu-fractioning-v0.1.9\n    app.kubernetes.io/name: gpu-fractioning\n    app.kubernetes.io/instance: gpu-fractioning\n    app.kubernetes.io/managed-by: Helm\n    app.kubernetes.io/version: v0.1.9\n---\napiVersion: rbac.authorization.k8s.io/v1\nkind: ClusterRole\nmetadata:\n  name: gpu-fractioning\n  labels:\n    helm.sh/chart: gpu-fractioning-v0.1.9\n    app.kubernetes.io/name: gpu-fractioning\n    app.kubernetes.io/instance: gpu-fractioning\n    app.kubernetes.io/managed-by: Helm\n    app.kubernetes.io/version: v0.1.9\nrules:\n- apiGroups:\n  - gpu-fractioning.kai.scheduler\n  resources:\n  - gpufractioningconfigs\n  verbs:\n  - get\n  - list\n  - watch\n  - update\n- apiGroups:\n  - gpu-fractioning.kai.scheduler\n  resources:\n  - gpufractioningconfigs/finalizers\n  verbs:\n  - update\n- apiGroups:\n  - gpu-fractioning.kai.scheduler\n  resources:\n  - gpufractioningconfigs/status\n  verbs:\n  - get\n  - patch\n  - update\n- apiGroups:\n  - coordination.k8s.io\n  resources:\n  - leases\n  verbs:\n  - create\n  - get\n  - patch\n  - update\n  - watch\n- apiGroups:\n  - apps\n  resources:\n  - daemonsets\n  verbs:\n  - create\n  - delete\n  - get\n  - list\n  - patch\n  - update\n  - watch\n- apiGroups:\n  - ''\n  resources:\n  - nodes\n  verbs:\n  - get\n  - list\n  - patch\n- apiGroups:\n  - ''\n  resources:\n  - nodes/status\n  verbs:\n  - get\n  - patch\n- apiGroups:\n  - ''\n  resources:\n  - pods\n  verbs:\n  - get\n  - list\n- apiGroups:\n  - nvidia.com\n  resources:\n  - clusterpolicies\n  verbs:\n  - get\n  - list\n  - watch\n- apiGroups:\n  - operators.coreos.com\n  resources:\n  - clusterserviceversions\n  verbs:\n  - list\n  - watch\n- apiGroups:\n  - ''\n  resources:\n  - events\n  verbs:\n  - create\n  - patch\n---\napiVersion: rbac.authorization.k8s.io/v1\nkind: ClusterRole\nmetadata:\n  name: gpu-fractioning-daemon\n  labels:\n    helm.sh/chart: gpu-fractioning-v0.1.9\n    app.kubernetes.io/name: gpu-fractioning\n    app.kubernetes.io/instance: gpu-fractioning\n    app.kubernetes.io/managed-by: Helm\n    app.kubernetes.io/version: v0.1.9\nrules:\n- apiGroups:\n  - ''\n  resources:\n  - nodes\n  verbs:\n  - patch\n---\napiVersion: rbac.authorization.k8s.io/v1\nkind: ClusterRoleBinding\nmetadata:\n  name: gpu-fractioning\n  labels:\n    helm.sh/chart: gpu-fractioning-v0.1.9\n    app.kubernetes.io/name: gpu-fractioning\n    app.kubernetes.io/instance: gpu-fractioning\n    app.kubernetes.io/managed-by: Helm\n    app.kubernetes.io/version: v0.1.9\nroleRef:\n  apiGroup: rbac.authorization.k8s.io\n  kind: ClusterRole\n  name: gpu-fractioning\nsubjects:\n- kind: ServiceAccount\n  name: gpu-fractioning\n  namespace: gpu-fractioning\n---\napiVersion: rbac.authorization.k8s.io/v1\nkind: ClusterRoleBinding\nmetadata:\n  name: gpu-fractioning-daemon\n  labels:\n    helm.sh/chart: gpu-fractioning-v0.1.9\n    app.kubernetes.io/name: gpu-fractioning\n    app.kubernetes.io/instance: gpu-fractioning\n    app.kubernetes.io/managed-by: Helm\n    app.kubernetes.io/version: v0.1.9\nroleRef:\n  apiGroup: rbac.authorization.k8s.io\n  kind: ClusterRole\n  name: gpu-fractioning-daemon\nsubjects:\n- kind: ServiceAccount\n  name: gpu-fractioning-daemon\n  namespace: gpu-fractioning\n---\napiVersion: v1\nkind: Service\nmetadata:\n  name: gpu-fractioning-metrics\n  namespace: gpu-fractioning\n  labels:\n    helm.sh/chart: gpu-fractioning-v0.1.9\n    app.kubernetes.io/name: gpu-fractioning\n    app.kubernetes.io/instance: gpu-fractioning\n    app.kubernetes.io/managed-by: Helm\n    app.kubernetes.io/version: v0.1.9\nspec:\n  type: ClusterIP\n  selector:\n    app.kubernetes.io/name: gpu-fractioning\n    app.kubernetes.io/instance: gpu-fractioning\n  ports:\n  - name: http\n    port: 8080\n    targetPort: metrics\n    protocol: TCP\n---\napiVersion: apps/v1\nkind: Deployment\nmetadata:\n  name: gpu-fractioning\n  namespace: gpu-fractioning\n  labels:\n    helm.sh/chart: gpu-fractioning-v0.1.9\n    app.kubernetes.io/name: gpu-fractioning\n    app.kubernetes.io/instance: gpu-fractioning\n    app.kubernetes.io/managed-by: Helm\n    app.kubernetes.io/version: v0.1.9\nspec:\n  replicas: 1\n  selector:\n    matchLabels:\n      app.kubernetes.io/name: gpu-fractioning\n      app.kubernetes.io/instance: gpu-fractioning\n  template:\n    metadata:\n      labels:\n        app.kubernetes.io/name: gpu-fractioning\n        app.kubernetes.io/instance: gpu-fractioning\n    spec:\n      serviceAccountName: gpu-fractioning\n      securityContext:\n        runAsNonRoot: true\n      containers:\n      - name: manager\n        image: ghcr.io/kai-scheduler/gpu-fractioning/operator:v0.1.9\n        imagePullPolicy: IfNotPresent\n        env:\n        - name: POD_NAMESPACE\n          valueFrom:\n            fieldRef:\n              fieldPath: metadata.namespace\n        - name: FRACTIOND_IMAGE_REPOSITORY\n          value: ghcr.io/kai-scheduler/gpu-fractioning/fractiond\n        - name: FRACTIOND_IMAGE_TAG\n          value: v0.1.9\n        - name: FRACTIOND_IMAGE_PULL_POLICY\n          value: IfNotPresent\n        - name: METRICSD_IMAGE_REPOSITORY\n          value: ghcr.io/kai-scheduler/gpu-fractioning/metricsd\n        - name: METRICSD_IMAGE_TAG\n          value: v0.1.9\n        - name: METRICSD_IMAGE_PULL_POLICY\n          value: IfNotPresent\n        - name: MPSD_IMAGE_REPOSITORY\n          value: ghcr.io/kai-scheduler/gpu-fractioning/mpsd\n        - name: MPSD_IMAGE_TAG\n          value: v0.1.9\n        - name: MPSD_IMAGE_PULL_POLICY\n          value: IfNotPresent\n        - name: MPSD_AUDIT_LOG\n          value: 'true'\n        - name: SUPPORT_SM_SHARING\n          value: 'false'\n        - name: SKIP_GPU_STACK_VERSION_CHECKS\n          value: 'false'\n        - name: DAEMON_SERVICE_ACCOUNT_NAME\n          value: gpu-fractioning-daemon\n        - name: FIPS_MODE\n          value: 'off'\n        args:\n        - --leader-elect\n        - --health-probe-bind-address=:8081\n        - --metrics-bind-address=:8080\n        - --metrics-secure=false\n        ports:\n        - name: health\n          containerPort: 8081\n          protocol: TCP\n        - name: metrics\n          containerPort: 8080\n          protocol: TCP\n        livenessProbe:\n          httpGet:\n            path: /healthz\n            port: health\n          initialDelaySeconds: 15\n          periodSeconds: 20\n        readinessProbe:\n          httpGet:\n            path: /readyz\n            port: health\n          initialDelaySeconds: 5\n          periodSeconds: 10\n        resources:\n          limits:\n            cpu: 500m\n            memory: 128Mi\n          requests:\n            cpu: 100m\n            ephemeral-storage: 100Mi\n            memory: 64Mi\n        securityContext:\n          allowPrivilegeEscalation: false\n          capabilities:\n            drop:\n            - ALL\n      terminationGracePeriodSeconds: 10\n---\napiVersion: gpu-fractioning.kai.scheduler/v1alpha1\nkind: GpuFractioningConfig\nmetadata:\n  name: default\n  labels:\n    helm.sh/chart: gpu-fractioning-v0.1.9\n    app.kubernetes.io/name: gpu-fractioning\n    app.kubernetes.io/instance: gpu-fractioning\n    app.kubernetes.io/managed-by: Helm\n    app.kubernetes.io/version: v0.1.9\nspec:\n  nodeSelector:\n    cps.unileoben.ac.at/fractioning-runtime: upstream\n  tolerations:\n  - effect: NoSchedule\n    key: nvidia.com/gpu\n    operator: Exists\n  - effect: NoSchedule\n    key: cps.unileoben.ac.at/maintenance\n    operator: Exists\n  runtimeClassName: nvidia\n  fractioningAgent:\n    criSocketPath: /run/k3s/containerd/containerd.sock\n    failOpen: false\n    retroactiveEnforcement: true\n    nriSocketPath: /var/run/nri/nri.sock\n  metricsAgent:\n    enabled: true\n    # GPU Operator writes this only after validating the current driver installation.\n    # File (not FileOrCreate) blocks container creation until /run readiness exists.\n    volumes:\n    - name: gpu-operator-driver-ready\n      hostPath:\n        path: /run/nvidia/validations/driver-ready\n        type: File\n    volumeMounts:\n    - name: gpu-operator-driver-ready\n      mountPath: /run/nvidia/validations/driver-ready\n      readOnly: true\n",
+                "name": "resources.yaml"
+            },
+            {
+                "content": "---\n# Source: gpu-fractioning/templates/monitors.yaml\n# metricsd sidecars: per-pod GPU metrics on the fractiond DaemonSet pods. A single\n# PodMonitor discovers every metricsd pod — Prometheus creates one scrape target\n# per pod, i.e. one per GPU node.\napiVersion: monitoring.coreos.com/v1\nkind: PodMonitor\nmetadata:\n  name: gpu-fractioning-metricsd\n  namespace: gpu-fractioning\n  labels:\n    helm.sh/chart: gpu-fractioning-v0.1.9\n    app.kubernetes.io/name: gpu-fractioning\n    app.kubernetes.io/instance: gpu-fractioning\n    app.kubernetes.io/managed-by: Helm\n    app.kubernetes.io/version: \"v0.1.9\"\nspec:\n  # These values are fixed literals on purpose: the daemon pods are labelled by\n  # the operator (daemonmgr.ManagedByValue = \"gpu-fractioning\" and the component\n  # name), not by Helm. The gpu-fractioning.name helper would follow nameOverride and\n  # stop matching the operator-set label, so it must not be used here.\n  selector:\n    matchLabels:\n      app.kubernetes.io/managed-by: gpu-fractioning\n      app.kubernetes.io/component: fractiond\n  namespaceSelector:\n    matchNames:\n      - gpu-fractioning\n  podMetricsEndpoints:\n    - port: metrics\n      path: /metrics\n      interval: 30s\n---\n# Source: gpu-fractioning/templates/monitors.yaml\n# Controller metrics: reconcile counters + node/daemon gauges, scraped over plain\n# HTTP from the metrics Service.\napiVersion: monitoring.coreos.com/v1\nkind: ServiceMonitor\nmetadata:\n  name: gpu-fractioning\n  namespace: gpu-fractioning\n  labels:\n    helm.sh/chart: gpu-fractioning-v0.1.9\n    app.kubernetes.io/name: gpu-fractioning\n    app.kubernetes.io/instance: gpu-fractioning\n    app.kubernetes.io/managed-by: Helm\n    app.kubernetes.io/version: \"v0.1.9\"\nspec:\n  selector:\n    matchLabels:\n      app.kubernetes.io/name: gpu-fractioning\n      app.kubernetes.io/instance: gpu-fractioning\n  namespaceSelector:\n    matchNames:\n      - gpu-fractioning\n  endpoints:\n    - port: http\n      scheme: http\n      path: /metrics\n      interval: 30s\n      scrapeTimeout: 10s\n",
+                "name": "stock-monitors.yaml"
+            }
+        ],
+        "targetRestrictions": [
+            {
+                "clusterSelector": {
+                    "matchExpressions": [
+                        {
+                            "key": "provider.cattle.io",
+                            "operator": "NotIn",
+                            "values": [
+                                "harvester"
+                            ]
+                        }
+                    ]
+                }
+            }
+        ],
+        "targets": [
+            {
+                "clusterSelector": {
+                    "matchExpressions": [
+                        {
+                            "key": "provider.cattle.io",
+                            "operator": "NotIn",
+                            "values": [
+                                "harvester"
+                            ]
+                        }
+                    ]
+                }
+            }
+        ]
+    },
+    "status": {
+        "conditions": [
+            {
+                "lastUpdateTime": "2026-11-16T21:12:36Z",
+                "status": "True",
+                "type": "Ready"
+            }
+        ],
+        "display": {
+            "readyClusters": "1/1"
+        },
+        "maxNew": 50,
+        "maxUnavailable": 1,
+        "observedGeneration": 8,
+        "partitions": [
+            {
+                "count": 1,
+                "maxUnavailable": 1,
+                "name": "All",
+                "summary": {
+                    "desiredReady": 1,
+                    "ready": 1
+                }
+            }
+        ],
+        "resourcesSha256Sum": "dc3fadc56a7af6c0229cc5c24f38bf0bc2fc4aa401f3cb3df37f335b6149f662",
+        "summary": {
+            "desiredReady": 1,
+            "ready": 1
+        },
+        "unavailable": 0
+    }
+}

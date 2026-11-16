@@ -1,0 +1,88 @@
+{
+  "apiVersion": "v1",
+  "kind": "Pod",
+  "metadata": {
+    "name": "cps-metrics-gate-present",
+    "namespace": "gpu-operator",
+    "labels": {
+      "cps.unileoben.ac.at/metrics-gate-probe": "20261116"
+    }
+  },
+  "spec": {
+    "nodeName": "k3s-wk-gpu2",
+    "runtimeClassName": "nvidia",
+    "restartPolicy": "Never",
+    "activeDeadlineSeconds": 90,
+    "terminationGracePeriodSeconds": 10,
+    "automountServiceAccountToken": false,
+    "imagePullSecrets": [
+      {
+        "name": "cps-native-image-pull"
+      }
+    ],
+    "securityContext": {
+      "runAsNonRoot": true,
+      "runAsUser": 1000,
+      "runAsGroup": 1000,
+      "seccompProfile": {
+        "type": "RuntimeDefault"
+      }
+    },
+    "volumes": [
+      {
+        "name": "gpu-operator-driver-ready",
+        "hostPath": {
+          "path": "/run/nvidia/validations/driver-ready",
+          "type": "File"
+        }
+      }
+    ],
+    "containers": [
+      {
+        "name": "main",
+        "image": "ghcr.io/mul-cps/cps-ubuntu-release-upgrade@sha256:5030556ecf8cd38fc9acc4676316bd0a3217d1ab10930b75b9dba7106e8f4004",
+        "command": [
+          "python3",
+          "-u",
+          "-c",
+          "import ctypes as C,json\nlib=C.CDLL('libnvidia-ml.so.1')\ndef call(name,types,*args):\n f=getattr(lib,name);f.argtypes=types;f.restype=C.c_int;rc=f(*args);assert rc==0,(name,rc)\ncall('nvmlInit_v2',[])\ntry:\n count=C.c_uint();call('nvmlDeviceGetCount_v2',[C.POINTER(C.c_uint)],C.byref(count));assert count.value==2\n uuids=[]\n for index in range(count.value):\n  device=C.c_void_p();call('nvmlDeviceGetHandleByIndex_v2',[C.c_uint,C.POINTER(C.c_void_p)],index,C.byref(device))\n  value=C.create_string_buffer(96);call('nvmlDeviceGetUUID',[C.c_void_p,C.c_char_p,C.c_uint],device,value,len(value));uuids.append(value.value.decode())\n assert set(uuids)=={'GPU-16128952-b438-556a-00bb-93039ee24e56','GPU-1e6145d5-8ee2-43e2-a0d5-6d345909e8a6'}\n print(json.dumps({'cpu_started':True,'readonly_nvml_init':True,'gpu_uuids':uuids,'cuda_calls':0}),flush=True)\nfinally:call('nvmlShutdown',[])\n"
+        ],
+        "env": [
+          {
+            "name": "NVIDIA_VISIBLE_DEVICES",
+            "value": "all"
+          },
+          {
+            "name": "NVIDIA_DRIVER_CAPABILITIES",
+            "value": "utility"
+          }
+        ],
+        "resources": {
+          "requests": {
+            "cpu": "100m",
+            "memory": "64Mi"
+          },
+          "limits": {
+            "cpu": "1",
+            "memory": "256Mi"
+          }
+        },
+        "securityContext": {
+          "allowPrivilegeEscalation": false,
+          "capabilities": {
+            "drop": [
+              "ALL"
+            ]
+          }
+        },
+        "volumeMounts": [
+          {
+            "name": "gpu-operator-driver-ready",
+            "mountPath": "/run/nvidia/validations/driver-ready",
+            "readOnly": true
+          }
+        ]
+      }
+    ]
+  }
+}

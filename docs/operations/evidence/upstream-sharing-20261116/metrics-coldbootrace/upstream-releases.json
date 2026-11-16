@@ -1,0 +1,14 @@
+[
+  {
+    "tag": "v0.1.9",
+    "published": "2026-11-11T07:21:05Z",
+    "url": "https://github.com/kai-scheduler/gpu-fractioning/releases/tag/v0.1.9",
+    "body": "## What's Changed\r\n* chore(deps): update Go toolchain to 1.26.10 by @danbar2 in https://github.com/kai-scheduler/gpu-fractioning/pull/162\r\n* feat: include node scope in the aggregate Ready condition message by @shmuel-runai in https://github.com/kai-scheduler/gpu-fractioning/pull/174\r\n* fix(operator): raise mpsd's memory limit and make its resources configurable by @blacksoxx in https://github.com/kai-scheduler/gpu-fractioning/pull/181\r\n\r\n## New Contributors\r\n* @blacksoxx made their first contribution in https://github.com/kai-scheduler/gpu-fractioning/pull/181\r\n\r\n**Full Changelog**: https://github.com/kai-scheduler/gpu-fractioning/compare/v0.1.8...v0.1.9"
+  },
+  {
+    "tag": "v0.1.8",
+    "published": "2026-10-19T11:36:34Z",
+    "url": "https://github.com/kai-scheduler/gpu-fractioning/releases/tag/v0.1.8",
+    "body": "## What's Changed\r\n* chore(deps): update Go toolchain and golang.org/x/net by @danbar2 in https://github.com/kai-scheduler/gpu-fractioning/pull/148\r\n* feat: tag the Helm chart without the v prefix for semver range installs by @natasharomm in https://github.com/kai-scheduler/gpu-fractioning/pull/152\r\n* ci: run the pull-request gates on release branches by @danbar2 in https://github.com/kai-scheduler/gpu-fractioning/pull/155\r\n* feat: support OpenShift out of the box with a plain helm install by @shmuel-runai in https://github.com/kai-scheduler/gpu-fractioning/pull/160\r\n\r\n\r\n**Full Changelog**: https://github.com/kai-scheduler/gpu-fractioning/compare/v0.1.7...v0.1.8"
+  }
+]

@@ -1,0 +1,22 @@
+{
+  "spec": {
+    "metricsAgent": {
+      "volumes": [
+        {
+          "name": "gpu-operator-driver-ready",
+          "hostPath": {
+            "path": "/run/nvidia/validations/driver-ready",
+            "type": "File"
+          }
+        }
+      ],
+      "volumeMounts": [
+        {
+          "name": "gpu-operator-driver-ready",
+          "mountPath": "/run/nvidia/validations/driver-ready",
+          "readOnly": true
+        }
+      ]
+    }
+  }
+}
