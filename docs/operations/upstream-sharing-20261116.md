@@ -34,9 +34,7 @@ bytes. Proxmox successfully extracted its VM configuration; its original backup
 log records successful completion. It contains both disks and is **old**. No full
 restore or full archive integrity scan has been claimed. Preserve current user
 files/configuration and never restore February Longhorn replicas as authoritative.
-A new private configuration/custody/home archive and temporary-volume archive
-are being retained under `/home/bjoern/artifacts/cps-upstream-sharing-20261116/`
-on the workstation (mode 0600, credentials intentionally excluded from Git).
+The user subsequently canceled the additional configuration/custody/home backup and instructed proceeding with the existing VM backup. Its interrupted workstation file is marked `INCOMPLETE` and is not a valid recovery archive. The small infrastructure temporary-volume archive and original maintenance manifests remain under `/home/bjoern/artifacts/cps-upstream-sharing-20261116/` (mode 0600, credentials excluded from Git).
 
 Maintenance started on GPU2 only: it was cordoned, kured's standard manual lock
 was acquired, and Longhorn scheduling on GPU2 was disabled. Longhorn replica
@@ -56,8 +54,7 @@ scaled to zero after checking that all 44 enrollments had published cleanup or
 abort records, every published cleanup was confirmed, and no CUDA compute
 process was reported on GPU2. Custody records were retained unchanged.
 
-Standard drain uses PDBs, no force, no eviction bypass, and no local-data deletion
-flag. A drain timeout is reconciled from actual remaining Pods, not counted as
+The completed standard drain used PDBs, no force, no eviction bypass, and no local-data deletion flag. The user later authorized force-removing any remaining stuck GPU2 Pods; none were stuck when checked, so no force deletion was needed. A drain timeout is reconciled from actual remaining Pods, not counted as
 successful drain by itself. All non-DaemonSet live Pods must be gone before SUC
 can launch the release operation. Prerequisite Ubuntu package updates run under
 host systemd in `cps-gpu2-ubuntu-prerequisites.service` with a retained log.
@@ -124,3 +121,9 @@ installed SUC CRD accepted the candidate Plan in strict server dry-run.
 
 No OS acceptance, R620 hardware enforcement, workspace cutover, peer promotion,
 eight-GPU acceptance, or custom-runtime retirement is claimed by these checks.
+
+## Prerequisite reboot and deployed OS Plan
+
+Ubuntu prerequisites completed successfully under host systemd, resulting in Ubuntu 24.04.5 with a clean package audit. AppArmor requested a reboot. The prerequisite reboot reached systemd reboot target after a CRI scope stop timeout; the warm reboot then failed to return SSH/QGA. After reconciling serial and QMP state, VM102 was stopped and cold-started. The other three workers stayed Ready; no release upgrade had yet run at that point.
+
+Fleet GitRepo `fleet-local/upstream-gpu2-os-pilot` is pinned to source commit `b71839011cadf52d5f1646ade7381b1298e596ee`, watching only the OS bundle path. It reconciled Ready 1/1 and installed `cattle-system/cps-ubuntu-gpu2-ubuntu-20261116`. The required nomination label was absent, so no worker upgrade Job ran. `Complete=True` with zero selected nodes is not OS acceptance. The private image pull secret was supplied from the existing registry credential, and the final OS image was pulled and its source hashes verified in a nonprivileged GPU2 Pod.
