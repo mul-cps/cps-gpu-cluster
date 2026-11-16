@@ -1,0 +1,92 @@
+{
+  "apiVersion": "scheduling.run.ai/v1alpha2",
+  "kind": "BindRequest",
+  "metadata": {
+    "creationTimestamp": "2026-11-16T20:37:57Z",
+    "generation": 1,
+    "labels": {
+      "selected-node": "k3s-wk-gpu2"
+    },
+    "managedFields": [
+      {
+        "apiVersion": "scheduling.run.ai/v1alpha2",
+        "fieldsType": "FieldsV1",
+        "fieldsV1": {
+          "f:metadata": {
+            "f:labels": {
+              ".": {},
+              "f:selected-node": {}
+            },
+            "f:ownerReferences": {
+              ".": {},
+              "k:{\"uid\":\"d098803a-128e-45c5-8459-eb292e7293ef\"}": {}
+            }
+          },
+          "f:spec": {
+            ".": {},
+            "f:podName": {},
+            "f:receivedGPU": {
+              ".": {},
+              "f:count": {},
+              "f:portion": {}
+            },
+            "f:receivedResourceType": {},
+            "f:selectedFractionalGpuGroups": {},
+            "f:selectedGPUGroups": {},
+            "f:selectedNode": {}
+          }
+        },
+        "manager": "app",
+        "operation": "Update",
+        "time": "2026-11-16T20:37:57Z"
+      },
+      {
+        "apiVersion": "scheduling.run.ai/v1alpha2",
+        "fieldsType": "FieldsV1",
+        "fieldsV1": {
+          "f:status": {
+            ".": {},
+            "f:phase": {}
+          }
+        },
+        "manager": "app",
+        "operation": "Update",
+        "subresource": "status",
+        "time": "2026-11-16T20:37:57Z"
+      }
+    ],
+    "name": "kai-place-watchfix-20261116-r1-b-10",
+    "namespace": "gpu-operator",
+    "ownerReferences": [
+      {
+        "apiVersion": "v1",
+        "kind": "Pod",
+        "name": "kai-place-watchfix-20261116-r1-b-10",
+        "uid": "d098803a-128e-45c5-8459-eb292e7293ef"
+      }
+    ],
+    "resourceVersion": "406858096",
+    "uid": "964be5b5-e69a-4fe7-84d6-98be98a078c2"
+  },
+  "spec": {
+    "podName": "kai-place-watchfix-20261116-r1-b-10",
+    "receivedGPU": {
+      "count": 1,
+      "portion": "0.25"
+    },
+    "receivedResourceType": "Fraction",
+    "selectedFractionalGpuGroups": [
+      {
+        "computeSharingMode": "time-slicing",
+        "id": "8ca3d6ea-c5a9-4936-ac80-8250b2d5bb6c"
+      }
+    ],
+    "selectedGPUGroups": [
+      "8ca3d6ea-c5a9-4936-ac80-8250b2d5bb6c"
+    ],
+    "selectedNode": "k3s-wk-gpu2"
+  },
+  "status": {
+    "phase": "Succeeded"
+  }
+}

@@ -1,0 +1,4 @@
+name: gpu3-ubuntu-os-rollout
+defaultNamespace: cattle-system
+labels:
+  name: gpu3-ubuntu-os-rollout

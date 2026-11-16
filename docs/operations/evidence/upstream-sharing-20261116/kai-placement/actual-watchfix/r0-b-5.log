@@ -1,0 +1,21 @@
+{"env": {"NVIDIA_VISIBLE_DEVICES": "void", "NVIDIA_GPU_MEMORY_REQUEST": "5120", "NVIDIA_GPU_MEMORY_LIMIT": "5120", "CUDA_MPS_PIPE_DIRECTORY": "/run/nvidia-mps"}}
+{"role": "r0-b-5", "mode": "ordinary", "gate": "start", "waiting": true}
+{"step": "init", "result": 0}
+{"step": "device", "result": 0}
+{"step": "context", "result": 0}
+{"step": "visible-device-count", "result": 0}
+{"step": "device-uuid", "result": 0}
+{"role": "r0-b-5", "mode": "ordinary", "step": "cuda-identity", "gpu_uuid": "GPU-16128952-b438-556a-00bb-93039ee24e56", "device_count": 1}
+{"role": "r0-b-5", "mode": "ordinary", "step": "above-hard-limit-allocation", "result": 2, "mib": 6144}
+{"role": "r0-b-5", "mode": "ordinary", "step": "allocation", "result": 0, "mib": 4096}
+{"step": "fill", "result": 0}
+{"step": "sync", "result": 0}
+{"role": "r0-b-5", "mode": "ordinary", "step": "holding-filled-vram", "mib": 4096}
+{"role": "r0-b-5", "mode": "ordinary", "step": "progress", "result": 0}
+{"role": "r0-b-5", "mode": "ordinary", "step": "progress", "result": 0}
+{"role": "r0-b-5", "mode": "ordinary", "step": "progress", "result": 0}
+{"role": "r0-b-5", "mode": "ordinary", "step": "progress", "result": 0}
+{"role": "r0-b-5", "mode": "ordinary", "step": "progress", "result": 0}
+{"step": "free", "result": 0}
+{"step": "destroy", "result": 0}
+{"role": "r0-b-5", "mode": "ordinary", "step": "process-finished"}

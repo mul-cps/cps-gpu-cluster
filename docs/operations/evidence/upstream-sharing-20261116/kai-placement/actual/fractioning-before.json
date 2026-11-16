@@ -1,0 +1,46 @@
+{
+  "config_conditions": [
+    {
+      "lastTransitionTime": "2026-11-16T20:22:54Z",
+      "message": "1 of 1 pods ready",
+      "observedGeneration": 1,
+      "reason": "AllPodsReady",
+      "status": "True",
+      "type": "FractiondReady"
+    },
+    {
+      "lastTransitionTime": "2026-11-16T20:22:53Z",
+      "message": "1 of 1 pods ready",
+      "observedGeneration": 1,
+      "reason": "AllPodsReady",
+      "status": "True",
+      "type": "MpsdReady"
+    },
+    {
+      "lastTransitionTime": "2026-11-16T20:22:54Z",
+      "message": "all components are healthy",
+      "observedGeneration": 1,
+      "reason": "AllComponentsReady",
+      "status": "True",
+      "type": "Ready"
+    },
+    {
+      "lastTransitionTime": "2026-11-16T20:21:42Z",
+      "message": "",
+      "observedGeneration": 1,
+      "reason": "NoDriverUpgrade",
+      "status": "False",
+      "type": "DriverUpgradeInProgress"
+    }
+  ],
+  "pods": [
+    {
+      "name": "gpu-fractioning-fractiond-sdf6w",
+      "uid": "c9cf5712-6c7a-4d74-a6e0-09e47c05d265"
+    },
+    {
+      "name": "gpu-fractioning-mpsd-2q2wm",
+      "uid": "9a73fb96-8018-40a2-bbd6-642fa79ad322"
+    }
+  ]
+}

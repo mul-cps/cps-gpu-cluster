@@ -1,9 +1,9 @@
 {
-  "as_of": "2026-11-16T20:09:20.640663+00:00",
+  "as_of": "2026-11-16T20:41:12.707834+00:00",
   "worker": "k3s-wk-gpu2",
   "worker_acceptance": false,
-  "phase": "platform candidate passed; normal Source workflows pending",
-  "gpu_eligibility": "fenced",
+  "phase": "stock KAI placement accepted; controlled real Source-registry workspace lifecycle acceptance running",
+  "gpu_eligibility": "GPU2 only: temporarily eligible for controlled acceptance, not yet accepted",
   "driver": {
     "version": "620.70.06",
     "image": "sha256:c3b71557aa17df43faad5a2661d81f1025ba355ac3adf784096de12cd2ef3e73",
@@ -27,14 +27,22 @@
     "Both 5/10/20 mixed orders with typed OOM, coexistence, actual limits and cleanup",
     "Post-coldboot AppArmor enforcement, signal/ptrace and mount-denial controls",
     "First hung NRI request and disconnected request rejected, CPU works; runtime restart continuity and CUDA quota recovery",
-    "Longhorn nonroot read/write/fsync and normal fixture removal"
+    "Longhorn nonroot read/write/fsync and normal fixture removal",
+    "Stock KAI actual scheduler assignment: both physical/profile orders, 12 payloads plus guards/seed, both six-way progress checkpoints and confirmed cleanup"
   ],
   "remaining": [
-    "New Source-registry Hub deployment and real 5/10/20-to-CPU workflow",
-    "Real stock KAI forced physical placement orders",
-    "Upstream metrics discovery and NVML collector recovery",
+    "Real Source-registry CPS/CIT 5/10/20-to-CPU workflow",
+    "Active per-Pod upstream metrics qualification (NVML initialized; stock monitors installed)",
     "Remaining consolidated-plan distributed, startup/defrag, teaching, RTC and matching restore gates",
     "GPU3 then GPU1 then GPU4 complete serial cycles"
   ],
-  "peers": "GPU1/3/4 Ubuntu24.04/R615 unchanged; not qualified for new shared starts"
+  "peers": "GPU1/3/4 Ubuntu24.04/R615 unchanged; not qualified for new shared starts",
+  "hubs": {
+    "source": "1c160751676bce808fe8a2ae86b0a495b61c0f72",
+    "cps_image": "sha256:0bbeb42640f040a1c26a39c19d368a6ea92bcb18721beba8f68320e7c0edd097",
+    "cit_image": "sha256:bf138c57e6a6243143b71ca6850487f5237ec25add5cee248d1ebabd221409a6",
+    "cps_gitops_pin": "7e7271426e12e2330220857029a26812d66b74ef",
+    "cit_gitops_pin": "6c0135c2f6819d76e21a65de07b47bc66c992d74",
+    "fleet_both_ready": true
+  }
 }

@@ -1,0 +1,55 @@
+{
+  "config_uid": "3623f528-e1ef-423c-8212-b9032707f6a2",
+  "mode": "NvFractions",
+  "pods": [
+    {
+      "name": "admission-569c94dbd8-7pcfr",
+      "uid": "20df8d30-7302-4a10-a410-659a976e0320",
+      "images": [
+        "ghcr.io/kai-scheduler/kai-scheduler/admission:v0.18.1"
+      ]
+    },
+    {
+      "name": "binder-787f45bd66-22wgc",
+      "uid": "bda9f217-7f71-4857-bb22-3ab85c0dad62",
+      "images": [
+        "ghcr.io/kai-scheduler/kai-scheduler/binder:v0.18.1"
+      ]
+    },
+    {
+      "name": "kai-operator-854cd78c9d-m7mzt",
+      "uid": "8d820dc8-e8b9-4a57-9273-0273f4493020",
+      "images": [
+        "ghcr.io/kai-scheduler/kai-scheduler/operator:v0.18.1"
+      ]
+    },
+    {
+      "name": "kai-scheduler-default-7b68cfd44f-7dm4g",
+      "uid": "d857cb85-07b8-4e01-8617-1f6f70cdf627",
+      "images": [
+        "ghcr.io/kai-scheduler/kai-scheduler/scheduler:v0.18.1"
+      ]
+    },
+    {
+      "name": "pod-grouper-66cfc5859b-x7792",
+      "uid": "5ee06065-634b-4dce-8b47-e67dac429e98",
+      "images": [
+        "ghcr.io/kai-scheduler/kai-scheduler/podgrouper:v0.18.1"
+      ]
+    },
+    {
+      "name": "podgroup-controller-679fc68688-9mjtt",
+      "uid": "9a6eb3e3-796c-438d-8b09-3d4e65174232",
+      "images": [
+        "ghcr.io/kai-scheduler/kai-scheduler/podgroupcontroller:v0.18.1"
+      ]
+    },
+    {
+      "name": "queue-controller-6fb7fbd9f8-hkpn7",
+      "uid": "476fc332-3a83-4517-8e9b-b62f4c3532a4",
+      "images": [
+        "ghcr.io/kai-scheduler/kai-scheduler/queuecontroller:v0.18.1"
+      ]
+    }
+  ]
+}

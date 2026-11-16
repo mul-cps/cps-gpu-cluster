@@ -1,0 +1,91 @@
+{
+  "apiVersion": "v1",
+  "kind": "Pod",
+  "metadata": {
+    "annotations": {
+      "required-plugins.noderesource.dev/container.main": "[\"gpu-fractioning\"]",
+      "nvidia.com/container.main.gpu-memory.request": "20480Mi",
+      "nvidia.com/container.main.gpu-memory.limit": "20480Mi",
+      "nvidia.com/container.main.gpu-compute.mode": "time-slicing"
+    },
+    "name": "kai-place-actual-20261116-r0-a-20",
+    "namespace": "gpu-operator",
+    "labels": {
+      "kai.scheduler/queue": "cps-interactive",
+      "cps.unileoben.ac.at/kai-placement-run": "kai-place-actual-20261116"
+    }
+  },
+  "spec": {
+    "containers": [
+      {
+        "command": [
+          "python3",
+          "-u",
+          "/probe/probe.py",
+          "ordinary",
+          "19456",
+          "r0-a-20"
+        ],
+        "image": "ghcr.io/mul-cps/cps-ubuntu-release-upgrade@sha256:5030556ecf8cd38fc9acc4676316bd0a3217d1ab10930b75b9dba7106e8f4004",
+        "name": "main",
+        "resources": {
+          "requests": {
+            "cpu": "200m",
+            "memory": "16Gi"
+          },
+          "limits": {
+            "cpu": "1",
+            "memory": "16Gi"
+          }
+        },
+        "securityContext": {
+          "allowPrivilegeEscalation": false,
+          "capabilities": {
+            "drop": [
+              "ALL"
+            ]
+          }
+        },
+        "volumeMounts": [
+          {
+            "mountPath": "/probe",
+            "name": "probe",
+            "readOnly": true
+          }
+        ]
+      }
+    ],
+    "imagePullSecrets": [
+      {
+        "name": "cps-native-image-pull"
+      }
+    ],
+    "restartPolicy": "Never",
+    "securityContext": {
+      "runAsGroup": 1000,
+      "runAsNonRoot": true,
+      "runAsUser": 1000,
+      "seccompProfile": {
+        "type": "RuntimeDefault"
+      }
+    },
+    "terminationGracePeriodSeconds": 15,
+    "volumes": [
+      {
+        "configMap": {
+          "name": "kai-place-actual-20261116"
+        },
+        "name": "probe"
+      }
+    ],
+    "schedulerName": "kai-scheduler",
+    "priorityClassName": "cps-peer-protocol-20261108",
+    "preemptionPolicy": "Never",
+    "automountServiceAccountToken": false,
+    "nodeSelector": {
+      "kubernetes.io/hostname": "k3s-wk-gpu2",
+      "cps.unileoben.ac.at/upstream-gpu-sharing": "qualified"
+    },
+    "activeDeadlineSeconds": 900
+  }
+}

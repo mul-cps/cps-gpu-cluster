@@ -1,0 +1,46 @@
+[
+  {
+    "time": 1794861270.0528939,
+    "node": "k3s-wk-gpu2",
+    "boot_id": "a39cdade-f00d-4cd1-9a81-c290d668194f",
+    "gpu": "GPU-16128952-b438-556a-00bb-93039ee24e56, 620.70.06, 1, 40960",
+    "compute_processes": "",
+    "uvm": {
+      "srcversion": "10301D70B8ED1758BC717E9",
+      "parameters/uvm_reject_managed_memory": "Y",
+      "parameters/uvm_disable_hmm": "Y"
+    },
+    "uvm_source_sha256": "5648dbfe43957eb257d9efb715906de0fb6caa43458752544221d90db6efdb18",
+    "runtime": {
+      "outer_sha256": "6ce276301723a902da671058730611591c59b5f016b816f57f2d97b05c88fe2c",
+      "containerd_pid": 181962,
+      "containerd_exe": "/var/lib/rancher/k3s/data/2277a2c458beda093f8367b944c2fbb2e5f53a00f17776759721fb781b3874fa/bin/k3s",
+      "inner_sha256": "0ca3be05fd3fcdd9682e68bbff5821ea15027773404a7e47517b822bcb57387a",
+      "kernel": "7.0.0-43-generic",
+      "k3s_version": "k3s version v1.34.9+k3s1 (5f72184f)\ngo version go1.25.11",
+      "mem_available_bytes": 398341226496
+    }
+  },
+  {
+    "time": 1794861270.7987275,
+    "node": "k3s-wk-gpu2",
+    "boot_id": "a39cdade-f00d-4cd1-9a81-c290d668194f",
+    "gpu": "GPU-1e6145d5-8ee2-43e2-a0d5-6d345909e8a6, 620.70.06, 1, 40960",
+    "compute_processes": "",
+    "uvm": {
+      "srcversion": "10301D70B8ED1758BC717E9",
+      "parameters/uvm_reject_managed_memory": "Y",
+      "parameters/uvm_disable_hmm": "Y"
+    },
+    "uvm_source_sha256": "5648dbfe43957eb257d9efb715906de0fb6caa43458752544221d90db6efdb18",
+    "runtime": {
+      "outer_sha256": "6ce276301723a902da671058730611591c59b5f016b816f57f2d97b05c88fe2c",
+      "containerd_pid": 181962,
+      "containerd_exe": "/var/lib/rancher/k3s/data/2277a2c458beda093f8367b944c2fbb2e5f53a00f17776759721fb781b3874fa/bin/k3s",
+      "inner_sha256": "0ca3be05fd3fcdd9682e68bbff5821ea15027773404a7e47517b822bcb57387a",
+      "kernel": "7.0.0-43-generic",
+      "k3s_version": "k3s version v1.34.9+k3s1 (5f72184f)\ngo version go1.25.11",
+      "mem_available_bytes": 398102974464
+    }
+  }
+]

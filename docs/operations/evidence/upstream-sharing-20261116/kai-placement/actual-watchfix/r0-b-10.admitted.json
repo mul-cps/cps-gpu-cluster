@@ -1,0 +1,244 @@
+{
+  "apiVersion": "v1",
+  "kind": "Pod",
+  "metadata": {
+    "annotations": {
+      "nvidia.com/container.main.gpu-compute.mode": "time-slicing",
+      "nvidia.com/container.main.gpu-memory.limit": "10240Mi",
+      "nvidia.com/container.main.gpu-memory.request": "10240Mi",
+      "nvidia.com/container.main.gpus.devices": "k8s.device-plugin.nvidia.com/gpu=GPU-16128952-b438-556a-00bb-93039ee24e56",
+      "pod-group-name": "pg-kai-place-watchfix-20261116-r0-b-10-64882506-dae2-4c52-afeb-11a850c5c853",
+      "received-resource-type": "Fraction",
+      "required-plugins.noderesource.dev/container.main": "[\"gpu-fractioning\"]"
+    },
+    "creationTimestamp": "2026-11-16T20:37:20Z",
+    "generation": 1,
+    "labels": {
+      "cps.unileoben.ac.at/kai-placement-run": "kai-place-watchfix-20261116",
+      "kai.scheduler/queue": "cps-interactive",
+      "runai-gpu-group": "6c24be14-98e1-4c80-8493-a1ab3d70ee9a"
+    },
+    "name": "kai-place-watchfix-20261116-r0-b-10",
+    "namespace": "gpu-operator",
+    "resourceVersion": "406857564",
+    "uid": "64882506-dae2-4c52-afeb-11a850c5c853"
+  },
+  "spec": {
+    "activeDeadlineSeconds": 900,
+    "automountServiceAccountToken": false,
+    "containers": [
+      {
+        "command": [
+          "python3",
+          "-u",
+          "/probe/probe.py",
+          "ordinary",
+          "9216",
+          "r0-b-10"
+        ],
+        "image": "ghcr.io/mul-cps/cps-ubuntu-release-upgrade@sha256:5030556ecf8cd38fc9acc4676316bd0a3217d1ab10930b75b9dba7106e8f4004",
+        "imagePullPolicy": "IfNotPresent",
+        "name": "main",
+        "resources": {
+          "limits": {
+            "cpu": "1",
+            "memory": "16Gi"
+          },
+          "requests": {
+            "cpu": "200m",
+            "memory": "16Gi"
+          }
+        },
+        "securityContext": {
+          "allowPrivilegeEscalation": false,
+          "capabilities": {
+            "drop": [
+              "ALL"
+            ]
+          }
+        },
+        "terminationMessagePath": "/dev/termination-log",
+        "terminationMessagePolicy": "File",
+        "volumeMounts": [
+          {
+            "mountPath": "/probe",
+            "name": "probe",
+            "readOnly": true
+          }
+        ]
+      }
+    ],
+    "dnsPolicy": "ClusterFirst",
+    "enableServiceLinks": true,
+    "imagePullSecrets": [
+      {
+        "name": "cps-native-image-pull"
+      }
+    ],
+    "nodeName": "k3s-wk-gpu2",
+    "nodeSelector": {
+      "cps.unileoben.ac.at/upstream-gpu-sharing": "qualified",
+      "kubernetes.io/hostname": "k3s-wk-gpu2"
+    },
+    "preemptionPolicy": "Never",
+    "priority": -1000,
+    "priorityClassName": "cps-peer-protocol-20261108",
+    "restartPolicy": "Never",
+    "runtimeClassName": "nvidia",
+    "schedulerName": "kai-scheduler",
+    "securityContext": {
+      "runAsGroup": 1000,
+      "runAsNonRoot": true,
+      "runAsUser": 1000,
+      "seccompProfile": {
+        "type": "RuntimeDefault"
+      }
+    },
+    "serviceAccount": "default",
+    "serviceAccountName": "default",
+    "terminationGracePeriodSeconds": 15,
+    "tolerations": [
+      {
+        "effect": "NoExecute",
+        "key": "node.kubernetes.io/not-ready",
+        "operator": "Exists",
+        "tolerationSeconds": 300
+      },
+      {
+        "effect": "NoExecute",
+        "key": "node.kubernetes.io/unreachable",
+        "operator": "Exists",
+        "tolerationSeconds": 300
+      }
+    ],
+    "volumes": [
+      {
+        "configMap": {
+          "defaultMode": 420,
+          "name": "kai-place-watchfix-20261116"
+        },
+        "name": "probe"
+      }
+    ]
+  },
+  "status": {
+    "conditions": [
+      {
+        "lastProbeTime": null,
+        "lastTransitionTime": "2026-11-16T20:37:21Z",
+        "message": "Pod bound successfully to node k3s-wk-gpu2",
+        "reason": "Bound",
+        "status": "True",
+        "type": "PodBound"
+      },
+      {
+        "lastProbeTime": null,
+        "lastTransitionTime": "2026-11-16T20:37:22Z",
+        "observedGeneration": 1,
+        "status": "True",
+        "type": "PodReadyToStartContainers"
+      },
+      {
+        "lastProbeTime": null,
+        "lastTransitionTime": "2026-11-16T20:37:21Z",
+        "observedGeneration": 1,
+        "status": "True",
+        "type": "Initialized"
+      },
+      {
+        "lastProbeTime": null,
+        "lastTransitionTime": "2026-11-16T20:37:22Z",
+        "observedGeneration": 1,
+        "status": "True",
+        "type": "Ready"
+      },
+      {
+        "lastProbeTime": null,
+        "lastTransitionTime": "2026-11-16T20:37:22Z",
+        "observedGeneration": 1,
+        "status": "True",
+        "type": "ContainersReady"
+      },
+      {
+        "lastProbeTime": null,
+        "lastTransitionTime": "2026-11-16T20:37:21Z",
+        "observedGeneration": 1,
+        "status": "True",
+        "type": "PodScheduled"
+      }
+    ],
+    "containerStatuses": [
+      {
+        "allocatedResources": {
+          "cpu": "200m",
+          "memory": "16Gi"
+        },
+        "containerID": "containerd://d13588b5498276f5586b7bc9b5b871e8c8770e2b69da8daf39b4be29aed9f7a4",
+        "image": "sha256:9c399a068d4a44f84f3feec8884de1f1b80ed8e3841987c41c97af0f03226893",
+        "imageID": "ghcr.io/mul-cps/cps-ubuntu-release-upgrade@sha256:5030556ecf8cd38fc9acc4676316bd0a3217d1ab10930b75b9dba7106e8f4004",
+        "lastState": {},
+        "name": "main",
+        "ready": true,
+        "resources": {
+          "limits": {
+            "cpu": "1",
+            "memory": "16Gi"
+          },
+          "requests": {
+            "cpu": "200m",
+            "memory": "16Gi"
+          }
+        },
+        "restartCount": 0,
+        "started": true,
+        "state": {
+          "running": {
+            "startedAt": "2026-11-16T20:37:22Z"
+          }
+        },
+        "user": {
+          "linux": {
+            "gid": 1000,
+            "supplementalGroups": [
+              4,
+              20,
+              24,
+              25,
+              27,
+              29,
+              30,
+              44,
+              46,
+              1000
+            ],
+            "uid": 1000
+          }
+        },
+        "volumeMounts": [
+          {
+            "mountPath": "/probe",
+            "name": "probe",
+            "readOnly": true,
+            "recursiveReadOnly": "Disabled"
+          }
+        ]
+      }
+    ],
+    "hostIP": "10.21.0.43",
+    "hostIPs": [
+      {
+        "ip": "10.21.0.43"
+      }
+    ],
+    "observedGeneration": 1,
+    "phase": "Running",
+    "podIP": "10.42.7.167",
+    "podIPs": [
+      {
+        "ip": "10.42.7.167"
+      }
+    ],
+    "qosClass": "Burstable",
+    "startTime": "2026-11-16T20:37:21Z"
+  }
+}

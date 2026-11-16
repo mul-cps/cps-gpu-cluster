@@ -1,0 +1,81 @@
+{
+  "apiVersion": "scheduling.run.ai/v1alpha2",
+  "kind": "BindRequest",
+  "metadata": {
+    "creationTimestamp": "2026-11-16T20:36:46Z",
+    "generation": 1,
+    "labels": {
+      "selected-node": "k3s-wk-gpu2"
+    },
+    "managedFields": [
+      {
+        "apiVersion": "scheduling.run.ai/v1alpha2",
+        "fieldsType": "FieldsV1",
+        "fieldsV1": {
+          "f:metadata": {
+            "f:labels": {
+              ".": {},
+              "f:selected-node": {}
+            },
+            "f:ownerReferences": {
+              ".": {},
+              "k:{\"uid\":\"486e5034-3fdc-4a9c-9e96-ab72f7f07a3b\"}": {}
+            }
+          },
+          "f:spec": {
+            ".": {},
+            "f:podName": {},
+            "f:receivedGPU": {
+              ".": {},
+              "f:count": {},
+              "f:portion": {}
+            },
+            "f:receivedResourceType": {},
+            "f:selectedNode": {}
+          }
+        },
+        "manager": "app",
+        "operation": "Update",
+        "time": "2026-11-16T20:36:46Z"
+      },
+      {
+        "apiVersion": "scheduling.run.ai/v1alpha2",
+        "fieldsType": "FieldsV1",
+        "fieldsV1": {
+          "f:status": {
+            ".": {},
+            "f:phase": {}
+          }
+        },
+        "manager": "app",
+        "operation": "Update",
+        "subresource": "status",
+        "time": "2026-11-16T20:36:46Z"
+      }
+    ],
+    "name": "kai-place-watchfix-20261116-seed-exclusive",
+    "namespace": "gpu-operator",
+    "ownerReferences": [
+      {
+        "apiVersion": "v1",
+        "kind": "Pod",
+        "name": "kai-place-watchfix-20261116-seed-exclusive",
+        "uid": "486e5034-3fdc-4a9c-9e96-ab72f7f07a3b"
+      }
+    ],
+    "resourceVersion": "406856941",
+    "uid": "2e944ecd-57d3-4a5d-9367-ecf4d10fdde8"
+  },
+  "spec": {
+    "podName": "kai-place-watchfix-20261116-seed-exclusive",
+    "receivedGPU": {
+      "count": 1,
+      "portion": "1.00"
+    },
+    "receivedResourceType": "Regular",
+    "selectedNode": "k3s-wk-gpu2"
+  },
+  "status": {
+    "phase": "Succeeded"
+  }
+}

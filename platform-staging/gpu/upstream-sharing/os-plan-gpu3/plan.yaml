@@ -1,0 +1,28 @@
+apiVersion: upgrade.cattle.io/v1
+kind: Plan
+metadata:
+  name: cps-ubuntu-gpu3-ubuntu-20261116
+  namespace: cattle-system
+spec:
+  concurrency: 1
+  exclusive: true
+  version: gpu3-ubuntu-20261116
+  serviceAccountName: system-upgrade-controller
+  cordon: false
+  nodeSelector:
+    matchLabels:
+      kubernetes.io/hostname: k3s-wk-gpu3
+      cps.unileoben.ac.at/os-upgrade: gpu3-ubuntu-20261116
+  tolerations:
+  - key: cps.unileoben.ac.at/os-upgrade
+    operator: Exists
+    effect: NoSchedule
+  upgrade:
+    image: ghcr.io/mul-cps/cps-ubuntu-release-upgrade@sha256:5030556ecf8cd38fc9acc4676316bd0a3217d1ab10930b75b9dba7106e8f4004
+    command:
+    - /entrypoint.sh
+    args:
+    - gpu3-ubuntu-20261116
+    - k3s-wk-gpu3
+  imagePullSecrets:
+  - name: cps-upstream-image-pull

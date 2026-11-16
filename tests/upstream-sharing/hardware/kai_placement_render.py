@@ -29,6 +29,13 @@ def render(a):
     source = source[:start] + " if 'NVIDIA_GPU_MEMORY_LIMIT' in os.environ:\n" + ''.join(
         ' ' + line + '\n' for line in block.splitlines()) + source[end:]
     source = source.replace('time.monotonic()+120', 'time.monotonic()+600')
+    identity = """count=C.c_int();check('visible-device-count',api('cuDeviceGetCount',[C.POINTER(C.c_int)])(C.byref(count)))
+if count.value!=1:raise RuntimeError('exactly one visible CUDA device required')
+u=(C.c_ubyte*16)();check('device-uuid',api('cuDeviceGetUuid_v2',[C.c_void_p,C.c_int])(C.byref(u),dev))
+import uuid
+emit(step='cuda-identity',gpu_uuid='GPU-'+str(uuid.UUID(bytes=bytes(u))),device_count=count.value)
+"""
+    source = source.replace('p=C.c_uint64();n=mib*1024**2', identity + 'p=C.c_uint64();n=mib*1024**2')
     compile(source, 'kai-placement-probe.py', 'exec')
     base = yaml.safe_load((HISTORICAL / 'gpu2-mixed-a-5.yaml').read_text())
     cm = {'apiVersion': 'v1', 'kind': 'ConfigMap', 'metadata': {
@@ -103,7 +110,7 @@ def render(a):
     return cm, pods, provenance
 
 
-def main():
+def arguments(argv=None, execution=False):
     p = argparse.ArgumentParser(description=__doc__)
     p.add_argument('--node', required=True, choices=[f'k3s-wk-gpu{i}' for i in range(1, 5)])
     p.add_argument('--operator-selected-worker', required=True)
@@ -116,7 +123,12 @@ def main():
     p.add_argument('--queue', default='cps-interactive')
     p.add_argument('--run-id', default='kai-place-' + uuid.uuid4().hex[:8])
     p.add_argument('--output', type=Path, required=True)
-    a = p.parse_args()
+    if execution:
+        p.add_argument('--execute', action='store_true')
+        p.add_argument('--parent-idle-release')
+        p.add_argument('--ssh-target')
+        p.add_argument('--ssh-key', type=Path)
+    a = p.parse_args(argv)
     if a.node != a.operator_selected_worker:
         p.error('single operator-selected worker must match --node')
     for value in (a.namespace, a.queue, a.run_id):
@@ -129,6 +141,11 @@ def main():
     uuid.UUID(a.expected_boot_id)
     if a.gpu_a == a.gpu_b or not re.fullmatch('[0-9a-fA-F]{1,24}', a.expected_module_srcversion):
         p.error('distinct GPU UUIDs and exact loaded module identity required')
+    return a
+
+
+def main():
+    a = arguments()
     cm, pods, evidence = render(a)
     a.output.mkdir(parents=True, exist_ok=False)
     (a.output / 'configmap.yaml').write_text(yaml.safe_dump(cm, sort_keys=False))

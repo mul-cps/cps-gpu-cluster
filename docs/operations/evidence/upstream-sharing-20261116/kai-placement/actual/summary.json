@@ -1,0 +1,125 @@
+{
+  "status": "FAIL",
+  "node": "k3s-wk-gpu2",
+  "node_ip": "10.21.0.43",
+  "operator_selected_worker": "k3s-wk-gpu2",
+  "allowed_gpu_uuids": [
+    "GPU-16128952-b438-556a-00bb-93039ee24e56",
+    "GPU-1e6145d5-8ee2-43e2-a0d5-6d345909e8a6"
+  ],
+  "expected_boot_id": "a39cdade-f00d-4cd1-9a81-c290d668194f",
+  "expected_module_srcversion": "10301D70B8ED1758BC717E9",
+  "driver_image": "ghcr.io/mul-cps/cps-nvidia-driver@sha256:c3b71557aa17df43faad5a2661d81f1025ba355ac3adf784096de12cd2ef3e73",
+  "uvm_source_sha256": "5648dbfe43957eb257d9efb715906de0fb6caa43458752544221d90db6efdb18",
+  "k3s_outer_sha256": "6ce276301723a902da671058730611591c59b5f016b816f57f2d97b05c88fe2c",
+  "k3s_inner_containerd_sha256": "0ca3be05fd3fcdd9682e68bbff5821ea15027773404a7e47517b822bcb57387a",
+  "historical_probe_sha256": "d2a4f4cdb9ee1e6c09622a3277fffc711d0be0a2ddd140e74b03e0a20dd02515",
+  "derived_probe_sha256": "9ef2c893dfebcc5d63b053cccbddd7e4379df5957adfa4d097789e72d5c72a14",
+  "roles_to_pod_names": {
+    "seed-exclusive": "kai-place-actual-20261116-seed-exclusive",
+    "r0-a-5": "kai-place-actual-20261116-r0-a-5",
+    "r0-a-10": "kai-place-actual-20261116-r0-a-10",
+    "r0-a-20": "kai-place-actual-20261116-r0-a-20",
+    "r0-b-5": "kai-place-actual-20261116-r0-b-5",
+    "r0-b-10": "kai-place-actual-20261116-r0-b-10",
+    "r0-b-20": "kai-place-actual-20261116-r0-b-20",
+    "r1-b-20": "kai-place-actual-20261116-r1-b-20",
+    "r1-b-10": "kai-place-actual-20261116-r1-b-10",
+    "r1-b-5": "kai-place-actual-20261116-r1-b-5",
+    "r1-a-20": "kai-place-actual-20261116-r1-a-20",
+    "r1-a-10": "kai-place-actual-20261116-r1-a-10",
+    "r1-a-5": "kai-place-actual-20261116-r1-a-5",
+    "guard-a": "kai-place-actual-20261116-guard-a",
+    "guard-b": "kai-place-actual-20261116-guard-b"
+  },
+  "sequence": [
+    {
+      "create": [
+        "seed-exclusive"
+      ],
+      "expect": "KAI selects one UUID; discover it as B; other allowed UUID is A"
+    },
+    {
+      "create": [
+        "r0-a-5",
+        "r0-a-10",
+        "r0-a-20",
+        "guard-a"
+      ],
+      "expect": "all A; logical reservation 40GiB on A, seed exclusively reserves B"
+    },
+    {
+      "release_delete": [
+        "seed-exclusive"
+      ],
+      "expect": "UID-guarded seed release; B is available"
+    },
+    {
+      "create": [
+        "r0-b-5",
+        "r0-b-10",
+        "r0-b-20"
+      ],
+      "expect": "all B; A logical40GiB; both cards profiles5/10/20 coexist and independently progress"
+    },
+    {
+      "checkpoint": "round0-AB: physical32GiB/card +1MiB guard; capture BindRequests, leaf limits, progress and NVML"
+    },
+    {
+      "release_delete": [
+        "r0-b-5",
+        "r0-b-10",
+        "r0-b-20"
+      ],
+      "expect": "B payload stops before refill; preserve original A logical40GiB"
+    },
+    {
+      "create": [
+        "r1-b-20",
+        "r1-b-10",
+        "r1-b-5",
+        "guard-b"
+      ],
+      "expect": "all original B; B logical40GiB; reverse profile order"
+    },
+    {
+      "release_delete": [
+        "r0-a-5",
+        "r0-a-10",
+        "r0-a-20",
+        "guard-a"
+      ],
+      "expect": "original A becomes free while B remains booked40GiB"
+    },
+    {
+      "create": [
+        "r1-a-20",
+        "r1-a-10",
+        "r1-a-5"
+      ],
+      "expect": "all original A; both cards profiles20/10/5 coexist and independently progress"
+    },
+    {
+      "checkpoint": "round1-BA: physical32GiB/card +1MiB guard; same witness set"
+    },
+    {
+      "release_delete": [
+        "r1-b-20",
+        "r1-b-10",
+        "r1-b-5",
+        "guard-b",
+        "r1-a-20",
+        "r1-a-10",
+        "r1-a-5"
+      ],
+      "expect": "all owned Pods/CM gone; no owned BindRequests/reservations; no CUDA clients; <=1MiB/card"
+    }
+  ],
+  "parent_idle_release": "gpu2-kai-controlled-20261116-root-7e727142",
+  "observations": {},
+  "node_uid": "3336cdd5-d245-436e-b57c-2f66c6dcaa41",
+  "driver_pod_uid": "dfd0cc7a-1e57-476f-a90c-50b4f09b70c4",
+  "error": "BindRequest watch terminated unexpectedly",
+  "cleanup": "PASS",
+  "elapsed_seconds": 5.21615572203882
+}

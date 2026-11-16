@@ -1,0 +1,2 @@
+error: unknown flag: --resource-version
+See 'kubectl get --help' for usage.
