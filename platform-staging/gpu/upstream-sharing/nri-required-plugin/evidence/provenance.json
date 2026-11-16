@@ -1,0 +1,22 @@
+{
+  "status": "review candidate; not published or installed",
+  "k3s_tag": "v1.34.9+k3s1",
+  "k3s_commit": "5f72184f2d188f75171bbd21953b1c16268e425f",
+  "nri_version": "v0.12.0",
+  "upstream_patch_commit": "9cb8bc1fee03ebd41d90319240c2493fb03411b9",
+  "patch_sha256": "48349d32bd48042e490c8bef3cde3ea401c96a654c8f5a4f315bde4d15e647ae",
+  "only_changed_vendored_nri_source": [
+    "pkg/adaptation/adaptation.go"
+  ],
+  "patched_source_sha256": "70fae2905e5ecbe0f8976dd6bc4dd8a6b2f57548aee9cf4c445c12602ece00c8",
+  "artifact_path": "/var/tmp/cps-nri-required-20261116/k3s/dist/artifacts/k3s",
+  "outer_sha256": "6ce276301723a902da671058730611591c59b5f016b816f57f2d97b05c88fe2c",
+  "inner_sha256": "0ca3be05fd3fcdd9682e68bbff5821ea15027773404a7e47517b822bcb57387a",
+  "embedded_archive_sha256": "2277a2c458beda093f8367b944c2fbb2e5f53a00f17776759721fb781b3874fa",
+  "stock_outer_sha256": "80eebb578e36a04ca460575fab419a3336b32c84205a0ae954ff16636181d9f7",
+  "stock_archive_sha256": "65415f7708224bbfc7865f032e84da4a5123a3acebef70c8ee40fa991aa68555",
+  "builder_base": "docker.io/library/golang:1.25.11-alpine3.23@sha256:419b51cdb0b245c7fc3008fba7a6e933e6ca051ef4601e9681d9a1ef0ff59e6e",
+  "builder_image_id": "43e3d7d1558edb9b6a7f8916ae818fc48e9f74697fe46a517ca2435f661f5fd4",
+  "go_mod_sha256": "33850ef8d98fb8f26f6eaf6d22987ca12f58ffe989122fce687edeed37e01554",
+  "go_sum_sha256": "c081088a795708a92ab4ab69bcb7c7bd1e57600f27600203b35ac5383b515645"
+}

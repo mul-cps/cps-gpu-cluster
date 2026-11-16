@@ -1,0 +1,10 @@
+{
+  "changed_assets": [
+    "bin/.sha256sums",
+    "bin/k3s"
+  ],
+  "asset_entries": 375,
+  "inner_sha256": "0ca3be05fd3fcdd9682e68bbff5821ea15027773404a7e47517b822bcb57387a",
+  "stock_assets_preserved": true,
+  "checksums_and_links_valid": true
+}

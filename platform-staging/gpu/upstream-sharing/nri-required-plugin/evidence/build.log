@@ -1,0 +1,535 @@
+WARNING: opening from cache https://dl-cdn.alpinelinux.org/alpine/v3.23/main/x86_64/APKINDEX.tar.gz: No such file or directory
+WARNING: opening from cache https://dl-cdn.alpinelinux.org/alpine/v3.23/community/x86_64/APKINDEX.tar.gz: No such file or directory
+++ dirname ./scripts/package-cli
++ cd ./scripts/..
++ . ./scripts/version.sh
+++ GO=go
++++ go env GOARCH
+++ ARCH=amd64
++++ go env GOOS
+++ OS=linux
+++ SUFFIX=-amd64
+++ '[' -z true ']'
++++ get-module-path github.com/containerd/containerd/v2
++++ go list -mod=readonly -m -f '{{if .Replace}}{{.Replace.Path}}{{else}}{{.Path}}{{end}}' github.com/containerd/containerd/v2
+++ PKG_CONTAINERD_K3S=github.com/k3s-io/containerd/v2
++++ get-module-version github.com/containerd/containerd/v2
++++ go list -mod=readonly -m -f '{{if .Replace}}{{.Replace.Version}}{{else}}{{.Version}}{{end}}' github.com/containerd/containerd/v2
+++ VERSION_CONTAINERD=v2.2.5-k3s2
+++ '[' -z v2.2.5-k3s2 ']'
++++ get-module-version sigs.k8s.io/cri-tools
++++ go list -mod=readonly -m -f '{{if .Replace}}{{.Replace.Version}}{{else}}{{.Version}}{{end}}' sigs.k8s.io/cri-tools
+++ VERSION_CRICTL=v1.34.0-k3s2
+++ '[' -z v1.34.0-k3s2 ']'
++++ get-module-version k8s.io/kubernetes
++++ go list -mod=readonly -m -f '{{if .Replace}}{{.Replace.Version}}{{else}}{{.Version}}{{end}}' k8s.io/kubernetes
+++ VERSION_K8S_K3S=v1.34.9-k3s1
+++ VERSION_K8S=v1.34.9
+++ '[' -z v1.34.9 ']'
++++ echo v1.34.9
++++ grep -Eo '1\.[0-9]+'
+++ BRANCH_K8S=release-1.34
+++ '[' release-1.34 == release-0.0 ']'
++++ get-module-version github.com/opencontainers/runc
++++ go list -mod=readonly -m -f '{{if .Replace}}{{.Replace.Version}}{{else}}{{.Version}}{{end}}' github.com/opencontainers/runc
+++ VERSION_RUNC=v1.4.2
+++ '[' -z v1.4.2 ']'
++++ get-module-version github.com/Microsoft/hcsshim
++++ go list -mod=readonly -m -f '{{if .Replace}}{{.Replace.Version}}{{else}}{{.Version}}{{end}}' github.com/Microsoft/hcsshim
+++ VERSION_HCSSHIM=v0.14.0-rc.1
+++ '[' -z v0.14.0-rc.1 ']'
++++ get-module-version github.com/flannel-io/flannel
++++ go list -mod=readonly -m -f '{{if .Replace}}{{.Replace.Version}}{{else}}{{.Version}}{{end}}' github.com/flannel-io/flannel
+++ VERSION_FLANNEL=v0.28.4
+++ '[' -z v0.28.4 ']'
++++ get-module-version github.com/Mirantis/cri-dockerd
++++ go list -mod=readonly -m -f '{{if .Replace}}{{.Replace.Version}}{{else}}{{.Version}}{{end}}' github.com/Mirantis/cri-dockerd
+++ VERSION_CRI_DOCKERD=v0.3.19-k3s3
+++ '[' -z v0.3.19-k3s3 ']'
+++ VERSION_CNIPLUGINS=v1.9.1-k3s1
+++ VERSION_FLANNEL_PLUGIN=v1.9.0-flannel1
++++ get-module-version github.com/cloudnativelabs/kube-router/v2
++++ go list -mod=readonly -m -f '{{if .Replace}}{{.Replace.Version}}{{else}}{{.Version}}{{end}}' github.com/cloudnativelabs/kube-router/v2
+++ VERSION_KUBE_ROUTER=v2.6.3-k3s1
+++ '[' -z v2.6.3-k3s1 ']'
+++ VERSION_ROOT=v0.15.2
+++ case ${ARCH} in
+++ K3S_ROOT_SHA256=9e56393cf828583b50b6b0e66cc47cb6a5e1d0489eab1436421bc20c56c0cf65
+++ VERSION_HELM_JOB=v0.11.1-build20260615
+++ [[ -n v1.34.9+k3s1 ]]
+++ [[ ! v1.34.9+k3s1 =~ ^v1\.34\.9[+-] ]]
+++ VERSION=v1.34.9+k3s1
++++ sed -e s/+/-/g
+++ VERSION_TAG=v1.34.9-k3s1
+++ BINARY_POSTFIX=
+++ '[' linux = windows ']'
++ GO=go
++ for i in containerd crictl kubectl k3s-agent k3s-server k3s-token k3s-etcd-snapshot k3s-secrets-encrypt k3s-certificate k3s-completion
++ rm -f bin/containerd
++ ln -s k3s bin/containerd
++ for i in containerd crictl kubectl k3s-agent k3s-server k3s-token k3s-etcd-snapshot k3s-secrets-encrypt k3s-certificate k3s-completion
++ rm -f bin/crictl
++ ln -s k3s bin/crictl
++ for i in containerd crictl kubectl k3s-agent k3s-server k3s-token k3s-etcd-snapshot k3s-secrets-encrypt k3s-certificate k3s-completion
++ rm -f bin/kubectl
++ ln -s k3s bin/kubectl
++ for i in containerd crictl kubectl k3s-agent k3s-server k3s-token k3s-etcd-snapshot k3s-secrets-encrypt k3s-certificate k3s-completion
++ rm -f bin/k3s-agent
++ ln -s k3s bin/k3s-agent
++ for i in containerd crictl kubectl k3s-agent k3s-server k3s-token k3s-etcd-snapshot k3s-secrets-encrypt k3s-certificate k3s-completion
++ rm -f bin/k3s-server
++ ln -s k3s bin/k3s-server
++ for i in containerd crictl kubectl k3s-agent k3s-server k3s-token k3s-etcd-snapshot k3s-secrets-encrypt k3s-certificate k3s-completion
++ rm -f bin/k3s-token
++ ln -s k3s bin/k3s-token
++ for i in containerd crictl kubectl k3s-agent k3s-server k3s-token k3s-etcd-snapshot k3s-secrets-encrypt k3s-certificate k3s-completion
++ rm -f bin/k3s-etcd-snapshot
++ ln -s k3s bin/k3s-etcd-snapshot
++ for i in containerd crictl kubectl k3s-agent k3s-server k3s-token k3s-etcd-snapshot k3s-secrets-encrypt k3s-certificate k3s-completion
++ rm -f bin/k3s-secrets-encrypt
++ ln -s k3s bin/k3s-secrets-encrypt
++ for i in containerd crictl kubectl k3s-agent k3s-server k3s-token k3s-etcd-snapshot k3s-secrets-encrypt k3s-certificate k3s-completion
++ rm -f bin/k3s-certificate
++ ln -s k3s bin/k3s-certificate
++ for i in containerd crictl kubectl k3s-agent k3s-server k3s-token k3s-etcd-snapshot k3s-secrets-encrypt k3s-certificate k3s-completion
++ rm -f bin/k3s-completion
++ ln -s k3s bin/k3s-completion
++ cni_binaries=("bandwidth" "bridge" "firewall" "flannel" "host-local" "loopback" "portmap")
++ '[' linux = windows ']'
++ for i in "${cni_binaries[@]}"
++ rm -f bin/bandwidth
++ ln -s cni bin/bandwidth
++ for i in "${cni_binaries[@]}"
++ rm -f bin/bridge
++ ln -s cni bin/bridge
++ for i in "${cni_binaries[@]}"
++ rm -f bin/firewall
++ ln -s cni bin/firewall
++ for i in "${cni_binaries[@]}"
++ rm -f bin/flannel
++ ln -s cni bin/flannel
++ for i in "${cni_binaries[@]}"
++ rm -f bin/host-local
++ ln -s cni bin/host-local
++ for i in "${cni_binaries[@]}"
++ rm -f bin/loopback
++ ln -s cni bin/loopback
++ for i in "${cni_binaries[@]}"
++ rm -f bin/portmap
++ ln -s cni bin/portmap
++ cp contrib/util/check-config.sh bin/check-config
++ rm -rf build/data
++ mkdir -p build/data build/out
++ mkdir -p dist/artifacts
++ mkdir -p ./etc
++ set +x
++ tar --sort=name --mtime=@0 -cvf ./build/out/data-linux.tar ./bin ./etc
+tar: Option --mtime: Treating date '@0' as 1970-01-01 00:00:00
+./bin/
+./bin/.links
+./bin/.sha256sums
+./bin/[
+./bin/[[
+./bin/addgroup
+./bin/adduser
+./bin/ar
+./bin/arch
+./bin/arp
+./bin/arping
+./bin/ash
+./bin/aux/
+./bin/aux/arptables
+./bin/aux/arptables-nft
+./bin/aux/arptables-nft-restore
+./bin/aux/arptables-nft-save
+./bin/aux/arptables-restore
+./bin/aux/arptables-save
+./bin/aux/arptables-translate
+./bin/aux/ebtables
+./bin/aux/ebtables-legacy
+./bin/aux/ebtables-nft
+./bin/aux/ebtables-nft-restore
+./bin/aux/ebtables-nft-save
+./bin/aux/ebtables-restore
+./bin/aux/ebtables-save
+./bin/aux/ebtables-translate
+./bin/aux/ebtablesd
+./bin/aux/ebtablesu
+./bin/aux/ip6tables
+./bin/aux/ip6tables-apply
+./bin/aux/ip6tables-legacy
+./bin/aux/ip6tables-legacy-restore
+./bin/aux/ip6tables-legacy-save
+./bin/aux/ip6tables-nft
+./bin/aux/ip6tables-nft-restore
+./bin/aux/ip6tables-nft-save
+./bin/aux/ip6tables-restore
+./bin/aux/ip6tables-restore-translate
+./bin/aux/ip6tables-save
+./bin/aux/ip6tables-translate
+./bin/aux/iptables
+./bin/aux/iptables-apply
+./bin/aux/iptables-detect.sh
+./bin/aux/iptables-legacy
+./bin/aux/iptables-legacy-restore
+./bin/aux/iptables-legacy-save
+./bin/aux/iptables-nft
+./bin/aux/iptables-nft-restore
+./bin/aux/iptables-nft-save
+./bin/aux/iptables-restore
+./bin/aux/iptables-restore-translate
+./bin/aux/iptables-save
+./bin/aux/iptables-translate
+./bin/aux/modprobe
+./bin/aux/mount
+./bin/aux/nft
+./bin/aux/xtables-legacy-multi
+./bin/aux/xtables-monitor
+./bin/aux/xtables-nft-multi
+./bin/aux/xtables-set-mode.sh
+./bin/awk
+./bin/b2sum
+./bin/bandwidth
+./bin/base32
+./bin/base64
+./bin/basename
+./bin/basenc
+./bin/bc
+./bin/blkid
+./bin/bridge
+./bin/bunzip2
+./bin/busybox
+./bin/bzcat
+./bin/cat
+./bin/chattr
+./bin/chcon
+./bin/check-config
+./bin/chgrp
+./bin/chmod
+./bin/chown
+./bin/chroot
+./bin/chrt
+./bin/chvt
+./bin/cksum
+./bin/clear
+./bin/cmp
+./bin/cni
+./bin/comm
+./bin/conntrack
+./bin/containerd
+./bin/containerd-shim-runc-v2
+./bin/coreutils
+./bin/cp
+./bin/cpio
+./bin/crictl
+./bin/crond
+./bin/crontab
+./bin/csplit
+./bin/ctr
+./bin/cut
+./bin/date
+./bin/dc
+./bin/dd
+./bin/deallocvt
+./bin/delgroup
+./bin/deluser
+./bin/devmem
+./bin/df
+./bin/diff
+./bin/dir
+./bin/dircolors
+./bin/dirname
+./bin/dnsd
+./bin/dnsdomainname
+./bin/dos2unix
+./bin/du
+./bin/dumpkmap
+./bin/echo
+./bin/egrep
+./bin/eject
+./bin/env
+./bin/ether-wake
+./bin/ethtool
+./bin/expand
+./bin/expr
+./bin/factor
+./bin/fallocate
+./bin/false
+./bin/fbset
+./bin/fdflush
+./bin/fdformat
+./bin/fgrep
+./bin/find
+./bin/firewall
+./bin/flannel
+./bin/fmt
+./bin/fold
+./bin/free
+./bin/freeramdisk
+./bin/fsck
+./bin/fsfreeze
+./bin/fuse-overlayfs
+./bin/fuser
+./bin/getfattr
+./bin/getopt
+./bin/getty
+./bin/grep
+./bin/groups
+./bin/gunzip
+./bin/gzip
+./bin/halt
+./bin/hdparm
+./bin/head
+./bin/hexedit
+./bin/host-local
+./bin/hostid
+./bin/hostname
+./bin/hwclock
+./bin/i2cdetect
+./bin/i2cdump
+./bin/i2cget
+./bin/i2cset
+./bin/i2ctransfer
+./bin/id
+./bin/ifconfig
+./bin/ifdown
+./bin/ifup
+./bin/inetd
+./bin/init
+./bin/insmod
+./bin/install
+./bin/ip
+./bin/ipaddr
+./bin/ipcrm
+./bin/ipcs
+./bin/iplink
+./bin/ipneigh
+./bin/iproute
+./bin/iprule
+./bin/ipset
+./bin/iptunnel
+./bin/join
+./bin/k3s
+./bin/k3s-agent
+./bin/k3s-certificate
+./bin/k3s-completion
+./bin/k3s-etcd-snapshot
+./bin/k3s-secrets-encrypt
+./bin/k3s-server
+./bin/k3s-token
+./bin/kill
+./bin/killall
+./bin/killall5
+./bin/klogd
+./bin/kubectl
+./bin/last
+./bin/less
+./bin/link
+./bin/linux32
+./bin/linux64
+./bin/linuxrc
+./bin/ln
+./bin/loadfont
+./bin/loadkmap
+./bin/logger
+./bin/login
+./bin/logname
+./bin/loopback
+./bin/losetup
+./bin/ls
+./bin/lsattr
+./bin/lsmod
+./bin/lsof
+./bin/lspci
+./bin/lsscsi
+./bin/lsusb
+./bin/lzcat
+./bin/lzma
+./bin/lzopcat
+./bin/makedevs
+./bin/md5sum
+./bin/mdev
+./bin/mesg
+./bin/microcom
+./bin/mim
+./bin/mkdir
+./bin/mkdosfs
+./bin/mke2fs
+./bin/mkfifo
+./bin/mknod
+./bin/mkpasswd
+./bin/mktemp
+./bin/more
+./bin/mountpoint
+./bin/mt
+./bin/mv
+./bin/nameif
+./bin/netstat
+./bin/nice
+./bin/nl
+./bin/nohup
+./bin/nologin
+./bin/nproc
+./bin/nsenter
+./bin/nslookup
+./bin/nuke
+./bin/numfmt
+./bin/od
+./bin/openvt
+./bin/partprobe
+./bin/passwd
+./bin/paste
+./bin/patch
+./bin/pathchk
+./bin/pidof
+./bin/pigz
+./bin/ping
+./bin/pinky
+./bin/pipe_progress
+./bin/pivot_root
+./bin/portmap
+./bin/poweroff
+./bin/pr
+./bin/printenv
+./bin/printf
+./bin/ps
+./bin/ptx
+./bin/pwd
+./bin/rdate
+./bin/readlink
+./bin/realpath
+./bin/reboot
+./bin/reset
+./bin/resize
+./bin/resume
+./bin/rm
+./bin/rmdir
+./bin/rmmod
+./bin/route
+./bin/run-init
+./bin/run-parts
+./bin/runc
+./bin/runcon
+./bin/runlevel
+./bin/sed
+./bin/seq
+./bin/setarch
+./bin/setconsole
+./bin/setfattr
+./bin/setkeycodes
+./bin/setlogcons
+./bin/setpriv
+./bin/setserial
+./bin/sh
+./bin/sha1sum
+./bin/sha224sum
+./bin/sha256sum
+./bin/sha384sum
+./bin/sha3sum
+./bin/sha512sum
+./bin/shred
+./bin/shuf
+./bin/sleep
+./bin/slirp4netns
+./bin/sort
+./bin/split
+./bin/start-stop-daemon
+./bin/stat
+./bin/strings
+./bin/stty
+./bin/su
+./bin/sulogin
+./bin/sum
+./bin/svc
+./bin/svok
+./bin/switch_root
+./bin/sync
+./bin/sysctl
+./bin/syslogd
+./bin/tac
+./bin/tail
+./bin/tar
+./bin/tee
+./bin/telnet
+./bin/test
+./bin/tftp
+./bin/time
+./bin/timeout
+./bin/top
+./bin/touch
+./bin/tr
+./bin/traceroute
+./bin/true
+./bin/truncate
+./bin/ts
+./bin/tsort
+./bin/tty
+./bin/ubirename
+./bin/udhcpc
+./bin/uevent
+./bin/umount
+./bin/uname
+./bin/unexpand
+./bin/uniq
+./bin/unix2dos
+./bin/unlink
+./bin/unlzma
+./bin/unlzop
+./bin/unpigz
+./bin/unxz
+./bin/unzip
+./bin/uptime
+./bin/users
+./bin/usleep
+./bin/uudecode
+./bin/uuencode
+./bin/vconfig
+./bin/vdir
+./bin/vi
+./bin/vlock
+./bin/w
+./bin/watch
+./bin/watchdog
+./bin/wc
+./bin/wget
+./bin/which
+./bin/who
+./bin/whoami
+./bin/xargs
+./bin/xxd
+./bin/xz
+./bin/xzcat
+./bin/yes
+./bin/zcat
+./etc/
++ zstd --no-progress -T0 -16 -f --long=25 --rm ./build/out/data-linux.tar -o ./build/out/data-linux.tar.zst
+./build/out/data-linux.tar : 26.27%   (   245 MiB =>   64.5 MiB, ./build/out/data-linux.tar.zst) 
+++ sha256sum ./build/out/data-linux.tar.zst
+++ awk '{print $1}'
++ HASH=2277a2c458beda093f8367b944c2fbb2e5f53a00f17776759721fb781b3874fa
++ cp ./build/out/data-linux.tar.zst ./build/data/2277a2c458beda093f8367b944c2fbb2e5f53a00f17776759721fb781b3874fa.tar.zst
++ BIN_SUFFIX=-amd64
++ '[' amd64 = amd64 ']'
++ BIN_SUFFIX=
++ CMD_NAME=dist/artifacts/k3s
++ LDFLAGS=$'\n    -X github.com/k3s-io/k3s/pkg/version.Version=v1.34.9+k3s1\n    -X github.com/k3s-io/k3s/pkg/version.GitCommit=5f72184f\n    -w -s\n'
++ TAGS=urfave_cli_no_docs
++ STATIC='-extldflags '\''-static'\'''
++ cp -av build/data/2277a2c458beda093f8367b944c2fbb2e5f53a00f17776759721fb781b3874fa.tar.zst pkg/data/embed/
+'build/data/2277a2c458beda093f8367b944c2fbb2e5f53a00f17776759721fb781b3874fa.tar.zst' -> 'pkg/data/embed/2277a2c458beda093f8367b944c2fbb2e5f53a00f17776759721fb781b3874fa.tar.zst'
++ CGO_ENABLED=0
++ go build -tags urfave_cli_no_docs -buildvcs=false -ldflags $'\n    -X github.com/k3s-io/k3s/pkg/version.Version=v1.34.9+k3s1\n    -X github.com/k3s-io/k3s/pkg/version.GitCommit=5f72184f\n    -w -s\n -extldflags \'-static\'' -o dist/artifacts/k3s ./cmd/k3s
++ stat dist/artifacts/k3s
+  File: dist/artifacts/k3s
+  Size: 80404664  	Blocks: 157048     IO Block: 4096   regular file
+Device: 0,38	Inode: 16945634    Links: 1
+Access: (0755/-rwxr-xr-x)  Uid: (    0/    root)   Gid: (    0/    root)
+Access: 2026-11-16 19:27:30.992272895 +0000
+Modify: 2026-11-16 19:27:30.992272895 +0000
+Change: 2026-11-16 19:27:30.992272895 +0000
+ Birth: 2026-11-16 19:27:30.992272895 +0000
++ ./scripts/build-upload dist/artifacts/k3s 5f72184f2d188f75171bbd21953b1c16268e425f
+AWS_SECRET_ACCESS_KEY is not set
+0ca3be05fd3fcdd9682e68bbff5821ea15027773404a7e47517b822bcb57387a  bin/k3s
+6ce276301723a902da671058730611591c59b5f016b816f57f2d97b05c88fe2c  dist/artifacts/k3s
+2277a2c458beda093f8367b944c2fbb2e5f53a00f17776759721fb781b3874fa  build/data/2277a2c458beda093f8367b944c2fbb2e5f53a00f17776759721fb781b3874fa.tar.zst

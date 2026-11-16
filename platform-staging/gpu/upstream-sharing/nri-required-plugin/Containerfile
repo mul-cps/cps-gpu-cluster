@@ -1,0 +1,6 @@
+FROM docker.io/library/golang:1.25.11-alpine3.23@sha256:419b51cdb0b245c7fc3008fba7a6e933e6ca051ef4601e9681d9a1ef0ff59e6e
+# Same compiler distribution as the tagged K3s Dockerfile.local. Only the
+# Linux amd64 inner binary and official outer packaging are rebuilt.
+RUN apk add --no-cache bash git gcc musl-dev linux-headers coreutils tar zstd \
+    sqlite-dev sqlite-static libseccomp-dev libseccomp-static libselinux-dev \
+    zlib-dev zlib-static libuv-static btrfs-progs-dev btrfs-progs-static

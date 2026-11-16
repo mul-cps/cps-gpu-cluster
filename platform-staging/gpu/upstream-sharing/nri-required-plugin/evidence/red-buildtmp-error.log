@@ -1,0 +1,255 @@
+go: downloading github.com/containerd/ttrpc v1.2.7
+go: downloading google.golang.org/grpc v1.57.1
+go: downloading github.com/tetratelabs/wazero v1.11.0
+go: downloading golang.org/x/sys v0.39.0
+go: downloading google.golang.org/protobuf v1.34.1
+go: downloading github.com/google/go-cmp v0.7.0
+go: downloading github.com/onsi/ginkgo/v2 v2.19.1
+go: downloading github.com/onsi/gomega v1.34.0
+go: downloading github.com/opencontainers/runtime-spec v1.3.0
+go: downloading github.com/sirupsen/logrus v1.9.3
+go: downloading github.com/stretchr/testify v1.8.4
+go: downloading gopkg.in/yaml.v3 v3.0.1
+go: downloading golang.org/x/mod v0.32.0
+go: downloading github.com/knqyf263/go-plugin v0.9.0
+go: downloading google.golang.org/genproto/googleapis/rpc v0.0.0-20230731190214-cbb8c96f2d6d
+go: downloading github.com/containerd/log v0.1.0
+go: downloading github.com/pmezard/go-difflib v1.0.0
+go: downloading github.com/davecgh/go-spew v1.1.1
+go: downloading golang.org/x/net v0.48.0
+go: downloading github.com/go-logr/logr v1.4.2
+go: downloading github.com/golang/protobuf v1.5.3
+go: downloading golang.org/x/text v0.32.0
+# crypto/rsa
+compile: writing output: write $WORK/b213/_pkg_.a: disk quota exceeded
+# google.golang.org/protobuf/internal/encoding/defval
+compile: writing output: write $WORK/b146/_pkg_.a: disk quota exceeded
+# golang.org/x/text/encoding/htmlindex
+compile: writing output: write $WORK/b365/_pkg_.a: disk quota exceeded
+# text/template
+compile: writing output: write $WORK/b342/_pkg_.a: disk quota exceeded
+# net
+cgo-gcc-prolog:132:1: fatal error: error writing to /tmp/ccn6yfVc.s: Disk quota exceeded
+compilation terminated.
+# crypto/ed25519
+compile: writing output: write $WORK/b195/_pkg_.a: disk quota exceeded
+# golang.org/x/sys/unix
+compile: writing output: write $WORK/b131/_pkg_.a: disk quota exceeded
+# encoding/asn1
+compile: writing output: write $WORK/b192/_pkg_.a: disk quota exceeded
+# google.golang.org/protobuf/proto
+compile: writing output: write $WORK/b152/_pkg_.a: disk quota exceeded
+# log/slog
+compile: writing output: write $WORK/b326/_pkg_.a: disk quota exceeded
+# go/parser
+compile: writing output: write $WORK/b112/_pkg_.a: disk quota exceeded
+# runtime
+vet: failed to export analysis facts: write $WORK/b010/vet.out: disk quota exceeded
+crypto/subtle: write /tmp/go-build2613027490/b102/vet.cfg: disk quota exceeded
+internal/reflectlite: write /tmp/go-build2613027490/b005/vet.cfg: disk quota exceeded
+sync: write /tmp/go-build2613027490/b038/vet.cfg: disk quota exceeded
+weak: write /tmp/go-build2613027490/b187/vet.cfg: disk quota exceeded
+iter: write /tmp/go-build2613027490/b046/vet.cfg: disk quota exceeded
+errors: write /tmp/go-build2613027490/b004/vet.cfg: disk quota exceeded
+internal/bisect: write /tmp/go-build2613027490/b050/vet.cfg: disk quota exceeded
+google.golang.org/protobuf/internal/pragma: write /tmp/go-build2613027490/b140/vet.cfg: disk quota exceeded
+slices: write /tmp/go-build2613027490/b044/vet.cfg: disk quota exceeded
+path: write /tmp/go-build2613027490/b042/vet.cfg: disk quota exceeded
+crypto/internal/fips140cache: write /tmp/go-build2613027490/b186/vet.cfg: disk quota exceeded
+internal/godebug: write /tmp/go-build2613027490/b049/vet.cfg: disk quota exceeded
+internal/singleflight: write /tmp/go-build2613027490/b227/vet.cfg: disk quota exceeded
+io: write /tmp/go-build2613027490/b037/vet.cfg: disk quota exceeded
+maps: write /tmp/go-build2613027490/b223/vet.cfg: disk quota exceeded
+strconv: write /tmp/go-build2613027490/b059/vet.cfg: disk quota exceeded
+crypto/internal/fips140deps/godebug: write /tmp/go-build2613027490/b084/vet.cfg: disk quota exceeded
+internal/testlog: write /tmp/go-build2613027490/b056/vet.cfg: disk quota exceeded
+sort: write /tmp/go-build2613027490/b111/vet.cfg: disk quota exceeded
+internal/oserror: write /tmp/go-build2613027490/b036/vet.cfg: disk quota exceeded
+vendor/golang.org/x/net/dns/dnsmessage: write /tmp/go-build2613027490/b225/vet.cfg: disk quota exceeded
+math/rand/v2: write /tmp/go-build2613027490/b100/vet.cfg: disk quota exceeded
+hash: write /tmp/go-build2613027490/b079/vet.cfg: disk quota exceeded
+strings: write /tmp/go-build2613027490/b068/vet.cfg: disk quota exceeded
+golang.org/x/mod/semver: write /tmp/go-build2613027490/b127/vet.cfg: disk quota exceeded
+crypto: write /tmp/go-build2613027490/b078/vet.cfg: disk quota exceeded
+hash/fnv: write /tmp/go-build2613027490/b139/vet.cfg: disk quota exceeded
+hash/crc32: write /tmp/go-build2613027490/b121/vet.cfg: disk quota exceeded
+crypto/internal/impl: write /tmp/go-build2613027490/b091/vet.cfg: disk quota exceeded
+syscall: write /tmp/go-build2613027490/b051/vet.cfg: disk quota exceeded
+internal/saferio: write /tmp/go-build2613027490/b193/vet.cfg: disk quota exceeded
+crypto/internal/randutil: write /tmp/go-build2613027490/b099/vet.cfg: disk quota exceeded
+internal/syscall/execenv: write /tmp/go-build2613027490/b055/vet.cfg: disk quota exceeded
+time: write /tmp/go-build2613027490/b048/vet.cfg: disk quota exceeded
+math/rand: write /tmp/go-build2613027490/b071/vet.cfg: disk quota exceeded
+github.com/tetratelabs/wazero/internal/descriptor: write /tmp/go-build2613027490/b264/vet.cfg: disk quota exceeded
+encoding/base64: write /tmp/go-build2613027490/b106/vet.cfg: disk quota exceeded
+runtime/cgo: write /tmp/go-build2613027490/b230/vet.cfg: disk quota exceeded
+internal/syscall/unix: write /tmp/go-build2613027490/b054/vet.cfg: disk quota exceeded
+regexp/syntax: write /tmp/go-build2613027490/b117/vet.cfg: disk quota exceeded
+net/http/internal/ascii: write /tmp/go-build2613027490/b305/vet.cfg: disk quota exceeded
+net/http/internal/testcert: write /tmp/go-build2613027490/b308/vet.cfg: disk quota exceeded
+bytes: write /tmp/go-build2613027490/b062/vet.cfg: disk quota exceeded
+unique: write /tmp/go-build2613027490/b229/vet.cfg: disk quota exceeded
+crypto/internal/fips140: write /tmp/go-build2613027490/b083/vet.cfg: disk quota exceeded
+log/slog/internal/buffer: write /tmp/go-build2613027490/b328/vet.cfg: disk quota exceeded
+github.com/google/go-cmp/cmp/internal/diff: write /tmp/go-build2613027490/b319/vet.cfg: disk quota exceeded
+io/fs: write /tmp/go-build2613027490/b035/vet.cfg: disk quota exceeded
+bufio: write /tmp/go-build2613027490/b070/vet.cfg: disk quota exceeded
+internal/poll: write /tmp/go-build2613027490/b053/vet.cfg: disk quota exceeded
+crypto/internal/fips140/sha512: write /tmp/go-build2613027490/b094/vet.cfg: disk quota exceeded
+crypto/internal/fips140/sha256: write /tmp/go-build2613027490/b088/vet.cfg: disk quota exceeded
+context: write /tmp/go-build2613027490/b063/vet.cfg: disk quota exceeded
+embed: write /tmp/go-build2613027490/b126/vet.cfg: disk quota exceeded
+net/netip: write /tmp/go-build2613027490/b228/vet.cfg: disk quota exceeded
+crypto/internal/fips140/sha3: write /tmp/go-build2613027490/b092/vet.cfg: disk quota exceeded
+vendor/golang.org/x/text/transform: write /tmp/go-build2613027490/b294/vet.cfg: disk quota exceeded
+regexp: write /tmp/go-build2613027490/b116/vet.cfg: disk quota exceeded
+encoding/pem: write /tmp/go-build2613027490/b222/vet.cfg: disk quota exceeded
+reflect: write /tmp/go-build2613027490/b057/vet.cfg: disk quota exceeded
+html: write /tmp/go-build2613027490/b341/vet.cfg: disk quota exceeded
+crypto/internal/fips140/hmac: write /tmp/go-build2613027490/b087/vet.cfg: disk quota exceeded
+github.com/google/go-cmp/cmp/internal/function: write /tmp/go-build2613027490/b321/vet.cfg: disk quota exceeded
+encoding/binary: write /tmp/go-build2613027490/b104/vet.cfg: disk quota exceeded
+internal/filepathlite: write /tmp/go-build2613027490/b034/vet.cfg: disk quota exceeded
+google.golang.org/protobuf/internal/editiondefaults: write /tmp/go-build2613027490/b145/vet.cfg: disk quota exceeded
+crypto/sha3: write /tmp/go-build2613027490/b189/vet.cfg: disk quota exceeded
+internal/fmtsort: write /tmp/go-build2613027490/b067/vet.cfg: disk quota exceeded
+github.com/tetratelabs/wazero/internal/ieee754: write /tmp/go-build2613027490/b262/vet.cfg: disk quota exceeded
+crypto/internal/fips140/check: write /tmp/go-build2613027490/b086/vet.cfg: disk quota exceeded
+github.com/onsi/gomega/types: write /tmp/go-build2613027490/b350/vet.cfg: disk quota exceeded
+golang.org/x/net/context: write /tmp/go-build2613027490/b344/vet.cfg: disk quota exceeded
+crypto/internal/fips140/nistec/fiat: write /tmp/go-build2613027490/b178/vet.cfg: disk quota exceeded
+os: write /tmp/go-build2613027490/b003/vet.cfg: disk quota exceeded
+google.golang.org/protobuf/internal/detrand: write /tmp/go-build2613027490/b138/vet.cfg: disk quota exceeded
+crypto/internal/fips140hash: write /tmp/go-build2613027490/b188/vet.cfg: disk quota exceeded
+crypto/internal/fips140/aes: write /tmp/go-build2613027490/b082/vet.cfg: disk quota exceeded
+crypto/internal/sysrand: write /tmp/go-build2613027490/b098/vet.cfg: disk quota exceeded
+fmt: write /tmp/go-build2613027490/b066/vet.cfg: disk quota exceeded
+crypto/internal/entropy: write /tmp/go-build2613027490/b097/vet.cfg: disk quota exceeded
+google.golang.org/protobuf/internal/errors: write /tmp/go-build2613027490/b137/vet.cfg: disk quota exceeded
+log: write /tmp/go-build2613027490/b132/vet.cfg: disk quota exceeded
+google.golang.org/protobuf/encoding/protowire: write /tmp/go-build2613027490/b136/vet.cfg: disk quota exceeded
+go/token: write /tmp/go-build2613027490/b110/vet.cfg: disk quota exceeded
+google.golang.org/protobuf/reflect/protoreflect: write /tmp/go-build2613027490/b135/vet.cfg: disk quota exceeded
+compress/flate: write /tmp/go-build2613027490/b120/vet.cfg: disk quota exceeded
+google.golang.org/protobuf/internal/descfmt: write /tmp/go-build2613027490/b143/vet.cfg: disk quota exceeded
+google.golang.org/protobuf/internal/encoding/messageset: write /tmp/go-build2613027490/b150/vet.cfg: disk quota exceeded
+google.golang.org/protobuf/internal/strs: write /tmp/go-build2613027490/b149/vet.cfg: disk quota exceeded
+google.golang.org/protobuf/internal/genid: write /tmp/go-build2613027490/b151/vet.cfg: disk quota exceeded
+google.golang.org/protobuf/internal/order: write /tmp/go-build2613027490/b153/vet.cfg: disk quota exceeded
+google.golang.org/protobuf/internal/encoding/text: write /tmp/go-build2613027490/b147/vet.cfg: disk quota exceeded
+google.golang.org/protobuf/reflect/protoregistry: write /tmp/go-build2613027490/b154/vet.cfg: disk quota exceeded
+google.golang.org/protobuf/runtime/protoiface: write /tmp/go-build2613027490/b155/vet.cfg: disk quota exceeded
+encoding/json: write /tmp/go-build2613027490/b105/vet.cfg: disk quota exceeded
+google.golang.org/protobuf/internal/version: write /tmp/go-build2613027490/b161/vet.cfg: disk quota exceeded
+google.golang.org/grpc/attributes: write /tmp/go-build2613027490/b165/vet.cfg: disk quota exceeded
+google.golang.org/grpc/internal/grpclog: write /tmp/go-build2613027490/b168/vet.cfg: disk quota exceeded
+golang.org/x/text/transform: write /tmp/go-build2613027490/b362/vet.cfg: disk quota exceeded
+crypto/internal/fips140/drbg: write /tmp/go-build2613027490/b096/vet.cfg: disk quota exceeded
+google.golang.org/grpc/grpclog: write /tmp/go-build2613027490/b167/vet.cfg: disk quota exceeded
+crypto/internal/fips140/edwards25519/field: write /tmp/go-build2613027490/b179/vet.cfg: disk quota exceeded
+crypto/internal/fips140/nistec: write /tmp/go-build2613027490/b177/vet.cfg: disk quota exceeded
+vendor/golang.org/x/crypto/internal/poly1305: write /tmp/go-build2613027490/b209/vet.cfg: disk quota exceeded
+crypto/internal/fips140/ecdh: write /tmp/go-build2613027490/b176/vet.cfg: disk quota exceeded
+crypto/internal/fips140/bigmod: write /tmp/go-build2613027490/b185/vet.cfg: disk quota exceeded
+crypto/internal/fips140/edwards25519: write /tmp/go-build2613027490/b197/vet.cfg: disk quota exceeded
+crypto/internal/fips140/ecdsa: write /tmp/go-build2613027490/b184/vet.cfg: disk quota exceeded
+math/big: write /tmp/go-build2613027490/b182/vet.cfg: disk quota exceeded
+crypto/internal/fips140/hkdf: write /tmp/go-build2613027490/b200/vet.cfg: disk quota exceeded
+crypto/internal/fips140/ed25519: write /tmp/go-build2613027490/b196/vet.cfg: disk quota exceeded
+crypto/elliptic: write /tmp/go-build2613027490/b181/vet.cfg: disk quota exceeded
+crypto/internal/fips140/mlkem: write /tmp/go-build2613027490/b202/vet.cfg: disk quota exceeded
+crypto/internal/fips140/tls12: write /tmp/go-build2613027490/b203/vet.cfg: disk quota exceeded
+crypto/internal/fips140/tls13: write /tmp/go-build2613027490/b204/vet.cfg: disk quota exceeded
+crypto/fips140: write /tmp/go-build2613027490/b217/vet.cfg: disk quota exceeded
+encoding/hex: write /tmp/go-build2613027490/b221/vet.cfg: disk quota exceeded
+crypto/internal/fips140/rsa: write /tmp/go-build2613027490/b214/vet.cfg: disk quota exceeded
+crypto/tls/internal/fips140tls: write /tmp/go-build2613027490/b216/vet.cfg: disk quota exceeded
+vendor/golang.org/x/sys/cpu: write /tmp/go-build2613027490/b210/vet.cfg: disk quota exceeded
+net/url: write /tmp/go-build2613027490/b231/vet.cfg: disk quota exceeded
+io/ioutil: write /tmp/go-build2613027490/b237/vet.cfg: disk quota exceeded
+path/filepath: write /tmp/go-build2613027490/b072/vet.cfg: disk quota exceeded
+github.com/opencontainers/runtime-spec/specs-go: write /tmp/go-build2613027490/b251/vet.cfg: disk quota exceeded
+github.com/tetratelabs/wazero/sys: write /tmp/go-build2613027490/b256/vet.cfg: disk quota exceeded
+github.com/tetratelabs/wazero/api: write /tmp/go-build2613027490/b249/vet.cfg: disk quota exceeded
+golang.org/x/sys/cpu: write /tmp/go-build2613027490/b267/vet.cfg: disk quota exceeded
+github.com/tetratelabs/wazero/experimental/sys: write /tmp/go-build2613027490/b255/vet.cfg: disk quota exceeded
+github.com/knqyf263/go-plugin/wasm: write /tmp/go-build2613027490/b248/vet.cfg: disk quota exceeded
+github.com/tetratelabs/wazero/internal/fsapi: write /tmp/go-build2613027490/b265/vet.cfg: disk quota exceeded
+debug/dwarf: write /tmp/go-build2613027490/b271/vet.cfg: disk quota exceeded
+github.com/tetratelabs/wazero/experimental: write /tmp/go-build2613027490/b253/vet.cfg: disk quota exceeded
+github.com/tetratelabs/wazero/internal/wasip1: write /tmp/go-build2613027490/b285/vet.cfg: disk quota exceeded
+github.com/davecgh/go-spew/spew: write /tmp/go-build2613027490/b287/vet.cfg: disk quota exceeded
+vendor/golang.org/x/text/unicode/bidi: write /tmp/go-build2613027490/b295/vet.cfg: disk quota exceeded
+github.com/pmezard/go-difflib/difflib: write /tmp/go-build2613027490/b288/vet.cfg: disk quota exceeded
+vendor/golang.org/x/net/http2/hpack: write /tmp/go-build2613027490/b299/vet.cfg: disk quota exceeded
+runtime/debug: write /tmp/go-build2613027490/b073/vet.cfg: disk quota exceeded
+vendor/golang.org/x/text/unicode/norm: write /tmp/go-build2613027490/b296/vet.cfg: disk quota exceeded
+vendor/golang.org/x/text/secure/bidirule: write /tmp/go-build2613027490/b293/vet.cfg: disk quota exceeded
+github.com/containerd/nri/pkg/version: write /tmp/go-build2613027490/b125/vet.cfg: disk quota exceeded
+github.com/tetratelabs/wazero/internal/wasmdebug: write /tmp/go-build2613027490/b270/vet.cfg: disk quota exceeded
+google.golang.org/protobuf/internal/descopts: write /tmp/go-build2613027490/b144/vet.cfg: disk quota exceeded
+compress/gzip: write /tmp/go-build2613027490/b119/vet.cfg: disk quota exceeded
+google.golang.org/grpc/connectivity: write /tmp/go-build2613027490/b166/vet.cfg: disk quota exceeded
+github.com/tetratelabs/wazero/internal/version: write /tmp/go-build2613027490/b282/vet.cfg: disk quota exceeded
+mime/quotedprintable: write /tmp/go-build2613027490/b302/vet.cfg: disk quota exceeded
+encoding/gob: write /tmp/go-build2613027490/b339/vet.cfg: disk quota exceeded
+text/template/parse: write /tmp/go-build2613027490/b343/vet.cfg: disk quota exceeded
+vendor/golang.org/x/net/idna: write /tmp/go-build2613027490/b292/vet.cfg: disk quota exceeded
+os/signal: write /tmp/go-build2613027490/b115/vet.cfg: disk quota exceeded
+crypto/internal/fips140only: write /tmp/go-build2613027490/b101/vet.cfg: disk quota exceeded
+os/exec: write /tmp/go-build2613027490/b114/vet.cfg: disk quota exceeded
+internal/sysinfo: write /tmp/go-build2613027490/b069/vet.cfg: disk quota exceeded
+github.com/onsi/ginkgo/v2/formatter: write /tmp/go-build2613027490/b329/vet.cfg: disk quota exceeded
+crypto/hkdf: write /tmp/go-build2613027490/b199/vet.cfg: disk quota exceeded
+runtime/trace: write /tmp/go-build2613027490/b074/vet.cfg: disk quota exceeded
+net/http/internal: write /tmp/go-build2613027490/b304/vet.cfg: disk quota exceeded
+encoding/xml: write /tmp/go-build2613027490/b335/vet.cfg: disk quota exceeded
+crypto/rc4: write /tmp/go-build2613027490/b212/vet.cfg: disk quota exceeded
+crypto/md5: write /tmp/go-build2613027490/b211/vet.cfg: disk quota exceeded
+flag: write /tmp/go-build2613027490/b064/vet.cfg: disk quota exceeded
+github.com/onsi/gomega/format: write /tmp/go-build2613027490/b349/vet.cfg: disk quota exceeded
+crypto/dsa: write /tmp/go-build2613027490/b219/vet.cfg: disk quota exceeded
+github.com/onsi/gomega/internal: write /tmp/go-build2613027490/b348/vet.cfg: disk quota exceeded
+testing: write /tmp/go-build2613027490/b061/vet.cfg: disk quota exceeded
+gopkg.in/yaml.v3: write /tmp/go-build2613027490/b289/vet.cfg: disk quota exceeded
+github.com/onsi/gomega/matchers/support/goraph/bipartitegraph: write /tmp/go-build2613027490/b353/vet.cfg: disk quota exceeded
+golang.org/x/net/html: write /tmp/go-build2613027490/b358/vet.cfg: disk quota exceeded
+golang.org/x/text/encoding: write /tmp/go-build2613027490/b360/vet.cfg: disk quota exceeded
+golang.org/x/text/encoding/internal: write /tmp/go-build2613027490/b364/vet.cfg: disk quota exceeded
+golang.org/x/text/encoding/charmap: write /tmp/go-build2613027490/b363/vet.cfg: disk quota exceeded
+golang.org/x/text/encoding/japanese: write /tmp/go-build2613027490/b366/vet.cfg: disk quota exceeded
+mime: write /tmp/go-build2613027490/b300/vet.cfg: disk quota exceeded
+golang.org/x/text/encoding/korean: write /tmp/go-build2613027490/b367/vet.cfg: disk quota exceeded
+golang.org/x/text/encoding/simplifiedchinese: write /tmp/go-build2613027490/b368/vet.cfg: disk quota exceeded
+crypto/internal/fips140/aes/gcm: write /tmp/go-build2613027490/b095/vet.cfg: disk quota exceeded
+github.com/google/go-cmp/cmp/internal/value: write /tmp/go-build2613027490/b322/vet.cfg: disk quota exceeded
+github.com/tetratelabs/wazero/internal/leb128: write /tmp/go-build2613027490/b259/vet.cfg: disk quota exceeded
+golang.org/x/text/encoding/traditionalchinese: write /tmp/go-build2613027490/b369/vet.cfg: disk quota exceeded
+github.com/onsi/gomega/internal/gutil: write /tmp/go-build2613027490/b352/vet.cfg: disk quota exceeded
+crypto/cipher: write /tmp/go-build2613027490/b081/vet.cfg: disk quota exceeded
+github.com/google/go-cmp/cmp: write /tmp/go-build2613027490/b318/vet.cfg: disk quota exceeded
+crypto/internal/boring: write /tmp/go-build2613027490/b080/vet.cfg: disk quota exceeded
+crypto/des: write /tmp/go-build2613027490/b174/vet.cfg: disk quota exceeded
+crypto/aes: write /tmp/go-build2613027490/b173/vet.cfg: disk quota exceeded
+crypto/ecdh: write /tmp/go-build2613027490/b175/vet.cfg: disk quota exceeded
+crypto/internal/boring/bbig: write /tmp/go-build2613027490/b183/vet.cfg: disk quota exceeded
+crypto/sha512: write /tmp/go-build2613027490/b190/vet.cfg: disk quota exceeded
+crypto/rand: write /tmp/go-build2613027490/b198/vet.cfg: disk quota exceeded
+crypto/hmac: write /tmp/go-build2613027490/b201/vet.cfg: disk quota exceeded
+vendor/golang.org/x/crypto/chacha20: write /tmp/go-build2613027490/b207/vet.cfg: disk quota exceeded
+crypto/sha1: write /tmp/go-build2613027490/b215/vet.cfg: disk quota exceeded
+crypto/sha256: write /tmp/go-build2613027490/b077/vet.cfg: disk quota exceeded
+vendor/golang.org/x/crypto/chacha20poly1305: write /tmp/go-build2613027490/b206/vet.cfg: disk quota exceeded
+github.com/tetratelabs/wazero/internal/filecache: write /tmp/go-build2613027490/b258/vet.cfg: disk quota exceeded
+crypto/internal/hpke: write /tmp/go-build2613027490/b205/vet.cfg: disk quota exceeded
+golang.org/x/text/runes: write /tmp/go-build2613027490/b372/vet.cfg: disk quota exceeded
+github.com/google/go-cmp/cmp/cmpopts: write /tmp/go-build2613027490/b323/vet.cfg: disk quota exceeded
+golang.org/x/text/internal/tag: write /tmp/go-build2613027490/b375/vet.cfg: disk quota exceeded
+golang.org/x/text/encoding/unicode: write /tmp/go-build2613027490/b370/vet.cfg: disk quota exceeded
+golang.org/x/text/internal/language: write /tmp/go-build2613027490/b374/vet.cfg: disk quota exceeded
+golang.org/x/text/internal/language/compact: write /tmp/go-build2613027490/b376/vet.cfg: disk quota exceeded
+golang.org/x/text/language: write /tmp/go-build2613027490/b373/vet.cfg: disk quota exceeded
+# github.com/onsi/ginkgo/v2/types
+compile: writing output: write $WORK/b337/_pkg_.a: disk quota exceeded
+FAIL	github.com/containerd/nri/pkg/adaptation [build failed]
+FAIL

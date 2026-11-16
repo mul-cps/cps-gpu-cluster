@@ -1,0 +1,17 @@
+Run from platform-staging/gpu/upstream-sharing/nri-required-plugin in the root worktree.
+Prepared source: exact K3s tag, go mod vendor, patch -p1 in vendor/github.com/containerd/nri.
+The patch was independently tested first in exact NRI v0.12.0 source.
+
+podman build -t localhost/cps-k3s-nri-builder:1.34.9 -f Containerfile .
+podman run --rm --name cps-k3s-nri-review-build --security-opt label=disable \
+  -v /var/tmp/cps-nri-required-20261116/k3s:/src \
+  -v /var/tmp/cps-nri-required-20261116/stock-payload:/stock:ro \
+  -v /home/bjoern/.codex/worktrees/708f/cps-gpu-cluster/platform-staging/gpu/upstream-sharing/nri-required-plugin:/qualification \
+  -v /var/tmp/cps-nri-required-20261116/gomodcache:/go/pkg/mod \
+  -v /var/tmp/cps-nri-required-20261116/gocache-alpine:/root/.cache/go-build \
+  -v /var/tmp/cps-nri-required-20261116/gotmp:/gotmp \
+  -e GOTMPDIR=/gotmp -w /src localhost/cps-k3s-nri-builder:1.34.9 \
+  bash /qualification/build-in-container.sh
+
+The isolated build container has no Kubernetes credentials, SSH keys, registry
+credentials, host sockets, or AWS upload credentials mounted or passed through.

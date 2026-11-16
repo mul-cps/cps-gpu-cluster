@@ -1,0 +1,12 @@
+[
+  {
+    "url": "https://k3s.io/k3s-charts/assets/traefik-crd/traefik-crd-40.1.3+up40.1.0.tgz",
+    "sha256": "5e54903d0004ff008c7199de3a7be5896803c359d03c5a2ad4eb40c2c7613273",
+    "verified_identical_bytes_in_stock_inner": true
+  },
+  {
+    "url": "https://k3s.io/k3s-charts/assets/traefik/traefik-40.1.3+up40.1.0.tgz",
+    "sha256": "bf31a0bb92ee012c0332bd2a86c970d4ff25bc98f2e8b58b2e6f0b76bb21ece9",
+    "verified_identical_bytes_in_stock_inner": true
+  }
+]

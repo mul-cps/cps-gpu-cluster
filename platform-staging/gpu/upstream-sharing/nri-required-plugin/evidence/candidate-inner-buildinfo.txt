@@ -1,0 +1,566 @@
+bin/k3s: go1.25.11
+	path	github.com/k3s-io/k3s/cmd/server
+	mod	github.com/k3s-io/k3s	(devel)	
+	dep	cel.dev/expr	v0.24.0	
+	dep	dario.cat/mergo	v1.0.2	
+	dep	filippo.io/bigmod	v0.1.1-0.20260103110540-f8a47775ebe5	
+	dep	filippo.io/edwards25519	v1.2.0	
+	dep	filippo.io/keygen	v0.0.0-20260114151900-8e2790ea4c5b	
+	dep	github.com/DataDog/zstd	v1.5.7	
+	dep	github.com/HdrHistogram/hdrhistogram-go	v1.2.0	
+	dep	github.com/MakeNowJust/heredoc	v1.0.0	
+	dep	github.com/Masterminds/semver/v3	v3.4.0	
+	dep	github.com/Microsoft/hcsshim	v0.15.0-rc.1
+	=>	github.com/Microsoft/hcsshim	v0.14.0-rc.1	
+	
+	dep	github.com/Mirantis/cri-dockerd	v0.3.19
+	=>	github.com/k3s-io/cri-dockerd	v0.3.19-k3s3	
+	
+	dep	github.com/NYTimes/gziphandler	v1.1.1	
+	dep	github.com/Rican7/retry	v0.3.1	
+	dep	github.com/antithesishq/antithesis-sdk-go	v0.7.0	
+	dep	github.com/antlr4-go/antlr/v4	v4.13.1	
+	dep	github.com/armon/circbuf	v0.0.0-20190214190532-5111143e8da2	
+	dep	github.com/avast/retry-go/v4	v4.7.0	
+	dep	github.com/bahlo/generic-list-go	v0.2.0	
+	dep	github.com/benbjohnson/clock	v1.3.5	
+	dep	github.com/beorn7/perks	v1.0.1	
+	dep	github.com/blang/semver	v3.5.1+incompatible	
+	dep	github.com/blang/semver/v4	v4.0.0	
+	dep	github.com/bronze1man/goStrongswanVici	v0.0.0-20231128135937-211cef3b0b20	
+	dep	github.com/buger/jsonparser	v1.1.2	
+	dep	github.com/cenkalti/backoff/v5	v5.0.3	
+	dep	github.com/cespare/xxhash/v2	v2.3.0	
+	dep	github.com/chai2010/gettext-go	v1.0.2	
+	dep	github.com/checkpoint-restore/checkpointctl	v1.5.0	
+	dep	github.com/checkpoint-restore/go-criu/v7	v7.2.0	
+	dep	github.com/cilium/ebpf	v0.17.3
+	=>	github.com/cilium/ebpf	v0.12.3	
+	
+	dep	github.com/cloudnativelabs/kube-router/v2	v2.0.0-00010101000000-000000000000
+	=>	github.com/k3s-io/kube-router/v2	v2.6.3-k3s1	
+	
+	dep	github.com/cockroachdb/errors	v1.11.3	
+	dep	github.com/cockroachdb/fifo	v0.0.0-20240606204812-0bbfbd93a7ce	
+	dep	github.com/cockroachdb/logtags	v0.0.0-20230118201751-21c54148d20b	
+	dep	github.com/cockroachdb/pebble	v1.1.5	
+	dep	github.com/cockroachdb/redact	v1.1.5	
+	dep	github.com/cockroachdb/tokenbucket	v0.0.0-20230807174530-cc333fc44b06	
+	dep	github.com/container-storage-interface/spec	v1.9.0	
+	dep	github.com/containerd/btrfs/v2	v2.0.0	
+	dep	github.com/containerd/cgroups/v3	v3.1.3	
+	dep	github.com/containerd/console	v1.0.5	
+	dep	github.com/containerd/containerd/api	v1.11.1
+	=>	github.com/containerd/containerd/api	v1.10.0	
+	
+	dep	github.com/containerd/containerd/v2	v2.2.3
+	=>	github.com/k3s-io/containerd/v2	v2.2.5-k3s2	
+	
+	dep	github.com/containerd/continuity	v0.5.0	
+	dep	github.com/containerd/errdefs	v1.0.0	
+	dep	github.com/containerd/errdefs/pkg	v0.3.0	
+	dep	github.com/containerd/fifo	v1.1.0	
+	dep	github.com/containerd/fuse-overlayfs-snapshotter/v2	v2.1.7	
+	dep	github.com/containerd/go-cni	v1.1.13	
+	dep	github.com/containerd/go-runc	v1.1.0	
+	dep	github.com/containerd/imgcrypt/v2	v2.0.2	
+	dep	github.com/containerd/log	v0.1.0	
+	dep	github.com/containerd/nri	v0.12.0	
+	dep	github.com/containerd/otelttrpc	v0.1.0	
+	dep	github.com/containerd/platforms	v1.0.0-rc.4	
+	dep	github.com/containerd/plugin	v1.1.0	
+	dep	github.com/containerd/stargz-snapshotter	v0.18.2	
+	dep	github.com/containerd/stargz-snapshotter/estargz	v0.18.2	
+	dep	github.com/containerd/ttrpc	v1.2.8	
+	dep	github.com/containerd/typeurl/v2	v2.2.3	
+	dep	github.com/containerd/zfs/v2	v2.0.0	
+	dep	github.com/containernetworking/cni	v1.3.0	
+	dep	github.com/containernetworking/plugins	v1.9.1	
+	dep	github.com/containers/ocicrypt	v1.2.1	
+	dep	github.com/coreos/go-iptables	v0.8.0	
+	dep	github.com/coreos/go-oidc	v2.3.0+incompatible	
+	dep	github.com/coreos/go-semver	v0.3.1	
+	dep	github.com/coreos/go-systemd/v22	v22.7.0	
+	dep	github.com/cyphar/filepath-securejoin	v0.6.1	
+	dep	github.com/davecgh/go-spew	v1.1.2-0.20180830191138-d8f796af33cc	
+	dep	github.com/davidlazar/go-crypto	v0.0.0-20200604182044-b73af7476f6c	
+	dep	github.com/decred/dcrd/dcrec/secp256k1/v4	v4.4.1	
+	dep	github.com/distribution/reference	v0.6.0	
+	dep	github.com/docker/cli	v29.2.0+incompatible	
+	dep	github.com/docker/distribution	v2.8.3+incompatible
+	=>	github.com/docker/distribution	v2.8.3+incompatible	
+	
+	dep	github.com/docker/docker	v28.3.3+incompatible
+	=>	github.com/docker/docker	v25.0.15-0.20260325154711-d2dbc0547253+incompatible	
+	
+	dep	github.com/docker/docker-credential-helpers	v0.7.0	
+	dep	github.com/docker/go-connections	v0.6.0	
+	dep	github.com/docker/go-events	v0.0.0-20190806004212-e31b211e4f1c	
+	dep	github.com/docker/go-metrics	v0.0.1	
+	dep	github.com/docker/go-units	v0.5.0	
+	dep	github.com/dunglas/httpsfv	v1.1.0	
+	dep	github.com/dustin/go-humanize	v1.0.1	
+	dep	github.com/emicklei/go-restful	v2.16.0+incompatible	
+	dep	github.com/emicklei/go-restful/v3	v3.13.0
+	=>	github.com/emicklei/go-restful/v3	v3.12.2	
+	
+	dep	github.com/erikdubbelboer/gspt	v0.0.0-20190125194910-e68493906b83	
+	dep	github.com/euank/go-kmsg-parser	v2.0.0+incompatible	
+	dep	github.com/evanphx/json-patch	v5.9.11+incompatible	
+	dep	github.com/exponent-io/jsonpath	v0.0.0-20210407135951-1de76d718b3f	
+	dep	github.com/expr-lang/expr	v1.17.8	
+	dep	github.com/fatih/camelcase	v1.0.0	
+	dep	github.com/felixge/httpsnoop	v1.0.4	
+	dep	github.com/filecoin-project/go-clock	v0.1.0	
+	dep	github.com/flannel-io/flannel	v0.28.4	
+	dep	github.com/flynn/noise	v1.1.0	
+	dep	github.com/fsnotify/fsnotify	v1.9.0	
+	dep	github.com/fxamacker/cbor/v2	v2.9.0	
+	dep	github.com/gammazero/deque	v1.2.1	
+	dep	github.com/getsentry/sentry-go	v0.27.0	
+	dep	github.com/ghodss/yaml	v1.0.0	
+	dep	github.com/go-errors/errors	v1.4.2	
+	dep	github.com/go-ini/ini	v1.67.0	
+	dep	github.com/go-jose/go-jose/v4	v4.1.4	
+	dep	github.com/go-logr/logr	v1.4.3	
+	dep	github.com/go-logr/stdr	v1.2.3-0.20220714215716-96bad1d688c5	
+	dep	github.com/go-openapi/jsonpointer	v0.22.0	
+	dep	github.com/go-openapi/jsonreference	v0.21.1	
+	dep	github.com/go-openapi/swag	v0.24.1	
+	dep	github.com/go-openapi/swag/cmdutils	v0.24.0	
+	dep	github.com/go-openapi/swag/conv	v0.24.0	
+	dep	github.com/go-openapi/swag/fileutils	v0.24.0	
+	dep	github.com/go-openapi/swag/jsonname	v0.24.0	
+	dep	github.com/go-openapi/swag/jsonutils	v0.24.0	
+	dep	github.com/go-openapi/swag/loading	v0.24.0	
+	dep	github.com/go-openapi/swag/mangling	v0.24.0	
+	dep	github.com/go-openapi/swag/netutils	v0.24.0	
+	dep	github.com/go-openapi/swag/stringutils	v0.24.0	
+	dep	github.com/go-openapi/swag/typeutils	v0.24.0	
+	dep	github.com/go-openapi/swag/yamlutils	v0.24.0	
+	dep	github.com/go-sql-driver/mysql	v1.10.0	
+	dep	github.com/go-test/deep	v1.0.7	
+	dep	github.com/godbus/dbus/v5	v5.1.0	
+	dep	github.com/gofrs/flock	v0.8.1	
+	dep	github.com/gogo/protobuf	v1.3.2	
+	dep	github.com/golang-jwt/jwt/v5	v5.3.0	
+	dep	github.com/golang/groupcache	v0.0.0-20241129210726-2c02b8208cf8	
+	dep	github.com/golang/protobuf	v1.5.4
+	=>	github.com/golang/protobuf	v1.5.4	
+	
+	dep	github.com/golang/snappy	v0.0.5-0.20231225225746-43d5d4cd4e0e	
+	dep	github.com/google/btree	v1.1.3	
+	dep	github.com/google/cadvisor	v0.53.0
+	=>	github.com/k3s-io/cadvisor	v0.52.1	
+	
+	dep	github.com/google/cel-go	v0.26.1	
+	dep	github.com/google/gnostic-models	v0.7.0	
+	dep	github.com/google/go-cmp	v0.7.0	
+	dep	github.com/google/go-containerregistry	v0.20.2	
+	dep	github.com/google/gopacket	v1.1.19	
+	dep	github.com/google/uuid	v1.6.0	
+	dep	github.com/gorilla/mux	v1.8.1	
+	dep	github.com/gorilla/websocket	v1.5.4-0.20250319132907-e064f32e3674	
+	dep	github.com/gregjones/httpcache	v0.0.0-20190611155906-901d90724c79	
+	dep	github.com/grpc-ecosystem/go-grpc-middleware/providers/prometheus	v1.0.1	
+	dep	github.com/grpc-ecosystem/go-grpc-middleware/v2	v2.3.0	
+	dep	github.com/grpc-ecosystem/go-grpc-prometheus	v1.2.0	
+	dep	github.com/grpc-ecosystem/grpc-gateway/v2	v2.28.0	
+	dep	github.com/guillaumemichel/reservedpool	v0.3.0	
+	dep	github.com/hanwen/go-fuse/v2	v2.9.0	
+	dep	github.com/hashicorp/go-cleanhttp	v0.5.2	
+	dep	github.com/hashicorp/go-retryablehttp	v0.7.8	
+	dep	github.com/hashicorp/go-version	v1.7.0	
+	dep	github.com/hashicorp/golang-lru	v1.0.2	
+	dep	github.com/hashicorp/golang-lru/arc/v2	v2.0.7	
+	dep	github.com/hashicorp/golang-lru/v2	v2.0.7	
+	dep	github.com/huin/goupnp	v1.3.0	
+	dep	github.com/inetaf/tcpproxy	v0.0.0-20240214030015-3ce58045626c	
+	dep	github.com/intel/goresctrl	v0.12.0	
+	dep	github.com/invopop/jsonschema	v0.13.0	
+	dep	github.com/ipfs/boxo	v0.39.0	
+	dep	github.com/ipfs/go-block-format	v0.2.3	
+	dep	github.com/ipfs/go-cid	v0.6.1	
+	dep	github.com/ipfs/go-datastore	v0.9.1	
+	dep	github.com/ipfs/go-ds-leveldb	v0.5.0	
+	dep	github.com/ipfs/go-libdht	v0.5.0	
+	dep	github.com/ipfs/go-log/v2	v2.9.2	
+	dep	github.com/ipfs/go-test	v0.3.0	
+	dep	github.com/ipld/go-ipld-prime	v0.23.0	
+	dep	github.com/jackc/pgerrcode	v0.0.0-20240316143900-6e2875d9b438	
+	dep	github.com/jackc/pgpassfile	v1.0.0	
+	dep	github.com/jackc/pgservicefile	v0.0.0-20240606120523-5a60cdf6a761	
+	dep	github.com/jackc/pgx/v5	v5.9.2	
+	dep	github.com/jackc/puddle/v2	v2.2.2	
+	dep	github.com/jackpal/go-nat-pmp	v1.0.2	
+	dep	github.com/jbenet/go-temp-err-catcher	v0.1.0	
+	dep	github.com/joho/godotenv	v1.5.1	
+	dep	github.com/jonboulle/clockwork	v0.5.0	
+	dep	github.com/josharian/intern	v1.0.0	
+	dep	github.com/josharian/native	v1.1.0	
+	dep	github.com/json-iterator/go	v1.1.12	
+	dep	github.com/k3s-io/api	v0.1.4	
+	dep	github.com/k3s-io/helm-controller	v0.17.1	
+	dep	github.com/k3s-io/kine	v0.16.1	
+	dep	github.com/karrick/godirwalk	v1.17.0	
+	dep	github.com/klauspost/compress	v1.18.6	
+	dep	github.com/klauspost/cpuid/v2	v2.3.0	
+	dep	github.com/klauspost/crc32	v1.3.0	
+	dep	github.com/knqyf263/go-plugin	v0.9.0	
+	dep	github.com/koron/go-ssdp	v0.0.6	
+	dep	github.com/kr/pretty	v0.3.1	
+	dep	github.com/kr/text	v0.2.0	
+	dep	github.com/kylelemons/godebug	v1.1.0	
+	dep	github.com/libopenstorage/openstorage	v1.0.0	
+	dep	github.com/libp2p/go-buffer-pool	v0.1.0	
+	dep	github.com/libp2p/go-cidranger	v1.1.0	
+	dep	github.com/libp2p/go-flow-metrics	v0.3.0	
+	dep	github.com/libp2p/go-libp2p	v0.48.0	
+	dep	github.com/libp2p/go-libp2p-asn-util	v0.4.1	
+	dep	github.com/libp2p/go-libp2p-kad-dht	v0.40.0	
+	dep	github.com/libp2p/go-libp2p-kbucket	v0.8.0	
+	dep	github.com/libp2p/go-libp2p-record	v0.3.1	
+	dep	github.com/libp2p/go-libp2p-routing-helpers	v0.7.5	
+	dep	github.com/libp2p/go-msgio	v0.3.0	
+	dep	github.com/libp2p/go-netroute	v0.4.0	
+	dep	github.com/libp2p/go-reuseport	v0.4.0	
+	dep	github.com/libp2p/go-yamux/v5	v5.0.1	
+	dep	github.com/liggitt/tabwriter	v0.0.0-20181228230101-89fcab3d43de	
+	dep	github.com/lithammer/dedent	v1.1.0	
+	dep	github.com/mailru/easyjson	v0.9.1	
+	dep	github.com/marten-seemann/tcp	v0.0.0-20210406111302-dfbc87cc63fd	
+	dep	github.com/mattn/go-isatty	v0.0.22	
+	dep	github.com/mattn/go-sqlite3	v1.14.44	
+	dep	github.com/mdlayher/genetlink	v1.3.2	
+	dep	github.com/mdlayher/netlink	v1.7.2	
+	dep	github.com/mdlayher/socket	v0.5.1	
+	dep	github.com/mdlayher/vsock	v1.2.1	
+	dep	github.com/miekg/pkcs11	v1.1.1	
+	dep	github.com/mikioh/tcpinfo	v0.0.0-20190314235526-30a79bb1804b	
+	dep	github.com/mikioh/tcpopt	v0.0.0-20190314235656-172688c1accc	
+	dep	github.com/minio/crc64nvme	v1.1.1	
+	dep	github.com/minio/highwayhash	v1.0.4	
+	dep	github.com/minio/md5-simd	v1.1.2	
+	dep	github.com/minio/minio-go/v7	v7.1.0	
+	dep	github.com/minio/sha256-simd	v1.0.1	
+	dep	github.com/mistifyio/go-zfs	v2.1.2-0.20190413222219-f784269be439+incompatible	
+	dep	github.com/mistifyio/go-zfs/v3	v3.0.1	
+	dep	github.com/mitchellh/go-homedir	v1.1.0	
+	dep	github.com/mitchellh/go-wordwrap	v1.0.1	
+	dep	github.com/moby/ipvs	v1.1.0	
+	dep	github.com/moby/locker	v1.0.1	
+	dep	github.com/moby/spdystream	v0.5.1	
+	dep	github.com/moby/sys/capability	v0.4.0	
+	dep	github.com/moby/sys/mountinfo	v0.7.2	
+	dep	github.com/moby/sys/reexec	v0.1.0	
+	dep	github.com/moby/sys/signal	v0.7.1	
+	dep	github.com/moby/sys/symlink	v0.3.0	
+	dep	github.com/moby/sys/user	v0.4.0	
+	dep	github.com/moby/sys/userns	v0.1.0	
+	dep	github.com/moby/term	v0.5.2	
+	dep	github.com/modern-go/concurrent	v0.0.0-20180306012644-bacd9c7ef1dd	
+	dep	github.com/modern-go/reflect2	v1.0.3-0.20250322232337-35a7c28c31ee	
+	dep	github.com/mohae/deepcopy	v0.0.0-20170929034955-c48cc78d4826	
+	dep	github.com/monochromegane/go-gitignore	v0.0.0-20200626010858-205db1a8cc00	
+	dep	github.com/morikuni/aec	v1.0.0	
+	dep	github.com/mr-tron/base58	v1.3.0	
+	dep	github.com/multiformats/go-base32	v0.1.0	
+	dep	github.com/multiformats/go-base36	v0.2.0	
+	dep	github.com/multiformats/go-multiaddr	v0.16.1	
+	dep	github.com/multiformats/go-multiaddr-dns	v0.5.0	
+	dep	github.com/multiformats/go-multiaddr-fmt	v0.1.0	
+	dep	github.com/multiformats/go-multibase	v0.3.0	
+	dep	github.com/multiformats/go-multicodec	v0.10.0	
+	dep	github.com/multiformats/go-multihash	v0.2.3	
+	dep	github.com/multiformats/go-multistream	v0.6.1	
+	dep	github.com/multiformats/go-varint	v0.1.0	
+	dep	github.com/munnerz/goautoneg	v0.0.0-20191010083416-a7dc8b61c822	
+	dep	github.com/mwitkow/go-http-dialer	v0.0.0-20161116154839-378f744fb2b8	
+	dep	github.com/mxk/go-flowrate	v0.0.0-20140419014527-cca7078d478f	
+	dep	github.com/natefinch/lumberjack	v2.0.0+incompatible	
+	dep	github.com/nats-io/jsm.go	v0.4.1	
+	dep	github.com/nats-io/jwt/v2	v2.8.1	
+	dep	github.com/nats-io/nats-server/v2	v2.14.0	
+	dep	github.com/nats-io/nats.go	v1.52.0	
+	dep	github.com/nats-io/nkeys	v0.4.15	
+	dep	github.com/nats-io/nuid	v1.0.1	
+	dep	github.com/onsi/ginkgo/v2	v2.27.2	
+	dep	github.com/onsi/gomega	v1.38.2	
+	dep	github.com/opencontainers/cgroups	v0.0.4	
+	dep	github.com/opencontainers/go-digest	v1.0.0	
+	dep	github.com/opencontainers/image-spec	v1.1.1	
+	dep	github.com/opencontainers/runtime-spec	v1.3.0	
+	dep	github.com/opencontainers/runtime-tools	v0.9.1-0.20251114084447-edf4cb3d2116	
+	dep	github.com/opencontainers/selinux	v1.13.1
+	=>	github.com/opencontainers/selinux	v1.13.0	
+	
+	dep	github.com/otiai10/copy	v1.14.1	
+	dep	github.com/pbnjay/memory	v0.0.0-20210728143218-7b4eea64cf58	
+	dep	github.com/pdtpartners/nix-snapshotter	v0.4.0	
+	dep	github.com/pelletier/go-toml/v2	v2.3.0	
+	dep	github.com/peterbourgon/diskv	v2.0.1+incompatible	
+	dep	github.com/philhofer/fwd	v1.2.0	
+	dep	github.com/pierrec/lz4	v2.6.0+incompatible	
+	dep	github.com/pion/datachannel	v1.5.10	
+	dep	github.com/pion/dtls/v3	v3.1.2	
+	dep	github.com/pion/ice/v4	v4.0.10	
+	dep	github.com/pion/interceptor	v0.1.40	
+	dep	github.com/pion/logging	v0.2.4	
+	dep	github.com/pion/mdns/v2	v2.0.7	
+	dep	github.com/pion/randutil	v0.1.0	
+	dep	github.com/pion/rtcp	v1.2.16	
+	dep	github.com/pion/rtp	v1.8.19	
+	dep	github.com/pion/sctp	v1.8.39	
+	dep	github.com/pion/sdp/v3	v3.0.18	
+	dep	github.com/pion/srtp/v3	v3.0.6	
+	dep	github.com/pion/stun/v3	v3.1.1	
+	dep	github.com/pion/transport/v3	v3.0.7	
+	dep	github.com/pion/transport/v4	v4.0.1	
+	dep	github.com/pion/turn/v4	v4.0.2	
+	dep	github.com/pion/webrtc/v4	v4.1.2	
+	dep	github.com/pkg/errors	v0.9.1	
+	dep	github.com/pmezard/go-difflib	v1.0.1-0.20181226105442-5d4384ee4fb2	
+	dep	github.com/polydawn/refmt	v0.89.1-0.20231129105047-37766d95467a	
+	dep	github.com/pquerna/cachecontrol	v0.1.0	
+	dep	github.com/prometheus/client_golang	v1.23.2
+	=>	github.com/prometheus/client_golang	v1.23.2	
+	
+	dep	github.com/prometheus/client_model	v0.6.2	
+	dep	github.com/prometheus/common	v0.67.5
+	=>	github.com/prometheus/common	v0.66.1	
+	
+	dep	github.com/prometheus/procfs	v0.20.1	
+	dep	github.com/quic-go/qpack	v0.6.0	
+	dep	github.com/quic-go/quic-go	v0.59.0	
+	dep	github.com/quic-go/webtransport-go	v0.10.0	
+	dep	github.com/rancher/dynamiclistener	v0.7.5	
+	dep	github.com/rancher/lasso	v0.2.6	
+	dep	github.com/rancher/remotedialer	v0.6.0-rc.1.0.20250916111157-f160aa32568d	
+	dep	github.com/rancher/wharfie	v0.7.1	
+	dep	github.com/rancher/wrangler/v3	v3.3.4	
+	dep	github.com/robfig/cron/v3	v3.0.1	
+	dep	github.com/rogpeppe/go-internal	v1.14.1	
+	dep	github.com/rootless-containers/rootlesskit	v1.1.1	
+	dep	github.com/rs/xid	v1.6.0	
+	dep	github.com/russross/blackfriday/v2	v2.1.0	
+	dep	github.com/shengdoushi/base58	v1.0.0	
+	dep	github.com/sirupsen/logrus	v1.9.4	
+	dep	github.com/smallstep/pkcs7	v0.1.1	
+	dep	github.com/soheilhy/cmux	v0.1.5	
+	dep	github.com/spaolacci/murmur3	v1.1.0	
+	dep	github.com/spegel-org/spegel	v0.7.0
+	=>	github.com/k3s-io/spegel	v0.7.1-k3s1	
+	
+	dep	github.com/spf13/cobra	v1.10.2	
+	dep	github.com/spf13/pflag	v1.0.10	
+	dep	github.com/stefanberger/go-pkcs11uri	v0.0.0-20230803200340-78284954bff6	
+	dep	github.com/stoewer/go-strcase	v1.3.1	
+	dep	github.com/stretchr/objx	v0.5.2	
+	dep	github.com/stretchr/testify	v1.11.1	
+	dep	github.com/syndtr/goleveldb	v1.0.0	
+	dep	github.com/t4db/t4	v1.0.3	
+	dep	github.com/tchap/go-patricia/v2	v2.3.3	
+	dep	github.com/tetratelabs/wazero	v1.11.0	
+	dep	github.com/tidwall/btree	v1.8.1	
+	dep	github.com/tinylib/msgp	v1.6.1	
+	dep	github.com/tmc/grpc-websocket-proxy	v0.0.0-20220101234140-673ab2c3ae75	
+	dep	github.com/urfave/cli/v2	v2.27.7	
+	dep	github.com/vbatts/tar-split	v0.12.2	
+	dep	github.com/vishvananda/netlink	v1.3.1	
+	dep	github.com/vishvananda/netns	v0.0.5	
+	dep	github.com/whyrusleeping/go-keyspace	v0.0.0-20160322163242-5b898ac5add1	
+	dep	github.com/wk8/go-ordered-map/v2	v2.1.8	
+	dep	github.com/wlynxg/anet	v0.0.5	
+	dep	github.com/x448/float16	v0.8.4	
+	dep	github.com/xiang90/probing	v0.0.0-20221125231312-a49e3df8f510	
+	dep	github.com/xlab/treeprint	v1.2.0	
+	dep	github.com/xrash/smetrics	v0.0.0-20240521201337-686a1a2994c1	
+	dep	github.com/yl2chen/cidranger	v1.0.2	
+	dep	github.com/zeebo/xxh3	v1.1.0	
+	dep	go.etcd.io/bbolt	v1.4.3	
+	dep	go.etcd.io/etcd/api/v3	v3.6.12
+	=>	github.com/k3s-io/etcd/api/v3	v3.6.12-k3s1	
+	
+	dep	go.etcd.io/etcd/client/pkg/v3	v3.6.12
+	=>	github.com/k3s-io/etcd/client/pkg/v3	v3.6.12-k3s1	
+	
+	dep	go.etcd.io/etcd/client/v3	v3.6.12
+	=>	github.com/k3s-io/etcd/client/v3	v3.6.12-k3s1	
+	
+	dep	go.etcd.io/etcd/etcdutl/v3	v3.6.6
+	=>	github.com/k3s-io/etcd/etcdutl/v3	v3.6.12-k3s1	
+	
+	dep	go.etcd.io/etcd/pkg/v3	v3.6.12
+	=>	github.com/k3s-io/etcd/pkg/v3	v3.6.12-k3s1	
+	
+	dep	go.etcd.io/etcd/server/v3	v3.6.12
+	=>	github.com/k3s-io/etcd/server/v3	v3.6.12-k3s1	
+	
+	dep	go.etcd.io/raft/v3	v3.6.0	
+	dep	go.opentelemetry.io/auto/sdk	v1.2.1	
+	dep	go.opentelemetry.io/contrib/instrumentation/github.com/emicklei/go-restful/otelrestful	v0.44.0
+	=>	go.opentelemetry.io/contrib/instrumentation/github.com/emicklei/go-restful/otelrestful	v0.44.0	
+	
+	dep	go.opentelemetry.io/contrib/instrumentation/google.golang.org/grpc/otelgrpc	v0.60.0	
+	dep	go.opentelemetry.io/contrib/instrumentation/net/http/otelhttp	v0.67.0	
+	dep	go.opentelemetry.io/otel	v1.43.0	
+	dep	go.opentelemetry.io/otel/exporters/otlp/otlptrace	v1.43.0	
+	dep	go.opentelemetry.io/otel/exporters/otlp/otlptrace/otlptracegrpc	v1.43.0	
+	dep	go.opentelemetry.io/otel/metric	v1.43.0	
+	dep	go.opentelemetry.io/otel/sdk	v1.43.0	
+	dep	go.opentelemetry.io/otel/trace	v1.43.0	
+	dep	go.opentelemetry.io/proto/otlp	v1.10.0	
+	dep	go.uber.org/dig	v1.19.0	
+	dep	go.uber.org/fx	v1.24.0	
+	dep	go.uber.org/multierr	v1.11.0	
+	dep	go.uber.org/zap	v1.28.0	
+	dep	go.yaml.in/yaml/v2	v2.4.4	
+	dep	go.yaml.in/yaml/v3	v3.0.4	
+	dep	golang.org/x/crypto	v0.53.0
+	=>	golang.org/x/crypto	v0.47.0	
+	
+	dep	golang.org/x/exp	v0.0.0-20260410095643-746e56fc9e2f	
+	dep	golang.org/x/mod	v0.36.0	
+	dep	golang.org/x/net	v0.55.0
+	=>	golang.org/x/net	v0.55.0	
+	
+	dep	golang.org/x/oauth2	v0.36.0	
+	dep	golang.org/x/sync	v0.21.0	
+	dep	golang.org/x/sys	v0.46.0
+	=>	golang.org/x/sys	v0.40.0	
+	
+	dep	golang.org/x/term	v0.44.0	
+	dep	golang.org/x/text	v0.38.0	
+	dep	golang.org/x/time	v0.15.0	
+	dep	golang.org/x/tools	v0.45.0	
+	dep	golang.zx2c4.com/wireguard/wgctrl	v0.0.0-20241231184526-a9ab2273dd10	
+	dep	gonum.org/v1/gonum	v0.17.0	
+	dep	google.golang.org/genproto/googleapis/api	v0.0.0-20260401024825-9d38bb4040a9	
+	dep	google.golang.org/genproto/googleapis/rpc	v0.0.0-20260401024825-9d38bb4040a9	
+	dep	google.golang.org/grpc	v1.81.1
+	=>	google.golang.org/grpc	v1.72.1	
+	
+	dep	google.golang.org/protobuf	v1.36.11	
+	dep	gopkg.in/evanphx/json-patch.v4	v4.13.0	
+	dep	gopkg.in/go-jose/go-jose.v2	v2.6.3	
+	dep	gopkg.in/inf.v0	v0.9.1	
+	dep	gopkg.in/natefinch/lumberjack.v2	v2.2.1	
+	dep	gopkg.in/yaml.v2	v2.4.0	
+	dep	gopkg.in/yaml.v3	v3.0.1	
+	dep	k8s.io/api	v0.35.6
+	=>	github.com/k3s-io/kubernetes/staging/src/k8s.io/api	v1.34.9-k3s1	
+	
+	dep	k8s.io/apiextensions-apiserver	v0.35.2
+	=>	github.com/k3s-io/kubernetes/staging/src/k8s.io/apiextensions-apiserver	v1.34.9-k3s1	
+	
+	dep	k8s.io/apimachinery	v0.35.6
+	=>	github.com/k3s-io/kubernetes/staging/src/k8s.io/apimachinery	v1.34.9-k3s1	
+	
+	dep	k8s.io/apiserver	v0.35.4
+	=>	github.com/k3s-io/kubernetes/staging/src/k8s.io/apiserver	v1.34.9-k3s1	
+	
+	dep	k8s.io/cli-runtime	v0.35.2
+	=>	github.com/k3s-io/kubernetes/staging/src/k8s.io/cli-runtime	v1.34.9-k3s1	
+	
+	dep	k8s.io/client-go	v0.35.6
+	=>	github.com/k3s-io/kubernetes/staging/src/k8s.io/client-go	v1.34.9-k3s1	
+	
+	dep	k8s.io/cloud-provider	v0.35.2
+	=>	github.com/k3s-io/kubernetes/staging/src/k8s.io/cloud-provider	v1.34.9-k3s1	
+	
+	dep	k8s.io/cluster-bootstrap	v0.35.2
+	=>	github.com/k3s-io/kubernetes/staging/src/k8s.io/cluster-bootstrap	v1.34.9-k3s1	
+	
+	dep	k8s.io/component-base	v0.35.4
+	=>	github.com/k3s-io/kubernetes/staging/src/k8s.io/component-base	v1.34.9-k3s1	
+	
+	dep	k8s.io/component-helpers	v0.35.2
+	=>	github.com/k3s-io/kubernetes/staging/src/k8s.io/component-helpers	v1.34.9-k3s1	
+	
+	dep	k8s.io/controller-manager	v0.34.9
+	=>	github.com/k3s-io/kubernetes/staging/src/k8s.io/controller-manager	v1.34.9-k3s1	
+	
+	dep	k8s.io/cri-api	v0.35.6
+	=>	github.com/k3s-io/kubernetes/staging/src/k8s.io/cri-api	v1.34.9-k3s2	
+	
+	dep	k8s.io/cri-client	v0.35.4	
+	dep	k8s.io/csi-translation-lib	v0.34.9
+	=>	github.com/k3s-io/kubernetes/staging/src/k8s.io/csi-translation-lib	v1.34.9-k3s1	
+	
+	dep	k8s.io/dynamic-resource-allocation	v0.34.9
+	=>	github.com/k3s-io/kubernetes/staging/src/k8s.io/dynamic-resource-allocation	v1.34.9-k3s1	
+	
+	dep	k8s.io/endpointslice	v0.34.9
+	=>	github.com/k3s-io/kubernetes/staging/src/k8s.io/endpointslice	v1.34.9-k3s1	
+	
+	dep	k8s.io/externaljwt	v1.32.0
+	=>	github.com/k3s-io/kubernetes/staging/src/k8s.io/externaljwt	v1.34.9-k3s1	
+	
+	dep	k8s.io/klog/v2	v2.140.0
+	=>	github.com/k3s-io/klog/v2	v2.140.0-k3s1	
+	
+	dep	k8s.io/kms	v0.34.9
+	=>	github.com/k3s-io/kubernetes/staging/src/k8s.io/kms	v1.34.9-k3s1	
+	
+	dep	k8s.io/kube-aggregator	v0.34.9
+	=>	github.com/k3s-io/kubernetes/staging/src/k8s.io/kube-aggregator	v1.34.9-k3s1	
+	
+	dep	k8s.io/kube-controller-manager	v0.34.9
+	=>	github.com/k3s-io/kubernetes/staging/src/k8s.io/kube-controller-manager	v1.34.9-k3s1	
+	
+	dep	k8s.io/kube-openapi	v0.0.0-20250910181357-589584f1c912
+	=>	k8s.io/kube-openapi	v0.0.0-20250710124328-f3f2b991d03b	
+	
+	dep	k8s.io/kube-proxy	v0.34.9
+	=>	github.com/k3s-io/kubernetes/staging/src/k8s.io/kube-proxy	v1.34.9-k3s1	
+	
+	dep	k8s.io/kube-scheduler	v0.34.9
+	=>	github.com/k3s-io/kubernetes/staging/src/k8s.io/kube-scheduler	v1.34.9-k3s1	
+	
+	dep	k8s.io/kubectl	v0.34.9
+	=>	github.com/k3s-io/kubernetes/staging/src/k8s.io/kubectl	v1.34.9-k3s1	
+	
+	dep	k8s.io/kubelet	v0.34.9
+	=>	github.com/k3s-io/kubernetes/staging/src/k8s.io/kubelet	v1.34.9-k3s1	
+	
+	dep	k8s.io/kubernetes	v1.34.9
+	=>	github.com/k3s-io/kubernetes	v1.34.9-k3s1	
+	
+	dep	k8s.io/metrics	v0.34.9
+	=>	github.com/k3s-io/kubernetes/staging/src/k8s.io/metrics	v1.34.9-k3s1	
+	
+	dep	k8s.io/mount-utils	v0.34.9
+	=>	github.com/k3s-io/kubernetes/staging/src/k8s.io/mount-utils	v1.34.9-k3s1	
+	
+	dep	k8s.io/pod-security-admission	v0.34.9
+	=>	github.com/k3s-io/kubernetes/staging/src/k8s.io/pod-security-admission	v1.34.9-k3s1	
+	
+	dep	k8s.io/utils	v0.0.0-20251002143259-bc988d571ff4	
+	dep	lukechampine.com/blake3	v1.4.1	
+	dep	sigs.k8s.io/apiserver-network-proxy/konnectivity-client	v0.33.0	
+	dep	sigs.k8s.io/cri-tools	v0.34.0
+	=>	github.com/k3s-io/cri-tools	v1.34.0-k3s2	
+	
+	dep	sigs.k8s.io/json	v0.0.0-20250730193827-2d320260d730	
+	dep	sigs.k8s.io/knftables	v0.0.21	
+	dep	sigs.k8s.io/kustomize/api	v0.20.1	
+	dep	sigs.k8s.io/kustomize/kustomize/v5	v5.7.1	
+	dep	sigs.k8s.io/kustomize/kyaml	v0.20.1	
+	dep	sigs.k8s.io/randfill	v1.0.0	
+	dep	sigs.k8s.io/structured-merge-diff/v6	v6.3.0	
+	dep	sigs.k8s.io/yaml	v1.6.0	
+	dep	tags.cncf.io/container-device-interface	v1.1.0	
+	dep	tags.cncf.io/container-device-interface/specs-go	v1.1.0	
+	build	-buildmode=exe
+	build	-compiler=gc
+	build	-gcflags=all=
+	build	-ldflags="     -X github.com/k3s-io/k3s/pkg/version.Version=v1.34.9+k3s1     -X github.com/k3s-io/k3s/pkg/version.GitCommit=5f72184f      -X k8s.io/client-go/pkg/version.gitVersion=v1.34.9+k3s1     -X k8s.io/client-go/pkg/version.gitCommit=5f72184f2d188f75171bbd21953b1c16268e425f     -X k8s.io/client-go/pkg/version.gitTreeState=clean     -X k8s.io/client-go/pkg/version.buildDate=2026-06-24T22:51:16Z      -X k8s.io/component-base/version.gitVersion=v1.34.9+k3s1     -X k8s.io/component-base/version.gitCommit=5f72184f2d188f75171bbd21953b1c16268e425f     -X k8s.io/component-base/version.gitTreeState=clean     -X k8s.io/component-base/version.buildDate=2026-06-24T22:51:16Z      -X sigs.k8s.io/cri-tools/pkg/version.Version=v1.34.0-k3s2      -X github.com/containerd/containerd/v2/version.Version=v2.2.5-k3s2     -X github.com/containerd/containerd/v2/version.Package=github.com/k3s-io/containerd/v2      -X github.com/containernetworking/plugins/pkg/utils/buildversion.BuildVersion=v1.9.1-k3s1     -X github.com/containernetworking/plugins/plugins/meta/flannel.Program=flannel     -X github.com/containernetworking/plugins/plugins/meta/flannel.Version=v1.9.0-flannel1+v0.28.4     -X github.com/containernetworking/plugins/plugins/meta/flannel.Commit=HEAD     -X github.com/containernetworking/plugins/plugins/meta/flannel.buildDate=2026-06-24T22:51:16Z      -X github.com/cloudnativelabs/kube-router/v2/pkg/version.Version=v2.6.3-k3s1     -X github.com/cloudnativelabs/kube-router/v2/pkg/version.BuildDate=2026-06-24T22:51:16Z      -X github.com/Mirantis/cri-dockerd/cmd/version.Version=v0.3.19-k3s3     -X github.com/Mirantis/cri-dockerd/cmd/version.GitCommit=HEAD     -X github.com/Mirantis/cri-dockerd/cmd/version.BuildTime=2026-06-24T22:51:16Z      -X go.etcd.io/etcd/api/v3/version.GitSHA=HEAD          -X github.com/k3s-io/helm-controller/pkg/controllers/chart.DefaultJobImage=rancher/klipper-helm:v0.11.1-build20260615  -w -s  -extldflags '-static -lm -ldl -lz -lpthread' "
+	build	-tags=static_build,libsqlite3,ctrd,netcgo,osusergo,providerless,urfave_cli_no_docs,sqlite_omit_load_extension,apparmor,seccomp,selinux
+	build	CGO_ENABLED=1
+	build	CGO_CFLAGS="-DSQLITE_ENABLE_DBSTAT_VTAB=1 -DSQLITE_USE_ALLOCA=1"
+	build	CGO_CPPFLAGS=
+	build	CGO_CXXFLAGS=
+	build	CGO_LDFLAGS=
+	build	GOARCH=amd64
+	build	GOOS=linux
+	build	GOAMD64=v1

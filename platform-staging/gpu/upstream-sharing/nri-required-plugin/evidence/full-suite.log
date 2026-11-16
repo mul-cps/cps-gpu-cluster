@@ -1,0 +1,276 @@
+go: downloading github.com/moby/sys/mountinfo v0.7.2
+go: downloading github.com/opencontainers/runtime-tools v0.9.1-0.20251114084447-edf4cb3d2116
+go: downloading github.com/brianvoe/gofakeit/v7 v7.12.1
+go: downloading github.com/moby/sys/capability v0.4.0
+?   	github.com/containerd/nri	[no test files]
+=== RUN   TestPluginSynchronizeMetrics
+time="2026-11-16T20:22:10+01:00" level=info msg="synchronizing plugin 00-test-plugin"
+--- PASS: TestPluginSynchronizeMetrics (0.00s)
+=== RUN   TestPluginRunPodSandboxMetrics
+--- PASS: TestPluginRunPodSandboxMetrics (0.00s)
+=== RUN   TestPluginUpdatePodSandboxMetrics
+--- PASS: TestPluginUpdatePodSandboxMetrics (0.00s)
+=== RUN   TestPluginPostUpdatePodSandboxMetrics
+--- PASS: TestPluginPostUpdatePodSandboxMetrics (0.00s)
+=== RUN   TestPluginStopPodSandboxMetrics
+--- PASS: TestPluginStopPodSandboxMetrics (0.00s)
+=== RUN   TestPluginRemovePodSandboxMetrics
+--- PASS: TestPluginRemovePodSandboxMetrics (0.00s)
+=== RUN   TestPluginCreateContainerMetrics
+--- PASS: TestPluginCreateContainerMetrics (0.00s)
+=== RUN   TestPluginPostCreateContainerMetrics
+--- PASS: TestPluginPostCreateContainerMetrics (0.00s)
+=== RUN   TestPluginStartContainerMetrics
+--- PASS: TestPluginStartContainerMetrics (0.00s)
+=== RUN   TestPluginPostStartContainerMetrics
+--- PASS: TestPluginPostStartContainerMetrics (0.00s)
+=== RUN   TestPluginUpdateContainerMetrics
+--- PASS: TestPluginUpdateContainerMetrics (0.00s)
+=== RUN   TestPluginPostUpdateContainerMetrics
+--- PASS: TestPluginPostUpdateContainerMetrics (0.00s)
+=== RUN   TestPluginStopContainerMetrics
+--- PASS: TestPluginStopContainerMetrics (0.00s)
+=== RUN   TestPluginRemoveContainerMetrics
+--- PASS: TestPluginRemoveContainerMetrics (0.00s)
+=== RUN   TestPluginValidateContainerAdjustmentMetrics
+--- PASS: TestPluginValidateContainerAdjustmentMetrics (0.00s)
+=== RUN   TestRuntime
+Running Suite: NRI Runtime - /tmp/cps-nri-required-20261116/nri/pkg/adaptation
+==============================================================================
+Random Seed: [1m1794856930[0m
+
+Will run [1m132[0m of [1m132[0m specs
+[38;5;10m•[0m[38;5;10m•[0m[38;5;10m•[0m[38;5;10m•[0m[38;5;10m•[0m[38;5;10m•[0m[38;5;10m•[0m[38;5;10m•[0m[38;5;10m•[0m[38;5;10m•[0m[38;5;10m•[0m[38;5;10m•[0m[38;5;10m•[0m[38;5;10m•[0m[38;5;10m•[0m[38;5;10m•[0m[38;5;10m•[0m[38;5;10m•[0m[38;5;10m•[0m[38;5;10m•[0m[38;5;10m•[0m[38;5;10m•[0m[38;5;10m•[0m[38;5;10m•[0m[38;5;10m•[0m[38;5;10m•[0m[38;5;10m•[0m[38;5;10m•[0m[38;5;10m•[0m[38;5;10m•[0m[38;5;10m•[0m[38;5;10m•[0m[38;5;10m•[0m[38;5;10m•[0m[38;5;10m•[0m[38;5;10m•[0m[38;5;10m•[0m[38;5;10m•[0m[38;5;10m•[0m[38;5;10m•[0m[38;5;10m•[0m[38;5;10m•[0m[38;5;10m•[0m[38;5;10m•[0m[38;5;10m•[0mtime="2026-11-16T20:22:10+01:00" level=error msg="rejecting adjustment: validation error: plugin \"00-foo\" attempted restricted OCI hook injection"
+[38;5;10m•[0mtime="2026-11-16T20:22:10+01:00" level=error msg="rejecting adjustment: validation error: plugin 00-foo attempted restricted runtime default seccomp policy adjustment"
+[38;5;10m•[0m[38;5;10m•[0mtime="2026-11-16T20:22:10+01:00" level=error msg="rejecting adjustment: validation error: plugin 00-foo attempted restricted  custom seccomp policy adjustment"
+[38;5;10m•[0m[38;5;10m•[0mtime="2026-11-16T20:22:10+01:00" level=error msg="rejecting adjustment: validation error: plugin 00-foo attempted restricted  unconfined seccomp policy adjustment"
+[38;5;10m•[0m[38;5;10m•[0mtime="2026-11-16T20:22:10+01:00" level=error msg="rejecting adjustment: validation error: attempted restricted namespace adjustment by plugin(s) \"00-foo\" (namespace \"cgroup\")"
+[38;5;10m•[0mtime="2026-11-16T20:22:10+01:00" level=error msg="rejecting adjustment: validation error: required plugin \"bar\" not present"
+[38;5;10m•[0m[38;5;10m•[0m[38;5;10m•[0mtime="2026-11-16T20:22:10+01:00" level=error msg="rejecting adjustment: validation error: required plugin \"xyzzy\" not present"
+[38;5;10m•[0m[38;5;10m•[0m[38;5;10m•[0m[38;5;10m•[0m[38;5;10m•[0m[38;5;10m•[0m[38;5;10m•[0m[38;5;10m•[0m[38;5;10m•[0m[38;5;10m•[0m[38;5;10m•[0m[38;5;10m•[0m[38;5;10m•[0m[38;5;10m•[0m[38;5;10m•[0m[38;5;10m•[0m[38;5;10m•[0m[38;5;10m•[0m[38;5;10m•[0m[38;5;10m•[0m[38;5;10m•[0m[38;5;10m•[0m[38;5;10m•[0m[38;5;10m•[0m[38;5;10m•[0m[38;5;10m•[0m[38;5;10m•[0m[38;5;10m•[0m[38;5;10m•[0m[38;5;10m•[0m[38;5;10m•[0m[38;5;10m•[0m[38;5;10m•[0m[38;5;10m•[0m[38;5;10m•[0m[38;5;10m•[0m[38;5;10m•[0m[38;5;10m•[0m[38;5;10m•[0m[38;5;10m•[0m[38;5;10m•[0m[38;5;10m•[0m[38;5;10m•[0m[38;5;10m•[0m[38;5;10m•[0m[38;5;10m•[0m[38;5;10m•[0m[38;5;10m•[0m[38;5;10m•[0m[38;5;10m•[0m[38;5;10m•[0m[38;5;10m•[0m[38;5;10m•[0m[38;5;10m•[0m[38;5;10m•[0m[38;5;10m•[0m[38;5;10m•[0m[38;5;10m•[0mtime="2026-11-16T20:22:10+01:00" level=error msg="closing plugin 10-required, failed to handle CreateContainer request: context deadline exceeded"
+time="2026-11-16T20:22:10+01:00" level=error msg="rejecting adjustment: validation error: required plugin \"required\" not present"
+[38;5;10m•[0mtime="2026-11-16T20:22:10+01:00" level=error msg="closing plugin 10-required, failed to handle CreateContainer request: ttrpc: closed"
+time="2026-11-16T20:22:10+01:00" level=error msg="rejecting adjustment: validation error: required plugin \"required\" not present"
+[38;5;10m•[0mtime="2026-11-16T20:22:10+01:00" level=error msg="closing plugin 10-required, failed to handle CreateContainer request: ttrpc: closed"
+time="2026-11-16T20:22:10+01:00" level=error msg="rejecting adjustment: validation error: required plugin \"required\" not present"
+[38;5;10m•[0mtime="2026-11-16T20:22:11+01:00" level=error msg="closing plugin 10-required, failed to handle CreateContainer request: context deadline exceeded"
+[38;5;10m•[0mtime="2026-11-16T20:22:11+01:00" level=error msg="closing plugin 10-required, failed to handle CreateContainer request: ttrpc: closed"
+[38;5;10m•[0m[38;5;10m•[0m[38;5;10m•[0m[38;5;10m•[0m[38;5;10m•[0m[38;5;10m•[0m[38;5;10m•[0m[38;5;10m•[0m[38;5;10m•[0m[38;5;10m•[0mtime="2026-11-16T20:22:11+01:00" level=error msg="failed to start external plugin: failed to register plugin: plugin registered with an invalid name: invalid plugin name \"foo,bar\": contains invalid character ','"
+[38;5;10m•[0m[38;5;10m•[0m[38;5;10m•[0mtime="2026-11-16T20:22:11+01:00" level=error msg="failed to synchronize plugin: mock runtime forced synchronize failure"
+[38;5;10m•[0m
+
+[38;5;10m[1mRan 132 of 132 Specs in 0.315 seconds[0m
+[38;5;10m[1mSUCCESS![0m -- [38;5;10m[1m132 Passed[0m | [38;5;9m[1m0 Failed[0m | [38;5;11m[1m0 Pending[0m | [38;5;14m[1m0 Skipped[0m
+--- PASS: TestRuntime (0.32s)
+PASS
+ok  	github.com/containerd/nri/pkg/adaptation	0.323s
+?   	github.com/containerd/nri/pkg/adaptation/builtin	[no test files]
+=== RUN   TestOptionalRepeatedString
+=== RUN   TestOptionalRepeatedString/nil_input
+=== RUN   TestOptionalRepeatedString/nil_slice
+=== RUN   TestOptionalRepeatedString/empty_slice
+=== RUN   TestOptionalRepeatedString/non-empty_slice
+=== RUN   TestOptionalRepeatedString/pointer_to_slice
+=== RUN   TestOptionalRepeatedString/non-slice_type
+=== RUN   TestOptionalRepeatedString/pointer_to_nil
+--- PASS: TestOptionalRepeatedString (0.00s)
+    --- PASS: TestOptionalRepeatedString/nil_input (0.00s)
+    --- PASS: TestOptionalRepeatedString/nil_slice (0.00s)
+    --- PASS: TestOptionalRepeatedString/empty_slice (0.00s)
+    --- PASS: TestOptionalRepeatedString/non-empty_slice (0.00s)
+    --- PASS: TestOptionalRepeatedString/pointer_to_slice (0.00s)
+    --- PASS: TestOptionalRepeatedString/non-slice_type (0.00s)
+    --- PASS: TestOptionalRepeatedString/pointer_to_nil (0.00s)
+=== RUN   TestSimpleClaims
+--- PASS: TestSimpleClaims (0.00s)
+=== RUN   TestCompoundClaims
+--- PASS: TestCompoundClaims (0.00s)
+=== RUN   TestAccumulatingOwnership
+--- PASS: TestAccumulatingOwnership (0.00s)
+=== RUN   TestNonEmptyContainerAdjustmentStrip
+=== RUN   TestNonEmptyContainerAdjustmentStrip/annotations
+=== RUN   TestNonEmptyContainerAdjustmentStrip/mounts
+=== RUN   TestNonEmptyContainerAdjustmentStrip/hooks
+=== RUN   TestNonEmptyContainerAdjustmentStrip/RLimits
+=== RUN   TestNonEmptyContainerAdjustmentStrip/CDI_devices
+=== RUN   TestNonEmptyContainerAdjustmentStrip/args
+=== RUN   TestNonEmptyContainerAdjustmentStrip/Linux_devices
+=== RUN   TestNonEmptyContainerAdjustmentStrip/Linux_resources
+=== RUN   TestNonEmptyContainerAdjustmentStrip/Linux_cgroups_path
+=== RUN   TestNonEmptyContainerAdjustmentStrip/Linux_OOM_score_adjustment
+=== RUN   TestNonEmptyContainerAdjustmentStrip/Linux_I/O_priority_adjustment
+=== RUN   TestNonEmptyContainerAdjustmentStrip/Linux_seccomp_policy_adjustment
+=== RUN   TestNonEmptyContainerAdjustmentStrip/Linux_namespaces_adjustment
+=== RUN   TestNonEmptyContainerAdjustmentStrip/Linux_sysctl_adjustment
+=== RUN   TestNonEmptyContainerAdjustmentStrip/Linux_net_devices_adjustment
+=== RUN   TestNonEmptyContainerAdjustmentStrip/Linux_scheduler_policy_adjustment
+random data: &{policy:1283235882  nice:1717175708  priority:609369759  flags:588671358  flags:61078908  flags:1134787251  runtime:6694950547166525019  deadline:18241202817320141363  period:2910675521500838435}
+--- PASS: TestNonEmptyContainerAdjustmentStrip (0.00s)
+    --- PASS: TestNonEmptyContainerAdjustmentStrip/annotations (0.00s)
+    --- PASS: TestNonEmptyContainerAdjustmentStrip/mounts (0.00s)
+    --- PASS: TestNonEmptyContainerAdjustmentStrip/hooks (0.00s)
+    --- PASS: TestNonEmptyContainerAdjustmentStrip/RLimits (0.00s)
+    --- PASS: TestNonEmptyContainerAdjustmentStrip/CDI_devices (0.00s)
+    --- PASS: TestNonEmptyContainerAdjustmentStrip/args (0.00s)
+    --- PASS: TestNonEmptyContainerAdjustmentStrip/Linux_devices (0.00s)
+    --- PASS: TestNonEmptyContainerAdjustmentStrip/Linux_resources (0.00s)
+    --- PASS: TestNonEmptyContainerAdjustmentStrip/Linux_cgroups_path (0.00s)
+    --- PASS: TestNonEmptyContainerAdjustmentStrip/Linux_OOM_score_adjustment (0.00s)
+    --- PASS: TestNonEmptyContainerAdjustmentStrip/Linux_I/O_priority_adjustment (0.00s)
+    --- PASS: TestNonEmptyContainerAdjustmentStrip/Linux_seccomp_policy_adjustment (0.00s)
+    --- PASS: TestNonEmptyContainerAdjustmentStrip/Linux_namespaces_adjustment (0.00s)
+    --- PASS: TestNonEmptyContainerAdjustmentStrip/Linux_sysctl_adjustment (0.00s)
+    --- PASS: TestNonEmptyContainerAdjustmentStrip/Linux_net_devices_adjustment (0.00s)
+    --- PASS: TestNonEmptyContainerAdjustmentStrip/Linux_scheduler_policy_adjustment (0.00s)
+=== RUN   TestEmptyContainerAdjustmentStrip
+=== RUN   TestEmptyContainerAdjustmentStrip/annotations
+=== RUN   TestEmptyContainerAdjustmentStrip/mounts
+=== RUN   TestEmptyContainerAdjustmentStrip/hooks
+=== RUN   TestEmptyContainerAdjustmentStrip/RLimits
+=== RUN   TestEmptyContainerAdjustmentStrip/CDI_devices
+=== RUN   TestEmptyContainerAdjustmentStrip/args
+=== RUN   TestEmptyContainerAdjustmentStrip/Linux_devices
+=== RUN   TestEmptyContainerAdjustmentStrip/Linux_resources
+=== RUN   TestEmptyContainerAdjustmentStrip/Linux_cgroups_path
+=== RUN   TestEmptyContainerAdjustmentStrip/Linux_I/O_priority_adjustment
+=== RUN   TestEmptyContainerAdjustmentStrip/Linux_seccomp_policy_adjustment
+=== RUN   TestEmptyContainerAdjustmentStrip/Linux_namespaces_adjustment
+=== RUN   TestEmptyContainerAdjustmentStrip/Linux_sysctl_adjustment
+=== RUN   TestEmptyContainerAdjustmentStrip/Linux_net_devices_adjustment
+=== RUN   TestEmptyContainerAdjustmentStrip/Linux_scheduler_policy_adjustment
+=== RUN   TestEmptyContainerAdjustmentStrip/empty_container_adjustment
+--- PASS: TestEmptyContainerAdjustmentStrip (0.00s)
+    --- PASS: TestEmptyContainerAdjustmentStrip/annotations (0.00s)
+    --- PASS: TestEmptyContainerAdjustmentStrip/mounts (0.00s)
+    --- PASS: TestEmptyContainerAdjustmentStrip/hooks (0.00s)
+    --- PASS: TestEmptyContainerAdjustmentStrip/RLimits (0.00s)
+    --- PASS: TestEmptyContainerAdjustmentStrip/CDI_devices (0.00s)
+    --- PASS: TestEmptyContainerAdjustmentStrip/args (0.00s)
+    --- PASS: TestEmptyContainerAdjustmentStrip/Linux_devices (0.00s)
+    --- PASS: TestEmptyContainerAdjustmentStrip/Linux_resources (0.00s)
+    --- PASS: TestEmptyContainerAdjustmentStrip/Linux_cgroups_path (0.00s)
+    --- PASS: TestEmptyContainerAdjustmentStrip/Linux_I/O_priority_adjustment (0.00s)
+    --- PASS: TestEmptyContainerAdjustmentStrip/Linux_seccomp_policy_adjustment (0.00s)
+    --- PASS: TestEmptyContainerAdjustmentStrip/Linux_namespaces_adjustment (0.00s)
+    --- PASS: TestEmptyContainerAdjustmentStrip/Linux_sysctl_adjustment (0.00s)
+    --- PASS: TestEmptyContainerAdjustmentStrip/Linux_net_devices_adjustment (0.00s)
+    --- PASS: TestEmptyContainerAdjustmentStrip/Linux_scheduler_policy_adjustment (0.00s)
+    --- PASS: TestEmptyContainerAdjustmentStrip/empty_container_adjustment (0.00s)
+PASS
+ok  	github.com/containerd/nri/pkg/api	0.005s
+?   	github.com/containerd/nri/pkg/log	[no test files]
+=== RUN   TestPreconnectedReadWrite
+--- PASS: TestPreconnectedReadWrite (0.00s)
+=== RUN   TestNewSocketPair
+--- PASS: TestNewSocketPair (0.00s)
+=== RUN   TestConnReadWrite
+--- PASS: TestConnReadWrite (0.00s)
+=== RUN   TestFileReadWrite
+--- PASS: TestFileReadWrite (0.00s)
+PASS
+ok  	github.com/containerd/nri/pkg/net	0.003s
+=== RUN   TestMultiplex
+Running Suite: Connection Multiplexer - /tmp/cps-nri-required-20261116/nri/pkg/net/multiplex
+============================================================================================
+Random Seed: [1m1794856931[0m
+
+Will run [1m13[0m of [1m13[0m specs
+[38;5;10m•[0m[38;5;10m•[0m[38;5;10m•[0m[38;5;10m•[0m[38;5;10m•[0m[38;5;10m•[0m[38;5;10m•[0m[38;5;10m•[0m[38;5;10m•[0m[38;5;10m•[0m[38;5;10m•[0m[38;5;10m•[0m[38;5;10m•[0m
+
+[38;5;10m[1mRan 13 of 13 Specs in 0.022 seconds[0m
+[38;5;10m[1mSUCCESS![0m -- [38;5;10m[1m13 Passed[0m | [38;5;9m[1m0 Failed[0m | [38;5;11m[1m0 Pending[0m | [38;5;14m[1m0 Skipped[0m
+--- PASS: TestMultiplex (0.02s)
+PASS
+ok  	github.com/containerd/nri/pkg/net/multiplex	0.027s
+?   	github.com/containerd/nri/pkg/plugin	[no test files]
+=== RUN   TestGenerate
+Running Suite: Generate Suite - /tmp/cps-nri-required-20261116/nri/pkg/runtime-tools/generate
+=============================================================================================
+Random Seed: [1m1794856931[0m
+
+Will run [1m19[0m of [1m19[0m specs
+[38;5;10m•[0m[38;5;10m•[0m[38;5;10m•[0m[38;5;10m•[0m[38;5;10m•[0m[38;5;10m•[0m[38;5;10m•[0m[38;5;10m•[0m[38;5;10m•[0m[38;5;10m•[0m[38;5;10m•[0m[38;5;10m•[0m[38;5;10m•[0m[38;5;10m•[0m[38;5;10m•[0m[38;5;10m•[0m[38;5;10m•[0m[38;5;10m•[0m[38;5;10m•[0m
+
+[38;5;10m[1mRan 19 of 19 Specs in 0.001 seconds[0m
+[38;5;10m[1mSUCCESS![0m -- [38;5;10m[1m19 Passed[0m | [38;5;9m[1m0 Failed[0m | [38;5;11m[1m0 Pending[0m | [38;5;14m[1m0 Skipped[0m
+--- PASS: TestGenerate (0.00s)
+PASS
+ok  	github.com/containerd/nri/pkg/runtime-tools/generate	0.005s
+?   	github.com/containerd/nri/pkg/stub	[no test files]
+=== RUN   TestStripGitSuffix
+=== RUN   TestStripGitSuffix/no/empty_version
+=== RUN   TestStripGitSuffix/major.minor.patch_version_without_suffix
+=== RUN   TestStripGitSuffix/major.minor_version_without_suffix
+=== RUN   TestStripGitSuffix/major_version_without_suffix
+=== RUN   TestStripGitSuffix/prerelease_version_without_git_suffix
+=== RUN   TestStripGitSuffix/working_tree_version_with_git_suffix
+=== RUN   TestStripGitSuffix/prerelease_version
+=== RUN   TestStripGitSuffix/prerelease_version,_looking_more_like_a_git_suffix
+=== RUN   TestStripGitSuffix/another_prerelease_version
+--- PASS: TestStripGitSuffix (0.00s)
+    --- PASS: TestStripGitSuffix/no/empty_version (0.00s)
+    --- PASS: TestStripGitSuffix/major.minor.patch_version_without_suffix (0.00s)
+    --- PASS: TestStripGitSuffix/major.minor_version_without_suffix (0.00s)
+    --- PASS: TestStripGitSuffix/major_version_without_suffix (0.00s)
+    --- PASS: TestStripGitSuffix/prerelease_version_without_git_suffix (0.00s)
+    --- PASS: TestStripGitSuffix/working_tree_version_with_git_suffix (0.00s)
+    --- PASS: TestStripGitSuffix/prerelease_version (0.00s)
+    --- PASS: TestStripGitSuffix/prerelease_version,_looking_more_like_a_git_suffix (0.00s)
+    --- PASS: TestStripGitSuffix/another_prerelease_version (0.00s)
+=== RUN   TestFindClosestMatch
+=== RUN   TestFindClosestMatch/no_candidates
+=== RUN   TestFindClosestMatch/no_closest_match
+=== RUN   TestFindClosestMatch/exact_match
+=== RUN   TestFindClosestMatch/closest_match_has_no_patch
+=== RUN   TestFindClosestMatch/closest_match_has_patch
+=== RUN   TestFindClosestMatch/closest_match_has_no_minor
+=== RUN   TestFindClosestMatch/version_has_no_patch
+=== RUN   TestFindClosestMatch/version_has_no_minor
+=== RUN   TestFindClosestMatch/closest_match_for_a_pre-release_version
+=== RUN   TestFindClosestMatch/closest_match_for_a_working_tree_version
+=== RUN   TestFindClosestMatch/another_closest_match_for_a_working_tree_version
+--- PASS: TestFindClosestMatch (0.00s)
+    --- PASS: TestFindClosestMatch/no_candidates (0.00s)
+    --- PASS: TestFindClosestMatch/no_closest_match (0.00s)
+    --- PASS: TestFindClosestMatch/exact_match (0.00s)
+    --- PASS: TestFindClosestMatch/closest_match_has_no_patch (0.00s)
+    --- PASS: TestFindClosestMatch/closest_match_has_patch (0.00s)
+    --- PASS: TestFindClosestMatch/closest_match_has_no_minor (0.00s)
+    --- PASS: TestFindClosestMatch/version_has_no_patch (0.00s)
+    --- PASS: TestFindClosestMatch/version_has_no_minor (0.00s)
+    --- PASS: TestFindClosestMatch/closest_match_for_a_pre-release_version (0.00s)
+    --- PASS: TestFindClosestMatch/closest_match_for_a_working_tree_version (0.00s)
+    --- PASS: TestFindClosestMatch/another_closest_match_for_a_working_tree_version (0.00s)
+PASS
+ok  	github.com/containerd/nri/pkg/version	0.002s
+=== RUN   TestValidateRequiredPlugins
+=== RUN   TestValidateRequiredPlugins/no_required_plugins
+=== RUN   TestValidateRequiredPlugins/missing_annotated_required_plugin
+=== RUN   TestValidateRequiredPlugins/present_annotated_required_plugin
+=== RUN   TestValidateRequiredPlugins/missing_global_required_plugin
+=== RUN   TestValidateRequiredPlugins/present_global_required_plugin
+=== RUN   TestValidateRequiredPlugins/tolerated_missing_(global_required)_plugin
+=== RUN   TestValidateRequiredPlugins/present_annotated_and_global_required_plugin
+=== RUN   TestValidateRequiredPlugins/missing_annotated_with_present_global_required_plugin
+=== RUN   TestValidateRequiredPlugins/present_annotated_with_missing_global_required_plugin
+--- PASS: TestValidateRequiredPlugins (0.00s)
+    --- PASS: TestValidateRequiredPlugins/no_required_plugins (0.00s)
+    --- PASS: TestValidateRequiredPlugins/missing_annotated_required_plugin (0.00s)
+    --- PASS: TestValidateRequiredPlugins/present_annotated_required_plugin (0.00s)
+    --- PASS: TestValidateRequiredPlugins/missing_global_required_plugin (0.00s)
+    --- PASS: TestValidateRequiredPlugins/present_global_required_plugin (0.00s)
+    --- PASS: TestValidateRequiredPlugins/tolerated_missing_(global_required)_plugin (0.00s)
+    --- PASS: TestValidateRequiredPlugins/present_annotated_and_global_required_plugin (0.00s)
+    --- PASS: TestValidateRequiredPlugins/missing_annotated_with_present_global_required_plugin (0.00s)
+    --- PASS: TestValidateRequiredPlugins/present_annotated_with_missing_global_required_plugin (0.00s)
+=== RUN   TestValidateSysctl
+=== RUN   TestValidateSysctl/disallowed_sysctl_adjustment
+--- PASS: TestValidateSysctl (0.00s)
+    --- PASS: TestValidateSysctl/disallowed_sysctl_adjustment (0.00s)
+PASS
+ok  	github.com/containerd/nri/plugins/default-validator	0.003s
+?   	github.com/containerd/nri/plugins/default-validator/builtin	[no test files]
+?   	github.com/containerd/nri/skel	[no test files]
+?   	github.com/containerd/nri/tools/protoc-gen-owners	[no test files]
+?   	github.com/containerd/nri/tools/protoc-gen-strip	[no test files]
+?   	github.com/containerd/nri/types/v1	[no test files]
