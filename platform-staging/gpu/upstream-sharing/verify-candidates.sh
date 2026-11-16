@@ -34,10 +34,14 @@ assert agent['failOpen'] is False and agent['retroactiveEnforcement'] is True
 assert agent['criSocketPath']=='/run/k3s/containerd/containerd.sock'
 assert agent['nriSocketPath']=='/var/run/nri/nri.sock'
 assert not any(d['kind']=='GpuFractioningConfig' for d in documents('kai.yaml'))
-manifest=next(d for d in documents('kai.yaml') if d['kind']=='ConfigMap' and 'kai-config.yaml' in d.get('data',{}))
-kai=yaml.safe_load(manifest['data']['kai-config.yaml'])['spec']
+inline=[d for d in documents('kai.yaml') if d['kind']=='Config' and d.get('apiVersion')=='kai.scheduler/v1']
+assert len(inline)==1
+kai=inline[0]['spec']
+assert not any(d['kind']=='Job' and 'kai-config' in d['metadata']['name'] for d in documents('kai.yaml'))
 assert kai['global']['gpuSharingMode']=='NvFractions'
 assert kai['binder']['plugins']['hamicore']['enabled'] is False
+assert kai['binder']['service']['enabled'] is True
+assert kai['binder'].get('cdiEnabled') is True
 image=kai['binder']['service']['image']
 assert (image['repository'],image['name'],image['tag'])==('ghcr.io/kai-scheduler/kai-scheduler','binder','v0.18.1')
 gpu=documents('gpu-operator.yaml')

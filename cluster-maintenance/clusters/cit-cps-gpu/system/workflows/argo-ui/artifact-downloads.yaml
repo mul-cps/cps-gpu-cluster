@@ -55,6 +55,12 @@ spec:
       automountServiceAccountToken: false
       imagePullSecrets: [{name: argo-artifact-image-pull}]
       nodeSelector: {kubernetes.io/hostname: k3s-wk-gpu2}
+      # CPU-only download relay may run while GPU2 remains GPU-quarantined.
+      tolerations:
+        - key: cps.unileoben.ac.at/maintenance
+          operator: Equal
+          value: upstream-pilot
+          effect: NoSchedule
       securityContext:
         runAsNonRoot: true
         runAsUser: 10001

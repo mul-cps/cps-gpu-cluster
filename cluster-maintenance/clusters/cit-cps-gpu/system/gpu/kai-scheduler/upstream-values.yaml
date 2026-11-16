@@ -1,0 +1,22 @@
+# Upstream KAI overlay; apply only after legacy starts are fenced.
+global:
+  tag: v0.18.1
+  registry: ghcr.io/kai-scheduler/kai-scheduler
+  gpuSharingMode: NvFractions
+  nvFractions:
+    set: false
+binder:
+  plugins:
+    hamicore:
+      enabled: false
+  image:
+    name: binder
+    tag: v0.18.1
+  enabled: true
+  cdiEnabled: true
+admission:
+  gpuFractionRuntimeClassName: nvidia
+kaiConfig:
+  render: true
+kaiConfigDeployer:
+  enabled: false

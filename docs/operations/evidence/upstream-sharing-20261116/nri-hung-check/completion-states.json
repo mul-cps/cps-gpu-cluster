@@ -1,0 +1,28 @@
+[
+  {
+    "name": "gpu2-nri-hung-required",
+    "node": "k3s-wk-gpu2",
+    "state": {
+      "terminated": {
+        "containerID": "containerd://4bad7037ea6663ae6202708bdb363be474db03fbad091433f14d237ac8ce9d6b",
+        "exitCode": 0,
+        "finishedAt": "2026-11-16T13:53:21Z",
+        "reason": "Completed",
+        "startedAt": "2026-11-16T13:53:21Z"
+      }
+    }
+  },
+  {
+    "name": "gpu2-nri-hung-cpu",
+    "node": "k3s-wk-gpu2",
+    "state": {
+      "terminated": {
+        "containerID": "containerd://b3ff2b8999c7fedecafe4d9f523a5d73380d943081b4a36125c5b02db8697245",
+        "exitCode": 0,
+        "finishedAt": "2026-11-16T13:52:54Z",
+        "reason": "Completed",
+        "startedAt": "2026-11-16T13:52:54Z"
+      }
+    }
+  }
+]

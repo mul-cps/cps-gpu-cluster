@@ -1,97 +1,19 @@
-global:
-  # Bumped 2026-07-07: v0.14.6 -> v0.16.3. Motivated by the MinNodeGPUMemory
-  # fair-share bug (fixed upstream in v0.16.2; see docs/troubleshooting.md,
-  # "RESOLVED (2026-07-07): root cause of the reclaim mystery" and the
-  # follow-up entry) plus v0.16.3's additional "Filter unreclaimable reclaim
-  # victims" fix. Verified before bumping: no JobSet workloads on this
-  # cluster (CRD present, zero instances, zero manifests in this repo) --
-  # the two JobSet-scoped breaking changes in v0.15.0/v0.16.0 (minAvailable
-  # auto-calc change; PodGroup hierarchy restructure removing
-  # backoffLimit/completions/parallelism from the PodGroup CRD) do not
-  # apply. Confirmed no live PodGroup on this cluster sets those removed
-  # fields. Confirmed all 8 component images (scheduler, admission, binder,
-  # operator, podgrouper, podgroupcontroller, queuecontroller,
-  # crd-upgrader) resolve at v0.16.3 in ghcr.io/kai-scheduler/kai-scheduler.
-  # The chart runs its own crd-upgrader pre-upgrade Helm hook, so the CRD
-  # schema changes (additive only, backward compatible) are applied
-  # automatically by Fleet's helm upgrade -- no manual `kubectl apply` of
-  # CRDs needed.
-  #
-  # Bumped 2026-07-06: v0.12.10 -> v0.14.6 (LTS line). Note the project
-  # moved its GHCR org between v0.13.0 and v0.14.0 -- both the Helm chart
-  # (fleet.yaml: oci://ghcr.io/kai-scheduler/kai-scheduler/kai-scheduler)
-  # and this registry override must point at ghcr.io/kai-scheduler/kai-scheduler
-  # now, not ghcr.io/nvidia/kai-scheduler (the old path 404s for >=v0.14).
-  tag: v0.16.3
-  registry: ghcr.io/kai-scheduler/kai-scheduler
-  # Required for the gpu-memory annotation (MPS-based VRAM-tier sharing,
-  # see user/jupyter/jupyterhub/values.yaml PROFILE_CONFIGS) -- without
-  # this, KAI's admission webhook rejects any pod with a GPU-sharing
-  # request outright ("GPU sharing is disabled"). Confirmed live
-  # (2026-07-06) via kubectl patch before landing this repo change.
-  gpuSharing: true
-  # INVESTIGATED, NOT SET (2026-07-06): tried setting global.replicaCount:
-  # 2 here to get a second admission webhook replica (the admission
-  # webhook's namespaceSelector is broad by design -- NotIn [kube-system,
-  # kai-scheduler] -- and matches nearly every pod creation cluster-wide
-  # regardless of schedulerName; confirmed live during a real incident
-  # where a single admission pod becoming briefly unreachable blocked ALL
-  # pod scheduling cluster-wide). Traced the chart template
-  # (kai-scheduler/templates/kai-config.yaml:41) and found
-  # `global.replicaCount` only maps to `.Values.operator.replicaCount` --
-  # the kai-operator's OWN replica count, not admission's or any other
-  # component's. admission's replica count is hardcoded to 1 in the
-  # operator's Go controller with no values.yaml/Config-CR override
-  # surface at all in v0.12.10 -- same class of "operator hardcodes it, no
-  # config exposed" gap as the namespaceSelector issue. Filed
-  # https://github.com/kai-scheduler/KAI-Scheduler/issues/1842 for the
-  # namespaceSelector; this replica-count gap should be added to that same
-  # upstream ask (or a new issue) rather than worked around here --
-  # cloning admission the way mps-control-daemon-standalone.yaml clones
-  # the MPS daemon is possible but meaningfully more fragile (admission
-  # runs the actual webhook logic with TLS cert rotation via
-  # certSecretName, not just a passthrough daemon) and wasn't attempted.
-  #
-  # admission-pdb.yaml is still applied (see that file) -- with only 1
-  # replica it can't prevent the exact incident above, but it does stop a
-  # voluntary eviction (node drain, descheduler) from casually taking down
-  # the only admission pod without at least surfacing the block.
-  #
-  # RE-CHECKED against v0.14.6 (2026-07-06, during the v0.12.10 -> v0.14.6
-  # bump): `helm show values` for v0.14.6 still only exposes
-  # `operator.replicaCount`, no per-component (admission) replicaCount, and
-  # still no namespaceSelector field anywhere under `admission:`.
-  #
-  # UPDATE (2026-07-07): a maintainer responded on issue #1842
-  # (https://github.com/kai-scheduler/KAI-Scheduler/issues/1842#issuecomment-4897859295)
-  # pointing out both webhooks already gate on `object.spec.schedulerName
-  # == 'kai-scheduler'` via `matchConditions` (CEL, evaluated server-side
-  # before the webhook backend is ever contacted). Verified this is true
-  # live on this cluster for BOTH mutating-kai-admission and
-  # validating-kai-admission (v0.14.6, confirmed via
-  # `kubectl get {mutating,validating}webhookconfigurations ... -o json`)
-  # and in the v0.14.6 upstream source
-  # (pkg/operator/operands/admission/resources.go,
-  # buildSchedulerNameMatchConditions; pkg/apis/kai/v1/global.go defaults
-  # Global.SchedulerName to "kai-scheduler" so this is on by default, no
-  # Config CR override needed). Net effect: the broad namespaceSelector
-  # above is now functionally inert for the incident this issue was filed
-  # over -- any pod that doesn't explicitly set schedulerName:
-  # kai-scheduler (e.g. JupyterHub's Hub pod) never reaches the webhook at
-  # all, so an unreachable admission pod can no longer block unrelated
-  # cluster-wide pod creation even under failurePolicy: Fail. No config
-  # change was needed or made here as a result -- see
-  # docs/troubleshooting.md ("KAI admission webhook blast radius: upstream
-  # response to issue #1842", 2026-07-07) for the full verification. The
-  # namespaceSelector/objectSelector override request and the
-  # admission-replicaCount gap both remain open upstream as separate,
-  # lower-severity asks.
-
+# Preserved deployed v0.18.1 values; upstream mode is selected in upstream-values.yaml.
 admission:
-  # Renamed from gpuPodRuntimeClassName -> gpuFractionRuntimeClassName in
-  # v0.16.0 (bumped alongside the chart to v0.16.3, 2026-07-07). The old
-  # name still exists in the v0.16.3 CRD (deprecated, gpuFractionRuntimeClassName
-  # wins if both set) but Helm would silently drop an unknown-to-the-new-chart
-  # key were the rename skipped -- functionally it's the same field either
-  # way, this just uses the current name.
   gpuFractionRuntimeClassName: nvidia
+binder:
+  plugins:
+    hamicore:
+      enabled: true
+defaultPriorityClasses:
+  enabled: true
+defaultQueue:
+  createDefaultQueue: true
+global:
+  gpuSharingMode: HamiCore
+  registry: ghcr.io/kai-scheduler/kai-scheduler
+  tag: v0.18.1
+scheduler:
+  actions:
+    consolidation:
+      enabled: false

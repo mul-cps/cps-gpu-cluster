@@ -1,0 +1,186 @@
+{"env": {"NVIDIA_VISIBLE_DEVICES": "void", "NVIDIA_GPU_MEMORY_REQUEST": "5120", "NVIDIA_GPU_MEMORY_LIMIT": "5120", "CUDA_MPS_PIPE_DIRECTORY": "/run/nvidia-mps"}}
+{"role": "survivor", "mode": "ordinary", "gate": "start", "waiting": true}
+{"step": "init", "result": 0}
+{"step": "device", "result": 0}
+{"step": "context", "result": 0}
+{"role": "survivor", "mode": "ordinary", "step": "allocation", "result": 0, "mib": 1024}
+{"step": "fill", "result": 0}
+{"step": "sync", "result": 0}
+{"role": "survivor", "mode": "ordinary", "step": "holding-filled-vram", "mib": 1024}
+{"step": "live-gpu-fill", "result": 0}
+{"step": "live-gpu-sync", "result": 0}
+{"role": "survivor", "mode": "ordinary", "step": "progress", "result": 0, "timestamp": 1794833742.066944}
+{"step": "live-gpu-fill", "result": 0}
+{"step": "live-gpu-sync", "result": 0}
+{"role": "survivor", "mode": "ordinary", "step": "progress", "result": 0, "timestamp": 1794833744.068741}
+{"step": "live-gpu-fill", "result": 0}
+{"step": "live-gpu-sync", "result": 0}
+{"role": "survivor", "mode": "ordinary", "step": "progress", "result": 0, "timestamp": 1794833746.0707874}
+{"step": "live-gpu-fill", "result": 0}
+{"step": "live-gpu-sync", "result": 0}
+{"role": "survivor", "mode": "ordinary", "step": "progress", "result": 0, "timestamp": 1794833748.0724692}
+{"step": "live-gpu-fill", "result": 0}
+{"step": "live-gpu-sync", "result": 0}
+{"role": "survivor", "mode": "ordinary", "step": "progress", "result": 0, "timestamp": 1794833750.0741987}
+{"step": "live-gpu-fill", "result": 0}
+{"step": "live-gpu-sync", "result": 0}
+{"role": "survivor", "mode": "ordinary", "step": "progress", "result": 0, "timestamp": 1794833752.0757864}
+{"step": "live-gpu-fill", "result": 0}
+{"step": "live-gpu-sync", "result": 0}
+{"role": "survivor", "mode": "ordinary", "step": "progress", "result": 0, "timestamp": 1794833754.0771616}
+{"step": "live-gpu-fill", "result": 0}
+{"step": "live-gpu-sync", "result": 0}
+{"role": "survivor", "mode": "ordinary", "step": "progress", "result": 0, "timestamp": 1794833756.0790143}
+{"step": "live-gpu-fill", "result": 0}
+{"step": "live-gpu-sync", "result": 0}
+{"role": "survivor", "mode": "ordinary", "step": "progress", "result": 0, "timestamp": 1794833758.0810235}
+{"step": "live-gpu-fill", "result": 0}
+{"step": "live-gpu-sync", "result": 0}
+{"role": "survivor", "mode": "ordinary", "step": "progress", "result": 0, "timestamp": 1794833760.0834854}
+{"step": "live-gpu-fill", "result": 0}
+{"step": "live-gpu-sync", "result": 0}
+{"role": "survivor", "mode": "ordinary", "step": "progress", "result": 0, "timestamp": 1794833762.086346}
+{"step": "live-gpu-fill", "result": 0}
+{"step": "live-gpu-sync", "result": 0}
+{"role": "survivor", "mode": "ordinary", "step": "progress", "result": 0, "timestamp": 1794833764.0889523}
+{"step": "live-gpu-fill", "result": 0}
+{"step": "live-gpu-sync", "result": 0}
+{"role": "survivor", "mode": "ordinary", "step": "progress", "result": 0, "timestamp": 1794833766.0914369}
+{"step": "live-gpu-fill", "result": 0}
+{"step": "live-gpu-sync", "result": 0}
+{"role": "survivor", "mode": "ordinary", "step": "progress", "result": 0, "timestamp": 1794833768.093392}
+{"step": "live-gpu-fill", "result": 0}
+{"step": "live-gpu-sync", "result": 0}
+{"role": "survivor", "mode": "ordinary", "step": "progress", "result": 0, "timestamp": 1794833770.0949929}
+{"step": "live-gpu-fill", "result": 0}
+{"step": "live-gpu-sync", "result": 0}
+{"role": "survivor", "mode": "ordinary", "step": "progress", "result": 0, "timestamp": 1794833772.0963628}
+{"step": "live-gpu-fill", "result": 0}
+{"step": "live-gpu-sync", "result": 0}
+{"role": "survivor", "mode": "ordinary", "step": "progress", "result": 0, "timestamp": 1794833774.0979538}
+{"step": "live-gpu-fill", "result": 0}
+{"step": "live-gpu-sync", "result": 0}
+{"role": "survivor", "mode": "ordinary", "step": "progress", "result": 0, "timestamp": 1794833776.099318}
+{"step": "live-gpu-fill", "result": 0}
+{"step": "live-gpu-sync", "result": 0}
+{"role": "survivor", "mode": "ordinary", "step": "progress", "result": 0, "timestamp": 1794833778.1011727}
+{"step": "live-gpu-fill", "result": 0}
+{"step": "live-gpu-sync", "result": 0}
+{"role": "survivor", "mode": "ordinary", "step": "progress", "result": 0, "timestamp": 1794833780.1030858}
+{"step": "live-gpu-fill", "result": 0}
+{"step": "live-gpu-sync", "result": 0}
+{"role": "survivor", "mode": "ordinary", "step": "progress", "result": 0, "timestamp": 1794833782.1047852}
+{"step": "live-gpu-fill", "result": 0}
+{"step": "live-gpu-sync", "result": 0}
+{"role": "survivor", "mode": "ordinary", "step": "progress", "result": 0, "timestamp": 1794833784.1064067}
+{"step": "live-gpu-fill", "result": 0}
+{"step": "live-gpu-sync", "result": 0}
+{"role": "survivor", "mode": "ordinary", "step": "progress", "result": 0, "timestamp": 1794833786.1077063}
+{"step": "live-gpu-fill", "result": 0}
+{"step": "live-gpu-sync", "result": 0}
+{"role": "survivor", "mode": "ordinary", "step": "progress", "result": 0, "timestamp": 1794833788.1091452}
+{"step": "live-gpu-fill", "result": 0}
+{"step": "live-gpu-sync", "result": 0}
+{"role": "survivor", "mode": "ordinary", "step": "progress", "result": 0, "timestamp": 1794833790.1112893}
+{"step": "live-gpu-fill", "result": 0}
+{"step": "live-gpu-sync", "result": 0}
+{"role": "survivor", "mode": "ordinary", "step": "progress", "result": 0, "timestamp": 1794833792.1133249}
+{"step": "live-gpu-fill", "result": 0}
+{"step": "live-gpu-sync", "result": 0}
+{"role": "survivor", "mode": "ordinary", "step": "progress", "result": 0, "timestamp": 1794833794.1151888}
+{"step": "live-gpu-fill", "result": 0}
+{"step": "live-gpu-sync", "result": 0}
+{"role": "survivor", "mode": "ordinary", "step": "progress", "result": 0, "timestamp": 1794833796.117214}
+{"step": "live-gpu-fill", "result": 0}
+{"step": "live-gpu-sync", "result": 0}
+{"role": "survivor", "mode": "ordinary", "step": "progress", "result": 0, "timestamp": 1794833798.1194122}
+{"step": "live-gpu-fill", "result": 0}
+{"step": "live-gpu-sync", "result": 0}
+{"role": "survivor", "mode": "ordinary", "step": "progress", "result": 0, "timestamp": 1794833800.1215115}
+{"step": "live-gpu-fill", "result": 0}
+{"step": "live-gpu-sync", "result": 0}
+{"role": "survivor", "mode": "ordinary", "step": "progress", "result": 0, "timestamp": 1794833802.123797}
+{"step": "live-gpu-fill", "result": 0}
+{"step": "live-gpu-sync", "result": 0}
+{"role": "survivor", "mode": "ordinary", "step": "progress", "result": 0, "timestamp": 1794833804.1258426}
+{"step": "live-gpu-fill", "result": 0}
+{"step": "live-gpu-sync", "result": 0}
+{"role": "survivor", "mode": "ordinary", "step": "progress", "result": 0, "timestamp": 1794833806.1277137}
+{"step": "live-gpu-fill", "result": 0}
+{"step": "live-gpu-sync", "result": 0}
+{"role": "survivor", "mode": "ordinary", "step": "progress", "result": 0, "timestamp": 1794833808.1291792}
+{"step": "live-gpu-fill", "result": 0}
+{"step": "live-gpu-sync", "result": 0}
+{"role": "survivor", "mode": "ordinary", "step": "progress", "result": 0, "timestamp": 1794833810.1310081}
+{"step": "live-gpu-fill", "result": 0}
+{"step": "live-gpu-sync", "result": 0}
+{"role": "survivor", "mode": "ordinary", "step": "progress", "result": 0, "timestamp": 1794833812.1332424}
+{"step": "live-gpu-fill", "result": 0}
+{"step": "live-gpu-sync", "result": 0}
+{"role": "survivor", "mode": "ordinary", "step": "progress", "result": 0, "timestamp": 1794833814.1348934}
+{"step": "live-gpu-fill", "result": 0}
+{"step": "live-gpu-sync", "result": 0}
+{"role": "survivor", "mode": "ordinary", "step": "progress", "result": 0, "timestamp": 1794833816.1371262}
+{"step": "live-gpu-fill", "result": 0}
+{"step": "live-gpu-sync", "result": 0}
+{"role": "survivor", "mode": "ordinary", "step": "progress", "result": 0, "timestamp": 1794833818.1389751}
+{"step": "live-gpu-fill", "result": 0}
+{"step": "live-gpu-sync", "result": 0}
+{"role": "survivor", "mode": "ordinary", "step": "progress", "result": 0, "timestamp": 1794833820.1415963}
+{"step": "live-gpu-fill", "result": 0}
+{"step": "live-gpu-sync", "result": 0}
+{"role": "survivor", "mode": "ordinary", "step": "progress", "result": 0, "timestamp": 1794833822.1433754}
+{"step": "live-gpu-fill", "result": 0}
+{"step": "live-gpu-sync", "result": 0}
+{"role": "survivor", "mode": "ordinary", "step": "progress", "result": 0, "timestamp": 1794833824.1450906}
+{"step": "live-gpu-fill", "result": 0}
+{"step": "live-gpu-sync", "result": 0}
+{"role": "survivor", "mode": "ordinary", "step": "progress", "result": 0, "timestamp": 1794833826.1476712}
+{"step": "live-gpu-fill", "result": 0}
+{"step": "live-gpu-sync", "result": 0}
+{"role": "survivor", "mode": "ordinary", "step": "progress", "result": 0, "timestamp": 1794833828.1494653}
+{"step": "live-gpu-fill", "result": 0}
+{"step": "live-gpu-sync", "result": 0}
+{"role": "survivor", "mode": "ordinary", "step": "progress", "result": 0, "timestamp": 1794833830.1524048}
+{"step": "live-gpu-fill", "result": 0}
+{"step": "live-gpu-sync", "result": 0}
+{"role": "survivor", "mode": "ordinary", "step": "progress", "result": 0, "timestamp": 1794833832.1544209}
+{"step": "live-gpu-fill", "result": 0}
+{"step": "live-gpu-sync", "result": 0}
+{"role": "survivor", "mode": "ordinary", "step": "progress", "result": 0, "timestamp": 1794833834.1567554}
+{"step": "live-gpu-fill", "result": 0}
+{"step": "live-gpu-sync", "result": 0}
+{"role": "survivor", "mode": "ordinary", "step": "progress", "result": 0, "timestamp": 1794833836.1584067}
+{"step": "live-gpu-fill", "result": 0}
+{"step": "live-gpu-sync", "result": 0}
+{"role": "survivor", "mode": "ordinary", "step": "progress", "result": 0, "timestamp": 1794833838.159579}
+{"step": "live-gpu-fill", "result": 0}
+{"step": "live-gpu-sync", "result": 0}
+{"role": "survivor", "mode": "ordinary", "step": "progress", "result": 0, "timestamp": 1794833840.1610866}
+{"step": "live-gpu-fill", "result": 0}
+{"step": "live-gpu-sync", "result": 0}
+{"role": "survivor", "mode": "ordinary", "step": "progress", "result": 0, "timestamp": 1794833842.1627624}
+{"step": "live-gpu-fill", "result": 0}
+{"step": "live-gpu-sync", "result": 0}
+{"role": "survivor", "mode": "ordinary", "step": "progress", "result": 0, "timestamp": 1794833844.1647663}
+{"step": "live-gpu-fill", "result": 0}
+{"step": "live-gpu-sync", "result": 0}
+{"role": "survivor", "mode": "ordinary", "step": "progress", "result": 0, "timestamp": 1794833846.166395}
+{"step": "live-gpu-fill", "result": 0}
+{"step": "live-gpu-sync", "result": 0}
+{"role": "survivor", "mode": "ordinary", "step": "progress", "result": 0, "timestamp": 1794833848.1679087}
+{"step": "live-gpu-fill", "result": 0}
+{"step": "live-gpu-sync", "result": 0}
+{"role": "survivor", "mode": "ordinary", "step": "progress", "result": 0, "timestamp": 1794833850.1699822}
+{"step": "live-gpu-fill", "result": 0}
+{"step": "live-gpu-sync", "result": 0}
+{"role": "survivor", "mode": "ordinary", "step": "progress", "result": 0, "timestamp": 1794833852.1715486}
+{"step": "live-gpu-fill", "result": 0}
+{"step": "live-gpu-sync", "result": 0}
+{"role": "survivor", "mode": "ordinary", "step": "progress", "result": 0, "timestamp": 1794833854.17327}
+{"step": "live-gpu-fill", "result": 0}
+{"step": "live-gpu-sync", "result": 0}
+{"role": "survivor", "mode": "ordinary", "step": "progress", "result": 0, "timestamp": 1794833856.175534}
+{"step": "free", "result": 0}
+{"step": "destroy", "result": 0}
+{"role": "survivor", "mode": "ordinary", "step": "process-finished"}

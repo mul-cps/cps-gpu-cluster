@@ -268,3 +268,36 @@ profile, ordering, contention pattern or application lifecycle.
 The complete readbacks, identity snapshots, probe source, fixture YAML and
 MPS/kernel logs are retained under
 [evidence/hard-limit-and-contention](evidence/upstream-sharing-20261116/hard-limit-and-contention/current-acceptance-policy.json).
+
+## Final platform checks before workspace cutover
+
+GPU2 passed mixed5/10/20 GiB ordinary-memory probes on both physical cards,
+first filling A then B, then B then A with reversed profile order. All12 cases
+returned typed CUDA OOM for a request1 GiB above the actual hard limit, then
+filled the in-budget allocation. Each card held34030 MiB physical use with all
+three profiles active. A5 GiB parent/child case enforced aggregate use even
+when children replaced memory-limit environment values with999999 and used a
+nonexistent MPS pipe: parent3 GiB +child3 GiB was rejected, child1 GiB succeeded.
+Tenant nested-cgroup creation failed with read-only filesystem.
+
+A running CUDA workload survived K3s/containerd restart with the identical Pod
+UID, containerID and restartCount0; it continued GPU memset/synchronize calls.
+fractiond reconnected after5 seconds and recovered the live container mapping.
+GPU2 subsequently completed a clean poweroff/cold-start cycle, newbootID
+043e6e01-0e3a-44ab-bca9-f6d42ababe60. R620, toolkit, device plugin and Fractioning
+returned healthy automatically. The Longhorn instance manager required the
+known temporary fenced uncordon to recover; GPU2 was re-cordoned afterward.
+Storage stayed healthy. No host driver packages were present; the pinned
+upstream driver container remains the only driver owner.
+
+A controlled15-second SIGSTOP of only fractiond, with an independent host
+systemd timer armed to resume it, verified hung/disconnected plugin handling.
+The required-plugin GPU Pod was rejected by containerd's default validator
+while the plugin was absent; an ordinary CPU Pod succeeded. After plugin
+reconnection, the GPU Pod passed its1 GiB /6 GiB typedOOM /2 GiB recovery probe.
+All test fixtures were removed. No production workspace acceptance is implied.
+
+The app implementation review is approved through cps-compute8d45f06; source
+334 tests and actual CPS/CIT overlay closures333 tests each passed. Immutable
+Gateway/CPSHub/CITHub candidates were published and source-verified. These are
+candidates pending coordinated live cutover and real workspace acceptance.

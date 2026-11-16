@@ -1,5 +1,4 @@
-# Candidate overrides on the exact live KAI values, not a replacement values file.
-# Activate only after fractioning is installed and legacy Binder custody is clear.
+# Upstream KAI overlay; apply only after legacy starts are fenced.
 global:
   tag: v0.18.1
   registry: ghcr.io/kai-scheduler/kai-scheduler
@@ -13,5 +12,11 @@ binder:
   image:
     name: binder
     tag: v0.18.1
+  enabled: true
+  cdiEnabled: true
 admission:
   gpuFractionRuntimeClassName: nvidia
+kaiConfig:
+  render: true
+kaiConfigDeployer:
+  enabled: false

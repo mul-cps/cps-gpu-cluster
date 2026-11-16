@@ -1,27 +1,21 @@
+# Stock KAI; inline Config is owned by Fleet, independently installed Fractioning stays separate.
+# Legacy verbose-shard post-render source is retained but not enabled: preserve live empty args.
 name: kai-scheduler
 defaultNamespace: kai-scheduler
-
 labels:
   name: kai-scheduler
-
 helm:
   chart: oci://ghcr.io/kai-scheduler/kai-scheduler/kai-scheduler
-  version: v0.16.3
+  version: v0.18.1
   valuesFiles:
-    - values.yaml
-
-# Post-render patch applied on top of the Helm output (the chart's
-# default-shard.yaml template has no values.yaml field wired to
-# SchedulingShard.spec.args, even though the CRD supports it -- see
-# kustomization.yaml and docs/troubleshooting.md, 2026-07-07 entry, for why
-# this is needed and confirmation this is a supported Fleet bundle shape).
-kustomize:
-  dir: .
-
+  - values.yaml
+  - upstream-values.yaml
+  takeOwnership: true
 diff:
   comparePatches:
   - apiVersion: kai.scheduler/v1
     kind: SchedulingShard
     name: default
     operations:
-    - {"op": "remove", "path": "/status"}
+    - op: remove
+      path: /status

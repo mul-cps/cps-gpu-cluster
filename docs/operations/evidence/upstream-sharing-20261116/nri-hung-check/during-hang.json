@@ -1,0 +1,53 @@
+[
+  {
+    "waiting": {
+      "reason": "ContainerCreating"
+    }
+  },
+  {
+    "waiting": {
+      "reason": "ContainerCreating"
+    }
+  },
+  {
+    "waiting": {
+      "reason": "ContainerCreating"
+    }
+  },
+  {
+    "waiting": {
+      "reason": "ContainerCreating"
+    }
+  },
+  {
+    "waiting": {
+      "reason": "ContainerCreating"
+    }
+  },
+  {
+    "waiting": {
+      "reason": "ContainerCreating"
+    }
+  },
+  {
+    "waiting": {
+      "reason": "ContainerCreating"
+    }
+  },
+  {
+    "waiting": {
+      "reason": "ContainerCreating"
+    }
+  },
+  {
+    "waiting": {
+      "reason": "ContainerCreating"
+    }
+  },
+  {
+    "waiting": {
+      "message": "failed to create containerd container: failed to get NRI adjustment for container: validator \"00-default-validator\" rejected container adjustment, reason: validation error: required plugin \"gpu-fractioning\" not present",
+      "reason": "CreateContainerError"
+    }
+  }
+]
