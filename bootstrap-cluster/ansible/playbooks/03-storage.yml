@@ -1,4 +1,21 @@
 ---
+- name: Preserve Fleet's local-path configuration across K3s restarts
+  hosts: control_plane
+  become: yes
+  gather_facts: no
+  any_errors_fatal: true
+
+  tasks:
+    # K3s rewrites packaged manifests on every server start. Skipping deployment
+    # preserves the existing local-storage resources; --disable would remove them.
+    # Every server needs the marker so none can restore the default-only path map.
+    - name: Keep K3s from reapplying the packaged local-storage manifest
+      ansible.builtin.copy:
+        dest: /var/lib/rancher/k3s/server/manifests/local-storage.yaml.skip
+        content: ""
+        force: no
+        mode: '0644'
+
 - name: Configure storage
   hosts: control_plane[0]
   become: yes
@@ -74,6 +91,26 @@
       environment:
         KUBECONFIG: /etc/rancher/k3s/k3s.yaml
       register: local_path_config_apply
+
+    - name: Read current local-path-config ownership
+      ansible.builtin.command:
+        argv: [kubectl, -n, kube-system, get, configmap, local-path-config, -o, json]
+      environment:
+        KUBECONFIG: /etc/rancher/k3s/k3s.yaml
+      register: local_path_config_owner
+      changed_when: false
+
+    - name: Transfer only local-path-config ownership from the skipped AddOn to Fleet
+      shell: |
+        set -e
+        kubectl -n kube-system label configmap local-path-config app.kubernetes.io/managed-by=Helm --overwrite
+        kubectl -n kube-system annotate configmap local-path-config meta.helm.sh/release-name=storage-classes meta.helm.sh/release-namespace=default --overwrite
+        kubectl -n kube-system label configmap local-path-config objectset.rio.cattle.io/hash-
+        kubectl -n kube-system annotate configmap local-path-config objectset.rio.cattle.io/applied- objectset.rio.cattle.io/id- objectset.rio.cattle.io/owner-gvk- objectset.rio.cattle.io/owner-name- objectset.rio.cattle.io/owner-namespace-
+      environment:
+        KUBECONFIG: /etc/rancher/k3s/k3s.yaml
+      when: >-
+        (local_path_config_owner.stdout | from_json).get('metadata', {}).get('annotations', {}).get('objectset.rio.cattle.io/owner-gvk', '') == 'k3s.cattle.io/v1, Kind=Addon'
 
     - name: Restart local-path-provisioner to pick up config if it changed
       shell: kubectl -n kube-system rollout restart deploy local-path-provisioner

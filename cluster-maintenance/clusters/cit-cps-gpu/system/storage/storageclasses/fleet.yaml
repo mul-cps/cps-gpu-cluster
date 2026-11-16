@@ -27,4 +27,7 @@ helm:
   # local-path-config is created by K3s's packaged local-storage addon. Fleet
   # must adopt it so the NVMe node-path allowlist is reconciled continuously,
   # instead of being restored only when the bootstrap playbook is rerun.
+  # Bootstrap 03-storage.yml installs local-storage.yaml.skip on ALL servers
+  # and removes only this ConfigMap's stale AddOn ownership metadata. Without
+  # that handoff, K3s can reset config.json and Fleet reports "not owned by us".
   takeOwnership: true
