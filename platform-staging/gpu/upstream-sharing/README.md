@@ -3,7 +3,7 @@
 This is a runtime preparation package outside Fleet's original watched
 `cluster-maintenance/clusters/cit-cps-gpu` tree. It does not replace the gateway,
 reservation store, launch adapters, admission policy, custom Binder or node cap
-writer. GPU2 remains fenced by its existing accelerator label. The separate GitOps OS pilot bundle is at `cluster-maintenance/clusters/cit-cps-gpu/system/os/gpu2-ubuntu`. No worker is accepted and no legacy allocation custody has been released.
+writer. GPU2 remains fenced by its existing accelerator label. The separate GitOps OS pilot bundle is at `platform-staging/gpu/upstream-sharing/os-plan`. No worker is accepted and no legacy allocation custody has been released.
 
 The supplied rollout order is GPU2 → GPU3 → GPU1 → GPU4, one worker at a time.
 Ubuntu 26.04.1 and R620.70.06 are fixed targets. MIG remains disabled. Do not

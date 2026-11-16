@@ -1,0 +1,36 @@
+# Candidate only; selected worker ownership must be transferred explicitly.
+apiVersion: nvidia.com/v1alpha1
+kind: NVIDIADriver
+metadata:
+  name: cps-r620-workers
+spec:
+  driverType: gpu
+  repository: ghcr.io/mul-cps
+  image: cps-nvidia-driver
+  version: sha256:0fcbf7340155f8d6868e30b1b0fbf09b601d093a9316621902d5ac09ad7874a1
+  kernelModuleType: auto
+  usePrecompiled: false
+  imagePullSecrets:
+  - cps-native-image-pull
+  nodeSelector:
+    cps.unileoben.ac.at/driver: 620.70.06
+  manager:
+    repository: nvcr.io/nvidia/cloud-native
+    image: k8s-driver-manager
+    version: v0.12.1
+    env:
+    - name: ENABLE_GPU_POD_EVICTION
+      value: 'false'
+    - name: ENABLE_AUTO_DRAIN
+      value: 'false'
+  upgradePolicy:
+    autoUpgrade: false
+    maxParallelUpgrades: 1
+    drain:
+      enable: false
+      force: false
+      deleteEmptyDir: false
+    podDeletion:
+      force: false
+      deleteEmptyDir: false
+  default: false
