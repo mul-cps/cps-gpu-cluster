@@ -24,6 +24,9 @@ RAW_SHA256 = '8fd644921ce685e50f6dc8f57db6adb3fa0433d3fae7fa39cfdd673bd951dd82'
 SSH_KEY = Path('/home/bjoern/.ssh/id_ed25519')
 MAINTENANCE = 'cps.unileoben.ac.at/maintenance'
 QUALIFIED = 'cps.unileoben.ac.at/upstream-gpu-sharing'
+KERNEL_RELEASE = '7.0.0-43-generic'
+OS_VERSION = '26.04'
+OS_IMAGE = 'Ubuntu 26.04.1 LTS'
 
 
 def require(condition, message):
@@ -41,11 +44,17 @@ def validate_profiles(payload):
     require(payload['selection']['profile_sha256'] == PROFILE_SHA256, 'selected source profile hash mismatch')
 
 
+def validate_target(selection):
+    require(selection['expected_kernel'] == KERNEL_RELEASE and selection['expected_os_version'] == OS_VERSION,
+            'qualified Ubuntu26.04 kernel7.0.0-43-generic target required')
+
+
 def validate_node(selection, node, parent_release):
     fields = {'node', 'node_uid', 'ip', 'expected_boot', 'expected_kernel', 'expected_os_version',
               'k3s_version', 'containerd_version', 'parent_release', 'profile_sha256'}
     require(set(selection) == fields and all(isinstance(v, str) and v for v in selection.values()),
             'exact nonempty selected-worker fields required')
+    validate_target(selection)
     require(re.fullmatch(r'k3s-wk-gpu[1-4]', selection['node']), 'selected worker name required')
     require(selection['parent_release'] == parent_release and parent_release.strip(), 'parent release mismatch')
     for name in ('node_uid', 'expected_boot'):
@@ -54,6 +63,10 @@ def validate_node(selection, node, parent_release):
     require(selection['k3s_version'] == 'v1.34.9+k3s1' and selection['containerd_version'] == 'v2.2.5-k3s2',
             'reviewed stock runtime versions required')
     metadata = node['metadata']; spec = node['spec']; status = node['status']; info = status['nodeInfo']
+    require(metadata.get('deletionTimestamp') is None, 'deleting Node is not eligible')
+    require([c.get('status') for c in status.get('conditions', []) if c.get('type') == 'Ready'] == ['True'],
+            'exact Ready=True Node required')
+    require(info.get('osImage') == OS_IMAGE, 'qualified Ubuntu26.04.1 Node image required')
     require(metadata['name'] == selection['node'] and metadata['uid'] == selection['node_uid'], 'selected Node identity mismatch')
     require([a['address'] for a in status['addresses'] if a['type'] == 'InternalIP'] == [selection['ip']], 'selected Node IP mismatch')
     require(info['bootID'] == selection['expected_boot'] and info['kernelVersion'] == selection['expected_kernel'], 'Node boot/kernel mismatch')
@@ -106,6 +119,7 @@ def host_install(payload, root, observed, command):
     """Real filesystem transaction; command is the OS execution boundary."""
     validate_profiles(payload)
     selection = payload['selection']
+    validate_target(selection)
     require(observed['hostname'] == selection['node'], 'selected host mismatch')
     require(observed['kernel'] == selection['expected_kernel'], 'host kernel mismatch')
     boot = root/'proc/sys/kernel/random/boot_id'
@@ -186,8 +200,8 @@ def host_install(payload, root, observed, command):
 
 def render_remote():
     imports = 'import hashlib,json,os,re,stat,subprocess,platform\nfrom pathlib import Path\n'
-    constants = '\n'.join(name+' = '+repr(globals()[name]) for name in ('BASELINE_SHA256', 'PROFILE_SHA256', 'RAW_SHA256'))
-    functions = '\n'.join(inspect.getsource(f) for f in (require, digest, validate_profiles, loaded_raw, exclusive_write, host_install))
+    constants = '\n'.join(name+' = '+repr(globals()[name]) for name in ('BASELINE_SHA256', 'PROFILE_SHA256', 'RAW_SHA256', 'KERNEL_RELEASE', 'OS_VERSION'))
+    functions = '\n'.join(inspect.getsource(f) for f in (require, digest, validate_profiles, validate_target, loaded_raw, exclusive_write, host_install))
     entry = "\nrequire(os.geteuid()==0,'root required')\np=json.load(__import__('sys').stdin)\nprint(json.dumps(host_install(p,Path('/'),{'hostname':platform.node(),'kernel':platform.release()},subprocess.run)))\n"
     return imports + constants + '\n' + functions + entry
 

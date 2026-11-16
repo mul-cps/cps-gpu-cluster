@@ -32,16 +32,17 @@ class SelectedAppArmorTests(unittest.TestCase):
         self.root = Path(self.temp.name)
         self.selection = {'node': 'k3s-wk-gpu3', 'node_uid': '00000000-0000-4000-8000-000000000003',
             'ip': '10.21.0.44', 'expected_boot': '00000000-0000-4000-8000-000000000004',
-            'expected_kernel': '7.0.0-fixture', 'expected_os_version': '26.04',
+            'expected_kernel': '7.0.0-43-generic', 'expected_os_version': '26.04',
             'k3s_version': 'v1.34.9+k3s1', 'containerd_version': 'v2.2.5-k3s2',
             'parent_release': 'offline-preparation-only',
             'profile_sha256': '30e2fc1210fc99c4e7060ea6bf7f931f6d6c03fbdc499f5f0584fb5c01c92875'}
         self.node = {'metadata': {'name': self.selection['node'], 'uid': self.selection['node_uid'], 'labels': {}},
             'spec': {'unschedulable': True, 'taints': [{'key': 'cps.unileoben.ac.at/maintenance',
                 'value': 'upstream-pilot', 'effect': 'NoSchedule'}]},
-            'status': {'addresses': [{'type': 'InternalIP', 'address': '10.21.0.44'}],
-                'nodeInfo': {'bootID': self.selection['expected_boot'], 'kernelVersion': '7.0.0-fixture',
-                    'kubeletVersion': 'v1.34.9+k3s1', 'containerRuntimeVersion': 'containerd://2.2.5-k3s2'}}}
+            'status': {'conditions': [{'type':'Ready','status':'True'}], 'addresses': [{'type': 'InternalIP', 'address': '10.21.0.44'}],
+                'nodeInfo': {'bootID': self.selection['expected_boot'], 'kernelVersion': '7.0.0-43-generic',
+                    'kubeletVersion': 'v1.34.9+k3s1', 'containerRuntimeVersion': 'containerd://2.2.5-k3s2',
+                    'osImage': 'Ubuntu 26.04.1 LTS'}}}
 
     def payload(self):
         return self.module.prepare_payload(self.selection, self.node, 'offline-preparation-only')
@@ -77,6 +78,38 @@ class SelectedAppArmorTests(unittest.TestCase):
                 self.module.prepare_payload(self.selection, node, 'offline-preparation-only')
         with self.assertRaises(ValueError):self.module.prepare_payload(self.selection, self.node, 'different-parent-release')
 
+    def test_deleting_and_non_ready_nodes_fail_before_transport(self):
+        variants=[]
+        node=copy.deepcopy(self.node);node['metadata']['deletionTimestamp']='2026-11-17T00:00:00Z';variants.append(node)
+        for conditions in [[],[{'type':'Ready','status':'False'}],[{'type':'Ready','status':'Unknown'}]]:
+            node=copy.deepcopy(self.node);node['status']['conditions']=conditions;variants.append(node)
+        selection=self.root/'selection.json';selection.write_text(json.dumps(self.selection))
+        for index,node in enumerate(variants):
+            with self.subTest(index=index):
+                node_path=self.root/('node-'+str(index)+'.json');node_path.write_text(json.dumps(node))
+                output=self.root/('review-'+str(index)+'.json')
+                with patch.object(self.module,'checked_key',return_value=Path('/home/bjoern/.ssh/id_ed25519')), patch.object(self.module.subprocess,'run',return_value=subprocess.CompletedProcess([],0,stdout=json.dumps(node))) as transport, patch('sys.stdout',new_callable=io.StringIO):
+                    with self.assertRaises(ValueError):self.module.main(['--selection',str(selection),'--node-json',str(node_path),'--ssh-key','/home/bjoern/.ssh/id_ed25519','--parent-release','offline-preparation-only','--output',str(output),'--apply'])
+                    transport.assert_not_called()
+                self.assertFalse(output.exists())
+
+    def test_matching_but_unqualified_kernel_os_or_point_release_rejected(self):
+        for change in ['kernel','os','point-release']:
+            selection=copy.deepcopy(self.selection);node=copy.deepcopy(self.node)
+            if change=='kernel':
+                selection['expected_kernel']='7.0.0-44-generic';node['status']['nodeInfo']['kernelVersion']='7.0.0-44-generic'
+            if change=='os':selection['expected_os_version']='24.04'
+            if change=='point-release':node['status']['nodeInfo']['osImage']='Ubuntu 26.04 LTS'
+            with self.subTest(change=change), self.assertRaises(ValueError):
+                self.module.prepare_payload(selection,node,'offline-preparation-only')
+
+    def test_remote_host_cannot_accept_a_different_selected_target(self):
+        payload,observed,raw,command=self.host()
+        payload['selection']['expected_kernel']='7.0.0-44-generic';observed['kernel']='7.0.0-44-generic'
+        with self.assertRaises(ValueError):self.install(payload,observed,command)
+        self.assertEqual(raw.read_bytes(),b'fixture-stock-binary')
+        self.assertFalse((self.root/'var/lib/cps-apparmor-compat').exists())
+
     def test_current_source_profile_and_baseline_are_pinned(self):
         self.selection['profile_sha256'] = '0'*64
         with self.assertRaises(ValueError):self.payload()
@@ -102,7 +135,7 @@ class SelectedAppArmorTests(unittest.TestCase):
         raw.parent.mkdir(parents=True);raw.write_bytes(b'fixture-stock-binary')
         (self.root/'etc/apparmor.d').mkdir(parents=True)
         (self.root/'var/lib').mkdir(parents=True)
-        observed={'hostname':'k3s-wk-gpu3','kernel':'7.0.0-fixture'}
+        observed={'hostname':'k3s-wk-gpu3','kernel':'7.0.0-43-generic'}
         def command(args, **kwargs):
             data=b''
             if args == ['/usr/local/bin/k3s','--version']:data=b'k3s version v1.34.9+k3s1 (fixture)\n'

@@ -20,7 +20,7 @@ Prepare these exact fields from reviewed observations (replace placeholders):
   "node_uid": "EXACT_NODE_UID",
   "ip": "EXACT_INTERNAL_IPV4",
   "expected_boot": "EXACT_CURRENT_BOOT_UUID",
-  "expected_kernel": "EXACT_UNAME_RELEASE",
+  "expected_kernel": "7.0.0-43-generic",
   "expected_os_version": "26.04",
   "k3s_version": "v1.34.9+k3s1",
   "containerd_version": "v2.2.5-k3s2",
@@ -29,10 +29,15 @@ Prepare these exact fields from reviewed observations (replace placeholders):
 }
 ```
 
-`expected_os_version` is the host's exact Ubuntu `VERSION_ID`, not its marketing
-point-release string. Supply the read-only selected Node JSON separately. It
-must match name, UID, sole InternalIP, boot, kernel and runtime versions; be
-cordoned; carry
+`expected_os_version` is pinned to Ubuntu `VERSION_ID=26.04`, not the
+marketing point-release string. This helper is narrowly calibrated to the
+qualified GPU2 target: Node `osImage="Ubuntu 26.04.1 LTS"` and kernel
+`7.0.0-43-generic` (confirmed by read-only Node observation). A matching
+operator selection cannot opt into another OS/kernel; that needs separate review.
+Supply the read-only selected Node JSON separately. It
+must not be deleting, must report exactly one `Ready=True` condition, and
+must match name, UID, sole InternalIP, boot, the pinned OS/kernel and runtime
+versions; be cordoned; carry
 `cps.unileoben.ac.at/maintenance=upstream-pilot:NoSchedule`; and have **no**
 `cps.unileoben.ac.at/upstream-gpu-sharing` label.
 
@@ -88,7 +93,8 @@ python -m pytest -q
 python -m py_compile platform-staging/gpu/upstream-sharing/apparmor-compat/install_selected_worker.py
 ```
 
-Sixteen focused tests cover the identity/fence/source guards, no-transport
+Nineteen focused tests cover the identity/Ready/deletion/fence/source and
+pinned-target guards, no-transport
 preparation, stock/compiled mismatch, create-once private backup, partial file
 write, partial kernel load, reload rollback and failed rollback retention.
 Filesystem effects are real temporary files; the host command boundary is a
