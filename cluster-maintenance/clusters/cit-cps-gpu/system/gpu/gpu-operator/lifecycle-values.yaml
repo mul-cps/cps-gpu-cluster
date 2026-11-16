@@ -1,0 +1,35 @@
+daemonsets:
+  updateStrategy: OnDelete
+  tolerations:
+  - key: nvidia.com/gpu
+    operator: Exists
+    effect: NoSchedule
+  - key: gpu-pool
+    operator: Exists
+    effect: NoSchedule
+  - key: cps.unileoben.ac.at/maintenance
+    operator: Exists
+    effect: NoSchedule
+driver:
+  upgradePolicy:
+    autoUpgrade: false
+    drain:
+      enable: false
+      force: false
+      deleteEmptyDir: false
+    podDeletion:
+      force: false
+      deleteEmptyDir: false
+  manager:
+    env:
+    - name: ENABLE_GPU_POD_EVICTION
+      value: 'false'
+    - name: ENABLE_AUTO_DRAIN
+      value: 'false'
+mig:
+  strategy: none
+node-feature-discovery:
+  worker:
+    updateStrategy:
+      type: OnDelete
+      rollingUpdate: null

@@ -34,3 +34,9 @@ spec:
       force: false
       deleteEmptyDir: false
   default: false
+  tolerations:
+  - key: cps.unileoben.ac.at/maintenance
+    operator: Exists
+    effect: NoSchedule
+  kernelModuleConfig:
+    name: cps-r620-misc-config

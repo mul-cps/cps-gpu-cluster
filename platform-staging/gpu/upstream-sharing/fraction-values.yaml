@@ -1,4 +1,3 @@
-# Released gpu-fractioning 0.1.9; use fraction-postrender for the generated CR.
 runtimeClassName: nvidia
 supportSmSharing: false
 skipGpuStackVersionChecks: false
@@ -6,10 +5,17 @@ fractioningAgent:
   criSocketPath: /run/k3s/containerd/containerd.sock
 images:
   operator:
-    tag: "0.1.9"
+    tag: 0.1.9
   fractiond:
-    tag: "0.1.9"
+    tag: 0.1.9
   metricsd:
-    tag: "0.1.9"
+    tag: 0.1.9
   mpsd:
-    tag: "0.1.9"
+    tag: 0.1.9
+daemonTolerations:
+- key: nvidia.com/gpu
+  operator: Exists
+  effect: NoSchedule
+- key: cps.unileoben.ac.at/maintenance
+  operator: Exists
+  effect: NoSchedule
