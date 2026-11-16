@@ -1,0 +1,4 @@
+name: r620-driver
+defaultNamespace: gpu-operator
+labels:
+  name: r620-driver

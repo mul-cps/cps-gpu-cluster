@@ -88,13 +88,12 @@ driver:
       timeoutSeconds: 300
     waitForCompletion:
       timeoutSeconds: 0
-  useNvidiaDriverCRD: false
   usePrecompiled: false
   version: 615.71.09
   virtualTopology:
     config: ''
   nvidiaDriverCRD:
-    enabled: false
+    enabled: true
     deployDefaultCR: false
 gdrcopy:
   enabled: false
