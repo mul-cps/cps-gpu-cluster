@@ -1,0 +1,4 @@
+{
+  "tests/upstream-sharing/hardware/nri_candidate_probe.py": "4ef91f890db11464215d665906f63d51089e0af02268e6ae2d7d6ce2efeba7f5",
+  "tests/upstream-sharing/hardware/nri_candidate_hang.py": "6384c0ab289c708f5e6bbd77081da60f1b121476be2dc7719f0b084be1625a83"
+}

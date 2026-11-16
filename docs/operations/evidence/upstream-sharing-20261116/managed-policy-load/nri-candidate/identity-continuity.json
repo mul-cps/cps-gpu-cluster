@@ -1,0 +1,22 @@
+[
+  {
+    "name": "argo-artifact-downloads-7dbcb67b95-7qc24",
+    "uid": "ebd6f11b-031d-4d37-987e-83f18e40da70",
+    "container_ids_before": [
+      "containerd://3a592167fc999a81b5bb2a4d072a3e630a4a77cd5be6bfa0a5d5d964451147d0"
+    ],
+    "container_ids_after": [
+      "containerd://3a592167fc999a81b5bb2a4d072a3e630a4a77cd5be6bfa0a5d5d964451147d0"
+    ]
+  },
+  {
+    "name": "nri-candidate-survivor",
+    "uid": "aaea196e-f2fc-4bd5-b45a-9f305ac31597",
+    "container_ids_before": [
+      "containerd://aa962ebd90d10fbeb5b32bb928628f7939f89524a3c7588b198cdeafbc1d4632"
+    ],
+    "container_ids_after": [
+      "containerd://aa962ebd90d10fbeb5b32bb928628f7939f89524a3c7588b198cdeafbc1d4632"
+    ]
+  }
+]

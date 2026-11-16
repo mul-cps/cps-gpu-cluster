@@ -1,0 +1,89 @@
+{
+  "apiVersion": "v1",
+  "kind": "Pod",
+  "metadata": {
+    "name": "nri-candidate-recovery",
+    "namespace": "gpu-operator",
+    "labels": {
+      "cps.unileoben.ac.at/extended-probe": "nri-candidate-survivor"
+    },
+    "annotations": {
+      "nvidia.com/container.main.gpu-memory.request": "5120Mi",
+      "nvidia.com/container.main.gpu-memory.limit": "5120Mi",
+      "nvidia.com/container.main.gpu-compute.mode": "time-slicing",
+      "gpu-compute.mode": "time-slicing",
+      "gpu-fraction-container-name": "main",
+      "nvidia.com/container.main.gpus.devices": "k8s.device-plugin.nvidia.com/gpu=GPU-16128952-b438-556a-00bb-93039ee24e56",
+      "required-plugins.noderesource.dev/container.main": "[\"gpu-fractioning\"]"
+    }
+  },
+  "spec": {
+    "nodeName": "k3s-wk-gpu2",
+    "runtimeClassName": "nvidia",
+    "restartPolicy": "Never",
+    "activeDeadlineSeconds": 120,
+    "terminationGracePeriodSeconds": 15,
+    "automountServiceAccountToken": false,
+    "imagePullSecrets": [
+      {
+        "name": "cps-native-image-pull"
+      }
+    ],
+    "securityContext": {
+      "runAsNonRoot": true,
+      "runAsUser": 1000,
+      "runAsGroup": 1000,
+      "seccompProfile": {
+        "type": "RuntimeDefault"
+      }
+    },
+    "containers": [
+      {
+        "name": "main",
+        "image": "ghcr.io/mul-cps/cps-ubuntu-release-upgrade@sha256:5030556ecf8cd38fc9acc4676316bd0a3217d1ab10930b75b9dba7106e8f4004",
+        "command": [
+          "python3",
+          "-u",
+          "-c",
+          "import ctypes as C, json, os, sys\nlib=C.CDLL('libcuda.so.1')\ndef api(name,args):\n f=getattr(lib,name);f.argtypes=args;f.restype=C.c_int;return f\ninit=api('cuInit',[C.c_uint]);getdev=api('cuDeviceGet',[C.POINTER(C.c_int),C.c_int]);create=api('cuCtxCreate_v2',[C.POINTER(C.c_void_p),C.c_uint,C.c_int]);destroy=api('cuCtxDestroy_v2',[C.c_void_p]);alloc=api('cuMemAlloc_v2',[C.POINTER(C.c_uint64),C.c_size_t]);free=api('cuMemFree_v2',[C.c_uint64]);fill=api('cuMemsetD8_v2',[C.c_uint64,C.c_ubyte,C.c_size_t]);sync=api('cuCtxSynchronize',[])\ndef report(step,rc,**extra): print(json.dumps({'step':step,'result':rc,**extra}),flush=True)\ndef check(step,rc):\n report(step,rc)\n if rc:raise RuntimeError(step+' CUDA error '+str(rc))\nprint(json.dumps({'env':{k:os.environ.get(k) for k in ['NVIDIA_VISIBLE_DEVICES','NVIDIA_GPU_MEMORY_REQUEST','NVIDIA_GPU_MEMORY_LIMIT','CUDA_MPS_PIPE_DIRECTORY']}}),flush=True)\ncheck('init',init(0));dev=C.c_int();check('device',getdev(C.byref(dev),0));ctx=C.c_void_p();check('context',create(C.byref(ctx),0,dev))\ntry:\n for mib,expected in [(1024,0),(6144,2),(2048,0)]:\n  ptr=C.c_uint64();rc=alloc(C.byref(ptr),mib*1024**2);report('allocation',rc,mib=mib,expected=expected)\n  try:\n   if rc!=expected:raise RuntimeError('unexpected allocation result')\n   if rc==0:check('fill',fill(ptr,1,mib*1024**2));check('sync',sync())\n  finally:\n   if ptr.value:check('free',free(ptr))\nfinally:check('destroy',destroy(ctx))\nprint('RAW_DRIVER_LIMIT_AND_RECOVERY_PASSED',flush=True)\n"
+        ],
+        "env": [
+          {
+            "name": "NVIDIA_DRIVER_CAPABILITIES",
+            "value": "compute,utility"
+          },
+          {
+            "name": "EXPECTED_NODE",
+            "value": "k3s-wk-gpu2"
+          },
+          {
+            "name": "POD_UID",
+            "valueFrom": {
+              "fieldRef": {
+                "fieldPath": "metadata.uid"
+              }
+            }
+          }
+        ],
+        "resources": {
+          "requests": {
+            "cpu": "200m",
+            "memory": "128Mi"
+          },
+          "limits": {
+            "cpu": "2",
+            "memory": "4Gi"
+          }
+        },
+        "securityContext": {
+          "allowPrivilegeEscalation": false,
+          "capabilities": {
+            "drop": [
+              "ALL"
+            ]
+          }
+        }
+      }
+    ]
+  }
+}

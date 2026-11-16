@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 """Read-only root host observation; prints no CRI environment or credentials."""
 import argparse
+import hashlib
 import json
 import os
 from pathlib import Path
@@ -33,6 +34,14 @@ def main():
     if gpu.split(',')[0].strip() != a.gpu_uuid: raise RuntimeError('Host GPU UUID mismatch')
     result = dict(time=time.time(), node=a.node, boot_id=Path('/proc/sys/kernel/random/boot_id').read_text().strip(),
                   gpu=gpu, compute_processes=command([smi,'--query-compute-apps=gpu_uuid,pid,used_gpu_memory','--format=csv,noheader,nounits','-i',a.gpu_uuid]))
+    # Read actual loaded identity/settings, not just the unchanged driver version.
+    uvm = Path('/sys/module/nvidia_uvm')
+    result['uvm'] = {name: (uvm / name).read_text().strip() for name in
+                     ('srcversion', 'parameters/uvm_reject_managed_memory',
+                      'parameters/uvm_disable_hmm') if (uvm / name).exists()}
+    source = Path('/run/nvidia/driver/usr/src/nvidia-620.70.06/nvidia-uvm/uvm_va_range.c')
+    if source.is_file():
+        result['uvm_source_sha256'] = hashlib.sha256(source.read_bytes()).hexdigest()
     if a.retired_cgroup:
         if not a.retired_cgroup.startswith('/') or '..' in Path(a.retired_cgroup).parts:
             raise RuntimeError('Absolute retired cgroup path required')

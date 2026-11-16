@@ -1,0 +1,31 @@
+{"time":"2026-11-16T19:00:41.273338058Z","level":"INFO","msg":"adjusting container with GPU memory config","container":"main","pod":"nri-candidate-survivor","request":"5120","limit":"5120","visibleDevices":"k8s.device-plugin.nvidia.com/gpu=GPU-16128952-b438-556a-00bb-93039ee24e56","cdiDevices":null,"computeMode":"time-slicing"}
+time="2026-11-16T19:01:02Z" level=info msg="ttrpc server closed 10-gpu-fractioning : ttrpc: server closed"
+{"time":"2026-11-16T19:01:02.28352971Z","level":"INFO","msg":"connection was stable, resetting retry budget","uptime":1531897841858}
+{"time":"2026-11-16T19:01:02.283542835Z","level":"WARN","msg":"connection lost, retrying","error":"ttrpc: server closed","attempt":0,"uptime":1531897841858,"retryIn":5000000000}
+{"time":"2026-11-16T19:01:07.283809301Z","level":"INFO","msg":"connecting to NRI runtime","attempt":1,"plugin":"gpu-fractioning","idx":"10","socket":"/var/run/nri/nri.sock"}
+time="2026-11-16T19:01:07Z" level=info msg="Created plugin 10-gpu-fractioning (fractiond, handles CreateContainer,RemoveContainer)"
+time="2026-11-16T19:01:07Z" level=info msg="Registering plugin 10-gpu-fractioning using NRI version v0.12.1..."
+{"time":"2026-11-16T19:01:07.28726664Z","level":"INFO","msg":"configured NRI plugin","runtime":"containerd","runtimeVersion":"v2.2.5-k3s2"}
+time="2026-11-16T19:01:07Z" level=info msg="Configuring plugin 10-gpu-fractioning for runtime containerd/v2.2.5-k3s2 (NRI version v0.12.0)..."
+time="2026-11-16T19:01:07Z" level=info msg="Subscribing plugin 10-gpu-fractioning (fractiond) for events CreateContainer,RemoveContainer"
+time="2026-11-16T19:01:07Z" level=info msg="Started plugin 10-gpu-fractioning..."
+{"time":"2026-11-16T19:01:07.352997146Z","level":"INFO","msg":"synchronizing container mapping with runtime","pods":47,"containers":36}
+{"time":"2026-11-16T19:01:07.353150663Z","level":"INFO","msg":"rebuilt container mapping from runtime sync","recordedContainers":1,"totalContainers":36}
+{"time":"2026-11-16T19:01:41.540355102Z","level":"INFO","msg":"adjusting container with GPU memory config","container":"main","pod":"nri-candidate-missing","request":"5120","limit":"5120","visibleDevices":"k8s.device-plugin.nvidia.com/gpu=GPU-16128952-b438-556a-00bb-93039ee24e56","cdiDevices":null,"computeMode":"time-slicing"}
+{"time":"2026-11-16T19:01:41.900544651Z","level":"INFO","msg":"adjusting container with GPU memory config","container":"main","pod":"nri-candidate-missing","request":"5120","limit":"5120","visibleDevices":"k8s.device-plugin.nvidia.com/gpu=GPU-16128952-b438-556a-00bb-93039ee24e56","cdiDevices":null,"computeMode":"time-slicing"}
+{"time":"2026-11-16T19:01:55.564843487Z","level":"INFO","msg":"adjusting container with GPU memory config","container":"main","pod":"nri-candidate-missing","request":"5120","limit":"5120","visibleDevices":"k8s.device-plugin.nvidia.com/gpu=GPU-16128952-b438-556a-00bb-93039ee24e56","cdiDevices":null,"computeMode":"time-slicing"}
+{"time":"2026-11-16T19:02:07.561773461Z","level":"INFO","msg":"adjusting container with GPU memory config","container":"main","pod":"nri-candidate-missing","request":"5120","limit":"5120","visibleDevices":"k8s.device-plugin.nvidia.com/gpu=GPU-16128952-b438-556a-00bb-93039ee24e56","cdiDevices":null,"computeMode":"time-slicing"}
+{"time":"2026-11-16T19:02:20.564379181Z","level":"INFO","msg":"adjusting container with GPU memory config","container":"main","pod":"nri-candidate-missing","request":"5120","limit":"5120","visibleDevices":"k8s.device-plugin.nvidia.com/gpu=GPU-16128952-b438-556a-00bb-93039ee24e56","cdiDevices":null,"computeMode":"time-slicing"}
+{"time":"2026-11-16T19:02:33.561660224Z","level":"INFO","msg":"adjusting container with GPU memory config","container":"main","pod":"nri-candidate-missing","request":"5120","limit":"5120","visibleDevices":"k8s.device-plugin.nvidia.com/gpu=GPU-16128952-b438-556a-00bb-93039ee24e56","cdiDevices":null,"computeMode":"time-slicing"}
+{"time":"2026-11-16T19:02:50.165751597Z","level":"INFO","msg":"adjusting container with GPU memory config","container":"main","pod":"nri-candidate-hung","request":"5120","limit":"5120","visibleDevices":"k8s.device-plugin.nvidia.com/gpu=GPU-16128952-b438-556a-00bb-93039ee24e56","cdiDevices":null,"computeMode":"time-slicing"}
+{"time":"2026-11-16T19:02:50.165814073Z","level":"WARN","msg":"connection lost, retrying","error":"ttrpc: server closed","attempt":1,"uptime":102881020283,"retryIn":10000000000}
+time="2026-11-16T19:02:50Z" level=info msg="ttrpc server closed 10-gpu-fractioning : ttrpc: server closed"
+{"time":"2026-11-16T19:03:00.166066018Z","level":"INFO","msg":"connecting to NRI runtime","attempt":2,"plugin":"gpu-fractioning","idx":"10","socket":"/var/run/nri/nri.sock"}
+time="2026-11-16T19:03:00Z" level=info msg="Created plugin 10-gpu-fractioning (fractiond, handles CreateContainer,RemoveContainer)"
+time="2026-11-16T19:03:00Z" level=info msg="Registering plugin 10-gpu-fractioning using NRI version v0.12.1..."
+time="2026-11-16T19:03:00Z" level=info msg="Configuring plugin 10-gpu-fractioning for runtime containerd/v2.2.5-k3s2 (NRI version v0.12.0)..."
+{"time":"2026-11-16T19:03:00.166869649Z","level":"INFO","msg":"configured NRI plugin","runtime":"containerd","runtimeVersion":"v2.2.5-k3s2"}
+time="2026-11-16T19:03:00Z" level=info msg="Subscribing plugin 10-gpu-fractioning (fractiond) for events CreateContainer,RemoveContainer"
+time="2026-11-16T19:03:00Z" level=info msg="Started plugin 10-gpu-fractioning..."
+{"time":"2026-11-16T19:03:00.231155032Z","level":"INFO","msg":"synchronizing container mapping with runtime","pods":50,"containers":36}
+{"time":"2026-11-16T19:03:00.231337441Z","level":"INFO","msg":"rebuilt container mapping from runtime sync","recordedContainers":0,"totalContainers":36}

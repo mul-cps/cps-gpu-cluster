@@ -316,7 +316,6 @@ metadata:
     app.kubernetes.io/version: v0.1.9
 spec:
   nodeSelector:
-    kubernetes.io/hostname: k3s-wk-gpu2
     cps.unileoben.ac.at/fractioning-runtime: upstream
   tolerations:
   - effect: NoSchedule

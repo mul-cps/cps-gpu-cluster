@@ -1,0 +1,74 @@
+{"step": "process", "time": 1794855122.446817, "pid": 52, "stat": "52 (python3) R 0 52 52 0 -1 4194560 3363 0 0 0 4 1 0 0 20 0 1 0 113132 124977152 5093 18446744073709551615 4325376 7352253 140731312363968 0 0 0 0 16781312 2 0 0 0 17 18 0 0 0 0 0 10653128 12216448 691310592 140731312372473 140731312372486 140731312372486 140731312373735 0\n", "cgroup": "0::/\n", "profile": "cri-containerd.apparmor.d//&unconfined (enforce)\n", "ptx_sha256": "919710e6b3d6771a1ff3725cb0b4ca5114215232a5942e0baf676756e57d904d"}
+{"step": "cuInit", "time": 1794855122.6282666, "pid": 52, "result": 0}
+{"step": "cuDeviceGetCount", "time": 1794855122.6284766, "pid": 52, "result": 0}
+{"step": "cuDeviceGet", "time": 1794855122.6285245, "pid": 52, "result": 0}
+{"step": "cuDeviceGetUuid_v2", "time": 1794855122.628595, "pid": 52, "result": 0}
+{"step": "cuDeviceGet", "time": 1794855122.6286561, "pid": 52, "result": 0}
+{"step": "cuDeviceGetUuid_v2", "time": 1794855122.6286836, "pid": 52, "result": 0}
+{"step": "identity", "time": 1794855122.6287131, "pid": 52, "ordinal": 0, "gpu_uuid": "GPU-16128952-b438-556a-00bb-93039ee24e56"}
+{"step": "cuCtxCreate_v2", "time": 1794855122.7665098, "pid": 52, "result": 0}
+{"step": "cuModuleLoadData", "time": 1794855122.803199, "pid": 52, "result": 0}
+{"step": "cuModuleGetFunction", "time": 1794855122.8033996, "pid": 52, "result": 0}
+{"step": "cuMemAlloc_v2", "time": 1794855122.8038015, "pid": 52, "result": 0}
+{"step": "cuMemAlloc_v2", "time": 1794855122.8038385, "pid": 52, "result": 0}
+{"step": "cuMemcpyHtoD_v2", "time": 1794855122.804017, "pid": 52, "result": 0}
+{"step": "cuCtxSetCurrent", "time": 1794855122.8040473, "pid": 52, "result": 0}
+{"step": "cuLaunchKernel", "time": 1794855122.8041346, "pid": 52, "result": 0}
+{"step": "cuCtxSynchronize", "time": 1794855122.8041642, "pid": 52, "result": 0}
+{"step": "cuCtxSetCurrent", "time": 1794855122.8041897, "pid": 52, "result": 0}
+{"step": "cuMemcpyDtoH_v2", "time": 1794855122.8042388, "pid": 52, "result": 0}
+{"step": "kernel-reference-pass", "time": 1794855122.804291, "pid": 52, "gpu_uuid": "GPU-16128952-b438-556a-00bb-93039ee24e56", "values": 256, "explicit_device_bytes": 2048}
+{"step": "identity", "time": 1794855122.804308, "pid": 52, "ordinal": 1, "gpu_uuid": "GPU-1e6145d5-8ee2-43e2-a0d5-6d345909e8a6"}
+{"step": "cuCtxCreate_v2", "time": 1794855122.945794, "pid": 52, "result": 0}
+{"step": "cuModuleLoadData", "time": 1794855122.946022, "pid": 52, "result": 0}
+{"step": "cuModuleGetFunction", "time": 1794855122.9460754, "pid": 52, "result": 0}
+{"step": "cuMemAlloc_v2", "time": 1794855122.9462476, "pid": 52, "result": 0}
+{"step": "cuMemAlloc_v2", "time": 1794855122.9462786, "pid": 52, "result": 0}
+{"step": "cuMemcpyHtoD_v2", "time": 1794855122.9463923, "pid": 52, "result": 0}
+{"step": "cuCtxSetCurrent", "time": 1794855122.946416, "pid": 52, "result": 0}
+{"step": "cuLaunchKernel", "time": 1794855122.946459, "pid": 52, "result": 0}
+{"step": "cuCtxSynchronize", "time": 1794855122.946481, "pid": 52, "result": 0}
+{"step": "cuCtxSetCurrent", "time": 1794855122.9464965, "pid": 52, "result": 0}
+{"step": "cuMemcpyDtoH_v2", "time": 1794855122.9465446, "pid": 52, "result": 0}
+{"step": "kernel-reference-pass", "time": 1794855122.9466004, "pid": 52, "gpu_uuid": "GPU-1e6145d5-8ee2-43e2-a0d5-6d345909e8a6", "values": 256, "explicit_device_bytes": 2048}
+{"step": "cuCtxSetCurrent", "time": 1794855122.9466197, "pid": 52, "result": 0}
+{"step": "cuDeviceCanAccessPeer", "time": 1794855122.946651, "pid": 52, "result": 0}
+{"step": "peer-capability", "time": 1794855122.946666, "pid": 52, "destination": "GPU-16128952-b438-556a-00bb-93039ee24e56", "source": "GPU-1e6145d5-8ee2-43e2-a0d5-6d345909e8a6", "supported": true}
+{"step": "cuCtxEnablePeerAccess", "time": 1794855122.9473045, "pid": 52, "result": 0}
+{"step": "cuMemcpyPeer", "time": 1794855122.9473605, "pid": 52, "result": 0}
+{"step": "cuCtxSetCurrent", "time": 1794855122.9473777, "pid": 52, "result": 0}
+{"step": "cuMemcpyDtoH_v2", "time": 1794855122.9474118, "pid": 52, "result": 0}
+{"step": "cuCtxSetCurrent", "time": 1794855122.9474638, "pid": 52, "result": 0}
+{"step": "cuLaunchKernel", "time": 1794855122.947494, "pid": 52, "result": 0}
+{"step": "cuCtxSynchronize", "time": 1794855122.947511, "pid": 52, "result": 0}
+{"step": "cuCtxSetCurrent", "time": 1794855122.9475257, "pid": 52, "result": 0}
+{"step": "cuMemcpyDtoH_v2", "time": 1794855122.9475543, "pid": 52, "result": 0}
+{"step": "direct-peer-copy-and-kernel-mapping-pass", "time": 1794855122.9476225, "pid": 52, "source": "GPU-1e6145d5-8ee2-43e2-a0d5-6d345909e8a6", "destination": "GPU-16128952-b438-556a-00bb-93039ee24e56"}
+{"step": "cuCtxSetCurrent", "time": 1794855122.9476392, "pid": 52, "result": 0}
+{"step": "cuCtxDisablePeerAccess", "time": 1794855122.947768, "pid": 52, "result": 0}
+{"step": "cuCtxSetCurrent", "time": 1794855122.9477887, "pid": 52, "result": 0}
+{"step": "cuDeviceCanAccessPeer", "time": 1794855122.9478014, "pid": 52, "result": 0}
+{"step": "peer-capability", "time": 1794855122.9478104, "pid": 52, "destination": "GPU-1e6145d5-8ee2-43e2-a0d5-6d345909e8a6", "source": "GPU-16128952-b438-556a-00bb-93039ee24e56", "supported": true}
+{"step": "cuCtxEnablePeerAccess", "time": 1794855122.9483182, "pid": 52, "result": 0}
+{"step": "cuMemcpyPeer", "time": 1794855122.948361, "pid": 52, "result": 0}
+{"step": "cuCtxSetCurrent", "time": 1794855122.9483728, "pid": 52, "result": 0}
+{"step": "cuMemcpyDtoH_v2", "time": 1794855122.948409, "pid": 52, "result": 0}
+{"step": "cuCtxSetCurrent", "time": 1794855122.9484606, "pid": 52, "result": 0}
+{"step": "cuLaunchKernel", "time": 1794855122.9484885, "pid": 52, "result": 0}
+{"step": "cuCtxSynchronize", "time": 1794855122.9485118, "pid": 52, "result": 0}
+{"step": "cuCtxSetCurrent", "time": 1794855122.9485254, "pid": 52, "result": 0}
+{"step": "cuMemcpyDtoH_v2", "time": 1794855122.9485571, "pid": 52, "result": 0}
+{"step": "direct-peer-copy-and-kernel-mapping-pass", "time": 1794855122.9486165, "pid": 52, "source": "GPU-16128952-b438-556a-00bb-93039ee24e56", "destination": "GPU-1e6145d5-8ee2-43e2-a0d5-6d345909e8a6"}
+{"step": "cuCtxSetCurrent", "time": 1794855122.9486318, "pid": 52, "result": 0}
+{"step": "cuCtxDisablePeerAccess", "time": 1794855122.94874, "pid": 52, "result": 0}
+{"step": "cuCtxSetCurrent", "time": 1794855122.948761, "pid": 52, "result": 0}
+{"step": "cuMemFree_v2", "time": 1794855122.9487898, "pid": 52, "result": 0}
+{"step": "cuMemFree_v2", "time": 1794855122.948897, "pid": 52, "result": 0}
+{"step": "cuModuleUnload", "time": 1794855122.948947, "pid": 52, "result": 0}
+{"step": "cuCtxDestroy_v2", "time": 1794855123.0449758, "pid": 52, "result": 0}
+{"step": "cuCtxSetCurrent", "time": 1794855123.0451214, "pid": 52, "result": 0}
+{"step": "cuMemFree_v2", "time": 1794855123.045172, "pid": 52, "result": 0}
+{"step": "cuMemFree_v2", "time": 1794855123.0453117, "pid": 52, "result": 0}
+{"step": "cuModuleUnload", "time": 1794855123.0453677, "pid": 52, "result": 0}
+{"step": "cuCtxDestroy_v2", "time": 1794855123.1457288, "pid": 52, "result": 0}
+{"step": "all-passed", "time": 1794855123.1458256, "pid": 52}

@@ -1,0 +1,11 @@
+{
+  "status": "PASS",
+  "boot_id": "a39cdade-f00d-4cd1-9a81-c290d668194f",
+  "corrected_policy_byte_identical": true,
+  "confined_signal_ptrace_sigkill": "PASS",
+  "mount_denial_with_positive_control": "PASS",
+  "boot_signal_ptrace_denials": 0,
+  "host_policy_changes": false,
+  "GPU_operations": false,
+  "checked_at": "2026-11-16T18:37:14.233232+00:00"
+}

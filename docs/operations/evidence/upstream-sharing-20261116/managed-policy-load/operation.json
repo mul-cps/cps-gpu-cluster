@@ -1,0 +1,15 @@
+{
+  "operation": "gpu2-managed-policy-20261116",
+  "worker": "k3s-wk-gpu2",
+  "proxmox_vmid": 102,
+  "prior_boot_id": "043e6e01-0e3a-44ab-bca9-f6d42ababe60",
+  "prior_driver_pod_uid": "87b8bde5-a12a-427f-943b-cb49bf5926c3",
+  "driver_cr_uid": "76473758-0114-4e6c-b250-62f6da33b3aa",
+  "candidate_digest": "sha256:c3b71557aa17df43faad5a2661d81f1025ba355ac3adf784096de12cd2ef3e73",
+  "prior_uvm_srcversion": "2F0FA19C087E86A8284E975",
+  "status": "newboot+exactnewmoduleloaded; behavioral qualification in progress",
+  "timestamp": "2026-11-16T18:26:53.447705+00:00",
+  "stopped_confirmed_at": "2026-11-16T18:29:44.170175+00:00",
+  "new_boot_id": "a39cdade-f00d-4cd1-9a81-c290d668194f",
+  "driver_pod_uid": "dfd0cc7a-1e57-476f-a90c-50b4f09b70c4"
+}

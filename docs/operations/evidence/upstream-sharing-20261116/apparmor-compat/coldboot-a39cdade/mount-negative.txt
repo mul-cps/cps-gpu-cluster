@@ -1,0 +1,5 @@
+unconfined_mount_control=PASS
+confined_mount_exit=32
+confined_mount_denial=PASS
+mount: /tmp/cps-apparmor-mount.8NJkJy: cannot mount tmpfs read-only.
+       dmesg(1) may have more information after failed mount system call.

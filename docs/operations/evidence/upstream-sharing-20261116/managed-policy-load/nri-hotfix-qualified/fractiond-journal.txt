@@ -1,0 +1,24 @@
+{"time":"2026-11-16T19:42:51.696156327Z","level":"INFO","msg":"connection was stable, resetting retry budget","uptime":2391529982006}
+{"time":"2026-11-16T19:42:51.696185641Z","level":"WARN","msg":"connection lost, retrying","error":"ttrpc: server closed","attempt":0,"uptime":2391529982006,"retryIn":5000000000}
+time="2026-11-16T19:42:51Z" level=info msg="ttrpc server closed 10-gpu-fractioning : ttrpc: server closed"
+{"time":"2026-11-16T19:42:56.696798723Z","level":"INFO","msg":"connecting to NRI runtime","attempt":1,"plugin":"gpu-fractioning","idx":"10","socket":"/var/run/nri/nri.sock"}
+time="2026-11-16T19:42:56Z" level=info msg="Created plugin 10-gpu-fractioning (fractiond, handles CreateContainer,RemoveContainer)"
+time="2026-11-16T19:42:56Z" level=info msg="Registering plugin 10-gpu-fractioning using NRI version v0.12.1..."
+{"time":"2026-11-16T19:42:56.698149706Z","level":"INFO","msg":"configured NRI plugin","runtime":"containerd","runtimeVersion":"v2.2.5-k3s2"}
+time="2026-11-16T19:42:56Z" level=info msg="Configuring plugin 10-gpu-fractioning for runtime containerd/v2.2.5-k3s2 (NRI version v0.12.0)..."
+time="2026-11-16T19:42:56Z" level=info msg="Subscribing plugin 10-gpu-fractioning (fractiond) for events CreateContainer,RemoveContainer"
+time="2026-11-16T19:42:56Z" level=info msg="Started plugin 10-gpu-fractioning..."
+{"time":"2026-11-16T19:42:56.762754471Z","level":"INFO","msg":"synchronizing container mapping with runtime","pods":46,"containers":35}
+{"time":"2026-11-16T19:42:56.762913727Z","level":"INFO","msg":"rebuilt container mapping from runtime sync","recordedContainers":0,"totalContainers":35}
+time="2026-11-16T19:51:35Z" level=info msg="ttrpc server closed 10-gpu-fractioning : ttrpc: server closed"
+{"time":"2026-11-16T19:51:35.941983856Z","level":"INFO","msg":"connection was stable, resetting retry budget","uptime":519245013713}
+{"time":"2026-11-16T19:51:35.942165455Z","level":"WARN","msg":"connection lost, retrying","error":"ttrpc: server closed","attempt":0,"uptime":519245013713,"retryIn":5000000000}
+{"time":"2026-11-16T19:51:40.942343433Z","level":"INFO","msg":"connecting to NRI runtime","attempt":1,"plugin":"gpu-fractioning","idx":"10","socket":"/var/run/nri/nri.sock"}
+time="2026-11-16T19:51:40Z" level=info msg="Created plugin 10-gpu-fractioning (fractiond, handles CreateContainer,RemoveContainer)"
+time="2026-11-16T19:51:40Z" level=info msg="Registering plugin 10-gpu-fractioning using NRI version v0.12.1..."
+time="2026-11-16T19:51:40Z" level=info msg="Configuring plugin 10-gpu-fractioning for runtime containerd/v2.2.5-k3s2 (NRI version v0.12.0)..."
+time="2026-11-16T19:51:40Z" level=info msg="Subscribing plugin 10-gpu-fractioning (fractiond) for events CreateContainer,RemoveContainer"
+{"time":"2026-11-16T19:51:40.943102017Z","level":"INFO","msg":"configured NRI plugin","runtime":"containerd","runtimeVersion":"v2.2.5-k3s2"}
+time="2026-11-16T19:51:40Z" level=info msg="Started plugin 10-gpu-fractioning..."
+{"time":"2026-11-16T19:51:41.04128295Z","level":"INFO","msg":"synchronizing container mapping with runtime","pods":49,"containers":36}
+{"time":"2026-11-16T19:51:41.041551931Z","level":"INFO","msg":"rebuilt container mapping from runtime sync","recordedContainers":0,"totalContainers":36}

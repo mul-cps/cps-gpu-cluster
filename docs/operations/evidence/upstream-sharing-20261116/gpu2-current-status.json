@@ -1,0 +1,40 @@
+{
+  "as_of": "2026-11-16T20:09:20.640663+00:00",
+  "worker": "k3s-wk-gpu2",
+  "worker_acceptance": false,
+  "phase": "platform candidate passed; normal Source workflows pending",
+  "gpu_eligibility": "fenced",
+  "driver": {
+    "version": "620.70.06",
+    "image": "sha256:c3b71557aa17df43faad5a2661d81f1025ba355ac3adf784096de12cd2ef3e73",
+    "policy_source": "01abf8131b8453c51bef4c5794a89ebe5a498700",
+    "managed_memory": "driver rejects with CUDA_ERROR_NOT_SUPPORTED",
+    "hmm": "disabled",
+    "backend": "misc"
+  },
+  "runtime": {
+    "version": "v1.34.9+k3s1",
+    "artifact": "sha256:1e79df5dd8d75db5407a4b3b8c62d3cce1f099fe137dfc88339f4ffdb733b456",
+    "outer_sha256": "6ce276301723a902da671058730611591c59b5f016b816f57f2d97b05c88fe2c",
+    "inner_sha256": "0ca3be05fd3fcdd9682e68bbff5821ea15027773404a7e47517b822bcb57387a",
+    "upstream_backport": "9cb8bc1fee03ebd41d90319240c2493fb03411b9",
+    "version_owner": "Rancher unchanged; one-time same-version outer artifact exception"
+  },
+  "passed": [
+    "Both-card repeated managed rejection and ordinary recovery; raw host-pointer migration rejected",
+    "Both-card VMM, pools, IPC aggregation, process-crash, allocation-race and Pod/cgroup replacement",
+    "Both-card real PTX kernel and direct bidirectional P2P",
+    "Both 5/10/20 mixed orders with typed OOM, coexistence, actual limits and cleanup",
+    "Post-coldboot AppArmor enforcement, signal/ptrace and mount-denial controls",
+    "First hung NRI request and disconnected request rejected, CPU works; runtime restart continuity and CUDA quota recovery",
+    "Longhorn nonroot read/write/fsync and normal fixture removal"
+  ],
+  "remaining": [
+    "New Source-registry Hub deployment and real 5/10/20-to-CPU workflow",
+    "Real stock KAI forced physical placement orders",
+    "Upstream metrics discovery and NVML collector recovery",
+    "Remaining consolidated-plan distributed, startup/defrag, teaching, RTC and matching restore gates",
+    "GPU3 then GPU1 then GPU4 complete serial cycles"
+  ],
+  "peers": "GPU1/3/4 Ubuntu24.04/R615 unchanged; not qualified for new shared starts"
+}

@@ -1,0 +1,9 @@
+{"step": "cuInit", "time": 1794858845.3248413, "result": 0, "expected": 0}
+{"step": "cuDeviceGet", "time": 1794858845.3250313, "result": 0, "expected": 0}
+{"step": "cuCtxCreate_v2", "time": 1794858845.461804, "result": 0, "expected": 0}
+{"step": "cuMemAlloc_v2", "time": 1794858845.4621778, "result": 0, "expected": 0}
+{"step": "cuMemsetD8_v2", "time": 1794858845.46224, "result": 0, "expected": 0}
+{"step": "cuMemAlloc_v2", "time": 1794858845.462468, "result": 2, "expected": 2}
+{"step": "cuMemsetD8_v2", "time": 1794858845.4625032, "result": 0, "expected": 0}
+{"step": "cuCtxSynchronize", "time": 1794858845.463029, "result": 0, "expected": 0}
+{"step": "progress-and-quota-pass", "time": 1794858845.463052}

@@ -1,0 +1,17 @@
+{"env": {"NVIDIA_VISIBLE_DEVICES": "void", "NVIDIA_GPU_MEMORY_REQUEST": "10240", "NVIDIA_GPU_MEMORY_LIMIT": "10240", "CUDA_MPS_PIPE_DIRECTORY": "/run/nvidia-mps"}}
+{"role": "mixed-candidate-20261116-r1-b-10", "mode": "ordinary", "gate": "start", "waiting": true}
+{"step": "init", "result": 0}
+{"step": "device", "result": 0}
+{"step": "context", "result": 0}
+{"role": "mixed-candidate-20261116-r1-b-10", "mode": "ordinary", "step": "above-hard-limit-allocation", "result": 2, "mib": 11264}
+{"role": "mixed-candidate-20261116-r1-b-10", "mode": "ordinary", "step": "allocation", "result": 0, "mib": 9216}
+{"step": "fill", "result": 0}
+{"step": "sync", "result": 0}
+{"role": "mixed-candidate-20261116-r1-b-10", "mode": "ordinary", "step": "holding-filled-vram", "mib": 9216}
+{"role": "mixed-candidate-20261116-r1-b-10", "mode": "ordinary", "step": "progress", "result": 0}
+{"role": "mixed-candidate-20261116-r1-b-10", "mode": "ordinary", "step": "progress", "result": 0}
+{"role": "mixed-candidate-20261116-r1-b-10", "mode": "ordinary", "step": "progress", "result": 0}
+{"role": "mixed-candidate-20261116-r1-b-10", "mode": "ordinary", "step": "progress", "result": 0}
+{"step": "free", "result": 0}
+{"step": "destroy", "result": 0}
+{"role": "mixed-candidate-20261116-r1-b-10", "mode": "ordinary", "step": "process-finished"}

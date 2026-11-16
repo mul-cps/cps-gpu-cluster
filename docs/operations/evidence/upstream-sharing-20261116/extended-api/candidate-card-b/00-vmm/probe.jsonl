@@ -1,0 +1,35 @@
+{"step": "gate", "pid": 1, "time": 1794854706.2943678, "name": "start"}
+{"step": "cuInit", "pid": 1, "time": 1794854707.575733, "result": 0, "expected": 0}
+{"step": "cuDeviceGetCount", "pid": 1, "time": 1794854707.575893, "result": 0, "expected": 0}
+{"step": "cuDeviceGet", "pid": 1, "time": 1794854707.5759172, "result": 0, "expected": 0}
+{"step": "cuDeviceGetUuid_v2", "pid": 1, "time": 1794854707.5759661, "result": 0, "expected": 0}
+{"step": "identity", "pid": 1, "time": 1794854707.5761976, "gpu_uuid": "GPU-1e6145d5-8ee2-43e2-a0d5-6d345909e8a6", "cgroup": "0::/\n", "stat": "1 (python3) R 0 1 1 0 -1 4194560 4897 6163 0 0 7 11 1 4 20 0 2 0 71501 4618690560 10419 18446744073709551615 4325376 7352253 140731002259216 0 0 0 0 16781312 8194 0 0 0 17 16 0 0 0 0 0 10653128 12216448 850350080 140731002259979 140731002260062 140731002260062 140731002261479 0\n", "node": "k3s-wk-gpu2", "pod_uid": "5c08a530-a97a-4bae-ae5f-37a5984152aa"}
+{"step": "cuDeviceGetAttribute", "pid": 1, "time": 1794854707.5762377, "result": 0, "expected": 0}
+{"step": "device-attribute", "pid": 1, "time": 1794854707.5762491, "attribute": 100, "name": "CU_DEVICE_ATTRIBUTE_PAGEABLE_MEMORY_ACCESS_USES_HOST_PAGE_TABLES", "value": 0, "gpu_uuid": "GPU-1e6145d5-8ee2-43e2-a0d5-6d345909e8a6"}
+{"step": "cuCtxCreate_v2", "pid": 1, "time": 1794854707.7274354, "result": 0, "expected": 0}
+{"step": "cuMemGetAllocationGranularity", "pid": 1, "time": 1794854707.7276258, "result": 0, "expected": 0}
+{"step": "vmm-case", "pid": 1, "time": 1794854707.7276554, "mib": 1024, "bytes": 1073741824}
+{"step": "cuMemCreate", "pid": 1, "time": 1794854707.7277315, "result": 0, "expected": 0}
+{"step": "cuMemAddressReserve", "pid": 1, "time": 1794854707.7277737, "result": 0, "expected": 0}
+{"step": "cuMemMap", "pid": 1, "time": 1794854707.7277997, "result": 0, "expected": 0}
+{"step": "cuMemSetAccess", "pid": 1, "time": 1794854707.7280066, "result": 0, "expected": 0}
+{"step": "cuMemsetD8_v2", "pid": 1, "time": 1794854707.7280679, "result": 0, "expected": 0}
+{"step": "cuCtxSynchronize", "pid": 1, "time": 1794854707.7287803, "result": 0, "expected": 0}
+{"step": "cuMemUnmap", "pid": 1, "time": 1794854709.7291334, "result": 0, "expected": 0}
+{"step": "cuMemAddressFree", "pid": 1, "time": 1794854709.7292295, "result": 0, "expected": 0}
+{"step": "cuMemRelease", "pid": 1, "time": 1794854709.7300117, "result": 0, "expected": 0}
+{"step": "vmm-case", "pid": 1, "time": 1794854709.7300406, "mib": 6144, "bytes": 6442450944}
+{"step": "cuMemCreate", "pid": 1, "time": 1794854709.7301848, "result": 2, "expected": 2}
+{"step": "vmm-case", "pid": 1, "time": 1794854709.730206, "mib": 2048, "bytes": 2147483648}
+{"step": "cuMemCreate", "pid": 1, "time": 1794854709.7302704, "result": 0, "expected": 0}
+{"step": "cuMemAddressReserve", "pid": 1, "time": 1794854709.7303097, "result": 0, "expected": 0}
+{"step": "cuMemMap", "pid": 1, "time": 1794854709.730338, "result": 0, "expected": 0}
+{"step": "cuMemSetAccess", "pid": 1, "time": 1794854709.731072, "result": 0, "expected": 0}
+{"step": "cuMemsetD8_v2", "pid": 1, "time": 1794854709.7311447, "result": 0, "expected": 0}
+{"step": "cuCtxSynchronize", "pid": 1, "time": 1794854709.7327487, "result": 0, "expected": 0}
+{"step": "cuMemUnmap", "pid": 1, "time": 1794854711.7330952, "result": 0, "expected": 0}
+{"step": "cuMemAddressFree", "pid": 1, "time": 1794854711.7331963, "result": 0, "expected": 0}
+{"step": "cuMemRelease", "pid": 1, "time": 1794854711.73511, "result": 0, "expected": 0}
+{"step": "cuCtxDestroy_v2", "pid": 1, "time": 1794854711.8476148, "result": 0, "expected": 0}
+{"step": "case-passed", "pid": 1, "time": 1794854711.847699, "case": "vmm"}
+{"step": "gate", "pid": 1, "time": 1794854711.8477118, "name": "release"}

@@ -1,0 +1,6 @@
+{
+  "tests/upstream-sharing/hardware/nri_candidate_hotfix.py": "251039290b0b49345bf68892ddf832ca7c4a899b67d452b71a7476d3f8581105",
+  "tests/upstream-sharing/hardware/nri_candidate_hotfix_followup.py": "543499bacc6f422923ebe961c93e5fb4b83f8141fffdff32a14a08209ec97d2b",
+  "tests/upstream-sharing/hardware/nri_candidate_probe.py": "4ef91f890db11464215d665906f63d51089e0af02268e6ae2d7d6ce2efeba7f5",
+  "tests/upstream-sharing/hardware/extended_host_observer.py": "3c9ecb1801af97ef27c9542a55105953d0204cc553ad21b31606e18a64945fd6"
+}

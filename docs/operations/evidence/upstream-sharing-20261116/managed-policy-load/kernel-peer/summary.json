@@ -1,0 +1,6 @@
+{
+  "status": "FAIL",
+  "pod_uid": "46fe229f-ca30-4c52-bf75-6617567fd058",
+  "driver_uid": "dfd0cc7a-1e57-476f-a90c-50b4f09b70c4",
+  "error": "error: unable to upgrade connection: <html>\n<head><title>414 Request-URI Too Large</title></head>\n<body>\n<center><h1>414 Request-URI Too Large</h1></center>\n<hr><center>nginx</center>\n</body>\n</html>\n"
+}

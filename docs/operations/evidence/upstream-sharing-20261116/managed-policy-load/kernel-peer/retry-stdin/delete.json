@@ -1,0 +1,9 @@
+{
+  "apiVersion": "v1",
+  "kind": "DeleteOptions",
+  "gracePeriodSeconds": 5,
+  "preconditions": {
+    "uid": "8c24156b-b60a-4bca-9dbe-7e2d5bde36be",
+    "resourceVersion": "406774772"
+  }
+}

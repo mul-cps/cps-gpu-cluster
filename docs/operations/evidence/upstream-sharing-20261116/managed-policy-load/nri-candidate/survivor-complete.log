@@ -1,0 +1,92 @@
+{"step": "cuInit", "time": 1794855642.0213063, "result": 0, "expected": 0}
+{"step": "cuDeviceGet", "time": 1794855642.0215275, "result": 0, "expected": 0}
+{"step": "cuCtxCreate_v2", "time": 1794855642.1610556, "result": 0, "expected": 0}
+{"step": "cuMemAlloc_v2", "time": 1794855642.1614614, "result": 0, "expected": 0}
+{"step": "cuMemsetD8_v2", "time": 1794855642.1615286, "result": 0, "expected": 0}
+{"step": "cuMemAlloc_v2", "time": 1794855642.1618023, "result": 2, "expected": 2}
+{"step": "cuMemsetD8_v2", "time": 1794855642.1618407, "result": 0, "expected": 0}
+{"step": "cuCtxSynchronize", "time": 1794855642.1622388, "result": 0, "expected": 0}
+{"step": "progress-and-quota-pass", "time": 1794855642.1622543}
+{"step": "cuMemAlloc_v2", "time": 1794855644.1631994, "result": 2, "expected": 2}
+{"step": "cuMemsetD8_v2", "time": 1794855644.1632957, "result": 0, "expected": 0}
+{"step": "cuCtxSynchronize", "time": 1794855644.1633182, "result": 0, "expected": 0}
+{"step": "progress-and-quota-pass", "time": 1794855644.1633267}
+{"step": "cuMemAlloc_v2", "time": 1794855646.1638942, "result": 2, "expected": 2}
+{"step": "cuMemsetD8_v2", "time": 1794855646.1640396, "result": 0, "expected": 0}
+{"step": "cuCtxSynchronize", "time": 1794855646.164075, "result": 0, "expected": 0}
+{"step": "progress-and-quota-pass", "time": 1794855646.1640897}
+{"step": "cuMemAlloc_v2", "time": 1794855648.1648486, "result": 2, "expected": 2}
+{"step": "cuMemsetD8_v2", "time": 1794855648.1649804, "result": 0, "expected": 0}
+{"step": "cuCtxSynchronize", "time": 1794855648.1651092, "result": 0, "expected": 0}
+{"step": "progress-and-quota-pass", "time": 1794855648.1651328}
+{"step": "cuMemAlloc_v2", "time": 1794855650.1656573, "result": 2, "expected": 2}
+{"step": "cuMemsetD8_v2", "time": 1794855650.165754, "result": 0, "expected": 0}
+{"step": "cuCtxSynchronize", "time": 1794855650.1657836, "result": 0, "expected": 0}
+{"step": "progress-and-quota-pass", "time": 1794855650.165792}
+{"step": "cuMemAlloc_v2", "time": 1794855652.1663275, "result": 2, "expected": 2}
+{"step": "cuMemsetD8_v2", "time": 1794855652.1664197, "result": 0, "expected": 0}
+{"step": "cuCtxSynchronize", "time": 1794855652.1664453, "result": 0, "expected": 0}
+{"step": "progress-and-quota-pass", "time": 1794855652.1664538}
+{"step": "cuMemAlloc_v2", "time": 1794855654.16698, "result": 2, "expected": 2}
+{"step": "cuMemsetD8_v2", "time": 1794855654.167125, "result": 0, "expected": 0}
+{"step": "cuCtxSynchronize", "time": 1794855654.1671553, "result": 0, "expected": 0}
+{"step": "progress-and-quota-pass", "time": 1794855654.167164}
+{"step": "cuMemAlloc_v2", "time": 1794855656.1676974, "result": 2, "expected": 2}
+{"step": "cuMemsetD8_v2", "time": 1794855656.1677935, "result": 0, "expected": 0}
+{"step": "cuCtxSynchronize", "time": 1794855656.1678238, "result": 0, "expected": 0}
+{"step": "progress-and-quota-pass", "time": 1794855656.1678324}
+{"step": "cuMemAlloc_v2", "time": 1794855658.1683877, "result": 2, "expected": 2}
+{"step": "cuMemsetD8_v2", "time": 1794855658.1684833, "result": 0, "expected": 0}
+{"step": "cuCtxSynchronize", "time": 1794855658.1685154, "result": 0, "expected": 0}
+{"step": "progress-and-quota-pass", "time": 1794855658.1685236}
+{"step": "cuMemAlloc_v2", "time": 1794855660.1691267, "result": 2, "expected": 2}
+{"step": "cuMemsetD8_v2", "time": 1794855660.1692262, "result": 0, "expected": 0}
+{"step": "cuCtxSynchronize", "time": 1794855660.169256, "result": 0, "expected": 0}
+{"step": "progress-and-quota-pass", "time": 1794855660.1692638}
+{"step": "cuMemAlloc_v2", "time": 1794855662.169766, "result": 2, "expected": 2}
+{"step": "cuMemsetD8_v2", "time": 1794855662.1698647, "result": 0, "expected": 0}
+{"step": "cuCtxSynchronize", "time": 1794855662.1698942, "result": 0, "expected": 0}
+{"step": "progress-and-quota-pass", "time": 1794855662.1699057}
+{"step": "cuMemAlloc_v2", "time": 1794855664.170437, "result": 2, "expected": 2}
+{"step": "cuMemsetD8_v2", "time": 1794855664.1705694, "result": 0, "expected": 0}
+{"step": "cuCtxSynchronize", "time": 1794855664.1706116, "result": 0, "expected": 0}
+{"step": "progress-and-quota-pass", "time": 1794855664.1706252}
+{"step": "cuMemAlloc_v2", "time": 1794855666.171144, "result": 2, "expected": 2}
+{"step": "cuMemsetD8_v2", "time": 1794855666.1712365, "result": 0, "expected": 0}
+{"step": "cuCtxSynchronize", "time": 1794855666.171267, "result": 0, "expected": 0}
+{"step": "progress-and-quota-pass", "time": 1794855666.1712754}
+{"step": "cuMemAlloc_v2", "time": 1794855668.171784, "result": 2, "expected": 2}
+{"step": "cuMemsetD8_v2", "time": 1794855668.1718755, "result": 0, "expected": 0}
+{"step": "cuCtxSynchronize", "time": 1794855668.1719048, "result": 0, "expected": 0}
+{"step": "progress-and-quota-pass", "time": 1794855668.1719134}
+{"step": "cuMemAlloc_v2", "time": 1794855670.1724267, "result": 2, "expected": 2}
+{"step": "cuMemsetD8_v2", "time": 1794855670.1725197, "result": 0, "expected": 0}
+{"step": "cuCtxSynchronize", "time": 1794855670.1725473, "result": 0, "expected": 0}
+{"step": "progress-and-quota-pass", "time": 1794855670.172561}
+{"step": "cuMemAlloc_v2", "time": 1794855672.173154, "result": 2, "expected": 2}
+{"step": "cuMemsetD8_v2", "time": 1794855672.1732469, "result": 0, "expected": 0}
+{"step": "cuCtxSynchronize", "time": 1794855672.1732755, "result": 0, "expected": 0}
+{"step": "progress-and-quota-pass", "time": 1794855672.1732867}
+{"step": "cuMemAlloc_v2", "time": 1794855674.1738238, "result": 2, "expected": 2}
+{"step": "cuMemsetD8_v2", "time": 1794855674.1739197, "result": 0, "expected": 0}
+{"step": "cuCtxSynchronize", "time": 1794855674.173951, "result": 0, "expected": 0}
+{"step": "progress-and-quota-pass", "time": 1794855674.1739645}
+{"step": "cuMemAlloc_v2", "time": 1794855676.1745305, "result": 2, "expected": 2}
+{"step": "cuMemsetD8_v2", "time": 1794855676.174629, "result": 0, "expected": 0}
+{"step": "cuCtxSynchronize", "time": 1794855676.174659, "result": 0, "expected": 0}
+{"step": "progress-and-quota-pass", "time": 1794855676.174668}
+{"step": "cuMemAlloc_v2", "time": 1794855678.175166, "result": 2, "expected": 2}
+{"step": "cuMemsetD8_v2", "time": 1794855678.1752489, "result": 0, "expected": 0}
+{"step": "cuCtxSynchronize", "time": 1794855678.1752756, "result": 0, "expected": 0}
+{"step": "progress-and-quota-pass", "time": 1794855678.1752846}
+{"step": "cuMemAlloc_v2", "time": 1794855680.1758163, "result": 2, "expected": 2}
+{"step": "cuMemsetD8_v2", "time": 1794855680.175915, "result": 0, "expected": 0}
+{"step": "cuCtxSynchronize", "time": 1794855680.1759431, "result": 0, "expected": 0}
+{"step": "progress-and-quota-pass", "time": 1794855680.175952}
+{"step": "cuMemAlloc_v2", "time": 1794855682.1764493, "result": 2, "expected": 2}
+{"step": "cuMemsetD8_v2", "time": 1794855682.1765404, "result": 0, "expected": 0}
+{"step": "cuCtxSynchronize", "time": 1794855682.1765685, "result": 0, "expected": 0}
+{"step": "progress-and-quota-pass", "time": 1794855682.1765769}
+{"step": "cuMemFree_v2", "time": 1794855684.1778648, "result": 0, "expected": 0}
+{"step": "cuCtxDestroy_v2", "time": 1794855684.2848048, "result": 0, "expected": 0}
+{"step": "passed", "time": 1794855684.2848973}

@@ -1,0 +1,48 @@
+{"step": "gate", "pid": 1, "time": 1794854659.0129251, "name": "start"}
+{"step": "cuInit", "pid": 57, "time": 1794854660.3505683, "result": 0, "expected": 0}
+{"step": "cuDeviceGetCount", "pid": 57, "time": 1794854660.3507385, "result": 0, "expected": 0}
+{"step": "cuDeviceGet", "pid": 57, "time": 1794854660.3507721, "result": 0, "expected": 0}
+{"step": "cuDeviceGetUuid_v2", "pid": 57, "time": 1794854660.3508208, "result": 0, "expected": 0}
+{"step": "identity", "pid": 57, "time": 1794854660.3510778, "gpu_uuid": "GPU-16128952-b438-556a-00bb-93039ee24e56", "cgroup": "0::/\n", "stat": "57 (python3) R 1 1 1 0 -1 4194560 2729 0 0 0 3 8 0 0 20 0 2 0 66915 4618698752 10516 18446744073709551615 4325376 7352253 140736272948208 0 0 0 0 16781312 8194 0 0 0 17 14 0 0 0 0 0 10653128 12216448 864423936 140736272955846 140736272955981 140736272955981 140736272957415 0\n", "node": "k3s-wk-gpu2", "pod_uid": "1fdc2c30-d13b-4ded-bde0-87488e500200"}
+{"step": "cuDeviceGetAttribute", "pid": 57, "time": 1794854660.351119, "result": 0, "expected": 0}
+{"step": "device-attribute", "pid": 57, "time": 1794854660.3511312, "attribute": 100, "name": "CU_DEVICE_ATTRIBUTE_PAGEABLE_MEMORY_ACCESS_USES_HOST_PAGE_TABLES", "value": 0, "gpu_uuid": "GPU-16128952-b438-556a-00bb-93039ee24e56"}
+{"step": "cuInit", "pid": 58, "time": 1794854660.3621383, "result": 0, "expected": 0}
+{"step": "cuDeviceGetCount", "pid": 58, "time": 1794854660.362341, "result": 0, "expected": 0}
+{"step": "cuDeviceGet", "pid": 58, "time": 1794854660.3623824, "result": 0, "expected": 0}
+{"step": "cuDeviceGetUuid_v2", "pid": 58, "time": 1794854660.362436, "result": 0, "expected": 0}
+{"step": "identity", "pid": 58, "time": 1794854660.3627043, "gpu_uuid": "GPU-16128952-b438-556a-00bb-93039ee24e56", "cgroup": "0::/\n", "stat": "58 (python3) R 1 1 1 0 -1 4194560 2731 0 0 0 3 5 0 0 20 0 2 0 66915 4618698752 5373 18446744073709551615 4325376 7352253 140729722918512 0 0 0 0 16781312 8194 0 0 0 17 12 0 0 0 0 0 10653128 12216448 943509504 140729722919366 140729722919501 140729722919501 140729722920935 0\n", "node": "k3s-wk-gpu2", "pod_uid": "1fdc2c30-d13b-4ded-bde0-87488e500200"}
+{"step": "cuDeviceGetAttribute", "pid": 58, "time": 1794854660.3627505, "result": 0, "expected": 0}
+{"step": "device-attribute", "pid": 58, "time": 1794854660.362766, "attribute": 100, "name": "CU_DEVICE_ATTRIBUTE_PAGEABLE_MEMORY_ACCESS_USES_HOST_PAGE_TABLES", "value": 0, "gpu_uuid": "GPU-16128952-b438-556a-00bb-93039ee24e56"}
+{"step": "cuCtxCreate_v2", "pid": 57, "time": 1794854660.5979128, "result": 0, "expected": 0}
+{"step": "gate", "pid": 57, "time": 1794854660.5981789, "name": "race-start"}
+{"step": "cuCtxCreate_v2", "pid": 58, "time": 1794854660.5981898, "result": 0, "expected": 0}
+{"step": "gate", "pid": 58, "time": 1794854660.5985653, "name": "race-start"}
+{"step": "race-allocation", "pid": 57, "time": 1794854660.7990723, "result": 0, "mib": 3072}
+{"step": "cuMemsetD8_v2", "pid": 57, "time": 1794854660.7991848, "result": 0, "expected": 0}
+{"step": "race-allocation", "pid": 58, "time": 1794854660.7992609, "result": 2, "mib": 3072}
+{"step": "gate", "pid": 58, "time": 1794854660.7996016, "name": "race-release"}
+{"step": "cuCtxSynchronize", "pid": 57, "time": 1794854660.801544, "result": 0, "expected": 0}
+{"step": "gate", "pid": 57, "time": 1794854662.8020585, "name": "race-release"}
+{"step": "race-results", "pid": 1, "time": 1794854662.8209157, "results": [{"pid": 57, "result": 0}, {"pid": 58, "result": 2}]}
+{"step": "cuMemFree_v2", "pid": 57, "time": 1794854666.0075464, "result": 0, "expected": 0}
+{"step": "cuCtxDestroy_v2", "pid": 57, "time": 1794854666.208002, "result": 0, "expected": 0}
+{"step": "case-passed", "pid": 57, "time": 1794854666.2080908, "case": "race-child"}
+{"step": "cuCtxDestroy_v2", "pid": 58, "time": 1794854666.2116764, "result": 0, "expected": 0}
+{"step": "case-passed", "pid": 58, "time": 1794854666.2117603, "case": "race-child"}
+{"step": "cuInit", "pid": 65, "time": 1794854666.382542, "result": 0, "expected": 0}
+{"step": "cuDeviceGetCount", "pid": 65, "time": 1794854666.3827128, "result": 0, "expected": 0}
+{"step": "cuDeviceGet", "pid": 65, "time": 1794854666.3827465, "result": 0, "expected": 0}
+{"step": "cuDeviceGetUuid_v2", "pid": 65, "time": 1794854666.3828022, "result": 0, "expected": 0}
+{"step": "identity", "pid": 65, "time": 1794854666.3830922, "gpu_uuid": "GPU-16128952-b438-556a-00bb-93039ee24e56", "cgroup": "0::/\n", "stat": "65 (python3) R 1 1 1 0 -1 4194560 2730 0 0 0 3 5 0 0 20 0 2 0 67523 4618698752 10480 18446744073709551615 4325376 7352253 140722177996064 0 0 0 0 16781312 8194 0 0 0 17 15 0 0 0 0 0 10653128 12216448 282578944 140722178001380 140722178001485 140722178001485 140722178002919 0\n", "node": "k3s-wk-gpu2", "pod_uid": "1fdc2c30-d13b-4ded-bde0-87488e500200"}
+{"step": "cuDeviceGetAttribute", "pid": 65, "time": 1794854666.3831356, "result": 0, "expected": 0}
+{"step": "device-attribute", "pid": 65, "time": 1794854666.3831482, "attribute": 100, "name": "CU_DEVICE_ATTRIBUTE_PAGEABLE_MEMORY_ACCESS_USES_HOST_PAGE_TABLES", "value": 0, "gpu_uuid": "GPU-16128952-b438-556a-00bb-93039ee24e56"}
+{"step": "cuCtxCreate_v2", "pid": 65, "time": 1794854666.4961262, "result": 0, "expected": 0}
+{"step": "cuMemAlloc_v2", "pid": 65, "time": 1794854666.496461, "result": 2, "expected": 2}
+{"step": "recovery-allocation", "pid": 65, "time": 1794854666.496823, "result": 0, "mib": 4096}
+{"step": "cuMemsetD8_v2", "pid": 65, "time": 1794854666.4969013, "result": 0, "expected": 0}
+{"step": "cuCtxSynchronize", "pid": 65, "time": 1794854666.499684, "result": 0, "expected": 0}
+{"step": "cuMemFree_v2", "pid": 65, "time": 1794854668.5030758, "result": 0, "expected": 0}
+{"step": "cuCtxDestroy_v2", "pid": 65, "time": 1794854668.6153488, "result": 0, "expected": 0}
+{"step": "case-passed", "pid": 65, "time": 1794854668.61543, "case": "recovery"}
+{"step": "case-passed", "pid": 1, "time": 1794854668.7191625, "case": "race"}
+{"step": "gate", "pid": 1, "time": 1794854668.7192225, "name": "release"}

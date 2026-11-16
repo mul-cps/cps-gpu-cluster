@@ -1,0 +1,204 @@
+{
+  "apiVersion": "v1",
+  "kind": "Pod",
+  "metadata": {
+    "creationTimestamp": "2026-11-16T18:51:12Z",
+    "generation": 1,
+    "name": "kernel-peer-c32a2dd985",
+    "namespace": "gpu-operator",
+    "resourceVersion": "406774152",
+    "uid": "46fe229f-ca30-4c52-bf75-6617567fd058"
+  },
+  "spec": {
+    "activeDeadlineSeconds": 240,
+    "automountServiceAccountToken": false,
+    "containers": [
+      {
+        "command": [
+          "python3",
+          "-c",
+          "import time;time.sleep(220)"
+        ],
+        "env": [
+          {
+            "name": "NVIDIA_DRIVER_CAPABILITIES",
+            "value": "compute,utility"
+          }
+        ],
+        "image": "ghcr.io/mul-cps/cps-ubuntu-release-upgrade@sha256:5030556ecf8cd38fc9acc4676316bd0a3217d1ab10930b75b9dba7106e8f4004",
+        "imagePullPolicy": "IfNotPresent",
+        "name": "main",
+        "resources": {
+          "limits": {
+            "cpu": "2",
+            "memory": "1Gi",
+            "nvidia.com/gpu": "2"
+          },
+          "requests": {
+            "cpu": "100m",
+            "memory": "128Mi",
+            "nvidia.com/gpu": "2"
+          }
+        },
+        "securityContext": {
+          "allowPrivilegeEscalation": false,
+          "capabilities": {
+            "drop": [
+              "ALL"
+            ]
+          }
+        },
+        "terminationMessagePath": "/dev/termination-log",
+        "terminationMessagePolicy": "File"
+      }
+    ],
+    "dnsPolicy": "ClusterFirst",
+    "enableServiceLinks": true,
+    "imagePullSecrets": [
+      {
+        "name": "cps-native-image-pull"
+      }
+    ],
+    "nodeName": "k3s-wk-gpu2",
+    "preemptionPolicy": "PreemptLowerPriority",
+    "priority": 0,
+    "restartPolicy": "Never",
+    "runtimeClassName": "nvidia",
+    "schedulerName": "default-scheduler",
+    "securityContext": {
+      "appArmorProfile": {
+        "type": "RuntimeDefault"
+      },
+      "runAsGroup": 1000,
+      "runAsNonRoot": true,
+      "runAsUser": 1000,
+      "seccompProfile": {
+        "type": "RuntimeDefault"
+      }
+    },
+    "serviceAccount": "default",
+    "serviceAccountName": "default",
+    "terminationGracePeriodSeconds": 5,
+    "tolerations": [
+      {
+        "effect": "NoExecute",
+        "key": "node.kubernetes.io/not-ready",
+        "operator": "Exists",
+        "tolerationSeconds": 300
+      },
+      {
+        "effect": "NoExecute",
+        "key": "node.kubernetes.io/unreachable",
+        "operator": "Exists",
+        "tolerationSeconds": 300
+      }
+    ]
+  },
+  "status": {
+    "conditions": [
+      {
+        "lastProbeTime": null,
+        "lastTransitionTime": "2026-11-16T18:51:13Z",
+        "observedGeneration": 1,
+        "status": "True",
+        "type": "PodReadyToStartContainers"
+      },
+      {
+        "lastProbeTime": null,
+        "lastTransitionTime": "2026-11-16T18:51:12Z",
+        "observedGeneration": 1,
+        "status": "True",
+        "type": "Initialized"
+      },
+      {
+        "lastProbeTime": null,
+        "lastTransitionTime": "2026-11-16T18:51:13Z",
+        "observedGeneration": 1,
+        "status": "True",
+        "type": "Ready"
+      },
+      {
+        "lastProbeTime": null,
+        "lastTransitionTime": "2026-11-16T18:51:13Z",
+        "observedGeneration": 1,
+        "status": "True",
+        "type": "ContainersReady"
+      },
+      {
+        "lastProbeTime": null,
+        "lastTransitionTime": "2026-11-16T18:51:12Z",
+        "observedGeneration": 1,
+        "status": "True",
+        "type": "PodScheduled"
+      }
+    ],
+    "containerStatuses": [
+      {
+        "allocatedResources": {
+          "cpu": "100m",
+          "memory": "128Mi",
+          "nvidia.com/gpu": "2"
+        },
+        "containerID": "containerd://c4d67f0348d052812926ef541f86fe7bb2f173df49491234dcdd4a070e1212f1",
+        "image": "sha256:9c399a068d4a44f84f3feec8884de1f1b80ed8e3841987c41c97af0f03226893",
+        "imageID": "ghcr.io/mul-cps/cps-ubuntu-release-upgrade@sha256:5030556ecf8cd38fc9acc4676316bd0a3217d1ab10930b75b9dba7106e8f4004",
+        "lastState": {},
+        "name": "main",
+        "ready": true,
+        "resources": {
+          "limits": {
+            "cpu": "2",
+            "memory": "1Gi",
+            "nvidia.com/gpu": "2"
+          },
+          "requests": {
+            "cpu": "100m",
+            "memory": "128Mi",
+            "nvidia.com/gpu": "2"
+          }
+        },
+        "restartCount": 0,
+        "started": true,
+        "state": {
+          "running": {
+            "startedAt": "2026-11-16T18:51:12Z"
+          }
+        },
+        "user": {
+          "linux": {
+            "gid": 1000,
+            "supplementalGroups": [
+              4,
+              20,
+              24,
+              25,
+              27,
+              29,
+              30,
+              44,
+              46,
+              1000
+            ],
+            "uid": 1000
+          }
+        }
+      }
+    ],
+    "hostIP": "10.21.0.43",
+    "hostIPs": [
+      {
+        "ip": "10.21.0.43"
+      }
+    ],
+    "observedGeneration": 1,
+    "phase": "Running",
+    "podIP": "10.42.7.127",
+    "podIPs": [
+      {
+        "ip": "10.42.7.127"
+      }
+    ],
+    "qosClass": "Burstable",
+    "startTime": "2026-11-16T18:51:12Z"
+  }
+}

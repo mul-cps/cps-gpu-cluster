@@ -33,5 +33,9 @@
     "ordinary10-forward",
     "managed20-forward"
   ],
-  "limitations": "Passing arrival order is not a guarantee; failure remains blocking. No driver patch yet."
+  "limitations": "Passing arrival order is not a guarantee; failure remains blocking. No driver patch yet.",
+  "evidence_role": "causal stock-driver failure; retained verbatim outcomes",
+  "stock_driver_image": "sha256:0fcbf7340155f8d6868e30b1b0fbf09b601d093a9316621902d5ac09ad7874a1",
+  "subsequent_candidate_resolution": "../managed-policy-load/loaded-artifact-proof.json; explicit managed rejection, not permissive managed sharing",
+  "current_worker_status": "../gpu2-current-status.json"
 }

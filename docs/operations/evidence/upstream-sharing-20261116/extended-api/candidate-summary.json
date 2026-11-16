@@ -1,0 +1,337 @@
+{
+  "status": "PASS extended APIs both cards on actual c3b candidate",
+  "checked_at": "2026-11-16T18:47:19.087708+00:00",
+  "driver_provenance": {
+    "driver_pod": {
+      "name": "nvidia-gpu-driver-ubuntu26.04-8665b5f4cf-dq5wx",
+      "uid": "dfd0cc7a-1e57-476f-a90c-50b4f09b70c4",
+      "image": "ghcr.io/mul-cps/cps-nvidia-driver@sha256:c3b71557aa17df43faad5a2661d81f1025ba355ac3adf784096de12cd2ef3e73",
+      "containerStatuses": [
+        {
+          "containerID": "containerd://38d2e2b8d18045d783c36b2c95098268bf62a751b18b62edf9c78350e9df34e6",
+          "image": "sha256:42b51a1af1671adbf92ab6bff1cb2e7d2d287820044d5f91e06577c5b7fdc1e5",
+          "imageID": "ghcr.io/mul-cps/cps-nvidia-driver@sha256:c3b71557aa17df43faad5a2661d81f1025ba355ac3adf784096de12cd2ef3e73",
+          "lastState": {},
+          "name": "nvidia-driver-ctr",
+          "ready": true,
+          "resources": {},
+          "restartCount": 0,
+          "started": true,
+          "state": {
+            "running": {
+              "startedAt": "2026-11-16T18:33:44Z"
+            }
+          },
+          "user": {
+            "linux": {
+              "gid": 0,
+              "supplementalGroups": [
+                0
+              ],
+              "uid": 0
+            }
+          },
+          "volumeMounts": [
+            {
+              "mountPath": "/run/nvidia",
+              "name": "run-nvidia"
+            },
+            {
+              "mountPath": "/run/nvidia-fabricmanager",
+              "name": "run-nvidia-fabricmanager"
+            },
+            {
+              "mountPath": "/run/nvidia-topologyd",
+              "name": "run-nvidia-topologyd"
+            },
+            {
+              "mountPath": "/var/log",
+              "name": "var-log"
+            },
+            {
+              "mountPath": "/dev/log",
+              "name": "dev-log"
+            },
+            {
+              "mountPath": "/host-etc/os-release",
+              "name": "host-os-release",
+              "readOnly": true,
+              "recursiveReadOnly": "Disabled"
+            },
+            {
+              "mountPath": "/run/mellanox/drivers/usr/src",
+              "name": "mlnx-ofed-usr-src"
+            },
+            {
+              "mountPath": "/run/mellanox/drivers",
+              "name": "run-mellanox-drivers"
+            },
+            {
+              "mountPath": "/sys/module/firmware_class/parameters/path",
+              "name": "firmware-search-path"
+            },
+            {
+              "mountPath": "/sys/devices/system",
+              "name": "host-sys-devices-system"
+            },
+            {
+              "mountPath": "/lib/firmware",
+              "name": "nv-firmware"
+            },
+            {
+              "mountPath": "/usr/local/bin/startup-probe.sh",
+              "name": "driver-startup-probe-script"
+            },
+            {
+              "mountPath": "/drivers/nvidia-uvm.conf",
+              "name": "cps-r620-misc-config",
+              "readOnly": true,
+              "recursiveReadOnly": "Disabled"
+            },
+            {
+              "mountPath": "/drivers/nvidia.conf",
+              "name": "cps-r620-misc-config",
+              "readOnly": true,
+              "recursiveReadOnly": "Disabled"
+            },
+            {
+              "mountPath": "/var/run/secrets/kubernetes.io/serviceaccount",
+              "name": "kube-api-access-7zj9d",
+              "readOnly": true,
+              "recursiveReadOnly": "Disabled"
+            }
+          ]
+        }
+      ]
+    },
+    "host": {
+      "time": 1794854588.2838333,
+      "node": "k3s-wk-gpu2",
+      "boot_id": "a39cdade-f00d-4cd1-9a81-c290d668194f",
+      "gpu": "GPU-16128952-b438-556a-00bb-93039ee24e56, 620.70.06, 1, 40960",
+      "compute_processes": "",
+      "uvm": {
+        "srcversion": "10301D70B8ED1758BC717E9",
+        "parameters/uvm_reject_managed_memory": "Y",
+        "parameters/uvm_disable_hmm": "Y"
+      },
+      "uvm_source_sha256": "5648dbfe43957eb257d9efb715906de0fb6caa43458752544221d90db6efdb18"
+    }
+  },
+  "on_disk_uvm_srcversion": "10301D70B8ED1758BC717E9",
+  "runs": [
+    {
+      "run": "candidate-card-a",
+      "gpu_uuid": "GPU-16128952-b438-556a-00bb-93039ee24e56",
+      "status": "hardware-cases-passed",
+      "cases": [
+        {
+          "case": "00-vmm",
+          "pod_uid": "07b745d1-2c5f-4b20-8779-0ca0c04436d6",
+          "container_id": "5b0efaa36c7a786835f5b4da3ef6e3894b2408fd1ae7783debae8fb48a569741",
+          "cgroup": "0::/kubepods.slice/kubepods-burstable.slice/kubepods-burstable-pod07b745d1_2c5f_4b20_8779_0ca0c04436d6.slice/cri-containerd-5b0efaa36c7a786835f5b4da3ef6e3894b2408fd1ae7783debae8fb48a569741.scope\n",
+          "cgroup_inode": 23237,
+          "init_host_pid": 42874,
+          "attribute100_values": [
+            0
+          ],
+          "after_gpu": "GPU-16128952-b438-556a-00bb-93039ee24e56, 620.70.06, 1, 40960",
+          "retired_cgroup_exists": false,
+          "compute_processes": []
+        },
+        {
+          "case": "01-pool",
+          "pod_uid": "e671560c-d02e-4aec-8fa2-dcbb7e4701bd",
+          "container_id": "af2cb3b696fdc67a8747bfacfc6cc19879883bd76a4a7282ead39197cfe4b910",
+          "cgroup": "0::/kubepods.slice/kubepods-burstable.slice/kubepods-burstable-pode671560c_d02e_4aec_8fa2_dcbb7e4701bd.slice/cri-containerd-af2cb3b696fdc67a8747bfacfc6cc19879883bd76a4a7282ead39197cfe4b910.scope\n",
+          "cgroup_inode": 23804,
+          "init_host_pid": 44413,
+          "attribute100_values": [
+            0
+          ],
+          "after_gpu": "GPU-16128952-b438-556a-00bb-93039ee24e56, 620.70.06, 1, 40960",
+          "retired_cgroup_exists": false,
+          "compute_processes": []
+        },
+        {
+          "case": "02-ipc",
+          "pod_uid": "9af12776-58a5-4441-96fa-1a5f459ebbb5",
+          "container_id": "be43ddce52903fe641c2e3ed0fb6e8ea0444bef50696f5d1a37ee28fde42e623",
+          "cgroup": "0::/kubepods.slice/kubepods-burstable.slice/kubepods-burstable-pod9af12776_58a5_4441_96fa_1a5f459ebbb5.slice/cri-containerd-be43ddce52903fe641c2e3ed0fb6e8ea0444bef50696f5d1a37ee28fde42e623.scope\n",
+          "cgroup_inode": 24422,
+          "init_host_pid": 46210,
+          "attribute100_values": [
+            0
+          ],
+          "after_gpu": "GPU-16128952-b438-556a-00bb-93039ee24e56, 620.70.06, 1, 40960",
+          "retired_cgroup_exists": false,
+          "compute_processes": []
+        },
+        {
+          "case": "03-crash",
+          "pod_uid": "bad01cf6-1eb8-4e8b-b8e5-4ab86347e7cf",
+          "container_id": "89ede64c5c6eea41faf4557d6cca7cecbdbd4550f4a5c158060ee65ca4424583",
+          "cgroup": "0::/kubepods.slice/kubepods-burstable.slice/kubepods-burstable-podbad01cf6_1eb8_4e8b_b8e5_4ab86347e7cf.slice/cri-containerd-89ede64c5c6eea41faf4557d6cca7cecbdbd4550f4a5c158060ee65ca4424583.scope\n",
+          "cgroup_inode": 25040,
+          "init_host_pid": 47929,
+          "attribute100_values": [
+            0
+          ],
+          "after_gpu": "GPU-16128952-b438-556a-00bb-93039ee24e56, 620.70.06, 1, 40960",
+          "retired_cgroup_exists": false,
+          "compute_processes": []
+        },
+        {
+          "case": "04-race",
+          "pod_uid": "1fdc2c30-d13b-4ded-bde0-87488e500200",
+          "container_id": "53fd3fe7b74d004a6ac000bfbe2283e2a1c42678c150b7bf963a7d6bb5852eb6",
+          "cgroup": "0::/kubepods.slice/kubepods-burstable.slice/kubepods-burstable-pod1fdc2c30_d13b_4ded_bde0_87488e500200.slice/cri-containerd-53fd3fe7b74d004a6ac000bfbe2283e2a1c42678c150b7bf963a7d6bb5852eb6.scope\n",
+          "cgroup_inode": 26219,
+          "init_host_pid": 51527,
+          "attribute100_values": [
+            0
+          ],
+          "after_gpu": "GPU-16128952-b438-556a-00bb-93039ee24e56, 620.70.06, 1, 40960",
+          "retired_cgroup_exists": false,
+          "compute_processes": []
+        },
+        {
+          "case": "05-recovery",
+          "pod_uid": "23957ebd-c801-4f56-afc0-bca0d6e4202f",
+          "container_id": "5015bc0e62b0449cbbbc9e371599008596a6d2c47b0944da8669fa7c7b5d580b",
+          "cgroup": "0::/kubepods.slice/kubepods-burstable.slice/kubepods-burstable-pod23957ebd_c801_4f56_afc0_bca0d6e4202f.slice/cri-containerd-5015bc0e62b0449cbbbc9e371599008596a6d2c47b0944da8669fa7c7b5d580b.scope\n",
+          "cgroup_inode": 26939,
+          "init_host_pid": 53742,
+          "attribute100_values": [
+            0
+          ],
+          "after_gpu": "GPU-16128952-b438-556a-00bb-93039ee24e56, 620.70.06, 1, 40960",
+          "retired_cgroup_exists": false,
+          "compute_processes": []
+        },
+        {
+          "case": "06-recovery",
+          "pod_uid": "97b0e0c5-ef11-43b0-8ce7-44c2e944ebdc",
+          "container_id": "80cb765561c03eea0e220badffbbba31de8ac0eed7f01d7f2b7d744efeee387d",
+          "cgroup": "0::/kubepods.slice/kubepods-burstable.slice/kubepods-burstable-pod97b0e0c5_ef11_43b0_8ce7_44c2e944ebdc.slice/cri-containerd-80cb765561c03eea0e220badffbbba31de8ac0eed7f01d7f2b7d744efeee387d.scope\n",
+          "cgroup_inode": 27455,
+          "init_host_pid": 55123,
+          "attribute100_values": [
+            0
+          ],
+          "after_gpu": "GPU-16128952-b438-556a-00bb-93039ee24e56, 620.70.06, 1, 40960",
+          "retired_cgroup_exists": false,
+          "compute_processes": []
+        }
+      ]
+    },
+    {
+      "run": "candidate-card-b",
+      "gpu_uuid": "GPU-1e6145d5-8ee2-43e2-a0d5-6d345909e8a6",
+      "status": "hardware-cases-passed",
+      "cases": [
+        {
+          "case": "00-vmm",
+          "pod_uid": "5c08a530-a97a-4bae-ae5f-37a5984152aa",
+          "container_id": "4a73f0f252dccb7679e92c89968670fe7e1659849e6eb852a9f4cde856445833",
+          "cgroup": "0::/kubepods.slice/kubepods-burstable.slice/kubepods-burstable-pod5c08a530_a97a_4bae_ae5f_37a5984152aa.slice/cri-containerd-4a73f0f252dccb7679e92c89968670fe7e1659849e6eb852a9f4cde856445833.scope\n",
+          "cgroup_inode": 29019,
+          "init_host_pid": 57428,
+          "attribute100_values": [
+            0
+          ],
+          "after_gpu": "GPU-1e6145d5-8ee2-43e2-a0d5-6d345909e8a6, 620.70.06, 1, 40960",
+          "retired_cgroup_exists": false,
+          "compute_processes": []
+        },
+        {
+          "case": "01-pool",
+          "pod_uid": "9e2e9638-8a0b-4f09-9fac-9973e244e5e1",
+          "container_id": "ee1b6ccfb1c9007f09f28e42f1c157a86769e341699b76527580add93496bce3",
+          "cgroup": "0::/kubepods.slice/kubepods-burstable.slice/kubepods-burstable-pod9e2e9638_8a0b_4f09_9fac_9973e244e5e1.slice/cri-containerd-ee1b6ccfb1c9007f09f28e42f1c157a86769e341699b76527580add93496bce3.scope\n",
+          "cgroup_inode": 29586,
+          "init_host_pid": 58954,
+          "attribute100_values": [
+            0
+          ],
+          "after_gpu": "GPU-1e6145d5-8ee2-43e2-a0d5-6d345909e8a6, 620.70.06, 1, 40960",
+          "retired_cgroup_exists": false,
+          "compute_processes": []
+        },
+        {
+          "case": "02-ipc",
+          "pod_uid": "aef858bc-309f-42f3-af3b-e215d7da5161",
+          "container_id": "20d323d5eae75f527dffa5c61d9e4ed57ff7106aa05330b17395d0541bc48f25",
+          "cgroup": "0::/kubepods.slice/kubepods-burstable.slice/kubepods-burstable-podaef858bc_309f_42f3_af3b_e215d7da5161.slice/cri-containerd-20d323d5eae75f527dffa5c61d9e4ed57ff7106aa05330b17395d0541bc48f25.scope\n",
+          "cgroup_inode": 30204,
+          "init_host_pid": 60968,
+          "attribute100_values": [
+            0
+          ],
+          "after_gpu": "GPU-1e6145d5-8ee2-43e2-a0d5-6d345909e8a6, 620.70.06, 1, 40960",
+          "retired_cgroup_exists": false,
+          "compute_processes": []
+        },
+        {
+          "case": "03-crash",
+          "pod_uid": "464f18f8-abe8-4085-b20e-804b06cea642",
+          "container_id": "670bd8e0ef3b94fc2674f6c3093870875f30a11a8f1e2758a70f66377c5673d8",
+          "cgroup": "0::/kubepods.slice/kubepods-burstable.slice/kubepods-burstable-pod464f18f8_abe8_4085_b20e_804b06cea642.slice/cri-containerd-670bd8e0ef3b94fc2674f6c3093870875f30a11a8f1e2758a70f66377c5673d8.scope\n",
+          "cgroup_inode": 30822,
+          "init_host_pid": 62731,
+          "attribute100_values": [
+            0
+          ],
+          "after_gpu": "GPU-1e6145d5-8ee2-43e2-a0d5-6d345909e8a6, 620.70.06, 1, 40960",
+          "retired_cgroup_exists": false,
+          "compute_processes": []
+        },
+        {
+          "case": "04-race",
+          "pod_uid": "5c905e50-01d1-4abd-9145-d7c3244a4d22",
+          "container_id": "fe9d275b512e32522e7151b66353f4be3743fcb72dcf8113da134e83b977cd40",
+          "cgroup": "0::/kubepods.slice/kubepods-burstable.slice/kubepods-burstable-pod5c905e50_01d1_4abd_9145_d7c3244a4d22.slice/cri-containerd-fe9d275b512e32522e7151b66353f4be3743fcb72dcf8113da134e83b977cd40.scope\n",
+          "cgroup_inode": 32324,
+          "init_host_pid": 66949,
+          "attribute100_values": [
+            0
+          ],
+          "after_gpu": "GPU-1e6145d5-8ee2-43e2-a0d5-6d345909e8a6, 620.70.06, 1, 40960",
+          "retired_cgroup_exists": false,
+          "compute_processes": []
+        },
+        {
+          "case": "05-recovery",
+          "pod_uid": "c1d178ee-e77f-4a63-81ab-5db0625ae0c5",
+          "container_id": "64bc2c9952df3cd16bb2186453e5d66e06bca516e8f4f872e4862c09142ea439",
+          "cgroup": "0::/kubepods.slice/kubepods-burstable.slice/kubepods-burstable-podc1d178ee_e77f_4a63_81ab_5db0625ae0c5.slice/cri-containerd-64bc2c9952df3cd16bb2186453e5d66e06bca516e8f4f872e4862c09142ea439.scope\n",
+          "cgroup_inode": 33044,
+          "init_host_pid": 69283,
+          "attribute100_values": [
+            0
+          ],
+          "after_gpu": "GPU-1e6145d5-8ee2-43e2-a0d5-6d345909e8a6, 620.70.06, 1, 40960",
+          "retired_cgroup_exists": false,
+          "compute_processes": []
+        },
+        {
+          "case": "06-recovery",
+          "pod_uid": "7e2b40d1-5b9c-4acc-941d-9fde9019bfac",
+          "container_id": "9de7f645e6c3678a9cf7a0ed9cd4b847fecc93eb24c0b1516840ff19da4864f3",
+          "cgroup": "0::/kubepods.slice/kubepods-burstable.slice/kubepods-burstable-pod7e2b40d1_5b9c_4acc_941d_9fde9019bfac.slice/cri-containerd-9de7f645e6c3678a9cf7a0ed9cd4b847fecc93eb24c0b1516840ff19da4864f3.scope\n",
+          "cgroup_inode": 33560,
+          "init_host_pid": 70681,
+          "attribute100_values": [
+            0
+          ],
+          "after_gpu": "GPU-1e6145d5-8ee2-43e2-a0d5-6d345909e8a6, 620.70.06, 1, 40960",
+          "retired_cgroup_exists": false,
+          "compute_processes": []
+        }
+      ]
+    }
+  ],
+  "node_unschedulable": null,
+  "qualification_labels": {},
+  "qualification_override": false
+}

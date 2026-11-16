@@ -1,0 +1,17 @@
+{"step": "gate", "pid": 1, "time": 1794854674.4862545, "name": "start"}
+{"step": "cuInit", "pid": 1, "time": 1794854676.763747, "result": 0, "expected": 0}
+{"step": "cuDeviceGetCount", "pid": 1, "time": 1794854676.7639236, "result": 0, "expected": 0}
+{"step": "cuDeviceGet", "pid": 1, "time": 1794854676.763958, "result": 0, "expected": 0}
+{"step": "cuDeviceGetUuid_v2", "pid": 1, "time": 1794854676.7642167, "result": 0, "expected": 0}
+{"step": "identity", "pid": 1, "time": 1794854676.764469, "gpu_uuid": "GPU-16128952-b438-556a-00bb-93039ee24e56", "cgroup": "0::/\n", "stat": "1 (python3) R 0 1 1 0 -1 4194560 4905 6060 0 0 7 11 1 4 20 0 2 0 68320 4618686464 10420 18446744073709551615 4325376 7352253 140728920923136 0 0 0 0 16781312 8194 0 0 0 17 42 0 0 0 0 0 10653128 12216448 470249472 140728920926726 140728920926814 140728920926814 140728920928231 0\n", "node": "k3s-wk-gpu2", "pod_uid": "23957ebd-c801-4f56-afc0-bca0d6e4202f"}
+{"step": "cuDeviceGetAttribute", "pid": 1, "time": 1794854676.7645152, "result": 0, "expected": 0}
+{"step": "device-attribute", "pid": 1, "time": 1794854676.7645302, "attribute": 100, "name": "CU_DEVICE_ATTRIBUTE_PAGEABLE_MEMORY_ACCESS_USES_HOST_PAGE_TABLES", "value": 0, "gpu_uuid": "GPU-16128952-b438-556a-00bb-93039ee24e56"}
+{"step": "cuCtxCreate_v2", "pid": 1, "time": 1794854676.9018571, "result": 0, "expected": 0}
+{"step": "cuMemAlloc_v2", "pid": 1, "time": 1794854676.902219, "result": 2, "expected": 2}
+{"step": "recovery-allocation", "pid": 1, "time": 1794854676.9026427, "result": 0, "mib": 4096}
+{"step": "cuMemsetD8_v2", "pid": 1, "time": 1794854676.9027069, "result": 0, "expected": 0}
+{"step": "cuCtxSynchronize", "pid": 1, "time": 1794854676.9057496, "result": 0, "expected": 0}
+{"step": "cuMemFree_v2", "pid": 1, "time": 1794854678.909068, "result": 0, "expected": 0}
+{"step": "cuCtxDestroy_v2", "pid": 1, "time": 1794854679.0285504, "result": 0, "expected": 0}
+{"step": "case-passed", "pid": 1, "time": 1794854679.0286415, "case": "recovery"}
+{"step": "gate", "pid": 1, "time": 1794854679.0286534, "name": "release"}

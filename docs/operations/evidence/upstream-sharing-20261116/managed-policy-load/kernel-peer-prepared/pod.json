@@ -1,0 +1,69 @@
+{
+  "apiVersion": "v1",
+  "kind": "Pod",
+  "metadata": {
+    "name": "kernel-peer-8e6ff335a3",
+    "namespace": "gpu-operator"
+  },
+  "spec": {
+    "nodeName": "k3s-wk-gpu2",
+    "runtimeClassName": "nvidia",
+    "restartPolicy": "Never",
+    "activeDeadlineSeconds": 240,
+    "terminationGracePeriodSeconds": 5,
+    "automountServiceAccountToken": false,
+    "imagePullSecrets": [
+      {
+        "name": "cps-native-image-pull"
+      }
+    ],
+    "securityContext": {
+      "runAsUser": 1000,
+      "runAsGroup": 1000,
+      "runAsNonRoot": true,
+      "seccompProfile": {
+        "type": "RuntimeDefault"
+      },
+      "appArmorProfile": {
+        "type": "RuntimeDefault"
+      }
+    },
+    "containers": [
+      {
+        "name": "main",
+        "image": "ghcr.io/mul-cps/cps-ubuntu-release-upgrade@sha256:5030556ecf8cd38fc9acc4676316bd0a3217d1ab10930b75b9dba7106e8f4004",
+        "command": [
+          "python3",
+          "-c",
+          "import time;time.sleep(220)"
+        ],
+        "env": [
+          {
+            "name": "NVIDIA_DRIVER_CAPABILITIES",
+            "value": "compute,utility"
+          }
+        ],
+        "resources": {
+          "requests": {
+            "cpu": "100m",
+            "memory": "128Mi",
+            "nvidia.com/gpu": 2
+          },
+          "limits": {
+            "cpu": "2",
+            "memory": "1Gi",
+            "nvidia.com/gpu": 2
+          }
+        },
+        "securityContext": {
+          "allowPrivilegeEscalation": false,
+          "capabilities": {
+            "drop": [
+              "ALL"
+            ]
+          }
+        }
+      }
+    ]
+  }
+}

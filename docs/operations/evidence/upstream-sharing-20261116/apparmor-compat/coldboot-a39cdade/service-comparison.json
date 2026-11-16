@@ -1,0 +1,587 @@
+[
+  {
+    "namespace": "alloy",
+    "name": "alloy-mnp9c",
+    "same_uid": true,
+    "before": [
+      [
+        "alloy",
+        true,
+        1
+      ],
+      [
+        "config-reloader",
+        true,
+        1
+      ]
+    ],
+    "after": [
+      [
+        "alloy",
+        true,
+        1
+      ],
+      [
+        "config-reloader",
+        true,
+        1
+      ]
+    ]
+  },
+  {
+    "namespace": "cattle-monitoring-system",
+    "name": "rancher-monitoring-prometheus-node-exporter-ml952",
+    "same_uid": true,
+    "before": [
+      [
+        "node-exporter",
+        true,
+        18
+      ]
+    ],
+    "after": [
+      [
+        "node-exporter",
+        true,
+        18
+      ]
+    ]
+  },
+  {
+    "namespace": "cit-jhub",
+    "name": "continuous-image-puller-zs7x2",
+    "same_uid": true,
+    "before": [
+      [
+        "pause",
+        true,
+        8
+      ]
+    ],
+    "after": [
+      [
+        "pause",
+        true,
+        8
+      ]
+    ]
+  },
+  {
+    "namespace": "default",
+    "name": "upstream-apparmor-coldboot",
+    "same_uid": true,
+    "before": [
+      [
+        "probe",
+        true,
+        0
+      ]
+    ],
+    "after": [
+      [
+        "probe",
+        true,
+        0
+      ]
+    ]
+  },
+  {
+    "namespace": "gpu-fractioning",
+    "name": "gpu-fractioning-fractiond-d7j6f",
+    "same_uid": true,
+    "before": [
+      [
+        "fractiond",
+        true,
+        2
+      ],
+      [
+        "metricsd",
+        true,
+        2
+      ]
+    ],
+    "after": [
+      [
+        "fractiond",
+        true,
+        2
+      ],
+      [
+        "metricsd",
+        true,
+        2
+      ]
+    ]
+  },
+  {
+    "namespace": "gpu-fractioning",
+    "name": "gpu-fractioning-mpsd-mmctb",
+    "same_uid": true,
+    "before": [
+      [
+        "mpsd",
+        true,
+        10
+      ]
+    ],
+    "after": [
+      [
+        "mpsd",
+        true,
+        10
+      ]
+    ]
+  },
+  {
+    "namespace": "gpu-operator",
+    "name": "gpu-feature-discovery-tk7lw",
+    "same_uid": true,
+    "before": [
+      [
+        "config-manager",
+        true,
+        2
+      ],
+      [
+        "gpu-feature-discovery",
+        true,
+        2
+      ]
+    ],
+    "after": [
+      [
+        "config-manager",
+        true,
+        2
+      ],
+      [
+        "gpu-feature-discovery",
+        true,
+        2
+      ]
+    ]
+  },
+  {
+    "namespace": "gpu-operator",
+    "name": "gpu-operator-node-feature-discovery-worker-hlwkr",
+    "same_uid": true,
+    "before": [
+      [
+        "worker",
+        true,
+        46
+      ]
+    ],
+    "after": [
+      [
+        "worker",
+        true,
+        46
+      ]
+    ]
+  },
+  {
+    "namespace": "gpu-operator",
+    "name": "nvidia-container-toolkit-daemonset-wxbsw",
+    "same_uid": true,
+    "before": [
+      [
+        "nvidia-container-toolkit-ctr",
+        true,
+        2
+      ]
+    ],
+    "after": [
+      [
+        "nvidia-container-toolkit-ctr",
+        true,
+        2
+      ]
+    ]
+  },
+  {
+    "namespace": "gpu-operator",
+    "name": "nvidia-cuda-validator-wjbxw",
+    "same_uid": true,
+    "before": [
+      [
+        "nvidia-cuda-validator",
+        false,
+        0
+      ]
+    ],
+    "after": [
+      [
+        "nvidia-cuda-validator",
+        false,
+        0
+      ]
+    ]
+  },
+  {
+    "namespace": "gpu-operator",
+    "name": "nvidia-dcgm-exporter-rqktw",
+    "same_uid": true,
+    "before": [
+      [
+        "nvidia-dcgm-exporter",
+        true,
+        2
+      ]
+    ],
+    "after": [
+      [
+        "nvidia-dcgm-exporter",
+        true,
+        2
+      ]
+    ]
+  },
+  {
+    "namespace": "gpu-operator",
+    "name": "nvidia-device-plugin-daemonset-7mqwv",
+    "same_uid": true,
+    "before": [
+      [
+        "config-manager",
+        true,
+        2
+      ],
+      [
+        "nvidia-device-plugin",
+        true,
+        2
+      ]
+    ],
+    "after": [
+      [
+        "config-manager",
+        true,
+        2
+      ],
+      [
+        "nvidia-device-plugin",
+        true,
+        2
+      ]
+    ]
+  },
+  {
+    "namespace": "gpu-operator",
+    "name": "nvidia-gpu-driver-ubuntu26.04-8665b5f4cf-dq5wx",
+    "same_uid": true,
+    "before": [
+      [
+        "nvidia-driver-ctr",
+        true,
+        0
+      ]
+    ],
+    "after": [
+      [
+        "nvidia-driver-ctr",
+        true,
+        0
+      ]
+    ]
+  },
+  {
+    "namespace": "gpu-operator",
+    "name": "nvidia-operator-validator-bstjv",
+    "same_uid": true,
+    "before": [
+      [
+        "nvidia-operator-validator",
+        true,
+        2
+      ]
+    ],
+    "after": [
+      [
+        "nvidia-operator-validator",
+        true,
+        2
+      ]
+    ]
+  },
+  {
+    "namespace": "ingress-nginx",
+    "name": "ingress-nginx-controller-m6txm",
+    "same_uid": true,
+    "before": [
+      [
+        "controller",
+        true,
+        72
+      ]
+    ],
+    "after": [
+      [
+        "controller",
+        true,
+        72
+      ]
+    ]
+  },
+  {
+    "namespace": "jupyterhub",
+    "name": "continuous-image-puller-g68hd",
+    "same_uid": true,
+    "before": [
+      [
+        "pause",
+        true,
+        8
+      ]
+    ],
+    "after": [
+      [
+        "pause",
+        true,
+        8
+      ]
+    ]
+  },
+  {
+    "namespace": "kube-system",
+    "name": "system-tuning-jx5r9",
+    "same_uid": true,
+    "before": [
+      [
+        "sysctl-tuner",
+        true,
+        13
+      ]
+    ],
+    "after": [
+      [
+        "sysctl-tuner",
+        true,
+        13
+      ]
+    ]
+  },
+  {
+    "namespace": "kured",
+    "name": "kured-vwx8s",
+    "same_uid": true,
+    "before": [
+      [
+        "kured",
+        true,
+        12
+      ]
+    ],
+    "after": [
+      [
+        "kured",
+        true,
+        12
+      ]
+    ]
+  },
+  {
+    "namespace": "loki",
+    "name": "loki-canary-cz7dq",
+    "same_uid": true,
+    "before": [
+      [
+        "loki-canary",
+        true,
+        12
+      ]
+    ],
+    "after": [
+      [
+        "loki-canary",
+        true,
+        12
+      ]
+    ]
+  },
+  {
+    "namespace": "longhorn-system",
+    "name": "engine-image-ei-27581b25-vzn67",
+    "same_uid": true,
+    "before": [
+      [
+        "engine-image-ei-27581b25",
+        true,
+        17
+      ]
+    ],
+    "after": [
+      [
+        "engine-image-ei-27581b25",
+        true,
+        17
+      ]
+    ]
+  },
+  {
+    "namespace": "longhorn-system",
+    "name": "longhorn-csi-plugin-px92r",
+    "same_uid": true,
+    "before": [
+      [
+        "longhorn-csi-plugin",
+        true,
+        20
+      ],
+      [
+        "longhorn-liveness-probe",
+        true,
+        17
+      ],
+      [
+        "node-driver-registrar",
+        true,
+        20
+      ]
+    ],
+    "after": [
+      [
+        "longhorn-csi-plugin",
+        true,
+        20
+      ],
+      [
+        "longhorn-liveness-probe",
+        true,
+        17
+      ],
+      [
+        "node-driver-registrar",
+        true,
+        20
+      ]
+    ]
+  },
+  {
+    "namespace": "longhorn-system",
+    "name": "longhorn-manager-frn9c",
+    "same_uid": true,
+    "before": [
+      [
+        "longhorn-manager",
+        true,
+        16
+      ],
+      [
+        "pre-pull-share-manager-image",
+        true,
+        13
+      ]
+    ],
+    "after": [
+      [
+        "longhorn-manager",
+        true,
+        16
+      ],
+      [
+        "pre-pull-share-manager-image",
+        true,
+        13
+      ]
+    ]
+  },
+  {
+    "namespace": "metallb-system",
+    "name": "metallb-frr-k8s-cxnlc",
+    "same_uid": true,
+    "before": [
+      [
+        "controller",
+        true,
+        8
+      ],
+      [
+        "frr",
+        true,
+        22
+      ],
+      [
+        "frr-metrics",
+        true,
+        8
+      ],
+      [
+        "frr-status",
+        true,
+        8
+      ],
+      [
+        "reloader",
+        true,
+        8
+      ]
+    ],
+    "after": [
+      [
+        "controller",
+        true,
+        8
+      ],
+      [
+        "frr",
+        true,
+        22
+      ],
+      [
+        "frr-metrics",
+        true,
+        8
+      ],
+      [
+        "frr-status",
+        true,
+        8
+      ],
+      [
+        "reloader",
+        true,
+        8
+      ]
+    ]
+  },
+  {
+    "namespace": "metallb-system",
+    "name": "metallb-speaker-qlrmd",
+    "same_uid": true,
+    "before": [
+      [
+        "speaker",
+        true,
+        8
+      ]
+    ],
+    "after": [
+      [
+        "speaker",
+        true,
+        8
+      ]
+    ]
+  },
+  {
+    "namespace": "spegel",
+    "name": "spegel-9vzlm",
+    "same_uid": true,
+    "before": [
+      [
+        "registry",
+        true,
+        19
+      ]
+    ],
+    "after": [
+      [
+        "registry",
+        true,
+        19
+      ]
+    ]
+  }
+]

@@ -1,0 +1,79 @@
+{
+  "apiVersion": "v1",
+  "kind": "Pod",
+  "metadata": {
+    "name": "nri-hotfix-cpu-survivor",
+    "namespace": "gpu-operator",
+    "labels": {
+      "cps.unileoben.ac.at/extended-probe": "nri-hotfix-qualified"
+    }
+  },
+  "spec": {
+    "nodeName": "k3s-wk-gpu2",
+    "restartPolicy": "Never",
+    "activeDeadlineSeconds": 240,
+    "terminationGracePeriodSeconds": 15,
+    "automountServiceAccountToken": false,
+    "imagePullSecrets": [
+      {
+        "name": "cps-native-image-pull"
+      }
+    ],
+    "securityContext": {
+      "runAsNonRoot": true,
+      "runAsUser": 1000,
+      "runAsGroup": 1000,
+      "seccompProfile": {
+        "type": "RuntimeDefault"
+      }
+    },
+    "containers": [
+      {
+        "name": "main",
+        "image": "ghcr.io/mul-cps/cps-ubuntu-release-upgrade@sha256:5030556ecf8cd38fc9acc4676316bd0a3217d1ab10930b75b9dba7106e8f4004",
+        "command": [
+          "python3",
+          "-u",
+          "-c",
+          "import time,json,pathlib\nend=time.monotonic()+180\nwhile time.monotonic()<end and not pathlib.Path(\"/tmp/release\").exists():\n print(json.dumps({\"cpu_progress\":time.time()}),flush=True);time.sleep(1)\nprint(\"CPU_CONTINUITY_PASSED\",flush=True)"
+        ],
+        "env": [
+          {
+            "name": "NVIDIA_DRIVER_CAPABILITIES",
+            "value": "compute,utility"
+          },
+          {
+            "name": "EXPECTED_NODE",
+            "value": "k3s-wk-gpu2"
+          },
+          {
+            "name": "POD_UID",
+            "valueFrom": {
+              "fieldRef": {
+                "fieldPath": "metadata.uid"
+              }
+            }
+          }
+        ],
+        "resources": {
+          "requests": {
+            "cpu": "200m",
+            "memory": "128Mi"
+          },
+          "limits": {
+            "cpu": "2",
+            "memory": "4Gi"
+          }
+        },
+        "securityContext": {
+          "allowPrivilegeEscalation": false,
+          "capabilities": {
+            "drop": [
+              "ALL"
+            ]
+          }
+        }
+      }
+    ]
+  }
+}

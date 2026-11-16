@@ -1,0 +1,61 @@
+---
+# Source: gpu-fractioning/templates/monitors.yaml
+# metricsd sidecars: per-pod GPU metrics on the fractiond DaemonSet pods. A single
+# PodMonitor discovers every metricsd pod — Prometheus creates one scrape target
+# per pod, i.e. one per GPU node.
+apiVersion: monitoring.coreos.com/v1
+kind: PodMonitor
+metadata:
+  name: gpu-fractioning-metricsd
+  namespace: gpu-fractioning
+  labels:
+    helm.sh/chart: gpu-fractioning-v0.1.9
+    app.kubernetes.io/name: gpu-fractioning
+    app.kubernetes.io/instance: gpu-fractioning
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/version: "v0.1.9"
+spec:
+  # These values are fixed literals on purpose: the daemon pods are labelled by
+  # the operator (daemonmgr.ManagedByValue = "gpu-fractioning" and the component
+  # name), not by Helm. The gpu-fractioning.name helper would follow nameOverride and
+  # stop matching the operator-set label, so it must not be used here.
+  selector:
+    matchLabels:
+      app.kubernetes.io/managed-by: gpu-fractioning
+      app.kubernetes.io/component: fractiond
+  namespaceSelector:
+    matchNames:
+      - gpu-fractioning
+  podMetricsEndpoints:
+    - port: metrics
+      path: /metrics
+      interval: 30s
+---
+# Source: gpu-fractioning/templates/monitors.yaml
+# Controller metrics: reconcile counters + node/daemon gauges, scraped over plain
+# HTTP from the metrics Service.
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: gpu-fractioning
+  namespace: gpu-fractioning
+  labels:
+    helm.sh/chart: gpu-fractioning-v0.1.9
+    app.kubernetes.io/name: gpu-fractioning
+    app.kubernetes.io/instance: gpu-fractioning
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/version: "v0.1.9"
+spec:
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: gpu-fractioning
+      app.kubernetes.io/instance: gpu-fractioning
+  namespaceSelector:
+    matchNames:
+      - gpu-fractioning
+  endpoints:
+    - port: http
+      scheme: http
+      path: /metrics
+      interval: 30s
+      scrapeTimeout: 10s

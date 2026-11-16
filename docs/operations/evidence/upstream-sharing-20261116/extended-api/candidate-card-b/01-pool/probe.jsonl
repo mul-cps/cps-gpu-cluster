@@ -1,0 +1,56 @@
+{"step": "gate", "pid": 1, "time": 1794854716.796179, "name": "start"}
+{"step": "cuInit", "pid": 1, "time": 1794854719.0702832, "result": 0, "expected": 0}
+{"step": "cuDeviceGetCount", "pid": 1, "time": 1794854719.0704656, "result": 0, "expected": 0}
+{"step": "cuDeviceGet", "pid": 1, "time": 1794854719.070498, "result": 0, "expected": 0}
+{"step": "cuDeviceGetUuid_v2", "pid": 1, "time": 1794854719.0705464, "result": 0, "expected": 0}
+{"step": "identity", "pid": 1, "time": 1794854719.07076, "gpu_uuid": "GPU-1e6145d5-8ee2-43e2-a0d5-6d345909e8a6", "cgroup": "0::/\n", "stat": "1 (python3) R 0 1 1 0 -1 4194560 4907 6122 0 0 6 10 2 3 20 0 2 0 72551 4618690560 10406 18446744073709551615 4325376 7352253 140725288349824 0 0 0 0 16781312 8194 0 0 0 17 24 0 0 0 0 0 10653128 12216448 279674880 140725288356362 140725288356446 140725288356446 140725288357863 0\n", "node": "k3s-wk-gpu2", "pod_uid": "9e2e9638-8a0b-4f09-9fac-9973e244e5e1"}
+{"step": "cuDeviceGetAttribute", "pid": 1, "time": 1794854719.0708034, "result": 0, "expected": 0}
+{"step": "device-attribute", "pid": 1, "time": 1794854719.07082, "attribute": 100, "name": "CU_DEVICE_ATTRIBUTE_PAGEABLE_MEMORY_ACCESS_USES_HOST_PAGE_TABLES", "value": 0, "gpu_uuid": "GPU-1e6145d5-8ee2-43e2-a0d5-6d345909e8a6"}
+{"step": "cuCtxCreate_v2", "pid": 1, "time": 1794854719.2033477, "result": 0, "expected": 0}
+{"step": "cuStreamCreate", "pid": 1, "time": 1794854719.2034996, "result": 0, "expected": 0}
+{"step": "cuDeviceGetDefaultMemPool", "pid": 1, "time": 1794854719.203593, "result": 0, "expected": 0}
+{"step": "cuMemPoolSetAttribute", "pid": 1, "time": 1794854719.2036247, "result": 0, "expected": 0}
+{"step": "pool-case", "pid": 1, "time": 1794854719.203639, "mib": 1024}
+{"step": "cuMemAllocFromPoolAsync", "pid": 1, "time": 1794854719.2186153, "result": 0, "expected": 0}
+{"step": "cuStreamSynchronize", "pid": 1, "time": 1794854719.2187614, "result": 0, "expected": 0}
+{"step": "cuMemsetD8_v2", "pid": 1, "time": 1794854719.2188337, "result": 0, "expected": 0}
+{"step": "cuCtxSynchronize", "pid": 1, "time": 1794854719.2196317, "result": 0, "expected": 0}
+{"step": "cuMemFreeAsync", "pid": 1, "time": 1794854721.2198322, "result": 0, "expected": 0}
+{"step": "cuStreamSynchronize", "pid": 1, "time": 1794854721.219916, "result": 0, "expected": 0}
+{"step": "cuMemPoolGetAttribute", "pid": 1, "time": 1794854721.2199562, "result": 0, "expected": 0}
+{"step": "pool-accounting", "pid": 1, "time": 1794854721.2199783, "attribute": 5, "bytes": 1073741824}
+{"step": "cuMemPoolGetAttribute", "pid": 1, "time": 1794854721.2200153, "result": 0, "expected": 0}
+{"step": "pool-accounting", "pid": 1, "time": 1794854721.2200344, "attribute": 7, "bytes": 0}
+{"step": "pool-case", "pid": 1, "time": 1794854721.2200532, "mib": 6144}
+{"step": "cuMemAllocFromPoolAsync", "pid": 1, "time": 1794854721.2227597, "result": 2, "expected": 2}
+{"step": "cuMemPoolGetAttribute", "pid": 1, "time": 1794854721.2228038, "result": 0, "expected": 0}
+{"step": "pool-accounting", "pid": 1, "time": 1794854721.2228181, "attribute": 5, "bytes": 4932501504}
+{"step": "cuMemPoolGetAttribute", "pid": 1, "time": 1794854721.222845, "result": 0, "expected": 0}
+{"step": "pool-accounting", "pid": 1, "time": 1794854721.2228596, "attribute": 7, "bytes": 0}
+{"step": "pool-case", "pid": 1, "time": 1794854721.2228713, "mib": 2048}
+{"step": "cuMemAllocFromPoolAsync", "pid": 1, "time": 1794854721.2248943, "result": 0, "expected": 0}
+{"step": "cuStreamSynchronize", "pid": 1, "time": 1794854721.2249334, "result": 0, "expected": 0}
+{"step": "cuMemsetD8_v2", "pid": 1, "time": 1794854721.22501, "result": 0, "expected": 0}
+{"step": "cuCtxSynchronize", "pid": 1, "time": 1794854721.2265933, "result": 0, "expected": 0}
+{"step": "cuMemFreeAsync", "pid": 1, "time": 1794854723.2267845, "result": 0, "expected": 0}
+{"step": "cuStreamSynchronize", "pid": 1, "time": 1794854723.2268913, "result": 0, "expected": 0}
+{"step": "cuMemPoolGetAttribute", "pid": 1, "time": 1794854723.226918, "result": 0, "expected": 0}
+{"step": "pool-accounting", "pid": 1, "time": 1794854723.2269282, "attribute": 5, "bytes": 4932501504}
+{"step": "cuMemPoolGetAttribute", "pid": 1, "time": 1794854723.2269397, "result": 0, "expected": 0}
+{"step": "pool-accounting", "pid": 1, "time": 1794854723.2269475, "attribute": 7, "bytes": 0}
+{"step": "pool-case", "pid": 1, "time": 1794854723.2269576, "mib": 2048}
+{"step": "cuMemAllocFromPoolAsync", "pid": 1, "time": 1794854723.2270153, "result": 0, "expected": 0}
+{"step": "cuStreamSynchronize", "pid": 1, "time": 1794854723.227035, "result": 0, "expected": 0}
+{"step": "cuMemsetD8_v2", "pid": 1, "time": 1794854723.2270942, "result": 0, "expected": 0}
+{"step": "cuCtxSynchronize", "pid": 1, "time": 1794854723.2286668, "result": 0, "expected": 0}
+{"step": "cuMemFreeAsync", "pid": 1, "time": 1794854725.2288513, "result": 0, "expected": 0}
+{"step": "cuStreamSynchronize", "pid": 1, "time": 1794854725.2289495, "result": 0, "expected": 0}
+{"step": "cuMemPoolGetAttribute", "pid": 1, "time": 1794854725.2289748, "result": 0, "expected": 0}
+{"step": "pool-accounting", "pid": 1, "time": 1794854725.2289848, "attribute": 5, "bytes": 4932501504}
+{"step": "cuMemPoolGetAttribute", "pid": 1, "time": 1794854725.2290149, "result": 0, "expected": 0}
+{"step": "pool-accounting", "pid": 1, "time": 1794854725.2290223, "attribute": 7, "bytes": 0}
+{"step": "cuMemPoolTrimTo", "pid": 1, "time": 1794854725.237963, "result": 0, "expected": 0}
+{"step": "cuStreamDestroy_v2", "pid": 1, "time": 1794854725.2380443, "result": 0, "expected": 0}
+{"step": "cuCtxDestroy_v2", "pid": 1, "time": 1794854725.352554, "result": 0, "expected": 0}
+{"step": "case-passed", "pid": 1, "time": 1794854725.3526402, "case": "pool"}
+{"step": "gate", "pid": 1, "time": 1794854725.3526556, "name": "release"}

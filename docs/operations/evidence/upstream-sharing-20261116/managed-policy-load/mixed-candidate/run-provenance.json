@@ -1,0 +1,25 @@
+{
+  "status": "passed",
+  "execution_exit_code": 0,
+  "runner_path": "tests/upstream-sharing/hardware/mixed_profiles_run.py",
+  "runner_sha256": "fe3af462b80d4c5333ef7b9ae8a6516a60b5b3d3fb46502983e1bc4a85ff9253",
+  "driver_image": "ghcr.io/mul-cps/cps-nvidia-driver@sha256:c3b71557aa17df43faad5a2661d81f1025ba355ac3adf784096de12cd2ef3e73",
+  "node_uid": "3336cdd5-d245-436e-b57c-2f66c6dcaa41",
+  "driver_pod_uid": "dfd0cc7a-1e57-476f-a90c-50b4f09b70c4",
+  "boot_id": "a39cdade-f00d-4cd1-9a81-c290d668194f",
+  "module_srcversion": "10301D70B8ED1758BC717E9",
+  "historical_probe_sha256": "d2a4f4cdb9ee1e6c09622a3277fffc711d0be0a2ddd140e74b03e0a20dd02515",
+  "parent_idle_release": "root-mixed-candidate-window-release-20261116",
+  "fixture_pods_deleted": 12,
+  "source_configmap_deleted": true,
+  "final_physical_state": [
+    {
+      "gpu": "GPU-16128952-b438-556a-00bb-93039ee24e56, 620.70.06, 1, 40960",
+      "compute_processes": ""
+    },
+    {
+      "gpu": "GPU-1e6145d5-8ee2-43e2-a0d5-6d345909e8a6, 620.70.06, 1, 40960",
+      "compute_processes": ""
+    }
+  ]
+}

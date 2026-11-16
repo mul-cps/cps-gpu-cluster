@@ -1,0 +1,55 @@
+time="2026-11-16T19:02:43.739035348Z" level=info msg="StopPodSandbox for \"4400f7980ed5e34cf7b5982da20604d9041f171db0f9855d9a2e238b9ba34e03\""
+time="2026-11-16T19:02:43.756049948Z" level=info msg="received sandbox exit event container_id:\"4400f7980ed5e34cf7b5982da20604d9041f171db0f9855d9a2e238b9ba34e03\" id:\"4400f7980ed5e34cf7b5982da20604d9041f171db0f9855d9a2e238b9ba34e03\" exit_status:137 exited_at:{seconds:1794855763 nanos:755581382}" monitor_name=podsandbox
+time="2026-11-16T19:02:43.825069042Z" level=info msg="shim disconnected" id=4400f7980ed5e34cf7b5982da20604d9041f171db0f9855d9a2e238b9ba34e03 namespace=k8s.io
+time="2026-11-16T19:02:43.825098858Z" level=info msg="cleaning up after shim disconnected" id=4400f7980ed5e34cf7b5982da20604d9041f171db0f9855d9a2e238b9ba34e03 namespace=k8s.io
+time="2026-11-16T19:02:43.825107845Z" level=info msg="cleaning up dead shim" id=4400f7980ed5e34cf7b5982da20604d9041f171db0f9855d9a2e238b9ba34e03 namespace=k8s.io
+time="2026-11-16T19:02:43.848470586Z" level=info msg="received sandbox container exit event sandbox_id:\"4400f7980ed5e34cf7b5982da20604d9041f171db0f9855d9a2e238b9ba34e03\" exit_status:137 exited_at:{seconds:1794855763 nanos:755581382}" monitor_name=criService
+time="2026-11-16T19:02:43.903578128Z" level=info msg="TearDown network for sandbox \"4400f7980ed5e34cf7b5982da20604d9041f171db0f9855d9a2e238b9ba34e03\" successfully"
+time="2026-11-16T19:02:43.903638491Z" level=info msg="StopPodSandbox for \"4400f7980ed5e34cf7b5982da20604d9041f171db0f9855d9a2e238b9ba34e03\" returns successfully"
+time="2026-11-16T19:02:46.101714703Z" level=info msg="RunPodSandbox for name:\"nri-candidate-hung\" uid:\"dec188c6-9899-4d8c-b038-3d4977e2f1e0\" namespace:\"gpu-operator\""
+{"cniVersion":"1.0.0","forceAddress":true,"hairpinMode":true,"ipMasq":false,"ipam":{"ranges":[[{"subnet":"10.42.7.0/24"}]],"routes":[{"dst":"10.42.0.0/16"}],"type":"host-local"},"isDefaultGateway":true,"isGateway":true,"mtu":1450,"name":"cbr0","type":"bridge"}time="2026-11-16T19:02:46.189419028Z" level=info msg="connecting to shim 45b2e0be350d4a52280dd264eb219d392c30b9634a5eccb4dcaaafebc6a4d45d" address="unix:///run/containerd/s/84679e2b7e7e118f5d81725af0d141e8d7b047a3f0bd5cf726ad4cb8a65196c5" namespace=k8s.io protocol=ttrpc version=3
+time="2026-11-16T19:02:46.261261869Z" level=info msg="RunPodSandbox for name:\"nri-candidate-hung-cpu\" uid:\"3e052213-132f-4104-a60f-c6d98c30bfee\" namespace:\"gpu-operator\""
+time="2026-11-16T19:02:46.297383398Z" level=info msg="RunPodSandbox for name:\"nri-candidate-hung\" uid:\"dec188c6-9899-4d8c-b038-3d4977e2f1e0\" namespace:\"gpu-operator\" returns sandbox id \"45b2e0be350d4a52280dd264eb219d392c30b9634a5eccb4dcaaafebc6a4d45d\""
+{"cniVersion":"1.0.0","forceAddress":true,"hairpinMode":true,"ipMasq":false,"ipam":{"ranges":[[{"subnet":"10.42.7.0/24"}]],"routes":[{"dst":"10.42.0.0/16"}],"type":"host-local"},"isDefaultGateway":true,"isGateway":true,"mtu":1450,"name":"cbr0","type":"bridge"}time="2026-11-16T19:02:46.305909458Z" level=info msg="CreateContainer within sandbox \"45b2e0be350d4a52280dd264eb219d392c30b9634a5eccb4dcaaafebc6a4d45d\" for container name:\"main\""
+time="2026-11-16T19:02:46.350081418Z" level=info msg="connecting to shim c020470f99aa038311bcea410849384c6e2adfa68e274555c34acf1f884d2ff6" address="unix:///run/containerd/s/b984104583319b0d897ddcdfb1b390f87d61fd2fea37f9d1ad345d23c59681a8" namespace=k8s.io protocol=ttrpc version=3
+time="2026-11-16T19:02:48.325369173Z" level=error msg="closing plugin 10-gpu-fractioning, failed to handle CreateContainer request: context deadline exceeded"
+time="2026-11-16T19:02:48.325473398Z" level=info msg="connection to plugin \"10-gpu-fractioning\" closed"
+time="2026-11-16T19:02:48.326000623Z" level=info msg="RunPodSandbox for name:\"nri-candidate-hung-cpu\" uid:\"3e052213-132f-4104-a60f-c6d98c30bfee\" namespace:\"gpu-operator\" returns sandbox id \"c020470f99aa038311bcea410849384c6e2adfa68e274555c34acf1f884d2ff6\""
+time="2026-11-16T19:02:48.333550539Z" level=info msg="CreateContainer within sandbox \"c020470f99aa038311bcea410849384c6e2adfa68e274555c34acf1f884d2ff6\" for container name:\"main\""
+time="2026-11-16T19:02:48.339293389Z" level=info msg="CreateContainer within sandbox \"45b2e0be350d4a52280dd264eb219d392c30b9634a5eccb4dcaaafebc6a4d45d\" for name:\"main\" returns container id \"266f861a034c05925279076be1b209448c9ceda51597a283622b13ee3b8ddc78\""
+time="2026-11-16T19:02:48.339620440Z" level=info msg="StartContainer for \"266f861a034c05925279076be1b209448c9ceda51597a283622b13ee3b8ddc78\""
+time="2026-11-16T19:02:48.340575514Z" level=info msg="connecting to shim 266f861a034c05925279076be1b209448c9ceda51597a283622b13ee3b8ddc78" address="unix:///run/containerd/s/84679e2b7e7e118f5d81725af0d141e8d7b047a3f0bd5cf726ad4cb8a65196c5" protocol=ttrpc version=3
+time="2026-11-16T19:02:48.363740015Z" level=info msg="CreateContainer within sandbox \"c020470f99aa038311bcea410849384c6e2adfa68e274555c34acf1f884d2ff6\" for name:\"main\" returns container id \"39a2a3f0ea9e22c8e11529f2c5e73a62031299f0d1e543085f09d68048d559c8\""
+time="2026-11-16T19:02:48.364171771Z" level=info msg="StartContainer for \"39a2a3f0ea9e22c8e11529f2c5e73a62031299f0d1e543085f09d68048d559c8\""
+time="2026-11-16T19:02:48.365164186Z" level=info msg="connecting to shim 39a2a3f0ea9e22c8e11529f2c5e73a62031299f0d1e543085f09d68048d559c8" address="unix:///run/containerd/s/b984104583319b0d897ddcdfb1b390f87d61fd2fea37f9d1ad345d23c59681a8" protocol=ttrpc version=3
+time="2026-11-16T19:02:48.444897098Z" level=info msg="StartContainer for \"39a2a3f0ea9e22c8e11529f2c5e73a62031299f0d1e543085f09d68048d559c8\" returns successfully"
+time="2026-11-16T19:02:48.445144500Z" level=info msg="StartContainer for \"266f861a034c05925279076be1b209448c9ceda51597a283622b13ee3b8ddc78\" returns successfully"
+time="2026-11-16T19:02:48.451665144Z" level=info msg="received container exit event container_id:\"266f861a034c05925279076be1b209448c9ceda51597a283622b13ee3b8ddc78\" id:\"266f861a034c05925279076be1b209448c9ceda51597a283622b13ee3b8ddc78\" pid:108036 exited_at:{seconds:1794855768 nanos:451300813}"
+time="2026-11-16T19:02:48.452734852Z" level=info msg="received container exit event container_id:\"39a2a3f0ea9e22c8e11529f2c5e73a62031299f0d1e543085f09d68048d559c8\" id:\"39a2a3f0ea9e22c8e11529f2c5e73a62031299f0d1e543085f09d68048d559c8\" pid:108043 exited_at:{seconds:1794855768 nanos:452456372}"
+time="2026-11-16T19:02:50.268791146Z" level=info msg="StopPodSandbox for \"c020470f99aa038311bcea410849384c6e2adfa68e274555c34acf1f884d2ff6\""
+time="2026-11-16T19:02:50.268857990Z" level=info msg="Container to stop \"39a2a3f0ea9e22c8e11529f2c5e73a62031299f0d1e543085f09d68048d559c8\" must be in running or unknown state, current state \"CONTAINER_EXITED\""
+time="2026-11-16T19:02:50.268872839Z" level=info msg="StopPodSandbox for \"45b2e0be350d4a52280dd264eb219d392c30b9634a5eccb4dcaaafebc6a4d45d\""
+time="2026-11-16T19:02:50.268961053Z" level=info msg="Container to stop \"266f861a034c05925279076be1b209448c9ceda51597a283622b13ee3b8ddc78\" must be in running or unknown state, current state \"CONTAINER_EXITED\""
+time="2026-11-16T19:02:50.278730627Z" level=info msg="received sandbox exit event container_id:\"c020470f99aa038311bcea410849384c6e2adfa68e274555c34acf1f884d2ff6\" id:\"c020470f99aa038311bcea410849384c6e2adfa68e274555c34acf1f884d2ff6\" exit_status:137 exited_at:{seconds:1794855770 nanos:278423293}" monitor_name=podsandbox
+time="2026-11-16T19:02:50.284727611Z" level=info msg="received sandbox exit event container_id:\"45b2e0be350d4a52280dd264eb219d392c30b9634a5eccb4dcaaafebc6a4d45d\" id:\"45b2e0be350d4a52280dd264eb219d392c30b9634a5eccb4dcaaafebc6a4d45d\" exit_status:137 exited_at:{seconds:1794855770 nanos:284547295}" monitor_name=podsandbox
+time="2026-11-16T19:02:50.355311591Z" level=info msg="shim disconnected" id=45b2e0be350d4a52280dd264eb219d392c30b9634a5eccb4dcaaafebc6a4d45d namespace=k8s.io
+time="2026-11-16T19:02:50.355366653Z" level=info msg="cleaning up after shim disconnected" id=45b2e0be350d4a52280dd264eb219d392c30b9634a5eccb4dcaaafebc6a4d45d namespace=k8s.io
+time="2026-11-16T19:02:50.355374217Z" level=info msg="cleaning up dead shim" id=45b2e0be350d4a52280dd264eb219d392c30b9634a5eccb4dcaaafebc6a4d45d namespace=k8s.io
+time="2026-11-16T19:02:50.355342468Z" level=info msg="shim disconnected" id=c020470f99aa038311bcea410849384c6e2adfa68e274555c34acf1f884d2ff6 namespace=k8s.io
+time="2026-11-16T19:02:50.355541389Z" level=info msg="cleaning up after shim disconnected" id=c020470f99aa038311bcea410849384c6e2adfa68e274555c34acf1f884d2ff6 namespace=k8s.io
+time="2026-11-16T19:02:50.355557520Z" level=info msg="cleaning up dead shim" id=c020470f99aa038311bcea410849384c6e2adfa68e274555c34acf1f884d2ff6 namespace=k8s.io
+time="2026-11-16T19:02:50.374153425Z" level=info msg="received sandbox container exit event sandbox_id:\"c020470f99aa038311bcea410849384c6e2adfa68e274555c34acf1f884d2ff6\" exit_status:137 exited_at:{seconds:1794855770 nanos:278423293}" monitor_name=criService
+time="2026-11-16T19:02:50.380021899Z" level=info msg="received sandbox container exit event sandbox_id:\"45b2e0be350d4a52280dd264eb219d392c30b9634a5eccb4dcaaafebc6a4d45d\" exit_status:137 exited_at:{seconds:1794855770 nanos:284547295}" monitor_name=criService
+time="2026-11-16T19:02:50.425302682Z" level=info msg="TearDown network for sandbox \"c020470f99aa038311bcea410849384c6e2adfa68e274555c34acf1f884d2ff6\" successfully"
+time="2026-11-16T19:02:50.425381790Z" level=info msg="StopPodSandbox for \"c020470f99aa038311bcea410849384c6e2adfa68e274555c34acf1f884d2ff6\" returns successfully"
+time="2026-11-16T19:02:50.446956620Z" level=info msg="TearDown network for sandbox \"45b2e0be350d4a52280dd264eb219d392c30b9634a5eccb4dcaaafebc6a4d45d\" successfully"
+time="2026-11-16T19:02:50.447053331Z" level=info msg="StopPodSandbox for \"45b2e0be350d4a52280dd264eb219d392c30b9634a5eccb4dcaaafebc6a4d45d\" returns successfully"
+time="2026-11-16T19:03:00.166568216Z" level=info msg="plugin \"external:10-gpu-fractioning[6234]\" registered as \"10-gpu-fractioning\" (with NRI version v0.12.1)"
+time="2026-11-16T19:03:00.167016354Z" level=info msg="Synchronizing NRI (plugin) with current runtime state"
+time="2026-11-16T19:03:00.219823780Z" level=info msg="synchronizing plugin 10-gpu-fractioning"
+time="2026-11-16T19:03:00.231319167Z" level=info msg="plugin invocation order"
+time="2026-11-16T19:03:00.231345477Z" level=info msg="  #1: \"00-default-validator\" (builtin:00-default-validator)"
+time="2026-11-16T19:03:00.231355145Z" level=info msg="  #2: \"10-gpu-fractioning\" (external:10-gpu-fractioning[6234])"
+time="2026-11-16T19:03:00.231359954Z" level=info msg="validator plugins"
+time="2026-11-16T19:03:00.231365234Z" level=info msg="  \"00-default-validator\" (builtin:00-default-validator)"
+time="2026-11-16T19:03:00.231374932Z" level=info msg="plugin \"10-gpu-fractioning\" connected and synchronized"

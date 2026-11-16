@@ -1,0 +1,28 @@
+{
+  "verified_at": "2026-11-16T18:38:36.624083+00:00",
+  "node": "k3s-wk-gpu2",
+  "node_uid": "3336cdd5-d245-436e-b57c-2f66c6dcaa41",
+  "boot_id": "a39cdade-f00d-4cd1-9a81-c290d668194f",
+  "os": "Ubuntu 26.04.1 LTS",
+  "kernel": "7.0.0-43-generic",
+  "driver_pod_uid": "dfd0cc7a-1e57-476f-a90c-50b4f09b70c4",
+  "driver_image_id": "ghcr.io/mul-cps/cps-nvidia-driver@sha256:c3b71557aa17df43faad5a2661d81f1025ba355ac3adf784096de12cd2ef3e73",
+  "driver_version": "620.70.06",
+  "uvm_reject_managed_memory": "Y",
+  "uvm_disable_hmm": "Y",
+  "source_sha256": "5648dbfe43957eb257d9efb715906de0fb6caa43458752544221d90db6efdb18",
+  "compiled_and_loaded_uvm_srcversion": "10301D70B8ED1758BC717E9",
+  "prior_stock_uvm_srcversion": "2F0FA19C087E86A8284E975",
+  "managed_rejections_per_card": 18,
+  "managed_error": {
+    "code": 801,
+    "name": "CUDA_ERROR_NOT_SUPPORTED"
+  },
+  "ordinary_recovery_after_every_rejection": true,
+  "raw_host_pointer_prefetch": {
+    "code": 1,
+    "name": "CUDA_ERROR_INVALID_VALUE"
+  },
+  "host_page_tables_attribute_per_card": 0,
+  "qualification": "in progress; node remains unqualified"
+}

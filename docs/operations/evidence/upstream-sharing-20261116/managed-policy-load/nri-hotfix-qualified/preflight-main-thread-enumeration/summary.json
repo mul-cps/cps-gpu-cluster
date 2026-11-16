@@ -1,0 +1,6 @@
+{
+  "status": "FAIL",
+  "started_at": 1794858645.092649,
+  "error": "CalledProcessError(1, ['ssh', '-i', '/home/bjoern/.ssh/id_ed25519', '-o', 'IdentitiesOnly=yes', '-o', 'BatchMode=yes', 'ubuntu@10.21.0.43', 'sudo python3 - '])",
+  "finished_at": 1794858646.8964305
+}

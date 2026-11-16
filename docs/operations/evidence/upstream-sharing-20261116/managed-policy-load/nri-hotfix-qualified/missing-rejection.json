@@ -1,0 +1,194 @@
+{
+  "apiVersion": "v1",
+  "kind": "Pod",
+  "metadata": {
+    "annotations": {
+      "gpu-compute.mode": "time-slicing",
+      "gpu-fraction-container-name": "main",
+      "nvidia.com/container.main.gpu-compute.mode": "time-slicing",
+      "nvidia.com/container.main.gpu-memory.limit": "5120Mi",
+      "nvidia.com/container.main.gpu-memory.request": "5120Mi",
+      "nvidia.com/container.main.gpus.devices": "k8s.device-plugin.nvidia.com/gpu=GPU-16128952-b438-556a-00bb-93039ee24e56",
+      "required-plugins.noderesource.dev/container.main": "[\"gpu-fractioning\",\"cps-required-missing-final\"]"
+    },
+    "creationTimestamp": "2026-11-16T19:53:30Z",
+    "generation": 1,
+    "labels": {
+      "cps.unileoben.ac.at/extended-probe": "nri-hotfix-qualified"
+    },
+    "name": "nri-hotfix-missing",
+    "namespace": "gpu-operator",
+    "resourceVersion": "406822538",
+    "uid": "bb41de65-5902-4e63-afe4-cbe8da871a1e"
+  },
+  "spec": {
+    "activeDeadlineSeconds": 120,
+    "automountServiceAccountToken": false,
+    "containers": [
+      {
+        "command": [
+          "python3",
+          "-u",
+          "-c",
+          "print(\"GPU_STARTED\")"
+        ],
+        "env": [
+          {
+            "name": "NVIDIA_DRIVER_CAPABILITIES",
+            "value": "compute,utility"
+          },
+          {
+            "name": "EXPECTED_NODE",
+            "value": "k3s-wk-gpu2"
+          },
+          {
+            "name": "POD_UID",
+            "valueFrom": {
+              "fieldRef": {
+                "apiVersion": "v1",
+                "fieldPath": "metadata.uid"
+              }
+            }
+          }
+        ],
+        "image": "ghcr.io/mul-cps/cps-ubuntu-release-upgrade@sha256:5030556ecf8cd38fc9acc4676316bd0a3217d1ab10930b75b9dba7106e8f4004",
+        "imagePullPolicy": "IfNotPresent",
+        "name": "main",
+        "resources": {
+          "limits": {
+            "cpu": "2",
+            "memory": "4Gi"
+          },
+          "requests": {
+            "cpu": "200m",
+            "memory": "128Mi"
+          }
+        },
+        "securityContext": {
+          "allowPrivilegeEscalation": false,
+          "capabilities": {
+            "drop": [
+              "ALL"
+            ]
+          }
+        },
+        "terminationMessagePath": "/dev/termination-log",
+        "terminationMessagePolicy": "File"
+      }
+    ],
+    "dnsPolicy": "ClusterFirst",
+    "enableServiceLinks": true,
+    "imagePullSecrets": [
+      {
+        "name": "cps-native-image-pull"
+      }
+    ],
+    "nodeName": "k3s-wk-gpu2",
+    "preemptionPolicy": "PreemptLowerPriority",
+    "priority": 0,
+    "restartPolicy": "Never",
+    "runtimeClassName": "nvidia",
+    "schedulerName": "default-scheduler",
+    "securityContext": {
+      "runAsGroup": 1000,
+      "runAsNonRoot": true,
+      "runAsUser": 1000,
+      "seccompProfile": {
+        "type": "RuntimeDefault"
+      }
+    },
+    "serviceAccount": "default",
+    "serviceAccountName": "default",
+    "terminationGracePeriodSeconds": 15,
+    "tolerations": [
+      {
+        "effect": "NoExecute",
+        "key": "node.kubernetes.io/not-ready",
+        "operator": "Exists",
+        "tolerationSeconds": 300
+      },
+      {
+        "effect": "NoExecute",
+        "key": "node.kubernetes.io/unreachable",
+        "operator": "Exists",
+        "tolerationSeconds": 300
+      }
+    ]
+  },
+  "status": {
+    "conditions": [
+      {
+        "lastProbeTime": null,
+        "lastTransitionTime": "2026-11-16T19:53:31Z",
+        "observedGeneration": 1,
+        "status": "True",
+        "type": "PodReadyToStartContainers"
+      },
+      {
+        "lastProbeTime": null,
+        "lastTransitionTime": "2026-11-16T19:53:30Z",
+        "observedGeneration": 1,
+        "status": "True",
+        "type": "Initialized"
+      },
+      {
+        "lastProbeTime": null,
+        "lastTransitionTime": "2026-11-16T19:53:30Z",
+        "message": "containers with unready status: [main]",
+        "observedGeneration": 1,
+        "reason": "ContainersNotReady",
+        "status": "False",
+        "type": "Ready"
+      },
+      {
+        "lastProbeTime": null,
+        "lastTransitionTime": "2026-11-16T19:53:30Z",
+        "message": "containers with unready status: [main]",
+        "observedGeneration": 1,
+        "reason": "ContainersNotReady",
+        "status": "False",
+        "type": "ContainersReady"
+      },
+      {
+        "lastProbeTime": null,
+        "lastTransitionTime": "2026-11-16T19:53:30Z",
+        "observedGeneration": 1,
+        "status": "True",
+        "type": "PodScheduled"
+      }
+    ],
+    "containerStatuses": [
+      {
+        "image": "ghcr.io/mul-cps/cps-ubuntu-release-upgrade@sha256:5030556ecf8cd38fc9acc4676316bd0a3217d1ab10930b75b9dba7106e8f4004",
+        "imageID": "",
+        "lastState": {},
+        "name": "main",
+        "ready": false,
+        "restartCount": 0,
+        "started": false,
+        "state": {
+          "waiting": {
+            "message": "failed to create containerd container: failed to get NRI adjustment for container: validator \"00-default-validator\" rejected container adjustment, reason: validation error: required plugin \"cps-required-missing-final\" not present",
+            "reason": "CreateContainerError"
+          }
+        }
+      }
+    ],
+    "hostIP": "10.21.0.43",
+    "hostIPs": [
+      {
+        "ip": "10.21.0.43"
+      }
+    ],
+    "observedGeneration": 1,
+    "phase": "Pending",
+    "podIP": "10.42.7.149",
+    "podIPs": [
+      {
+        "ip": "10.42.7.149"
+      }
+    ],
+    "qosClass": "Burstable",
+    "startTime": "2026-11-16T19:53:30Z"
+  }
+}

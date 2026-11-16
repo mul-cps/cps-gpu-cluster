@@ -1,0 +1,44 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: gpu2-managed-policy-storage
+  namespace: cattle-system
+spec:
+  activeDeadlineSeconds: 180
+  containers:
+  - command:
+    - python3
+    - -c
+    - import pathlib,os,hashlib,json; p=pathlib.Path('/check/acceptance.bin'); data=b'GPU2_POLICY_STORAGE_'+b'x'*(4*1024*1024);
+      f=p.open('wb'); f.write(data); f.flush(); os.fsync(f.fileno()); f.close(); assert
+      p.read_bytes()==data; print(json.dumps({'bytes':len(data),'sha256':hashlib.sha256(data).hexdigest(),'uid':os.getuid(),'result':'RW_FSYNC_PASS'}))
+    image: ghcr.io/mul-cps/cps-ubuntu-release-upgrade@sha256:5030556ecf8cd38fc9acc4676316bd0a3217d1ab10930b75b9dba7106e8f4004
+    name: main
+    resources:
+      limits:
+        memory: 128Mi
+      requests:
+        cpu: 100m
+        memory: 64Mi
+    securityContext:
+      allowPrivilegeEscalation: false
+      capabilities:
+        drop:
+        - ALL
+      readOnlyRootFilesystem: true
+    volumeMounts:
+    - mountPath: /check
+      name: data
+  nodeName: k3s-wk-gpu2
+  restartPolicy: Never
+  securityContext:
+    fsGroup: 1000
+    runAsGroup: 1000
+    runAsNonRoot: true
+    runAsUser: 1000
+    seccompProfile:
+      type: RuntimeDefault
+  volumes:
+  - name: data
+    persistentVolumeClaim:
+      claimName: gpu2-managed-policy-storage

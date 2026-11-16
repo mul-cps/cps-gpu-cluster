@@ -1,0 +1,6 @@
+{
+  "status": "FAIL",
+  "started_at": 1794858678.1469624,
+  "error": "CalledProcessError(5, ['ssh', '-i', '/home/bjoern/.ssh/id_ed25519', '-o', 'IdentitiesOnly=yes', '-o', 'BatchMode=yes', 'ubuntu@10.21.0.43', 'sudo systemctl stop cps-nri-hotfix-cont-6234.timer'])",
+  "finished_at": 1794858700.7242675
+}

@@ -1,0 +1,92 @@
+time="2026-11-16T19:51:21.562096402Z" level=info msg="RunPodSandbox for name:\"nri-hotfix-hung\" uid:\"868631d1-3802-4f44-804b-27c98b91b0ae\" namespace:\"gpu-operator\""
+{"cniVersion":"1.0.0","forceAddress":true,"hairpinMode":true,"ipMasq":false,"ipam":{"ranges":[[{"subnet":"10.42.7.0/24"}]],"routes":[{"dst":"10.42.0.0/16"}],"type":"host-local"},"isDefaultGateway":true,"isGateway":true,"mtu":1450,"name":"cbr0","type":"bridge"}time="2026-11-16T19:51:21.644162610Z" level=info msg="connecting to shim dedb2b53c14ca3b3086893f06565098d050162a726673d6e1f348bff44ffdcb9" address="unix:///run/containerd/s/ccb9e2971630125d39450d5cbaadf502094c9dc98501422c3b649188bf8f0916" namespace=k8s.io protocol=ttrpc version=3
+time="2026-11-16T19:51:21.747158397Z" level=info msg="RunPodSandbox for name:\"nri-hotfix-hung\" uid:\"868631d1-3802-4f44-804b-27c98b91b0ae\" namespace:\"gpu-operator\" returns sandbox id \"dedb2b53c14ca3b3086893f06565098d050162a726673d6e1f348bff44ffdcb9\""
+time="2026-11-16T19:51:21.754838511Z" level=info msg="CreateContainer within sandbox \"dedb2b53c14ca3b3086893f06565098d050162a726673d6e1f348bff44ffdcb9\" for container name:\"main\""
+time="2026-11-16T19:51:23.770421063Z" level=error msg="closing plugin 10-gpu-fractioning, failed to handle CreateContainer request: context deadline exceeded"
+time="2026-11-16T19:51:23.770539443Z" level=info msg="connection to plugin \"10-gpu-fractioning\" closed"
+time="2026-11-16T19:51:23.770670738Z" level=error msg="rejecting adjustment: validation error: required plugin \"gpu-fractioning\" not present"
+time="2026-11-16T19:51:23.774852191Z" level=error msg="CreateContainer within sandbox \"dedb2b53c14ca3b3086893f06565098d050162a726673d6e1f348bff44ffdcb9\" for name:\"main\" failed" error="rpc error: code = Unknown desc = failed to create containerd container: failed to get NRI adjustment for container: validator \"00-default-validator\" rejected container adjustment, reason: validation error: required plugin \"gpu-fractioning\" not present"
+time="2026-11-16T19:51:24.681834507Z" level=info msg="CreateContainer within sandbox \"dedb2b53c14ca3b3086893f06565098d050162a726673d6e1f348bff44ffdcb9\" for container name:\"main\""
+time="2026-11-16T19:51:24.696938266Z" level=error msg="rejecting adjustment: validation error: required plugin \"gpu-fractioning\" not present"
+time="2026-11-16T19:51:24.700170419Z" level=error msg="CreateContainer within sandbox \"dedb2b53c14ca3b3086893f06565098d050162a726673d6e1f348bff44ffdcb9\" for name:\"main\" failed" error="rpc error: code = Unknown desc = failed to create containerd container: failed to get NRI adjustment for container: validator \"00-default-validator\" rejected container adjustment, reason: validation error: required plugin \"gpu-fractioning\" not present"
+time="2026-11-16T19:51:25.225759798Z" level=info msg="RunPodSandbox for name:\"nri-hotfix-hung-cpu\" uid:\"d54b15ce-b029-4d0a-bf41-c183f0ec1507\" namespace:\"gpu-operator\""
+{"cniVersion":"1.0.0","forceAddress":true,"hairpinMode":true,"ipMasq":false,"ipam":{"ranges":[[{"subnet":"10.42.7.0/24"}]],"routes":[{"dst":"10.42.0.0/16"}],"type":"host-local"},"isDefaultGateway":true,"isGateway":true,"mtu":1450,"name":"cbr0","type":"bridge"}time="2026-11-16T19:51:25.314881108Z" level=info msg="connecting to shim 01270c9842646655ee8da7e058d6218c90ded7326d1c4829d32fc8690216cce9" address="unix:///run/containerd/s/458d1c793b96f944762074051f3fc501cb937fb3bd8958c112ec81d5a70bea7a" namespace=k8s.io protocol=ttrpc version=3
+time="2026-11-16T19:51:25.402882190Z" level=info msg="RunPodSandbox for name:\"nri-hotfix-hung-cpu\" uid:\"d54b15ce-b029-4d0a-bf41-c183f0ec1507\" namespace:\"gpu-operator\" returns sandbox id \"01270c9842646655ee8da7e058d6218c90ded7326d1c4829d32fc8690216cce9\""
+time="2026-11-16T19:51:25.409612734Z" level=info msg="CreateContainer within sandbox \"01270c9842646655ee8da7e058d6218c90ded7326d1c4829d32fc8690216cce9\" for container name:\"main\""
+time="2026-11-16T19:51:25.437577272Z" level=info msg="CreateContainer within sandbox \"01270c9842646655ee8da7e058d6218c90ded7326d1c4829d32fc8690216cce9\" for name:\"main\" returns container id \"d427899230cf9f05cf96834a1ac0acc6ee14eedf0cf96fb6dba4a49e90bf4a9f\""
+time="2026-11-16T19:51:25.438080110Z" level=info msg="StartContainer for \"d427899230cf9f05cf96834a1ac0acc6ee14eedf0cf96fb6dba4a49e90bf4a9f\""
+time="2026-11-16T19:51:25.439217940Z" level=info msg="connecting to shim d427899230cf9f05cf96834a1ac0acc6ee14eedf0cf96fb6dba4a49e90bf4a9f" address="unix:///run/containerd/s/458d1c793b96f944762074051f3fc501cb937fb3bd8958c112ec81d5a70bea7a" protocol=ttrpc version=3
+time="2026-11-16T19:51:25.524284834Z" level=info msg="StartContainer for \"d427899230cf9f05cf96834a1ac0acc6ee14eedf0cf96fb6dba4a49e90bf4a9f\" returns successfully"
+time="2026-11-16T19:51:25.533966148Z" level=info msg="received container exit event container_id:\"d427899230cf9f05cf96834a1ac0acc6ee14eedf0cf96fb6dba4a49e90bf4a9f\" id:\"d427899230cf9f05cf96834a1ac0acc6ee14eedf0cf96fb6dba4a49e90bf4a9f\" pid:172360 exited_at:{seconds:1794858685 nanos:533488758}"
+time="2026-11-16T19:51:26.693770711Z" level=info msg="StopPodSandbox for \"01270c9842646655ee8da7e058d6218c90ded7326d1c4829d32fc8690216cce9\""
+time="2026-11-16T19:51:26.693872750Z" level=info msg="Container to stop \"d427899230cf9f05cf96834a1ac0acc6ee14eedf0cf96fb6dba4a49e90bf4a9f\" must be in running or unknown state, current state \"CONTAINER_EXITED\""
+time="2026-11-16T19:51:26.705199261Z" level=info msg="received sandbox exit event container_id:\"01270c9842646655ee8da7e058d6218c90ded7326d1c4829d32fc8690216cce9\" id:\"01270c9842646655ee8da7e058d6218c90ded7326d1c4829d32fc8690216cce9\" exit_status:137 exited_at:{seconds:1794858686 nanos:704731890}" monitor_name=podsandbox
+time="2026-11-16T19:51:26.749910091Z" level=info msg="shim disconnected" id=01270c9842646655ee8da7e058d6218c90ded7326d1c4829d32fc8690216cce9 namespace=k8s.io
+time="2026-11-16T19:51:26.749949093Z" level=info msg="cleaning up after shim disconnected" id=01270c9842646655ee8da7e058d6218c90ded7326d1c4829d32fc8690216cce9 namespace=k8s.io
+time="2026-11-16T19:51:26.749958310Z" level=info msg="cleaning up dead shim" id=01270c9842646655ee8da7e058d6218c90ded7326d1c4829d32fc8690216cce9 namespace=k8s.io
+time="2026-11-16T19:51:26.769702760Z" level=info msg="received sandbox container exit event sandbox_id:\"01270c9842646655ee8da7e058d6218c90ded7326d1c4829d32fc8690216cce9\" exit_status:137 exited_at:{seconds:1794858686 nanos:704731890}" monitor_name=criService
+time="2026-11-16T19:51:26.818038756Z" level=info msg="TearDown network for sandbox \"01270c9842646655ee8da7e058d6218c90ded7326d1c4829d32fc8690216cce9\" successfully"
+time="2026-11-16T19:51:26.818095642Z" level=info msg="StopPodSandbox for \"01270c9842646655ee8da7e058d6218c90ded7326d1c4829d32fc8690216cce9\" returns successfully"
+time="2026-11-16T19:51:27.619519035Z" level=info msg="RunPodSandbox for name:\"nri-hotfix-disconnected\" uid:\"021938d0-bb18-4a59-bbd3-9871e4fdfd6c\" namespace:\"gpu-operator\""
+{"cniVersion":"1.0.0","forceAddress":true,"hairpinMode":true,"ipMasq":false,"ipam":{"ranges":[[{"subnet":"10.42.7.0/24"}]],"routes":[{"dst":"10.42.0.0/16"}],"type":"host-local"},"isDefaultGateway":true,"isGateway":true,"mtu":1450,"name":"cbr0","type":"bridge"}time="2026-11-16T19:51:27.706934647Z" level=info msg="connecting to shim 58ab6ac90732e2fa44733eb80d84b8e741c3101b76b88da78851ba667b8f5f4a" address="unix:///run/containerd/s/98144269232266d73f3182901cc11f8ccd90ad49dd3b6008fde59582d9fb6e3d" namespace=k8s.io protocol=ttrpc version=3
+time="2026-11-16T19:51:27.818698599Z" level=info msg="RunPodSandbox for name:\"nri-hotfix-disconnected\" uid:\"021938d0-bb18-4a59-bbd3-9871e4fdfd6c\" namespace:\"gpu-operator\" returns sandbox id \"58ab6ac90732e2fa44733eb80d84b8e741c3101b76b88da78851ba667b8f5f4a\""
+time="2026-11-16T19:51:27.827419502Z" level=info msg="CreateContainer within sandbox \"58ab6ac90732e2fa44733eb80d84b8e741c3101b76b88da78851ba667b8f5f4a\" for container name:\"main\""
+time="2026-11-16T19:51:27.845743874Z" level=error msg="rejecting adjustment: validation error: required plugin \"gpu-fractioning\" not present"
+time="2026-11-16T19:51:27.849249278Z" level=error msg="CreateContainer within sandbox \"58ab6ac90732e2fa44733eb80d84b8e741c3101b76b88da78851ba667b8f5f4a\" for name:\"main\" failed" error="rpc error: code = Unknown desc = failed to create containerd container: failed to get NRI adjustment for container: validator \"00-default-validator\" rejected container adjustment, reason: validation error: required plugin \"gpu-fractioning\" not present"
+time="2026-11-16T19:51:28.709874002Z" level=info msg="CreateContainer within sandbox \"58ab6ac90732e2fa44733eb80d84b8e741c3101b76b88da78851ba667b8f5f4a\" for container name:\"main\""
+time="2026-11-16T19:51:28.728452207Z" level=error msg="rejecting adjustment: validation error: required plugin \"gpu-fractioning\" not present"
+time="2026-11-16T19:51:28.731939478Z" level=error msg="CreateContainer within sandbox \"58ab6ac90732e2fa44733eb80d84b8e741c3101b76b88da78851ba667b8f5f4a\" for name:\"main\" failed" error="rpc error: code = Unknown desc = failed to create containerd container: failed to get NRI adjustment for container: validator \"00-default-validator\" rejected container adjustment, reason: validation error: required plugin \"gpu-fractioning\" not present"
+time="2026-11-16T19:51:37.774855680Z" level=info msg="CreateContainer within sandbox \"dedb2b53c14ca3b3086893f06565098d050162a726673d6e1f348bff44ffdcb9\" for container name:\"main\""
+time="2026-11-16T19:51:37.794865986Z" level=error msg="rejecting adjustment: validation error: required plugin \"gpu-fractioning\" not present"
+time="2026-11-16T19:51:37.798336525Z" level=error msg="CreateContainer within sandbox \"dedb2b53c14ca3b3086893f06565098d050162a726673d6e1f348bff44ffdcb9\" for name:\"main\" failed" error="rpc error: code = Unknown desc = failed to create containerd container: failed to get NRI adjustment for container: validator \"00-default-validator\" rejected container adjustment, reason: validation error: required plugin \"gpu-fractioning\" not present"
+time="2026-11-16T19:51:40.595299022Z" level=info msg="StopPodSandbox for \"dedb2b53c14ca3b3086893f06565098d050162a726673d6e1f348bff44ffdcb9\""
+time="2026-11-16T19:51:40.614423317Z" level=info msg="received sandbox exit event container_id:\"dedb2b53c14ca3b3086893f06565098d050162a726673d6e1f348bff44ffdcb9\" id:\"dedb2b53c14ca3b3086893f06565098d050162a726673d6e1f348bff44ffdcb9\" exit_status:137 exited_at:{seconds:1794858700 nanos:614121314}" monitor_name=podsandbox
+time="2026-11-16T19:51:40.721400493Z" level=info msg="StopPodSandbox for \"58ab6ac90732e2fa44733eb80d84b8e741c3101b76b88da78851ba667b8f5f4a\""
+time="2026-11-16T19:51:40.739962229Z" level=info msg="received sandbox exit event container_id:\"58ab6ac90732e2fa44733eb80d84b8e741c3101b76b88da78851ba667b8f5f4a\" id:\"58ab6ac90732e2fa44733eb80d84b8e741c3101b76b88da78851ba667b8f5f4a\" exit_status:137 exited_at:{seconds:1794858700 nanos:738665502}" monitor_name=podsandbox
+time="2026-11-16T19:51:40.881422386Z" level=info msg="shim disconnected" id=dedb2b53c14ca3b3086893f06565098d050162a726673d6e1f348bff44ffdcb9 namespace=k8s.io
+time="2026-11-16T19:51:40.881477129Z" level=info msg="cleaning up after shim disconnected" id=dedb2b53c14ca3b3086893f06565098d050162a726673d6e1f348bff44ffdcb9 namespace=k8s.io
+time="2026-11-16T19:51:40.881485334Z" level=info msg="cleaning up dead shim" id=dedb2b53c14ca3b3086893f06565098d050162a726673d6e1f348bff44ffdcb9 namespace=k8s.io
+time="2026-11-16T19:51:40.881435151Z" level=info msg="shim disconnected" id=58ab6ac90732e2fa44733eb80d84b8e741c3101b76b88da78851ba667b8f5f4a namespace=k8s.io
+time="2026-11-16T19:51:40.881612872Z" level=info msg="cleaning up after shim disconnected" id=58ab6ac90732e2fa44733eb80d84b8e741c3101b76b88da78851ba667b8f5f4a namespace=k8s.io
+time="2026-11-16T19:51:40.881630124Z" level=info msg="cleaning up dead shim" id=58ab6ac90732e2fa44733eb80d84b8e741c3101b76b88da78851ba667b8f5f4a namespace=k8s.io
+time="2026-11-16T19:51:40.908322825Z" level=info msg="received sandbox container exit event sandbox_id:\"dedb2b53c14ca3b3086893f06565098d050162a726673d6e1f348bff44ffdcb9\" exit_status:137 exited_at:{seconds:1794858700 nanos:614121314}" monitor_name=criService
+time="2026-11-16T19:51:40.908335809Z" level=info msg="received sandbox container exit event sandbox_id:\"58ab6ac90732e2fa44733eb80d84b8e741c3101b76b88da78851ba667b8f5f4a\" exit_status:137 exited_at:{seconds:1794858700 nanos:738665502}" monitor_name=criService
+time="2026-11-16T19:51:40.942742306Z" level=info msg="plugin \"external:10-gpu-fractioning[6234]\" registered as \"10-gpu-fractioning\" (with NRI version v0.12.1)"
+time="2026-11-16T19:51:40.964219166Z" level=info msg="TearDown network for sandbox \"dedb2b53c14ca3b3086893f06565098d050162a726673d6e1f348bff44ffdcb9\" successfully"
+time="2026-11-16T19:51:40.964287422Z" level=info msg="StopPodSandbox for \"dedb2b53c14ca3b3086893f06565098d050162a726673d6e1f348bff44ffdcb9\" returns successfully"
+time="2026-11-16T19:51:40.982970645Z" level=info msg="TearDown network for sandbox \"58ab6ac90732e2fa44733eb80d84b8e741c3101b76b88da78851ba667b8f5f4a\" successfully"
+time="2026-11-16T19:51:40.983041096Z" level=info msg="StopPodSandbox for \"58ab6ac90732e2fa44733eb80d84b8e741c3101b76b88da78851ba667b8f5f4a\" returns successfully"
+time="2026-11-16T19:51:40.983086822Z" level=info msg="Synchronizing NRI (plugin) with current runtime state"
+time="2026-11-16T19:51:41.029517942Z" level=info msg="synchronizing plugin 10-gpu-fractioning"
+time="2026-11-16T19:51:41.041512167Z" level=info msg="plugin invocation order"
+time="2026-11-16T19:51:41.041526152Z" level=info msg="  #1: \"00-default-validator\" (builtin:00-default-validator)"
+time="2026-11-16T19:51:41.041534418Z" level=info msg="  #2: \"10-gpu-fractioning\" (external:10-gpu-fractioning[6234])"
+time="2026-11-16T19:51:41.041541321Z" level=info msg="validator plugins"
+time="2026-11-16T19:51:41.041546611Z" level=info msg="  \"00-default-validator\" (builtin:00-default-validator)"
+time="2026-11-16T19:51:41.041551720Z" level=info msg="plugin \"10-gpu-fractioning\" connected and synchronized"
+time="2026-11-16T19:51:57.851286389Z" level=info msg="RemoveContainer for \"d427899230cf9f05cf96834a1ac0acc6ee14eedf0cf96fb6dba4a49e90bf4a9f\""
+time="2026-11-16T19:51:57.863685860Z" level=info msg="RemoveContainer for \"d427899230cf9f05cf96834a1ac0acc6ee14eedf0cf96fb6dba4a49e90bf4a9f\" returns successfully"
+time="2026-11-16T19:51:57.867407918Z" level=info msg="StopPodSandbox for \"dedb2b53c14ca3b3086893f06565098d050162a726673d6e1f348bff44ffdcb9\""
+time="2026-11-16T19:51:57.892535904Z" level=info msg="TearDown network for sandbox \"dedb2b53c14ca3b3086893f06565098d050162a726673d6e1f348bff44ffdcb9\" successfully"
+time="2026-11-16T19:51:57.892602198Z" level=info msg="StopPodSandbox for \"dedb2b53c14ca3b3086893f06565098d050162a726673d6e1f348bff44ffdcb9\" returns successfully"
+time="2026-11-16T19:51:57.893064830Z" level=info msg="RemovePodSandbox for \"dedb2b53c14ca3b3086893f06565098d050162a726673d6e1f348bff44ffdcb9\""
+time="2026-11-16T19:51:57.893098452Z" level=info msg="Forcibly stopping sandbox \"dedb2b53c14ca3b3086893f06565098d050162a726673d6e1f348bff44ffdcb9\""
+time="2026-11-16T19:51:57.914539798Z" level=info msg="TearDown network for sandbox \"dedb2b53c14ca3b3086893f06565098d050162a726673d6e1f348bff44ffdcb9\" successfully"
+time="2026-11-16T19:51:57.920894562Z" level=info msg="Ensure that sandbox dedb2b53c14ca3b3086893f06565098d050162a726673d6e1f348bff44ffdcb9 in task-service has been cleanup successfully"
+time="2026-11-16T19:51:57.928207923Z" level=info msg="RemovePodSandbox \"dedb2b53c14ca3b3086893f06565098d050162a726673d6e1f348bff44ffdcb9\" returns successfully"
+time="2026-11-16T19:51:57.928559428Z" level=info msg="StopPodSandbox for \"58ab6ac90732e2fa44733eb80d84b8e741c3101b76b88da78851ba667b8f5f4a\""
+time="2026-11-16T19:51:57.948886096Z" level=info msg="TearDown network for sandbox \"58ab6ac90732e2fa44733eb80d84b8e741c3101b76b88da78851ba667b8f5f4a\" successfully"
+time="2026-11-16T19:51:57.948948441Z" level=info msg="StopPodSandbox for \"58ab6ac90732e2fa44733eb80d84b8e741c3101b76b88da78851ba667b8f5f4a\" returns successfully"
+time="2026-11-16T19:51:57.949263028Z" level=info msg="RemovePodSandbox for \"58ab6ac90732e2fa44733eb80d84b8e741c3101b76b88da78851ba667b8f5f4a\""
+time="2026-11-16T19:51:57.949302531Z" level=info msg="Forcibly stopping sandbox \"58ab6ac90732e2fa44733eb80d84b8e741c3101b76b88da78851ba667b8f5f4a\""
+time="2026-11-16T19:51:57.970426615Z" level=info msg="TearDown network for sandbox \"58ab6ac90732e2fa44733eb80d84b8e741c3101b76b88da78851ba667b8f5f4a\" successfully"
+time="2026-11-16T19:51:57.976363391Z" level=info msg="Ensure that sandbox 58ab6ac90732e2fa44733eb80d84b8e741c3101b76b88da78851ba667b8f5f4a in task-service has been cleanup successfully"
+time="2026-11-16T19:51:57.987478308Z" level=info msg="RemovePodSandbox \"58ab6ac90732e2fa44733eb80d84b8e741c3101b76b88da78851ba667b8f5f4a\" returns successfully"
+time="2026-11-16T19:51:57.987860560Z" level=info msg="StopPodSandbox for \"01270c9842646655ee8da7e058d6218c90ded7326d1c4829d32fc8690216cce9\""
+time="2026-11-16T19:51:58.011228255Z" level=info msg="TearDown network for sandbox \"01270c9842646655ee8da7e058d6218c90ded7326d1c4829d32fc8690216cce9\" successfully"
+time="2026-11-16T19:51:58.011266657Z" level=info msg="StopPodSandbox for \"01270c9842646655ee8da7e058d6218c90ded7326d1c4829d32fc8690216cce9\" returns successfully"
+time="2026-11-16T19:51:58.011557109Z" level=info msg="RemovePodSandbox for \"01270c9842646655ee8da7e058d6218c90ded7326d1c4829d32fc8690216cce9\""
+time="2026-11-16T19:51:58.011595420Z" level=info msg="Forcibly stopping sandbox \"01270c9842646655ee8da7e058d6218c90ded7326d1c4829d32fc8690216cce9\""
+time="2026-11-16T19:51:58.032198943Z" level=info msg="TearDown network for sandbox \"01270c9842646655ee8da7e058d6218c90ded7326d1c4829d32fc8690216cce9\" successfully"
+time="2026-11-16T19:51:58.037761832Z" level=info msg="Ensure that sandbox 01270c9842646655ee8da7e058d6218c90ded7326d1c4829d32fc8690216cce9 in task-service has been cleanup successfully"
+time="2026-11-16T19:51:58.044846537Z" level=info msg="RemovePodSandbox \"01270c9842646655ee8da7e058d6218c90ded7326d1c4829d32fc8690216cce9\" returns successfully"

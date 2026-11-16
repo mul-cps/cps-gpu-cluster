@@ -1,0 +1,22 @@
+{
+  "nri-hotfix-survivor": {
+    "uid": "b8e6c2c4-0872-40b5-b164-3de76f7df7d8",
+    "containers": [
+      {
+        "name": "main",
+        "containerID": "containerd://2ebf455eb2cddaa5b2fe3b860757f5a37e0f2280746896d089916f3c5156fc68",
+        "restartCount": 0
+      }
+    ]
+  },
+  "nri-hotfix-cpu-survivor": {
+    "uid": "647368ad-36a7-449f-9870-4131bbb8c7ae",
+    "containers": [
+      {
+        "name": "main",
+        "containerID": "containerd://6e59fe5b2d6adf7acf15dc78557a5e04e658ae81c0b2bfd9a5d33fac83c65538",
+        "restartCount": 0
+      }
+    ]
+  }
+}

@@ -79,6 +79,24 @@ try:
                     check('ordinary-recovery-sync', sync())
                 finally:
                     check('ordinary-recovery-free', free(ordinary))
+    if args.expect_rejected:
+        libc = C.CDLL(None)
+        libc.posix_memalign.argtypes = [C.POINTER(C.c_void_p), C.c_size_t, C.c_size_t]
+        libc.posix_memalign.restype = C.c_int
+        libc.free.argtypes = [C.c_void_p]
+        host = C.c_void_p()
+        if libc.posix_memalign(C.byref(host), 4096, 1024**2):
+            raise RuntimeError('host aligned allocation failed')
+        try:
+            C.memset(host, 3, 1024**2)
+            prefetch = api('cuMemPrefetchAsync', [C.c_uint64, C.c_size_t, C.c_int, C.c_void_p])
+            code = prefetch(host.value, 1024**2, device, None)
+            result('raw-host-pointer-prefetch', code)
+            if code == 0:
+                check('unexpected-host-prefetch-sync', sync())
+                raise RuntimeError('unregistered host pointer unexpectedly accepted for GPU migration')
+        finally:
+            libc.free(host)
 finally:
     check('destroy', destroy(context))
 print('MANAGED_POLICY_REJECTION_AND_RECOVERY_PASSED' if args.expect_rejected else 'STOCK_MANAGED_BASELINE_PASSED', flush=True)

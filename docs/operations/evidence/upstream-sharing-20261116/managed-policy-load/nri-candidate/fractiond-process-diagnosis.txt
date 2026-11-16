@@ -1,0 +1,1 @@
+   6234    5434 Mon Nov 16 18:33:38 2026 Ssl  fractiond       /fractiond --support-sm-sharing=false --inject-cdi-device=false --socket-path /var/run/nri/nri.sock --retroactive-enforcement=true --cri-socket /run/k3s/containerd/containerd.sock

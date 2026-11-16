@@ -1,0 +1,8 @@
+{
+  "status": "PASS",
+  "first_required_timeout_rejected": true,
+  "disconnected_required_rejected": true,
+  "cpu_success_while_stopped": true,
+  "timer_restored_exact_pid": true,
+  "post_check_fixture_error": "auto-collected timer stop returned 5; verified inactive/not-found; no repeat injection"
+}

@@ -1,0 +1,19 @@
+{
+  "status": "hardware-cases-passed",
+  "node": "k3s-wk-gpu2",
+  "node_ip": "10.21.0.43",
+  "gpu_uuid": "GPU-16128952-b438-556a-00bb-93039ee24e56",
+  "image": "ghcr.io/mul-cps/cps-ubuntu-release-upgrade@sha256:5030556ecf8cd38fc9acc4676316bd0a3217d1ab10930b75b9dba7106e8f4004",
+  "cases": [
+    "vmm",
+    "pool",
+    "ipc",
+    "crash",
+    "race",
+    "recovery",
+    "recovery"
+  ],
+  "probe_sha256": "1d9c5a5a15f44aa01deab76b67c2e3d3d890258cc245bffa5c458d1455db0cff",
+  "parent_idle_release": "root-candidate-c3b-window-postboot-a39-20261116",
+  "node_uid": "3336cdd5-d245-436e-b57c-2f66c6dcaa41"
+}

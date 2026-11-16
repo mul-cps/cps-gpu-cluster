@@ -1,0 +1,17 @@
+{"step": "gate", "pid": 1, "time": 1794854793.8734, "name": "start"}
+{"step": "cuInit", "pid": 1, "time": 1794854796.1568894, "result": 0, "expected": 0}
+{"step": "cuDeviceGetCount", "pid": 1, "time": 1794854796.1571033, "result": 0, "expected": 0}
+{"step": "cuDeviceGet", "pid": 1, "time": 1794854796.1571429, "result": 0, "expected": 0}
+{"step": "cuDeviceGetUuid_v2", "pid": 1, "time": 1794854796.1572013, "result": 0, "expected": 0}
+{"step": "identity", "pid": 1, "time": 1794854796.157454, "gpu_uuid": "GPU-1e6145d5-8ee2-43e2-a0d5-6d345909e8a6", "cgroup": "0::/\n", "stat": "1 (python3) R 0 1 1 0 -1 4194560 4896 6153 0 0 6 11 1 3 20 0 2 0 80259 4618686464 10491 18446744073709551615 4325376 7352253 140731977091392 0 0 0 0 16781312 8194 0 0 0 17 13 0 0 0 0 0 10653128 12216448 705175552 140731977095686 140731977095774 140731977095774 140731977097191 0\n", "node": "k3s-wk-gpu2", "pod_uid": "c1d178ee-e77f-4a63-81ab-5db0625ae0c5"}
+{"step": "cuDeviceGetAttribute", "pid": 1, "time": 1794854796.1574955, "result": 0, "expected": 0}
+{"step": "device-attribute", "pid": 1, "time": 1794854796.157512, "attribute": 100, "name": "CU_DEVICE_ATTRIBUTE_PAGEABLE_MEMORY_ACCESS_USES_HOST_PAGE_TABLES", "value": 0, "gpu_uuid": "GPU-1e6145d5-8ee2-43e2-a0d5-6d345909e8a6"}
+{"step": "cuCtxCreate_v2", "pid": 1, "time": 1794854796.3007078, "result": 0, "expected": 0}
+{"step": "cuMemAlloc_v2", "pid": 1, "time": 1794854796.3011138, "result": 2, "expected": 2}
+{"step": "recovery-allocation", "pid": 1, "time": 1794854796.3015316, "result": 0, "mib": 4096}
+{"step": "cuMemsetD8_v2", "pid": 1, "time": 1794854796.3016331, "result": 0, "expected": 0}
+{"step": "cuCtxSynchronize", "pid": 1, "time": 1794854796.304732, "result": 0, "expected": 0}
+{"step": "cuMemFree_v2", "pid": 1, "time": 1794854798.3079438, "result": 0, "expected": 0}
+{"step": "cuCtxDestroy_v2", "pid": 1, "time": 1794854798.44141, "result": 0, "expected": 0}
+{"step": "case-passed", "pid": 1, "time": 1794854798.4415016, "case": "recovery"}
+{"step": "gate", "pid": 1, "time": 1794854798.441515, "name": "release"}

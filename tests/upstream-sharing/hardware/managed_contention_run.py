@@ -25,7 +25,11 @@ def main():
     parser.add_argument('--peer-mode', choices=['managed', 'ordinary'], default='ordinary')
     parser.add_argument('--borrower-mib', type=int, default=36864)
     parser.add_argument('--reverse', action='store_true')
+    parser.add_argument('--expect-managed-rejection', action='store_true',
+                        help='Require driver-boundary borrower rejection and protected ordinary peer progress')
     args = parser.parse_args()
+    if args.expect_managed_rejection and args.peer_mode != 'ordinary':
+        parser.error('rejection witness requires a supported ordinary-memory peer')
     if not args.gpu_uuid.startswith('GPU-') or not 5120 < args.borrower_mib < 40960:
         parser.error('require an explicit GPU UUID and bounded managed borrower size')
     args.out.mkdir(parents=True, exist_ok=False)
@@ -123,10 +127,19 @@ def main():
             try:
                 wait_filled(name)
             except RuntimeError:
-                if not (args.reverse and name == names[0]):
+                if name != names[0] or not (args.reverse or args.expect_managed_rejection):
                     raise
-                # A borrower may be rejected or killed while the promised peer progresses.
-                (args.out / 'borrower-rejected-under-contention.txt').write_text(kubectl('logs', '-n', 'gpu-operator', name))
+                logs = kubectl('logs', '-n', 'gpu-operator', name)
+                if args.expect_managed_rejection:
+                    events = [json.loads(line) for line in logs.splitlines() if line.startswith('{')]
+                    allocations = [e for e in events if e.get('step') == 'allocation']
+                    if not allocations or not all(e.get('result', 0) != 0 for e in allocations):
+                        raise RuntimeError('borrower failed without an observed driver allocation rejection')
+                # Preserve the exact error; a rejection is only expected in the opt-in policy witness.
+                (args.out / 'borrower-rejected-under-contention.txt').write_text(logs)
+            else:
+                if args.expect_managed_rejection and name == names[0]:
+                    raise RuntimeError('managed borrower unexpectedly accepted by rejection policy')
             (args.out / (name + '-filled.csv')).write_text(smi('--query-gpu=uuid,memory.used', '--format=csv,noheader'))
         # The protected peer must continue real memset+sync work after contention.
         time.sleep(12)
@@ -140,7 +153,8 @@ def main():
         time.sleep(2)
         save_logs()
         (args.out / 'result.json').write_text(json.dumps({'protected_peer_progress': True,
-            'borrower_survival_required': False, 'idle_borrowing_allowed': True}, indent=2))
+            'borrower_survival_required': False, 'idle_borrowing_allowed': True,
+            'managed_rejection_required': args.expect_managed_rejection}, indent=2))
     except Exception as error:
         (args.out / 'result.json').write_text(json.dumps({'protected_peer_progress': False,
             'error': str(error), 'error_type': type(error).__name__}, indent=2))

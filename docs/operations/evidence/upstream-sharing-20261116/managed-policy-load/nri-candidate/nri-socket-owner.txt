@@ -1,0 +1,3 @@
+Netid State Recv-Q Send-Q         Local Address:Port   Peer Address:Port  Process                                 
+u_str ESTAB 0      0      /var/run/nri/nri.sock 732087            * 781337 users:(("containerd",pid=102825,fd=17))
+u_str ESTAB 0      0                          * 781337            * 732087 users:(("fractiond",pid=6234,fd=4))    

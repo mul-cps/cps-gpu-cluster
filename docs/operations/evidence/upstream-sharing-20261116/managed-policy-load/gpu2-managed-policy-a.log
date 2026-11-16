@@ -1,0 +1,102 @@
+{"step": "init", "code": 0, "error_name": "CUDA_SUCCESS"}
+{"step": "device", "code": 0, "error_name": "CUDA_SUCCESS"}
+{"step": "uuid", "code": 0, "error_name": "CUDA_SUCCESS"}
+{"gpu_uuid": "GPU-16128952-b438-556a-00bb-93039ee24e56"}
+{"step": "attribute-pageable_memory_access", "code": 0, "error_name": "CUDA_SUCCESS"}
+{"attribute": "pageable_memory_access", "value": 0}
+{"step": "attribute-uses_host_page_tables", "code": 0, "error_name": "CUDA_SUCCESS"}
+{"attribute": "uses_host_page_tables", "value": 0}
+{"step": "context", "code": 0, "error_name": "CUDA_SUCCESS"}
+{"step": "managed-allocation", "code": 801, "error_name": "CUDA_ERROR_NOT_SUPPORTED", "mib": 1, "flags": 1, "iteration": 0}
+{"step": "ordinary-recovery-allocation", "code": 0, "error_name": "CUDA_SUCCESS"}
+{"step": "ordinary-recovery-fill", "code": 0, "error_name": "CUDA_SUCCESS"}
+{"step": "ordinary-recovery-sync", "code": 0, "error_name": "CUDA_SUCCESS"}
+{"step": "ordinary-recovery-free", "code": 0, "error_name": "CUDA_SUCCESS"}
+{"step": "managed-allocation", "code": 801, "error_name": "CUDA_ERROR_NOT_SUPPORTED", "mib": 5120, "flags": 1, "iteration": 0}
+{"step": "ordinary-recovery-allocation", "code": 0, "error_name": "CUDA_SUCCESS"}
+{"step": "ordinary-recovery-fill", "code": 0, "error_name": "CUDA_SUCCESS"}
+{"step": "ordinary-recovery-sync", "code": 0, "error_name": "CUDA_SUCCESS"}
+{"step": "ordinary-recovery-free", "code": 0, "error_name": "CUDA_SUCCESS"}
+{"step": "managed-allocation", "code": 801, "error_name": "CUDA_ERROR_NOT_SUPPORTED", "mib": 24576, "flags": 1, "iteration": 0}
+{"step": "ordinary-recovery-allocation", "code": 0, "error_name": "CUDA_SUCCESS"}
+{"step": "ordinary-recovery-fill", "code": 0, "error_name": "CUDA_SUCCESS"}
+{"step": "ordinary-recovery-sync", "code": 0, "error_name": "CUDA_SUCCESS"}
+{"step": "ordinary-recovery-free", "code": 0, "error_name": "CUDA_SUCCESS"}
+{"step": "managed-allocation", "code": 801, "error_name": "CUDA_ERROR_NOT_SUPPORTED", "mib": 1, "flags": 2, "iteration": 0}
+{"step": "ordinary-recovery-allocation", "code": 0, "error_name": "CUDA_SUCCESS"}
+{"step": "ordinary-recovery-fill", "code": 0, "error_name": "CUDA_SUCCESS"}
+{"step": "ordinary-recovery-sync", "code": 0, "error_name": "CUDA_SUCCESS"}
+{"step": "ordinary-recovery-free", "code": 0, "error_name": "CUDA_SUCCESS"}
+{"step": "managed-allocation", "code": 801, "error_name": "CUDA_ERROR_NOT_SUPPORTED", "mib": 5120, "flags": 2, "iteration": 0}
+{"step": "ordinary-recovery-allocation", "code": 0, "error_name": "CUDA_SUCCESS"}
+{"step": "ordinary-recovery-fill", "code": 0, "error_name": "CUDA_SUCCESS"}
+{"step": "ordinary-recovery-sync", "code": 0, "error_name": "CUDA_SUCCESS"}
+{"step": "ordinary-recovery-free", "code": 0, "error_name": "CUDA_SUCCESS"}
+{"step": "managed-allocation", "code": 801, "error_name": "CUDA_ERROR_NOT_SUPPORTED", "mib": 24576, "flags": 2, "iteration": 0}
+{"step": "ordinary-recovery-allocation", "code": 0, "error_name": "CUDA_SUCCESS"}
+{"step": "ordinary-recovery-fill", "code": 0, "error_name": "CUDA_SUCCESS"}
+{"step": "ordinary-recovery-sync", "code": 0, "error_name": "CUDA_SUCCESS"}
+{"step": "ordinary-recovery-free", "code": 0, "error_name": "CUDA_SUCCESS"}
+{"step": "managed-allocation", "code": 801, "error_name": "CUDA_ERROR_NOT_SUPPORTED", "mib": 1, "flags": 1, "iteration": 1}
+{"step": "ordinary-recovery-allocation", "code": 0, "error_name": "CUDA_SUCCESS"}
+{"step": "ordinary-recovery-fill", "code": 0, "error_name": "CUDA_SUCCESS"}
+{"step": "ordinary-recovery-sync", "code": 0, "error_name": "CUDA_SUCCESS"}
+{"step": "ordinary-recovery-free", "code": 0, "error_name": "CUDA_SUCCESS"}
+{"step": "managed-allocation", "code": 801, "error_name": "CUDA_ERROR_NOT_SUPPORTED", "mib": 5120, "flags": 1, "iteration": 1}
+{"step": "ordinary-recovery-allocation", "code": 0, "error_name": "CUDA_SUCCESS"}
+{"step": "ordinary-recovery-fill", "code": 0, "error_name": "CUDA_SUCCESS"}
+{"step": "ordinary-recovery-sync", "code": 0, "error_name": "CUDA_SUCCESS"}
+{"step": "ordinary-recovery-free", "code": 0, "error_name": "CUDA_SUCCESS"}
+{"step": "managed-allocation", "code": 801, "error_name": "CUDA_ERROR_NOT_SUPPORTED", "mib": 24576, "flags": 1, "iteration": 1}
+{"step": "ordinary-recovery-allocation", "code": 0, "error_name": "CUDA_SUCCESS"}
+{"step": "ordinary-recovery-fill", "code": 0, "error_name": "CUDA_SUCCESS"}
+{"step": "ordinary-recovery-sync", "code": 0, "error_name": "CUDA_SUCCESS"}
+{"step": "ordinary-recovery-free", "code": 0, "error_name": "CUDA_SUCCESS"}
+{"step": "managed-allocation", "code": 801, "error_name": "CUDA_ERROR_NOT_SUPPORTED", "mib": 1, "flags": 2, "iteration": 1}
+{"step": "ordinary-recovery-allocation", "code": 0, "error_name": "CUDA_SUCCESS"}
+{"step": "ordinary-recovery-fill", "code": 0, "error_name": "CUDA_SUCCESS"}
+{"step": "ordinary-recovery-sync", "code": 0, "error_name": "CUDA_SUCCESS"}
+{"step": "ordinary-recovery-free", "code": 0, "error_name": "CUDA_SUCCESS"}
+{"step": "managed-allocation", "code": 801, "error_name": "CUDA_ERROR_NOT_SUPPORTED", "mib": 5120, "flags": 2, "iteration": 1}
+{"step": "ordinary-recovery-allocation", "code": 0, "error_name": "CUDA_SUCCESS"}
+{"step": "ordinary-recovery-fill", "code": 0, "error_name": "CUDA_SUCCESS"}
+{"step": "ordinary-recovery-sync", "code": 0, "error_name": "CUDA_SUCCESS"}
+{"step": "ordinary-recovery-free", "code": 0, "error_name": "CUDA_SUCCESS"}
+{"step": "managed-allocation", "code": 801, "error_name": "CUDA_ERROR_NOT_SUPPORTED", "mib": 24576, "flags": 2, "iteration": 1}
+{"step": "ordinary-recovery-allocation", "code": 0, "error_name": "CUDA_SUCCESS"}
+{"step": "ordinary-recovery-fill", "code": 0, "error_name": "CUDA_SUCCESS"}
+{"step": "ordinary-recovery-sync", "code": 0, "error_name": "CUDA_SUCCESS"}
+{"step": "ordinary-recovery-free", "code": 0, "error_name": "CUDA_SUCCESS"}
+{"step": "managed-allocation", "code": 801, "error_name": "CUDA_ERROR_NOT_SUPPORTED", "mib": 1, "flags": 1, "iteration": 2}
+{"step": "ordinary-recovery-allocation", "code": 0, "error_name": "CUDA_SUCCESS"}
+{"step": "ordinary-recovery-fill", "code": 0, "error_name": "CUDA_SUCCESS"}
+{"step": "ordinary-recovery-sync", "code": 0, "error_name": "CUDA_SUCCESS"}
+{"step": "ordinary-recovery-free", "code": 0, "error_name": "CUDA_SUCCESS"}
+{"step": "managed-allocation", "code": 801, "error_name": "CUDA_ERROR_NOT_SUPPORTED", "mib": 5120, "flags": 1, "iteration": 2}
+{"step": "ordinary-recovery-allocation", "code": 0, "error_name": "CUDA_SUCCESS"}
+{"step": "ordinary-recovery-fill", "code": 0, "error_name": "CUDA_SUCCESS"}
+{"step": "ordinary-recovery-sync", "code": 0, "error_name": "CUDA_SUCCESS"}
+{"step": "ordinary-recovery-free", "code": 0, "error_name": "CUDA_SUCCESS"}
+{"step": "managed-allocation", "code": 801, "error_name": "CUDA_ERROR_NOT_SUPPORTED", "mib": 24576, "flags": 1, "iteration": 2}
+{"step": "ordinary-recovery-allocation", "code": 0, "error_name": "CUDA_SUCCESS"}
+{"step": "ordinary-recovery-fill", "code": 0, "error_name": "CUDA_SUCCESS"}
+{"step": "ordinary-recovery-sync", "code": 0, "error_name": "CUDA_SUCCESS"}
+{"step": "ordinary-recovery-free", "code": 0, "error_name": "CUDA_SUCCESS"}
+{"step": "managed-allocation", "code": 801, "error_name": "CUDA_ERROR_NOT_SUPPORTED", "mib": 1, "flags": 2, "iteration": 2}
+{"step": "ordinary-recovery-allocation", "code": 0, "error_name": "CUDA_SUCCESS"}
+{"step": "ordinary-recovery-fill", "code": 0, "error_name": "CUDA_SUCCESS"}
+{"step": "ordinary-recovery-sync", "code": 0, "error_name": "CUDA_SUCCESS"}
+{"step": "ordinary-recovery-free", "code": 0, "error_name": "CUDA_SUCCESS"}
+{"step": "managed-allocation", "code": 801, "error_name": "CUDA_ERROR_NOT_SUPPORTED", "mib": 5120, "flags": 2, "iteration": 2}
+{"step": "ordinary-recovery-allocation", "code": 0, "error_name": "CUDA_SUCCESS"}
+{"step": "ordinary-recovery-fill", "code": 0, "error_name": "CUDA_SUCCESS"}
+{"step": "ordinary-recovery-sync", "code": 0, "error_name": "CUDA_SUCCESS"}
+{"step": "ordinary-recovery-free", "code": 0, "error_name": "CUDA_SUCCESS"}
+{"step": "managed-allocation", "code": 801, "error_name": "CUDA_ERROR_NOT_SUPPORTED", "mib": 24576, "flags": 2, "iteration": 2}
+{"step": "ordinary-recovery-allocation", "code": 0, "error_name": "CUDA_SUCCESS"}
+{"step": "ordinary-recovery-fill", "code": 0, "error_name": "CUDA_SUCCESS"}
+{"step": "ordinary-recovery-sync", "code": 0, "error_name": "CUDA_SUCCESS"}
+{"step": "ordinary-recovery-free", "code": 0, "error_name": "CUDA_SUCCESS"}
+{"step": "raw-host-pointer-prefetch", "code": 1, "error_name": "CUDA_ERROR_INVALID_VALUE"}
+{"step": "destroy", "code": 0, "error_name": "CUDA_SUCCESS"}
+MANAGED_POLICY_REJECTION_AND_RECOVERY_PASSED

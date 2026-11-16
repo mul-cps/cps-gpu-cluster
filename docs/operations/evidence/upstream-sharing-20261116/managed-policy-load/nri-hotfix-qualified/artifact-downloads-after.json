@@ -1,0 +1,12 @@
+{
+  "cps-argo/argo-artifact-downloads-7dbcb67b95-7qc24": {
+    "uid": "ebd6f11b-031d-4d37-987e-83f18e40da70",
+    "containers": [
+      {
+        "name": "downloads",
+        "containerID": "containerd://3a592167fc999a81b5bb2a4d072a3e630a4a77cd5be6bfa0a5d5d964451147d0",
+        "restartCount": 0
+      }
+    ]
+  }
+}
