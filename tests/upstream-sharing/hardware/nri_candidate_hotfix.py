@@ -1,21 +1,67 @@
 #!/usr/bin/env python3
 """Bounded final-binary NRI qualification. Run only in the released GPU2 window."""
+import argparse
 import copy
 import hashlib
 import json
 from pathlib import Path
+import re
 import shlex
 import subprocess
 import time
+import uuid
 
 BASE=Path('docs/operations/evidence/upstream-sharing-20261116/managed-policy-load')
-OUT=BASE/'nri-hotfix-qualified'
+OUT=None
+ARGS=None
 OLD=BASE/'nri-candidate'
 SSH=['ssh','-i','/home/bjoern/.ssh/id_ed25519','-o','IdentitiesOnly=yes','-o','BatchMode=yes','ubuntu@10.21.0.43']
 NS='gpu-operator'
 GPUS=['GPU-16128952-b438-556a-00bb-93039ee24e56','GPU-1e6145d5-8ee2-43e2-a0d5-6d345909e8a6']
 OWNED={}
 GUARD=(OLD/'resume-guard.py').read_text()
+
+def arguments(argv=None):
+    p=argparse.ArgumentParser(description=__doc__)
+    p.add_argument('--expected-boot-id',required=True)
+    p.add_argument('--output',required=True,type=Path)
+    p.add_argument('--fractiond-pod',required=True)
+    p.add_argument('--fractiond-pod-uid',required=True)
+    a=p.parse_args(argv)
+    try:
+        uuid.UUID(a.expected_boot_id);uuid.UUID(a.fractiond_pod_uid)
+    except ValueError:p.error('Full expected boot UUID and fractiond Pod UID required')
+    if not re.fullmatch(r'[a-z0-9][a-z0-9.-]{0,252}',a.fractiond_pod):p.error('Explicit valid fractiond Pod name required')
+    return a
+
+
+def fresh_output(path):
+    path.mkdir(parents=True,exist_ok=False)
+
+
+def require_boot(actual,expected):
+    if actual!=expected:raise RuntimeError('Actual boot ID differs from explicitly approved cold-boot witness')
+
+
+def validate_node(node):
+    if (not node['spec'].get('unschedulable')
+            or 'cps.unileoben.ac.at/upstream-gpu-sharing' in node['metadata'].get('labels',{})
+            or not any(t.get('key')=='cps.unileoben.ac.at/maintenance' and t.get('effect')=='NoSchedule'
+                for t in node['spec'].get('taints',[]))):
+        raise RuntimeError('Cordoned, maintenance-tainted, unqualified GPU2 required')
+
+
+def validate_fractiond(pod,args):
+    meta=pod['metadata']
+    if (meta.get('name')!=args.fractiond_pod or meta.get('uid')!=args.fractiond_pod_uid
+            or meta.get('deletionTimestamp') or pod['spec'].get('nodeName')!='k3s-wk-gpu2'):
+        raise RuntimeError('Explicit current fractiond Pod name/UID/node required')
+    rows=[c for c in pod['status'].get('containerStatuses',[]) if c['name']=='fractiond']
+    if len(rows)!=1 or 'running' not in rows[0].get('state',{}):raise RuntimeError('Running fractiond container required')
+    cid=rows[0].get('containerID','')
+    if not re.fullmatch(r'containerd://[0-9a-f]{64}',cid):raise RuntimeError('Exact CRI fractiond container ID required')
+    return cid.removeprefix('containerd://')
+
 
 def run(args,stdin=None,timeout=30):
     return subprocess.check_output(args,input=stdin,text=True,timeout=timeout)
@@ -70,6 +116,7 @@ def host_snapshot(label,idle=True):
     rows=[]
     for gpu in GPUS:
         row=json.loads(remote(observer,'--node','k3s-wk-gpu2','--gpu-uuid',gpu))
+        require_boot(row['boot_id'],ARGS.expected_boot_id)
         assert row['uvm']=={'srcversion':'10301D70B8ED1758BC717E9','parameters/uvm_reject_managed_memory':'Y','parameters/uvm_disable_hmm':'Y'}
         assert row['uvm_source_sha256']=='5648dbfe43957eb257d9efb715906de0fb6caa43458752544221d90db6efdb18'
         if idle:assert not row['compute_processes'],row
@@ -94,9 +141,8 @@ print(json.dumps({'outer_sha256':sha('/usr/local/bin/k3s'),'data_current':str(pa
     write(label+'-runtime.json',identity)
 
 def hang():
-    pod=json.loads(run(['kubectl','get','pod','-n','gpu-fractioning','gpu-fractioning-fractiond-d7j6f','-o','json']))
-    assert pod['spec']['nodeName']=='k3s-wk-gpu2'
-    cid=next(c['containerID'] for c in pod['status']['containerStatuses'] if c['name']=='fractiond').removeprefix('containerd://')
+    pod=json.loads(run(['kubectl','get','pod','-n','gpu-fractioning',ARGS.fractiond_pod,'-o','json']))
+    cid=validate_fractiond(pod,ARGS)
     identity=json.loads(remote('''import json,pathlib,subprocess,sys
 b=json.loads(subprocess.check_output(['k3s','crictl','inspect',sys.argv[1]],text=True));p=int(b['info']['pid']);root=pathlib.Path('/proc/'+str(p));cmd=(root/'cmdline').read_bytes().split(b'\\0');assert cmd[0]==b'/fractiond',cmd
 print(json.dumps({'pid':p,'starttime':(root/'stat').read_text().rsplit(')',1)[1].split()[19],'cmdline':[x.decode() for x in cmd if x],'cgroup':(root/'cgroup').read_text()}))
@@ -108,10 +154,12 @@ print(json.dumps({'pid':p,'starttime':(root/'stat').read_text().rsplit(')',1)[1]
     timer=['sudo','systemd-run','--unit='+unit,'--on-active=15s','--timer-property=AccuracySec=1us','--collect','/usr/bin/python3','-c',GUARD,str(pid),start]
     armed=False;snapshots=[];started=time.time()
     try:
+        current=json.loads(run(['kubectl','get','pod','-n','gpu-fractioning',ARGS.fractiond_pod,'-o','json']))
+        if validate_fractiond(current,ARGS)!=cid:raise RuntimeError('Fractiond container changed before STOP')
         run(SSH+[shlex.join(timer)])
         assert run(SSH+['sudo systemctl is-active '+unit+'.timer']).strip()=='active'
         armed=True
-        remote("import os,signal,pathlib;pid="+str(pid)+";fd=os.pidfd_open(pid);assert pathlib.Path('/proc/'+str(pid)+'/stat').read_text().rsplit(')',1)[1].split()[19]=="+repr(start)+";signal.pidfd_send_signal(fd,signal.SIGSTOP);os.close(fd)")
+        remote("import os,signal,pathlib;assert pathlib.Path('/proc/sys/kernel/random/boot_id').read_text().strip()=="+repr(ARGS.expected_boot_id)+";pid="+str(pid)+";fd=os.pidfd_open(pid);assert pathlib.Path('/proc/'+str(pid)+'/stat').read_text().rsplit(')',1)[1].split()[19]=="+repr(start)+";signal.pidfd_send_signal(fd,signal.SIGSTOP);os.close(fd)")
         identity['stopped_at']=time.time()
         gpu=create('hung')
         first=wait(gpu,rejected,8);write('first-rejection.json',first)
@@ -147,12 +195,15 @@ print(json.dumps({'pid':p,'starttime':(root/'stat').read_text().rsplit(')',1)[1]
         for name in list(OWNED):delete(name)
 
 def main():
-    OUT.mkdir(parents=True,exist_ok=True)
-    assert not (OUT/'summary.json').exists(),'Never overwrite a completed qualification run'
-    summary={'status':'RUNNING','started_at':time.time()}
+    global OUT,ARGS
+    ARGS=arguments()
+    OUT=ARGS.output
+    fresh_output(OUT)
+    summary={'status':'RUNNING','started_at':time.time(),'expected_boot_id':ARGS.expected_boot_id,
+        'fractiond_pod':ARGS.fractiond_pod,'fractiond_pod_uid':ARGS.fractiond_pod_uid}
     try:
         node=json.loads(run(['kubectl','get','node','k3s-wk-gpu2','-o','json']))
-        assert node['spec']['unschedulable'] and 'cps.unileoben.ac.at/upstream-sharing-qualified' not in node['metadata']['labels']
+        validate_node(node)
         write('node-before.json',node)
         host_snapshot('before')
         hang()
@@ -171,7 +222,16 @@ def main():
     except BaseException as exc:
         summary.update(status='FAIL',error=repr(exc));raise
     finally:
-        for name in list(OWNED):delete(name)
-        summary['finished_at']=time.time();write('summary.json',summary)
+        try:
+            try:
+                for name in list(OWNED):delete(name)
+            finally:
+                final_boot=remote("from pathlib import Path;print(Path('/proc/sys/kernel/random/boot_id').read_text().strip())").strip()
+                summary['final_boot_id']=final_boot
+                require_boot(final_boot,ARGS.expected_boot_id)
+        except BaseException as exc:
+            summary.update(status='FAIL',final_check_error=repr(exc));raise
+        finally:
+            summary['finished_at']=time.time();write('summary.json',summary)
 
 if __name__=='__main__':main()
