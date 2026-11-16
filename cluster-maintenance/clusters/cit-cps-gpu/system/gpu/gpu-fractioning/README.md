@@ -1,7 +1,8 @@
 # Released GPU Fractioning 0.1.9 manifests
 
 These resources are rendered from the upstream chart, not a runtime fork.
-The CRD and namespace install first; the operand bundle depends on them.
+The CRD installs first; the operand bundle depends on it. Fleet creates the
+release namespace through defaultNamespace; the bundles do not own/delete it.
 The default CR is restricted to GPU2 plus an explicit runtime nomination label.
 Do not remove either selector until that worker has completed acceptance.
 
@@ -18,8 +19,9 @@ python3 platform-staging/gpu/upstream-sharing/prepare.py fraction-postrender \
   < /tmp/fraction-raw.yaml > /tmp/fraction-scoped.yaml
 ```
 
-Split CustomResourceDefinition documents into the CRD bundle, adding the
-`gpu-fractioning` Namespace there; put the other documents in this bundle.
+Split CustomResourceDefinition documents into the CRD bundle; put the other
+documents in this bundle. Do not render a Namespace resource: Fleet creates
+the release namespace before Helm and does not give it Helm ownership.
 Remove only `helm.sh/hook*` annotations from the default CR. It is an ordinary
 GitOps-managed resource so the released post-install hook cannot create an
 unscoped default configuration outside the post-renderer. The chart's CRD
