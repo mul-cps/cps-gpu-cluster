@@ -99,6 +99,7 @@ emit(step='cuda-identity',gpu_uuid='GPU-'+str(uuid.UUID(bytes=bytes(u))),device_
     ]
     provenance = {'status': 'render-only-not-executed', 'node': a.node,
                   'node_ip': a.node_ip, 'operator_selected_worker': a.operator_selected_worker,
+                  'accepted_qualified_peers': dict(sorted(a.accepted_qualified_peers.items())),
                   'allowed_gpu_uuids': [a.gpu_a, a.gpu_b], 'expected_boot_id': a.expected_boot_id,
                   'expected_module_srcversion': a.expected_module_srcversion,
                   'driver_image': DRIVER, 'uvm_source_sha256': '5648dbfe43957eb257d9efb715906de0fb6caa43458752544221d90db6efdb18',
@@ -114,6 +115,9 @@ def arguments(argv=None, execution=False):
     p = argparse.ArgumentParser(description=__doc__)
     p.add_argument('--node', required=True, choices=[f'k3s-wk-gpu{i}' for i in range(1, 5)])
     p.add_argument('--operator-selected-worker', required=True)
+    p.add_argument('--accepted-qualified-peer', action='append', default=[],
+                   dest='accepted_qualified_peers', metavar='NAME=NODE_UID',
+                   help='Previously accepted qualified peer; repeat for each exact Ready identity')
     p.add_argument('--node-ip', required=True)
     p.add_argument('--gpu-a', required=True)
     p.add_argument('--gpu-b', required=True)
@@ -131,6 +135,19 @@ def arguments(argv=None, execution=False):
     a = p.parse_args(argv)
     if a.node != a.operator_selected_worker:
         p.error('single operator-selected worker must match --node')
+    peers = {}
+    for entry in a.accepted_qualified_peers:
+        name, separator, uid = entry.partition('=')
+        if (not separator or name not in [f'k3s-wk-gpu{i}' for i in range(1, 5)]
+                or name == a.node or name in peers):
+            p.error('accepted peer must be a distinct other worker NAME=NODE_UID')
+        try:
+            if str(uuid.UUID(uid)) != uid:
+                raise ValueError('noncanonical NodeUID')
+        except ValueError:
+            p.error('accepted peer requires exact canonical NodeUID')
+        peers[name] = uid
+    a.accepted_qualified_peers = peers
     for value in (a.namespace, a.queue, a.run_id):
         if not re.fullmatch(r'[a-z0-9][a-z0-9-]{0,39}', value):
             p.error('bounded DNS namespace/queue/run ID required')

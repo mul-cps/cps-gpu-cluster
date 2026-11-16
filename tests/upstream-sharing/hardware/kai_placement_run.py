@@ -18,6 +18,23 @@ def require_uid(resource, uid):
         raise RuntimeError('Refuse same-name replacement: ' + resource['metadata']['name'])
 
 
+def validate_qualified_nodes(nodes, selected, selected_uid, accepted_peers):
+    expected = {selected: selected_uid, **accepted_peers}
+    names = [node['metadata']['name'] for node in nodes]
+    if selected in accepted_peers or len(names) != len(set(names)) or set(names) != set(expected):
+        raise RuntimeError('Qualified workers must be exactly selected worker plus accepted peers')
+    observed = []
+    for node in nodes:
+        meta = node['metadata']
+        if (meta['uid'] != expected[meta['name']] or meta.get('deletionTimestamp')
+                or meta.get('labels', {}).get('cps.unileoben.ac.at/upstream-gpu-sharing') != 'qualified'
+                or not any(c['type'] == 'Ready' and c['status'] == 'True'
+                           for c in node.get('status', {}).get('conditions', []))):
+            raise RuntimeError('Qualified worker identity/readiness mismatch: ' + meta['name'])
+        observed.append({'name': meta['name'], 'uid': meta['uid'], 'ready': True})
+    return sorted(observed, key=lambda node: node['name'])
+
+
 def validate_assignment(pod, br, node, allowed, expected):
     meta, spec = pod['metadata'], br['spec']
     owners = [x['uid'] for x in br['metadata'].get('ownerReferences', []) if x.get('kind') == 'Pod']
@@ -130,7 +147,9 @@ def main():
             or node['metadata']['labels'].get('nvidia.com/gpu.memory') != '40960'):
         raise RuntimeError('Root must open only selected Ready matching worker for scheduling')
     qualified = get('nodes','-l','cps.unileoben.ac.at/upstream-gpu-sharing=qualified')['items']
-    if [x['metadata']['name'] for x in qualified] != [a.node]: raise RuntimeError('Exactly one qualified worker required')
+    summary['qualified_workers_before'] = validate_qualified_nodes(
+        qualified, a.node, node_uid, a.accepted_qualified_peers)
+    save('summary.json', summary)
     drivers = [p for p in get('pods','-n','gpu-operator')['items'] if p['spec'].get('nodeName')==a.node
                and p['status'].get('phase')=='Running' and any(c['name']=='nvidia-driver-ctr' for c in p['spec']['containers'])]
     if (len(drivers)!=1 or drivers[0]['metadata'].get('deletionTimestamp')
