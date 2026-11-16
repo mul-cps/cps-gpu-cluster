@@ -1,0 +1,14 @@
+{
+  "status": "candidate-not-loaded-unqualified",
+  "base_image": "ghcr.io/mul-cps/cps-nvidia-driver@sha256:0fcbf7340155f8d6868e30b1b0fbf09b601d093a9316621902d5ac09ad7874a1",
+  "stock_driver_container_revision": "d0ff0f87636185423a45a1d80093a600fe5a5492",
+  "driver_version": "620.70.06",
+  "source_package": "/usr/local/repos/nvidia-dkms-open_620.70.06-1ubuntu1_amd64.deb",
+  "stock_source_package_sha256": "fae10115b4938a4cc016d0cece0acab03756f216a4dc49491052e68519362e28",
+  "source_file": "usr/src/nvidia-620.70.06/nvidia-uvm/uvm_va_range.c",
+  "stock_source_sha256": "6ed2a2ed36f39654151d9df7e60e5812bc791517d7a1045cc841287b8f7dea91",
+  "patched_source_sha256": "5648dbfe43957eb257d9efb715906de0fb6caa43458752544221d90db6efdb18",
+  "scope": "node-wide opt-in managed-memory rejection, default false, read-only 0444",
+  "separate_released_option": "uvm_disable_hmm=1",
+  "build_source_date_epoch": 1794787200
+}
