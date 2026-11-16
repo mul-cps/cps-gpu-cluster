@@ -1,3 +1,9 @@
+**Policy update 2026-11-16:** the user accepts idle borrowing. These original
+strict-cap witnesses retain historical measurements; exceeding a nominal
+profile while idle is no longer itself a sharing acceptance failure. The
+current criterion is protection of competing users' shares and progress.
+No custom driver restriction should be added solely for idle overage.
+
 # GPU2 raw-driver enforcement witnesses
 
 These are real-hardware probes, excluded from ordinary pytest discovery. They
@@ -30,6 +36,6 @@ configuration error was corrected without changing production runtime code.
 
 Always retain logs and remove the probe Pods and ConfigMaps after the probe
 exits. Neither a passing ordinary allocation case nor Fractioning Ready is
-workspace acceptance. Managed/UVM enforcement failed on the initial candidate;
-keep GPU2 fenced until the same witness is bounded or safely rejected at the
-driver boundary and final-artifact acceptance passes.
+workspace acceptance. The initial strict managed/UVM cap check failed, and its verdict was subsequently
+superseded by the user policy above. Keep GPU2 fenced until final sharing and
+workspace acceptance passes.

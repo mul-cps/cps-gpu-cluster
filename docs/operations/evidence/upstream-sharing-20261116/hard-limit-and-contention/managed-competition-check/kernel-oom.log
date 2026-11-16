@@ -1,0 +1,13 @@
+Nov 16 12:33:24 k3s-wk-gpu2 kernel: python3 invoked oom-killer: gfp_mask=0x580cc2(GFP_HIGHUSER|__GFP_NOMEMALLOC|__GFP_ACCOUNT), order=0, oom_score_adj=999
+Nov 16 12:33:24 k3s-wk-gpu2 kernel: Memory cgroup stats for /kubepods.slice/kubepods-burstable.slice/kubepods-burstable-podccf4e8a4_0401_4455_b2bc_da4beb8fddc1.slice:
+Nov 16 12:33:24 k3s-wk-gpu2 kernel: Memory cgroup min protection 0kB -- low protection 0kB
+Nov 16 12:33:24 k3s-wk-gpu2 kernel: oom-kill:constraint=CONSTRAINT_MEMCG,nodemask=(null),cpuset=cri-containerd-18a8fbf64ff9c56d99fc9f7001da0b71adf8d1579a8ffade2c9c74de68e4f7df.scope,mems_allowed=0,oom_memcg=/kubepods.slice/kubepods-burstable.slice/kubepods-burstable-podccf4e8a4_0401_4455_b2bc_da4beb8fddc1.slice,task_memcg=/kubepods.slice/kubepods-burstable.slice/kubepods-burstable-podccf4e8a4_0401_4455_b2bc_da4beb8fddc1.slice/cri-containerd-b3e7f233437df6ef5ce0ab6f5619f6748e5fa8904296d515ba15dd976b5218ae.scope,task=python3,pid=127418,uid=1000
+Nov 16 12:33:24 k3s-wk-gpu2 kernel: Memory cgroup out of memory: Killed process 127418 (python3) total-vm:42974368kB, anon-rss:19528kB, file-rss:91564kB, shmem-rss:102072kB, UID:1000 pgtables:376kB oom_score_adj:999
+Nov 16 12:33:24 k3s-wk-gpu2 kernel: python3 invoked oom-killer: gfp_mask=0x580cc2(GFP_HIGHUSER|__GFP_NOMEMALLOC|__GFP_ACCOUNT), order=0, oom_score_adj=999
+Nov 16 12:33:24 k3s-wk-gpu2 kernel: Memory cgroup stats for /kubepods.slice/kubepods-burstable.slice/kubepods-burstable-podccf4e8a4_0401_4455_b2bc_da4beb8fddc1.slice:
+Nov 16 12:33:24 k3s-wk-gpu2 kernel: Memory cgroup min protection 0kB -- low protection 0kB
+Nov 16 12:33:24 k3s-wk-gpu2 kernel: oom-kill:constraint=CONSTRAINT_MEMCG,nodemask=(null),cpuset=cri-containerd-18a8fbf64ff9c56d99fc9f7001da0b71adf8d1579a8ffade2c9c74de68e4f7df.scope,mems_allowed=0,oom_memcg=/kubepods.slice/kubepods-burstable.slice/kubepods-burstable-podccf4e8a4_0401_4455_b2bc_da4beb8fddc1.slice,task_memcg=/kubepods.slice/kubepods-burstable.slice/kubepods-burstable-podccf4e8a4_0401_4455_b2bc_da4beb8fddc1.slice/cri-containerd-eea545e76990a7499e257b573df71b98c1df3397125374e8042303e8f1b50965.scope,task=pause,pid=127336,uid=1000
+Nov 16 12:33:24 k3s-wk-gpu2 kernel: Memory cgroup out of memory: Killed process 127336 (pause) total-vm:980kB, anon-rss:36kB, file-rss:516kB, shmem-rss:0kB, UID:1000 pgtables:36kB oom_score_adj:-998
+Nov 16 12:33:24 k3s-wk-gpu2 kernel: python3 invoked oom-killer: gfp_mask=0x580cc2(GFP_HIGHUSER|__GFP_NOMEMALLOC|__GFP_ACCOUNT), order=0, oom_score_adj=999
+Nov 16 12:33:24 k3s-wk-gpu2 kernel: Memory cgroup stats for /kubepods.slice/kubepods-burstable.slice/kubepods-burstable-podccf4e8a4_0401_4455_b2bc_da4beb8fddc1.slice:
+Nov 16 12:33:24 k3s-wk-gpu2 kernel: Memory cgroup min protection 0kB -- low protection 0kB

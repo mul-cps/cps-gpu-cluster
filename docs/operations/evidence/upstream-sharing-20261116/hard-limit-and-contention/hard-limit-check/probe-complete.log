@@ -1,0 +1,19 @@
+{"env": {"NVIDIA_VISIBLE_DEVICES": "void", "NVIDIA_GPU_MEMORY_REQUEST": "1024", "NVIDIA_GPU_MEMORY_LIMIT": "5120", "CUDA_MPS_PIPE_DIRECTORY": "/run/nvidia-mps"}}
+{"gate": "start", "waiting": true}
+{"step": "init", "result": 0}
+{"step": "device", "result": 0}
+{"step": "context", "result": 0}
+{"step": "ordinary-allocation", "result": 0, "mib": 2048, "expected": 0}
+{"step": "ordinary-fill", "result": 0}
+{"step": "ordinary-sync", "result": 0}
+{"step": "ordinary-free", "result": 0}
+{"step": "ordinary-allocation", "result": 2, "mib": 6144, "expected": 2}
+{"step": "managed-allocation", "result": 0, "mib": 6144}
+{"step": "managed-prefetch", "result": 0}
+{"step": "managed-prefetch-sync", "result": 0}
+{"step": "managed-fill", "result": 0}
+{"step": "managed-fill-sync", "result": 0}
+MANAGED_GPU_USE_COMPLETED_ABOVE_HARD_LIMIT
+{"gate": "release", "waiting": true}
+{"step": "managed-free", "result": 0}
+{"step": "destroy", "result": 0}

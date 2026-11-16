@@ -1,0 +1,24 @@
+[
+  {
+    "name": "gpu2-managed-competition-a",
+    "phase": "Failed",
+    "state": {
+      "terminated": {
+        "containerID": "containerd://b3e7f233437df6ef5ce0ab6f5619f6748e5fa8904296d515ba15dd976b5218ae",
+        "exitCode": 137,
+        "finishedAt": "2026-11-16T12:33:25Z",
+        "reason": "OOMKilled",
+        "startedAt": "2026-11-16T12:32:39Z"
+      }
+    }
+  },
+  {
+    "name": "gpu2-managed-competition-b",
+    "phase": "Running",
+    "state": {
+      "running": {
+        "startedAt": "2026-11-16T12:32:39Z"
+      }
+    }
+  }
+]

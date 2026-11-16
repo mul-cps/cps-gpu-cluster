@@ -1,0 +1,56 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  annotations:
+    nvidia.com/container.main.gpu-compute.mode: time-slicing
+    nvidia.com/container.main.gpu-memory.limit: 30720Mi
+    nvidia.com/container.main.gpu-memory.request: 18432Mi
+    nvidia.com/container.main.gpus.devices: k8s.device-plugin.nvidia.com/gpu=GPU-16128952-b438-556a-00bb-93039ee24e56
+    required-plugins.noderesource.dev/container.main: '["gpu-fractioning"]'
+  name: gpu2-vram-competition-b
+  namespace: gpu-operator
+spec:
+  containers:
+  - command:
+    - python3
+    - -u
+    - /probe/probe.py
+    - ordinary
+    - '17408'
+    - b
+    env:
+    - name: NVIDIA_DRIVER_CAPABILITIES
+      value: compute,utility
+    image: ghcr.io/mul-cps/cps-ubuntu-release-upgrade@sha256:5030556ecf8cd38fc9acc4676316bd0a3217d1ab10930b75b9dba7106e8f4004
+    name: main
+    resources:
+      limits:
+        memory: 512Mi
+      requests:
+        cpu: 200m
+        memory: 128Mi
+    securityContext:
+      allowPrivilegeEscalation: false
+      capabilities:
+        drop:
+        - ALL
+    volumeMounts:
+    - mountPath: /probe
+      name: probe
+      readOnly: true
+  imagePullSecrets:
+  - name: cps-native-image-pull
+  nodeName: k3s-wk-gpu2
+  restartPolicy: Never
+  runtimeClassName: nvidia
+  securityContext:
+    runAsGroup: 1000
+    runAsNonRoot: true
+    runAsUser: 1000
+    seccompProfile:
+      type: RuntimeDefault
+  terminationGracePeriodSeconds: 15
+  volumes:
+  - configMap:
+      name: gpu2-vram-competition-probe
+    name: probe

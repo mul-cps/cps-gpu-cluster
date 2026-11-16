@@ -1,5 +1,9 @@
 # GPU2 upstream sharing pilot — 2026-11-16
 
+**Current user policy:** idle users may borrow spare VRAM. Sharing acceptance
+protects promised shares under contention; the historical strict idle-cap
+verdict below is superseded. See the final policy/competition section.
+
 Implementation worktree: branch `work/upstream-gpu-sharing-20261116`, based on
 Fleet's deployed revision `281c8134cfac2302966aa3652a81cd398dfd565a`. The original
 shared checkout was preserved. Runtime candidates and the OS integration are in
@@ -228,3 +232,39 @@ writer, library interception or environment workaround was introduced. The next
 required work is the smallest driver-boundary rejection/accounting fix after
 considering upstream configuration/released fixes, followed by the same failing
 case and complete final-artifact acceptance. GPU3 is not nominated.
+
+## Current policy and verified hard-limit/competition diagnostics
+
+The user explicitly clarified that limits matter for sharing, and a user alone
+may use extra memory. This supersedes the earlier strict idle hard-cap criterion.
+Do not add a custom driver restriction solely to prohibit idle managed/UVM
+borrowing. The observations above remain valid diagnostics, not an automatic
+rejection under the revised policy. Full sharing/workspace acceptance remains
+required.
+
+Following NVIDIA's diagnostics, the actual leaf cgroup was resolved from the
+running container's host CRI PID on GPU2. Soft1024/hard5120 MiB were read back,
+explicitly set through nvidia-smi and read back again. Ordinary2048 MiB succeeded
+above soft; ordinary6144 MiB returned typed OOM; managed6144 MiB still completed
+GPU prefetch/fill/sync with physical6567 MiB and driver-accounted415 MiB.
+GPU2 remained cordoned: each test explicitly selected spec.nodeName, with Pod
+hostIP, host hostname/PID/cgroup and physical GPU UUID checked together.
+The kernel exposes dmem files even with misc forced; they contained no GPU
+entries, while the driver module parameter confirmed RmMemacctMode1.
+
+Two containers then competed on the same card. With soft18/hard30 GiB each,
+A filled24 GiB. B requested17 GiB; MPS selected A's over-soft cgroup, killed only
+the test borrower, logged26209746944 bytes freed and B succeeded. This verifies
+the measured ordinary-memory borrowing/reclamation path.
+
+With soft=hard5 GiB each, managed A filled36 GiB (host physical37287 MiB).
+B requested/fill4 GiB successfully. A was CPU-memory-cgroup OOM-killed at its
+4 GiB host-memory limit; kernel and container status confirm the cause. This
+protects the measured peer's progress but is not a GPU hard-limit rejection.
+All fixtures were removed and both GPUs returned to1 MiB usage. Preserve this
+causal distinction when extending tests: two outcomes do not establish every
+profile, ordering, contention pattern or application lifecycle.
+
+The complete readbacks, identity snapshots, probe source, fixture YAML and
+MPS/kernel logs are retained under
+[evidence/hard-limit-and-contention](evidence/upstream-sharing-20261116/hard-limit-and-contention/current-acceptance-policy.json).

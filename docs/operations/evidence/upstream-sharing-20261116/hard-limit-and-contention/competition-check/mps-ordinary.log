@@ -1,0 +1,30 @@
+[2026-11-16 12:28:13.552 Control ERROR 93752] Failed to receive credentials during handshake
+[2026-11-16 12:28:13.553 Control ERROR 93752] Dropping connection with failed handshake
+[2026-11-16 12:28:13.553 Other INFO     1] Using MPS V3 protocol
+[2026-11-16 12:28:13.553 Control ERROR 93752] Client uid 1000: context-share disabled; not auto-spawning server
+[2026-11-16 12:28:13.553 Control INFO 93752] memacct: Tracking fallback client pid=117979 cgroup_fd=present
+[2026-11-16 12:28:13.553 Other WARN     1] MPS daemon declined context-sharing connection; fallback to normal CUDA operation
+[2026-11-16 12:28:13.767 Control INFO 93752] [memacct] Event device=0 direction=edge-up pid=117979 target=non-mps changed=1 old=0x0 new=0x1 seq=1 more=0
+[2026-11-16 12:28:13.769 Control INFO 93752] [memacct] Event device=0 direction=edge-down pid=117979 target=non-mps changed=1 old=0x1 new=0x0 seq=0 more=0
+[2026-11-16 12:28:33.207 Control INFO 93752] Received command: memacct describe
+[2026-11-16 12:28:33.207 Control INFO 93752] NAME              OPTIONS                                                         
+[2026-11-16 12:28:33.207 Control INFO 93752] memacct           audit_log=true, force_polling=false                             
+[2026-11-16 12:31:16.222 Control ERROR 93752] Failed to receive credentials during handshake
+[2026-11-16 12:31:16.222 Control ERROR 93752] Dropping connection with failed handshake
+[2026-11-16 12:31:16.223 Other INFO     1] Using MPS V3 protocol
+[2026-11-16 12:31:16.223 Control ERROR 93752] Client uid 1000: context-share disabled; not auto-spawning server
+[2026-11-16 12:31:16.223 Control INFO 93752] memacct: Tracking fallback client pid=123899 cgroup_fd=present
+[2026-11-16 12:31:16.223 Other WARN     1] MPS daemon declined context-sharing connection; fallback to normal CUDA operation
+[2026-11-16 12:31:16.433 Control INFO 93752] [memacct] Event device=0 direction=edge-up pid=123899 target=non-mps changed=1 old=0x0 new=0x1 seq=2 more=0
+[2026-11-16 12:31:31.842 Control ERROR 93752] Failed to receive credentials during handshake
+[2026-11-16 12:31:31.842 Control ERROR 93752] Dropping connection with failed handshake
+[2026-11-16 12:31:31.842 Other INFO     1] Using MPS V3 protocol
+[2026-11-16 12:31:31.842 Control ERROR 93752] Client uid 1000: context-share disabled; not auto-spawning server
+[2026-11-16 12:31:31.842 Control INFO 93752] memacct: Tracking fallback client pid=123901 cgroup_fd=present
+[2026-11-16 12:31:31.842 Other WARN     1] MPS daemon declined context-sharing connection; fallback to normal CUDA operation
+[2026-11-16 12:31:32.046 Control INFO 93752] memacct: Eviction request from pid=123901 device=0 bytesNeeded=18253611008
+[2026-11-16 12:31:32.046 Control INFO 93752] memacct: Eviction selected cgroup=30:29631 members=1 device=0 seq=2 polled=false
+[2026-11-16 12:31:32.296 Control INFO 93752] [memacct] SIGKILL client=123899
+[2026-11-16 12:31:32.409 Control INFO 93752] [memacct] Eviction cgroup=30:29631 device=0 freed=26209746944 bytes remaining=0 bytes
+[2026-11-16 12:31:32.409 Control INFO 93752] [memacct] Eviction result=RETRY requester=123901 device=0 bytesNeeded=18253611008 trackedMembers=1 [123899]
+[2026-11-16 12:31:32.409 Control INFO 93752] [memacct] Event device=0 direction=edge-down pid=123899 target=unknown changed=0 old=0x0 new=0x0 seq=0 more=0

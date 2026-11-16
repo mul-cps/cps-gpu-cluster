@@ -1,0 +1,3 @@
+{"cgroup": "/sys/fs/cgroup/kubepods.slice/kubepods-burstable.slice/kubepods-burstable-pod70df8a27_fc80_401f_93be_641d989a6723.slice/cri-containerd-af197c9e24aabc14e6cab60681a7463f6370790a3301db7b445578f6b03e3042.scope", "dmem.current": "", "dmem.min": "", "dmem.max": "", "cgroup.subtree_control": ""}
+{"cgroup": "/sys/fs/cgroup/kubepods.slice/kubepods-burstable.slice/kubepods-burstable-pod70df8a27_fc80_401f_93be_641d989a6723.slice", "dmem.current": "", "dmem.min": "", "dmem.max": "", "cgroup.subtree_control": "cpuset cpu io memory hugetlb pids rdma misc dmem"}
+{"cgroup": "/sys/fs/cgroup", "dmem.current": "", "dmem.min": null, "dmem.max": null, "cgroup.subtree_control": "cpuset cpu io memory hugetlb pids rdma misc dmem"}

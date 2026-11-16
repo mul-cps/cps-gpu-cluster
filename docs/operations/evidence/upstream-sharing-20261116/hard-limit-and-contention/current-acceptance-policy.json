@@ -1,0 +1,39 @@
+{
+  "updated": "2026-11-16",
+  "authority": "User explicitly accepts borrowing spare VRAM while alone; limits matter for sharing under contention.",
+  "supersedes": "Earlier strict idle hard-cap acceptance verdict, including gpu2-enforcement-gate.json; measured observations remain valid.",
+  "criteria": [
+    "Idle managed/UVM usage above nominal profile is allowed.",
+    "Competing users must receive their promised shares and make independent progress.",
+    "Capacity must be recovered after cleanup; retained jobs, files and custody remain protected."
+  ],
+  "measured": {
+    "hard_limit_readback": {
+      "soft_mib": 1024,
+      "hard_mib": 5120,
+      "target": "actual container leaf cgroup on k3s-wk-gpu2",
+      "ordinary_2048_mib": "success",
+      "ordinary_6144_mib": "CUDA_ERROR_OUT_OF_MEMORY (2)",
+      "managed_6144_mib": "GPU prefetch/fill/sync succeeded; physical usage6567MiB"
+    },
+    "ordinary_competition": {
+      "soft_mib_each": 18432,
+      "hard_mib_each": 30720,
+      "a_allocation_mib": 24576,
+      "b_allocation_mib": 17408,
+      "result": "MPS detected A above soft, selected its cgroup and SIGKILLed test A, freed26209746944bytes; B allocated and filled successfully."
+    },
+    "managed_competition": {
+      "soft_mib_each": 5120,
+      "hard_mib_each": 5120,
+      "a_managed_mib": 36864,
+      "a_physical_gpu_usage_before_b_mib": 37287,
+      "b_ordinary_mib": 4096,
+      "result": "B allocation/fill succeeded. Managed A CPU memory cgroup OOM-killed at its4GiB host-memory limit; kernel log confirms PID127418. This is not an MPS GPU-hard-limit rejection."
+    },
+    "node_proof": "Pod.spec.nodeName=k3s-wk-gpu2, hostIP10.21.0.43, host-side CRI container PID and cgroup, matching GPU UUID and process PID verified. Node stayed cordoned.",
+    "backend": "RmMemacctMode1 selects misc. Kernel exposes dmem files, but GPU entries were empty at leaf/parent/root; do not infer active GPU backend solely from file existence."
+  },
+  "cleanup": "All test Pods and ConfigMaps removed; both GPUs back to1MiB used and node remains cordoned.",
+  "remaining": "Full mixed-profile, lifecycle, CPS/CIT workspace and all-worker acceptance still pending; no custom driver patch justified solely by idle overage."
+}
