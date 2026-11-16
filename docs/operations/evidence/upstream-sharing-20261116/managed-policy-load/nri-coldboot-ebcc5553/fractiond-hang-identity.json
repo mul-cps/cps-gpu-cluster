@@ -1,0 +1,18 @@
+{
+  "pid": 6652,
+  "starttime": "2578",
+  "cmdline": [
+    "/fractiond",
+    "--support-sm-sharing=false",
+    "--inject-cdi-device=false",
+    "--socket-path",
+    "/var/run/nri/nri.sock",
+    "--retroactive-enforcement=true",
+    "--cri-socket",
+    "/run/k3s/containerd/containerd.sock"
+  ],
+  "cgroup": "0::/kubepods.slice/kubepods-burstable.slice/kubepods-burstable-podc9cf5712_6c7a_4d74_a6e0_09e47c05d265.slice/cri-containerd-b9e7c160efa10f5a750e2a75dd8a8ff7d4ee4369e35013425c294dc932f4aa38.scope\n",
+  "pod_uid": "c9cf5712-6c7a-4d74-a6e0-09e47c05d265",
+  "container_id": "b9e7c160efa10f5a750e2a75dd8a8ff7d4ee4369e35013425c294dc932f4aa38",
+  "unit": "cps-nri-hotfix-cont-6652"
+}

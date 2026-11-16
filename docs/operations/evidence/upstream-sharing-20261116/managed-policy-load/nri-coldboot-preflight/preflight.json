@@ -1,0 +1,28 @@
+{
+  "argo-before.json": {
+    "sha256": "8b92f19369fd4fea38682e835d8015054020a01ceff4b3467a29fc95e4b43158",
+    "retained_privately": true
+  },
+  "standby-input.json": {
+    "sha256": "96584d0828d9af361877f049bdb07625815f102728c87792bc31b623ea352616",
+    "retained_privately": true
+  },
+  "original_reader": {
+    "deployment_uid": "6980833f-7cd0-4e07-a8be-5c5a6a6a889f",
+    "replicas": 1,
+    "strategy": "Recreate",
+    "node_selector": {
+      "kubernetes.io/hostname": "k3s-wk-gpu2"
+    },
+    "original_pod_uid": "ebd6f11b-031d-4d37-987e-83f18e40da70"
+  },
+  "phase": "clean guest poweroff submitted; Proxmox status running at first reconciliation",
+  "previous_boot_id": "a39cdade-f00d-4cd1-9a81-c290d668194f",
+  "state_semantics": "Do not replay poweroff/start until authoritative VM state reconciled",
+  "no_active_gpu_jobs": true,
+  "no_local_longhorn_io": true,
+  "all17_attached_volumes_healthy": true,
+  "argo_standby_ready_on": "k3s-wk-gpu4",
+  "original_reader_pod_files_preserved": true,
+  "temporary_scale_attempt": "2 replicas could not place standby due fixed GPU2 selector; restored replicas1, no template changes; bounded separate Pod used"
+}

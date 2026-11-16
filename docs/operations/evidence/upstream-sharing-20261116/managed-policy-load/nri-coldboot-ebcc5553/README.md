@@ -1,0 +1,13 @@
+# Post-coldboot final-artifact NRI acceptance: PASS
+
+Root explicitly released this one run after clean guest poweroff/Proxmox stopped/start and Ready driver/fractiond. Helper source SHA256 c87c8d01ad6829d88626ecd0ce804f4addd9ca33edca0cb9a5f70287f30cd17c, committed root fixture f4f69b07. Run elapsed55.789s. No retry, node/runtime/config change or fractiond Pod restart was performed by this test.
+
+Expected and actual before/final boot ebcc5553-3251-43f7-95f2-236e5e3e6b70. Node remained cordoned, maintenance-tainted and without qualification. Fractiond gpu-fractioning-fractiond-sdf6w UIDc9cf5712-6c7a-4d74-a6e0-09e47c05d265; CRI CIDb9e7c160efa10f5a750e2a75dd8a8ff7d4ee4369e35013425c294dc932f4aa38; hostPID6652/starttime2578. CID→executable/cgroup, PodUID/CID re-read, boot immediately before SIGSTOP and pidfd/starttime fences retained.
+
+Both first hung-plugin GPU CreateContainer and subsequent disconnected GPU CreateContainer returned00-default-validator rejection, required plugin gpu-fractioning not present, with no containerID/running/terminated state at the witnessed rejection. CPU-only fixture completed Succeeded while original fractiond remained stopped (stateT). The15s systemd CONT timer and final same-process resume guard completed; timer-final-state is inactive/not-found. No unsafe timeout fallback executed either rejected GPU container during the observed stopped interval.
+
+After plugin reconnect, both physical cards independently passed raw driver quota/recovery:5GiB request/limit,1GiB allocation/fill/free succeeded,6GiB allocation returned typed CUDA OOM2, subsequent2GiB allocation/fill/free succeeded, context destroy0. Recovery logs record actual steps; quota was not inferred from successful Pod readiness.
+
+Before/after host/runtime records verify UVMsrcversion10301D70B8ED1758BC717E9, both policyflagsY, effective sourceSHA5648dbfe43957eb257d9efb715906de0fb6caa43458752544221d90db6efdb18, outerSHA6ce276301723a902da671058730611591c59b5f016b816f57f2d97b05c88fe2c and actual running agent/containerd executableSHA0ca3be05fd3fcdd9682e68bbff5821ea15027773404a7e47517b822bcb57387a. Additional filtered read-only driver image identity confirms immutable c3b71557aa17df43faad5a2661d81f1025ba355ac3adf784096de12cd2ef3e73 after this cold boot.
+
+All five owned fault/CPU/recovery Pods were deleted with their originalUID preconditions. Independent post-run read returned no nri-hotfix fixture Pods. Both cards returned1MiB and no compute clients. Window returned to root immediately after completion. This closes this final-artifact post-coldboot NRI fault gate; ordinary Hub/service/metrics acceptance remains separate.

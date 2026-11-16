@@ -1,0 +1,17 @@
+{"time":"2026-11-16T21:00:12.778032925Z","level":"WARN","msg":"connection lost, retrying","error":"ttrpc: server closed","attempt":1,"uptime":86540909013,"retryIn":5000000000}
+{"time":"2026-11-16T21:00:17.782164377Z","level":"INFO","msg":"connecting to NRI runtime","attempt":2,"plugin":"gpu-fractioning","idx":"10","socket":"/var/run/nri/nri.sock"}
+{"time":"2026-11-16T21:00:17.782370554Z","level":"WARN","msg":"connection failed, retrying","error":"failed to connect to NRI service: dial unix /var/run/nri/nri.sock: connect: connection refused","attempt":2,"uptime":119525,"retryIn":10000000000}
+time="2026-11-16T21:00:12Z" level=info msg="ttrpc server closed 10-gpu-fractioning : ttrpc: server closed"
+time="2026-11-16T21:00:17Z" level=info msg="Created plugin 10-gpu-fractioning (fractiond, handles CreateContainer,RemoveContainer)"
+{"time":"2026-11-16T21:00:27.783395744Z","level":"INFO","msg":"connecting to NRI runtime","attempt":3,"plugin":"gpu-fractioning","idx":"10","socket":"/var/run/nri/nri.sock"}
+time="2026-11-16T21:00:27Z" level=info msg="Created plugin 10-gpu-fractioning (fractiond, handles CreateContainer,RemoveContainer)"
+time="2026-11-16T21:00:27Z" level=info msg="Registering plugin 10-gpu-fractioning using NRI version v0.12.1..."
+{"time":"2026-11-16T21:00:27.784423341Z","level":"INFO","msg":"configured NRI plugin","runtime":"containerd","runtimeVersion":"v2.2.5-k3s2"}
+time="2026-11-16T21:00:27Z" level=info msg="Configuring plugin 10-gpu-fractioning for runtime containerd/v2.2.5-k3s2 (NRI version v0.12.0)..."
+time="2026-11-16T21:00:27Z" level=info msg="Subscribing plugin 10-gpu-fractioning (fractiond) for events CreateContainer,RemoveContainer"
+time="2026-11-16T21:00:27Z" level=info msg="Started plugin 10-gpu-fractioning..."
+{"time":"2026-11-16T21:00:28.359014425Z","level":"INFO","msg":"synchronizing container mapping with runtime","pods":48,"containers":33}
+{"time":"2026-11-16T21:00:28.359145494Z","level":"INFO","msg":"rebuilt container mapping from runtime sync","recordedContainers":0,"totalContainers":33}
+time="2026-11-16T21:01:46Z" level=info msg="ttrpc server closed 10-gpu-fractioning : ttrpc: server closed"
+{"time":"2026-11-16T21:01:46.170782661Z","level":"WARN","msg":"connection lost, retrying","error":"ttrpc: server closed","attempt":3,"uptime":78387269404,"retryIn":20000000000}
+{"time":"2026-11-16T21:01:46.170935267Z","level":"INFO","msg":"adjusting container with GPU memory config","container":"main","pod":"nri-hotfix-hung","request":"5120","limit":"5120","visibleDevices":"k8s.device-plugin.nvidia.com/gpu=GPU-16128952-b438-556a-00bb-93039ee24e56","cdiDevices":null,"computeMode":"time-slicing"}

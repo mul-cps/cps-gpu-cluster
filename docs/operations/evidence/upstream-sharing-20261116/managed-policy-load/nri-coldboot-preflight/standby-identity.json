@@ -1,0 +1,5 @@
+{
+  "name": "argo-downloads-gpu2-finalboot-standby",
+  "uid": "64401ddd-90da-4f95-958f-54d9faa1a072",
+  "reason": "Preserve original GPU2 Pod UID and /tmp data while keeping reader available during final boot"
+}

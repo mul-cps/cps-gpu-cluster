@@ -1,0 +1,11 @@
+[
+  {
+    "uid": "dfd0cc7a-1e57-476f-a90c-50b4f09b70c4",
+    "images": [
+      "ghcr.io/mul-cps/cps-nvidia-driver@sha256:c3b71557aa17df43faad5a2661d81f1025ba355ac3adf784096de12cd2ef3e73"
+    ],
+    "imageIDs": [
+      "ghcr.io/mul-cps/cps-nvidia-driver@sha256:c3b71557aa17df43faad5a2661d81f1025ba355ac3adf784096de12cd2ef3e73"
+    ]
+  }
+]

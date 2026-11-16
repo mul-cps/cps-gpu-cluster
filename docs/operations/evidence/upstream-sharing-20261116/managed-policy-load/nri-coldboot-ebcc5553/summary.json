@@ -1,0 +1,11 @@
+{
+  "status": "PASS",
+  "started_at": 1794862887.9599442,
+  "expected_boot_id": "ebcc5553-3251-43f7-95f2-236e5e3e6b70",
+  "fractiond_pod": "gpu-fractioning-fractiond-sdf6w",
+  "fractiond_pod_uid": "c9cf5712-6c7a-4d74-a6e0-09e47c05d265",
+  "hang": "PASS",
+  "recovery_cards": 2,
+  "final_boot_id": "ebcc5553-3251-43f7-95f2-236e5e3e6b70",
+  "finished_at": 1794862943.748587
+}

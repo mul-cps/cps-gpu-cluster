@@ -1,0 +1,2545 @@
+{
+  "started_at": "2026-11-16T21:05:40.275301+00:00",
+  "old_hash": "sha256:b28bbd7770b90bdb9fe3831b4379dc1107d6416fbf6e193e2b4b7333220183e0",
+  "new_hash": "sha256:2b2ad6ce656db38a0e9cc2a0d3365c48d6061a835d317236a322776c11dc3fcb",
+  "status": "FAIL",
+  "resources": {
+    "cps-compute/compute-gateway": {
+      "deployment_uid": "f5f9b266-433d-4825-83de-d51e31c71648",
+      "old_generation": 435,
+      "images": [
+        "ghcr.io/mul-cps/cps-compute@sha256:3a90de138a011786015ee1b631a926a3f0e689509c75ba2d25917f4e0e709d06",
+        "ghcr.io/mul-cps/cps-compute@sha256:09c535b59fa9188e1942b0285632a6f3a1b1ced48211028cf8b1f2036157a6d5"
+      ]
+    },
+    "jupyterhub/hub": {
+      "deployment_uid": "02fb8421-d323-4636-b006-2490cd6f5b63",
+      "old_generation": 372,
+      "images": [
+        "ghcr.io/mul-cps/cps-compute@sha256:0bbeb42640f040a1c26a39c19d368a6ea92bcb18721beba8f68320e7c0edd097"
+      ]
+    },
+    "cit-jhub/hub": {
+      "deployment_uid": "dd90f866-47d3-4b9f-ba41-b4ebf8cb2b1e",
+      "old_generation": 313,
+      "images": [
+        "ghcr.io/mul-cps/cps-compute@sha256:bf138c57e6a6243143b71ca6850487f5237ec25add5cee248d1ebabd221409a6"
+      ]
+    }
+  },
+  "observations": [
+    {
+      "time": 1794863141.1022236,
+      "resource": "cps-compute/compute-gateway",
+      "generation": 435,
+      "observed_generation": 435,
+      "available": 1,
+      "ready": 1,
+      "updated": 1
+    },
+    {
+      "time": 1794863141.1839988,
+      "resource": "jupyterhub/hub",
+      "generation": 372,
+      "observed_generation": 372,
+      "available": 1,
+      "ready": 1,
+      "updated": 1
+    },
+    {
+      "time": 1794863141.2604373,
+      "resource": "cit-jhub/hub",
+      "generation": 313,
+      "observed_generation": 313,
+      "available": 1,
+      "ready": 1,
+      "updated": 1
+    },
+    {
+      "time": 1794863141.7478921,
+      "resource": "cps-compute/compute-gateway",
+      "generation": 436,
+      "observed_generation": 436,
+      "available": 0,
+      "ready": 0,
+      "updated": 0
+    },
+    {
+      "time": 1794863141.8237662,
+      "resource": "jupyterhub/hub",
+      "generation": 372,
+      "observed_generation": 372,
+      "available": 1,
+      "ready": 1,
+      "updated": 1
+    },
+    {
+      "time": 1794863141.9024632,
+      "resource": "cit-jhub/hub",
+      "generation": 313,
+      "observed_generation": 313,
+      "available": 1,
+      "ready": 1,
+      "updated": 1
+    },
+    {
+      "time": 1794863142.3995745,
+      "resource": "cps-compute/compute-gateway",
+      "generation": 436,
+      "observed_generation": 436,
+      "available": 0,
+      "ready": 0,
+      "updated": 0
+    },
+    {
+      "time": 1794863142.4779513,
+      "resource": "jupyterhub/hub",
+      "generation": 372,
+      "observed_generation": 372,
+      "available": 1,
+      "ready": 1,
+      "updated": 1
+    },
+    {
+      "time": 1794863142.5572417,
+      "resource": "cit-jhub/hub",
+      "generation": 313,
+      "observed_generation": 313,
+      "available": 1,
+      "ready": 1,
+      "updated": 1
+    },
+    {
+      "time": 1794863143.0478778,
+      "resource": "cps-compute/compute-gateway",
+      "generation": 436,
+      "observed_generation": 436,
+      "available": 0,
+      "ready": 0,
+      "updated": 0
+    },
+    {
+      "time": 1794863143.1249323,
+      "resource": "jupyterhub/hub",
+      "generation": 372,
+      "observed_generation": 372,
+      "available": 1,
+      "ready": 1,
+      "updated": 1
+    },
+    {
+      "time": 1794863143.2041936,
+      "resource": "cit-jhub/hub",
+      "generation": 313,
+      "observed_generation": 313,
+      "available": 1,
+      "ready": 1,
+      "updated": 1
+    },
+    {
+      "time": 1794863143.687887,
+      "resource": "cps-compute/compute-gateway",
+      "generation": 436,
+      "observed_generation": 436,
+      "available": 0,
+      "ready": 0,
+      "updated": 1
+    },
+    {
+      "time": 1794863143.769809,
+      "resource": "jupyterhub/hub",
+      "generation": 372,
+      "observed_generation": 372,
+      "available": 1,
+      "ready": 1,
+      "updated": 1
+    },
+    {
+      "time": 1794863143.8477483,
+      "resource": "cit-jhub/hub",
+      "generation": 313,
+      "observed_generation": 313,
+      "available": 1,
+      "ready": 1,
+      "updated": 1
+    },
+    {
+      "time": 1794863144.343093,
+      "resource": "cps-compute/compute-gateway",
+      "generation": 436,
+      "observed_generation": 436,
+      "available": 0,
+      "ready": 0,
+      "updated": 1
+    },
+    {
+      "time": 1794863144.4207265,
+      "resource": "jupyterhub/hub",
+      "generation": 372,
+      "observed_generation": 372,
+      "available": 1,
+      "ready": 1,
+      "updated": 1
+    },
+    {
+      "time": 1794863144.5059452,
+      "resource": "cit-jhub/hub",
+      "generation": 313,
+      "observed_generation": 313,
+      "available": 1,
+      "ready": 1,
+      "updated": 1
+    },
+    {
+      "time": 1794863144.990154,
+      "resource": "cps-compute/compute-gateway",
+      "generation": 436,
+      "observed_generation": 436,
+      "available": 0,
+      "ready": 0,
+      "updated": 1
+    },
+    {
+      "time": 1794863145.0724492,
+      "resource": "jupyterhub/hub",
+      "generation": 372,
+      "observed_generation": 372,
+      "available": 1,
+      "ready": 1,
+      "updated": 1
+    },
+    {
+      "time": 1794863145.1486523,
+      "resource": "cit-jhub/hub",
+      "generation": 313,
+      "observed_generation": 313,
+      "available": 1,
+      "ready": 1,
+      "updated": 1
+    },
+    {
+      "time": 1794863145.6318266,
+      "resource": "cps-compute/compute-gateway",
+      "generation": 436,
+      "observed_generation": 436,
+      "available": 0,
+      "ready": 0,
+      "updated": 1
+    },
+    {
+      "time": 1794863145.7145844,
+      "resource": "jupyterhub/hub",
+      "generation": 372,
+      "observed_generation": 372,
+      "available": 1,
+      "ready": 1,
+      "updated": 1
+    },
+    {
+      "time": 1794863145.7955465,
+      "resource": "cit-jhub/hub",
+      "generation": 313,
+      "observed_generation": 313,
+      "available": 1,
+      "ready": 1,
+      "updated": 1
+    },
+    {
+      "time": 1794863146.2889757,
+      "resource": "cps-compute/compute-gateway",
+      "generation": 436,
+      "observed_generation": 436,
+      "available": 0,
+      "ready": 0,
+      "updated": 1
+    },
+    {
+      "time": 1794863146.3701622,
+      "resource": "jupyterhub/hub",
+      "generation": 372,
+      "observed_generation": 372,
+      "available": 1,
+      "ready": 1,
+      "updated": 1
+    },
+    {
+      "time": 1794863146.4524555,
+      "resource": "cit-jhub/hub",
+      "generation": 313,
+      "observed_generation": 313,
+      "available": 1,
+      "ready": 1,
+      "updated": 1
+    },
+    {
+      "time": 1794863146.9410012,
+      "resource": "cps-compute/compute-gateway",
+      "generation": 436,
+      "observed_generation": 436,
+      "available": 0,
+      "ready": 0,
+      "updated": 1
+    },
+    {
+      "time": 1794863147.0276015,
+      "resource": "jupyterhub/hub",
+      "generation": 372,
+      "observed_generation": 372,
+      "available": 1,
+      "ready": 1,
+      "updated": 1
+    },
+    {
+      "time": 1794863147.1066043,
+      "resource": "cit-jhub/hub",
+      "generation": 313,
+      "observed_generation": 313,
+      "available": 1,
+      "ready": 1,
+      "updated": 1
+    },
+    {
+      "time": 1794863147.6011083,
+      "resource": "cps-compute/compute-gateway",
+      "generation": 436,
+      "observed_generation": 436,
+      "available": 0,
+      "ready": 0,
+      "updated": 1
+    },
+    {
+      "time": 1794863147.685136,
+      "resource": "jupyterhub/hub",
+      "generation": 372,
+      "observed_generation": 372,
+      "available": 1,
+      "ready": 1,
+      "updated": 1
+    },
+    {
+      "time": 1794863147.7640908,
+      "resource": "cit-jhub/hub",
+      "generation": 313,
+      "observed_generation": 313,
+      "available": 1,
+      "ready": 1,
+      "updated": 1
+    },
+    {
+      "time": 1794863148.2648115,
+      "resource": "cps-compute/compute-gateway",
+      "generation": 436,
+      "observed_generation": 436,
+      "available": 0,
+      "ready": 0,
+      "updated": 1
+    },
+    {
+      "time": 1794863148.3392296,
+      "resource": "jupyterhub/hub",
+      "generation": 372,
+      "observed_generation": 372,
+      "available": 1,
+      "ready": 1,
+      "updated": 1
+    },
+    {
+      "time": 1794863148.4198966,
+      "resource": "cit-jhub/hub",
+      "generation": 313,
+      "observed_generation": 313,
+      "available": 1,
+      "ready": 1,
+      "updated": 1
+    },
+    {
+      "time": 1794863148.9049878,
+      "resource": "cps-compute/compute-gateway",
+      "generation": 436,
+      "observed_generation": 436,
+      "available": 0,
+      "ready": 0,
+      "updated": 1
+    },
+    {
+      "time": 1794863148.9847775,
+      "resource": "jupyterhub/hub",
+      "generation": 372,
+      "observed_generation": 372,
+      "available": 1,
+      "ready": 1,
+      "updated": 1
+    },
+    {
+      "time": 1794863149.0719044,
+      "resource": "cit-jhub/hub",
+      "generation": 313,
+      "observed_generation": 313,
+      "available": 1,
+      "ready": 1,
+      "updated": 1
+    },
+    {
+      "time": 1794863149.5612516,
+      "resource": "cps-compute/compute-gateway",
+      "generation": 436,
+      "observed_generation": 436,
+      "available": 0,
+      "ready": 0,
+      "updated": 1
+    },
+    {
+      "time": 1794863149.6432219,
+      "resource": "jupyterhub/hub",
+      "generation": 372,
+      "observed_generation": 372,
+      "available": 1,
+      "ready": 1,
+      "updated": 1
+    },
+    {
+      "time": 1794863149.7244048,
+      "resource": "cit-jhub/hub",
+      "generation": 313,
+      "observed_generation": 313,
+      "available": 1,
+      "ready": 1,
+      "updated": 1
+    },
+    {
+      "time": 1794863150.2145987,
+      "resource": "cps-compute/compute-gateway",
+      "generation": 436,
+      "observed_generation": 436,
+      "available": 0,
+      "ready": 0,
+      "updated": 1
+    },
+    {
+      "time": 1794863150.2925923,
+      "resource": "jupyterhub/hub",
+      "generation": 372,
+      "observed_generation": 372,
+      "available": 1,
+      "ready": 1,
+      "updated": 1
+    },
+    {
+      "time": 1794863150.37141,
+      "resource": "cit-jhub/hub",
+      "generation": 313,
+      "observed_generation": 313,
+      "available": 1,
+      "ready": 1,
+      "updated": 1
+    },
+    {
+      "time": 1794863150.8563147,
+      "resource": "cps-compute/compute-gateway",
+      "generation": 436,
+      "observed_generation": 436,
+      "available": 0,
+      "ready": 0,
+      "updated": 1
+    },
+    {
+      "time": 1794863150.9357595,
+      "resource": "jupyterhub/hub",
+      "generation": 372,
+      "observed_generation": 372,
+      "available": 1,
+      "ready": 1,
+      "updated": 1
+    },
+    {
+      "time": 1794863151.0228744,
+      "resource": "cit-jhub/hub",
+      "generation": 313,
+      "observed_generation": 313,
+      "available": 1,
+      "ready": 1,
+      "updated": 1
+    },
+    {
+      "time": 1794863151.5113168,
+      "resource": "cps-compute/compute-gateway",
+      "generation": 436,
+      "observed_generation": 436,
+      "available": 0,
+      "ready": 0,
+      "updated": 1
+    },
+    {
+      "time": 1794863151.5869203,
+      "resource": "jupyterhub/hub",
+      "generation": 372,
+      "observed_generation": 372,
+      "available": 1,
+      "ready": 1,
+      "updated": 1
+    },
+    {
+      "time": 1794863151.668809,
+      "resource": "cit-jhub/hub",
+      "generation": 313,
+      "observed_generation": 313,
+      "available": 1,
+      "ready": 1,
+      "updated": 1
+    },
+    {
+      "time": 1794863152.1565092,
+      "resource": "cps-compute/compute-gateway",
+      "generation": 436,
+      "observed_generation": 436,
+      "available": 0,
+      "ready": 0,
+      "updated": 1
+    },
+    {
+      "time": 1794863152.2362273,
+      "resource": "jupyterhub/hub",
+      "generation": 372,
+      "observed_generation": 372,
+      "available": 1,
+      "ready": 1,
+      "updated": 1
+    },
+    {
+      "time": 1794863152.3168607,
+      "resource": "cit-jhub/hub",
+      "generation": 313,
+      "observed_generation": 313,
+      "available": 1,
+      "ready": 1,
+      "updated": 1
+    },
+    {
+      "time": 1794863152.801732,
+      "resource": "cps-compute/compute-gateway",
+      "generation": 436,
+      "observed_generation": 436,
+      "available": 0,
+      "ready": 0,
+      "updated": 1
+    },
+    {
+      "time": 1794863152.8774118,
+      "resource": "jupyterhub/hub",
+      "generation": 372,
+      "observed_generation": 372,
+      "available": 1,
+      "ready": 1,
+      "updated": 1
+    },
+    {
+      "time": 1794863152.9520917,
+      "resource": "cit-jhub/hub",
+      "generation": 313,
+      "observed_generation": 313,
+      "available": 1,
+      "ready": 1,
+      "updated": 1
+    },
+    {
+      "time": 1794863153.4530737,
+      "resource": "cps-compute/compute-gateway",
+      "generation": 436,
+      "observed_generation": 436,
+      "available": 0,
+      "ready": 0,
+      "updated": 1
+    },
+    {
+      "time": 1794863153.5327024,
+      "resource": "jupyterhub/hub",
+      "generation": 372,
+      "observed_generation": 372,
+      "available": 1,
+      "ready": 1,
+      "updated": 1
+    },
+    {
+      "time": 1794863153.6110733,
+      "resource": "cit-jhub/hub",
+      "generation": 313,
+      "observed_generation": 313,
+      "available": 1,
+      "ready": 1,
+      "updated": 1
+    },
+    {
+      "time": 1794863154.1019046,
+      "resource": "cps-compute/compute-gateway",
+      "generation": 436,
+      "observed_generation": 436,
+      "available": 0,
+      "ready": 0,
+      "updated": 1
+    },
+    {
+      "time": 1794863154.1805897,
+      "resource": "jupyterhub/hub",
+      "generation": 372,
+      "observed_generation": 372,
+      "available": 1,
+      "ready": 1,
+      "updated": 1
+    },
+    {
+      "time": 1794863154.2582805,
+      "resource": "cit-jhub/hub",
+      "generation": 313,
+      "observed_generation": 313,
+      "available": 1,
+      "ready": 1,
+      "updated": 1
+    },
+    {
+      "time": 1794863154.7429469,
+      "resource": "cps-compute/compute-gateway",
+      "generation": 436,
+      "observed_generation": 436,
+      "available": 0,
+      "ready": 0,
+      "updated": 1
+    },
+    {
+      "time": 1794863154.8203635,
+      "resource": "jupyterhub/hub",
+      "generation": 372,
+      "observed_generation": 372,
+      "available": 1,
+      "ready": 1,
+      "updated": 1
+    },
+    {
+      "time": 1794863154.9001427,
+      "resource": "cit-jhub/hub",
+      "generation": 313,
+      "observed_generation": 313,
+      "available": 1,
+      "ready": 1,
+      "updated": 1
+    },
+    {
+      "time": 1794863155.392733,
+      "resource": "cps-compute/compute-gateway",
+      "generation": 436,
+      "observed_generation": 436,
+      "available": 0,
+      "ready": 0,
+      "updated": 1
+    },
+    {
+      "time": 1794863155.4733293,
+      "resource": "jupyterhub/hub",
+      "generation": 372,
+      "observed_generation": 372,
+      "available": 1,
+      "ready": 1,
+      "updated": 1
+    },
+    {
+      "time": 1794863155.55702,
+      "resource": "cit-jhub/hub",
+      "generation": 313,
+      "observed_generation": 313,
+      "available": 1,
+      "ready": 1,
+      "updated": 1
+    },
+    {
+      "time": 1794863156.0494075,
+      "resource": "cps-compute/compute-gateway",
+      "generation": 436,
+      "observed_generation": 436,
+      "available": 0,
+      "ready": 0,
+      "updated": 1
+    },
+    {
+      "time": 1794863156.1266549,
+      "resource": "jupyterhub/hub",
+      "generation": 372,
+      "observed_generation": 372,
+      "available": 1,
+      "ready": 1,
+      "updated": 1
+    },
+    {
+      "time": 1794863156.2061665,
+      "resource": "cit-jhub/hub",
+      "generation": 313,
+      "observed_generation": 313,
+      "available": 1,
+      "ready": 1,
+      "updated": 1
+    },
+    {
+      "time": 1794863156.691071,
+      "resource": "cps-compute/compute-gateway",
+      "generation": 436,
+      "observed_generation": 436,
+      "available": 0,
+      "ready": 0,
+      "updated": 1
+    },
+    {
+      "time": 1794863156.775715,
+      "resource": "jupyterhub/hub",
+      "generation": 372,
+      "observed_generation": 372,
+      "available": 1,
+      "ready": 1,
+      "updated": 1
+    },
+    {
+      "time": 1794863156.8544235,
+      "resource": "cit-jhub/hub",
+      "generation": 313,
+      "observed_generation": 313,
+      "available": 1,
+      "ready": 1,
+      "updated": 1
+    },
+    {
+      "time": 1794863157.3479774,
+      "resource": "cps-compute/compute-gateway",
+      "generation": 436,
+      "observed_generation": 436,
+      "available": 0,
+      "ready": 0,
+      "updated": 1
+    },
+    {
+      "time": 1794863157.4285817,
+      "resource": "jupyterhub/hub",
+      "generation": 372,
+      "observed_generation": 372,
+      "available": 1,
+      "ready": 1,
+      "updated": 1
+    },
+    {
+      "time": 1794863157.5067117,
+      "resource": "cit-jhub/hub",
+      "generation": 313,
+      "observed_generation": 313,
+      "available": 1,
+      "ready": 1,
+      "updated": 1
+    },
+    {
+      "time": 1794863157.9887333,
+      "resource": "cps-compute/compute-gateway",
+      "generation": 436,
+      "observed_generation": 436,
+      "available": 0,
+      "ready": 0,
+      "updated": 1
+    },
+    {
+      "time": 1794863158.0703275,
+      "resource": "jupyterhub/hub",
+      "generation": 372,
+      "observed_generation": 372,
+      "available": 1,
+      "ready": 1,
+      "updated": 1
+    },
+    {
+      "time": 1794863158.1481988,
+      "resource": "cit-jhub/hub",
+      "generation": 313,
+      "observed_generation": 313,
+      "available": 1,
+      "ready": 1,
+      "updated": 1
+    },
+    {
+      "time": 1794863158.6341374,
+      "resource": "cps-compute/compute-gateway",
+      "generation": 436,
+      "observed_generation": 436,
+      "available": 0,
+      "ready": 0,
+      "updated": 1
+    },
+    {
+      "time": 1794863158.7179472,
+      "resource": "jupyterhub/hub",
+      "generation": 372,
+      "observed_generation": 372,
+      "available": 1,
+      "ready": 1,
+      "updated": 1
+    },
+    {
+      "time": 1794863158.7961376,
+      "resource": "cit-jhub/hub",
+      "generation": 313,
+      "observed_generation": 313,
+      "available": 1,
+      "ready": 1,
+      "updated": 1
+    },
+    {
+      "time": 1794863159.2896512,
+      "resource": "cps-compute/compute-gateway",
+      "generation": 436,
+      "observed_generation": 436,
+      "available": 0,
+      "ready": 0,
+      "updated": 1
+    },
+    {
+      "time": 1794863159.367049,
+      "resource": "jupyterhub/hub",
+      "generation": 372,
+      "observed_generation": 372,
+      "available": 1,
+      "ready": 1,
+      "updated": 1
+    },
+    {
+      "time": 1794863159.450184,
+      "resource": "cit-jhub/hub",
+      "generation": 313,
+      "observed_generation": 313,
+      "available": 1,
+      "ready": 1,
+      "updated": 1
+    },
+    {
+      "time": 1794863159.9363472,
+      "resource": "cps-compute/compute-gateway",
+      "generation": 436,
+      "observed_generation": 436,
+      "available": 0,
+      "ready": 0,
+      "updated": 1
+    },
+    {
+      "time": 1794863160.0239825,
+      "resource": "jupyterhub/hub",
+      "generation": 372,
+      "observed_generation": 372,
+      "available": 1,
+      "ready": 1,
+      "updated": 1
+    },
+    {
+      "time": 1794863160.102232,
+      "resource": "cit-jhub/hub",
+      "generation": 313,
+      "observed_generation": 313,
+      "available": 1,
+      "ready": 1,
+      "updated": 1
+    },
+    {
+      "time": 1794863160.5852888,
+      "resource": "cps-compute/compute-gateway",
+      "generation": 436,
+      "observed_generation": 436,
+      "available": 0,
+      "ready": 0,
+      "updated": 1
+    },
+    {
+      "time": 1794863160.6617863,
+      "resource": "jupyterhub/hub",
+      "generation": 372,
+      "observed_generation": 372,
+      "available": 1,
+      "ready": 1,
+      "updated": 1
+    },
+    {
+      "time": 1794863160.742258,
+      "resource": "cit-jhub/hub",
+      "generation": 313,
+      "observed_generation": 313,
+      "available": 1,
+      "ready": 1,
+      "updated": 1
+    },
+    {
+      "time": 1794863161.2339933,
+      "resource": "cps-compute/compute-gateway",
+      "generation": 436,
+      "observed_generation": 436,
+      "available": 0,
+      "ready": 0,
+      "updated": 1
+    },
+    {
+      "time": 1794863161.31152,
+      "resource": "jupyterhub/hub",
+      "generation": 372,
+      "observed_generation": 372,
+      "available": 1,
+      "ready": 1,
+      "updated": 1
+    },
+    {
+      "time": 1794863161.3880746,
+      "resource": "cit-jhub/hub",
+      "generation": 313,
+      "observed_generation": 313,
+      "available": 1,
+      "ready": 1,
+      "updated": 1
+    },
+    {
+      "time": 1794863161.8744566,
+      "resource": "cps-compute/compute-gateway",
+      "generation": 436,
+      "observed_generation": 436,
+      "available": 0,
+      "ready": 0,
+      "updated": 1
+    },
+    {
+      "time": 1794863161.9574842,
+      "resource": "jupyterhub/hub",
+      "generation": 372,
+      "observed_generation": 372,
+      "available": 1,
+      "ready": 1,
+      "updated": 1
+    },
+    {
+      "time": 1794863162.0461783,
+      "resource": "cit-jhub/hub",
+      "generation": 313,
+      "observed_generation": 313,
+      "available": 1,
+      "ready": 1,
+      "updated": 1
+    },
+    {
+      "time": 1794863162.5289736,
+      "resource": "cps-compute/compute-gateway",
+      "generation": 436,
+      "observed_generation": 436,
+      "available": 0,
+      "ready": 0,
+      "updated": 1
+    },
+    {
+      "time": 1794863162.6064093,
+      "resource": "jupyterhub/hub",
+      "generation": 372,
+      "observed_generation": 372,
+      "available": 1,
+      "ready": 1,
+      "updated": 1
+    },
+    {
+      "time": 1794863162.6828518,
+      "resource": "cit-jhub/hub",
+      "generation": 313,
+      "observed_generation": 313,
+      "available": 1,
+      "ready": 1,
+      "updated": 1
+    },
+    {
+      "time": 1794863163.1750236,
+      "resource": "cps-compute/compute-gateway",
+      "generation": 436,
+      "observed_generation": 436,
+      "available": 0,
+      "ready": 0,
+      "updated": 1
+    },
+    {
+      "time": 1794863163.2530825,
+      "resource": "jupyterhub/hub",
+      "generation": 372,
+      "observed_generation": 372,
+      "available": 1,
+      "ready": 1,
+      "updated": 1
+    },
+    {
+      "time": 1794863163.3306472,
+      "resource": "cit-jhub/hub",
+      "generation": 313,
+      "observed_generation": 313,
+      "available": 1,
+      "ready": 1,
+      "updated": 1
+    },
+    {
+      "time": 1794863163.8130214,
+      "resource": "cps-compute/compute-gateway",
+      "generation": 436,
+      "observed_generation": 436,
+      "available": 0,
+      "ready": 0,
+      "updated": 1
+    },
+    {
+      "time": 1794863163.893588,
+      "resource": "jupyterhub/hub",
+      "generation": 372,
+      "observed_generation": 372,
+      "available": 1,
+      "ready": 1,
+      "updated": 1
+    },
+    {
+      "time": 1794863163.974002,
+      "resource": "cit-jhub/hub",
+      "generation": 313,
+      "observed_generation": 313,
+      "available": 1,
+      "ready": 1,
+      "updated": 1
+    },
+    {
+      "time": 1794863164.47279,
+      "resource": "cps-compute/compute-gateway",
+      "generation": 436,
+      "observed_generation": 436,
+      "available": 0,
+      "ready": 0,
+      "updated": 1
+    },
+    {
+      "time": 1794863164.5519147,
+      "resource": "jupyterhub/hub",
+      "generation": 372,
+      "observed_generation": 372,
+      "available": 1,
+      "ready": 1,
+      "updated": 1
+    },
+    {
+      "time": 1794863164.6279483,
+      "resource": "cit-jhub/hub",
+      "generation": 313,
+      "observed_generation": 313,
+      "available": 1,
+      "ready": 1,
+      "updated": 1
+    },
+    {
+      "time": 1794863165.1211205,
+      "resource": "cps-compute/compute-gateway",
+      "generation": 436,
+      "observed_generation": 436,
+      "available": 0,
+      "ready": 0,
+      "updated": 1
+    },
+    {
+      "time": 1794863165.2005312,
+      "resource": "jupyterhub/hub",
+      "generation": 372,
+      "observed_generation": 372,
+      "available": 1,
+      "ready": 1,
+      "updated": 1
+    },
+    {
+      "time": 1794863165.2803216,
+      "resource": "cit-jhub/hub",
+      "generation": 313,
+      "observed_generation": 313,
+      "available": 1,
+      "ready": 1,
+      "updated": 1
+    },
+    {
+      "time": 1794863165.7614174,
+      "resource": "cps-compute/compute-gateway",
+      "generation": 436,
+      "observed_generation": 436,
+      "available": 0,
+      "ready": 0,
+      "updated": 1
+    },
+    {
+      "time": 1794863165.8376074,
+      "resource": "jupyterhub/hub",
+      "generation": 372,
+      "observed_generation": 372,
+      "available": 1,
+      "ready": 1,
+      "updated": 1
+    },
+    {
+      "time": 1794863165.918281,
+      "resource": "cit-jhub/hub",
+      "generation": 313,
+      "observed_generation": 313,
+      "available": 1,
+      "ready": 1,
+      "updated": 1
+    },
+    {
+      "time": 1794863166.409332,
+      "resource": "cps-compute/compute-gateway",
+      "generation": 436,
+      "observed_generation": 436,
+      "available": 0,
+      "ready": 0,
+      "updated": 1
+    },
+    {
+      "time": 1794863166.486336,
+      "resource": "jupyterhub/hub",
+      "generation": 372,
+      "observed_generation": 372,
+      "available": 1,
+      "ready": 1,
+      "updated": 1
+    },
+    {
+      "time": 1794863166.56486,
+      "resource": "cit-jhub/hub",
+      "generation": 313,
+      "observed_generation": 313,
+      "available": 1,
+      "ready": 1,
+      "updated": 1
+    },
+    {
+      "time": 1794863167.0581653,
+      "resource": "cps-compute/compute-gateway",
+      "generation": 436,
+      "observed_generation": 436,
+      "available": 0,
+      "ready": 0,
+      "updated": 1
+    },
+    {
+      "time": 1794863167.134588,
+      "resource": "jupyterhub/hub",
+      "generation": 372,
+      "observed_generation": 372,
+      "available": 1,
+      "ready": 1,
+      "updated": 1
+    },
+    {
+      "time": 1794863167.2149777,
+      "resource": "cit-jhub/hub",
+      "generation": 313,
+      "observed_generation": 313,
+      "available": 1,
+      "ready": 1,
+      "updated": 1
+    },
+    {
+      "time": 1794863167.6987655,
+      "resource": "cps-compute/compute-gateway",
+      "generation": 436,
+      "observed_generation": 436,
+      "available": 0,
+      "ready": 0,
+      "updated": 1
+    },
+    {
+      "time": 1794863167.7855368,
+      "resource": "jupyterhub/hub",
+      "generation": 372,
+      "observed_generation": 372,
+      "available": 1,
+      "ready": 1,
+      "updated": 1
+    },
+    {
+      "time": 1794863167.862278,
+      "resource": "cit-jhub/hub",
+      "generation": 313,
+      "observed_generation": 313,
+      "available": 1,
+      "ready": 1,
+      "updated": 1
+    },
+    {
+      "time": 1794863168.35699,
+      "resource": "cps-compute/compute-gateway",
+      "generation": 436,
+      "observed_generation": 436,
+      "available": 0,
+      "ready": 0,
+      "updated": 1
+    },
+    {
+      "time": 1794863168.4358459,
+      "resource": "jupyterhub/hub",
+      "generation": 372,
+      "observed_generation": 372,
+      "available": 1,
+      "ready": 1,
+      "updated": 1
+    },
+    {
+      "time": 1794863168.5108595,
+      "resource": "cit-jhub/hub",
+      "generation": 313,
+      "observed_generation": 313,
+      "available": 1,
+      "ready": 1,
+      "updated": 1
+    },
+    {
+      "time": 1794863168.9928207,
+      "resource": "cps-compute/compute-gateway",
+      "generation": 436,
+      "observed_generation": 436,
+      "available": 0,
+      "ready": 0,
+      "updated": 1
+    },
+    {
+      "time": 1794863169.0850465,
+      "resource": "jupyterhub/hub",
+      "generation": 372,
+      "observed_generation": 372,
+      "available": 1,
+      "ready": 1,
+      "updated": 1
+    },
+    {
+      "time": 1794863169.163698,
+      "resource": "cit-jhub/hub",
+      "generation": 313,
+      "observed_generation": 313,
+      "available": 1,
+      "ready": 1,
+      "updated": 1
+    },
+    {
+      "time": 1794863169.6502988,
+      "resource": "cps-compute/compute-gateway",
+      "generation": 436,
+      "observed_generation": 436,
+      "available": 0,
+      "ready": 0,
+      "updated": 1
+    },
+    {
+      "time": 1794863169.7287695,
+      "resource": "jupyterhub/hub",
+      "generation": 372,
+      "observed_generation": 372,
+      "available": 1,
+      "ready": 1,
+      "updated": 1
+    },
+    {
+      "time": 1794863169.8032775,
+      "resource": "cit-jhub/hub",
+      "generation": 313,
+      "observed_generation": 313,
+      "available": 1,
+      "ready": 1,
+      "updated": 1
+    },
+    {
+      "time": 1794863170.2984378,
+      "resource": "cps-compute/compute-gateway",
+      "generation": 436,
+      "observed_generation": 436,
+      "available": 0,
+      "ready": 0,
+      "updated": 1
+    },
+    {
+      "time": 1794863170.379418,
+      "resource": "jupyterhub/hub",
+      "generation": 372,
+      "observed_generation": 372,
+      "available": 1,
+      "ready": 1,
+      "updated": 1
+    },
+    {
+      "time": 1794863170.460938,
+      "resource": "cit-jhub/hub",
+      "generation": 313,
+      "observed_generation": 313,
+      "available": 1,
+      "ready": 1,
+      "updated": 1
+    },
+    {
+      "time": 1794863170.9480455,
+      "resource": "cps-compute/compute-gateway",
+      "generation": 436,
+      "observed_generation": 436,
+      "available": 0,
+      "ready": 0,
+      "updated": 1
+    },
+    {
+      "time": 1794863171.0297666,
+      "resource": "jupyterhub/hub",
+      "generation": 372,
+      "observed_generation": 372,
+      "available": 1,
+      "ready": 1,
+      "updated": 1
+    },
+    {
+      "time": 1794863171.109312,
+      "resource": "cit-jhub/hub",
+      "generation": 313,
+      "observed_generation": 313,
+      "available": 1,
+      "ready": 1,
+      "updated": 1
+    },
+    {
+      "time": 1794863171.5956776,
+      "resource": "cps-compute/compute-gateway",
+      "generation": 436,
+      "observed_generation": 436,
+      "available": 0,
+      "ready": 0,
+      "updated": 1
+    },
+    {
+      "time": 1794863171.6747248,
+      "resource": "jupyterhub/hub",
+      "generation": 372,
+      "observed_generation": 372,
+      "available": 1,
+      "ready": 1,
+      "updated": 1
+    },
+    {
+      "time": 1794863171.7527575,
+      "resource": "cit-jhub/hub",
+      "generation": 313,
+      "observed_generation": 313,
+      "available": 1,
+      "ready": 1,
+      "updated": 1
+    },
+    {
+      "time": 1794863172.246402,
+      "resource": "cps-compute/compute-gateway",
+      "generation": 436,
+      "observed_generation": 436,
+      "available": 0,
+      "ready": 0,
+      "updated": 1
+    },
+    {
+      "time": 1794863172.3268425,
+      "resource": "jupyterhub/hub",
+      "generation": 372,
+      "observed_generation": 372,
+      "available": 1,
+      "ready": 1,
+      "updated": 1
+    },
+    {
+      "time": 1794863172.4032137,
+      "resource": "cit-jhub/hub",
+      "generation": 313,
+      "observed_generation": 313,
+      "available": 1,
+      "ready": 1,
+      "updated": 1
+    },
+    {
+      "time": 1794863172.8844755,
+      "resource": "cps-compute/compute-gateway",
+      "generation": 436,
+      "observed_generation": 436,
+      "available": 0,
+      "ready": 0,
+      "updated": 1
+    },
+    {
+      "time": 1794863172.9583354,
+      "resource": "jupyterhub/hub",
+      "generation": 372,
+      "observed_generation": 372,
+      "available": 1,
+      "ready": 1,
+      "updated": 1
+    },
+    {
+      "time": 1794863173.0449846,
+      "resource": "cit-jhub/hub",
+      "generation": 313,
+      "observed_generation": 313,
+      "available": 1,
+      "ready": 1,
+      "updated": 1
+    },
+    {
+      "time": 1794863173.514157,
+      "resource": "cps-compute/compute-gateway",
+      "generation": 436,
+      "observed_generation": 436,
+      "available": 0,
+      "ready": 0,
+      "updated": 1
+    },
+    {
+      "time": 1794863173.583506,
+      "resource": "jupyterhub/hub",
+      "generation": 372,
+      "observed_generation": 372,
+      "available": 1,
+      "ready": 1,
+      "updated": 1
+    },
+    {
+      "time": 1794863173.6550207,
+      "resource": "cit-jhub/hub",
+      "generation": 313,
+      "observed_generation": 313,
+      "available": 1,
+      "ready": 1,
+      "updated": 1
+    },
+    {
+      "time": 1794863174.1419227,
+      "resource": "cps-compute/compute-gateway",
+      "generation": 436,
+      "observed_generation": 436,
+      "available": 0,
+      "ready": 0,
+      "updated": 1
+    },
+    {
+      "time": 1794863174.2065465,
+      "resource": "jupyterhub/hub",
+      "generation": 372,
+      "observed_generation": 372,
+      "available": 1,
+      "ready": 1,
+      "updated": 1
+    },
+    {
+      "time": 1794863174.2802753,
+      "resource": "cit-jhub/hub",
+      "generation": 313,
+      "observed_generation": 313,
+      "available": 1,
+      "ready": 1,
+      "updated": 1
+    },
+    {
+      "time": 1794863174.754925,
+      "resource": "cps-compute/compute-gateway",
+      "generation": 436,
+      "observed_generation": 436,
+      "available": 0,
+      "ready": 0,
+      "updated": 1
+    },
+    {
+      "time": 1794863174.8327625,
+      "resource": "jupyterhub/hub",
+      "generation": 372,
+      "observed_generation": 372,
+      "available": 1,
+      "ready": 1,
+      "updated": 1
+    },
+    {
+      "time": 1794863174.910961,
+      "resource": "cit-jhub/hub",
+      "generation": 313,
+      "observed_generation": 313,
+      "available": 1,
+      "ready": 1,
+      "updated": 1
+    },
+    {
+      "time": 1794863175.404394,
+      "resource": "cps-compute/compute-gateway",
+      "generation": 436,
+      "observed_generation": 436,
+      "available": 0,
+      "ready": 0,
+      "updated": 1
+    },
+    {
+      "time": 1794863175.480984,
+      "resource": "jupyterhub/hub",
+      "generation": 372,
+      "observed_generation": 372,
+      "available": 1,
+      "ready": 1,
+      "updated": 1
+    },
+    {
+      "time": 1794863175.5565236,
+      "resource": "cit-jhub/hub",
+      "generation": 313,
+      "observed_generation": 313,
+      "available": 1,
+      "ready": 1,
+      "updated": 1
+    },
+    {
+      "time": 1794863176.0482035,
+      "resource": "cps-compute/compute-gateway",
+      "generation": 436,
+      "observed_generation": 436,
+      "available": 0,
+      "ready": 0,
+      "updated": 1
+    },
+    {
+      "time": 1794863176.1262426,
+      "resource": "jupyterhub/hub",
+      "generation": 372,
+      "observed_generation": 372,
+      "available": 1,
+      "ready": 1,
+      "updated": 1
+    },
+    {
+      "time": 1794863176.202687,
+      "resource": "cit-jhub/hub",
+      "generation": 313,
+      "observed_generation": 313,
+      "available": 1,
+      "ready": 1,
+      "updated": 1
+    },
+    {
+      "time": 1794863176.6852155,
+      "resource": "cps-compute/compute-gateway",
+      "generation": 436,
+      "observed_generation": 436,
+      "available": 0,
+      "ready": 0,
+      "updated": 1
+    },
+    {
+      "time": 1794863176.7677548,
+      "resource": "jupyterhub/hub",
+      "generation": 372,
+      "observed_generation": 372,
+      "available": 1,
+      "ready": 1,
+      "updated": 1
+    },
+    {
+      "time": 1794863176.8504243,
+      "resource": "cit-jhub/hub",
+      "generation": 313,
+      "observed_generation": 313,
+      "available": 1,
+      "ready": 1,
+      "updated": 1
+    },
+    {
+      "time": 1794863177.3461308,
+      "resource": "cps-compute/compute-gateway",
+      "generation": 436,
+      "observed_generation": 436,
+      "available": 0,
+      "ready": 0,
+      "updated": 1
+    },
+    {
+      "time": 1794863177.4252245,
+      "resource": "jupyterhub/hub",
+      "generation": 372,
+      "observed_generation": 372,
+      "available": 1,
+      "ready": 1,
+      "updated": 1
+    },
+    {
+      "time": 1794863177.5063436,
+      "resource": "cit-jhub/hub",
+      "generation": 313,
+      "observed_generation": 313,
+      "available": 1,
+      "ready": 1,
+      "updated": 1
+    },
+    {
+      "time": 1794863177.9899907,
+      "resource": "cps-compute/compute-gateway",
+      "generation": 436,
+      "observed_generation": 436,
+      "available": 0,
+      "ready": 0,
+      "updated": 1
+    },
+    {
+      "time": 1794863178.0740306,
+      "resource": "jupyterhub/hub",
+      "generation": 372,
+      "observed_generation": 372,
+      "available": 1,
+      "ready": 1,
+      "updated": 1
+    },
+    {
+      "time": 1794863178.153286,
+      "resource": "cit-jhub/hub",
+      "generation": 313,
+      "observed_generation": 313,
+      "available": 1,
+      "ready": 1,
+      "updated": 1
+    },
+    {
+      "time": 1794863178.6411572,
+      "resource": "cps-compute/compute-gateway",
+      "generation": 436,
+      "observed_generation": 436,
+      "available": 0,
+      "ready": 0,
+      "updated": 1
+    },
+    {
+      "time": 1794863178.7155254,
+      "resource": "jupyterhub/hub",
+      "generation": 372,
+      "observed_generation": 372,
+      "available": 1,
+      "ready": 1,
+      "updated": 1
+    },
+    {
+      "time": 1794863178.7980642,
+      "resource": "cit-jhub/hub",
+      "generation": 313,
+      "observed_generation": 313,
+      "available": 1,
+      "ready": 1,
+      "updated": 1
+    },
+    {
+      "time": 1794863179.2943778,
+      "resource": "cps-compute/compute-gateway",
+      "generation": 436,
+      "observed_generation": 436,
+      "available": 0,
+      "ready": 0,
+      "updated": 1
+    },
+    {
+      "time": 1794863179.3783069,
+      "resource": "jupyterhub/hub",
+      "generation": 372,
+      "observed_generation": 372,
+      "available": 1,
+      "ready": 1,
+      "updated": 1
+    },
+    {
+      "time": 1794863179.4545407,
+      "resource": "cit-jhub/hub",
+      "generation": 313,
+      "observed_generation": 313,
+      "available": 1,
+      "ready": 1,
+      "updated": 1
+    },
+    {
+      "time": 1794863179.9365478,
+      "resource": "cps-compute/compute-gateway",
+      "generation": 436,
+      "observed_generation": 436,
+      "available": 0,
+      "ready": 0,
+      "updated": 1
+    },
+    {
+      "time": 1794863180.0258436,
+      "resource": "jupyterhub/hub",
+      "generation": 372,
+      "observed_generation": 372,
+      "available": 1,
+      "ready": 1,
+      "updated": 1
+    },
+    {
+      "time": 1794863180.102553,
+      "resource": "cit-jhub/hub",
+      "generation": 313,
+      "observed_generation": 313,
+      "available": 1,
+      "ready": 1,
+      "updated": 1
+    },
+    {
+      "time": 1794863180.5865126,
+      "resource": "cps-compute/compute-gateway",
+      "generation": 436,
+      "observed_generation": 436,
+      "available": 0,
+      "ready": 0,
+      "updated": 1
+    },
+    {
+      "time": 1794863180.6676617,
+      "resource": "jupyterhub/hub",
+      "generation": 372,
+      "observed_generation": 372,
+      "available": 1,
+      "ready": 1,
+      "updated": 1
+    },
+    {
+      "time": 1794863180.74234,
+      "resource": "cit-jhub/hub",
+      "generation": 313,
+      "observed_generation": 313,
+      "available": 1,
+      "ready": 1,
+      "updated": 1
+    },
+    {
+      "time": 1794863181.2390013,
+      "resource": "cps-compute/compute-gateway",
+      "generation": 436,
+      "observed_generation": 436,
+      "available": 0,
+      "ready": 0,
+      "updated": 1
+    },
+    {
+      "time": 1794863181.3140945,
+      "resource": "jupyterhub/hub",
+      "generation": 372,
+      "observed_generation": 372,
+      "available": 1,
+      "ready": 1,
+      "updated": 1
+    },
+    {
+      "time": 1794863181.393121,
+      "resource": "cit-jhub/hub",
+      "generation": 313,
+      "observed_generation": 313,
+      "available": 1,
+      "ready": 1,
+      "updated": 1
+    },
+    {
+      "time": 1794863181.8790143,
+      "resource": "cps-compute/compute-gateway",
+      "generation": 436,
+      "observed_generation": 436,
+      "available": 0,
+      "ready": 0,
+      "updated": 1
+    },
+    {
+      "time": 1794863181.9548662,
+      "resource": "jupyterhub/hub",
+      "generation": 372,
+      "observed_generation": 372,
+      "available": 1,
+      "ready": 1,
+      "updated": 1
+    },
+    {
+      "time": 1794863182.0433614,
+      "resource": "cit-jhub/hub",
+      "generation": 313,
+      "observed_generation": 313,
+      "available": 1,
+      "ready": 1,
+      "updated": 1
+    },
+    {
+      "time": 1794863182.5284872,
+      "resource": "cps-compute/compute-gateway",
+      "generation": 436,
+      "observed_generation": 436,
+      "available": 0,
+      "ready": 0,
+      "updated": 1
+    },
+    {
+      "time": 1794863182.606544,
+      "resource": "jupyterhub/hub",
+      "generation": 372,
+      "observed_generation": 372,
+      "available": 1,
+      "ready": 1,
+      "updated": 1
+    },
+    {
+      "time": 1794863182.6865606,
+      "resource": "cit-jhub/hub",
+      "generation": 313,
+      "observed_generation": 313,
+      "available": 1,
+      "ready": 1,
+      "updated": 1
+    },
+    {
+      "time": 1794863183.1823728,
+      "resource": "cps-compute/compute-gateway",
+      "generation": 436,
+      "observed_generation": 436,
+      "available": 0,
+      "ready": 0,
+      "updated": 1
+    },
+    {
+      "time": 1794863183.2605426,
+      "resource": "jupyterhub/hub",
+      "generation": 372,
+      "observed_generation": 372,
+      "available": 1,
+      "ready": 1,
+      "updated": 1
+    },
+    {
+      "time": 1794863183.3390765,
+      "resource": "cit-jhub/hub",
+      "generation": 313,
+      "observed_generation": 313,
+      "available": 1,
+      "ready": 1,
+      "updated": 1
+    },
+    {
+      "time": 1794863183.840134,
+      "resource": "cps-compute/compute-gateway",
+      "generation": 436,
+      "observed_generation": 436,
+      "available": 0,
+      "ready": 0,
+      "updated": 1
+    },
+    {
+      "time": 1794863183.9692636,
+      "resource": "jupyterhub/hub",
+      "generation": 372,
+      "observed_generation": 372,
+      "available": 1,
+      "ready": 1,
+      "updated": 1
+    },
+    {
+      "time": 1794863184.1277306,
+      "resource": "cit-jhub/hub",
+      "generation": 313,
+      "observed_generation": 313,
+      "available": 1,
+      "ready": 1,
+      "updated": 1
+    },
+    {
+      "time": 1794863184.6143937,
+      "resource": "cps-compute/compute-gateway",
+      "generation": 436,
+      "observed_generation": 436,
+      "available": 0,
+      "ready": 0,
+      "updated": 1
+    },
+    {
+      "time": 1794863184.6934264,
+      "resource": "jupyterhub/hub",
+      "generation": 372,
+      "observed_generation": 372,
+      "available": 1,
+      "ready": 1,
+      "updated": 1
+    },
+    {
+      "time": 1794863184.773136,
+      "resource": "cit-jhub/hub",
+      "generation": 313,
+      "observed_generation": 313,
+      "available": 1,
+      "ready": 1,
+      "updated": 1
+    },
+    {
+      "time": 1794863185.2718644,
+      "resource": "cps-compute/compute-gateway",
+      "generation": 436,
+      "observed_generation": 436,
+      "available": 0,
+      "ready": 0,
+      "updated": 1
+    },
+    {
+      "time": 1794863185.3586974,
+      "resource": "jupyterhub/hub",
+      "generation": 372,
+      "observed_generation": 372,
+      "available": 1,
+      "ready": 1,
+      "updated": 1
+    },
+    {
+      "time": 1794863185.4397047,
+      "resource": "cit-jhub/hub",
+      "generation": 313,
+      "observed_generation": 313,
+      "available": 1,
+      "ready": 1,
+      "updated": 1
+    },
+    {
+      "time": 1794863185.9269817,
+      "resource": "cps-compute/compute-gateway",
+      "generation": 436,
+      "observed_generation": 436,
+      "available": 0,
+      "ready": 0,
+      "updated": 1
+    },
+    {
+      "time": 1794863186.017463,
+      "resource": "jupyterhub/hub",
+      "generation": 372,
+      "observed_generation": 372,
+      "available": 1,
+      "ready": 1,
+      "updated": 1
+    },
+    {
+      "time": 1794863186.0918849,
+      "resource": "cit-jhub/hub",
+      "generation": 313,
+      "observed_generation": 313,
+      "available": 1,
+      "ready": 1,
+      "updated": 1
+    },
+    {
+      "time": 1794863186.5757134,
+      "resource": "cps-compute/compute-gateway",
+      "generation": 436,
+      "observed_generation": 436,
+      "available": 0,
+      "ready": 0,
+      "updated": 1
+    },
+    {
+      "time": 1794863186.657364,
+      "resource": "jupyterhub/hub",
+      "generation": 372,
+      "observed_generation": 372,
+      "available": 1,
+      "ready": 1,
+      "updated": 1
+    },
+    {
+      "time": 1794863186.7390835,
+      "resource": "cit-jhub/hub",
+      "generation": 313,
+      "observed_generation": 313,
+      "available": 1,
+      "ready": 1,
+      "updated": 1
+    },
+    {
+      "time": 1794863187.2368793,
+      "resource": "cps-compute/compute-gateway",
+      "generation": 436,
+      "observed_generation": 436,
+      "available": 0,
+      "ready": 0,
+      "updated": 1
+    },
+    {
+      "time": 1794863187.3198457,
+      "resource": "jupyterhub/hub",
+      "generation": 372,
+      "observed_generation": 372,
+      "available": 1,
+      "ready": 1,
+      "updated": 1
+    },
+    {
+      "time": 1794863187.3990688,
+      "resource": "cit-jhub/hub",
+      "generation": 313,
+      "observed_generation": 313,
+      "available": 1,
+      "ready": 1,
+      "updated": 1
+    },
+    {
+      "time": 1794863187.8833723,
+      "resource": "cps-compute/compute-gateway",
+      "generation": 436,
+      "observed_generation": 436,
+      "available": 0,
+      "ready": 0,
+      "updated": 1
+    },
+    {
+      "time": 1794863187.9599643,
+      "resource": "jupyterhub/hub",
+      "generation": 372,
+      "observed_generation": 372,
+      "available": 1,
+      "ready": 1,
+      "updated": 1
+    },
+    {
+      "time": 1794863188.0467122,
+      "resource": "cit-jhub/hub",
+      "generation": 313,
+      "observed_generation": 313,
+      "available": 1,
+      "ready": 1,
+      "updated": 1
+    },
+    {
+      "time": 1794863188.5277302,
+      "resource": "cps-compute/compute-gateway",
+      "generation": 436,
+      "observed_generation": 436,
+      "available": 0,
+      "ready": 0,
+      "updated": 1
+    },
+    {
+      "time": 1794863188.6077633,
+      "resource": "jupyterhub/hub",
+      "generation": 372,
+      "observed_generation": 372,
+      "available": 1,
+      "ready": 1,
+      "updated": 1
+    },
+    {
+      "time": 1794863188.6899953,
+      "resource": "cit-jhub/hub",
+      "generation": 313,
+      "observed_generation": 313,
+      "available": 1,
+      "ready": 1,
+      "updated": 1
+    },
+    {
+      "time": 1794863189.1815283,
+      "resource": "cps-compute/compute-gateway",
+      "generation": 436,
+      "observed_generation": 436,
+      "available": 0,
+      "ready": 0,
+      "updated": 1
+    },
+    {
+      "time": 1794863189.2635267,
+      "resource": "jupyterhub/hub",
+      "generation": 372,
+      "observed_generation": 372,
+      "available": 1,
+      "ready": 1,
+      "updated": 1
+    },
+    {
+      "time": 1794863189.3435664,
+      "resource": "cit-jhub/hub",
+      "generation": 313,
+      "observed_generation": 313,
+      "available": 1,
+      "ready": 1,
+      "updated": 1
+    },
+    {
+      "time": 1794863189.8299072,
+      "resource": "cps-compute/compute-gateway",
+      "generation": 436,
+      "observed_generation": 436,
+      "available": 0,
+      "ready": 0,
+      "updated": 1
+    },
+    {
+      "time": 1794863189.9093087,
+      "resource": "jupyterhub/hub",
+      "generation": 372,
+      "observed_generation": 372,
+      "available": 1,
+      "ready": 1,
+      "updated": 1
+    },
+    {
+      "time": 1794863189.9907417,
+      "resource": "cit-jhub/hub",
+      "generation": 313,
+      "observed_generation": 313,
+      "available": 1,
+      "ready": 1,
+      "updated": 1
+    },
+    {
+      "time": 1794863190.483431,
+      "resource": "cps-compute/compute-gateway",
+      "generation": 436,
+      "observed_generation": 436,
+      "available": 0,
+      "ready": 0,
+      "updated": 1
+    },
+    {
+      "time": 1794863190.5613952,
+      "resource": "jupyterhub/hub",
+      "generation": 372,
+      "observed_generation": 372,
+      "available": 1,
+      "ready": 1,
+      "updated": 1
+    },
+    {
+      "time": 1794863190.6397645,
+      "resource": "cit-jhub/hub",
+      "generation": 313,
+      "observed_generation": 313,
+      "available": 1,
+      "ready": 1,
+      "updated": 1
+    },
+    {
+      "time": 1794863191.1301668,
+      "resource": "cps-compute/compute-gateway",
+      "generation": 436,
+      "observed_generation": 436,
+      "available": 0,
+      "ready": 0,
+      "updated": 1
+    },
+    {
+      "time": 1794863191.2076151,
+      "resource": "jupyterhub/hub",
+      "generation": 372,
+      "observed_generation": 372,
+      "available": 1,
+      "ready": 1,
+      "updated": 1
+    },
+    {
+      "time": 1794863191.2873745,
+      "resource": "cit-jhub/hub",
+      "generation": 313,
+      "observed_generation": 313,
+      "available": 1,
+      "ready": 1,
+      "updated": 1
+    },
+    {
+      "time": 1794863191.7718592,
+      "resource": "cps-compute/compute-gateway",
+      "generation": 436,
+      "observed_generation": 436,
+      "available": 0,
+      "ready": 0,
+      "updated": 1
+    },
+    {
+      "time": 1794863191.850115,
+      "resource": "jupyterhub/hub",
+      "generation": 372,
+      "observed_generation": 372,
+      "available": 1,
+      "ready": 1,
+      "updated": 1
+    },
+    {
+      "time": 1794863191.9300532,
+      "resource": "cit-jhub/hub",
+      "generation": 313,
+      "observed_generation": 313,
+      "available": 1,
+      "ready": 1,
+      "updated": 1
+    },
+    {
+      "time": 1794863192.426305,
+      "resource": "cps-compute/compute-gateway",
+      "generation": 436,
+      "observed_generation": 436,
+      "available": 0,
+      "ready": 0,
+      "updated": 1
+    },
+    {
+      "time": 1794863192.5036798,
+      "resource": "jupyterhub/hub",
+      "generation": 372,
+      "observed_generation": 372,
+      "available": 1,
+      "ready": 1,
+      "updated": 1
+    },
+    {
+      "time": 1794863192.582043,
+      "resource": "cit-jhub/hub",
+      "generation": 313,
+      "observed_generation": 313,
+      "available": 1,
+      "ready": 1,
+      "updated": 1
+    },
+    {
+      "time": 1794863193.0731807,
+      "resource": "cps-compute/compute-gateway",
+      "generation": 436,
+      "observed_generation": 436,
+      "available": 0,
+      "ready": 0,
+      "updated": 1
+    },
+    {
+      "time": 1794863193.1489558,
+      "resource": "jupyterhub/hub",
+      "generation": 372,
+      "observed_generation": 372,
+      "available": 1,
+      "ready": 1,
+      "updated": 1
+    },
+    {
+      "time": 1794863193.230581,
+      "resource": "cit-jhub/hub",
+      "generation": 313,
+      "observed_generation": 313,
+      "available": 1,
+      "ready": 1,
+      "updated": 1
+    },
+    {
+      "time": 1794863193.719394,
+      "resource": "cps-compute/compute-gateway",
+      "generation": 436,
+      "observed_generation": 436,
+      "available": 0,
+      "ready": 0,
+      "updated": 1
+    },
+    {
+      "time": 1794863193.7980063,
+      "resource": "jupyterhub/hub",
+      "generation": 372,
+      "observed_generation": 372,
+      "available": 1,
+      "ready": 1,
+      "updated": 1
+    },
+    {
+      "time": 1794863193.8798041,
+      "resource": "cit-jhub/hub",
+      "generation": 313,
+      "observed_generation": 313,
+      "available": 1,
+      "ready": 1,
+      "updated": 1
+    },
+    {
+      "time": 1794863194.3767571,
+      "resource": "cps-compute/compute-gateway",
+      "generation": 436,
+      "observed_generation": 436,
+      "available": 0,
+      "ready": 0,
+      "updated": 1
+    },
+    {
+      "time": 1794863194.4593527,
+      "resource": "jupyterhub/hub",
+      "generation": 372,
+      "observed_generation": 372,
+      "available": 1,
+      "ready": 1,
+      "updated": 1
+    },
+    {
+      "time": 1794863194.5384932,
+      "resource": "cit-jhub/hub",
+      "generation": 313,
+      "observed_generation": 313,
+      "available": 1,
+      "ready": 1,
+      "updated": 1
+    },
+    {
+      "time": 1794863195.0354261,
+      "resource": "cps-compute/compute-gateway",
+      "generation": 436,
+      "observed_generation": 436,
+      "available": 0,
+      "ready": 0,
+      "updated": 1
+    },
+    {
+      "time": 1794863195.1102724,
+      "resource": "jupyterhub/hub",
+      "generation": 372,
+      "observed_generation": 372,
+      "available": 1,
+      "ready": 1,
+      "updated": 1
+    },
+    {
+      "time": 1794863195.1873665,
+      "resource": "cit-jhub/hub",
+      "generation": 313,
+      "observed_generation": 313,
+      "available": 1,
+      "ready": 1,
+      "updated": 1
+    },
+    {
+      "time": 1794863195.6743755,
+      "resource": "cps-compute/compute-gateway",
+      "generation": 436,
+      "observed_generation": 436,
+      "available": 0,
+      "ready": 0,
+      "updated": 1
+    },
+    {
+      "time": 1794863195.7549725,
+      "resource": "jupyterhub/hub",
+      "generation": 372,
+      "observed_generation": 372,
+      "available": 1,
+      "ready": 1,
+      "updated": 1
+    },
+    {
+      "time": 1794863195.8355353,
+      "resource": "cit-jhub/hub",
+      "generation": 313,
+      "observed_generation": 313,
+      "available": 1,
+      "ready": 1,
+      "updated": 1
+    },
+    {
+      "time": 1794863196.3327997,
+      "resource": "cps-compute/compute-gateway",
+      "generation": 436,
+      "observed_generation": 436,
+      "available": 0,
+      "ready": 0,
+      "updated": 1
+    },
+    {
+      "time": 1794863196.4086237,
+      "resource": "jupyterhub/hub",
+      "generation": 372,
+      "observed_generation": 372,
+      "available": 1,
+      "ready": 1,
+      "updated": 1
+    },
+    {
+      "time": 1794863196.491172,
+      "resource": "cit-jhub/hub",
+      "generation": 313,
+      "observed_generation": 313,
+      "available": 1,
+      "ready": 1,
+      "updated": 1
+    },
+    {
+      "time": 1794863196.9741013,
+      "resource": "cps-compute/compute-gateway",
+      "generation": 436,
+      "observed_generation": 436,
+      "available": 0,
+      "ready": 0,
+      "updated": 1
+    },
+    {
+      "time": 1794863197.0612376,
+      "resource": "jupyterhub/hub",
+      "generation": 372,
+      "observed_generation": 372,
+      "available": 1,
+      "ready": 1,
+      "updated": 1
+    },
+    {
+      "time": 1794863197.140785,
+      "resource": "cit-jhub/hub",
+      "generation": 313,
+      "observed_generation": 313,
+      "available": 1,
+      "ready": 1,
+      "updated": 1
+    },
+    {
+      "time": 1794863197.6256516,
+      "resource": "cps-compute/compute-gateway",
+      "generation": 436,
+      "observed_generation": 436,
+      "available": 0,
+      "ready": 0,
+      "updated": 1
+    },
+    {
+      "time": 1794863197.706273,
+      "resource": "jupyterhub/hub",
+      "generation": 372,
+      "observed_generation": 372,
+      "available": 1,
+      "ready": 1,
+      "updated": 1
+    },
+    {
+      "time": 1794863197.7844179,
+      "resource": "cit-jhub/hub",
+      "generation": 313,
+      "observed_generation": 313,
+      "available": 1,
+      "ready": 1,
+      "updated": 1
+    },
+    {
+      "time": 1794863198.278942,
+      "resource": "cps-compute/compute-gateway",
+      "generation": 436,
+      "observed_generation": 436,
+      "available": 0,
+      "ready": 0,
+      "updated": 1
+    },
+    {
+      "time": 1794863198.3556898,
+      "resource": "jupyterhub/hub",
+      "generation": 372,
+      "observed_generation": 372,
+      "available": 1,
+      "ready": 1,
+      "updated": 1
+    },
+    {
+      "time": 1794863198.4383333,
+      "resource": "cit-jhub/hub",
+      "generation": 313,
+      "observed_generation": 313,
+      "available": 1,
+      "ready": 1,
+      "updated": 1
+    },
+    {
+      "time": 1794863198.9232707,
+      "resource": "cps-compute/compute-gateway",
+      "generation": 436,
+      "observed_generation": 436,
+      "available": 0,
+      "ready": 0,
+      "updated": 1
+    },
+    {
+      "time": 1794863199.0029962,
+      "resource": "jupyterhub/hub",
+      "generation": 372,
+      "observed_generation": 372,
+      "available": 1,
+      "ready": 1,
+      "updated": 1
+    },
+    {
+      "time": 1794863199.0942788,
+      "resource": "cit-jhub/hub",
+      "generation": 313,
+      "observed_generation": 313,
+      "available": 1,
+      "ready": 1,
+      "updated": 1
+    },
+    {
+      "time": 1794863199.5778134,
+      "resource": "cps-compute/compute-gateway",
+      "generation": 436,
+      "observed_generation": 436,
+      "available": 0,
+      "ready": 0,
+      "updated": 1
+    },
+    {
+      "time": 1794863199.658043,
+      "resource": "jupyterhub/hub",
+      "generation": 372,
+      "observed_generation": 372,
+      "available": 1,
+      "ready": 1,
+      "updated": 1
+    },
+    {
+      "time": 1794863199.7337618,
+      "resource": "cit-jhub/hub",
+      "generation": 313,
+      "observed_generation": 313,
+      "available": 1,
+      "ready": 1,
+      "updated": 1
+    },
+    {
+      "time": 1794863200.2263796,
+      "resource": "cps-compute/compute-gateway",
+      "generation": 436,
+      "observed_generation": 436,
+      "available": 0,
+      "ready": 0,
+      "updated": 1
+    },
+    {
+      "time": 1794863200.3102052,
+      "resource": "jupyterhub/hub",
+      "generation": 372,
+      "observed_generation": 372,
+      "available": 1,
+      "ready": 1,
+      "updated": 1
+    },
+    {
+      "time": 1794863200.3892627,
+      "resource": "cit-jhub/hub",
+      "generation": 313,
+      "observed_generation": 313,
+      "available": 1,
+      "ready": 1,
+      "updated": 1
+    },
+    {
+      "time": 1794863200.8731964,
+      "resource": "cps-compute/compute-gateway",
+      "generation": 436,
+      "observed_generation": 436,
+      "available": 0,
+      "ready": 0,
+      "updated": 1
+    },
+    {
+      "time": 1794863200.9473898,
+      "resource": "jupyterhub/hub",
+      "generation": 372,
+      "observed_generation": 372,
+      "available": 1,
+      "ready": 1,
+      "updated": 1
+    },
+    {
+      "time": 1794863201.0296986,
+      "resource": "cit-jhub/hub",
+      "generation": 313,
+      "observed_generation": 313,
+      "available": 1,
+      "ready": 1,
+      "updated": 1
+    }
+  ],
+  "error_type": "CalledProcessError",
+  "finished_at": "2026-11-16T21:06:41.219057+00:00"
+}

@@ -1,0 +1,5 @@
+{
+  "name": "argo-downloads-gpu2-marker-standby",
+  "uid": "df69780b-70c4-4a16-9163-d2590d2ecfcd",
+  "reason": "Fresh 30min bounded reader standby for real marker-gate coldboot; previous standby deadline below10min safety threshold"
+}
