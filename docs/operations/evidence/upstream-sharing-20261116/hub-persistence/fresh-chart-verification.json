@@ -1,0 +1,10 @@
+{
+  "chart": "jupyterhub-4.4.2",
+  "chart_sha256": "0ddfa517050d16f2e1b50c62b5b6377b12574f9a2b88f3b352bd211ef3173c3e",
+  "upstream_Hub_namespace": null,
+  "old_CPS_namespace_target": "RED: overlay silently matched zero fresh chart resources",
+  "fixed_CPS_namespace_agnostic_target": "GREEN: exact reviewed template/Recreate and server dry-run",
+  "CIT_namespace_agnostic_target": "GREEN: exact reviewed template/Recreate and server dry-run",
+  "incident": "CPS reverted to vanilla image/managed Secret during first persistence rollout; immediately restored from reviewed snapshot whileGPU2quarantined",
+  "secrets_emitted": false
+}
