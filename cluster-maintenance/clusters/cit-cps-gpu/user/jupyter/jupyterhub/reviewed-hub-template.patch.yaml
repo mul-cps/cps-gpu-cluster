@@ -22,7 +22,7 @@ spec:
         cps.unileoben.ac.at/cpu-addon-values-sha256: ca45d2b26ad4b0d8208d70dd14bcfcacc9ce4df368e503c5d7c5ab481900b5d5
         cps.unileoben.ac.at/current-custody-request-sha256: 83312908e3e4bf45b674e31dec9a52195dc074d505382657dedbd59039911594
         cps.unileoben.ac.at/native-approval-stage: sdk-156c6f5b
-        cps.unileoben.ac.at/upstream-helper-settings: 1401b26ea0c97c30d255ae03990abf99d59c92ab8390bdd7ddaf8bd847b4f7f9
+        cps.unileoben.ac.at/upstream-helper-settings: a3eff91b1c4c2f27931fa3dafbb7a510f35a4e9423e36cc1610dda089099a92b
         cps.unileoben.ac.at/upstream-policy-hash: sha256:b28bbd7770b90bdb9fe3831b4379dc1107d6416fbf6e193e2b4b7333220183e0
         cps.unileoben.ac.at/upstream-runtime-bootstrap: 0d9c42a691fcdd5c26ddcc4f7b1f3ba63c351dd377043e802f3dc1baf2b7bd52
         kubectl.kubernetes.io/restartedAt: '2026-10-12T15:03:41+02:00'
@@ -134,7 +134,7 @@ spec:
               name: native-lifecycle147-hub-2ca9dccf4f4b81f4-control
         - name: CPS_NATIVE_GROUP_POLICY_TRANSITION_REFERENCE
           value: /etc/cps-native-proof/policy-transition.json
-        image: ghcr.io/mul-cps/cps-compute@sha256:2a73a06ebd7c6c5ed8235332da9a43296c343becc98f9ff4d68284364031c3f9
+        image: ghcr.io/mul-cps/cps-compute@sha256:0bbeb42640f040a1c26a39c19d368a6ea92bcb18721beba8f68320e7c0edd097
         imagePullPolicy: IfNotPresent
         livenessProbe:
           failureThreshold: 30
