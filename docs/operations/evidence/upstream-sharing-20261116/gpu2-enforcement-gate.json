@@ -1,0 +1,43 @@
+{
+  "qualification": "failed - remain quarantined",
+  "candidate": {
+    "os": "Ubuntu 26.04.1",
+    "kernel": "7.0.0-43-generic",
+    "driver": "620.70.06",
+    "driver_image": "sha256:0fcbf7340155f8d6868e30b1b0fbf09b601d093a9316621902d5ac09ad7874a1",
+    "toolkit": "v1.20.1",
+    "device_plugin": "v0.20.1",
+    "fractioning": "v0.1.9",
+    "containerd": "v2.2.5-k3s2",
+    "accounting": "misc"
+  },
+  "raw_allocation_mib": [
+    1024,
+    6144,
+    2048
+  ],
+  "raw_cuda_results": [
+    0,
+    2,
+    0
+  ],
+  "managed_probe": {
+    "limit_mib": 5120,
+    "managed_allocation_mib": 6144,
+    "allocation_cuda_result": 0,
+    "prefetch_cuda_result": 0,
+    "prefetch_sync_cuda_result": 0,
+    "memset_cuda_result": 0,
+    "memset_sync_cuda_result": 0,
+    "container_nvml_total_mib": 5120,
+    "container_nvml_used_mib": 415,
+    "host_nvml_total_mib": 40960,
+    "host_nvml_free_mib": 33902,
+    "host_nvml_used_mib": 6567,
+    "host_second_gpu_used_mib": 1,
+    "process_nvml_used_mib": 416,
+    "interpretation": "Physical GPU memory exceeds the fixed profile while container/process accounting omits managed usage."
+  },
+  "cleanup": "Probe freed managed allocation, destroyed CUDA context, exited; Pod/ConfigMaps removed. No peer worker nominated.",
+  "upstream_limitation": "https://docs.nvidia.com/deploy/mps/latest/mpsv3-memory-partitioning.html#known-limitations"
+}

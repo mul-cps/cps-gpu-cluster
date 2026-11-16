@@ -1,0 +1,19 @@
+{"env": {"NVIDIA_VISIBLE_DEVICES": "void", "NVIDIA_GPU_MEMORY_REQUEST": "5120", "NVIDIA_GPU_MEMORY_LIMIT": "5120", "CUDA_MPS_PIPE_DIRECTORY": "/run/nvidia-mps"}}
+{"step": "init", "result": 0}
+{"step": "device", "result": 0}
+{"step": "context", "result": 0}
+{"step": "managed-allocation", "result": 0, "mib": 6144}
+{"step": "managed-prefetch", "result": 0}
+{"step": "managed-prefetch-sync", "result": 0}
+{"step": "managed-fill", "result": 0}
+{"step": "managed-fill-sync", "result": 0}
+uuid, memory.total [MiB], memory.free [MiB], memory.used [MiB]
+GPU-16128952-b438-556a-00bb-93039ee24e56, 5120 MiB, 4706 MiB, 415 MiB
+
+MANAGED_6G_GPU_USE_SUCCEEDED_WITH_5G_LIMIT
+{"step": "managed-free", "result": 0}
+{"step": "destroy", "result": 0}
+Traceback (most recent call last):
+  File "/probe/probe.py", line 32, in <module>
+    raise RuntimeError('managed allocation exceeded the fixed profile')
+RuntimeError: managed allocation exceeded the fixed profile

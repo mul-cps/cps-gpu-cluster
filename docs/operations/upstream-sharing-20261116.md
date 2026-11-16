@@ -200,3 +200,31 @@ Fleet manages the already-scoped CR directly. The two-part GPU2 selector,
 fail-open=false, retroactive enforcement and K3s sockets validate against the
 released schema. The separate runtime nomination label remains absent until
 installation checks complete; no peer is selected.
+
+## Enforcement gate: managed/UVM failure, no promotion
+
+Upstream Fractioning v0.1.9 reached Ready on GPU2 only. MPS reported driver620,
+threshold events for both devices and memacct available with mps_only=false;
+fractiond registered with containerd and metricsd initialized NVML. Peer GPU
+operand Pod UIDs/restart counts remain unchanged. GPU2 remains cordoned with
+its maintenance taint and accelerator fence. KAI and gateway cutover have not
+been performed.
+
+The 5120 MiB raw-driver probe passed: 1024 MiB allocated/filled/freed, 6144 MiB
+returned CUDA_ERROR_OUT_OF_MEMORY (2), and 2048 MiB then allocated/filled/freed.
+The same exact candidate failed managed/UVM qualification: a 6144 MiB managed
+allocation, GPU prefetch, memset and synchronization all succeeded under a
+5120 MiB profile. During the hold, the host reported 6567 MiB physical GPU use;
+the capped container reported total5120/used415 MiB and process accounting
+reported416 MiB. Thus successful managed use was not merely a large virtual
+allocation: host-wide physical use exceeded the profile while per-container
+accounting omitted it. NVIDIA's current published limitation still states that
+managed memory is tracked in system memory only.
+
+The probe released its allocation/context and exited; its Pods and ConfigMaps
+were removed. Source fixtures and sanitized logs plus the measured gate are in
+`tests/upstream-sharing/hardware/` and the adjacent evidence directory. No cap
+writer, library interception or environment workaround was introduced. The next
+required work is the smallest driver-boundary rejection/accounting fix after
+considering upstream configuration/released fixes, followed by the same failing
+case and complete final-artifact acceptance. GPU3 is not nominated.
