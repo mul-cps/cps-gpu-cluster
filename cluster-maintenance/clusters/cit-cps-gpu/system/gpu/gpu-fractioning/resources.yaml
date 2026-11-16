@@ -332,3 +332,14 @@ spec:
     nriSocketPath: /var/run/nri/nri.sock
   metricsAgent:
     enabled: true
+    # GPU Operator writes this only after validating the current driver installation.
+    # File (not FileOrCreate) blocks container creation until /run readiness exists.
+    volumes:
+    - name: gpu-operator-driver-ready
+      hostPath:
+        path: /run/nvidia/validations/driver-ready
+        type: File
+    volumeMounts:
+    - name: gpu-operator-driver-ready
+      mountPath: /run/nvidia/validations/driver-ready
+      readOnly: true
