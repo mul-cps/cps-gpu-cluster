@@ -9,6 +9,7 @@ helm:
   - values.yaml
   - preserve-operands.yaml
   - lifecycle-values.yaml
+  - target-values.yaml
 labels:
   app: gpu-operator
   name: gpu-operator

@@ -63,9 +63,9 @@ host systemd in `cps-gpu2-ubuntu-prerequisites.service` with a retained log.
 
 | Component | Published evidence | Measured target acceptance |
 | --- | --- | --- |
-| Ubuntu 24.04 → 26.04.1 | Canonical enables this upgrade and recommends `do-release-upgrade` | Direct GPU2 pilot, pending |
-| Rancher 2.13.3 / K3s 1.34 | Matrix supports K3s 1.34; its explicit Ubuntu provisioning rows list 22.04/24.04, not 26.04 | Current 24.04 cluster operates; 26.04 worker compatibility pending |
-| Longhorn 1.9.2 | Release-tested OS list includes Ubuntu 24.04; tested K8s versions listed are 1.31–1.33 | Current K3s 1.34 storage observed; Ubuntu 26.04/kernel, reads/writes and restore still require pilot evidence |
+| Ubuntu 24.04 → 26.04.1 | Canonical enables this upgrade and recommends `do-release-upgrade` | GPU2 booted 26.04.1 / 7.0.0-43; clean package audit |
+| Rancher 2.13.3 / K3s 1.34 | Matrix supports K3s 1.34; its explicit Ubuntu provisioning rows list 22.04/24.04, not 26.04 | 26.04 worker Ready, Rancher Ready/Connected; management versions unchanged |
+| Longhorn 1.9.2 | Release-tested OS list includes Ubuntu 24.04; tested K8s versions listed are 1.31–1.33 | GPU2 nonroot Longhorn read/write passed; restore not tested |
 | NVIDIA GPU Operator | Current platform matrix includes Ubuntu 26.04, K3s 1.33–1.37 and containerd 2.0–2.3 | Exact 26.7.1/R620/selected kernel combination pending |
 | R620.70.06 Ubuntu 26.04 driver | Official pinning and driver/firmware/NVML/MPS packages available | Candidate image package versions verified; kernel module build and GPU execution pending |
 | Fractioning 0.1.9 / KAI 0.18.1 | Released charts fetched and locally rendered; matching CRD/watch checked | NRI, driver enforcement, lifecycle, CPS/CIT acceptance pending |
@@ -107,8 +107,8 @@ Published OS payload:
 Ubuntu 24.04 base:
 `docker.io/library/ubuntu@sha256:73b999393d07f2bf65a40373778a44dc9a6d54ad7718d29247d8ff9413c4d6a8`.
 The final container's payload, preflight and entrypoint hashes were inspected.
-The driver and OS images are published but have not yet run as qualified GPU2
-artifacts.
+The OS image ran the successful host upgrade on GPU2. R620 driver loading and
+hardware/workspace qualification are tracked below.
 
 Local verification: 17 pytest tests and 4 subtests pass. The review found a
 lost-reply status gap; the reproducer failed first, then the fix passed. Lost
@@ -119,8 +119,8 @@ released CRD, GPU2 selection is narrow, HAMi is disabled in the KAI overlay,
 stock Binder is selected, and operand/NFD update strategies are OnDelete. The
 installed SUC CRD accepted the candidate Plan in strict server dry-run.
 
-No OS acceptance, R620 hardware enforcement, workspace cutover, peer promotion,
-eight-GPU acceptance, or custom-runtime retirement is claimed by these checks.
+The local source checks do not qualify R620 hardware enforcement, workspace
+cutover, peer promotion, eight-GPU acceptance or custom-runtime retirement.
 
 ## Prerequisite reboot and deployed OS Plan
 
@@ -133,3 +133,45 @@ Fleet GitRepo `fleet-local/upstream-gpu2-os-pilot` is pinned to source commit `b
 The SUC Job completed after submitting the host service; Canonical subsequently completed successfully with `ExecMainStatus=0`. Durable state became `reboot-required` at 2026-11-16 11:14 UTC. Ubuntu 26.04.1 packages and `/boot/vmlinuz-7.0.0-43-generic` plus its initramfs were present, and `dpkg --audit` was clean. The legacy GPU2 R615 driver and validator DaemonSets were scoped to an absent legacy-enable label after confirming no CUDA compute processes; both reached desired/current zero and their Pods exited gracefully. No force deletion or module reset was used. The guest was powered down cleanly for a cold start, avoiding the reproduced warm-reboot issue. OS acceptance awaits the new-kernel boot and reconciliation.
 
 The current source moves the OS bundle under `platform-staging/gpu/upstream-sharing/os-plan` to prevent duplicate bundle ownership if the original broad cluster GitRepo is advanced. The already-deployed OS GitRepo remains pinned to historical commit `b7183901`, where its original path still exists, so its active Plan does not change during the host operation. A selected-worker R620 NVIDIADriver candidate was added with a digest pin, `default: false`, driver auto-upgrade/drain/force disabled and stock driver manager v0.12.1. It validates against the released 26.7.1 CRD. The installed 25.10 CRD lacks its safety-policy field; upgrade the controller/CRD before applying rather than dropping that field.
+
+## Post-upgrade boot and upstream driver ownership
+
+GPU2 booted Ubuntu 26.04.1 with kernel `7.0.0-43-generic`; boot identity is
+`25b0d1c8-3a45-4623-91bd-3724fd6e5341`. The durable host operation reconciled to
+`os-verified`. SSH, K3s, the scratch mount and the package audit passed. A 100 MiB
+Longhorn fixture using UID 1000 wrote and read successfully, then its Pod/PVC
+were removed. Longhorn 1.9.2 requires an uncordoned node to start its instance
+manager; GPU2 was temporarily uncordoned with the separate maintenance taint and
+GPU placement fence retained, then cordoned again. This measures compatibility
+of this operation; it does not expand published Rancher/Longhorn support claims.
+
+The controller passed through actual GPU Operator 26.3.3 to 26.7.1, with pinned
+operand images and OnDelete updates. A nested vendored 25.10 chart initially
+shadowed the requested remote chart; its unchanged source was preserved under
+`platform-staging/vendor/gpu-operator-v25.10.0`. Actual Helm release and running
+controller images were checked after removing that shadow. Peer operand Pod
+UIDs and restart counts remained unchanged. Fleet's unrelated bundle deployment
+IDs were unchanged when its root Git revision advanced.
+
+The separate R620 NVIDIADriver is digest pinned, non-default and selected only
+by `cps.unileoben.ac.at/driver=620.70.06`. Auto-upgrade, forced eviction and drain
+are disabled. Its kernel module configuration selects misc accounting. Legacy
+GPU2 driver/validator Pods exited before selection; the custom cap writer is
+stopped with existing custody retained.
+
+Creating the NVIDIADriver before adding its custom selector label reproduced a
+26.7.1 routing event gap: an unowned node's custom selector-label change does
+not enqueue NodeLabeling reconciliation. The driver reconciled zero owned
+nodes and misleadingly reported Ready. Restarting only the upstream operator
+refreshed owner assignment and created the selected GPU2 driver DaemonSet;
+no runtime patch was required. Verify nonzero desired Pods, actual loading and
+CUDA rather than accepting a zero-node CR's Ready condition. For subsequent
+workers, nominate the node before creating/changing the matching driver CR,
+or explicitly reconcile and verify owner assignment.
+
+The stock driver manager init exited successfully and the pinned R620 image
+compiled and loaded open modules for kernel 7.0.0-43. Both A100-PCIE-40GB cards
+report 620.70.06 and 40960 MiB through NVML. `/proc/driver/nvidia/params` confirms
+`RmMemacctMode=1`; the driver DaemonSet is 1/1 Ready. GPU2 remains cordoned
+with zero advertised GPUs while the toolkit/plugin transition is prepared. Fractioning, KAI cutover and real workspace acceptance
+are still pending; no next worker is nominated.
