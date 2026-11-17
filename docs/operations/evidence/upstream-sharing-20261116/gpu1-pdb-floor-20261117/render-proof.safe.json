@@ -1,0 +1,26 @@
+{
+  "base": "b666f3b93ca2e1ee4301f5cb9ffd69a874cc1b2e",
+  "renderedObjectCount": 59,
+  "exactChangedObjects": [
+    {
+      "apiVersion": "autoscaling/v2",
+      "kind": "HorizontalPodAutoscaler",
+      "namespace": "knative-serving",
+      "name": "webhook",
+      "path": "spec.minReplicas",
+      "old": 1,
+      "new": 5
+    },
+    {
+      "apiVersion": "autoscaling/v2",
+      "kind": "HorizontalPodAutoscaler",
+      "namespace": "kourier-system",
+      "name": "3scale-kourier-gateway",
+      "path": "spec.minReplicas",
+      "old": 1,
+      "new": 5
+    }
+  ],
+  "allOtherObjectsExact": true,
+  "liveApplied": false
+}

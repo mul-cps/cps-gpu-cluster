@@ -1,0 +1,14 @@
+{
+  "baseHEAD": "b666f3b93ca2e1ee4301f5cb9ffd69a874cc1b2e",
+  "rootHEADAtCheck": "b666f3b93ca2e1ee4301f5cb9ffd69a874cc1b2e",
+  "committedDifferenceAgainstRoot": [],
+  "workingTreeChangedFilesOnly": [
+    "cluster-maintenance/clusters/cit-cps-gpu/system/knative/knative-serving/kourier.yaml",
+    "cluster-maintenance/clusters/cit-cps-gpu/system/knative/knative-serving/serving-core.yaml"
+  ],
+  "renderAfterWhitespacePreservationExact": true,
+  "trackedVclusterDeploymentPaths": [],
+  "allOtherTrackedContentExactToBase": true,
+  "sensitiveUnmodifiedTrackedFileCount": 48,
+  "parentPinGate": "Cherry-pick only reviewed commit onto current root HEAD; never rewind parent to this branch if root advances. Review any intervening root changes separately."
+}

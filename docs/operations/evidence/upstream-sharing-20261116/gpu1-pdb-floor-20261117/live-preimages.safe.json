@@ -1,0 +1,203 @@
+{
+  "at": "2026-11-17T16:11:57.064498+00:00",
+  "objects": [
+    {
+      "kind": "HorizontalPodAutoscaler",
+      "namespace": "knative-serving",
+      "name": "webhook",
+      "uid": "20764103-0aba-402d-8258-1bf022e4affa",
+      "resourceVersion": "407786440",
+      "spec": {
+        "maxReplicas": 5,
+        "metrics": [
+          {
+            "resource": {
+              "name": "cpu",
+              "target": {
+                "averageUtilization": 100,
+                "type": "Utilization"
+              }
+            },
+            "type": "Resource"
+          }
+        ],
+        "minReplicas": 1,
+        "scaleTargetRef": {
+          "apiVersion": "apps/v1",
+          "kind": "Deployment",
+          "name": "webhook"
+        }
+      },
+      "status": {
+        "currentReplicas": 1,
+        "desiredReplicas": 1
+      },
+      "ownerAnnotations": {
+        "objectset.rio.cattle.io/id": "default-knative-serving-cattle-fleet-local-system"
+      }
+    },
+    {
+      "kind": "PodDisruptionBudget",
+      "namespace": "knative-serving",
+      "name": "webhook-pdb",
+      "uid": "e531780d-7c68-4074-adea-e1a58a5a247d",
+      "resourceVersion": "406309648",
+      "spec": {
+        "minAvailable": "80%",
+        "selector": {
+          "matchLabels": {
+            "app": "webhook"
+          }
+        }
+      },
+      "status": {
+        "currentHealthy": 1,
+        "desiredHealthy": 1,
+        "disruptionsAllowed": 0,
+        "expectedPods": 1
+      },
+      "ownerAnnotations": {
+        "objectset.rio.cattle.io/id": "default-knative-serving-cattle-fleet-local-system"
+      }
+    },
+    {
+      "kind": "Deployment",
+      "namespace": "knative-serving",
+      "name": "webhook",
+      "uid": "e8808415-3583-437e-8218-68461b57a6eb",
+      "resourceVersion": "406309656",
+      "spec": {
+        "replicas": 1,
+        "strategy": {
+          "rollingUpdate": {
+            "maxSurge": "25%",
+            "maxUnavailable": "25%"
+          },
+          "type": "RollingUpdate"
+        },
+        "containers": [
+          {
+            "name": "webhook",
+            "image": "gcr.io/knative-releases/knative.dev/serving/cmd/webhook@sha256:2501e32186dd40c1f95eb7020121b328502a46b6d68e9dc2d917d2ed47958c1e",
+            "resources": {
+              "limits": {
+                "cpu": "500m",
+                "memory": "500Mi"
+              },
+              "requests": {
+                "cpu": "100m",
+                "memory": "100Mi"
+              }
+            }
+          }
+        ]
+      },
+      "status": {
+        "availableReplicas": 1,
+        "readyReplicas": 1
+      },
+      "ownerAnnotations": {
+        "objectset.rio.cattle.io/id": "default-knative-serving-cattle-fleet-local-system"
+      }
+    },
+    {
+      "kind": "HorizontalPodAutoscaler",
+      "namespace": "kourier-system",
+      "name": "3scale-kourier-gateway",
+      "uid": "639bec34-0cd1-438e-b193-d97ebaebc588",
+      "resourceVersion": "407785903",
+      "spec": {
+        "maxReplicas": 10,
+        "metrics": [
+          {
+            "resource": {
+              "name": "cpu",
+              "target": {
+                "averageUtilization": 100,
+                "type": "Utilization"
+              }
+            },
+            "type": "Resource"
+          }
+        ],
+        "minReplicas": 1,
+        "scaleTargetRef": {
+          "apiVersion": "apps/v1",
+          "kind": "Deployment",
+          "name": "3scale-kourier-gateway"
+        }
+      },
+      "status": {
+        "currentReplicas": 1,
+        "desiredReplicas": 1
+      },
+      "ownerAnnotations": {
+        "objectset.rio.cattle.io/id": "default-knative-serving-cattle-fleet-local-system"
+      }
+    },
+    {
+      "kind": "PodDisruptionBudget",
+      "namespace": "kourier-system",
+      "name": "3scale-kourier-gateway-pdb",
+      "uid": "99dbd378-37a2-4cee-9ed0-afb22d32d936",
+      "resourceVersion": "406310299",
+      "spec": {
+        "minAvailable": "80%",
+        "selector": {
+          "matchLabels": {
+            "app": "3scale-kourier-gateway"
+          }
+        }
+      },
+      "status": {
+        "currentHealthy": 1,
+        "desiredHealthy": 1,
+        "disruptionsAllowed": 0,
+        "expectedPods": 1
+      },
+      "ownerAnnotations": {
+        "objectset.rio.cattle.io/id": "default-knative-serving-cattle-fleet-local-system"
+      }
+    },
+    {
+      "kind": "Deployment",
+      "namespace": "kourier-system",
+      "name": "3scale-kourier-gateway",
+      "uid": "a6f60a3c-0caf-4c13-8630-f41cd02e0f44",
+      "resourceVersion": "406310300",
+      "spec": {
+        "replicas": 1,
+        "strategy": {
+          "rollingUpdate": {
+            "maxSurge": "100%",
+            "maxUnavailable": 0
+          },
+          "type": "RollingUpdate"
+        },
+        "containers": [
+          {
+            "name": "kourier-gateway",
+            "image": "docker.io/envoyproxy/envoy:v1.30-latest",
+            "resources": {
+              "limits": {
+                "cpu": "1",
+                "memory": "800Mi"
+              },
+              "requests": {
+                "cpu": "200m",
+                "memory": "200Mi"
+              }
+            }
+          }
+        ]
+      },
+      "status": {
+        "availableReplicas": 1,
+        "readyReplicas": 1
+      },
+      "ownerAnnotations": {
+        "objectset.rio.cattle.io/id": "default-knative-serving-cattle-fleet-local-system"
+      }
+    }
+  ]
+}

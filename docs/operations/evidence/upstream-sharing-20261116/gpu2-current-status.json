@@ -1,8 +1,8 @@
 {
-  "as_of": "2026-11-17T21:38:11.138140+00:00",
+  "as_of": "2026-11-17T21:42:35.684074+00:00",
   "worker": "k3s-wk-gpu2",
   "worker_acceptance": true,
-  "phase": "GPU2 and GPU3 fixed-profile workers accepted; normal shared placement/storage/monitoring restored; GPU1/GPU4 not nominated",
+  "phase": "GPU2/GPU3 fixed-profile workers accepted; GPU1 cordoned/maintenance-fenced for prerequisite preparation, no drain or OS nomination; GPU4 unchanged",
   "gpu_eligibility": "GPU2/GPU3 qualified, uncordoned, maintenance-taint free, two GPUs each; GPU1/GPU4 retain legacy workers and are not qualified for new upstream shared placement.",
   "driver": {
     "version": "620.70.06",
@@ -53,7 +53,7 @@
     "Prometheus72targets and selected retained historical samples pass; this is not complete TSDB integrity or full platform restoration qualification.",
     "Global GPU Operator/Fleet convergence is not asserted by this selected-worker receipt; peers retain staged legacy operands and the existing Turtles chart-normalization issue remains separate."
   ],
-  "peers": "All seven nodes Ready. GPU2/GPU3 Ubuntu26.04.1/R620 qualified; GPU1/GPU4 Ubuntu24.04 legacy workers unchanged and not nominated.",
+  "peers": "All7NodesReady; GPU1 is the only maintenance-fenced worker, with existing Pods preserved; G2/G3 qualified normally eligible.",
   "hubs": {
     "source": "1c160751676bce808fe8a2ae86b0a495b61c0f72",
     "cps_image": "sha256:0bbeb42640f040a1c26a39c19d368a6ea92bcb18721beba8f68320e7c0edd097",
@@ -168,8 +168,14 @@
       "name": "k3s-wk-gpu1",
       "uid": "b13bebdd-60c2-4bbd-8fce-a39312ec264d",
       "ready": "True",
-      "cordoned": false,
-      "taints": [],
+      "cordoned": true,
+      "taints": [
+        {
+          "effect": "NoSchedule",
+          "key": "cps.unileoben.ac.at/maintenance",
+          "value": "upstream-pilot"
+        }
+      ],
       "os": "Ubuntu 24.04.4 LTS",
       "kernel": "6.8.0-149-generic",
       "boot_id": "b7aef52b-199b-48d2-a0f5-f584174dbcb6",
@@ -177,7 +183,7 @@
       "accelerator": "nvidia",
       "gpu_capacity": "2",
       "upgrade_labels_including_history": {},
-      "maintenance_tainted": false
+      "maintenance_tainted": true
     },
     {
       "name": "k3s-wk-gpu2",
@@ -348,5 +354,14 @@
     "open": true,
     "evidence": "gpu3-source-e5-20261117/canonical-denial-audit.safe.json"
   },
-  "gpu3_worker_receipt_sha256": "94c2a18c384f776728fbf1da1c7a84c283e542b59676e3b8645632c45b39a0cf"
+  "gpu3_worker_receipt_sha256": "94c2a18c384f776728fbf1da1c7a84c283e542b59676e3b8645632c45b39a0cf",
+  "gpu1_maintenance": {
+    "cordoned": true,
+    "maintenance_tainted": true,
+    "drain_started": false,
+    "OS_nominated": false,
+    "availability_floor_prepared": true,
+    "controller_and_localdata_gates_pending": true,
+    "GPU3_acceptance_precedes_this_window": true
+  }
 }
