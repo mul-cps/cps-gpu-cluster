@@ -1,0 +1,8 @@
+{
+  "at": "2026-11-17T18:22:29.480329+00:00",
+  "source_state": "stopped",
+  "profile": "interactive-shared-5",
+  "lease_active": false,
+  "lease_attempt": null,
+  "exact_pod_absent": true
+}

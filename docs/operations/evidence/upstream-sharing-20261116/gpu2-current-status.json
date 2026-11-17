@@ -1,5 +1,5 @@
 {
-  "as_of": "2026-11-17T18:17:23.788005+00:00",
+  "as_of": "2026-11-17T18:24:43.669024+00:00",
   "worker": "k3s-wk-gpu2",
   "worker_acceptance": true,
   "phase": "GPU2 accepted; GPU3 hardware/runtime/KAI passed; exact failed QA no-CREATE reservation reconciled, test RBAC fixed, real Source acceptance pending",
@@ -219,12 +219,18 @@
     "worker_acceptance": false,
     "real_gpu_source_acceptance": false,
     "failed_precreate_attempt_reconciled": true,
-    "normal_source_stop_reconciliation_pending": true,
+    "normal_source_stop_reconciliation_pending": false,
     "temporary_node_get_rbac_verified": true,
     "temporary_node_get_rbac_cleanup_pending": true,
     "fresh_qa_epoch_required": true,
     "evidence": "gpu3-source-recovery-20261117/README.md",
     "postcommit_exact_audit_verified": true,
-    "qa_containers_absent_and_gpu_idle_after_commit": true
+    "qa_containers_absent_and_gpu_idle_after_commit": true,
+    "normal_source_stop_status": 200,
+    "source_stopped": true,
+    "lease_inactive_attempt_null": true,
+    "temporary_operator_credential_closed": true,
+    "historical_hub_marker_retained": true,
+    "marker_restart_semantics_pending": true
   }
 }

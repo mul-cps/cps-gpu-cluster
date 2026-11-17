@@ -11,3 +11,5 @@ The attached-database transaction removed only the exact QA reservation and bind
 A temporary standard ClusterRole now grants both Hub service accounts GET of GPU3 only. Actual in-cluster clients return200 for GPU3 and403 for GPU2/list. The expired QA permit remains in place. Normal Source STOP/reconciliation and a fresh bounded QA epoch are next; no real Source GPU3 GPU acceptance is claimed. Remove the temporary role/binding after restoring original Hub configuration.
 
 GPU2 remains accepted. GPU3 retains its maintenance taint; GPU1/GPU4 are not nominated. Full worker and rollout acceptance remain open.
+
+At18:22:29Z, a fresh CPS-only native operator credential completed one normal Source STOP200. Source GET reports stopped, exact Pod is absent, and strict TLS authoritative lease reports inactive/attemptnull. The token was revoked, actual authorization denied, raw handoff removed, and independent watch exited. Hub owner31/spawner72 has serverNone but retains the old attempt/generation metadata. No direct state edit or new GPU start occurred; startup handling of that historical marker is being checked.
