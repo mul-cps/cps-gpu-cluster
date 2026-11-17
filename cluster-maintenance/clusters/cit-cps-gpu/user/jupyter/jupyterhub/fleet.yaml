@@ -14,6 +14,1915 @@ helm:
   createNamespace: true
   valuesFiles:
   - values.yaml
+  values:
+    hub:
+      extraConfig:
+        02-profiles: |
+          # ---------- Access logic ----------
+          # Groups that have full access (GPU + Shared Storage)
+          # Groups that have full access (GPU + Shared Storage)
+          POWER_USER_GROUPS = {'app_jupyterhub_poweruser', 'jupyter_admin'}
+
+          # TODO(platform-owner): placeholder group name(s) - replace with the real
+          # Authentik/LDAP group(s) used for enrolled course/student accounts once known.
+          STUDENT_GROUPS = {'app_jupyterhub_student'}
+
+          def is_power_user(user):
+              user_groups = {getattr(g, "name", g) for g in user.groups}
+              return bool(user.admin) or bool(user_groups & POWER_USER_GROUPS)
+
+          def is_student(user):
+              user_groups = {getattr(g, "name", g) for g in user.groups}
+              return bool(user_groups & STUDENT_GROUPS)
+
+          STANDARD_NFS_MOUNTS = [
+              {
+                  'key': 'personal',
+                  'label': 'Personal user share',
+                  'description': 'Mount your per-user NFS share for long-lived files.',
+                  'volume_name': 'cps-persistent1-users',
+                  'claim_name': 'cps-persistent1-users-pvc',
+                  'mount_path': '/home/jovyan/cps_persistent1_users',
+                  'mount_options': [
+                      'nfsvers=4.2',
+                      'proto=tcp',
+                      'hard',
+                      'timeo=150',
+                      'retrans=2',
+                      'rsize=1048576',
+                      'wsize=1048576',
+                      'nconnect=8',
+                      'noresvport',
+                      'noatime',
+                      '_netdev',
+                      'x-systemd.automount',
+                      'x-systemd.idle-timeout=600s',
+                      'x-systemd.requires=network-online.target',
+                      'x-systemd.after=network-online.target',
+                      'nofail',
+                  ],
+                  'kind': 'pvc',
+                  'default_checked': False,
+                  'power_user_only': False,
+              },
+              {
+                  'key': 'persistent1_shared',
+                  'label': 'Project share',
+                  'description': 'Shared NFS workspace for team notebooks and datasets.',
+                  'volume_name': 'cps-persistent1-shared',
+                  'claim_name': 'cps-persistent1-shared-pvc',
+                  'mount_path': '/home/jovyan/cps_persistent1_shared',
+                  'mount_options': [
+                      'nfsvers=4.2',
+                      'proto=tcp',
+                      'hard',
+                      'timeo=150',
+                      'retrans=3',
+                      'rsize=1048576',
+                      'wsize=1048576',
+                      'nconnect=4',
+                      'noresvport',
+                      'noatime',
+                  ],
+                  'kind': 'pvc',
+                  'default_checked': False,
+                  'power_user_only': True,
+              },
+              {
+                  'key': 'scratch',
+                  'label': 'Scratch1 storage',
+                  'description': 'Mount the full scratch1 export for temporary storage and the recovery folder.',
+                  'volume_name': 'cps-scratch1-tmp',
+                  'claim_name': 'cps-scratch1-tmp-v2-pvc',
+                  'mount_path': '/home/jovyan/cps_scratch1',
+                  'mount_options': [
+                      'nfsvers=4.2',
+                      'proto=tcp',
+                      'hard',
+                      'timeo=150',
+                      'retrans=2',
+                      'rsize=1048576',
+                      'wsize=1048576',
+                      'nconnect=8',
+                      'noresvport',
+                      'noatime',
+                      '_netdev',
+                      'x-systemd.automount',
+                      'x-systemd.idle-timeout=600s',
+                      'x-systemd.requires=network-online.target',
+                      'x-systemd.after=network-online.target',
+                      'nofail',
+                  ],
+                  'kind': 'pvc',
+                  'default_checked': False,
+                  'power_user_only': True,
+              },
+          ]
+
+
+          CUSTOM_NFS_DEFAULT_SERVER = '193.170.30.58'
+          CUSTOM_NFS_DEFAULT_MOUNT_PATH = '/home/jovyan/custom_nfs'
+          CPS_LOGO_SRC = 'https://cloud.cps.unileoben.ac.at/index.php/s/3TnF46QfwZCR8XY/download'
+
+          def form_bool(formdata, key, default=False):
+              values = formdata.get(key, [])
+              if not values:
+                  return default
+              return values[0].strip().lower() in ('1', 'true', 'on', 'yes', 'checked')
+
+          def append_volume_mount(spawner, volume_spec, mount_spec):
+              if spawner.volumes is None:
+                  spawner.volumes = []
+              if isinstance(spawner.volumes, list):
+                  spawner.volumes.append(volume_spec)
+              elif isinstance(spawner.volumes, dict):
+                  spawner.volumes[volume_spec['name']] = volume_spec
+
+              if spawner.volume_mounts is None:
+                  spawner.volume_mounts = []
+              if isinstance(spawner.volume_mounts, list):
+                  spawner.volume_mounts.append(mount_spec)
+              elif isinstance(spawner.volume_mounts, dict):
+                  spawner.volume_mounts[mount_spec['name']] = mount_spec
+
+          def sanitize_nfs_volume_name(raw_name):
+              import re
+              cleaned = re.sub(r'[^a-z0-9-]+', '-', raw_name.lower()).strip('-')
+              return cleaned[:48] or 'custom-nfs'
+
+          # ---------- LDAP Lookup ----------
+          def get_ldap_info(username, log=None):
+              from ldap3 import Server, Connection, ALL
+              
+              import os
+
+              # LDAP Config
+              LDAP_SERVER = 'ldaps://auth.cps.unileoben.ac.at:636'
+              LDAP_USER = 'cn=ldapservice,ou=users,dc=ldap,dc=goauthentik,dc=io'
+              # LDAP_PASSWORD is read from the LDAP_BIND_PASSWORD env var (injected
+              # from the jupyterhub-ldap-credentials k8s Secret via hub.extraEnv).
+              # This reuses the existing 'ldapservice' bind-account credential --
+              # not a newly generated value. Rotation flagged as manual follow-up
+              # requiring LDAP directory admin coordination, see
+              # docs/sops-secrets-migration.md.
+              LDAP_PASSWORD = os.environ['LDAP_BIND_PASSWORD']
+              SEARCH_BASE = 'ou=users,dc=ldap,dc=goauthentik,dc=io'
+              
+              try:
+                  if log: log.info(f"LDAP: Connecting to {LDAP_SERVER}...")
+                  server = Server(LDAP_SERVER, get_info=ALL, connect_timeout=5)
+                  conn = Connection(server, user=LDAP_USER, password=LDAP_PASSWORD, auto_bind=True, receive_timeout=5)
+                  
+                  # Search for user
+                  if log: log.info(f"LDAP: Searching for {username}...")
+                  search_filter = f'(cn={username})'
+                  conn.search(SEARCH_BASE, search_filter, attributes=['uidNumber', 'gidNumber'])
+                  
+                  if len(conn.entries) > 0:
+                      entry = conn.entries[0]
+                      if log: log.info(f"LDAP: Found user {username}: {entry.entry_dn}")
+                      return {
+                          'uid': int(entry.uidNumber.value),
+                          'gid': int(entry.gidNumber.value)
+                      }
+                  else:
+                      if log: log.warning(f"LDAP: User {username} not found")
+                      return None
+              except Exception as e:
+                  if log: log.error(f"LDAP Error for {username}: {e}")
+                  else: print(f"LDAP Error for {username}: {e}")
+                  return None
+
+          from cps_compute_hub.directory_identity import DirectoryIdentityCache
+          directory_identities = DirectoryIdentityCache(get_ldap_info)
+
+          # ---------- Dynamic UI Generation ----------
+          def get_options_form(spawner):
+              power_user = is_power_user(spawner.user)
+              # cps-upstream-managed-profile-ui-v1
+              from cps_compute_hub.upstream_hub import legacy_shared_intent as _cps_legacy_shared_intent
+              allowed_profiles = [row for row in get_profile_list(spawner)
+                                  if not _cps_legacy_shared_intent(row)]
+
+              allowed_slugs = {p['slug'] for p in allowed_profiles}
+              default_slug = next(
+                  (slug for slug, cfg in PROFILE_CONFIGS.items() if cfg.get('default') and slug in allowed_slugs),
+                  allowed_profiles[0]['slug'] if allowed_profiles else 'cpu-default'
+              )
+              default_cfg = PROFILE_CONFIGS.get(default_slug, PROFILE_CONFIGS['cpu-default'])
+
+              def render_card(slug, cfg, selected=False):
+                  gpu = cfg.get('gpu', 0)
+                  cpu = cfg.get('cpu_limit', 0)
+                  mem = cfg.get('mem_limit', '0G')
+
+                  chips = []
+                  mem_mib = cfg.get('memory_mib')
+                  if gpu > 0 and mem_mib:
+                      chips.append(f'<span class="chip gpu-chip">{mem_mib / 1024:g} GB VRAM (MPS-shared)</span>')
+                  elif gpu > 0:
+                      chips.append(f'<span class="chip gpu-chip">{gpu}× GPU</span>')
+
+                  chips.append(f'<span class="chip cpu-chip">{int(cpu)} vCPU</span>')
+                  chips.append(f'<span class="chip ram-chip">{mem} RAM</span>')
+                  if selected:
+                      chips.append('<span class="chip default-chip">Default start</span>')
+
+                  cls = "option-card selected" if selected else "option-card"
+                  checked = "checked" if selected else ""
+                  description = cfg.get('description', '')
+
+                  return f"""
+                  <label class="{cls}" data-slug="{slug}">
+                    <input type="radio" name="profile" value="{slug}" {checked}>
+                    <div class="option-card-title">{cfg['display_name']}</div>
+                    <div class="option-card-copy">{description}</div>
+                    <div class="meta">{''.join(chips)}</div>
+                  </label>
+                  """
+
+              categories = {
+                  'CPU-only (general purpose)': [],
+                  'GPU-enabled': [],
+                  'Special': []
+              }
+              for p in allowed_profiles:
+                  slug = p['slug']
+                  cfg = PROFILE_CONFIGS[slug]
+                  cat = cfg.get('category', 'Special')
+                  categories.setdefault(cat, [])
+                  categories[cat].append(slug)
+
+              sections_html = []
+              for cat_name, slugs in categories.items():
+                  if not slugs:
+                      continue
+                  card_html = "\n".join(
+                      render_card(slug, PROFILE_CONFIGS[slug], selected=(slug == default_slug))
+                      for slug in slugs
+                  )
+                  sections_html.append(f"""
+                  <section class="option-section">
+                    <div class="section-head">
+                      <div class="section-title">{cat_name}</div>
+                    </div>
+                    <div class="grid">
+                      {card_html}
+                    </div>
+                  </section>
+                  """)
+              options_profiles_html = ('<p class="help-text" role="note">Shared GPUs (5, 10 or 20 GiB) are launched from <a href="/services/cps-admin/app/">Shared workspaces in CPS</a>. Open a workspace to see profiles allowed by its membership and budget.</p>'
+                                       + "\n".join(sections_html))
+
+              mount_items_html = []
+              for spec in STANDARD_NFS_MOUNTS:
+                  if spec.get('power_user_only') and not power_user:
+                      continue
+                  checked = "checked" if spec.get('default_checked', False) else ""
+                  mount_items_html.append(f"""
+                  <label class="mount-item">
+                    <div class="mount-item-header">
+                      <div>
+                        <div class="mount-item-title">
+                          <input type="checkbox" name="mount_{spec['key']}_nfs" value="1" {checked} style="width:auto; margin:0 8px 0 0;">
+                          <span>{spec['label']}</span>
+                        </div>
+                        <div class="hint">{spec['description']}</div>
+                      </div>
+                      <div class="mount-pill">{spec['mount_path']}</div>
+                    </div>
+                    <div class="mount-details">
+                      <div><strong>Source:</strong> {spec['claim_name']}</div>
+                      <div><strong>Mount options:</strong> {', '.join(spec['mount_options'])}</div>
+                    </div>
+                  </label>
+                  """)
+              mount_items_markup = ''.join(mount_items_html)
+
+              shared_workspace_html = ""
+              if power_user:
+                  shared_workspace_html = """
+                  <section class="layer">
+                    <div class="section-title">Shared Workspace</div>
+                    <label class="toggle-row">
+                      <input type="checkbox" name="mount_shared_longhorn" value="1" checked style="width:auto; margin:0;">
+                      <span>Mount the shared Longhorn workspace</span>
+                    </label>
+                    <div class="hint">Mounts the recovered shared workspace at <code>/home/jovyan/shared</code>. It has a verified external backup.</div>
+                  </section>
+                  """
+
+              user_groups = sorted([getattr(g, "name", str(g)) for g in spawner.user.groups])
+              debug_html = f"""
+              <details class="debug-panel">
+                <summary>Debug Info</summary>
+                <div class="debug-copy">
+                  User: {spawner.user.name}<br>
+                  Admin: {spawner.user.admin}<br>
+                  Groups: {user_groups}<br>
+                  Power User: {power_user}<br>
+                  Allowed Profiles: {[p['slug'] for p in allowed_profiles]}
+                </div>
+              </details>
+              """
+
+              quick_start_copy = "Start Server launches the default notebook profile immediately."
+              if power_user:
+                  quick_start_copy = "Start Server launches the default notebook profile immediately. Open Options if you need GPUs, alternate images, or custom storage."
+
+              return f"""
+              <style>
+                .hub-ui * {{ box-sizing: border-box; }}
+                .hub-ui {{
+                  max-width: 980px;
+                  margin: 24px auto;
+                  padding: 0 8px;
+                  font-family: system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, 'Helvetica Neue', Arial, 'Noto Sans', sans-serif;
+                  color: #0f172a;
+                }}
+                .spawn-shell {{
+                  perspective: 1800px;
+                }}
+                .spawn-flip-frame {{
+                  position: relative;
+                  transition: height .82s cubic-bezier(.22,.82,.25,1);
+                }}
+                .spawn-flip-card {{
+                  position: relative;
+                  transform-style: preserve-3d;
+                  transition: transform .82s cubic-bezier(.22,.82,.25,1);
+                }}
+                .spawn-flip-card.is-flipped {{
+                  transform: rotateY(180deg);
+                }}
+                .spawn-face {{
+                  position: absolute;
+                  inset: 0;
+                  width: 100%;
+                  backface-visibility: hidden;
+                  -webkit-backface-visibility: hidden;
+                }}
+                .spawn-face--back {{
+                  transform: rotateY(180deg);
+                }}
+                .face-panel {{
+                  background:
+                    radial-gradient(circle at top right, rgba(59,130,246,.16), transparent 32%),
+                    radial-gradient(circle at bottom left, rgba(14,165,233,.12), transparent 28%),
+                    linear-gradient(180deg, #ffffff, #f8fafc 72%);
+                  border: 1px solid #dbe3ef;
+                  border-radius: 26px;
+                  box-shadow: 0 18px 48px rgba(15,23,42,.10);
+                  padding: 26px;
+                }}
+                .welcome-panel {{
+                  min-height: 420px;
+                  display: flex;
+                  flex-direction: column;
+                  justify-content: space-between;
+                  position: relative;
+                  overflow: hidden;
+                  isolation: isolate;
+                }}
+                .welcome-panel::before {{
+                  content: "";
+                  position: absolute;
+                  inset: -28%;
+                  background:
+                    radial-gradient(circle at 18% 24%, rgba(59,130,246,.16), transparent 24%),
+                    radial-gradient(circle at 82% 22%, rgba(14,165,233,.12), transparent 22%),
+                    radial-gradient(circle at 74% 78%, rgba(37,99,235,.10), transparent 24%);
+                  opacity: .78;
+                  z-index: -1;
+                  filter: blur(10px) saturate(104%);
+                  transform-origin: 50% 50%;
+                  animation: welcome-glow-drift 24s cubic-bezier(.42,0,.2,1) infinite;
+                  will-change: transform, opacity;
+                }}
+                .welcome-panel::after {{
+                  content: "";
+                  position: absolute;
+                  inset: 10px;
+                  border-radius: 22px;
+                  border: 1px solid rgba(255,255,255,.56);
+                  pointer-events: none;
+                  opacity: .6;
+                }}
+                .hero-top {{
+                  display: flex;
+                  align-items: flex-start;
+                  justify-content: space-between;
+                  gap: 18px;
+                }}
+                .affiliation-strip {{
+                  display: flex;
+                  flex-wrap: wrap;
+                  gap: 10px;
+                  margin-bottom: 20px;
+                }}
+                .affiliation-pill {{
+                  display: inline-flex;
+                  align-items: center;
+                  gap: 8px;
+                  padding: 7px 13px;
+                  border-radius: 999px;
+                  border: 1px solid #dbe3ef;
+                  background: rgba(255,255,255,.86);
+                  font-size: 12px;
+                  letter-spacing: .08em;
+                  text-transform: uppercase;
+                  color: #475569;
+                  box-shadow: 0 8px 18px rgba(15,23,42,.04);
+                }}
+                .logo-tile {{
+                  min-width: 188px;
+                  max-width: 228px;
+                  margin-top: 52px;
+                  padding: 16px 18px;
+                  border-radius: 20px;
+                  border: 1px solid #dbe3ef;
+                  background: rgba(255,255,255,.86);
+                  box-shadow: 0 12px 28px rgba(15,23,42,.06);
+                }}
+                .logo-tile img {{
+                  display: block;
+                  width: 100%;
+                  height: auto;
+                }}
+                .hero-main {{
+                  max-width: 62ch;
+                }}
+                .hero-title {{
+                  font-size: 34px;
+                  line-height: 1.08;
+                  font-weight: 700;
+                  color: #0f172a;
+                  margin: 18px 0 12px;
+                  max-width: 12ch;
+                }}
+                .hero-copy {{
+                  max-width: 60ch;
+                  font-size: 15px;
+                  line-height: 1.7;
+                  color: #475569;
+                  margin: 0;
+                }}
+                .hero-grid {{
+                  display: grid;
+                  grid-template-columns: repeat(3, minmax(0,1fr));
+                  gap: 14px;
+                  margin-top: 24px;
+                }}
+                .hero-stat {{
+                  padding: 14px 16px;
+                  border-radius: 18px;
+                  border: 1px solid #dbe3ef;
+                  background: rgba(255,255,255,.78);
+                }}
+                .hero-stat-title {{
+                  font-size: 12px;
+                  color: #64748b;
+                  text-transform: uppercase;
+                  letter-spacing: .08em;
+                  margin-bottom: 8px;
+                }}
+                .hero-stat-copy {{
+                  font-size: 14px;
+                  color: #0f172a;
+                  line-height: 1.5;
+                }}
+                .default-banner {{
+                  margin-top: 26px;
+                  padding: 16px 18px;
+                  border-radius: 20px;
+                  border: 1px solid #c7d2fe;
+                  background: linear-gradient(180deg, rgba(238,242,255,.96), rgba(255,255,255,.92));
+                }}
+                .default-banner-title {{
+                  font-size: 12px;
+                  text-transform: uppercase;
+                  letter-spacing: .08em;
+                  color: #4338ca;
+                  margin-bottom: 8px;
+                }}
+                .default-banner-copy {{
+                  font-size: 15px;
+                  line-height: 1.6;
+                  color: #1e293b;
+                }}
+                @keyframes welcome-glow-drift {{
+                  0%, 100% {{
+                    transform: translate3d(-0.9%, -0.7%, 0) scale(1.008) rotate(-0.35deg);
+                    opacity: .74;
+                  }}
+                  34% {{
+                    transform: translate3d(1.1%, 0.9%, 0) scale(1.022) rotate(0.45deg);
+                    opacity: .84;
+                  }}
+                  68% {{
+                    transform: translate3d(0.35%, -0.95%, 0) scale(1.014) rotate(-0.2deg);
+                    opacity: .78;
+                  }}
+                }}
+                .options-heading {{
+                  display:flex;
+                  align-items:flex-start;
+                  justify-content:space-between;
+                  gap: 16px;
+                  margin-bottom: 18px;
+                }}
+                .title {{
+                  font-size: 28px;
+                  font-weight: 700;
+                  color:#0f172a;
+                  margin: 0;
+                }}
+                .subtle {{
+                  color:#64748b;
+                  font-size: 14px;
+                  margin: 6px 0 0;
+                  max-width: 62ch;
+                  line-height: 1.6;
+                }}
+                .layer {{
+                  background: rgba(255,255,255,.80);
+                  border: 1px solid #dbe3ef;
+                  border-radius: 20px;
+                  box-shadow: 0 8px 22px rgba(15,23,42,.05);
+                  padding: 18px;
+                  margin-bottom: 16px;
+                }}
+                .option-section {{
+                  margin-bottom: 20px;
+                }}
+                .section-head {{
+                  margin-bottom: 10px;
+                }}
+                .section-title {{
+                  font-size: 13px;
+                  font-weight: 700;
+                  color: #334155;
+                  text-transform: uppercase;
+                  letter-spacing: .08em;
+                }}
+                .field-label {{
+                  font-size: 12px;
+                  font-weight: 700;
+                  color: #334155;
+                  text-transform: uppercase;
+                  letter-spacing: .08em;
+                  margin-bottom: 6px;
+                }}
+                .grid {{
+                  display:grid;
+                  grid-template-columns: repeat(2, minmax(0,1fr));
+                  gap: 12px;
+                }}
+                .option-card {{
+                  position: relative;
+                  border: 1px solid #dbe3ef;
+                  border-radius: 18px;
+                  padding: 16px;
+                  transition: box-shadow .16s ease, border-color .16s ease, transform .08s ease;
+                  background: linear-gradient(180deg, rgba(248,250,252,.85), rgba(255,255,255,1));
+                }}
+                .option-card:hover {{
+                  box-shadow: 0 10px 26px rgba(15,23,42,.08);
+                  border-color:#bfdbfe;
+                  transform: translateY(-1px);
+                }}
+                .option-card input[type="radio"] {{
+                  position: absolute;
+                  inset:0;
+                  opacity:0;
+                  cursor:pointer;
+                }}
+                .option-card.selected {{
+                  border-color: #2563eb;
+                  box-shadow: 0 0 0 3px rgba(37,99,235,.14);
+                }}
+                .option-card-title {{
+                  font-weight: 700;
+                  color:#0f172a;
+                  margin-bottom: 6px;
+                }}
+                .option-card-copy {{
+                  font-size: 13px;
+                  line-height: 1.55;
+                  color:#64748b;
+                  margin-bottom: 10px;
+                }}
+                .row {{
+                  display:flex;
+                  align-items:center;
+                  justify-content:space-between;
+                  gap: 10px;
+                }}
+                .meta {{
+                  display:flex;
+                  gap:8px;
+                  flex-wrap: wrap;
+                }}
+                .chip {{
+                  font-size:12px;
+                  border:1px solid #dbe3ef;
+                  padding:3px 8px;
+                  border-radius:999px;
+                  color:#334155;
+                  background:#f8fafc;
+                }}
+                .gpu-chip {{ border-color:#c7d2fe; background:#eef2ff; color:#4338ca; }}
+                .cpu-chip {{ border-color:#bae6fd; background:#e0f2fe; color:#075985; }}
+                .ram-chip {{ border-color:#c7f9cc; background:#ecfccb; color:#166534; }}
+                .default-chip {{ border-color:#fde68a; background:#fffbeb; color:#92400e; }}
+                .input, .select {{
+                  width:100%;
+                  padding:10px 12px;
+                  border:1.5px solid #dbe3ef;
+                  border-radius:12px;
+                  background:white;
+                }}
+                .select-inline {{ width:auto; min-width: 160px; }}
+                .hint {{
+                  font-size:12px;
+                  color:#64748b;
+                  margin-top: 4px;
+                  line-height: 1.5;
+                }}
+                .toggle-row {{
+                  display:flex;
+                  align-items:center;
+                  gap:10px;
+                  font-weight:600;
+                  color:#0f172a;
+                  cursor:pointer;
+                }}
+                .mount-list {{
+                  display:grid;
+                  gap: 10px;
+                  margin-top: 12px;
+                }}
+                .mount-grid {{
+                  display:grid;
+                  grid-template-columns: repeat(2, minmax(0,1fr));
+                  gap: 12px;
+                  margin-top: 12px;
+                }}
+                .mount-item {{
+                  display:block;
+                  border:1px solid #dbe3ef;
+                  border-radius: 16px;
+                  background: linear-gradient(180deg, rgba(248,250,252,.82), rgba(255,255,255,1));
+                  padding: 14px;
+                }}
+                .mount-item-header {{
+                  display:flex;
+                  justify-content:space-between;
+                  gap: 12px;
+                  align-items:flex-start;
+                }}
+                .mount-item-title {{
+                  display:flex;
+                  align-items:center;
+                  font-weight:700;
+                  color:#0f172a;
+                }}
+                .mount-details {{
+                  margin-top: 10px;
+                  display:grid;
+                  gap: 4px;
+                  font-size: 12px;
+                  color:#475569;
+                }}
+                .mount-pill {{
+                  font-size:12px;
+                  color:#334155;
+                  background:#f8fafc;
+                  border:1px solid #dbe3ef;
+                  border-radius:999px;
+                  padding:4px 10px;
+                  white-space: nowrap;
+                }}
+                .flip-controls {{
+                  display:flex;
+                  align-items:center;
+                  justify-content:space-between;
+                  gap: 16px;
+                  margin-top: 18px;
+                }}
+                .flip-copy {{
+                  font-size: 13px;
+                  line-height: 1.55;
+                  color: #64748b;
+                  max-width: 54ch;
+                }}
+                .flip-button {{
+                  appearance: none;
+                  border: 0;
+                  border-radius: 999px;
+                  padding: 12px 18px;
+                  background: linear-gradient(135deg, #0f172a, #1d4ed8);
+                  color: white;
+                  font-weight: 700;
+                  cursor: pointer;
+                  box-shadow: 0 10px 24px rgba(29,78,216,.22);
+                  transition: transform .16s ease, box-shadow .16s ease, opacity .16s ease;
+                }}
+                .flip-button:hover {{
+                  transform: translateY(-1px);
+                  box-shadow: 0 14px 30px rgba(29,78,216,.28);
+                }}
+                .flip-button:focus-visible {{
+                  outline: 3px solid rgba(59,130,246,.24);
+                  outline-offset: 3px;
+                }}
+                .debug-panel {{
+                  margin-top: 18px;
+                  border: 1px solid #dbe3ef;
+                  border-radius: 16px;
+                  background: rgba(248,250,252,.82);
+                  padding: 10px 14px;
+                }}
+                .debug-panel summary {{
+                  cursor: pointer;
+                  font-size: 12px;
+                  font-weight: 700;
+                  letter-spacing: .08em;
+                  text-transform: uppercase;
+                  color: #64748b;
+                }}
+                .debug-copy {{
+                  margin-top: 10px;
+                  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, Liberation Mono, monospace;
+                  font-size: 12px;
+                  line-height: 1.6;
+                  color: #334155;
+                }}
+                @media (max-width: 820px) {{
+                  .hero-grid,
+                  .grid,
+                  .mount-grid {{
+                    grid-template-columns: 1fr;
+                  }}
+                  .hero-top {{
+                    flex-direction: column;
+                  }}
+                  .logo-tile {{
+                    margin-top: 0;
+                    max-width: 220px;
+                  }}
+                  .flip-controls,
+                  .options-heading {{
+                    flex-direction: column;
+                    align-items: stretch;
+                  }}
+                  .select-inline {{
+                    width: 100%;
+                  }}
+                }}
+              </style>
+
+              <div class="hub-ui">
+                <div class="spawn-shell">
+                  <div class="spawn-flip-frame" id="spawn-flip-frame">
+                    <div class="spawn-flip-card" id="spawn-flip-card">
+                      <div class="spawn-face spawn-face--front">
+                        <div class="face-panel welcome-panel" id="spawn-face-front">
+                          <div>
+                            <div class="hero-top">
+                              <div>
+                                <div class="affiliation-strip">
+                                  <div class="affiliation-pill">Montanuniversitaet Leoben</div>
+                                  <div class="affiliation-pill">CPS-DSHL JupyterHub</div>
+                                </div>
+                                <div class="hero-main">
+                                  <div class="hero-title">Quick start into the CPS GPU cluster.</div>
+                                  <p class="hero-copy">
+                                    This JupyterHub instance provides a managed notebook environment for CPU and GPU workloads, persistent home storage on Longhorn, and optional network-attached storage for users who need shared data access.
+                                  </p>
+                                </div>
+                              </div>
+                              <div class="logo-tile">
+                                <img src="{CPS_LOGO_SRC}" alt="Cyber-Physical-Systems logo" />
+                              </div>
+                            </div>
+                            <div class="hero-grid">
+                              <div class="hero-stat">
+                                <div class="hero-stat-title">Authentication</div>
+                                <div class="hero-stat-copy">Single sign-on via Authentik with profile access based on your group membership.</div>
+                              </div>
+                              <div class="hero-stat">
+                                <div class="hero-stat-title">Storage</div>
+                                <div class="hero-stat-copy">Fast default home storage plus optional shared and NFS-backed mounts when you opt in.</div>
+                              </div>
+                              <div class="hero-stat">
+                                <div class="hero-stat-title">Workloads</div>
+                                <div class="hero-stat-copy">CPU notebooks for everyone, with additional GPU and power-user options when your role permits them.</div>
+                              </div>
+                            </div>
+                          </div>
+                          <div class="default-banner">
+                            <div class="default-banner-title">Default server launch</div>
+                            <div class="default-banner-copy">
+                              <strong>{default_cfg['display_name']}</strong> starts when you press <strong>Start Server</strong>. {quick_start_copy}
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+
+                      <div class="spawn-face spawn-face--back">
+                        <div class="face-panel" id="spawn-face-back">
+                          <div class="options-heading">
+                            <div>
+                              <h2 class="title">Advanced Spawn Options</h2>
+                              <p class="subtle">Choose a fixed profile and optional storage mounts before starting the server.</p>
+                            </div>
+                            <div class="chip default-chip">Default profile: {default_cfg['display_name']}</div>
+                          </div>
+
+                          {options_profiles_html}
+
+                          <section class="layer">
+                            <div class="section-title">Network Storage</div>
+                            <label class="toggle-row">
+                              <input type="checkbox" id="mount-nfs" name="mount_nfs" value="1" style="width:auto; margin:0;">
+                              <span>Enable network mounts</span>
+                            </label>
+                            <div class="hint">Check this to add the standard PVC-backed network mounts; they are off by default.</div>
+                            <div class="hint">Power users can separately opt into the shared Longhorn workspace.</div>
+                            <div class="mount-list">
+                              {mount_items_markup}
+                            </div>
+                          </section>
+
+                          {shared_workspace_html}
+                          {debug_html}
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="flip-controls">
+                    <div class="flip-copy" id="flip-copy">
+                      Start Server uses the default profile unless you open Options and change the configuration.
+                    </div>
+                    <button type="button" class="flip-button" id="flip-toggle" aria-controls="spawn-flip-card" aria-pressed="false">
+                      Options
+                    </button>
+                  </div>
+                </div>
+              </div>
+
+              <script>
+              (function(){{
+                var cards = document.querySelectorAll('.option-card');
+                function selectCard(el) {{
+                  cards.forEach(function(card) {{ card.classList.remove('selected'); }});
+                  el.classList.add('selected');
+                  var input = el.querySelector('input[type="radio"]');
+                  if (input) {{
+                    input.checked = true;
+                  }}
+                }}
+                cards.forEach(function(card) {{
+                  card.addEventListener('click', function() {{ selectCard(card); }});
+                }});
+
+                var master = document.getElementById('mount-nfs');
+                var mountArea = document.getElementById('spawn-face-back');
+                function syncNfsControls() {{
+                  var enabled = master ? master.checked : true;
+                  if (!mountArea) {{
+                    return;
+                  }}
+                  mountArea.querySelectorAll('input[name$="_nfs"]').forEach(function(field) {{
+                    if (field === master || field.name === 'profile') {{
+                      return;
+                    }}
+                    field.disabled = !enabled;
+                  }});
+                }}
+                if (master) {{
+                  master.addEventListener('change', syncNfsControls);
+                  syncNfsControls();
+                }}
+
+                var flipFrame = document.getElementById('spawn-flip-frame');
+                var flipCard = document.getElementById('spawn-flip-card');
+                var flipToggle = document.getElementById('flip-toggle');
+                var flipCopy = document.getElementById('flip-copy');
+                var frontFace = document.getElementById('spawn-face-front');
+                var backFace = document.getElementById('spawn-face-back');
+
+                function syncFlipHeight() {{
+                  if (!flipFrame || !flipCard || !frontFace || !backFace) {{
+                    return;
+                  }}
+                  var activeFace = flipCard.classList.contains('is-flipped') ? backFace : frontFace;
+                  flipFrame.style.height = activeFace.offsetHeight + 'px';
+                }}
+
+                function setFlipState(flipped) {{
+                  if (!flipCard || !flipToggle) {{
+                    return;
+                  }}
+                  flipCard.classList.toggle('is-flipped', flipped);
+                  flipToggle.textContent = flipped ? 'Back to Quick Start' : 'Options';
+                  flipToggle.setAttribute('aria-pressed', flipped ? 'true' : 'false');
+                  if (flipCopy) {{
+                    flipCopy.textContent = flipped
+                      ? 'These settings change what Start Server launches. Flip back if you just want the default environment.'
+                      : 'Start Server uses the default profile unless you open Options and change the configuration.';
+                  }}
+                  window.requestAnimationFrame(syncFlipHeight);
+                }}
+
+                if (flipToggle) {{
+                  flipToggle.addEventListener('click', function() {{
+                    setFlipState(!flipCard.classList.contains('is-flipped'));
+                  }});
+                }}
+
+                window.addEventListener('resize', syncFlipHeight);
+                window.requestAnimationFrame(syncFlipHeight);
+              }})();
+              </script>
+              """
+
+          c.KubeSpawner.options_form = get_options_form
+
+          # ---------- Parse form ----------
+          def options_from_form(formdata):
+              opts = {}
+              opts['profile'] = formdata.get('profile', ['cpu-default'])[0]
+              opts['mount_nfs'] = form_bool(formdata, 'mount_nfs', False)
+              opts['mount_shared_longhorn'] = form_bool(formdata, 'mount_shared_longhorn', False)
+              opts['mount_personal_nfs'] = form_bool(formdata, 'mount_personal_nfs', False)
+              opts['mount_persistent1_shared_nfs'] = form_bool(formdata, 'mount_persistent1_shared_nfs', False)
+              opts['mount_scratch_nfs'] = form_bool(formdata, 'mount_scratch_nfs', False)
+              opts['mount_scratch_recovery_nfs'] = form_bool(formdata, 'mount_scratch_recovery_nfs', False)
+              return opts
+          c.Spawner.options_from_form = options_from_form
+          c.Spawner.http_timeout = 300
+          c.Spawner.start_timeout = 300
+
+          # ---------- Canonical profile configs ----------
+          # Define all profiles here. The UI list is generated from this dictionary.
+          # To add more profiles, simply add entries to this dictionary or use PROFILE_CONFIGS.update({...}).
+          PROFILE_CONFIGS = {
+              # CPU default
+              'cpu-default': {
+                  'display_name': 'Standard Small (CPU)',
+                  'description': '2 vCPU (shared) • 2 GiB',
+                  'default': True,
+                  # TEMPORARY: pinned to a digest instead of the mutable
+                  # `latest-standard-cpu` tag (2026-08-04). Spegel (the
+                  # cluster's P2P image mirror) has been repeatedly observed
+                  # serving a stale, broken digest for this tag
+                  # (sha256:ba03b01b..., which crashes with `KeyError:
+                  # 'jupyterhub-singleuser'`) even after the registry moved
+                  # on and even after clearing every node's local Spegel
+                  # data dir + containerd image cache and restarting the
+                  # spegel daemonset -- confirmed the staleness is NOT
+                  # node-local (all 7 nodes' caches verified empty) so it's
+                  # coming from somewhere in Spegel's distributed
+                  # peer-advertisement layer that a local cache purge
+                  # doesn't reach. A digest pull is content-addressable and
+                  # cryptographically verified, so Spegel cannot substitute
+                  # wrong content for it even if it still has stale state.
+                  # sha256:ff0c30d92f8b0483623acb719a909daba8dc93ab3f1910706e65b3f15237ae35
+                  # confirmed correct (Python 3.13, jupyterhub 5.4.5,
+                  # jupyterhub-singleuser extension loads cleanly) as of the
+                  # main-branch CI run that finished 2026-08-04 06:18:58Z.
+                  # REVERT to the tag once the Spegel staleness is properly
+                  # root-caused and fixed -- a pinned digest will NOT pick up
+                  # future image updates.
+                  'image': 'ghcr.io/mul-cps/cps-jupyter-notebook@sha256:efc3b485006f9d4e1e1b1eeacdd75c92bf00bfe02141f5d91ff28eaadb6eb72f',
+                  'cpu_limit': 2.0, 'cpu_guarantee': 0.5,
+                  'mem_limit': '2G', 'mem_guarantee': '1G',
+                  'runtime_class': None,
+                  'gpu': 0,
+                  'grant_sudo': False,
+                  'category': 'CPU-only (general purpose)',
+              },
+
+              # Dask Cluster
+              'dask-cluster': {
+                  'display_name': 'Standard Medium (Dask)',
+                  'description': 'Dask Image • 2 vCPU • 8 GiB',
+                  'image': 'nvcr.io/nvidia/rapidsai/base:24.08-cuda12.2-py3.10',
+                  'cpu_limit': 2.0, 'cpu_guarantee': 1.0,
+                  'mem_limit': '8G', 'mem_guarantee': '4G',
+                  'runtime_class': None,
+                  'gpu': 0,
+                  'uid': 1001, # RapidsAI image uses UID 1001
+                  'cmd': ['/bin/sh', '-c', 'pip install --no-cache-dir jupyterhub && jupyterhub-singleuser && jupyter-server-proxy'],
+                  'grant_sudo': True,
+                  'category': 'CPU-only (general purpose)',
+              },
+
+              # Desktop CPU
+              'cpu-desktop': {
+                  'display_name': 'Standard Large (Desktop)',
+                  'description': 'Desktop Environment • 4 vCPU • 16 GiB',
+                  'image': 'ghcr.io/mul-cps/cps-jupyter-notebook:latest-desktop-ros2',
+                  'cpu_limit': 4.0, 'cpu_guarantee': 1.0,
+                  'mem_limit': '16G', 'mem_guarantee': '4G',
+                  'gpu': 0,
+                  'grant_sudo': True,
+                  'category': 'CPU-only (general purpose)',
+              },
+
+              # GPU full devices
+              'gpu-pytorch-single': {
+                  'display_name': 'GPU Large (PyTorch 1×)',
+                  'description': '1× A100 (40GB VRAM) • 16 vCPU • 64 GiB',
+                  'image': 'ghcr.io/mul-cps/cps-jupyter-notebook@sha256:3910644e2e541f9cde6bed75a01f1bbdcc293a2d57a3f8862cbc99c7eeca30f3',
+                  'cpu_limit': 16.0, 'cpu_guarantee': 8.0,
+                  'mem_limit': '64G', 'mem_guarantee': '32G',
+                  'gpu': 1,
+                  'shm_size': '32Gi',
+                  'resource_key': 'nvidia.com/gpu',
+                  'runtime_class': 'nvidia',
+                  'grant_sudo': True,
+                  'category': 'GPU-enabled',
+              },
+              'gpu-tensorflow-single': {
+                  'display_name': 'GPU Large (TF 1×)',
+                  'description': '1× A100 (40GB VRAM) • 16 vCPU • 64 GiB',
+                  'image': 'ghcr.io/mul-cps/cps-jupyter-notebook:latest-tf-code',
+                  'cpu_limit': 16.0, 'cpu_guarantee': 8.0,
+                  'mem_limit': '64G', 'mem_guarantee': '32G',
+                  'gpu': 1,
+                  'shm_size': '32Gi',
+                  'resource_key': 'nvidia.com/gpu',
+                  'runtime_class': 'nvidia',
+                  'grant_sudo': True,
+                  'category': 'GPU-enabled',
+              },
+
+              # GPU dual
+              'gpu-pytorch-dual': {
+                  'display_name': 'GPU X-Large (PyTorch 2×)',
+                  'description': '2× A100 (40GB VRAM) • 32 vCPU • 128 GiB',
+                  'image': 'ghcr.io/mul-cps/cps-jupyter-notebook@sha256:3910644e2e541f9cde6bed75a01f1bbdcc293a2d57a3f8862cbc99c7eeca30f3',
+                  'cpu_limit': 32.0, 'cpu_guarantee': 16.0,
+                  'mem_limit': '128G', 'mem_guarantee': '64G',
+                  'gpu': 2,
+                  'shm_size': '64Gi',
+                  'resource_key': 'nvidia.com/gpu',
+                  'runtime_class': 'nvidia',
+                  'grant_sudo': True,
+                  'category': 'GPU-enabled',
+              },
+              'gpu-tensorflow-dual': {
+                  'display_name': 'GPU X-Large (TF 2×)',
+                  'description': '2× A100 (40GB VRAM) • 32 vCPU • 128 GiB',
+                  'image': 'ghcr.io/mul-cps/cps-jupyter-notebook:latest-tf-code',
+                  'cpu_limit': 32.0, 'cpu_guarantee': 16.0,
+                  'mem_limit': '128G', 'mem_guarantee': '64G',
+                  'gpu': 2,
+                  'shm_size': '64Gi',
+                  'resource_key': 'nvidia.com/gpu',
+                  'runtime_class': 'nvidia',
+                  'grant_sudo': True,
+                  'category': 'GPU-enabled',
+              },
+
+              # ---- VRAM-tiered GPU sharing profiles (MPS-based, replaces old MIG slices) ----
+              # All physical GPUs run in full (non-MIG) mode now. Sharing between concurrent
+              # sessions on the same physical GPU is achieved via NVIDIA MPS: KAI Scheduler
+              # bin-packs pods onto GPUs using the 'gpu-memory' pod annotation (MiB), while
+              # KubeSpawner sets the matching CUDA_MPS_PINNED_DEVICE_MEM_LIMIT env var on the
+              # container so the enforced memory ceiling always matches what was scheduled.
+              # All of these request resource_key 'nvidia.com/gpu' with gpu=1 (uniform
+              # physical resource type - no more MIG-specific extended resource names).
+              'gpu-3gb': {
+                  'display_name': 'GPU Tiny (3GB, shared)',
+                  'description': '3GB VRAM via MPS sharing • 4 vCPU • 16 GiB',
+                  'image': 'ghcr.io/mul-cps/cps-jupyter-notebook@sha256:3910644e2e541f9cde6bed75a01f1bbdcc293a2d57a3f8862cbc99c7eeca30f3',
+                  'cpu_limit': 4.0, 'cpu_guarantee': 2.0,
+                  'mem_limit': '16G', 'mem_guarantee': '8G',
+                  'gpu': 1,
+                  'memory_mib': 3072,
+                  'resource_key': 'nvidia.com/gpu',
+                  'runtime_class': 'nvidia',
+                  'grant_sudo': True,
+                  'category': 'GPU-enabled',
+              },
+              'gpu-5gb': {
+                  'display_name': 'GPU Small (5GB, shared)',
+                  'description': '5GB VRAM via MPS sharing • 6 vCPU • 24 GiB',
+                  'image': 'ghcr.io/mul-cps/cps-jupyter-notebook@sha256:3910644e2e541f9cde6bed75a01f1bbdcc293a2d57a3f8862cbc99c7eeca30f3',
+                  'cpu_limit': 6.0, 'cpu_guarantee': 3.0,
+                  'mem_limit': '24G', 'mem_guarantee': '12G',
+                  'gpu': 1,
+                  'memory_mib': 5120,
+                  'resource_key': 'nvidia.com/gpu',
+                  'runtime_class': 'nvidia',
+                  'grant_sudo': True,
+                  'category': 'GPU-enabled',
+              },
+              'gpu-8gb': {
+                  'display_name': 'GPU Small-Medium (8GB, shared)',
+                  'description': '8GB VRAM via MPS sharing • 8 vCPU • 32 GiB',
+                  'image': 'ghcr.io/mul-cps/cps-jupyter-notebook@sha256:3910644e2e541f9cde6bed75a01f1bbdcc293a2d57a3f8862cbc99c7eeca30f3',
+                  'cpu_limit': 8.0, 'cpu_guarantee': 4.0,
+                  'mem_limit': '32G', 'mem_guarantee': '16G',
+                  'gpu': 1,
+                  'memory_mib': 8192,
+                  'resource_key': 'nvidia.com/gpu',
+                  'runtime_class': 'nvidia',
+                  'grant_sudo': True,
+                  'category': 'GPU-enabled',
+              },
+              'gpu-10gb': {
+                  'display_name': 'GPU Medium (10GB, shared)',
+                  'description': '10GB VRAM via MPS sharing • 10 vCPU • 40 GiB',
+                  'image': 'ghcr.io/mul-cps/cps-jupyter-notebook@sha256:3910644e2e541f9cde6bed75a01f1bbdcc293a2d57a3f8862cbc99c7eeca30f3',
+                  'cpu_limit': 10.0, 'cpu_guarantee': 5.0,
+                  'mem_limit': '40G', 'mem_guarantee': '20G',
+                  'gpu': 1,
+                  'memory_mib': 10240,
+                  'resource_key': 'nvidia.com/gpu',
+                  'runtime_class': 'nvidia',
+                  'grant_sudo': True,
+                  'category': 'GPU-enabled',
+              },
+              'gpu-12gb': {
+                  'display_name': 'GPU Medium-Large (12GB, shared)',
+                  'description': '12GB VRAM via MPS sharing • 12 vCPU • 48 GiB',
+                  'image': 'ghcr.io/mul-cps/cps-jupyter-notebook@sha256:3910644e2e541f9cde6bed75a01f1bbdcc293a2d57a3f8862cbc99c7eeca30f3',
+                  'cpu_limit': 12.0, 'cpu_guarantee': 6.0,
+                  'mem_limit': '48G', 'mem_guarantee': '24G',
+                  'gpu': 1,
+                  'memory_mib': 12288,
+                  'resource_key': 'nvidia.com/gpu',
+                  'runtime_class': 'nvidia',
+                  'grant_sudo': True,
+                  'category': 'GPU-enabled',
+              },
+              'gpu-20gb': {
+                  'display_name': 'GPU Large (20GB, shared)',
+                  'description': '20GB VRAM via MPS sharing • 16 vCPU • 64 GiB',
+                  'image': 'ghcr.io/mul-cps/cps-jupyter-notebook@sha256:3910644e2e541f9cde6bed75a01f1bbdcc293a2d57a3f8862cbc99c7eeca30f3',
+                  'cpu_limit': 16.0, 'cpu_guarantee': 8.0,
+                  'mem_limit': '64G', 'mem_guarantee': '32G',
+                  'gpu': 1,
+                  'memory_mib': 20480,
+                  'resource_key': 'nvidia.com/gpu',
+                  'runtime_class': 'nvidia',
+                  'grant_sudo': True,
+                  'category': 'GPU-enabled',
+              },
+
+              # Student-facing profile: small MPS-shared VRAM tier, scheduled through the
+              # existing 'courses' KAI queue with kai-course-high priority. Sizing
+              # (5120 MiB) is a placeholder default - platform owner should tune this
+              # based on actual course/lab GPU memory requirements.
+              'gpu-student': {
+                  'display_name': 'GPU Student (Shared)',
+                  'description': '5GB VRAM via MPS sharing, course queue • 6 vCPU • 24 GiB',
+                  'image': 'ghcr.io/mul-cps/cps-jupyter-notebook@sha256:3910644e2e541f9cde6bed75a01f1bbdcc293a2d57a3f8862cbc99c7eeca30f3',
+                  'cpu_limit': 6.0, 'cpu_guarantee': 3.0,
+                  'mem_limit': '24G', 'mem_guarantee': '12G',
+                  'gpu': 1,
+                  'memory_mib': 5120,
+                  'resource_key': 'nvidia.com/gpu',
+                  'runtime_class': 'nvidia',
+                  'grant_sudo': True,
+                  'category': 'GPU-enabled',
+                  'student_profile': True,
+              },
+
+              # Desktop + ROS 2
+              'gpu-desktop-ros2': {
+                  'display_name': 'GPU Large (Desktop + ROS 2)',
+                  'description': 'Desktop + ROS 2 • 1× A100 (40GB VRAM) • 16 vCPU • 64 GiB',
+                  'image': 'ghcr.io/mul-cps/cps-jupyter-notebook:latest-desktop-ros2',
+                  'cpu_limit': 16.0, 'cpu_guarantee': 8.0,
+                  'mem_limit': '64G', 'mem_guarantee': '32G',
+                  'gpu': 1,
+                  'resource_key': 'nvidia.com/gpu',
+                  'runtime_class': 'nvidia',
+                  'grant_sudo': True,
+                  'category': 'GPU-enabled',
+              },
+              'gpu-desktop-5gb': {
+                  'display_name': 'GPU Small (Desktop + ROS 2, shared)',
+                  'description': 'Desktop + ROS 2 • 5GB VRAM via MPS sharing • 6 vCPU • 24 GiB',
+                  'image': 'ghcr.io/mul-cps/cps-jupyter-notebook:latest-desktop-ros2',
+                  'cpu_limit': 6.0, 'cpu_guarantee': 3.0,
+                  'mem_limit': '24G', 'mem_guarantee': '12G',
+                  'gpu': 1,
+                  'memory_mib': 5120,
+                  'resource_key': 'nvidia.com/gpu',
+                  'runtime_class': 'nvidia',
+                  'grant_sudo': True,
+                  'category': 'GPU-enabled',
+              },
+
+              # Xpra desktop (new, parallel to gpu-desktop-5gb above -- see
+              # docs/superpowers/specs/2026-07-24-xpra-desktop-migration-design.md).
+              # Native OS clipboard, LibreOffice + common desktop tools, same
+              # MPS-slice pattern and VirtualGL GPU rendering path as the
+              # TurboVNC profiles. Software x264 encode (A100 has no NVENC),
+              # so cpu_limit is set a bit higher than gpu-desktop-5gb's as a
+              # starting point -- tune based on measured encode load.
+              'gpu-desktop-xpra': {
+                  'display_name': 'GPU Small (Desktop + Xpra, shared)',
+                  'description': 'Desktop + ROS 2 + LibreOffice • Xpra (native clipboard) • 5GB VRAM via MPS sharing • 8 vCPU • 24 GiB',
+                  'image': 'ghcr.io/mul-cps/cps-jupyter-notebook:latest-desktop-ros2-xpra',
+                  'cpu_limit': 8.0, 'cpu_guarantee': 4.0,
+                  'mem_limit': '24G', 'mem_guarantee': '12G',
+                  'gpu': 1,
+                  'memory_mib': 5120,
+                  'resource_key': 'nvidia.com/gpu',
+                  'runtime_class': 'nvidia',
+                  'grant_sudo': True,
+                  'category': 'GPU-enabled',
+              },
+
+              # ComfyUI Profile
+              'gpu-comfyui': {
+                  'display_name': 'ComfyUI (GPU)',
+                  'description': 'ComfyUI Image • 1× A100 (40GB VRAM) • 16 vCPU • 64 GiB',
+                  'image': 'ghcr.io/mul-cps/cps-jupyter-notebook:main-comfyui',
+                  'cpu_limit': 16.0, 'cpu_guarantee': 8.0,
+                  'mem_limit': '64G', 'mem_guarantee': '32G',
+                  'gpu': 1,
+                  'resource_key': 'nvidia.com/gpu',
+                  'runtime_class': 'nvidia',
+                  'grant_sudo': True,
+                  'category': 'Special',
+              },
+
+              # Slurm Profile
+              'gpu-slurm': {
+                  'display_name': 'GPU via Slurm (Slinky)',
+                  'description': 'Scheduled by Slurm • 8 vCPU • 32 GiB',
+                  'image': 'ghcr.io/mul-cps/cps-jupyter-notebook@sha256:3910644e2e541f9cde6bed75a01f1bbdcc293a2d57a3f8862cbc99c7eeca30f3',
+                  'cpu_limit': 8.0, 'cpu_guarantee': 4.0,
+                  'mem_limit': '32G', 'mem_guarantee': '16G',
+                  'gpu': 0, # Slurm handles GPU allocation
+                  'scheduler_name': 'slurm-bridge-scheduler',
+                  'extra_labels': {
+                      'slinky.slurm.net/account': 'cps',
+                      'slinky.slurm.net/partition': 'gpu',
+                  },
+                  'runtime_class': None,
+                  'grant_sudo': True,
+                  'category': 'Special',
+              },
+          }
+
+          # ---------- Generate profile list ----------
+          c.KubeSpawner.image_pull_policy = 'Always'
+          # Route every spawned pod through KAI Scheduler by default, not just
+          # GPU profiles -- previously only set inside apply_profile_settings
+          # for GPU profiles, which left any non-GPU pod (and any pod spawned
+          # before the profile hook's scheduler_name assignment took effect)
+          # eligible for whatever scheduler the chart's built-in
+          # scheduling.userScheduler happened to be running, causing
+          # inconsistent routing between kai-scheduler and
+          # jupyterhub-user-scheduler. See docs/troubleshooting.md and
+          # scheduling.userScheduler.enabled: false below -- both changes are
+          # required together (a per-spawner default here does not stop a
+          # second, independently-active scheduler from also competing for
+          # placement of the same pods). gpu-slurm profile still overrides
+          # this via cfg['scheduler_name'] in apply_profile_settings.
+          c.KubeSpawner.scheduler_name = 'kai-scheduler'
+
+          def get_profile_list(spawner):
+              # Filter profiles based on user groups
+              power_user = is_power_user(spawner.user)
+              student_user = is_student(spawner.user)
+
+              profiles = []
+              for slug, cfg in PROFILE_CONFIGS.items():
+                  # These profile entries have no live execution route: Dask's
+                  # configured namespace is absent, and the Slurm bridge scheduler
+                  # is not installed. Keep them out of user choices until their
+                  # backing service and identity boundary are qualified.
+                  if slug in {'dask-cluster', 'gpu-slurm'}:
+                      continue
+
+                  # 'gpu-student' is a special case: not gated by power-user status,
+                  # only by STUDENT_GROUPS membership (mirrors the 'power_user_only'
+                  # gating pattern used for STANDARD_NFS_MOUNTS).
+                  if cfg.get('student_profile'):
+                      if not student_user:
+                          continue
+                      profiles.append({
+                          'display_name': cfg['display_name'],
+                          'slug': slug,
+                          'description': cfg.get('description', ''),
+                          'default': cfg.get('default', False),
+                      })
+                      continue
+
+                  # If not power user, skip GPU profiles and advanced profiles
+                  if not power_user:
+                      if cfg.get('gpu', 0) > 0:
+                          continue
+                  profiles.append({
+                      'display_name': cfg['display_name'],
+                      'slug': slug,
+                      'description': cfg.get('description', ''),
+                      'default': cfg.get('default', False),
+                  })
+              return profiles
+
+          c.KubeSpawner.profile_list = get_profile_list
+
+          # ---------- Apply profile & per-profile knobs ----------
+          async def apply_profile_settings(spawner):
+              from cps_compute_hub.legacy_profile_request import validate_legacy_spawner_request
+              profile_slug = await validate_legacy_spawner_request(spawner)
+              mount_nfs = bool(spawner.user_options.get('mount_nfs', False))
+              mount_shared_longhorn = bool(spawner.user_options.get('mount_shared_longhorn', False))
+              mount_personal_nfs = bool(spawner.user_options.get('mount_personal_nfs', False))
+              mount_persistent1_shared = bool(spawner.user_options.get('mount_persistent1_shared_nfs', False))
+              mount_scratch_nfs = bool(spawner.user_options.get('mount_scratch_nfs', False))
+              mount_scratch_recovery_nfs = bool(spawner.user_options.get('mount_scratch_recovery_nfs', False))
+              cfg = PROFILE_CONFIGS.get(profile_slug, PROFILE_CONFIGS['cpu-default'])
+              requested_network_mounts = []
+              requested_storage_mounts = []
+              spawner.log.info(
+                  f"{spawner.user.name} -> profile={profile_slug}, mount_nfs={mount_nfs}, "
+                  f"mount_shared_longhorn={mount_shared_longhorn}, "
+                  f"mount_personal_nfs={mount_personal_nfs}, mount_persistent1_shared={mount_persistent1_shared}, "
+                  f"mount_scratch_nfs={mount_scratch_nfs}, mount_scratch_recovery_nfs={mount_scratch_recovery_nfs}, "
+                  "freeform_overrides=disabled"
+              )
+
+              # LDAP Lookup for UID/GID
+              ldap_info = await directory_identities.resolve(spawner.user.name, spawner.log)
+              
+              # Default to jovyan (fail-safe)
+              spawner.uid = 1000
+              spawner.fs_gid = 100
+              
+              if ldap_info:
+                  spawner.uid = ldap_info['uid']
+                  spawner.gid = ldap_info['gid']
+                  spawner.fs_gid = ldap_info['gid']
+                  spawner.log.info(f"LDAP: Set {spawner.user.name} to UID={spawner.uid}, GID={spawner.gid}")
+              else:
+                  spawner.log.warning(f"LDAP: Could not find UID/GID for {spawner.user.name}, using default UID 1000/100. NFS share will NOT be mounted.")
+
+              if not mount_nfs:
+                  mount_personal_nfs = False
+                  mount_persistent1_shared = False
+                  mount_scratch_nfs = False
+                  mount_scratch_recovery_nfs = False
+
+              if mount_nfs and mount_personal_nfs and ldap_info:
+                  user_nfs_vol = {'name': 'cps-persistent1-users', 'persistentVolumeClaim': {'claimName': 'cps-persistent1-users-pvc'}}
+                  user_nfs_mount = {'name': 'cps-persistent1-users', 'mountPath': '/home/jovyan/cps_persistent1_users'}
+                  append_volume_mount(spawner, user_nfs_vol, user_nfs_mount)
+                  requested_network_mounts.append('personal')
+              elif mount_nfs and mount_personal_nfs and not ldap_info:
+                  spawner.log.warning(f"NFS personal share requested for {spawner.user.name} but LDAP UID/GID lookup failed; skipping")
+
+              if is_power_user(spawner.user):
+                  # Keep a larger working volume for power users even when network mounts are off.
+                  spawner.storage_capacity = '100Gi'
+                  if mount_shared_longhorn:
+                      shared_vol = {'name': 'shared', 'persistentVolumeClaim': {'claimName': 'jupyterhub-shared-storage'}}
+                      shared_mount = {'name': 'shared', 'mountPath': '/home/jovyan/shared'}
+                      append_volume_mount(spawner, shared_vol, shared_mount)
+                      requested_storage_mounts.append('shared-longhorn')
+
+                  if mount_nfs and mount_persistent1_shared:
+                      shared_pvc_vol = {'name': 'cps-persistent1-shared', 'persistentVolumeClaim': {'claimName': 'cps-persistent1-shared-pvc'}}
+                      shared_pvc_mount = {'name': 'cps-persistent1-shared', 'mountPath': '/home/jovyan/cps_persistent1_shared'}
+                      append_volume_mount(spawner, shared_pvc_vol, shared_pvc_mount)
+                      requested_network_mounts.append('persistent1-shared')
+                  if mount_nfs and (mount_scratch_nfs or mount_scratch_recovery_nfs):
+                      scratch_vol = {'name': 'cps-scratch1-tmp', 'persistentVolumeClaim': {'claimName': 'cps-scratch1-tmp-v2-pvc'}}
+                      scratch_mount = {'name': 'cps-scratch1-tmp', 'mountPath': '/home/jovyan/cps_scratch1'}
+                      append_volume_mount(spawner, scratch_vol, scratch_mount)
+                      requested_network_mounts.append('scratch1-root')
+              elif mount_nfs and (mount_persistent1_shared or mount_scratch_nfs or mount_scratch_recovery_nfs):
+                  spawner.log.warning(f"Shared network mounts were requested for {spawner.user.name}, but the user is not a power user; skipping")
+
+              # Set Notebook Dir to User's Folder on NFS
+              # spawner.notebook_dir = f"/home/jovyan/cps_persistent1_users/{spawner.user.name}"
+              # spawner.default_url = "/lab/tree/cps_persistent1_users/" + spawner.user.name
+
+              # Base image
+              spawner.image = cfg['image']
+              # Resources
+              spawner.cpu_limit = cfg['cpu_limit']; spawner.cpu_guarantee = cfg['cpu_guarantee']
+              spawner.mem_limit = cfg['mem_limit']; spawner.mem_guarantee = cfg['mem_guarantee']
+              # RuntimeClass (helps nvidia-smi passthrough with some clusters)
+              spawner.extra_pod_config = spawner.extra_pod_config or {}
+              if cfg['runtime_class']:
+                  spawner.extra_pod_config['runtimeClassName'] = cfg['runtime_class']
+              
+              # UID Override (e.g. for RapidsAI which uses 1001)
+              if cfg.get('uid'):
+                  spawner.uid = cfg['uid']
+
+              # --- SSH sidecar credential (VS Code Remote-SSH support) ---
+              # WARNING: this hook runs for EVERY spawn. If `cryptography` and
+              # `kubernetes_asyncio` are not already present in the JupyterHub hub
+              # image's Python environment, this import will raise ImportError on
+              # every single spawn attempt for every user (a full outage), not just
+              # for SSH users. VERIFIED LIVE? -- if you are reading this and have not
+              # confirmed `pip show cryptography` and `pip show kubernetes_asyncio`
+              # succeed inside a running hub pod, STOP and verify before deploying
+              # this change. See docs/superpowers/specs/2026-08-03-vscode-remote-ssh-design.md.
+              import base64
+              import re
+              from cryptography.hazmat.primitives import serialization
+              from cryptography.hazmat.primitives.asymmetric.ed25519 import Ed25519PrivateKey
+              from kubernetes_asyncio import client as k8s_client
+              from kubernetes_asyncio.client.rest import ApiException
+              from kubespawner.clients import load_config, shared_client
+
+              safe_username = re.sub(r'[^a-z0-9-]', '-', spawner.user.name.lower())[:40]
+              safe_server_name = re.sub(r'[^a-z0-9-]', '-', (spawner.name or '').lower())[:40]
+              sidecar_secret_name = f"ssh-sidecar-{safe_username}-{safe_server_name or 'default'}"
+
+              # KubeSpawner instances have no `.api_client`/`.api` attribute of
+              # their own (confirmed live against the running hub pod's
+              # installed kubespawner: KubeSpawner exposes no api/api_client
+              # trait at all) -- kubespawner itself gets its Kubernetes API
+              # clients via kubespawner.clients.shared_client(), which reuses
+              # the config KubeSpawner already loaded globally at hub startup.
+              # A prior version of this code called
+              # `k8s_client.CoreV1Api(spawner.api_client)` here, which raised
+              # `AttributeError: 'KubeSpawner' object has no attribute
+              # 'api_client'` on every single spawn attempt -- confirmed live
+              # via `kubectl logs deploy/hub` after this bug reached
+              # production. Use the same shared_client() pattern kubespawner
+              # itself uses instead. load_config() is idempotent (@lru_cache)
+              # and safe to call even if kubespawner already loaded config
+              # elsewhere in the process -- call it explicitly here so this
+              # code doesn't depend on incidental prior calls having already
+              # happened before this hook runs.
+              load_config()
+              core_api = shared_client("CoreV1Api")
+
+              # Get-or-create, NOT unconditional regenerate-on-every-call.
+              # Confirmed live (2026-08-06): this hook can run more than once
+              # for what is logically a single user-facing spawn (KubeSpawner
+              # builds the pod manifest -- and therefore invokes this
+              # pre_spawn hook -- more than once per spawn attempt in some
+              # code paths). The previous version unconditionally generated a
+              # brand-new random Ed25519 keypair and delete+created the Secret
+              # on every single invocation, so whichever invocation happened
+              # to run LAST won the Secret, while the pod's actual
+              # `SSH_SIDECAR_AUTHORIZED_KEY` env var baked into
+              # `~/.ssh/authorized_keys` reflected whichever invocation's
+              # manifest KubeSpawner actually used to create the pod --
+              # confirmed live these two silently diverged for a real user
+              # (`gottam`), leaving the notebook pod's authorized_keys and the
+              # `ssh-sidecar-<user>-<server>` Secret holding two DIFFERENT
+              # keypairs from the same spawn, which made the SSH gateway's
+              # sidecar connection fail pubkey auth every time
+              # ("Auth failed for user jovyan") despite everything else being
+              # healthy. Reusing an existing Secret's public key across
+              # repeated hook invocations (and across pod restarts, which is
+              # harmless -- this is a per-identity credential, not a
+              # single-use one) makes every invocation agree on the same
+              # keypair regardless of how many times the hook fires.
+              existing_secret = None
+              try:
+                  existing_secret = await core_api.read_namespaced_secret(sidecar_secret_name, "jupyterhub")
+              except ApiException as e:
+                  if e.status != 404:
+                      raise
+
+              if existing_secret is not None:
+                  pub_openssh = base64.b64decode(existing_secret.data["public_key"])
+              else:
+                  priv_key = Ed25519PrivateKey.generate()
+                  priv_pem = priv_key.private_bytes(
+                      encoding=serialization.Encoding.PEM,
+                      format=serialization.PrivateFormat.OpenSSH,
+                      encryption_algorithm=serialization.NoEncryption(),
+                  )
+                  pub_openssh = priv_key.public_key().public_bytes(
+                      encoding=serialization.Encoding.OpenSSH,
+                      format=serialization.PublicFormat.OpenSSH,
+                  )
+
+                  secret_body = k8s_client.V1Secret(
+                      metadata=k8s_client.V1ObjectMeta(
+                          name=sidecar_secret_name,
+                          namespace="jupyterhub",
+                          labels={"app.kubernetes.io/component": "ssh-sidecar-credential"},
+                      ),
+                      string_data={
+                          "private_key": priv_pem.decode(),
+                          "public_key": pub_openssh.decode(),
+                      },
+                      type="Opaque",
+                  )
+                  try:
+                      await core_api.create_namespaced_secret("jupyterhub", secret_body)
+                  except ApiException as e:
+                      if e.status == 409:
+                          # Lost the create race to a concurrent invocation
+                          # for the same identity -- read back whichever
+                          # keypair won so we still agree with it, rather
+                          # than deleting/overwriting it (that unconditional
+                          # delete+create loop is exactly the bug this
+                          # rewrite removes).
+                          winner = await core_api.read_namespaced_secret(sidecar_secret_name, "jupyterhub")
+                          pub_openssh = base64.b64decode(winner.data["public_key"])
+                      else:
+                          raise
+
+              # REDESIGNED 2026-08-03 (live, mid-incident): originally this ran
+              # a separate "ssh-sidecar" container (minimal debian + openssh),
+              # sharing only volume mounts with the main "notebook" container.
+              # Confirmed live via a real VS Code Remote-SSH session that this
+              # left the ssh session with none of the main container's actual
+              # software -- no nvidia-smi, no CUDA, no conda/pip environment,
+              # no GPU device access at all (K8s grants GPU resources
+              # per-container, not per-pod). A sidecar can share the
+              # filesystem via matching volumeMounts, but never the image
+              # layers or GPU device access of a DIFFERENT container. Fixed by
+              # running sshd inside the main container itself instead, via the
+              # postStart hook below (same mechanism already used to ensure
+              # tmux is present) -- this gets full parity with the Jupyter web
+              # terminal for free, and eliminates the separate sidecar image
+              # entirely (no more build/push/tag-caching maintenance burden).
+              # The public key is passed in via an env var the postStart
+              # script writes to ~/.ssh/authorized_keys.
+              spawner.environment["SSH_SIDECAR_AUTHORIZED_KEY"] = pub_openssh.decode()
+              # --- end SSH sidecar credential ---
+
+              # Command override (e.g. for Dask profile)
+              if cfg.get('cmd'):
+                  spawner.cmd = cfg['cmd']
+
+              # Ensure tmux is present, and (2026-08-03) run a real sshd inside
+              # this container itself for VS Code Remote-SSH support -- see
+              # the SSH_SIDECAR_AUTHORIZED_KEY comment above for why this
+              # replaced a separate sidecar container.
+              #
+              # CRITICAL (found live 2026-08-03, ~1 minute after first
+              # deploying this): postStart hooks are BLOCKING -- the
+              # container is killed and restarted if the hook doesn't return
+              # (successfully) within the kubelet's hook timeout. This image
+              # does not have openssh-server preinstalled, so the first cut
+              # of this hook ran `apt-get update && apt-get install -y
+              # openssh-server` SYNCHRONOUSLY inside postStart on every single
+              # spawn -- confirmed live via `kubectl describe pod` showing
+              # repeated `FailedPostStartHook` / `Killing` / `BackOff`
+              # (PostStartHookError), i.e. a permanent crashloop for every
+              # user, not just an SSH-only degradation. Fixed by moving the
+              # entire SSH setup (including the slow apt-get) into a fully
+              # detached background subshell, with its stdin/stdout/stderr
+              # redirected away from the hook's own pipe -- postStart itself
+              # now only does `mkdir` + backgrounding and returns in
+              # milliseconds, unconditionally succeeding regardless of how
+              # long the background install takes or whether it fails.
+              # SSH access simply becomes available a few seconds after the
+              # rest of the pod, instead of blocking notebook startup on it.
+              # This exact mechanism (setsid + a one-line `sh -c '...' &`
+              # script embedded as a shell string) went through several live
+              # failed iterations before landing here -- see git history on
+              # this block for the full trail (sudo silently failing under a
+              # TTY-less setsid session; sshd's own self-daemonizing
+              # double-fork silently vanishing when backgrounded with a
+              # trailing `&` inside a nested `sh -c` string). The version
+              # below was verified end-to-end in an isolated debug pod
+              # (real listening sshd process observed via `ps aux`, not just
+              # assumed) before being wired into the real spawn path:
+              # - the script is written to a real FILE first, not passed as
+              #   a nested-quoted inline string, to eliminate an entire class
+              #   of shell-quoting ambiguity;
+              # - it ends with `exec sshd -D ...` rather than backgrounding
+              #   sshd with a trailing `&` -- `exec` replaces the script's
+              #   own process image with sshd directly, so sshd BECOMES the
+              #   setsid'd session leader instead of being a background child
+              #   whose survival depends on job-control semantics that proved
+              #   unreliable in this nested context.
+              spawner.extra_container_config = spawner.extra_container_config or {}
+              _ssh_setup_script = (
+                  "#!/bin/sh\n"
+                  "command -v tmux >/dev/null 2>&1 && [ -e /usr/lib/openssh/sftp-server ] || (apt-get update && apt-get install -y tmux openssh-sftp-server || true)\n"
+                  "command -v sshd >/dev/null 2>&1 || (apt-get update && apt-get install -y openssh-server || true)\n"
+                  "mkdir -p /home/jovyan/.ssh && chmod 700 /home/jovyan/.ssh\n"
+                  "touch /home/jovyan/.ssh/authorized_keys\n"
+                  # Idempotent, non-destructive rewrite: `> authorized_keys`
+                  # unconditionally on every pod start previously wiped out
+                  # ANY key a user had added themselves (e.g. via
+                  # `ssh-copy-id`, landing here through the sidecar relay) --
+                  # confirmed live (2026-08-04) this would have silently
+                  # discarded a user's own key on their very next pod
+                  # restart. Tag this gateway's own managed line with a
+                  # trailing marker comment, strip only lines carrying that
+                  # exact marker (i.e. only ever our own previous line, never
+                  # a user's key, which won't have this marker), then append
+                  # the current gateway key fresh -- also fixes the marker-less
+                  # version of this script re-appending on every restart
+                  # across the SAME still-running pod ballooning into repeated
+                  # duplicate entries (confirmed live: 3 duplicate copies of a
+                  # user's own key from repeated ssh-copy-id retries during
+                  # this same debugging session).
+                  'grep -v " jupyterhub-ssh-gateway-managed$" /home/jovyan/.ssh/authorized_keys > /tmp/authorized_keys.new || true\n'
+                  'printf "%s jupyterhub-ssh-gateway-managed\\n" "$SSH_SIDECAR_AUTHORIZED_KEY" >> /tmp/authorized_keys.new\n'
+                  "mv /tmp/authorized_keys.new /home/jovyan/.ssh/authorized_keys\n"
+                  "chmod 600 /home/jovyan/.ssh/authorized_keys\n"
+                  # Owner-only chown (no group): "jovyan:jovyan" confirmed
+                  # live to fail with "invalid group" in this image (jovyan's
+                  # primary group isn't literally named "jovyan") -- owner
+                  # ownership alone is what sshd's StrictModes check needs.
+                  "chown jovyan /home/jovyan/.ssh /home/jovyan/.ssh/authorized_keys\n"
+                  # GPU-profile base image (cschranz/gpu-jupyter) ships jovyan
+                  # with a LOCKED account (`getent shadow jovyan` -> `jovyan:!:...`)
+                  # -- confirmed live (2026-08-04) this makes OpenSSH's own
+                  # core allowed_user() check (auth.c) reject every connection
+                  # attempt outright ("User jovyan not allowed because account
+                  # is locked"), fully independent of PAM and firing before any
+                  # auth-method-specific logic runs -- i.e. this blocks the
+                  # whole sidecar relay (exec/shell, not just SFTP) on every
+                  # GPU profile, not just the SFTP path that surfaced it.
+                  # cpu-default's base image (datascience-notebook) ships a
+                  # real password hash for jovyan, not locked, which is why
+                  # this was never hit while testing SSH against that profile
+                  # earlier today. Only root can clear a locked shadow entry;
+                  # GPU (grant_sudo: True) profiles already run this whole
+                  # script as root, so this is safe here and a harmless no-op
+                  # (`|| true`) on non-root/non-sudo profiles that don't need
+                  # it. `passwd -d` clears the password field entirely (empty,
+                  # not locked) -- safe combined with the PasswordAuthentication=no
+                  # already set below, so this does not open a blank-password
+                  # login path.
+                  '[ "$(id -u)" = "0" ] && passwd -d jovyan >/dev/null 2>&1 || true\n'
+                  # Non-sudo profiles (grant_sudo: False, e.g. cpu-default) run
+                  # this whole container -- postStart included -- as the plain
+                  # jovyan user, not root (only grant_sudo: True profiles get
+                  # spawner.uid = 0). Confirmed live (2026-08-04) that this
+                  # setup previously ALWAYS failed silently on such profiles:
+                  # `mkdir /run/sshd` -> Permission denied (root-owned tmpfs),
+                  # then `ssh-keygen -A`'s default /etc/ssh/ssh_host_*_key
+                  # location is also root-owned -> silently produced no host
+                  # keys -> sshd's own fatal "no hostkeys available -- exiting"
+                  # on every single attempt, meaning SSH into any non-sudo
+                  # profile never actually worked via this in-container sshd at
+                  # all (always fell back to the old Terminado bridge, which
+                  # can't service non-interactive exec commands like
+                  # `ssh-copy-id` uses). Fixed to not require root anywhere:
+                  # host key generated into the user's own home directory
+                  # instead of /etc/ssh, and /run/sshd's mkdir is now best-effort
+                  # (`|| true`) since this sshd runs fully unprivileged from the
+                  # start -- there is no root process to privilege-separate
+                  # FROM, so a missing privsep directory does not stop it from
+                  # serving connections (verified: the only fatal this setup
+                  # ever produced was the hostkeys one, never one naming
+                  # /run/sshd).
+                  "mkdir -p /run/sshd 2>/dev/null || true\n"
+                  "mkdir -p /home/jovyan/.ssh/host_keys && chmod 700 /home/jovyan/.ssh/host_keys\n"
+                  "[ -f /home/jovyan/.ssh/host_keys/ssh_host_ed25519_key ] || ssh-keygen -q -t ed25519 -f /home/jovyan/.ssh/host_keys/ssh_host_ed25519_key -N '' >/dev/null 2>&1\n"
+                  # "sshd -p 2200" (without .*) does NOT match the actual
+                  # running cmdline "sshd -D -p 2200" (the -D flag sits
+                  # between "sshd" and "-p 2200"), confirmed live: this
+                  # silently failed to kill a still-running prior instance
+                  # during manual re-testing, causing a bind conflict that
+                  # masked an unrelated fix for several iterations.
+                  'pkill -f "sshd.*-p 2200" >/dev/null 2>&1 || true\n'
+                  # StrictModes=no: confirmed live that /home/jovyan itself is
+                  # world-writable (drwxrwxrwx) in this image, which makes
+                  # sshd's default StrictModes check reject key auth
+                  # ("Auth failed for user jovyan" / Permission denied)
+                  # regardless of .ssh's own correct permissions -- matches
+                  # why the original standalone sidecar's sshd_config also
+                  # had to set this.
+                  # UsePAM=no: confirmed live (2026-08-04) that PAM's ACCOUNT
+                  # phase (not the key check itself, which succeeded) rejects
+                  # jovyan outright -- "Access denied for user jovyan by PAM
+                  # account configuration" -- in this minimal image's default
+                  # PAM config, most likely because jovyan's /etc/shadow
+                  # password field is locked/disabled, which pam_unix's
+                  # account phase treats as an expired/disabled account
+                  # regardless of auth method. PasswordAuthentication is
+                  # already off and AllowUsers already restricts to jovyan
+                  # only, so PAM adds nothing security-relevant here for this
+                  # internal-only (never externally exposed) sidecar sshd --
+                  # simplest fix is to not invoke it at all.
+                  "exec /usr/sbin/sshd -D -p 2200 -h /home/jovyan/.ssh/host_keys/ssh_host_ed25519_key -o UsePAM=no -o StrictModes=no -o PermitRootLogin=no -o PasswordAuthentication=no -o AllowUsers=jovyan -o PidFile=/tmp/sshd-2200.pid\n"
+              )
+              _ssh_setup_cmd = (
+                  "mkdir -p /tmp/ssh-setup-logs && cat > /tmp/ssh-setup.sh << 'SCRIPT_EOF'\n"
+                  + _ssh_setup_script
+                  + "SCRIPT_EOF\n"
+                  "chmod +x /tmp/ssh-setup.sh\n"
+                  "setsid /tmp/ssh-setup.sh </dev/null >/tmp/ssh-setup-logs/setup.log 2>&1 &"
+              )
+              spawner.extra_container_config['lifecycle'] = {
+                  'postStart': {
+                      'exec': {
+                          'command': ['/bin/sh', '-c', _ssh_setup_cmd]
+                      }
+                  }
+              }
+
+              # GPU resources (profile)
+              #
+              # CRITICAL (found live 2026-07-07, capacity-planning pass for the
+              # 30-concurrent-student-session requirement): `gpu-memory` (MPS
+              # fractional sharing, set below via 'memory_mib') and
+              # `resources.limits."nvidia.com/gpu"` are ALTERNATIVE, non-combinable
+              # allocation paths in KAI -- setting both on the same pod is
+              # unconditionally rejected by the admission webhook
+              # (admission.kai-scheduler.svc) with "cannot request both GPU and
+              # GPU memory" (pkg/binder/plugins/gpusharing/gpu-request/gpu_request_validator.go:36-38
+              # in NVIDIA/KAI-Scheduler v0.14.6). This file's example templates and
+              # docs/troubleshooting.md already documented this rule, but every
+              # VRAM-tiered ('memory_mib') profile below was still unconditionally
+              # given a `nvidia.com/gpu` resource limit/guarantee too, via this
+              # block -- confirmed live: a synthetic pod built from this exact
+              # profile shape (gpu:1 limit + gpu-memory annotation) was rejected
+              # by the same admission error. This meant EVERY course/MPS-shared
+              # 'gpu-*gb' profile spawn attempt failed at admission, unconditionally
+              # -- not a capacity or queue-quota problem, a total block regardless
+              # of student count. Fixed by excluding memory_mib profiles from the
+              # nvidia.com/gpu resource assignment; they rely solely on the
+              # 'gpu-memory' annotation set further below.
+              spawner.extra_resource_limits = {}
+              spawner.extra_resource_guarantees = {}
+              if cfg['gpu'] and cfg.get('resource_key'):
+                  # Only whole-GPU (non-MPS) profiles get an actual nvidia.com/gpu
+                  # resource limit/guarantee. MPS/'memory_mib' profiles must NOT --
+                  # see the comment above this block -- they rely solely on the
+                  # 'gpu-memory' annotation set later in this same block.
+                  # Everything else below (NVIDIA_VISIBLE_DEVICES, node_selector,
+                  # the memory_mib annotation/env/mounts) still applies to BOTH
+                  # kinds of GPU profile, so it stays outside this inner if.
+                  if not cfg.get('memory_mib'):
+                      spawner.extra_resource_limits[cfg['resource_key']] = str(cfg['gpu'])
+                      spawner.extra_resource_guarantees[cfg['resource_key']] = str(cfg['gpu'])
+                  if not getattr(spawner, "environment", None):
+                      spawner.environment = {}
+                  spawner.environment.update({'NVIDIA_VISIBLE_DEVICES':'all','NVIDIA_DRIVER_CAPABILITIES':'compute,utility'})
+                  spawner.node_selector = dict(getattr(spawner,'node_selector',{}) or {}, **{'accelerator':'nvidia'})
+
+                  # Multi-GPU exclusive profiles (whole-device, gpu > 1, no MPS
+                  # 'memory_mib' fractional sharing) request more than one whole
+                  # nvidia.com/gpu on a SINGLE pod/node. With 4 workers x 2 GPUs
+                  # each, free GPUs can legitimately be fragmented 1+1 across two
+                  # nodes even though the cluster-wide total is sufficient -- KAI
+                  # then leaves the pod pending while it waits for reclaim/
+                  # consolidation (or a session to end) to free 2 GPUs on one
+                  # node. c.Spawner.start_timeout (global, set above to 300s/5m)
+                  # is nowhere near long enough to wait that out, and its
+                  # generic-looking timeout kills the pending pod and PodGroup
+                  # before KAI can resolve it (see docs/troubleshooting.md,
+                  # "JupyterHub '2x GPU' profile spawn failure", 2026-07-07).
+                  # KubeSpawner's start_timeout is a per-instance traitlet, so
+                  # overriding it here in the pre-spawn hook only affects this
+                  # spawner instance/profile -- single-GPU and MPS-shared
+                  # profiles keep the fast 5-minute default so genuine failures
+                  # still surface quickly.
+                  #
+                  # UPDATED 2026-07-07: measured live that KAI's reclaim/
+                  # consolidation defragmentation itself only takes ~30-45s
+                  # end-to-end (bounded by the real 30s terminationGracePeriodSeconds
+                  # used by ablator-* batch jobs at the time), or ~9-10s via
+                  # consolidation's live-relocation path. Per explicit product
+                  # requirement, ANY spawn attempt (success or failure) must
+                  # resolve quickly rather than being left long "for safety"
+                  # against the separate, unbounded case where the requesting
+                  # queue is already over its own fair share (reclaim/
+                  # consolidation both refuse to act at all in that case, per
+                  # docs/gpu-scheduling-architecture.md) -- that case still fails
+                  # fast rather than hanging for up to 20 minutes.
+                  #
+                  # UPDATED 2026-07-07 (later, verification pass): live
+                  # ablator-* batch jobs were found to actually use
+                  # terminationGracePeriodSeconds=150, not 30 -- reclaim's bind
+                  # time is bounded by the victim's real grace period, so on a
+                  # fully-saturated cluster the eviction alone can take close to
+                  # 150s. 110s was too tight against that realistic worst case
+                  # (see docs/troubleshooting.md verification-pass entry).
+                  # Raised to 200s to give reclaim room to complete against a
+                  # real 150s-grace-period victim with margin, while still
+                  # resolving far faster than the original 1200s.
+                  #
+                  # UPDATED 2026-07-07 (again): live-tested a SECOND concurrent
+                  # 2-GPU request against phd-interactive's quota=2 (which only
+                  # guarantees one such session) with the cluster fully
+                  # saturated (8/8 GPUs in use) -- it succeeded via reclaim but
+                  # took ~165s, leaving only ~35s of margin under 200s. Raised
+                  # to 250s for real margin on concurrent/contended multi-GPU
+                  # requests, not just the single-request case.
+                  if cfg['gpu'] > 1 and not cfg.get('memory_mib'):
+                      spawner.start_timeout = 250
+
+                  # MPS-based memory sharing: for VRAM-tiered profiles (those carrying a
+                  # 'memory_mib' key), pin the container's MPS memory ceiling and tell
+                  # KAI Scheduler's bin-packer the same figure via the 'gpu-memory' pod
+                  # annotation, so scheduling accounting and enforcement stay in sync by
+                  # construction. Full-GPU profiles (no 'memory_mib') are left alone -
+                  # they get the whole device as before.
+                  #
+                  # CRITICAL (found live, 2026-07-06): CUDA_MPS_PINNED_DEVICE_MEM_LIMIT
+                  # alone does NOT connect the process to the MPS daemon -- without also
+                  # setting CUDA_MPS_PIPE_DIRECTORY/CUDA_MPS_LOG_DIRECTORY (and mounting
+                  # the daemon's actual pipe/log hostPath), CUDA silently falls back to
+                  # direct GPU access and the memory limit is never enforced at all. A
+                  # test pod missing this wiring allocated 16x its configured 1GB limit
+                  # with zero errors; the identical test WITH this wiring correctly
+                  # failed at ~1GB. See docs/troubleshooting.md for the full incident.
+                  memory_mib = cfg.get('memory_mib')
+                  if memory_mib:
+                      spawner.environment['CUDA_MPS_PINNED_DEVICE_MEM_LIMIT'] = f"0={memory_mib}M"
+                      spawner.environment['CUDA_MPS_PIPE_DIRECTORY'] = '/mps/nvidia.com/gpu/pipe'
+                      spawner.environment['CUDA_MPS_LOG_DIRECTORY'] = '/mps/nvidia.com/gpu/log'
+                      spawner.extra_annotations = spawner.extra_annotations or {}
+                      spawner.extra_annotations.update({'gpu-memory': str(memory_mib)})
+
+                      mps_pipe_volume = {'name': 'mps-pipe', 'hostPath': {'path': '/run/nvidia/mps/nvidia.com/gpu/pipe', 'type': 'DirectoryOrCreate'}}
+                      mps_log_volume = {'name': 'mps-log', 'hostPath': {'path': '/run/nvidia/mps/nvidia.com/gpu/log', 'type': 'DirectoryOrCreate'}}
+                      mps_pipe_mount = {'name': 'mps-pipe', 'mountPath': '/mps/nvidia.com/gpu/pipe'}
+                      mps_log_mount = {'name': 'mps-log', 'mountPath': '/mps/nvidia.com/gpu/log'}
+                      if spawner.volumes is None:
+                          spawner.volumes = []
+                      if spawner.volume_mounts is None:
+                          spawner.volume_mounts = []
+                      if isinstance(spawner.volumes, list):
+                          spawner.volumes.extend([mps_pipe_volume, mps_log_volume])
+                      elif isinstance(spawner.volumes, dict):
+                          spawner.volumes[mps_pipe_volume['name']] = mps_pipe_volume
+                          spawner.volumes[mps_log_volume['name']] = mps_log_volume
+                      if isinstance(spawner.volume_mounts, list):
+                          spawner.volume_mounts.extend([mps_pipe_mount, mps_log_mount])
+                      elif isinstance(spawner.volume_mounts, dict):
+                          spawner.volume_mounts[mps_pipe_mount['name']] = mps_pipe_mount
+                          spawner.volume_mounts[mps_log_mount['name']] = mps_log_mount
+
+                  # Route all configured GPU profiles through
+                  # KAI Scheduler. Student sessions use the existing 'courses' queue with
+                  # kai-course-high priority; staff/general interactive sessions use the
+                  # 'phd-interactive' queue with kai-phd-interactive priority.
+                  spawner.scheduler_name = 'kai-scheduler'
+                  spawner.extra_labels = spawner.extra_labels or {}
+                  if cfg.get('student_profile'):
+                      spawner.extra_labels.update({'kai.scheduler/queue': 'courses'})
+                      spawner.extra_pod_config['priorityClassName'] = 'kai-course-high'
+                  else:
+                      spawner.extra_labels.update({'kai.scheduler/queue': 'phd-interactive'})
+                      spawner.extra_pod_config['priorityClassName'] = 'kai-phd-interactive'
+
+              # Record profile on the server (used by per-profile culler)
+              spawner.environment = spawner.environment or {}
+              spawner.environment['HUB_PROFILE_SLUG'] = profile_slug
+              spawner.environment['HUB_NFS_MOUNTS'] = ','.join(requested_network_mounts) if requested_network_mounts else 'disabled'
+              spawner.environment['HUB_STORAGE_MOUNTS'] = ','.join(requested_storage_mounts) if requested_storage_mounts else 'disabled'
+
+              # Scheduler override (e.g. for Slurm)
+              if cfg.get('scheduler_name'):
+                  spawner.scheduler_name = cfg['scheduler_name']
+              
+              # Extra labels (e.g. for Slurm accounting)
+              if cfg.get('extra_labels'):
+                  spawner.extra_labels.update(cfg['extra_labels'])
+                  # Dynamic user label for Slurm
+                  if cfg['scheduler_name'] == 'slurm-bridge-scheduler':
+                      spawner.extra_labels.update({"slinky.slurm.net/user": spawner.user.name})
+
+              # Sudo access
+              if cfg.get('grant_sudo'):
+                  spawner.environment['GRANT_SUDO'] = 'yes'
+                  spawner.extra_container_config = spawner.extra_container_config or {}
+                  spawner.extra_container_config['securityContext'] = {
+                      'allowPrivilegeEscalation': True,
+                      'runAsUser': 0,
+                  }
+                  # Run as root to configure sudo, then switch to NB_UID
+                  spawner.uid = 0
+                  target_uid = cfg.get('uid', 1000)
+                  spawner.environment['NB_UID'] = str(target_uid)
+                  spawner.environment['NB_USER'] = 'jovyan'
+                  spawner.environment['CHOWN_HOME'] = 'yes'
+                  spawner.environment['CHOWN_HOME_OPTS'] = '' # Non-recursive to avoid RO mount errors
+
+              # Shared memory (/dev/shm) tuning for multiprocessing / PyTorch DataLoader
+              shm_size = cfg.get('shm_size')
+              if shm_size:
+                  if isinstance(spawner.volumes, dict):
+                      if 'dshm' in spawner.volumes:
+                          spawner.volumes['dshm']['emptyDir'] = {'medium': 'Memory', 'sizeLimit': shm_size}
+                      else:
+                          spawner.volumes['dshm'] = {'name': 'dshm', 'emptyDir': {'medium': 'Memory', 'sizeLimit': shm_size}}
+                  elif isinstance(spawner.volumes, list):
+                      for v in spawner.volumes:
+                          if v.get('name') == 'dshm':
+                              v['emptyDir'] = {'medium': 'Memory', 'sizeLimit': shm_size}
+                              break
+                      else:
+                          spawner.volumes.append({'name': 'dshm', 'emptyDir': {'medium': 'Memory', 'sizeLimit': shm_size}})
+
+              spawner.log.info(f"Final: image={spawner.image} CPU={spawner.cpu_limit}/{spawner.cpu_guarantee} MEM={spawner.mem_limit}/{spawner.mem_guarantee} RES={spawner.extra_resource_limits}")
+          c.KubeSpawner.pre_spawn_hook = apply_profile_settings
 
 # Storage PVCs and additional Kubernetes manifests
 kustomize:
