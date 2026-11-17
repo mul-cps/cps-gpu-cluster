@@ -1,0 +1,11 @@
+{
+  "approved_plan_sha256": "d7077f4f58f8fb89dabfe1aeea0dba571ff7c2cdd71fd45604a16b988c0bbd7b",
+  "original_source_receipt_and_account_preserved": true,
+  "exact_original_custody_preimage": true,
+  "only_derived_workspace_runtime_and_source_control_scopes": true,
+  "source_service_id": 5,
+  "neutral_hub_user_id": 18,
+  "backup_sha256": "7ad452312f47564914328c465c849ee4a3dd89f9c9798aa461c3766b677af699",
+  "expires": "2026-11-17T13:14:56.234816+00:00",
+  "reviewed_by": "Codex operator under existing bjoern authorization"
+}

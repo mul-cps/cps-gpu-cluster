@@ -1,0 +1,113 @@
+{
+  "observed": "2026-11-17T13:20:42.048879+00:00",
+  "workspace": "shared-gpu-lab",
+  "existing_profile": "interactive-shared-5",
+  "source_start_http": 200,
+  "source_state_running_confirmed": true,
+  "pod": {
+    "observed": "2026-11-17T13:13:47.307194+00:00",
+    "namespace": "jupyterhub",
+    "name": "jupyter-cps-ws-27c474f74f9d41c53eac0be01fcca8a3--rtc",
+    "uid": "b934f817-db93-4737-af29-be4b1b59f5ac",
+    "node": "k3s-wk-gpu2",
+    "node_uid": "3336cdd5-d245-436e-b57c-2f66c6dcaa41",
+    "node_boot_id": "8874dcda-ced2-4aa4-b5cb-71a0871abdd5",
+    "phase": "Running",
+    "containers": [
+      {
+        "name": "notebook",
+        "containerID": "containerd://cc14b201dc1146d15bac307b1b24f24c8f9d2d1aba15504bd944fd42f7e3faee",
+        "imageID": "ghcr.io/mul-cps/cps-jupyter-notebook@sha256:4a03fe381c6f32f8e056ac05aad27abc64defa2f63128c53511a24d37fb5c194",
+        "ready": true,
+        "restartCount": 0
+      }
+    ],
+    "gpu_annotations": {
+      "gpu-compute.mode": "time-slicing",
+      "gpu-fraction-container-name": "notebook",
+      "nvidia.com/container.notebook.gpu-memory.limit": "5120Mi",
+      "nvidia.com/container.notebook.gpu-memory.request": "5120Mi",
+      "nvidia.com/container.notebook.gpus.devices": "k8s.device-plugin.nvidia.com/gpu=GPU-16128952-b438-556a-00bb-93039ee24e56"
+    },
+    "runtime_class": "nvidia",
+    "pvc_mounts": [
+      "cps-workspace-f583518f2b68a736d90225b76837d5c1b6d9bed5"
+    ]
+  },
+  "registered_policy": "sha256:2b2ad6ce656db38a0e9cc2a0d3365c48d6061a835d317236a322776c11dc3fcb",
+  "registered_active_member_count": 1,
+  "cuda": {
+    "cuda_pass": true,
+    "uid": 1000,
+    "device_count": 1,
+    "gpu_uuid": "GPU-16128952-b438-556a-00bb-93039ee24e56",
+    "gpu_name": "NVIDIA A100-PCIE-40GB",
+    "allocation_bytes": 67108864,
+    "calls": {
+      "cuInit": 0,
+      "cuDeviceGetCount": 0,
+      "cuDeviceGet": 0,
+      "cuDeviceGetName": 0,
+      "cuDeviceGetUuid": 0,
+      "cuCtxCreate_v2": 0,
+      "cuMemAlloc_v2": 0,
+      "cuMemsetD8_v2": 0,
+      "cuCtxSynchronize": 0,
+      "cuMemFree_v2": 0,
+      "cuCtxDestroy_v2": 0
+    },
+    "started": "2026-11-17T13:14:34.383968+00:00",
+    "completed": "2026-11-17T13:14:49.615772+00:00",
+    "all_memory_freed": true,
+    "context_destroyed": true,
+    "workspace_file_access": false
+  },
+  "normal_stop": {
+    "observed": "2026-11-17T13:18:14.319107+00:00",
+    "first_stop_http": 409,
+    "reconciled_source_stopped_before_retry": true,
+    "pod_absent_before_retry": true,
+    "reservation_inactive_before_retry": true,
+    "idempotent_stop_http": 200,
+    "source_state": "stopped",
+    "reservation": {
+      "workspace": "shared-gpu-lab",
+      "active": false,
+      "attempt": null
+    },
+    "hub": {
+      "owner_status": 200,
+      "servers": {},
+      "group_users": [
+        "bjoern"
+      ],
+      "share_status": 200,
+      "share_response": {
+        "items": [],
+        "_pagination": {
+          "offset": 0,
+          "limit": 200,
+          "total": 0,
+          "next": null
+        }
+      }
+    },
+    "authorized49_grants_guard": true,
+    "no_user_file_access": true
+  },
+  "credential_cleanup": {
+    "token_id": "a1405",
+    "delete_status": 204,
+    "fresh_exact_id_get": 404,
+    "private_token_copy_absent": true,
+    "supervisor": "inactive",
+    "authorized49_guard": true
+  },
+  "source_grant_and_membership_deadline": "2026-11-24T10:19:00.235897Z",
+  "no_other_grant_or_source_member_renewal": true,
+  "no_user_file_access": true,
+  "original_home_pvc_preserved": true,
+  "registered_source_pvc_preserved": true,
+  "actual_driver_leaf_limit_this_run": "Not captured in this run; actual request/limit annotations5120Mi and earlier same-final-artifact qualified5GiB driver leaf are separate evidence.",
+  "final_state": "stopped; Pod absent; reservation inactive/attempt null; shares zero; no temporary Source credentials"
+}

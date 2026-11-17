@@ -1,8 +1,8 @@
 {
-  "as_of": "2026-11-17T12:40:00.605817+00:00",
+  "as_of": "2026-11-17T13:24:29.770263+00:00",
   "worker": "k3s-wk-gpu2",
   "worker_acceptance": true,
-  "phase": "GPU2 scoped worker accepted; real CPS shared launch blocked by missing neutral-account custody roles; GPU3 upgrade held",
+  "phase": "GPU2 scoped worker and real existing CPS5 Source lifecycle accepted; GPU3 maintenance preparation resumed",
   "gpu_eligibility": "qualified and schedulable; legacy accelerator fence retained; QA grants revoked; old OS nomination cleared",
   "driver": {
     "version": "620.70.06",
@@ -41,10 +41,10 @@
     "CIT normal membership removal: GPU Pod shutdown/lease return; CPU neutral-owner held kernel+two RTC connections closed during normal memberB removal. Human authentication is a separate open gate.",
     "Actual overlapping SourceSTART200+typed400 with one Pod/attempt; complete STOP409 reply lost to client, fresh stopped/Podgone/inactive reconciliation before STOP200 replay.",
     "Final c3b/6ce both-card byte-identical child aggregate/env/MPS/nested-cgroup probe and confirmed UID-bound cleanup; five executor safety tests passed.",
-    "CIT Source memberships/Hub group/Shares0, QA Pods absent, all5QAgrants revoked/original49unchanged, authoritative global person/binding rows0, all owned credentials revoked and raw copies unlinked."
+    "CIT Source memberships/Hub group/Shares0, QA Pods absent, all5QAgrants revoked/original49unchanged, authoritative global person/binding rows0, all owned credentials revoked and raw copies unlinked.",
+    "Existing real bjoern shared-gpu-lab5GiB SourceStart200/Ready onGPU2 with2b2 policy and current member only; nonroot64MiB CUDA fill/sync/free; confirmed normalstop/Podgone/leaseinactive/shares0/temporarycredentialclosed. Original neutral identity/receipt and both PVCs preserved through reviewed operator-only recovery and actual Hub restart."
   ],
   "remaining": [
-    "Restore the existing shared-gpu-lab neutral account permissions through reviewed operator recovery, then verify actual bjoern Source launch/CUDA/stop. Normal provisioning correctly rejects missing roles; recovery not yet applied.",
     "GPU3 serial maintenance: detached-volume extra copies and activator PDB prerequisite repaired; six infrastructure workloads relocated. Prometheus retains a local PV on GPU3 and is Ready there after uncordoning; resolve its maintenance availability before fresh workload checks/drain/OS nomination. GPU1/GPU4 follow after GPU3 acceptance.",
     "Genuine CIT nonadministrator IdP/browser/two-human access; QA aliases have no SSO identity and cannot prove this gate.",
     "Remaining original advanced-feature, ordinary/distributed, startup/defrag, teaching, controllercutover and matching restore gates."
@@ -60,7 +60,7 @@
     "live_catalog": "sha256:2b2ad6ce656db38a0e9cc2a0d3365c48d6061a835d317236a322776c11dc3fcb",
     "sdk_repair_candidate": "ghcr.io/mul-cps/cps-jupyter-notebook@sha256:4a03fe381c6f32f8e056ac05aad27abc64defa2f63128c53511a24d37fb5c194",
     "live_hubs_ready": true,
-    "fleet_note": "Reviewed UI persistence pushed and cluster-maintenance revision pinned to0f4f8bf; reconciliation acceptance pending. No overall Fleet acceptance claimed."
+    "fleet_note": "CPS UI Fleet Bundle verified Ready1/1 on0f; same-image Hub cache restart375Ready preserved recovered custody. No overall Fleet acceptance claimed during staged worker rollout."
   },
   "full_platform_acceptance": false,
   "worker_receipt": "gpu2-worker-acceptance-20261117.json",
@@ -72,15 +72,17 @@
     "change": "Upstream workspace preview skips the legacy native-group roster rule; canonical identity, Source authorization and grant checks remain."
   },
   "usability": {
-    "actual_shared_launch_verified": false,
+    "actual_shared_launch_verified": true,
     "cps_form_script_sha256": "b048ab982036edc8fc3d21ea1afd9d7978f4aee429e99c3ad149ea353afaee0e",
-    "cps_hub_generation": 374,
+    "cps_hub_generation": 375,
     "form": "Blocked legacy personal shared options removed; Shared workspaces link deployed.",
     "existing_access": "One existing 5GiB one-workspace grant and matching bjoern Source membership renewed with user authorization until 2026-11-24T10:19:00.235897+00:00; other grants unchanged.",
-    "blocker": "Same original neutral user18 matches its receipt; runtime/control roles absent. No automatic regrant; reviewed recovery in preparation.",
-    "last_verified_attempt": "Source preview200; account provisioning409; Pod absent; reservation inactive.",
-    "custody_observation": "2026-11-17T11:05:57.902117+00:00",
-    "operator_preparation": "Small Hub PostgreSQL backup saved and archive catalog verified (full restore separately rehearsed locally); exact four stale neutral-account server tokens revoked through Hub API, current API-token count0. No role restoration yet."
+    "blocker": null,
+    "last_verified_attempt": "Normal SourceStart200/Running onGPU2; nonroot64MiB CUDA memory operations passed; normalStop409 retained until fresh Podabsence/inactivelease, confirmed idempotentStop200; finalStopped/shares0.",
+    "custody_observation": "2026-11-17T13:11:44.471735+00:00",
+    "operator_preparation": "Completed reviewed operator-only role recovery; exact artifact and actual cold restart qualified; old owner tokens and temporary Source credential revoked.",
+    "evidence": "managed5-production-recovery-20261117/managed5-final-qualification.safe.json",
+    "browser_two_human_witness": false
   },
   "current_nodes": [
     {

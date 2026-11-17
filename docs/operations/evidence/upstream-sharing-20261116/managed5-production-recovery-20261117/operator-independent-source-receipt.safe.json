@@ -1,0 +1,7 @@
+{
+  "source_receipt_matches_hub_original": true,
+  "source": "cps",
+  "workspace": "shared-gpu-lab",
+  "receipt_sha256": "d77fbf1432614e3fc5525fc16b9d849cf73b8e4c58f191229234365455fe90c8",
+  "query_read_only": true
+}

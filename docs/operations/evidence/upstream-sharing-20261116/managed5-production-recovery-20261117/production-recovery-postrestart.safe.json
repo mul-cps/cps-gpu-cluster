@@ -1,0 +1,13 @@
+{
+  "recovery_applied": true,
+  "plan_sha256": "d7077f4f58f8fb89dabfe1aeea0dba571ff7c2cdd71fd45604a16b988c0bbd7b",
+  "hub_user_id": 18,
+  "same_original_receipt": true,
+  "new_control_role_id": 57,
+  "new_runtime_role_id": 58,
+  "same_image_hub_restart_ready": true,
+  "hub_generation": 375,
+  "custody_survived_actual_restart": true,
+  "approved49_grants_unchanged": true,
+  "actual_shared_launch_verified": false
+}

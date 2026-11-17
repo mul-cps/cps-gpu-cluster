@@ -1,0 +1,25 @@
+{
+  "returncode": 0,
+  "image": "ghcr.io/mul-cps/cps-compute@sha256:0bbeb42640f040a1c26a39c19d368a6ea92bcb18721beba8f68320e7c0edd097",
+  "payload_sha256": {
+    "custody_recovery": "09730173427f556d74dbe55b33f295f521beea677e117a0346f09ca8bd7231b2",
+    "custody_recovery_cli": "347813e6eb9d7a9bc78a968ea984c41066dee5af807631dd21249890c774abc4"
+  },
+  "proof": {
+    "pg_membership_revocation_serialized": {
+      "observed_blocked_while_recovery_open": true,
+      "delete_rows": 1,
+      "blocked_seconds": 0.280069398926571
+    },
+    "actual_snapshot_normal_provisioning_red_then_green": true,
+    "receipt_and_all_12_accounts_unchanged": true,
+    "other_11_custody_rows_unchanged": true,
+    "all_group_memberships_and_credentials_unchanged": true,
+    "only_two_owner_and_one_source_role_associations_added": true,
+    "two_actual_cold_hub_role_creation_assignment_cycles_passed": true,
+    "exact_mounted_retention_script_used": true,
+    "later_revocation_survives_cold_start": true,
+    "replayed_review_rejected": true,
+    "production_mutations": false
+  }
+}
