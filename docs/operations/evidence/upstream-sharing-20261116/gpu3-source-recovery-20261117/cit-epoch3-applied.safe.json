@@ -1,0 +1,20 @@
+{
+  "at": "2026-11-17T18:44:08.527606+00:00",
+  "source": "cit",
+  "created_owned_objects": [
+    {
+      "kind": "configmap",
+      "name": "cit-gpu3-source-qa-909952cd227f",
+      "uid": "4744bd32-5ee4-44e0-ba0e-6b9568fc927e"
+    },
+    {
+      "kind": "secret",
+      "name": "cit-hub-gpu3-qa-fbe26d724251",
+      "uid": "62b7b54c-7ef2-46db-bad3-54573818003e"
+    }
+  ],
+  "actual_spec_exact": true,
+  "deployment_uid": "dd90f866-47d3-4b9f-ba41-b4ebf8cb2b1e",
+  "generation": 317,
+  "gitrepo_revision": "69b20f60fb4b306b1884aa29818e055095de8f8d"
+}

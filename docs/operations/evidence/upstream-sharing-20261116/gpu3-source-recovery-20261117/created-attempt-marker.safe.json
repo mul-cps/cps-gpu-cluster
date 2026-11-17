@@ -1,0 +1,21 @@
+{
+  "owner_id": 31,
+  "spawner_present": true,
+  "read_only": true,
+  "spawner_id": 73,
+  "server_none": true,
+  "compute": {
+    "attempt": "edeef051-a875-48f8-b6b2-7477e8a3f72b",
+    "workspace": "upstream-registry-qualification-20261116-cps",
+    "profile": "interactive-shared-5"
+  },
+  "marker_type": "dict",
+  "generation": {
+    "engine": "kai-nvfractions-v1",
+    "source": "cps",
+    "attempt": "edeef051-a875-48f8-b6b2-7477e8a3f72b",
+    "generation": "9f8fea74-02f7-4c44-86a8-8e39f9bc4169",
+    "pod_uid": "5289c199-b2d5-4f81-a925-463e57da1119"
+  },
+  "marker_cleared": false
+}

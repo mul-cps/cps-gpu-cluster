@@ -1,0 +1,20 @@
+{
+  "at": "2026-11-17T18:43:32.377230+00:00",
+  "source": "cps",
+  "created_owned_objects": [
+    {
+      "kind": "configmap",
+      "name": "cps-gpu3-source-qa-018897c34bd3",
+      "uid": "29498a57-3ca7-4f08-a4ce-bdf1c02446ab"
+    },
+    {
+      "kind": "secret",
+      "name": "cps-hub-gpu3-qa-57155e960a4a",
+      "uid": "046d344a-9e74-4825-89f5-8b3c249454a7"
+    }
+  ],
+  "actual_spec_exact": true,
+  "deployment_uid": "02fb8421-d323-4636-b006-2490cd6f5b63",
+  "generation": 378,
+  "gitrepo_revision": "0dfe1e0e9b323b7157764069eccb80aa06b8e2a5"
+}

@@ -1,0 +1,25 @@
+{
+  "observed": "2026-11-17T18:54:21.487320+00:00",
+  "method": "actual Gateway in-cluster client",
+  "proof": [
+    {
+      "kind": "node",
+      "name": "k3s-wk-gpu3",
+      "status": 403,
+      "reason": "Forbidden",
+      "message": "nodes \"k3s-wk-gpu3\" is forbidden: User \"system:serviceaccount:cps-compute:cps-compute-controller\" cannot get resource \"nodes\" in API group \"\" at the cluster scope"
+    },
+    {
+      "kind": "node",
+      "name": "k3s-wk-gpu2",
+      "status": 200
+    },
+    {
+      "kind": "pod",
+      "name": "jupyter-cps-ws-2114b8e3a15e8913cb98083bd5673e45--rtc",
+      "status": 404,
+      "reason": "NotFound",
+      "message": "pods \"jupyter-cps-ws-2114b8e3a15e8913cb98083bd5673e45--rtc\" not found"
+    }
+  ]
+}

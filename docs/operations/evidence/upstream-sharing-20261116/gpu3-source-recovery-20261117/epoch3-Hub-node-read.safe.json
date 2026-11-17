@@ -1,0 +1,53 @@
+{
+  "observed": "2026-11-17T18:44:31.492973+00:00",
+  "proof": [
+    {
+      "namespace": "jupyterhub",
+      "method": "actual in-cluster Hub serviceaccount client",
+      "results": [
+        {
+          "verb": "get",
+          "resource_name": "k3s-wk-gpu3",
+          "status": 200
+        },
+        {
+          "verb": "get",
+          "resource_name": "k3s-wk-gpu2",
+          "status": 403
+        },
+        {
+          "verb": "list",
+          "resource_name": null,
+          "status": 403
+        }
+      ]
+    },
+    {
+      "namespace": "cit-jhub",
+      "method": "actual in-cluster Hub serviceaccount client",
+      "results": [
+        {
+          "verb": "get",
+          "resource_name": "k3s-wk-gpu3",
+          "status": 200
+        },
+        {
+          "verb": "get",
+          "resource_name": "k3s-wk-gpu2",
+          "status": 403
+        },
+        {
+          "verb": "list",
+          "resource_name": null,
+          "status": 403
+        }
+      ]
+    }
+  ],
+  "expected_statuses": [
+    200,
+    403,
+    403
+  ],
+  "passed": true
+}

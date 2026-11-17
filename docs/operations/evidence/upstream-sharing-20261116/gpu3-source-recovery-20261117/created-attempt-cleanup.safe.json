@@ -1,0 +1,47 @@
+{
+  "frozenAt": "2026-11-17T19:00:09.680456+00:00",
+  "attempt": "edeef051-a875-48f8-b6b2-7477e8a3f72b",
+  "generation": "9f8fea74-02f7-4c44-86a8-8e39f9bc4169",
+  "podUID": "5289c199-b2d5-4f81-a925-463e57da1119",
+  "node": "k3s-wk-gpu3",
+  "sandboxID": "651b2b62383f698c8376f7089b97ca49a8966e99981dfca07e215b8dc2f9f9c9",
+  "containerID": "ef797b625e48e598139958a0305e3719c44859149cc9f59653082f0d949c6e5f",
+  "stockFractiondAllocation": {
+    "time": "2026-11-17T18:51:22.015116777Z",
+    "level": "INFO",
+    "msg": "adjusting container with GPU memory config",
+    "container": "notebook",
+    "pod": "jupyter-cps-ws-2114b8e3a15e8913cb98083bd5673e45--rtc",
+    "request": "5120",
+    "limit": "5120",
+    "visibleDevices": "k8s.device-plugin.nvidia.com/gpu=GPU-0a9f2da8-59f5-1cb0-9ead-d9fce56b69e5",
+    "cdiDevices": null,
+    "computeMode": "time-slicing"
+  },
+  "PodAPIAbsent": true,
+  "stockKAIUIDEventsProveGPU3Placement": true,
+  "retainedBindingRequests": 0,
+  "exactCIDAndSandboxNotFound": true,
+  "allMatchingCRIObjectsAbsentBothWorkers": true,
+  "exactPodCgroupPathsAbsentBothWorkers": true,
+  "targetCgroupPIDs": 0,
+  "GPU2GPU3BothCardsMiBUsed": [
+    1,
+    1
+  ],
+  "GPU2GPU3ComputeProcesses": 0,
+  "nodes": [
+    {
+      "name": "k3s-wk-gpu2",
+      "uid": "3336cdd5-d245-436e-b57c-2f66c6dcaa41",
+      "bootID": "8874dcda-ced2-4aa4-b5cb-71a0871abdd5"
+    },
+    {
+      "name": "k3s-wk-gpu3",
+      "uid": "7b3b5113-158d-4e0d-bd63-898a508fe806",
+      "bootID": "1fcf5b3e-c7c6-4d47-9a28-88a9a36be95a"
+    }
+  ],
+  "limits": "No retained actual Pod CDI annotation snapshot; stock fractiond visibleDevices captured and cdiDevices explicitly null. Removed cgroup has no remaining numeric charge counter to query; physical baseline/no clients/absent leaf are independently verified. Central held lease/Hub marker are not changed or claimed cleared.",
+  "noForceStopOrDBAuthorityWrites": true
+}

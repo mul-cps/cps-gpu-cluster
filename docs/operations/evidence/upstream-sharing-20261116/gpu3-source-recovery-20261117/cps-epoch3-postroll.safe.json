@@ -1,0 +1,93 @@
+{
+  "source": "cps",
+  "module_sha256": "0da43f168270900591a10a31f3650ab2b3778e2f175a7b63df55e78ad274e203",
+  "permit_sha256": "018897c34bd36421d9fdb078174f069d189600ee0b0cd364f9b1e9b58e4cb796",
+  "permit_expires": "2026-11-17T19:29:00+00:00",
+  "effective_sha256": {
+    "386feebb-df1a-4f3c-9ef9-6d9c026d5aea": "97b1e9595a2ebadb6ed89bd54f8944e5d00a793831aa0ddbe857b2163c40222e",
+    "d1fb4e43-64ec-4ac5-914f-e9cd39ad1c62": "1e34ecb3b216454fb138e8f21b0352200a9fef582062e679396e95d16551a435",
+    "8edde4a2-257c-42d7-9732-13f1e8742a33": "6c956afec84d949f4bdec6d835871d03b9dd24018d37afb405e0c18f77aca6e5",
+    "3237c91b-cef3-4f6f-960e-875b9e93c4be": "538a910f88fef9c97659bb86f57d4c630f9394254a4184bb2319f2817af94659"
+  },
+  "health": 200,
+  "accounts": [
+    {
+      "owner": "cps-ws-2114b8e3a15e8913cb98083bd5673e45",
+      "user_id": 31,
+      "receipt_matches": true,
+      "receipt_sha256": "c49edf3db690fcd02b8470161ad08f24817fac1ce05df12ef8643c7c1766c623",
+      "control_role_ids": [
+        55,
+        56
+      ],
+      "roles_exist_by_id": true,
+      "user_roles": [
+        {
+          "id": 51,
+          "name": "cps-workspace-kernel"
+        },
+        {
+          "id": 56,
+          "name": "cps-workspace-runtime-cps-ws-2114b8e3a15e8913cb98083bd5673e45"
+        }
+      ],
+      "kernel_group_ids": [
+        22
+      ],
+      "servers": 0,
+      "owner_api_tokens": 0,
+      "account_sha256": "f4ab683ee46cac5ef1114c8b20845e948005363c203b0b87da78c3b555b0921c",
+      "custody_sha256": "69fe3cd3f73a9c934a551ab971723c25b186987ee93b68732ba8352008488664"
+    },
+    {
+      "owner": "cps-ws-27c474f74f9d41c53eac0be01fcca8a3",
+      "user_id": 18,
+      "receipt_matches": true,
+      "receipt_sha256": "d77fbf1432614e3fc5525fc16b9d849cf73b8e4c58f191229234365455fe90c8",
+      "control_role_ids": [
+        57,
+        58
+      ],
+      "roles_exist_by_id": true,
+      "user_roles": [
+        {
+          "id": 58,
+          "name": "cps-workspace-runtime-cps-ws-27c474f74f9d41c53eac0be01fcca8a3"
+        },
+        {
+          "id": 51,
+          "name": "cps-workspace-kernel"
+        }
+      ],
+      "kernel_group_ids": [
+        22
+      ],
+      "servers": 0,
+      "owner_api_tokens": 0,
+      "account_sha256": "abf9f6fe732d4228ab57c8e34ec69e7ae176a3802f137e0033ff457024e697a2",
+      "custody_sha256": "0fe96fd172e46b541e096f53e4e50543b5bee66997908c1dd107a1351a5fc647"
+    }
+  ],
+  "wiring": {
+    "method": "readonly subprocess executes exact mounted leaf with installed real classes and preexisting sentinel objects; no daemon heap introspection",
+    "same_adapter_client_provider_preserved": true,
+    "normal_pre_post_profiles_and_previous_modify_unchanged": true,
+    "no_installer_reexecution": true,
+    "one_QA_leaf": true
+  },
+  "runtime_uid": 1000,
+  "authority_writes": false,
+  "observed": "2026-11-17T18:49:16.844832+00:00",
+  "deployment_uid": "02fb8421-d323-4636-b006-2490cd6f5b63",
+  "generation": 378,
+  "spec_exact": true,
+  "actual_pod": {
+    "name": "hub-674f5bfb9b-hg84q",
+    "uid": "54cf6b62-8f60-4df4-bced-86c41783b4b6",
+    "node": "k3s-wk-gpu1",
+    "container_id": "containerd://8fa86ebdd9a9cf68d48e66e4350a15c962de78ffce50848e7b2738806aabf7d6",
+    "image_id": "ghcr.io/mul-cps/cps-compute@sha256:0bbeb42640f040a1c26a39c19d368a6ea92bcb18721beba8f68320e7c0edd097",
+    "ready": true,
+    "restart_count": 0
+  }
+}

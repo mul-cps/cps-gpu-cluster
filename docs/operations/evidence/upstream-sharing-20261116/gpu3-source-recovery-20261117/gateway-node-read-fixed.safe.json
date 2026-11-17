@@ -1,0 +1,31 @@
+{
+  "observed": "2026-11-17T18:57:12.690365+00:00",
+  "method": "actual Gateway in-cluster serviceaccount client",
+  "results": [
+    {
+      "name": "k3s-wk-gpu3",
+      "operation": "get",
+      "status": 200
+    },
+    {
+      "name": "k3s-wk-gpu2",
+      "operation": "get",
+      "status": 200
+    },
+    {
+      "name": "k3s-wk-gpu1",
+      "operation": "get",
+      "status": 403
+    },
+    {
+      "name": "k3s-wk-gpu4",
+      "operation": "get",
+      "status": 403
+    },
+    {
+      "name": null,
+      "operation": "list",
+      "status": 403
+    }
+  ]
+}

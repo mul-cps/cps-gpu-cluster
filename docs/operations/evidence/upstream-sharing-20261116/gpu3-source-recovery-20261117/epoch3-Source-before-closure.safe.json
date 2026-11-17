@@ -1,0 +1,18 @@
+{
+  "cps": {
+    "source_state": "reconciling",
+    "lease": {
+      "workspace": "upstream-registry-qualification-20261116-cps",
+      "active": true,
+      "attempt": "edeef051-a875-48f8-b6b2-7477e8a3f72b"
+    }
+  },
+  "cit": {
+    "source_state": "stopped",
+    "lease": {
+      "workspace": "upstream-registry-qualification-20261116-cit",
+      "active": false,
+      "attempt": null
+    }
+  }
+}
