@@ -12,7 +12,7 @@
         cps.unileoben.ac.at/cpu-addon-values-sha256: ca45d2b26ad4b0d8208d70dd14bcfcacc9ce4df368e503c5d7c5ab481900b5d5
         cps.unileoben.ac.at/current-custody-request-sha256: 83312908e3e4bf45b674e31dec9a52195dc074d505382657dedbd59039911594
         cps.unileoben.ac.at/gpu3-source-qa-module: 0da43f168270900591a10a31f3650ab2b3778e2f175a7b63df55e78ad274e203
-        cps.unileoben.ac.at/gpu3-source-qa-permit: 0b729c95ab42bad58e8fc5fcb5da628d37b412b70e5b139522a178435ae0434f
+        cps.unileoben.ac.at/gpu3-source-qa-permit: 303bafd682392da1a3f73f72c91488f4a386dd2ebdb5d89f8b02a0dc797ce3cb
         cps.unileoben.ac.at/native-approval-stage: sdk-156c6f5b
         cps.unileoben.ac.at/personal-spawn-ui-sha256: b048ab982036edc8fc3d21ea1afd9d7978f4aee429e99c3ad149ea353afaee0e
         cps.unileoben.ac.at/upstream-helper-settings: a3eff91b1c4c2f27931fa3dafbb7a510f35a4e9423e36cc1610dda089099a92b
@@ -303,7 +303,7 @@
       - name: secret
         secret:
           defaultMode: 420
-          secretName: cps-hub-gpu3-qa-1d0ecd24dff9
+          secretName: cps-hub-gpu3-qa-6bae3f38662a
       - emptyDir: {}
         name: ca-bundle
       - configMap:
@@ -400,7 +400,7 @@
         name: upstream-policy
       - configMap:
           defaultMode: 420
-          name: cps-gpu3-source-qa-0b729c95ab42
+          name: cps-gpu3-source-qa-303bafd68239
         name: cps-gpu3-source-qa
 - op: replace
   path: /spec/strategy
