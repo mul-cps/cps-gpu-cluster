@@ -1,0 +1,77 @@
+{
+  "range_selector_raw_stored_samples": true,
+  "profiles": [
+    {
+      "profile_gib": 5,
+      "pod_uid": "05329c53-6a3d-44c6-bc41-3688bb74e093",
+      "metrics": {
+        "gpu_fractioning_gpu_memory_used_bytes": {
+          "actual_stored_samples": 4,
+          "max": 5268045824.0,
+          "peak_utc_unix": 1794903314.871,
+          "has_zero_after_peak": true
+        },
+        "gpu_fractioning_gpu_sm_utilization_percent": {
+          "actual_stored_samples": 4,
+          "max": 82.0,
+          "peak_utc_unix": 1794903314.871,
+          "has_zero_after_peak": true
+        },
+        "gpu_fractioning_gpu_sm_utilization_percent_normalized": {
+          "actual_stored_samples": 4,
+          "max": 100.0,
+          "peak_utc_unix": 1794903314.871,
+          "has_zero_after_peak": true
+        }
+      }
+    },
+    {
+      "profile_gib": 10,
+      "pod_uid": "02426dbe-b8b6-45cb-8236-a237442ddfb7",
+      "metrics": {
+        "gpu_fractioning_gpu_memory_used_bytes": {
+          "actual_stored_samples": 5,
+          "max": 10636754944.0,
+          "peak_utc_unix": 1794903494.871,
+          "has_zero_after_peak": true
+        },
+        "gpu_fractioning_gpu_sm_utilization_percent": {
+          "actual_stored_samples": 5,
+          "max": 83.0,
+          "peak_utc_unix": 1794903494.871,
+          "has_zero_after_peak": true
+        },
+        "gpu_fractioning_gpu_sm_utilization_percent_normalized": {
+          "actual_stored_samples": 5,
+          "max": 100.0,
+          "peak_utc_unix": 1794903494.871,
+          "has_zero_after_peak": true
+        }
+      }
+    },
+    {
+      "profile_gib": 20,
+      "pod_uid": "f74c3782-fde0-445a-8700-24ca83a090f1",
+      "metrics": {
+        "gpu_fractioning_gpu_memory_used_bytes": {
+          "actual_stored_samples": 18,
+          "max": 21374173184.0,
+          "peak_utc_unix": 1794903734.871,
+          "has_zero_after_peak": true
+        },
+        "gpu_fractioning_gpu_sm_utilization_percent": {
+          "actual_stored_samples": 18,
+          "max": 82.0,
+          "peak_utc_unix": 1794903764.871,
+          "has_zero_after_peak": true
+        },
+        "gpu_fractioning_gpu_sm_utilization_percent_normalized": {
+          "actual_stored_samples": 18,
+          "max": 100.0,
+          "peak_utc_unix": 1794903734.871,
+          "has_zero_after_peak": true
+        }
+      }
+    }
+  ]
+}

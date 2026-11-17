@@ -1,0 +1,15 @@
+{
+  "forwarded_response_bytes": 0,
+  "request_count": 1,
+  "target_path": "/services/cit-admin/api/workspaces/upstream-registry-qualification-20261116-cit/stop",
+  "body_sha256": "44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a",
+  "forwarded_unix": 1794905489.1744776,
+  "backend_status": 409,
+  "backend_headers_unix": 1794905493.9910202,
+  "backend_body_sha256": "149cd5e32b79d9656f1d668188d46833ccd3441ba57d4ddac9ec8301ea02b389",
+  "backend_response_consumed": true,
+  "downstream_close_unix": 1794905493.991201,
+  "client_exception_type": "RemoteDisconnected",
+  "client_eof_unix": 1794905493.9916105,
+  "client_received_http_status": null
+}

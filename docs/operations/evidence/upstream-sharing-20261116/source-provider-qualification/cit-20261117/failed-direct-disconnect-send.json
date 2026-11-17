@@ -1,0 +1,12 @@
+{
+  "event": "single_request_fully_sent_then_client_closed_without_reading_response",
+  "method": "POST",
+  "path": "/services/cit-admin/api/workspaces/upstream-registry-qualification-20261116-cit/remove-member",
+  "body_sha256": "00792f70cb219a096f108071ba95ea52a62e3932817aed25b034e47131044c70",
+  "sent_utc": "2026-11-17T08:28:17.451355+00:00",
+  "sent_unix": 1794904097.4513726,
+  "closed_utc": "2026-11-17T08:28:17.451418+00:00",
+  "closed_unix": 1794904097.4514215,
+  "response_read": false,
+  "retry_count": 0
+}

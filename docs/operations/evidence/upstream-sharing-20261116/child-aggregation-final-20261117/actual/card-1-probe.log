@@ -1,0 +1,32 @@
+{"env": {"NVIDIA_VISIBLE_DEVICES": "k8s.device-plugin.nvidia.com/gpu=GPU-1e6145d5-8ee2-43e2-a0d5-6d345909e8a6", "NVIDIA_GPU_MEMORY_REQUEST": "5120", "NVIDIA_GPU_MEMORY_LIMIT": "5120", "CUDA_MPS_PIPE_DIRECTORY": "/run/nvidia-mps"}}
+{"step": "init", "result": 0}
+{"step": "device", "result": 0}
+{"step": "context", "result": 0}
+{"step": "parent-allocation-3072MiB", "result": 0}
+{"step": "parent-fill", "result": 0}
+{"step": "parent-sync", "result": 0}
+{"env": {"NVIDIA_VISIBLE_DEVICES": "k8s.device-plugin.nvidia.com/gpu=GPU-1e6145d5-8ee2-43e2-a0d5-6d345909e8a6", "NVIDIA_GPU_MEMORY_REQUEST": "0", "NVIDIA_GPU_MEMORY_LIMIT": "999999", "CUDA_MPS_PIPE_DIRECTORY": "/tmp/cps-no-mps-daemon"}}
+{"step": "init", "result": 0}
+{"step": "device", "result": 0}
+{"step": "context", "result": 0}
+{"step": "child-allocation", "result": 2, "mib": 3072, "expected": 2}
+{"step": "destroy", "result": 0}
+CHILD_AGGREGATION_AND_ENV_BYPASS_PROBE_PASSED
+
+
+{"env": {"NVIDIA_VISIBLE_DEVICES": "k8s.device-plugin.nvidia.com/gpu=GPU-1e6145d5-8ee2-43e2-a0d5-6d345909e8a6", "NVIDIA_GPU_MEMORY_REQUEST": "0", "NVIDIA_GPU_MEMORY_LIMIT": "999999", "CUDA_MPS_PIPE_DIRECTORY": "/tmp/cps-no-mps-daemon"}}
+{"step": "init", "result": 0}
+{"step": "device", "result": 0}
+{"step": "context", "result": 0}
+{"step": "child-allocation", "result": 0, "mib": 1024, "expected": 0}
+{"step": "child-fill", "result": 0}
+{"step": "child-sync", "result": 0}
+{"step": "free", "result": 0}
+{"step": "destroy", "result": 0}
+CHILD_AGGREGATION_AND_ENV_BYPASS_PROBE_PASSED
+
+
+{"step": "nested-cgroup-creation-rejected", "result": 30}
+{"step": "free", "result": 0}
+{"step": "destroy", "result": 0}
+CHILD_AGGREGATION_AND_ENV_BYPASS_PROBE_PASSED

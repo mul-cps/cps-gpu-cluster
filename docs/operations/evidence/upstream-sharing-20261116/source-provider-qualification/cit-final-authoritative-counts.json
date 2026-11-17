@@ -1,0 +1,11 @@
+{
+  "observed_at": "2026-11-17T09:04:07.313064+00:00",
+  "database": "/data/reservations.sqlite",
+  "global_person_rows": 0,
+  "global_binding_rows": 0,
+  "workspace_keys": [
+    "cps:upstream-registry-qualification-20261116-cps",
+    "cit:upstream-registry-qualification-20261116-cit"
+  ],
+  "scope_note": "Counts observed after cleanup; no retrospective active-count claim. Earlier unprefixed-key zero queries were invalid evidence."
+}

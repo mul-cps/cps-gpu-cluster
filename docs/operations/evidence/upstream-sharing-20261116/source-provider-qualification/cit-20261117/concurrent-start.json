@@ -1,0 +1,47 @@
+{
+  "two_identical_requests": true,
+  "results": [
+    {
+      "request": 1,
+      "sent_unix": 1794905110.0282974,
+      "completed_unix": 1794905134.3057623,
+      "status": 200,
+      "body": {
+        "workspace": {
+          "archive_pending": false,
+          "course_ceiling": {
+            "cpu": "4",
+            "gpuMemoryGiB": 20,
+            "memory": "16Gi"
+          },
+          "course_id": "upstream-gpu-operator-qualification",
+          "external_id": null,
+          "group_id": "upstream-registry-qa-20261116",
+          "hub_server": "rtc",
+          "hub_user": "cit-ws-4f8bebfab68c2dc3f8cea6df357d874c",
+          "id": "upstream-registry-qualification-20261116-cit",
+          "namespace": "cit-jhub",
+          "notice": null,
+          "pod": "jupyter-cit-ws-4f8bebfab68c2dc3f8cea6df357d874c--rtc",
+          "profile": "interactive-shared-5",
+          "source": "local",
+          "state": "running",
+          "term_id": "qualification-20261116"
+        }
+      }
+    },
+    {
+      "request": 2,
+      "sent_unix": 1794905110.0291646,
+      "completed_unix": 1794905134.3701034,
+      "status": 400,
+      "body": {
+        "error_type": "non-json HTTP error",
+        "title": [
+          "400: Workspace lifecycle is unresolved; observed Stop/reconciliation required"
+        ],
+        "message": []
+      }
+    }
+  ]
+}

@@ -1,0 +1,12 @@
+{
+  "status": 200,
+  "reservation_after": {
+    "workspace": "upstream-registry-qualification-20261116-cit",
+    "active": false,
+    "attempt": null
+  },
+  "source_state_before": "stopped",
+  "pod_absent_before": true,
+  "no_start_requests_during_reconciliation": true,
+  "original49_raw_unchanged": true
+}

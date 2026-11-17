@@ -1,0 +1,67 @@
+{
+  "case": "CPU neutral-owner held kernel and2RTC connections; normal authoritative Source remove-member B",
+  "http_status": 200,
+  "events": [
+    {
+      "event": "rtc_initial_sync",
+      "person": "owner_1",
+      "frame_bytes": 13,
+      "unix": 1794904496.453222
+    },
+    {
+      "event": "rtc_initial_sync",
+      "person": "owner_2",
+      "frame_bytes": 26,
+      "unix": 1794904496.6289291
+    },
+    {
+      "event": "held_ready",
+      "unix": 1794904496.6289802,
+      "kernel_id": "d48b8b0c-1931-4fc6-9793-a3aba61d2c1d",
+      "sockets": [
+        "kernel_owner",
+        "rtc_owner_1",
+        "rtc_owner_2"
+      ],
+      "actors": [
+        "neutral-workload-owner",
+        "neutral-workload-owner"
+      ]
+    },
+    {
+      "event": "connection_closed",
+      "socket": "rtc_owner_2",
+      "unix": 1794904789.7089796,
+      "close_code": null
+    },
+    {
+      "event": "connection_closed",
+      "socket": "rtc_owner_1",
+      "unix": 1794904789.7091737,
+      "close_code": null
+    },
+    {
+      "event": "connection_closed",
+      "socket": "kernel_owner",
+      "unix": 1794904789.710083,
+      "close_code": null
+    },
+    {
+      "event": "all_held_connections_closed",
+      "unix": 1794904789.7101874
+    }
+  ],
+  "removed_member": "source-qa-20261116-cit-b",
+  "actors": "same trusted neutral workload owner; no human impersonation",
+  "prior_cpu_restart": {
+    "central_member_count": 3,
+    "a_absent": true,
+    "hub_group_b_present": true,
+    "files_retained": true,
+    "gpu_devices": [],
+    "libcuda_lookup": null,
+    "libcuda_loadable": false,
+    "torch_cuda_available": false
+  },
+  "human_member_access_qualified": false
+}

@@ -1,0 +1,15 @@
+{
+  "before_replay": true,
+  "observations": [
+    {
+      "unix": 1794905576.076549,
+      "source_state": "stopped",
+      "reservation": {
+        "workspace": "upstream-registry-qualification-20261116-cit",
+        "active": false,
+        "attempt": null
+      },
+      "pod_present": false
+    }
+  ]
+}

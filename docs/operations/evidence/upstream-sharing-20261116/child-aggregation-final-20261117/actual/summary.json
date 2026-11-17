@@ -1,0 +1,36 @@
+{
+  "status": "PASS",
+  "run_id": "child-final-20261117",
+  "probe_sha256": "88c81166cfe2aa44c6a8e932ff81468e9e3f870054b8c9349c3a044b16b72b8f",
+  "executor_sha256": "b4396bff546e3ef9280df8fa5bebe2c70dec78531bd3be862a14f7e3eb9be19e",
+  "image": "ghcr.io/mul-cps/cps-ubuntu-release-upgrade@sha256:5030556ecf8cd38fc9acc4676316bd0a3217d1ab10930b75b9dba7106e8f4004",
+  "gpu_uuids": [
+    "GPU-16128952-b438-556a-00bb-93039ee24e56",
+    "GPU-1e6145d5-8ee2-43e2-a0d5-6d345909e8a6"
+  ],
+  "expected_boot_id": "8874dcda-ced2-4aa4-b5cb-71a0871abdd5",
+  "release_reference": "gpu2-child-final-20261117-root-4b3f436e",
+  "cards": [
+    {
+      "gpu_uuid": "GPU-16128952-b438-556a-00bb-93039ee24e56",
+      "pod_uid": "d88559dd-67bd-40fb-9589-9fc4b0b3155e",
+      "container_id": "b4d6c76df1d7f1668be5d706d129dfb8958ec5691e594ea6954b4c339f4373b2",
+      "retired_cgroup": "/kubepods.slice/kubepods-burstable.slice/kubepods-burstable-podd88559dd_67bd_40fb_9589_9fc4b0b3155e.slice/cri-containerd-b4d6c76df1d7f1668be5d706d129dfb8958ec5691e594ea6954b4c339f4373b2.scope",
+      "status": "PASS",
+      "finished_at": 1794904669.668556
+    },
+    {
+      "gpu_uuid": "GPU-1e6145d5-8ee2-43e2-a0d5-6d345909e8a6",
+      "pod_uid": "2d85ddff-cc38-4711-98d6-b391ee39b18f",
+      "container_id": "ff724b4bb6c7b2d967463bdb49b6dfbbc0a25e7315342a8029d0cf0c3a8dd68c",
+      "retired_cgroup": "/kubepods.slice/kubepods-burstable.slice/kubepods-burstable-pod2d85ddff_cc38_4711_98d6_b391ee39b18f.slice/cri-containerd-ff724b4bb6c7b2d967463bdb49b6dfbbc0a25e7315342a8029d0cf0c3a8dd68c.scope",
+      "status": "PASS",
+      "finished_at": 1794904691.835769
+    }
+  ],
+  "ambiguous_creates": [],
+  "started_at": 1794904646.349904,
+  "cleanup_errors": [],
+  "remaining_owned": [],
+  "finished_at": 1794904696.7904997
+}

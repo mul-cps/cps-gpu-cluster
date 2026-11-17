@@ -1,5 +1,15 @@
 # GPU2 upstream sharing pilot — 2026-11-16
 
+**2026-11-17 current state:** GPU2 passed the scoped fixed-profile worker
+acceptance and is restored to shared placement and Longhorn scheduling. Its old
+OS nomination is cleared. See the [worker receipt](evidence/upstream-sharing-20261116/gpu2-worker-acceptance-20261117.json),
+[CIT Source lifecycle evidence](evidence/upstream-sharing-20261116/source-provider-qualification/cit-20261117/README.md)
+and [final-artifact bypass checks](evidence/upstream-sharing-20261116/child-aggregation-final-20261117/README.md).
+Real CIT nonadministrator IdP/browser/two-person access remains open; these
+tests used a genuinely authenticated administrator and workload-owned sessions.
+GPU3/1/4 are unchanged. GPU3 must satisfy the replica and activator/PDB
+prerequisites before nomination. The narrative below retains historical stages.
+
 **Current user policy:** idle users may borrow spare VRAM. Sharing acceptance
 protects promised shares under contention; the historical strict idle-cap
 verdict below is superseded. See the final policy/competition section.
@@ -70,9 +80,9 @@ host systemd in `cps-gpu2-ubuntu-prerequisites.service` with a retained log.
 | Ubuntu 24.04 → 26.04.1 | Canonical enables this upgrade and recommends `do-release-upgrade` | GPU2 booted 26.04.1 / 7.0.0-43; clean package audit |
 | Rancher 2.13.3 / K3s 1.34 | Matrix supports K3s 1.34; its explicit Ubuntu provisioning rows list 22.04/24.04, not 26.04 | 26.04 worker Ready, Rancher Ready/Connected; management versions unchanged |
 | Longhorn 1.9.2 | Release-tested OS list includes Ubuntu 24.04; tested K8s versions listed are 1.31–1.33 | GPU2 nonroot Longhorn read/write passed; restore not tested |
-| NVIDIA GPU Operator | Current platform matrix includes Ubuntu 26.04, K3s 1.33–1.37 and containerd 2.0–2.3 | Exact 26.7.1/R620/selected kernel combination pending |
-| R620.70.06 Ubuntu 26.04 driver | Official pinning and driver/firmware/NVML/MPS packages available | Candidate image package versions verified; kernel module build and GPU execution pending |
-| Fractioning 0.1.9 / KAI 0.18.1 | Released charts fetched and locally rendered; matching CRD/watch checked | NRI, driver enforcement, lifecycle, CPS/CIT acceptance pending |
+| NVIDIA GPU Operator | Current platform matrix includes Ubuntu 26.04, K3s 1.33–1.37 and containerd 2.0–2.3 | Selected GPU2 operands Ready with 26.7.1/R620/kernel7.0.0-43; global ClusterPolicy remains notReady during the deliberate OnDelete rollout of peer operands |
+| R620.70.06 Ubuntu 26.04 driver | Official pinning and driver/firmware/NVML/MPS packages available | Derived c3b loaded on both cards; final-artifact CUDA, contention, bypass and cleanup passed; managed memory explicitly rejected, MIG disabled |
+| Fractioning 0.1.9 / KAI 0.18.1 | Released charts fetched and locally rendered; matching CRD/watch checked | Stock placement, mandatory-plugin failures, limits, CPS/CIT Source-controller lifecycle and tested reply-loss reconciliation passed; real CIT human access remains open |
 
 Sources checked during this run:
 

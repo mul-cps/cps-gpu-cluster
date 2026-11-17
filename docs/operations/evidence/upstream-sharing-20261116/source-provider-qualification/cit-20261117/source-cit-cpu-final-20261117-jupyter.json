@@ -1,0 +1,23 @@
+{
+  "jupyter_kernel_execution": true,
+  "elapsed_seconds": 3.8078324739908567,
+  "baseline": {},
+  "jupyter_status_unix": 1794904446.5078776,
+  "result": {
+    "profile": "interactive-cpu",
+    "sentinel_sha256": "95976f0f1f7a4e6002501a50c74e569bb07a8f6292e591d6e358efb06ddb6f97",
+    "sdk_identity": {
+      "identity": "workspace:cit:upstream-registry-qualification-20261116-cit",
+      "principal_kind": "workspace",
+      "grants": [],
+      "policy_hash": "sha256:2b2ad6ce656db38a0e9cc2a0d3365c48d6061a835d317236a322776c11dc3fcb"
+    },
+    "home": "/workspace",
+    "jupyter_runtime_dir": "/workspace/.local/share/jupyter/runtime",
+    "gpu_device_nodes": [],
+    "libcuda_lookup": null,
+    "libcuda_loadable": false,
+    "torch_cuda_available": false,
+    "events": []
+  }
+}

@@ -1,0 +1,494 @@
+{
+  "status": "success",
+  "data": {
+    "resultType": "matrix",
+    "result": [
+      {
+        "metric": {
+          "__name__": "gpu_fractioning_gpu_memory_used_bytes",
+          "container": "metricsd",
+          "endpoint": "metrics",
+          "exported_namespace": "cit-jhub",
+          "exported_pod": "jupyter-cit-ws-4f8bebfab68c2dc3f8cea6df357d874c--rtc",
+          "gpu": "0",
+          "gpu_uuid": "GPU-16128952-b438-556a-00bb-93039ee24e56",
+          "instance": "10.42.7.231:2112",
+          "job": "gpu-fractioning/gpu-fractioning-metricsd",
+          "namespace": "gpu-fractioning",
+          "pod": "gpu-fractioning-fractiond-p57lq",
+          "pod_uuid": "02426dbe-b8b6-45cb-8236-a237442ddfb7"
+        },
+        "values": [
+          [
+            1794903494.871,
+            "10636754944"
+          ],
+          [
+            1794903524.871,
+            "10636754944"
+          ],
+          [
+            1794903554.871,
+            "0"
+          ],
+          [
+            1794903584.871,
+            "0"
+          ],
+          [
+            1794903614.871,
+            "0"
+          ]
+        ]
+      },
+      {
+        "metric": {
+          "__name__": "gpu_fractioning_gpu_memory_used_bytes",
+          "container": "metricsd",
+          "endpoint": "metrics",
+          "exported_namespace": "cit-jhub",
+          "exported_pod": "jupyter-cit-ws-4f8bebfab68c2dc3f8cea6df357d874c--rtc",
+          "gpu": "0",
+          "gpu_uuid": "GPU-16128952-b438-556a-00bb-93039ee24e56",
+          "instance": "10.42.7.231:2112",
+          "job": "gpu-fractioning/gpu-fractioning-metricsd",
+          "namespace": "gpu-fractioning",
+          "pod": "gpu-fractioning-fractiond-p57lq",
+          "pod_uuid": "05329c53-6a3d-44c6-bc41-3688bb74e093"
+        },
+        "values": [
+          [
+            1794903314.871,
+            "5268045824"
+          ],
+          [
+            1794903344.871,
+            "0"
+          ],
+          [
+            1794903374.871,
+            "0"
+          ],
+          [
+            1794903404.871,
+            "0"
+          ]
+        ]
+      },
+      {
+        "metric": {
+          "__name__": "gpu_fractioning_gpu_memory_used_bytes",
+          "container": "metricsd",
+          "endpoint": "metrics",
+          "exported_namespace": "cit-jhub",
+          "exported_pod": "jupyter-cit-ws-4f8bebfab68c2dc3f8cea6df357d874c--rtc",
+          "gpu": "0",
+          "gpu_uuid": "GPU-16128952-b438-556a-00bb-93039ee24e56",
+          "instance": "10.42.7.231:2112",
+          "job": "gpu-fractioning/gpu-fractioning-metricsd",
+          "namespace": "gpu-fractioning",
+          "pod": "gpu-fractioning-fractiond-p57lq",
+          "pod_uuid": "f74c3782-fde0-445a-8700-24ca83a090f1"
+        },
+        "values": [
+          [
+            1794903734.871,
+            "21374173184"
+          ],
+          [
+            1794903764.871,
+            "21374173184"
+          ],
+          [
+            1794903794.871,
+            "0"
+          ],
+          [
+            1794903824.871,
+            "0"
+          ],
+          [
+            1794903854.871,
+            "0"
+          ],
+          [
+            1794903884.871,
+            "0"
+          ],
+          [
+            1794903914.871,
+            "0"
+          ],
+          [
+            1794903944.871,
+            "0"
+          ],
+          [
+            1794903974.871,
+            "0"
+          ],
+          [
+            1794904004.871,
+            "0"
+          ],
+          [
+            1794904034.871,
+            "0"
+          ],
+          [
+            1794904064.871,
+            "0"
+          ],
+          [
+            1794904094.871,
+            "0"
+          ],
+          [
+            1794904124.871,
+            "0"
+          ],
+          [
+            1794904154.871,
+            "0"
+          ],
+          [
+            1794904184.871,
+            "0"
+          ],
+          [
+            1794904214.871,
+            "0"
+          ],
+          [
+            1794904244.871,
+            "0"
+          ]
+        ]
+      },
+      {
+        "metric": {
+          "__name__": "gpu_fractioning_gpu_sm_utilization_percent",
+          "container": "metricsd",
+          "endpoint": "metrics",
+          "exported_namespace": "cit-jhub",
+          "exported_pod": "jupyter-cit-ws-4f8bebfab68c2dc3f8cea6df357d874c--rtc",
+          "gpu": "0",
+          "gpu_uuid": "GPU-16128952-b438-556a-00bb-93039ee24e56",
+          "instance": "10.42.7.231:2112",
+          "job": "gpu-fractioning/gpu-fractioning-metricsd",
+          "namespace": "gpu-fractioning",
+          "pod": "gpu-fractioning-fractiond-p57lq",
+          "pod_uuid": "02426dbe-b8b6-45cb-8236-a237442ddfb7"
+        },
+        "values": [
+          [
+            1794903494.871,
+            "83"
+          ],
+          [
+            1794903524.871,
+            "82"
+          ],
+          [
+            1794903554.871,
+            "0"
+          ],
+          [
+            1794903584.871,
+            "0"
+          ],
+          [
+            1794903614.871,
+            "0"
+          ]
+        ]
+      },
+      {
+        "metric": {
+          "__name__": "gpu_fractioning_gpu_sm_utilization_percent",
+          "container": "metricsd",
+          "endpoint": "metrics",
+          "exported_namespace": "cit-jhub",
+          "exported_pod": "jupyter-cit-ws-4f8bebfab68c2dc3f8cea6df357d874c--rtc",
+          "gpu": "0",
+          "gpu_uuid": "GPU-16128952-b438-556a-00bb-93039ee24e56",
+          "instance": "10.42.7.231:2112",
+          "job": "gpu-fractioning/gpu-fractioning-metricsd",
+          "namespace": "gpu-fractioning",
+          "pod": "gpu-fractioning-fractiond-p57lq",
+          "pod_uuid": "05329c53-6a3d-44c6-bc41-3688bb74e093"
+        },
+        "values": [
+          [
+            1794903314.871,
+            "82"
+          ],
+          [
+            1794903344.871,
+            "0"
+          ],
+          [
+            1794903374.871,
+            "0"
+          ],
+          [
+            1794903404.871,
+            "0"
+          ]
+        ]
+      },
+      {
+        "metric": {
+          "__name__": "gpu_fractioning_gpu_sm_utilization_percent",
+          "container": "metricsd",
+          "endpoint": "metrics",
+          "exported_namespace": "cit-jhub",
+          "exported_pod": "jupyter-cit-ws-4f8bebfab68c2dc3f8cea6df357d874c--rtc",
+          "gpu": "0",
+          "gpu_uuid": "GPU-16128952-b438-556a-00bb-93039ee24e56",
+          "instance": "10.42.7.231:2112",
+          "job": "gpu-fractioning/gpu-fractioning-metricsd",
+          "namespace": "gpu-fractioning",
+          "pod": "gpu-fractioning-fractiond-p57lq",
+          "pod_uuid": "f74c3782-fde0-445a-8700-24ca83a090f1"
+        },
+        "values": [
+          [
+            1794903734.871,
+            "73"
+          ],
+          [
+            1794903764.871,
+            "82"
+          ],
+          [
+            1794903794.871,
+            "0"
+          ],
+          [
+            1794903824.871,
+            "0"
+          ],
+          [
+            1794903854.871,
+            "0"
+          ],
+          [
+            1794903884.871,
+            "0"
+          ],
+          [
+            1794903914.871,
+            "0"
+          ],
+          [
+            1794903944.871,
+            "0"
+          ],
+          [
+            1794903974.871,
+            "0"
+          ],
+          [
+            1794904004.871,
+            "0"
+          ],
+          [
+            1794904034.871,
+            "0"
+          ],
+          [
+            1794904064.871,
+            "0"
+          ],
+          [
+            1794904094.871,
+            "0"
+          ],
+          [
+            1794904124.871,
+            "0"
+          ],
+          [
+            1794904154.871,
+            "0"
+          ],
+          [
+            1794904184.871,
+            "0"
+          ],
+          [
+            1794904214.871,
+            "0"
+          ],
+          [
+            1794904244.871,
+            "0"
+          ]
+        ]
+      },
+      {
+        "metric": {
+          "__name__": "gpu_fractioning_gpu_sm_utilization_percent_normalized",
+          "container": "metricsd",
+          "endpoint": "metrics",
+          "exported_namespace": "cit-jhub",
+          "exported_pod": "jupyter-cit-ws-4f8bebfab68c2dc3f8cea6df357d874c--rtc",
+          "gpu": "0",
+          "gpu_uuid": "GPU-16128952-b438-556a-00bb-93039ee24e56",
+          "instance": "10.42.7.231:2112",
+          "job": "gpu-fractioning/gpu-fractioning-metricsd",
+          "namespace": "gpu-fractioning",
+          "pod": "gpu-fractioning-fractiond-p57lq",
+          "pod_uuid": "02426dbe-b8b6-45cb-8236-a237442ddfb7"
+        },
+        "values": [
+          [
+            1794903494.871,
+            "100"
+          ],
+          [
+            1794903524.871,
+            "100"
+          ],
+          [
+            1794903554.871,
+            "0"
+          ],
+          [
+            1794903584.871,
+            "0"
+          ],
+          [
+            1794903614.871,
+            "0"
+          ]
+        ]
+      },
+      {
+        "metric": {
+          "__name__": "gpu_fractioning_gpu_sm_utilization_percent_normalized",
+          "container": "metricsd",
+          "endpoint": "metrics",
+          "exported_namespace": "cit-jhub",
+          "exported_pod": "jupyter-cit-ws-4f8bebfab68c2dc3f8cea6df357d874c--rtc",
+          "gpu": "0",
+          "gpu_uuid": "GPU-16128952-b438-556a-00bb-93039ee24e56",
+          "instance": "10.42.7.231:2112",
+          "job": "gpu-fractioning/gpu-fractioning-metricsd",
+          "namespace": "gpu-fractioning",
+          "pod": "gpu-fractioning-fractiond-p57lq",
+          "pod_uuid": "05329c53-6a3d-44c6-bc41-3688bb74e093"
+        },
+        "values": [
+          [
+            1794903314.871,
+            "100"
+          ],
+          [
+            1794903344.871,
+            "0"
+          ],
+          [
+            1794903374.871,
+            "0"
+          ],
+          [
+            1794903404.871,
+            "0"
+          ]
+        ]
+      },
+      {
+        "metric": {
+          "__name__": "gpu_fractioning_gpu_sm_utilization_percent_normalized",
+          "container": "metricsd",
+          "endpoint": "metrics",
+          "exported_namespace": "cit-jhub",
+          "exported_pod": "jupyter-cit-ws-4f8bebfab68c2dc3f8cea6df357d874c--rtc",
+          "gpu": "0",
+          "gpu_uuid": "GPU-16128952-b438-556a-00bb-93039ee24e56",
+          "instance": "10.42.7.231:2112",
+          "job": "gpu-fractioning/gpu-fractioning-metricsd",
+          "namespace": "gpu-fractioning",
+          "pod": "gpu-fractioning-fractiond-p57lq",
+          "pod_uuid": "f74c3782-fde0-445a-8700-24ca83a090f1"
+        },
+        "values": [
+          [
+            1794903734.871,
+            "100"
+          ],
+          [
+            1794903764.871,
+            "100"
+          ],
+          [
+            1794903794.871,
+            "0"
+          ],
+          [
+            1794903824.871,
+            "0"
+          ],
+          [
+            1794903854.871,
+            "0"
+          ],
+          [
+            1794903884.871,
+            "0"
+          ],
+          [
+            1794903914.871,
+            "0"
+          ],
+          [
+            1794903944.871,
+            "0"
+          ],
+          [
+            1794903974.871,
+            "0"
+          ],
+          [
+            1794904004.871,
+            "0"
+          ],
+          [
+            1794904034.871,
+            "0"
+          ],
+          [
+            1794904064.871,
+            "0"
+          ],
+          [
+            1794904094.871,
+            "0"
+          ],
+          [
+            1794904124.871,
+            "0"
+          ],
+          [
+            1794904154.871,
+            "0"
+          ],
+          [
+            1794904184.871,
+            "0"
+          ],
+          [
+            1794904214.871,
+            "0"
+          ],
+          [
+            1794904244.871,
+            "0"
+          ]
+        ]
+      }
+    ]
+  }
+}

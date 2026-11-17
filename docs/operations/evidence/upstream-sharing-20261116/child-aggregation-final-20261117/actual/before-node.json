@@ -1,0 +1,631 @@
+{
+  "apiVersion": "v1",
+  "kind": "Node",
+  "metadata": {
+    "annotations": {
+      "alpha.kubernetes.io/provided-node-ip": "10.21.0.43",
+      "csi.volume.kubernetes.io/nodeid": "{\"driver.longhorn.io\":\"k3s-wk-gpu2\"}",
+      "flannel.alpha.coreos.com/backend-data": "{\"VNI\":1,\"VtepMAC\":\"ea:c3:5c:ae:52:41\"}",
+      "flannel.alpha.coreos.com/backend-type": "vxlan",
+      "flannel.alpha.coreos.com/kube-subnet-manager": "true",
+      "flannel.alpha.coreos.com/public-ip": "10.21.0.43",
+      "k3s.io/hostname": "k3s-wk-gpu2",
+      "k3s.io/internal-ip": "10.21.0.43",
+      "k3s.io/node-args": "[\"agent\"]",
+      "k3s.io/node-config-hash": "6O4CMGT2HJMGY3FSS23HT33Q5IXQLWXLZQOPNCMBD6O7II577DIA====",
+      "k3s.io/node-env": "{\"K3S_TOKEN\":\"********\",\"K3S_URL\":\"https://10.21.0.35:6443\"}",
+      "management.cattle.io/pod-limits": "{\"cpu\":\"2\",\"ephemeral-storage\":\"1Gi\",\"memory\":\"3456Mi\"}",
+      "management.cattle.io/pod-requests": "{\"cpu\":\"6125m\",\"ephemeral-storage\":\"556Mi\",\"memory\":\"882Mi\",\"pods\":\"25\"}",
+      "nfd.node.kubernetes.io/feature-labels": "cpu-cpuid.ADX,cpu-cpuid.AESNI,cpu-cpuid.AVX,cpu-cpuid.AVX2,cpu-cpuid.CLZERO,cpu-cpuid.CMPXCHG8,cpu-cpuid.FMA3,cpu-cpuid.FXSR,cpu-cpuid.FXSROPT,cpu-cpuid.HYPERVISOR,cpu-cpuid.IBPB,cpu-cpuid.IBPB_BRTYPE,cpu-cpuid.IBRS,cpu-cpuid.LAHF,cpu-cpuid.LBRVIRT,cpu-cpuid.MCAOVERFLOW,cpu-cpuid.MOVBE,cpu-cpuid.NRIPS,cpu-cpuid.OSXSAVE,cpu-cpuid.SHA,cpu-cpuid.SPEC_CTRL_SSBD,cpu-cpuid.SSE4A,cpu-cpuid.STIBP,cpu-cpuid.SUCCOR,cpu-cpuid.SVM,cpu-cpuid.SVMFBASID,cpu-cpuid.SVMNP,cpu-cpuid.SVMPF,cpu-cpuid.SVMPFT,cpu-cpuid.SYSCALL,cpu-cpuid.SYSEE,cpu-cpuid.TSA_L1_NO,cpu-cpuid.TSA_SQ_NO,cpu-cpuid.TSCRATEMSR,cpu-cpuid.VMCBCLEAN,cpu-cpuid.WBNOINVD,cpu-cpuid.X87,cpu-cpuid.XGETBV1,cpu-cpuid.XSAVE,cpu-cpuid.XSAVEC,cpu-cpuid.XSAVEOPT,cpu-cpuid.XSAVES,cpu-hardware_multithreading,cpu-model.family,cpu-model.id,cpu-model.vendor_id,kernel-config.NO_HZ,kernel-config.NO_HZ_FULL,kernel-version.full,kernel-version.major,kernel-version.minor,kernel-version.revision,nvidia.com/cuda.driver-version.full,nvidia.com/cuda.driver-version.major,nvidia.com/cuda.driver-version.minor,nvidia.com/cuda.driver-version.revision,nvidia.com/cuda.driver.major,nvidia.com/cuda.driver.minor,nvidia.com/cuda.driver.rev,nvidia.com/cuda.runtime-version.full,nvidia.com/cuda.runtime-version.major,nvidia.com/cuda.runtime-version.minor,nvidia.com/cuda.runtime.major,nvidia.com/cuda.runtime.minor,nvidia.com/gfd.timestamp,nvidia.com/gpu.compute.major,nvidia.com/gpu.compute.minor,nvidia.com/gpu.count,nvidia.com/gpu.family,nvidia.com/gpu.machine,nvidia.com/gpu.memory,nvidia.com/gpu.mode,nvidia.com/gpu.product,nvidia.com/gpu.replicas,nvidia.com/gpu.sharing-strategy,nvidia.com/mig.capable,nvidia.com/mps.capable,nvidia.com/vgpu.present,pci-10de.present,pci-1af4.present,storage-nonrotationaldisk,system-os_release.ID,system-os_release.VERSION_ID,system-os_release.VERSION_ID.major,system-os_release.VERSION_ID.minor",
+      "node.alpha.kubernetes.io/ttl": "0",
+      "nvidia.com/gpu-driver-upgrade.node-initial-state.unschedulable": "true",
+      "volumes.kubernetes.io/controller-managed-attach-detach": "true"
+    },
+    "creationTimestamp": "2025-11-07T12:34:09Z",
+    "finalizers": [
+      "wrangler.cattle.io/managed-etcd-controller",
+      "wrangler.cattle.io/node"
+    ],
+    "labels": {
+      "accelerator": "r615-canary-maintenance",
+      "beta.kubernetes.io/arch": "amd64",
+      "beta.kubernetes.io/instance-type": "k3s",
+      "beta.kubernetes.io/os": "linux",
+      "cps.unileoben.ac.at/driver": "620.70.06",
+      "cps.unileoben.ac.at/fractioning-runtime": "upstream",
+      "cps.unileoben.ac.at/os-upgrade": "gpu2-ubuntu-20261116",
+      "feature.node.kubernetes.io/cpu-cpuid.ADX": "true",
+      "feature.node.kubernetes.io/cpu-cpuid.AESNI": "true",
+      "feature.node.kubernetes.io/cpu-cpuid.AVX": "true",
+      "feature.node.kubernetes.io/cpu-cpuid.AVX2": "true",
+      "feature.node.kubernetes.io/cpu-cpuid.CLZERO": "true",
+      "feature.node.kubernetes.io/cpu-cpuid.CMPXCHG8": "true",
+      "feature.node.kubernetes.io/cpu-cpuid.FMA3": "true",
+      "feature.node.kubernetes.io/cpu-cpuid.FXSR": "true",
+      "feature.node.kubernetes.io/cpu-cpuid.FXSROPT": "true",
+      "feature.node.kubernetes.io/cpu-cpuid.HYPERVISOR": "true",
+      "feature.node.kubernetes.io/cpu-cpuid.IBPB": "true",
+      "feature.node.kubernetes.io/cpu-cpuid.IBPB_BRTYPE": "true",
+      "feature.node.kubernetes.io/cpu-cpuid.IBRS": "true",
+      "feature.node.kubernetes.io/cpu-cpuid.LAHF": "true",
+      "feature.node.kubernetes.io/cpu-cpuid.LBRVIRT": "true",
+      "feature.node.kubernetes.io/cpu-cpuid.MCAOVERFLOW": "true",
+      "feature.node.kubernetes.io/cpu-cpuid.MOVBE": "true",
+      "feature.node.kubernetes.io/cpu-cpuid.NRIPS": "true",
+      "feature.node.kubernetes.io/cpu-cpuid.OSXSAVE": "true",
+      "feature.node.kubernetes.io/cpu-cpuid.SHA": "true",
+      "feature.node.kubernetes.io/cpu-cpuid.SPEC_CTRL_SSBD": "true",
+      "feature.node.kubernetes.io/cpu-cpuid.SSE4A": "true",
+      "feature.node.kubernetes.io/cpu-cpuid.STIBP": "true",
+      "feature.node.kubernetes.io/cpu-cpuid.SUCCOR": "true",
+      "feature.node.kubernetes.io/cpu-cpuid.SVM": "true",
+      "feature.node.kubernetes.io/cpu-cpuid.SVMFBASID": "true",
+      "feature.node.kubernetes.io/cpu-cpuid.SVMNP": "true",
+      "feature.node.kubernetes.io/cpu-cpuid.SVMPF": "true",
+      "feature.node.kubernetes.io/cpu-cpuid.SVMPFT": "true",
+      "feature.node.kubernetes.io/cpu-cpuid.SYSCALL": "true",
+      "feature.node.kubernetes.io/cpu-cpuid.SYSEE": "true",
+      "feature.node.kubernetes.io/cpu-cpuid.TSA_L1_NO": "true",
+      "feature.node.kubernetes.io/cpu-cpuid.TSA_SQ_NO": "true",
+      "feature.node.kubernetes.io/cpu-cpuid.TSCRATEMSR": "true",
+      "feature.node.kubernetes.io/cpu-cpuid.VMCBCLEAN": "true",
+      "feature.node.kubernetes.io/cpu-cpuid.WBNOINVD": "true",
+      "feature.node.kubernetes.io/cpu-cpuid.X87": "true",
+      "feature.node.kubernetes.io/cpu-cpuid.XGETBV1": "true",
+      "feature.node.kubernetes.io/cpu-cpuid.XSAVE": "true",
+      "feature.node.kubernetes.io/cpu-cpuid.XSAVEC": "true",
+      "feature.node.kubernetes.io/cpu-cpuid.XSAVEOPT": "true",
+      "feature.node.kubernetes.io/cpu-cpuid.XSAVES": "true",
+      "feature.node.kubernetes.io/cpu-hardware_multithreading": "false",
+      "feature.node.kubernetes.io/cpu-model.family": "23",
+      "feature.node.kubernetes.io/cpu-model.id": "49",
+      "feature.node.kubernetes.io/cpu-model.vendor_id": "AMD",
+      "feature.node.kubernetes.io/kernel-config.NO_HZ": "true",
+      "feature.node.kubernetes.io/kernel-config.NO_HZ_FULL": "true",
+      "feature.node.kubernetes.io/kernel-version.full": "7.0.0-43-generic",
+      "feature.node.kubernetes.io/kernel-version.major": "7",
+      "feature.node.kubernetes.io/kernel-version.minor": "0",
+      "feature.node.kubernetes.io/kernel-version.revision": "0",
+      "feature.node.kubernetes.io/pci-10de.present": "true",
+      "feature.node.kubernetes.io/pci-1af4.present": "true",
+      "feature.node.kubernetes.io/storage-nonrotationaldisk": "true",
+      "feature.node.kubernetes.io/system-os_release.ID": "ubuntu",
+      "feature.node.kubernetes.io/system-os_release.VERSION_ID": "26.04",
+      "feature.node.kubernetes.io/system-os_release.VERSION_ID.major": "26",
+      "feature.node.kubernetes.io/system-os_release.VERSION_ID.minor": "04",
+      "gpu-fractioning.kai.scheduler/nvidia-driver-version.major": "620",
+      "gpu-model": "a100",
+      "kubernetes.io/arch": "amd64",
+      "kubernetes.io/hostname": "k3s-wk-gpu2",
+      "kubernetes.io/os": "linux",
+      "node.kubernetes.io/instance-type": "k3s",
+      "nos.nebuly.com/gpu-partitioning": "mig",
+      "nvidia.com/cuda.driver-version.full": "620.70.06",
+      "nvidia.com/cuda.driver-version.major": "620",
+      "nvidia.com/cuda.driver-version.minor": "70",
+      "nvidia.com/cuda.driver-version.revision": "06",
+      "nvidia.com/cuda.driver.major": "620",
+      "nvidia.com/cuda.driver.minor": "70",
+      "nvidia.com/cuda.driver.rev": "06",
+      "nvidia.com/cuda.runtime-version.full": "13.5",
+      "nvidia.com/cuda.runtime-version.major": "13",
+      "nvidia.com/cuda.runtime-version.minor": "5",
+      "nvidia.com/cuda.runtime.major": "13",
+      "nvidia.com/cuda.runtime.minor": "5",
+      "nvidia.com/device-plugin.config": "plain",
+      "nvidia.com/gfd.timestamp": "1794864215",
+      "nvidia.com/gpu-driver-upgrade.skip": "true",
+      "nvidia.com/gpu-operator.driver.owner": "cps-r620-workers",
+      "nvidia.com/gpu.compute.major": "8",
+      "nvidia.com/gpu.compute.minor": "0",
+      "nvidia.com/gpu.count": "2",
+      "nvidia.com/gpu.deploy.client": "true",
+      "nvidia.com/gpu.deploy.container-toolkit": "true",
+      "nvidia.com/gpu.deploy.dcgm": "false",
+      "nvidia.com/gpu.deploy.dcgm-exporter": "true",
+      "nvidia.com/gpu.deploy.device-plugin": "true",
+      "nvidia.com/gpu.deploy.driver": "true",
+      "nvidia.com/gpu.deploy.gpu-feature-discovery": "true",
+      "nvidia.com/gpu.deploy.mig-manager": "false",
+      "nvidia.com/gpu.deploy.node-status-exporter": "false",
+      "nvidia.com/gpu.deploy.nvsm": "false",
+      "nvidia.com/gpu.deploy.operator-validator": "true",
+      "nvidia.com/gpu.family": "ampere",
+      "nvidia.com/gpu.machine": "Standard-PC-Q35-ICH9-2009",
+      "nvidia.com/gpu.memory": "40960",
+      "nvidia.com/gpu.mode": "compute",
+      "nvidia.com/gpu.present": "true",
+      "nvidia.com/gpu.product": "NVIDIA-A100-PCIE-40GB",
+      "nvidia.com/gpu.replicas": "1",
+      "nvidia.com/gpu.sharing-strategy": "none",
+      "nvidia.com/mig.capable": "true",
+      "nvidia.com/mig.config": "all-disabled",
+      "nvidia.com/mig.config.state": "success",
+      "nvidia.com/mig.strategy": "none",
+      "nvidia.com/mps.capable": "false",
+      "nvidia.com/vgpu.present": "false",
+      "plan.upgrade.cattle.io/cps-ubuntu-gpu2-ubuntu-20261116": "1944270e1ec4d7c3b777720482fab70f046c8373f5ae0a396a1b3460",
+      "scratch": "nvme"
+    },
+    "name": "k3s-wk-gpu2",
+    "resourceVersion": "407423258",
+    "uid": "3336cdd5-d245-436e-b57c-2f66c6dcaa41"
+  },
+  "spec": {
+    "podCIDR": "10.42.7.0/24",
+    "podCIDRs": [
+      "10.42.7.0/24"
+    ],
+    "providerID": "k3s://k3s-wk-gpu2",
+    "taints": [
+      {
+        "effect": "NoSchedule",
+        "key": "cps.unileoben.ac.at/maintenance",
+        "value": "upstream-pilot"
+      },
+      {
+        "effect": "NoSchedule",
+        "key": "node.kubernetes.io/unschedulable",
+        "timeAdded": "2026-11-17T08:36:36Z"
+      }
+    ],
+    "unschedulable": true
+  },
+  "status": {
+    "addresses": [
+      {
+        "address": "10.21.0.43",
+        "type": "InternalIP"
+      },
+      {
+        "address": "k3s-wk-gpu2",
+        "type": "Hostname"
+      }
+    ],
+    "allocatable": {
+      "cpu": "48",
+      "ephemeral-storage": "492986995735",
+      "hugepages-1Gi": "0",
+      "hugepages-2Mi": "0",
+      "memory": "395959308Ki",
+      "nvidia.com/gpu": "2",
+      "nvidia.com/mig-1g.5gb": "0",
+      "pods": "110"
+    },
+    "capacity": {
+      "cpu": "48",
+      "ephemeral-storage": "506771172Ki",
+      "hugepages-1Gi": "0",
+      "hugepages-2Mi": "0",
+      "memory": "395959308Ki",
+      "nvidia.com/gpu": "2",
+      "nvidia.com/mig-1g.5gb": "0",
+      "pods": "110"
+    },
+    "conditions": [
+      {
+        "lastHeartbeatTime": "2026-11-16T21:23:43Z",
+        "lastTransitionTime": "2026-11-16T21:23:43Z",
+        "message": "all gpu-fractioning daemons are running",
+        "reason": "AllDaemonsReady",
+        "status": "True",
+        "type": "gpu-fractioning.nvidia.com/Ready"
+      },
+      {
+        "lastHeartbeatTime": "2026-11-17T08:34:31Z",
+        "lastTransitionTime": "2026-11-16T21:21:37Z",
+        "message": "kubelet has sufficient memory available",
+        "reason": "KubeletHasSufficientMemory",
+        "status": "False",
+        "type": "MemoryPressure"
+      },
+      {
+        "lastHeartbeatTime": "2026-11-17T08:34:31Z",
+        "lastTransitionTime": "2026-11-16T21:21:37Z",
+        "message": "kubelet has no disk pressure",
+        "reason": "KubeletHasNoDiskPressure",
+        "status": "False",
+        "type": "DiskPressure"
+      },
+      {
+        "lastHeartbeatTime": "2026-11-17T08:34:31Z",
+        "lastTransitionTime": "2026-11-16T21:21:37Z",
+        "message": "kubelet has sufficient PID available",
+        "reason": "KubeletHasSufficientPID",
+        "status": "False",
+        "type": "PIDPressure"
+      },
+      {
+        "lastHeartbeatTime": "2026-11-17T08:34:31Z",
+        "lastTransitionTime": "2026-11-16T21:21:37Z",
+        "message": "kubelet is posting ready status",
+        "reason": "KubeletReady",
+        "status": "True",
+        "type": "Ready"
+      }
+    ],
+    "daemonEndpoints": {
+      "kubeletEndpoint": {
+        "Port": 10250
+      }
+    },
+    "features": {
+      "supplementalGroupsPolicy": true
+    },
+    "images": [
+      {
+        "names": [
+          "ghcr.io/mul-cps/cps-jupyter-notebook@sha256:ae3dede57292cec34d0222bbde6a2995c305289df62a6a0aaf10e30c029aa77d",
+          "ghcr.io/mul-cps/cps-jupyter-notebook:main-comfyui"
+        ],
+        "sizeBytes": 19625522347
+      },
+      {
+        "names": [
+          "ghcr.io/mul-cps/cps-jupyter-notebook@sha256:4a03fe381c6f32f8e056ac05aad27abc64defa2f63128c53511a24d37fb5c194"
+        ],
+        "sizeBytes": 19532847071
+      },
+      {
+        "names": [
+          "ghcr.io/mul-cps/cps-jupyter-notebook@sha256:0b417f31fe7d82ec67be6db71a6f481d6ac268dab70a74ac1ad8221ecfc6d784"
+        ],
+        "sizeBytes": 19488784942
+      },
+      {
+        "names": [
+          "ghcr.io/mul-cps/cps-jupyter-notebook@sha256:1e25428268d359343c13c34f8a2c91f6a9c3995369d56d6b0fc6812a6330e6b0",
+          "ghcr.io/mul-cps/cps-jupyter-notebook:latest-desktop-ros2-xpra"
+        ],
+        "sizeBytes": 18890573163
+      },
+      {
+        "names": [
+          "ghcr.io/mul-cps/cps-jupyter-notebook@sha256:3eabf4238cdc1b48b5e945d62a5bf8bd22761891cbba91ba2aa2c0e54c776b56"
+        ],
+        "sizeBytes": 17775020773
+      },
+      {
+        "names": [
+          "ghcr.io/mul-cps/cps-jupyter-notebook@sha256:fb9872bf71bfee402807c4f0e9adc92c49740ec30fa4a6a4261fa2ae18d32a45"
+        ],
+        "sizeBytes": 17741813002
+      },
+      {
+        "names": [
+          "ghcr.io/mul-cps/cps-jupyter-notebook@sha256:5427088986bc06ad0713875d1aa2f31439f0bd1fbe6099d4669570fcf3e85be4"
+        ],
+        "sizeBytes": 17729102321
+      },
+      {
+        "names": [
+          "ghcr.io/mul-cps/cps-jupyter-notebook@sha256:531027c8e330d4ce818598e998a29d502433e9064f06a32dfc208a06ef2d0ba4"
+        ],
+        "sizeBytes": 17717542079
+      },
+      {
+        "names": [
+          "ghcr.io/mul-cps/cps-jupyter-notebook@sha256:9167861058c1364c58d1c2fca0d6f536c3ffb53a33800dcdb9a1560f14ca4dc0"
+        ],
+        "sizeBytes": 17716869855
+      },
+      {
+        "names": [
+          "ghcr.io/mul-cps/cps-jupyter-notebook@sha256:6b6a8d6a225df1b938fe98bcdad9e547aef249347392ce8f29adb3fedda512ae",
+          "ghcr.io/mul-cps/cps-jupyter-notebook:latest-pytorch-code"
+        ],
+        "sizeBytes": 17657173408
+      },
+      {
+        "names": [
+          "ghcr.io/mul-cps/cit-jupyter-notebook@sha256:8b8c1d719802729a30043a502103ff7449c68ac45239f2241a750cbc901ed5d3",
+          "ghcr.io/mul-cps/cit-jupyter-notebook:latest-pytorch-code"
+        ],
+        "sizeBytes": 15944365000
+      },
+      {
+        "names": [
+          "ghcr.io/mul-cps/cit-jupyter-notebook@sha256:8400fee46638d13e842877340db0435a2f8c55bf9f59af1519bd68a44a34a38f",
+          "ghcr.io/mul-cps/cit-jupyter-notebook:latest-tf-code"
+        ],
+        "sizeBytes": 12854316816
+      },
+      {
+        "names": [
+          "ghcr.io/mul-cps/cps-jupyter-notebook@sha256:842b90a868e60f61b6aed854b27481fb44dc781cb71d7c0ab7e7e0934c97a10e",
+          "ghcr.io/mul-cps/cps-jupyter-notebook:latest-desktop-ros2"
+        ],
+        "sizeBytes": 12161615824
+      },
+      {
+        "names": [
+          "ghcr.io/mul-cps/cps-jupyter-notebook@sha256:99841ef72d6c8b86a61a388b25aabbaebad7fc1ed1bb8b6f92abc6bf0c2442c1"
+        ],
+        "sizeBytes": 11199870496
+      },
+      {
+        "names": [
+          "ghcr.io/bjoernellens1/splatograph@sha256:2e2521c4c5e20ecd0a2ebe0abb314b5b7e09c6d8b8361d99e6f505cbdb882d3b"
+        ],
+        "sizeBytes": 11092564233
+      },
+      {
+        "names": [
+          "ghcr.io/mul-cps/cps-jupyter-notebook@sha256:593fbba67a2ed22250ad842270c2d7701ddb3e2d0607cb2500e980026c1df754",
+          "ghcr.io/mul-cps/cps-jupyter-notebook:latest-tf-code"
+        ],
+        "sizeBytes": 10561113596
+      },
+      {
+        "names": [
+          "ghcr.io/mul-cps/cps-jupyter-notebook@sha256:9444a023984ffe792ba6588b5f54d459edae1c69b13399597498a659b591df7f"
+        ],
+        "sizeBytes": 10475746364
+      },
+      {
+        "names": [
+          "ghcr.io/bjoernellens1/colmap-rgbd-gt@sha256:6cd4f77ff256c3178aa01610d06bf23dbfbd72e9ea756d4822ffb12b307f68fc",
+          "ghcr.io/bjoernellens1/colmap-rgbd-gt:cuda-caspar-opencv-v1"
+        ],
+        "sizeBytes": 5743079345
+      },
+      {
+        "names": [
+          "harbor.dshl.unileoben.ac.at/cps-users/cps-jupyter-notebook@sha256:1ed46addaed50f1874edec98001a122bd9da219d89e6cfecf1945c7338261c21"
+        ],
+        "sizeBytes": 5529887946
+      },
+      {
+        "names": [
+          "nvcr.io/nvidia/rapidsai/base@sha256:f2617cbde59343831f81049447f6362f015ae022990dcca6e47a5e64b8be97ed",
+          "nvcr.io/nvidia/rapidsai/base:24.08-cuda12.2-py3.10"
+        ],
+        "sizeBytes": 5505535576
+      },
+      {
+        "names": [
+          "ghcr.io/mul-cps/cps-jupyter-notebook@sha256:ff0c30d92f8b0483623acb719a909daba8dc93ab3f1910706e65b3f15237ae35"
+        ],
+        "sizeBytes": 3543872210
+      },
+      {
+        "names": [
+          "ghcr.io/mul-cps/cps-jupyter-notebook@sha256:3a624207705d2d22e9d90681cc11bc7d81e69fe63190c077a7a3df79ec2e09e6",
+          "ghcr.io/mul-cps/cps-jupyter-notebook:latest-standard-cpu"
+        ],
+        "sizeBytes": 3168082974
+      },
+      {
+        "names": [
+          "ghcr.io/mul-cps/cit-jupyter-notebook@sha256:6acd8bfe2b56968f7db0f9a033cdec329888a0e90cc73d4fa1e511f2561b18f9"
+        ],
+        "sizeBytes": 2792269089
+      },
+      {
+        "names": [
+          "ghcr.io/mul-cps/cit-jupyter-notebook@sha256:7cbef42fe051178e209bf5e245d6811bc8f8c24dff1bd07a639e1d812adbfd63",
+          "ghcr.io/mul-cps/cit-jupyter-notebook:latest-standard-cpu"
+        ],
+        "sizeBytes": 2655274914
+      },
+      {
+        "names": [
+          "quay.io/jupyter/tensorflow-notebook@sha256:4a28c816fc2ff62818f5d3002e767d39bac2e0d838c49af59234df8e488ecd94",
+          "quay.io/jupyter/tensorflow-notebook:2025-11-06"
+        ],
+        "sizeBytes": 1564885656
+      },
+      {
+        "names": [
+          "ghcr.io/mul-cps/cps-compute@sha256:5d6803af796bcac8b9487eafb87c3928d7279c958530a0b5ec1ae4640858f31b"
+        ],
+        "sizeBytes": 1367735913
+      },
+      {
+        "names": [
+          "ghcr.io/mul-cps/cps-compute@sha256:0dbe07a2e9358bdc5b9f246c5451159c6e9839bdc2d85e17e4bd47211beb9245"
+        ],
+        "sizeBytes": 1367735607
+      },
+      {
+        "names": [
+          "ghcr.io/mul-cps/cps-compute@sha256:435c080630b71dc9af7656052f96d3e038380d5a87e484b398f7c0a27e5cb466"
+        ],
+        "sizeBytes": 1272479320
+      },
+      {
+        "names": [
+          "ghcr.io/mul-cps/cps-compute@sha256:6bbd8788d5c84b9e5aa3d968d54350bf4de9fed8e08922cf136abf75b892d488"
+        ],
+        "sizeBytes": 983363903
+      },
+      {
+        "names": [
+          "ghcr.io/mul-cps/cps-nvidia-driver@sha256:c3b71557aa17df43faad5a2661d81f1025ba355ac3adf784096de12cd2ef3e73"
+        ],
+        "sizeBytes": 846885335
+      },
+      {
+        "names": [
+          "ghcr.io/mul-cps/cps-nvidia-driver@sha256:0fcbf7340155f8d6868e30b1b0fbf09b601d093a9316621902d5ac09ad7874a1"
+        ],
+        "sizeBytes": 837690703
+      },
+      {
+        "names": [
+          "docker.io/rancher/rancher@sha256:4b1eea4c10ac2af1765a3036310fd77433a8fe42e25504843c8cfe2784c45a82",
+          "docker.io/rancher/rancher:v2.13.3"
+        ],
+        "sizeBytes": 819202844
+      },
+      {
+        "names": [
+          "nvcr.io/nvidia/driver@sha256:bc7572b7f14177c467e4dd8b66c4f4535f462ea9cf6a65cebd7603cc966ebbd7"
+        ],
+        "sizeBytes": 793061512
+      },
+      {
+        "names": [
+          "nvcr.io/nvidia/driver@sha256:41515698692bd5e192186e620b65717af960a66d22dbb5a06e3656575a5d9148",
+          "nvcr.io/nvidia/driver:580.95.05-ubuntu24.04"
+        ],
+        "sizeBytes": 649891286
+      },
+      {
+        "names": [
+          "docker.io/rancher/rancher-agent@sha256:1898876ab36c047fdc4fe9d64dc3820be5e7c8ab301554e4f266b19e1870b4a3",
+          "docker.io/rancher/rancher-agent:v2.13.3"
+        ],
+        "sizeBytes": 525277518
+      },
+      {
+        "names": [
+          "ghcr.io/mul-cps/cps-native-node@sha256:ac993e13f098745c908d32a61e30fdb3b6341521d48f6cbafb60077443776eb5"
+        ],
+        "sizeBytes": 504803199
+      },
+      {
+        "names": [
+          "ghcr.io/mul-cps/cps-native-node@sha256:7b3484eeaad9b55aa10903b71a7443475920b5b9e865caedac50b3bcbfddea12"
+        ],
+        "sizeBytes": 504788838
+      },
+      {
+        "names": [
+          "ghcr.io/mul-cps/cps-native-node@sha256:1054ec09847f61ed8bc6c21ed5066edbba1e5d9a7dbed44b723250fd9313fdbc"
+        ],
+        "sizeBytes": 504788788
+      },
+      {
+        "names": [
+          "docker.io/longhornio/longhorn-instance-manager@sha256:b0d45a6fadbef8f16ac168e06cbae7ae02e46eae9359b95e16ef1ce537069d81",
+          "docker.io/longhornio/longhorn-instance-manager:v1.9.2"
+        ],
+        "sizeBytes": 458906852
+      },
+      {
+        "names": [
+          "ghcr.io/kai-scheduler/gpu-fractioning/mpsd@sha256:f161d6c653c668e49e384ae15794421777464248c5e533660ac26b006787b102",
+          "ghcr.io/kai-scheduler/gpu-fractioning/mpsd:v0.1.9"
+        ],
+        "sizeBytes": 440728055
+      },
+      {
+        "names": [
+          "ghcr.io/kai-scheduler/gpu-fractioning/metricsd@sha256:7a619c92651d0744bcd80745be264f3b6c213ad4f3a12fef19a339df422af2bf",
+          "ghcr.io/kai-scheduler/gpu-fractioning/metricsd:v0.1.9"
+        ],
+        "sizeBytes": 435826976
+      },
+      {
+        "names": [
+          "ghcr.io/mul-cps/cps-native-node@sha256:52ede962c561d95d47f863e3aa329ed41e6b891c68e8fd99d5404f792b1f25b8",
+          "ghcr.io/mul-cps/cps-native-node:qualification-4522c38"
+        ],
+        "sizeBytes": 394826076
+      },
+      {
+        "names": [
+          "docker.io/longhornio/longhorn-instance-manager@sha256:c087556826fc00b9e8f6b72d7dd4b5d4615afde3650394e407610061da8c7e52",
+          "docker.io/longhornio/longhorn-instance-manager:v1.8.2"
+        ],
+        "sizeBytes": 372620993
+      },
+      {
+        "names": [
+          "ghcr.io/goauthentik/server@sha256:33a92b246b798f23931ce62027e045ecf302c3bc198b6389225973db6448a886",
+          "ghcr.io/goauthentik/server:2025.12.4"
+        ],
+        "sizeBytes": 338856387
+      },
+      {
+        "names": [
+          "docker.io/kasmweb/kasm-guac@sha256:517f35284c6db857a9414f35ffa1a715e5a0713ee64b84448452e20f6a776915",
+          "docker.io/kasmweb/kasm-guac:1.17.0"
+        ],
+        "sizeBytes": 311376394
+      },
+      {
+        "names": [
+          "ghcr.io/dask/dask-notebook@sha256:af0f475ddccb5e9967e5d7e64ec7651e3109e5b0c36119c447e1e821cb33b475",
+          "ghcr.io/dask/dask-notebook:2025.1.0"
+        ],
+        "sizeBytes": 309483619
+      },
+      {
+        "names": [
+          "ghcr.io/mul-cps/cps-compute@sha256:ac9ee1b0fe77266e089be0c64c564cf009c55684808dd5fee5d2c135080c23f4"
+        ],
+        "sizeBytes": 236479303
+      },
+      {
+        "names": [
+          "ghcr.io/mul-cps/cps-compute@sha256:1895f5b08f707a65f66b3512babf5c630e043877208513d1f5c5d8e6f2f1ec28"
+        ],
+        "sizeBytes": 234731669
+      },
+      {
+        "names": [
+          "ghcr.io/mul-cps/e2x-course-hub@sha256:03634029cbe382c4a5c520f9e19a32fc047a676afbe51de47639c62e0aa1b12e"
+        ],
+        "sizeBytes": 203618420
+      },
+      {
+        "names": [
+          "docker.io/rancher/mirrored-grafana-grafana@sha256:a1701c2180249361737a99a01bc770db39381640e4d631825d38ff4535efa47d",
+          "docker.io/rancher/mirrored-grafana-grafana:12.1.1"
+        ],
+        "sizeBytes": 201615524
+      }
+    ],
+    "nodeInfo": {
+      "architecture": "amd64",
+      "bootID": "8874dcda-ced2-4aa4-b5cb-71a0871abdd5",
+      "containerRuntimeVersion": "containerd://2.2.5-k3s2",
+      "kernelVersion": "7.0.0-43-generic",
+      "kubeProxyVersion": "",
+      "kubeletVersion": "v1.34.9+k3s1",
+      "machineID": "a5d6c873f113403f88663680b11240a8",
+      "operatingSystem": "linux",
+      "osImage": "Ubuntu 26.04.1 LTS",
+      "systemUUID": "a5d6c873-f113-403f-8866-3680b11240a8"
+    },
+    "runtimeHandlers": [
+      {
+        "features": {
+          "recursiveReadOnlyMounts": true,
+          "userNamespaces": true
+        },
+        "name": ""
+      },
+      {
+        "features": {
+          "recursiveReadOnlyMounts": true,
+          "userNamespaces": true
+        },
+        "name": "nvidia"
+      },
+      {
+        "features": {
+          "recursiveReadOnlyMounts": true,
+          "userNamespaces": true
+        },
+        "name": "nvidia-cdi"
+      },
+      {
+        "features": {
+          "recursiveReadOnlyMounts": true,
+          "userNamespaces": true
+        },
+        "name": "runc"
+      },
+      {
+        "features": {
+          "recursiveReadOnlyMounts": false,
+          "userNamespaces": false
+        },
+        "name": "runhcs-wcow-process"
+      }
+    ]
+  }
+}

@@ -1,0 +1,27 @@
+{
+  "human_cit_member_access": {
+    "qualified": false,
+    "a_and_b_before_removal_http": 403,
+    "reason": "OAuthenticator: No auth_state found; full authentication required. These operatorQA APP aliases are not authenticated CIT humanSSO subjects. No role/auth_state/IdP changes made."
+  },
+  "gpu20_owner_held_closure": {
+    "qualified": false,
+    "reason": "First owner observer timedout240s before valid normal memberA request; do not infer closure from later Podabsence."
+  },
+  "direct_member_disconnect": {
+    "qualified": false,
+    "backend_http": 403,
+    "reason": "Different raw transport failed XSRF before any mutation; fresh observations kept originalA/Pod/activelease. No committed-operation/replay success claimed."
+  },
+  "full_stop_response_loss": {
+    "classification": "Actual complete response EOF during guarded normal STOP, upstream409pendingcleanup; authoritative reconciliation then typed replay200",
+    "scripted_upstream200_expectation_met": false,
+    "not_claimed": "upstream200 receipt loss, arbitrary startup network uncertainty, general fault tolerance"
+  },
+  "sql_observation_correction": {
+    "database": "/data/reservations.sqlite IS current Reservations",
+    "mistake": "Earlier queries used unprefixed workspace keys; zero results were not charge evidence. Correct keys are cps:upstream-registry-qualification-20261116-cps and cit:upstream-registry-qualification-20261116-cit.",
+    "root_independent_final_check": "2026-11-17T09:00:02Z root reported GLOBALperson0/binding0 and both correct Source-prefixed keys0/0; current app proof uses authoritative reservation APIs."
+  },
+  "human_browser_two_person_rtc": "OPEN; operator Source/controller and neutral-owner socket tests make no human-login claim"
+}

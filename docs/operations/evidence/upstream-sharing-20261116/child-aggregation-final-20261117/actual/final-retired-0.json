@@ -1,0 +1,15 @@
+{
+  "time": 1794904694.3722916,
+  "node": "k3s-wk-gpu2",
+  "boot_id": "8874dcda-ced2-4aa4-b5cb-71a0871abdd5",
+  "gpu": "GPU-16128952-b438-556a-00bb-93039ee24e56, 620.70.06, 1, 40960",
+  "compute_processes": "",
+  "uvm": {
+    "srcversion": "10301D70B8ED1758BC717E9",
+    "parameters/uvm_reject_managed_memory": "Y",
+    "parameters/uvm_disable_hmm": "Y"
+  },
+  "uvm_source_sha256": "5648dbfe43957eb257d9efb715906de0fb6caa43458752544221d90db6efdb18",
+  "retired_cgroup": "/kubepods.slice/kubepods-burstable.slice/kubepods-burstable-podd88559dd_67bd_40fb_9589_9fc4b0b3155e.slice/cri-containerd-b4d6c76df1d7f1668be5d706d129dfb8958ec5691e594ea6954b4c339f4373b2.scope",
+  "retired_cgroup_exists": false
+}

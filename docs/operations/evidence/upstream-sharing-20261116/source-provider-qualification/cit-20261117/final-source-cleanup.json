@@ -1,0 +1,23 @@
+{
+  "unix": 1794905737.036077,
+  "source_cit_memberships": 0,
+  "cit_hub_group_users": 0,
+  "cit_shares": 0,
+  "both_qa_pods_absent": true,
+  "authoritative_reservations": {
+    "cps": {
+      "workspace": "upstream-registry-qualification-20261116-cps",
+      "active": false,
+      "attempt": null
+    },
+    "cit": {
+      "workspace": "upstream-registry-qualification-20261116-cit",
+      "active": false,
+      "attempt": null
+    }
+  },
+  "original49_raw_unchanged": true,
+  "quota_note": "Uses authoritative Gateway reservation API. Earlier SQL used an unprefixed workspace key and is excluded; current store uses Source-scoped workspace keys.",
+  "files_and_metadata_retained": true,
+  "real_cit_human_access": "NOT QUALIFIED: operator QA appaliases have no SSO auth_state"
+}

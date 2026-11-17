@@ -1,0 +1,6 @@
+GPU 1: NVIDIA A100-PCIE-40GB (UUID: GPU-1e6145d5-8ee2-43e2-a0d5-6d345909e8a6)
+  namespace:      /sys/fs/cgroup/kubepods.slice/kubepods-burstable.slice/kubepods-burstable-pod2d85ddff_cc38_4711_98d6_b391ee39b18f.slice/cri-containerd-ff724b4bb6c7b2d967463bdb49b6dfbbc0a25e7315342a8029d0cf0c3a8dd68c.scope
+  soft limit:     5120 MiB
+  hard limit:     5120 MiB
+  current used:   0 MiB
+

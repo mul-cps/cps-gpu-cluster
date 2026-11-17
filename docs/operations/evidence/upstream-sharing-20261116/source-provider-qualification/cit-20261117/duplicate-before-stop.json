@@ -1,0 +1,24 @@
+{
+  "unix": 1794905488.5163603,
+  "pod_uid": "d9334d23-713c-46db-b173-639f0597cd15",
+  "node": "k3s-wk-gpu2",
+  "node_uid": "3336cdd5-d245-436e-b57c-2f66c6dcaa41",
+  "boot_id": "8874dcda-ced2-4aa4-b5cb-71a0871abdd5",
+  "containers": [
+    {
+      "name": "notebook",
+      "cid": "containerd://d355aa11b4f0dd5947710999cd5b7231f3af9a1fde18298d97bcf59f91f08fca",
+      "restarts": 0
+    }
+  ],
+  "reservation": {
+    "workspace": "upstream-registry-qualification-20261116-cit",
+    "active": true,
+    "attempt": "e175e331-2ed5-4e31-8940-23118cfcf304"
+  },
+  "canonical_members": [
+    "3237c91b-cef3-4f6f-960e-875b9e93c4be",
+    "8edde4a2-257c-42d7-9732-13f1e8742a33"
+  ],
+  "original49_raw_unchanged": true
+}

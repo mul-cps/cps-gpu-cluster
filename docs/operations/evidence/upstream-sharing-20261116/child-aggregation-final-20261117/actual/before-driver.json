@@ -1,0 +1,254 @@
+[
+  {
+    "metadata": {
+      "annotations": {
+        "kubectl.kubernetes.io/default-container": "nvidia-driver-ctr"
+      },
+      "creationTimestamp": "2026-11-16T18:33:37Z",
+      "generateName": "nvidia-gpu-driver-ubuntu26.04-8665b5f4cf-",
+      "generation": 1,
+      "labels": {
+        "app": "nvidia-gpu-driver-ubuntu26.04-8665b5f4cf",
+        "app.kubernetes.io/component": "nvidia-driver",
+        "controller-revision-hash": "7c5f98d8f4",
+        "nvidia.com/node.os-version": "ubuntu26.04",
+        "nvidia.com/precompiled": "false",
+        "pod-template-generation": "2"
+      },
+      "name": "nvidia-gpu-driver-ubuntu26.04-8665b5f4cf-dq5wx",
+      "namespace": "gpu-operator",
+      "ownerReferences": [
+        {
+          "apiVersion": "apps/v1",
+          "blockOwnerDeletion": true,
+          "controller": true,
+          "kind": "DaemonSet",
+          "name": "nvidia-gpu-driver-ubuntu26.04-8665b5f4cf",
+          "uid": "0fcbb262-ac50-4e06-9361-d5f82b00e19b"
+        }
+      ],
+      "resourceVersion": "406902290",
+      "uid": "dfd0cc7a-1e57-476f-a90c-50b4f09b70c4"
+    },
+    "images": [
+      "ghcr.io/mul-cps/cps-nvidia-driver@sha256:c3b71557aa17df43faad5a2661d81f1025ba355ac3adf784096de12cd2ef3e73"
+    ],
+    "status": {
+      "conditions": [
+        {
+          "lastProbeTime": null,
+          "lastTransitionTime": "2026-11-16T21:21:43Z",
+          "observedGeneration": 1,
+          "status": "True",
+          "type": "PodReadyToStartContainers"
+        },
+        {
+          "lastProbeTime": null,
+          "lastTransitionTime": "2026-11-16T18:33:41Z",
+          "observedGeneration": 1,
+          "status": "True",
+          "type": "Initialized"
+        },
+        {
+          "lastProbeTime": null,
+          "lastTransitionTime": "2026-11-16T21:23:47Z",
+          "observedGeneration": 1,
+          "status": "True",
+          "type": "Ready"
+        },
+        {
+          "lastProbeTime": null,
+          "lastTransitionTime": "2026-11-16T21:23:47Z",
+          "observedGeneration": 1,
+          "status": "True",
+          "type": "ContainersReady"
+        },
+        {
+          "lastProbeTime": null,
+          "lastTransitionTime": "2026-11-16T18:33:37Z",
+          "observedGeneration": 1,
+          "status": "True",
+          "type": "PodScheduled"
+        }
+      ],
+      "containerStatuses": [
+        {
+          "containerID": "containerd://11d23783edc9f0d4c983b41e65708d1b559bcc376be96478def08ea0de21cf51",
+          "image": "sha256:42b51a1af1671adbf92ab6bff1cb2e7d2d287820044d5f91e06577c5b7fdc1e5",
+          "imageID": "ghcr.io/mul-cps/cps-nvidia-driver@sha256:c3b71557aa17df43faad5a2661d81f1025ba355ac3adf784096de12cd2ef3e73",
+          "lastState": {
+            "terminated": {
+              "containerID": "containerd://8d3aa762c659829dc7d824c539b71bfd9876921438f0408e58f8512c67c5379d",
+              "exitCode": 255,
+              "finishedAt": "2026-11-16T21:21:35Z",
+              "reason": "Unknown",
+              "startedAt": "2026-11-16T20:58:48Z"
+            }
+          },
+          "name": "nvidia-driver-ctr",
+          "ready": true,
+          "resources": {},
+          "restartCount": 2,
+          "started": true,
+          "state": {
+            "running": {
+              "startedAt": "2026-11-16T21:21:45Z"
+            }
+          },
+          "user": {
+            "linux": {
+              "gid": 0,
+              "supplementalGroups": [
+                0
+              ],
+              "uid": 0
+            }
+          },
+          "volumeMounts": [
+            {
+              "mountPath": "/run/nvidia",
+              "name": "run-nvidia"
+            },
+            {
+              "mountPath": "/run/nvidia-fabricmanager",
+              "name": "run-nvidia-fabricmanager"
+            },
+            {
+              "mountPath": "/run/nvidia-topologyd",
+              "name": "run-nvidia-topologyd"
+            },
+            {
+              "mountPath": "/var/log",
+              "name": "var-log"
+            },
+            {
+              "mountPath": "/dev/log",
+              "name": "dev-log"
+            },
+            {
+              "mountPath": "/host-etc/os-release",
+              "name": "host-os-release",
+              "readOnly": true,
+              "recursiveReadOnly": "Disabled"
+            },
+            {
+              "mountPath": "/run/mellanox/drivers/usr/src",
+              "name": "mlnx-ofed-usr-src"
+            },
+            {
+              "mountPath": "/run/mellanox/drivers",
+              "name": "run-mellanox-drivers"
+            },
+            {
+              "mountPath": "/sys/module/firmware_class/parameters/path",
+              "name": "firmware-search-path"
+            },
+            {
+              "mountPath": "/sys/devices/system",
+              "name": "host-sys-devices-system"
+            },
+            {
+              "mountPath": "/lib/firmware",
+              "name": "nv-firmware"
+            },
+            {
+              "mountPath": "/usr/local/bin/startup-probe.sh",
+              "name": "driver-startup-probe-script"
+            },
+            {
+              "mountPath": "/drivers/nvidia-uvm.conf",
+              "name": "cps-r620-misc-config",
+              "readOnly": true,
+              "recursiveReadOnly": "Disabled"
+            },
+            {
+              "mountPath": "/drivers/nvidia.conf",
+              "name": "cps-r620-misc-config",
+              "readOnly": true,
+              "recursiveReadOnly": "Disabled"
+            },
+            {
+              "mountPath": "/var/run/secrets/kubernetes.io/serviceaccount",
+              "name": "kube-api-access-7zj9d",
+              "readOnly": true,
+              "recursiveReadOnly": "Disabled"
+            }
+          ]
+        }
+      ],
+      "hostIP": "10.21.0.43",
+      "hostIPs": [
+        {
+          "ip": "10.21.0.43"
+        }
+      ],
+      "initContainerStatuses": [
+        {
+          "containerID": "containerd://9ef033216b8e76712ab296ddf3172e39a1070a44846851ffa8ed177d227becb2",
+          "image": "nvcr.io/nvidia/cloud-native/k8s-driver-manager:v0.12.1",
+          "imageID": "nvcr.io/nvidia/cloud-native/k8s-driver-manager@sha256:37e6bf0cf02b5888288a173353b858da8823cc9f9fb9c6e8d6d1e2cf5bfb16c8",
+          "lastState": {},
+          "name": "k8s-driver-manager",
+          "ready": true,
+          "resources": {},
+          "restartCount": 2,
+          "started": false,
+          "state": {
+            "terminated": {
+              "containerID": "containerd://9ef033216b8e76712ab296ddf3172e39a1070a44846851ffa8ed177d227becb2",
+              "exitCode": 0,
+              "finishedAt": "2026-11-16T21:21:44Z",
+              "reason": "Completed",
+              "startedAt": "2026-11-16T21:21:42Z"
+            }
+          },
+          "user": {
+            "linux": {
+              "gid": 0,
+              "supplementalGroups": [
+                0
+              ],
+              "uid": 0
+            }
+          },
+          "volumeMounts": [
+            {
+              "mountPath": "/run/nvidia",
+              "name": "run-nvidia"
+            },
+            {
+              "mountPath": "/host",
+              "name": "host-root",
+              "readOnly": true,
+              "recursiveReadOnly": "Disabled"
+            },
+            {
+              "mountPath": "/sys",
+              "name": "host-sys"
+            },
+            {
+              "mountPath": "/run/mellanox/drivers",
+              "name": "run-mellanox-drivers"
+            },
+            {
+              "mountPath": "/var/run/secrets/kubernetes.io/serviceaccount",
+              "name": "kube-api-access-7zj9d",
+              "readOnly": true,
+              "recursiveReadOnly": "Disabled"
+            }
+          ]
+        }
+      ],
+      "observedGeneration": 1,
+      "phase": "Running",
+      "podIP": "10.42.7.224",
+      "podIPs": [
+        {
+          "ip": "10.42.7.224"
+        }
+      ],
+      "qosClass": "BestEffort",
+      "startTime": "2026-11-16T18:33:37Z"
+    }
+  }
+]
