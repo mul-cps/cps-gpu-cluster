@@ -261,7 +261,6 @@
           readOnly: true
         - mountPath: /kai-hub-private
           name: cps-native-kai-hub-private
-      nodeName: k3s-wk-gpu1
       priorityClassName: jupyterhub-default-priority
       restartPolicy: Always
       schedulerName: default-scheduler
