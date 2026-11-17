@@ -1,0 +1,151 @@
+{
+  "observed": "2026-11-17T15:25:58.278540+00:00",
+  "node_uid": "7b3b5113-158d-4e0d-bd63-898a508fe806",
+  "boot_id": "3fe87b77-467a-4f6d-beed-47316853e181",
+  "cordoned": true,
+  "conditions": [
+    {
+      "lastHeartbeatTime": "2026-11-17T15:18:24Z",
+      "lastTransitionTime": "2026-11-17T15:18:24Z",
+      "message": "all gpu-fractioning daemons are running",
+      "reason": "AllDaemonsReady",
+      "status": "True",
+      "type": "gpu-fractioning.nvidia.com/Ready"
+    }
+  ],
+  "config": {
+    "generation": 2,
+    "spec": {
+      "fractioningAgent": {
+        "criSocketPath": "/run/k3s/containerd/containerd.sock",
+        "failOpen": false,
+        "nriSocketPath": "/var/run/nri/nri.sock",
+        "retroactiveEnforcement": true
+      },
+      "metricsAgent": {
+        "enabled": true,
+        "volumeMounts": [
+          {
+            "mountPath": "/run/nvidia/validations/driver-ready",
+            "name": "gpu-operator-driver-ready",
+            "readOnly": true
+          }
+        ],
+        "volumes": [
+          {
+            "hostPath": {
+              "path": "/run/nvidia/validations/driver-ready",
+              "type": "File"
+            },
+            "name": "gpu-operator-driver-ready"
+          }
+        ]
+      },
+      "nodeSelector": {
+        "cps.unileoben.ac.at/fractioning-runtime": "upstream"
+      },
+      "runtimeClassName": "nvidia",
+      "tolerations": [
+        {
+          "effect": "NoSchedule",
+          "key": "nvidia.com/gpu",
+          "operator": "Exists"
+        },
+        {
+          "effect": "NoSchedule",
+          "key": "cps.unileoben.ac.at/maintenance",
+          "operator": "Exists"
+        }
+      ]
+    },
+    "status": {
+      "conditions": [
+        {
+          "lastTransitionTime": "2026-11-17T15:18:24Z",
+          "message": "2 of 2 pods ready",
+          "observedGeneration": 2,
+          "reason": "AllPodsReady",
+          "status": "True",
+          "type": "FractiondReady"
+        },
+        {
+          "lastTransitionTime": "2026-11-17T15:18:23Z",
+          "message": "2 of 2 pods ready",
+          "observedGeneration": 2,
+          "reason": "AllPodsReady",
+          "status": "True",
+          "type": "MpsdReady"
+        },
+        {
+          "lastTransitionTime": "2026-11-17T15:18:24Z",
+          "message": "all components are healthy",
+          "observedGeneration": 2,
+          "reason": "AllComponentsReady",
+          "status": "True",
+          "type": "Ready"
+        },
+        {
+          "lastTransitionTime": "2026-11-16T20:21:42Z",
+          "message": "",
+          "observedGeneration": 2,
+          "reason": "NoDriverUpgrade",
+          "status": "False",
+          "type": "DriverUpgradeInProgress"
+        }
+      ],
+      "observedGeneration": 2
+    }
+  },
+  "pods": [
+    {
+      "name": "gpu-fractioning-fractiond-wnv4l",
+      "uid": "ffd1f1d0-90bc-43ea-b194-61d4d4836ac3",
+      "node": "k3s-wk-gpu3",
+      "containers": [
+        {
+          "name": "fractiond",
+          "ready": true,
+          "containerID": "containerd://762cb2f98b68daaa760eeeb9e0d80e1f0fc8d754b1b626399d3f52b6473cac73",
+          "imageID": "ghcr.io/kai-scheduler/gpu-fractioning/fractiond@sha256:29c5fca25c1b35f22cf9f1e6c53acaa79d0b9f722ed6e8417caf438c06cd3739",
+          "restartCount": 0,
+          "state": {
+            "running": {
+              "startedAt": "2026-11-17T15:18:04Z"
+            }
+          }
+        },
+        {
+          "name": "metricsd",
+          "ready": true,
+          "containerID": "containerd://dea4495b03fd32b370c47000ba140732e47259728a6ef9e5935968d483423095",
+          "imageID": "ghcr.io/kai-scheduler/gpu-fractioning/metricsd@sha256:7a619c92651d0744bcd80745be264f3b6c213ad4f3a12fef19a339df422af2bf",
+          "restartCount": 0,
+          "state": {
+            "running": {
+              "startedAt": "2026-11-17T15:18:11Z"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "gpu-fractioning-mpsd-xxb7q",
+      "uid": "22d8c655-8ab2-4721-916b-5c8f29d7ffa2",
+      "node": "k3s-wk-gpu3",
+      "containers": [
+        {
+          "name": "mpsd",
+          "ready": true,
+          "containerID": "containerd://3e063785f11982cf274579f0e6d34fe07afd4c72e69e0c50a055461181949903",
+          "imageID": "ghcr.io/kai-scheduler/gpu-fractioning/mpsd@sha256:f161d6c653c668e49e384ae15794421777464248c5e533660ac26b006787b102",
+          "restartCount": 0,
+          "state": {
+            "running": {
+              "startedAt": "2026-11-17T15:18:11Z"
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

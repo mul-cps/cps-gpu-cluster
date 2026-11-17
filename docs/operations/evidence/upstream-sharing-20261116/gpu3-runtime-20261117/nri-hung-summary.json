@@ -1,0 +1,26 @@
+{
+  "container_id": "762cb2f98b68daaa760eeeb9e0d80e1f0fc8d754b1b626399d3f52b6473cac73",
+  "pod_uid": "ffd1f1d0-90bc-43ea-b194-61d4d4836ac3",
+  "pod_name": "gpu-fractioning-fractiond-wnv4l",
+  "namespace": "gpu-fractioning",
+  "container_name": "fractiond",
+  "pid": 65488,
+  "starttime": "169750",
+  "cmdline": [
+    "/fractiond",
+    "--support-sm-sharing=false",
+    "--inject-cdi-device=false",
+    "--socket-path",
+    "/var/run/nri/nri.sock",
+    "--retroactive-enforcement=true",
+    "--cri-socket",
+    "/run/k3s/containerd/containerd.sock"
+  ],
+  "cgroup": "0::/kubepods.slice/kubepods-burstable.slice/kubepods-burstable-podffd1f1d0_90bc_43ea_b194_61d4d4836ac3.slice/cri-containerd-762cb2f98b68daaa760eeeb9e0d80e1f0fc8d754b1b626399d3f52b6473cac73.scope\n",
+  "unit": "cps-nri-hotfix-cont-65488",
+  "stopped_at": 1794929120.5364454,
+  "status": "PASS",
+  "first_required_timeout_rejected": true,
+  "disconnected_required_rejected": true,
+  "cpu_success_while_stopped": true
+}

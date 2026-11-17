@@ -1,0 +1,10 @@
+{
+  "status": "os-verified",
+  "operation": "gpu3-ubuntu-20261116",
+  "node": "k3s-wk-gpu3",
+  "target": "26.04.1",
+  "boot_id": "cb6761a4-b73c-427e-a01b-9a1046a66218",
+  "payload_sha256": "9fdc8214a86c822d6a68c8b646ce39a8f5dba4cca9d456097b15bdd190ca72d2",
+  "updated_at": 1794927060.7341342,
+  "verified_boot_id": "3fe87b77-467a-4f6d-beed-47316853e181"
+}

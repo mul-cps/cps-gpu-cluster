@@ -1,0 +1,20 @@
+{
+  "node": "k3s-wk-gpu3",
+  "target": "26.04.1",
+  "payload_sha256": "9fdc8214a86c822d6a68c8b646ce39a8f5dba4cca9d456097b15bdd190ca72d2",
+  "authorized_at": "2026-11-17T14:34:28.381287+00:00",
+  "node_uid": "7b3b5113-158d-4e0d-bd63-898a508fe806",
+  "boot_id": "cb6761a4-b73c-427e-a01b-9a1046a66218",
+  "evidence": {
+    "compatibility": "Same exact OS payload as accepted GPU2; measured K3s1.34.9/containerd2.2.5, Rancher2.13.3 and Longhorn1.9.2 compatibility retained separately from published support; final GPU3 acceptance remains required.",
+    "rollout_authorization": "User approved direct real-VM rollout with existing backups, no clone/new full backup; serial GPU2 accepted including actual existing CPS5 Source CUDA lifecycle before selecting GPU3.",
+    "recovery_backup": "Existing accepted VM107 February1 VMA archive453833877889B/config/log checked. Current root0600 config archive /var/lib/cps-maintenance/gpu3-config-recovery-20261117T132843Z/config.tar.gz sha2563eed7ddb3efed85332f171d88fe6cfa2c329e61bc8700723563a5570ec2329ca; matching private local copy verified.",
+    "console": "VM107 Proxmox serial console connection and QGA ping verified; current qm status running independently observed. Hypervisor OS unchanged.",
+    "prerequisites": "Durable cps-gpu3-prerequisites-20261117.service payloadfcc7466d completed strict apt update/full-upgrade phased updates with no removals, audit/check/simulation pass. Planned prerequisite reboot reconciled cb6761a4-b73c-427e-a01b-9a1046a66218; current reboot marker absent/locks unheld; package timers suspended with original policy retained.",
+    "jobs_finished": "Fresh selected-node API has zero active non-DaemonSet Pods after normal PDB/graceful evacuation; source controllers/databases Ready off GPU3, no selected user GPU clients before old-owner shutdown.",
+    "custody_cleanup": "No GPU3 custom allocations/unclean custody in exact selected-node inventories. Old GPU3 R615 driver and standalone MPS shut down through label ownership, peer driver UIDs unchanged; no force unload/reset. No new driver owner yet.",
+    "storage_evacuated": "No selected CSI attachments/volumesInUse or Longhorn processes. All17 active volumes now healthy outside GPU3 with at least2 current remote RW;77 detached replicas stopped, including20 configured desired2 volumes with1 historical healthy outside and preserved local copy, explicitly accepted. Original Prometheus local PV/claim/path/inode4217182 retained ownerreplicas0; root and scratch disk UUIDs/fstab verified after reboot.",
+    "maintenance_lock": "Manual global kured DS lock retained; selected node cordoned and fenced; only GPU3 maintenance. Atomic nomination will replace maintenance taint with existing Plan-tolerated OS-upgrade taint.",
+    "peer_health": "Fresh GPU1/GPU2/GPU4 Ready+schedulable and2GPU allocatable each; scoped GPU2 actual Source5/CUDA/stop passed. Turtles memory-only same-image fix Ready/restarts0; other evacuated infrastructure Ready."
+  }
+}

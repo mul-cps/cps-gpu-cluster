@@ -1,0 +1,11 @@
+# GPU3 runtime installed; worker acceptance pending
+
+Selected worker k3s-wk-gpu3 is still cordoned, maintenance fenced and unqualified. Ubuntu26.04.1/kernel7.0.0-43 boot3fe87b77 now runs the exact GPU2-qualified c3b R620.70.06 driver, 6ce outer/0ca running K3s/containerd artifact, two upstream AppArmor compatibility rules, toolkit1.20.1 and stock plugin/GFD0.20.1. Only selected OnDelete operands were replaced by ordinary UID/RV-bound Evictions. Peer operand UIDs were unchanged.
+
+GPU Operator26.7.1 required one normal controller restart to relist a newly matching custom driver selector: its upstream node-labeler event predicate did not assign an owner when the previous owner was empty. Existing driver CR UID76473758 was retained; no owner label was forged or predicate patched. Its stock driver-manager initializer unloaded unused nouveau normally; no forced module unload or GPU reset was used.
+
+Fractioning0.1.9 fractiond/MPS/metrics and both config/node readiness conditions were verified. Fail-open is false and retroactive enforcement true. Standard containerd NRI default validator is enabled with empty global required_plugins, preserving CPU-only workloads; shared containers require fractiond through their annotation. Accounting remains misc. The corrected readback uses the actual RegistryDwords field; an earlier local assertion looked for a nonexistent direct field and did not establish a driver fault. Driver-ready existed before metrics startup; NVML initialization succeeded.
+
+The reviewed selected-worker NRI fault runner exited0 with PASS: exact PID/CID/starttime-bound fractiond hang with independent15-second CONT timer, first hung and disconnected required-plugin rejections with no GPU exec, CPU completion while fractiond remained stopped, followed by raw-driver quota/OOM/recovery on both physical cards. Timer final state inactive; both-card process/memory and actual runtime snapshots returned to baseline. This is one same-boot receipt, not coldboot, mixed-profile, full service, or whole-worker acceptance.
+
+Further managed/API/child/contention tests, restart/coldboot persistence, KAI placement, CPS/CIT lifecycle and monitoring restoration remain gated. GPU1 is next only after GPU3 complete acceptance.

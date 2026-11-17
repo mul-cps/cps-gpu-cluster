@@ -1,8 +1,8 @@
 {
-  "as_of": "2026-11-17T13:24:29.770263+00:00",
+  "as_of": "2026-11-17T15:05:32.402653+00:00",
   "worker": "k3s-wk-gpu2",
   "worker_acceptance": true,
-  "phase": "GPU2 scoped worker and real existing CPS5 Source lifecycle accepted; GPU3 maintenance preparation resumed",
+  "phase": "GPU2 accepted; GPU3 Ubuntu26.04.1 OS verified; selected runtime transfer and qualification underway",
   "gpu_eligibility": "qualified and schedulable; legacy accelerator fence retained; QA grants revoked; old OS nomination cleared",
   "driver": {
     "version": "620.70.06",
@@ -45,16 +45,17 @@
     "Existing real bjoern shared-gpu-lab5GiB SourceStart200/Ready onGPU2 with2b2 policy and current member only; nonroot64MiB CUDA fill/sync/free; confirmed normalstop/Podgone/leaseinactive/shares0/temporarycredentialclosed. Original neutral identity/receipt and both PVCs preserved through reviewed operator-only recovery and actual Hub restart."
   ],
   "remaining": [
-    "GPU3 serial maintenance: detached-volume extra copies and activator PDB prerequisite repaired; six infrastructure workloads relocated. Prometheus retains a local PV on GPU3 and is Ready there after uncordoning; resolve its maintenance availability before fresh workload checks/drain/OS nomination. GPU1/GPU4 follow after GPU3 acceptance.",
+    "GPU3 complete hardware, restart/coldboot, KAI and CPS/CIT acceptance plus monitoring restoration; OS and selected upstream runtime installed, initial NRI fault and both-card recovery tests passed. GPU1 thenGPU4 remain unchanged until explicit serial promotion.",
     "Genuine CIT nonadministrator IdP/browser/two-human access; QA aliases have no SSO identity and cannot prove this gate.",
-    "Remaining original advanced-feature, ordinary/distributed, startup/defrag, teaching, controllercutover and matching restore gates."
+    "Remaining original advanced-feature, ordinary/distributed, startup/defrag, teaching, controllercutover and matching restore gates.",
+    "Turtles same-image memory-only override is healthy; Helm revision2 still records the hardcoded old memory values. Future owner-chart normalization/replay is explicitly documented, no false Helm convergence claim."
   ],
-  "peers": "GPU1/3/4 Ubuntu24.04/R615 unchanged; not qualified for new shared starts",
+  "peers": "GPU3 OS26.04.1/R620 runtime installed, fenced and unqualified; GPU1/GPU4 remain Ubuntu24.04/R615 and unqualified for new shared starts.",
   "hubs": {
     "source": "1c160751676bce808fe8a2ae86b0a495b61c0f72",
     "cps_image": "sha256:0bbeb42640f040a1c26a39c19d368a6ea92bcb18721beba8f68320e7c0edd097",
     "cit_image": "sha256:bf138c57e6a6243143b71ca6850487f5237ec25add5cee248d1ebabd221409a6",
-    "cps_gitops_pin": "0f4f8bf903e9e20118e6897daa60741fe57338ad",
+    "cps_gitops_pin": "df0eaa883106d9d7ad4b6ae901ba926a9907dd0e",
     "cit_gitops_pin": "9bab4508e28858934a3873072806d28b6b44c1b6",
     "fleet_both_ready": false,
     "live_catalog": "sha256:2b2ad6ce656db38a0e9cc2a0d3365c48d6061a835d317236a322776c11dc3fcb",
@@ -90,6 +91,8 @@
       "ready": "True",
       "cordoned": false,
       "os": "Ubuntu 24.04.4 LTS",
+      "kernel": "6.8.0-149-generic",
+      "boot_id": "db237e6c-5f5c-401a-9f08-8bae2ce804f7",
       "os_nomination": null
     },
     {
@@ -97,6 +100,8 @@
       "ready": "True",
       "cordoned": false,
       "os": "Ubuntu 24.04.4 LTS",
+      "kernel": "6.8.0-149-generic",
+      "boot_id": "d6fd3938-0340-4821-a87c-5b8fe77164bc",
       "os_nomination": null
     },
     {
@@ -104,6 +109,8 @@
       "ready": "True",
       "cordoned": false,
       "os": "Ubuntu 24.04.4 LTS",
+      "kernel": "6.8.0-149-generic",
+      "boot_id": "ca372986-f7bc-41f9-969e-22d274d64aa5",
       "os_nomination": null
     },
     {
@@ -111,6 +118,8 @@
       "ready": "True",
       "cordoned": false,
       "os": "Ubuntu 24.04.4 LTS",
+      "kernel": "6.8.0-149-generic",
+      "boot_id": "b7aef52b-199b-48d2-a0f5-f584174dbcb6",
       "os_nomination": null
     },
     {
@@ -118,13 +127,17 @@
       "ready": "True",
       "cordoned": false,
       "os": "Ubuntu 26.04.1 LTS",
+      "kernel": "7.0.0-43-generic",
+      "boot_id": "8874dcda-ced2-4aa4-b5cb-71a0871abdd5",
       "os_nomination": null
     },
     {
       "name": "k3s-wk-gpu3",
       "ready": "True",
-      "cordoned": false,
-      "os": "Ubuntu 24.04.3 LTS",
+      "cordoned": true,
+      "os": "Ubuntu 26.04.1 LTS",
+      "kernel": "7.0.0-43-generic",
+      "boot_id": "3fe87b77-467a-4f6d-beed-47316853e181",
       "os_nomination": null
     },
     {
@@ -132,7 +145,60 @@
       "ready": "True",
       "cordoned": false,
       "os": "Ubuntu 24.04.3 LTS",
+      "kernel": "6.8.0-149-generic",
+      "boot_id": "21aa4a49-9e79-4194-8d26-830debb6ce2e",
       "os_nomination": null
     }
-  ]
+  ],
+  "gpu3_maintenance": {
+    "prometheus_replicas": 0,
+    "prometheus_local_pv_retained": true,
+    "monitoring_gap_open": true,
+    "old_selected_driver_and_mps_pods_absent": true,
+    "peer_driver_pod_uids_unchanged": true,
+    "os_nominated": false,
+    "new_findings": [
+      "Legacy vCluster fully removed after verified native SQLite/PKI backup; no target resource or RBAC residue remains.",
+      "Both portable Source console nodeName pins removed under guarded Recreate handoffs; original logical databases and storage unchanged.",
+      "Migrated Turtles manager exceeded old300Mi cap; same-image limit1Gi/request256Mi restored readiness, with explicit Helm owner drift."
+    ],
+    "credential_containment": "Old bound virtual DNS token rejected after ordinary exact-Pod replacement; vCluster subsequently removed by user request.",
+    "active_storage": "All17 attached volumes healthy with3 current remoteRW outsideGPU3; original selected data disks preserved."
+  },
+  "gpu3_os_operation": {
+    "operation": "gpu3-ubuntu-20261116",
+    "plan_uid": "f4b24520-0236-4e6c-b672-e2ebb91d55dd",
+    "suc_job_uid": "97399580-b82a-4285-8998-928b8c30c264",
+    "host_payload_sha256": "9fdc8214a86c822d6a68c8b646ce39a8f5dba4cca9d456097b15bdd190ca72d2",
+    "host_operation_state_before_target_reboot": "reboot-required",
+    "host_systemd_main_pid_before_completion": 20129,
+    "source_boot": "cb6761a4-b73c-427e-a01b-9a1046a66218",
+    "suc_job_completion_is_host_submission_only": true,
+    "os_acceptance": true,
+    "worker_acceptance": false,
+    "target_reboot_requires_reconciliation": false,
+    "prerequisite_package_operation_completed_and_reboot_verified": true,
+    "current_config_backup_sha256": "3eed7ddb3efed85332f171d88fe6cfa2c329e61bc8700723563a5570ec2329ca",
+    "verified_boot_id": "3fe87b77-467a-4f6d-beed-47316853e181",
+    "evidence": "gpu3-os-20261117/host-os-reconciliation.json"
+  },
+  "vcluster_retirement": {
+    "complete": true,
+    "source_commit": "df0eaa883106d9d7ad4b6ae901ba926a9907dd0e",
+    "evidence_commit": "e673f42c3b480f32dd12f8a31c91f121f166c26a",
+    "evidence": "vcluster-retirement-20261117/final-absence.json",
+    "private_recovery_backup_retained": true,
+    "namespace_pvc_pv_and_exclusive_rbac_absent": true
+  },
+  "gpu3_runtime": {
+    "installed": true,
+    "worker_acceptance": false,
+    "boot_id": "3fe87b77-467a-4f6d-beed-47316853e181",
+    "fractiond_ready": true,
+    "mpsd_ready": true,
+    "metrics_ready": true,
+    "initial_nri_fault_receipt": "gpu3-runtime-20261117/nri-summary.json",
+    "coldboot_acceptance": false,
+    "evidence": "gpu3-runtime-20261117/README.md"
+  }
 }

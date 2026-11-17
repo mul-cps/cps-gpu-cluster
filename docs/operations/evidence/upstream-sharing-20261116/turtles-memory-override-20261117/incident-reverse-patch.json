@@ -1,0 +1,46 @@
+[
+  {
+    "op": "test",
+    "path": "/metadata/uid",
+    "value": "6ba25078-f262-499b-b90b-a54c4ea97686"
+  },
+  {
+    "op": "test",
+    "path": "/metadata/resourceVersion",
+    "value": "407692503"
+  },
+  {
+    "op": "test",
+    "path": "/spec/template/spec/containers/0/name",
+    "value": "manager"
+  },
+  {
+    "op": "test",
+    "path": "/spec/template/spec/containers/0/image",
+    "value": "rancher/turtles:v0.25.4"
+  },
+  {
+    "op": "test",
+    "path": "/spec/template/spec/containers/0/resources",
+    "value": {
+      "limits": {
+        "cpu": "500m",
+        "memory": "1Gi"
+      },
+      "requests": {
+        "cpu": "10m",
+        "memory": "256Mi"
+      }
+    }
+  },
+  {
+    "op": "replace",
+    "path": "/spec/template/spec/containers/0/resources/limits/memory",
+    "value": "300Mi"
+  },
+  {
+    "op": "replace",
+    "path": "/spec/template/spec/containers/0/resources/requests/memory",
+    "value": "128Mi"
+  }
+]

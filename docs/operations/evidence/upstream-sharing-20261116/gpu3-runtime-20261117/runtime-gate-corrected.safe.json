@@ -1,0 +1,21 @@
+{
+  "boot_id": "3fe87b77-467a-4f6d-beed-47316853e181",
+  "memacct_mode": "misc",
+  "RegistryDwords": "RegistryDwords: \"RmMemacctMode=1\"",
+  "nri": {
+    "disable": false,
+    "socket_path": "/var/run/nri/nri.sock",
+    "default_validator": {
+      "enable": true,
+      "required_plugins": []
+    }
+  },
+  "driver_ready": true,
+  "driver_ready_mtime_ns": 1794928473313934209,
+  "uvm": {
+    "srcversion": "10301D70B8ED1758BC717E9",
+    "parameters/uvm_reject_managed_memory": "Y",
+    "parameters/uvm_disable_hmm": "Y"
+  },
+  "outer_sha256": "6ce276301723a902da671058730611591c59b5f016b816f57f2d97b05c88fe2c"
+}

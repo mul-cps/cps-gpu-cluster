@@ -1,0 +1,44 @@
+{
+  "at": "2026-11-17T14:23:08.434531+00:00",
+  "status": "resource-only override applied and new manager Ready; temporary Helm-owner drift remains explicit",
+  "owner": {
+    "helmRelease": "rancher-turtles",
+    "namespace": "cattle-turtles-system",
+    "releaseRevision": 2,
+    "chart": "rancher-turtles",
+    "chartVersion": "108.0.4+up0.25.4",
+    "appVersion": "0.25.4",
+    "releaseSecretUID": "5b4517c1-8fae-4b7a-ac2e-9a862552b086",
+    "fullDecodedReleaseExactBeforeAfter": true,
+    "releaseConfigAndManifestUnchanged": true,
+    "noFleetOrHelmChartConfigOwnerFound": true
+  },
+  "chartSHA256": "a39d56f656d998ab409c1703d1461b899d1523b5b43af276ff8160f664b351f7",
+  "deploymentUID": "6ba25078-f262-499b-b90b-a54c4ea97686",
+  "generationAfter": 3,
+  "scope": [
+    "manager.memory.limit300Mi\u21921Gi",
+    "manager.memory.request128Mi\u2192256Mi"
+  ],
+  "allOtherDeploymentSpecFieldsExact": true,
+  "matchingPDBs": 0,
+  "noDirectPodDelete": true,
+  "noHelmUpgrade": true,
+  "noSoftwareVersionUpgrade": true,
+  "noCRDOrRBACOrSecretMutationByOverride": true,
+  "newPod": {
+    "name": "rancher-turtles-controller-manager-c5c4f486-n6wt8",
+    "uid": "fd3060e2-7837-448a-98ab-ff308004bdb8",
+    "node": "k3s-wk-gpu2",
+    "image": "docker.io/rancher/turtles:v0.25.4",
+    "imageID": "docker.io/rancher/turtles@sha256:14e1c6c4cc6026e6cd99b4b6b711ded740b6883d53dd98cd55bf4424b4d1687b",
+    "ready": true,
+    "restartCount": 0,
+    "startedAt": "2026-11-17T14:19:10Z"
+  },
+  "memoryDeltaBytes": {
+    "limit": 759169024,
+    "request": 134217728
+  },
+  "ownerNormalizationOpen": true
+}

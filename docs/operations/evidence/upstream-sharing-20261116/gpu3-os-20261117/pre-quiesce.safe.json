@@ -1,0 +1,16 @@
+{
+  "observed": "2026-11-17T13:30:41.623509+00:00",
+  "node_uid": "7b3b5113-158d-4e0d-bd63-898a508fe806",
+  "boot_id": "27ca43ed-31d5-4944-b95f-a4eefd4a636f",
+  "selected_driver_pod": "cps-r615-driver-kjlhp",
+  "selected_driver_pod_uid": "6cf4ebd0-18f4-42b7-a7ea-c29eabf5a69c",
+  "untouched_peer_driver_pod_uids": {
+    "k3s-wk-gpu4": "dedb32d5-dc6f-4a3b-a53a-58b6fbd17f26",
+    "k3s-wk-gpu1": "4b747796-2077-457b-a3d2-fc23ea30caed"
+  },
+  "no_compute_clients": true,
+  "old_driver_label": "615.71.09",
+  "old_accelerator_label": "nvidia",
+  "os_nomination_absent": true,
+  "purpose": "Normal controller-owned shutdown of selected legacy driver and standalone MPS before OS; no new driver owner or forced module operation"
+}

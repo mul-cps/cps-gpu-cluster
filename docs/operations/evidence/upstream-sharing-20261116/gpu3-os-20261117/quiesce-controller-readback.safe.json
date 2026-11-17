@@ -1,0 +1,6 @@
+{
+  "observed": "2026-11-17T13:31:51.217185+00:00",
+  "selected_old_driver_and_standalone_mps_pods": [],
+  "peer_driver_pod_uids_unchanged": true,
+  "forced_module_unload_or_gpu_reset": false
+}

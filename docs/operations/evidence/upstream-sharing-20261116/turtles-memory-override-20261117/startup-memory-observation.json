@@ -1,0 +1,25 @@
+{
+  "at": "2026-11-17T14:21:26.717274+00:00",
+  "pod": {
+    "name": "rancher-turtles-controller-manager-c5c4f486-n6wt8",
+    "uid": "fd3060e2-7837-448a-98ab-ff308004bdb8",
+    "node": "k3s-wk-gpu2",
+    "image": "docker.io/rancher/turtles:v0.25.4",
+    "imageID": "docker.io/rancher/turtles@sha256:14e1c6c4cc6026e6cd99b4b6b711ded740b6883d53dd98cd55bf4424b4d1687b",
+    "ready": true,
+    "restartCount": 0,
+    "startedAt": "2026-11-17T14:19:10Z"
+  },
+  "nodeMemoryPressure": "False",
+  "cgroup": {
+    "containerID": "a178f43680fadf0a5911d6586a507dc7898e9689e35a9eea3383edf017ce353f",
+    "hostPID": 1585383,
+    "cgroup": "/sys/fs/cgroup/kubepods.slice/kubepods-burstable.slice/kubepods-burstable-podfd3060e2_7837_448a_98ab_ff308004bdb8.slice/cri-containerd-a178f43680fadf0a5911d6586a507dc7898e9689e35a9eea3383edf017ce353f.scope",
+    "files": {
+      "memory.current": "310726656",
+      "memory.peak": "317591552",
+      "memory.max": "1073741824",
+      "memory.events": "low 0\nhigh 0\nmax 0\noom 0\noom_kill 0\noom_group_kill 0\nsock_throttled 0"
+    }
+  }
+}

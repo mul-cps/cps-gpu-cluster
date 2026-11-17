@@ -1,0 +1,12 @@
+{
+  "at": "2026-11-17T14:19:09.371181+00:00",
+  "soleChanges": [
+    "manager.resources.limits.memory300Mi\u21921Gi",
+    "manager.resources.requests.memory128Mi\u2192256Mi"
+  ],
+  "allOtherFieldsExact": true,
+  "UID": "6ba25078-f262-499b-b90b-a54c4ea97686",
+  "resourceVersion": "407691926",
+  "image": "rancher/turtles:v0.25.4",
+  "matchingPDBs": []
+}

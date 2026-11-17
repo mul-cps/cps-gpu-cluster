@@ -1,0 +1,20 @@
+{
+  "status": "PASS",
+  "started_at": 1794929116.8273947,
+  "expected_boot_id": "3fe87b77-467a-4f6d-beed-47316853e181",
+  "fractiond_pod": "gpu-fractioning-fractiond-wnv4l",
+  "fractiond_pod_uid": "ffd1f1d0-90bc-43ea-b194-61d4d4836ac3",
+  "node": "k3s-wk-gpu3",
+  "node_uid": "7b3b5113-158d-4e0d-bd63-898a508fe806",
+  "node_ip": "10.21.0.40",
+  "ssh_target": "ubuntu@10.21.0.40",
+  "gpu_uuids": [
+    "GPU-0a9f2da8-59f5-1cb0-9ead-d9fce56b69e5",
+    "GPU-e7a56fad-ce29-f7d7-380a-3b5ae62a0b2a"
+  ],
+  "release_reference": "root-gpu3-fenced-hardware-20261117-boot3fe87",
+  "hang": "PASS",
+  "recovery_cards": 2,
+  "final_boot_id": "3fe87b77-467a-4f6d-beed-47316853e181",
+  "finished_at": 1794929164.6890972
+}

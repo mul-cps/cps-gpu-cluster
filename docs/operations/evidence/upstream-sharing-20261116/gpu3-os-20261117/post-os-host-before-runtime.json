@@ -1,0 +1,25 @@
+{
+  "node": "k3s-wk-gpu3",
+  "boot_id": "3fe87b77-467a-4f6d-beed-47316853e181",
+  "os": "Ubuntu 26.04.1 LTS",
+  "kernel": "7.0.0-43-generic",
+  "dpkg_audit_empty": true,
+  "apt_check_pass": true,
+  "reboot_marker_absent": true,
+  "mounts": {
+    "/": "/dev/sda1 ext4 ffe7eb40-94f7-473b-b336-935460126345 /",
+    "/var/lib/longhorn/": "/dev/sda1 ext4 ffe7eb40-94f7-473b-b336-935460126345 /",
+    "/mnt/nvme/scratch": "/dev/sdb ext4 7d6c1e7d-1031-4213-a3d8-5dff61b4a9c9 /mnt/nvme/scratch"
+  },
+  "fstab_sha256": "2436bae3284a71ac5fb049b072b380b70cb514a5e38c6e87bd643419086a5363",
+  "k3s_version": "k3s version v1.34.9+k3s1 (5f72184f)\ngo version go1.25.11",
+  "k3s_outer_sha256": "80eebb578e36a04ca460575fab419a3336b32c84205a0ae954ff16636181d9f7",
+  "timers": {
+    "apt-daily.timer": "ActiveState=active\nUnitFileState=enabled",
+    "apt-daily-upgrade.timer": "ActiveState=active\nUnitFileState=enabled"
+  },
+  "gpu_modules": [
+    "nouveau"
+  ],
+  "firmware_class_path": ""
+}
