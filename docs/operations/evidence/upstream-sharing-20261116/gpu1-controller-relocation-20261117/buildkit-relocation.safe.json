@@ -1,0 +1,20 @@
+{
+  "observed": "2026-11-17T22:17:40.767030+00:00",
+  "selectedOldPodAbsent": true,
+  "ordinaryEvictionNoForce": true,
+  "oldCachePVUID": "3552f88a-77a1-4e50-bdd5-3bc8a43894ac",
+  "oldCachePVRetainReleased": true,
+  "oldBackendPathStatExact": true,
+  "originalServiceSelectorRestored": true,
+  "temporaryPeerLabelRemoved": true,
+  "poolReadyPodUIDs": [
+    "31113e0a-e9ef-4681-8314-2a784a2c3779",
+    "b628a64c-f07f-47d1-bd8e-afcacaf17456"
+  ],
+  "poolNodes": [
+    "k3s-wk-gpu3",
+    "k3s-wk-gpu4"
+  ],
+  "originalDesiredReplicasPreserved": 2,
+  "oldCacheNotAutomaticallyReattached": true
+}

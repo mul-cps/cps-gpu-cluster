@@ -1,0 +1,54 @@
+{
+  "completed": "2026-11-17T22:59:44.546209+00:00",
+  "RootAcceptedPreservationHandoff": true,
+  "writers": {
+    "main": {
+      "name": "compute-gateway-6d7dd46f96-lwg26",
+      "uid": "a07310b9-07a3-4fca-8417-848f45dd6e53",
+      "node": "k3s-wk-gpu2",
+      "containers": [
+        {
+          "name": "approval-capture",
+          "CID": "containerd://de112faa5cba25980fc3f8cbef0fb1c3deca677cebeded0eecbf75d7eee4f696",
+          "imageID": "ghcr.io/mul-cps/cps-compute@sha256:09c535b59fa9188e1942b0285632a6f3a1b1ced48211028cf8b1f2036157a6d5"
+        },
+        {
+          "name": "gateway",
+          "CID": "containerd://6c8159a9ed23a87200e2ea46d042dd800210606d80663e58de9463a8391d02d7",
+          "imageID": "ghcr.io/mul-cps/cps-compute@sha256:6e647f2ade167c36a6649242ff23e7f74435d500ce41dbb7328b8dbdc8b7fd67"
+        }
+      ]
+    },
+    "native": {
+      "name": "native-lifecycle147-gateway-cdf475fb5-ztwk6",
+      "uid": "99ba0af1-ff2e-4012-a550-305ccd55f698",
+      "node": "k3s-wk-gpu2",
+      "containers": [
+        {
+          "name": "gateway",
+          "CID": "containerd://2ba916b03b48ab9671155112f9d9af54db532bd0d0388c6167a43917f9730a7d",
+          "imageID": "ghcr.io/mul-cps/cps-compute@sha256:2701165c10ed941016ad110bf02195de41ef000cd58efc111cb569ac611889d9"
+        }
+      ]
+    }
+  },
+  "bothReadySameGPU2": true,
+  "oldWritersAPIAndCRIGoneBeforeNewWriters": true,
+  "naturalDetachNoForce": true,
+  "sameAuthoritativePVC_PV_NoClone": true,
+  "all4DBSchemasEveryLogicalRowExactBeforeUnfence": true,
+  "all13ProtectedPrivateFilesBackedUp": true,
+  "all10MainPrivateFilesExactAfter": true,
+  "all23ConfigurationUIDsPreserved": true,
+  "other22StaticConfigurationHashesExact": true,
+  "soleArgoReaderScheduledTokenRotationExplicitlyValidated": true,
+  "originalBothServiceSpecsRestored": true,
+  "mainSourceReadAPIs200": true,
+  "mainCapture200SameRevisionLegacyEpoch503StaleACKPreserved": true,
+  "native147QualificationTLS": "Original dedicated certificate unchanged, expired Oct29 before handoff; TLS validation refuses it. Existing TCP Ready preserved; no fresh HTTPS qualification claimed, no verification bypass or renewal. Operator-only legacy path is outside upstream Source admission.",
+  "originalCronSpecRestored": true,
+  "noGPU1ComputeStateConsumers": true,
+  "controlledMainServiceFenceSeconds": 936.801786,
+  "controllerCutover60SecondGoalAchievedByThisEpisode": false,
+  "performanceLimit": "Maintenance included operator backup/diagnostics; window exceeds60s, final cutover qualification remains open."
+}

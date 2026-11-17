@@ -1,0 +1,22 @@
+{
+  "scope": "Sanitized controller/local-data relocation receipts; not worker or full-platform acceptance",
+  "source_receipts": "Root execution attestations copied byte-exact; current-controller metadata independently read",
+  "files": {
+    "README.md": "cc0e0db244f1e8c4edcda158f152ff4ebab93a3873031a0504489b0b5795d6ff",
+    "buildkit-relocation.safe.json": "1facce67a47fec32e931c12d3641bc7d07ce79aa70c52bfcb8dbd7dfd4d1ad53",
+    "cohort-handoff.safe.json": "003fee65ad9817ad0dbb1e086c674860103b6c0331cdd5403409045b20468cb1",
+    "cps-hub-preservation.safe.json": "01642b402525f42e5f600fab24a7969457886f67b93230a27de9310d37d81b83",
+    "cps-hub-writer-order-and-gap.safe.json": "29e54005b825fd6d3d049775ef538b26cd722a078e57cc322a193bfb5eeb770f",
+    "current-controllers-and-fences.safe.json": "4fba88b29dacb84d760dc732fe9fcf3468a747ae220024959b8b529d19d763ab",
+    "openwebui-cold-backup-metadata.safe.json": "53ce7397c397d8fe73a1ecc0a7bc6abc0dff451ba4d81e1e6e2db5c4a9306c1a",
+    "openwebui-owner-pin.safe.json": "870dd50288c1b2fef8fb7ae6702f92ae2ec7a6589bfbd550d87dd74789d7452d"
+  },
+  "copied_from_artifact_relative_paths": {
+    "cohort-handoff.safe.json": "gpu1-compute-state-handoff-20261117/root-operation-20261117T222412Z/root-cohort-handoff-complete.safe.json",
+    "cps-hub-preservation.safe.json": "gpu1-cps-hub-relocation-20261117/root-postmove-accepted.safe.json",
+    "cps-hub-writer-order-and-gap.safe.json": "gpu1-cps-hub-relocation-20261117/root-writer-order-and-health-gap.safe.json",
+    "buildkit-relocation.safe.json": "gpu1-localdata-pin-prep-20261117T214035Z/cache-preservation-service-gate/root-buildkit-relocation-complete.safe.json",
+    "openwebui-cold-backup-metadata.safe.json": "gpu1-localdata-pin-prep-20261117T214035Z/openwebui-owner-stop-prep/root-cold-data-backup.safe.json",
+    "openwebui-owner-pin.safe.json": "gpu1-localdata-pin-prep-20261117T214035Z/openwebui-owner-stop-prep/root-owner-pin.safe.json"
+  }
+}

@@ -1,0 +1,7 @@
+{
+  "observed": "2026-11-17T22:21:04.427210+00:00",
+  "revision": "550a835e57c52147858f2b89a36622878b8a5ea1",
+  "sourceDeltaOnlyOpenWebUIReplicaCount0": true,
+  "allOtherGitRepoFieldsExact": true,
+  "freshNoActivityEvidence": "task-session.safe.json/activity.safe.json at22:17"
+}

@@ -1,0 +1,24 @@
+{
+  "accepted_at": "2026-11-17T22:04:19.484355+00:00",
+  "RootDecision": "Accept expected documented JupyterHub service-startup deltas during this placement-only handoff",
+  "literal_all21_table_hashes_equal": false,
+  "remaining19_tables_and_schema_custody_roles_accounts_exact": true,
+  "exception_scope": {
+    "api_tokens": "Only new startup-generated idle-culler service3 token1435 with no user ownership/inherited existing service scope; activity timestamps on old1434 and metrics457 only",
+    "oauth_clients": "Only salted secret hash of existing service-cps-argo-ui client558; same identity/redirect and unchanged referencedSecretdata, installed add_client rehash behavior verified"
+  },
+  "no_user_tokens_added_or_removed": true,
+  "no_scope_role_membership_custody_changes": true,
+  "all9_SecretUID_type_data_hashes_exact": true,
+  "oldCRIStoppedBeforeNewContainerStarted": true,
+  "newNode": "k3s-wk-gpu2",
+  "samePVC_PV_UID_Bound": true,
+  "health200": true,
+  "freshProofs": [
+    "postmove-qualification.safe.json",
+    "startup-table-differences.safe.json",
+    "startup-row-identities.safe.json",
+    "installed-oauth-startup-rehash.safe.json",
+    "root-writer-order-and-health-gap.safe.json"
+  ]
+}

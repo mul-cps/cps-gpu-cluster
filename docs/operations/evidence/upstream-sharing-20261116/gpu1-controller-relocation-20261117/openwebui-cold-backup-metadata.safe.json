@@ -1,0 +1,16 @@
+{
+  "started": "2026-11-17T22:30:12.273036+00:00",
+  "ownerReplicas0": true,
+  "oldPodAbsent": true,
+  "noLivePodUsesDataPVC": true,
+  "samePVC_PV_UID_Bound": true,
+  "standalonePVCNotDeleted": true,
+  "nativeColdDataBackupOnlyNotVMCloneOrVMBackup": true,
+  "completed": "2026-11-17T22:31:26.757359+00:00",
+  "archiveBytes": 1257362446,
+  "sha256": "1246f573f919052542e51f289adba8eec27f0ad3ce001bd12cad6a2cb43b2804",
+  "archiveCatalogVerified": true,
+  "elapsedSeconds": 74.48406388703734,
+  "fullRestoreRehearsed": false,
+  "archivePrivate0600": true
+}

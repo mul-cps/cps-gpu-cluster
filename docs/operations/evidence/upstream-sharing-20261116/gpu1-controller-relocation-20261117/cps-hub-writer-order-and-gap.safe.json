@@ -1,0 +1,12 @@
+{
+  "observed": "2026-11-17T22:00:40.031022+00:00",
+  "newPodUID": "5ab5e642-07e2-44ab-a0a8-ef3a7f4e3fb9",
+  "newNode": "k3s-wk-gpu2",
+  "newCID": "containerd://fd144869a6be7fd74dd01a91fabc384d312569613febf1ee097e63429a1cff3f",
+  "newStartedAt": "2026-11-17T21:59:24Z",
+  "oldCRIFirstVerifiedStoppedUnix": 1794952749.8040898,
+  "oldCRIStoppedBeforeNewContainerStarted": true,
+  "sampledPublicHealthGapConservativeUpperSeconds": 28.643608331680298,
+  "healthSampleCount": 75,
+  "singleEpisodeNotGeneralCutoverQualification": true
+}
