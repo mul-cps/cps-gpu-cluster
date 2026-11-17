@@ -1,0 +1,26 @@
+{
+  "profile": "interactive-shared-5",
+  "namespace": "jupyterhub",
+  "pod": "jupyter-cps-ws-2114b8e3a15e8913cb98083bd5673e45--rtc",
+  "pod_uid": "80cb59aa-7a09-4064-94e3-13cca7877c30",
+  "node": "k3s-wk-gpu3",
+  "node_uid": "7b3b5113-158d-4e0d-bd63-898a508fe806",
+  "boot_id": "1fcf5b3e-c7c6-4d47-9a28-88a9a36be95a",
+  "runtime_class": "nvidia",
+  "containers": [
+    {
+      "name": "notebook",
+      "image_id": "ghcr.io/mul-cps/cps-jupyter-notebook@sha256:4a03fe381c6f32f8e056ac05aad27abc64defa2f63128c53511a24d37fb5c194",
+      "container_id": "containerd://f9e2db80982937b8dbb4b9afe4c0aedfa860b18b0e6a4d5e6156686ce09fe9a6",
+      "restarts": 0
+    }
+  ],
+  "assignment_annotations": {
+    "nvidia.com/container.notebook.gpu-memory.limit": "5120Mi",
+    "nvidia.com/container.notebook.gpu-memory.request": "5120Mi",
+    "nvidia.com/container.notebook.gpus.devices": "k8s.device-plugin.nvidia.com/gpu=GPU-0a9f2da8-59f5-1cb0-9ead-d9fce56b69e5",
+    "required-plugins.noderesource.dev/container.notebook": "[\"gpu-fractioning\"]"
+  },
+  "ready_at": "2026-11-17T19:28:03Z",
+  "start_to_pod_ready_seconds": 11.636163234710693
+}

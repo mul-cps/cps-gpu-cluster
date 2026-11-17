@@ -1,0 +1,106 @@
+{
+  "observed": "2026-11-17T19:27:27.009167+00:00",
+  "approvedPlanSHA256": "18891cb208f054b9b973c244f4e831a38e84b53c5151613eaba9d3d89a1e814f",
+  "before": "/home/bjoern/artifacts/cps-upstream-sharing-20261116/gpu3-source-qa-epoch3-batch-20261117/custody-reconstruction-final-20261117T191843Z",
+  "after": "/home/bjoern/artifacts/cps-upstream-sharing-20261116/gpu3-source-qa-epoch3-batch-20261117/custody-postcommit-20261117T192417Z",
+  "allSchemasExactAndMatchApprovedPlan": true,
+  "allBeforeTablesMatchApprovedRootLivePlan": true,
+  "allUnrelatedTablesExactIncludingGrantsAndNativeApprovals": true,
+  "nativeBackupAuditPrefixExact": true,
+  "rootLivePlanAuditPrefixExact": true,
+  "sameGatewayUIDAndContainerIDs": true,
+  "tables": {
+    "main.reservation": {
+      "beforeRows": 1,
+      "afterRows": 0,
+      "removed": 1,
+      "added": 0,
+      "beforeLogicalSHA256": "da0e6e0bb2a2aef5f9dc9d0ecd196fa4280d3152cc81c38aff0b8646d939a2fd",
+      "afterLogicalSHA256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    "main.reservation_binding": {
+      "beforeRows": 1,
+      "afterRows": 0,
+      "removed": 1,
+      "added": 0,
+      "beforeLogicalSHA256": "cd73157b948d03e3a5cb29c04c2e81bc1a479aa0da64d9d9daa161ef283a59a2",
+      "afterLogicalSHA256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    "authority.grant_record": {
+      "beforeRows": 58,
+      "afterRows": 58,
+      "removed": 0,
+      "added": 0,
+      "beforeLogicalSHA256": "bf8ce166cbb613969afcc4f2b2ae00d05497fa30b6686291c6d170461c47108e",
+      "afterLogicalSHA256": "bf8ce166cbb613969afcc4f2b2ae00d05497fa30b6686291c6d170461c47108e"
+    },
+    "authority.native_group_approval_head": {
+      "beforeRows": 1,
+      "afterRows": 1,
+      "removed": 0,
+      "added": 0,
+      "beforeLogicalSHA256": "ea12b40353720be054719ff6d529701eff820cad47a3edd08c48f1fe036bb2b8",
+      "afterLogicalSHA256": "ea12b40353720be054719ff6d529701eff820cad47a3edd08c48f1fe036bb2b8"
+    },
+    "authority.native_group_approval_head_cdbe7a3426f70c3650c90eb550b93f56b25c3216c68b39c349ab20621f7e446f": {
+      "beforeRows": 1,
+      "afterRows": 1,
+      "removed": 0,
+      "added": 0,
+      "beforeLogicalSHA256": "ac5a6163601cf4d7a9c525830c801a07c581c95c6a4db7db3ad54789287a2914",
+      "afterLogicalSHA256": "ac5a6163601cf4d7a9c525830c801a07c581c95c6a4db7db3ad54789287a2914"
+    },
+    "authority.native_group_approval_revision": {
+      "beforeRows": 10,
+      "afterRows": 10,
+      "removed": 0,
+      "added": 0,
+      "beforeLogicalSHA256": "77eb3e2f219e129ba588df22d4e5bd8192723943984f37fe95a4408b7b2a792e",
+      "afterLogicalSHA256": "77eb3e2f219e129ba588df22d4e5bd8192723943984f37fe95a4408b7b2a792e"
+    },
+    "authority.native_group_approval_revision_cdbe7a3426f70c3650c90eb550b93f56b25c3216c68b39c349ab20621f7e446f": {
+      "beforeRows": 54,
+      "afterRows": 54,
+      "removed": 0,
+      "added": 0,
+      "beforeLogicalSHA256": "6246fad1c0e7f181d97560fe914e6c1fe56fae944463dd29233ff3bc4c1a1fa8",
+      "afterLogicalSHA256": "6246fad1c0e7f181d97560fe914e6c1fe56fae944463dd29233ff3bc4c1a1fa8"
+    },
+    "authority.storage_lifecycle": {
+      "beforeRows": 21,
+      "afterRows": 21,
+      "removed": 0,
+      "added": 0,
+      "beforeLogicalSHA256": "63ca4f26a811ad0505098ed2ff35673baa591ffdf2891bf1b53aadbadd309e67",
+      "afterLogicalSHA256": "63ca4f26a811ad0505098ed2ff35673baa591ffdf2891bf1b53aadbadd309e67"
+    },
+    "authority.workspace_record": {
+      "beforeRows": 21,
+      "afterRows": 21,
+      "removed": 0,
+      "added": 0,
+      "beforeLogicalSHA256": "3f446d761bf387842fa581e172cbf385cdc175ddd478088459e5dcda7768d55b",
+      "afterLogicalSHA256": "3f446d761bf387842fa581e172cbf385cdc175ddd478088459e5dcda7768d55b"
+    }
+  },
+  "appendedAuditCount": 237,
+  "sameAttemptDenialCount": 235,
+  "exactOperatorAudit": {
+    "seq": 9202,
+    "time": "2026-11-17T19:23:44.032393+00:00",
+    "outcome": "operator_reconstructed_upstream_custody",
+    "actor": "operator:root-cps-gpu3-created-custody-20261117",
+    "historicalSource": "operator-reconstructed-historical-not-live-observe",
+    "leaseReleasedByOperator": false
+  },
+  "normalFinalizerReleased": true,
+  "normalReleaseAudit": [
+    {
+      "seq": 9203,
+      "time": "2026-11-17T19:23:45.458444+00:00",
+      "actor": "cps",
+      "outcome": "success"
+    }
+  ],
+  "sourceOrAuthorityWritesByVerifier": false
+}

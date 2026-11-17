@@ -1,0 +1,23 @@
+{
+  "at": "2026-11-17T19:24:36.263669+00:00",
+  "lease": {
+    "workspace": "upstream-registry-qualification-20261116-cps",
+    "active": false,
+    "attempt": null
+  },
+  "hub_marker": {
+    "owner_id": 31,
+    "spawner_present": true,
+    "read_only": true,
+    "spawner_id": 73,
+    "server_none": true,
+    "compute": {
+      "attempt": null,
+      "workspace": null,
+      "profile": null
+    },
+    "marker_type": "NoneType",
+    "generation": null,
+    "marker_cleared": true
+  }
+}

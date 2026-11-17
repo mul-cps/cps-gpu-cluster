@@ -1,0 +1,25 @@
+{
+  "image": "sha256:6e647f2ade167c36a6649242ff23e7f74435d500ce41dbb7328b8dbdc8b7fd67",
+  "uid": 10001,
+  "network": "none",
+  "payload_sha256": "af97fe9a21e8dea23cfde84b9d092a795fda8747d2608ce5ee4116e01ae29a07",
+  "external_gate": "synthetic offline only, not live authority",
+  "native_backup_hashes": {
+    "reservations": "9fd67d472341f88a1d77403bc3f770ff5e7170d8ab30a829e53744d335e22489",
+    "control": "2a2ce688450982517638fbda8cde0b4a4084d8e7e9da0b7f10fbca774d6a3228"
+  },
+  "original_backups_unchanged": true,
+  "existing_method_result_equivalent": true,
+  "normal_healthy_node_guard_unchanged": true,
+  "operator_lease_release_or_table_deletes": false,
+  "normal_http_release_tested_live": false,
+  "results": {
+    "method_equivalence_and_healthy_guard": "custody only; every unrelated table/old audit preserved",
+    "unknown_mapping": "refused",
+    "exact_denial_tail": "custody only; every unrelated table/old audit preserved",
+    "unrelated_audit_tail": "refused/rollback",
+    "native_approval_drift": "refused/rollback",
+    "audit_tamper_rollback": "refused/rollback",
+    "postcommit_output_unknown": "UNKNOWN with audit+custody committed, lease still held"
+  }
+}

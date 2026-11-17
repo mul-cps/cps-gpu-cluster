@@ -1,0 +1,22 @@
+{
+  "kind": "one-case-operator-historical-custody-only",
+  "payload_sha256": "af97fe9a21e8dea23cfde84b9d092a795fda8747d2608ce5ee4116e01ae29a07",
+  "source_files": {
+    "src/cps_compute/historical_custody_recovery.py": "af97fe9a21e8dea23cfde84b9d092a795fda8747d2608ce5ee4116e01ae29a07",
+    "tests/test_historical_custody_recovery.py": "f98ca7354ca3abab0347c1c6173d265eb32ee6badfc8a334e1b84f005ffc8343",
+    "docs/operator-historical-custody-reconstruction-20261117.md": "02018cbfe35260725483671c32a31f0d545b2ee5c76615e662f27fd02e8d39c8"
+  },
+  "artifacts": {
+    "normal-release-once.py": "7d9e366a5ba730a0ddc7e8929c201ce656ca5de8fe826c1f927607dc04a43719",
+    "run-native-rehearsal.py": "670962da71fc7efbbde5fe10eeb2bca332d1c018af1d7490c47a0148afee91e4",
+    "invoke-native-rehearsal.py": "04189d37c4e162eb9eba9527cccca07407863990c2d910b6bb9b9a609a8d5cea",
+    "native-rehearsal.safe.json": "344746fa9a8955245e332e84b15036616bce4d58adf2dd21ae9316ed158e4351"
+  },
+  "source_tests_passed": 96,
+  "full_project_baseline_collection_errors": "same unchanged5nativepool imports as priorcase; not a fullsuite PASS",
+  "operator_deletes_or_releases": false,
+  "normal_modules_or_image_changed": false,
+  "live_execution": false,
+  "source_commit": "61617351f97d5e75b96c100c9fa39d2adc14ea82",
+  "source_base": "6674e4bb1e7eb2955a16ad693ce185ec5324f703"
+}
