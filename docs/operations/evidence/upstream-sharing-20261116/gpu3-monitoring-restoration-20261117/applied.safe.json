@@ -1,0 +1,18 @@
+{
+  "at": "2026-11-17T16:05:47.216656+00:00",
+  "uid": "8863e992-53e9-4b08-b6e3-07006b989762",
+  "generation": 4,
+  "replicas": 1,
+  "onlyAddedToleration": {
+    "key": "cps.unileoben.ac.at/maintenance",
+    "operator": "Equal",
+    "value": "upstream-pilot",
+    "effect": "NoSchedule"
+  },
+  "allOtherSpecFieldsUnchanged": true,
+  "originalPVandPVCUIDsRetained": true,
+  "GPU3MaintenanceRetained": true,
+  "GPU3QualifiedLabelAbsent": true,
+  "temporaryHelmOwnerConfigDrift": true,
+  "routineReverseRequiredAfterMaintenance": true
+}

@@ -1,0 +1,127 @@
+{
+  "at": "2026-11-17T16:01:58.025086+00:00",
+  "PromUID": "8863e992-53e9-4b08-b6e3-07006b989762",
+  "resourceVersion": "407648209",
+  "generation": 3,
+  "oldReplicas": 0,
+  "newReplicas": 1,
+  "pausedUnchangedFalse": true,
+  "onlyAddedToleration": {
+    "key": "cps.unileoben.ac.at/maintenance",
+    "operator": "Equal",
+    "value": "upstream-pilot",
+    "effect": "NoSchedule"
+  },
+  "originalTolerations": [
+    {
+      "effect": "NoSchedule",
+      "key": "cattle.io/os",
+      "operator": "Equal",
+      "value": "linux"
+    }
+  ],
+  "allOtherSpecFieldsExact": true,
+  "serverDryrunPassed": true,
+  "liveApplied": false,
+  "node": {
+    "uid": "7b3b5113-158d-4e0d-bd63-898a508fe806",
+    "bootID": "1fcf5b3e-c7c6-4d47-9a28-88a9a36be95a",
+    "unschedulable": false,
+    "maintenanceOnlyTaint": true,
+    "GPUqualificationAbsent": true
+  },
+  "STS": {
+    "uid": "ead80961-fc96-441a-bdb6-c03e4e830636",
+    "replicas": 0,
+    "retention": {
+      "whenDeleted": "Retain",
+      "whenScaled": "Retain"
+    },
+    "grace": 600,
+    "podSecurityContext": {
+      "fsGroup": 2000,
+      "runAsGroup": 2000,
+      "runAsNonRoot": true,
+      "runAsUser": 1000,
+      "seccompProfile": {
+        "type": "RuntimeDefault"
+      }
+    },
+    "imageRefs": [
+      {
+        "name": "prometheus",
+        "image": "docker.io/rancher/prom-prometheus:v3.5.0"
+      },
+      {
+        "name": "config-reloader",
+        "image": "docker.io/rancher/mirrored-prometheus-operator-prometheus-config-reloader:v0.80.1"
+      },
+      {
+        "name": "prometheus-proxy",
+        "image": "rancher/mirrored-library-nginx:1.27.2-alpine"
+      }
+    ]
+  },
+  "storage": {
+    "PVCuid": "aa098e20-3601-4edc-8fca-c0a444569814",
+    "PVuid": "4496a4b6-7aef-4956-a5f3-32901ea9ad37",
+    "claimName": "prometheus-rancher-monitoring-prometheus-db-prometheus-rancher-monitoring-prometheus-0",
+    "volumeName": "pvc-aa098e20-3601-4edc-8fca-c0a444569814",
+    "path": "/var/lib/rancher/k3s/storage/pvc-aa098e20-3601-4edc-8fca-c0a444569814_cattle-monitoring-system_prometheus-rancher-monitoring-prometheus-db-prometheus-rancher-monitoring-prometheus-0",
+    "claimSize": "50Gi",
+    "PVreclaimPolicy": "Delete",
+    "Bound": true,
+    "PVnodeAffinity": {
+      "required": {
+        "nodeSelectorTerms": [
+          {
+            "matchExpressions": [
+              {
+                "key": "kubernetes.io/hostname",
+                "operator": "In",
+                "values": [
+                  "k3s-wk-gpu3"
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    }
+  },
+  "services": [
+    {
+      "name": "prometheus-operated",
+      "uid": "62b30c7d-f2f1-475d-b888-106ecb0c44c9",
+      "ports": [
+        {
+          "name": "http-web",
+          "port": 9090,
+          "targetPort": "http-web"
+        }
+      ]
+    },
+    {
+      "name": "rancher-monitoring-prometheus",
+      "uid": "aaf785fa-1ede-43ec-b1e6-11045f2a6cc9",
+      "ports": [
+        {
+          "name": "http-web",
+          "port": 9090,
+          "targetPort": 8081
+        },
+        {
+          "name": "reloader-web",
+          "port": 8080,
+          "targetPort": "reloader-web"
+        }
+      ]
+    }
+  ],
+  "ownerHelm": {
+    "meta.helm.sh/release-name": "rancher-monitoring",
+    "meta.helm.sh/release-namespace": "cattle-monitoring-system"
+  },
+  "originalRestoredSpecSHA256": "be6682186153f6630534c0bff4e1af74a6816df5b640498f95027f62dfae0c9c",
+  "restoredWithTemporaryTolerationSpecSHA256": "f959c7fe80d33e8166ac255801c93f2b32f9a163db346c655f9502ae6e9e586b"
+}

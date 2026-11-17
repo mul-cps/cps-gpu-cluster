@@ -1,0 +1,60 @@
+{
+  "at": "2026-11-17T16:07:44.122908+00:00",
+  "CR": {
+    "uid": "8863e992-53e9-4b08-b6e3-07006b989762",
+    "generation": 4,
+    "onlyExpectedSpecChanges": true
+  },
+  "pod": {
+    "uid": "bd40185e-af82-42d4-92df-533d4477d077",
+    "node": "k3s-wk-gpu3",
+    "ready": "True",
+    "grace": 600,
+    "claimUID": "aa098e20-3601-4edc-8fca-c0a444569814",
+    "PVUID": "4496a4b6-7aef-4956-a5f3-32901ea9ad37",
+    "containers": [
+      {
+        "name": "config-reloader",
+        "ready": true,
+        "restarts": 0,
+        "containerID": "containerd://509bcb09cca3e8466cd9a85a2093895e130d5b69eca120efa07fc56ad661cedb",
+        "imageID": "docker.io/rancher/mirrored-prometheus-operator-prometheus-config-reloader@sha256:7d5114f24fdaaf266b5e2fab3feed2c9769342ca73c5152ecfbc553d76a5dc54"
+      },
+      {
+        "name": "prometheus",
+        "ready": true,
+        "restarts": 0,
+        "containerID": "containerd://3bc648062231a38ffdec29882bd6591e2c4b73888c41aa6e497f63a921058b86",
+        "imageID": "docker.io/rancher/prom-prometheus@sha256:63805ebb8d2b3920190daf1cb14a60871b16fd38bed42b857a3182bc621f4996"
+      },
+      {
+        "name": "prometheus-proxy",
+        "ready": true,
+        "restarts": 0,
+        "containerID": "containerd://d9ba6a3c524060603200b49de70ded62615fc4d66eb891bb5bf767b08b490e5b",
+        "imageID": "docker.io/rancher/mirrored-library-nginx@sha256:8e9776e1c28f087ed4a5e1b8e8609a0a3a2317fee57f6d2dfe534941c63b263b"
+      }
+    ]
+  },
+  "STS": {
+    "uid": "ead80961-fc96-441a-bdb6-c03e4e830636",
+    "replicas": 1,
+    "retention": {
+      "whenDeleted": "Retain",
+      "whenScaled": "Retain"
+    }
+  },
+  "storageSpecsExact": true,
+  "nodeFence": {
+    "bootID": "1fcf5b3e-c7c6-4d47-9a28-88a9a36be95a",
+    "maintenanceRetained": true,
+    "qualificationAbsent": true
+  },
+  "serviceEndpoints": [
+    {
+      "ready": true,
+      "targetUID": "bd40185e-af82-42d4-92df-533d4477d077"
+    }
+  ],
+  "readOnly": true
+}

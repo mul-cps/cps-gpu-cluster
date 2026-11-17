@@ -1,0 +1,20 @@
+{
+  "checkedAt": "2026-11-17T16:04:38.792904+00:00",
+  "PVUIDExact": true,
+  "PVCUIDExact": true,
+  "PVSpecExact": true,
+  "PVCSpecExact": true,
+  "pathStat": {
+    "bootID": "1fcf5b3e-c7c6-4d47-9a28-88a9a36be95a",
+    "host": "k3s-wk-gpu3",
+    "inode": 4217182,
+    "device": 2049,
+    "uid": 0,
+    "gid": 2000,
+    "mode": "2777",
+    "source": "/dev/sda1",
+    "filesystem": "ext4",
+    "filesystemUUID": "ffe7eb40-94f7-473b-b336-935460126345"
+  },
+  "statReadOnlyNoDataContentsRead": true
+}

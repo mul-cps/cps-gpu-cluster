@@ -1,8 +1,8 @@
 {
-  "as_of": "2026-11-17T16:00:44.191209+00:00",
+  "as_of": "2026-11-17T16:09:31.556933+00:00",
   "worker": "k3s-wk-gpu2",
   "worker_acceptance": true,
-  "phase": "GPU2 accepted; GPU3 hardware, storage, coldboot and stock KAI passed; CPS/CIT Source acceptance and monitoring restoration pending",
+  "phase": "GPU2 accepted; GPU3 hardware, storage, coldboot, stock KAI and monitoring restored; real CPS/CIT Source acceptance pending",
   "gpu_eligibility": "qualified and schedulable; legacy accelerator fence retained; QA grants revoked; old OS nomination cleared",
   "driver": {
     "version": "620.70.06",
@@ -45,7 +45,7 @@
     "Existing real bjoern shared-gpu-lab5GiB SourceStart200/Ready onGPU2 with2b2 policy and current member only; nonroot64MiB CUDA fill/sync/free; confirmed normalstop/Podgone/leaseinactive/shares0/temporarycredentialclosed. Original neutral identity/receipt and both PVCs preserved through reviewed operator-only recovery and actual Hub restart."
   ],
   "remaining": [
-    "GPU3 real CPS/CIT Source lifecycle acceptance and monitoring restoration; hardware, storage, coldboot/NRI/CPU and full stock KAI placement passed. GPU1 thenGPU4 remain unchanged until explicit serial promotion.",
+    "GPU3 real CPS/CIT Source lifecycle acceptance and routine removal of the temporary Prometheus toleration after maintenance; hardware/storage/coldboot/KAI passed and Prometheus/72 targets restored. GPU1 thenGPU4 remain unchanged until explicit serial promotion.",
     "Genuine CIT nonadministrator IdP/browser/two-human access; QA aliases have no SSO identity and cannot prove this gate.",
     "Remaining original advanced-feature, ordinary/distributed, startup/defrag, teaching, controllercutover and matching restore gates.",
     "Turtles same-image memory-only override is healthy; Helm revision2 still records the hardcoded old memory values. Future owner-chart normalization/replay is explicitly documented, no false Helm convergence claim."
@@ -158,9 +158,9 @@
     }
   ],
   "gpu3_maintenance": {
-    "prometheus_replicas": 0,
+    "prometheus_replicas": 1,
     "prometheus_local_pv_retained": true,
-    "monitoring_gap_open": true,
+    "monitoring_gap_open": false,
     "old_selected_driver_and_mps_pods_absent": true,
     "peer_driver_pod_uids_unchanged": true,
     "os_nominated": false,
@@ -170,7 +170,12 @@
       "Migrated Turtles manager exceeded old300Mi cap; same-image limit1Gi/request256Mi restored readiness, with explicit Helm owner drift."
     ],
     "credential_containment": "Old bound virtual DNS token rejected after ordinary exact-Pod replacement; vCluster subsequently removed by user request.",
-    "active_storage": "All17 attached volumes healthy with3 current remoteRW outsideGPU3; original selected data disks preserved."
+    "active_storage": "All17 attached volumes healthy with3 current remoteRW outsideGPU3; original selected data disks preserved.",
+    "monitoring_gap_recorded": true,
+    "prometheus_ready": true,
+    "prometheus_temporary_maintenance_toleration": true,
+    "prometheus_routine_toleration_cleanup_pending": true,
+    "monitoring_evidence": "gpu3-monitoring-restoration-20261117/restored-observation.safe.json"
   },
   "gpu3_os_operation": {
     "operation": "gpu3-ubuntu-20261116",
