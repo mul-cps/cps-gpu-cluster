@@ -1,0 +1,46 @@
+{
+  "state": {
+    "status": "os-verified",
+    "operation": "gpu1-ubuntu-20261117",
+    "node": "k3s-wk-gpu1",
+    "target": "26.04.1",
+    "boot_id": "e5a3e0f3-6463-49cd-9947-6a2ffb357437",
+    "payload_sha256": "9fdc8214a86c822d6a68c8b646ce39a8f5dba4cca9d456097b15bdd190ca72d2",
+    "updated_at": 1794959726.9409187,
+    "verified_boot_id": "b82de564-00cd-4596-a6cf-b4c618e79583"
+  },
+  "boot": "b82de564-00cd-4596-a6cf-b4c618e79583",
+  "os": "Ubuntu 26.04.1 LTS",
+  "kernel": "7.0.0-43-generic",
+  "mounts": {
+    "/": {
+      "target": "/",
+      "source": "/dev/sda1",
+      "fstype": "ext4",
+      "uuid": "ffe7eb40-94f7-473b-b336-935460126345",
+      "options": "rw,relatime,discard,errors=remount-ro,commit=30"
+    },
+    "/mnt/nvme/scratch": {
+      "target": "/mnt/nvme/scratch",
+      "source": "/dev/sdb",
+      "fstype": "ext4",
+      "uuid": "730ffc3a-3d42-41b7-a2b8-f7237c0f6cd0",
+      "options": "rw,relatime"
+    }
+  },
+  "storageRWProbes": {
+    "/": {
+      "exclusiveWriteFsyncReadCleanup": true
+    },
+    "/mnt/nvme/scratch": {
+      "exclusiveWriteFsyncReadCleanup": true
+    }
+  },
+  "fstabSha256": "2436bae3284a71ac5fb049b072b380b70cb514a5e38c6e87bd643419086a5363",
+  "dpkgAuditClean": true,
+  "aptCheck": 0,
+  "rebootRequired": false,
+  "k3sAgent": "active",
+  "k3sOuterSha256": "80eebb578e36a04ca460575fab419a3336b32c84205a0ae954ff16636181d9f7",
+  "observed": "2026-11-17T23:55:27.636682+00:00"
+}

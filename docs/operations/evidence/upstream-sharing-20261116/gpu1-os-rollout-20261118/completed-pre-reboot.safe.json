@@ -1,0 +1,37 @@
+{
+  "boot": "e5a3e0f3-6463-49cd-9947-6a2ffb357437",
+  "state": {
+    "status": "reboot-required",
+    "operation": "gpu1-ubuntu-20261117",
+    "node": "k3s-wk-gpu1",
+    "target": "26.04.1",
+    "boot_id": "e5a3e0f3-6463-49cd-9947-6a2ffb357437",
+    "payload_sha256": "9fdc8214a86c822d6a68c8b646ce39a8f5dba4cca9d456097b15bdd190ca72d2",
+    "updated_at": 1794959401.9464967
+  },
+  "unit": "ActiveState=inactive\nSubState=dead\nResult=success\nExecMainStatus=0\n",
+  "osRelease": "PRETTY_NAME=\"Ubuntu 26.04.1 LTS\"\nNAME=\"Ubuntu\"\nVERSION_ID=\"26.04\"\nVERSION=\"26.04.1 LTS (Resolute Raccoon)\"\nVERSION_CODENAME=resolute\nID=ubuntu\nID_LIKE=debian\nHOME_URL=\"https://www.ubuntu.com/\"\nSUPPORT_URL=\"https://help.ubuntu.com/\"\nBUG_REPORT_URL=\"https://bugs.launchpad.net/ubuntu/\"\nPRIVACY_POLICY_URL=\"https://www.ubuntu.com/legal/terms-and-policies/privacy-policy\"\nUBUNTU_CODENAME=resolute\nLOGO=ubuntu-logo\n",
+  "mounts": {
+    "/": {
+      "target": "/",
+      "source": "/dev/sda1",
+      "fstype": "ext4",
+      "uuid": "ffe7eb40-94f7-473b-b336-935460126345",
+      "options": "rw,relatime,discard,errors=remount-ro,commit=30"
+    },
+    "/mnt/nvme/scratch": {
+      "target": "/mnt/nvme/scratch",
+      "source": "/dev/sdb",
+      "fstype": "ext4",
+      "uuid": "730ffc3a-3d42-41b7-a2b8-f7237c0f6cd0",
+      "options": "rw,relatime"
+    }
+  },
+  "fstabSha256": "2436bae3284a71ac5fb049b072b380b70cb514a5e38c6e87bd643419086a5363",
+  "kernelPackageVersion": "7.0.0-43.43",
+  "dpkgAuditClean": true,
+  "aptCheck": 0,
+  "locksClear": true,
+  "rebootRequired": true,
+  "observed": "2026-11-17T23:51:21.143447+00:00"
+}

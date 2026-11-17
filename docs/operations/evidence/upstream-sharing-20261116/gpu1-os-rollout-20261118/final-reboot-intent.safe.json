@@ -1,0 +1,7 @@
+{
+  "observed": "2026-11-17T23:52:12.573054+00:00",
+  "operation": "gpu1-ubuntu-20261117",
+  "oldBoot": "e5a3e0f3-6463-49cd-9947-6a2ffb357437",
+  "onlyWorker": "k3s-wk-gpu1",
+  "force": false
+}

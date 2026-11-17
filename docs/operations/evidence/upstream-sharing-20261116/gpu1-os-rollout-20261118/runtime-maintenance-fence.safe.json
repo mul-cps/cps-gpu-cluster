@@ -1,0 +1,27 @@
+{
+  "observed": "2026-11-17T23:56:17.965634+00:00",
+  "nodeUID": "b13bebdd-60c2-4bbd-8fce-a39312ec264d",
+  "boot": "b82de564-00cd-4596-a6cf-b4c618e79583",
+  "nodeInfo": {
+    "architecture": "amd64",
+    "bootID": "b82de564-00cd-4596-a6cf-b4c618e79583",
+    "containerRuntimeVersion": "containerd://2.2.5-k3s2",
+    "kernelVersion": "7.0.0-43-generic",
+    "kubeProxyVersion": "",
+    "kubeletVersion": "v1.34.9+k3s1",
+    "machineID": "6dd83db65fb84f268e0397fd37e25204",
+    "operatingSystem": "linux",
+    "osImage": "Ubuntu 26.04.1 LTS",
+    "systemUUID": "6dd83db6-5fb8-4f26-8e03-97fd37e25204"
+  },
+  "cordoned": true,
+  "maintenanceTaint": {
+    "key": "cps.unileoben.ac.at/maintenance",
+    "value": "upstream-pilot",
+    "effect": "NoSchedule"
+  },
+  "OSNominationRemoved": true,
+  "GPUQualificationAbsent": true,
+  "onlyApprovedSpecDelta": true,
+  "releaseReference": "root-post-release-os-verified.safe.json"
+}

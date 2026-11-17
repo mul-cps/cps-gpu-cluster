@@ -1,9 +1,9 @@
 {
-  "as_of": "2026-11-17T23:41:26.225277+00:00",
+  "as_of": "2026-11-17T23:58:14.684812+00:00",
   "worker": "k3s-wk-gpu2",
   "worker_acceptance": true,
-  "phase": "GPU2/GPU3 fixed-profile workers accepted; GPU1 fully drained and Ubuntu26.04.1 host upgrade running through SUC; GPU4 unchanged",
-  "gpu_eligibility": "GPU2/GPU3 qualified, uncordoned, maintenance-taint free, two GPUs each; GPU1/GPU4 retain legacy workers and are not qualified for new upstream shared placement.",
+  "phase": "GPU2/GPU3 fixed-profile workers accepted; GPU1 Ubuntu26.04.1 host verified on kernel7.0.0-43, selected runtime transfer in progress; GPU4 unchanged",
+  "gpu_eligibility": "GPU2/GPU3 qualified for new/restarted upstream shared placement. GPU1 remains quarantined for runtime and worker qualification; GPU4 remains an unqualified legacy worker.",
   "driver": {
     "version": "620.70.06",
     "image": "sha256:c3b71557aa17df43faad5a2661d81f1025ba355ac3adf784096de12cd2ef3e73",
@@ -182,21 +182,20 @@
         },
         {
           "effect": "NoSchedule",
-          "key": "cps.unileoben.ac.at/os-upgrade",
-          "value": "gpu1-ubuntu-20261117"
+          "key": "cps.unileoben.ac.at/maintenance",
+          "value": "upstream-pilot"
         }
       ],
-      "os": "Ubuntu 24.04.5 LTS",
-      "kernel": "6.8.0-149-generic",
-      "boot_id": "e5a3e0f3-6463-49cd-9947-6a2ffb357437",
+      "os": "Ubuntu 26.04.1 LTS",
+      "kernel": "7.0.0-43-generic",
+      "boot_id": "b82de564-00cd-4596-a6cf-b4c618e79583",
       "qualified": null,
       "accelerator": "r615-canary-maintenance",
       "gpu_capacity": "0",
       "upgrade_labels_including_history": {
-        "cps.unileoben.ac.at/os-upgrade": "gpu1-ubuntu-20261117",
         "plan.upgrade.cattle.io/cps-ubuntu-gpu1-ubuntu-20261117": "5a7bfc4aa1ce82fde37054c385bb45c1f734d4495a7fab615c431dd2"
       },
-      "maintenance_tainted": false
+      "maintenance_tainted": true
     },
     {
       "name": "k3s-wk-gpu2",
@@ -370,9 +369,9 @@
   "gpu3_worker_receipt_sha256": "94c2a18c384f776728fbf1da1c7a84c283e542b59676e3b8645632c45b39a0cf",
   "gpu1_maintenance": {
     "cordoned": true,
-    "maintenance_tainted": false,
+    "maintenance_tainted": true,
     "drain_started": true,
-    "OS_nominated": true,
+    "OS_nominated": false,
     "availability_floor_prepared": true,
     "controller_and_localdata_gates_pending": false,
     "GPU3_acceptance_precedes_this_window": true,
@@ -390,16 +389,19 @@
     "openwebui_restore_rehearsed": false,
     "full_drain_pending": false,
     "evidence": "gpu1-controller-relocation-20261117/README.md",
-    "OS_upgrade_tainted": true,
+    "OS_upgrade_tainted": false,
     "full_drain_passed": true,
     "prerequisites_completed": true,
     "prerequisite_reboot_verified": true,
-    "release_operation_status": "running",
+    "release_operation_status": "os-verified",
     "release_operation": "gpu1-ubuntu-20261117",
     "release_operation_evidence": "gpu1-os-rollout-20261118/README.md",
     "OS_acceptance": false,
     "worker_acceptance": false,
-    "expected_storage_degraded_with_two_current_remote_RW": true
+    "expected_storage_degraded_with_two_current_remote_RW": true,
+    "host_OS_verified": true,
+    "OS_workload_storage_acceptance_pending": true,
+    "runtime_installation_in_progress": true
   },
   "controller_cutover": {
     "accepted_preservation_handoff": true,
@@ -421,25 +423,19 @@
     "no_legacy_revival_or_ACK_rewrite": true
   },
   "gpu1_os_operation": {
-    "observed": "2026-11-17T23:41:26.225277+00:00",
+    "observed": "2026-11-17T23:58:14.684812+00:00",
     "state": {
-      "status": "running",
+      "status": "os-verified",
       "operation": "gpu1-ubuntu-20261117",
       "node": "k3s-wk-gpu1",
       "target": "26.04.1",
       "boot_id": "e5a3e0f3-6463-49cd-9947-6a2ffb357437",
       "payload_sha256": "9fdc8214a86c822d6a68c8b646ce39a8f5dba4cca9d456097b15bdd190ca72d2",
-      "updated_at": 1794958807.234086
+      "updated_at": 1794959726.9409187,
+      "verified_boot_id": "b82de564-00cd-4596-a6cf-b4c618e79583"
     },
-    "unit": {
-      "Result": "success",
-      "ExecMainStatus": "0",
-      "ActiveState": "active",
-      "SubState": "running"
-    },
-    "hostOperationActuallyRunning": true,
-    "SUCSubmissionJobSucceeded": true,
+    "host_OS_verified": true,
     "workerAccepted": false,
-    "fullPlatformAccepted": false
+    "evidence": "gpu1-os-rollout-20261118/post-reboot-host-verified.safe.json"
   }
 }
